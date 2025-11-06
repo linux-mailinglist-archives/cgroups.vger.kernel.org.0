@@ -1,215 +1,156 @@
-Return-Path: <cgroups+bounces-11648-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-11649-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 22806C3BE83
-	for <lists+cgroups@lfdr.de>; Thu, 06 Nov 2025 15:57:45 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id E94DEC3CB63
+	for <lists+cgroups@lfdr.de>; Thu, 06 Nov 2025 18:07:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 456181890565
-	for <lists+cgroups@lfdr.de>; Thu,  6 Nov 2025 14:52:49 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id F2CC04F4A8E
+	for <lists+cgroups@lfdr.de>; Thu,  6 Nov 2025 17:02:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E87F32548D;
-	Thu,  6 Nov 2025 14:52:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 33DAD34D918;
+	Thu,  6 Nov 2025 17:02:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MzrKvwrC"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="nOFurHju"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-ed1-f50.google.com (mail-ed1-f50.google.com [209.85.208.50])
+Received: from mail-pj1-f52.google.com (mail-pj1-f52.google.com [209.85.216.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 44FE931A06C
-	for <cgroups@vger.kernel.org>; Thu,  6 Nov 2025 14:52:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F2CB34D927
+	for <cgroups@vger.kernel.org>; Thu,  6 Nov 2025 17:02:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762440738; cv=none; b=W8fRZVXZ9LvxvYDTJFCMK6Hq/MVESABQXiZQ3plWKyOGDyzdVn3gzY3a+4Yub6yHnTB2m0gjSjtECPhb8Wz1QHFWAk3ca7fT8dMWW9Wc1BHb3ByH4/vfP2T9I/JM5lewM8Fb8UTylaQnpm3Uk1Ao3C6+XMqJECN74KNagcYA5bU=
+	t=1762448567; cv=none; b=fMV1zzzojhnSjD6rlczCwHT38fjVa1110g7DQMOnzLp7cFF4cvLcV69XULT7j3jUkrUNwPogeQg3m1r7KgHMh0GpinGRXUeHuaDnQQIq9O4+6PQGzlr9nJ5BlaNcrbmXWWj5Nw+AT5j+lXK9n6Ht4ieBbOKNf8ekIXgyWj22GMw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762440738; c=relaxed/simple;
-	bh=dAoak8iwf0Fm/YyIMtLFLD7XPGq/ThJgvczcM7IhDYU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=TXGL21mUIOq40Y3s0Lf0FkuzkSkIHncYDY8wO90Qlim9GZYcfhlnZvae1cAeTojcwPKTkBovxoJ9vxH1ERAVqVwIVGR/p2cDgZhobHsKhE6j2kPSz6lG9lV1qZSijcwcp1t274fVaqY0VvCDV7m8gTibPMa4BJYD6ACg0pwk9Wk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=MzrKvwrC; arc=none smtp.client-ip=209.85.208.50
+	s=arc-20240116; t=1762448567; c=relaxed/simple;
+	bh=bmpbnRF3cKHlPN9Xaqa4sxklQfqyLwTGZdaTa34IQvM=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=TF4HayX6kcZo60AslDHvuBObvYQtc5u3rqodM2mhdVGfdAtf3KnbLTTUKMeD+B6Nvp59+YdccAbSSKNHycRnorRvtQg3dXpUCnxYZWyeTMuRsUYDMxfqdV936EjUC6MpV299dwTJ7k6FnjTfg38+yEk79xgMP4bbe7cSEWwtQsc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=nOFurHju; arc=none smtp.client-ip=209.85.216.52
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f50.google.com with SMTP id 4fb4d7f45d1cf-640f4b6836bso1824480a12.3
-        for <cgroups@vger.kernel.org>; Thu, 06 Nov 2025 06:52:15 -0800 (PST)
+Received: by mail-pj1-f52.google.com with SMTP id 98e67ed59e1d1-34077439166so1356302a91.2
+        for <cgroups@vger.kernel.org>; Thu, 06 Nov 2025 09:02:45 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1762440734; x=1763045534; darn=vger.kernel.org;
-        h=user-agent:in-reply-to:content-disposition:mime-version:references
-         :reply-to:message-id:subject:cc:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=wDdygpEaHGMoa57zuV/aMoSnBxXhLlVU6zzsPP0T20o=;
-        b=MzrKvwrChCqozTBR129s+QWX5qczo+V6yYXt/08OI33p1LwylgRcnibfAb2QcgYwq2
-         siDEU080VVpgFlb5liTgPqS4aqZJ2UxjXzUuYfu35ogAR7KVsaDumUlmJtLrDkPb/XJg
-         fJY9Bct8rfIHuyzVr6NTpHzYzrEX6CPaxV6N8IzAeFtuFECJ4TB8ppngcRE599w3DE9w
-         KojszPnDN5HUI7aY0+2arGKkd67m7b6Fyzva7YKAp45CAzTt7nLh2NVdiKF36zGLMd9u
-         Gtrt/V9uWt1aM1ipyxl0+I2+pRyfbKcNPM+e+OJ3B+D3ex4lkL7QFNYqFeUVoAC0gZjU
-         h1OQ==
+        d=gmail.com; s=20230601; t=1762448565; x=1763053365; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=YPpU0awjnKN/G6+KlazEDar1/1ZBM2a+Pz44QPC0Ujg=;
+        b=nOFurHjuTzW0jfTeH02iB669PpnWqGca+VSjL5Xawhy24YIFlKgN4ZDeCkphWGSbpW
+         y8A0huE1cOAJVEtiAqe+qxFfOPI/3xAr9ZpZfugEIW71U/rdRELKftThDLP/bMke3CPR
+         agarxOKgUyUGSkUBPW8y7eboNpCPIBGv07HtXJI6bT9aybJhFylgLlwobWu0uDeJLbFE
+         p2Bz484i47jg/RqlvITtoX7m4vid689CHH+SM2GXkNsbsuVQYrYlh3jYZBU4k36ALk64
+         2aSl5hH2W9XzEXWuNxygV8f2mf52Z+oDtchEYxV9AhmFagL3m8mtpp0jovFzltywJ0ho
+         MPlA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1762440734; x=1763045534;
-        h=user-agent:in-reply-to:content-disposition:mime-version:references
-         :reply-to:message-id:subject:cc:to:from:date:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=wDdygpEaHGMoa57zuV/aMoSnBxXhLlVU6zzsPP0T20o=;
-        b=Mdx9Mc127sy/DfyyIWj3xy4eubFgTmGRFcSaDRJs/lX5CyeJSM1GoyshmCH0HbpYcI
-         VOOoMj38HQhQi8IeGHwTTBsjbT3cx2tGtZcw5gDzqIMFEoZrvk2XisSjViGogxI5d+6P
-         p7x3BdC8Wi1VMPjW6AhlMr+oGJ8JjRNOHnzyUnnU7kwbjk/N4f3wIcJZy97QK9Hv/Wb0
-         +/TS3sUbzbGWc4c1tQ0RVvqfyxuuPZKWBMj2u9UDqRRFHrIU2foi1Bb4xNdLhay8aSNC
-         XvbQdSrCrV3ZHaZ6vSJpxXindfSFChbefCXbjF3dyzUNbG2pG0o6jgzWXBKz941gKG+9
-         9+rw==
-X-Forwarded-Encrypted: i=1; AJvYcCW3UWmOQg2MtYip1dvRmgLMZKSXTV2LLHvpn474D+6LYSGuDA14JIOFySQLLlWk2/vgW4O6zTs7@vger.kernel.org
-X-Gm-Message-State: AOJu0Ywa213oGlO3S+m1xVqQM1w5cxJeWjn+mWrk2hcrI97N+gD8Bnmk
-	rxFDid9JNlO7S/dyf2CBHCfVP2nT/G/KCBU3U2FxLntU5fnUfnXJdP3W
-X-Gm-Gg: ASbGnctSwMURY5JYb2cnCWVQ32r6rdk1bKxjUti6jiTtzgKE642o4fbKMWfduuyX01f
-	m06lH2UqzqKJcT2JZMxHS8TxLM9oONjyLfTHLOui5CrA5HXtmmjC1VqSqcW3gi6ssO5OFNRdDjO
-	zam12zZjT6WPFwOucL2CWeSd3cYxzf27G2uHu3VYr9edOa0slZpkHLruy01tsJ3OH9uiVNqSmiW
-	2Q/NfZLtQw/7EIZFjjJrDwYDXVj5acdJVrYM2j2OPQYQ+i00BcKtXXSi5K3YPISBiUMcZ/zlFDB
-	34EBtPPgOiEBxHUuFHYpqGYGiQ7l4j8IjI+DxxY6xEfaq1ZgpO3JiIiip3++urKHtvLdAXxGX3p
-	tIhw+sLR7aETtxQ+4tX78eecsl9U4X/VDdLXBRqfEjk98kA9z7tNoyXt6T95/gJPcENyQ0K/E3I
-	VO9wTMEchMRQ==
-X-Google-Smtp-Source: AGHT+IGgp/wgiZUKTPVZE3gj8111Pcf5itf4K+msOi2yemcqfhoEzuV1DpvFFwMSKzQh7/JzEeOngQ==
-X-Received: by 2002:a05:6402:34c6:b0:640:bd90:350d with SMTP id 4fb4d7f45d1cf-641058899e1mr6623598a12.1.1762440734161;
-        Thu, 06 Nov 2025 06:52:14 -0800 (PST)
-Received: from localhost ([185.92.221.13])
-        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-6411f8578d4sm1999441a12.18.2025.11.06.06.52.13
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Thu, 06 Nov 2025 06:52:13 -0800 (PST)
-Date: Thu, 6 Nov 2025 14:52:13 +0000
-From: Wei Yang <richard.weiyang@gmail.com>
-To: Qi Zheng <qi.zheng@linux.dev>
-Cc: hannes@cmpxchg.org, hughd@google.com, mhocko@suse.com,
-	roman.gushchin@linux.dev, shakeel.butt@linux.dev,
-	muchun.song@linux.dev, david@redhat.com, lorenzo.stoakes@oracle.com,
-	ziy@nvidia.com, harry.yoo@oracle.com, baolin.wang@linux.alibaba.com,
-	Liam.Howlett@oracle.com, npache@redhat.com, ryan.roberts@arm.com,
-	dev.jain@arm.com, baohua@kernel.org, lance.yang@linux.dev,
-	akpm@linux-foundation.org, linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-	Muchun Song <songmuchun@bytedance.com>,
-	Qi Zheng <zhengqi.arch@bytedance.com>
-Subject: Re: [PATCH v5 3/4] mm: thp: use folio_batch to handle THP splitting
- in deferred_split_scan()
-Message-ID: <20251106145213.jblfgslgjzfr3z7h@master>
-Reply-To: Wei Yang <richard.weiyang@gmail.com>
-References: <cover.1760509767.git.zhengqi.arch@bytedance.com>
- <4f5d7a321c72dfe65e0e19a3f89180d5988eae2e.1760509767.git.zhengqi.arch@bytedance.com>
+        d=1e100.net; s=20230601; t=1762448565; x=1763053365;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=YPpU0awjnKN/G6+KlazEDar1/1ZBM2a+Pz44QPC0Ujg=;
+        b=k9sSOqAqf9oI5V7tfTpRw3UEWMeD7rdXzPGUvkpJ7chv30Ed0f0j44mm6EEZwCsYb/
+         tzCWIgik4F2aMHC7sVtb9aSl1zmugWAqKfqJR7dS1Xbec87hobJ5NZEokVkqHtdV65LP
+         wLM2yWTIIV7K053dliiyDi2oLn0oMXJ80BFrDRN7kuuY9iPZfqaTORCOI5cHrGBKKrno
+         nDN8hKsSFt0fbzxKhGIpgShCVXowGGU+VqzhKuuvzydFLXrQIdNnl/oepeJ19SPk0D/a
+         env3+wZdp2TeR+HU5l/dc43BVHTaZbV++ZKQY93mEgIY1m+gLbGjYeo9frTATmI+bIFD
+         f4tQ==
+X-Forwarded-Encrypted: i=1; AJvYcCX7aeJjCoRDuXrPdPbN7d+eTjKy9FqGBMe+jOoCtBVqGKXSCyyz1/ix2WjIQOinoPRXwFnlxLvZ@vger.kernel.org
+X-Gm-Message-State: AOJu0Yy9HnumEtr67YD57Et3rf+VEaejiQaZu6oacvveFlv8N8lgI0vm
+	CYgANY2kN8+XZbrdBywZV2zoYYFqRHoZ2xjqipxkmTKqpWFMSJyRAE5Y
+X-Gm-Gg: ASbGncuOCfGYT8Qh5u90C2pRSGwXQpWgAj72tiTd9nPL3DbzbWkc3Qd8u+w2M1GgUHQ
+	aTqdQMIjiXJWAKiTYvBb9urfi4Vl58LS9crVrkI+ZR4MpXTZFBIpeY3tVFqo2v73AdIFdlS7AVc
+	uPEmuty9R/emCS5apeIOEusxurIe5VNCYY/lTzn7QCoEO6R4j/YpaYOp4KY7H+d3DQpLRkFdgml
+	z3XqlLPyWkMpQrUXprlvKqgMqn70N6jBtDShqcLmpWkjR/5iyDMACTqQ0BweBABk4gSOvBi7vKE
+	7X5TMDlLhZxpIN7l6S4qitwdBO1QcLSSsgL1sC/14DHS243+5WSHT99d4hsLsFULX8HStse5yUw
+	zYNYi2dBkE8Be4BPcrSeUddI7J+h1PC0VJqBc6YB7rPXrDliwhYAVpwPwaBSASKUPvGuG67l4ct
+	5FQriPQfCVFA99z0mMv4x/
+X-Google-Smtp-Source: AGHT+IF+6Xuvm4wgSMuStjeXOxmAX8A3ViGGV9aMWlq3E5tLch0rpxg/9QHMKCn3GRSTdg/WUL+Q6Q==
+X-Received: by 2002:a17:90b:2f87:b0:330:6d5e:f17b with SMTP id 98e67ed59e1d1-341a6dc4b6emr10139367a91.21.1762448564481;
+        Thu, 06 Nov 2025 09:02:44 -0800 (PST)
+Received: from [192.168.4.196] ([73.222.117.172])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-341d0456b34sm3029537a91.3.2025.11.06.09.02.42
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 06 Nov 2025 09:02:43 -0800 (PST)
+Message-ID: <37aa86c5-2659-4626-a80b-b3d07c2512c9@gmail.com>
+Date: Thu, 6 Nov 2025 09:02:41 -0800
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <4f5d7a321c72dfe65e0e19a3f89180d5988eae2e.1760509767.git.zhengqi.arch@bytedance.com>
-User-Agent: NeoMutt/20170113 (1.7.2)
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH mm-new v2] mm/memcontrol: Flush stats when write stat file
+To: Leon Huang Fu <leon.huangfu@shopee.com>, linux-mm@kvack.org
+Cc: hannes@cmpxchg.org, mhocko@kernel.org, roman.gushchin@linux.dev,
+ shakeel.butt@linux.dev, muchun.song@linux.dev, akpm@linux-foundation.org,
+ joel.granados@kernel.org, jack@suse.cz, laoar.shao@gmail.com,
+ mclapinski@google.com, kyle.meyer@hpe.com, corbet@lwn.net,
+ lance.yang@linux.dev, linux-doc@vger.kernel.org,
+ linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
+References: <20251105074917.94531-1-leon.huangfu@shopee.com>
+Content-Language: en-US
+From: JP Kobryn <inwardvessel@gmail.com>
+In-Reply-To: <20251105074917.94531-1-leon.huangfu@shopee.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Wed, Oct 15, 2025 at 02:35:32PM +0800, Qi Zheng wrote:
->From: Muchun Song <songmuchun@bytedance.com>
->
->The maintenance of the folio->_deferred_list is intricate because it's
->reused in a local list.
->
->Here are some peculiarities:
->
->   1) When a folio is removed from its split queue and added to a local
->      on-stack list in deferred_split_scan(), the ->split_queue_len isn't
->      updated, leading to an inconsistency between it and the actual
->      number of folios in the split queue.
->
->   2) When the folio is split via split_folio() later, it's removed from
->      the local list while holding the split queue lock. At this time,
->      the lock is not needed as it is not protecting anything.
->
->   3) To handle the race condition with a third-party freeing or migrating
->      the preceding folio, we must ensure there's always one safe (with
->      raised refcount) folio before by delaying its folio_put(). More
->      details can be found in commit e66f3185fa04 ("mm/thp: fix deferred
->      split queue not partially_mapped"). It's rather tricky.
->
->We can use the folio_batch infrastructure to handle this clearly. In this
->case, ->split_queue_len will be consistent with the real number of folios
->in the split queue. If list_empty(&folio->_deferred_list) returns false,
->it's clear the folio must be in its split queue (not in a local list
->anymore).
->
->In the future, we will reparent LRU folios during memcg offline to
->eliminate dying memory cgroups, which requires reparenting the split queue
->to its parent first. So this patch prepares for using
->folio_split_queue_lock_irqsave() as the memcg may change then.
->
->Signed-off-by: Muchun Song <songmuchun@bytedance.com>
->Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
->Reviewed-by: Zi Yan <ziy@nvidia.com>
->Acked-by: David Hildenbrand <david@redhat.com>
->Acked-by: Shakeel Butt <shakeel.butt@linux.dev>
->---
-> mm/huge_memory.c | 87 +++++++++++++++++++++++-------------------------
-> 1 file changed, 41 insertions(+), 46 deletions(-)
->
->diff --git a/mm/huge_memory.c b/mm/huge_memory.c
->index a68f26547cd99..e850bc10da3e2 100644
->--- a/mm/huge_memory.c
->+++ b/mm/huge_memory.c
->@@ -3782,21 +3782,22 @@ static int __folio_split(struct folio *folio, unsigned int new_order,
-> 		struct lruvec *lruvec;
-> 		int expected_refs;
+On 11/4/25 11:49 PM, Leon Huang Fu wrote:
+> On high-core count systems, memory cgroup statistics can become stale
+> due to per-CPU caching and deferred aggregation. Monitoring tools and
+> management applications sometimes need guaranteed up-to-date statistics
+> at specific points in time to make accurate decisions.
 > 
->-		if (folio_order(folio) > 1 &&
->-		    !list_empty(&folio->_deferred_list)) {
->-			ds_queue->split_queue_len--;
->+		if (folio_order(folio) > 1) {
->+			if (!list_empty(&folio->_deferred_list)) {
->+				ds_queue->split_queue_len--;
->+				/*
->+				 * Reinitialize page_deferred_list after removing the
->+				 * page from the split_queue, otherwise a subsequent
->+				 * split will see list corruption when checking the
->+				 * page_deferred_list.
->+				 */
->+				list_del_init(&folio->_deferred_list);
->+			}
-> 			if (folio_test_partially_mapped(folio)) {
-> 				folio_clear_partially_mapped(folio);
-> 				mod_mthp_stat(folio_order(folio),
-> 					      MTHP_STAT_NR_ANON_PARTIALLY_MAPPED, -1);
-> 			}
->-			/*
->-			 * Reinitialize page_deferred_list after removing the
->-			 * page from the split_queue, otherwise a subsequent
->-			 * split will see list corruption when checking the
->-			 * page_deferred_list.
->-			 */
->-			list_del_init(&folio->_deferred_list);
+> This patch adds write handlers to both memory.stat and memory.numa_stat
+> files to allow userspace to explicitly force an immediate flush of
+> memory statistics. When "1" is written to either file, it triggers
+> __mem_cgroup_flush_stats(memcg, true), which unconditionally flushes
+> all pending statistics for the cgroup and its descendants.
+> 
+> The write operation validates the input and only accepts the value "1",
+> returning -EINVAL for any other input.
+> 
+> Usage example:
+>    # Force immediate flush before reading critical statistics
+>    echo 1 > /sys/fs/cgroup/mygroup/memory.stat
+>    cat /sys/fs/cgroup/mygroup/memory.stat
+> 
+> This provides several benefits:
+> 
+> 1. On-demand accuracy: Tools can flush only when needed, avoiding
+>     continuous overhead
+> 
+> 2. Targeted flushing: Allows flushing specific cgroups when precision
+>     is required for particular workloads
 
-@Andrew
+I'm curious about your use case. Since you mention required precision,
+are you planning on manually flushing before every read?
 
-Current mm-new looks not merge the code correctly?
+> 
+> 3. Integration flexibility: Monitoring scripts can decide when to pay
+>     the flush cost based on their specific accuracy requirements
 
-The above removed code is still there.
+[...]
+> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> index c34029e92bab..d6a5d872fbcb 100644
+> --- a/mm/memcontrol.c
+> +++ b/mm/memcontrol.c
+> @@ -4531,6 +4531,17 @@ int memory_stat_show(struct seq_file *m, void *v)
+>   	return 0;
+>   }
+> 
+> +int memory_stat_write(struct cgroup_subsys_state *css, struct cftype *cft, u64 val)
+> +{
+> +	if (val != 1)
+> +		return -EINVAL;
+> +
+> +	if (css)
+> +		css_rstat_flush(css);
 
-@Qi
+This is a kfunc. You can do this right now from a bpf program without
+any kernel changes.
 
-After rescan this, I am confused about this code change.
-
-The difference here is originally it would check/clear partially_mapped if
-folio is on a list. But now we would do this even folio is not on a list.
-
-If my understanding is correct, after this change, !list_empty() means folio
-is on its ds_queue. And there are total three places to remove it from
-ds_queue.
-
-  1) __folio_unqueue_deferred_split()
-  2) deferred_split_scan()
-  3) __folio_split()
-
-In 1) and 2) we all clear partially_mapped bit before removing folio from
-ds_queue, this means if the folio is not on ds_queue in __folio_split(), it is
-not necessary to check/clear partially_mapped bit.
-
-Maybe I missed something, would you mind correct me on this?
-
--- 
-Wei Yang
-Help you, Help me
 
