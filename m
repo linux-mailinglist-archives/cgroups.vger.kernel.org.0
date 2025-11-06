@@ -1,178 +1,215 @@
-Return-Path: <cgroups+bounces-11647-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-11648-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id 61123C3948B
-	for <lists+cgroups@lfdr.de>; Thu, 06 Nov 2025 07:42:17 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 22806C3BE83
+	for <lists+cgroups@lfdr.de>; Thu, 06 Nov 2025 15:57:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 8AFFD4E71FD
-	for <lists+cgroups@lfdr.de>; Thu,  6 Nov 2025 06:42:14 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 456181890565
+	for <lists+cgroups@lfdr.de>; Thu,  6 Nov 2025 14:52:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AEAB023B616;
-	Thu,  6 Nov 2025 06:42:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E87F32548D;
+	Thu,  6 Nov 2025 14:52:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=shopee.com header.i=@shopee.com header.b="ZfJkLhxI"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MzrKvwrC"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-pl1-f176.google.com (mail-pl1-f176.google.com [209.85.214.176])
+Received: from mail-ed1-f50.google.com (mail-ed1-f50.google.com [209.85.208.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF4F92D7395
-	for <cgroups@vger.kernel.org>; Thu,  6 Nov 2025 06:42:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 44FE931A06C
+	for <cgroups@vger.kernel.org>; Thu,  6 Nov 2025 14:52:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762411330; cv=none; b=SnrrhkuQQZ8fCPu4EsI3T9DuByt8vU9/lXbZuel30mtHRrJP7AEJ27i5ASfxbrabBjFTwnlqKnxLyfJE3+VhAQ9q4SEhtqeCBWPvokq1OadsW5rkywIDcw3NEzs6mllGjaAMy+cddUr2VcYmZAjzBTf+y1buDhf0t6FoaLrUWoY=
+	t=1762440738; cv=none; b=W8fRZVXZ9LvxvYDTJFCMK6Hq/MVESABQXiZQ3plWKyOGDyzdVn3gzY3a+4Yub6yHnTB2m0gjSjtECPhb8Wz1QHFWAk3ca7fT8dMWW9Wc1BHb3ByH4/vfP2T9I/JM5lewM8Fb8UTylaQnpm3Uk1Ao3C6+XMqJECN74KNagcYA5bU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762411330; c=relaxed/simple;
-	bh=TL19hVOz4D0kxYhklrn7cfeF0qsMbESAPz4b68jgXaw=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=JiboUxmpIhqL+JTBfcJZXmapWVgBbYqVCkSVRYxgDLfk6rqjb1aPUgOa8gDAtQyj9z5y2dStmATxyF8/OXBYbsjqtz7b5ffrBI+ahfZkFQhBvNQwlhbtKXFZ13CtIvCBZV9GxoxQWDuzHKfOqk03cLh64vv8YQKsh37udvs+Sgc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=shopee.com; spf=pass smtp.mailfrom=shopee.com; dkim=pass (2048-bit key) header.d=shopee.com header.i=@shopee.com header.b=ZfJkLhxI; arc=none smtp.client-ip=209.85.214.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=shopee.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=shopee.com
-Received: by mail-pl1-f176.google.com with SMTP id d9443c01a7336-29599f08202so8054985ad.3
-        for <cgroups@vger.kernel.org>; Wed, 05 Nov 2025 22:42:08 -0800 (PST)
+	s=arc-20240116; t=1762440738; c=relaxed/simple;
+	bh=dAoak8iwf0Fm/YyIMtLFLD7XPGq/ThJgvczcM7IhDYU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=TXGL21mUIOq40Y3s0Lf0FkuzkSkIHncYDY8wO90Qlim9GZYcfhlnZvae1cAeTojcwPKTkBovxoJ9vxH1ERAVqVwIVGR/p2cDgZhobHsKhE6j2kPSz6lG9lV1qZSijcwcp1t274fVaqY0VvCDV7m8gTibPMa4BJYD6ACg0pwk9Wk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=MzrKvwrC; arc=none smtp.client-ip=209.85.208.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f50.google.com with SMTP id 4fb4d7f45d1cf-640f4b6836bso1824480a12.3
+        for <cgroups@vger.kernel.org>; Thu, 06 Nov 2025 06:52:15 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=shopee.com; s=shopee.com; t=1762411328; x=1763016128; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1762440734; x=1763045534; darn=vger.kernel.org;
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :reply-to:message-id:subject:cc:to:from:date:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=TL19hVOz4D0kxYhklrn7cfeF0qsMbESAPz4b68jgXaw=;
-        b=ZfJkLhxIWZBQvF7NMqvJ0p10+yDwCoWueoYNYNJIWmLJeaSNPIszN5JRPlWXWSh+mp
-         ekXayQqhi1wv956TtCRUXANceH8lpJG7rA+kuROjny5++Tsyd2ifnmIeGHHlcgFnlAv5
-         dMSIiXBAqtuUYD8F8fEVtJGNrPyMopWz6jknkFp+ICmL2LMWKWdJnh4WIWFHZnntKP88
-         QUnVxemjzYLVLx0Arl+rrUYtChkGwiCmMsgOMykU6ZKhDvjBP56GXAClOtHK/ZD5vE6i
-         UfvvCrveG8V3jqabpA/LWQ7S9lPeh/jNih/My/BM5soct5xJijbLonVGifFCB7ag+bQR
-         zW6w==
+        bh=wDdygpEaHGMoa57zuV/aMoSnBxXhLlVU6zzsPP0T20o=;
+        b=MzrKvwrChCqozTBR129s+QWX5qczo+V6yYXt/08OI33p1LwylgRcnibfAb2QcgYwq2
+         siDEU080VVpgFlb5liTgPqS4aqZJ2UxjXzUuYfu35ogAR7KVsaDumUlmJtLrDkPb/XJg
+         fJY9Bct8rfIHuyzVr6NTpHzYzrEX6CPaxV6N8IzAeFtuFECJ4TB8ppngcRE599w3DE9w
+         KojszPnDN5HUI7aY0+2arGKkd67m7b6Fyzva7YKAp45CAzTt7nLh2NVdiKF36zGLMd9u
+         Gtrt/V9uWt1aM1ipyxl0+I2+pRyfbKcNPM+e+OJ3B+D3ex4lkL7QFNYqFeUVoAC0gZjU
+         h1OQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1762411328; x=1763016128;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=TL19hVOz4D0kxYhklrn7cfeF0qsMbESAPz4b68jgXaw=;
-        b=GbErOoJ0T/gFUwWm7ydIlF/fpSn2prjBOrqYzYgqrx3qkY34Dap2MZd7Gc4rv91T8d
-         n6eIqAex8yCELc1k2V9sPx/hf2LySQt/UDrE1ZCKgS8hNuTwxtWwZ54OLhM0fj46OX+n
-         wscjE9ZdBdk+2iNVf1lBliym5tXL4idgIgz4OA1m6IYUqCwNnqz4YgtIlvCaeuvVKgdX
-         YTOmnj38NawuZ4BhwGJoINNnDA3QAlbLpwV19iUTUm1DVcfx1tOkyGmPltj1gYMuja9G
-         BNgkO0s7sACAu4GELvviCy3FjNnNKjSW0yBKt+xMnpnNbOX33EHU06wcFrH7/Ge6gi2L
-         hZEw==
-X-Forwarded-Encrypted: i=1; AJvYcCWg4jejOBf0PW0nDNrlZ4ty2lQAQ6YMcx4xUNStDl4yd9dVcK7FxiEVY6mv5lAxcZhpKkZcUuBj@vger.kernel.org
-X-Gm-Message-State: AOJu0Yz/NPUN6yqcFcbhqwuGheqOTwB9WzCKUU9lDGDy/p3zd1kFl4cO
-	rg1Ewm8RepCcOWYuEtYyN3DBK1nv9+X5sHYi5TYMzMmM6tD6mEtqG5k6WxlNpSXJGaw=
-X-Gm-Gg: ASbGncuDnxFwXbdbtMSqKXQbukNuJ+Y4Xb1euoAPpHTPOD4r5U+A64+/EJsz/BDn4rq
-	6CK49smfFHXtVeNptGYRV7ebrzisNglL27b6SUfZU1mpMUpMCBgor7G7BWtGn/Q4FDacwWQ6g1J
-	xg+1UwH++1xDkdNL7hpPy67nmOrVQRj0IbjBdRs5rntai7vPQxcBviO26OXqgcaj8XXsNYmnlAj
-	DrTXnJhY/k7UiUqgN7TVIT/TtkbBuJlqn3JF9TaIg9UwAL34KgGBbiIVK21E1oBvkkDho21F1Bf
-	QHC2iSsR0GDDVIXTbOElQkkJaNJJfqmNufZOC3vsjr6OoxrlIN5X4vhW+VQUvv0XBWM03ivme7u
-	75VTVocxaq57hcIz0dZRzFc66lkV5g6hF0j5ngwkciB1OWeD7D09nofWfFy82vZkE4VfZ1QrUMk
-	lPqTzhDgJTi7lDMw==
-X-Google-Smtp-Source: AGHT+IHUkyt8WCcqdVjY6Gz4mADuanTmzresjnwoIZFRGAhN7gntziMCQomA+rIkuthn7tqcXJO81w==
-X-Received: by 2002:a17:902:e5c5:b0:28d:18d3:46ca with SMTP id d9443c01a7336-2962adb62f9mr95573365ad.49.1762411327911;
-        Wed, 05 Nov 2025 22:42:07 -0800 (PST)
-Received: from .shopee.com ([122.11.166.8])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-29651ccc19asm16080265ad.104.2025.11.05.22.42.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 05 Nov 2025 22:42:07 -0800 (PST)
-From: Leon Huang Fu <leon.huangfu@shopee.com>
-To: inwardvessel@gmail.com
-Cc: akpm@linux-foundation.org,
-	cgroups@vger.kernel.org,
-	corbet@lwn.net,
-	hannes@cmpxchg.org,
-	jack@suse.cz,
-	joel.granados@kernel.org,
-	kyle.meyer@hpe.com,
-	lance.yang@linux.dev,
-	laoar.shao@gmail.com,
-	leon.huangfu@shopee.com,
-	linux-doc@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-mm@kvack.org,
-	mclapinski@google.com,
-	mhocko@kernel.org,
-	muchun.song@linux.dev,
-	roman.gushchin@linux.dev,
-	shakeel.butt@linux.dev,
-	yosry.ahmed@linux.dev
-Subject: Re: [PATCH mm-new v2] mm/memcontrol: Flush stats when write stat file
-Date: Thu,  6 Nov 2025 14:42:00 +0800
-Message-ID: <20251106064200.64198-1-leon.huangfu@shopee.com>
-X-Mailer: git-send-email 2.51.2
-In-Reply-To: <c704e7d9-5bc9-43e6-98cf-d28c592b0f3b@gmail.com>
-References: <c704e7d9-5bc9-43e6-98cf-d28c592b0f3b@gmail.com>
+        d=1e100.net; s=20230601; t=1762440734; x=1763045534;
+        h=user-agent:in-reply-to:content-disposition:mime-version:references
+         :reply-to:message-id:subject:cc:to:from:date:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=wDdygpEaHGMoa57zuV/aMoSnBxXhLlVU6zzsPP0T20o=;
+        b=Mdx9Mc127sy/DfyyIWj3xy4eubFgTmGRFcSaDRJs/lX5CyeJSM1GoyshmCH0HbpYcI
+         VOOoMj38HQhQi8IeGHwTTBsjbT3cx2tGtZcw5gDzqIMFEoZrvk2XisSjViGogxI5d+6P
+         p7x3BdC8Wi1VMPjW6AhlMr+oGJ8JjRNOHnzyUnnU7kwbjk/N4f3wIcJZy97QK9Hv/Wb0
+         +/TS3sUbzbGWc4c1tQ0RVvqfyxuuPZKWBMj2u9UDqRRFHrIU2foi1Bb4xNdLhay8aSNC
+         XvbQdSrCrV3ZHaZ6vSJpxXindfSFChbefCXbjF3dyzUNbG2pG0o6jgzWXBKz941gKG+9
+         9+rw==
+X-Forwarded-Encrypted: i=1; AJvYcCW3UWmOQg2MtYip1dvRmgLMZKSXTV2LLHvpn474D+6LYSGuDA14JIOFySQLLlWk2/vgW4O6zTs7@vger.kernel.org
+X-Gm-Message-State: AOJu0Ywa213oGlO3S+m1xVqQM1w5cxJeWjn+mWrk2hcrI97N+gD8Bnmk
+	rxFDid9JNlO7S/dyf2CBHCfVP2nT/G/KCBU3U2FxLntU5fnUfnXJdP3W
+X-Gm-Gg: ASbGnctSwMURY5JYb2cnCWVQ32r6rdk1bKxjUti6jiTtzgKE642o4fbKMWfduuyX01f
+	m06lH2UqzqKJcT2JZMxHS8TxLM9oONjyLfTHLOui5CrA5HXtmmjC1VqSqcW3gi6ssO5OFNRdDjO
+	zam12zZjT6WPFwOucL2CWeSd3cYxzf27G2uHu3VYr9edOa0slZpkHLruy01tsJ3OH9uiVNqSmiW
+	2Q/NfZLtQw/7EIZFjjJrDwYDXVj5acdJVrYM2j2OPQYQ+i00BcKtXXSi5K3YPISBiUMcZ/zlFDB
+	34EBtPPgOiEBxHUuFHYpqGYGiQ7l4j8IjI+DxxY6xEfaq1ZgpO3JiIiip3++urKHtvLdAXxGX3p
+	tIhw+sLR7aETtxQ+4tX78eecsl9U4X/VDdLXBRqfEjk98kA9z7tNoyXt6T95/gJPcENyQ0K/E3I
+	VO9wTMEchMRQ==
+X-Google-Smtp-Source: AGHT+IGgp/wgiZUKTPVZE3gj8111Pcf5itf4K+msOi2yemcqfhoEzuV1DpvFFwMSKzQh7/JzEeOngQ==
+X-Received: by 2002:a05:6402:34c6:b0:640:bd90:350d with SMTP id 4fb4d7f45d1cf-641058899e1mr6623598a12.1.1762440734161;
+        Thu, 06 Nov 2025 06:52:14 -0800 (PST)
+Received: from localhost ([185.92.221.13])
+        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-6411f8578d4sm1999441a12.18.2025.11.06.06.52.13
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Thu, 06 Nov 2025 06:52:13 -0800 (PST)
+Date: Thu, 6 Nov 2025 14:52:13 +0000
+From: Wei Yang <richard.weiyang@gmail.com>
+To: Qi Zheng <qi.zheng@linux.dev>
+Cc: hannes@cmpxchg.org, hughd@google.com, mhocko@suse.com,
+	roman.gushchin@linux.dev, shakeel.butt@linux.dev,
+	muchun.song@linux.dev, david@redhat.com, lorenzo.stoakes@oracle.com,
+	ziy@nvidia.com, harry.yoo@oracle.com, baolin.wang@linux.alibaba.com,
+	Liam.Howlett@oracle.com, npache@redhat.com, ryan.roberts@arm.com,
+	dev.jain@arm.com, baohua@kernel.org, lance.yang@linux.dev,
+	akpm@linux-foundation.org, linux-mm@kvack.org,
+	linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+	Muchun Song <songmuchun@bytedance.com>,
+	Qi Zheng <zhengqi.arch@bytedance.com>
+Subject: Re: [PATCH v5 3/4] mm: thp: use folio_batch to handle THP splitting
+ in deferred_split_scan()
+Message-ID: <20251106145213.jblfgslgjzfr3z7h@master>
+Reply-To: Wei Yang <richard.weiyang@gmail.com>
+References: <cover.1760509767.git.zhengqi.arch@bytedance.com>
+ <4f5d7a321c72dfe65e0e19a3f89180d5988eae2e.1760509767.git.zhengqi.arch@bytedance.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <4f5d7a321c72dfe65e0e19a3f89180d5988eae2e.1760509767.git.zhengqi.arch@bytedance.com>
+User-Agent: NeoMutt/20170113 (1.7.2)
 
->On 11/5/25 7:30 PM, Leon Huang Fu wrote:
->> On Thu, Nov 6, 2025 at 9:19 AM Shakeel Butt <shakeel.butt@linux.dev> wrote:
->>>
->>> +Yosry, JP
->>>
->>> On Wed, Nov 05, 2025 at 03:49:16PM +0800, Leon Huang Fu wrote:
->>>> On high-core count systems, memory cgroup statistics can become stale
->>>> due to per-CPU caching and deferred aggregation. Monitoring tools and
->>>> management applications sometimes need guaranteed up-to-date statistics
->>>> at specific points in time to make accurate decisions.
->>>
->>> Can you explain a bit more on your environment where you are seeing
->>> stale stats? More specifically, how often the management applications
->>> are reading the memcg stats and if these applications are reading memcg
->>> stats for each nodes of the cgroup tree.
->>>
->>> We force flush all the memcg stats at root level every 2 seconds but it
->>> seems like that is not enough for your case. I am fine with an explicit
->>> way for users to flush the memcg stats. In that way only users who want
->>> to has to pay for the flush cost.
->>>
->>
->> Thanks for the feedback. I encountered this issue while running the LTP
->> memcontrol02 test case [1] on a 256-core server with the 6.6.y kernel on XFS,
->> where it consistently failed.
->>
->> I was aware that Yosry had improved the memory statistics refresh mechanism
->> in "mm: memcg: subtree stats flushing and thresholds" [2], so I attempted to
->> backport that patchset to 6.6.y [3]. However, even on the 6.15.0-061500-generic
->> kernel with those improvements, the test still fails intermittently on XFS.
->>
+On Wed, Oct 15, 2025 at 02:35:32PM +0800, Qi Zheng wrote:
+>From: Muchun Song <songmuchun@bytedance.com>
 >
->I'm not against this change, but it might be worth testing on a 6.16 or
->later kernel. There were some changes that could affect your
->measurements. One is that flushing was isolated to individual subsystems
->[0] and the other is that updating stats became lockless [1].
+>The maintenance of the folio->_deferred_list is intricate because it's
+>reused in a local list.
 >
->[0]
->https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/kernel/cgroup/rstat.c?h=v6.18-rc4&id=5da3bfa029d6809e192d112f39fca4dbe0137aaf
->[1]
->https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/kernel/cgroup/rstat.c?h=v6.18-rc4&id=36df6e3dbd7e7b074e55fec080012184e2fa3a46
+>Here are some peculiarities:
+>
+>   1) When a folio is removed from its split queue and added to a local
+>      on-stack list in deferred_split_scan(), the ->split_queue_len isn't
+>      updated, leading to an inconsistency between it and the actual
+>      number of folios in the split queue.
+>
+>   2) When the folio is split via split_folio() later, it's removed from
+>      the local list while holding the split queue lock. At this time,
+>      the lock is not needed as it is not protecting anything.
+>
+>   3) To handle the race condition with a third-party freeing or migrating
+>      the preceding folio, we must ensure there's always one safe (with
+>      raised refcount) folio before by delaying its folio_put(). More
+>      details can be found in commit e66f3185fa04 ("mm/thp: fix deferred
+>      split queue not partially_mapped"). It's rather tricky.
+>
+>We can use the folio_batch infrastructure to handle this clearly. In this
+>case, ->split_queue_len will be consistent with the real number of folios
+>in the split queue. If list_empty(&folio->_deferred_list) returns false,
+>it's clear the folio must be in its split queue (not in a local list
+>anymore).
+>
+>In the future, we will reparent LRU folios during memcg offline to
+>eliminate dying memory cgroups, which requires reparenting the split queue
+>to its parent first. So this patch prepares for using
+>folio_split_queue_lock_irqsave() as the memcg may change then.
+>
+>Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+>Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
+>Reviewed-by: Zi Yan <ziy@nvidia.com>
+>Acked-by: David Hildenbrand <david@redhat.com>
+>Acked-by: Shakeel Butt <shakeel.butt@linux.dev>
+>---
+> mm/huge_memory.c | 87 +++++++++++++++++++++++-------------------------
+> 1 file changed, 41 insertions(+), 46 deletions(-)
+>
+>diff --git a/mm/huge_memory.c b/mm/huge_memory.c
+>index a68f26547cd99..e850bc10da3e2 100644
+>--- a/mm/huge_memory.c
+>+++ b/mm/huge_memory.c
+>@@ -3782,21 +3782,22 @@ static int __folio_split(struct folio *folio, unsigned int new_order,
+> 		struct lruvec *lruvec;
+> 		int expected_refs;
+> 
+>-		if (folio_order(folio) > 1 &&
+>-		    !list_empty(&folio->_deferred_list)) {
+>-			ds_queue->split_queue_len--;
+>+		if (folio_order(folio) > 1) {
+>+			if (!list_empty(&folio->_deferred_list)) {
+>+				ds_queue->split_queue_len--;
+>+				/*
+>+				 * Reinitialize page_deferred_list after removing the
+>+				 * page from the split_queue, otherwise a subsequent
+>+				 * split will see list corruption when checking the
+>+				 * page_deferred_list.
+>+				 */
+>+				list_del_init(&folio->_deferred_list);
+>+			}
+> 			if (folio_test_partially_mapped(folio)) {
+> 				folio_clear_partially_mapped(folio);
+> 				mod_mthp_stat(folio_order(folio),
+> 					      MTHP_STAT_NR_ANON_PARTIALLY_MAPPED, -1);
+> 			}
+>-			/*
+>-			 * Reinitialize page_deferred_list after removing the
+>-			 * page from the split_queue, otherwise a subsequent
+>-			 * split will see list corruption when checking the
+>-			 * page_deferred_list.
+>-			 */
+>-			list_del_init(&folio->_deferred_list);
 
-Thanks for the suggestion! I've tested on kernel 6.17.7-061707-generic and
-the results show the problem has actually gotten worse compared to
-6.15.0-061500-generic.
+@Andrew
 
-Test results (100 runs each on the LTP memcontrol02 test scenario):
+Current mm-new looks not merge the code correctly?
 
-Kernel 6.15.0-061500-generic:
-- Failures: 2/100 runs
-- Failure rate: 2%
+The above removed code is still there.
 
-Kernel 6.17.7-061707-generic:
-- Failures: 25/100 runs
-- Failure rate: 25%
+@Qi
 
-The increased failure rate with the newer kernel suggests that the lockless
-stats updates and subsystem isolation changes, while improving performance,
-may have reduced the implicit synchronization that was helping mask the
-staleness issue in some cases.
+After rescan this, I am confused about this code change.
 
-This reinforces the need for an explicit flush mechanism (memory.stat_refresh)
-to give users control when they need guaranteed up-to-date statistics.
+The difference here is originally it would check/clear partially_mapped if
+folio is on a list. But now we would do this even folio is not on a list.
 
-Thanks,
-Leon
+If my understanding is correct, after this change, !list_empty() means folio
+is on its ds_queue. And there are total three places to remove it from
+ds_queue.
+
+  1) __folio_unqueue_deferred_split()
+  2) deferred_split_scan()
+  3) __folio_split()
+
+In 1) and 2) we all clear partially_mapped bit before removing folio from
+ds_queue, this means if the folio is not on ds_queue in __folio_split(), it is
+not necessary to check/clear partially_mapped bit.
+
+Maybe I missed something, would you mind correct me on this?
+
+-- 
+Wei Yang
+Help you, Help me
 
