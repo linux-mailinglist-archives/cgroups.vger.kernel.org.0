@@ -1,101 +1,298 @@
-Return-Path: <cgroups+bounces-11667-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-11668-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C43F1C4022C
-	for <lists+cgroups@lfdr.de>; Fri, 07 Nov 2025 14:34:56 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 70670C41DDD
+	for <lists+cgroups@lfdr.de>; Fri, 07 Nov 2025 23:50:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6F8223ACBE1
-	for <lists+cgroups@lfdr.de>; Fri,  7 Nov 2025 13:34:54 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id ED871189B140
+	for <lists+cgroups@lfdr.de>; Fri,  7 Nov 2025 22:50:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1EA1E2E6CD5;
-	Fri,  7 Nov 2025 13:34:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 55B183074AF;
+	Fri,  7 Nov 2025 22:50:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="csAjAb7m"
+	dkim=pass (2048-bit key) header.d=gourry.net header.i=@gourry.net header.b="NA0sAHf7"
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qt1-f173.google.com (mail-qt1-f173.google.com [209.85.160.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C7264284889;
-	Fri,  7 Nov 2025 13:34:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D6E45303CA2
+	for <cgroups@vger.kernel.org>; Fri,  7 Nov 2025 22:50:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762522489; cv=none; b=il3Io0WhC8bYNAm8hXTPrVISgdAmXWPu8qRfzF0T95TGy/GkqaSjhxPlv7LlvSD5Hfp3vyo20BOObSsZMlgokQKidh6QkypKEj1FzGlicseojUhxC0m2NutHp41BGBvOg0Nf6tNT2Kj3K0Gs42AXVkmyEGrIybGfLrd8b1l/HmU=
+	t=1762555805; cv=none; b=EPbxOlFB8crTC5NhfVCxUbE55cnFrfBssL3mjjBWbVHrK2Rx6PIHRhFhyBTMqYVNXR0Tm1foyJssC9x+Tp3XxElyvvPPIMUnIhvALn3XOulHibn7qPajqqdTM9lIPTSOtyh/8XQj/aAXtV/NdXuYoOb8YioSe69QQgbONlehXaI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762522489; c=relaxed/simple;
-	bh=GZ1aR9vyKGpOf7GGJN4F566g8/j1fnBtFxg9TQ8LTV0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=bUKHZlqO4Wkii9uGCaqHDSDaEJhR0NrDXN6DvwqFwpQ8Dwer0XgjMYq2ZQUez8tBpLqmFD2xZ738u8EM2s7HuZng+0Y/zmsdHn2nhZTK8YKp4VoxXrayUy3/RM4qdKeRHLBDaROJuUpdi07pY1WDsvFhxexnCuYFihjaVECBbBA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=csAjAb7m; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 50C94C19421;
-	Fri,  7 Nov 2025 13:34:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1762522485;
-	bh=GZ1aR9vyKGpOf7GGJN4F566g8/j1fnBtFxg9TQ8LTV0=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=csAjAb7mGFsqx+jfwzUVkcCZbX87Qv5IOMRvCXEF9CB+kgSMXusMQRfkWRBzmUX9f
-	 hbMA7FSl2VHpww5ujPh0o1Sl8uSpHbQyDj3QyriTWqBLq5NBbrYKkw45orJAAa/tsc
-	 X1CiWgQzFTwixR/ZIjdZJiRj+L9CXOX59g5vULlBUZ1mAqH1MfyEofeiSjz4jNSjdT
-	 mWMu5UKmjJym4wNFYvtovGe9NJB5gtsXXPIpwA4mHq/YoHsElg/ZzZ3vY1+ROnyH7R
-	 IvihDf2vhihy0H/lL2evyqs4eb2rQP94wsJRRlObud+hFnceAyxAQyBDCn+chkkDXH
-	 /LKH38exKdo7Q==
-Date: Fri, 7 Nov 2025 03:34:43 -1000
-From: Tejun Heo <tj@kernel.org>
-To: Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
-Cc: Johannes Weiner <hannes@cmpxchg.org>, cgroups@vger.kernel.org,
-	linux-kernel@vger.kernel.org, stable@vger.kernel.org
-Subject: Re: [PATCH cgroup/for-6.18-fixes] cgroup: Skip showing PID 0 in
- cgroup.procs and cgroup.threads
-Message-ID: <aQ31cwAFCS4Tvb7T@slm.duckdns.org>
-References: <2016aece61b4da7ad86c6eca2dbcfd16@kernel.org>
- <5r6yyuleoru7h6wcbdw673nlfzzbsc24sltmfg5hk2mj6a34xa@2xo7a3jhhkef>
+	s=arc-20240116; t=1762555805; c=relaxed/simple;
+	bh=MlggfO79faftTr5r5TEYzz+mGbqyBDNnNZnD0sCXLe8=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=Fhj+vo+688ovqrzn4fl9hHs0/ph/btbEUg0Z/EUp56UW33aLStmXwj+gC0qi6opaDlui3UtGt4yZj9QnOrmt9k3dLtZsv2+RWc4tBks1NPuU0GmV7z7KWFnR3VljvgMdZ0yig9Q+M9XXdPr7RCamtR6MXXg6IL966zNwCEZX63E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gourry.net; spf=pass smtp.mailfrom=gourry.net; dkim=pass (2048-bit key) header.d=gourry.net header.i=@gourry.net header.b=NA0sAHf7; arc=none smtp.client-ip=209.85.160.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gourry.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gourry.net
+Received: by mail-qt1-f173.google.com with SMTP id d75a77b69052e-4ed82e82f0fso12045481cf.1
+        for <cgroups@vger.kernel.org>; Fri, 07 Nov 2025 14:50:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gourry.net; s=google; t=1762555802; x=1763160602; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=W/i5+G+JXNuEj74b+jlkiB1ru0BZu3qaV0THAJdKUHE=;
+        b=NA0sAHf7KcPSuhFkj2x8QXtvc+ndurMMNk4dks4zhnC+C1bVvYdWKbz2dXhGMxlqFs
+         gOGonsxLixWPW/yYIbNKdL4oXDxYAwr5SN51FKRqsNpvHAhiTDth+cbfki1WWwyun2BL
+         F4A96++jc/ZYNudpr1x0e1Le0iqlTY0thKkj9suJDtJRZA666KWqTpG1eh21YdMH5ugc
+         iU/H7LLVFNUIbe2tO4P+gFwfvaOaIAjCB14S9e+cJn4zYwplG1nLyJnx0W/LtvgMD9Wi
+         uuXW47Tasnln0eMAa3z4I3nLUplPm5GTNvkcYWjOikq/d10IFZaBCdzWPhaXMXmMaD8+
+         4z6A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1762555802; x=1763160602;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=W/i5+G+JXNuEj74b+jlkiB1ru0BZu3qaV0THAJdKUHE=;
+        b=Umd2sUEyitT1qQx9H5QbdueJRPeUnyciEHNUombynHgxz6pxpycvjD5ARnJJfG5uWb
+         1JrAU1QVeNXsxqbN8FjLjREeJ6V02xbEPN5JZMcxzlkUlnqTVEhX0nnBIwHSR6H8WPn3
+         65aNDd8xbKfJ/zorAPoOTSfNl2FUKR9+0HRz29RNWr7+NYiVeLmARA1jwc3W6JCS55F7
+         BAw60/JIWEXinZSqiTUvU/upvlIVyD4NBEaNmnFC1Y8yLsJEWQILXEcpHmmORSWJHiQq
+         XLwMsK98zNh/ZfFuvR3TLmZUhtXIKwaAllUXpNDB2g2uJUhyWH0snK+PYVLE21QGUonQ
+         YiPA==
+X-Forwarded-Encrypted: i=1; AJvYcCXwb23IJ2eDnAqdwl90nxyHe5LzNPYOxZpUvA0wV24aIqUjCF2J4KcLDATdiLNqgiyhvOISr0fs@vger.kernel.org
+X-Gm-Message-State: AOJu0Yz+6d6sN/XtqLg+Y9PyZ9l8b3ilkEb0Ecb4vvapfbPNZUM5EvHp
+	oozeG3LzZ77jwBhh5S7iQcsYMJUe7MGbgLlqT6qdDov5zekpI5qLDUHTqhLH8X/M0eI=
+X-Gm-Gg: ASbGncuRsyWDH8qdLcvIAI65TPDzVdb+ttOufTqFUJdWXpfp9lRhQkrbPvF8z4cbqgN
+	YUIwa5YqZLXsMsBWG/+ERQaKQok0pwKV12PCX4UbpnfCEUebj+mWYNW7R3blqm943DQ7emtuVrP
+	Fk3K4wEC1C6lC8dJuyLYjsGeZ3J34xMgsnhjQP0S739evvpUd262Qpv2nOq6/pVS4s9UT2VkK6E
+	7Q4yVZmlZjcCg6i4t9cDP3i51N/F7KtTxuSAX9n+aEz+VAXgtU++G/4FM1cYqNmWsRSzohQSSeI
+	SeXbY6rkVaQxp7X0Eww5PETUQkFep0HtYpkTPTnmuGo6ubyRUYOQeoNz5WaBgCI6Qspe61wnA35
+	ctrq82y4mFV1IAcos0dnutb9OpJ/BaSERbCowr+UetQGWXs+G4Gw0/xT8xfxPWAvJismN35Sggx
+	teY/fWsoA0sw8zD99xNbyi+mVdRPiE5IKowHHIxLXIndDFORMuYRIvk5us2d0vRp9rWnrCkL7VC
+	7gyquYvoOMz6A==
+X-Google-Smtp-Source: AGHT+IEnnHkz/BZSg5DKCpmGTuSxg9EESDNIjBwNYfeFy3KOQNMlwaNzTyo63eXXhJ12ZyZIPB9YSg==
+X-Received: by 2002:ac8:59cb:0:b0:4b6:299d:dfe4 with SMTP id d75a77b69052e-4eda4f0a4a4mr12390191cf.32.1762555801614;
+        Fri, 07 Nov 2025 14:50:01 -0800 (PST)
+Received: from gourry-fedora-PF4VCD3F.lan (pool-96-255-20-138.washdc.ftas.verizon.net. [96.255.20.138])
+        by smtp.gmail.com with ESMTPSA id d75a77b69052e-4eda57ad8e6sm3293421cf.27.2025.11.07.14.49.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 07 Nov 2025 14:50:01 -0800 (PST)
+From: Gregory Price <gourry@gourry.net>
+To: linux-mm@kvack.org
+Cc: linux-cxl@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	nvdimm@lists.linux.dev,
+	linux-fsdevel@vger.kernel.org,
+	cgroups@vger.kernel.org,
+	dave@stgolabs.net,
+	jonathan.cameron@huawei.com,
+	dave.jiang@intel.com,
+	alison.schofield@intel.com,
+	vishal.l.verma@intel.com,
+	ira.weiny@intel.com,
+	dan.j.williams@intel.com,
+	longman@redhat.com,
+	akpm@linux-foundation.org,
+	david@redhat.com,
+	lorenzo.stoakes@oracle.com,
+	Liam.Howlett@oracle.com,
+	vbabka@suse.cz,
+	rppt@kernel.org,
+	surenb@google.com,
+	mhocko@suse.com,
+	osalvador@suse.de,
+	ziy@nvidia.com,
+	matthew.brost@intel.com,
+	joshua.hahnjy@gmail.com,
+	rakie.kim@sk.com,
+	byungchul@sk.com,
+	gourry@gourry.net,
+	ying.huang@linux.alibaba.com,
+	apopple@nvidia.com,
+	mingo@redhat.com,
+	peterz@infradead.org,
+	juri.lelli@redhat.com,
+	vincent.guittot@linaro.org,
+	dietmar.eggemann@arm.com,
+	rostedt@goodmis.org,
+	bsegall@google.com,
+	mgorman@suse.de,
+	vschneid@redhat.com,
+	tj@kernel.org,
+	hannes@cmpxchg.org,
+	mkoutny@suse.com,
+	kees@kernel.org,
+	muchun.song@linux.dev,
+	roman.gushchin@linux.dev,
+	shakeel.butt@linux.dev,
+	rientjes@google.com,
+	jackmanb@google.com,
+	cl@gentwo.org,
+	harry.yoo@oracle.com,
+	axelrasmussen@google.com,
+	yuanchu@google.com,
+	weixugc@google.com,
+	zhengqi.arch@bytedance.com,
+	yosry.ahmed@linux.dev,
+	nphamcs@gmail.com,
+	chengming.zhou@linux.dev,
+	fabio.m.de.francesco@linux.intel.com,
+	rrichter@amd.com,
+	ming.li@zohomail.com,
+	usamaarif642@gmail.com,
+	brauner@kernel.org,
+	oleg@redhat.com,
+	namcao@linutronix.de,
+	escape@linux.alibaba.com,
+	dongjoo.seo1@samsung.com
+Subject: [RFC LPC2026 PATCH 0/9] Protected Memory NUMA Nodes
+Date: Fri,  7 Nov 2025 17:49:45 -0500
+Message-ID: <20251107224956.477056-1-gourry@gourry.net>
+X-Mailer: git-send-email 2.51.1
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <5r6yyuleoru7h6wcbdw673nlfzzbsc24sltmfg5hk2mj6a34xa@2xo7a3jhhkef>
 
-Hello,
+Author Note
+-----------
+This is a code RFC for discussion related to
 
-On Fri, Nov 07, 2025 at 10:57:54AM +0100, Michal Koutn� wrote:
-> On Thu, Nov 06, 2025 at 12:07:45PM -1000, Tejun Heo <tj@kernel.org> wrote:
-> > css_task_iter_next() pins and returns a task, but the task can do whatever
-> > between that and cgroup_procs_show() being called, including dying and
-> > losing its PID. When that happens, task_pid_vnr() returns 0.
-> 
-> task_pid_vnr() would return 0 also when the process is not from reader's
-> pidns (IMO more common than the transitional effect).
+"Mempolicy is dead, long live memory policy!"
+https://lpc.events/event/19/contributions/2143/
 
-Hmm... haven't thought about that.
+Given the subtlety of some of these changes, and the upcoming holidays
+I wanted to publish this well ahead of time for discussion. This is
+the baseline patch set which predicates a new kind of mempolicy based
+on NUMA node memory features - which can be defined by the components
+adding memory to such NUMA nodes.
 
-> > Showing "0" in cgroup.procs or cgroup.threads is confusing and can lead to
-> > surprising outcomes. For example, if a user tries to kill PID 0, it kills
-> > all processes in the current process group.
-> 
-> It's still info about present processes.
-> 
-> > 
-> > Skip entries with PID 0 by returning SEQ_SKIP.
-> 
-> It's likely OK to skip for these exiting tasks but with the external pidns tasks
-> in mind, reading cgroup.procs now may give false impression of an empty
-> cgroup.
-> 
-> Where does the 0 from of the exiting come from? (Could it be
-> distinguished from foreign pidns?)
+Included is an example of a Compressed Memory Node, and how compressed
+RAM could be managed by zswap.  Compressed memory is its own rabbit
+hole - I recommend not getting hung up on the example. 
 
-Yeah, I think it can be distinguished. We just need to check whether the
-task has pid attached at all after getting 0 return from task_pid_vnr().
+The core discussion should be around whether such a "Protected Node"
+based system is reasonable - and whether there are sufficient potential
+users to warrant support.
 
-Thanks.
+Also please do not get hung up on naming. "Protected" just means
+"Not-System-RAM".  If you see "Default" just assume "Systam RAM".
+
+base-commit: 1c353dc8d962de652bc7ad2ba2e63f553331391c
+-----------
+
+With this set, we aim to enable allocation of "special purpose memory"
+with the page allocator (mm/page_alloc.c) without exposing the same
+memory as "Typical System RAM".  Unless a non-userland component
+explicitly asks for the node, and does so with a GFP_PROTECTED flag,
+memory on that node cannot be "accidentally" used as normal ram.
+
+We present an example of using this mechanism within ZSWAP, as-if
+a "compressed memory node" was present.  How to describe the features
+of memory present on nodes is left up to comment here and at LPC '26.
+
+Important Note: Since userspace interfaces are restricted by the
+default_node mask (sysram), nothing in userspace can explicitly
+request memory from protected nodes.  Instead, the intent is to
+create new components which understand different node features,
+which abstracts the hardware complexity away from userland.
+
+The ZSWAP example demonstrates this with `mt_compressed_nodemask`
+which is simply a hack to simply demonstrate the idea.
+
+There are 4 major changes in this set:
+
+1) Introducing default_sysram_nodes in mm/memory-tiers.c which denotes
+   the set of default nodes which are eligible for use as normal sysram
+
+   Some existing users noew pass default_sysram_nodes into the page
+   allocator instead of NULL, but passing a NULL pointer in will simply
+   have it replaced by default_sysram_nodes anyway.
+
+   default_sysram_nodes is always guaranteed to contain the N_MEMORY
+   nodes that were present at boot time, and so it can never be empty.
+
+
+2) The addition of `cpuset.mems.default` which restricts cgroups to
+   using `default_sysram_nodes` by default, while allowing non-sysram
+   nodes into mems_effective (mems_allowed).
+
+   This is done to allow separate control over sysram and protected node
+   sets by cgroups while maintaining the hierarchical rules.
+
+   current cpuset configuration
+   cpuset.mems_allowed
+    |.mems_effective         < (mems_allowed ∩ parent.mems_effective)
+    |->tasks.mems_allowed    < cpuset.mems_effective
+
+   new cpuset configuration
+   cpuset.mems_allowed
+    |.mems_effective        < (mems_allowed ∩ parent.mems_effective)
+    |.mems_default          < (mems_effective ∩ default_sys_nodemask)
+      |->task.mems_default  < cpuset.mems_default - (note renamed)
+
+3) Addition of MHP_PROTECTED_MEMORY flag to denote to memory-hotplug
+   that the memory capacity being added should mark the node as a
+   protected memory node.  A node is either SysRAM or Protected, and
+   cannot contain both (adding protected to an existing SysRAM node
+   will result in EINVAL).
+
+   DAX and CXL are made aware of the bit and have `protected_memory`
+   bits added to their relevant subsystems.
+
+4) Adding GFP_PROTECTED - which allows page_alloc.c to request memory
+   from the provided node or nodemask.  It changes the behavior of
+   the cpuset mems_allowed check.
+
+   Probably there needs to be some additional work done here to
+   restrict non-cgroup kernels.
+
+Gregory Price (9):
+  gfp: Add GFP_PROTECTED for protected-node allocations
+  memory-tiers: create default_sysram_nodes
+  mm: default slub, oom_kill, compaction, and page_alloc to sysram
+  mm,cpusets: rename task->mems_allowed to task->mems_default
+  cpuset: introduce cpuset.mems.default
+  mm/memory_hotplug: add MHP_PROTECTED_MEMORY flag
+  drivers/dax: add protected memory bit to dev_dax
+  drivers/cxl: add protected_memory bit to cxl region
+  [HACK] mm/zswap: compressed ram integration example
+
+ drivers/cxl/core/region.c       |  30 ++++++
+ drivers/cxl/cxl.h               |   2 +
+ drivers/dax/bus.c               |  39 ++++++++
+ drivers/dax/bus.h               |   1 +
+ drivers/dax/cxl.c               |   1 +
+ drivers/dax/dax-private.h       |   1 +
+ drivers/dax/kmem.c              |   2 +
+ fs/proc/array.c                 |   2 +-
+ include/linux/cpuset.h          |  52 +++++------
+ include/linux/gfp_types.h       |   3 +
+ include/linux/memory-tiers.h    |   4 +
+ include/linux/memory_hotplug.h  |  10 ++
+ include/linux/mempolicy.h       |   2 +-
+ include/linux/sched.h           |   6 +-
+ init/init_task.c                |   2 +-
+ kernel/cgroup/cpuset-internal.h |   8 ++
+ kernel/cgroup/cpuset-v1.c       |   7 ++
+ kernel/cgroup/cpuset.c          | 157 +++++++++++++++++++++-----------
+ kernel/fork.c                   |   2 +-
+ kernel/sched/fair.c             |   4 +-
+ mm/hugetlb.c                    |   8 +-
+ mm/memcontrol.c                 |   2 +-
+ mm/memory-tiers.c               |  25 ++++-
+ mm/memory_hotplug.c             |  25 +++++
+ mm/mempolicy.c                  |  34 +++----
+ mm/migrate.c                    |   4 +-
+ mm/oom_kill.c                   |  11 ++-
+ mm/page_alloc.c                 |  28 +++---
+ mm/show_mem.c                   |   2 +-
+ mm/slub.c                       |   4 +-
+ mm/vmscan.c                     |   2 +-
+ mm/zswap.c                      |  65 ++++++++++++-
+ 32 files changed, 411 insertions(+), 134 deletions(-)
 
 -- 
-tejun
+2.51.1
+
 
