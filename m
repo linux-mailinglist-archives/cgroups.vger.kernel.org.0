@@ -1,78 +1,80 @@
-Return-Path: <cgroups+bounces-11668-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-11669-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 70670C41DDD
-	for <lists+cgroups@lfdr.de>; Fri, 07 Nov 2025 23:50:21 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id EF09AC41E0C
+	for <lists+cgroups@lfdr.de>; Fri, 07 Nov 2025 23:50:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id ED871189B140
-	for <lists+cgroups@lfdr.de>; Fri,  7 Nov 2025 22:50:45 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 5C44F4EB59E
+	for <lists+cgroups@lfdr.de>; Fri,  7 Nov 2025 22:50:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 55B183074AF;
-	Fri,  7 Nov 2025 22:50:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 23DBA314B7A;
+	Fri,  7 Nov 2025 22:50:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gourry.net header.i=@gourry.net header.b="NA0sAHf7"
+	dkim=pass (2048-bit key) header.d=gourry.net header.i=@gourry.net header.b="tKXxgKOL"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-qt1-f173.google.com (mail-qt1-f173.google.com [209.85.160.173])
+Received: from mail-qt1-f182.google.com (mail-qt1-f182.google.com [209.85.160.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D6E45303CA2
-	for <cgroups@vger.kernel.org>; Fri,  7 Nov 2025 22:50:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 207D4314A90
+	for <cgroups@vger.kernel.org>; Fri,  7 Nov 2025 22:50:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762555805; cv=none; b=EPbxOlFB8crTC5NhfVCxUbE55cnFrfBssL3mjjBWbVHrK2Rx6PIHRhFhyBTMqYVNXR0Tm1foyJssC9x+Tp3XxElyvvPPIMUnIhvALn3XOulHibn7qPajqqdTM9lIPTSOtyh/8XQj/aAXtV/NdXuYoOb8YioSe69QQgbONlehXaI=
+	t=1762555808; cv=none; b=pmSYHhd7LvtEnVuPXQn6x/L1YP0StocddY2yhlErGeZ7iRgYuWEIED+7KOIYQn03MNZo6pMBCaeIqCc386eWcvTSbXhKIdQtALoUJmneUFHgrVUq8ChnX1CZmNTuPT6njcoOfQJQhAW7/s6ujMIdcviUL06SQd7X6PCZTILxO2Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762555805; c=relaxed/simple;
-	bh=MlggfO79faftTr5r5TEYzz+mGbqyBDNnNZnD0sCXLe8=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=Fhj+vo+688ovqrzn4fl9hHs0/ph/btbEUg0Z/EUp56UW33aLStmXwj+gC0qi6opaDlui3UtGt4yZj9QnOrmt9k3dLtZsv2+RWc4tBks1NPuU0GmV7z7KWFnR3VljvgMdZ0yig9Q+M9XXdPr7RCamtR6MXXg6IL966zNwCEZX63E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gourry.net; spf=pass smtp.mailfrom=gourry.net; dkim=pass (2048-bit key) header.d=gourry.net header.i=@gourry.net header.b=NA0sAHf7; arc=none smtp.client-ip=209.85.160.173
+	s=arc-20240116; t=1762555808; c=relaxed/simple;
+	bh=UCpXheq+ISF5ooL3BArG9j5Ni7nrQ94FnST2TGVI9qs=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=kSHHjeENdhu1Y+iRwr16xbkAVPGAfxOWN1CuOC/WJ4BM2WiyP57p+vQgnZ080/DV+2ey/vXNohc0xrJH3kuMf0dT6251SIZGzwYR6EoGaANX6vju70Hyfdi02yXJon7biVPzRG6SA4eFNGmLhoVFYz1fNbxV2tnKi057ODeROBc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gourry.net; spf=pass smtp.mailfrom=gourry.net; dkim=pass (2048-bit key) header.d=gourry.net header.i=@gourry.net header.b=tKXxgKOL; arc=none smtp.client-ip=209.85.160.182
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gourry.net
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gourry.net
-Received: by mail-qt1-f173.google.com with SMTP id d75a77b69052e-4ed82e82f0fso12045481cf.1
-        for <cgroups@vger.kernel.org>; Fri, 07 Nov 2025 14:50:02 -0800 (PST)
+Received: by mail-qt1-f182.google.com with SMTP id d75a77b69052e-4ed8e22689dso7654231cf.1
+        for <cgroups@vger.kernel.org>; Fri, 07 Nov 2025 14:50:07 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gourry.net; s=google; t=1762555802; x=1763160602; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=W/i5+G+JXNuEj74b+jlkiB1ru0BZu3qaV0THAJdKUHE=;
-        b=NA0sAHf7KcPSuhFkj2x8QXtvc+ndurMMNk4dks4zhnC+C1bVvYdWKbz2dXhGMxlqFs
-         gOGonsxLixWPW/yYIbNKdL4oXDxYAwr5SN51FKRqsNpvHAhiTDth+cbfki1WWwyun2BL
-         F4A96++jc/ZYNudpr1x0e1Le0iqlTY0thKkj9suJDtJRZA666KWqTpG1eh21YdMH5ugc
-         iU/H7LLVFNUIbe2tO4P+gFwfvaOaIAjCB14S9e+cJn4zYwplG1nLyJnx0W/LtvgMD9Wi
-         uuXW47Tasnln0eMAa3z4I3nLUplPm5GTNvkcYWjOikq/d10IFZaBCdzWPhaXMXmMaD8+
-         4z6A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1762555802; x=1763160602;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+        d=gourry.net; s=google; t=1762555806; x=1763160606; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=W/i5+G+JXNuEj74b+jlkiB1ru0BZu3qaV0THAJdKUHE=;
-        b=Umd2sUEyitT1qQx9H5QbdueJRPeUnyciEHNUombynHgxz6pxpycvjD5ARnJJfG5uWb
-         1JrAU1QVeNXsxqbN8FjLjREeJ6V02xbEPN5JZMcxzlkUlnqTVEhX0nnBIwHSR6H8WPn3
-         65aNDd8xbKfJ/zorAPoOTSfNl2FUKR9+0HRz29RNWr7+NYiVeLmARA1jwc3W6JCS55F7
-         BAw60/JIWEXinZSqiTUvU/upvlIVyD4NBEaNmnFC1Y8yLsJEWQILXEcpHmmORSWJHiQq
-         XLwMsK98zNh/ZfFuvR3TLmZUhtXIKwaAllUXpNDB2g2uJUhyWH0snK+PYVLE21QGUonQ
-         YiPA==
-X-Forwarded-Encrypted: i=1; AJvYcCXwb23IJ2eDnAqdwl90nxyHe5LzNPYOxZpUvA0wV24aIqUjCF2J4KcLDATdiLNqgiyhvOISr0fs@vger.kernel.org
-X-Gm-Message-State: AOJu0Yz+6d6sN/XtqLg+Y9PyZ9l8b3ilkEb0Ecb4vvapfbPNZUM5EvHp
-	oozeG3LzZ77jwBhh5S7iQcsYMJUe7MGbgLlqT6qdDov5zekpI5qLDUHTqhLH8X/M0eI=
-X-Gm-Gg: ASbGncuRsyWDH8qdLcvIAI65TPDzVdb+ttOufTqFUJdWXpfp9lRhQkrbPvF8z4cbqgN
-	YUIwa5YqZLXsMsBWG/+ERQaKQok0pwKV12PCX4UbpnfCEUebj+mWYNW7R3blqm943DQ7emtuVrP
-	Fk3K4wEC1C6lC8dJuyLYjsGeZ3J34xMgsnhjQP0S739evvpUd262Qpv2nOq6/pVS4s9UT2VkK6E
-	7Q4yVZmlZjcCg6i4t9cDP3i51N/F7KtTxuSAX9n+aEz+VAXgtU++G/4FM1cYqNmWsRSzohQSSeI
-	SeXbY6rkVaQxp7X0Eww5PETUQkFep0HtYpkTPTnmuGo6ubyRUYOQeoNz5WaBgCI6Qspe61wnA35
-	ctrq82y4mFV1IAcos0dnutb9OpJ/BaSERbCowr+UetQGWXs+G4Gw0/xT8xfxPWAvJismN35Sggx
-	teY/fWsoA0sw8zD99xNbyi+mVdRPiE5IKowHHIxLXIndDFORMuYRIvk5us2d0vRp9rWnrCkL7VC
-	7gyquYvoOMz6A==
-X-Google-Smtp-Source: AGHT+IEnnHkz/BZSg5DKCpmGTuSxg9EESDNIjBwNYfeFy3KOQNMlwaNzTyo63eXXhJ12ZyZIPB9YSg==
-X-Received: by 2002:ac8:59cb:0:b0:4b6:299d:dfe4 with SMTP id d75a77b69052e-4eda4f0a4a4mr12390191cf.32.1762555801614;
-        Fri, 07 Nov 2025 14:50:01 -0800 (PST)
+        bh=jCHR6ylRLZZ9pqd+jMer6/IGdndwoE5PhK5YE6dS19U=;
+        b=tKXxgKOLQJx65x89wlHUjXEms19V2h4+fJag0WnIJD5oEG/ILVml5bMn3kzA7LHKDD
+         LoQdZb79TEU0fFHEdNl4l22hrCtI6XV8X/jowNCQvk0BBSWLp7FemAeYB11k0uAvNb7V
+         lgfICkxQx5DM7N94uYFET8BHEPw5QZfJIzV8alY5IYe45jTno/a5NixiBZ1VsLouSE6z
+         k6i4CxCDOAQIkmBhb/f18FuKH9Iu6OVyW7xn5oYvaATF3mWOYCaHW+Ytm/K5ENzoTYZ7
+         3wiIgHSuVrFFM5Gic9V9B2gxUDC60XHGkWXocxp36ukAuwShuqz/V3LH8hgfXHKzLCF8
+         d5Yw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1762555806; x=1763160606;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=jCHR6ylRLZZ9pqd+jMer6/IGdndwoE5PhK5YE6dS19U=;
+        b=rvAS3GrwNFlP00IZbSwhQVCdT7/NA27gCDr3R4v33MgfYub8QOUAuFQLNmkBpMDgDh
+         J8sSN99GMLKt/1lafdXNm+QSSUo9rEKAHqNG7pOOUJ+yjHaIXU1nU4OtNW6qa4af6lkB
+         ORO+k6iJLlmNN/9aUbRJUXC0OT4HSu6mNv0N2pZbrRhXg8BFV6HQy7J+C9HRVLFhEh+e
+         RZUKa1vqTKW9LmCQ9NgWkOf5mioVW795eglGPwM6WchTwIOKQ06JSoh7rcAIQWPI53Ef
+         7CeqiDMeKd19AGmih9sExAzBx837aNa13/RIcUyMBkr+JBW5NnCUT4vrCcTbYHmnyb2y
+         5/iA==
+X-Forwarded-Encrypted: i=1; AJvYcCX21e6IDwIzINMeTZVwieTtIZGds0X2XTzvicMp6kI6hwcYjUQmoeqsRFOxo9ciIaDsgg9b9n4L@vger.kernel.org
+X-Gm-Message-State: AOJu0Yw2AtxDNxRiaPDqvhDEhChZxNYqAWv201PLCfbBn7TOJmZAyW9+
+	dNpeoprbyZjHAZ3vTjg5tFPm1NV0pUA5GbNQTa69IHjFy1P5frfC/Xd1jRgaCHKa1DQ=
+X-Gm-Gg: ASbGncuNAjW8lpCBBrCDELFiBDRuCXizxoeXabUXmJA1QpC4FVvGRBVtX/WMxm2ipSz
+	pw3QXSHj9Cb3m/I1CSBMHtReb+oeKzrY6Wg50H1eWgzYNRIDQGCrUEe8OcZ5Wm+r4SdfjvycNae
+	oAYjuq8fNu7Lb/1E4xIdoYiajvHOg9I58jQUlBJlw8Ozuwn6Hhw9xmI/dksbKqzHctZx0OBnxF0
+	9T25xe0EOQ7gk0NH7QqnV95U9I0hcvjziGMGDXi1YTt6ZO9MicOx6Nv2xuiwfdmtCfa0bgaBnax
+	15i0SoNq2m9h7PoJd3QdPYRvlfHeNgYiZ7LL/F3LRiQ4MtkchE+ZNDCiCrRkx9BQCIypmg6xRc7
+	QtC1/mdu9fgV2cosZ58km6i3ny4UN9YJBN/cFF9+3VlrNd3iqakO3Reih4BFXnratutVXJrI0o9
+	/+3w6H1r7ta5Fbq1txeLnJkXvIR+VCVHp5LzVrLsvtrkpX15zOHyPnUzBThy+nfukQFpz/EkJUj
+	CzXADjE+TKsaQ==
+X-Google-Smtp-Source: AGHT+IFFPECdAOsGcbR+MEazzzIO7MJP4xCB0/B2/FxsL9mdOEjwM8IeKSGUWcVdouQFvc3wSAz+tg==
+X-Received: by 2002:a05:622a:120f:b0:4ed:6e79:acf7 with SMTP id d75a77b69052e-4eda4fa468emr10231361cf.41.1762555806006;
+        Fri, 07 Nov 2025 14:50:06 -0800 (PST)
 Received: from gourry-fedora-PF4VCD3F.lan (pool-96-255-20-138.washdc.ftas.verizon.net. [96.255.20.138])
-        by smtp.gmail.com with ESMTPSA id d75a77b69052e-4eda57ad8e6sm3293421cf.27.2025.11.07.14.49.59
+        by smtp.gmail.com with ESMTPSA id d75a77b69052e-4eda57ad8e6sm3293421cf.27.2025.11.07.14.50.03
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 07 Nov 2025 14:50:01 -0800 (PST)
+        Fri, 07 Nov 2025 14:50:05 -0800 (PST)
 From: Gregory Price <gourry@gourry.net>
 To: linux-mm@kvack.org
 Cc: linux-cxl@vger.kernel.org,
@@ -141,157 +143,58 @@ Cc: linux-cxl@vger.kernel.org,
 	namcao@linutronix.de,
 	escape@linux.alibaba.com,
 	dongjoo.seo1@samsung.com
-Subject: [RFC LPC2026 PATCH 0/9] Protected Memory NUMA Nodes
-Date: Fri,  7 Nov 2025 17:49:45 -0500
-Message-ID: <20251107224956.477056-1-gourry@gourry.net>
+Subject: [RFC PATCH 1/9] gfp: Add GFP_PROTECTED for protected-node allocations
+Date: Fri,  7 Nov 2025 17:49:46 -0500
+Message-ID: <20251107224956.477056-2-gourry@gourry.net>
 X-Mailer: git-send-email 2.51.1
+In-Reply-To: <20251107224956.477056-1-gourry@gourry.net>
+References: <20251107224956.477056-1-gourry@gourry.net>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-Author Note
------------
-This is a code RFC for discussion related to
+GFP_PROTECTED changes the nodemask checks when ALLOC_CPUSET
+is set in the page allocator to check the full set of nodes
+in cpuset->mems_allowed rather than just sysram nodes in
+task->mems_default.
 
-"Mempolicy is dead, long live memory policy!"
-https://lpc.events/event/19/contributions/2143/
+Signed-off-by: Gregory Price <gourry@gourry.net>
+---
+ include/linux/gfp_types.h | 3 +++
+ 1 file changed, 3 insertions(+)
 
-Given the subtlety of some of these changes, and the upcoming holidays
-I wanted to publish this well ahead of time for discussion. This is
-the baseline patch set which predicates a new kind of mempolicy based
-on NUMA node memory features - which can be defined by the components
-adding memory to such NUMA nodes.
-
-Included is an example of a Compressed Memory Node, and how compressed
-RAM could be managed by zswap.  Compressed memory is its own rabbit
-hole - I recommend not getting hung up on the example. 
-
-The core discussion should be around whether such a "Protected Node"
-based system is reasonable - and whether there are sufficient potential
-users to warrant support.
-
-Also please do not get hung up on naming. "Protected" just means
-"Not-System-RAM".  If you see "Default" just assume "Systam RAM".
-
-base-commit: 1c353dc8d962de652bc7ad2ba2e63f553331391c
------------
-
-With this set, we aim to enable allocation of "special purpose memory"
-with the page allocator (mm/page_alloc.c) without exposing the same
-memory as "Typical System RAM".  Unless a non-userland component
-explicitly asks for the node, and does so with a GFP_PROTECTED flag,
-memory on that node cannot be "accidentally" used as normal ram.
-
-We present an example of using this mechanism within ZSWAP, as-if
-a "compressed memory node" was present.  How to describe the features
-of memory present on nodes is left up to comment here and at LPC '26.
-
-Important Note: Since userspace interfaces are restricted by the
-default_node mask (sysram), nothing in userspace can explicitly
-request memory from protected nodes.  Instead, the intent is to
-create new components which understand different node features,
-which abstracts the hardware complexity away from userland.
-
-The ZSWAP example demonstrates this with `mt_compressed_nodemask`
-which is simply a hack to simply demonstrate the idea.
-
-There are 4 major changes in this set:
-
-1) Introducing default_sysram_nodes in mm/memory-tiers.c which denotes
-   the set of default nodes which are eligible for use as normal sysram
-
-   Some existing users noew pass default_sysram_nodes into the page
-   allocator instead of NULL, but passing a NULL pointer in will simply
-   have it replaced by default_sysram_nodes anyway.
-
-   default_sysram_nodes is always guaranteed to contain the N_MEMORY
-   nodes that were present at boot time, and so it can never be empty.
-
-
-2) The addition of `cpuset.mems.default` which restricts cgroups to
-   using `default_sysram_nodes` by default, while allowing non-sysram
-   nodes into mems_effective (mems_allowed).
-
-   This is done to allow separate control over sysram and protected node
-   sets by cgroups while maintaining the hierarchical rules.
-
-   current cpuset configuration
-   cpuset.mems_allowed
-    |.mems_effective         < (mems_allowed ∩ parent.mems_effective)
-    |->tasks.mems_allowed    < cpuset.mems_effective
-
-   new cpuset configuration
-   cpuset.mems_allowed
-    |.mems_effective        < (mems_allowed ∩ parent.mems_effective)
-    |.mems_default          < (mems_effective ∩ default_sys_nodemask)
-      |->task.mems_default  < cpuset.mems_default - (note renamed)
-
-3) Addition of MHP_PROTECTED_MEMORY flag to denote to memory-hotplug
-   that the memory capacity being added should mark the node as a
-   protected memory node.  A node is either SysRAM or Protected, and
-   cannot contain both (adding protected to an existing SysRAM node
-   will result in EINVAL).
-
-   DAX and CXL are made aware of the bit and have `protected_memory`
-   bits added to their relevant subsystems.
-
-4) Adding GFP_PROTECTED - which allows page_alloc.c to request memory
-   from the provided node or nodemask.  It changes the behavior of
-   the cpuset mems_allowed check.
-
-   Probably there needs to be some additional work done here to
-   restrict non-cgroup kernels.
-
-Gregory Price (9):
-  gfp: Add GFP_PROTECTED for protected-node allocations
-  memory-tiers: create default_sysram_nodes
-  mm: default slub, oom_kill, compaction, and page_alloc to sysram
-  mm,cpusets: rename task->mems_allowed to task->mems_default
-  cpuset: introduce cpuset.mems.default
-  mm/memory_hotplug: add MHP_PROTECTED_MEMORY flag
-  drivers/dax: add protected memory bit to dev_dax
-  drivers/cxl: add protected_memory bit to cxl region
-  [HACK] mm/zswap: compressed ram integration example
-
- drivers/cxl/core/region.c       |  30 ++++++
- drivers/cxl/cxl.h               |   2 +
- drivers/dax/bus.c               |  39 ++++++++
- drivers/dax/bus.h               |   1 +
- drivers/dax/cxl.c               |   1 +
- drivers/dax/dax-private.h       |   1 +
- drivers/dax/kmem.c              |   2 +
- fs/proc/array.c                 |   2 +-
- include/linux/cpuset.h          |  52 +++++------
- include/linux/gfp_types.h       |   3 +
- include/linux/memory-tiers.h    |   4 +
- include/linux/memory_hotplug.h  |  10 ++
- include/linux/mempolicy.h       |   2 +-
- include/linux/sched.h           |   6 +-
- init/init_task.c                |   2 +-
- kernel/cgroup/cpuset-internal.h |   8 ++
- kernel/cgroup/cpuset-v1.c       |   7 ++
- kernel/cgroup/cpuset.c          | 157 +++++++++++++++++++++-----------
- kernel/fork.c                   |   2 +-
- kernel/sched/fair.c             |   4 +-
- mm/hugetlb.c                    |   8 +-
- mm/memcontrol.c                 |   2 +-
- mm/memory-tiers.c               |  25 ++++-
- mm/memory_hotplug.c             |  25 +++++
- mm/mempolicy.c                  |  34 +++----
- mm/migrate.c                    |   4 +-
- mm/oom_kill.c                   |  11 ++-
- mm/page_alloc.c                 |  28 +++---
- mm/show_mem.c                   |   2 +-
- mm/slub.c                       |   4 +-
- mm/vmscan.c                     |   2 +-
- mm/zswap.c                      |  65 ++++++++++++-
- 32 files changed, 411 insertions(+), 134 deletions(-)
-
+diff --git a/include/linux/gfp_types.h b/include/linux/gfp_types.h
+index 65db9349f905..2c0c250ade3a 100644
+--- a/include/linux/gfp_types.h
++++ b/include/linux/gfp_types.h
+@@ -58,6 +58,7 @@ enum {
+ #ifdef CONFIG_SLAB_OBJ_EXT
+ 	___GFP_NO_OBJ_EXT_BIT,
+ #endif
++	___GFP_PROTECTED_BIT,
+ 	___GFP_LAST_BIT
+ };
+ 
+@@ -103,6 +104,7 @@ enum {
+ #else
+ #define ___GFP_NO_OBJ_EXT       0
+ #endif
++#define ___GFP_PROTECTED	BIT(___GFP_PROTECTED_BIT)
+ 
+ /*
+  * Physical address zone modifiers (see linux/mmzone.h - low four bits)
+@@ -115,6 +117,7 @@ enum {
+ #define __GFP_HIGHMEM	((__force gfp_t)___GFP_HIGHMEM)
+ #define __GFP_DMA32	((__force gfp_t)___GFP_DMA32)
+ #define __GFP_MOVABLE	((__force gfp_t)___GFP_MOVABLE)  /* ZONE_MOVABLE allowed */
++#define __GFP_PROTECTED	((__force gfp_t)___GFP_PROTECTED) /* Protected nodes allowed */
+ #define GFP_ZONEMASK	(__GFP_DMA|__GFP_HIGHMEM|__GFP_DMA32|__GFP_MOVABLE)
+ 
+ /**
 -- 
 2.51.1
 
