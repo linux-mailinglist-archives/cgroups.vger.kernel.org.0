@@ -1,80 +1,80 @@
-Return-Path: <cgroups+bounces-11673-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-11674-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id D2F10C41E3F
-	for <lists+cgroups@lfdr.de>; Fri, 07 Nov 2025 23:52:31 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9B358C41E4B
+	for <lists+cgroups@lfdr.de>; Fri, 07 Nov 2025 23:52:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 1E4374F7304
-	for <lists+cgroups@lfdr.de>; Fri,  7 Nov 2025 22:51:58 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 9672C4F5B94
+	for <lists+cgroups@lfdr.de>; Fri,  7 Nov 2025 22:52:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 46FEB3081BD;
-	Fri,  7 Nov 2025 22:50:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 47D3632E140;
+	Fri,  7 Nov 2025 22:50:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gourry.net header.i=@gourry.net header.b="SdFbaD3m"
+	dkim=pass (2048-bit key) header.d=gourry.net header.i=@gourry.net header.b="e6hAHDYb"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-qk1-f175.google.com (mail-qk1-f175.google.com [209.85.222.175])
+Received: from mail-qt1-f173.google.com (mail-qt1-f173.google.com [209.85.160.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 68B58324B2E
-	for <cgroups@vger.kernel.org>; Fri,  7 Nov 2025 22:50:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 03C92329E6D
+	for <cgroups@vger.kernel.org>; Fri,  7 Nov 2025 22:50:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762555822; cv=none; b=GUDkOWPw+58wvw2IM2qDAmM3zO+MDUVVK91tTZmxUuEU5542Uo4FqBMaDcXg26hfC30KO9ufbJ00wpNxYRojDhBfwX3PO25rzyxzSlOYd8FFS18apIZ65H96b8hkyqsCvkNpzJasXm0ReQXLpyU6TGYK2GmTgC1y8VdxuYvtHzk=
+	t=1762555825; cv=none; b=hST4HssbeJDGGuczIQJ1SUK5VecZ7i1t6q5foo7eLnfLsKt3/SoPH2xqRZUvoR0TiwcjuEPx2TFiA112gzc00cr70VvTKijrUHBsrFfc4YW+dwgDYhtk7deC49tEaJCIVRc2zebxRDmd/7d6ea9w+GCQm8WA5RxhVRri1u937hw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762555822; c=relaxed/simple;
-	bh=koa/fjZCDlPKpidQ/k53aiyNwJ47G8p3nDbr9zi5tZM=;
+	s=arc-20240116; t=1762555825; c=relaxed/simple;
+	bh=aVCsq29TRfkUneUg7VcXHP54fL2RXfk+IKU2j2Nc0iM=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=nuWW5SZe+I2v0TcKZaR2FVvOfnSX4+TYBPsMbuyBY46N+jNOb+0ObufJia9Aaf8z6rRRgPacGkXuRMyTi51rGd9bVcs+0A2TDDIgfpa1LiCywg7hHjNPYKvAfY+Fwwx4YpUM2awfJqbav7aEukYAhuE//XKMCs6TBLfJaHcSaVA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gourry.net; spf=pass smtp.mailfrom=gourry.net; dkim=pass (2048-bit key) header.d=gourry.net header.i=@gourry.net header.b=SdFbaD3m; arc=none smtp.client-ip=209.85.222.175
+	 MIME-Version; b=sgFCflOycANaN638Vrncs1lXw6SoP7I15koJFhzPmkDS30hdyYWcfW4j8258FKOcV2bwXhRm5mxruAEohuz7r/E/g9SYyEVy/FI0tqMf3+hPSED6weaNQiuymAKBb4YaN94keWTTuyoT2gL/SJSzpHpYyCorFXLgwyZ6VJ/SHhY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gourry.net; spf=pass smtp.mailfrom=gourry.net; dkim=pass (2048-bit key) header.d=gourry.net header.i=@gourry.net header.b=e6hAHDYb; arc=none smtp.client-ip=209.85.160.173
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gourry.net
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gourry.net
-Received: by mail-qk1-f175.google.com with SMTP id af79cd13be357-89c81839de7so75713085a.1
-        for <cgroups@vger.kernel.org>; Fri, 07 Nov 2025 14:50:20 -0800 (PST)
+Received: by mail-qt1-f173.google.com with SMTP id d75a77b69052e-4ed917b5b18so12997131cf.1
+        for <cgroups@vger.kernel.org>; Fri, 07 Nov 2025 14:50:22 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gourry.net; s=google; t=1762555819; x=1763160619; darn=vger.kernel.org;
+        d=gourry.net; s=google; t=1762555822; x=1763160622; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=GQ93CDfHIH+oMfrkUgkIneMTo3fyJaVdZgvytoZjFWk=;
-        b=SdFbaD3myu7kWMep+hqgptaQ1+u+3DqZwVJMflTKAunppZzKEwOXDjZavKbozVmXlR
-         Nz3lhGYkiwOO6ksXzlwQ89/ygO3SuUe6GpHLL6TdkAXMlvV9US9f+xt/lUtatcXp7X6K
-         Te4YIBNhZuqybO/11FT+n8b1QB+0KtNOAgmSSzcv1/3xOmbTwHydq7X7T/URRs7ecwiM
-         nGPz4RpYrLvgx2tJlQjKyF8hNFJTX7xXwPq8icYgSw0VXIELwh95s+eOOXYoCndcl4qy
-         SrUWczATpvvObpossYtMdkoP4lOxmlGXy6+LztfDpXPewGDbhjnBwKQqXkairdnKuZ6y
-         31xg==
+        bh=THbr/Y85WnAbuULOZYzy4wMGCXZ829d22z7gMjfvDN0=;
+        b=e6hAHDYbggGHZBmB7mlRbzfSodbsoab5X40BEKEdAZvtChHGvKVRcvsW5cBVzpmC9x
+         OZ5p3FN0XBihQtUZjxEnRfyP3CFOmBDiMqevLId7SOIRZJOYBxCMnOqG9pfQqvUHcNQz
+         LALKEXIIu3Rdrq6orTaIUizrjCrPbUVJM5DMPIJzAexPDeD1DpH080r5glEhUBRVhai0
+         O1wndC7SXAr0bJb6OVH5PHJuzBos3O7+uxHK+zct1Unv6Ip5yTEJJSsUhWkwXaUVp6VZ
+         vpHU0n9xzukHCYQaUBpYna1FRNPmN7Vwu7ZP3iNP+Uz+S6srFH9d6g7cc4VSxBWlwkYL
+         Nrcw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1762555819; x=1763160619;
+        d=1e100.net; s=20230601; t=1762555822; x=1763160622;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=GQ93CDfHIH+oMfrkUgkIneMTo3fyJaVdZgvytoZjFWk=;
-        b=wiD13wyQ8WNRkh0wfJGwbPJ60CiSM1qJKw9MyRJ3SX5mKdmrc3jm9m+e/ZrHjM6cgB
-         3HsdVzAcvP8j+WtFH4AX/pHOks+6Wfs9XoCqwsnVbVPWEIcsl/4Z8yfOWBAVXaNGEj8l
-         l3XPmIJsfxEpMJI0QWFv0roO4zLEEPc8py9Mq4jUur2DALmeb9YIIciRGJTanTOyNQYZ
-         J0G+p1ZP5ItZ+45FRhb2D3emQZc09mgUATFZuIWPwKpJc/Zc3AnufTbikDTbkMll7x2O
-         szWMz4+B/r4697YCx0G/qSbdgNFVlmy1zUTV67oAjg/v8mQifv0pFy7mSCcwMwDwzeQz
-         i+4A==
-X-Forwarded-Encrypted: i=1; AJvYcCWNet0CAPLhNmHn8ahTNIAAzmY8lHPQPHFNUOQck2mCjUEuwTZpw4gwVNDQXFEZr6cc4Kx20r8K@vger.kernel.org
-X-Gm-Message-State: AOJu0YwdAJMgO6itb3jPxyRVTTMyYx9u97OiTJ2lMZ9AK8+fvjcoUjrb
-	t+wDPCr+0Iow20IKjl/NYXbL9wgF0yFhhipXjT0HezFLhxwZMU7/L8POwQj9NyBe/UY=
-X-Gm-Gg: ASbGncteEgXOUBmrPzBYGZuid+KiIQEanELig/H78v/EFy1Ko931rdepxD1xJy/bXkj
-	XuJ3dm/iOuGnpEgSpyC9K+DlwdeaiUGELO9VUcoDcE3L8dr7A4P6pGAMz+jrGxkxFuKd3B5qutL
-	dol3lPESbo1xcfhlKsmVzDQPg8F/BkMKJz6oRHBK98qt3Lon0miZwS1sCSInvIvlwNitz60Q+sW
-	hLFvexPXKEdRMPZvBqgdidvBmhlXbyPjZleUawo0D1jFSRaTGFOODpTpnbTbBMncdIYNuyLzKT+
-	RZaa03mDUsXQOPSdEEfowz6E4c4BGkgXcTJDT9kZaQjFsQySoYrItC1DBASZB9IAW0ewNC0L3B9
-	e3/UwSs/Fpd7Q3E4SnlcIZhij6pxCk/W9AoDe0pm9fWYw59ryGy/VYQ+jACSK1Cmht+J3KAcUW7
-	AWMfmw06/sr0cggyPK0eAOMQYNdt9RPVhPT94empX6xjRaBDxVJS/iq2buXS/gf5V5osLZSLLLP
-	Gw=
-X-Google-Smtp-Source: AGHT+IH4sjc29LnlFvFnAwWRtvFPqpVwQViV/HOTSPYo8yeihO6tfsYBX8y4H0P1XTIJN1n2ZtvtvA==
-X-Received: by 2002:ac8:5a92:0:b0:4e8:b812:2e2a with SMTP id d75a77b69052e-4eda4e94134mr11669521cf.24.1762555819113;
-        Fri, 07 Nov 2025 14:50:19 -0800 (PST)
+        bh=THbr/Y85WnAbuULOZYzy4wMGCXZ829d22z7gMjfvDN0=;
+        b=INtqPL+PELRBKOhYIjJcUu0voDIa6GXZhIybkA7xxBVct08xeWc5bGCxh9vmH3xIEP
+         XVLpMiLh6CpQ/eH7Ub6NahnClvw1AsBjkEkq7hRNFTLcL9BKNYNecSD4f4A9LTkrSDUQ
+         2raahKwReKvltw8dCQo9h2IT3FSkDIN7EBot1Bx0jpvp5z4h8BRgi5/PixgH8NUet8ow
+         8r/SyGfvhw2YSai/1Ui03Ic05jbR34ycf8sbX0eFJDVrX/+nTXBBHxPOs/pj5SqHYH8f
+         6iEtwyyLb+VBiD9R9oRI7pYCdHL9nOCrc8lbApAvw7ohhxtCfqWU/SxEqAnNr6V2sist
+         FIqA==
+X-Forwarded-Encrypted: i=1; AJvYcCXqq5t0UoaXUD3Fc16rWxQ5nNVHAadtrVpsu6doVvlzbb5M7v3T5Xvvd7/YzWoNSD+ZyTG5IFWk@vger.kernel.org
+X-Gm-Message-State: AOJu0YyXDvUY/eVzgmbWhl3eBB0GSXHSVy0TMXwiCPmQL2gw9gqbtVun
+	h9LiFcz7Z012E9DHNIluAihMeNilAATN7O33AG1GpwGNnyFIanSUHpmG4GYqUVJl444=
+X-Gm-Gg: ASbGnctEHm4ndvrhuw4/GpYNaj0+145YsLE9YNnCPkgYHynceKs2f51w8HEE3kFqsLH
+	Rz/OL4oKAnXZPsbxWPR2JNOYt+EweNmWnGec6XrZIVWWxgmMG8UjI2N1Wu7xzJnKBgWiWOcwBdu
+	rVJclClzFhAwb8bkz1fJBBT3zt2/GKbamEtjChZBUIJsOg5xfW5VONIx9ZxyFxq9G3pADsn4id3
+	uXRwETfGDVBnQYk7jyHwBoA7HGWXXEW5XSU7rGrxJKjupovV3nGLO7cQ0Krf8cZoJHB4shr6AoV
+	0GF/UaO8IjFtI63YdGPxPu0H4925oggoyDrpc6PvdRbtlJz8gWcNbS3raF7v2ke4E4jtRymsZ24
+	0v4XRq6L6o6ZCnWfoV1EyrcIA1+sVDfyxRHkxhDinkq+E8F2TmYUa250J/EhvEl7yZU/Wv2nQTK
+	f/VvD2ylHk8O8UhGJjM/F4OGdgdVKiSvbbg1KAS0JN7kWU6CJNhxDxaPNsQMKMw1Zg14REYzjxw
+	S8QFOfY1nfNxQ==
+X-Google-Smtp-Source: AGHT+IFWQljTxYPO6CFPNauC805q+VElYGBru+/DO5QGOLDAxl11WHp9VZk3rhHcoNcRJaJ5IM73qw==
+X-Received: by 2002:a05:622a:386:b0:4ec:a564:3e66 with SMTP id d75a77b69052e-4eda4ec8aa5mr11288381cf.29.1762555821864;
+        Fri, 07 Nov 2025 14:50:21 -0800 (PST)
 Received: from gourry-fedora-PF4VCD3F.lan (pool-96-255-20-138.washdc.ftas.verizon.net. [96.255.20.138])
-        by smtp.gmail.com with ESMTPSA id d75a77b69052e-4eda57ad8e6sm3293421cf.27.2025.11.07.14.50.16
+        by smtp.gmail.com with ESMTPSA id d75a77b69052e-4eda57ad8e6sm3293421cf.27.2025.11.07.14.50.20
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 07 Nov 2025 14:50:18 -0800 (PST)
+        Fri, 07 Nov 2025 14:50:21 -0800 (PST)
 From: Gregory Price <gourry@gourry.net>
 To: linux-mm@kvack.org
 Cc: linux-cxl@vger.kernel.org,
@@ -143,9 +143,9 @@ Cc: linux-cxl@vger.kernel.org,
 	namcao@linutronix.de,
 	escape@linux.alibaba.com,
 	dongjoo.seo1@samsung.com
-Subject: [RFC PATCH 5/9] cpuset: introduce cpuset.mems.default
-Date: Fri,  7 Nov 2025 17:49:50 -0500
-Message-ID: <20251107224956.477056-6-gourry@gourry.net>
+Subject: [RFC PATCH 6/9] mm/memory_hotplug: add MHP_PROTECTED_MEMORY flag
+Date: Fri,  7 Nov 2025 17:49:51 -0500
+Message-ID: <20251107224956.477056-7-gourry@gourry.net>
 X-Mailer: git-send-email 2.51.1
 In-Reply-To: <20251107224956.477056-1-gourry@gourry.net>
 References: <20251107224956.477056-1-gourry@gourry.net>
@@ -157,435 +157,106 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-mems_default is intersect(effective_mems, default_sysram_nodes). This
-allows hotplugged memory nodes to be marked "protected".  A protected
-node's memory is not default-allocable via standard methods (basic
-pages faults, mempolicies, etc).
+Add support for protected memory blocks/nodes, which signal to
+memory_hotplug that a given memory block is considered "protected".
 
-When checking node_allowed, check for GFP_PROTECTED to determine if
-the check should be made against mems_default or mems_allowed, since
-mems_default only contains sysram nodes.
+A protected memory block/node is not exposed as SystemRAM by default
+via default_sysram_nodes.  Protected memory cannot be added to sysram
+nodes, and non-protected memory cannot be added to protected nodes.
+
+This enables these memory blocks to be protected from allocation by
+general actions (page faults, demotion, etc) without explicit
+integration points which are memory-tier aware.
 
 Signed-off-by: Gregory Price <gourry@gourry.net>
 ---
- include/linux/cpuset.h          |  8 ++--
- kernel/cgroup/cpuset-internal.h |  8 ++++
- kernel/cgroup/cpuset-v1.c       |  7 +++
- kernel/cgroup/cpuset.c          | 83 ++++++++++++++++++++++++++-------
- mm/memcontrol.c                 |  2 +-
- mm/mempolicy.c                  |  8 ++--
- mm/migrate.c                    |  4 +-
- 7 files changed, 93 insertions(+), 27 deletions(-)
+ include/linux/memory_hotplug.h | 10 ++++++++++
+ mm/memory_hotplug.c            | 23 +++++++++++++++++++++++
+ 2 files changed, 33 insertions(+)
 
-diff --git a/include/linux/cpuset.h b/include/linux/cpuset.h
-index 4db08c580cc3..7f683e4cf6c3 100644
---- a/include/linux/cpuset.h
-+++ b/include/linux/cpuset.h
-@@ -77,7 +77,7 @@ extern void cpuset_unlock(void);
- extern void cpuset_cpus_allowed(struct task_struct *p, struct cpumask *mask);
- extern bool cpuset_cpus_allowed_fallback(struct task_struct *p);
- extern bool cpuset_cpu_is_isolated(int cpu);
--extern nodemask_t cpuset_mems_allowed(struct task_struct *p);
-+extern nodemask_t cpuset_mems_default(struct task_struct *p);
- #define cpuset_current_mems_default (current->mems_default)
- void cpuset_init_current_mems_default(void);
- int cpuset_nodemask_valid_mems_default(const nodemask_t *nodemask);
-@@ -173,7 +173,7 @@ static inline void set_mems_allowed(nodemask_t nodemask)
- 	task_unlock(current);
- }
+diff --git a/include/linux/memory_hotplug.h b/include/linux/memory_hotplug.h
+index 23f038a16231..89f4e5b7054d 100644
+--- a/include/linux/memory_hotplug.h
++++ b/include/linux/memory_hotplug.h
+@@ -74,6 +74,16 @@ typedef int __bitwise mhp_t;
+  * helpful in low-memory situations.
+  */
+ #define MHP_OFFLINE_INACCESSIBLE	((__force mhp_t)BIT(3))
++/*
++ * The hotplugged memory can only be added to a NUMA node which is
++ * not in default_sysram_nodes.  This prevents the node from be accessible
++ * by the page allocator (mm/page_alloc.c) by way of userland configuration.
++ *
++ * Attempting to hotplug protected memory into a node in default_sysram_nodes
++ * will result in an -EINVAL, and attempting to hotplug non-protected memory
++ * into protected memory node will also result in an -EINVAL.
++ */
++#define MHP_PROTECTED_MEMORY	((__force mhp_t)BIT(4))
  
--extern bool cpuset_node_allowed(struct cgroup *cgroup, int nid);
-+extern bool cpuset_node_default(struct cgroup *cgroup, int nid);
- #else /* !CONFIG_CPUSETS */
+ /*
+  * Extended parameters for memory hotplug:
+diff --git a/mm/memory_hotplug.c b/mm/memory_hotplug.c
+index 0be83039c3b5..ceab56b7231d 100644
+--- a/mm/memory_hotplug.c
++++ b/mm/memory_hotplug.c
+@@ -20,6 +20,7 @@
+ #include <linux/memory.h>
+ #include <linux/memremap.h>
+ #include <linux/memory_hotplug.h>
++#include <linux/memory-tiers.h>
+ #include <linux/vmalloc.h>
+ #include <linux/ioport.h>
+ #include <linux/delay.h>
+@@ -1506,6 +1507,7 @@ int add_memory_resource(int nid, struct resource *res, mhp_t mhp_flags)
+ 	struct memory_group *group = NULL;
+ 	u64 start, size;
+ 	bool new_node = false;
++	bool node_has_blocks, protected_mem, node_is_sysram;
+ 	int ret;
  
- static inline bool cpusets_enabled(void) { return false; }
-@@ -211,7 +211,7 @@ static inline bool cpuset_cpu_is_isolated(int cpu)
- 	return false;
- }
+ 	start = res->start;
+@@ -1529,6 +1531,19 @@ int add_memory_resource(int nid, struct resource *res, mhp_t mhp_flags)
  
--static inline nodemask_t cpuset_mems_allowed(struct task_struct *p)
-+static inline nodemask_t cpuset_mems_default(struct task_struct *p)
- {
- 	return node_possible_map;
- }
-@@ -294,7 +294,7 @@ static inline bool read_mems_allowed_retry(unsigned int seq)
- 	return false;
- }
- 
--static inline bool cpuset_node_allowed(struct cgroup *cgroup, int nid)
-+static inline bool cpuset_node_default(struct cgroup *cgroup, int nid)
- {
- 	return true;
- }
-diff --git a/kernel/cgroup/cpuset-internal.h b/kernel/cgroup/cpuset-internal.h
-index 337608f408ce..6978e04477b2 100644
---- a/kernel/cgroup/cpuset-internal.h
-+++ b/kernel/cgroup/cpuset-internal.h
-@@ -55,6 +55,7 @@ typedef enum {
- 	FILE_MEMLIST,
- 	FILE_EFFECTIVE_CPULIST,
- 	FILE_EFFECTIVE_MEMLIST,
-+	FILE_MEMS_DEFAULT,
- 	FILE_SUBPARTS_CPULIST,
- 	FILE_EXCLUSIVE_CPULIST,
- 	FILE_EFFECTIVE_XCPULIST,
-@@ -104,6 +105,13 @@ struct cpuset {
- 	cpumask_var_t effective_cpus;
- 	nodemask_t effective_mems;
+ 	mem_hotplug_begin();
  
 +	/*
-+	 * Default Memory Nodes for tasks.
-+	 * This is the intersection of effective_mems and default_sysram_nodes.
-+	 * Tasks will have their mems_default set to this value.
++	 * If the NUMA node already has memory blocks, then we can only allow
++	 * additional memory blocks of the same protection type (protected or
++	 * un-protected).  Online/offline does not matter at this point.
 +	 */
-+	nodemask_t mems_default;
++	node_has_blocks = node_has_memory_blocks(nid);
++	protected_mem = !!(mhp_flags & MHP_PROTECTED_MEMORY);
++	node_is_sysram = node_isset(nid, *default_sysram_nodes);
++	if (node_has_blocks && (protected_mem ^ node_is_sysram)) {
++		ret = -EINVAL;
++		goto error_mem_hotplug_end;
++	}
 +
- 	/*
- 	 * Exclusive CPUs dedicated to current cgroup (default hierarchy only)
- 	 *
-diff --git a/kernel/cgroup/cpuset-v1.c b/kernel/cgroup/cpuset-v1.c
-index 12e76774c75b..a06f2b032e0d 100644
---- a/kernel/cgroup/cpuset-v1.c
-+++ b/kernel/cgroup/cpuset-v1.c
-@@ -293,6 +293,7 @@ void cpuset1_hotplug_update_tasks(struct cpuset *cs,
- 	cpumask_copy(cs->effective_cpus, new_cpus);
- 	cs->mems_allowed = *new_mems;
- 	cs->effective_mems = *new_mems;
-+	cpuset_update_mems_default(cs);
- 	cpuset_callback_unlock_irq();
+ 	if (IS_ENABLED(CONFIG_ARCH_KEEP_MEMBLOCK)) {
+ 		if (res->flags & IORESOURCE_SYSRAM_DRIVER_MANAGED)
+ 			memblock_flags = MEMBLOCK_DRIVER_MANAGED;
+@@ -1574,6 +1589,10 @@ int add_memory_resource(int nid, struct resource *res, mhp_t mhp_flags)
+ 	register_memory_blocks_under_node_hotplug(nid, PFN_DOWN(start),
+ 					  PFN_UP(start + size - 1));
  
- 	/*
-@@ -532,6 +533,12 @@ struct cftype cpuset1_files[] = {
- 		.private = FILE_EFFECTIVE_MEMLIST,
- 	},
- 
-+	{
-+		.name = "mems_default",
-+		.seq_show = cpuset_common_seq_show,
-+		.private = FILE_MEMS_DEFAULT,
-+	},
++	/* At this point if not protected, we can add node to sysram nodes */
++	if (!(mhp_flags & MHP_PROTECTED_MEMORY))
++		node_set(nid, *default_sysram_nodes);
 +
- 	{
- 		.name = "cpu_exclusive",
- 		.read_u64 = cpuset_read_u64,
-diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
-index b05c07489a4d..ea5ca1a05cf5 100644
---- a/kernel/cgroup/cpuset.c
-+++ b/kernel/cgroup/cpuset.c
-@@ -29,6 +29,7 @@
- #include <linux/mempolicy.h>
- #include <linux/mm.h>
- #include <linux/memory.h>
-+#include <linux/memory-tiers.h>
- #include <linux/export.h>
- #include <linux/rcupdate.h>
- #include <linux/sched.h>
-@@ -430,9 +431,9 @@ static void guarantee_active_cpus(struct task_struct *tsk,
-  */
- static void guarantee_online_mems(struct cpuset *cs, nodemask_t *pmask)
- {
--	while (!nodes_intersects(cs->effective_mems, node_states[N_MEMORY]))
-+	while (!nodes_intersects(cs->mems_default, node_states[N_MEMORY]))
- 		cs = parent_cs(cs);
--	nodes_and(*pmask, cs->effective_mems, node_states[N_MEMORY]);
-+	nodes_and(*pmask, cs->mems_default, node_states[N_MEMORY]);
- }
+ 	/* create new memmap entry */
+ 	if (!strcmp(res->name, "System RAM"))
+ 		firmware_map_add_hotplug(start, start + size, "System RAM");
+@@ -2274,6 +2293,10 @@ static int try_remove_memory(u64 start, u64 size)
+ 	if (nid != NUMA_NO_NODE)
+ 		try_offline_node(nid);
  
- /**
-@@ -2748,7 +2749,7 @@ void cpuset_update_tasks_nodemask(struct cpuset *cs)
- 
- 		migrate = is_memory_migrate(cs);
- 
--		mpol_rebind_mm(mm, &cs->mems_allowed);
-+		mpol_rebind_mm(mm, &cs->mems_default);
- 		if (migrate)
- 			cpuset_migrate_mm(mm, &cs->old_mems_allowed, &newmems);
- 		else
-@@ -2808,6 +2809,9 @@ static void update_nodemasks_hier(struct cpuset *cs, nodemask_t *new_mems)
- 
- 		spin_lock_irq(&callback_lock);
- 		cp->effective_mems = *new_mems;
-+		if (!nodes_empty(default_sysram_nodelist))
-+			nodes_and(cp->mems_default, cp->effective_mems,
-+				  default_sysram_nodelist);
- 		spin_unlock_irq(&callback_lock);
- 
- 		WARN_ON(!is_in_v2_mode() &&
-@@ -3234,7 +3238,7 @@ static void cpuset_attach(struct cgroup_taskset *tset)
- 	 * by skipping the task iteration and update.
- 	 */
- 	if (cpuset_v2() && !cpus_updated && !mems_updated) {
--		cpuset_attach_nodemask_to = cs->effective_mems;
-+		cpuset_attach_nodemask_to = cs->mems_default;
- 		goto out;
- 	}
- 
-@@ -3249,7 +3253,7 @@ static void cpuset_attach(struct cgroup_taskset *tset)
- 	 * if there is no change in effective_mems and CS_MEMORY_MIGRATE is
- 	 * not set.
- 	 */
--	cpuset_attach_nodemask_to = cs->effective_mems;
-+	cpuset_attach_nodemask_to = cs->mems_default;
- 	if (!is_memory_migrate(cs) && !mems_updated)
- 		goto out;
- 
-@@ -3371,6 +3375,9 @@ int cpuset_common_seq_show(struct seq_file *sf, void *v)
- 	case FILE_EFFECTIVE_MEMLIST:
- 		seq_printf(sf, "%*pbl\n", nodemask_pr_args(&cs->effective_mems));
- 		break;
-+	case FILE_MEMS_DEFAULT:
-+		seq_printf(sf, "%*pbl\n", nodemask_pr_args(&cs->mems_default));
-+		break;
- 	case FILE_EXCLUSIVE_CPULIST:
- 		seq_printf(sf, "%*pbl\n", cpumask_pr_args(cs->exclusive_cpus));
- 		break;
-@@ -3482,6 +3489,12 @@ static struct cftype dfl_files[] = {
- 		.private = FILE_EFFECTIVE_MEMLIST,
- 	},
- 
-+	{
-+		.name = "mems.default",
-+		.seq_show = cpuset_common_seq_show,
-+		.private = FILE_MEMS_DEFAULT,
-+	},
++	/* If no more memblocks, remove node from default sysram nodemask */
++	if (!node_has_memory_blocks(nid))
++		node_clear(nid, *default_sysram_nodes);
 +
- 	{
- 		.name = "cpus.partition",
- 		.seq_show = cpuset_partition_show,
-@@ -3585,6 +3598,9 @@ static int cpuset_css_online(struct cgroup_subsys_state *css)
- 	if (is_in_v2_mode()) {
- 		cpumask_copy(cs->effective_cpus, parent->effective_cpus);
- 		cs->effective_mems = parent->effective_mems;
-+		if (!nodes_empty(default_sysram_nodelist))
-+			nodes_and(cs->mems_default, cs->effective_mems,
-+				  default_sysram_nodelist);
- 	}
- 	spin_unlock_irq(&callback_lock);
- 
-@@ -3616,6 +3632,9 @@ static int cpuset_css_online(struct cgroup_subsys_state *css)
- 	spin_lock_irq(&callback_lock);
- 	cs->mems_allowed = parent->mems_allowed;
- 	cs->effective_mems = parent->mems_allowed;
-+	if (!nodes_empty(default_sysram_nodelist))
-+		nodes_and(cs->mems_default, cs->effective_mems,
-+			  default_sysram_nodelist);
- 	cpumask_copy(cs->cpus_allowed, parent->cpus_allowed);
- 	cpumask_copy(cs->effective_cpus, parent->cpus_allowed);
- 	spin_unlock_irq(&callback_lock);
-@@ -3818,6 +3837,9 @@ int __init cpuset_init(void)
- 	cpumask_setall(top_cpuset.effective_xcpus);
- 	cpumask_setall(top_cpuset.exclusive_cpus);
- 	nodes_setall(top_cpuset.effective_mems);
-+	if (!nodes_empty(default_sysram_nodelist))
-+		nodes_and(top_cpuset.mems_default, top_cpuset.effective_mems,
-+			  default_sysram_nodelist);
- 
- 	fmeter_init(&top_cpuset.fmeter);
- 	INIT_LIST_HEAD(&remote_children);
-@@ -3848,6 +3870,9 @@ hotplug_update_tasks(struct cpuset *cs,
- 	spin_lock_irq(&callback_lock);
- 	cpumask_copy(cs->effective_cpus, new_cpus);
- 	cs->effective_mems = *new_mems;
-+	if (!nodes_empty(default_sysram_nodelist))
-+		nodes_and(cs->mems_default, cs->effective_mems,
-+			  default_sysram_nodelist);
- 	spin_unlock_irq(&callback_lock);
- 
- 	if (cpus_updated)
-@@ -4039,6 +4064,10 @@ static void cpuset_handle_hotplug(void)
- 		if (!on_dfl)
- 			top_cpuset.mems_allowed = new_mems;
- 		top_cpuset.effective_mems = new_mems;
-+		if (!nodes_empty(default_sysram_nodelist))
-+			nodes_and(top_cpuset.mems_default,
-+				  top_cpuset.effective_mems,
-+				  default_sysram_nodelist);
- 		spin_unlock_irq(&callback_lock);
- 		cpuset_update_tasks_nodemask(&top_cpuset);
- 	}
-@@ -4109,6 +4138,9 @@ void __init cpuset_init_smp(void)
- 
- 	cpumask_copy(top_cpuset.effective_cpus, cpu_active_mask);
- 	top_cpuset.effective_mems = node_states[N_MEMORY];
-+	if (!nodes_empty(default_sysram_nodelist))
-+		nodes_and(top_cpuset.mems_default, top_cpuset.effective_mems,
-+			  default_sysram_nodelist);
- 
- 	hotplug_node_notifier(cpuset_track_online_nodes, CPUSET_CALLBACK_PRI);
- 
-@@ -4205,22 +4237,27 @@ bool cpuset_cpus_allowed_fallback(struct task_struct *tsk)
- 	return changed;
+ 	mem_hotplug_done();
+ 	return 0;
  }
- 
-+/*
-+ * At this point in time, no hotplug nodes can have been added, so just set
-+ * the mems_default of the init task to the set of N_MEMORY nodes.
-+ */
- void __init cpuset_init_current_mems_default(void)
- {
--	nodes_setall(current->mems_default);
-+	nodes_clear(current->mems_default);
-+	nodes_or(current->mems_default, current->mems_default, node_states[N_MEMORY]);
- }
- 
- /**
-- * cpuset_mems_allowed - return mems_allowed mask from a tasks cpuset.
-- * @tsk: pointer to task_struct from which to obtain cpuset->mems_allowed.
-+ * cpuset_mems_default - return mems_default mask from a tasks cpuset.
-+ * @tsk: pointer to task_struct from which to obtain cpuset->mems_default.
-  *
-- * Description: Returns the nodemask_t mems_allowed of the cpuset
-+ * Description: Returns the nodemask_t mems_default of the cpuset
-  * attached to the specified @tsk.  Guaranteed to return some non-empty
-  * subset of node_states[N_MEMORY], even if this means going outside the
-  * tasks cpuset.
-  **/
- 
--nodemask_t cpuset_mems_allowed(struct task_struct *tsk)
-+nodemask_t cpuset_mems_default(struct task_struct *tsk)
- {
- 	nodemask_t mask;
- 	unsigned long flags;
-@@ -4295,17 +4332,29 @@ static struct cpuset *nearest_hardwall_ancestor(struct cpuset *cs)
-  *	tsk_is_oom_victim   - any node ok
-  *	GFP_KERNEL   - any node in enclosing hardwalled cpuset ok
-  *	GFP_USER     - only nodes in current tasks mems allowed ok.
-+ *	GFP_PROTECTED - allow non-sysram nodes in mems_allowed
-  */
- bool cpuset_current_node_allowed(int node, gfp_t gfp_mask)
- {
- 	struct cpuset *cs;		/* current cpuset ancestors */
- 	bool allowed;			/* is allocation in zone z allowed? */
- 	unsigned long flags;
-+	bool protected_node = gfp_mask & __GFP_PROTECTED;
- 
- 	if (in_interrupt())
- 		return true;
--	if (node_isset(node, current->mems_default))
--		return true;
-+
-+	if (protected_node) {
-+		rcu_read_lock();
-+		cs = task_cs(current);
-+		allowed = node_isset(node, cs->mems_allowed);
-+		rcu_read_unlock();
-+	} else if (node_isset(node, current->mems_default))
-+		allowed = true;
-+
-+	if (allowed)
-+		return allowed;
-+
- 	/*
- 	 * Allow tasks that have access to memory reserves because they have
- 	 * been OOM killed to get memory anywhere.
-@@ -4322,13 +4371,15 @@ bool cpuset_current_node_allowed(int node, gfp_t gfp_mask)
- 	spin_lock_irqsave(&callback_lock, flags);
- 
- 	cs = nearest_hardwall_ancestor(task_cs(current));
--	allowed = node_isset(node, cs->mems_allowed);
-+	allowed = node_isset(node, cs->mems_allowed); /* include protected */
-+	if (!protected_node && !nodes_empty(default_sysram_nodelist))
-+		allowed &= node_isset(node, default_sysram_nodelist);
- 
- 	spin_unlock_irqrestore(&callback_lock, flags);
- 	return allowed;
- }
- 
--bool cpuset_node_allowed(struct cgroup *cgroup, int nid)
-+bool cpuset_node_default(struct cgroup *cgroup, int nid)
- {
- 	struct cgroup_subsys_state *css;
- 	struct cpuset *cs;
-@@ -4347,7 +4398,7 @@ bool cpuset_node_allowed(struct cgroup *cgroup, int nid)
- 		return true;
- 
- 	/*
--	 * Normally, accessing effective_mems would require the cpuset_mutex
-+	 * Normally, accessing mems_default would require the cpuset_mutex
- 	 * or callback_lock - but node_isset is atomic and the reference
- 	 * taken via cgroup_get_e_css is sufficient to protect css.
- 	 *
-@@ -4359,7 +4410,7 @@ bool cpuset_node_allowed(struct cgroup *cgroup, int nid)
- 	 * cannot make strong isolation guarantees, so this is acceptable.
- 	 */
- 	cs = container_of(css, struct cpuset, css);
--	allowed = node_isset(nid, cs->effective_mems);
-+	allowed = node_isset(nid, cs->mems_default);
- 	css_put(css);
- 	return allowed;
- }
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index 4deda33625f4..a25584cb281e 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -5599,5 +5599,5 @@ subsys_initcall(mem_cgroup_swap_init);
- 
- bool mem_cgroup_node_allowed(struct mem_cgroup *memcg, int nid)
- {
--	return memcg ? cpuset_node_allowed(memcg->css.cgroup, nid) : true;
-+	return memcg ? cpuset_node_default(memcg->css.cgroup, nid) : true;
- }
-diff --git a/mm/mempolicy.c b/mm/mempolicy.c
-index 6225d4d23010..5360333dc06d 100644
---- a/mm/mempolicy.c
-+++ b/mm/mempolicy.c
-@@ -1831,14 +1831,14 @@ static int kernel_migrate_pages(pid_t pid, unsigned long maxnode,
- 	}
- 	rcu_read_unlock();
- 
--	task_nodes = cpuset_mems_allowed(task);
-+	task_nodes = cpuset_mems_default(task);
- 	/* Is the user allowed to access the target nodes? */
- 	if (!nodes_subset(*new, task_nodes) && !capable(CAP_SYS_NICE)) {
- 		err = -EPERM;
- 		goto out_put;
- 	}
- 
--	task_nodes = cpuset_mems_allowed(current);
-+	task_nodes = cpuset_mems_default(current);
- 	nodes_and(*new, *new, task_nodes);
- 	if (nodes_empty(*new))
- 		goto out_put;
-@@ -2738,7 +2738,7 @@ int vma_dup_policy(struct vm_area_struct *src, struct vm_area_struct *dst)
- /*
-  * If mpol_dup() sees current->cpuset == cpuset_being_rebound, then it
-  * rebinds the mempolicy its copying by calling mpol_rebind_policy()
-- * with the mems_default returned by cpuset_mems_allowed().  This
-+ * with the mems_default returned by cpuset_mems_default().  This
-  * keeps mempolicies cpuset relative after its cpuset moves.  See
-  * further kernel/cpuset.c update_nodemask().
-  *
-@@ -2763,7 +2763,7 @@ struct mempolicy *__mpol_dup(struct mempolicy *old)
- 		*new = *old;
- 
- 	if (current_cpuset_is_being_rebound()) {
--		nodemask_t mems = cpuset_mems_allowed(current);
-+		nodemask_t mems = cpuset_mems_default(current);
- 		mpol_rebind_policy(new, &mems);
- 	}
- 	atomic_set(&new->refcnt, 1);
-diff --git a/mm/migrate.c b/mm/migrate.c
-index c0e9f15be2a2..f9a910b43a9f 100644
---- a/mm/migrate.c
-+++ b/mm/migrate.c
-@@ -2526,7 +2526,7 @@ static struct mm_struct *find_mm_struct(pid_t pid, nodemask_t *mem_nodes)
- 	 */
- 	if (!pid) {
- 		mmget(current->mm);
--		*mem_nodes = cpuset_mems_allowed(current);
-+		*mem_nodes = cpuset_mems_default(current);
- 		return current->mm;
- 	}
- 
-@@ -2547,7 +2547,7 @@ static struct mm_struct *find_mm_struct(pid_t pid, nodemask_t *mem_nodes)
- 	mm = ERR_PTR(security_task_movememory(task));
- 	if (IS_ERR(mm))
- 		goto out;
--	*mem_nodes = cpuset_mems_allowed(task);
-+	*mem_nodes = cpuset_mems_default(task);
- 	mm = get_task_mm(task);
- out:
- 	put_task_struct(task);
 -- 
 2.51.1
 
