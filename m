@@ -1,114 +1,170 @@
-Return-Path: <cgroups+bounces-11663-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-11664-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id BB408C3EB9C
-	for <lists+cgroups@lfdr.de>; Fri, 07 Nov 2025 08:18:42 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7C081C3EC20
+	for <lists+cgroups@lfdr.de>; Fri, 07 Nov 2025 08:32:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id A9BF84E7857
-	for <lists+cgroups@lfdr.de>; Fri,  7 Nov 2025 07:18:41 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 11C1A4E9EC2
+	for <lists+cgroups@lfdr.de>; Fri,  7 Nov 2025 07:31:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 393EB238149;
-	Fri,  7 Nov 2025 07:18:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="0foV2wBI";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="4HhAeH/I"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 03F813081C0;
+	Fri,  7 Nov 2025 07:31:31 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-io1-f77.google.com (mail-io1-f77.google.com [209.85.166.77])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 81704AD2C;
-	Fri,  7 Nov 2025 07:18:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7283D27AC4C
+	for <cgroups@vger.kernel.org>; Fri,  7 Nov 2025 07:31:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.77
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762499918; cv=none; b=flmMkGljzRddDy2n2zfAfxhBrpcIT1921s73e1sKUwVClaKpEwJaDIXW8NFUwtNdbx883bh+gYOJPQsLG/gytEORlxh5rSjA23BzYAXNvhBOpFpqy/OuMQmaTZN3aP7ZaX+bvGr7ZgmxeHzmbmD/u2HX3Iqoi4Ygyw4Pg0m5W/c=
+	t=1762500690; cv=none; b=PITO+K6PfOuGgH27dkJ4y4YibUBTrQ1tKHAh8Lc1cQoyZBPLB/V5qOL/EQlO5HOhdr9uh1xpf9qO8oiJhyuPfhlza1Irqe/fymG09iQ7PC6OBiM4/ztCfmU/S6u3J2Tcq8+tQj/g1cBq942fnmhLhTDDh9NoPANqb4VQgA47J08=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762499918; c=relaxed/simple;
-	bh=weU+v0sRv+5l3qc9AmslFpwy78JmXv/w7Q+ES0doiPI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=do12cI63XW8wssuK77eorEffumjIeGk28MsugjsdjZKPiDWN3nAGKTzJf6HbaroLEj7AJ3Z9M4sPTieZZmsafG1f1ciDMZ1Bun29CgU5Hsmi9Z9aTe6cgjDQXfiZnd3gRUkO3KaIpV/zApPic3e8b7n1IHDKVLXo8Udgus9HUgo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=0foV2wBI; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=4HhAeH/I; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-Date: Fri, 7 Nov 2025 08:18:32 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1762499914;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=heYXyy7Nh4RID45V94BklvzF7jWiD7JOdC5Cl12Mf4s=;
-	b=0foV2wBII5D5grA3Ma4Lt5FTDQyn8Ne53juxY4gS7aVgvVSZXUbiBlhKs90ZgrmRJ7M7Qg
-	Z6G+38Hngk5eVpswngQf3nX1dzxhEFwEZxeVH8uRERcPiYFwsrXOqU2ZmaaWQgF0UkvpeF
-	3plGMA4JWo5AWbvwSWW1L2F207ZETIJbh1z8DMdmcj1IOXNMWegkXDvnhsU6/H5gI29d2/
-	HswQZ64w1tAajFso/zFtJOy6cV7bVF2jbBPoGMUUHE7m57a/DfEp+IUR4TsA37m8H+ultr
-	DBIEAx7lSeJGWpH/hDOd8ONJs54WzX3OY25xpxC5vo2Nw7qihWXBwpthO02YNw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1762499914;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=heYXyy7Nh4RID45V94BklvzF7jWiD7JOdC5Cl12Mf4s=;
-	b=4HhAeH/IM7xqCjhvO9k/AiYYQLJbrdErspxJFo0S3UZwapJog43P00CbuK4lrm4CnbPUYd
-	1j0RSvVxRq8llyAg==
-From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To: Harry Yoo <harry.yoo@oracle.com>
-Cc: Qi Zheng <qi.zheng@linux.dev>, hannes@cmpxchg.org, hughd@google.com,
-	mhocko@suse.com, roman.gushchin@linux.dev, shakeel.butt@linux.dev,
-	muchun.song@linux.dev, david@redhat.com, lorenzo.stoakes@oracle.com,
-	ziy@nvidia.com, imran.f.khan@oracle.com,
-	kamalesh.babulal@oracle.com, axelrasmussen@google.com,
-	yuanchu@google.com, weixugc@google.com, akpm@linux-foundation.org,
-	linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-	cgroups@vger.kernel.org, Muchun Song <songmuchun@bytedance.com>,
-	Qi Zheng <zhengqi.arch@bytedance.com>,
-	Clark Williams <clrkwllms@kernel.org>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	linux-rt-devel@lists.linux.dev
-Subject: Re: [PATCH v1 04/26] mm: vmscan: refactor move_folios_to_lru()
-Message-ID: <20251107071832.Ty2LfTyY@linutronix.de>
-References: <cover.1761658310.git.zhengqi.arch@bytedance.com>
- <97ea4728568459f501ddcab6c378c29064630bb9.1761658310.git.zhengqi.arch@bytedance.com>
- <aQ1_f_6KPRZknUGS@harry>
+	s=arc-20240116; t=1762500690; c=relaxed/simple;
+	bh=hmBQunOCM5ZmhF1k490t04BJn11l0BugsBMHywhEaok=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=WdIsO+x/yPyaJ8iI5ZFLKI4poX1PwOsTJhbUPgBcurb2fpjf3razv0amZoymHpEKafHPaeyiHMog+8ungfBLklNGUOYRPFxljV5k8gvbEEiiLI74CTuGjWcPrxPg6qpfZ/9Op9sEAx8xybOwyUqQtcy66tBaYahRLOI/YERpYm8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.77
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f77.google.com with SMTP id ca18e2360f4ac-93e86696b5fso38745039f.1
+        for <cgroups@vger.kernel.org>; Thu, 06 Nov 2025 23:31:28 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1762500687; x=1763105487;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=DC5whZ6xjAg9orncDEXG9Mf4Zikpjttx0BkeAU8vHTQ=;
+        b=AYMvwSr9DYetYasT8iPatoa9DSUH4+NtuEQEmKGu6rYsZORWYZ4PS7QVS+iPrnrVW8
+         YTxE3nwuChLDfLmSrLCbQ5Y+crx5FSDK8BHJAdIi0JF8zOH3H82VyhDKM/PMUXDNW9dx
+         LttJiy3FTO3LL3FOMoeFTdVXmMAD2Y6aGJfA+1YB/3CluVrtSyXlbNHDgM8UD+O3A8Ry
+         ngIjfEcQXyDaC8pF7hx1Was72hDRsw4PdQ0vuxFNiyLsDSOzUnx+0Yn1jsnspI1EbimR
+         bkZQziBUrX3iaO9UzMRwc7URY4DL1coXZEaisBFvHowlkOMMxt9aYlxYe2aC/QAv+gmO
+         fCqw==
+X-Forwarded-Encrypted: i=1; AJvYcCXEAEA1sLm4QmS07Vq7yrgltYotq7FZ9Bb7MFA9Oq8wJnNx6ITo9poz0xLGj8xJgO228NB3ZjGI@vger.kernel.org
+X-Gm-Message-State: AOJu0YxUut69A2aPMhC4Boi2lnpYlTH5DZ5OqSO2RwbNNQmmX1rbTxGB
+	wJDJaUl0c4C7su3GgLyOrUAdpna+jXOFeeCDq7FxlirHTefTVLPGzEi5t7dyZOTNSqIdt/DuNhf
+	9ElOWFv7YZnpVouzuJZ7R3sJqF05QIs4OM2iWpCPDxhkExssUJH6ms/Bd4Yg=
+X-Google-Smtp-Source: AGHT+IF1mWmFU+QuzP+6G0raJVSuUbhvWf35rIhwvg/7kKBEsHrx+TEWgqipXwdks6Tvvg+v62pf8jfuYyIcJq7AP3kS3CRjzES2
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <aQ1_f_6KPRZknUGS@harry>
+X-Received: by 2002:a05:6e02:1a64:b0:433:290f:c201 with SMTP id
+ e9e14a558f8ab-4335f3d0389mr32665345ab.11.1762500687581; Thu, 06 Nov 2025
+ 23:31:27 -0800 (PST)
+Date: Thu, 06 Nov 2025 23:31:27 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <690da04f.a70a0220.22f260.0027.GAE@google.com>
+Subject: [syzbot] [fs?] WARNING in destroy_super_work
+From: syzbot <syzbot+1957b26299cf3ff7890c@syzkaller.appspotmail.com>
+To: Liam.Howlett@oracle.com, akpm@linux-foundation.org, 
+	anna-maria@linutronix.de, bpf@vger.kernel.org, brauner@kernel.org, 
+	bsegall@google.com, cgroups@vger.kernel.org, david@redhat.com, 
+	dietmar.eggemann@arm.com, frederic@kernel.org, hannes@cmpxchg.org, 
+	jack@suse.cz, jsavitz@redhat.com, juri.lelli@redhat.com, kees@kernel.org, 
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-mm@kvack.org, linux-security-module@vger.kernel.org, 
+	lorenzo.stoakes@oracle.com, mgorman@suse.de, mhocko@suse.com, 
+	mingo@redhat.com, mjguzik@gmail.com, mkoutny@suse.com, oleg@redhat.com, 
+	paul@paul-moore.com, peterz@infradead.org, rostedt@goodmis.org, 
+	rppt@kernel.org, sergeh@kernel.org, surenb@google.com, 
+	syzkaller-bugs@googlegroups.com, tglx@linutronix.de, tj@kernel.org, 
+	vbabka@suse.cz, vincent.guittot@linaro.org, viro@zeniv.linux.org.uk, 
+	vschneid@redhat.com
+Content-Type: text/plain; charset="UTF-8"
 
-On 2025-11-07 14:11:27 [+0900], Harry Yoo wrote:
-> > @@ -4735,14 +4734,15 @@ static int evict_folios(unsigned long nr_to_scan, struct lruvec *lruvec,
-> >  			set_mask_bits(&folio->flags.f, LRU_REFS_FLAGS, BIT(PG_active));
-> >  	}
-> >  
-> > -	spin_lock_irq(&lruvec->lru_lock);
-> > -
-> > -	move_folios_to_lru(lruvec, &list);
-> > +	move_folios_to_lru(&list);
-> >  
-> > +	local_irq_disable();
-> >  	walk = current->reclaim_state->mm_walk;
-> >  	if (walk && walk->batched) {
-> >  		walk->lruvec = lruvec;
-> > +		spin_lock(&lruvec->lru_lock);
-> >  		reset_batch_size(walk);
-> > +		spin_unlock(&lruvec->lru_lock);
-> >  	}
-> 
-> Cc'ing RT folks as they may not want to disable IRQ on PREEMPT_RT.
+Hello,
 
-Thank you, this is not going to work. The local_irq_disable() shouldn't
-be used.
+syzbot found the following issue on:
 
-> IIRC there has been some effort in MM to reduce the scope of
-> IRQ-disabled section in MM when PREEMPT_RT config was added to the
-> mainline. spin_lock_irq() doesn't disable IRQ on PREEMPT_RT.
-Exactly.
+HEAD commit:    982312090977 Add linux-next specific files for 20251103
+git tree:       linux-next
+console output: https://syzkaller.appspot.com/x/log.txt?x=17b2932f980000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=43cc0e31558cb527
+dashboard link: https://syzkaller.appspot.com/bug?extid=1957b26299cf3ff7890c
+compiler:       Debian clang version 20.1.8 (++20250708063551+0c9f909b7976-1~exp1~20250708183702.136), Debian LLD 20.1.8
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1347817c580000
 
-Sebastian
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/40058f8a830c/disk-98231209.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/1d7f42e8639f/vmlinux-98231209.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/d8bb0284f393/bzImage-98231209.xz
+
+The issue was bisected to:
+
+commit 3c9820d5c64aeaadea7ffe3a6bb99d019a5ff46a
+Author: Christian Brauner <brauner@kernel.org>
+Date:   Wed Oct 29 12:20:24 2025 +0000
+
+    ns: add active reference count
+
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=101e9bcd980000
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=121e9bcd980000
+console output: https://syzkaller.appspot.com/x/log.txt?x=141e9bcd980000
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+1957b26299cf3ff7890c@syzkaller.appspotmail.com
+Fixes: 3c9820d5c64a ("ns: add active reference count")
+
+------------[ cut here ]------------
+WARNING: ./include/linux/ns_common.h:229 at __ns_ref_put include/linux/ns_common.h:229 [inline], CPU#0: kworker/0:6/6108
+WARNING: ./include/linux/ns_common.h:229 at put_user_ns include/linux/user_namespace.h:189 [inline], CPU#0: kworker/0:6/6108
+WARNING: ./include/linux/ns_common.h:229 at destroy_super_work+0x15c/0x1a0 fs/super.c:280, CPU#0: kworker/0:6/6108
+Modules linked in:
+CPU: 0 UID: 0 PID: 6108 Comm: kworker/0:6 Not tainted syzkaller #0 PREEMPT(full) 
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 10/02/2025
+Workqueue: events destroy_super_work
+RIP: 0010:__ns_ref_put include/linux/ns_common.h:229 [inline]
+RIP: 0010:put_user_ns include/linux/user_namespace.h:189 [inline]
+RIP: 0010:destroy_super_work+0x15c/0x1a0 fs/super.c:280
+Code: 90 63 ff 48 81 c3 a8 fc ff ff 48 89 df e8 ec 90 63 ff 4c 89 f7 5b 41 5c 41 5d 41 5e 41 5f 5d e9 8a 91 e1 ff e8 45 df 86 ff 90 <0f> 0b 90 e9 6d ff ff ff e8 37 df 86 ff 4c 89 e7 be 03 00 00 00 e8
+RSP: 0018:ffffc900030d7a48 EFLAGS: 00010293
+RAX: ffffffff823a294b RBX: ffff88805639c898 RCX: ffff88802ab59e80
+RDX: 0000000000000000 RSI: 0000000000000004 RDI: 0000000000000000
+RBP: 0000000000000004 R08: ffff88807477565b R09: 1ffff1100e8eeacb
+R10: dffffc0000000000 R11: ffffed100e8eeacc R12: ffff888074775658
+R13: dffffc0000000000 R14: ffff88805639c000 R15: ffff8880747754c8
+FS:  0000000000000000(0000) GS:ffff888125eda000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 000000c008044000 CR3: 0000000077ad4000 CR4: 00000000003526f0
+Call Trace:
+ <TASK>
+ process_one_work+0x94a/0x15d0 kernel/workqueue.c:3267
+ process_scheduled_works kernel/workqueue.c:3350 [inline]
+ worker_thread+0x9b0/0xee0 kernel/workqueue.c:3431
+ kthread+0x711/0x8a0 kernel/kthread.c:463
+ ret_from_fork+0x52d/0xa70 arch/x86/kernel/process.c:158
+ ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:245
+ </TASK>
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
 
