@@ -1,99 +1,146 @@
-Return-Path: <cgroups+bounces-11682-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-11683-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5D407C4285F
-	for <lists+cgroups@lfdr.de>; Sat, 08 Nov 2025 07:33:19 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id AC6E5C42A50
+	for <lists+cgroups@lfdr.de>; Sat, 08 Nov 2025 10:24:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 00E1A3B3FD7
-	for <lists+cgroups@lfdr.de>; Sat,  8 Nov 2025 06:33:18 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 69760188E0FB
+	for <lists+cgroups@lfdr.de>; Sat,  8 Nov 2025 09:25:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 46CD72DF14A;
-	Sat,  8 Nov 2025 06:33:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="uzq6smUi"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E243A2EA158;
+	Sat,  8 Nov 2025 09:24:39 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from out-172.mta0.migadu.com (out-172.mta0.migadu.com [91.218.175.172])
+Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 35A3B2DEA97
-	for <cgroups@vger.kernel.org>; Sat,  8 Nov 2025 06:33:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 200272737F8;
+	Sat,  8 Nov 2025 09:24:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762583594; cv=none; b=JytF3SuwHmEtdtrHfv6BegHZMTkisBdckRzpJrwKcYWujCobOMytnqDyqWd/QF3znjhY2uDRNYNsh+5woTfo3uUQsdrSD1LUXKFQ5TY0j77j+RdlHbhWW8KRtP66dmW++maPxCoVS4MCqy8tE3K779wwClu44AVE7e1oykJDaaI=
+	t=1762593879; cv=none; b=pq9RGAU81JwjmQRJ5mUpuCRzh3Jsquhyg+z0wjfrrVmf+TD+/kJ/AfKdo3Qjet8GlLikvALWMZMFGTw0gS2Sio66EEufJ+5yM4LYrLOJt/GPFwHte/d03kdj337K3j3WbOOL5J2HJ8gBcklb95hM7JXhbGSY+xECKfi5Q2jI9Vg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762583594; c=relaxed/simple;
-	bh=dbfhdtCKn+6nvZ6eJ1H7Lwiq1Z6gbhIUoQCHaumcd70=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=aJ7yJau+UPDnZEXmNJVAYGlkhhnIYzzPnfNCg9NDCIUR/kB/nOO7mGWhWz19Caw+MHHcm6rfJQYB2nrrvpLverWVY+q5bckBqjb+tU30nPPc4g4bel5gau0Mz+FbLdT0u1APx7NdX7wcKzImDWWP4xYey0iH+mwc9Fsd/9Tf73w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=uzq6smUi; arc=none smtp.client-ip=91.218.175.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Fri, 7 Nov 2025 22:32:52 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1762583579;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=J/7T3JLvqIy8G97oSkwZiUgQ/us13qwXbaI51bbYH88=;
-	b=uzq6smUiUaadIABNL4WAH3kQ9/NWi6rV98ylBfMFIppw4E+N8btmKbgAwhGrszMoJj9rnz
-	CB2k+MOmm4mSUBVKeFZssHPocjdfCursoyR/iyfIffk6nTiCSrZTDcFQJPhgzISSZpcb6J
-	ZQS4G8+TUhTtakAd1HkSQXaXtPTzs0Y=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Shakeel Butt <shakeel.butt@linux.dev>
-To: Harry Yoo <harry.yoo@oracle.com>
-Cc: Qi Zheng <qi.zheng@linux.dev>, hannes@cmpxchg.org, hughd@google.com, 
-	mhocko@suse.com, roman.gushchin@linux.dev, muchun.song@linux.dev, 
-	david@redhat.com, lorenzo.stoakes@oracle.com, ziy@nvidia.com, 
-	imran.f.khan@oracle.com, kamalesh.babulal@oracle.com, axelrasmussen@google.com, 
-	yuanchu@google.com, weixugc@google.com, akpm@linux-foundation.org, 
-	linux-mm@kvack.org, linux-kernel@vger.kernel.org, cgroups@vger.kernel.org, 
-	Muchun Song <songmuchun@bytedance.com>, Qi Zheng <zhengqi.arch@bytedance.com>, 
-	Sebastian Andrzej Siewior <bigeasy@linutronix.de>, Clark Williams <clrkwllms@kernel.org>, 
-	Steven Rostedt <rostedt@goodmis.org>, linux-rt-devel@lists.linux.dev
-Subject: Re: [PATCH v1 04/26] mm: vmscan: refactor move_folios_to_lru()
-Message-ID: <hfutmuh4g5jtmrgeemq2aqr2tvxz6mnqaxo5l5vddqnjasyagi@gcscu5khrjxm>
-References: <cover.1761658310.git.zhengqi.arch@bytedance.com>
- <97ea4728568459f501ddcab6c378c29064630bb9.1761658310.git.zhengqi.arch@bytedance.com>
- <aQ1_f_6KPRZknUGS@harry>
- <366385a3-ed0e-440b-a08b-9cf14165ee8f@linux.dev>
- <aQ3yLER4C4jY70BH@harry>
+	s=arc-20240116; t=1762593879; c=relaxed/simple;
+	bh=+LS6ZrGO7B6vLyR4/fHLFcG30wc9EjVsZTbQqzeQlp0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=l4J119H19axrywjAZyVYy57zSnkp3tl/mEzKwLYbBOOoCsn8TZxuytVu8pV0LbhFpLVpV/z8prtrOVvlTNbXMkuQh1/dawiPeTZj0aegDFLC3QK33WV+OXpseBL1adlbh1lHNDbRg+dmVyt55sKFRVjUiDZ2xT492zr3XMR6Mq4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.93.142])
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTPS id 4d3VPS3q9gzKHMbr;
+	Sat,  8 Nov 2025 17:05:00 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.128])
+	by mail.maildlp.com (Postfix) with ESMTP id EA27C1A07BB;
+	Sat,  8 Nov 2025 17:05:11 +0800 (CST)
+Received: from [10.67.111.176] (unknown [10.67.111.176])
+	by APP4 (Coremail) with SMTP id gCh0CgAnUF3GBw9pgLIYAA--.42082S2;
+	Sat, 08 Nov 2025 17:05:11 +0800 (CST)
+Message-ID: <e0c0f8b7-112f-40d7-b211-89065e9003b2@huaweicloud.com>
+Date: Sat, 8 Nov 2025 17:05:10 +0800
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <aQ3yLER4C4jY70BH@harry>
-X-Migadu-Flow: FLOW_OUT
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 13/31] cpuset: Update HK_TYPE_DOMAIN cpumask from cpuset
+To: Frederic Weisbecker <frederic@kernel.org>,
+ LKML <linux-kernel@vger.kernel.org>
+Cc: =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
+ Andrew Morton <akpm@linux-foundation.org>,
+ Bjorn Helgaas <bhelgaas@google.com>,
+ Catalin Marinas <catalin.marinas@arm.com>, Danilo Krummrich
+ <dakr@kernel.org>, "David S . Miller" <davem@davemloft.net>,
+ Eric Dumazet <edumazet@google.com>, Gabriele Monaco <gmonaco@redhat.com>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Ingo Molnar <mingo@redhat.com>, Jakub Kicinski <kuba@kernel.org>,
+ Jens Axboe <axboe@kernel.dk>, Johannes Weiner <hannes@cmpxchg.org>,
+ Lai Jiangshan <jiangshanlai@gmail.com>,
+ Marco Crivellari <marco.crivellari@suse.com>, Michal Hocko
+ <mhocko@suse.com>, Muchun Song <muchun.song@linux.dev>,
+ Paolo Abeni <pabeni@redhat.com>, Peter Zijlstra <peterz@infradead.org>,
+ Phil Auld <pauld@redhat.com>, "Rafael J . Wysocki" <rafael@kernel.org>,
+ Roman Gushchin <roman.gushchin@linux.dev>,
+ Shakeel Butt <shakeel.butt@linux.dev>, Simon Horman <horms@kernel.org>,
+ Tejun Heo <tj@kernel.org>, Thomas Gleixner <tglx@linutronix.de>,
+ Vlastimil Babka <vbabka@suse.cz>, Waiman Long <longman@redhat.com>,
+ Will Deacon <will@kernel.org>, cgroups@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-block@vger.kernel.org,
+ linux-mm@kvack.org, linux-pci@vger.kernel.org, netdev@vger.kernel.org
+References: <20251105210348.35256-1-frederic@kernel.org>
+ <20251105210348.35256-14-frederic@kernel.org>
+Content-Language: en-US
+From: Chen Ridong <chenridong@huaweicloud.com>
+In-Reply-To: <20251105210348.35256-14-frederic@kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID:gCh0CgAnUF3GBw9pgLIYAA--.42082S2
+X-Coremail-Antispam: 1UD129KBjvdXoW7JrWUCF4fXF43Gr1UAF4kCrg_yoWDuFc_Wr
+	15WF4Uuw15JFyqgw1Yy34qga1fJa17t39aqa48try5W3Z5JF43Jrs3A345Ca13Xa4xJF1a
+	934kK393ZrnFqjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+	9fnUUIcSsGvfJTRUUUbxkYFVCjjxCrM7AC8VAFwI0_Wr0E3s1l1xkIjI8I6I8E6xAIw20E
+	Y4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwV
+	A0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVWDJVCq3wA2z4x0Y4vE2Ix0cI8IcVCY1x02
+	67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
+	0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
+	x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
+	0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc7CjxVAaw2AF
+	wI0_Wrv_ZF1l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4
+	xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26rWY6r4U
+	JwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x
+	0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_
+	Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU0
+	EksDUUUUU==
+X-CM-SenderInfo: hfkh02xlgr0w46kxt4xhlfz01xgou0bp/
 
-On Fri, Nov 07, 2025 at 10:20:57PM +0900, Harry Yoo wrote:
-> 
-> Although it's mentioned in the locking documentation, I'm afraid that
-> local_lock is not the right interface to use here. Preemption will be
-> disabled anyway (on both PREEMPT_RT and !PREEMPT_RT) when the stats are
-> updated (in __mod_node_page_state()).
-> 
-> Here we just want to disable IRQ only on !PREEMPT_RT (to update
-> the stats safely).
 
-I don't think there is a need to disable IRQs. There are three stats
-update functions called in that hunk.
 
-1) __mod_lruvec_state
-2) __count_vm_events
-3) count_memcg_events
 
-count_memcg_events() can be called with IRQs. __count_vm_events can be
-replaced with count_vm_events. For __mod_lruvec_state, the
-__mod_node_page_state() inside needs preemption disabled.
+> +int housekeeping_update(struct cpumask *mask, enum hk_type type)
+> +{
+> +	struct cpumask *trial, *old = NULL;
+> +
+> +	if (type != HK_TYPE_DOMAIN)
+> +		return -ENOTSUPP;
+> +
+> +	trial = kmalloc(cpumask_size(), GFP_KERNEL);
+> +	if (!trial)
+> +		return -ENOMEM;
+> +
+> +	cpumask_andnot(trial, housekeeping_cpumask(HK_TYPE_DOMAIN_BOOT), mask);
 
-Easy way would be to just disable/enable preemption instead of IRQs.
-Otherwise go a bit more fine-grained approach i.e. replace
-__count_vm_events with count_vm_events and just disable preemption
-across __mod_node_page_state().
+Since there's no comment for the 'mask' parameter, would it be better to name it 'isol_mask'? This
+would make it clearer that this is the isolation mask input and what is doing here.
+
+> +	if (!cpumask_intersects(trial, cpu_online_mask)) {
+> +		kfree(trial);
+> +		return -EINVAL;
+> +	}
+> +
+> +	if (!housekeeping.flags)
+> +		static_branch_enable(&housekeeping_overridden);
+> +
+> +	if (housekeeping.flags & BIT(type))
+> +		old = housekeeping_cpumask_dereference(type);
+> +	else
+> +		WRITE_ONCE(housekeeping.flags, housekeeping.flags | BIT(type));
+> +	rcu_assign_pointer(housekeeping.cpumasks[type], trial);
+> +
+> +	synchronize_rcu();
+> +
+> +	kfree(old);
+> +
+> +	return 0;
+> +}
+> +
+
+
+-- 
+Best regards,
+Ridong
+
 
