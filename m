@@ -1,99 +1,186 @@
-Return-Path: <cgroups+bounces-11691-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-11692-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 852CCC43FBE
-	for <lists+cgroups@lfdr.de>; Sun, 09 Nov 2025 15:11:25 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id 30E1BC44717
+	for <lists+cgroups@lfdr.de>; Sun, 09 Nov 2025 22:13:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 46ADB4E4A62
-	for <lists+cgroups@lfdr.de>; Sun,  9 Nov 2025 14:11:16 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 1FBA64E4248
+	for <lists+cgroups@lfdr.de>; Sun,  9 Nov 2025 21:13:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 439E52FC030;
-	Sun,  9 Nov 2025 14:11:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E041C262FFF;
+	Sun,  9 Nov 2025 21:13:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZXvP0mpx"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-il1-f199.google.com (mail-il1-f199.google.com [209.85.166.199])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 16B572FB62C
-	for <cgroups@vger.kernel.org>; Sun,  9 Nov 2025 14:11:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.199
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8572D537E9;
+	Sun,  9 Nov 2025 21:13:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762697466; cv=none; b=TeiuiUIqJ4fVVGVsk+iDIiFeQV/bxJul3T0FeYrLM5gPBKr/NGOdeDNtrtz4RxHhIIbtimsE9vxmmM/v3v4C8WLqtoQR20iz5A38DnAMF/4/l3ipOImqDrmYzzeI7fsuBR1m/iHYkrIrBfmaQe2W/HudazOqWkBIdrjcRWsb8r0=
+	t=1762722799; cv=none; b=fwRo4gXk7c5jA0tJPNN0+92BkVgWtLCp+5YSkl94Gc1oAI15n5B2/7MTYmdMpY1nreWz4hU3aWK1WtIEvs38hhTqjoqgMhbXEDh6cRa1kGoVnUHs9b2H1jAUvhjV9CdD18aSXmrYlzuyG98Y8qWe6/bCe4V9ps+NqxmMS2wq5cY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762697466; c=relaxed/simple;
-	bh=y6Dy/w1K3XpX2uFUEe+rBJFRb32lSDcExJhalbXQ5aU=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=Y/w1/AxX+7WY7BhFaSvhgemO8ev10MvndxDe2EeME6lldTYFg32HvmOap1wdQI49OtCHgu8Cr3lCG07BWChrsx3qZOuiA3fi+V8ePK/Wa6s2Wvk0CPSsM7C18H1A8ehUlaNlVg7BkkjQOpOWUGMzWmTwcs/qJrE9hOCPsK3+oK8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.199
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f199.google.com with SMTP id e9e14a558f8ab-433817220f5so148005ab.1
-        for <cgroups@vger.kernel.org>; Sun, 09 Nov 2025 06:11:02 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1762697462; x=1763302262;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=m02kWE5lhyrzZgApWthbB6kQBtAUB+gmZPn3Dt1ZsD4=;
-        b=go35LgrJDlwXsnslAzXmaC71uA8ekJrsrEWWnZECjlobGqdtvVCx+NZU8iISBe80iL
-         LFOvxBqwXx2Wv7p2rAoIojPyFH/f9QaDOL17sZLO+uflWWsinmXz60k09fsUj4Xr2i83
-         S0IFmrPWYxtWPk+px4fI7YVf5ejrWjPAeuthwYnT8SnNauZd2yjW6A972zJ+8m4glOkP
-         B7Hhrc5ah9/k4bNdsmN6LNeVvsEqBMRBmZ+Xy3gjKqvCWenXg6VqHYX8RJEM+38n4N93
-         FrierTSFgCzxwkz57b6CQmcfRGVnxZqtjL2ZNIQEKe9uyxFoTC+0pxPxzpSq9FgPDYN2
-         aNCg==
-X-Forwarded-Encrypted: i=1; AJvYcCVhyxYLld2SxKP+K3df5La+kOSFj747WW1kHa2zmor1vqGe+IklszQY2mRAwZNkwJAc2QJd/Cgk@vger.kernel.org
-X-Gm-Message-State: AOJu0Yywh6xHtdccDJIjjANXNXMHdTJ3fJRSHqFyFND8DCRooNLr/jc8
-	VXCT0frXeD+EOkLKNSDViBkkvc9H+mm+XXAn8eA//78BYVWOob4wkc15JZSt1Xg6JURamhjXt1w
-	MJahldWjnPcvaxf+LJ3cBd3K57krf3aRuqVZLS6254/1TJlO9wBYiTVgLlLI=
-X-Google-Smtp-Source: AGHT+IEw+SyBMcsmvsru2ydmWiAer57ckBKlQAwl2f1WWyRnepHiN7uVkkXdan4vghsxm/ZOPYzm213l8SerzWDt7Il3Poc2ozLJ
+	s=arc-20240116; t=1762722799; c=relaxed/simple;
+	bh=7XNqneAJZkD31+B87Un/9oPOJDMkEukENXKqvVQgFwo=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=Oz89mSZ4k9+JpXiZ0qbNoFpZybTjPIQ4plW5qiTtaHw+FcWB6VswkVd1sZva24Wdcd5e2T4Wz0i8B4tYe5l1ag9346mE8t2aFbSGbvml3xm/dttto8y6sc2YIrPFD+vr1QxXEjk1umU9qWXUuA8UtlfWSWIZBTfX5S8bd0DKr/g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ZXvP0mpx; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1E7BBC4CEF7;
+	Sun,  9 Nov 2025 21:13:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1762722798;
+	bh=7XNqneAJZkD31+B87Un/9oPOJDMkEukENXKqvVQgFwo=;
+	h=From:Subject:Date:To:Cc:From;
+	b=ZXvP0mpx2GZlmqqGorpb0j2F325nIpl6OZSi+z14gKFxUbRbwAkaKzbifFZ6bc92Y
+	 +xlGKZ+IP1q0jgnVLPiQ2GwJ6ck0b3vOsBOyKha21SF6THjb7qnOxJR9BfRuqv9mK4
+	 fqpU0Jx7x2N1zkd4hNTvZmQRSh4ii5FMSzR/FG8fOflJlnhmEdGJlTs+cSd68wtVzG
+	 RcHH9uNfhGoTPCVO+yd8fyyTX7E+adNY8UwVhPy7NsVpAidckdYmthqM1HY98dmW37
+	 x8ei81kE4vbiPapdLqEa6ihOy0R6e1wE6DYkiw+nlR3t2ZB3Hgc8886E67Js4+x1lP
+	 pc/nq17c6kvvg==
+From: Christian Brauner <brauner@kernel.org>
+Subject: [PATCH 0/8] ns: fixes for namespace iteration and active reference
+ counting
+Date: Sun, 09 Nov 2025 22:11:21 +0100
+Message-Id: <20251109-namespace-6-19-fixes-v1-0-ae8a4ad5a3b3@kernel.org>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:4417:20b0:433:7d0b:b377 with SMTP id
- e9e14a558f8ab-4337d0bb530mr14752975ab.15.1762697462239; Sun, 09 Nov 2025
- 06:11:02 -0800 (PST)
-Date: Sun, 09 Nov 2025 06:11:02 -0800
-In-Reply-To: <20251109-lesung-erkaufen-476f6fb00b1b@brauner>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <6910a0f6.a70a0220.22f260.00b8.GAE@google.com>
-Subject: Re: [syzbot] [fs?] WARNING in destroy_super_work
-From: syzbot <syzbot+1957b26299cf3ff7890c@syzkaller.appspotmail.com>
-To: akpm@linux-foundation.org, anna-maria@linutronix.de, bpf@vger.kernel.org, 
-	brauner@kernel.org, bsegall@google.com, cgroups@vger.kernel.org, 
-	david@redhat.com, dietmar.eggemann@arm.com, frederic@kernel.org, 
-	hannes@cmpxchg.org, jack@suse.cz, jsavitz@redhat.com, juri.lelli@redhat.com, 
-	kees@kernel.org, liam.howlett@oracle.com, linux-fsdevel@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-mm@kvack.org, 
-	linux-security-module@vger.kernel.org, lorenzo.stoakes@oracle.com, 
-	mgorman@suse.de, mhocko@suse.com, mingo@redhat.com, mjguzik@gmail.com, 
-	mkoutny@suse.com, oleg@redhat.com, paul@paul-moore.com, peterz@infradead.org, 
-	rostedt@goodmis.org, rppt@kernel.org, sergeh@kernel.org, surenb@google.com, 
-	syzkaller-bugs@googlegroups.com, tglx@linutronix.de, tj@kernel.org, 
-	vbabka@suse.cz, vincent.guittot@linaro.org, viro@zeniv.linux.org.uk, 
-	vschneid@redhat.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAHkDEWkC/02MwQrCMAxAf2XkbGQprFJ/RTykNXU5WEcDIoz9u
+ 9lOHh+P91Yw6SoG12GFLh81fTcHOg1QZm5PQX04QxjDRDQmbPwSW7gIRqSEVb9iOOVca6olhng
+ BT5cuh/DydnfObIK5cyvzPvt7nCnBtv0ACoz8G4cAAAA=
+X-Change-ID: 20251109-namespace-6-19-fixes-5bbff9fc6267
+To: linux-fsdevel@vger.kernel.org, Josef Bacik <josef@toxicpanda.com>, 
+ Jeff Layton <jlayton@kernel.org>
+Cc: Jann Horn <jannh@google.com>, Mike Yuan <me@yhndnzj.com>, 
+ =?utf-8?q?Zbigniew_J=C4=99drzejewski-Szmek?= <zbyszek@in.waw.pl>, 
+ Lennart Poettering <mzxreary@0pointer.de>, 
+ Daan De Meyer <daan.j.demeyer@gmail.com>, Aleksa Sarai <cyphar@cyphar.com>, 
+ Amir Goldstein <amir73il@gmail.com>, Tejun Heo <tj@kernel.org>, 
+ Johannes Weiner <hannes@cmpxchg.org>, Thomas Gleixner <tglx@linutronix.de>, 
+ Alexander Viro <viro@zeniv.linux.org.uk>, Jan Kara <jack@suse.cz>, 
+ linux-kernel@vger.kernel.org, cgroups@vger.kernel.org, bpf@vger.kernel.org, 
+ Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, 
+ netdev@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>, 
+ Christian Brauner <brauner@kernel.org>, 
+ syzbot+1957b26299cf3ff7890c@syzkaller.appspotmail.com
+X-Mailer: b4 0.15-dev-a6db3
+X-Developer-Signature: v=1; a=openpgp-sha256; l=5203; i=brauner@kernel.org;
+ h=from:subject:message-id; bh=7XNqneAJZkD31+B87Un/9oPOJDMkEukENXKqvVQgFwo=;
+ b=owGbwMvMwCU28Zj0gdSKO4sYT6slMWQKMr/YfvmA7FrlZeYP1Bi9pshbVHhaGqefctlXEuzgM
+ 81z5Ya0jlIWBjEuBlkxRRaHdpNwueU8FZuNMjVg5rAygQxh4OIUgInoejIyNF2pvWNgdXrelIas
+ sqoItuc/LGeGl4Vw9qz548cszbJuEcNv9rPHc8sFjfyzrtRl3oiVctz6aKbodE6rn+nLE3aHT/j
+ NDAA=
+X-Developer-Key: i=brauner@kernel.org; a=openpgp;
+ fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
 
-Hello,
+* Make sure to initialize the active reference count for the initial
+  network namespace and prevent __ns_common_init() from returning too
+  early.
 
-syzbot has tested the proposed patch and the reproducer did not trigger any issue:
+* Make sure that passive reference counts are dropped outside of rcu
+  read locks as some namespaces such as the mount namespace do in fact
+  sleep when putting the last reference.
 
-Reported-by: syzbot+1957b26299cf3ff7890c@syzkaller.appspotmail.com
-Tested-by: syzbot+1957b26299cf3ff7890c@syzkaller.appspotmail.com
+* The setns() system call supports:
 
-Tested on:
+  (1) namespace file descriptors (nsfd)
+  (2) process file descriptors (pidfd)
 
-commit:         241462cd ns: fixes for namespace iteration and active ..
-git tree:       https://github.com/brauner/linux.git namespace-6.19.fixes
-console output: https://syzkaller.appspot.com/x/log.txt?x=11e1517c580000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=f1b1a45727d1f117
-dashboard link: https://syzkaller.appspot.com/bug?extid=1957b26299cf3ff7890c
-compiler:       Debian clang version 20.1.8 (++20250708063551+0c9f909b7976-1~exp1~20250708183702.136), Debian LLD 20.1.8
+  When using nsfds the namespaces will remain active because they are
+  pinned by the vfs. However, when pidfds are used things are more
+  complicated.
 
-Note: no patches were applied.
-Note: testing is done by a robot and is best-effort only.
+  When the target task exits and passes through exit_nsproxy_namespaces()
+  or is reaped and thus also passes through exit_cred_namespaces() after
+  the setns()'ing task has called prepare_nsset() but before the active
+  reference count of the set of namespaces it wants to setns() to might
+  have been dropped already:
+
+    P1                                                              P2
+
+    pid_p1 = clone(CLONE_NEWUSER | CLONE_NEWNET | CLONE_NEWNS)
+                                                                    pidfd = pidfd_open(pid_p1)
+                                                                    setns(pidfd, CLONE_NEWUSER | CLONE_NEWNET | CLONE_NEWNS)
+                                                                    prepare_nsset()
+
+    exit(0)
+    // ns->__ns_active_ref        == 1
+    // parent_ns->__ns_active_ref == 1
+    -> exit_nsproxy_namespaces()
+    -> exit_cred_namespaces()
+
+    // ns_active_ref_put() will also put
+    // the reference on the owner of the
+    // namespace. If the only reason the
+    // owning namespace was alive was
+    // because it was a parent of @ns
+    // it's active reference count now goes
+    // to zero... --------------------------------
+    //                                           |
+    // ns->__ns_active_ref        == 0           |
+    // parent_ns->__ns_active_ref == 0           |
+                                                 |                  commit_nsset()
+                                                 -----------------> // If setns()
+                                                                    // now manages to install the namespaces
+                                                                    // it will call ns_active_ref_get()
+                                                                    // on them thus bumping the active reference
+                                                                    // count from zero again but without also
+                                                                    // taking the required reference on the owner.
+                                                                    // Thus we get:
+                                                                    //
+                                                                    // ns->__ns_active_ref        == 1
+                                                                    // parent_ns->__ns_active_ref == 0
+
+    When later someone does ns_active_ref_put() on @ns it will underflow
+    parent_ns->__ns_active_ref leading to a splat from our asserts
+    thinking there are still active references when in fact the counter
+    just underflowed.
+
+  So resurrect the ownership chain if necessary as well. If the caller
+  succeeded to grab passive references to the set of namespaces the
+  setns() should simply succeed even if the target task exists or gets
+  reaped in the meantime.
+
+  The race is rare and can only be triggered when using pidfs to setns()
+  to namespaces. Also note that active reference on initial namespaces are
+  nops.
+
+  Since we now always handle parent references directly we can drop
+  ns_ref_active_get_owner() when adding a namespace to a namespace tree.
+  This is now all handled uniformly in the places where the new namespaces
+  actually become active.
+
+Signed-off-by: Christian Brauner <brauner@kernel.org>
+---
+Christian Brauner (8):
+      ns: don't skip active reference count initialization
+      ns: don't increment or decrement initial namespaces
+      ns: make sure reference are dropped outside of rcu lock
+      ns: return EFAULT on put_user() error
+      ns: handle setns(pidfd, ...) cleanly
+      ns: add asserts for active refcount underflow
+      selftests/namespaces: add active reference count regression test
+      selftests/namespaces: test for efault
+
+ fs/nsfs.c                                          |   2 +-
+ include/linux/ns_common.h                          |  49 +-
+ kernel/nscommon.c                                  |  52 +-
+ kernel/nstree.c                                    |  44 +-
+ tools/testing/selftests/namespaces/.gitignore      |   2 +
+ tools/testing/selftests/namespaces/Makefile        |   6 +-
+ .../selftests/namespaces/listns_efault_test.c      | 521 +++++++++++++++++++++
+ .../namespaces/regression_pidfd_setns_test.c       | 113 +++++
+ 8 files changed, 715 insertions(+), 74 deletions(-)
+---
+base-commit: 8ebfb9896c97ab609222460e705f425cb3f0aad0
+change-id: 20251109-namespace-6-19-fixes-5bbff9fc6267
+
 
