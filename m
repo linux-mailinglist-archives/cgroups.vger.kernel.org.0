@@ -1,269 +1,164 @@
-Return-Path: <cgroups+bounces-11733-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-11734-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4A126C46ABA
-	for <lists+cgroups@lfdr.de>; Mon, 10 Nov 2025 13:43:35 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id 575DCC46E22
+	for <lists+cgroups@lfdr.de>; Mon, 10 Nov 2025 14:26:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 023133BB3A1
-	for <lists+cgroups@lfdr.de>; Mon, 10 Nov 2025 12:43:34 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 4A8AC4E1836
+	for <lists+cgroups@lfdr.de>; Mon, 10 Nov 2025 13:26:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE93730E82E;
-	Mon, 10 Nov 2025 12:43:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 01DA03101C5;
+	Mon, 10 Nov 2025 13:26:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.de header.i=natalie.vock@gmx.de header.b="VKLBs62C"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ZMOehkiy"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.19])
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.13])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A6AEF223DF9
-	for <cgroups@vger.kernel.org>; Mon, 10 Nov 2025 12:43:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.19
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A38882EBB9C;
+	Mon, 10 Nov 2025 13:26:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.13
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762778609; cv=none; b=SC4lzULXwZthTJAWU4bFqXWLj+qga/19eNzEwQnq/fCy5sS+198c7kxRFNLSicgOAm1w34I1MM5lR3kR3SkqJ+aBhXcgtLGWq0vmsO4MEcM4Rfpq/zy+hXpSdXYm8TcZNegT8ywsr+YlP+C6FctvVzpHtrpqbKEScP0mWdbSWdk=
+	t=1762781213; cv=none; b=IXAjw2Z7hf9QcD5GscxwzRJl8v7nLn+nkeS6XcExR6OXb69NrHh0ZcntKfXua4UYWvwPp7uRTX9Gg5JNzzpLZGNJ6XzttHRgHFX49/ovEfsZDjlDwucO+OaAPkgLTVIE2EbAHBRws427Woy4gtowXKMANG2tEwcfov/HhDOhkP8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762778609; c=relaxed/simple;
-	bh=nAYfUrS+V8DwTpCsaISCGX8GHKz3GM3et4tdGFrMoxc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=iWtbDQ9TpV48xGQaEHJheRaddMXW9/xiD2FNihw8bmqXc1x4Tb4PdVHPqo/PRv38gMKopSF5gtvY7PoCODQ6g0d8TLFQFKL0hKJDWRxb8OewyfpD3rMt2qudyV4/BH0xBgQhV4xRKcvzCSizjyILU9FSpdO4HkijtnlHYn5jMZM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de; spf=pass smtp.mailfrom=gmx.de; dkim=pass (2048-bit key) header.d=gmx.de header.i=natalie.vock@gmx.de header.b=VKLBs62C; arc=none smtp.client-ip=212.227.15.19
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.de;
-	s=s31663417; t=1762778594; x=1763383394; i=natalie.vock@gmx.de;
-	bh=u0DlpRr1AG2ar9SFV6i2Rq3E/bZXeLQ0soFFn0kY0v0=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
-	 References:From:In-Reply-To:Content-Type:
-	 Content-Transfer-Encoding:cc:content-transfer-encoding:
-	 content-type:date:from:message-id:mime-version:reply-to:subject:
-	 to;
-	b=VKLBs62C2SadTR/h5sNOBC6bfTahJcdz8fTna7HsPUyiXNZd90y8Tw9CaePVMmXm
-	 g8p2L2d8afBU7SAzM/7kAbkXeInVxFW0V7RQaAETCkJ4pOUDhwBzkS4FoeHsZlHC6
-	 DViwum6Tw4bWX++KnbJwchMubShoMEc2/Gqhr8buf4OrDy92VfyvZ9t5TOk40+TN3
-	 KFhjlP7+rAW8GDzyHTg2ifRr2EvOoraB25CDorl02llGv1E+KA9z6Vp8/Efu6If5p
-	 wE9sNNis0Jk8ruxjdGywa3b9E017EeeHaeoXyrP4Bqq48x0Ax5lFaSVSs4brXJFKf
-	 7Nx2daqtWosG7h+xZw==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [192.168.0.3] ([109.42.49.68]) by mail.gmx.net (mrgmx005
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1MgesQ-1vqMt40yya-00jBDw; Mon, 10
- Nov 2025 13:43:14 +0100
-Message-ID: <6d19cedc-2e70-4371-9637-80460719c5b4@gmx.de>
-Date: Mon, 10 Nov 2025 13:43:11 +0100
+	s=arc-20240116; t=1762781213; c=relaxed/simple;
+	bh=gqluEsxLQlbV3vngbeO8V//CEUVe0NkM4sEqKyJqBVc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=U2Uehh2rXRuOqC3SlwuM2b1y6Fu53EDudxeaoB44bPkvs1cTCn3IB1+0QPQV64ttyi5iS3I1WForPfnncxbXGjOYFBEb0Kc2zLqBmtVYl45Xy48uoRjHkaDh2aJ996ARFxeHh6/BZA3nK+TGrCffOlhUv1ZBBRHVCuYpO6Ik6E8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=ZMOehkiy; arc=none smtp.client-ip=192.198.163.13
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1762781211; x=1794317211;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=gqluEsxLQlbV3vngbeO8V//CEUVe0NkM4sEqKyJqBVc=;
+  b=ZMOehkiyNZMJdT6wlKz1eQlP7EdIaGli/KwkhbSmCQ3BMgsy3w+agHIk
+   C0EZgiSvmDOO66ptfkAa+3s3SbbAIRcDwtw5KNV/wR2O3W7c4WWiesCS0
+   JKbnCNdSZFtdLMHaN2/9y152apuH/tmLU02/1D765dVUw8O21QPCZTOz8
+   GB3H/K33ESwD/Wh7x2kSbzwEmnP17TJ0ZPKsYfJBKWjSDPnn7Lxd9xgB/
+   YPE7hWfU5FG2g2uWqDOgQCyAUjmUUms3T8do0PlMcQ3LwdOeeqhEZNtXg
+   R8OzmVF+okqZPXqZKqT/5Ii97dihSPcBX6y2rj/aG4vQldLNFuEUTwr83
+   w==;
+X-CSE-ConnectionGUID: EmQbSs3RTVGKJCJuQ7mtcg==
+X-CSE-MsgGUID: 0ytpoQ/8Q/iGDw8Ap7NvEw==
+X-IronPort-AV: E=McAfee;i="6800,10657,11609"; a="67436098"
+X-IronPort-AV: E=Sophos;i="6.19,293,1754982000"; 
+   d="scan'208";a="67436098"
+Received: from fmviesa005.fm.intel.com ([10.60.135.145])
+  by fmvoesa107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Nov 2025 05:26:51 -0800
+X-CSE-ConnectionGUID: t+LJONLVQHSZACIPcylDHg==
+X-CSE-MsgGUID: TMq45V+1QXibCa/0AnAzug==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.19,293,1754982000"; 
+   d="scan'208";a="192932412"
+Received: from lkp-server01.sh.intel.com (HELO 7b01c990427b) ([10.239.97.150])
+  by fmviesa005.fm.intel.com with ESMTP; 10 Nov 2025 05:26:45 -0800
+Received: from kbuild by 7b01c990427b with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1vIRuu-0000Sp-2q;
+	Mon, 10 Nov 2025 13:26:44 +0000
+Date: Mon, 10 Nov 2025 21:26:01 +0800
+From: kernel test robot <lkp@intel.com>
+To: Youngjun Park <youngjun.park@lge.com>, akpm@linux-foundation.org,
+	linux-mm@kvack.org
+Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+	cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+	chrisl@kernel.org, kasong@tencent.com, hannes@cmpxchg.org,
+	mhocko@kernel.org, roman.gushchin@linux.dev, shakeel.butt@linux.dev,
+	muchun.song@linux.dev, shikemeng@huaweicloud.com, nphamcs@gmail.com,
+	bhe@redhat.com, baohua@kernel.org, youngjun.park@lge.com,
+	gunho.lee@lge.com, taejoon.song@lge.com
+Subject: Re: [PATCH 3/3] mm/swap: integrate swap tier infrastructure into
+ swap subsystem
+Message-ID: <202511102100.y6n1mtle-lkp@intel.com>
+References: <20251109124947.1101520-4-youngjun.park@lge.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 5/5] drm/ttm: Use common ancestor of evictor and
- evictee as limit pool
-To: Maarten Lankhorst <dev@lankhorst.se>, Maxime Ripard <mripard@kernel.org>,
- Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>,
- =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
- Christian Koenig <christian.koenig@amd.com>, Huang Rui <ray.huang@amd.com>,
- Matthew Auld <matthew.auld@intel.com>,
- Matthew Brost <matthew.brost@intel.com>,
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
- Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>,
- Simona Vetter <simona@ffwll.ch>
-Cc: cgroups@vger.kernel.org, dri-devel@lists.freedesktop.org
-References: <20251015-dmemcg-aggressive-protect-v2-0-36644fb4e37f@gmx.de>
- <20251015-dmemcg-aggressive-protect-v2-5-36644fb4e37f@gmx.de>
- <a825aed9-c217-4864-807d-9fce40076388@lankhorst.se>
-Content-Language: en-US
-From: Natalie Vock <natalie.vock@gmx.de>
-In-Reply-To: <a825aed9-c217-4864-807d-9fce40076388@lankhorst.se>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:KX1WneHQFVb5WPbwz2GhM/DVXrR17VJ+e/qJ5b1i30CxWAGcAC2
- O81JnT1Xo+AmTtLyEZp8lO36c6bvSZJKZDvFZ445rRSXAw/OstvnP0QltWQ7xipctC/TjZB
- VnpFw4DuvyTRdb2axa+k3u6xP0ScSIkRE8VKElaF8rrqgadKMt2fWFTLUVUlXqRr6EIqJEc
- sdVA5ZpUHR0oXoFPcDXSw==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:SEMadvtdFf8=;5DPn5VT8wIGVi/xzA2z2m4jOyln
- 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
- pNUqx1p8HvAHj8lcc=
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20251109124947.1101520-4-youngjun.park@lge.com>
 
-Hi,
+Hi Youngjun,
 
-On 10/24/25 14:21, Maarten Lankhorst wrote:
-> Hey,
->=20
-> Den 2025-10-15 kl. 15:57, skrev Natalie Vock:
->> When checking whether to skip certain buffers because they're protected
->> by dmem.low, we're checking the effective protection of the evictee's
->> cgroup, but depending on how the evictor's cgroup relates to the
->> evictee's, the semantics of effective protection values change.
->>
->> When testing against cgroups from different subtrees, page_counter's
->> recursive protection propagates memory protection afforded to a parent
->> down to the child cgroups, even if the children were not explicitly
->> protected. This prevents cgroups whose parents were afforded no
->> protection from stealing memory from cgroups whose parents were afforde=
-d
->> more protection, without users having to explicitly propagate this
->> protection.
->>
->> However, if we always calculate protection from the root cgroup, this
->> breaks prioritization of sibling cgroups: If one cgroup was explicitly
->> protected and its siblings were not, the protected cgroup should get
->> higher priority, i.e. the protected cgroup should be able to steal from
->> unprotected siblings. This only works if we restrict the protection
->> calculation to the subtree shared by evictor and evictee.
->>
->> Signed-off-by: Natalie Vock <natalie.vock@gmx.de>
->> ---
->>   drivers/gpu/drm/ttm/ttm_bo.c | 22 +++++++++++++++++++---
->>   1 file changed, 19 insertions(+), 3 deletions(-)
->>
->> diff --git a/drivers/gpu/drm/ttm/ttm_bo.c b/drivers/gpu/drm/ttm/ttm_bo.=
-c
->> index 7f7872ab2090cc8db188e08ddfdcd12fe924f743..bc88941c0aadb9a1d6fbaa4=
-70ccdeae4f91c41fb 100644
->> --- a/drivers/gpu/drm/ttm/ttm_bo.c
->> +++ b/drivers/gpu/drm/ttm/ttm_bo.c
->> @@ -524,13 +524,29 @@ struct ttm_bo_evict_walk {
->>  =20
->>   static s64 ttm_bo_evict_cb(struct ttm_lru_walk *walk, struct ttm_buff=
-er_object *bo)
->>   {
->> +	struct dmem_cgroup_pool_state *limit_pool;
->>   	struct ttm_bo_evict_walk *evict_walk =3D
->>   		container_of(walk, typeof(*evict_walk), walk);
->>   	s64 lret;
->>  =20
->> -	if (!dmem_cgroup_state_evict_valuable(evict_walk->alloc_state->limit_=
-pool,
->> -					      bo->resource->css, evict_walk->try_low,
->> -					      &evict_walk->hit_low))
->> +	/*
->> +	 * If only_evict_unprotected is set, then we're trying to evict unpro=
-tected
->> +	 * buffers in favor of a protected allocation for charge_pool. Explic=
-itly skip
->> +	 * buffers belonging to the same cgroup here - that cgroup is definit=
-ely protected,
->> +	 * even though dmem_cgroup_state_evict_valuable would allow the evict=
-ion because a
->> +	 * cgroup is always allowed to evict from itself even if it is protec=
-ted.
->> +	 */
->> +	if (evict_walk->alloc_state->only_evict_unprotected &&
->> +			bo->resource->css =3D=3D evict_walk->alloc_state->charge_pool)
->> +		return 0;
->> +
->> +	limit_pool =3D evict_walk->alloc_state->limit_pool;
->> +	if (!limit_pool)
->> +		limit_pool =3D dmem_cgroup_common_ancestor(bo->resource->css,
->> +							 evict_walk->alloc_state->charge_pool);
->> +
->> +	if (!dmem_cgroup_state_evict_valuable(limit_pool, bo->resource->css,
->> +					      evict_walk->try_low, &evict_walk->hit_low))
->>   		return 0;
->>  =20
->>   	if (bo->pin_count || !bo->bdev->funcs->eviction_valuable(bo, evict_w=
-alk->place))
->>
-> Patches themselves look good, I think it would help to add a bit more do=
-cumentation since
-> cgroup related dmem eviction is already complicated, and while I believe=
- those changes are
-> correct, it will help others to understand the code in case bugs show up=
-.
->=20
-> Perhaps even add a global overview of how dmem eviction interacts with T=
-TM eviction.
->=20
-> This will need review from the TTM maintainers/reviewers too before bein=
-g accepted.
->=20
-> With the extra documentation added:
-> Reviewed-by: Maarten Lankhorst <dev@lankhorst.se>
+kernel test robot noticed the following build errors:
 
-Sent out a v3 with extra documentation added[1].
+[auto build test ERROR on akpm-mm/mm-everything]
 
-Is this roughly in line with the documentation on cgroup-related dmem=20
-eviction you expected? I skipped adding your R-b below the patches for=20
-now to give you a chance to look over it again :)
+url:    https://github.com/intel-lab-lkp/linux/commits/Youngjun-Park/mm-swap-introduce-swap-tier-infrastructure/20251109-215033
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/akpm/mm.git mm-everything
+patch link:    https://lore.kernel.org/r/20251109124947.1101520-4-youngjun.park%40lge.com
+patch subject: [PATCH 3/3] mm/swap: integrate swap tier infrastructure into swap subsystem
+config: riscv-randconfig-001-20251110 (https://download.01.org/0day-ci/archive/20251110/202511102100.y6n1mtle-lkp@intel.com/config)
+compiler: clang version 22.0.0git (https://github.com/llvm/llvm-project 996639d6ebb86ff15a8c99b67f1c2e2117636ae7)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20251110/202511102100.y6n1mtle-lkp@intel.com/reproduce)
 
-Thanks,
-Natalie
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202511102100.y6n1mtle-lkp@intel.com/
 
-[1]=20
-https://lore.kernel.org/dri-devel/20251110-dmemcg-aggressive-protect-v3-0-=
-219ffcfc54e9@gmx.de/
+All errors (new ones prefixed by >>):
 
+   In file included from mm/page_io.c:29:
+>> mm/swap_tier.h:71:1: error: expected identifier or '('
+      71 | {
+         | ^
+   1 error generated.
+--
+   In file included from mm/swapfile.c:52:
+>> mm/swap_tier.h:71:1: error: expected identifier or '('
+      71 | {
+         | ^
+>> mm/swapfile.c:1309:31: error: no member named 'tier_idx' in 'struct swap_info_struct'
+    1309 |                 if (swap_tiers_test_off(si->tier_idx, mask))
+         |                                         ~~  ^
+   2 errors generated.
+
+
+vim +71 mm/swap_tier.h
+
+c17fe68325c921 Youngjun Park 2025-11-09  41  
+c17fe68325c921 Youngjun Park 2025-11-09  42  void swap_tiers_init(void);
+c17fe68325c921 Youngjun Park 2025-11-09  43  int swap_tiers_add(struct tiers_desc desc[], int nr);
+c17fe68325c921 Youngjun Park 2025-11-09  44  int swap_tiers_remove(struct tiers_desc desc[], int nr);
+c17fe68325c921 Youngjun Park 2025-11-09  45  ssize_t swap_tiers_show_sysfs(char *buf);
+c17fe68325c921 Youngjun Park 2025-11-09  46  void swap_tiers_show_memcg(struct seq_file *m, struct mem_cgroup *memcg);
+c17fe68325c921 Youngjun Park 2025-11-09  47  void swap_tiers_assign(struct swap_info_struct *swp);
+c17fe68325c921 Youngjun Park 2025-11-09  48  void swap_tiers_release(struct swap_info_struct *swp);
+c17fe68325c921 Youngjun Park 2025-11-09  49  int swap_tiers_get_mask(struct tiers_desc *desc, int nr, struct mem_cgroup *memcg);
+c17fe68325c921 Youngjun Park 2025-11-09  50  void swap_tiers_put_mask(struct mem_cgroup *memcg);
+c17fe68325c921 Youngjun Park 2025-11-09  51  static inline bool swap_tiers_test_off(int tier_idx, int mask)
+c17fe68325c921 Youngjun Park 2025-11-09  52  {
+c17fe68325c921 Youngjun Park 2025-11-09  53  	return TIER_MASK(tier_idx, TIER_OFF_MASK) & mask;
+c17fe68325c921 Youngjun Park 2025-11-09  54  }
+c17fe68325c921 Youngjun Park 2025-11-09  55  int swap_tiers_collect_compare_mask(struct mem_cgroup *memcg);
+c17fe68325c921 Youngjun Park 2025-11-09  56  #else
+c17fe68325c921 Youngjun Park 2025-11-09  57  static inline void swap_tiers_init(void)
+c17fe68325c921 Youngjun Park 2025-11-09  58  {
+c17fe68325c921 Youngjun Park 2025-11-09  59  }
+c17fe68325c921 Youngjun Park 2025-11-09  60  static inline void swap_tiers_assign(struct swap_info_struct *swp)
+c17fe68325c921 Youngjun Park 2025-11-09  61  {
+c17fe68325c921 Youngjun Park 2025-11-09  62  }
+c17fe68325c921 Youngjun Park 2025-11-09  63  static inline void swap_tiers_release(struct swap_info_struct *swp)
+c17fe68325c921 Youngjun Park 2025-11-09  64  {
+c17fe68325c921 Youngjun Park 2025-11-09  65  }
+c17fe68325c921 Youngjun Park 2025-11-09  66  static inline bool swap_tiers_test_off(int tier_off_mask, int mask)
+c17fe68325c921 Youngjun Park 2025-11-09  67  {
+c17fe68325c921 Youngjun Park 2025-11-09  68  	return false;
+c17fe68325c921 Youngjun Park 2025-11-09  69  }
+c17fe68325c921 Youngjun Park 2025-11-09  70  static inline int swap_tiers_collect_compare_mask(struct mem_cgroup *memcg);
+c17fe68325c921 Youngjun Park 2025-11-09 @71  {
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
