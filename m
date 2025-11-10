@@ -1,132 +1,136 @@
-Return-Path: <cgroups+bounces-11736-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-11737-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6F797C472C8
-	for <lists+cgroups@lfdr.de>; Mon, 10 Nov 2025 15:27:52 +0100 (CET)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
+	by mail.lfdr.de (Postfix) with ESMTPS id 05B23C4768E
+	for <lists+cgroups@lfdr.de>; Mon, 10 Nov 2025 16:08:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 96C081881960
-	for <lists+cgroups@lfdr.de>; Mon, 10 Nov 2025 14:28:08 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 33501349DC2
+	for <lists+cgroups@lfdr.de>; Mon, 10 Nov 2025 15:08:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BABA9312813;
-	Mon, 10 Nov 2025 14:27:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 67FFA313E06;
+	Mon, 10 Nov 2025 15:08:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="SRYkGJix"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uLm0/4Ev"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-wm1-f50.google.com (mail-wm1-f50.google.com [209.85.128.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 83C9D13C3F2
-	for <cgroups@vger.kernel.org>; Mon, 10 Nov 2025 14:27:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 100AE1A7AE3;
+	Mon, 10 Nov 2025 15:08:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762784858; cv=none; b=hB3ZhEbgw87RFCR82YKnD+bnXaQvYeRviO7THv+Zpb+cvBxQg8v6Sv2jdBhAGbKtIRajzVtsXFYEYp2N5Z75e5b5Mla6hrAsmW8LTFb6pYSlWSi5lKZGeHY3btUwSqmYt1mEoiL6FDvVmHa9IE3/WWVZVmdQnUVe7ink2BUdMOo=
+	t=1762787322; cv=none; b=MpvA/76q5WBhBMMmErudHZoA0S46RT1gI9ZxXleeQp7ZPSMmwm4pFLSr8piti7XLknDisijgaLrKdRkCB5FQdoqV0ga5zHygBpHDKL4curnU77wXn7zj8/zkzTbabwpzlRIj7fpOK5pZaL+GjKqEM6zcpOxG2xdNWKUfgugmGyo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762784858; c=relaxed/simple;
-	bh=ihoIGUSl5KG1eENwxR/j5csfH6FTtQ5eoSNs9oJA6Vk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=QLLwLPASxSVacfaMg31hxC4x4uOojhUAaEVaKrN1sg/k40hFQpKYcxVrrMUJCR5ouVCylDTLsFxRjp73T+5gQ3Vg+fDGzZsJ3Ndbhiuw57p9Si2tthmk+zCHHmE5WFFk2vpiBdLLIU0ERTdtbY3pFlUA7pFltxWJqHi4wiVdzF4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=SRYkGJix; arc=none smtp.client-ip=209.85.128.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-wm1-f50.google.com with SMTP id 5b1f17b1804b1-477632d9326so23781095e9.1
-        for <cgroups@vger.kernel.org>; Mon, 10 Nov 2025 06:27:36 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1762784855; x=1763389655; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=7Kg3vBr5eIV1bhiU84P8YOC4pYEYEClLlaacpCw0wZo=;
-        b=SRYkGJixCHOd9/Arbun0EwNmU+4bb5C90UQJ1GDHKLanUCCs81mj/owXVdVjpomwxp
-         Mc3My3CUwSe3B94SJciG2Rc5peVIFORE21gU3zUGbMuwK7wBNaVd5mf0cD2DhWoRDTOp
-         htAHD0cYaQgQOFAkK4j+wi3pMFc/H5oLrd0RoVZto7GV4HYF8GfuvVPm7juMLxUfYyvB
-         2VeVtM+rmvpm1n9gAtzavK6F0ejRMkSW7UWdl384HFeCPP+XRQRVJCZzfTPdoL4NT08j
-         e3PkJjEOSHR6GNp2+Cjzajx3rH5Si7yPXOKH9efJ4K/lMd3lIsQ2zY32mU9yJ6OIV4Qz
-         f3yg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1762784855; x=1763389655;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=7Kg3vBr5eIV1bhiU84P8YOC4pYEYEClLlaacpCw0wZo=;
-        b=qugmXKsTNudoO4Z6/Yum43Ag+vypSTR+rzHng9AntmEu9X6sXOhbrIR8kX21Kf9zeE
-         54s3IHbXppeADJE8tp0msf0Uukxj/gnDPHcso3fJb5xA8wtl0N6WObHuCPno4mLwYJEI
-         uHOje7V9uz2Z4W7clnr9tgHSZdRUYrtUEwRVK1tbS8/QO+6JW8jqV5M1t8/jFDQ4zm7/
-         gFXJZiMs1OPgpLJ6uFCl0hmZP7HcG6/BB3ftAdI9D2+65AZzcMsu4746xbwtk4HHvNDk
-         gi+Z5PXvqZC1eExHApbnzZ891uET91+Wp8myjPWhhQ6rcg7e9jaQDPOgAzMPwI/ARK/4
-         LiGA==
-X-Forwarded-Encrypted: i=1; AJvYcCWzWOiq+9e33cYLL1dMw5rDFHTjKa+q/F3GdihT4JZJacR9eJ/oKU/7pB0UI4ei40YtNuXKlqac@vger.kernel.org
-X-Gm-Message-State: AOJu0YyoCJnMTUmB9C5mux4gnnMmHktnVzlgUHbPjokvQZy7TKxCISjx
-	s0qoXzRuSlUgDmCm+UDSFcfcKHT0SzK7RUhoFEsiUEw372D7I81oePHYPoJy8ijrd/w=
-X-Gm-Gg: ASbGnculn9isJ653eHN136pbqNSdlzgzutZQn1A3g1B965yJ1bff4zGCrGQ3T6Kc3dB
-	JTVri585DxyYKqMRx92HeWcqUhtYoc1n0PP9EZSrjoYXsay8joTpWvKEIACfKVl5q7HFUvHEQcN
-	TFzsGlRHN2HEs4fY5HtNu0AHFK2+L04Qx3gMJZAvfaY/R+2KqA8NY4dvI/tUWguh6LPKrhTgdBk
-	c+OlZ/qxkBtQC9e4nc2SDqT2igNCDmVe6g/ooKCzw3fWaICM7EsiJL8Do0gXz/yYquqN03Cgupv
-	xnZ/M+3yYdDAFVb0y1oDXra4L0yttegNZ/m7ljZvm/hXbGn8PrT2gRINkEaLa8BbgVDSnx/8cQT
-	P9EP3uwpUkST1r6MqWJ3WQRunS+cidnGrtJ3gbckPpNH3ZhgVSePxGIybAUBEOvb/QMWtNO/hbM
-	YjoA4sOr8kI7jDu3PED3qN
-X-Google-Smtp-Source: AGHT+IHML8MOqcOYXtiQH3128zZ7cQFznn5BzWZ/x/UpuzVV3JHCT24/iF1D8qaKQPfZa4W9/kkUDg==
-X-Received: by 2002:a05:600c:4f4c:b0:477:7f4a:44a8 with SMTP id 5b1f17b1804b1-4777f4a4945mr17710055e9.29.1762784854868;
-        Mon, 10 Nov 2025 06:27:34 -0800 (PST)
-Received: from blackdock.suse.cz (nat2.prg.suse.com. [195.250.132.146])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-47763e4f89fsm116549665e9.3.2025.11.10.06.27.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 10 Nov 2025 06:27:34 -0800 (PST)
-Date: Mon, 10 Nov 2025 15:27:32 +0100
-From: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
-To: Chen Ridong <chenridong@huaweicloud.com>
-Cc: longman@redhat.com, tj@kernel.org, hannes@cmpxchg.org, 
-	cgroups@vger.kernel.org, linux-kernel@vger.kernel.org, lujialin4@huawei.com, 
-	chenridong@huawei.com
-Subject: Re: [PATCH -next 1/3] cpuset: simplify node setting on error
-Message-ID: <o3daj3fasq66buthgl3rherobjqwkemjge5xlrgfzfyvcjxyme@anbppjgrj77h>
-References: <20251110015228.897736-1-chenridong@huaweicloud.com>
- <20251110015228.897736-2-chenridong@huaweicloud.com>
+	s=arc-20240116; t=1762787322; c=relaxed/simple;
+	bh=6KSwsK8hJ3VsxaX3vSZfCo2wVNblyfeSCIhlDo7+M8s=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=QAAvSfisKgZ0lhvOLuS/5ICYa4T8x82tcpaAd9HNrZqrpHlLc73H9qsjrr1JD0baRbtA+/qXUA75qdS5zPDGYMdZOCzAyEB3jfgBWYuFPorhjyRoVV3b/plT9HFUzBhkiR6Kj2vf6+14bFTZkJkIYjATQeDkQBPuMmEo+k8WKFU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=uLm0/4Ev; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 77677C113D0;
+	Mon, 10 Nov 2025 15:08:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1762787321;
+	bh=6KSwsK8hJ3VsxaX3vSZfCo2wVNblyfeSCIhlDo7+M8s=;
+	h=From:Subject:Date:To:Cc:From;
+	b=uLm0/4EvJE1j74j9QrirPiPyBOSzPMEk/h/hXjnZIEdQ180jK+CQjUqfYCuGpk4Vf
+	 5mobfv4yPgkePiyxcD6931VgiqR944gHEROE/Wyih0wahEAMNE4JxyyBJdAueainrp
+	 uh4+nQKWGr+in+771km0LEE5tCpV4pYhQi11wdGREl7LqMC60DbVDYpGq5OHabFy2d
+	 UngFeoTeREhmgCy/D+pwkHjnlxonZgRPbAycgSi/7aEVXNrHqc4GgTScMbV1sOZIvX
+	 8sqnHIUyfO+j/10N487rOEaY33MQvYwCyujkiHEvYinl5EYVJFDdhtbcECrpcDWpGA
+	 8VKES//ZwEnWQ==
+From: Christian Brauner <brauner@kernel.org>
+Subject: [PATCH 00/17] ns: header cleanups and initial namespace reference
+ count improvements
+Date: Mon, 10 Nov 2025 16:08:12 +0100
+Message-Id: <20251110-work-namespace-nstree-fixes-v1-0-e8a9264e0fb9@kernel.org>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="ncajuq6cdkyono22"
-Content-Disposition: inline
-In-Reply-To: <20251110015228.897736-2-chenridong@huaweicloud.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIANz/EWkC/0XMQQrCQAxA0auUrE2ZTFGoVxEXmTG1g5iWpKhQe
+ nenblw+PvwVXKyIw7lZweRVvExaQYcG8sh6Fyy3aoghHoko4HuyByo/xWfOguqLieBQPuI4xK7
+ viENIHKEeZpNfqIPLtTqxCyZjzeP+3Nn+V6eWeti2Lx80KNOTAAAA
+X-Change-ID: 20251110-work-namespace-nstree-fixes-f23931a00ba2
+To: linux-fsdevel@vger.kernel.org, Josef Bacik <josef@toxicpanda.com>, 
+ Jeff Layton <jlayton@kernel.org>
+Cc: Jann Horn <jannh@google.com>, Mike Yuan <me@yhndnzj.com>, 
+ =?utf-8?q?Zbigniew_J=C4=99drzejewski-Szmek?= <zbyszek@in.waw.pl>, 
+ Lennart Poettering <mzxreary@0pointer.de>, 
+ Daan De Meyer <daan.j.demeyer@gmail.com>, Aleksa Sarai <cyphar@cyphar.com>, 
+ Amir Goldstein <amir73il@gmail.com>, Tejun Heo <tj@kernel.org>, 
+ Johannes Weiner <hannes@cmpxchg.org>, Thomas Gleixner <tglx@linutronix.de>, 
+ Alexander Viro <viro@zeniv.linux.org.uk>, Jan Kara <jack@suse.cz>, 
+ linux-kernel@vger.kernel.org, cgroups@vger.kernel.org, bpf@vger.kernel.org, 
+ Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, 
+ netdev@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>, 
+ Christian Brauner <brauner@kernel.org>
+X-Mailer: b4 0.15-dev-a6db3
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2728; i=brauner@kernel.org;
+ h=from:subject:message-id; bh=6KSwsK8hJ3VsxaX3vSZfCo2wVNblyfeSCIhlDo7+M8s=;
+ b=owGbwMvMwCU28Zj0gdSKO4sYT6slMWQK/v+sx9I829Vx/dJT0dYO/bk8rzg27U5LYN7h9iE3S
+ vKfgIFsRykLgxgXg6yYIotDu0m43HKeis1GmRowc1iZQIYwcHEKwETS2hkZ1p+8KSZhx8wk4XH/
+ 3y1F57kChquubJ0gVh50I+jinRlX+BgZ9lwRMytQ1/zhUerw06P496wDmdHWVvofdxteP25TMzG
+ WGQA=
+X-Developer-Key: i=brauner@kernel.org; a=openpgp;
+ fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
 
+Cleanup the namespace headers by splitting them into types and helpers.
+Better separate common namepace types and functions from namespace tree
+types and functions.
 
---ncajuq6cdkyono22
-Content-Type: text/plain; protected-headers=v1; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-Subject: Re: [PATCH -next 1/3] cpuset: simplify node setting on error
-MIME-Version: 1.0
+Fix the reference counts of initial namespaces so we don't do any
+pointless cacheline ping-pong for them when we know they can never go
+away. Add a bunch of asserts for both the passive and active reference
+counts to catch any changes that would break it.
 
-On Mon, Nov 10, 2025 at 01:52:26AM +0000, Chen Ridong <chenridong@huaweiclo=
-ud.com> wrote:
-> From: Chen Ridong <chenridong@huawei.com>
->=20
-> There is no need to jump to the 'done' label upon failure, as no cleanup
-> is required. Return the error code directly instead.
->=20
-> Signed-off-by: Chen Ridong <chenridong@huawei.com>
-> ---
->  kernel/cgroup/cpuset.c | 21 +++++++++------------
->  1 file changed, 9 insertions(+), 12 deletions(-)
+Signed-off-by: Christian Brauner <brauner@kernel.org>
+---
+Christian Brauner (17):
+      ns: move namespace types into separate header
+      nstree: decouple from ns_common header
+      nstree: move nstree types into separate header
+      nstree: add helper to operate on struct ns_tree_{node,root}
+      nstree: switch to new structures
+      nstree: simplify owner list iteration
+      nstree: use guards for ns_tree_lock
+      ns: make is_initial_namespace() argument const
+      ns: rename is_initial_namespace()
+      fs: use boolean to indicate anonymous mount namespace
+      ipc: enable is_ns_init_id() assertions
+      ns: make all reference counts on initial namespace a nop
+      ns: add asserts for initial namespace reference counts
+      ns: add asserts for initial namespace active reference counts
+      pid: rely on common reference count behavior
+      ns: drop custom reference count initialization for initial namespaces
+      selftests/namespaces: fix nsid tests
 
-Reviewed-by: Michal Koutn=FD <mkoutny@suse.com>
+ fs/mount.h                                     |   3 +-
+ fs/namespace.c                                 |   9 +-
+ include/linux/ns/ns_common_types.h             | 196 ++++++++++++++++
+ include/linux/ns/nstree_types.h                |  55 +++++
+ include/linux/ns_common.h                      | 266 +++++-----------------
+ include/linux/nstree.h                         |  38 ++--
+ include/linux/pid_namespace.h                  |   3 +-
+ init/version-timestamp.c                       |   2 +-
+ ipc/msgutil.c                                  |   2 +-
+ ipc/namespace.c                                |   3 +-
+ kernel/cgroup/cgroup.c                         |   2 +-
+ kernel/nscommon.c                              |  15 +-
+ kernel/nstree.c                                | 304 ++++++++++++++-----------
+ kernel/pid.c                                   |   2 +-
+ kernel/pid_namespace.c                         |   2 +-
+ kernel/time/namespace.c                        |   2 +-
+ kernel/user.c                                  |   2 +-
+ tools/testing/selftests/namespaces/nsid_test.c | 107 +++++----
+ 18 files changed, 576 insertions(+), 437 deletions(-)
+---
+base-commit: c9255cbe738098e46c9125c6b409f7f8f4785bf6
+change-id: 20251110-work-namespace-nstree-fixes-f23931a00ba2
 
---ncajuq6cdkyono22
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iJEEABYKADkWIQRCE24Fn/AcRjnLivR+PQLnlNv4CAUCaRH2UhsUgAAAAAAEAA5t
-YW51MiwyLjUrMS4xMSwyLDIACgkQfj0C55Tb+AjC9wEA3+kvpJFNdj+cvbVOFOqf
-Mdoc4b5dv+sH20VJyQfNcTQBAI6c/7vhNcZfsC3tkOPJETcbP9dC+sU+F8uUm7aq
-jcII
-=MKFE
------END PGP SIGNATURE-----
-
---ncajuq6cdkyono22--
 
