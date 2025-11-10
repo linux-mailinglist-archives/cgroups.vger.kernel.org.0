@@ -1,91 +1,88 @@
-Return-Path: <cgroups+bounces-11735-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-11736-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 41B00C4704D
-	for <lists+cgroups@lfdr.de>; Mon, 10 Nov 2025 14:50:30 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6F797C472C8
+	for <lists+cgroups@lfdr.de>; Mon, 10 Nov 2025 15:27:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C4F8A188FCBC
-	for <lists+cgroups@lfdr.de>; Mon, 10 Nov 2025 13:50:52 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 96C081881960
+	for <lists+cgroups@lfdr.de>; Mon, 10 Nov 2025 14:28:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC3B430DEAF;
-	Mon, 10 Nov 2025 13:50:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BABA9312813;
+	Mon, 10 Nov 2025 14:27:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="bnwUw4s4"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="SRYkGJix"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-wm1-f48.google.com (mail-wm1-f48.google.com [209.85.128.48])
+Received: from mail-wm1-f50.google.com (mail-wm1-f50.google.com [209.85.128.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 61BE730BB94
-	for <cgroups@vger.kernel.org>; Mon, 10 Nov 2025 13:50:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 83C9D13C3F2
+	for <cgroups@vger.kernel.org>; Mon, 10 Nov 2025 14:27:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762782617; cv=none; b=TV6h3Fxsde7MXIto7n7AR/yMpctOc8vyMZAstg2gMTTXD+T6n7RUqop3B6l6XP15ZVnG5IHF3GPuzEQ+4WwmyxdmkjyZQPjrGZtQIs4zVZIHnr91fdJQ8wPYWkzZIH8hDdtcAA53HWTb4cgaXXWRwYkwWvQ7LeW1tIF0nTfWj4g=
+	t=1762784858; cv=none; b=hB3ZhEbgw87RFCR82YKnD+bnXaQvYeRviO7THv+Zpb+cvBxQg8v6Sv2jdBhAGbKtIRajzVtsXFYEYp2N5Z75e5b5Mla6hrAsmW8LTFb6pYSlWSi5lKZGeHY3btUwSqmYt1mEoiL6FDvVmHa9IE3/WWVZVmdQnUVe7ink2BUdMOo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762782617; c=relaxed/simple;
-	bh=Z2GcdcHLSBPyJMV4Z1quXuXSj4IHiZox4TXxVh4RwU8=;
+	s=arc-20240116; t=1762784858; c=relaxed/simple;
+	bh=ihoIGUSl5KG1eENwxR/j5csfH6FTtQ5eoSNs9oJA6Vk=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=qcBPQkw8uvnlHZR40FBeenQMaIlsMA149odDCA2vvjeQjNUAgHYVODjCpkXNt21Pc/PVy0nmbuWMuFVoLxm8stpo9sYkMrAH28JTZWbcuev5vXLjQYfgydLZ6sV1D8Tmg01HzoqzdsEIu/xCYa5O/atXY4ON7tNDFNlf1VgsS1k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=bnwUw4s4; arc=none smtp.client-ip=209.85.128.48
+	 Content-Type:Content-Disposition:In-Reply-To; b=QLLwLPASxSVacfaMg31hxC4x4uOojhUAaEVaKrN1sg/k40hFQpKYcxVrrMUJCR5ouVCylDTLsFxRjp73T+5gQ3Vg+fDGzZsJ3Ndbhiuw57p9Si2tthmk+zCHHmE5WFFk2vpiBdLLIU0ERTdtbY3pFlUA7pFltxWJqHi4wiVdzF4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=SRYkGJix; arc=none smtp.client-ip=209.85.128.50
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-wm1-f48.google.com with SMTP id 5b1f17b1804b1-47775fb6c56so20369205e9.1
-        for <cgroups@vger.kernel.org>; Mon, 10 Nov 2025 05:50:15 -0800 (PST)
+Received: by mail-wm1-f50.google.com with SMTP id 5b1f17b1804b1-477632d9326so23781095e9.1
+        for <cgroups@vger.kernel.org>; Mon, 10 Nov 2025 06:27:36 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1762782614; x=1763387414; darn=vger.kernel.org;
+        d=suse.com; s=google; t=1762784855; x=1763389655; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=tCs1YwS37zjMEsWnDzmEV/JMvwyL1fiKF8eAfxcvVZM=;
-        b=bnwUw4s4sThlYanFH58caHNcesysUXuk2S+0Vpgj4pW9LBZQLQBwJ+ViyTca6zvith
-         +dUOylNOB7oUfsNfDf/wm22jZB/tG4+feDi8t/RSQCxRuZe5YoW8kFh3CUkqJ/J3x9qa
-         iV3x2NrH8ptPvAfqgVucKkGxsyLmSaYp69YSionh1rpwDLixr2AQl+O/U6BJCO05wher
-         aWCdJGfSyO8Xc9a3UsEHRiFuFn/fvAfvZVBeQiHSchgPs1FIbHcjHP02tiawRdHUccDg
-         aU6H5GbGHNGUsgiVJsAmgsguknYvYehi0EG/J0Vw5HWXNVHBGiqjZ2qVAkdpz3zc8RVx
-         jygw==
+        bh=7Kg3vBr5eIV1bhiU84P8YOC4pYEYEClLlaacpCw0wZo=;
+        b=SRYkGJixCHOd9/Arbun0EwNmU+4bb5C90UQJ1GDHKLanUCCs81mj/owXVdVjpomwxp
+         Mc3My3CUwSe3B94SJciG2Rc5peVIFORE21gU3zUGbMuwK7wBNaVd5mf0cD2DhWoRDTOp
+         htAHD0cYaQgQOFAkK4j+wi3pMFc/H5oLrd0RoVZto7GV4HYF8GfuvVPm7juMLxUfYyvB
+         2VeVtM+rmvpm1n9gAtzavK6F0ejRMkSW7UWdl384HFeCPP+XRQRVJCZzfTPdoL4NT08j
+         e3PkJjEOSHR6GNp2+Cjzajx3rH5Si7yPXOKH9efJ4K/lMd3lIsQ2zY32mU9yJ6OIV4Qz
+         f3yg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1762782614; x=1763387414;
+        d=1e100.net; s=20230601; t=1762784855; x=1763389655;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=tCs1YwS37zjMEsWnDzmEV/JMvwyL1fiKF8eAfxcvVZM=;
-        b=IvQnoNDp+hv62EuCNuvgfwQG32jzRDnHg4eajpAAuKHBNs6MLAVtjUdf98Cd/NsD6/
-         3MHxCR82ctc1sJATWEMu/29htyEfakQtC+5qsdwhNgiGY0nvQ35KoelS88zcOjHZCgsP
-         lhORBi8EmSpo3UKTGKyLF/leZtDDDTkNY/NiwwH5lEoMchxXNghL2cSm+WbOoCDogmCu
-         rNCAWGDsbph0KcRxDzMEgiDaBCbogqhNAJ/0aOfT+aS+MkEG7tah9+JX6TXSGO5msYoQ
-         UtKey6ncK6uOkA2SD9SygYFWt+gUtN696/lyEU/VDnpXnW/l7glkxJfydk3F7TSNp5Nz
-         KEwg==
-X-Forwarded-Encrypted: i=1; AJvYcCUQi2ma/prYGQL0VlSofrzB4YPkTztMGhzPkfkbpqBDOYMxFgHVsQSCUZqOeBoeo8PqRGw5uBgA@vger.kernel.org
-X-Gm-Message-State: AOJu0YxcOqCQSTNRRQ9UvgdmEA11+bsdj7m4Za1Us3Bg75hLMFQsI6ON
-	C9oWAS2y91N/F748JyHczAW9iS1LdDicF61Ht8TxTvIhw+q2lSgA6CiLHS/h/qGbXmo=
-X-Gm-Gg: ASbGncuh1KvRsA4kl+p0k3lPBFyvfhMblScDmYJz4FJI0CKC5TYchxodLjSnDBy4qZX
-	vosszdaWMrEBQi/u4TNLXsN+5ufcZArkcXOvOVOufK8WPwsrrSXtXlwnmCpO20wex1sel/j/On6
-	3ZehU+69DiVrlNJ9VrA6FRCODHjkP+pzKxDmTg9wW+F15tmknvjYfmGpaHfACvCxjqgc/ZH7IG0
-	z770Izi0Oj89d04dwZMosUJrS/3slWYlCG8344ZPZljT6p83esNk7QjTLduMIbyZrFT1QbaIQ0B
-	2l3TOGDV7WKrmUWSKfyk6ur+6ogIzpbnpRQ9sFJT372ha7UDEFVw4mwFvldaABl4h1v7enb6cZY
-	5tEZ9WfqdsIt51pdiFnUEfZVUOEK2EjQRNT8Dz6Dvu8GdDwJCa0Ed+7cV9XPITTpwPgVTpYeMWX
-	jvHnQMz6cS0ybqf2Iou3JJfe/eSGnSH3U=
-X-Google-Smtp-Source: AGHT+IFbwuDPMH0i3HrzOH4fQgag2ujLMbEc53k+8Ky8ZYKaeuvXAQUWa6E5cujElbmdZf149UMenA==
-X-Received: by 2002:a05:600c:3511:b0:475:e007:bae0 with SMTP id 5b1f17b1804b1-4777323ec8fmr52334305e9.16.1762782613605;
-        Mon, 10 Nov 2025 05:50:13 -0800 (PST)
+        bh=7Kg3vBr5eIV1bhiU84P8YOC4pYEYEClLlaacpCw0wZo=;
+        b=qugmXKsTNudoO4Z6/Yum43Ag+vypSTR+rzHng9AntmEu9X6sXOhbrIR8kX21Kf9zeE
+         54s3IHbXppeADJE8tp0msf0Uukxj/gnDPHcso3fJb5xA8wtl0N6WObHuCPno4mLwYJEI
+         uHOje7V9uz2Z4W7clnr9tgHSZdRUYrtUEwRVK1tbS8/QO+6JW8jqV5M1t8/jFDQ4zm7/
+         gFXJZiMs1OPgpLJ6uFCl0hmZP7HcG6/BB3ftAdI9D2+65AZzcMsu4746xbwtk4HHvNDk
+         gi+Z5PXvqZC1eExHApbnzZ891uET91+Wp8myjPWhhQ6rcg7e9jaQDPOgAzMPwI/ARK/4
+         LiGA==
+X-Forwarded-Encrypted: i=1; AJvYcCWzWOiq+9e33cYLL1dMw5rDFHTjKa+q/F3GdihT4JZJacR9eJ/oKU/7pB0UI4ei40YtNuXKlqac@vger.kernel.org
+X-Gm-Message-State: AOJu0YyoCJnMTUmB9C5mux4gnnMmHktnVzlgUHbPjokvQZy7TKxCISjx
+	s0qoXzRuSlUgDmCm+UDSFcfcKHT0SzK7RUhoFEsiUEw372D7I81oePHYPoJy8ijrd/w=
+X-Gm-Gg: ASbGnculn9isJ653eHN136pbqNSdlzgzutZQn1A3g1B965yJ1bff4zGCrGQ3T6Kc3dB
+	JTVri585DxyYKqMRx92HeWcqUhtYoc1n0PP9EZSrjoYXsay8joTpWvKEIACfKVl5q7HFUvHEQcN
+	TFzsGlRHN2HEs4fY5HtNu0AHFK2+L04Qx3gMJZAvfaY/R+2KqA8NY4dvI/tUWguh6LPKrhTgdBk
+	c+OlZ/qxkBtQC9e4nc2SDqT2igNCDmVe6g/ooKCzw3fWaICM7EsiJL8Do0gXz/yYquqN03Cgupv
+	xnZ/M+3yYdDAFVb0y1oDXra4L0yttegNZ/m7ljZvm/hXbGn8PrT2gRINkEaLa8BbgVDSnx/8cQT
+	P9EP3uwpUkST1r6MqWJ3WQRunS+cidnGrtJ3gbckPpNH3ZhgVSePxGIybAUBEOvb/QMWtNO/hbM
+	YjoA4sOr8kI7jDu3PED3qN
+X-Google-Smtp-Source: AGHT+IHML8MOqcOYXtiQH3128zZ7cQFznn5BzWZ/x/UpuzVV3JHCT24/iF1D8qaKQPfZa4W9/kkUDg==
+X-Received: by 2002:a05:600c:4f4c:b0:477:7f4a:44a8 with SMTP id 5b1f17b1804b1-4777f4a4945mr17710055e9.29.1762784854868;
+        Mon, 10 Nov 2025 06:27:34 -0800 (PST)
 Received: from blackdock.suse.cz (nat2.prg.suse.com. [195.250.132.146])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-42b2dd927c9sm15613706f8f.27.2025.11.10.05.50.12
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-47763e4f89fsm116549665e9.3.2025.11.10.06.27.34
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 10 Nov 2025 05:50:13 -0800 (PST)
-Date: Mon, 10 Nov 2025 14:50:11 +0100
+        Mon, 10 Nov 2025 06:27:34 -0800 (PST)
+Date: Mon, 10 Nov 2025 15:27:32 +0100
 From: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
-To: Leon Huang Fu <leon.huangfu@shopee.com>
-Cc: linux-mm@kvack.org, tj@kernel.org, hannes@cmpxchg.org, 
-	mhocko@kernel.org, roman.gushchin@linux.dev, shakeel.butt@linux.dev, 
-	muchun.song@linux.dev, akpm@linux-foundation.org, joel.granados@kernel.org, 
-	jack@suse.cz, laoar.shao@gmail.com, mclapinski@google.com, kyle.meyer@hpe.com, 
-	corbet@lwn.net, lance.yang@linux.dev, linux-doc@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
-Subject: Re: [PATCH mm-new v3] mm/memcontrol: Add memory.stat_refresh for
- on-demand stats flushing
-Message-ID: <ewcsz3553cd6ooslgzwbubnbaxwmpd23d2k7pw5s4ckfvbb7sp@dffffjvohz5b>
-References: <20251110101948.19277-1-leon.huangfu@shopee.com>
+To: Chen Ridong <chenridong@huaweicloud.com>
+Cc: longman@redhat.com, tj@kernel.org, hannes@cmpxchg.org, 
+	cgroups@vger.kernel.org, linux-kernel@vger.kernel.org, lujialin4@huawei.com, 
+	chenridong@huawei.com
+Subject: Re: [PATCH -next 1/3] cpuset: simplify node setting on error
+Message-ID: <o3daj3fasq66buthgl3rherobjqwkemjge5xlrgfzfyvcjxyme@anbppjgrj77h>
+References: <20251110015228.897736-1-chenridong@huaweicloud.com>
+ <20251110015228.897736-2-chenridong@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -93,103 +90,43 @@ List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="elrbjxmejfczykla"
+	protocol="application/pgp-signature"; boundary="ncajuq6cdkyono22"
 Content-Disposition: inline
-In-Reply-To: <20251110101948.19277-1-leon.huangfu@shopee.com>
+In-Reply-To: <20251110015228.897736-2-chenridong@huaweicloud.com>
 
 
---elrbjxmejfczykla
-Content-Type: text/plain; protected-headers=v1; charset=us-ascii
+--ncajuq6cdkyono22
+Content-Type: text/plain; protected-headers=v1; charset=iso-8859-1
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
-Subject: Re: [PATCH mm-new v3] mm/memcontrol: Add memory.stat_refresh for
- on-demand stats flushing
+Subject: Re: [PATCH -next 1/3] cpuset: simplify node setting on error
 MIME-Version: 1.0
 
-Hello Leon.
-
-On Mon, Nov 10, 2025 at 06:19:48PM +0800, Leon Huang Fu <leon.huangfu@shope=
-e.com> wrote:
-> Memory cgroup statistics are updated asynchronously with periodic
-> flushing to reduce overhead. The current implementation uses a flush
-> threshold calculated as MEMCG_CHARGE_BATCH * num_online_cpus() for
-> determining when to aggregate per-CPU memory cgroup statistics. On
-> systems with high core counts, this threshold can become very large
-> (e.g., 64 * 256 =3D 16,384 on a 256-core system), leading to stale
-> statistics when userspace reads memory.stat files.
+On Mon, Nov 10, 2025 at 01:52:26AM +0000, Chen Ridong <chenridong@huaweiclo=
+ud.com> wrote:
+> From: Chen Ridong <chenridong@huawei.com>
 >=20
-> This is particularly problematic for monitoring and management tools
-> that rely on reasonably fresh statistics, as they may observe data
-> that is thousands of updates out of date.
+> There is no need to jump to the 'done' label upon failure, as no cleanup
+> is required. Return the error code directly instead.
 >=20
-> Introduce a new write-only file, memory.stat_refresh, that allows
-> userspace to explicitly trigger an immediate flush of memory statistics.
+> Signed-off-by: Chen Ridong <chenridong@huawei.com>
+> ---
+>  kernel/cgroup/cpuset.c | 21 +++++++++------------
+>  1 file changed, 9 insertions(+), 12 deletions(-)
 
-I think it's worth thinking twice when introducing a new file like
-this...
+Reviewed-by: Michal Koutn=FD <mkoutny@suse.com>
 
-> Writing any value to this file forces a synchronous flush via
-> __mem_cgroup_flush_stats(memcg, true) for the cgroup and all its
-> descendants, ensuring that subsequent reads of memory.stat and
-> memory.numa_stat reflect current data.
->=20
-> This approach follows the pattern established by /proc/sys/vm/stat_refresh
-> and memory.peak, where the written value is ignored, keeping the
-> interface simple and consistent with existing kernel APIs.
->=20
-> Usage example:
->   echo 1 > /sys/fs/cgroup/mygroup/memory.stat_refresh
->   cat /sys/fs/cgroup/mygroup/memory.stat
->=20
-> The feature is available in both cgroup v1 and v2 for consistency.
-
-First, I find the motivation by the testcase (not real world) weak when
-considering such an API change (e.g. real world would be confined to
-fewer CPUs or there'd be other "traffic" causing flushes making this a
-non-issue, we don't know here).
-
-Second, this is open to everyone (non-root) who mkdir's their cgroups.
-Then why not make it the default memory.stat behavior? (Tongue-in-cheek,
-but [*].)
-
-With this change, we admit the implementation (async flushing) and leak
-it to the users which is hard to take back. Why should we continue doing
-any implicit in-kernel flushing afterwards?
-
-Next, v1 and v2 haven't been consistent since introduction of v2 (unlike
-some other controllers that share code or even cftypes between v1 and
-v2). So I'd avoid introducing a new file to V1 API.
-
-When looking for analogies, I admittedly like memory.reclaim's
-O_NONBLOCK better (than /proc/sys/vm/stat_refresh). That would be an
-argument for flushing by default mentioned abovee [*]).
-
-Also, this undercuts the hooking of rstat flushing into BPF. I think the
-attempts were given up too early (I read about the verifier vs
-seq_file). Have you tried bypassing bailout from
-__mem_cgroup_flush_stats via trace_memcg_flush_stats?
-
-
-All in all, I'd like to have more backing data on insufficiency of (all
-the) rstat optimizations before opening explicit flushes like this
-(especially when it's meant to be exposed by BPF already).
-
-Thanks,
-Michal
-
-
-
---elrbjxmejfczykla
+--ncajuq6cdkyono22
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iJEEABYKADkWIQRCE24Fn/AcRjnLivR+PQLnlNv4CAUCaRHthRsUgAAAAAAEAA5t
-YW51MiwyLjUrMS4xMSwyLDIACgkQfj0C55Tb+AjIDgD8D7HBEqfD01sGDIReAADc
-4pTJ2AD2pY2UoeiHwekZY7MA/0iGiNuZJTf1Sq2EA+RVWF9MNs3x64m7LutLmfib
-iBcM
-=PZ8F
+iJEEABYKADkWIQRCE24Fn/AcRjnLivR+PQLnlNv4CAUCaRH2UhsUgAAAAAAEAA5t
+YW51MiwyLjUrMS4xMSwyLDIACgkQfj0C55Tb+AjC9wEA3+kvpJFNdj+cvbVOFOqf
+Mdoc4b5dv+sH20VJyQfNcTQBAI6c/7vhNcZfsC3tkOPJETcbP9dC+sU+F8uUm7aq
+jcII
+=MKFE
 -----END PGP SIGNATURE-----
 
---elrbjxmejfczykla--
+--ncajuq6cdkyono22--
 
