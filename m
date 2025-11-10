@@ -1,243 +1,197 @@
-Return-Path: <cgroups+bounces-11715-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-11716-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 60E17C45583
-	for <lists+cgroups@lfdr.de>; Mon, 10 Nov 2025 09:19:48 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id B2E45C456E4
+	for <lists+cgroups@lfdr.de>; Mon, 10 Nov 2025 09:49:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0B7A1188F634
-	for <lists+cgroups@lfdr.de>; Mon, 10 Nov 2025 08:20:13 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 47EDD188FB9B
+	for <lists+cgroups@lfdr.de>; Mon, 10 Nov 2025 08:49:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE51C2F7440;
-	Mon, 10 Nov 2025 08:19:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 75B292FDC23;
+	Mon, 10 Nov 2025 08:49:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="oHpboN7r"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="QakBKAIe"
 X-Original-To: cgroups@vger.kernel.org
-Received: from out-179.mta1.migadu.com (out-179.mta1.migadu.com [95.215.58.179])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f68.google.com (mail-ej1-f68.google.com [209.85.218.68])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 46B2D2F7AC1
-	for <cgroups@vger.kernel.org>; Mon, 10 Nov 2025 08:19:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 187972FD697
+	for <cgroups@vger.kernel.org>; Mon, 10 Nov 2025 08:49:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.68
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762762773; cv=none; b=atawhif+vpdK8Q5QwIVa21LfsyERTCXjBHMxsiRmNu54jlnjdakY8w62E0zVxlsyFquh1GPjIgPRJTjz3X+jIVJzzX5OLZB9kwLWeHPDtk0Nd8/iVggf9DSKVj3Nl7LhV9gXcSIqTXSb/JAgtIoIaZOVFr0SFYNH3UEeCx35i/4=
+	t=1762764548; cv=none; b=WKz6RLzGrgVUcCRszZOPJVR2ZgEmctPIPh4saq5GuGcXY29BpyXf5PODPCvVGqaryco1tGDS4hXWr/qbFTYv6jGTRodn6QUDwfcA10UivGf6RMkZ9x2ozfrCjMmGEsORWyzGzLCPCmLuvWoayN6EDYP84/wlO+LgSHOobDMccSM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762762773; c=relaxed/simple;
-	bh=dY54iUVYMBbXkmsmdXNh3DNAgDdbA+fXTxeuOKNKpiY=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=QOPWQr3mXqVipHTqYEHQmXOjnvFWQpb+KBUdCfo4e1y6oerno7P1g6ylgrSM9BItPW4UJvRrFlcixbO6OwqxwK0XprSoX2M6PPPEPC8Z5YlQOw4WpsaL7j5QtMVfiGjSOe9IAUbgs/QWL9ZXz+eTdoXApleU2diRljHYGW0eJPc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=oHpboN7r; arc=none smtp.client-ip=95.215.58.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1762762769;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=YZBuBE3QWFYp7uE2iHbl7AwFCBW3XwNIvR3EZWHHVV4=;
-	b=oHpboN7raQaq3heBBKwf64VuXGAjGZj8U6vaCmv4rAbusmntps11N3dfZKkAZGz+JHjIRo
-	NYqR8InlX0YLgDhBMWBKHXvRAI51ckuNCNxLhQMgCtp5Ewj2fxheB0sGh/zf3LbABflqL2
-	3HIcUX9vAaS1xvtsVyaJrf6neuUrjNU=
-From: Qi Zheng <qi.zheng@linux.dev>
-To: hannes@cmpxchg.org,
-	hughd@google.com,
-	mhocko@suse.com,
-	roman.gushchin@linux.dev,
-	shakeel.butt@linux.dev,
-	muchun.song@linux.dev,
-	david@redhat.com,
-	lorenzo.stoakes@oracle.com,
-	ziy@nvidia.com,
-	harry.yoo@oracle.com,
-	baolin.wang@linux.alibaba.com,
-	Liam.Howlett@oracle.com,
-	npache@redhat.com,
-	ryan.roberts@arm.com,
-	dev.jain@arm.com,
-	baohua@kernel.org,
-	lance.yang@linux.dev,
-	akpm@linux-foundation.org,
-	richard.weiyang@gmail.com
-Cc: linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org,
-	cgroups@vger.kernel.org,
-	Qi Zheng <zhengqi.arch@bytedance.com>
-Subject: [PATCH v6 4/4] mm: thp: reparent the split queue during memcg offline
-Date: Mon, 10 Nov 2025 16:17:58 +0800
-Message-ID: <8703f907c4d1f7e8a2ef2bfed3036a84fa53028b.1762762324.git.zhengqi.arch@bytedance.com>
-In-Reply-To: <cover.1762762324.git.zhengqi.arch@bytedance.com>
-References: <cover.1762762324.git.zhengqi.arch@bytedance.com>
+	s=arc-20240116; t=1762764548; c=relaxed/simple;
+	bh=SYX+Wy7bJsOihCfrh07XC2V+14ZgJEkkJ3rX4N05Puk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=A234B8dYoGeyx1IVRLQimU4yoRvaLmiCLh6Uz+CdK/8jz+/sltWCq69OlhlWt3D2GbBLJk/2mzofT80uNJZD3tkGmUle4PTcMuB6GIaYJpp5GL0To8gL1v1MEEVX15IHe8Su4vITb5tZxmwj8BV3kpPTdgMUK2GEhmNFhv3jpN0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=QakBKAIe; arc=none smtp.client-ip=209.85.218.68
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-ej1-f68.google.com with SMTP id a640c23a62f3a-b727f330dd2so464496366b.2
+        for <cgroups@vger.kernel.org>; Mon, 10 Nov 2025 00:49:02 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1762764541; x=1763369341; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=MYB3eNFBCkjH9q1uLbtzcXRkRk6p1kh+Sygy8eTu3sY=;
+        b=QakBKAIe/3yS67qIEcpuvukggq1LgUspMnGX4htskEVXk1zn1I0y2o8KYWPr2CUE3d
+         fhhLcSOtLH7YMw4KhZeH6/TPHOiWE4z9mCihclFUxyfrXSx2cZ5O/gxJ+eVp3UlxgBWk
+         savu48/aDFOsqYzHGARsRwBBfLrVmdVkQi3m9KNNvzA2v9XeC5kteHaH6I4+l8uepCS/
+         35NGsA3G70gFeCWFw4mLot930jUX716OxTtWfPZeutu2a3rJ7MPQ9RaOY261Y26l9woi
+         q1cgnMz6OMLAtqcSamq/EV+rJDeUd4obdrOd05K6bd2qbpFwNkYrwXcIDIvpzI0Blb0Q
+         5hzQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1762764541; x=1763369341;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=MYB3eNFBCkjH9q1uLbtzcXRkRk6p1kh+Sygy8eTu3sY=;
+        b=nEtYOKc+/FXv9C8wSWau2fA18tihXHc8beKiF0WITVF3tXZSl8TSF3myBxPrvxDgde
+         LHOJaaaDDeQWd/2vVj1FYpMGN28NNGRR9QpuhH/IX5xNuPu787Xmx2I1G+vX2qwS7PsJ
+         gu6c0U7T052uuNj/xyH04JTQNU5NKfT3hjuOWpg16LHecuB/DDhhcD5gHV0zpvf1Q5+E
+         u/tOO/98RIl+zRv9DchyDLxulVfOIulThQ9kN4Yj+JuZ4erYzYpxTEgw7gf2cp0CJy7B
+         YVZaIyzoygNHimWYg9/wt4JKx6cjK7wVdD5Ve+FwRCFQDEIFU0M7yUxq77MkFGJFVpVv
+         RrBg==
+X-Forwarded-Encrypted: i=1; AJvYcCW+hbYWLADilXgvaJ33xmH0/FKWfrP5psRN6zof7p9ifRta6C2NNRlKCcoqOpAd6FUJ6T40YbNS@vger.kernel.org
+X-Gm-Message-State: AOJu0YzKe4KJlVk2xTFP48Nr9ZgUJInv1VlMUXHiA3Xn7XRTnHhi7uP5
+	0GjiHJpmVzVPEQd8IMoBJrKHgVKGowIUmV1kphboKJjn5ut/1evvuVO5km7R7cUEZRc=
+X-Gm-Gg: ASbGncuSe9UZap5nBj1bTVdUTEedZwnagAXrPMJr/ENmhPKiEjYGXPzUm6b4G/ioX2A
+	pVVJdzuVMi94QXTzyv6mQZ2QsfzC8WF6h90yGrpsa0QwrcG1S5LFWQ/sTMsHo4m3swIz2wEV2XW
+	zJu/CdFVlv3tNFSGbwI7DsgwGb3t9tRwBO+0dOfcHB6pfeBll9dL8wPJ09MPxJ8cACM7lHJjI4Z
+	0n/JYUkjvCP81f6QoONpA2hrPm+2oUBAI7P4RcoawALhDDjLHA4HQtM70yyhgxVPk+hyMDBogN9
+	e7EDkr+GpoQ39CvPJ2geKYUS6AYZwDp/mvAm4bQcV7u8f/DZKfHjw1lZm4KCIW+iUO7TA9PzQuo
+	4Z2Y47j3mZ62wSpL0YBfv6LJUiiFjaTj4ypwkw5QYT3zWCgQqVevsQcenRLDxaR3Wga5es8FA2F
+	vTQrfBlSBSn554dxufKkFfFguS
+X-Google-Smtp-Source: AGHT+IHkCcGZffVbGb8qG3xm/rRfqIb/GgVIQQoNThnr6QrJwoyhjqnbS9/gl3lEpfFn0E7hIkOGtw==
+X-Received: by 2002:a17:907:9807:b0:b6d:2b14:4aa4 with SMTP id a640c23a62f3a-b72e05ac909mr660427666b.63.1762764541165;
+        Mon, 10 Nov 2025 00:49:01 -0800 (PST)
+Received: from localhost (109-81-31-109.rct.o2.cz. [109.81.31.109])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-b72bf9be184sm1016802566b.56.2025.11.10.00.49.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 10 Nov 2025 00:49:00 -0800 (PST)
+Date: Mon, 10 Nov 2025 09:48:59 +0100
+From: Michal Hocko <mhocko@suse.com>
+To: Shakeel Butt <shakeel.butt@linux.dev>
+Cc: Andrew Morton <akpm@linux-foundation.org>,
+	Johannes Weiner <hannes@cmpxchg.org>,
+	Roman Gushchin <roman.gushchin@linux.dev>,
+	Muchun Song <muchun.song@linux.dev>,
+	David Rientjes <rientjes@google.com>,
+	Vlastimil Babka <vbabka@suse.cz>, linux-mm@kvack.org,
+	cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Meta kernel team <kernel-team@meta.com>
+Subject: Re: [PATCH] mm: memcg: dump memcg protection info on oom or alloc
+ failures
+Message-ID: <aRGm-yJwkHIlF07I@tiehlicka>
+References: <20251107234041.3632644-1-shakeel.butt@linux.dev>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20251107234041.3632644-1-shakeel.butt@linux.dev>
 
-From: Qi Zheng <zhengqi.arch@bytedance.com>
+On Fri 07-11-25 15:40:41, Shakeel Butt wrote:
+> Currently kernel dumps memory state on oom and allocation failures. One
+> of the question usually raised on those dumps is why the kernel has not
+> reclaimed the reclaimable memory instead of triggering oom. One
+> potential reason is the usage of memory protection provided by memcg.
+> So, let's also dump the memory protected by the memcg in such reports to
+> ease the debugging.
 
-Similar to list_lru, the split queue is relatively independent and does
-not need to be reparented along with objcg and LRU folios (holding
-objcg lock and lru lock). So let's apply the similar mechanism as list_lru
-to reparent the split queue separately when memcg is offine.
+Makes sense to me.
 
-This is also a preparation for reparenting LRU folios.
+> Signed-off-by: Shakeel Butt <shakeel.butt@linux.dev>
 
-Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
-Acked-by: Zi Yan <ziy@nvidia.com>
-Reviewed-by: Muchun Song <muchun.song@linux.dev>
-Acked-by: David Hildenbrand <david@redhat.com>
-Acked-by: Shakeel Butt <shakeel.butt@linux.dev>
-Reviewed-by: Harry Yoo <harry.yoo@oracle.com>
----
- include/linux/huge_mm.h    |  4 ++++
- include/linux/memcontrol.h | 10 +++++++++
- mm/huge_memory.c           | 44 ++++++++++++++++++++++++++++++++++++++
- mm/memcontrol.c            |  1 +
- 4 files changed, 59 insertions(+)
+Acked-by: Michal Hocko <mhocko@suse.com>
+Thanks!
 
-diff --git a/include/linux/huge_mm.h b/include/linux/huge_mm.h
-index 5ba9cac440b92..f381339842fa1 100644
---- a/include/linux/huge_mm.h
-+++ b/include/linux/huge_mm.h
-@@ -412,6 +412,9 @@ static inline int split_huge_page(struct page *page)
- 	return split_huge_page_to_list_to_order(page, NULL, 0);
- }
- void deferred_split_folio(struct folio *folio, bool partially_mapped);
-+#ifdef CONFIG_MEMCG
-+void reparent_deferred_split_queue(struct mem_cgroup *memcg);
-+#endif
- 
- void __split_huge_pmd(struct vm_area_struct *vma, pmd_t *pmd,
- 		unsigned long address, bool freeze);
-@@ -644,6 +647,7 @@ static inline int try_folio_split_to_order(struct folio *folio,
- }
- 
- static inline void deferred_split_folio(struct folio *folio, bool partially_mapped) {}
-+static inline void reparent_deferred_split_queue(struct mem_cgroup *memcg) {}
- #define split_huge_pmd(__vma, __pmd, __address)	\
- 	do { } while (0)
- 
-diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-index fad2661ca55d8..8d2e250535a8a 100644
---- a/include/linux/memcontrol.h
-+++ b/include/linux/memcontrol.h
-@@ -1774,6 +1774,11 @@ static inline void count_objcg_events(struct obj_cgroup *objcg,
- 
- bool mem_cgroup_node_allowed(struct mem_cgroup *memcg, int nid);
- 
-+static inline bool memcg_is_dying(struct mem_cgroup *memcg)
-+{
-+	return memcg ? css_is_dying(&memcg->css) : false;
-+}
-+
- #else
- static inline bool mem_cgroup_kmem_disabled(void)
- {
-@@ -1840,6 +1845,11 @@ static inline bool mem_cgroup_node_allowed(struct mem_cgroup *memcg, int nid)
- {
- 	return true;
- }
-+
-+static inline bool memcg_is_dying(struct mem_cgroup *memcg)
-+{
-+	return false;
-+}
- #endif /* CONFIG_MEMCG */
- 
- #if defined(CONFIG_MEMCG) && defined(CONFIG_ZSWAP)
-diff --git a/mm/huge_memory.c b/mm/huge_memory.c
-index db03853a73e3f..8bb63acaa8329 100644
---- a/mm/huge_memory.c
-+++ b/mm/huge_memory.c
-@@ -1118,8 +1118,19 @@ static struct deferred_split *split_queue_lock(int nid, struct mem_cgroup *memcg
- {
- 	struct deferred_split *queue;
- 
-+retry:
- 	queue = memcg_split_queue(nid, memcg);
- 	spin_lock(&queue->split_queue_lock);
-+	/*
-+	 * There is a period between setting memcg to dying and reparenting
-+	 * deferred split queue, and during this period the THPs in the deferred
-+	 * split queue will be hidden from the shrinker side.
-+	 */
-+	if (unlikely(memcg_is_dying(memcg))) {
-+		spin_unlock(&queue->split_queue_lock);
-+		memcg = parent_mem_cgroup(memcg);
-+		goto retry;
-+	}
- 
- 	return queue;
- }
-@@ -1129,8 +1140,14 @@ split_queue_lock_irqsave(int nid, struct mem_cgroup *memcg, unsigned long *flags
- {
- 	struct deferred_split *queue;
- 
-+retry:
- 	queue = memcg_split_queue(nid, memcg);
- 	spin_lock_irqsave(&queue->split_queue_lock, *flags);
-+	if (unlikely(memcg_is_dying(memcg))) {
-+		spin_unlock_irqrestore(&queue->split_queue_lock, *flags);
-+		memcg = parent_mem_cgroup(memcg);
-+		goto retry;
-+	}
- 
- 	return queue;
- }
-@@ -4402,6 +4419,33 @@ static unsigned long deferred_split_scan(struct shrinker *shrink,
- 	return split;
- }
- 
-+#ifdef CONFIG_MEMCG
-+void reparent_deferred_split_queue(struct mem_cgroup *memcg)
-+{
-+	struct mem_cgroup *parent = parent_mem_cgroup(memcg);
-+	struct deferred_split *ds_queue = &memcg->deferred_split_queue;
-+	struct deferred_split *parent_ds_queue = &parent->deferred_split_queue;
-+	int nid;
-+
-+	spin_lock_irq(&ds_queue->split_queue_lock);
-+	spin_lock_nested(&parent_ds_queue->split_queue_lock, SINGLE_DEPTH_NESTING);
-+
-+	if (!ds_queue->split_queue_len)
-+		goto unlock;
-+
-+	list_splice_tail_init(&ds_queue->split_queue, &parent_ds_queue->split_queue);
-+	parent_ds_queue->split_queue_len += ds_queue->split_queue_len;
-+	ds_queue->split_queue_len = 0;
-+
-+	for_each_node(nid)
-+		set_shrinker_bit(parent, nid, shrinker_id(deferred_split_shrinker));
-+
-+unlock:
-+	spin_unlock(&parent_ds_queue->split_queue_lock);
-+	spin_unlock_irq(&ds_queue->split_queue_lock);
-+}
-+#endif
-+
- #ifdef CONFIG_DEBUG_FS
- static void split_huge_pages_all(void)
- {
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index 025da46d9959f..c34029e92baba 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -3920,6 +3920,7 @@ static void mem_cgroup_css_offline(struct cgroup_subsys_state *css)
- 	zswap_memcg_offline_cleanup(memcg);
- 
- 	memcg_offline_kmem(memcg);
-+	reparent_deferred_split_queue(memcg);
- 	reparent_shrinker_deferred(memcg);
- 	wb_memcg_offline(memcg);
- 	lru_gen_offline_memcg(memcg);
+> ---
+>  include/linux/memcontrol.h |  5 +++++
+>  mm/memcontrol.c            | 13 +++++++++++++
+>  mm/oom_kill.c              |  1 +
+>  mm/page_alloc.c            |  1 +
+>  4 files changed, 20 insertions(+)
+> 
+> diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
+> index 8d2e250535a8..6861f0ff02b5 100644
+> --- a/include/linux/memcontrol.h
+> +++ b/include/linux/memcontrol.h
+> @@ -1779,6 +1779,7 @@ static inline bool memcg_is_dying(struct mem_cgroup *memcg)
+>  	return memcg ? css_is_dying(&memcg->css) : false;
+>  }
+>  
+> +void mem_cgroup_show_protected_memory(struct mem_cgroup *memcg);
+>  #else
+>  static inline bool mem_cgroup_kmem_disabled(void)
+>  {
+> @@ -1850,6 +1851,10 @@ static inline bool memcg_is_dying(struct mem_cgroup *memcg)
+>  {
+>  	return false;
+>  }
+> +
+> +static inline void mem_cgroup_show_protected_memory(struct mem_cgroup *memcg)
+> +{
+> +}
+>  #endif /* CONFIG_MEMCG */
+>  
+>  #if defined(CONFIG_MEMCG) && defined(CONFIG_ZSWAP)
+> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> index c34029e92bab..623446821b00 100644
+> --- a/mm/memcontrol.c
+> +++ b/mm/memcontrol.c
+> @@ -5636,3 +5636,16 @@ bool mem_cgroup_node_allowed(struct mem_cgroup *memcg, int nid)
+>  {
+>  	return memcg ? cpuset_node_allowed(memcg->css.cgroup, nid) : true;
+>  }
+> +
+> +void mem_cgroup_show_protected_memory(struct mem_cgroup *memcg)
+> +{
+> +	if (mem_cgroup_disabled() || !cgroup_subsys_on_dfl(memory_cgrp_subsys))
+> +		return;
+> +
+> +	if (!memcg)
+> +		memcg = root_mem_cgroup;
+> +
+> +	pr_warn("Memory cgroup min protection %lukB -- low protection %lukB",
+> +		K(atomic_long_read(&memcg->memory.children_min_usage)*PAGE_SIZE),
+> +		K(atomic_long_read(&memcg->memory.children_low_usage)*PAGE_SIZE));
+> +}
+> diff --git a/mm/oom_kill.c b/mm/oom_kill.c
+> index c145b0feecc1..5eb11fbba704 100644
+> --- a/mm/oom_kill.c
+> +++ b/mm/oom_kill.c
+> @@ -472,6 +472,7 @@ static void dump_header(struct oom_control *oc)
+>  		if (should_dump_unreclaim_slab())
+>  			dump_unreclaimable_slab();
+>  	}
+> +	mem_cgroup_show_protected_memory(oc->memcg);
+>  	if (sysctl_oom_dump_tasks)
+>  		dump_tasks(oc);
+>  }
+> diff --git a/mm/page_alloc.c b/mm/page_alloc.c
+> index e4efda1158b2..26be5734253f 100644
+> --- a/mm/page_alloc.c
+> +++ b/mm/page_alloc.c
+> @@ -3977,6 +3977,7 @@ static void warn_alloc_show_mem(gfp_t gfp_mask, nodemask_t *nodemask)
+>  		filter &= ~SHOW_MEM_FILTER_NODES;
+>  
+>  	__show_mem(filter, nodemask, gfp_zone(gfp_mask));
+> +	mem_cgroup_show_protected_memory(NULL);
+>  }
+>  
+>  void warn_alloc(gfp_t gfp_mask, nodemask_t *nodemask, const char *fmt, ...)
+> -- 
+> 2.47.3
+
 -- 
-2.20.1
-
+Michal Hocko
+SUSE Labs
 
