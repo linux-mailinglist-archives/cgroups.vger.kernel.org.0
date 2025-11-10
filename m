@@ -1,233 +1,289 @@
-Return-Path: <cgroups+bounces-11721-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-11722-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 44009C45CD1
-	for <lists+cgroups@lfdr.de>; Mon, 10 Nov 2025 11:04:11 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 42DF1C45E3B
+	for <lists+cgroups@lfdr.de>; Mon, 10 Nov 2025 11:20:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7504A3A7DCD
-	for <lists+cgroups@lfdr.de>; Mon, 10 Nov 2025 10:03:57 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E6F851891C64
+	for <lists+cgroups@lfdr.de>; Mon, 10 Nov 2025 10:20:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C94E303A04;
-	Mon, 10 Nov 2025 10:03:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 93612305064;
+	Mon, 10 Nov 2025 10:20:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="kLiaGybW"
+	dkim=pass (2048-bit key) header.d=shopee.com header.i=@shopee.com header.b="UrC7Vxy9"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.11])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pj1-f43.google.com (mail-pj1-f43.google.com [209.85.216.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 76B61302CBA;
-	Mon, 10 Nov 2025 10:03:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=192.198.163.11
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762769027; cv=fail; b=nLduosR84fs2n4d14P+Ns3GMlkY8tueRufcAjmqyShi3EYAkYpsQP4CAl0q2mucO+5BZ8l+5qU59X1g6gFTiKggTNvnT32GZ87Wc8NXgC2jagLlPTp2w8KeCMYub5WiClHmdA5rAkXkMFce2cDhadgeD/8F6ISpunFT+6ixdDbE=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762769027; c=relaxed/simple;
-	bh=9kAt2K/oEK54DRORDxCZuPXD+dNxAeFEaHndxUuDUlY=;
-	h=Date:From:To:CC:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=FTYke3m74Z+4Ua+ML7cwbNbbk73GHB+Hh0lZlxbqSoNrubV74rzxSEcwwCqys4LuqpYy85xh57pF/NIinl7v6nF9XjesOz9MzYyzg4q3BXikzZZnC8nP0cFdfdjFuo8NgAtKZ0cWVwroy27rkZgA3bf62pYNCcHi9wKDlCOU3OU=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=kLiaGybW; arc=fail smtp.client-ip=192.198.163.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1762769025; x=1794305025;
-  h=date:from:to:cc:subject:message-id:reply-to:references:
-   in-reply-to:mime-version;
-  bh=9kAt2K/oEK54DRORDxCZuPXD+dNxAeFEaHndxUuDUlY=;
-  b=kLiaGybW7Cif7lBUFuX1CgZkOxmr+t5avico/KGoGIQru/F3QJ9gQ/m0
-   TOkMZHJYzpI0AwgyagAr/j7f56L//ZDzSR1VdUt8Y5LRlrZHOQoxypYKR
-   eRjh6nKeaGN0EtOlSteEIQQYy3tsDSURRKos9oQh6vSR4yaTIpQWbjkKm
-   NCG/hLYJ2piRKI2pEstwSHUSBgEf5BvqviSZrOgUX3myZ6vbykn27BgAj
-   RWAxjfyepLt1FUeZQVBQasF23Ch2RtFzLJfo8Lkrkts0cQpiL6BX0sXdp
-   iEJwRXN588iZZRsM9P+fqLxTAqvRYM5Ckx1QAryBgQKmXUXKtXzD6PJIP
-   w==;
-X-CSE-ConnectionGUID: 5eMRvPU2Qbm157du4zqQSQ==
-X-CSE-MsgGUID: z4Z78eXhQo6CQgKGE78xpg==
-X-IronPort-AV: E=McAfee;i="6800,10657,11608"; a="75426270"
-X-IronPort-AV: E=Sophos;i="6.19,293,1754982000"; 
-   d="scan'208";a="75426270"
-Received: from fmviesa002.fm.intel.com ([10.60.135.142])
-  by fmvoesa105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Nov 2025 02:03:44 -0800
-X-CSE-ConnectionGUID: /Hbv84m8QZOM+rIZfRTh3A==
-X-CSE-MsgGUID: 0g0vwPdHSw2LAhO9eHt/9g==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.19,293,1754982000"; 
-   d="scan'208";a="212031542"
-Received: from orsmsx902.amr.corp.intel.com ([10.22.229.24])
-  by fmviesa002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 10 Nov 2025 02:03:42 -0800
-Received: from ORSMSX901.amr.corp.intel.com (10.22.229.23) by
- ORSMSX902.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.2562.27; Mon, 10 Nov 2025 02:03:41 -0800
-Received: from ORSEDG902.ED.cps.intel.com (10.7.248.12) by
- ORSMSX901.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.2562.27 via Frontend Transport; Mon, 10 Nov 2025 02:03:41 -0800
-Received: from BYAPR05CU005.outbound.protection.outlook.com (52.101.85.18) by
- edgegateway.intel.com (134.134.137.112) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.2562.27; Mon, 10 Nov 2025 02:03:41 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=i9t8SMCyFxSx3z4YsQpglM1eL2r6JG2ISCEmOJdV5hQbaJAg7n83UXZk0mFyCIRpY626FajD7j9cIjgjZxfXBr6VsCdeEJUsCKAQ+LE29+nqhm4/6fetCabfpwUZUeseFZtdWVTK3SkXR+VT0o+k52aOWbIiTizPmHXDTp+wI33rPF8HX150xBiuGJmSd7c/QOuVCzcIIJxLuUkn0WqUahJ5zgXErtwGk6MfEfSZOoqsjPNmpzb+yxsrLNIDqE77V0JQVlcZZeomjUsy92M338yFkG2OlA4DsjSWVKXDaRn7O1jASWS/M/UX8zQeRKZ+bqH153Bw8W5hqxq3ePNm1g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=2/CG2Kv+ZLjp/c+DlxHbry3AuswPB6FwpsohHVPIOTs=;
- b=ZwiiNsDqResYRveuzMtnB2RcU08CYlukKCwzcINqFJCRZDYxOPFNtCU2t5c/k9uRFBh0UkiOgDhTEnAyng0WPeUvRLFwcAs992KmQPB277pu6MqjvBcx7w7qlDKl0K9PGe85d1VF2FmKNWd72CfTvqfRZDCcfjlacdXxIWOyjXkIpenu0NFxSvl1fyEYbNCnpMKBxrEwGWd3+A5I27Ej3ABmxli7cA2P/BZdqEdm4YJ1fzQy6mc60S7RrSZxWPcIodZ0d7roEWxvl7cDEMyvYnA9Jn9cjewQmeq88cn6hnPLhY3jZIJKPBYPq67ZMhAmLAOsNgubnBjMA2rOj1cRTA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from DS7PR11MB5966.namprd11.prod.outlook.com (2603:10b6:8:71::6) by
- IA1PR11MB7920.namprd11.prod.outlook.com (2603:10b6:208:3fc::7) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.9298.16; Mon, 10 Nov 2025 10:03:38 +0000
-Received: from DS7PR11MB5966.namprd11.prod.outlook.com
- ([fe80::e971:d8f4:66c4:12ca]) by DS7PR11MB5966.namprd11.prod.outlook.com
- ([fe80::e971:d8f4:66c4:12ca%6]) with mapi id 15.20.9298.012; Mon, 10 Nov 2025
- 10:03:38 +0000
-Date: Mon, 10 Nov 2025 18:01:10 +0800
-From: Yan Zhao <yan.y.zhao@intel.com>
-To: Ackerley Tng <ackerleytng@google.com>
-CC: <cgroups@vger.kernel.org>, <kvm@vger.kernel.org>,
-	<linux-doc@vger.kernel.org>, <linux-fsdevel@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, <linux-kselftest@vger.kernel.org>,
-	<linux-mm@kvack.org>, <linux-trace-kernel@vger.kernel.org>, <x86@kernel.org>,
-	<akpm@linux-foundation.org>, <binbin.wu@linux.intel.com>, <bp@alien8.de>,
-	<brauner@kernel.org>, <chao.p.peng@intel.com>, <chenhuacai@kernel.org>,
-	<corbet@lwn.net>, <dave.hansen@intel.com>, <dave.hansen@linux.intel.com>,
-	<david@redhat.com>, <dmatlack@google.com>, <erdemaktas@google.com>,
-	<fan.du@intel.com>, <fvdl@google.com>, <haibo1.xu@intel.com>,
-	<hannes@cmpxchg.org>, <hch@infradead.org>, <hpa@zytor.com>,
-	<hughd@google.com>, <ira.weiny@intel.com>, <isaku.yamahata@intel.com>,
-	<jack@suse.cz>, <james.morse@arm.com>, <jarkko@kernel.org>, <jgg@ziepe.ca>,
-	<jgowans@amazon.com>, <jhubbard@nvidia.com>, <jroedel@suse.de>,
-	<jthoughton@google.com>, <jun.miao@intel.com>, <kai.huang@intel.com>,
-	<keirf@google.com>, <kent.overstreet@linux.dev>, <liam.merwick@oracle.com>,
-	<maciej.wieczor-retman@intel.com>, <mail@maciej.szmigiero.name>,
-	<maobibo@loongson.cn>, <mathieu.desnoyers@efficios.com>, <maz@kernel.org>,
-	<mhiramat@kernel.org>, <mhocko@kernel.org>, <mic@digikod.net>,
-	<michael.roth@amd.com>, <mingo@redhat.com>, <mlevitsk@redhat.com>,
-	<mpe@ellerman.id.au>, <muchun.song@linux.dev>, <nikunj@amd.com>,
-	<nsaenz@amazon.es>, <oliver.upton@linux.dev>, <palmer@dabbelt.com>,
-	<pankaj.gupta@amd.com>, <paul.walmsley@sifive.com>, <pbonzini@redhat.com>,
-	<peterx@redhat.com>, <pgonda@google.com>, <prsampat@amd.com>,
-	<pvorel@suse.cz>, <qperret@google.com>, <richard.weiyang@gmail.com>,
-	<rick.p.edgecombe@intel.com>, <rientjes@google.com>, <rostedt@goodmis.org>,
-	<roypat@amazon.co.uk>, <rppt@kernel.org>, <seanjc@google.com>,
-	<shakeel.butt@linux.dev>, <shuah@kernel.org>, <steven.price@arm.com>,
-	<steven.sistare@oracle.com>, <suzuki.poulose@arm.com>, <tabba@google.com>,
-	<tglx@linutronix.de>, <thomas.lendacky@amd.com>, <vannapurve@google.com>,
-	<vbabka@suse.cz>, <viro@zeniv.linux.org.uk>, <vkuznets@redhat.com>,
-	<wei.w.wang@intel.com>, <will@kernel.org>, <willy@infradead.org>,
-	<wyihan@google.com>, <xiaoyao.li@intel.com>, <yilun.xu@intel.com>,
-	<yuzenghui@huawei.com>, <zhiquan1.li@intel.com>
-Subject: Re: [RFC PATCH v1 06/37] KVM: guest_memfd: Update
- kvm_gmem_populate() to use gmem attributes
-Message-ID: <aRG35j3OhMvQo85n@yzhao56-desk.sh.intel.com>
-Reply-To: Yan Zhao <yan.y.zhao@intel.com>
-References: <cover.1760731772.git.ackerleytng@google.com>
- <a3795f7fb4f785ced19abe18c2f33aa478c4d202.1760731772.git.ackerleytng@google.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <a3795f7fb4f785ced19abe18c2f33aa478c4d202.1760731772.git.ackerleytng@google.com>
-X-ClientProxiedBy: SG2P153CA0031.APCP153.PROD.OUTLOOK.COM (2603:1096:4:c7::18)
- To DS7PR11MB5966.namprd11.prod.outlook.com (2603:10b6:8:71::6)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B29832F7AAC
+	for <cgroups@vger.kernel.org>; Mon, 10 Nov 2025 10:20:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.43
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1762770008; cv=none; b=Pe9owG8cHKTrbc5Aj/EiHN2XPNXaX558m6rvXnkuE53aGIxoHx+JOCqVa5qTr2yoF0t7UFY6L8xKevPwCsncaCs7SuxxU2BaS77RaTgFEa4d5uv+1Y+wYs9LOqVvIbRcJpvwqG9Zcm9CItgPeRyFleYhtfrsvMDAnocII0pmb5Q=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1762770008; c=relaxed/simple;
+	bh=GqUB6OdRuR8B21IHUNRuCDfou43BL1Hu4iux/1Rgm2k=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=h4qo1UbLNvlqg1CRXkuyvLH9njgr1bBamA3ERQB715QeG8hlPm9lUrWVb1fzpXTq505IOx5MXyUf9lW7Osep42+GGcvV6YENXBMYLL+UwLuf1RBJxOfuQCCPjm9wcuopJQS6Geu5qee920IpoX6hZMrPeFL+03eFABKVKnh3q0c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=shopee.com; spf=pass smtp.mailfrom=shopee.com; dkim=pass (2048-bit key) header.d=shopee.com header.i=@shopee.com header.b=UrC7Vxy9; arc=none smtp.client-ip=209.85.216.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=shopee.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=shopee.com
+Received: by mail-pj1-f43.google.com with SMTP id 98e67ed59e1d1-3438d4ae152so1101557a91.1
+        for <cgroups@vger.kernel.org>; Mon, 10 Nov 2025 02:20:04 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=shopee.com; s=shopee.com; t=1762770004; x=1763374804; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=u9Um+h9dOsIowK0Xeh4oFsJO5SmqkrPeMg+IBmuohd8=;
+        b=UrC7Vxy9NcOWP0GluQ0+3haj3LpfvglBOtrHkGy5ENZsletZ8q2xJQVQT7nDnJm9G1
+         i/mG4ofKsZZIxaNHWLSK0TNwkfv45fjxDtpjPY/pZNyGb8kRaSpVaOpG7AqhaBT46n5w
+         N61R6PgVRuZctFD1zPXUzNoIP2A175oynVWjJk9YzBKcGekiaAJCE7vR7Aa6Ymx1SKjR
+         kHSJZ28MjuAPqHgDJcMXi9RHRpbcg373cajVcydof92fnZYwvuwdkjxTSuJsE5GatfMY
+         Gu9gtcyCK0vBcqKFDqOoeq+SKDBPtZfBvMS7yxnwbVV6Q12GmHwK1olSC5uuaUsJuGH2
+         rNfg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1762770004; x=1763374804;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=u9Um+h9dOsIowK0Xeh4oFsJO5SmqkrPeMg+IBmuohd8=;
+        b=Kyupzt+FAkXRvHS6i0hp9iO1PdbceLMhUxD4zblYqxiHl4N2UkwdNcRRpczWD3EX5u
+         Qf15yXkz0Wro6igJ39OQ6flgeYiPTeV50tTc7/kQwe7itZ/Z2KxbNm7bGs5vaFbkyF2K
+         dkFPQRXgZLZLnAmWvjHmdAlT6eV14j+kY1/AD4VKrwfUq1UuWW2Q8O7M50aeQO0CZ8Qd
+         e+UORsHwbGV1kntNqTsEje3878Buapw6tF4RKrgVUnCoy8HwbBxWbMFUDbSVGxAC1tM9
+         D6dvDgeDHKbaxY0xq0AjNlIdaQ4VbPhKUV2o1yk/NGXrtS1PhUlLGuVmT3lmFxIZj2Zp
+         ZwWw==
+X-Forwarded-Encrypted: i=1; AJvYcCWK2G7fsk14BUbhMqk71jLujOetfrLehpsH4SMrXd0V3PbB1MPLyBInRdOIcMQ/hNs4tzADHj4j@vger.kernel.org
+X-Gm-Message-State: AOJu0Yyfjw5KvLn2HnDgQasSAvgZ4p1v6siblgJ5rbCgVfWfMWT7H/ei
+	USKzdyHyNNj+M7t1HZBBr7BEimgLGPTm3l9V1t/JQ4uB2DEptb1dur/9fVWabpl4WGc=
+X-Gm-Gg: ASbGncvHLCOEYNPiy8zkSQ66I8UZjPxR+RNroXhlGofbNonLC6jFnB7IoIGlsiXGunh
+	j6FGDqed3SELzFoPwbRtrCn3MSAiDteJJIEH9E3jmJU5LsnxGAU1oMIy3xhFeELx1zWdBbVMkQ6
+	eU+o8mapaAcYVHGYrPskWYXmxF19HQUAvYBfBhjiSDcrkCIVm5zvIvXxj8BZlS5oKLBXgmiK1/9
+	4483wr3G0AHwvnk55e5znOIi2FPgDu6OhTJpwrjbKZUEKS3cRwYUS6EpK29kTC73smxBUN4IoxZ
+	6Ci23m1mkJaD4DhOk4KylrlZ2gY6ngjoYTsPdJXTXnPQc/w52RdmD3Fesb91peBwg+rsrRSt0FR
+	1qGMGNjA6lVQNyYO1s15QMTj6UI8RVlBiK/P7WD/lmQ1ioxhscJAFLJ6y1uubZuMI9AJG0CODQt
+	NkBaawA93j4YCqOg==
+X-Google-Smtp-Source: AGHT+IGg+qZi4q9NfQViBJozr4dBl5TzCMHd9K8BS4nEMBk0sFI9y2oNIm83/8ZcSK7PJ3Gqzu8SSQ==
+X-Received: by 2002:a17:90b:582b:b0:340:f05a:3ec3 with SMTP id 98e67ed59e1d1-3436cbc8edamr8666587a91.33.1762770003828;
+        Mon, 10 Nov 2025 02:20:03 -0800 (PST)
+Received: from .shopee.com ([122.11.166.8])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-341a69b626csm17372339a91.19.2025.11.10.02.19.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 10 Nov 2025 02:20:03 -0800 (PST)
+From: Leon Huang Fu <leon.huangfu@shopee.com>
+To: linux-mm@kvack.org
+Cc: tj@kernel.org,
+	mkoutny@suse.com,
+	hannes@cmpxchg.org,
+	mhocko@kernel.org,
+	roman.gushchin@linux.dev,
+	shakeel.butt@linux.dev,
+	muchun.song@linux.dev,
+	akpm@linux-foundation.org,
+	joel.granados@kernel.org,
+	jack@suse.cz,
+	laoar.shao@gmail.com,
+	mclapinski@google.com,
+	kyle.meyer@hpe.com,
+	corbet@lwn.net,
+	lance.yang@linux.dev,
+	leon.huangfu@shopee.com,
+	linux-doc@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	cgroups@vger.kernel.org
+Subject: [PATCH mm-new v3] mm/memcontrol: Add memory.stat_refresh for on-demand stats flushing
+Date: Mon, 10 Nov 2025 18:19:48 +0800
+Message-ID: <20251110101948.19277-1-leon.huangfu@shopee.com>
+X-Mailer: git-send-email 2.51.2
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DS7PR11MB5966:EE_|IA1PR11MB7920:EE_
-X-MS-Office365-Filtering-Correlation-Id: 39de3c03-7919-49d0-568a-08de20406b24
-X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|366016|7416014|376014|1800799024;
-X-Microsoft-Antispam-Message-Info: =?us-ascii?Q?P7gxU9qmw7dF7Hk6hYea8VdGV87+Q1LMILKdeDZnLt0obaVxLP9L6p3rLOl8?=
- =?us-ascii?Q?ItSQr2Rl5p+Xo/qaeJZ6bsVg/43yMdhQrQm0yvkGG+YwvdfRpgT+M42eHVtH?=
- =?us-ascii?Q?CVc8c3Fz608+kjNEp7BRmRMTnSaqVOcYfLtcyqgwEcOY8NipPdvbbeoE5wzc?=
- =?us-ascii?Q?SeoZgw1CU0O3jxQXCpes9HwNazIEACSwU5GX5WwPApA7hAELR4B7SZpdqjYb?=
- =?us-ascii?Q?SRHQa8o7ynTKx++Cj+5bKABeczSuUkU8eN0RLoNzwrn6Q1Mmu+lOcWyc8d58?=
- =?us-ascii?Q?+HMCacvVrOF6DBHbuT+ebWpF9W/VE/1xmIOYx2cvq7lzPpsvXfYDNK8Vb+ar?=
- =?us-ascii?Q?1wx+NzHr5eY4mEJmPugPI0bomTq6cnUpwJ+iCgisbD2i5fBLl1oChMVVb9d2?=
- =?us-ascii?Q?YlLmEbPiHvGF8n3Ica/FlypR5ob76P8C+2xR6S0N1ht7K6a9c1rM1W7jdwOM?=
- =?us-ascii?Q?0nY2PbFhg4L1kdV8PINEYnDD7m37I+ysQQKf4u8FA/4vIx2c6ezg7sUh/ZO1?=
- =?us-ascii?Q?X7A1tesNd478IGaugCg7sJs5yzVTeufaisPN5ih8vD3aqFaslAPsD5KtImaq?=
- =?us-ascii?Q?rsde7ybif6csEO7ulIOnjj5zC2z3hvDJaYW+KbX0NgLLDncIOAkRHhEAlG5c?=
- =?us-ascii?Q?c7NWD70QBdCcZSIKFJ7oHvCdQzB35EaF2nwPRUnwlrcnxDtjE32HV6Mqi+LE?=
- =?us-ascii?Q?8bXacIktLzzSR4ZCQVHIKEnmyLQU53iDKLnkzqCejfN6bxwyb1xN2YBZJqR5?=
- =?us-ascii?Q?khq7rOThZhL4NHzwBz/3bOlNoY6y4ixqku4S+CXNd6U7EpJ8NUaNsG35thon?=
- =?us-ascii?Q?TCzPQnzU+2BcE1vLpE6h7ZcJgUvHjTUay297WO1Wl9p8AISfgI+56yC3RKTp?=
- =?us-ascii?Q?VR3jYDesNQPD3p+bHLaUT8xxH1/VZsLlcbu/JUqXd4Qsq/yuBespbNijmLV4?=
- =?us-ascii?Q?jSAI7T7eHPyI+cI7nsUvfFsP+PY69icO9eJLh94PBKKbBp7poSJS3oMesfUm?=
- =?us-ascii?Q?wjSXYRWf4QJRk0zV3DP4yiDSlOKcvYUj9R5HWd6equDrquDzcc3Y5rYD12Gz?=
- =?us-ascii?Q?KUQb2MWXbr300KGKK/unOOi10cxgxB1sX7aDv8+RlfPDRVIBxyLVBdXVPO/o?=
- =?us-ascii?Q?0YVT6IWeNr87mucY5q3qARL7iG/1VdbCFnEFAllqUyTT+Kov3wIaxyYGKp7E?=
- =?us-ascii?Q?g8kUCAyBsXWWEiIrz2N6PeYnVaMHX9EQGyhSZSpiWxXvcIylq8cKGwCW5bGL?=
- =?us-ascii?Q?yoKgBKzzZQZ6yoPaDEJU0wahgE+iUpPd3jhuZ4aQp+tnuh2PI+xwz5vPAu/j?=
- =?us-ascii?Q?rRiUOVAk8OC0ViMYrchvvhyObuJSEPlzusxd7lpsLs0ANoJPAxxCnFJ69qvL?=
- =?us-ascii?Q?ghWNDoPR+YEiVVGC1ZplWEbMZD+kgA4jtA+tUT1SdHkEz9K0qnR0Whbkd61u?=
- =?us-ascii?Q?T4e1GbqEsJREdKb7L7Q0A5uh2/8rYMIj?=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS7PR11MB5966.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(7416014)(376014)(1800799024);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?bKaJbzBw8ReM+nAI7lfOJUgBXz++Pny1x8984QUysm7ltHv6mWQ2lUSkPsId?=
- =?us-ascii?Q?Z6bAc0zZiFEnXO6WDL0QO0rv/1Wes2D1LAkD2a9ROVarLuQC32evrO6ZQ9ZE?=
- =?us-ascii?Q?TJhn2jlo5ZKTO8JkUYJ6ac+SOYt80seFnLEkiRDrN5mbO5RivNqSL33I8D7W?=
- =?us-ascii?Q?a0P44YEd87bQY1UPI/6OI605mw2vRruXpiLA/p9e7eLBItOWTIeb1cscxiG/?=
- =?us-ascii?Q?zj+g+c0rKYRjTreZEOpxK/RGNsa3lRcZXtzOJaHgFra9AJFQ2LnugZ2AtfF3?=
- =?us-ascii?Q?CPhd/SdP9ToLiywX/j/B+UGlScwXPrCuwNqz8MQAqbgG8WCxEfAbkuG4svwo?=
- =?us-ascii?Q?scwRxBB0oPFuBFMl2UB7RZ8Uimq3IGNEA6w7HsxnKUS0HnLK987ENgqO7hMf?=
- =?us-ascii?Q?55Exw1uSY1mFhjUV5ORtJ7oSTlAt7SDqTdJdaDmTZJintJV7o8O/sYpqPDvU?=
- =?us-ascii?Q?TRCmsUCZXDxYN02AALNRRo0X5gphW50ZoDZOhaMAUc6zEYfXKl9Lx5Afkclt?=
- =?us-ascii?Q?wuf5xprVWimloqQNpdFWzyvHdC/5m1/qRunEN82nta427oTIKLx9NNzfP9nr?=
- =?us-ascii?Q?5cFRNclovk3KhfkqCQLZMggbh6QArY3O42Dp27IZaJTQKcEygRKoBnjpS/FE?=
- =?us-ascii?Q?WNzFfz//nvyohxT2aB6RdjMry3S3hh1FCQa7G5l3shPp8wirepcHD8I9izyX?=
- =?us-ascii?Q?fnaM5iZiwIhbQtEspKUbnvsfkHK6gY3JcXOmc3owsaKq+7Omm60SLDiOsGzK?=
- =?us-ascii?Q?6YoxJGD26Ji7CPX2MA3FAfh3hcuScK3K96cOGsNoLqoAPCfoLYwQE7PjZSgF?=
- =?us-ascii?Q?MU2hoDwY8t177VWw74ANP++2DA7RtgQaDV9SqDRFxD+V5k/R4MOdI6W7Vbl8?=
- =?us-ascii?Q?sPwHa23gxaKKqcdX2Tkpy5mAbTrOSvhteQvsmwnsZvhkE+3bCzmARIGsBZiH?=
- =?us-ascii?Q?Kau0xW0x9WGASxOhReI4r4G19fJwnM71aln6DvNFyzt67bVQjHD1VnlZbLi6?=
- =?us-ascii?Q?3lgfimfx1yL7wKI+R4yoKOalzggeXIVso8hcXUed3kgnqhzhKZ/2F9BD+fK0?=
- =?us-ascii?Q?p3TrAHAzYOki6dj2DHMKQQ2BVdmXSciPw5orHEKrDNy6xwTmClpS46IB9x2J?=
- =?us-ascii?Q?Bsid3ZAnJO+CCKi1Z+G6pPkCaftHGEaJlAnQNeHAELrykXWTMnAABnOSgt4g?=
- =?us-ascii?Q?vkltvWnor5Y4WtLMisXxde2LVReOyUReT1ODz8IHK56YX3aswi4xNvJo6XrS?=
- =?us-ascii?Q?Ha7mTjJnNgimj0Hp2yPE8TCagsbNS+jop5GIbCSUrU6SeKx83Vi1t8jE6CML?=
- =?us-ascii?Q?n7APGEnGo9xjO5jputuUsjwvHZ89Is614wJbWPz5vnvV37sRF7HRQkaUjCOI?=
- =?us-ascii?Q?vIOaAEkSlzURfryvIC/ek55r97qXm84SLUspAVYJ500QZdQCplGKhcjrEdKI?=
- =?us-ascii?Q?1dsAzw/1fJBJL6yN8IVxw+OTFFKfrrrK/HceJNOlUZ8/Wpb7uzGM5DQuyhhK?=
- =?us-ascii?Q?oThzNKUS3CnlFlAgacpwgPZN4Ng6k6xDXk92JqENGcabNDjXdTqVH9KOhMHv?=
- =?us-ascii?Q?I1v6j9Nj1u5dORinPqaST6iDqmRifJARgAerLy2h?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 39de3c03-7919-49d0-568a-08de20406b24
-X-MS-Exchange-CrossTenant-AuthSource: DS7PR11MB5966.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Nov 2025 10:03:38.3215
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: MWHHVs7d1OZCTTJikdTgC/pTPFI/Orekf2RpTVawHxWtxB7Yq7xqZFqbbodT5nh8CcI7INdKI6+3zPaOxYYoJA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA1PR11MB7920
-X-OriginatorOrg: intel.com
+Content-Transfer-Encoding: 8bit
 
->  #ifdef CONFIG_HAVE_KVM_ARCH_GMEM_POPULATE
-> +static bool kvm_gmem_range_is_private(struct gmem_inode *gi, pgoff_t index,
-> +				      size_t nr_pages, struct kvm *kvm, gfn_t gfn)
-> +{
-> +	pgoff_t end = index + nr_pages - 1;
-> +	void *entry;
-> +
-> +	if (vm_memory_attributes)
-> +		return kvm_range_has_vm_memory_attributes(kvm, gfn, gfn + nr_pages,
-> +						       KVM_MEMORY_ATTRIBUTE_PRIVATE,
-> +						       KVM_MEMORY_ATTRIBUTE_PRIVATE);
-Can't compile kvm_range_has_vm_memory_attributes() if
-CONFIG_KVM_VM_MEMORY_ATTRIBUTES is not set.
+Memory cgroup statistics are updated asynchronously with periodic
+flushing to reduce overhead. The current implementation uses a flush
+threshold calculated as MEMCG_CHARGE_BATCH * num_online_cpus() for
+determining when to aggregate per-CPU memory cgroup statistics. On
+systems with high core counts, this threshold can become very large
+(e.g., 64 * 256 = 16,384 on a 256-core system), leading to stale
+statistics when userspace reads memory.stat files.
+
+This is particularly problematic for monitoring and management tools
+that rely on reasonably fresh statistics, as they may observe data
+that is thousands of updates out of date.
+
+Introduce a new write-only file, memory.stat_refresh, that allows
+userspace to explicitly trigger an immediate flush of memory statistics.
+Writing any value to this file forces a synchronous flush via
+__mem_cgroup_flush_stats(memcg, true) for the cgroup and all its
+descendants, ensuring that subsequent reads of memory.stat and
+memory.numa_stat reflect current data.
+
+This approach follows the pattern established by /proc/sys/vm/stat_refresh
+and memory.peak, where the written value is ignored, keeping the
+interface simple and consistent with existing kernel APIs.
+
+Usage example:
+  echo 1 > /sys/fs/cgroup/mygroup/memory.stat_refresh
+  cat /sys/fs/cgroup/mygroup/memory.stat
+
+The feature is available in both cgroup v1 and v2 for consistency.
+
+Signed-off-by: Leon Huang Fu <leon.huangfu@shopee.com>
+---
+v2 -> v3:
+  - Flush stats by memory.stat_refresh (per Michal)
+  - https://lore.kernel.org/linux-mm/20251105074917.94531-1-leon.huangfu@shopee.com/
+
+v1 -> v2:
+  - Flush stats when write the file (per Michal).
+  - https://lore.kernel.org/linux-mm/20251104031908.77313-1-leon.huangfu@shopee.com/
+
+ Documentation/admin-guide/cgroup-v2.rst | 21 +++++++++++++++++--
+ mm/memcontrol-v1.c                      |  4 ++++
+ mm/memcontrol-v1.h                      |  2 ++
+ mm/memcontrol.c                         | 27 ++++++++++++++++++-------
+ 4 files changed, 45 insertions(+), 9 deletions(-)
+
+diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admin-guide/cgroup-v2.rst
+index 3345961c30ac..ca079932f957 100644
+--- a/Documentation/admin-guide/cgroup-v2.rst
++++ b/Documentation/admin-guide/cgroup-v2.rst
+@@ -1337,7 +1337,7 @@ PAGE_SIZE multiple when read back.
+ 	cgroup is within its effective low boundary, the cgroup's
+ 	memory won't be reclaimed unless there is no reclaimable
+ 	memory available in unprotected cgroups.
+-	Above the effective low	boundary (or
++	Above the effective low	boundary (or
+ 	effective min boundary if it is higher), pages are reclaimed
+ 	proportionally to the overage, reducing reclaim pressure for
+ 	smaller overages.
+@@ -1785,6 +1785,23 @@ The following nested keys are defined.
+ 		up if hugetlb usage is accounted for in memory.current (i.e.
+ 		cgroup is mounted with the memory_hugetlb_accounting option).
+
++  memory.stat_refresh
++	A write-only file which exists on non-root cgroups.
++
++	Writing any value to this file forces an immediate flush of
++	memory statistics for this cgroup and its descendants. This
++	ensures subsequent reads of memory.stat and memory.numa_stat
++	reflect the most current data.
++
++	This is useful on high-core count systems where per-CPU caching
++	can lead to stale statistics, or when precise memory usage
++	information is needed for monitoring or debugging purposes.
++
++	Example::
++
++	  echo 1 > memory.stat_refresh
++	  cat memory.stat
++
+   memory.numa_stat
+ 	A read-only nested-keyed file which exists on non-root cgroups.
+
+@@ -2173,7 +2190,7 @@ of the two is enforced.
+
+ cgroup writeback requires explicit support from the underlying
+ filesystem.  Currently, cgroup writeback is implemented on ext2, ext4,
+-btrfs, f2fs, and xfs.  On other filesystems, all writeback IOs are
++btrfs, f2fs, and xfs.  On other filesystems, all writeback IOs are
+ attributed to the root cgroup.
+
+ There are inherent differences in memory and writeback management
+diff --git a/mm/memcontrol-v1.c b/mm/memcontrol-v1.c
+index 6eed14bff742..c3eac9b1f1be 100644
+--- a/mm/memcontrol-v1.c
++++ b/mm/memcontrol-v1.c
+@@ -2041,6 +2041,10 @@ struct cftype mem_cgroup_legacy_files[] = {
+ 		.name = "stat",
+ 		.seq_show = memory_stat_show,
+ 	},
++	{
++		.name = "stat_refresh",
++		.write = memory_stat_refresh_write,
++	},
+ 	{
+ 		.name = "force_empty",
+ 		.write = mem_cgroup_force_empty_write,
+diff --git a/mm/memcontrol-v1.h b/mm/memcontrol-v1.h
+index 6358464bb416..a14d4d74c9aa 100644
+--- a/mm/memcontrol-v1.h
++++ b/mm/memcontrol-v1.h
+@@ -29,6 +29,8 @@ void drain_all_stock(struct mem_cgroup *root_memcg);
+ unsigned long memcg_events(struct mem_cgroup *memcg, int event);
+ unsigned long memcg_page_state_output(struct mem_cgroup *memcg, int item);
+ int memory_stat_show(struct seq_file *m, void *v);
++ssize_t memory_stat_refresh_write(struct kernfs_open_file *of, char *buf,
++				  size_t nbytes, loff_t off);
+
+ void mem_cgroup_id_get_many(struct mem_cgroup *memcg, unsigned int n);
+ struct mem_cgroup *mem_cgroup_id_get_online(struct mem_cgroup *memcg);
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index bfc986da3289..19ef4b971d8d 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -610,6 +610,15 @@ static void __mem_cgroup_flush_stats(struct mem_cgroup *memcg, bool force)
+ 	css_rstat_flush(&memcg->css);
+ }
+
++static void memcg_flush_stats(struct mem_cgroup *memcg, bool force)
++{
++	if (mem_cgroup_disabled())
++		return;
++
++	memcg = memcg ?: root_mem_cgroup;
++	__mem_cgroup_flush_stats(memcg, force);
++}
++
+ /*
+  * mem_cgroup_flush_stats - flush the stats of a memory cgroup subtree
+  * @memcg: root of the subtree to flush
+@@ -621,13 +630,7 @@ static void __mem_cgroup_flush_stats(struct mem_cgroup *memcg, bool force)
+  */
+ void mem_cgroup_flush_stats(struct mem_cgroup *memcg)
+ {
+-	if (mem_cgroup_disabled())
+-		return;
+-
+-	if (!memcg)
+-		memcg = root_mem_cgroup;
+-
+-	__mem_cgroup_flush_stats(memcg, false);
++	memcg_flush_stats(memcg, false);
+ }
+
+ void mem_cgroup_flush_stats_ratelimited(struct mem_cgroup *memcg)
+@@ -4530,6 +4533,12 @@ int memory_stat_show(struct seq_file *m, void *v)
+ 	return 0;
+ }
+
++ssize_t memory_stat_refresh_write(struct kernfs_open_file *of, char *buf, size_t nbytes, loff_t off)
++{
++	memcg_flush_stats(mem_cgroup_from_css(of_css(of)), true);
++	return nbytes;
++}
++
+ #ifdef CONFIG_NUMA
+ static inline unsigned long lruvec_page_state_output(struct lruvec *lruvec,
+ 						     int item)
+@@ -4666,6 +4675,10 @@ static struct cftype memory_files[] = {
+ 		.name = "stat",
+ 		.seq_show = memory_stat_show,
+ 	},
++	{
++		.name = "stat_refresh",
++		.write = memory_stat_refresh_write,
++	},
+ #ifdef CONFIG_NUMA
+ 	{
+ 		.name = "numa_stat",
+--
+2.51.2
 
 
