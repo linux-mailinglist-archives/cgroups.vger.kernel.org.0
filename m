@@ -1,234 +1,125 @@
-Return-Path: <cgroups+bounces-11757-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-11758-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3EB2BC48FBA
-	for <lists+cgroups@lfdr.de>; Mon, 10 Nov 2025 20:24:19 +0100 (CET)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5D5AFC49172
+	for <lists+cgroups@lfdr.de>; Mon, 10 Nov 2025 20:36:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 613C134AEFD
-	for <lists+cgroups@lfdr.de>; Mon, 10 Nov 2025 19:24:18 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 0958234287E
+	for <lists+cgroups@lfdr.de>; Mon, 10 Nov 2025 19:36:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA26B331A72;
-	Mon, 10 Nov 2025 19:24:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EBAE13176E0;
+	Mon, 10 Nov 2025 19:36:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="j8l3KWm2"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="H2VjVHLy"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-pl1-f170.google.com (mail-pl1-f170.google.com [209.85.214.170])
+Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com [209.85.128.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 09CA6321F31
-	for <cgroups@vger.kernel.org>; Mon, 10 Nov 2025 19:24:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 247873002A0
+	for <cgroups@vger.kernel.org>; Mon, 10 Nov 2025 19:36:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762802651; cv=none; b=QithBzKV+0sdANQYEJtU0YxudZ8CpxWHHV3CnnHiYbX98OYmFg7dlyOIH/32+macVChtD1AoTd+Drb4P3uOrt3Diw4iPjso73SDUR8IU9OOj4rNpTd+Is1XSCKPu7ZeqGLdtH6QTf+J0eyUri2PrAGedSpFwB9Ios2gWlXwMUiY=
+	t=1762803407; cv=none; b=KZNIc6+OwUisC3U0yEzBQLekyC79joWODKIrgykTlVDB0bKg6lIWi1M7qY2V7eBmbyZl1o9/nzN3IEna5EG5gEiKmbg7xSzgoxVcsgsym+QyaSff9aScvehs/Y5WPXVxCEj2FIrCiNJJ8vIeU3U6Ra3Rfkz8tGXrfEPcB4k+6so=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762802651; c=relaxed/simple;
-	bh=KtWEwtg7MDJfegORsZg1yms6PhzLTV6xv9D+IvLBI+M=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=AG+GID1dePBjOyWUhvIxDerjC3LBhy9tLB8IzbAJaUyYZHXwzFQiaLgL/tNrZozn7n0q/QMMFVG/QJSnpGgoZrXk2+c4+cKjNwcblfOOa04iw/HadqQTsFXJKoNEApUQN9MnMIGbul4I+UkDbf6apPGagPHPiEW0cORE3D5o6LU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=j8l3KWm2; arc=none smtp.client-ip=209.85.214.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f170.google.com with SMTP id d9443c01a7336-298144fb9bcso13504345ad.0
-        for <cgroups@vger.kernel.org>; Mon, 10 Nov 2025 11:24:09 -0800 (PST)
+	s=arc-20240116; t=1762803407; c=relaxed/simple;
+	bh=uOPdRM2zXUbj0uAF4/Y1KdXhAAYdQVcF5zz7omcQwNA=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=ZIv/u36gthL3ed42kaLMhvj6C08eVpLKsiBHLJxx8EfY/dfRtSGgOeBwpPzkpYRAO0qza95O6mX/jgp9G7abyYGX0dG3jrRwukSFx2QLvNNFeASNHbAtlUZz1bAyqTkdotA1rL4D73qtLx4hI6OPJucj/ygF27bi/AUyKi1b3DU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=H2VjVHLy; arc=none smtp.client-ip=209.85.128.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-wm1-f51.google.com with SMTP id 5b1f17b1804b1-4775e891b5eso17704805e9.2
+        for <cgroups@vger.kernel.org>; Mon, 10 Nov 2025 11:36:44 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1762802649; x=1763407449; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=6aZiAriaFpcSO4WwPdL0RMujLkTEysUvR5KxZIxL0hk=;
-        b=j8l3KWm2pDo9Kw53yv6aMJaJeE9bxY/G3o1UAqtCsq+mp1S5jGbqDYyiM6DourmeJB
-         We1G3j1ng+VpqDJhEZ7yE5+JWINO7ZU07M//FoBcHM1LXkLSorg/mgWFfMOmsf8eYqBb
-         1paJhfwIEevLkG9CyBv+G4BXBtKUxSaIeY/Y0kSXbVh4P480j7NiddRXH1ht7fGMIDOc
-         +BSWzF4aCtQ8ZIsap36OhOefiI1bE5cBOzoGE1+W9yz6t46CQWSTpJ71zeg4uEHXpeGN
-         ek2N2euvBhL2bQK0HlqZCK0pQqamrRyEnS2O7eXXKoAJatsBEidPGT5bmLRCUXBPjxIy
-         6JZg==
+        d=suse.com; s=google; t=1762803403; x=1763408203; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=YDpt0zy7PtnsCd6fKg/NI/I37lccoSys25WO0LkUemM=;
+        b=H2VjVHLyJvbeTUJmvaX6D1/Mk5MMIzvGOzaQ0YqgDPSWmjLUWywvO7mHfVQVCldqig
+         FdYnboyQqE7doRR1hyBJx7CVkbvbgNsg3Xz1/fkOoodMaZhFarOWw3geJOxwLGXTnTKc
+         funqi5dWl05SbdIRZ2bWB0GgackLEXXsk8XSH9QPK5PTY5ZXIlOY0v1S2pKYcBi0KZL9
+         u4LEJt1P6dfaUAMwXJgZaVwVN4c4jei3eQes4nZ7cX4eV5mPjJ39f7JcXcm0LqCMkwTK
+         Nll6ntBK/xDWfEyF7iBtf+rK2TOlIfemg+tIQDboywb39uqAWYHQ1QdTCgE5vtqmRosW
+         Axxw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1762802649; x=1763407449;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=6aZiAriaFpcSO4WwPdL0RMujLkTEysUvR5KxZIxL0hk=;
-        b=XiF2hz7HdPuj6gxQrQzcMVTtd9SNdbGvhRDq1ludKSHTQ6eJDRVsyZknxqyf1Tl6vp
-         rrX1pa7gr3ubwBVmsMzvc2SrAenbpXHyoxLaHMD7IXwcmknwAAsZUR0HaguWp8f5hEbT
-         w2TZp9LVsFM5RE6MiHGt6G2YhgHoAI3HYDUZU1GI+TuD/pWoSenWERVFUEBfjD+BB86w
-         CkxT3sLczw4sX5tzqt0jSLgcQ/U7E17V1qgQrsk/cdFipDvB5uemurEddsy2ZkRCqbNo
-         7g/zj+Wbrt1SU7ZsTLVKjkyjj09yTgEk0pOOZ1NCh1szlfcflOructL+NKIG59WkmhD1
-         PFpw==
-X-Forwarded-Encrypted: i=1; AJvYcCULI+Dkgbsjl8adU3LADUtzVjIT+qoylx3E7ekOqnAu6n9AtmY0XJO4Dud8UaAovE3SbLDbq+Dk@vger.kernel.org
-X-Gm-Message-State: AOJu0YwnZk1EKUOoHNuHDm77w6W+tSGrG3kRtyGyWEpkd4EC+UIqCcmq
-	/yY1iCYU/jAO3VvktH6YOOozvNpCsQfP/5ffaFRYnlDAbBMHIfV1GpgY
-X-Gm-Gg: ASbGncugnbqmXlV1UOnfUAy0GnmyLUjVFc82KqWWmUbM7gI7FYgfpfU63GHQaKK676Y
-	qkDa9vRNPBPcxNj9tz/COtwdvsgLv8ZSgu1+9PQ3y9Pmr5IWx2ROFh9NTh1jS/FVqBTLD+UYUQ3
-	QvtSBV1xSzeTU6NIwq1H2wcr6msMPmkXAT+02JqCku3jdtdJrgiku5r+SPWoHcsOG9xlUMG7Y86
-	Vh1cXk2ofb1pazFZisvFSRTla7VHPbnaShWrMq8LHYc8V5cz0LIobIGLijPprY0IMGfLZSt1bZz
-	paGk4x8nhA7YCZSIcrQHTR6q/+ooTncqNrUOF/q0y4OK/G/P5W1hvOd7OjaAPM1cvntYvCBHAaa
-	/ACej216wvpRxheYPq7aQqj+7E2X789mKa5JNK4SLV3WkMDp7oLpnNmAeKg3SJKRPtIEgIlm3Op
-	v7QjXA9vbVllW3nHRw6j0JF4JlHiaoH1XYXle0/M46XWUi
-X-Google-Smtp-Source: AGHT+IEfAMgWyE3Ndc3ssUFwIgGkinkSWPsXOWikHUjdgiJLp2PdUMQ1cJ8E1GKkTroGDK1oj6VzdA==
-X-Received: by 2002:a17:903:fad:b0:295:9b9a:6a7f with SMTP id d9443c01a7336-297e571290cmr120832745ad.49.1762802649165;
-        Mon, 10 Nov 2025 11:24:09 -0800 (PST)
-Received: from ?IPV6:2a03:83e0:1151:15:9ac6:a0c2:ad3d:6884? ([2620:10d:c090:500::6:8ce7])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-296509680e5sm159021765ad.1.2025.11.10.11.24.06
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 10 Nov 2025 11:24:08 -0800 (PST)
-Message-ID: <51f1f343-c29f-49b5-8016-bbda4bc778a2@gmail.com>
-Date: Mon, 10 Nov 2025 11:24:05 -0800
+        d=1e100.net; s=20230601; t=1762803403; x=1763408203;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=YDpt0zy7PtnsCd6fKg/NI/I37lccoSys25WO0LkUemM=;
+        b=hmAaC/h1XGncJfJgarAD6MZjJbnGE7yy6+ga1AhhRg33Vby+jyKfmgPM6ya2s/M61N
+         mq8zDI2TPYAw3n4CzcNxHZ7mZavk5mvwsqOjhctXhoeY2ehyY7EhY18soOZ1VpasQL0r
+         WApdHIJkWROQbRlIv3ZhFkuVLyM5bK3AFuRTzkDVBVnE538qN+czF9s5z4+eogSD6KDs
+         3ndqPkb/95Wzdvm0tZhfY4awul7L1bHSMNVS9Kjc+VIVScG/TSEnuBaiibdtUK9hVhgv
+         X+cX2+oQIFvDXwL4CoAYAxOUzBkqWGDDEnO1Y7vB5HXVH9Edd2LRzk+pS+bzIst8xZZd
+         fyWA==
+X-Forwarded-Encrypted: i=1; AJvYcCXFpeL7gani1fmHvJxc396Ex4tPVa/4vF2YiDtug2tKuex+aZ0s8AeI0pt6mebd6BXnQBSNikFm@vger.kernel.org
+X-Gm-Message-State: AOJu0YxO5pVMEOBJ8caeCU3cYTwz9nPPw7XdiHKZ3W+3mljatAaZOlkQ
+	9eSXp7otycej5egtspNwdXud7tDdVTaHvC2hfVLJTV3FexL0eF+3zsAvetOX6L9+fbk=
+X-Gm-Gg: ASbGncsK1eSkX/GooKQnJSSvov0PS27WhB56tnm3+jpHigZOdnpJ8WCQMQciz4POZ3j
+	RrUuHpUPSiRFs/Hb6cGj2M9ysvPRREO/8klGKBsNKZ+6+jyND7iu8yWFwL/MG2vwVqC+ZdKjh/+
+	GXEyDuOVyXtcSPnHS7o+3BTzEfZlG328dPpRD0NHsityOsmyQl4GzG3V+mXlauNV23kh3TE9TYW
+	OYIHYo73/xudz8jWatljGhYOa8LTDwMbEP6yOwXN/30OC7d3SJqj0vk/W5ZH7OGe1mbhu7ZBGrL
+	3EaetequTTuli/6DOvAvSJaPas9KHjz4GjNdC9OiY26lKkMB7HsiWLb1/Rqi1opMKxUcUKZviuj
+	kzJraFpCB9DP8T55IKoYZF8Bb06xF12axOhcQWEr06xShTFpdw+Cvx97rkRSPuWQI4GU0aCHi+x
+	qxqTIsionWhpeG74oPh8GECLkE11PUbWs=
+X-Google-Smtp-Source: AGHT+IHeuLkKSsH8AzcRusY4bSGEmMJr+yCrFo1Kif3KcLfYiwCAAN+hODaeTCLagsz7hdm8X9yqTQ==
+X-Received: by 2002:a05:600c:3b01:b0:46d:ba6d:65bb with SMTP id 5b1f17b1804b1-47773288bf9mr97918675e9.31.1762803403412;
+        Mon, 10 Nov 2025 11:36:43 -0800 (PST)
+Received: from blackdock.suse.cz (nat2.prg.suse.com. [195.250.132.146])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4775ce32653sm336766725e9.13.2025.11.10.11.36.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 10 Nov 2025 11:36:43 -0800 (PST)
+From: =?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>
+To: linux-doc@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	cgroups@vger.kernel.org
+Cc: Natalie Vock <natalie.vock@gmx.de>,
+	Maarten Lankhorst <dev@lankhorst.se>,
+	=?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>,
+	Tejun Heo <tj@kernel.org>,
+	Johannes Weiner <hannes@cmpxchg.org>,
+	Jonathan Corbet <corbet@lwn.net>
+Subject: [PATCH RESEND 0/3] Memory reclaim documentation fixes
+Date: Mon, 10 Nov 2025 20:36:32 +0100
+Message-ID: <20251110193638.623208-1-mkoutny@suse.com>
+X-Mailer: git-send-email 2.51.1
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH mm-new v2] mm/memcontrol: Flush stats when write stat file
-To: Leon Huang Fu <leon.huangfu@shopee.com>
-Cc: akpm@linux-foundation.org, cgroups@vger.kernel.org, corbet@lwn.net,
- hannes@cmpxchg.org, jack@suse.cz, joel.granados@kernel.org,
- kyle.meyer@hpe.com, lance.yang@linux.dev, laoar.shao@gmail.com,
- linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, linux-mm@kvack.org,
- mclapinski@google.com, mhocko@kernel.org, muchun.song@linux.dev,
- roman.gushchin@linux.dev, shakeel.butt@linux.dev
-References: <37aa86c5-2659-4626-a80b-b3d07c2512c9@gmail.com>
- <20251110062053.83754-1-leon.huangfu@shopee.com>
-Content-Language: en-US
-From: JP Kobryn <inwardvessel@gmail.com>
-In-Reply-To: <20251110062053.83754-1-leon.huangfu@shopee.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On 11/9/25 10:20 PM, Leon Huang Fu wrote:
-> On Fri, Nov 7, 2025 at 1:02 AM JP Kobryn <inwardvessel@gmail.com> wrote:
->>
->> On 11/4/25 11:49 PM, Leon Huang Fu wrote:
->>> On high-core count systems, memory cgroup statistics can become stale
->>> due to per-CPU caching and deferred aggregation. Monitoring tools and
->>> management applications sometimes need guaranteed up-to-date statistics
->>> at specific points in time to make accurate decisions.
->>>
->>> This patch adds write handlers to both memory.stat and memory.numa_stat
->>> files to allow userspace to explicitly force an immediate flush of
->>> memory statistics. When "1" is written to either file, it triggers
->>> __mem_cgroup_flush_stats(memcg, true), which unconditionally flushes
->>> all pending statistics for the cgroup and its descendants.
->>>
->>> The write operation validates the input and only accepts the value "1",
->>> returning -EINVAL for any other input.
->>>
->>> Usage example:
->>>     # Force immediate flush before reading critical statistics
->>>     echo 1 > /sys/fs/cgroup/mygroup/memory.stat
->>>     cat /sys/fs/cgroup/mygroup/memory.stat
->>>
->>> This provides several benefits:
->>>
->>> 1. On-demand accuracy: Tools can flush only when needed, avoiding
->>>      continuous overhead
->>>
->>> 2. Targeted flushing: Allows flushing specific cgroups when precision
->>>      is required for particular workloads
->>
->> I'm curious about your use case. Since you mention required precision,
->> are you planning on manually flushing before every read?
->>
-> 
-> Yes, for our use case, manual flushing before critical reads is necessary.
-> We're going to run on high-core count servers (224-256 cores), where the
-> per-CPU batching threshold (MEMCG_CHARGE_BATCH * num_online_cpus) can
-> accumulate up to 16,384 events (on 256 cores) before an automatic flush is
-> triggered. This means memory statistics can be likely stale, often exceeding
-> acceptable tolerance for critical memory management decisions.
-> 
-> Our monitoring tools don't need to flush on every read - only when making
-> critical decisions like OOM adjustments, container placement, or resource
-> limit enforcement. The opt-in nature of this mechanism allows us to pay the
-> flush cost only when precision is truly required.
-> 
->>>
->>> 3. Integration flexibility: Monitoring scripts can decide when to pay
->>>      the flush cost based on their specific accuracy requirements
->>
->> [...]
->>> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
->>> index c34029e92bab..d6a5d872fbcb 100644
->>> --- a/mm/memcontrol.c
->>> +++ b/mm/memcontrol.c
->>> @@ -4531,6 +4531,17 @@ int memory_stat_show(struct seq_file *m, void *v)
->>>        return 0;
->>>    }
->>>
->>> +int memory_stat_write(struct cgroup_subsys_state *css, struct cftype *cft, u64 val)
->>> +{
->>> +     if (val != 1)
->>> +             return -EINVAL;
->>> +
->>> +     if (css)
->>> +             css_rstat_flush(css);
->>
->> This is a kfunc. You can do this right now from a bpf program without
->> any kernel changes.
->>
-> 
-> While css_rstat_flush() is indeed available as a BPF kfunc, the practical
-> challenge is determining when to call it. The natural hook point would be
-> memory_stat_show() using fentry, but this runs into a BPF verifier
-> limitation: the function's 'struct seq_file *' argument doesn't provide a
-> trusted path to obtain the 'struct cgroup_subsys_state *css' pointer
-> required by css_rstat_flush().
+I think the reclaim target is a concept that is not just an
+implementation detail and hence it should be documented how it applies
+to protection configuration (the first patch). Second patch is a "best
+practice" bit of information, it may be squashed with the first one. The
+last patch just makes docs indefinite until the idea is implemented.
 
-Ok, I see this would only work on the css for base stats.
+Originally sent in [1], this is rebased and resent since I still think
+it'd be good to have the concept somewhere documented. (E.g. for the
+guys who are implementing protection for the dmem controller [2] to
+arrive at similar behavior.)
 
-SEC("iter.s/cgroup")
-int cgroup_memcg_query(struct bpf_iter__cgroup *ctx)
-{
-     struct cgroup *cgrp = ctx->cgroup;
-     struct cgroup_subsys_state *css;
+[1] https://lore.kernel.org/lkml/20200729140537.13345-1-mkoutny@suse.com/
+[2] https://lore.kernel.org/r/20251110-dmemcg-aggressive-protect-v3-5-219ffcfc54e9@gmx.de
 
-     if (!cgrp)
-         return 1;
+Michal Koutný (3):
+  docs: cgroup: Explain reclaim protection target
+  docs: cgroup: Note about sibling relative reclaim protection
+  docs: cgroup: No special handling of unpopulated memcgs
 
-     /* example of flushing css for base cpu stats
-      * css = container_of(cgrp, struct cgroup_subsys_state, cgroup);
-      * if (!css)
-      *     return 1;
-      * css_rstat_flush(css);
-      */
+ Documentation/admin-guide/cgroup-v2.rst | 31 ++++++++++++++++++++-----
+ 1 file changed, 25 insertions(+), 6 deletions(-)
 
-     /* get css for memcg stats */
-     css = cgrp->subsys[memory_cgrp_id];
-     if (!css)
-         return 1;
-     css_rstat_flush(css); <- confirm untrusted pointer arg error
-     ...
 
-> 
-> I attempted to implement this via BPF (code below), but it fails
-> verification because deriving the css pointer through
-> seq->private->kn->parent->priv results in an untrusted scalar that the
-> verifier rejects for the kfunc call:
-> 
->      R1 invalid mem access 'scalar'
-> 
-> The verifier error occurs because:
-> 1. seq->private is rdonly_untrusted_mem
-> 2. Dereferencing through kernfs_node internals produces untracked pointers
-> 3. css_rstat_flush() requires a trusted css pointer per its kfunc definition
-> 
-> A direct userspace interface (memory.stat_refresh) avoids these verifier
-> limitations and provides a cleaner, more maintainable solution that doesn't
-> require BPF expertise or complex workarounds.
+base-commit: 1c353dc8d962de652bc7ad2ba2e63f553331391c
+-- 
+2.51.1
 
-This is subjective. After hearing more about your use case and how you
-mention making critical decisions, you should have a look at the work
-being done on BPF OOM [0][1]. I think you would benefit from this
-series. Specifically for your case it provides the ability to flush
-memcg on demand and also fetch stats.
-
-[0] 
-https://lore.kernel.org/all/20251027231727.472628-1-roman.gushchin@linux.dev/
-[1] 
-https://lore.kernel.org/all/20251027232206.473085-2-roman.gushchin@linux.dev/
 
