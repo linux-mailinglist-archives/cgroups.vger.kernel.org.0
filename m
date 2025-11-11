@@ -1,192 +1,128 @@
-Return-Path: <cgroups+bounces-11813-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-11814-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id B4392C4E370
-	for <lists+cgroups@lfdr.de>; Tue, 11 Nov 2025 14:44:48 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 79443C4E412
+	for <lists+cgroups@lfdr.de>; Tue, 11 Nov 2025 14:56:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id EE38134AF18
-	for <lists+cgroups@lfdr.de>; Tue, 11 Nov 2025 13:44:47 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 12946189B79E
+	for <lists+cgroups@lfdr.de>; Tue, 11 Nov 2025 13:55:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B395B34250D;
-	Tue, 11 Nov 2025 13:44:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 19D3C35970F;
+	Tue, 11 Nov 2025 13:54:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="Uw7BhU3M"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="Lc4EF7rX"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-pf1-f179.google.com (mail-pf1-f179.google.com [209.85.210.179])
+Received: from mail-wm1-f45.google.com (mail-wm1-f45.google.com [209.85.128.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CBB7433BBB4
-	for <cgroups@vger.kernel.org>; Tue, 11 Nov 2025 13:44:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 706A727CCE2
+	for <cgroups@vger.kernel.org>; Tue, 11 Nov 2025 13:54:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762868682; cv=none; b=U6TIyi6kvGdEZwgUc5WEWEoWBOSbJhIEI+aQBd6hkXqavLOwfKvQI6D+rSmtevZIkcVxBUk9y0yDmFJMgYGdVKSihCdew+wtWrbdEZrhiVL/90XlV9DxOwo0xe6a5/BpYYEQwhlOeajAcu+fDYGC4Xt0jof5V7pfHZlgkYJhq4c=
+	t=1762869274; cv=none; b=C7PABw5N0PDPsYYRjIAT6dbsLHqpHtHrkDGqgTzR57nPrmWYg5St+zeJq3qPm2fm0D7v7wO/pAr+q0JPO7NKUecq+eZ+2CuWWifQDcd5I/TTJXt6/HlJdOY2+JnO0JIN2bZdpHEl0tM6p+bAxQ1OBNKDEGxuKG7ld4x9MSaNU7o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762868682; c=relaxed/simple;
-	bh=35g9I8Yb/hg4maMftzejHy/BrNK6ZvWVhKBVl/xDwn8=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=niJ0kYdQRZwO24pACbNLj+yq5x2ORxbPJn6Qzm8pSEOCwJQmSoiwtHVAQbQ7AVYF66F4vuSICRh6Hnjh5Lr8B77p580Tihd3V6nQ0xO8RPgc0RoCBlA8MDONJw+hUaUggwK88G3PbIF09Q/kitY//m1qGquhK/RVVtD3ks4I1AI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=Uw7BhU3M; arc=none smtp.client-ip=209.85.210.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
-Received: by mail-pf1-f179.google.com with SMTP id d2e1a72fcca58-7b22ffa2a88so2111491b3a.1
-        for <cgroups@vger.kernel.org>; Tue, 11 Nov 2025 05:44:40 -0800 (PST)
+	s=arc-20240116; t=1762869274; c=relaxed/simple;
+	bh=P6GNFkzn8TcXRgWxzpOmWVxQL+x4LYS/awOpWtj3rLo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Q0jOCHEQ9ASY5CPIR6Ew2zTMultRQz7HHt609nmWwTwmpmG6o68pc3q8gIMP4oyQwDEJTqC0ydJsP0JmTHtKqCVXDU8ssjGfTEqbJnCTFcciVH46TgR3d4X6XRzuO/R6iAYKBjA8g0iaD831HRtSF35oBs3hsJjoqqi3G2zAhVs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=Lc4EF7rX; arc=none smtp.client-ip=209.85.128.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-wm1-f45.google.com with SMTP id 5b1f17b1804b1-47118259fd8so29982085e9.3
+        for <cgroups@vger.kernel.org>; Tue, 11 Nov 2025 05:54:32 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1762868680; x=1763473480; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=jNls6INMU6jsxyZMe3CgvVJTOv7NvVA2mbafVbFewXM=;
-        b=Uw7BhU3MU0j/xbfAgNlTaLhCiwKe71Hye0wAIFI3zXQIA7dw9s8oYVf52hqtKU/e/w
-         SRu16jkWJDwtBaqaa6PCCrNa0Pb7zKt09a8QwuOEycwU48Q484WvxU508O/wRsGVNvLC
-         F6uwNgUc9lWdrZcqDmhVDaYismgwyOI0+2BxYOgijhrckneQB+UzqmPvsHFERxUHBN1F
-         s8PRHn0g0Wnealf9zkOgua64NlWCpBPS6dzm19MVOophrSBenZfIs+WMvWbdx+KsVVXb
-         Ka8Z7Unc4RYeifh76YIFCrlSauvzqm7QxBACQLR92WmfZjICE4POiyFtweP07080gy/z
-         11Mw==
+        d=suse.com; s=google; t=1762869271; x=1763474071; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=P6GNFkzn8TcXRgWxzpOmWVxQL+x4LYS/awOpWtj3rLo=;
+        b=Lc4EF7rXcN4CsD4RsUVl3OOq61QaHm0BkoNX5fv+U+nif72IulDQPsgiYoT7T9tj+I
+         1oQK3GtKb9v/4BKDDqzPyZtrb3x71+9IFN91s+BkGNjlbWhy4swQ0eolq9ESZDgss6HB
+         DRvYhiEeKqcYehzGoVxCH0GBEAp3xEwhULrJGvb2xpMb4A+IuEX0uELEcUQQDzer8C6T
+         nxOH2GdMhNZgwdxZgiV5nL+OPPIOdzEpOxw3H4S6yUs9VFCW3l1e6XATcA0q9y+UxTmY
+         tVmeIof/x6FdKMKIR/DlbO7FiW56qEJtajDRY6IWR/0sT4zfKfsRlZMA1v0M8uPQxI6i
+         yZUw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1762868680; x=1763473480;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=jNls6INMU6jsxyZMe3CgvVJTOv7NvVA2mbafVbFewXM=;
-        b=Lef4GYoG6ZyyC2gNethrnGxl0ExyOMAkaLiLswSKZBCuTh1TxRecZD3HPV7YA18gEX
-         j3dra4Ri2iBvSnfzh0CUFb3w8NWB4ikgOFHNS347StE67MLIEt5K2PdHXNcmAN0RIB/H
-         WJqwddd0LvjnWejE2xLRUX+K1E+Fwv7oBzpDKBmEnJv4xE3T2OB492HOxPv66RPZ0zYR
-         ycNL7MGJqdoMA+05BZu7AlGyiUxtTeHpZqdcH/gJ2VyV1o1aDuJZp3nvuw4MCusnW1MB
-         Ymda0c0UfCVaYrqCzCjGQc/wlAlvLgO7gxNmV7AZFv5/hW3ekIi1S6VMeX2DhnQ4f+/8
-         +0RA==
-X-Gm-Message-State: AOJu0Yx2gRUMNmDBBY8cfT2quo6Dc4mR8hMuTj+bTgQq1iWMLQXxXS8U
-	677qjhpuULQbu1ur3BtazhFoX75AsEXi/UAx6pGhwuR6xBLrp3DS8AdlE0Zvq9QiP1HdaOWEcGr
-	CMMhXqAM=
-X-Gm-Gg: ASbGncsANpkWKLN09vw+x16uASL1H9CHfMjDbABdNMpQE5xky1ccuKjKcOOrlrbklLw
-	Pgt4G9xNDK5HcCvhOwnyx/16v9xHy32oTVAeKUy2WI6CDBGoWCl5TGirDsOlmqTwkR/oGUNp+dy
-	Mv73Nsd1ozI+eOSa96BZPATsL2U2nCrJw7IBk+dPh3ymLQef0nY4XCArnEgQzADPRSYDfsYgmnf
-	WHUgaaHadAMfRe/rN2wjFAveWsyqLN3lRLcMjMqEzCJ1/8H5z3H5ljcMEsrXD6GB83UuvCKWxOJ
-	eUNusfQBv+khbI+8DTZeD7D4y4/02sDlYzojcpvzFzhJK0hxJe/Fd7wpFpI1sErV+B6qAUZBLK4
-	QWBcIgeHn9pHy6gdYIj3vePJW31nQILs3zj1kTIRuW3qs32IlSnOKUXYWUEjkYLoM1Vmizazawc
-	3sfVEAUitRTcYMQ/mtwZZmhhZbnUF57Q2vKBCwE6afiBDeZZJ5IQ==
-X-Google-Smtp-Source: AGHT+IHVprBtd3SLMYC24KqamhEauYMeVGyVRUgYiCi6o4kUbc1FsyNW+cFWnBqsD+7zVZokvRrhLQ==
-X-Received: by 2002:a05:6a21:4ccc:b0:340:db9b:cffa with SMTP id adf61e73a8af0-353a11b1731mr12268324637.9.1762868679966;
-        Tue, 11 Nov 2025 05:44:39 -0800 (PST)
-Received: from K4L2F221J6.bytedance.net ([203.208.167.150])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-7b0c953e2a4sm15772351b3a.6.2025.11.11.05.44.37
-        (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
-        Tue, 11 Nov 2025 05:44:39 -0800 (PST)
-From: Wenyu Liu <liuwenyu.0311@bytedance.com>
-To: tj@kernel.org,
-	hannes@cmpxchg.org,
-	mkoutny@suse.com
-Cc: cgroups@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Wenyu Liu <liuwenyu.0311@bytedance.com>
-Subject: [PATCH] cgroup: Improve cgroup_addrm_files remove files handling
-Date: Tue, 11 Nov 2025 21:44:27 +0800
-Message-Id: <20251111134427.96430-1-liuwenyu.0311@bytedance.com>
-X-Mailer: git-send-email 2.39.3 (Apple Git-146)
+        d=1e100.net; s=20230601; t=1762869271; x=1763474071;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=P6GNFkzn8TcXRgWxzpOmWVxQL+x4LYS/awOpWtj3rLo=;
+        b=jKafDqRBqGQRLsCpvCGU6+80cqBCzIZGURFYhtgEBDeS5UgU975ph9i0qFtl9o8r5h
+         HnbDK0BcVCTPkRP+CqZtxs3Bqag1ZsB/m7xoh1jLi2Fixwu6N8XoLwx8sgEDDOV/Gf6O
+         mar3Uhw1ZBnJAPOA72NHFP20J42m8cezFlr4On1ViPJ1x7BHcKOl6ZUeaFsp2c/9oTNK
+         yFQE3oxlivmOEmVfEjhC1o7eUU3sVe5onMPqmY+mJR5ULI+5NFruDiNMnlgx/rGFMAYf
+         4fPxQDQA5YMhEulBUvMTSHzS9mHXZmkmogmIkFxmk31fB4z246NadHQ8qwwvrSsWJqU+
+         x0Rw==
+X-Forwarded-Encrypted: i=1; AJvYcCVN1H3pAEjweAATdAizNa/aLw0QBGHx2xF9kFNgqjbVTVclOLyn9YPDdOoY2c8HOJe9w+JWeGuz@vger.kernel.org
+X-Gm-Message-State: AOJu0YzOzNDo2GT1jvTxqbVaqPyaBu02lHFWIn/haKCsaTIspNIzcZ2u
+	dELJHx7RXilEBpDzNYUEgKG4DAQii9wrBIAKdCQb2w2a6p/xhVGZ1dKrjuS2RA7ipSA=
+X-Gm-Gg: ASbGnct1Qi//1uzzzCdW4SlBk8RZKukB7NoYpe7qh2ExNmuV757UDN9vWPAbsTnLsCp
+	wXDulUntuXXjljdCPQB4ryonXbj8E0CVT2M9THm0dDy7kvozrKyESBwKmjYHpYnTPoXNt0NMo2i
+	jFYyZZkfbVS+hk0YJgSveWuMt699iACdbbp1AYxTp8KuJnwANpcSkQzXbPjtAksIjQfxS+GhCwv
+	LakWjzYw7yApX4nzxh1mrEmkqFLXRmhWDOIEe1pZsIIE4BdbPhPSd8w/XkrG69OnF3rSqw8pqCL
+	JT1/Tde8yvgBY8kSLsEeyGa32Io1MWv+pvaNyDmatoQeelovpCUEykLKNQ10ny68+ADzwILdgGs
+	0PRJGidl2YfiLiswXD3nF2U36CwnUHtDPa+sWxIzDSHZ+ocUtRZEbnR+ArPHUevHTqFCG5N4NYr
+	YJnvCQW5fkQiriBXH4hCidFu9VBkuao6k=
+X-Google-Smtp-Source: AGHT+IHMToJMTHnk0Sjr4OhFA30NqCu+I6pfjVpcEXbS9ImlNQd/QJ6+y0oX5fqt6AJuI1o5RGkDjg==
+X-Received: by 2002:a05:600c:4594:b0:477:942:7521 with SMTP id 5b1f17b1804b1-4777323eeb7mr91052805e9.14.1762869270698;
+        Tue, 11 Nov 2025 05:54:30 -0800 (PST)
+Received: from blackdock.suse.cz (nat2.prg.suse.com. [195.250.132.146])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-47782ceb0f9sm32628105e9.4.2025.11.11.05.54.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 11 Nov 2025 05:54:30 -0800 (PST)
+Date: Tue, 11 Nov 2025 14:54:28 +0100
+From: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
+To: Wenyu Liu <liuwenyu.0311@bytedance.com>
+Cc: tj@kernel.org, hannes@cmpxchg.org, cgroups@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] cgroup: Improve cgroup_addrm_files remove files handling
+Message-ID: <gbmz65zlanqe7p4iw6or4jqxilpv626zp4ktf6bigxs6ni2vdo@kprxb7s73qgb>
+References: <20251111134427.96430-1-liuwenyu.0311@bytedance.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="wvlhdmpdiubfdwdh"
+Content-Disposition: inline
+In-Reply-To: <20251111134427.96430-1-liuwenyu.0311@bytedance.com>
 
-For now cgroup_apply_cftypes(cfts, is_add) with `is_add` false
-will remove all the cftype files in `cfts` array, this can lead
-to some unexpected behaviors in some abnormal situation.
 
-Consider this situation: if we have two cftype arrays A and B
-which contain the exact same files, and we add this two cftypes
-with cgroup_add_cftypes().
+--wvlhdmpdiubfdwdh
+Content-Type: text/plain; protected-headers=v1; charset=us-ascii
+Content-Disposition: inline
+Subject: Re: [PATCH] cgroup: Improve cgroup_addrm_files remove files handling
+MIME-Version: 1.0
 
-We can correctly add files from A, but adding B will delete all
-files previously added from A.
+Hi Wenyu.
 
-When adding cftype files of B:
-cgroup_add_cftypes
-  ->cgroup_apply_cftypes
-      ->cgroup_addrm_files (failed with -EEXIST)
-  ->cgroup_rm_cftypes_locked (this will delete all files added from A)
+On Tue, Nov 11, 2025 at 09:44:27PM +0800, Wenyu Liu <liuwenyu.0311@bytedance.com> wrote:
+> Consider this situation: if we have two cftype arrays A and B
+> which contain the exact same files, and we add this two cftypes
+> with cgroup_add_cftypes().
 
-Even worse thing is that if we add B again at this point,
-we can successfully create these files, but there will be two cftys
-nodes (A and B) on the ss->cftys list at the same time.
+Do you have more details about this situation?
+Does this happen with any of the mainline controllers?
 
-    ss        A|0|1|2|3|...|   B|0|1|2|3|...|
- +------+       |                |
- |      |       +          +-----+
- +------+       |          |
- | cfts |<-->|node|<--->|node|<--->|...|
- +------+
+Thanks,
+Michal
 
-This will lead to all hierarchies that apply this ss controller
-to be unable to create any directory:
-cgroup_mkdir
-  ->cgroup_apply_control_enable
-    ->css_populate_dir
-      ->cgroup_addrm_files (will return -EEXIST when handling node of B)
+--wvlhdmpdiubfdwdh
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Add a new flag __CFTYPE_ADDRM_END to track the end cft if something
-wrong with cgroup_addrm_files() add files, make sure we only remove
-the cftype files that were successfully added.
+-----BEGIN PGP SIGNATURE-----
 
-Signed-off-by: Wenyu Liu <liuwenyu.0311@bytedance.com>
----
- include/linux/cgroup-defs.h | 1 +
- kernel/cgroup/cgroup.c      | 8 ++++----
- 2 files changed, 5 insertions(+), 4 deletions(-)
+iJEEABYKADkWIQRCE24Fn/AcRjnLivR+PQLnlNv4CAUCaRNAEBsUgAAAAAAEAA5t
+YW51MiwyLjUrMS4xMSwyLDIACgkQfj0C55Tb+Ai/EwEA9e6PnEEBOoLhC0CzLK86
+2RY/swr1ksmy+r9aHBwrZd4BAMMsmAU+h+i/JmiGtCaXwilw8j0HOOIp2mJFJjyL
+SDcB
+=dvQ2
+-----END PGP SIGNATURE-----
 
-diff --git a/include/linux/cgroup-defs.h b/include/linux/cgroup-defs.h
-index 93318fce31f3..7ad98048ca23 100644
---- a/include/linux/cgroup-defs.h
-+++ b/include/linux/cgroup-defs.h
-@@ -144,6 +144,7 @@ enum {
- 	__CFTYPE_ONLY_ON_DFL	= (1 << 16),	/* only on default hierarchy */
- 	__CFTYPE_NOT_ON_DFL	= (1 << 17),	/* not on default hierarchy */
- 	__CFTYPE_ADDED		= (1 << 18),
-+	__CFTYPE_ADDRM_END  = (1 << 19),
- };
- 
- enum cgroup_attach_lock_mode {
-diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
-index 6ae5f48cf64e..0d7d3079e635 100644
---- a/kernel/cgroup/cgroup.c
-+++ b/kernel/cgroup/cgroup.c
-@@ -4453,13 +4453,13 @@ static int cgroup_addrm_files(struct cgroup_subsys_state *css,
- 			      struct cgroup *cgrp, struct cftype cfts[],
- 			      bool is_add)
- {
--	struct cftype *cft, *cft_end = NULL;
-+	struct cftype *cft;
- 	int ret = 0;
- 
- 	lockdep_assert_held(&cgroup_mutex);
- 
- restart:
--	for (cft = cfts; cft != cft_end && cft->name[0] != '\0'; cft++) {
-+	for (cft = cfts; !(cft->flags & __CFTYPE_ADDRM_END) && cft->name[0] != '\0'; cft++) {
- 		/* does cft->flags tell us to skip this file on @cgrp? */
- 		if ((cft->flags & __CFTYPE_ONLY_ON_DFL) && !cgroup_on_dfl(cgrp))
- 			continue;
-@@ -4476,7 +4476,7 @@ static int cgroup_addrm_files(struct cgroup_subsys_state *css,
- 			if (ret) {
- 				pr_warn("%s: failed to add %s, err=%d\n",
- 					__func__, cft->name, ret);
--				cft_end = cft;
-+				cft->flags |= __CFTYPE_ADDRM_END;
- 				is_add = false;
- 				goto restart;
- 			}
-@@ -4526,7 +4526,7 @@ static void cgroup_exit_cftypes(struct cftype *cfts)
- 
- 		/* revert flags set by cgroup core while adding @cfts */
- 		cft->flags &= ~(__CFTYPE_ONLY_ON_DFL | __CFTYPE_NOT_ON_DFL |
--				__CFTYPE_ADDED);
-+				__CFTYPE_ADDED | __CFTYPE_ADDRM_END);
- 	}
- }
- 
--- 
-2.39.3 (Apple Git-146)
-
+--wvlhdmpdiubfdwdh--
 
