@@ -1,46 +1,46 @@
-Return-Path: <cgroups+bounces-11821-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-11822-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8CE69C4F84C
-	for <lists+cgroups@lfdr.de>; Tue, 11 Nov 2025 19:58:42 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 73255C4F84F
+	for <lists+cgroups@lfdr.de>; Tue, 11 Nov 2025 19:58:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A803E1896050
-	for <lists+cgroups@lfdr.de>; Tue, 11 Nov 2025 18:59:02 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0EE4B3B3D0C
+	for <lists+cgroups@lfdr.de>; Tue, 11 Nov 2025 18:58:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6393E2C325A;
-	Tue, 11 Nov 2025 18:58:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 11DA42C326B;
+	Tue, 11 Nov 2025 18:58:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="rHob7y7U"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="CAmFJeGW"
 X-Original-To: cgroups@vger.kernel.org
-Received: from out-174.mta0.migadu.com (out-174.mta0.migadu.com [91.218.175.174])
+Received: from out-183.mta1.migadu.com (out-183.mta1.migadu.com [95.215.58.183])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5084A2C3248
-	for <cgroups@vger.kernel.org>; Tue, 11 Nov 2025 18:58:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DDF862C3248
+	for <cgroups@vger.kernel.org>; Tue, 11 Nov 2025 18:58:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.183
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762887513; cv=none; b=aptupP2t29UpylLJXUc8LdUCjPv5BgftZ/MHFRgFI+BEP4WJenrBjIC1fOe7azJ2v6zbhUXfsQdn/qbmThuSQXWo1BQSVk2jzCdNu5funGws+jdJLobWgTEOHq1/YCO+XJoVi0zXIVZSgc6//+6yLRpyImRIw6P43NBTBdincw8=
+	t=1762887525; cv=none; b=n7ynxcyJM/xua77bUFbH6lgyPSD4do8/dAhzJFJE1D3Px9jwbfGQXQ7PbyrmtN3rNEd4adcEQIIDht8MeHtpEZEwyikP56FCKT4BxO3p+9YEtKbP/1RL53ySYwXS6Tf31TAxLEdfHiQMVFEEA7m91ZbKig4Uv5JgiL8RlY12UQA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762887513; c=relaxed/simple;
-	bh=Kx+FXBuhKKRAGKrr5/plFPqCKumMeNYYYtkhE4HBypE=;
+	s=arc-20240116; t=1762887525; c=relaxed/simple;
+	bh=AGVQvQg8MiLEgx1G3pQPBT8+hmFVeqeHvps6Z7l8J/w=;
 	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=SPOiWyO931HCUZt0zfeJydbasn1plFPpC4keyTWvd4k6stEH2pHBcZyks7RAJqrrcrZSKqLXoR/jwQVDAigB4pv5Cz3NNV88rBs4VMsSQ++bthxmF9rPaEoUdG7/ky6pM5CB98WPP851+8CX8Bnw2aVtQ9XYhuC/bQ5NRz7507s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=rHob7y7U; arc=none smtp.client-ip=91.218.175.174
+	 MIME-Version:Content-Type; b=kLfKYrp/dyqhtS/gzv8vzoArr9moxxjuQOXyfQpaPKZHS2olYv58VzvIJT7VWTYxlwaQaX8R+Gaj5lMf1j9UnkqatDxJIY9OE67tDXlOL+QSOdJdGwOfqTDLYkOx//UeVRfiSQqKwSc76Xz+ATZBgnntwZnERV6ve90FlSDVqO8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=CAmFJeGW; arc=none smtp.client-ip=95.215.58.183
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1762887495;
+	t=1762887520;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=Kx+FXBuhKKRAGKrr5/plFPqCKumMeNYYYtkhE4HBypE=;
-	b=rHob7y7UWymH1inhA1ByOYabtPCUkfecfAjIaljlgEHiACDBJFHtSRnSanQ5oSsgZ5Z1fH
-	z8kMqD4pdBecZSRUvP+pOZ00ZD+9iEjeQ8tA9GB2z/gu5UR5HxNvSKYl0XRxAuNjm27kt4
-	d/V9G4AruJodXnPdobBbAcDYHa4jikc=
+	bh=AGVQvQg8MiLEgx1G3pQPBT8+hmFVeqeHvps6Z7l8J/w=;
+	b=CAmFJeGWCZJN57MY4gwWybs2dREiErDYue/5FkpwaTUcKoSHRYBd+iwgP58+4Ya76HjQaQ
+	aTh8usMbQC2DeyEzHeLKJQBPTjn/lvHDdqglejQE+XTtesJbXwIgdjEyyGCRDD9nauKniU
+	urGosVTQFZPdErlV2MyeoZQoQWc4vRc=
 From: Roman Gushchin <roman.gushchin@linux.dev>
 To: Shakeel Butt <shakeel.butt@linux.dev>
 Cc: Andrew Morton <akpm@linux-foundation.org>,  Johannes Weiner
@@ -49,13 +49,13 @@ Cc: Andrew Morton <akpm@linux-foundation.org>,  Johannes Weiner
  <qi.zheng@linux.dev>,  Vlastimil Babka <vbabka@suse.cz>,
   linux-mm@kvack.org,  cgroups@vger.kernel.org,
   linux-kernel@vger.kernel.org,  Meta kernel team <kernel-team@meta.com>
-Subject: Re: [PATCH 1/4] memcg: use mod_node_page_state to update stats
-In-Reply-To: <20251110232008.1352063-2-shakeel.butt@linux.dev> (Shakeel Butt's
-	message of "Mon, 10 Nov 2025 15:20:05 -0800")
+Subject: Re: [PATCH 2/4] memcg: remove __mod_lruvec_kmem_state
+In-Reply-To: <20251110232008.1352063-3-shakeel.butt@linux.dev> (Shakeel Butt's
+	message of "Mon, 10 Nov 2025 15:20:06 -0800")
 References: <20251110232008.1352063-1-shakeel.butt@linux.dev>
-	<20251110232008.1352063-2-shakeel.butt@linux.dev>
-Date: Tue, 11 Nov 2025 10:58:08 -0800
-Message-ID: <87zf8ss8fz.fsf@linux.dev>
+	<20251110232008.1352063-3-shakeel.butt@linux.dev>
+Date: Tue, 11 Nov 2025 10:58:30 -0800
+Message-ID: <87qzu4s8fd.fsf@linux.dev>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -67,13 +67,10 @@ X-Migadu-Flow: FLOW_OUT
 
 Shakeel Butt <shakeel.butt@linux.dev> writes:
 
-> The memcg stats are safe against irq (and nmi) context and thus does not
-> require disabling irqs. However some code paths for memcg stats also
-> update the node level stats and use irq unsafe interface and thus
-> require the users to disable irqs. However node level stats, on
-> architectures with HAVE_CMPXCHG_LOCAL (all major ones), has interface
-> which does not require irq disabling. Let's move memcg stats code to
-> start using that interface for node level stats.
+> The __mod_lruvec_kmem_state is already safe against irqs, so there is no
+> need to have a separate interface (i.e. mod_lruvec_kmem_state) which
+> wraps calls to it with irq disabling and reenabling. Let's rename
+> __mod_lruvec_kmem_state to mod_lruvec_kmem_state.
 >
 > Signed-off-by: Shakeel Butt <shakeel.butt@linux.dev>
 
