@@ -1,82 +1,81 @@
-Return-Path: <cgroups+bounces-11820-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-11821-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id EEEC8C4F822
-	for <lists+cgroups@lfdr.de>; Tue, 11 Nov 2025 19:52:07 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8CE69C4F84C
+	for <lists+cgroups@lfdr.de>; Tue, 11 Nov 2025 19:58:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id DEE114E9EC3
-	for <lists+cgroups@lfdr.de>; Tue, 11 Nov 2025 18:52:06 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A803E1896050
+	for <lists+cgroups@lfdr.de>; Tue, 11 Nov 2025 18:59:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B333329BDB3;
-	Tue, 11 Nov 2025 18:52:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6393E2C325A;
+	Tue, 11 Nov 2025 18:58:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hJaY3/c4"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="rHob7y7U"
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out-174.mta0.migadu.com (out-174.mta0.migadu.com [91.218.175.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 689AB3AA19B;
-	Tue, 11 Nov 2025 18:52:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5084A2C3248
+	for <cgroups@vger.kernel.org>; Tue, 11 Nov 2025 18:58:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762887122; cv=none; b=VtJFgxERkUY8fXmYKiFV/g/cqoTVlU+Ip2m3Opa0YeQDuPTnZOvAkBXk3h+PdkXV+4QRD42MVv73KDBAKVBKr0sZScmBMvPy9wvVstETFVflehksF1XosrabAH5vR/A9CVpwuTLgaoMEdhqHw9N63oyRCroyvk629CDGF8UohJ4=
+	t=1762887513; cv=none; b=aptupP2t29UpylLJXUc8LdUCjPv5BgftZ/MHFRgFI+BEP4WJenrBjIC1fOe7azJ2v6zbhUXfsQdn/qbmThuSQXWo1BQSVk2jzCdNu5funGws+jdJLobWgTEOHq1/YCO+XJoVi0zXIVZSgc6//+6yLRpyImRIw6P43NBTBdincw8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762887122; c=relaxed/simple;
-	bh=wKqIegUi0DiJka0SaYsAR82k/GO5oanlw/ZrqT+rYI4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=eRaEEZ6x8DL4YFhO/aFSbo6J4lErvPaKMJtsAoEeFK2d6bX/f3ZyGdp8UI+oKpujdUwwrln5M1ZrJXjgTrApI7uqU+yqi3YQB9r+50sAM3R8lYq5mnIXiYKjB1IYvcXcWV9a7N5Ro0Evyz78wEZ0iVodakjanUCgqQBbJjPWKQw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hJaY3/c4; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AFDF5C2BC86;
-	Tue, 11 Nov 2025 18:52:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1762887121;
-	bh=wKqIegUi0DiJka0SaYsAR82k/GO5oanlw/ZrqT+rYI4=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=hJaY3/c4Hz0IicNy9MoLgjQ72hFd73LWM4TMqP63GTIdB5LtGou1hjNDUDGl+e7zD
-	 AT6j1WygoT+efMp5+V2fSzW03Cm+yUOQUbt42/hpdA2H4tZckgvVxWisb1xdKNSWal
-	 f/bPa+DZO92VdcbG49H/eXwNxeehNe6TnMde639i1q9Un8Jq0i+x5usTEbtkDlYX/S
-	 Pb1PB14S2v+U/XSQt8C6/C+niFgrViOBm/icjKuwBROUgkWHgCALRlB6UybWi9e4GJ
-	 fXObnVEmiXEAFwUpr/hOzM6bwlPNmfXhiDxOGdi/z40pF6S6E/XfkVvN4u02zuI/yo
-	 mkVtoSvrX+DQA==
-Date: Tue, 11 Nov 2025 08:52:00 -1000
-From: Tejun Heo <tj@kernel.org>
-To: Leon Huang Fu <leon.huangfu@shopee.com>
-Cc: mkoutny@suse.com, akpm@linux-foundation.org, cgroups@vger.kernel.org,
-	corbet@lwn.net, hannes@cmpxchg.org, jack@suse.cz,
-	joel.granados@kernel.org, kyle.meyer@hpe.com, lance.yang@linux.dev,
-	laoar.shao@gmail.com, linux-doc@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-	mclapinski@google.com, mhocko@kernel.org, muchun.song@linux.dev,
-	roman.gushchin@linux.dev, shakeel.butt@linux.dev
-Subject: Re: [PATCH mm-new v3] mm/memcontrol: Add memory.stat_refresh for
- on-demand stats flushing
-Message-ID: <aROF0BXEJtCM7c12@slm.duckdns.org>
-References: <ewcsz3553cd6ooslgzwbubnbaxwmpd23d2k7pw5s4ckfvbb7sp@dffffjvohz5b>
- <20251111061343.71045-1-leon.huangfu@shopee.com>
+	s=arc-20240116; t=1762887513; c=relaxed/simple;
+	bh=Kx+FXBuhKKRAGKrr5/plFPqCKumMeNYYYtkhE4HBypE=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=SPOiWyO931HCUZt0zfeJydbasn1plFPpC4keyTWvd4k6stEH2pHBcZyks7RAJqrrcrZSKqLXoR/jwQVDAigB4pv5Cz3NNV88rBs4VMsSQ++bthxmF9rPaEoUdG7/ky6pM5CB98WPP851+8CX8Bnw2aVtQ9XYhuC/bQ5NRz7507s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=rHob7y7U; arc=none smtp.client-ip=91.218.175.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1762887495;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Kx+FXBuhKKRAGKrr5/plFPqCKumMeNYYYtkhE4HBypE=;
+	b=rHob7y7UWymH1inhA1ByOYabtPCUkfecfAjIaljlgEHiACDBJFHtSRnSanQ5oSsgZ5Z1fH
+	z8kMqD4pdBecZSRUvP+pOZ00ZD+9iEjeQ8tA9GB2z/gu5UR5HxNvSKYl0XRxAuNjm27kt4
+	d/V9G4AruJodXnPdobBbAcDYHa4jikc=
+From: Roman Gushchin <roman.gushchin@linux.dev>
+To: Shakeel Butt <shakeel.butt@linux.dev>
+Cc: Andrew Morton <akpm@linux-foundation.org>,  Johannes Weiner
+ <hannes@cmpxchg.org>,  Michal Hocko <mhocko@kernel.org>,  Muchun Song
+ <muchun.song@linux.dev>,  Harry Yoo <harry.yoo@oracle.com>,  Qi Zheng
+ <qi.zheng@linux.dev>,  Vlastimil Babka <vbabka@suse.cz>,
+  linux-mm@kvack.org,  cgroups@vger.kernel.org,
+  linux-kernel@vger.kernel.org,  Meta kernel team <kernel-team@meta.com>
+Subject: Re: [PATCH 1/4] memcg: use mod_node_page_state to update stats
+In-Reply-To: <20251110232008.1352063-2-shakeel.butt@linux.dev> (Shakeel Butt's
+	message of "Mon, 10 Nov 2025 15:20:05 -0800")
+References: <20251110232008.1352063-1-shakeel.butt@linux.dev>
+	<20251110232008.1352063-2-shakeel.butt@linux.dev>
+Date: Tue, 11 Nov 2025 10:58:08 -0800
+Message-ID: <87zf8ss8fz.fsf@linux.dev>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20251111061343.71045-1-leon.huangfu@shopee.com>
+Content-Type: text/plain
+X-Migadu-Flow: FLOW_OUT
 
-On Tue, Nov 11, 2025 at 02:13:42PM +0800, Leon Huang Fu wrote:
-> We are going to run kernels on 224/256 cores machines, and the flush threshold
-> is 16384 on a 256-core machine. That means we will have stale statistics often,
-> and we will need a way to improve the stats accuracy.
+Shakeel Butt <shakeel.butt@linux.dev> writes:
 
-The thing is that these machines are already common and going to be more and
-more common. These are cases that aren't all that special, so I really hope
-this could be solved in a more generic manner.
+> The memcg stats are safe against irq (and nmi) context and thus does not
+> require disabling irqs. However some code paths for memcg stats also
+> update the node level stats and use irq unsafe interface and thus
+> require the users to disable irqs. However node level stats, on
+> architectures with HAVE_CMPXCHG_LOCAL (all major ones), has interface
+> which does not require irq disabling. Let's move memcg stats code to
+> start using that interface for node level stats.
+>
+> Signed-off-by: Shakeel Butt <shakeel.butt@linux.dev>
 
-Thanks.
-
--- 
-tejun
+Acked-by: Roman Gushchin <roman.gushchin@linux.dev>
 
