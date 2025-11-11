@@ -1,70 +1,58 @@
-Return-Path: <cgroups+bounces-11818-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-11819-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id DF4E0C4F1B5
-	for <lists+cgroups@lfdr.de>; Tue, 11 Nov 2025 17:46:57 +0100 (CET)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6C651C4F1A9
+	for <lists+cgroups@lfdr.de>; Tue, 11 Nov 2025 17:46:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 19A033BC00D
-	for <lists+cgroups@lfdr.de>; Tue, 11 Nov 2025 16:44:48 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id C107834C8A1
+	for <lists+cgroups@lfdr.de>; Tue, 11 Nov 2025 16:46:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A4A73730D9;
-	Tue, 11 Nov 2025 16:44:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 75F1B3730C9;
+	Tue, 11 Nov 2025 16:46:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="rfXPZSdW"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="F9eTogNq"
 X-Original-To: cgroups@vger.kernel.org
-Received: from out-170.mta1.migadu.com (out-170.mta1.migadu.com [95.215.58.170])
+Received: from out-170.mta0.migadu.com (out-170.mta0.migadu.com [91.218.175.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 46B9A36CE1E
-	for <cgroups@vger.kernel.org>; Tue, 11 Nov 2025 16:44:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D05C36998F
+	for <cgroups@vger.kernel.org>; Tue, 11 Nov 2025 16:46:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762879481; cv=none; b=n7tet8bLPe9+WTd2km7Yl7z67OzdHzM+ZQNUbCIqC7fvFmAccUqPg96XkmXRNU8+MYlqsF+8hI7Sw6DzrHoXn1Alebi1YXVbBw4fPBblIYuAfAb2fS/m0L3HTQWVXxivzhtSueFFXebW0ExCz+p3vVMEKRAR9Qzc4Zn5TPP6R1Q=
+	t=1762879572; cv=none; b=K6AFdQQDsHh46tzkWMiiV3E8nw+3sn+n6heGj0t9R1RyyrFMuXuO9UBqXk2p/e5AOx5/M5Y87pi29G/Au5vIDoqDx1uOcmOS45Fh5SfTQFXeX5bZMjilhxDUdtG+LwrvHiFYjiYl9C7elZTZdFKqLjDTP5geDHciY3hNPcSitDs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762879481; c=relaxed/simple;
-	bh=4cFlTn1ndDkONGK1hqa3YKpwy44LbNZPfGhXgFQq30w=;
+	s=arc-20240116; t=1762879572; c=relaxed/simple;
+	bh=6asq6D0YWk1clzZ0WCtlMvMA5lEjdT6pWxHqsmk527s=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=WWkE4RdSpQgM3huEhEx7SUva3bUHoKNuXlpYnNENsvGGSWc3E32+rPPnTa9TyqiFL4SFOfZ6THEnjmaO3QXXdFSRCQLyfAydBDaHEfCyEOAbCKFwu8nTwzrtHsdFLzb8cgMA33AITVGdQXW5JC+P98+X4ayOkfn3nuuCnuUrW1A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=rfXPZSdW; arc=none smtp.client-ip=95.215.58.170
+	 Content-Type:Content-Disposition:In-Reply-To; b=CwTUPxIg77tX6qytOrq8FKv0Bw9B8mIPVUD5NDgkYXCF4+B3UsOBhLXKkfVay0RGKAOjL4rAchKUWcQQfGXg1PlQ9S7+/qfYpxRZ7fBa2JM5huLdEjtiVNdy431w+f+tc4DGDRk3ZAPJRjpp0E2hREj8SySncvMBTo6q+UkGqPE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=F9eTogNq; arc=none smtp.client-ip=91.218.175.170
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Tue, 11 Nov 2025 08:44:14 -0800
+Date: Tue, 11 Nov 2025 08:45:46 -0800
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1762879463;
+	t=1762879554;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=AFGArA0AwyLodhjb1ON/WMsB8iA1cwp5MzvB1sHE/Ws=;
-	b=rfXPZSdWWJKvfp/fyeozoSkkYJwyDMDkRUVrEra7CvbSs6AFwxYotJETtKrWvS3TJZRC2h
-	Arwcb/Xt1oFuQUnzOeHaCFe/795zZ0GNk5RO/LZXgNAfpb+qLnIUjCIe0slSEGkSjAeNYH
-	bROAJPYA4Fq3TcbIL99NO0L3yuoCXjU=
+	bh=QwOueIDR7iQLq0yktgbr0XMz1VzOnqj2R/QpQ9bY1ZU=;
+	b=F9eTogNqMIrPlvSuExmQ7EbcOmA1oJ69tHiAS8UUnOhVS46t4pAhkZk06/DWTS/NIUIpNb
+	+/DQ/LxknjCDPtzBy6dEgLfsIALH8ubWqhQMCDNWkTDOMj881YgTFWO1j7vJ0gKl+Up/1a
+	D1/ypSEWvsjRVuIdcvJ94kIBOg8oezU=
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 From: Shakeel Butt <shakeel.butt@linux.dev>
-To: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc: Harry Yoo <harry.yoo@oracle.com>, Qi Zheng <qi.zheng@linux.dev>, 
-	hannes@cmpxchg.org, hughd@google.com, mhocko@suse.com, roman.gushchin@linux.dev, 
-	muchun.song@linux.dev, david@redhat.com, lorenzo.stoakes@oracle.com, ziy@nvidia.com, 
-	imran.f.khan@oracle.com, kamalesh.babulal@oracle.com, axelrasmussen@google.com, 
-	yuanchu@google.com, weixugc@google.com, akpm@linux-foundation.org, 
-	linux-mm@kvack.org, linux-kernel@vger.kernel.org, cgroups@vger.kernel.org, 
-	Muchun Song <songmuchun@bytedance.com>, Qi Zheng <zhengqi.arch@bytedance.com>, 
-	Clark Williams <clrkwllms@kernel.org>, Steven Rostedt <rostedt@goodmis.org>, 
-	linux-rt-devel@lists.linux.dev
-Subject: Re: [PATCH v1 04/26] mm: vmscan: refactor move_folios_to_lru()
-Message-ID: <jzihvbb6w26d4codfigy2o7b2h26izb4ahihouw54cvuzau54d@jyaa6rgpzuai>
-References: <366385a3-ed0e-440b-a08b-9cf14165ee8f@linux.dev>
- <aQ3yLER4C4jY70BH@harry>
- <hfutmuh4g5jtmrgeemq2aqr2tvxz6mnqaxo5l5vddqnjasyagi@gcscu5khrjxm>
- <aRFKY5VGEujVOqBc@hyeyoo>
- <2a68bddf-e6e6-4960-b5bc-1a39d747ea9b@linux.dev>
- <aRF7eYlBKmG3hEFF@hyeyoo>
- <aqdvjyzfk6vpespzcszfkmx522iy7hvddefcjgusrysglpdykt@uqedtngotzmy>
- <8d6655f8-2756-45bb-85c1-223c3a5e656c@linux.dev>
- <aRKqm24Lrg-JnCoh@hyeyoo>
- <20251111084900.babaOj0w@linutronix.de>
+To: Qi Zheng <qi.zheng@linux.dev>
+Cc: Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>, 
+	Roman Gushchin <roman.gushchin@linux.dev>, Muchun Song <muchun.song@linux.dev>, 
+	Harry Yoo <harry.yoo@oracle.com>, Vlastimil Babka <vbabka@suse.cz>, linux-mm@kvack.org, 
+	cgroups@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	Meta kernel team <kernel-team@meta.com>, Andrew Morton <akpm@linux-foundation.org>
+Subject: Re: [PATCH 0/4] memcg: cleanup the memcg stats interfaces
+Message-ID: <xjwmyqdjynpeuqtgxiz3igynjl4ywopdc33lteidgmp5yez2ed@pbdfsekytezn>
+References: <20251110232008.1352063-1-shakeel.butt@linux.dev>
+ <0618ea79-fed3-4d4d-9573-2be49de728cf@linux.dev>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -73,44 +61,27 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20251111084900.babaOj0w@linutronix.de>
+In-Reply-To: <0618ea79-fed3-4d4d-9573-2be49de728cf@linux.dev>
 X-Migadu-Flow: FLOW_OUT
 
-On Tue, Nov 11, 2025 at 09:49:00AM +0100, Sebastian Andrzej Siewior wrote:
-> On 2025-11-11 12:16:43 [+0900], Harry Yoo wrote:
-> > > However, in the !CONFIG_HAVE_CMPXCHG_LOCAL case, mod_node_page_state()
-> > > still calls local_irq_save(). Is this feasible in the PREEMPT_RT kernel?
-> > 
-> > Hmm I was going to say it's necessary, but AFAICT we don't allocate
-> > or free memory in hardirq context on PREEMPT_RT (that's the policy)
-> > and so I'd say it's not necessary to disable IRQs.
-> > 
-> > Sounds like we still want to disable IRQs only on !PREEMPT_RT on
-> > such architectures?
-> > 
-> > Not sure how seriously do PREEMPT_RT folks care about architectures
-> > without HAVE_CMPXCHG_LOCAL. (riscv and loongarch have ARCH_SUPPORTS_RT
-> > but doesn't have HAVE_CMPXCHG_LOCAL).
+On Tue, Nov 11, 2025 at 04:36:14PM +0800, Qi Zheng wrote:
+> Hi Shakeel,
 > 
-> We take things seriously and you shouldn't make assumption based on
-> implementation. Either the API can be used as such or not.
-> In case of mod_node_page_state(), the non-IRQ off version
-> (__mod_node_page_state()) has a preempt_disable_nested() to ensure
-> atomic update on PREEMPT_RT without disabling interrupts.
+> On 11/11/25 7:20 AM, Shakeel Butt wrote:
+> > The memcg stats are safe against irq (and nmi) context and thus does not
+> > require disabling irqs. However for some stats which are also maintained
+> > at node level, it is using irq unsafe interface and thus requiring the
+> > users to still disables irqs or use interfaces which explicitly disables
+> > irqs. Let's move memcg code to use irq safe node level stats function
+> > which is already optimized for architectures with HAVE_CMPXCHG_LOCAL
+> > (all major ones), so there will not be any performance penalty for its
+> > usage.
 > 
+> Generally, places that call __mod_lruvec_state() also call
+> __mod_zone_page_state(), and it also has the corresponding optimized
+> version (mod_zone_page_state()). It seems necessary to clean that up
+> as well, so that those disabling-IRQs that are only used for updating
+> vmstat can be removed.
 
-Harry is talking about mod_node_page_state() on
-!CONFIG_HAVE_CMPXCHG_LOCAL which is disabling irqs.
-
-void mod_node_page_state(struct pglist_data *pgdat, enum node_stat_item item,
-					long delta)
-{
-	unsigned long flags;
-
-	local_irq_save(flags);
-	__mod_node_page_state(pgdat, item, delta);
-	local_irq_restore(flags);
-}
-
-Is PREEMPT_RT fine with this?
+I agree, please take a stab at that.
 
