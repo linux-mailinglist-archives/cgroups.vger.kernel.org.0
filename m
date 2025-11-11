@@ -1,81 +1,82 @@
-Return-Path: <cgroups+bounces-11800-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-11801-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id 314CFC4BAD3
-	for <lists+cgroups@lfdr.de>; Tue, 11 Nov 2025 07:27:52 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0D965C4BB99
+	for <lists+cgroups@lfdr.de>; Tue, 11 Nov 2025 07:45:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id A81A74E8B10
-	for <lists+cgroups@lfdr.de>; Tue, 11 Nov 2025 06:27:47 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id ED0191882C86
+	for <lists+cgroups@lfdr.de>; Tue, 11 Nov 2025 06:46:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B1C442D595F;
-	Tue, 11 Nov 2025 06:27:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EA5B5329E49;
+	Tue, 11 Nov 2025 06:45:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=shopee.com header.i=@shopee.com header.b="GdJyNN46"
+	dkim=pass (2048-bit key) header.d=shopee.com header.i=@shopee.com header.b="N/h4ahcN"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-pj1-f48.google.com (mail-pj1-f48.google.com [209.85.216.48])
+Received: from mail-pf1-f178.google.com (mail-pf1-f178.google.com [209.85.210.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 142C82D3EC7
-	for <cgroups@vger.kernel.org>; Tue, 11 Nov 2025 06:27:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1FBDF329E53
+	for <cgroups@vger.kernel.org>; Tue, 11 Nov 2025 06:45:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762842462; cv=none; b=U0p+eLRcH22v4jUFkdpZKf76EEU7ZsAqstZ6aYaMpq70JEp2HbbyaEvhhwZwoz+Nt+h18gqGxSRYupZ7WAsfU08gEMoUXG9urlojcmJ252zm7iTMi0fj8Wok0TRJNWt34dUfTuW2LLlUuNh4zqBVet+pnbLqV/ZvNitLmp3zZ7E=
+	t=1762843549; cv=none; b=XuZJymKJgRit/q4FfawiwPuB+2cTGY3XhMYBnDXbcpX9RzMw+J0r5q0G+0n/qua38mu6d58cefSO1szUMNugz5nk1GA6BTkiOl5l6k+Q7eJWEFLvRxg+P7yXZyTyPTcsydApnnrLeqfPAaC5HIRKnavPz3pSZyfYhklRd1nac/w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762842462; c=relaxed/simple;
-	bh=89750Oqu/BHAULCo/u4k/dwdc+TJgBdi3kwqH7WW9JE=;
+	s=arc-20240116; t=1762843549; c=relaxed/simple;
+	bh=WkPIBxcEOHQ4ilXDCjPP5RJCUvaILWDuUwT419tOHBI=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=kmuLiLuTTNZNdFv3e/k/spUEWL1cW6ldA+7xQ1iLDkT4wN8ygiLcXIEH3h0+JLpPHXHG5Zr4m06TArpb13ezSFr3XXkqysudK3roKNLw4/JouGmqjzjDGUUGULU+TV4mGWQPzlxYi2YVcLgRI2sOFsVLgCmzfA2RE3T/BxRIGaY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=shopee.com; spf=pass smtp.mailfrom=shopee.com; dkim=pass (2048-bit key) header.d=shopee.com header.i=@shopee.com header.b=GdJyNN46; arc=none smtp.client-ip=209.85.216.48
+	 MIME-Version:Content-Type; b=eFp4dbCKPhCi5xOnvBFBuCt2pAUq/RK/A1NOOun6jkqFp0lTPSFmnYdkpELPCJb8tHF4DQ55YrJPqBHn52nY35bBnPyRb7F8zBLWmFse2toCVn7sLq/u19KSccEtCjgJHg/Aajd/oJ58v62DazK5FL3lomW1WJKuNozdfxYCm3Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=shopee.com; spf=pass smtp.mailfrom=shopee.com; dkim=pass (2048-bit key) header.d=shopee.com header.i=@shopee.com header.b=N/h4ahcN; arc=none smtp.client-ip=209.85.210.178
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=shopee.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=shopee.com
-Received: by mail-pj1-f48.google.com with SMTP id 98e67ed59e1d1-3439e1b6f72so1793072a91.2
-        for <cgroups@vger.kernel.org>; Mon, 10 Nov 2025 22:27:40 -0800 (PST)
+Received: by mail-pf1-f178.google.com with SMTP id d2e1a72fcca58-7833765433cso4389490b3a.0
+        for <cgroups@vger.kernel.org>; Mon, 10 Nov 2025 22:45:47 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=shopee.com; s=shopee.com; t=1762842460; x=1763447260; darn=vger.kernel.org;
+        d=shopee.com; s=shopee.com; t=1762843547; x=1763448347; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=89750Oqu/BHAULCo/u4k/dwdc+TJgBdi3kwqH7WW9JE=;
-        b=GdJyNN46yLS3b1G+msP90X37DCoOmpaIXITKAdfe2Wc/tmb9yxRG1a3IFybkmtc1Fs
-         NWvJT5mg7aCURM9KiMMFcgpvoaJDlYuHSM2FAAY2Ehh9M1Y9VK9577s0NKfeQsdeeypR
-         mHEt9SsHqQPxA294PcPAjAduH5P9eCe3DLr0fi/W3yjcGkwYA9fGv+9Uv5Q8cGuFptRB
-         GX/KuT/unYj/jp+ugjhaQ3ff82srJeJTVZArMTV/RawhUfBCp0E9j4e6T7gC9ppnLsgl
-         mppvkVMWY+9xWYNwRI8VJoPhiyx+d6kwYCR8WEa7DfOO5QdC7cb3ANm85HVO/3V+NT+L
-         ZaTg==
+        bh=Cl+GLucGBzlTLWjtZq9oz0wfi6xtPX0PrTL9GqsnyOc=;
+        b=N/h4ahcNfF3R32arEM1F6gK6BKI61NUrq+t2EjyJbu609ImOvcQ00jNeGjjFIt9k7C
+         trWk1hM5sFB/bmvIkCMROgjK4tc2zNe6bEmlssdSp8C914tmfItN7q/FDqzyYTllMKnY
+         JShRnaWBIhG3yigb/oVcchHiucCzwArWrc/tBqcYEpMWhqiV5HJgIKxaNys+OjDihhFy
+         x6JoBY4jR9y1bDIGSMIkCYVlqveQexUdM6B+kVHeJBwjmgjxz6thtrGXDhGhnyTDzCYt
+         n586VZ0pA0Y0DdQXWmEH4q8kZ725vFOwLp3Nnajc2sxuGrXlaL+rCIEVryYjlEmlOIX/
+         BBeg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1762842460; x=1763447260;
+        d=1e100.net; s=20230601; t=1762843547; x=1763448347;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=89750Oqu/BHAULCo/u4k/dwdc+TJgBdi3kwqH7WW9JE=;
-        b=XH0F59DQ7u5Dw1vlzAR2FkQDTf+kvgwLuccqDPUza1UaTUPQ2+dDIImPvzzKw1U4eJ
-         nJOVuUL0MPbiUnxZ2YP0C/cAT7Kci68K+3+JJqh3849KsB/oSuQHJA2qW7ht7B6EJaV2
-         FrZnDHfugCGv8X159kEuZbhNqndHRHFZW5qAF9AvxSPiBHWCv11nQG/RCzPPsB0AoOmC
-         ikXyNEpql2x9mFC5akvMJa7NP8CvGG9Blln3rwoAbeIX7BlIlJzhKcrXin9X5gZfMXLl
-         /cokI7e0R7RiLnJuSfnQcq/S/vNJQ0Hx7NO3LrxUgBF1QeXiSrzw4EOOQWe6nN9+4ceO
-         4htA==
-X-Forwarded-Encrypted: i=1; AJvYcCWKn2CJ8SIsLkeRHdV5AB9KGEtlxkDzlmmpI8BJlUQPcLLbxaxZtVRCzQgNnIFlhf1q40JTOFOO@vger.kernel.org
-X-Gm-Message-State: AOJu0YwK2C+O2x4FNnrhkobe1IcBTcKOyhJnwPRLNBBRMQ5632xCgmdJ
-	8fBWF/JgO0AC/PhRg/LEF/Lpr1yczx9svYRLQnxz6vi3wIXxGhgjvsO1Kof7u0s6C1I=
-X-Gm-Gg: ASbGnct1fkf5pmo2lZm1k6ijC+XU0+elsN6rBm80kh9ece4dtaU8eSYh64+DegxWZ09
-	oHakgekt4vTibWPnRpOcedFesSdORR+rsoTQGzheXWvjLwjkfRN98UI6+pVnhE/sUWNvoBr4Saz
-	9LXQNsIASi5AQcB7AXMa2psViRx7lzQaYIu2izv4+f9s68o/9MDAnyTMlRKlww7qqTmHhlh4D/6
-	1hMcKSj/6wHThYpLZxUqUb7OcV6MotlnHi0cHHPcG/nVQsMqcEeCgjmG2NH4nt8sbbgWpzbzWjj
-	W/4cgWC4SdCa1k5XIY//+xAynCyB+chD/xEbMHrKIN38ewKVCp2rygRa7GzFxQPceLKsa7PRmxv
-	WEYkepyQeODaQLcKwoSX9e+Es6gpaY/KDLCvqv9jujb/EgMmEm/6zVRf09nmCMM5/87yaPClcwN
-	Qat0apPqOfzaCw1ioWyj7diAAH
-X-Google-Smtp-Source: AGHT+IHvv3nGqmj6KV33XK0cWeJgSfI0JoC5d0X073m/gYYS8JMWAEkjk7xwepmEOfVYPNtHkdK8iw==
-X-Received: by 2002:a17:90b:3c09:b0:32d:e780:e9d5 with SMTP id 98e67ed59e1d1-3436cbf60c3mr13213813a91.22.1762842460272;
-        Mon, 10 Nov 2025 22:27:40 -0800 (PST)
+        bh=Cl+GLucGBzlTLWjtZq9oz0wfi6xtPX0PrTL9GqsnyOc=;
+        b=r3qiZTFSo1STit6N1x3L0D0FHTvUb++oNWFzzgp5yI0uweJuTG8rYrZbtbDo2InLCC
+         BdA1F+BPNhn066s3tXQ9+IHlVvYrw5liNd2/6j1FL3z3Z1J+VBm2q65qo5WfBnpBybm2
+         ZfnLZWi/rZdITt7LmrmR8twpoYJRNyjtmCIG+3YrJ3TvPEfBXs2DhFf1tNxCc2rdZcCT
+         6U0C99VTktn7+c/9jGynNFM4HYwmdjGCR1RRzIL8I1gsRgSW3BngK4B8T8SW0456MXqy
+         4KMs7xnOl/ocBwu9qcNbCGWZMiVakksFHoLify5f2MsQITljZQeQ335dhF35FfzZUf4e
+         /GBw==
+X-Forwarded-Encrypted: i=1; AJvYcCULMgylPli3bi1ETDZCTC0q6TSZCigkaP3kLD4d/jGgbE6dPjXx2nXeOe1nY3QqaAtyGSgqwBta@vger.kernel.org
+X-Gm-Message-State: AOJu0YwDoKMAFetbTs0Hn6E1jlJo4ix1dUvSZE9c53He1lbTtfAaP6Hs
+	5KHj2cE/0/lEK3m4B6l7Zfw2d1XbsiczkR9VLJcIllYKs/FpwFmSVWawMwDrB7PqQXzEyVvuxgx
+	iaXx3aCg=
+X-Gm-Gg: ASbGncvV+9g4SDcv9Qc5Ln9HOdBPBT+EylvtbvLip9Nxpu/2D7HYUK9p8GzEvzuU/4s
+	DGhtnJPzoSOM2RCbaiXxOGKFbzp5j6QYG641/bEWXXm0Dja8CgKA8898gt+TYajiafDRqY/02ss
+	ShBRqU+/+lDm/IO3mHXyUymtctLoxr+KWdJDxonZIdDX4H6OD2+DRvlyuF0fq/csUcf3+DyFFjO
+	OunXOKMgz1oFs7g8L6TM5n6c2DL9Jy4AoWfZwBAa3gne1ORvlgjeA5wtavDfBysHW7jPExiqCTE
+	fPbUB7VHqVMUn/vz6tgXBzdeZcsTmBInTnJw8scegNv7yV7BomtbKMXScXfjQkmiWDo/pvh/OEz
+	Md9b9mDKt0qQNfQ70P+4fOFCqRHrmAeg/qXZ737wECzIPvlHlfYCKObX9kLGIOFZWAyGcmxvF/I
+	cqzO6DFdj5Oigo4g==
+X-Google-Smtp-Source: AGHT+IEicHLSYzdwynj4I4nc/MYN4IYvIV6/LmFIMqRyJaOIQeaa5JTA6robs499AmJpzGJRfdsVew==
+X-Received: by 2002:a05:6a20:3d86:b0:343:3d3c:4685 with SMTP id adf61e73a8af0-353a1de1402mr13983796637.18.1762843547462;
+        Mon, 10 Nov 2025 22:45:47 -0800 (PST)
 Received: from .shopee.com ([122.11.166.8])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-7b0c6951633sm14267754b3a.0.2025.11.10.22.27.35
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-7b0c953e791sm14370759b3a.7.2025.11.10.22.44.44
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 10 Nov 2025 22:27:39 -0800 (PST)
+        Mon, 10 Nov 2025 22:45:47 -0800 (PST)
 From: Leon Huang Fu <leon.huangfu@shopee.com>
-To: tj@kernel.org
+To: chenridong@huaweicloud.com
 Cc: akpm@linux-foundation.org,
 	cgroups@vger.kernel.org,
 	corbet@lwn.net,
@@ -94,13 +95,14 @@ Cc: akpm@linux-foundation.org,
 	mkoutny@suse.com,
 	muchun.song@linux.dev,
 	roman.gushchin@linux.dev,
-	shakeel.butt@linux.dev
+	shakeel.butt@linux.dev,
+	tj@kernel.org
 Subject: Re: [PATCH mm-new v3] mm/memcontrol: Add memory.stat_refresh for on-demand stats flushing
-Date: Tue, 11 Nov 2025 14:27:30 +0800
-Message-ID: <20251111062732.72880-1-leon.huangfu@shopee.com>
+Date: Tue, 11 Nov 2025 14:44:13 +0800
+Message-ID: <20251111064415.75290-1-leon.huangfu@shopee.com>
 X-Mailer: git-send-email 2.51.2
-In-Reply-To: <aRINDrnnI1HVvU1p@slm.duckdns.org>
-References: <aRINDrnnI1HVvU1p@slm.duckdns.org>
+In-Reply-To: <7d46ef17-684b-4603-be7a-a9428149da05@huaweicloud.com>
+References: <7d46ef17-684b-4603-be7a-a9428149da05@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -110,30 +112,55 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-On Tue, Nov 11, 2025 at 12:04 AM Tejun Heo <tj@kernel.org> wrote:
+On Tue, Nov 11, 2025 at 9:00 AM Chen Ridong <chenridong@huaweicloud.com> wrote:
 >
-> Hello,
-
-Hi Tejun,
-
 >
-> On Mon, Nov 10, 2025 at 02:50:11PM +0100, Michal Koutnı wrote:
-> > All in all, I'd like to have more backing data on insufficiency of (all
-> > the) rstat optimizations before opening explicit flushes like this
-> > (especially when it's meant to be exposed by BPF already).
 >
-> +1. If the current behavior introduces errors too significant to ignore, I'd
-> much rather see it fixed from the implementation side rather than exposing
-> internal operation details like this.
+> On 2025/11/10 21:50, Michal Koutný wrote:
+>> Hello Leon.
+
+Hi Ridong,
+
+>>
+>> On Mon, Nov 10, 2025 at 06:19:48PM +0800, Leon Huang Fu <leon.huangfu@shopee.com> wrote:
+>>> Memory cgroup statistics are updated asynchronously with periodic
+>>> flushing to reduce overhead. The current implementation uses a flush
+>>> threshold calculated as MEMCG_CHARGE_BATCH * num_online_cpus() for
+>>> determining when to aggregate per-CPU memory cgroup statistics. On
+>>> systems with high core counts, this threshold can become very large
+>>> (e.g., 64 * 256 = 16,384 on a 256-core system), leading to stale
+>>> statistics when userspace reads memory.stat files.
+>>>
+>
+> We have encountered this problem multiple times when running LTP tests. It can easily occur when
+> using a 64K page size.
+>
+> error:
+>         memcg_stat_rss 10 TFAIL: rss is 0, 266240 expected
 >
 
-I haven't observed any significant errors with the current behavior.
+Have you encountered this problem in real world?
 
-That said, I agree that we should focus on improving the flushing
-implementation to enhance stats accuracy on high-core-count systems.
-I'll review both the synchronous and asynchronous flushing paths to see
-where we can tighten things up.
+>>> This is particularly problematic for monitoring and management tools
+>>> that rely on reasonably fresh statistics, as they may observe data
+>>> that is thousands of updates out of date.
+>>>
+>>> Introduce a new write-only file, memory.stat_refresh, that allows
+>>> userspace to explicitly trigger an immediate flush of memory statistics.
+>>
+[...]
+>>
+>> Next, v1 and v2 haven't been consistent since introduction of v2 (unlike
+>> some other controllers that share code or even cftypes between v1 and
+>> v2). So I'd avoid introducing a new file to V1 API.
+>>
+>
+> We encountered this problem in v1, I think this is a common problem should be fixed.
+
+Thanks for pointing that out.
 
 Thanks,
 Leon
+
+[...]
 
