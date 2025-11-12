@@ -1,339 +1,161 @@
-Return-Path: <cgroups+bounces-11865-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-11866-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id BB699C52863
-	for <lists+cgroups@lfdr.de>; Wed, 12 Nov 2025 14:43:52 +0100 (CET)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
+	by mail.lfdr.de (Postfix) with ESMTPS id EEB95C52980
+	for <lists+cgroups@lfdr.de>; Wed, 12 Nov 2025 15:02:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 4E5284F6D02
-	for <lists+cgroups@lfdr.de>; Wed, 12 Nov 2025 13:34:27 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id C344134BE43
+	for <lists+cgroups@lfdr.de>; Wed, 12 Nov 2025 14:02:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9A1C0337B9D;
-	Wed, 12 Nov 2025 13:34:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 983D4246BA7;
+	Wed, 12 Nov 2025 14:02:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ETRSj4/b"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="ARbnSoR1"
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com [209.85.128.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 584183375A3
-	for <cgroups@vger.kernel.org>; Wed, 12 Nov 2025 13:34:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 63FC51ADC83
+	for <cgroups@vger.kernel.org>; Wed, 12 Nov 2025 14:02:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762954459; cv=none; b=Qzhqtpq0Af6e3tdWvzR+tbpVBa5lBqYQaMhGkX1tjCAoSWDvzpyH/TTuhlwPlgLoAZxele6H2LHajHklBzPk9HgdYFFe88EV0A5o7CGz4ulMDxOsFyyaRFmTsjEe6eOtIJT0i+C8cOY3HmzzkokTrxxAQV5BshEyz9v51vMR43c=
+	t=1762956135; cv=none; b=BWd1PA9/5Lo3lSx44jYqRE8XQsqP+b1Odv/NCkyToYtMi3OUORWYFBV0kFcdkwIVpx/M4Y3exDKl/EKdKh/pA9jr/qja1nUVCG0pTMui5yQuNvPUXW2E7G620oKYc+DuODTeQiT+Wcykwq3pG1cMl/uym+rqf5QzlwaQY4/WT9I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762954459; c=relaxed/simple;
-	bh=Iswk76xrOcOZ+ghm9k0OtsD4f3QfWzKcacySZovmqZI=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=fbnLrAyY5jkS4m/qTc7nPiT/p2v+Nnxd4MT4LThUq9LtZ//lJ5K33uaemC8OCuoascVlJ2c/y9/BpmeUMhaY+TbEMgYEiPvxpezsNgY9Pq1aRPXK1byZgz6RipvN1yRHlK/K0t91sPDCifDGvE5yVX+lfRz5yrMb6nXtR8h6kg0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ETRSj4/b; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0651EC2BC86
-	for <cgroups@vger.kernel.org>; Wed, 12 Nov 2025 13:34:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1762954459;
-	bh=Iswk76xrOcOZ+ghm9k0OtsD4f3QfWzKcacySZovmqZI=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=ETRSj4/bajJ1ZD0uaFMjWWqub+ltFHUXncRTGPcSP9amKobJ60Knkj1FVZCzd20Lk
-	 K+cmkbylppaNMhLqcKKGLpm3VNN3U6bvyEri7jaqbob2Yv7fQodEiNl7eZk1OqZjVr
-	 O71YjSPK1dyCXJs/QOUCdmCyFrYzxxqIYgd68TY0J+IfEXcyiK7MuApxSfAO9QJNpv
-	 Vw5uBc2LAsDLLZNwvSpoq/C7upmFEYHwW+tpvKujh5subfImZjSw6Tj6sQBqPh8W/W
-	 ZhM1jD2TmimZEIiV6H/uzkkmAyCBaXYXZyupPDJfoNA5diVznGX196ZidMwKSxRCLu
-	 EGpCLdYq8vhFw==
-Received: by mail-wr1-f50.google.com with SMTP id ffacd0b85a97d-42b312a089fso630480f8f.2
-        for <cgroups@vger.kernel.org>; Wed, 12 Nov 2025 05:34:18 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCWm3dnsXK3k9gjKOvm1BaPF/7lB6HFbPAR+mZPWJbATY4ITgoGadfrzKZnETN62WbaWRPKYILYn@vger.kernel.org
-X-Gm-Message-State: AOJu0Ywn72bq9ZMxC3GYfCJ5YknhCNygcvpMNld8li8EiPXH7nL4OGu5
-	ObImGxVfhWW+5pL/nPY4L9rZC9QPuPPr4Cdi9I1gjuJd4Hg47Cbcg4xlo4GRw/0WhzEPun5AhFq
-	tENMntv/B0hfv+fklet0xHYdxQ+LHrYI21w2ybehO/g==
-X-Google-Smtp-Source: AGHT+IF9bcWOvDByXeJcPGdpBQ62WykCFYRS8f6AjV3YIWckQFEoXL97S1nJnKOvcUbeL/OiU294pxGnu8ThdwoRQ1E=
-X-Received: by 2002:a05:6000:4210:b0:427:8c85:a4ac with SMTP id
- ffacd0b85a97d-42b4bdb4cfcmr2474633f8f.47.1762954457534; Wed, 12 Nov 2025
- 05:34:17 -0800 (PST)
+	s=arc-20240116; t=1762956135; c=relaxed/simple;
+	bh=hhaiEJCK8eTAN1k0/yDDRPi3ZY6cafDGrtKd0G+aZE4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=mYzMc1E73A5Bp9maSx5eHCFTUi1YCK9zF6jkCX+8MWNvGI1AAGnGPnPQm76tDqI5pi+ryZcZghA8EZqtAKL2+HyAdmKKqUfTbqeyayfLh+XL4PCSCU/S9y1G291afQtzgX/WeN7Lnasa0IZnDeZ0eR1iA/qNiV7q0Htg4fDMdbc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=ARbnSoR1; arc=none smtp.client-ip=209.85.128.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-47789cd2083so3907775e9.2
+        for <cgroups@vger.kernel.org>; Wed, 12 Nov 2025 06:02:13 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1762956132; x=1763560932; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=WOeUMdFLrARgOFLb1t2AnuzeStuy1JBycaUsDP/wyV8=;
+        b=ARbnSoR1Nr+HjwG9Lv8sC18gr+fpb8MIBNs7/go6rcbQw1/ivs01jtIGIyAtZjsE4X
+         pvu6PowI+oo1rKE8UdTg4C47+72oQIGo6GTyaWbDNLcu1KAMXvOx7u9PXXsh4jzE+bOG
+         Rf+swwgpHyCQrL4odfcSk1H8GIaVIlY0JSd49O045T1Gh4fPds4G1Sii4e29r+IOqc5h
+         f2f3btewh+P+BX4hwJMoFPeQjI0RHsdyhokEwyF9UaU1pXJGa4MAuCJQRxlUvZyqz5wT
+         X3hf8Z6pXdtL73NK6nKFlIJYlnuqUPMsWIODWfOO20kyIM2lfrCn8rujw9DSqGSowPIe
+         nGpg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1762956132; x=1763560932;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=WOeUMdFLrARgOFLb1t2AnuzeStuy1JBycaUsDP/wyV8=;
+        b=MW1Ng4lvgoNs5DOnew69ky9x15/m9W9rv09sWHr4ultz7SeHjyDzAkgNa34chHYi1I
+         knVhlyKC/C+Czs9WcdcI1yANYtUqhPN8m3nSPN+Y/CGKwy7Qxy7R6Yr4J5Ci5XQhO5yu
+         xl22fSD/idOTAQDmFVOqfYuSqwaIXdMmdoygRpY9ae5BkrcOlE0WNTvT5W+eaQKstRd+
+         kkJ0C2wJMJyYp/ygWhg3Pk4/kAzUEgnmpVB7scTvIt9zwhs01cxNfQOtyc3aaTVNRw+t
+         RnpgOowHjEdB+hjTuT875U1TULwBTQ4AXvRoE53VzfLmycBpUhNwMCEfWEHQ88GTWzP1
+         5twA==
+X-Forwarded-Encrypted: i=1; AJvYcCVPRr41wTLwycu5iwoLG3lBpYFvAmIDh6nsfPJzmOXFjZJIUfczCxsiWL096E5CWZymSOK5Z/Bh@vger.kernel.org
+X-Gm-Message-State: AOJu0Yxf5NpjApc8f0cwdVp5VA9yaY+eujDHFUWtX396bGun/wTSnpoH
+	JieaKNPtWf+VQt8djf5p0AGbVv7nvPw9GUdkv/XF94S8/sUGOfKp/WNw/KmpZCMGO3U=
+X-Gm-Gg: ASbGncsG2r0geb1U42jSZUpkrNilsmrNpIsZ/o8Ui3uyPC9TvfbbugvjtSyl8pZBD8C
+	YSXuchEpHE+Qm+K3y0ORLNx1/nynXdYuclX9teHHVh4+oBrEaROvB9Yf+W1qo4w6FGWBPkSRLda
+	rm8YuT5t+k6NiEl3+DXG6mSXw4EojtRD3iOysCVfBxMJX6fbKIJ1/ZuFvg26KJ7R3FtZYY/sbk5
+	OFUDS8AdFFdPyVXdGJ6qiMVvhgF/ZeWNaBTORM5vTyWS6ibA4V+tzogjTb55vNY0HJlaJtjpBqD
+	Rf2AWmkjCRPJWvXZYXn/jgQ3g/81gao56j5cylsha3YkWoXDImU0bbG3ou7+bKuLpckLui5WIJ+
+	SE48q7Z2Eb0cmvzIkxuCM0/+Z4B5CxyBn0KgzfumiC8oMCF/812PEm4MNnFzypw70j2aHpyerQW
+	+yhnh+oJVIB2IExAUc8ryK
+X-Google-Smtp-Source: AGHT+IHr7c4ZnrhLQZ/bB6CXbwoEkep3GrU2Tc3liHlu3o2VJH0vMGReTx6XLb+PoXt92HxE5gNWUw==
+X-Received: by 2002:a05:600c:3114:b0:477:1bb6:17e5 with SMTP id 5b1f17b1804b1-477871c4b45mr28509875e9.30.1762956130143;
+        Wed, 12 Nov 2025 06:02:10 -0800 (PST)
+Received: from blackdock.suse.cz (nat2.prg.suse.com. [195.250.132.146])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-47787e85a94sm37157975e9.13.2025.11.12.06.02.09
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 12 Nov 2025 06:02:09 -0800 (PST)
+Date: Wed, 12 Nov 2025 15:02:08 +0100
+From: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
+To: Michal Hocko <mhocko@suse.com>
+Cc: Waiman Long <llong@redhat.com>, 
+	Leon Huang Fu <leon.huangfu@shopee.com>, linux-mm@kvack.org, tj@kernel.org, hannes@cmpxchg.org, 
+	roman.gushchin@linux.dev, shakeel.butt@linux.dev, muchun.song@linux.dev, 
+	akpm@linux-foundation.org, joel.granados@kernel.org, jack@suse.cz, laoar.shao@gmail.com, 
+	mclapinski@google.com, kyle.meyer@hpe.com, corbet@lwn.net, lance.yang@linux.dev, 
+	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
+Subject: Re: [PATCH mm-new v3] mm/memcontrol: Add memory.stat_refresh for
+ on-demand stats flushing
+Message-ID: <ew7opa4vqangjafwfthroe7d37ovvvmlekzc6clbqia7od4v6y@344cuiqiduc2>
+References: <20251110101948.19277-1-leon.huangfu@shopee.com>
+ <9a9a2ede-af6e-413a-97a0-800993072b22@redhat.com>
+ <aROS7yxDU6qFAWzp@tiehlicka>
+ <061cdd9e-a70b-4d45-909a-6d50f4da8ef3@redhat.com>
+ <aROkMU-OFAmYPBgo@tiehlicka>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20251109124947.1101520-1-youngjun.park@lge.com>
-In-Reply-To: <20251109124947.1101520-1-youngjun.park@lge.com>
-From: Chris Li <chrisl@kernel.org>
-Date: Wed, 12 Nov 2025 05:34:05 -0800
-X-Gmail-Original-Message-ID: <CACePvbV80ZtC2FL6Z-Y4Rg=5bzdi1O8zqQSMEGuxqhj5P0txsA@mail.gmail.com>
-X-Gm-Features: AWmQ_bkQL-nIO8ItDYbzVpVznojBy7HPNB9u7fXNkmn_UNYWv8e_ajah8xnS1QY
-Message-ID: <CACePvbV80ZtC2FL6Z-Y4Rg=5bzdi1O8zqQSMEGuxqhj5P0txsA@mail.gmail.com>
-Subject: Re: [RFC] mm/swap, memcg: Introduce swap tiers for cgroup based swap control
-To: Youngjun Park <youngjun.park@lge.com>
-Cc: akpm@linux-foundation.org, linux-mm@kvack.org, cgroups@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, kasong@tencent.com, hannes@cmpxchg.org, 
-	mhocko@kernel.org, roman.gushchin@linux.dev, shakeel.butt@linux.dev, 
-	muchun.song@linux.dev, shikemeng@huaweicloud.com, nphamcs@gmail.com, 
-	bhe@redhat.com, baohua@kernel.org, gunho.lee@lge.com, taejoon.song@lge.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="jtcwccftag6wk3eh"
+Content-Disposition: inline
+In-Reply-To: <aROkMU-OFAmYPBgo@tiehlicka>
+
+
+--jtcwccftag6wk3eh
+Content-Type: text/plain; protected-headers=v1; charset=us-ascii
+Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH mm-new v3] mm/memcontrol: Add memory.stat_refresh for
+ on-demand stats flushing
+MIME-Version: 1.0
 
-Hi Youngjun,
+On Tue, Nov 11, 2025 at 10:01:37PM +0100, Michal Hocko <mhocko@suse.com> wr=
+ote:
+> How does that differ from writing a limit that would cause a constant
+> memory reclaim from a worklad that you craft and cause a constant CPU
+> activity and even worse lock contention?
+>=20
+> I guess the answer is that you do not let untrusted entities to create
+> cgroup hierarchies and allow to modify or generally have a write access
+> to control files. Or am I missing something?
 
-Sorry for the late reply, I have been super busy in the last two weeks
-and I am still catching up on my backlogs.
+This used to apply in cgroup v1 but the v2 controller APIs are meant to
+be available to anyone (e.g. rootless containers).
 
-Thanks for the patches. I notice that your cover letter does not have
-[0/3] on it. One tool I found useful is using the b4 to send out
-patches in series. Just for your consideration, it is not an ask. I
-can review patches not sent out from b4 just fine.
+So yes, if it turns out that the isolation may be substantially bypassed
+by reclaim, I think it should be solved by some rework.
 
-On Sun, Nov 9, 2025 at 4:50=E2=80=AFAM Youngjun Park <youngjun.park@lge.com=
-> wrote:
->
-> Hi all,
->
-> In constrained environments, there is a need to improve workload
-> performance by controlling swap device usage on a per-process or
-> per-cgroup basis. For example, one might want to direct critical
-> processes to faster swap devices (like SSDs) while relegating
-> less critical ones to slower devices (like HDDs or Network Swap).
->
-> Initial approach was to introduce a per-cgroup swap priority
-> mechanism [1]. However, through review and discussion, several
-> drawbacks were identified:
->
-> a. There is a lack of concrete use cases for assigning a fine-grained,
->    unique swap priority to each cgroup.
-> b. The implementation complexity was high relative to the desired
->    level of control.
-> c. Differing swap priorities between cgroups could lead to LRU
->    inversion problems.
->
-> To address these concerns, I propose the "swap tiers" concept,
-> originally suggested by Chris Li [2] and further developed through
-> collaborative discussions. I would like to thank Chris Li and
-> He Baoquan for their invaluable contributions in refining this
-> approach, and Kairui Song, Nhat Pham, and Michal Koutn=C3=BD for their
-> insightful reviews of earlier RFC versions.
->
-> Concept
-> -------
-> A swap tier is a grouping mechanism that assigns a "named id" to a
-> range of swap priorities. For example, all swap devices with a
-> priority of 100 or higher could be grouped into a tier named "SSD",
-> and all others into a tier named "HDD".
->
-> Cgroups can then select which named tiers they are permitted to use for
-> swapping via a new cgroup interface. This effectively restricts a
-> cgroup's swap activity to a specific subset of the available swap
-> devices.
->
-> Proposed Interface
-> ------------------
-> 1. Global Tier Definition: /sys/kernel/mm/swap/tiers
->
-> This file is used to define the global swap tiers and their associated
-> minimum priority levels.
->
-> - To add tiers:
->   Format: + 'tier_name':'prio'[,|' ']'tier_name 2':'prio']...
->   Example:
->   # echo "+ SSD:100,HDD:2" > /sys/kernel/mm/swap/tiers
+The memory.stat_refresh is different because it doesn't exist yet so its
+impact on isolation needn't be even potentially solved :-p (not more
+than memory.stat).
 
-I think a lot of this documentation nature of the cover letter should
-move into a kernel document commit. Maybe
-Documentation/mm/swap_tiers.rst
+---
 
-Another suggestion is use "+SSD:100,+HDD:2,-SD" that kind of flavor
-similar to "cgroup.subtree_control" interface, which allows adding or
-removing cgroups. That way you can add and remove in one line action.
+That's also why memory.stat_refresh is different from one global
+vm/stat_refresh (easily constrained to root's monitoring tools).
+And despite this precedent, I don't like the approach of two independent
+invocations (write(2)+read(2)) when the intention [1] is to obtain
+precise data (at least) at the time of the read(2).
 
->
->   There are several rules for defining tiers:
->   - Priority ranges for tiers must not overlap.
+Cheers,
+Michal
 
-We can add that we suggest allocating a higher priority range for
-faster swap devices. That way more swap page faults will likely be
-served by faster swap devices.
-
->   - The combination of all defined tiers must cover the entire valid
->     priority range (DEF_SWAP_PRIO to SHRT_MAX) to ensure every swap devic=
-e
->     can be assigned to a tier.
->   - A tier's prio value is its inclusive lower bound,
->     covering priorities up to the next tier's prio.
->     The highest tier extends to SHRT_MAX, and the lowest tier extends to =
-DEF_SWAP_PRIO.
->   - If the specified tiers do not cover the entire priority range,
->     the priority of the tier with the lowest specified priority value
->     is set to SHRT_MIN
->   - The total number of tiers is limited.
->
-> - To remove tiers:
->   Format: - 'tier_name'[,|' ']'tier_name2']...
->   Example:
->   # echo "- SSD,HDD" > /sys/kernel/mm/swap/tiers
-
-See above, make the '-SSD, -HDD' similar to the "cgroup.subtree_control"
->
->   Note: A tier cannot be removed if it is currently in use by any
->   cgroup or if any active swap device is assigned to it. This acts as
->   a reference count to prevent disruption.
->
-> - To show current tiers:
->   Reading the file displays the currently configured tiers, their
->   internal index, and the priority range they cover.
->   Example:
->   # echo "+ SSD:100,HDD:2" > /sys/kernel/mm/swap/tiers
->   # cat /sys/kernel/mm/swap/tiers
->   Name      Idx   PrioStart   PrioEnd
->             0
->   SSD       1    100         32767
->   HDD       2     -1         99
->
->   - `Name`: The name of the tier. The unnamed entry is a default tier.
->   - `Idx`: The internal index assigned to the tier.
->   - `PrioStart`: The starting priority of the range covered by this tier.
->   - `PrioEnd`: The ending priority of the range covered by this tier.
->
-> Two special tiers are predefined:
-> - "": Represents the default inheritance behavior in cgroups.
-This belongs to the memory.swap.tiers section.
-"" is not a real tier's name. It is just a wide cast to refer to all tiers.
-
-> - "zswap": Reserved for zswap integration.
-
-One thing I realize is that, we might need to have per swap tier have
-a matching zswap tier. Otherwise when we refer to zswap, there is no
-way for the cgroup to select which backing swapfile does this zswap
-use for allocating the swap entry.
-
-We can avoid this complexity by providing a dedicated ghost swapfile,
-which only zswap can use to allocate swap entries.
-
-> 2. Cgroup Tier Selection: memory.swap.tiers
->
-> This file controls which swap tiers are enabled for a given cgroup.
->
-> - Reading the file:
->   The first line shows the operation that was written to the file.
->   The second line shows the final, effective set of tiers after
->   merging with the parent cgroup's configuration.
->
-> - Writing to the file:
->   Format: [+/-] [+|-][TIER_NAME]...
->   - `+TIER_NAME`: Explicitly enables this tier for the cgroup.
->   - `-TIER_NAME`: Explicitly disables this tier for the cgroup.
->   - If a tier is not specified, its setting is inherited from the
->     parent cgroup.
->   - A standalone `+` at the beginning resets the configuration: it
->     ignores the parent's settings, enables all globally defined tiers,
->     and then applies the subsequent operations in the command.
->   - A standalone `-` at the beginning also resets: it ignores the
->     parent's settings, disables all tiers, and then applies subsequent
->     operations.
->   - The root cgroup defaults to an implicit `+`, enabling all swap
->     devices.
->
->   Example:
->   # echo "+ -SSD -HDD" > /sys/fs/cgroup/my_cgroup/memory.swap.tiers
->   This command first resets the cgroup's configuration to enable all
->   tiers (due to the leading `+`), and then explicitly disables the
->   "SSD" and "HDD" tiers.
->
-> Further Discussion and Open Questions
-> -------------------------------------
-> I seek feedback on this concept and have identified several key
-> points that require further discussion (though this is not an
-> exhaustive list). This topic will also be presented at the upcoming
-> Linux Plumbers Conference 2025 [3], and I would appreciate any
-> feedback here on the list beforehand, or in person at the conference.
-
-All very good questions. Thanks for preparing that.
-
->
-> 1.  The swap fast path utilizes a percpu cluster cache for efficiency.
->     In swap tiers, this has been changed to a per-device per-cpu
->     cluster cache. (See the first patch in this series.)
->     An alternative approach would be to cache only the swap_info_struct
->     (si) per-tier per-cpu, avoiding cluster caching entirely while still
->     maintaining fast device acquisition without `swap_avail_lock`.
->     Should we pursue this alternative, or is the current per-device
->     per-cpu cluster caching approach preferable?
->
-> 2.  Consistency with cgroup parent-child semantics: Unlike general
->     resource distribution, tier selection may bypass parent
->     constraints (e.g., a child can enable a tier disabled by its
->     parent). Is this behavior acceptable?
->
-> 3.  Per-cgroup swap tier limit: Is a `swap.tier.max` needed in
->     addition to the existing `swap.max`?
-
-I really hope not.
-
->
-> 4.  Parent-child tier mismatch: If a zombie memcg (child) uses a tier
->     that is not available to its new parent, how should this be
->     handled during recharging or reparenting? (This question is raised
->     in the context of ongoing work to improve memcg reparenting and
->     handle zombie memcgs [4, 5].)
-
-I really want to avoid doing the reparenting.
-
-Chris
+[1] I guess. I'd still wait for what the actual usefulness besides
+    fixing LTP here is.
 
 
->
-> 5.  Tier mask calculation: What are the trade-offs between calculating
->     the effective tier mask at runtime vs. pre-calculating it when the
->     interface is written to?
->
-> 6.  If a swap tier configuration is applied to a memcg, should we
->     migrate existing swap-out pages that are on devices not belonging
->     to any of the cgroup's allowed tiers?
->
-> 7.  swap tier could be good abstraction layer. Discuss on extended usage =
-of swap tiers.
->
-> Any feedback on the overall concept, interface, and these specific
-> points would be greatly appreciated.
->
-> Best Regards,
-> Youngjun Park
->
-> References
-> ----------
-> [1] https://lore.kernel.org/linux-mm/aEvLjEInMQC7hEyh@yjaykim-PowerEdge-T=
-330/T/#mbbb6a5e9e30843097e1f5f65fb98f31d582b973d
-> [2] https://lore.kernel.org/linux-mm/20250716202006.3640584-1-youngjun.pa=
-rk@lge.com/
-> [3] https://lpc.events/event/19/abstracts/2296/
-> [4] https://lore.kernel.org/linux-mm/20230720070825.992023-1-yosryahmed@g=
-oogle.com/
-> [5] https://blogs.oracle.com/linux/post/zombie-memcg-issues
->
-> Youngjun Park (3):
->   mm, swap: change back to use each swap device's percpu cluster
->   mm: swap: introduce swap tier infrastructure
->   mm/swap: integrate swap tier infrastructure into swap subsystem
->
->  Documentation/admin-guide/cgroup-v2.rst |  32 ++
->  MAINTAINERS                             |   2 +
->  include/linux/memcontrol.h              |   4 +
->  include/linux/swap.h                    |  16 +-
->  mm/Kconfig                              |  13 +
->  mm/Makefile                             |   1 +
->  mm/memcontrol.c                         |  69 +++
->  mm/page_io.c                            |  21 +-
->  mm/swap.h                               |   4 +
->  mm/swap_state.c                         |  93 ++++
->  mm/swap_tier.c                          | 602 ++++++++++++++++++++++++
->  mm/swap_tier.h                          |  75 +++
->  mm/swapfile.c                           | 169 +++----
->  13 files changed, 987 insertions(+), 114 deletions(-)
->  create mode 100644 mm/swap_tier.c
->  create mode 100644 mm/swap_tier.h
->
-> base-commit: 02dafa01ec9a00c3758c1c6478d82fe601f5f1ba
-> --
-> 2.34.1
->
->
+--jtcwccftag6wk3eh
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iJEEABYKADkWIQRCE24Fn/AcRjnLivR+PQLnlNv4CAUCaRSTXRsUgAAAAAAEAA5t
+YW51MiwyLjUrMS4xMSwyLDIACgkQfj0C55Tb+AgYtAD/c+S8KG22icAY+D5u/Hw+
+IaaTSOoxlnotS8mWtF9Q37kA/Rx/AJ5T2cm0Z5vyBpqCrcQhSgksn4AhdUXvWv8t
+O8AL
+=ff7K
+-----END PGP SIGNATURE-----
+
+--jtcwccftag6wk3eh--
 
