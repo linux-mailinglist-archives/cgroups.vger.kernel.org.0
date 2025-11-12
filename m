@@ -1,45 +1,45 @@
-Return-Path: <cgroups+bounces-11839-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-11840-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
-	by mail.lfdr.de (Postfix) with ESMTPS id 97E6BC5023B
-	for <lists+cgroups@lfdr.de>; Wed, 12 Nov 2025 01:45:07 +0100 (CET)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id E7D2DC5028D
+	for <lists+cgroups@lfdr.de>; Wed, 12 Nov 2025 01:56:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id CD67A34BFA8
-	for <lists+cgroups@lfdr.de>; Wed, 12 Nov 2025 00:45:06 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 8A67334C299
+	for <lists+cgroups@lfdr.de>; Wed, 12 Nov 2025 00:56:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B86711E5718;
-	Wed, 12 Nov 2025 00:45:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A3F6E1C6FEC;
+	Wed, 12 Nov 2025 00:56:37 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
 Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5EDF033F3;
-	Wed, 12 Nov 2025 00:44:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F20B14B96E;
+	Wed, 12 Nov 2025 00:56:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762908302; cv=none; b=PkN7aLwAhMMDVe8uCSPpoEyTAw5W9XZKCzs8G3iwwmw8GKmgpEZx+Sy16RIq7l0fuUCPJUWWGW+W0vJS/BlvTTd9BTzOiz2ddQMCge1t9CUBk5nRL57D57WyeIgq26D1Ltp58rDOHuVV4n19DJTpVklAS/eAOvkKygbbIOWhGcw=
+	t=1762908997; cv=none; b=h4ynm5EpJeTnFlq3L+V4ywEjcyBw0aBTL+zPavs7Nydq8fivbFZglWzp2yXtkALkinBP0NYR99dJQUtotLIyBbduFLEmbYCWwyeXaFiywEkXVmRj82FVZPZpEGSPKGTizbdjbYJaqPeJH8wB80rEjZQm96PH0FS5yqfFg1Sljg8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762908302; c=relaxed/simple;
-	bh=a1BOEu2pejaHCZiL5XfB9WFufKW13R6QgWRNxhGxDXk=;
+	s=arc-20240116; t=1762908997; c=relaxed/simple;
+	bh=TIoMZjpibgfM0vfF/TNu1msyh8gg3Ujr1PN57cUbzxc=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=sdSippNTYnK5MXOdR0rWGGhsbw5FjiWZxYAComDjrCYHOdxqhXmX50Q8mImAifsA75wn5J+DEic9Zclisa0Bha008rrKxQmChZLWzTSppUFjlz9pI9xhyt6TzHbLdROsqEdNxFGKgmuaGltlB9MIZSFMkA/ad6Ei+AV4qFLXjFk=
+	 In-Reply-To:Content-Type; b=kqH2BTULJ1IxQXtchLXXAJ/N6gsureZHjQlnypynfj0SCvRtmwE1RDafDIieZqbrolpOG3LN49cZXm7v6MMPTKjX8ytX5suj4x0bKR2wQIaK1ezjy/lj3Cwtq+4/nDGQGsq0GAzMX5rO3lx4JX9+oIifUTcHDT4URIW8rsIk7K8=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.235])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTPS id 4d5l6516SfzYQtfT;
-	Wed, 12 Nov 2025 08:44:29 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.252])
-	by mail.maildlp.com (Postfix) with ESMTP id B836C1A0BB3;
-	Wed, 12 Nov 2025 08:44:56 +0800 (CST)
+Received: from mail.maildlp.com (unknown [172.19.93.142])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTPS id 4d5lMQ6pWBzYQtpG;
+	Wed, 12 Nov 2025 08:56:02 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.75])
+	by mail.maildlp.com (Postfix) with ESMTP id 881491A084B;
+	Wed, 12 Nov 2025 08:56:30 +0800 (CST)
 Received: from [10.67.111.176] (unknown [10.67.111.176])
-	by APP3 (Coremail) with SMTP id _Ch0CgAX4BGH2BNpdqizAQ--.9685S2;
-	Wed, 12 Nov 2025 08:44:56 +0800 (CST)
-Message-ID: <b94504d5-0a2b-48f4-a445-f2c83898e8d0@huaweicloud.com>
-Date: Wed, 12 Nov 2025 08:44:55 +0800
+	by APP2 (Coremail) with SMTP id Syh0CgBnw3k92xNp7pW8AQ--.37935S2;
+	Wed, 12 Nov 2025 08:56:30 +0800 (CST)
+Message-ID: <2f43bdf7-5ce0-4835-9e60-39d91f637152@huaweicloud.com>
+Date: Wed, 12 Nov 2025 08:56:28 +0800
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -47,149 +47,102 @@ List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH -next v2 2/3] cpuset: remove global remote_children list
-To: Waiman Long <llong@redhat.com>, tj@kernel.org, hannes@cmpxchg.org,
- mkoutny@suse.com
-Cc: cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
- lujialin4@huawei.com, chenridong@huawei.com
-References: <20251111132429.950343-1-chenridong@huaweicloud.com>
- <20251111132429.950343-3-chenridong@huaweicloud.com>
- <307e7687-4320-4b2b-a552-5d8409522cfe@redhat.com>
+Subject: Re: [PATCH mm-new v3] mm/memcontrol: Add memory.stat_refresh for
+ on-demand stats flushing
+To: Leon Huang Fu <leon.huangfu@shopee.com>
+Cc: akpm@linux-foundation.org, cgroups@vger.kernel.org, corbet@lwn.net,
+ hannes@cmpxchg.org, jack@suse.cz, joel.granados@kernel.org,
+ kyle.meyer@hpe.com, lance.yang@linux.dev, laoar.shao@gmail.com,
+ linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+ mclapinski@google.com, mhocko@kernel.org, mkoutny@suse.com,
+ muchun.song@linux.dev, roman.gushchin@linux.dev, shakeel.butt@linux.dev,
+ tj@kernel.org
+References: <7d46ef17-684b-4603-be7a-a9428149da05@huaweicloud.com>
+ <20251111064415.75290-1-leon.huangfu@shopee.com>
 Content-Language: en-US
 From: Chen Ridong <chenridong@huaweicloud.com>
-In-Reply-To: <307e7687-4320-4b2b-a552-5d8409522cfe@redhat.com>
+In-Reply-To: <20251111064415.75290-1-leon.huangfu@shopee.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:_Ch0CgAX4BGH2BNpdqizAQ--.9685S2
-X-Coremail-Antispam: 1UD129KBjvJXoW3JrWDZr4fZr4xGrWktr47Arb_yoW7Cr4UpF
-	1kGFWrJFW5Krn5C347JF1Uu3sxtw1DJ3WDtw1fXa4rJF43ZF1j9Fyj934q934UZ3ykGry5
-	ZFn8ZrZ7ZF17AF7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUylb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+X-CM-TRANSID:Syh0CgBnw3k92xNp7pW8AQ--.37935S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7Cr45Wr4UJrW8Xr1fZr4DCFg_yoW8tr1rpF
+	W3Jas0vF48tF97Crs2qwn7XryUtwn7WryUWr98Crn5G3ZxKr1akF45KFWYkF9xKr4fCr1j
+	vw4jga4Iva45ZF7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUv0b4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
 	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
 	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
 	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxkF7I0En4kS14v26r126r1DMxAIw28IcxkI7VAK
-	I48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7
-	xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xII
-	jxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw2
-	0EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x02
-	67AKxVWUJVW8JbIYCTnIWIevJa73UjIFyTuYvjxUwxhLUUUUU
+	6I80ewAv7VC0I7IYx2IY67AKxVWUGVWUXwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxkF7I0En4kS
+	14v26r4a6rW5MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I
+	8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVW8ZVWr
+	XwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x
+	0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_
+	Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU0
+	bAw3UUUUU==
 X-CM-SenderInfo: hfkh02xlgr0w46kxt4xhlfz01xgou0bp/
 
 
 
-On 2025/11/11 22:56, Waiman Long wrote:
-> On 11/11/25 8:24 AM, Chen Ridong wrote:
->> From: Chen Ridong <chenridong@huawei.com>
+On 2025/11/11 14:44, Leon Huang Fu wrote:
+> On Tue, Nov 11, 2025 at 9:00 AM Chen Ridong <chenridong@huaweicloud.com> wrote:
 >>
->> The remote_children list is used to track all remote partitions attached
->> to a cpuset. However, it serves no other purpose. Using a boolean flag to
->> indicate whether a cpuset is a remote partition is a more direct approach,
->> making remote_children unnecessary.
 >>
->> This patch replaces the list with a remote_partition flag in the cpuset
->> structure and removes remote_children entirely.
 >>
->> Signed-off-by: Chen Ridong <chenridong@huawei.com>
->> ---
->>   kernel/cgroup/cpuset-internal.h | 10 +++++++---
->>   kernel/cgroup/cpuset.c          | 13 ++++---------
->>   2 files changed, 11 insertions(+), 12 deletions(-)
->>
->> diff --git a/kernel/cgroup/cpuset-internal.h b/kernel/cgroup/cpuset-internal.h
->> index 5cac42c5fd97..01976c8e7d49 100644
->> --- a/kernel/cgroup/cpuset-internal.h
->> +++ b/kernel/cgroup/cpuset-internal.h
->> @@ -158,6 +158,13 @@ struct cpuset {
->>       /* partition root state */
->>       int partition_root_state;
->>   +    /*
->> +     * Whether cpuset is a remote partition.
->> +     * It used to be a list anchoring all remote partitions — we can switch back
->> +     * to a list if we need to iterate over the remote partitions.
->> +     */
->> +    bool remote_partition;
->> +
->>       /*
->>        * number of SCHED_DEADLINE tasks attached to this cpuset, so that we
->>        * know when to rebuild associated root domain bandwidth information.
->> @@ -172,9 +179,6 @@ struct cpuset {
->>       /* Handle for cpuset.cpus.partition */
->>       struct cgroup_file partition_file;
->>   -    /* Remote partition silbling list anchored at remote_children */
->> -    struct list_head remote_sibling;
->> -
->>       /* Used to merge intersecting subsets for generate_sched_domains */
->>       struct uf_node node;
->>   };
->> diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
->> index c90476d52f09..aff3ddc67393 100644
->> --- a/kernel/cgroup/cpuset.c
->> +++ b/kernel/cgroup/cpuset.c
->> @@ -94,9 +94,6 @@ static bool isolated_cpus_updating;
->>   static cpumask_var_t    boot_hk_cpus;
->>   static bool        have_boot_isolcpus;
->>   -/* List of remote partition root children */
->> -static struct list_head remote_children;
->> -
->>   /*
->>    * A flag to force sched domain rebuild at the end of an operation.
->>    * It can be set in
->> @@ -219,7 +216,7 @@ static struct cpuset top_cpuset = {
->>            BIT(CS_MEM_EXCLUSIVE) | BIT(CS_SCHED_LOAD_BALANCE),
->>       .partition_root_state = PRS_ROOT,
->>       .relax_domain_level = -1,
->> -    .remote_sibling = LIST_HEAD_INIT(top_cpuset.remote_sibling),
->> +    .remote_partition = false,
-> I forgot to notify you that this init is also not needed. Anyway, this is a minor issue.
-
-Hmm, I should have noticed that. This could be fixed if we send a related patch in the future, but I
-don't think it's worth submitting a standalone patch.
-
->>   };
->>     /*
->> @@ -1572,7 +1569,7 @@ static int compute_trialcs_excpus(struct cpuset *trialcs, struct cpuset *cs)
->>     static inline bool is_remote_partition(struct cpuset *cs)
->>   {
->> -    return !list_empty(&cs->remote_sibling);
->> +    return cs->remote_partition;
->>   }
->>     static inline bool is_local_partition(struct cpuset *cs)
->> @@ -1621,7 +1618,7 @@ static int remote_partition_enable(struct cpuset *cs, int new_prs,
->>         spin_lock_irq(&callback_lock);
->>       partition_xcpus_add(new_prs, NULL, tmp->new_cpus);
->> -    list_add(&cs->remote_sibling, &remote_children);
->> +    cs->remote_partition = true;
->>       cpumask_copy(cs->effective_xcpus, tmp->new_cpus);
->>       spin_unlock_irq(&callback_lock);
->>       update_isolation_cpumasks();
->> @@ -1651,7 +1648,7 @@ static void remote_partition_disable(struct cpuset *cs, struct tmpmasks *tmp)
->>       WARN_ON_ONCE(!cpumask_subset(cs->effective_xcpus, subpartitions_cpus));
->>         spin_lock_irq(&callback_lock);
->> -    list_del_init(&cs->remote_sibling);
->> +    cs->remote_partition = false;
->>       partition_xcpus_del(cs->partition_root_state, NULL, cs->effective_xcpus);
->>       if (cs->prs_err)
->>           cs->partition_root_state = -cs->partition_root_state;
->> @@ -3603,7 +3600,6 @@ cpuset_css_alloc(struct cgroup_subsys_state *parent_css)
->>       __set_bit(CS_SCHED_LOAD_BALANCE, &cs->flags);
->>       fmeter_init(&cs->fmeter);
->>       cs->relax_domain_level = -1;
->> -    INIT_LIST_HEAD(&cs->remote_sibling);
->>         /* Set CS_MEMORY_MIGRATE for default hierarchy */
->>       if (cpuset_v2())
->> @@ -3874,7 +3870,6 @@ int __init cpuset_init(void)
->>       nodes_setall(top_cpuset.effective_mems);
->>         fmeter_init(&top_cpuset.fmeter);
->> -    INIT_LIST_HEAD(&remote_children);
->>         BUG_ON(!alloc_cpumask_var(&cpus_attach, GFP_KERNEL));
->>   
-> Reviewed-by: Waiman Long <longman@redhat.com>
+>> On 2025/11/10 21:50, Michal Koutný wrote:
+>>> Hello Leon.
 > 
+> Hi Ridong,
+> 
+>>>
+>>> On Mon, Nov 10, 2025 at 06:19:48PM +0800, Leon Huang Fu <leon.huangfu@shopee.com> wrote:
+>>>> Memory cgroup statistics are updated asynchronously with periodic
+>>>> flushing to reduce overhead. The current implementation uses a flush
+>>>> threshold calculated as MEMCG_CHARGE_BATCH * num_online_cpus() for
+>>>> determining when to aggregate per-CPU memory cgroup statistics. On
+>>>> systems with high core counts, this threshold can become very large
+>>>> (e.g., 64 * 256 = 16,384 on a 256-core system), leading to stale
+>>>> statistics when userspace reads memory.stat files.
+>>>>
+>>
+>> We have encountered this problem multiple times when running LTP tests. It can easily occur when
+>> using a 64K page size.
+>>
+>> error:
+>>         memcg_stat_rss 10 TFAIL: rss is 0, 266240 expected
+>>
+> 
+> Have you encountered this problem in real world?
+> 
+Do you mean whether we’ve encountered this issue in our product? We haven’t so far.
 
-Thanks.
+However, this fails the LTP test quite easily. The error logs come directly from LTP. The issue
+occurs because the threshold isn’t reached, resulting in an RSS value of 0. We tried increasing the
+memory allocated by the LTP case, but that wasn’t the right solution.
+
+>>>> This is particularly problematic for monitoring and management tools
+>>>> that rely on reasonably fresh statistics, as they may observe data
+>>>> that is thousands of updates out of date.
+>>>>
+>>>> Introduce a new write-only file, memory.stat_refresh, that allows
+>>>> userspace to explicitly trigger an immediate flush of memory statistics.
+>>>
+> [...]
+>>>
+>>> Next, v1 and v2 haven't been consistent since introduction of v2 (unlike
+>>> some other controllers that share code or even cftypes between v1 and
+>>> v2). So I'd avoid introducing a new file to V1 API.
+>>>
+>>
+>> We encountered this problem in v1, I think this is a common problem should be fixed.
+> 
+> Thanks for pointing that out.
+> 
+> Thanks,
+> Leon
+> 
+> [...]
 
 -- 
 Best regards,
