@@ -1,189 +1,135 @@
-Return-Path: <cgroups+bounces-11853-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-11854-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8B62FC508F6
-	for <lists+cgroups@lfdr.de>; Wed, 12 Nov 2025 05:49:28 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id A5DF5C5101C
+	for <lists+cgroups@lfdr.de>; Wed, 12 Nov 2025 08:50:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 1AE7D4E0533
-	for <lists+cgroups@lfdr.de>; Wed, 12 Nov 2025 04:49:27 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C24E71889E44
+	for <lists+cgroups@lfdr.de>; Wed, 12 Nov 2025 07:50:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B909274B30;
-	Wed, 12 Nov 2025 04:49:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 25FAD2ECEA7;
+	Wed, 12 Nov 2025 07:49:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="f2HB/A/h";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="l0o/LkGf"
 X-Original-To: cgroups@vger.kernel.org
-Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C7AD44C63;
-	Wed, 12 Nov 2025 04:49:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6331B2D9ED1;
+	Wed, 12 Nov 2025 07:49:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762922963; cv=none; b=KQCWZYqcNnvSdHjLTcyhOk3JmJI0ntNRa0YTTjjfUXsMHMERK/WvvDwXIygLhE2t4gcUW8GSfiX7pWey+mbjWcKjmfKyclcTvaAvNF6Pv2CZnxLA6gVhteYu+MyZVnomPvGPyta7nZS/L0qtdJvtLAU8KCL8aK3wAWHW4HbkaP4=
+	t=1762933775; cv=none; b=rZD0OdrdIhHcx8SnX0ukdeL7opDz/KyqhPevwZ4+zTBCOEppsGrnopNwQ0m9qzztkcZxu5wZp8MeVP2uQN6A85oJJibRr2u3ym8OgoE83OiPv9DAbonmJHskoxo2WN5tF9pNM0a57x/9LT/Suc3qMFLN+2z+l0WyaIKEjvuUyLQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762922963; c=relaxed/simple;
-	bh=C6SjzfETBc/EqX3c0J0k+PwuSTwVn43LPPbTH98dikU=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=uSXvWMm2vReov3hGQF+Kcq3eepWDvbaUZZBaP2blpG/Fx8M1W7LtVodW4f5v7jNdBAPz+GGvhcDtG+XAivRjsoA1XBZibi0MIwFnU5I4mbeANX3VWJ1HDa44WBGh6zQPQFvOXQOQKgJ6ntBFVpG4O8id65PQeYqT51CjgRdEItQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.216])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTPS id 4d5rXF59CdzKHMYF;
-	Wed, 12 Nov 2025 12:49:01 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.128])
-	by mail.maildlp.com (Postfix) with ESMTP id C8BEA1A1A44;
-	Wed, 12 Nov 2025 12:49:18 +0800 (CST)
-Received: from [10.67.111.176] (unknown [10.67.111.176])
-	by APP4 (Coremail) with SMTP id gCh0CgBnjlvNERRpWRPPAQ--.55340S2;
-	Wed, 12 Nov 2025 12:49:18 +0800 (CST)
-Message-ID: <47ade8f8-376a-4716-a6c6-0eb7f10bfd47@huaweicloud.com>
-Date: Wed, 12 Nov 2025 12:49:17 +0800
+	s=arc-20240116; t=1762933775; c=relaxed/simple;
+	bh=xbvMcM1IoFXOayGu/dX6p8mJi1v8/NnppEEb+PdNlEU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=pzPhLPBwxxW47eFjd4oRBtG8OFS3KlseKuDOlp92OhtiwVN1XBVBGcNhaRK5fb7vEnAKhXTwnKD7lBlKAHZUpmQ+5yrwIHLrCOcg5S0mgBKC4XL5LsW1oP8Z1QnP63n/WHV4W/X77wyqXAEgcdGVpgNiMs3mHG3eG9wCJFsG41k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=f2HB/A/h; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=l0o/LkGf; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+Date: Wed, 12 Nov 2025 08:49:30 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1762933772;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=hjmsQNbabVrHMjgajgEZibUL+efg9RjKcTRD2S+ysQ8=;
+	b=f2HB/A/hb6zPD+MvHy/KC6OdmWpC1V68JL0jW4qNfv0jLBEggJ0szbe/6OorO2hbDxG684
+	ArYQRJhVOGOBDvhNEI2ERthAEZnlBT2HjBfL/kf0+8KhcCPVsge0dLNgregR4MX6nJg5oo
+	bpS9gAPhIWKi072xVwjJTvnB0IiQKxoKaQNhLFwvkVDMFFkJ7UIf+oDNa48WnLmlaNROEq
+	5h/cgHgPc0QS7fhyI9Ff7mQduVeKdQ5HLfc6YYwGKQbSuZEok9BR/stoGLsi4VpqGFRO3c
+	EeLwmycKHbL72hmLC4HFwiReBONSFKPSBT/oOafm0ECnUZHz10SG/AKDCb3VVg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1762933772;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=hjmsQNbabVrHMjgajgEZibUL+efg9RjKcTRD2S+ysQ8=;
+	b=l0o/LkGfxoyEmPkG6koDawTBPXTEvwbAYcuza/5SjiqDSmJto9UrhdHQKSLqA10+aCQusg
+	Q2gtdV349a9ij4Dg==
+From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To: Shakeel Butt <shakeel.butt@linux.dev>
+Cc: Harry Yoo <harry.yoo@oracle.com>, Qi Zheng <qi.zheng@linux.dev>,
+	hannes@cmpxchg.org, hughd@google.com, mhocko@suse.com,
+	roman.gushchin@linux.dev, muchun.song@linux.dev, david@redhat.com,
+	lorenzo.stoakes@oracle.com, ziy@nvidia.com, imran.f.khan@oracle.com,
+	kamalesh.babulal@oracle.com, axelrasmussen@google.com,
+	yuanchu@google.com, weixugc@google.com, akpm@linux-foundation.org,
+	linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+	cgroups@vger.kernel.org, Muchun Song <songmuchun@bytedance.com>,
+	Qi Zheng <zhengqi.arch@bytedance.com>,
+	Clark Williams <clrkwllms@kernel.org>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	linux-rt-devel@lists.linux.dev
+Subject: Re: [PATCH v1 04/26] mm: vmscan: refactor move_folios_to_lru()
+Message-ID: <20251112074930.mKu1J__U@linutronix.de>
+References: <aQ3yLER4C4jY70BH@harry>
+ <hfutmuh4g5jtmrgeemq2aqr2tvxz6mnqaxo5l5vddqnjasyagi@gcscu5khrjxm>
+ <aRFKY5VGEujVOqBc@hyeyoo>
+ <2a68bddf-e6e6-4960-b5bc-1a39d747ea9b@linux.dev>
+ <aRF7eYlBKmG3hEFF@hyeyoo>
+ <aqdvjyzfk6vpespzcszfkmx522iy7hvddefcjgusrysglpdykt@uqedtngotzmy>
+ <8d6655f8-2756-45bb-85c1-223c3a5e656c@linux.dev>
+ <aRKqm24Lrg-JnCoh@hyeyoo>
+ <20251111084900.babaOj0w@linutronix.de>
+ <jzihvbb6w26d4codfigy2o7b2h26izb4ahihouw54cvuzau54d@jyaa6rgpzuai>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH RFC v2 00/22] cpuset: rework local partition logic
-To: Waiman Long <llong@redhat.com>, tj@kernel.org, hannes@cmpxchg.org,
- mkoutny@suse.com
-Cc: cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
- lujialin4@huawei.com, chenridong@huawei.com
-References: <20251025064844.495525-1-chenridong@huaweicloud.com>
- <31b58b15-0b46-4eba-bd50-afc99203695a@huaweicloud.com>
- <c5c4e977-9194-42c8-9045-0ed0ff16f5a5@huaweicloud.com>
- <01a859a8-c678-4fd3-8d01-f45759c61c72@redhat.com>
-Content-Language: en-US
-From: Chen Ridong <chenridong@huaweicloud.com>
-In-Reply-To: <01a859a8-c678-4fd3-8d01-f45759c61c72@redhat.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:gCh0CgBnjlvNERRpWRPPAQ--.55340S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxZr1fJFW7Kw17GryUKr4kJFb_yoWrZw1rpF
-	yDGayftrWrCr1Fk3sFqF1xA3yrtwnrJa4qqwn8J348JrsFywnY9FWI9398ua4UWrZ5Ar1U
-	Zr1UXr4xuF1ayaUanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUylb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
-	0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
-	x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
-	0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lc7CjxVAaw2AFwI0_JF0_Jw1l42xK82IYc2Ij64vI
-	r41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8Gjc
-	xK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0
-	cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8V
-	AvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E
-	14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUwxhLUUUUU
-X-CM-SenderInfo: hfkh02xlgr0w46kxt4xhlfz01xgou0bp/
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <jzihvbb6w26d4codfigy2o7b2h26izb4ahihouw54cvuzau54d@jyaa6rgpzuai>
 
-
-
-On 2025/11/12 12:19, Waiman Long wrote:
+On 2025-11-11 08:44:14 [-0800], Shakeel Butt wrote:
+> On Tue, Nov 11, 2025 at 09:49:00AM +0100, Sebastian Andrzej Siewior wrote:
+> > On 2025-11-11 12:16:43 [+0900], Harry Yoo wrote:
+> > > > However, in the !CONFIG_HAVE_CMPXCHG_LOCAL case, mod_node_page_state()
+> > > > still calls local_irq_save(). Is this feasible in the PREEMPT_RT kernel?
+> > > 
+> > > Hmm I was going to say it's necessary, but AFAICT we don't allocate
+> > > or free memory in hardirq context on PREEMPT_RT (that's the policy)
+> > > and so I'd say it's not necessary to disable IRQs.
+> > > 
+> > > Sounds like we still want to disable IRQs only on !PREEMPT_RT on
+> > > such architectures?
+> > > 
+> > > Not sure how seriously do PREEMPT_RT folks care about architectures
+> > > without HAVE_CMPXCHG_LOCAL. (riscv and loongarch have ARCH_SUPPORTS_RT
+> > > but doesn't have HAVE_CMPXCHG_LOCAL).
+> > 
+> > We take things seriously and you shouldn't make assumption based on
+> > implementation. Either the API can be used as such or not.
+> > In case of mod_node_page_state(), the non-IRQ off version
+> > (__mod_node_page_state()) has a preempt_disable_nested() to ensure
+> > atomic update on PREEMPT_RT without disabling interrupts.
+> > 
 > 
-> On 11/11/25 11:11 PM, Chen Ridong wrote:
->>
->> On 2025/11/3 19:18, Chen Ridong wrote:
->>>
->>> On 2025/10/25 14:48, Chen Ridong wrote:
->>>> From: Chen Ridong <chenridong@huawei.com>
->>>>
->>>> The current local partition implementation consolidates all operations
->>>> (enable, disable, invalidate, and update) within the large
->>>> update_parent_effective_cpumask() function, which exceeds 300 lines.
->>>> This monolithic approach has become increasingly difficult to understand
->>>> and maintain. Additionally, partition-related fields are updated in
->>>> multiple locations, leading to redundant code and potential corner case
->>>> oversights.
->>>>
->>>> This patch series refactors the local partition logic by separating
->>>> operations into dedicated functions: local_partition_enable(),
->>>> local_partition_disable(), and local_partition_update(), creating
->>>> symmetry with the existing remote partition infrastructure.
->>>>
->>>> The series is organized as follows:
->>>>
->>>> 1. Fix a bug that isolcpus stat in root partition.
->>>>
->>>> 2. Infrastructure Preparation (Patches 2-3):
->>>>     - Code cleanup and preparation for the refactoring work
->>>>
->>>> 3. Introduce partition operation helpers (Patches 4-6):
->>>>     - Intoduce out partition_enable(), partition_disable(), and
->>>>       partition_update() functions.
->>>>
->>>> 4. Use new helpers for remote partition (Patches 7-9)
->>>>
->>>> 5. Local Partition Implementation (Patches 10-13):
->>>>     - Separate update_parent_effective_cpumask() into dedicated functions:
->>>>       * local_partition_enable()
->>>>       * local_partition_disable()
->>>>       * local_partition_invalidate()
->>>>       * local_partition_update()
->>>>
->>>> 6. Optimization and Cleanup (Patches 14-22):
->>>>     - Remove redundant partition-related operations
->>>>     - Additional optimizations based on the new architecture
->>>>
->>>> ---
->>>>
->>>> Changes in v2:
->>>> - Added bugfix for root partition isolcpus at series start.
->>>> - Completed helper function implementations when first introduced.
->>>> - Split larger patches into smaller, more reviewable units.
->>>> - Incorporated feedback from Longman.
->>>>
->>>> Chen Ridong (22):
->>>>    cpuset: fix isolcpus stay in root when isolated partition changes to
->>>>      root
->>>>    cpuset: add early empty cpumask check in partition_xcpus_add/del
->>>>    cpuset: generalize validate_partition() interface
->>>>    cpuset: introduce partition_enable()
->>>>    cpuset: introduce partition_disable()
->>>>    cpuset: introduce partition_update()
->>>>    cpuset: use partition_enable() for remote partition enablement
->>>>    cpuset: use partition_disable() for remote partition disablement
->>>>    cpuset: use partition_update() for remote partition update
->>>>    cpuset: introduce local_partition_enable()
->>>>    cpuset: introduce local_partition_disable()
->>>>    cpuset: introduce local_partition_invalidate()
->>>>    cpuset: introduce local_partition_update()
->>>>    cpuset: remove update_parent_effective_cpumask
->>>>    cpuset: remove redundant partition field updates
->>>>    cpuset: simplify partition update logic for hotplug tasks
->>>>    cpuset: unify local partition disable and invalidate
->>>>    cpuset: use partition_disable for compute_partition_effective_cpumask
->>>>    cpuset: use validate_local_partition in local_partition_enable
->>>>    cpuset: introduce validate_remote_partition
->>>>    cpuset: simplify update_prstate() function
->>>>    cpuset: remove prs_err clear when notify_partition_change
->>>>
->>>>   kernel/cgroup/cpuset.c | 1000 +++++++++++++++++++---------------------
->>>>   1 file changed, 463 insertions(+), 537 deletions(-)
->>>>
->>> Hi Longman,
->>>
->>> I'd appreciate it if you could have a look at this series when you have a moment.
->>>
->> Hi Longman,
->>
->> Could you kindly take a look at this series when you have a moment?
->> I'd appreciate any feedback you might have, and I’ll update the series accordingly.
+> Harry is talking about mod_node_page_state() on
+> !CONFIG_HAVE_CMPXCHG_LOCAL which is disabling irqs.
 > 
-> I will take a look at this series tomorrow, though it has to be updated again anyway.
+> void mod_node_page_state(struct pglist_data *pgdat, enum node_stat_item item,
+> 					long delta)
+> {
+> 	unsigned long flags;
 > 
-> Cheers,
-> Longman
+> 	local_irq_save(flags);
+> 	__mod_node_page_state(pgdat, item, delta);
+> 	local_irq_restore(flags);
+> }
 > 
->>
-> 
+> Is PREEMPT_RT fine with this?
 
-Thank you very much.
+Yes.
+The local_irq_save() is not strictly needed but I am fine with it to
+keep it simple. The inner part is just counting.
 
--- 
-Best regards,
-Ridong
-
+Sebastian
 
