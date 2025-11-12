@@ -1,45 +1,102 @@
-Return-Path: <cgroups+bounces-11849-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-11850-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1D2E8C507A8
-	for <lists+cgroups@lfdr.de>; Wed, 12 Nov 2025 05:07:27 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6A8C0C507C0
+	for <lists+cgroups@lfdr.de>; Wed, 12 Nov 2025 05:09:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id C73264E8EF9
-	for <lists+cgroups@lfdr.de>; Wed, 12 Nov 2025 04:07:21 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BF4D31899F0A
+	for <lists+cgroups@lfdr.de>; Wed, 12 Nov 2025 04:10:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4CD772C0F62;
-	Wed, 12 Nov 2025 04:07:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D493F2D0607;
+	Wed, 12 Nov 2025 04:09:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="RqGPCslN";
+	dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b="ekFg/j6a"
 X-Original-To: cgroups@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 758762820DB;
-	Wed, 12 Nov 2025 04:07:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E4B14242D9B
+	for <cgroups@vger.kernel.org>; Wed, 12 Nov 2025 04:09:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762920437; cv=none; b=qEUmiljW22B64gGJz2kSbxHMa+lR7Z5K1h/r56lcgvUOWZSsB2ZUu3Qb8Jt7ZsqZiWkTKZDrBCZUgBhuqV1+GJSi/5K8vgaMohUr78CfQLJcUZX+szBPLw4ryO15j1uvag5gEXdw1IEWbmQupYU61OTyRNAe/hmJrCpULbdJCCA=
+	t=1762920575; cv=none; b=pnIvyF/R/JYLTy9/U2y9KLidO/gP5Ia1ahGS85GHXiIJ+HhpFpU+zsC1begKAaW9YV4SQFS1qhGCEwrEq9GDhPGu3/umrnplgWtNhXOw0FRzDTQ5IapfE9h6skZdYlLx0uR8j8foYpxrHd0f9md/Zs25HdF24lCeyOEzwqYoUPI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762920437; c=relaxed/simple;
-	bh=cScFm02nwlwZeY8pfG80ctyyXNzrHj/7vnVK1zAfUq0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=O2w1DODw0tvHI4jDFTStYYSBiMcSo/bF7PJFC4r2DQnvoW4VAvwN/Swbr7AwRfLkSChbLr/K9fhzW2Z6qN1orWbBaSlBbbX18hlDwepfORRYPdx4Ak9Ya3sWs5rOg/kqHwGgtQvekaCB6lO/U9ohiGpItKuDqaH03qyP6HYNusk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.216])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTPS id 4d5qbK2FWszYQtGx;
-	Wed, 12 Nov 2025 12:06:37 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.128])
-	by mail.maildlp.com (Postfix) with ESMTP id 24D311A1A7E;
-	Wed, 12 Nov 2025 12:07:05 +0800 (CST)
-Received: from [10.67.111.176] (unknown [10.67.111.176])
-	by APP4 (Coremail) with SMTP id gCh0CgDnDlznBxRp4ajLAQ--.10098S2;
-	Wed, 12 Nov 2025 12:07:05 +0800 (CST)
-Message-ID: <6e2e4f6a-a6a0-47b1-b037-c52f0c786018@huaweicloud.com>
-Date: Wed, 12 Nov 2025 12:07:03 +0800
+	s=arc-20240116; t=1762920575; c=relaxed/simple;
+	bh=9PW+A3JHWzURTlDXLHDmB0OKXZRnM2OGKf4qPL38i74=;
+	h=From:Message-ID:Date:MIME-Version:Subject:To:Cc:References:
+	 In-Reply-To:Content-Type; b=pzh/GO6zq5cE+TfTBe8Ze5jFLZmfj7bJ2nfXtRjRrmzZchXv3pdRWpjFxRS10vV3eoz0Ky3+kBr+2Ma3oa+kg9l+Jkjm+C+7rO+XtMUHx9XkmFoitjX6vkJNQq08ypGrjvNcbjVaG5/BAy75VIHkrTfs06ostGA+AppukZSQcd4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=RqGPCslN; dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b=ekFg/j6a; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1762920572;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=jBULf+ZIkA9FqHKiIs1320k4feJF2I1rgP/b6d4F0Mk=;
+	b=RqGPCslNWScVnn2Ck8198zp8k3QFwJYzUEuVbqRCtQLYv2/sfM0iFmajjpAhRgAuSCvhp9
+	Cbg7FJRC6OJXEFBWv/PmqM9xc3NYFCRGjAEZ5gvR6fZbgty7GwRv4P15aqJNps20rNWsfT
+	bXN54Zvd4ak6z5h70UF33wK13wLegW4=
+Received: from mail-qt1-f200.google.com (mail-qt1-f200.google.com
+ [209.85.160.200]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-636-sgmsAo9yN2ODb1fns5m6sQ-1; Tue, 11 Nov 2025 23:09:31 -0500
+X-MC-Unique: sgmsAo9yN2ODb1fns5m6sQ-1
+X-Mimecast-MFC-AGG-ID: sgmsAo9yN2ODb1fns5m6sQ_1762920571
+Received: by mail-qt1-f200.google.com with SMTP id d75a77b69052e-4edd678b2a3so5149111cf.2
+        for <cgroups@vger.kernel.org>; Tue, 11 Nov 2025 20:09:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=redhat.com; s=google; t=1762920571; x=1763525371; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:content-language:references
+         :cc:to:subject:user-agent:mime-version:date:message-id:from:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=jBULf+ZIkA9FqHKiIs1320k4feJF2I1rgP/b6d4F0Mk=;
+        b=ekFg/j6aJfbuCI/fUdbBHYO8FmybPehHCL7m55Fnh0HjygoTnq+HTAe0eYnXO+75oz
+         Fc/b/tdXULJVMhXcohj3c9qQols4VKsA1uFCztCyQgeRvso/io1K3UYQOljc0E7lPLOC
+         a7MkjAXGg5R/2WA/oNYIs38rFTE2fgEU6SPP7l+txRfcjQccaIN3MMVprsaiGheYPSRw
+         2uSTJBPY6bHhz1IPfk0FC7zX37tPfX7h76Lkz4aggmGZbmos5zAqXRePPhu+9+HUHeRQ
+         8egx2jc37454HovImtru3UjyT1psiGVYihYQnxj2zGv7G+hS/9k9nQHJj9x/0KlEVR2A
+         g//g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1762920571; x=1763525371;
+        h=content-transfer-encoding:in-reply-to:content-language:references
+         :cc:to:subject:user-agent:mime-version:date:message-id:from:x-gm-gg
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=jBULf+ZIkA9FqHKiIs1320k4feJF2I1rgP/b6d4F0Mk=;
+        b=RcbfPfj55rozhddJXpQXxlUmcNbGUUrZGeLKsD3wEsUGyDaHy0Sylsdqn/XOlSd1fE
+         VvUVEDOK2sLhtJijSg5lvlv8RqgW0v8V0jOwmx8ZMyoqWzqCaUI5j2X2w/hbB833xkWK
+         N+XHoKgwc4q+aFZPgBNUL4AJ6N2HjX7LnWumuIDX8zeERVD+K8CRspiPNFMf6CGLOdp3
+         vhHcvYMZC8woaBvDpCIyZljw5/ZLRnZotgBks9X9gxbRarY58m9/crDNRNzDw9vjt51f
+         JIkbU3LijUQFAphQ4zyUfrrHcuL2Qdbu4IoJvY8tX7GWnrU2v7Wei+LjrYXgX29Sdil5
+         qkeA==
+X-Forwarded-Encrypted: i=1; AJvYcCVAzwLgYcwlKgOPwvKHrGwa1/+3FWbaPfsPLYkU+TLFXAM6Fw2JmEkOOxdm26L2ar1wZFeXmJxo@vger.kernel.org
+X-Gm-Message-State: AOJu0YzT+LaRw1Mt0T+Eq2r4gjnMLRrcHjWaslka6uxQF/mTzT66NNVv
+	V6eIRKjxrGJaAw8kQGDXbFPbRgH0R9ycTBbWmGvuqdQ20TObAR8gX5P+S82C6ZIQ6FvsMDefWWI
+	MVydjruYYu4x7Y1bU9qasSJCnJIWxzAFTg/xLQtbM5ACx1qvV2vT6jUoikHo=
+X-Gm-Gg: ASbGnct+ASSZaAxXf/i3OidU/u7Y9hhDFrxvsUEi2J1xFKKuIfbLlpLMKudYJbfH9t3
+	iJZlxt1tmYmwp505QMCsxHuVITuPmYx/sTj+CFuxi0fYrJjbpZqq1rOJna/GseoxwAi/jLRoyow
+	lPoByMPBtHD8+8iLBlmzoJSkK3jgk+W3n5gct6TS4Kh+Qx9yaTZtwB5M7OlQVmb+DZqZn3KQ12r
+	h9b/z+z5km6Fn5EkAx6rI+KOj+yTYOR2iKK5g0QCRzPQl2kDQG08WMixlSa8dcKGzuhVZgwci+t
+	pBfE/36H3Y2fA1eIMRATKvNYx5C+jcJKQ6MrS6tVV4mj13ImScypVejbvLSMxXz/xpt2YNj17H7
+	jgEAi/dBk7vs7HfZ8NDTnsFcRAKx1jjgHEr7lysaC9qiAdQ==
+X-Received: by 2002:ac8:5a15:0:b0:4e8:ada0:450a with SMTP id d75a77b69052e-4eddbd774bamr18423771cf.45.1762920571008;
+        Tue, 11 Nov 2025 20:09:31 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IGPWTMesD++oG9Eb6d/7De7HTmZLuSnw0p9oUBYq3+RbK0SLKI1SdBODf1yz+ndvuVag3fpAg==
+X-Received: by 2002:ac8:5a15:0:b0:4e8:ada0:450a with SMTP id d75a77b69052e-4eddbd774bamr18423691cf.45.1762920570668;
+        Tue, 11 Nov 2025 20:09:30 -0800 (PST)
+Received: from ?IPV6:2601:188:c102:b180:1f8b:71d0:77b1:1f6e? ([2601:188:c102:b180:1f8b:71d0:77b1:1f6e])
+        by smtp.gmail.com with ESMTPSA id d75a77b69052e-4eda563fbfcsm77229701cf.10.2025.11.11.20.09.29
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 11 Nov 2025 20:09:30 -0800 (PST)
+From: Waiman Long <llong@redhat.com>
+X-Google-Original-From: Waiman Long <longman@redhat.com>
+Message-ID: <b9dce00a-4728-4ac8-ae38-7f41114c7c81@redhat.com>
+Date: Tue, 11 Nov 2025 23:09:29 -0500
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -47,120 +104,71 @@ List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH next] cpuset: Treat tasks in attaching process as
- populated
-To: Waiman Long <llong@redhat.com>, =?UTF-8?Q?Michal_Koutn=C3=BD?=
- <mkoutny@suse.com>
-Cc: tj@kernel.org, hannes@cmpxchg.org, cgroups@vger.kernel.org,
- linux-kernel@vger.kernel.org, lujialin4@huawei.com, chenridong@huawei.com
-References: <20251111132632.950430-1-chenridong@huaweicloud.com>
- <dpo6yfx7tb6b3vgayxnqgxwighrl7ds6teaatii5us2a6dqmnw@ioipae3evzo4>
- <fed9367d-19bd-4df0-b59d-8cb5a624ef34@redhat.com>
- <sebxxc2px767l447xr7cmkvlsewvdiazp7ksee3u2hlqaka522@egghgtj4oowf>
- <a4e61aa0-5c1f-490e-9cae-5e478ba809ee@redhat.com>
- <86361412-7de0-46bc-9188-a32b634e43a3@huaweicloud.com>
- <3019dd82-5388-427f-8618-30b5d8b06fd8@redhat.com>
+Subject: Re: [PATCH v1] cpuset: Avoid unnecessary partition invalidation
+To: Chen Ridong <chenridong@huaweicloud.com>,
+ Sun Shaojie <sunshaojie@kylinos.cn>
+Cc: tj@kernel.org, hannes@cmpxchg.org, mkoutny@suse.com, shuah@kernel.org,
+ cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-kselftest@vger.kernel.org
+References: <20251112021120.248778-1-sunshaojie@kylinos.cn>
+ <380567da-9079-4a4d-afae-42bde42d2a58@huaweicloud.com>
 Content-Language: en-US
-From: Chen Ridong <chenridong@huaweicloud.com>
-In-Reply-To: <3019dd82-5388-427f-8618-30b5d8b06fd8@redhat.com>
-Content-Type: text/plain; charset=UTF-8
+In-Reply-To: <380567da-9079-4a4d-afae-42bde42d2a58@huaweicloud.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:gCh0CgDnDlznBxRp4ajLAQ--.10098S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxAF4rCr4kXw43AFy8Cry8Krg_yoWrWF1DpF
-	WUWF17tws0yw12kws7K3WIq3WSv3srKF45Xr95JryrAasxWr1Fvr12yFWF9Fyjgrn7GrWj
-	vFW5XryxWa4qyFJanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUyGb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxkF7I0En4kS14v26r126r1DMxAIw28IcxkI7VAK
-	I48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7
-	xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xII
-	jxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw2
-	0EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x02
-	67AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU1veHDUUUUU==
-X-CM-SenderInfo: hfkh02xlgr0w46kxt4xhlfz01xgou0bp/
 
-
-
-On 2025/11/12 10:21, Waiman Long wrote:
-> On 11/11/25 8:58 PM, Chen Ridong wrote:
+On 11/11/25 10:33 PM, Chen Ridong wrote:
+>
+> On 2025/11/12 10:11, Sun Shaojie wrote:
+> Hello Shaojie,
+>
+>> Currently, when a non-exclusive cpuset's "cpuset.cpus" overlaps with a
+>> partitioned sibling, the sibling's partition state becomes invalid.
+>> However, this invalidation is often unnecessary.
 >>
->> On 2025/11/12 4:35, Waiman Long wrote:
->>> On 11/11/25 2:25 PM, Michal Koutný wrote:
->>>> On Tue, Nov 11, 2025 at 10:16:33AM -0500, Waiman Long <llong@redhat.com> wrote:
->>>>> For internal helper like this one, we may not really need that as
->>>>> almost all the code in cpuset.c are within either a cpuset_mutex or
->>>>> callback_lock critical sections. So I am fine with or without it.
->>>> OK, cpuset_mutex and callback_lock are close but cgroup_is_populated()
->>>> that caught my eye would also need cgroup_mutex otherwise "the result
->>>> can only be used as a hint" (quote from cgroup.h).
->>>>
->>>> Or is it safe to assume that cpuset_mutex inside cpuset_attach() is
->>>> sufficient to always (incl. exits) ensure stability of
->>>> cgroup_is_populated() result?
->>>>
->>>> Anyway, I'd find some clarifications in the commit message or the
->>>> surrounding code about this helpful. (Judgment call, whether with a
->>>> lockdep macro. My opinion is -- why not.)
->>> For attach_in_progress, it is protected by the cpuset_mutex. So it may make sense to add a
->>> lockdep_assert_held() for that.
->>>
->> Will add.
+>> This can be observed in specific configuration sequences:
 >>
->>> You are right that there are problems WRT the stability of cgroup_is_populated() value.
->>>
->>> I think "cgrp->nr_populated_csets + cs->attach_in_progress" should be almost stable for the cgroup
->>> itself with cpuset_mutex, but there can be a small timing window after cpuset_attach(), but before
->>> the stat is updated where the sum is 0, but there are actually tasks in the cgroup.
->>>
->> Do you mean there’s a small window after ss->attach (i.e., cpuset_attach) where
->> cgrp->nr_populated_csets + cs->attach_in_progress could be 0?
+>> Case 1: Partition created first, then non-exclusive cpuset overlaps
+>>   #1> mkdir -p /sys/fs/cgroup/A1
+>>   #2> echo "0-1" > /sys/fs/cgroup/A1/cpuset.cpus
+>>   #3> echo "root" > /sys/fs/cgroup/A1/cpuset.cpus.partition
+>>   #4> mkdir -p /sys/fs/cgroup/B1
+>>   #5> echo "0-3" > /sys/fs/cgroup/B1/cpuset.cpus
+>>   // A1's partition becomes "root invalid" - this is unnecessary
 >>
->> If I understand correctly:
+>> Case 2: Non-exclusive cpuset exists first, then partition created
+>>   #1> mkdir -p /sys/fs/cgroup/B1
+>>   #2> echo "0-1" > /sys/fs/cgroup/B1/cpuset.cpus
+>>   #3> mkdir -p /sys/fs/cgroup/A1
+>>   #4> echo "0-1" > /sys/fs/cgroup/A1/cpuset.cpus
+>>   #5> echo "root" > /sys/fs/cgroup/A1/cpuset.cpus.partition
+>>   // A1's partition becomes "root invalid" - this is unnecessary
 >>
->> ss->can_attach: cs->attach_in_progress++, sum > 0
->> css_set_move_task->css_set_update_populated: cgrp->nr_populated_csets++, sum > 0
->> ss->attach->cpuset_attach: cs->attach_in_progress--, sum > 0
+>> In Case 1, the effective CPU mask of B1 can differ from its requested
+>> mask. B1 can use CPUs 2-3 which don't overlap with A1's exclusive
+>> CPUs (0-1), thus not violating A1's exclusivity requirement.
 >>
->> What exactly is the small window you’re referring to where the sum equals 0?
-> Yes, the nr_populated_csets is incremented before calling cpuset_attach(). I think I had mixed up
-> the ordering. Thanks for the clarification.
+>> In Case 2, B1 can inherit the effective CPUs from its parent, so there
+>> is no need to invalidate A1's partition state.
 >>
->>> For "cgrp->nr_populated_domain_children + cgrp->nr_populated_threaded_children", it also has the
->>> problem that the sum can be 0 but there are attach_in_progress set in one or more of the child
->>> cgroups. So even with this patch, we can't guarantee 100% that there can be no task in the partition
->>> even if it has empty effective_cpus. It is only a problem for nested local partitions though as
->>> remote partitions are not allowed to exhaust all the CPUs from root cgroup.
->>>
->>> We should probably document that limitation to warn users if they try to create nested local
->>> partitions where the parent partition root of the child partitions has empty effective_cpus.
->>>
->> Hmm, but it was what the commit e2d59900d936 ("cgroup/cpuset: Allow no-task partition to have empty
->> cpuset.cpus.effective") allowed, and it makes sense.
-> 
-> This commit will allow user to not waste a CPU if users want to set up a nested local partitions
-> where there is no task in some intermediate levels. One way to address this gap is to iterate down
-> the cpuset hierarchy to check if any of its attach_in_progress count is set. So it is a solvable
-> problem.
-> 
+>> This patch relaxes the overlap check to only consider conflicts between
+>> partitioned siblings, not between a partitioned cpuset and a regular
+>> non-exclusive one.
+>>
+> Does this rule have any negative impact on your products?
+>
+> The CPUs specified by the user (including cpuset.cpus and cpuset.cpus.exclusive) can be treated as
+> the dedicated exclusive CPUs for the partition. For the cases you provided, both siblings can be
+> partitions. For example, in case 1, A1 can also be converted to a partition. If this rule is
+> relaxed, I don’t see any check for exclusive conflicts when A1 becomes a partition.
+>
+> Additionally, I think we should preserve the CPU affinity as the user intends as much as possible.
 
-Yes, the modification needed is to replace cpuset_for_each_child with cpuset_for_each_descendant_pre
-in partition_is_populated.
+Where does the original patch sent to? I didn't see it.
 
-> There is also a flip side where cgroup_is_populated() returns a non-zero value, but the tasks are
-> actively being moved away. This false positive is less a problem even though it can cause a failure
-> in distributing out all the CPUs to child partitions. The users can retry and it should work the
-> second time.
-> 
+Anyway it is late for me. I will take a further look tomorrow.
 
-Agree. This is a short-lived state, and it’s difficult to determine if any tasks are in the
-partition during this period. Users should retry.
-
--- 
-Best regards,
-Ridong
+Cheers,
+Longman
 
 
