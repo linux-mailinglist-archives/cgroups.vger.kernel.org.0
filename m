@@ -1,70 +1,83 @@
-Return-Path: <cgroups+bounces-11858-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-11859-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 57CA3C51365
-	for <lists+cgroups@lfdr.de>; Wed, 12 Nov 2025 09:56:12 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6CDE7C513B9
+	for <lists+cgroups@lfdr.de>; Wed, 12 Nov 2025 09:58:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 983394F0A56
-	for <lists+cgroups@lfdr.de>; Wed, 12 Nov 2025 08:51:33 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id C3AA54EC510
+	for <lists+cgroups@lfdr.de>; Wed, 12 Nov 2025 08:54:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A00FF2FD665;
-	Wed, 12 Nov 2025 08:51:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C77EF1E492A;
+	Wed, 12 Nov 2025 08:54:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="RqdeNE9W";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="5XX9Dx12"
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="0XI7kQwN";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="iYc+Xf07"
 X-Original-To: cgroups@vger.kernel.org
 Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E8C032F83A3;
-	Wed, 12 Nov 2025 08:51:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 324F72EE5FE;
+	Wed, 12 Nov 2025 08:54:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762937490; cv=none; b=sN6g6mJQKMvJEPqwbIf8E+KhQz4v4k6IVXafd+5+PUUcD606hR5vEBGv6v9c3HwQFnRG430xQyUkyWO8PSPuCbWrWKchYpFZs88NUg3BfyuId20T2V+efpm3BqLLm4AADX6rmHlGF9KFKpf27NpRJvt666EVa1E/k1LIVj6I4TY=
+	t=1762937648; cv=none; b=VHxOeL86MZ7LcoW8/wrgSQi2hI3kXVDymORT7CZSvC2c8zh/MKv6zSidaIm6sig4r1grP9maepUETKeND03g/yiBInWqMEz2Z1sayvy3nMpj9D67wa5wkTW5UeipVp0alCEwGREFubfsUHO2SiupA0Nx3fe994YceAMAj07Y5PI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762937490; c=relaxed/simple;
-	bh=kywgyA5FQhs8oTkjYjD9AFdb6TMZcC4VTRRosKwcu6o=;
+	s=arc-20240116; t=1762937648; c=relaxed/simple;
+	bh=tSeDYSdTakR0Jp4OF2Jm0a9M8Zm7izlqpSwMYkUzRVA=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=kwu2iKmBunlY+hBc0Q1pBeU3SZuRtd/ObBXKFFwj5nwUyJOMHPaiPvwQ3o6m6oyq5c2n6eFdVSDDgdDdY0gTEeDYTzGYHXAnN+nM06WwtMBqDmch4mUn/BvhmiFBcF5GBUes+4iaNL6DxTMQ0EEYXD1QVo6YryR8mwYMOduSnjc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=RqdeNE9W; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=5XX9Dx12; arc=none smtp.client-ip=193.142.43.55
+	 Content-Type:Content-Disposition:In-Reply-To; b=PiuM6m0qkeuv/yD+wrqxmBIpA3be+X+T67A/J9hVsOHE3B3CM4ZJyb/sk5iNHPiqxylsxg+ODEnmEZb8VxTuOYKnpiYSHIUTFBBr7IXYlk+LBKAYQ/hjMoc4ukPxLOYVh4xgXI3pi8PAbVpwF91KDkdTJBIROLVnbikMhlY/RSs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=0XI7kQwN; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=iYc+Xf07; arc=none smtp.client-ip=193.142.43.55
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-Date: Wed, 12 Nov 2025 09:51:24 +0100
+Date: Wed, 12 Nov 2025 09:54:03 +0100
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1762937487;
+	s=2020; t=1762937644;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=mBQp5we3WQzNUr+PZJkPqi9yKHhRHyihXOTm5iJHE5M=;
-	b=RqdeNE9WVxzF6JfkZqhPy54fYG98A573xXX6VDuMmXALlr/i4ZNejefpnEeRPr9tqm7nme
-	QVUMdVDat9o1RnGZBI1tTqahIWNaVw/WUMl56/TOfjwJ8IQa+1L6Ifk27C1R49mxh7MZWq
-	tx1T/8B8YjuzkERYyID647GQUPIuaOGWaW6pccjuJ6nvvsMb7yLhHZY8A241tNEsb+nXg6
-	TYqWq0dMYCYqJvtwe7QIVSO4KH63s6flRkeUWgdVMVNqMxw9CQzaBa3n3LsvVQWGp7ZClU
-	p21B3TmecXzrop7qWgiFziSjt7TdO9lxW7TMxTjZgdt420siwdVWfZQppDeC4A==
+	bh=+V65kbZ9DU351geqXdbjAKHkaUI37Nqr4MUCHI9acFg=;
+	b=0XI7kQwNRmOiy++ujh+bSWLTTxUj12k6FNh+VqQ0qP0Aa7jEBI+SRJfSv9sa68oMiPh+TS
+	YmlnV5Y0dnwWZ7pgENZpBHPa96fz2hEpI18ydhmq4M50UrKPDFYoyWvJzofOH6Hd1I/Dd+
+	il03UZHcMCtjIq7tGI9eE4Q599rnWD1utwrvMLz2XFstp190lCfO4+YqpRECS4UcJAhFIm
+	VHZrN5t1iY1HFmSaQdLVy55GaJ/lJO5z9vOR2WXcqMpMjRNHuQVre3eeHTn0J6SWsL9m8M
+	+1mIPodxkf3F4OTU4YE/IC8SByzgY+L+rGaOamuOkCfBQfRE7+vyOUxsm2uncQ==
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1762937487;
+	s=2020e; t=1762937644;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=mBQp5we3WQzNUr+PZJkPqi9yKHhRHyihXOTm5iJHE5M=;
-	b=5XX9Dx124mDAOrpgt9BjA2WxZS5h7LCCkV3H4UL9UAaOnFsLq/wVDI/fQatJiO0WI2WIFG
-	x9b7WEkh7W+YYMDQ==
+	bh=+V65kbZ9DU351geqXdbjAKHkaUI37Nqr4MUCHI9acFg=;
+	b=iYc+Xf072ZiHDDTNwwAtlbIIW6UxlrZjsGBEUM25STRuau127eoPUU3ZFohjg511KAUkGS
+	qrweraEEcSKJeiBw==
 From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To: Waiman Long <longman@redhat.com>
-Cc: Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>,
-	Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>,
+To: Harry Yoo <harry.yoo@oracle.com>
+Cc: Shakeel Butt <shakeel.butt@linux.dev>, Qi Zheng <qi.zheng@linux.dev>,
+	hannes@cmpxchg.org, hughd@google.com, mhocko@suse.com,
+	roman.gushchin@linux.dev, muchun.song@linux.dev, david@redhat.com,
+	lorenzo.stoakes@oracle.com, ziy@nvidia.com, imran.f.khan@oracle.com,
+	kamalesh.babulal@oracle.com, axelrasmussen@google.com,
+	yuanchu@google.com, weixugc@google.com, akpm@linux-foundation.org,
+	linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+	cgroups@vger.kernel.org, Muchun Song <songmuchun@bytedance.com>,
+	Qi Zheng <zhengqi.arch@bytedance.com>,
 	Clark Williams <clrkwllms@kernel.org>,
-	Steven Rostedt <rostedt@goodmis.org>, linux-kernel@vger.kernel.org,
-	cgroups@vger.kernel.org, linux-rt-devel@lists.linux.dev,
-	Chen Ridong <chenridong@huawei.com>, Pingfan Liu <piliu@redhat.com>,
-	Juri Lelli <juri.lelli@redhat.com>
-Subject: Re: [cgroup/for-6.19 PATCH] cgroup/cpuset: Make callback_lock a
- raw_spinlock_t
-Message-ID: <20251112085124.O5dlZ8Og@linutronix.de>
-References: <20251112035759.1162541-1-longman@redhat.com>
+	Steven Rostedt <rostedt@goodmis.org>,
+	linux-rt-devel@lists.linux.dev
+Subject: Re: [PATCH v1 04/26] mm: vmscan: refactor move_folios_to_lru()
+Message-ID: <20251112085403.DDv0RU5k@linutronix.de>
+References: <aRFKY5VGEujVOqBc@hyeyoo>
+ <2a68bddf-e6e6-4960-b5bc-1a39d747ea9b@linux.dev>
+ <aRF7eYlBKmG3hEFF@hyeyoo>
+ <aqdvjyzfk6vpespzcszfkmx522iy7hvddefcjgusrysglpdykt@uqedtngotzmy>
+ <8d6655f8-2756-45bb-85c1-223c3a5e656c@linux.dev>
+ <aRKqm24Lrg-JnCoh@hyeyoo>
+ <20251111084900.babaOj0w@linutronix.de>
+ <jzihvbb6w26d4codfigy2o7b2h26izb4ahihouw54cvuzau54d@jyaa6rgpzuai>
+ <20251112074930.mKu1J__U@linutronix.de>
+ <aRRJe3PzN3cmgvcB@hyeyoo>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -73,39 +86,19 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20251112035759.1162541-1-longman@redhat.com>
+In-Reply-To: <aRRJe3PzN3cmgvcB@hyeyoo>
 
-On 2025-11-11 22:57:59 [-0500], Waiman Long wrote:
-> The callback_lock is a spinlock_t which is acquired either to read
-> a stable set of cpu or node masks or to modify those masks when
-> cpuset_mutex is also acquired. Sometime it may need to go up the
-> cgroup hierarchy while holding the lock to find the right set of masks
-> to use. Assuming that the depth of the cgroup hierarch is finite and
-> typically small, the lock hold time should be limited.
-
-We can't assume that, can we?
-
-> Some externally callable cpuset APIs like cpuset_cpus_allowed() and
-
-cpuset_cpus_allowed() has three callers in kernel/sched/ and all use
-GFP_KERNEL shortly before invoking the function in question.
-
-> cpuset_mems_allowed() acquires callback_lock with irq disabled to ensure
-This I did not find. But I would ask to rework it somehow that we don't
-need to use raw_spinlock_t as a hammer that solves it all.
-
-> stable cpuset data. These APIs currently have the restriction that they
-> can't be called when a raw spinlock is being held. This is needed to
-> work correctly in a PREEMPT_RT kernel. This requires additional code
-> changes to work around this limitation. See [1] for a discussion of that.
+On 2025-11-12 17:46:51 [+0900], Harry Yoo wrote:
+> > > Is PREEMPT_RT fine with this?
+> > 
+> > Yes.
+> > The local_irq_save() is not strictly needed but I am fine with it to
+> > keep it simple. The inner part is just counting.
 > 
-> Make these external cpuset APIs more useful by changing callback_lock
-> to a raw_spinlock_t to remove this limitation so that they can be called
-> from within other raw spinlock critical sections if needed.
-> 
-> [1] https://lore.kernel.org/lkml/20251110014706.8118-1-piliu@redhat.com/
-> 
-> Signed-off-by: Waiman Long <longman@redhat.com>
+> Yeah I was wondering about this... and thanks for confirming!
+The preempt_disable_nested() and no in-IRQ user makes it okay. Not the
+counting, that was meant as "it is a small section". That might have
+been too short of an explanation.
 
 Sebastian
 
