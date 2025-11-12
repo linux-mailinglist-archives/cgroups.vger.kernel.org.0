@@ -1,47 +1,47 @@
-Return-Path: <cgroups+bounces-11863-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-11864-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E728FC52607
-	for <lists+cgroups@lfdr.de>; Wed, 12 Nov 2025 14:07:27 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 98BA4C52649
+	for <lists+cgroups@lfdr.de>; Wed, 12 Nov 2025 14:10:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BB7CE3B0679
-	for <lists+cgroups@lfdr.de>; Wed, 12 Nov 2025 12:56:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 791E23A1CF5
+	for <lists+cgroups@lfdr.de>; Wed, 12 Nov 2025 13:00:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E9DD632C95D;
-	Wed, 12 Nov 2025 12:56:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D592F33557B;
+	Wed, 12 Nov 2025 13:00:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dY7dS6CT"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tXMxI5CO"
 X-Original-To: cgroups@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A27DA328B73;
-	Wed, 12 Nov 2025 12:56:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 92A2223ABA1;
+	Wed, 12 Nov 2025 13:00:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762952187; cv=none; b=tAfnx230yJxBf5qbGFcPT1m88gMcDVMWC5EAsyrsxCOACjLY+7eCfAwJ04fJ9TJoc5fiMi65UqbWHSyoOwI3HyPUmt2V2t7UUtF7bgySEmtSRqDv3bWj3AF1XQ16EWss9zbEgrCg3fp9Z2lIalkGF6P5DdldWDLwbJZOSPX9utU=
+	t=1762952410; cv=none; b=Uz3znbygou+97Pf/cj2ULhhkhDAPflwpJngumcIstq6YxNH4cgAMeXYr7LzquTfeSRyJUKbqEurdoskbJb8RGolRPnaT8lDn3yXozJVHsqytwBr74JxHSm3RkXSVnQVtwMACwkUSo3tkQOpS+N+8cOTpvcsslr1p53ALAsdTXSY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762952187; c=relaxed/simple;
-	bh=J+FO8rTuxAuIuSLNonP5wf90/amTae3wDl1vcSvuonk=;
+	s=arc-20240116; t=1762952410; c=relaxed/simple;
+	bh=0HaLe2gNL7ont5LOICHqqQrLuo+dYo01HdsnDzUuumI=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=A7LlKVZMSWW67KkB7ZadghHj3l+5sWVpliUd++1vamurp6I6TTPHp4TpLTFxufJ20HNNV7R7tDU+8Z3p7gsq/kHBU7R6Wp9pb5Dl4R7AYL0SUryDzDNEqg/6/6U0W+wM3oAytWFdP7jDlVbJUU29iwTdP/3CVU6tNe4BU18tCDk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dY7dS6CT; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CD2E7C116B1;
-	Wed, 12 Nov 2025 12:56:26 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=grOZl0g+OHYYTHhGrJogMMPB2NEImgRgffa1LILVshOo5gj1AFWbSxADvNw/E8m8T3qH2CCsiilY6mYzyYHXjPuNkzvqQZcz+vrMvPkJbG71/esgc8KrO+l9p46YU6XdVnf3bmRwbnGy/f6/omT9XYYUjgf1Ct90bCEg3n0GqLQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=tXMxI5CO; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C06D8C4CEF8;
+	Wed, 12 Nov 2025 13:00:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1762952187;
-	bh=J+FO8rTuxAuIuSLNonP5wf90/amTae3wDl1vcSvuonk=;
+	s=k20201202; t=1762952410;
+	bh=0HaLe2gNL7ont5LOICHqqQrLuo+dYo01HdsnDzUuumI=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=dY7dS6CTElHmVc1niZeY+/LX7O6VVu+Wn/9n2JnlkQ3fu3W6EsJuxGufCtYjh+/AI
-	 CsJxMpd5FHncxpEXKy7BYdDQV6+rXc0eg8XuH4qQPhohRe28pjTy+Kd7WYMaSpllk+
-	 dW1bK5rMQGCW5098wV2IP5Bkfr5GYN8FVZnj+dzdAdOhEt8lYDpG49z4Wk6dM8WjXS
-	 DVWslIn3SBF9L/oryv76A0nd+O8TJ3qXikt/tLfFLn5LxDp17EekgRJCUnx8g7H4O7
-	 UkSqgG5fWrql9wBXQ62IZqua6ZqtzTHsWWTCkDfyL5qRgBtXnk05cVA/2mML4DbgCS
-	 /iP6izZJzZ+IA==
-Date: Wed, 12 Nov 2025 13:56:24 +0100
+	b=tXMxI5COf7TJMZFSLGF2JbY6TWMpb+swhx2IgZ6EUrTfQoM5GLWkM/q6iSQLIloLV
+	 ebccs9QJZ2K87HU7jAC/Xlh3l37Bbc4qB5o0nCIuNoteOcsQtMjjsFXRWwCzxqL2jq
+	 tOQZz2YWHOJurjDXOSJzMXVpLQRlwKDgZeiSW7bmzKNtY6sX3f2/6TsUOYsMHKBq3S
+	 srcFfzVZRebz1rnHmUyPQRdFz06qfrO3KGpbFgHut9qlGFR9AtwSH6JcCwZEoX62BV
+	 Zxm5x1aeLrttCtKPoTYkw/hP5QSMden0PeXjCwc7fl4cbLDJEP6gKfgKNOcrZBHz15
+	 DWtnyl3auf3eQ==
+Date: Wed, 12 Nov 2025 14:00:07 +0100
 From: Frederic Weisbecker <frederic@kernel.org>
 To: Waiman Long <llong@redhat.com>
 Cc: Thomas Gleixner <tglx@linutronix.de>,
@@ -50,7 +50,7 @@ Cc: Thomas Gleixner <tglx@linutronix.de>,
 	cgroups@vger.kernel.org
 Subject: Re: [PATCH] genirq: Fix IRQ threads affinity VS cpuset isolated
  partitions
-Message-ID: <aRSD-Fyy87qhCR6C@localhost.localdomain>
+Message-ID: <aRSE17zEW7IdYkCA@localhost.localdomain>
 References: <20251105131726.46364-1-frederic@kernel.org>
  <5d3d80dd-00ca-464d-bebf-c0fd4836b947@redhat.com>
 Precedence: bulk
@@ -146,15 +146,9 @@ Le Mon, Nov 10, 2025 at 04:28:49PM -0500, Waiman Long a écrit :
 > Should we use IRQD_AFFINITY_SET flag to check if affinity has been set and
 > then set PF_NO_SETAFFINITY only in this case?
 
-So IIUC, the cpumask_available() failure can't really happen because an allocation
-failure would make irq_alloc_descs() fail.
-
-__irq_alloc_descs() -> alloc_descs() -> alloc_desc() -> init_desc() - > alloc_mask()
-
-The error doesn't seem as well handled in early_irq_init() but the desc is freed
-anyway if that happens.
-
-So this is just a sanity check at best.
+Oh and if IRQD_AFFINITY_SET hasn't been set, then the cpuset shouldn't touch
+the kthread affinity directly either but reaffine the whole IRQ so that both
+the vector and its kthreads are moved away and not just the kthreads.
 
 Thanks.
 
