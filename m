@@ -1,79 +1,80 @@
-Return-Path: <cgroups+bounces-11879-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-11880-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B1CB6C54399
-	for <lists+cgroups@lfdr.de>; Wed, 12 Nov 2025 20:45:38 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3E31FC54303
+	for <lists+cgroups@lfdr.de>; Wed, 12 Nov 2025 20:39:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8E5543AA8C5
-	for <lists+cgroups@lfdr.de>; Wed, 12 Nov 2025 19:30:43 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 61F784F6956
+	for <lists+cgroups@lfdr.de>; Wed, 12 Nov 2025 19:31:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 89B9534DCF3;
-	Wed, 12 Nov 2025 19:29:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6EC5A3502B6;
+	Wed, 12 Nov 2025 19:29:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gourry.net header.i=@gourry.net header.b="ueCv7JmA"
+	dkim=pass (2048-bit key) header.d=gourry.net header.i=@gourry.net header.b="U21woACI"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-qk1-f169.google.com (mail-qk1-f169.google.com [209.85.222.169])
+Received: from mail-qv1-f44.google.com (mail-qv1-f44.google.com [209.85.219.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 555FC34D39F
-	for <cgroups@vger.kernel.org>; Wed, 12 Nov 2025 19:29:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3BA63350281
+	for <cgroups@vger.kernel.org>; Wed, 12 Nov 2025 19:29:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762975794; cv=none; b=JuzMi6GwB3pj1Qsezu9m5JR7nNx9vSH5uyX/5tWwwe4rjmGam1VRsXLEVDHSSMGN12M3rgNNcarc+4IOybXLBFTubLFenwNs6+bn1aHQuxE4Q5ePg8ZED24iTKVG9RnjHuvZxCSfX0iOVPCLcWtth3ibVK0HqE8JSBCBPiCeoTY=
+	t=1762975797; cv=none; b=FyAp4zkO5Ff8/UGqKHzEdn4zB0KPfLTJy7aOSpdBu4wEu+Aq2z3pa4qNpqeSPO549OF9RemA4s20JQtR7mWKPIyJSTpHHWKLETxAj2oH9VcgP9mTl8QX1vsxNDEQ7XGL27/3Yq1A8oxReLz36rJDruIb+jAPPUapR7qfrtSqCmg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762975794; c=relaxed/simple;
-	bh=oWT3QdfzIV3jbSGJXVBBh6ddTLW23EABmnAWQr4nZ1Q=;
+	s=arc-20240116; t=1762975797; c=relaxed/simple;
+	bh=LBAE8kZkJPq29k1iLwOntoOZutywPK8fvxCPXpNAG00=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=QkRh8FZdFi5VJMAwvLAARD/7L6sgsuIRJ1JlNx9QGKhUX0hFvAmWMj0RDI0S4ZGsLKUy3juz13wTm6Wz3tzcqfzM8y32SMUifK6PCgWLS8sDBzG7Q1CK1QHqRN5D6sYngUntlz1R0nk6S/RDXXjw1YQv58no7gildmP4ed8hEbs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gourry.net; spf=pass smtp.mailfrom=gourry.net; dkim=pass (2048-bit key) header.d=gourry.net header.i=@gourry.net header.b=ueCv7JmA; arc=none smtp.client-ip=209.85.222.169
+	 MIME-Version; b=lKcjtlFOv+ahTmWkyDMI7o/Goc/sY5HnL4NYD+e7Hrvb76Q6GybksmTj0abT7VZznzocYREr3R5QhUCKpJ3G+qwF+KA6kVccIEwRCFwiG5G7EeSOItDtbwMvXoaLM7Ki4rhoHfDKWHiPEvWx/vyoYA7kBFGHjVcuj40RKUMCXVw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gourry.net; spf=pass smtp.mailfrom=gourry.net; dkim=pass (2048-bit key) header.d=gourry.net header.i=@gourry.net header.b=U21woACI; arc=none smtp.client-ip=209.85.219.44
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gourry.net
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gourry.net
-Received: by mail-qk1-f169.google.com with SMTP id af79cd13be357-8b25ed53fcbso7045685a.0
-        for <cgroups@vger.kernel.org>; Wed, 12 Nov 2025 11:29:52 -0800 (PST)
+Received: by mail-qv1-f44.google.com with SMTP id 6a1803df08f44-8823dfa84c5so75286d6.3
+        for <cgroups@vger.kernel.org>; Wed, 12 Nov 2025 11:29:55 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gourry.net; s=google; t=1762975791; x=1763580591; darn=vger.kernel.org;
+        d=gourry.net; s=google; t=1762975794; x=1763580594; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=T7tukR8goduFTZ00FpwpL7JWktUWF3Mq7A3Wmoox3b0=;
-        b=ueCv7JmAjtqI0gF+tfVnACo9PU17ifJtvdmippVwrC5/JZH1bQevLHEZ0bn15lkr9S
-         Ier1nGktNolPrwiEgbq4RmATGAYT6iR9RlR/FR504QEJmNDBYJ2gZNWJ3/HrJbPGxjFk
-         G6koATqImxp133UblEdRRXaZHk7Mk3ne6qmST2sooUX15G91xUTeu/7hRygInlHBe2E+
-         hrMgegeuVmzq/nxFXlWJMi3qHZh/fBq05t8VElR4paYQ6l2EYxWSnu2hGX08rsyZkqyG
-         KAuI0J312Y/rXV8yQi5vycN/oZYwdjOOHvnrk9ClSEV0KSnvySm8HaOFR9CTa3iqNvjd
-         Loqw==
+        bh=sCG0uhUeeA1he7Dw5Q3elz2n5ZNHYlg7H15kRGg6IlY=;
+        b=U21woACIC0IijHo6RyKeSPCm+5RbJUW5pOEKTWR5JuSXcjxbSz03302AaVefkaK1mN
+         1YSVR62/CcaXLISutnAmS1VBXtnnQxUQorFfdAqXHmnpfJjHVI9Y7K2tvRHVushO6Oue
+         6PE+SEbCrKLR5O5I0CMqw7INddgtmB1xDuFlZR47qzU9xB/XZcDuKnxcz5zp5vrhP1u5
+         plxt8n3Ig/WrOi1pSpkE1Fpa82gKW5jxb9Y+utSlJnAzYiPrcSPro5ew2TTkSBC0sa/J
+         XH9oigqx1GQ7eMvy4tVul+1+agNbfLI2NA4/qEpTCwAn6mUbboDZXtJ9kIfO3RT4OIQE
+         PgtA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1762975791; x=1763580591;
+        d=1e100.net; s=20230601; t=1762975794; x=1763580594;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=T7tukR8goduFTZ00FpwpL7JWktUWF3Mq7A3Wmoox3b0=;
-        b=gje7CF3CDxV/OH7Ssbk2AQmZIEodire8cvBsoD1Snqa46S42DYqXOWrfpT4FOwBGoD
-         DMKmigjmoX/vvKBLDh3sENUhSVs7vaboCZw2aq20OBE3AbPHSC8X67EGKRSfTmnl4XDM
-         v2QyH6Z7zNhqebbjShRibw4r14JkCOSWEjzMQbxi6MovNDObRkclaugJnIsexYsjyb0X
-         QNbovbtm/7k3R95RVxoNSAb78XoHOo1YCMVZeXLBMl/WaZi5tD2G6dqfJwPMjGsA6J8f
-         xPsowVXuF9RPDjISMKz6BobPe+ikRahFI3H+KVheNUCzdk3LMvkC0lmRy8YTCHLbQqdc
-         7Q9g==
-X-Forwarded-Encrypted: i=1; AJvYcCXnKyVEDiyqDwBDZDHeeNdUyHSdL30pg4ECbInMCVHODq/FOtSKrYmB2Q+nBN4wRSQdFBuaoJZx@vger.kernel.org
-X-Gm-Message-State: AOJu0YyIC1ohwQ+jj7/YGmt5pRvDw8h8jOYbcz01zZItCbeu+wCQII0L
-	iXEJqCH3F9KzoSJcQpnnK8w2GWItXWSPqfthb4yugNYRSbGqsXWDJnPJwZWvcroJnl0=
-X-Gm-Gg: ASbGncvzl0gqcFa/Hhu92wlZxe75XryvO0lP1T3UQ2rVwFw11toLr0SAGmWftXbiqNi
-	zc8ljNFqiBSH1iQRSMleLJR7bcVvl2Hh7ioOHumVixPmVGs1M9SKpk0n5eM7Yk9JnuMCp72t1Yn
-	yCv6PpsU2TPLkWtal5QNnTJ8HTfNN0whOM43a7N6L0m+MVCtqYFyTiIB2vjdbfUcKmluFZVevVu
-	e1CAHhUfIB8+7WLU6GWmT0xf/izguEckAlMf6J1KtLJT2ZSNNZ0mutlnnYK3wpU0Nulr1PECssT
-	r4MHs+oaIL70SavEWFfmowCV1H/fjDBxTQsm5XqATpq1yfeHFJ+zCq7L92zDQxeuZyYuaQE5KtA
-	zFtkzYCSefJ1shhVFRy3RMDQUQWq+McZ2JY+R4DNzWCywXEr/IroxsyabXkmWsYfK1b8khbGx8T
-	mJfKPH/6ksOz0hqu0A9UNSdV06NgqfbkAhRZv6EVNtmLXqoN6G8HsZZ49upB8G8g21
-X-Google-Smtp-Source: AGHT+IHo8OwgwUC032YSv60eOJd12q77M7KD3oUAYRPoiD1R5IwVdmpQvxPyI0R/rCY63GPtuNDIug==
-X-Received: by 2002:a05:620a:4406:b0:8a4:40da:b907 with SMTP id af79cd13be357-8b29b768ba9mr557487185a.32.1762975790793;
-        Wed, 12 Nov 2025 11:29:50 -0800 (PST)
+        bh=sCG0uhUeeA1he7Dw5Q3elz2n5ZNHYlg7H15kRGg6IlY=;
+        b=BS30zBefldyaDuLWO5NRBEMlDd33AjSAtwQVRJFwTbKKaHczVRRW+pq2IGTbrPsbMP
+         Jl+xUGCVAy/0AJemoysbPrnJmulB2SbwROFEwBJXwiQWXniqZ8zhcSDhON8zLe6g3AET
+         5wy8wRxG1Jw/uC05YMeC3Zn10guGBYk5cUykhXxwAMpdgtJOfcpXes9TZ63CWcW3OpwR
+         ONoLopsI2/uwhtbnlZrAeHkb42GMJaTkPTE9CHeFzH/JqqhTi0g7HmgTsmC8i2ryvqVJ
+         Nt7twnCATmJpf+qK5E4R++pUPGRlY2TwuePeCHD5js2cKdglEJyXn8TgZh2OXIHdJAys
+         20Mg==
+X-Forwarded-Encrypted: i=1; AJvYcCUEJqby/RX2NCFiVZrQjfMD3tdT4iyAyMQqhRSyY2LxAQUQhMo3xXmF1HpviqosG13pUlhgTfNK@vger.kernel.org
+X-Gm-Message-State: AOJu0Yw38B+mrEHhpBoi1tYNhbeV7pzjmWLN5ourWYtzQ4bvzahfCVKd
+	JJdsB9CnfX6+2skpfZfNdWIfZe3lXIhzvPl1Co2Y+orcw5Py2Av0EDexhskqd/HG+uQ=
+X-Gm-Gg: ASbGnctC27gGMQDChB/f2hzTmvvylIINv0Bqdb4EA4Aqc5EaTae0P3KQM2zIXDZClvN
+	z39GFarRtWxmztgVPm0whRQvk68fzi4KpQK1RI5vwWN/4aCoVPRdizglllT8Mc3UMwkx97MVrL2
+	ByTTpBx2k8Sg9ATnmodyvmW2kpJl6OQgCjEwGKDA5j54dTaapN9EomBfX6FVzS3pSJwfA1kU+W3
+	wTPNoxr60TGhXR+Yg6I3HEU9pKdK9gGWLHPmuHyfyf2n6G1Qcjcb5vMlnEXSf55n5dtehDmt7ry
+	4i7MzeRii/n0cnAkTMQIcqAlozn+TaVVy5BSewYEW4JYoZWxmSJ2dyuiOnKcpFqr5mMBiIpowGK
+	fCKse3iQuKYixAG+shDaPmnoTd41MrNfPaw0qDcs7KcRURt7ojbE2k5y27JQUWz6uRY6EMH+J5L
+	a5uWgUd1v5rxEDw5q9/NQCsE1nW7W4kFZK/t/iP14aJyZV+eTVNU5fFPyvmbTHzoZ7l84KAzvYZ
+	RQ=
+X-Google-Smtp-Source: AGHT+IHnM9b4iMhaMM3Umfgp794GytPagXJHdOPIuSBhJp6PMVhTsTQsQQE9eWpDhS66Z0o2IvV+zA==
+X-Received: by 2002:a05:622a:2d6:b0:4db:db96:15d3 with SMTP id d75a77b69052e-4eddbd61fe9mr49171401cf.31.1762975793923;
+        Wed, 12 Nov 2025 11:29:53 -0800 (PST)
 Received: from gourry-fedora-PF4VCD3F.lan (pool-96-255-20-138.washdc.ftas.verizon.net. [96.255.20.138])
-        by smtp.gmail.com with ESMTPSA id af79cd13be357-8b29aa0082esm243922885a.50.2025.11.12.11.29.48
+        by smtp.gmail.com with ESMTPSA id af79cd13be357-8b29aa0082esm243922885a.50.2025.11.12.11.29.52
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 12 Nov 2025 11:29:50 -0800 (PST)
+        Wed, 12 Nov 2025 11:29:53 -0800 (PST)
 From: Gregory Price <gourry@gourry.net>
 To: linux-mm@kvack.org
 Cc: kernel-team@meta.com,
@@ -143,9 +144,9 @@ Cc: kernel-team@meta.com,
 	namcao@linutronix.de,
 	escape@linux.alibaba.com,
 	dongjoo.seo1@samsung.com
-Subject: [RFC PATCH v2 01/11] mm: constify oom_control, scan_control, and alloc_context nodemask
-Date: Wed, 12 Nov 2025 14:29:17 -0500
-Message-ID: <20251112192936.2574429-2-gourry@gourry.net>
+Subject: [RFC PATCH v2 02/11] mm: change callers of __cpuset_zone_allowed to cpuset_zone_allowed
+Date: Wed, 12 Nov 2025 14:29:18 -0500
+Message-ID: <20251112192936.2574429-3-gourry@gourry.net>
 X-Mailer: git-send-email 2.51.1
 In-Reply-To: <20251112192936.2574429-1-gourry@gourry.net>
 References: <20251112192936.2574429-1-gourry@gourry.net>
@@ -157,262 +158,79 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-The nodemasks in these structures may come from a variety of sources,
-including tasks and cpusets - and should never be modified by any code
-when being passed around inside another context.
+All current callers of __cpuset_zone_allowed() presently check if
+cpusets_enabled() is true first - which is the first check of the
+cpuset_zone_allowed() function.
 
 Signed-off-by: Gregory Price <gourry@gourry.net>
 ---
- include/linux/cpuset.h | 4 ++--
- include/linux/mm.h     | 4 ++--
- include/linux/mmzone.h | 6 +++---
- include/linux/oom.h    | 2 +-
- include/linux/swap.h   | 2 +-
- kernel/cgroup/cpuset.c | 2 +-
- mm/internal.h          | 2 +-
- mm/mmzone.c            | 5 +++--
- mm/page_alloc.c        | 4 ++--
- mm/show_mem.c          | 9 ++++++---
- mm/vmscan.c            | 6 +++---
- 11 files changed, 25 insertions(+), 21 deletions(-)
+ mm/compaction.c |  7 +++----
+ mm/page_alloc.c | 19 ++++++++-----------
+ 2 files changed, 11 insertions(+), 15 deletions(-)
 
-diff --git a/include/linux/cpuset.h b/include/linux/cpuset.h
-index 2ddb256187b5..548eaf7ef8d0 100644
---- a/include/linux/cpuset.h
-+++ b/include/linux/cpuset.h
-@@ -80,7 +80,7 @@ extern bool cpuset_cpu_is_isolated(int cpu);
- extern nodemask_t cpuset_mems_allowed(struct task_struct *p);
- #define cpuset_current_mems_allowed (current->mems_allowed)
- void cpuset_init_current_mems_allowed(void);
--int cpuset_nodemask_valid_mems_allowed(nodemask_t *nodemask);
-+int cpuset_nodemask_valid_mems_allowed(const nodemask_t *nodemask);
+diff --git a/mm/compaction.c b/mm/compaction.c
+index 1e8f8eca318c..d2176935d3dd 100644
+--- a/mm/compaction.c
++++ b/mm/compaction.c
+@@ -2829,10 +2829,9 @@ enum compact_result try_to_compact_pages(gfp_t gfp_mask, unsigned int order,
+ 					ac->highest_zoneidx, ac->nodemask) {
+ 		enum compact_result status;
  
- extern bool cpuset_current_node_allowed(int node, gfp_t gfp_mask);
+-		if (cpusets_enabled() &&
+-			(alloc_flags & ALLOC_CPUSET) &&
+-			!__cpuset_zone_allowed(zone, gfp_mask))
+-				continue;
++		if ((alloc_flags & ALLOC_CPUSET) &&
++		    !cpuset_zone_allowed(zone, gfp_mask))
++			continue;
  
-@@ -219,7 +219,7 @@ static inline nodemask_t cpuset_mems_allowed(struct task_struct *p)
- #define cpuset_current_mems_allowed (node_states[N_MEMORY])
- static inline void cpuset_init_current_mems_allowed(void) {}
- 
--static inline int cpuset_nodemask_valid_mems_allowed(nodemask_t *nodemask)
-+static inline int cpuset_nodemask_valid_mems_allowed(const nodemask_t *nodemask)
- {
- 	return 1;
- }
-diff --git a/include/linux/mm.h b/include/linux/mm.h
-index d16b33bacc32..1a874917eae6 100644
---- a/include/linux/mm.h
-+++ b/include/linux/mm.h
-@@ -3343,7 +3343,7 @@ extern int __meminit early_pfn_to_nid(unsigned long pfn);
- extern void mem_init(void);
- extern void __init mmap_init(void);
- 
--extern void __show_mem(unsigned int flags, nodemask_t *nodemask, int max_zone_idx);
-+extern void __show_mem(unsigned int flags, const nodemask_t *nodemask, int max_zone_idx);
- static inline void show_mem(void)
- {
- 	__show_mem(0, NULL, MAX_NR_ZONES - 1);
-@@ -3353,7 +3353,7 @@ extern void si_meminfo(struct sysinfo * val);
- extern void si_meminfo_node(struct sysinfo *val, int nid);
- 
- extern __printf(3, 4)
--void warn_alloc(gfp_t gfp_mask, nodemask_t *nodemask, const char *fmt, ...);
-+void warn_alloc(gfp_t gfp_mask, const nodemask_t *nodemask, const char *fmt, ...);
- 
- extern void setup_per_cpu_pageset(void);
- 
-diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
-index 7fb7331c5725..5c96b2c52817 100644
---- a/include/linux/mmzone.h
-+++ b/include/linux/mmzone.h
-@@ -1725,7 +1725,7 @@ static inline int zonelist_node_idx(const struct zoneref *zoneref)
- 
- struct zoneref *__next_zones_zonelist(struct zoneref *z,
- 					enum zone_type highest_zoneidx,
--					nodemask_t *nodes);
-+					const nodemask_t *nodes);
- 
- /**
-  * next_zones_zonelist - Returns the next zone at or below highest_zoneidx within the allowed nodemask using a cursor within a zonelist as a starting point
-@@ -1744,7 +1744,7 @@ struct zoneref *__next_zones_zonelist(struct zoneref *z,
-  */
- static __always_inline struct zoneref *next_zones_zonelist(struct zoneref *z,
- 					enum zone_type highest_zoneidx,
--					nodemask_t *nodes)
-+					const nodemask_t *nodes)
- {
- 	if (likely(!nodes && zonelist_zone_idx(z) <= highest_zoneidx))
- 		return z;
-@@ -1770,7 +1770,7 @@ static __always_inline struct zoneref *next_zones_zonelist(struct zoneref *z,
-  */
- static inline struct zoneref *first_zones_zonelist(struct zonelist *zonelist,
- 					enum zone_type highest_zoneidx,
--					nodemask_t *nodes)
-+					const nodemask_t *nodes)
- {
- 	return next_zones_zonelist(zonelist->_zonerefs,
- 							highest_zoneidx, nodes);
-diff --git a/include/linux/oom.h b/include/linux/oom.h
-index 7b02bc1d0a7e..00da05d227e6 100644
---- a/include/linux/oom.h
-+++ b/include/linux/oom.h
-@@ -30,7 +30,7 @@ struct oom_control {
- 	struct zonelist *zonelist;
- 
- 	/* Used to determine mempolicy */
--	nodemask_t *nodemask;
-+	const nodemask_t *nodemask;
- 
- 	/* Memory cgroup in which oom is invoked, or NULL for global oom */
- 	struct mem_cgroup *memcg;
-diff --git a/include/linux/swap.h b/include/linux/swap.h
-index e818fbade1e2..f5154499bafd 100644
---- a/include/linux/swap.h
-+++ b/include/linux/swap.h
-@@ -381,7 +381,7 @@ extern void swap_setup(void);
- /* linux/mm/vmscan.c */
- extern unsigned long zone_reclaimable_pages(struct zone *zone);
- extern unsigned long try_to_free_pages(struct zonelist *zonelist, int order,
--					gfp_t gfp_mask, nodemask_t *mask);
-+					gfp_t gfp_mask, const nodemask_t *mask);
- 
- #define MEMCG_RECLAIM_MAY_SWAP (1 << 1)
- #define MEMCG_RECLAIM_PROACTIVE (1 << 2)
-diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
-index 52468d2c178a..cd3e2ae83d70 100644
---- a/kernel/cgroup/cpuset.c
-+++ b/kernel/cgroup/cpuset.c
-@@ -4238,7 +4238,7 @@ nodemask_t cpuset_mems_allowed(struct task_struct *tsk)
-  *
-  * Are any of the nodes in the nodemask allowed in current->mems_allowed?
-  */
--int cpuset_nodemask_valid_mems_allowed(nodemask_t *nodemask)
-+int cpuset_nodemask_valid_mems_allowed(const nodemask_t *nodemask)
- {
- 	return nodes_intersects(*nodemask, current->mems_allowed);
- }
-diff --git a/mm/internal.h b/mm/internal.h
-index 1561fc2ff5b8..464e60dd7ba1 100644
---- a/mm/internal.h
-+++ b/mm/internal.h
-@@ -587,7 +587,7 @@ void page_alloc_sysctl_init(void);
-  */
- struct alloc_context {
- 	struct zonelist *zonelist;
--	nodemask_t *nodemask;
-+	const nodemask_t *nodemask;
- 	struct zoneref *preferred_zoneref;
- 	int migratetype;
- 
-diff --git a/mm/mmzone.c b/mm/mmzone.c
-index 0c8f181d9d50..59dc3f2076a6 100644
---- a/mm/mmzone.c
-+++ b/mm/mmzone.c
-@@ -43,7 +43,8 @@ struct zone *next_zone(struct zone *zone)
- 	return zone;
- }
- 
--static inline int zref_in_nodemask(struct zoneref *zref, nodemask_t *nodes)
-+static inline int zref_in_nodemask(struct zoneref *zref,
-+				   const nodemask_t *nodes)
- {
- #ifdef CONFIG_NUMA
- 	return node_isset(zonelist_node_idx(zref), *nodes);
-@@ -55,7 +56,7 @@ static inline int zref_in_nodemask(struct zoneref *zref, nodemask_t *nodes)
- /* Returns the next zone at or below highest_zoneidx in a zonelist */
- struct zoneref *__next_zones_zonelist(struct zoneref *z,
- 					enum zone_type highest_zoneidx,
--					nodemask_t *nodes)
-+					const nodemask_t *nodes)
- {
- 	/*
- 	 * Find the next suitable zone to use for the allocation.
+ 		if (prio > MIN_COMPACT_PRIORITY
+ 					&& compaction_deferred(zone, order)) {
 diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index 600d9e981c23..fd5401fb5e00 100644
+index fd5401fb5e00..bcaf1125d109 100644
 --- a/mm/page_alloc.c
 +++ b/mm/page_alloc.c
-@@ -3924,7 +3924,7 @@ get_page_from_freelist(gfp_t gfp_mask, unsigned int order, int alloc_flags,
- 	return NULL;
- }
+@@ -3750,10 +3750,9 @@ get_page_from_freelist(gfp_t gfp_mask, unsigned int order, int alloc_flags,
+ 		struct page *page;
+ 		unsigned long mark;
  
--static void warn_alloc_show_mem(gfp_t gfp_mask, nodemask_t *nodemask)
-+static void warn_alloc_show_mem(gfp_t gfp_mask, const nodemask_t *nodemask)
- {
- 	unsigned int filter = SHOW_MEM_FILTER_NODES;
+-		if (cpusets_enabled() &&
+-			(alloc_flags & ALLOC_CPUSET) &&
+-			!__cpuset_zone_allowed(zone, gfp_mask))
+-				continue;
++		if ((alloc_flags & ALLOC_CPUSET) &&
++		    !cpuset_zone_allowed(zone, gfp_mask))
++			continue;
+ 		/*
+ 		 * When allocating a page cache page for writing, we
+ 		 * want to get it from a node that is within its dirty
+@@ -4553,10 +4552,9 @@ should_reclaim_retry(gfp_t gfp_mask, unsigned order,
+ 		unsigned long min_wmark = min_wmark_pages(zone);
+ 		bool wmark;
  
-@@ -3943,7 +3943,7 @@ static void warn_alloc_show_mem(gfp_t gfp_mask, nodemask_t *nodemask)
- 	__show_mem(filter, nodemask, gfp_zone(gfp_mask));
- }
+-		if (cpusets_enabled() &&
+-			(alloc_flags & ALLOC_CPUSET) &&
+-			!__cpuset_zone_allowed(zone, gfp_mask))
+-				continue;
++		if ((alloc_flags & ALLOC_CPUSET) &&
++		    !cpuset_zone_allowed(zone, gfp_mask))
++			continue;
  
--void warn_alloc(gfp_t gfp_mask, nodemask_t *nodemask, const char *fmt, ...)
-+void warn_alloc(gfp_t gfp_mask, const nodemask_t *nodemask, const char *fmt, ...)
- {
- 	struct va_format vaf;
- 	va_list args;
-diff --git a/mm/show_mem.c b/mm/show_mem.c
-index 3a4b5207635d..24685b5c6dcf 100644
---- a/mm/show_mem.c
-+++ b/mm/show_mem.c
-@@ -116,7 +116,8 @@ void si_meminfo_node(struct sysinfo *val, int nid)
-  * Determine whether the node should be displayed or not, depending on whether
-  * SHOW_MEM_FILTER_NODES was passed to show_free_areas().
-  */
--static bool show_mem_node_skip(unsigned int flags, int nid, nodemask_t *nodemask)
-+static bool show_mem_node_skip(unsigned int flags, int nid,
-+			       const nodemask_t *nodemask)
- {
- 	if (!(flags & SHOW_MEM_FILTER_NODES))
- 		return false;
-@@ -177,7 +178,8 @@ static bool node_has_managed_zones(pg_data_t *pgdat, int max_zone_idx)
-  * SHOW_MEM_FILTER_NODES: suppress nodes that are not allowed by current's
-  *   cpuset.
-  */
--static void show_free_areas(unsigned int filter, nodemask_t *nodemask, int max_zone_idx)
-+static void show_free_areas(unsigned int filter, const nodemask_t *nodemask,
-+			    int max_zone_idx)
- {
- 	unsigned long free_pcp = 0;
- 	int cpu, nid;
-@@ -399,7 +401,8 @@ static void show_free_areas(unsigned int filter, nodemask_t *nodemask, int max_z
- 	show_swap_cache_info();
- }
+ 		available = reclaimable = zone_reclaimable_pages(zone);
+ 		available += zone_page_state_snapshot(zone, NR_FREE_PAGES);
+@@ -5052,10 +5050,9 @@ unsigned long alloc_pages_bulk_noprof(gfp_t gfp, int preferred_nid,
+ 	for_next_zone_zonelist_nodemask(zone, z, ac.highest_zoneidx, ac.nodemask) {
+ 		unsigned long mark;
  
--void __show_mem(unsigned int filter, nodemask_t *nodemask, int max_zone_idx)
-+void __show_mem(unsigned int filter, const nodemask_t *nodemask,
-+		int max_zone_idx)
- {
- 	unsigned long total = 0, reserved = 0, highmem = 0;
- 	struct zone *zone;
-diff --git a/mm/vmscan.c b/mm/vmscan.c
-index b2fc8b626d3d..03e7f5206ad9 100644
---- a/mm/vmscan.c
-+++ b/mm/vmscan.c
-@@ -80,7 +80,7 @@ struct scan_control {
- 	 * Nodemask of nodes allowed by the caller. If NULL, all nodes
- 	 * are scanned.
- 	 */
--	nodemask_t	*nodemask;
-+	const nodemask_t *nodemask;
+-		if (cpusets_enabled() && (alloc_flags & ALLOC_CPUSET) &&
+-		    !__cpuset_zone_allowed(zone, gfp)) {
++		if ((alloc_flags & ALLOC_CPUSET) &&
++		    !cpuset_zone_allowed(zone, gfp))
+ 			continue;
+-		}
  
- 	/*
- 	 * The memory cgroup that hit its limit and as a result is the
-@@ -6530,7 +6530,7 @@ static bool allow_direct_reclaim(pg_data_t *pgdat)
-  * happens, the page allocator should not consider triggering the OOM killer.
-  */
- static bool throttle_direct_reclaim(gfp_t gfp_mask, struct zonelist *zonelist,
--					nodemask_t *nodemask)
-+				    const nodemask_t *nodemask)
- {
- 	struct zoneref *z;
- 	struct zone *zone;
-@@ -6610,7 +6610,7 @@ static bool throttle_direct_reclaim(gfp_t gfp_mask, struct zonelist *zonelist,
- }
- 
- unsigned long try_to_free_pages(struct zonelist *zonelist, int order,
--				gfp_t gfp_mask, nodemask_t *nodemask)
-+				gfp_t gfp_mask, const nodemask_t *nodemask)
- {
- 	unsigned long nr_reclaimed;
- 	struct scan_control sc = {
+ 		if (nr_online_nodes > 1 && zone != zonelist_zone(ac.preferred_zoneref) &&
+ 		    zone_to_nid(zone) != zonelist_node_idx(ac.preferred_zoneref)) {
 -- 
 2.51.1
 
