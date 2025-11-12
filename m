@@ -1,102 +1,102 @@
-Return-Path: <cgroups+bounces-11876-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-11877-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
-	by mail.lfdr.de (Postfix) with ESMTPS id 921A3C53D84
-	for <lists+cgroups@lfdr.de>; Wed, 12 Nov 2025 19:05:27 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id B5430C53E8D
+	for <lists+cgroups@lfdr.de>; Wed, 12 Nov 2025 19:25:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 17B9B343971
-	for <lists+cgroups@lfdr.de>; Wed, 12 Nov 2025 18:05:27 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6A49F3A5BFD
+	for <lists+cgroups@lfdr.de>; Wed, 12 Nov 2025 18:21:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1D860348867;
-	Wed, 12 Nov 2025 18:05:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7AC7834AB1C;
+	Wed, 12 Nov 2025 18:21:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="FCuHR/3q";
-	dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b="fvBBqqqy"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="FijbiEZd";
+	dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b="q3ctEXq0"
 X-Original-To: cgroups@vger.kernel.org
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 14A03335073
-	for <cgroups@vger.kernel.org>; Wed, 12 Nov 2025 18:05:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7350D2D97AF
+	for <cgroups@vger.kernel.org>; Wed, 12 Nov 2025 18:21:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762970722; cv=none; b=VrpI49cDDMzLQfkYAcSxkpZsHgA58VnaGvrAEnC/gKxH0KE7Uu6MV5v5IxNr0AQfZedUxytqdqD51DDgIKRn7UsuqhBNM3+jiZDlwWStRZkyMroMNk2DI0Os/Sfq4mx299877ZEalBjbXdTyIdqrOegHvx4jLgh4W+RgWX3zVUA=
+	t=1762971680; cv=none; b=bphGhyVbb3G84BHhxWSesu5e5upObKRqyho12izX8kbfgCFay2zNzp2sy5jdbpGInVjXOVRd+ZIe0rMTzRThq45rZasqhFUZA9A5iN02KDpZ9mz/1QHgDWFrKNeyGY7ovAxOKghHTnkryhPgRYaW5btF5l/Zqn7fFngGdgFfJW4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762970722; c=relaxed/simple;
-	bh=ko5BbGl6a9fQFlBxeoKvlk91k6qFsjA2qTndHaSt7YE=;
+	s=arc-20240116; t=1762971680; c=relaxed/simple;
+	bh=yl+oslX8wXO1RMzv0DqKzC2S5J5LK9Sv9dWD7vhAgAM=;
 	h=From:Message-ID:Date:MIME-Version:Subject:To:Cc:References:
-	 In-Reply-To:Content-Type; b=bD4i4GgrcOZ+DyMJ3As4e4/h6NSs0R7wU/Ov9p0u4T0e3hlWDl9L6pn+HlF3Hyf6dATczh0P4MoSyHzAxwayKIimlk7OEWCN5YtP7GAbhgMYookWxL43FUVAFnGz/0FT6Je/QSKYKy0ID3RYTCTT0qgy5PQElPpp/oUZwN7BPyw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=FCuHR/3q; dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b=fvBBqqqy; arc=none smtp.client-ip=170.10.133.124
+	 In-Reply-To:Content-Type; b=P7Wjc0fqvADb1gtYwLxubsisOgTl5I2+x39KzeAWi6l7MZiUMN1HFigSK5wS2B0sjZZHiLLb25s08bJ0lBB3FU9fZM4sFGEQDL5DmQSjcvENUBf/GGX20SCnebjkutOhHLJRZhkqYv4k55ICG45P5B6NrLAjDQlYFjQV5Y7UmoA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=FijbiEZd; dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b=q3ctEXq0; arc=none smtp.client-ip=170.10.133.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1762970719;
+	s=mimecast20190719; t=1762971676;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=0Zn2uqlOqkTGm+7Vhf+JluqFYrDljO4Zyy3TKQXkdTw=;
-	b=FCuHR/3qXGnLB9pvrp2X3NsKGrGybR8DhnSIuJTocE09BRm+1vZ3SuNUdBfnt1Xy9nsOSL
-	p2CMWLCAG24ZRIP0J1hBc6GOnf25gXN0+/ApUFL0Kv3vR/DJ78vO6RXQGT2ylefvox5uZD
-	EanRBSdSCxF+JFl6ujNNDocJiDsFniI=
-Received: from mail-qv1-f70.google.com (mail-qv1-f70.google.com
- [209.85.219.70]) by relay.mimecast.com with ESMTP with STARTTLS
+	bh=+dJpJWnR6W2PauvB5c9FgPR6gGTYegkNj3iOoqqoWtg=;
+	b=FijbiEZd46vSeDwSvYBUxk3wafkUoH+Cv1oAAsVk1KrbmfCySsHlI3zt3VxmCM+zPS8fUy
+	tJtGDmvKTyT8p74VG6fJBnmwQazbLEzuCB4Wdi1C9H0T+f8Q49KjUxKQOmBEaCFghaI0t8
+	DsjiiCACuG1Aa8ySQEUy2WyVQs23xg0=
+Received: from mail-qk1-f199.google.com (mail-qk1-f199.google.com
+ [209.85.222.199]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-426-JbYErc-nNKGm4N2SYvcXyA-1; Wed, 12 Nov 2025 13:05:18 -0500
-X-MC-Unique: JbYErc-nNKGm4N2SYvcXyA-1
-X-Mimecast-MFC-AGG-ID: JbYErc-nNKGm4N2SYvcXyA_1762970718
-Received: by mail-qv1-f70.google.com with SMTP id 6a1803df08f44-882529130acso28966506d6.2
-        for <cgroups@vger.kernel.org>; Wed, 12 Nov 2025 10:05:18 -0800 (PST)
+ us-mta-692-VNJD_LDjOTawAakp7HW_Eg-1; Wed, 12 Nov 2025 13:21:14 -0500
+X-MC-Unique: VNJD_LDjOTawAakp7HW_Eg-1
+X-Mimecast-MFC-AGG-ID: VNJD_LDjOTawAakp7HW_Eg_1762971674
+Received: by mail-qk1-f199.google.com with SMTP id af79cd13be357-8b233e206ddso308034485a.3
+        for <cgroups@vger.kernel.org>; Wed, 12 Nov 2025 10:21:14 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=redhat.com; s=google; t=1762970718; x=1763575518; darn=vger.kernel.org;
+        d=redhat.com; s=google; t=1762971674; x=1763576474; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:content-language:references
          :cc:to:subject:user-agent:mime-version:date:message-id:from:from:to
          :cc:subject:date:message-id:reply-to;
-        bh=0Zn2uqlOqkTGm+7Vhf+JluqFYrDljO4Zyy3TKQXkdTw=;
-        b=fvBBqqqyTlsxOIpJ9UPap7LmW1Xe5fW9YUJV3oCBJ1KX1CFIaX5xqLNBDGrE7gge5Y
-         O23qi8y+k/5Okr59fUf/XJ/xTSlxUh2UsmSta2Yzr8xtp33E0JCsZ3Wqjk4402bP3pQa
-         N+dmz4M8zr/G0Y2E56IAN9pe3sJkpxUlNJ7hYJIpXEot8BZ6eqO+cfKWL+T3TWNneOwZ
-         MaMEXMvUkwX6xO4PPRDYphpIJB7/+2tZhjfJ/bt1IIGUpN2TE4da2+m8Q3WHXkrgoAyZ
-         OESEdmlcK0rpnVjrCSdbYp+Rax+vRgEbFheMfR/h1HpG9m3Z9n+jZR3RKTPKhBcxUQOW
-         PidA==
+        bh=+dJpJWnR6W2PauvB5c9FgPR6gGTYegkNj3iOoqqoWtg=;
+        b=q3ctEXq0ffJ4swuBHHeX0XNAnGJowN6jiL8X3fYDo7vZfFxBdJxCiGVFvTrJ1xKOxj
+         3BsZ45bqdOSjKLzQ8P+gXTnFq6rluEAwmx7ccwuR9hWtAkgqDg3J54rEbqvn4hf9BIC3
+         TWk00a6BXXLekHWc5phULXwY1RAlCLlaF+GxXjy8aXZeNx/CT7GZKs2kpJ0bzmYB87c2
+         aNND3ZDytqAkn4nr+OW2ya3iBlGLIw4UGgL3IoyxM01sVvOmOHzEHr90JmlcWPJqXt1z
+         KVy1Ejoa52qHF8UA19yKmCalFAOzej6H+7PlG1AVFVq04YekvGUzw4JVjh53rLc+bLAG
+         O4vQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1762970718; x=1763575518;
+        d=1e100.net; s=20230601; t=1762971674; x=1763576474;
         h=content-transfer-encoding:in-reply-to:content-language:references
          :cc:to:subject:user-agent:mime-version:date:message-id:from:x-gm-gg
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=0Zn2uqlOqkTGm+7Vhf+JluqFYrDljO4Zyy3TKQXkdTw=;
-        b=MF2eORaoqs5dUKv3F00OGd/j00WupkW1pJfa+dzF1+6Rm+SVyvM3gLkbTQW7YUCxae
-         oHJAT+BqDCb572H+vRobb85zscXEP+0LvRr1sXWBy9DhDNq6M1Nf6/oTfRw7toR4kzb6
-         iqhKa0R2Y5yR6pjOWy0WBEO57ch7C3LsoCetagTpjW9fTVLCbwvvkj8V8Wi0UdL5qeiE
-         4nNXUU8VBOJxFkzoAgCos0VnYHw/nidjhH/bgkYTuCPt2X4++QNAEc8FpyIUIxqivSDg
-         rSlzJ6GbL9VNbk7NSNcrUlV2IuxF2ewHyGU9WapjO8ZNAwQbby/Z0D/B4R/qIbLMzG0D
-         Ri6w==
-X-Forwarded-Encrypted: i=1; AJvYcCUIY4PX+lxMZgoFeaqki7uOX+a/hZRL6gxaHW1TAOhIz9EldXl5tV4BvRKedoHGPOX9dEPoDi5A@vger.kernel.org
-X-Gm-Message-State: AOJu0YylmkMNVec3ScTXnprUZy2dqAuBoAZVDgpdDH16NCSygc30ckCc
-	Pck9dPxIhP5RDGAPn0DKfK7WFJb/O4/sWzkWyhaTnv0sj3epdYHINedZ3OlHgc8lEKjEDMgUoHr
-	qDS6GoiAZCMKFTFaP+Au0sk9tjM7g+tsGHrcdmMaNNJhf7ysWHAxF5LTmOPE=
-X-Gm-Gg: ASbGnctj4LGtXhpCYoJKYzsBYdG8FuUtwFcNIjGDEuW4Xe4j0I7qfZBBKuMI3gsoAsY
-	FgVX/e5j6umJvB7uoJUUV8RqOO0nGVz9OJQ0TSaRhKxDNbXwmVmIGPgFc0zmRtSBRbW9kR1fC2d
-	DeSH1M4gF6Mq36wjqUx+mEULvpAE8SFivREPHHArrTQ+qB2uO38zZ/zpdvNuGQUfMxxbMB9UJ/e
-	hIaips5uVw9guikkAb9Z92OJ0s16qXN1e7AfvwzCzpSOSsNG+WCfI5egFRq33kU8mpBWB89OjZt
-	T44qcD1ohOQBcMc2kZRlViLLDn6uhLB/idpmiwy+FNu4/Nx2i74SWumPQAVB5xsh+paTx59Motw
-	fq0Eoz0AvdkmuU59P6+jPnle362Mrb3mldh9HBsz7Qh3pSg==
-X-Received: by 2002:ad4:5f49:0:b0:882:4f53:ed41 with SMTP id 6a1803df08f44-882719e6978mr55688826d6.39.1762970717969;
-        Wed, 12 Nov 2025 10:05:17 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IG4IiIw+N1Z2Q8t2UVNI42KNkJKyBdYBTSzcbCJ42RBQAZsdIZ+JdFm9V5TA71Qksd6vDNtIw==
-X-Received: by 2002:ad4:5f49:0:b0:882:4f53:ed41 with SMTP id 6a1803df08f44-882719e6978mr55688206d6.39.1762970717419;
-        Wed, 12 Nov 2025 10:05:17 -0800 (PST)
+        bh=+dJpJWnR6W2PauvB5c9FgPR6gGTYegkNj3iOoqqoWtg=;
+        b=fzyQ0c3W8rA6Ahd+6FLXb5/qSSJg7UycgKHjwOB4CCf5Az7GUKaAZyF50kpaRi1zyb
+         ZCQWVSciC7LTSCB3UHo/K+WfKDRbrmXoNY8WqPJfSuxm0ptgOvtcHC4V8XYu4ok8Nikv
+         PwfDHxuQB+dv9rHGiWyFzZLnNzj4LUUZYM48tIa9/+xSEU/le8v39yFFeC2Byg9fXybj
+         xO4mdaikeoTNPRD3paBtD0I5i7RwqvWXlFoS9iog1QfwIyB71x9idKwi8fCfyPidMhRO
+         61o4ezC+84cb53kf8u5uxvBlZXKxsYyHgC/XL5j1HuBzW5A/bG1RZucxH1ENq3LAwjRL
+         TIXg==
+X-Forwarded-Encrypted: i=1; AJvYcCUH+7KHYGmBMixheQwQeaxvNPSNzxkzpI9wDdHTCKQ8lSuAdy7mjOaCCEoYglZThnlg87LoxW0m@vger.kernel.org
+X-Gm-Message-State: AOJu0YxME/gY4nJZIYihH6GHIY/YEm+I0hnQFRRwkAM+c2AdpOv6XKKZ
+	S2wda4MB8G1uDrLbKjTeVMsAUr8QWkOt6yuxCzm8CDvHJ1gMp1Ee8HMkkZ672jmotr8MrEKXmMm
+	Sop/PRIfeZoc/iJQLtnmsBKWHBZ4w09KDLCpmVmkSTvJW72FjUZoG0OmX0PY=
+X-Gm-Gg: ASbGncu/9oDwQWH8R05GlOTYRzPEydFPzuxA2Zw8eOsswI0DzuVAyYZt6uyIB7SdcyX
+	1FfOl1qlHlzrnG7Ms7mKU7+38VyxffkFPFTRO5+5CbsUgZu1g4yahchQ2JmHT5NykmYX7yQel/T
+	4lW6HrNcJLLXnrk5rVubjs5HjRLQgsAJlyzYJXN53MSzryIS57+JhGTgAHxWNfLqOTSwBs6lQNR
+	jHbJfhvXV8l3xUTJTlTxGiLM6RsDSKOa79/weZQ13Y50lERMrtFxhcedh6Q64Cb/VUQdVA9Mzki
+	URubAfHWOslDZfZ91Zt4U+y1GTOXCBmszDyYPhNYoL4PGN1ngjUMl3A61q9EidydKmJrj3OqCZe
+	Cx8IljKFTJsV+ZOQV+AejDZHdMs04HAsOUvaOoJOOrArWQA==
+X-Received: by 2002:a05:620a:3189:b0:891:ae32:d696 with SMTP id af79cd13be357-8b29b82bdaamr491393585a.66.1762971674362;
+        Wed, 12 Nov 2025 10:21:14 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IFmk9lfZ7Dqn8dctjmk3Q6bmGkgKiuUiM1dIje3DZrti/tFNHBsEkMGCydCnh8k8ZsuTO/tAA==
+X-Received: by 2002:a05:620a:3189:b0:891:ae32:d696 with SMTP id af79cd13be357-8b29b82bdaamr491389785a.66.1762971673918;
+        Wed, 12 Nov 2025 10:21:13 -0800 (PST)
 Received: from ?IPV6:2601:188:c102:b180:1f8b:71d0:77b1:1f6e? ([2601:188:c102:b180:1f8b:71d0:77b1:1f6e])
-        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-88238b293a6sm95893676d6.37.2025.11.12.10.05.16
+        by smtp.gmail.com with ESMTPSA id af79cd13be357-8b29a85e0a9sm238798185a.20.2025.11.12.10.21.12
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 12 Nov 2025 10:05:16 -0800 (PST)
+        Wed, 12 Nov 2025 10:21:13 -0800 (PST)
 From: Waiman Long <llong@redhat.com>
 X-Google-Original-From: Waiman Long <longman@redhat.com>
-Message-ID: <85f438b2-5131-4794-bb2d-09ca611fb246@redhat.com>
-Date: Wed, 12 Nov 2025 13:05:15 -0500
+Message-ID: <318f1024-ba7a-4d88-aac5-af9040c31021@redhat.com>
+Date: Wed, 12 Nov 2025 13:21:12 -0500
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -104,73 +104,62 @@ List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1] cpuset: Avoid unnecessary partition invalidation
-To: Sun Shaojie <sunshaojie@kylinos.cn>, chenridong@huaweicloud.com
-Cc: tj@kernel.org, hannes@cmpxchg.org, mkoutny@suse.com, shuah@kernel.org,
- cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-kselftest@vger.kernel.org
-References: <b9dce00a-4728-4ac8-ae38-7f41114c7c81@redhat.com>
- <20251112094610.386299-1-sunshaojie@kylinos.cn>
+Subject: Re: [cgroup/for-6.19 PATCH] cgroup/cpuset: Make callback_lock a
+ raw_spinlock_t
+To: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc: Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>,
+ =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
+ Clark Williams <clrkwllms@kernel.org>, Steven Rostedt <rostedt@goodmis.org>,
+ linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+ linux-rt-devel@lists.linux.dev, Chen Ridong <chenridong@huawei.com>,
+ Pingfan Liu <piliu@redhat.com>, Juri Lelli <juri.lelli@redhat.com>
+References: <20251112035759.1162541-1-longman@redhat.com>
+ <20251112085124.O5dlZ8Og@linutronix.de>
 Content-Language: en-US
-In-Reply-To: <20251112094610.386299-1-sunshaojie@kylinos.cn>
+In-Reply-To: <20251112085124.O5dlZ8Og@linutronix.de>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
-On 11/12/25 4:46 AM, Sun Shaojie wrote:
-> Hi Ridong,
+On 11/12/25 3:51 AM, Sebastian Andrzej Siewior wrote:
+> On 2025-11-11 22:57:59 [-0500], Waiman Long wrote:
+>> The callback_lock is a spinlock_t which is acquired either to read
+>> a stable set of cpu or node masks or to modify those masks when
+>> cpuset_mutex is also acquired. Sometime it may need to go up the
+>> cgroup hierarchy while holding the lock to find the right set of masks
+>> to use. Assuming that the depth of the cgroup hierarch is finite and
+>> typically small, the lock hold time should be limited.
+> We can't assume that, can we?
+We can theoretically create a cgroup hierarchy with many levels, but no 
+sane users will actually do that. If this is a concern to you, I can 
+certainly drop this patch.
+>> Some externally callable cpuset APIs like cpuset_cpus_allowed() and
+> cpuset_cpus_allowed() has three callers in kernel/sched/ and all use
+> GFP_KERNEL shortly before invoking the function in question.
+The current callers of these APIs are fine. What I am talking is about 
+new callers that may want to call them when holding a raw_spinlock_t.
 >
-> Thank you for your response.
->
->  From your reply "in case 1, A1 can also be converted to a partition," I
-> realize there might be a misunderstanding. The scenario I'm addressing
-> involves two sibling cgroups where one is an effective partition root and
-> the other is not, and both have empty cpuset.cpus.exclusive. Let me
-> explain the intention behind case 1 in detail, which will also illustrate
-> why this has negative impacts on our product.
->
-> In case 1, after #3 completes, A1 is already a valid partition root - this
-> is correct.After #4, B1 was generated, and B1 is no-exclusive. After #5,
-> A1 changes from "root" to "root invalid". But A1 becoming "root invalid"
-> could be unnecessary because having A1 remain as "root" might be more
-> acceptable. Here's the analysis:
->
-> As documented in cgroup-v2.rst regarding cpuset.cpus: "The actual list of
-> CPUs to be granted, however, is subjected to constraints imposed by its
-> parent and can differ from the requested CPUs". This means that although
-> we're requesting CPUs 0-3 for B1, we can accept that the actual available
-> CPUs in B1 might not be 0-3.
->
-> Based on this characteristic, in our product's implementation for case 1,
-> before writing to B1's cpuset.cpus in #5, we check B1's parent
-> cpuset.cpus.effective and know that the CPUs available for B1 don't include
-> 0-1 (since 0-1 are exclusively used by A1). However, we still want to set
-> B1's cpuset.cpus to 0-3 because we hope that when 0-1 become available in
-> the future, B1 can use them without affecting the normal operation of other
-> cgroups.
->
-> The reality is that because B1's requested cpuset.cpus (0-3) conflicts with
-> A1's exclusive CPUs (0-1) at that moment, it destroys the validity of A1's
-> partition root. So why must the current rule sacrifice A1's validity to
-> accommodate B1's CPU request? In this situation, B1 can clearly use 2-3
-> while A1 exclusively uses 0-1 - they don't need to conflict.
->
-> This patch narrows the exclusivity conflict check scope to only between
-> partitions. Moreover, user-specified CPUs (including cpuset.cpus and
-> cpuset.cpus.exclusive) only have true exclusive meaning within effective
-> partitions. So why should the current rule perform exclusivity conflict
-> checks between an exclusive partition and a non-exclusive member? This is
-> clearly unnecessary.
+>> cpuset_mems_allowed() acquires callback_lock with irq disabled to ensure
+> This I did not find. But I would ask to rework it somehow that we don't
+> need to use raw_spinlock_t as a hammer that solves it all.
 
-As I have said in the other thread, v2 exclusive cpuset checking follows 
-the v1 rule. However, the behavior of setting cpuset.cpus differs 
-between v1 and v2. In v1, setting cpuset.cpus can fail if there is some 
-conflict. In v2, users are allow to set whatever value they want without 
-failure, but the effective CPUs granted will be subjected to constraints 
-and differ from cpuset.cpus. So in that sense, I think it makes sense to 
-relax the exclusive cpuset check for v2, but we still need to keep the 
-current v1 behavior. Please update your patch to do that.
+OK.
 
 Cheers,
 Longman
+
+>> stable cpuset data. These APIs currently have the restriction that they
+>> can't be called when a raw spinlock is being held. This is needed to
+>> work correctly in a PREEMPT_RT kernel. This requires additional code
+>> changes to work around this limitation. See [1] for a discussion of that.
+>>
+>> Make these external cpuset APIs more useful by changing callback_lock
+>> to a raw_spinlock_t to remove this limitation so that they can be called
+>> from within other raw spinlock critical sections if needed.
+>>
+>> [1] https://lore.kernel.org/lkml/20251110014706.8118-1-piliu@redhat.com/
+>>
+>> Signed-off-by: Waiman Long <longman@redhat.com>
+> Sebastian
+>
 
 
