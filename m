@@ -1,109 +1,167 @@
-Return-Path: <cgroups+bounces-11870-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-11871-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id A3551C53950
-	for <lists+cgroups@lfdr.de>; Wed, 12 Nov 2025 18:09:09 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 83E0DC53AD1
+	for <lists+cgroups@lfdr.de>; Wed, 12 Nov 2025 18:27:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 68CF54FDB57
-	for <lists+cgroups@lfdr.de>; Wed, 12 Nov 2025 15:47:35 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 09C244A5291
+	for <lists+cgroups@lfdr.de>; Wed, 12 Nov 2025 16:40:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA7B333BBC6;
-	Wed, 12 Nov 2025 15:45:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A75C33DEE8;
+	Wed, 12 Nov 2025 16:40:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="DOz0gP4U";
+	dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b="U4ogwg8j"
 X-Original-To: cgroups@vger.kernel.org
-Received: from relay.hostedemail.com (smtprelay0013.hostedemail.com [216.40.44.13])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B679C35CBBD;
-	Wed, 12 Nov 2025 15:45:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=216.40.44.13
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D6452BCF6C
+	for <cgroups@vger.kernel.org>; Wed, 12 Nov 2025 16:40:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762962307; cv=none; b=OmV0TuqXZ6K4fCNeA7Uz+V871X+OLejM56+5PPOxXn85rjslE10xtFv97WGR0MuMsvny7FEUj8UcEeUF3lEo1mmYSOaO5Ulq5cONvCdaed9nzcdwaHOdLC5+jH0ZoRf9SHRW/DRQ3YmfZ93YfJPbHE+3SmDoSVvjY8uRCruNfhY=
+	t=1762965626; cv=none; b=k3DtBwO/FdUmCsu41JPdz041pbrr8Qov96xlpHlRtegKD8qUbrP4bY2oQpaJf9frOGUS9VXMZ/d7umn9lUEulqOBBI7vr3FssTrStLqQfQhlxAg6RSVUsinsOw0bB3avLDKyYTAoven4VOlhbmx++4xluc9aTshzP9G7lz/Ne3E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762962307; c=relaxed/simple;
-	bh=K2NgcdDSsNIpmukvk9ZTuvgP7S9Fzwf2iF4Zv9Lx6wY=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=leXAdLaQkqqzZSqNz8R19YiKx2ctsJQ2Czn3ObHL1Lg08cll6DpjA3lE3iiVFnI8P6LA4qcq+noNXa3O1rWVuIpVvBlsl7ZHobeHZbJ077nZyW8ZJdhZUxJI0qBThMI7NXmJH6uuAvItVvbreSJCWCv0GfZGTNgAkwAsuigg3W0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=goodmis.org; spf=pass smtp.mailfrom=goodmis.org; arc=none smtp.client-ip=216.40.44.13
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=goodmis.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=goodmis.org
-Received: from omf18.hostedemail.com (a10.router.float.18 [10.200.18.1])
-	by unirelay08.hostedemail.com (Postfix) with ESMTP id CDD17140573;
-	Wed, 12 Nov 2025 15:45:00 +0000 (UTC)
-Received: from [HIDDEN] (Authenticated sender: rostedt@goodmis.org) by omf18.hostedemail.com (Postfix) with ESMTPA id C85DD32;
-	Wed, 12 Nov 2025 15:44:55 +0000 (UTC)
-Date: Wed, 12 Nov 2025 10:45:08 -0500
-From: Steven Rostedt <rostedt@goodmis.org>
-To: Shakeel Butt <shakeel.butt@linux.dev>
-Cc: Sebastian Andrzej Siewior <bigeasy@linutronix.de>, Harry Yoo
- <harry.yoo@oracle.com>, Qi Zheng <qi.zheng@linux.dev>, hannes@cmpxchg.org,
- hughd@google.com, mhocko@suse.com, roman.gushchin@linux.dev,
- muchun.song@linux.dev, david@redhat.com, lorenzo.stoakes@oracle.com,
- ziy@nvidia.com, imran.f.khan@oracle.com, kamalesh.babulal@oracle.com,
- axelrasmussen@google.com, yuanchu@google.com, weixugc@google.com,
- akpm@linux-foundation.org, linux-mm@kvack.org,
- linux-kernel@vger.kernel.org, cgroups@vger.kernel.org, Muchun Song
- <songmuchun@bytedance.com>, Qi Zheng <zhengqi.arch@bytedance.com>, Clark
- Williams <clrkwllms@kernel.org>, linux-rt-devel@lists.linux.dev
-Subject: Re: [PATCH v1 04/26] mm: vmscan: refactor move_folios_to_lru()
-Message-ID: <20251112104508.5500ad9b@gandalf.local.home>
-In-Reply-To: <jzihvbb6w26d4codfigy2o7b2h26izb4ahihouw54cvuzau54d@jyaa6rgpzuai>
-References: <366385a3-ed0e-440b-a08b-9cf14165ee8f@linux.dev>
-	<aQ3yLER4C4jY70BH@harry>
-	<hfutmuh4g5jtmrgeemq2aqr2tvxz6mnqaxo5l5vddqnjasyagi@gcscu5khrjxm>
-	<aRFKY5VGEujVOqBc@hyeyoo>
-	<2a68bddf-e6e6-4960-b5bc-1a39d747ea9b@linux.dev>
-	<aRF7eYlBKmG3hEFF@hyeyoo>
-	<aqdvjyzfk6vpespzcszfkmx522iy7hvddefcjgusrysglpdykt@uqedtngotzmy>
-	<8d6655f8-2756-45bb-85c1-223c3a5e656c@linux.dev>
-	<aRKqm24Lrg-JnCoh@hyeyoo>
-	<20251111084900.babaOj0w@linutronix.de>
-	<jzihvbb6w26d4codfigy2o7b2h26izb4ahihouw54cvuzau54d@jyaa6rgpzuai>
-X-Mailer: Claws Mail 3.20.0git84 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1762965626; c=relaxed/simple;
+	bh=NPKmesSgG0k5cHihrVZICOAHxzeS6yl0o6Q6Msfzyf0=;
+	h=From:Message-ID:Date:MIME-Version:Subject:To:Cc:References:
+	 In-Reply-To:Content-Type; b=Q6AZeeU5XgD0QZPAzzrCRzYTakEY/ka93vvPCf9VY/kDyVBKtvUD4qyWsDfCSdk8Rz/1xnH9DCAeEiw77LWB1/VOfCPO5TvDP3IBPKx3c0HqX2/hISAE8iicHHwWPAPSRJUK8c3h8kNUgYJZBpw9tL7tDhiwpFbp0JamINnIJKY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=DOz0gP4U; dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b=U4ogwg8j; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1762965623;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=a54XX/ax76HZixMaF/okaC52MUDpaFJIGlkFp/l1jwo=;
+	b=DOz0gP4U3n24WDcZG5E9C1uVTPgcYKpBfAngJpCW6YrSUCWWLK8IZnES44x+mnSoqQY9pN
+	pBO77RxbwHZdewvaGAmBO/lEHHy6Zi1oAIvh7QPLEqUGTo8Eib4sJgVOdqREj7l2d894D7
+	qYwifJHW+XCral11I/A1VqWRdecX4TA=
+Received: from mail-qk1-f199.google.com (mail-qk1-f199.google.com
+ [209.85.222.199]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-615-E87wbZDwNXypZJi1NBd9bg-1; Wed, 12 Nov 2025 11:40:22 -0500
+X-MC-Unique: E87wbZDwNXypZJi1NBd9bg-1
+X-Mimecast-MFC-AGG-ID: E87wbZDwNXypZJi1NBd9bg_1762965621
+Received: by mail-qk1-f199.google.com with SMTP id af79cd13be357-8b17194d321so138000185a.0
+        for <cgroups@vger.kernel.org>; Wed, 12 Nov 2025 08:40:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=redhat.com; s=google; t=1762965621; x=1763570421; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:content-language:references
+         :cc:to:subject:user-agent:mime-version:date:message-id:from:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=a54XX/ax76HZixMaF/okaC52MUDpaFJIGlkFp/l1jwo=;
+        b=U4ogwg8j0AkH0dSCF16QZLstcV5ZtOrLLgzfytX0ey0f+aDo6nI7UjT/4mLSN+1rch
+         I5oPWSCFEWiwN5zNGLA5tf6LY7p0aoOo4tE6+AMIuABCxpjChI+t/B03dHZtdn8VmRQv
+         6WYcRZpAeM8PFbYJ5GsSxcgbGr5ZZNpWzcNU4nTpRU68EaS8LkpvLKhfs6Hm64Ansxsb
+         C6ShRFRlGcXfbXsQZa+wc37LLumw1hrDT0/QI8Kv8+K8Hq40PAgpeTPiOxCmm9mICVdd
+         t62e1ga2v0npHM4tBcXTgw5rBXmqHiHa+B3AtenWLTIKQetr6Bmq2YxwZ6dat7kpNn2y
+         7Aow==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1762965621; x=1763570421;
+        h=content-transfer-encoding:in-reply-to:content-language:references
+         :cc:to:subject:user-agent:mime-version:date:message-id:from:x-gm-gg
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=a54XX/ax76HZixMaF/okaC52MUDpaFJIGlkFp/l1jwo=;
+        b=FItTDN86knWtUAm0lyxZzQDOWL0s0I3dc/vGE8oE5wK0ozNqBycbQY1zZfajzZ2+OU
+         +lw6r3C8JSvwrrzITwJBTcHysQn/NLc6RPJHj7vhrn2ay1Z2isI9A0XDH641RDyw4snT
+         xxe/YQvUZV8jp0jVUNdI1XjRZ2N8jKf1ecNRGAEjpFIbftyosOHZjBG/FaFtE46GxIBd
+         PiZ4r9xMjlil2kycQTm5fgPdOvZ9UqIqFptSgI3zY0jQP12nltolw1RJ68dCo0+ZoBzS
+         p/WJqfLYKY0l4vgL58t4fqWpMVtaMgKWd9WkPC5KzU7P5Aa0vd3q/f1Zxab2cyIfvl2o
+         s48w==
+X-Forwarded-Encrypted: i=1; AJvYcCXmAiJgS764Q4lcxCmN53idUOIF+PeYuFB9WUpsrrZJGt+djf0oB1VCevsSfomQLjHMreYFklRN@vger.kernel.org
+X-Gm-Message-State: AOJu0YxJrIr/zbqpiYu0rS3/XitOikfM1cG8016Zv0PdQqDTsDKx3c0L
+	dxv1rSsbHaDpJQ9N/8K8GhrvgTasQv9SMTU3+ATFzNlFub060DuxzqY7RvornpOblLs0YXCZ/cI
+	DvYyrcy+dKBOnSwpOfyqjzLubH8V8WzT4r044LeUu5gQzER77i5a4TeIJtE0=
+X-Gm-Gg: ASbGncu6wYcZoUGbNU+RQ2ESoWfYtNOzQ9GXM/Oz5FroxUwqs6vDH1ooVjfv3E0OHkL
+	n9f5OErOqjIyihL/KzX1NvjiiJIkvCIhHJnMNWo/BszLTHlsvb2mBubhwhkkGO+FPl1rMHdon/8
+	t6SpppVBZrpiRVqNC6uLAHfPE67KHWzDENF2ESVPGttTUTw+LlVb/PJCUAhYI+ZqO0jS3fu8L9G
+	2YbERBXwKBGdT8BbiVJW5p1rdcBS0Vqu7vozsfRrGR++ROmgMMmfw8mIdoORu2Yuyqes3Lr6dhs
+	mJg/WxTRweGTkssYss1MetqCBe7gLwMoqWrtImg2Do4Tor1sHklmtHqQKpvqkONrWPSvyUCruJG
+	it/LbA7ZhkcRVolwZ+oVYBL3qB3WjUG5vULxzBX+aT2P1Mw==
+X-Received: by 2002:a05:620a:45a7:b0:89e:99b3:2e9f with SMTP id af79cd13be357-8b29b7d96c9mr432074185a.54.1762965620691;
+        Wed, 12 Nov 2025 08:40:20 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IEeRHn0TE7WSuy/RawTo+0uqdbnmzeUBkTfUMKCdOV0bkTaq6MIRt0f6pTVYA0aGPlXvo+hcw==
+X-Received: by 2002:a05:620a:45a7:b0:89e:99b3:2e9f with SMTP id af79cd13be357-8b29b7d96c9mr432071385a.54.1762965620280;
+        Wed, 12 Nov 2025 08:40:20 -0800 (PST)
+Received: from ?IPV6:2601:188:c102:b180:1f8b:71d0:77b1:1f6e? ([2601:188:c102:b180:1f8b:71d0:77b1:1f6e])
+        by smtp.gmail.com with ESMTPSA id af79cd13be357-8b29a85e0e8sm222910385a.15.2025.11.12.08.40.19
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 12 Nov 2025 08:40:19 -0800 (PST)
+From: Waiman Long <llong@redhat.com>
+X-Google-Original-From: Waiman Long <longman@redhat.com>
+Message-ID: <c8e234f4-2c27-4753-8f39-8ae83197efd3@redhat.com>
+Date: Wed, 12 Nov 2025 11:40:18 -0500
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Stat-Signature: 8i46fu3i1uexab3gcai9n6jo5zxtnjew
-X-Rspamd-Server: rspamout03
-X-Rspamd-Queue-Id: C85DD32
-X-Session-Marker: 726F737465647440676F6F646D69732E6F7267
-X-Session-ID: U2FsdGVkX1/zzJBKVnQjnF7+vD3iE7NPwFKeizQlGh4=
-X-HE-Tag: 1762962295-724363
-X-HE-Meta: U2FsdGVkX18sZXyIcTgAaFZzEaJim5B3AdsBNcnSuhkN2xVPR14V+jN/a1c5qbKBwiNNEDsYnm/64J4ywfekI1ESXBN6UJspS6OQJv2pFY4ePIxPhNzVl9Rm+8vU67m3SqAyq9LTVgOoNLhlzs0tmR4GFlK36oZ2M//1r6/uqVtRYmW841FrUMVYjYit8fHlXYKbBGeroJSS3BFYTvoXIMH5Z70gftOSU00Kt1bZvIjYFPdOyzv8A9vwq3mX3ifD5SZC3t2J5qSG6sJo6DrZkw5hpFnMuHHE12uSwei8c4W8RtEV9QEVyxIuOx7wSpSY
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v1] cpuset: Avoid unnecessary partition invalidation
+To: Chen Ridong <chenridong@huaweicloud.com>,
+ Sun Shaojie <sunshaojie@kylinos.cn>
+Cc: tj@kernel.org, hannes@cmpxchg.org, mkoutny@suse.com, shuah@kernel.org,
+ cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-kselftest@vger.kernel.org
+References: <20251112021120.248778-1-sunshaojie@kylinos.cn>
+ <380567da-9079-4a4d-afae-42bde42d2a58@huaweicloud.com>
+Content-Language: en-US
+In-Reply-To: <380567da-9079-4a4d-afae-42bde42d2a58@huaweicloud.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Tue, 11 Nov 2025 08:44:14 -0800
-Shakeel Butt <shakeel.butt@linux.dev> wrote:
+On 11/11/25 10:33 PM, Chen Ridong wrote:
+>
+> On 2025/11/12 10:11, Sun Shaojie wrote:
+> Hello Shaojie,
+>
+>> Currently, when a non-exclusive cpuset's "cpuset.cpus" overlaps with a
+>> partitioned sibling, the sibling's partition state becomes invalid.
+>> However, this invalidation is often unnecessary.
+>>
+>> This can be observed in specific configuration sequences:
+>>
+>> Case 1: Partition created first, then non-exclusive cpuset overlaps
+>>   #1> mkdir -p /sys/fs/cgroup/A1
+>>   #2> echo "0-1" > /sys/fs/cgroup/A1/cpuset.cpus
+>>   #3> echo "root" > /sys/fs/cgroup/A1/cpuset.cpus.partition
+>>   #4> mkdir -p /sys/fs/cgroup/B1
+>>   #5> echo "0-3" > /sys/fs/cgroup/B1/cpuset.cpus
+>>   // A1's partition becomes "root invalid" - this is unnecessary
+>>
+>> Case 2: Non-exclusive cpuset exists first, then partition created
+>>   #1> mkdir -p /sys/fs/cgroup/B1
+>>   #2> echo "0-1" > /sys/fs/cgroup/B1/cpuset.cpus
+>>   #3> mkdir -p /sys/fs/cgroup/A1
+>>   #4> echo "0-1" > /sys/fs/cgroup/A1/cpuset.cpus
+>>   #5> echo "root" > /sys/fs/cgroup/A1/cpuset.cpus.partition
+>>   // A1's partition becomes "root invalid" - this is unnecessary
+>>
+>> In Case 1, the effective CPU mask of B1 can differ from its requested
+>> mask. B1 can use CPUs 2-3 which don't overlap with A1's exclusive
+>> CPUs (0-1), thus not violating A1's exclusivity requirement.
+>>
+>> In Case 2, B1 can inherit the effective CPUs from its parent, so there
+>> is no need to invalidate A1's partition state.
+>>
+>> This patch relaxes the overlap check to only consider conflicts between
+>> partitioned siblings, not between a partitioned cpuset and a regular
+>> non-exclusive one.
+>>
+The current cgroup v2 exclusive cpuset behavior follows the v1 behavior 
+of cpuset.cpus.exclusive flag. Even if we want to relax the cgroup v2 
+behavior, we will still need to maintain the v1 behavior as we want to 
+minimize any changes to cgroup v1.  IOW, we have to gate this change 
+specific to v2.
 
-> Harry is talking about mod_node_page_state() on
-> !CONFIG_HAVE_CMPXCHG_LOCAL which is disabling irqs.
-> 
-> void mod_node_page_state(struct pglist_data *pgdat, enum node_stat_item item,
-> 					long delta)
-> {
-> 	unsigned long flags;
-> 
-> 	local_irq_save(flags);
-> 	__mod_node_page_state(pgdat, item, delta);
-> 	local_irq_restore(flags);
-> }
-> 
-> Is PREEMPT_RT fine with this?
+Cheers,
+Longman
 
-But should be:
-
-void mod_node_page_state(struct pglist_data *pgdat, enum node_stat_item item,
-					long delta)
-{
-	guard(irqsave)();
-	__mod_node_page_state(pgdat, item, delta);
-}
-
--- Steve
 
