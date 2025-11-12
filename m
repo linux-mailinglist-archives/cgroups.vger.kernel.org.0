@@ -1,269 +1,197 @@
-Return-Path: <cgroups+bounces-11896-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-11897-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4E8CCC54C18
-	for <lists+cgroups@lfdr.de>; Wed, 12 Nov 2025 23:54:29 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id 95F5FC54DE2
+	for <lists+cgroups@lfdr.de>; Thu, 13 Nov 2025 01:00:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 1A2D434A259
-	for <lists+cgroups@lfdr.de>; Wed, 12 Nov 2025 22:54:21 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 405A24E03B6
+	for <lists+cgroups@lfdr.de>; Thu, 13 Nov 2025 00:00:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 504C72E2EE7;
-	Wed, 12 Nov 2025 22:54:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A6D12F1FDE;
+	Thu, 13 Nov 2025 00:00:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="RKBPBuYa";
-	dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b="cFKu3Yam"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="dDmZi027"
 X-Original-To: cgroups@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.13])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E8ED92D193F
-	for <cgroups@vger.kernel.org>; Wed, 12 Nov 2025 22:54:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E54135CBC1
+	for <cgroups@vger.kernel.org>; Wed, 12 Nov 2025 23:59:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.13
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762988059; cv=none; b=ppNITk7LTJ1qVcGlLmUXbcAZv3gt35ZId8BucEWo5nzNXuXjBpLfso33P3DOziI27m4z2pfh48CpCmjCcS4x6Y8EhTJib7HDVjRCj+CnoAjOvg5bog7EfsCP14egPWK/vxKeasjHXsRYjkzZIzKwyQMYo0BuW7w3WM449uPPPq8=
+	t=1762992001; cv=none; b=Mxrf9tGSYYRHrhKj6j6Ow/cfNOyAtvdZBQs0rlnrXZwBWXrRDCJknKw8UynJ6zlKAJqy5UZkxgK3Ft0VFcQfh9um2bDQ6Dt45rKejseegLbrVCl7jRDf37ZDq3155MDsVgp9LPwdsuWKnepCrtvYS94tzxWRmy6lX6hwvBh/ig0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762988059; c=relaxed/simple;
-	bh=IGh+aIPPoWBLcAIZs0Jz6dPtn1efoP5CzXHA/HI3lH4=;
-	h=From:Message-ID:Date:MIME-Version:Subject:To:Cc:References:
-	 In-Reply-To:Content-Type; b=RqIDAWaI4zVBGaTlhdqJXmQ450mc3F7Mgy9tcYRYYlzzdgHQYtq4WvoUxbmZpmnzUwZp2j63c19byjocTb/j1YVOTuGW9O0v/z5Mz/OjPeF4OsmlUQ6JodS03iZRLY1T382NmVxk7EXAeW3K9g7OLS5KWHoyxVJVom7EM4bRqJI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=RKBPBuYa; dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b=cFKu3Yam; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1762988055;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=CVjkePrhZOOCcRrxM0ei79YsOMP5kpZrEVFm7XWWWOQ=;
-	b=RKBPBuYaprr3RLDErWyvKlq5tekIkd0oatED5LXwAT8lgEgQ8+mDjBrroWPlOqFH7N1DvP
-	Igly7yrwJJFkiWQVNmKs2cxtXo5g67Ah/Vqp0dn86ugP5NIGr1bSg1vuLEePDDSB2lCk7I
-	gc0eG3VBV0DfFFOo68N1bHtP5ZDtvMk=
-Received: from mail-qv1-f69.google.com (mail-qv1-f69.google.com
- [209.85.219.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-582-z_8pPzynNgihqjf36J63Bw-1; Wed, 12 Nov 2025 17:54:14 -0500
-X-MC-Unique: z_8pPzynNgihqjf36J63Bw-1
-X-Mimecast-MFC-AGG-ID: z_8pPzynNgihqjf36J63Bw_1762988054
-Received: by mail-qv1-f69.google.com with SMTP id 6a1803df08f44-880441e0f93so6837366d6.1
-        for <cgroups@vger.kernel.org>; Wed, 12 Nov 2025 14:54:14 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=redhat.com; s=google; t=1762988054; x=1763592854; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:content-language:references
-         :cc:to:subject:user-agent:mime-version:date:message-id:from:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=CVjkePrhZOOCcRrxM0ei79YsOMP5kpZrEVFm7XWWWOQ=;
-        b=cFKu3YamnKpegAQM1CCK2GQt/bdQDkjC1StDG8jD+cqoK7KyfsLI31TXt4jIxxGSPY
-         E799T0oMggPIUB7y9nilbI4Icyl6eat4du0AGqcGkvsiPw0r7CH4IM/0hKZXh//JWqNG
-         PAOGjm7s2VhBLaZZSszFQzVYOGa66af9rvouBUI1vSFwkztqya/y7GRv+vqP3MJQCVdh
-         8DTrmIqVOoiCW3rZWeB+qqLug6KVekZ7F6TakuIG9O/2I399wT/FrTiQDENKKymao7mh
-         +xoOcBuYOYbRHLlAy9RKpuhUtyBiH1S6Aliurc65lw0ilr03WU0q27Wgxte3EYfAlPLf
-         VVBA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1762988054; x=1763592854;
-        h=content-transfer-encoding:in-reply-to:content-language:references
-         :cc:to:subject:user-agent:mime-version:date:message-id:from:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=CVjkePrhZOOCcRrxM0ei79YsOMP5kpZrEVFm7XWWWOQ=;
-        b=XhikZ7JWtUwjZY9BdhbJ8Me+YFugj6nWCktJP7DpP2YkkvC3AsaaRAzkBI9DxcRud7
-         ECPkAqlyM810WwXZTaTS4g08/OHZ49wlsCrgEgI3VsGKiwkBMoYmo7bVNW2GW0m6qRnO
-         KRMur0UKQoXpLm6Evo8GjyeA08T5CmWzNw5AHlQkPRcvWWekQGFbfJsSvMEyjotcAQuC
-         SWGSpkHXnNRsqrclFPVsXkMFUnFx4U6nKCi4+sVl/N39n/B2yWR50NIV6s1EFtUeWrKU
-         o1JzueNkIO56fLULnXfV4xZG1alIFWzSi49IJ6BRC3zA4Sy6hjKFyBlFiAOXFyfLuROQ
-         jy9w==
-X-Gm-Message-State: AOJu0YyHpFuVWU+XGWFJe0lC18n706zYz8KYrUjadzthOJa4ovNniWn5
-	+OFu5/+IXdrbFg9ss5VPRw+Upc2/xVfUhHFQg0pkqeJr+FlgbsEpZk2gcOR79Cs8gnY0y7kubrc
-	VBbdw3InqUBW90dgGDeG7cqGIBf5XAK+rV+YIyVjAq4eCCvs15l7yTA1thPI=
-X-Gm-Gg: ASbGnct15lkqjHy7ImvPWm7B9c/VMd4kIxVPrBAdLemgXfvlMvVKui76pLxsKFG8tBZ
-	1kz0ZYunTQt1wWA4z7wWE0mXyPY63p2+Ff/lQHF3vtFqdlwIWr1s9GKo72pIFKJzHbKPNa4uuT1
-	tL9tSWswBFB6fB88i8qtab3MTBQsNOCh1dlJTRRP3z5LD8W0kSZvQErykrsT4JMAbFj4cODcfVm
-	g6HC1HIYfvSKZiA4rvZQZY8jT+S4nJpgF0yEr+6RtgARztuD3Rew7bkrl+9w1M11ZbK/IMoTNKm
-	4ZlQVGnagL1+xmCfr4fAO+qKHkqsUCtGhK3J+HhqpKUCJxaqJ8MNYtJHZIoMcS8FxDXZmAJwaKz
-	kUlJcowUqKfURoiwxrQHGKhAi291wI1uBjeZYHXY9dFKlRw==
-X-Received: by 2002:a05:6214:268f:b0:880:53a8:404d with SMTP id 6a1803df08f44-8828179e98dmr19926026d6.3.1762988054191;
-        Wed, 12 Nov 2025 14:54:14 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IHNgNwE6us1RRjm44F0DeY0a+grxA9MVmz4QFMpDJs4NwFpsV7MGQqZlX1SYNAIF4H2DnYqVw==
-X-Received: by 2002:a05:6214:268f:b0:880:53a8:404d with SMTP id 6a1803df08f44-8828179e98dmr19925816d6.3.1762988053803;
-        Wed, 12 Nov 2025 14:54:13 -0800 (PST)
-Received: from ?IPV6:2601:188:c102:b180:1f8b:71d0:77b1:1f6e? ([2601:188:c102:b180:1f8b:71d0:77b1:1f6e])
-        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-882863135cfsm787076d6.22.2025.11.12.14.54.12
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 12 Nov 2025 14:54:13 -0800 (PST)
-From: Waiman Long <llong@redhat.com>
-X-Google-Original-From: Waiman Long <longman@redhat.com>
-Message-ID: <f9a3fffb-922c-4d4a-81ad-9eeb489cef07@redhat.com>
-Date: Wed, 12 Nov 2025 17:54:12 -0500
+	s=arc-20240116; t=1762992001; c=relaxed/simple;
+	bh=ZyIxt9/00sHM6bBtW8Y8dNA/bp64Fn3kWUNVUyw5sEI=;
+	h=Date:From:To:Cc:Subject:Message-ID; b=I22YO+apnOMjTdfE9HUGijRmsugwzq8jqb+582kAGqm7Ot/ZvZn98X0B4bZ9u09Vu2APnsoaZY+vwJv8AU/XlgMFjyWFxqGP043HMLNIxMo8BFTBzkeQAE/896iRpjiYwujFqVD+YG3OlmKcr3LAOzXPj0XB5cqnrysjJsnArtM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=dDmZi027; arc=none smtp.client-ip=192.198.163.13
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1762991999; x=1794527999;
+  h=date:from:to:cc:subject:message-id;
+  bh=ZyIxt9/00sHM6bBtW8Y8dNA/bp64Fn3kWUNVUyw5sEI=;
+  b=dDmZi027t+0JSuFXAE/602HoyyEoLcRKxWtl7Iv4vTMlVqpkQBGNKmBK
+   /tgpCVqYItdKMUzwtIdAoiXWAImkXW+fJsaY8uclnebvK1TrY4KqgFQbP
+   OIfwkYtH+nK//a1WxPVUhcXIVe87CUGkdzHLK3YZ4l9YCURBL1yLkCk/S
+   NRnxe8cgUMzThjsGcnmhOAdDmgYuUWjTV/kkBRd4W1Rj/zjjm/cFD0AKi
+   2oxMEUqCbLTnlgdpYTKRwIj5FQEcz3aV9JMNT4/kqhFW4+CRygrf46WQF
+   NbWZKtPGo8y6k+UCe3o53a6YEutltPL0cVbx92KGPh/t+++qow6ox7ob3
+   Q==;
+X-CSE-ConnectionGUID: vHvbCrL4Tr+GfQm4oR3C+w==
+X-CSE-MsgGUID: Ir7AiARSRomRYC3nX/KTxw==
+X-IronPort-AV: E=McAfee;i="6800,10657,11611"; a="67665040"
+X-IronPort-AV: E=Sophos;i="6.19,300,1754982000"; 
+   d="scan'208";a="67665040"
+Received: from orviesa007.jf.intel.com ([10.64.159.147])
+  by fmvoesa107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 Nov 2025 15:59:58 -0800
+X-CSE-ConnectionGUID: JkwabmsNTCqWWdB+Qc0O8w==
+X-CSE-MsgGUID: izqY+rzgSbSZ4mZl/wjfNg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.19,300,1754982000"; 
+   d="scan'208";a="189357873"
+Received: from lkp-server01.sh.intel.com (HELO 7b01c990427b) ([10.239.97.150])
+  by orviesa007.jf.intel.com with ESMTP; 12 Nov 2025 15:59:56 -0800
+Received: from kbuild by 7b01c990427b with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1vJKkk-0004jB-2O;
+	Wed, 12 Nov 2025 23:59:54 +0000
+Date: Thu, 13 Nov 2025 07:59:07 +0800
+From: kernel test robot <lkp@intel.com>
+To: Tejun Heo <tj@kernel.org>
+Cc: cgroups@vger.kernel.org
+Subject: [tj-cgroup:for-6.19] BUILD SUCCESS
+ f23cb0ced8fb28ba65bf4ddaa2fcaf044c6894cc
+Message-ID: <202511130702.cKZ9bHZc-lkp@intel.com>
+User-Agent: s-nail v14.9.25
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH RFC v2 12/22] cpuset: introduce
- local_partition_invalidate()
-To: Chen Ridong <chenridong@huaweicloud.com>, tj@kernel.org,
- hannes@cmpxchg.org, mkoutny@suse.com
-Cc: cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
- lujialin4@huawei.com, chenridong@huawei.com
-References: <20251025064844.495525-1-chenridong@huaweicloud.com>
- <20251025064844.495525-13-chenridong@huaweicloud.com>
-Content-Language: en-US
-In-Reply-To: <20251025064844.495525-13-chenridong@huaweicloud.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
 
-On 10/25/25 2:48 AM, Chen Ridong wrote:
-> From: Chen Ridong <chenridong@huawei.com>
->
-> Build on the partition_disable() infrastructure introduced in the previous
-> patch to handle local partition invalidation.
->
-> The local_partition_invalidate() function factors out the local partition
-> invalidation logic from update_parent_effective_cpumask(), which delegates
-> to partition_disable() to complete the invalidation process.
->
-> Additionally, correct the transition logic in cpuset_hotplug_update_tasks()
-> when determining whether to transition an invalid partition root, the check
-> should be based on non-empty user_cpus rather than non-empty
-> effective_xcpus. This correction addresses the scenario where
-> exclusive_cpus is not set but cpus_allowed is configured - in this case,
-> effective_xcpus may be empty even though the partition should be considered
-> for re-enablement. The user_cpus-based check ensures proper partition state
-> transitions under these conditions.
->
-> Signed-off-by: Chen Ridong <chenridong@huawei.com>
-> ---
->   kernel/cgroup/cpuset.c | 66 +++++++++++++++++++++++++++---------------
->   1 file changed, 43 insertions(+), 23 deletions(-)
->
-> diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
-> index f36d17a4d8cd..73a43ab58f72 100644
-> --- a/kernel/cgroup/cpuset.c
-> +++ b/kernel/cgroup/cpuset.c
-> @@ -1914,6 +1914,40 @@ static void local_partition_disable(struct cpuset *cs, enum prs_errcode part_err
->   	}
->   }
->   
-> +/**
-> + * local_partition_invalidate - Invalidate a local partition
-> + * @cs: Target cpuset (local partition root) to invalidate
-> + * @tmp: Temporary masks
-> + */
-> +static void local_partition_invalidate(struct cpuset *cs, struct tmpmasks *tmp)
-> +{
-> +	struct cpumask *xcpus = user_xcpus(cs);
-> +	struct cpuset *parent = parent_cs(cs);
-> +	int new_prs = cs->partition_root_state;
-> +	bool cpumask_updated = false;
-> +
-> +	lockdep_assert_held(&cpuset_mutex);
-> +	WARN_ON_ONCE(is_remote_partition(cs));	/* For local partition only */
-> +
-> +	if (!is_partition_valid(cs))
-> +		return;
-> +
-> +	/*
-> +	 * Make the current partition invalid.
-> +	 */
-> +	if (is_partition_valid(parent))
-> +		cpumask_updated = cpumask_and(tmp->addmask,
-> +					      xcpus, parent->effective_xcpus);
-Invalidation is different from disable. It can be called when parent is 
-no longer a valid partition root. So the check here is appropriate.
-> +	if (cs->partition_root_state > 0)
-> +		new_prs = -cs->partition_root_state;
-> +
-> +	partition_disable(cs, parent, new_prs, cs->prs_err);
-> +	if (cpumask_updated) {
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git for-6.19
+branch HEAD: f23cb0ced8fb28ba65bf4ddaa2fcaf044c6894cc  cpuset: remove need_rebuild_sched_domains
 
-The cpumask_and() operation above is no longer relevant as it should be 
-done inside partition_disable(). Instead of cpumask_updated, we can just 
-do a "is_partition_valid(parent))" check here to decide if the following 
-two helpers should be called.
+elapsed time: 1544m
 
-Cheers,
-Longman
+configs tested: 104
+configs skipped: 3
 
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-> +		cpuset_update_tasks_cpumask(parent, tmp->addmask);
-> +		update_sibling_cpumasks(parent, cs, tmp);
-> +	}
-> +}
-> +
->   /**
->    * update_parent_effective_cpumask - update effective_cpus mask of parent cpuset
->    * @cs:      The cpuset that requests change in partition root state
-> @@ -1974,22 +2008,6 @@ static int update_parent_effective_cpumask(struct cpuset *cs, int cmd,
->   	adding = deleting = false;
->   	old_prs = new_prs = cs->partition_root_state;
->   
-> -	if (cmd == partcmd_invalidate) {
-> -		if (is_partition_invalid(cs))
-> -			return 0;
-> -
-> -		/*
-> -		 * Make the current partition invalid.
-> -		 */
-> -		if (is_partition_valid(parent))
-> -			adding = cpumask_and(tmp->addmask,
-> -					     xcpus, parent->effective_xcpus);
-> -		if (old_prs > 0)
-> -			new_prs = -old_prs;
-> -
-> -		goto write_error;
-> -	}
-> -
->   	/*
->   	 * The parent must be a partition root.
->   	 * The new cpumask, if present, or the current cpus_allowed must
-> @@ -2553,7 +2571,7 @@ static int cpus_allowed_validate_change(struct cpuset *cs, struct cpuset *trialc
->   			if (is_partition_valid(cp) &&
->   			    cpumask_intersects(xcpus, cp->effective_xcpus)) {
->   				rcu_read_unlock();
-> -				update_parent_effective_cpumask(cp, partcmd_invalidate, NULL, tmp);
-> +				local_partition_invalidate(cp, tmp);
->   				rcu_read_lock();
->   			}
->   		}
-> @@ -2593,8 +2611,7 @@ static void partition_cpus_change(struct cpuset *cs, struct cpuset *trialcs,
->   					   trialcs->effective_xcpus, tmp);
->   	} else {
->   		if (trialcs->prs_err)
-> -			update_parent_effective_cpumask(cs, partcmd_invalidate,
-> -							NULL, tmp);
-> +			local_partition_invalidate(cs, tmp);
->   		else
->   			update_parent_effective_cpumask(cs, partcmd_update,
->   							trialcs->effective_xcpus, tmp);
-> @@ -4040,18 +4057,21 @@ static void cpuset_hotplug_update_tasks(struct cpuset *cs, struct tmpmasks *tmp)
->   	 *    partitions.
->   	 */
->   	if (is_local_partition(cs) && (!is_partition_valid(parent) ||
-> -				tasks_nocpu_error(parent, cs, &new_cpus)))
-> +				tasks_nocpu_error(parent, cs, &new_cpus))) {
->   		partcmd = partcmd_invalidate;
-> +		local_partition_invalidate(cs, tmp);
-> +	}
->   	/*
->   	 * On the other hand, an invalid partition root may be transitioned
-> -	 * back to a regular one with a non-empty effective xcpus.
-> +	 * back to a regular one with a non-empty user xcpus.
->   	 */
->   	else if (is_partition_valid(parent) && is_partition_invalid(cs) &&
-> -		 !cpumask_empty(cs->effective_xcpus))
-> +		 !cpumask_empty(user_xcpus(cs))) {
->   		partcmd = partcmd_update;
-> +		update_parent_effective_cpumask(cs, partcmd, NULL, tmp);
-> +	}
->   
->   	if (partcmd >= 0) {
-> -		update_parent_effective_cpumask(cs, partcmd, NULL, tmp);
->   		if ((partcmd == partcmd_invalidate) || is_partition_valid(cs)) {
->   			compute_partition_effective_cpumask(cs, &new_cpus);
->   			cpuset_force_rebuild();
+tested configs:
+alpha                             allnoconfig    gcc-15.1.0
+arc                               allnoconfig    gcc-15.1.0
+arc                   randconfig-001-20251112    gcc-8.5.0
+arc                   randconfig-002-20251112    gcc-9.5.0
+arm                               allnoconfig    clang-22
+arm                   randconfig-001-20251112    gcc-8.5.0
+arm                   randconfig-002-20251112    clang-22
+arm                   randconfig-003-20251112    clang-22
+arm                   randconfig-004-20251112    gcc-14.3.0
+arm                        realview_defconfig    clang-16
+arm                           sama5_defconfig    gcc-15.1.0
+arm                        vexpress_defconfig    gcc-15.1.0
+arm64                             allnoconfig    gcc-15.1.0
+arm64                 randconfig-001-20251112    clang-22
+arm64                 randconfig-002-20251112    gcc-10.5.0
+arm64                 randconfig-003-20251112    gcc-8.5.0
+arm64                 randconfig-004-20251112    clang-22
+csky                              allnoconfig    gcc-15.1.0
+csky                  randconfig-001-20251112    gcc-13.4.0
+csky                  randconfig-002-20251112    gcc-15.1.0
+hexagon                           allnoconfig    clang-22
+hexagon               randconfig-001-20251112    clang-16
+hexagon               randconfig-002-20251112    clang-22
+i386                              allnoconfig    gcc-14
+i386                  randconfig-001-20251113    gcc-14
+i386                  randconfig-004-20251113    gcc-14
+i386                  randconfig-011-20251112    gcc-14
+i386                  randconfig-012-20251112    gcc-14
+i386                  randconfig-013-20251112    clang-20
+i386                  randconfig-014-20251112    clang-20
+i386                  randconfig-015-20251112    clang-20
+i386                  randconfig-016-20251112    gcc-14
+i386                  randconfig-017-20251112    clang-20
+loongarch                         allnoconfig    clang-22
+loongarch                           defconfig    clang-19
+loongarch             randconfig-001-20251112    gcc-15.1.0
+loongarch             randconfig-002-20251112    gcc-13.4.0
+m68k                              allnoconfig    gcc-15.1.0
+m68k                                defconfig    gcc-15.1.0
+microblaze                        allnoconfig    gcc-15.1.0
+microblaze                          defconfig    gcc-15.1.0
+mips                              allnoconfig    gcc-15.1.0
+mips                            gpr_defconfig    clang-18
+nios2                             allnoconfig    gcc-11.5.0
+nios2                               defconfig    gcc-11.5.0
+nios2                 randconfig-001-20251112    gcc-11.5.0
+nios2                 randconfig-002-20251112    gcc-11.5.0
+openrisc                          allnoconfig    gcc-15.1.0
+openrisc                            defconfig    gcc-15.1.0
+parisc                            allnoconfig    gcc-15.1.0
+parisc                              defconfig    gcc-15.1.0
+parisc                randconfig-001-20251112    gcc-9.5.0
+parisc                randconfig-002-20251112    gcc-8.5.0
+parisc64                            defconfig    gcc-15.1.0
+powerpc                           allnoconfig    gcc-15.1.0
+powerpc                        fsp2_defconfig    gcc-15.1.0
+powerpc               randconfig-001-20251112    clang-22
+powerpc               randconfig-002-20251112    clang-22
+powerpc                     tqm8540_defconfig    gcc-15.1.0
+powerpc64             randconfig-001-20251112    clang-22
+powerpc64             randconfig-002-20251112    clang-22
+riscv                             allnoconfig    gcc-15.1.0
+riscv                               defconfig    clang-22
+riscv                 randconfig-001-20251113    gcc-8.5.0
+riscv                 randconfig-002-20251113    gcc-11.5.0
+s390                              allnoconfig    clang-22
+s390                                defconfig    clang-22
+s390                  randconfig-001-20251113    clang-22
+s390                  randconfig-002-20251113    clang-17
+sh                                allnoconfig    gcc-15.1.0
+sh                                  defconfig    gcc-15.1.0
+sh                    randconfig-001-20251113    gcc-15.1.0
+sh                    randconfig-002-20251113    gcc-11.5.0
+sh                   sh7770_generic_defconfig    gcc-15.1.0
+sparc                             allnoconfig    gcc-15.1.0
+sparc                               defconfig    gcc-15.1.0
+sparc                 randconfig-001-20251113    gcc-8.5.0
+sparc                 randconfig-002-20251113    gcc-8.5.0
+sparc64                             defconfig    clang-20
+sparc64               randconfig-001-20251113    clang-20
+sparc64               randconfig-002-20251113    clang-22
+um                                allnoconfig    clang-22
+um                                  defconfig    clang-22
+um                             i386_defconfig    gcc-14
+um                    randconfig-001-20251113    gcc-14
+um                    randconfig-002-20251113    clang-22
+um                           x86_64_defconfig    clang-22
+x86_64                            allnoconfig    clang-20
+x86_64      buildonly-randconfig-001-20251113    gcc-14
+x86_64      buildonly-randconfig-002-20251113    clang-20
+x86_64      buildonly-randconfig-003-20251113    clang-20
+x86_64      buildonly-randconfig-004-20251113    gcc-14
+x86_64      buildonly-randconfig-005-20251113    gcc-12
+x86_64      buildonly-randconfig-006-20251113    gcc-14
+x86_64                              defconfig    gcc-14
+x86_64                randconfig-071-20251113    gcc-14
+x86_64                randconfig-072-20251113    gcc-12
+x86_64                randconfig-073-20251113    gcc-12
+x86_64                randconfig-074-20251113    gcc-14
+x86_64                randconfig-075-20251113    gcc-14
+x86_64                randconfig-076-20251113    gcc-14
+xtensa                            allnoconfig    gcc-15.1.0
+xtensa                randconfig-001-20251113    gcc-15.1.0
+xtensa                randconfig-002-20251113    gcc-13.4.0
 
+--
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
