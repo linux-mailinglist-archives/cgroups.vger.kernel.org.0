@@ -1,314 +1,171 @@
-Return-Path: <cgroups+bounces-11889-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-11890-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1700CC542A0
-	for <lists+cgroups@lfdr.de>; Wed, 12 Nov 2025 20:36:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id BFB89C545EB
+	for <lists+cgroups@lfdr.de>; Wed, 12 Nov 2025 21:11:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 58ABD34C3B0
-	for <lists+cgroups@lfdr.de>; Wed, 12 Nov 2025 19:34:09 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 390B13450F6
+	for <lists+cgroups@lfdr.de>; Wed, 12 Nov 2025 20:09:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 87CB8354ACE;
-	Wed, 12 Nov 2025 19:30:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B39FA299A8F;
+	Wed, 12 Nov 2025 20:09:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gourry.net header.i=@gourry.net header.b="pOiqeYQC"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="OCBIQfeP";
+	dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b="PKuh6Up+"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-qt1-f180.google.com (mail-qt1-f180.google.com [209.85.160.180])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 44E2635470E
-	for <cgroups@vger.kernel.org>; Wed, 12 Nov 2025 19:30:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ABD7D27E040
+	for <cgroups@vger.kernel.org>; Wed, 12 Nov 2025 20:09:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762975825; cv=none; b=cL+HDMdAXNAywM9zo/cz+xfBBGLOaQOxxDku/cjbeeOsUFxDmd98IgWO/gEZaQPJjtak1R/lUX4rcVcqa+y1zYHLYhv1xR1h70uuWs12D40BmdWcaTWTZBZn6svPHT5EfcBGc1odMpTlGfMlkFmTRJbrEKzohSGN9rvv/vAKiBA=
+	t=1762978165; cv=none; b=pq3LxtZaTz+/Bhpl9A/D6DTH8atZQkL587q4tBEAMUaQNbyjVXstSLkhnsyj3oO3z6jsBlyA+WfZmWb0+j0Z6f2Hg8f1yMb8cI5j+vVMfwueq8wENjgG6ceHQppE/vUFJ8Og8PD10wOPbCNdDvlVVzdAFuFnhbNC9L9iPaKDHME=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762975825; c=relaxed/simple;
-	bh=rQ2kHp6lPREv3YxzvbPdgaiaRh8JzJ1empdCPfgiMYg=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=U6Ij13qvN4BGh5Gf4SWMgmWUFllpWkCA5ogNtcKq3fOBdNY87Z6yQoWFQCuVwzHOPywAlB2sEUXH/5rGJhEKofoXNMfjcxXgAZE7S62xYpCwEiC+uOangzJbD3rdYURvi8XmWdJWBFuzHwLlFdH7Q4Vt9OCZnKJgCxRr8EdfS/I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gourry.net; spf=pass smtp.mailfrom=gourry.net; dkim=pass (2048-bit key) header.d=gourry.net header.i=@gourry.net header.b=pOiqeYQC; arc=none smtp.client-ip=209.85.160.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gourry.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gourry.net
-Received: by mail-qt1-f180.google.com with SMTP id d75a77b69052e-4ed946ed3cdso9768381cf.3
-        for <cgroups@vger.kernel.org>; Wed, 12 Nov 2025 11:30:23 -0800 (PST)
+	s=arc-20240116; t=1762978165; c=relaxed/simple;
+	bh=Q7jKv1JlKhmirpqCatrnUEr8E5+mAGjOY7Wywiyo+Sg=;
+	h=From:Message-ID:Date:MIME-Version:Subject:To:Cc:References:
+	 In-Reply-To:Content-Type; b=hGAZHrjeR5Vnql72HNr/0iimDi/KLPBDItEH5iB7bWXAQYI6sZeA8z1Mor3G7PWbHT6irC94s+7v1DziR3sNx3wgYYVduIhqQ/NltdeIgVpk3hImQKEzKinDXNi4v3p7knv7XsBqN+Q5i/OZ90SleGJOVQJihfhCIdjidbgEl8Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=OCBIQfeP; dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b=PKuh6Up+; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1762978162;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=qsVZFRRGhKmeupE13R44EbaKUl2pjowYCrWWNsS8SwM=;
+	b=OCBIQfePoC9OcUhtc6DukvZcNTmrULylBn2JyPGN9nPyf2rzAZx0907ykeoJi8nfAi0PdA
+	em+wY+WSH9ciVWXJh23u0A24PgKlk0Cm0n1zajUiHIw0ANvxzFenDxmKH80lnCgH6IwR2C
+	C+gt9sOgOeRl75kmdsFjR3Vdy2QwQhw=
+Received: from mail-qt1-f198.google.com (mail-qt1-f198.google.com
+ [209.85.160.198]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-145-hS3XCH4WPCOhJCKkUGZgRQ-1; Wed, 12 Nov 2025 15:09:21 -0500
+X-MC-Unique: hS3XCH4WPCOhJCKkUGZgRQ-1
+X-Mimecast-MFC-AGG-ID: hS3XCH4WPCOhJCKkUGZgRQ_1762978160
+Received: by mail-qt1-f198.google.com with SMTP id d75a77b69052e-4ed6ceab125so850891cf.1
+        for <cgroups@vger.kernel.org>; Wed, 12 Nov 2025 12:09:20 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gourry.net; s=google; t=1762975822; x=1763580622; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=EE3olEnyRjl52kAEWnA02JLmmLDlTmwS9hIpIeJT8kY=;
-        b=pOiqeYQCabQJef3Rs9wWabdkiZ771ipQtxnLdPN8Y9Io/D5tmux82CXFBxpEiwDOD3
-         0HUsImdY3DffKnat2HR1WwA/P2GcwlnLE/ElaNkW+LibWaC/wOhEyfS3X3f6H9Wpebgt
-         AmFZr9UQ8dGUE5gkR2dNl93p5S3mo9aNaje3hsRTg475vogLENODR6MIfAUfIcnfiRRQ
-         uxfbG9o1CGd6U45pXz/Ye39X5Lq8jQeY0f1h3PQKS5hpmmSwmc6v3AYRPU945hJG7ATL
-         A8Jmn6od++41aDCAYWvKcjFMxXI0rtOELJL0B8WwxGS1nxIpebr7U0zst7YWxVjs1rQv
-         2WKQ==
+        d=redhat.com; s=google; t=1762978160; x=1763582960; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:content-language:references
+         :cc:to:subject:user-agent:mime-version:date:message-id:from:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=qsVZFRRGhKmeupE13R44EbaKUl2pjowYCrWWNsS8SwM=;
+        b=PKuh6Up+4JUfWIEmgE2vTDO0jw+9xBDnw9DilXXoDtKk9u2b7JP5gR2o+vIoYG8CTB
+         4BxjaJFvV5H6FGTuGIIr9yQbdm0IkdV2kWyR39CTDgAVmTn7HKHm9EtE2HfBjYApU2ef
+         QSuLgXTK8Un0Kkpom9DGXLn05Gpwf8zDrPrMB/thhlXC0v7dmSOUr7IIg0pjEW7G9B+v
+         YOsF2lDltZ0BvYu5lHPa3Ach9UE3GZyyrbNia/iYFpKEs6quM3WAZNoDZo3nE2iScvz5
+         by8IakZC3oR73oEvgRB4RTecTLQVgJ35IsNwGofgxNzeovIFx/d3PZe3sXm5lDqBq6zP
+         EJOQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1762975822; x=1763580622;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=EE3olEnyRjl52kAEWnA02JLmmLDlTmwS9hIpIeJT8kY=;
-        b=UJvMlc8yzH957Ri+Qf8gcZOcTO8Sg9OsrAH1jz/cK54iJHT4xHLVZYOSYnH2sIop3h
-         xOrsZuyrER4MP5KmhBF9+zoOSiJatCpNrgkxTUlSE0dP4Fq89LpeU5cBZdUNI8SJ3OBX
-         Ognxyt3O3ZArqGwGEzEXOBYr8k9f0PnSxyJX5nk0jrq3xKuRSTIfcrOh0HAvFReAz4MX
-         yNZCultEtfuQ1M21eYqu8MHvf8IoMazVceHBrjWjkBHaXRYyeVRJmDXHY4CSumX4HoBg
-         h+h7e2y1TJl42wMExxGO84d758xYl57tW+Mytt5aTHXgNU2gXa6O/QBWhttqeggp70wc
-         PM+Q==
-X-Forwarded-Encrypted: i=1; AJvYcCU7fzgtLTdZuiWdoAdJnj2wxymq+F//XEgjyCw1VxPw87QpDPpw24BaPxcD/P4Z+LrZNlbyrQ/9@vger.kernel.org
-X-Gm-Message-State: AOJu0Yy2XdKZs/6ldhXBRSIsszpo/gobJy9PgBVUaKVWJFDDIIIuTSzg
-	z14T2/cf7nAfnoeYF1NI62id/+fKsaUReUzxKlQ6kTv2lfvpLkR6HeIRw0ruJhuLoh8=
-X-Gm-Gg: ASbGnctTh7mT+DOdEK12cSsL3pTVL8gLUv65c/VmgZ6LsxzSJ2sGWirYh+UxUfX/Jbd
-	8RuObTQ5icnEIUo/DC8ZOE9dZhDyN/TMA8ZwDJeNw9JQCbr8R+GK9wQZN+dsok0ORpxrxGm5+Tp
-	BWjNB/quK6y/JrdL+ncTOLQJ26DfUmOt8NHrxoo9yVJcOasHTi89yrVkune7ZtkLx4QSWbIfZ/N
-	hAwQteSUCTuIx7EkAH+8difWnt9PjpgV7uuEu2R9U9YU6oo7q0gGn59gDvm4X7ayOJBuhChhfXB
-	6m1Us0ZyuqbueZrz4eP+FmSOfo7MbSG9Fb6gYXRtTpUp3FfcNtHzM4v4uW5wkhI+4exI8mHZKx6
-	okof8pCKBWH/dvO3sC3AWmDdRali7QuMHLpqeCxZ6VM+ou+u1sMDedOkF2oGean/alXbfKgWy9N
-	kho/Ir8N2vPFpo+9lZksF/+BRsjsuslo9Q9rNC3Tl8aw+AMD8TAv7JgVQT9jtfxfTp
-X-Google-Smtp-Source: AGHT+IEpkA9sHRf+vDkvWZyRaV+z+4MD09rdo9Mmp9OjAhV3qhp/e6NAADZhOGarPgun9sbSz0rc+w==
-X-Received: by 2002:a05:622a:14f:b0:4e8:b980:4792 with SMTP id d75a77b69052e-4eddbcb30a2mr55332141cf.37.1762975821965;
-        Wed, 12 Nov 2025 11:30:21 -0800 (PST)
-Received: from gourry-fedora-PF4VCD3F.lan (pool-96-255-20-138.washdc.ftas.verizon.net. [96.255.20.138])
-        by smtp.gmail.com with ESMTPSA id af79cd13be357-8b29aa0082esm243922885a.50.2025.11.12.11.30.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 12 Nov 2025 11:30:21 -0800 (PST)
-From: Gregory Price <gourry@gourry.net>
-To: linux-mm@kvack.org
-Cc: kernel-team@meta.com,
-	linux-cxl@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	nvdimm@lists.linux.dev,
-	linux-fsdevel@vger.kernel.org,
-	cgroups@vger.kernel.org,
-	dave@stgolabs.net,
-	jonathan.cameron@huawei.com,
-	dave.jiang@intel.com,
-	alison.schofield@intel.com,
-	vishal.l.verma@intel.com,
-	ira.weiny@intel.com,
-	dan.j.williams@intel.com,
-	longman@redhat.com,
-	akpm@linux-foundation.org,
-	david@redhat.com,
-	lorenzo.stoakes@oracle.com,
-	Liam.Howlett@oracle.com,
-	vbabka@suse.cz,
-	rppt@kernel.org,
-	surenb@google.com,
-	mhocko@suse.com,
-	osalvador@suse.de,
-	ziy@nvidia.com,
-	matthew.brost@intel.com,
-	joshua.hahnjy@gmail.com,
-	rakie.kim@sk.com,
-	byungchul@sk.com,
-	gourry@gourry.net,
-	ying.huang@linux.alibaba.com,
-	apopple@nvidia.com,
-	mingo@redhat.com,
-	peterz@infradead.org,
-	juri.lelli@redhat.com,
-	vincent.guittot@linaro.org,
-	dietmar.eggemann@arm.com,
-	rostedt@goodmis.org,
-	bsegall@google.com,
-	mgorman@suse.de,
-	vschneid@redhat.com,
-	tj@kernel.org,
-	hannes@cmpxchg.org,
-	mkoutny@suse.com,
-	kees@kernel.org,
-	muchun.song@linux.dev,
-	roman.gushchin@linux.dev,
-	shakeel.butt@linux.dev,
-	rientjes@google.com,
-	jackmanb@google.com,
-	cl@gentwo.org,
-	harry.yoo@oracle.com,
-	axelrasmussen@google.com,
-	yuanchu@google.com,
-	weixugc@google.com,
-	zhengqi.arch@bytedance.com,
-	yosry.ahmed@linux.dev,
-	nphamcs@gmail.com,
-	chengming.zhou@linux.dev,
-	fabio.m.de.francesco@linux.intel.com,
-	rrichter@amd.com,
-	ming.li@zohomail.com,
-	usamaarif642@gmail.com,
-	brauner@kernel.org,
-	oleg@redhat.com,
-	namcao@linutronix.de,
-	escape@linux.alibaba.com,
-	dongjoo.seo1@samsung.com
-Subject: [RFC PATCH v2 11/11] [HACK] mm/zswap: compressed ram integration example
-Date: Wed, 12 Nov 2025 14:29:27 -0500
-Message-ID: <20251112192936.2574429-12-gourry@gourry.net>
-X-Mailer: git-send-email 2.51.1
-In-Reply-To: <20251112192936.2574429-1-gourry@gourry.net>
-References: <20251112192936.2574429-1-gourry@gourry.net>
+        d=1e100.net; s=20230601; t=1762978160; x=1763582960;
+        h=content-transfer-encoding:in-reply-to:content-language:references
+         :cc:to:subject:user-agent:mime-version:date:message-id:from:x-gm-gg
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=qsVZFRRGhKmeupE13R44EbaKUl2pjowYCrWWNsS8SwM=;
+        b=F6v+RigjpXd0RTBLTFb83uTS3W4Tx3qh/RhRXwIrCxk9O+LAUc3TrxSrj0k2yV9GkV
+         jWmov+wPBVRJMz8kiR+UW4vjQ7mPPDo1guM8ocs1bsdPktsmmqopVoA/zGGzB8OGGwdE
+         4Pym08g08J9KbWmek+6h+fWZ4YbzvryiIgVIWb8quovMiqGkOlXb7ggqccjEO1E7E4NI
+         21VNt9zujnBA/LVVvvo1ZCn0gGGQ2tAm4MrSW5BbS10+FeZ+nidT5535dNm5KjWBtdxm
+         oSbkmn9vygjj4kROzUhjBUEKdkq3ARR4C05M08dDoFimtzFnRX+Qoi18yzdjHw+Ss7Y1
+         RXxA==
+X-Gm-Message-State: AOJu0YzTmqAl0Z+AUZAnQgEqiEa71BGX7X40LkigoYG/z+x0bhBBMW4G
+	p9NC9snTyx3TbTmh4Q8TFaXAkaBXRCkpQknJh03ztao69IHgUH3R74Nvu6/MEunhaPut+CDOjuR
+	Qx/BIvOJWxSgV2kC7nUqETqCQgYFBAtxQj37H9gBynK8imeLWVrSROmimtjQ=
+X-Gm-Gg: ASbGncu1mXVJQ10okIrpKftmjEuQziKTbBiehb88M/prEbDXkLtMQwPuwy3ayRghWXW
+	OlPaa8RUlyxF+AmGwCFdIkR3rESKy/jm8XPuWDflWciHxwU7puTQXxARJpIz4pJB3DsA5dpUPh5
+	SA4vtTDHk1wbF1rmXj8rsP+YbRyDQFM8f9erXixff/LH71oC5sJrAVuoal1lpn3ZKFCQMgQveNz
+	ufQYUAYpnUUUyPfXxxSCrZ12433QCvK3IuAi/ozqAi+BrbEDZPR07VMigtEPLmpn41XbFRTPdLW
+	mSTxXD5rmP2FOvipqzoKKkrSx9Kqd0w2Fi/6VrQLwx+xf7YMrMPPEa8au6CZTYFmAJVfS2FsKWM
+	3XVG9v8AUyc8RWwCt0Zos++Jrp3MR/GVNA3xdgtY6GR6RBQ==
+X-Received: by 2002:ac8:57d0:0:b0:4ed:635c:17dc with SMTP id d75a77b69052e-4eddbccc00amr49732851cf.8.1762978159816;
+        Wed, 12 Nov 2025 12:09:19 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IHrHRtoWUnalhKkU81sz2ukv2YLjrxVdyeykwnN+OFwK5SIwxIrrc30MD3x4HLaRYsG8yBL2A==
+X-Received: by 2002:ac8:57d0:0:b0:4ed:635c:17dc with SMTP id d75a77b69052e-4eddbccc00amr49732511cf.8.1762978159467;
+        Wed, 12 Nov 2025 12:09:19 -0800 (PST)
+Received: from ?IPV6:2601:188:c102:b180:1f8b:71d0:77b1:1f6e? ([2601:188:c102:b180:1f8b:71d0:77b1:1f6e])
+        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-88238ba8561sm97073816d6.61.2025.11.12.12.09.18
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 12 Nov 2025 12:09:18 -0800 (PST)
+From: Waiman Long <llong@redhat.com>
+X-Google-Original-From: Waiman Long <longman@redhat.com>
+Message-ID: <28109443-4bee-4ec8-b7d1-599ce1464da6@redhat.com>
+Date: Wed, 12 Nov 2025 15:09:17 -0500
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH RFC v2 01/22] cpuset: fix isolcpus stay in root when
+ isolated partition changes to root
+To: Chen Ridong <chenridong@huaweicloud.com>, tj@kernel.org,
+ hannes@cmpxchg.org, mkoutny@suse.com
+Cc: cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+ lujialin4@huawei.com, chenridong@huawei.com
+References: <20251025064844.495525-1-chenridong@huaweicloud.com>
+ <20251025064844.495525-2-chenridong@huaweicloud.com>
+Content-Language: en-US
+In-Reply-To: <20251025064844.495525-2-chenridong@huaweicloud.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Here is an example of how you might use a SPM memory node.
+On 10/25/25 2:48 AM, Chen Ridong wrote:
+> From: Chen Ridong <chenridong@huawei.com>
+>
+> A bug was detected with the following steps:
+>
+>    # cd /sys/fs/cgroup/
+>    # mkdir test
+>    # echo 9 > test/cpuset.cpus
+>    # echo isolated > test/cpuset.cpus.partition
+>    # cat test/cpuset.cpus.partition
+>    isolated
+>    # cat test/cpuset.cpus
+>    9
+>    # echo root > test/cpuset.cpus.partition
+>    # cat test/cpuset.cpus
+>    9
+>    # cat test/cpuset.cpus.partition
+>    root
+>
+> CPU 9 was initially listed in the "isolcpus" boot command line parameter.
+> When the partition type is changed from isolated to root, CPU 9 remains
+> in what becomes a valid root partition. This violates the rule that
+> isolcpus can only be assigned to isolated partitions.
+>
+> Fix this by adding a housekeeping conflict check during transitions
+> between root and isolated partitions.
+>
+> Fixes: 4a74e418881f ("cgroup/cpuset: Check partition conflict with housekeeping setup")
+> Signed-off-by: Chen Ridong <chenridong@huawei.com>
+> ---
+>   kernel/cgroup/cpuset.c | 2 ++
+>   1 file changed, 2 insertions(+)
+>
+> diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
+> index 96104710a649..6af4d80b53c4 100644
+> --- a/kernel/cgroup/cpuset.c
+> +++ b/kernel/cgroup/cpuset.c
+> @@ -2995,6 +2995,8 @@ static int update_prstate(struct cpuset *cs, int new_prs)
+>   		 * Need to update isolated_cpus.
+>   		 */
+>   		isolcpus_updated = true;
+> +		if (prstate_housekeeping_conflict(new_prs, cs->effective_xcpus))
+> +			err = PERR_HKEEPING;
+>   	} else {
+>   		/*
+>   		 * Switching back to member is always allowed even if it
 
-If there is compressed ram available (in this case, a bit present
-in mt_spm_nodelist), we skip the entire software compression process
-and memcpy directly to a compressed memory folio, and store the newly
-allocated compressed memory page as the zswap entry->handle.
+This patch has been merged in somewhat different form.
 
-On decompress we do the opposite: copy directly from the stored
-page to the destination, and free the compressed memory page.
-
-Note: We do not integrate any compressed memory device checks at
-this point because this is a stand-in to demonstrate how the SPM
-node allocation mechanism works.
-
-See the "TODO" comment in `zswap_compress_direct()` for more details
-
-In reality, we would want to move this mechanism out of zswap into
-its own component (cram.c?), and enable a more direct migrate_page()
-call that actually re-maps the page read-only into any mappings, and
-then provides a write-fault handler which promotes the page on write.
-
-(Similar to a NUMA Hint Fault, but only on write-access)
-
-This prevents any run-away compression ratio failures, since the
-compression ratio would be checked on allocation, rather than allowed
-to silently decrease on writes until the device becomes unstable.
-
-Signed-off-by: Gregory Price <gourry@gourry.net>
----
- mm/zswap.c | 66 +++++++++++++++++++++++++++++++++++++++++++++++++++++-
- 1 file changed, 65 insertions(+), 1 deletion(-)
-
-diff --git a/mm/zswap.c b/mm/zswap.c
-index c1af782e54ec..e6f48a4e90f1 100644
---- a/mm/zswap.c
-+++ b/mm/zswap.c
-@@ -25,6 +25,7 @@
- #include <linux/scatterlist.h>
- #include <linux/mempolicy.h>
- #include <linux/mempool.h>
-+#include <linux/memory-tiers.h>
- #include <crypto/acompress.h>
- #include <linux/zswap.h>
- #include <linux/mm_types.h>
-@@ -191,6 +192,7 @@ struct zswap_entry {
- 	swp_entry_t swpentry;
- 	unsigned int length;
- 	bool referenced;
-+	bool direct;
- 	struct zswap_pool *pool;
- 	unsigned long handle;
- 	struct obj_cgroup *objcg;
-@@ -717,7 +719,8 @@ static void zswap_entry_cache_free(struct zswap_entry *entry)
- static void zswap_entry_free(struct zswap_entry *entry)
- {
- 	zswap_lru_del(&zswap_list_lru, entry);
--	zs_free(entry->pool->zs_pool, entry->handle);
-+	if (!entry->direct)
-+		zs_free(entry->pool->zs_pool, entry->handle);
- 	zswap_pool_put(entry->pool);
- 	if (entry->objcg) {
- 		obj_cgroup_uncharge_zswap(entry->objcg, entry->length);
-@@ -851,6 +854,43 @@ static void acomp_ctx_put_unlock(struct crypto_acomp_ctx *acomp_ctx)
- 	mutex_unlock(&acomp_ctx->mutex);
- }
- 
-+static struct page *zswap_compress_direct(struct page *src,
-+					  struct zswap_entry *entry)
-+{
-+	int nid = first_node(mt_spm_nodelist);
-+	struct page *dst;
-+	gfp_t gfp;
-+
-+	if (nid == NUMA_NO_NODE)
-+		return NULL;
-+
-+	gfp = GFP_NOWAIT | __GFP_NORETRY | __GFP_HIGHMEM | __GFP_MOVABLE |
-+	      __GFP_SPM_NODE;
-+	dst = __alloc_pages(gfp, 0, nid, &mt_spm_nodelist);
-+	if (!dst)
-+		return NULL;
-+
-+	/*
-+	 * TODO: check that the page is safe to use
-+	 *
-+	 * In a real implementation, we would not be using ZSWAP to demonstrate this
-+	 * and instead would implement a new component (compressed_ram, cram.c?)
-+	 *
-+	 * At this point we would check via some callback that the device's memory
-+	 * is actually safe to use - and if not, free the page (without writing to
-+	 * it), and kick off kswapd for that node to make room.
-+	 *
-+	 * Alternatively, if the compressed memory device(s) report a watermark
-+	 * crossing via interrupt, a flag can be set that is checked here rather
-+	 * that calling back into a device driver.
-+	 *
-+	 * In this case, we're testing with normal memory, so the memory is always
-+	 * safe to use (i.e. no compression ratio to worry about).
-+	 */
-+	copy_mc_highpage(dst, src);
-+	return dst;
-+}
-+
- static bool zswap_compress(struct page *page, struct zswap_entry *entry,
- 			   struct zswap_pool *pool)
- {
-@@ -862,6 +902,19 @@ static bool zswap_compress(struct page *page, struct zswap_entry *entry,
- 	gfp_t gfp;
- 	u8 *dst;
- 	bool mapped = false;
-+	struct page *zpage;
-+
-+	/* Try to shunt directly to compressed ram */
-+	if (!nodes_empty(mt_spm_nodelist)) {
-+		zpage = zswap_compress_direct(page, entry);
-+		if (zpage) {
-+			entry->handle = (unsigned long)zpage;
-+			entry->length = PAGE_SIZE;
-+			entry->direct = true;
-+			return true;
-+		}
-+		/* otherwise fallback to normal zswap */
-+	}
- 
- 	acomp_ctx = acomp_ctx_get_cpu_lock(pool);
- 	dst = acomp_ctx->buffer;
-@@ -939,6 +992,16 @@ static bool zswap_decompress(struct zswap_entry *entry, struct folio *folio)
- 	int decomp_ret = 0, dlen = PAGE_SIZE;
- 	u8 *src, *obj;
- 
-+	/* compressed ram page */
-+	if (entry->direct) {
-+		struct page *src = (struct page *)entry->handle;
-+		struct folio *zfolio = page_folio(src);
-+
-+		memcpy_folio(folio, 0, zfolio, 0, PAGE_SIZE);
-+		__free_page(src);
-+		goto direct_done;
-+	}
-+
- 	acomp_ctx = acomp_ctx_get_cpu_lock(pool);
- 	obj = zs_obj_read_begin(pool->zs_pool, entry->handle, acomp_ctx->buffer);
- 
-@@ -972,6 +1035,7 @@ static bool zswap_decompress(struct zswap_entry *entry, struct folio *folio)
- 	zs_obj_read_end(pool->zs_pool, entry->handle, obj);
- 	acomp_ctx_put_unlock(acomp_ctx);
- 
-+direct_done:
- 	if (!decomp_ret && dlen == PAGE_SIZE)
- 		return true;
- 
--- 
-2.51.1
+Cheers,
+Longman
 
 
