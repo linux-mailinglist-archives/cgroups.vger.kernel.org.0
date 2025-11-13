@@ -1,128 +1,132 @@
-Return-Path: <cgroups+bounces-11916-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-11917-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C3307C55EF5
-	for <lists+cgroups@lfdr.de>; Thu, 13 Nov 2025 07:34:25 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5C642C55F65
+	for <lists+cgroups@lfdr.de>; Thu, 13 Nov 2025 07:43:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D31913AE628
-	for <lists+cgroups@lfdr.de>; Thu, 13 Nov 2025 06:34:07 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 66A133AEE1F
+	for <lists+cgroups@lfdr.de>; Thu, 13 Nov 2025 06:42:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 33DBF3218A6;
-	Thu, 13 Nov 2025 06:33:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A1B7321428;
+	Thu, 13 Nov 2025 06:42:26 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
+Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 110FA248F78;
-	Thu, 13 Nov 2025 06:33:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F6E6320A0B;
+	Thu, 13 Nov 2025 06:42:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=124.126.103.232
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763015636; cv=none; b=sqfXVpstz1uum559pKpZrJFCOwBH249gPO//htvlaExtW8XZqH2+AlVPSUFMmRx7MZ3zz3xMbWaipfXIP1dt8V6qzWcU+0Bp9Z5NDePqh8DTYDKeemKM7HAhvBjF8QZCaBskAqUu82BBDd4DChRceOebhPM7Si0am3wmsTecJvU=
+	t=1763016146; cv=none; b=OW9s2AxzRVjHzs/4L/7LShqpScSfF5AKc0gcpQ4T4cLIc+rckCvqG2me3JeOrxUap0IgaLuC7St/f2G2X986Oqji7nuBdHunt3zEXYw7jpvjOw0HcAOb1xuu+rq1Ib01lJPyEpiABt/6nvf1A9FsPdyZUpovLHiSrcMZ1cFbCZo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763015636; c=relaxed/simple;
-	bh=iSqld2kQTeDHTFqIiQOSFYISAvx7H/oD8ySXVslWgQ4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=hUOZRwNSPhO34/sPypZM8Q+21QOyjv6MxQFk85V7TUxm4PTOeUapsRy8uJF3Rx4GobJIjEaORZg3VykamhU2Cx6zPgM8Vv/b2hHffe3c/Wq4Re4AbOujjNLoctyhE+osa88XtYwNVJTbJQpp1AHx2CmC5IKhde0Ln5hp1buNWtU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.216])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTPS id 4d6VpM4gkXzKHM0R;
-	Thu, 13 Nov 2025 14:33:31 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.112])
-	by mail.maildlp.com (Postfix) with ESMTP id 57F241A19D2;
-	Thu, 13 Nov 2025 14:33:50 +0800 (CST)
-Received: from [10.67.111.176] (unknown [10.67.111.176])
-	by APP1 (Coremail) with SMTP id cCh0CgAHQUrNexVpetdGAg--.48893S2;
-	Thu, 13 Nov 2025 14:33:50 +0800 (CST)
-Message-ID: <90eb21c8-e6d8-4b65-a126-8a822d48afdf@huaweicloud.com>
-Date: Thu, 13 Nov 2025 14:33:49 +0800
+	s=arc-20240116; t=1763016146; c=relaxed/simple;
+	bh=+xPG4uC6KAuzhM7W/PX9xBrsT/qPUDv4VnVdnHuqSFw=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=fcOX1RpqNFzhR2OiQ9kA6ZLio/NOQkjiaDBFPJLMXTpScko5GJBQKKMiNP3TKO7qhUoZObdLNzZZhTD76fnTzLZQRUAQzBzgwPD7W7QahyeIWcTzwqO/CZnNhy1g3d8g5offZyWYBcUdC0aKF+DXIVlmIks25z0ixwfYoJqtVSQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn; spf=pass smtp.mailfrom=kylinos.cn; arc=none smtp.client-ip=124.126.103.232
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kylinos.cn
+X-UUID: e45ff0eec05b11f0a38c85956e01ac42-20251113
+X-CTIC-Tags:
+	HR_CC_COUNT, HR_CC_DOMAIN_COUNT, HR_CC_NO_NAME, HR_CTE_8B, HR_CTT_TXT
+	HR_DATE_H, HR_DATE_WKD, HR_DATE_ZONE, HR_FROM_NAME, HR_SJ_DIGIT_LEN
+	HR_SJ_LANG, HR_SJ_LEN, HR_SJ_LETTER, HR_SJ_NOR_SYM, HR_SJ_PHRASE
+	HR_SJ_PHRASE_LEN, HR_SJ_PRE_RE, HR_SJ_WS, HR_TO_COUNT, HR_TO_DOMAIN_COUNT
+	HR_TO_NO_NAME, IP_TRUSTED, SRC_TRUSTED, DN_TRUSTED, SA_UNTRUSTED
+	SA_LOWREP, SA_EXISTED, SN_UNTRUSTED, SN_UNFAMILIAR, SPF_NOPASS
+	DKIM_NOPASS, DMARC_NOPASS, CIE_BAD, CIE_GOOD, CIE_GOOD_SPF
+	GTI_FG_BS, GTI_RG_INFO, GTI_C_BU, AMN_GOOD, ABX_MISS_RDNS
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.3.6,REQID:fd1a5dd4-a870-4389-ad86-8bce00c2ede2,IP:10,U
+	RL:0,TC:0,Content:0,EDM:0,RT:0,SF:-5,FILE:0,BULK:0,RULE:Release_Ham,ACTION
+	:release,TS:5
+X-CID-INFO: VERSION:1.3.6,REQID:fd1a5dd4-a870-4389-ad86-8bce00c2ede2,IP:10,URL
+	:0,TC:0,Content:0,EDM:0,RT:0,SF:-5,FILE:0,BULK:0,RULE:Release_Ham,ACTION:r
+	elease,TS:5
+X-CID-META: VersionHash:a9d874c,CLOUDID:4c82669886c03cb61ed280203a47079c,BulkI
+	D:251112113325GOOOY919,BulkQuantity:12,Recheck:0,SF:17|19|64|66|78|80|81|8
+	2|83|102|841|850,TC:nil,Content:0|15|50,EDM:-3,IP:-2,URL:0,File:nil,RT:nil
+	,Bulk:40,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BR
+	R:0,BRE:0,ARC:0
+X-CID-BVR: 2,SSN|SDN
+X-CID-BAS: 2,SSN|SDN,0,_
+X-CID-FACTOR: TF_CID_SPAM_OBB,TF_CID_SPAM_SNR,TF_CID_SPAM_FAS,TF_CID_SPAM_FSD
+X-CID-RHF: D41D8CD98F00B204E9800998ECF8427E
+X-UUID: e45ff0eec05b11f0a38c85956e01ac42-20251113
+X-User: sunshaojie@kylinos.cn
+Received: from localhost.localdomain [(223.70.159.239)] by mailgw.kylinos.cn
+	(envelope-from <sunshaojie@kylinos.cn>)
+	(Generic MTA with TLSv1.3 TLS_AES_256_GCM_SHA384 256/256)
+	with ESMTP id 171834587; Thu, 13 Nov 2025 14:42:15 +0800
+From: Sun Shaojie <sunshaojie@kylinos.cn>
+To: llong@redhat.com
+Cc: cgroups@vger.kernel.org,
+	chenridong@huaweicloud.com,
+	hannes@cmpxchg.org,
+	linux-kernel@vger.kernel.org,
+	linux-kselftest@vger.kernel.org,
+	mkoutny@suse.com,
+	shuah@kernel.org,
+	sunshaojie@kylinos.cn,
+	tj@kernel.org
+Subject: Re: [PATCH v1] cpuset: Avoid unnecessary partition invalidation
+Date: Thu, 13 Nov 2025 14:42:04 +0800
+Message-Id: <20251113064204.507472-1-sunshaojie@kylinos.cn>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <c8e234f4-2c27-4753-8f39-8ae83197efd3@redhat.com>
+References: <c8e234f4-2c27-4753-8f39-8ae83197efd3@redhat.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH RFC v2 13/22] cpuset: introduce local_partition_update()
-To: Waiman Long <llong@redhat.com>, tj@kernel.org, hannes@cmpxchg.org,
- mkoutny@suse.com
-Cc: cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
- lujialin4@huawei.com, chenridong@huawei.com
-References: <20251025064844.495525-1-chenridong@huaweicloud.com>
- <20251025064844.495525-14-chenridong@huaweicloud.com>
- <3b3b49df-c215-4f7d-b2c6-628eac823134@redhat.com>
-Content-Language: en-US
-From: Chen Ridong <chenridong@huaweicloud.com>
-In-Reply-To: <3b3b49df-c215-4f7d-b2c6-628eac823134@redhat.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:cCh0CgAHQUrNexVpetdGAg--.48893S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7tF4kCFW7ZrW3WrykXry3XFb_yoW8XF4DpF
-	95GayrJ3yY9F17u3ZIyF4kAryrKan7Jr1Ut3Zxt3W8JF17tw1kKF1qvwnxJF4UXFZ7uF1U
-	ZF909r42gFy7ArUanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUyGb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-	6I80ewAv7VC0I7IYx2IY67AKxVWUGVWUXwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxkF7I0En4kS14v26r126r1DMxAIw28IcxkI7VAK
-	I48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7
-	xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xII
-	jxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw2
-	0EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x02
-	67AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IUbiF4tUUUUU==
-X-CM-SenderInfo: hfkh02xlgr0w46kxt4xhlfz01xgou0bp/
 
-
-
-On 2025/11/13 10:06, Waiman Long wrote:
-> On 10/25/25 2:48 AM, Chen Ridong wrote:
->> From: Chen Ridong <chenridong@huawei.com>
+On 2025/11/13 12:12, Waiman Long wrote:
+>On 11/12/25 10:33 PM, Sun Shaojie wrote:
+>> The reviewer mentioned they couldn't see my original patch, so I'm
+>> re-quoting the key changes below for clarity:
 >>
->> The local_partition_update() function replaces the command partcmd_update
->> previously handled within update_parent_effective_cpumask(). The update
->> logic follows a state-based approach:
->>
->> 1. Validation check: First verify if the local partition is currently valid
->> 2. Invalidation handling: If the partition is invalid, trigger invalidation
->> 3. State transition: If an invalid partition has no errors, transition to
->>     valid
->> 4. cpumasks updates: For local partition that only cpu maks changes, use
-> "cpumask"
+>>> diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
+>>> index 52468d2c178a..e0d27c9a101a 100644
+>>> --- a/kernel/cgroup/cpuset.c
+>>> +++ b/kernel/cgroup/cpuset.c
+>>> @@ -586,14 +586,14 @@ static inline bool cpusets_are_exclusive(struct cpuset *cs1, struct cpuset *cs2)
+>>>   * Returns: true if CPU exclusivity conflict exists, false otherwise
+>>>   *
+>>>   * Conflict detection rules:
+>>> - * 1. If either cpuset is CPU exclusive, they must be mutually exclusive
+>>> + * 1. If both cpusets are exclusive, they must be mutually exclusive
+>>>   * 2. exclusive_cpus masks cannot intersect between cpusets
+>>>   * 3. The allowed CPUs of one cpuset cannot be a subset of another's exclusive CPUs
+>>>   */
+>>> static inline bool cpus_excl_conflict(struct cpuset *cs1, struct cpuset *cs2)
+>>> {
+>>> -	/* If either cpuset is exclusive, check if they are mutually exclusive */
+>>> -	if (is_cpu_exclusive(cs1) || is_cpu_exclusive(cs2))
+>>> +	/* If both cpusets are exclusive, check if they are mutually exclusive */
+>>> +	if (is_cpu_exclusive(cs1) && is_cpu_exclusive(cs2))
+>>> 		return !cpusets_are_exclusive(cs1, cs2);
+>>>
+>>> 	/* Exclusive_cpus cannot intersect */
+>> Here are the main changes, where the conflict check for step #6 in Table 2
+>> is performed. And these changes have no effect on cgroup v1.
+>
+>cpus_excl_conflict() is called by validate_change() which is used for 
+>both v1 and v2.
+>
+>Cheers,
+>Longman
 
-Thanks, will update.
+Hi，Longman
 
->>     partition_update() to handle partition change.
->>
->> Signed-off-by: Chen Ridong <chenridong@huawei.com>
->> ---
->>   kernel/cgroup/cpuset.c | 153 +++++++++++++++++++++++++++++++++++++++--
->>   1 file changed, 148 insertions(+), 5 deletions(-)
->>
->> diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
->> index 73a43ab58f72..49df38237c1d 100644
->> --- a/kernel/cgroup/cpuset.c
->> +++ b/kernel/cgroup/cpuset.c
->> @@ -1822,6 +1822,59 @@ static void remote_cpus_update(struct cpuset *cs, struct cpumask *xcpus,
->>       remote_partition_disable(cs, tmp);
->>   }
->>   +static bool is_user_cpus_exclusive(struct cpuset *cs)
-> 
-> Should we name this "is_user_xcpus_exclusive"?
-> 
-> Cheers,
-> Longman
-> 
+Thanks for pointing this out. I will make the necessary updates.
 
-Thanks, will update.
-
--- 
-Best regards,
-Ridong
-
+Thanks,
+Sun Shaojie
 
