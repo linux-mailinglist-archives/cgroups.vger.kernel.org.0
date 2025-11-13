@@ -1,301 +1,153 @@
-Return-Path: <cgroups+bounces-11907-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-11906-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 41098C5566E
-	for <lists+cgroups@lfdr.de>; Thu, 13 Nov 2025 03:16:45 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 80089C5563B
+	for <lists+cgroups@lfdr.de>; Thu, 13 Nov 2025 03:12:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id B91F5347D39
-	for <lists+cgroups@lfdr.de>; Thu, 13 Nov 2025 02:16:44 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C9D3C3A64C9
+	for <lists+cgroups@lfdr.de>; Thu, 13 Nov 2025 02:07:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6266D2F49E5;
-	Thu, 13 Nov 2025 02:16:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A0C129DB88;
+	Thu, 13 Nov 2025 02:06:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="EQiDyARZ";
+	dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b="ZMfjxcBa"
 X-Original-To: cgroups@vger.kernel.org
-Received: from lgeamrelo03.lge.com (lgeamrelo03.lge.com [156.147.51.102])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4168C2F3C07
-	for <cgroups@vger.kernel.org>; Thu, 13 Nov 2025 02:16:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.147.51.102
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A35E01F181F
+	for <cgroups@vger.kernel.org>; Thu, 13 Nov 2025 02:06:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763000199; cv=none; b=oHW3AQCMK8z79bdaqKPU2TSUpqcEhAd3NSxYhfGJGMFqtlPRaUtipe7IeTm3LALMvCWMNKehcUkHiEcwoY8PAMYcEl6+Ta3uBnLNnMfn57UI8SSET+1+KHFMrawmem00Sw0eq1Rd0wenJUVgTzk/665yM5iYMFwS3ACOUicLmxw=
+	t=1762999618; cv=none; b=gnmVuZ31V1sBCtS/MBWzql9Z8qWfsfmEACppa2ZgSoO/IuUzTBA6y6lRhcFy68TvXiTD8sC7rKkqXCQO0l9RCgHwcFE/V02HUwaOz/bhcMMvNAGgnSZSG5ZyGI84IOPcjYlh2jdqVHoykaTLvX9lYrpwrYqbQjBnpizIJiNpFic=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763000199; c=relaxed/simple;
-	bh=Bt1uXlZPw/nKh5/JP2JGfg9HYD7gdM8IVXfmkIuY4OM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=NBfgQA+ShHTzIe8ejuADgIlHjCQNc1DFFGe2EZVr6erGN3y+TSuDhJp3iOLh0dojxdS32rAzOqgUDSeqFDeJOZKej2I5qVbHdKv49jriGiKgeqkTS6RgZy66o4TGcSavrGChGYwz6PseVAab67goz/IGstJXuNBsr3in3IooODs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lge.com; spf=pass smtp.mailfrom=lge.com; arc=none smtp.client-ip=156.147.51.102
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lge.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lge.com
-Received: from unknown (HELO yjaykim-PowerEdge-T330) (10.177.112.156)
-	by 156.147.51.102 with ESMTP; 13 Nov 2025 11:01:34 +0900
-X-Original-SENDERIP: 10.177.112.156
-X-Original-MAILFROM: youngjun.park@lge.com
-Date: Thu, 13 Nov 2025 11:01:34 +0900
-From: YoungJun Park <youngjun.park@lge.com>
-To: Chris Li <chrisl@kernel.org>
-Cc: akpm@linux-foundation.org, linux-mm@kvack.org, cgroups@vger.kernel.org,
-	linux-kernel@vger.kernel.org, kasong@tencent.com,
-	hannes@cmpxchg.org, mhocko@kernel.org, roman.gushchin@linux.dev,
-	shakeel.butt@linux.dev, muchun.song@linux.dev,
-	shikemeng@huaweicloud.com, nphamcs@gmail.com, bhe@redhat.com,
-	baohua@kernel.org, gunho.lee@lge.com, taejoon.song@lge.com
-Subject: Re: [PATCH 2/3] mm: swap: introduce swap tier infrastructure
-Message-ID: <aRU7/ibyrPTn93qV@yjaykim-PowerEdge-T330>
-References: <20251109124947.1101520-1-youngjun.park@lge.com>
- <20251109124947.1101520-3-youngjun.park@lge.com>
- <CACePvbUvDfZgDx-sXkZ+Oa7DwtKg6b1t=owQ1sRZ_FpFrGxA3g@mail.gmail.com>
+	s=arc-20240116; t=1762999618; c=relaxed/simple;
+	bh=IahK6y5WaenF4MCU8w5zfMzE+ab1EnS1xLPbJ9kZCQM=;
+	h=From:Message-ID:Date:MIME-Version:Subject:To:Cc:References:
+	 In-Reply-To:Content-Type; b=gBWUV4Qo+XFzIn6okcA5p1A1STBxdMaa7+o2CQxsOTQQkZuaieCDXmgeQPaR5gkBHuqPA7fBZmlfBK2ntx6ZYBTX/ZuTAPJligQTJD0mPXHI9gnLfNkThASjJ21NUEl1xawU8tBRDFg1JcaNJ61RtfSNiW7rxssCVBjI0LPjLXE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=EQiDyARZ; dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b=ZMfjxcBa; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1762999615;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=nwLfxiEgNX9ofFATsdLOeVj72vW/st41Tfih7kYHKv8=;
+	b=EQiDyARZWlIqPhW7ueb4QGxBKqcTicymEZCj9oiiYAdPVpVngMHYdfyQcBdAqG2ey4RK4b
+	bUMeGKrQdwH68PUnr/peRssmU5knANxVQvwyyEl1OFsYY2c+9AFCBetpFs126BtLxInBjO
+	ZiYzcCTugvqaQkVc19feywWSmF51INc=
+Received: from mail-qk1-f200.google.com (mail-qk1-f200.google.com
+ [209.85.222.200]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-70-H0pVoMnxNBauDtOX9r_7Jw-1; Wed, 12 Nov 2025 21:06:54 -0500
+X-MC-Unique: H0pVoMnxNBauDtOX9r_7Jw-1
+X-Mimecast-MFC-AGG-ID: H0pVoMnxNBauDtOX9r_7Jw_1762999613
+Received: by mail-qk1-f200.google.com with SMTP id af79cd13be357-8b12cde7f76so122576385a.0
+        for <cgroups@vger.kernel.org>; Wed, 12 Nov 2025 18:06:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=redhat.com; s=google; t=1762999613; x=1763604413; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:content-language:references
+         :cc:to:subject:user-agent:mime-version:date:message-id:from:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=nwLfxiEgNX9ofFATsdLOeVj72vW/st41Tfih7kYHKv8=;
+        b=ZMfjxcBaHKxZkT6EZxPErI+WuS4+Bv8BFzEtmOa9MT4yuAzlTL31+n9wypyDE5TIWU
+         Wu0bhvQF1KbxALaKqkaoNw2FXfS/UInYCdyXd3xqrqJsE2Ec31hxIRXYvnx1+J4OvyDj
+         bV0ZqR0e+WThyucyL6Zq1KeN1fsHKTqcNA1eoCGuBRPbBw4TwxrJx1ucqqrgKY6vx5qV
+         CjqZjranVq1HvEEr7qIIKUgUBa7ft0pCxxEfFHhm95LGeisNJCG0d+5fJPB2ZfclrxM6
+         dFS4KIpGMNNHqSb1zO9zscsyH+FabzfgcaRI4kxsYNcRWBVelGjmpjibVnbq3GEY+1aP
+         FKmg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1762999613; x=1763604413;
+        h=content-transfer-encoding:in-reply-to:content-language:references
+         :cc:to:subject:user-agent:mime-version:date:message-id:from:x-gm-gg
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=nwLfxiEgNX9ofFATsdLOeVj72vW/st41Tfih7kYHKv8=;
+        b=B9WaP+9ZbKfVEkHWvTj2kQP1lc7bWODyy0Y2iHyrYv8F/5ZsHhGZus3IDeZP7yF1g3
+         PJG6sNMFcC8TZcRjRm5WMxnZjK9a+M+5MridBi33+r1J67KxhqC4lDCu3zTckvLCuPpX
+         wgZ+7P0+BNVss1WUd+qEMpDOm/3qSYwIpHRu5IBrxmNQUIB2TpQeEt6kDmkH6/G004y+
+         SKcIg1PaMlCzf+F7wlm1/w0eHu8DOt29dbu43Ewh42vc6AL0GcvqOVM02PTK4h1tVHzg
+         jVQVE5LLK76IF725QEsWjeaF+D63BcNqBHSziVTBIF86OAVurpiNssqO4kzOKNTSx+JS
+         R9LA==
+X-Gm-Message-State: AOJu0YzVqgzZHVN5FHAIj1DhegZzzf96XwsabiG2m3zgXJpuRPOMPr5i
+	K0Ptm9llW9UjwwZ5+k9B26x7VuuZEuMNUCR9HCXWFFrxu5d5Vwye98a9/hv741cxEfC1bWG3FtQ
+	kblTuMWDgGmUpMDCCeYZShTjv8EsKV84JL+9ZOtamYph8raQJk0+Is4tnP0w=
+X-Gm-Gg: ASbGncvGMRsQDWlZFIV0tSGJar0jDG6TZ0tQ0sW01NdNQ7Mq2wxCSDgibWRr+zua79o
+	iD09kPGikwRo5nITE8L43MhJZydtjg4TektGRh/+32zSi/n4JpWhiQ53fCQyiHHha2lgWEiaequ
+	xhjwnAkHkVB2MxeDuCwbUXSQ81I3dXqZHgzeHl+j+B9mdJrwb13N6gdOSblCRwduV9tAe+fahnL
+	zar1+OxjGOs2MSYeUE3Lfx9vcBdp+u7wysb6hzOlck523uxC4EbQjPuLrHdeLMOZYk5DvBccQF2
+	pR1xuOvGs58QC3FHglO0hmocjLCLC9jGLP9LLqanjWAtq0Q5i0iFIb7sH83jjXAvpWsRnR0Wyzb
+	5Qm0FYx0GSUHPQvYonnnlOIg+kcV06bALAe9ir3NKPjMmqQ==
+X-Received: by 2002:a05:620a:4692:b0:8ad:453f:8b19 with SMTP id af79cd13be357-8b2ac1ec6c3mr225518485a.32.1762999613623;
+        Wed, 12 Nov 2025 18:06:53 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IEOI/YfNKWL0Jyv0zeQOmK7Xhyn4wG1lOa7dtDlEoeVUKwP9+WhvUSSS6dR5cS4lcK53Zyj5w==
+X-Received: by 2002:a05:620a:4692:b0:8ad:453f:8b19 with SMTP id af79cd13be357-8b2ac1ec6c3mr225516585a.32.1762999613295;
+        Wed, 12 Nov 2025 18:06:53 -0800 (PST)
+Received: from ?IPV6:2601:188:c102:b180:1f8b:71d0:77b1:1f6e? ([2601:188:c102:b180:1f8b:71d0:77b1:1f6e])
+        by smtp.gmail.com with ESMTPSA id af79cd13be357-8b2aef2f9bbsm38251885a.31.2025.11.12.18.06.52
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 12 Nov 2025 18:06:52 -0800 (PST)
+From: Waiman Long <llong@redhat.com>
+X-Google-Original-From: Waiman Long <longman@redhat.com>
+Message-ID: <3b3b49df-c215-4f7d-b2c6-628eac823134@redhat.com>
+Date: Wed, 12 Nov 2025 21:06:51 -0500
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CACePvbUvDfZgDx-sXkZ+Oa7DwtKg6b1t=owQ1sRZ_FpFrGxA3g@mail.gmail.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH RFC v2 13/22] cpuset: introduce local_partition_update()
+To: Chen Ridong <chenridong@huaweicloud.com>, tj@kernel.org,
+ hannes@cmpxchg.org, mkoutny@suse.com
+Cc: cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+ lujialin4@huawei.com, chenridong@huawei.com
+References: <20251025064844.495525-1-chenridong@huaweicloud.com>
+ <20251025064844.495525-14-chenridong@huaweicloud.com>
+Content-Language: en-US
+In-Reply-To: <20251025064844.495525-14-chenridong@huaweicloud.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Wed, Nov 12, 2025 at 06:20:22AM -0800, Chris Li wrote:
-> First of all, for RFC series, please include RFC in each patch subject as well.
-> 
-> For the real patch submission, please consider split it into smaller
-> chunks and have incremental milestones.
-> Only introduce the function needed for each milestone, not define them
-> all together then use it in later patches.
-> 
-> See some feedback as follows.
-> 
-> This patch is too big, to be continued.
-> 
-> Chris
+On 10/25/25 2:48 AM, Chen Ridong wrote:
+> From: Chen Ridong <chenridong@huawei.com>
+>
+> The local_partition_update() function replaces the command partcmd_update
+> previously handled within update_parent_effective_cpumask(). The update
+> logic follows a state-based approach:
+>
+> 1. Validation check: First verify if the local partition is currently valid
+> 2. Invalidation handling: If the partition is invalid, trigger invalidation
+> 3. State transition: If an invalid partition has no errors, transition to
+>     valid
+> 4. cpumasks updates: For local partition that only cpu maks changes, use
+"cpumask"
+>     partition_update() to handle partition change.
+>
+> Signed-off-by: Chen Ridong <chenridong@huawei.com>
+> ---
+>   kernel/cgroup/cpuset.c | 153 +++++++++++++++++++++++++++++++++++++++--
+>   1 file changed, 148 insertions(+), 5 deletions(-)
+>
+> diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
+> index 73a43ab58f72..49df38237c1d 100644
+> --- a/kernel/cgroup/cpuset.c
+> +++ b/kernel/cgroup/cpuset.c
+> @@ -1822,6 +1822,59 @@ static void remote_cpus_update(struct cpuset *cs, struct cpumask *xcpus,
+>   	remote_partition_disable(cs, tmp);
+>   }
+>   
+> +static bool is_user_cpus_exclusive(struct cpuset *cs)
 
-Sure, I will take care of it. will make better on real patch submissions.
+Should we name this "is_user_xcpus_exclusive"?
 
-> > diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-> > index 966f7c1a0128..1224029620ed 100644
-> > --- a/include/linux/memcontrol.h
-> > +++ b/include/linux/memcontrol.h
-> > @@ -283,6 +283,10 @@ struct mem_cgroup {
-> >         /* per-memcg mm_struct list */
-> >         struct lru_gen_mm_list mm_list;
-> >  #endif
-> > +#ifdef CONFIG_SWAP_TIER
-> 
-> I think we don't need this CONFIG_SWAP_TIER. Making it part of the
-> default swap is fine.
-> By default the memory.swap.tiers is empty and matches the previous
-> swap behavior. The user doesn't need to do anything if they are not
-> using swap tiers. I see no reason to have a separate config option.
+Cheers,
+Longman
 
-Okay I will change it to default kernel option.
-
-> > +       int tiers_onoff;
-> > +       int tiers_mask;
-> > +#endif
-> >
-> >  #ifdef CONFIG_MEMCG_V1
-> >         /* Legacy consumer-oriented counters */
-> > diff --git a/include/linux/swap.h b/include/linux/swap.h
-> > index 90fa27bb7796..8911eff9d37a 100644
-> > --- a/include/linux/swap.h
-> > +++ b/include/linux/swap.h
-> > @@ -271,6 +271,9 @@ struct swap_info_struct {
-> >         struct percpu_ref users;        /* indicate and keep swap device valid. */
-> >         unsigned long   flags;          /* SWP_USED etc: see above */
-> >         signed short    prio;           /* swap priority of this type */
-> > +#ifdef CONFIG_SWAP_TIER
-> > +       int tier_idx;
-> > +#endif
-> >         struct plist_node list;         /* entry in swap_active_head */
-> >         signed char     type;           /* strange name for an index */
-> >         unsigned int    max;            /* extent of the swap_map */
-> > diff --git a/mm/Kconfig b/mm/Kconfig
-> > index e1fb11f36ede..78173ffe65d6 100644
-> > --- a/mm/Kconfig
-> > +++ b/mm/Kconfig
-> > @@ -163,6 +163,19 @@ endmenu
-> >
-> >  endif
-> >
-> > +config SWAP_TIER
-> Same, I think we can remove the SWAP_TIER, just turn it on when swap is enabled.
-
-Ack
-
-> > diff --git a/mm/swap.h b/mm/swap.h
-> > index d034c13d8dd2..b116282690c8 100644
-> > --- a/mm/swap.h
-> > +++ b/mm/swap.h
-> > @@ -16,6 +16,10 @@ extern int page_cluster;
-> >  #define swap_entry_order(order)        0
-> >  #endif
-> >
-> > +#define DEF_SWAP_PRIO  -1
-> > +
-> > +extern spinlock_t swap_lock;
-> > +extern struct plist_head swap_active_head;
-> >  extern struct swap_info_struct *swap_info[];
-> >
-> >  /*
-> > diff --git a/mm/swap_tier.c b/mm/swap_tier.c
-> > new file mode 100644
-> > index 000000000000..4301e3c766b9
-> > --- /dev/null
-> > +++ b/mm/swap_tier.c
-> > @@ -0,0 +1,602 @@
-> > +// SPDX-License-Identifier: GPL-2.0
-> > +#include <linux/swap.h>
-> > +#include <linux/rcupdate.h>
-> > +#include <linux/memcontrol.h>
-> > +#include <linux/plist.h>
-> > +#include <linux/sysfs.h>
-> > +#include <linux/sort.h>
-> > +
-> > +#include "swap_tier.h"
-> > +
-> > +/*
-> > + * struct swap_tier - Structure representing a swap tier.
-> > + *
-> > + * @name:              Name of the swap_tier.
-> > + * @prio_st:           Starting value of priority.
-> > + * @prio_end:          Ending value of priority.
-> > + * @list:              Linked list of active tiers.
-> > + * @inactive_list:     Linked list of inactive tiers.
-> > + * @kref:              Reference count (held by swap device and memory cgroup).
-> > + */
-> > +static struct swap_tier {
-> > +       char name[MAX_TIERNAME];
-> > +       short prio_st;
-> > +       short prio_end;
-> 
-> I see a lot of complexity of the code come from this priority range.
-> Having both start and end.
-> We should be able to just keep just one of the start and end,  e.g.
-> high end of the priority, then keep all tier in a sorted list or
-> array. Then use the next tier's priority to indicate the other end of
-> the current tier.
-
-After checking my code, I decide to remove st or end.
-
-> > +       union {
-> > +               struct plist_node list;
-> > +               struct list_head inactive_list;
-> > +       };
-> 
-> Is this the list of swapfiles?
-> Why union, how does it indicate which field of the union is valid?
-
-It is swap_tier itself. The 'list' maintains active tiers, and
-'inactive_list' maintains inactive tiers. One tier exists on either
-'list' or 'inactive_list'. The code ensures that a tier must be on one
-of them.
-
-> > +
-> > +/* swap_tiers initialization */
-> > +void swap_tiers_init(void)
-> > +{
-> > +       struct swap_tier *tier;
-> > +       int idx;
-> > +
-> > +       BUILD_BUG_ON(BITS_PER_TYPE(int) < MAX_SWAPTIER * 2);
-> > +
-> > +       for_each_tier(tier, idx) {
-> > +               if (idx < SWAP_TIER_RESERVED_CNT) {
-> > +                       /* for display fisrt */
-> > +                       plist_node_init(&tier->list, -SHRT_MAX);
-> > +                       plist_add(&tier->list, &swap_tier_active_list);
-> > +                       kref_init(&tier->ref);
-> > +               } else {
-> > +                       INIT_LIST_HEAD(&tier->inactive_list);
-> > +                       list_add_tail(&tier->inactive_list, &swap_tier_inactive_list);
-> > +               }
-> > +       }
-> > +
-> > +       strscpy(swap_tiers[SWAP_TIER_DEFAULT].name, DEFAULT_TIER_NAME);
-> 
-> The default tier is not a real tier. It shouldn't show up in the
-> swap_tiers array.
-> The default tier is only a wide cast for memory.swap.tiers to select
-> tiers to turn on/off swap tiers. It is a wide cast pattern, not an
-> actual tier.
-
-Yeah, as I commented in the previous mail, I will change it to a
-logical concept.
-
-> > +void swap_tiers_show_memcg(struct seq_file *m, struct mem_cgroup *memcg)
-> > +{
-> > +       spin_lock(&swap_tier_lock);
-> > +       if (memcg->tiers_onoff)
-> > +               swap_tier_show_mask(m, memcg->tiers_onoff);
-> > +       else
-> > +               seq_puts(m, "\n");
-> > +       swap_tier_show_mask(m, swap_tier_collect_mask(memcg));
-> > +       spin_unlock(&swap_tier_lock);
-> > +}
-> > +
-> > +void swap_tiers_assign(struct swap_info_struct *swp)
-> > +{
-> > +       struct swap_tier *tier;
-> > +
-> > +       spin_lock(&swap_tier_lock);
-> > +       swp->tier_idx = NULL_TIER;
-> > +
-> > +       for_each_active_tier(tier) {
-> > +               if (swap_tier_is_default(tier))
-> > +                       continue;
-> > +               if (swap_tier_prio_in_range(tier, swp->prio)) {
-> > +                       swp->tier_idx = TIER_IDX(tier);
-> > +                       swap_tier_get(tier);
-> > +                       break;
-> > +               }
-> > +       }
-> > +       spin_unlock(&swap_tier_lock);
-> > +}
-> > +
-> > +void swap_tiers_release(struct swap_info_struct *swp)
-> > +{
-> > +       spin_lock(&swap_tier_lock);
-> > +       if (swp->tier_idx != NULL_TIER)
-> > +               swap_tier_put(&swap_tiers[swp->tier_idx]);
-> > +       spin_unlock(&swap_tier_lock);
-> > +}
-> > +
-> > +/* not incremental, but reset. */
-> > +int swap_tiers_get_mask(struct tiers_desc *desc, int nr, struct mem_cgroup *memcg)
-> 
-> Who is using this function? I can't find the user of this function in
-> this patch.
-> Please introduce this function together with the patch that uses it.
-> Don't introduce a function without a user.
-
-swapoff calls swap_tiers_release. I must improve the readability of my
-RFC patch series.
-
-> 
-> > +{
-> > +       struct swap_tier *tier;
-> > +       int ret = 0;
-> > +       int tiers_mask = 0;
-> > +       int tiers_onoff = 0;
-> > +       int cnt = 0;
-> > +
-> > +       for (int i = 0; i < nr; i++) {
-> > +               for (int j = i+1; j < nr; j++) {
-> > +                       if (!strcmp(desc[i].name, desc[j].name))
-> 
-> These two nested for loops look suspicious. Again because I don't see
-
-For assuring, unique tier name input.
-I will think of making simple.
-
-> the caller, I can't reason what it is doing here.
-
-When a swap tier is designated by the memcg sys interface, it is
-called. I will introduce this logic together with the caller
-implementation.
-
-Best Regards,
-Youngjun Park
 
