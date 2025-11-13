@@ -1,159 +1,139 @@
-Return-Path: <cgroups+bounces-11898-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-11899-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D7EEBC54E09
-	for <lists+cgroups@lfdr.de>; Thu, 13 Nov 2025 01:09:48 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CB18DC54E3C
+	for <lists+cgroups@lfdr.de>; Thu, 13 Nov 2025 01:16:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5BF0E3B4D6C
-	for <lists+cgroups@lfdr.de>; Thu, 13 Nov 2025 00:09:47 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 497953B5215
+	for <lists+cgroups@lfdr.de>; Thu, 13 Nov 2025 00:16:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 796942110;
-	Thu, 13 Nov 2025 00:09:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E45A23BB40;
+	Thu, 13 Nov 2025 00:15:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="BeG5DlQv"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="K8J9T8qt";
+	dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b="TDigx1TB"
 X-Original-To: cgroups@vger.kernel.org
-Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7891C17D2
-	for <cgroups@vger.kernel.org>; Thu, 13 Nov 2025 00:09:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F0B3B35CBC1
+	for <cgroups@vger.kernel.org>; Thu, 13 Nov 2025 00:15:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762992586; cv=none; b=gkRDfaCtS+hydUT6iPoalUv8753VD4555A+vvMv8+pGTLzNE2OAPZuFDWmiYdzB905j8U2PWv0QRkLoRkIV4UE+uz1c92qiAY6C+IFW8YoTUKqnn21pRfbT0T0NfEKZOJ3SzsQDw0vyoEn3GnVrq7+sWdUUzqM6CMgH7lWNEoE4=
+	t=1762992959; cv=none; b=D3nZ5WW64ECEdVoElTTesurb4l3aE5Kvw0/i03ElidlutLihpqzm/UNErzKA2nQ7gKWQCz6lZMJ2nYlerFMTJG8Ac1daC5/YqP6upGskx5CxdM5Qku90g6hZu1VDXhxFL8GsKVaHPYrqv8Oc4A5z0BEaUv34wzBkmi3/M0J5VUI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762992586; c=relaxed/simple;
-	bh=GS3zXq0GptIhdpJ09QBFE5N/O2z8PYkSDIO98VYL7bM=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=b/YOWAFsBepwzKg5nZRiiGcsW/tRFB125X1ICFVW5lIW2mOIWxqJg8bZn9IWMlMiua60Rwc8f+7/vfWnuxXlwK2lrm26XRt7JXM1/N6WHY1zrW6hrSJr2Ce5eGZYt561vcaox2e6T0ASMCW3CxpVuojaFI+6zoaguiQuxAncS2Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=BeG5DlQv; arc=none smtp.client-ip=90.155.50.34
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
-	References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:
-	Content-Type:Content-ID:Content-Description;
-	bh=PxZkdsw3AvExa2s+lE/wpoYA3pnAzbSC5CA5PV/sp7E=; b=BeG5DlQvLMsI8zTq7f/ymzTUTo
-	RXI366pSGQdULy0UCAI0at39JngyFgeOoXKLARXJgugslliJjiH+0ZIAhWbN1G1nirv29no66lzSe
-	fm8zQXKEhHuQnWogDO7THGgMZbxkC5hDGUvtY+ACKU9h8z3ZJ77P1XfA5S5xg/Rwld0n4HUdWJcf8
-	HPVJtwCJm53cizrhHEVKrDPdXdE5MG651Jkt6xSaJAidBeRVNgo1B5GIbsXrKDzxsqQILGV9Vyqff
-	1OF9rr7QZfPMfDHaTdZOVPC5N5ShfTOHITMZ+VWtXZWy3zTxiArUSlrEkDnPBJ/E8DGdUJrsUeq7h
-	wFAXBUqA==;
-Received: from willy by casper.infradead.org with local (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vJKu7-00000006fPH-3R1L;
-	Thu, 13 Nov 2025 00:09:35 +0000
-From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
-To: Vlastimil Babka <vbabka@suse.cz>,
-	Andrew Morton <akpm@linux-foundation.org>
-Cc: "Matthew Wilcox (Oracle)" <willy@infradead.org>,
-	Christoph Lameter <cl@gentwo.org>,
-	David Rientjes <rientjes@google.com>,
-	Roman Gushchin <roman.gushchin@linux.dev>,
-	Harry Yoo <harry.yoo@oracle.com>,
-	linux-mm@kvack.org,
-	Johannes Weiner <hannes@cmpxchg.org>,
-	Michal Hocko <mhocko@kernel.org>,
-	Shakeel Butt <shakeel.butt@linux.dev>,
-	Muchun Song <muchun.song@linux.dev>,
-	cgroups@vger.kernel.org
-Subject: [PATCH v4 14/16] memcg: Convert mem_cgroup_from_obj_folio() to mem_cgroup_from_obj_slab()
-Date: Thu, 13 Nov 2025 00:09:28 +0000
-Message-ID: <20251113000932.1589073-15-willy@infradead.org>
-X-Mailer: git-send-email 2.51.0
-In-Reply-To: <20251113000932.1589073-1-willy@infradead.org>
-References: <20251113000932.1589073-1-willy@infradead.org>
+	s=arc-20240116; t=1762992959; c=relaxed/simple;
+	bh=1uQgCaKZj2tGULsNrZstj+l1JrpS7Lk/ujXpQ4zaIXo=;
+	h=From:Message-ID:Date:MIME-Version:Subject:To:Cc:References:
+	 In-Reply-To:Content-Type; b=ExkaM82RGBY8/iazMXTnO/9unK4OAMslm7Sx4D3fj4BiKkHPGNTAx7n+gDl/yM/7YfNUiRnqL+spxeeteGBVjFfgt4ic4xsi4eorJRRiwJoES6OzqeY/JtOeNasG+3E8YFXMraJ7g3FY1l1OY967BTpaVqqxBW+kJ6mJpU9uViQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=K8J9T8qt; dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b=TDigx1TB; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1762992957;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=1uQgCaKZj2tGULsNrZstj+l1JrpS7Lk/ujXpQ4zaIXo=;
+	b=K8J9T8qtJbax0gCgWIG9mQvbfK6XahZZ5NFZrXdy2/4VhjZss9wFV0iYapPZFrA5gTi3ba
+	LgcB/gotF9jSAXhXdplWVJu82PDZakAajXdxKlbhYYNMXByRx0QdfaEOk0gkbrRokMlySD
+	SH+Oz7zU6qorvA253AUNZhr7MxK/xy0=
+Received: from mail-qv1-f69.google.com (mail-qv1-f69.google.com
+ [209.85.219.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-401-1c3jbIKfOH2ui8CGIg0WRA-1; Wed, 12 Nov 2025 19:15:55 -0500
+X-MC-Unique: 1c3jbIKfOH2ui8CGIg0WRA-1
+X-Mimecast-MFC-AGG-ID: 1c3jbIKfOH2ui8CGIg0WRA_1762992955
+Received: by mail-qv1-f69.google.com with SMTP id 6a1803df08f44-88051c72070so5880066d6.1
+        for <cgroups@vger.kernel.org>; Wed, 12 Nov 2025 16:15:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=redhat.com; s=google; t=1762992955; x=1763597755; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:content-language:references
+         :cc:to:subject:user-agent:mime-version:date:message-id:from:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=1uQgCaKZj2tGULsNrZstj+l1JrpS7Lk/ujXpQ4zaIXo=;
+        b=TDigx1TBZ9R9yU6DyT0vmJ9Wn6x2XlLQp+u6/sOz3+HfVYZblp8hpl5e3/WG3Vpi45
+         TzeCxNF/Aj7wCWcs2xfl275nJCPnsVjeQZJA5SmpPC1agJ8Pbjfbsi6y5CZo25pFsuPt
+         kBZjz/LJejyWgZgw4iMRlvw0y3ErxE/w0yrHvClHIc8un7TJ/fvC5u/c/Z9+5Jp/Mwm4
+         9vpJKLRjbm8oh8HqQ7tlhHAXEtw4tu9XsJqrUaWfw8khScNIr2rqRNvliyOyi+YBJv5f
+         ifoDwlu02sBaB9R/SVWkgjP5T3MNgl3zxxxr7hcZ/qW7oPoLAVyXG7hPzW/xrfeR25zG
+         YADQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1762992955; x=1763597755;
+        h=content-transfer-encoding:in-reply-to:content-language:references
+         :cc:to:subject:user-agent:mime-version:date:message-id:from:x-gm-gg
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=1uQgCaKZj2tGULsNrZstj+l1JrpS7Lk/ujXpQ4zaIXo=;
+        b=imJPQYMi5Nw9Q0fTyAKyNl9p0dFkmdqCDfxYvZauMobC9jeUGLWcOlFQkzwzKgUPfb
+         51sBqzcXxWgMpkQT+GPcm6hNt0n8DzRw4m9nxn/xsMrzAEQ1zfCSJP+r6t0cl0KHL4ZK
+         Bh/uXb16M5ArmfmZ+BZUM1QpF2fTPQ3RPlgJNn18RJQQ9nuz0x2ErPFmWlrxY2RtF6U1
+         8rIRNhDpTAnZMb0IvCgEpMw7MZ48weoLE1vsvIUYwWl3o4s4IdC5u+8X0jQWdg0WYMMR
+         k5E4YynhLnToi4tr9qq0N0LSqsF8Ua15jSQy2b0Imw0tRI8ruD5I9nyhQKfVbK5Ase9V
+         INEA==
+X-Gm-Message-State: AOJu0YxZWeKe59urpfTJKNx6FdZNUUSmLK5HQNtdJNuWFowqpbkUlddL
+	FZHU7JZv6YROIX1itpYswH8iXdqg+sV8cS/dC63TTy0C2jhftfn/80RjY5wxLqwkQU5/R+N8KTJ
+	X4nvSKv3TVGtZud2tEUaT4UD9OH6eHC3x/AvDJ+gGmrQzPZbRgWmBPv+DY8E=
+X-Gm-Gg: ASbGncu0bek2gosUOQZcp3XF8LP222AEU9vWiBjaR1aBZo/L3KAx20GiHMamU7il40b
+	aHfLgUezn9hkr6pNwPt5rp3k6H46x1XNM84/LaZ39FM3LtzKLlLs/51DGXW2Xbh/yxbh4Nr6q5d
+	RALbYHfqSUXJzJ6KoQKvZOfqClXE/knvKIYlJIFjlS+NsIsBq0Sm9as1xIlGsH4daCV6weSTLvQ
+	0NtXePmeEkJeWzmKYB+4UFtBiMg24rcaZJVPbyHtJPwBcI2WI2quYLAxq8QVBPfJYJHAZ/Y4AMp
+	10zExB+k0Tpv9kgo0tFssAf+LhiC4l1CNaHfoCsFMd/c3NSIfJGdGKjONyxyMiRCdYw8f2L2XsO
+	BTA50rlCn2sMULkYiojNM0a0EVYUP6ftsmDJZNuaxucuKgA==
+X-Received: by 2002:a05:6214:19ec:b0:882:437d:2831 with SMTP id 6a1803df08f44-882719e69c4mr76020676d6.34.1762992955116;
+        Wed, 12 Nov 2025 16:15:55 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IEQ/5laODbRLTtMJ6oFMsJihehWBShOjFK/xe+7cmHL2bQLklCsUIp4BkQW6kgEel0W5IC9fg==
+X-Received: by 2002:a05:6214:19ec:b0:882:437d:2831 with SMTP id 6a1803df08f44-882719e69c4mr76020406d6.34.1762992954768;
+        Wed, 12 Nov 2025 16:15:54 -0800 (PST)
+Received: from ?IPV6:2601:188:c102:b180:1f8b:71d0:77b1:1f6e? ([2601:188:c102:b180:1f8b:71d0:77b1:1f6e])
+        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-8828655e55bsm1573796d6.43.2025.11.12.16.15.53
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 12 Nov 2025 16:15:54 -0800 (PST)
+From: Waiman Long <llong@redhat.com>
+X-Google-Original-From: Waiman Long <longman@redhat.com>
+Message-ID: <52aa0b5d-cc4c-4072-a590-9944fff4bce0@redhat.com>
+Date: Wed, 12 Nov 2025 19:15:53 -0500
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH RFC v2 12/22] cpuset: introduce
+ local_partition_invalidate()
+To: Chen Ridong <chenridong@huaweicloud.com>, tj@kernel.org,
+ hannes@cmpxchg.org, mkoutny@suse.com
+Cc: cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+ lujialin4@huawei.com, chenridong@huawei.com
+References: <20251025064844.495525-1-chenridong@huaweicloud.com>
+ <20251025064844.495525-13-chenridong@huaweicloud.com>
+Content-Language: en-US
+In-Reply-To: <20251025064844.495525-13-chenridong@huaweicloud.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-In preparation for splitting struct slab from struct page and struct
-folio, convert the pointer to a slab rather than a folio.  This means
-we can end up passing a NULL slab pointer to mem_cgroup_from_obj_slab()
-if the pointer is not to a page allocated to slab, and we handle that
-appropriately by returning NULL.
 
-Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
-Cc: Johannes Weiner <hannes@cmpxchg.org>
-Cc: Michal Hocko <mhocko@kernel.org>
-Cc: Roman Gushchin <roman.gushchin@linux.dev>
-Cc: Shakeel Butt <shakeel.butt@linux.dev>
-Cc: Muchun Song <muchun.song@linux.dev>
-Cc: cgroups@vger.kernel.org
----
- mm/memcontrol.c | 36 +++++++++++++-----------------------
- 1 file changed, 13 insertions(+), 23 deletions(-)
+On 10/25/25 2:48 AM, Chen Ridong wrote:
+> From: Chen Ridong <chenridong@huawei.com>
+>
+> Build on the partition_disable() infrastructure introduced in the previous
+> patch to handle local partition invalidation.
+>
+> The local_partition_invalidate() function factors out the local partition
+> invalidation logic from update_parent_effective_cpumask(), which delegates
+> to partition_disable() to complete the invalidation process.
+>
+> Additionally, correct the transition logic in cpuset_hotplug_update_tasks()
+> when determining whether to transition an invalid partition root, the check
+> should be based on non-empty user_cpus rather than non-empty
 
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index 025da46d9959..b239d8ad511a 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -2589,38 +2589,28 @@ static inline void mod_objcg_mlstate(struct obj_cgroup *objcg,
- }
- 
- static __always_inline
--struct mem_cgroup *mem_cgroup_from_obj_folio(struct folio *folio, void *p)
-+struct mem_cgroup *mem_cgroup_from_obj_slab(struct slab *slab, void *p)
- {
- 	/*
- 	 * Slab objects are accounted individually, not per-page.
- 	 * Memcg membership data for each individual object is saved in
- 	 * slab->obj_exts.
- 	 */
--	if (folio_test_slab(folio)) {
--		struct slabobj_ext *obj_exts;
--		struct slab *slab;
--		unsigned int off;
--
--		slab = folio_slab(folio);
--		obj_exts = slab_obj_exts(slab);
--		if (!obj_exts)
--			return NULL;
-+	struct slabobj_ext *obj_exts;
-+	unsigned int off;
- 
--		off = obj_to_index(slab->slab_cache, slab, p);
--		if (obj_exts[off].objcg)
--			return obj_cgroup_memcg(obj_exts[off].objcg);
-+	if (!slab)
-+		return NULL;
- 
-+	obj_exts = slab_obj_exts(slab);
-+	if (!obj_exts)
- 		return NULL;
--	}
- 
--	/*
--	 * folio_memcg_check() is used here, because in theory we can encounter
--	 * a folio where the slab flag has been cleared already, but
--	 * slab->obj_exts has not been freed yet
--	 * folio_memcg_check() will guarantee that a proper memory
--	 * cgroup pointer or NULL will be returned.
--	 */
--	return folio_memcg_check(folio);
-+	off = obj_to_index(slab->slab_cache, slab, p);
-+	if (obj_exts[off].objcg)
-+		return obj_cgroup_memcg(obj_exts[off].objcg);
-+
-+	return NULL;
- }
- 
- /*
-@@ -2637,7 +2627,7 @@ struct mem_cgroup *mem_cgroup_from_slab_obj(void *p)
- 	if (mem_cgroup_disabled())
- 		return NULL;
- 
--	return mem_cgroup_from_obj_folio(virt_to_folio(p), p);
-+	return mem_cgroup_from_obj_slab(virt_to_slab(p), p);
- }
- 
- static struct obj_cgroup *__get_obj_cgroup_from_memcg(struct mem_cgroup *memcg)
--- 
-2.47.2
+"user_xcpus"
+
+Cheers,
+Longman
 
 
