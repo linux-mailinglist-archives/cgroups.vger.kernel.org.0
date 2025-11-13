@@ -1,198 +1,157 @@
-Return-Path: <cgroups+bounces-11910-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-11911-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 163F3C5591B
-	for <lists+cgroups@lfdr.de>; Thu, 13 Nov 2025 04:40:51 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7F803C55932
+	for <lists+cgroups@lfdr.de>; Thu, 13 Nov 2025 04:43:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id DFE3D4EE8BA
-	for <lists+cgroups@lfdr.de>; Thu, 13 Nov 2025 03:34:37 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 0662C4E9641
+	for <lists+cgroups@lfdr.de>; Thu, 13 Nov 2025 03:35:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D0B02BD58C;
-	Thu, 13 Nov 2025 03:27:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0983F1A5B9E;
+	Thu, 13 Nov 2025 03:34:01 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 168E929B224;
-	Thu, 13 Nov 2025 03:27:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5F2F226A1C4;
+	Thu, 13 Nov 2025 03:33:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=124.126.103.232
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763004440; cv=none; b=V/sKg5SIENWIG+HETTSCXF3MMxJX3LaUKtbWfkxESQ9v0aoTvIaukKvxWEGIUexNNy6CQeQBY9jB6s6+dM1yCb1JKXmuV8WHJhx/Z8l8g0dlIMnSEglKlZ1ENXu+yNCGeIbKJtMe11hpFMiIf2AP0kDAl3e9Ox0fj402gCQa6o0=
+	t=1763004840; cv=none; b=kmzm6Xcy7ofMBeFFzQ8X+n9jrSDxA+PYgkRWwMbfQE7ULVNOOEYU1xCnRNtq0RvuxPLQuXWUGfPyGfLKQNal2epgeoVLQvijL1ChUGYnljkssIxgGyx0BWe1ZpszzsxywGYkUsUPsG1hyvQnRuZOtgTgWempInanXzfX2hG85f4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763004440; c=relaxed/simple;
-	bh=+oOlVIJ7BW7dBmztUdrHhfLWJiEumgnsRlrxm4aLDq8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ropBzps7WsGtShF5zRFjtz8LRWJLjG3XEslq2gTK4hzOQa8V+g5klzt4DKuL9EzGmpzZXCG9C+xTChbjHSU5PqaEJxEg4zdh1YU0cUITfJ+PdU5YZT8sQAeYP90B23tnCi6RoIpkj4r32b9FJdoS/LeMP0FVKtzY/A+m4asFL8c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.216])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTPS id 4d6Qfs25jWzYQv0v;
-	Thu, 13 Nov 2025 11:26:45 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.75])
-	by mail.maildlp.com (Postfix) with ESMTP id BACF21A0A22;
-	Thu, 13 Nov 2025 11:27:14 +0800 (CST)
-Received: from [10.67.111.176] (unknown [10.67.111.176])
-	by APP2 (Coremail) with SMTP id Syh0CgBnxXsRUBVpUqM9Ag--.21141S2;
-	Thu, 13 Nov 2025 11:27:14 +0800 (CST)
-Message-ID: <3569d5d9-1a5d-4e01-a24b-4d5817181899@huaweicloud.com>
-Date: Thu, 13 Nov 2025 11:27:13 +0800
+	s=arc-20240116; t=1763004840; c=relaxed/simple;
+	bh=1lz50uhiAgQq3i2dzjHKoezuauuoFa923Yl7yx8RnH4=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=SW3WJ2qOqZ3ZNXSmch5zGaY1hMc3Sda3W4j8oA2BbCK4UhaGumUOUZ71EbsCqT6BXoOra20C89MuG7PzOU/wDoSV2OPmxFL/kScmVW3dKqvH5D2ufArudSDtrBlEyyi830uYJK55iwGTxnoGgGgu/qAsY8scQIrjDB29CNTtzpo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn; spf=pass smtp.mailfrom=kylinos.cn; arc=none smtp.client-ip=124.126.103.232
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kylinos.cn
+X-UUID: 8c017c84c04111f0a38c85956e01ac42-20251113
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.3.6,REQID:6e3acb6c-6b76-4c86-9752-9a0490c8b2a6,IP:20,U
+	RL:0,TC:0,Content:0,EDM:0,RT:0,SF:-5,FILE:0,BULK:0,RULE:Release_Ham,ACTION
+	:release,TS:15
+X-CID-INFO: VERSION:1.3.6,REQID:6e3acb6c-6b76-4c86-9752-9a0490c8b2a6,IP:20,URL
+	:0,TC:0,Content:0,EDM:0,RT:0,SF:-5,FILE:0,BULK:0,RULE:Release_Ham,ACTION:r
+	elease,TS:15
+X-CID-META: VersionHash:a9d874c,CLOUDID:bb1ed2f2e0d1bfd4aac28d672924011c,BulkI
+	D:251112113325GOOOY919,BulkQuantity:9,Recheck:0,SF:17|19|38|64|66|78|80|81
+	|82|83|102|841|850,TC:nil,Content:0|15|50,EDM:-3,IP:-2,URL:0,File:nil,RT:n
+	il,Bulk:40,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,
+	BRR:0,BRE:0,ARC:0
+X-CID-BVR: 2,SSN|SDN
+X-CID-BAS: 2,SSN|SDN,0,_
+X-CID-FACTOR: TF_CID_SPAM_FSD,TF_CID_SPAM_SNR,TF_CID_SPAM_FAS
+X-CID-RHF: D41D8CD98F00B204E9800998ECF8427E
+X-UUID: 8c017c84c04111f0a38c85956e01ac42-20251113
+X-User: sunshaojie@kylinos.cn
+Received: from localhost.localdomain [(223.70.159.239)] by mailgw.kylinos.cn
+	(envelope-from <sunshaojie@kylinos.cn>)
+	(Generic MTA with TLSv1.3 TLS_AES_256_GCM_SHA384 256/256)
+	with ESMTP id 622887929; Thu, 13 Nov 2025 11:33:40 +0800
+From: Sun Shaojie <sunshaojie@kylinos.cn>
+To: chenridong@huaweicloud.com,
+	longman@redhat.com
+Cc: tj@kernel.org,
+	hannes@cmpxchg.org,
+	mkoutny@suse.com,
+	shuah@kernel.org,
+	cgroups@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH v1] cpuset: Avoid unnecessary partition invalidation
+Date: Thu, 13 Nov 2025 11:33:22 +0800
+Message-Id: <20251113033322.431859-1-sunshaojie@kylinos.cn>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <b9dce00a-4728-4ac8-ae38-7f41114c7c81@redhat.com>
+References: <b9dce00a-4728-4ac8-ae38-7f41114c7c81@redhat.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH RFC v2 11/22] cpuset: introduce local_partition_disable()
-To: Waiman Long <llong@redhat.com>, tj@kernel.org, hannes@cmpxchg.org,
- mkoutny@suse.com
-Cc: cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
- lujialin4@huawei.com, chenridong@huawei.com
-References: <20251025064844.495525-1-chenridong@huaweicloud.com>
- <20251025064844.495525-12-chenridong@huaweicloud.com>
- <c4adcc3d-577d-4065-b419-581f67d5e724@redhat.com>
-Content-Language: en-US
-From: Chen Ridong <chenridong@huaweicloud.com>
-In-Reply-To: <c4adcc3d-577d-4065-b419-581f67d5e724@redhat.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:Syh0CgBnxXsRUBVpUqM9Ag--.21141S2
-X-Coremail-Antispam: 1UD129KBjvJXoW3XrWkWr47CF4DWr4DJr1DWrg_yoW7Gw1xpr
-	1kJrW7GrWUXr1rC347JFnrJryrJw4DJ3WDtwn7X3WrJr17Jw1vgF1jq34qg3WUXrWkJryU
-	ZF1UXr47uF17ArDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUyGb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxkF7I0En4kS14v26r126r1DMxAIw28IcxkI7VAK
-	I48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7
-	xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xII
-	jxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw2
-	0EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x02
-	67AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU1veHDUUUUU==
-X-CM-SenderInfo: hfkh02xlgr0w46kxt4xhlfz01xgou0bp/
 
+On 2025/11/13 09:21, Chen Ridong wrote:
+>
+>Hi, Longman.
+>
+>It did not fail to set cupset.cpus, but invalidated the sibling cpuset partition.
+>
+>If we relax this rule, we should consider:
+>
+>  What I want to note is this: what if we run echo root > /sys/fs/cgroup/B1/cpuset.cpus.partition
+>after step #5? There’s no conflict check when enabling the partition.
+>
+>-- 
+>Best regards,
+>Ridong
 
+Hi, Ridong.
 
-On 2025/11/13 6:10, Waiman Long wrote:
-> On 10/25/25 2:48 AM, Chen Ridong wrote:
->> From: Chen Ridong <chenridong@huawei.com>
->>
->> The partition_disable() function introduced earlier can be extended to
->> handle local partition disablement.
->>
->> The local_partition_disable() functions is introduced, which extracts the
->> local partition disable logic from update_parent_effective_cpumask(). It
->> calls partition_disable() to complete the disablement process.
->>
->> This refactoring establishes a clear separation between local and remote
->> partition operations while promoting code reuse through the shared
->> partition_disable() infrastructure.
->>
->> Signed-off-by: Chen Ridong <chenridong@huawei.com>
->> ---
->>   kernel/cgroup/cpuset.c | 55 ++++++++++++++++++++++++++++++------------
->>   1 file changed, 39 insertions(+), 16 deletions(-)
->>
->> diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
->> index b308d9f80eef..f36d17a4d8cd 100644
->> --- a/kernel/cgroup/cpuset.c
->> +++ b/kernel/cgroup/cpuset.c
->> @@ -1877,6 +1877,43 @@ static int local_partition_enable(struct cpuset *cs,
->>       return 0;
->>   }
->>   +/**
->> + * local_partition_disable - Disable a local partition
->> + * @cs: Target cpuset (local partition root) to disable
->> + * @part_error: partition error when @cs is disabled
->> + * @tmp: Temporary masks for CPU calculations
->> + */
->> +static void local_partition_disable(struct cpuset *cs, enum prs_errcode part_error,
->> +                    struct tmpmasks *tmp)
->> +{
->> +    struct cpuset *parent = parent_cs(cs);
->> +    bool cpumask_updated = false;
->> +    int new_prs;
->> +
->> +    lockdep_assert_held(&cpuset_mutex);
->> +    WARN_ON_ONCE(is_remote_partition(cs));    /* For local partition only */
->> +
->> +    if (!is_partition_valid(cs))
->> +        return;
->> +
->> +    new_prs = part_error ? -cs->partition_root_state : 0;
->> +    /*
->> +     * May need to add cpus back to parent's effective_cpus
->> +     * (and maybe removed from subpartitions_cpus/isolated_cpus)
->> +     * for valid partition root. xcpus may contain CPUs that
->> +     * shouldn't be removed from the two global cpumasks.
->> +     */
->> +    if (is_partition_valid(parent))
->> +        cpumask_updated = !cpumask_empty(cs->effective_xcpus);
+I understand your concern, and there is a conflict check when enabling 
+partitions. Below, I will use two tables to show the partition states of A1
+and B1 before applying this patch and after applying it.(All the steps in 
+the table are by default under the path /sys/fs/cgroup)
+
+Table 1: Before applying the patch
+                                            | A1's prstate | B1's prstate |
+ #1> mkdir -p A1                            | member       |              |
+ #2> echo "0-1" > A1/cpuset.cpus            | member       |              |
+ #3> echo "root" > A1/cpuset.cpus.partition | root         |              |
+ #4> mkdir -p B1                            | root         | member       |
+ #5> echo "0-3" > B1/cpuset.cpus            | root invalid | member       |
+ #6> echo "root" > B1/cpuset.cpus.partition | root invalid | root invalid |
+
+Table 2: After applying the patch
+                                            | A1's prstate | B1's prstate |
+ #1> mkdir -p A1                            | member       |              |
+ #2> echo "0-1" > A1/cpuset.cpus            | member       |              |
+ #3> echo "root" > A1/cpuset.cpus.partition | root         |              |
+ #4> mkdir -p B1                            | root         | member       |
+ #5> echo "0-3" > B1/cpuset.cpus            | root         | member       |
+ #6> echo "root" > B1/cpuset.cpus.partition | root         | root invalid |
+
+As shown in Table 2, after step #6, B1's partition state becomes "root 
+invalid". This confirms that conflict checks are performed when enabling 
+partitions, and clearly, the check did not pass in this case. This is the 
+expected result, since the CPUs (0-3) that B1 attempts to use exclusively 
+conflict with those used by A1 (0-1).
+
+The reviewer mentioned they couldn't see my original patch, so I'm 
+re-quoting the key changes below for clarity:
+
+>diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
+>index 52468d2c178a..e0d27c9a101a 100644
+>--- a/kernel/cgroup/cpuset.c
+>+++ b/kernel/cgroup/cpuset.c
+>@@ -586,14 +586,14 @@ static inline bool cpusets_are_exclusive(struct cpuset *cs1, struct cpuset *cs2)
+>  * Returns: true if CPU exclusivity conflict exists, false otherwise
+>  *
+>  * Conflict detection rules:
+>- * 1. If either cpuset is CPU exclusive, they must be mutually exclusive
+>+ * 1. If both cpusets are exclusive, they must be mutually exclusive
+>  * 2. exclusive_cpus masks cannot intersect between cpusets
+>  * 3. The allowed CPUs of one cpuset cannot be a subset of another's exclusive CPUs
+>  */
+> static inline bool cpus_excl_conflict(struct cpuset *cs1, struct cpuset *cs2)
+> {
+>-	/* If either cpuset is exclusive, check if they are mutually exclusive */
+>-	if (is_cpu_exclusive(cs1) || is_cpu_exclusive(cs2))
+>+	/* If both cpusets are exclusive, check if they are mutually exclusive */
+>+	if (is_cpu_exclusive(cs1) && is_cpu_exclusive(cs2))
+> 		return !cpusets_are_exclusive(cs1, cs2);
 > 
-> If cs is a valid local partition, parent must be a valid partition. So the
-> is_partition_valid(parent) check is meaningless. Also the effective_xcpus must not be empty. IOW,
-> cpumask_updated must be true.
-> 
-> Cheers,
-> Longman
-> 
+> 	/* Exclusive_cpus cannot intersect */
 
-I believe is_partition_valid(parent) is meaningless and can be removed. We do support valid
-partitions with empty effective CPUs—meaning cs->effective_xcpus may be empty.
+Here are the main changes, where the conflict check for step #6 in Table 2 
+is performed. And these changes have no effect on cgroup v1.
 
->> +
->> +    partition_disable(cs, parent, new_prs, part_error);
->> +
->> +    if (cpumask_updated) {
->> +        cpuset_update_tasks_cpumask(parent, tmp->addmask);
->> +        update_sibling_cpumasks(parent, cs, tmp);
->> +    }
->> +}
->> +
->>   /**
->>    * update_parent_effective_cpumask - update effective_cpus mask of parent cpuset
->>    * @cs:      The cpuset that requests change in partition root state
->> @@ -1967,19 +2004,7 @@ static int update_parent_effective_cpumask(struct cpuset *cs, int cmd,
->>         nocpu = tasks_nocpu_error(parent, cs, xcpus);
->>   -    if (cmd == partcmd_disable) {
->> -        /*
->> -         * May need to add cpus back to parent's effective_cpus
->> -         * (and maybe removed from subpartitions_cpus/isolated_cpus)
->> -         * for valid partition root. xcpus may contain CPUs that
->> -         * shouldn't be removed from the two global cpumasks.
->> -         */
->> -        if (is_partition_valid(cs)) {
->> -            cpumask_copy(tmp->addmask, cs->effective_xcpus);
->> -            adding = true;
->> -        }
->> -        new_prs = PRS_MEMBER;
->> -    } else if (newmask) {
->> +    if (newmask) {
->>           /*
->>            * Empty cpumask is not allowed
->>            */
->> @@ -3110,9 +3135,7 @@ static int update_prstate(struct cpuset *cs, int new_prs)
->>           if (is_remote_partition(cs))
->>               remote_partition_disable(cs, &tmpmask);
->>           else
->> -            update_parent_effective_cpumask(cs, partcmd_disable,
->> -                            NULL, &tmpmask);
->> -
->> +            local_partition_disable(cs, PERR_NONE, &tmpmask);
->>           /*
->>            * Invalidation of child partitions will be done in
->>            * update_cpumasks_hier().
-> 
-
--- 
-Best regards,
-Ridong
-
+Thanks,
+Sun Shaojie
 
