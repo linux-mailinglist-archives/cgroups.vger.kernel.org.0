@@ -1,234 +1,146 @@
-Return-Path: <cgroups+bounces-11902-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-11903-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8E357C55427
-	for <lists+cgroups@lfdr.de>; Thu, 13 Nov 2025 02:34:54 +0100 (CET)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
+	by mail.lfdr.de (Postfix) with ESMTPS id F20B4C55439
+	for <lists+cgroups@lfdr.de>; Thu, 13 Nov 2025 02:36:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 920024E2C15
-	for <lists+cgroups@lfdr.de>; Thu, 13 Nov 2025 01:33:44 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 9C84534615D
+	for <lists+cgroups@lfdr.de>; Thu, 13 Nov 2025 01:36:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 543832874E9;
-	Thu, 13 Nov 2025 01:33:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F239428D8F1;
+	Thu, 13 Nov 2025 01:36:26 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from lgeamrelo07.lge.com (lgeamrelo07.lge.com [156.147.51.103])
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 56B53265CA2
-	for <cgroups@vger.kernel.org>; Thu, 13 Nov 2025 01:33:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.147.51.103
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C6E13B1BD;
+	Thu, 13 Nov 2025 01:36:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1762997621; cv=none; b=TeErVmROVdPQWXLiPnlbeaC1/DWpCRk9BHOsvB/WkmBN4OkSoSk5XE1cUpu16XFopn9WmCICmoQMbHaY1KOWeH3sa0pk/Gh5M2WA0evH7t2MR+9xBVaRr6NFoy/yXxE5gf4XJz0etKZir30B4inyLz82ZWMNUR207P3X7Lzgetc=
+	t=1762997786; cv=none; b=QqHn29Zu9udrV0LZG2vsjEKiCprfe/rpoSx7Z3w6cBV87YmMXcL9W3tHZaoBP8vdGclNrgwSLGLom8kBGuP3GVgC+yQLleT+oUDvQYQVp0nqj6LNHjMVbHBMC5KzzdUteQIq2lwwR1xd5l/iPinXVp/uzMxkqKEq6sFYT2OIduE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1762997621; c=relaxed/simple;
-	bh=YYr0ovGXbPx1j+h8mG4oGlF/bo67CcFXqo/NraN20eI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=qGqtRUZZvH+axGBSJjKUs/Uvax/NySU9SZrdye3GMw+pnjTPqLvlnuLSJyEh1XbKtjzQDOaalFY80q9rTDBtXXp575lRldOjzou0qoaqR5EMjO1v3blvL9PwtCo1qf6GnZSRnFGjhVxlRUzlK3h5baacBwbkwdXK/NaQAvoEWgc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lge.com; spf=pass smtp.mailfrom=lge.com; arc=none smtp.client-ip=156.147.51.103
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lge.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lge.com
-Received: from unknown (HELO yjaykim-PowerEdge-T330) (10.177.112.156)
-	by 156.147.51.103 with ESMTP; 13 Nov 2025 10:33:29 +0900
-X-Original-SENDERIP: 10.177.112.156
-X-Original-MAILFROM: youngjun.park@lge.com
-Date: Thu, 13 Nov 2025 10:33:29 +0900
-From: YoungJun Park <youngjun.park@lge.com>
-To: Chris Li <chrisl@kernel.org>
-Cc: akpm@linux-foundation.org, linux-mm@kvack.org, cgroups@vger.kernel.org,
-	linux-kernel@vger.kernel.org, kasong@tencent.com,
-	hannes@cmpxchg.org, mhocko@kernel.org, roman.gushchin@linux.dev,
-	shakeel.butt@linux.dev, muchun.song@linux.dev,
-	shikemeng@huaweicloud.com, nphamcs@gmail.com, bhe@redhat.com,
-	baohua@kernel.org, gunho.lee@lge.com, taejoon.song@lge.com
-Subject: Re: [RFC] mm/swap, memcg: Introduce swap tiers for cgroup based swap
- control
-Message-ID: <aRU1abZaS+c1rK4R@yjaykim-PowerEdge-T330>
-References: <20251109124947.1101520-1-youngjun.park@lge.com>
- <CACePvbV80ZtC2FL6Z-Y4Rg=5bzdi1O8zqQSMEGuxqhj5P0txsA@mail.gmail.com>
+	s=arc-20240116; t=1762997786; c=relaxed/simple;
+	bh=K+2b+IyeZvWNwL7IA5XzdG/CeYwFnpHLZsl3b4SjHOI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=fR0aCIVlNcAYYZ0i+eyPZDQZdII+hMUz45pKnKz70isWZrzXYzcAv9Q8H4g7Oyyfd/mJNLiPjiLDOXX22+XzHaMf/wKeGBz2NDc+5WVEqAI9u+bYAa3fwr75jYjgqTtLwPRt7y9/ZHWsvwnURRLfswZMOByUupcsShH2sZF5bT0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=none smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.235])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTPS id 4d6NBv307KzYQv5D;
+	Thu, 13 Nov 2025 09:35:51 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.112])
+	by mail.maildlp.com (Postfix) with ESMTP id B7B8E1A08FE;
+	Thu, 13 Nov 2025 09:36:20 +0800 (CST)
+Received: from [10.67.111.176] (unknown [10.67.111.176])
+	by APP1 (Coremail) with SMTP id cCh0CgA3cksTNhVp5sEuAg--.25431S2;
+	Thu, 13 Nov 2025 09:36:20 +0800 (CST)
+Message-ID: <931a4ff2-f240-403b-adff-822449b49d31@huaweicloud.com>
+Date: Thu, 13 Nov 2025 09:36:19 +0800
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH RFC v2 02/22] cpuset: add early empty cpumask check in
+ partition_xcpus_add/del
+To: Waiman Long <llong@redhat.com>, tj@kernel.org, hannes@cmpxchg.org,
+ mkoutny@suse.com
+Cc: cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+ lujialin4@huawei.com, chenridong@huawei.com
+References: <20251025064844.495525-1-chenridong@huaweicloud.com>
+ <20251025064844.495525-3-chenridong@huaweicloud.com>
+ <3c449d75-2a44-4acc-b3f6-0b2c261db1bd@redhat.com>
+Content-Language: en-US
+From: Chen Ridong <chenridong@huaweicloud.com>
+In-Reply-To: <3c449d75-2a44-4acc-b3f6-0b2c261db1bd@redhat.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CACePvbV80ZtC2FL6Z-Y4Rg=5bzdi1O8zqQSMEGuxqhj5P0txsA@mail.gmail.com>
+X-CM-TRANSID:cCh0CgA3cksTNhVp5sEuAg--.25431S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7ur43tr1UJFWktw18GF17Wrg_yoW8Kw13pr
+	s5KFWUGFW5Kr1rC3srta1xCFyfKws7G3WUtwnYqFy8AF17W3ZYgF9F9a90gw15X3ykCr4U
+	ZF13XrsFvF17Z3DanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUyGb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+	6I80ewAv7VC0I7IYx2IY67AKxVWUGVWUXwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxkF7I0En4kS14v26r126r1DMxAIw28IcxkI7VAK
+	I48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7
+	xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xII
+	jxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw2
+	0EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x02
+	67AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IUbiF4tUUUUU==
+X-CM-SenderInfo: hfkh02xlgr0w46kxt4xhlfz01xgou0bp/
 
-On Wed, Nov 12, 2025 at 05:34:05AM -0800, Chris Li wrote:
 
-Hello Chris :)
 
-> Thanks for the patches. I notice that your cover letter does not have
-> [0/3] on it. One tool I found useful is using the b4 to send out
-> patches in series. Just for your consideration, it is not an ask. I
-> can review patches not sent out from b4 just fine.
-
-I manually edited the cover letter title, but made a human error.
-Thanks for the tip.
- 
-> On Sun, Nov 9, 2025 at 4:50 AM Youngjun Park <youngjun.park@lge.com> wrote:
-> >
-> > Hi all,
-> >
-> > In constrained environments, there is a need to improve workload
-> > performance by controlling swap device usage on a per-process or
-> > per-cgroup basis. For example, one might want to direct critical
-> > processes to faster swap devices (like SSDs) while relegating
-> > less critical ones to slower devices (like HDDs or Network Swap).
-> >
-> > Initial approach was to introduce a per-cgroup swap priority
-> > mechanism [1]. However, through review and discussion, several
-> > drawbacks were identified:
-> >
-> > a. There is a lack of concrete use cases for assigning a fine-grained,
-> >    unique swap priority to each cgroup.
-> > b. The implementation complexity was high relative to the desired
-> >    level of control.
-> > c. Differing swap priorities between cgroups could lead to LRU
-> >    inversion problems.
-> >
-> > To address these concerns, I propose the "swap tiers" concept,
-> > originally suggested by Chris Li [2] and further developed through
-> > collaborative discussions. I would like to thank Chris Li and
-> > He Baoquan for their invaluable contributions in refining this
-> > approach, and Kairui Song, Nhat Pham, and Michal Koutný for their
-> > insightful reviews of earlier RFC versions.
-> >
-> > Concept
-> > -------
-> > A swap tier is a grouping mechanism that assigns a "named id" to a
-> > range of swap priorities. For example, all swap devices with a
-> > priority of 100 or higher could be grouped into a tier named "SSD",
-> > and all others into a tier named "HDD".
-> >
-> > Cgroups can then select which named tiers they are permitted to use for
-> > swapping via a new cgroup interface. This effectively restricts a
-> > cgroup's swap activity to a specific subset of the available swap
-> > devices.
-> >
-> > Proposed Interface
-> > ------------------
-> > 1. Global Tier Definition: /sys/kernel/mm/swap/tiers
-> >
-> > This file is used to define the global swap tiers and their associated
-> > minimum priority levels.
-> >
-> > - To add tiers:
-> >   Format: + 'tier_name':'prio'[,|' ']'tier_name 2':'prio']...
-> >   Example:
-> >   # echo "+ SSD:100,HDD:2" > /sys/kernel/mm/swap/tiers
+On 2025/11/13 4:18, Waiman Long wrote:
+> On 10/25/25 2:48 AM, Chen Ridong wrote:
+>> From: Chen Ridong <chenridong@huawei.com>
+>>
+>> Add a check for an empty cpumask at the start of partition_xcpus_add()
+>> and partition_xcpus_del(). This allows the functions to return early,
+>> avoiding unnecessary computation when there is no work to be done.
+>>
+>> Signed-off-by: Chen Ridong <chenridong@huawei.com>
+>> ---
+>>   kernel/cgroup/cpuset.c | 6 ++++++
+>>   1 file changed, 6 insertions(+)
+>>
+>> diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
+>> index 6af4d80b53c4..3ba9ca4e8f5e 100644
+>> --- a/kernel/cgroup/cpuset.c
+>> +++ b/kernel/cgroup/cpuset.c
+>> @@ -1345,6 +1345,9 @@ static bool partition_xcpus_add(int new_prs, struct cpuset *parent,
+>>         WARN_ON_ONCE(new_prs < 0);
+>>       lockdep_assert_held(&callback_lock);
+>> +    if (cpumask_empty(xcpus))
+>> +        return false;
+>> +
+>>       if (!parent)
+>>           parent = &top_cpuset;
+>>   @@ -1377,6 +1380,9 @@ static bool partition_xcpus_del(int old_prs, struct cpuset *parent,
+>>         WARN_ON_ONCE(old_prs < 0);
+>>       lockdep_assert_held(&callback_lock);
+>> +    if (cpumask_empty(xcpus))
+>> +        return false;
+>> +
+>>       if (!parent)
+>>           parent = &top_cpuset;
+>>   
 > 
-> I think a lot of this documentation nature of the cover letter should
-> move into a kernel document commit. Maybe
-> Documentation/mm/swap_tiers.rst
-
-I will create a Documentation file based on what is mentioned here.
-
-> Another suggestion is use "+SSD:100,+HDD:2,-SD" that kind of flavor
-> similar to "cgroup.subtree_control" interface, which allows adding or
-> removing cgroups. That way you can add and remove in one line action.
-
-Your suggested format is more familiar. I have no objections and will
-change it accordingly.
-
-> >
-> >   There are several rules for defining tiers:
-> >   - Priority ranges for tiers must not overlap.
+> partition_xcpus_add() and partition_xcpus_del() are supposed to be called only when action is really
+> needed. The empty xcpus check should be done earlier to avoid calling them in the first  place. So
+> unless you are planning to change the logic that they will always be called even if action is not
+> really needed. If so, you have to state in the commit log.
 > 
-> We can add that we suggest allocating a higher priority range for
-> faster swap devices. That way more swap page faults will likely be
-> served by faster swap devices.
-
-It would be good to explicitly state this in the Documentation.
-
-> >   - The combination of all defined tiers must cover the entire valid
-> >     priority range (DEF_SWAP_PRIO to SHRT_MAX) to ensure every swap device
-> >     can be assigned to a tier.
-> >   - A tier's prio value is its inclusive lower bound,
-> >     covering priorities up to the next tier's prio.
-> >     The highest tier extends to SHRT_MAX, and the lowest tier extends to DEF_SWAP_PRIO.
-> >   - If the specified tiers do not cover the entire priority range,
-> >     the priority of the tier with the lowest specified priority value
-> >     is set to SHRT_MIN
-> >   - The total number of tiers is limited.
-> >
-> > - To remove tiers:
-> >   Format: - 'tier_name'[,|' ']'tier_name2']...
-> >   Example:
-> >   # echo "- SSD,HDD" > /sys/kernel/mm/swap/tiers
+> Cheers,
+> Longman
 > 
-> See above, make the '-SSD, -HDD' similar to the "cgroup.subtree_control"
 
-Ack as I said before commenct. Thanks for suggestion again.
+Thanks Longman,
 
-> >   Note: A tier cannot be removed if it is currently in use by any
-> >   cgroup or if any active swap device is assigned to it. This acts as
-> >   a reference count to prevent disruption.
-> >
-> > - To show current tiers:
-> >   Reading the file displays the currently configured tiers, their
-> >   internal index, and the priority range they cover.
-> >   Example:
-> >   # echo "+ SSD:100,HDD:2" > /sys/kernel/mm/swap/tiers
-> >   # cat /sys/kernel/mm/swap/tiers
-> >   Name      Idx   PrioStart   PrioEnd
-> >             0
-> >   SSD       1    100         32767
-> >   HDD       2     -1         99
-> >
-> >   - `Name`: The name of the tier. The unnamed entry is a default tier.
-> >   - `Idx`: The internal index assigned to the tier.
-> >   - `PrioStart`: The starting priority of the range covered by this tier.
-> >   - `PrioEnd`: The ending priority of the range covered by this tier.
-> >
-> > Two special tiers are predefined:
-> > - "": Represents the default inheritance behavior in cgroups.
-> This belongs to the memory.swap.tiers section.
-> "" is not a real tier's name. It is just a wide cast to refer to all tiers.
+partition_xcpus_add() and partition_xcpus_del() are called in serial contexts. If we move the check
+outside these functions, we’ll end up with more conditional statements like this:
 
-I will manage it separately as a logical tier that is not exposed to
-users, and also handle it at the code level.
+if (!is_empty(xxx))
+	partition_xcpus_add()/partition_xcpus_del()
 
-> > - "zswap": Reserved for zswap integration.
->
-> One thing I realize is that, we might need to have per swap tier have
-> a matching zswap tier. Otherwise when we refer to zswap, there is no
-> way for the cgroup to select which backing swapfile does this zswap
-> use for allocating the swap entry.
+So I prefer to handle the check inside the functions themselves. This way, we don’t need to care
+whether xcpus is empty when calling them—and the overhead is negligible.
 
-From the perspective of per-cgroup swap control,
-if a ZSWAP tier is assigned and a cgroup selects that tier,
-it determines whether to use zswap or not.
+I’ll update the commit log to clarify that these functions can be called even when the action isn’t
+strictly necessary.
 
-However, since the zswap backend does not know which tier it is linked
-to, there could be a mismatch between the zswap tier (1), the backend
-storage (2), and possibly another layer (3).  
-This could lead to a contradiction where the cgroup-selected tier may
-or may not correspond to the actual backend tier.  
-Is this the correct understanding?
+-- 
+Best regards,
+Ridong
 
-> We can avoid this complexity by providing a dedicated ghost swapfile,
-> which only zswap can use to allocate swap entries.
-
-From what I understood when youpreviously mentioned this concept,
-the “ghost swapfile” is not a real swap device.  
-It exists conceptually so that zswap can operate as if there is a swap
-device, but in reality, only compressed swap entries are managed by
-zswap itself. (zswap needs actual swap for compress swap)
-
-Considering both points above, could you please clarify the intended
-direction?  
-
-Are you suggesting removing the zswap tier entirely, or defining a
-specific way to manage it?  
-
-I would appreciate a bit more explanation on how you envision the zswap
-tier being handled.
-
-Best Regards,
-Youngjun Park
 
