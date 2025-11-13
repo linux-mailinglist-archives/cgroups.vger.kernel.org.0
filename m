@@ -1,216 +1,179 @@
-Return-Path: <cgroups+bounces-11925-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-11926-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 35541C57423
-	for <lists+cgroups@lfdr.de>; Thu, 13 Nov 2025 12:47:44 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 150E0C57C62
+	for <lists+cgroups@lfdr.de>; Thu, 13 Nov 2025 14:49:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 95F6B3A1432
-	for <lists+cgroups@lfdr.de>; Thu, 13 Nov 2025 11:45:49 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D982B4A601F
+	for <lists+cgroups@lfdr.de>; Thu, 13 Nov 2025 13:15:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1512633DED8;
-	Thu, 13 Nov 2025 11:45:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B6B3F350A04;
+	Thu, 13 Nov 2025 13:15:11 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from lgeamrelo03.lge.com (lgeamrelo03.lge.com [156.147.51.102])
+Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E8205347BB8
-	for <cgroups@vger.kernel.org>; Thu, 13 Nov 2025 11:45:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.147.51.102
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB8E73502B0;
+	Thu, 13 Nov 2025 13:15:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=124.126.103.232
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763034327; cv=none; b=hkFPExWrgDXYymucEEX4JEatp1hZ8ztBbNb2tbw72kTRQjZPme9c1LqaWGeRjlaiYBeT6NiGQ+KnVV42xMJDuQil0vwa2e3JpC+UHzJqw+4x7dSUmogI/BrrnDzRrFa3/hK0s2TH1Og3rhYZb3yiphnGxZuXpnU7mpuigiWfngM=
+	t=1763039711; cv=none; b=pqybhtYrhGB99wm1Q/Cj2NWZi391uFIzi7sirf9tn9N/e+rCzEFyUr/ccET0vy+O7Hm7yiHpM9T/Q7up7lMKf9hoeqBO7LQFWFMasDwOJ1Qj+zAJePsPcY6ilXoUeAcMoJmrGeOZ70N+59anYFruT1L/2PHbVZxNyFU2Ltz/b8g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763034327; c=relaxed/simple;
-	bh=8Bjk7Se1d3lR9ScfHQTRNdgp+wGA4HYwbSkDp1IrILw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=YUOiU8PaTXfp+xrx+TGSUoA9rm/7eaDme7KLhOkNVURruo05WAudI6446bf/6YhkMy5h0wmbvh5CYUPMvnppCufoJ681lcoqnP9Mv3+AnEkfG6QqdW9MQTHlC2wqrDFf9USNDF/1ynAzBpijMD85pW8QDGNsIt52l8zaOPv0Wp4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lge.com; spf=pass smtp.mailfrom=lge.com; arc=none smtp.client-ip=156.147.51.102
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lge.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lge.com
-Received: from unknown (HELO yjaykim-PowerEdge-T330) (10.177.112.156)
-	by 156.147.51.102 with ESMTP; 13 Nov 2025 20:45:22 +0900
-X-Original-SENDERIP: 10.177.112.156
-X-Original-MAILFROM: youngjun.park@lge.com
-Date: Thu, 13 Nov 2025 20:45:22 +0900
-From: YoungJun Park <youngjun.park@lge.com>
-To: Kairui Song <ryncsn@gmail.com>
-Cc: akpm@linux-foundation.org, linux-mm@kvack.org, cgroups@vger.kernel.org,
-	linux-kernel@vger.kernel.org, chrisl@kernel.org, hannes@cmpxchg.org,
-	mhocko@kernel.org, roman.gushchin@linux.dev, shakeel.butt@linux.dev,
-	muchun.song@linux.dev, shikemeng@huaweicloud.com, nphamcs@gmail.com,
-	bhe@redhat.com, baohua@kernel.org, gunho.lee@lge.com,
-	taejoon.song@lge.com
-Subject: Re: [PATCH 1/3] mm, swap: change back to use each swap device's
- percpu cluster
-Message-ID: <aRXE0ppned4Kprnz@yjaykim-PowerEdge-T330>
-References: <20251109124947.1101520-1-youngjun.park@lge.com>
- <20251109124947.1101520-2-youngjun.park@lge.com>
- <CAMgjq7AomHkGAtpvEt_ZrGK6fLUkWgg0vDGZ0B570QU_oNwRGA@mail.gmail.com>
+	s=arc-20240116; t=1763039711; c=relaxed/simple;
+	bh=6dMW8bMwTxb4FkBK6bLthIdV3ilHyTf/DTu0YvWev8U=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=J+SWi/f4aY15Ye1rcH+EiNs2Hp/4mVRp40LZ524gVoaPxe2K1pZrGAmRyydyAcRPenq4K2+yVF4sRoHy5q/nqdUdUkXOoHw9u4tp7PMZbfb2w5pnT3L3nNk2FMVFm1Ba7Hu0xN4skCRnvpMOIBOZfVnIalc2NX/B7MW2NedDXS0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn; spf=pass smtp.mailfrom=kylinos.cn; arc=none smtp.client-ip=124.126.103.232
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kylinos.cn
+X-UUID: c0b2be10c09211f0a38c85956e01ac42-20251113
+X-CTIC-Tags:
+	HR_CC_COUNT, HR_CC_DOMAIN_COUNT, HR_CC_NO_NAME, HR_CTE_8B, HR_CTT_MISS
+	HR_DATE_H, HR_DATE_WKD, HR_DATE_ZONE, HR_FROM_NAME, HR_SJ_DIGIT_LEN
+	HR_SJ_LANG, HR_SJ_LEN, HR_SJ_LETTER, HR_SJ_NOR_SYM, HR_SJ_PHRASE
+	HR_SJ_PHRASE_LEN, HR_SJ_WS, HR_TO_COUNT, HR_TO_DOMAIN_COUNT, HR_TO_NO_NAME
+	IP_TRUSTED, SRC_TRUSTED, DN_TRUSTED, SA_UNTRUSTED, SA_LOWREP
+	SA_EXISTED, SN_UNTRUSTED, SN_UNFAMILIAR, SPF_NOPASS, DKIM_NOPASS
+	DMARC_NOPASS, CIE_BAD, CIE_GOOD, CIE_GOOD_SPF, GTI_FG_BS
+	GTI_C_CI, GTI_FG_IT, GTI_RG_INFO, GTI_C_BU, AMN_T1
+	AMN_GOOD, AMN_C_TI, ABX_MISS_RDNS
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.3.6,REQID:84fc251b-f117-4269-a976-58cc5b6f035c,IP:10,U
+	RL:0,TC:0,Content:0,EDM:0,RT:0,SF:-5,FILE:0,BULK:0,RULE:Release_Ham,ACTION
+	:release,TS:5
+X-CID-INFO: VERSION:1.3.6,REQID:84fc251b-f117-4269-a976-58cc5b6f035c,IP:10,URL
+	:0,TC:0,Content:0,EDM:0,RT:0,SF:-5,FILE:0,BULK:0,RULE:Release_Ham,ACTION:r
+	elease,TS:5
+X-CID-META: VersionHash:a9d874c,CLOUDID:900a97af88ae7b7aff42089cce452c64,BulkI
+	D:251113211501BVFKTKG3,BulkQuantity:0,Recheck:0,SF:17|19|66|78|102|850,TC:
+	nil,Content:0|15|50,EDM:-3,IP:-2,URL:99|1,File:nil,RT:nil,Bulk:nil,QS:nil,
+	BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0,ARC:0
+X-CID-BVR: 2,SSN|SDN
+X-CID-BAS: 2,SSN|SDN,0,_
+X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_FAS,TF_CID_SPAM_FSD,TF_CID_SPAM_ULS
+X-CID-RHF: D41D8CD98F00B204E9800998ECF8427E
+X-UUID: c0b2be10c09211f0a38c85956e01ac42-20251113
+X-User: sunshaojie@kylinos.cn
+Received: from localhost.localdomain [(223.70.159.239)] by mailgw.kylinos.cn
+	(envelope-from <sunshaojie@kylinos.cn>)
+	(Generic MTA with TLSv1.3 TLS_AES_256_GCM_SHA384 256/256)
+	with ESMTP id 1220712474; Thu, 13 Nov 2025 21:14:57 +0800
+From: Sun Shaojie <sunshaojie@kylinos.cn>
+To: llong@redhat.com
+Cc: cgroups@vger.kernel.org,
+	chenridong@huaweicloud.com,
+	hannes@cmpxchg.org,
+	linux-kernel@vger.kernel.org,
+	linux-kselftest@vger.kernel.org,
+	mkoutny@suse.com,
+	shuah@kernel.org,
+	sunshaojie@kylinos.cn,
+	tj@kernel.org
+Subject: [PATCH v2] cpuset: relax the overlap check for cgroup-v2
+Date: Thu, 13 Nov 2025 21:14:34 +0800
+Message-Id: <20251113131434.606961-1-sunshaojie@kylinos.cn>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAMgjq7AomHkGAtpvEt_ZrGK6fLUkWgg0vDGZ0B570QU_oNwRGA@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
 
-On Thu, Nov 13, 2025 at 02:07:59PM +0800, Kairui Song wrote:
-> On Sun, Nov 9, 2025 at 8:54 PM Youngjun Park <youngjun.park@lge.com> wrote:
-> >
-> > This reverts commit 1b7e90020eb7 ("mm, swap: use percpu cluster as
-> > allocation fast path").
-> >
-> > Because in the newly introduced swap tiers, the global percpu cluster
-> > will cause two issues:
-> > 1) it will cause caching oscillation in the same order of different si
-> >    if two different memcg can only be allowed to access different si and
-> >    both of them are swapping out.
-> > 2) It can cause priority inversion on swap devices. Imagine a case where
-> >    there are two memcg, say memcg1 and memcg2. Memcg1 can access si A, B
-> >    and A is higher priority device. While memcg2 can only access si B.
-> >    Then memcg 2 could write the global percpu cluster with si B, then
-> >    memcg1 take si B in fast path even though si A is not exhausted.
-> >
-> > Hence in order to support swap tier, revert commit 1b7e90020eb7 to use
-> > each swap device's percpu cluster.
-> >
-> > Co-developed-by: Baoquan He <bhe@redhat.com>
-> > Suggested-by: Kairui Song <kasong@tencent.com>
-> > Signed-off-by: Baoquan He <bhe@redhat.com>
-> > Signed-off-by: Youngjun Park <youngjun.park@lge.com>
->
-> Hi Youngjun, Baoquan, Thanks for the work on the percpu cluster thing.
+In cgroup v2, a mutual overlap check is required when at least one of two
+cpusets is exclusive. However, this check should be relaxed and limited to
+cases where both cpusets are exclusive.
 
-Hello Kairui,
+The table 1 shows the partition states of A1 and B1 after each step before
+applying this patch.
 
-> It will be better if you can provide some benchmark result since the
-> whole point of global percpu cluster is to improve the performance and
-> get rid of the swap slot cache.
+Table 1: Before applying the patch
+ Step                                       | A1's prstate | B1's prstate |
+ #1> mkdir -p A1                            | member       |              |
+ #2> echo "0-1" > A1/cpuset.cpus            | member       |              |
+ #3> echo "root" > A1/cpuset.cpus.partition | root         |              |
+ #4> mkdir -p B1                            | root         | member       |
+ #5> echo "0-3" > B1/cpuset.cpus            | root invalid | member       |
+ #6> echo "root" > B1/cpuset.cpus.partition | root invalid | root invalid |
 
-After RFC stage,
-I will try to prepare benchmark results.
+After step #5, A1 changes from "root" to "root invalid" because its CPUs
+(0-1) overlap with those requested by B1 (0-3). However, B1 can actually
+use CPUs 2-3, so it would be more reasonable for A1 to remain as "root."
 
-> I'm fine with a small regression but we better be aware of it. And we
-> can still figure out some other ways to optimize it. e.g. I remember
-> Chris once mentioned an idea of having a per device slot cache, that
-> is different from the original slot cache (swap_slot.c): the allocator
-> will be aware of it so it will be much cleaner.
+This patch relaxes the exclusive cpuset check for cgroup v2 while
+preserving the current cgroup v1 behavior.
 
-Ack, we will work on better optimization.
+Signed-off-by: Sun Shaojie <sunshaojie@kylinos.cn>
 
-> > ---
-> >  include/linux/swap.h |  13 +++-
-> >  mm/swapfile.c        | 151 +++++++++++++------------------------------
-> >  2 files changed, 56 insertions(+), 108 deletions(-)
-> >
-> > diff --git a/include/linux/swap.h b/include/linux/swap.h
-> > index 38ca3df68716..90fa27bb7796 100644
-> > --- a/include/linux/swap.h
-> > +++ b/include/linux/swap.h
-> > @@ -250,10 +250,17 @@ enum {
-> >  #endif
-> >
-> >  /*
-> > - * We keep using same cluster for rotational device so IO will be sequential.
-> > - * The purpose is to optimize SWAP throughput on these device.
-> > + * We assign a cluster to each CPU, so each CPU can allocate swap entry from
-> > + * its own cluster and swapout sequentially. The purpose is to optimize swapout
-> > + * throughput.
-> >   */
-> > +struct percpu_cluster {
-> > +       local_lock_t lock; /* Protect the percpu_cluster above */
->
-> I think you mean "below"?
+---
+v1 -> v2:
+  - Keeps the current cgroup v1 behavior unchanged
+  - Link: https://lore.kernel.org/cgroups/c8e234f4-2c27-4753-8f39-8ae83197efd3@redhat.com
+---
+ kernel/cgroup/cpuset.c                            |  9 +++++++--
+ tools/testing/selftests/cgroup/test_cpuset_prs.sh | 10 +++++-----
+ 2 files changed, 12 insertions(+), 7 deletions(-)
 
-This comment was originally written this way in the earlier code, and it
-seems to refer to the percpu_cluster structure itself rather than the
-fields below. But I agree it's a bit ambiguous. I'll just remove this
-comment since the structure name is self-explanatory. Or change it to below. :)
+diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
+index 52468d2c178a..3240b3ab5998 100644
+--- a/kernel/cgroup/cpuset.c
++++ b/kernel/cgroup/cpuset.c
+@@ -592,8 +592,13 @@ static inline bool cpusets_are_exclusive(struct cpuset *cs1, struct cpuset *cs2)
+  */
+ static inline bool cpus_excl_conflict(struct cpuset *cs1, struct cpuset *cs2)
+ {
+-	/* If either cpuset is exclusive, check if they are mutually exclusive */
+-	if (is_cpu_exclusive(cs1) || is_cpu_exclusive(cs2))
++	/* If both cpusets are exclusive, check if they are mutually exclusive */
++	if (is_cpu_exclusive(cs1) && is_cpu_exclusive(cs2))
++		return !cpusets_are_exclusive(cs1, cs2);
++
++	/* In cgroup-v1, if either cpuset is exclusive, check if they are mutually exclusive */
++	if (!is_in_v2_mode() &&
++	    (is_cpu_exclusive(cs1) != is_cpu_exclusive(cs2)))
+ 		return !cpusets_are_exclusive(cs1, cs2);
+ 
+ 	/* Exclusive_cpus cannot intersect */
+diff --git a/tools/testing/selftests/cgroup/test_cpuset_prs.sh b/tools/testing/selftests/cgroup/test_cpuset_prs.sh
+index a17256d9f88a..903dddfe88d7 100755
+--- a/tools/testing/selftests/cgroup/test_cpuset_prs.sh
++++ b/tools/testing/selftests/cgroup/test_cpuset_prs.sh
+@@ -269,7 +269,7 @@ TEST_MATRIX=(
+ 	" C0-3:S+ C1-3:S+ C2-3     .    X2-3   X3:P2    .      .     0 A1:0-2|A2:3|A3:3 A1:P0|A2:P2 3"
+ 	" C0-3:S+ C1-3:S+ C2-3     .    X2-3   X2-3  X2-3:P2   .     0 A1:0-1|A2:1|A3:2-3 A1:P0|A3:P2 2-3"
+ 	" C0-3:S+ C1-3:S+ C2-3     .    X2-3   X2-3 X2-3:P2:C3 .     0 A1:0-1|A2:1|A3:2-3 A1:P0|A3:P2 2-3"
+-	" C0-3:S+ C1-3:S+ C2-3   C2-3     .      .      .      P2    0 A1:0-3|A2:1-3|A3:2-3|B1:2-3 A1:P0|A3:P0|B1:P-2"
++	" C0-3:S+ C1-3:S+ C2-3   C2-3     .      .      .      P2    0 A1:0-1|A2:1|A3:1|B1:2-3 A1:P0|A3:P0|B1:P2 2-3"
+ 	" C0-3:S+ C1-3:S+ C2-3   C4-5     .      .      .      P2    0 B1:4-5 B1:P2 4-5"
+ 	" C0-3:S+ C1-3:S+ C2-3    C4    X2-3   X2-3  X2-3:P2   P2    0 A3:2-3|B1:4 A3:P2|B1:P2 2-4"
+ 	" C0-3:S+ C1-3:S+ C2-3    C4    X2-3   X2-3 X2-3:P2:C1-3 P2  0 A3:2-3|B1:4 A3:P2|B1:P2 2-4"
+@@ -318,7 +318,7 @@ TEST_MATRIX=(
+ 	# Invalid to valid local partition direct transition tests
+ 	" C1-3:S+:P2 X4:P2  .      .      .      .      .      .     0 A1:1-3|XA1:1-3|A2:1-3:XA2: A1:P2|A2:P-2 1-3"
+ 	" C1-3:S+:P2 X4:P2  .      .      .    X3:P2    .      .     0 A1:1-2|XA1:1-3|A2:3:XA2:3 A1:P2|A2:P2 1-3"
+-	"  C0-3:P2   .      .    C4-6   C0-4     .      .      .     0 A1:0-4|B1:4-6 A1:P-2|B1:P0"
++	"  C0-3:P2   .      .    C4-6   C0-4     .      .      .     0 A1:0-4|B1:5-6 A1:P2|B1:P0 0-4"
+ 	"  C0-3:P2   .      .    C4-6 C0-4:C0-3  .      .      .     0 A1:0-3|B1:4-6 A1:P2|B1:P0 0-3"
+ 
+ 	# Local partition invalidation tests
+@@ -388,10 +388,10 @@ TEST_MATRIX=(
+ 	"  C0-1:S+  C1      .    C2-3     .      P2     .      .     0 A1:0-1|A2:1 A1:P0|A2:P-2"
+ 	"  C0-1:S+ C1:P2    .    C2-3     P1     .      .      .     0 A1:0|A2:1 A1:P1|A2:P2 0-1|1"
+ 
+-	# A non-exclusive cpuset.cpus change will invalidate partition and its siblings
+-	"  C0-1:P1   .      .    C2-3   C0-2     .      .      .     0 A1:0-2|B1:2-3 A1:P-1|B1:P0"
++	# A non-exclusive cpuset.cpus change will not invalidate partition and its siblings
++	"  C0-1:P1   .      .    C2-3   C0-2     .      .      .     0 A1:0-2|B1:3 A1:P1|B1:P0"
+ 	"  C0-1:P1   .      .  P1:C2-3  C0-2     .      .      .     0 A1:0-2|B1:2-3 A1:P-1|B1:P-1"
+-	"   C0-1     .      .  P1:C2-3  C0-2     .      .      .     0 A1:0-2|B1:2-3 A1:P0|B1:P-1"
++	"   C0-1     .      .  P1:C2-3  C0-2     .      .      .     0 A1:0-1|B1:2-3 A1:P0|B1:P1"
+ 
+ 	# cpuset.cpus can overlap with sibling cpuset.cpus.exclusive but not subsumed by it
+ 	"   C0-3     .      .    C4-5     X5     .      .      .     0 A1:0-3|B1:4-5"
+-- 
+2.25.1
 
-> > +       unsigned int next[SWAP_NR_ORDERS]; /* Likely next allocation offset */
-> > +};
-> > +
-> >
-> > -/*
-> > - * Fast path try to get swap entries with specified order from current
-> > - * CPU's swap entry pool (a cluster).
-> > - */
-> > -static bool swap_alloc_fast(swp_entry_t *entry,
-> > -                           int order)
-> > -{
-> > -       struct swap_cluster_info *ci;
-> > -       struct swap_info_struct *si;
-> > -       unsigned int offset, found = SWAP_ENTRY_INVALID;
-> > -
-> > -       /*
-> > -        * Once allocated, swap_info_struct will never be completely freed,
-> > -        * so checking it's liveness by get_swap_device_info is enough.
-> > -        */
-> > -       si = this_cpu_read(percpu_swap_cluster.si[order]);
-> > -       offset = this_cpu_read(percpu_swap_cluster.offset[order]);
-> > -       if (!si || !offset || !get_swap_device_info(si))
-> > -               return false;
-> > -
-> > -       ci = swap_cluster_lock(si, offset);
-> > -       if (cluster_is_usable(ci, order)) {
-> > -               if (cluster_is_empty(ci))
-> > -                       offset = cluster_offset(si, ci);
-> > -               found = alloc_swap_scan_cluster(si, ci, offset, order, SWAP_HAS_CACHE);
-> > -               if (found)
-> > -                       *entry = swp_entry(si->type, found);
-> > -       } else {
-> > -               swap_cluster_unlock(ci);
-> > -       }
-> > -
-> > -       put_swap_device(si);
-> > -       return !!found;
-> > -}
-> > -
-> >  /* Rotate the device and switch to a new cluster */
-> > -static bool swap_alloc_slow(swp_entry_t *entry,
-> > +static void swap_alloc_entry(swp_entry_t *entry,
-> >                             int order)
->
-> It seems you also changed the rotation rule here so every allocation
-> of any order is causing a swap device rotation? Before 1b7e90020eb7
-> every 64 allocation causes a rotation as we had slot cache
-> (swap_slot.c). The global cluster makes the rotation happen for every
-> cluster so the overhead is even lower on average. But now a per
-> allocation rotation seems a rather high overhead and may cause serious
-> fragmentation.
-
-Yeah... The rotation rule has indeed changed. I remember the
-discussion about rotation behavior:
-https://lore.kernel.org/linux-mm/aPc3lmbJEVTXoV6h@yjaykim-PowerEdge-T330/
-
-After that discussion, I've been thinking about the rotation.
-Currently, the requeue happens after every priority list traversal, and this logic
-is easily affected by changes.
-The rotation logic change behavior change is not not mentioned somtimes.
-(as you mentioned in commit 1b7e90020eb7).
-
-I'd like to share some ideas and hear your thoughts:
-
-1. Getting rid of the same priority requeue rule
-   - same priority devices get priority - 1 or + 1 after requeue
-     (more add or remove as needed to handle any overlapping priority appropriately)
-
-2. Requeue only when a new cluster is allocated
-   - Instead of requeueing after every priority list traversal, we
-     requeue only when a cluster is fully used
-   - This might have some performance impact, but the rotation behavior
-     would be similar to the existing one (though slightly different due
-     to synchronization and logic processing changes)
-
-Going further with these approaches, if we remove the requeue mechanism
-entirely, we could potentially reduce synchronization overhead during
-plist traversal. (degrade the lock)
-
-I'm curious what do you think about these possibilities?
-
-Youngjun Park
 
