@@ -1,55 +1,81 @@
-Return-Path: <cgroups+bounces-11946-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-11947-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E89EDC5AFFB
-	for <lists+cgroups@lfdr.de>; Fri, 14 Nov 2025 03:23:48 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id 820CAC5B419
+	for <lists+cgroups@lfdr.de>; Fri, 14 Nov 2025 04:58:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1DF843B467C
-	for <lists+cgroups@lfdr.de>; Fri, 14 Nov 2025 02:23:47 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 59E634E2025
+	for <lists+cgroups@lfdr.de>; Fri, 14 Nov 2025 03:58:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B9B222FE11;
-	Fri, 14 Nov 2025 02:23:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C044927056D;
+	Fri, 14 Nov 2025 03:58:53 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 51ED135957;
-	Fri, 14 Nov 2025 02:23:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 63644238C0D;
+	Fri, 14 Nov 2025 03:58:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=124.126.103.232
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763087022; cv=none; b=JoGjbJMDIRbnfbvq6z4HEfMdJwZ9KspVjki8NtfLZ6OAOhvOdQ9UaEQNAuQASgDKoWtPLeoPG6w/6CNX009DnPrwJ4pdnytubAIZ4IUokUBo1ksq+lyh/TJPt5FV+OxH5NO2Px9T+Adq/m/KtpkLhWu+l4IqPHGJ43Afwkv6LLg=
+	t=1763092733; cv=none; b=ZOFkm3Yk5V7PcExUg1+ED3PV2BQt7kxTe9DGyr28/ejLG8AF3xCoTuBzxUUjmUXbn/LN9yJBuhCUJ4OYRpZbClWRNNqozkmKEQ2xzT+dIQatWVTulxYimGkxes3KG3JqU3g+23sokucUQiwL/0TQlhT/NfCROTHrpxir8KoC8HA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763087022; c=relaxed/simple;
-	bh=MU5bSpBC9UKna6RSH9nawDKGTIVZ8IitlCW9GgTpnzg=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=ifEilATS0HQTw6/WPSGFz5aJ+VhHkNr7De1GDRXMXFNe+KZetyfh0FP2ZGIraGuaK+IYP+R7McSmzZGft53MiYBYOKVo3/4b0cEUFjecl2Wrx4WXFtVte1AdAdLVJSHHZJ4X5QtMpIlQ7x/gpw8Gp0Wt4rMzQGvVEwIHz80vSwM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=none smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.235])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTPS id 4d71By1S1CzYQv1C;
-	Fri, 14 Nov 2025 10:23:06 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.128])
-	by mail.maildlp.com (Postfix) with ESMTP id 415791A0FD1;
-	Fri, 14 Nov 2025 10:23:37 +0800 (CST)
-Received: from hulk-vt.huawei.com (unknown [10.67.174.121])
-	by APP4 (Coremail) with SMTP id gCh0CgAnUF2mkhZpT6itAg--.58755S2;
-	Fri, 14 Nov 2025 10:23:37 +0800 (CST)
-From: Chen Ridong <chenridong@huaweicloud.com>
-To: longman@redhat.com,
-	tj@kernel.org,
+	s=arc-20240116; t=1763092733; c=relaxed/simple;
+	bh=jLK5SvYihbvAZZAmD1Y5pXgADx4KtTfCx42eajBhW/A=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=tvAoMxWh6ARR+vUj1vDaF/O7ZMdnDZVD36IH/JwplaAV3uMcE4M+xwEg2pKSWNLVhyF1q6W2b6w7HqvWjNCpo0jw88rSf3/tic584vzOC6dmYAYy2zgLlV+fMSEVReCwg/kXj7seTkIEuafO2HN4HinMq+DxlBc/mnAhtQ4rwIM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn; spf=pass smtp.mailfrom=kylinos.cn; arc=none smtp.client-ip=124.126.103.232
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kylinos.cn
+X-UUID: 32bb2b20c10e11f0a38c85956e01ac42-20251114
+X-CTIC-Tags:
+	HR_CC_COUNT, HR_CC_DOMAIN_COUNT, HR_CC_NAME, HR_CC_NO_NAME, HR_CTE_8B
+	HR_CTT_MISS, HR_DATE_H, HR_DATE_WKD, HR_DATE_ZONE, HR_FROM_NAME
+	HR_SJ_LANG, HR_SJ_LEN, HR_SJ_LETTER, HR_SJ_NOR_SYM, HR_SJ_PHRASE
+	HR_SJ_PHRASE_LEN, HR_SJ_PRE_RE, HR_SJ_WS, HR_TO_COUNT, HR_TO_DOMAIN_COUNT
+	HR_TO_NO_NAME, IP_TRUSTED, SRC_TRUSTED, DN_TRUSTED, SA_UNTRUSTED
+	SA_LOWREP, SA_EXISTED, SN_UNTRUSTED, SN_LOWREP, SN_EXISTED
+	SPF_NOPASS, DKIM_NOPASS, DMARC_NOPASS
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.3.6,REQID:d25ded52-3a7d-48e5-aeab-296aff2329db,IP:10,U
+	RL:0,TC:0,Content:-25,EDM:0,RT:0,SF:5,FILE:0,BULK:0,RULE:Release_Ham,ACTIO
+	N:release,TS:-10
+X-CID-INFO: VERSION:1.3.6,REQID:d25ded52-3a7d-48e5-aeab-296aff2329db,IP:10,URL
+	:0,TC:0,Content:-25,EDM:0,RT:0,SF:5,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
+	release,TS:-10
+X-CID-META: VersionHash:a9d874c,CLOUDID:a25de5dcc271b445f1a2c966e73d6fe1,BulkI
+	D:251113184535IYNM5ZGZ,BulkQuantity:1,Recheck:0,SF:19|66|72|78|81|82|83|10
+	2|841|850,TC:nil,Content:0|15|50,EDM:-3,IP:-2,URL:0,File:nil,RT:nil,Bulk:4
+	0,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE
+	:0,ARC:0
+X-CID-BVR: 2,SSN|SDN
+X-CID-BAS: 2,SSN|SDN,0,_
+X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_FSD
+X-CID-RHF: D41D8CD98F00B204E9800998ECF8427E
+X-UUID: 32bb2b20c10e11f0a38c85956e01ac42-20251114
+X-User: zhangguopeng@kylinos.cn
+Received: from localhost.localdomain [(223.70.159.239)] by mailgw.kylinos.cn
+	(envelope-from <zhangguopeng@kylinos.cn>)
+	(Generic MTA with TLSv1.3 TLS_AES_256_GCM_SHA384 256/256)
+	with ESMTP id 925737466; Fri, 14 Nov 2025 11:58:37 +0800
+From: Guopeng Zhang <zhangguopeng@kylinos.cn>
+To: mkoutny@suse.com
+Cc: tj@kernel.org,
 	hannes@cmpxchg.org,
-	mkoutny@suse.com
-Cc: cgroups@vger.kernel.org,
+	shuah@kernel.org,
+	cgroups@vger.kernel.org,
+	linux-kselftest@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
-	lujialin4@huawei.com,
-	chenridong@huawei.com
-Subject: [PATCH -next v3] cpuset: Treat cpusets in attaching as populated
-Date: Fri, 14 Nov 2025 02:08:47 +0000
-Message-Id: <20251114020847.1040546-1-chenridong@huaweicloud.com>
-X-Mailer: git-send-email 2.34.1
+	sebastian.chlad@suse.com,
+	Guopeng Zhang <zhangguopeng@kylinos.cn>
+Subject: Re: [PATCH] selftests/cgroup: conform test to TAP format output
+Date: Fri, 14 Nov 2025 11:55:48 +0800
+Message-Id: <your-message-id>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <6lwnagu63xzanum2xx6vkm2qe4oh74fteqeymmkqxyjbovcce6@3jekdivdr7yf>
+References: <6lwnagu63xzanum2xx6vkm2qe4oh74fteqeymmkqxyjbovcce6@3jekdivdr7yf>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -57,125 +83,38 @@ List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:gCh0CgAnUF2mkhZpT6itAg--.58755S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxJF1furyxXw1kXF1rGw15Jwb_yoW5Zw4DpF
-	WDua47J3yUG3W3C393Ga97W34Fgw1kKF1UJrn3Kw1rXFy7JF1jkr1qvas8tFy3JF97C34f
-	ZFsxXr4IganFyFJanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUyEb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-	6I80ewAv7VC0I7IYx2IY67AKxVWUGVWUXwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-	Cjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JMxkF7I0En4kS14v26r126r1DMxAIw28IcxkI
-	7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxV
-	Cjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY
-	6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6x
-	AIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY
-	1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IUbiF4tUUUUU==
-X-CM-SenderInfo: hfkh02xlgr0w46kxt4xhlfz01xgou0bp/
 
-From: Chen Ridong <chenridong@huawei.com>
+Hi Michal,
 
-Currently, the check for whether a partition is populated does not
-account for tasks in the cpuset of attaching. This is a corner case
-that can leave a task stuck in a partition with no effective CPUs.
+Thanks for reviewing and pointing out [1].
 
-The race condition occurs as follows:
+> Could you please explain more why is the TAP layout beneficial?
+> (I understand selftest are for oneself, i.e. human readable only by default.)
 
-cpu0				cpu1
-				//cpuset A  with cpu N
-migrate task p to A
-cpuset_can_attach
-// with effective cpus
-// check ok
+Actually, selftests are no longer just something for developers to view locally; they are now extensively 
+run in CI and stable branch regression testing. Using a standardized layout means that general test runners 
+and CI systems can parse the cgroup test results without any special handling.
 
-// cpuset_mutex is not held	// clear cpuset.cpus.exclusive
-				// making effective cpus empty
-				update_exclusive_cpumask
-				// tasks_nocpu_error check ok
-				// empty effective cpus, partition valid
-cpuset_attach
-...
-// task p stays in A, with non-effective cpus.
+TAP provides a structured format that is both human-readable and machine-readable. The plan/result lines are parsed by tools, 
+while the diagnostic lines can still contain human-readable debug information. Over time, other selftest suites (such as mm, KVM, mptcp, etc.) 
+have also been converted to TAP-style output, so this change just brings the cgroup tests in line with that broader direction.
 
-To fix this issue, this patch introduces cs_is_populated, which considers
-tasks in the attaching cpuset. This new helper is used in validate_change
-and partition_is_populated.
+> Or is this part of some tree-wide effort?
 
-Fixes: e2d59900d936 ("cgroup/cpuset: Allow no-task partition to have empty cpuset.cpus.effective")
-Signed-off-by: Chen Ridong <chenridong@huawei.com>
----
- kernel/cgroup/cpuset.c | 35 +++++++++++++++++++++++++++--------
- 1 file changed, 27 insertions(+), 8 deletions(-)
+This patch is not part of a formal, tree-wide conversion series I am running; it is an incremental step to align the 
+cgroup C tests with the existing TAP usage. I started here because these tests already use ksft_test_result_*() and 
+only require minor changes to generate proper TAP output.
 
-diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
-index daf813386260..8bf7c38ba320 100644
---- a/kernel/cgroup/cpuset.c
-+++ b/kernel/cgroup/cpuset.c
-@@ -356,6 +356,15 @@ static inline bool is_in_v2_mode(void)
- 	      (cpuset_cgrp_subsys.root->flags & CGRP_ROOT_CPUSET_V2_MODE);
- }
- 
-+static inline bool cpuset_is_populated(struct cpuset *cs)
-+{
-+	lockdep_assert_held(&cpuset_mutex);
-+
-+	/* Cpusets in the process of attaching should be considered as populated */
-+	return cgroup_is_populated(cs->css.cgroup) ||
-+		cs->attach_in_progress;
-+}
-+
- /**
-  * partition_is_populated - check if partition has tasks
-  * @cs: partition root to be checked
-@@ -373,19 +382,29 @@ static inline bool is_in_v2_mode(void)
- static inline bool partition_is_populated(struct cpuset *cs,
- 					  struct cpuset *excluded_child)
- {
--	struct cgroup_subsys_state *css;
--	struct cpuset *child;
-+	struct cpuset *cp;
-+	struct cgroup_subsys_state *pos_css;
- 
--	if (cs->css.cgroup->nr_populated_csets)
-+	/*
-+	 * We cannot call cs_is_populated(cs) directly, as
-+	 * nr_populated_domain_children may include populated
-+	 * csets from descendants that are partitions.
-+	 */
-+	if (cs->css.cgroup->nr_populated_csets ||
-+	    cs->attach_in_progress)
- 		return true;
- 
- 	rcu_read_lock();
--	cpuset_for_each_child(child, css, cs) {
--		if (child == excluded_child)
-+	cpuset_for_each_descendant_pre(cp, pos_css, cs) {
-+		if (cp == cs || cp == excluded_child)
- 			continue;
--		if (is_partition_valid(child))
-+
-+		if (is_partition_valid(cp)) {
-+			pos_css = css_rightmost_descendant(pos_css);
- 			continue;
--		if (cgroup_is_populated(child->css.cgroup)) {
-+		}
-+
-+		if (cpuset_is_populated(cp)) {
- 			rcu_read_unlock();
- 			return true;
- 		}
-@@ -670,7 +689,7 @@ static int validate_change(struct cpuset *cur, struct cpuset *trial)
- 	 * be changed to have empty cpus_allowed or mems_allowed.
- 	 */
- 	ret = -ENOSPC;
--	if ((cgroup_is_populated(cur->css.cgroup) || cur->attach_in_progress)) {
-+	if (cpuset_is_populated(cur)) {
- 		if (!cpumask_empty(cur->cpus_allowed) &&
- 		    cpumask_empty(trial->cpus_allowed))
- 			goto out;
--- 
-2.34.1
+> I'm asking to better asses whether also the scripts listed in
+> Makefile:TEST_PROGS should be converted too.
+
+I agree that having them produce TAP output would benefit tooling and CI. I did not want to mix 
+that into this change, but if you and other maintainers think this direction is reasonable, 
+I would be happy to follow up and convert the cgroup shell tests to TAP as well.
+
+Thanks again for your review.
+
+Best regards,  
+Guopeng
 
 
