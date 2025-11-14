@@ -1,73 +1,76 @@
-Return-Path: <cgroups+bounces-11977-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-11978-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id D649DC5FA29
-	for <lists+cgroups@lfdr.de>; Sat, 15 Nov 2025 00:55:19 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id D7592C5FA20
+	for <lists+cgroups@lfdr.de>; Sat, 15 Nov 2025 00:55:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 8376A35C256
-	for <lists+cgroups@lfdr.de>; Fri, 14 Nov 2025 23:55:01 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id B92AB4E2557
+	for <lists+cgroups@lfdr.de>; Fri, 14 Nov 2025 23:55:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4071F30E85C;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 409BE30F7ED;
 	Fri, 14 Nov 2025 23:54:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="XG9IpBMU"
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="HXRR9iCD"
 X-Original-To: cgroups@vger.kernel.org
 Received: from mail-pg1-f181.google.com (mail-pg1-f181.google.com [209.85.215.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 788CB306D58
-	for <cgroups@vger.kernel.org>; Fri, 14 Nov 2025 23:54:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7728930DD3D
+	for <cgroups@vger.kernel.org>; Fri, 14 Nov 2025 23:54:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763164491; cv=none; b=K3e2vcpcmlLkLsRXl/cHv2R3mG+7OMRlnHoZ5k8RCAqVzHVx0fJ05FjrKqrCE8AUve4a+bR5KEBYlqNFeEM6qNZOvCG7lCxOFNLhioC2J2xsXjV8Iy+lTCS80WvB0G4cw0hio+FQdZ07x4A8pYGHQfFNNm0rmOF7+ZTOFNSHrPo=
+	t=1763164491; cv=none; b=tWOIP0C/rb+APhPWci6kCGMWPAdtcl4KXm4oXx9+L21DtCoLRPk0EhgLPHtZFtgQjHFtLgFaBZihnOXJGdStfNm2xLnoCQfx2duS0Tu76zYL3Z61VfCRfvsdXVmQ+f6RzjlFnpC6ap8rQp7WO2gUJtGugmRdWKIAIhDKypGYsaU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1763164491; c=relaxed/simple;
-	bh=8b2K75exTopC25Duwa3XNxKklUYHIMlCaizUVN8+ses=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=OaaFlrIYKhQ6rGAenvHkuAA8gkTaY4p9wntmMvZaeStGmR9PYnOV7PwkKn3EjatRVO9lC5W8gfMkINDZcI4MT5wOoJb+RsCcdGchokENkn3ENQzKosQSexgW+2lQAvJSLMvjlYKCxrq1dd3NA13fAOWyvj0EmQeiHVNKQ204c98=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=XG9IpBMU; arc=none smtp.client-ip=209.85.215.181
+	bh=eZmo6/5xCexjplSdLKsWrnqHmeMVHTordQIE+X1VxUo=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=d41f8kFkSnElZ7qIy9k+C7XOhSYBPRWob6qg3I1IMzvzDR8xK8E2pev5tNovei/Uab/Y6ezHQBCY7fL9AyUlEbhZf1ee1Zv4yTgU46DbYLqEhS+d3ICTvT0KN48xOqe0XYtgoJBYP1euQlPUKrKkFT1Sc6y1sLwJEafG0ckyRvU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=HXRR9iCD; arc=none smtp.client-ip=209.85.215.181
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pg1-f181.google.com with SMTP id 41be03b00d2f7-bc0e89640b9so1742093a12.1
-        for <cgroups@vger.kernel.org>; Fri, 14 Nov 2025 15:54:48 -0800 (PST)
+Received: by mail-pg1-f181.google.com with SMTP id 41be03b00d2f7-bc17d39ccd2so1418659a12.3
+        for <cgroups@vger.kernel.org>; Fri, 14 Nov 2025 15:54:49 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1763164488; x=1763769288; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=hgM/nvnBybHbCEHd2i0eoRGXYVypUnH143ZWqlNySO0=;
-        b=XG9IpBMUV0srPz359pUU2bxfv81KKJ8BdUnkYM7bRM4lugMjRLsirrAptlLdjT+PMK
-         mgRooc0l4Bbo2x20R2MKMzNoFkzNSq9WV54gyzt2Zshr39vm+gmcQN2zUfYLR/Ai8rtT
-         bixudUWnqwbF8uU5jOwbdqIt1M4nSQGf4EDGE=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1763164488; x=1763769288;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+        d=chromium.org; s=google; t=1763164489; x=1763769289; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=hgM/nvnBybHbCEHd2i0eoRGXYVypUnH143ZWqlNySO0=;
-        b=Zxwb70tJvMtjW9XcFGHJtfVMF1UAhjEMvdfkGCJq4SOi9kdw55ynSJ39mQBsYXY36C
-         xlne3NgE3oeoKuYkBBJl2JV6qzeEqa6sa7sfjnvFNOdPX3jgdstu5zQfI0DF/s6Sa4BK
-         qIdYgA3Vs0hElEyR8AzsilLEUEzq2zUCx9I0/GA6Rt0MEc1odNqVqxFGM/iZptrrXESY
-         oqLylxQE01t2NMqFoxx45FyfzDIALPTUZOnlbpENhniDOhQHkgrHn5LFGYCh9wFUIXCf
-         1vcL5zhWX+YDYxKrm/AnxzHl6ORO70k/cxlzoHEGuAkxJ62btcIzyOHEsgLY5i+FbZol
-         CkkQ==
-X-Gm-Message-State: AOJu0Yz6DHRLxvT70R94C1Vae8OYwzoW1jqUmkGpeowHfPn8zTm4Ambz
-	06TbAFuszmB1Nl6LFvwCCEmgL1uInSJIv4Lp8vX1JOFGL1CG3KPXPn8j6EyhEd91Qg==
-X-Gm-Gg: ASbGncuT7CNs1sD2/eqqISxMrjBZ+jRZ8okKTOfBm9h+x3RlY9/8SvQ/o97aKY/PrhC
-	6xq6gi4WCg+dOPllKZZXWfmWpen8clwmgIFkQbR3v9tUgE2LNcTdwywM3Huupqqd8X7smxZCNLD
-	u1xRZlteZqQm3B8KNmQzPBNsYKmz+UOI+I2E5a+BVhUpHkJ+xh6b8OQ38c35yOG2SCfyE1KDs8T
-	HRGpQK8qpBHjlAY3YbIo1rETfSOdERLQP7/fnxG8OqQFI35g11OLUKb56aHdo1yvo4iC0+Y4TcX
-	N2Zyu+rpvSLFaf3ZQz0UaVTJFhGsHA7DwSCXrzlP4hs3UIdqb3Ii1em5msxhgEXLqx2mA3Jwvml
-	uWmyZN16CgNRSbdFphWusTzOEeRqFwTaP9Yat70FFOLkcJzwe2U4yI2Vo8Bj6FzqghigHOfzqWq
-	PZuhCYS1jjHF1GpO8eGcg3v3GrEdqzr0g/MT4FY4ffNjgekzRsHJJ3xB8e6tYzgy4A8d4qRTE=
-X-Google-Smtp-Source: AGHT+IG3JcoLJMtRbmF6VRDQOY9UH+gOZKPuPSg70/zIMIlY7t2a6Vyb+8LbWG8aqa1hQUqyH5V/Ag==
-X-Received: by 2002:a05:7301:d194:b0:2a4:617a:418a with SMTP id 5a478bee46e88-2a4abaa252cmr1665974eec.13.1763164487804;
-        Fri, 14 Nov 2025 15:54:47 -0800 (PST)
+        bh=A4f5r+TGOOPde/WLtRUa45GVIxXbdn1Vo4b55yI0gt4=;
+        b=HXRR9iCD4ENjXznIuoGTr8IHj75+6u5IHRhUrtib9y946Xg5VIN5NRPwxxI/fCVPg6
+         V/F1L73PrHf/vD83VcnkkpY0FOxSsEUtXYY0ZEsa0Ip6cnFo8aWIugXUEhnqzrZZ6VOX
+         yvsICP43bAt7HJqMG9DikG1YDf35gqBpq7Dmw=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1763164489; x=1763769289;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=A4f5r+TGOOPde/WLtRUa45GVIxXbdn1Vo4b55yI0gt4=;
+        b=cGl6/XPdcCYokWXq7iw1gTjZ//Ft1SVaaAzu2zMlmr62YErPsxb0RMqX+cM+mgklQy
+         UElQM5od9YLrYqC8qsYI0QRaBXQjj+05CzHahCYttTqT1sjUoS4RFI5EzMdOzGhpn3Ck
+         Vznd3ULLAE+AnxZHOfRi2Ksp00eUATR232Z/bTsJ++KhmHh3AjWpVzqq445DmXgajPVC
+         IUQ8Fa9S89XyKiJeCws/1Dh7raCdGBvD3RHCHCh1r3OsqB6Q1r6AWWacM8+YqiXZqeKJ
+         FWpYXZMo9XjmOSbFDNxFZRbcqP4UaaEQ/mI+MWX63WYlKjxQBYqhoL1ugiDBfnuLKWJ/
+         Ko1Q==
+X-Gm-Message-State: AOJu0Yxohyn+WGlw4IzMdt9EjKy5ZdB1W50KN4otgdOjp30vLup1qpCG
+	z1gBw/9I7bNG3Fn+yaGGzDEu/j1KNBA4OSpDioHydHzRp2vUnnXkGpYno6XplEzvQw==
+X-Gm-Gg: ASbGncu7MB4QxrAUn51OvPhV2G6rfugmSSBe/FyQcXBbhY7McXceQy2MXBBSBa3SMXz
+	iggpbM949GMJGHu+BIM6O9Ab4imqCLDeoJgTe5GLBT35Zc8n9xGc7EeK3GndPxOktL9ipkwq2nj
+	DgLRq9MYW7M7dPXLSqhB2b0d2NCnmMYzha2HowmhYqbNTBdhQJnzaDLQyaGNTy6/8jBsdAhFX6j
+	TvE/bjvMFfp03EaYxg3Qp20LlS6TcICqfKZY8S7qgjbZFxDjeh4O6+NQI+R4yG1OFoY4ovahfUZ
+	TsO0HXkLhC6jPLZ6inWwhx6F0nfztnscmNYYtPFq7JiXu+2PfJFsq80e5G2BzLiMFD3lcWdhZVw
+	KeGguiWaAnw+C5EW+OTvjBuO5eaUY0jGOCcayaRy6Ksz3ilfQLGSRYpFBIaCK2yjgrdbmaGc3Sq
+	7Z2K5ZJKB2Agrujag6yolMkUZqXE7iPe8kblZQcWm8QN9OBNbSVKyxiylU02nWFHpKHG3LRDpiN
+	mX3uTDdCw==
+X-Google-Smtp-Source: AGHT+IFtwwfARtE+LZgjm4XpePNHmAw5KTc8Gn91NyCPCwHKkcDkm5Smf3lVi3mzi3s6gN/2LN1I7g==
+X-Received: by 2002:a05:693c:40dc:b0:2a4:3593:4679 with SMTP id 5a478bee46e88-2a4abd973e6mr2295298eec.21.1763164488752;
+        Fri, 14 Nov 2025 15:54:48 -0800 (PST)
 Received: from khazhy-linux.svl.corp.google.com ([2a00:79e0:2e5b:9:bb76:6725:868a:78e5])
         by smtp.gmail.com with ESMTPSA id 5a478bee46e88-2a49db7a753sm14114818eec.6.2025.11.14.15.54.47
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 14 Nov 2025 15:54:47 -0800 (PST)
+        Fri, 14 Nov 2025 15:54:48 -0800 (PST)
 From: Khazhismel Kumykov <khazhy@chromium.org>
 X-Google-Original-From: Khazhismel Kumykov <khazhy@google.com>
 To: Tejun Heo <tj@kernel.org>,
@@ -76,11 +79,15 @@ To: Tejun Heo <tj@kernel.org>,
 Cc: cgroups@vger.kernel.org,
 	linux-block@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
+	Guenter Roeck <linux@roeck-us.net>,
+	Yu Kuai <yukuai@kernel.org>,
 	Khazhismel Kumykov <khazhy@google.com>
-Subject: [PATCH v2 0/3] block/blk-throttle: Fix throttle slice time for SSDs
-Date: Fri, 14 Nov 2025 15:54:31 -0800
-Message-ID: <20251114235434.2168072-1-khazhy@google.com>
+Subject: [PATCH v2 1/3] block/blk-throttle: Fix throttle slice time for SSDs
+Date: Fri, 14 Nov 2025 15:54:32 -0800
+Message-ID: <20251114235434.2168072-2-khazhy@google.com>
 X-Mailer: git-send-email 2.52.0.rc1.455.g30608eb744-goog
+In-Reply-To: <20251114235434.2168072-1-khazhy@google.com>
+References: <20251114235434.2168072-1-khazhy@google.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -89,27 +96,67 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Since commit bf20ab538c81 ("blk-throttle: remove CONFIG_BLK_DEV_THROTTLING_LOW"),
-the throttle slice time differs between SSD and non-SSD devices. This
-causes test failures with slow throttle speeds on SSD devices.
+From: Guenter Roeck <linux@roeck-us.net>
 
-The first patch in the series fixes the problem by restoring the throttle
-slice time to a fixed value, matching behavior seen prior to above
-mentioned revert. The remaining patches clean up unneeeded code after removing
-CONFIG_BLK_DEV_THROTTLING_LOW.
+Commit d61fcfa4bb18 ("blk-throttle: choose a small throtl_slice for SSD")
+introduced device type specific throttle slices if BLK_DEV_THROTTLING_LOW
+was enabled. Commit bf20ab538c81 ("blk-throttle: remove
+CONFIG_BLK_DEV_THROTTLING_LOW") removed support for BLK_DEV_THROTTLING_LOW,
+but left the device type specific throttle slices in place. This
+effectively changed throttling behavior on systems with SSD which now use
+a different and non-configurable slice time compared to non-SSD devices.
+Practical impact is that throughput tests with low configured throttle
+values (65536 bps) experience less than expected throughput on SSDs,
+presumably due to rounding errors associated with the small throttle slice
+time used for those devices. The same tests pass when setting the throttle
+values to 65536 * 4 = 262144 bps.
 
-Guenter Roeck (3):
-  block/blk-throttle: Fix throttle slice time for SSDs
-  block/blk-throttle: drop unneeded blk_stat_enable_accounting
-  block/blk-throttle: Remove throtl_slice from struct throtl_data
+The original code sets the throttle slice time to DFL_THROTL_SLICE_HD if
+CONFIG_BLK_DEV_THROTTLING_LOW is disabled. Restore that code to fix the
+problem. With that, DFL_THROTL_SLICE_SSD is no longer necessary. Revert to
+the original code and re-introduce DFL_THROTL_SLICE to replace both
+DFL_THROTL_SLICE_HD and DFL_THROTL_SLICE_SSD. This effectively reverts
+commit d61fcfa4bb18 ("blk-throttle: choose a small throtl_slice for SSD").
 
- block/blk-throttle.c | 45 ++++++++++++++------------------------------
- 1 file changed, 14 insertions(+), 31 deletions(-)
+While at it, also remove MAX_THROTL_SLICE since it is not used anymore.
 
+Fixes: bf20ab538c81 ("blk-throttle: remove CONFIG_BLK_DEV_THROTTLING_LOW")
+Cc: Yu Kuai <yukuai@kernel.org>
+Cc: Tejun Heo <tj@kernel.org>
+Signed-off-by: Guenter Roeck <linux@roeck-us.net>
+Signed-off-by: Khazhismel Kumykov <khazhy@google.com>
+---
+ block/blk-throttle.c | 9 ++-------
+ 1 file changed, 2 insertions(+), 7 deletions(-)
+
+diff --git a/block/blk-throttle.c b/block/blk-throttle.c
+index 2c5b64b1a724..c19d052a8f2f 100644
+--- a/block/blk-throttle.c
++++ b/block/blk-throttle.c
+@@ -22,9 +22,7 @@
+ #define THROTL_QUANTUM 32
+ 
+ /* Throttling is performed over a slice and after that slice is renewed */
+-#define DFL_THROTL_SLICE_HD (HZ / 10)
+-#define DFL_THROTL_SLICE_SSD (HZ / 50)
+-#define MAX_THROTL_SLICE (HZ)
++#define DFL_THROTL_SLICE (HZ / 10)
+ 
+ /* A workqueue to queue throttle related work */
+ static struct workqueue_struct *kthrotld_workqueue;
+@@ -1341,10 +1339,7 @@ static int blk_throtl_init(struct gendisk *disk)
+ 		goto out;
+ 	}
+ 
+-	if (blk_queue_nonrot(q))
+-		td->throtl_slice = DFL_THROTL_SLICE_SSD;
+-	else
+-		td->throtl_slice = DFL_THROTL_SLICE_HD;
++	td->throtl_slice = DFL_THROTL_SLICE;
+ 	td->track_bio_latency = !queue_is_mq(q);
+ 	if (!td->track_bio_latency)
+ 		blk_stat_enable_accounting(q);
 -- 
-
-v2: block accounting fix into separate patch
-
 2.52.0.rc1.455.g30608eb744-goog
 
 
