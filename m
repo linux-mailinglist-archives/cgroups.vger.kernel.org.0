@@ -1,155 +1,339 @@
-Return-Path: <cgroups+bounces-11953-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-11954-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EF730C5C395
-	for <lists+cgroups@lfdr.de>; Fri, 14 Nov 2025 10:21:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 09D26C5C927
+	for <lists+cgroups@lfdr.de>; Fri, 14 Nov 2025 11:28:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7248C3BD353
-	for <lists+cgroups@lfdr.de>; Fri, 14 Nov 2025 09:20:15 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A52093BC31D
+	for <lists+cgroups@lfdr.de>; Fri, 14 Nov 2025 10:25:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C5FE03054F5;
-	Fri, 14 Nov 2025 09:19:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DF9C63101C6;
+	Fri, 14 Nov 2025 10:25:41 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
 Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB82B30215D;
-	Fri, 14 Nov 2025 09:19:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 43965289811;
+	Fri, 14 Nov 2025 10:25:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=124.126.103.232
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763111958; cv=none; b=RacRQBIRgAh3AVvu0naCKt4BnGiYE7/5yE4UfeiqHVZyelfu2nQfOY2RKw5J+OzsRjJnUsULVOnpyPMjibnrTbQSkpW/O+XRsW6mYP/N22Ux+QNPFGGhzft2kBXGwhJAd3tsa77Ugorkry+Ll7+0QtwyMX2BoZQykbyXqn5A5iU=
+	t=1763115941; cv=none; b=f+MIWdC5Owxa3G8d9JyfnyN7ZkI3c1uawx1x0XI6vHWb7UeoIiu0Lvlw3gWvgNVpjh3BU0DcwID1UXBqMkpm8M73O8h1GlES5yRaSpSbbo7qqtWR34eJFsKZ39ZgQWCTf3mRKGT+EvLSTITgnQtZHRcKvcZjfIdNpuO17mWaChA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763111958; c=relaxed/simple;
-	bh=D4OkPFQ2eTQeHzIKv1g312Zn05yoLrzXJ7pSWXHVsVg=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=nt4oRJO/pJehUHT8ziAtaI4w5iDpAfjB4lxTrGtoyNi3zggsNfOvIKAA0szyVBckKJyKpoBr2QjgBAwVXjYdzZWayyazvT833MsEM+y/opI9chDB83DQJCjQ02uIMtAjovLoSNTjXxAPLqaw0AKCiTZHo3Y2Hppz3EH1k2T5G4U=
+	s=arc-20240116; t=1763115941; c=relaxed/simple;
+	bh=NTRQrkXrVOlZ817YcIMNizB6JNZt99wbtTjoaPbNuyU=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=ieQ21SsZhjgRaxWX/CvntyFwu5uZ8jj4KXFU67p1OiYgGy2XMAGOU2efakQD/2QaeWuehHmRqpmyQGIPxL39TEubn8d8ksQ9dp2zrMA7920PSegu9nblniGbFBXOjXpMd50fwyg/UlmgfRvh4ICilCdNK1i03RBBLH0FoW8sjLA=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn; spf=pass smtp.mailfrom=kylinos.cn; arc=none smtp.client-ip=124.126.103.232
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kylinos.cn
-X-UUID: f84076d0c13a11f0a38c85956e01ac42-20251114
+X-UUID: 3b8b74b8c14411f0a38c85956e01ac42-20251114
+X-CTIC-Tags:
+	HR_CC_COUNT, HR_CC_DOMAIN_COUNT, HR_CC_NAME, HR_CC_NO_NAME, HR_CTE_8B
+	HR_CTT_MISS, HR_DATE_H, HR_DATE_WKD, HR_DATE_ZONE, HR_FROM_NAME
+	HR_SJ_DIGIT_LEN, HR_SJ_LANG, HR_SJ_LEN, HR_SJ_LETTER, HR_SJ_NOR_SYM
+	HR_SJ_PHRASE, HR_SJ_PHRASE_LEN, HR_SJ_WS, HR_TO_COUNT, HR_TO_DOMAIN_COUNT
+	HR_TO_NO_NAME, IP_TRUSTED, SRC_TRUSTED, DN_TRUSTED, SA_UNTRUSTED
+	SA_LOWREP, SA_EXISTED, SN_UNTRUSTED, SN_LOWREP, SN_EXISTED
+	SPF_NOPASS, DKIM_NOPASS, DMARC_NOPASS
 X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.3.6,REQID:33a85a89-58c0-4279-aa61-a08f5896d271,IP:10,U
-	RL:0,TC:0,Content:0,EDM:0,RT:0,SF:1,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
-	release,TS:11
-X-CID-INFO: VERSION:1.3.6,REQID:33a85a89-58c0-4279-aa61-a08f5896d271,IP:10,URL
-	:0,TC:0,Content:0,EDM:0,RT:0,SF:1,FILE:0,BULK:0,RULE:Release_Ham,ACTION:re
-	lease,TS:11
-X-CID-META: VersionHash:a9d874c,CLOUDID:dfabb8f72b851ee1ab9a7d64679c66e7,BulkI
-	D:251113184535IYNM5ZGZ,BulkQuantity:3,Recheck:0,SF:19|64|66|72|78|80|81|82
-	|83|102|841,TC:nil,Content:0|15|50,EDM:-3,IP:-2,URL:99|1,File:nil,RT:nil,B
-	ulk:40,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:
-	0,BRE:0,ARC:0
+X-CID-O-INFO: VERSION:1.3.6,REQID:91711ad3-018f-4f8c-92c7-39b68ad9cecd,IP:10,U
+	RL:0,TC:0,Content:0,EDM:0,RT:0,SF:5,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
+	release,TS:15
+X-CID-INFO: VERSION:1.3.6,REQID:91711ad3-018f-4f8c-92c7-39b68ad9cecd,IP:10,URL
+	:0,TC:0,Content:0,EDM:0,RT:0,SF:5,FILE:0,BULK:0,RULE:Release_Ham,ACTION:re
+	lease,TS:15
+X-CID-META: VersionHash:a9d874c,CLOUDID:1983b938a7bc7da8f0fba472cf3cf538,BulkI
+	D:251114182531RMD01A3R,BulkQuantity:0,Recheck:0,SF:19|38|66|72|78|102|850,
+	TC:nil,Content:0|15|50,EDM:-3,IP:-2,URL:0,File:nil,RT:nil,Bulk:nil,QS:nil,
+	BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0,ARC:0
 X-CID-BVR: 2,SSN|SDN
 X-CID-BAS: 2,SSN|SDN,0,_
-X-CID-FACTOR: TF_CID_SPAM_ULS,TF_CID_SPAM_SNR,TF_CID_SPAM_FSD
+X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_FSD
 X-CID-RHF: D41D8CD98F00B204E9800998ECF8427E
-X-UUID: f84076d0c13a11f0a38c85956e01ac42-20251114
+X-UUID: 3b8b74b8c14411f0a38c85956e01ac42-20251114
 X-User: zhangguopeng@kylinos.cn
-Received: from [192.168.24.105] [(223.70.159.239)] by mailgw.kylinos.cn
+Received: from localhost.localdomain [(223.70.159.239)] by mailgw.kylinos.cn
 	(envelope-from <zhangguopeng@kylinos.cn>)
-	(Generic MTA with TLSv1.3 TLS_AES_128_GCM_SHA256 128/128)
-	with ESMTP id 1806708038; Fri, 14 Nov 2025 17:19:06 +0800
-Message-ID: <d3dd2dbc-ec02-48c4-952a-2b9d6a1bf9b8@kylinos.cn>
-Date: Fri, 14 Nov 2025 17:19:02 +0800
+	(Generic MTA with TLSv1.3 TLS_AES_256_GCM_SHA384 256/256)
+	with ESMTP id 356757877; Fri, 14 Nov 2025 18:25:24 +0800
+From: Guopeng Zhang <zhangguopeng@kylinos.cn>
+To: mkoutny@suse.com,
+	tj@kernel.org,
+	hannes@cmpxchg.org,
+	shuah@kernel.org,
+	cgroups@vger.kernel.org
+Cc: sebastian.chlad@suse.com,
+	linux-kselftest@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Guopeng Zhang <zhangguopeng@kylinos.cn>
+Subject: [PATCH v2] selftests/cgroup: conform test to KTAP format output
+Date: Fri, 14 Nov 2025 18:24:40 +0800
+Message-Id: <20251114102440.3448810-1-zhangguopeng@kylinos.cn>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] selftests/cgroup: conform test to TAP format output
-To: Sebastian Chlad <sebastian.chlad@suse.com>
-Cc: mkoutny@suse.com, tj@kernel.org, hannes@cmpxchg.org, shuah@kernel.org,
- cgroups@vger.kernel.org, linux-kselftest@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <6lwnagu63xzanum2xx6vkm2qe4oh74fteqeymmkqxyjbovcce6@3jekdivdr7yf>
- <6916a904.9d0a0220.2b5e5.0b79SMTPIN_ADDED_BROKEN@mx.google.com>
- <CAJR+Y9LG+qrvDdbufNpBqW4+8oPBrmY3eABJzXBm9Y_DPN4XLg@mail.gmail.com>
-From: Guopeng Zhang <zhangguopeng@kylinos.cn>
-In-Reply-To: <CAJR+Y9LG+qrvDdbufNpBqW4+8oPBrmY3eABJzXBm9Y_DPN4XLg@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
+Conform the layout, informational and status messages to KTAP.  No
+functional change is intended other than the layout of output messages.
 
+Signed-off-by: Guopeng Zhang <zhangguopeng@kylinos.cn>
+Suggested-by: Sebastian Chlad <sebastian.chlad@suse.com>
+---
+v2:
+Change subject and commit message to refer to KTAP instead of TAP.
+No code changes.
+---
+ tools/testing/selftests/cgroup/test_core.c       | 7 ++++---
+ tools/testing/selftests/cgroup/test_cpu.c        | 7 ++++---
+ tools/testing/selftests/cgroup/test_cpuset.c     | 7 ++++---
+ tools/testing/selftests/cgroup/test_freezer.c    | 7 ++++---
+ tools/testing/selftests/cgroup/test_kill.c       | 7 ++++---
+ tools/testing/selftests/cgroup/test_kmem.c       | 7 ++++---
+ tools/testing/selftests/cgroup/test_memcontrol.c | 7 ++++---
+ tools/testing/selftests/cgroup/test_zswap.c      | 7 ++++---
+ 8 files changed, 32 insertions(+), 24 deletions(-)
 
-On 11/14/25 15:04, Sebastian Chlad wrote:
-> On Fri, Nov 14, 2025 at 4:59 AM Guopeng Zhang <zhangguopeng@kylinos.cn> wrote:
->>
->> Hi Michal,
->>
->> Thanks for reviewing and pointing out [1].
->>
->>> Could you please explain more why is the TAP layout beneficial?
->>> (I understand selftest are for oneself, i.e. human readable only by default.)
->>
->> Actually, selftests are no longer just something for developers to view locally; they are now extensively
->> run in CI and stable branch regression testing. Using a standardized layout means that general test runners
->> and CI systems can parse the cgroup test results without any special handling.
-> 
-> I second that.
-> In fact, we do run some of those tests in the CI; i.e.
-> https://openqa.opensuse.org/tests/5453031#external
-> We added this: https://github.com/os-autoinst/openQA/blob/master/lib/OpenQA/Parser/Format/KTAP.pm
-> to our CI
-> but frankly the use of the KTAP across the selftests is very
-> inconsistent, so we need to post-process some of the output files
-> quite a lot.
-> Therefore the more standardized the output, the better for any CI.
-> 
-Hi Sebastian,
-
-Thanks a lot for the details and for sharing the openQA links and the KTAP parser.
-That context is really helpful.
-> Small ask: should we amend the commit message to say KTAP?
-> 
-Good point about the naming – I’ll respin this as v2 and amend the commit
-message to refer to KTAP rather than just TAP.
-> That being said - the cgroups tests produce nice output which is easy
-> to parse and gives us no issues in our CI apart
-> from the shell tests, specifically test_cpuset_prs.sh.
-> 
-> We currently run the cgroup tests only internally because some of them
-> tend to fail when crossing resource-usage
-> boundaries and don’t provide clear information about by how much.
-> That ties into my earlier effort Michal linked here::
-> https://lore.kernel.org/all/rua6ubri67gh3b7atarbm5mggqgjyh6646mzkry2n2547jne4s@wvvpr3esi5es/
-> 
-> I’ll try to add the cgroup tests to the public openSUSE CI and will
-> test your patches.
-> 
-It’s also great to hear that the cgroup C tests already integrate reasonably
-well with your CI. Once this change settles, I’d be happy to follow up with
-patches to convert the cgroup shell tests, in particular test_cpuset_prs.sh,
-to KTAP-style output as well.
-
-Thanks again for trying the patches in the openSUSE CI and for the feedback.
->>
->> TAP provides a structured format that is both human-readable and machine-readable. The plan/result lines are parsed by tools,
->> while the diagnostic lines can still contain human-readable debug information. Over time, other selftest suites (such as mm, KVM, mptcp, etc.)
->> have also been converted to TAP-style output, so this change just brings the cgroup tests in line with that broader direction.
->>
->>> Or is this part of some tree-wide effort?
->>
->> This patch is not part of a formal, tree-wide conversion series I am running; it is an incremental step to align the
->> cgroup C tests with the existing TAP usage. I started here because these tests already use ksft_test_result_*() and
->> only require minor changes to generate proper TAP output.
->>
->>> I'm asking to better asses whether also the scripts listed in
->>> Makefile:TEST_PROGS should be converted too.
->>
->> I agree that having them produce TAP output would benefit tooling and CI. I did not want to mix
->> that into this change, but if you and other maintainers think this direction is reasonable,
->> I would be happy to follow up and convert the cgroup shell tests to TAP as well.
->>
->> Thanks again for your review.
->>
->> Best regards,
->> Guopeng
->>
->>
+diff --git a/tools/testing/selftests/cgroup/test_core.c b/tools/testing/selftests/cgroup/test_core.c
+index 5e5b8c4b8c0e..102262555a59 100644
+--- a/tools/testing/selftests/cgroup/test_core.c
++++ b/tools/testing/selftests/cgroup/test_core.c
+@@ -923,8 +923,10 @@ struct corecg_test {
+ int main(int argc, char *argv[])
+ {
+ 	char root[PATH_MAX];
+-	int i, ret = EXIT_SUCCESS;
++	int i;
+ 
++	ksft_print_header();
++	ksft_set_plan(ARRAY_SIZE(tests));
+ 	if (cg_find_unified_root(root, sizeof(root), &nsdelegate)) {
+ 		if (setup_named_v1_root(root, sizeof(root), CG_NAMED_NAME))
+ 			ksft_exit_skip("cgroup v2 isn't mounted and could not setup named v1 hierarchy\n");
+@@ -946,12 +948,11 @@ int main(int argc, char *argv[])
+ 			ksft_test_result_skip("%s\n", tests[i].name);
+ 			break;
+ 		default:
+-			ret = EXIT_FAILURE;
+ 			ksft_test_result_fail("%s\n", tests[i].name);
+ 			break;
+ 		}
+ 	}
+ 
+ 	cleanup_named_v1_root(root);
+-	return ret;
++	ksft_finished();
+ }
+diff --git a/tools/testing/selftests/cgroup/test_cpu.c b/tools/testing/selftests/cgroup/test_cpu.c
+index 7d77d3d43c8e..c83f05438d7c 100644
+--- a/tools/testing/selftests/cgroup/test_cpu.c
++++ b/tools/testing/selftests/cgroup/test_cpu.c
+@@ -796,8 +796,10 @@ struct cpucg_test {
+ int main(int argc, char *argv[])
+ {
+ 	char root[PATH_MAX];
+-	int i, ret = EXIT_SUCCESS;
++	int i;
+ 
++	ksft_print_header();
++	ksft_set_plan(ARRAY_SIZE(tests));
+ 	if (cg_find_unified_root(root, sizeof(root), NULL))
+ 		ksft_exit_skip("cgroup v2 isn't mounted\n");
+ 
+@@ -814,11 +816,10 @@ int main(int argc, char *argv[])
+ 			ksft_test_result_skip("%s\n", tests[i].name);
+ 			break;
+ 		default:
+-			ret = EXIT_FAILURE;
+ 			ksft_test_result_fail("%s\n", tests[i].name);
+ 			break;
+ 		}
+ 	}
+ 
+-	return ret;
++	ksft_finished();
+ }
+diff --git a/tools/testing/selftests/cgroup/test_cpuset.c b/tools/testing/selftests/cgroup/test_cpuset.c
+index 8094091a5857..c5cf8b56ceb8 100644
+--- a/tools/testing/selftests/cgroup/test_cpuset.c
++++ b/tools/testing/selftests/cgroup/test_cpuset.c
+@@ -247,8 +247,10 @@ struct cpuset_test {
+ int main(int argc, char *argv[])
+ {
+ 	char root[PATH_MAX];
+-	int i, ret = EXIT_SUCCESS;
++	int i;
+ 
++	ksft_print_header();
++	ksft_set_plan(ARRAY_SIZE(tests));
+ 	if (cg_find_unified_root(root, sizeof(root), NULL))
+ 		ksft_exit_skip("cgroup v2 isn't mounted\n");
+ 
+@@ -265,11 +267,10 @@ int main(int argc, char *argv[])
+ 			ksft_test_result_skip("%s\n", tests[i].name);
+ 			break;
+ 		default:
+-			ret = EXIT_FAILURE;
+ 			ksft_test_result_fail("%s\n", tests[i].name);
+ 			break;
+ 		}
+ 	}
+ 
+-	return ret;
++	ksft_finished();
+ }
+diff --git a/tools/testing/selftests/cgroup/test_freezer.c b/tools/testing/selftests/cgroup/test_freezer.c
+index 714c963aa3f5..97fae92c8387 100644
+--- a/tools/testing/selftests/cgroup/test_freezer.c
++++ b/tools/testing/selftests/cgroup/test_freezer.c
+@@ -1488,8 +1488,10 @@ struct cgfreezer_test {
+ int main(int argc, char *argv[])
+ {
+ 	char root[PATH_MAX];
+-	int i, ret = EXIT_SUCCESS;
++	int i;
+ 
++	ksft_print_header();
++	ksft_set_plan(ARRAY_SIZE(tests));
+ 	if (cg_find_unified_root(root, sizeof(root), NULL))
+ 		ksft_exit_skip("cgroup v2 isn't mounted\n");
+ 	for (i = 0; i < ARRAY_SIZE(tests); i++) {
+@@ -1501,11 +1503,10 @@ int main(int argc, char *argv[])
+ 			ksft_test_result_skip("%s\n", tests[i].name);
+ 			break;
+ 		default:
+-			ret = EXIT_FAILURE;
+ 			ksft_test_result_fail("%s\n", tests[i].name);
+ 			break;
+ 		}
+ 	}
+ 
+-	return ret;
++	ksft_finished();
+ }
+diff --git a/tools/testing/selftests/cgroup/test_kill.c b/tools/testing/selftests/cgroup/test_kill.c
+index a4dd326ced79..c8c9d306925b 100644
+--- a/tools/testing/selftests/cgroup/test_kill.c
++++ b/tools/testing/selftests/cgroup/test_kill.c
+@@ -274,8 +274,10 @@ struct cgkill_test {
+ int main(int argc, char *argv[])
+ {
+ 	char root[PATH_MAX];
+-	int i, ret = EXIT_SUCCESS;
++	int i;
+ 
++	ksft_print_header();
++	ksft_set_plan(ARRAY_SIZE(tests));
+ 	if (cg_find_unified_root(root, sizeof(root), NULL))
+ 		ksft_exit_skip("cgroup v2 isn't mounted\n");
+ 	for (i = 0; i < ARRAY_SIZE(tests); i++) {
+@@ -287,11 +289,10 @@ int main(int argc, char *argv[])
+ 			ksft_test_result_skip("%s\n", tests[i].name);
+ 			break;
+ 		default:
+-			ret = EXIT_FAILURE;
+ 			ksft_test_result_fail("%s\n", tests[i].name);
+ 			break;
+ 		}
+ 	}
+ 
+-	return ret;
++	ksft_finished();
+ }
+diff --git a/tools/testing/selftests/cgroup/test_kmem.c b/tools/testing/selftests/cgroup/test_kmem.c
+index 005a142f3492..ca38525484e3 100644
+--- a/tools/testing/selftests/cgroup/test_kmem.c
++++ b/tools/testing/selftests/cgroup/test_kmem.c
+@@ -421,8 +421,10 @@ struct kmem_test {
+ int main(int argc, char **argv)
+ {
+ 	char root[PATH_MAX];
+-	int i, ret = EXIT_SUCCESS;
++	int i;
+ 
++	ksft_print_header();
++	ksft_set_plan(ARRAY_SIZE(tests));
+ 	if (cg_find_unified_root(root, sizeof(root), NULL))
+ 		ksft_exit_skip("cgroup v2 isn't mounted\n");
+ 
+@@ -446,11 +448,10 @@ int main(int argc, char **argv)
+ 			ksft_test_result_skip("%s\n", tests[i].name);
+ 			break;
+ 		default:
+-			ret = EXIT_FAILURE;
+ 			ksft_test_result_fail("%s\n", tests[i].name);
+ 			break;
+ 		}
+ 	}
+ 
+-	return ret;
++	ksft_finished();
+ }
+diff --git a/tools/testing/selftests/cgroup/test_memcontrol.c b/tools/testing/selftests/cgroup/test_memcontrol.c
+index 2e9d78ab641c..4e1647568c5b 100644
+--- a/tools/testing/selftests/cgroup/test_memcontrol.c
++++ b/tools/testing/selftests/cgroup/test_memcontrol.c
+@@ -1650,8 +1650,10 @@ struct memcg_test {
+ int main(int argc, char **argv)
+ {
+ 	char root[PATH_MAX];
+-	int i, proc_status, ret = EXIT_SUCCESS;
++	int i, proc_status;
+ 
++	ksft_print_header();
++	ksft_set_plan(ARRAY_SIZE(tests));
+ 	if (cg_find_unified_root(root, sizeof(root), NULL))
+ 		ksft_exit_skip("cgroup v2 isn't mounted\n");
+ 
+@@ -1685,11 +1687,10 @@ int main(int argc, char **argv)
+ 			ksft_test_result_skip("%s\n", tests[i].name);
+ 			break;
+ 		default:
+-			ret = EXIT_FAILURE;
+ 			ksft_test_result_fail("%s\n", tests[i].name);
+ 			break;
+ 		}
+ 	}
+ 
+-	return ret;
++	ksft_finished();
+ }
+diff --git a/tools/testing/selftests/cgroup/test_zswap.c b/tools/testing/selftests/cgroup/test_zswap.c
+index ab865d900791..64ebc3f3f203 100644
+--- a/tools/testing/selftests/cgroup/test_zswap.c
++++ b/tools/testing/selftests/cgroup/test_zswap.c
+@@ -597,8 +597,10 @@ static bool zswap_configured(void)
+ int main(int argc, char **argv)
+ {
+ 	char root[PATH_MAX];
+-	int i, ret = EXIT_SUCCESS;
++	int i;
+ 
++	ksft_print_header();
++	ksft_set_plan(ARRAY_SIZE(tests));
+ 	if (cg_find_unified_root(root, sizeof(root), NULL))
+ 		ksft_exit_skip("cgroup v2 isn't mounted\n");
+ 
+@@ -625,11 +627,10 @@ int main(int argc, char **argv)
+ 			ksft_test_result_skip("%s\n", tests[i].name);
+ 			break;
+ 		default:
+-			ret = EXIT_FAILURE;
+ 			ksft_test_result_fail("%s\n", tests[i].name);
+ 			break;
+ 		}
+ 	}
+ 
+-	return ret;
++	ksft_finished();
+ }
+-- 
+2.25.1
 
 
