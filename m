@@ -1,141 +1,89 @@
-Return-Path: <cgroups+bounces-11971-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-11972-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 45C59C5EDE0
-	for <lists+cgroups@lfdr.de>; Fri, 14 Nov 2025 19:30:03 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1580EC5F0C7
+	for <lists+cgroups@lfdr.de>; Fri, 14 Nov 2025 20:33:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D85773A7B72
-	for <lists+cgroups@lfdr.de>; Fri, 14 Nov 2025 18:30:01 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 6158D4E4799
+	for <lists+cgroups@lfdr.de>; Fri, 14 Nov 2025 19:28:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB92F2D7DF7;
-	Fri, 14 Nov 2025 18:29:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6AECF2F25FA;
+	Fri, 14 Nov 2025 19:27:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="RJbPo++5"
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="mzEGyLyV";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="lhvJq1so"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-wm1-f48.google.com (mail-wm1-f48.google.com [209.85.128.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 96C4A31D723
-	for <cgroups@vger.kernel.org>; Fri, 14 Nov 2025 18:29:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AECE32ED86F;
+	Fri, 14 Nov 2025 19:27:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763144974; cv=none; b=VRFa6EwnkRZONGDI5dEmgDTBr7jC/M9KY2HgLdp/P/W0FgtvN3IjLiYrLv2EQ+BFVIGTJi0B3Vvwdur1xNhQBL/EQ4vMunLi7xEvt+5sDbDwyhZnmfpZZQNnThI/4tfRYxTWA3qdZssrSeZ+e+AFFhzrTP1xgghjcuSaVoKN/4I=
+	t=1763148478; cv=none; b=G8malftjErRBz8HvheRFvOjiDlkBqehAJVntXuYtgV7HrnbhZCkPmhjZ2OEVAIbWDsqleWczhr0xAjNSPLwMpu/KrvxmHd4AN0ZKhXwLWPxe4FufflWZF4uBcAbraPZhaWVfNHAr/QqWNq4e3EzWCdl3+tXAmDdpgIh+Ki8yQIw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763144974; c=relaxed/simple;
-	bh=V+os3BBZVwF/PrLDunpQ8w9lhgRvpQnhZ1tdXiJr0Qg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=oW0l+vkYliCXS9O3fDN1zpOPx6WUoLqQ8rmeWINhe/8oKVjBBPn2fBqDFGSlK9ePG/sMU47QYyuZCUYdILBYHej1xiiXvvk9JCoQkEvQ0wNAwWt0l8w5/DpBKQwz8px2u7lmdO7LLsIImpKTKNZmBaaMyI2DEZbngTWAu8CqBCk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=RJbPo++5; arc=none smtp.client-ip=209.85.128.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-wm1-f48.google.com with SMTP id 5b1f17b1804b1-4710022571cso21895185e9.3
-        for <cgroups@vger.kernel.org>; Fri, 14 Nov 2025 10:29:32 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1763144971; x=1763749771; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=Rs6KuXzAAad7sbRP025YxG1G/WsCswtNWwIDQpANIbg=;
-        b=RJbPo++5wNv5rMNXTV+GeN14ISgMPC/3K7VSFi9s6J2rV8C9c3A66+ecEG29j72MxK
-         qRy0rel6NAPfA9xImlkWhRHvC5nGHkFmquW4nI556G4LyDr8HWeVLegnUsTDf8gz7gV2
-         VhmQTqeLZHl946mS4UocJIEqTfA2XUt4tBu+qPl1sPYV/A25Zpez5cYkVQvp4jJdg59M
-         0MPgNSLV5IDmb33WqFGSnWbz9rpgWwM5zTSZ956B0WJqy9F3A0VWSon/O3mbm5fB3H8i
-         9LixIjF+EYI/lewA4H6xrkr7/j3s0Jx5t1Dnoept3bPw87WPq+/5gb/7ZRNIz+LD0Ph6
-         g3rg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1763144971; x=1763749771;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Rs6KuXzAAad7sbRP025YxG1G/WsCswtNWwIDQpANIbg=;
-        b=MjqKcPY+oDeNS7DxW+l4m7EC95M6vvtMJ8rqZQZuRjCgu5ma2U1jCFjo4ZuPdKiREe
-         dEywCmwJPd3ATupv6lADeX6dK7e/P2/oks/vBBa9tustdsODlUkCvtGXxcFYyxg+VBL5
-         867ETZrngciYOB/Zwua9vm0qNJvDSGSYX9ASE8lkJ7ncx80XaVChJS7cojb2xSODvcNJ
-         AOm6J8aXGROc5VuEfP/IGLzejxIU/b490OeXkrkZSKo9OIMKwtAmooCr52hHtcMjWU2B
-         7v5VwydB4cLEatWDoV5WM+6Apu7SsLFDLKUx9cxBNJw8y5e9fW3S/SMPk2w58gg8ZpY3
-         ks0g==
-X-Gm-Message-State: AOJu0Yw4MDVrfsWxNATKUkXr3UqP7bpFsYeJy/nOqrIHgNyZEo1zQ0XA
-	0qZ9M/4TIG4AG240q+IkTTAsV91mALu2KdUXpLGdN/cdw4bGGRRbVjySruqA8gHIIr4=
-X-Gm-Gg: ASbGnctEWQlV/vLKKzYdMU8SOV8hnB5XCyt9pJkCs34EzL0+MYqnF3BuO5sgIXq8cQO
-	eVvZtxz+rrjEwtXMBI99FLe73bKEYjN5Fo10jotarQ7i2jtdiDaWsW8l1hMCyur12DyxJFPyNO9
-	R9JcYQOrHrThNQD8k7INfuAeq79AQEW1WeciVIPJVLDVU7x1gOUzzCyRTDRNJ3QDwoyryH8yYNR
-	kDQL+upYiuWLJ3mmchYwjwN6q4uKzsbFwvL3qfkisX4vLI6ZsNHcCDGxTaLsGxxPGNh6hNqv9Tv
-	bO1wd9YaWNrqeAJ3j323cUo0Vi1FZZxJMCXnrrbM5U3dHqmRWRrJQ28PbWgM1mcdZidth5YtAql
-	0XkfGuzeig6bXyTr9T5VOGG5IthcrGrrjjyFGbQjtKrBlBkWFn5niGp4KQwp1FWbGmk6eHzO8or
-	50NAHJIcQ2HGiGjAp2Re+dtUhBWH0MgeE=
-X-Google-Smtp-Source: AGHT+IGiVuh5NjUH3OUXRwywEj3dAAcLkuSOQxnMCr/Tjl01waowqDE5+kN/bovUGSqLMkvh7dTWrw==
-X-Received: by 2002:a05:600c:630d:b0:477:89d5:fdac with SMTP id 5b1f17b1804b1-4778fea1becmr45809045e9.31.1763144970812;
-        Fri, 14 Nov 2025 10:29:30 -0800 (PST)
-Received: from blackdock.suse.cz (nat2.prg.suse.com. [195.250.132.146])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-47787daab3fsm184371285e9.0.2025.11.14.10.29.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 14 Nov 2025 10:29:30 -0800 (PST)
-Date: Fri, 14 Nov 2025 19:29:28 +0100
-From: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
-To: Jonathan Corbet <corbet@lwn.net>
-Cc: cgroups@vger.kernel.org, linux-doc@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, Natalie Vock <natalie.vock@gmx.de>, 
-	Maarten Lankhorst <dev@lankhorst.se>, Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>
-Subject: Re: [PATCH RESEND 1/3] docs: cgroup: Explain reclaim protection
- target
-Message-ID: <qhywsiwlbrpe4el3pcprtnpwdyifmfxesmsdgxuze6ho3d4wqe@mweffv3yoxlt>
-References: <20251110193638.623208-1-mkoutny@suse.com>
- <20251110193638.623208-2-mkoutny@suse.com>
- <87wm3xwtcm.fsf@trenco.lwn.net>
+	s=arc-20240116; t=1763148478; c=relaxed/simple;
+	bh=fIP30BIi+nbkk1jws3UoNLwug2/m6PXiHl2hbLq4bu4=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=oBV+SoQ3t9xFttmAqGMx4lXbsPr6N5zFDgt5UtYqqYMQx/v7yQgBPxl9o9NMAAoBQUnW267Kr74t4lksuuWBbmjpHkdG541p5MVKv27AMC2j9A3fjj5voUZ1mA0mkjN2otrLbOmEtgmxJjayBN4O5Jd+OmE7fzA/qD9FQm+8xyA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=mzEGyLyV; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=lhvJq1so; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+From: Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1763148474;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=fIP30BIi+nbkk1jws3UoNLwug2/m6PXiHl2hbLq4bu4=;
+	b=mzEGyLyVwMwvGCrTRPZcdj9gBt9D/Gi/TW4q/DtNC3mT/YRfTB44dXerQ0xCYHW0Jvx18G
+	Avgb9L0sKkiHMzFAYvobT37WVRr1+0n83BXeKMlPzfHW8h2r9ntgDeYRq3L9mwnlCbKOTN
+	mL87vv9eyOgrWwG6qfY4QZLloSEgGSct4hTGKmlCme/3R+Y6FNbMSuvxQ/05BmGH6j+t7U
+	AfZodXJ68xIgK7G7iY50g0ek9rYr0m45oyN1p/gJR4MEzJIIz+Q4PXDBnZHoYnUd1dg+Z3
+	E0/Nm24A/xOEPapJrGULtIK1VgXnV/h5ybyewtFZzWCPuMgvBboMAzxKi8obkw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1763148474;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=fIP30BIi+nbkk1jws3UoNLwug2/m6PXiHl2hbLq4bu4=;
+	b=lhvJq1soMa2ManHvchkFhjlnOemj1riOo5kEisjHHlHvp2eijVtcSNsrnrrNd/pMvN99ag
+	QNNtykBJKnqr1sBA==
+To: Christian Brauner <brauner@kernel.org>, linux-fsdevel@vger.kernel.org,
+ Josef Bacik <josef@toxicpanda.com>, Jeff Layton <jlayton@kernel.org>
+Cc: Jann Horn <jannh@google.com>, Mike Yuan <me@yhndnzj.com>, Zbigniew
+ =?utf-8?Q?J=C4=99drzejewski-Szmek?= <zbyszek@in.waw.pl>, Lennart Poettering
+ <mzxreary@0pointer.de>, Daan De Meyer <daan.j.demeyer@gmail.com>, Aleksa
+ Sarai <cyphar@cyphar.com>, Amir Goldstein <amir73il@gmail.com>, Tejun Heo
+ <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>, Alexander Viro
+ <viro@zeniv.linux.org.uk>, Jan Kara <jack@suse.cz>,
+ linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+ bpf@vger.kernel.org, Eric Dumazet <edumazet@google.com>, Jakub Kicinski
+ <kuba@kernel.org>, netdev@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
+ Christian Brauner <brauner@kernel.org>
+Subject: Re: [PATCH 16/17] ns: drop custom reference count initialization
+ for initial namespaces
+In-Reply-To: <20251110-work-namespace-nstree-fixes-v1-16-e8a9264e0fb9@kernel.org>
+References: <20251110-work-namespace-nstree-fixes-v1-0-e8a9264e0fb9@kernel.org>
+ <20251110-work-namespace-nstree-fixes-v1-16-e8a9264e0fb9@kernel.org>
+Date: Fri, 14 Nov 2025 20:27:53 +0100
+Message-ID: <87bjl4beiu.ffs@tglx>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="iit6ajlbncbnam5z"
-Content-Disposition: inline
-In-Reply-To: <87wm3xwtcm.fsf@trenco.lwn.net>
+Content-Type: text/plain
 
+On Mon, Nov 10 2025 at 16:08, Christian Brauner wrote:
+> Initial namespaces don't modify their reference count anymore.
+> They remain fixed at one so drop the custom refcount initializations.
+>
+> Signed-off-by: Christian Brauner <brauner@kernel.org>
 
---iit6ajlbncbnam5z
-Content-Type: text/plain; protected-headers=v1; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-Subject: Re: [PATCH RESEND 1/3] docs: cgroup: Explain reclaim protection
- target
-MIME-Version: 1.0
-
-On Mon, Nov 10, 2025 at 01:00:41PM -0700, Jonathan Corbet <corbet@lwn.net> =
-wrote:
-> > @@ -53,7 +53,8 @@ v1 is available under :ref:`Documentation/admin-guide=
-/cgroup-v1/index.rst <cgrou
-> >       5-2. Memory
-> >         5-2-1. Memory Interface Files
-> >         5-2-2. Usage Guidelines
-> > -       5-2-3. Memory Ownership
-> > +       5-2-3. Reclaim Protection
-> > +       5-2-4. Memory Ownership
->=20
-> I always have to ask...do we really need the manually maintained TOC
-> here?=20
-
-Tejun [1] (and maybe some others) like it.
-
-Thanks,
-Michal
-
-[1] https://lore.kernel.org/r/aMwo-IW35bsdc1BM@slm.duckdns.org/
-
---iit6ajlbncbnam5z
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iJEEABYKADkWIQRCE24Fn/AcRjnLivR+PQLnlNv4CAUCaRd1BhsUgAAAAAAEAA5t
-YW51MiwyLjUrMS4xMSwyLDIACgkQfj0C55Tb+AgYPQEApUkkuPc8jpbhA9W1qLNR
-2OzJ5OQuiJ+KJRVk9vv4/AQBAInGMLPC1Ye6Oy6vRBeNzV+ocTcDynZ9usjxMN5D
-Jf0P
-=7GH6
------END PGP SIGNATURE-----
-
---iit6ajlbncbnam5z--
+Acked-by: Thomas Gleixner <tglx@linutronix.de>
 
