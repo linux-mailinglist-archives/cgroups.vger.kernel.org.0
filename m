@@ -1,242 +1,112 @@
-Return-Path: <cgroups+bounces-11957-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-11958-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3896FC5E2F4
-	for <lists+cgroups@lfdr.de>; Fri, 14 Nov 2025 17:23:54 +0100 (CET)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id AA4B9C5E223
+	for <lists+cgroups@lfdr.de>; Fri, 14 Nov 2025 17:14:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id C121D501AF0
-	for <lists+cgroups@lfdr.de>; Fri, 14 Nov 2025 15:48:00 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 7340F367E26
+	for <lists+cgroups@lfdr.de>; Fri, 14 Nov 2025 15:53:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1858933D6E6;
-	Fri, 14 Nov 2025 15:35:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AFFBA32F77F;
+	Fri, 14 Nov 2025 15:40:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="FAsvS4Xy"
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="3dJAh/Ae";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="JyatNC89"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-pj1-f41.google.com (mail-pj1-f41.google.com [209.85.216.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 156F233E344
-	for <cgroups@vger.kernel.org>; Fri, 14 Nov 2025 15:35:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 133E015746E;
+	Fri, 14 Nov 2025 15:40:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763134539; cv=none; b=iWcsRM3YR3o00vBF7TCy1tofIrE0ivcLfxFo98cCqy7m3vNkpKmmXLrkVaPji2SdghNuRHk64NmS+nKJx/K8H0h3EAhQVFw7Cv/478VsVGeLSscnNa7JCblSnnoW+lCCw4OBaxBMtYVy0JmCCxuL6l1n1aADM4Z0jJK5jpFJXlk=
+	t=1763134850; cv=none; b=rS7B9pDn2VIrpjoerl6QZR9vvmvAiFfTw5JEJ8pqj/K7dk0hXS08pux9tdbkaMSWRSLiv3X/xgpULn4pV+DUaGLJNMCcafvtbNJ44Sp5G9jwu4SeD3WEdRK5ZvHY6pUsP0CnAeOCk914b6L4w0kQLWZ8XOKgtzK0zSFtTJ5eheo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763134539; c=relaxed/simple;
-	bh=j0qsxl3uniKIqQftjyMY8DYAOdAo/FWnUDwzouYThaQ=;
-	h=Message-ID:Date:MIME-Version:From:Subject:To:Cc:References:
-	 In-Reply-To:Content-Type; b=bLUjxz6L9zki81FFx1AEgCRZJVA4VOBNU6+zurl7I9Tv04Y1NaqRCTmyN3oNE+oVkDJcDQvQlCMZ4ea3meAgt4Es3T9UBL7L1XvSng/3zE5+HyNiK12NEopU0wcyHF++4faF9TgxxUZUi6tIW/6YmsBAfAO/8qrjNHnj9sxug80=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=FAsvS4Xy; arc=none smtp.client-ip=209.85.216.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
-Received: by mail-pj1-f41.google.com with SMTP id 98e67ed59e1d1-341988c720aso1842282a91.3
-        for <cgroups@vger.kernel.org>; Fri, 14 Nov 2025 07:35:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1763134537; x=1763739337; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:references:cc:to:subject:from
-         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Do1ulcbjwbox5pHRl0C2qYb8sHFbD2Rm8Vw+uifoI+o=;
-        b=FAsvS4XyJcyJNZAuxXQhBPcH5N/7Z+GXTgiCQVQ9uh7APCXWaD9ixqA9GJbflsKAr8
-         B7TL+2HwCEewn+oeahWAtkhB5mVdm1kDOHMyv+30ainnpDWi6e2hLgh6ZVMPnaMKkeaW
-         of33afaZ5BdXDemJi9jzV6H0qFxJTqfIg/vkbYqIf2nehUiP1iIz5NgOKSwtKN0LmMH1
-         xD4+/pVHrpnuJIZFhOqSn+k4F1RfiALWjg+VNNQ1+PPgqzMu+nA5exZbd9/y8p9xosPO
-         OVKJ4fZKYqmyFEuGLh0/sNW4Wou7J5Jef9orO2VGSVeLxAFy4WDWVIr2mUdHXuaqlIOz
-         33Vg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1763134537; x=1763739337;
-        h=content-transfer-encoding:in-reply-to:references:cc:to:subject:from
-         :user-agent:mime-version:date:message-id:x-gm-gg:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Do1ulcbjwbox5pHRl0C2qYb8sHFbD2Rm8Vw+uifoI+o=;
-        b=KP/EPcEnt2XspNFcEQg4ojag1XvX0EF/eDtdR3ItdbiUyxBenSuHEyp+2k2JHd4KLx
-         vhf/b6gg/uFyanZDYajP7JwThvbscRLe3cHjr4RBd5UyB8xHN0iT9xOLvPaUC86chwuW
-         LA0YjCIjuBUY4Jbz4gh71sVUMp3mwhnbs20oZNe9UslHGInI2msEf2OIRl+Wy+oP7AQL
-         kmRXd5vbRq0qNawT/jMOzGJB2bfPavzC5lIO+S5/EQ6agNHwqiYZylksJKNgKx/Ab0uq
-         1lb+9/7zGg9oMfe/J7NHWmqWbF+QY/sTjKm/DtOhpuDXz+/TJnEqFByL8NnGYE9YzkqQ
-         5bvA==
-X-Forwarded-Encrypted: i=1; AJvYcCX0V7cyUaUsENRLcBVLGqb5rdAPrjEoQqvN4rCjn5NZTSQc/Ir/v0YTqqUO4YnvQjEBVHy9HfoJ@vger.kernel.org
-X-Gm-Message-State: AOJu0YxxbjWPS+LMVL6qsJoYccLvsJalAxxCi7+WtSNn9Cpd3U04m1mm
-	tx48Qao12jsWUJNe3UFTHXR8nybSdoua0lUhDB8bEYEoaE74MPCpn28ZFR9oxxriL98=
-X-Gm-Gg: ASbGncudCLD3ELWLa1ABXsKWOHskHcqVD7APptqML91nnop/XwYtTjV8ybjzEcbd3OY
-	OgAHGgePx1SxtOsAni163AbkXabnesEby9QywzDEZhG0PyKWQjl9kYCjL8CvTubvQnp3GLmP7v6
-	xwYVvovpE8lNIzrMcH1NUYPFS0/vE+Sf0rcoBH43Hkkn4FqHVvGrF1BbqqSR/4heiclcVKHnn3w
-	KqC5Wy86L6gaCGBWKVaDYP7Aap53ippqbjPfQh2OTO+OSM4dwe5SJIma8jl4CKu2C49zkQpH4H9
-	Na8hEeWe4hd5H/aKh/thniCTkWEzLvVuXFUEE/5+pDORIFHd0NE8NfFgF/ooLG/NpSNWRkYvqkh
-	dW164kb0XfsmmQNKvSLrzM+Ln04+MEk2yXbC1MIU6aiZUBQ/rY2xDh0Ft5Oi0w/ixODqsmvVMig
-	vF0XG9JObM1ORu9XtPS0wUy0jXAlCYENY8ZdTochQHZYTSv/5taaAG2w==
-X-Google-Smtp-Source: AGHT+IGBHe7K6SGFeVpyBf3c0o9rjTnklEYPnZPi2oxzPisjCfoarypHSGn+M9BsKCfr5lRJ/wDM3A==
-X-Received: by 2002:a17:90b:2ccc:b0:340:ba29:d3b6 with SMTP id 98e67ed59e1d1-343f9e92724mr4004932a91.6.1763134537310;
-        Fri, 14 Nov 2025 07:35:37 -0800 (PST)
-Received: from [10.254.116.28] ([139.177.225.248])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-345651183b2sm856644a91.2.2025.11.14.07.35.34
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 14 Nov 2025 07:35:36 -0800 (PST)
-Message-ID: <4d9119a1-0541-4bf1-9ac1-5abc756609d6@bytedance.com>
-Date: Fri, 14 Nov 2025 23:35:32 +0800
+	s=arc-20240116; t=1763134850; c=relaxed/simple;
+	bh=J2tyUCneDZzkQdF5AvAGWRYdQ5JArliVe9FMcgcoieE=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=iOzMCljf9seWvK1OP9LDRr0HQyxMmWAIdz4nJk4mrpbPAkAoBscLjjcXFTkCy9vXyrc0sgEfAqH5GLPyz/onSp+n9uKZ/Czoz6W0+38feoeoz17u+2fjPCF0nnFLiPJOmySHhKYNRsXFJRVndFTt0JYXDfnKoJRQtGpXT9y1yds=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=3dJAh/Ae; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=JyatNC89; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+From: Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1763134847;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=4jO6apgBHrHsSf5QPy3p7M9NQE6+E5IimFLryM8DCZw=;
+	b=3dJAh/AeQzSJ34ekc7f7hf77sskXKCRw8Q7RYnHrxJh2AG7wwX+R0HHZaoJ/QqxH5tGAmL
+	KR66zoqqlfhwThbKlQIzzzh+ijJRC0Sny9sqPZxMOhJfRw+I59CYa1So7dZ0SiZ3jRHX55
+	iV6w7KTJeM+nrtxyCYg4u9667RIC2tNVyWwbDrybmeK5rIAbltGfEoa4ElUUGKc9Ku9ktN
+	khxhgiXWCQ9jL98bH8ovTwESGgfIr5GpK8IkknQ6hmNSQ7nUZKcHhsWiitWqwnz3/rNxaB
+	QcNqr48iPrbWZpE0dEAkIBE6Hs1msvycCvOs+uD1TFMmXkB0oNToREZb0R9O0g==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1763134847;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=4jO6apgBHrHsSf5QPy3p7M9NQE6+E5IimFLryM8DCZw=;
+	b=JyatNC89PkGRsU4ZrYypzViA22f5pLtKsJDqAksmvaseBpJUxj0hdHK6lQyrlC+pn92jIZ
+	p2KPX0U+ZiaFMECg==
+To: Frederic Weisbecker <frederic@kernel.org>, Waiman Long <llong@redhat.com>
+Cc: LKML <linux-kernel@vger.kernel.org>, Marco Crivellari
+ <marco.crivellari@suse.com>, cgroups@vger.kernel.org
+Subject: Re: [PATCH] genirq: Fix IRQ threads affinity VS cpuset isolated
+ partitions
+In-Reply-To: <aRSD-Fyy87qhCR6C@localhost.localdomain>
+References: <20251105131726.46364-1-frederic@kernel.org>
+ <5d3d80dd-00ca-464d-bebf-c0fd4836b947@redhat.com>
+ <aRSD-Fyy87qhCR6C@localhost.localdomain>
+Date: Fri, 14 Nov 2025 16:40:45 +0100
+Message-ID: <87tsywbp1e.ffs@tglx>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-From: Wenyu Liu <liuwenyu.0311@bytedance.com>
-Subject: Re: [PATCH] cgroup: Improve cgroup_addrm_files remove files handling
-To: =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>
-Cc: tj@kernel.org, hannes@cmpxchg.org, cgroups@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <20251111134427.96430-1-liuwenyu.0311@bytedance.com>
- <gbmz65zlanqe7p4iw6or4jqxilpv626zp4ktf6bigxs6ni2vdo@kprxb7s73qgb>
-In-Reply-To: <gbmz65zlanqe7p4iw6or4jqxilpv626zp4ktf6bigxs6ni2vdo@kprxb7s73qgb>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
+On Wed, Nov 12 2025 at 13:56, Frederic Weisbecker wrote:
+> Le Mon, Nov 10, 2025 at 04:28:49PM -0500, Waiman Long a =C3=A9crit :
+>> This function seems to mirror what is done in irq_thread_check_affinity()
+>> when the affinity cpumask is available.=C2=A0 But if affinity isn't defi=
+ned, it
+>> will make this irq kthread immune from changes in the set of isolated CP=
+Us.
+>> Should we use IRQD_AFFINITY_SET flag to check if affinity has been set a=
+nd
+>> then set PF_NO_SETAFFINITY only in this case?
+>
+> So IIUC, the cpumask_available() failure can't really happen because an a=
+llocation
+> failure would make irq_alloc_descs() fail.
 
+That's indeed a historical leftover.
 
-在 11/11/25 21:54, Michal Koutný 写道:
-> Hi Wenyu.
-> 
-> On Tue, Nov 11, 2025 at 09:44:27PM +0800, Wenyu Liu <liuwenyu.0311@bytedance.com> wrote:
->> Consider this situation: if we have two cftype arrays A and B
->> which contain the exact same files, and we add this two cftypes
->> with cgroup_add_cftypes().
-> 
-> Do you have more details about this situation?
-> Does this happen with any of the mainline controllers?
-> 
-> Thanks,
-> Michal
-And here is a simple test module that will reproduce this problem. I know that using the symbol not exported is not recommended, but judging from the code, it seems to be indeed a bug: it should always return -EXEIST, however this module can be loaded successfully and make creating a new cgroup dirictory failed with the 'File exists' error.
----
- Makefile       |  9 +++++
- cft_add_test.c | 99 ++++++++++++++++++++++++++++++++++++++++++++++++++
- 2 files changed, 108 insertions(+)
- create mode 100644 Makefile
- create mode 100644 cft_add_test.c
+> __irq_alloc_descs() -> alloc_descs() -> alloc_desc() -> init_desc() - > a=
+lloc_mask()
+>
+> The error doesn't seem as well handled in early_irq_init() but the desc i=
+s freed
+> anyway if that happens.
 
-diff --git a/Makefile b/Makefile
-new file mode 100644
-index 0000000..160a718
---- /dev/null
-+++ b/Makefile
-@@ -0,0 +1,9 @@
-+# SPDX-License-Identifier: GPL-2.0-only
-+
-+kernelver ?= $(shell uname -r)
-+obj-m += cft_add_test.o
-+
-+all:
-+       $(MAKE) -C /lib/modules/$(kernelver)/build M=$(CURDIR) modules
-+clean:
-+       $(MAKE) -C /lib/modules/$(kernelver)/build M=$(CURDIR) clean
-\ No newline at end of file
-diff --git a/cft_add_test.c b/cft_add_test.c
-new file mode 100644
-index 0000000..473b988
---- /dev/null
-+++ b/cft_add_test.c
-@@ -0,0 +1,99 @@
-+//SPDX-License-Identifier: GPL-2.0-only
-+#include <linux/kprobes.h>
-+#include <linux/cgroup.h>
-+#include <linux/kernfs.h>
-+#include <linux/dcache.h>
-+
-+typedef unsigned long (*kallsyms_lookup_name_t)(const char *name);
-+
-+static struct kprobe kp = {
-+    .symbol_name = "kallsyms_lookup_name",
-+};
-+
-+#define LOOKUP_SYMS(name)                                               \
-+do {                                                                    \
-+        kallsyms_lookup_name_t kallsyms_lookup_name;                    \
-+        register_kprobe(&kp);                                           \
-+        kallsyms_lookup_name = (kallsyms_lookup_name_t)kp.addr;         \
-+        unregister_kprobe(&kp);                                         \
-+        m_##name = (void *)kallsyms_lookup_name(#name);                 \
-+        if (!m_##name) {                                                \
-+                pr_err("kallsyms loopup failed: %s\n", #name);          \
-+                return -ENXIO;                                          \
-+        }                                                               \
-+} while (0)                                                             \
-+
-+static int (*m_cgroup_add_dfl_cftypes)(struct cgroup_subsys *ss, struct cftype *cfts);
-+static int (*m_cgroup_rm_cftypes)(struct cftype *cfts);
-+static struct cgroup_subsys *m_cpu_cgrp_subsys;
-+
-+static int show_cft_cgroup(struct seq_file *m, void *v)                
-+{
-+        struct cgroup *cgrp;
-+        char path[1024];
-+
-+        cgrp = seq_css(m)->cgroup;
-+        kernfs_path_from_node(cgrp->kn, NULL, path, sizeof(path));
-+        seq_printf(m, "cgroup dir:%s\n", path);
-+        return 0;
-+}
-+
-+static struct cftype cft_add_files[] = {
-+        {
-+                .name = "cft_test_0",
-+                .seq_show = show_cft_cgroup,
-+        },
-+        {
-+                .name = "cft_test_1",
-+                .seq_show = show_cft_cgroup,
-+        },
-+        {
-+                .name = "cft_test_2",
-+                .seq_show = show_cft_cgroup,
-+        },
-+        { } /* terminate */
-+};
-+
-+static struct cftype cft_add_files_duplicate[] = {
-+        {
-+                .name = "cft_test_0",
-+                .seq_show = show_cft_cgroup,
-+        },
-+        {
-+                .name = "cft_test_1",
-+                .seq_show = show_cft_cgroup,
-+        },
-+        { } /* terminate */
-+};
-+
-+static int __init cft_add_test_init(void)
-+{
-+        int ret = 0;
-+
-+        LOOKUP_SYMS(cgroup_add_dfl_cftypes);
-+        LOOKUP_SYMS(cgroup_rm_cftypes);
-+        LOOKUP_SYMS(cpu_cgrp_subsys);
-+
-+        ret = m_cgroup_add_dfl_cftypes(m_cpu_cgrp_subsys, cft_add_files);
-+        if (ret) {
-+            pr_err("failed to add cft_add_files\n"); 
-+            return ret;
-+        }
-+
-+        ret = m_cgroup_add_dfl_cftypes(m_cpu_cgrp_subsys, cft_add_files_duplicate);
-+        if (ret) {
-+            //try again, this time will success
-+            return m_cgroup_add_dfl_cftypes(m_cpu_cgrp_subsys, cft_add_files_duplicate);
-+        } 
-+        return ret;
-+}
-+
-+static void __exit cft_add_test_exit(void)
-+{
-+        m_cgroup_rm_cftypes(cft_add_files);
-+        m_cgroup_rm_cftypes(cft_add_files_duplicate);
-+}
-+
-+module_init(cft_add_test_init);
-+module_exit(cft_add_test_exit);
-+MODULE_LICENSE("GPL v2");
--- 
+Right, the insert should only happen when desc !=3D NULL. OTOH if it fails
+at that stage the kernel won't get far anyway and definitely not to the
+point where these cpumasks are checked :)
+
+> So this is just a sanity check at best.
+
+I think we can just remove it. It does not make sense at all.
+
+Thanks,
+
+        tglx
 
