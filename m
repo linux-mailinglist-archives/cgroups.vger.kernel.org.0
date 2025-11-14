@@ -1,88 +1,87 @@
-Return-Path: <cgroups+bounces-11955-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-11956-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
-	by mail.lfdr.de (Postfix) with ESMTPS id 47087C5DAC9
-	for <lists+cgroups@lfdr.de>; Fri, 14 Nov 2025 15:49:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 11073C5DAB7
+	for <lists+cgroups@lfdr.de>; Fri, 14 Nov 2025 15:48:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id C49E136663F
-	for <lists+cgroups@lfdr.de>; Fri, 14 Nov 2025 14:34:56 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 4E8BC3533AF
+	for <lists+cgroups@lfdr.de>; Fri, 14 Nov 2025 14:35:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9361D32824B;
-	Fri, 14 Nov 2025 14:32:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5FEA2329388;
+	Fri, 14 Nov 2025 14:33:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="U/iWaspM"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="KhJzHNq9"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-wr1-f51.google.com (mail-wr1-f51.google.com [209.85.221.51])
+Received: from mail-wr1-f46.google.com (mail-wr1-f46.google.com [209.85.221.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 718B33277AA
-	for <cgroups@vger.kernel.org>; Fri, 14 Nov 2025 14:32:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D5A8832827C
+	for <cgroups@vger.kernel.org>; Fri, 14 Nov 2025 14:32:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763130760; cv=none; b=llrx7fWrsOWMSnimg7h6lgTdY7koB2v6Wq2PL1qOw3Wr1GjwjD6Qp/Cmy6c4hd2Wf2q8IaFCxo4c2FcxpZpUBI9Md4d3aQkE1BFu5eUgckMOnPSIYSUVH8HgWH+1sniTp+VWOXUEROsJLYtyBBUuOMVaGx00gFycu6r051Xf0H4=
+	t=1763130783; cv=none; b=Z0homnED7Xla4Eq+mw+70aVbi/LpMgTiHNYkCyQaHmReg4ZZM+8Ye+dfLJ4ysGJ8JqqYP4bR0NI158feCrtqEEnJ3dvppF3evrkXq1UkmM10q0zVIuzpE8fMDETj0lXo62XGcy+NLLqX4mW2CFJT0QKVN1c9zmxWF6hNZ/gHoIM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763130760; c=relaxed/simple;
-	bh=HN3jnmUy+Cud7sca2nzou+9fsUG3OJoMB2unjr//I7Y=;
+	s=arc-20240116; t=1763130783; c=relaxed/simple;
+	bh=7qdco/QQvfGWM5vwE9iQYYA+QwG3ILtDr3ENUSIC4O0=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=N8/XJd6Jde28aB/zVeSDdLsJQClV/Vzj/kABGir2bOf2jlj4W70o4B1LNYucrw6XMz+X0cg2r3fb/KzyfWAd1T8Kpo14zVkuNi8g+bKgE4SVhWBzDRZn44GMDO4WLcAfX3qnL7vfIu33rdJxpalpyVd9SOu20Zrf/v0DXVczGqE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=U/iWaspM; arc=none smtp.client-ip=209.85.221.51
+	 Content-Type:Content-Disposition:In-Reply-To; b=gE7KHjk7A9qUqulR6DBzWikHMv+C3oGrj0V1cf7mwFkCrjNOAmEBFoxV3J2gTayx7u3M4t7jPwDUu5bwbiWauewkwntkKEr0Xl3SruV9oecGzQfgbgna7JqtUhO0/JWguPJn2CLDwROk7zNWvsiwacvUfFKhHtjbCIzHMw4iZu4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=KhJzHNq9; arc=none smtp.client-ip=209.85.221.46
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-wr1-f51.google.com with SMTP id ffacd0b85a97d-429ce7e79f8so1608140f8f.0
-        for <cgroups@vger.kernel.org>; Fri, 14 Nov 2025 06:32:38 -0800 (PST)
+Received: by mail-wr1-f46.google.com with SMTP id ffacd0b85a97d-42b3669ca3dso1209807f8f.0
+        for <cgroups@vger.kernel.org>; Fri, 14 Nov 2025 06:32:59 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1763130757; x=1763735557; darn=vger.kernel.org;
+        d=suse.com; s=google; t=1763130778; x=1763735578; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=HN3jnmUy+Cud7sca2nzou+9fsUG3OJoMB2unjr//I7Y=;
-        b=U/iWaspMoTD/e2lIs9AM+3/XgbYqp6QstaOAl+YZhvy9MmJCi3XjpnW9bHmziQEaqs
-         UqKrDRXaqjLkX5OWkrT2g2aulQJrlnDmkmDCYAutzGiCODIVhSrJTLy3g4+Lnu1cKFEL
-         6fjLJVPMu2J14s7ZnbRQmoQGv0DdxkwML7VbwrNn/H66EXT+4tAzM8iIfVyBo9iyt0EE
-         zQ4HDazCnatbWN9UbuHvM6w7kOE3xASNSTzCS/BpRTKjrOAnC/koYyiT/S6771S1z+67
-         b7SDhu6Z+ARQwu3HkEOXBRFpREl9/Md4Ph06yksDJk1CUh8ZmYJ54qrZ0FYAUZbC+YdY
-         9cYw==
+        bh=yHqTLrvZxttCqzjtuiPn9ni3n+eqD+EeRxjlL+RTa5A=;
+        b=KhJzHNq9Qm3WxOEZVsZ8IvfQYaYlrptlUXjC+PVQ0nVVXKcSN1KrzNv0Ep9JsGJOfe
+         MyjP3oTMqOHXBuhmL/BwVUKQ7VcVQ/sj9xA3Xoc12LF8f/B2qLgiTpZoU9B030dUhGyf
+         wAsA9dBltlGnXrY4aFh3AS4RVVFgprre6Juw/XvxFwtbu2WRzJrAvK05lzJ8If1Or8Go
+         MgCH4lgUUtDn7bunqj5rcrBO1eiV8qGhBt4OLwszV9RjeW6mv6hxrUh2nvQV4HQYZIak
+         eX5jFNYUcfVJsGq25/vgSg6BHqt+4e191FO6rhp3SON10XcT8ehoHZs0IgK+MpArV6ab
+         RPcg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1763130757; x=1763735557;
+        d=1e100.net; s=20230601; t=1763130778; x=1763735578;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=HN3jnmUy+Cud7sca2nzou+9fsUG3OJoMB2unjr//I7Y=;
-        b=c9IZh5tilGJEB3qoAmnOBW5pHUUFqaAGHzw69MqWVf77ra+M2j8PKjzOamKAACI6tc
-         tZgPah1EA3NkMeCOZfCjwpEQ1vjAPA1N+IkQDVQSrMwQ1xzlOHMszbbue3/VPdgP0wmb
-         GXTtv0XCYx91I0Unv2Ku6Mhnhp9Kj2JVyH8sSsUvWBr89MxLXB3jM1tNrMa9PbJJfr8m
-         0pRha2mApqyCbHSxC8lFSDmaTuwJHRSdhNTzjobEbmGu7RbEATq/0hHZrDWDBdsZSx8A
-         LSk8VBko8RhiyQh+sjixVEVrwma4v25/1LBNwXIUg5MCX15YIr2GUkbTgg7T/7ZovfZa
-         RlNQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXAmNqw1QbIdOMc5NRx0YYLC04phX/uHZVyob4aKqwsGCnCbaHdbPNvuDzP6QcX6DGuo0OjwIkE@vger.kernel.org
-X-Gm-Message-State: AOJu0YywlH9ysVCj/A9yeNoxM8AO+jx+RuJRGx5bhFFvThc74ZvTF1vH
-	jtEI5rw+ZIVNQLyT2uJtH90LPddtR155EVu/7SYx09VLh1asn9wXLM+q699xRPcHgmA=
-X-Gm-Gg: ASbGncvFcCL8n76v0bCAv5kKtCnswKA+aFm+560cIVSeMfHCVlt2QkOS8IoauNwra9Z
-	v2+Sxi3u5Bs5yZpBS52W45esvdS0eyNiJWsdVMZZdBigdPBV6rERzj6x6N4YWOOoBlZQPg3jI0Q
-	W2F365ij8aUvrVwWu3u5mm271xt82k/XAn7bRdT+yfyGBPMRVo7DC+H7wyZL19CKKeWIbBJFABB
-	3Syt5ObLLTZ7wIiKjziZKoC+94QpxRHvh4PNxkPsvhB3cj3dyPQuxgg7SMVo5wHwmZ/+QnVYDRv
-	RB0ZgfIkaIe0myyjw6Gs3FphsEKZ/Wyg1Bk1HYMSNkMdjwA5eQVDVUtiOpDU1eJKpPAmLP4bxCP
-	YFsAELm8Qh+2iLsk3dyrIie+V9QTHQXtgtDzOU4vAaGJaqxM9mP+qX8JywttrVhYhcNCoBUYVVs
-	+ccgSdB+2Eajr+WzgK7vz8
-X-Google-Smtp-Source: AGHT+IG/wsNger26E0V0m6xgXzA1Oo9csceQsjfNfsN8BI+4W7SPfZqWJAu79dOI4diXiuEuLjz23Q==
-X-Received: by 2002:a05:6000:2c0f:b0:42b:41d3:daf9 with SMTP id ffacd0b85a97d-42b5933ce36mr2926758f8f.2.1763130756418;
-        Fri, 14 Nov 2025 06:32:36 -0800 (PST)
+        bh=yHqTLrvZxttCqzjtuiPn9ni3n+eqD+EeRxjlL+RTa5A=;
+        b=p9Lzd+yIWdDovO1Isrgae9nyM2Nubjkrs8BQjofPvxkg1WJX1Z2N+9t/RbaIU5dG+t
+         YCWEiWwDa1mCvg8qdU3t+eaOUZm+i3749rTnJr5gjy+y9U32yqFZUdZh1fxcDMCEidBQ
+         +HFMPHXDBoUoO4twbyfYaElgvu9nhJH0vyBjWv170Z4bkV6EMTk1wkXI0VAMFVk/k//k
+         LW9i14k/dTXdxb6Jgb3uwesOqVXXgV5Hlu27FzdA0lz2/Bfoav0RUJj5z0jBr0TTcm53
+         /PmzHbdzRfQrX/vCaihVNKp9DcKqXlYQOWI5d+CwVJbCl9SfT64BAHaESEp/R5krSANF
+         /JSg==
+X-Forwarded-Encrypted: i=1; AJvYcCUOchnOUqGLMqJLKZ2trVSt25ZXFiy7U+p8/Td9WaJd57d7UQ1Bn/cqNXQ8JasAmo/tRubAKFQF@vger.kernel.org
+X-Gm-Message-State: AOJu0YxIcWZuDdadgUEeFXrm0f36eK2X13Gjb04VfhDbFuwCJlu6/XTb
+	ywWmkI1jq1XsnydIfwdQYT713YIY2jhVJBv8a5MdvkYq4tz6V75MSCARWSsT3u7+h44=
+X-Gm-Gg: ASbGncu1OjbwHFZef94LGJcoaCgKJPn2FU7BUCLv0rVp2Ex2vfSwJ89cxu8aNfniH4x
+	iZW5UHmasGrKViZt6ItXNHxwxuF2G59kGDxSYqxh+Vax9F5BLr6uyEbauAXDBS+/RYpf2H1F/1w
+	1xaEihGqeg0uvrPC2egfYZqUovRsmPs67KooRLnUImEHZ6qYEwHtMp/kl4BcGVQAVQfUcM5QvPn
+	Rw0x+yfHUdp9J35JQZfA52QJKFN/3MYHaFvexVXqblp9MxH6juWxP+c/Hues9GUnRWPlZTSCJCJ
+	jG2MjjGHLjKvE3A8cAaK1Y6eNXkMzjNJJICd4GFZbO6LylJw33drjxNPYQ3OCaMFIM1zmVoTI2g
+	D3ywMMwT4IX0WM7Mi5c9JwcxE5YHzXDeD8Cm75ZSfPkWhYsUQS5b/oCxxcXuxESB6EEBIgKpbX8
+	P+6Du/+Kh1PL/q89XaKC8w
+X-Google-Smtp-Source: AGHT+IH26aVrRDzlChufLyFGmxHyZGqRsdxpVP+1rmEkehnJenvkfGQPqfiv7exots+Nxemc71ThZw==
+X-Received: by 2002:a05:6000:420e:b0:42b:41dc:1b58 with SMTP id ffacd0b85a97d-42b595adf22mr2877337f8f.45.1763130778179;
+        Fri, 14 Nov 2025 06:32:58 -0800 (PST)
 Received: from blackdock.suse.cz (nat2.prg.suse.com. [195.250.132.146])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-42b53e982d6sm10480919f8f.21.2025.11.14.06.32.35
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-42b53e84a4fsm9898656f8f.11.2025.11.14.06.32.57
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 14 Nov 2025 06:32:36 -0800 (PST)
-Date: Fri, 14 Nov 2025 15:32:34 +0100
+        Fri, 14 Nov 2025 06:32:57 -0800 (PST)
+Date: Fri, 14 Nov 2025 15:32:56 +0100
 From: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
 To: Guopeng Zhang <zhangguopeng@kylinos.cn>
 Cc: tj@kernel.org, hannes@cmpxchg.org, shuah@kernel.org, 
-	cgroups@vger.kernel.org, linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	sebastian.chlad@suse.com, longman@redhat.com
-Subject: Re: [PATCH] selftests/cgroup: conform test to TAP format output
-Message-ID: <4h54pkcisk5fmevglu3qldk5fb2rgo5355vfds3wplhekfumtz@qtwtixmuw2hz>
-References: <6lwnagu63xzanum2xx6vkm2qe4oh74fteqeymmkqxyjbovcce6@3jekdivdr7yf>
- <6916a8f5.050a0220.23bb4.ab7dSMTPIN_ADDED_BROKEN@mx.google.com>
+	cgroups@vger.kernel.org, sebastian.chlad@suse.com, linux-kselftest@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] selftests/cgroup: conform test to KTAP format output
+Message-ID: <h3sy3xfvxuxyqf4jzaivbquff4f3uktr5c3khohdguc4yhll2a@wcnaig6ywzqe>
+References: <20251114102440.3448810-1-zhangguopeng@kylinos.cn>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -90,65 +89,53 @@ List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="s6uqnsagtupmqone"
+	protocol="application/pgp-signature"; boundary="g4h64q4o7bv5knqa"
 Content-Disposition: inline
-In-Reply-To: <6916a8f5.050a0220.23bb4.ab7dSMTPIN_ADDED_BROKEN@mx.google.com>
+In-Reply-To: <20251114102440.3448810-1-zhangguopeng@kylinos.cn>
 
 
---s6uqnsagtupmqone
-Content-Type: text/plain; protected-headers=v1; charset=us-ascii
+--g4h64q4o7bv5knqa
+Content-Type: text/plain; protected-headers=v1; charset=iso-8859-1
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
-Subject: Re: [PATCH] selftests/cgroup: conform test to TAP format output
+Subject: Re: [PATCH v2] selftests/cgroup: conform test to KTAP format output
 MIME-Version: 1.0
 
-On Fri, Nov 14, 2025 at 11:55:48AM +0800, Guopeng Zhang <zhangguopeng@kylin=
+On Fri, Nov 14, 2025 at 06:24:40PM +0800, Guopeng Zhang <zhangguopeng@kylin=
 os.cn> wrote:
-> Actually, selftests are no longer just something for developers to view l=
-ocally; they are now extensively=20
-> run in CI and stable branch regression testing. Using a standardized layo=
-ut means that general test runners=20
-> and CI systems can parse the cgroup test results without any special hand=
-ling.
-
-Nice. I appreciate you took this up.
-
-> This patch is not part of a formal, tree-wide conversion series I am runn=
-ing; it is an incremental step to align the=20
-> cgroup C tests with the existing TAP usage. I started here because these =
-tests already use ksft_test_result_*() and=20
-> only require minor changes to generate proper TAP output.
-
-The tests are in various state of usage, correctness and usefulness,
-hence...
-
+> Conform the layout, informational and status messages to KTAP.  No
+> functional change is intended other than the layout of output messages.
 >=20
-> > I'm asking to better asses whether also the scripts listed in
-> > Makefile:TEST_PROGS should be converted too.
->=20
-> I agree that having them produce TAP output would benefit tooling and CI.=
- I did not want to mix=20
-> that into this change, but if you and other maintainers think this direct=
-ion is reasonable,=20
-> I would be happy to follow up and convert the cgroup shell tests to TAP a=
-s well.
+> Signed-off-by: Guopeng Zhang <zhangguopeng@kylinos.cn>
+> Suggested-by: Sebastian Chlad <sebastian.chlad@suse.com>
+> ---
+> v2:
+> Change subject and commit message to refer to KTAP instead of TAP.
+> No code changes.
+> ---
+>  tools/testing/selftests/cgroup/test_core.c       | 7 ++++---
+>  tools/testing/selftests/cgroup/test_cpu.c        | 7 ++++---
+>  tools/testing/selftests/cgroup/test_cpuset.c     | 7 ++++---
+>  tools/testing/selftests/cgroup/test_freezer.c    | 7 ++++---
+>  tools/testing/selftests/cgroup/test_kill.c       | 7 ++++---
+>  tools/testing/selftests/cgroup/test_kmem.c       | 7 ++++---
+>  tools/testing/selftests/cgroup/test_memcontrol.c | 7 ++++---
+>  tools/testing/selftests/cgroup/test_zswap.c      | 7 ++++---
+>  8 files changed, 32 insertions(+), 24 deletions(-)
 
-=2E..I'd suggest next focus on test_cpuset_prs.sh (as discussed, it may
-need more changes to adapt its output too).
+Acked-by: Michal Koutn=FD <mkoutny@suse.com>
 
-Michal
-
---s6uqnsagtupmqone
+--g4h64q4o7bv5knqa
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iJEEABYKADkWIQRCE24Fn/AcRjnLivR+PQLnlNv4CAUCaRc9gBsUgAAAAAAEAA5t
-YW51MiwyLjUrMS4xMSwyLDIACgkQfj0C55Tb+AgLgQD/fbe7S0AtogwfuP1y5Bqn
-wM4mhSkCc3blXh/7ObpsjqEA/3cTt2T97D0h3i5iLPdSu/NO3AwScgRBygMG5F3I
-dJUB
-=rsPe
+iJEEABYKADkWIQRCE24Fn/AcRjnLivR+PQLnlNv4CAUCaRc9lhsUgAAAAAAEAA5t
+YW51MiwyLjUrMS4xMSwyLDIACgkQfj0C55Tb+Ahe2QEAqXn/k67ocURIofRnUExh
+KUI3pYqs9HZu/dh74vHFlxMBAJL0kE3aiHgntjlZGRcjx7182xtPvQZRDm4Ah6+w
+zGoF
+=zjpi
 -----END PGP SIGNATURE-----
 
---s6uqnsagtupmqone--
+--g4h64q4o7bv5knqa--
 
