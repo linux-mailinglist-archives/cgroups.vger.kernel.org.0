@@ -1,339 +1,154 @@
-Return-Path: <cgroups+bounces-11954-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-11955-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 09D26C5C927
-	for <lists+cgroups@lfdr.de>; Fri, 14 Nov 2025 11:28:34 +0100 (CET)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
+	by mail.lfdr.de (Postfix) with ESMTPS id 47087C5DAC9
+	for <lists+cgroups@lfdr.de>; Fri, 14 Nov 2025 15:49:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A52093BC31D
-	for <lists+cgroups@lfdr.de>; Fri, 14 Nov 2025 10:25:45 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id C49E136663F
+	for <lists+cgroups@lfdr.de>; Fri, 14 Nov 2025 14:34:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DF9C63101C6;
-	Fri, 14 Nov 2025 10:25:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9361D32824B;
+	Fri, 14 Nov 2025 14:32:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="U/iWaspM"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f51.google.com (mail-wr1-f51.google.com [209.85.221.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 43965289811;
-	Fri, 14 Nov 2025 10:25:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=124.126.103.232
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 718B33277AA
+	for <cgroups@vger.kernel.org>; Fri, 14 Nov 2025 14:32:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763115941; cv=none; b=f+MIWdC5Owxa3G8d9JyfnyN7ZkI3c1uawx1x0XI6vHWb7UeoIiu0Lvlw3gWvgNVpjh3BU0DcwID1UXBqMkpm8M73O8h1GlES5yRaSpSbbo7qqtWR34eJFsKZ39ZgQWCTf3mRKGT+EvLSTITgnQtZHRcKvcZjfIdNpuO17mWaChA=
+	t=1763130760; cv=none; b=llrx7fWrsOWMSnimg7h6lgTdY7koB2v6Wq2PL1qOw3Wr1GjwjD6Qp/Cmy6c4hd2Wf2q8IaFCxo4c2FcxpZpUBI9Md4d3aQkE1BFu5eUgckMOnPSIYSUVH8HgWH+1sniTp+VWOXUEROsJLYtyBBUuOMVaGx00gFycu6r051Xf0H4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763115941; c=relaxed/simple;
-	bh=NTRQrkXrVOlZ817YcIMNizB6JNZt99wbtTjoaPbNuyU=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=ieQ21SsZhjgRaxWX/CvntyFwu5uZ8jj4KXFU67p1OiYgGy2XMAGOU2efakQD/2QaeWuehHmRqpmyQGIPxL39TEubn8d8ksQ9dp2zrMA7920PSegu9nblniGbFBXOjXpMd50fwyg/UlmgfRvh4ICilCdNK1i03RBBLH0FoW8sjLA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn; spf=pass smtp.mailfrom=kylinos.cn; arc=none smtp.client-ip=124.126.103.232
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kylinos.cn
-X-UUID: 3b8b74b8c14411f0a38c85956e01ac42-20251114
-X-CTIC-Tags:
-	HR_CC_COUNT, HR_CC_DOMAIN_COUNT, HR_CC_NAME, HR_CC_NO_NAME, HR_CTE_8B
-	HR_CTT_MISS, HR_DATE_H, HR_DATE_WKD, HR_DATE_ZONE, HR_FROM_NAME
-	HR_SJ_DIGIT_LEN, HR_SJ_LANG, HR_SJ_LEN, HR_SJ_LETTER, HR_SJ_NOR_SYM
-	HR_SJ_PHRASE, HR_SJ_PHRASE_LEN, HR_SJ_WS, HR_TO_COUNT, HR_TO_DOMAIN_COUNT
-	HR_TO_NO_NAME, IP_TRUSTED, SRC_TRUSTED, DN_TRUSTED, SA_UNTRUSTED
-	SA_LOWREP, SA_EXISTED, SN_UNTRUSTED, SN_LOWREP, SN_EXISTED
-	SPF_NOPASS, DKIM_NOPASS, DMARC_NOPASS
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.3.6,REQID:91711ad3-018f-4f8c-92c7-39b68ad9cecd,IP:10,U
-	RL:0,TC:0,Content:0,EDM:0,RT:0,SF:5,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
-	release,TS:15
-X-CID-INFO: VERSION:1.3.6,REQID:91711ad3-018f-4f8c-92c7-39b68ad9cecd,IP:10,URL
-	:0,TC:0,Content:0,EDM:0,RT:0,SF:5,FILE:0,BULK:0,RULE:Release_Ham,ACTION:re
-	lease,TS:15
-X-CID-META: VersionHash:a9d874c,CLOUDID:1983b938a7bc7da8f0fba472cf3cf538,BulkI
-	D:251114182531RMD01A3R,BulkQuantity:0,Recheck:0,SF:19|38|66|72|78|102|850,
-	TC:nil,Content:0|15|50,EDM:-3,IP:-2,URL:0,File:nil,RT:nil,Bulk:nil,QS:nil,
-	BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0,ARC:0
-X-CID-BVR: 2,SSN|SDN
-X-CID-BAS: 2,SSN|SDN,0,_
-X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_FSD
-X-CID-RHF: D41D8CD98F00B204E9800998ECF8427E
-X-UUID: 3b8b74b8c14411f0a38c85956e01ac42-20251114
-X-User: zhangguopeng@kylinos.cn
-Received: from localhost.localdomain [(223.70.159.239)] by mailgw.kylinos.cn
-	(envelope-from <zhangguopeng@kylinos.cn>)
-	(Generic MTA with TLSv1.3 TLS_AES_256_GCM_SHA384 256/256)
-	with ESMTP id 356757877; Fri, 14 Nov 2025 18:25:24 +0800
-From: Guopeng Zhang <zhangguopeng@kylinos.cn>
-To: mkoutny@suse.com,
-	tj@kernel.org,
-	hannes@cmpxchg.org,
-	shuah@kernel.org,
-	cgroups@vger.kernel.org
-Cc: sebastian.chlad@suse.com,
-	linux-kselftest@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Guopeng Zhang <zhangguopeng@kylinos.cn>
-Subject: [PATCH v2] selftests/cgroup: conform test to KTAP format output
-Date: Fri, 14 Nov 2025 18:24:40 +0800
-Message-Id: <20251114102440.3448810-1-zhangguopeng@kylinos.cn>
-X-Mailer: git-send-email 2.25.1
+	s=arc-20240116; t=1763130760; c=relaxed/simple;
+	bh=HN3jnmUy+Cud7sca2nzou+9fsUG3OJoMB2unjr//I7Y=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=N8/XJd6Jde28aB/zVeSDdLsJQClV/Vzj/kABGir2bOf2jlj4W70o4B1LNYucrw6XMz+X0cg2r3fb/KzyfWAd1T8Kpo14zVkuNi8g+bKgE4SVhWBzDRZn44GMDO4WLcAfX3qnL7vfIu33rdJxpalpyVd9SOu20Zrf/v0DXVczGqE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=U/iWaspM; arc=none smtp.client-ip=209.85.221.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-wr1-f51.google.com with SMTP id ffacd0b85a97d-429ce7e79f8so1608140f8f.0
+        for <cgroups@vger.kernel.org>; Fri, 14 Nov 2025 06:32:38 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1763130757; x=1763735557; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=HN3jnmUy+Cud7sca2nzou+9fsUG3OJoMB2unjr//I7Y=;
+        b=U/iWaspMoTD/e2lIs9AM+3/XgbYqp6QstaOAl+YZhvy9MmJCi3XjpnW9bHmziQEaqs
+         UqKrDRXaqjLkX5OWkrT2g2aulQJrlnDmkmDCYAutzGiCODIVhSrJTLy3g4+Lnu1cKFEL
+         6fjLJVPMu2J14s7ZnbRQmoQGv0DdxkwML7VbwrNn/H66EXT+4tAzM8iIfVyBo9iyt0EE
+         zQ4HDazCnatbWN9UbuHvM6w7kOE3xASNSTzCS/BpRTKjrOAnC/koYyiT/S6771S1z+67
+         b7SDhu6Z+ARQwu3HkEOXBRFpREl9/Md4Ph06yksDJk1CUh8ZmYJ54qrZ0FYAUZbC+YdY
+         9cYw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1763130757; x=1763735557;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=HN3jnmUy+Cud7sca2nzou+9fsUG3OJoMB2unjr//I7Y=;
+        b=c9IZh5tilGJEB3qoAmnOBW5pHUUFqaAGHzw69MqWVf77ra+M2j8PKjzOamKAACI6tc
+         tZgPah1EA3NkMeCOZfCjwpEQ1vjAPA1N+IkQDVQSrMwQ1xzlOHMszbbue3/VPdgP0wmb
+         GXTtv0XCYx91I0Unv2Ku6Mhnhp9Kj2JVyH8sSsUvWBr89MxLXB3jM1tNrMa9PbJJfr8m
+         0pRha2mApqyCbHSxC8lFSDmaTuwJHRSdhNTzjobEbmGu7RbEATq/0hHZrDWDBdsZSx8A
+         LSk8VBko8RhiyQh+sjixVEVrwma4v25/1LBNwXIUg5MCX15YIr2GUkbTgg7T/7ZovfZa
+         RlNQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXAmNqw1QbIdOMc5NRx0YYLC04phX/uHZVyob4aKqwsGCnCbaHdbPNvuDzP6QcX6DGuo0OjwIkE@vger.kernel.org
+X-Gm-Message-State: AOJu0YywlH9ysVCj/A9yeNoxM8AO+jx+RuJRGx5bhFFvThc74ZvTF1vH
+	jtEI5rw+ZIVNQLyT2uJtH90LPddtR155EVu/7SYx09VLh1asn9wXLM+q699xRPcHgmA=
+X-Gm-Gg: ASbGncvFcCL8n76v0bCAv5kKtCnswKA+aFm+560cIVSeMfHCVlt2QkOS8IoauNwra9Z
+	v2+Sxi3u5Bs5yZpBS52W45esvdS0eyNiJWsdVMZZdBigdPBV6rERzj6x6N4YWOOoBlZQPg3jI0Q
+	W2F365ij8aUvrVwWu3u5mm271xt82k/XAn7bRdT+yfyGBPMRVo7DC+H7wyZL19CKKeWIbBJFABB
+	3Syt5ObLLTZ7wIiKjziZKoC+94QpxRHvh4PNxkPsvhB3cj3dyPQuxgg7SMVo5wHwmZ/+QnVYDRv
+	RB0ZgfIkaIe0myyjw6Gs3FphsEKZ/Wyg1Bk1HYMSNkMdjwA5eQVDVUtiOpDU1eJKpPAmLP4bxCP
+	YFsAELm8Qh+2iLsk3dyrIie+V9QTHQXtgtDzOU4vAaGJaqxM9mP+qX8JywttrVhYhcNCoBUYVVs
+	+ccgSdB+2Eajr+WzgK7vz8
+X-Google-Smtp-Source: AGHT+IG/wsNger26E0V0m6xgXzA1Oo9csceQsjfNfsN8BI+4W7SPfZqWJAu79dOI4diXiuEuLjz23Q==
+X-Received: by 2002:a05:6000:2c0f:b0:42b:41d3:daf9 with SMTP id ffacd0b85a97d-42b5933ce36mr2926758f8f.2.1763130756418;
+        Fri, 14 Nov 2025 06:32:36 -0800 (PST)
+Received: from blackdock.suse.cz (nat2.prg.suse.com. [195.250.132.146])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-42b53e982d6sm10480919f8f.21.2025.11.14.06.32.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 14 Nov 2025 06:32:36 -0800 (PST)
+Date: Fri, 14 Nov 2025 15:32:34 +0100
+From: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
+To: Guopeng Zhang <zhangguopeng@kylinos.cn>
+Cc: tj@kernel.org, hannes@cmpxchg.org, shuah@kernel.org, 
+	cgroups@vger.kernel.org, linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	sebastian.chlad@suse.com, longman@redhat.com
+Subject: Re: [PATCH] selftests/cgroup: conform test to TAP format output
+Message-ID: <4h54pkcisk5fmevglu3qldk5fb2rgo5355vfds3wplhekfumtz@qtwtixmuw2hz>
+References: <6lwnagu63xzanum2xx6vkm2qe4oh74fteqeymmkqxyjbovcce6@3jekdivdr7yf>
+ <6916a8f5.050a0220.23bb4.ab7dSMTPIN_ADDED_BROKEN@mx.google.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="s6uqnsagtupmqone"
+Content-Disposition: inline
+In-Reply-To: <6916a8f5.050a0220.23bb4.ab7dSMTPIN_ADDED_BROKEN@mx.google.com>
 
-Conform the layout, informational and status messages to KTAP.  No
-functional change is intended other than the layout of output messages.
 
-Signed-off-by: Guopeng Zhang <zhangguopeng@kylinos.cn>
-Suggested-by: Sebastian Chlad <sebastian.chlad@suse.com>
----
-v2:
-Change subject and commit message to refer to KTAP instead of TAP.
-No code changes.
----
- tools/testing/selftests/cgroup/test_core.c       | 7 ++++---
- tools/testing/selftests/cgroup/test_cpu.c        | 7 ++++---
- tools/testing/selftests/cgroup/test_cpuset.c     | 7 ++++---
- tools/testing/selftests/cgroup/test_freezer.c    | 7 ++++---
- tools/testing/selftests/cgroup/test_kill.c       | 7 ++++---
- tools/testing/selftests/cgroup/test_kmem.c       | 7 ++++---
- tools/testing/selftests/cgroup/test_memcontrol.c | 7 ++++---
- tools/testing/selftests/cgroup/test_zswap.c      | 7 ++++---
- 8 files changed, 32 insertions(+), 24 deletions(-)
+--s6uqnsagtupmqone
+Content-Type: text/plain; protected-headers=v1; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH] selftests/cgroup: conform test to TAP format output
+MIME-Version: 1.0
 
-diff --git a/tools/testing/selftests/cgroup/test_core.c b/tools/testing/selftests/cgroup/test_core.c
-index 5e5b8c4b8c0e..102262555a59 100644
---- a/tools/testing/selftests/cgroup/test_core.c
-+++ b/tools/testing/selftests/cgroup/test_core.c
-@@ -923,8 +923,10 @@ struct corecg_test {
- int main(int argc, char *argv[])
- {
- 	char root[PATH_MAX];
--	int i, ret = EXIT_SUCCESS;
-+	int i;
- 
-+	ksft_print_header();
-+	ksft_set_plan(ARRAY_SIZE(tests));
- 	if (cg_find_unified_root(root, sizeof(root), &nsdelegate)) {
- 		if (setup_named_v1_root(root, sizeof(root), CG_NAMED_NAME))
- 			ksft_exit_skip("cgroup v2 isn't mounted and could not setup named v1 hierarchy\n");
-@@ -946,12 +948,11 @@ int main(int argc, char *argv[])
- 			ksft_test_result_skip("%s\n", tests[i].name);
- 			break;
- 		default:
--			ret = EXIT_FAILURE;
- 			ksft_test_result_fail("%s\n", tests[i].name);
- 			break;
- 		}
- 	}
- 
- 	cleanup_named_v1_root(root);
--	return ret;
-+	ksft_finished();
- }
-diff --git a/tools/testing/selftests/cgroup/test_cpu.c b/tools/testing/selftests/cgroup/test_cpu.c
-index 7d77d3d43c8e..c83f05438d7c 100644
---- a/tools/testing/selftests/cgroup/test_cpu.c
-+++ b/tools/testing/selftests/cgroup/test_cpu.c
-@@ -796,8 +796,10 @@ struct cpucg_test {
- int main(int argc, char *argv[])
- {
- 	char root[PATH_MAX];
--	int i, ret = EXIT_SUCCESS;
-+	int i;
- 
-+	ksft_print_header();
-+	ksft_set_plan(ARRAY_SIZE(tests));
- 	if (cg_find_unified_root(root, sizeof(root), NULL))
- 		ksft_exit_skip("cgroup v2 isn't mounted\n");
- 
-@@ -814,11 +816,10 @@ int main(int argc, char *argv[])
- 			ksft_test_result_skip("%s\n", tests[i].name);
- 			break;
- 		default:
--			ret = EXIT_FAILURE;
- 			ksft_test_result_fail("%s\n", tests[i].name);
- 			break;
- 		}
- 	}
- 
--	return ret;
-+	ksft_finished();
- }
-diff --git a/tools/testing/selftests/cgroup/test_cpuset.c b/tools/testing/selftests/cgroup/test_cpuset.c
-index 8094091a5857..c5cf8b56ceb8 100644
---- a/tools/testing/selftests/cgroup/test_cpuset.c
-+++ b/tools/testing/selftests/cgroup/test_cpuset.c
-@@ -247,8 +247,10 @@ struct cpuset_test {
- int main(int argc, char *argv[])
- {
- 	char root[PATH_MAX];
--	int i, ret = EXIT_SUCCESS;
-+	int i;
- 
-+	ksft_print_header();
-+	ksft_set_plan(ARRAY_SIZE(tests));
- 	if (cg_find_unified_root(root, sizeof(root), NULL))
- 		ksft_exit_skip("cgroup v2 isn't mounted\n");
- 
-@@ -265,11 +267,10 @@ int main(int argc, char *argv[])
- 			ksft_test_result_skip("%s\n", tests[i].name);
- 			break;
- 		default:
--			ret = EXIT_FAILURE;
- 			ksft_test_result_fail("%s\n", tests[i].name);
- 			break;
- 		}
- 	}
- 
--	return ret;
-+	ksft_finished();
- }
-diff --git a/tools/testing/selftests/cgroup/test_freezer.c b/tools/testing/selftests/cgroup/test_freezer.c
-index 714c963aa3f5..97fae92c8387 100644
---- a/tools/testing/selftests/cgroup/test_freezer.c
-+++ b/tools/testing/selftests/cgroup/test_freezer.c
-@@ -1488,8 +1488,10 @@ struct cgfreezer_test {
- int main(int argc, char *argv[])
- {
- 	char root[PATH_MAX];
--	int i, ret = EXIT_SUCCESS;
-+	int i;
- 
-+	ksft_print_header();
-+	ksft_set_plan(ARRAY_SIZE(tests));
- 	if (cg_find_unified_root(root, sizeof(root), NULL))
- 		ksft_exit_skip("cgroup v2 isn't mounted\n");
- 	for (i = 0; i < ARRAY_SIZE(tests); i++) {
-@@ -1501,11 +1503,10 @@ int main(int argc, char *argv[])
- 			ksft_test_result_skip("%s\n", tests[i].name);
- 			break;
- 		default:
--			ret = EXIT_FAILURE;
- 			ksft_test_result_fail("%s\n", tests[i].name);
- 			break;
- 		}
- 	}
- 
--	return ret;
-+	ksft_finished();
- }
-diff --git a/tools/testing/selftests/cgroup/test_kill.c b/tools/testing/selftests/cgroup/test_kill.c
-index a4dd326ced79..c8c9d306925b 100644
---- a/tools/testing/selftests/cgroup/test_kill.c
-+++ b/tools/testing/selftests/cgroup/test_kill.c
-@@ -274,8 +274,10 @@ struct cgkill_test {
- int main(int argc, char *argv[])
- {
- 	char root[PATH_MAX];
--	int i, ret = EXIT_SUCCESS;
-+	int i;
- 
-+	ksft_print_header();
-+	ksft_set_plan(ARRAY_SIZE(tests));
- 	if (cg_find_unified_root(root, sizeof(root), NULL))
- 		ksft_exit_skip("cgroup v2 isn't mounted\n");
- 	for (i = 0; i < ARRAY_SIZE(tests); i++) {
-@@ -287,11 +289,10 @@ int main(int argc, char *argv[])
- 			ksft_test_result_skip("%s\n", tests[i].name);
- 			break;
- 		default:
--			ret = EXIT_FAILURE;
- 			ksft_test_result_fail("%s\n", tests[i].name);
- 			break;
- 		}
- 	}
- 
--	return ret;
-+	ksft_finished();
- }
-diff --git a/tools/testing/selftests/cgroup/test_kmem.c b/tools/testing/selftests/cgroup/test_kmem.c
-index 005a142f3492..ca38525484e3 100644
---- a/tools/testing/selftests/cgroup/test_kmem.c
-+++ b/tools/testing/selftests/cgroup/test_kmem.c
-@@ -421,8 +421,10 @@ struct kmem_test {
- int main(int argc, char **argv)
- {
- 	char root[PATH_MAX];
--	int i, ret = EXIT_SUCCESS;
-+	int i;
- 
-+	ksft_print_header();
-+	ksft_set_plan(ARRAY_SIZE(tests));
- 	if (cg_find_unified_root(root, sizeof(root), NULL))
- 		ksft_exit_skip("cgroup v2 isn't mounted\n");
- 
-@@ -446,11 +448,10 @@ int main(int argc, char **argv)
- 			ksft_test_result_skip("%s\n", tests[i].name);
- 			break;
- 		default:
--			ret = EXIT_FAILURE;
- 			ksft_test_result_fail("%s\n", tests[i].name);
- 			break;
- 		}
- 	}
- 
--	return ret;
-+	ksft_finished();
- }
-diff --git a/tools/testing/selftests/cgroup/test_memcontrol.c b/tools/testing/selftests/cgroup/test_memcontrol.c
-index 2e9d78ab641c..4e1647568c5b 100644
---- a/tools/testing/selftests/cgroup/test_memcontrol.c
-+++ b/tools/testing/selftests/cgroup/test_memcontrol.c
-@@ -1650,8 +1650,10 @@ struct memcg_test {
- int main(int argc, char **argv)
- {
- 	char root[PATH_MAX];
--	int i, proc_status, ret = EXIT_SUCCESS;
-+	int i, proc_status;
- 
-+	ksft_print_header();
-+	ksft_set_plan(ARRAY_SIZE(tests));
- 	if (cg_find_unified_root(root, sizeof(root), NULL))
- 		ksft_exit_skip("cgroup v2 isn't mounted\n");
- 
-@@ -1685,11 +1687,10 @@ int main(int argc, char **argv)
- 			ksft_test_result_skip("%s\n", tests[i].name);
- 			break;
- 		default:
--			ret = EXIT_FAILURE;
- 			ksft_test_result_fail("%s\n", tests[i].name);
- 			break;
- 		}
- 	}
- 
--	return ret;
-+	ksft_finished();
- }
-diff --git a/tools/testing/selftests/cgroup/test_zswap.c b/tools/testing/selftests/cgroup/test_zswap.c
-index ab865d900791..64ebc3f3f203 100644
---- a/tools/testing/selftests/cgroup/test_zswap.c
-+++ b/tools/testing/selftests/cgroup/test_zswap.c
-@@ -597,8 +597,10 @@ static bool zswap_configured(void)
- int main(int argc, char **argv)
- {
- 	char root[PATH_MAX];
--	int i, ret = EXIT_SUCCESS;
-+	int i;
- 
-+	ksft_print_header();
-+	ksft_set_plan(ARRAY_SIZE(tests));
- 	if (cg_find_unified_root(root, sizeof(root), NULL))
- 		ksft_exit_skip("cgroup v2 isn't mounted\n");
- 
-@@ -625,11 +627,10 @@ int main(int argc, char **argv)
- 			ksft_test_result_skip("%s\n", tests[i].name);
- 			break;
- 		default:
--			ret = EXIT_FAILURE;
- 			ksft_test_result_fail("%s\n", tests[i].name);
- 			break;
- 		}
- 	}
- 
--	return ret;
-+	ksft_finished();
- }
--- 
-2.25.1
+On Fri, Nov 14, 2025 at 11:55:48AM +0800, Guopeng Zhang <zhangguopeng@kylin=
+os.cn> wrote:
+> Actually, selftests are no longer just something for developers to view l=
+ocally; they are now extensively=20
+> run in CI and stable branch regression testing. Using a standardized layo=
+ut means that general test runners=20
+> and CI systems can parse the cgroup test results without any special hand=
+ling.
 
+Nice. I appreciate you took this up.
+
+> This patch is not part of a formal, tree-wide conversion series I am runn=
+ing; it is an incremental step to align the=20
+> cgroup C tests with the existing TAP usage. I started here because these =
+tests already use ksft_test_result_*() and=20
+> only require minor changes to generate proper TAP output.
+
+The tests are in various state of usage, correctness and usefulness,
+hence...
+
+>=20
+> > I'm asking to better asses whether also the scripts listed in
+> > Makefile:TEST_PROGS should be converted too.
+>=20
+> I agree that having them produce TAP output would benefit tooling and CI.=
+ I did not want to mix=20
+> that into this change, but if you and other maintainers think this direct=
+ion is reasonable,=20
+> I would be happy to follow up and convert the cgroup shell tests to TAP a=
+s well.
+
+=2E..I'd suggest next focus on test_cpuset_prs.sh (as discussed, it may
+need more changes to adapt its output too).
+
+Michal
+
+--s6uqnsagtupmqone
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iJEEABYKADkWIQRCE24Fn/AcRjnLivR+PQLnlNv4CAUCaRc9gBsUgAAAAAAEAA5t
+YW51MiwyLjUrMS4xMSwyLDIACgkQfj0C55Tb+AgLgQD/fbe7S0AtogwfuP1y5Bqn
+wM4mhSkCc3blXh/7ObpsjqEA/3cTt2T97D0h3i5iLPdSu/NO3AwScgRBygMG5F3I
+dJUB
+=rsPe
+-----END PGP SIGNATURE-----
+
+--s6uqnsagtupmqone--
 
