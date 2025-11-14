@@ -1,93 +1,68 @@
-Return-Path: <cgroups+bounces-11975-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-11976-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
-	by mail.lfdr.de (Postfix) with ESMTPS id 17BDEC5F51C
-	for <lists+cgroups@lfdr.de>; Fri, 14 Nov 2025 22:11:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2589AC5F598
+	for <lists+cgroups@lfdr.de>; Fri, 14 Nov 2025 22:23:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id B3F3235C920
-	for <lists+cgroups@lfdr.de>; Fri, 14 Nov 2025 21:11:32 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 11FC3358E4D
+	for <lists+cgroups@lfdr.de>; Fri, 14 Nov 2025 21:22:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 661B22FDC3F;
-	Fri, 14 Nov 2025 21:11:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 60EF9355047;
+	Fri, 14 Nov 2025 21:22:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="O33RyYWG"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gmK1dBJE"
 X-Original-To: cgroups@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1CBCD1E1A3D;
-	Fri, 14 Nov 2025 21:11:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 17A482FC86C;
+	Fri, 14 Nov 2025 21:22:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763154688; cv=none; b=tSfrglwXe+Bgzc9dd8p+uj+oUSRndajt+fu266wYCZZzHCksj+7kPsx8Q+2NtwDc/GVcDnH+K3c4qfRGeeisgLY/zqxFYugIAhh3/ad86UcHPtAq0L9LwCG9WHsY6/tUAFwLOd+RmNz6ruPWX1LxhrSr+oSCq3+O7LWZ6Rwl3Zw=
+	t=1763155373; cv=none; b=d8vc4zEd30Df7xJ5MxX3/gesZA6XBaPNE39SUT1JtD/ukkddTE2+kDIqBpbWvR7IMtGGFi1HGVe7GACVpGA4IuwBFg0F2Q/5ZmD8nJnTlEcwOm+zIeSF0MNoFfb+jTMMKQKs3nsL74Y47gQPg79PHtGfDNKfy1jwzU0WS2KZgVc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763154688; c=relaxed/simple;
-	bh=7AUZ2qMbVGNlnVWU3OOoHOhP0pZer04KISPztcjt8S8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=cpwBdxHNtVYE8BO9Rh87cTKu/vH/e9y98OfSLf0Lmiq9LVlbs/5o5fTBk5n9Nq7lO/EfH3bPQJ6g9cyIWuMfc0iYXsgr6/CSi/8LX9ZXzR/d7+7pc3H8TgC5fwwCrMGHubTSu7LVC60Gv3wRPzEoh2ghR3V4D3IC2FtkVAHMBSg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=O33RyYWG; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7D278C113D0;
-	Fri, 14 Nov 2025 21:11:27 +0000 (UTC)
+	s=arc-20240116; t=1763155373; c=relaxed/simple;
+	bh=0jMPT7Wo0pVBWBmBZYHMmczEsCFoVCz8QbaRD9szspI=;
+	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References; b=VbWvpnXIuh9m6liwNe1suKi2fy7OV/Cg2Y86CQYRiatMT0MOGFk2wum7EO1qUUBk49vPwKUH5yG2i3AijOXcgPXcpweoZqoMRk4OCOcezStXtcfxtgjzNXlKsAQyxrbWlMzggXX9qlgso1gpZiJLX+RUPXnPaJidKge/8/UMASg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gmK1dBJE; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7ED26C19421;
+	Fri, 14 Nov 2025 21:22:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1763154687;
-	bh=7AUZ2qMbVGNlnVWU3OOoHOhP0pZer04KISPztcjt8S8=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=O33RyYWGKXDohGHEJtAM2maj1QXbHB4Ea5eUROXVCjkKaeEGVJF/iNkF5dwPlNOLt
-	 DGnJK4huxQkkXl9X1AtHTnYawU9Yh1eY0U7GOG4qYFKNuJZHQ8QSC0RIL1L7MoEsys
-	 88WhhDwxqeG7dqu6tecHnFUxnwneGCbN4XjZ//zE4PGErZNiff75FnsTqy3sx6cSZa
-	 f5LsRplwNhr35umWBS7QH1Lv7y8pAZvDjumyxhcGDcXcZqP3Srp3UPjKTWdV7S+WtP
-	 x2XiJYMqIUjiy8hVnravF1Ik3N4s2C0Kwt4Fy/ilEoEKucZVheSL+QUlS73LGC7r+C
-	 hP9BVs+JS1+MQ==
-Date: Fri, 14 Nov 2025 11:11:26 -1000
+	s=k20201202; t=1763155372;
+	bh=0jMPT7Wo0pVBWBmBZYHMmczEsCFoVCz8QbaRD9szspI=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=gmK1dBJEs6Xe6EaQiE1Y2duQDFTqQ/rnXgzzmPerTiViniptgLGwTGQHVOo0ZavSf
+	 iyp1lAdDD/C97vdP2O1B82K90FtC6jsjUFgynGeqvclBjPUv4oDD6PiyyDG8xovlCd
+	 BYHoClg5H8Uc79OdzwbcuVldlFU9OVLmOl3sDlr8pyL7mMnS84KBcVEAwU1gvl4SPy
+	 9kVMyeFVEdSa0cvrsurNOJn+isf65QvwXd42yUVZuIm00L6isWV0+xO2rCFIwTAI4y
+	 TyFhurL0tOLL3Mwfu2j8R1DJTkcHgoVke3l/lUH4ORgCiUsQy6Rw9K2YFv+mYawYrz
+	 2DM/ncKBDnOQQ==
+Date: Fri, 14 Nov 2025 11:22:51 -1000
+Message-ID: <0135870c901931c4ec93c76ed3bb3019@kernel.org>
 From: Tejun Heo <tj@kernel.org>
-To: Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
-Cc: Jonathan Corbet <corbet@lwn.net>, cgroups@vger.kernel.org,
-	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Natalie Vock <natalie.vock@gmx.de>,
-	Maarten Lankhorst <dev@lankhorst.se>,
-	Johannes Weiner <hannes@cmpxchg.org>
-Subject: Re: [PATCH RESEND 1/3] docs: cgroup: Explain reclaim protection
- target
-Message-ID: <aRea_mDhhsUn24K-@slm.duckdns.org>
-References: <20251110193638.623208-1-mkoutny@suse.com>
- <20251110193638.623208-2-mkoutny@suse.com>
- <87wm3xwtcm.fsf@trenco.lwn.net>
- <qhywsiwlbrpe4el3pcprtnpwdyifmfxesmsdgxuze6ho3d4wqe@mweffv3yoxlt>
+To: Michal Koutný <mkoutny@suse.com>
+Cc: cgroups@vger.kernel.org, linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, Natalie Vock <natalie.vock@gmx.de>, Maarten Lankhorst <dev@lankhorst.se>, Johannes Weiner <hannes@cmpxchg.org>, Jonathan Corbet <corbet@lwn.net>
+Subject: Re: [PATCH v2 0/3] Memory reclaim documentation fixes
+In-Reply-To: <20251114182130.1549832-1-mkoutny@suse.com>
+References: <20251114182130.1549832-1-mkoutny@suse.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <qhywsiwlbrpe4el3pcprtnpwdyifmfxesmsdgxuze6ho3d4wqe@mweffv3yoxlt>
 
-On Fri, Nov 14, 2025 at 07:29:28PM +0100, Michal Koutn� wrote:
-> On Mon, Nov 10, 2025 at 01:00:41PM -0700, Jonathan Corbet <corbet@lwn.net> wrote:
-> > > @@ -53,7 +53,8 @@ v1 is available under :ref:`Documentation/admin-guide/cgroup-v1/index.rst <cgrou
-> > >       5-2. Memory
-> > >         5-2-1. Memory Interface Files
-> > >         5-2-2. Usage Guidelines
-> > > -       5-2-3. Memory Ownership
-> > > +       5-2-3. Reclaim Protection
-> > > +       5-2-4. Memory Ownership
-> > 
-> > I always have to ask...do we really need the manually maintained TOC
-> > here? 
-> 
-> Tejun [1] (and maybe some others) like it.
+> Michal Koutný (3):
+>   docs: cgroup: Explain reclaim protection target
+>   docs: cgroup: Note about sibling relative reclaim protection
+>   docs: cgroup: No special handling of unpopulated memcgs
 
-I'm not married to it but I think a lot of people including me just read the
-source docs without ever formatting them. It is kinda nice to have ToC for
-them. Maybe section numbers are too error-prone, I don't know.
+Applied 1-3 to cgroup/for-6.19.
 
 Thanks.
 
--- 
+--
 tejun
 
