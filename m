@@ -1,89 +1,88 @@
-Return-Path: <cgroups+bounces-11960-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-11961-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 65098C5E564
-	for <lists+cgroups@lfdr.de>; Fri, 14 Nov 2025 17:51:20 +0100 (CET)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
+	by mail.lfdr.de (Postfix) with ESMTPS id CC936C5E4D1
+	for <lists+cgroups@lfdr.de>; Fri, 14 Nov 2025 17:44:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 1E91A3A1147
-	for <lists+cgroups@lfdr.de>; Fri, 14 Nov 2025 16:18:29 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 943AB3C7FC3
+	for <lists+cgroups@lfdr.de>; Fri, 14 Nov 2025 16:19:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 425C3329386;
-	Fri, 14 Nov 2025 16:14:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9579C3314C4;
+	Fri, 14 Nov 2025 16:15:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="SB6MVX9x"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="ZXGHQB4Y"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-wm1-f54.google.com (mail-wm1-f54.google.com [209.85.128.54])
+Received: from mail-wm1-f45.google.com (mail-wm1-f45.google.com [209.85.128.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E4D86329367
-	for <cgroups@vger.kernel.org>; Fri, 14 Nov 2025 16:14:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E38132A3CF
+	for <cgroups@vger.kernel.org>; Fri, 14 Nov 2025 16:15:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763136891; cv=none; b=X7yvehmiWOJ3lCjtIeI8852fSknDwPrmNyenD28OnFVGsZNJX+6JFB+g4+e102uIGrCF18hZJEGAFwtXmql6qTcdDsKgYtoQJxWt+CY3LpkCo9WUmSvjGlrVMTZKoCSL6d5Mivx9BePueK+nH71V1qrbQyEzA0p0s6YT+HTtv0M=
+	t=1763136910; cv=none; b=ACODc4tuauS5gnFX7FGqF1ybh7YYff3B+1D1UL2xBT2esmCKC0EbdVpAjiGPglNWEVD2UIIX8kV71NtlviDqtlF0ArAeIOVCLC5iz0Lvv1DB6ILAM3HL4w0MUCRDYU8/WxWEM8PFFBtbO9Q28DeCOsiRpui0VgnibLQWpQGaJoM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763136891; c=relaxed/simple;
-	bh=3ym9hcDcavEyVb71JBBWRlFTktspLEDiAOi0d3d96PM=;
+	s=arc-20240116; t=1763136910; c=relaxed/simple;
+	bh=ejBx6SWBDyqUnaXvs0hfExFMOttKr4WNz5/+Xw7vBS8=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=UQJKWX2vJLbVOiPygh7VhxoxoRDPKoWJui3AevX2xKX2FkkNdSBh42PffOhQs/io4Ew2NUMflvbMcePnTKV4MQkhG8jNIGmCX3LYDD0SWgwmSM6qTIfCR6KgMtPEdIwHW45FMkA5QRX7qZcTtu82bhQBtllNdvz/URF64HNNYZ0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=SB6MVX9x; arc=none smtp.client-ip=209.85.128.54
+	 Content-Type:Content-Disposition:In-Reply-To; b=ThWcIFJTOeGj/jKx92MYgcD9ldRjFLMaq9bBxpPFzF+LmcFvqZXKTBOrTfn1nBeD0J2ORfFqyfk6bMZQZQOf+fk8X5zjhuEGDk5ZOQ4eZt5ifHuX/m2WEHrDscfalrBujDEd0YxlVgQPIwzFkDtnYd7bKq0mxPWhCVdIfQHU8ic=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=ZXGHQB4Y; arc=none smtp.client-ip=209.85.128.45
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-wm1-f54.google.com with SMTP id 5b1f17b1804b1-47795f6f5c0so453485e9.1
-        for <cgroups@vger.kernel.org>; Fri, 14 Nov 2025 08:14:48 -0800 (PST)
+Received: by mail-wm1-f45.google.com with SMTP id 5b1f17b1804b1-47789cd2083so16552575e9.2
+        for <cgroups@vger.kernel.org>; Fri, 14 Nov 2025 08:15:08 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1763136887; x=1763741687; darn=vger.kernel.org;
+        d=suse.com; s=google; t=1763136907; x=1763741707; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=Z9bbGFOxixkcmKzkjDLBUH8YjYM6lGTpT38wHmTm2Z4=;
-        b=SB6MVX9xNg5Fvq4kjfFTDBNswzy618qEcnYFYFrOizMCYiPU1DqWqp7UEeIvptQ3Ko
-         5VYp8ccSUb4HtUsfvmwepmkgOixTGzz2UdUxGioM7I68K14AdL7or5DDN0NToxBskr4F
-         EiJlEwJ0pZovjpTYU+DMVhiMBDKmCaK/MHUROIj6flRALJ8b5005exK+Uxw6q6fKHwbr
-         63d3NCTasUHhQ+5uEljpe2gzQt9YByHsDAESKbX+jZjq/rU2p8YsyWeRA+hDfKwIAPUG
-         rY1EKB/pvFLH/evXDUePtYLGXUJd3iHGo3iCUPdPbAPdPeRykvPl3HWD4Qqir/FvNU3J
-         L9CQ==
+        bh=Uve5aie6t2ot1LukeDq0Ajy09nejf8kSYUsScMpBm7E=;
+        b=ZXGHQB4YWRdAFKFLpo+9mV3H/17F/V5UoeMvsLZghKobajfqV91M+VQ3j8NE7boPib
+         LCf42tZ+23gUwh8ULnK1MtpgC9Jxkxlqyg+uVOmuALTJJSRaoyYcKw9p698uY60bwXIx
+         1wfGtMMAZmtFLgRnpYEbpNqAsrw1+QnaXl/tH/oK+fXlRjp9pRoULIMHm3OaextaAfic
+         XqOt4l5ueDIeIRX74O/aNgaZgDmO/zw/YSxhyOAtSiiriJXBoCP97YiXFW7VLFwvmYDY
+         Z/JNUoTGPP32zWXJD7Jjq6TVKfeuPwDg3x/CkVGuoDNnuU8gb3I5Rbtv9TANWWICdzC1
+         a/Qg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1763136887; x=1763741687;
+        d=1e100.net; s=20230601; t=1763136907; x=1763741707;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Z9bbGFOxixkcmKzkjDLBUH8YjYM6lGTpT38wHmTm2Z4=;
-        b=NJBbMzacmcFofcMHUrQ8+WHFClBS9aa5nzSFkCRm3dGhnwPvTJdff61Cc1BbxPE5so
-         TmFidqo5+IRLr94wCWpWXietXG8i1vz73EU0CsI8rOl6AYxsOixPdTzSM3h+/GxOR0sW
-         oA3ldj1zl8b4Ze81wdJc8918AtLvBIYq68JKvjpmGX7Wxf4xw5yMpfs5P/0Zzycww1A5
-         QzRCmVOSjEJEt+PzyBWQFdS2aWSAFH5PNnj3taMm2N2p9nTjlk7YC/6Ixhg7QCpTyJam
-         w6qmplv0srSxKgRoZ06jtlj3zFUiSBJyXcNbOKdutob8fjmtSdMP1M4KXbdHyVwxg0lU
-         3BfQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVUeZEQBOOPx33Sw9g1sHjWNCTZWGHcLBfkzK0Xr2eULgEoims2tY65QoThSegXlh2p1QV0aQIw@vger.kernel.org
-X-Gm-Message-State: AOJu0Yw5AUn9NdlCZpmsTCmihj+gE5EwcfKjPdd+KoOnWKshgynaB6ed
-	H+iZDXJcqESQxfGlzQIPU9KPjEOH7jVkIpmuyOJNamCNFA2P+0i125fN9jsUkbh8YYA=
-X-Gm-Gg: ASbGncsehzbF1vN4z4V+Wwsm3txBQjOwNgfamAF739Uv27AXMhbo+YslNZ/ks/8TOpL
-	iMucIfI4ZYKJVC6xhfWlZKizsBHdzV6AElfdc1p6594V7FEoP3fe45WgjRI1pXoZPqNO/t6TeiF
-	kmZ7tZjOxEOTADvfsK4d4lWRsojjFeEgmz/Bj48jboMzZY4OF8NJj4WFc7R5dWJaBMeHNGf5fkV
-	109k4hEWxw6eO19mzJjSg8hXBBfViZuTDrEx9ASBT471+z0Lj5yHHjY9XsZVJ6cx0lKsc+rMmj0
-	pbhoF40AmbYRHasxnzumPP3apANkjX0cvnKIawI4Hxd8UNbOfCHDE/058cibz+xSVkhhDdfFFwA
-	9XMXLcIT3mYkOYEY5WwmJ561GCveEvUfrUg4egp3SxhE6URr3BSg4U02U4ATkGNOot5s/xFCLGR
-	b9IBUEnJyInujbUqwX1EwsAh3NJNHxTEA=
-X-Google-Smtp-Source: AGHT+IG1E5IWAEk6xijIYXYbonIi0wedCVbGGYbaWBp7CoJXlMlxjmDDO+6DHCoaGNcrjRMlvoQNgw==
-X-Received: by 2002:a05:600c:3587:b0:477:79f8:daa8 with SMTP id 5b1f17b1804b1-4778fe7e760mr33380215e9.17.1763136887123;
-        Fri, 14 Nov 2025 08:14:47 -0800 (PST)
+        bh=Uve5aie6t2ot1LukeDq0Ajy09nejf8kSYUsScMpBm7E=;
+        b=CI2UuORRLLtK/wcDURYc5McTSwZe2tkSCb7jR4LPH9ZtrXUHIBUeWuUHIViEIbmtZN
+         N3jqZ7cEUuPEu1h+oyBIITCMGYhZ71ysJb1Pq2RxRw+JEHVa+oNKlfOrnz1xORzgmp+u
+         +4fZfmEyT/nT/MDE9mu8EPmAjFMRoz07rWlg0Tt40Kdi8paWGVXSP+d0UgYKirvwvUmB
+         2Ext1xA5k2zJ/tc9VKB0tKGy2FaRbaCVYdBa3Le7KJgANB4krnKKse93Mce6AkLz4RdE
+         ulZh6YNRcp4mVPZb+ush7FwwpvrlP3PpAqe7eDzbioEcStDE7zSpwoPBWHIZLr4s88Tc
+         9xoA==
+X-Forwarded-Encrypted: i=1; AJvYcCVHvnMxSTob6EpleZ3XxFAK//OYHSXfkKOF/Haba+npMBQH8FuI3Q2wUo6BqN4hVZBSSLqHwXSp@vger.kernel.org
+X-Gm-Message-State: AOJu0YwUUDZNZeGMT6zGbE0YpR3uTGcj6LudzmgczIApVl5VYw00Uocx
+	EKLSwCka7vX1UV1SdJIZEm68KfAUA84/VYUZHOBWP+56CudPxsEFO5CU9I59jhNa9ug=
+X-Gm-Gg: ASbGncubuL5BwD7yPVIVhv6P1PG+sjsAavZ+6lXs+JD7KB3mKgBalqiygPfJep9bfeg
+	yzb1r+1A6CU9faw4gt6jfMIxBeoixvDoI9LKZEq+ESE2IjmzIhzH2Dzt4rkwf4CXVo+rf/E9ZXd
+	ELtBx/yabnreXj3znfRnEKBhg85yY4yLHck/zHrynY6xXkWANtjvZW4D5Kv9rn29xWmFQ7BFHox
+	sPPEFhQv3ANOL3d2dK8l9MOFnxn7OukfLDdpqeNS1Iwl5Rehtg4xLDDnjYwvfMPtWcGY3OMw+uH
+	JOEI1oyyYOg6o6X4ktTGlL4axBN10PWWGvYZkUZLtHb8xNIk9N9v0X4pR+fy2q7n523sfCD/g0Z
+	uRGn5TDxIAMMu0mrFOgQeSyeHwRWfGRmmpUugZeZIVKCYXcfsmSiItjjYL48SI4nKsf5Yd+Y3Oh
+	RX3A7pUYtgFBnSm0rVc+jZ
+X-Google-Smtp-Source: AGHT+IHAcvxQ0S1fd661evp/djtiAIG1J/y+QdRRpdijz3aPV7O2phZJh8S1qUXE6mzjepnqCMJsbQ==
+X-Received: by 2002:a05:600c:8b4b:b0:477:63a4:88fe with SMTP id 5b1f17b1804b1-4778fe50df1mr37780715e9.2.1763136906924;
+        Fri, 14 Nov 2025 08:15:06 -0800 (PST)
 Received: from blackdock.suse.cz (nat2.prg.suse.com. [195.250.132.146])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-47787e2bcf9sm158015055e9.3.2025.11.14.08.14.46
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4779524d2ffsm18049275e9.3.2025.11.14.08.15.06
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 14 Nov 2025 08:14:46 -0800 (PST)
-Date: Fri, 14 Nov 2025 17:14:45 +0100
+        Fri, 14 Nov 2025 08:15:06 -0800 (PST)
+Date: Fri, 14 Nov 2025 17:15:05 +0100
 From: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
-To: Chen Ridong <chenridong@huaweicloud.com>
-Cc: Sun Shaojie <sunshaojie@kylinos.cn>, llong@redhat.com, 
-	cgroups@vger.kernel.org, hannes@cmpxchg.org, linux-kernel@vger.kernel.org, 
-	linux-kselftest@vger.kernel.org, shuah@kernel.org, tj@kernel.org
+To: Sun Shaojie <sunshaojie@kylinos.cn>
+Cc: llong@redhat.com, chenridong@huaweicloud.com, cgroups@vger.kernel.org, 
+	hannes@cmpxchg.org, linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org, 
+	shuah@kernel.org, tj@kernel.org
 Subject: Re: [PATCH v2] cpuset: relax the overlap check for cgroup-v2
-Message-ID: <4gzorntzaig4vnskzkumnpvpqfbqrzaahlkn5c33cgtjdm5eef@gtvm3p2rihm7>
-References: <20251113131434.606961-1-sunshaojie@kylinos.cn>
- <lhfcykirz5afdzdc6wnroubsdhasww4gsfri4dxpzagiejjbep@322rtmyvwiyd>
- <2ca99986-b15b-45bc-b2ee-23d9e5395691@huaweicloud.com>
+Message-ID: <4b7znoqq6sdtutcn3jafyrucpqe5jylryvoeooz5ah54vbei4f@wxhsd7gkj3tp>
+References: <19fa5a93-4cc9-4f84-891c-b3b096a68799@huaweicloud.com>
+ <20251114062448.685754-1-sunshaojie@kylinos.cn>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -91,77 +90,73 @@ List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="eicmwaue5zpkfrwb"
+	protocol="application/pgp-signature"; boundary="fp75ulup33bonzwv"
 Content-Disposition: inline
-In-Reply-To: <2ca99986-b15b-45bc-b2ee-23d9e5395691@huaweicloud.com>
+In-Reply-To: <20251114062448.685754-1-sunshaojie@kylinos.cn>
 
 
---eicmwaue5zpkfrwb
-Content-Type: text/plain; protected-headers=v1; charset=utf-8
+--fp75ulup33bonzwv
+Content-Type: text/plain; protected-headers=v1; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 Subject: Re: [PATCH v2] cpuset: relax the overlap check for cgroup-v2
 MIME-Version: 1.0
 
-On Fri, Nov 14, 2025 at 09:29:20AM +0800, Chen Ridong <chenridong@huaweiclo=
-ud.com> wrote:
-> After further consideration, I still suggest retaining this rule.
+On Fri, Nov 14, 2025 at 02:24:48PM +0800, Sun Shaojie <sunshaojie@kylinos.c=
+n> wrote:
+> The desired outcome is that after step #5, although B1 writes "0-3" to=20
+> cpuset.cpus, A1 can still remain as "root", and B1 ends up with effective=
+=20
+> CPUs of 2-3. In summary, We want to avoid A1's invalidation when B1=20
+> changes its cpuset.cpus. Because cgroup v2 allows the effective CPU mask=
+=20
+> of a cpuset to differ from its requested mask.
 
-Apologies, I'm slightly lost which rule. I hope the new iteration from
-Shaojie with both before/after tables will explain it.
+So the new list of reasons why configured cpuset's cpus change are:
+- hotplug,
+- ancestor's config change,
+- stealing by a sibling (new).
 
-> For am example:
->   Step                                       | A1's prstate | B1's prstat=
-e |
->   #1> mkdir -p A1                            | member       |            =
-  |
->   #2> echo "0-1" > A1/cpuset.cpus.exclusive  | member       |            =
-  |
->   #3> echo "root" > A1/cpuset.cpus.partition | root         |            =
-  |
->   #4> mkdir -p B1                            | root         | member     =
-  |
->   #5> echo "0" > B1/cpuset.cpus              | root invalid | member     =
-  |
->=20
-> Currently, we mark A1 as invalid. But similar to the logic in this patch,=
- why must A1 be
-> invalidated?
+IIUC, the patch proposes this behavior:
 
-A1 is invalidated becase it doesn't have exclusive ownership of CPU 0
-anymore.
+  echo root >A1.cpuset.partition
+  echo 0-1 >A1.cpuset.cpus
+ =20
+  echo root >B1.cpuset.partition
+  echo 1-2 >B1.cpuset.cpus	# invalidates A1
+ =20
+  echo 0-1 >A1.cpuset.cpus	# invalidates B1
+ =20
+  ping-pong over CPU 1 ad libitum
 
-> B1 could also use the parent's effective CPUs, right?
+I think the right (tm) behavior would be not to depend on the order in
+which config is applied to siblings, i.e.
 
-Here you assume some ordering between siblings treating A1 more
-important than B1. But it's symmetrical in principle, no?
+  echo root >A1.cpuset.partition
+  echo 0-1 >A1.cpuset.cpus
+ =20
+  echo root >B1.cpuset.partition
+  echo 1-2 >B1.cpuset.cpus	# invalidates both A1 and B1
 
-> This raises the question: Should we relax the restriction to allow a cpus=
-et's cpus to be a subset of
-> its siblings' exclusive_cpus, thereby keeping A1 valid? If we do this, us=
-ers may struggle to
-> understand what their cpuset.cpus.effective value is (and why it has that=
- value)=E2=80=94contrary to their
-> expectations.
+  echo 0-1 >A1.cpuset.cpus	# no change anymore
 
-Not only users, not only users. I think struggle is reduced when
-the resulting state (valid/invalid, effective) doesn't depend on the
-order in which individual cgroups are configured.
+(I hope my example sheds some light on my understanding of the situation
+and desired behavior.)
 
-0.02=E2=82=AC,
+Thanks,
 Michal
 
---eicmwaue5zpkfrwb
+--fp75ulup33bonzwv
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iJEEABYKADkWIQRCE24Fn/AcRjnLivR+PQLnlNv4CAUCaRdVcxsUgAAAAAAEAA5t
-YW51MiwyLjUrMS4xMSwyLDIACgkQfj0C55Tb+Aj9KQEAvVj4ecJeL98Rh6P23PUx
-4wFEX14ZytH0qFiWOYbQjnQBALxgQqhQ6t/VDKfQjQqqj+GjUaVI+5IDwkXg0Iyz
-//8M
-=KFha
+iJEEABYKADkWIQRCE24Fn/AcRjnLivR+PQLnlNv4CAUCaRdVhBsUgAAAAAAEAA5t
+YW51MiwyLjUrMS4xMSwyLDIACgkQfj0C55Tb+AgESgEAmMKb6G2aDqaIJVTnQ3DR
+QMho7kNzp30rMBiabdQxgIABAI9U1dIVC5F2bompvihxej8MACnAJBhIXNU7OJsm
+KiYJ
+=ynnE
 -----END PGP SIGNATURE-----
 
---eicmwaue5zpkfrwb--
+--fp75ulup33bonzwv--
 
