@@ -1,131 +1,141 @@
-Return-Path: <cgroups+bounces-11970-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-11971-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 45F95C5EDD4
-	for <lists+cgroups@lfdr.de>; Fri, 14 Nov 2025 19:29:26 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 45C59C5EDE0
+	for <lists+cgroups@lfdr.de>; Fri, 14 Nov 2025 19:30:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id CD6F14F482F
-	for <lists+cgroups@lfdr.de>; Fri, 14 Nov 2025 18:22:41 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D85773A7B72
+	for <lists+cgroups@lfdr.de>; Fri, 14 Nov 2025 18:30:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3808D34B18B;
-	Fri, 14 Nov 2025 18:21:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB92F2D7DF7;
+	Fri, 14 Nov 2025 18:29:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="cJetZ2j2"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="RJbPo++5"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com [209.85.128.51])
+Received: from mail-wm1-f48.google.com (mail-wm1-f48.google.com [209.85.128.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7241434572F
-	for <cgroups@vger.kernel.org>; Fri, 14 Nov 2025 18:21:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 96C4A31D723
+	for <cgroups@vger.kernel.org>; Fri, 14 Nov 2025 18:29:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763144516; cv=none; b=N7TaprKVLklwT2NExZEPCzwqFiB73ebNtC0wKsSYpN92y7tRZXV08A8Te6xncSsTdppWDbkyQPJR4XEb0CjaNudcT25sfi2VHrxBsDd7Wf2yWgaqSFm7Qq4jhhzb3diE+W3OB3Q90J+RBoExR+gzQC2Yv+ozgwyHkmZa9J8CoD0=
+	t=1763144974; cv=none; b=VRFa6EwnkRZONGDI5dEmgDTBr7jC/M9KY2HgLdp/P/W0FgtvN3IjLiYrLv2EQ+BFVIGTJi0B3Vvwdur1xNhQBL/EQ4vMunLi7xEvt+5sDbDwyhZnmfpZZQNnThI/4tfRYxTWA3qdZssrSeZ+e+AFFhzrTP1xgghjcuSaVoKN/4I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763144516; c=relaxed/simple;
-	bh=8qNH+bv6qnOKRk8Ht91oNJxRGlDhaipub/m6U+pzcsQ=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=JG4Ii7SbcJ7tYjhElnzTZF5FL1tVNfDD2EqSm6or9sbMUNQVvxQhOq2AnF9gAaZ/Pm71zFbiVgx7Nt8cEw67PoeeReXxEEG3gu68RywsfA1XurQK2P+b5YlF426VGdWUjPXzkGB40keRt6NMNX2xnRYndTBCOuBeKkUIiXGmocQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=cJetZ2j2; arc=none smtp.client-ip=209.85.128.51
+	s=arc-20240116; t=1763144974; c=relaxed/simple;
+	bh=V+os3BBZVwF/PrLDunpQ8w9lhgRvpQnhZ1tdXiJr0Qg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=oW0l+vkYliCXS9O3fDN1zpOPx6WUoLqQ8rmeWINhe/8oKVjBBPn2fBqDFGSlK9ePG/sMU47QYyuZCUYdILBYHej1xiiXvvk9JCoQkEvQ0wNAwWt0l8w5/DpBKQwz8px2u7lmdO7LLsIImpKTKNZmBaaMyI2DEZbngTWAu8CqBCk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=RJbPo++5; arc=none smtp.client-ip=209.85.128.48
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-wm1-f51.google.com with SMTP id 5b1f17b1804b1-475ca9237c2so13365445e9.3
-        for <cgroups@vger.kernel.org>; Fri, 14 Nov 2025 10:21:52 -0800 (PST)
+Received: by mail-wm1-f48.google.com with SMTP id 5b1f17b1804b1-4710022571cso21895185e9.3
+        for <cgroups@vger.kernel.org>; Fri, 14 Nov 2025 10:29:32 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1763144511; x=1763749311; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=MOShTwAArIFHr3R9C6zEKOQttwiCluYdM1UARxYplgk=;
-        b=cJetZ2j2/PRUXdkMxuHGwFMqEhhoA0QBzmSX1u4hlsG2zvCHALbT1d7zqfA3Rqnw8Y
-         2VZyI0+WYL0W+00ADBCXPpeCWfFtLYi2Nwxq3sVVBk1GWMi7UtWeiiscgsqoqRjK5sk3
-         PgCuUIf74lmHyPOQ0uHISOETrtD1KcciKS8reZdMnYWr60PURfj5Ji7Yoj7XoRX92pHD
-         66nYzgQXFAtyH4ZyHxssA4bqhrOSHX8MctNf7B1yauginputyJdhmcydpl8/6aHHSa89
-         jXy1/LrtpXlOKXNv16LnfxbQx+iCtcFRJKDwJ2Jz+Dn+GfCeMpetevQbYHgMd94WRxQS
-         miLg==
+        d=suse.com; s=google; t=1763144971; x=1763749771; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=Rs6KuXzAAad7sbRP025YxG1G/WsCswtNWwIDQpANIbg=;
+        b=RJbPo++5wNv5rMNXTV+GeN14ISgMPC/3K7VSFi9s6J2rV8C9c3A66+ecEG29j72MxK
+         qRy0rel6NAPfA9xImlkWhRHvC5nGHkFmquW4nI556G4LyDr8HWeVLegnUsTDf8gz7gV2
+         VhmQTqeLZHl946mS4UocJIEqTfA2XUt4tBu+qPl1sPYV/A25Zpez5cYkVQvp4jJdg59M
+         0MPgNSLV5IDmb33WqFGSnWbz9rpgWwM5zTSZ956B0WJqy9F3A0VWSon/O3mbm5fB3H8i
+         9LixIjF+EYI/lewA4H6xrkr7/j3s0Jx5t1Dnoept3bPw87WPq+/5gb/7ZRNIz+LD0Ph6
+         g3rg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1763144511; x=1763749311;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=MOShTwAArIFHr3R9C6zEKOQttwiCluYdM1UARxYplgk=;
-        b=aURbn+Y9n5UB91wHlTYpqcqB8KkxIMHVx16ajx5eKYLil9gUL4X+zi10zuppXuzVFH
-         hwEabJ9OVotAtCibLodtuzOgA29r6sbj1ieL4OkH0VICT+zMQfmriaVYWh++bzXpqtXO
-         69Nu3Hd95m0MRPtkaf4+wAD+2uU4JWL0yKr4Ss4mJ0A3kntzObOBFrH/q6tJ72oR1IeI
-         ZCWZVF1wqjSDqVEGsBA8Ou7wMPYhYX3plGJ+WqWhHHB8q154kvYyVg/BIgbdKKqAxi9r
-         GXkk8B77ktzOQS4ffzRTriZlhDphZN7F+df1hIl+IpB3RB5hWSo2pNmRXu9XxKsncDYz
-         auYA==
-X-Gm-Message-State: AOJu0YwptECLUZfwEOhp3QpDoPv5z94JE3gG/vkCcN6DUULipYSJ7Vjj
-	sAZst2lOh7bQEA6p5aTQ0F2ewR/wVKmJ22pYMRKc2hsi53LQq4pm2FilIrX6ZdsNjr/gJ1WU+8c
-	c4tng
-X-Gm-Gg: ASbGncthkHp+jhFNz1KTQADcFZ9IKR+jQXlVW6qy5dzJbOWgH8q01Yhk1AN+YuMQSf1
-	6Mj4Mc5OEPldsaYy5FDI2lnnqBHl0VB499gUi7L0y3wCHVdjk9PElGqdgYcyLpxghOGfK5iTgmI
-	bVI+TYvCQVFGW2FaY4+bzpUwx0KdPeQavfaOZccenDCysEvIRYcyoCyk4Jjo8KSKSS8QKcaJjwU
-	FD7V+y49CDyX67j2bP0xJ0Ky3kVcn0YUNYPmMzg+q6jLXFAAFhPfy3GXXiZA5OnVyr2tZADC+DB
-	5fWqY/V1KBIY3E8M6cZU1mhf/+HsgfQZHWSA/9p2ga9XcggKRg3nEk2kyskeBa2VXH5x5tJlhYe
-	G1frlKJ7R1XrqdLBYW5Mmg1UKc9v2+tvzjhr9fiKwsRu7+/a/XK1b9Ys3nR5+VX1rYozqkOvfks
-	vqJmjvlSAY6rWy0GAfTUW6
-X-Google-Smtp-Source: AGHT+IEi672ocN9HJOjDk4mkON5X1Kwc+vDF8kTUOrO8ZZ/Mjdjg3mnnnul14tWFLNhxG+MPCcczKQ==
-X-Received: by 2002:a05:600c:4f93:b0:477:bb0:751b with SMTP id 5b1f17b1804b1-4778fea1056mr38183415e9.27.1763144510774;
-        Fri, 14 Nov 2025 10:21:50 -0800 (PST)
+        d=1e100.net; s=20230601; t=1763144971; x=1763749771;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Rs6KuXzAAad7sbRP025YxG1G/WsCswtNWwIDQpANIbg=;
+        b=MjqKcPY+oDeNS7DxW+l4m7EC95M6vvtMJ8rqZQZuRjCgu5ma2U1jCFjo4ZuPdKiREe
+         dEywCmwJPd3ATupv6lADeX6dK7e/P2/oks/vBBa9tustdsODlUkCvtGXxcFYyxg+VBL5
+         867ETZrngciYOB/Zwua9vm0qNJvDSGSYX9ASE8lkJ7ncx80XaVChJS7cojb2xSODvcNJ
+         AOm6J8aXGROc5VuEfP/IGLzejxIU/b490OeXkrkZSKo9OIMKwtAmooCr52hHtcMjWU2B
+         7v5VwydB4cLEatWDoV5WM+6Apu7SsLFDLKUx9cxBNJw8y5e9fW3S/SMPk2w58gg8ZpY3
+         ks0g==
+X-Gm-Message-State: AOJu0Yw4MDVrfsWxNATKUkXr3UqP7bpFsYeJy/nOqrIHgNyZEo1zQ0XA
+	0qZ9M/4TIG4AG240q+IkTTAsV91mALu2KdUXpLGdN/cdw4bGGRRbVjySruqA8gHIIr4=
+X-Gm-Gg: ASbGnctEWQlV/vLKKzYdMU8SOV8hnB5XCyt9pJkCs34EzL0+MYqnF3BuO5sgIXq8cQO
+	eVvZtxz+rrjEwtXMBI99FLe73bKEYjN5Fo10jotarQ7i2jtdiDaWsW8l1hMCyur12DyxJFPyNO9
+	R9JcYQOrHrThNQD8k7INfuAeq79AQEW1WeciVIPJVLDVU7x1gOUzzCyRTDRNJ3QDwoyryH8yYNR
+	kDQL+upYiuWLJ3mmchYwjwN6q4uKzsbFwvL3qfkisX4vLI6ZsNHcCDGxTaLsGxxPGNh6hNqv9Tv
+	bO1wd9YaWNrqeAJ3j323cUo0Vi1FZZxJMCXnrrbM5U3dHqmRWRrJQ28PbWgM1mcdZidth5YtAql
+	0XkfGuzeig6bXyTr9T5VOGG5IthcrGrrjjyFGbQjtKrBlBkWFn5niGp4KQwp1FWbGmk6eHzO8or
+	50NAHJIcQ2HGiGjAp2Re+dtUhBWH0MgeE=
+X-Google-Smtp-Source: AGHT+IGiVuh5NjUH3OUXRwywEj3dAAcLkuSOQxnMCr/Tjl01waowqDE5+kN/bovUGSqLMkvh7dTWrw==
+X-Received: by 2002:a05:600c:630d:b0:477:89d5:fdac with SMTP id 5b1f17b1804b1-4778fea1becmr45809045e9.31.1763144970812;
+        Fri, 14 Nov 2025 10:29:30 -0800 (PST)
 Received: from blackdock.suse.cz (nat2.prg.suse.com. [195.250.132.146])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-47787e2bcf9sm163601805e9.3.2025.11.14.10.21.50
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-47787daab3fsm184371285e9.0.2025.11.14.10.29.30
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 14 Nov 2025 10:21:50 -0800 (PST)
-From: =?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>
-To: cgroups@vger.kernel.org,
-	linux-doc@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: Natalie Vock <natalie.vock@gmx.de>,
-	Maarten Lankhorst <dev@lankhorst.se>,
-	=?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>,
-	Tejun Heo <tj@kernel.org>,
-	Johannes Weiner <hannes@cmpxchg.org>,
-	Jonathan Corbet <corbet@lwn.net>
-Subject: [PATCH v2 3/3] docs: cgroup: No special handling of unpopulated memcgs
-Date: Fri, 14 Nov 2025 19:21:27 +0100
-Message-ID: <20251114182130.1549832-4-mkoutny@suse.com>
-X-Mailer: git-send-email 2.51.1
-In-Reply-To: <20251114182130.1549832-1-mkoutny@suse.com>
-References: <20251114182130.1549832-1-mkoutny@suse.com>
+        Fri, 14 Nov 2025 10:29:30 -0800 (PST)
+Date: Fri, 14 Nov 2025 19:29:28 +0100
+From: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
+To: Jonathan Corbet <corbet@lwn.net>
+Cc: cgroups@vger.kernel.org, linux-doc@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, Natalie Vock <natalie.vock@gmx.de>, 
+	Maarten Lankhorst <dev@lankhorst.se>, Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>
+Subject: Re: [PATCH RESEND 1/3] docs: cgroup: Explain reclaim protection
+ target
+Message-ID: <qhywsiwlbrpe4el3pcprtnpwdyifmfxesmsdgxuze6ho3d4wqe@mweffv3yoxlt>
+References: <20251110193638.623208-1-mkoutny@suse.com>
+ <20251110193638.623208-2-mkoutny@suse.com>
+ <87wm3xwtcm.fsf@trenco.lwn.net>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="iit6ajlbncbnam5z"
+Content-Disposition: inline
+In-Reply-To: <87wm3xwtcm.fsf@trenco.lwn.net>
 
-The current kernel doesn't handle unpopulated cgroups any special
-regarding reclaim protection. Furthermore, this wasn't a case even when
-this was introduced in
-    bf8d5d52ffe89 ("memcg: introduce memory.min")
-Drop the incorrect documentation. (Implementation taking into account
-the inner-node constraint may be added later.)
 
-Signed-off-by: Michal Koutný <mkoutny@suse.com>
----
- Documentation/admin-guide/cgroup-v2.rst | 3 ---
- 1 file changed, 3 deletions(-)
+--iit6ajlbncbnam5z
+Content-Type: text/plain; protected-headers=v1; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH RESEND 1/3] docs: cgroup: Explain reclaim protection
+ target
+MIME-Version: 1.0
 
-diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admin-guide/cgroup-v2.rst
-index e0a659474fa47..4c072e85acdfe 100644
---- a/Documentation/admin-guide/cgroup-v2.rst
-+++ b/Documentation/admin-guide/cgroup-v2.rst
-@@ -1327,9 +1327,6 @@ PAGE_SIZE multiple when read back.
- 	Putting more memory than generally available under this
- 	protection is discouraged and may lead to constant OOMs.
- 
--	If a memory cgroup is not populated with processes,
--	its memory.min is ignored.
--
-   memory.low
- 	A read-write single value file which exists on non-root
- 	cgroups.  The default is "0".
--- 
-2.51.1
+On Mon, Nov 10, 2025 at 01:00:41PM -0700, Jonathan Corbet <corbet@lwn.net> =
+wrote:
+> > @@ -53,7 +53,8 @@ v1 is available under :ref:`Documentation/admin-guide=
+/cgroup-v1/index.rst <cgrou
+> >       5-2. Memory
+> >         5-2-1. Memory Interface Files
+> >         5-2-2. Usage Guidelines
+> > -       5-2-3. Memory Ownership
+> > +       5-2-3. Reclaim Protection
+> > +       5-2-4. Memory Ownership
+>=20
+> I always have to ask...do we really need the manually maintained TOC
+> here?=20
 
+Tejun [1] (and maybe some others) like it.
+
+Thanks,
+Michal
+
+[1] https://lore.kernel.org/r/aMwo-IW35bsdc1BM@slm.duckdns.org/
+
+--iit6ajlbncbnam5z
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iJEEABYKADkWIQRCE24Fn/AcRjnLivR+PQLnlNv4CAUCaRd1BhsUgAAAAAAEAA5t
+YW51MiwyLjUrMS4xMSwyLDIACgkQfj0C55Tb+AgYPQEApUkkuPc8jpbhA9W1qLNR
+2OzJ5OQuiJ+KJRVk9vv4/AQBAInGMLPC1Ye6Oy6vRBeNzV+ocTcDynZ9usjxMN5D
+Jf0P
+=7GH6
+-----END PGP SIGNATURE-----
+
+--iit6ajlbncbnam5z--
 
