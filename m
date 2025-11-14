@@ -1,89 +1,120 @@
-Return-Path: <cgroups+bounces-11972-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-11973-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1580EC5F0C7
-	for <lists+cgroups@lfdr.de>; Fri, 14 Nov 2025 20:33:25 +0100 (CET)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 78D31C5F3B9
+	for <lists+cgroups@lfdr.de>; Fri, 14 Nov 2025 21:26:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 6158D4E4799
-	for <lists+cgroups@lfdr.de>; Fri, 14 Nov 2025 19:28:06 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 0A84635760D
+	for <lists+cgroups@lfdr.de>; Fri, 14 Nov 2025 20:26:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6AECF2F25FA;
-	Fri, 14 Nov 2025 19:27:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E6B0334A783;
+	Fri, 14 Nov 2025 20:26:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="mzEGyLyV";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="lhvJq1so"
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="TiYFqd0B"
 X-Original-To: cgroups@vger.kernel.org
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qv1-f43.google.com (mail-qv1-f43.google.com [209.85.219.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AECE32ED86F;
-	Fri, 14 Nov 2025 19:27:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D7A634A3A7
+	for <cgroups@vger.kernel.org>; Fri, 14 Nov 2025 20:26:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763148478; cv=none; b=G8malftjErRBz8HvheRFvOjiDlkBqehAJVntXuYtgV7HrnbhZCkPmhjZ2OEVAIbWDsqleWczhr0xAjNSPLwMpu/KrvxmHd4AN0ZKhXwLWPxe4FufflWZF4uBcAbraPZhaWVfNHAr/QqWNq4e3EzWCdl3+tXAmDdpgIh+Ki8yQIw=
+	t=1763151979; cv=none; b=gFqbGI42WLV64Jm62fQKDZaE3C30TKCN2S0g5C2tVMfQpoHZ5+PNtOs8otG9co4cdYB1vFYSHAsRtYmCTp7WeMBj34NUHvXGVfLpaqtPP0Qo2cHHrEpWNy75RsFJFLQZIy/0QzG7MIy3jFd+MtnQTxzJkF3E16GOk3ec1ngo3eA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763148478; c=relaxed/simple;
-	bh=fIP30BIi+nbkk1jws3UoNLwug2/m6PXiHl2hbLq4bu4=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=oBV+SoQ3t9xFttmAqGMx4lXbsPr6N5zFDgt5UtYqqYMQx/v7yQgBPxl9o9NMAAoBQUnW267Kr74t4lksuuWBbmjpHkdG541p5MVKv27AMC2j9A3fjj5voUZ1mA0mkjN2otrLbOmEtgmxJjayBN4O5Jd+OmE7fzA/qD9FQm+8xyA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=mzEGyLyV; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=lhvJq1so; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-From: Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1763148474;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=fIP30BIi+nbkk1jws3UoNLwug2/m6PXiHl2hbLq4bu4=;
-	b=mzEGyLyVwMwvGCrTRPZcdj9gBt9D/Gi/TW4q/DtNC3mT/YRfTB44dXerQ0xCYHW0Jvx18G
-	Avgb9L0sKkiHMzFAYvobT37WVRr1+0n83BXeKMlPzfHW8h2r9ntgDeYRq3L9mwnlCbKOTN
-	mL87vv9eyOgrWwG6qfY4QZLloSEgGSct4hTGKmlCme/3R+Y6FNbMSuvxQ/05BmGH6j+t7U
-	AfZodXJ68xIgK7G7iY50g0ek9rYr0m45oyN1p/gJR4MEzJIIz+Q4PXDBnZHoYnUd1dg+Z3
-	E0/Nm24A/xOEPapJrGULtIK1VgXnV/h5ybyewtFZzWCPuMgvBboMAzxKi8obkw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1763148474;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=fIP30BIi+nbkk1jws3UoNLwug2/m6PXiHl2hbLq4bu4=;
-	b=lhvJq1soMa2ManHvchkFhjlnOemj1riOo5kEisjHHlHvp2eijVtcSNsrnrrNd/pMvN99ag
-	QNNtykBJKnqr1sBA==
-To: Christian Brauner <brauner@kernel.org>, linux-fsdevel@vger.kernel.org,
- Josef Bacik <josef@toxicpanda.com>, Jeff Layton <jlayton@kernel.org>
-Cc: Jann Horn <jannh@google.com>, Mike Yuan <me@yhndnzj.com>, Zbigniew
- =?utf-8?Q?J=C4=99drzejewski-Szmek?= <zbyszek@in.waw.pl>, Lennart Poettering
- <mzxreary@0pointer.de>, Daan De Meyer <daan.j.demeyer@gmail.com>, Aleksa
- Sarai <cyphar@cyphar.com>, Amir Goldstein <amir73il@gmail.com>, Tejun Heo
- <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>, Alexander Viro
- <viro@zeniv.linux.org.uk>, Jan Kara <jack@suse.cz>,
- linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
- bpf@vger.kernel.org, Eric Dumazet <edumazet@google.com>, Jakub Kicinski
- <kuba@kernel.org>, netdev@vger.kernel.org, Arnd Bergmann <arnd@arndb.de>,
- Christian Brauner <brauner@kernel.org>
-Subject: Re: [PATCH 16/17] ns: drop custom reference count initialization
- for initial namespaces
-In-Reply-To: <20251110-work-namespace-nstree-fixes-v1-16-e8a9264e0fb9@kernel.org>
-References: <20251110-work-namespace-nstree-fixes-v1-0-e8a9264e0fb9@kernel.org>
- <20251110-work-namespace-nstree-fixes-v1-16-e8a9264e0fb9@kernel.org>
-Date: Fri, 14 Nov 2025 20:27:53 +0100
-Message-ID: <87bjl4beiu.ffs@tglx>
+	s=arc-20240116; t=1763151979; c=relaxed/simple;
+	bh=UBXKy1JsF+c00Tx+eyE82c66VPELlnaIipoBvhQAyvw=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=MA3kedxdnDwx1zIJzKBfH8XZLZCbhWVcRlVYfl3DtRnRE1c7ftrJDfORDlV6H1nXc+TYxbie6lDw4k/3uicfN2EDQ8InHWbFryp1ZJqB2B2JQwV1eCcfy6gugGoEHqfvvqnU/tZqYPGHayyEegTlOEo50kr0zXvGvGk8SWzWAW0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=TiYFqd0B; arc=none smtp.client-ip=209.85.219.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-qv1-f43.google.com with SMTP id 6a1803df08f44-88246676008so27555046d6.3
+        for <cgroups@vger.kernel.org>; Fri, 14 Nov 2025 12:26:16 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1763151975; x=1763756775; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=UBXKy1JsF+c00Tx+eyE82c66VPELlnaIipoBvhQAyvw=;
+        b=TiYFqd0BTt2mZ6srySit3jk/+X3wivp7VK8J2GXtR7R4t99gMypfMjgmMiK12L3IbU
+         7Wh+uEeYR3kO7LyS+OXrdfUS3YTG9HzOmn188gUQtavkC8CRFIoXdQg/7r+JF8oh5Pk3
+         nwYNhxny2jHPd5rt4A21vGOI5lLzUf8noHwPE=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1763151975; x=1763756775;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=UBXKy1JsF+c00Tx+eyE82c66VPELlnaIipoBvhQAyvw=;
+        b=xNh86oMOYJYNl2SNCoDf543umlqATOEF06m1w+U6JBHvKZeEmCKhUrLveYZohABbPW
+         ydB3mIVXI/5E4E0GpU256kLAQnf4K/sEebQErlfmvjkZO8yw8aZPcT36BuH/0Sw0C8W8
+         AApOcBuZrpHVlN6vQZBUYtGIYeHDZHCuXhfmRcZ0Vc47ozCxKe79pu8Njcl1GgVDsvo2
+         zrYk+gjyCxkWlEhSTvbIS4W6bL07oNB4/Bm4COD/cRnNKb5LgBRpOUnbLONdeapkiaiE
+         2fPw7Z3uFVd2tDFb8hKRzJi3wTuTQyPTvI7+TGSv1DvVXk63J141d6StDReekkvYpvgX
+         Tytg==
+X-Forwarded-Encrypted: i=1; AJvYcCU61/EeXRQ/oQg1nZVALXwYAamVlVPD1Xm4bfSJIFNsEkSKwm0KehTEMcZtvS1MSZfnPWDKJyrF@vger.kernel.org
+X-Gm-Message-State: AOJu0Yw2r38vEJYCOYd0DHsVxxzoQn4JyLgKVnqnc40xW2JMG59JapDx
+	gyEqgHTeSdi4mXhq7lO0ShnqQbDGa9hs4CH5jmWR+75/UNoo3srZsYkEalX710tOTMZpxLBlZGb
+	LrN4=
+X-Gm-Gg: ASbGnctcxeeUK4t3StmGqsYaJP7xrr5hXhB1wErZn67rYG8hs2IkMYsPmvXgqDXKdQu
+	x48F2XLgL0Sou+ZArEcfaYWyAityr+HNQXhcYVx1nF/LVK8l6j+A/QQS5OGVStBc5Z0NYIIJhrd
+	bj+vi2TrxceDOlyXJgZz0PuW2d5M9/Q2Le8R8g5lIxbWMZw8ITxDzTpbwWejmmyairqNSpK1S/Q
+	aDbv9x/Yt7gfwrOR770J/sYYcGPXU5dGCMfwngCFwEjHTEvYbfdCpJeqOxmBpwrSFE30gbGLr7v
+	ly5gor9b0VrTBquZoffretxkjhMRV6EHrkABCPMNd6TRZTbjwlkUXcrife52ILVCs5zli/Yyta7
+	AxTvFElI0ZTbXwHKaObpKrvvmh1zZNJeZ72+Wda1/qylPNC0xAkBSBExopcVMjO+GFgGfTuyljK
+	vvSPfsCQgyCwNd1jPgEuupr6Hwr6pgGCaGTS05p+H639+51hMB+yQ=
+X-Google-Smtp-Source: AGHT+IGFt0wYY5T9UVoyEGh/0i0QIH6nbdwqV5bMP8VPj9FcFP664XFXCHV5CCMy0R2SnKrG2RZ4cA==
+X-Received: by 2002:ad4:5ae4:0:b0:880:23fb:9e63 with SMTP id 6a1803df08f44-882926de3d9mr65462126d6.56.1763151975529;
+        Fri, 14 Nov 2025 12:26:15 -0800 (PST)
+Received: from mail-qt1-f177.google.com (mail-qt1-f177.google.com. [209.85.160.177])
+        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-8828630e991sm38699766d6.15.2025.11.14.12.26.14
+        for <cgroups@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 14 Nov 2025 12:26:14 -0800 (PST)
+Received: by mail-qt1-f177.google.com with SMTP id d75a77b69052e-4ed67a143c5so67691cf.0
+        for <cgroups@vger.kernel.org>; Fri, 14 Nov 2025 12:26:14 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCXfwVMWeweU/EL4sBikBw1obv0yMo7OtuiXoebf+MJ3sF6DRG83L4Q7gdYcgYXS1E5+niHUdi3N@vger.kernel.org
+X-Received: by 2002:ac8:5893:0:b0:4ed:341a:5499 with SMTP id
+ d75a77b69052e-4ee02c20affmr644891cf.11.1763151974060; Fri, 14 Nov 2025
+ 12:26:14 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+References: <20250730164832.1468375-1-linux@roeck-us.net> <20250730164832.1468375-2-linux@roeck-us.net>
+ <1a1fe348-9ae5-4f3e-be9e-19fa88af513c@kernel.org> <2919c400-9626-4cf7-a889-63ab50e989af@roeck-us.net>
+In-Reply-To: <2919c400-9626-4cf7-a889-63ab50e989af@roeck-us.net>
+From: Khazhy Kumykov <khazhy@chromium.org>
+Date: Fri, 14 Nov 2025 12:26:02 -0800
+X-Gmail-Original-Message-ID: <CACGdZYKFxdF5sv3RY19_ZafgwVSy35E0JmUvL-B95CskHUC2Yw@mail.gmail.com>
+X-Gm-Features: AWmQ_bnp-FrH81LO9wZI0yv8eE_oTDu_DOH8Z8kJMW2op_FnlMZESx-1cXuPw40
+Message-ID: <CACGdZYKFxdF5sv3RY19_ZafgwVSy35E0JmUvL-B95CskHUC2Yw@mail.gmail.com>
+Subject: Re: [PATCH 1/2] block/blk-throttle: Fix throttle slice time for SSDs
+To: Tejun Heo <tj@kernel.org>
+Cc: yukuai@kernel.org, Guenter Roeck <linux@roeck-us.net>, 
+	Josef Bacik <josef@toxicpanda.com>, Jens Axboe <axboe@kernel.dk>, Yu Kuai <yukuai3@huawei.com>, 
+	cgroups@vger.kernel.org, linux-block@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Nov 10 2025 at 16:08, Christian Brauner wrote:
-> Initial namespaces don't modify their reference count anymore.
-> They remain fixed at one so drop the custom refcount initializations.
+On Wed, Jul 30, 2025 at 4:19=E2=80=AFPM Guenter Roeck <linux@roeck-us.net> =
+wrote:
 >
-> Signed-off-by: Christian Brauner <brauner@kernel.org>
-
-Acked-by: Thomas Gleixner <tglx@linutronix.de>
+> On 7/30/25 11:30, Yu Kuai wrote:
+> I had combined it because it is another left-over from bf20ab538c81 and
+> I don't know if enabling statistics has other side effects. But, sure,
+> I can split it out if that is preferred. Let's wait for feedback from
+> Jens and/or Tejun; I'll follow their guidance.
+>
+> Thanks,
+> Guenter
+>
+noticed this one in our carry queue... any further guidance here? If
+my opinion counts, since this is a fixup for a "remove feature X"
+commit... I would have done it in one commit as well :)
 
