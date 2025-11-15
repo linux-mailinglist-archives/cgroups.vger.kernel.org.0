@@ -1,143 +1,124 @@
-Return-Path: <cgroups+bounces-11984-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-11985-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 18B2EC5FCA0
-	for <lists+cgroups@lfdr.de>; Sat, 15 Nov 2025 01:58:51 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7C32FC5FD2C
+	for <lists+cgroups@lfdr.de>; Sat, 15 Nov 2025 02:22:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 93A0E35CDA0
-	for <lists+cgroups@lfdr.de>; Sat, 15 Nov 2025 00:58:34 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1B9333BA762
+	for <lists+cgroups@lfdr.de>; Sat, 15 Nov 2025 01:22:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA13D19755B;
-	Sat, 15 Nov 2025 00:58:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4DA7A1C3BE0;
+	Sat, 15 Nov 2025 01:22:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qhEqFRWJ"
 X-Original-To: cgroups@vger.kernel.org
-Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CCDA28F49;
-	Sat, 15 Nov 2025 00:58:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0627917BEBF;
+	Sat, 15 Nov 2025 01:22:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763168300; cv=none; b=ddkDTJmxHlmc0ObL07SElsEHfBQ02D0Op1p9EZFhS/821wY0aoVWLuncqLzPWEJf2kniDK7PkaMY+gj1SBl05wN6Bl0/tITbksEURyqD+bcCcZ3VZb4wt+anHGd+MXhTF4ddC0cDEoUa1yccAyfKtPcp+UD0irQFJehw7SPsSBI=
+	t=1763169773; cv=none; b=mnPetuWkPhZDGceZNk45yqYeBYkGmpmyF9cJhEPbpM1I8Zg2wIzwBx7xShMrSiiAHB08o8JRKR4/+scfv8oZD1fNm18QTUMC/Iv5d08EDb2r8CpBJTBh3m5bHw8svnjdb5D5tK/LXCWeAT4ilfGPgr/LmrGP3EWjl8mTh63/9Gs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763168300; c=relaxed/simple;
-	bh=8IL0zhAcSQsz89HwY+L9Qfb3uIAAaM75wCR11nPqZcM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=AVATk7OnHu3LgAOeduibTPGm81b1/N2M60kl1xQR4PD047cJlO2Fbho2Yuwe4sCNYsblwK3vR4jaE3AKiVtp1vS/PdB82RtwJKPUgSeQuBldjZEzgQCxl1ECNKqCy9ikJcOnZppc0f5ACp/JLfXDDw1it4A1AJg3NUl6abm43sQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.235])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTPS id 4d7bG16PMjzKHMN2;
-	Sat, 15 Nov 2025 08:57:45 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.128])
-	by mail.maildlp.com (Postfix) with ESMTP id 3F2971A08CA;
-	Sat, 15 Nov 2025 08:58:07 +0800 (CST)
-Received: from [10.67.111.176] (unknown [10.67.111.176])
-	by APP4 (Coremail) with SMTP id gCh0CgDX_lsd0BdpinYcAw--.896S2;
-	Sat, 15 Nov 2025 08:58:07 +0800 (CST)
-Message-ID: <4ff564c4-a2c3-4599-8e7f-762380f44153@huaweicloud.com>
-Date: Sat, 15 Nov 2025 08:58:05 +0800
+	s=arc-20240116; t=1763169773; c=relaxed/simple;
+	bh=eQsdDltmb6P7uFAk5MYeuKsn/K8/pYmmEhSLmqls45A=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=NWOFxt1ZaVWwpSx3iCegzA+KyrgoI12o5XlLmYoQtDKTHFbrW2QsxFbYaNEdhHSdlldWCyoEQsyOMYoVoUDxZvKa4uz/2D3mhtLNj5zFvLT4Umm5eV2DKGeJ6VhkRs3AKAe+m/AMmu0Ph/ewiW112RMyHycX+ssI0SZ02HIczqY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qhEqFRWJ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 22FE0C4CEF8;
+	Sat, 15 Nov 2025 01:22:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1763169772;
+	bh=eQsdDltmb6P7uFAk5MYeuKsn/K8/pYmmEhSLmqls45A=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=qhEqFRWJRAl8ptzMXC9mAW/w4Mk1OEKJ6drFzClhcMlgN0OHpKVwIysriIsH4E0jB
+	 TPMcGNZl87bIxYAdbKurkge+oINY5IdFUx1vaCRpI6F/AsxdL3dqyb8pQU1Gbb+jRC
+	 OIKlhQk+QTSLISAlg3xc4M6fvnpTVWFWf0vyM9Lt32IAqxDxV2rp2QsoYGFeYqyXGE
+	 Ge2PibrejVTmI/YJ66JOUjh+5W9RK9kDlxXjbQ6I1sc4dCL6fodKX3q9PsV9UEblk2
+	 p6GyUsFY4JWOBrhAY7n9AicE5YqROoHJkRkce3t8gm39AQNARp0CPj6SmZcNmDAIxd
+	 iV2MTiHObJOyg==
+From: SeongJae Park <sj@kernel.org>
+To: Youngjun Park <youngjun.park@lge.com>
+Cc: SeongJae Park <sj@kernel.org>,
+	akpm@linux-foundation.org,
+	linux-mm@kvack.org,
+	cgroups@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	chrisl@kernel.org,
+	kasong@tencent.com,
+	hannes@cmpxchg.org,
+	mhocko@kernel.org,
+	roman.gushchin@linux.dev,
+	shakeel.butt@linux.dev,
+	muchun.song@linux.dev,
+	shikemeng@huaweicloud.com,
+	nphamcs@gmail.com,
+	bhe@redhat.com,
+	baohua@kernel.org,
+	gunho.lee@lge.com,
+	taejoon.song@lge.com
+Subject: Re: [RFC] mm/swap, memcg: Introduce swap tiers for cgroup based swap control
+Date: Fri, 14 Nov 2025 17:22:45 -0800
+Message-ID: <20251115012247.78999-1-sj@kernel.org>
+X-Mailer: git-send-email 2.47.3
+In-Reply-To: <20251109124947.1101520-1-youngjun.park@lge.com>
+References: 
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] cpuset: relax the overlap check for cgroup-v2
-To: =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>
-Cc: Sun Shaojie <sunshaojie@kylinos.cn>, llong@redhat.com,
- cgroups@vger.kernel.org, hannes@cmpxchg.org, linux-kernel@vger.kernel.org,
- linux-kselftest@vger.kernel.org, shuah@kernel.org, tj@kernel.org
-References: <20251113131434.606961-1-sunshaojie@kylinos.cn>
- <lhfcykirz5afdzdc6wnroubsdhasww4gsfri4dxpzagiejjbep@322rtmyvwiyd>
- <2ca99986-b15b-45bc-b2ee-23d9e5395691@huaweicloud.com>
- <4gzorntzaig4vnskzkumnpvpqfbqrzaahlkn5c33cgtjdm5eef@gtvm3p2rihm7>
-Content-Language: en-US
-From: Chen Ridong <chenridong@huaweicloud.com>
-In-Reply-To: <4gzorntzaig4vnskzkumnpvpqfbqrzaahlkn5c33cgtjdm5eef@gtvm3p2rihm7>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:gCh0CgDX_lsd0BdpinYcAw--.896S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7ZF4DXF13tFy8try7Ww4kWFg_yoW8Kr47pr
-	y8Ka17JaykuF1UCws2gwnrXFsYva12qFsxJrn5Xw18A3sxJF1q9wn5AwsxJayDJrsxW3ya
-	q39rZaySgFn8uaUanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUymb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
-	0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
-	x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
-	0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lc7CjxVAaw2AFwI0_Jw0_GFyl42xK82IYc2Ij64vI
-	r41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8Gjc
-	xK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0
-	cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8V
-	AvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E
-	14v26r1j6r4UYxBIdaVFxhVjvjDU0xZFpf9x07UAwIDUUUUU=
-X-CM-SenderInfo: hfkh02xlgr0w46kxt4xhlfz01xgou0bp/
 
+On Sun,  9 Nov 2025 21:49:44 +0900 Youngjun Park <youngjun.park@lge.com> wrote:
 
-
-On 2025/11/15 0:14, Michal Koutný wrote:
-> On Fri, Nov 14, 2025 at 09:29:20AM +0800, Chen Ridong <chenridong@huaweicloud.com> wrote:
->> After further consideration, I still suggest retaining this rule.
+> Hi all,
 > 
-> Apologies, I'm slightly lost which rule. I hope the new iteration from
-> Shaojie with both before/after tables will explain it.
+> In constrained environments, there is a need to improve workload
+> performance by controlling swap device usage on a per-process or
+> per-cgroup basis. For example, one might want to direct critical
+> processes to faster swap devices (like SSDs) while relegating
+> less critical ones to slower devices (like HDDs or Network Swap).
 > 
-
-The rule has changed in this patch from "If either cpuset is exclusive, check if they are mutually
-exclusive" to
-"If both cpusets are exclusive, check if they are mutually exclusive"
-
-  -	/* If either cpuset is exclusive, check if they are mutually exclusive */
-  -	if (is_cpu_exclusive(cs1) || is_cpu_exclusive(cs2))
-  +	/* If both cpusets are exclusive, check if they are mutually exclusive */
-  +	if (is_cpu_exclusive(cs1) && is_cpu_exclusive(cs2))
-  +		return !cpusets_are_exclusive(cs1, cs2);
-
-I suggest not modifying this rule and keeping the original logic intact:
-
->> For am example:
->>   Step                                       | A1's prstate | B1's prstate |
->>   #1> mkdir -p A1                            | member       |              |
->>   #2> echo "0-1" > A1/cpuset.cpus.exclusive  | member       |              |
->>   #3> echo "root" > A1/cpuset.cpus.partition | root         |              |
->>   #4> mkdir -p B1                            | root         | member       |
->>   #5> echo "0" > B1/cpuset.cpus              | root invalid | member       |
->>
->> Currently, we mark A1 as invalid. But similar to the logic in this patch, why must A1 be
->> invalidated?
+> Initial approach was to introduce a per-cgroup swap priority
+> mechanism [1]. However, through review and discussion, several
+> drawbacks were identified:
 > 
-> A1 is invalidated becase it doesn't have exclusive ownership of CPU 0
-> anymore.
+> a. There is a lack of concrete use cases for assigning a fine-grained,
+>    unique swap priority to each cgroup. 
+> b. The implementation complexity was high relative to the desired
+>    level of control.
+> c. Differing swap priorities between cgroups could lead to LRU
+>    inversion problems.
 > 
->> B1 could also use the parent's effective CPUs, right?
-> 
-> Here you assume some ordering between siblings treating A1 more
-> important than B1. But it's symmetrical in principle, no?
-> 
+> To address these concerns, I propose the "swap tiers" concept, 
+> originally suggested by Chris Li [2] and further developed through 
+> collaborative discussions. I would like to thank Chris Li and 
+> He Baoquan for their invaluable contributions in refining this 
+> approach, and Kairui Song, Nhat Pham, and Michal Koutný for their 
+> insightful reviews of earlier RFC versions.
 
-I’m using an example to illustrate that if Shaojie’s patch is accepted, other rules could be relaxed
-following the same logic—but I’m not in favor of doing so.
+I think the tiers concept is a nice abstraction.  I'm also interested in how
+the in-kernel control mechanism will deal with tiers management, which is not
+always simple.  I'll try to take a time to read this series thoroughly.  Thank
+you for sharing this nice work!
 
->> This raises the question: Should we relax the restriction to allow a cpuset's cpus to be a subset of
->> its siblings' exclusive_cpus, thereby keeping A1 valid? If we do this, users may struggle to
->> understand what their cpuset.cpus.effective value is (and why it has that value)—contrary to their
->> expectations.
-> 
-> Not only users, not only users. I think struggle is reduced when
-> the resulting state (valid/invalid, effective) doesn't depend on the
-> order in which individual cgroups are configured.
-> 
-> 0.02€,
-> Michal
+Nevertheless, I'm curious if there is simpler and more flexible ways to achieve
+the goal (control of swap device to use).  For example, extending existing
+proactive pageout features, such as memory.reclaim, MADV_PAGEOUT or
+DAMOS_PAGEOUT, to let users specify the swap device to use.  Doing such
+extension for MADV_PAGEOUT may be challenging, but it might be doable for
+memory.reclaim and DAMOS_PAGEOUT.  Have you considered this kind of options?
 
--- 
-Best regards,
-Ridong
 
+Thanks,
+SJ
+
+[...]
 
