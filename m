@@ -1,190 +1,166 @@
-Return-Path: <cgroups+bounces-11993-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-11994-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8BEE6C602B9
-	for <lists+cgroups@lfdr.de>; Sat, 15 Nov 2025 10:51:38 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 66A99C603D0
+	for <lists+cgroups@lfdr.de>; Sat, 15 Nov 2025 12:25:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 2E2003498A0
-	for <lists+cgroups@lfdr.de>; Sat, 15 Nov 2025 09:51:38 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 267563BBE8E
+	for <lists+cgroups@lfdr.de>; Sat, 15 Nov 2025 11:25:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 547192820C6;
-	Sat, 15 Nov 2025 09:51:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D9702877D6;
+	Sat, 15 Nov 2025 11:25:20 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
+Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B73D2749E6;
-	Sat, 15 Nov 2025 09:51:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 66880257843;
+	Sat, 15 Nov 2025 11:25:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=124.126.103.232
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763200292; cv=none; b=MijyzMhNXfqeDY1gi3jGnBbx+syKKyVjS1L+HalJlxkNI6gVXNl2eQln2ocjaecNGTrpV7OLpuJidWYTD5Yp+lowMzh9jSL5XbH9ygpzi25+qw+KjZKnNEwZZcA110bxOaXb5/71xTbA0KHma5S1q27vCIDJUutz+rbEE9dDEG8=
+	t=1763205920; cv=none; b=DNT1SPlWsz/m5P/HOGC6OImfOhDEAo3VCQM9Vzd46FfXJy7raiG6SDMb5/V+QunIS1Z43HWieaCxcEGUfTucw1Tcfalo42QJYtVxGN/qQfEZpWsBClIrhl/EXDfRADqd5qqvIQBlE64TyzSn18PGde3Rw9siGgLS3VZxwR8QBIM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763200292; c=relaxed/simple;
-	bh=yw8tQBOyB93srTjowAcCDv2klbNxg0UIg/9aUexsWMM=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
-	 In-Reply-To:Content-Type; b=d2bqFP1gU215CDk5YIAAfdOqlGv6NzArQa87kulDHcwq71pKKUZsSpkZGtVy0GR89UBTX7uMNIv9RR+EAnycECP0GhbSQ4PIGxnmMdSIpfGW36LYLcLxVW8P+D+RwKsn8Y7J1fRPIROmRSv9u2ENEi7yY76tuV63it8mazKwWl8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.93.142])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTPS id 4d7q5N2ch9zKHMfb;
-	Sat, 15 Nov 2025 17:51:04 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.112])
-	by mail.maildlp.com (Postfix) with ESMTP id 479AA1A07BB;
-	Sat, 15 Nov 2025 17:51:26 +0800 (CST)
-Received: from [10.67.111.176] (unknown [10.67.111.176])
-	by APP1 (Coremail) with SMTP id cCh0CgD3MkwbTRhpgUs_Aw--.16577S2;
-	Sat, 15 Nov 2025 17:51:25 +0800 (CST)
-Message-ID: <b6d9088e-bd35-47c5-a891-4ad3705fd1a6@huaweicloud.com>
-Date: Sat, 15 Nov 2025 17:51:23 +0800
+	s=arc-20240116; t=1763205920; c=relaxed/simple;
+	bh=HOAgnmwlweNEvVPrLsxOwlt1uM4M/KjHmrkM5QAuZpA=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=iRCT+3lSnFaL9naI5//lkBHTNkkWn80YzcguPAB7FZ6Zir0/qSXlBQyB4TpB5bztYYS7iB1TdjrhK/w8dzNvyiVdr60uy10kWsrPNcvd75qaUEm9U0Ry1xX0JLOPqsdbjmbfqFecEhCVQkQhHqPlUlW5bukWG/2Eirc+VJ37d7s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn; spf=pass smtp.mailfrom=kylinos.cn; arc=none smtp.client-ip=124.126.103.232
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kylinos.cn
+X-UUID: bc208b32c21511f0a38c85956e01ac42-20251115
+X-CTIC-Tags:
+	HR_CC_COUNT, HR_CC_DOMAIN_COUNT, HR_CC_NO_NAME, HR_CTE_8B, HR_CTT_TXT
+	HR_DATE_H, HR_DATE_WKD, HR_DATE_ZONE, HR_FROM_NAME, HR_SJ_DIGIT_LEN
+	HR_SJ_LANG, HR_SJ_LEN, HR_SJ_LETTER, HR_SJ_NOR_SYM, HR_SJ_PHRASE
+	HR_SJ_PHRASE_LEN, HR_SJ_PRE_RE, HR_SJ_WS, HR_TO_COUNT, HR_TO_DOMAIN_COUNT
+	HR_TO_NO_NAME, IP_TRUSTED, SRC_TRUSTED, DN_TRUSTED, SA_EXISTED
+	SN_EXISTED, SPF_NOPASS, DKIM_NOPASS, DMARC_NOPASS, CIE_GOOD
+	CIE_GOOD_SPF, GTI_FG_BS, GTI_RG_INFO, GTI_C_BU, AMN_GOOD
+	ABX_MISS_RDNS
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.3.6,REQID:43b85a57-5df2-4ff9-9aa0-30fa6e54850d,IP:20,U
+	RL:0,TC:0,Content:0,EDM:0,RT:0,SF:-5,FILE:0,BULK:0,RULE:Release_Ham,ACTION
+	:release,TS:15
+X-CID-INFO: VERSION:1.3.6,REQID:43b85a57-5df2-4ff9-9aa0-30fa6e54850d,IP:20,URL
+	:0,TC:0,Content:0,EDM:0,RT:0,SF:-5,FILE:0,BULK:0,RULE:Release_Ham,ACTION:r
+	elease,TS:15
+X-CID-META: VersionHash:a9d874c,CLOUDID:1cbb6708e1e82d7bc667778fc4d70487,BulkI
+	D:251113225812EYOJ6GI2,BulkQuantity:15,Recheck:0,SF:17|19|64|66|78|80|81|8
+	2|83|102|841|850,TC:nil,Content:0|15|50,EDM:-3,IP:-2,URL:0,File:nil,RT:nil
+	,Bulk:40,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BR
+	R:0,BRE:0,ARC:0
+X-CID-BVR: 2,SSN|SDN
+X-CID-BAS: 2,SSN|SDN,0,_
+X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_FAS,TF_CID_SPAM_FSD,TF_CID_SPAM_OBB
+X-CID-RHF: D41D8CD98F00B204E9800998ECF8427E
+X-UUID: bc208b32c21511f0a38c85956e01ac42-20251115
+X-User: sunshaojie@kylinos.cn
+Received: from localhost.localdomain [(223.70.159.239)] by mailgw.kylinos.cn
+	(envelope-from <sunshaojie@kylinos.cn>)
+	(Generic MTA with TLSv1.3 TLS_AES_256_GCM_SHA384 256/256)
+	with ESMTP id 63388585; Sat, 15 Nov 2025 19:25:05 +0800
+From: Sun Shaojie <sunshaojie@kylinos.cn>
+To: mkoutny@suse.com
+Cc: cgroups@vger.kernel.org,
+	chenridong@huaweicloud.com,
+	hannes@cmpxchg.org,
+	linux-kernel@vger.kernel.org,
+	linux-kselftest@vger.kernel.org,
+	llong@redhat.com,
+	shuah@kernel.org,
+	sunshaojie@kylinos.cn,
+	tj@kernel.org
+Subject: Re: [PATCH v2] cpuset: relax the overlap check for cgroup-v2
+Date: Sat, 15 Nov 2025 19:24:53 +0800
+Message-Id: <20251115112453.875799-1-sunshaojie@kylinos.cn>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <4b7znoqq6sdtutcn3jafyrucpqe5jylryvoeooz5ah54vbei4f@wxhsd7gkj3tp>
+References: <4b7znoqq6sdtutcn3jafyrucpqe5jylryvoeooz5ah54vbei4f@wxhsd7gkj3tp>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] cpuset: relax the overlap check for cgroup-v2
-From: Chen Ridong <chenridong@huaweicloud.com>
-To: =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
- Sun Shaojie <sunshaojie@kylinos.cn>
-Cc: llong@redhat.com, cgroups@vger.kernel.org, hannes@cmpxchg.org,
- linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
- shuah@kernel.org, tj@kernel.org
-References: <19fa5a93-4cc9-4f84-891c-b3b096a68799@huaweicloud.com>
- <20251114062448.685754-1-sunshaojie@kylinos.cn>
- <4b7znoqq6sdtutcn3jafyrucpqe5jylryvoeooz5ah54vbei4f@wxhsd7gkj3tp>
- <765120d5-1887-4376-b779-8294df137b9d@huaweicloud.com>
-Content-Language: en-US
-In-Reply-To: <765120d5-1887-4376-b779-8294df137b9d@huaweicloud.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:cCh0CgD3MkwbTRhpgUs_Aw--.16577S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxXw4Utr1DKw4UKw15Jw4xWFg_yoW5uw1UpF
-	yrKF15Ja4F9r15Cw42q3WxWr4YqanrZF1UArnxG3yxJws2q3WqkF1jkrZxX3s8XwsxGryj
-	vay7uw4FqFnrG3DanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUylb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
-	0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
-	x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
-	0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lc7CjxVAaw2AFwI0_Jw0_GFyl42xK82IYc2Ij64vI
-	r41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8Gjc
-	xK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0
-	cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8V
-	AvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E
-	14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUF1v3UUUUU
-X-CM-SenderInfo: hfkh02xlgr0w46kxt4xhlfz01xgou0bp/
 
+On 2025/11/15 0:15, Michal Koutný wrote:
+>On Fri, Nov 14, 2025 at 02:24:48PM +0800, Sun Shaojie <sunshaojie@kylinos.cn> wrote:
+>> The desired outcome is that after step #5, although B1 writes "0-3" to 
+>> cpuset.cpus, A1 can still remain as "root", and B1 ends up with effective 
+>> CPUs of 2-3. In summary, We want to avoid A1's invalidation when B1 
+>> changes its cpuset.cpus. Because cgroup v2 allows the effective CPU mask 
+>> of a cpuset to differ from its requested mask.
+>
+>So the new list of reasons why configured cpuset's cpus change are:
+>- hotplug,
+>- ancestor's config change,
+>- stealing by a sibling (new).
+>
+>IIUC, the patch proposes this behavior:
+>
+>  echo root >A1.cpuset.partition
+>  echo 0-1 >A1.cpuset.cpus
+>  
+>  echo root >B1.cpuset.partition
+>  echo 1-2 >B1.cpuset.cpus	# invalidates A1
+>  
+>  echo 0-1 >A1.cpuset.cpus	# invalidates B1
+>  
+>  ping-pong over CPU 1 ad libitum
+>
+>I think the right (tm) behavior would be not to depend on the order in
+>which config is applied to siblings, i.e.
+>
+>  echo root >A1.cpuset.partition
+>  echo 0-1 >A1.cpuset.cpus
+>  
+>  echo root >B1.cpuset.partition
+>  echo 1-2 >B1.cpuset.cpus	# invalidates both A1 and B1
+>
+>  echo 0-1 >A1.cpuset.cpus	# no change anymore
+>
+>(I hope my example sheds some light on my understanding of the situation
+>and desired behavior.)
 
+Hi, Michal
 
-On 2025/11/15 10:01, Chen Ridong wrote:
-> 
-> 
-> On 2025/11/15 0:15, Michal Koutný wrote:
->> On Fri, Nov 14, 2025 at 02:24:48PM +0800, Sun Shaojie <sunshaojie@kylinos.cn> wrote:
->>> The desired outcome is that after step #5, although B1 writes "0-3" to 
->>> cpuset.cpus, A1 can still remain as "root", and B1 ends up with effective 
->>> CPUs of 2-3. In summary, We want to avoid A1's invalidation when B1 
->>> changes its cpuset.cpus. Because cgroup v2 allows the effective CPU mask 
->>> of a cpuset to differ from its requested mask.
->>
->> So the new list of reasons why configured cpuset's cpus change are:
->> - hotplug,
->> - ancestor's config change,
->> - stealing by a sibling (new).
->>
->> IIUC, the patch proposes this behavior:
->>
->>   echo root >A1.cpuset.partition
->>   echo 0-1 >A1.cpuset.cpus
->>   
->>   echo root >B1.cpuset.partition
->>   echo 1-2 >B1.cpuset.cpus	# invalidates A1
->>   
->>   echo 0-1 >A1.cpuset.cpus	# invalidates B1
->>   
->>   ping-pong over CPU 1 ad libitum
->>
->> I think the right (tm) behavior would be not to depend on the order in
->> which config is applied to siblings, i.e.
->>
->>   echo root >A1.cpuset.partition
->>   echo 0-1 >A1.cpuset.cpus
->>   
->>   echo root >B1.cpuset.partition
->>   echo 1-2 >B1.cpuset.cpus	# invalidates both A1 and B1
->>
->>   echo 0-1 >A1.cpuset.cpus	# no change anymore
->>
->> (I hope my example sheds some light on my understanding of the situation
->> and desired behavior.)
-> 
-> Before applying the patch, the behavior I got:
-> 
-> 	# cd /sys/fs/cgroup/
-> 	# mkdir A1
-> 	# mkdir B1
-> 	# echo root > A1/cpuset.cpus.partition
-> 	# echo 0-1 > A1/cpuset.cpus
-> 	# cat A1/cpuset.cpus.partition
-> 	root
-> 	# echo root > B1/cpuset.cpus.partition
-> 	# echo 1-2 > B1/cpuset.cpus  # A1 is exclusive, invalidate both A1 and B1
-> 	# cat A1/cpuset.cpus.partition
-> 	root invalid
-> 	# cat B1/cpuset.cpus.partition
-> 	root invalid (cpuset.cpus and cpuset.cpus.exclusive are empty)
-> 	# echo root > B1/cpuset.cpus.partition
-> 	# cat B1/cpuset.cpus.partition
-> 	root invalid (Cpu list in cpuset.cpus not exclusive)
-> 	# echo root > A1/cpuset.cpus.partition
-> 	# cat A1/cpuset.cpus.partition
-> 	root invalid (Cpu list in cpuset.cpus not exclusive)
-> 	#
-> 
-> After applying the patch, the behavior I got:
-> 
-> 	# cd /sys/fs/cgroup/
-> 	# mkdir A1
-> 	#  mkdir B1
-> 	# echo root > A1/cpuset.cpus.partition
-> 	# echo 0-1 > A1/cpuset.cpus
-> 	# cat A1/cpuset.cpus.partition
-> 	root
-> 	# echo root > B1/cpuset.cpus.partition
-> 	# echo 1-2 > B1/cpuset.cpus # A1 is exclusive, B1 is going to be exclusive
-> 	# cat A1/cpuset.cpus.partition
-> 	root
-> 	# cat B1/cpuset.cpus.partition # A1 and B1 should be invalid.
-> 	root
-> 	# echo member > B1/cpuset.cpus.partition
-> 	# echo root > B1/cpuset.cpus.partition
-> 	# cat A1/cpuset.cpus.partition
-> 	root
-> 	# cat B1/cpuset.cpus.partition
-> 	root invalid (Cpu list in cpuset.cpus not exclusive)
-> 	# echo member > A1/cpuset.cpus.partition
-> 	# echo root > B1/cpuset.cpus.partition
-> 	# echo root > A1/cpuset.cpus.partition
-> 	# cat A1/cpuset.cpus.partition
-> 	root invalid (Cpu list in cpuset.cpus not exclusive)
-> 	# cat B1/cpuset.cpus.partition
-> 	root
-> 
-> After applying the patch, The result is unexpected.
-> 
+The current patch is flawed and will be fixed in patch v3. However, the 
+example you provided also has issues. Below, I’ll explain your example.
 
-This may trigger another related corner case, I sent a patch to fix it:
+Table 1: current result for your example 1.
+ Step                                | A1's prstate | B1's prstate |
+ #1> echo root > A1.cpuset.partition | root invalid |              |
+ #2> echo 0-1 > A1.cpuset.cpus       | root         |              |
+ #3> echo root > B1.cpuset.partition | root         | root invalid |
+ #4> echo 1-2 > B1.cpuset.cpus       | root invalid | root invalid |
+ #5> echo 0-1 >A1.cpuset.cpus        | root invalid | root invalid |
 
-https://lore.kernel.org/cgroups/20251115093140.1121329-1-chenridong@huaweicloud.com/T/#mfc4157e23d253b71ef9a2cfa5cb54bf41449840c
+After step #4, both A1 and B1 are already in the "root invalid" state.
+Therefore, B1 becoming "root invalid" is not caused by step #5, but was 
+already in the "root invalid" state from the beginning.
 
--- 
-Best regards,
-Ridong
+Table 2: this is my expected result 
+ Step                                | A1's prstate | B1's prstate |
+ #1> echo root > A1.cpuset.partition | root invalid |              |
+ #2> echo 0-1 > A1.cpuset.cpus       | root         |              |
+ #3> echo root > B1.cpuset.partition | root         | root invalid |
+ #4> echo 1-2 > B1.cpuset.cpus       | root         | root invalid |
+ #5> echo 0-1 >A1.cpuset.cpus        | root         | root invalid |
+
+If A1 is "root", and B1 is not "root", Our goal is to ensure that B1's 
+behavior does not affect the "root" state of A1. Similarly, when B1's 
+"cpuset.cpus.effective" is non-empty, we strive to ensure A1's own behavior
+does not affect its "root" state as much as possible.
+
+In summary, the purpose of submitting this patch is to ensure that, when 
+only one of A1 and B1 is "root", the actions of one party do not affect the
+"root" state of the other.
+
+Thanks,
+Sun Shaojie
 
 
