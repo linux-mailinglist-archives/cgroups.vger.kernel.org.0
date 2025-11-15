@@ -1,185 +1,106 @@
-Return-Path: <cgroups+bounces-12000-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-12001-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 872D7C60925
-	for <lists+cgroups@lfdr.de>; Sat, 15 Nov 2025 18:24:47 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 69F4EC60A5F
+	for <lists+cgroups@lfdr.de>; Sat, 15 Nov 2025 20:28:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3B26C3B795C
-	for <lists+cgroups@lfdr.de>; Sat, 15 Nov 2025 17:24:46 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D52F93AED51
+	for <lists+cgroups@lfdr.de>; Sat, 15 Nov 2025 19:27:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 134183019A1;
-	Sat, 15 Nov 2025 17:24:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5FB533093C4;
+	Sat, 15 Nov 2025 19:27:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="K0opQtSr"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="UW4346lT"
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out-188.mta1.migadu.com (out-188.mta1.migadu.com [95.215.58.188])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC8232FBDFE;
-	Sat, 15 Nov 2025 17:24:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C8923090F5
+	for <cgroups@vger.kernel.org>; Sat, 15 Nov 2025 19:27:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.188
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763227481; cv=none; b=IH74glOyQJuqi7viIYNfZJqldbGW2FmdSpniLw8xq8Nw2wEJ17uZLKq+Q4gkltisYfnl/8JDSuUpOLMb8/0BtBVUcou+/Xv2RDEFJE7xmfwI2fWYEgjLj+fpLUjLdmpM+dlFyE6csoklrrZif5/kkm547ex1DcL8WAvjWRE26VM=
+	t=1763234841; cv=none; b=fsG9vQzHu+24cWpiU+YCAF4u3ciAcpKYGG3ymIb88K4E0+2nXCicTHeOa9kec+a9InpxRHDqSZSZEAM3uRraPsrvk1omnjHC1MLlykkAGN9ZxKpX3ut7/MyifXHQsc8WkGyz26QIAL6clcpjYYvjYa6efPQA9kbVaMjQi9+/ao4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763227481; c=relaxed/simple;
-	bh=qflNL+o4u7ZS4s+sN0dF13IvClzqLsiakctOn+2j+Ww=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=JU0Va+QCP+IwkpNtVG/oVU974tXlQerT3W+iIAkrUKlSSRf3Q2q4vvxu/Ugzgw40K8MasQLQBuBqP2TY3doy55rWEqmZ10bGFWYA3Dbz5uoq4nGX3KHigwPTf/lax4VmIF7OTX2Zz8Jy7GHPFllUpFf5m+2zQ4PtAQld1JbQZvE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=K0opQtSr; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2D101C19423;
-	Sat, 15 Nov 2025 17:24:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1763227481;
-	bh=qflNL+o4u7ZS4s+sN0dF13IvClzqLsiakctOn+2j+Ww=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=K0opQtSrljGMEXfGx3lu0Ui88SpOIFxaCWiAHegbkZS0iZDgOekiHXFYy2u3SgAML
-	 oEQVFHga+HUeR4ar0sKLoI97SlKHnbQUIst+vnpdXtKq0V/EqFyeBzpRXndaGMT2KC
-	 7zsxcsY6hkXeacRjcYykl+MuHWB2DXTAp7jlXk9QTkeTPYCzQBlwg4gAgIF0BoeRqP
-	 NvSd9hYdgqtf5bDIh/jqahGAVXcy43AjW/+/2ms1YHUcNilRZq0noU6Tr3+NpzJsW7
-	 v/61/70aVkgMizF5dgia2uPp2GbvkrP1Nvcs0aY7RLs+w4g2u6wpmLwu2Q0/L1Ni5f
-	 MPY8cdyVcKUww==
-From: SeongJae Park <sj@kernel.org>
-To: Chris Li <chrisl@kernel.org>
-Cc: SeongJae Park <sj@kernel.org>,
-	Youngjun Park <youngjun.park@lge.com>,
-	akpm@linux-foundation.org,
-	linux-mm@kvack.org,
-	cgroups@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	kasong@tencent.com,
-	hannes@cmpxchg.org,
-	mhocko@kernel.org,
-	roman.gushchin@linux.dev,
-	shakeel.butt@linux.dev,
-	muchun.song@linux.dev,
-	shikemeng@huaweicloud.com,
-	nphamcs@gmail.com,
-	bhe@redhat.com,
-	baohua@kernel.org,
-	gunho.lee@lge.com,
-	taejoon.song@lge.com
-Subject: Re: [RFC] mm/swap, memcg: Introduce swap tiers for cgroup based swap control
-Date: Sat, 15 Nov 2025 09:24:30 -0800
-Message-ID: <20251115172431.83156-1-sj@kernel.org>
-X-Mailer: git-send-email 2.47.3
-In-Reply-To: <CACePvbUBEQsgoei=ykeM6uX_GWaFywZEXY7dGt+T6Pt4zhiGsA@mail.gmail.com>
-References: 
+	s=arc-20240116; t=1763234841; c=relaxed/simple;
+	bh=59LAVmPytdb1i8qrZeU2pnNsVPGtk3yjF3eA1gmh8Kw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=NPUEcewKM2nGbY/sRInb9KlwvMZhn/plxry/iyFi3bd69W4K/oEJqkIuh3yw5gf9g+3ezTqwPwfHSJxWiYsM2z7chrJa6nhl57Yw/34tuq5flDJzSuy6MvMznuzmyTSSSktOjfGCoQWqJEc5isj64CtXhV5JQ27oE2rhbCFNjkg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=UW4346lT; arc=none smtp.client-ip=95.215.58.188
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Date: Sat, 15 Nov 2025 11:27:00 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1763234827;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=tL1st+LPzSORFHxjjvUUas/B2xSYAdjy0OmiDtjidDo=;
+	b=UW4346lTXgp48lzzmTtizHyxMFKJBsoH9YYSsoWJEV7pbt/sEdsu+NAlTnXmgfqLpf9CTZ
+	S3PRTMjrzHV5FkpFeeTWlcSYuYwa0czrbgw8sFmvGnFFQ6e2myg26QzqXK3VHElOV+zs02
+	0C2T/2uFylsPFUYbJyVUUJCQx94d5Gk=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Shakeel Butt <shakeel.butt@linux.dev>
+To: Andrew Morton <akpm@linux-foundation.org>
+Cc: Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>, 
+	Roman Gushchin <roman.gushchin@linux.dev>, Muchun Song <muchun.song@linux.dev>, 
+	Harry Yoo <harry.yoo@oracle.com>, Qi Zheng <qi.zheng@linux.dev>, Vlastimil Babka <vbabka@suse.cz>, 
+	linux-mm@kvack.org, cgroups@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	Meta kernel team <kernel-team@meta.com>
+Subject: Re: [PATCH 0/4] memcg: cleanup the memcg stats interfaces
+Message-ID: <wwuzmneum26ddbf43kquy6u5rynbtwsphkp7xlp4ktnznxmn54@dmxb54xxhgah>
+References: <20251110232008.1352063-1-shakeel.butt@linux.dev>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20251110232008.1352063-1-shakeel.butt@linux.dev>
+X-Migadu-Flow: FLOW_OUT
 
-On Sat, 15 Nov 2025 07:13:49 -0800 Chris Li <chrisl@kernel.org> wrote:
+Hi Andrew, can you please pick this series as it is ready for wider
+testing.
 
-> On Fri, Nov 14, 2025 at 5:22 PM SeongJae Park <sj@kernel.org> wrote:
-> >
-> > On Sun,  9 Nov 2025 21:49:44 +0900 Youngjun Park <youngjun.park@lge.com> wrote:
-> >
-> > > Hi all,
-> > >
-> > > In constrained environments, there is a need to improve workload
-> > > performance by controlling swap device usage on a per-process or
-> > > per-cgroup basis. For example, one might want to direct critical
-> > > processes to faster swap devices (like SSDs) while relegating
-> > > less critical ones to slower devices (like HDDs or Network Swap).
-> > >
-> > > Initial approach was to introduce a per-cgroup swap priority
-> > > mechanism [1]. However, through review and discussion, several
-> > > drawbacks were identified:
-> > >
-> > > a. There is a lack of concrete use cases for assigning a fine-grained,
-> > >    unique swap priority to each cgroup.
-> > > b. The implementation complexity was high relative to the desired
-> > >    level of control.
-> > > c. Differing swap priorities between cgroups could lead to LRU
-> > >    inversion problems.
-> > >
-> > > To address these concerns, I propose the "swap tiers" concept,
-> > > originally suggested by Chris Li [2] and further developed through
-> > > collaborative discussions. I would like to thank Chris Li and
-> > > He Baoquan for their invaluable contributions in refining this
-> > > approach, and Kairui Song, Nhat Pham, and Michal Koutný for their
-> > > insightful reviews of earlier RFC versions.
-> >
-> > I think the tiers concept is a nice abstraction.  I'm also interested in how
-> > the in-kernel control mechanism will deal with tiers management, which is not
-> > always simple.  I'll try to take a time to read this series thoroughly.  Thank
-> > you for sharing this nice work!
+thanks,
+Shakeel
+
+On Mon, Nov 10, 2025 at 03:20:04PM -0800, Shakeel Butt wrote:
+> The memcg stats are safe against irq (and nmi) context and thus does not
+> require disabling irqs. However for some stats which are also maintained
+> at node level, it is using irq unsafe interface and thus requiring the
+> users to still disables irqs or use interfaces which explicitly disables
+> irqs. Let's move memcg code to use irq safe node level stats function
+> which is already optimized for architectures with HAVE_CMPXCHG_LOCAL
+> (all major ones), so there will not be any performance penalty for its
+> usage.
 > 
-> Thank you for your interest. Please keep in mind that this patch
-> series is RFC. I suspect the current series will go through a lot of
-> overhaul before it gets merged in. I predict the end result will
-> likely have less than half of the code resemble what it is in the
-> series right  now.
-
-Sure, I belive this work will greatly evolve :)
-
+> Shakeel Butt (4):
+>   memcg: use mod_node_page_state to update stats
+>   memcg: remove __mod_lruvec_kmem_state
+>   memcg: remove __mod_lruvec_state
+>   memcg: remove __lruvec_stat_mod_folio
 > 
-> > Nevertheless, I'm curious if there is simpler and more flexible ways to achieve
-> > the goal (control of swap device to use).  For example, extending existing
-> Simplicity is one of my primary design principles. The current design
-> is close to the simplest within the design constraints.
-
-I agree the concept is very simple.  But, I was thinking there _could_ be
-complexity for its implementation and required changes to existing code.
-Especially I'm curious about how the control logic for tiers maangement would
-be implemented in a simple but optimum and flexible way.  Hence I was lazily
-thinking what if we just let users make the control.
-
-I'm not saying tiers approach's control part implementation will, or is,
-complex or suboptimum.  I didn't read this series thoroughly yet.
-
-Even if it is at the moment, as you pointed out, I believe it will evolve to a
-simple and optimum one.  That's why I am willing to try to get time for reading
-this series and learn from it, and contribute back to the evolution if I find
-something :)
-
+>  include/linux/memcontrol.h | 28 ++++------------------
+>  include/linux/mm_inline.h  |  2 +-
+>  include/linux/vmstat.h     | 48 ++------------------------------------
+>  mm/filemap.c               | 20 ++++++++--------
+>  mm/huge_memory.c           |  4 ++--
+>  mm/khugepaged.c            |  8 +++----
+>  mm/memcontrol.c            | 20 ++++++++--------
+>  mm/migrate.c               | 20 ++++++++--------
+>  mm/page-writeback.c        |  2 +-
+>  mm/rmap.c                  |  4 ++--
+>  mm/shmem.c                 |  6 ++---
+>  mm/vmscan.c                |  4 ++--
+>  mm/workingset.c            |  2 +-
+>  13 files changed, 53 insertions(+), 115 deletions(-)
 > 
-> > proactive pageout features, such as memory.reclaim, MADV_PAGEOUT or
-> > DAMOS_PAGEOUT, to let users specify the swap device to use.  Doing such
+> -- 
+> 2.47.3
 > 
-> In my mind that is a later phase. No, per VMA swapfile is not simpler
-> to use, nor is the API simpler to code. There are much more VMA than
-> memcg in the system, no even the same magnitude. It is a higher burden
-> for both user space and kernel to maintain all the per VMA mapping.
-> The VMA and mmap path is much more complex to hack. Doing it on the
-> memcg level as the first step is the right approach.
-> 
-> > extension for MADV_PAGEOUT may be challenging, but it might be doable for
-> > memory.reclaim and DAMOS_PAGEOUT.  Have you considered this kind of options?
-> 
-> Yes, as YoungJun points out, that has been considered here, but in a
-> later phase. Borrow the link in his email here:
-> https://lore.kernel.org/linux-mm/CACePvbW_Q6O2ppMG35gwj7OHCdbjja3qUCF1T7GFsm9VDr2e_g@mail.gmail.com/
-
-Thank you for kindly sharing your opinion and previous discussion!  I
-understand you believe sub-cgroup (e.g., vma level) control of swap tiers can
-be useful, but there is no expected use case, and you concern about its
-complexity in terms of implementation and interface.  That all makes sense to
-me.
-
-Nonetheless, I'm not saying about sub-cgroup control.  As I also replied [1] to
-Youngjun, memory.reclaim and DAMOS_PAGEOUT based extension would work in cgroup
-level.  And to my humble perspective, doing the extension could be doable, at
-least for DAMOS_PAGEOUT.
-
-Hmm, I feel like my mail might be read like I'm suggesting you to use
-DAMOS_PAGEOUT.  The decision is yours and I will respect it, of course.  I'm
-saying this though, because I am uncautiously but definitely biased as DAMON
-maintainer. ;)  Again, the decision is yours and I will respect it.
-
-[1] https://lore.kernel.org/20251115165637.82966-1-sj@kernel.org
-
-
-Thanks,
-SJ
-
-[...]
 
