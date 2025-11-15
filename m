@@ -1,266 +1,179 @@
-Return-Path: <cgroups+bounces-11989-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-11990-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 87E94C60135
-	for <lists+cgroups@lfdr.de>; Sat, 15 Nov 2025 08:41:15 +0100 (CET)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
+	by mail.lfdr.de (Postfix) with ESMTPS id 91DCFC60267
+	for <lists+cgroups@lfdr.de>; Sat, 15 Nov 2025 10:28:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2AE093BB32D
-	for <lists+cgroups@lfdr.de>; Sat, 15 Nov 2025 07:41:14 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 15B11356AF6
+	for <lists+cgroups@lfdr.de>; Sat, 15 Nov 2025 09:28:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 67AAB1EDA2C;
-	Sat, 15 Nov 2025 07:41:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3DE66257828;
+	Sat, 15 Nov 2025 09:28:27 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
+Received: from lgeamrelo03.lge.com (lgeamrelo03.lge.com [156.147.51.102])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E1F1D7E792;
-	Sat, 15 Nov 2025 07:41:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2168D242D87
+	for <cgroups@vger.kernel.org>; Sat, 15 Nov 2025 09:28:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.147.51.102
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763192471; cv=none; b=FXfD4LLAKBcO9yUsySmEG+w8+czqiWxku5+6FzXWxx9YT0Z2jsPWqd2nBCWtCGusZ+fuMvriYh3fOmagljuf6nnkKU6EJjetn4pPimituGKIHhPMpTDBdYGxDqVClPlDxlzb2zkEw4rwCddqugnHgc2yQI48u8oF6ZlV+LM7JM8=
+	t=1763198907; cv=none; b=WAxoFTB2f5nu4l3JkqBPZXHHu2h2LMmNqEGq1Qj8/64DA62MwDQOIzEf0nnsgxfO3AFvuABsXSDoQ73LKsViJDSVlGp+4DiPQN15GkxGknsXSAnxybJi2kogM1RsYyxie9P9xW4KIEo1N1k7wHKLSIjROkZ0qv+C+vaB6ADabIg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763192471; c=relaxed/simple;
-	bh=YnS28CBlm2kdudtLHIY39jdmTBBK9VFE6DFQehs4kCk=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=tv8HsHFyk7AHbBKLhZ8k2n7gtdy1gQsM5q32PiZLDx3KKf3WrCiW3SVcRIeBvXJXr4vOmjbIPjR0DOJQKnkhqiVO5d1XuozkQhoVQ/tgnq1vw2fb9grAEK8h2QCDJNuX/SpZX3SOpWL9xYCjPSggrR9BANGnP+sMnewIsgSujPM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.93.142])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTPS id 4d7mBz3RBBzKHMPh;
-	Sat, 15 Nov 2025 15:40:43 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.128])
-	by mail.maildlp.com (Postfix) with ESMTP id 40FDD1A07BB;
-	Sat, 15 Nov 2025 15:41:05 +0800 (CST)
-Received: from [10.67.111.176] (unknown [10.67.111.176])
-	by APP4 (Coremail) with SMTP id gCh0CgDXTFqPLhhpJl09Aw--.58092S2;
-	Sat, 15 Nov 2025 15:41:05 +0800 (CST)
-Message-ID: <d9332ba1-2614-44c2-b2e8-eab213f196bc@huaweicloud.com>
-Date: Sat, 15 Nov 2025 15:41:03 +0800
+	s=arc-20240116; t=1763198907; c=relaxed/simple;
+	bh=PP9ng+07RNSYZH6C9fcZ3Y1dtRToGRbeKubx+ISrD1Y=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=QlBdJNzpVEhlbSWujr8FC0TRw4H6G3p6+uDLkz3ngC0C37DrglyERGknNTKD1/fgcKRLbQt/0DMeUzRgN7hUbjKem5ug/BdrwxCHqDY+AXeRIVFt+jJ0gJrd1zi3k0JwRRngPtnj1L/0kTi48M6uuFCdYr0e5cWd0O7eC4niHaE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lge.com; spf=pass smtp.mailfrom=lge.com; arc=none smtp.client-ip=156.147.51.102
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lge.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lge.com
+Received: from unknown (HELO yjaykim-PowerEdge-T330) (10.177.112.156)
+	by 156.147.51.102 with ESMTP; 15 Nov 2025 18:28:17 +0900
+X-Original-SENDERIP: 10.177.112.156
+X-Original-MAILFROM: youngjun.park@lge.com
+Date: Sat, 15 Nov 2025 18:28:17 +0900
+From: YoungJun Park <youngjun.park@lge.com>
+To: Kairui Song <ryncsn@gmail.com>
+Cc: Baoquan He <bhe@redhat.com>, akpm@linux-foundation.org,
+	linux-mm@kvack.org, cgroups@vger.kernel.org,
+	linux-kernel@vger.kernel.org, chrisl@kernel.org, hannes@cmpxchg.org,
+	mhocko@kernel.org, roman.gushchin@linux.dev, shakeel.butt@linux.dev,
+	muchun.song@linux.dev, shikemeng@huaweicloud.com, nphamcs@gmail.com,
+	baohua@kernel.org, gunho.lee@lge.com, taejoon.song@lge.com
+Subject: Re: [PATCH 1/3] mm, swap: change back to use each swap device's
+ percpu cluster
+Message-ID: <aRhHsbh6ZtjCJ3wP@yjaykim-PowerEdge-T330>
+References: <20251109124947.1101520-1-youngjun.park@lge.com>
+ <20251109124947.1101520-2-youngjun.park@lge.com>
+ <CAMgjq7AomHkGAtpvEt_ZrGK6fLUkWgg0vDGZ0B570QU_oNwRGA@mail.gmail.com>
+ <aRXE0ppned4Kprnz@yjaykim-PowerEdge-T330>
+ <aRaAW5G7NDWDu5/D@MiWiFi-R3L-srv>
+ <CAMgjq7D=eULiSQzUo6AQ16DUMtL_EQaRSOXGRhMJrUzakvj5Jg@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] cpuset: relax the overlap check for cgroup-v2
-To: Sun Shaojie <sunshaojie@kylinos.cn>, mkoutny@suse.com, llong@redhat.com
-Cc: cgroups@vger.kernel.org, hannes@cmpxchg.org,
- linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
- shuah@kernel.org, tj@kernel.org
-References: <19fa5a93-4cc9-4f84-891c-b3b096a68799@huaweicloud.com>
- <20251115060211.853449-1-sunshaojie@kylinos.cn>
-Content-Language: en-US
-From: Chen Ridong <chenridong@huaweicloud.com>
-In-Reply-To: <20251115060211.853449-1-sunshaojie@kylinos.cn>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:gCh0CgDXTFqPLhhpJl09Aw--.58092S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxtr1fCw48CryUXr1xKw15urg_yoWxWw1UpF
-	W8KFn8Jw4kXF15CwsIqFn7Wa1aya9FqFsrXF95Gry0yr9rtF1qy3WvyrZIk3y5Wr95Gay2
-	qrZFvrWSvFyDXaDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUyGb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxkF7I0En4kS14v26r1q6r43MxAIw28IcxkI7VAK
-	I48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7
-	xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xII
-	jxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw2
-	0EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x02
-	67AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU17KsUUUUUU==
-X-CM-SenderInfo: hfkh02xlgr0w46kxt4xhlfz01xgou0bp/
+In-Reply-To: <CAMgjq7D=eULiSQzUo6AQ16DUMtL_EQaRSOXGRhMJrUzakvj5Jg@mail.gmail.com>
+
+On Fri, Nov 14, 2025 at 11:52:25PM +0800, Kairui Song wrote:
+> On Fri, Nov 14, 2025 at 9:05 AM Baoquan He <bhe@redhat.com> wrote:
+> > On 11/13/25 at 08:45pm, YoungJun Park wrote:
+> > > On Thu, Nov 13, 2025 at 02:07:59PM +0800, Kairui Song wrote:
+> > > > On Sun, Nov 9, 2025 at 8:54 PM Youngjun Park <youngjun.park@lge.com> wrote:
+> > > > >
+> > > > > This reverts commit 1b7e90020eb7 ("mm, swap: use percpu cluster as
+> > > > > allocation fast path").
+> > > > >
+> > > > > Because in the newly introduced swap tiers, the global percpu cluster
+> > > > > will cause two issues:
+> > > > > 1) it will cause caching oscillation in the same order of different si
+> > > > >    if two different memcg can only be allowed to access different si and
+> > > > >    both of them are swapping out.
+> > > > > 2) It can cause priority inversion on swap devices. Imagine a case where
+> > > > >    there are two memcg, say memcg1 and memcg2. Memcg1 can access si A, B
+> > > > >    and A is higher priority device. While memcg2 can only access si B.
+> > > > >    Then memcg 2 could write the global percpu cluster with si B, then
+> > > > >    memcg1 take si B in fast path even though si A is not exhausted.
+> > > > >
+> > > > > Hence in order to support swap tier, revert commit 1b7e90020eb7 to use
+> > > > > each swap device's percpu cluster.
+> > > > >
+> > > > > Co-developed-by: Baoquan He <bhe@redhat.com>
+> > > > > Suggested-by: Kairui Song <kasong@tencent.com>
+> > > > > Signed-off-by: Baoquan He <bhe@redhat.com>
+> > > > > Signed-off-by: Youngjun Park <youngjun.park@lge.com>
+> > > >
+> > > > Hi Youngjun, Baoquan, Thanks for the work on the percpu cluster thing.
+> > >
+> > > Hello Kairui,
+> 
+> ...
+> 
+> > >
+> > > Yeah... The rotation rule has indeed changed. I remember the
+> > > discussion about rotation behavior:
+> > > https://lore.kernel.org/linux-mm/aPc3lmbJEVTXoV6h@yjaykim-PowerEdge-T330/
+> > >
+> > > After that discussion, I've been thinking about the rotation.
+> > > Currently, the requeue happens after every priority list traversal, and this logic
+> > > is easily affected by changes.
+> > > The rotation logic change behavior change is not not mentioned somtimes.
+> > > (as you mentioned in commit 1b7e90020eb7).
+> > >
+> > > I'd like to share some ideas and hear your thoughts:
+> > >
+> > > 1. Getting rid of the same priority requeue rule
+> > >    - same priority devices get priority - 1 or + 1 after requeue
+> > >      (more add or remove as needed to handle any overlapping priority appropriately)
+> > >
+> > > 2. Requeue only when a new cluster is allocated
+> > >    - Instead of requeueing after every priority list traversal, we
+> > >      requeue only when a cluster is fully used
+> > >    - This might have some performance impact, but the rotation behavior
+> > >      would be similar to the existing one (though slightly different due
+> > >      to synchronization and logic processing changes)
+> >
+> > 2) sounds better to me, and the logic and code change is simpler.
+> >
+> > Removing requeue may change behaviour. Swap devices of the same priority
+> > should be round robin to take.
+> 
+> I agree. We definitely need balancing between devices of the same
+> priority, cluster based rotation seems good enough.
+
+Hello Kairui, Baoquan.
+Thanks for your feedback. 
+
+Okay I try to keep current rotation logic workable on next patch iteration.
+
+Based on Kairui suggested previously,
+We can keep the per-cpu si cache alive.
+(However, since it could pick si from unselected tiers, it should
+exist per tier - per cpu)
+
+Or, following the current code structure, we could also consider,
+Requeue while holding swap_avail_lock when the cluster is consumed.
+ 
+> And I'm thinking if we can have a better rotation mechanism? Maybe
+> plist isn't the best way to do rotation if we want to minimize the
+> cost of rotation.
+
+I did some more ideation.
+(Although it is some workable way, next step idea. like I said just ideation )
+
+I've been thinking about the inefficiencies with plist_requeue during
+rotation, and the plist_for_each_entry traversal structure itself.
+There is also small problem like it can be ended up selecting a lower priority swap device
+while traversing the list, even when a higher priority swap device gets
+inserted into the plist.
+
+So anyway as I think... 
+
+- On the read side (alloc_swap_entry), manage it so only one swap
+  device can be obtained when selecting a swap device. (grabbing
+  read_lock). swap selection logic does not any behavior affecting
+  logic change like current approach. just see swapdevice only.
+
+- On the write side, handle it appropriately using plist or some
+  improved data structure. (grabbing write_lock)
+
+- For rotation, instead of placing a plist per swap device, we could
+  create something like a priority node. In this priority node
+  structure, entries would be rotated each time a cluster is fully used.
+
+- Also, with tiers introduced, since we only need to traverse the
+  selected tier for each I/O, the current single swap_avail_list may
+  not be suitable anymore. This could be changed to a per-tier
+  structure.
 
 
-
-On 2025/11/15 14:02, Sun Shaojie wrote:
-> On 2015/11/15 08:58, Chen Ridong wrote:
->> On 2025/11/15 0:14, Michal Koutný wrote:
->>> On Fri, Nov 14, 2025 at 09:29:20AM +0800, Chen Ridong <chenridong@huaweicloud.com> wrote:
->>>> After further consideration, I still suggest retaining this rule.
->>>
->>> Apologies, I'm slightly lost which rule. I hope the new iteration from
->>> Shaojie with both before/after tables will explain it.
->>>
->>
->> The rule has changed in this patch from "If either cpuset is exclusive, check if they are mutually
->> exclusive" to
->> "If both cpusets are exclusive, check if they are mutually exclusive"
->>
->>  -    /* If either cpuset is exclusive, check if they are mutually exclusive */
->>  -    if (is_cpu_exclusive(cs1) || is_cpu_exclusive(cs2))
->>  +    /* If both cpusets are exclusive, check if they are mutually exclusive */
->>  +    if (is_cpu_exclusive(cs1) && is_cpu_exclusive(cs2))
->>  +        return !cpusets_are_exclusive(cs1, cs2);
->>
->> I suggest not modifying this rule and keeping the original logic intact:
->>
->>>> For am example:
->>>>   Step                                       | A1's prstate | B1's prstate |
->>>>   #1> mkdir -p A1                            | member       |              |
->>>>   #2> echo "0-1" > A1/cpuset.cpus.exclusive  | member       |              |
->>>>   #3> echo "root" > A1/cpuset.cpus.partition | root         |              |
->>>>   #4> mkdir -p B1                            | root         | member       |
->>>>   #5> echo "0" > B1/cpuset.cpus              | root invalid | member       |
->>>>
->>>> Currently, we mark A1 as invalid. But similar to the logic in this patch, why must A1 be
->>>> invalidated?
->>>
->>> A1 is invalidated becase it doesn't have exclusive ownership of CPU 0
->>> anymore.
->>>
->>>> B1 could also use the parent's effective CPUs, right?
->>>
->>> Here you assume some ordering between siblings treating A1 more
->>> important than B1. But it's symmetrical in principle, no?
->>>
->>
->> I’m using an example to illustrate that if Shaojie’s patch is accepted, other rules could be relaxed
->> following the same logic—but I’m not in favor of doing so.
-> 
-> Hi, Ridong,
-> 
-> Thank you for pointing out the issue with the current patch; this is indeed
-> not what our product intends. I must admit that I haven't thoroughly tested
-> on such recent kernel versions.
-> 
-> Obviously, this patch is flawed. However, patch v3 is needed. Regarding the
-> "other rules" you mentioned, we do not intend to relax them. On the 
-> contrary, we aim to maintain them firmly.
-> 
-> Our product need ensure the following behavior: in cgroup-v2, user 
-> modifications to one cpuset should not affect the partition state of its 
-> sibling cpusets. This is justified and meaningful, as it aligns with the 
-> isolation characteristics of cgroups.
-> 
-
-This is ideal in theory, but I don’t think it’s practical in reality.
-
-> This can be divided into two scenarios:
-> Scenario 1: Only one of A1 and B1 is "root".
-> Scenario 2: Both A1 and B1 are "root".
-> 
-> We plan to implement Scenario 1 first. This is the goal of patch v2.
-> However, patch v2 is flawed because it does not strictly adhere to the 
-> following existing rule.
-> 
-> However, it is worth noting that the current cgroup v2 implementation does 
-> not strictly adhere to the following rule either (which is also an 
-> objective for patch v3 to address).
-> 
-> Rule 1: "cpuset.cpus" cannot be a subset of a sibling's "cpuset.cpus.exclusive".
-> 
-> Using your example to illustrate.
->  Step (refer to the steps in the table below）
->  #1> mkdir -p A1                           
->  #2> echo "0-1" > A1/cpuset.cpus.exclusive 
->  #3> echo "root" > A1/cpuset.cpus.partition
->  #4> mkdir -p B1               
->  #5> echo "0" > B1/cpuset.cpus 
-> 
-> Table 1: Current result
->  Step | return | A1's excl_cpus | B1's cpus | A1's prstate | B1's prstate |
->  #1   | 0      |                |           | member       |              |
->  #2   | 0      | 0-1            |           | member       |              |
->  #3   | 0      | 0-1            |           | root         |              |
->  #4   | 0      | 0-1            |           | root         | member       |
->  #5   | 0      | 0-1            | 0         | root invalid | member       |
-> 
-
-I think this what we expect.
-
-> Table 2: Expected result
->  Step | return | A1's excl_cpus | B1's cpus | A1's prstate | B1's prstate |
->  #1   | 0      |                |           | member       |              |
->  #2   | 0      | 0-1            |           | member       |              |
->  #3   | 0      | 0-1            |           | root         |              |
->  #4   | 0      | 0-1            |           | root         | member       |
->  #5   | error  | 0-1            |           | root         | member       |
-> 
-
-Step 5 should not return an error. As Longman pointed out, in cgroup-v2, setting cpuset.cpus should
-never fail.
-
-> Currently, after step #5, the operation returns success, which clearly 
-> violates Rule 1, as B1's "cpuset.cpus" is a subset of A1's 
-> "cpuset.cpus.exclusive".
-> 
-> Therefore, after step #5, the operation should return error, with A1 
-> remaining as "root". This better complies with the Rule 1.
-> 
-
-This is an exclusivity rule. Since it violates the exclusivity rules, A1 should be invalidated.
-
-> ------
-> The following content is provided for reference, and we hope it may be 
-> adopted in the future.
-> !!These are not part of what patch v3 will implement.
-> 
-> As for Scenario 2 (Both A1 and B1 are "root")， we will retain the current 
-> cgroup v2 behavior. This patch series does not modify it, but we hope to 
-> draw the maintainers' attention, as we indeed have plans for future 
-> modifications. Our intent can be seen from the following examples.
-> 
-> For example:
->  Step (refer to the steps in the table below）
->  #1> mkdir -p A1                           
->  #2> echo "0-1"  > A1/cpuset.cpus 
->  #3> echo "root" > A1/cpuset.cpus.partition
->  #4> mkdir -p B1               
->  #5> echo "2-3"  > B1/cpuset.cpus 
->  #6> echo "root" > B1/cpuset.cpus.partition
->  #7> echo "1-2"  > B1/cpuset.cpus
-> 
-> Table 1: Current result
->  Step | A1's eft_cpus | B1's eft_cpus | A1's prstate | B1's prstate |
->  #1   | from parent   |               | member       |              |
->  #2   | 0-1           |               | member       |              |
->  #3   | 0-1           |               | root         |              |
->  #4   | 0-1           | from parent   | root         | member       |
->  #5   | 0-1           | 2-3           | root         | member       |
->  #6   | 0-1           | 2-3           | root         | root         |
->  #7   | 0-1           | 1-2           | root invalid | root invalid |
-> 
-> Table 2: Expected result
->  Step | A1's eft_cpus | B1's eft_cpus | A1's prstate | B1's prstate |
->  #1   | from parent   |               | member       |              |
->  #2   | 0-1           |               | member       |              |
->  #3   | 0-1           |               | root         |              |
->  #4   | 0-1           | from parent   | root         | member       |
->  #5   | 0-1           | 2-3           | root         | member       |
->  #6   | 0-1           | 2-3           | root         | root         |
->  #7   | 0-1           | 2             | root         | root invalid |
-> 
-> After step #7, we expect A1 to remain "root" (unaffected), while only B1 
-> becomes "root invalid".
-> 
-
-With the result you expect, would we observe the following behaviors:
-
-#1> mkdir -p A1
-#2> mkdir -p B1
-#3> echo "0-1"  > A1/cpuset.cpus
-#4> echo "1-2"  > B1/cpuset.cpus
-#5> echo "root" > A1/cpuset.cpus.partition
-#6> echo "root" > B1/cpuset.cpus.partition # A1:root;B1:root invalid
-
-#1> mkdir -p A1
-#2> mkdir -p B1
-#3> echo "0-1"  > A1/cpuset.cpus
-#4> echo "1-2"  > B1/cpuset.cpus
-#5> echo "root" > B1/cpuset.cpus.partition
-#6> echo "root" > A1/cpuset.cpus.partition # A1:root invalid;B1:root
-
-Do different operation orders yield different results? If so, this is not what we expect.
-
--- 
-Best regards,
-Ridong
-
+Thanks,
+YoungJun 
 
