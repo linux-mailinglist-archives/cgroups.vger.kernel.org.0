@@ -1,166 +1,151 @@
-Return-Path: <cgroups+bounces-11994-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-11995-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 66A99C603D0
-	for <lists+cgroups@lfdr.de>; Sat, 15 Nov 2025 12:25:24 +0100 (CET)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
+	by mail.lfdr.de (Postfix) with ESMTPS id 427AAC607C1
+	for <lists+cgroups@lfdr.de>; Sat, 15 Nov 2025 16:14:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 267563BBE8E
-	for <lists+cgroups@lfdr.de>; Sat, 15 Nov 2025 11:25:23 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id C9E5735BB40
+	for <lists+cgroups@lfdr.de>; Sat, 15 Nov 2025 15:14:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D9702877D6;
-	Sat, 15 Nov 2025 11:25:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 495C629B789;
+	Sat, 15 Nov 2025 15:14:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZIRNEOYD"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 66880257843;
-	Sat, 15 Nov 2025 11:25:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=124.126.103.232
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0701E155326
+	for <cgroups@vger.kernel.org>; Sat, 15 Nov 2025 15:14:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763205920; cv=none; b=DNT1SPlWsz/m5P/HOGC6OImfOhDEAo3VCQM9Vzd46FfXJy7raiG6SDMb5/V+QunIS1Z43HWieaCxcEGUfTucw1Tcfalo42QJYtVxGN/qQfEZpWsBClIrhl/EXDfRADqd5qqvIQBlE64TyzSn18PGde3Rw9siGgLS3VZxwR8QBIM=
+	t=1763219641; cv=none; b=tJ7eRjk8taOf4UQ+SU+1FVUy3PQGwcwCJ610GLlWH2b9+bEv3mOUbq0idAeoOvk/8eI6L4TnciTl4LNoECEkl2ivBzwQ8S8H/0NnjTsJuOKobaxWpk/8FXQHmpEX70uhDtt/hlKPoOtGHPWSIkULnETzS7nhpLezXuuW9ybc4JM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763205920; c=relaxed/simple;
-	bh=HOAgnmwlweNEvVPrLsxOwlt1uM4M/KjHmrkM5QAuZpA=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=iRCT+3lSnFaL9naI5//lkBHTNkkWn80YzcguPAB7FZ6Zir0/qSXlBQyB4TpB5bztYYS7iB1TdjrhK/w8dzNvyiVdr60uy10kWsrPNcvd75qaUEm9U0Ry1xX0JLOPqsdbjmbfqFecEhCVQkQhHqPlUlW5bukWG/2Eirc+VJ37d7s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn; spf=pass smtp.mailfrom=kylinos.cn; arc=none smtp.client-ip=124.126.103.232
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kylinos.cn
-X-UUID: bc208b32c21511f0a38c85956e01ac42-20251115
-X-CTIC-Tags:
-	HR_CC_COUNT, HR_CC_DOMAIN_COUNT, HR_CC_NO_NAME, HR_CTE_8B, HR_CTT_TXT
-	HR_DATE_H, HR_DATE_WKD, HR_DATE_ZONE, HR_FROM_NAME, HR_SJ_DIGIT_LEN
-	HR_SJ_LANG, HR_SJ_LEN, HR_SJ_LETTER, HR_SJ_NOR_SYM, HR_SJ_PHRASE
-	HR_SJ_PHRASE_LEN, HR_SJ_PRE_RE, HR_SJ_WS, HR_TO_COUNT, HR_TO_DOMAIN_COUNT
-	HR_TO_NO_NAME, IP_TRUSTED, SRC_TRUSTED, DN_TRUSTED, SA_EXISTED
-	SN_EXISTED, SPF_NOPASS, DKIM_NOPASS, DMARC_NOPASS, CIE_GOOD
-	CIE_GOOD_SPF, GTI_FG_BS, GTI_RG_INFO, GTI_C_BU, AMN_GOOD
-	ABX_MISS_RDNS
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.3.6,REQID:43b85a57-5df2-4ff9-9aa0-30fa6e54850d,IP:20,U
-	RL:0,TC:0,Content:0,EDM:0,RT:0,SF:-5,FILE:0,BULK:0,RULE:Release_Ham,ACTION
-	:release,TS:15
-X-CID-INFO: VERSION:1.3.6,REQID:43b85a57-5df2-4ff9-9aa0-30fa6e54850d,IP:20,URL
-	:0,TC:0,Content:0,EDM:0,RT:0,SF:-5,FILE:0,BULK:0,RULE:Release_Ham,ACTION:r
-	elease,TS:15
-X-CID-META: VersionHash:a9d874c,CLOUDID:1cbb6708e1e82d7bc667778fc4d70487,BulkI
-	D:251113225812EYOJ6GI2,BulkQuantity:15,Recheck:0,SF:17|19|64|66|78|80|81|8
-	2|83|102|841|850,TC:nil,Content:0|15|50,EDM:-3,IP:-2,URL:0,File:nil,RT:nil
-	,Bulk:40,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BR
-	R:0,BRE:0,ARC:0
-X-CID-BVR: 2,SSN|SDN
-X-CID-BAS: 2,SSN|SDN,0,_
-X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_FAS,TF_CID_SPAM_FSD,TF_CID_SPAM_OBB
-X-CID-RHF: D41D8CD98F00B204E9800998ECF8427E
-X-UUID: bc208b32c21511f0a38c85956e01ac42-20251115
-X-User: sunshaojie@kylinos.cn
-Received: from localhost.localdomain [(223.70.159.239)] by mailgw.kylinos.cn
-	(envelope-from <sunshaojie@kylinos.cn>)
-	(Generic MTA with TLSv1.3 TLS_AES_256_GCM_SHA384 256/256)
-	with ESMTP id 63388585; Sat, 15 Nov 2025 19:25:05 +0800
-From: Sun Shaojie <sunshaojie@kylinos.cn>
-To: mkoutny@suse.com
-Cc: cgroups@vger.kernel.org,
-	chenridong@huaweicloud.com,
-	hannes@cmpxchg.org,
-	linux-kernel@vger.kernel.org,
-	linux-kselftest@vger.kernel.org,
-	llong@redhat.com,
-	shuah@kernel.org,
-	sunshaojie@kylinos.cn,
-	tj@kernel.org
-Subject: Re: [PATCH v2] cpuset: relax the overlap check for cgroup-v2
-Date: Sat, 15 Nov 2025 19:24:53 +0800
-Message-Id: <20251115112453.875799-1-sunshaojie@kylinos.cn>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <4b7znoqq6sdtutcn3jafyrucpqe5jylryvoeooz5ah54vbei4f@wxhsd7gkj3tp>
-References: <4b7znoqq6sdtutcn3jafyrucpqe5jylryvoeooz5ah54vbei4f@wxhsd7gkj3tp>
+	s=arc-20240116; t=1763219641; c=relaxed/simple;
+	bh=/Po9rhXBcisyw1Z/KeQrWHbPXqjNgSyu9tnQaTBxNec=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=HauntL7M2t2KwOBIFOrWLOM2ZwcE6AiIq+F+Mrdb5rXdAywGAga4BS5tvQMcs9K1aNQ+qpIia4px2KfeGs4mzFOHg4S+DbgUNcCgf459qTAL+as3r6a3M2Dwr/ve7CjJBu/6N3PvIlYEPV7+D4PY3Kogc7++7iIhSUI/ahYONFs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ZIRNEOYD; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 94A90C4AF09
+	for <cgroups@vger.kernel.org>; Sat, 15 Nov 2025 15:14:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1763219640;
+	bh=/Po9rhXBcisyw1Z/KeQrWHbPXqjNgSyu9tnQaTBxNec=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=ZIRNEOYDlISacP3LRzj/bJSfFlw+UdHvbtM4kqx8z4Q0dl60KUY44cmihU4is8mYl
+	 3XDj0vOX1F78A9NfmioA38+NAm+Ovvb/IXBWJA70kpq290PMPpKBvOnstbXf5I6GDy
+	 sRFy34MsLjQWxi1y7ZA5ZqYYqqW9A5UkXkt8/2rNpHUnxtcMsQHNm3QJzk4V4PPi78
+	 zMRjEhPhWGaQi+At5kKXY5uClp0WKsi1Dy4eBgErJ9j9N0BhEziXA2RP9PKdUkVlb2
+	 6BWcpOtmAZwFFBgNztjWzSMD5Uc/21ls2uzP8VxqD9SROFH2ncwiiPi9nfOjixHI/G
+	 vRiXMSu2Ii6Tg==
+Received: by mail-yw1-f179.google.com with SMTP id 00721157ae682-787e7aa1631so42105997b3.1
+        for <cgroups@vger.kernel.org>; Sat, 15 Nov 2025 07:14:00 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCVcTmtVVEGZ2WvUkuik6ccrD2HIF/b08w65M+W2thQLPb3yF5QgGOH99n6ys35YYWqVDRgo1lYo@vger.kernel.org
+X-Gm-Message-State: AOJu0YwoanXU/Nn/G8aSk3YXxMx6cPzk1V1mtcKHFnK1V+gz4ACmcntZ
+	LxcmDSllYPNzK59y9UZzOgrBPQsLhkgjUMDg/suZ6QqRqSiqJp/KO2rEazHWW/2Rhc6QqIv7Yfl
+	vPIw6eLQaN54HqLgsyV1UPKsxV8QFnhXhpPN6TdLI8w==
+X-Google-Smtp-Source: AGHT+IH1JnpV5QKEs/WPjJU+XSrEnxlODjDSrdDJ/I+MeluASZGuG3v0xBn9frSM87UKfnLcK7THvuciP15/1mEzvps=
+X-Received: by 2002:a05:690e:1289:b0:63f:b988:4a91 with SMTP id
+ 956f58d0204a3-6410d1387f1mr8288888d50.24.1763219639903; Sat, 15 Nov 2025
+ 07:13:59 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <20251109124947.1101520-1-youngjun.park@lge.com> <20251115012247.78999-1-sj@kernel.org>
+In-Reply-To: <20251115012247.78999-1-sj@kernel.org>
+From: Chris Li <chrisl@kernel.org>
+Date: Sat, 15 Nov 2025 07:13:49 -0800
+X-Gmail-Original-Message-ID: <CACePvbUBEQsgoei=ykeM6uX_GWaFywZEXY7dGt+T6Pt4zhiGsA@mail.gmail.com>
+X-Gm-Features: AWmQ_bmkrQnsLWN6zZqLHzRrez2-Aopu9cRG6qIT8b5U9CsZP5z3d3-jlWOzyqQ
+Message-ID: <CACePvbUBEQsgoei=ykeM6uX_GWaFywZEXY7dGt+T6Pt4zhiGsA@mail.gmail.com>
+Subject: Re: [RFC] mm/swap, memcg: Introduce swap tiers for cgroup based swap control
+To: SeongJae Park <sj@kernel.org>
+Cc: Youngjun Park <youngjun.park@lge.com>, akpm@linux-foundation.org, linux-mm@kvack.org, 
+	cgroups@vger.kernel.org, linux-kernel@vger.kernel.org, kasong@tencent.com, 
+	hannes@cmpxchg.org, mhocko@kernel.org, roman.gushchin@linux.dev, 
+	shakeel.butt@linux.dev, muchun.song@linux.dev, shikemeng@huaweicloud.com, 
+	nphamcs@gmail.com, bhe@redhat.com, baohua@kernel.org, gunho.lee@lge.com, 
+	taejoon.song@lge.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 2025/11/15 0:15, Michal Koutný wrote:
->On Fri, Nov 14, 2025 at 02:24:48PM +0800, Sun Shaojie <sunshaojie@kylinos.cn> wrote:
->> The desired outcome is that after step #5, although B1 writes "0-3" to 
->> cpuset.cpus, A1 can still remain as "root", and B1 ends up with effective 
->> CPUs of 2-3. In summary, We want to avoid A1's invalidation when B1 
->> changes its cpuset.cpus. Because cgroup v2 allows the effective CPU mask 
->> of a cpuset to differ from its requested mask.
+On Fri, Nov 14, 2025 at 5:22=E2=80=AFPM SeongJae Park <sj@kernel.org> wrote=
+:
 >
->So the new list of reasons why configured cpuset's cpus change are:
->- hotplug,
->- ancestor's config change,
->- stealing by a sibling (new).
+> On Sun,  9 Nov 2025 21:49:44 +0900 Youngjun Park <youngjun.park@lge.com> =
+wrote:
 >
->IIUC, the patch proposes this behavior:
+> > Hi all,
+> >
+> > In constrained environments, there is a need to improve workload
+> > performance by controlling swap device usage on a per-process or
+> > per-cgroup basis. For example, one might want to direct critical
+> > processes to faster swap devices (like SSDs) while relegating
+> > less critical ones to slower devices (like HDDs or Network Swap).
+> >
+> > Initial approach was to introduce a per-cgroup swap priority
+> > mechanism [1]. However, through review and discussion, several
+> > drawbacks were identified:
+> >
+> > a. There is a lack of concrete use cases for assigning a fine-grained,
+> >    unique swap priority to each cgroup.
+> > b. The implementation complexity was high relative to the desired
+> >    level of control.
+> > c. Differing swap priorities between cgroups could lead to LRU
+> >    inversion problems.
+> >
+> > To address these concerns, I propose the "swap tiers" concept,
+> > originally suggested by Chris Li [2] and further developed through
+> > collaborative discussions. I would like to thank Chris Li and
+> > He Baoquan for their invaluable contributions in refining this
+> > approach, and Kairui Song, Nhat Pham, and Michal Koutn=C3=BD for their
+> > insightful reviews of earlier RFC versions.
 >
->  echo root >A1.cpuset.partition
->  echo 0-1 >A1.cpuset.cpus
->  
->  echo root >B1.cpuset.partition
->  echo 1-2 >B1.cpuset.cpus	# invalidates A1
->  
->  echo 0-1 >A1.cpuset.cpus	# invalidates B1
->  
->  ping-pong over CPU 1 ad libitum
->
->I think the right (tm) behavior would be not to depend on the order in
->which config is applied to siblings, i.e.
->
->  echo root >A1.cpuset.partition
->  echo 0-1 >A1.cpuset.cpus
->  
->  echo root >B1.cpuset.partition
->  echo 1-2 >B1.cpuset.cpus	# invalidates both A1 and B1
->
->  echo 0-1 >A1.cpuset.cpus	# no change anymore
->
->(I hope my example sheds some light on my understanding of the situation
->and desired behavior.)
+> I think the tiers concept is a nice abstraction.  I'm also interested in =
+how
+> the in-kernel control mechanism will deal with tiers management, which is=
+ not
+> always simple.  I'll try to take a time to read this series thoroughly.  =
+Thank
+> you for sharing this nice work!
 
-Hi, Michal
+Thank you for your interest. Please keep in mind that this patch
+series is RFC. I suspect the current series will go through a lot of
+overhaul before it gets merged in. I predict the end result will
+likely have less than half of the code resemble what it is in the
+series right  now.
 
-The current patch is flawed and will be fixed in patch v3. However, the 
-example you provided also has issues. Below, I’ll explain your example.
+> Nevertheless, I'm curious if there is simpler and more flexible ways to a=
+chieve
+> the goal (control of swap device to use).  For example, extending existin=
+g
+Simplicity is one of my primary design principles. The current design
+is close to the simplest within the design constraints.
 
-Table 1: current result for your example 1.
- Step                                | A1's prstate | B1's prstate |
- #1> echo root > A1.cpuset.partition | root invalid |              |
- #2> echo 0-1 > A1.cpuset.cpus       | root         |              |
- #3> echo root > B1.cpuset.partition | root         | root invalid |
- #4> echo 1-2 > B1.cpuset.cpus       | root invalid | root invalid |
- #5> echo 0-1 >A1.cpuset.cpus        | root invalid | root invalid |
+> proactive pageout features, such as memory.reclaim, MADV_PAGEOUT or
+> DAMOS_PAGEOUT, to let users specify the swap device to use.  Doing such
 
-After step #4, both A1 and B1 are already in the "root invalid" state.
-Therefore, B1 becoming "root invalid" is not caused by step #5, but was 
-already in the "root invalid" state from the beginning.
+In my mind that is a later phase. No, per VMA swapfile is not simpler
+to use, nor is the API simpler to code. There are much more VMA than
+memcg in the system, no even the same magnitude. It is a higher burden
+for both user space and kernel to maintain all the per VMA mapping.
+The VMA and mmap path is much more complex to hack. Doing it on the
+memcg level as the first step is the right approach.
 
-Table 2: this is my expected result 
- Step                                | A1's prstate | B1's prstate |
- #1> echo root > A1.cpuset.partition | root invalid |              |
- #2> echo 0-1 > A1.cpuset.cpus       | root         |              |
- #3> echo root > B1.cpuset.partition | root         | root invalid |
- #4> echo 1-2 > B1.cpuset.cpus       | root         | root invalid |
- #5> echo 0-1 >A1.cpuset.cpus        | root         | root invalid |
+> extension for MADV_PAGEOUT may be challenging, but it might be doable for
+> memory.reclaim and DAMOS_PAGEOUT.  Have you considered this kind of optio=
+ns?
 
-If A1 is "root", and B1 is not "root", Our goal is to ensure that B1's 
-behavior does not affect the "root" state of A1. Similarly, when B1's 
-"cpuset.cpus.effective" is non-empty, we strive to ensure A1's own behavior
-does not affect its "root" state as much as possible.
+Yes, as YoungJun points out, that has been considered here, but in a
+later phase. Borrow the link in his email here:
+https://lore.kernel.org/linux-mm/CACePvbW_Q6O2ppMG35gwj7OHCdbjja3qUCF1T7GFs=
+m9VDr2e_g@mail.gmail.com/
 
-In summary, the purpose of submitting this patch is to ensure that, when 
-only one of A1 and B1 is "root", the actions of one party do not affect the
-"root" state of the other.
-
-Thanks,
-Sun Shaojie
-
+Chris
 
