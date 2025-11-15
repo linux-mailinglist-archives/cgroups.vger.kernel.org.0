@@ -1,179 +1,171 @@
-Return-Path: <cgroups+bounces-11990-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-11992-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
-	by mail.lfdr.de (Postfix) with ESMTPS id 91DCFC60267
-	for <lists+cgroups@lfdr.de>; Sat, 15 Nov 2025 10:28:32 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id 27FE3C602A6
+	for <lists+cgroups@lfdr.de>; Sat, 15 Nov 2025 10:49:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 15B11356AF6
-	for <lists+cgroups@lfdr.de>; Sat, 15 Nov 2025 09:28:32 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 0ED514E3507
+	for <lists+cgroups@lfdr.de>; Sat, 15 Nov 2025 09:47:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3DE66257828;
-	Sat, 15 Nov 2025 09:28:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9F8B728032D;
+	Sat, 15 Nov 2025 09:47:06 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from lgeamrelo03.lge.com (lgeamrelo03.lge.com [156.147.51.102])
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2168D242D87
-	for <cgroups@vger.kernel.org>; Sat, 15 Nov 2025 09:28:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.147.51.102
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E954523D7C4;
+	Sat, 15 Nov 2025 09:47:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763198907; cv=none; b=WAxoFTB2f5nu4l3JkqBPZXHHu2h2LMmNqEGq1Qj8/64DA62MwDQOIzEf0nnsgxfO3AFvuABsXSDoQ73LKsViJDSVlGp+4DiPQN15GkxGknsXSAnxybJi2kogM1RsYyxie9P9xW4KIEo1N1k7wHKLSIjROkZ0qv+C+vaB6ADabIg=
+	t=1763200026; cv=none; b=MgA28uqiGwGrgPAYAucl59u6eJHT87EBjA+NpFcZrIlY/E8lie8CaOfzxjiNNxg8NI+SSkSN7t2Dc3ROIbYE6uQxbprm4sfGMmZ2Xrt4XKqDpS0roK+qfR6nRGU0zFz00ECuBT3QKk34oKw3i9mTca6H0vA3l7b2pVxitqp35+g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763198907; c=relaxed/simple;
-	bh=PP9ng+07RNSYZH6C9fcZ3Y1dtRToGRbeKubx+ISrD1Y=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=QlBdJNzpVEhlbSWujr8FC0TRw4H6G3p6+uDLkz3ngC0C37DrglyERGknNTKD1/fgcKRLbQt/0DMeUzRgN7hUbjKem5ug/BdrwxCHqDY+AXeRIVFt+jJ0gJrd1zi3k0JwRRngPtnj1L/0kTi48M6uuFCdYr0e5cWd0O7eC4niHaE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lge.com; spf=pass smtp.mailfrom=lge.com; arc=none smtp.client-ip=156.147.51.102
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lge.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lge.com
-Received: from unknown (HELO yjaykim-PowerEdge-T330) (10.177.112.156)
-	by 156.147.51.102 with ESMTP; 15 Nov 2025 18:28:17 +0900
-X-Original-SENDERIP: 10.177.112.156
-X-Original-MAILFROM: youngjun.park@lge.com
-Date: Sat, 15 Nov 2025 18:28:17 +0900
-From: YoungJun Park <youngjun.park@lge.com>
-To: Kairui Song <ryncsn@gmail.com>
-Cc: Baoquan He <bhe@redhat.com>, akpm@linux-foundation.org,
-	linux-mm@kvack.org, cgroups@vger.kernel.org,
-	linux-kernel@vger.kernel.org, chrisl@kernel.org, hannes@cmpxchg.org,
-	mhocko@kernel.org, roman.gushchin@linux.dev, shakeel.butt@linux.dev,
-	muchun.song@linux.dev, shikemeng@huaweicloud.com, nphamcs@gmail.com,
-	baohua@kernel.org, gunho.lee@lge.com, taejoon.song@lge.com
-Subject: Re: [PATCH 1/3] mm, swap: change back to use each swap device's
- percpu cluster
-Message-ID: <aRhHsbh6ZtjCJ3wP@yjaykim-PowerEdge-T330>
-References: <20251109124947.1101520-1-youngjun.park@lge.com>
- <20251109124947.1101520-2-youngjun.park@lge.com>
- <CAMgjq7AomHkGAtpvEt_ZrGK6fLUkWgg0vDGZ0B570QU_oNwRGA@mail.gmail.com>
- <aRXE0ppned4Kprnz@yjaykim-PowerEdge-T330>
- <aRaAW5G7NDWDu5/D@MiWiFi-R3L-srv>
- <CAMgjq7D=eULiSQzUo6AQ16DUMtL_EQaRSOXGRhMJrUzakvj5Jg@mail.gmail.com>
+	s=arc-20240116; t=1763200026; c=relaxed/simple;
+	bh=EM3pYpdZ+L7QcTHZhu5+2yrHYW7d1u5AKf6wrAmmdvc=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=FCv9e86ygsxQBr28aVGcMWTre4+2QF8BGy7mKroUkIQvQ1JP7t7V89fHkjDqvebIPc2SKh6byME0nXEY+Q33Md9u3RyEJgRrAkq2VIvzf8XWHNRgx6yNidL5TW4ZkrTcHb90nZU6oQknLtrXom3Zsv1y+txXKW+39OxBxkuKh14=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.216])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTPS id 4d7pzx4xkTzYQtyh;
+	Sat, 15 Nov 2025 17:46:21 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.128])
+	by mail.maildlp.com (Postfix) with ESMTP id E57451A1480;
+	Sat, 15 Nov 2025 17:46:54 +0800 (CST)
+Received: from hulk-vt.huawei.com (unknown [10.67.174.121])
+	by APP4 (Coremail) with SMTP id gCh0CgCnz1zzSxhpfa5HAw--.5650S2;
+	Sat, 15 Nov 2025 17:46:54 +0800 (CST)
+From: Chen Ridong <chenridong@huaweicloud.com>
+To: longman@redhat.com,
+	tj@kernel.org,
+	hannes@cmpxchg.org,
+	mkoutny@suse.com
+Cc: cgroups@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH -next] cpuset: treate root invalid trialcs as exclusive
+Date: Sat, 15 Nov 2025 09:31:40 +0000
+Message-Id: <20251115093140.1121329-1-chenridong@huaweicloud.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <765120d5-1887-4376-b779-8294df137b9d@huaweicloud.com>
+References: <765120d5-1887-4376-b779-8294df137b9d@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAMgjq7D=eULiSQzUo6AQ16DUMtL_EQaRSOXGRhMJrUzakvj5Jg@mail.gmail.com>
+X-CM-TRANSID:gCh0CgCnz1zzSxhpfa5HAw--.5650S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxAr48Zr48XF45ury8tr17trb_yoW5AFWfpF
+	W8Gr45J3yYgryY9w4DKan2g343Ka1kXa47trnxG34rGFy2q3ZFkFyDJ3sxZa43J39rGF18
+	Zay2vr42gFnFyrDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUyKb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
+	0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
+	x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
+	0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lc7CjxVAaw2AFwI0_JF0_Jw1l42xK82IYc2Ij
+	64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x
+	8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE
+	2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42
+	xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF
+	7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxU7IJmUUUUU
+X-CM-SenderInfo: hfkh02xlgr0w46kxt4xhlfz01xgou0bp/
 
-On Fri, Nov 14, 2025 at 11:52:25PM +0800, Kairui Song wrote:
-> On Fri, Nov 14, 2025 at 9:05 AM Baoquan He <bhe@redhat.com> wrote:
-> > On 11/13/25 at 08:45pm, YoungJun Park wrote:
-> > > On Thu, Nov 13, 2025 at 02:07:59PM +0800, Kairui Song wrote:
-> > > > On Sun, Nov 9, 2025 at 8:54 PM Youngjun Park <youngjun.park@lge.com> wrote:
-> > > > >
-> > > > > This reverts commit 1b7e90020eb7 ("mm, swap: use percpu cluster as
-> > > > > allocation fast path").
-> > > > >
-> > > > > Because in the newly introduced swap tiers, the global percpu cluster
-> > > > > will cause two issues:
-> > > > > 1) it will cause caching oscillation in the same order of different si
-> > > > >    if two different memcg can only be allowed to access different si and
-> > > > >    both of them are swapping out.
-> > > > > 2) It can cause priority inversion on swap devices. Imagine a case where
-> > > > >    there are two memcg, say memcg1 and memcg2. Memcg1 can access si A, B
-> > > > >    and A is higher priority device. While memcg2 can only access si B.
-> > > > >    Then memcg 2 could write the global percpu cluster with si B, then
-> > > > >    memcg1 take si B in fast path even though si A is not exhausted.
-> > > > >
-> > > > > Hence in order to support swap tier, revert commit 1b7e90020eb7 to use
-> > > > > each swap device's percpu cluster.
-> > > > >
-> > > > > Co-developed-by: Baoquan He <bhe@redhat.com>
-> > > > > Suggested-by: Kairui Song <kasong@tencent.com>
-> > > > > Signed-off-by: Baoquan He <bhe@redhat.com>
-> > > > > Signed-off-by: Youngjun Park <youngjun.park@lge.com>
-> > > >
-> > > > Hi Youngjun, Baoquan, Thanks for the work on the percpu cluster thing.
-> > >
-> > > Hello Kairui,
-> 
-> ...
-> 
-> > >
-> > > Yeah... The rotation rule has indeed changed. I remember the
-> > > discussion about rotation behavior:
-> > > https://lore.kernel.org/linux-mm/aPc3lmbJEVTXoV6h@yjaykim-PowerEdge-T330/
-> > >
-> > > After that discussion, I've been thinking about the rotation.
-> > > Currently, the requeue happens after every priority list traversal, and this logic
-> > > is easily affected by changes.
-> > > The rotation logic change behavior change is not not mentioned somtimes.
-> > > (as you mentioned in commit 1b7e90020eb7).
-> > >
-> > > I'd like to share some ideas and hear your thoughts:
-> > >
-> > > 1. Getting rid of the same priority requeue rule
-> > >    - same priority devices get priority - 1 or + 1 after requeue
-> > >      (more add or remove as needed to handle any overlapping priority appropriately)
-> > >
-> > > 2. Requeue only when a new cluster is allocated
-> > >    - Instead of requeueing after every priority list traversal, we
-> > >      requeue only when a cluster is fully used
-> > >    - This might have some performance impact, but the rotation behavior
-> > >      would be similar to the existing one (though slightly different due
-> > >      to synchronization and logic processing changes)
-> >
-> > 2) sounds better to me, and the logic and code change is simpler.
-> >
-> > Removing requeue may change behaviour. Swap devices of the same priority
-> > should be round robin to take.
-> 
-> I agree. We definitely need balancing between devices of the same
-> priority, cluster based rotation seems good enough.
+From: Chen Ridong <chenridong@huawei.com>
 
-Hello Kairui, Baoquan.
-Thanks for your feedback. 
+A test scenario revealed inconsistent results based on operation order:
+Scenario 1:
+	#cd /sys/fs/cgroup/
+	#mkdir A1
+	#mkdir B1
+	#echo 1-2 > B1/cpuset.cpus
+	#echo 0-1 > A1/cpuset.cpus
+	#echo root > A1/cpuset.cpus.partition
+	#cat A1/cpuset.cpus.partition
+	root invalid (Cpu list in cpuset.cpus not exclusive)
 
-Okay I try to keep current rotation logic workable on next patch iteration.
+Scenario 2:
+	#cd /sys/fs/cgroup/
+	#mkdir A1
+	#mkdir B1
+	#echo 1-2 > B1/cpuset.cpus
+	#echo root > A1/cpuset.cpus.partition
+	#echo 0-1 > A1/cpuset.cpus
+	#cat A1/cpuset.cpus.partition
+	root
 
-Based on Kairui suggested previously,
-We can keep the per-cpu si cache alive.
-(However, since it could pick si from unselected tiers, it should
-exist per tier - per cpu)
+The second scenario produces an unexpected result: A1 should be marked
+as invalid but is incorrectly recognized as valid. This occurs because
+when validate_change is invoked, A1 (in root-invalid state) may
+automatically transition to a valid partition, with non-exclusive state
+checks against siblings, leading to incorrect validation.
 
-Or, following the current code structure, we could also consider,
-Requeue while holding swap_avail_lock when the cluster is consumed.
+To fix this inconsistency, treat trialcs in root-invalid state as exclusive
+during validation and set the corresponding exclusive flags, ensuring
+consistent behavior regardless of operation order.
+
+Signed-off-by: Chen Ridong <chenridong@huawei.com>
+---
+ kernel/cgroup/cpuset.c | 19 ++++++++++++++-----
+ 1 file changed, 14 insertions(+), 5 deletions(-)
+
+diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
+index daf813386260..a189f356b5f1 100644
+--- a/kernel/cgroup/cpuset.c
++++ b/kernel/cgroup/cpuset.c
+@@ -2526,6 +2526,18 @@ static void partition_cpus_change(struct cpuset *cs, struct cpuset *trialcs,
+ 	}
+ }
  
-> And I'm thinking if we can have a better rotation mechanism? Maybe
-> plist isn't the best way to do rotation if we want to minimize the
-> cost of rotation.
++static int init_trialcs(struct cpuset *cs, struct cpuset *trialcs)
++{
++	trialcs->prs_err = PERR_NONE;
++	/*
++	 * If partition_root_state != 0, it may automatically change to a partition,
++	 * Therefore, we should treat trialcs as exclusive during validation
++	 */
++	if (trialcs->partition_root_state)
++		set_bit(CS_CPU_EXCLUSIVE, &trialcs->flags);
++	return compute_trialcs_excpus(trialcs, cs);
++}
++
+ /**
+  * update_cpumask - update the cpus_allowed mask of a cpuset and all tasks in it
+  * @cs: the cpuset to consider
+@@ -2551,9 +2563,7 @@ static int update_cpumask(struct cpuset *cs, struct cpuset *trialcs,
+ 	if (alloc_tmpmasks(&tmp))
+ 		return -ENOMEM;
+ 
+-	compute_trialcs_excpus(trialcs, cs);
+-	trialcs->prs_err = PERR_NONE;
+-
++	init_trialcs(cs, trialcs);
+ 	retval = cpus_allowed_validate_change(cs, trialcs, &tmp);
+ 	if (retval < 0)
+ 		goto out_free;
+@@ -2612,7 +2622,7 @@ static int update_exclusive_cpumask(struct cpuset *cs, struct cpuset *trialcs,
+ 	 * Reject the change if there is exclusive CPUs conflict with
+ 	 * the siblings.
+ 	 */
+-	if (compute_trialcs_excpus(trialcs, cs))
++	if (init_trialcs(cs, trialcs))
+ 		return -EINVAL;
+ 
+ 	/*
+@@ -2628,7 +2638,6 @@ static int update_exclusive_cpumask(struct cpuset *cs, struct cpuset *trialcs,
+ 	if (alloc_tmpmasks(&tmp))
+ 		return -ENOMEM;
+ 
+-	trialcs->prs_err = PERR_NONE;
+ 	partition_cpus_change(cs, trialcs, &tmp);
+ 
+ 	spin_lock_irq(&callback_lock);
+-- 
+2.34.1
 
-I did some more ideation.
-(Although it is some workable way, next step idea. like I said just ideation )
-
-I've been thinking about the inefficiencies with plist_requeue during
-rotation, and the plist_for_each_entry traversal structure itself.
-There is also small problem like it can be ended up selecting a lower priority swap device
-while traversing the list, even when a higher priority swap device gets
-inserted into the plist.
-
-So anyway as I think... 
-
-- On the read side (alloc_swap_entry), manage it so only one swap
-  device can be obtained when selecting a swap device. (grabbing
-  read_lock). swap selection logic does not any behavior affecting
-  logic change like current approach. just see swapdevice only.
-
-- On the write side, handle it appropriately using plist or some
-  improved data structure. (grabbing write_lock)
-
-- For rotation, instead of placing a plist per swap device, we could
-  create something like a priority node. In this priority node
-  structure, entries would be rotated each time a cluster is fully used.
-
-- Also, with tiers introduced, since we only need to traverse the
-  selected tier for each I/O, the current single swap_avail_list may
-  not be suitable anymore. This could be changed to a per-tier
-  structure.
-
-
-Thanks,
-YoungJun 
 
