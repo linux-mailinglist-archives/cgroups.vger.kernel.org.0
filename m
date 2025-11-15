@@ -1,176 +1,226 @@
-Return-Path: <cgroups+bounces-11981-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-11982-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id 56925C5FBF1
-	for <lists+cgroups@lfdr.de>; Sat, 15 Nov 2025 01:31:00 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8F9E9C5FC2A
+	for <lists+cgroups@lfdr.de>; Sat, 15 Nov 2025 01:47:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id EB1684E2C53
-	for <lists+cgroups@lfdr.de>; Sat, 15 Nov 2025 00:30:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8CA5D3A0836
+	for <lists+cgroups@lfdr.de>; Sat, 15 Nov 2025 00:47:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E211F165F16;
-	Sat, 15 Nov 2025 00:30:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 11670155326;
+	Sat, 15 Nov 2025 00:47:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Sc2gA6Ay"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="BQPKiKh1"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-pf1-f176.google.com (mail-pf1-f176.google.com [209.85.210.176])
+Received: from mail-pj1-f74.google.com (mail-pj1-f74.google.com [209.85.216.74])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2342F35898
-	for <cgroups@vger.kernel.org>; Sat, 15 Nov 2025 00:30:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D68243AA4
+	for <cgroups@vger.kernel.org>; Sat, 15 Nov 2025 00:46:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.74
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763166653; cv=none; b=VX8srtJLyHNbqvOgIu7XUspE5l8NeTV768ZIfBA9MgCYoGpIWT8TSjhWZRAF1gK4Vvt5+wm0e82N3ID33tPnl0Sd0QjY6UyRhquCKKeKoguJe50ij0X3D4oNgeb1VVZz/eqx6ve6YPa74QQIA1dEiwSvRVuCsVxZJaRxOIzQby4=
+	t=1763167619; cv=none; b=pmo6Iyot2qhjS6BJFWF8Kder7hhlvpPXIX+q/5UQq9XapRas4XDFF7DD3fKMCsnAFD5fiWfaq9YrVss8Y8/U7xMuzKrtyWpqOiJIsXrMlZTRv7ls9zdik76kuI3b6pU+A89EU0Xrm4/pnz5EeL5obdChcWT2xvSqL/24osoIxIw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763166653; c=relaxed/simple;
-	bh=CyMEE0IhMEpR9YVsIa3u+pNlkztUYvjK7VmUdpcgFgs=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=dkJJAvhMhN38mylEas78ZSQw0nH6mP7Ji0OWgaULJWi10QBAjyOQ1aSRw00kCtbtiehm0eKhUHViqgee0EmiT/d/IuQaVgCXPXt4vYlIEH3E7vNWkMfF90TEnUXa5P2aHQw4Mh15Lbk1GqjvRmdrhdkjQriCeyRCfI1y0mjzvyA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Sc2gA6Ay; arc=none smtp.client-ip=209.85.210.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f176.google.com with SMTP id d2e1a72fcca58-7ba49f92362so1481354b3a.1
-        for <cgroups@vger.kernel.org>; Fri, 14 Nov 2025 16:30:51 -0800 (PST)
+	s=arc-20240116; t=1763167619; c=relaxed/simple;
+	bh=1/rD70ZHFrBNjJjci45pfQlAUENF4SO4u3lc/h6C+Zc=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=W7olQUEeowKLbqvuDr1jaOFhORAL5+s3WdgpaFPZVmIYxlO2dzti76yLwcFSWh7M+azdeRSWc3I26v6ZoQGi3/+DCkkwFyAg9SJGllOCbvMXbzeadOYRq3f5qi5TV//YxTNcVhguLebKd3C3lqkFLabMIfXPHUPFpAANST0X2H4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--ackerleytng.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=BQPKiKh1; arc=none smtp.client-ip=209.85.216.74
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--ackerleytng.bounces.google.com
+Received: by mail-pj1-f74.google.com with SMTP id 98e67ed59e1d1-341aec498fdso4016709a91.2
+        for <cgroups@vger.kernel.org>; Fri, 14 Nov 2025 16:46:58 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1763166651; x=1763771451; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:sender:from:to:cc:subject:date:message-id:reply-to;
-        bh=UH8vhsrcxkR8/9lYYF2BxevjVQSKucRmVZ2xBoOxvos=;
-        b=Sc2gA6Aynmw27WVCwjKxAuZspB2BXwhUNBXacYT7sB5nvnAgIpICM9S59SgvDZz+r1
-         o5EpoyWAv2ia53IhHz5N3Y+OXsiAAcgiwGhEScNhGFheYSpjde12nU+d7BHVtGRmHN3s
-         8Vdc51d3eFLG7iHuYZZFFJEcNaXDmfZLuUILFC9ROT+c8abRwsJpp2C5aW2Fpkaazz7t
-         rsBU/ZOaUujLcrRQze6zMohdNKUy6Fq0Tf2M13lXyTswFGNLK5Etth4rKJCNinWLMW7J
-         3X3wiVbhc2M9Nfn6OpKmYD13oJL7/2h1PQpHSINUgmx5V4lLjVnuKtCT9ohRH/p18+9k
-         XC9Q==
+        d=google.com; s=20230601; t=1763167617; x=1763772417; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=Mr/52DwIA8Vew8AuO0L8R6bm0vR8dQ+5A9WA+WG6t/s=;
+        b=BQPKiKh1yfHcIrDSW59IH51D2rhvPkgu8emslDNrXmC7gsCFmyIVKyaXPuUky4qISc
+         +19Up0qR7WWgxb5rLlc/vAvyxEK+7xSgmw20NRkuvhsi2uNabtm3xwQFagWK4bxGDqS/
+         7gYj1dgRY4Qz6cyLqfB+LbbJ8hPrpBmmNQPY/qOHjAjqEqdl2m5Gvwe2rcSO1iFrvHaC
+         9swHyDubrt6x4xbkszwVPYZjC8xoJlQCUauEvdXnHkEai5Ya/mUGIPDi/aaxO3ZaLOIy
+         FiDZnjit3RNrnR++7shFiwMTsNlkRDSDa1Av00GMtGH845Ycpd83v1N/4tK/TCeKiRf/
+         xCOw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1763166651; x=1763771451;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:sender:x-gm-gg:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=UH8vhsrcxkR8/9lYYF2BxevjVQSKucRmVZ2xBoOxvos=;
-        b=ovOKEW19ysxRRrkneGJNjHCrPuaRYYhxoLdY8iXqAOAYzxpnvedpmrQMV0ZiVJjBuO
-         fLv8Eb6uCs/EbgwyjNQ+z3sYFWqllPJEAnK1TA+VTaSS0nMCKCyTNpUBC/LdGGPOKiYj
-         5Fa+4bTU8apvqAt2TA4bcwMgVMCY58CrJ/msH3alAnsYn/ek6zUHJ6X5QJmIdW6BRSVH
-         HTlaA21/IQE40KJ7fHd5u4fAR9yiudcHMSz4RQiZoJhpHUTY2nhRZ0tJ9JUdI1/nNlBS
-         bgyaV7APmiTCB04nLJ1rBm7gX2bjye5Ecav3fbb0BtS0rCwDxWhgNjpo1lxLJ5myNyD6
-         nCcQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXPO2r7/TZAsZkz0gi39y3rS8AMD0JHQr0jy0coMfCbg9lJcUbs5rbYUAI7ck/qC7xICZPXxSnr@vger.kernel.org
-X-Gm-Message-State: AOJu0Yy5wK2VVxLua7zHeQlJIVzD53rjqsTcKshZid5I/WCwROFjTmXi
-	4G7N/j9HY0RToQOfASpO61OxsOTSHXp+x+/DdUnhhZKnZuSs/SHBUH6b
-X-Gm-Gg: ASbGncuSdUccpL+Q7SbKjdNr+7Ckj1KwwuTwXbaRazUjqy69r4KdRKflDVV/OFkoxQA
-	Vp9wo3oVleoFr3VdJncfvsK3zhq3x9gl2bL93iaOfzknWcsY7QqWSP+ZfQ+kXzHNGVzynL1B7kT
-	TRmKWfKTo4rQZVjj9AD8eYguAvl33Ha2e57BRl7MkOE80ScGRqMGp17yvcdayUbGcmsxMOBvAKL
-	KAhTvxUkjNIJ9DD68BH9wCkpDNac1fnV6wBsMPXrZvfARr5KjLKGbnVEefWYVrrego77OJmwjJj
-	h6b5bLEwDMiz6UkgP6Y5QEAfGdSsvvfnMEr0usx6KCMLUIuyLTyGZyApnq9+bQ6+cYmCxZAJDjT
-	UvTm+UL4JAJSOYRdiUbRExJc4iLFaodHogJ9ZkkfXfGF3gSZLPaKzXgbT4KxXXTiyC2JXOXKgCH
-	KH7HLAXalKW2j18OEF2g53IdbNty6peHUTsD8OhvltDRzFPsGI
-X-Google-Smtp-Source: AGHT+IFZxpPHepoqcAonLXGZsRugPd4gH5rofBqG3xvaEzmCYdG8AmIGMTOgZ+fIwFwh5r602aQDvQ==
-X-Received: by 2002:a05:6a20:7f8e:b0:354:ce8b:4b9a with SMTP id adf61e73a8af0-35a4eb01f1bmr11973447637.6.1763166651263;
-        Fri, 14 Nov 2025 16:30:51 -0800 (PST)
-Received: from ?IPV6:2600:1700:e321:62f0:da43:aeff:fecc:bfd5? ([2600:1700:e321:62f0:da43:aeff:fecc:bfd5])
-        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-bc37703a0d9sm5647721a12.31.2025.11.14.16.30.49
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 14 Nov 2025 16:30:50 -0800 (PST)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Message-ID: <aea2df71-a255-4980-a75d-4918a7b2eac6@roeck-us.net>
-Date: Fri, 14 Nov 2025 16:30:49 -0800
+        d=1e100.net; s=20230601; t=1763167617; x=1763772417;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Mr/52DwIA8Vew8AuO0L8R6bm0vR8dQ+5A9WA+WG6t/s=;
+        b=UTcl47yHfzYSr4iPnONpJ1EGn+e3zfiGH5MZH4OImIS7He6Lm8muEhn9/Uv/3tfep0
+         W5jyV2upbOdXBxNz524LRadrNZUPGuneuDgBS5fk3XHYv8eM8Z0RTHOPXMdkrvUDn/38
+         xpDA/hJgBoezewddjP/VM7DIHEAe158oxGTQh9ESL/mpvvl1OkNia2uYRO1IYRTxyeI9
+         Hi95cmBl4SjFGkw5SpqQIDCSAQX08i7dx9xWPQELucOoFh8kL0MVGCw0BRoMC0nwvfHl
+         +JKdYaAiTgohYQneFzbbfTNYh1XD5rD5frymfQXHQxr8RGbrM145jHfMENZkuwVwqqjc
+         Jg2w==
+X-Gm-Message-State: AOJu0YxxdCU0r7qN7oeLFg8KmI+rhGnwKAA90TryVkldmFS1rh8wveBK
+	ZGnhY9bE/gaA22TWTgaCMLgfDJ03RBjpb9ny+Tf/dfQuJbsy+8ONLUF5MpB+DBxW35SU5cf7vp9
+	s4bHmA0Yrd6OVt+f7ywP6JGk6qg==
+X-Google-Smtp-Source: AGHT+IHPDsoGUhVWbmh0UerKKIaGr6kr4KuHT3qBmIvhj2MnXtnNCORQphwRQGqEcjJQnhvfFDaRm0g88w6S7pk3mw==
+X-Received: from pjbdb8.prod.google.com ([2002:a17:90a:d648:b0:343:5c2:dd74])
+ (user=ackerleytng job=prod-delivery.src-stubby-dispatcher) by
+ 2002:a17:90b:1dc9:b0:340:29a1:1b0c with SMTP id 98e67ed59e1d1-343f9e93781mr5917746a91.7.1763167617416;
+ Fri, 14 Nov 2025 16:46:57 -0800 (PST)
+Date: Fri, 14 Nov 2025 16:46:56 -0800
+In-Reply-To: <aQnGJ5agTohMijj8@yzhao56-desk.sh.intel.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/2] block/blk-throttle: Fix throttle slice time for SSDs
-To: Jens Axboe <axboe@kernel.dk>, Khazhy Kumykov <khazhy@chromium.org>,
- Tejun Heo <tj@kernel.org>
-Cc: yukuai@kernel.org, Josef Bacik <josef@toxicpanda.com>,
- Yu Kuai <yukuai3@huawei.com>, cgroups@vger.kernel.org,
- linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20250730164832.1468375-1-linux@roeck-us.net>
- <20250730164832.1468375-2-linux@roeck-us.net>
- <1a1fe348-9ae5-4f3e-be9e-19fa88af513c@kernel.org>
- <2919c400-9626-4cf7-a889-63ab50e989af@roeck-us.net>
- <CACGdZYKFxdF5sv3RY19_ZafgwVSy35E0JmUvL-B95CskHUC2Yw@mail.gmail.com>
- <b9efd5cb-d3cc-48df-8dda-2b3d85e2190b@kernel.dk>
-Content-Language: en-US
-From: Guenter Roeck <linux@roeck-us.net>
-Autocrypt: addr=linux@roeck-us.net; keydata=
- xsFNBE6H1WcBEACu6jIcw5kZ5dGeJ7E7B2uweQR/4FGxH10/H1O1+ApmcQ9i87XdZQiB9cpN
- RYHA7RCEK2dh6dDccykQk3bC90xXMPg+O3R+C/SkwcnUak1UZaeK/SwQbq/t0tkMzYDRxfJ7
- nyFiKxUehbNF3r9qlJgPqONwX5vJy4/GvDHdddSCxV41P/ejsZ8PykxyJs98UWhF54tGRWFl
- 7i1xvaDB9lN5WTLRKSO7wICuLiSz5WZHXMkyF4d+/O5ll7yz/o/JxK5vO/sduYDIlFTvBZDh
- gzaEtNf5tQjsjG4io8E0Yq0ViobLkS2RTNZT8ICq/Jmvl0SpbHRvYwa2DhNsK0YjHFQBB0FX
- IdhdUEzNefcNcYvqigJpdICoP2e4yJSyflHFO4dr0OrdnGLe1Zi/8Xo/2+M1dSSEt196rXaC
- kwu2KgIgmkRBb3cp2vIBBIIowU8W3qC1+w+RdMUrZxKGWJ3juwcgveJlzMpMZNyM1jobSXZ0
- VHGMNJ3MwXlrEFPXaYJgibcg6brM6wGfX/LBvc/haWw4yO24lT5eitm4UBdIy9pKkKmHHh7s
- jfZJkB5fWKVdoCv/omy6UyH6ykLOPFugl+hVL2Prf8xrXuZe1CMS7ID9Lc8FaL1ROIN/W8Vk
- BIsJMaWOhks//7d92Uf3EArDlDShwR2+D+AMon8NULuLBHiEUQARAQABzTJHdWVudGVyIFJv
- ZWNrIChMaW51eCBhY2NvdW50KSA8bGludXhAcm9lY2stdXMubmV0PsLBgQQTAQIAKwIbAwYL
- CQgHAwIGFQgCCQoLBBYCAwECHgECF4ACGQEFAmgrMyQFCSbODQkACgkQyx8mb86fmYGcWRAA
- oRwrk7V8fULqnGGpBIjp7pvR187Yzx+lhMGUHuM5H56TFEqeVwCMLWB2x1YRolYbY4MEFlQg
- VUFcfeW0OknSr1s6wtrtQm0gdkolM8OcCL9ptTHOg1mmXa4YpW8QJiL0AVtbpE9BroeWGl9v
- 2TGILPm9mVp+GmMQgkNeCS7Jonq5f5pDUGumAMguWzMFEg+Imt9wr2YA7aGen7KPSqJeQPpj
- onPKhu7O/KJKkuC50ylxizHzmGx+IUSmOZxN950pZUFvVZH9CwhAAl+NYUtcF5ry/uSYG2U7
- DCvpzqOryJRemKN63qt1bjF6cltsXwxjKOw6CvdjJYA3n6xCWLuJ6yk6CAy1Ukh545NhgBAs
- rGGVkl6TUBi0ixL3EF3RWLa9IMDcHN32r7OBhw6vbul8HqyTFZWY2ksTvlTl+qG3zV6AJuzT
- WdXmbcKN+TdhO5XlxVlbZoCm7ViBj1+PvIFQZCnLAhqSd/DJlhaq8fFXx1dCUPgQDcD+wo65
- qulV/NijfU8bzFfEPgYP/3LP+BSAyFs33y/mdP8kbMxSCjnLEhimQMrSSo/To1Gxp5C97fw5
- 3m1CaMILGKCmfI1B8iA8zd8ib7t1Rg0qCwcAnvsM36SkrID32GfFbv873bNskJCHAISK3Xkz
- qo7IYZmjk/IJGbsiGzxUhvicwkgKE9r7a1rOwU0ETofVZwEQALlLbQeBDTDbwQYrj0gbx3bq
- 7kpKABxN2MqeuqGr02DpS9883d/t7ontxasXoEz2GTioevvRmllJlPQERVxM8gQoNg22twF7
- pB/zsrIjxkE9heE4wYfN1AyzT+AxgYN6f8hVQ7Nrc9XgZZe+8IkuW/Nf64KzNJXnSH4u6nJM
- J2+Dt274YoFcXR1nG76Q259mKwzbCukKbd6piL+VsT/qBrLhZe9Ivbjq5WMdkQKnP7gYKCAi
- pNVJC4enWfivZsYupMd9qn7Uv/oCZDYoBTdMSBUblaLMwlcjnPpOYK5rfHvC4opxl+P/Vzyz
- 6WC2TLkPtKvYvXmdsI6rnEI4Uucg0Au/Ulg7aqqKhzGPIbVaL+U0Wk82nz6hz+WP2ggTrY1w
- ZlPlRt8WM9w6WfLf2j+PuGklj37m+KvaOEfLsF1v464dSpy1tQVHhhp8LFTxh/6RWkRIR2uF
- I4v3Xu/k5D0LhaZHpQ4C+xKsQxpTGuYh2tnRaRL14YMW1dlI3HfeB2gj7Yc8XdHh9vkpPyuT
- nY/ZsFbnvBtiw7GchKKri2gDhRb2QNNDyBnQn5mRFw7CyuFclAksOdV/sdpQnYlYcRQWOUGY
- HhQ5eqTRZjm9z+qQe/T0HQpmiPTqQcIaG/edgKVTUjITfA7AJMKLQHgp04Vylb+G6jocnQQX
- JqvvP09whbqrABEBAAHCwWUEGAECAA8CGwwFAmgrMyQFCSbODQkACgkQyx8mb86fmYHlgg/9
- H5JeDmB4jsreE9Bn621wZk7NMzxy9STxiVKSh8Mq4pb+IDu1RU2iLyetCY1TiJlcxnE362kj
- njrfAdqyPteHM+LU59NtEbGwrfcXdQoh4XdMuPA5ADetPLma3YiRa3VsVkLwpnR7ilgwQw6u
- dycEaOxQ7LUXCs0JaGVVP25Z2hMkHBwx6BlW6EZLNgzGI2rswSZ7SKcsBd1IRHVf0miwIFYy
- j/UEfAFNW+tbtKPNn3xZTLs3quQN7GdYLh+J0XxITpBZaFOpwEKV+VS36pSLnNl0T5wm0E/y
- scPJ0OVY7ly5Vm1nnoH4licaU5Y1nSkFR/j2douI5P7Cj687WuNMC6CcFd6j72kRfxklOqXw
- zvy+2NEcXyziiLXp84130yxAKXfluax9sZhhrhKT6VrD45S6N3HxJpXQ/RY/EX35neH2/F7B
- RgSloce2+zWfpELyS1qRkCUTt1tlGV2p+y2BPfXzrHn2vxvbhEn1QpQ6t+85FKN8YEhJEygJ
- F0WaMvQMNrk9UAUziVcUkLU52NS9SXqpVg8vgrO0JKx97IXFPcNh0DWsSj/0Y8HO/RDkGXYn
- FDMj7fZSPKyPQPmEHg+W/KzxSSfdgWIHF2QaQ0b2q1wOSec4Rti52ohmNSY+KNIW/zODhugJ
- np3900V20aS7eD9K8GTU0TGC1pyz6IVJwIE=
-In-Reply-To: <b9efd5cb-d3cc-48df-8dda-2b3d85e2190b@kernel.dk>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Mime-Version: 1.0
+References: <cover.1760731772.git.ackerleytng@google.com> <5a4dfc265a46959953e6c24730d22584972b1179.1760731772.git.ackerleytng@google.com>
+ <aQnGJ5agTohMijj8@yzhao56-desk.sh.intel.com>
+Message-ID: <diqz346gcebj.fsf@google.com>
+Subject: Re: [RFC PATCH v1 11/37] KVM: guest_memfd: Add support for KVM_SET_MEMORY_ATTRIBUTES
+From: Ackerley Tng <ackerleytng@google.com>
+To: Yan Zhao <yan.y.zhao@intel.com>
+Cc: cgroups@vger.kernel.org, kvm@vger.kernel.org, linux-doc@vger.kernel.org, 
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-kselftest@vger.kernel.org, linux-mm@kvack.org, 
+	linux-trace-kernel@vger.kernel.org, x86@kernel.org, akpm@linux-foundation.org, 
+	binbin.wu@linux.intel.com, bp@alien8.de, brauner@kernel.org, 
+	chao.p.peng@intel.com, chenhuacai@kernel.org, corbet@lwn.net, 
+	dave.hansen@intel.com, dave.hansen@linux.intel.com, david@redhat.com, 
+	dmatlack@google.com, erdemaktas@google.com, fan.du@intel.com, fvdl@google.com, 
+	haibo1.xu@intel.com, hannes@cmpxchg.org, hch@infradead.org, hpa@zytor.com, 
+	hughd@google.com, ira.weiny@intel.com, isaku.yamahata@intel.com, jack@suse.cz, 
+	james.morse@arm.com, jarkko@kernel.org, jgg@ziepe.ca, jgowans@amazon.com, 
+	jhubbard@nvidia.com, jroedel@suse.de, jthoughton@google.com, 
+	jun.miao@intel.com, kai.huang@intel.com, keirf@google.com, 
+	kent.overstreet@linux.dev, liam.merwick@oracle.com, 
+	maciej.wieczor-retman@intel.com, mail@maciej.szmigiero.name, 
+	maobibo@loongson.cn, mathieu.desnoyers@efficios.com, maz@kernel.org, 
+	mhiramat@kernel.org, mhocko@kernel.org, mic@digikod.net, michael.roth@amd.com, 
+	mingo@redhat.com, mlevitsk@redhat.com, mpe@ellerman.id.au, 
+	muchun.song@linux.dev, nikunj@amd.com, nsaenz@amazon.es, 
+	oliver.upton@linux.dev, palmer@dabbelt.com, pankaj.gupta@amd.com, 
+	paul.walmsley@sifive.com, pbonzini@redhat.com, peterx@redhat.com, 
+	pgonda@google.com, prsampat@amd.com, pvorel@suse.cz, qperret@google.com, 
+	richard.weiyang@gmail.com, rick.p.edgecombe@intel.com, rientjes@google.com, 
+	rostedt@goodmis.org, roypat@amazon.co.uk, rppt@kernel.org, seanjc@google.com, 
+	shakeel.butt@linux.dev, shuah@kernel.org, steven.price@arm.com, 
+	steven.sistare@oracle.com, suzuki.poulose@arm.com, tabba@google.com, 
+	tglx@linutronix.de, thomas.lendacky@amd.com, vannapurve@google.com, 
+	vbabka@suse.cz, viro@zeniv.linux.org.uk, vkuznets@redhat.com, 
+	wei.w.wang@intel.com, will@kernel.org, willy@infradead.org, wyihan@google.com, 
+	xiaoyao.li@intel.com, yilun.xu@intel.com, yuzenghui@huawei.com, 
+	zhiquan1.li@intel.com
+Content-Type: text/plain; charset="UTF-8"
 
-On 11/14/25 12:51, Jens Axboe wrote:
-> On 11/14/25 1:26 PM, Khazhy Kumykov wrote:
->> On Wed, Jul 30, 2025 at 4:19 PM Guenter Roeck <linux@roeck-us.net> wrote:
->>>
->>> On 7/30/25 11:30, Yu Kuai wrote:
->>> I had combined it because it is another left-over from bf20ab538c81 and
->>> I don't know if enabling statistics has other side effects. But, sure,
->>> I can split it out if that is preferred. Let's wait for feedback from
->>> Jens and/or Tejun; I'll follow their guidance.
->>>
->>> Thanks,
->>> Guenter
->>>
->> noticed this one in our carry queue... any further guidance here? If
->> my opinion counts, since this is a fixup for a "remove feature X"
->> commit... I would have done it in one commit as well :)
-> 
-> I agree with Yu that a split of patch 1 would be appropriate.
-> 
+Yan Zhao <yan.y.zhao@intel.com> writes:
 
-I completely forgot about this, sorry.
+> On Fri, Oct 17, 2025 at 01:11:52PM -0700, Ackerley Tng wrote:
+>> For shared to private conversions, if refcounts on any of the folios
+>> within the range are elevated, fail the conversion with -EAGAIN.
+>> 
+>> At the point of shared to private conversion, all folios in range are
+>> also unmapped. The filemap_invalidate_lock() is held, so no faulting
+>> can occur. Hence, from that point on, only transient refcounts can be
+>> taken on the folios associated with that guest_memfd.
+>> 
+>> Hence, it is safe to do the conversion from shared to private.
+>> 
+>> After conversion is complete, refcounts may become elevated, but that
+>> is fine since users of transient refcounts don't actually access
+>> memory.
+>> 
+>> For private to shared conversions, there are no refcount checks. any
+>> transient refcounts are expected to drop their refcounts soon. The
+>> conversion process will spin waiting for these transient refcounts to
+>> go away.
+> Where's the code to spin?
+>
 
-I was about to send a new version, but Khazy was faster.
+Thanks, I will fix the commit message for the next revision.
+
+>> +/*
+>> + * Preallocate memory for attributes to be stored on a maple tree, pointed to
+>> + * by mas.  Adjacent ranges with attributes identical to the new attributes
+>> + * will be merged.  Also sets mas's bounds up for storing attributes.
+>> + *
+>> + * This maintains the invariant that ranges with the same attributes will
+>> + * always be merged.
+>> + */
+>> +static int kvm_gmem_mas_preallocate(struct ma_state *mas, u64 attributes,
+>> +				    pgoff_t start, size_t nr_pages)
+>> +{
+>> +	pgoff_t end = start + nr_pages;
+>> +	pgoff_t last = end - 1;
+>> +	void *entry;
+>> +
+>> +	/* Try extending range. entry is NULL on overflow/wrap-around. */
+>> +	mas_set_range(mas, end, end);
+>> +	entry = mas_find(mas, end);
+>> +	if (entry && xa_to_value(entry) == attributes)
+>> +		last = mas->last;
+>> +
+>> +	mas_set_range(mas, start - 1, start - 1);
+> Check start == 0 ?
+>
 
 Thanks!
-Guenter
 
+>> +	entry = mas_find(mas, start - 1);
+>> +	if (entry && xa_to_value(entry) == attributes)
+>> +		start = mas->index;
+>> +
+>> +	mas_set_range(mas, start, last);
+>> +	return mas_preallocate(mas, xa_mk_value(attributes), GFP_KERNEL);
+>> +}
+> ...
+>
+>> +static long kvm_gmem_set_attributes(struct file *file, void __user *argp)
+>> +{
+>> +	struct gmem_file *f = file->private_data;
+>> +	struct inode *inode = file_inode(file);
+>> +	struct kvm_memory_attributes2 attrs;
+>> +	pgoff_t err_index;
+>> +	size_t nr_pages;
+>> +	pgoff_t index;
+>> +	int r;
+>> +
+>> +	if (copy_from_user(&attrs, argp, sizeof(attrs)))
+>> +		return -EFAULT;
+>> +
+>> +	if (attrs.flags)
+>> +		return -EINVAL;
+>> +	if (attrs.attributes & ~kvm_supported_mem_attributes(f->kvm))
+>> +		return -EINVAL;
+>> +	if (attrs.size == 0 || attrs.offset + attrs.size < attrs.offset)
+>> +		return -EINVAL;
+>> +	if (!PAGE_ALIGNED(attrs.offset) || !PAGE_ALIGNED(attrs.offset))
+> Should be
+> if (!PAGE_ALIGNED(attrs.offset) || !PAGE_ALIGNED(attrs.size))
+> ?
+>
+
+Thanks!
+
+>> +		return -EINVAL;
+>> +
+>> +	if (attrs.offset > inode->i_size ||
+> Should be
+> if (attrs.offset >= inode->i_size ||
+> ?
+
+Thanks!
+>> +	    attrs.offset + attrs.size > inode->i_size)
+>> +		return -EINVAL;
+>> +
+>> +	nr_pages = attrs.size >> PAGE_SHIFT;
+>> +	index = attrs.offset >> PAGE_SHIFT;
+>> +	r = __kvm_gmem_set_attributes(inode, index, nr_pages, attrs.attributes,
+>> +				      &err_index);
+>> +	if (r) {
+>> +		attrs.error_offset = err_index << PAGE_SHIFT;
+>> +
+>> +		if (copy_to_user(argp, &attrs, sizeof(attrs)))
+>> +			return -EFAULT;
+>> +	}
+>> +
+>> +	return r;
+>> +}
 
