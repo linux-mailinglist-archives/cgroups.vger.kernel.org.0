@@ -1,151 +1,116 @@
-Return-Path: <cgroups+bounces-11995-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-11996-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
-	by mail.lfdr.de (Postfix) with ESMTPS id 427AAC607C1
-	for <lists+cgroups@lfdr.de>; Sat, 15 Nov 2025 16:14:06 +0100 (CET)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id E3E76C60807
+	for <lists+cgroups@lfdr.de>; Sat, 15 Nov 2025 16:52:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id C9E5735BB40
-	for <lists+cgroups@lfdr.de>; Sat, 15 Nov 2025 15:14:05 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 45EB6347639
+	for <lists+cgroups@lfdr.de>; Sat, 15 Nov 2025 15:51:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 495C629B789;
-	Sat, 15 Nov 2025 15:14:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ABC9E29BD91;
+	Sat, 15 Nov 2025 15:51:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZIRNEOYD"
+	dkim=pass (2048-bit key) header.d=fnnas-com.20200927.dkim.feishu.cn header.i=@fnnas-com.20200927.dkim.feishu.cn header.b="s5P3v6VJ"
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from sg-1-23.ptr.blmpb.com (sg-1-23.ptr.blmpb.com [118.26.132.23])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0701E155326
-	for <cgroups@vger.kernel.org>; Sat, 15 Nov 2025 15:14:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ED7DE224AF0
+	for <cgroups@vger.kernel.org>; Sat, 15 Nov 2025 15:51:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=118.26.132.23
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763219641; cv=none; b=tJ7eRjk8taOf4UQ+SU+1FVUy3PQGwcwCJ610GLlWH2b9+bEv3mOUbq0idAeoOvk/8eI6L4TnciTl4LNoECEkl2ivBzwQ8S8H/0NnjTsJuOKobaxWpk/8FXQHmpEX70uhDtt/hlKPoOtGHPWSIkULnETzS7nhpLezXuuW9ybc4JM=
+	t=1763221907; cv=none; b=iF6M6Uh3ZAnt0Qc8dvV5ogp7gO1EsfOF8PrvFgBLGDT1SgYPWYfd8ixWjfciYlf9NTd4i4kiaxXJkHGJh61yA+v8uv3I364b7L9uRSqBn6dW3oRQ7Okiloq8s4aLtfIUJIdeImxdcjoX7UGalIUtnGJ//GceUvtc+srVFBMa81E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763219641; c=relaxed/simple;
-	bh=/Po9rhXBcisyw1Z/KeQrWHbPXqjNgSyu9tnQaTBxNec=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=HauntL7M2t2KwOBIFOrWLOM2ZwcE6AiIq+F+Mrdb5rXdAywGAga4BS5tvQMcs9K1aNQ+qpIia4px2KfeGs4mzFOHg4S+DbgUNcCgf459qTAL+as3r6a3M2Dwr/ve7CjJBu/6N3PvIlYEPV7+D4PY3Kogc7++7iIhSUI/ahYONFs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ZIRNEOYD; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 94A90C4AF09
-	for <cgroups@vger.kernel.org>; Sat, 15 Nov 2025 15:14:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1763219640;
-	bh=/Po9rhXBcisyw1Z/KeQrWHbPXqjNgSyu9tnQaTBxNec=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=ZIRNEOYDlISacP3LRzj/bJSfFlw+UdHvbtM4kqx8z4Q0dl60KUY44cmihU4is8mYl
-	 3XDj0vOX1F78A9NfmioA38+NAm+Ovvb/IXBWJA70kpq290PMPpKBvOnstbXf5I6GDy
-	 sRFy34MsLjQWxi1y7ZA5ZqYYqqW9A5UkXkt8/2rNpHUnxtcMsQHNm3QJzk4V4PPi78
-	 zMRjEhPhWGaQi+At5kKXY5uClp0WKsi1Dy4eBgErJ9j9N0BhEziXA2RP9PKdUkVlb2
-	 6BWcpOtmAZwFFBgNztjWzSMD5Uc/21ls2uzP8VxqD9SROFH2ncwiiPi9nfOjixHI/G
-	 vRiXMSu2Ii6Tg==
-Received: by mail-yw1-f179.google.com with SMTP id 00721157ae682-787e7aa1631so42105997b3.1
-        for <cgroups@vger.kernel.org>; Sat, 15 Nov 2025 07:14:00 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCVcTmtVVEGZ2WvUkuik6ccrD2HIF/b08w65M+W2thQLPb3yF5QgGOH99n6ys35YYWqVDRgo1lYo@vger.kernel.org
-X-Gm-Message-State: AOJu0YwoanXU/Nn/G8aSk3YXxMx6cPzk1V1mtcKHFnK1V+gz4ACmcntZ
-	LxcmDSllYPNzK59y9UZzOgrBPQsLhkgjUMDg/suZ6QqRqSiqJp/KO2rEazHWW/2Rhc6QqIv7Yfl
-	vPIw6eLQaN54HqLgsyV1UPKsxV8QFnhXhpPN6TdLI8w==
-X-Google-Smtp-Source: AGHT+IH1JnpV5QKEs/WPjJU+XSrEnxlODjDSrdDJ/I+MeluASZGuG3v0xBn9frSM87UKfnLcK7THvuciP15/1mEzvps=
-X-Received: by 2002:a05:690e:1289:b0:63f:b988:4a91 with SMTP id
- 956f58d0204a3-6410d1387f1mr8288888d50.24.1763219639903; Sat, 15 Nov 2025
- 07:13:59 -0800 (PST)
+	s=arc-20240116; t=1763221907; c=relaxed/simple;
+	bh=pzWPVQ8GdreVBO816k8UADkKSCD77YskIZrpvAC4HHg=;
+	h=In-Reply-To:From:To:Cc:Message-Id:Content-Type:Subject:Date:
+	 Mime-Version:References; b=VKr3CO/CSEfLrR0ehyiaDYFmhYCJZb2CZlF6tlGN1PQ5wcI5HJHppzPLOc8/G3jLgqZzv4zuWhurxdZ0Q9LV+T7j9EAdPutL1s571BQkk6X0qzIAzSdSKxkJ8B7EI9a4kYKUpVmvAf22BIznU1DSuDmSIK6yDooZNYn4nhA7ohI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=fnnas.com; spf=fail smtp.mailfrom=fnnas.com; dkim=pass (2048-bit key) header.d=fnnas-com.20200927.dkim.feishu.cn header.i=@fnnas-com.20200927.dkim.feishu.cn header.b=s5P3v6VJ; arc=none smtp.client-ip=118.26.132.23
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=fnnas.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=fnnas.com
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+ s=s1; d=fnnas-com.20200927.dkim.feishu.cn; t=1763221892;
+  h=from:subject:mime-version:from:date:message-id:subject:to:cc:
+ reply-to:content-type:mime-version:in-reply-to:message-id;
+ bh=eIVIqg5H76+/wW/OhmQAvmScyINJb7NcynmvVQrg6zM=;
+ b=s5P3v6VJ2L/A5lonjj9bAClhcUYQWBr6uKrmSCsTxEhTBwNXLquwC7dGm6xQoMfjBt3//5
+ g18Wxk85fDVC4QBnKQ5HWuoLk11jNfz2uup/giYuIuiatAzhI/+LcvCeC9kqg406f27FyV
+ GVQZ/ISx5XVDZR2WZkkim2wqRJZnbO3a+ldsUUQi/MUvFmKX0Rewf79VfwQ/Hv+e2pzYYH
+ xYf1NzsekRgja8B1JC13McIu5EXJF4pjyfwc3sAVLaJ8rGUu93M4EkqmudCgDcF3uWNyTI
+ XF5rBKP0Rhwuf8hkvzV4RVvKkQe+JCfIN0YraFTW6T5b4ip4iGXYk6JzmEsoEg==
+Content-Language: en-US
+In-Reply-To: <20251114235434.2168072-2-khazhy@google.com>
+X-Lms-Return-Path: <lba+26918a182+ea5146+vger.kernel.org+yukuai@fnnas.com>
+From: "Yu Kuai" <yukuai@fnnas.com>
+Content-Transfer-Encoding: quoted-printable
+X-Original-From: Yu Kuai <yukuai@fnnas.com>
+To: "Khazhismel Kumykov" <khazhy@chromium.org>, "Tejun Heo" <tj@kernel.org>, 
+	"Josef Bacik" <josef@toxicpanda.com>, "Jens Axboe" <axboe@kernel.dk>
+Cc: <cgroups@vger.kernel.org>, <linux-block@vger.kernel.org>, 
+	<linux-kernel@vger.kernel.org>, "Guenter Roeck" <linux@roeck-us.net>, 
+	"Yu Kuai" <yukuai@kernel.org>, "Khazhismel Kumykov" <khazhy@google.com>
+Message-Id: <2d827b93-9ffa-4767-8409-88460e64a407@fnnas.com>
+User-Agent: Mozilla Thunderbird
+Content-Type: text/plain; charset=UTF-8
+Received: from [192.168.1.104] ([39.182.0.135]) by smtp.feishu.cn with ESMTPS; Sat, 15 Nov 2025 23:51:29 +0800
+Reply-To: yukuai@fnnas.com
+Subject: Re: [PATCH v2 1/3] block/blk-throttle: Fix throttle slice time for SSDs
+Date: Sat, 15 Nov 2025 23:51:27 +0800
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20251109124947.1101520-1-youngjun.park@lge.com> <20251115012247.78999-1-sj@kernel.org>
-In-Reply-To: <20251115012247.78999-1-sj@kernel.org>
-From: Chris Li <chrisl@kernel.org>
-Date: Sat, 15 Nov 2025 07:13:49 -0800
-X-Gmail-Original-Message-ID: <CACePvbUBEQsgoei=ykeM6uX_GWaFywZEXY7dGt+T6Pt4zhiGsA@mail.gmail.com>
-X-Gm-Features: AWmQ_bmkrQnsLWN6zZqLHzRrez2-Aopu9cRG6qIT8b5U9CsZP5z3d3-jlWOzyqQ
-Message-ID: <CACePvbUBEQsgoei=ykeM6uX_GWaFywZEXY7dGt+T6Pt4zhiGsA@mail.gmail.com>
-Subject: Re: [RFC] mm/swap, memcg: Introduce swap tiers for cgroup based swap control
-To: SeongJae Park <sj@kernel.org>
-Cc: Youngjun Park <youngjun.park@lge.com>, akpm@linux-foundation.org, linux-mm@kvack.org, 
-	cgroups@vger.kernel.org, linux-kernel@vger.kernel.org, kasong@tencent.com, 
-	hannes@cmpxchg.org, mhocko@kernel.org, roman.gushchin@linux.dev, 
-	shakeel.butt@linux.dev, muchun.song@linux.dev, shikemeng@huaweicloud.com, 
-	nphamcs@gmail.com, bhe@redhat.com, baohua@kernel.org, gunho.lee@lge.com, 
-	taejoon.song@lge.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Mime-Version: 1.0
+References: <20251114235434.2168072-1-khazhy@google.com> <20251114235434.2168072-2-khazhy@google.com>
 
-On Fri, Nov 14, 2025 at 5:22=E2=80=AFPM SeongJae Park <sj@kernel.org> wrote=
-:
+=E5=9C=A8 2025/11/15 7:54, Khazhismel Kumykov =E5=86=99=E9=81=93:
+> From: Guenter Roeck<linux@roeck-us.net>
 >
-> On Sun,  9 Nov 2025 21:49:44 +0900 Youngjun Park <youngjun.park@lge.com> =
-wrote:
+> Commit d61fcfa4bb18 ("blk-throttle: choose a small throtl_slice for SSD")
+> introduced device type specific throttle slices if BLK_DEV_THROTTLING_LOW
+> was enabled. Commit bf20ab538c81 ("blk-throttle: remove
+> CONFIG_BLK_DEV_THROTTLING_LOW") removed support for BLK_DEV_THROTTLING_LO=
+W,
+> but left the device type specific throttle slices in place. This
+> effectively changed throttling behavior on systems with SSD which now use
+> a different and non-configurable slice time compared to non-SSD devices.
+> Practical impact is that throughput tests with low configured throttle
+> values (65536 bps) experience less than expected throughput on SSDs,
+> presumably due to rounding errors associated with the small throttle slic=
+e
+> time used for those devices. The same tests pass when setting the throttl=
+e
+> values to 65536 * 4 =3D 262144 bps.
 >
-> > Hi all,
-> >
-> > In constrained environments, there is a need to improve workload
-> > performance by controlling swap device usage on a per-process or
-> > per-cgroup basis. For example, one might want to direct critical
-> > processes to faster swap devices (like SSDs) while relegating
-> > less critical ones to slower devices (like HDDs or Network Swap).
-> >
-> > Initial approach was to introduce a per-cgroup swap priority
-> > mechanism [1]. However, through review and discussion, several
-> > drawbacks were identified:
-> >
-> > a. There is a lack of concrete use cases for assigning a fine-grained,
-> >    unique swap priority to each cgroup.
-> > b. The implementation complexity was high relative to the desired
-> >    level of control.
-> > c. Differing swap priorities between cgroups could lead to LRU
-> >    inversion problems.
-> >
-> > To address these concerns, I propose the "swap tiers" concept,
-> > originally suggested by Chris Li [2] and further developed through
-> > collaborative discussions. I would like to thank Chris Li and
-> > He Baoquan for their invaluable contributions in refining this
-> > approach, and Kairui Song, Nhat Pham, and Michal Koutn=C3=BD for their
-> > insightful reviews of earlier RFC versions.
+> The original code sets the throttle slice time to DFL_THROTL_SLICE_HD if
+> CONFIG_BLK_DEV_THROTTLING_LOW is disabled. Restore that code to fix the
+> problem. With that, DFL_THROTL_SLICE_SSD is no longer necessary. Revert t=
+o
+> the original code and re-introduce DFL_THROTL_SLICE to replace both
+> DFL_THROTL_SLICE_HD and DFL_THROTL_SLICE_SSD. This effectively reverts
+> commit d61fcfa4bb18 ("blk-throttle: choose a small throtl_slice for SSD")=
+.
 >
-> I think the tiers concept is a nice abstraction.  I'm also interested in =
-how
-> the in-kernel control mechanism will deal with tiers management, which is=
- not
-> always simple.  I'll try to take a time to read this series thoroughly.  =
-Thank
-> you for sharing this nice work!
+> While at it, also remove MAX_THROTL_SLICE since it is not used anymore.
+>
+> Fixes: bf20ab538c81 ("blk-throttle: remove CONFIG_BLK_DEV_THROTTLING_LOW"=
+)
+> Cc: Yu Kuai<yukuai@kernel.org>
+> Cc: Tejun Heo<tj@kernel.org>
+> Signed-off-by: Guenter Roeck<linux@roeck-us.net>
+> Signed-off-by: Khazhismel Kumykov<khazhy@google.com>
+> ---
+>   block/blk-throttle.c | 9 ++-------
+>   1 file changed, 2 insertions(+), 7 deletions(-)
 
-Thank you for your interest. Please keep in mind that this patch
-series is RFC. I suspect the current series will go through a lot of
-overhaul before it gets merged in. I predict the end result will
-likely have less than half of the code resemble what it is in the
-series right  now.
+LGTM
+Reviewed-by: Yu Kuai <yukuai@fnnas.com>
 
-> Nevertheless, I'm curious if there is simpler and more flexible ways to a=
-chieve
-> the goal (control of swap device to use).  For example, extending existin=
-g
-Simplicity is one of my primary design principles. The current design
-is close to the simplest within the design constraints.
-
-> proactive pageout features, such as memory.reclaim, MADV_PAGEOUT or
-> DAMOS_PAGEOUT, to let users specify the swap device to use.  Doing such
-
-In my mind that is a later phase. No, per VMA swapfile is not simpler
-to use, nor is the API simpler to code. There are much more VMA than
-memcg in the system, no even the same magnitude. It is a higher burden
-for both user space and kernel to maintain all the per VMA mapping.
-The VMA and mmap path is much more complex to hack. Doing it on the
-memcg level as the first step is the right approach.
-
-> extension for MADV_PAGEOUT may be challenging, but it might be doable for
-> memory.reclaim and DAMOS_PAGEOUT.  Have you considered this kind of optio=
-ns?
-
-Yes, as YoungJun points out, that has been considered here, but in a
-later phase. Borrow the link in his email here:
-https://lore.kernel.org/linux-mm/CACePvbW_Q6O2ppMG35gwj7OHCdbjja3qUCF1T7GFs=
-m9VDr2e_g@mail.gmail.com/
-
-Chris
+--=20
+Thanks
+Kuai
 
