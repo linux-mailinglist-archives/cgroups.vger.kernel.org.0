@@ -1,81 +1,55 @@
-Return-Path: <cgroups+bounces-12006-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-12012-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AC933C62093
-	for <lists+cgroups@lfdr.de>; Mon, 17 Nov 2025 02:59:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 73D42C622DB
+	for <lists+cgroups@lfdr.de>; Mon, 17 Nov 2025 04:03:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 308C73ABE89
-	for <lists+cgroups@lfdr.de>; Mon, 17 Nov 2025 01:58:03 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 30DB13A4070
+	for <lists+cgroups@lfdr.de>; Mon, 17 Nov 2025 03:02:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 339CD24DCF6;
-	Mon, 17 Nov 2025 01:57:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7775526738B;
+	Mon, 17 Nov 2025 03:01:48 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
+Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1775813A244;
-	Mon, 17 Nov 2025 01:57:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=124.126.103.232
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 37F39244687;
+	Mon, 17 Nov 2025 03:01:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763344653; cv=none; b=IyPjvKRjjNtJOxQWksBwYEEaixwti+OsLHPi4rsoBRBlajlY7wB49UOCUKd3TUv4AE+KpA6k0tcG73lZJt0/PfClq50klF031I3p71Nr6g+w/ufQ4zCMqQ+30nnqcIxQedBicUI08FG87nVCw/S6vFUf9KtfE231JhFK7Fhdkds=
+	t=1763348508; cv=none; b=Ek0wZ6pxj9HkdP7yIDc5/is10+YEob/5OV/CxGwK2gcOpy6JJuD+HqynONO9NkcwYrvZG8/5ilb+bUSspHbo+w9QnNQnUUGwkZ9KPlwdzkLFwbJJhXCzkZt2FSv7FD5d3k5JslRdM4r+bdHd60BPQsam/Bg4ZE8LzpR2ZjaEJeA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763344653; c=relaxed/simple;
-	bh=j8qckSH0DdQEhcEYbGTH0EdctZZW2iNGiNhZ7yNom5g=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=NJV9DM3gsMSr8ul25iImCBUk1MWYXnkr+uLNxodjAo2uyR7cxO1AW3rEDHLfxe+4uZ4KQdTXolJT/PbmAJL8j5aHDoYVdY7VNnwVEeDpcdrbbq1vteqJ/+JEzf5ysF1KaeCzQIEbXn8IihAFfXjkLzYv6gF5pFzyCQ5YqfbL1i0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn; spf=pass smtp.mailfrom=kylinos.cn; arc=none smtp.client-ip=124.126.103.232
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kylinos.cn
-X-UUID: c358e16cc35811f0a38c85956e01ac42-20251117
-X-CTIC-Tags:
-	HR_CC_COUNT, HR_CC_DOMAIN_COUNT, HR_CC_NAME, HR_CC_NO_NAME, HR_CTE_8B
-	HR_CTT_TXT, HR_DATE_H, HR_DATE_WKD, HR_DATE_ZONE, HR_FROM_NAME
-	HR_SJ_DIGIT_LEN, HR_SJ_LANG, HR_SJ_LEN, HR_SJ_LETTER, HR_SJ_NOR_SYM
-	HR_SJ_PHRASE, HR_SJ_PHRASE_LEN, HR_SJ_WS, HR_TO_COUNT, HR_TO_DOMAIN_COUNT
-	HR_TO_NO_NAME, IP_TRUSTED, SRC_TRUSTED, DN_TRUSTED, SA_EXISTED
-	SN_EXISTED, SPF_NOPASS, DKIM_NOPASS, DMARC_NOPASS
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.3.6,REQID:3b7e332d-df33-4c3a-98a2-0713a0c1976f,IP:20,U
-	RL:0,TC:0,Content:0,EDM:0,RT:0,SF:-5,FILE:0,BULK:0,RULE:Release_Ham,ACTION
-	:release,TS:15
-X-CID-INFO: VERSION:1.3.6,REQID:3b7e332d-df33-4c3a-98a2-0713a0c1976f,IP:20,URL
-	:0,TC:0,Content:0,EDM:0,RT:0,SF:-5,FILE:0,BULK:0,RULE:Release_Ham,ACTION:r
-	elease,TS:15
-X-CID-META: VersionHash:a9d874c,CLOUDID:3fc0f543ee78172a81c15415ac016ca0,BulkI
-	D:251117095725SPDKQGD4,BulkQuantity:0,Recheck:0,SF:17|19|66|78|81|82|102|8
-	50,TC:nil,Content:0|15|50,EDM:-3,IP:-2,URL:0,File:nil,RT:nil,Bulk:nil,QS:n
-	il,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0,ARC
-	:0
-X-CID-BVR: 2,SSN|SDN
-X-CID-BAS: 2,SSN|SDN,0,_
-X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_FAS,TF_CID_SPAM_FSD
-X-CID-RHF: D41D8CD98F00B204E9800998ECF8427E
-X-UUID: c358e16cc35811f0a38c85956e01ac42-20251117
-X-User: sunshaojie@kylinos.cn
-Received: from localhost.localdomain [(223.70.159.239)] by mailgw.kylinos.cn
-	(envelope-from <sunshaojie@kylinos.cn>)
-	(Generic MTA with TLSv1.3 TLS_AES_256_GCM_SHA384 256/256)
-	with ESMTP id 1110326806; Mon, 17 Nov 2025 09:57:25 +0800
-From: Sun Shaojie <sunshaojie@kylinos.cn>
-To: llong@redhat.com
-Cc: chenridong@huaweicloud.com,
-	mkoutny@suse.com,
-	cgroups@vger.kernel.org,
-	hannes@cmpxchg.org,
-	linux-kernel@vger.kernel.org,
-	linux-kselftest@vger.kernel.org,
-	shuah@kernel.org,
+	s=arc-20240116; t=1763348508; c=relaxed/simple;
+	bh=KaXxufi6am8CSJEMN7gZoT7SpDaxr5a3WGQda8jI9xg=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=D6ubjyOnEGXZtCPbxPCjLAMh0Ux6db2rRCsQoWDe0P9MFmEK7S9MMn+fkjJFn8QuLhaltdo891Ha6OUgrI16NILGakMUI9DXVzKNAuv35FGuplLmQSK8Wfe4LZf+kjVJi/2Cgfha3zlzKj3zU9Z7heLejLxiaRZpfr6w1Ch5pIc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.93.142])
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTPS id 4d8svX5yqwzKHMLV;
+	Mon, 17 Nov 2025 11:01:12 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.75])
+	by mail.maildlp.com (Postfix) with ESMTP id 5B1DF1A07BD;
+	Mon, 17 Nov 2025 11:01:37 +0800 (CST)
+Received: from hulk-vt.huawei.com (unknown [10.67.174.121])
+	by APP2 (Coremail) with SMTP id Syh0CgA3lHr5jxpp+kwRBA--.27716S2;
+	Mon, 17 Nov 2025 11:01:37 +0800 (CST)
+From: Chen Ridong <chenridong@huaweicloud.com>
+To: longman@redhat.com,
 	tj@kernel.org,
-	Sun Shaojie <sunshaojie@kylinos.cn>
-Subject: [PATCH v4 1/1] cpuset: relax the overlap check for cgroup-v2
-Date: Mon, 17 Nov 2025 09:57:08 +0800
-Message-Id: <20251117015708.977585-2-sunshaojie@kylinos.cn>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20251117015708.977585-1-sunshaojie@kylinos.cn>
-References: <20251117015708.977585-1-sunshaojie@kylinos.cn>
+	hannes@cmpxchg.org,
+	mkoutny@suse.com
+Cc: cgroups@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	lujialin4@huawei.com,
+	chenridong@huawei.com
+Subject: [PATCH -next 00/21] cpuset: rework local partition logic
+Date: Mon, 17 Nov 2025 02:46:06 +0000
+Message-Id: <20251117024627.1128037-1-chenridong@huaweicloud.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -84,192 +58,105 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:Syh0CgA3lHr5jxpp+kwRBA--.27716S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxAr15CrWxZFWUAr4DJw1DKFg_yoW5KFy7pF
+	y3GaySyryUGFy5C39rXa1xAw4Fgw4DJa4Utwnru348Xr1ayw1vyFy0v395ZayUWr9rZr1U
+	Z3ZrWr48X3WUuaUanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUyCb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Cr1j6rxdM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
+	0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
+	x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
+	0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lc7CjxVAaw2AFwI0_JF0_Jw1l42xK82IYc2Ij
+	64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x
+	8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE
+	2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42
+	xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF
+	7I0E14v26r1j6r4UYxBIdaVFxhVjvjDU0xZFpf9x07UK2NtUUUUU=
+X-CM-SenderInfo: hfkh02xlgr0w46kxt4xhlfz01xgou0bp/
 
-In cgroup v2, a mutual overlap check is required when at least one of two
-cpusets is exclusive. However, this check should be relaxed and limited to
-cases where both cpusets are exclusive.
+From: Chen Ridong <chenridong@huawei.com>
 
-This patch ensures that for sibling cpusets A1 (exclusive) and B1
-(non-exclusive), change B1 cannot affect A1's exclusivity.
+The current local partition implementation consolidates all operations
+(enable, disable, invalidate, and update) within the large
+update_parent_effective_cpumask() function, which exceeds 300 lines.
+This monolithic approach has become increasingly difficult to understand
+and maintain. Additionally, partition-related fields are updated in
+multiple locations, leading to redundant code and potential corner case
+oversights.
 
-for example. Assume a machine has 4 CPUs (0-3).
+This patch series refactors the local partition logic by separating
+operations into dedicated functions: local_partition_enable(),
+local_partition_disable(), and local_partition_update(), creating
+symmetry with the existing remote partition infrastructure.
 
-   root cgroup
-      /    \
-    A1      B1
+The series is organized as follows:
 
-Case 1:
- Table 1.1: Before applying the patch
- Step                                       | A1's prstate | B1'sprstate |
- #1> echo "0-1" > A1/cpuset.cpus            | member       | member      |
- #2> echo "root" > A1/cpuset.cpus.partition | root         | member      |
- #3> echo "0" > B1/cpuset.cpus              | root invalid | member      |
+1. Infrastructure Preparation (Patches 1-2):
+   - Code cleanup and preparation for the refactoring work
 
-After step #3, A1 changes from "root" to "root invalid" because its CPUs
-(0-1) overlap with those requested by B1 (0-3). However, B1 can actually
-use CPUs 2-3(from B1's parent), so it would be more reasonable for A1 to
-remain as "root."
+2. Introduce partition operation helpers (Patches 3-5):
+   - Introduce out partition_enable(), partition_disable(), and
+     partition_update() functions.
 
- Table 1.2: After applying the patch
- Step                                       | A1's prstate | B1'sprstate |
- #1> echo "0-1" > A1/cpuset.cpus            | member       | member      |
- #2> echo "root" > A1/cpuset.cpus.partition | root         | member      |
- #3> echo "0" > B1/cpuset.cpus              | root         | member      |
+3. Use new helpers for remote partition (Patches 6-8)
 
-All other cases remain unaffected. For example, cgroup-v1, both A1 and B1
-are exclusive or non-exlusive.
+4. Local Partition Implementation (Patches 9-12):
+   - Separate update_parent_effective_cpumask() into dedicated functions:
+     * local_partition_enable()
+     * local_partition_disable()
+     * local_partition_update()
 
-Signed-off-by: Sun Shaojie <sunshaojie@kylinos.cn>
+5. Optimization and Cleanup (Patches 13-21):
+   - Remove redundant partition-related operations
+   - Additional optimizations based on the new architecture
+
+base-commit: 6d7e7251d03f98f26f2ee0dfd21bb0a0480a2178
+
 ---
- kernel/cgroup/cpuset-internal.h               |  3 ++
- kernel/cgroup/cpuset-v1.c                     | 20 +++++++++
- kernel/cgroup/cpuset.c                        | 43 ++++++++++++++-----
- .../selftests/cgroup/test_cpuset_prs.sh       |  5 ++-
- 4 files changed, 58 insertions(+), 13 deletions(-)
 
-diff --git a/kernel/cgroup/cpuset-internal.h b/kernel/cgroup/cpuset-internal.h
-index 337608f408ce..c53111998432 100644
---- a/kernel/cgroup/cpuset-internal.h
-+++ b/kernel/cgroup/cpuset-internal.h
-@@ -292,6 +292,7 @@ void cpuset1_hotplug_update_tasks(struct cpuset *cs,
- 			    struct cpumask *new_cpus, nodemask_t *new_mems,
- 			    bool cpus_updated, bool mems_updated);
- int cpuset1_validate_change(struct cpuset *cur, struct cpuset *trial);
-+bool cpuset1_cpus_excl_conflict(struct cpuset *cs1, struct cpuset *cs2);
- #else
- static inline void fmeter_init(struct fmeter *fmp) {}
- static inline void cpuset1_update_task_spread_flags(struct cpuset *cs,
-@@ -302,6 +303,8 @@ static inline void cpuset1_hotplug_update_tasks(struct cpuset *cs,
- 			    bool cpus_updated, bool mems_updated) {}
- static inline int cpuset1_validate_change(struct cpuset *cur,
- 				struct cpuset *trial) { return 0; }
-+static inline bool cpuset1_cpus_excl_conflict(struct cpuset *cs1,
-+				struct cpuset *cs2) {return false; }
- #endif /* CONFIG_CPUSETS_V1 */
- 
- #endif /* __CPUSET_INTERNAL_H */
-diff --git a/kernel/cgroup/cpuset-v1.c b/kernel/cgroup/cpuset-v1.c
-index 12e76774c75b..5c1296bf6a34 100644
---- a/kernel/cgroup/cpuset-v1.c
-+++ b/kernel/cgroup/cpuset-v1.c
-@@ -373,6 +373,26 @@ int cpuset1_validate_change(struct cpuset *cur, struct cpuset *trial)
- 	return ret;
- }
- 
-+/*
-+ * cpuset1_cpus_excl_conflict() - Check if two cpusets have exclusive CPU conflicts
-+ *                                to legacy (v1)
-+ * @cs1: first cpuset to check
-+ * @cs2: second cpuset to check
-+ *
-+ * Returns: true if CPU exclusivity conflict exists, false otherwise
-+ *
-+ * If either cpuset is CPU exclusive, their allowed CPUs cannot intersect.
-+ */
-+bool cpuset1_cpus_excl_conflict(struct cpuset *cs1, struct cpuset *cs2)
-+{
-+	if (is_cpu_exclusive(cs1) || is_cpu_exclusive(cs2))
-+		if (cpumask_intersects(cs1->cpus_allowed,
-+				       cs2->cpus_allowed))
-+			return true;
-+
-+	return false;
-+}
-+
- #ifdef CONFIG_PROC_PID_CPUSET
- /*
-  * proc_cpuset_show()
-diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
-index 52468d2c178a..0fd803612513 100644
---- a/kernel/cgroup/cpuset.c
-+++ b/kernel/cgroup/cpuset.c
-@@ -580,35 +580,56 @@ static inline bool cpusets_are_exclusive(struct cpuset *cs1, struct cpuset *cs2)
- 
- /**
-  * cpus_excl_conflict - Check if two cpusets have exclusive CPU conflicts
-- * @cs1: first cpuset to check
-- * @cs2: second cpuset to check
-+ * @cs1: current cpuset to check
-+ * @cs2: cpuset involved in the check
-  *
-  * Returns: true if CPU exclusivity conflict exists, false otherwise
-  *
-  * Conflict detection rules:
-- * 1. If either cpuset is CPU exclusive, they must be mutually exclusive
-+ * For cgroup-v1:
-+ *     see cpuset1_cpus_excl_conflict()
-+ * For cgroup-v2:
-+ * 1. If cs1 is exclusive, cs1 and cs2 must be mutually exclusive
-  * 2. exclusive_cpus masks cannot intersect between cpusets
-- * 3. The allowed CPUs of one cpuset cannot be a subset of another's exclusive CPUs
-+ * 3. If cs2 is exclusive, cs2's allowed CPUs cannot be a subset of cs1's exclusive CPUs
-+ * 4. if cs1 and cs2 are not exclusive, the allowed CPUs of one cpuset cannot be a subset
-+ *    of another's exclusive CPUs
-  */
- static inline bool cpus_excl_conflict(struct cpuset *cs1, struct cpuset *cs2)
- {
--	/* If either cpuset is exclusive, check if they are mutually exclusive */
--	if (is_cpu_exclusive(cs1) || is_cpu_exclusive(cs2))
-+	/* For cgroup-v1 */
-+	if (!cpuset_v2())
-+		return cpuset1_cpus_excl_conflict(cs1, cs2);
-+
-+	/* If cs1 are exclusive, check if they are mutually exclusive */
-+	if (is_cpu_exclusive(cs1))
- 		return !cpusets_are_exclusive(cs1, cs2);
- 
-+	/* The following check applies when either
-+	 * both cs1 and cs2 are non-exclusive，or
-+	 * only cs2 is exclusive.
-+	 */
-+
- 	/* Exclusive_cpus cannot intersect */
- 	if (cpumask_intersects(cs1->exclusive_cpus, cs2->exclusive_cpus))
- 		return true;
- 
--	/* The cpus_allowed of one cpuset cannot be a subset of another cpuset's exclusive_cpus */
--	if (!cpumask_empty(cs1->cpus_allowed) &&
--	    cpumask_subset(cs1->cpus_allowed, cs2->exclusive_cpus))
--		return true;
--
-+	/* cs2's allowed CPUs cannot be a subset of cs1's exclusive CPUs */
- 	if (!cpumask_empty(cs2->cpus_allowed) &&
- 	    cpumask_subset(cs2->cpus_allowed, cs1->exclusive_cpus))
- 		return true;
- 
-+	/* If cs2 is exclusive, check finished here */
-+	if (is_cpu_exclusive(cs2))
-+		return false;
-+
-+	/* The following check applies only if both cs1 and cs2 are non-exclusive. */
-+
-+	/* cs1's allowed CPUs cannot be a subset of cs1's exclusive CPUs */
-+	if (!cpumask_empty(cs1->cpus_allowed) &&
-+	    cpumask_subset(cs1->cpus_allowed, cs2->exclusive_cpus))
-+		return true;
-+
- 	return false;
- }
- 
-diff --git a/tools/testing/selftests/cgroup/test_cpuset_prs.sh b/tools/testing/selftests/cgroup/test_cpuset_prs.sh
-index a17256d9f88a..b848bc0729cf 100755
---- a/tools/testing/selftests/cgroup/test_cpuset_prs.sh
-+++ b/tools/testing/selftests/cgroup/test_cpuset_prs.sh
-@@ -388,10 +388,11 @@ TEST_MATRIX=(
- 	"  C0-1:S+  C1      .    C2-3     .      P2     .      .     0 A1:0-1|A2:1 A1:P0|A2:P-2"
- 	"  C0-1:S+ C1:P2    .    C2-3     P1     .      .      .     0 A1:0|A2:1 A1:P1|A2:P2 0-1|1"
- 
--	# A non-exclusive cpuset.cpus change will invalidate partition and its siblings
-+	# A non-exclusive cpuset.cpus change will not invalidate its siblings partition.
-+	# But a exclusive cpuset.cpus change will invalidate itself.
- 	"  C0-1:P1   .      .    C2-3   C0-2     .      .      .     0 A1:0-2|B1:2-3 A1:P-1|B1:P0"
- 	"  C0-1:P1   .      .  P1:C2-3  C0-2     .      .      .     0 A1:0-2|B1:2-3 A1:P-1|B1:P-1"
--	"   C0-1     .      .  P1:C2-3  C0-2     .      .      .     0 A1:0-2|B1:2-3 A1:P0|B1:P-1"
-+	"   C0-1     .      .  P1:C2-3  C0-2     .      .      .     0 A1:0-1|B1:2-3 A1:P0|B1:P1"
- 
- 	# cpuset.cpus can overlap with sibling cpuset.cpus.exclusive but not subsumed by it
- 	"   C0-3     .      .    C4-5     X5     .      .      .     0 A1:0-3|B1:4-5"
+Changes from RFC v2:
+1. Dropped the bugfix (already merged/fixed upstream)
+2. Rebased onto next
+3. Introduced partition_switch to handle root state switches
+4. Directly use local_partition_disable()—no longer first introduce
+   local_partition_invalidate() before unifying the two
+5. Incorporated modifications based on Longman's suggestions
+
+Changes in RFC v1:
+1. Added bugfix for root partition isolcpus at series start.
+2. Completed helper function implementations when first introduced.
+3. Split larger patches into smaller, more reviewable units.
+4. Incorporated feedback from Longman.
+
+Chen Ridong (21):
+  cpuset: add early empty cpumask check in partition_xcpus_add/del
+  cpuset: generalize the validate_partition() interface
+  cpuset: introduce partition_enable()
+  cpuset: introduce partition_disable()
+  cpuset: introduce partition_update()
+  cpuset: use partition_enable() for remote partition enablement
+  cpuset: use partition_disable() for remote partition disablement
+  cpuset: use partition_update() for remote partition update
+  cpuset: introduce local_partition_enable()
+  cpuset: introduce local_partition_disable()
+  cpuset: user local_partition_disable() to invalidate local partition
+  cpuset: introduce local_partition_update()
+  cpuset: remove update_parent_effective_cpumask
+  cpuset: remove redundant partition field updates
+  cpuset: simplify partition update logic for hotplug tasks
+  cpuset: use partition_disable for compute_partition_effective_cpumask
+  cpuset: use validate_local_partition in local_partition_enable
+  cpuset: introduce validate_remote_partition
+  cpuset: simplify the update_prstate() function
+  cpuset: remove prs_err clear when notify_partition_change
+  cpuset: Remove unnecessary validation in partition_cpus_change
+
+ kernel/cgroup/cpuset.c | 1014 ++++++++++++++++++----------------------
+ 1 file changed, 453 insertions(+), 561 deletions(-)
+
 -- 
-2.25.1
+2.34.1
 
 
