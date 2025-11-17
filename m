@@ -1,42 +1,42 @@
-Return-Path: <cgroups+bounces-12017-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-12018-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 89C7FC6230E
-	for <lists+cgroups@lfdr.de>; Mon, 17 Nov 2025 04:05:54 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 29F6BC622EA
+	for <lists+cgroups@lfdr.de>; Mon, 17 Nov 2025 04:04:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D64303AEAC0
-	for <lists+cgroups@lfdr.de>; Mon, 17 Nov 2025 03:02:55 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id DF9474EC530
+	for <lists+cgroups@lfdr.de>; Mon, 17 Nov 2025 03:02:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C504D27B358;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F304427E056;
 	Mon, 17 Nov 2025 03:01:51 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
 Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 88CAE270569;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AC1B2263C91;
 	Mon, 17 Nov 2025 03:01:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763348511; cv=none; b=H0IXlrq9wsfdQzVU/79Q3NwqF+zBy4SXxEpJLHtkirjOsm/mxAbhNTfrdMqJSb4pLZ0LDTtP6XE6IzjQlpuf+o8dLGG1lJTJHqHItujSOyu9zWeYanXf/T6nojhitC/Cb7FM0+jIWYeshfgvwfB41s6VX1AwejxVjRlGJyo6viU=
+	t=1763348511; cv=none; b=cZ658ZannOpFkg9T2qwLqbeZhknph8lP/31LXd0h4+p2LtEL5fo3jMPDlR3malAw+RYiPnmFxOYQS6MjHBfROlPI1LHoxYRaMZUqONfIzjtnlYmGqGAQvD89n2YPcSaWbF61poDMPpyv1KdWill9ZSSSziR1JrY4VY5dOvBQs5c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1763348511; c=relaxed/simple;
-	bh=+MTjgW3oiXqbHxXyX2uSjCuWJtWPdG2cCHx8FLdGw3k=;
+	bh=gB7//HZ/drCgAnuS/jK9gEOOtMLW7SNS/v5FtqKr6Hk=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=RxPgR2RtoK1Izupi/otOfu+IFD4kvy2tm/5QULwkH3Pa1wzyYXYeEQbH/AxgJRlxVPhcQ81R+GRikNFwtA/vr2sXwmga5WgahzrGQ00ozf8t0DY+YUeszsQiNbLPFOaWExHTZCljHafW0IjtAql+sHIU1HullmHWjGzBYcQzC+I=
+	 MIME-Version; b=I12PcOPTb7VX/iAnUghDz6A0/b5iZIaShmP6fhpzIEyO50sDunaEP4XcqgHCAXU2U/a1xw98rtBSaPfND/lBNGdpBcSQUfTWuc2q3aL2J8N8i2kLoF0BSzh0b/5BApj4rRVDODRwKVbH7DbFMyXmxX0E4LpZIkXQBzHE1nGjJ8U=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.235])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTPS id 4d8svL1R33zYQtxV;
+Received: from mail.maildlp.com (unknown [172.19.93.142])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTPS id 4d8svL1Z4vzYQty0;
 	Mon, 17 Nov 2025 11:01:02 +0800 (CST)
 Received: from mail02.huawei.com (unknown [10.116.40.75])
-	by mail.maildlp.com (Postfix) with ESMTP id 534041A13FA;
+	by mail.maildlp.com (Postfix) with ESMTP id 590BB1A07BB;
 	Mon, 17 Nov 2025 11:01:38 +0800 (CST)
 Received: from hulk-vt.huawei.com (unknown [10.67.174.121])
-	by APP2 (Coremail) with SMTP id Syh0CgA3lHr5jxpp+kwRBA--.27716S22;
+	by APP2 (Coremail) with SMTP id Syh0CgA3lHr5jxpp+kwRBA--.27716S23;
 	Mon, 17 Nov 2025 11:01:38 +0800 (CST)
 From: Chen Ridong <chenridong@huaweicloud.com>
 To: longman@redhat.com,
@@ -47,9 +47,9 @@ Cc: cgroups@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	lujialin4@huawei.com,
 	chenridong@huawei.com
-Subject: [PATCH -next 20/21] cpuset: remove prs_err clear when notify_partition_change
-Date: Mon, 17 Nov 2025 02:46:26 +0000
-Message-Id: <20251117024627.1128037-21-chenridong@huaweicloud.com>
+Subject: [PATCH -next 21/21] cpuset: Remove unnecessary validation in partition_cpus_change
+Date: Mon, 17 Nov 2025 02:46:27 +0000
+Message-Id: <20251117024627.1128037-22-chenridong@huaweicloud.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20251117024627.1128037-1-chenridong@huaweicloud.com>
 References: <20251117024627.1128037-1-chenridong@huaweicloud.com>
@@ -60,50 +60,59 @@ List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:Syh0CgA3lHr5jxpp+kwRBA--.27716S22
-X-Coremail-Antispam: 1UD129KBjvdXoWrtFyfCw48uryktw4fWry3Jwb_yoW3uFc_Z3
-	y0gr1vqryrXryIg3Z0ka1SqrWvya15ArnYyas0qrW5AF129wn3WwnFgF98trnxZa1xXrnx
-	AF93GFZI9FnFgjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-	9fnUUIcSsGvfJTRUUUbfAYFVCjjxCrM7AC8VAFwI0_Wr0E3s1l1xkIjI8I6I8E6xAIw20E
-	Y4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l82xGYIkIc2x26280x7IE14v26r126s
-	0DM28IrcIa0xkI8VCY1x0267AKxVW5JVCq3wA2ocxC64kIII0Yj41l84x0c7CEw4AK67xG
-	Y2AK021l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14
-	v26F4UJVW0owA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AK
-	xVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ew
-	Av7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY
-	6r1j6r4UM4x0Y48IcxkI7VAKI48JMxkF7I0En4kS14v26r126r1DMxAIw28IcxkI7VAKI4
-	8JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xv
-	wVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjx
-	v20xvE14v26ryj6F1UMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8Jr0_Cr1UMIIF0xvE42xK
-	8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVW8JVWxJwCI42IY6I8E87Iv6xkF7I
-	0E14v26r4UJVWxJrUvcSsGvfC2KfnxnUUI43ZEXa7IU1l_M7UUUUU==
+X-CM-TRANSID:Syh0CgA3lHr5jxpp+kwRBA--.27716S23
+X-Coremail-Antispam: 1UD129KBjvJXoW7Zw47tw4UXrW7Kw4DXryrWFg_yoW8Jw4kpF
+	y7Gw4UGay5Wr1jkayDJas7u3s8K3ZrXF1UtFnxta4fWF1Iqa4qkFyjy39xZFyfXasrGa48
+	Z3ZIvr4qgFW2yrDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUBFb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUAV
+	Cq3wA2048vs2IY020Ec7CjxVAFwI0_Xr0E3s1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0
+	rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVWDJVCq3wA2z4x0Y4vE2Ix0cI8IcVCY1x0267
+	AKxVWxJr0_GcWl84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAF
+	wI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2
+	WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkE
+	bVWUJVW8JwACjcxG0xvY0x0EwIxGrwCY1x0262kKe7AKxVWUAVWUtwCF04k20xvY0x0EwI
+	xGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480
+	Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7
+	IYx2IY67AKxVW5JVW7JwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr1j6F4UJwCI42IY6xAI
+	w20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Gr0_Cr1lIxAIcVC2z280aVCY1x
+	0267AKxVW8Jr0_Cr1UYxBIdaVFxhVjvjDU0xZFpf9x07UM6wAUUUUU=
 X-CM-SenderInfo: hfkh02xlgr0w46kxt4xhlfz01xgou0bp/
 
 From: Chen Ridong <chenridong@huawei.com>
 
-The prs_err should be properly set when partition state is set, it
-does't have to reset in the notify_partition_change, just remove it.
+When user-configured CPUs (including cpuset.cpus and cpuset.cpus.exclusive)
+are modified, the partition may either be disabled or updated. Both local
+and remote partitions update can fully validate their own validity: if the
+validation fails, the partition will be disabled. Therefore, the
+validationin partition_cpus_change is redundant and can be removed.
 
 Signed-off-by: Chen Ridong <chenridong@huawei.com>
 ---
- kernel/cgroup/cpuset.c | 4 ----
- 1 file changed, 4 deletions(-)
+ kernel/cgroup/cpuset.c | 7 -------
+ 1 file changed, 7 deletions(-)
 
 diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
-index 333bd6476370..b795af41eff8 100644
+index b795af41eff8..59c1592280b0 100644
 --- a/kernel/cgroup/cpuset.c
 +++ b/kernel/cgroup/cpuset.c
-@@ -182,10 +182,6 @@ static inline void notify_partition_change(struct cpuset *cs, int old_prs)
- 	if (old_prs == cs->partition_root_state)
- 		return;
- 	cgroup_file_notify(&cs->partition_file);
+@@ -2465,16 +2465,9 @@ static int cpus_allowed_validate_change(struct cpuset *cs, struct cpuset *trialc
+ static void partition_cpus_change(struct cpuset *cs, struct cpuset *trialcs,
+ 					struct tmpmasks *tmp)
+ {
+-	enum prs_errcode prs_err;
 -
--	/* Reset prs_err if not invalid */
--	if (is_partition_valid(cs))
--		WRITE_ONCE(cs->prs_err, PERR_NONE);
- }
+ 	if (cs_is_member(cs))
+ 		return;
  
- /*
+-	prs_err = validate_partition(cs, trialcs->partition_root_state,
+-			trialcs->effective_xcpus, trialcs->effective_xcpus, NULL);
+-	if (prs_err)
+-		trialcs->prs_err = prs_err;
+-
+ 	if (is_remote_partition(cs)) {
+ 		if (trialcs->prs_err)
+ 			remote_partition_disable(cs, trialcs->prs_err, tmp);
 -- 
 2.34.1
 
