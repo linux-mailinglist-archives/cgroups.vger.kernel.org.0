@@ -1,101 +1,102 @@
-Return-Path: <cgroups+bounces-12046-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-12047-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 99CA1C65C19
-	for <lists+cgroups@lfdr.de>; Mon, 17 Nov 2025 19:43:15 +0100 (CET)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
+	by mail.lfdr.de (Postfix) with ESMTPS id C5D9FC661DC
+	for <lists+cgroups@lfdr.de>; Mon, 17 Nov 2025 21:39:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 4DAD34E4B4E
-	for <lists+cgroups@lfdr.de>; Mon, 17 Nov 2025 18:43:14 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 55A49345365
+	for <lists+cgroups@lfdr.de>; Mon, 17 Nov 2025 20:37:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4501331AF12;
-	Mon, 17 Nov 2025 18:43:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 20CDA340298;
+	Mon, 17 Nov 2025 20:37:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="iUSUa9RV";
-	dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b="chk80gK5"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="SKpk+ct+";
+	dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b="p2rYetMs"
 X-Original-To: cgroups@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 27D9D3195E2
-	for <cgroups@vger.kernel.org>; Mon, 17 Nov 2025 18:43:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2B0201DF73A
+	for <cgroups@vger.kernel.org>; Mon, 17 Nov 2025 20:37:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763404990; cv=none; b=L6leqJ/8J+tfbr0RTK1d9aOamOZqAoySN/z+D/lYGDPQbWXEkrcL5uASrNqA2xULn043OWoTBz1HjQJjfsAMeMUp0QvdpEL5wt5yHXQw5/5FXuL4OMvZbOBZ8ObmHaK9TjZjm26ZD/l9+MJXdyxXkDTJUKSO3GXKa/vkhojZXts=
+	t=1763411844; cv=none; b=b2BB4Q488r8zrM+B8fDl3iZdgjABS7stXyVCaDaf+eZIMw8vXYmGGTew16Hje4+vcxaSMRVQcgqPcURY4Z8BoFRQ5/eYcHhZRp65iBQgOQ0U6yrGvlvZdH5EvW9Glj6D0+Q4Kkn+DesGwomgFmh2XyoP+ySS3d0HqXj9hYzBuzs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763404990; c=relaxed/simple;
-	bh=GIG/iyDk/a3m0i27C/ULXzWZKuo5X7gaeRrIaW50xR8=;
+	s=arc-20240116; t=1763411844; c=relaxed/simple;
+	bh=SmPR+A59MooYRc2WJidnDJCDD3wZZK2HbZ/vnM2OMwo=;
 	h=From:Message-ID:Date:MIME-Version:Subject:To:Cc:References:
-	 In-Reply-To:Content-Type; b=V3A1NfLst3s9Q6GG+N/zAjc+phEHgusGtFD6s5utLWeRFpf1Y3RnF/5P7qpzN6LeYQesbE4nrHDEJaT5gn0ZGSftYQJR2NeHS1SiMC0h8w/ZkAyFaogNQhg8Nw1CBSXoGPkY7tteYSdiMk7i/aeyi78oM65ZeNq5g4rMU30vA8Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=iUSUa9RV; dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b=chk80gK5; arc=none smtp.client-ip=170.10.129.124
+	 In-Reply-To:Content-Type; b=QYsO1567dn+V31ZHPQ3FXhlNlCiK/eRzs/2E17gsUYT2iDV2D/xQrSFSmpBEEpo7Om6MUPw6wHK2uEEgoPtm53tjpNIuiBBxkGReihc8eTQNvITLiDUOWait17x7zawzqKhl9XqhD3IlNIuCjJY+QX65SnFMBOcTOxnF2zOCu6w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=SKpk+ct+; dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b=p2rYetMs; arc=none smtp.client-ip=170.10.133.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1763404987;
+	s=mimecast20190719; t=1763411842;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=XpfOGVqLv8brfQ8QJuGmJSNw8lcPJaQQkI4+G0V1iic=;
-	b=iUSUa9RVFOlvyMQJ0VC5z82bSuZL2dEINUfYmRFYjEBpa/rtN9q08tMxoBF9dSo1lEijzI
-	Vn317FG7u9osXruHm6IFDspvVl02PYp/RScqf+NuQ3h24yKZ4sQznCp0zk/sC5JxsJTQCs
-	Xp6Qq8tK3LQ0lhK91md8DxtM8grKg8A=
-Received: from mail-qv1-f69.google.com (mail-qv1-f69.google.com
- [209.85.219.69]) by relay.mimecast.com with ESMTP with STARTTLS
+	bh=NH+JjbVFS4evMnwZjaAY2ijL6D93KhWvJesUB02vD9U=;
+	b=SKpk+ct++Sl6yVxCe/mnTFsrPDxLFbgJt9Rn24CuXeSSV6lG7AaVtDYYFPp/H5hh0EVzIq
+	PHKzoTvhN+Eoghbm4+vvDPM+UEq8Fg+WXBrV8V/SzqniZGN1yXs1ME67nLtHG3YEFXrbnw
+	QDXaXbf+ac2LbJaGPiO3itqvyhQF2z0=
+Received: from mail-qv1-f70.google.com (mail-qv1-f70.google.com
+ [209.85.219.70]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-53-foB5muRrNmWe4V3j3K3I-w-1; Mon, 17 Nov 2025 13:43:05 -0500
-X-MC-Unique: foB5muRrNmWe4V3j3K3I-w-1
-X-Mimecast-MFC-AGG-ID: foB5muRrNmWe4V3j3K3I-w_1763404984
-Received: by mail-qv1-f69.google.com with SMTP id 6a1803df08f44-8805c2acd64so156578336d6.3
-        for <cgroups@vger.kernel.org>; Mon, 17 Nov 2025 10:43:05 -0800 (PST)
+ us-mta-616-hknkttgNM9Wd_9YDTRvvFw-1; Mon, 17 Nov 2025 15:37:20 -0500
+X-MC-Unique: hknkttgNM9Wd_9YDTRvvFw-1
+X-Mimecast-MFC-AGG-ID: hknkttgNM9Wd_9YDTRvvFw_1763411840
+Received: by mail-qv1-f70.google.com with SMTP id 6a1803df08f44-8823f71756dso64379066d6.3
+        for <cgroups@vger.kernel.org>; Mon, 17 Nov 2025 12:37:20 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=redhat.com; s=google; t=1763404984; x=1764009784; darn=vger.kernel.org;
+        d=redhat.com; s=google; t=1763411840; x=1764016640; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:content-language:references
          :cc:to:subject:user-agent:mime-version:date:message-id:from:from:to
          :cc:subject:date:message-id:reply-to;
-        bh=XpfOGVqLv8brfQ8QJuGmJSNw8lcPJaQQkI4+G0V1iic=;
-        b=chk80gK5hGYLznobaSphkDvyCHLuUBNezstAp/yN6Q+9iWibx+9wGqMMH32wXnBw7f
-         klRacwNqWWiUwix9ZMFxe6Tj1wHbLl3xJ7ZN8E2cwBavFLd61bDec7IoGPlrEZqD5nkN
-         oVr7jehFhlKJO5zNlLrxYNCrphk9Je9ST3pOCAY1GMxZjzY3Qln91cP9mq7NBBZXsrus
-         5r/DXTpjUuBfCICcePvs3Ao8mx+q2PFDkOZDv4qbyiadOVQUZ3mPl8uPshRhFy1knzjK
-         0jd7QqpjZq1/M/y99318yqnsyHJR981BQPUiNWu7lwSlt4ZiGy2jMcOQ6/pT4YzcP1ft
-         7JyA==
+        bh=NH+JjbVFS4evMnwZjaAY2ijL6D93KhWvJesUB02vD9U=;
+        b=p2rYetMsI9iu5LY/aflJHZME2Ueb2rsolz/ywTVeKVIu1cq4PXyELw2q9SKb6nZ6Jz
+         nnLNCcD5O5adtIxRjrakd4c8Q7n2XtNajKKU4O+nYGLgdpNqnpc0Av3rbut5Eoc8qSOG
+         1AjujrCBmD7uTjYgyUCoTOoDKVI9Mn2OKQPME1oHYz0l0YQ7QynF4E0cHMHC8mouFRtZ
+         ++VSC4w6XdZf0yS/O+M9ttXVHhzRgBDgw4BfGoNu2yHpmP5Lq/LBFZ+bpfCfl2beNQIo
+         NgFFjvrhVZ3pMiCbFhWoTmUXZutyt6vWc9E7E0Z2Zl9g2kZzgx/4t8tucry63864HzNl
+         b4YA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1763404984; x=1764009784;
+        d=1e100.net; s=20230601; t=1763411840; x=1764016640;
         h=content-transfer-encoding:in-reply-to:content-language:references
          :cc:to:subject:user-agent:mime-version:date:message-id:from:x-gm-gg
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=XpfOGVqLv8brfQ8QJuGmJSNw8lcPJaQQkI4+G0V1iic=;
-        b=Z0pB8bc1HyTqpNnzFSSgTCjb0QNCAeHLKT35mkVigQYVdSRkJyl1qmcseznJ24SFqf
-         3D1/cP7hSGR0A/35h8c+XXqtCJcKMXDyEjBoOpFUbvFjI+G4JGgkJsOSflbLQQ3l2zdG
-         rPlYKtNuuQY+F/tLaF5Pbk50LTVpzIjl4MCT7SAPd6viLYMvzqWf3N3a1gz9CGGKrXBc
-         /FIylKyWZdVW0gvsvzFTOyhI7Jc2Z859lJVfYGEG+do3MA6YvOd973lqvL0SEf5iJhES
-         1+Qsi64r/dGv9YkkErosHfY0nVxWXeji+tQVENcBHtgAcyMZmDikyYngKW9KJUBBVbjh
-         xD8g==
-X-Gm-Message-State: AOJu0YxxNV9+3haCfF7FdjHWM86OcFBGONZ5b/Obf8NjmPZCWOVbj7h8
-	rxvpt0CpuKUn4lbuiO7dbgnDR1ZJmmAUojvJ5Z1RGryk098B54/TbaT4O9knEt7oK+RT4cmxDFE
-	rgJxGygmk+uY2cbuNUK4yUKUyP6xAumqdnufxrjnJo6ngJMG/uEV23mtfSYs=
-X-Gm-Gg: ASbGncuey2LEUn2rH68IVEMC9M9A6XM0YFrAM1/1H1HgZSWUERuumY95WYeZye0n7bl
-	cFWwqi5Zgy+pQByDEKGqd6kEQc5WcMk3pYquHxb1hvSfVRCVlx8rQH9ZHNQtGgL/mnKNRSCTHgT
-	bLnM8nJI8jMtm4Mg5zu7BJ1dILe4y2ZhPKFi09z1/qpascw+wZBn9CyfdfwDRAC/pEeeEwtWvxu
-	o9bP2mCtJ/CXTqSIlrqEMn4eHSF5DwwNy7hQ+SmrqXgbS3xTqTDsl7T8xjJUkgtvFJUZQ22U+q4
-	Lc7nvEZzQQDszNkafZlsabTTUhPspeB8ClXnwbm+6zSqklFhNDP8tTn/Z3smYdHfzyz8UY78aFC
-	uq8cCoYks4Waa18puTpdDTK6PCqCPMnw/8BbzB+ySYy+EFQ==
-X-Received: by 2002:a05:6214:4107:b0:809:19ab:599f with SMTP id 6a1803df08f44-882926025bbmr171908776d6.27.1763404984415;
-        Mon, 17 Nov 2025 10:43:04 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IHQrDJLX+yOoO3ZzmOViiV0w0QFUdIMlBhGy2JuQArUWTmQJ0fqku/2pfP07YjDe5rOa6U05A==
-X-Received: by 2002:a05:6214:4107:b0:809:19ab:599f with SMTP id 6a1803df08f44-882926025bbmr171908296d6.27.1763404983958;
-        Mon, 17 Nov 2025 10:43:03 -0800 (PST)
+        bh=NH+JjbVFS4evMnwZjaAY2ijL6D93KhWvJesUB02vD9U=;
+        b=uaBaIm939Ln0MWqjzwFfzAqVSw0qAhot7MqhnSe5LI1c2lUjBMpQOjsCVgo7x8H91k
+         juQlrVfECiT3O2+SeNphIW1kbAPpNfqFRTUNf4Yc0nf9Ej43vaThO0wPlbVOQ3W26T4l
+         5gjqgj6rbQ+YOM7mMQ4c9fzVYePz6bH31SJeZvGB65AecnD8G4cCZVIc8HJSFKPbI5Hc
+         utZiMWh62YuboOSVWQZ+7LWfEkzZ7OAwcBj/11JTD7zRT8gTVGxcAEhFUq0ARnQZ+6d2
+         zCXklT7Bo42tZCIiqFvYiw+6kn/JW8AghpqeZvesG+CkzxBn9reRsRs4m04tTbfT7XD1
+         FsGg==
+X-Forwarded-Encrypted: i=1; AJvYcCVJE7q7L6C+V5moeRHOJLZo1JFPE7TRXC2a0/KILQZMOKfXXTP+O+MX+UNkAKQluNfHrWksmtVJ@vger.kernel.org
+X-Gm-Message-State: AOJu0Yw8dcPAdohXHjumutjCEuKZpyp8zTEE4hCIJhSXKlNEL2Jg3DNU
+	PeebkBfcZ/gf/jKgeCAU/smvs/K6h2b6Vp6sUGRROmvjFnF3HQjG7FL79pIO8L7GZb2wha+yCh9
+	GaVIaIesNaoOKyrsn9JRiELymejGszE2oydr6nKaxk7PCF2cJDOfBZ9oH/Xw=
+X-Gm-Gg: ASbGncuTPA6VIpZ1YFuJA7CmELMjOQ9cn6c71EoShIqV3YS5cJoFJGHqFcVlvUYhNRC
+	V4cbf2oD5JGKF0hvuf/ctabAlmQwhWGzvUEtUZSwoUMmVyOEUr/aFY2ETjFrHn280gy4EzSmGR5
+	xrLiQ1DDYlj3erRk9Gy9FekXvr1doCERMIJ4ccf3vHYziSh/fvA2kuhc5exJ217PinNqjWRrjyq
+	ebHamXnNHfYQ8cGNQSpG/l54D3j1hiCRje0da+nL6sFSxMGIHuLwHYMgGh5ncv5ZHrsgP1A0DBH
+	voWy57cTZ4RjUXrqIjPN3vNGzK1hHqn6QNQsiDjva/XgQcL3Rs1VT7ySsT74L5pH9DkGVRfd3AX
+	afDFenyc1M0LuKoi8PtsFywF1vwc845Kj6jzpR9B1zNAHwA==
+X-Received: by 2002:a05:6214:c65:b0:882:4dec:42b9 with SMTP id 6a1803df08f44-882925f280amr200935266d6.26.1763411840284;
+        Mon, 17 Nov 2025 12:37:20 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IGFBq9DDNquaCKU7McYtmHMkXKL2oozerHAJiNvFCEr30jW86RIcnuOYpR+b7DJwQSQmAjbcg==
+X-Received: by 2002:a05:6214:c65:b0:882:4dec:42b9 with SMTP id 6a1803df08f44-882925f280amr200934896d6.26.1763411839858;
+        Mon, 17 Nov 2025 12:37:19 -0800 (PST)
 Received: from ?IPV6:2601:188:c102:b180:1f8b:71d0:77b1:1f6e? ([2601:188:c102:b180:1f8b:71d0:77b1:1f6e])
-        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-8828655e55bsm96747376d6.43.2025.11.17.10.43.02
+        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-8828652c882sm101791536d6.32.2025.11.17.12.37.18
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 17 Nov 2025 10:43:03 -0800 (PST)
+        Mon, 17 Nov 2025 12:37:19 -0800 (PST)
 From: Waiman Long <llong@redhat.com>
 X-Google-Original-From: Waiman Long <longman@redhat.com>
-Message-ID: <52026e81-9cf6-4711-9bd0-4b57b31021a4@redhat.com>
-Date: Mon, 17 Nov 2025 13:43:02 -0500
+Message-ID: <97ec2e86-cb4f-4467-8930-d390519f12a6@redhat.com>
+Date: Mon, 17 Nov 2025 15:37:17 -0500
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -103,195 +104,66 @@ List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] cpuset: relax the overlap check for cgroup-v2
-To: Sun Shaojie <sunshaojie@kylinos.cn>, chenridong@huaweicloud.com,
- mkoutny@suse.com, llong@redhat.com
-Cc: cgroups@vger.kernel.org, hannes@cmpxchg.org,
- linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
- shuah@kernel.org, tj@kernel.org
-References: <19fa5a93-4cc9-4f84-891c-b3b096a68799@huaweicloud.com>
- <20251115060211.853449-1-sunshaojie@kylinos.cn>
+Subject: Re: [PATCHv6 1/2] cgroup/cpuset: Introduce
+ cpuset_cpus_allowed_locked()
+To: Pingfan Liu <piliu@redhat.com>, cgroups@vger.kernel.org
+Cc: Chen Ridong <chenridong@huaweicloud.com>,
+ Peter Zijlstra <peterz@infradead.org>, Juri Lelli <juri.lelli@redhat.com>,
+ Pierre Gondois <pierre.gondois@arm.com>, Ingo Molnar <mingo@redhat.com>,
+ Vincent Guittot <vincent.guittot@linaro.org>,
+ Dietmar Eggemann <dietmar.eggemann@arm.com>,
+ Steven Rostedt <rostedt@goodmis.org>, Ben Segall <bsegall@google.com>,
+ Mel Gorman <mgorman@suse.de>, Valentin Schneider <vschneid@redhat.com>,
+ Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>,
+ mkoutny@suse.com, linux-kernel@vger.kernel.org
+References: <20251117092732.16419-1-piliu@redhat.com>
+ <20251117092732.16419-2-piliu@redhat.com>
 Content-Language: en-US
-In-Reply-To: <20251115060211.853449-1-sunshaojie@kylinos.cn>
+In-Reply-To: <20251117092732.16419-2-piliu@redhat.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
-On 11/15/25 1:02 AM, Sun Shaojie wrote:
-> On 2015/11/15 08:58, Chen Ridong wrote:
->> On 2025/11/15 0:14, Michal Koutný wrote:
->>> On Fri, Nov 14, 2025 at 09:29:20AM +0800, Chen Ridong <chenridong@huaweicloud.com> wrote:
->>>> After further consideration, I still suggest retaining this rule.
->>> Apologies, I'm slightly lost which rule. I hope the new iteration from
->>> Shaojie with both before/after tables will explain it.
->>>
->> The rule has changed in this patch from "If either cpuset is exclusive, check if they are mutually
->> exclusive" to
->> "If both cpusets are exclusive, check if they are mutually exclusive"
->>
->>   -    /* If either cpuset is exclusive, check if they are mutually exclusive */
->>   -    if (is_cpu_exclusive(cs1) || is_cpu_exclusive(cs2))
->>   +    /* If both cpusets are exclusive, check if they are mutually exclusive */
->>   +    if (is_cpu_exclusive(cs1) && is_cpu_exclusive(cs2))
->>   +        return !cpusets_are_exclusive(cs1, cs2);
->>
->> I suggest not modifying this rule and keeping the original logic intact:
->>
->>>> For am example:
->>>>    Step                                       | A1's prstate | B1's prstate |
->>>>    #1> mkdir -p A1                            | member       |              |
->>>>    #2> echo "0-1" > A1/cpuset.cpus.exclusive  | member       |              |
->>>>    #3> echo "root" > A1/cpuset.cpus.partition | root         |              |
->>>>    #4> mkdir -p B1                            | root         | member       |
->>>>    #5> echo "0" > B1/cpuset.cpus              | root invalid | member       |
->>>>
->>>> Currently, we mark A1 as invalid. But similar to the logic in this patch, why must A1 be
->>>> invalidated?
->>> A1 is invalidated becase it doesn't have exclusive ownership of CPU 0
->>> anymore.
->>>
->>>> B1 could also use the parent's effective CPUs, right?
->>> Here you assume some ordering between siblings treating A1 more
->>> important than B1. But it's symmetrical in principle, no?
->>>
->> I’m using an example to illustrate that if Shaojie’s patch is accepted, other rules could be relaxed
->> following the same logic—but I’m not in favor of doing so.
-> Hi, Ridong,
+On 11/17/25 4:27 AM, Pingfan Liu wrote:
+> cpuset_cpus_allowed() uses a reader lock that is sleepable under RT,
+> which means it cannot be called inside raw_spin_lock_t context.
 >
-> Thank you for pointing out the issue with the current patch; this is indeed
-> not what our product intends. I must admit that I haven't thoroughly tested
-> on such recent kernel versions.
+> Introduce a new cpuset_cpus_allowed_locked() helper that performs the
+> same function as cpuset_cpus_allowed() except that the caller must have
+> acquired the cpuset_mutex so that no further locking will be needed.
 >
-> Obviously, this patch is flawed. However, patch v3 is needed. Regarding the
-> "other rules" you mentioned, we do not intend to relax them. On the
-> contrary, we aim to maintain them firmly.
+> Suggested-by: Waiman Long <longman@redhat.com>
+> Signed-off-by: Pingfan Liu <piliu@redhat.com>
+> Cc: Waiman Long <longman@redhat.com>
+> Cc: Tejun Heo <tj@kernel.org>
+> Cc: Johannes Weiner <hannes@cmpxchg.org>
+> Cc: "Michal Koutný" <mkoutny@suse.com>
+> Cc: linux-kernel@vger.kernel.org
+> To: cgroups@vger.kernel.org
+> ---
+>   include/linux/cpuset.h |  1 +
+>   kernel/cgroup/cpuset.c | 51 +++++++++++++++++++++++++++++-------------
+>   2 files changed, 37 insertions(+), 15 deletions(-)
 >
-> Our product need ensure the following behavior: in cgroup-v2, user
-> modifications to one cpuset should not affect the partition state of its
-> sibling cpusets. This is justified and meaningful, as it aligns with the
-> isolation characteristics of cgroups.
->
-> This can be divided into two scenarios:
-> Scenario 1: Only one of A1 and B1 is "root".
-> Scenario 2: Both A1 and B1 are "root".
->
-> We plan to implement Scenario 1 first. This is the goal of patch v2.
-> However, patch v2 is flawed because it does not strictly adhere to the
-> following existing rule.
->
-> However, it is worth noting that the current cgroup v2 implementation does
-> not strictly adhere to the following rule either (which is also an
-> objective for patch v3 to address).
->
-> Rule 1: "cpuset.cpus" cannot be a subset of a sibling's "cpuset.cpus.exclusive".
+> diff --git a/include/linux/cpuset.h b/include/linux/cpuset.h
+> index 2ddb256187b51..e057a3123791e 100644
+> --- a/include/linux/cpuset.h
+> +++ b/include/linux/cpuset.h
+> @@ -75,6 +75,7 @@ extern void dec_dl_tasks_cs(struct task_struct *task);
+>   extern void cpuset_lock(void);
+>   extern void cpuset_unlock(void);
+>   extern void cpuset_cpus_allowed(struct task_struct *p, struct cpumask *mask);
+> +extern void cpuset_cpus_allowed_locked(struct task_struct *p, struct cpumask *mask);
+>   extern bool cpuset_cpus_allowed_fallback(struct task_struct *p);
+>   extern bool cpuset_cpu_is_isolated(int cpu);
+>   extern nodemask_t cpuset_mems_allowed(struct task_struct *p);
 
-Inside the cpuset code, the rule should be "cpuset.cpus should not be a 
-subset of sibling's cpuset.cpus.exclusive".
+Ah, the following code should be added to to !CONFIG_CPUSETS section 
+after cpuset_cpus_allowed().
 
-Note that one rule that should always be followed in v2 is that writing 
-any valid cpumask into cpuset.cpus is allowed, but writing to 
-cpuset.cpus.exclusive may fail if some rules are violated. If the new 
-cpuset.cpus violate the rules for a sibling partition root, the current 
-code will invalidate the sibling partition. I am not against changing 
-the cpuset.cpus.effective to a suitable value to avoid the conflict 
-instead invalidating a sibling partition. We do need to make sure that 
-the new behavior is consistent under different circumstances.
+#define cpuset_cpus_allowed_locked(p, m)  cpuset_cpus_allowed(p, m)
 
->
-> Using your example to illustrate.
->   Step (refer to the steps in the table below）
->   #1> mkdir -p A1
->   #2> echo "0-1" > A1/cpuset.cpus.exclusive
->   #3> echo "root" > A1/cpuset.cpus.partition
->   #4> mkdir -p B1
->   #5> echo "0" > B1/cpuset.cpus
->
-> Table 1: Current result
->   Step | return | A1's excl_cpus | B1's cpus | A1's prstate | B1's prstate |
->   #1   | 0      |                |           | member       |              |
->   #2   | 0      | 0-1            |           | member       |              |
->   #3   | 0      | 0-1            |           | root         |              |
->   #4   | 0      | 0-1            |           | root         | member       |
->   #5   | 0      | 0-1            | 0         | root invalid | member       |
->
-> Table 2: Expected result
->   Step | return | A1's excl_cpus | B1's cpus | A1's prstate | B1's prstate |
->   #1   | 0      |                |           | member       |              |
->   #2   | 0      | 0-1            |           | member       |              |
->   #3   | 0      | 0-1            |           | root         |              |
->   #4   | 0      | 0-1            |           | root         | member       |
->   #5   | error  | 0-1            |           | root         | member       |
->
-> Currently, after step #5, the operation returns success, which clearly
-> violates Rule 1, as B1's "cpuset.cpus" is a subset of A1's
-> "cpuset.cpus.exclusive".
->
-> Therefore, after step #5, the operation should return error, with A1
-> remaining as "root". This better complies with the Rule 1.
->
-> ------
-> The following content is provided for reference, and we hope it may be
-> adopted in the future.
-> !!These are not part of what patch v3 will implement.
->
-> As for Scenario 2 (Both A1 and B1 are "root")， we will retain the current
-> cgroup v2 behavior. This patch series does not modify it, but we hope to
-> draw the maintainers' attention, as we indeed have plans for future
-> modifications. Our intent can be seen from the following examples.
->
-> For example:
->   Step (refer to the steps in the table below）
->   #1> mkdir -p A1
->   #2> echo "0-1"  > A1/cpuset.cpus
->   #3> echo "root" > A1/cpuset.cpus.partition
->   #4> mkdir -p B1
->   #5> echo "2-3"  > B1/cpuset.cpus
->   #6> echo "root" > B1/cpuset.cpus.partition
->   #7> echo "1-2"  > B1/cpuset.cpus
->
-> Table 1: Current result
->   Step | A1's eft_cpus | B1's eft_cpus | A1's prstate | B1's prstate |
->   #1   | from parent   |               | member       |              |
->   #2   | 0-1           |               | member       |              |
->   #3   | 0-1           |               | root         |              |
->   #4   | 0-1           | from parent   | root         | member       |
->   #5   | 0-1           | 2-3           | root         | member       |
->   #6   | 0-1           | 2-3           | root         | root         |
->   #7   | 0-1           | 1-2           | root invalid | root invalid |
->
-> Table 2: Expected result
->   Step | A1's eft_cpus | B1's eft_cpus | A1's prstate | B1's prstate |
->   #1   | from parent   |               | member       |              |
->   #2   | 0-1           |               | member       |              |
->   #3   | 0-1           |               | root         |              |
->   #4   | 0-1           | from parent   | root         | member       |
->   #5   | 0-1           | 2-3           | root         | member       |
->   #6   | 0-1           | 2-3           | root         | root         |
->   #7   | 0-1           | 2             | root         | root invalid |
->
-> After step #7, we expect A1 to remain "root" (unaffected), while only B1
-> becomes "root invalid".
->
->   
-> The following Rule 2 and Rule 3 are alsomplemented and adhered to by our
-> product. The current cgroup v2 implementation does not enforce them.
-> Likewise, we hope this will draw the maintainers' attention. Maybe, they can
-> be applied in the future.
->
-> Rule 2: In one cpuset, when "cpuset.cpus" is not null, "cpuset.cpus.effective"
->          must either be a subset of it, or "cpuset.cpus.effective" is null.
-
-cpuset.cpus.effective will never be null in v2 with the exception of a 
-partition root distributing out all its CPUs to child sub-partitions.
-
-
->
-> Rule 3: In one cpuset, when "cpuset.cpus" is not null, "cpuset.cpus.exclusive"
->          must either be a subset of it, or "cpuset.cpus.exclusive" is null.
-
-We currently don't have this rule in the cpuset code as 
-cpuset.cpus.exclusive can be independent of "cpuset.cpus".  We could 
-implement this rule by failing the cpuset.cpus.exclusive write in this 
-case, but we can't fail the write to "cpuset.cpus" if the rule is violated.
+Or you can add another inline function that just calls 
+cpuset_cpus_allowed().
 
 Cheers,
 Longman
