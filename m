@@ -1,252 +1,318 @@
-Return-Path: <cgroups+bounces-12040-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-12041-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0AF3AC6357A
-	for <lists+cgroups@lfdr.de>; Mon, 17 Nov 2025 10:50:47 +0100 (CET)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 123D4C636BF
+	for <lists+cgroups@lfdr.de>; Mon, 17 Nov 2025 11:08:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id CF7F7366E6F
-	for <lists+cgroups@lfdr.de>; Mon, 17 Nov 2025 09:44:06 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 4A77334BEC7
+	for <lists+cgroups@lfdr.de>; Mon, 17 Nov 2025 10:01:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7DCE026E719;
-	Mon, 17 Nov 2025 09:42:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="dqdf0P1O";
-	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="q5abrBej"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 163652701BB;
+	Mon, 17 Nov 2025 10:01:16 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
+Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8099C31B80C;
-	Mon, 17 Nov 2025 09:42:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.165.32
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763372524; cv=fail; b=iXUfU311Q6Q0bBIzxtVwEkUYx1/21zFFa4CeWvMxUd2dwVk9emtw8zEstCA9aWUfpJZ7Gj2SnEqNr3cGLecDBmV9WanAWs126zqZQuk9I1WsbaSdxPDs7WXsgtHh8NRhWTUEPjPufNkARlZf6W/dqlZe4qbi5AV7LZZJwHupQ+Y=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763372524; c=relaxed/simple;
-	bh=XYy4ixg1AxvePE7IlvLcbJj8QnmBjFJbWJT3PfehfuY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=Ff5IoinkRsaQCn2CkDUCpezH7NHt4jKFtV/R3H4LZTXjCvlFOaLaCsnZx85apHVXzNfoVGv79H+WkvThq0PP24AFZzBOSr2qtDaWdDh+Uxz4TRW68+bCgE0wwXpaNQr/btt47o+joOxzh7adExbFWKXun/MEypqqjKuvVQU0s8Y=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=dqdf0P1O; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=q5abrBej; arc=fail smtp.client-ip=205.220.165.32
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
-Received: from pps.filterd (m0246627.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 5AH1w4Hu017435;
-	Mon, 17 Nov 2025 09:41:25 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=cc
-	:content-type:date:from:in-reply-to:message-id:mime-version
-	:references:subject:to; s=corp-2025-04-25; bh=HZ0TshM2+DW3YlBNQ/
-	Y0MmPx4/ida2FFsiNEHWeXx60=; b=dqdf0P1OgLTsVg2/xo1aMpXajjYWtcigP8
-	qrQVO5mdho0AeTpukTBpangNY1bwlivSPBab4VFkoUCGY/aTsRi0OZc797NusOQD
-	fsJHNo4TEv1OHv7rl4Hlcw3pH/n3IScVbbSjHPCpJ2rNP221VXaoGp7E1wRm0QOc
-	2lOFVL+crAADunUxWl07q82Ih+7QMFCceC9kf2E+z2ATF8GehP/qM3LGj/RWrXFR
-	o7QUwkjx/BixOabjuS02nf720lQFd/RHbcOaueYRcXvfeM0uCFOjuWjL904Eh41t
-	fYoTJ1DRZCOb3OVHh8msdqo2DvueU4TKjnvbc3+7rnm9GSQjHKYA==
-Received: from phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta02.appoci.oracle.com [147.154.114.232])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 4aejbpt3af-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Mon, 17 Nov 2025 09:41:25 +0000 (GMT)
-Received: from pps.filterd (phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-	by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (8.18.1.2/8.18.1.2) with ESMTP id 5AH9SZCn007201;
-	Mon, 17 Nov 2025 09:41:24 GMT
-Received: from bn1pr04cu002.outbound.protection.outlook.com (mail-eastus2azon11010059.outbound.protection.outlook.com [52.101.56.59])
-	by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 4aefy7ep4p-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Mon, 17 Nov 2025 09:41:24 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=hn0/1Mn8wDYqhyXzc5gGMrqoVLCvq3JE3OsEFU8N0/MINophE+mhCy4ea8WD52CNm7E+6KYjTbOehRlTH2uViSDcHwZ8RG7dixeAk5NdDgRagEhAXrMOrrJVPY4ZUNOwNbvn4C+WppCeaxtTP0huWWYRNUCNoBqhbh2O2mxe94Sr4aDjV9ikeVGpN5Rz8kboDq8Isfi4lRSvjU/2UYBimjg8b2+xso63FQjQU+PhWZwA6yzSVPM/fFcketI5l5jcXe/8AcDCZja6N8DcJwBcDF8B7Gr97xM4yaQutHmmhzG0LvXA63fJpzVNXy9ykDBQXtXC3gqJPhr+UwTRpz0DFQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=HZ0TshM2+DW3YlBNQ/Y0MmPx4/ida2FFsiNEHWeXx60=;
- b=C1xGcfM7q3WCmc8CtlfPUJ6tneF9YYEMKEFXZtQ6VnKgCbwswsb9XUH1DQFt+rB8sl0XN+pCYIiUdcejjFNohRH6AeEiKrWUJHp17EZlmVb7ywdXQRwrWqSib+0gVU7TTqSV5idYcCQobwqaSshNNCF95JvwCkj2bOb131v3sBl6RCAP5j60pxCdRVdlbNR2Iczxh87gsDT/9Jx0l71trI5oTvrxQ+gNvvwXO6mnnJp4aYscTgu2BtzR9pwlUWznL2IxNLKQl8kBbiRMbfD45RGCx+KdbhI6wYZKGyoexc5ZslntpdiHolx5go0VNU2/On7Fs2452h97j/vtvAd5Vw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=HZ0TshM2+DW3YlBNQ/Y0MmPx4/ida2FFsiNEHWeXx60=;
- b=q5abrBejSqQ6B+6aRJQmzn27TkItMUcxtKWt+3wtgoNpii2Ms4iAKzVrK2A1E26Rc1JVDz7qPNrN0rCq1k8xIKEdcgnKJCc3+0/Wu7zvBggvGI8SMc3fa67qNtlrcWzkkaMCUrZETt1XywwH1TvOg8jdRz01b1bCl3eT0CuEiBc=
-Received: from DS0PR10MB7341.namprd10.prod.outlook.com (2603:10b6:8:f8::22) by
- SA1PR10MB5841.namprd10.prod.outlook.com (2603:10b6:806:22b::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9320.21; Mon, 17 Nov
- 2025 09:41:21 +0000
-Received: from DS0PR10MB7341.namprd10.prod.outlook.com
- ([fe80::3d6b:a1ef:44c3:a935]) by DS0PR10MB7341.namprd10.prod.outlook.com
- ([fe80::3d6b:a1ef:44c3:a935%5]) with mapi id 15.20.9320.018; Mon, 17 Nov 2025
- 09:41:21 +0000
-Date: Mon, 17 Nov 2025 18:41:09 +0900
-From: Harry Yoo <harry.yoo@oracle.com>
-To: Qi Zheng <qi.zheng@linux.dev>
-Cc: hannes@cmpxchg.org, hughd@google.com, mhocko@suse.com,
-        roman.gushchin@linux.dev, shakeel.butt@linux.dev,
-        muchun.song@linux.dev, david@redhat.com, lorenzo.stoakes@oracle.com,
-        ziy@nvidia.com, imran.f.khan@oracle.com, kamalesh.babulal@oracle.com,
-        axelrasmussen@google.com, yuanchu@google.com, weixugc@google.com,
-        akpm@linux-foundation.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-        Muchun Song <songmuchun@bytedance.com>,
-        Qi Zheng <zhengqi.arch@bytedance.com>
-Subject: Re: [PATCH v1 06/26] mm: memcontrol: return root object cgroup for
- root memory cgroup
-Message-ID: <aRrttY5kdbbubmGs@hyeyoo>
-References: <cover.1761658310.git.zhengqi.arch@bytedance.com>
- <5e9743f291e7ca7b8f052775e993090ed66cfa80.1761658310.git.zhengqi.arch@bytedance.com>
- <aRroO9ypxvHsAjug@hyeyoo>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <aRroO9ypxvHsAjug@hyeyoo>
-X-ClientProxiedBy: TY4PR01CA0106.jpnprd01.prod.outlook.com
- (2603:1096:405:378::13) To CH3PR10MB7329.namprd10.prod.outlook.com
- (2603:10b6:610:12c::16)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 19706258EE9;
+	Mon, 17 Nov 2025 10:01:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=124.126.103.232
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1763373675; cv=none; b=pVvvktVyAjJg6NoPMQ/7DDVXnWetnAQ44/qEGlJ/vqWbf3/CkAfL69NnD5A3v7jrFsptposEugC7VUSfe6uLQZ5hHElpw41nl4DyNHt+Wg2rkgny+X/6DW80sqKPC/NWSeGAvMVvnZ1Z5mTCLVY4nAo6aoXdYXRi5n0U4GSzIFM=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1763373675; c=relaxed/simple;
+	bh=DoExi13Ey0RfXsXbNgYjV7MqjnEVusH8XGsOHEFv7Hs=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=kfO9EyRAembro1XwIELKZtf39gbPNTo7ArLtIB0t9/Ay74Ot9clYZ+3uUxqmwvYLiv6DRZ8Fr0f4/2H1fqAMtNKBMgPTBZRE14k8lv19ApQykXJQTBJFHMPDdcPuyng78oGYCBpJnBO3JtIJGe63qVGDnw9lPeHbeKwnmPmBX7s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn; spf=pass smtp.mailfrom=kylinos.cn; arc=none smtp.client-ip=124.126.103.232
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kylinos.cn
+X-UUID: 502cbf62c39c11f0a38c85956e01ac42-20251117
+X-CTIC-Tags:
+	HR_CC_COUNT, HR_CC_DOMAIN_COUNT, HR_CC_NO_NAME, HR_CTE_8B, HR_CTT_TXT
+	HR_DATE_H, HR_DATE_WKD, HR_DATE_ZONE, HR_FROM_NAME, HR_SJ_DIGIT_LEN
+	HR_SJ_LANG, HR_SJ_LEN, HR_SJ_LETTER, HR_SJ_NOR_SYM, HR_SJ_PHRASE
+	HR_SJ_PHRASE_LEN, HR_SJ_PRE_RE, HR_SJ_WS, HR_TO_COUNT, HR_TO_DOMAIN_COUNT
+	HR_TO_NO_NAME, IP_TRUSTED, SRC_TRUSTED, DN_TRUSTED, SA_EXISTED
+	SN_EXISTED, SPF_NOPASS, DKIM_NOPASS, DMARC_NOPASS, CIE_GOOD
+	CIE_GOOD_SPF, GTI_FG_BS, GTI_RG_INFO, GTI_C_BU, AMN_GOOD
+	ABX_MISS_RDNS
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.3.6,REQID:a9281e61-7c39-4bce-a791-e0203bf86ac1,IP:10,U
+	RL:0,TC:0,Content:0,EDM:0,RT:0,SF:-5,FILE:0,BULK:0,RULE:Release_Ham,ACTION
+	:release,TS:5
+X-CID-INFO: VERSION:1.3.6,REQID:a9281e61-7c39-4bce-a791-e0203bf86ac1,IP:10,URL
+	:0,TC:0,Content:0,EDM:0,RT:0,SF:-5,FILE:0,BULK:0,RULE:Release_Ham,ACTION:r
+	elease,TS:5
+X-CID-META: VersionHash:a9d874c,CLOUDID:458874bca1e5da0854ce5cbfdd67e74f,BulkI
+	D:251117180100BIUI482W,BulkQuantity:0,Recheck:0,SF:17|19|64|66|78|80|81|82
+	|83|102|841|850,TC:nil,Content:0|15|50,EDM:-3,IP:-2,URL:0,File:nil,RT:nil,
+	Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BR
+	R:0,BRE:0,ARC:0
+X-CID-BVR: 2,SSN|SDN
+X-CID-BAS: 2,SSN|SDN,0,_
+X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_FAS,TF_CID_SPAM_FSD
+X-CID-RHF: D41D8CD98F00B204E9800998ECF8427E
+X-UUID: 502cbf62c39c11f0a38c85956e01ac42-20251117
+X-User: sunshaojie@kylinos.cn
+Received: from localhost.localdomain [(223.70.159.239)] by mailgw.kylinos.cn
+	(envelope-from <sunshaojie@kylinos.cn>)
+	(Generic MTA with TLSv1.3 TLS_AES_256_GCM_SHA384 256/256)
+	with ESMTP id 1793727431; Mon, 17 Nov 2025 18:00:57 +0800
+From: Sun Shaojie <sunshaojie@kylinos.cn>
+To: chenridong@huaweicloud.com
+Cc: cgroups@vger.kernel.org,
+	hannes@cmpxchg.org,
+	linux-kernel@vger.kernel.org,
+	linux-kselftest@vger.kernel.org,
+	llong@redhat.com,
+	mkoutny@suse.com,
+	shuah@kernel.org,
+	sunshaojie@kylinos.cn,
+	tj@kernel.org
+Subject: Re: [PATCH v4 1/1] cpuset: relax the overlap check for cgroup-v2
+Date: Mon, 17 Nov 2025 18:00:47 +0800
+Message-Id: <20251117100047.1101975-1-sunshaojie@kylinos.cn>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <fe8046d7-1f21-4b23-92f2-6be24ef9f58b@huaweicloud.com>
+References: <fe8046d7-1f21-4b23-92f2-6be24ef9f58b@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DS0PR10MB7341:EE_|SA1PR10MB5841:EE_
-X-MS-Office365-Filtering-Correlation-Id: 06d6e504-f8ce-417c-bf0e-08de25bd769d
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|366016|1800799024|376014|7416014;
-X-Microsoft-Antispam-Message-Info:
-	=?us-ascii?Q?8NMJwt/7ESX+QEt1LxBV9WbFxEoQR77W9OtHP7uIjKXV7zAX7k+DeihOXiAq?=
- =?us-ascii?Q?8RWLX4s2hcuNbse2O3gr8Vf7r56yjDjtIP8VLpPCoioxDqENnsGHPeC4VkFq?=
- =?us-ascii?Q?AdSKdlalqEpRNLRdNEx2CTji8nkRmqtmlnV+uO9l3gxp8CifEcrbTFclCvOW?=
- =?us-ascii?Q?xhR3jHvxFezyT7IzoeMvwAmAqJTsA11mGJNIrzYdJumnNZLLabgGeVJ7l/7v?=
- =?us-ascii?Q?1gH6jQhgpMJ29pqRpyMSjZZLbkKkCy1e3Vd61LgxHnJcjsyBFvS3McaTYLNP?=
- =?us-ascii?Q?dsBxFP9Uu2EFa6+l/3qcKUxxUcEPoUDV9/uRgs0ChUkCvVe4It9AVIcB+PZp?=
- =?us-ascii?Q?CiBvx/8o4yS6RyOg8CUQUboP0opZB0ggq9T+k4xzPRDKmz83GVR5XNi9nhxy?=
- =?us-ascii?Q?rx6fn2lxh1lNnoC6EjElNT25+7ciXIb32OG7vl6pJztiIgSjaCjV2JBR/HzO?=
- =?us-ascii?Q?lawQ5nZqJl0yOp5htpNcH/r6ofLDXs6SINNuOv2O2v9bqHrAK+cjgaIkJ6h4?=
- =?us-ascii?Q?Fz8cQTcrsS0EZruTn6SFRGoB47GZ6WpAlOhXcBt1z0U0EHw4+xn0pHGzAB/J?=
- =?us-ascii?Q?u9CKJe0vpqRkpTGk7XjMDPfa+S7No75kpj7Upv9Ay2Iyn67ifS1R7zs4JaIb?=
- =?us-ascii?Q?TacM68wUTFIPEUosU8ev8YB1PE5mFH+z770r+2shwwYIJea2ussftR23Qk7+?=
- =?us-ascii?Q?HBSLFkEWjQnyrd1XWlf3GXAUd+fSPCDt7UGtffXm6K4sVFSouZoH9s57oOUR?=
- =?us-ascii?Q?IHfzgkahX1M8H1vYIJ3L8SaSW+rVnn/YfaBTtztT4eSLzZ6TdX4tPlDUGv7G?=
- =?us-ascii?Q?SugFqUAs8P23IanX0DQHsQyVadUCOJa9biMPnwEfNhR/Mc0b0ki9EFlcvSJ4?=
- =?us-ascii?Q?CdrQNkN1MQeUjQZqx2SeE9FRaNZrEqGGeBRegtoqqnBuyjFb773yMdg/JIpg?=
- =?us-ascii?Q?rGzR8MeFGtqdYzJooKvN9V0IHBFBXtsiuvpU5kag8oyH7SnSvx2Da0QbXboA?=
- =?us-ascii?Q?0fyC2QPkEjb60/AXpEka5TQ2F2mzB/pdm1tDOIFc7RoJsChhUpHBjQsE8axS?=
- =?us-ascii?Q?HxLp3XCmQdu2SdSWXJusDcLqwilNAUkXvAsPF5WtW9LbeFHVIQrpEs/Efw+O?=
- =?us-ascii?Q?OF+NAK7Uqlv3AMN3I42nzG/o+qlj8ksOFjjNvoSx02ixCya/w28hBNNM85L1?=
- =?us-ascii?Q?2xgaI24QX3gvUfSUnO+1hw8sKvuHwYzYszm0veCGWdwhT0AxiTIe7chXMaJC?=
- =?us-ascii?Q?llvzxL1ZMmE9mEhnmf77UoeAP+uDHaoykeeZ/7sXZk+KjfE29nXr49IK8jBf?=
- =?us-ascii?Q?rz7XXuigdvUWmW8DSbGrxayqIR3ZDoxt42yKzeRi16A8jEjPOyRMa+VrDuV8?=
- =?us-ascii?Q?drBxwvgFk3ukXKMk5hlr25FOxvvx36iCVUyHEn5SLM4HsB5CYyVBD1xzVtTt?=
- =?us-ascii?Q?4ws/du+Aj5vZb1/TCJAKsmrv3UuGV/XTwJGHkFkJfF1p71n4HUnlEA=3D=3D?=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS0PR10MB7341.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(1800799024)(376014)(7416014);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?GybRVenmIadsF31jEyrecMolxqRF4KNLATUNNisUHurmDqP5aCbYNnnzXQUF?=
- =?us-ascii?Q?vXYykS6amag8SfqnbzdzF5OjvrJb+oTXhtSRsCdHC9yLHVGKJybFfelfwqoE?=
- =?us-ascii?Q?wE0j3Cme4VNGDTpWRg1I3XfrNDHaRBKkW6oO/ldAyGCslqSOeJs8JWvL8UHn?=
- =?us-ascii?Q?Z+HF8V5go8EHXYvFiOI9bEcHAht1FOv6KjPRF5wbCq2ACrOarZQeUcH6OaZI?=
- =?us-ascii?Q?Tx6FSR3uZNCBjR/1ZfDxvSU/fHrAl2Vy3CG9KX7MP6UaBtKEqJ4ggcv7XT5F?=
- =?us-ascii?Q?z7BzfBbVE/nuOTZkgvDnuNQ79dWFhOteVW5t4VgBNFZEL5NS8abfdBZ4qpJS?=
- =?us-ascii?Q?b5s4X1mAcGhPz75+WJJAJqJpJ/3mFBBuRj8DiUjy8jIi7dotA/5utW9PBq7H?=
- =?us-ascii?Q?/IXvGAwpgZLB4WPlRBxvFzww1oTC8tKo3+dv8cn2XHz7qkdvTbzwwq19CBsz?=
- =?us-ascii?Q?nH+Cj7EjhD/SG1e1YnK33TCTHt6WYjQUEEs38pkqWPS0z5RaTz0ENJBcQA9n?=
- =?us-ascii?Q?4hkxIG9x9HMH5PLLiHFx6/09H/OBx3OxZzSqBDntr3xnoqSrgDWhzte8INyT?=
- =?us-ascii?Q?+U/pgF6PE/uR7vQ9/I+n5cYB48K2gB2eU+WGnaHLLlUUdUTl4yk8AqYjjMdU?=
- =?us-ascii?Q?L80IrQvB8/VsyJjU6sebgXogXmr5yn6zHSAN0NgTVx8XFMuX1bFliBfKyAOe?=
- =?us-ascii?Q?RGtXIgIhJvJg7rti0JkCK0PVVnT/PalouMEamrYn1BjlG2H41zGaI+nMFz8u?=
- =?us-ascii?Q?+diq65OcuJhs4zvnywDyseNFPsxf/WMOiEnp/7oZ9t/2mrxhMQ9SHOI9g5sg?=
- =?us-ascii?Q?hBKoW1Kq5HXElLKklgV2L6Tj4oypKHW8hWIitZ3lT0DwLbEc2hJU3IzP9oZv?=
- =?us-ascii?Q?turlDiABGNvpCD/L8cHTPKV7kf8FB5NHIxN1hkOtgh94PzWy6/R2hjwO5nsh?=
- =?us-ascii?Q?wGtsy9KmOm2tfm1nySaF9SWXe3gKn5j+YLFZRXTyFHi7K/NJoLObleh5pWyx?=
- =?us-ascii?Q?GU3cuFPGzAAn2qKF79YsBypIs+SYiRCEZ6DeCRyhAbt7LOt8Dh5DwcAm2kFV?=
- =?us-ascii?Q?avJxtkiS5diT+HegBJHgiVti2laU4WkQuxd6oG4yx6G0YQSVyWqLwxQ6HUgm?=
- =?us-ascii?Q?z/K7OURu0QEjml4MYjbcMb7Mk17XucjiIUX0yamu7H0blxRJmKf5JRi1YRRN?=
- =?us-ascii?Q?04KJBwbHRJH2TY91NF/xHpyhCX7x5i+hEYTx82sNpZg6dcXOeNcnkXg6S0bD?=
- =?us-ascii?Q?7prMThuhtkm9KzNrSmIcimph9aBA7eVgRYhHbtq0W8hDfqTjL9hIrOURsUqQ?=
- =?us-ascii?Q?9kY9jgj9xZ+krKcYSBW01rm+reFVSKDzN+zsV5b5pHbfCSZ5pAAeqA6OfkSn?=
- =?us-ascii?Q?Nj+PrhYuuiLB874GsFxO4KpDBoBFt5Zoy+4PaAvQkLNZcJf2JpN32IxBb8ao?=
- =?us-ascii?Q?tBqZORQmNfJj1/8ZNJnrGtloJt+aGkyrBT0TTDtI/JGBn73FOfoEKuPFAEHE?=
- =?us-ascii?Q?G2UgWf4AkkmHdBHXeeRiflSBjAxz1Oh2GCe6koxOixXs8MRAQuU/AHH5oPbx?=
- =?us-ascii?Q?E4SNPYXWFwhdEHZSJ4PEIWO0Llu5pge4sWd2ifAR?=
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0:
-	QHT8opxtf83XbZdP1tlAx484PLW45dhV/L8Qp+k3nG+Uzh4lgT8mGmKX+KhzWeuRHpWXPQb3Sqv1O5O5YnASSh6hmxOmE1efOXxyYN1XKFuhlQ1mAlLTCsDOr0iFmks+qrR7TXX+LJPnKxwudKs5YN7+AT18Mf2VdH6bRaivNvhoMZGn6ES2O25Ho7Zzct772nZhRhacTJGluBlm6yLF9NIdRL4gohIICrcYIzy+TJqjcgFvhqPIEqEoQIQ1iKouBpulVh3AR3d+EOSlz70zKdOWrzA7T1BrAHqSSPFS56y6sU6PeUFNMHu5VNZYQ+1PjPbpcQ0rj1TMgDHehRN2RJ+nCIIoyXImJF4+bx1UpFntOktQz/+YCOZDRtCPbRhIXmA33p6sd2AwAN4+KFmFTicIXsLJ5SwZ8dUuNdzCVZWK8zeSHGkFz3akWffE693OnIQM/Uc26WhlkjoSdhSop+CV7cbTmp50hU3yA8iAjkBQrQMe7rr96tyc1uq3iYFPhhSuydHvuJYcn2swALdb6Z0BnayMzVOcfzEllRH/G8IQeU5L4g6mSo4eHgfIF2lI34s0RMHQKlYKqPqvodGjqi7BYZtj36aHUloT69jIP/w=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 06d6e504-f8ce-417c-bf0e-08de25bd769d
-X-MS-Exchange-CrossTenant-AuthSource: CH3PR10MB7329.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Nov 2025 09:41:20.8798
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: Vi1DrDLcEUOGdofceIRAcD+aotBR3l1rFS/KkcFWHxcJpRd54E+9S8130hehVkPxi+GqDWaw1g2SfR5cGT3Ljg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR10MB5841
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1121,Hydra:6.1.9,FMLib:17.12.100.49
- definitions=2025-11-17_02,2025-11-13_02,2025-10-01_01
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 phishscore=0 bulkscore=0
- mlxscore=0 malwarescore=0 adultscore=0 mlxlogscore=999 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2510240000
- definitions=main-2511170080
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUxMTE1MDAzMSBTYWx0ZWRfX2gALMXY1b2Oy
- BOjndhqkxDf6XDLqSzmhA7ODTUKdABsgf99qcI6DHh1WXL0EmjNS2jVlMmT+SOephROBqndZCxr
- qaIg9iNsR0K5l3oH+UK4Vt40G6tSbbtDFUrVHIXz+CJcJWm3w4GClLIDE4uQvkI9gDBAiK1Etn/
- ENWVucvgXp/+93KdHKVatoBAWUOC/zpNZfAmkIs66ayvgD4qGUyl4T+f2nPm4xsacGx5YgrXNQQ
- Tx4/L91gzlkoIYb8LDdK4aG7SG4GMp7xGpgECNDHwWGbTHKjlLDQozhW/h0ebTSN3CbbxgPJpPT
- rwF2IrzNe84vXRqU1D5pRffw3O39PuhK9zGJdI48tjNauE49r6sR491uRiaRDGL19TmqGPks9Vp
- utC929cp/rqFOxDsK77Bn59QTPq3iA==
-X-Proofpoint-ORIG-GUID: 76huLt_mYUb69-FWsJ7MOBz-kcnrSFVH
-X-Proofpoint-GUID: 76huLt_mYUb69-FWsJ7MOBz-kcnrSFVH
-X-Authority-Analysis: v=2.4 cv=a+o9NESF c=1 sm=1 tr=0 ts=691aedc5 cx=c_pps
- a=OOZaFjgC48PWsiFpTAqLcw==:117 a=OOZaFjgC48PWsiFpTAqLcw==:17
- a=6eWqkTHjU83fiwn7nKZWdM+Sl24=:19 a=z/mQ4Ysz8XfWz/Q5cLBRGdckG28=:19
- a=lCpzRmAYbLLaTzLvsPZ7Mbvzbb8=:19 a=xqWC_Br6kY4A:10 a=kj9zAlcOel0A:10
- a=6UeiqGixMTsA:10 a=GoEa3M9JfhUA:10 a=VkNPw1HP01LnGYTKEx00:22
- a=VwQbUJbxAAAA:8 a=nMxWCna17N_2zbbx6cUA:9 a=CjuIK1q_8ugA:10
- a=cPQSjfK2_nFv0Q5t_7PE:22
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Mon, Nov 17, 2025 at 06:17:47PM +0900, Harry Yoo wrote:
-> On Tue, Oct 28, 2025 at 09:58:19PM +0800, Qi Zheng wrote:
-> > diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> > index 2afd7f99ca101..d484b632c790f 100644
-> > --- a/mm/memcontrol.c
-> > +++ b/mm/memcontrol.c
-> > @@ -2871,7 +2865,7 @@ int __memcg_kmem_charge_page(struct page *page, gfp_t gfp, int order)
-> >  	int ret = 0;
-> >  
-> >  	objcg = current_obj_cgroup();
-> > -	if (objcg) {
-> > +	if (!obj_cgroup_is_root(objcg)) {
-> 
-> Now that we support the page and slab allocators support allocating memory
-> in NMI contexts (on some archs), current_obj_cgroup() can return NULL
-> if (IS_ENABLED(CONFIG_MEMCG_NMI_UNSAFE) && in_nmi()) returns true
-> (then it leads to a NULL-pointer-deref bug).
+On 2025/11/17 15:45, Chen Ridong  Wrote:
+>On 2025/11/17 9:57, Sun Shaojie wrote:
+>> In cgroup v2, a mutual overlap check is required when at least one of two
+>> cpusets is exclusive. However, this check should be relaxed and limited to
+>> cases where both cpusets are exclusive.
+>> 
+>> This patch ensures that for sibling cpusets A1 (exclusive) and B1
+>> (non-exclusive), change B1 cannot affect A1's exclusivity.
+>> 
+>> for example. Assume a machine has 4 CPUs (0-3).
+>> 
+>>    root cgroup
+>>       /    \
+>>     A1      B1
+>> 
+>> Case 1:
+>>  Table 1.1: Before applying the patch
+>>  Step                                       | A1's prstate | B1'sprstate |
+>>  #1> echo "0-1" > A1/cpuset.cpus            | member       | member      |
+>>  #2> echo "root" > A1/cpuset.cpus.partition | root         | member      |
+>>  #3> echo "0" > B1/cpuset.cpus              | root invalid | member      |
+>> 
+>> After step #3, A1 changes from "root" to "root invalid" because its CPUs
+>> (0-1) overlap with those requested by B1 (0-3). However, B1 can actually
+>
+>B1 (0-3) --> B1(0) ?
 
-This is a real issue, but
+Sorry, that was a typo. It should indeed be B1 (0).
 
-> But IIUC this is applied to kmem charging only (as they use this_cpu ops
-> for stats update), and we don't have to apply the same restriction to
-> charging LRU pages with objcg.
+>
+>> use CPUs 2-3(from B1's parent), so it would be more reasonable for A1 to
+>> remain as "root."
+>> 
+>>  Table 1.2: After applying the patch
+>>  Step                                       | A1's prstate | B1'sprstate |
+>>  #1> echo "0-1" > A1/cpuset.cpus            | member       | member      |
+>>  #2> echo "root" > A1/cpuset.cpus.partition | root         | member      |
+>>  #3> echo "0" > B1/cpuset.cpus              | root         | member      |
+>> 
+>> All other cases remain unaffected. For example, cgroup-v1, both A1 and B1
+>> are exclusive or non-exlusive.
+>> 
+>> Signed-off-by: Sun Shaojie <sunshaojie@kylinos.cn>
+>> ---
+>>  kernel/cgroup/cpuset-internal.h               |  3 ++
+>>  kernel/cgroup/cpuset-v1.c                     | 20 +++++++++
+>>  kernel/cgroup/cpuset.c                        | 43 ++++++++++++++-----
+>>  .../selftests/cgroup/test_cpuset_prs.sh       |  5 ++-
+>>  4 files changed, 58 insertions(+), 13 deletions(-)
+>> 
+>> diff --git a/kernel/cgroup/cpuset-internal.h b/kernel/cgroup/cpuset-internal.h
+>> index 337608f408ce..c53111998432 100644
+>> --- a/kernel/cgroup/cpuset-internal.h
+>> +++ b/kernel/cgroup/cpuset-internal.h
+>> @@ -292,6 +292,7 @@ void cpuset1_hotplug_update_tasks(struct cpuset *cs,
+>>  			    struct cpumask *new_cpus, nodemask_t *new_mems,
+>>  			    bool cpus_updated, bool mems_updated);
+>>  int cpuset1_validate_change(struct cpuset *cur, struct cpuset *trial);
+>> +bool cpuset1_cpus_excl_conflict(struct cpuset *cs1, struct cpuset *cs2);
+>>  #else
+>>  static inline void fmeter_init(struct fmeter *fmp) {}
+>>  static inline void cpuset1_update_task_spread_flags(struct cpuset *cs,
+>> @@ -302,6 +303,8 @@ static inline void cpuset1_hotplug_update_tasks(struct cpuset *cs,
+>>  			    bool cpus_updated, bool mems_updated) {}
+>>  static inline int cpuset1_validate_change(struct cpuset *cur,
+>>  				struct cpuset *trial) { return 0; }
+>> +static inline bool cpuset1_cpus_excl_conflict(struct cpuset *cs1,
+>> +				struct cpuset *cs2) {return false; }
+>>  #endif /* CONFIG_CPUSETS_V1 */
+>>  
+>>  #endif /* __CPUSET_INTERNAL_H */
+>> diff --git a/kernel/cgroup/cpuset-v1.c b/kernel/cgroup/cpuset-v1.c
+>> index 12e76774c75b..5c1296bf6a34 100644
+>> --- a/kernel/cgroup/cpuset-v1.c
+>> +++ b/kernel/cgroup/cpuset-v1.c
+>> @@ -373,6 +373,26 @@ int cpuset1_validate_change(struct cpuset *cur, struct cpuset *trial)
+>>  	return ret;
+>>  }
+>>  
+>> +/*
+>> + * cpuset1_cpus_excl_conflict() - Check if two cpusets have exclusive CPU conflicts
+>> + *                                to legacy (v1)
+>> + * @cs1: first cpuset to check
+>> + * @cs2: second cpuset to check
+>> + *
+>> + * Returns: true if CPU exclusivity conflict exists, false otherwise
+>> + *
+>> + * If either cpuset is CPU exclusive, their allowed CPUs cannot intersect.
+>> + */
+>> +bool cpuset1_cpus_excl_conflict(struct cpuset *cs1, struct cpuset *cs2)
+>> +{
+>> +	if (is_cpu_exclusive(cs1) || is_cpu_exclusive(cs2))
+>> +		if (cpumask_intersects(cs1->cpus_allowed,
+>> +				       cs2->cpus_allowed))
+>> +			return true;
+>> +
+>> +	return false;
+>> +}
+>> +
+>>  #ifdef CONFIG_PROC_PID_CPUSET
+>>  /*
+>>   * proc_cpuset_show()
+>> diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
+>> index 52468d2c178a..0fd803612513 100644
+>> --- a/kernel/cgroup/cpuset.c
+>> +++ b/kernel/cgroup/cpuset.c
+>> @@ -580,35 +580,56 @@ static inline bool cpusets_are_exclusive(struct cpuset *cs1, struct cpuset *cs2)
+>>  
+>>  /**
+>>   * cpus_excl_conflict - Check if two cpusets have exclusive CPU conflicts
+>> - * @cs1: first cpuset to check
+>> - * @cs2: second cpuset to check
+>> + * @cs1: current cpuset to check
+>> + * @cs2: cpuset involved in the check
+>>   *
+>>   * Returns: true if CPU exclusivity conflict exists, false otherwise
+>>   *
+>>   * Conflict detection rules:
+>> - * 1. If either cpuset is CPU exclusive, they must be mutually exclusive
+>> + * For cgroup-v1:
+>> + *     see cpuset1_cpus_excl_conflict()
+>> + * For cgroup-v2:
+>> + * 1. If cs1 is exclusive, cs1 and cs2 must be mutually exclusive
+>>   * 2. exclusive_cpus masks cannot intersect between cpusets
+>> - * 3. The allowed CPUs of one cpuset cannot be a subset of another's exclusive CPUs
+>> + * 3. If cs2 is exclusive, cs2's allowed CPUs cannot be a subset of cs1's exclusive CPUs
+>> + * 4. if cs1 and cs2 are not exclusive, the allowed CPUs of one cpuset cannot be a subset
+>> + *    of another's exclusive CPUs
+>>   */
+>
+>The revised conflict detection rules are confusing to me. I thought cs1 and cs2 should be treated
+>symmetrically, but that doesn’t seem to be the case here.
+>
+>Shouldn’t the following rule apply regardless of whether cs1 or cs2 is exclusive: "The allowed CPUs
+>of one cpuset cannot be a subset of another's exclusive CPUs"?
+>
 
-actually this should be fine for now since we use get_mem_cgroup_from_mm()
-and obj_cgroup_from_memcg() instead of current_obj_cgroup() when charging
-LRU pages.
 
-But it is not immediately obvious that there are multiple ways to get
-an objcg, each with different restrictions depending on what you are
-going to charge :/
+Certainly, this rule applies regardless of whether cs1 or cs2 is exclusive,
+and the current implementation already handles it this way.
+The following two cases cover this rule. 
+"1. If cs1 is exclusive, cs1 and cs2 must be mutually exclusive"
+"3. If cs2 is exclusive, cs2's allowed CPUs cannot be a subset of cs1's exclusive CPUs"
 
-> Maybe Shakeel has more insight on this.
-> 
-> Link: https://lore.kernel.org/all/20250519063142.111219-1-shakeel.butt@linux.dev
 
--- 
-Cheers,
-Harry / Hyeonggon
+>>  static inline bool cpus_excl_conflict(struct cpuset *cs1, struct cpuset *cs2)
+>>  {
+>> -	/* If either cpuset is exclusive, check if they are mutually exclusive */
+>> -	if (is_cpu_exclusive(cs1) || is_cpu_exclusive(cs2))
+>> +	/* For cgroup-v1 */
+>> +	if (!cpuset_v2())
+>> +		return cpuset1_cpus_excl_conflict(cs1, cs2);
+>> +
+>> +	/* If cs1 are exclusive, check if they are mutually exclusive */
+>> +	if (is_cpu_exclusive(cs1))
+>>  		return !cpusets_are_exclusive(cs1, cs2);
+>>  
+>> +	/* The following check applies when either
+>> +	 * both cs1 and cs2 are non-exclusive，or
+>> +	 * only cs2 is exclusive.
+>> +	 */
+>> +
+>>  	/* Exclusive_cpus cannot intersect */
+>>  	if (cpumask_intersects(cs1->exclusive_cpus, cs2->exclusive_cpus))
+>>  		return true;
+>>  
+>> -	/* The cpus_allowed of one cpuset cannot be a subset of another cpuset's exclusive_cpus */
+>> -	if (!cpumask_empty(cs1->cpus_allowed) &&
+>> -	    cpumask_subset(cs1->cpus_allowed, cs2->exclusive_cpus))
+>> -		return true;
+>> -
+>> +	/* cs2's allowed CPUs cannot be a subset of cs1's exclusive CPUs */
+>>  	if (!cpumask_empty(cs2->cpus_allowed) &&
+>>  	    cpumask_subset(cs2->cpus_allowed, cs1->exclusive_cpus))
+>>  		return true;
+>>  
+>> +	/* If cs2 is exclusive, check finished here */
+>> +	if (is_cpu_exclusive(cs2))
+>> +		return false;
+>> +
+>> +	/* The following check applies only if both cs1 and cs2 are non-exclusive. */
+>> +
+>> +	/* cs1's allowed CPUs cannot be a subset of cs1's exclusive CPUs */
+>> +	if (!cpumask_empty(cs1->cpus_allowed) &&
+>> +	    cpumask_subset(cs1->cpus_allowed, cs2->exclusive_cpus))
+>> +		return true;
+>> +
+>>  	return false;
+>>  }
+>>  
+>
+>From your commit message, it appears you intend to modify "if (is_cpu_exclusive(cs1) ||
+>is_cpu_exclusive(cs2))" to "if (is_cpu_exclusive(cs1) && is_cpu_exclusive(cs2))".
+>
+>However, I’m having trouble following the change.
+>
+
+The current modification specifically addresses the scenario where one cpuset
+A1 is exclusive and its sibling cpuset B1 is non-exclusive. 
+The goal is to ensure that when the non-exclusive cpuset B1 modifies its own
+"cpuset.cpus" or "cpuset.cpus.exclusive", it does not cause A1 to change from 
+exclusive to non-exclusive.
+
+The following three scenarios are not affected by this patch:
+1.both A1 and B1 are exclusive.
+2.both A1 and B1 are non-exclusive.
+3.A1 is exclusive, B1 is non-exclusive, change "cpuset.cpus" or "cpuset.cpus.exclusive" of A1.
+
+
+>> diff --git a/tools/testing/selftests/cgroup/test_cpuset_prs.sh b/tools/testing/selftests/cgroup/test_cpuset_prs.sh
+>> index a17256d9f88a..b848bc0729cf 100755
+>> --- a/tools/testing/selftests/cgroup/test_cpuset_prs.sh
+>> +++ b/tools/testing/selftests/cgroup/test_cpuset_prs.sh
+>> @@ -388,10 +388,11 @@ TEST_MATRIX=(
+>>  	"  C0-1:S+  C1      .    C2-3     .      P2     .      .     0 A1:0-1|A2:1 A1:P0|A2:P-2"
+>>  	"  C0-1:S+ C1:P2    .    C2-3     P1     .      .      .     0 A1:0|A2:1 A1:P1|A2:P2 0-1|1"
+>>  
+>> -	# A non-exclusive cpuset.cpus change will invalidate partition and its siblings
+>> +	# A non-exclusive cpuset.cpus change will not invalidate its siblings partition.
+>> +	# But a exclusive cpuset.cpus change will invalidate itself.
+>>  	"  C0-1:P1   .      .    C2-3   C0-2     .      .      .     0 A1:0-2|B1:2-3 A1:P-1|B1:P0"
+>>  	"  C0-1:P1   .      .  P1:C2-3  C0-2     .      .      .     0 A1:0-2|B1:2-3 A1:P-1|B1:P-1"
+>> -	"   C0-1     .      .  P1:C2-3  C0-2     .      .      .     0 A1:0-2|B1:2-3 A1:P0|B1:P-1"
+>> +	"   C0-1     .      .  P1:C2-3  C0-2     .      .      .     0 A1:0-1|B1:2-3 A1:P0|B1:P1"
+>>  
+>>  	# cpuset.cpus can overlap with sibling cpuset.cpus.exclusive but not subsumed by it
+>>  	"   C0-3     .      .    C4-5     X5     .      .      .     0 A1:0-3|B1:4-5"
+>
 
