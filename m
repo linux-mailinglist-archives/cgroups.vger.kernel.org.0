@@ -1,322 +1,97 @@
-Return-Path: <cgroups+bounces-12042-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-12043-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id 01091C63DFB
-	for <lists+cgroups@lfdr.de>; Mon, 17 Nov 2025 12:42:09 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9772DC63E8B
+	for <lists+cgroups@lfdr.de>; Mon, 17 Nov 2025 12:47:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 89D894E85CF
-	for <lists+cgroups@lfdr.de>; Mon, 17 Nov 2025 11:37:53 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTPS id 502E828A57
+	for <lists+cgroups@lfdr.de>; Mon, 17 Nov 2025 11:47:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED82032ABFB;
-	Mon, 17 Nov 2025 11:37:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B40C932C947;
+	Mon, 17 Nov 2025 11:47:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=toke.dk header.i=@toke.dk header.b="OER8VvtA"
 X-Original-To: cgroups@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+Received: from mail.toke.dk (mail.toke.dk [45.145.95.4])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D1047320CB5;
-	Mon, 17 Nov 2025 11:37:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2108E32B9AE;
+	Mon, 17 Nov 2025 11:47:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.145.95.4
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763379457; cv=none; b=rFR4rN3mge0pqOQbWH6tHyP4dE82Obtg6p0q7BJTBxmcVFPtLWkVS4YriUD60Yz4ADrtM9ffe/SXT2NC0cjpv3FVmt8r5apW/w3/+xXzSqAu9wRl7a3cq2C/HNyKKXKfKKdm6tKC7lIIAOINz4H6CEXwnBauUgL9I/lM/rddF/w=
+	t=1763380036; cv=none; b=rf5bzaKX71raR0x7fYUM64t9uaw3DKYKeN5+/NjDd6eAGhugBM/tc0L9gpgvt336FsBf3dNnbEf8dDqsNKsSApXexbyzIJPK3bWHmpSk9Znfgt36c0DHNTnkFRqfsHY8RJ6DtZ/sItN0o09Y/njoczSME3OIwlW1dy8ToTz9J94=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763379457; c=relaxed/simple;
-	bh=h7xExUgJ2PMfCCbOEdTmw1MHf+lPsPBwvkENqcV6bmU=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=VLvUEejzUv00CAtw32T0fixpu4KKfevn+EoIhRKI7h/dyX5STNzhqZhPiz06yquhrRkAEEZUTL9v/nKaFeSugSyP3oMFwbujA/pqgLYI/Q689iu2ufXqbZyUPSDM30SAqRvDJVH6AOaVjFL+yA+nO9n3uKDsmxvfs+eYm9vroDg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.235])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTPS id 4d95Lb6TDDzYQvKh;
-	Mon, 17 Nov 2025 19:36:55 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.128])
-	by mail.maildlp.com (Postfix) with ESMTP id 9AF421A0C96;
-	Mon, 17 Nov 2025 19:37:32 +0800 (CST)
-Received: from [10.67.111.176] (unknown [10.67.111.176])
-	by APP4 (Coremail) with SMTP id gCh0CgB3n1z7CBtp73g7BA--.60798S2;
-	Mon, 17 Nov 2025 19:37:32 +0800 (CST)
-Message-ID: <f32d2f31-630f-450b-911f-b512bbeb380a@huaweicloud.com>
-Date: Mon, 17 Nov 2025 19:37:31 +0800
+	s=arc-20240116; t=1763380036; c=relaxed/simple;
+	bh=18AThoJ1F5XQlVvAYjRYKKUnjnNDdRj8jhe5/a7p0Ss=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=fihHClnSu06lbwCCo62Xbt7+OoD3hFTTQQ4IH+bL2cCx4bpESFf/+pz7KtIOHyDNKGPnXwpXHHQM/+U2N9TvX+L8pi48mBLRnwGi+m/W0w3bR7AJnVZgOJ0CM9W/sKP5OfbZUONM9VCprJH3eJUuh1OarZKtHTcWBMG7XOcrWwk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=toke.dk; spf=pass smtp.mailfrom=toke.dk; dkim=pass (2048-bit key) header.d=toke.dk header.i=@toke.dk header.b=OER8VvtA; arc=none smtp.client-ip=45.145.95.4
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=toke.dk
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=toke.dk
+From: Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@toke.dk>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=toke.dk; s=20161023;
+	t=1763380031; bh=18AThoJ1F5XQlVvAYjRYKKUnjnNDdRj8jhe5/a7p0Ss=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+	b=OER8VvtAWTP0L0fklHIXgvMbFN6jQ42q7ikGcR7PT1lfcpE+sk1vaFPlgwmYfxh2u
+	 Pq0y/kJUlVETtENUzSDWBD29nZ2oAwTrefvL8GaBT/YWNG1U5Mjq4+u8N2zaMvWGEW
+	 D0+efZ3KilUrlzGa4RTfgyZqCWS8ZZBaKN5UMhTzrzKUnNddCaSBPAq9WMvcT+Ds69
+	 3092p0XYV87EDLK8QwERXg2JcshEZMZcTB0vts1w1Xkp4t6mwezRfsELFuLCBJODqY
+	 ihba2OAwwWb9Fs/T1FQnHaijPFLuUVe/E+WYicL9bzWdCRfMuTnCXAFDCbIwAZWgF0
+	 sOcUAGdTe3FmA==
+To: pengdonglin <dolinux.peng@gmail.com>, tj@kernel.org,
+ tony.luck@intel.com, jani.nikula@linux.intel.com, ap420073@gmail.com,
+ jv@jvosburgh.net, freude@linux.ibm.com, bcrl@kvack.org,
+ trondmy@kernel.org, longman@redhat.com, kees@kernel.org
+Cc: bigeasy@linutronix.de, hdanton@sina.com, paulmck@kernel.org,
+ linux-kernel@vger.kernel.org, linux-rt-devel@lists.linux.dev,
+ linux-nfs@vger.kernel.org, linux-aio@kvack.org,
+ linux-fsdevel@vger.kernel.org, linux-security-module@vger.kernel.org,
+ netdev@vger.kernel.org, intel-gfx@lists.freedesktop.org,
+ linux-wireless@vger.kernel.org, linux-acpi@vger.kernel.org,
+ linux-s390@vger.kernel.org, cgroups@vger.kernel.org, pengdonglin
+ <dolinux.peng@gmail.com>, Jakub Kicinski <kuba@kernel.org>, pengdonglin
+ <pengdonglin@xiaomi.com>
+Subject: Re: [PATCH v3 14/14] wifi: ath9k: Remove redundant
+ rcu_read_lock/unlock() in spin_lock
+In-Reply-To: <20250916044735.2316171-15-dolinux.peng@gmail.com>
+References: <20250916044735.2316171-1-dolinux.peng@gmail.com>
+ <20250916044735.2316171-15-dolinux.peng@gmail.com>
+Date: Mon, 17 Nov 2025 12:47:07 +0100
+X-Clacks-Overhead: GNU Terry Pratchett
+Message-ID: <87fracop8k.fsf@toke.dk>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 1/1] cpuset: relax the overlap check for cgroup-v2
-To: Sun Shaojie <sunshaojie@kylinos.cn>
-Cc: cgroups@vger.kernel.org, hannes@cmpxchg.org,
- linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
- llong@redhat.com, mkoutny@suse.com, shuah@kernel.org, tj@kernel.org
-References: <fe8046d7-1f21-4b23-92f2-6be24ef9f58b@huaweicloud.com>
- <20251117100047.1101975-1-sunshaojie@kylinos.cn>
-Content-Language: en-US
-From: Chen Ridong <chenridong@huaweicloud.com>
-In-Reply-To: <20251117100047.1101975-1-sunshaojie@kylinos.cn>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:gCh0CgB3n1z7CBtp73g7BA--.60798S2
-X-Coremail-Antispam: 1UD129KBjvJXoWfJw1UGw4DGry8Cry8Xr4rAFb_yoWDWr13pF
-	W8GF4jya1jgr15Cw13tw1kWrsaq3yIqFnrJrn8Jr1rAF9xtF1xArn5JwnxCFy5Ars8Gw15
-	ZFZFy3yfuFn8tFDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUyCb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxkF7I0En4kS14v26r1q6r43MxAIw28IcxkI7VAK
-	I48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7
-	xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xII
-	jxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw2
-	0EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Gr0_Cr1lIxAIcVC2z280aVCY1x02
-	67AKxVW8Jr0_Cr1UYxBIdaVFxhVjvjDU0xZFpf9x07UAwIDUUUUU=
-X-CM-SenderInfo: hfkh02xlgr0w46kxt4xhlfz01xgou0bp/
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
+pengdonglin <dolinux.peng@gmail.com> writes:
 
+> From: pengdonglin <pengdonglin@xiaomi.com>
+>
+> Since commit a8bb74acd8efe ("rcu: Consolidate RCU-sched update-side funct=
+ion definitions")
+> there is no difference between rcu_read_lock(), rcu_read_lock_bh() and
+> rcu_read_lock_sched() in terms of RCU read section and the relevant grace
+> period. That means that spin_lock(), which implies rcu_read_lock_sched(),
+> also implies rcu_read_lock().
+>
+> There is no need no explicitly start a RCU read section if one has already
+> been started implicitly by spin_lock().
+>
+> Simplify the code and remove the inner rcu_read_lock() invocation.
+>
+> Cc: "Toke" <toke@toke.dk>
+> Cc: Jakub Kicinski <kuba@kernel.org>
+> Signed-off-by: pengdonglin <pengdonglin@xiaomi.com>
+> Signed-off-by: pengdonglin <dolinux.peng@gmail.com>
 
-On 2025/11/17 18:00, Sun Shaojie wrote:
-> On 2025/11/17 15:45, Chen Ridong  Wrote:
->> On 2025/11/17 9:57, Sun Shaojie wrote:
->>> In cgroup v2, a mutual overlap check is required when at least one of two
->>> cpusets is exclusive. However, this check should be relaxed and limited to
->>> cases where both cpusets are exclusive.
->>>
->>> This patch ensures that for sibling cpusets A1 (exclusive) and B1
->>> (non-exclusive), change B1 cannot affect A1's exclusivity.
->>>
->>> for example. Assume a machine has 4 CPUs (0-3).
->>>
->>>    root cgroup
->>>       /    \
->>>     A1      B1
->>>
->>> Case 1:
->>>  Table 1.1: Before applying the patch
->>>  Step                                       | A1's prstate | B1'sprstate |
->>>  #1> echo "0-1" > A1/cpuset.cpus            | member       | member      |
->>>  #2> echo "root" > A1/cpuset.cpus.partition | root         | member      |
->>>  #3> echo "0" > B1/cpuset.cpus              | root invalid | member      |
->>>
->>> After step #3, A1 changes from "root" to "root invalid" because its CPUs
->>> (0-1) overlap with those requested by B1 (0-3). However, B1 can actually
->>
->> B1 (0-3) --> B1(0) ?
-> 
-> Sorry, that was a typo. It should indeed be B1 (0).
-> 
->>
->>> use CPUs 2-3(from B1's parent), so it would be more reasonable for A1 to
->>> remain as "root."
->>>
->>>  Table 1.2: After applying the patch
->>>  Step                                       | A1's prstate | B1'sprstate |
->>>  #1> echo "0-1" > A1/cpuset.cpus            | member       | member      |
->>>  #2> echo "root" > A1/cpuset.cpus.partition | root         | member      |
->>>  #3> echo "0" > B1/cpuset.cpus              | root         | member      |
->>>
->>> All other cases remain unaffected. For example, cgroup-v1, both A1 and B1
->>> are exclusive or non-exlusive.
->>>
->>> Signed-off-by: Sun Shaojie <sunshaojie@kylinos.cn>
->>> ---
->>>  kernel/cgroup/cpuset-internal.h               |  3 ++
->>>  kernel/cgroup/cpuset-v1.c                     | 20 +++++++++
->>>  kernel/cgroup/cpuset.c                        | 43 ++++++++++++++-----
->>>  .../selftests/cgroup/test_cpuset_prs.sh       |  5 ++-
->>>  4 files changed, 58 insertions(+), 13 deletions(-)
->>>
->>> diff --git a/kernel/cgroup/cpuset-internal.h b/kernel/cgroup/cpuset-internal.h
->>> index 337608f408ce..c53111998432 100644
->>> --- a/kernel/cgroup/cpuset-internal.h
->>> +++ b/kernel/cgroup/cpuset-internal.h
->>> @@ -292,6 +292,7 @@ void cpuset1_hotplug_update_tasks(struct cpuset *cs,
->>>  			    struct cpumask *new_cpus, nodemask_t *new_mems,
->>>  			    bool cpus_updated, bool mems_updated);
->>>  int cpuset1_validate_change(struct cpuset *cur, struct cpuset *trial);
->>> +bool cpuset1_cpus_excl_conflict(struct cpuset *cs1, struct cpuset *cs2);
->>>  #else
->>>  static inline void fmeter_init(struct fmeter *fmp) {}
->>>  static inline void cpuset1_update_task_spread_flags(struct cpuset *cs,
->>> @@ -302,6 +303,8 @@ static inline void cpuset1_hotplug_update_tasks(struct cpuset *cs,
->>>  			    bool cpus_updated, bool mems_updated) {}
->>>  static inline int cpuset1_validate_change(struct cpuset *cur,
->>>  				struct cpuset *trial) { return 0; }
->>> +static inline bool cpuset1_cpus_excl_conflict(struct cpuset *cs1,
->>> +				struct cpuset *cs2) {return false; }
->>>  #endif /* CONFIG_CPUSETS_V1 */
->>>  
->>>  #endif /* __CPUSET_INTERNAL_H */
->>> diff --git a/kernel/cgroup/cpuset-v1.c b/kernel/cgroup/cpuset-v1.c
->>> index 12e76774c75b..5c1296bf6a34 100644
->>> --- a/kernel/cgroup/cpuset-v1.c
->>> +++ b/kernel/cgroup/cpuset-v1.c
->>> @@ -373,6 +373,26 @@ int cpuset1_validate_change(struct cpuset *cur, struct cpuset *trial)
->>>  	return ret;
->>>  }
->>>  
->>> +/*
->>> + * cpuset1_cpus_excl_conflict() - Check if two cpusets have exclusive CPU conflicts
->>> + *                                to legacy (v1)
->>> + * @cs1: first cpuset to check
->>> + * @cs2: second cpuset to check
->>> + *
->>> + * Returns: true if CPU exclusivity conflict exists, false otherwise
->>> + *
->>> + * If either cpuset is CPU exclusive, their allowed CPUs cannot intersect.
->>> + */
->>> +bool cpuset1_cpus_excl_conflict(struct cpuset *cs1, struct cpuset *cs2)
->>> +{
->>> +	if (is_cpu_exclusive(cs1) || is_cpu_exclusive(cs2))
->>> +		if (cpumask_intersects(cs1->cpus_allowed,
->>> +				       cs2->cpus_allowed))
->>> +			return true;
->>> +
->>> +	return false;
->>> +}
->>> +
->>>  #ifdef CONFIG_PROC_PID_CPUSET
->>>  /*
->>>   * proc_cpuset_show()
->>> diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
->>> index 52468d2c178a..0fd803612513 100644
->>> --- a/kernel/cgroup/cpuset.c
->>> +++ b/kernel/cgroup/cpuset.c
->>> @@ -580,35 +580,56 @@ static inline bool cpusets_are_exclusive(struct cpuset *cs1, struct cpuset *cs2)
->>>  
->>>  /**
->>>   * cpus_excl_conflict - Check if two cpusets have exclusive CPU conflicts
->>> - * @cs1: first cpuset to check
->>> - * @cs2: second cpuset to check
->>> + * @cs1: current cpuset to check
->>> + * @cs2: cpuset involved in the check
->>>   *
->>>   * Returns: true if CPU exclusivity conflict exists, false otherwise
->>>   *
->>>   * Conflict detection rules:
->>> - * 1. If either cpuset is CPU exclusive, they must be mutually exclusive
->>> + * For cgroup-v1:
->>> + *     see cpuset1_cpus_excl_conflict()
->>> + * For cgroup-v2:
->>> + * 1. If cs1 is exclusive, cs1 and cs2 must be mutually exclusive
->>>   * 2. exclusive_cpus masks cannot intersect between cpusets
->>> - * 3. The allowed CPUs of one cpuset cannot be a subset of another's exclusive CPUs
->>> + * 3. If cs2 is exclusive, cs2's allowed CPUs cannot be a subset of cs1's exclusive CPUs
->>> + * 4. if cs1 and cs2 are not exclusive, the allowed CPUs of one cpuset cannot be a subset
->>> + *    of another's exclusive CPUs
->>>   */
->>
->> The revised conflict detection rules are confusing to me. I thought cs1 and cs2 should be treated
->> symmetrically, but that doesn’t seem to be the case here.
->>
->> Shouldn’t the following rule apply regardless of whether cs1 or cs2 is exclusive: "The allowed CPUs
->> of one cpuset cannot be a subset of another's exclusive CPUs"?
->>
-> 
-> 
-> Certainly, this rule applies regardless of whether cs1 or cs2 is exclusive,
-> and the current implementation already handles it this way.
-> The following two cases cover this rule. 
-> "1. If cs1 is exclusive, cs1 and cs2 must be mutually exclusive"
-> "3. If cs2 is exclusive, cs2's allowed CPUs cannot be a subset of cs1's exclusive CPUs"
-> 
-
-I believe this function should return the same result regardless of whether it is called as
-cpus_excl_conflict(A1, B1) or cpus_excl_conflict(B1, A1), which means cs1 and cs2 should be treated
-symmetrically. However, since cs1 and cs2 are handled differently, it is difficult to convince me
-that this implementation is correct.
-
-> 
->>>  static inline bool cpus_excl_conflict(struct cpuset *cs1, struct cpuset *cs2)
->>>  {
->>> -	/* If either cpuset is exclusive, check if they are mutually exclusive */
->>> -	if (is_cpu_exclusive(cs1) || is_cpu_exclusive(cs2))
->>> +	/* For cgroup-v1 */
->>> +	if (!cpuset_v2())
->>> +		return cpuset1_cpus_excl_conflict(cs1, cs2);
->>> +
->>> +	/* If cs1 are exclusive, check if they are mutually exclusive */
->>> +	if (is_cpu_exclusive(cs1))
->>>  		return !cpusets_are_exclusive(cs1, cs2);
->>>  
->>> +	/* The following check applies when either
->>> +	 * both cs1 and cs2 are non-exclusive，or
->>> +	 * only cs2 is exclusive.
->>> +	 */
->>> +
->>>  	/* Exclusive_cpus cannot intersect */
->>>  	if (cpumask_intersects(cs1->exclusive_cpus, cs2->exclusive_cpus))
->>>  		return true;
->>>  
->>> -	/* The cpus_allowed of one cpuset cannot be a subset of another cpuset's exclusive_cpus */
->>> -	if (!cpumask_empty(cs1->cpus_allowed) &&
->>> -	    cpumask_subset(cs1->cpus_allowed, cs2->exclusive_cpus))
->>> -		return true;
->>> -
->>> +	/* cs2's allowed CPUs cannot be a subset of cs1's exclusive CPUs */
->>>  	if (!cpumask_empty(cs2->cpus_allowed) &&
->>>  	    cpumask_subset(cs2->cpus_allowed, cs1->exclusive_cpus))
->>>  		return true;
->>>  
->>> +	/* If cs2 is exclusive, check finished here */
->>> +	if (is_cpu_exclusive(cs2))
->>> +		return false;
->>> +
->>> +	/* The following check applies only if both cs1 and cs2 are non-exclusive. */
->>> +
->>> +	/* cs1's allowed CPUs cannot be a subset of cs1's exclusive CPUs */
->>> +	if (!cpumask_empty(cs1->cpus_allowed) &&
->>> +	    cpumask_subset(cs1->cpus_allowed, cs2->exclusive_cpus))
->>> +		return true;
->>> +
->>>  	return false;
->>>  }
->>>  
->>
->>From your commit message, it appears you intend to modify "if (is_cpu_exclusive(cs1) ||
->> is_cpu_exclusive(cs2))" to "if (is_cpu_exclusive(cs1) && is_cpu_exclusive(cs2))".
->>
->> However, I’m having trouble following the change.
->>
-> 
-> The current modification specifically addresses the scenario where one cpuset
-> A1 is exclusive and its sibling cpuset B1 is non-exclusive. 
-> The goal is to ensure that when the non-exclusive cpuset B1 modifies its own
-> "cpuset.cpus" or "cpuset.cpus.exclusive", it does not cause A1 to change from 
-> exclusive to non-exclusive.
-> 
-> The following three scenarios are not affected by this patch:
-> 1.both A1 and B1 are exclusive.
-> 2.both A1 and B1 are non-exclusive.
-> 3.A1 is exclusive, B1 is non-exclusive, change "cpuset.cpus" or "cpuset.cpus.exclusive" of A1.
-> 
-> 
->>> diff --git a/tools/testing/selftests/cgroup/test_cpuset_prs.sh b/tools/testing/selftests/cgroup/test_cpuset_prs.sh
->>> index a17256d9f88a..b848bc0729cf 100755
->>> --- a/tools/testing/selftests/cgroup/test_cpuset_prs.sh
->>> +++ b/tools/testing/selftests/cgroup/test_cpuset_prs.sh
->>> @@ -388,10 +388,11 @@ TEST_MATRIX=(
->>>  	"  C0-1:S+  C1      .    C2-3     .      P2     .      .     0 A1:0-1|A2:1 A1:P0|A2:P-2"
->>>  	"  C0-1:S+ C1:P2    .    C2-3     P1     .      .      .     0 A1:0|A2:1 A1:P1|A2:P2 0-1|1"
->>>  
->>> -	# A non-exclusive cpuset.cpus change will invalidate partition and its siblings
->>> +	# A non-exclusive cpuset.cpus change will not invalidate its siblings partition.
->>> +	# But a exclusive cpuset.cpus change will invalidate itself.
->>>  	"  C0-1:P1   .      .    C2-3   C0-2     .      .      .     0 A1:0-2|B1:2-3 A1:P-1|B1:P0"
->>>  	"  C0-1:P1   .      .  P1:C2-3  C0-2     .      .      .     0 A1:0-2|B1:2-3 A1:P-1|B1:P-1"
->>> -	"   C0-1     .      .  P1:C2-3  C0-2     .      .      .     0 A1:0-2|B1:2-3 A1:P0|B1:P-1"
->>> +	"   C0-1     .      .  P1:C2-3  C0-2     .      .      .     0 A1:0-1|B1:2-3 A1:P0|B1:P1"
->>>  
->>>  	# cpuset.cpus can overlap with sibling cpuset.cpus.exclusive but not subsumed by it
->>>  	"   C0-3     .      .    C4-5     X5     .      .      .     0 A1:0-3|B1:4-5"
->>
-
--- 
-Best regards,
-Ridong
+Acked-by: Toke H=C3=B8iland-J=C3=B8rgensen <toke@toke.dk>
 
 
