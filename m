@@ -1,159 +1,193 @@
-Return-Path: <cgroups+bounces-12029-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-12030-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E4DDDC623D2
-	for <lists+cgroups@lfdr.de>; Mon, 17 Nov 2025 04:24:09 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id 52B19C6253F
+	for <lists+cgroups@lfdr.de>; Mon, 17 Nov 2025 05:35:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 169513B1244
-	for <lists+cgroups@lfdr.de>; Mon, 17 Nov 2025 03:23:47 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 44FC34E237A
+	for <lists+cgroups@lfdr.de>; Mon, 17 Nov 2025 04:35:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B27C313287;
-	Mon, 17 Nov 2025 03:23:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A2E3830B519;
+	Mon, 17 Nov 2025 04:35:42 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 64F9E1F17E8;
-	Mon, 17 Nov 2025 03:23:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 770BF2EC56E;
+	Mon, 17 Nov 2025 04:35:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=124.126.103.232
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763349824; cv=none; b=JUiBfrAo3w5zOo29ZJ2ZEB8P2N8DdDm5Sv+Dawua6ZETCSfzyB1Pp07tbGfJOmF2mTHNHpf0m80zvo+t4Q6O+Eh4pJQlqcrWxSHGzRSpOXLdb8BKn7NSj9g5V/bJxuEhB2bT2P22P3wwd4iBO1PT/F0PCOd2KLa9sA/BNsszh64=
+	t=1763354142; cv=none; b=cLfBHfL0sMGLyG+3sxbA1JSZ47nzgZp5YbnkLu5VrVer2+tqDuZkRvXaBA1PrIVDUC7koH3xHiEnoAML4rMxUfglsl0CLtGzTahj81XDI58o+jT2sJqv16x+4KAQtgoHOuEhEglSeIluRNwYyvvh3Fxlj7bWS3XP469aFAZ4Mc0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763349824; c=relaxed/simple;
-	bh=nKuoB07EcDlVtm9AxhElVEsilfrWUwPj5O2a+UEZjkk=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=AEZAfmpVIuopBKPbqU+j6K+koIiKuXByhPgYCFGSG0hIaOHKrhqNOzBQqwCAagZtHZJiO4GwCaD5j1+YzKjvxMTRkncIc4f+N00Cj5Rr/iuI1C3QA9dV0sIuGS8s4Dv9rVOnyzEecPyG7HbiLqJrDtOAX55IoQBxEAGLZNc7WVA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.235])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTPS id 4d8tNk5YVrzYQtlM;
-	Mon, 17 Nov 2025 11:23:02 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.128])
-	by mail.maildlp.com (Postfix) with ESMTP id E3F2C1A0FC6;
-	Mon, 17 Nov 2025 11:23:38 +0800 (CST)
-Received: from [10.67.111.176] (unknown [10.67.111.176])
-	by APP4 (Coremail) with SMTP id gCh0CgAXP1w4lRppjBITBA--.24837S2;
-	Mon, 17 Nov 2025 11:23:37 +0800 (CST)
-Message-ID: <4366cedd-b9c7-48de-bb48-f3c4ff81e73e@huaweicloud.com>
-Date: Mon, 17 Nov 2025 11:23:36 +0800
+	s=arc-20240116; t=1763354142; c=relaxed/simple;
+	bh=lc3wkzTY1adIG7fu36QrobrMlZATISet2Fq1DN6nmcg=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=MXU+FuyVJpJJn4pHdshyPUSXhZZXyMdmTX9VYpSuPShgVkfJF07PXyh4RR+N1eTCNzFRiWFsRkogYYTuW7wnuUhAvZm33RDhvnZQwmbfiMIss+QJybIIGW2E2AoTdQhd707so9mAZQxbVyWpO59f5kgJ1acrX/ikeEtMyTPaGPA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn; spf=pass smtp.mailfrom=kylinos.cn; arc=none smtp.client-ip=124.126.103.232
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kylinos.cn
+X-UUID: d86ab68cc36e11f0a38c85956e01ac42-20251117
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.3.6,REQID:fa3f2253-43b5-4794-a2dc-1a2513c12102,IP:10,U
+	RL:0,TC:0,Content:0,EDM:0,RT:0,SF:-5,FILE:0,BULK:0,RULE:Release_Ham,ACTION
+	:release,TS:5
+X-CID-INFO: VERSION:1.3.6,REQID:fa3f2253-43b5-4794-a2dc-1a2513c12102,IP:10,URL
+	:0,TC:0,Content:0,EDM:0,RT:0,SF:-5,FILE:0,BULK:0,RULE:Release_Ham,ACTION:r
+	elease,TS:5
+X-CID-META: VersionHash:a9d874c,CLOUDID:f5a68f10e5446d71b6c252e4159b51a9,BulkI
+	D:2511171235311XBXILTJ,BulkQuantity:0,Recheck:0,SF:17|19|64|66|78|80|81|82
+	|83|102|841|850,TC:nil,Content:0|15|50,EDM:-3,IP:-2,URL:0,File:nil,RT:nil,
+	Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BR
+	R:0,BRE:0,ARC:0
+X-CID-BVR: 2,SSN|SDN
+X-CID-BAS: 2,SSN|SDN,0,_
+X-CID-FACTOR: TF_CID_SPAM_FSD,TF_CID_SPAM_SNR,TF_CID_SPAM_FAS
+X-CID-RHF: D41D8CD98F00B204E9800998ECF8427E
+X-UUID: d86ab68cc36e11f0a38c85956e01ac42-20251117
+X-User: sunshaojie@kylinos.cn
+Received: from localhost.localdomain [(223.70.159.239)] by mailgw.kylinos.cn
+	(envelope-from <sunshaojie@kylinos.cn>)
+	(Generic MTA with TLSv1.3 TLS_AES_256_GCM_SHA384 256/256)
+	with ESMTP id 612225712; Mon, 17 Nov 2025 12:35:29 +0800
+From: Sun Shaojie <sunshaojie@kylinos.cn>
+To: chenridong@huaweicloud.com
+Cc: cgroups@vger.kernel.org,
+	hannes@cmpxchg.org,
+	linux-kernel@vger.kernel.org,
+	longman@redhat.com,
+	mkoutny@suse.com,
+	tj@kernel.org
+Subject: Re: [PATCH -next] cpuset: treate root invalid trialcs as exclusive
+Date: Mon, 17 Nov 2025 12:35:16 +0800
+Message-Id: <20251117043516.1019183-1-sunshaojie@kylinos.cn>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20251115093140.1121329-1-chenridong@huaweicloud.com>
+References: <20251115093140.1121329-1-chenridong@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 0/1] cpuset: relax the overlap check for cgroup-v2
-To: Sun Shaojie <sunshaojie@kylinos.cn>, llong@redhat.com
-Cc: mkoutny@suse.com, cgroups@vger.kernel.org, hannes@cmpxchg.org,
- linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
- shuah@kernel.org, tj@kernel.org
-References: <20251117015708.977585-1-sunshaojie@kylinos.cn>
-Content-Language: en-US
-From: Chen Ridong <chenridong@huaweicloud.com>
-In-Reply-To: <20251117015708.977585-1-sunshaojie@kylinos.cn>
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:gCh0CgAXP1w4lRppjBITBA--.24837S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxGr4xWF4DZr1kKr4kZFyfXrb_yoW5XF4fpF
-	y8Kr1rXw4rXr1rG3ZIgw17ZF43tw48ZFnrAFZ8Kr1rAa9FqF1UAF1DAr9IgFZ8JrZxW3Wj
-	v3y3u3yfZrWqqF7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUyCb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxkF7I0En4kS14v26r1q6r43MxAIw28IcxkI7VAK
-	I48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7
-	xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xII
-	jxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw2
-	0EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Gr0_Cr1lIxAIcVC2z280aVCY1x02
-	67AKxVW8Jr0_Cr1UYxBIdaVFxhVjvjDU0xZFpf9x07UAwIDUUUUU=
-X-CM-SenderInfo: hfkh02xlgr0w46kxt4xhlfz01xgou0bp/
 
+On 2025/11/15 09:31, Chen Ridong wrote:
+>A test scenario revealed inconsistent results based on operation order:
+>Scenario 1:
+>	#cd /sys/fs/cgroup/
+>	#mkdir A1
+>	#mkdir B1
+>	#echo 1-2 > B1/cpuset.cpus
+>	#echo 0-1 > A1/cpuset.cpus
+>	#echo root > A1/cpuset.cpus.partition
+>	#cat A1/cpuset.cpus.partition
+>	root invalid (Cpu list in cpuset.cpus not exclusive)
+>
+>Scenario 2:
+>	#cd /sys/fs/cgroup/
+>	#mkdir A1
+>	#mkdir B1
+>	#echo 1-2 > B1/cpuset.cpus
+>	#echo root > A1/cpuset.cpus.partition
+>	#echo 0-1 > A1/cpuset.cpus
+>	#cat A1/cpuset.cpus.partition
+>	root
+>
+>The second scenario produces an unexpected result: A1 should be marked
+>as invalid but is incorrectly recognized as valid. This occurs because
+>when validate_change is invoked, A1 (in root-invalid state) may
+>automatically transition to a valid partition, with non-exclusive state
+>checks against siblings, leading to incorrect validation.
+>
+>To fix this inconsistency, treat trialcs in root-invalid state as exclusive
+>during validation and set the corresponding exclusive flags, ensuring
+>consistent behavior regardless of operation order.
+>
+>Signed-off-by: Chen Ridong <chenridong@huawei.com>
+>---
+> kernel/cgroup/cpuset.c | 19 ++++++++++++++-----
+> 1 file changed, 14 insertions(+), 5 deletions(-)
+>
+>diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
+>index daf813386260..a189f356b5f1 100644
+>--- a/kernel/cgroup/cpuset.c
+>+++ b/kernel/cgroup/cpuset.c
+>@@ -2526,6 +2526,18 @@ static void partition_cpus_change(struct cpuset *cs, struct cpuset *trialcs,
+> 	}
+> }
+> 
+>+static int init_trialcs(struct cpuset *cs, struct cpuset *trialcs)
+>+{
+>+	trialcs->prs_err = PERR_NONE;
+>+	/*
+>+	 * If partition_root_state != 0, it may automatically change to a partition,
+>+	 * Therefore, we should treat trialcs as exclusive during validation
+>+	 */
+>+	if (trialcs->partition_root_state)
+>+		set_bit(CS_CPU_EXCLUSIVE, &trialcs->flags);
+>+	return compute_trialcs_excpus(trialcs, cs);
+>+}
+>+
+> /**
+>  * update_cpumask - update the cpus_allowed mask of a cpuset and all tasks in it
+>  * @cs: the cpuset to consider
+>@@ -2551,9 +2563,7 @@ static int update_cpumask(struct cpuset *cs, struct cpuset *trialcs,
+> 	if (alloc_tmpmasks(&tmp))
+> 		return -ENOMEM;
+> 
+>-	compute_trialcs_excpus(trialcs, cs);
+>-	trialcs->prs_err = PERR_NONE;
+>-
+>+	init_trialcs(cs, trialcs);
+> 	retval = cpus_allowed_validate_change(cs, trialcs, &tmp);
+> 	if (retval < 0)
+> 		goto out_free;
+>@@ -2612,7 +2622,7 @@ static int update_exclusive_cpumask(struct cpuset *cs, struct cpuset *trialcs,
+> 	 * Reject the change if there is exclusive CPUs conflict with
+> 	 * the siblings.
+> 	 */
+>-	if (compute_trialcs_excpus(trialcs, cs))
+>+	if (init_trialcs(cs, trialcs))
+> 		return -EINVAL;
+> 
+> 	/*
+>@@ -2628,7 +2638,6 @@ static int update_exclusive_cpumask(struct cpuset *cs, struct cpuset *trialcs,
+> 	if (alloc_tmpmasks(&tmp))
+> 		return -ENOMEM;
+> 
+>-	trialcs->prs_err = PERR_NONE;
+> 	partition_cpus_change(cs, trialcs, &tmp);
+> 
+> 	spin_lock_irq(&callback_lock);
 
+Hi, Ridong,
 
-On 2025/11/17 9:57, Sun Shaojie wrote:
-> In cgroup v2, a mutual overlap check is required when at least one of two
-> cpusets is exclusive. However, this check should be relaxed and limited to
-> cases where both cpusets are exclusive.
-> 
-> This patch ensures that for sibling cpusets A1 (exclusive) and B1
-> (non-exclusive), change B1 cannot affect A1's exclusivity.
-> 
-> for example. Assume a machine has 4 CPUs (0-3).
-> 
->    root cgroup
->       /    \
->     A1      B1
-> 
-> Case 1:
->  Table 1.1: Before applying the patch
->  Step                                       | A1's prstate | B1'sprstate |
->  #1> echo "0-1" > A1/cpuset.cpus            | member       | member      |
->  #2> echo "root" > A1/cpuset.cpus.partition | root         | member      |
->  #3> echo "0" > B1/cpuset.cpus              | root invalid | member      |
-> 
-> After step #3, A1 changes from "root" to "root invalid" because its CPUs
-> (0-1) overlap with those requested by B1 (0-3). However, B1 can actually
-> use CPUs 2-3(from B1's parent), so it would be more reasonable for A1 to
-> remain as "root."
-> 
->  Table 1.2: After applying the patch
->  Step                                       | A1's prstate | B1'sprstate |
->  #1> echo "0-1" > A1/cpuset.cpus            | member       | member      |
->  #2> echo "root" > A1/cpuset.cpus.partition | root         | member      |
->  #3> echo "0" > B1/cpuset.cpus              | root         | member      |
-> 
-> Case 2: (This situation remains unchanged from before)
->  Table 2.1: Before applying the patch
->  Step                                       | A1's prstate | B1'sprstate |
->  #1> echo "0-1" > A1/cpuset.cpus            | member       | member      |
->  #3> echo "1-2" > B1/cpuset.cpus            | member       | member      |
->  #2> echo "root" > A1/cpuset.cpus.partition | root invalid | member      |
-> 
->  Table 2.2: After applying the patch
->  Step                                       | A1's prstate | B1'sprstate |
->  #1> echo "0-1" > A1/cpuset.cpus            | member       | member      |
->  #3> echo "1-2" > B1/cpuset.cpus            | member       | member      |
->  #2> echo "root" > A1/cpuset.cpus.partition | root invalid | member      |
-> 
-> All other cases remain unaffected. For example, cgroup-v1, both A1 and
-> B1 are exclusive or non-exlusive.
-> 
-> ---
-> v3 -> v4:
->   - Adjust the test_cpuset_prt.sh test file to align with the current
->     behavior.
-> 
-> v2 -> v3:
->   - Ensure compliance with constraints such as cpuset.cpus.exclusive.
->   - Link: https://lore.kernel.org/cgroups/20251113131434.606961-1-sunshaojie@kylinos.cn/
-> 
-> v1 -> v2:
->   - Keeps the current cgroup v1 behavior unchanged
->   - Link: https://lore.kernel.org/cgroups/c8e234f4-2c27-4753-8f39-8ae83197efd3@redhat.com
-> 
-> ---
->  kernel/cgroup/cpuset-internal.h               |  3 ++
->  kernel/cgroup/cpuset-v1.c                     | 20 +++++++++
->  kernel/cgroup/cpuset.c                        | 43 ++++++++++++++-----
->  .../selftests/cgroup/test_cpuset_prs.sh       |  5 ++-
->  4 files changed, 58 insertions(+), 13 deletions(-)
-> 
-Is this a cover letter?
+Maybe, this patch does not apply to the following cases:
+ Step
+ #1> echo "root" > A1/cpuset.cpus.partition
+ #1> echo "0-1" > B1/cpuset.cpus
+ #2> echo "1-2" > A1/cpuset.cpus.exclusive  -> return error
+ It should return success here.
 
-The cover letter is labeled as v3, while the patch itself is v4.
+Please consider the following modification.
 
-For a single patch, I don’t think a cover letter is necessary.
-
--- 
-Best regards,
-Ridong
-
+diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
+index 52468d2c178a..b4085438368c 100644
+--- a/kernel/cgroup/cpuset.c
++++ b/kernel/cgroup/cpuset.c
+@@ -609,6 +609,9 @@ static inline bool cpus_excl_conflict(struct cpuset *cs1, struct cpuset *cs2)
+ 	    cpumask_subset(cs2->cpus_allowed, cs1->exclusive_cpus))
+ 		return true;
+ 
++	if (cpumask_empty(cs1->exclusive_cpus))
++		return cpumask_intersects(cs1->cpus_allowed, cs2->cpus_allowed);
++
+ 	return false;
+ }
+ 
+Thanks,
+Sun Shaojie
 
