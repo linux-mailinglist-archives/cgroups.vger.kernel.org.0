@@ -1,212 +1,125 @@
-Return-Path: <cgroups+bounces-12044-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-12045-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 258F7C64FD4
-	for <lists+cgroups@lfdr.de>; Mon, 17 Nov 2025 16:56:33 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3E8E2C6539C
+	for <lists+cgroups@lfdr.de>; Mon, 17 Nov 2025 17:45:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by tor.lore.kernel.org (Postfix) with ESMTPS id 28D19289BD
-	for <lists+cgroups@lfdr.de>; Mon, 17 Nov 2025 15:56:32 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 7044A4ECF2A
+	for <lists+cgroups@lfdr.de>; Mon, 17 Nov 2025 16:42:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DDCC629BDBA;
-	Mon, 17 Nov 2025 15:56:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 174592E03EC;
+	Mon, 17 Nov 2025 16:42:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="cw11Mq0f";
-	dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b="r4vzNwJo"
+	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="RC6bobC4"
 X-Original-To: cgroups@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-io1-f46.google.com (mail-io1-f46.google.com [209.85.166.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B9D0D29BD80
-	for <cgroups@vger.kernel.org>; Mon, 17 Nov 2025 15:56:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4FF472DF3D9
+	for <cgroups@vger.kernel.org>; Mon, 17 Nov 2025 16:42:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763394985; cv=none; b=l9++5HbtgbVVronRcBRCKRRBRJjWuendQJyb2BCHLngyqCk30Qi785Rvx4uHb6e0+QAW8lMfVc7SEmZL8rtenq4BU3M/s4TIj+GAgeMoZYEN/ICuFYDxFHOTlZNdNo9w1CPeEpzdurwdUE63GQmF8liHKx8ptGpaUwLVQr9WAV0=
+	t=1763397755; cv=none; b=SnG5Mc4ABjVFXgo5ltroQUoZ7rCtKK6dI7FPOndpvSaSkQcXkh+5tiQmhRr81eVPGM53z/XJwK6uGUu29PMZTgMvJzblte2W6356Yr39z7mo3V27iix60PQOp7hMu/4vm6Smy+M5/JpTAE5PnBlLzUEPUj2p5PnEKKp1YllKJnU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763394985; c=relaxed/simple;
-	bh=tTZhsNRVLWfEpLCgxNhJjA6kY43D7elTeo9B6cxCYfw=;
-	h=From:Message-ID:Date:MIME-Version:Subject:To:Cc:References:
-	 In-Reply-To:Content-Type; b=f5TzAhRcG4NODpSod4HaA9IDj7Ns34JPE9HqASWhMtPkpxvsmCpXsJvpYpnzL1ybWXurgP/1dG6CuZs5MnzXPpX4OiIZgp5Z0q2qh2C40W3sS5LD8oGrRsIUOSLdJv92tHShK6tp0iRfEhXIE9gLOVwR5MGFvnS1/DrdZfEVg0s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=cw11Mq0f; dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b=r4vzNwJo; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1763394982;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=J1RJNJZ82F8TzhuH6RX+KFV7V9KN5X1jSm+ZEyTowtI=;
-	b=cw11Mq0fj9dtm4MC3PA/RfZAsQwCnzwYSlQ3jkqpSNN4s6YP7Y693IEjtHeUUxPlTmqxDe
-	GmnJTKDWmPBzeG+hU7lojq6ZQWkCC/ZEsLvARuDPMny5Mf2NB3wzBrsNQT4iymeCEVVYwE
-	/muazJawvG8soBtBmHSYC6gBiFdSLfY=
-Received: from mail-qk1-f200.google.com (mail-qk1-f200.google.com
- [209.85.222.200]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-126-dvkACfgAOdKA69s99jkSXg-1; Mon, 17 Nov 2025 10:56:20 -0500
-X-MC-Unique: dvkACfgAOdKA69s99jkSXg-1
-X-Mimecast-MFC-AGG-ID: dvkACfgAOdKA69s99jkSXg_1763394979
-Received: by mail-qk1-f200.google.com with SMTP id af79cd13be357-8b22ab98226so2141890885a.2
-        for <cgroups@vger.kernel.org>; Mon, 17 Nov 2025 07:56:19 -0800 (PST)
+	s=arc-20240116; t=1763397755; c=relaxed/simple;
+	bh=pMxEm4NUjUGTpHRKv7d5LLStUvt+joOsQt6SvZeQ/aA=;
+	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
+	 MIME-Version:Content-Type; b=bL8OkVO/zrEE2y/8rm6wZz8p3ldAc85oq6ZmgFgYuS2wFhTbD1qofTbd+8GphZy/dmfa09py7tYupYwhZHCgdX5yojVv6tTWbj41VMyOH/+ybmdQPAVy1lbd87r+NQcJvLQdgqUalkOCkxAtrb6ls1GR2Knrh89mhQ5R4X+WFOk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=RC6bobC4; arc=none smtp.client-ip=209.85.166.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
+Received: by mail-io1-f46.google.com with SMTP id ca18e2360f4ac-949031532f9so65446039f.0
+        for <cgroups@vger.kernel.org>; Mon, 17 Nov 2025 08:42:33 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=redhat.com; s=google; t=1763394979; x=1763999779; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:content-language:references
-         :cc:to:subject:user-agent:mime-version:date:message-id:from:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=J1RJNJZ82F8TzhuH6RX+KFV7V9KN5X1jSm+ZEyTowtI=;
-        b=r4vzNwJoNNQ2pwvO+fCY/52e9AueFRj8ybbXnldhYaasl9KSm2Y4TmDfeBsR04jaFY
-         mABtoOQpFPkYDEKCj8UIJBIa/bhOlJwSUkPLIjboqT2/G3MIOjtXBmvOtlaaCvluMPk9
-         /gnVvrLlpMApwhOfdMUVO4TyeP696FT81gKiHdn2ENFK8IFCkVU5A56BnuqzahKL4sVb
-         vKlC3LbJYqq3CbIj3czt424B2jk608xuBHUgHXA531zd8Z2gcB8ryLIWssSAo35SnI3n
-         ze2Kl8jXoMt4DyZU9//Y4pMw7S9I394DxPxIs98aOfbC3CvhcQ3xf65TO6cesxdePZgF
-         TptQ==
+        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1763397753; x=1764002553; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:date:message-id:subject
+         :references:in-reply-to:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=cPLj/39ZpulhoDTDGoazpNeOK1ByBZpHBDDVSHE4zmc=;
+        b=RC6bobC4+TovrvaGkyyJWnIYG9UfB2Q2nRY2/nVuq2FL1hwFL0YESAY7qDvSH+DKdg
+         Yrpfw25/6XVrDtxSVSqQSLeiU7qSKAf0cZ2mO9ry+HTactxFvCZmb2sbzUBNLvOhsMEg
+         i2mpQHBOqZfkBDBQ9xk6iwAKqQ4VPx8UiEHUwokBOwzHaaNEDXOPSAVWua8rNdu4OR+6
+         MpV7Y/x9GZ1bM2AjRI/WuPc94cBkTR6xTMaUTtvz5LdIsHUkFnw3jkJVmIk9uzQQC6cZ
+         wPw5bI/pIBkhFo0cTEptoscv3eVRhUl266rQ8JgD+HWQYMSbjFfUPrDJLJ1fXzoDigKo
+         nceQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1763394979; x=1763999779;
-        h=content-transfer-encoding:in-reply-to:content-language:references
-         :cc:to:subject:user-agent:mime-version:date:message-id:from:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=J1RJNJZ82F8TzhuH6RX+KFV7V9KN5X1jSm+ZEyTowtI=;
-        b=ZcrvFuzB2+hQj6AJhi2l6+4tGrNJLuByE8HVPTuS5kUvf298kHP6Owgk7cSkfPB1PE
-         Rn98xwOfgbZ7Ttw8lL7k+gBOlw543TUIVjcezMpM2sRHIA+I0PCB63oHJJMTgTKxN8IP
-         E2ykPmXh7FrpXCt4WGxDAvawB/6wEfrb7kqFsssxxKsM8kqmrP+UORFIJvWWCLLwnD6b
-         nXi2kU89MVoPigJ4omDfmRQBSJsUI6XF0nAoMeNeCKFhwoOMuNnhT+SLPo6tlDwEZajN
-         vzqyssFDi3giTwXSv/6wmb7jpzdrC4GwdDXD5fuL37zyYUnLqUTa8FHqD1Abg8lghGJL
-         UGgA==
-X-Gm-Message-State: AOJu0YxOyYRvS8HAw54NPBdxKiqsxhrEnujTWmkC0/N0p/E014W089V/
-	kKTnOt9G/U+Cp4k9jbgqXoZTqvAYuzhxcz8hDsncojFjGNFen9qxE+wF2AGK9+N1Y6dk21+HqJC
-	ETW4WmFEMIMg5qHuDyDgoUO7zFBt5EVDI+B2Qsuodb2SPnaHwavxn68+XZwQ=
-X-Gm-Gg: ASbGncsWsfeuK6Lg9u2ORmDUBHTiiN74wG1aEN5CeFrpQRAKjj1sx8z2O0k2cGjqpIC
-	R1omXGU9kUfmEyJ43aQAO95nGj4qrcEQ1DnvXinKCqAhjP0V6MQwZBUmWJ6L89pXLi1ZFQD0nDA
-	Ov1D5P9ATeAdY9rBLNsGFVYziFnZ9vOapt9YOVjPRI5YLnN00xcPPmZUprAE1A2dXxRgLRB5zUI
-	4ON0yuaIRJw+gwULOax1+NJMuVeDXy94ZXewwLLcuM1wTKFEeUbQ32NI5jyLU0AY2HDBGKccm5+
-	udTi9cisIeTZkuzTYUdiObCACmfB4ArdhP8uzxednO9+L1djuEaJ+JYldNCeibfNQGhfGcoreu2
-	fmBHSKc+WbwqWz10JY9258lioBzqNw4ui+tZ+dsqWNxfpIg==
-X-Received: by 2002:a05:620a:172a:b0:8b2:e986:2701 with SMTP id af79cd13be357-8b2e9862c47mr579861385a.90.1763394979412;
-        Mon, 17 Nov 2025 07:56:19 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IH0lJ+5uQ6BebjPplYNJBYDM5ltIejy4iBVBvXIno/oN341rrqjwPE0VB9cptmvx0IFEar4UA==
-X-Received: by 2002:a05:620a:172a:b0:8b2:e986:2701 with SMTP id af79cd13be357-8b2e9862c47mr579858485a.90.1763394978986;
-        Mon, 17 Nov 2025 07:56:18 -0800 (PST)
-Received: from ?IPV6:2601:188:c102:b180:1f8b:71d0:77b1:1f6e? ([2601:188:c102:b180:1f8b:71d0:77b1:1f6e])
-        by smtp.gmail.com with ESMTPSA id af79cd13be357-8b2aeeb2522sm996309385a.23.2025.11.17.07.56.17
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 17 Nov 2025 07:56:18 -0800 (PST)
-From: Waiman Long <llong@redhat.com>
-X-Google-Original-From: Waiman Long <longman@redhat.com>
-Message-ID: <e042851e-6cf5-4475-bf4d-a69bb5713c7f@redhat.com>
-Date: Mon, 17 Nov 2025 10:56:16 -0500
+        d=1e100.net; s=20230601; t=1763397753; x=1764002553;
+        h=content-transfer-encoding:mime-version:date:message-id:subject
+         :references:in-reply-to:cc:to:from:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=cPLj/39ZpulhoDTDGoazpNeOK1ByBZpHBDDVSHE4zmc=;
+        b=QwgYe/uQLd8NDx74NxCz/ZjBoqRJdu7qc3cesF9r2KeZsrxsRqsoLTgWsSljnOeICU
+         K0gpbOGyzXIaSDYqe7pw4d7ALiVE7SIJsrVpWLi3H0nb9bxba1lqxPiMD3pnkAGUz7Br
+         Htj0PkcPL0EShH9L+ctvqX2DTzOfWIJ9QojKv+aEjklj6A2ZjZ61FkSr7DqR2wL/6AkW
+         YR3G1nL56OqPlssvy2rAniftgSTeiY5UNrd+hUkQLmPoj8u/Ode/+g59v6JBD+rXJYfZ
+         AI/I1inziVYvIL3VqWQ0UHZQCDMexQTEbPN9Ym59L+jvJv1zvV1HVzZNb1nwcVWkpdU5
+         3dwA==
+X-Gm-Message-State: AOJu0Yz9ROMydpjhAU384sK/rjk/v7FA7SR6IUvqL8Aek/9Ttwq9F1WZ
+	Zb5LFd3JFwA2pHmdg+fLUZ4Kq/xiSBwH/iqqhDwgkT9grJUJqJYmz4h/HGBuZMGTupw=
+X-Gm-Gg: ASbGncu0HYc/5GFgilaYnMeacWt1KK9kj5i73IHSK8wtkig3eIO/jafYGlnidS8TL4O
+	goOQHRwfRa0jFCl7ShH7bAH1GP0ut61C4+k274z5yjc2H1cW8jLYb/Rl1gjqoTXPQsDvRUWe6MI
+	8B255qg3A1qrcANGjAztL+Gbl7PKxQjm/AIOzqAjZ+vPTplcqoIub7dTleB5VMBHhmtvLlDEpq3
+	FYzfTzd0spPNaSIqYuhjYsXdZPrPebzJR0qO61oFXlwjeRSFMXzPHF6XFw1ufyf94FB5Gb7+LJf
+	KrPdFkN2mhsiRlUKuCzcz6TI4NHA/Z7UqB7hJM61Uo8JTIVrJRko1lNdO5HiiryWRE5DzXj1VpC
+	lYRd8Rg5NCdVvNB1l1SOEm004CJSsMFwLqr6B09uTcl8ZbZcl3LNrFCHHiJcNxHewveBYeHvPTI
+	9pag==
+X-Google-Smtp-Source: AGHT+IExXiO+QkYrKnmU03Fq6LXoF/sRtqr6FyMgEi0OFyE/Cj1hbgnilLpBLKEEKN9vWUKT3aE/kg==
+X-Received: by 2002:a05:6638:9823:b0:5b7:d710:6632 with SMTP id 8926c6da1cb9f-5b7d7106816mr9931097173.11.1763397753282;
+        Mon, 17 Nov 2025 08:42:33 -0800 (PST)
+Received: from [127.0.0.1] ([96.43.243.2])
+        by smtp.gmail.com with ESMTPSA id 8926c6da1cb9f-5b7bd26e131sm4924100173.20.2025.11.17.08.42.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 17 Nov 2025 08:42:32 -0800 (PST)
+From: Jens Axboe <axboe@kernel.dk>
+To: Tejun Heo <tj@kernel.org>, Josef Bacik <josef@toxicpanda.com>, 
+ Khazhismel Kumykov <khazhy@chromium.org>
+Cc: cgroups@vger.kernel.org, linux-block@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, Khazhismel Kumykov <khazhy@google.com>
+In-Reply-To: <20251114235434.2168072-1-khazhy@google.com>
+References: <20251114235434.2168072-1-khazhy@google.com>
+Subject: Re: [PATCH v2 0/3] block/blk-throttle: Fix throttle slice time for
+ SSDs
+Message-Id: <176339775226.116629.17706508995359561190.b4-ty@kernel.dk>
+Date: Mon, 17 Nov 2025 09:42:32 -0700
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH -next] cpuset: treate root invalid trialcs as exclusive
-To: Chen Ridong <chenridong@huaweicloud.com>, tj@kernel.org,
- hannes@cmpxchg.org, mkoutny@suse.com
-Cc: cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <765120d5-1887-4376-b779-8294df137b9d@huaweicloud.com>
- <20251115093140.1121329-1-chenridong@huaweicloud.com>
-Content-Language: en-US
-In-Reply-To: <20251115093140.1121329-1-chenridong@huaweicloud.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
+X-Mailer: b4 0.14.3
 
-On 11/15/25 4:31 AM, Chen Ridong wrote:
-> From: Chen Ridong <chenridong@huawei.com>
->
-> A test scenario revealed inconsistent results based on operation order:
-> Scenario 1:
-> 	#cd /sys/fs/cgroup/
-> 	#mkdir A1
-> 	#mkdir B1
-> 	#echo 1-2 > B1/cpuset.cpus
-> 	#echo 0-1 > A1/cpuset.cpus
-> 	#echo root > A1/cpuset.cpus.partition
-> 	#cat A1/cpuset.cpus.partition
-> 	root invalid (Cpu list in cpuset.cpus not exclusive)
->
-> Scenario 2:
-> 	#cd /sys/fs/cgroup/
-> 	#mkdir A1
-> 	#mkdir B1
-> 	#echo 1-2 > B1/cpuset.cpus
-> 	#echo root > A1/cpuset.cpus.partition
-> 	#echo 0-1 > A1/cpuset.cpus
-> 	#cat A1/cpuset.cpus.partition
-> 	root
->
-> The second scenario produces an unexpected result: A1 should be marked
-> as invalid but is incorrectly recognized as valid. This occurs because
-> when validate_change is invoked, A1 (in root-invalid state) may
-> automatically transition to a valid partition, with non-exclusive state
-> checks against siblings, leading to incorrect validation.
->
-> To fix this inconsistency, treat trialcs in root-invalid state as exclusive
-> during validation and set the corresponding exclusive flags, ensuring
-> consistent behavior regardless of operation order.
->
-> Signed-off-by: Chen Ridong <chenridong@huawei.com>
-> ---
->   kernel/cgroup/cpuset.c | 19 ++++++++++++++-----
->   1 file changed, 14 insertions(+), 5 deletions(-)
->
-> diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
-> index daf813386260..a189f356b5f1 100644
-> --- a/kernel/cgroup/cpuset.c
-> +++ b/kernel/cgroup/cpuset.c
-> @@ -2526,6 +2526,18 @@ static void partition_cpus_change(struct cpuset *cs, struct cpuset *trialcs,
->   	}
->   }
->   
-> +static int init_trialcs(struct cpuset *cs, struct cpuset *trialcs)
-> +{
-> +	trialcs->prs_err = PERR_NONE;
-> +	/*
-> +	 * If partition_root_state != 0, it may automatically change to a partition,
-> +	 * Therefore, we should treat trialcs as exclusive during validation
-> +	 */
-> +	if (trialcs->partition_root_state)
-> +		set_bit(CS_CPU_EXCLUSIVE, &trialcs->flags);
-Nit: We usually use the non-atomic version __set_bit() if concurrent 
-access isn't possible which is true in this case.
 
-> +	return compute_trialcs_excpus(trialcs, cs);
-> +}
-> +
->   /**
->    * update_cpumask - update the cpus_allowed mask of a cpuset and all tasks in it
->    * @cs: the cpuset to consider
-> @@ -2551,9 +2563,7 @@ static int update_cpumask(struct cpuset *cs, struct cpuset *trialcs,
->   	if (alloc_tmpmasks(&tmp))
->   		return -ENOMEM;
->   
-> -	compute_trialcs_excpus(trialcs, cs);
-> -	trialcs->prs_err = PERR_NONE;
-> -
-> +	init_trialcs(cs, trialcs);
->   	retval = cpus_allowed_validate_change(cs, trialcs, &tmp);
->   	if (retval < 0)
->   		goto out_free;
-> @@ -2612,7 +2622,7 @@ static int update_exclusive_cpumask(struct cpuset *cs, struct cpuset *trialcs,
->   	 * Reject the change if there is exclusive CPUs conflict with
->   	 * the siblings.
->   	 */
-> -	if (compute_trialcs_excpus(trialcs, cs))
-> +	if (init_trialcs(cs, trialcs))
->   		return -EINVAL;
->   
->   	/*
-> @@ -2628,7 +2638,6 @@ static int update_exclusive_cpumask(struct cpuset *cs, struct cpuset *trialcs,
->   	if (alloc_tmpmasks(&tmp))
->   		return -ENOMEM;
->   
-> -	trialcs->prs_err = PERR_NONE;
->   	partition_cpus_change(cs, trialcs, &tmp);
->   
->   	spin_lock_irq(&callback_lock);
-Acked-by: Waiman Long <longman@redhat.com>
+On Fri, 14 Nov 2025 15:54:31 -0800, Khazhismel Kumykov wrote:
+> Since commit bf20ab538c81 ("blk-throttle: remove CONFIG_BLK_DEV_THROTTLING_LOW"),
+> the throttle slice time differs between SSD and non-SSD devices. This
+> causes test failures with slow throttle speeds on SSD devices.
+> 
+> The first patch in the series fixes the problem by restoring the throttle
+> slice time to a fixed value, matching behavior seen prior to above
+> mentioned revert. The remaining patches clean up unneeeded code after removing
+> CONFIG_BLK_DEV_THROTTLING_LOW.
+> 
+> [...]
+
+Applied, thanks!
+
+[1/3] block/blk-throttle: Fix throttle slice time for SSDs
+      commit: f76581f9f1d29e32e120b0242974ba266e79de58
+[2/3] block/blk-throttle: drop unneeded blk_stat_enable_accounting
+      commit: 20d0b359c73d15b25abea04066ef4cdbc6a8738d
+[3/3] block/blk-throttle: Remove throtl_slice from struct throtl_data
+      commit: 6483faa3938bfbd2c9f8ae090f647635f3bd2877
+
+Best regards,
+-- 
+Jens Axboe
+
+
 
 
