@@ -1,97 +1,158 @@
-Return-Path: <cgroups+bounces-12054-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-12055-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7B4C1C67ECC
-	for <lists+cgroups@lfdr.de>; Tue, 18 Nov 2025 08:26:28 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id 47189C6850D
+	for <lists+cgroups@lfdr.de>; Tue, 18 Nov 2025 09:53:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sin.lore.kernel.org (Postfix) with ESMTPS id 273B928DD3
-	for <lists+cgroups@lfdr.de>; Tue, 18 Nov 2025 07:26:26 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTPS id 49D6E2A55F
+	for <lists+cgroups@lfdr.de>; Tue, 18 Nov 2025 08:53:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B0C2A302CD6;
-	Tue, 18 Nov 2025 07:24:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="24QE6ZMl";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="HemVkTlf"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D9B63311C39;
+	Tue, 18 Nov 2025 08:52:02 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B8FC32FE063;
-	Tue, 18 Nov 2025 07:24:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D478304BDA;
+	Tue, 18 Nov 2025 08:51:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763450695; cv=none; b=m6d7nErSryawtU4OMg61UuZ5dVBB4BqglwWDQ4aWtftze9QBSaC5OLU99549EKImMtKffHE39JHwhKDtQwN1aXR/+LrTpm17SHEC4yyR0WEPe72sAFFt+mVjFHpK05EsCqWA3E6rqxUPDH5QF0mg4RdbkXhJv6BFNFCW4qk33UY=
+	t=1763455922; cv=none; b=pvL/IDMjoDfc7yC9DKH7LNgz6Gd3E3VPda5bgFTwjPFkGZKgtVcau6F33vXl07LIe4aA2ofYFkuxbtqA0UCR17hSjqG1nTC2jI2G6CEjSGLrdN1vkhzse84Fs/zgL+gUPBprsdaMeCDD6QGOm7106Ru+5rQEFI4fhS+I937BWc0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763450695; c=relaxed/simple;
-	bh=jrjinFXbeDbMX2dy8EHh/ldqeCkJ7jxk4YEibZJS9Kc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=HoH1G0nO4PkeQnDKqBZDFO7sglur6hklTh6YiCKWNo2w62HZr7mf24LA5uRQXZBMfjHcz9q1XVSrbPQfx0UdXh96kD/8kdajyV3rM0X9DRRGhJMXBOJxTUA8nvxARGQbTJbjxUZLTQh2hVO9jM44/zcEnd5WhdprF+DpU7996LY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=24QE6ZMl; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=HemVkTlf; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-Date: Tue, 18 Nov 2025 08:24:49 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1763450691;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=I9vA6V+bN9GTdLdJJnTr5BmlcMkR802o3dcmS/oJ4PA=;
-	b=24QE6ZMlr+aPw0mCJ5+WZU96Ur1bJED22ECyuR3qc6mknaLzxVccN1eBwGOEHnhDPXViIi
-	vYgzPxjYImC932JHg5SRA4a/U7iRiyXlufjgEKN4WCeGZs0vyBoTiY57FYZhIlaLZIjOYL
-	+alp7QvobezEF44LShBi4xm5QwByUm+lr5oir3v42WJgDcsNA1jjMRsN3D7i9qQlM6SH/w
-	Q7jKWbml/XlgMaWqRO6CbEuEcKtaMflllcFEPJbOfhRueQ9ruRBPn/TM+ku3PXkSxlYXiS
-	tZlF7YYrv2qXgzM7t0CdOvC+IbV/y+85xI811fdS8iBRo5Im02eMP11MJthBmA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1763450691;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=I9vA6V+bN9GTdLdJJnTr5BmlcMkR802o3dcmS/oJ4PA=;
-	b=HemVkTlfIKjmIexQaIi7tETka6Ixoo5dyRx/jz0Qu6Db6AH88jYgFE/IZlIzrJ2xfOoL2m
-	0DLyByvQHHJXBSDA==
-From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To: pengdonglin <dolinux.peng@gmail.com>
-Cc: tj@kernel.org, tony.luck@intel.com, jani.nikula@linux.intel.com,
-	ap420073@gmail.com, jv@jvosburgh.net, freude@linux.ibm.com,
-	bcrl@kvack.org, trondmy@kernel.org, longman@redhat.com,
-	kees@kernel.org, hdanton@sina.com, paulmck@kernel.org,
-	linux-kernel@vger.kernel.org, linux-rt-devel@lists.linux.dev,
-	linux-nfs@vger.kernel.org, linux-aio@kvack.org,
-	linux-fsdevel@vger.kernel.org,
-	linux-security-module@vger.kernel.org, netdev@vger.kernel.org,
-	intel-gfx@lists.freedesktop.org, linux-wireless@vger.kernel.org,
-	linux-acpi@vger.kernel.org, linux-s390@vger.kernel.org,
-	cgroups@vger.kernel.org
-Subject: Re: [PATCH v3 00/14] Remove redundant rcu_read_lock/unlock() in
- spin_lock
-Message-ID: <20251118072449.PFe_yjOF@linutronix.de>
-References: <20250916044735.2316171-1-dolinux.peng@gmail.com>
+	s=arc-20240116; t=1763455922; c=relaxed/simple;
+	bh=3SiuzLV3cxOAu7Ji/1FZZXNRwCvxnxU1ASI8oWLcZ2I=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=XFqw0ceZvhzprT/I483/aMs0EeGNoZVCL2GQe3fi5AZGZ3YocBHa23dge2VWRM77VN6hwPqYsRpL1ldBW9Vc61BZOOq2XoFr34c9NqVbSz9V4ICZ3n1m9+vMHtwlre3tG+hxiNoJ7lf8WONt322HI3Qo4QWwu97Oi7wr6d2ElEM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.216])
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTPS id 4d9dd74jJ1zKHMlq;
+	Tue, 18 Nov 2025 16:51:23 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.128])
+	by mail.maildlp.com (Postfix) with ESMTP id 133A91A1686;
+	Tue, 18 Nov 2025 16:51:50 +0800 (CST)
+Received: from hulk-vt.huawei.com (unknown [10.67.174.121])
+	by APP4 (Coremail) with SMTP id gCh0CgBHcF2SMxxppSKjBA--.4747S2;
+	Tue, 18 Nov 2025 16:51:49 +0800 (CST)
+From: Chen Ridong <chenridong@huaweicloud.com>
+To: longman@redhat.com,
+	tj@kernel.org,
+	hannes@cmpxchg.org,
+	mkoutny@suse.com
+Cc: cgroups@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	daniel.m.jordan@oracle.com,
+	lujialin4@huawei.com,
+	chenridong@huawei.com
+Subject: [PATCH -next] cpuset: Remove unnecessary checks in rebuild_sched_domains_locked
+Date: Tue, 18 Nov 2025 08:36:43 +0000
+Message-Id: <20251118083643.1363020-1-chenridong@huaweicloud.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20250916044735.2316171-1-dolinux.peng@gmail.com>
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:gCh0CgBHcF2SMxxppSKjBA--.4747S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxWryxWr17WrWrJrykCw1rWFg_yoW5GF17pF
+	Z5KF47Zr45Kr1UC39xtay3ZryF9an7Jay7t3ZxWr18AF17A3Z29ryjya43XrWUWr9xC34U
+	ZFn09w43uFnFyFJanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUyEb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+	6I80ewAv7VC0I7IYx2IY67AKxVWUXVWUAwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+	Cjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JMxkF7I0En4kS14v26r1q6r43MxAIw28IcxkI
+	7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxV
+	Cjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY
+	6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6x
+	AIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY
+	1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU10PfPUUUUU==
+X-CM-SenderInfo: hfkh02xlgr0w46kxt4xhlfz01xgou0bp/
 
-On 2025-09-16 12:47:21 [+0800], pengdonglin wrote:
-Hi,
+From: Chen Ridong <chenridong@huawei.com>
 
-> There is no need no explicitly start a RCU read section if one has already
-> been started implicitly by spin_lock().
-> 
-> Simplify the code and remove the inner rcu_read_lock() invocation.
+Commit 406100f3da08 ("cpuset: fix race between hotplug work and later CPU
+offline")added a check for empty effective_cpus in partitions for cgroup
+v2. However, thischeck did not account for remote partitions, which were
+introduced later.
 
-I'm not going argue if this is a good or not but: If you intend to get
-this merged I suggest you rebase your series (or what is left since I
-think a few patches got merged) on top of current tree and resend them
-individually targeting the relevant tree/ list. Otherwise everyone might
-think someone else is in charge of this big series.
+After commit 2125c0034c5d ("cgroup/cpuset: Make cpuset hotplug processing
+synchronous"),cgroup v2's cpuset hotplug handling is now synchronous. This
+eliminates the race condition with subsequent CPU offline operations that
+the original check aimed to fix.
 
-Sebastian
+Instead of extending the check to support remote partitions, this patch
+removes the redundant partition effective_cpus check. Additionally, it adds
+a check and warningto verify that all generated sched domains consist of
+active CPUs, preventing partition_sched_domains from being invoked with
+offline CPUs.
+
+Signed-off-by: Chen Ridong <chenridong@huawei.com>
+---
+ kernel/cgroup/cpuset.c | 29 ++++++-----------------------
+ 1 file changed, 6 insertions(+), 23 deletions(-)
+
+diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
+index daf813386260..1ac58e3f26b4 100644
+--- a/kernel/cgroup/cpuset.c
++++ b/kernel/cgroup/cpuset.c
+@@ -1084,11 +1084,10 @@ void dl_rebuild_rd_accounting(void)
+  */
+ void rebuild_sched_domains_locked(void)
+ {
+-	struct cgroup_subsys_state *pos_css;
+ 	struct sched_domain_attr *attr;
+ 	cpumask_var_t *doms;
+-	struct cpuset *cs;
+ 	int ndoms;
++	int i;
+ 
+ 	lockdep_assert_cpus_held();
+ 	lockdep_assert_held(&cpuset_mutex);
+@@ -1107,30 +1106,14 @@ void rebuild_sched_domains_locked(void)
+ 	    !cpumask_equal(top_cpuset.effective_cpus, cpu_active_mask))
+ 		return;
+ 
+-	/*
+-	 * With subpartition CPUs, however, the effective CPUs of a partition
+-	 * root should be only a subset of the active CPUs.  Since a CPU in any
+-	 * partition root could be offlined, all must be checked.
+-	 */
+-	if (!cpumask_empty(subpartitions_cpus)) {
+-		rcu_read_lock();
+-		cpuset_for_each_descendant_pre(cs, pos_css, &top_cpuset) {
+-			if (!is_partition_valid(cs)) {
+-				pos_css = css_rightmost_descendant(pos_css);
+-				continue;
+-			}
+-			if (!cpumask_subset(cs->effective_cpus,
+-					    cpu_active_mask)) {
+-				rcu_read_unlock();
+-				return;
+-			}
+-		}
+-		rcu_read_unlock();
+-	}
+-
+ 	/* Generate domain masks and attrs */
+ 	ndoms = generate_sched_domains(&doms, &attr);
+ 
++	for (i = 0; i < ndoms; ++i) {
++		if (WARN_ON_ONCE(!cpumask_subset(doms[i], cpu_active_mask)))
++			return;
++	}
++
+ 	/* Have scheduler rebuild the domains */
+ 	partition_sched_domains(ndoms, doms, attr);
+ }
+-- 
+2.34.1
+
 
