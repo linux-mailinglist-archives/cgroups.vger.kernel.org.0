@@ -1,170 +1,337 @@
-Return-Path: <cgroups+bounces-12070-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-12071-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
-	by mail.lfdr.de (Postfix) with ESMTPS id 09041C6B0E7
-	for <lists+cgroups@lfdr.de>; Tue, 18 Nov 2025 18:52:37 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4671EC6B7E8
+	for <lists+cgroups@lfdr.de>; Tue, 18 Nov 2025 20:53:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sin.lore.kernel.org (Postfix) with ESMTPS id 96CA42AF7F
-	for <lists+cgroups@lfdr.de>; Tue, 18 Nov 2025 17:52:34 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 2C3464E4008
+	for <lists+cgroups@lfdr.de>; Tue, 18 Nov 2025 19:53:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DCFAA350A1A;
-	Tue, 18 Nov 2025 17:52:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D71042E5B0E;
+	Tue, 18 Nov 2025 19:53:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="PMeOj8Mz"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="UwZQhGjs";
+	dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b="IFj1DMfM"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-wm1-f48.google.com (mail-wm1-f48.google.com [209.85.128.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 662A1349B19
-	for <cgroups@vger.kernel.org>; Tue, 18 Nov 2025 17:52:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C580280A20
+	for <cgroups@vger.kernel.org>; Tue, 18 Nov 2025 19:53:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763488351; cv=none; b=jESxSs63g09Xj8nwdmemMVD0DxBHex4qJ8jJlGqSv50E62ouqGloABvf2uG7JGKmBu/0f1dBYCSkDydhgyhZK9Oojsvh///UPgakyVSXSgjRSrbCLkKD8YRuN0gaP12iAbK5RpP0IL3hLvJFl7dDUXOVX19yPOTpMiBrr8r73/I=
+	t=1763495615; cv=none; b=mRDFoAZ7UgDd8AyqIKML24/fJC/C+QwmKXCVJczES2ufcjdAuKOqCw16YTBwAgZIl8az0c6EzElJ5tfHEBhuwG/SnrkgvPqmq38LPHPX1RAfuTOXUd7RLRh+0KFudehZmUnQQXNMuqh63iYyZrypfSXR+6ybBW9HOjURJLuKWGk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763488351; c=relaxed/simple;
-	bh=9tDLmEl0AlG+JlkcUzxp8d7AUiUIQj7FJpPRHfm9nJ8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=u91WDPYErfnuqIZDUiIiqr6Qw/eem9qs46IlbHgX+CNq2f4Ma3XBgA/ks4HZAyfl0Pg4cD4tDX/DWgGGCToXxVvQpzzHlFT1TrqN3P3EguiQBCNlScMqncTUOxLXK2kT5dijV7ZAhwxI9b8lPdYautIF56SiCJEzkc/gd90OxC4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=PMeOj8Mz; arc=none smtp.client-ip=209.85.128.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-wm1-f48.google.com with SMTP id 5b1f17b1804b1-4779cc419b2so35760115e9.3
-        for <cgroups@vger.kernel.org>; Tue, 18 Nov 2025 09:52:27 -0800 (PST)
+	s=arc-20240116; t=1763495615; c=relaxed/simple;
+	bh=qXFgI3qKojE1YW3SDNEREX2qLcUPd1lD0cibq1uveCQ=;
+	h=From:Message-ID:Date:MIME-Version:Subject:To:Cc:References:
+	 In-Reply-To:Content-Type; b=SNNeZCJjJPvKMH2v+nt3TMkcDyy+SwMEa0mH+P52Jo+RlK2UnvY5l+gadVntufHM18ZKXzlhsaeHR8T/OOhtVM2fyKG/8N2H1y61VH8K3GP/XRF8iUzoWblmzLpRwpC+BgcauzoqKH9rJ8iqKZ54QlGp1z+MVpUiKfvtL2+y7z4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=UwZQhGjs; dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b=IFj1DMfM; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1763495612;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=WtisD4HnKFV6BLauDswvQVW8uS6raEN7PaYY44AASso=;
+	b=UwZQhGjsVg7qa7UT4tLgSoLK6R6n1xU3U+SZ7upBJi58lqUC+lrBjXW4J5ret/oDFnT5sT
+	zW/xoBSZbr7ZZQ6AKO6Wm90y8r7quDeswwBGbbYyCxMtpBhwAuYEQk1WqIdkRYHCA8DYJD
+	yd/HNfeOQeTXYFSgnyuS+3iGneerDAc=
+Received: from mail-qk1-f199.google.com (mail-qk1-f199.google.com
+ [209.85.222.199]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-423-lO9jkh_8NDe7LImao_pB6w-1; Tue, 18 Nov 2025 14:53:30 -0500
+X-MC-Unique: lO9jkh_8NDe7LImao_pB6w-1
+X-Mimecast-MFC-AGG-ID: lO9jkh_8NDe7LImao_pB6w_1763495610
+Received: by mail-qk1-f199.google.com with SMTP id af79cd13be357-8b2de6600c0so958037085a.1
+        for <cgroups@vger.kernel.org>; Tue, 18 Nov 2025 11:53:30 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1763488346; x=1764093146; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=ZaANC36yaZF4chZG7yq+ENtiQcLbr4MDM5mx57OGjSU=;
-        b=PMeOj8MzQU9TjG+chSwzqc/g7OHOg4GaivoUcenfMSZc4JEgEBtb1cp7oDh5WUO9oy
-         cVxmnn5mud6VwYvHx1jGRBKKpIYFaCsnu05YmwcclYInW5MpkmChcyJmy/qam1YI6UFj
-         lVjjHJwiT3nOOe6ZuRhExPd+BYL3cnRdJ7JSiMnzblOGn40JKzwdok7/BKByQu2t010Y
-         kfBBb9imbGWqoy6PR70gl3ldcqR1y0yhTPh/3d2eSuxCmOtR/mXc7XQkGkF2rFahho9R
-         Jx+6LHWxsjY66cEhwSLQ4SZCtpeeZoFFXv+dg9JWwfwWZJHfx/xaF7srp/QFutfiVWK/
-         AhIg==
+        d=redhat.com; s=google; t=1763495610; x=1764100410; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:content-language:references
+         :cc:to:subject:user-agent:mime-version:date:message-id:from:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=WtisD4HnKFV6BLauDswvQVW8uS6raEN7PaYY44AASso=;
+        b=IFj1DMfMAHo0Sjsv206l1mQmtgBqVjCnUO0RDxlTaNKLLxA6u4GfvExsgTActk6Deh
+         4V7wbMgcpOIKAhzUqKfDEnTeVwmsc0vqJuwmQCxMDiT04d9qT/xytP3AipY/Yfoz7oHP
+         NYSYydFOZ9X9+5y+/3NmtCknityAddfo1W1awJ6rd7CyTpaSQH4blt9C2ac5qT+XFqlq
+         BMZ5y8E+ygLQefqmnTl1ROm4J5Qa6L2Ar+R0TLdhTLa08Vrbm2xORlaO8ywkEXZr6VE/
+         8J8gnNO2QVBaeaC4G/n89QZHDcZK3NNxELpNJKh+TpzBSmRYcrWKr3FPQY+jg57W2Aw3
+         /VOg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1763488346; x=1764093146;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ZaANC36yaZF4chZG7yq+ENtiQcLbr4MDM5mx57OGjSU=;
-        b=AZ4LGw1K6gS6tmU2HG6mquJxku9C+5Al+ZMWZCiraBBBSR53JBfTXTd/Ej/l7+6pLr
-         4PSGCaqAw9+ROpOfztOmLgBDj7hUF/e4RB6VnkpVu3Jp1VoxD37aGExqP3NkKmPcKf+t
-         hM9WSGjmPgugvxJsibUJsqqgCk/W1uNqTJY29Hv2uqTVAiF1PIFjtsvzQvFeNcN9FMt4
-         UqSIGRCaXUFlAB6x66/j0wNMREz+gO5KW4zLi4vIoKnjEBBtGEiRBYHwWTmoHwYpKPC/
-         QHoyhDpkG8qTvz5wDKOgLGDOiSYkrzJzl8lkfXzwX9PjxifNIEEzCykkTal6HALuTO1i
-         XB1w==
-X-Forwarded-Encrypted: i=1; AJvYcCVLbvm/BUDl34sSCPOU20lLtxzQHfhrNpMA7+/FkK3yYOQu1oDojasgsQY274Hbnt7x5b6hhUhH@vger.kernel.org
-X-Gm-Message-State: AOJu0YyajC8rD22XuCO0lzZn0bYPFz7NK6StDLdXDIQh2Vn8tBIG/Hu+
-	qwnyaQRSZB6rQum7pcRfZkqC/fLapGvrW/0v2+WEiT/c94SacPdsHL91Z6Rv3CMQVHY=
-X-Gm-Gg: ASbGnctMN2bbYR1vF2t+TfSPaHpZYPbEJzHH1Y5fQ/XBCDFeO5FnBHZB/mF1icFMYde
-	7v+G3cg33WsuMSwAz1PeEQLKKbNC/MYvGUjoLMkqD6RMXgsJirNvFpAQ8vWBWc3w+dbmuGO4MN+
-	D4GNY8sRiIBSR4ZH7+QKSJgMn8t1MG2tr695dUej0gXgcqG0T83Nkic7wm6npOm3Cso7L68z/nD
-	bogmXhAibzPzNwvrlwzZxY0q0BqSncxncvapq8XuyngdHKEZ5YCESUknAo6fMczXWROtkcGeLmo
-	F52wMF7PFuJiK03otubWclSvB/0a8qaKqF6WATG2m7IwlHkn61tUi7MdVf++aciF3IlaVGb8pNU
-	X7bPEbgGU/0mkFu8w/q1bwNw5PZyNqgFCiGGz3grr7g3ah0rQ0aLGeL+rjT/dAWwItcRx8eW4c5
-	nsvD195hTE+mTBgNmSV9VvaJENYEpmuig=
-X-Google-Smtp-Source: AGHT+IFUj6UETFT7esarzT9wjbjzFkPLV1Vezhy7cP2e4tBVdvrdSt2otb6qr2e+Rrdr7C4erQ5TWA==
-X-Received: by 2002:a05:600c:4712:b0:46e:4586:57e4 with SMTP id 5b1f17b1804b1-4778fe9b36emr155621345e9.24.1763488346164;
-        Tue, 18 Nov 2025 09:52:26 -0800 (PST)
-Received: from blackdock.suse.cz (nat2.prg.suse.com. [195.250.132.146])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-477a9d21591sm23572965e9.2.2025.11.18.09.52.25
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 18 Nov 2025 09:52:25 -0800 (PST)
-Date: Tue, 18 Nov 2025 18:52:24 +0100
-From: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
-To: Sun Shaojie <sunshaojie@kylinos.cn>
-Cc: llong@redhat.com, chenridong@huaweicloud.com, cgroups@vger.kernel.org, 
-	hannes@cmpxchg.org, linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org, 
-	shuah@kernel.org, tj@kernel.org
-Subject: Re: [PATCH v4 1/1] cpuset: relax the overlap check for cgroup-v2
-Message-ID: <mcpsxwjouoxfgdoqbysxlvjrgx7m2475y75fhssz4uoryb3jqj@lnigmwq7nage>
-References: <20251117015708.977585-1-sunshaojie@kylinos.cn>
- <20251117015708.977585-2-sunshaojie@kylinos.cn>
+        d=1e100.net; s=20230601; t=1763495610; x=1764100410;
+        h=content-transfer-encoding:in-reply-to:content-language:references
+         :cc:to:subject:user-agent:mime-version:date:message-id:from:x-gm-gg
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=WtisD4HnKFV6BLauDswvQVW8uS6raEN7PaYY44AASso=;
+        b=gUFplL0W2PTkkSXZAy3j2fJNMiHDgMyWGGR8wXogmWZK8ypsx3QWZfxTj+nZxTgTQV
+         PlZw6iUaC//KxsXv/d05edbZKSs3+ABlHhwBMcRbNN4TLMmShC98kFba+YpMTtdkXfQz
+         v0t5vEdrz3+kumS+xhYdDWSA+hLjQnxJ/yFN/Vdc/x+2B4EAcnbh7eZa9q3LvuUCKYgU
+         IrN+6jR8zG00u5A21JpF0zyA3MVRY6gMWsBMTmDB2rcvhiiEeiwJdYBcT/9VLn6lEUtm
+         HZN/HUVFD9CuKclWmg0ihOVhLk3DIo48HWgwsaBU43MLxlkspbxcTV4M3ohT9tRcQm9e
+         fPig==
+X-Forwarded-Encrypted: i=1; AJvYcCXE5xRVKn263x6RE/PuzS3ARdJaGb2bSxUGxIoGDsAvmFHLgR1m16ANovOYmOo+QBcpbIzUI2JA@vger.kernel.org
+X-Gm-Message-State: AOJu0YxW9qGxxHNkki16zyT7DqUv6fec1UM9FcC/ZpSMIlL3YDhYtW3s
+	CGTdZmu/7FsUG22BKhtXCEPCgK92OmH438zjzcRi6CZZtzBKT3CmRrUSOm+laJDktYCWPeCz605
+	dAbJvcehGejDle8pgXip1a1Flz8fuisBPNS35vwE2dmV5DoE4+qNb2L9dMWQ=
+X-Gm-Gg: ASbGncta0QnQywL5U3iD3gZwUT8gPgm7UcjP7flDPxlJPCkjyDaXDgHF45bbyhyeRJ2
+	XWwmkuqCm1aDiaBvJN+kmFBUKM5RVnEDTYrPrSM4JuFdfVcwr7FfBe4yHz2vqz1T69yziDBJY1Z
+	bLpKyLIgtM/JQpwpcGVkYKj98zNFbcl9U74FBKQDnPRuQ7aPuzMVLwvHtogfW8Fckv2+8JoxSLl
+	Vkjek8bOSfX62DQfmRfifTAB2e7kIoQpBVsGPt531kx8XYkfUvLb6nmEUAzVEuXYGhuVzm8YNM4
+	8aP+LrJYCku09GHeCROdXYBFXSVUDFa/h0aXiaPWctGGNmEZjsel6vWxwWJwnd/mA6N/GudVuCC
+	JRxSXJetRyLul+WI6lpZCiDLpClr6VlOlqCG9vn1dizXYO6oyGtD2Isws
+X-Received: by 2002:a05:620a:4052:b0:7fd:50bd:193b with SMTP id af79cd13be357-8b316f00ec4mr45645385a.14.1763495609845;
+        Tue, 18 Nov 2025 11:53:29 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IGxz2UI33696KG6+FTP1B1jFldUykRHwqvk+bH1o+FYx+sXz2DhZLgjahMUGZEU4DuUWPhLFg==
+X-Received: by 2002:a05:620a:4052:b0:7fd:50bd:193b with SMTP id af79cd13be357-8b316f00ec4mr45641085a.14.1763495609246;
+        Tue, 18 Nov 2025 11:53:29 -0800 (PST)
+Received: from ?IPV6:2601:188:c102:b180:1f8b:71d0:77b1:1f6e? ([2601:188:c102:b180:1f8b:71d0:77b1:1f6e])
+        by smtp.gmail.com with ESMTPSA id af79cd13be357-8b2aeeb4afbsm1242544185a.14.2025.11.18.11.53.28
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 18 Nov 2025 11:53:28 -0800 (PST)
+From: Waiman Long <llong@redhat.com>
+X-Google-Original-From: Waiman Long <longman@redhat.com>
+Message-ID: <942d2b65-3c28-4f6d-aa6b-8365fa5cea2c@redhat.com>
+Date: Tue, 18 Nov 2025 14:53:27 -0500
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="yqudl6qznctquhdl"
-Content-Disposition: inline
-In-Reply-To: <20251117015708.977585-2-sunshaojie@kylinos.cn>
-
-
---yqudl6qznctquhdl
-Content-Type: text/plain; protected-headers=v1; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
 Subject: Re: [PATCH v4 1/1] cpuset: relax the overlap check for cgroup-v2
-MIME-Version: 1.0
+To: Sun Shaojie <sunshaojie@kylinos.cn>, llong@redhat.com
+Cc: chenridong@huaweicloud.com, mkoutny@suse.com, cgroups@vger.kernel.org,
+ hannes@cmpxchg.org, linux-kernel@vger.kernel.org,
+ linux-kselftest@vger.kernel.org, shuah@kernel.org, tj@kernel.org
+References: <20251117015708.977585-1-sunshaojie@kylinos.cn>
+ <20251117015708.977585-2-sunshaojie@kylinos.cn>
+Content-Language: en-US
+In-Reply-To: <20251117015708.977585-2-sunshaojie@kylinos.cn>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Mon, Nov 17, 2025 at 09:57:08AM +0800, Sun Shaojie <sunshaojie@kylinos.c=
-n> wrote:
+On 11/16/25 8:57 PM, Sun Shaojie wrote:
+> In cgroup v2, a mutual overlap check is required when at least one of two
+> cpusets is exclusive. However, this check should be relaxed and limited to
+> cases where both cpusets are exclusive.
+>
 > This patch ensures that for sibling cpusets A1 (exclusive) and B1
 > (non-exclusive), change B1 cannot affect A1's exclusivity.
->=20
+>
 > for example. Assume a machine has 4 CPUs (0-3).
->=20
->    root cgroup
->       /    \
->     A1      B1
->=20
+>
+>     root cgroup
+>        /    \
+>      A1      B1
+>
 > Case 1:
->  Table 1.1: Before applying the patch
->  Step                                       | A1's prstate | B1'sprstate |
->  #1> echo "0-1" > A1/cpuset.cpus            | member       | member      |
->  #2> echo "root" > A1/cpuset.cpus.partition | root         | member      |
->  #3> echo "0" > B1/cpuset.cpus              | root invalid | member      |
->=20
+>   Table 1.1: Before applying the patch
+>   Step                                       | A1's prstate | B1'sprstate |
+>   #1> echo "0-1" > A1/cpuset.cpus            | member       | member      |
+>   #2> echo "root" > A1/cpuset.cpus.partition | root         | member      |
+>   #3> echo "0" > B1/cpuset.cpus              | root invalid | member      |
+>
 > After step #3, A1 changes from "root" to "root invalid" because its CPUs
 > (0-1) overlap with those requested by B1 (0-3). However, B1 can actually
 > use CPUs 2-3(from B1's parent), so it would be more reasonable for A1 to
 > remain as "root."
->=20
->  Table 1.2: After applying the patch
->  Step                                       | A1's prstate | B1'sprstate |
->  #1> echo "0-1" > A1/cpuset.cpus            | member       | member      |
->  #2> echo "root" > A1/cpuset.cpus.partition | root         | member      |
->  #3> echo "0" > B1/cpuset.cpus              | root         | member      |
-
-OK, this looks fine to me, based on this statement from the docs about
-cpuset.cpus.effective:
-
->  subset of "cpuset.cpus" unless none of the CPUs listed in "cpuset.cpus"
->  can be granted.  In this case, it will be treated just like an empty
->  "cpuset.cpus".
-
-I was likely confused by the eventual switch of B1 to root in your
-previous example.
-(Because if you continue, it should result in (after patch too):
-  #4> echo "root" > B1/cpuset.partition       | root invalid  | root invali=
-d |
-and end state should be invariant wrt A1,B1 or B1,A1 config order.)
-
+>
+>   Table 1.2: After applying the patch
+>   Step                                       | A1's prstate | B1'sprstate |
+>   #1> echo "0-1" > A1/cpuset.cpus            | member       | member      |
+>   #2> echo "root" > A1/cpuset.cpus.partition | root         | member      |
+>   #3> echo "0" > B1/cpuset.cpus              | root         | member      |
+>
 > All other cases remain unaffected. For example, cgroup-v1, both A1 and B1
 > are exclusive or non-exlusive.
+>
+> Signed-off-by: Sun Shaojie <sunshaojie@kylinos.cn>
+> ---
+>   kernel/cgroup/cpuset-internal.h               |  3 ++
+>   kernel/cgroup/cpuset-v1.c                     | 20 +++++++++
+>   kernel/cgroup/cpuset.c                        | 43 ++++++++++++++-----
+>   .../selftests/cgroup/test_cpuset_prs.sh       |  5 ++-
+>   4 files changed, 58 insertions(+), 13 deletions(-)
+>
+> diff --git a/kernel/cgroup/cpuset-internal.h b/kernel/cgroup/cpuset-internal.h
+> index 337608f408ce..c53111998432 100644
+> --- a/kernel/cgroup/cpuset-internal.h
+> +++ b/kernel/cgroup/cpuset-internal.h
+> @@ -292,6 +292,7 @@ void cpuset1_hotplug_update_tasks(struct cpuset *cs,
+>   			    struct cpumask *new_cpus, nodemask_t *new_mems,
+>   			    bool cpus_updated, bool mems_updated);
+>   int cpuset1_validate_change(struct cpuset *cur, struct cpuset *trial);
+> +bool cpuset1_cpus_excl_conflict(struct cpuset *cs1, struct cpuset *cs2);
+>   #else
+>   static inline void fmeter_init(struct fmeter *fmp) {}
+>   static inline void cpuset1_update_task_spread_flags(struct cpuset *cs,
+> @@ -302,6 +303,8 @@ static inline void cpuset1_hotplug_update_tasks(struct cpuset *cs,
+>   			    bool cpus_updated, bool mems_updated) {}
+>   static inline int cpuset1_validate_change(struct cpuset *cur,
+>   				struct cpuset *trial) { return 0; }
+> +static inline bool cpuset1_cpus_excl_conflict(struct cpuset *cs1,
+> +				struct cpuset *cs2) {return false; }
+>   #endif /* CONFIG_CPUSETS_V1 */
+>   
+>   #endif /* __CPUSET_INTERNAL_H */
+> diff --git a/kernel/cgroup/cpuset-v1.c b/kernel/cgroup/cpuset-v1.c
+> index 12e76774c75b..5c1296bf6a34 100644
+> --- a/kernel/cgroup/cpuset-v1.c
+> +++ b/kernel/cgroup/cpuset-v1.c
+> @@ -373,6 +373,26 @@ int cpuset1_validate_change(struct cpuset *cur, struct cpuset *trial)
+>   	return ret;
+>   }
+>   
+> +/*
+> + * cpuset1_cpus_excl_conflict() - Check if two cpusets have exclusive CPU conflicts
+> + *                                to legacy (v1)
+> + * @cs1: first cpuset to check
+> + * @cs2: second cpuset to check
+> + *
+> + * Returns: true if CPU exclusivity conflict exists, false otherwise
+> + *
+> + * If either cpuset is CPU exclusive, their allowed CPUs cannot intersect.
+> + */
+> +bool cpuset1_cpus_excl_conflict(struct cpuset *cs1, struct cpuset *cs2)
+> +{
+> +	if (is_cpu_exclusive(cs1) || is_cpu_exclusive(cs2))
+> +		if (cpumask_intersects(cs1->cpus_allowed,
+> +				       cs2->cpus_allowed))
+> +			return true;
+> +
+> +	return false;
+> +}
+> +
+>   #ifdef CONFIG_PROC_PID_CPUSET
+>   /*
+>    * proc_cpuset_show()
+> diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
+> index 52468d2c178a..0fd803612513 100644
+> --- a/kernel/cgroup/cpuset.c
+> +++ b/kernel/cgroup/cpuset.c
+> @@ -580,35 +580,56 @@ static inline bool cpusets_are_exclusive(struct cpuset *cs1, struct cpuset *cs2)
+>   
+>   /**
+>    * cpus_excl_conflict - Check if two cpusets have exclusive CPU conflicts
+> - * @cs1: first cpuset to check
+> - * @cs2: second cpuset to check
+> + * @cs1: current cpuset to check
+> + * @cs2: cpuset involved in the check
+>    *
+>    * Returns: true if CPU exclusivity conflict exists, false otherwise
+>    *
+>    * Conflict detection rules:
+> - * 1. If either cpuset is CPU exclusive, they must be mutually exclusive
+> + * For cgroup-v1:
+> + *     see cpuset1_cpus_excl_conflict()
+> + * For cgroup-v2:
+> + * 1. If cs1 is exclusive, cs1 and cs2 must be mutually exclusive
+>    * 2. exclusive_cpus masks cannot intersect between cpusets
+> - * 3. The allowed CPUs of one cpuset cannot be a subset of another's exclusive CPUs
+> + * 3. If cs2 is exclusive, cs2's allowed CPUs cannot be a subset of cs1's exclusive CPUs
+> + * 4. if cs1 and cs2 are not exclusive, the allowed CPUs of one cpuset cannot be a subset
+> + *    of another's exclusive CPUs
+>    */
+>   static inline bool cpus_excl_conflict(struct cpuset *cs1, struct cpuset *cs2)
 
-(Note, I'm only commenting the concept here, I haven't checked the code
-change actually achieves that and doesn't break anythine else ;-)
+As cs1 and cs2 is going to be handled differently, their current naming 
+will make it hard to understand why they are treated differently. I will 
+recommended changing the parameter name to "trial, sibling" as the 
+caller call it with "cpus_excl_conflict(trial, c)" where trial is the 
+new cpuset data to be tested and sibling is one of its sibling cpusets. 
+It has to be clearly document what each parameter is for and the fact 
+that swapping the parameters will cause it to return incorrect result.
 
-Thanks,
-Michal
 
---yqudl6qznctquhdl
-Content-Type: application/pgp-signature; name="signature.asc"
+>   {
+> -	/* If either cpuset is exclusive, check if they are mutually exclusive */
+> -	if (is_cpu_exclusive(cs1) || is_cpu_exclusive(cs2))
+> +	/* For cgroup-v1 */
+> +	if (!cpuset_v2())
+> +		return cpuset1_cpus_excl_conflict(cs1, cs2);
+> +
+> +	/* If cs1 are exclusive, check if they are mutually exclusive */
+> +	if (is_cpu_exclusive(cs1))
+>   		return !cpusets_are_exclusive(cs1, cs2);
 
------BEGIN PGP SIGNATURE-----
+Code change like the following can eliminate the need to introduce a new 
+cpuset1_cpus_excl_conflict() helper.
 
-iJEEABYKADkWIQRCE24Fn/AcRjnLivR+PQLnlNv4CAUCaRyyVhsUgAAAAAAEAA5t
-YW51MiwyLjUrMS4xMSwyLDIACgkQfj0C55Tb+AjW9QD/c2y0ArZIX75uJ7oNlCG+
-+AR0L7BKrnxC/iw8IDwHzwUA/jZoh2yJaEM+blH9V1++aGv6PORbyXfY/6FSFL6u
-ZUEF
-=v8ne
------END PGP SIGNATURE-----
+diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
+index ec8bebc66469..201c70fb7401 100644
+--- a/kernel/cgroup/cpuset.c
++++ b/kernel/cgroup/cpuset.c
+@@ -599,9 +599,15 @@ static inline bool cpusets_are_exclusive(struct 
+cpuset *cs1, struct cpuset *cs2)
+   */
+  static inline bool cpus_excl_conflict(struct cpuset *cs1, struct 
+cpuset *cs2)
+  {
+-       /* If either cpuset is exclusive, check if they are mutually 
+exclusive */
+-       if (is_cpu_exclusive(cs1) || is_cpu_exclusive(cs2))
+-               return !cpusets_are_exclusive(cs1, cs2);
++       /*
++        * If trial is exclusive or sibling is exclusive & in v1,
++        * check if they are mutually exclusive
++        */
++       if (is_cpu_exclusive(trial) || (!cpuset_v2() && 
+is_cpu_exclusive(sibling)))
++               return !cpusets_are_exclusive(trial, sibling);
++
++       if (!cpuset_v2())
++               return false;   /* The checking below is irrelevant to 
+cpuset v1 */
 
---yqudl6qznctquhdl--
+         /* Exclusive_cpus cannot intersect */
+         if (cpumask_intersects(cs1->exclusive_cpus, cs2->exclusive_cpus))
+
+>   
+> +	/* The following check applies when either
+> +	 * both cs1 and cs2 are non-exclusive，or
+> +	 * only cs2 is exclusive.
+> +	 */
+> +
+>   	/* Exclusive_cpus cannot intersect */
+>   	if (cpumask_intersects(cs1->exclusive_cpus, cs2->exclusive_cpus))
+>   		return true;
+>   
+> -	/* The cpus_allowed of one cpuset cannot be a subset of another cpuset's exclusive_cpus */
+> -	if (!cpumask_empty(cs1->cpus_allowed) &&
+> -	    cpumask_subset(cs1->cpus_allowed, cs2->exclusive_cpus))
+> -		return true;
+> -
+> +	/* cs2's allowed CPUs cannot be a subset of cs1's exclusive CPUs */
+>   	if (!cpumask_empty(cs2->cpus_allowed) &&
+>   	    cpumask_subset(cs2->cpus_allowed, cs1->exclusive_cpus))
+>   		return true;
+>   
+> +	/* If cs2 is exclusive, check finished here */
+> +	if (is_cpu_exclusive(cs2))
+> +		return false;
+> +
+> +	/* The following check applies only if both cs1 and cs2 are non-exclusive. */
+> +
+> +	/* cs1's allowed CPUs cannot be a subset of cs1's exclusive CPUs */
+"sibling's exclusive CPUs"
+> +	if (!cpumask_empty(cs1->cpus_allowed) &&
+> +	    cpumask_subset(cs1->cpus_allowed, cs2->exclusive_cpus))
+> +		return true;
+> +
+
+As said before, we can't fail change to cpuset.cpus by default, but we 
+can fail change to cpuset.cpus.exclusive. So this additional check isn't 
+OK unless this check is under a special mode that is opted in via other 
+means like an additional cgroup control file or a boot command line 
+option and so on.
+
+Cheers,
+Longman
+
 
