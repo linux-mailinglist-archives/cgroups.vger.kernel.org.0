@@ -1,262 +1,173 @@
-Return-Path: <cgroups+bounces-12051-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-12052-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 17E3AC66CC9
-	for <lists+cgroups@lfdr.de>; Tue, 18 Nov 2025 02:11:45 +0100 (CET)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
+	by mail.lfdr.de (Postfix) with ESMTPS id 66E89C67BC1
+	for <lists+cgroups@lfdr.de>; Tue, 18 Nov 2025 07:31:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by tor.lore.kernel.org (Postfix) with ESMTPS id 2215029A84
-	for <lists+cgroups@lfdr.de>; Tue, 18 Nov 2025 01:11:44 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id DF9FD361495
+	for <lists+cgroups@lfdr.de>; Tue, 18 Nov 2025 06:31:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 951C72D94B9;
-	Tue, 18 Nov 2025 01:11:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C0D032E7180;
+	Tue, 18 Nov 2025 06:31:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RhMV3shW"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="flBp46r9";
+	dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b="pkNnkeDR"
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 365C030217B;
-	Tue, 18 Nov 2025 01:11:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 789911E9B1A
+	for <cgroups@vger.kernel.org>; Tue, 18 Nov 2025 06:30:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763428280; cv=none; b=qqlIiC9525+N00po7UeNoEHZrUUW56DlIMPl3Y5GOlNszuunpL4/d1ZL3LabChsZODFWfg7tfhjpGsCjrf4IlAk3BShZYOG6L3alRx3VOlwoOvMFbg0rcntzQFQbzkTTNmw06q0eZ/w01UGI6jY1pO7UwBCoFqifz60aXjWsyX0=
+	t=1763447460; cv=none; b=ZCeOlyu7wR5FZqVzGpH32JDR0/Yx++3gPNaddhPhdlPybYRu6Z+XYat4iSlF2Pno9Q5IW77bqH9mCh/BL2/uBuEVrRL4fe9iNFwroxedmOjbtnJSXg6MExgu3+EKdQt/jr/giE1HJdjxu8KAZITA7t1uGcgSfy976prGsxMimCU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763428280; c=relaxed/simple;
-	bh=KR7lSvTBx1GYbntfD6LTgnw4OVTqKdduvephCIMgmDo=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=Vk7DzUzHgPrDPjzwF51cd8EutwJ+GyB3Ra4ap1U/N914WK9FmG15APvA9cCeOL3kCFl6jHhcjM8SL4nkJ1LngkpIK5lJTAL/Mk+tyxfc4ttyI11UnaLtU4Y0LfFej6hXg/CkyF5UT8PNaOzGf6OmPpuA6FhBTcP0f0enBWeDous=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RhMV3shW; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 94FE0C4CEF5;
-	Tue, 18 Nov 2025 01:11:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1763428279;
-	bh=KR7lSvTBx1GYbntfD6LTgnw4OVTqKdduvephCIMgmDo=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=RhMV3shWof4q6bAoyPBHcglc8GPA7dKJogXivez6cVvJ1Ugisb1r9suEHgYKgPBTy
-	 XU38ZzWxcUriNn9AxgRZorDzQY0MQDYLlcnBQVUTTJIivPg/wKKIrfeN/SnX5egH7Z
-	 kvziTnRTNuTEfX1Sjam+VHzWvDAHMbr8A84rcJgEPqe0wdTY9DG7FqZ2tSQtVpm+jv
-	 vBLhM/ABS4tNU5O3crtmkaeZ63tBKVZ3PdZX6PA4CRCcK6uBH9uQZBbDaf/LXckfQ9
-	 lzRyp8gMVA5FoZbQ0zUsOd6PUW8mMNRe1tg8d5xiGOqog2lC66a8OmNrZBn64SDlW4
-	 r+Qwnxbda+ZHg==
-From: SeongJae Park <sj@kernel.org>
-To: Chris Li <chrisl@kernel.org>
-Cc: SeongJae Park <sj@kernel.org>,
-	Youngjun Park <youngjun.park@lge.com>,
-	akpm@linux-foundation.org,
-	linux-mm@kvack.org,
-	cgroups@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	kasong@tencent.com,
-	hannes@cmpxchg.org,
-	mhocko@kernel.org,
-	roman.gushchin@linux.dev,
-	shakeel.butt@linux.dev,
-	muchun.song@linux.dev,
-	shikemeng@huaweicloud.com,
-	nphamcs@gmail.com,
-	bhe@redhat.com,
-	baohua@kernel.org,
-	gunho.lee@lge.com,
-	taejoon.song@lge.com
-Subject: Re: [RFC] mm/swap, memcg: Introduce swap tiers for cgroup based swap control
-Date: Mon, 17 Nov 2025 17:11:07 -0800
-Message-ID: <20251118011109.75484-1-sj@kernel.org>
-X-Mailer: git-send-email 2.47.3
-In-Reply-To: <CACePvbVkBPJBaowW0tQrL0mPqSq5kM1hNx91BX_JroM8ruS7sQ@mail.gmail.com>
-References: 
+	s=arc-20240116; t=1763447460; c=relaxed/simple;
+	bh=pgiz/sV7bgeD0OwI5WljJoXC4EvKfNYlOwARIcPyhSs=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=YYPjN1xl3TdPAEqMRXr096og9qhM0zmzS+mfhKOsfMcmYnnpUZ+R90RT17AfE2BojKm75zZak7x+r/M86VUAS7+TgJmomeyTzI1N7NHmgI8SuLYQP19SX6g04WcJFB0mWOomZANdTClNAap/W+lyaTUcgVoTUyyhCmLufogXknY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=flBp46r9; dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b=pkNnkeDR; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1763447457;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=QY44smSdvK1wQ3q05guYHRyux7pWoGLOc2MYPa7y6M4=;
+	b=flBp46r9/I5f2mp78FILIO3QYSKkg/qKb3SGOXpvkB6qVf2AtGu8zQj8Y0UF1tA0csyHhn
+	bJwCFHEk2wdsrQgzz4CIhnUgW7Z178EEPPHxzPOJtsyD72UhWJatYydCCF7cNLKk+BOJjC
+	9qgem2XtNUjmu8+565WgUNa8v7Ng4bw=
+Received: from mail-pg1-f198.google.com (mail-pg1-f198.google.com
+ [209.85.215.198]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-12-CdT2oqCENbaaDaF1tzAI1Q-1; Tue, 18 Nov 2025 01:30:55 -0500
+X-MC-Unique: CdT2oqCENbaaDaF1tzAI1Q-1
+X-Mimecast-MFC-AGG-ID: CdT2oqCENbaaDaF1tzAI1Q_1763447454
+Received: by mail-pg1-f198.google.com with SMTP id 41be03b00d2f7-bcecfea0e8aso2129646a12.0
+        for <cgroups@vger.kernel.org>; Mon, 17 Nov 2025 22:30:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=redhat.com; s=google; t=1763447454; x=1764052254; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=QY44smSdvK1wQ3q05guYHRyux7pWoGLOc2MYPa7y6M4=;
+        b=pkNnkeDRUL8oX6fY75LHAs+tFfb1zTv5ovXtq4gwCzMbcik5EHY6mNgGZOoAVxNcip
+         doe6S5yrKmTCvN/MuMPWa2l0xFQjEMub7jc12s0c9BHAyNohXKqe2oC+i7H5OYHXy8kG
+         Z/uPU45vmhouQ/1D+h1OU708Lfg69q9US20S4IrOTZCJ/koNChKh1hrZWrxDeVf/R6Wy
+         DILn3a3UzZ9ND3tKZBIgC2eDlW9kH4KidUyBjsqpG8rIkabfpdFUW/uWIQbfzg4iYADj
+         BFwj8qYjy+U/ZFu1GATdGL7plcWzrgVzxHTIsUdIsDsAzXRiO9/MOd9DOAm9VVVAkwBU
+         7NXg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1763447454; x=1764052254;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=QY44smSdvK1wQ3q05guYHRyux7pWoGLOc2MYPa7y6M4=;
+        b=c/OXK009ctq00xheZTy/d09g6BYRj1bV5Fv0BO/e+Dn2oVmCqIZn1DpVlwJpaZcd4X
+         /tGLMHfAFS9zh513EM7oj1rgO+Ieg7MOoENqZkxRdO2iA+nc7r1JSPulFELQrTKcl2DI
+         Z72ToGT5hICnr/OJmiGV8qFP7mWKKMC31f4W6jJCdXcQLk9LhsjcSu7XvQFi7X1nx8G1
+         32LLjHNXTiOcrQEdkPfBVCqjc5BoYFFdcI+DI7TvSwjZ5CYTEm/kN7NXNCcvUVjZRiJ0
+         JfIhdc/HXW7F/Gg7JraFFOtN5RUaj/fzYNkt75Whxp4+JRuN2joqnjaO+PQnsjZBedyZ
+         QCpA==
+X-Gm-Message-State: AOJu0Yx6zGqt4AOzU1ar4muh809ZAIlBVv9P9jhCaYSC4Od96/V4h/23
+	mrCu/Cq1nc0/nW1EzU5P+JqZ4cBG5PyNJk6yQ09jk/QVqUYGFYUUmYQTHDDQNahtCttWAIjt8BF
+	htUg92huyGPZuP2HySbAIYGkCV82mPtJG/e+W1BPI9H08bUJiWCBzCRJrxmsINx1HtroP88LXUU
+	ASSZhY36E3a29AHu4tHKlK79MABGf1g2NjDg==
+X-Gm-Gg: ASbGnctsWemZy05FZ+FdKxgLDTLpHths8VSzFbDoW59Loy+niJywkyHhxnjGZyY6b0E
+	CR3UTcF8YHYF0ysbGra1oagtB+QiqnEsIh0CN69jv+BhfagblkqzUv6MInL0BEwqgyqsKmZ+FI6
+	eSbHOa4vavyjq+bl2T2cYyf1IPYBWAnN3UcgWOGoB8Ly/Qz89dStAvpR85
+X-Received: by 2002:a05:693c:8099:b0:2a4:7dbd:1d7a with SMTP id 5a478bee46e88-2a6c71ad5eemr682234eec.11.1763447453647;
+        Mon, 17 Nov 2025 22:30:53 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IFLFqXegjR61fkYUX0VGeOPkrPyUrQxHkD8/vOectHuDaomlIInTH99lAZh8M+sdAvkeZ/R/vbiqH42732uSDg=
+X-Received: by 2002:a05:693c:8099:b0:2a4:7dbd:1d7a with SMTP id
+ 5a478bee46e88-2a6c71ad5eemr682219eec.11.1763447453197; Mon, 17 Nov 2025
+ 22:30:53 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+References: <20251117092732.16419-1-piliu@redhat.com> <20251117092732.16419-2-piliu@redhat.com>
+ <97ec2e86-cb4f-4467-8930-d390519f12a6@redhat.com>
+In-Reply-To: <97ec2e86-cb4f-4467-8930-d390519f12a6@redhat.com>
+From: Pingfan Liu <piliu@redhat.com>
+Date: Tue, 18 Nov 2025 14:30:42 +0800
+X-Gm-Features: AWmQ_bn2bVCLXzrG7aYHJDTqzt5yhS1hHhzvPZ2G4gZebpVApzcygrm_RETfCug
+Message-ID: <CAF+s44SAPA+PgKBGHd_5853JOHyFxLasKXYegJSWyrkKsDYg1w@mail.gmail.com>
+Subject: Re: [PATCHv6 1/2] cgroup/cpuset: Introduce cpuset_cpus_allowed_locked()
+To: Waiman Long <llong@redhat.com>
+Cc: cgroups@vger.kernel.org, Chen Ridong <chenridong@huaweicloud.com>, 
+	Peter Zijlstra <peterz@infradead.org>, Juri Lelli <juri.lelli@redhat.com>, 
+	Pierre Gondois <pierre.gondois@arm.com>, Ingo Molnar <mingo@redhat.com>, 
+	Vincent Guittot <vincent.guittot@linaro.org>, Dietmar Eggemann <dietmar.eggemann@arm.com>, 
+	Steven Rostedt <rostedt@goodmis.org>, Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>, 
+	Valentin Schneider <vschneid@redhat.com>, Tejun Heo <tj@kernel.org>, 
+	Johannes Weiner <hannes@cmpxchg.org>, mkoutny@suse.com, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, 17 Nov 2025 14:17:43 -0800 Chris Li <chrisl@kernel.org> wrote:
-
-TLDR: my idea was only for proactive reclaim use cases, while you want to cover
-reactive swap use cases.  I agree my idea cannot work for that.
-
-I added more detailed comments below.
-
-> On Sat, Nov 15, 2025 at 9:24 AM SeongJae Park <sj@kernel.org> wrote:
+On Tue, Nov 18, 2025 at 4:37=E2=80=AFAM Waiman Long <llong@redhat.com> wrot=
+e:
+>
+> On 11/17/25 4:27 AM, Pingfan Liu wrote:
+> > cpuset_cpus_allowed() uses a reader lock that is sleepable under RT,
+> > which means it cannot be called inside raw_spin_lock_t context.
 > >
-> > On Sat, 15 Nov 2025 07:13:49 -0800 Chris Li <chrisl@kernel.org> wrote:
-> > > Thank you for your interest. Please keep in mind that this patch
-> > > series is RFC. I suspect the current series will go through a lot of
-> > > overhaul before it gets merged in. I predict the end result will
-> > > likely have less than half of the code resemble what it is in the
-> > > series right  now.
+> > Introduce a new cpuset_cpus_allowed_locked() helper that performs the
+> > same function as cpuset_cpus_allowed() except that the caller must have
+> > acquired the cpuset_mutex so that no further locking will be needed.
 > >
-> > Sure, I belive this work will greatly evolve :)
-> 
-> Yes, we can use any eyes that can help to review or spot bugs.
-> 
-> > > > Nevertheless, I'm curious if there is simpler and more flexible ways to achieve
-> > > > the goal (control of swap device to use).  For example, extending existing
-> > > Simplicity is one of my primary design principles. The current design
-> > > is close to the simplest within the design constraints.
+> > Suggested-by: Waiman Long <longman@redhat.com>
+> > Signed-off-by: Pingfan Liu <piliu@redhat.com>
+> > Cc: Waiman Long <longman@redhat.com>
+> > Cc: Tejun Heo <tj@kernel.org>
+> > Cc: Johannes Weiner <hannes@cmpxchg.org>
+> > Cc: "Michal Koutn=C3=BD" <mkoutny@suse.com>
+> > Cc: linux-kernel@vger.kernel.org
+> > To: cgroups@vger.kernel.org
+> > ---
+> >   include/linux/cpuset.h |  1 +
+> >   kernel/cgroup/cpuset.c | 51 +++++++++++++++++++++++++++++------------=
+-
+> >   2 files changed, 37 insertions(+), 15 deletions(-)
 > >
-> > I agree the concept is very simple.  But, I was thinking there _could_ be
-> > complexity for its implementation and required changes to existing code.
-> > Especially I'm curious about how the control logic for tiers maangement would
-> > be implemented in a simple but optimum and flexible way.  Hence I was lazily
-> > thinking what if we just let users make the control.
-> 
-> The selection of the swap device will be at the swap allocator. The
-> good news is that we just rewrite the whole swap allocator so it is an
-> easier code base to work with for us than the previous swap allocator.
-> I haven't imagined how to implement swap file selection on the
-> previous allocator, I am just glad that I don't need to worry about
-> it.
-> 
-> Some feedback on the madvise API that selects one specific device.
-> That might sound simple, because you only need to remember one swap
-> file. However, the less than ideal part is that, you are pinned to one
-> swap file, if that swap file is full, you are stuck. If that swap file
-> has been swapoff, you are stuck.
+> > diff --git a/include/linux/cpuset.h b/include/linux/cpuset.h
+> > index 2ddb256187b51..e057a3123791e 100644
+> > --- a/include/linux/cpuset.h
+> > +++ b/include/linux/cpuset.h
+> > @@ -75,6 +75,7 @@ extern void dec_dl_tasks_cs(struct task_struct *task)=
+;
+> >   extern void cpuset_lock(void);
+> >   extern void cpuset_unlock(void);
+> >   extern void cpuset_cpus_allowed(struct task_struct *p, struct cpumask=
+ *mask);
+> > +extern void cpuset_cpus_allowed_locked(struct task_struct *p, struct c=
+pumask *mask);
+> >   extern bool cpuset_cpus_allowed_fallback(struct task_struct *p);
+> >   extern bool cpuset_cpu_is_isolated(int cpu);
+> >   extern nodemask_t cpuset_mems_allowed(struct task_struct *p);
+>
+> Ah, the following code should be added to to !CONFIG_CPUSETS section
+> after cpuset_cpus_allowed().
+>
+> #define cpuset_cpus_allowed_locked(p, m)  cpuset_cpus_allowed(p, m)
+>
+> Or you can add another inline function that just calls
+> cpuset_cpus_allowed().
+>
 
-I agree about the problem.
-
-My idea was, however, letting each madvise() call to decide which swap device
-to use.  In the case, if a swap device is full, the user may try other swap
-device, so no such stuck would happen.
-
-And because of the madivse() interface, I was saying doing such extension for
-madvise() could be challenging, while such extensions for memory.reclaim or
-DAMOS_PAGEOUT may be much more doable.
-
-> 
-> I believe that allowing selection of a tier class, e.g. a QoS aspect
-> of the swap latency expectation, is better fit what the user really
-> wants to do. So I see selecting swapfile vs swap tier is a separate
-> issue of how to select the swap device (madvise vs memory.swap.tiers).
-> Your argument is that selecting a tier is more complex than selecting
-> a swap file directly. I agree from an implementation point of view.
-> However the tiers offer better flexibility and free users from the
-> swapfile pinning. e.g. round robin on a few swap files of the same
-> tier is better than pinning to one swap file. That has been proven
-> from Baoquan's test benchmark.
-
-I agree the problem of pinning.  Nonetheless my idea was not pinning, but just
-letting users select the swap device whenever they want to swap.  That is, the
-user may be able to do the round robin selection.  And in a case, they might
-want and be able to do an advanced selection that optimized for their special
-case.
-
-> 
-> Another feedback is that user space isn't the primary one to perform
-> swap out by madivse PAGEOUT. A lot of swap happens due to the cgroup
-> memory usage hitting the memory cgroup limit, which triggers the swap
-> out from the memory cgroup that hit the limit. That is an existing
-> usage case and we have a need to select which swap file anyway. If we
-> extend the madvise for per swapfile selection, that is a question that
-> must have an answer for native swap out (by the kernel not madvise)
-> anyway.  I can see  the user space wants to set the POLICY about a VMA
-> if it ever gets swapped out, what speed of swap file it goes to. That
-> is a follow up after we have the swapfile selection at the memory
-> cgroup level.
-
-I fully agreed.  My idea is basically extending proactive reclamation features.
-It cannot cover this reactive reclaim cases.
-
-I think this perfectly answers my question!
-
-> 
-> > I'm not saying tiers approach's control part implementation will, or is,
-> > complex or suboptimum.  I didn't read this series thoroughly yet.
-> >
-> > Even if it is at the moment, as you pointed out, I believe it will evolve to a
-> > simple and optimum one.  That's why I am willing to try to get time for reading
-> > this series and learn from it, and contribute back to the evolution if I find
-> > something :)
-> >
-> > >
-> > > > proactive pageout features, such as memory.reclaim, MADV_PAGEOUT or
-> > > > DAMOS_PAGEOUT, to let users specify the swap device to use.  Doing such
-> > >
-> > > In my mind that is a later phase. No, per VMA swapfile is not simpler
-> > > to use, nor is the API simpler to code. There are much more VMA than
-> > > memcg in the system, no even the same magnitude. It is a higher burden
-> > > for both user space and kernel to maintain all the per VMA mapping.
-> > > The VMA and mmap path is much more complex to hack. Doing it on the
-> > > memcg level as the first step is the right approach.
-> > >
-> > > > extension for MADV_PAGEOUT may be challenging, but it might be doable for
-> > > > memory.reclaim and DAMOS_PAGEOUT.  Have you considered this kind of options?
-> > >
-> > > Yes, as YoungJun points out, that has been considered here, but in a
-> > > later phase. Borrow the link in his email here:
-> > > https://lore.kernel.org/linux-mm/CACePvbW_Q6O2ppMG35gwj7OHCdbjja3qUCF1T7GFsm9VDr2e_g@mail.gmail.com/
-> >
-> > Thank you for kindly sharing your opinion and previous discussion!  I
-> > understand you believe sub-cgroup (e.g., vma level) control of swap tiers can
-> > be useful, but there is no expected use case, and you concern about its
-> > complexity in terms of implementation and interface.  That all makes sense to
-> > me.
-> 
-> There is some usage request from Android wanting to protect some VMA
-> never getting swapped into slower tiers. Otherwise it can cause
-> jankiness. Still I consider the cgroup swap file selection is a more
-> common one.
-
-Thank you for sharing this interesting usage request!  And I agree cgroup level
-requirements would be more common.
-
-> 
-> > Nonetheless, I'm not saying about sub-cgroup control.  As I also replied [1] to
-> > Youngjun, memory.reclaim and DAMOS_PAGEOUT based extension would work in cgroup
-> > level.  And to my humble perspective, doing the extension could be doable, at
-> > least for DAMOS_PAGEOUT.
-> 
-> I would do it one thing at a time and start from the mem cgroup level
-> swap file selection e.g. "memory.swap.tiers".
-
-Makes sense, please proceed on your schedule :)
-
-> However, if you are
-> passionate about VMA level swap file selection, please feel free to
-> submit patches for it.
-
-I have no plan to do that at the moment.  I just wanted to hear your opinion on
-my naive ideas :)  Thank you for sharing the opinions!
-
-> 
-> > Hmm, I feel like my mail might be read like I'm suggesting you to use
-> > DAMOS_PAGEOUT.  The decision is yours and I will respect it, of course.  I'm
-> > saying this though, because I am uncautiously but definitely biased as DAMON
-> > maintainer. ;)  Again, the decision is yours and I will respect it.
-> >
-> > [1] https://lore.kernel.org/20251115165637.82966-1-sj@kernel.org
-> 
-> Sorry I haven't read much about the DAMOS_PAGEOUT yet. After reading
-> the above thread, I still don't feel I have a good sense of
-> DAMOS_PAGEOUT. Who is the actual user that requested that feature and
-> what is the typical usage work flow and life cycle?
-
-In short, DAMOS_PAGEOUT is a proactive reclaim mechanism.  Users can ask a
-kernel thread (called kdamond) to monitor the access pattern of the system and
-reclaim pages of specific access pattern (e.g., not accessed for >=2 minutes)
-as soon as found.  Some users including AWS are using it as a proactive
-reclamation mechanism.
-
-As I mentioned above, since it is a sort of proactive method, it wouldn't cover
-the reactive reclamation use case and cannot be an alternative of your swap
-tiers work.
-
-> BTW, I am still
-> considering the per VMA swap policy should happen after the
-> memory.swap.tiers given my current understanding.
-
-I have no strong opinion, and that also makes sense to me :)
-
+It may be better to make cpuset_cpus_allowed() call
+cpuset_cpus_allowed_locked(), following the call chain used under
+CONFIG_CPUSETS case.
 
 Thanks,
-SJ
 
-[...]
+Pingfan
+
 
