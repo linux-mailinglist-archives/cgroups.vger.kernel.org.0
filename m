@@ -1,83 +1,46 @@
-Return-Path: <cgroups+bounces-12093-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-12094-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id B73F7C6E2CB
-	for <lists+cgroups@lfdr.de>; Wed, 19 Nov 2025 12:15:45 +0100 (CET)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
+	by mail.lfdr.de (Postfix) with ESMTPS id A484CC6E326
+	for <lists+cgroups@lfdr.de>; Wed, 19 Nov 2025 12:20:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 5639834D17B
-	for <lists+cgroups@lfdr.de>; Wed, 19 Nov 2025 11:08:11 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 7139234AE26
+	for <lists+cgroups@lfdr.de>; Wed, 19 Nov 2025 11:14:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 99DD23538AC;
-	Wed, 19 Nov 2025 11:06:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 44F0A347FE8;
+	Wed, 19 Nov 2025 11:14:19 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
+Received: from localhost.localdomain (unknown [147.136.157.0])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 568E4350D46;
-	Wed, 19 Nov 2025 11:06:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=124.126.103.232
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 700D634A3A2;
+	Wed, 19 Nov 2025 11:14:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=147.136.157.0
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763550388; cv=none; b=s4BAaZQJMDTE8LYAdDOG4p5xGue6LBf3DQnygsvYkdw0NCOVV6OcKB09xq23wiRXg+4UdNpq7PPZLciovbAf0RDchyq6Vl2hbia4udb7hqFn3FYUadK+3TomlE84RKQcvSjCCDWxbutefoBeaflaMS81+zKlIgfamFIzGM9XMUQ=
+	t=1763550859; cv=none; b=Ld6gMoE0vnjXIUBZ/flBQ4uQDe1pZK6eTptXumWr87suWxmsUnzfKXYRHSA0eqfwsBpiZO6l0MsYPkLt6QcXqOJ+QeULNg+R6R8u/B5ZVFfSbou5u/udRzKn+8gqXbEnJJjqqHuGARzhE5Goy97h93dwTcX4U3GKggNFqmaTCjg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763550388; c=relaxed/simple;
-	bh=BbYn8CqyP0+Hg9dyQYWnTfj+aqDyVNNHHeIsXidYinQ=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=m3Uz93Rw8/shyKtq/ZHUcVyG0tjOYzb9YvlT0SfL2v/NZ07S7l3QJ2ROp3o8NmMUO3XpxFhUOM3ls2BJEeyjK82pCmkL2GCziWL4lnhVVXOYpG8bB3lkHF3JtZ5Ef8qVT0eGV0Dp5ZcmwjACxfG5M5paHIRFue45OuW4ioXqLKg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn; spf=pass smtp.mailfrom=kylinos.cn; arc=none smtp.client-ip=124.126.103.232
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kylinos.cn
-X-UUID: c09cf5e0c53711f0a38c85956e01ac42-20251119
-X-CTIC-Tags:
-	HR_CC_COUNT, HR_CC_DOMAIN_COUNT, HR_CC_NO_NAME, HR_CTE_8B, HR_CTT_MISS
-	HR_DATE_H, HR_DATE_WKD, HR_DATE_ZONE, HR_FROM_NAME, HR_SJ_DIGIT_LEN
-	HR_SJ_LANG, HR_SJ_LEN, HR_SJ_LETTER, HR_SJ_NOR_SYM, HR_SJ_PHRASE
-	HR_SJ_PHRASE_LEN, HR_SJ_PRE_RE, HR_SJ_WS, HR_TO_COUNT, HR_TO_DOMAIN_COUNT
-	HR_TO_NO_NAME, IP_TRUSTED, SRC_TRUSTED, DN_TRUSTED, SA_TRUSTED
-	SA_EXISTED, SN_EXISTED, SPF_NOPASS, DKIM_NOPASS, DMARC_NOPASS
-	CIE_GOOD, CIE_GOOD_SPF, GTI_FG_BS, GTI_FG_IT, GTI_RG_INFO
-	GTI_C_BU, AMN_GOOD, ABX_MISS_RDNS
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.3.6,REQID:cc27802b-44c4-49f9-a9b0-58b2da6c2faf,IP:10,U
-	RL:0,TC:0,Content:0,EDM:0,RT:0,SF:-5,FILE:0,BULK:0,RULE:Release_Ham,ACTION
-	:release,TS:5
-X-CID-INFO: VERSION:1.3.6,REQID:cc27802b-44c4-49f9-a9b0-58b2da6c2faf,IP:10,URL
-	:0,TC:0,Content:0,EDM:0,RT:0,SF:-5,FILE:0,BULK:0,RULE:Release_Ham,ACTION:r
-	elease,TS:5
-X-CID-META: VersionHash:a9d874c,CLOUDID:5802ba938666071d8c168d1e00a3a3b8,BulkI
-	D:251117180100BIUI482W,BulkQuantity:6,Recheck:0,SF:17|19|64|66|78|80|81|82
-	|83|102|841|850,TC:nil,Content:0|15|50,EDM:-3,IP:-2,URL:99|1,File:nil,RT:n
-	il,Bulk:40,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,
-	BRR:0,BRE:0,ARC:0
-X-CID-BVR: 2,SSN|SDN
-X-CID-BAS: 2,SSN|SDN,0,_
-X-CID-FACTOR: TF_CID_SPAM_FSD,TF_CID_SPAM_ULS,TF_CID_SPAM_SNR,TF_CID_SPAM_FAS
-X-CID-RHF: D41D8CD98F00B204E9800998ECF8427E
-X-UUID: c09cf5e0c53711f0a38c85956e01ac42-20251119
-X-User: sunshaojie@kylinos.cn
-Received: from localhost.localdomain [(223.70.159.239)] by mailgw.kylinos.cn
-	(envelope-from <sunshaojie@kylinos.cn>)
-	(Generic MTA with TLSv1.3 TLS_AES_256_GCM_SHA384 256/256)
-	with ESMTP id 687768682; Wed, 19 Nov 2025 19:06:09 +0800
-From: Sun Shaojie <sunshaojie@kylinos.cn>
-To: llong@redhat.com
-Cc: cgroups@vger.kernel.org,
-	chenridong@huaweicloud.com,
+	s=arc-20240116; t=1763550859; c=relaxed/simple;
+	bh=NjoZchIMgmxOHpL/nnZumtYE5ZVpIaDfYIyjDVRhy1E=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=M0YS5xCJZRjWDGYXvy64HdwAtPtlrbk3rVWbraKSUEgL7MQ/LrPlt2bCzjdFM1IrpZzb7Sdn8q9YKQkt0V80Hp/u878bHDC5cYBaLgiHoi6QF2JH3DAoV3SSAASMBZq0mPVzxgFOicWmqhFtzFqWGwLLxN1MpAu/i/dNxT92QDo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.dev; spf=none smtp.mailfrom=localhost.localdomain; arc=none smtp.client-ip=147.136.157.0
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=localhost.localdomain
+Received: by localhost.localdomain (Postfix, from userid 1007)
+	id AB33C8B2A10; Wed, 19 Nov 2025 19:14:09 +0800 (+08)
+From: Jiayuan Chen <jiayuan.chen@linux.dev>
+To: cgroups@vger.kernel.org
+Cc: tj@kernel.org,
 	hannes@cmpxchg.org,
-	linux-kernel@vger.kernel.org,
-	linux-kselftest@vger.kernel.org,
 	mkoutny@suse.com,
-	shuah@kernel.org,
-	sunshaojie@kylinos.cn,
-	tj@kernel.org
-Subject: Re: [PATCH v4 1/1] cpuset: relax the overlap check for cgroup-v2
-Date: Wed, 19 Nov 2025 19:05:46 +0800
-Message-Id: <20251119110546.1387184-1-sunshaojie@kylinos.cn>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <942d2b65-3c28-4f6d-aa6b-8365fa5cea2c@redhat.com>
-References: <942d2b65-3c28-4f6d-aa6b-8365fa5cea2c@redhat.com>
+	linux-kernel@vger.kernel.org,
+	Jiayuan Chen <jiayuan.chen@linux.dev>
+Subject: [PATCH v1] cgroup: drop preemption_disabled checking
+Date: Wed, 19 Nov 2025 19:14:01 +0800
+Message-ID: <20251119111402.153727-1-jiayuan.chen@linux.dev>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -86,97 +49,67 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Hi, Longman,
+BPF programs do not disable preemption, they only disable migration.
+Therefore, when running the cgroup_hierarchical_stats selftest, a
+warning [1] is generated.
 
-On Tue, 18 Nov 2025 14:53:27 -0500, Longman wrote:
->On 11/16/25 8:57 PM, Sun Shaojie wrote:
->> diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
->> index 52468d2c178a..0fd803612513 100644
->> --- a/kernel/cgroup/cpuset.c
->> +++ b/kernel/cgroup/cpuset.c
->> @@ -580,35 +580,56 @@ static inline bool cpusets_are_exclusive(struct cpuset *cs1, struct cpuset *cs2)
->>   
->>   /**
->>    * cpus_excl_conflict - Check if two cpusets have exclusive CPU conflicts
->> - * @cs1: first cpuset to check
->> - * @cs2: second cpuset to check
->> + * @cs1: current cpuset to check
->> + * @cs2: cpuset involved in the check
->>    *
->>    * Returns: true if CPU exclusivity conflict exists, false otherwise
->>    *
->>    * Conflict detection rules:
->> - * 1. If either cpuset is CPU exclusive, they must be mutually exclusive
->> + * For cgroup-v1:
->> + *     see cpuset1_cpus_excl_conflict()
->> + * For cgroup-v2:
->> + * 1. If cs1 is exclusive, cs1 and cs2 must be mutually exclusive
->>    * 2. exclusive_cpus masks cannot intersect between cpusets
->> - * 3. The allowed CPUs of one cpuset cannot be a subset of another's exclusive CPUs
->> + * 3. If cs2 is exclusive, cs2's allowed CPUs cannot be a subset of cs1's exclusive CPUs
->> + * 4. if cs1 and cs2 are not exclusive, the allowed CPUs of one cpuset cannot be a subset
->> + *    of another's exclusive CPUs
->>    */
->>   static inline bool cpus_excl_conflict(struct cpuset *cs1, struct cpuset *cs2)
->
->As cs1 and cs2 is going to be handled differently, their current naming 
->will make it hard to understand why they are treated differently. I will 
->recommended changing the parameter name to "trial, sibling" as the 
->caller call it with "cpus_excl_conflict(trial, c)" where trial is the 
->new cpuset data to be tested and sibling is one of its sibling cpusets. 
->It has to be clearly document what each parameter is for and the fact 
->that swapping the parameters will cause it to return incorrect result.
->
->
->>   {
->> -	/* If either cpuset is exclusive, check if they are mutually exclusive */
->> -	if (is_cpu_exclusive(cs1) || is_cpu_exclusive(cs2))
->> +	/* For cgroup-v1 */
->> +	if (!cpuset_v2())
->> +		return cpuset1_cpus_excl_conflict(cs1, cs2);
->> +
->> +	/* If cs1 are exclusive, check if they are mutually exclusive */
->> +	if (is_cpu_exclusive(cs1))
->>   		return !cpusets_are_exclusive(cs1, cs2);
->
->Code change like the following can eliminate the need to introduce a new 
->cpuset1_cpus_excl_conflict() helper.
->
->diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
->index ec8bebc66469..201c70fb7401 100644
->--- a/kernel/cgroup/cpuset.c
->+++ b/kernel/cgroup/cpuset.c
->@@ -599,9 +599,15 @@ static inline bool cpusets_are_exclusive(struct 
->cpuset *cs1, struct cpuset *cs2)
->   */
->  static inline bool cpus_excl_conflict(struct cpuset *cs1, struct 
->cpuset *cs2)
->  {
->-       /* If either cpuset is exclusive, check if they are mutually 
->exclusive */
->-       if (is_cpu_exclusive(cs1) || is_cpu_exclusive(cs2))
->-               return !cpusets_are_exclusive(cs1, cs2);
->+       /*
->+        * If trial is exclusive or sibling is exclusive & in v1,
->+        * check if they are mutually exclusive
->+        */
->+       if (is_cpu_exclusive(trial) || (!cpuset_v2() && 
->is_cpu_exclusive(sibling)))
->+               return !cpusets_are_exclusive(trial, sibling);
->+
->+       if (!cpuset_v2())
->+               return false;   /* The checking below is irrelevant to 
->cpuset v1 */
->
->         /* Exclusive_cpus cannot intersect */
->         if (cpumask_intersects(cs1->exclusive_cpus, cs2->exclusive_cpus))
+The css_rstat_updated() function is lockless and reentrant, so checking
+for disabled preemption is unnecessary (please correct me if I'm wrong).
 
-Thank you very much for your guidance and suggestions on the code.
+[1]:
+~/tools/testing/selftests/bpf$
+test_progs -a cgroup_hierarchical_stats
 
-I've updated patch v5 with some new ideas and look forward to your feedback.
+...
+------------[ cut here ]------------
+WARNING: CPU: 0 PID: 382 at kernel/cgroup/rstat.c:84
+Modules linked in:
+RIP: 0010:css_rstat_updated+0x9d/0x160
+...
+PKRU: 55555554
+Call Trace:
+ <TASK>
+ bpf_prog_16a1c2d081688506_counter+0x143/0x14e
+ bpf_trampoline_6442524909+0x4b/0xb7
+ cgroup_attach_task+0x5/0x330
+ ? __cgroup_procs_write+0x1d7/0x2f0
+ cgroup_procs_write+0x17/0x30
+ cgroup_file_write+0xa6/0x2d0
+ kernfs_fop_write_iter+0x188/0x240
+ vfs_write+0x2da/0x5a0
+ ksys_write+0x77/0x100
+ __x64_sys_write+0x19/0x30
+ x64_sys_call+0x79/0x26a0
+ do_syscall_64+0x89/0x790
+ ? irqentry_exit+0x77/0xb0
+ ? __this_cpu_preempt_check+0x13/0x20
+ ? lockdep_hardirqs_on+0xce/0x170
+ ? irqentry_exit_to_user_mode+0xf2/0x290
+ ? irqentry_exit+0x77/0xb0
+ ? clear_bhb_loop+0x50/0xa0
+ ? clear_bhb_loop+0x50/0xa0
+ entry_SYSCALL_64_after_hwframe+0x76/0x7e
+---[ end trace 0000000000000000 ]---
 
-patch v5 : https://lore.kernel.org/cgroups/20251119105749.1385946-1-sunshaojie@kylinos.cn/
+Signed-off-by: Jiayuan Chen <jiayuan.chen@linux.dev>
+---
+ kernel/cgroup/rstat.c | 2 --
+ 1 file changed, 2 deletions(-)
 
-Thanks,
-Sun Shaojie
+diff --git a/kernel/cgroup/rstat.c b/kernel/cgroup/rstat.c
+index a198e40c799b..fe0d22280cbd 100644
+--- a/kernel/cgroup/rstat.c
++++ b/kernel/cgroup/rstat.c
+@@ -81,8 +81,6 @@ __bpf_kfunc void css_rstat_updated(struct cgroup_subsys_state *css, int cpu)
+ 	if (!css_uses_rstat(css))
+ 		return;
+ 
+-	lockdep_assert_preemption_disabled();
+-
+ 	/*
+ 	 * For archs withnot nmi safe cmpxchg or percpu ops support, ignore
+ 	 * the requests from nmi context.
+-- 
+2.43.0
+
 
