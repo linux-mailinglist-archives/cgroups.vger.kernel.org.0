@@ -1,115 +1,216 @@
-Return-Path: <cgroups+bounces-12094-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-12095-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
-	by mail.lfdr.de (Postfix) with ESMTPS id A484CC6E326
-	for <lists+cgroups@lfdr.de>; Wed, 19 Nov 2025 12:20:18 +0100 (CET)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8786FC6ED44
+	for <lists+cgroups@lfdr.de>; Wed, 19 Nov 2025 14:22:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 7139234AE26
-	for <lists+cgroups@lfdr.de>; Wed, 19 Nov 2025 11:14:26 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTPS id E56E12954B
+	for <lists+cgroups@lfdr.de>; Wed, 19 Nov 2025 13:22:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 44F0A347FE8;
-	Wed, 19 Nov 2025 11:14:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B8BC235C1A6;
+	Wed, 19 Nov 2025 13:20:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="BgN076L5"
 X-Original-To: cgroups@vger.kernel.org
-Received: from localhost.localdomain (unknown [147.136.157.0])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com [209.85.128.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 700D634A3A2;
-	Wed, 19 Nov 2025 11:14:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=147.136.157.0
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 736DE352FA6
+	for <cgroups@vger.kernel.org>; Wed, 19 Nov 2025 13:20:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763550859; cv=none; b=Ld6gMoE0vnjXIUBZ/flBQ4uQDe1pZK6eTptXumWr87suWxmsUnzfKXYRHSA0eqfwsBpiZO6l0MsYPkLt6QcXqOJ+QeULNg+R6R8u/B5ZVFfSbou5u/udRzKn+8gqXbEnJJjqqHuGARzhE5Goy97h93dwTcX4U3GKggNFqmaTCjg=
+	t=1763558432; cv=none; b=oQzpUX3e/UrsJQIguFx2O7mAFebwr2Hs8S0qnNgmz5fdj13EVV9wK7WnlXOXFt4eg36OOR1lexALXFSjzkBz11rG4CDVZmlESFy/Bt5SVwz/QT+yII5wKPkljKYWBll7D1qFaVtJ+cxEmEdhMSayaXmASxcf20ocB7nSn4Q94zg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763550859; c=relaxed/simple;
-	bh=NjoZchIMgmxOHpL/nnZumtYE5ZVpIaDfYIyjDVRhy1E=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=M0YS5xCJZRjWDGYXvy64HdwAtPtlrbk3rVWbraKSUEgL7MQ/LrPlt2bCzjdFM1IrpZzb7Sdn8q9YKQkt0V80Hp/u878bHDC5cYBaLgiHoi6QF2JH3DAoV3SSAASMBZq0mPVzxgFOicWmqhFtzFqWGwLLxN1MpAu/i/dNxT92QDo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.dev; spf=none smtp.mailfrom=localhost.localdomain; arc=none smtp.client-ip=147.136.157.0
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=localhost.localdomain
-Received: by localhost.localdomain (Postfix, from userid 1007)
-	id AB33C8B2A10; Wed, 19 Nov 2025 19:14:09 +0800 (+08)
-From: Jiayuan Chen <jiayuan.chen@linux.dev>
-To: cgroups@vger.kernel.org
-Cc: tj@kernel.org,
-	hannes@cmpxchg.org,
-	mkoutny@suse.com,
-	linux-kernel@vger.kernel.org,
-	Jiayuan Chen <jiayuan.chen@linux.dev>
-Subject: [PATCH v1] cgroup: drop preemption_disabled checking
-Date: Wed, 19 Nov 2025 19:14:01 +0800
-Message-ID: <20251119111402.153727-1-jiayuan.chen@linux.dev>
-X-Mailer: git-send-email 2.43.0
+	s=arc-20240116; t=1763558432; c=relaxed/simple;
+	bh=nm3sztzQa4S0D20Deg+k1S1+xIdqQFIVhZyb8SECxss=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=WkAsAj7DErj2HdGf4sATnQtHB3W3Z+fJrN50A0PvV/5m2Gb7t7DlXYsOmhogq4hhx7aavLh4Z7shWVKAshHNn1ozEN9Yl2Nr0vnRKloW7lNBgtoajb7KbwQsqPHMOj9EP6zbfnd7NzRNJbHRYw3fmJEyxSyjOUhnaqsGWFrc+j8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=BgN076L5; arc=none smtp.client-ip=209.85.128.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-47795f6f5c0so32130895e9.1
+        for <cgroups@vger.kernel.org>; Wed, 19 Nov 2025 05:20:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1763558427; x=1764163227; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=PoxARgPM89Y9X6g97pK7NmdCJnjkyiIU/xTcdKp+qf0=;
+        b=BgN076L5BEohZr7QL1FuLQJAxGvi2GEPEFhxWwTOE6Qz1Qfko7aWYapR3IcW8uFxV3
+         JR/+BN453S0V5hSDoaJ5dVKqdFiRYWbN8tvIgd58H6mQr6xoK9PV5WtMIylec67fgKx6
+         KqcoJZVU9bwpo5T00BBS/7rqccFrMu8x71V2yBVTckXAfpjWpnc/bHqubkevTNFla8Un
+         0m4sg2Ny8RExczfpgOnr3jQJ107D2jmAWAoznMVJ9Wj65qiZF/MlT99zybDJ1+qkAeHM
+         GOTiVKf3krtKtuzrW/YThzGq4fkjiZBGIj79iGFdbd9sR2qb3RYeB9AjJBradVeenSUB
+         Ec4Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1763558427; x=1764163227;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=PoxARgPM89Y9X6g97pK7NmdCJnjkyiIU/xTcdKp+qf0=;
+        b=DACdmm2Y1ftYRAeDgr+5Tz0D/TO6Kc+EpQt80FcFkBmcF+5tGTnlv0PS65Bhe1oJqZ
+         X81i+l9vggVqO/SXLCviKjrOLqTY8Vvu9qou7jRoWCcGZgi9g8VML5YvjLTgler7aiSt
+         IMEoNhkvzM4E4CiDaPn3HSFqpgMiB203NSRXsilNR3HSywNoQdOBfJt0MXB4GQRMjyza
+         XfQxeQA3oiG0xaA7MwDF7tIOut4BVigr7k89nmJW+bWlxFKfKeGz8I2W7eNmJmCQhpeG
+         AusG5TN95Z0yQieWkh8C6FA8d0MHNqTIOkOHNkIN/ErmUDiBdCmQj77NiDetBzhLR9Mv
+         aGzQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWqti8VMHdo8AHXxiIwxTdMfP6MJ4XgzhdM0wHPBztlxKBxxOpk84yO74lovXBG/Tlhrba2XZ+R@vger.kernel.org
+X-Gm-Message-State: AOJu0YwQXXq8uLFLD/Lmrq61u3nMxD69SymlP3KowEB7n69IGqPb8zR/
+	z7djCB6Qg66cMI8MQlfmf7/OPKXPTA4DR0vMANTGAu8zkZMVjOQXry21oFuaRUl3Svs=
+X-Gm-Gg: ASbGncsfGu6ac9qt6BqwXql423SBHup8fv3mFaugHV0h9CuMM+txMAHDBWmao386dUf
+	8O9ZlWEdcfQCR5cS6DQFo4u/fqrSNDvSeAabNYzoDEAx5UziE/wWfr8OYtbh//jMkMDO63tRWKi
+	iJls/Lmxd1U0oOtEN8hWJMsFpNiOFE5I3DkQzAYpNOwIafCZl/ZBZ0l4v3o/cvPED5Qr9+IRUo5
+	YAQbWFCOMa++wVn8AsqVPgpouHAnLJpGyHzWyMqpUHnBZPNUETePP/h2MsOAZwKy9SaKyAwjxlJ
+	WexX4VAsFXDkD0uwmwftsIc0btZerXPhBeCHY/J3Miay4p+/sJHohrJ8rR45vrToaqjY6FX0gUT
+	KAts5SarRk/41O1bFSNJt/vR3/wYKTqT6EHpOUKDy9EAP2gtwA8nWWwYb1n4h+oCxv9cIGhntTi
+	LIa5w2Wx02Zrg2gpVWz7U6CkAp6wTPQ4Q=
+X-Google-Smtp-Source: AGHT+IF3C7gq6LiGSx2tyyH9qIWLwrqvuyyIU92gVC2nsYxSAWDhsioOPNiP+CZTOsQ5zahjmuCeWg==
+X-Received: by 2002:a05:600c:45c7:b0:477:73e9:dbe7 with SMTP id 5b1f17b1804b1-477b19ee2b2mr22992965e9.35.1763558427327;
+        Wed, 19 Nov 2025 05:20:27 -0800 (PST)
+Received: from blackdock.suse.cz (nat2.prg.suse.com. [195.250.132.146])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-477a9de4765sm39618955e9.10.2025.11.19.05.20.26
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 19 Nov 2025 05:20:26 -0800 (PST)
+Date: Wed, 19 Nov 2025 14:20:25 +0100
+From: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
+To: Sun Shaojie <sunshaojie@kylinos.cn>
+Cc: llong@redhat.com, chenridong@huaweicloud.com, cgroups@vger.kernel.org, 
+	hannes@cmpxchg.org, linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org, 
+	shuah@kernel.org, tj@kernel.org
+Subject: Re: [PATCH v5] cpuset: Avoid invalidating sibling partitions on
+ cpuset.cpus conflict.
+Message-ID: <unk64xmcj5kt5c5gaauwaeld5qsshaldw7utgzk362w33y3zr7@s765trmj5ccs>
+References: <f32d2f31-630f-450b-911f-b512bbeb380a@huaweicloud.com>
+ <20251119105749.1385946-1-sunshaojie@kylinos.cn>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="56pquggrhrxwrten"
+Content-Disposition: inline
+In-Reply-To: <20251119105749.1385946-1-sunshaojie@kylinos.cn>
 
-BPF programs do not disable preemption, they only disable migration.
-Therefore, when running the cgroup_hierarchical_stats selftest, a
-warning [1] is generated.
 
-The css_rstat_updated() function is lockless and reentrant, so checking
-for disabled preemption is unnecessary (please correct me if I'm wrong).
+--56pquggrhrxwrten
+Content-Type: text/plain; protected-headers=v1; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH v5] cpuset: Avoid invalidating sibling partitions on
+ cpuset.cpus conflict.
+MIME-Version: 1.0
 
-[1]:
-~/tools/testing/selftests/bpf$
-test_progs -a cgroup_hierarchical_stats
+On Wed, Nov 19, 2025 at 06:57:49PM +0800, Sun Shaojie <sunshaojie@kylinos.c=
+n> wrote:
+> Currently, when setting a cpuset's cpuset.cpus to a value that conflicts
+> with its sibling partition, the sibling's partition state becomes invalid.
+> However, this invalidation is often unnecessary. If the cpuset being
+> modified is exclusive, it should invalidate itself upon conflict.
+>=20
+> This patch applies only to the following two cases=EF=BC=9A
+>=20
+> Assume the machine has 4 CPUs (0-3).
+>=20
+>    root cgroup
+>       /    \
+>     A1      B1
+>=20
+> Case 1: A1 is exclusive, B1 is non-exclusive, set B1's cpuset.cpus
+>=20
+>  Table 1.1: Before applying this patch
+>  Step                                       | A1's prstate | B1's prstate=
+ |
+>  #1> echo "0-1" > A1/cpuset.cpus            | member       | member      =
+ |
+>  #2> echo "root" > A1/cpuset.cpus.partition | root         | member      =
+ |
+>  #3> echo "0" > B1/cpuset.cpus              | root invalid | member      =
+ |
+>=20
+> After step #3, A1 changes from "root" to "root invalid" because its CPUs
+> (0-1) overlap with those requested by B1 (0). However, B1 can actually
+> use CPUs 2-3(from B1's parent), so it would be more reasonable for A1 to
+> remain as "root."
+>=20
+>  Table 1.2: After applying this patch
+>  Step                                       | A1's prstate | B1's prstate=
+ |
+>  #1> echo "0-1" > A1/cpuset.cpus            | member       | member      =
+ |
+>  #2> echo "root" > A1/cpuset.cpus.partition | root         | member      =
+ |
+>  #3> echo "0" > B1/cpuset.cpus              | root         | member      =
+ |
+>=20
+> Case 2: Both A1 and B1 are exclusive, set B1's cpuset.cpus
 
-...
-------------[ cut here ]------------
-WARNING: CPU: 0 PID: 382 at kernel/cgroup/rstat.c:84
-Modules linked in:
-RIP: 0010:css_rstat_updated+0x9d/0x160
-...
-PKRU: 55555554
-Call Trace:
- <TASK>
- bpf_prog_16a1c2d081688506_counter+0x143/0x14e
- bpf_trampoline_6442524909+0x4b/0xb7
- cgroup_attach_task+0x5/0x330
- ? __cgroup_procs_write+0x1d7/0x2f0
- cgroup_procs_write+0x17/0x30
- cgroup_file_write+0xa6/0x2d0
- kernfs_fop_write_iter+0x188/0x240
- vfs_write+0x2da/0x5a0
- ksys_write+0x77/0x100
- __x64_sys_write+0x19/0x30
- x64_sys_call+0x79/0x26a0
- do_syscall_64+0x89/0x790
- ? irqentry_exit+0x77/0xb0
- ? __this_cpu_preempt_check+0x13/0x20
- ? lockdep_hardirqs_on+0xce/0x170
- ? irqentry_exit_to_user_mode+0xf2/0x290
- ? irqentry_exit+0x77/0xb0
- ? clear_bhb_loop+0x50/0xa0
- ? clear_bhb_loop+0x50/0xa0
- entry_SYSCALL_64_after_hwframe+0x76/0x7e
----[ end trace 0000000000000000 ]---
+(Thanks for working this out, Shaojie.)
 
-Signed-off-by: Jiayuan Chen <jiayuan.chen@linux.dev>
----
- kernel/cgroup/rstat.c | 2 --
- 1 file changed, 2 deletions(-)
+>=20
+>  Table 2.1: Before applying this patch
+>  Step                                       | A1's prstate | B1's prstate=
+ |
+>  #1> echo "0-1" > A1/cpuset.cpus            | member       | member      =
+ |
+>  #2> echo "root" > A1/cpuset.cpus.partition | root         | member      =
+ |
+>  #3> echo "2" > B1/cpuset.cpus              | root         | member      =
+ |
+>  #4> echo "root" > B1/cpuset.cpus.partition | root         | root        =
+ |
+>  #5> echo "1-2" > B1/cpuset.cpus            | root invalid | root invalid=
+ |
+>=20
+> After step #4, B1 can exclusively use CPU 2. Therefore, at step #5,
+> regardless of what conflicting value B1 writes to cpuset.cpus, it will
+> always have at least CPU 2 available. This makes it unnecessary to mark
+> A1 as "root invalid".
+>=20
+>  Table 2.2: After applying this patch
+>  Step                                       | A1's prstate | B1's prstate=
+ |
+>  #1> echo "0-1" > A1/cpuset.cpus            | member       | member      =
+ |
+>  #2> echo "root" > A1/cpuset.cpus.partition | root         | member      =
+ |
+>  #3> echo "2" > B1/cpuset.cpus              | root         | member      =
+ |
+>  #4> echo "root" > B1/cpuset.cpus.partition | root         | root        =
+ |
+>  #5> echo "1-2" > B1/cpuset.cpus            | root         | root invalid=
+ |
+>=20
+> In summary, regardless of how B1 configures its cpuset.cpus, there will
+> always be available CPUs in B1's cpuset.cpus.effective. Therefore, there
+> is no need to change A1 from "root" to "root invalid".
 
-diff --git a/kernel/cgroup/rstat.c b/kernel/cgroup/rstat.c
-index a198e40c799b..fe0d22280cbd 100644
---- a/kernel/cgroup/rstat.c
-+++ b/kernel/cgroup/rstat.c
-@@ -81,8 +81,6 @@ __bpf_kfunc void css_rstat_updated(struct cgroup_subsys_state *css, int cpu)
- 	if (!css_uses_rstat(css))
- 		return;
- 
--	lockdep_assert_preemption_disabled();
--
- 	/*
- 	 * For archs withnot nmi safe cmpxchg or percpu ops support, ignore
- 	 * the requests from nmi context.
--- 
-2.43.0
+Admittedly, I don't like this change because it relies on implicit
+preference ordering between siblings (here first comes, first served)
+and so the effective config cannot be derived just from the applied
+values :-/
 
+Do you actually want to achieve this or is it an implementation
+side-effect of the Case 1 scenario that you want to achieve?
+
+
+Thanks,
+Michal
+
+--56pquggrhrxwrten
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iJEEABYKADkWIQRCE24Fn/AcRjnLivR+PQLnlNv4CAUCaR3EFRsUgAAAAAAEAA5t
+YW51MiwyLjUrMS4xMSwyLDIACgkQfj0C55Tb+Aj+eAD+J14AFyYgMq6PwY3tUvdv
++yJeyY2AzHSVfN4YYmOdkYIA+wZwO2bW660vCxGCI4qFDcSrI0RNqEm+EZg+dPyM
+2TkG
+=r/6p
+-----END PGP SIGNATURE-----
+
+--56pquggrhrxwrten--
 
