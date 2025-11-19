@@ -1,54 +1,83 @@
-Return-Path: <cgroups+bounces-12096-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-12097-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4DDBEC6FEBC
-	for <lists+cgroups@lfdr.de>; Wed, 19 Nov 2025 17:05:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 00A20C6FF5B
+	for <lists+cgroups@lfdr.de>; Wed, 19 Nov 2025 17:11:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by tor.lore.kernel.org (Postfix) with ESMTPS id 8FD022FDE8
-	for <lists+cgroups@lfdr.de>; Wed, 19 Nov 2025 16:03:20 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTPS id 4DA0A2FA5B
+	for <lists+cgroups@lfdr.de>; Wed, 19 Nov 2025 16:07:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C0C182E03F3;
-	Wed, 19 Nov 2025 15:59:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A3622E36F8;
+	Wed, 19 Nov 2025 16:07:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="LQJ1F6JR"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="b7KQxCxa"
 X-Original-To: cgroups@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 668AD341043;
-	Wed, 19 Nov 2025 15:59:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0982936E555;
+	Wed, 19 Nov 2025 16:07:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763567978; cv=none; b=pgqDpq9epAOB1XUlePc9Xl19+z3FcTmCqv+JDjcpzwdhKupdf8a28rFN5ytlTU+sCkYMHiO/MSpYJ/2+au7+14+amNFmKcOUGOipf+i2l+dn96U+9fmRFVfCE1uxa7TZpNet4FxANKGgoGohfwQdjQQjiSGHPzDaDurKetIDhuU=
+	t=1763568435; cv=none; b=M9eF34YaBxduztuhYyo9sCS2/AENWCLB/wHdIsAxuGNEh5zId/Gj+iOxbZJdUyhTfyXcScl1g16Kp0tscH6rvfaKnv5KkQcqMlgbaFj0mnTSj0bv5rCIQI16A8VHFIiMpMTeaN5hvmsLKoWRnQLS832n/8d70/1bLd7qx44SCe0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763567978; c=relaxed/simple;
-	bh=CdjK4X48w1HdNQUKBNO5x4nNDYlk2RJu4rnbsLEZPkw=;
+	s=arc-20240116; t=1763568435; c=relaxed/simple;
+	bh=qRmXNqvNBQDh97190xHWs7o5wzuF2E7C7rnGx3N7xAc=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=WGyHAva0ciTtxzZird3IhGu3eDWiYJT7DvjGCcqgDd2Iu14vfbUGJ1yowu8vzZMhykmyFLFhM446kBD0JnunQxH3d7PacW7c9pWMGt7/vgE8VkceKSF2Y7wI0+j44GtoMtSJ+D9hWzUJ48Wg7/FIl8uM5hGOeCwQRGhv1fGgWSg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=LQJ1F6JR; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1F995C19423;
-	Wed, 19 Nov 2025 15:59:38 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=aiV5ZGYPIMBEF7024cv2PWrp32gM6PxDoc6mo696BVf1H57moKusNOR2+l9DfYjYIAIYh9tQi0WDZjh5ytjUNimGRvyNHtcvv7fmZ92YYKTV7lAcd1JTUAD13u42pxE27H1nVDTIUJ0dcps2FkL8InDVCuRjU1URWdPDZhIT/Kw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=b7KQxCxa; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 581A2C4CEF5;
+	Wed, 19 Nov 2025 16:07:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1763567978;
-	bh=CdjK4X48w1HdNQUKBNO5x4nNDYlk2RJu4rnbsLEZPkw=;
+	s=k20201202; t=1763568434;
+	bh=qRmXNqvNBQDh97190xHWs7o5wzuF2E7C7rnGx3N7xAc=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=LQJ1F6JRiLHobcE3QBd39FfpLx+aWq491pgb6FtioSd+sHwVlQ4IJfVzZz+o9GOj6
-	 YjFSrtEd1QDut5vMm0Ht/bZYdGoROX40tVljl2irmoJc+9eVetQHCJSHjXNAay7L4Y
-	 D+BhhxLU7DYAScSakrTrZTOGeEkca//XKqTRN94qmr9bBcUTh7MVP4CkVYYf2UgHIz
-	 hy30oZCB2yWJAKgEg1RGS6OuNONx3uxMVWAFzmf0HvmS1OjxaM87QkK6V6QRQhZC+e
-	 QBJesCl6FQgsLF1ClWkJVviqcvRr158fjh5xgnZM78ypPMyMTVq52i+O2CqLUABVQw
-	 HJucvGj+gWG7A==
-Date: Wed, 19 Nov 2025 05:59:37 -1000
+	b=b7KQxCxafz4qEtGxChHspekYVsdbRsj9qiAz3vFLObGmqzZL1lrFzsBm8ciNbo6bq
+	 6BGzn/8DBsreJedaX+njzYw+E6jL4GPtRfRmybU9J+KrygcbHjUiE0fs+uh/QE0hHP
+	 JPY4vDH00zQ7d98qcxtDlDEuoR0pfukrqJyDU+rNCe9lhxeqcGCciOmDsRIRbLDTuN
+	 FKn8BquQeP2swUUvrzc0OrDxuxM5jAUXtAsRKDWgQX7VTQ3Zw2+2W9bhY+dJf+Uryl
+	 i+UbaOQQNdPcqbzi+7QtAn/c0/dF25lZ0w5/bf1XZ3TSyj50NsbNJNzj6X6G7jCNd3
+	 KMf70HOU7D2Tg==
+Date: Wed, 19 Nov 2025 06:07:13 -1000
 From: Tejun Heo <tj@kernel.org>
-To: Jiayuan Chen <jiayuan.chen@linux.dev>
-Cc: cgroups@vger.kernel.org, hannes@cmpxchg.org, mkoutny@suse.com,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v1] cgroup: drop preemption_disabled checking
-Message-ID: <aR3paXRgyxdeO4sC@slm.duckdns.org>
-References: <20251119111402.153727-1-jiayuan.chen@linux.dev>
+To: Hui Zhu <hui.zhu@linux.dev>
+Cc: Andrew Morton <akpm@linux-foundation.org>,
+	Johannes Weiner <hannes@cmpxchg.org>,
+	Michal Hocko <mhocko@kernel.org>,
+	Roman Gushchin <roman.gushchin@linux.dev>,
+	Shakeel Butt <shakeel.butt@linux.dev>,
+	Muchun Song <muchun.song@linux.dev>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>,
+	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+	Shuah Khan <shuah@kernel.org>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Miguel Ojeda <ojeda@kernel.org>,
+	Nathan Chancellor <nathan@kernel.org>, Kees Cook <kees@kernel.org>,
+	Jeff Xu <jeffxu@chromium.org>, mkoutny@suse.com,
+	Jan Hendrik Farr <kernel@jfarr.cc>,
+	Christian Brauner <brauner@kernel.org>,
+	Randy Dunlap <rdunlap@infradead.org>,
+	Brian Gerst <brgerst@gmail.com>,
+	Masahiro Yamada <masahiroy@kernel.org>,
+	linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+	cgroups@vger.kernel.org, bpf@vger.kernel.org,
+	linux-kselftest@vger.kernel.org, Hui Zhu <zhuhui@kylinos.cn>,
+	Geliang Tang <geliang@kernel.org>
+Subject: Re: [RFC PATCH 1/3] memcg: add eBPF struct ops support for memory
+ charging
+Message-ID: <aR3rMWgTWHryaZ6n@slm.duckdns.org>
+References: <cover.1763457705.git.zhuhui@kylinos.cn>
+ <15f95166c6c516f303f3092e74c88ace5164bdf0.1763457705.git.zhuhui@kylinos.cn>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -57,23 +86,19 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20251119111402.153727-1-jiayuan.chen@linux.dev>
+In-Reply-To: <15f95166c6c516f303f3092e74c88ace5164bdf0.1763457705.git.zhuhui@kylinos.cn>
 
-Hello,
+Hello, Hui.
 
-On Wed, Nov 19, 2025 at 07:14:01PM +0800, Jiayuan Chen wrote:
-> BPF programs do not disable preemption, they only disable migration.
-> Therefore, when running the cgroup_hierarchical_stats selftest, a
-> warning [1] is generated.
-> 
-> The css_rstat_updated() function is lockless and reentrant, so checking
-> for disabled preemption is unnecessary (please correct me if I'm wrong).
+On Wed, Nov 19, 2025 at 09:34:06AM +0800, Hui Zhu wrote:
+> Handlers can inspect this context and modify certain fields
+> (e.g., nr_pages) to adjust reclamation behavior. The design
+> enforces single active handler to avoid conflicts.
 
-While it won't crash the kernel to schedule while running the function,
-there are timing considerations here. If the thread which wins the lnode
-competition gets scheduled out, there can be significant unexpected delays
-for others that lost against it. Maybe just update the caller to disable
-preemption?
+Other folks would know a lot better how this should hook into memcg, but
+given that this is a cgroup feature, this should allow hierarchical
+delegation. It probably would be a good idea to aling it with the bpf OOM
+handler support that Roman is working on.
 
 Thanks.
 
