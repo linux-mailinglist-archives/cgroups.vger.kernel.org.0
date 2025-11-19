@@ -1,337 +1,231 @@
-Return-Path: <cgroups+bounces-12071-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-12073-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4671EC6B7E8
-	for <lists+cgroups@lfdr.de>; Tue, 18 Nov 2025 20:53:41 +0100 (CET)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id CC7F8C6C423
+	for <lists+cgroups@lfdr.de>; Wed, 19 Nov 2025 02:35:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 2C3464E4008
-	for <lists+cgroups@lfdr.de>; Tue, 18 Nov 2025 19:53:40 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 4E84735CED8
+	for <lists+cgroups@lfdr.de>; Wed, 19 Nov 2025 01:35:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D71042E5B0E;
-	Tue, 18 Nov 2025 19:53:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3C4EE24C676;
+	Wed, 19 Nov 2025 01:35:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="UwZQhGjs";
-	dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b="IFj1DMfM"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="wcb6zxRs"
 X-Original-To: cgroups@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+Received: from out-189.mta1.migadu.com (out-189.mta1.migadu.com [95.215.58.189])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C580280A20
-	for <cgroups@vger.kernel.org>; Tue, 18 Nov 2025 19:53:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 31F2A2475CF
+	for <cgroups@vger.kernel.org>; Wed, 19 Nov 2025 01:35:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.189
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763495615; cv=none; b=mRDFoAZ7UgDd8AyqIKML24/fJC/C+QwmKXCVJczES2ufcjdAuKOqCw16YTBwAgZIl8az0c6EzElJ5tfHEBhuwG/SnrkgvPqmq38LPHPX1RAfuTOXUd7RLRh+0KFudehZmUnQQXNMuqh63iYyZrypfSXR+6ybBW9HOjURJLuKWGk=
+	t=1763516104; cv=none; b=OfweJDHHLplVTXGkC6Qu15Fdg94uLZDhGuJag35n/xJ1oVY4MU6MjlkIvKiOk/cViIsI8ArHwUxymnAS2kM+bOn5MYlt2AwdWRkXHWYjt55zmuyg5PMoc4cfKuoHjKhDTM/kERE0kaCrYV+k477MC7L4R9pLH0ZjW+3kPWrR7cg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763495615; c=relaxed/simple;
-	bh=qXFgI3qKojE1YW3SDNEREX2qLcUPd1lD0cibq1uveCQ=;
-	h=From:Message-ID:Date:MIME-Version:Subject:To:Cc:References:
-	 In-Reply-To:Content-Type; b=SNNeZCJjJPvKMH2v+nt3TMkcDyy+SwMEa0mH+P52Jo+RlK2UnvY5l+gadVntufHM18ZKXzlhsaeHR8T/OOhtVM2fyKG/8N2H1y61VH8K3GP/XRF8iUzoWblmzLpRwpC+BgcauzoqKH9rJ8iqKZ54QlGp1z+MVpUiKfvtL2+y7z4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=UwZQhGjs; dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b=IFj1DMfM; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1763495612;
+	s=arc-20240116; t=1763516104; c=relaxed/simple;
+	bh=CiQKBJl4/m9pEbLGKBsYnyhtXzDO2PTe408naUKLZXs=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=kKeFZlBHJ28+Ws152o4oUgOKf99q6LjIzbJKSyrjZmqY+gxz0nreTh6XsHX2Wj/w//sLXDbv9edZ3Yagw1AAvbVeC/+N26+biTSfl4oQLuKS6C4oZTQ6mPoq74oR5dJc+Do1PyidwyBQORujS+M1t0aRLsM2hsGLxU7pVdxlKW4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=wcb6zxRs; arc=none smtp.client-ip=95.215.58.189
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1763516090;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=WtisD4HnKFV6BLauDswvQVW8uS6raEN7PaYY44AASso=;
-	b=UwZQhGjsVg7qa7UT4tLgSoLK6R6n1xU3U+SZ7upBJi58lqUC+lrBjXW4J5ret/oDFnT5sT
-	zW/xoBSZbr7ZZQ6AKO6Wm90y8r7quDeswwBGbbYyCxMtpBhwAuYEQk1WqIdkRYHCA8DYJD
-	yd/HNfeOQeTXYFSgnyuS+3iGneerDAc=
-Received: from mail-qk1-f199.google.com (mail-qk1-f199.google.com
- [209.85.222.199]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-423-lO9jkh_8NDe7LImao_pB6w-1; Tue, 18 Nov 2025 14:53:30 -0500
-X-MC-Unique: lO9jkh_8NDe7LImao_pB6w-1
-X-Mimecast-MFC-AGG-ID: lO9jkh_8NDe7LImao_pB6w_1763495610
-Received: by mail-qk1-f199.google.com with SMTP id af79cd13be357-8b2de6600c0so958037085a.1
-        for <cgroups@vger.kernel.org>; Tue, 18 Nov 2025 11:53:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=redhat.com; s=google; t=1763495610; x=1764100410; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:content-language:references
-         :cc:to:subject:user-agent:mime-version:date:message-id:from:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=WtisD4HnKFV6BLauDswvQVW8uS6raEN7PaYY44AASso=;
-        b=IFj1DMfMAHo0Sjsv206l1mQmtgBqVjCnUO0RDxlTaNKLLxA6u4GfvExsgTActk6Deh
-         4V7wbMgcpOIKAhzUqKfDEnTeVwmsc0vqJuwmQCxMDiT04d9qT/xytP3AipY/Yfoz7oHP
-         NYSYydFOZ9X9+5y+/3NmtCknityAddfo1W1awJ6rd7CyTpaSQH4blt9C2ac5qT+XFqlq
-         BMZ5y8E+ygLQefqmnTl1ROm4J5Qa6L2Ar+R0TLdhTLa08Vrbm2xORlaO8ywkEXZr6VE/
-         8J8gnNO2QVBaeaC4G/n89QZHDcZK3NNxELpNJKh+TpzBSmRYcrWKr3FPQY+jg57W2Aw3
-         /VOg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1763495610; x=1764100410;
-        h=content-transfer-encoding:in-reply-to:content-language:references
-         :cc:to:subject:user-agent:mime-version:date:message-id:from:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=WtisD4HnKFV6BLauDswvQVW8uS6raEN7PaYY44AASso=;
-        b=gUFplL0W2PTkkSXZAy3j2fJNMiHDgMyWGGR8wXogmWZK8ypsx3QWZfxTj+nZxTgTQV
-         PlZw6iUaC//KxsXv/d05edbZKSs3+ABlHhwBMcRbNN4TLMmShC98kFba+YpMTtdkXfQz
-         v0t5vEdrz3+kumS+xhYdDWSA+hLjQnxJ/yFN/Vdc/x+2B4EAcnbh7eZa9q3LvuUCKYgU
-         IrN+6jR8zG00u5A21JpF0zyA3MVRY6gMWsBMTmDB2rcvhiiEeiwJdYBcT/9VLn6lEUtm
-         HZN/HUVFD9CuKclWmg0ihOVhLk3DIo48HWgwsaBU43MLxlkspbxcTV4M3ohT9tRcQm9e
-         fPig==
-X-Forwarded-Encrypted: i=1; AJvYcCXE5xRVKn263x6RE/PuzS3ARdJaGb2bSxUGxIoGDsAvmFHLgR1m16ANovOYmOo+QBcpbIzUI2JA@vger.kernel.org
-X-Gm-Message-State: AOJu0YxW9qGxxHNkki16zyT7DqUv6fec1UM9FcC/ZpSMIlL3YDhYtW3s
-	CGTdZmu/7FsUG22BKhtXCEPCgK92OmH438zjzcRi6CZZtzBKT3CmRrUSOm+laJDktYCWPeCz605
-	dAbJvcehGejDle8pgXip1a1Flz8fuisBPNS35vwE2dmV5DoE4+qNb2L9dMWQ=
-X-Gm-Gg: ASbGncta0QnQywL5U3iD3gZwUT8gPgm7UcjP7flDPxlJPCkjyDaXDgHF45bbyhyeRJ2
-	XWwmkuqCm1aDiaBvJN+kmFBUKM5RVnEDTYrPrSM4JuFdfVcwr7FfBe4yHz2vqz1T69yziDBJY1Z
-	bLpKyLIgtM/JQpwpcGVkYKj98zNFbcl9U74FBKQDnPRuQ7aPuzMVLwvHtogfW8Fckv2+8JoxSLl
-	Vkjek8bOSfX62DQfmRfifTAB2e7kIoQpBVsGPt531kx8XYkfUvLb6nmEUAzVEuXYGhuVzm8YNM4
-	8aP+LrJYCku09GHeCROdXYBFXSVUDFa/h0aXiaPWctGGNmEZjsel6vWxwWJwnd/mA6N/GudVuCC
-	JRxSXJetRyLul+WI6lpZCiDLpClr6VlOlqCG9vn1dizXYO6oyGtD2Isws
-X-Received: by 2002:a05:620a:4052:b0:7fd:50bd:193b with SMTP id af79cd13be357-8b316f00ec4mr45645385a.14.1763495609845;
-        Tue, 18 Nov 2025 11:53:29 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IGxz2UI33696KG6+FTP1B1jFldUykRHwqvk+bH1o+FYx+sXz2DhZLgjahMUGZEU4DuUWPhLFg==
-X-Received: by 2002:a05:620a:4052:b0:7fd:50bd:193b with SMTP id af79cd13be357-8b316f00ec4mr45641085a.14.1763495609246;
-        Tue, 18 Nov 2025 11:53:29 -0800 (PST)
-Received: from ?IPV6:2601:188:c102:b180:1f8b:71d0:77b1:1f6e? ([2601:188:c102:b180:1f8b:71d0:77b1:1f6e])
-        by smtp.gmail.com with ESMTPSA id af79cd13be357-8b2aeeb4afbsm1242544185a.14.2025.11.18.11.53.28
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 18 Nov 2025 11:53:28 -0800 (PST)
-From: Waiman Long <llong@redhat.com>
-X-Google-Original-From: Waiman Long <longman@redhat.com>
-Message-ID: <942d2b65-3c28-4f6d-aa6b-8365fa5cea2c@redhat.com>
-Date: Tue, 18 Nov 2025 14:53:27 -0500
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=e2EGDBgBbdB4DgQO2TbLGho5UNAFXwK5TbGKkRJZcyU=;
+	b=wcb6zxRs7rat5F88XagPhY4x0Gw6BsMRBqudFzDvtr+kZdAQ0HdzJZFIb28U+8FqJ1g6fk
+	PCpOQ+BrIEmrHEjQWL0JuK73P4sDppwutql3YXl4jyMJ4V/mBADmnshAVBNvNgRBojSew9
+	Tt1POrat12cH3TSDmK+a4CnxIQdAPgU=
+From: Hui Zhu <hui.zhu@linux.dev>
+To: Andrew Morton <akpm@linux-foundation.org>,
+	Johannes Weiner <hannes@cmpxchg.org>,
+	Michal Hocko <mhocko@kernel.org>,
+	Roman Gushchin <roman.gushchin@linux.dev>,
+	Shakeel Butt <shakeel.butt@linux.dev>,
+	Muchun Song <muchun.song@linux.dev>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>,
+	Stanislav Fomichev <sdf@fomichev.me>,
+	Hao Luo <haoluo@google.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	Shuah Khan <shuah@kernel.org>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Miguel Ojeda <ojeda@kernel.org>,
+	Nathan Chancellor <nathan@kernel.org>,
+	Kees Cook <kees@kernel.org>,
+	Tejun Heo <tj@kernel.org>,
+	Jeff Xu <jeffxu@chromium.org>,
+	mkoutny@suse.com,
+	Jan Hendrik Farr <kernel@jfarr.cc>,
+	Christian Brauner <brauner@kernel.org>,
+	Randy Dunlap <rdunlap@infradead.org>,
+	Brian Gerst <brgerst@gmail.com>,
+	Masahiro Yamada <masahiroy@kernel.org>,
+	linux-kernel@vger.kernel.org,
+	linux-mm@kvack.org,
+	cgroups@vger.kernel.org,
+	bpf@vger.kernel.org,
+	linux-kselftest@vger.kernel.org
+Cc: Hui Zhu <zhuhui@kylinos.cn>
+Subject: [RFC PATCH 0/3] Memory Controller eBPF support
+Date: Wed, 19 Nov 2025 09:34:05 +0800
+Message-ID: <cover.1763457705.git.zhuhui@kylinos.cn>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 1/1] cpuset: relax the overlap check for cgroup-v2
-To: Sun Shaojie <sunshaojie@kylinos.cn>, llong@redhat.com
-Cc: chenridong@huaweicloud.com, mkoutny@suse.com, cgroups@vger.kernel.org,
- hannes@cmpxchg.org, linux-kernel@vger.kernel.org,
- linux-kselftest@vger.kernel.org, shuah@kernel.org, tj@kernel.org
-References: <20251117015708.977585-1-sunshaojie@kylinos.cn>
- <20251117015708.977585-2-sunshaojie@kylinos.cn>
-Content-Language: en-US
-In-Reply-To: <20251117015708.977585-2-sunshaojie@kylinos.cn>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-On 11/16/25 8:57 PM, Sun Shaojie wrote:
-> In cgroup v2, a mutual overlap check is required when at least one of two
-> cpusets is exclusive. However, this check should be relaxed and limited to
-> cases where both cpusets are exclusive.
->
-> This patch ensures that for sibling cpusets A1 (exclusive) and B1
-> (non-exclusive), change B1 cannot affect A1's exclusivity.
->
-> for example. Assume a machine has 4 CPUs (0-3).
->
->     root cgroup
->        /    \
->      A1      B1
->
-> Case 1:
->   Table 1.1: Before applying the patch
->   Step                                       | A1's prstate | B1'sprstate |
->   #1> echo "0-1" > A1/cpuset.cpus            | member       | member      |
->   #2> echo "root" > A1/cpuset.cpus.partition | root         | member      |
->   #3> echo "0" > B1/cpuset.cpus              | root invalid | member      |
->
-> After step #3, A1 changes from "root" to "root invalid" because its CPUs
-> (0-1) overlap with those requested by B1 (0-3). However, B1 can actually
-> use CPUs 2-3(from B1's parent), so it would be more reasonable for A1 to
-> remain as "root."
->
->   Table 1.2: After applying the patch
->   Step                                       | A1's prstate | B1'sprstate |
->   #1> echo "0-1" > A1/cpuset.cpus            | member       | member      |
->   #2> echo "root" > A1/cpuset.cpus.partition | root         | member      |
->   #3> echo "0" > B1/cpuset.cpus              | root         | member      |
->
-> All other cases remain unaffected. For example, cgroup-v1, both A1 and B1
-> are exclusive or non-exlusive.
->
-> Signed-off-by: Sun Shaojie <sunshaojie@kylinos.cn>
-> ---
->   kernel/cgroup/cpuset-internal.h               |  3 ++
->   kernel/cgroup/cpuset-v1.c                     | 20 +++++++++
->   kernel/cgroup/cpuset.c                        | 43 ++++++++++++++-----
->   .../selftests/cgroup/test_cpuset_prs.sh       |  5 ++-
->   4 files changed, 58 insertions(+), 13 deletions(-)
->
-> diff --git a/kernel/cgroup/cpuset-internal.h b/kernel/cgroup/cpuset-internal.h
-> index 337608f408ce..c53111998432 100644
-> --- a/kernel/cgroup/cpuset-internal.h
-> +++ b/kernel/cgroup/cpuset-internal.h
-> @@ -292,6 +292,7 @@ void cpuset1_hotplug_update_tasks(struct cpuset *cs,
->   			    struct cpumask *new_cpus, nodemask_t *new_mems,
->   			    bool cpus_updated, bool mems_updated);
->   int cpuset1_validate_change(struct cpuset *cur, struct cpuset *trial);
-> +bool cpuset1_cpus_excl_conflict(struct cpuset *cs1, struct cpuset *cs2);
->   #else
->   static inline void fmeter_init(struct fmeter *fmp) {}
->   static inline void cpuset1_update_task_spread_flags(struct cpuset *cs,
-> @@ -302,6 +303,8 @@ static inline void cpuset1_hotplug_update_tasks(struct cpuset *cs,
->   			    bool cpus_updated, bool mems_updated) {}
->   static inline int cpuset1_validate_change(struct cpuset *cur,
->   				struct cpuset *trial) { return 0; }
-> +static inline bool cpuset1_cpus_excl_conflict(struct cpuset *cs1,
-> +				struct cpuset *cs2) {return false; }
->   #endif /* CONFIG_CPUSETS_V1 */
->   
->   #endif /* __CPUSET_INTERNAL_H */
-> diff --git a/kernel/cgroup/cpuset-v1.c b/kernel/cgroup/cpuset-v1.c
-> index 12e76774c75b..5c1296bf6a34 100644
-> --- a/kernel/cgroup/cpuset-v1.c
-> +++ b/kernel/cgroup/cpuset-v1.c
-> @@ -373,6 +373,26 @@ int cpuset1_validate_change(struct cpuset *cur, struct cpuset *trial)
->   	return ret;
->   }
->   
-> +/*
-> + * cpuset1_cpus_excl_conflict() - Check if two cpusets have exclusive CPU conflicts
-> + *                                to legacy (v1)
-> + * @cs1: first cpuset to check
-> + * @cs2: second cpuset to check
-> + *
-> + * Returns: true if CPU exclusivity conflict exists, false otherwise
-> + *
-> + * If either cpuset is CPU exclusive, their allowed CPUs cannot intersect.
-> + */
-> +bool cpuset1_cpus_excl_conflict(struct cpuset *cs1, struct cpuset *cs2)
-> +{
-> +	if (is_cpu_exclusive(cs1) || is_cpu_exclusive(cs2))
-> +		if (cpumask_intersects(cs1->cpus_allowed,
-> +				       cs2->cpus_allowed))
-> +			return true;
-> +
-> +	return false;
-> +}
-> +
->   #ifdef CONFIG_PROC_PID_CPUSET
->   /*
->    * proc_cpuset_show()
-> diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
-> index 52468d2c178a..0fd803612513 100644
-> --- a/kernel/cgroup/cpuset.c
-> +++ b/kernel/cgroup/cpuset.c
-> @@ -580,35 +580,56 @@ static inline bool cpusets_are_exclusive(struct cpuset *cs1, struct cpuset *cs2)
->   
->   /**
->    * cpus_excl_conflict - Check if two cpusets have exclusive CPU conflicts
-> - * @cs1: first cpuset to check
-> - * @cs2: second cpuset to check
-> + * @cs1: current cpuset to check
-> + * @cs2: cpuset involved in the check
->    *
->    * Returns: true if CPU exclusivity conflict exists, false otherwise
->    *
->    * Conflict detection rules:
-> - * 1. If either cpuset is CPU exclusive, they must be mutually exclusive
-> + * For cgroup-v1:
-> + *     see cpuset1_cpus_excl_conflict()
-> + * For cgroup-v2:
-> + * 1. If cs1 is exclusive, cs1 and cs2 must be mutually exclusive
->    * 2. exclusive_cpus masks cannot intersect between cpusets
-> - * 3. The allowed CPUs of one cpuset cannot be a subset of another's exclusive CPUs
-> + * 3. If cs2 is exclusive, cs2's allowed CPUs cannot be a subset of cs1's exclusive CPUs
-> + * 4. if cs1 and cs2 are not exclusive, the allowed CPUs of one cpuset cannot be a subset
-> + *    of another's exclusive CPUs
->    */
->   static inline bool cpus_excl_conflict(struct cpuset *cs1, struct cpuset *cs2)
+From: Hui Zhu <zhuhui@kylinos.cn>
 
-As cs1 and cs2 is going to be handled differently, their current naming 
-will make it hard to understand why they are treated differently. I will 
-recommended changing the parameter name to "trial, sibling" as the 
-caller call it with "cpus_excl_conflict(trial, c)" where trial is the 
-new cpuset data to be tested and sibling is one of its sibling cpusets. 
-It has to be clearly document what each parameter is for and the fact 
-that swapping the parameters will cause it to return incorrect result.
+This series proposes adding eBPF support to the Linux memory
+controller, enabling dynamic and extensible memory management
+policies at runtime.
 
+Background
 
->   {
-> -	/* If either cpuset is exclusive, check if they are mutually exclusive */
-> -	if (is_cpu_exclusive(cs1) || is_cpu_exclusive(cs2))
-> +	/* For cgroup-v1 */
-> +	if (!cpuset_v2())
-> +		return cpuset1_cpus_excl_conflict(cs1, cs2);
-> +
-> +	/* If cs1 are exclusive, check if they are mutually exclusive */
-> +	if (is_cpu_exclusive(cs1))
->   		return !cpusets_are_exclusive(cs1, cs2);
+The memory controller (memcg) currently provides fixed memory
+accounting and reclamation policies through static kernel code.
+This limits flexibility for specialized workloads and use cases
+that require custom memory management strategies.
 
-Code change like the following can eliminate the need to introduce a new 
-cpuset1_cpus_excl_conflict() helper.
+By enabling eBPF programs to hook into key memory control
+operations, administrators can implement custom policies without
+recompiling the kernel, while maintaining the safety guarantees
+provided by the BPF verifier.
 
-diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
-index ec8bebc66469..201c70fb7401 100644
---- a/kernel/cgroup/cpuset.c
-+++ b/kernel/cgroup/cpuset.c
-@@ -599,9 +599,15 @@ static inline bool cpusets_are_exclusive(struct 
-cpuset *cs1, struct cpuset *cs2)
-   */
-  static inline bool cpus_excl_conflict(struct cpuset *cs1, struct 
-cpuset *cs2)
-  {
--       /* If either cpuset is exclusive, check if they are mutually 
-exclusive */
--       if (is_cpu_exclusive(cs1) || is_cpu_exclusive(cs2))
--               return !cpusets_are_exclusive(cs1, cs2);
-+       /*
-+        * If trial is exclusive or sibling is exclusive & in v1,
-+        * check if they are mutually exclusive
-+        */
-+       if (is_cpu_exclusive(trial) || (!cpuset_v2() && 
-is_cpu_exclusive(sibling)))
-+               return !cpusets_are_exclusive(trial, sibling);
-+
-+       if (!cpuset_v2())
-+               return false;   /* The checking below is irrelevant to 
-cpuset v1 */
+Use Cases
 
-         /* Exclusive_cpus cannot intersect */
-         if (cpumask_intersects(cs1->exclusive_cpus, cs2->exclusive_cpus))
+1. Custom memory reclamation strategies for specialized workloads
+2. Dynamic memory pressure monitoring and telemetry
+3. Memory accounting adjustments based on runtime conditions
+4. Integration with container orchestration systems for
+   intelligent resource management
+5. Research and experimentation with novel memory management
+   algorithms
 
->   
-> +	/* The following check applies when either
-> +	 * both cs1 and cs2 are non-exclusive，or
-> +	 * only cs2 is exclusive.
-> +	 */
-> +
->   	/* Exclusive_cpus cannot intersect */
->   	if (cpumask_intersects(cs1->exclusive_cpus, cs2->exclusive_cpus))
->   		return true;
->   
-> -	/* The cpus_allowed of one cpuset cannot be a subset of another cpuset's exclusive_cpus */
-> -	if (!cpumask_empty(cs1->cpus_allowed) &&
-> -	    cpumask_subset(cs1->cpus_allowed, cs2->exclusive_cpus))
-> -		return true;
-> -
-> +	/* cs2's allowed CPUs cannot be a subset of cs1's exclusive CPUs */
->   	if (!cpumask_empty(cs2->cpus_allowed) &&
->   	    cpumask_subset(cs2->cpus_allowed, cs1->exclusive_cpus))
->   		return true;
->   
-> +	/* If cs2 is exclusive, check finished here */
-> +	if (is_cpu_exclusive(cs2))
-> +		return false;
-> +
-> +	/* The following check applies only if both cs1 and cs2 are non-exclusive. */
-> +
-> +	/* cs1's allowed CPUs cannot be a subset of cs1's exclusive CPUs */
-"sibling's exclusive CPUs"
-> +	if (!cpumask_empty(cs1->cpus_allowed) &&
-> +	    cpumask_subset(cs1->cpus_allowed, cs2->exclusive_cpus))
-> +		return true;
-> +
+Design Overview
 
-As said before, we can't fail change to cpuset.cpus by default, but we 
-can fail change to cpuset.cpus.exclusive. So this additional check isn't 
-OK unless this check is under a special mode that is opted in via other 
-means like an additional cgroup control file or a boot command line 
-option and so on.
+This series introduces:
 
-Cheers,
-Longman
+1. A new BPF struct ops type (`memcg_ops`) that allows eBPF
+   programs to implement custom behavior for memory charging
+   operations.
+
+2. A hook point in the `try_charge_memcg()` fast path that
+   invokes registered eBPF programs to determine if custom
+   memory management should be applied.
+
+3. The eBPF handler can inspect memory cgroup context and
+   optionally modify certain parameters (e.g., `nr_pages` for
+   reclamation size).
+
+4. A reference counting mechanism using `percpu_ref` to safely
+   manage the lifecycle of registered eBPF struct ops instances.
+
+5. Configuration via `CONFIG_MEMCG_BPF` to allow disabling this
+   feature at build time.
+
+Implementation Details
+
+- Uses BPF struct ops for a cleaner integration model
+- Leverages static branch keys for minimal overhead when feature
+  is unused
+- RCU synchronization ensures safe replacement of handlers
+- Sample eBPF program demonstrates monitoring capabilities
+- Comprehensive selftest suite validates core functionality
+
+Performance Considerations
+
+- Zero overhead when feature is disabled or no eBPF program is
+  loaded (static branch is disabled)
+- Minimal overhead when enabled: one indirect function call per
+  charge attempt
+- eBPF programs run under the restrictions of the BPF verifier
+
+Patch Overview
+
+PATCH 1/3: Core kernel implementation
+  - Adds eBPF struct ops support to memcg
+  - Introduces CONFIG_MEMCG_BPF option
+  - Implements safe registration/unregistration mechanism
+
+PATCH 2/3: Selftest suite
+  - prog_tests/memcg_ops.c: Test entry points
+  - progs/memcg_ops.bpf.c: Test eBPF program
+  - Validates load, attach, and single-handler constraints
+
+PATCH 3/3: Sample userspace program
+  - samples/bpf/memcg_printk.bpf.c: Monitoring eBPF program
+  - samples/bpf/memcg_printk.c: Userspace loader
+  - Demonstrates real-world usage and debugging capabilities
+
+Open Questions & Discussion Points
+
+1. Should the eBPF handler have access to additional memory
+   cgroup state? Current design exposes minimal context to
+   reduce attack surface.
+
+2. Are there other memory control operations that would benefit
+   from eBPF extensibility (e.g., uncharge, reclaim)?
+
+3. Should there be permission checks or restrictions on who can
+   load memcg eBPF programs? Currently inherits BPF's
+   CAP_PERFMON/CAP_SYS_ADMIN requirements.
+
+4. How should we handle multiple eBPF programs trying to
+   register? Current implementation allows only one active
+   handler.
+
+5. Is the current exposed context in `try_charge_memcg` struct
+   sufficient, or should additional fields be added?
+
+Testing
+
+The selftests provide comprehensive coverage of the core
+functionality. The sample program can be used for manual
+testing and as a reference for implementing additional
+monitoring tools.
+
+Hui Zhu (3):
+  memcg: add eBPF struct ops support for memory charging
+  selftests/bpf: add memcg eBPF struct ops test
+  samples/bpf: add example memcg eBPF program
+
+ MAINTAINERS                                   |   5 +
+ init/Kconfig                                  |  38 ++++
+ mm/Makefile                                   |   1 +
+ mm/memcontrol.c                               |  26 ++-
+ mm/memcontrol_bpf.c                           | 200 ++++++++++++++++++
+ mm/memcontrol_bpf.h                           | 103 +++++++++
+ samples/bpf/Makefile                          |   2 +
+ samples/bpf/memcg_printk.bpf.c                |  30 +++
+ samples/bpf/memcg_printk.c                    |  82 +++++++
+ .../selftests/bpf/prog_tests/memcg_ops.c      | 117 ++++++++++
+ tools/testing/selftests/bpf/progs/memcg_ops.c |  20 ++
+ 11 files changed, 617 insertions(+), 7 deletions(-)
+ create mode 100644 mm/memcontrol_bpf.c
+ create mode 100644 mm/memcontrol_bpf.h
+ create mode 100644 samples/bpf/memcg_printk.bpf.c
+ create mode 100644 samples/bpf/memcg_printk.c
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/memcg_ops.c
+ create mode 100644 tools/testing/selftests/bpf/progs/memcg_ops.c
+
+-- 
+2.43.0
 
 
