@@ -1,146 +1,153 @@
-Return-Path: <cgroups+bounces-12099-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-12101-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4D261C715AC
-	for <lists+cgroups@lfdr.de>; Wed, 19 Nov 2025 23:48:47 +0100 (CET)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 172F8C7171E
+	for <lists+cgroups@lfdr.de>; Thu, 20 Nov 2025 00:31:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 95FA14E7567
-	for <lists+cgroups@lfdr.de>; Wed, 19 Nov 2025 22:46:06 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTPS id A15422B62E
+	for <lists+cgroups@lfdr.de>; Wed, 19 Nov 2025 23:30:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C29A933436F;
-	Wed, 19 Nov 2025 22:42:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B31A27381E;
+	Wed, 19 Nov 2025 23:30:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=runbox.com header.i=@runbox.com header.b="GkUoEl0B"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="FkkqA0OI"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mailtransmit04.runbox.com (mailtransmit04.runbox.com [185.226.149.37])
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.17])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6DBE5331207
-	for <cgroups@vger.kernel.org>; Wed, 19 Nov 2025 22:42:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.226.149.37
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 545572522B6
+	for <cgroups@vger.kernel.org>; Wed, 19 Nov 2025 23:30:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.17
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763592171; cv=none; b=pQT11dS8SiUUhxSAdsTgKLQTetYg4iM4TVI0PEIxXYhYc/e6R3AXZd+4PdheG7o5iRkxQaTSJuDDntIJpyimdfT5egTBIvwTFG3RH4tMBWm2AvIXStl1EtWspyI2nUgcYpxhYxnVMoZjlXA4ONSSh5PlCMB5w8vhy57GYe+NJR4=
+	t=1763595055; cv=none; b=GNMFPBL3Nm5cMDXdax51jZ4IV0qZq7TU2vd4hnc9krZyCPZjEWKfVkpEIwSLE33PhLvlampFjnL5UOZeCNY84eghi3GeIh7u2u8hZCgPERjtP/tTWfClGGgV5X/jIAbS5r3JmvK2Ow4G26JYMtvPJBEw9Zrjlq3QlbFgW7ad5i8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763592171; c=relaxed/simple;
-	bh=ZZNNuTRuiX53llVmFMgKwGGhIW58g3kFCa2xIK5PUCc=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=T0t7jY0T/rfF1FRueCZ8ZlJOzV4HTFTUawUbteJ/pjagJuTKHfpY7qt1ckTkctFLzRz6OOoUjho8wZn5F4COJ21WHRaitzHKEcx9wK/+ramk8ew+OtjBe2BZ2BCA0b3WfwDyZFjS9F9s4r9QkCzvQUEMTkMw7Y/IzHeqeyOnv9A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=runbox.com; dkim=pass (2048-bit key) header.d=runbox.com header.i=@runbox.com header.b=GkUoEl0B; arc=none smtp.client-ip=185.226.149.37
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=runbox.com
-Received: from mailtransmit02.runbox ([10.9.9.162] helo=aibo.runbox.com)
-	by mailtransmit04.runbox.com with esmtps  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-	(Exim 4.93)
-	(envelope-from <david.laight.linux_spam@runbox.com>)
-	id 1vLqsw-006yt9-O2; Wed, 19 Nov 2025 23:42:46 +0100
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=runbox.com;
-	 s=selector1; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To
-	:Message-Id:Date:Subject:Cc:To:From;
-	bh=Vhn8/vbnFTBTrLe40in1hyrWt+hwUetOS1daXHrGJRI=; b=GkUoEl0BxUcro5HrumgEhz6q7S
-	ABk1zCOGPsPuJyp1ZRIagRRuwzkOCh0X4FJqoA+gb+WH43yS/9/fELw+4L+cMrKm286TWzaluczUD
-	kmvzWGSBWmdHpO3mEp3toCKbeQ86UNgVPKKUiwQwfOpMaXOExV5xSOVtSklsVRJBUezKxOfJMeT5C
-	Sy5jmu2eU1AXBMVmKlNkEb7n13V9qpNc3vRdyP0HdznRtS/x6QzaRGq2rxSzIN9g297yPBdk2jDtM
-	WqrenPTlhBjHV2g2szbJ7y0zTVdf/yAXs98gfKaSlJ8/75ShkB42ktGPXLIyvMDkVFbRCGxyhEJ0O
-	faXr9lTA==;
-Received: from [10.9.9.74] (helo=submission03.runbox)
-	by mailtransmit02.runbox with esmtp (Exim 4.86_2)
-	(envelope-from <david.laight.linux_spam@runbox.com>)
-	id 1vLqsw-00085q-81; Wed, 19 Nov 2025 23:42:46 +0100
-Received: by submission03.runbox with esmtpsa  [Authenticated ID (1493616)]  (TLS1.2:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256)
-	(Exim 4.93)
-	id 1vLqsa-00Fos6-9U; Wed, 19 Nov 2025 23:42:24 +0100
-From: david.laight.linux@gmail.com
-To: linux-kernel@vger.kernel.org,
-	cgroups@vger.kernel.org,
-	linux-block@vger.kernel.org,
-	linux-efi@vger.kernel.org
-Cc: Davidlohr Bueso <dave@stgolabs.net>,
-	Jens Axboe <axboe@kernel.dk>,
-	Josef Bacik <josef@toxicpanda.com>,
-	Tejun Heo <tj@kernel.org>,
-	David Laight <david.laight.linux@gmail.com>
-Subject: [PATCH 12/44] block: use min() instead of min_t()
-Date: Wed, 19 Nov 2025 22:41:08 +0000
-Message-Id: <20251119224140.8616-13-david.laight.linux@gmail.com>
-X-Mailer: git-send-email 2.39.5
-In-Reply-To: <20251119224140.8616-1-david.laight.linux@gmail.com>
-References: <20251119224140.8616-1-david.laight.linux@gmail.com>
+	s=arc-20240116; t=1763595055; c=relaxed/simple;
+	bh=cY9zHlo3o+hhdOWlQnaGbb/DOYAPtCVVwD0+FD+XGy4=;
+	h=Date:From:To:Cc:Subject:Message-ID; b=OMVsjTZuyfrFbTsdUiuWeiuppiJ7n1nBPt0ZzMyafQSwBK81VZxdZMBwAYcXOOzO6/LwAayAeRB8hlCflmalyNkQQigJYKqFuJ/RJSe6xdBS45h7g/ZYrz3zLJoJOLOUk29Q5reVedjAksNAROBZVjsLuJ6X8pjRmLcTyklj56A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=FkkqA0OI; arc=none smtp.client-ip=192.198.163.17
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1763595054; x=1795131054;
+  h=date:from:to:cc:subject:message-id;
+  bh=cY9zHlo3o+hhdOWlQnaGbb/DOYAPtCVVwD0+FD+XGy4=;
+  b=FkkqA0OIfpsNbsK0JqlZlgYlEmkfmUva9Cx+bi1/I1rLpvDy8CddAKAg
+   DvdCwOxLhsXdn8Kvy8MjUNqpeYWkd+B+QHy3h1S3wY7J6q3hCx9lqWg/R
+   pNPoEFcWxjwAyp7ZhtkwIxh/WohmRpd/33SiM9MeotQGtuaIZN/+yuF53
+   uo4u2vRP+Vl+0VDrHgC8XkbTPowF7UDnJj0zTsD//6nF5c6dc2+5QS7DT
+   lun7AzH+fIdlfZ4ZsdTeKMLrUdgCVoiwFsNcB+ulKZTV7qGL8YnxYb75w
+   xZzlOXytVPRQTqdzcW/kcXx/WaIA/pPKE2UxKaueN6n4SMLVsO+XzjQJ3
+   w==;
+X-CSE-ConnectionGUID: JcNaQSkuSxC58FQ6oOl6Vw==
+X-CSE-MsgGUID: aQ4oSZ0ISGmFLA+MV5ehqg==
+X-IronPort-AV: E=McAfee;i="6800,10657,11618"; a="65548773"
+X-IronPort-AV: E=Sophos;i="6.19,316,1754982000"; 
+   d="scan'208";a="65548773"
+Received: from fmviesa006.fm.intel.com ([10.60.135.146])
+  by fmvoesa111.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Nov 2025 15:30:53 -0800
+X-CSE-ConnectionGUID: CzibEMc9Sp6p9NGn/alyqg==
+X-CSE-MsgGUID: gtyZDBwjRfqWMGX7LfrRHQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.19,316,1754982000"; 
+   d="scan'208";a="191000024"
+Received: from lkp-server01.sh.intel.com (HELO adf6d29aa8d9) ([10.239.97.150])
+  by fmviesa006.fm.intel.com with ESMTP; 19 Nov 2025 15:30:52 -0800
+Received: from kbuild by adf6d29aa8d9 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1vLrdR-0003Pb-2u;
+	Wed, 19 Nov 2025 23:30:49 +0000
+Date: Thu, 20 Nov 2025 07:30:19 +0800
+From: kernel test robot <lkp@intel.com>
+To: Tejun Heo <tj@kernel.org>
+Cc: cgroups@vger.kernel.org
+Subject: [tj-cgroup:for-next] BUILD SUCCESS
+ 7587adebe583e9ea2063771d489962be9c50b66a
+Message-ID: <202511200713.jsqSMD4I-lkp@intel.com>
+User-Agent: s-nail v14.9.25
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
 
-From: David Laight <david.laight.linux@gmail.com>
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git for-next
+branch HEAD: 7587adebe583e9ea2063771d489962be9c50b66a  Merge branch 'for-6.19' into for-next
 
-min_t(unsigned int, a, b) casts an 'unsigned long' to 'unsigned int'.
-Use min(a, b) instead as it promotes any 'unsigned int' to 'unsigned long'
-and so cannot discard significant bits.
+elapsed time: 7289m
 
-In this case the 'unsigned long' value is small enough that the result
-is ok.
+configs tested: 60
+configs skipped: 0
 
-(Similarly for max_t() and clamp_t().)
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-Detected by an extra check added to min_t().
+tested configs:
+alpha                   allnoconfig    gcc-15.1.0
+arc                     allnoconfig    gcc-15.1.0
+arc         randconfig-001-20251115    gcc-13.4.0
+arc         randconfig-002-20251115    gcc-11.5.0
+arm                     allnoconfig    clang-22
+arm         randconfig-001-20251115    clang-22
+arm         randconfig-002-20251115    gcc-8.5.0
+arm         randconfig-003-20251115    gcc-10.5.0
+arm         randconfig-004-20251115    clang-22
+arm64                   allnoconfig    gcc-15.1.0
+arm64       randconfig-001-20251116    gcc-12.5.0
+arm64       randconfig-002-20251116    gcc-10.5.0
+arm64       randconfig-003-20251116    clang-22
+arm64       randconfig-004-20251116    gcc-8.5.0
+csky                   allmodconfig    gcc-15.1.0
+csky                    allnoconfig    gcc-15.1.0
+csky        randconfig-001-20251116    gcc-12.5.0
+csky        randconfig-002-20251116    gcc-15.1.0
+hexagon                 allnoconfig    clang-22
+hexagon     randconfig-001-20251116    clang-22
+hexagon     randconfig-002-20251116    clang-17
+i386                    allnoconfig    gcc-14
+loongarch               allnoconfig    clang-22
+loongarch   randconfig-001-20251116    gcc-15.1.0
+loongarch   randconfig-002-20251116    clang-22
+m68k                    allnoconfig    gcc-15.1.0
+microblaze              allnoconfig    gcc-15.1.0
+mips                    allnoconfig    gcc-15.1.0
+nios2                   allnoconfig    gcc-11.5.0
+nios2       randconfig-001-20251116    gcc-11.5.0
+nios2       randconfig-002-20251116    gcc-11.5.0
+openrisc                allnoconfig    gcc-15.1.0
+parisc                  allnoconfig    gcc-15.1.0
+parisc      randconfig-001-20251116    gcc-12.5.0
+parisc      randconfig-002-20251116    gcc-14.3.0
+powerpc                 allnoconfig    gcc-15.1.0
+powerpc     randconfig-001-20251116    gcc-10.5.0
+powerpc     randconfig-002-20251116    clang-22
+powerpc64   randconfig-001-20251116    clang-22
+powerpc64   randconfig-002-20251116    gcc-10.5.0
+riscv                   allnoconfig    gcc-15.1.0
+riscv       randconfig-001-20251115    clang-22
+riscv       randconfig-002-20251115    gcc-8.5.0
+s390                    allnoconfig    clang-22
+s390        randconfig-001-20251115    clang-17
+s390        randconfig-002-20251115    gcc-8.5.0
+sh                      allnoconfig    gcc-15.1.0
+sh          randconfig-001-20251115    gcc-12.5.0
+sh          randconfig-002-20251115    gcc-15.1.0
+sparc                   allnoconfig    gcc-15.1.0
+um                      allnoconfig    clang-22
+x86_64                  allnoconfig    clang-20
+x86_64                        kexec    clang-20
+x86_64                     rhel-9.4    clang-20
+x86_64                 rhel-9.4-bpf    gcc-14
+x86_64                rhel-9.4-func    clang-20
+x86_64          rhel-9.4-kselftests    clang-20
+x86_64               rhel-9.4-kunit    gcc-14
+x86_64                 rhel-9.4-ltp    gcc-14
+xtensa                  allnoconfig    gcc-15.1.0
 
-Signed-off-by: David Laight <david.laight.linux@gmail.com>
----
- block/blk-iocost.c     | 6 ++----
- block/blk-settings.c   | 2 +-
- block/partitions/efi.c | 3 +--
- 3 files changed, 4 insertions(+), 7 deletions(-)
-
-diff --git a/block/blk-iocost.c b/block/blk-iocost.c
-index 5bfd70311359..a0416927d33d 100644
---- a/block/blk-iocost.c
-+++ b/block/blk-iocost.c
-@@ -2334,10 +2334,8 @@ static void ioc_timer_fn(struct timer_list *timer)
- 			else
- 				usage_dur = max_t(u64, now.now - ioc->period_at, 1);
- 
--			usage = clamp_t(u32,
--				DIV64_U64_ROUND_UP(usage_us * WEIGHT_ONE,
--						   usage_dur),
--				1, WEIGHT_ONE);
-+			usage = clamp(DIV64_U64_ROUND_UP(usage_us * WEIGHT_ONE, usage_dur),
-+				      1, WEIGHT_ONE);
- 
- 			/*
- 			 * Already donating or accumulated enough to start.
-diff --git a/block/blk-settings.c b/block/blk-settings.c
-index d74b13ec8e54..4e0c23e68fac 100644
---- a/block/blk-settings.c
-+++ b/block/blk-settings.c
-@@ -472,7 +472,7 @@ int blk_validate_limits(struct queue_limits *lim)
- 		seg_size = lim->max_segment_size;
- 	else
- 		seg_size = lim->seg_boundary_mask + 1;
--	lim->min_segment_size = min_t(unsigned int, seg_size, PAGE_SIZE);
-+	lim->min_segment_size = min(seg_size, PAGE_SIZE);
- 
- 	/*
- 	 * We require drivers to at least do logical block aligned I/O, but
-diff --git a/block/partitions/efi.c b/block/partitions/efi.c
-index 7acba66eed48..638261e9f2fb 100644
---- a/block/partitions/efi.c
-+++ b/block/partitions/efi.c
-@@ -215,8 +215,7 @@ static int is_pmbr_valid(legacy_mbr *mbr, sector_t total_sectors)
- 		sz = le32_to_cpu(mbr->partition_record[part].size_in_lba);
- 		if (sz != (uint32_t) total_sectors - 1 && sz != 0xFFFFFFFF)
- 			pr_debug("GPT: mbr size in lba (%u) different than whole disk (%u).\n",
--				 sz, min_t(uint32_t,
--					   total_sectors - 1, 0xFFFFFFFF));
-+				 sz, (uint32_t)min(total_sectors - 1, 0xFFFFFFFF));
- 	}
- done:
- 	return ret;
--- 
-2.39.5
-
+--
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
