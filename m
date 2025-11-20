@@ -1,45 +1,45 @@
-Return-Path: <cgroups+bounces-12104-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-12105-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
-	by mail.lfdr.de (Postfix) with ESMTPS id 89E2AC71A07
-	for <lists+cgroups@lfdr.de>; Thu, 20 Nov 2025 01:58:03 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id 93202C71AAD
+	for <lists+cgroups@lfdr.de>; Thu, 20 Nov 2025 02:12:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 048C13493BE
-	for <lists+cgroups@lfdr.de>; Thu, 20 Nov 2025 00:58:03 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTPS id 8C96A29514
+	for <lists+cgroups@lfdr.de>; Thu, 20 Nov 2025 01:12:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A6C32217F29;
-	Thu, 20 Nov 2025 00:57:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C8AE23C51D;
+	Thu, 20 Nov 2025 01:12:20 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
 Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 13EA5322A;
-	Thu, 20 Nov 2025 00:57:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 165CE23B609;
+	Thu, 20 Nov 2025 01:12:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763600277; cv=none; b=gtyBXgBBAn89uksNrlkcrkHW0zFrfvrF6RCeKtZbOaSAdiLjJKiVaNXn4H3uopABOdO4x+oe0RQRj/3gR+rTSaxEj4U/PiD3ABYQoc1aUcI11ZJ/0+faYMT1a21nCzTiP8I86k4sa/ZoxoC0bfumwa4bFtBv07eFxDwQNXNt9bg=
+	t=1763601140; cv=none; b=jr9N6RmTah4OGoDaSjsR9TLcp10cX9rezjTaRxM4S80IF+v6gA48OvWt55q68idr+8b4I49cZcDAdkxdK7Gtb5zL0PXHJ/YTjkGV7LZKtib6mNUPEISLsvW7f2c0j+dhepH+SNV4LfUxCzwrt6eFWrbmu+QVZaibOKYZm9NozJg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763600277; c=relaxed/simple;
-	bh=HD4FvgXwrqeA7YIj/qM+7gIyeMp1HiiScAbshKa1Zdw=;
+	s=arc-20240116; t=1763601140; c=relaxed/simple;
+	bh=zQXc5YiuwqRVA2ZxpOeKGrGC8+XWzEmlPH+B+X4w3HM=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=QVGRrJgg58QFjsu3IOA7Xn6oOvcmWTSGkbq0TdJ6fTKis5VwioY9eC+TsmK2LOzw8CwHz1ERxDK+GwKY1j5Yt1+HFBKHvE0F8TDk38q0cmkMftFCZYfDjfsG5DX7JRrX5mCW1N12lbEsB6yfPWxW63qd/bna3UOpz6WWEBFr9KQ=
+	 In-Reply-To:Content-Type; b=WKsr0orMLMOSwr4GvwB+id1SUGBbApW4Tw+rZhy4IF54CRIoZam/ioTcohrzhMHTqr//sPGflk4jphfWTajmQytMvOfGv3PaZTU0lEJlZvrOCYqxYwQRY8oY/GDUSPDrG1qaPVZf8SQhENBY0Zb945kL9DcXDcu4THNjPEhV+c8=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.235])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTPS id 4dBg132m79zYQtpP;
-	Thu, 20 Nov 2025 08:57:11 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.128])
-	by mail.maildlp.com (Postfix) with ESMTP id 629C91A0939;
-	Thu, 20 Nov 2025 08:57:52 +0800 (CST)
+Received: from mail.maildlp.com (unknown [172.19.163.216])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTPS id 4dBgKd4kbVzYQtmj;
+	Thu, 20 Nov 2025 09:11:33 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.112])
+	by mail.maildlp.com (Postfix) with ESMTP id AF3FF1A19CE;
+	Thu, 20 Nov 2025 09:12:14 +0800 (CST)
 Received: from [10.67.111.176] (unknown [10.67.111.176])
-	by APP4 (Coremail) with SMTP id gCh0CgBXzFmPZx5pUvplBQ--.10207S2;
-	Thu, 20 Nov 2025 08:57:52 +0800 (CST)
-Message-ID: <06d74676-258e-43b7-ae61-d2102bab3926@huaweicloud.com>
-Date: Thu, 20 Nov 2025 08:57:51 +0800
+	by APP1 (Coremail) with SMTP id cCh0CgCHDEbtah5pLN9YBQ--.12866S2;
+	Thu, 20 Nov 2025 09:12:14 +0800 (CST)
+Message-ID: <4ec92cd0-0d10-4bbb-8fbd-696aa5d84bd5@huaweicloud.com>
+Date: Thu, 20 Nov 2025 09:12:13 +0800
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -47,120 +47,173 @@ List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5] cpuset: Avoid invalidating sibling partitions on
- cpuset.cpus conflict.
-To: =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
- Sun Shaojie <sunshaojie@kylinos.cn>
-Cc: llong@redhat.com, cgroups@vger.kernel.org, hannes@cmpxchg.org,
- linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
- shuah@kernel.org, tj@kernel.org
-References: <f32d2f31-630f-450b-911f-b512bbeb380a@huaweicloud.com>
- <20251119105749.1385946-1-sunshaojie@kylinos.cn>
- <unk64xmcj5kt5c5gaauwaeld5qsshaldw7utgzk362w33y3zr7@s765trmj5ccs>
+Subject: Re: [PATCHv7 1/2] cgroup/cpuset: Introduce
+ cpuset_cpus_allowed_locked()
+To: Pingfan Liu <piliu@redhat.com>, cgroups@vger.kernel.org
+Cc: Waiman Long <longman@redhat.com>, Peter Zijlstra <peterz@infradead.org>,
+ Juri Lelli <juri.lelli@redhat.com>, Pierre Gondois <pierre.gondois@arm.com>,
+ Ingo Molnar <mingo@redhat.com>, Vincent Guittot
+ <vincent.guittot@linaro.org>, Dietmar Eggemann <dietmar.eggemann@arm.com>,
+ Steven Rostedt <rostedt@goodmis.org>, Ben Segall <bsegall@google.com>,
+ Mel Gorman <mgorman@suse.de>, Valentin Schneider <vschneid@redhat.com>,
+ Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>,
+ mkoutny@suse.com, linux-kernel@vger.kernel.org
+References: <20251119095525.12019-1-piliu@redhat.com>
+ <20251119095525.12019-2-piliu@redhat.com>
 Content-Language: en-US
 From: Chen Ridong <chenridong@huaweicloud.com>
-In-Reply-To: <unk64xmcj5kt5c5gaauwaeld5qsshaldw7utgzk362w33y3zr7@s765trmj5ccs>
+In-Reply-To: <20251119095525.12019-2-piliu@redhat.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:gCh0CgBXzFmPZx5pUvplBQ--.10207S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxGr4xKr43GF13Gr4rJw4xZwb_yoW5Zw43pF
-	W8KF18Ja1kXr1rGwsFq3WxXF4aq3ZrZF17AF98Gr40ywnFk3WkCF4qyr9xWFZ8J39xGw4j
-	g3y7ZrWfZryUXrJanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUylb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+X-CM-TRANSID:cCh0CgCHDEbtah5pLN9YBQ--.12866S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxKryDJFy7tr1kuFy8Jr13Jwb_yoW7XFWxpF
+	4qk347CFWUXr1xuw13X3yDuFyF9w1kuF15C3WrXw1rAFy3tF1jyF1kXF98Ary3tr15uF47
+	GrZxKr4S9F1DA37anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUv0b4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
 	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
-	0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
-	x7xfMcIj6xIIjxv20xvE14v26r106r15McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
-	0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lc7CjxVAaw2AFwI0_Jw0_GFyl42xK82IYc2Ij64vI
-	r41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8Gjc
-	xK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0
-	cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8V
-	AvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E
-	14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUOBMKDUUUU
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxkF7I0En4kS
+	14v26r4a6rW5MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I
+	8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVW8ZVWr
+	XwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x
+	0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_
+	Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU0
+	s2-5UUUUU==
 X-CM-SenderInfo: hfkh02xlgr0w46kxt4xhlfz01xgou0bp/
 
 
 
-On 2025/11/19 21:20, Michal Koutný wrote:
-> On Wed, Nov 19, 2025 at 06:57:49PM +0800, Sun Shaojie <sunshaojie@kylinos.cn> wrote:
->> Currently, when setting a cpuset's cpuset.cpus to a value that conflicts
->> with its sibling partition, the sibling's partition state becomes invalid.
->> However, this invalidation is often unnecessary. If the cpuset being
->> modified is exclusive, it should invalidate itself upon conflict.
->>
->> This patch applies only to the following two cases：
->>
->> Assume the machine has 4 CPUs (0-3).
->>
->>    root cgroup
->>       /    \
->>     A1      B1
->>
->> Case 1: A1 is exclusive, B1 is non-exclusive, set B1's cpuset.cpus
->>
->>  Table 1.1: Before applying this patch
->>  Step                                       | A1's prstate | B1's prstate |
->>  #1> echo "0-1" > A1/cpuset.cpus            | member       | member       |
->>  #2> echo "root" > A1/cpuset.cpus.partition | root         | member       |
->>  #3> echo "0" > B1/cpuset.cpus              | root invalid | member       |
->>
->> After step #3, A1 changes from "root" to "root invalid" because its CPUs
->> (0-1) overlap with those requested by B1 (0). However, B1 can actually
->> use CPUs 2-3(from B1's parent), so it would be more reasonable for A1 to
->> remain as "root."
->>
->>  Table 1.2: After applying this patch
->>  Step                                       | A1's prstate | B1's prstate |
->>  #1> echo "0-1" > A1/cpuset.cpus            | member       | member       |
->>  #2> echo "root" > A1/cpuset.cpus.partition | root         | member       |
->>  #3> echo "0" > B1/cpuset.cpus              | root         | member       |
->>
->> Case 2: Both A1 and B1 are exclusive, set B1's cpuset.cpus
+On 2025/11/19 17:55, Pingfan Liu wrote:
+> cpuset_cpus_allowed() uses a reader lock that is sleepable under RT,
+> which means it cannot be called inside raw_spin_lock_t context.
 > 
-> (Thanks for working this out, Shaojie.)
+> Introduce a new cpuset_cpus_allowed_locked() helper that performs the
+> same function as cpuset_cpus_allowed() except that the caller must have
+> acquired the cpuset_mutex so that no further locking will be needed.
 > 
->>
->>  Table 2.1: Before applying this patch
->>  Step                                       | A1's prstate | B1's prstate |
->>  #1> echo "0-1" > A1/cpuset.cpus            | member       | member       |
->>  #2> echo "root" > A1/cpuset.cpus.partition | root         | member       |
->>  #3> echo "2" > B1/cpuset.cpus              | root         | member       |
->>  #4> echo "root" > B1/cpuset.cpus.partition | root         | root         |
->>  #5> echo "1-2" > B1/cpuset.cpus            | root invalid | root invalid |
->>
->> After step #4, B1 can exclusively use CPU 2. Therefore, at step #5,
->> regardless of what conflicting value B1 writes to cpuset.cpus, it will
->> always have at least CPU 2 available. This makes it unnecessary to mark
->> A1 as "root invalid".
->>
->>  Table 2.2: After applying this patch
->>  Step                                       | A1's prstate | B1's prstate |
->>  #1> echo "0-1" > A1/cpuset.cpus            | member       | member       |
->>  #2> echo "root" > A1/cpuset.cpus.partition | root         | member       |
->>  #3> echo "2" > B1/cpuset.cpus              | root         | member       |
->>  #4> echo "root" > B1/cpuset.cpus.partition | root         | root         |
->>  #5> echo "1-2" > B1/cpuset.cpus            | root         | root invalid |
->>
->> In summary, regardless of how B1 configures its cpuset.cpus, there will
->> always be available CPUs in B1's cpuset.cpus.effective. Therefore, there
->> is no need to change A1 from "root" to "root invalid".
+> Suggested-by: Waiman Long <longman@redhat.com>
+> Signed-off-by: Pingfan Liu <piliu@redhat.com>
+> Cc: Waiman Long <longman@redhat.com>
+> Cc: Tejun Heo <tj@kernel.org>
+> Cc: Johannes Weiner <hannes@cmpxchg.org>
+> Cc: "Michal Koutný" <mkoutny@suse.com>
+> Cc: linux-kernel@vger.kernel.org
+> To: cgroups@vger.kernel.org
+> ---
+>  include/linux/cpuset.h |  9 +++++++-
+>  kernel/cgroup/cpuset.c | 51 +++++++++++++++++++++++++++++-------------
+>  2 files changed, 44 insertions(+), 16 deletions(-)
 > 
-> Admittedly, I don't like this change because it relies on implicit
-> preference ordering between siblings (here first comes, first served)
+> diff --git a/include/linux/cpuset.h b/include/linux/cpuset.h
+> index 2ddb256187b51..a98d3330385c2 100644
+> --- a/include/linux/cpuset.h
+> +++ b/include/linux/cpuset.h
+> @@ -74,6 +74,7 @@ extern void inc_dl_tasks_cs(struct task_struct *task);
+>  extern void dec_dl_tasks_cs(struct task_struct *task);
+>  extern void cpuset_lock(void);
+>  extern void cpuset_unlock(void);
+> +extern void cpuset_cpus_allowed_locked(struct task_struct *p, struct cpumask *mask);
+>  extern void cpuset_cpus_allowed(struct task_struct *p, struct cpumask *mask);
+>  extern bool cpuset_cpus_allowed_fallback(struct task_struct *p);
+>  extern bool cpuset_cpu_is_isolated(int cpu);
+> @@ -195,10 +196,16 @@ static inline void dec_dl_tasks_cs(struct task_struct *task) { }
+>  static inline void cpuset_lock(void) { }
+>  static inline void cpuset_unlock(void) { }
+>  
+> +static inline void cpuset_cpus_allowed_locked(struct task_struct *p,
+> +					struct cpumask *mask)
+> +{
+> +	cpumask_copy(mask, task_cpu_possible_mask(p));
+> +}
+> +
+>  static inline void cpuset_cpus_allowed(struct task_struct *p,
+>  				       struct cpumask *mask)
+>  {
+> -	cpumask_copy(mask, task_cpu_possible_mask(p));
+> +	cpuset_cpus_allowed_locked(p, mask);
+>  }
+>  
+>  static inline bool cpuset_cpus_allowed_fallback(struct task_struct *p)
+> diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
+> index 52468d2c178a3..7a179a1a2e30a 100644
+> --- a/kernel/cgroup/cpuset.c
+> +++ b/kernel/cgroup/cpuset.c
+> @@ -4116,24 +4116,13 @@ void __init cpuset_init_smp(void)
+>  	BUG_ON(!cpuset_migrate_mm_wq);
+>  }
+>  
+> -/**
+> - * cpuset_cpus_allowed - return cpus_allowed mask from a tasks cpuset.
+> - * @tsk: pointer to task_struct from which to obtain cpuset->cpus_allowed.
+> - * @pmask: pointer to struct cpumask variable to receive cpus_allowed set.
+> - *
+> - * Description: Returns the cpumask_var_t cpus_allowed of the cpuset
+> - * attached to the specified @tsk.  Guaranteed to return some non-empty
+> - * subset of cpu_active_mask, even if this means going outside the
+> - * tasks cpuset, except when the task is in the top cpuset.
+> - **/
+> -
+> -void cpuset_cpus_allowed(struct task_struct *tsk, struct cpumask *pmask)
+> +/*
+> + * Return cpus_allowed mask from a task's cpuset.
+> + */
+> +static void __cpuset_cpus_allowed_locked(struct task_struct *tsk, struct cpumask *pmask)
+>  {
+> -	unsigned long flags;
+>  	struct cpuset *cs;
+>  
+> -	spin_lock_irqsave(&callback_lock, flags);
+> -
+>  	cs = task_cs(tsk);
+>  	if (cs != &top_cpuset)
+>  		guarantee_active_cpus(tsk, pmask);
+> @@ -4153,7 +4142,39 @@ void cpuset_cpus_allowed(struct task_struct *tsk, struct cpumask *pmask)
+>  		if (!cpumask_intersects(pmask, cpu_active_mask))
+>  			cpumask_copy(pmask, possible_mask);
+>  	}
+> +}
+>  
+> +/**
+> + * cpuset_cpus_allowed_locked - return cpus_allowed mask from a task's cpuset.
+> + * @tsk: pointer to task_struct from which to obtain cpuset->cpus_allowed.
+> + * @pmask: pointer to struct cpumask variable to receive cpus_allowed set.
+> + *
+> + * Similir to cpuset_cpus_allowed() except that the caller must have acquired
+> + * cpuset_mutex.
+> + */
+> +void cpuset_cpus_allowed_locked(struct task_struct *tsk, struct cpumask *pmask)
+> +{
+> +	lockdep_assert_held(&cpuset_mutex);
+> +	__cpuset_cpus_allowed_locked(tsk, pmask);
+> +}
+> +
+> +/**
+> + * cpuset_cpus_allowed - return cpus_allowed mask from a task's cpuset.
+> + * @tsk: pointer to task_struct from which to obtain cpuset->cpus_allowed.
+> + * @pmask: pointer to struct cpumask variable to receive cpus_allowed set.
+> + *
+> + * Description: Returns the cpumask_var_t cpus_allowed of the cpuset
+> + * attached to the specified @tsk.  Guaranteed to return some non-empty
+> + * subset of cpu_active_mask, even if this means going outside the
+> + * tasks cpuset, except when the task is in the top cpuset.
+> + **/
+> +
+> +void cpuset_cpus_allowed(struct task_struct *tsk, struct cpumask *pmask)
+> +{
+> +	unsigned long flags;
+> +
+> +	spin_lock_irqsave(&callback_lock, flags);
+> +	__cpuset_cpus_allowed_locked(tsk, pmask);
+>  	spin_unlock_irqrestore(&callback_lock, flags);
+>  }
+>  
 
-Agree. If we only invalidate the latter one, I think regardless of the implementation approach, we
-may end up with different results depending on the order of operations.
+LGTM
 
-> and so the effective config cannot be derived just from the applied
-> values :-/
-> 
-> Do you actually want to achieve this or is it an implementation
-> side-effect of the Case 1 scenario that you want to achieve?
-> 
-> 
-> Thanks,
-> Michal
+Reviewed-by: Chen Ridong <chenridong@huawei.com>
 
 -- 
 Best regards,
