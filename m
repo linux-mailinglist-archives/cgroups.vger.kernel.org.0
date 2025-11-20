@@ -1,177 +1,272 @@
-Return-Path: <cgroups+bounces-12135-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-12136-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id BAB67C74AA7
-	for <lists+cgroups@lfdr.de>; Thu, 20 Nov 2025 15:53:25 +0100 (CET)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6E295C74C03
+	for <lists+cgroups@lfdr.de>; Thu, 20 Nov 2025 16:10:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by tor.lore.kernel.org (Postfix) with ESMTPS id BFB982B61E
-	for <lists+cgroups@lfdr.de>; Thu, 20 Nov 2025 14:53:24 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 0722135AC6D
+	for <lists+cgroups@lfdr.de>; Thu, 20 Nov 2025 15:00:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B271345CB9;
-	Thu, 20 Nov 2025 14:52:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 126592BDC02;
+	Thu, 20 Nov 2025 15:00:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="Nlop4bDN"
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="L8+X/Epj";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="931FtcyY"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-il1-f177.google.com (mail-il1-f177.google.com [209.85.166.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D5D333F396
-	for <cgroups@vger.kernel.org>; Thu, 20 Nov 2025 14:52:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 06DA42BE620;
+	Thu, 20 Nov 2025 15:00:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763650371; cv=none; b=rR4pnJezd4u2N6vUkjYpPD2zhjoSOryui7cDVxpA9+1jje9EgmT4c2BxyMxQsocAEx20rJabX26rf2KW7ZnHeLCS6/VKdieOeWMoQX5KO6c82mktuU5Qcf28bY+dleT/gQf9Hn0EPUVmRAyP6gIcgh2hrFt+IQjM9JFBryAEBQw=
+	t=1763650844; cv=none; b=oTHZTiWn69kWL+b8hDMJvloZF163ftF5MVmua29ECXiavaD+pT7z/iWTi09bCCZwiytHnXCrxCiGg2Rjb2PIe73MEkSlXTexYOkJ4QLC6yU7Io6MmavMClC9d6cf2xg1gJoYbM/ggD+TClQLSubhhc75Q7nRjtoX00A4P1nzhuw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763650371; c=relaxed/simple;
-	bh=fJNbQYu7PoiJLsEPpjUYNqAPI6k2geFEJacIKnsv5a4=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=TXEbB1eUVH8L+Wqj3NukzdLW62EdATs19OO06AS62AA7UzWjrBUAwca31HpTr8qEllkXGun+KRTffmPkcgcE/3ElBggV2ebDTP2vsvad/oXCRyUXDN/AIZmFPOizXnNV6w+jcChXuRoF26+mckDfLcYpa+hV6Z6edCSo+JVsMdA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=Nlop4bDN; arc=none smtp.client-ip=209.85.166.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
-Received: by mail-il1-f177.google.com with SMTP id e9e14a558f8ab-43379251ff9so9582705ab.1
-        for <cgroups@vger.kernel.org>; Thu, 20 Nov 2025 06:52:47 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1763650367; x=1764255167; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=mIp1emodWmrQX+c6TjoXmEBGWcecINECr9nK+dGHBUw=;
-        b=Nlop4bDNIOkjuo0pMhzaqc0ODrEsmRo7XtLqwhp00uyFASxw+sbIvvfDKg63/0WNIr
-         Irgw7i1L5c7f3KspyZuRfY76O51HffIuodvQy5ZIcDN4No7WwIxUOGZ9dpes/M6K+nsd
-         SNLzENdMcdkRpJUmuFjuM9BMlGaR61DPmsUMatu7aVJzbpi7Z/RO6GbliOgOscpBha8S
-         DnzFtV5phPRpPEJgf98WlMFKyzL6CdLykV3ZnkTgBAq3ZRb9M24771+6fglXYKmcEHuj
-         JwzMwrRMP1iOEu/PZF6XSo/nxjqLzdvmfaif9TGvKGR4YXIy2m1LIpokuAZvSHGS7C+s
-         olCQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1763650367; x=1764255167;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:cc:to:from:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=mIp1emodWmrQX+c6TjoXmEBGWcecINECr9nK+dGHBUw=;
-        b=Qa8LgQZObVKlf5nQ8m8A4YhXT72Dtc2BeJuzkZTXuc3QqMt5EXp8IdBG89wzp4gAxG
-         nUoXGNbr0uYuuWo9gM4n+Kd+n3JctAMiBggMTTekNhNfvFnf69CjwaFuT0MVXsEvNvny
-         d6JsC5eWmRVnmpyFa/S3FwF8NZpL6Jyb4+fn5WYEaK5+1l2Baq3rzdJnnc96+pMM4vfa
-         L+J1MIFB+HrRpBLZW/4ncINf+SA7oqci8ZGqguS/gY+YKT8qwS6Q+llDTxQLmo1BsQJj
-         24ucDiqp4fQF6J550ALq4odhpx1D6Gc2yT5aeMvtEgQ16PeN78ls/1GF4YhVYg7mJhet
-         U7NA==
-X-Forwarded-Encrypted: i=1; AJvYcCUM3KxgMdhB2FxqYzAgXbtEdDMBrRltEIajDOoh+Hfq5K/YRl8GDmUxul19GR/M8Y8YMSa2CBs6@vger.kernel.org
-X-Gm-Message-State: AOJu0YwyXU5BDOCUz98lQewyJtYQcVYE+YFSG+7NNKJfrouNDbdPZkFv
-	+qNsx1zLnuvXGQnX+zCJgCu3CJvibQOeuwwHtlllXsaUyD8VGRYGpEDrrw9HbNZsLFQ=
-X-Gm-Gg: ASbGnctVrlDlhAc2nguXvZzJUZ+nQrFqia7jWAKDxo/m3YJSjigJV+lv1xtYbLyns8U
-	AUNjTgBZ3FppytQhMT9z4dbYap4VocxsiVZJ7SCYSR0NDoW00FknirJwD4fM1swfmGL/z1FHAX2
-	l17ITW/rg3rM1IyvBaWDmPzmYT7RSvzPkMe8ZKBHu/A7I6ZQ5v7BbB2Hv5BUnlqwWpQZkPboS8L
-	j8GRcJFE2lt0BokosgNx0mt304NWFtDyiyPhCFJikxBwENm4Cosb6iBYCC2GbQWfxUmQYps+A69
-	jqDP6rj3MQADYnX+3EV0tWM2JlJcD5FcdmOMoPq43wBx/hWz/iXsDU+ezemQbDHOcFUUEpTL1PD
-	41PjVGtDY7cqVjaFKm5TZy1+YA5fU9qHxoGMB0kGU3GA4Sf3vEIvlHCWrVhy4NoMsoLB7VeDJ2n
-	z7Wg==
-X-Google-Smtp-Source: AGHT+IEmRlVKCe07qbgo1t2w3uFpBKsqx62crTftDC+8sZ0oUBIrcGL53VTRakva//fmnWvcfQrQww==
-X-Received: by 2002:a05:6e02:1c01:b0:433:1d5a:5157 with SMTP id e9e14a558f8ab-435aa88e822mr21434775ab.6.1763650367018;
-        Thu, 20 Nov 2025 06:52:47 -0800 (PST)
-Received: from [127.0.0.1] ([96.43.243.2])
-        by smtp.gmail.com with ESMTPSA id 8926c6da1cb9f-5b954b207d7sm1008611173.33.2025.11.20.06.52.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 20 Nov 2025 06:52:46 -0800 (PST)
-From: Jens Axboe <axboe@kernel.dk>
-To: linux-kernel@vger.kernel.org, david.laight.linux@gmail.com
-Cc: Alan Stern <stern@rowland.harvard.edu>, 
- Alexander Viro <viro@zeniv.linux.org.uk>, 
- Alexei Starovoitov <ast@kernel.org>, Andi Shyti <andi.shyti@kernel.org>, 
- Andreas Dilger <adilger.kernel@dilger.ca>, Andrew Lunn <andrew@lunn.ch>, 
- Andrew Morton <akpm@linux-foundation.org>, 
- Andrii Nakryiko <andrii@kernel.org>, 
- Andy Shevchenko <andriy.shevchenko@linux.intel.com>, 
- Ard Biesheuvel <ardb@kernel.org>, 
- Arnaldo Carvalho de Melo <acme@kernel.org>, 
- Bjorn Helgaas <bhelgaas@google.com>, Borislav Petkov <bp@alien8.de>, 
- Christian Brauner <brauner@kernel.org>, 
- =?utf-8?q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>, 
- Christoph Hellwig <hch@lst.de>, Daniel Borkmann <daniel@iogearbox.net>, 
- Dan Williams <dan.j.williams@intel.com>, 
- Dave Hansen <dave.hansen@linux.intel.com>, 
- Dave Jiang <dave.jiang@intel.com>, David Ahern <dsahern@kernel.org>, 
- Davidlohr Bueso <dave@stgolabs.net>, 
- "David S. Miller" <davem@davemloft.net>, Dennis Zhou <dennis@kernel.org>, 
- Eric Dumazet <edumazet@google.com>, 
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
- Herbert Xu <herbert@gondor.apana.org.au>, Ingo Molnar <mingo@redhat.com>, 
- Jakub Kicinski <kuba@kernel.org>, Jakub Sitnicki <jakub@cloudflare.com>, 
- "James E.J. Bottomley" <James.Bottomley@HansenPartnership.com>, 
- Jarkko Sakkinen <jarkko@kernel.org>, "Jason A. Donenfeld" <Jason@zx2c4.com>, 
- Jiri Slaby <jirislaby@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>, 
- John Allen <john.allen@amd.com>, 
- Jonathan Cameron <jonathan.cameron@huawei.com>, 
- Juergen Gross <jgross@suse.com>, Kees Cook <kees@kernel.org>, 
- KP Singh <kpsingh@kernel.org>, Linus Walleij <linus.walleij@linaro.org>, 
- "Martin K. Petersen" <martin.petersen@oracle.com>, 
- "Matthew Wilcox (Oracle)" <willy@infradead.org>, 
- Mika Westerberg <westeri@kernel.org>, Mike Rapoport <rppt@kernel.org>, 
- Miklos Szeredi <miklos@szeredi.hu>, Namhyung Kim <namhyung@kernel.org>, 
- Neal Cardwell <ncardwell@google.com>, nic_swsd@realtek.com, 
- OGAWA Hirofumi <hirofumi@mail.parknet.co.jp>, 
- Olivia Mackall <olivia@selenic.com>, Paolo Abeni <pabeni@redhat.com>, 
- Paolo Bonzini <pbonzini@redhat.com>, Peter Huewe <peterhuewe@gmx.de>, 
- Peter Zijlstra <peterz@infradead.org>, 
- "Rafael J. Wysocki" <rafael@kernel.org>, 
- Sean Christopherson <seanjc@google.com>, 
- Srinivas Kandagatla <srini@kernel.org>, 
- Stefano Stabellini <sstabellini@kernel.org>, 
- Steven Rostedt <rostedt@goodmis.org>, Tejun Heo <tj@kernel.org>, 
- Theodore Ts'o <tytso@mit.edu>, Thomas Gleixner <tglx@linutronix.de>, 
- Tom Lendacky <thomas.lendacky@amd.com>, 
- Willem de Bruijn <willemdebruijn.kernel@gmail.com>, x86@kernel.org, 
- Yury Norov <yury.norov@gmail.com>, amd-gfx@lists.freedesktop.org, 
- bpf@vger.kernel.org, cgroups@vger.kernel.org, 
- dri-devel@lists.freedesktop.org, io-uring@vger.kernel.org, 
- kvm@vger.kernel.org, linux-acpi@vger.kernel.org, 
- linux-block@vger.kernel.org, linux-crypto@vger.kernel.org, 
- linux-cxl@vger.kernel.org, linux-efi@vger.kernel.org, 
- linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
- linux-gpio@vger.kernel.org, linux-i2c@vger.kernel.org, 
- linux-integrity@vger.kernel.org, linux-mm@kvack.org, 
- linux-nvme@lists.infradead.org, linux-pci@vger.kernel.org, 
- linux-perf-users@vger.kernel.org, linux-scsi@vger.kernel.org, 
- linux-serial@vger.kernel.org, linux-trace-kernel@vger.kernel.org, 
- linux-usb@vger.kernel.org, mptcp@lists.linux.dev, netdev@vger.kernel.org, 
- usb-storage@lists.one-eyed-alien.net, David Hildenbrand <david@kernel.org>
-In-Reply-To: <20251119224140.8616-1-david.laight.linux@gmail.com>
-References: <20251119224140.8616-1-david.laight.linux@gmail.com>
-Subject: Re: (subset) [PATCH 00/44] Change a lot of min_t() that might mask
- high bits
-Message-Id: <176365036384.566630.2992984118137417732.b4-ty@kernel.dk>
-Date: Thu, 20 Nov 2025 07:52:43 -0700
+	s=arc-20240116; t=1763650844; c=relaxed/simple;
+	bh=uwBU2PPgA6W6CmBzxknjBqt5LSogUR5poaN1qugjKZw=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=dVSrHyJacE0G1637kwr8y3RHvqzpuLldxW5hEVtVgRtcLIwqvLyiXQMHLYTg82bLQL+eyYD7aRWru7Yajhu4l0GKrUKhVr/O5Nywz/2KgN/z1XQbBlb4xU8gXK0C0hyqQDRgG9jYE1+biMFeNLP1AapZ7kv2iEXipuWLdEqYZdA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=L8+X/Epj; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=931FtcyY; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+From: Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1763650840;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=+LpGqZhaaYXzA4hdibOg5WRDbLO44FNcTLiM76SYeOI=;
+	b=L8+X/EpjB9f8avr0IYkzsGaJikZMPvaUUTOTi8VN3whByblBFig7f4gOOYwjYva8PHcC6N
+	V7d7bepBfQHrUyqLc71NCXHxP6tvXcMDEmR6bRMutOQmTBhG7zSC0+3Iiyx8lYgXrDE8fD
+	OUEC2OneX24w+Y4tXoD1VeM1pmzilwMfMdOi3g8FuDpWnp1PeQRMGaDODKwv8d2Y8CaEtT
+	M60EQVrKwGyJEe85yUUbMzTpL2Hqb+WU4ENo8+/JPji2OdJ4EWlmGiPegQjRo5/u8vbY50
+	6awekPM1yozlOnnokNfUJo5FhedWMOZh0b5THHamNfXUVc4ezZP2zxEjGgtiVQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1763650840;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=+LpGqZhaaYXzA4hdibOg5WRDbLO44FNcTLiM76SYeOI=;
+	b=931FtcyY+520bLgB8StFc9bN6yPm2UKqiNtOzjLk2hHVhf3lT2eeKW8/E32sj1051HLqxD
+	+RMO/3R6wCzfrKAw==
+To: Frederic Weisbecker <frederic@kernel.org>, Marek Szyprowski
+ <m.szyprowski@samsung.com>
+Cc: LKML <linux-kernel@vger.kernel.org>, Marco Crivellari
+ <marco.crivellari@suse.com>, Waiman Long <llong@redhat.com>,
+ cgroups@vger.kernel.org
+Subject: Re: [PATCH 1/2] genirq: Fix IRQ threads affinity VS cpuset isolated
+ partitions
+In-Reply-To: <aR8VoUxBncOu4H47@localhost.localdomain>
+References: <20251118143052.68778-1-frederic@kernel.org>
+ <20251118143052.68778-2-frederic@kernel.org>
+ <CGME20251120115132eucas1p160658ba63831911aadd0b0c2f70b7e28@eucas1p1.samsung.com>
+ <73356b5f-ab5c-4e9e-b57f-b80981c35998@samsung.com>
+ <aR8VoUxBncOu4H47@localhost.localdomain>
+Date: Thu, 20 Nov 2025 16:00:39 +0100
+Message-ID: <87tsyokaug.ffs@tglx>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.14.3
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
+On Thu, Nov 20 2025 at 14:20, Frederic Weisbecker wrote:
+> Le Thu, Nov 20, 2025 at 12:51:31PM +0100, Marek Szyprowski a =C3=A9crit :
+>> On 18.11.2025 15:30, Frederic Weisbecker wrote:
+>> > When a cpuset isolated partition is created / updated or destroyed,
+>> > the IRQ threads are affine blindly to all the non-isolated CPUs. And
+>> > this happens without taking into account the IRQ thread initial
+>> > affinity that becomes ignored.
+>> >
+>> > For example in a system with 8 CPUs, if an IRQ and its kthread are
+>> > initially affine to CPU 5, creating an isolated partition with only
+>> > CPU 2 inside will eventually end up affining the IRQ kthread to all
+>> > CPUs but CPU 2 (that is CPUs 0,1,3-7), losing the kthread preference f=
+or
+>> > CPU 5.
+>> >
+>> > Besides the blind re-affinity, this doesn't take care of the actual
+>> > low level interrupt which isn't migrated. As of today the only way to
+>> > isolate non managed interrupts, along with their kthreads, is to
+>> > overwrite their affinity separately, for example through /proc/irq/
+>> >
+>> > To avoid doing that manually, future development should focus on
+>> > updating the IRQs affinity whenever cpuset isolated partitions are
+>> > updated.
+>> >
+>> > In the meantime, cpuset shouldn't fiddle with IRQ threads directly.
+>> > To prevent from that, set the PF_NO_SETAFFINITY flag to them.
+>> >
+>> > Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
+>>=20
+>> This patch landed in today's linux-next as commit 844dcacab287 ("genirq:=
+=20
+>> Fix interrupt threads affinity vs. cpuset isolated partitions"). In my=20
+>> tests I found that it triggers a warnings on some of my test systems.=20
+>> This is example of such warning:
+>>=20
+>> ------------[ cut here ]------------
+>> WARNING: CPU: 0 PID: 1 at kernel/kthread.c:599 kthread_bind_mask+0x2c/0x=
+84
+>
+> Erm, does this means that the IRQ thread got awaken before the first offi=
+cial
+> wakeup in wake_up_and_wait_for_irq_thread_ready()? This looks wrong...
+>
+> irq_startup() may be called on a few occcasions before. So perhaps
+> the IRQ already fired and woke up the kthread once before the "official"
+> first wake up?
+>
+> There seem to be some initialization ordering issue here...
 
-On Wed, 19 Nov 2025 22:40:56 +0000, david.laight.linux@gmail.com wrote:
-> It in not uncommon for code to use min_t(uint, a, b) when one of a or b
-> is 64bit and can have a value that is larger than 2^32;
-> This is particularly prevelant with:
-> 	uint_var = min_t(uint, uint_var, uint64_expression);
-> 
-> Casts to u8 and u16 are very likely to discard significant bits.
-> 
-> [...]
+That's unavoidable because of locking and hen and egg ordering problems.
 
-Applied, thanks!
+When the thread is created the interrupt is not yet started up and
+therefore effective affinity is not known. So doing a bind there is
+pointless.
 
-[12/44] block: use min() instead of min_t()
-        commit: 9420e720ad192c53c8d2803c5a2313b2d586adbd
+The action has to be made visible _before_ starting it up as once the
+interrupt is unmasked it might fire. That's even more true for shared
+interrupts.
 
-Best regards,
--- 
-Jens Axboe
+The wakeup/bind/... muck cannot be invoked with the descriptor lock
+held, so it has to be done _after_ the thing went live.
 
+So yes an interrupt which fires before kthread_bind() is invoked might
+exactly have that effect. It wakes it from the kthread() wait and it
+goes straight through to the thread function.
+
+That's why the original code just set the affinity bit and let the
+thread itself handle it.
+
+There are three options to solve that:
+
+      1) Bind the thread right after kthread_create() to a random
+         housekeeping task and let move itself over to the real place
+         once it came up (at this point the affinity is established)
+
+      2) Serialize the setup so that the thread (even, when woken up
+         early) get's stuck in UNINTERRUPTIBLE state _before_ it can
+         reach wait_for_interrupt() which waits with INTERRUPTIBLE
+
+      3) Teach kthread_create() that the thread is subject to being
+         bound to something later on and implement that serialization
+         there.
+
+#1 is pretty straight forward. See untested below.
+
+#2 is ugly (I tried)
+
+#3 could be useful in general, but that needs more thoughts
+
+Thanks
+
+        tglx
+---
+--- a/kernel/irq/handle.c
++++ b/kernel/irq/handle.c
+@@ -133,7 +133,15 @@ void __irq_wake_thread(struct irq_desc *
+ 	 */
+ 	atomic_inc(&desc->threads_active);
+=20
+-	wake_up_process(action->thread);
++	/*
++	 * This might be a premature wakeup before the thread reached the
++	 * thread function and set the IRQTF_READY bit. It's waiting in
++	 * kthread code with state UNINTERRUPTIBLE. Once it reaches the
++	 * thread function it waits with INTERRUPTIBLE. The wakeup is not
++	 * lost in that case because the thread is guaranteed to observe
++	 * the RUN flag before it goes to sleep in wait_for_interrupt().
++	 */
++	wake_up_state(action->thread, TASK_INTERRUPTIBLE);
+ }
+=20
+ static DEFINE_STATIC_KEY_FALSE(irqhandler_duration_check_enabled);
+--- a/kernel/irq/manage.c
++++ b/kernel/irq/manage.c
+@@ -1026,16 +1026,8 @@ static void irq_thread_check_affinity(st
+ 	set_cpus_allowed_ptr(current, mask);
+ 	free_cpumask_var(mask);
+ }
+-
+-static inline void irq_thread_set_affinity(struct task_struct *t,
+-					   struct irq_desc *desc)
+-{
+-	kthread_bind_mask(t, irq_data_get_effective_affinity_mask(&desc->irq_data=
+));
+-}
+ #else
+ static inline void irq_thread_check_affinity(struct irq_desc *desc, struct=
+ irqaction *action) { }
+-static inline void irq_thread_set_affinity(struct task_struct *t,
+-					   struct irq_desc *desc) { }
+ #endif
+=20
+ static int irq_wait_for_interrupt(struct irq_desc *desc,
+@@ -1220,7 +1212,6 @@ static void wake_up_and_wait_for_irq_thr
+ 	if (!action || !action->thread)
+ 		return;
+=20
+-	irq_thread_set_affinity(action->thread, desc);
+ 	wake_up_process(action->thread);
+ 	wait_event(desc->wait_for_threads,
+ 		   test_bit(IRQTF_READY, &action->thread_flags));
+@@ -1389,26 +1380,35 @@ static void irq_nmi_teardown(struct irq_
+ static int
+ setup_irq_thread(struct irqaction *new, unsigned int irq, bool secondary)
+ {
++	/*
++	 * At this point interrupt affinity is not known. just assume that
++	 * the current CPU is not isolated and valid to bring the thread
++	 * up. The thread will move itself over to the right place once the
++	 * whole setup is complete.
++	 */
++	unsigned int cpu =3D raw_smp_processor_id();
+ 	struct task_struct *t;
+=20
+-	if (!secondary) {
+-		t =3D kthread_create(irq_thread, new, "irq/%d-%s", irq,
+-				   new->name);
+-	} else {
+-		t =3D kthread_create(irq_thread, new, "irq/%d-s-%s", irq,
+-				   new->name);
+-	}
++	if (!secondary)
++		t =3D kthread_create_on_cpu(irq_thread, new, cpu, "irq/%d-%s", irq, new-=
+>name);
++	else
++		t =3D kthread_create_on_cpu(irq_thread, new, cpu, "irq/%d-s-%s", irq, ne=
+w->name);
+=20
+ 	if (IS_ERR(t))
+ 		return PTR_ERR(t);
+=20
+ 	/*
+-	 * We keep the reference to the task struct even if
+-	 * the thread dies to avoid that the interrupt code
+-	 * references an already freed task_struct.
++	 * We keep the reference to the task struct even if the thread dies
++	 * to avoid that the interrupt code references an already freed
++	 * task_struct.
+ 	 */
+ 	new->thread =3D get_task_struct(t);
+=20
++	/*
++	 * Ensure the thread adjusts the affinity once it reaches the
++	 * thread function.
++	 */
++	new->thread_flags =3D BIT(IRQTF_AFFINITY);
+ 	return 0;
+ }
+=20
 
 
 
