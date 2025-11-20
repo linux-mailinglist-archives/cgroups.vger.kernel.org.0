@@ -1,225 +1,117 @@
-Return-Path: <cgroups+bounces-12132-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-12133-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4CB25C745E6
-	for <lists+cgroups@lfdr.de>; Thu, 20 Nov 2025 14:53:31 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id C923BC746C1
+	for <lists+cgroups@lfdr.de>; Thu, 20 Nov 2025 15:04:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id E4F7C4FBDC1
-	for <lists+cgroups@lfdr.de>; Thu, 20 Nov 2025 13:46:35 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 3F0B54EABC4
+	for <lists+cgroups@lfdr.de>; Thu, 20 Nov 2025 13:46:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B02B73469E7;
-	Thu, 20 Nov 2025 13:45:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6AB9B343D90;
+	Thu, 20 Nov 2025 13:45:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="KZQyoVQE"
 X-Original-To: cgroups@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+Received: from out-179.mta0.migadu.com (out-179.mta0.migadu.com [91.218.175.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9A05B342C99;
-	Thu, 20 Nov 2025 13:45:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 364D92DCF61
+	for <cgroups@vger.kernel.org>; Thu, 20 Nov 2025 13:45:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763646323; cv=none; b=cVNSqejl8B61tMCZIQslWH0HKHZoO+PkOWo+o7QZGApP4IaO8Yq9CwvRAFSvfTBB9wmGYwiyHF6zjVNBf+pL8VivuqcUz2qcGBM84gV3EUGGesLiLrMOCu0+0oHTJXLPMhQXXpGQ8P0Yk9Xq5vlI3WhEUweXqlRONque/kSQdWw=
+	t=1763646333; cv=none; b=CVuo8FEvzECWqB+WEAWvuKFk14zZnxLid810L3HqRF4i2Wap9zk5veJKW70AGMHD5ivo4Tp2q5nDyExTcFbjp73x3YguvAZN1r8pSWwRI0xHDc9aLuApP5/hlinygD6eyihy0DGBi2nxGefsNqiLxK6NJHxv1TuzMmykj3PZosQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763646323; c=relaxed/simple;
-	bh=+jiC7CZHOFjw2Ag8OX/h9tCN/ZPLE0V2bCBBgmCAam0=;
+	s=arc-20240116; t=1763646333; c=relaxed/simple;
+	bh=YMDJg6Qpkx1+NdWyiE4Ba9nP2PX29bxOtpZrdoUsdYY=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=RCHGHCU4DGCpfnwDm3ycIdQWdb8mklmYMWSQZSEBPQXc/OH1jk4rNM9RuD+QlMviy4GlCd34HCwYRAjqZevTzDPYtMJVCwpEBI2lrwJA+zXwt1vID9dUMCxXUGDVDZ7lWYgAyOvi0ri6L29pDCG0AYl6ZvA2LjZn/1CuVutAgtw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.216])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTPS id 4dC02X0wTBzYQtkt;
-	Thu, 20 Nov 2025 21:44:36 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.75])
-	by mail.maildlp.com (Postfix) with ESMTP id 09D861A1A0B;
-	Thu, 20 Nov 2025 21:45:18 +0800 (CST)
-Received: from [10.67.111.176] (unknown [10.67.111.176])
-	by APP2 (Coremail) with SMTP id Syh0CgDHbnVsGx9pmvekBQ--.9802S2;
-	Thu, 20 Nov 2025 21:45:17 +0800 (CST)
-Message-ID: <8d38b4ea-6b55-4319-b330-2dc33ac5cd77@huaweicloud.com>
-Date: Thu, 20 Nov 2025 21:45:16 +0800
+	 In-Reply-To:Content-Type; b=RfRx4lXLW+cKLE4Yi8p1AQco8p6VORzmvZLqQnEA+uB5eA3uyQSbghRSGqtClWywdmLQAWf5EfE+KA3fJJCF9StmPsocRfiLJJjtfdzWWmmdU5LaYhFZ+c8jZDV42MXdbJyeR48ZWfPOBuQ8vZeqmw9RahIbC7ebhndMYtdyTGA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=KZQyoVQE; arc=none smtp.client-ip=91.218.175.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <cf600d82-82f5-414c-b880-71133379d5d4@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1763646329;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=0F1vo22ZFTmKf8sXE42d1ovwkd4h2/GmeH0WirLVGeg=;
+	b=KZQyoVQEqYe/9XPzLslzGEobTzkXAQWLBhUuaENdHn2JcZkTs3FEHl89i4TBmDv3Q4l6WK
+	dJciw1xTfr0yhYuoDDpR3VaSo5HBt+gc9UF2D2kvkmuBMPvmRBDtIW/ul/1iL+G1qsqO34
+	F/b9KKIJiTm3UsMXcB4XXtOz6iniLEU=
+Date: Thu, 20 Nov 2025 21:45:19 +0800
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5] cpuset: Avoid invalidating sibling partitions on
- cpuset.cpus conflict.
-To: Sun Shaojie <sunshaojie@kylinos.cn>
-Cc: cgroups@vger.kernel.org, hannes@cmpxchg.org,
- linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
- llong@redhat.com, mkoutny@suse.com, shuah@kernel.org, tj@kernel.org
-References: <5e690981-2921-4b9f-9771-8afaa15018c8@huaweicloud.com>
- <20251120130704.1554368-1-sunshaojie@kylinos.cn>
-Content-Language: en-US
-From: Chen Ridong <chenridong@huaweicloud.com>
-In-Reply-To: <20251120130704.1554368-1-sunshaojie@kylinos.cn>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID:Syh0CgDHbnVsGx9pmvekBQ--.9802S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxCw4ruFWUXFyxWryDZry7ZFb_yoWrCr15pF
-	yxKa17Xw4kXr15C3srX3Wvgryav3ZrZF47Arn8Jw1fAF9IyFnFv3WqkrZIvr15Ar9xGr4U
-	ZayjkrZxZF9rAaDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUyCb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxkF7I0En4kS14v26r1q6r43MxAIw28IcxkI7VAK
-	I48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7
-	xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xII
-	jxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw2
-	0EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x02
-	67AKxVW8Jr0_Cr1UYxBIdaVFxhVjvjDU0xZFpf9x07UAwIDUUUUU=
-X-CM-SenderInfo: hfkh02xlgr0w46kxt4xhlfz01xgou0bp/
+Subject: Re: [PATCH v1 25/26] mm: memcontrol: eliminate the problem of dying
+ memory cgroup for LRU folios
+To: Chen Ridong <chenridong@huaweicloud.com>, hannes@cmpxchg.org,
+ hughd@google.com, mhocko@suse.com, roman.gushchin@linux.dev,
+ shakeel.butt@linux.dev, muchun.song@linux.dev, david@redhat.com,
+ lorenzo.stoakes@oracle.com, ziy@nvidia.com, harry.yoo@oracle.com,
+ imran.f.khan@oracle.com, kamalesh.babulal@oracle.com,
+ axelrasmussen@google.com, yuanchu@google.com, weixugc@google.com,
+ akpm@linux-foundation.org
+Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+ cgroups@vger.kernel.org, Muchun Song <songmuchun@bytedance.com>,
+ Qi Zheng <zhengqi.arch@bytedance.com>
+References: <cover.1761658310.git.zhengqi.arch@bytedance.com>
+ <44fd54721dfa74941e65a82e03c23d9c0bff9feb.1761658311.git.zhengqi.arch@bytedance.com>
+ <a7e55445-20ee-4133-8455-b6c5f7a45ff3@huaweicloud.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Qi Zheng <qi.zheng@linux.dev>
+In-Reply-To: <a7e55445-20ee-4133-8455-b6c5f7a45ff3@huaweicloud.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
 
 
-On 2025/11/20 21:07, Sun Shaojie wrote:
-> Hi, Ridong,
+On 11/20/25 7:56 PM, Chen Ridong wrote:
 > 
-> On Thu, 20 Nov 2025 08:51:30, Chen Ridong wrote:
->> On 2025/11/19 18:57, Sun Shaojie wrote:
->>>  kernel/cgroup/cpuset.c                        | 19 +------------------
->>>  .../selftests/cgroup/test_cpuset_prs.sh       |  7 ++++---
->>>  2 files changed, 5 insertions(+), 21 deletions(-)
->>>
->>> diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
->>> index 52468d2c178a..f6a834335ebf 100644
->>> --- a/kernel/cgroup/cpuset.c
->>> +++ b/kernel/cgroup/cpuset.c
->>> @@ -2411,34 +2411,17 @@ static int cpus_allowed_validate_change(struct cpuset *cs, struct cpuset *trialc
->>>  					struct tmpmasks *tmp)
->>>  {
->>>  	int retval;
->>> -	struct cpuset *parent = parent_cs(cs);
->>>  
->>>  	retval = validate_change(cs, trialcs);
->>>  
->>>  	if ((retval == -EINVAL) && cpuset_v2()) {
->>> -		struct cgroup_subsys_state *css;
->>> -		struct cpuset *cp;
->>> -
->>>  		/*
->>>  		 * The -EINVAL error code indicates that partition sibling
->>>  		 * CPU exclusivity rule has been violated. We still allow
->>>  		 * the cpumask change to proceed while invalidating the
->>> -		 * partition. However, any conflicting sibling partitions
->>> -		 * have to be marked as invalid too.
->>> +		 * partition.
->>>  		 */
->>>  		trialcs->prs_err = PERR_NOTEXCL;
->>> -		rcu_read_lock();
->>> -		cpuset_for_each_child(cp, css, parent) {
->>> -			struct cpumask *xcpus = user_xcpus(trialcs);
->>> -
->>> -			if (is_partition_valid(cp) &&
->>> -			    cpumask_intersects(xcpus, cp->effective_xcpus)) {
->>> -				rcu_read_unlock();
->>> -				update_parent_effective_cpumask(cp, partcmd_invalidate, NULL, tmp);
->>> -				rcu_read_lock();
->>> -			}
->>> -		}
->>> -		rcu_read_unlock();
->>>  		retval = 0;
->>>  	}
->>>  	return retval;
->>
->> If we remove this logic, there is a scenario where the parent (a partition) could end up with empty
->> effective CPUs. This means the corresponding CS will also have empty effective CPUs and thus fail to
->> disable its siblings' partitions.
 > 
-> I have carefully considered the scenario where parent effective CPUs are 
-> empty, which corresponds to the following two cases. (After apply this patch).
+> On 2025/10/28 21:58, Qi Zheng wrote:
+>>   static void reparent_locks(struct mem_cgroup *src, struct mem_cgroup *dst)
+>>   {
+>> +	int nid, nest = 0;
+>> +
+>>   	spin_lock_irq(&objcg_lock);
+>> +	for_each_node(nid) {
+>> +		spin_lock_nested(&mem_cgroup_lruvec(src,
+>> +				 NODE_DATA(nid))->lru_lock, nest++);
+>> +		spin_lock_nested(&mem_cgroup_lruvec(dst,
+>> +				 NODE_DATA(nid))->lru_lock, nest++);
+>> +	}
+>>   }
+>>   
+>>   static void reparent_unlocks(struct mem_cgroup *src, struct mem_cgroup *dst)
+>>   {
+>> +	int nid;
+>> +
+>> +	for_each_node(nid) {
+>> +		spin_unlock(&mem_cgroup_lruvec(dst, NODE_DATA(nid))->lru_lock);
+>> +		spin_unlock(&mem_cgroup_lruvec(src, NODE_DATA(nid))->lru_lock);
+>> +	}
+>>   	spin_unlock_irq(&objcg_lock);
+>>   }
+>>   
 > 
->    root cgroup
->         |
->        A1
->       /  \
->     A2    A3
+> The lock order follows S0→D0→S1→D1→…, and the correct unlock sequence should be Dn→Sn→…→D1→S0
 > 
-> Case 1:
->  Step:
->  #1> echo "0-1" > A1/cpuset.cpus
->  #2> echo "root" > A1/cpuset.cpus.partition
->  #3> echo "0-1" > A2/cpuset.cpus
->  #4> echo "root" > A2/cpuset.cpus.partition
+> However, the current unlock implementation uses D0→S0→D1→S1→…
 > 
->  After step #4, 
-> 
->                 |      A1      |      A2      |      A3      |
->  cpus_allowed   | 0-1          | 0-1          |              |
->  effective_cpus |              | 0-1          |              |
->  prstate        | root         | root         | member       |
-> 
->  After step #4, A3's effective CPUs is empty.
-> 
+> I’m not certain whether this unlock order will cause any issues—could this lead to potential
+> problems like deadlocks or lock state inconsistencies?
 
-That may be a corner case is unexpected.
+As long as the order in which the locks are held is consistent, there 
+should be no deadlock problem?
 
->  #5> echo "0-1" > A3/cpuset.cpus
 > 
-
-If we create subdirectories (e.g., A4, A5, ...) under the A1 cpuset and then configure cpuset.cpus
-for A1 (a common usage scenario), processes can no longer be migrated into these subdirectories (A4,
-A5, ...) afterward. However, prior to your patch, this migration was allowed.
-
->  After step #5,
-> 
->                 |      A1      |      A2      |      A3      |
->  cpus_allowed   | 0-1          | 0-1          | 0-1          |
->  effective_cpus |              | 0-1          |              |
->  prstate        | root         | root         | member       |
-> 
-> This patch affects step #5. After step #5, A3's effective CPUs is also empty.
-> Since A3's effective CPUs can be empty before step #5 (setting cpuset.cpus),
-> it is acceptable for them to remain empty after step #5. Moreover, if A3 is
-> aware that its parent's effective CPUs are empty, it should understand that
-> the CPUs it requests may not be granted.
-> 
-> Case 2:
->  Step:
->  #1> echo "0-1" > A1/cpuset.cpus
->  #2> echo "root" > A1/cpuset.cpus.partition
->  #3> echo "0" > A2/cpuset.cpus
->  #4> echo "root" > A2/cpuset.cpus.partition
->  #5> echo "1" > A3/cpuset.cpus
->  #6> echo "root" > A3/cpuset.cpus.partition
-> 
->  After step #6,
-> 
->                 |      A1      |      A2      |      A3      |
->  cpus_allowed   | 0-1          | 0            | 1            |
->  effective_cpus |              | 0            | 1            |
->  prstate        | root         | root         | root         |
-> 
->  #7> echo "0-1" > A3/cpuset.cpus
-> 
->  After step #7,
-> 
->                 |      A1      |      A2      |      A3      |
->  cpus_allowed   | 0-1          | 0            | 0-1          |
->  effective_cpus | 1            | 0            | 1            |
->  prstate        | root         | root         | root invalid |
-> 
-> This patch affects step #7. After step #7, A3 only affects itself, changing
-> from "root" to "root invalid". However, since its effective CPUs remain 1 
-> both before and after step #7, it doesn't matter even if A2 is not invalidated.
-> 
-> The purpose of this patch is to ensure that modifying cpuset.cpus does not 
-> disable its siblings' partitions.
-> 
-> 
-> Thanks,
-> Sun Shaojie
-
--- 
-Best regards,
-Ridong
 
 
