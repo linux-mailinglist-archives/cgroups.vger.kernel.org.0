@@ -1,235 +1,255 @@
-Return-Path: <cgroups+bounces-12118-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-12119-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
-	by mail.lfdr.de (Postfix) with ESMTPS id 21A81C73558
-	for <lists+cgroups@lfdr.de>; Thu, 20 Nov 2025 10:58:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 7363AC73D28
+	for <lists+cgroups@lfdr.de>; Thu, 20 Nov 2025 12:51:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id B7594354277
-	for <lists+cgroups@lfdr.de>; Thu, 20 Nov 2025 09:55:38 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id CAC9134B7E2
+	for <lists+cgroups@lfdr.de>; Thu, 20 Nov 2025 11:51:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4E17030E846;
-	Thu, 20 Nov 2025 09:55:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 54F6830AAC0;
+	Thu, 20 Nov 2025 11:51:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="mm5s0TDu";
-	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="zYIQFKe+"
+	dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b="mim/8sLH"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
+Received: from mailout2.w1.samsung.com (mailout2.w1.samsung.com [210.118.77.12])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D0452EFD81;
-	Thu, 20 Nov 2025 09:55:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.177.32
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763632528; cv=fail; b=nuAIqeqquR3b29Kobg1XhEwXah/IirS11RZPSFUZ8RTPmDN6HoSX+JCgc9CxpFBJ58qW2V6rIG7Y1eZPRvfNBkdhwWGGDSksSZrFnkIIjO+tHj9+0j9dbGAf5iIZLpXsRyo4xPJYErT58tNDD1WUiCot6Ukib1zNUBhvc+MtWa0=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763632528; c=relaxed/simple;
-	bh=RhQSK8Eatz+WDMz++X2gsKkwjzwocjqBhnqYlRSs3bk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=l6ggbJm/p046thiToiL10fNXUPpyDkkai68/mJFKfYDM2ZE/trSfrtCYBSRbKbyOzK6CF+sCdoPP5HxUxW0IhzT8CR6Hh2V9usz1UFwsQtnG6pq4Mvvu1VjaBAF1NJC5vJXcwFK8i8nixLVmeZPYpWfSKlycn8AdMMZX3zVbNVg=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=mm5s0TDu; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=zYIQFKe+; arc=fail smtp.client-ip=205.220.177.32
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
-Received: from pps.filterd (m0246631.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 5AK9Ae16032582;
-	Thu, 20 Nov 2025 09:54:58 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=cc
-	:content-type:date:from:in-reply-to:message-id:mime-version
-	:references:subject:to; s=corp-2025-04-25; bh=igEWjqpoev/IxPCvLH
-	qhMxcZDsXHU/bd3VQ6KT9IMIE=; b=mm5s0TDupsrzSi3tldZBwvPqrVKS3R91h6
-	rXNsw2oDJAWkUl1JChV4wPUWbrZJwWdHhE6GIivl1bpv/eNkEji6+py0xNP88foK
-	zXHxhoTYCGh2tJRvoNbw/qvecnSZmAN0aLL09/5EcPzNsZUCrPm3s3Ibww23IV2L
-	JzkZrbWfJIGJW0vWSsDKjvWHcVQZjJeUNo0FyBX6joGqgWq1hAQ7Hda9Ymhi4dsl
-	86QiZwKvMqc6hC47rA4b4dyd14yXOGzq1X4Edx+17bYZMCrj3c58xUEZuviXI/QT
-	xIGrAd/bbfCtUeGDVByzxUmWw7HqFxClIXD4OfWohTcM3SiL6HNg==
-Received: from phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta01.appoci.oracle.com [138.1.114.2])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 4aej908uby-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Thu, 20 Nov 2025 09:54:58 +0000 (GMT)
-Received: from pps.filterd (phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-	by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (8.18.1.2/8.18.1.2) with ESMTP id 5AK8vb8H004341;
-	Thu, 20 Nov 2025 09:54:57 GMT
-Received: from sn4pr0501cu005.outbound.protection.outlook.com (mail-southcentralusazon11011029.outbound.protection.outlook.com [40.93.194.29])
-	by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 4aefybk0r8-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Thu, 20 Nov 2025 09:54:57 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=a9vrgjKtVBg/PY4vEGlgv0pg+o7XdLNBunx+oYbJ8VC3HPgh70NsrRv8pV6Edacw07zLSqbYCcugfJvzvz+vH+MM+dOl4h1Msd/Eyx/t3YC2EHC2KudL55OpG/NDN9NRPSrVAzh4mzCxt2CKDhuTOEZoup/c0MpY62fRfwuZIXOSxxiA69qnVzpxguAAOusr38u3CWtCwhLvGxhIzdf5vyUCgLLYNy8dODpwIJQsBIe43HN8OzpisOt4g4pTX8eW/ZzCpxpqGL9CMP/NkQwhm132hhDwE63K7MR/0uEJ1oU4yfV4wvGPzYqRbPOedpaeWgTu2F1Lbdq8OP5zU0+5QA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=igEWjqpoev/IxPCvLHqhMxcZDsXHU/bd3VQ6KT9IMIE=;
- b=M9iEfLF0RN7hgRAdxOjRBYJ6qALTjlKEaIoXslEdfCxepSeJtwuD8VRt7t5BNHJfdgx5iIdri0O5bwKeRCFDhhd9UEEBiOSF1Cc1IeoxHO7P1g3EaGbt1HeUd4x/nxnlRX4lMOK2uO6mfootwPNJ+7OsOAslIkf13NY2YSuVmQ/f4FqnCZbuumxGpXN4eje4tDt2QdWoDwReHQuLee7FG4zwo27jxBsou8hl5bNapiX7lgPUNVNMi0MEmp/dy0O2uvEcku0CUj4imviX9/ahAh+w7OkyVhzFo3HdaCn8xHaULmtCOnTDiSyqn0596wBLNltBAzAxHdCgb7NMXMBWBA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=igEWjqpoev/IxPCvLHqhMxcZDsXHU/bd3VQ6KT9IMIE=;
- b=zYIQFKe+g83awbrX2l+bo0Ic4jOzS16TiCeta8CGniCeY/zB1KqMCQdykHBBLuB4OK8d9h01HpZnKMGYbciqtblradkcGpaUNurUd3fWBkTK7Hp1yU8T9FYcM8+//hPUfJLeqs2Xj0KJ9pFfBqlWeInjWEBhr3fdugDNsdorY8o=
-Received: from DS0PR10MB7341.namprd10.prod.outlook.com (2603:10b6:8:f8::22) by
- PH8PR10MB6291.namprd10.prod.outlook.com (2603:10b6:510:1c2::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9343.10; Thu, 20 Nov
- 2025 09:54:53 +0000
-Received: from DS0PR10MB7341.namprd10.prod.outlook.com
- ([fe80::3d6b:a1ef:44c3:a935]) by DS0PR10MB7341.namprd10.prod.outlook.com
- ([fe80::3d6b:a1ef:44c3:a935%5]) with mapi id 15.20.9343.009; Thu, 20 Nov 2025
- 09:54:53 +0000
-Date: Thu, 20 Nov 2025 18:54:45 +0900
-From: Harry Yoo <harry.yoo@oracle.com>
-To: Qi Zheng <qi.zheng@linux.dev>
-Cc: hannes@cmpxchg.org, hughd@google.com, mhocko@suse.com,
-        roman.gushchin@linux.dev, shakeel.butt@linux.dev,
-        muchun.song@linux.dev, david@redhat.com, lorenzo.stoakes@oracle.com,
-        ziy@nvidia.com, imran.f.khan@oracle.com, kamalesh.babulal@oracle.com,
-        axelrasmussen@google.com, yuanchu@google.com, weixugc@google.com,
-        akpm@linux-foundation.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-        Muchun Song <songmuchun@bytedance.com>,
-        Qi Zheng <zhengqi.arch@bytedance.com>
-Subject: Re: [PATCH v1 20/26] mm: workingset: prevent lruvec release in
- workingset_activation()
-Message-ID: <aR7lZdIHI44eZCFG@hyeyoo>
-References: <cover.1761658310.git.zhengqi.arch@bytedance.com>
- <03a26f7d8723a42c29a24b03ed318a2830faff02.1761658311.git.zhengqi.arch@bytedance.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <03a26f7d8723a42c29a24b03ed318a2830faff02.1761658311.git.zhengqi.arch@bytedance.com>
-X-ClientProxiedBy: SEWP216CA0105.KORP216.PROD.OUTLOOK.COM
- (2603:1096:101:2bb::9) To CH3PR10MB7329.namprd10.prod.outlook.com
- (2603:10b6:610:12c::16)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 97E5421018A
+	for <cgroups@vger.kernel.org>; Thu, 20 Nov 2025 11:51:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=210.118.77.12
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1763639503; cv=none; b=SkYgM3SpXTe9A1xG4OIByku0hQezioGgLp4YlbIas/1fU/B6+2EwdhEnJ81VTChU5MPyYHRVhMevtf31ESw23NgvFpavoGMg3vyTruwomcX+hQOEvJSnlTZeljJQZZIbmote+SULqVql41b+4SdJQyGbuKXCHsJTBBe9Q3TFpds=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1763639503; c=relaxed/simple;
+	bh=Bh7h0gzlYzRBTCD8lACrdU70G6YpSV6Yz6gdjLwU+BI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:From:In-Reply-To:
+	 Content-Type:References; b=P83n5TWBgtmXXZZL/n+nS3EWAD9SktTc1wZoGThy7vWnzAwkWfVXV8xG5Lbwec2WUsLtguQQmNegm6amlqtQB4tg0LsuSfPdCHaPLNBaikcemqNebEbMR8pbSd2P+a3U+SnYaFQz0y96l3htgEwzGwcjSNolEq/W2tFWQ4Plmis=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com; spf=pass smtp.mailfrom=samsung.com; dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b=mim/8sLH; arc=none smtp.client-ip=210.118.77.12
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=samsung.com
+Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
+	by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20251120115133euoutp02e6a1a2fc9e50e03f26ef5e3f7c9abc6e~5tMZZRPyN1111911119euoutp02G
+	for <cgroups@vger.kernel.org>; Thu, 20 Nov 2025 11:51:33 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20251120115133euoutp02e6a1a2fc9e50e03f26ef5e3f7c9abc6e~5tMZZRPyN1111911119euoutp02G
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+	s=mail20170921; t=1763639493;
+	bh=YC8Iv9QeBZhANLAOcz5oFjg5bmmq4/vkYmOCTJfLHDU=;
+	h=Date:Subject:To:Cc:From:In-Reply-To:References:From;
+	b=mim/8sLHH8wBOZcnEGhJKSSzHOut2ecemUFtS94qv3agiqwnPPM8RzXw0dqeTQYBf
+	 xY/Q4aM5FqtJNZJbg7Eck7vGfoY88rD/XR+2d5B8dtOBK+Q0ObR/4ZY9sFXXecNsRf
+	 0yKhV2oOp+9/NG6h03/jCL/7rKuo9dEuqQpUvU6A=
+Received: from eusmtip2.samsung.com (unknown [203.254.199.222]) by
+	eucas1p1.samsung.com (KnoxPortal) with ESMTPA id
+	20251120115132eucas1p160658ba63831911aadd0b0c2f70b7e28~5tMZMcv8j1678016780eucas1p1t;
+	Thu, 20 Nov 2025 11:51:32 +0000 (GMT)
+Received: from [106.210.134.192] (unknown [106.210.134.192]) by
+	eusmtip2.samsung.com (KnoxPortal) with ESMTPA id
+	20251120115132eusmtip26809d2eaf3a7640f90ac60fb957db482~5tMYsTiV20736207362eusmtip2x;
+	Thu, 20 Nov 2025 11:51:32 +0000 (GMT)
+Message-ID: <73356b5f-ab5c-4e9e-b57f-b80981c35998@samsung.com>
+Date: Thu, 20 Nov 2025 12:51:31 +0100
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DS0PR10MB7341:EE_|PH8PR10MB6291:EE_
-X-MS-Office365-Filtering-Correlation-Id: 496dc0cf-146a-4f1b-daee-08de281ada54
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|1800799024|376014|7416014|366016;
-X-Microsoft-Antispam-Message-Info:
-	=?us-ascii?Q?7zrAJVecEeT9UTjhrRXfwCicOVlfzIkUc55gTQkI2dbOAMQM2EevmVl7p1DG?=
- =?us-ascii?Q?r15ALBZsGsWAdDELx8YPrRiJmUsdtUQagKK8/8sK1fRaG6nU97JE+gaDaDqk?=
- =?us-ascii?Q?t4rvhdxWd8jPgp758LrNFiHJ5mqucAJY5PnbnkqRmkrngcPTLKxnB45+s35o?=
- =?us-ascii?Q?fv6fIJz6s5rMZ4sNh7jIFmjAV099UmjbMEI/tR0/JtWGtOuxuZTYAkei9TXG?=
- =?us-ascii?Q?1TXS7HHv/GYXHrHHSbrfv+Vu1azLQpyvWVPlhXji99fGUT0x67BRmKtqDH/j?=
- =?us-ascii?Q?ogUU87HiFPIJ6tbDLmSTX9upoR6KYRFpqHamnJzM54D4ZPTMuFcL995g2IKA?=
- =?us-ascii?Q?PPWo0fGWYtEu6iD0Jsa4QzOtWQwrYod2FzlT9Rd4WUAe7ifGxE/mmHTnGTFF?=
- =?us-ascii?Q?KtOa9zIPWbymc0HW5SEUX1TPxyO1nmbWG1Jq26GqvIM1IjrQ/YQMgJdRN0B0?=
- =?us-ascii?Q?xLc41OO/+RfHXtefviquYMC3uwHNlt2oxUdr/TvKieFOXhUlgmptYR1vNSbd?=
- =?us-ascii?Q?3OSvT1kaR6YrvtIiPzQ/l6v8IC6LqGA8/t4YgIjiKYn0fW+jZ4pcASEPUSUx?=
- =?us-ascii?Q?qFMMisnlHEau1f2c5GrbNvR4IRKqLPMPEWcOWsVshi8xpFv61SC+PsNfXT6x?=
- =?us-ascii?Q?zka5tbuKOVSK9Tdbtk7ZgRErb9fm8T1kdObDlklDPkPAlxvTEhyROaHGz/5l?=
- =?us-ascii?Q?Y8uUuXAwfYwm4utZmEQT11sPqyHsi3vT51dh5qn6KpZL8s/hHwgxuEPjxdLL?=
- =?us-ascii?Q?eUHgBA6v0pVcUOVUn/gkytQ0AI8hOKY2S+ROqArR7hfiu7Ry2hwglKNMhrRk?=
- =?us-ascii?Q?z062YHZqZH8zZcYnRYHlYZdYh+m0doWS6pgW1TBh+LNh977PiIsdeIZ3wLQA?=
- =?us-ascii?Q?J40gwTe1YWR3va3FK0wd+VEmbRO7jX0+P8KNEmvodwYcIM819nr1a2SHUsCc?=
- =?us-ascii?Q?7DN10zmGvlilQ4sHEk3koZHcwIYMdO4FkS4DjQ/oB7SboWlhwWQtu4ET4Y6F?=
- =?us-ascii?Q?wu2XKOt4xx3pczmJf7s7jkCC+/k6ZWDQt7xoxd1Zb2Yj3CnVIDqP8HuB7AeC?=
- =?us-ascii?Q?GfAGqy2QnJz91aONE4KR3yut4+EfDa5AQWEpRzR75AkctjvsxaK3/vSr30ql?=
- =?us-ascii?Q?t1uqExX0acr6fw4J/fvLVjn79yCdfafm92A2ZaqYHTZUJTEU4CGOSN+sJlzi?=
- =?us-ascii?Q?KP5Iwv/qvEOSa/yGY6rQVeN7iFGWJqnoFeMPsEuJt4tC9fee6qR9wBfH9EoL?=
- =?us-ascii?Q?GteXRkhCfYleCXhFEhn4TbJ/Fi+Xp11g3EmQOgjNfvOKv0CVxJgiA4rkluP5?=
- =?us-ascii?Q?OcZtzASniOHOlI2LCekJMBEjIi3HywWSFYyX+QziwnbZr8FOvcVDyMTOePzK?=
- =?us-ascii?Q?fYL86UDR0+VMqL5DFD2O+1gSUSO/b1euIFihek2dRUYIHy0nDCf43im+DN5M?=
- =?us-ascii?Q?wpzarnIpsjwbLNk4P2xMU3voB+B54+I1?=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS0PR10MB7341.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(376014)(7416014)(366016);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?r6JrmoWnTtLW7gfivLrBfShJoEnucXfsVPUTS4FZ6E0zv3voMyVTNLqUC8lh?=
- =?us-ascii?Q?gB9lkG0j5leUgunRWcXc4s+ULp9p/QqnHNhg9DuP1jTLvXck976lRUt4aDAz?=
- =?us-ascii?Q?2G1jCFSZKWUlcf+XjDUIfoz8gonIIN1zfxlf4RDeVmEfciGOQuVNWc7ykaNb?=
- =?us-ascii?Q?kjLWLHnOiukgMnYLZn97CT2pHMOgQRAt0ZCsKl33t2oCp93nluTXiXBxRQhz?=
- =?us-ascii?Q?0ZkpgJuzfYh9VnfVV6uePlYIGOT1cTkNOxAf7eOPDe9EVAuAKj4hmtXWuqFj?=
- =?us-ascii?Q?yo6YddsHrCz76fTbKbhP/J5Z7WSGS1NQdyIe1FHIlB1wEt2+O1kwsEqqn/oC?=
- =?us-ascii?Q?FzRI5QQw5sgUBIXbCkmxfpCnQUHi7QJ1HrlcNMZdkFIKNTPVMaKPXBHz9aeB?=
- =?us-ascii?Q?HAqE3VJ1QrzWdnQY5Swt8QFnQb7zMt0s/nx2FEPpH9jnj6Lk0QniGJxngwK4?=
- =?us-ascii?Q?rAYqvxGIdeBFkX0M9D0XksekcmjvqGLLbzliXoHctG/gR7qQjc/bnW3+lFid?=
- =?us-ascii?Q?lLQQL39LEV8FpVs09YApSijqmoiXT+c8DpHfGx5+MPMPgoQ3IJ4eB68BrV4M?=
- =?us-ascii?Q?jSOhiJquqypk46aPyenuFBi/3/XsrqhySCb+4GsSUTP3phA7pk2Q6Nm0Bp02?=
- =?us-ascii?Q?DTMBAf0koM0Aqas3fWRpa3N1fT7PHFFCtkg68X3nJeZGXr485g042NgkUAa6?=
- =?us-ascii?Q?/UnAhqehGSltrD9Pm4f3RzwioGPS+v8X8u69V2GOGDCOLqsTColzd3dm2VOq?=
- =?us-ascii?Q?rJ6R+DFRDn/Q3FzQ62rxZ4qAxmzkBB9tfv5ovHbLex4dgwEsxwl1A6gsWrgT?=
- =?us-ascii?Q?tHA6BAl2buqPHGeMQTn6i8guhFlMeKJ16Et3WOaOp8NcFhEP9yLxSwXv0kWP?=
- =?us-ascii?Q?gXfGtmQIAMy7B7VaHy4kyrI4JbvCGQDIvKZ0xp95ByjiANIpXBMMyu2NDRVJ?=
- =?us-ascii?Q?KoZYqXTgk59I2fncwSycx11QbxQpSXj7Ox+QVScCy5LKxYGBdYHlXferNhEq?=
- =?us-ascii?Q?OExLg6qRXiRBVYbDvnrF5wFbvlTys7VJzDPKiKVSIZk836aoTUozFSLZm0yT?=
- =?us-ascii?Q?ikAQNUHwjQWrNadL86sSrPh/JQeWJmPxTWCH+8aS7piAIBWAUHxPw8aRoVCy?=
- =?us-ascii?Q?FAMpWVQTFQQxcY28NBtGrzXdPX+Mb2h/g5RdP5b4n4/XIQSQ3wXUCIMrLNrA?=
- =?us-ascii?Q?GLR1SbyCjX3/dHR86ucnVGB8q0zVB7VQX+9wsUvSsfF3pEw9tTKL3tuejl3F?=
- =?us-ascii?Q?U59gZ+Qr9E1F4azPuVTf2bMjU4ESdBYatkt0BcDkTx/8URKqQ0JqerZ3wqvr?=
- =?us-ascii?Q?Xn8Ftxn51GHm7qOPzuih7CX3nJ8uB68+gcHTToDxyTjnH5lXksJT6ZHe1NFx?=
- =?us-ascii?Q?S5iHC3agmWdDnone2u64ASPpJWJh0AGkK3E/fDgHXQlxkZukxy26MBOoiZ9q?=
- =?us-ascii?Q?UvsKEEJX/Iat9yIm8Ey4xP4n+FgluCCtGcgZ/1Qa8IQwsgYRGawL1P8fOvdm?=
- =?us-ascii?Q?6RDvUS4zbU+zWDQwtXMaMAiMRaUD2WN/wGkovS/lC1+HwDXoIFS6qo7eI5jJ?=
- =?us-ascii?Q?CAHp1gjiERq7F90+fMKgZLf0L9fQUZdYNOuojxWu?=
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0:
-	FKblBU4RLEoC/qPQ53hFwXdaLTZLLA4CuVix7Dss1hW4sH5jdEHwP4ZpiRHQ0SX7MclV+DYlknR4sPKxl9eclF2vq9+jgnQ55vKjrkOMCRItSIJXoGw2NnubdX7tiaBDHJ8jagd7UIqr7+MbdChYZZN2ZLcwe26TGswn1zjwm9oYeuCWjHCyMNGVNavQjO2DhnwBqOFn0F8y70Ca55N5KOkshZ9jYtAKbUpTbQZ+T8iN2nELDEdOVU0ZcSsUZ0ye39LZux5AaYrMY6mbCVTzM2tD3m0wqfcfa7C7+xX3xuQDgECimV9Ho4g1B5gxu7x+l3SC9Cin33rDblokjIKim9N07dlrAJQWsTmekCZuwlPNripJq7vbCsZwLpAfJaKzOgZboc/FbSlSBMBSxaLH+GbfsaRwX82/94fZOyxAq19T8omWfeQk3K5OZkc6YUCyqdVCKchhJUkfS+1DNn8Xnf06kRkJjpt6/sFFLwNwfL7OC/TjGXx+9I0xl+UYW69nfs2/9PZykb76TrLoLHlkCE1LIaxP/Y2p5C0PwuEggeN4O8qoxFWhGdgMo0XWN1uuBLTccxto+tR9Mr4V74+m3ffk0xUoXU93LSrsaKcZz9A=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 496dc0cf-146a-4f1b-daee-08de281ada54
-X-MS-Exchange-CrossTenant-AuthSource: CH3PR10MB7329.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Nov 2025 09:54:53.3051
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 40fCyhCos4lnUpGdqsQXS9YY1q39EqwRvjiPWDK/wuWfwFnlnvf2l1QSb+aaLvDEgw/XvNDgmgpeWDR6vsBxwQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH8PR10MB6291
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1121,Hydra:6.1.9,FMLib:17.12.100.49
- definitions=2025-11-20_03,2025-11-18_02,2025-10-01_01
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 mlxlogscore=978
- suspectscore=0 malwarescore=0 mlxscore=0 bulkscore=0 phishscore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2510240000 definitions=main-2511200060
-X-Authority-Analysis: v=2.4 cv=OMAqHCaB c=1 sm=1 tr=0 ts=691ee572 cx=c_pps
- a=XiAAW1AwiKB2Y8Wsi+sD2Q==:117 a=XiAAW1AwiKB2Y8Wsi+sD2Q==:17
- a=6eWqkTHjU83fiwn7nKZWdM+Sl24=:19 a=z/mQ4Ysz8XfWz/Q5cLBRGdckG28=:19
- a=lCpzRmAYbLLaTzLvsPZ7Mbvzbb8=:19 a=xqWC_Br6kY4A:10 a=kj9zAlcOel0A:10
- a=6UeiqGixMTsA:10 a=GoEa3M9JfhUA:10 a=VkNPw1HP01LnGYTKEx00:22
- a=968KyxNXAAAA:8 a=yPCof4ZbAAAA:8 a=W9BqLgzXg1EqYeH4nf4A:9 a=CjuIK1q_8ugA:10
-X-Proofpoint-ORIG-GUID: yCyRFCzpwjF5WlmwBEE0XsvuP2S-HnAU
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjUxMTE1MDAzMSBTYWx0ZWRfXybnc4PlC6wLb
- uFMJKtQxOoyoM1tYX/vY8NsZj8pymI72i43XybTNisoFPdG7p2m1qzZoqozbQEGiU/tEflEpZDt
- c9nGKPOHi+asHtqVwcOSZBnegUh8cJrOiij1Ni371nOiji9w+JWbrD/yc7t+F9WXTcy8p+hzx52
- Kgc+jGsrceDQRkTqeCsrMj69SJdstVlatMYCR6XT62sknSJjqQLAvI6BSLCTWRWspI75ytDPM1y
- T935uK+BR+KIq2PPk2C7AaTqpq8AswBWnSgKDhsa16lPY/XY+gD0MyCZEOOYfuql4gL5bqGWDgw
- 5ccVHeoZD2thm2uc8XWz7jnODNpoDYvV/NPsOc1DtYfHDX3AanejUUNwQN6gGJhxhBEjRaiWTfc
- oS0OzOg5b65A1IZvi87mMII1XNiO8g==
-X-Proofpoint-GUID: yCyRFCzpwjF5WlmwBEE0XsvuP2S-HnAU
+User-Agent: Betterbird (Windows)
+Subject: Re: [PATCH 1/2] genirq: Fix IRQ threads affinity VS cpuset isolated
+ partitions
+To: Frederic Weisbecker <frederic@kernel.org>, Thomas Gleixner
+	<tglx@linutronix.de>
+Cc: LKML <linux-kernel@vger.kernel.org>, Marco Crivellari
+	<marco.crivellari@suse.com>, Waiman Long <llong@redhat.com>,
+	cgroups@vger.kernel.org
+Content-Language: en-US
+From: Marek Szyprowski <m.szyprowski@samsung.com>
+In-Reply-To: <20251118143052.68778-2-frederic@kernel.org>
+Content-Transfer-Encoding: 8bit
+X-CMS-MailID: 20251120115132eucas1p160658ba63831911aadd0b0c2f70b7e28
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+X-RootMTR: 20251120115132eucas1p160658ba63831911aadd0b0c2f70b7e28
+X-EPHeader: CA
+X-CMS-RootMailID: 20251120115132eucas1p160658ba63831911aadd0b0c2f70b7e28
+References: <20251118143052.68778-1-frederic@kernel.org>
+	<20251118143052.68778-2-frederic@kernel.org>
+	<CGME20251120115132eucas1p160658ba63831911aadd0b0c2f70b7e28@eucas1p1.samsung.com>
 
-On Tue, Oct 28, 2025 at 09:58:33PM +0800, Qi Zheng wrote:
-> From: Muchun Song <songmuchun@bytedance.com>
-> 
-> In the near future, a folio will no longer pin its corresponding
-> memory cgroup. So an lruvec returned by folio_lruvec() could be
-> released without the rcu read lock or a reference to its memory
-> cgroup.
-> 
-> In the current patch, the rcu read lock is employed to safeguard
-> against the release of the lruvec in workingset_activation().
-> 
-> This serves as a preparatory measure for the reparenting of the
-> LRU pages.
-> 
-> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-> Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
+On 18.11.2025 15:30, Frederic Weisbecker wrote:
+> When a cpuset isolated partition is created / updated or destroyed,
+> the IRQ threads are affine blindly to all the non-isolated CPUs. And
+> this happens without taking into account the IRQ thread initial
+> affinity that becomes ignored.
+>
+> For example in a system with 8 CPUs, if an IRQ and its kthread are
+> initially affine to CPU 5, creating an isolated partition with only
+> CPU 2 inside will eventually end up affining the IRQ kthread to all
+> CPUs but CPU 2 (that is CPUs 0,1,3-7), losing the kthread preference for
+> CPU 5.
+>
+> Besides the blind re-affinity, this doesn't take care of the actual
+> low level interrupt which isn't migrated. As of today the only way to
+> isolate non managed interrupts, along with their kthreads, is to
+> overwrite their affinity separately, for example through /proc/irq/
+>
+> To avoid doing that manually, future development should focus on
+> updating the IRQs affinity whenever cpuset isolated partitions are
+> updated.
+>
+> In the meantime, cpuset shouldn't fiddle with IRQ threads directly.
+> To prevent from that, set the PF_NO_SETAFFINITY flag to them.
+>
+> Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
+
+This patch landed in today's linux-next as commit 844dcacab287 ("genirq: 
+Fix interrupt threads affinity vs. cpuset isolated partitions"). In my 
+tests I found that it triggers a warnings on some of my test systems. 
+This is example of such warning:
+
+------------[ cut here ]------------
+WARNING: CPU: 0 PID: 1 at kernel/kthread.c:599 kthread_bind_mask+0x2c/0x84
+Modules linked in:
+CPU: 0 UID: 0 PID: 1 Comm: swapper/0 Not tainted 
+6.18.0-rc1-00031-g844dcacab287 #16177 PREEMPT
+Hardware name: Samsung Exynos (Flattened Device Tree)
+Call trace:
+  unwind_backtrace from show_stack+0x10/0x14
+  show_stack from dump_stack_lvl+0x68/0x88
+  dump_stack_lvl from __warn+0x80/0x1d0
+  __warn from warn_slowpath_fmt+0x1b0/0x1bc
+  warn_slowpath_fmt from kthread_bind_mask+0x2c/0x84
+  kthread_bind_mask from wake_up_and_wait_for_irq_thread_ready+0x3c/0xd4
+  wake_up_and_wait_for_irq_thread_ready from __setup_irq+0x3e8/0x894
+  __setup_irq from request_threaded_irq+0xe4/0x15c
+  request_threaded_irq from devm_request_threaded_irq+0x78/0x104
+  devm_request_threaded_irq from max8997_irq_init+0x15c/0x24c
+  max8997_irq_init from max8997_i2c_probe+0x118/0x208
+  max8997_i2c_probe from i2c_device_probe+0x1bc/0x358
+  i2c_device_probe from really_probe+0xe0/0x3d8
+  really_probe from __driver_probe_device+0x9c/0x1e0
+  __driver_probe_device from driver_probe_device+0x30/0xc0
+  driver_probe_device from __device_attach_driver+0xa8/0x120
+  __device_attach_driver from bus_for_each_drv+0x84/0xdc
+  bus_for_each_drv from __device_attach+0xb0/0x20c
+  __device_attach from bus_probe_device+0x8c/0x90
+  bus_probe_device from device_add+0x5b0/0x7f0
+  device_add from i2c_new_client_device+0x170/0x360
+  i2c_new_client_device from of_i2c_register_device+0x80/0xc8
+  of_i2c_register_device from of_i2c_register_devices+0x84/0xf8
+  of_i2c_register_devices from i2c_register_adapter+0x240/0x7b0
+  i2c_register_adapter from s3c24xx_i2c_probe+0x2a0/0x570
+  s3c24xx_i2c_probe from platform_probe+0x5c/0x98
+  platform_probe from really_probe+0xe0/0x3d8
+  really_probe from __driver_probe_device+0x9c/0x1e0
+  __driver_probe_device from driver_probe_device+0x30/0xc0
+  driver_probe_device from __driver_attach+0x124/0x1d4
+  __driver_attach from bus_for_each_dev+0x70/0xc4
+  bus_for_each_dev from bus_add_driver+0xe0/0x220
+  bus_add_driver from driver_register+0x7c/0x118
+  driver_register from do_one_initcall+0x70/0x328
+  do_one_initcall from kernel_init_freeable+0x1c0/0x234
+  kernel_init_freeable from kernel_init+0x1c/0x12c
+  kernel_init from ret_from_fork+0x14/0x28
+Exception stack(0xf082dfb0 to 0xf082dff8)
+...
+irq event stamp: 78529
+hardirqs last  enabled at (78805): [<c01bc4f8>] __up_console_sem+0x50/0x60
+hardirqs last disabled at (78816): [<c01bc4e4>] __up_console_sem+0x3c/0x60
+softirqs last  enabled at (78784): [<c013bb14>] handle_softirqs+0x328/0x520
+softirqs last disabled at (78779): [<c013beb8>] __irq_exit_rcu+0x144/0x1f0
+---[ end trace 0000000000000000 ]---
+
+Reverting $subject on top of linux-next fixes this issue. Let me know 
+how I can help debugging it.
+
+
 > ---
+>   kernel/irq/manage.c | 26 +++++++++++++-------------
+>   1 file changed, 13 insertions(+), 13 deletions(-)
+>
+> diff --git a/kernel/irq/manage.c b/kernel/irq/manage.c
+> index 400856abf672..76e2cbe21d1f 100644
+> --- a/kernel/irq/manage.c
+> +++ b/kernel/irq/manage.c
+> @@ -176,7 +176,7 @@ bool irq_can_set_affinity_usr(unsigned int irq)
+>   }
+>   
+>   /**
+> - * irq_set_thread_affinity - Notify irq threads to adjust affinity
+> + * irq_thread_update_affinity - Notify irq threads to adjust affinity
+>    * @desc:	irq descriptor which has affinity changed
+>    *
+>    * Just set IRQTF_AFFINITY and delegate the affinity setting to the
+> @@ -184,7 +184,7 @@ bool irq_can_set_affinity_usr(unsigned int irq)
+>    * we hold desc->lock and this code can be called from hard interrupt
+>    * context.
+>    */
+> -static void irq_set_thread_affinity(struct irq_desc *desc)
+> +static void irq_thread_update_affinity(struct irq_desc *desc)
+>   {
+>   	struct irqaction *action;
+>   
+> @@ -283,7 +283,7 @@ int irq_do_set_affinity(struct irq_data *data, const struct cpumask *mask,
+>   		fallthrough;
+>   	case IRQ_SET_MASK_OK_NOCOPY:
+>   		irq_validate_effective_affinity(data);
+> -		irq_set_thread_affinity(desc);
+> +		irq_thread_update_affinity(desc);
+>   		ret = 0;
+>   	}
+>   
+> @@ -1035,8 +1035,16 @@ static void irq_thread_check_affinity(struct irq_desc *desc, struct irqaction *a
+>   		set_cpus_allowed_ptr(current, mask);
+>   	free_cpumask_var(mask);
+>   }
+> +
+> +static inline void irq_thread_set_affinity(struct task_struct *t,
+> +					   struct irq_desc *desc)
+> +{
+> +	kthread_bind_mask(t, irq_data_get_effective_affinity_mask(&desc->irq_data));
+> +}
+>   #else
+>   static inline void irq_thread_check_affinity(struct irq_desc *desc, struct irqaction *action) { }
+> +static inline void irq_thread_set_affinity(struct task_struct *t,
+> +					   struct irq_desc *desc) { }
+>   #endif
+>   
+>   static int irq_wait_for_interrupt(struct irq_desc *desc,
+> @@ -1221,6 +1229,7 @@ static void wake_up_and_wait_for_irq_thread_ready(struct irq_desc *desc,
+>   	if (!action || !action->thread)
+>   		return;
+>   
+> +	irq_thread_set_affinity(action->thread, desc);
+>   	wake_up_process(action->thread);
+>   	wait_event(desc->wait_for_threads,
+>   		   test_bit(IRQTF_READY, &action->thread_flags));
+> @@ -1405,16 +1414,7 @@ setup_irq_thread(struct irqaction *new, unsigned int irq, bool secondary)
+>   	 * references an already freed task_struct.
+>   	 */
+>   	new->thread = get_task_struct(t);
+> -	/*
+> -	 * Tell the thread to set its affinity. This is
+> -	 * important for shared interrupt handlers as we do
+> -	 * not invoke setup_affinity() for the secondary
+> -	 * handlers as everything is already set up. Even for
+> -	 * interrupts marked with IRQF_NO_BALANCE this is
+> -	 * correct as we want the thread to move to the cpu(s)
+> -	 * on which the requesting code placed the interrupt.
+> -	 */
+> -	set_bit(IRQTF_AFFINITY, &new->thread_flags);
+> +
+>   	return 0;
+>   }
+>   
 
-Looks good to me,
-Reviewed-by: Harry Yoo <harry.yoo@oracle.com>
-
+Best regards
 -- 
-Cheers,
-Harry / Hyeonggon
+Marek Szyprowski, PhD
+Samsung R&D Institute Poland
+
 
