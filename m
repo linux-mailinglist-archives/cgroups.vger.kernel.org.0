@@ -1,144 +1,225 @@
-Return-Path: <cgroups+bounces-12131-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-12132-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id E1774C74664
-	for <lists+cgroups@lfdr.de>; Thu, 20 Nov 2025 15:00:44 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4CB25C745E6
+	for <lists+cgroups@lfdr.de>; Thu, 20 Nov 2025 14:53:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 8F5FA4FBB20
-	for <lists+cgroups@lfdr.de>; Thu, 20 Nov 2025 13:46:20 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id E4F7C4FBDC1
+	for <lists+cgroups@lfdr.de>; Thu, 20 Nov 2025 13:46:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC04D345CAC;
-	Thu, 20 Nov 2025 13:45:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="iiA7pQiu";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="frpsbROp"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B02B73469E7;
+	Thu, 20 Nov 2025 13:45:23 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D77D2345740;
-	Thu, 20 Nov 2025 13:45:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9A05B342C99;
+	Thu, 20 Nov 2025 13:45:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763646306; cv=none; b=Jo8ixUH8YwQjGvmCle36cwUlbABh772oABcN0e8p/PLiNU0NRArl8RnpU8ZEA84y3YFWhtSzxSKi1IJy5PZEZkbe0WDMkVMgAFc9+CSCTj+saIQz2dWZs5h67XS87d+3nETnMCPZq0FXwWZvpig8kBjIag3brcF7QnWJKUh9+k8=
+	t=1763646323; cv=none; b=cVNSqejl8B61tMCZIQslWH0HKHZoO+PkOWo+o7QZGApP4IaO8Yq9CwvRAFSvfTBB9wmGYwiyHF6zjVNBf+pL8VivuqcUz2qcGBM84gV3EUGGesLiLrMOCu0+0oHTJXLPMhQXXpGQ8P0Yk9Xq5vlI3WhEUweXqlRONque/kSQdWw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763646306; c=relaxed/simple;
-	bh=oUAi5krh6uTcg34CzazQImLZetne4f0l6tu/fhPst10=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=uJffwehsgczMgG89LY1B4jT4h0uDoWo1TNJgE9MNVlPU25oMzg5wX6WR0BZ1b3bJbg9uqwkSDcwQkyM/irN6s91oIDOVPUbXvqhwiYFQCaerWr4/JKZ0A6u6DX98O3KEdDVcdgYKdCc9//obcxC64UQV+aV9b1MJlBeUKRUSLIk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=iiA7pQiu; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=frpsbROp; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-From: Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1763646302;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=iF8rPSfDYi/YjnXdlmkH8+8vLUjtk9rsKhMZm+awUCo=;
-	b=iiA7pQiudS+4jRrwjC0IfAKk4g4WOwyrjsfWzcOQG9nALDdKP5U4M1uAGigQx9OBzzDKmI
-	2tp65VY8JDupPUVD80Tdg2ZkIrYi+05wxYZIFsYwXPELInnOeZl7MecgJobdtXozC2Fe+g
-	doK/ps7dLvb3X1At2RuC4mLM+mg+dGvkNHfOgCxCkb/NBINMI/EyKStSe4wpvBFQWtfbVL
-	TyUMV8N2pRhDQDnE3RtIDXlvKQU0upOepEf1f5d6d70hs6g4qrbeYYzmR7ltZx0gbF5bL2
-	whJClURiXmzoSyqS4a3AEJwgShPjVAALfF+7Pv14vzjAxx842bUsLobwfaatxw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1763646302;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=iF8rPSfDYi/YjnXdlmkH8+8vLUjtk9rsKhMZm+awUCo=;
-	b=frpsbROpKgPYLKcaq9oPqUV/WvAA7CmzOTtItvzKC2Xp94c7NIDeImvrytTvpmXGfmSVtk
-	rW31UM7PuPwn3hBw==
-To: Marek Szyprowski <m.szyprowski@samsung.com>, Frederic Weisbecker
- <frederic@kernel.org>
-Cc: LKML <linux-kernel@vger.kernel.org>, Marco Crivellari
- <marco.crivellari@suse.com>, Waiman Long <llong@redhat.com>,
- cgroups@vger.kernel.org
-Subject: Re: [PATCH 1/2] genirq: Fix IRQ threads affinity VS cpuset isolated
- partitions
-In-Reply-To: <73356b5f-ab5c-4e9e-b57f-b80981c35998@samsung.com>
-References: <20251118143052.68778-1-frederic@kernel.org>
- <20251118143052.68778-2-frederic@kernel.org>
- <CGME20251120115132eucas1p160658ba63831911aadd0b0c2f70b7e28@eucas1p1.samsung.com>
- <73356b5f-ab5c-4e9e-b57f-b80981c35998@samsung.com>
-Date: Thu, 20 Nov 2025 14:45:01 +0100
-Message-ID: <87y0o0keci.ffs@tglx>
+	s=arc-20240116; t=1763646323; c=relaxed/simple;
+	bh=+jiC7CZHOFjw2Ag8OX/h9tCN/ZPLE0V2bCBBgmCAam0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=RCHGHCU4DGCpfnwDm3ycIdQWdb8mklmYMWSQZSEBPQXc/OH1jk4rNM9RuD+QlMviy4GlCd34HCwYRAjqZevTzDPYtMJVCwpEBI2lrwJA+zXwt1vID9dUMCxXUGDVDZ7lWYgAyOvi0ri6L29pDCG0AYl6ZvA2LjZn/1CuVutAgtw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.216])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTPS id 4dC02X0wTBzYQtkt;
+	Thu, 20 Nov 2025 21:44:36 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.75])
+	by mail.maildlp.com (Postfix) with ESMTP id 09D861A1A0B;
+	Thu, 20 Nov 2025 21:45:18 +0800 (CST)
+Received: from [10.67.111.176] (unknown [10.67.111.176])
+	by APP2 (Coremail) with SMTP id Syh0CgDHbnVsGx9pmvekBQ--.9802S2;
+	Thu, 20 Nov 2025 21:45:17 +0800 (CST)
+Message-ID: <8d38b4ea-6b55-4319-b330-2dc33ac5cd77@huaweicloud.com>
+Date: Thu, 20 Nov 2025 21:45:16 +0800
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v5] cpuset: Avoid invalidating sibling partitions on
+ cpuset.cpus conflict.
+To: Sun Shaojie <sunshaojie@kylinos.cn>
+Cc: cgroups@vger.kernel.org, hannes@cmpxchg.org,
+ linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+ llong@redhat.com, mkoutny@suse.com, shuah@kernel.org, tj@kernel.org
+References: <5e690981-2921-4b9f-9771-8afaa15018c8@huaweicloud.com>
+ <20251120130704.1554368-1-sunshaojie@kylinos.cn>
+Content-Language: en-US
+From: Chen Ridong <chenridong@huaweicloud.com>
+In-Reply-To: <20251120130704.1554368-1-sunshaojie@kylinos.cn>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID:Syh0CgDHbnVsGx9pmvekBQ--.9802S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxCw4ruFWUXFyxWryDZry7ZFb_yoWrCr15pF
+	yxKa17Xw4kXr15C3srX3Wvgryav3ZrZF47Arn8Jw1fAF9IyFnFv3WqkrZIvr15Ar9xGr4U
+	ZayjkrZxZF9rAaDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUyCb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxkF7I0En4kS14v26r1q6r43MxAIw28IcxkI7VAK
+	I48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7
+	xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xII
+	jxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw2
+	0EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x02
+	67AKxVW8Jr0_Cr1UYxBIdaVFxhVjvjDU0xZFpf9x07UAwIDUUUUU=
+X-CM-SenderInfo: hfkh02xlgr0w46kxt4xhlfz01xgou0bp/
 
-On Thu, Nov 20 2025 at 12:51, Marek Szyprowski wrote:
-> On 18.11.2025 15:30, Frederic Weisbecker wrote:
->> In the meantime, cpuset shouldn't fiddle with IRQ threads directly.
->> To prevent from that, set the PF_NO_SETAFFINITY flag to them.
+
+
+On 2025/11/20 21:07, Sun Shaojie wrote:
+> Hi, Ridong,
+> 
+> On Thu, 20 Nov 2025 08:51:30, Chen Ridong wrote:
+>> On 2025/11/19 18:57, Sun Shaojie wrote:
+>>>  kernel/cgroup/cpuset.c                        | 19 +------------------
+>>>  .../selftests/cgroup/test_cpuset_prs.sh       |  7 ++++---
+>>>  2 files changed, 5 insertions(+), 21 deletions(-)
+>>>
+>>> diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
+>>> index 52468d2c178a..f6a834335ebf 100644
+>>> --- a/kernel/cgroup/cpuset.c
+>>> +++ b/kernel/cgroup/cpuset.c
+>>> @@ -2411,34 +2411,17 @@ static int cpus_allowed_validate_change(struct cpuset *cs, struct cpuset *trialc
+>>>  					struct tmpmasks *tmp)
+>>>  {
+>>>  	int retval;
+>>> -	struct cpuset *parent = parent_cs(cs);
+>>>  
+>>>  	retval = validate_change(cs, trialcs);
+>>>  
+>>>  	if ((retval == -EINVAL) && cpuset_v2()) {
+>>> -		struct cgroup_subsys_state *css;
+>>> -		struct cpuset *cp;
+>>> -
+>>>  		/*
+>>>  		 * The -EINVAL error code indicates that partition sibling
+>>>  		 * CPU exclusivity rule has been violated. We still allow
+>>>  		 * the cpumask change to proceed while invalidating the
+>>> -		 * partition. However, any conflicting sibling partitions
+>>> -		 * have to be marked as invalid too.
+>>> +		 * partition.
+>>>  		 */
+>>>  		trialcs->prs_err = PERR_NOTEXCL;
+>>> -		rcu_read_lock();
+>>> -		cpuset_for_each_child(cp, css, parent) {
+>>> -			struct cpumask *xcpus = user_xcpus(trialcs);
+>>> -
+>>> -			if (is_partition_valid(cp) &&
+>>> -			    cpumask_intersects(xcpus, cp->effective_xcpus)) {
+>>> -				rcu_read_unlock();
+>>> -				update_parent_effective_cpumask(cp, partcmd_invalidate, NULL, tmp);
+>>> -				rcu_read_lock();
+>>> -			}
+>>> -		}
+>>> -		rcu_read_unlock();
+>>>  		retval = 0;
+>>>  	}
+>>>  	return retval;
 >>
->> Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
->
-> This patch landed in today's linux-next as commit 844dcacab287 ("genirq:=
-=20
-> Fix interrupt threads affinity vs. cpuset isolated partitions"). In my=20
-> tests I found that it triggers a warnings on some of my test systems.=20
-> This is example of such warning:
->
-> ------------[ cut here ]------------
-> WARNING: CPU: 0 PID: 1 at kernel/kthread.c:599 kthread_bind_mask+0x2c/0x84
-> Modules linked in:
-> CPU: 0 UID: 0 PID: 1 Comm: swapper/0 Not tainted=20
-> 6.18.0-rc1-00031-g844dcacab287 #16177 PREEMPT
-> Hardware name: Samsung Exynos (Flattened Device Tree)
-> Call trace:
->  =C2=A0unwind_backtrace from show_stack+0x10/0x14
->  =C2=A0show_stack from dump_stack_lvl+0x68/0x88
->  =C2=A0dump_stack_lvl from __warn+0x80/0x1d0
->  =C2=A0__warn from warn_slowpath_fmt+0x1b0/0x1bc
->  =C2=A0warn_slowpath_fmt from kthread_bind_mask+0x2c/0x84
->  =C2=A0kthread_bind_mask from wake_up_and_wait_for_irq_thread_ready+0x3c/=
-0xd4
->  =C2=A0wake_up_and_wait_for_irq_thread_ready from __setup_irq+0x3e8/0x894
+>> If we remove this logic, there is a scenario where the parent (a partition) could end up with empty
+>> effective CPUs. This means the corresponding CS will also have empty effective CPUs and thus fail to
+>> disable its siblings' partitions.
+> 
+> I have carefully considered the scenario where parent effective CPUs are 
+> empty, which corresponds to the following two cases. (After apply this patch).
+> 
+>    root cgroup
+>         |
+>        A1
+>       /  \
+>     A2    A3
+> 
+> Case 1:
+>  Step:
+>  #1> echo "0-1" > A1/cpuset.cpus
+>  #2> echo "root" > A1/cpuset.cpus.partition
+>  #3> echo "0-1" > A2/cpuset.cpus
+>  #4> echo "root" > A2/cpuset.cpus.partition
+> 
+>  After step #4, 
+> 
+>                 |      A1      |      A2      |      A3      |
+>  cpus_allowed   | 0-1          | 0-1          |              |
+>  effective_cpus |              | 0-1          |              |
+>  prstate        | root         | root         | member       |
+> 
+>  After step #4, A3's effective CPUs is empty.
+> 
 
-Hmm. The only explaination for that is that the thread got woken up
-already and left the initial UNINTERRUPTIBLE state and is now waiting
-for an interrupt wakeup with INTERRUPTIBLE state.
+That may be a corner case is unexpected.
 
-To validate that theory, can you please apply the patch below? The extra
-warning I added should trigger first.
+>  #5> echo "0-1" > A3/cpuset.cpus
+> 
 
-Let me think about a proper cure...
+If we create subdirectories (e.g., A4, A5, ...) under the A1 cpuset and then configure cpuset.cpus
+for A1 (a common usage scenario), processes can no longer be migrated into these subdirectories (A4,
+A5, ...) afterward. However, prior to your patch, this migration was allowed.
 
-Thanks,
+>  After step #5,
+> 
+>                 |      A1      |      A2      |      A3      |
+>  cpus_allowed   | 0-1          | 0-1          | 0-1          |
+>  effective_cpus |              | 0-1          |              |
+>  prstate        | root         | root         | member       |
+> 
+> This patch affects step #5. After step #5, A3's effective CPUs is also empty.
+> Since A3's effective CPUs can be empty before step #5 (setting cpuset.cpus),
+> it is acceptable for them to remain empty after step #5. Moreover, if A3 is
+> aware that its parent's effective CPUs are empty, it should understand that
+> the CPUs it requests may not be granted.
+> 
+> Case 2:
+>  Step:
+>  #1> echo "0-1" > A1/cpuset.cpus
+>  #2> echo "root" > A1/cpuset.cpus.partition
+>  #3> echo "0" > A2/cpuset.cpus
+>  #4> echo "root" > A2/cpuset.cpus.partition
+>  #5> echo "1" > A3/cpuset.cpus
+>  #6> echo "root" > A3/cpuset.cpus.partition
+> 
+>  After step #6,
+> 
+>                 |      A1      |      A2      |      A3      |
+>  cpus_allowed   | 0-1          | 0            | 1            |
+>  effective_cpus |              | 0            | 1            |
+>  prstate        | root         | root         | root         |
+> 
+>  #7> echo "0-1" > A3/cpuset.cpus
+> 
+>  After step #7,
+> 
+>                 |      A1      |      A2      |      A3      |
+>  cpus_allowed   | 0-1          | 0            | 0-1          |
+>  effective_cpus | 1            | 0            | 1            |
+>  prstate        | root         | root         | root invalid |
+> 
+> This patch affects step #7. After step #7, A3 only affects itself, changing
+> from "root" to "root invalid". However, since its effective CPUs remain 1 
+> both before and after step #7, it doesn't matter even if A2 is not invalidated.
+> 
+> The purpose of this patch is to ensure that modifying cpuset.cpus does not 
+> disable its siblings' partitions.
+> 
+> 
+> Thanks,
+> Sun Shaojie
 
-        tglx
----
---- a/kernel/kthread.c
-+++ b/kernel/kthread.c
-@@ -615,6 +615,8 @@ static void __kthread_bind(struct task_s
- void kthread_bind_mask(struct task_struct *p, const struct cpumask *mask)
- {
- 	struct kthread *kthread =3D to_kthread(p);
-+
-+	WARN_ON_ONCE(kthread->started);
- 	__kthread_bind_mask(p, mask, TASK_UNINTERRUPTIBLE);
- 	WARN_ON_ONCE(kthread->started);
- }
-@@ -631,6 +633,8 @@ void kthread_bind_mask(struct task_struc
- void kthread_bind(struct task_struct *p, unsigned int cpu)
- {
- 	struct kthread *kthread =3D to_kthread(p);
-+
-+	WARN_ON_ONCE(kthread->started);
- 	__kthread_bind(p, cpu, TASK_UNINTERRUPTIBLE);
- 	WARN_ON_ONCE(kthread->started);
- }
-
+-- 
+Best regards,
+Ridong
 
 
