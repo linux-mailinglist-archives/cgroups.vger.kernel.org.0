@@ -1,155 +1,200 @@
-Return-Path: <cgroups+bounces-12102-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-12103-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3BC12C71799
-	for <lists+cgroups@lfdr.de>; Thu, 20 Nov 2025 00:57:05 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id ECEF8C719BF
+	for <lists+cgroups@lfdr.de>; Thu, 20 Nov 2025 01:51:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sin.lore.kernel.org (Postfix) with ESMTPS id 5F27D28F5B
-	for <lists+cgroups@lfdr.de>; Wed, 19 Nov 2025 23:57:02 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 921C34E1335
+	for <lists+cgroups@lfdr.de>; Thu, 20 Nov 2025 00:51:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 18D542EAB83;
-	Wed, 19 Nov 2025 23:56:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="EqTtxuTi"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5812E209F5A;
+	Thu, 20 Nov 2025 00:51:44 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.18])
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 52F99136351
-	for <cgroups@vger.kernel.org>; Wed, 19 Nov 2025 23:56:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3542B136E3F;
+	Thu, 20 Nov 2025 00:51:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763596617; cv=none; b=XpASMKRJMapcGG+UYLlC0pA4EtTlC9ihOHfLB0IN0vAqA47xZUuFxPTPpmQ4MH8CAcvddbwCaHbwYxW07pplahQTGpIZV8W2FdPaw4VfcAqX2mfbTS+URDp79SlnxDTJo1heCz4DOj9l4uWJX3WKcS93GcIWxlYAnCeC/CxG2Nw=
+	t=1763599904; cv=none; b=UrpZNomXs4+XFgyAjduDeF82eL2g5FnRp8pqje+A3iM4gJs9Cs+x/T3CoTd+yLyE1aM/mJFBF3ox9W/ZHhoqQYn+LsltTU56sJtR1tthoLtzaxMoL5pgnYRmZXNSh52IT7do3uT3TX67OwwJ4aXyjSQ4gb3BzE7fE/6epbrs8Vc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763596617; c=relaxed/simple;
-	bh=GNh3FyoFBJlOR/mAK51P2ciWgupLSIO1q8hmqs7/P9c=;
-	h=Date:From:To:Cc:Subject:Message-ID; b=pocBE+C3hfMpLNpyMVGDK5+Mw+zdfJvIfAqA/riOyb+LwDxOeiKhVKrLNqmJ0Bd9l6WD7lqWDj2iodF1F+P1yhGVMHeGdo+JaUeRKKCTU2xtL1cBvRZnlHBi7PbVwjqwfBGLRn+spUNHg/xu3fG1p11hv+wkxtqKARxP2y4ubDM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=EqTtxuTi; arc=none smtp.client-ip=198.175.65.18
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1763596617; x=1795132617;
-  h=date:from:to:cc:subject:message-id;
-  bh=GNh3FyoFBJlOR/mAK51P2ciWgupLSIO1q8hmqs7/P9c=;
-  b=EqTtxuTiBdceonUmXZhAd1qgwiHFs6aeiWqURuD5heQmD4s9BZQS9EKz
-   0KAnaR0/2M9rzycMech1LsrMFn/iPjcbVs05Grh7c5kJUi6WHucWz5PXS
-   lC71Uy5wRKlDC93DWsYrj41j0ORyXDgcF1TF6dt5MvQRUSrPD5PeWLUIg
-   I6aUR0l/5mbPiJaVXxyiDf4ikGsz74Vwysanp+HEdT3dKe4wNIq+YvlSc
-   QNdMgJpKa6sVwQUrCq2LPQQUDqrEhpywyf9iupDrK5ouwQ6meZ5bE7Act
-   LxClV8D0TxaUuXfW9HoPeyRomLUAQjYNeujzlav7edljHHKZ4xiHLcEhk
-   Q==;
-X-CSE-ConnectionGUID: Ueaub81eS0u/NukD9RkjNQ==
-X-CSE-MsgGUID: SrbXu1m5QruqMeHTZmEtXQ==
-X-IronPort-AV: E=McAfee;i="6800,10657,11618"; a="65687035"
-X-IronPort-AV: E=Sophos;i="6.19,316,1754982000"; 
-   d="scan'208";a="65687035"
-Received: from orviesa005.jf.intel.com ([10.64.159.145])
-  by orvoesa110.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Nov 2025 15:56:56 -0800
-X-CSE-ConnectionGUID: HkcaFOOUSd+NfqcPCv6yCg==
-X-CSE-MsgGUID: 148ymubXQsaq9MnMff1DaA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.19,316,1754982000"; 
-   d="scan'208";a="196330505"
-Received: from lkp-server01.sh.intel.com (HELO adf6d29aa8d9) ([10.239.97.150])
-  by orviesa005.jf.intel.com with ESMTP; 19 Nov 2025 15:56:55 -0800
-Received: from kbuild by adf6d29aa8d9 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1vLs2d-0003Qh-2x;
-	Wed, 19 Nov 2025 23:56:51 +0000
-Date: Thu, 20 Nov 2025 07:56:39 +0800
-From: kernel test robot <lkp@intel.com>
-To: Tejun Heo <tj@kernel.org>
-Cc: cgroups@vger.kernel.org
-Subject: [tj-cgroup:for-6.19] BUILD SUCCESS
- a0131c39270de634c33950a799d8870da2191974
-Message-ID: <202511200734.PDZ7qCdM-lkp@intel.com>
-User-Agent: s-nail v14.9.25
+	s=arc-20240116; t=1763599904; c=relaxed/simple;
+	bh=QESTvboA3oRHs+bjAnexYRgLKmE1EDJL5evsq3z39xs=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=EvKuFlIFMoc4BZIzDzCw7x+qH1ONiA2/wGMVI5RFsyQIquuiFdeoNd3yrQxmsBi8Dd/U5PISvtn1pgtGKAX7iZoppdPQOxGoRNxv4QFDXX90e8z1swt4FdiL18momJn6pi20gd1zFzjHiKtmKAGT8QKehTQ7ap4g85K+1N3c/fQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.216])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTPS id 4dBfsl2jHtzYQtjG;
+	Thu, 20 Nov 2025 08:50:51 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.75])
+	by mail.maildlp.com (Postfix) with ESMTP id 5D3331A019B;
+	Thu, 20 Nov 2025 08:51:32 +0800 (CST)
+Received: from [10.67.111.176] (unknown [10.67.111.176])
+	by APP2 (Coremail) with SMTP id Syh0CgC3XnUTZh5pcC9mBQ--.11563S2;
+	Thu, 20 Nov 2025 08:51:32 +0800 (CST)
+Message-ID: <5e690981-2921-4b9f-9771-8afaa15018c8@huaweicloud.com>
+Date: Thu, 20 Nov 2025 08:51:30 +0800
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v5] cpuset: Avoid invalidating sibling partitions on
+ cpuset.cpus conflict.
+To: Sun Shaojie <sunshaojie@kylinos.cn>, llong@redhat.com, mkoutny@suse.com
+Cc: cgroups@vger.kernel.org, hannes@cmpxchg.org,
+ linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+ shuah@kernel.org, tj@kernel.org
+References: <f32d2f31-630f-450b-911f-b512bbeb380a@huaweicloud.com>
+ <20251119105749.1385946-1-sunshaojie@kylinos.cn>
+Content-Language: en-US
+From: Chen Ridong <chenridong@huaweicloud.com>
+In-Reply-To: <20251119105749.1385946-1-sunshaojie@kylinos.cn>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:Syh0CgC3XnUTZh5pcC9mBQ--.11563S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxZr43WrW7uFy5XF1UJFy8AFb_yoWrCFyxpF
+	y8Kr17JwsYqr1rCwnrJ3Z7ur1Sg3ZrXFnrAFn8Gw4rA3sFy3WqyF1qyr93WrW5J39xGw45
+	Z3yavrWrZFyqqrJanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUymb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
+	0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
+	x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
+	0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lc7CjxVAaw2AFwI0_Jw0_GFyl42xK82IYc2Ij64vI
+	r41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8Gjc
+	xK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0
+	cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8V
+	AvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E
+	14v26r1j6r4UYxBIdaVFxhVjvjDU0xZFpf9x07UAwIDUUUUU=
+X-CM-SenderInfo: hfkh02xlgr0w46kxt4xhlfz01xgou0bp/
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git for-6.19
-branch HEAD: a0131c39270de634c33950a799d8870da2191974  docs: cgroup: No special handling of unpopulated memcgs
 
-elapsed time: 7315m
 
-configs tested: 62
-configs skipped: 0
+On 2025/11/19 18:57, Sun Shaojie wrote:
+> Currently, when setting a cpuset's cpuset.cpus to a value that conflicts
+> with its sibling partition, the sibling's partition state becomes invalid.
+> However, this invalidation is often unnecessary. If the cpuset being
+> modified is exclusive, it should invalidate itself upon conflict.
+> 
+> This patch applies only to the following two cases：
+> 
+> Assume the machine has 4 CPUs (0-3).
+> 
+>    root cgroup
+>       /    \
+>     A1      B1
+> 
+> Case 1: A1 is exclusive, B1 is non-exclusive, set B1's cpuset.cpus
+> 
+>  Table 1.1: Before applying this patch
+>  Step                                       | A1's prstate | B1's prstate |
+>  #1> echo "0-1" > A1/cpuset.cpus            | member       | member       |
+>  #2> echo "root" > A1/cpuset.cpus.partition | root         | member       |
+>  #3> echo "0" > B1/cpuset.cpus              | root invalid | member       |
+> 
+> After step #3, A1 changes from "root" to "root invalid" because its CPUs
+> (0-1) overlap with those requested by B1 (0). However, B1 can actually
+> use CPUs 2-3(from B1's parent), so it would be more reasonable for A1 to
+> remain as "root."
+> 
+>  Table 1.2: After applying this patch
+>  Step                                       | A1's prstate | B1's prstate |
+>  #1> echo "0-1" > A1/cpuset.cpus            | member       | member       |
+>  #2> echo "root" > A1/cpuset.cpus.partition | root         | member       |
+>  #3> echo "0" > B1/cpuset.cpus              | root         | member       |
+> 
+> Case 2: Both A1 and B1 are exclusive, set B1's cpuset.cpus
+> 
+>  Table 2.1: Before applying this patch
+>  Step                                       | A1's prstate | B1's prstate |
+>  #1> echo "0-1" > A1/cpuset.cpus            | member       | member       |
+>  #2> echo "root" > A1/cpuset.cpus.partition | root         | member       |
+>  #3> echo "2" > B1/cpuset.cpus              | root         | member       |
+>  #4> echo "root" > B1/cpuset.cpus.partition | root         | root         |
+>  #5> echo "1-2" > B1/cpuset.cpus            | root invalid | root invalid |
+> 
+> After step #4, B1 can exclusively use CPU 2. Therefore, at step #5,
+> regardless of what conflicting value B1 writes to cpuset.cpus, it will
+> always have at least CPU 2 available. This makes it unnecessary to mark
+> A1 as "root invalid".
+> 
+>  Table 2.2: After applying this patch
+>  Step                                       | A1's prstate | B1's prstate |
+>  #1> echo "0-1" > A1/cpuset.cpus            | member       | member       |
+>  #2> echo "root" > A1/cpuset.cpus.partition | root         | member       |
+>  #3> echo "2" > B1/cpuset.cpus              | root         | member       |
+>  #4> echo "root" > B1/cpuset.cpus.partition | root         | root         |
+>  #5> echo "1-2" > B1/cpuset.cpus            | root         | root invalid |
+> 
+> In summary, regardless of how B1 configures its cpuset.cpus, there will
+> always be available CPUs in B1's cpuset.cpus.effective. Therefore, there
+> is no need to change A1 from "root" to "root invalid".
+> 
+> All other cases remain unaffected. For example, cgroup-v1.
+> 
+> Signed-off-by: Sun Shaojie <sunshaojie@kylinos.cn>
+> ---
+>  kernel/cgroup/cpuset.c                        | 19 +------------------
+>  .../selftests/cgroup/test_cpuset_prs.sh       |  7 ++++---
+>  2 files changed, 5 insertions(+), 21 deletions(-)
+> 
+> diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
+> index 52468d2c178a..f6a834335ebf 100644
+> --- a/kernel/cgroup/cpuset.c
+> +++ b/kernel/cgroup/cpuset.c
+> @@ -2411,34 +2411,17 @@ static int cpus_allowed_validate_change(struct cpuset *cs, struct cpuset *trialc
+>  					struct tmpmasks *tmp)
+>  {
+>  	int retval;
+> -	struct cpuset *parent = parent_cs(cs);
+>  
+>  	retval = validate_change(cs, trialcs);
+>  
+>  	if ((retval == -EINVAL) && cpuset_v2()) {
+> -		struct cgroup_subsys_state *css;
+> -		struct cpuset *cp;
+> -
+>  		/*
+>  		 * The -EINVAL error code indicates that partition sibling
+>  		 * CPU exclusivity rule has been violated. We still allow
+>  		 * the cpumask change to proceed while invalidating the
+> -		 * partition. However, any conflicting sibling partitions
+> -		 * have to be marked as invalid too.
+> +		 * partition.
+>  		 */
+>  		trialcs->prs_err = PERR_NOTEXCL;
+> -		rcu_read_lock();
+> -		cpuset_for_each_child(cp, css, parent) {
+> -			struct cpumask *xcpus = user_xcpus(trialcs);
+> -
+> -			if (is_partition_valid(cp) &&
+> -			    cpumask_intersects(xcpus, cp->effective_xcpus)) {
+> -				rcu_read_unlock();
+> -				update_parent_effective_cpumask(cp, partcmd_invalidate, NULL, tmp);
+> -				rcu_read_lock();
+> -			}
+> -		}
+> -		rcu_read_unlock();
+>  		retval = 0;
+>  	}
+>  	return retval;
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+If we remove this logic, there is a scenario where the parent (a partition) could end up with empty
+effective CPUs. This means the corresponding CS will also have empty effective CPUs and thus fail to
+disable its siblings' partitions.
 
-tested configs:
-alpha                   allnoconfig    gcc-15.1.0
-arc                     allnoconfig    gcc-15.1.0
-arc         randconfig-001-20251115    gcc-13.4.0
-arc         randconfig-002-20251115    gcc-11.5.0
-arm                     allnoconfig    clang-22
-arm         randconfig-001-20251115    clang-22
-arm         randconfig-002-20251115    gcc-8.5.0
-arm         randconfig-003-20251115    gcc-10.5.0
-arm         randconfig-004-20251115    clang-22
-arm64                   allnoconfig    gcc-15.1.0
-arm64       randconfig-001-20251116    gcc-12.5.0
-arm64       randconfig-002-20251116    gcc-10.5.0
-arm64       randconfig-003-20251116    clang-22
-arm64       randconfig-004-20251116    gcc-8.5.0
-csky                   allmodconfig    gcc-15.1.0
-csky                    allnoconfig    gcc-15.1.0
-csky        randconfig-001-20251116    gcc-12.5.0
-csky        randconfig-002-20251116    gcc-15.1.0
-hexagon                 allnoconfig    clang-22
-hexagon     randconfig-001-20251116    clang-22
-hexagon     randconfig-002-20251116    clang-17
-i386                    allnoconfig    gcc-14
-loongarch               allnoconfig    clang-22
-loongarch   randconfig-001-20251116    gcc-15.1.0
-loongarch   randconfig-002-20251116    clang-22
-m68k                   allmodconfig    gcc-15.1.0
-m68k                    allnoconfig    gcc-15.1.0
-m68k                   allyesconfig    gcc-15.1.0
-microblaze              allnoconfig    gcc-15.1.0
-mips                    allnoconfig    gcc-15.1.0
-nios2                   allnoconfig    gcc-11.5.0
-nios2       randconfig-001-20251116    gcc-11.5.0
-nios2       randconfig-002-20251116    gcc-11.5.0
-openrisc                allnoconfig    gcc-15.1.0
-parisc                  allnoconfig    gcc-15.1.0
-parisc      randconfig-001-20251116    gcc-12.5.0
-parisc      randconfig-002-20251116    gcc-14.3.0
-powerpc                 allnoconfig    gcc-15.1.0
-powerpc     randconfig-001-20251116    gcc-10.5.0
-powerpc     randconfig-002-20251116    clang-22
-powerpc64   randconfig-001-20251116    clang-22
-powerpc64   randconfig-002-20251116    gcc-10.5.0
-riscv                   allnoconfig    gcc-15.1.0
-riscv       randconfig-001-20251115    clang-22
-riscv       randconfig-002-20251115    gcc-8.5.0
-s390                    allnoconfig    clang-22
-s390        randconfig-001-20251115    clang-17
-s390        randconfig-002-20251115    gcc-8.5.0
-sh                      allnoconfig    gcc-15.1.0
-sh          randconfig-001-20251115    gcc-12.5.0
-sh          randconfig-002-20251115    gcc-15.1.0
-sparc                   allnoconfig    gcc-15.1.0
-um                      allnoconfig    clang-22
-x86_64                  allnoconfig    clang-20
-x86_64                        kexec    clang-20
-x86_64                     rhel-9.4    clang-20
-x86_64                 rhel-9.4-bpf    gcc-14
-x86_64                rhel-9.4-func    clang-20
-x86_64          rhel-9.4-kselftests    clang-20
-x86_64               rhel-9.4-kunit    gcc-14
-x86_64                 rhel-9.4-ltp    gcc-14
-xtensa                  allnoconfig    gcc-15.1.0
+-- 
+Best regards,
+Ridong
 
---
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
 
