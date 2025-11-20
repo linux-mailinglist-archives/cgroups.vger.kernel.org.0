@@ -1,111 +1,194 @@
-Return-Path: <cgroups+bounces-12121-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-12122-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 54597C73F60
-	for <lists+cgroups@lfdr.de>; Thu, 20 Nov 2025 13:27:43 +0100 (CET)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
+	by mail.lfdr.de (Postfix) with ESMTPS id 83027C74163
+	for <lists+cgroups@lfdr.de>; Thu, 20 Nov 2025 14:06:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id C50653574A2
-	for <lists+cgroups@lfdr.de>; Thu, 20 Nov 2025 12:27:42 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id B2DEB350722
+	for <lists+cgroups@lfdr.de>; Thu, 20 Nov 2025 13:06:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E05BE333730;
-	Thu, 20 Nov 2025 12:27:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EAD1E336EF7;
+	Thu, 20 Nov 2025 13:06:49 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
+Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6922F32C33A;
-	Thu, 20 Nov 2025 12:27:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 67C71326921;
+	Thu, 20 Nov 2025 13:06:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=124.126.103.232
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763641655; cv=none; b=lm0JSDVAbLpwtIUxOGm5/Za3AKRoZDYeV+OUQXJqMBp0s81t0So1NTb1QzmKmLjvhfPQ8NoIcM5QjH/ELNYXRozRuQZmf4SWDuNo9pM5UlvwfLp2hEKqR6bUui4lBb965wQVwZYOJWjO+KgHz03kih6Vbgm63fDn6XGwfYp2ZeE=
+	t=1763644009; cv=none; b=dr19LPfjzAqGJHLAABLu+xYaAEBIZBNTJkfnxxlTX9zSIoHaN7i/Gi959yyAIx3yiT0xhrd9m7bE3ofrI2K2Rt03wJmC8776z9O4YnuKXi3wfIlafhDPr0FvSqX6fWA7VcEeQdwDYKqDgIKPIErEToYk8+Sk8J4MLKJPZz+ME00=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763641655; c=relaxed/simple;
-	bh=bTWsfzkP6jnrLGQWEa2P1aHmJawpgmuDSlD+Zf/o/eA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=bhbcBnOR4wdY+FP9QjvjAbHBIh7FBkuL5c5fI6/zWpQARTFNqietThvqbCsLKuBUfcR1qZYlNUxvimbVxFco2DiOVnYEBaRgwEmZUBbzZNA2+rM/Vz7G4BIVHhrcdf3Mq8paBZPsi6MpHxYpK0HS5V+k2XUNAv4Xq+Do4z2YlnU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.235])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTPS id 4dByJz0GQlzKHMVS;
-	Thu, 20 Nov 2025 20:26:59 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.112])
-	by mail.maildlp.com (Postfix) with ESMTP id A9DD61A0A3A;
-	Thu, 20 Nov 2025 20:27:28 +0800 (CST)
-Received: from [10.67.111.176] (unknown [10.67.111.176])
-	by APP1 (Coremail) with SMTP id cCh0CgDnIkwvCR9pshiPBQ--.57953S2;
-	Thu, 20 Nov 2025 20:27:28 +0800 (CST)
-Message-ID: <82c22c02-35ab-4dae-b764-c694ef203a68@huaweicloud.com>
-Date: Thu, 20 Nov 2025 20:27:27 +0800
+	s=arc-20240116; t=1763644009; c=relaxed/simple;
+	bh=RGvJThNDKvEi3kAIVd2ILPgKgSEI63+ebSQhKwPrN4w=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=h/bvZv9dhIVhZdEYy+p5HgVtNpwd3d/oh6vAwRtoVUAWQA1JAm9+PPKg3h2GHZzN7LeqaCflrNYE0GNkKhWUQJEMfqcKxJCz5IU4ikgQJyHAArRsTWTr7/4S5rCY3Cg96dpXLab0WYgA8R2q1+ecS74zhVcqYlo8mzSYViVyuIQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn; spf=pass smtp.mailfrom=kylinos.cn; arc=none smtp.client-ip=124.126.103.232
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kylinos.cn
+X-UUID: b2d92dd6c61111f0a38c85956e01ac42-20251120
+X-CTIC-Tags:
+	HR_CC_COUNT, HR_CC_DOMAIN_COUNT, HR_CC_NO_NAME, HR_CTE_8B, HR_CTT_TXT
+	HR_DATE_H, HR_DATE_WKD, HR_DATE_ZONE, HR_FROM_NAME, HR_SJ_DIGIT_LEN
+	HR_SJ_LANG, HR_SJ_LEN, HR_SJ_LETTER, HR_SJ_NOR_SYM, HR_SJ_PHRASE
+	HR_SJ_PHRASE_LEN, HR_SJ_PRE_RE, HR_SJ_WS, HR_TO_COUNT, HR_TO_DOMAIN_COUNT
+	HR_TO_NO_NAME, IP_TRUSTED, SRC_TRUSTED, DN_TRUSTED, SA_TRUSTED
+	SA_EXISTED, SN_EXISTED, SPF_NOPASS, DKIM_NOPASS, DMARC_NOPASS
+	CIE_GOOD, CIE_GOOD_SPF, GTI_FG_BS, GTI_RG_INFO, GTI_C_BU
+	AMN_GOOD, ABX_MISS_RDNS
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.3.6,REQID:3c1f7f0f-3eef-405a-bbbe-3cfc40ee9124,IP:10,U
+	RL:0,TC:0,Content:0,EDM:0,RT:0,SF:-5,FILE:0,BULK:0,RULE:Release_Ham,ACTION
+	:release,TS:5
+X-CID-INFO: VERSION:1.3.6,REQID:3c1f7f0f-3eef-405a-bbbe-3cfc40ee9124,IP:10,URL
+	:0,TC:0,Content:0,EDM:0,RT:0,SF:-5,FILE:0,BULK:0,RULE:Release_Ham,ACTION:r
+	elease,TS:5
+X-CID-META: VersionHash:a9d874c,CLOUDID:42d86bd557a3a2a23587bc6bce955fd0,BulkI
+	D:251119212056S6LKT8LY,BulkQuantity:3,Recheck:0,SF:17|19|64|66|78|80|81|82
+	|83|102|127|841|850|898,TC:nil,Content:0|15|50,EDM:-3,IP:-2,URL:0,File:nil
+	,RT:nil,Bulk:40,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,D
+	KP:0,BRR:0,BRE:0,ARC:0
+X-CID-BVR: 2,SSN|SDN
+X-CID-BAS: 2,SSN|SDN,0,_
+X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_FAS,TF_CID_SPAM_FSD
+X-CID-RHF: D41D8CD98F00B204E9800998ECF8427E
+X-UUID: b2d92dd6c61111f0a38c85956e01ac42-20251120
+X-User: sunshaojie@kylinos.cn
+Received: from localhost.localdomain [(223.70.159.239)] by mailgw.kylinos.cn
+	(envelope-from <sunshaojie@kylinos.cn>)
+	(Generic MTA with TLSv1.3 TLS_AES_256_GCM_SHA384 256/256)
+	with ESMTP id 2059068899; Thu, 20 Nov 2025 21:06:16 +0800
+From: Sun Shaojie <sunshaojie@kylinos.cn>
+To: mkoutny@suse.com
+Cc: cgroups@vger.kernel.org,
+	chenridong@huaweicloud.com,
+	hannes@cmpxchg.org,
+	linux-kernel@vger.kernel.org,
+	linux-kselftest@vger.kernel.org,
+	llong@redhat.com,
+	shuah@kernel.org,
+	sunshaojie@kylinos.cn,
+	tj@kernel.org
+Subject: Re: [PATCH v5] cpuset: Avoid invalidating sibling partitions on cpuset.cpus conflict.
+Date: Thu, 20 Nov 2025 21:05:57 +0800
+Message-Id: <20251120130557.1554118-1-sunshaojie@kylinos.cn>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <unk64xmcj5kt5c5gaauwaeld5qsshaldw7utgzk362w33y3zr7@s765trmj5ccs>
+References: <unk64xmcj5kt5c5gaauwaeld5qsshaldw7utgzk362w33y3zr7@s765trmj5ccs>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1 03/26] mm: rename unlock_page_lruvec_irq and its
- variants
-To: Qi Zheng <qi.zheng@linux.dev>, hannes@cmpxchg.org, hughd@google.com,
- mhocko@suse.com, roman.gushchin@linux.dev, shakeel.butt@linux.dev,
- muchun.song@linux.dev, david@redhat.com, lorenzo.stoakes@oracle.com,
- ziy@nvidia.com, harry.yoo@oracle.com, imran.f.khan@oracle.com,
- kamalesh.babulal@oracle.com, axelrasmussen@google.com, yuanchu@google.com,
- weixugc@google.com, akpm@linux-foundation.org
-Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org,
- cgroups@vger.kernel.org, Muchun Song <songmuchun@bytedance.com>,
- Qi Zheng <zhengqi.arch@bytedance.com>
-References: <cover.1761658310.git.zhengqi.arch@bytedance.com>
- <f68f1ae435edbbc6cfe15448c2df5c4112a4a61c.1761658310.git.zhengqi.arch@bytedance.com>
-Content-Language: en-US
-From: Chen Ridong <chenridong@huaweicloud.com>
-In-Reply-To: <f68f1ae435edbbc6cfe15448c2df5c4112a4a61c.1761658310.git.zhengqi.arch@bytedance.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID:cCh0CgDnIkwvCR9pshiPBQ--.57953S2
-X-Coremail-Antispam: 1UD129KBjvdXoWrZrWUJry3AFW3XF1fAw1xAFb_yoW3Gwb_Aw
-	1fCwn7Zwn5JrZxJw4Fg343ur109ay7CF1DXrn09r15tF9xJw4kXF4vqwnag3y3JFsxZrZF
-	9rn3Xa1vqrnxujkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-	9fnUUIcSsGvfJTRUUUbxkYFVCjjxCrM7AC8VAFwI0_Xr0_Wr1l1xkIjI8I6I8E6xAIw20E
-	Y4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwV
-	A0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW7JVWDJwA2z4x0Y4vE2Ix0cI8IcVCY1x02
-	67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
-	0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
-	x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
-	0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc7CjxVAaw2AF
-	wI0_GFv_Wryl42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4
-	xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a6rW5
-	MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I
-	0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWU
-	JVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4UJVWxJrUvcSsGvfC2KfnxnUUI43ZEXa7IU0
-	s2-5UUUUU==
-X-CM-SenderInfo: hfkh02xlgr0w46kxt4xhlfz01xgou0bp/
+Content-Transfer-Encoding: 8bit
+
+Hi, Michal,
+
+On Wed, 19 Nov 2025 14:20:25, Michal Koutný wrote:
+>On Wed, Nov 19, 2025 at 06:57:49PM +0800, Sun Shaojie <sunshaojie@kylinos.cn> wrote:
+>> Currently, when setting a cpuset's cpuset.cpus to a value that conflicts
+>> with its sibling partition, the sibling's partition state becomes invalid.
+>> However, this invalidation is often unnecessary. If the cpuset being
+>> modified is exclusive, it should invalidate itself upon conflict.
+>> 
+>> This patch applies only to the following two cases：
+>> 
+>> Assume the machine has 4 CPUs (0-3).
+>> 
+>>    root cgroup
+>>       /    \
+>>     A1      B1
+>> 
+>> Case 1: A1 is exclusive, B1 is non-exclusive, set B1's cpuset.cpus
+>> 
+>>  Table 1.1: Before applying this patch
+>>  Step                                       | A1's prstate | B1's prstate |
+>>  #1> echo "0-1" > A1/cpuset.cpus            | member       | member       |
+>>  #2> echo "root" > A1/cpuset.cpus.partition | root         | member       |
+>>  #3> echo "0" > B1/cpuset.cpus              | root invalid | member       |
+>> 
+>> After step #3, A1 changes from "root" to "root invalid" because its CPUs
+>> (0-1) overlap with those requested by B1 (0). However, B1 can actually
+>> use CPUs 2-3(from B1's parent), so it would be more reasonable for A1 to
+>> remain as "root."
+>> 
+>>  Table 1.2: After applying this patch
+>>  Step                                       | A1's prstate | B1's prstate |
+>>  #1> echo "0-1" > A1/cpuset.cpus            | member       | member       |
+>>  #2> echo "root" > A1/cpuset.cpus.partition | root         | member       |
+>>  #3> echo "0" > B1/cpuset.cpus              | root         | member       |
+>> 
+>> Case 2: Both A1 and B1 are exclusive, set B1's cpuset.cpus
+>
+>(Thanks for working this out, Shaojie.)
+>
+>> 
+>>  Table 2.1: Before applying this patch
+>>  Step                                       | A1's prstate | B1's prstate |
+>>  #1> echo "0-1" > A1/cpuset.cpus            | member       | member       |
+>>  #2> echo "root" > A1/cpuset.cpus.partition | root         | member       |
+>>  #3> echo "2" > B1/cpuset.cpus              | root         | member       |
+>>  #4> echo "root" > B1/cpuset.cpus.partition | root         | root         |
+>>  #5> echo "1-2" > B1/cpuset.cpus            | root invalid | root invalid |
+>> 
+>> After step #4, B1 can exclusively use CPU 2. Therefore, at step #5,
+>> regardless of what conflicting value B1 writes to cpuset.cpus, it will
+>> always have at least CPU 2 available. This makes it unnecessary to mark
+>> A1 as "root invalid".
+>> 
+>>  Table 2.2: After applying this patch
+>>  Step                                       | A1's prstate | B1's prstate |
+>>  #1> echo "0-1" > A1/cpuset.cpus            | member       | member       |
+>>  #2> echo "root" > A1/cpuset.cpus.partition | root         | member       |
+>>  #3> echo "2" > B1/cpuset.cpus              | root         | member       |
+>>  #4> echo "root" > B1/cpuset.cpus.partition | root         | root         |
+>>  #5> echo "1-2" > B1/cpuset.cpus            | root         | root invalid |
+>> 
+>> In summary, regardless of how B1 configures its cpuset.cpus, there will
+>> always be available CPUs in B1's cpuset.cpus.effective. Therefore, there
+>> is no need to change A1 from "root" to "root invalid".
+>
+>Admittedly, I don't like this change because it relies on implicit
+>preference ordering between siblings (here first comes, first served)
+>and so the effective config cannot be derived just from the applied
+>values :-/
+>
+>Do you actually want to achieve this or is it an implementation
+>side-effect of the Case 1 scenario that you want to achieve?
+
+Yes, this is indeed the functionality I intended to achieve, as I find it 
+follows the same logic as Case 1.
+
+However, I didn't fully understand what you meant by "implicit preference 
+ordering between siblings (here first comes, first served)."
+Could you provide an example?
+
+As for your point that "the effective config cannot be derived just from 
+the applied values," even before this patch, we couldn't derive the final 
+effective configuration solely from the applied values.
+
+For example, consider the following scenario: (not apply this patch)
+Table 1:
+ Step                                       | A1's prstate | B1's prstate |
+ #1> echo "0-1" > A1/cpuset.cpus            | member       | member       |
+ #2> echo "root" > A1/cpuset.cpus.partition | root         | member       |
+ #3> echo "1-2" > B1/cpuset.cpus            | root invalid | member       |
+
+Table 2:
+ Step                                       | A1's prstate | B1's prstate |
+ #1> echo "1-2" > B1/cpuset.cpus            | member       | member       |
+ #2> echo "root" > A1/cpuset.cpus.partition | root invalid | member       |
+ #3> echo "0-1" > A1/cpuset.cpus            | root         | member       |
+
+After step #3, both Table 1 and Table 2 have identical value settings, 
+yet A1's partition state differs between them.
 
 
-
-On 2025/10/28 21:58, Qi Zheng wrote:
-> From: Muchun Song <songmuchun@bytedance.com>
-> 
-> It is inappropriate to use folio_lruvec_lock() variants in conjunction
-> with unlock_page_lruvec() variants, as this involves the inconsistent
-> operation of locking a folio while unlocking a page. To rectify this, the
-> functions unlock_page_lruvec{_irq, _irqrestore} are renamed to
-> lruvec_unlock{_irq,_irqrestore}.
-> 
-> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-> Acked-by: Roman Gushchin <roman.gushchin@linux.dev>
-> Acked-by: Johannes Weiner <hannes@cmpxchg.org>
-> Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
-
-LGTM.
-
-Reviewed-by: Chen Ridong <chenridong@huawei.com>
-
--- 
-Best regards,
-Ridong
-
+Thanks,
+Sun Shaojie
 
