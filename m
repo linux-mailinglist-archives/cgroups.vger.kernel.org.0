@@ -1,174 +1,119 @@
-Return-Path: <cgroups+bounces-12124-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-12125-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id C2D97C74187
-	for <lists+cgroups@lfdr.de>; Thu, 20 Nov 2025 14:08:52 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1E854C743FD
+	for <lists+cgroups@lfdr.de>; Thu, 20 Nov 2025 14:31:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 07940350BB1
-	for <lists+cgroups@lfdr.de>; Thu, 20 Nov 2025 13:08:25 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id BA55E4ED6DD
+	for <lists+cgroups@lfdr.de>; Thu, 20 Nov 2025 13:23:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F5F033A003;
-	Thu, 20 Nov 2025 13:08:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 10B793081CC;
+	Thu, 20 Nov 2025 13:20:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tE7qLKoU"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1A2E7333438;
-	Thu, 20 Nov 2025 13:08:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=124.126.103.232
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B9C561F0995;
+	Thu, 20 Nov 2025 13:20:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763644099; cv=none; b=IIP1PPTaGT+aHmaWHXVLddoXRr7HwJCyZq5jX6fQPyw/xHIQ3C3cMG01Ysf6rv9JnKTiSFKDJfbQW341nJecOP7j/0IJhc2RpwyKKHH/fOdPTEOF+fLmC27i6sfMer/LlVqQbzrwiIfKiRddt66yhelKcj/GzTKN7+DNd95ESJ4=
+	t=1763644836; cv=none; b=o8NumbQ8F5W5mvdULoqVvBClE2pJe/8PwWCXmyw0fwfoY6ik7ZUHYwrh7kfF6n0TD/D+jVtAbpN922PjFGAWBwTg1ftjHEhajb7jjE1vCMhub2+KPK3DxU+nSU3kIcU4EAB3+tnwwtqexBjuCwUNN9bjyB01wiuk31HDd5yyAf4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763644099; c=relaxed/simple;
-	bh=lU2ZVTe+uxTYCKPyOq+n3HvyR7i812t/b1uYsH4K+s0=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=HJI8R0rfNkEScN6dLICFvy7jpxokSMiYyU6bN6ZEDM/NRC19sLDidWS5ParyUdtUC1d4E9lrNmInhEC4208Gg3Yz5bXmV8G6kDlN1IBhK7e84QqPJYilR7JrFkTC3gbXIcYg2uKEIhwLmDLqza3mgsw7nNwPqrWOwoC2XHSavnM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn; spf=pass smtp.mailfrom=kylinos.cn; arc=none smtp.client-ip=124.126.103.232
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kylinos.cn
-X-UUID: f214ccd0c61111f0a38c85956e01ac42-20251120
-X-CTIC-Tags:
-	HR_CC_COUNT, HR_CC_DOMAIN_COUNT, HR_CC_NO_NAME, HR_CTE_8B, HR_CTT_TXT
-	HR_DATE_H, HR_DATE_WKD, HR_DATE_ZONE, HR_FROM_NAME, HR_SJ_DIGIT_LEN
-	HR_SJ_LANG, HR_SJ_LEN, HR_SJ_LETTER, HR_SJ_NOR_SYM, HR_SJ_PHRASE
-	HR_SJ_PHRASE_LEN, HR_SJ_PRE_RE, HR_SJ_WS, HR_TO_COUNT, HR_TO_DOMAIN_COUNT
-	HR_TO_NO_NAME, IP_TRUSTED, SRC_TRUSTED, DN_TRUSTED, SA_TRUSTED
-	SA_EXISTED, SN_EXISTED, SPF_NOPASS, DKIM_NOPASS, DMARC_NOPASS
-	CIE_GOOD, CIE_GOOD_SPF, GTI_FG_BS, GTI_RG_INFO, GTI_C_BU
-	AMN_GOOD, ABX_MISS_RDNS
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.3.6,REQID:d1a5438a-6d45-40c8-af73-f51ad9cee350,IP:10,U
-	RL:0,TC:0,Content:0,EDM:0,RT:0,SF:-5,FILE:0,BULK:0,RULE:Release_Ham,ACTION
-	:release,TS:5
-X-CID-INFO: VERSION:1.3.6,REQID:d1a5438a-6d45-40c8-af73-f51ad9cee350,IP:10,URL
-	:0,TC:0,Content:0,EDM:0,RT:0,SF:-5,FILE:0,BULK:0,RULE:Release_Ham,ACTION:r
-	elease,TS:5
-X-CID-META: VersionHash:a9d874c,CLOUDID:8483b94bc1721e408cea7e78eaa79adc,BulkI
-	D:251119212056S6LKT8LY,BulkQuantity:5,Recheck:0,SF:17|19|64|66|78|80|81|82
-	|83|102|127|841|850|898,TC:nil,Content:0|15|50,EDM:-3,IP:-2,URL:0,File:nil
-	,RT:nil,Bulk:40,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,D
-	KP:0,BRR:0,BRE:0,ARC:0
-X-CID-BVR: 2,SSN|SDN
-X-CID-BAS: 2,SSN|SDN,0,_
-X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_FAS,TF_CID_SPAM_FSD
-X-CID-RHF: D41D8CD98F00B204E9800998ECF8427E
-X-UUID: f214ccd0c61111f0a38c85956e01ac42-20251120
-X-User: sunshaojie@kylinos.cn
-Received: from localhost.localdomain [(223.70.159.239)] by mailgw.kylinos.cn
-	(envelope-from <sunshaojie@kylinos.cn>)
-	(Generic MTA with TLSv1.3 TLS_AES_256_GCM_SHA384 256/256)
-	with ESMTP id 901818270; Thu, 20 Nov 2025 21:08:02 +0800
-From: Sun Shaojie <sunshaojie@kylinos.cn>
-To: chenridong@huaweicloud.com
-Cc: cgroups@vger.kernel.org,
-	hannes@cmpxchg.org,
-	linux-kernel@vger.kernel.org,
-	linux-kselftest@vger.kernel.org,
-	llong@redhat.com,
-	mkoutny@suse.com,
-	shuah@kernel.org,
-	sunshaojie@kylinos.cn,
-	tj@kernel.org
-Subject: Re: [PATCH v5] cpuset: Avoid invalidating sibling partitions on cpuset.cpus conflict.
-Date: Thu, 20 Nov 2025 21:07:50 +0800
-Message-Id: <20251120130750.1554604-1-sunshaojie@kylinos.cn>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <06d74676-258e-43b7-ae61-d2102bab3926@huaweicloud.com>
-References: <06d74676-258e-43b7-ae61-d2102bab3926@huaweicloud.com>
+	s=arc-20240116; t=1763644836; c=relaxed/simple;
+	bh=suChz3lb455K0CTc0lxqoZMuUln/t/yNRJylmUEI0uA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Mc3HIgtpRTSWuLOT+qWNUL4c3rTzQCQmwOuusx/DnBCRINQnEWVgi4w1z0OjvufjIvJEbQvIY5Tu/KZ1QNz+uWULCB2C77+1XF+Qk9DjnciERBQz8t08rA/wxBURTTYuCgHBQu5jl8p8ZZ7Rhsj2Uu9qWw9ZCpGuW1jyBkqRt6s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=tE7qLKoU; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 07699C4CEF1;
+	Thu, 20 Nov 2025 13:20:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1763644836;
+	bh=suChz3lb455K0CTc0lxqoZMuUln/t/yNRJylmUEI0uA=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=tE7qLKoUsAPutpbnrmwjp9vykq5EjMzu28IBVF6NPPhgbKwMmq35tpdqtrW7GGY5F
+	 BvLDy/Sj0j2uq0jpopWM0Fd9dJvjewEhLskgTZsSH6d3c2ttcvsYkZt37iIWmPNetG
+	 RflX4Rv+1h/0vlA0wE8zQKkybUB5H8ZOKqHDphGdLjbimNLclXaSBswEseHXF+Lljg
+	 19ulMxpDPqlPNs1IIZq47CPRKrUI01VQ5ZC5KwzaaBJKF6U+KFpJk7pjEoxkIjPlTU
+	 d5u1/6VfG9fLGdD2rq2ShBoFe71Kk5pBCE0/fFhL65xCVmSS6V7XLY9efhPOwJ2LTm
+	 0kQa3l8fUq8xg==
+Date: Thu, 20 Nov 2025 14:20:33 +0100
+From: Frederic Weisbecker <frederic@kernel.org>
+To: Marek Szyprowski <m.szyprowski@samsung.com>
+Cc: Thomas Gleixner <tglx@linutronix.de>,
+	LKML <linux-kernel@vger.kernel.org>,
+	Marco Crivellari <marco.crivellari@suse.com>,
+	Waiman Long <llong@redhat.com>, cgroups@vger.kernel.org
+Subject: Re: [PATCH 1/2] genirq: Fix IRQ threads affinity VS cpuset isolated
+ partitions
+Message-ID: <aR8VoUxBncOu4H47@localhost.localdomain>
+References: <20251118143052.68778-1-frederic@kernel.org>
+ <20251118143052.68778-2-frederic@kernel.org>
+ <CGME20251120115132eucas1p160658ba63831911aadd0b0c2f70b7e28@eucas1p1.samsung.com>
+ <73356b5f-ab5c-4e9e-b57f-b80981c35998@samsung.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <73356b5f-ab5c-4e9e-b57f-b80981c35998@samsung.com>
 
-Hi, Ridong,
+Le Thu, Nov 20, 2025 at 12:51:31PM +0100, Marek Szyprowski a écrit :
+> On 18.11.2025 15:30, Frederic Weisbecker wrote:
+> > When a cpuset isolated partition is created / updated or destroyed,
+> > the IRQ threads are affine blindly to all the non-isolated CPUs. And
+> > this happens without taking into account the IRQ thread initial
+> > affinity that becomes ignored.
+> >
+> > For example in a system with 8 CPUs, if an IRQ and its kthread are
+> > initially affine to CPU 5, creating an isolated partition with only
+> > CPU 2 inside will eventually end up affining the IRQ kthread to all
+> > CPUs but CPU 2 (that is CPUs 0,1,3-7), losing the kthread preference for
+> > CPU 5.
+> >
+> > Besides the blind re-affinity, this doesn't take care of the actual
+> > low level interrupt which isn't migrated. As of today the only way to
+> > isolate non managed interrupts, along with their kthreads, is to
+> > overwrite their affinity separately, for example through /proc/irq/
+> >
+> > To avoid doing that manually, future development should focus on
+> > updating the IRQs affinity whenever cpuset isolated partitions are
+> > updated.
+> >
+> > In the meantime, cpuset shouldn't fiddle with IRQ threads directly.
+> > To prevent from that, set the PF_NO_SETAFFINITY flag to them.
+> >
+> > Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
+> 
+> This patch landed in today's linux-next as commit 844dcacab287 ("genirq: 
+> Fix interrupt threads affinity vs. cpuset isolated partitions"). In my 
+> tests I found that it triggers a warnings on some of my test systems. 
+> This is example of such warning:
+> 
+> ------------[ cut here ]------------
+> WARNING: CPU: 0 PID: 1 at kernel/kthread.c:599 kthread_bind_mask+0x2c/0x84
 
-On Thu, 20 Nov 2025 08:57:51, Chen Ridong wrote:
->On 2025/11/19 21:20, Michal KoutnÃ½ wrote:
->> On Wed, Nov 19, 2025 at 06:57:49PM +0800, Sun Shaojie <sunshaojie@kylinos.cn> wrote:
->>>  Table 2.1: Before applying this patch
->>>  Step                                       | A1's prstate | B1's prstate |
->>>  #1> echo "0-1" > A1/cpuset.cpus            | member       | member       |
->>>  #2> echo "root" > A1/cpuset.cpus.partition | root         | member       |
->>>  #3> echo "2" > B1/cpuset.cpus              | root         | member       |
->>>  #4> echo "root" > B1/cpuset.cpus.partition | root         | root         |
->>>  #5> echo "1-2" > B1/cpuset.cpus            | root invalid | root invalid |
->>>
->>> After step #4, B1 can exclusively use CPU 2. Therefore, at step #5,
->>> regardless of what conflicting value B1 writes to cpuset.cpus, it will
->>> always have at least CPU 2 available. This makes it unnecessary to mark
->>> A1 as "root invalid".
->>>
->>>  Table 2.2: After applying this patch
->>>  Step                                       | A1's prstate | B1's prstate |
->>>  #1> echo "0-1" > A1/cpuset.cpus            | member       | member       |
->>>  #2> echo "root" > A1/cpuset.cpus.partition | root         | member       |
->>>  #3> echo "2" > B1/cpuset.cpus              | root         | member       |
->>>  #4> echo "root" > B1/cpuset.cpus.partition | root         | root         |
->>>  #5> echo "1-2" > B1/cpuset.cpus            | root         | root invalid |
->>>
->>> In summary, regardless of how B1 configures its cpuset.cpus, there will
->>> always be available CPUs in B1's cpuset.cpus.effective. Therefore, there
->>> is no need to change A1 from "root" to "root invalid".
->> 
->> Admittedly, I don't like this change because it relies on implicit
->> preference ordering between siblings (here first comes, first served)
->
->Agree. If we only invalidate the latter one, I think regardless of the implementation approach, we
->may end up with different results depending on the order of operations.
+Erm, does this means that the IRQ thread got awaken before the first official
+wakeup in wake_up_and_wait_for_irq_thread_ready()? This looks wrong...
 
+irq_startup() may be called on a few occcasions before. So perhaps
+the IRQ already fired and woke up the kthread once before the "official"
+first wake up?
 
-I don't understand the "order of operations" mentioned here. After reviewing
-the previous email content, are you referring to this?
+There seem to be some initialization ordering issue here...
 
-On Sat, 15 Nov 2025 15:41:03, Chen Ridong wrote:
->With the result you expect, would we observe the following behaviors:
->
->#1> mkdir -p A1
->#2> mkdir -p B1
->#3> echo "0-1"  > A1/cpuset.cpus
->#4> echo "1-2"  > B1/cpuset.cpus
->#5> echo "root" > A1/cpuset.cpus.partition
->#6> echo "root" > B1/cpuset.cpus.partition # A1:root;B1:root invalid
->
->#1> mkdir -p A1
->#2> mkdir -p B1
->#3> echo "0-1"  > A1/cpuset.cpus
->#4> echo "1-2"  > B1/cpuset.cpus
->#5> echo "root" > B1/cpuset.cpus.partition
->#6> echo "root" > A1/cpuset.cpus.partition # A1:root invalid;B1:root
->
->Do different operation orders yield different results? If so, this is not what we expect.
+Thomas?
 
-However, after applying this patch, the outcomes of these two examples are 
-as follows:
- 
- #1> mkdir -p A1
- #2> mkdir -p B1
- #3> echo "0-1"  > A1/cpuset.cpus           | member       | member      |
- #4> echo "1-2"  > B1/cpuset.cpus           | member       | member      |
- #5> echo "root" > A1/cpuset.cpus.partition | root invalid | root        |
- #6> echo "root" > B1/cpuset.cpus.partition | root invalid | root invalid|
-
- #1> mkdir -p A1
- #2> mkdir -p B1
- #3> echo "0-1"  > A1/cpuset.cpus           | member       | member      |
- #4> echo "1-2"  > B1/cpuset.cpus           | member       | member      |
- #5> echo "root" > B1/cpuset.cpus.partition | root         | root invalid|
- #6> echo "root" > A1/cpuset.cpus.partition | root invalid | root invalid|
-
-Moreover, even without applying this patch, the result remains the same,
-because modifying cpuset.cpus.partition does not disable its siblings' partitions.
-
-So, what are the specific issues that you believe would arise?
-
-
-Thanks,
-Sun Shaojie
+Thanks.
+-- 
+Frederic Weisbecker
+SUSE Labs
 
