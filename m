@@ -1,242 +1,171 @@
-Return-Path: <cgroups+bounces-12146-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-12147-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2618BC77337
-	for <lists+cgroups@lfdr.de>; Fri, 21 Nov 2025 05:00:38 +0100 (CET)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4B3BBC773A1
+	for <lists+cgroups@lfdr.de>; Fri, 21 Nov 2025 05:07:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sin.lore.kernel.org (Postfix) with ESMTPS id D39D82C057
-	for <lists+cgroups@lfdr.de>; Fri, 21 Nov 2025 03:59:07 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTPS id DDEFD29104
+	for <lists+cgroups@lfdr.de>; Fri, 21 Nov 2025 04:07:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D43D27FD49;
-	Fri, 21 Nov 2025 03:59:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D27B92E1F08;
+	Fri, 21 Nov 2025 04:07:00 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+Received: from localhost.localdomain (unknown [147.136.157.0])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D14A244661;
-	Fri, 21 Nov 2025 03:58:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A7192D7398;
+	Fri, 21 Nov 2025 04:06:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=147.136.157.0
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763697542; cv=none; b=h6ZpEGCDVmC9fcER4dheYayGD9q7BVzagln4CDFH4RdaaKC9leOUD+nxoCh3FMj66cO+ZxRxlvka6JZTqR5qE1PPL/RJ1YeKY9oz/OfkZvnaqcHJ9+Z4NujYyyt3NHGdPJBp+VhC3BgLBve0RwxuFH1UNRhL40vdvNDpQC+qwOg=
+	t=1763698020; cv=none; b=UW3FIdBlhsLrZOIC+GWWUHKlS4dtHUTR1uZT4F719oJ4TJzSqcPp9HBuZzOuZpkzqyfoxSIdBCKtuf8LZuqz4xxv90cehRLhkg1PcbniqMloRX0oKFh64Roz0sMGWkQS6iYsZ3vmvfCA03K2sjbcB91nLvV2LnC7PDzf4BZTQvw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763697542; c=relaxed/simple;
-	bh=ojaFMEdAu27CBY90NnpMExcnwYGI2Cc6ptqMQOwLBYE=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=FaY/MpgifkPxbIFdnCn1xpPuZMkDr/PHoOLG6Rwe6h3mBS3DryfLpLJGwDAhpJpYsy3iwi6NrKYS5j7/aY27Mbm6JYs7A06dDwb9kpSds/SO+kNpNf4Qntod9kDzeDGyISLH6XqCoGyNWWXpTa33kuaUsRWNQf3oCVOhnDGdyds=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.93.142])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTPS id 4dCLzM1mJkzYQtgk;
-	Fri, 21 Nov 2025 11:58:07 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.252])
-	by mail.maildlp.com (Postfix) with ESMTP id 248271A0359;
-	Fri, 21 Nov 2025 11:58:50 +0800 (CST)
-Received: from [10.67.111.176] (unknown [10.67.111.176])
-	by APP3 (Coremail) with SMTP id _Ch0CgA3ARN44x9pgwPPBQ--.14892S2;
-	Fri, 21 Nov 2025 11:58:49 +0800 (CST)
-Message-ID: <f31661d8-21e4-4626-86bb-8a8daa5d47ef@huaweicloud.com>
-Date: Fri, 21 Nov 2025 11:58:48 +0800
+	s=arc-20240116; t=1763698020; c=relaxed/simple;
+	bh=gDmGQjmlP+mFE3sO3gDTPk54MKTO9RjdwSAw2R/xDCM=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=mdpee9krbZfo7j2nGJk8aIG+RCx1BmGTPkQI1U3V2cgIay8Yy9qrVS8vGiVVn74zw7Hr7MZvd/392x3c9TUBEoqWEqcj36W44gyxVW8Jem96T7kf8vELA1+DAi84UNABgQPcqbXMb9sVx/bradc53YSMMacsqdViYvA4vs5PQjw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.dev; spf=none smtp.mailfrom=localhost.localdomain; arc=none smtp.client-ip=147.136.157.0
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=localhost.localdomain
+Received: by localhost.localdomain (Postfix, from userid 1007)
+	id A34448B2A15; Fri, 21 Nov 2025 12:06:56 +0800 (+08)
+From: Jiayuan Chen <jiayuan.chen@linux.dev>
+To: cgroups@vger.kernel.org
+Cc: tj@kernel.org,
+	hannes@cmpxchg.org,
+	mkoutny@suse.com,
+	linux-kernel@vger.kernel.org,
+	Jiayuan Chen <jiayuan.chen@linux.dev>
+Subject: [PATCH v2] cgroup: Add preemption protection to css_rstat_updated()
+Date: Fri, 21 Nov 2025 12:06:55 +0800
+Message-ID: <20251121040655.89584-1-jiayuan.chen@linux.dev>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1 05/26] mm: memcontrol: allocate object cgroup for
- non-kmem case
-To: Qi Zheng <qi.zheng@linux.dev>, hannes@cmpxchg.org, hughd@google.com,
- mhocko@suse.com, roman.gushchin@linux.dev, shakeel.butt@linux.dev,
- muchun.song@linux.dev, david@redhat.com, lorenzo.stoakes@oracle.com,
- ziy@nvidia.com, harry.yoo@oracle.com, imran.f.khan@oracle.com,
- kamalesh.babulal@oracle.com, axelrasmussen@google.com, yuanchu@google.com,
- weixugc@google.com, akpm@linux-foundation.org
-Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org,
- cgroups@vger.kernel.org, Muchun Song <songmuchun@bytedance.com>,
- Qi Zheng <zhengqi.arch@bytedance.com>
-References: <cover.1761658310.git.zhengqi.arch@bytedance.com>
- <05ef300193bbe5bb7d2d97723efe928dab60429b.1761658310.git.zhengqi.arch@bytedance.com>
-Content-Language: en-US
-From: Chen Ridong <chenridong@huaweicloud.com>
-In-Reply-To: <05ef300193bbe5bb7d2d97723efe928dab60429b.1761658310.git.zhengqi.arch@bytedance.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID:_Ch0CgA3ARN44x9pgwPPBQ--.14892S2
-X-Coremail-Antispam: 1UD129KBjvJXoW3Ary3CFyrJw4rGFyDAr18Krg_yoW7XFWDpF
-	sxJFy3Aw4rArW7Gr1Ska9FvFyFka18XFW5K34xGw1xArsIqw15Jr12kw18AFyrAFyfGr1x
-	Jrs0yw1kGF4Yya7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUvjb4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
-	0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
-	x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
-	0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc7CjxVAaw2AF
-	wI0_GFv_Wryl42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4
-	xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a6rW5
-	MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I
-	0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWU
-	JVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUIa
-	0PDUUUU
-X-CM-SenderInfo: hfkh02xlgr0w46kxt4xhlfz01xgou0bp/
+Content-Transfer-Encoding: 8bit
 
+BPF programs do not disable preemption, they only disable migration.
+Therefore, when running the cgroup_hierarchical_stats selftest, a
+warning [1] is generated.
 
+The css_rstat_updated() function is lockless and reentrant. However,
+as Tejun pointed out [2], preemption-related considerations need to
+be considered. Since css_rstat_updated() can be called from BPF where
+preemption is not disabled by its framework and it has already been
+exposed as a kfunc to BPF programs, introducing a new kfunc like bpf_xx
+will break existing uses. Thus, we directly make css_rstat_updated()
+preempt-safe here.
 
-On 2025/10/28 21:58, Qi Zheng wrote:
-> From: Muchun Song <songmuchun@bytedance.com>
-> 
-> Pagecache pages are charged at allocation time and hold a reference
-> to the original memory cgroup until reclaimed. Depending on memory
-> pressure, page sharing patterns between different cgroups and cgroup
-> creation/destruction rates, many dying memory cgroups can be pinned
-> by pagecache pages, reducing page reclaim efficiency and wasting
-> memory. Converting LRU folios and most other raw memory cgroup pins
-> to the object cgroup direction can fix this long-living problem.
-> 
-> As a result, the objcg infrastructure is no longer solely applicable
-> to the kmem case. In this patch, we extend the scope of the objcg
-> infrastructure beyond the kmem case, enabling LRU folios to reuse
-> it for folio charging purposes.
-> 
-> It should be noted that LRU folios are not accounted for at the root
-> level, yet the folio->memcg_data points to the root_mem_cgroup. Hence,
-> the folio->memcg_data of LRU folios always points to a valid pointer.
-> However, the root_mem_cgroup does not possess an object cgroup.
-> Therefore, we also allocate an object cgroup for the root_mem_cgroup.
-> 
-> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-> Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
-> ---
->  mm/memcontrol.c | 51 +++++++++++++++++++++++--------------------------
->  1 file changed, 24 insertions(+), 27 deletions(-)
-> 
-> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> index d5257465c9d75..2afd7f99ca101 100644
-> --- a/mm/memcontrol.c
-> +++ b/mm/memcontrol.c
-> @@ -204,10 +204,10 @@ static struct obj_cgroup *obj_cgroup_alloc(void)
->  	return objcg;
->  }
->  
-> -static void memcg_reparent_objcgs(struct mem_cgroup *memcg,
-> -				  struct mem_cgroup *parent)
-> +static void memcg_reparent_objcgs(struct mem_cgroup *memcg)
->  {
->  	struct obj_cgroup *objcg, *iter;
-> +	struct mem_cgroup *parent = parent_mem_cgroup(memcg);
->  
->  	objcg = rcu_replace_pointer(memcg->objcg, NULL, true);
->  
-> @@ -3302,30 +3302,17 @@ unsigned long mem_cgroup_usage(struct mem_cgroup *memcg, bool swap)
->  	return val;
->  }
->  
-> -static int memcg_online_kmem(struct mem_cgroup *memcg)
-> +static void memcg_online_kmem(struct mem_cgroup *memcg)
->  {
-> -	struct obj_cgroup *objcg;
-> -
->  	if (mem_cgroup_kmem_disabled())
-> -		return 0;
-> +		return;
->  
->  	if (unlikely(mem_cgroup_is_root(memcg)))
-> -		return 0;
-> -
-> -	objcg = obj_cgroup_alloc();
-> -	if (!objcg)
-> -		return -ENOMEM;
-> -
-> -	objcg->memcg = memcg;
-> -	rcu_assign_pointer(memcg->objcg, objcg);
-> -	obj_cgroup_get(objcg);
-> -	memcg->orig_objcg = objcg;
-> +		return;
->  
->  	static_branch_enable(&memcg_kmem_online_key);
->  
->  	memcg->kmemcg_id = memcg->id.id;
-> -
-> -	return 0;
->  }
->  
->  static void memcg_offline_kmem(struct mem_cgroup *memcg)
-> @@ -3340,12 +3327,6 @@ static void memcg_offline_kmem(struct mem_cgroup *memcg)
->  
->  	parent = parent_mem_cgroup(memcg);
->  	memcg_reparent_list_lrus(memcg, parent);
-> -
-> -	/*
-> -	 * Objcg's reparenting must be after list_lru's, make sure list_lru
-> -	 * helpers won't use parent's list_lru until child is drained.
-> -	 */
-> -	memcg_reparent_objcgs(memcg, parent);
->  }
->  
->  #ifdef CONFIG_CGROUP_WRITEBACK
-> @@ -3862,9 +3843,9 @@ mem_cgroup_css_alloc(struct cgroup_subsys_state *parent_css)
->  static int mem_cgroup_css_online(struct cgroup_subsys_state *css)
->  {
->  	struct mem_cgroup *memcg = mem_cgroup_from_css(css);
-> +	struct obj_cgroup *objcg;
->  
-> -	if (memcg_online_kmem(memcg))
-> -		goto remove_id;
-> +	memcg_online_kmem(memcg);
->  
->  	/*
->  	 * A memcg must be visible for expand_shrinker_info()
-> @@ -3874,6 +3855,15 @@ static int mem_cgroup_css_online(struct cgroup_subsys_state *css)
->  	if (alloc_shrinker_info(memcg))
->  		goto offline_kmem;
->  
-> +	objcg = obj_cgroup_alloc();
-> +	if (!objcg)
-> +		goto free_shrinker;
-> +
-> +	objcg->memcg = memcg;
-> +	rcu_assign_pointer(memcg->objcg, objcg);
-> +	obj_cgroup_get(objcg);
-> +	memcg->orig_objcg = objcg;
-> +
+[1]:
+~/tools/testing/selftests/bpf$
+test_progs -a cgroup_hierarchical_stats
 
-Will it be better to add a helper function like obj_cgroup_init()?
+...
+------------[ cut here ]------------
+WARNING: CPU: 0 PID: 382 at kernel/cgroup/rstat.c:84
+Modules linked in:
+RIP: 0010:css_rstat_updated+0x9d/0x160
+...
+PKRU: 55555554
+Call Trace:
+ <TASK>
+ bpf_prog_16a1c2d081688506_counter+0x143/0x14e
+ bpf_trampoline_6442524909+0x4b/0xb7
+ cgroup_attach_task+0x5/0x330
+ ? __cgroup_procs_write+0x1d7/0x2f0
+ cgroup_procs_write+0x17/0x30
+ cgroup_file_write+0xa6/0x2d0
+ kernfs_fop_write_iter+0x188/0x240
+ vfs_write+0x2da/0x5a0
+ ksys_write+0x77/0x100
+ __x64_sys_write+0x19/0x30
+ x64_sys_call+0x79/0x26a0
+ do_syscall_64+0x89/0x790
+ ? irqentry_exit+0x77/0xb0
+ ? __this_cpu_preempt_check+0x13/0x20
+ ? lockdep_hardirqs_on+0xce/0x170
+ ? irqentry_exit_to_user_mode+0xf2/0x290
+ ? irqentry_exit+0x77/0xb0
+ ? clear_bhb_loop+0x50/0xa0
+ ? clear_bhb_loop+0x50/0xa0
+ entry_SYSCALL_64_after_hwframe+0x76/0x7e
+---[ end trace 0000000000000000 ]---
 
->  	if (unlikely(mem_cgroup_is_root(memcg)) && !mem_cgroup_disabled())
->  		queue_delayed_work(system_unbound_wq, &stats_flush_dwork,
->  				   FLUSH_TIME);
-> @@ -3896,9 +3886,10 @@ static int mem_cgroup_css_online(struct cgroup_subsys_state *css)
->  	xa_store(&mem_cgroup_ids, memcg->id.id, memcg, GFP_KERNEL);
->  
->  	return 0;
-> +free_shrinker:
-> +	free_shrinker_info(memcg);
->  offline_kmem:
->  	memcg_offline_kmem(memcg);
-> -remove_id:
->  	mem_cgroup_id_remove(memcg);
->  	return -ENOMEM;
->  }
-> @@ -3916,6 +3907,12 @@ static void mem_cgroup_css_offline(struct cgroup_subsys_state *css)
->  
->  	memcg_offline_kmem(memcg);
->  	reparent_deferred_split_queue(memcg);
-> +	/*
-> +	 * The reparenting of objcg must be after the reparenting of the
-> +	 * list_lru and deferred_split_queue above, which ensures that they will
-> +	 * not mistakenly get the parent list_lru and deferred_split_queue.
-> +	 */
-> +	memcg_reparent_objcgs(memcg);
->  	reparent_shrinker_deferred(memcg);
->  	wb_memcg_offline(memcg);
->  	lru_gen_offline_memcg(memcg);
+[2]: https://lore.kernel.org/cgroups/445b0d155b7a3cb84452aa7010669e293e8c37db@linux.dev/T/
 
+Signed-off-by: Jiayuan Chen <jiayuan.chen@linux.dev>
+
+---
+v1 -> v2: Add preemption protection instread of dropping preemption
+          assert
+v1: https://lore.kernel.org/cgroups/445b0d155b7a3cb84452aa7010669e293e8c37db@linux.dev/T/
+---
+ kernel/cgroup/rstat.c | 39 +++++++++++++++++++++++----------------
+ 1 file changed, 23 insertions(+), 16 deletions(-)
+
+diff --git a/kernel/cgroup/rstat.c b/kernel/cgroup/rstat.c
+index a198e40c799b..ec68c653545c 100644
+--- a/kernel/cgroup/rstat.c
++++ b/kernel/cgroup/rstat.c
+@@ -52,22 +52,7 @@ static inline struct llist_head *ss_lhead_cpu(struct cgroup_subsys *ss, int cpu)
+ 	return per_cpu_ptr(&rstat_backlog_list, cpu);
+ }
+ 
+-/**
+- * css_rstat_updated - keep track of updated rstat_cpu
+- * @css: target cgroup subsystem state
+- * @cpu: cpu on which rstat_cpu was updated
+- *
+- * Atomically inserts the css in the ss's llist for the given cpu. This is
+- * reentrant safe i.e. safe against softirq, hardirq and nmi. The ss's llist
+- * will be processed at the flush time to create the update tree.
+- *
+- * NOTE: if the user needs the guarantee that the updater either add itself in
+- * the lockless list or the concurrent flusher flushes its updated stats, a
+- * memory barrier is needed before the call to css_rstat_updated() i.e. a
+- * barrier after updating the per-cpu stats and before calling
+- * css_rstat_updated().
+- */
+-__bpf_kfunc void css_rstat_updated(struct cgroup_subsys_state *css, int cpu)
++static void __css_rstat_updated(struct cgroup_subsys_state *css, int cpu)
+ {
+ 	struct llist_head *lhead;
+ 	struct css_rstat_cpu *rstatc;
+@@ -122,6 +107,28 @@ __bpf_kfunc void css_rstat_updated(struct cgroup_subsys_state *css, int cpu)
+ 	llist_add(&rstatc->lnode, lhead);
+ }
+ 
++/**
++ * css_rstat_updated - keep track of updated rstat_cpu
++ * @css: target cgroup subsystem state
++ * @cpu: cpu on which rstat_cpu was updated
++ *
++ * Atomically inserts the css in the ss's llist for the given cpu. This is
++ * reentrant safe i.e. safe against softirq, hardirq and nmi. The ss's llist
++ * will be processed at the flush time to create the update tree.
++ *
++ * NOTE: if the user needs the guarantee that the updater either add itself in
++ * the lockless list or the concurrent flusher flushes its updated stats, a
++ * memory barrier is needed before the call to css_rstat_updated() i.e. a
++ * barrier after updating the per-cpu stats and before calling
++ * css_rstat_updated().
++ */
++__bpf_kfunc void css_rstat_updated(struct cgroup_subsys_state *css, int cpu)
++{
++	preempt_disable();
++	__css_rstat_updated(css, cpu);
++	preempt_enable();
++}
++
+ static void __css_process_update_tree(struct cgroup_subsys_state *css, int cpu)
+ {
+ 	/* put @css and all ancestors on the corresponding updated lists */
 -- 
-Best regards,
-Ridong
+2.43.0
 
 
