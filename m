@@ -1,117 +1,177 @@
-Return-Path: <cgroups+bounces-12162-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-12163-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DD433C7B9DB
-	for <lists+cgroups@lfdr.de>; Fri, 21 Nov 2025 21:05:23 +0100 (CET)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id E8F96C7BB78
+	for <lists+cgroups@lfdr.de>; Fri, 21 Nov 2025 22:07:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 96EE33A531F
-	for <lists+cgroups@lfdr.de>; Fri, 21 Nov 2025 20:05:22 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 21F1135C1A8
+	for <lists+cgroups@lfdr.de>; Fri, 21 Nov 2025 21:07:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5E43D305068;
-	Fri, 21 Nov 2025 20:05:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9960627A462;
+	Fri, 21 Nov 2025 21:07:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b="GxIpXZIl"
+	dkim=pass (2048-bit key) header.d=gourry.net header.i=@gourry.net header.b="bVeAkH0S"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mailout1.w1.samsung.com (mailout1.w1.samsung.com [210.118.77.11])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qt1-f177.google.com (mail-qt1-f177.google.com [209.85.160.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1E5714C97
-	for <cgroups@vger.kernel.org>; Fri, 21 Nov 2025 20:05:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=210.118.77.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 995D42836B5
+	for <cgroups@vger.kernel.org>; Fri, 21 Nov 2025 21:07:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763755519; cv=none; b=OKEkeiyQux3RXLjHC7iyJVMfUv1j42R6MdGdnWZNxC+xKJROBB26BIgr35f9ZAnVFTye15oy5EdhcBSaErugeY8s6Tribn4T5cvr+H0MPleSB4Q+jIt9EOzSL/k+ZvsP6ydXj+EED7Z6FOOkUSZD9KcWNHLeg2S3mooOJr+cJLs=
+	t=1763759270; cv=none; b=ZDk9m/iYvh8whofJVM3lEyDi46Yhc4tDKX6RipcGFY8AEut6eU1S0qyATVr61gD2KkKtXujvclYpy3dHv058yWmq47uChlDhLRbzDUEyWbW/bHk6WHcF9AIrec5mnJImagSze+syhcl6LuJK5CwVQyEw6YAbG1vdczrtRb/NQqY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763755519; c=relaxed/simple;
-	bh=rJ6w0Eto3ZXBMQPblq+9l7H0IhawqLduFKkjWHxhL1k=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:From:In-Reply-To:
-	 Content-Type:References; b=Puo/Aar706Bf8xAEXiXzYDyFv0/zFaGA7/KEcBWi8Lf+ADMPkGm/Y8U/gmXfVJnnONtOY+2JIbBLkVTA5Q7a9ax/GnrVw/gqZbDW8s4AWRZFXypNxCNeF3A8E1JS0h1Pq5Dxj02DoKltAtLOoLtcuHw6qpXv05PLczGXVn2vVOI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com; spf=pass smtp.mailfrom=samsung.com; dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b=GxIpXZIl; arc=none smtp.client-ip=210.118.77.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=samsung.com
-Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
-	by mailout1.w1.samsung.com (KnoxPortal) with ESMTP id 20251121200508euoutp01e4be7d6d88ee2a2487a985efa2785bd1~6Hkpedm8L1772017720euoutp01J
-	for <cgroups@vger.kernel.org>; Fri, 21 Nov 2025 20:05:08 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout1.w1.samsung.com 20251121200508euoutp01e4be7d6d88ee2a2487a985efa2785bd1~6Hkpedm8L1772017720euoutp01J
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-	s=mail20170921; t=1763755508;
-	bh=TWcNwR8s7i9hJQBqzLWPt82xO1sFZQeOz3mN4JITxW0=;
-	h=Date:Subject:To:Cc:From:In-Reply-To:References:From;
-	b=GxIpXZIlParQi/nq7xDUmG+ederpXcHVl4dqDb/5PAK9hIiu5G3cVc5XMZGREJ3Fv
-	 ejmq5x+tyWQem469evnbdZe6u2/4qIJzm3LZgCjSLLl9HJ7ULfo//2PQ7n9sGVnEK7
-	 2UdXSr3ztrIYkk/aPOLGALcqC5tNWg18E5upVMcQ=
-Received: from eusmtip1.samsung.com (unknown [203.254.199.221]) by
-	eucas1p1.samsung.com (KnoxPortal) with ESMTPA id
-	20251121200508eucas1p188300879fffc7fb86f8e95e0a9a00c6b~6HkpHHWfA2715727157eucas1p1H;
-	Fri, 21 Nov 2025 20:05:08 +0000 (GMT)
-Received: from [106.210.134.192] (unknown [106.210.134.192]) by
-	eusmtip1.samsung.com (KnoxPortal) with ESMTPA id
-	20251121200508eusmtip12c44934ba72285b8a90bcc7671a1d797~6Hkoxblr80965609656eusmtip12;
-	Fri, 21 Nov 2025 20:05:08 +0000 (GMT)
-Message-ID: <8e5ff133-9af9-4718-9e94-ca2102e26ff6@samsung.com>
-Date: Fri, 21 Nov 2025 21:05:07 +0100
+	s=arc-20240116; t=1763759270; c=relaxed/simple;
+	bh=shSHymcVpVsJRS3DnGEq5zOC8PBxp/thlGXIe4I1Liw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=XSIkwuK+N/2zRt0FL0p0Fu/JTHsabCnbOdfwFJe0ws5XNL2+cE5S1lGZSR1ZylEaMa31GE3VV9GRln2cbRBgJMQc2PN1mGbG/PbePlbcbcjgDqjumyQK38yt3PMY1c4W0xqO4zu9UMUd6vs2rIJ+8cBk+DkKpVPh/Kb373qGD3E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gourry.net; spf=pass smtp.mailfrom=gourry.net; dkim=pass (2048-bit key) header.d=gourry.net header.i=@gourry.net header.b=bVeAkH0S; arc=none smtp.client-ip=209.85.160.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gourry.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gourry.net
+Received: by mail-qt1-f177.google.com with SMTP id d75a77b69052e-4ee257e56aaso22882141cf.0
+        for <cgroups@vger.kernel.org>; Fri, 21 Nov 2025 13:07:48 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gourry.net; s=google; t=1763759267; x=1764364067; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=Svi+I8ywJ8k5uxtzxqjpEGX4Qh9Fr5IeUT/6ziPIoB4=;
+        b=bVeAkH0Shdp0h8OjS5YQFosmUq1UbuAiSCtBpKGJd649mntc47dWELhSOTZQnaOAjK
+         BCY4D7BXJ5i1hsC1fClTm4PszJCglfGik5ovY+CoJ8ktPXIJO8jpUKKTbvCX2WfqGRw3
+         bA2H1a0CPlPAyhgwrhn0KSEAyGZt4e+MOmXefgJHOtptodjnXiUQIK0cE/uB+C1MmOj6
+         9Vv3N5ZkdIweoiAfWLXH0DDPqvoA94Oroxiiu7cs3E8G3STcoHTtPwib7Gxi2uB6ShCe
+         TN0qnP/keU7Y8ly8iP6f6U+hdeJ5CXT5nLs7pWeGnp4edtdM0Sym9I141bXeWTR7F0Zq
+         CZIg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1763759267; x=1764364067;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Svi+I8ywJ8k5uxtzxqjpEGX4Qh9Fr5IeUT/6ziPIoB4=;
+        b=NRQPeZBajWhwxwY+tAhhDU7BEPXc+bzyzrtxuaQoE1XYoXnQY/dtQbLXh/LbVoAVyU
+         lZLYdho4Wsj1mU7RszR34nkpn/IU5fCv8eKEl/huZNzVFr7m2Gt/gK/qYksoqdh4sqq0
+         dmNRWg5dj3toOF6k4aa4fGPEJ/gUEIzAzr3QXbuqqXgznhKALBKJOuypr836ZC2iA/Lu
+         cMlBFeWKfe8OcBz2N1oKDJxSwaKsweci1Xjm20GBwZSpba5l55Er5cXx3HvTUNI79UsP
+         fu/9PR8pL6+nNa4ueTJ9CYo6KNp1SRZruaD/HYYTgyDjJeHJNg2AR4b5Tu98l3/GpBlg
+         cf5w==
+X-Forwarded-Encrypted: i=1; AJvYcCUCB6Dpeopw9ilCBLVGSOO3g74MpRKhf7qPB3pvwYI7M8QzeUWMwhuZBpjX24QFSva11Cl5cjkP@vger.kernel.org
+X-Gm-Message-State: AOJu0YzQOZH9zQ4QQxuDqtQ9MjsQpldP+K6qoH7JMo2oTKaTkv5AQ6yV
+	PucugFj85fCLdwzUdqDQTXumB82zOqijIWAVv6It4HaF1TB2+uhaLwcwiwkM2viD3ciZUGuswoN
+	Vh0Wn
+X-Gm-Gg: ASbGncv4pVwBL5LDbrqWIjYAHS4gOf+5PZrbkZ7GdD7LZikuO8RC21T5dfQv3ml534l
+	MH2mgPg/zdLD+aKzwAf9+jMw4BDXVO5Qk0EWJQBQytcFvRqrsZY16LjEk24t1v34qMZRg7Bz8CY
+	j/0wPVaDsgCXKKkjDYoFLTtaC0Q9NUAbXk0BgE8FJhKYNDTPHW5wZgKSkBiGEC2YgO9gWYC3Kau
+	V1cc0XvuIKFplapkcWTun+PN9kMgu/QbdS/H1DOfDEwJlrq7y2qPdWOu4c1Gi/TZPeHGHioj2Z6
+	+LiZdmFhNMOxo4XEmt0qQo2M7laeU/nSuSsCQnKEl/tDafm+lTSHAYj8zqaLoFxIsCYhty0voQu
+	L92lAvjGY6h9Ch/rc2iYqfKtntZ342sqxiFGXCJaZg924xh9kBCOH3mc1FWeM3HwZI2hdqDRlu4
+	NUnMA8WvHx2fTOLLahv2QpuCUdY0cN8xhjC2Qe1nOHV2IkB5yKlbbaOVTIlWK0oz1JjJ6CFw==
+X-Google-Smtp-Source: AGHT+IHB54I5/pxWYI0YylL4DbWXryCZhFk7bd7fb71QpMMtzOgbCdkOeFKpCqsEbmreSLGZDE/f8Q==
+X-Received: by 2002:a05:622a:c6:b0:4eb:a457:394 with SMTP id d75a77b69052e-4ee587d2ef1mr64635291cf.12.1763759267374;
+        Fri, 21 Nov 2025 13:07:47 -0800 (PST)
+Received: from gourry-fedora-PF4VCD3F (pool-96-255-20-138.washdc.ftas.verizon.net. [96.255.20.138])
+        by smtp.gmail.com with ESMTPSA id d75a77b69052e-4ee48e65e3bsm42420991cf.17.2025.11.21.13.07.45
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 21 Nov 2025 13:07:46 -0800 (PST)
+Date: Fri, 21 Nov 2025 16:07:35 -0500
+From: Gregory Price <gourry@gourry.net>
+To: Alistair Popple <apopple@nvidia.com>
+Cc: linux-mm@kvack.org, kernel-team@meta.com, linux-cxl@vger.kernel.org,
+	linux-kernel@vger.kernel.org, nvdimm@lists.linux.dev,
+	linux-fsdevel@vger.kernel.org, cgroups@vger.kernel.org,
+	dave@stgolabs.net, jonathan.cameron@huawei.com,
+	dave.jiang@intel.com, alison.schofield@intel.com,
+	vishal.l.verma@intel.com, ira.weiny@intel.com,
+	dan.j.williams@intel.com, longman@redhat.com,
+	akpm@linux-foundation.org, david@redhat.com,
+	lorenzo.stoakes@oracle.com, Liam.Howlett@oracle.com, vbabka@suse.cz,
+	rppt@kernel.org, surenb@google.com, mhocko@suse.com,
+	osalvador@suse.de, ziy@nvidia.com, matthew.brost@intel.com,
+	joshua.hahnjy@gmail.com, rakie.kim@sk.com, byungchul@sk.com,
+	ying.huang@linux.alibaba.com, mingo@redhat.com,
+	peterz@infradead.org, juri.lelli@redhat.com,
+	vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+	rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+	vschneid@redhat.com, tj@kernel.org, hannes@cmpxchg.org,
+	mkoutny@suse.com, kees@kernel.org, muchun.song@linux.dev,
+	roman.gushchin@linux.dev, shakeel.butt@linux.dev,
+	rientjes@google.com, jackmanb@google.com, cl@gentwo.org,
+	harry.yoo@oracle.com, axelrasmussen@google.com, yuanchu@google.com,
+	weixugc@google.com, zhengqi.arch@bytedance.com,
+	yosry.ahmed@linux.dev, nphamcs@gmail.com, chengming.zhou@linux.dev,
+	fabio.m.de.francesco@linux.intel.com, rrichter@amd.com,
+	ming.li@zohomail.com, usamaarif642@gmail.com, brauner@kernel.org,
+	oleg@redhat.com, namcao@linutronix.de, escape@linux.alibaba.com,
+	dongjoo.seo1@samsung.com
+Subject: Re: [RFC LPC2026 PATCH v2 00/11] Specific Purpose Memory NUMA Nodes
+Message-ID: <aSDUl7kU73LJR78g@gourry-fedora-PF4VCD3F>
+References: <20251112192936.2574429-1-gourry@gourry.net>
+ <aktv2ivkrvtrox6nvcpxsnq6sagxnmj4yymelgkst6pazzpogo@aexnxfcklg75>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Betterbird (Windows)
-Subject: Re: [PATCH 0/3 v3] genirq: Fix IRQ threads VS cpuset
-To: Frederic Weisbecker <frederic@kernel.org>, Thomas Gleixner
-	<tglx@linutronix.de>
-Cc: LKML <linux-kernel@vger.kernel.org>, Marco Crivellari
-	<marco.crivellari@suse.com>, Waiman Long <llong@redhat.com>,
-	cgroups@vger.kernel.org
-Content-Language: en-US
-From: Marek Szyprowski <m.szyprowski@samsung.com>
-In-Reply-To: <20251121143500.42111-1-frederic@kernel.org>
-Content-Transfer-Encoding: 7bit
-X-CMS-MailID: 20251121200508eucas1p188300879fffc7fb86f8e95e0a9a00c6b
-X-Msg-Generator: CA
-Content-Type: text/plain; charset="utf-8"
-X-RootMTR: 20251121143513eucas1p15c03a2c15aa5a0a15cc46d8f0a4e534e
-X-EPHeader: CA
-X-CMS-RootMailID: 20251121143513eucas1p15c03a2c15aa5a0a15cc46d8f0a4e534e
-References: <CGME20251121143513eucas1p15c03a2c15aa5a0a15cc46d8f0a4e534e@eucas1p1.samsung.com>
-	<20251121143500.42111-1-frederic@kernel.org>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <aktv2ivkrvtrox6nvcpxsnq6sagxnmj4yymelgkst6pazzpogo@aexnxfcklg75>
 
-On 21.11.2025 15:34, Frederic Weisbecker wrote:
-> Here is another take after some last minutes issues reported by
-> Marek Szyprowski <m.szyprowski@samsung.com>:
->
-> https://lore.kernel.org/all/73356b5f-ab5c-4e9e-b57f-b80981c35998@samsung.com/
+On Tue, Nov 18, 2025 at 06:02:02PM +1100, Alistair Popple wrote:
+> 
+> I'm interested in the contrast with zone_device, and in particular why
+> device_coherent memory doesn't end up being a good fit for this.
+> 
+> > - Why mempolicy.c and cpusets as-is are insufficient
+> > - SPM types seeking this form of interface (Accelerator, Compression)
+> 
+> I'm sure you can guess my interest is in GPUs which also have memory some people
+> consider should only be used for specific purposes :-) Currently our coherent
+> GPUs online this as a normal NUMA noode, for which we have also generally
+> found mempolicy, cpusets, etc. inadequate as well, so it will be interesting to
+> hear what short comings you have been running into (I'm less familiar with the
+> Compression cases you talk about here though).
+> 
 
-Works fine on my test systems.
+after some thought, talks, and doc readings it seems like the
+zone_device setups don't allow the CPU to map the devmem into page
+tables, and instead depends on migrate_device logic (unless the docs are
+out of sync with the code these days).  That's at least what's described
+in hmm and migrate_device.  
 
-Tested-by: Marek Szyprowski <m.szyprowski@samsung.com>
+Assuming this is out of date and ZONE_DEVICE memory is mappable into
+page tables, assuming you want sparse allocation, ZONE_DEVICE seems to
+suggest you at least have to re-implement the buddy logic (which isn't
+that tall of an ask).
 
-> Changes since v2:
->
-> * Fix early spurious IRQ thread wake-up (to be SOB'ed by Thomas)
->
-> * Instead of applying the affinity remotely, set PF_NO_SETAFFINITY
->    early, right after kthread creation, and wait for the thread to
->    apply the affinity by itself. This is to prevent from early wake-up
->    to mess up with kthread_bind_mask(), as reported by
->    Marek Szyprowski <m.szyprowski@samsung.com>
->
-> Frederic Weisbecker (2):
->    genirq: Fix interrupt threads affinity vs. cpuset isolated partitions
->    genirq: Remove cpumask availability check on kthread affinity setting
->
-> Thomas Gleixner (1):
->    genirq: Prevent from early irq thread spurious wake-ups
->
->   kernel/irq/handle.c | 10 +++++++++-
->   kernel/irq/manage.c | 40 +++++++++++++++++++---------------------
->   2 files changed, 28 insertions(+), 22 deletions(-)
->
-Best regards
--- 
-Marek Szyprowski, PhD
-Samsung R&D Institute Poland
+But I could imagine an (overly simplistic) pattern with SPM Nodes:
+
+fd = open("/dev/gpu_mem", ...)
+buf = mmap(fd, ...)
+buf[0] 
+   1) driver takes the fault
+   2) driver calls alloc_page(..., gpu_node, GFP_SPM_NODE)
+   3) driver manages any special page table masks
+      Like marking pages RO/RW to manage ownership.
+   4) driver sends the gpu the (mapping_id, pfn, index) information
+      so that gpu can map the region in its page tables.
+   5) since the memory is cache coherent, gpu and cpu are free to
+      operate directly on the pages without any additional magic
+      (except typical concurrency controls).
+
+Driver doesn't have to do much in the way of allocationg management.
+
+This is probably less compelling since you don't want general purposes
+services like reclaim, migration, compaction, tiering - etc.  
+
+The value is clearly that you get to manage GPU memory like any other
+memory, but without worry that other parts of the system will touch it.
+
+I'm much more focused on the "I have memory that is otherwise general
+purpose, and wants services like reclaim and compaction, but I want
+strong controls over how things can land there in the first place".
+
+~Gregory
 
 
