@@ -1,171 +1,140 @@
-Return-Path: <cgroups+bounces-12147-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-12148-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4B3BBC773A1
-	for <lists+cgroups@lfdr.de>; Fri, 21 Nov 2025 05:07:06 +0100 (CET)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
+	by mail.lfdr.de (Postfix) with ESMTPS id CBF27C77513
+	for <lists+cgroups@lfdr.de>; Fri, 21 Nov 2025 06:08:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sto.lore.kernel.org (Postfix) with ESMTPS id DDEFD29104
-	for <lists+cgroups@lfdr.de>; Fri, 21 Nov 2025 04:07:05 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id D5EEC3592CD
+	for <lists+cgroups@lfdr.de>; Fri, 21 Nov 2025 05:08:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D27B92E1F08;
-	Fri, 21 Nov 2025 04:07:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 074192EC096;
+	Fri, 21 Nov 2025 05:07:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="G/QTNldg";
+	dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b="G2/w7jO6"
 X-Original-To: cgroups@vger.kernel.org
-Received: from localhost.localdomain (unknown [147.136.157.0])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A7192D7398;
-	Fri, 21 Nov 2025 04:06:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=147.136.157.0
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE6EC2DCF47
+	for <cgroups@vger.kernel.org>; Fri, 21 Nov 2025 05:07:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763698020; cv=none; b=UW3FIdBlhsLrZOIC+GWWUHKlS4dtHUTR1uZT4F719oJ4TJzSqcPp9HBuZzOuZpkzqyfoxSIdBCKtuf8LZuqz4xxv90cehRLhkg1PcbniqMloRX0oKFh64Roz0sMGWkQS6iYsZ3vmvfCA03K2sjbcB91nLvV2LnC7PDzf4BZTQvw=
+	t=1763701674; cv=none; b=I8Vu9UCnIYe3bI18ClSYc3DnhPkTx9g/gBWFBRLCFST4CShsLtWXn4x6TUVgqeS7dhy6euj8EFaAAQqe9WNZDYwgAbndvl7EwjdWXZBfbvNSxLA8mDusXPom0N4n1VFpc4C9gqYHZM9mtc+/hBFt7M2+zrQpBiypDde77XNgP/A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763698020; c=relaxed/simple;
-	bh=gDmGQjmlP+mFE3sO3gDTPk54MKTO9RjdwSAw2R/xDCM=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=mdpee9krbZfo7j2nGJk8aIG+RCx1BmGTPkQI1U3V2cgIay8Yy9qrVS8vGiVVn74zw7Hr7MZvd/392x3c9TUBEoqWEqcj36W44gyxVW8Jem96T7kf8vELA1+DAi84UNABgQPcqbXMb9sVx/bradc53YSMMacsqdViYvA4vs5PQjw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.dev; spf=none smtp.mailfrom=localhost.localdomain; arc=none smtp.client-ip=147.136.157.0
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=localhost.localdomain
-Received: by localhost.localdomain (Postfix, from userid 1007)
-	id A34448B2A15; Fri, 21 Nov 2025 12:06:56 +0800 (+08)
-From: Jiayuan Chen <jiayuan.chen@linux.dev>
-To: cgroups@vger.kernel.org
-Cc: tj@kernel.org,
-	hannes@cmpxchg.org,
-	mkoutny@suse.com,
-	linux-kernel@vger.kernel.org,
-	Jiayuan Chen <jiayuan.chen@linux.dev>
-Subject: [PATCH v2] cgroup: Add preemption protection to css_rstat_updated()
-Date: Fri, 21 Nov 2025 12:06:55 +0800
-Message-ID: <20251121040655.89584-1-jiayuan.chen@linux.dev>
-X-Mailer: git-send-email 2.43.0
+	s=arc-20240116; t=1763701674; c=relaxed/simple;
+	bh=M4bU509Hi6y2iIef1Lo4i4r8kXSDq0QpDONxBWI0zYw=;
+	h=From:Message-ID:Date:MIME-Version:Subject:To:Cc:References:
+	 In-Reply-To:Content-Type; b=RWTINjXqx5HflU3y826AEZb69NOxQbdzhDUXpEuOHbev2MJc222UOhoMcPQaiw32MDnmfBKA0r6jLfC5eIWsNP3lWoWI8RPqoRN6eG65rY+ZCt2qsLJepagVmed0M1/YunQCrxtl+nnhzOTWDkZgOJ9vwnHcfcQNpUsPb5ixTm8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=G/QTNldg; dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b=G2/w7jO6; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1763701672;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=xcqfPS7j13ZWD60dTrmDCM5p8py9aMO8JCZOetUJcKQ=;
+	b=G/QTNldgPKdVTb3y4m+FvCk86Zl98LyNrTt/hw+QMC+I5aOoOiA2dDf8Ixneltb1APfOkt
+	RrlNXuXCC4ecEiFT3KLz1fi1YTwqgN6OfyvZ0VQbL9CtIodyYdMj4p2yqErGkhQOcbODU2
+	trA8wIXWuJCvkOjjdq+677+q8mHICcU=
+Received: from mail-qk1-f199.google.com (mail-qk1-f199.google.com
+ [209.85.222.199]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-489-hW_w_NXCPviMuReLdgLkQg-1; Fri, 21 Nov 2025 00:07:50 -0500
+X-MC-Unique: hW_w_NXCPviMuReLdgLkQg-1
+X-Mimecast-MFC-AGG-ID: hW_w_NXCPviMuReLdgLkQg_1763701670
+Received: by mail-qk1-f199.google.com with SMTP id af79cd13be357-8b245c49d0cso475239985a.3
+        for <cgroups@vger.kernel.org>; Thu, 20 Nov 2025 21:07:50 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=redhat.com; s=google; t=1763701670; x=1764306470; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:content-language:references
+         :cc:to:subject:user-agent:mime-version:date:message-id:from:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=xcqfPS7j13ZWD60dTrmDCM5p8py9aMO8JCZOetUJcKQ=;
+        b=G2/w7jO6SxFsI878f7R3sLbULszbMTiKY8URWV0yQUrA63YLBNwiIsV8dnvFfUE82r
+         OMqsJlb61ET/gZWCmbODzF4G1wjzyB6tPGIrPVsEUzLdP8PjOkHdNrXhN7zgcP5+eb+g
+         9t0bSz5obIT1aDPECtbBSyN4QlFtU+DrV4/F8DaU3UZ/ykh/lrsxGen7TplJRAq4qrGf
+         JaV3Oo5Y+SANmDscgZ6EczmhLSWdtnT1RNuC8yDZVBqTH6NAGqttte+G7SQ7Y6imLRYz
+         pCHFPhbfdbpfzTaF3l7eNuH5IFgjP+GVBlHA+1DfwJc49OQqsDGpH/ztY1Etom3v82Vo
+         94PQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1763701670; x=1764306470;
+        h=content-transfer-encoding:in-reply-to:content-language:references
+         :cc:to:subject:user-agent:mime-version:date:message-id:from:x-gm-gg
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=xcqfPS7j13ZWD60dTrmDCM5p8py9aMO8JCZOetUJcKQ=;
+        b=s3CZfVqD9mVtHrmiKXrl8ZbaVYbPChFZFqrLMmgooSjXj+7yhUjnza9G8dPv7B1gMT
+         JodA10Oi1UnqEaROAcxmtl/0gfSQW9xTe1U45yfhmBiVoiA672/CpS5ItagRDoMAiWYq
+         ruiwvmN8epoUnNew4ulOxbRVaKFXtFaVU8rvlEB8K3pEdhz6nWphiKWoWoaFdNNcFpPL
+         a5cgSyHGXxNNysmYJpzqf2sxPgW2hd6pOK6lSVRaxI+5DD20vbkrQZDFKQC7bXwlPNgT
+         GHUTFdonN4R6Xbrgc1d8TZHGEOsaXQvIf2K5rK558aaMmEGcLA1SrPZHQRukQ9NSKrDR
+         37VA==
+X-Forwarded-Encrypted: i=1; AJvYcCU0jOmuXGPa/00C7/GQmEJXwMIr4IE0FavymuJOd6zDejM3rpDEKnEHQZWdASn6BAbHoyQ86zgL@vger.kernel.org
+X-Gm-Message-State: AOJu0YyQpsAStOROU6zTUw43HcFcstOBkjjQXtBAIvyCsLxo/KWJ53mq
+	mAw1gAfmakN1rVC0fxNH856qhqXpydwp5YWoSoq7uySXesc3o5wqlhmHXKRPeMmsNCNU4IiKD8X
+	6fvD/pPtlLoMErtq2yazcZtcR+/32u3ONWjbDcqn+AF/9x2luuUj7uQmyZUk=
+X-Gm-Gg: ASbGncuMW8aA6sphd6a3O9MIDbZitdZWe4DQCSViNzhv5mvBwq5lLitK7rZdcDldyz9
+	UvWJe89x4wcgDd+eB1oprQjoASdV+zZ+61vo3n5TaCiI5VBKB5U5odE5Qe9nXUbtmYBY/NmXaj5
+	FzzkaJfsin2I2gRAHFbG+SgprX5j/oH5yn9Bd6jVLobHtCb+TuqK2M5l08ZVA+9DeyqNYzL0hL6
+	r8OZrHxiU1S88nniHOKooy6A/wbWZy1pYzp/EilfrSv0ei2ErWvoWAFnNst09eNEop8p3Mxp8At
+	cKxVTL2VFeV9mc6czY00qw3TnsNJOecXVwErl3s4vrZ471GC8QdHZYk4uE7SyJmxkc2HXL5t6PH
+	vUxOD6sTA7IiXX+ktDd9bc7EHW59IE0U9d775fIjqGQiPYqnDufLiSYYL
+X-Received: by 2002:a05:620a:4405:b0:8b2:dd0a:8814 with SMTP id af79cd13be357-8b33d4afe3amr76000285a.85.1763701669779;
+        Thu, 20 Nov 2025 21:07:49 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IEkAfEpATpg8tPvpQs+GS3hfE/hz9o5RS1C26qAzB+yAMLs90YO077Oj9VUdwtsb57bM+n7Zw==
+X-Received: by 2002:a05:620a:4405:b0:8b2:dd0a:8814 with SMTP id af79cd13be357-8b33d4afe3amr75998785a.85.1763701669281;
+        Thu, 20 Nov 2025 21:07:49 -0800 (PST)
+Received: from ?IPV6:2601:188:c102:b180:1f8b:71d0:77b1:1f6e? ([2601:188:c102:b180:1f8b:71d0:77b1:1f6e])
+        by smtp.gmail.com with ESMTPSA id af79cd13be357-8b3295deaf8sm297373485a.44.2025.11.20.21.07.48
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 20 Nov 2025 21:07:48 -0800 (PST)
+From: Waiman Long <llong@redhat.com>
+X-Google-Original-From: Waiman Long <longman@redhat.com>
+Message-ID: <6cd2dc59-e647-411f-ba3e-2a741487abb8@redhat.com>
+Date: Fri, 21 Nov 2025 00:07:47 -0500
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] cgroup: Add preemption protection to
+ css_rstat_updated()
+To: Jiayuan Chen <jiayuan.chen@linux.dev>, cgroups@vger.kernel.org
+Cc: tj@kernel.org, hannes@cmpxchg.org, mkoutny@suse.com,
+ linux-kernel@vger.kernel.org
+References: <20251121040655.89584-1-jiayuan.chen@linux.dev>
+Content-Language: en-US
+In-Reply-To: <20251121040655.89584-1-jiayuan.chen@linux.dev>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-BPF programs do not disable preemption, they only disable migration.
-Therefore, when running the cgroup_hierarchical_stats selftest, a
-warning [1] is generated.
+On 11/20/25 11:06 PM, Jiayuan Chen wrote:
+> BPF programs do not disable preemption, they only disable migration.
+> Therefore, when running the cgroup_hierarchical_stats selftest, a
+> warning [1] is generated.
+>
+> The css_rstat_updated() function is lockless and reentrant. However,
+> as Tejun pointed out [2], preemption-related considerations need to
+> be considered. Since css_rstat_updated() can be called from BPF where
+> preemption is not disabled by its framework and it has already been
+> exposed as a kfunc to BPF programs, introducing a new kfunc like bpf_xx
+> will break existing uses. Thus, we directly make css_rstat_updated()
+> preempt-safe here.
 
-The css_rstat_updated() function is lockless and reentrant. However,
-as Tejun pointed out [2], preemption-related considerations need to
-be considered. Since css_rstat_updated() can be called from BPF where
-preemption is not disabled by its framework and it has already been
-exposed as a kfunc to BPF programs, introducing a new kfunc like bpf_xx
-will break existing uses. Thus, we directly make css_rstat_updated()
-preempt-safe here.
+My understand of Tejun's comment is to add bpf_preempt_disable() and 
+bpf_preempt_enable() calls around the css_rstat_updated() call in the 
+bpf program defined in 
+tools/testing/selftests/bpf/prog_tests/cgroup_hierarchical_stats.c 
+instead of adding that in the css_rstat_updated() function itself. But I 
+may be wrong.
 
-[1]:
-~/tools/testing/selftests/bpf$
-test_progs -a cgroup_hierarchical_stats
-
-...
-------------[ cut here ]------------
-WARNING: CPU: 0 PID: 382 at kernel/cgroup/rstat.c:84
-Modules linked in:
-RIP: 0010:css_rstat_updated+0x9d/0x160
-...
-PKRU: 55555554
-Call Trace:
- <TASK>
- bpf_prog_16a1c2d081688506_counter+0x143/0x14e
- bpf_trampoline_6442524909+0x4b/0xb7
- cgroup_attach_task+0x5/0x330
- ? __cgroup_procs_write+0x1d7/0x2f0
- cgroup_procs_write+0x17/0x30
- cgroup_file_write+0xa6/0x2d0
- kernfs_fop_write_iter+0x188/0x240
- vfs_write+0x2da/0x5a0
- ksys_write+0x77/0x100
- __x64_sys_write+0x19/0x30
- x64_sys_call+0x79/0x26a0
- do_syscall_64+0x89/0x790
- ? irqentry_exit+0x77/0xb0
- ? __this_cpu_preempt_check+0x13/0x20
- ? lockdep_hardirqs_on+0xce/0x170
- ? irqentry_exit_to_user_mode+0xf2/0x290
- ? irqentry_exit+0x77/0xb0
- ? clear_bhb_loop+0x50/0xa0
- ? clear_bhb_loop+0x50/0xa0
- entry_SYSCALL_64_after_hwframe+0x76/0x7e
----[ end trace 0000000000000000 ]---
-
-[2]: https://lore.kernel.org/cgroups/445b0d155b7a3cb84452aa7010669e293e8c37db@linux.dev/T/
-
-Signed-off-by: Jiayuan Chen <jiayuan.chen@linux.dev>
-
----
-v1 -> v2: Add preemption protection instread of dropping preemption
-          assert
-v1: https://lore.kernel.org/cgroups/445b0d155b7a3cb84452aa7010669e293e8c37db@linux.dev/T/
----
- kernel/cgroup/rstat.c | 39 +++++++++++++++++++++++----------------
- 1 file changed, 23 insertions(+), 16 deletions(-)
-
-diff --git a/kernel/cgroup/rstat.c b/kernel/cgroup/rstat.c
-index a198e40c799b..ec68c653545c 100644
---- a/kernel/cgroup/rstat.c
-+++ b/kernel/cgroup/rstat.c
-@@ -52,22 +52,7 @@ static inline struct llist_head *ss_lhead_cpu(struct cgroup_subsys *ss, int cpu)
- 	return per_cpu_ptr(&rstat_backlog_list, cpu);
- }
- 
--/**
-- * css_rstat_updated - keep track of updated rstat_cpu
-- * @css: target cgroup subsystem state
-- * @cpu: cpu on which rstat_cpu was updated
-- *
-- * Atomically inserts the css in the ss's llist for the given cpu. This is
-- * reentrant safe i.e. safe against softirq, hardirq and nmi. The ss's llist
-- * will be processed at the flush time to create the update tree.
-- *
-- * NOTE: if the user needs the guarantee that the updater either add itself in
-- * the lockless list or the concurrent flusher flushes its updated stats, a
-- * memory barrier is needed before the call to css_rstat_updated() i.e. a
-- * barrier after updating the per-cpu stats and before calling
-- * css_rstat_updated().
-- */
--__bpf_kfunc void css_rstat_updated(struct cgroup_subsys_state *css, int cpu)
-+static void __css_rstat_updated(struct cgroup_subsys_state *css, int cpu)
- {
- 	struct llist_head *lhead;
- 	struct css_rstat_cpu *rstatc;
-@@ -122,6 +107,28 @@ __bpf_kfunc void css_rstat_updated(struct cgroup_subsys_state *css, int cpu)
- 	llist_add(&rstatc->lnode, lhead);
- }
- 
-+/**
-+ * css_rstat_updated - keep track of updated rstat_cpu
-+ * @css: target cgroup subsystem state
-+ * @cpu: cpu on which rstat_cpu was updated
-+ *
-+ * Atomically inserts the css in the ss's llist for the given cpu. This is
-+ * reentrant safe i.e. safe against softirq, hardirq and nmi. The ss's llist
-+ * will be processed at the flush time to create the update tree.
-+ *
-+ * NOTE: if the user needs the guarantee that the updater either add itself in
-+ * the lockless list or the concurrent flusher flushes its updated stats, a
-+ * memory barrier is needed before the call to css_rstat_updated() i.e. a
-+ * barrier after updating the per-cpu stats and before calling
-+ * css_rstat_updated().
-+ */
-+__bpf_kfunc void css_rstat_updated(struct cgroup_subsys_state *css, int cpu)
-+{
-+	preempt_disable();
-+	__css_rstat_updated(css, cpu);
-+	preempt_enable();
-+}
-+
- static void __css_process_update_tree(struct cgroup_subsys_state *css, int cpu)
- {
- 	/* put @css and all ancestors on the corresponding updated lists */
--- 
-2.43.0
+Cheers, Longman
 
 
