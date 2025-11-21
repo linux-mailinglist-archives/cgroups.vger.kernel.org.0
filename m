@@ -1,65 +1,182 @@
-Return-Path: <cgroups+bounces-12143-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-12144-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0B3FBC77006
-	for <lists+cgroups@lfdr.de>; Fri, 21 Nov 2025 03:27:35 +0100 (CET)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 95F8AC770B7
+	for <lists+cgroups@lfdr.de>; Fri, 21 Nov 2025 03:46:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 86181349648
-	for <lists+cgroups@lfdr.de>; Fri, 21 Nov 2025 02:27:34 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id ECCB635407D
+	for <lists+cgroups@lfdr.de>; Fri, 21 Nov 2025 02:46:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B0E12241103;
-	Fri, 21 Nov 2025 02:27:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 265F72C15B4;
+	Fri, 21 Nov 2025 02:46:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nkkPE8dB"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="RXKuJU/R"
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out-173.mta1.migadu.com (out-173.mta1.migadu.com [95.215.58.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6AF5B157A5A;
-	Fri, 21 Nov 2025 02:27:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E4571D90DF
+	for <cgroups@vger.kernel.org>; Fri, 21 Nov 2025 02:46:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763692049; cv=none; b=hcZZSp1NWbf8gELgKwa4rNOcAXaGsCbbkLLK6FPca4e81sn6t/ceI8vszna7Gpaj0DlnNPS7NsCldurNBdVyuWNNdP6CvMYjU5Sbe4rYE0M+z2rHIwE2RJMFirIgrW6LRQ0xOkfLTQukd9qZKNPC8zJ5kHP/RDI3wLfMwzxZyjo=
+	t=1763693203; cv=none; b=r74dgVIepFhtyiiqoLGpF2+Nd4G0iTFQWM5+yjYHf1FI1CEIAwAFZV6aWKVl7mRuBWLA1hgM8EsZTL9olTCnn4os/JVzXPCczXLaFKttuq8sbDvS9I4a8qAbqIBystzZnBGFWp9nUI4Qp4lwbHft7J9w/m9upgLH1EB7HSPoUAM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763692049; c=relaxed/simple;
-	bh=QZa8ayUfWJJS+Lqb+yeeTgCdpc71cKgH26tuKpF5vVA=;
-	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References; b=WSFhzrA1Rcg6RCvBtQsmYPOjsp4cRQ+vSyAK3YzNhgEsYXmpdZuV7RsC6V2PiS6GyfbZsoOoU4Aosm+FYo/GOQGWaWRVShJ1yBCvQKXMoOeMZZaZvgvI+Jp1JUnFH60z9+SftWsum51jns+9HwZ7U1Qlh43bJJSF8lBAazEpACA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nkkPE8dB; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2CC05C4CEF1;
-	Fri, 21 Nov 2025 02:27:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1763692049;
-	bh=QZa8ayUfWJJS+Lqb+yeeTgCdpc71cKgH26tuKpF5vVA=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=nkkPE8dBpOxuIitnotH2A5YABYKGbAauIl2CiJ9Vy5LbdaQ8xX6SvIPrKxPWLbIdO
-	 P+1pwgHSDwmjHCMA7eynNGw5odSOkkganMr/bQXXx186O8/o0V/2vkLEy2eL10QF6U
-	 5Nd0Fm3dSSYcvomStLHbn29nH2+LZeYe8I6N3F7iLlwJXNl8QkTtifIc2VBaLYs7UU
-	 fl+E7SfCBuOmcUF8yrFNUpR+5KJ6f8e4qlrj65RhDCXOONOC26Y1zw1V9l54GBHrX2
-	 LbqlGnR1QzMb2Fpwtv12BcJtv5oInL1lKLMj4W7o0DfJlLNTnN8e8yvxQtog0S2ZT9
-	 ZVzNII2m6DcJg==
-Date: Thu, 20 Nov 2025 16:27:28 -1000
-Message-ID: <58a4e80c42cd0c1c6f19ac0890ba383c@kernel.org>
-From: Tejun Heo <tj@kernel.org>
-To: Chen Ridong <chenridong@huaweicloud.com>
-Cc: longman@redhat.com, hannes@cmpxchg.org, mkoutny@suse.com,
- cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
- lujialin4@huawei.com
-Subject: Re: [PATCH -next v3] cpuset: Treat cpusets in attaching as
- populated
-In-Reply-To: <20251114020847.1040546-1-chenridong@huaweicloud.com>
-References: <20251114020847.1040546-1-chenridong@huaweicloud.com>
+	s=arc-20240116; t=1763693203; c=relaxed/simple;
+	bh=9wRUpNCdJ+h3gNqDsWyecL8H/HjoIYfVBoT5t0mijps=;
+	h=MIME-Version:Date:Content-Type:From:Message-ID:Subject:To:Cc:
+	 In-Reply-To:References; b=fRZKd3a371++uNvD0O+26l8eS7HPtfT7kmscPCANxSEZPEEqWIRpNPX4+aBfxwf9SoWuyvvg+WN7XJ1qhSgBCLYFhsfcR3cr3CHLOxa6Xxo5CxzdYL8f+6EWPG9uw2AZS1jL7XFGU92r2RRZE5UoxmWC6gP2/QHTKHLTvHU1uCM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=RXKuJU/R; arc=none smtp.client-ip=95.215.58.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1763693196;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=0yYZn6QK5gg9APsMYldZKsKSIWjXDUkqOUS9S8IfOMQ=;
+	b=RXKuJU/RA1cAjc1XUBHWdIB9doG2Wk814x1wLnldU/d0slv40i246MHbcPxCVv8Z7ah4GX
+	tU01cPDa5Zxf/9up0Y0JiDZQe0KB46S33I1BVcb7IkEpeZNkoRR1xAhu/BizuIrlwYWvtW
+	gpBi8k0becQydlkbV7NHMiRxNgU9NF0=
+Date: Fri, 21 Nov 2025 02:46:31 +0000
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: hui.zhu@linux.dev
+Message-ID: <f5c4c443f8ba855d329a180a6816fc259eb8dfca@linux.dev>
+TLS-Required: No
+Subject: Re: [RFC PATCH 0/3] Memory Controller eBPF support
+To: "Michal Hocko" <mhocko@suse.com>
+Cc: "Roman Gushchin" <roman.gushchin@linux.dev>, "Andrew Morton"
+ <akpm@linux-foundation.org>, "Johannes Weiner" <hannes@cmpxchg.org>,
+ "Shakeel Butt" <shakeel.butt@linux.dev>, "Muchun Song"
+ <muchun.song@linux.dev>, "Alexei Starovoitov" <ast@kernel.org>, "Daniel 
+ Borkmann" <daniel@iogearbox.net>, "Andrii Nakryiko" <andrii@kernel.org>,
+ "Martin KaFai Lau" <martin.lau@linux.dev>, "Eduard Zingerman"
+ <eddyz87@gmail.com>, "Song Liu" <song@kernel.org>, "Yonghong Song"
+ <yonghong.song@linux.dev>, "John Fastabend" <john.fastabend@gmail.com>,
+ "KP Singh" <kpsingh@kernel.org>, "Stanislav Fomichev" <sdf@fomichev.me>,
+ "Hao Luo" <haoluo@google.com>, "Jiri Olsa" <jolsa@kernel.org>, "Shuah 
+ Khan" <shuah@kernel.org>, "Peter Zijlstra" <peterz@infradead.org>,
+ "Miguel Ojeda" <ojeda@kernel.org>, "Nathan Chancellor"
+ <nathan@kernel.org>, "Kees Cook" <kees@kernel.org>, "Tejun Heo"
+ <tj@kernel.org>, "Jeff Xu" <jeffxu@chromium.org>, mkoutny@suse.com, "Jan 
+ Hendrik Farr" <kernel@jfarr.cc>, "Christian Brauner"
+ <brauner@kernel.org>, "Randy Dunlap" <rdunlap@infradead.org>, "Brian 
+ Gerst" <brgerst@gmail.com>, "Masahiro Yamada" <masahiroy@kernel.org>,
+ linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+ cgroups@vger.kernel.org, bpf@vger.kernel.org,
+ linux-kselftest@vger.kernel.org, "Hui Zhu" <zhuhui@kylinos.cn>
+In-Reply-To: <aR9p8n3VzpNHdPFw@tiehlicka>
+References: <cover.1763457705.git.zhuhui@kylinos.cn>
+ <87ldk1mmk3.fsf@linux.dev>
+ <895f996653b3385e72763d5b35ccd993b07c6125@linux.dev>
+ <aR9p8n3VzpNHdPFw@tiehlicka>
+X-Migadu-Flow: FLOW_OUT
 
-Applied to cgroup/for-6.19.
+2025=E5=B9=B411=E6=9C=8821=E6=97=A5 03:20, "Michal Hocko" <mhocko@suse.co=
+m mailto:mhocko@suse.com?to=3D%22Michal%20Hocko%22%20%3Cmhocko%40suse.com=
+%3E > =E5=86=99=E5=88=B0:
 
-Thanks.
---
-tejun
+
+>=20
+>=20On Thu 20-11-25 09:29:52, hui.zhu@linux.dev wrote:
+> [...]
+>=20
+>=20>=20
+>=20> I generally agree with an idea to use BPF for various memcg-related
+> >  policies, but I'm not sure how specific callbacks can be used in
+> >  practice.
+> >=20=20
+>=20>  Hi Roman,
+> >=20=20
+>=20>  Following are some ideas that can use ebpf memcg:
+> >=20=20
+>=20>  Priority=E2=80=91Based Reclaim and Limits in Multi=E2=80=91Tenant =
+Environments:
+> >  On a single machine with multiple tenants / namespaces / containers,
+> >  under memory pressure it=E2=80=99s hard to decide =E2=80=9Cwho shoul=
+d be squeezed first=E2=80=9D
+> >  with static policies baked into the kernel.
+> >  Assign a BPF profile to each tenant=E2=80=99s memcg:
+> >  Under high global pressure, BPF can decide:
+> >  Which memcgs=E2=80=99 memory.high should be raised (delaying reclaim=
+),
+> >  Which memcgs should be scanned and reclaimed more aggressively.
+> >=20=20
+>=20>  Online Profiling / Diagnosing Memory Hotspots:
+> >  A cgroup=E2=80=99s memory keeps growing, but without patching the ke=
+rnel it=E2=80=99s
+> >  difficult to obtain fine=E2=80=91grained information.
+> >  Attach BPF to the memcg charge/uncharge path:
+> >  Record large allocations (greater than N KB) with call stacks and
+> >  owning file/module, and send them to user space via a BPF ring buffe=
+r.
+> >  Based on sampled data, generate:
+> >  =E2=80=9CTop N memory allocation stacks in this container over the l=
+ast 10 minutes,=E2=80=9D
+> >  Reports of which objects / call paths are growing fastest.
+> >  This makes it possible to pinpoint the root cause of host memory
+> >  anomalies without changing application code, which is very useful
+> >  in operations/ops scenarios.
+> >=20=20
+>=20>  SLO=E2=80=91Driven Auto Throttling / Scale=E2=80=91In/Out Signals:
+> >  Use eBPF to observe memory usage slope, frequent reclaim,
+> >  or near=E2=80=91OOM behavior within a memcg.
+> >  When it decides =E2=80=9COOM is imminent,=E2=80=9D instead of just k=
+illing/raising
+> >  limits, it can emit a signal to a control=E2=80=91plane component.
+> >  For example, send an event to a user=E2=80=91space agent to trigger
+> >  automatic scaling, QPS adjustment, or throttling.
+> >=20=20
+>=20>  Prevent a cgroup from launching a large=E2=80=91scale fork+malloc =
+attack:
+> >  BPF checks per=E2=80=91uid or per=E2=80=91cgroup allocation behavior=
+ over the
+> >  last few seconds during memcg charge.
+> >=20
+>=20AFAIU, these are just very high level ideas rather than anything you =
+are
+> trying to target with this patch series, right?
+>=20
+>=20All I can see is that you add a reclaim hook but it is not really cle=
+ar
+> to me how feasible it is to actually implement a real memory reclaim
+> strategy this way.
+>=20
+>=20In prinicipal I am not really opposed but the memory reclaim process =
+is
+> rather involved process and I would really like to see there is
+> something real to be done without exporting all the MM code to BPF for
+> any practical use. Is there any POC out there?
+
+Hi Michal,
+
+I apologize for not delivering a more substantial POC.
+
+I was hesitant to add extensive eBPF support to memcg
+because I wasn't certain it aligned with the community's
+vision=E2=80=94and such support would require introducing many
+eBPF hooks into memcg.
+
+I will add more eBPF hook to memcg and provide a more
+meaningful POC in the next version.
+
+Best,
+Hui
+
+
+> --=20
+>=20Michal Hocko
+> SUSE Labs
+>
 
