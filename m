@@ -1,177 +1,98 @@
-Return-Path: <cgroups+bounces-12163-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-12164-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id E8F96C7BB78
-	for <lists+cgroups@lfdr.de>; Fri, 21 Nov 2025 22:07:57 +0100 (CET)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
+	by mail.lfdr.de (Postfix) with ESMTPS id 903FAC7BD1A
+	for <lists+cgroups@lfdr.de>; Fri, 21 Nov 2025 23:04:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 21F1135C1A8
-	for <lists+cgroups@lfdr.de>; Fri, 21 Nov 2025 21:07:57 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id A33BB355376
+	for <lists+cgroups@lfdr.de>; Fri, 21 Nov 2025 22:04:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9960627A462;
-	Fri, 21 Nov 2025 21:07:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B937D30507E;
+	Fri, 21 Nov 2025 22:04:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gourry.net header.i=@gourry.net header.b="bVeAkH0S"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FYbbvqoi"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-qt1-f177.google.com (mail-qt1-f177.google.com [209.85.160.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 995D42836B5
-	for <cgroups@vger.kernel.org>; Fri, 21 Nov 2025 21:07:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 73708274671;
+	Fri, 21 Nov 2025 22:04:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763759270; cv=none; b=ZDk9m/iYvh8whofJVM3lEyDi46Yhc4tDKX6RipcGFY8AEut6eU1S0qyATVr61gD2KkKtXujvclYpy3dHv058yWmq47uChlDhLRbzDUEyWbW/bHk6WHcF9AIrec5mnJImagSze+syhcl6LuJK5CwVQyEw6YAbG1vdczrtRb/NQqY=
+	t=1763762677; cv=none; b=qLP6W1uSqUuvPHZnRuxi/yzd2keyjQaY/HEs/aB6/P4wTLQ2KWFetr/2V5Y9Xn/PTl0B+oX91yrSLHpGX305cQIBPnhKoKXgCNJAwPs9wRP3fwO1CipLlmyFokw8QxiLUwNc6Cyq7iOEkjJm1tesAyogBVdsEn9S3pVt/E6hwdE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763759270; c=relaxed/simple;
-	bh=shSHymcVpVsJRS3DnGEq5zOC8PBxp/thlGXIe4I1Liw=;
+	s=arc-20240116; t=1763762677; c=relaxed/simple;
+	bh=9xKWBuc1gcHIHSMFYOhH9czYmjSje8Y4RiNQUXP2ezE=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=XSIkwuK+N/2zRt0FL0p0Fu/JTHsabCnbOdfwFJe0ws5XNL2+cE5S1lGZSR1ZylEaMa31GE3VV9GRln2cbRBgJMQc2PN1mGbG/PbePlbcbcjgDqjumyQK38yt3PMY1c4W0xqO4zu9UMUd6vs2rIJ+8cBk+DkKpVPh/Kb373qGD3E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gourry.net; spf=pass smtp.mailfrom=gourry.net; dkim=pass (2048-bit key) header.d=gourry.net header.i=@gourry.net header.b=bVeAkH0S; arc=none smtp.client-ip=209.85.160.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gourry.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gourry.net
-Received: by mail-qt1-f177.google.com with SMTP id d75a77b69052e-4ee257e56aaso22882141cf.0
-        for <cgroups@vger.kernel.org>; Fri, 21 Nov 2025 13:07:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gourry.net; s=google; t=1763759267; x=1764364067; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=Svi+I8ywJ8k5uxtzxqjpEGX4Qh9Fr5IeUT/6ziPIoB4=;
-        b=bVeAkH0Shdp0h8OjS5YQFosmUq1UbuAiSCtBpKGJd649mntc47dWELhSOTZQnaOAjK
-         BCY4D7BXJ5i1hsC1fClTm4PszJCglfGik5ovY+CoJ8ktPXIJO8jpUKKTbvCX2WfqGRw3
-         bA2H1a0CPlPAyhgwrhn0KSEAyGZt4e+MOmXefgJHOtptodjnXiUQIK0cE/uB+C1MmOj6
-         9Vv3N5ZkdIweoiAfWLXH0DDPqvoA94Oroxiiu7cs3E8G3STcoHTtPwib7Gxi2uB6ShCe
-         TN0qnP/keU7Y8ly8iP6f6U+hdeJ5CXT5nLs7pWeGnp4edtdM0Sym9I141bXeWTR7F0Zq
-         CZIg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1763759267; x=1764364067;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Svi+I8ywJ8k5uxtzxqjpEGX4Qh9Fr5IeUT/6ziPIoB4=;
-        b=NRQPeZBajWhwxwY+tAhhDU7BEPXc+bzyzrtxuaQoE1XYoXnQY/dtQbLXh/LbVoAVyU
-         lZLYdho4Wsj1mU7RszR34nkpn/IU5fCv8eKEl/huZNzVFr7m2Gt/gK/qYksoqdh4sqq0
-         dmNRWg5dj3toOF6k4aa4fGPEJ/gUEIzAzr3QXbuqqXgznhKALBKJOuypr836ZC2iA/Lu
-         cMlBFeWKfe8OcBz2N1oKDJxSwaKsweci1Xjm20GBwZSpba5l55Er5cXx3HvTUNI79UsP
-         fu/9PR8pL6+nNa4ueTJ9CYo6KNp1SRZruaD/HYYTgyDjJeHJNg2AR4b5Tu98l3/GpBlg
-         cf5w==
-X-Forwarded-Encrypted: i=1; AJvYcCUCB6Dpeopw9ilCBLVGSOO3g74MpRKhf7qPB3pvwYI7M8QzeUWMwhuZBpjX24QFSva11Cl5cjkP@vger.kernel.org
-X-Gm-Message-State: AOJu0YzQOZH9zQ4QQxuDqtQ9MjsQpldP+K6qoH7JMo2oTKaTkv5AQ6yV
-	PucugFj85fCLdwzUdqDQTXumB82zOqijIWAVv6It4HaF1TB2+uhaLwcwiwkM2viD3ciZUGuswoN
-	Vh0Wn
-X-Gm-Gg: ASbGncv4pVwBL5LDbrqWIjYAHS4gOf+5PZrbkZ7GdD7LZikuO8RC21T5dfQv3ml534l
-	MH2mgPg/zdLD+aKzwAf9+jMw4BDXVO5Qk0EWJQBQytcFvRqrsZY16LjEk24t1v34qMZRg7Bz8CY
-	j/0wPVaDsgCXKKkjDYoFLTtaC0Q9NUAbXk0BgE8FJhKYNDTPHW5wZgKSkBiGEC2YgO9gWYC3Kau
-	V1cc0XvuIKFplapkcWTun+PN9kMgu/QbdS/H1DOfDEwJlrq7y2qPdWOu4c1Gi/TZPeHGHioj2Z6
-	+LiZdmFhNMOxo4XEmt0qQo2M7laeU/nSuSsCQnKEl/tDafm+lTSHAYj8zqaLoFxIsCYhty0voQu
-	L92lAvjGY6h9Ch/rc2iYqfKtntZ342sqxiFGXCJaZg924xh9kBCOH3mc1FWeM3HwZI2hdqDRlu4
-	NUnMA8WvHx2fTOLLahv2QpuCUdY0cN8xhjC2Qe1nOHV2IkB5yKlbbaOVTIlWK0oz1JjJ6CFw==
-X-Google-Smtp-Source: AGHT+IHB54I5/pxWYI0YylL4DbWXryCZhFk7bd7fb71QpMMtzOgbCdkOeFKpCqsEbmreSLGZDE/f8Q==
-X-Received: by 2002:a05:622a:c6:b0:4eb:a457:394 with SMTP id d75a77b69052e-4ee587d2ef1mr64635291cf.12.1763759267374;
-        Fri, 21 Nov 2025 13:07:47 -0800 (PST)
-Received: from gourry-fedora-PF4VCD3F (pool-96-255-20-138.washdc.ftas.verizon.net. [96.255.20.138])
-        by smtp.gmail.com with ESMTPSA id d75a77b69052e-4ee48e65e3bsm42420991cf.17.2025.11.21.13.07.45
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 21 Nov 2025 13:07:46 -0800 (PST)
-Date: Fri, 21 Nov 2025 16:07:35 -0500
-From: Gregory Price <gourry@gourry.net>
-To: Alistair Popple <apopple@nvidia.com>
-Cc: linux-mm@kvack.org, kernel-team@meta.com, linux-cxl@vger.kernel.org,
-	linux-kernel@vger.kernel.org, nvdimm@lists.linux.dev,
-	linux-fsdevel@vger.kernel.org, cgroups@vger.kernel.org,
-	dave@stgolabs.net, jonathan.cameron@huawei.com,
-	dave.jiang@intel.com, alison.schofield@intel.com,
-	vishal.l.verma@intel.com, ira.weiny@intel.com,
-	dan.j.williams@intel.com, longman@redhat.com,
-	akpm@linux-foundation.org, david@redhat.com,
-	lorenzo.stoakes@oracle.com, Liam.Howlett@oracle.com, vbabka@suse.cz,
-	rppt@kernel.org, surenb@google.com, mhocko@suse.com,
-	osalvador@suse.de, ziy@nvidia.com, matthew.brost@intel.com,
-	joshua.hahnjy@gmail.com, rakie.kim@sk.com, byungchul@sk.com,
-	ying.huang@linux.alibaba.com, mingo@redhat.com,
-	peterz@infradead.org, juri.lelli@redhat.com,
-	vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-	rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-	vschneid@redhat.com, tj@kernel.org, hannes@cmpxchg.org,
-	mkoutny@suse.com, kees@kernel.org, muchun.song@linux.dev,
-	roman.gushchin@linux.dev, shakeel.butt@linux.dev,
-	rientjes@google.com, jackmanb@google.com, cl@gentwo.org,
-	harry.yoo@oracle.com, axelrasmussen@google.com, yuanchu@google.com,
-	weixugc@google.com, zhengqi.arch@bytedance.com,
-	yosry.ahmed@linux.dev, nphamcs@gmail.com, chengming.zhou@linux.dev,
-	fabio.m.de.francesco@linux.intel.com, rrichter@amd.com,
-	ming.li@zohomail.com, usamaarif642@gmail.com, brauner@kernel.org,
-	oleg@redhat.com, namcao@linutronix.de, escape@linux.alibaba.com,
-	dongjoo.seo1@samsung.com
-Subject: Re: [RFC LPC2026 PATCH v2 00/11] Specific Purpose Memory NUMA Nodes
-Message-ID: <aSDUl7kU73LJR78g@gourry-fedora-PF4VCD3F>
-References: <20251112192936.2574429-1-gourry@gourry.net>
- <aktv2ivkrvtrox6nvcpxsnq6sagxnmj4yymelgkst6pazzpogo@aexnxfcklg75>
+	 Content-Type:Content-Disposition:In-Reply-To; b=f3YKOlxvAWznXNLM/DDrFTuwMtYp4E4IRR18e3kmpdU0PQmWd7bZdBc7rZSTt1Wdcncqtk4zvkjNXw8oA8EmVpBKxxLCAsfq1OO9SQ9sJ5ZPBW6rAa3egwSQrbT8HwrKgJlt4kHP8N8VnKgLqWgm5IcYN+qPsdjS6nfb5Up+h74=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FYbbvqoi; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A1821C4CEF1;
+	Fri, 21 Nov 2025 22:04:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1763762677;
+	bh=9xKWBuc1gcHIHSMFYOhH9czYmjSje8Y4RiNQUXP2ezE=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=FYbbvqoitMNBhZHlxFqN1JBEaPMNg9W2nL2hgmocM0qWkMXMliLU+Q/PhKrxKkDXQ
+	 9VJE8+t7qswsZVbKxuULq/3ZcaE4wygjgIw4WB21DOXL3r2grY0NCusoVfwVJ9Y0xo
+	 kjgR6cmaLkVUIiJ5vdukmMMNz1xfwXUgvcUM8YKWxWCC3WdKeFiyAxHte05NPg/1FT
+	 gZoUb5rLBUuvoiqHtDb2b/yMlfHTLh2muodhP8qGcu75x+aDxSvfzDdtwav0DWncIv
+	 X0n6fkGfqBz96l4B5aGAbkONOB0bw53W3u/FYRHKqLCHKpM+plZcLjDo8ftithi0kk
+	 U64xc9R20D+WA==
+Date: Fri, 21 Nov 2025 23:04:34 +0100
+From: Frederic Weisbecker <frederic@kernel.org>
+To: Thomas Gleixner <tglx@linutronix.de>
+Cc: LKML <linux-kernel@vger.kernel.org>,
+	Marek Szyprowski <m.szyprowski@samsung.com>,
+	Marco Crivellari <marco.crivellari@suse.com>,
+	Waiman Long <llong@redhat.com>, cgroups@vger.kernel.org
+Subject: Re: [PATCH 1/3 v3] genirq: Prevent from early irq thread spurious
+ wake-ups
+Message-ID: <aSDh8q_UdNtU3KZN@pavilion.home>
+References: <20251121143500.42111-1-frederic@kernel.org>
+ <20251121143500.42111-2-frederic@kernel.org>
+ <878qfzjj2x.ffs@tglx>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <aktv2ivkrvtrox6nvcpxsnq6sagxnmj4yymelgkst6pazzpogo@aexnxfcklg75>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <878qfzjj2x.ffs@tglx>
 
-On Tue, Nov 18, 2025 at 06:02:02PM +1100, Alistair Popple wrote:
+Le Fri, Nov 21, 2025 at 08:12:38PM +0100, Thomas Gleixner a écrit :
+> On Fri, Nov 21 2025 at 15:34, Frederic Weisbecker wrote:
+> > During initialization, the IRQ thread is created before the IRQ get a
+> > chance to be enabled. But the IRQ enablement may happen before the first
+> > official kthread wake up point. As a result, the firing IRQ can perform
+> > an early wake-up of the IRQ thread before the first official kthread
+> > wake up point.
+> >
+> > Although this has happened to be harmless so far, this uncontrolled
+> > behaviour is a bug waiting to happen at some point in the future with
+> > the threaded handler accessing halfway initialized states.
 > 
-> I'm interested in the contrast with zone_device, and in particular why
-> device_coherent memory doesn't end up being a good fit for this.
+> No. At the point where the first wake up can happen, the state used by
+> the thread is completely initialized. That's right after setup_irq()
+> drops the descriptor lock. Even if the hardware raises it immediately on
+> starting the interrupt up, the handler is stuck on the descriptor lock,
+> which is not released before everything is ready.
 > 
-> > - Why mempolicy.c and cpusets as-is are insufficient
-> > - SPM types seeking this form of interface (Accelerator, Compression)
+> That kthread_bind() issue is a special case as it makes the assumption
+> that the thread is still in that UNINTERRUPTIBLE state waiting for the
+> initial wake up. That assumption is only true, when the thread creator
+> guarantees that there is no wake up before kthread_bind() is invoked.
 > 
-> I'm sure you can guess my interest is in GPUs which also have memory some people
-> consider should only be used for specific purposes :-) Currently our coherent
-> GPUs online this as a normal NUMA noode, for which we have also generally
-> found mempolicy, cpusets, etc. inadequate as well, so it will be interesting to
-> hear what short comings you have been running into (I'm less familiar with the
-> Compression cases you talk about here though).
-> 
+> I'll rephrase that a bit. :)
 
-after some thought, talks, and doc readings it seems like the
-zone_device setups don't allow the CPU to map the devmem into page
-tables, and instead depends on migrate_device logic (unless the docs are
-out of sync with the code these days).  That's at least what's described
-in hmm and migrate_device.  
+Eh, thanks and sorry for the misinterpretation.
 
-Assuming this is out of date and ZONE_DEVICE memory is mappable into
-page tables, assuming you want sparse allocation, ZONE_DEVICE seems to
-suggest you at least have to re-implement the buddy logic (which isn't
-that tall of an ask).
-
-But I could imagine an (overly simplistic) pattern with SPM Nodes:
-
-fd = open("/dev/gpu_mem", ...)
-buf = mmap(fd, ...)
-buf[0] 
-   1) driver takes the fault
-   2) driver calls alloc_page(..., gpu_node, GFP_SPM_NODE)
-   3) driver manages any special page table masks
-      Like marking pages RO/RW to manage ownership.
-   4) driver sends the gpu the (mapping_id, pfn, index) information
-      so that gpu can map the region in its page tables.
-   5) since the memory is cache coherent, gpu and cpu are free to
-      operate directly on the pages without any additional magic
-      (except typical concurrency controls).
-
-Driver doesn't have to do much in the way of allocationg management.
-
-This is probably less compelling since you don't want general purposes
-services like reclaim, migration, compaction, tiering - etc.  
-
-The value is clearly that you get to manage GPU memory like any other
-memory, but without worry that other parts of the system will touch it.
-
-I'm much more focused on the "I have memory that is otherwise general
-purpose, and wants services like reclaim and compaction, but I want
-strong controls over how things can land there in the first place".
-
-~Gregory
-
+-- 
+Frederic Weisbecker
+SUSE Labs
 
