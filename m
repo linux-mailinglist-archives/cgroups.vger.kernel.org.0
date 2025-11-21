@@ -1,57 +1,60 @@
-Return-Path: <cgroups+bounces-12155-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-12156-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
-	by mail.lfdr.de (Postfix) with ESMTPS id 45E75C7A43E
-	for <lists+cgroups@lfdr.de>; Fri, 21 Nov 2025 15:47:05 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 24B58C7A4E2
+	for <lists+cgroups@lfdr.de>; Fri, 21 Nov 2025 15:52:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id E87CE35F305
-	for <lists+cgroups@lfdr.de>; Fri, 21 Nov 2025 14:38:44 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id F24114EB7D9
+	for <lists+cgroups@lfdr.de>; Fri, 21 Nov 2025 14:38:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2AC4A34D92F;
-	Fri, 21 Nov 2025 14:35:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B65DD354703;
+	Fri, 21 Nov 2025 14:35:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="muQXtMDO"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="iSNMVtOX"
 X-Original-To: cgroups@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B5DFC34CFD1;
-	Fri, 21 Nov 2025 14:35:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6DD1E3546F2;
+	Fri, 21 Nov 2025 14:35:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763735708; cv=none; b=t8AVxU5NB+245E1rIDvwUuJHRnS7FhmYeAO6/3BzcDRxX1GL4JcC9grWCUnKwheXorO0CoQoXp6EZrUH53tG3mihhT93U4ysMNgCF7AffvpFBTUkvTfGQUhJnXM+Scl2/hPBKkejELtSD9t4Yuy69ZAetmR48pOtmF4ro6HSeGU=
+	t=1763735710; cv=none; b=BexC7kOOyJ+IlLtHC4nrXg6U710fj6UjyevgD0Jsl1xShsKkfctqJbUSR1pWmezKkTzbLd3925HMBil5VkI4exT6ks9yP2+41y+ZTBuzI2AIaJ6pxV8Lp+ehJ/a99zCgKBZf+CWTIXMLVXdnl/lRq57WQPa4s5kRe7qFeWtpPjo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763735708; c=relaxed/simple;
-	bh=QDb2eatKiuZjTbqzmxGKoL+jm2p5mamd0Yx60gDcOd0=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=i+DRSitsr9uAei/LG/xNnrgBdSN7nCO1CW89UyueVNznUV7rtFVGjEybpvkn9XptmqhBHYt1Ws8fn3+MO01yj4zR2QldsbX3sTZkiedzUTOy1MTatqTlBd5bpgJzMVbUlNCZSNU5Af+qRYwJnAxv0J/ENAL/N3MO49EfqvU7HhI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=muQXtMDO; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9839DC4CEF1;
-	Fri, 21 Nov 2025 14:35:06 +0000 (UTC)
+	s=arc-20240116; t=1763735710; c=relaxed/simple;
+	bh=Bl7vO2+kYXaMHB3qf2doPbfGNWec/DE/aLmf8ZT5pa8=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=aK1Yt46ZElnFdQWtWQ5LTzawGyjZZnpbd9dzLElxfs3b0jD0ycUIFhVEe/bITQzJit9yVJrwC4Ir6+nfCsrHhIpnzyAL/MimbRnD/AToCCHWqhw9nFjOgxdcieh9+EZ/1f9ScVHF25SJtawFKkKnOD7q9VXtWsHMJXKlC1/NRSc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=iSNMVtOX; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9D3E9C116C6;
+	Fri, 21 Nov 2025 14:35:08 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1763735708;
-	bh=QDb2eatKiuZjTbqzmxGKoL+jm2p5mamd0Yx60gDcOd0=;
-	h=From:To:Cc:Subject:Date:From;
-	b=muQXtMDOImC7QQPxGRYlwqz0wN+NyVC7xucpyRYbMTi1tclW0TFl3MjodqKhKDO/B
-	 GR483G4Y/jMINYj3+cFXoDXYvCJ4GYWREDpgNtV616WrOV0wthW/6IzZ42rCfuehe0
-	 Ea0/R5MxArXYEu4DbRr4lYeQhGlIn58G0SZIXIutg59u7YGPNj/vo82mKF1qEbFn7W
-	 LG8N8jQVB5p0yf7PMpwxYM4s0ARrYJ5Z1PPSixYjaYC9T4f+PRz/Bdarzjr7d8A5Xa
-	 gAA8Ywov1HFoA29PQbUQafBxiVM4FGeysKJ4rZ5oZEi876rkivLMJ/sGgmcD4zA6nN
-	 KcYQ+tetooS5g==
+	s=k20201202; t=1763735710;
+	bh=Bl7vO2+kYXaMHB3qf2doPbfGNWec/DE/aLmf8ZT5pa8=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=iSNMVtOXIdjaF3LxB+tc3X7pt103E1XAlf7fRzYegFVnv/Tcs7TfjUNUbPLSR10iA
+	 lIFputcFRdnSg7WpjHQyYGAmf0Bf0pldhZ8KTS7XhI6KgwHTRhCin6eEv77ziBzbUP
+	 mTgXn0vqg9Z/gXmWjne30vjloKXsMKpCjoaqAQTP4JrQE0aZeZUhDA7RSs6zoc1rQs
+	 m+IfDoMOr+cNMz+lX2Li4kgxRfwSc4oW+ipuLxmTxuVkH2jcr+AKOSndSps75IWhAX
+	 syl7Isy1fSJJMopBtLeDKptK69SdVhrb1mvVG1qg8kEE4e8EKvhvYRy9GoiqkwAEWt
+	 0IPnYbw6NhFqg==
 From: Frederic Weisbecker <frederic@kernel.org>
 To: Thomas Gleixner <tglx@linutronix.de>
 Cc: LKML <linux-kernel@vger.kernel.org>,
-	Frederic Weisbecker <frederic@kernel.org>,
 	Marek Szyprowski <m.szyprowski@samsung.com>,
 	Marco Crivellari <marco.crivellari@suse.com>,
 	Waiman Long <llong@redhat.com>,
-	cgroups@vger.kernel.org
-Subject: [PATCH 0/3 v3] genirq: Fix IRQ threads VS cpuset
-Date: Fri, 21 Nov 2025 15:34:57 +0100
-Message-ID: <20251121143500.42111-1-frederic@kernel.org>
+	cgroups@vger.kernel.org,
+	Frederic Weisbecker <frederic@kernel.org>
+Subject: [PATCH 1/3 v3] genirq: Prevent from early irq thread spurious wake-ups
+Date: Fri, 21 Nov 2025 15:34:58 +0100
+Message-ID: <20251121143500.42111-2-frederic@kernel.org>
 X-Mailer: git-send-email 2.51.1
+In-Reply-To: <20251121143500.42111-1-frederic@kernel.org>
+References: <20251121143500.42111-1-frederic@kernel.org>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -60,35 +63,52 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Hi,
+From: Thomas Gleixner <tglx@linutronix.de>
 
-Here is another take after some last minutes issues reported by
-Marek Szyprowski <m.szyprowski@samsung.com>:
+During initialization, the IRQ thread is created before the IRQ get a
+chance to be enabled. But the IRQ enablement may happen before the first
+official kthread wake up point. As a result, the firing IRQ can perform
+an early wake-up of the IRQ thread before the first official kthread
+wake up point.
 
-https://lore.kernel.org/all/73356b5f-ab5c-4e9e-b57f-b80981c35998@samsung.com/
+Although this has happened to be harmless so far, this uncontrolled
+behaviour is a bug waiting to happen at some point in the future with
+the threaded handler accessing halfway initialized states.
 
+Prevent from such surprise with performing a wake-up only if the target
+is in TASK_INTERRUPTIBLE state. Since the IRQ thread waits in this state
+for interrupts to handle only after proper initialization, it is then
+guaranteed not to be spuriously woken up while waiting in
+TASK_UNINTERRUPTIBLE, right after creation in the kthread code, before
+the official first wake up point to be reached.
 
-Changes since v2:
-
-* Fix early spurious IRQ thread wake-up (to be SOB'ed by Thomas)
-
-* Instead of applying the affinity remotely, set PF_NO_SETAFFINITY
-  early, right after kthread creation, and wait for the thread to
-  apply the affinity by itself. This is to prevent from early wake-up
-  to mess up with kthread_bind_mask(), as reported by
-  Marek Szyprowski <m.szyprowski@samsung.com>
-
-Frederic Weisbecker (2):
-  genirq: Fix interrupt threads affinity vs. cpuset isolated partitions
-  genirq: Remove cpumask availability check on kthread affinity setting
-
-Thomas Gleixner (1):
-  genirq: Prevent from early irq thread spurious wake-ups
-
+Not-yet-Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
+---
  kernel/irq/handle.c | 10 +++++++++-
- kernel/irq/manage.c | 40 +++++++++++++++++++---------------------
- 2 files changed, 28 insertions(+), 22 deletions(-)
+ 1 file changed, 9 insertions(+), 1 deletion(-)
 
+diff --git a/kernel/irq/handle.c b/kernel/irq/handle.c
+index e103451243a0..786f5570a640 100644
+--- a/kernel/irq/handle.c
++++ b/kernel/irq/handle.c
+@@ -133,7 +133,15 @@ void __irq_wake_thread(struct irq_desc *desc, struct irqaction *action)
+ 	 */
+ 	atomic_inc(&desc->threads_active);
+ 
+-	wake_up_process(action->thread);
++	/*
++	 * This might be a premature wakeup before the thread reached the
++	 * thread function and set the IRQTF_READY bit. It's waiting in
++	 * kthread code with state UNINTERRUPTIBLE. Once it reaches the
++	 * thread function it waits with INTERRUPTIBLE. The wakeup is not
++	 * lost in that case because the thread is guaranteed to observe
++	 * the RUN flag before it goes to sleep in wait_for_interrupt().
++	 */
++	wake_up_state(action->thread, TASK_INTERRUPTIBLE);
+ }
+ 
+ static DEFINE_STATIC_KEY_FALSE(irqhandler_duration_check_enabled);
 -- 
 2.51.1
 
