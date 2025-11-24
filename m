@@ -1,209 +1,251 @@
-Return-Path: <cgroups+bounces-12177-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-12178-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id C2EA8C80388
-	for <lists+cgroups@lfdr.de>; Mon, 24 Nov 2025 12:34:15 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 78190C8158C
+	for <lists+cgroups@lfdr.de>; Mon, 24 Nov 2025 16:30:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 9E85A4E2647
-	for <lists+cgroups@lfdr.de>; Mon, 24 Nov 2025 11:34:14 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id AE6694E6C6F
+	for <lists+cgroups@lfdr.de>; Mon, 24 Nov 2025 15:29:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E2D602FBE12;
-	Mon, 24 Nov 2025 11:34:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A2FA9314D1B;
+	Mon, 24 Nov 2025 15:28:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gourry.net header.i=@gourry.net header.b="cc29oQnE"
 X-Original-To: cgroups@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yx1-f47.google.com (mail-yx1-f47.google.com [74.125.224.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E567935959;
-	Mon, 24 Nov 2025 11:34:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 515AD314D14
+	for <cgroups@vger.kernel.org>; Mon, 24 Nov 2025 15:28:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.224.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1763984046; cv=none; b=iKUqbPsKReyCX/Fp/6cCo/AnbIEtRgFrYMKjxRDV78Qz9NV4A/138gCsxbZEWWVHDGCs1jau9v9LPfKuAWaBRAo9R5kQTX/9/zWKJHwuvNd6Xd6uZ3M4x5D83wwpQqURp1R/3ikDOuKsPCADlT74aOpPsA8JQ/aZ/43Z1taOTtE=
+	t=1763998111; cv=none; b=MzLVAmmdv6KqQyW23OX9MDY3bB8warKUy3+c2NdJfsFqqWPNx28K2L+afnYEhMslt6RcHyfkUDidDEwHrS71bHIK4UTBTKKi8tiOi9vdmbZwpnll4gHgQjtyKsYwlOct0HRujwvc6jKwSZl8eqrZnOCpVpLO7hnUiiuImnl6nbg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1763984046; c=relaxed/simple;
-	bh=e8x4+7Pv2Jhk1EcyNugPzKY+gxDNCJ9trL4AVFQUv7o=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=OJS6v7aYD6bOZO39OCnewq0+mlin1Prcbr75A/ETTAlRAdvSSR1Y8XGYpfIl2SWw1A83pBcbAKKrTZr4bQ8hLTrv+Y4Dkeqt5itaspoP3O00nOYs5RwZaujFazYxcECvycZZDH0n+xYxqL1odpFSsplrYm6j8G1tE4qoEssWcAs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.235])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTPS id 4dFNwz1j0GzYQv40;
-	Mon, 24 Nov 2025 19:33:07 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.75])
-	by mail.maildlp.com (Postfix) with ESMTP id AA87A1A058E;
-	Mon, 24 Nov 2025 19:33:55 +0800 (CST)
-Received: from [10.67.111.176] (unknown [10.67.111.176])
-	by APP2 (Coremail) with SMTP id Syh0CgAHZHqiQiRp0AdsBw--.35066S2;
-	Mon, 24 Nov 2025 19:33:55 +0800 (CST)
-Message-ID: <921ab4b4-0713-4c33-9c11-eac234ab9d39@huaweicloud.com>
-Date: Mon, 24 Nov 2025 19:33:54 +0800
+	s=arc-20240116; t=1763998111; c=relaxed/simple;
+	bh=e7umUecNMkT5NIFhgt8CWZQ7TyVGwODRnftqlFBtnJo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=NnJn/bGK6Gp8lT/9YQ1DIuml1h+bi2f3PAY+jZI+xllVE4ETjVd8A5mEIbcK10q9tVi2jrYklcMGdgCgzMxeuqaUdUXPyEp9Lizr5uOYNwK/GXyGHLdKrfNT/vGab7Gw8xIPJrY7pMwjQildFbDY6AWxhzCenGHtcf1CZFSopag=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gourry.net; spf=pass smtp.mailfrom=gourry.net; dkim=pass (2048-bit key) header.d=gourry.net header.i=@gourry.net header.b=cc29oQnE; arc=none smtp.client-ip=74.125.224.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gourry.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gourry.net
+Received: by mail-yx1-f47.google.com with SMTP id 956f58d0204a3-640f2c9ccbdso3598626d50.1
+        for <cgroups@vger.kernel.org>; Mon, 24 Nov 2025 07:28:29 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gourry.net; s=google; t=1763998108; x=1764602908; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=rmvwb/YqLsu0y+cxhnZ07KM1iGl9RhSbLvXeq5B7c8s=;
+        b=cc29oQnEhRT6CbYNfkpLXsssu8DlJUZNo/wghRIYnvRxFwEO/evTZtymBpqaVUl5SK
+         ma1KeTPXm8tbbtzQBiMThDA6F889ulQhDqcnWx5mm7fTUu46xWlgg7lr6Iv3hZagFzSe
+         CUzh1yn2c+u+VG8M9W5hvNANPXU7Pc3d9s7wep/sMfxA7M38VeXLCq53lM3Goz8o3+JD
+         pY8C11pKhw0FFLx30udvepqepVVJ3E70I+pJzlLdraeb8vOWSGERYA8tRPZvbtSB+1H6
+         JPFPWBA+QldxFlrDr+h4V6lhGqb5KFL+rSyyT+BPcU7R4UXXn/QGHnpf6QAYPAbdB3Dm
+         /NTw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1763998108; x=1764602908;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=rmvwb/YqLsu0y+cxhnZ07KM1iGl9RhSbLvXeq5B7c8s=;
+        b=oQKXLRQVl2b0CmnG2gHXh3TOUwWxWesgdi62R045eFWFervGJpD1/3XdfTQ9ElNTVu
+         rx4OCFcNUZCqi+tS5D/pZq79fkpGOBybcg7neQcbw3/+FalZCuXL4MsnITLsCNkCOUsl
+         cxKRRYNYk8QyfWUvLCaycRiuj9NvfxoXkxZ8fUt0I4LgQMfEMXovGhuoF00Ma4ckjx+O
+         FwisNzvvkgW7O/Rf4iHXkbAwSELik2wJCStlxMtuR+KEshSv5dTDlwO+8zHIHeF6wvRH
+         m11IauiXvytblLGeWRqivlLc6mL+kTJ7fc2+hbteesZ+FKwXnhf0Zb9I9HUByp8H0uPB
+         tmDw==
+X-Forwarded-Encrypted: i=1; AJvYcCWrJts3r56ZQKAww7uQy7YpXpeIBnTe1ehJ0BpaNQUVggvVWfrXT4yMptfzdyRL1rPPozs/sVUN@vger.kernel.org
+X-Gm-Message-State: AOJu0YxvhZbCxVkLdyq/TLpcc8++YQR96PZJKlFWh3i4hhXyobpe/BZO
+	eInXOG5Gp31WrGmxSf3OEiYHs95d1NDGtIiKL1dYV1JLjEs7NsIAfX9xcefQt7Qx6ZI=
+X-Gm-Gg: ASbGncs0+E/GCgOnUzU804sydTt+4bEsqEFg6I0hz8Ra7bpD6jmaCf6RvtnSQbqbHsp
+	njBlne5DByG5vYSH+f9rRnApULYSLBr/VsY0gQfUlY7WilFIkPBiCVyJtUXA9KZ3t60p+IVChdM
+	KdXUzlo0GPPqAqiyuTZOSaJkL4vvq8uhsJ7JKUoX7CcHh9580PJ3ZeGXcFNXYGB8XETr/VOERL5
+	wEs/yb4q+wqBLRf8pTy2NHnbXUK9cFaQ3cn7JEl1Wm4RitXE1+/OQV8pAxExkfFMdr3BwIi/9Os
+	jYZd3/eDdSp/R0HiWmp5JZ8JysSNcpghcne6MeYBoksLB698FuGtjRIRmsByMSdeCAP8MSYj8Ja
+	JJdGODrd6QSs0Q0qGnnCFu7QkH5CY4325lThV5/M8E5h5dPjjgKapyU56964y4tqtxMOU/n+A5G
+	5imCDN4F0=
+X-Google-Smtp-Source: AGHT+IF2wNBmZkbTfngTULZjgnH8cbmz94buOftiW7SxjvwrErr131yc1azbjD5qkix9lvoC5B3wPQ==
+X-Received: by 2002:a05:690e:158d:20b0:641:f5bc:68d0 with SMTP id 956f58d0204a3-64302ad80f8mr6454834d50.77.1763998108057;
+        Mon, 24 Nov 2025 07:28:28 -0800 (PST)
+Received: from gourry-fedora-PF4VCD3F ([2620:10d:c091:400::5:62f9])
+        by smtp.gmail.com with ESMTPSA id 956f58d0204a3-642f718bbbesm5022280d50.21.2025.11.24.07.28.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 24 Nov 2025 07:28:27 -0800 (PST)
+Date: Mon, 24 Nov 2025 08:28:23 -0700
+From: Gregory Price <gourry@gourry.net>
+To: Alistair Popple <apopple@nvidia.com>
+Cc: linux-mm@kvack.org, kernel-team@meta.com, linux-cxl@vger.kernel.org,
+	linux-kernel@vger.kernel.org, nvdimm@lists.linux.dev,
+	linux-fsdevel@vger.kernel.org, cgroups@vger.kernel.org,
+	dave@stgolabs.net, jonathan.cameron@huawei.com,
+	dave.jiang@intel.com, alison.schofield@intel.com,
+	vishal.l.verma@intel.com, ira.weiny@intel.com,
+	dan.j.williams@intel.com, longman@redhat.com,
+	akpm@linux-foundation.org, david@redhat.com,
+	lorenzo.stoakes@oracle.com, Liam.Howlett@oracle.com, vbabka@suse.cz,
+	rppt@kernel.org, surenb@google.com, mhocko@suse.com,
+	osalvador@suse.de, ziy@nvidia.com, matthew.brost@intel.com,
+	joshua.hahnjy@gmail.com, rakie.kim@sk.com, byungchul@sk.com,
+	ying.huang@linux.alibaba.com, mingo@redhat.com,
+	peterz@infradead.org, juri.lelli@redhat.com,
+	vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+	rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+	vschneid@redhat.com, tj@kernel.org, hannes@cmpxchg.org,
+	mkoutny@suse.com, kees@kernel.org, muchun.song@linux.dev,
+	roman.gushchin@linux.dev, shakeel.butt@linux.dev,
+	rientjes@google.com, jackmanb@google.com, cl@gentwo.org,
+	harry.yoo@oracle.com, axelrasmussen@google.com, yuanchu@google.com,
+	weixugc@google.com, zhengqi.arch@bytedance.com,
+	yosry.ahmed@linux.dev, nphamcs@gmail.com, chengming.zhou@linux.dev,
+	fabio.m.de.francesco@linux.intel.com, rrichter@amd.com,
+	ming.li@zohomail.com, usamaarif642@gmail.com, brauner@kernel.org,
+	oleg@redhat.com, namcao@linutronix.de, escape@linux.alibaba.com,
+	dongjoo.seo1@samsung.com
+Subject: Re: [RFC LPC2026 PATCH v2 00/11] Specific Purpose Memory NUMA Nodes
+Message-ID: <aSR5l_fuONlCws8i@gourry-fedora-PF4VCD3F>
+References: <20251112192936.2574429-1-gourry@gourry.net>
+ <aktv2ivkrvtrox6nvcpxsnq6sagxnmj4yymelgkst6pazzpogo@aexnxfcklg75>
+ <aSDUl7kU73LJR78g@gourry-fedora-PF4VCD3F>
+ <c5enwlaui37lm4uxlsjbuhesy6hfwwqbxzzs77zn7kmsceojv3@f6tquznpmizu>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5] cpuset: Avoid invalidating sibling partitions on
- cpuset.cpus conflict.
-To: Sun Shaojie <sunshaojie@kylinos.cn>
-Cc: cgroups@vger.kernel.org, hannes@cmpxchg.org,
- linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
- llong@redhat.com, mkoutny@suse.com, shuah@kernel.org, tj@kernel.org
-References: <0c409964-c4aa-4d41-aae5-cd0626015eeb@huaweicloud.com>
- <20251124102024.1768386-1-sunshaojie@kylinos.cn>
-Content-Language: en-US
-From: Chen Ridong <chenridong@huaweicloud.com>
-In-Reply-To: <20251124102024.1768386-1-sunshaojie@kylinos.cn>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:Syh0CgAHZHqiQiRp0AdsBw--.35066S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxGF4UZF4kZrWrGr47JFyrWFg_yoW5tr4fpF
-	WxK3WDJwsYqr1rCwsFq3Z7Zr15tanrAF17XFn8Gr17Jwn2qF1vk3W0krZIgrs8Xr9xGr1U
-	ZrW3urW3ZF1DAaDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUyGb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxkF7I0En4kS14v26r1q6r43MxAIw28IcxkI7VAK
-	I48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7
-	xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xII
-	jxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw2
-	0EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x02
-	67AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU17KsUUUUUU==
-X-CM-SenderInfo: hfkh02xlgr0w46kxt4xhlfz01xgou0bp/
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <c5enwlaui37lm4uxlsjbuhesy6hfwwqbxzzs77zn7kmsceojv3@f6tquznpmizu>
 
-
-
-On 2025/11/24 18:20, Sun Shaojie wrote:
-> Hi, Ridong,
+On Mon, Nov 24, 2025 at 10:09:37AM +1100, Alistair Popple wrote:
+> On 2025-11-22 at 08:07 +1100, Gregory Price <gourry@gourry.net> wrote...
+> > On Tue, Nov 18, 2025 at 06:02:02PM +1100, Alistair Popple wrote:
+> > > 
 > 
-> On Sat, 22 Nov 2025 09:33:34, Chen Ridong wrote:
->> On 2025/11/21 18:32, Sun Shaojie wrote:
->>> Hi, Ridong,
->>>
->>> On Thu, 20 Nov 2025 21:45:16, Chen Ridong wrote:
->>>> On 2025/11/20 21:07, Sun Shaojie wrote:
->>>>> I have carefully considered the scenario where parent effective CPUs are 
->>>>> empty, which corresponds to the following two cases. (After apply this patch).
->>>>>
->>>>>    root cgroup
->>>>>         |
->>>>>        A1
->>>>>       /  \
->>>>>     A2    A3
->>>>>
->>>>> Case 1:
->>>>>  Step:
->>>>>  #1> echo "0-1" > A1/cpuset.cpus
->>>>>  #2> echo "root" > A1/cpuset.cpus.partition
->>>>>  #3> echo "0-1" > A2/cpuset.cpus
->>>>>  #4> echo "root" > A2/cpuset.cpus.partition
->>>>>
->>>>>  After step #4, 
->>>>>
->>>>>                 |      A1      |      A2      |      A3      |
->>>>>  cpus_allowed   | 0-1          | 0-1          |              |
->>>>>  effective_cpus |              | 0-1          |              |
->>>>>  prstate        | root         | root         | member       |
->>>>>
->>>>>  After step #4, A3's effective CPUs is empty.
->>>>>
->>>>
->>>> That may be a corner case is unexpected.
->>>>
->>>>>  #5> echo "0-1" > A3/cpuset.cpus
->>>>>
->>>>
->>>> If we create subdirectories (e.g., A4, A5, ...) under the A1 cpuset and then configure cpuset.cpus
->>>> for A1 (a common usage scenario), processes can no longer be migrated into these subdirectories (A4,
->>>> A5, ...) afterward. However, prior to your patch, this migration was allowed.
->>>
->>> Are you referring to creating subdirectories (A4, A5, ...) after step #4? 
->>> And what parameters should be configured for A1's cpuset.cpus?
->>> Could you provide a specific example?
->>>
->>
->> #1> echo "0-1" > A1/cpuset.cpus
->> #2> echo "root" > A1/cpuset.cpus.partition
->> #3> echo "0-1" > A2/cpuset.cpus
->> #4> echo "root" > A2/cpuset.cpus.partition
->> mkdir A4
->> mkdir A5
->> echo "0" > A4/cpuset.cpus
->> echo $$ > A4/cgroup.procs
->> echo "1" > A5/cpuset.cpus
->> echo $$ > A5/cgroup.procs
->>
->> You might be going to argue that we haven't set the cpus for A4/A5..., yeah, maybe a corner case.
->>
->> However, it’s common practice to configure a cpuset’s cpus first and then migrate processes—this is
->> a typical usage scenario.
->>
-> 
-> I'm sorry, I didn't quite understand the point you were trying to make with this example.
-> 
-> If that's the case
-> 
->      root cgroup
->           |
->           A1
->        / /  \ \
->      A2 A3  A4 A5
-> 
->  #1> echo "0-1" > A1/cpuset.cpus
->  #2> echo "root" > A1/cpuset.cpus.partition
->  #3> echo "0-1" > A2/cpuset.cpus
->  #4> echo "root" > A2/cpuset.cpus.partition
->  mkdir A4
->  mkdir A5
->  echo "0" > A4/cpuset.cpus
-
-If we don't apply your patch, A2 will be invalidated.
-
->  echo $$ > A4/cgroup.procs  ->This will return an error because A4's effective CPUs are empty.
->  echo "1" > A5/cpuset.cpus
->  echo $$ > A5/cgroup.procs  ->This will return an error because A5's effective CPUs are empty.
-> 
-> Even with this patch applied, this result will not change.
+> There are multiple types here (DEVICE_PRIVATE and DEVICE_COHERENT). The former
+> is mostly irrelevant for this discussion but I'm including the descriptions here
+> for completeness.
 > 
 
-You can have a try, the result I got:
+I appreciate you taking the time here.  I'll maybe try to look at
+updating the docs as this evolves.
 
-# mkdir A1
-# echo "0-1" > A1/cpuset.cpus
-# echo "root" > A1/cpuset.cpus.partition
-# cd A1/
-# mkdir A2
-# mkdir A4
-# mkdir A5
-# echo "0-1" > A2/cpuset.cpus
-# echo "root" > A2/cpuset.cpus.partition
-#
-# echo "0" > A4/cpuset.cpus
-# cat A2/cpuset.cpus
-0-1
-# cat A2/cpuset.cpus.partition
-root invalid
-# cat A4/cpuset.cpus.effective
-0
-
->>
->>> Additionally, processes cannot be migrated into a cgroup whose 
->>> cpuset.cpus.effective is empty. However, this patch does not modify this behavior.
->>>
->>> So why does applying this patch enable such migration?
+> > But I could imagine an (overly simplistic) pattern with SPM Nodes:
+> > 
+> > fd = open("/dev/gpu_mem", ...)
+> > buf = mmap(fd, ...)
+> > buf[0] 
+> >    1) driver takes the fault
+> >    2) driver calls alloc_page(..., gpu_node, GFP_SPM_NODE)
+> >    3) driver manages any special page table masks
+> >       Like marking pages RO/RW to manage ownership.
 > 
-> Thanks,
-> Sun Shaojie
+> Of course as an aside this needs to match the CPU PTEs logic (this what
+> hmm_range_fault() is primarily used for).
+>
 
--- 
-Best regards,
-Ridong
+This is actually the most interesting part of series for me.  I'm using
+a compressed memory device as a stand-in for a memory type that requires
+special page table entries (RO) to avoid compression ratios tanking
+(resulting, eventually, in a MCE as there's no way to slow things down).
+
+You can somewhat "Get there from here" through device coherent
+ZONE_DEVICE, but you still don't have access to basic services like
+compaction and reclaim - which you absolutely do want for such a memory
+type (for the same reasons we groom zswap and zram).
+
+I wonder if we can even re-use the hmm interfaces for SPM nodes to make
+managing special page table policies easier as well.  That seems
+promising.
+
+I said this during LSFMM: Without isolation, "memory policy" is really
+just a suggestion.  What we're describing here is all predicated on
+isolation work, and all of a sudden much clearer examples of managing
+memory on NUMA boundaries starts to make a little more sense.
+
+> >    4) driver sends the gpu the (mapping_id, pfn, index) information
+> >       so that gpu can map the region in its page tables.
+> 
+> On coherent systems this often just uses HW address translation services
+> (ATS), although I think the specific implementation of how page-tables are
+> mirrored/shared is orthogonal to this.
+>
+
+Yeah this part is completely foreign to me, I just presume there's some
+way to tell the GPU how to recontruct the virtually contiguous setup.
+
+That mechanism would be entirely reusable here (I assume).
+
+> This is roughly how things work with DEVICE_PRIVATE/COHERENT memory today,
+> except in the case of DEVICE_PRIVATE in step (5) above. In that case the page is
+> mapped as a non-present special swap entry that triggers a driver callback due
+> to the lack of cache coherence.
+> 
+
+Btw, just an aside, Lorenzo is moving to rename these entries to
+softleaf (software-leaf) entries. I think you'll find it welcome.
+https://lore.kernel.org/linux-mm/c879383aac77d96a03e4d38f7daba893cd35fc76.1762812360.git.lorenzo.stoakes@oracle.com/
+
+> > Driver doesn't have to do much in the way of allocationg management.
+> > 
+> > This is probably less compelling since you don't want general purposes
+> > services like reclaim, migration, compaction, tiering - etc.  
+> 
+> On at least some of our systems I'm told we do want this, hence my interest
+> here. Currently we have systems not using DEVICE_COHERENT and instead just
+> onlining everything as normal system managed memory in order to get reclaim
+> and tiering. Of course then people complain that it's managed as normal system
+> memory and non-GPU related things (ie. page-cache) end up in what's viewed as
+> special purpose memory.
+> 
+
+Ok, so now this gets interesting then.  I don't understand how this
+makes sense (not saying it doesn't, I simply don't understand).
+
+I would presume that under no circumstance do you want device memory to
+just suddenly disappear without some coordination from the driver.
+
+Whether it's compaction or reclaim, you have some thread that's going to
+migrate a virtual mapping from HPA(A) to HPA(B) and HPA(B) may or may not
+even map to the same memory device.
+
+That thread may not even be called in the context of a thread which
+accesses GPU memory (although, I think we could enforce that on top
+of SPM nodes, but devil is in the details).
+
+Maybe that "all magically works" because of the ATS described above?
+
+I suppose this assumes you have some kind of unified memory view between
+host and device memory?  Are there docs here you can point me at that
+might explain this wizardry?  (Sincerely, this is fascinating)
+
+> > The value is clearly that you get to manage GPU memory like any other
+> > memory, but without worry that other parts of the system will touch it.
+> > 
+> > I'm much more focused on the "I have memory that is otherwise general
+> > purpose, and wants services like reclaim and compaction, but I want
+> > strong controls over how things can land there in the first place".
+> 
+> So maybe there is some overlap here - what I have is memoy that we want managed
+> much like normal memory but with strong controls over what it can be used for
+> (ie. just for tasks utilising the processing element on the accelerator).
+> 
+
+I think it might be great if we could discuss this a bit more in-depth,
+as i've already been considering very mild refactors to reclaim to
+enable a driver to engage it with an SPM node as the only shrink target.
+
+This all becomes much more complicated due to per-memcg LRUs and such.
+
+All that said, I'm focused on the isolation / allocation pieces first.
+If that can't be agreed upon, the rest isn't worth exploring.
+
+I do have a mild extension to mempolicy that allows mbind() to hit an
+SPM node as an example as well.  I'll discuss this in the response to
+David's thread, as he had some related questions about the GFP flag.
+
+~Gregory
 
 
