@@ -1,117 +1,123 @@
-Return-Path: <cgroups+bounces-12192-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-12193-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9478BC85080
-	for <lists+cgroups@lfdr.de>; Tue, 25 Nov 2025 13:55:34 +0100 (CET)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id DC21EC85548
+	for <lists+cgroups@lfdr.de>; Tue, 25 Nov 2025 15:10:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 8FF8A4E7D4D
-	for <lists+cgroups@lfdr.de>; Tue, 25 Nov 2025 12:55:33 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 24976350A59
+	for <lists+cgroups@lfdr.de>; Tue, 25 Nov 2025 14:09:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C85ED320CDF;
-	Tue, 25 Nov 2025 12:55:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 08773322C99;
+	Tue, 25 Nov 2025 14:09:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="CxbVjZRH"
+	dkim=pass (2048-bit key) header.d=shutemov.name header.i=@shutemov.name header.b="OMPvzKlF";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="YLka3iJJ"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-wm1-f50.google.com (mail-wm1-f50.google.com [209.85.128.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from flow-a2-smtp.messagingengine.com (flow-a2-smtp.messagingengine.com [103.168.172.137])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A9E7127467D
-	for <cgroups@vger.kernel.org>; Tue, 25 Nov 2025 12:55:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9A4BF32255C;
+	Tue, 25 Nov 2025 14:09:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.137
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764075330; cv=none; b=JrTQ3ggVwWteipWERrLc2NnQHPc+fxCj2wJD+6Ebe+gjXh5//D8GLlHSXkH4wLnpZVTOnGh3SQknhfrLP7FXF3CQyKyF1Ehl87LogxVcv1R99t//woCpJiggp2lRWN+DJNBkqKwrdUvGtoBpXG7/1Ll+oa07WMECSbfYjt6TyPo=
+	t=1764079788; cv=none; b=IGZqti2cFhyUDEXVIJEVh6vI/TX9IYN9o4OaBtyardgA9NRrpALQWWinPIZq4jKTgu0scH3IrtxFoFTcMuftw8q0Q82ej9tA9bygPG3Quu90XbQXHgCIAqhJ3ooVEqPlMSmqGsel5RLHiyv5G7wfonkhYK5zPJ2qG4lF9xXfPXc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764075330; c=relaxed/simple;
-	bh=TcIehyyg9NOgFB+aqxQUl1XQcbzEAynNMvyg8CX0Iz8=;
+	s=arc-20240116; t=1764079788; c=relaxed/simple;
+	bh=41wuBfK6KmZfFSph9AoLMj/4UnC1VKX3ed8Fm4gY7Qk=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=dHfHUVbzj/3uB5PM+TsN0ns9PI5LlcTqlJ63tvEcpAAVjG5mHzxCO8pSXr4vSWTwHsF3bOMqcnQOKPVti/iYxyyNp5mGiLiYtQ36ENEWr0PbWiKew28CXwj53BhZxnjDjo/LmOhzd8WtGbk5vR721v1lbcc3A87PtnLsf+6UlRM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=CxbVjZRH; arc=none smtp.client-ip=209.85.128.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-wm1-f50.google.com with SMTP id 5b1f17b1804b1-4779adb38d3so39015435e9.2
-        for <cgroups@vger.kernel.org>; Tue, 25 Nov 2025 04:55:28 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1764075327; x=1764680127; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=usCzcCtVI6XgCiCu4NS8NEIAX55CiKwZAm0iUXb+TsA=;
-        b=CxbVjZRHmdeNmVkpr656+7d2ejK+CRH5xbGN7WoQ1OQ6RSHHh4OemSB+Ts4ZVLydJa
-         i+P2cmzrjX+PHuVDpSmB/Rm9YpkTSjr/pqoFg8pmTCY/FU1MR7Fkzv6of1c8WVTwAWZC
-         135wz6s+2WNVkWja+VN3+41e2gX8oILAA+CmXxTzb2eCA8TN6kSPJSsa/CAGpSao6x/E
-         366acJ67JjjaSN/7Qo7z6pX4zvh4Blwk1y6BDbdG83jvOAAFht2r91fp8EcdeKpQGh6W
-         B8EslKrt8PU6/IWPUadQR1+AT7OaBclYJMHoYdCaXlDof4m/Z7u+f4TwtlnX1jH6KJW5
-         CXMQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1764075327; x=1764680127;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=usCzcCtVI6XgCiCu4NS8NEIAX55CiKwZAm0iUXb+TsA=;
-        b=vtNjGs/oGLBTRtTTzEKzTDhqvHQMT21jj2VM6jl4mSJEFG9IzQaNrxz23xvAGhqyJJ
-         KlS5eB53NchIa94tVHl43oRu7T68PtOqm/axP6l7o5lesOXsjbiM8PIpsm6gXpC+LBuq
-         s4oqjYOWLo9atzTCerXTSB9CRUIGcFNq+eUsv2zrZMtfze4nUmDOoc5fa87WWdivccCm
-         N1nAZ4B5hveGrr5ozhkwHIuRJ064wxzvY/HE6jBtMwaoHO9JBwuXrubZZ/gg9LgAm2Ae
-         OdprUUxfsVMLX3GXyaMO7xh8MJT/UzzJ4BLfl44eOdLVu6JblJD8H3afRK5FdEsFdKVZ
-         zAZA==
-X-Forwarded-Encrypted: i=1; AJvYcCVV1Ujnsx3vfAbKFMM3rIHegr1unQ3Mepb2niqtzVr2eUzn7/Zl8XWSeOe7d0q3sR8ltapkfomM@vger.kernel.org
-X-Gm-Message-State: AOJu0Ywsz3yVX0iyUqPDbRrvxDeLLal2vjMzQjdAjrJHwPKSfEmphavr
-	280gjlcrNVh3dNs4nHgGzW4RLAvaf9KNG2VzUmpAedtaWlSYVVdRoGRrwsPc9hEOPKA=
-X-Gm-Gg: ASbGnct0GF+//gVaYd3xY1phokGb4k76VIuivIdJ3SFqWkK6eCMylQbrTHi6vNk86+R
-	P6THbz5BZc3DyCatTi0fhZitO8F2m8wcAE8AOhJYlZdTie0GzxLGu+H+YsbbWBOtV0eWFYpvzuc
-	aagdcxXt0+eiOJw8FppQoFdgwXBf0fK0FIVSEBpAF+RbHNSiUn2kLJisHJ/M5pggsz9jjIlQVRK
-	pbh1n4gDHJUDUOEjK1opMo94++OhbG5M8yfRT1LaEtdq/8Asqsthu02OYICu+OOSJuvtCSLaJ2n
-	+hlOXB0ZWevNYGkCbXUSLdefXr2nVYRFWQR+4UN7IdOlnAZWcpJzOPFhAuioKtQ51EPH3Nqukru
-	OTNXOdRB5SFZHB3wUSaRYhsbo45xhjHc7Jci9Xf4AAQjgOEIyrExNTPTO0kp9+QyCBaERGv3TMm
-	/ipzcMhJPJK445jVaP5ZmxYpwM
-X-Google-Smtp-Source: AGHT+IHeNFHz77PnS9U9y/LXSC6SdqMAwMHknNtAmvznPS8Yog8Q67/4L/1KHix1NRlDrhL8Rpv3qQ==
-X-Received: by 2002:a05:600c:3112:b0:477:b48d:ba7a with SMTP id 5b1f17b1804b1-47904b2b2e0mr24822815e9.32.1764075327005;
-        Tue, 25 Nov 2025 04:55:27 -0800 (PST)
-Received: from localhost (109-81-29-251.rct.o2.cz. [109.81.29.251])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-479040bd209sm18794505e9.3.2025.11.25.04.55.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 25 Nov 2025 04:55:26 -0800 (PST)
-Date: Tue, 25 Nov 2025 13:55:25 +0100
-From: Michal Hocko <mhocko@suse.com>
-To: hui.zhu@linux.dev
-Cc: Roman Gushchin <roman.gushchin@linux.dev>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Johannes Weiner <hannes@cmpxchg.org>,
-	Shakeel Butt <shakeel.butt@linux.dev>,
-	Muchun Song <muchun.song@linux.dev>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>,
-	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-	Shuah Khan <shuah@kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Miguel Ojeda <ojeda@kernel.org>,
-	Nathan Chancellor <nathan@kernel.org>, Kees Cook <kees@kernel.org>,
-	Tejun Heo <tj@kernel.org>, Jeff Xu <jeffxu@chromium.org>,
-	mkoutny@suse.com, Jan Hendrik Farr <kernel@jfarr.cc>,
-	Christian Brauner <brauner@kernel.org>,
-	Randy Dunlap <rdunlap@infradead.org>,
-	Brian Gerst <brgerst@gmail.com>,
-	Masahiro Yamada <masahiroy@kernel.org>,
-	linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-	cgroups@vger.kernel.org, bpf@vger.kernel.org,
-	linux-kselftest@vger.kernel.org, Hui Zhu <zhuhui@kylinos.cn>
-Subject: Re: [RFC PATCH 0/3] Memory Controller eBPF support
-Message-ID: <aSWnPfYXRYxCDXG3@tiehlicka>
-References: <cover.1763457705.git.zhuhui@kylinos.cn>
- <87ldk1mmk3.fsf@linux.dev>
- <895f996653b3385e72763d5b35ccd993b07c6125@linux.dev>
- <aR9p8n3VzpNHdPFw@tiehlicka>
- <f5c4c443f8ba855d329a180a6816fc259eb8dfca@linux.dev>
- <aSWdSlhU3acQ9Rq1@tiehlicka>
- <6ff7dad904bcb27323ea21977e1160ebfa5e283d@linux.dev>
+	 Content-Type:Content-Disposition:In-Reply-To; b=rls3yt4yCFbF/9hoYA8mXJ+oOeKK5Ca6wbD5+gZzK4Q9nKoFdqgdm5uHyzbx8WOOM9rz0HeITfzXKPmNwhczxXyt4IX6PlVWIYnphmOgGOZDSLwRmFEG+bwyfTQG84qg3mDLIgyxLMiWGGaAZ12pNcwnT/rqfBkGn+95bQnRS74=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=shutemov.name; spf=pass smtp.mailfrom=shutemov.name; dkim=pass (2048-bit key) header.d=shutemov.name header.i=@shutemov.name header.b=OMPvzKlF; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=YLka3iJJ; arc=none smtp.client-ip=103.168.172.137
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=shutemov.name
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=shutemov.name
+Received: from phl-compute-05.internal (phl-compute-05.internal [10.202.2.45])
+	by mailflow.phl.internal (Postfix) with ESMTP id 809B21380546;
+	Tue, 25 Nov 2025 09:09:45 -0500 (EST)
+Received: from phl-mailfrontend-02 ([10.202.2.163])
+  by phl-compute-05.internal (MEProxy); Tue, 25 Nov 2025 09:09:45 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=shutemov.name;
+	 h=cc:cc:content-type:content-type:date:date:from:from
+	:in-reply-to:in-reply-to:message-id:mime-version:references
+	:reply-to:subject:subject:to:to; s=fm2; t=1764079785; x=
+	1764086985; bh=3bMvsZSIiVU3pUA1Q96vlRsnQkJ+zVUPQsOHI7GHg2U=; b=O
+	MPvzKlFHkHMEkgAvO1Uyss+96M/hGKj5YsQfHejRjOSc4qcoxmXMj4hhXg44W1Ef
+	f+2FZmek/Vp7VMAcKSWKu5vw2ELUh/4TKqh05W+XH3fqT/kg0gRDs1cSTZFEzwsY
+	lfUK/XstLQ/GgwvHNBGpiPsihS3C907bycj46mTcTPjPWBcIFuNO2mkJK87dq41v
+	nEaYF+SW/r9n3rXEn7zZvJvhaqJKngqjJVqgYKouNkyWaY7csAolp+xbmx+7XCc6
+	NTnu6vEK2LnrusXBylHkCIdYJU8Qwx8yLU37YVnlHB1bRfm2yV73RrmEmaeu/OnY
+	zVRksTDa34siBV1sEgVBg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=
+	1764079785; x=1764086985; bh=3bMvsZSIiVU3pUA1Q96vlRsnQkJ+zVUPQsO
+	HI7GHg2U=; b=YLka3iJJS4uHYf+RVmsIhTYDXpAvrL5WrL9BPBFcYF8nsukYggb
+	QHO6tT2dwT3h9TcJys0ZthsLNKdLgkuGaDv5MkN8DaRBDYOvSDFB76gBeKNn5W0/
+	CVCemM3ZxiBVvJLvrV/KsXaaVnrH/XSHm5BR36zUS10Fj/JaEk3C0JUVf4tBZhI1
+	rwv6nH1MsGZq8Rx4O9829S+HBuzkXZM4K4wcZY5iTTS7mIR4Fo1mVU9WkuJ1CMd2
+	uD6szhHUcKTSLnb6TESaW5TxAiS8SqYaev0d0D3FkzA2naE3DgHaXS1hUhvkgcn9
+	odS/eCQqz0+KbMLRtjqc8IUq4qTlSRV2bug==
+X-ME-Sender: <xms:pbglaWvKN1DJZAzYSwKMRx9-OgT3rdfcTgkjojWPEw8KNW7Cx0AEAw>
+    <xme:pbglaTXf9w3AHkCR2Fi9l8wIxJHg69s8vY_NmbLplbMAS7ZPJhAxU4ZyvP7W59tRY
+    6tYZ94S8k6_dYSWuO2CmKlawxLgNFJRUNzUYh5ghix47LoIvHqcJ3E>
+X-ME-Received: <xmr:pbglaTVq6gxwgmVLYbKwhZEo3Ue8V3Yipkq04ow2rgFUWOH-1wlLy2M77sQWTg>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeffedrtdeggddvgeduieejucetufdoteggodetrf
+    dotffvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfurfetoffkrfgpnffqhgenuceu
+    rghilhhouhhtmecufedttdenucenucfjughrpeffhffvvefukfhfgggtuggjsehttdfstd
+    dttddvnecuhfhrohhmpefmihhrhihlucfuhhhuthhsvghmrghuuceokhhirhhilhhlsehs
+    hhhuthgvmhhovhdrnhgrmhgvqeenucggtffrrghtthgvrhhnpeejheeufeduvdfgjeekie
+    dvjedvgeejgfefieetveffhfdtvddtleduhfeffeffudenucevlhhushhtvghrufhiiigv
+    pedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehkihhrihhllhesshhhuhhtvghmohhvrd
+    hnrghmvgdpnhgspghrtghpthhtohepudefiedpmhhouggvpehsmhhtphhouhhtpdhrtghp
+    thhtohepghhouhhrrhihsehgohhurhhrhidrnhgvthdprhgtphhtthhopehlihhnuhigqd
+    hmmheskhhvrggtkhdrohhrghdprhgtphhtthhopehkvghrnhgvlhdqthgvrghmsehmvght
+    rgdrtghomhdprhgtphhtthhopehlihhnuhigqdgtgihlsehvghgvrhdrkhgvrhhnvghlrd
+    horhhgpdhrtghpthhtoheplhhinhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghl
+    rdhorhhgpdhrtghpthhtohepnhhvughimhhmsehlihhsthhsrdhlihhnuhigrdguvghvpd
+    hrtghpthhtoheplhhinhhugidqfhhsuggvvhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhr
+    ghdprhgtphhtthhopegtghhrohhuphhssehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtg
+    hpthhtohepuggrvhgvsehsthhgohhlrggsshdrnhgvth
+X-ME-Proxy: <xmx:pbglaW_0cXMtMthUHN5H-fE7CGn6DIwBKbPochRZeWCN8gj92pgAfQ>
+    <xmx:pbglab-e-8tK-jGoWZSTzd4htoSykssNFuRJIH-N3luEajg_qhcROg>
+    <xmx:pbglaS8xVJOZqKo-Vsq3I59doGzt7pGvGwt-1UuY4j1VdvVF-sGV3A>
+    <xmx:pbglabLAvm1PrWnHzKLnOzKQUK7tS39E5pLPz3qn6MaXu68uj2z1VA>
+    <xmx:qbglaXODIQJ_Tp6UtA9zcmakBUdCO8tVHH50Z00bPS2jBHC-6eFUxFQ4>
+Feedback-ID: ie3994620:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
+ 25 Nov 2025 09:09:40 -0500 (EST)
+Date: Tue, 25 Nov 2025 14:09:39 +0000
+From: Kiryl Shutsemau <kirill@shutemov.name>
+To: Gregory Price <gourry@gourry.net>
+Cc: linux-mm@kvack.org, kernel-team@meta.com, linux-cxl@vger.kernel.org,
+ 	linux-kernel@vger.kernel.org, nvdimm@lists.linux.dev,
+ linux-fsdevel@vger.kernel.org, 	cgroups@vger.kernel.org,
+ dave@stgolabs.net, jonathan.cameron@huawei.com, 	dave.jiang@intel.com,
+ alison.schofield@intel.com, vishal.l.verma@intel.com,
+ 	ira.weiny@intel.com, dan.j.williams@intel.com, longman@redhat.com,
+ 	akpm@linux-foundation.org, david@redhat.com, lorenzo.stoakes@oracle.com,
+ 	Liam.Howlett@oracle.com, vbabka@suse.cz, rppt@kernel.org,
+ surenb@google.com, 	mhocko@suse.com, osalvador@suse.de, ziy@nvidia.com,
+ matthew.brost@intel.com, 	joshua.hahnjy@gmail.com, rakie.kim@sk.com,
+ byungchul@sk.com, ying.huang@linux.alibaba.com, 	apopple@nvidia.com,
+ mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com,
+ 	vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+ rostedt@goodmis.org, 	bsegall@google.com, mgorman@suse.de,
+ vschneid@redhat.com, tj@kernel.org, 	hannes@cmpxchg.org,
+ mkoutny@suse.com, kees@kernel.org, muchun.song@linux.dev,
+ 	roman.gushchin@linux.dev, shakeel.butt@linux.dev, rientjes@google.com,
+ jackmanb@google.com, 	cl@gentwo.org, harry.yoo@oracle.com,
+ axelrasmussen@google.com, 	yuanchu@google.com, weixugc@google.com,
+ zhengqi.arch@bytedance.com, 	yosry.ahmed@linux.dev, nphamcs@gmail.com,
+ chengming.zhou@linux.dev, 	fabio.m.de.francesco@linux.intel.com,
+ rrichter@amd.com, ming.li@zohomail.com, usamaarif642@gmail.com,
+ 	brauner@kernel.org, oleg@redhat.com, namcao@linutronix.de,
+ escape@linux.alibaba.com, 	dongjoo.seo1@samsung.com
+Subject: Re: [RFC LPC2026 PATCH v2 00/11] Specific Purpose Memory NUMA Nodes
+Message-ID: <h7vt26ek4wzrls6twsveinxz7aarwqtkhydbgvihsm7xzsjiuz@yk2dltuf2eoh>
+References: <20251112192936.2574429-1-gourry@gourry.net>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -120,21 +126,45 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <6ff7dad904bcb27323ea21977e1160ebfa5e283d@linux.dev>
+In-Reply-To: <20251112192936.2574429-1-gourry@gourry.net>
 
-On Tue 25-11-25 12:39:11, hui.zhu@linux.dev wrote:
-> My goal is implement dynamic memory reclamation for memcgs without limits,
-> triggered by specific conditions.
+On Wed, Nov 12, 2025 at 02:29:16PM -0500, Gregory Price wrote:
+> With this set, we aim to enable allocation of "special purpose memory"
+> with the page allocator (mm/page_alloc.c) without exposing the same
+> memory as "System RAM".  Unless a non-userland component, and does so
+> with the GFP_SPM_NODE flag, memory on these nodes cannot be allocated.
+
+How special is "special purpose memory"? If the only difference is a
+latency/bandwidth discrepancy compared to "System RAM", I don't believe
+it deserves this designation.
+
+I am not in favor of the new GFP flag approach. To me, this indicates
+that our infrastructure surrounding nodemasks is lacking. I believe we
+would benefit more by improving it rather than simply adding a GFP flag
+on top.
+
+While I am not an expert in NUMA, it appears that the approach with
+default and opt-in NUMA nodes could be generally useful. Like,
+introduce a system-wide default NUMA nodemask that is a subset of all
+possible nodes. This way, users can request the "special" nodes by using
+a wider mask than the default.
+
+cpusets should allow to set both default and possible masks in a
+hierarchical manner where a child's default/possible mask cannot be
+wider than the parent's possible mask and default is not wider that
+own possible.
+
+> Userspace-driven allocations are restricted by the sysram_nodes mask,
+> nothing in userspace can explicitly request memory from SPM nodes.
 > 
-> For instance, with memcg A and memcg B both unlimited, when memcg A faces
-> high PSI pressure, ebpf control memcg B do some memory reclaim work when
-> it try charge.
+> Instead, the intent is to create new components which understand memory
+> features and register those nodes with those components. This abstracts
+> the hardware complexity away from userland while also not requiring new
+> memory innovations to carry entirely new allocators.
 
-Understood. Please also think whether this is already possible with
-existing interfaces and if not what are roadblocks in that direction.
+I don't see how it is a positive. It seems to be negative side-effect of
+GFP being a leaky abstraction.
 
-Thanks!
 -- 
-Michal Hocko
-SUSE Labs
+  Kiryl Shutsemau / Kirill A. Shutemov
 
