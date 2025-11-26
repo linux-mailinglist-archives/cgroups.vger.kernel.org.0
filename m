@@ -1,178 +1,177 @@
-Return-Path: <cgroups+bounces-12211-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-12212-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id EA26DC88DD0
-	for <lists+cgroups@lfdr.de>; Wed, 26 Nov 2025 10:09:28 +0100 (CET)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1FE0EC88F0E
+	for <lists+cgroups@lfdr.de>; Wed, 26 Nov 2025 10:27:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 9FAC14E3E58
-	for <lists+cgroups@lfdr.de>; Wed, 26 Nov 2025 09:09:20 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id C17D0355943
+	for <lists+cgroups@lfdr.de>; Wed, 26 Nov 2025 09:27:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD03B3126DA;
-	Wed, 26 Nov 2025 09:09:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Wqdxp7xy"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 790D53016F6;
+	Wed, 26 Nov 2025 09:27:07 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F49730E0DF
-	for <cgroups@vger.kernel.org>; Wed, 26 Nov 2025 09:09:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CCAB929BDA0;
+	Wed, 26 Nov 2025 09:27:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764148149; cv=none; b=bK0z6MHtSeOSWPICikCTyzbNpuD5gqYGoOQYK5L/khFVVervfjhO5fO7bBPfjjjrbEVCjxoSZnFdWF7ViMyZ+VJhgoc/+kLuHdIycryC3YlPifcB7KvPFcBa3XXkmDChfl5HRpk2WTh9QuXHrPiCd1J0DB0n7c3EuZgYyD9KI4A=
+	t=1764149227; cv=none; b=RZeoIe17UO7KvQmSKr2yY9rMe197fz0fsMkGCuMx+gC5H8PKjyOzQEQX7TSNeSm/376lt3uDJSCQmQaWzYq05aWn7ElL9nmwUeHvxvysHP5IsRjCsbYLZjyy9dTd51O5x9PhOoYoZscB3JxpPB0WjSNmMMUbr1xR5bpNteK/zsA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764148149; c=relaxed/simple;
-	bh=6w7rkWZMm2OzZs1d4tCa6J3Sjb91QF8PMCdGPkKWBoM=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=o08dc8/c8BT+QVcJoGRAI6NVoOu54kXriYJfKenuAN41WGaUFzfhP3J+/t5m2FoZNjJNTsAZ4vtHP3AYig9UVS3iXOHEIBc6GWfsuiMHXCwKr0H/uLIdx8aDnaH72pE/l28MYk3tBDbVeLpEY5Ae6nmpDKC2Gf0tyaf0Q/KI9yo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Wqdxp7xy; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1764148146;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=QioLbPIbEdhHQpe6rbAMDZ2orQalmMmfV24sYZuRkpM=;
-	b=Wqdxp7xy4+Os0DcgohpI+IhukFCTVK0rGUSvqVRv8BLZfeGpU1i2hwC0nxwc8i691Om1m3
-	eg4ZlyVYT/19A8sLOSA8frnM8WUQI2PujsyKTE+adOW1p/VLnmhuNNzWBbUv56UuoAzbwk
-	u6j6oFikFAVEHAwURFEXxQTAbz2j1KE=
-Received: from mx-prod-mc-01.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-610-9NRKrjBsMOyjmcTaAx-1rg-1; Wed,
- 26 Nov 2025 04:09:02 -0500
-X-MC-Unique: 9NRKrjBsMOyjmcTaAx-1rg-1
-X-Mimecast-MFC-AGG-ID: 9NRKrjBsMOyjmcTaAx-1rg_1764148138
-Received: from mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.4])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mx-prod-mc-01.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 432561956096;
-	Wed, 26 Nov 2025 09:08:57 +0000 (UTC)
-Received: from fweimer-oldenburg.csb.redhat.com (unknown [10.44.32.146])
-	by mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id F32D63001E83;
-	Wed, 26 Nov 2025 09:08:46 +0000 (UTC)
-From: Florian Weimer <fweimer@redhat.com>
-To: Christian Brauner <brauner@kernel.org>
-Cc: Jan Kara <jack@suse.cz>,  Amir Goldstein <amir73il@gmail.com>,
- linux-fsdevel@vger.kernel.org,  Josef Bacik <josef@toxicpanda.com>,
- Jeff Layton <jlayton@kernel.org>,  Mike Yuan <me@yhndnzj.com>,
- Zbigniew =?utf-8?Q?J=C4=99drzejewski-Szmek?= <zbyszek@in.waw.pl>,
- Lennart Poettering <mzxreary@0pointer.de>,
- Daan De Meyer <daan.j.demeyer@gmail.com>,
- Aleksa Sarai <cyphar@cyphar.com>,
- Alexander Viro <viro@zeniv.linux.org.uk>,
- Jens Axboe <axboe@kernel.dk>,  Tejun Heo <tj@kernel.org>,
- Johannes Weiner <hannes@cmpxchg.org>,
- Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>,  Eric Dumazet
- <edumazet@google.com>,
- Jakub Kicinski <kuba@kernel.org>,  Paolo Abeni <pabeni@redhat.com>,
- Simon Horman <horms@kernel.org>,
- Chuck Lever <chuck.lever@oracle.com>,  linux-nfs@vger.kernel.org,
- linux-kselftest@vger.kernel.org,  linux-block@vger.kernel.org,
- linux-kernel@vger.kernel.org,  cgroups@vger.kernel.org,
- netdev@vger.kernel.org, libc-alpha@sourceware.org, Dmitry V. Levin
- <ldv@strace.io>, address-sanitizer <address-sanitizer@googlegroups.com>,
- strace-devel@lists.strace.io
-Subject: Stability of ioctl constants in the UAPI (Re: [PATCH 01/32] pidfs:
- validate extensible ioctls)
-In-Reply-To: <20250910-work-namespace-v1-1-4dd56e7359d8@kernel.org> (Christian
-	Brauner's message of "Wed, 10 Sep 2025 16:36:46 +0200")
-References: <20250910-work-namespace-v1-0-4dd56e7359d8@kernel.org>
-	<20250910-work-namespace-v1-1-4dd56e7359d8@kernel.org>
-Date: Wed, 26 Nov 2025 10:08:44 +0100
-Message-ID: <lhu7bvd6u03.fsf_-_@oldenburg.str.redhat.com>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+	s=arc-20240116; t=1764149227; c=relaxed/simple;
+	bh=AtWCJL62oaHmescbXWhm4Tdik0c8IvxxkJk9Kv2of8o=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=UMOr11ZNBfX5OEsxX4hshhYdKvvQ4JRXa4+NCEx9JDr3xFEpTPj7dEiA1c5vZAEzgX2Fu/kRsW+sxLeMTZ6nN6ETtPtMtjB5UKYCPLLa3CIbLd/OTAXxSOWrQd015+Zi5idXONOt2NnabAiNTqaiMVR0vxMTmKJc+jExWSgN3ik=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.93.142])
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTPS id 4dGZ1p32VnzKHMwm;
+	Wed, 26 Nov 2025 17:26:22 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.75])
+	by mail.maildlp.com (Postfix) with ESMTP id 003E81A07BD;
+	Wed, 26 Nov 2025 17:27:00 +0800 (CST)
+Received: from hulk-vt.huawei.com (unknown [10.67.174.121])
+	by APP2 (Coremail) with SMTP id Syh0CgD3xXzUxyZpoMBICA--.31788S2;
+	Wed, 26 Nov 2025 17:27:00 +0800 (CST)
+From: Chen Ridong <chenridong@huaweicloud.com>
+To: longman@redhat.com,
+	tj@kernel.org,
+	hannes@cmpxchg.org,
+	mkoutny@suse.com
+Cc: cgroups@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	lujialin4@huawei.com,
+	chenridong@huawei.com
+Subject: [PATCH -next v2] cpuset: Remove unnecessary checks in rebuild_sched_domains_locked
+Date: Wed, 26 Nov 2025 09:11:58 +0000
+Message-Id: <20251126091158.1610673-1-chenridong@huaweicloud.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Scanned-By: MIMEDefang 3.4.1 on 10.30.177.4
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:Syh0CgD3xXzUxyZpoMBICA--.31788S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxWryxWr17WrWrJrykury7GFg_yoW5tw13pF
+	Z3GF47ZrW5Kr15C39xtay7Zr1Fga97Jay7t3ZxGrn5AFy7A3WvvryYya43ZrWUWr9xu34U
+	AFn0kr43WFnFyFJanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUyEb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+	Cjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JMxkF7I0En4kS14v26r126r1DMxAIw28IcxkI
+	7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxV
+	Cjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY
+	6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6x
+	AIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY
+	1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU1veHDUUUUU==
+X-CM-SenderInfo: hfkh02xlgr0w46kxt4xhlfz01xgou0bp/
 
-* Christian Brauner:
+From: Chen Ridong <chenridong@huawei.com>
 
-> Validate extensible ioctls stricter than we do now.
->
-> Signed-off-by: Christian Brauner <brauner@kernel.org>
-> ---
->  fs/pidfs.c         |  2 +-
->  include/linux/fs.h | 14 ++++++++++++++
->  2 files changed, 15 insertions(+), 1 deletion(-)
->
-> diff --git a/fs/pidfs.c b/fs/pidfs.c
-> index edc35522d75c..0a5083b9cce5 100644
-> --- a/fs/pidfs.c
-> +++ b/fs/pidfs.c
-> @@ -440,7 +440,7 @@ static bool pidfs_ioctl_valid(unsigned int cmd)
->  		 * erronously mistook the file descriptor for a pidfd.
->  		 * This is not perfect but will catch most cases.
->  		 */
-> -		return (_IOC_TYPE(cmd) == _IOC_TYPE(PIDFD_GET_INFO));
-> +		return extensible_ioctl_valid(cmd, PIDFD_GET_INFO, PIDFD_INFO_SIZE_VER0);
->  	}
->  
->  	return false;
-> diff --git a/include/linux/fs.h b/include/linux/fs.h
-> index d7ab4f96d705..2f2edc53bf3c 100644
-> --- a/include/linux/fs.h
-> +++ b/include/linux/fs.h
-> @@ -4023,4 +4023,18 @@ static inline bool vfs_empty_path(int dfd, const char __user *path)
->  
->  int generic_atomic_write_valid(struct kiocb *iocb, struct iov_iter *iter);
->  
-> +static inline bool extensible_ioctl_valid(unsigned int cmd_a,
-> +					  unsigned int cmd_b, size_t min_size)
-> +{
-> +	if (_IOC_DIR(cmd_a) != _IOC_DIR(cmd_b))
-> +		return false;
-> +	if (_IOC_TYPE(cmd_a) != _IOC_TYPE(cmd_b))
-> +		return false;
-> +	if (_IOC_NR(cmd_a) != _IOC_NR(cmd_b))
-> +		return false;
-> +	if (_IOC_SIZE(cmd_a) < min_size)
-> +		return false;
-> +	return true;
-> +}
-> +
->  #endif /* _LINUX_FS_H */
+Commit 406100f3da08 ("cpuset: fix race between hotplug work and later CPU
+offline") added a check for empty effective_cpus in partitions for cgroup
+v2. However, this check did not account for remote partitions, which were
+introduced later.
 
-Is this really the right direction?  This implies that the ioctl
-constants change as the structs get extended.  At present, this impacts
-struct pidfd_info and PIDFD_GET_INFO.
+After commit 2125c0034c5d ("cgroup/cpuset: Make cpuset hotplug processing
+synchronous"), cpuset hotplug handling is now synchronous. This eliminates
+the race condition with subsequent CPU offline operations that the original
+check aimed to fix.
 
-I think this is a deparature from the previous design, where (low-level)
-userspace did not have not worry about the internal structure of ioctl
-commands and could treat them as opaque bit patterns.  With the new
-approach, we have to dissect some of the commands in the same way
-extensible_ioctl_valid does it above.
+Instead of extending the check to support remote partitions, this patch
+removes all the redundant effective_cpus check. Additionally, it adds a
+check and warning to verify that all generated sched domains consist of
+active CPUs, preventing partition_sched_domains from being invoked with
+offline CPUs.
 
-So far, this impacts glibc ABI tests.  Looking at the strace sources, it
-doesn't look to me as if the ioctl handler is prepared to deal with this
-situation, either, because it uses the full ioctl command for lookups.
+Signed-off-by: Chen Ridong <chenridong@huawei.com>
+---
+ kernel/cgroup/cpuset.c | 50 +++++++++++++-----------------------------
+ 1 file changed, 15 insertions(+), 35 deletions(-)
 
-The sanitizers could implement generic ioctl checking with the embedded
-size information in the ioctl command, but the current code structure is
-not set up to handle this because it's indexed by the full ioctl
-command, not the type.  I think in some cases, the size is required to
-disambiguate ioctl commands because the type field is not unique across
-devices.  In some cases, the sanitizers would have to know the exact
-command (not just the size), to validate points embedded in the struct
-passed to the ioctl.  So I don't think changing ioctl constants when
-extensible structs change is obviously beneficial to the sanitizers,
-either.
-
-I would prefer if the ioctl commands could be frozen and decoupled from
-the structs.  As far as I understand it, there is no requirement that
-the embedded size matches what the kernel deals with.
-
-Thanks,
-Florian
+diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
+index 6e6eb09b8db6..fea577b4016a 100644
+--- a/kernel/cgroup/cpuset.c
++++ b/kernel/cgroup/cpuset.c
+@@ -1103,53 +1103,33 @@ void dl_rebuild_rd_accounting(void)
+  */
+ void rebuild_sched_domains_locked(void)
+ {
+-	struct cgroup_subsys_state *pos_css;
+ 	struct sched_domain_attr *attr;
+ 	cpumask_var_t *doms;
+-	struct cpuset *cs;
+ 	int ndoms;
++	int i;
+ 
+ 	lockdep_assert_cpus_held();
+ 	lockdep_assert_held(&cpuset_mutex);
+ 	force_sd_rebuild = false;
+ 
+-	/*
+-	 * If we have raced with CPU hotplug, return early to avoid
+-	 * passing doms with offlined cpu to partition_sched_domains().
+-	 * Anyways, cpuset_handle_hotplug() will rebuild sched domains.
+-	 *
+-	 * With no CPUs in any subpartitions, top_cpuset's effective CPUs
+-	 * should be the same as the active CPUs, so checking only top_cpuset
+-	 * is enough to detect racing CPU offlines.
+-	 */
+-	if (cpumask_empty(subpartitions_cpus) &&
+-	    !cpumask_equal(top_cpuset.effective_cpus, cpu_active_mask))
+-		return;
++	/* Generate domain masks and attrs */
++	ndoms = generate_sched_domains(&doms, &attr);
+ 
+ 	/*
+-	 * With subpartition CPUs, however, the effective CPUs of a partition
+-	 * root should be only a subset of the active CPUs.  Since a CPU in any
+-	 * partition root could be offlined, all must be checked.
+-	 */
+-	if (!cpumask_empty(subpartitions_cpus)) {
+-		rcu_read_lock();
+-		cpuset_for_each_descendant_pre(cs, pos_css, &top_cpuset) {
+-			if (!is_partition_valid(cs)) {
+-				pos_css = css_rightmost_descendant(pos_css);
+-				continue;
+-			}
+-			if (!cpumask_subset(cs->effective_cpus,
+-					    cpu_active_mask)) {
+-				rcu_read_unlock();
+-				return;
+-			}
+-		}
+-		rcu_read_unlock();
++	* cpuset_hotplug_workfn is invoked synchronously now, thus this
++	* function should not race with CPU hotplug. And the effective CPUs
++	* must not include any offline CPUs. Passing an offline CPU in the
++	* doms to partition_sched_domains() will trigger a kernel panic.
++	*
++	* We perform a final check here: if the doms contains any
++	* offline CPUs, a warning is emitted and we return directly to
++	* prevent the panic.
++	*/
++	for (i = 0; i < ndoms; ++i) {
++		if (WARN_ON_ONCE(!cpumask_subset(doms[i], cpu_active_mask)))
++			return;
+ 	}
+ 
+-	/* Generate domain masks and attrs */
+-	ndoms = generate_sched_domains(&doms, &attr);
+-
+ 	/* Have scheduler rebuild the domains */
+ 	partition_sched_domains(ndoms, doms, attr);
+ }
+-- 
+2.34.1
 
 
