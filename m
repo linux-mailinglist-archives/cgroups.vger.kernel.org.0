@@ -1,185 +1,202 @@
-Return-Path: <cgroups+bounces-12227-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-12228-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 28F4BC8CC1B
-	for <lists+cgroups@lfdr.de>; Thu, 27 Nov 2025 04:35:21 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 848C3C8CC57
+	for <lists+cgroups@lfdr.de>; Thu, 27 Nov 2025 04:49:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id A295834BBEA
-	for <lists+cgroups@lfdr.de>; Thu, 27 Nov 2025 03:35:20 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3E2EF3AECD0
+	for <lists+cgroups@lfdr.de>; Thu, 27 Nov 2025 03:49:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8308529B20A;
-	Thu, 27 Nov 2025 03:35:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A9782C0285;
+	Thu, 27 Nov 2025 03:49:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="MprLPJcp"
 X-Original-To: cgroups@vger.kernel.org
-Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
+Received: from out-173.mta0.migadu.com (out-173.mta0.migadu.com [91.218.175.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8017079DA;
-	Thu, 27 Nov 2025 03:35:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C71D2BE644
+	for <cgroups@vger.kernel.org>; Thu, 27 Nov 2025 03:49:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764214516; cv=none; b=aYlxGlmz+YiMDHpxrdDTqd8UjuiSIV5zxyR6m1+JpEuw463AXx2YL8QuGfni3KK9+8YPA/K2MF9qS3miVDRM8Idf3KFcUgpMZ2X5q3klULODnHN+8IiuCX7Q4FrJO90HLX9+pTfBD+SBoyzbHZd9HyouQ26r8J0s64e5D+cam9k=
+	t=1764215378; cv=none; b=MdrrtHaOPCxfuIZZRTzXS/9abMtPS26UV7sAmhu2moG87gFa3WuzmK29PQlv6lYUd7tp27q6xhU54CEa+4M9f9R69gvAf74xEiiBieeU+k9QUoyyM+Ddqqfuqk2iV+KC768r4/0Engxiy4njrnBnR7TDbQ8ptHimV6KMSl+xEVk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764214516; c=relaxed/simple;
-	bh=tAFQHnIHVd69DoNKF/38Q1jb15mxYDVMsLnLSOLeAVc=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=RHE2HsLYyckrVfRidaAuTBhHgJ5zWRSc96jmgNu3B1ug6MkAuUQHngAXVBBfrx1YyfPsttQpv47shYrhgvSO0VWYvQklQ5qYpnRiDWsR1U5sI3BXyCH9wzr7YxBJlExN7INcyxxwlZqVP7Endmv1X5piDMZ5OFkJDYCvLoQx7Sw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.216])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTPS id 4dH1qd1xwMzKHMW2;
-	Thu, 27 Nov 2025 11:19:09 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.112])
-	by mail.maildlp.com (Postfix) with ESMTP id EE8D01A12F0;
-	Thu, 27 Nov 2025 11:19:48 +0800 (CST)
-Received: from hulk-vt.huawei.com (unknown [10.67.174.121])
-	by APP1 (Coremail) with SMTP id cCh0CgDHAkxIwydpWR6ICA--.1072S2;
-	Thu, 27 Nov 2025 11:19:48 +0800 (CST)
-From: Chen Ridong <chenridong@huaweicloud.com>
-To: longman@redhat.com,
-	tj@kernel.org,
-	hannes@cmpxchg.org,
-	mkoutny@suse.com
-Cc: cgroups@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	lujialin4@huawei.com,
-	chenridong@huawei.com
-Subject: [PATCH -next] cpuset: fix warning when disabling remote partition
-Date: Thu, 27 Nov 2025 03:04:50 +0000
-Message-Id: <20251127030450.1611804-1-chenridong@huaweicloud.com>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1764215378; c=relaxed/simple;
+	bh=g446QZGMSDjjyrEPxr6CBgPHA23xc/sZfOCx4f7ZO0Y=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=ApN0inrCQFpllY12MTfgK0mbWaZwvlbV/dOZv0gsKmYxllL10cCurHQU4SvhGe8rsNgfCkqIhEvy8Fz7/90Ab6W6fFeI6/51+sM8E3vIFo3mKF7EpCCEsR6zum86vID1f+G02dlMCa/roiANCW9PNcI+DLVjDduKm3CVQXSPFiE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=MprLPJcp; arc=none smtp.client-ip=91.218.175.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <363eac01-4dd3-44c2-835a-1c843c9ad176@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1764215371;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=hQ0ZXYaEsqXDUL5h8p3v+NwU49BKhktpBBnYsZDc89I=;
+	b=MprLPJcpPK1AcE4rMa8EQXQpeJ8xaMTQGBfWxH6LezFLbZf+L6bnUsNF/Ns+IavWjiNpuv
+	JbTSaofPAHEMDRMzawPDXRQ1/ZUX4WK2W+QJBN1PXCrUoZOQlS1cCeNa0kSnICyk5aim5W
+	nZ9cof3nDUTQf6/5y1Fjdl4Jhb4qi3Q=
+Date: Thu, 27 Nov 2025 11:48:30 +0800
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:cCh0CgDHAkxIwydpWR6ICA--.1072S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxJw17Jr1UXr4rXw17urW3Jrb_yoWrtF43pF
-	yUKr47GrW0gr15Cay3JFs7Zw1rKan7AFW2yrnrW3s5JF17A3WvyFyjy398A34UWrWDGry7
-	Za4Dur4FqF9rAw7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUyEb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-	Cjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JMxkF7I0En4kS14v26r126r1DMxAIw28IcxkI
-	7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxV
-	Cjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY
-	6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6x
-	AIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY
-	1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU1veHDUUUUU==
-X-CM-SenderInfo: hfkh02xlgr0w46kxt4xhlfz01xgou0bp/
+Subject: Re: [PATCH v1 23/26] mm: vmscan: prepare for reparenting MGLRU folios
+To: Harry Yoo <harry.yoo@oracle.com>
+Cc: hannes@cmpxchg.org, hughd@google.com, mhocko@suse.com,
+ roman.gushchin@linux.dev, shakeel.butt@linux.dev, muchun.song@linux.dev,
+ david@redhat.com, lorenzo.stoakes@oracle.com, ziy@nvidia.com,
+ imran.f.khan@oracle.com, kamalesh.babulal@oracle.com,
+ axelrasmussen@google.com, yuanchu@google.com, weixugc@google.com,
+ akpm@linux-foundation.org, linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+ cgroups@vger.kernel.org, Qi Zheng <zhengqi.arch@bytedance.com>
+References: <cover.1761658310.git.zhengqi.arch@bytedance.com>
+ <cdcedd284f5706c557bb6f53858b8c2ac2815ecb.1761658311.git.zhengqi.arch@bytedance.com>
+ <aScFNZjGficdjnvD@hyeyoo>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Qi Zheng <qi.zheng@linux.dev>
+In-Reply-To: <aScFNZjGficdjnvD@hyeyoo>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
-From: Chen Ridong <chenridong@huawei.com>
 
-A warning was triggered as follows:
 
-WARNING: kernel/cgroup/cpuset.c:1651 at remote_partition_disable+0xf7/0x110
-RIP: 0010:remote_partition_disable+0xf7/0x110
-RSP: 0018:ffffc90001947d88 EFLAGS: 00000206
-RAX: 0000000000007fff RBX: ffff888103b6e000 RCX: 0000000000006f40
-RDX: 0000000000006f00 RSI: ffffc90001947da8 RDI: ffff888103b6e000
-RBP: ffff888103b6e000 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000001 R11: ffff88810b2e2728 R12: ffffc90001947da8
-R13: 0000000000000000 R14: ffffc90001947da8 R15: ffff8881081f1c00
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f55c8bbe0b2 CR3: 000000010b14c000 CR4: 00000000000006f0
-Call Trace:
- <TASK>
- update_prstate+0x2d3/0x580
- cpuset_partition_write+0x94/0xf0
- kernfs_fop_write_iter+0x147/0x200
- vfs_write+0x35d/0x500
- ksys_write+0x66/0xe0
- do_syscall_64+0x6b/0x390
- entry_SYSCALL_64_after_hwframe+0x4b/0x53
-RIP: 0033:0x7f55c8cd4887
+On 11/26/25 9:48 PM, Harry Yoo wrote:
+> On Tue, Oct 28, 2025 at 09:58:36PM +0800, Qi Zheng wrote:
+>> From: Qi Zheng <zhengqi.arch@bytedance.com>
+>>
+>> Similar to traditional LRU folios, in order to solve the dying memcg
+>> problem, we also need to reparenting MGLRU folios to the parent memcg when
+>> memcg offline.
+>>
+>> However, there are the following challenges:
+>>
+>> 1. Each lruvec has between MIN_NR_GENS and MAX_NR_GENS generations, the
+>>     number of generations of the parent and child memcg may be different,
+>>     so we cannot simply transfer MGLRU folios in the child memcg to the
+>>     parent memcg as we did for traditional LRU folios.
+>> 2. The generation information is stored in folio->flags, but we cannot
+>>     traverse these folios while holding the lru lock, otherwise it may
+>>     cause softlockup.
+>> 3. In walk_update_folio(), the gen of folio and corresponding lru size
+>>     may be updated, but the folio is not immediately moved to the
+>>     corresponding lru list. Therefore, there may be folios of different
+>>     generations on an LRU list.
+>> 4. In lru_gen_del_folio(), the generation to which the folio belongs is
+>>     found based on the generation information in folio->flags, and the
+>>     corresponding LRU size will be updated. Therefore, we need to update
+>>     the lru size correctly during reparenting, otherwise the lru size may
+>>     be updated incorrectly in lru_gen_del_folio().
+>>
+>> Finally, this patch chose a compromise method, which is to splice the lru
+>> list in the child memcg to the lru list of the same generation in the
+>> parent memcg during reparenting. And in order to ensure that the parent
+>> memcg has the same generation, we need to increase the generations in the
+>> parent memcg to the MAX_NR_GENS before reparenting.
+>>
+>> Of course, the same generation has different meanings in the parent and
+>> child memcg, this will cause confusion in the hot and cold information of
+>> folios. But other than that, this method is simple enough, the lru size
+>> is correct, and there is no need to consider some concurrency issues (such
+>> as lru_gen_del_folio()).
+>>
+>> To prepare for the above work, this commit implements the specific
+>> functions, which will be used during reparenting.
+>>
+>> Suggested-by: Harry Yoo <harry.yoo@oracle.com>
+>> Suggested-by: Imran Khan <imran.f.khan@oracle.com>
+>> Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
+>> ---
+>>   include/linux/mmzone.h | 16 ++++++++
+>>   mm/vmscan.c            | 86 ++++++++++++++++++++++++++++++++++++++++++
+>>   2 files changed, 102 insertions(+)
+>>
+>> diff --git a/mm/vmscan.c b/mm/vmscan.c
+>> index 7aa8e1472d10d..3ee7fb96b8aeb 100644
+>> --- a/mm/vmscan.c
+>> +++ b/mm/vmscan.c
+>> @@ -4468,6 +4468,92 @@ void lru_gen_soft_reclaim(struct mem_cgroup *memcg, int nid)
+>>   		lru_gen_rotate_memcg(lruvec, MEMCG_LRU_HEAD);
+>>   }
+>>   
+>> +bool recheck_lru_gen_max_memcg(struct mem_cgroup *memcg)
+>> +{
+>> +	int nid;
+>> +
+>> +	for_each_node(nid) {
+>> +		struct lruvec *lruvec = get_lruvec(memcg, nid);
+>> +		int type;
+>> +
+>> +		for (type = 0; type < ANON_AND_FILE; type++) {
+>> +			if (get_nr_gens(lruvec, type) != MAX_NR_GENS)
+>> +				return false;
+>> +		}
+>> +	}
+>> +
+>> +	return true;
+>> +}
+>> +
+>> +/*
+>> + * We need to ensure that the folios of child memcg can be reparented to the
+>> + * same gen of the parent memcg, so the gens of the parent memcg needed be
+>> + * incremented to the MAX_NR_GENS before reparenting.
+>> + */
+>> +void max_lru_gen_memcg(struct mem_cgroup *memcg)
+>> +{
+>> +	int nid;
+>> +
+>> +	for_each_node(nid) {
+>> +		struct lruvec *lruvec = get_lruvec(memcg, nid);
+>> +		int type;
+>> +
+> 
+> I was testing this series and observed two warnings...
+> 
+>> +		for (type = 0; type < ANON_AND_FILE; type++) {
+>> +			while (get_nr_gens(lruvec, type) < MAX_NR_GENS) {
+>> +				DEFINE_MAX_SEQ(lruvec);
+>> +
+>> +				inc_max_seq(lruvec, max_seq, mem_cgroup_swappiness(memcg));
+>> +				cond_resched();
+> 
+> Warning 1) Here we increment max_seq but we skip updating mm_state->seq.
+> (try_to_inc_max_seq() iterates the mm list and update mm_state->seq after
+> an iteration, but since we directly call inc_max_seq(), we don't update it)
+> 
+> When mm_state->seq is more than one generation behind walk->seq, a warning is
+> triggered in iterate_mm_list():
+> 
+>          VM_WARN_ON_ONCE(mm_state->seq + 1 < walk->max_seq);
+> 
+> Warning 2) In try_to_inc_max_seq(), the last walker of mm list
+> is supposed to succeed to increment max_seq by calling inc_max_seq():
+> 
+>          if (success) {
+>                   success = inc_max_seq(lruvec, seq, swappiness);
+>                   WARN_ON_ONCE(!success);
+>           }
+> 
+> But with this patch it may observe the max_seq is already advanced due to
+> reparenting and thus inc_max_seq() returns false, triggering the warning.
 
-Reproduction steps (on a 16-CPU machine):
+Got it. Thanks for testing and reporting!
 
-        # cd /sys/fs/cgroup/
-        # mkdir A1
-        # echo +cpuset > A1/cgroup.subtree_control
-        # echo "0-14" > A1/cpuset.cpus.exclusive
-        # mkdir A1/A2
-        # echo "0-14" > A1/A2/cpuset.cpus.exclusive
-        # echo "root" > A1/A2/cpuset.cpus.partition
-        # echo 0 > /sys/devices/system/cpu/cpu15/online
-        # echo member > A1/A2/cpuset.cpus.partition
+> 
+> I'm learning MGLRU internals to see whether we can simply remove the warnings
+> or if we need to do something to advance max_seq without actually iterating
+> over the mm list.
 
-When CPU 15 is offlined, subpartitions_cpus gets cleared because no CPUs
-remain available for the top_cpuset, forcing partitions to share CPUs with
-the top_cpuset. In this scenario, disabling the remote partition triggers
-a warning stating that effective_xcpus is not a subset of
-subpartitions_cpus. Partitions should be invalidated in this case to
-inform users that the partition is now invalid(cpus are shared with
-top_cpuset).
+Thanks! I will also check on this.
 
-To fix this issue:
-1. Only emit the warning only if subpartitions_cpus is not empty and the
-   effective_xcpus is not a subset of subpartitions_cpus.
-2. During the CPU hotplug process, invalidate partitions if
-   subpartitions_cpus is empty.
-
-Fixes: 4449b1ce46bf ("cgroup/cpuset: Remove remote_partition_check() & make update_cpumasks_hier() handle remote partition")
-Signed-off-by: Chen Ridong <chenridong@huawei.com>
----
- kernel/cgroup/cpuset.c | 21 ++++++++++++++++-----
- 1 file changed, 16 insertions(+), 5 deletions(-)
-
-diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
-index fea577b4016a..fbe539d66d9b 100644
---- a/kernel/cgroup/cpuset.c
-+++ b/kernel/cgroup/cpuset.c
-@@ -1648,7 +1648,14 @@ static int remote_partition_enable(struct cpuset *cs, int new_prs,
- static void remote_partition_disable(struct cpuset *cs, struct tmpmasks *tmp)
- {
- 	WARN_ON_ONCE(!is_remote_partition(cs));
--	WARN_ON_ONCE(!cpumask_subset(cs->effective_xcpus, subpartitions_cpus));
-+	/*
-+	 * When a CPU is offlined, top_cpuset may end up with no available CPUs,
-+	 * which should clear subpartitions_cpus. We should not emit a warning for this
-+	 * scenario: the hierarchy is updated from top to bottom, so subpartitions_cpus
-+	 * may already be cleared when disabling the partition.
-+	 */
-+	WARN_ON_ONCE(!cpumask_subset(cs->effective_xcpus, subpartitions_cpus) &&
-+		     !cpumask_empty(subpartitions_cpus));
- 
- 	spin_lock_irq(&callback_lock);
- 	cs->remote_partition = false;
-@@ -3956,8 +3963,9 @@ static void cpuset_hotplug_update_tasks(struct cpuset *cs, struct tmpmasks *tmp)
- 	if (remote || (is_partition_valid(cs) && is_partition_valid(parent)))
- 		compute_partition_effective_cpumask(cs, &new_cpus);
- 
--	if (remote && cpumask_empty(&new_cpus) &&
--	    partition_is_populated(cs, NULL)) {
-+	if (remote && (cpumask_empty(subpartitions_cpus) ||
-+			(cpumask_empty(&new_cpus) &&
-+			 partition_is_populated(cs, NULL)))) {
- 		cs->prs_err = PERR_HOTPLUG;
- 		remote_partition_disable(cs, tmp);
- 		compute_effective_cpumask(&new_cpus, cs, parent);
-@@ -3970,9 +3978,12 @@ static void cpuset_hotplug_update_tasks(struct cpuset *cs, struct tmpmasks *tmp)
- 	 * 1) empty effective cpus but not valid empty partition.
- 	 * 2) parent is invalid or doesn't grant any cpus to child
- 	 *    partitions.
-+	 * 3) subpartitions_cpus is empty.
- 	 */
--	if (is_local_partition(cs) && (!is_partition_valid(parent) ||
--				tasks_nocpu_error(parent, cs, &new_cpus)))
-+	if (is_local_partition(cs) &&
-+	    (!is_partition_valid(parent) ||
-+	     tasks_nocpu_error(parent, cs, &new_cpus) ||
-+	     cpumask_empty(subpartitions_cpus)))
- 		partcmd = partcmd_invalidate;
- 	/*
- 	 * On the other hand, an invalid partition root may be transitioned
--- 
-2.34.1
+> 
 
 
