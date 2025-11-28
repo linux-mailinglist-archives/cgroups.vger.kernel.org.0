@@ -1,160 +1,106 @@
-Return-Path: <cgroups+bounces-12231-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-12232-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3AA3FC8D687
-	for <lists+cgroups@lfdr.de>; Thu, 27 Nov 2025 09:51:42 +0100 (CET)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
+	by mail.lfdr.de (Postfix) with ESMTPS id DE5C2C91E2D
+	for <lists+cgroups@lfdr.de>; Fri, 28 Nov 2025 12:55:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 3E1E14E4FC2
-	for <lists+cgroups@lfdr.de>; Thu, 27 Nov 2025 08:51:41 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 856B434E497
+	for <lists+cgroups@lfdr.de>; Fri, 28 Nov 2025 11:55:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A8BF322524;
-	Thu, 27 Nov 2025 08:51:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 98083325713;
+	Fri, 28 Nov 2025 11:55:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="FH10daL6"
+	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="LA/6Kezz"
 X-Original-To: cgroups@vger.kernel.org
-Received: from out-188.mta1.migadu.com (out-188.mta1.migadu.com [95.215.58.188])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from sg-1-102.ptr.blmpb.com (sg-1-102.ptr.blmpb.com [118.26.132.102])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 869AD27EFE3;
-	Thu, 27 Nov 2025 08:51:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.188
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ED790325700
+	for <cgroups@vger.kernel.org>; Fri, 28 Nov 2025 11:55:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=118.26.132.102
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764233497; cv=none; b=pzCgWI2GcZ7id0C9FT066pwax+2xmAe73ac5H5f3xoH4XTf4Eovo8Kl5ovsKJiK7gB65YoFwBreu1vqd3TyyShZiE+6Mmcbmbv1OCxbxQGK+rPpM0rbRO166uBfloZ9aaKD2iIfwDGpMo8HK+nlUveb8blOwtIDz9BAbYXWuc04=
+	t=1764330928; cv=none; b=APZc+6eSnIDY0ehhPyjFJRCPB35SNNGa9ArnT821RDGmNKeoWCPH8VvMWOuV2uej3HDp5XXvUe0AUnqNBFKjz1UFsDXhsEBdcTo4YDLZee6DJzm1XfQ3Uazm9zYgF/bZEI5tJ7nG3DarA2JE3TDX/Z3i5dUfQ17+6BR7c5Q14k8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764233497; c=relaxed/simple;
-	bh=5IAq3f2xHDjdAvwCQxRJp8D3pKnf2CrEScrqKoyqI8s=;
-	h=MIME-Version:Date:Content-Type:From:Message-ID:Subject:To:Cc:
-	 In-Reply-To:References; b=bKVjOzbGSW2U5lj08hOQDANr+Wx8E2rwaa8o3IX+v+dLOvXXoBHIvlkw/JNgQlEzv+f8VLKwzOHU8TLK4UuLFZxINCzGOMv3/48gZPaiR9PkrbTLiOhdJ6Ytq0IgyayHJyMMo7AaaVy8S8Z2lZ8OWUUfRGoETn0Qjv/ABiGS2t0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=FH10daL6; arc=none smtp.client-ip=95.215.58.188
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+	s=arc-20240116; t=1764330928; c=relaxed/simple;
+	bh=5rN2sNDWFEg+BMAs4tkyzOnRPb4F0IabpRF+4FiZPNI=;
+	h=To:Cc:Content-Disposition:In-Reply-To:Subject:Content-Type:
+	 References:From:Date:Message-Id:Mime-Version; b=Z1DazBzfwBRISwZ6AZOdwaY72/eiFXBUEUswbUA26ibsQkWYTqpyzgGSGuiGdspx9XWeW0ZJ2CCkPkgmcCjOd1OtevSFFxSYA7y00UHRdFvsRPZP3VJPndzBV1hV8zzSm5IUFTEPkSoJ1tAgG0i3y78z49JJPNWW4ixtx9v7c1E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=LA/6Kezz; arc=none smtp.client-ip=118.26.132.102
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+ s=2212171451; d=bytedance.com; t=1764330913; h=from:subject:
+ mime-version:from:date:message-id:subject:to:cc:reply-to:content-type:
+ mime-version:in-reply-to:message-id;
+ bh=cxw/0blW+uUqCI4a4MpZbbL98vAmlxV1NVJypIpHH7Q=;
+ b=LA/6Kezz3CxjqxLMQAfiINqhJ0UHeIfPvIb1s2zeuqc+HoPi03WQljySpkvoJQoLsirPVW
+ b4YarNPJy0bO38FAWKOPYnxVAJn2k8tjCOaJiwT98WD9YY2bExSe/WCo1f/cGaXtLf1NVY
+ h/J1263fbzbC8k1XrJnazIDQPGNjRXklJqtfSElMgJwekTO3xRUUEvtjCEyW1Su/c3PqJQ
+ cW3hZ6YEZm/ojHpn0UeA/eetuRpCrgV7w8y6WA9w4YWXqFojA4NGa1BBamBSpeOojcLBzE
+ 7jj75uH5eLeeKPXz9lSsjpbgApiowFDRilyhIjQRuhZHTImXKmVuHNWesUWfEw==
+To: "xupengbo" <xupengbo1029@163.com>, "Ingo Molnar" <mingo@redhat.com>, 
+	"Peter Zijlstra" <peterz@infradead.org>
+Cc: "Juri Lelli" <juri.lelli@redhat.com>, 
+	"Vincent Guittot" <vincent.guittot@linaro.org>, 
+	"Dietmar Eggemann" <dietmar.eggemann@arm.com>, 
+	"Steven Rostedt" <rostedt@goodmis.org>, 
+	"Ben Segall" <bsegall@google.com>, "Mel Gorman" <mgorman@suse.de>, 
+	"Valentin Schneider" <vschneid@redhat.com>, 
+	"David Vernet" <void@manifault.com>, <linux-kernel@vger.kernel.org>, 
+	<cgroups@vger.kernel.org>
+Content-Disposition: inline
+In-Reply-To: <20250827022208.14487-1-xupengbo@oppo.com>
+Content-Transfer-Encoding: 7bit
+Subject: Re: [PATCH v5] sched/fair: Fix unfairness caused by stalled tg_load_avg_contrib when the last task migrates out.
+Content-Type: text/plain; charset=UTF-8
+References: <20250827022208.14487-1-xupengbo@oppo.com>
+X-Original-From: Aaron Lu <ziqianlu@bytedance.com>
+From: "Aaron Lu" <ziqianlu@bytedance.com>
+X-Lms-Return-Path: <lba+269298d9f+eebf62+vger.kernel.org+ziqianlu@bytedance.com>
+Date: Fri, 28 Nov 2025 19:54:45 +0800
+Message-Id: <20251128115445.GA1526246@bytedance.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1764233483;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=NlDmIt4icJ0MGcl8FRUaHm3th7RS/YZ+jPJUHQbVqU4=;
-	b=FH10daL69qK9TUXgf95R7j/IKzB/Swn10cKC6bkagWW/imN++jq4KVBF+mqpINurX6UGGm
-	twE/NgXtXzXEfHMQPGZlIzEP0wl7RCKwfm0QISOQpzIKIknjRyWt9wEdkgP5YLOxKaA5Gp
-	gvpWSEXVOgTlMoPNFL+IjPp5KcG4wSg=
-Date: Thu, 27 Nov 2025 08:51:18 +0000
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: hui.zhu@linux.dev
-Message-ID: <412806a9d1ba8269376f9b227b960d52542f2453@linux.dev>
-TLS-Required: No
-Subject: Re: [RFC PATCH 0/3] Memory Controller eBPF support
-To: "Michal Hocko" <mhocko@suse.com>
-Cc: "Roman Gushchin" <roman.gushchin@linux.dev>, "Andrew Morton"
- <akpm@linux-foundation.org>, "Johannes Weiner" <hannes@cmpxchg.org>,
- "Shakeel Butt" <shakeel.butt@linux.dev>, "Muchun Song"
- <muchun.song@linux.dev>, "Alexei Starovoitov" <ast@kernel.org>, "Daniel
- Borkmann" <daniel@iogearbox.net>, "Andrii Nakryiko" <andrii@kernel.org>,
- "Martin KaFai Lau" <martin.lau@linux.dev>, "Eduard Zingerman"
- <eddyz87@gmail.com>, "Song Liu" <song@kernel.org>, "Yonghong Song"
- <yonghong.song@linux.dev>, "John Fastabend" <john.fastabend@gmail.com>,
- "KP Singh" <kpsingh@kernel.org>, "Stanislav Fomichev" <sdf@fomichev.me>,
- "Hao Luo" <haoluo@google.com>, "Jiri Olsa" <jolsa@kernel.org>, "Shuah
- Khan" <shuah@kernel.org>, "Peter Zijlstra" <peterz@infradead.org>,
- "Miguel Ojeda" <ojeda@kernel.org>, "Nathan Chancellor"
- <nathan@kernel.org>, "Kees Cook" <kees@kernel.org>, "Tejun Heo"
- <tj@kernel.org>, "Jeff Xu" <jeffxu@chromium.org>, mkoutny@suse.com, "Jan
- Hendrik Farr" <kernel@jfarr.cc>, "Christian Brauner"
- <brauner@kernel.org>, "Randy Dunlap" <rdunlap@infradead.org>, "Brian
- Gerst" <brgerst@gmail.com>, "Masahiro Yamada" <masahiroy@kernel.org>,
- linux-kernel@vger.kernel.org, linux-mm@kvack.org,
- cgroups@vger.kernel.org, bpf@vger.kernel.org,
- linux-kselftest@vger.kernel.org, "Hui Zhu" <zhuhui@kylinos.cn>
-In-Reply-To: <aSckUNAfVokeC_2F@tiehlicka>
-References: <cover.1763457705.git.zhuhui@kylinos.cn>
- <87ldk1mmk3.fsf@linux.dev>
- <895f996653b3385e72763d5b35ccd993b07c6125@linux.dev>
- <aR9p8n3VzpNHdPFw@tiehlicka>
- <f5c4c443f8ba855d329a180a6816fc259eb8dfca@linux.dev>
- <aSWdSlhU3acQ9Rq1@tiehlicka>
- <6ff7dad904bcb27323ea21977e1160ebfa5e283d@linux.dev>
- <aSWnPfYXRYxCDXG3@tiehlicka>
- <87af0c7a8fc35cd96519a4e3f09d39918bdb7370@linux.dev>
- <aSckUNAfVokeC_2F@tiehlicka>
-X-Migadu-Flow: FLOW_OUT
+Mime-Version: 1.0
 
-2025=E5=B9=B411=E6=9C=8827=E6=97=A5 00:01, "Michal Hocko" <mhocko@suse.co=
-m mailto:mhocko@suse.com?to=3D%22Michal%20Hocko%22%20%3Cmhocko%40suse.com=
-%3E > =E5=86=99=E5=88=B0:
+Hello,
 
+On Wed, Aug 27, 2025 at 10:22:07AM +0800, xupengbo wrote:
+> When a task is migrated out, there is a probability that the tg->load_avg
+> value will become abnormal. The reason is as follows.
+> 
+> 1. Due to the 1ms update period limitation in update_tg_load_avg(), there
+> is a possibility that the reduced load_avg is not updated to tg->load_avg
+> when a task migrates out.
+> 2. Even though __update_blocked_fair() traverses the leaf_cfs_rq_list and
+> calls update_tg_load_avg() for cfs_rqs that are not fully decayed, the key
+> function cfs_rq_is_decayed() does not check whether
+> cfs->tg_load_avg_contrib is null. Consequently, in some cases,
+> __update_blocked_fair() removes cfs_rqs whose avg.load_avg has not been
+> updated to tg->load_avg.
+> 
+> Add a check of cfs_rq->tg_load_avg_contrib in cfs_rq_is_decayed(),
+> which fixes the case (2.) mentioned above.
+> 
+> Fixes: 1528c661c24b ("sched/fair: Ratelimit update to tg->load_avg")
+> Tested-by: Aaron Lu <ziqianlu@bytedance.com>
+> Reviewed-by: Aaron Lu <ziqianlu@bytedance.com>
+> Reviewed-by: Vincent Guittot <vincent.guittot@linaro.org>
+> Signed-off-by: xupengbo <xupengbo@oppo.com>
 
->=20
->=20On Wed 26-11-25 03:05:32, hui.zhu@linux.dev wrote:
->=20
->=20>=20
->=20> 2025=E5=B9=B411=E6=9C=8825=E6=97=A5 20:55, "Michal Hocko" <mhocko@s=
-use.com mailto:mhocko@suse.com?to=3D%22Michal%20Hocko%22%20%3Cmhocko%40su=
-se.com%3E > =E5=86=99=E5=88=B0:
-> >=20=20
->=20>=20=20
->=20>=20=20
->=20>  On Tue 25-11-25 12:39:11, hui.zhu@linux.dev wrote:
-> >=20=20
->=20>  >=20
->=20>  > My goal is implement dynamic memory reclamation for memcgs witho=
-ut limits,
-> >  > triggered by specific conditions.
-> >  >=20
->=20>  > For instance, with memcg A and memcg B both unlimited, when memc=
-g A faces
-> >  > high PSI pressure, ebpf control memcg B do some memory reclaim wor=
-k when
-> >  > it try charge.
-> >  >=20
->=20>  Understood. Please also think whether this is already possible wit=
-h
-> >  existing interfaces and if not what are roadblocks in that direction=
-.
-> >=20=20
->=20>  I think it's possible to implement a userspace program using the e=
-xisting
-> >  PSI userspace interfaces and the control interfaces provided by memc=
-g to
-> >  accomplish this task.
-> >  However, this approach has several limitations:
-> >  the entire process depends on the continuous execution of the usersp=
-ace
-> >  program, response latency is higher, and we cannot perform fine-grai=
-ned
-> >  operations on target memcg.
-> >=20
->=20I will need to back these arguments by some actual numbers.
+I wonder if there are any more concerns about this patch? If no, I hope
+this fix can be merged. It's a rare case but it does happen for some
+specific setup.
 
-Agree =E2=80=93 I=E2=80=99ll implement a PoC show it.
+Sorry if this is a bad timing, but I just hit an oncall where this exact
+problem occurred so I suppose it's worth a ping :)
 
-Best,
-Hui
-
->=20
->=20>=20
->=20> Now that Roman has provided PSI eBPF functionality at
-> >  https://lore.kernel.org/lkml/20251027231727.472628-1-roman.gushchin@=
-linux.dev/
-> >  Maybe we could add eBPF support to memcg as well, allowing us to imp=
-lement
-> >  the entire functionality directly in the kernel through eBPF.
-> >=20
->=20His usecase is very specific to OOM handling and we have agreed that
-> this specific usecase is really tricky to achieve from userspace. I
-> haven't see sound arguments for this usecase yet.
-> --=20
->=20Michal Hocko
-> SUSE Labs
->
+Best regards,
+Aaron
 
