@@ -1,106 +1,111 @@
-Return-Path: <cgroups+bounces-12232-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-12233-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
-	by mail.lfdr.de (Postfix) with ESMTPS id DE5C2C91E2D
-	for <lists+cgroups@lfdr.de>; Fri, 28 Nov 2025 12:55:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id E974CC92289
+	for <lists+cgroups@lfdr.de>; Fri, 28 Nov 2025 14:40:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 856B434E497
-	for <lists+cgroups@lfdr.de>; Fri, 28 Nov 2025 11:55:32 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 74C8B34B343
+	for <lists+cgroups@lfdr.de>; Fri, 28 Nov 2025 13:40:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 98083325713;
-	Fri, 28 Nov 2025 11:55:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA67A329E70;
+	Fri, 28 Nov 2025 13:40:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="LA/6Kezz"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="bp7E+5v4"
 X-Original-To: cgroups@vger.kernel.org
-Received: from sg-1-102.ptr.blmpb.com (sg-1-102.ptr.blmpb.com [118.26.132.102])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ED790325700
-	for <cgroups@vger.kernel.org>; Fri, 28 Nov 2025 11:55:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=118.26.132.102
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB7A1269D18;
+	Fri, 28 Nov 2025 13:40:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.92.199
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764330928; cv=none; b=APZc+6eSnIDY0ehhPyjFJRCPB35SNNGa9ArnT821RDGmNKeoWCPH8VvMWOuV2uej3HDp5XXvUe0AUnqNBFKjz1UFsDXhsEBdcTo4YDLZee6DJzm1XfQ3Uazm9zYgF/bZEI5tJ7nG3DarA2JE3TDX/Z3i5dUfQ17+6BR7c5Q14k8=
+	t=1764337232; cv=none; b=D5va4AUMGcx7kvPTHMdwDRyBiafbtISs/A+qbwma08XrU2jaXFzFK4C4NCfYG7k3zf6sEcShQKyYY3V0IlRXzn5Avw2Nc3SzA62SmO1MnTttY/tqTSp++2lbrJfKBTUdcCODO73WDMf+gYFCV2SaldkbgB9tqDACjWrPQQ2ZCbc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764330928; c=relaxed/simple;
-	bh=5rN2sNDWFEg+BMAs4tkyzOnRPb4F0IabpRF+4FiZPNI=;
-	h=To:Cc:Content-Disposition:In-Reply-To:Subject:Content-Type:
-	 References:From:Date:Message-Id:Mime-Version; b=Z1DazBzfwBRISwZ6AZOdwaY72/eiFXBUEUswbUA26ibsQkWYTqpyzgGSGuiGdspx9XWeW0ZJ2CCkPkgmcCjOd1OtevSFFxSYA7y00UHRdFvsRPZP3VJPndzBV1hV8zzSm5IUFTEPkSoJ1tAgG0i3y78z49JJPNWW4ixtx9v7c1E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=LA/6Kezz; arc=none smtp.client-ip=118.26.132.102
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
+	s=arc-20240116; t=1764337232; c=relaxed/simple;
+	bh=7oiRwdyCiQhwatgwdIYBAegsUsXyboXGEslYC632oGw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=t1WhS2Fwt5ry+D3XtnDGZnaEwOJLANym5YrkPe5yYg5A5X1wx6JkNQzoj9UYyqr3VzXZURIWWXX/iUwcyUYyqWtNfVF4jv1BWbcXjFNjOYMX2m3MyxGl+OOT93JCRxklW00UJVH1grwS8QDCwJK0jYZWE4c1qKkCE3XfkpzLP38=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=bp7E+5v4; arc=none smtp.client-ip=90.155.92.199
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
- s=2212171451; d=bytedance.com; t=1764330913; h=from:subject:
- mime-version:from:date:message-id:subject:to:cc:reply-to:content-type:
- mime-version:in-reply-to:message-id;
- bh=cxw/0blW+uUqCI4a4MpZbbL98vAmlxV1NVJypIpHH7Q=;
- b=LA/6Kezz3CxjqxLMQAfiINqhJ0UHeIfPvIb1s2zeuqc+HoPi03WQljySpkvoJQoLsirPVW
- b4YarNPJy0bO38FAWKOPYnxVAJn2k8tjCOaJiwT98WD9YY2bExSe/WCo1f/cGaXtLf1NVY
- h/J1263fbzbC8k1XrJnazIDQPGNjRXklJqtfSElMgJwekTO3xRUUEvtjCEyW1Su/c3PqJQ
- cW3hZ6YEZm/ojHpn0UeA/eetuRpCrgV7w8y6WA9w4YWXqFojA4NGa1BBamBSpeOojcLBzE
- 7jj75uH5eLeeKPXz9lSsjpbgApiowFDRilyhIjQRuhZHTImXKmVuHNWesUWfEw==
-To: "xupengbo" <xupengbo1029@163.com>, "Ingo Molnar" <mingo@redhat.com>, 
-	"Peter Zijlstra" <peterz@infradead.org>
-Cc: "Juri Lelli" <juri.lelli@redhat.com>, 
-	"Vincent Guittot" <vincent.guittot@linaro.org>, 
-	"Dietmar Eggemann" <dietmar.eggemann@arm.com>, 
-	"Steven Rostedt" <rostedt@goodmis.org>, 
-	"Ben Segall" <bsegall@google.com>, "Mel Gorman" <mgorman@suse.de>, 
-	"Valentin Schneider" <vschneid@redhat.com>, 
-	"David Vernet" <void@manifault.com>, <linux-kernel@vger.kernel.org>, 
-	<cgroups@vger.kernel.org>
-Content-Disposition: inline
-In-Reply-To: <20250827022208.14487-1-xupengbo@oppo.com>
-Content-Transfer-Encoding: 7bit
-Subject: Re: [PATCH v5] sched/fair: Fix unfairness caused by stalled tg_load_avg_contrib when the last task migrates out.
-Content-Type: text/plain; charset=UTF-8
+	d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=NiSrZjpRPnOkVzJCaCOCfd+bSpL80h9UhEQJSOYXF1Q=; b=bp7E+5v489oUAvATA7u6yHLZ2g
+	hI0ioYXw1ipjAFar26/PBIyFcRCzxAOIh3jdehIAtsqOc7J1qmyua8VrojvvlsvI7tMY9nOH9ND3Z
+	G3Z+7Q2f4Ix68oOJWK1eTRe4wiIOG/TLFLV3+N/cgENKb6PNMdgnY+O1z5N35/uUnrNWl2methmeF
+	AdIT/GUsir5A6l2e2L8tdqnpNn3ufWeNLCZOQRWA0qgK/55vzUHyoab7LRIyYwIZCMSICaRfmrK3e
+	p4YF1ZNZAnXaDyrzIE+x10eWdF0sghDAwIzrTrSxl9sZJA5vRwTSeyrbOBaInNhymW41D0iR8GPup
+	WswhKjrQ==;
+Received: from 77-249-17-252.cable.dynamic.v4.ziggo.nl ([77.249.17.252] helo=noisy.programming.kicks-ass.net)
+	by desiato.infradead.org with esmtpsa (Exim 4.98.2 #2 (Red Hat Linux))
+	id 1vOxqJ-0000000Bz2a-2tOw;
+	Fri, 28 Nov 2025 12:44:56 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+	id 0AC773002E3; Fri, 28 Nov 2025 14:40:17 +0100 (CET)
+Date: Fri, 28 Nov 2025 14:40:17 +0100
+From: Peter Zijlstra <peterz@infradead.org>
+To: Aaron Lu <ziqianlu@bytedance.com>
+Cc: xupengbo <xupengbo1029@163.com>, Ingo Molnar <mingo@redhat.com>,
+	Juri Lelli <juri.lelli@redhat.com>,
+	Vincent Guittot <vincent.guittot@linaro.org>,
+	Dietmar Eggemann <dietmar.eggemann@arm.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+	Valentin Schneider <vschneid@redhat.com>,
+	David Vernet <void@manifault.com>, linux-kernel@vger.kernel.org,
+	cgroups@vger.kernel.org
+Subject: Re: [PATCH v5] sched/fair: Fix unfairness caused by stalled
+ tg_load_avg_contrib when the last task migrates out.
+Message-ID: <20251128134017.GL3245006@noisy.programming.kicks-ass.net>
 References: <20250827022208.14487-1-xupengbo@oppo.com>
-X-Original-From: Aaron Lu <ziqianlu@bytedance.com>
-From: "Aaron Lu" <ziqianlu@bytedance.com>
-X-Lms-Return-Path: <lba+269298d9f+eebf62+vger.kernel.org+ziqianlu@bytedance.com>
-Date: Fri, 28 Nov 2025 19:54:45 +0800
-Message-Id: <20251128115445.GA1526246@bytedance.com>
+ <20251128115445.GA1526246@bytedance.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20251128115445.GA1526246@bytedance.com>
 
-Hello,
-
-On Wed, Aug 27, 2025 at 10:22:07AM +0800, xupengbo wrote:
-> When a task is migrated out, there is a probability that the tg->load_avg
-> value will become abnormal. The reason is as follows.
+On Fri, Nov 28, 2025 at 07:54:45PM +0800, Aaron Lu wrote:
+> Hello,
 > 
-> 1. Due to the 1ms update period limitation in update_tg_load_avg(), there
-> is a possibility that the reduced load_avg is not updated to tg->load_avg
-> when a task migrates out.
-> 2. Even though __update_blocked_fair() traverses the leaf_cfs_rq_list and
-> calls update_tg_load_avg() for cfs_rqs that are not fully decayed, the key
-> function cfs_rq_is_decayed() does not check whether
-> cfs->tg_load_avg_contrib is null. Consequently, in some cases,
-> __update_blocked_fair() removes cfs_rqs whose avg.load_avg has not been
-> updated to tg->load_avg.
+> On Wed, Aug 27, 2025 at 10:22:07AM +0800, xupengbo wrote:
+> > When a task is migrated out, there is a probability that the tg->load_avg
+> > value will become abnormal. The reason is as follows.
+> > 
+> > 1. Due to the 1ms update period limitation in update_tg_load_avg(), there
+> > is a possibility that the reduced load_avg is not updated to tg->load_avg
+> > when a task migrates out.
+> > 2. Even though __update_blocked_fair() traverses the leaf_cfs_rq_list and
+> > calls update_tg_load_avg() for cfs_rqs that are not fully decayed, the key
+> > function cfs_rq_is_decayed() does not check whether
+> > cfs->tg_load_avg_contrib is null. Consequently, in some cases,
+> > __update_blocked_fair() removes cfs_rqs whose avg.load_avg has not been
+> > updated to tg->load_avg.
+> > 
+> > Add a check of cfs_rq->tg_load_avg_contrib in cfs_rq_is_decayed(),
+> > which fixes the case (2.) mentioned above.
+> > 
+> > Fixes: 1528c661c24b ("sched/fair: Ratelimit update to tg->load_avg")
+> > Tested-by: Aaron Lu <ziqianlu@bytedance.com>
+> > Reviewed-by: Aaron Lu <ziqianlu@bytedance.com>
+> > Reviewed-by: Vincent Guittot <vincent.guittot@linaro.org>
+> > Signed-off-by: xupengbo <xupengbo@oppo.com>
 > 
-> Add a check of cfs_rq->tg_load_avg_contrib in cfs_rq_is_decayed(),
-> which fixes the case (2.) mentioned above.
+> I wonder if there are any more concerns about this patch? If no, I hope
+> this fix can be merged. It's a rare case but it does happen for some
+> specific setup.
 > 
-> Fixes: 1528c661c24b ("sched/fair: Ratelimit update to tg->load_avg")
-> Tested-by: Aaron Lu <ziqianlu@bytedance.com>
-> Reviewed-by: Aaron Lu <ziqianlu@bytedance.com>
-> Reviewed-by: Vincent Guittot <vincent.guittot@linaro.org>
-> Signed-off-by: xupengbo <xupengbo@oppo.com>
+> Sorry if this is a bad timing, but I just hit an oncall where this exact
+> problem occurred so I suppose it's worth a ping :)
 
-I wonder if there are any more concerns about this patch? If no, I hope
-this fix can be merged. It's a rare case but it does happen for some
-specific setup.
-
-Sorry if this is a bad timing, but I just hit an oncall where this exact
-problem occurred so I suppose it's worth a ping :)
-
-Best regards,
-Aaron
+Totally missed it. Seems okay, let me go queue the thing.
 
