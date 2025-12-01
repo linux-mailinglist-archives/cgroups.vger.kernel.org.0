@@ -1,224 +1,149 @@
-Return-Path: <cgroups+bounces-12238-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-12239-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 756E3C9815B
-	for <lists+cgroups@lfdr.de>; Mon, 01 Dec 2025 16:42:15 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2BA1EC98D25
+	for <lists+cgroups@lfdr.de>; Mon, 01 Dec 2025 20:16:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id E11E04E24D2
-	for <lists+cgroups@lfdr.de>; Mon,  1 Dec 2025 15:41:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9C99A3A4ECF
+	for <lists+cgroups@lfdr.de>; Mon,  1 Dec 2025 19:16:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2DCA73328EC;
-	Mon,  1 Dec 2025 15:41:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D6FD42080C8;
+	Mon,  1 Dec 2025 19:16:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="ZzA+zGcb"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DCtO8EoP"
 X-Original-To: cgroups@vger.kernel.org
-Received: from out-184.mta0.migadu.com (out-184.mta0.migadu.com [91.218.175.184])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 586B93321B7
-	for <cgroups@vger.kernel.org>; Mon,  1 Dec 2025 15:41:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.184
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 93CD41ACEDE;
+	Mon,  1 Dec 2025 19:16:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764603714; cv=none; b=bYLkYYeiXa3qFdrCID8Eg2QF2Kxh3ivIuvaAVeM7MDSAkwKI7ctI04RTGEM2k8E0MT6oEDK3LVwccdDJPJMSAcld0j+E6BvEUJJJaoAovkBvGUgmDSRpU0XzTgVwGAZUSw3OtipLXDK054p9vG5fDhF1My7DnBAvZOcZq24Tkbs=
+	t=1764616574; cv=none; b=QKOO/4Cu9P2XCRK700TdCQHA58qBPEcQQk8vlS8MgDGckvps4upkuxZ4k6dYMrDo/IxVH7z1LPY9qQZoCGcm+iAy5/gNB9+tE+YCXc3UcrDfgKUZLGpMGd7FEmHuW6WhuL0H9BH1n4dJw0jWY8hhm7nm2HlzGpnVXCxz8lLH6Kc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764603714; c=relaxed/simple;
-	bh=xUCZRq2Rv9QQoZ9a9Ydts73QvuVRqGYF2LyekzomqEM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=XOE3QG1l29hrF3/nr0i1Ud3AdMz9UmwCLYRLyjllEGNjmVOcBoikR6P48DprSO007HB0qsaH0Suy+ituDx0IxW5C7gJk2gGpGjtA9s4l9aiKzVeldhIegDj76EZr3d347yTP+ryP8COmWfEQwyDWgp0nfQAJWlF3lkApHpiv4NI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=ZzA+zGcb; arc=none smtp.client-ip=91.218.175.184
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <d94fe146-5cc6-4aa2-bd7f-8ca2a12e5457@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1764603699;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=uT9+iCk1C9W8oKaATIUH1G8jZwnmHrr4Jk2aweSPxhw=;
-	b=ZzA+zGcbfVaF0IbxZAcyuNjv0u24QwW+Exx11JVnVgnKJMNQ876Zu3WzrgtNGfGB9g2W3l
-	pZR6eaHFu4H43WJN2dh8RPmTqQqQ/THi68oYhI6t26RqdFVxCh7Zuzpo8Cx2XdFvQCovCb
-	bdvKKrcGaIP6J4hvwcUw4QyzEr+TKNc=
-Date: Mon, 1 Dec 2025 23:40:38 +0800
+	s=arc-20240116; t=1764616574; c=relaxed/simple;
+	bh=8LtbS+dXdRiiJ2grwGKcDIrFXJ92YvnQOLfaqNowQCE=;
+	h=Date:Message-ID:From:To:Cc:Subject; b=Q5xCe3iLh3Dh6HgkTzWCHeEWcKDKH6K6zWl+TCbdomE/ULaCP+X+vpfs6t4NbhXxsGif7C6QWzc4PrGalKBdTQLpX9t26MhE8/B7d8R0GuzMjTMN6ZnWMnMCtedfq/HxnX3fnbUhrQRDMNE54Jwv7TqipT2L0lstwEnj2gt0vw8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=DCtO8EoP; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 585E4C4CEF1;
+	Mon,  1 Dec 2025 19:16:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1764616574;
+	bh=8LtbS+dXdRiiJ2grwGKcDIrFXJ92YvnQOLfaqNowQCE=;
+	h=Date:From:To:Cc:Subject:From;
+	b=DCtO8EoPlDPLx4fJywiMqKkCJyvXWB7mB8gD+c8k2vw7BlIfDRiqAjV9MY8ANRolv
+	 8xfjNEV+ic0LjdljiH/WgUqiXYHYIYq4MwDPr304qVUMYjFtA33nkdUXhaiftBRu/C
+	 dg8rldvAhID9e1iOfdpVuPontQoI8TNSUC/makb+PhvtWB14Zqd2QxqlZ483Ne6BVm
+	 729gN7wSJHpd6K7o00BYbbqEY04qXob2jhnqUMBfaKYcrzhoeQPgK7C00yIDxEw9Dr
+	 oC8mFzGqpRKb5pm6D1/vgcuWBAXp5+hyKPc3kWTr3+cpKLaI1KE+TuJGmPe+61FHLb
+	 K6zAF+ffNqPHg==
+Date: Mon, 01 Dec 2025 09:16:13 -1000
+Message-ID: <58579714c3f54951dddf5af185da0515@kernel.org>
+From: Tejun Heo <tj@kernel.org>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+ Johannes Weiner <hannes@cmpxchg.org>, Michal Koutný <mkoutny@suse.com>,
+ Waiman Long <longman@redhat.com>
+Subject: [GIT PULL] cgroup changes for v6.19
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Subject: Re: [PATCH v1 23/26] mm: vmscan: prepare for reparenting MGLRU folios
-To: Harry Yoo <harry.yoo@oracle.com>
-Cc: hannes@cmpxchg.org, hughd@google.com, mhocko@suse.com,
- roman.gushchin@linux.dev, shakeel.butt@linux.dev, muchun.song@linux.dev,
- david@redhat.com, lorenzo.stoakes@oracle.com, ziy@nvidia.com,
- imran.f.khan@oracle.com, kamalesh.babulal@oracle.com,
- axelrasmussen@google.com, yuanchu@google.com, weixugc@google.com,
- akpm@linux-foundation.org, linux-mm@kvack.org, linux-kernel@vger.kernel.org,
- cgroups@vger.kernel.org, Qi Zheng <zhengqi.arch@bytedance.com>
-References: <cover.1761658310.git.zhengqi.arch@bytedance.com>
- <cdcedd284f5706c557bb6f53858b8c2ac2815ecb.1761658311.git.zhengqi.arch@bytedance.com>
- <aScFNZjGficdjnvD@hyeyoo>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Qi Zheng <qi.zheng@linux.dev>
-In-Reply-To: <aScFNZjGficdjnvD@hyeyoo>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
 
+Hi Linus,
 
+The following changes since commit 211ddde0823f1442e4ad052a2f30f050145ccada:
 
-On 11/26/25 9:48 PM, Harry Yoo wrote:
-> On Tue, Oct 28, 2025 at 09:58:36PM +0800, Qi Zheng wrote:
->> From: Qi Zheng <zhengqi.arch@bytedance.com>
->>
->> Similar to traditional LRU folios, in order to solve the dying memcg
->> problem, we also need to reparenting MGLRU folios to the parent memcg when
->> memcg offline.
->>
->> However, there are the following challenges:
->>
->> 1. Each lruvec has between MIN_NR_GENS and MAX_NR_GENS generations, the
->>     number of generations of the parent and child memcg may be different,
->>     so we cannot simply transfer MGLRU folios in the child memcg to the
->>     parent memcg as we did for traditional LRU folios.
->> 2. The generation information is stored in folio->flags, but we cannot
->>     traverse these folios while holding the lru lock, otherwise it may
->>     cause softlockup.
->> 3. In walk_update_folio(), the gen of folio and corresponding lru size
->>     may be updated, but the folio is not immediately moved to the
->>     corresponding lru list. Therefore, there may be folios of different
->>     generations on an LRU list.
->> 4. In lru_gen_del_folio(), the generation to which the folio belongs is
->>     found based on the generation information in folio->flags, and the
->>     corresponding LRU size will be updated. Therefore, we need to update
->>     the lru size correctly during reparenting, otherwise the lru size may
->>     be updated incorrectly in lru_gen_del_folio().
->>
->> Finally, this patch chose a compromise method, which is to splice the lru
->> list in the child memcg to the lru list of the same generation in the
->> parent memcg during reparenting. And in order to ensure that the parent
->> memcg has the same generation, we need to increase the generations in the
->> parent memcg to the MAX_NR_GENS before reparenting.
->>
->> Of course, the same generation has different meanings in the parent and
->> child memcg, this will cause confusion in the hot and cold information of
->> folios. But other than that, this method is simple enough, the lru size
->> is correct, and there is no need to consider some concurrency issues (such
->> as lru_gen_del_folio()).
->>
->> To prepare for the above work, this commit implements the specific
->> functions, which will be used during reparenting.
->>
->> Suggested-by: Harry Yoo <harry.yoo@oracle.com>
->> Suggested-by: Imran Khan <imran.f.khan@oracle.com>
->> Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
->> ---
->>   include/linux/mmzone.h | 16 ++++++++
->>   mm/vmscan.c            | 86 ++++++++++++++++++++++++++++++++++++++++++
->>   2 files changed, 102 insertions(+)
->>
->> diff --git a/mm/vmscan.c b/mm/vmscan.c
->> index 7aa8e1472d10d..3ee7fb96b8aeb 100644
->> --- a/mm/vmscan.c
->> +++ b/mm/vmscan.c
->> @@ -4468,6 +4468,92 @@ void lru_gen_soft_reclaim(struct mem_cgroup *memcg, int nid)
->>   		lru_gen_rotate_memcg(lruvec, MEMCG_LRU_HEAD);
->>   }
->>   
->> +bool recheck_lru_gen_max_memcg(struct mem_cgroup *memcg)
->> +{
->> +	int nid;
->> +
->> +	for_each_node(nid) {
->> +		struct lruvec *lruvec = get_lruvec(memcg, nid);
->> +		int type;
->> +
->> +		for (type = 0; type < ANON_AND_FILE; type++) {
->> +			if (get_nr_gens(lruvec, type) != MAX_NR_GENS)
->> +				return false;
->> +		}
->> +	}
->> +
->> +	return true;
->> +}
->> +
->> +/*
->> + * We need to ensure that the folios of child memcg can be reparented to the
->> + * same gen of the parent memcg, so the gens of the parent memcg needed be
->> + * incremented to the MAX_NR_GENS before reparenting.
->> + */
->> +void max_lru_gen_memcg(struct mem_cgroup *memcg)
->> +{
->> +	int nid;
->> +
->> +	for_each_node(nid) {
->> +		struct lruvec *lruvec = get_lruvec(memcg, nid);
->> +		int type;
->> +
-> 
-> I was testing this series and observed two warnings...
-> 
->> +		for (type = 0; type < ANON_AND_FILE; type++) {
->> +			while (get_nr_gens(lruvec, type) < MAX_NR_GENS) {
->> +				DEFINE_MAX_SEQ(lruvec);
->> +
->> +				inc_max_seq(lruvec, max_seq, mem_cgroup_swappiness(memcg));
->> +				cond_resched();
-> 
-> Warning 1) Here we increment max_seq but we skip updating mm_state->seq.
-> (try_to_inc_max_seq() iterates the mm list and update mm_state->seq after
-> an iteration, but since we directly call inc_max_seq(), we don't update it)
-> 
-> When mm_state->seq is more than one generation behind walk->seq, a warning is
-> triggered in iterate_mm_list():
-> 
->          VM_WARN_ON_ONCE(mm_state->seq + 1 < walk->max_seq);
+  Linux 6.18-rc2 (2025-10-19 15:19:16 -1000)
 
-The mm_state->seq is just to record the completion of a full traversal
-of mm_list. If we simply delete this warning, it may cause this judgment
-in iterate_mm_list to become invalid:
+are available in the Git repository at:
 
-         if (walk->seq <= mm_state->seq)
-		goto done;
+  https://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git tags/cgroup-for-6.19
 
-So it seems we can manually increase mm_state->seq during reparenting to
-avoid this warning.
+for you to fetch changes up to b1bcaed1e39a9e0dfbe324a15d2ca4253deda316:
 
-However, we cannot directly call iterate_mm_list_nowalk() because we do
-not want to reset mm_state->head and mm_state->tail to NULL. Otherwise,
-we wouldn't be able to continue iterating over the mm_list.
+  cpuset: Treat cpusets in attaching as populated (2025-11-20 16:25:26 -1000)
 
-> 
-> Warning 2) In try_to_inc_max_seq(), the last walker of mm list
-> is supposed to succeed to increment max_seq by calling inc_max_seq():
-> 
->          if (success) {
->                   success = inc_max_seq(lruvec, seq, swappiness);
->                   WARN_ON_ONCE(!success);
->           }
-> 
-> But with this patch it may observe the max_seq is already advanced due to
-> reparenting and thus inc_max_seq() returns false, triggering the warning.
+----------------------------------------------------------------
+cgroup: Changes for v6.19
 
-After we correct the warning above, we will satisfy this condition in
-iterate_mm_list():
+- Defer task cgroup unlink until after the dying task's final context switch
+  so that controllers see the cgroup properly populated until the task is
+  truly gone.
 
-         if (walk->seq <= mm_state->seq)
-		goto done;
+- cpuset cleanups and simplifications. Enforce that domain isolated CPUs
+  stay in root or isolated partitions and fail if isolated+nohz_full would
+  leave no housekeeping CPU. Fix sched/deadline root domain handling during
+  CPU hot-unplug and race for tasks in attaching cpusets.
 
-thus returning false, and avoiding triggering this warning.
+- Misc fixes including memory reclaim protection documentation and selftest
+  KTAP conformance.
 
-> 
-> I'm learning MGLRU internals to see whether we can simply remove the warnings
-> or if we need to do something to advance max_seq without actually iterating
-> over the mm list.
+----------------------------------------------------------------
+Bert Karwatzki (1):
+      cgroup: include missing header for struct irq_work
 
-So IIUC, we can simple increase mm_state->seq during reparenting to
-fix these warnings.
+Chen Ridong (4):
+      cpuset: simplify node setting on error
+      cpuset: remove global remote_children list
+      cpuset: remove need_rebuild_sched_domains
+      cpuset: Treat cpusets in attaching as populated
 
-> 
+Gabriele Monaco (1):
+      cgroup/cpuset: Rename update_unbound_workqueue_cpumask() to update_isolation_cpumasks()
 
+Guopeng Zhang (1):
+      selftests/cgroup: conform test to KTAP format output
+
+Michal Koutný (3):
+      docs: cgroup: Explain reclaim protection target
+      docs: cgroup: Note about sibling relative reclaim protection
+      docs: cgroup: No special handling of unpopulated memcgs
+
+Pingfan Liu (2):
+      cgroup/cpuset: Introduce cpuset_cpus_allowed_locked()
+      sched/deadline: Walk up cpuset hierarchy to decide root domain when hot-unplug
+
+Tejun Heo (4):
+      cgroup: Rename cgroup lifecycle hooks to cgroup_task_*()
+      cgroup: Move dying_tasks cleanup from cgroup_task_release() to cgroup_task_free()
+      cgroup: Defer task cgroup unlink until after the task is done switching out
+      cgroup: Fix sleeping from invalid context warning on PREEMPT_RT
+
+Waiman Long (5):
+      cgroup/cpuset: Don't track # of local child partitions
+      cgroup/cpuset: Fail if isolated and nohz_full don't leave any housekeeping
+      cgroup/cpuset: Move up prstate_housekeeping_conflict() helper
+      cgroup/cpuset: Ensure domain isolated CPUs stay in root or isolated partition
+      cgroup/cpuset: Globally track isolated_cpus update
+
+ Documentation/admin-guide/cgroup-v2.rst          |  31 +-
+ include/linux/cgroup.h                           |  14 +-
+ include/linux/cpuset.h                           |   9 +-
+ include/linux/sched.h                            |   5 +-
+ kernel/cgroup/cgroup.c                           |  91 +++++-
+ kernel/cgroup/cpuset-internal.h                  |  13 +-
+ kernel/cgroup/cpuset.c                           | 356 ++++++++++++++---------
+ kernel/exit.c                                    |   4 +-
+ kernel/fork.c                                    |   2 +-
+ kernel/sched/autogroup.c                         |   4 +-
+ kernel/sched/core.c                              |   2 +
+ kernel/sched/deadline.c                          |  54 +++-
+ tools/testing/selftests/cgroup/test_core.c       |   7 +-
+ tools/testing/selftests/cgroup/test_cpu.c        |   7 +-
+ tools/testing/selftests/cgroup/test_cpuset.c     |   7 +-
+ tools/testing/selftests/cgroup/test_freezer.c    |   7 +-
+ tools/testing/selftests/cgroup/test_kill.c       |   7 +-
+ tools/testing/selftests/cgroup/test_kmem.c       |   7 +-
+ tools/testing/selftests/cgroup/test_memcontrol.c |   7 +-
+ tools/testing/selftests/cgroup/test_zswap.c      |   7 +-
+ 20 files changed, 435 insertions(+), 206 deletions(-)
+
+Thanks.
+--
+tejun
 
