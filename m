@@ -1,110 +1,186 @@
-Return-Path: <cgroups+bounces-12243-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-12245-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0D6ADC99B60
-	for <lists+cgroups@lfdr.de>; Tue, 02 Dec 2025 02:12:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 1BB34C99F21
+	for <lists+cgroups@lfdr.de>; Tue, 02 Dec 2025 04:12:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 921DA3448B6
-	for <lists+cgroups@lfdr.de>; Tue,  2 Dec 2025 01:12:54 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id A1BED34545D
+	for <lists+cgroups@lfdr.de>; Tue,  2 Dec 2025 03:12:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A3981DE8AF;
-	Tue,  2 Dec 2025 01:12:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6EDF226ED2A;
+	Tue,  2 Dec 2025 03:12:50 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
 Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 91E7C3F9D2;
-	Tue,  2 Dec 2025 01:12:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5056A125A0;
+	Tue,  2 Dec 2025 03:12:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764637970; cv=none; b=hL/NS65r5lHscJqNqBlq7y7CAfQ6vlCnGelJ71pfcxPWtq4ILIppxutAO+UcLb6UhSlhPWRuRHAj2dMuvbpdglo09E78aZqCK7HJFc0se2SLKyMm7bLLDhQNShYjYY5bSGq2eNnOYMa6TGLWkZmdqhCawN8D9m4sPTUnVOhLDMU=
+	t=1764645170; cv=none; b=kYCYNj4piOrPVnl7LznTLmf0cuHIOcdcOov9x+5w8Fkt9b8jgIN4EJwkKUAa3LLcEFk5N006br4UbwiRuMdXWDiUqHcOjQc7puNHZkh4YpVfMjQCcrpuXuftW8shkm8ss2S1RMHrshE1og55w0XPETAgOLVhgqVhqTCX/86c724=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764637970; c=relaxed/simple;
-	bh=HOwPBcBA7eOyjeOqXZXNLeCQaq6wBNlpqLA/c/ujtNY=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
-	 In-Reply-To:Content-Type; b=ixQj+Lp9Xezb7O9z19FiMDgRoQelDpmXR3pdsmgA/vDgoks5s3SA71+yiN91yvxm1eR9T31i7kfNYKRjtwhP8ETcp7KdxmWHJLCPZEs2awzHzHfrOal4IaWamPcxP4s6L/S7OYpzL0hVUjO2PHVeg5keH6ApzD3wevejTH462pk=
+	s=arc-20240116; t=1764645170; c=relaxed/simple;
+	bh=AYOyZ6uKezjZhhQ85ozMAudJUekf+JOOxvH3SLg7DsI=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=N4xh9kM350r2hHmp+7uwL8bs1Cj+mQX3Tapa9hVwIPBKXQ6WaTPCzTZ69yKy6dERXGc3r9NfPYPW2tLNQ+6YO07+oaFthM61MKpAuBvYieJeneiVoeJhBG1lGgi6mBZR3blwv2sCB7pjI+7u16abeBrfOedTyMaLkCxybd4TP4w=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.93.142])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTPS id 4dL2nS3DnczYQtfp;
-	Tue,  2 Dec 2025 09:12:44 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.75])
-	by mail.maildlp.com (Postfix) with ESMTP id 52D291A018D;
-	Tue,  2 Dec 2025 09:12:45 +0800 (CST)
-Received: from [10.67.111.176] (unknown [10.67.111.176])
-	by APP2 (Coremail) with SMTP id Syh0CgAH51AMPS5p0y0pAQ--.24140S2;
-	Tue, 02 Dec 2025 09:12:45 +0800 (CST)
-Message-ID: <101c5f3a-5614-47aa-8d62-c0b7d6baea5b@huaweicloud.com>
-Date: Tue, 2 Dec 2025 09:12:43 +0800
+Received: from mail.maildlp.com (unknown [172.19.163.216])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTPS id 4dL5Rv5gG9zYQtjP;
+	Tue,  2 Dec 2025 11:12:43 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.128])
+	by mail.maildlp.com (Postfix) with ESMTP id BF1DD1A13C5;
+	Tue,  2 Dec 2025 11:12:44 +0800 (CST)
+Received: from hulk-vt.huawei.com (unknown [10.67.174.121])
+	by APP4 (Coremail) with SMTP id gCh0CgBHb5wgWS5pxEM0AQ--.41565S2;
+	Tue, 02 Dec 2025 11:12:44 +0800 (CST)
+From: Chen Ridong <chenridong@huaweicloud.com>
+To: viro@zeniv.linux.org.uk,
+	brauner@kernel.org,
+	jack@suse.cz,
+	hannes@cmpxchg.org,
+	mhocko@kernel.org,
+	roman.gushchin@linux.dev,
+	shakeel.butt@linux.dev,
+	muchun.song@linux.dev,
+	tj@kernel.org,
+	mkoutny@suse.com,
+	akpm@linux-foundation.org,
+	vbabka@suse.cz,
+	surenb@google.com,
+	jackmanb@google.com,
+	ziy@nvidia.com
+Cc: linux-fsdevel@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	cgroups@vger.kernel.org,
+	linux-mm@kvack.org,
+	lujialin4@huawei.com,
+	chenridong@huawei.com
+Subject: [PATCH -next] cgroup: switch to css_is_online() helper
+Date: Tue,  2 Dec 2025 02:57:47 +0000
+Message-Id: <20251202025747.1658159-1-chenridong@huaweicloud.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH -next] cgroup: Use descriptor table to unify mount flag
- management
-From: Chen Ridong <chenridong@huaweicloud.com>
-To: tj@kernel.org, hannes@cmpxchg.org, mkoutny@suse.com
-Cc: cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
- lujialin4@huawei.com, chenridong@huawei.com
-References: <20251126020825.1511671-1-chenridong@huaweicloud.com>
-Content-Language: en-US
-In-Reply-To: <20251126020825.1511671-1-chenridong@huaweicloud.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID:Syh0CgAH51AMPS5p0y0pAQ--.24140S2
-X-Coremail-Antispam: 1UD129KBjvdXoWrtr45Xw48Kry3tw1fGw1DAwb_yoWDCwbEgw
-	4S9w4qkayjvrnxKrs09FZ8uFZa9ay7Cr1xGrykXryUKw4UXFWDuFsavFy5Ar17A3ZrAFnx
-	CrnIyrs5uFW2gjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-	9fnUUIcSsGvfJTRUUUbz8YFVCjjxCrM7AC8VAFwI0_Gr0_Xr1l1xkIjI8I6I8E6xAIw20E
-	Y4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwV
-	A0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVWDJVCq3wA2z4x0Y4vE2Ix0cI8IcVCY1x02
-	67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
-	0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
-	x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
-	0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lc7CjxVAaw2AFwI0_JF0_Jw1l42xK82IYc2Ij64vI
-	r41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8Gjc
-	xK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE2Ix0
-	cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8V
-	AvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E
-	14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUwxhLUUUUU
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:gCh0CgBHb5wgWS5pxEM0AQ--.41565S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxAr1kKw1DXr4rJry7ZF1xGrg_yoW5ZryxpF
+	s7Ga47Ka1UAF13GFZ5Ka4q934Svan3GayYk3y8X347Zr13t34Yq3y093W5tFy8tF1akryS
+	qFs0yry8Cw4jyFJanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUv2b4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+	Cjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxkF7I0E
+	n4kS14v26r4a6rW5MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I
+	0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVW8
+	ZVWrXwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcV
+	CY1x0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAF
+	wI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa
+	7IU0s2-5UUUUU==
 X-CM-SenderInfo: hfkh02xlgr0w46kxt4xhlfz01xgou0bp/
 
+From: Chen Ridong <chenridong@huawei.com>
 
+Use the new css_is_online() helper that has been introduced to check css
+online state, instead of testing the CSS_ONLINE flag directly. This
+improves readability and centralizes the state check logic.
 
-On 2025/11/26 10:08, Chen Ridong wrote:
-> From: Chen Ridong <chenridong@huawei.com>
-> 
-> The cgroup2 mount flags (e.g. nsdelegate, favordynmods) were previously
-> handled via scattered switch-case and conditional checks across
-> parameter parsing, flag application, and option display paths. This
-> leads to redundant code and increased maintenance cost when adding/removing
-> flags.
-> 
-> Introduce a `cgroup_mount_flag_desc` descriptor table to centralize the
-> mapping between flag bits, names, and apply functions. Refactor the
-> relevant paths to use this table for unified management:
-> 1. cgroup2_parse_param: Replace switch-case with table lookup
-> 2. apply_cgroup_root_flags: Replace multiple conditionals with table
->    iteration
-> 3. cgroup_show_options: Replace hardcoded seq_puts with table-driven output
-> 
-> No functional change intended, and the mount option output format remains
-> compatible with the original implementation.
-> 
+No functional changes intended.
 
-Hi all,
+Signed-off-by: Chen Ridong <chenridong@huawei.com>
+---
+ fs/fs-writeback.c          | 2 +-
+ include/linux/memcontrol.h | 2 +-
+ kernel/cgroup/cgroup.c     | 4 ++--
+ mm/memcontrol.c            | 2 +-
+ mm/page_owner.c            | 2 +-
+ 5 files changed, 6 insertions(+), 6 deletions(-)
 
-Would anyone be interested?
-
+diff --git a/fs/fs-writeback.c b/fs/fs-writeback.c
+index 6800886c4d10..5dd6e89a6d29 100644
+--- a/fs/fs-writeback.c
++++ b/fs/fs-writeback.c
+@@ -981,7 +981,7 @@ void wbc_account_cgroup_owner(struct writeback_control *wbc, struct folio *folio
+ 
+ 	css = mem_cgroup_css_from_folio(folio);
+ 	/* dead cgroups shouldn't contribute to inode ownership arbitration */
+-	if (!(css->flags & CSS_ONLINE))
++	if (!css_is_online(css))
+ 		return;
+ 
+ 	id = css->id;
+diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
+index 0651865a4564..6a48398a1f4e 100644
+--- a/include/linux/memcontrol.h
++++ b/include/linux/memcontrol.h
+@@ -893,7 +893,7 @@ static inline bool mem_cgroup_online(struct mem_cgroup *memcg)
+ {
+ 	if (mem_cgroup_disabled())
+ 		return true;
+-	return !!(memcg->css.flags & CSS_ONLINE);
++	return css_is_online(&memcg->css);
+ }
+ 
+ void mem_cgroup_update_lru_size(struct lruvec *lruvec, enum lru_list lru,
+diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
+index 1e4033d05c29..ad0a35721dff 100644
+--- a/kernel/cgroup/cgroup.c
++++ b/kernel/cgroup/cgroup.c
+@@ -4939,7 +4939,7 @@ bool css_has_online_children(struct cgroup_subsys_state *css)
+ 
+ 	rcu_read_lock();
+ 	css_for_each_child(child, css) {
+-		if (child->flags & CSS_ONLINE) {
++		if (css_is_online(child)) {
+ 			ret = true;
+ 			break;
+ 		}
+@@ -5744,7 +5744,7 @@ static void offline_css(struct cgroup_subsys_state *css)
+ 
+ 	lockdep_assert_held(&cgroup_mutex);
+ 
+-	if (!(css->flags & CSS_ONLINE))
++	if (!css_is_online(css))
+ 		return;
+ 
+ 	if (ss->css_offline)
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index be810c1fbfc3..e2e49f4ec9e0 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -281,7 +281,7 @@ ino_t page_cgroup_ino(struct page *page)
+ 	/* page_folio() is racy here, but the entire function is racy anyway */
+ 	memcg = folio_memcg_check(page_folio(page));
+ 
+-	while (memcg && !(memcg->css.flags & CSS_ONLINE))
++	while (memcg && !css_is_online(&memcg->css))
+ 		memcg = parent_mem_cgroup(memcg);
+ 	if (memcg)
+ 		ino = cgroup_ino(memcg->css.cgroup);
+diff --git a/mm/page_owner.c b/mm/page_owner.c
+index a70245684206..27d19f01009c 100644
+--- a/mm/page_owner.c
++++ b/mm/page_owner.c
+@@ -530,7 +530,7 @@ static inline int print_page_owner_memcg(char *kbuf, size_t count, int ret,
+ 	if (!memcg)
+ 		goto out_unlock;
+ 
+-	online = (memcg->css.flags & CSS_ONLINE);
++	online = css_is_online(&memcg->css);
+ 	cgroup_name(memcg->css.cgroup, name, sizeof(name));
+ 	ret += scnprintf(kbuf + ret, count - ret,
+ 			"Charged %sto %smemcg %s\n",
 -- 
-Best regards,
-Ridong
+2.34.1
 
 
