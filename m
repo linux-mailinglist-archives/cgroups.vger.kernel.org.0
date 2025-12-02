@@ -1,45 +1,45 @@
-Return-Path: <cgroups+bounces-12242-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-12243-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9DF1EC99AE7
-	for <lists+cgroups@lfdr.de>; Tue, 02 Dec 2025 01:57:58 +0100 (CET)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0D6ADC99B60
+	for <lists+cgroups@lfdr.de>; Tue, 02 Dec 2025 02:12:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 46B553A3431
-	for <lists+cgroups@lfdr.de>; Tue,  2 Dec 2025 00:57:57 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 921DA3448B6
+	for <lists+cgroups@lfdr.de>; Tue,  2 Dec 2025 01:12:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7865815746F;
-	Tue,  2 Dec 2025 00:57:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A3981DE8AF;
+	Tue,  2 Dec 2025 01:12:50 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
 Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 734B779CF;
-	Tue,  2 Dec 2025 00:57:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 91E7C3F9D2;
+	Tue,  2 Dec 2025 01:12:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764637073; cv=none; b=ExeClPsiA33sYBzRQZPCBFrs2IlgwsqhTKqV1wKwnBPbPvqHu8UmjyJuTSTWXQvaRycOpQuvBBgz0Ocw4R84lnBkd/7VGuEm4Lp8mT5rQ2wiNbQxjj189DkTBdRCiospcHrKxkcBbOw8eYW4Ni4q10byQOa7yZj2bnW8vFCuBpI=
+	t=1764637970; cv=none; b=hL/NS65r5lHscJqNqBlq7y7CAfQ6vlCnGelJ71pfcxPWtq4ILIppxutAO+UcLb6UhSlhPWRuRHAj2dMuvbpdglo09E78aZqCK7HJFc0se2SLKyMm7bLLDhQNShYjYY5bSGq2eNnOYMa6TGLWkZmdqhCawN8D9m4sPTUnVOhLDMU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764637073; c=relaxed/simple;
-	bh=ac7HhOAYyqylhGf89Pk85R+Jp9cmAqjZC+G8pGqRBFg=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=k3Ir4kZX6zQ1mSnWIxt/zO/5EDrrMpRNnaCWaHcqzskrh6JhELbuifiP4hIF5WGY5CEumqCJCiSrVKFWgXiq5tqfbVtyMWPB2qgzx7NFr+PyIWwku2Myjte87PyuRlBoC438JD0dIQEmPeZn8py9cBKfLv4pQEx/kZ5Q2I70eoo=
+	s=arc-20240116; t=1764637970; c=relaxed/simple;
+	bh=HOwPBcBA7eOyjeOqXZXNLeCQaq6wBNlpqLA/c/ujtNY=;
+	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
+	 In-Reply-To:Content-Type; b=ixQj+Lp9Xezb7O9z19FiMDgRoQelDpmXR3pdsmgA/vDgoks5s3SA71+yiN91yvxm1eR9T31i7kfNYKRjtwhP8ETcp7KdxmWHJLCPZEs2awzHzHfrOal4IaWamPcxP4s6L/S7OYpzL0hVUjO2PHVeg5keH6ApzD3wevejTH462pk=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.216])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTPS id 4dL2SB1F7FzYQtgF;
-	Tue,  2 Dec 2025 08:57:46 +0800 (CST)
+Received: from mail.maildlp.com (unknown [172.19.93.142])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTPS id 4dL2nS3DnczYQtfp;
+	Tue,  2 Dec 2025 09:12:44 +0800 (CST)
 Received: from mail02.huawei.com (unknown [10.116.40.75])
-	by mail.maildlp.com (Postfix) with ESMTP id 0E3971A18D2;
-	Tue,  2 Dec 2025 08:57:47 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTP id 52D291A018D;
+	Tue,  2 Dec 2025 09:12:45 +0800 (CST)
 Received: from [10.67.111.176] (unknown [10.67.111.176])
-	by APP2 (Coremail) with SMTP id Syh0CgBHJlCJOS5pQfwnAQ--.22704S2;
-	Tue, 02 Dec 2025 08:57:46 +0800 (CST)
-Message-ID: <1165075e-baa2-4120-8e58-50532b2b459d@huaweicloud.com>
-Date: Tue, 2 Dec 2025 08:57:45 +0800
+	by APP2 (Coremail) with SMTP id Syh0CgAH51AMPS5p0y0pAQ--.24140S2;
+	Tue, 02 Dec 2025 09:12:45 +0800 (CST)
+Message-ID: <101c5f3a-5614-47aa-8d62-c0b7d6baea5b@huaweicloud.com>
+Date: Tue, 2 Dec 2025 09:12:43 +0800
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -47,141 +47,61 @@ List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH -next v2] cpuset: Remove unnecessary checks in
- rebuild_sched_domains_locked
-To: Waiman Long <llong@redhat.com>, tj@kernel.org, hannes@cmpxchg.org,
- mkoutny@suse.com
+Subject: Re: [PATCH -next] cgroup: Use descriptor table to unify mount flag
+ management
+From: Chen Ridong <chenridong@huaweicloud.com>
+To: tj@kernel.org, hannes@cmpxchg.org, mkoutny@suse.com
 Cc: cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
  lujialin4@huawei.com, chenridong@huawei.com
-References: <20251126091158.1610673-1-chenridong@huaweicloud.com>
- <518ffa19-fcb2-4131-942d-02aa8328a815@redhat.com>
+References: <20251126020825.1511671-1-chenridong@huaweicloud.com>
 Content-Language: en-US
-From: Chen Ridong <chenridong@huaweicloud.com>
-In-Reply-To: <518ffa19-fcb2-4131-942d-02aa8328a815@redhat.com>
+In-Reply-To: <20251126020825.1511671-1-chenridong@huaweicloud.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:Syh0CgBHJlCJOS5pQfwnAQ--.22704S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxGrWfKFyrurW3Zw4fAryUtrb_yoWrKw18pF
-	ykGrW7XrWUKr18C3yUJryUXryrKw4kJa1DJr1kXF18AF47AF1jgr1jq3s0gr1UXr48Wr1U
-	Ar1jqrnruF9xArJanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUyGb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-	6I80ewAv7VC0I7IYx2IY67AKxVWUGVWUXwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxkF7I0En4kS14v26r126r1DMxAIw28IcxkI7VAK
-	I48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7
-	xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xII
-	jxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw2
-	0EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x02
-	67AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IUbiF4tUUUUU==
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID:Syh0CgAH51AMPS5p0y0pAQ--.24140S2
+X-Coremail-Antispam: 1UD129KBjvdXoWrtr45Xw48Kry3tw1fGw1DAwb_yoWDCwbEgw
+	4S9w4qkayjvrnxKrs09FZ8uFZa9ay7Cr1xGrykXryUKw4UXFWDuFsavFy5Ar17A3ZrAFnx
+	CrnIyrs5uFW2gjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+	9fnUUIcSsGvfJTRUUUbz8YFVCjjxCrM7AC8VAFwI0_Gr0_Xr1l1xkIjI8I6I8E6xAIw20E
+	Y4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwV
+	A0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVWDJVCq3wA2z4x0Y4vE2Ix0cI8IcVCY1x02
+	67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
+	0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
+	x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
+	0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lc7CjxVAaw2AFwI0_JF0_Jw1l42xK82IYc2Ij64vI
+	r41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8Gjc
+	xK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE2Ix0
+	cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8V
+	AvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E
+	14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUwxhLUUUUU
 X-CM-SenderInfo: hfkh02xlgr0w46kxt4xhlfz01xgou0bp/
 
 
 
-On 2025/11/27 3:47, Waiman Long wrote:
-> On 11/26/25 4:11 AM, Chen Ridong wrote:
->> From: Chen Ridong <chenridong@huawei.com>
->>
->> Commit 406100f3da08 ("cpuset: fix race between hotplug work and later CPU
->> offline") added a check for empty effective_cpus in partitions for cgroup
->> v2. However, this check did not account for remote partitions, which were
->> introduced later.
->>
->> After commit 2125c0034c5d ("cgroup/cpuset: Make cpuset hotplug processing
->> synchronous"), cpuset hotplug handling is now synchronous. This eliminates
->> the race condition with subsequent CPU offline operations that the original
->> check aimed to fix.
->>
->> Instead of extending the check to support remote partitions, this patch
->> removes all the redundant effective_cpus check. Additionally, it adds a
->> check and warning to verify that all generated sched domains consist of
->> active CPUs, preventing partition_sched_domains from being invoked with
->> offline CPUs.
->>
->> Signed-off-by: Chen Ridong <chenridong@huawei.com>
->> ---
->>   kernel/cgroup/cpuset.c | 50 +++++++++++++-----------------------------
->>   1 file changed, 15 insertions(+), 35 deletions(-)
->>
->> diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
->> index 6e6eb09b8db6..fea577b4016a 100644
->> --- a/kernel/cgroup/cpuset.c
->> +++ b/kernel/cgroup/cpuset.c
->> @@ -1103,53 +1103,33 @@ void dl_rebuild_rd_accounting(void)
->>    */
->>   void rebuild_sched_domains_locked(void)
->>   {
->> -    struct cgroup_subsys_state *pos_css;
->>       struct sched_domain_attr *attr;
->>       cpumask_var_t *doms;
->> -    struct cpuset *cs;
->>       int ndoms;
->> +    int i;
->>         lockdep_assert_cpus_held();
->>       lockdep_assert_held(&cpuset_mutex);
->>       force_sd_rebuild = false;
->>   -    /*
->> -     * If we have raced with CPU hotplug, return early to avoid
->> -     * passing doms with offlined cpu to partition_sched_domains().
->> -     * Anyways, cpuset_handle_hotplug() will rebuild sched domains.
->> -     *
->> -     * With no CPUs in any subpartitions, top_cpuset's effective CPUs
->> -     * should be the same as the active CPUs, so checking only top_cpuset
->> -     * is enough to detect racing CPU offlines.
->> -     */
->> -    if (cpumask_empty(subpartitions_cpus) &&
->> -        !cpumask_equal(top_cpuset.effective_cpus, cpu_active_mask))
->> -        return;
->> +    /* Generate domain masks and attrs */
->> +    ndoms = generate_sched_domains(&doms, &attr);
->>         /*
->> -     * With subpartition CPUs, however, the effective CPUs of a partition
->> -     * root should be only a subset of the active CPUs.  Since a CPU in any
->> -     * partition root could be offlined, all must be checked.
->> -     */
->> -    if (!cpumask_empty(subpartitions_cpus)) {
->> -        rcu_read_lock();
->> -        cpuset_for_each_descendant_pre(cs, pos_css, &top_cpuset) {
->> -            if (!is_partition_valid(cs)) {
->> -                pos_css = css_rightmost_descendant(pos_css);
->> -                continue;
->> -            }
->> -            if (!cpumask_subset(cs->effective_cpus,
->> -                        cpu_active_mask)) {
->> -                rcu_read_unlock();
->> -                return;
->> -            }
->> -        }
->> -        rcu_read_unlock();
->> +    * cpuset_hotplug_workfn is invoked synchronously now, thus this
->> +    * function should not race with CPU hotplug. And the effective CPUs
->> +    * must not include any offline CPUs. Passing an offline CPU in the
->> +    * doms to partition_sched_domains() will trigger a kernel panic.
->> +    *
->> +    * We perform a final check here: if the doms contains any
->> +    * offline CPUs, a warning is emitted and we return directly to
->> +    * prevent the panic.
->> +    */
->> +    for (i = 0; i < ndoms; ++i) {
->> +        if (WARN_ON_ONCE(!cpumask_subset(doms[i], cpu_active_mask)))
->> +            return;
->>       }
->>   -    /* Generate domain masks and attrs */
->> -    ndoms = generate_sched_domains(&doms, &attr);
->> -
->>       /* Have scheduler rebuild the domains */
->>       partition_sched_domains(ndoms, doms, attr);
->>   }
-> Reviewed-by: Waiman Long <longman@redhat.com>
+On 2025/11/26 10:08, Chen Ridong wrote:
+> From: Chen Ridong <chenridong@huawei.com>
 > 
-> Thanks!
+> The cgroup2 mount flags (e.g. nsdelegate, favordynmods) were previously
+> handled via scattered switch-case and conditional checks across
+> parameter parsing, flag application, and option display paths. This
+> leads to redundant code and increased maintenance cost when adding/removing
+> flags.
+> 
+> Introduce a `cgroup_mount_flag_desc` descriptor table to centralize the
+> mapping between flag bits, names, and apply functions. Refactor the
+> relevant paths to use this table for unified management:
+> 1. cgroup2_parse_param: Replace switch-case with table lookup
+> 2. apply_cgroup_root_flags: Replace multiple conditionals with table
+>    iteration
+> 3. cgroup_show_options: Replace hardcoded seq_puts with table-driven output
+> 
+> No functional change intended, and the mount option output format remains
+> compatible with the original implementation.
 > 
 
-Hi Tj,
+Hi all,
 
-Just checking, can this patch be applied? Wanted to make sure you saw it.
+Would anyone be interested?
 
 -- 
 Best regards,
