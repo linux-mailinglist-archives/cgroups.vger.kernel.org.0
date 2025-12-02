@@ -1,45 +1,45 @@
-Return-Path: <cgroups+bounces-12241-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-12242-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id B5AFEC99AB1
-	for <lists+cgroups@lfdr.de>; Tue, 02 Dec 2025 01:44:12 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9DF1EC99AE7
+	for <lists+cgroups@lfdr.de>; Tue, 02 Dec 2025 01:57:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 796664E1605
-	for <lists+cgroups@lfdr.de>; Tue,  2 Dec 2025 00:44:11 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 46B553A3431
+	for <lists+cgroups@lfdr.de>; Tue,  2 Dec 2025 00:57:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D6B9184524;
-	Tue,  2 Dec 2025 00:44:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7865815746F;
+	Tue,  2 Dec 2025 00:57:53 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
 Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 878FE22097;
-	Tue,  2 Dec 2025 00:44:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 734B779CF;
+	Tue,  2 Dec 2025 00:57:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764636247; cv=none; b=K5e4ExHfRauCedu+6BjLrP+66eZ+8Skl1cMglLzxaem1CNSAidBUpGTGjUWE73omFmgQ263YmDsjHjUsoJU95pIIegyzh8RQngjsK+5cCyCDmR7//hcC5kx1GnT/VIjX0sVJFcQzn17yw7sZFimlq6TWcR5f+5k857aJ769S3Fw=
+	t=1764637073; cv=none; b=ExeClPsiA33sYBzRQZPCBFrs2IlgwsqhTKqV1wKwnBPbPvqHu8UmjyJuTSTWXQvaRycOpQuvBBgz0Ocw4R84lnBkd/7VGuEm4Lp8mT5rQ2wiNbQxjj189DkTBdRCiospcHrKxkcBbOw8eYW4Ni4q10byQOa7yZj2bnW8vFCuBpI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764636247; c=relaxed/simple;
-	bh=TkpYmsSX9irKWyRqJtTDjNzxbmVgXCK36/9gAZvPgRw=;
+	s=arc-20240116; t=1764637073; c=relaxed/simple;
+	bh=ac7HhOAYyqylhGf89Pk85R+Jp9cmAqjZC+G8pGqRBFg=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=PI/ZtQbVB+n5dRxifIDUyZFbWHxFnQ8RmTxzukpQa0b86GDdXTcrzXDE3GptVocAB3vMIx8zIIxVP/k3QtRpGa24u947a3jtpFY+gLSy9iJpNKyF9h+uwHOMvdfo93xg3RK4d7Wsc79+bU84SqvFiddWDHvcRr6YN78N2bNKYTs=
+	 In-Reply-To:Content-Type; b=k3Ir4kZX6zQ1mSnWIxt/zO/5EDrrMpRNnaCWaHcqzskrh6JhELbuifiP4hIF5WGY5CEumqCJCiSrVKFWgXiq5tqfbVtyMWPB2qgzx7NFr+PyIWwku2Myjte87PyuRlBoC438JD0dIQEmPeZn8py9cBKfLv4pQEx/kZ5Q2I70eoo=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.93.142])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTPS id 4dL28C1vpGzYQtg1;
-	Tue,  2 Dec 2025 08:43:55 +0800 (CST)
+Received: from mail.maildlp.com (unknown [172.19.163.216])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTPS id 4dL2SB1F7FzYQtgF;
+	Tue,  2 Dec 2025 08:57:46 +0800 (CST)
 Received: from mail02.huawei.com (unknown [10.116.40.75])
-	by mail.maildlp.com (Postfix) with ESMTP id 1E8D81A07BD;
-	Tue,  2 Dec 2025 08:43:56 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTP id 0E3971A18D2;
+	Tue,  2 Dec 2025 08:57:47 +0800 (CST)
 Received: from [10.67.111.176] (unknown [10.67.111.176])
-	by APP2 (Coremail) with SMTP id Syh0CgD31U9KNi5pEt8mAQ--.20673S2;
-	Tue, 02 Dec 2025 08:43:55 +0800 (CST)
-Message-ID: <8b7994af-fa75-473f-8b62-2473c7074686@huaweicloud.com>
-Date: Tue, 2 Dec 2025 08:43:54 +0800
+	by APP2 (Coremail) with SMTP id Syh0CgBHJlCJOS5pQfwnAQ--.22704S2;
+	Tue, 02 Dec 2025 08:57:46 +0800 (CST)
+Message-ID: <1165075e-baa2-4120-8e58-50532b2b459d@huaweicloud.com>
+Date: Tue, 2 Dec 2025 08:57:45 +0800
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -47,133 +47,141 @@ List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH -next 00/21] cpuset: rework local partition logic
+Subject: Re: [PATCH -next v2] cpuset: Remove unnecessary checks in
+ rebuild_sched_domains_locked
 To: Waiman Long <llong@redhat.com>, tj@kernel.org, hannes@cmpxchg.org,
  mkoutny@suse.com
 Cc: cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
  lujialin4@huawei.com, chenridong@huawei.com
-References: <20251117024627.1128037-1-chenridong@huaweicloud.com>
- <2943236a-bb0e-4417-aee4-31146988709a@huaweicloud.com>
- <ca3b31ca-e9c3-41e8-ae88-d4b126f574b3@redhat.com>
+References: <20251126091158.1610673-1-chenridong@huaweicloud.com>
+ <518ffa19-fcb2-4131-942d-02aa8328a815@redhat.com>
 Content-Language: en-US
 From: Chen Ridong <chenridong@huaweicloud.com>
-In-Reply-To: <ca3b31ca-e9c3-41e8-ae88-d4b126f574b3@redhat.com>
+In-Reply-To: <518ffa19-fcb2-4131-942d-02aa8328a815@redhat.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:Syh0CgD31U9KNi5pEt8mAQ--.20673S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxCFy7tw1rKr1UXr1kXrW8WFg_yoWrZw1DpF
-	yDGayftryUCF1vk3sFqF4xA3yrKwsrJFyDtwn8Z34xXrsFyw1v9FW09398ua4UWrWkAr18
-	ZF1DXr4xu3W2yF7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUylb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+X-CM-TRANSID:Syh0CgBHJlCJOS5pQfwnAQ--.22704S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxGrWfKFyrurW3Zw4fAryUtrb_yoWrKw18pF
+	ykGrW7XrWUKr18C3yUJryUXryrKw4kJa1DJr1kXF18AF47AF1jgr1jq3s0gr1UXr48Wr1U
+	Ar1jqrnruF9xArJanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUyGb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
 	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
 	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
 	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
 	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+	6I80ewAv7VC0I7IYx2IY67AKxVWUGVWUXwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
 	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxkF7I0En4kS14v26r126r1DMxAIw28IcxkI7VAK
 	I48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7
 	xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xII
-	jxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw2
+	jxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw2
 	0EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x02
-	67AKxVWUJVW8JbIYCTnIWIevJa73UjIFyTuYvjxUwxhLUUUUU
+	67AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IUbiF4tUUUUU==
 X-CM-SenderInfo: hfkh02xlgr0w46kxt4xhlfz01xgou0bp/
 
 
 
-On 2025/11/25 9:09, Waiman Long wrote:
-> On 11/24/25 7:49 PM, Chen Ridong wrote:
+On 2025/11/27 3:47, Waiman Long wrote:
+> On 11/26/25 4:11 AM, Chen Ridong wrote:
+>> From: Chen Ridong <chenridong@huawei.com>
 >>
->> On 2025/11/17 10:46, Chen Ridong wrote:
->>> From: Chen Ridong <chenridong@huawei.com>
->>>
->>> The current local partition implementation consolidates all operations
->>> (enable, disable, invalidate, and update) within the large
->>> update_parent_effective_cpumask() function, which exceeds 300 lines.
->>> This monolithic approach has become increasingly difficult to understand
->>> and maintain. Additionally, partition-related fields are updated in
->>> multiple locations, leading to redundant code and potential corner case
->>> oversights.
->>>
->>> This patch series refactors the local partition logic by separating
->>> operations into dedicated functions: local_partition_enable(),
->>> local_partition_disable(), and local_partition_update(), creating
->>> symmetry with the existing remote partition infrastructure.
->>>
->>> The series is organized as follows:
->>>
->>> 1. Infrastructure Preparation (Patches 1-2):
->>>     - Code cleanup and preparation for the refactoring work
->>>
->>> 2. Introduce partition operation helpers (Patches 3-5):
->>>     - Introduce out partition_enable(), partition_disable(), and
->>>       partition_update() functions.
->>>
->>> 3. Use new helpers for remote partition (Patches 6-8)
->>>
->>> 4. Local Partition Implementation (Patches 9-12):
->>>     - Separate update_parent_effective_cpumask() into dedicated functions:
->>>       * local_partition_enable()
->>>       * local_partition_disable()
->>>       * local_partition_update()
->>>
->>> 5. Optimization and Cleanup (Patches 13-21):
->>>     - Remove redundant partition-related operations
->>>     - Additional optimizations based on the new architecture
->>>
->>> base-commit: 6d7e7251d03f98f26f2ee0dfd21bb0a0480a2178
->>>
->>> ---
->>>
->>> Changes from RFC v2:
->>> 1. Dropped the bugfix (already merged/fixed upstream)
->>> 2. Rebased onto next
->>> 3. Introduced partition_switch to handle root state switches
->>> 4. Directly use local_partition_disable()—no longer first introduce
->>>     local_partition_invalidate() before unifying the two
->>> 5. Incorporated modifications based on Longman's suggestions
->>>
->>> Changes in RFC v1:
->>> 1. Added bugfix for root partition isolcpus at series start.
->>> 2. Completed helper function implementations when first introduced.
->>> 3. Split larger patches into smaller, more reviewable units.
->>> 4. Incorporated feedback from Longman.
->>>
->>> Chen Ridong (21):
->>>    cpuset: add early empty cpumask check in partition_xcpus_add/del
->>>    cpuset: generalize the validate_partition() interface
->>>    cpuset: introduce partition_enable()
->>>    cpuset: introduce partition_disable()
->>>    cpuset: introduce partition_update()
->>>    cpuset: use partition_enable() for remote partition enablement
->>>    cpuset: use partition_disable() for remote partition disablement
->>>    cpuset: use partition_update() for remote partition update
->>>    cpuset: introduce local_partition_enable()
->>>    cpuset: introduce local_partition_disable()
->>>    cpuset: user local_partition_disable() to invalidate local partition
->>>    cpuset: introduce local_partition_update()
->>>    cpuset: remove update_parent_effective_cpumask
->>>    cpuset: remove redundant partition field updates
->>>    cpuset: simplify partition update logic for hotplug tasks
->>>    cpuset: use partition_disable for compute_partition_effective_cpumask
->>>    cpuset: use validate_local_partition in local_partition_enable
->>>    cpuset: introduce validate_remote_partition
->>>    cpuset: simplify the update_prstate() function
->>>    cpuset: remove prs_err clear when notify_partition_change
->>>    cpuset: Remove unnecessary validation in partition_cpus_change
->>>
->>>   kernel/cgroup/cpuset.c | 1014 ++++++++++++++++++----------------------
->>>   1 file changed, 453 insertions(+), 561 deletions(-)
->>>
->> Hi Longman,
+>> Commit 406100f3da08 ("cpuset: fix race between hotplug work and later CPU
+>> offline") added a check for empty effective_cpus in partitions for cgroup
+>> v2. However, this check did not account for remote partitions, which were
+>> introduced later.
 >>
->> I would greatly appreciate it if you could review this series when you are available.
+>> After commit 2125c0034c5d ("cgroup/cpuset: Make cpuset hotplug processing
+>> synchronous"), cpuset hotplug handling is now synchronous. This eliminates
+>> the race condition with subsequent CPU offline operations that the original
+>> check aimed to fix.
 >>
-> I was expecting a v3 and so I had probably missed it. Will take a look sometimes this week.
+>> Instead of extending the check to support remote partitions, this patch
+>> removes all the redundant effective_cpus check. Additionally, it adds a
+>> check and warning to verify that all generated sched domains consist of
+>> active CPUs, preventing partition_sched_domains from being invoked with
+>> offline CPUs.
+>>
+>> Signed-off-by: Chen Ridong <chenridong@huawei.com>
+>> ---
+>>   kernel/cgroup/cpuset.c | 50 +++++++++++++-----------------------------
+>>   1 file changed, 15 insertions(+), 35 deletions(-)
+>>
+>> diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
+>> index 6e6eb09b8db6..fea577b4016a 100644
+>> --- a/kernel/cgroup/cpuset.c
+>> +++ b/kernel/cgroup/cpuset.c
+>> @@ -1103,53 +1103,33 @@ void dl_rebuild_rd_accounting(void)
+>>    */
+>>   void rebuild_sched_domains_locked(void)
+>>   {
+>> -    struct cgroup_subsys_state *pos_css;
+>>       struct sched_domain_attr *attr;
+>>       cpumask_var_t *doms;
+>> -    struct cpuset *cs;
+>>       int ndoms;
+>> +    int i;
+>>         lockdep_assert_cpus_held();
+>>       lockdep_assert_held(&cpuset_mutex);
+>>       force_sd_rebuild = false;
+>>   -    /*
+>> -     * If we have raced with CPU hotplug, return early to avoid
+>> -     * passing doms with offlined cpu to partition_sched_domains().
+>> -     * Anyways, cpuset_handle_hotplug() will rebuild sched domains.
+>> -     *
+>> -     * With no CPUs in any subpartitions, top_cpuset's effective CPUs
+>> -     * should be the same as the active CPUs, so checking only top_cpuset
+>> -     * is enough to detect racing CPU offlines.
+>> -     */
+>> -    if (cpumask_empty(subpartitions_cpus) &&
+>> -        !cpumask_equal(top_cpuset.effective_cpus, cpu_active_mask))
+>> -        return;
+>> +    /* Generate domain masks and attrs */
+>> +    ndoms = generate_sched_domains(&doms, &attr);
+>>         /*
+>> -     * With subpartition CPUs, however, the effective CPUs of a partition
+>> -     * root should be only a subset of the active CPUs.  Since a CPU in any
+>> -     * partition root could be offlined, all must be checked.
+>> -     */
+>> -    if (!cpumask_empty(subpartitions_cpus)) {
+>> -        rcu_read_lock();
+>> -        cpuset_for_each_descendant_pre(cs, pos_css, &top_cpuset) {
+>> -            if (!is_partition_valid(cs)) {
+>> -                pos_css = css_rightmost_descendant(pos_css);
+>> -                continue;
+>> -            }
+>> -            if (!cpumask_subset(cs->effective_cpus,
+>> -                        cpu_active_mask)) {
+>> -                rcu_read_unlock();
+>> -                return;
+>> -            }
+>> -        }
+>> -        rcu_read_unlock();
+>> +    * cpuset_hotplug_workfn is invoked synchronously now, thus this
+>> +    * function should not race with CPU hotplug. And the effective CPUs
+>> +    * must not include any offline CPUs. Passing an offline CPU in the
+>> +    * doms to partition_sched_domains() will trigger a kernel panic.
+>> +    *
+>> +    * We perform a final check here: if the doms contains any
+>> +    * offline CPUs, a warning is emitted and we return directly to
+>> +    * prevent the panic.
+>> +    */
+>> +    for (i = 0; i < ndoms; ++i) {
+>> +        if (WARN_ON_ONCE(!cpumask_subset(doms[i], cpu_active_mask)))
+>> +            return;
+>>       }
+>>   -    /* Generate domain masks and attrs */
+>> -    ndoms = generate_sched_domains(&doms, &attr);
+>> -
+>>       /* Have scheduler rebuild the domains */
+>>       partition_sched_domains(ndoms, doms, attr);
+>>   }
+> Reviewed-by: Waiman Long <longman@redhat.com>
+> 
+> Thanks!
 > 
 
-Hi Longman,
+Hi Tj,
 
-Looking forward to your review. :)
+Just checking, can this patch be applied? Wanted to make sure you saw it.
 
 -- 
 Best regards,
