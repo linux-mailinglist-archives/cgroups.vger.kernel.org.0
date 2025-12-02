@@ -1,213 +1,182 @@
-Return-Path: <cgroups+bounces-12251-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-12252-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C7B54C9BAC9
-	for <lists+cgroups@lfdr.de>; Tue, 02 Dec 2025 14:53:25 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id DF91AC9BF04
+	for <lists+cgroups@lfdr.de>; Tue, 02 Dec 2025 16:27:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7F5213A684F
-	for <lists+cgroups@lfdr.de>; Tue,  2 Dec 2025 13:53:24 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id B98944E355E
+	for <lists+cgroups@lfdr.de>; Tue,  2 Dec 2025 15:27:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C201A31A7F8;
-	Tue,  2 Dec 2025 13:53:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D8ECF264F81;
+	Tue,  2 Dec 2025 15:27:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="FTJZFX2d"
 X-Original-To: cgroups@vger.kernel.org
-Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
+Received: from SN4PR2101CU001.outbound.protection.outlook.com (mail-southcentralusazon11012048.outbound.protection.outlook.com [40.93.195.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5538E20CCE4;
-	Tue,  2 Dec 2025 13:53:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764683601; cv=none; b=h0jW+ES+0NgNUqDQwaR0WB87mRxEPSlvSNswK8GcU4RM/9FJc9hkBdg60/o47E6i4fApz44STPW9BQgtQQfJBujKq56obhOZajM/enLkW2+f2/OwfHsHDCYuBBR9yf/hBQXUkWj/z87sSAQoE7/6lWVjTOmNWH5NAdhgIiWbYGY=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764683601; c=relaxed/simple;
-	bh=vUUtBOj3ZT2eiMzIDwv6k7nd1a6UFcBxI3Rb2mee4d8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=HhRX07LwsfRB47lADxtdnSoY3xf+Mw6TjsRp1715EUOhr/x5PeKsMODp1I8RnwdtUbtRBddSck+Xo5k/LINk4vA24hmCzXV80Gh9oYEEPIPyU9FzCD+CjjTYQ5qjVKKHbwqQmRETMndv71ay3dqaNdQsRJRQSmd+O+8WJLJX4Rc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.235])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTPS id 4dLMf06XLyzKHMVb;
-	Tue,  2 Dec 2025 21:52:24 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.128])
-	by mail.maildlp.com (Postfix) with ESMTP id D47231A0B7C;
-	Tue,  2 Dec 2025 21:53:12 +0800 (CST)
-Received: from [10.67.111.176] (unknown [10.67.111.176])
-	by APP4 (Coremail) with SMTP id gCh0CgB3n5xH7y5psS9oAQ--.22172S2;
-	Tue, 02 Dec 2025 21:53:12 +0800 (CST)
-Message-ID: <e5b53c3a-563a-4af6-94e6-1ce4acc7b399@huaweicloud.com>
-Date: Tue, 2 Dec 2025 21:53:11 +0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 034A8264619;
+	Tue,  2 Dec 2025 15:27:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.93.195.48
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1764689239; cv=fail; b=kyWpRZqBklZ9M+W+zIojslz667ivt/nyYEx1qLfe+5/B9kUztaKEPEky7+AvjS2s4mnoKOLPgut5PqN8OLrT3IlIcpY7epDEMDe/FyjT2yliX6sQLN0ZBgS+FRWuzJm7m5Ye5Cwkw8xjBgDz3TyL3Rnz9dIPWVXl4G+6jWwpioY=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1764689239; c=relaxed/simple;
+	bh=Fc1H7KLXxIdxMels/Bm+xb2d4yb6HOAz1JzNeqsJT28=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=OKCkthHv7Z8q7F6kU4CpfTfjrVb+wxRtEvOse0Q4AbYmA1ADAKdxKuCietQX75YfHeswkereVKteNh+nlc0/2GZkoLXtYMOgwJIi9HHZ4qQaDay+T+Kw7jLIQ7LhRYyuFx2NKNYJtQ9099L/XUTY00M6yzMcdez7hbwNIDPJL84=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=FTJZFX2d; arc=fail smtp.client-ip=40.93.195.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=V/tzt7CoZABraYepWSDG3QZId4/rh9nANHb5SWcjjvrcCYxHkW6dFR0Eqcsjkw2MLGbagB2LfjF/+HWh9mCfsGwsDW0soz930bkSznozI90zqQFl4zElQN04Z9NJXvoKBpLOf8PjiClKEVRRq+PIOznMe6c4gp1nGxXWWwcKxoz29Qa2QzFDaIbFGAqaVyn1noRTPKZECs32nKUcJeeYRxGQ2oLZToe5AwOjg1DlVgLu5VZWISlTaiJiE/1QZ+XpjkqLhT7oF76vfktRW4j74trAxf+R7kJLnMmdgyUi6JxBuO1OnK6saWzi1ThKrNO9Kx6EhPFk5KmiQ4DmaILuGQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=Xm74YJYnk5wwxOHFanog9/CbuTR4XafiHnR+99D+2kE=;
+ b=er+r6xYjcLjQLtMtvS18Uv03Dl57HNEJrxhexBASw3UygGulo7SPSc9WEYZqao4mSDHWHSDIE5K59kNH06WYEYBUn1n+2ccPw6YXMQK/DeWYXSJR51VuOc24PJVldXQbo0HTFq7cpctlY74ZCihWoctrHrSPPAAkrwXpZRJAuuJtiYk5gGIVUjgl7wfexDBspJzOBoIktsA5N1PsMnhQRkmPNpITM9wPWa9S6eWGkVgQbmrMrshiAQdkI0YFHtH+6Sogi2FT9pyaXm0oQ6AQXQYMZdQEV/aDlBvEdBZlWKcnEW1c+Eu5AaxQZ1PPMKWJzANZOOHZxF9lGTf16KSAfQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Xm74YJYnk5wwxOHFanog9/CbuTR4XafiHnR+99D+2kE=;
+ b=FTJZFX2duWusmMvb3zMmLJjNRSIJAxudKFVUI4k1mo+f3x075JXs4geGuLPTVQFDLcVOC5O071Db78y34HZ5skuhihSPntDffgQWJHI6aX14/p2vFYWVaN7mIcc6rImwNhReEFX4zGGsChlD81Qjkhp2LwCV7ZxFAFTvMLvjaWpo9RdyWsgrF3hbfRBifb9sW8GGuRYfzOAypYVn++lq4ZoVg7N2nsthURo5f4IaCzGf+TEXdsHsfOJOItlAPj2m0B9p9nHTlpDGObvUOQVR1obbUz4tzHdjptkpcQX3K0Ul1sUZUAYoiNRRbPSP6Z2k7r6zoeFqH5FXB1T4OPxhsg==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from DS7PR12MB9473.namprd12.prod.outlook.com (2603:10b6:8:252::5) by
+ CH3PR12MB7547.namprd12.prod.outlook.com (2603:10b6:610:147::5) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.9366.17; Tue, 2 Dec 2025 15:27:14 +0000
+Received: from DS7PR12MB9473.namprd12.prod.outlook.com
+ ([fe80::5189:ecec:d84a:133a]) by DS7PR12MB9473.namprd12.prod.outlook.com
+ ([fe80::5189:ecec:d84a:133a%5]) with mapi id 15.20.9388.003; Tue, 2 Dec 2025
+ 15:27:14 +0000
+From: Zi Yan <ziy@nvidia.com>
+To: Chen Ridong <chenridong@huaweicloud.com>
+Cc: viro@zeniv.linux.org.uk, brauner@kernel.org, jack@suse.cz,
+ hannes@cmpxchg.org, mhocko@kernel.org, roman.gushchin@linux.dev,
+ shakeel.butt@linux.dev, muchun.song@linux.dev, tj@kernel.org,
+ mkoutny@suse.com, akpm@linux-foundation.org, vbabka@suse.cz,
+ surenb@google.com, jackmanb@google.com, linux-fsdevel@vger.kernel.org,
+ linux-kernel@vger.kernel.org, cgroups@vger.kernel.org, linux-mm@kvack.org,
+ lujialin4@huawei.com, chenridong@huawei.com
+Subject: Re: [PATCH -next] cgroup: switch to css_is_online() helper
+Date: Tue, 02 Dec 2025 10:27:10 -0500
+X-Mailer: MailMate (2.0r6290)
+Message-ID: <78BB88AE-E4C7-4AB3-9B66-48D97A92FA0D@nvidia.com>
+In-Reply-To: <20251202025747.1658159-1-chenridong@huaweicloud.com>
+References: <20251202025747.1658159-1-chenridong@huaweicloud.com>
+Content-Type: text/plain
+X-ClientProxiedBy: BN9PR03CA0504.namprd03.prod.outlook.com
+ (2603:10b6:408:130::29) To DS7PR12MB9473.namprd12.prod.outlook.com
+ (2603:10b6:8:252::5)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH -next] cgroup: Use descriptor table to unify mount flag
- management
-To: =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>
-Cc: tj@kernel.org, hannes@cmpxchg.org, cgroups@vger.kernel.org,
- linux-kernel@vger.kernel.org, lujialin4@huawei.com, chenridong@huawei.com
-References: <20251126020825.1511671-1-chenridong@huaweicloud.com>
- <nz6urfhwkgigftrovogbwzeqnrsnrnslmxcvpere7bv2im4uho@mdfhkvmpret4>
-Content-Language: en-US
-From: Chen Ridong <chenridong@huaweicloud.com>
-In-Reply-To: <nz6urfhwkgigftrovogbwzeqnrsnrnslmxcvpere7bv2im4uho@mdfhkvmpret4>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:gCh0CgB3n5xH7y5psS9oAQ--.22172S2
-X-Coremail-Antispam: 1UD129KBjvJXoW3Jw1DAr4DXrWUCrWUJw48Crg_yoW7CF1kpF
-	Z3Gas0kwn3JF9xu348tayFqr4ruw4rXr42yFy5AryFkwsrJr12qF4Ika1UZF1YqFn3Jw12
-	vFs0vw15Ga1ak3DanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUyGb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxkF7I0En4kS14v26r126r1DMxAIw28IcxkI7VAK
-	I48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7
-	xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUAVWUtwCIc40Y0x0EwIxGrwCI42IY6xII
-	jxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw2
-	0EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x02
-	67AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU1veHDUUUUU==
-X-CM-SenderInfo: hfkh02xlgr0w46kxt4xhlfz01xgou0bp/
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DS7PR12MB9473:EE_|CH3PR12MB7547:EE_
+X-MS-Office365-Filtering-Correlation-Id: 459fc8ff-de19-47e3-8136-08de31b744cf
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230040|366016|376014|7416014|1800799024;
+X-Microsoft-Antispam-Message-Info:
+	=?us-ascii?Q?f14B90fX3qDMrTOi+LyYUhPVHtJyv1MqWgkpzBQq+gmMGAi/5n58bQscbQei?=
+ =?us-ascii?Q?Cfo5i8R/k1B7WMULipZ0hANkDruYsbfE4t3zDh26d4YNv4p8Tm5dAhHntipq?=
+ =?us-ascii?Q?zWGebTCaJK2nsWd1/7heVdHNWmlnCCS6NcE911GTBA18os2QPeSXKFkO67RI?=
+ =?us-ascii?Q?ho2MQo1XV00eFoJ5hXq3xG/OSHtlniDkHQvfUN5eaPgWPlv5BiARkQkBBVaQ?=
+ =?us-ascii?Q?zJ8obuHirp+HzmEwZa6g2r256CwmlsmiU8nbemQjIGF1gZQgb1Fwv9yFoOUH?=
+ =?us-ascii?Q?sjeSZx8zDZWR/S+V66WqBn4SmoV2lyojAvhqd5hALuAot+gE4N85oF/eByP6?=
+ =?us-ascii?Q?2y+VghIRHRBwdQPS20Z7vAMLQL9ivbBw7ugjL62tHDu95bfe2IfX3YalqQd6?=
+ =?us-ascii?Q?qdAMtedxQI1RZT+AJ0xOwkHQeq6/1XNPCcijztbkYI1f6XO7HI0/aW2rE2QK?=
+ =?us-ascii?Q?ad7MoO7vwAZeN8dLT+sHawzeICZwNMN/d2irlmUUZIXPMYxxT7U17wJCzLkl?=
+ =?us-ascii?Q?TPceJfwtpfAKDkBqOM9jbZGL/nisK8tnm0sIB/VwVeC0/iKCeWUWBYP8Mwjm?=
+ =?us-ascii?Q?LxfMTkVJ0Fj473NpbEed2Fac9KlC7dkZ2pCSln7j/G0T2ioTY3CO7Y6f5HR3?=
+ =?us-ascii?Q?2ZGIUp0xU5Uif9W++Ig2MIzYYatMPcABrtGKgQXBx0rW6mTk2qItfzIeOmSf?=
+ =?us-ascii?Q?RlebEoXSz/HIMJmuD2yUwvfzakcP4Q9U6rjmQIXr2G87+ewxs29vuc3j2TnN?=
+ =?us-ascii?Q?vljgRm17W12HXhxFWXZd/eZv9y0aS1ppTvvp8x1hooWXZxACBtDi8I0O+hfH?=
+ =?us-ascii?Q?A/VzhGIcXHTIuI/I+YlftyAUipKh5/kIhs4JbExJAgYVcxcuRC1Qb8McpwSy?=
+ =?us-ascii?Q?4C7Wjox8+KWRIsvK26jQl3Djy4ql0XejKb2fRaEsmmswpvnra0C8Z09IJQ54?=
+ =?us-ascii?Q?RelWV4vnpSxy6R7RA9UN1cS9MimNf5D93UfHjtnQbsXQN91Nq4kC9ZKitO2b?=
+ =?us-ascii?Q?7y5/mdSglQFzA02Puk1uoBOOYUROZ9qiIpvu71rpENKRzy5j2tHZEs90uaYq?=
+ =?us-ascii?Q?rGRHl+IOKW+eE8vbbZKvRD4UQCdiVaa7hdNmQwx2RcbXdbAI58YUenLROIhM?=
+ =?us-ascii?Q?V17D1rIPnC3dqf7RfcHdIquQZ6OqA2ODS0T3PLn0RH654ZOTfN1MKgAEyeEv?=
+ =?us-ascii?Q?/7T4u06dkMyyqKuxTootAGBCNaKFlmiInPTkb0LJ0PFlIfYhvt425Xxhumnv?=
+ =?us-ascii?Q?e9aJXe4dUKNziB2dixcWKNdC6loTHxcf7IXMbViCIvu5XDC8fA6HnJ8kaofK?=
+ =?us-ascii?Q?61aM6zlA+CoHSyGCA5zEn6WgQ/Y0qhYXh8S8us9SwzHfPDej05vTEmS9E5vZ?=
+ =?us-ascii?Q?+53teGAicPzhE/pSoiKPReE8y9gDKH6YOVIxo5RiERiva2cDXUGz4RwdWYb8?=
+ =?us-ascii?Q?2OEUOtOxdRnQh8wBityC7UHuJj5RwQOB?=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS7PR12MB9473.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(376014)(7416014)(1800799024);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?/bh5KOjfWnWOdcCPCHrmMVl5SLPcuvwfYJPfIh3DoYV0X8fOuDuNU8Mw7B53?=
+ =?us-ascii?Q?anAoLJrlVLpzPkIU76ryHRgKlnlTXIsjf3gP+b08JpvrrM9w3tajTS16q6qT?=
+ =?us-ascii?Q?l6YhBm7b8NwrOHnopDKNzV1zFzjMO1LekT75e/sawD7qPSt44cmqRPjGykER?=
+ =?us-ascii?Q?unML9zX1S9MozcKCxZ0K/dqGH1fPF1JpUVuvk8xCFoqWWtHyhvkC2ggc/61q?=
+ =?us-ascii?Q?obErGx0w5c5PDG6HxC9qGVzAQXobLF6LpHpsNqpAiiRjrSC5FUsibmeyIyHM?=
+ =?us-ascii?Q?pN+LwaITVhsKyPoA3EYC4jHkXG+8/j3jvNosEkADK3D96FYiy6dlwk1JWS89?=
+ =?us-ascii?Q?uGwgkrYQc3U7UdsT8mE02jxIQcV6HITMIutKB1AveqR6WdxsME+1MtDLEdjB?=
+ =?us-ascii?Q?OGMEYpJO6EvcH9Y3EDmlkHBBLtfjhN8FhKqel8gmML+m1JLqSl+Wj+Dc7anZ?=
+ =?us-ascii?Q?CLq/ZOZ/JQRKgPEnXZOMURGJ8dgwKaLHQpi+bjJYB1kVDQNVugUChy2g4fez?=
+ =?us-ascii?Q?R7tDNx30rUR0Yq1VqrDXYgm699P0uSPz6rhgRye8uhzGTuaIbjjl7SuY1BGo?=
+ =?us-ascii?Q?8Rhg46ZyZ1q/960e6j7gsxiRze1bwgPRq5R2AfchoLvXaejV3EVNiJZI3qQ7?=
+ =?us-ascii?Q?R4fbM/kdfVzbA2Ly6c4VZFMMop0POVoXsDozi2k21iUONn6gDbkfw6GL1a5A?=
+ =?us-ascii?Q?Bq0x6iqLiWrrk9S2DqKO4DVlKqBAtdB6Y0M/9+beww/WSZxKsZnyQI1UFHos?=
+ =?us-ascii?Q?7WmV/FXE0yjhYJBQu1xXTWqm3FooiNukUFBoGbY8eXZOk2zfjkc//DsFqTOG?=
+ =?us-ascii?Q?CHTyz4/2GmZJ4EZoHilGO4j9P8CK2ZYDoZFP29Lr7uotK0+CFqzIMECgz2Zm?=
+ =?us-ascii?Q?Q8x6iGsGOeuWTkNa2ox+fY+kLOnmkhZvxBA1ut8ACy/dK8TMcDNokTGf5FLW?=
+ =?us-ascii?Q?NimKeHuHPtK/VXcO52uSrd2S8cFjtphMT+zAjltegdJAtsP/miNqE9QbvFWi?=
+ =?us-ascii?Q?qEfnx3fPJd9b6mTv1LmA8SnoeT5nK97f8Fx40HBkH6MA21kPmkTblVeneHCF?=
+ =?us-ascii?Q?yLxPIxWFpy4WFAm+Q29hT7rjCm+XKLj6LVS+9ieLAVY8EYZQOHmqyoXDfuZP?=
+ =?us-ascii?Q?9kMeRVikKXV1I3KGmJlTBmY31nWVHoW6sH0kHedMxW6cJwvbO/bvwXoAxVsB?=
+ =?us-ascii?Q?ArM0Fk5pLelGW0UAUM6x6pzKJB0LnEctEZWwHtur9OCB2fPUB6n73hm96SZG?=
+ =?us-ascii?Q?BvVsQLCUBJori3itrIITtflehOAa6H8TXZ+9SntUSBtBqIhgLx4lvwrUTKov?=
+ =?us-ascii?Q?lkF77/sm3+yS+pdaO9HvzL9L8Me4y3GMll55HKiszYLqoqCKMR3brLup45qp?=
+ =?us-ascii?Q?RChvk3OvivIxcsVejUHUdIA2u5kFSM5yOf4bJrxeqYgSMVbQAgVVmlu8p6pO?=
+ =?us-ascii?Q?JTj+wptp+vkOL2LHqmyQvp0ZtX8lYANgYCZhK1yLtqYe0wje/q0ztAvFzS5W?=
+ =?us-ascii?Q?g+BnqSTKbN/gvgkpjMJ9S6XgO2TO+TSFdbfpeIhh3Ho+ofHy4Cj2SkIXyQeA?=
+ =?us-ascii?Q?Iqjt+BCJey9NPh1DDCsWFKDeH03ceWNSF9UuHra9?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 459fc8ff-de19-47e3-8136-08de31b744cf
+X-MS-Exchange-CrossTenant-AuthSource: DS7PR12MB9473.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Dec 2025 15:27:13.7692
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 8eQlrG+a0kmWiNvJlNEuDOTl9EJL6LOhiDTGCeX9tT7WzbOUi7pSgQtcTPgc2oEF
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH3PR12MB7547
 
+On 1 Dec 2025, at 21:57, Chen Ridong wrote:
 
+> From: Chen Ridong <chenridong@huawei.com>
+>
+> Use the new css_is_online() helper that has been introduced to check css
+> online state, instead of testing the CSS_ONLINE flag directly. This
+> improves readability and centralizes the state check logic.
+>
+> No functional changes intended.
+>
+> Signed-off-by: Chen Ridong <chenridong@huawei.com>
+> ---
+>  fs/fs-writeback.c          | 2 +-
+>  include/linux/memcontrol.h | 2 +-
+>  kernel/cgroup/cgroup.c     | 4 ++--
+>  mm/memcontrol.c            | 2 +-
+>  mm/page_owner.c            | 2 +-
+>  5 files changed, 6 insertions(+), 6 deletions(-)
+>
+LGTM. Reviewed-by: Zi Yan <ziy@nvidia.com>
 
-On 2025/12/2 17:24, Michal Koutný wrote:
-> Hi Ridong.
-> 
-> On Wed, Nov 26, 2025 at 02:08:25AM +0000, Chen Ridong <chenridong@huaweicloud.com> wrote:
->> From: Chen Ridong <chenridong@huawei.com>
->>
->> The cgroup2 mount flags (e.g. nsdelegate, favordynmods) were previously
->> handled via scattered switch-case and conditional checks across
->> parameter parsing, flag application, and option display paths. This
->> leads to redundant code and increased maintenance cost when adding/removing
->> flags.
->>
->> Introduce a `cgroup_mount_flag_desc` descriptor table to centralize the
->> mapping between flag bits, names, and apply functions. Refactor the
->> relevant paths to use this table for unified management:
->> 1. cgroup2_parse_param: Replace switch-case with table lookup
->> 2. apply_cgroup_root_flags: Replace multiple conditionals with table
->>    iteration
->> 3. cgroup_show_options: Replace hardcoded seq_puts with table-driven output
->>
->> No functional change intended, and the mount option output format remains
->> compatible with the original implementation.
-> 
-> At first I thought this is worthy but then I ran into the possible
-> (semantic) overlap with the cgroup2_fs_parameters array (the string
-> `name`s are duplicated in both :-/), I didn't figure out a way how to
-> make such an polymorphic array in C (like when cgroup_mount_flag_desc
-> would be a class that inherits from fs_parameter_spec and you could pass
-> the array of the formers to consumers (fs_parse()) of latters).
-> 
-> So I'm wondering whether there exists some way to avoid possible
-> divergence between definitions of the two arrays...
-> 
-
-Hi Michal,
-
-Thank you for your thoughtful feedback.
-
-I understand your concern about the semantic overlap between the two arrays and the potential for
-divergence. I initially tried to find a way to merge them into a single polymorphic array, but given
-the constraints of C and the existing fs_parameter_spec structure (which we cannot easily modify for
-this purpose), I haven't found a clean way to achieve that.
-
-However, to address the maintenance issue, I've come up with an alternative approach using a macro
-that allows us to define mount flags in just one place. The idea is to introduce a macro list
-CGROUP2_MOUNT_FLAG_LIST that expands into both the fs_parameter_spec array and the new
-cgroup_mount_flag_desc table. This way, when adding a new mount flag, we only need to extend this
-single macro list.
-
-While we still end up with two separate arrays, the macro ensures that any addition or modification
-only needs to be made in one place—the CGROUP2_MOUNT_FLAG_LIST. This should prevent the divergence
-you mentioned.
-
-What do you think about this approach? If you have any suggestions for further improvement, I'd be
-happy to incorporate them.
-
-Below is a simplified diff showing the concept:
-
-diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
-index e717208cfb18..bd81b15dc3bd 100644
---- a/kernel/cgroup/cgroup.c
-+++ b/kernel/cgroup/cgroup.c
-@@ -1985,26 +1985,53 @@ int cgroup_show_path(struct seq_file *sf, struct kernfs_node *kf_node,
- 	return len;
- }
-
-+#define CGROUP2_MOUNT_FLAG_LIST(_)					\
-+	_(nsdelegate,		CGRP_ROOT_NS_DELEGATE,	apply_cgroup_root_flag) \
-+	_(favordynmods,	CGRP_ROOT_FAVOR_DYNMODS,	apply_cgroup_favor_flag) \
-+	_(memory_localevents,	CGRP_ROOT_MEMORY_LOCAL_EVENTS, apply_cgroup_root_flag) \
-+	_(memory_recursiveprot,	CGRP_ROOT_MEMORY_RECURSIVE_PROT, apply_cgroup_root_flag) \
-+	_(memory_hugetlb_accounting, CGRP_ROOT_MEMORY_HUGETLB_ACCOUNTING, apply_cgroup_root_flag) \
-+	_(pids_localevents,	CGRP_ROOT_PIDS_LOCAL_EVENTS, apply_cgroup_root_flag)
-+
- enum cgroup2_param {
--	Opt_nsdelegate,
--	Opt_favordynmods,
--	Opt_memory_localevents,
--	Opt_memory_recursiveprot,
--	Opt_memory_hugetlb_accounting,
--	Opt_pids_localevents,
-+#define CGROUP2_PARAM_ENUM(name, ...) Opt_##name,
-+	CGROUP2_MOUNT_FLAG_LIST(CGROUP2_PARAM_ENUM)
-+#undef CGROUP2_PARAM_ENUM
- 	nr__cgroup2_params
- };
-
-+struct cgroup_mount_flag_desc {
-+	enum cgroup_root_flag flag;
-+	const char *name;
-+	void (*apply)(enum cgroup_root_flag flag, bool enable);
-+};
-+
-+static void apply_cgroup_root_flag(enum cgroup_root_flag flag, bool enable)
-+{
-+	if (enable)
-+		cgrp_dfl_root.flags |= flag;
-+	else
-+		cgrp_dfl_root.flags &= ~flag;
-+}
-+
-+static void apply_cgroup_favor_flag(enum cgroup_root_flag flag, bool enable)
-+{
-+	cgroup_favor_dynmods(&cgrp_dfl_root, enable);
-+}
-+
- static const struct fs_parameter_spec cgroup2_fs_parameters[] = {
--	fsparam_flag("nsdelegate",		Opt_nsdelegate),
--	fsparam_flag("favordynmods",		Opt_favordynmods),
--	fsparam_flag("memory_localevents",	Opt_memory_localevents),
--	fsparam_flag("memory_recursiveprot",	Opt_memory_recursiveprot),
--	fsparam_flag("memory_hugetlb_accounting", Opt_memory_hugetlb_accounting),
--	fsparam_flag("pids_localevents",	Opt_pids_localevents),
-+#define CGROUP2_PARAM_SPEC(name, ...) fsparam_flag(#name, Opt_##name),
-+	CGROUP2_MOUNT_FLAG_LIST(CGROUP2_PARAM_SPEC)
-+#undef CGROUP2_PARAM_SPEC
- 	{}
- };
-
-+static const struct cgroup_mount_flag_desc cgroup2_mount_flags[] = {
-+#define CGROUP2_FLAG_DESC(name, flag, apply)[Opt_##name] = { flag, #name, apply },
-+	CGROUP2_MOUNT_FLAG_LIST(CGROUP2_FLAG_DESC)
-+#undef CGROUP2_FLAG_DESC
-+};
-+
-...
-
--- 
-Best regards,
-Ridong
-
+Best Regards,
+Yan, Zi
 
