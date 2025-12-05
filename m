@@ -1,109 +1,122 @@
-Return-Path: <cgroups+bounces-12273-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-12274-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 94B07CA5F10
-	for <lists+cgroups@lfdr.de>; Fri, 05 Dec 2025 03:57:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id E27AFCA606E
+	for <lists+cgroups@lfdr.de>; Fri, 05 Dec 2025 04:41:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id D417230F3848
-	for <lists+cgroups@lfdr.de>; Fri,  5 Dec 2025 02:57:44 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 929283065AE2
+	for <lists+cgroups@lfdr.de>; Fri,  5 Dec 2025 03:40:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 914CF2D8777;
-	Fri,  5 Dec 2025 02:57:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A2ED723D7EB;
+	Fri,  5 Dec 2025 03:40:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TsxVmgkH"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mta21.hihonor.com (mta21.honor.com [81.70.160.142])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B9B47E0E8;
-	Fri,  5 Dec 2025 02:57:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=81.70.160.142
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 53BAC398FAE;
+	Fri,  5 Dec 2025 03:40:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764903463; cv=none; b=KXBaT1WGkGGFe1ciYyWKmyWAsdE+fisoaRiJywNzhCUPIAoyjNE+n7n85192Tu3WJ7Id1jX27ZUIptcUlsCTF9722W93uwgr2rR64o+k8lHIOunBD7j/FcP467KPH0Uh6hBZjoIbhbadsISZNH1bh2gggMvS2pSbPz7AjPN2P5A=
+	t=1764906024; cv=none; b=CukPoYZPLjIVxKM5hqsIGCd3insyh2OIOfonCC9KllkRifm5wjX/7ZxE1UtW9ixx/BlVn38yQjo78P/MsQDW9N1MU7Rm15V6GdsGpwOoUQOMJan1oBoHzxxjY4iB3ZdtoKfN6cYGyI08sD88q4uLknXvmmPiQDbBrzDmW54r898=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764903463; c=relaxed/simple;
-	bh=ksRE/Eot9adIEuoFc4/CEzjMdBR7uCYLc4WbEYhYkIk=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=sBJYxAkDawdrqcBWj0UTHQxfJiEK59czglBZBjl1JK6ZrpuPgDcIiI9d83sel3blnlC2+1fQmEvnYI63Cac2lXUHMn/Gala+SsaPq+imLIUJvlXXnOT3qXpCNvx8t8ds2qG70SVTqDY8TW9GfCPgvba/tBDy+7sQ3vOuqgH3ZN4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=honor.com; spf=pass smtp.mailfrom=honor.com; arc=none smtp.client-ip=81.70.160.142
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=honor.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=honor.com
-Received: from w003.hihonor.com (unknown [10.68.17.88])
-	by mta21.hihonor.com (SkyGuard) with ESMTPS id 4dMww86G3JzYkxrJ;
-	Fri,  5 Dec 2025 10:55:04 +0800 (CST)
-Received: from a018.hihonor.com (10.68.17.250) by w003.hihonor.com
- (10.68.17.88) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.11; Fri, 5 Dec
- 2025 10:57:32 +0800
-Received: from localhost.localdomain (10.144.20.219) by a018.hihonor.com
- (10.68.17.250) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.11; Fri, 5 Dec
- 2025 10:57:32 +0800
-From: zhongjinji <zhongjinji@honor.com>
-To: <hannes@cmpxchg.org>
-CC: <Liam.Howlett@oracle.com>, <akpm@linux-foundation.org>,
-	<axelrasmussen@google.com>, <cgroups@vger.kernel.org>,
-	<chenridong@huawei.com>, <chenridong@huaweicloud.com>, <corbet@lwn.net>,
-	<david@kernel.org>, <linux-doc@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, <linux-mm@kvack.org>,
-	<lorenzo.stoakes@oracle.com>, <lujialin4@huawei.com>, <mhocko@suse.com>,
-	<muchun.song@linux.dev>, <roman.gushchin@linux.dev>, <rppt@kernel.org>,
-	<shakeel.butt@linux.dev>, <surenb@google.com>, <vbabka@suse.cz>,
-	<weixugc@google.com>, <yuanchu@google.com>, <yuzhao@google.com>,
-	<zhengqi.arch@bytedance.com>
-Subject: Re: [RFC PATCH -next 1/2] mm/mglru: use mem_cgroup_iter for global reclaim
-Date: Fri, 5 Dec 2025 10:57:27 +0800
-Message-ID: <20251205025727.8324-1-zhongjinji@honor.com>
-X-Mailer: git-send-email 2.17.1
-In-Reply-To: <20251204183437.GB481418@cmpxchg.org>
-References: <20251204183437.GB481418@cmpxchg.org>
+	s=arc-20240116; t=1764906024; c=relaxed/simple;
+	bh=pmtBP/IRAchq9Y+Of4LdB+8xUK6lrQZOgkP3KGgymBs=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=G92w4g/qND+PoJGnAvMuA3r8I8DQ8XzaKv7uXcJI957X4hHpkTiz0kXRO3Lgd8ITEYtZt/Z8gXOPqXHdJZrvk9fAkfrfnq/bfsGLOocZDmc7GLZi+NJkgFkwlW7HIajAe8ISxV0lGn6sQ4fa2gG0Elrkqw61/Z5cqvZRUFrwgm4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TsxVmgkH; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id ACB03C4CEFB;
+	Fri,  5 Dec 2025 03:40:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1764906023;
+	bh=pmtBP/IRAchq9Y+Of4LdB+8xUK6lrQZOgkP3KGgymBs=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=TsxVmgkHn5wz5hbY7X9e3YNY1yGivGCcIOtNeg3iaYGszqvV7YnRbUAHyCeXbbKgz
+	 FUdcYygxNjaB9gm3Q41cR98Ivd1A94Q5fiiOwHbgm3cg8DFnYKJkAFjciSp/WTQWSM
+	 8vk1nl3T+71SZ4FTbQLNjV6Z4SvdD7jNc6i1XSGATq4IHdyZI7aWQvZ+SSs4vTBd1R
+	 9NVxrTKMKfsq6lXfhnSv0tMxb/+hWqP5A/Q6ReMb4dNM1opuVkh+Ax2p0li7qNbNWk
+	 pG9ABSvmz6ibZwjC+ayCzcinjeWngw046Nxs71xsBefPtZ9CjiPdWBCPFXDorKRZE9
+	 KC3xE1ArkomLg==
+Date: Thu, 4 Dec 2025 19:40:23 -0800
+From: Kees Cook <kees@kernel.org>
+To: Andrei Vagin <avagin@google.com>
+Cc: linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+	linux-mm@kvack.org, cgroups@vger.kernel.org, criu@lists.linux.dev,
+	Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>,
+	Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
+	Vipin Sharma <vipinsh@google.com>, Jonathan Corbet <corbet@lwn.net>
+Subject: Re: [PATCH 1/3] cgroup, binfmt_elf: Add hwcap masks to the misc
+ controller
+Message-ID: <202512041939.63DA7C96C2@keescook>
+References: <20251205005841.3942668-1-avagin@google.com>
+ <20251205005841.3942668-2-avagin@google.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-ClientProxiedBy: w012.hihonor.com (10.68.27.189) To a018.hihonor.com
- (10.68.17.250)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20251205005841.3942668-2-avagin@google.com>
 
-> From: Chen Ridong <chenridong@huawei.com>
+On Fri, Dec 05, 2025 at 12:58:29AM +0000, Andrei Vagin wrote:
+> Add an interface to the misc cgroup controller that allows masking out
+> hardware capabilities (AT_HWCAP) reported to user-space processes. This
+> provides a mechanism to restrict the features a containerized
+> application can see.
 > 
-> The memcg LRU was originally introduced for global reclaim to enhance
-> scalability. However, its implementation complexity has led to performance
-> regressions when dealing with a large number of memory cgroups [1].
+> The new "misc.mask" cgroup file allows users to specify masks for
+> AT_HWCAP, AT_HWCAP2, AT_HWCAP3, and AT_HWCAP4.
 > 
-> As suggested by Johannes [1], this patch adopts mem_cgroup_iter with
-> cookie-based iteration for global reclaim, aligning with the approach
-> already used in shrink_node_memcgs. This simplification removes the
-> dedicated memcg LRU tracking while maintaining the core functionality.
+> The output of "misc.mask" is extended to display the effective mask,
+> which is a combination of the masks from the current cgroup and all its
+> ancestors.
 > 
-> It performed a stress test based on Zhao Yu's methodology [2] on a
-> 1 TB, 4-node NUMA system. The results are summarized below:
+> Signed-off-by: Andrei Vagin <avagin@google.com>
+> ---
+>  fs/binfmt_elf.c             |  24 +++++--
+>  include/linux/misc_cgroup.h |  25 +++++++
+>  kernel/cgroup/misc.c        | 126 ++++++++++++++++++++++++++++++++++++
+>  3 files changed, 171 insertions(+), 4 deletions(-)
 > 
-> 					memcg LRU    memcg iter
-> stddev(pgsteal) / mean(pgsteal)            91.2%         75.7%
-> sum(pgsteal) / sum(requested)             216.4%        230.5%
+> diff --git a/fs/binfmt_elf.c b/fs/binfmt_elf.c
+> index 3eb734c192e9..59137784e81d 100644
+> --- a/fs/binfmt_elf.c
+> +++ b/fs/binfmt_elf.c
+> @@ -47,6 +47,7 @@
+>  #include <linux/dax.h>
+>  #include <linux/uaccess.h>
+>  #include <uapi/linux/rseq.h>
+> +#include <linux/misc_cgroup.h>
+>  #include <asm/param.h>
+>  #include <asm/page.h>
+>  
+> @@ -182,6 +183,21 @@ create_elf_tables(struct linux_binprm *bprm, const struct elfhdr *exec,
+>  	int ei_index;
+>  	const struct cred *cred = current_cred();
+>  	struct vm_area_struct *vma;
+> +	struct misc_cg *misc_cg;
+> +	u64 hwcap_mask[4] = {0, 0, 0, 0};
+> +
+> +	misc_cg = get_current_misc_cg();
+> +	misc_cg_get_mask(MISC_CG_MASK_HWCAP, misc_cg, &hwcap_mask[0]);
+> +#ifdef ELF_HWCAP2
+> +	misc_cg_get_mask(MISC_CG_MASK_HWCAP2, misc_cg, &hwcap_mask[1]);
+> +#endif
+> +#ifdef ELF_HWCAP3
+> +	misc_cg_get_mask(MISC_CG_MASK_HWCAP3, misc_cg, &hwcap_mask[2]);
+> +#endif
+> +#ifdef ELF_HWCAP4
+> +	misc_cg_get_mask(MISC_CG_MASK_HWCAP4, misc_cg, &hwcap_mask[3]);
+> +#endif
 
-Are there more data available? For example, the load of kswapd or the refault values.
+Can we avoid having the open-coded 4, 0, 1, 2, 3 where these are used?
+I imagine it also doesn't need to be a 4 element array if ELF_HWCAP4
+isn't defined, etc?
 
-I am concerned about these two data points because Yu Zhao's implementation controls
-the fairness of aging through memcg gen (get_memcg_gen). This helps reduce excessive
-aging for certain cgroups, which is beneficial for kswapd's power consumption.
-
-At the same time, pages that age earlier can be considered colder pages (in the entire system),
-so reclaiming them should also help with the refault values.
-
-> The new implementation demonstrates a significant improvement in
-> fairness, reducing the standard deviation relative to the mean by
-> 15.5 percentage points. While the reclaim accuracy shows a slight
-> increase in overscan (from 85086871 to 90633890, 6.5%).
-> 
-> The primary benefits of this change are:
-> 1. Simplified codebase by removing custom memcg LRU infrastructure
-> 2. Improved fairness in memory reclaim across multiple cgroups
-> 3. Better performance when creating many memory cgroups
-> 
-> [1] https://lore.kernel.org/r/20251126171513.GC135004@cmpxchg.org
-> [2] https://lore.kernel.org/r/20221222041905.2431096-7-yuzhao@google.com
-> Signed-off-by: Chen Ridong <chenridong@huawei.com>
+-- 
+Kees Cook
 
