@@ -1,141 +1,140 @@
-Return-Path: <cgroups+bounces-12271-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-12272-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id E3621CA5E61
-	for <lists+cgroups@lfdr.de>; Fri, 05 Dec 2025 03:25:19 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id 55616CA5EF2
+	for <lists+cgroups@lfdr.de>; Fri, 05 Dec 2025 03:52:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 80EBC309AE3A
-	for <lists+cgroups@lfdr.de>; Fri,  5 Dec 2025 02:25:18 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 03471309B7B0
+	for <lists+cgroups@lfdr.de>; Fri,  5 Dec 2025 02:52:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B2D52DEA89;
-	Fri,  5 Dec 2025 02:25:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Jniu2i4T"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6706A279334;
+	Fri,  5 Dec 2025 02:52:36 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from out-171.mta1.migadu.com (out-171.mta1.migadu.com [95.215.58.171])
+Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ABA842DE718
-	for <cgroups@vger.kernel.org>; Fri,  5 Dec 2025 02:25:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 531B322FDE6;
+	Fri,  5 Dec 2025 02:52:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764901516; cv=none; b=k9RkCsrfkN7zN4bfnGjUpzukymUHhV0iommwgO2ArgDLXbLaa5sotJBXvpv4fKXXJZR+BVa/BFJs7LjX1pKLhhd0b6rN5XVspHePtBvjo+YDR281g34ddIIPu+69TkMjY+1juTBjdhsLJnNBgF4Xx9c8S3Hv95YtgSv1TXtEieo=
+	t=1764903156; cv=none; b=n3FhgQSwXABHAesgWxB5gRIPxy5xjo+MuRgGWtrx8FFsT2qC6TMA5daRLNHEXBYmsPcmFToAcTI70KrbTetlS8uNIRxoCus3ZasJxImMdDGI2TXRAgQF1Aq79NqN6Axsi5tta8ZwLVZ+6yjjJDGHTFVzVBCbZTAs7jmYfRER47M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764901516; c=relaxed/simple;
-	bh=SyifzKul4ctMh74hj13/AACTWrSeJbpEBM9kZ89WFCM=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=KqDK8Sah0ewLkKQN0OrowdvSXCW+l0cQIR40FuFB81z15nNZ+6mhVW2oLFwFjymay9Dgf4GzVF4av8fdbJxDH/XCC8EFfHBnzToq7BxY4dxiXaLLEDbQLqyK5kf8ThhJcQraRrrFXVvlKqxIXeLbrY0xB7TzxnFGVIcUWbJQkwo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Jniu2i4T; arc=none smtp.client-ip=95.215.58.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1764901501;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=KAZkzowfBam2M1V24QpnRECZ6TDi4HphjwzU/c/0E4c=;
-	b=Jniu2i4T5OR3rn521UQaQZq9Mc0MaK4h8AyAbHn1oXSSA8VQjdK7q7Fn0/vyaN5wPc2e+7
-	o+J3FIJgjLXm9VbI/krrDQMUybZD4PzFvy3o9gJnLiirYj88wrN2hYgy9cL/84RZBgYsAu
-	M9jq+KBisBbUkBz87Zw1g0gutwllHJM=
-From: Shakeel Butt <shakeel.butt@linux.dev>
-To: Tejun Heo <tj@kernel.org>
-Cc: Johannes Weiner <hannes@cmpxchg.org>,
-	=?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>,
-	"Paul E . McKenney" <paulmck@kernel.org>,
-	JP Kobryn <inwardvessel@gmail.com>,
-	Yosry Ahmed <yosry.ahmed@linux.dev>,
-	linux-mm@kvack.org,
-	cgroups@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Meta kernel team <kernel-team@meta.com>
-Subject: [PATCH] cgroup: rstat: use LOCK CMPXCHG in css_rstat_updated
-Date: Thu,  4 Dec 2025 18:24:37 -0800
-Message-ID: <20251205022437.1743547-1-shakeel.butt@linux.dev>
+	s=arc-20240116; t=1764903156; c=relaxed/simple;
+	bh=yE+1RpK4slMnBZPiOZ/cW1iGpGYP6WqNKFJIBK8MGaU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=H34mcjzHzpFU08wBGTrOq1NbPlAVxwVVz0+bfisX04RVhMCOWlVNruxxQJqYuR4ZW28wKfutmc/Q4SQAWsKZKuX8Z9nfZeJQYb/TnIYz+VK+sHDZDC9TFw4GxmRRr9TDOPwLT6oW1w8gA7WL/K4Gyou4RRxpbyjp7YPw6Lv2mTE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.93.142])
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTPS id 4dMwrB5ZP5zKHMLq;
+	Fri,  5 Dec 2025 10:51:38 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.75])
+	by mail.maildlp.com (Postfix) with ESMTP id 8F01C1A07C0;
+	Fri,  5 Dec 2025 10:52:30 +0800 (CST)
+Received: from [10.67.111.176] (unknown [10.67.111.176])
+	by APP2 (Coremail) with SMTP id Syh0CgAX91DtSDJp5tiPAg--.44550S2;
+	Fri, 05 Dec 2025 10:52:30 +0800 (CST)
+Message-ID: <57a7d8c3-a911-4729-bc39-ba3a1d810990@huaweicloud.com>
+Date: Fri, 5 Dec 2025 10:52:28 +0800
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 0/3] cgroup/misc: Add hwcap masks to the misc controller
+To: Andrei Vagin <avagin@google.com>, Kees Cook <kees@kernel.org>
+Cc: linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+ linux-mm@kvack.org, cgroups@vger.kernel.org, criu@lists.linux.dev,
+ Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>,
+ =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
+ Vipin Sharma <vipinsh@google.com>, Jonathan Corbet <corbet@lwn.net>
+References: <20251205005841.3942668-1-avagin@google.com>
+Content-Language: en-US
+From: Chen Ridong <chenridong@huaweicloud.com>
+In-Reply-To: <20251205005841.3942668-1-avagin@google.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+X-CM-TRANSID:Syh0CgAX91DtSDJp5tiPAg--.44550S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxAr1DXr4UXrW8Kry3Jry8Grg_yoW5GrWfpa
+	ykGr13K3Z5tF1fCa1Sq3y0gr1SgFs5Gr4UCrnrJ340y343Jr1Iqr1Iya15ZFWDGrWfZF90
+	y3WY93sxuw1jyaDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUv0b4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxkF7I0En4kS
+	14v26r1q6r43MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I
+	8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8
+	ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x
+	0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_
+	Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU1
+	7KsUUUUUU==
+X-CM-SenderInfo: hfkh02xlgr0w46kxt4xhlfz01xgou0bp/
 
-On x86-64, this_cpu_cmpxchg() uses CMPXCHG without LOCK prefix which
-means it is only safe for the local CPU and not for multiple CPUs.
-Recently the commit 36df6e3dbd7e ("cgroup: make css_rstat_updated nmi
-safe") make css_rstat_updated lockless and uses lockless list to allow
-reentrancy. Since css_rstat_updated can invoked from process context,
-IRQ and NMI, it uses this_cpu_cmpxchg() to select the winner which will
-inset the lockless lnode into the global per-cpu lockless list.
 
-However the commit missed one case where lockless node of a cgroup can
-be accessed and modified by another CPU doing the flushing. Basically
-llist_del_first_init() in css_process_update_tree().
 
-On a cursory look, it can be questioned how css_process_update_tree()
-can see a lockless node in global lockless list where the updater is at
-this_cpu_cmpxchg() and before llist_add() call in css_rstat_updated().
-This can indeed happen in the presence of IRQs/NMI.
+On 2025/12/5 8:58, Andrei Vagin wrote:
+> This patch series introduces a mechanism to mask hardware capabilities
+> (AT_HWCAP) reported to user-space processes via the misc cgroup
+> controller.
+> 
+> To support C/R operations (snapshots, live migration) in heterogeneous
+> clusters, we must ensure that processes utilize CPU features available
+> on all potential target nodes. To solve this, we need to advertise a
+> common feature set across the cluster. This patchset allows users to
+> configure a mask for AT_HWCAP, AT_HWCAP2. This ensures that applications
+> within a container only detect and use features guaranteed to be
+> available on all potential target hosts.
+> 
 
-Consider this scenario: Updater for cgroup stat C on CPU A in process
-context is after llist_on_list() check and before this_cpu_cmpxchg() in
-css_rstat_updated() where it get interrupted by IRQ/NMI. In the IRQ/NMI
-context, a new updater calls css_rstat_updated() for same cgroup C and
-successfully inserts rstatc_pcpu->lnode.
+Could you elaborate on how this mask mechanism would be used in practice?
 
-Now concurrently CPU B is running the flusher and it calls
-llist_del_first_init() for CPU A and got rstatc_pcpu->lnode of cgroup C
-which was added by the IRQ/NMI updater.
+Based on my understanding of the implementation, the parent’s mask is effectively a subset of the
+child’s mask, meaning the parent does not impose any additional restrictions on its children. This
+behavior appears to differ from typical cgroup controllers, where children are further constrained
+by their parent’s settings. This raises the question: is the cgroup model an appropriate fit for
+this functionality?
 
-Now imagine CPU B calling init_llist_node() on cgroup C's
-rstatc_pcpu->lnode of CPU A and on CPU A, the process context updater
-calling this_cpu_cmpxchg(rstatc_pcpu->lnode) concurrently.
+> The first patch adds the mask interface to the misc cgroup controller,
+> allowing users to set masks for AT_HWCAP, AT_HWCAP2...
+> 
+> The second patch adds a selftest to verify the functionality of the new
+> interface, ensuring masks are applied and inherited correctly.
+> 
+> The third patch updates the documentation.
+> 
+> Cc: Kees Cook <kees@kernel.org>
+> Cc: Tejun Heo <tj@kernel.org>
+> Cc: Johannes Weiner <hannes@cmpxchg.org>
+> Cc: "Michal Koutný" <mkoutny@suse.com>
+> Cc: Vipin Sharma <vipinsh@google.com>
+> Cc: Jonathan Corbet <corbet@lwn.net>
+> 
+> Andrei Vagin (3):
+>   cgroup, binfmt_elf: Add hwcap masks to the misc controller
+>   selftests/cgroup: Add a test for the misc.mask cgroup interface
+>   Documentation: cgroup-v2: Document misc.mask interface
+> 
+>  Documentation/admin-guide/cgroup-v2.rst    |  25 ++++
+>  Documentation/arch/arm64/elf_hwcaps.rst    |  21 ++++
+>  fs/binfmt_elf.c                            |  24 +++-
+>  include/linux/misc_cgroup.h                |  25 ++++
+>  kernel/cgroup/misc.c                       | 126 +++++++++++++++++++++
+>  tools/testing/selftests/cgroup/.gitignore  |   1 +
+>  tools/testing/selftests/cgroup/Makefile    |   2 +
+>  tools/testing/selftests/cgroup/config      |   1 +
+>  tools/testing/selftests/cgroup/test_misc.c | 114 +++++++++++++++++++
+>  9 files changed, 335 insertions(+), 4 deletions(-)
+>  create mode 100644 tools/testing/selftests/cgroup/test_misc.c
 
-The CMPXCNG without LOCK on CPU A is not safe and thus we need LOCK
-prefix.
-
-In Meta's fleet running the kernel with the commit 36df6e3dbd7e, we are
-observing on some machines the memcg stats are getting skewed by more
-than the actual memory on the system. On close inspection, we noticed
-that lockless node for a workload for specific CPU was in the bad state
-and thus all the updates on that CPU for that cgroup was being lost. At
-the moment, we are not sure if this CMPXCHG without LOCK is the cause of
-that but this needs to be fixed irrespective.
-
-Signed-off-by: Shakeel Butt <shakeel.butt@linux.dev>
-Fixes: 36df6e3dbd7e ("cgroup: make css_rstat_updated nmi safe")
----
- kernel/cgroup/rstat.c | 8 +++-----
- 1 file changed, 3 insertions(+), 5 deletions(-)
-
-diff --git a/kernel/cgroup/rstat.c b/kernel/cgroup/rstat.c
-index 91b34ebd5370..99aa7e557f92 100644
---- a/kernel/cgroup/rstat.c
-+++ b/kernel/cgroup/rstat.c
-@@ -71,8 +71,7 @@ __bpf_kfunc void css_rstat_updated(struct cgroup_subsys_state *css, int cpu)
- {
- 	struct llist_head *lhead;
- 	struct css_rstat_cpu *rstatc;
--	struct css_rstat_cpu __percpu *rstatc_pcpu;
--	struct llist_node *self;
-+	struct llist_node *expected;
- 
- 	/*
- 	 * Since bpf programs can call this function, prevent access to
-@@ -113,9 +112,8 @@ __bpf_kfunc void css_rstat_updated(struct cgroup_subsys_state *css, int cpu)
- 	 * successful and the winner will eventually add the per-cpu lnode to
- 	 * the llist.
- 	 */
--	self = &rstatc->lnode;
--	rstatc_pcpu = css->rstat_cpu;
--	if (this_cpu_cmpxchg(rstatc_pcpu->lnode.next, self, NULL) != self)
-+	expected = &rstatc->lnode;
-+	if (!try_cmpxchg(&rstatc->lnode.next, &expected, NULL))
- 		return;
- 
- 	lhead = ss_lhead_cpu(css->ss, cpu);
 -- 
-2.47.3
+Best regards,
+Ridong
 
 
