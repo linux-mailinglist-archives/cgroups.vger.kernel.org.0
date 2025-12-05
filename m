@@ -1,68 +1,68 @@
-Return-Path: <cgroups+bounces-12266-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-12267-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id AAEF5CA5C4D
-	for <lists+cgroups@lfdr.de>; Fri, 05 Dec 2025 01:59:26 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 96059CA5C53
+	for <lists+cgroups@lfdr.de>; Fri, 05 Dec 2025 01:59:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 960F7318ADAC
-	for <lists+cgroups@lfdr.de>; Fri,  5 Dec 2025 00:58:53 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 19AD8318D666
+	for <lists+cgroups@lfdr.de>; Fri,  5 Dec 2025 00:58:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 478F9215F5C;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 87469218821;
 	Fri,  5 Dec 2025 00:58:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="gv9lFCd+"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="eNZEsLmA"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-oa1-f73.google.com (mail-oa1-f73.google.com [209.85.160.73])
+Received: from mail-oi1-f202.google.com (mail-oi1-f202.google.com [209.85.167.202])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 22A301448E0
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 115061F7580
 	for <cgroups@vger.kernel.org>; Fri,  5 Dec 2025 00:58:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.73
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764896330; cv=none; b=nww4zkivwE560oSHqpBZKYFar9jIFyVncCjUcxpt0zyN44+Jsadp27K2gFwoatDHnZmCqyRCzFlKPDiF9zkorzZhPubAkorjvp/KarZKtYSZ1cKAPKy40TqhSFbxP/Ww4pE8WG0vpFncYhR2m6ye6lCNwIJYkFPXdoI3W62ZcMo=
+	t=1764896330; cv=none; b=A80muf9HNA9EHDP3Dds6jGvgDDDiVOqD4MsoHkJRjIAJmfZjYqg7PGyBVTRBywR6N4HeMSr/HJ0kymIQ5rhUlYt2BED6L82A9qHl+E8e7ZJ9vFLWRxDLmdR3FqKXX8pNlBk6n1fR/n7hItEVJYy+pvZjDM7I3kn/g+0morhzotM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1764896330; c=relaxed/simple;
 	bh=nyHWTFoGvASer3toat4ImRw6FmdnkyEWU7Xu2iHxdEk=;
 	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=oZh0jHygyMal6o1f1LOd0+BbRUFJToAiqmV3SM9F5pu8em0M2r1OFpHNNbrS8vmYWV6qCieE6OJmMEHWSCyfmlitRv3Qi42yTLTKHWuYdCABq2b7rxsXa30BpFJi6CDtt6YhktNf7PgXGBkfvmUDax/Rh36YlfKqWOzO6coA2cU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--avagin.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=gv9lFCd+; arc=none smtp.client-ip=209.85.160.73
+	 To:Cc:Content-Type; b=UWVRCo6dGBjCVrYpRLke1o0c6eUylUul7fIQiEELIrpRCccix2UEdHf0dXGh++13Rlh3Qi8sMTSr9OPgCNiTihqqP+lBcx7l7bjOZabUZ0JjbqL1aSCw6xiTWn2lqmUPTtOiNd/FCMOciIltnSEyFz77n5Jxxkk2rWj0bWSrhDs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--avagin.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=eNZEsLmA; arc=none smtp.client-ip=209.85.167.202
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--avagin.bounces.google.com
-Received: by mail-oa1-f73.google.com with SMTP id 586e51a60fabf-3e89d0035c4so2682691fac.2
+Received: by mail-oi1-f202.google.com with SMTP id 5614622812f47-450aff06525so1750741b6e.0
         for <cgroups@vger.kernel.org>; Thu, 04 Dec 2025 16:58:47 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1764896326; x=1765501126; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1764896327; x=1765501127; darn=vger.kernel.org;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
         bh=l1Ka/G7ByT2+kY8UIiF65zUCvkc5PFIL+KWxYDYgrVo=;
-        b=gv9lFCd+GtEiz92KLbQSnh8G42/pYerV62qYQ9N3AshItE6xE21WY9HEQtg0lNLuEs
-         z5B8ny+6MwviPpmtRUTHe1qJttrrqi0FiBRzFo9Khs3emOxfGTm85vwVWdi8uJ7Ha9BN
-         /GGzc955p/cz4XRYEvn4eA2YU8biHNDYYOgBaJxzGHY0XrGmMcoek5RLcxZqktsDRPeH
-         xB6ZCfpscjkWUKZDXf97b6OSVQPwgo/g3gNet2eLmwfDVFo7IuaMsSv1FZoHxw8oQgWt
-         ExoTTY9W7y5sCi5Tnata6GDm41gkKLzlgbKE+QVdsH8kVB5jdckuBkmLOaqzDl/TPTUu
-         On7g==
+        b=eNZEsLmAdpb0BU2UpV5lhEny7gj5K5inc2LLvEIbLCq3aW6Wl8RuKrlK16q0FbPdDY
+         cF6VTXRH+Q2yFbiCH9jUTQKHpfaBFNUtzYrqjcBu3fD1Z8i1NXxLk+wf7QQKQ9BnrzJi
+         6YZLicRaWzMU/MzBBy8odRJR3jPUSd2nji/PacrYeaakDSDUxvWjY5fy0f6kRD0B6NrC
+         jwzMeD6E+1UtawogGpdAQZr7Ir30WRkNlJhKprd8DX81gWIp4QZ8GWO1r4f9z0xjEVv2
+         ivmF3q7sQrG1YRJfijmK2DKI37V8MC9j5HLM5zx4RzNntOlvx8vJFy+nrKkStaqeZeXp
+         vXsg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1764896326; x=1765501126;
+        d=1e100.net; s=20230601; t=1764896327; x=1765501127;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
         bh=l1Ka/G7ByT2+kY8UIiF65zUCvkc5PFIL+KWxYDYgrVo=;
-        b=ZLt5Cz4fqZNtPZYCmLElcxrL1lKX39HhViaF7Kz4RV0Vf+mh3OBMeC3jdl88KBWYRQ
-         fO+8pquQ5PLJPAkqqqF17QfNeaLCL4tlUwEK4BpTDZFprmHAVEtD5Vm8M+n+uD+EWH3t
-         qbGBQQ7SvuwWieNkE7N0547WkwSitiLnwxr4yfJbmCfTyQqd0YlqKiRUrcQC08nqnUgD
-         rCytwmjBt+J1RCBSoPrNTCNJoX105WqhRVJp0w438Miwtc6jJG1tStyf943yViH8+bo9
-         dNMX1UxRhsGIfFhi8RIRzxF4Y2nwNG3ZQo0vWGh+lu/SZN6YZLVWrWNlpz4d/hjPeVNB
-         7jlQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWwhvSuL8KwBrI82n7uoC6EF/ooFaz/A7qxqJYb2DVHZr/5P2rvmH3vfZcYPL8IJ6YzE3iEvVb2@vger.kernel.org
-X-Gm-Message-State: AOJu0YxImmrZLEz6/RNDHhGjGrvXEqGB0WVIiZ65Cy4YHPuAXLdxnO1Y
-	kjZuqOHgDWIafUchqh+x2trhRHw8XBpnJlAYErecHfVPZNsmmMoWAN+0hgoFWxLSPt3NqyZ6oZU
-	y3anlKw==
-X-Google-Smtp-Source: AGHT+IEwsKSsZMSp6xx5UIj2r6LD+T7cD7UXVYxQ9IkaQIcbU4lDaPVqZhMj+NwIGSDCYm3tG6SS17DBIEk=
-X-Received: from oacnz12.prod.google.com ([2002:a05:6871:758c:b0:3e7:db6c:48b])
- (user=avagin job=prod-delivery.src-stubby-dispatcher) by 2002:a05:6870:888f:b0:3e8:8e57:a7a1
- with SMTP id 586e51a60fabf-3f5067dfc56mr2969051fac.52.1764896326246; Thu, 04
- Dec 2025 16:58:46 -0800 (PST)
-Date: Fri,  5 Dec 2025 00:58:29 +0000
+        b=CnMyxdmNmIwmoOuZEPZobIg8OpbqGUT5elsCiTYQf60D0HRxGLo0lM1Gfldcl17Vt0
+         Bj2JiymmaFOTN7jqb3+TgoJVSws39NVhyJCB2F8HEez0QyiUMluDIuggEIgbENP5oYV4
+         Us3Mw9kdGtoHDnwsCt0fMH291fht11/21VRhg3GwVdk2n+b7BVKkRM/Pd4FuHmQXjZ+y
+         1/kCc9/yTO9Er+2a3CkyrjeftMryn7SNJOeD/8OedGMSx0MKFmcJXrP5iDuISCqe9LX5
+         RbwAy5ArLfR8+6DGgiq1HUspKKuWMlKIreWQtNHBn1GQCTJBDiOuU5eUwKjGViAg/w6e
+         53aQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXHFfMltT0H3l9CgszsZ4G35YHy47h/EvZrf0htMUtVXv8ot0D/yyVibNJsGYfIniJEg7aWtuAy@vger.kernel.org
+X-Gm-Message-State: AOJu0YyjGPcx6M7EuZk/DqDvQ5kL83S5pX4AJgSSRzu97XVk2ela3+5V
+	GObbOzwQZTQsKBRd5a0EmFIJ3Ps/gWW/Hvd0VAEEnoIaXTh0fvVoEGxl8Hvn8PtGTQYdKzyFHOT
+	BHWTznA==
+X-Google-Smtp-Source: AGHT+IGmtosd8xmps/oV4TZgOUFGtK1BT8mv/MmkumMBnl/inyl5u1+B5QcUb//XVfD1YOf+RZc7lMo25M0=
+X-Received: from iobgp24.prod.google.com ([2002:a05:6602:e18:b0:949:60d:4912])
+ (user=avagin job=prod-delivery.src-stubby-dispatcher) by 2002:a05:6808:1185:b0:44f:e61d:189f
+ with SMTP id 5614622812f47-4536e3dcc04mr4462771b6e.13.1764896327255; Thu, 04
+ Dec 2025 16:58:47 -0800 (PST)
+Date: Fri,  5 Dec 2025 00:58:30 +0000
 In-Reply-To: <20251205005841.3942668-1-avagin@google.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
@@ -72,7 +72,7 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
 References: <20251205005841.3942668-1-avagin@google.com>
 X-Mailer: git-send-email 2.52.0.223.gf5cc29aaa4-goog
-Message-ID: <20251205005841.3942668-2-avagin@google.com>
+Message-ID: <20251205005841.3942668-3-avagin@google.com>
 Subject: [PATCH 1/3] cgroup, binfmt_elf: Add hwcap masks to the misc controller
 From: Andrei Vagin <avagin@google.com>
 To: Kees Cook <kees@kernel.org>
