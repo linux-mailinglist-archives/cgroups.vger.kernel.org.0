@@ -1,86 +1,86 @@
-Return-Path: <cgroups+bounces-12282-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-12283-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4B8BBCA9403
-	for <lists+cgroups@lfdr.de>; Fri, 05 Dec 2025 21:20:55 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id 102ACCAB1F1
+	for <lists+cgroups@lfdr.de>; Sun, 07 Dec 2025 07:16:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 2CBE2312AD9A
-	for <lists+cgroups@lfdr.de>; Fri,  5 Dec 2025 20:19:21 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id DB42B300854A
+	for <lists+cgroups@lfdr.de>; Sun,  7 Dec 2025 06:16:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D0A9E2C028C;
-	Fri,  5 Dec 2025 20:19:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D6189237713;
+	Sun,  7 Dec 2025 06:16:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dSaCfoNk"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lDdBX+HG"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-ot1-f46.google.com (mail-ot1-f46.google.com [209.85.210.46])
+Received: from mail-ot1-f43.google.com (mail-ot1-f43.google.com [209.85.210.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB8FA824BD
-	for <cgroups@vger.kernel.org>; Fri,  5 Dec 2025 20:19:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C8CB2EEB3
+	for <cgroups@vger.kernel.org>; Sun,  7 Dec 2025 06:16:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1764965958; cv=none; b=MCiF2C/ujObghMla33e8FJDKSEUg7mojK0erTnGw+0ZdviUiIZtwWpkW6OwZoSr8Q1QyoxjQDQV/JYypDcP+q53dwgoa/LbfpjYyg6ToL2gR5j6yeN5/TX7SqNYIyCDJ5LKa3/Y4/vLdDvkZzNPbaoBqEz+L9bBprkPXBmMxhaw=
+	t=1765088208; cv=none; b=p2lugMKilOESa1W58picxOzvXFYoNZN/9EmbZtucCsf695YIFUdDpyD3eAJ6aXPYx35Qdgbu24d1yxJXvRCJ3ND8wmI+VOgD3a543Z1YkKhZELXfbHpkg+VwzvrTJ+QlrylyOs6siLZKdvQKYshLvuxx7u7G+01OZ052cMPX4Ws=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1764965958; c=relaxed/simple;
-	bh=xbmCLz3opi4qCplJYdsJdq7LZGwK2jPD8ZNEWPkmI5Q=;
+	s=arc-20240116; t=1765088208; c=relaxed/simple;
+	bh=Vf6nRuZPEba+Oifq2sGnvE2wxBWCAWdIIwjomCWz4yI=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=ajkSmOvJor+YbgJ1UgPK1UZ9yh5ySFwYZKwTgyNPm0uuvExLMbWkJKOLAphjn89uhDgizginrSfSTq3JgimbUecI/tPS0SM/0vtNihgXOQXfkhas+yq3OIQUj1R90sCRnaLtlzBM2h1vIBFzgEQrneUtPAylsPZtZrh+XeGQfZQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=dSaCfoNk; arc=none smtp.client-ip=209.85.210.46
+	 To:Cc:Content-Type; b=LHKtHQPYjykG1zM7B3LykugkOY7qv0wWrnWv7mNSX6XHB+8YExohSBQYP/OVYVKM/nYCr0v+iZQXTlcXvMDhGCAl7EI3O+8GBugDcmSkdmPH9FTPCVlhxIRiFoRGxnhWT4SnJYaDCSR38VNrOMTsFj1JJeK1wS17PUR8NCjTVE0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=lDdBX+HG; arc=none smtp.client-ip=209.85.210.43
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ot1-f46.google.com with SMTP id 46e09a7af769-7c77fc7c11bso2664616a34.1
-        for <cgroups@vger.kernel.org>; Fri, 05 Dec 2025 12:19:16 -0800 (PST)
+Received: by mail-ot1-f43.google.com with SMTP id 46e09a7af769-7c6d3676455so1660569a34.2
+        for <cgroups@vger.kernel.org>; Sat, 06 Dec 2025 22:16:46 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1764965956; x=1765570756; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1765088206; x=1765693006; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=yr12v+DMAImdfz1AowemFJusGQ0cnaEVxPJMDmqgRC0=;
-        b=dSaCfoNkYjj/YgA3ca2Ot/TiL/N8s3rdGYEosLv1h6SXNRjCK3Rd5XvgTyqw34ifHG
-         m+lj+g6sBVu8urUSb1VkzF26mcdUkIZHzj0dFJxLwcV7FaXha/duKiVl4Se8t1B2dkyt
-         y84z5luSTjUeQ0JD5W9I5dlVc/jXNyoPutxBKQtcBl7s+tQ5gpnKRq/7XQHWD9AGbyP7
-         e9s33VWhE1vKyLo0T1UNjOWLa8yStaOWSWUXRMIvtTqYJXjQgi+/1+fvVuqDjZhcQVbx
-         YT18XBb7CGHs2aXFUfBOGlKi7Bcvq8y5M6+wKn239VkiscBws/SYCZvmVSZ0bi5KP7Oq
-         9BjA==
+        bh=Un5sUc5Cx47cq3O9cSCtpokOGHVUQEIffWJ4oCrfNps=;
+        b=lDdBX+HGMAEKYE60gxbiMVUnBtKI/10NEoaBpGBYnl5C7k8NmQC995SmOoVEtC3MZ5
+         PUfZHoKxQ3py/lTQpDS6EGov1KvXCee6LMSMmBLpZVZixE3DtUCZtaYfIRbNQaf4nlp8
+         +Cya8PjYKgX/BN+V9zb1qdX38//qLkKHX5JdrKF/rFiwywU+fDb0zgUy2yq5AmqwlOQM
+         uCZF/9ASqajNQsYgefovqw+I5H/U4aMT+K/oAISB0XvqD/FEJDZkWy9zOAEqkBGb2DRi
+         t7kQ2X/5rDmy5vXqlLgWb8YficBxXH+c65t5+3Ay5UQ2kPTQoMhva1lq3JaexVpuMHIK
+         4CPw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1764965956; x=1765570756;
+        d=1e100.net; s=20230601; t=1765088206; x=1765693006;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=yr12v+DMAImdfz1AowemFJusGQ0cnaEVxPJMDmqgRC0=;
-        b=CsevEFpRM4ICrABMO2CnMAtiVg0X5Cfv6jw4SUnAu8/ZqaeVWPVf6fg/cfZzCsHR1t
-         G1KTG2/+PRJAGIgw7wHcwgzerzenhcR6t244ZDH90TBuRh9z7KMDMQ6iLkRnGZh3E+sp
-         mflATUi9LxF4WUxNLhFIETs52YZ3wWfLVXimA3IVG+Qi2TUXY19H8gXn/mqGyrLAVdQz
-         VgVtt/UKFH68xgVVu2N6ElBzM/akZ97m8rJE06zYKihTh5vG6uKiKshqP+r96tET0MUH
-         hte0D6EHrJb+spWm5JocXpclc/IAP3eyeQGI5YbvPT0lwXTS6qsOUJJz2eyEBKFmKsHS
-         mhKQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXsSELYxdr3xbTfPjc+CcrwGeycWAuGhZjSFxojgWCXnqIaheTO9WNOSgzxgmVrDulBmNMpHvwu@vger.kernel.org
-X-Gm-Message-State: AOJu0YzCzBJDxLZHKm8GrHJB5QZb3hpeold7EPJA59VntfZ4cgOaqDiS
-	2TOyIj6KtnLS2YvAs+um9Zg4CFytTwYMtrGaBj1NmW0Stxqvhxi7411QzlHMwUsccwp5vjF3bvW
-	k3XiXUBQgfBK6rPxvtEFviQOPxHPacIM=
-X-Gm-Gg: ASbGnctp/Wr/uG2N0gVjl9w3HW/WuIQuzwN3luk8wz7RsKkhEivPy/6sH7UuRFLDnpY
-	IUHBcuD6HM6gu9xPihSXu+txuixaNsFR+P7OcMn7buoYWn+j5YaCUdyS4wX7vIheyrlAEipTCjI
-	X7Il6x2BU0/T9PLvV2kzmGIgmJBPFOvJ2Up+b87u00Uu9afuXsfNKydTFHXwpSQoyDP3vnpaIDd
-	qQCcRf+Q1FcPYiQZNAAiYokpZAhQGbjeVtURp+pljoJyRG9LXy31eOSpx5dl1SpEOI2CXHq
-X-Google-Smtp-Source: AGHT+IHwv0zV6pf0Mi0jmonA9X7SJfjx0KLsoUJL8YTZFGl2SAkAT8InplvChGboPRk86xwWowBh1fy40GkX0WBFhW0=
-X-Received: by 2002:a05:6830:6aa6:b0:7c7:ad8:68b3 with SMTP id
- 46e09a7af769-7c957c80e69mr5451091a34.14.1764965955996; Fri, 05 Dec 2025
- 12:19:15 -0800 (PST)
+        bh=Un5sUc5Cx47cq3O9cSCtpokOGHVUQEIffWJ4oCrfNps=;
+        b=nYAtf0tcLxPgd8GHqIXdwtS2x2/BanPC71GFDWMtkYpxVeOKi44Ii7SBX4+GPeQabT
+         8WRXVn8733NqC+XAleico/ifmOvJos6W1WJhpGwgfSsCqa6m2zKu5L1TbinvH4R49Fuh
+         Oc+y0PuCZMzTruUdp/LU6FZ4eFgwGR9I1GDXM6OpJguaCea2vSDWX4E7ZNWN9NkXxotC
+         UngV5tU6VF1q+Dcrv81VObgB4rEiVJsixGIQxk9eKTr5F58OVqn6QoCD5++FuIDraRpd
+         Qyvb7evUXXNIYykIj/nJB3mMBWcksgdhJnEvTmVY48ehrIYfj4A1PplLLdLmn5DQ7gyG
+         HcoQ==
+X-Forwarded-Encrypted: i=1; AJvYcCX+/bPwSgUTR3B/9LatbiYT1xUVjKRdE63PRMEUkDJDKV8pyYIPHx6jSc8+XvxT3BHkAG1rUID1@vger.kernel.org
+X-Gm-Message-State: AOJu0YyrL1v12+m2gzy8myDI9iULVgd3IdZyEvjdpyrUIMkOfe1Zco85
+	XijZtszie5tAqiTaLFT5HnvORD4ncUtiAfDiGKIo5qttDWwEEX829oOU4xCWw94u8PZnf4Anek5
+	pDPWcXdK3AgiGjGGoBX4wGL6S1ac0YBc=
+X-Gm-Gg: ASbGncvVh9nylHamh/Kwkvvk9Ym3xu0ncDDxwq/oxT8cmTQNCFJHlHgI0JtfI00OS3y
+	oyOLZCYy7bV6CqMK9fk4+JW7INRKkR76rQKh1IUP7xsG5RUby7/EKdrgbnFchagvdTzvfsqQcbw
+	v1K0YDqyMDcjI5CaoHlXoWhpIXFJst+uWUGsMPhU43Jrv0QKbVz8cVLGn0irdRxFxsCCYm9YCDr
+	zPS9WsYBUJJB9FInQ7IBkXdQg6Y3qUsVMrtNd4XuPG5CU4pPSUqymstzxHQozY50WQER26Q
+X-Google-Smtp-Source: AGHT+IGTU11em87jeAo6kbD6dSOQffzi00PVFHQ+kjvwjKAEFHYJNasF5rV2kwcoj4CItjdfPWuUhV4Bdq+BX91kfOI=
+X-Received: by 2002:a05:6830:3153:b0:7c7:5385:9ac2 with SMTP id
+ 46e09a7af769-7c97078be65mr3441356a34.8.1765088205704; Sat, 06 Dec 2025
+ 22:16:45 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20251205005841.3942668-1-avagin@google.com> <57a7d8c3-a911-4729-bc39-ba3a1d810990@huaweicloud.com>
- <CANaxB-x5qVv_yYR7aYYdrd26uFRk=Zsd243+TeBWMn47wi++eA@mail.gmail.com> <bc10cdcb-840f-400e-85b8-3e8ae904f763@huaweicloud.com>
-In-Reply-To: <bc10cdcb-840f-400e-85b8-3e8ae904f763@huaweicloud.com>
+References: <20251205005841.3942668-1-avagin@google.com> <20251205005841.3942668-2-avagin@google.com>
+ <25cac682-e6a5-4ab2-bae2-fb4df2d33626@huaweicloud.com>
+In-Reply-To: <25cac682-e6a5-4ab2-bae2-fb4df2d33626@huaweicloud.com>
 From: Andrei Vagin <avagin@gmail.com>
-Date: Fri, 5 Dec 2025 12:19:04 -0800
-X-Gm-Features: AWmQ_blYzl1FsACJBYWFF_FwJThgem-zZm9ldZnV3CqkFL-uCbsmPxPlFX-i5Z4
-Message-ID: <CANaxB-yOfS1KPZaZJ_4WG8XeZnB9M_shtWOOONTXQ2CW4mqsSA@mail.gmail.com>
-Subject: Re: [PATCH 0/3] cgroup/misc: Add hwcap masks to the misc controller
+Date: Sat, 6 Dec 2025 22:16:34 -0800
+X-Gm-Features: AQt7F2p7RekYLuKI-hKafG4DE8Ti31OsLl4BdXgEl5swhlVsRR3s_ZW5SSZKSRw
+Message-ID: <CANaxB-w+j89zVRpwVErT8JdrmKZqw+D7ANZBzk2pA2WCj75XPA@mail.gmail.com>
+Subject: Re: [PATCH 1/3] cgroup, binfmt_elf: Add hwcap masks to the misc controller
 To: Chen Ridong <chenridong@huaweicloud.com>
 Cc: Andrei Vagin <avagin@google.com>, Kees Cook <kees@kernel.org>, linux-kernel@vger.kernel.org, 
 	linux-fsdevel@vger.kernel.org, linux-mm@kvack.org, cgroups@vger.kernel.org, 
@@ -90,100 +90,292 @@ Cc: Andrei Vagin <avagin@google.com>, Kees Cook <kees@kernel.org>, linux-kernel@
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Dec 5, 2025 at 2:04=E2=80=AFAM Chen Ridong <chenridong@huaweicloud.=
+On Fri, Dec 5, 2025 at 2:11=E2=80=AFAM Chen Ridong <chenridong@huaweicloud.=
 com> wrote:
 >
 >
 >
-> On 2025/12/5 14:39, Andrei Vagin wrote:
-> > On Thu, Dec 4, 2025 at 6:52=E2=80=AFPM Chen Ridong <chenridong@huaweicl=
-oud.com> wrote:
-> >>
-> >>
-> >>
-> >> On 2025/12/5 8:58, Andrei Vagin wrote:
-> >>> This patch series introduces a mechanism to mask hardware capabilitie=
-s
-> >>> (AT_HWCAP) reported to user-space processes via the misc cgroup
-> >>> controller.
-> >>>
-> >>> To support C/R operations (snapshots, live migration) in heterogeneou=
-s
-> >>> clusters, we must ensure that processes utilize CPU features availabl=
-e
-> >>> on all potential target nodes. To solve this, we need to advertise a
-> >>> common feature set across the cluster. This patchset allows users to
-> >>> configure a mask for AT_HWCAP, AT_HWCAP2. This ensures that applicati=
-ons
-> >>> within a container only detect and use features guaranteed to be
-> >>> available on all potential target hosts.
-> >>>
-> >>
-> >> Could you elaborate on how this mask mechanism would be used in practi=
-ce?
-> >>
-> >> Based on my understanding of the implementation, the parent=E2=80=99s =
-mask is effectively a subset of the
-> >> child=E2=80=99s mask, meaning the parent does not impose any additiona=
-l restrictions on its children. This
-> >> behavior appears to differ from typical cgroup controllers, where chil=
-dren are further constrained
-> >> by their parent=E2=80=99s settings. This raises the question: is the c=
-group model an appropriate fit for
-> >> this functionality?
+> On 2025/12/5 8:58, Andrei Vagin wrote:
+> > Add an interface to the misc cgroup controller that allows masking out
+> > hardware capabilities (AT_HWCAP) reported to user-space processes. This
+> > provides a mechanism to restrict the features a containerized
+> > application can see.
 > >
-> > Chen,
+> > The new "misc.mask" cgroup file allows users to specify masks for
+> > AT_HWCAP, AT_HWCAP2, AT_HWCAP3, and AT_HWCAP4.
 > >
-> > Thank you for the question. I think I was not clear enough in the
-> > description.
+> > The output of "misc.mask" is extended to display the effective mask,
+> > which is a combination of the masks from the current cgroup and all its
+> > ancestors.
 > >
-> > The misc.mask file works by masking out available features; any feature
-> > bit set in the mask will not be advertised to processes within that
-> > cgroup. When a child cgroup is created, its effective mask is  a
-> > combination of its own mask and its parent's effective mask. This means
-> > any feature masked by either the parent or the child will be hidden fro=
-m
-> > processes in the child cgroup.
+> > Signed-off-by: Andrei Vagin <avagin@google.com>
+> > ---
+> >  fs/binfmt_elf.c             |  24 +++++--
+> >  include/linux/misc_cgroup.h |  25 +++++++
+> >  kernel/cgroup/misc.c        | 126 ++++++++++++++++++++++++++++++++++++
+> >  3 files changed, 171 insertions(+), 4 deletions(-)
 > >
-> > For example:
-> > - If a parent cgroup masks out feature A (mask=3D0b001), processes in i=
-t
-> >   won't see feature A.
-> > - If we create a child cgroup under it and set its mask to hide feature
-> >   B (mask=3D0b010), the effective mask for processes in the child cgrou=
-p
-> >   becomes 0b011. They will see neither feature A nor B.
+> > diff --git a/fs/binfmt_elf.c b/fs/binfmt_elf.c
+> > index 3eb734c192e9..59137784e81d 100644
+> > --- a/fs/binfmt_elf.c
+> > +++ b/fs/binfmt_elf.c
+> > @@ -47,6 +47,7 @@
+> >  #include <linux/dax.h>
+> >  #include <linux/uaccess.h>
+> >  #include <uapi/linux/rseq.h>
+> > +#include <linux/misc_cgroup.h>
+> >  #include <asm/param.h>
+> >  #include <asm/page.h>
 > >
-> Let me ask some basic questions:
+> > @@ -182,6 +183,21 @@ create_elf_tables(struct linux_binprm *bprm, const=
+ struct elfhdr *exec,
+> >       int ei_index;
+> >       const struct cred *cred =3D current_cred();
+> >       struct vm_area_struct *vma;
+> > +     struct misc_cg *misc_cg;
+> > +     u64 hwcap_mask[4] =3D {0, 0, 0, 0};
+> > +
+> > +     misc_cg =3D get_current_misc_cg();
+> > +     misc_cg_get_mask(MISC_CG_MASK_HWCAP, misc_cg, &hwcap_mask[0]);
+> > +#ifdef ELF_HWCAP2
+> > +     misc_cg_get_mask(MISC_CG_MASK_HWCAP2, misc_cg, &hwcap_mask[1]);
+> > +#endif
+> > +#ifdef ELF_HWCAP3
+> > +     misc_cg_get_mask(MISC_CG_MASK_HWCAP3, misc_cg, &hwcap_mask[2]);
+> > +#endif
+> > +#ifdef ELF_HWCAP4
+> > +     misc_cg_get_mask(MISC_CG_MASK_HWCAP4, misc_cg, &hwcap_mask[3]);
+> > +#endif
+> > +     put_misc_cg(misc_cg);
+> >
+> >       /*
+> >        * In some cases (e.g. Hyper-Threading), we want to avoid L1
+> > @@ -246,7 +262,7 @@ create_elf_tables(struct linux_binprm *bprm, const =
+struct elfhdr *exec,
+> >        */
+> >       ARCH_DLINFO;
+> >  #endif
+> > -     NEW_AUX_ENT(AT_HWCAP, ELF_HWCAP);
+> > +     NEW_AUX_ENT(AT_HWCAP, ELF_HWCAP & ~hwcap_mask[0]);
+> >       NEW_AUX_ENT(AT_PAGESZ, ELF_EXEC_PAGESIZE);
+> >       NEW_AUX_ENT(AT_CLKTCK, CLOCKS_PER_SEC);
+> >       NEW_AUX_ENT(AT_PHDR, phdr_addr);
+> > @@ -264,13 +280,13 @@ create_elf_tables(struct linux_binprm *bprm, cons=
+t struct elfhdr *exec,
+> >       NEW_AUX_ENT(AT_SECURE, bprm->secureexec);
+> >       NEW_AUX_ENT(AT_RANDOM, (elf_addr_t)(unsigned long)u_rand_bytes);
+> >  #ifdef ELF_HWCAP2
+> > -     NEW_AUX_ENT(AT_HWCAP2, ELF_HWCAP2);
+> > +     NEW_AUX_ENT(AT_HWCAP2, ELF_HWCAP2 & ~hwcap_mask[1]);
+> >  #endif
+> >  #ifdef ELF_HWCAP3
+> > -     NEW_AUX_ENT(AT_HWCAP3, ELF_HWCAP3);
+> > +     NEW_AUX_ENT(AT_HWCAP3, ELF_HWCAP3 & ~hwcap_mask[2]);
+> >  #endif
+> >  #ifdef ELF_HWCAP4
+> > -     NEW_AUX_ENT(AT_HWCAP4, ELF_HWCAP4);
+> > +     NEW_AUX_ENT(AT_HWCAP4, ELF_HWCAP4 & ~hwcap_mask[3]);
+> >  #endif
+> >       NEW_AUX_ENT(AT_EXECFN, bprm->exec);
+> >       if (k_platform) {
+> > diff --git a/include/linux/misc_cgroup.h b/include/linux/misc_cgroup.h
+> > index 0cb36a3ffc47..cff830c238fb 100644
+> > --- a/include/linux/misc_cgroup.h
+> > +++ b/include/linux/misc_cgroup.h
+> > @@ -8,6 +8,8 @@
+> >  #ifndef _MISC_CGROUP_H_
+> >  #define _MISC_CGROUP_H_
+> >
+> > +#include <linux/elf.h>
+> > +
+> >  /**
+> >   * enum misc_res_type - Types of misc cgroup entries supported by the =
+host.
+> >   */
+> > @@ -26,6 +28,20 @@ enum misc_res_type {
+> >       MISC_CG_RES_TYPES
+> >  };
+> >
+> > +enum misc_mask_type {
+> > +     MISC_CG_MASK_HWCAP,
+> > +#ifdef ELF_HWCAP2
+> > +     MISC_CG_MASK_HWCAP2,
+> > +#endif
+> > +#ifdef ELF_HWCAP3
+> > +     MISC_CG_MASK_HWCAP3,
+> > +#endif
+> > +#ifdef ELF_HWCAP4
+> > +     MISC_CG_MASK_HWCAP4,
+> > +#endif
+> > +     MISC_CG_MASK_TYPES
+> > +};
+> > +
+> >  struct misc_cg;
+> >
+> >  #ifdef CONFIG_CGROUP_MISC
+> > @@ -62,12 +78,15 @@ struct misc_cg {
+> >       struct cgroup_file events_local_file;
+> >
+> >       struct misc_res res[MISC_CG_RES_TYPES];
+> > +     u64 mask[MISC_CG_MASK_TYPES];
+> >  };
+> >
+> >  int misc_cg_set_capacity(enum misc_res_type type, u64 capacity);
+> >  int misc_cg_try_charge(enum misc_res_type type, struct misc_cg *cg, u6=
+4 amount);
+> >  void misc_cg_uncharge(enum misc_res_type type, struct misc_cg *cg, u64=
+ amount);
+> >
+> > +int misc_cg_get_mask(enum misc_mask_type type, struct misc_cg *cg, u64=
+ *pmask);
+> > +
+> >  /**
+> >   * css_misc() - Get misc cgroup from the css.
+> >   * @css: cgroup subsys state object.
+> > @@ -134,5 +153,11 @@ static inline void put_misc_cg(struct misc_cg *cg)
+> >  {
+> >  }
+> >
+> > +static inline int misc_cg_get_mask(enum misc_mask_type type, struct mi=
+sc_cg *cg, u64 *pmask)
+> > +{
+> > +     *pmask =3D 0;
+> > +     return 0;
+> > +}
+> > +
+> >  #endif /* CONFIG_CGROUP_MISC */
+> >  #endif /* _MISC_CGROUP_H_ */
+> > diff --git a/kernel/cgroup/misc.c b/kernel/cgroup/misc.c
+> > index 6a01d91ea4cb..d1386d86060f 100644
+> > --- a/kernel/cgroup/misc.c
+> > +++ b/kernel/cgroup/misc.c
+> > @@ -30,6 +30,19 @@ static const char *const misc_res_name[] =3D {
+> >  #endif
+> >  };
+> >
+> > +static const char *const misc_mask_name[] =3D {
+> > +     "AT_HWCAP",
+> > +#ifdef ELF_HWCAP2
+> > +     "AT_HWCAP2",
+> > +#endif
+> > +#ifdef ELF_HWCAP3
+> > +     "AT_HWCAP3",
+> > +#endif
+> > +#ifdef ELF_HWCAP4
+> > +     "AT_HWCAP4",
+> > +#endif
+> > +};
+> > +
+> >  /* Root misc cgroup */
+> >  static struct misc_cg root_cg;
+> >
+> > @@ -71,6 +84,11 @@ static inline bool valid_type(enum misc_res_type typ=
+e)
+> >       return type >=3D 0 && type < MISC_CG_RES_TYPES;
+> >  }
+> >
+> > +static inline bool valid_mask_type(enum misc_mask_type type)
+> > +{
+> > +     return type >=3D 0 && type < MISC_CG_MASK_TYPES;
+> > +}
+> > +
+> >  /**
+> >   * misc_cg_set_capacity() - Set the capacity of the misc cgroup res.
+> >   * @type: Type of the misc res.
+> > @@ -391,6 +409,109 @@ static int misc_events_local_show(struct seq_file=
+ *sf, void *v)
+> >       return __misc_events_show(sf, true);
+> >  }
+> >
+> > +/**
+> > + * misc_cg_get_mask() - Get the mask of the specified type.
+> > + * @type: The misc mask type.
+> > + * @cg: The misc cgroup.
+> > + * @pmask: Pointer to the resulting mask.
+> > + *
+> > + * This function calculates the effective mask for a given cgroup by w=
+alking up
+> > + * the hierarchy and ORing the masks from all parent cgroupfs. The fin=
+al result
+> > + * is stored in the location pointed to by @pmask.
+> > + *
+> > + * Context: Any context.
+> > + * Return: 0 on success, -EINVAL if @type is invalid.
+> > + */
+> > +int misc_cg_get_mask(enum misc_mask_type type, struct misc_cg *cg, u64=
+ *pmask)
+> > +{
+> > +     struct misc_cg *i;
+> > +     u64 mask =3D 0;
+> > +
+> > +     if (!(valid_mask_type(type)))
+> > +             return -EINVAL;
+> > +
+> > +     for (i =3D cg; i; i =3D parent_misc(i))
+> > +             mask |=3D READ_ONCE(i->mask[type]);
+> > +
+> > +     *pmask =3D mask;
+> > +     return 0;
+> > +}
+> > +
+> > +/**
+> > + * misc_cg_mask_show() - Show the misc cgroup masks.
+> > + * @sf: Interface file
+> > + * @v: Arguments passed
+> > + *
+> > + * Context: Any context.
+> > + * Return: 0 to denote successful print.
+> > + */
+> > +static int misc_cg_mask_show(struct seq_file *sf, void *v)
+> > +{
+> > +     struct misc_cg *cg =3D css_misc(seq_css(sf));
+> > +     int i;
+> > +
+> > +     for (i =3D 0; i < MISC_CG_MASK_TYPES; i++) {
+> > +             u64 rval, val =3D READ_ONCE(cg->mask[i]);
+> > +
+> > +             misc_cg_get_mask(i, cg, &rval);
+> > +             seq_printf(sf, "%s\t%#016llx\t%#016llx\n", misc_mask_name=
+[i], val, rval);
+> > +     }
+> > +
+> > +     return 0;
+> > +}
+> > +
 >
-> When is the misc.mask typically set? Is it only configured before startin=
-g a container (e.g., before
-> docker run), or can it be adjusted dynamically while processes are alread=
-y running?
-
-If we are talking about C/R use cases, it should be configured when
-container is started. It can be adjusted dynamically, but all changes
-will affect only new processes. The auxiliary vectors are set on execve.
-
+> I'm concerned about the performance impact of the bottom-up traversal in =
+deeply nested cgroup
+> hierarchies. Could this approach introduce noticeable latency in such sce=
+narios?
 >
-> I'm concerned about a potential scenario: If a child process initially ha=
-s access to a CPU feature,
-> but then its parent cgroup masks that feature out, could the child proces=
-s remain unaware of this
-> change?
->
-> Specifically, if a process has already cached or relied on a CPU capabili=
-ty before the mask was
-> applied, would it continue to assume it has that capability, leading to p=
-otential issues if it
-> attempts to use instructions that are now masked out?
 
-I wouldn't classify this behavior as an issue; it's designed to function
-this way. It's important to understand that this isn't enforcement, but
-rather information for processes regarding which features are
-"guaranteed" to them. A process can choose to utilize unexposed
-features at its own risk, potentially encountering problems after
-migration to a different host.
+I wrote an execve benchmark to measure the impact of this change
+(https://github.com/avagin/execve_vs_misccg).
+
+The benchmark results are as follows:
+
+depth | before (ops/sec)| after (ops/sec)| ratio %| perf
+------------------------------------------------------
+0     | 4813.06 =C2=B1 11.01 | 4826.78 =C2=B1 19.33| 100.28 |
+2     | 4752.75 =C2=B1 11.28 | 4754.38 =C2=B1 21.93| 100.03 |
+4     | 4767.41 =C2=B1 8.35  | 4729.81 =C2=B1 29.56|  99.21 |
+8     | 4768.01 =C2=B1 10.42 | 4745.23 =C2=B1 27.68|  99.52 |
+16    | 4749.34 =C2=B1 21.03 | 4723.63 =C2=B1 23.57|  99.45 |
+32    | 4758.67 =C2=B1 10.94 | 4728.49 =C2=B1 13.9 |  99.36 |
+64    | 4749.85 =C2=B1 12.33 | 4686.3  =C2=B1 13.06|  98.66 | 0.11%
+128   | 4707.22 =C2=B1 12.01 | 4668.22 =C2=B1 16.9 |  99.17 | 0.33%
+256   | 4725.75 =C2=B1 6.07  | 4629.09 =C2=B1 27.02|  97.95 | 1.61%
+
+Columns:
+* depth: The nesting level of the cgroup.
+* before: without this patch.
+* after: with this patch applied.
+* ratio: performance of after relative to before.
+* perf: profiling data from perf showing execution time spent in the
+        misc_cg_get_mask function.
+
+The performance impact is almost negligible for cgroup depths up to 64.
+Even at a depth of 128, the overhead is less than 1%.
 
 Thanks,
 Andrei
