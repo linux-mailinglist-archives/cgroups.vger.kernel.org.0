@@ -1,87 +1,90 @@
-Return-Path: <cgroups+bounces-12288-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-12289-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 967F0CAD72E
-	for <lists+cgroups@lfdr.de>; Mon, 08 Dec 2025 15:32:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id C4997CAD734
+	for <lists+cgroups@lfdr.de>; Mon, 08 Dec 2025 15:32:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 7A864301AD2D
-	for <lists+cgroups@lfdr.de>; Mon,  8 Dec 2025 14:31:59 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 6DF70301C0AD
+	for <lists+cgroups@lfdr.de>; Mon,  8 Dec 2025 14:32:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 69FFD32AAAB;
-	Mon,  8 Dec 2025 14:31:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 67CAF32AABE;
+	Mon,  8 Dec 2025 14:32:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="WbYhK0vb"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="PES9lO5R"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-wr1-f45.google.com (mail-wr1-f45.google.com [209.85.221.45])
+Received: from mail-wm1-f42.google.com (mail-wm1-f42.google.com [209.85.128.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5819732AAA8
-	for <cgroups@vger.kernel.org>; Mon,  8 Dec 2025 14:31:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B02832AAAD
+	for <cgroups@vger.kernel.org>; Mon,  8 Dec 2025 14:32:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765204318; cv=none; b=NI1DpPEULbdGhG343MB1sOASow6AQMleYfgDxL/gW4SW3ZzmT9T57pX9CqAxQfmSWgzHhxADJJASO8vfni+bwuFqx1QQMYNtbQWsZxClsG3gEY7Sc0eMbCHfAuSap779uxVL4D3PYoc8YcN89kXGlkAEoUISPAwHKqH2T/5uozY=
+	t=1765204328; cv=none; b=Kpy088zxa2v+cMbcmzt9XybQQkd1xWFhy7is1I+aS6vo44ZkxKHxNHelU1UeFnF6/31GCGOWbaOVglwf3qUFJxmsEs5SKmNRRNSOY7d6Uw/v1UhxJ1Aq6R9wM44OhG3wfI8ZwSAiZdCmTPdGyT5+htRnWqAyBeMlYN+77zuDEkA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765204318; c=relaxed/simple;
-	bh=O3Uh3B4gYAOFneJgek3n7rIoT2td1Ad2IKeXnSRNodk=;
+	s=arc-20240116; t=1765204328; c=relaxed/simple;
+	bh=90BBNBXDvrM79MgXY50AHCjXT7YIdu6d4NZhjCu1SyA=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=r6KpmAnD9kFfiFv51vVZwrAivcxyD2DpA+ZOgONeCrkgF3YpvQ+F4tZDP5DVqkNbCAJCnANp2/Rp0WZwIreRzYo2282+mtlU6udcF4i3TdaO2lMLjfGXOQZabnx8ZNG+se6RMHUhle7TGw1hufzYxhqlYlqlUkR0MYTLNUmxCN0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=WbYhK0vb; arc=none smtp.client-ip=209.85.221.45
+	 Content-Type:Content-Disposition:In-Reply-To; b=BfO/LNcXiNlAbFw6d/6UUbY+6jEYEU9vX1KoTNIaSHUEaes3Ifby6+P4UUe0BDdly1aOfjctx19RrlI1A0ODcNXydFdfQ0Cz9UogRcvXAO+qUh2x4OMJ647VYBth+6LT/GESqEkdNVAdcYkSwrQHslyEBGTqwJ7tg8idaS8YUJ4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=PES9lO5R; arc=none smtp.client-ip=209.85.128.42
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-wr1-f45.google.com with SMTP id ffacd0b85a97d-42e2e77f519so2894767f8f.2
-        for <cgroups@vger.kernel.org>; Mon, 08 Dec 2025 06:31:56 -0800 (PST)
+Received: by mail-wm1-f42.google.com with SMTP id 5b1f17b1804b1-47775fb6cb4so38005145e9.0
+        for <cgroups@vger.kernel.org>; Mon, 08 Dec 2025 06:32:04 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1765204315; x=1765809115; darn=vger.kernel.org;
+        d=suse.com; s=google; t=1765204323; x=1765809123; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=zbS/TB8hAZ6DXQ0g6ryy+CyTpWKhfJVHRWKBtDSGFk0=;
-        b=WbYhK0vbg68AsMM99gu2KpRcjgIib3jHGoJ1FhN5HlEHLdWOA0o279/RF5KNYmgWTa
-         9fl1vpBN6CbdLsdmfxAvUdmij9oRUnyTPK3Z/UhB1muwLZcAn+TZJTURJvXLgi49uqaQ
-         WeNA9aoiuZlgbnuShzd3A8FTp9hJAAtUTCqnaKQrrI6uQ16+Jyo7y5OmNuuz2/6VSqiP
-         JeQnie9s5YehgKGXFhtOtvRTS/avzd3zZ5hqC8hVUaE+f1+X8S9YkKyGo53ovYKT3XNN
-         Cu3gkGwKmPH3b4rhqTsS9hJ7aktWqb3c1eTfLSfoTGq9AmHQNBm+mok7EUuUZEhGsSRG
-         Mw6A==
+        bh=90BBNBXDvrM79MgXY50AHCjXT7YIdu6d4NZhjCu1SyA=;
+        b=PES9lO5ReOX1VEX1vont5hO1Ko400f67fgK2UIkSH6F47cITYoR8pZHYjwn4w5W0kr
+         WskeT1kmgDTjzHToGx31Z+KalcwDozideJZJntLu4XQBa5a7+jx1IUc0fOzFYzUugMOt
+         6kVxgbgely68sauiJd5cgKjWvwCOLjeT5jZKPSLs7CbKXDU630bB7+MzZ2pW+lhYUINY
+         m+tmcJt22GW0Cu+ZSBsU8/0cpglx5nIKSAvJdVl3sMgJWflg+Fijvxc+yFHAV9TjRjPV
+         TDE5KFtKA9wv6D3w8r5KJ7Zy5tj581WeHtntz8Ru37UL0v1ck/c2yola/Cxe9+nDRtzO
+         Iw5A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1765204315; x=1765809115;
+        d=1e100.net; s=20230601; t=1765204323; x=1765809123;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=zbS/TB8hAZ6DXQ0g6ryy+CyTpWKhfJVHRWKBtDSGFk0=;
-        b=ZLXorMbJGlICfgBYS1NcuYJtBXurC2ISnkTk6a0cyhofH8Q37kZBniQpKEOaa0YXkF
-         FnkLc3MfXu7IYZ6yr6W9+J2FNefqiS6a1t/Cy9FDpvJHcicIeq9TqLZ58OstkCEdt/+C
-         u6lNqvBRKnIKQiJnuJoMdcLn2oJ3SEQz7dNrepNeWIV+/xWMMRdJcxhFg9R+LSK13pnh
-         WzYtK79oynqlUO6kg/qA74FI1bmLX9V+6nJVgp/Rcvha5TCUCZ5JcwG4E+zc0D2BOcgm
-         XJ4y4asnylAtkRh1FMa2DIxpOIZdwGrbW4+f5I+G0yqJorvcllBwB4lxNhhs10p1vluf
-         E4lw==
-X-Forwarded-Encrypted: i=1; AJvYcCVBNe6O48fH4TILO3MHHvtj/18Vx8hqHdvmKdT+X4VE2qku1dahWmJQAeBo2lU96GpMt+GEwPXG@vger.kernel.org
-X-Gm-Message-State: AOJu0YxEOrrNKe/yU2fma5pi4TZQTO9lERaEhIZyyoHmTK2foXFdkvXl
-	rxp4SAQZy2goS3I/cnfN/fqb4vSkhLhzjP9l+6KwJ6IbwRokWp4i6TiStam3uF09/TM=
-X-Gm-Gg: ASbGncvP5gK4sZ9bBGRBj0iJrDztgu2B5Umn3SDGlb1ouCKrCvpaezyA/z5PPxakQk3
-	vLTO1XMvitm1tZDBJW9vlVANsbgS4INcl8uvOYsGSNzsmLa0FyX7OvhU3K7bye2cG5xEhVWeJ3Z
-	LGSSiao3r91/FMWSOQVdl+TN82vVuuVeCxEvs3zo50J9twM1j7mL8werN0W5i3nBIoafAOK9waV
-	FgRjlIq73KnU2jbVTSMsKwioAph0tvNolWjeNtPnfY1YqYyqzMnmbHDDrnmPitjw9dNGJNraaN7
-	WBeibSBv395FPzqv1Z3fmMhuokrM4BRQ6BwrCDMdPcj315TWq2rLt4Txpi2AVFOocLxRREROyX8
-	c9OTFha7KG0ukvQ3WKRFnP/jcJ705O6DgsfEysAxTpBNXWOPXL1T20Nu3IQ1kYTy9y4UjQs2jR4
-	YmK05swUApqNa36lmBnVwNL8Xq536gOa4=
-X-Google-Smtp-Source: AGHT+IFE7vUIMGvCnJOjKOCQWrdf18Do3wS1MnUJq3sK9xI/Jc79nYC+PBM3L0+BYybJi+Ost3nvog==
-X-Received: by 2002:a05:6000:2f88:b0:42b:30f9:79c9 with SMTP id ffacd0b85a97d-42f89f455c7mr8439244f8f.37.1765204314477;
-        Mon, 08 Dec 2025 06:31:54 -0800 (PST)
+        bh=90BBNBXDvrM79MgXY50AHCjXT7YIdu6d4NZhjCu1SyA=;
+        b=mmpmLZRxhgqD7UmA+blMMt5cvSYSrXbdF8P1XHxSBY+EXR17KDdmbYR8PCzYWtEl8f
+         3AoRCMNKjsJSG1kw0KW83sU7aYxMvUdF9fCFngB4WDsKboGZP/tuEKU1dJSpdkKTj3Fy
+         m6/UTjNOjjl4oOw6u734CmaQigcst1RtD6D9hI9iPOr8G/3Y6NJAL8AtkyIeHdz11f84
+         cZCSLdXuzoPq5OBa2vzXvdZF11OywN4hXO6G6a6K+FoXGRTrg5IRn9se/6cWBuIepKHc
+         JnNNLkuRJz/Dg45Xmr2u9bbShIcxqCUOJkj3vbFep0sssnJWnS4908CMUPE9meL4F1HM
+         hndw==
+X-Forwarded-Encrypted: i=1; AJvYcCUPb3a+KuTGSm5sWXoSYgiyNF2c/HKudLp3rQv+kr/6pcixCv5kXDUku3dmS1dQInDIwcsQ/JEd@vger.kernel.org
+X-Gm-Message-State: AOJu0YxjNaoFP+KE75/mHKYW7MMX+iKAf9X2GCTZPkZ/t4yKbmklv7nE
+	sPc8botzLRG81SH3D33dmjYkDebsYcQ7SPMzlfr6B1cMv8lfYVi7ZQV3yfgSOAMadGA=
+X-Gm-Gg: ASbGncvzGuTpfr748cVmjrtk2VHDCmzs0XAM27cDSdY4GjSNXAhFlcTHkJAauSW80IK
+	AG0iTFk8BHvIoJbP0DU1R+s4aLTnudoBWRq0w3Q1unkTKMOpX9tlOvC2M43uB8Mx8O1sTDkv2Pe
+	yN5o5ok9DOEgKW+ZNN4UfrlAU5C/e8lIUHDVXNlisJR2WpV4uDeqK4/YLo+QlO+aqiab0B/oOEk
+	xjcjKD8t0o4NywXEITEkEZ5FI/Q/SG9/9MS04xeOsFyc+VFBaYzfYEYLLGNzWHscujl9I/yjFcG
+	QNdvEq2Ll/e54LN9yrUdqSVnsGUb0YLNWIp3JHf0smQXE0wugeltV0QIK9fZeWyfgBhvVOCeeA6
+	lnlDQPn8Doiyi3Tv/cxiWjsiDiNbBaZEWOydOLRb4IDf29Eh8yObhui9bcju5PiGDBcwDEBVr1V
+	ccdcyiNT1lYLKfJijcsNVidNFOvhLXWh0=
+X-Google-Smtp-Source: AGHT+IF9MaPmbfKRH/ZEYxsCMKAKrKzmzWbh/CHlTqSr0teoUSfvgE/PLUzoI+UmwssaTSypsSev0w==
+X-Received: by 2002:a05:600c:3487:b0:477:9671:3a42 with SMTP id 5b1f17b1804b1-47939e43a49mr86544935e9.35.1765204323488;
+        Mon, 08 Dec 2025 06:32:03 -0800 (PST)
 Received: from blackdock.suse.cz (nat2.prg.suse.com. [195.250.132.146])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-42f7d222506sm27611266f8f.28.2025.12.08.06.31.53
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4792b132429sm142091665e9.4.2025.12.08.06.32.02
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Dec 2025 06:31:53 -0800 (PST)
-Date: Mon, 8 Dec 2025 15:31:52 +0100
+        Mon, 08 Dec 2025 06:32:03 -0800 (PST)
+Date: Mon, 8 Dec 2025 15:32:01 +0100
 From: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
-To: Sun Shaojie <sunshaojie@kylinos.cn>
-Cc: chenridong@huaweicloud.com, cgroups@vger.kernel.org, 
-	hannes@cmpxchg.org, linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org, 
-	llong@redhat.com, shuah@kernel.org, tj@kernel.org
+To: Waiman Long <llong@redhat.com>
+Cc: Sun Shaojie <sunshaojie@kylinos.cn>, chenridong@huaweicloud.com, 
+	cgroups@vger.kernel.org, hannes@cmpxchg.org, linux-kernel@vger.kernel.org, 
+	linux-kselftest@vger.kernel.org, shuah@kernel.org, tj@kernel.org
 Subject: Re: [PATCH v5] cpuset: Avoid invalidating sibling partitions on
  cpuset.cpus conflict.
-Message-ID: <b3umm7mcucmztqqnp6x4e6ichqcml2r2bg7d2xairxajyqrzbt@3nshatmt2evo>
-References: <45f5e2c6-42ec-4d77-9c2d-0e00472a05de@huaweicloud.com>
- <20251201094447.108278-1-sunshaojie@kylinos.cn>
+Message-ID: <3jkvuruuxdykpxjjdwhuqjfqi4nrtxojotswaoc7ehuwxp4s32@hfrvfato6q5b>
+References: <f32d2f31-630f-450b-911f-b512bbeb380a@huaweicloud.com>
+ <20251119105749.1385946-1-sunshaojie@kylinos.cn>
+ <cae7a3ef-9808-47ac-a061-ab40d3c61020@redhat.com>
+ <ur4ukfqtqq5jfmuia4tbvsdz3jn3zk6nx2ok4xtnlxth6ulrql@nmetgsxm3lik>
+ <d5d635df-94f3-4909-afe3-f2e6141afa32@redhat.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -89,93 +92,66 @@ List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="ji2b3cuc5ipyhw7r"
+	protocol="application/pgp-signature"; boundary="ry6ppl3gxnd6r2pn"
 Content-Disposition: inline
-In-Reply-To: <20251201094447.108278-1-sunshaojie@kylinos.cn>
+In-Reply-To: <d5d635df-94f3-4909-afe3-f2e6141afa32@redhat.com>
 
 
---ji2b3cuc5ipyhw7r
-Content-Type: text/plain; protected-headers=v1; charset=utf-8
+--ry6ppl3gxnd6r2pn
+Content-Type: text/plain; protected-headers=v1; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 Subject: Re: [PATCH v5] cpuset: Avoid invalidating sibling partitions on
  cpuset.cpus conflict.
 MIME-Version: 1.0
 
-Hello.
+Hi Waiman.
 
-On Mon, Dec 01, 2025 at 05:44:47PM +0800, Sun Shaojie <sunshaojie@kylinos.c=
-n> wrote:
-> As for "different operation orders yield different results", Below is an
-> example that is not a corner case.
+On Wed, Nov 26, 2025 at 02:43:50PM -0500, Waiman Long <llong@redhat.com> wr=
+ote:
+> Modification to cpumasks are all serialized by the cpuset_mutex. If you a=
+re
+> referring to 2 or more tasks doing parallel updates to various cpuset
+> control files of sibling cpusets, the results can actually vary depending=
+ on
+> the actual serialization results of those operations.
+
+I meant the latter when the difference in results when concurrent tasks
+do the update (e.g. two containers start in parallel), I don't see an
+issue with the race wrt consistency of in-kernel data. We're on the same
+page here.
+
+> One difference between cpuset.cpus and cpuset.cpus.exclusive is the fact
+> that operations on cpuset.cpus.exclusive can fail if the result is not
+> exclusive WRT sibling cpusets, but becoming a valid partition is guarante=
+ed
+> unless none of the exclusive CPUs are passed down from the parent. The use
+> of cpuset.cpus.exclusive is required for creating remote partition.
 >=20
->     root cgroup
->       /    \
->      A1    B1
+> OTOH, changes to cpuset.cpus will never fail, but becoming a valid partit=
+ion
+> root is not guaranteed and is limited to the creation of local partition
+> only.
 >=20
->  #1> echo "0" > A1/cpuset.cpus
->  #2> echo "0-1" > B1/cpuset.cpus.exclusive --> return error
->=20
->  #1> echo "0-1" > B1/cpuset.cpus.exclusive
->  #2> echo "0" > A1/cpuset.cpus
+> Does that answer your question?
 
-Here it is a combination of remote cs local partitions.
-I'd like to treat the two approaches separately and better not consider
-their combination.
+It does help my understanding. Do you envision that remote and local
+partitions should be used together (in one subtree)?
 
-The idea (and permissions check AFACS) behind remote partitions is to
-allow "stealing" CPU ownership so cpuset.cpus.exclusive has different
-behavior.
-
-> >   root cgroup
-> >        |
-> >       A1  //MK: A4 A5 here?
-> >      /  \
-> >    A2    A3... //MK: A4 A5 or here?
-> >
-> > #1> echo "0-1" > A1/cpuset.cpus
-> > #2> echo "root" > A1/cpuset.cpus.partition
-> > #3> echo "0-1" > A2/cpuset.cpus
-> > #4> echo "root" > A2/cpuset.cpus.partition
-> > mkdir A4
-> > mkdir A5
-> > echo "0" > A4/cpuset.cpus
-> > echo $$ > A4/cgroup.procs
-> > echo "1" > A5/cpuset.cpus
-> > echo $$ > A5/cgroup.procs
-> >
->=20
-> If A2...A5 all belong to the same user, and that user wants both A4 and A=
-5=20
-> to have effective CPUs, then the user should also understand that A2 needs
-> to be adjusted to "member" instead of "root".
->=20
-> if A2...A5 belong to different users, must satisfying user A4=E2=80=99s r=
-equirement
-> come at the expense of user A2=E2=80=99s requirement? That is not fair.
-
-If A4 is a sibling at the level of A1, then A2 must be stripped of its
-CPUs to honor the hierarchy hence the apparent unfairness.
-
-If A4 is a sibling at the level of A2 and they have different owning
-users, their respective cpuset.cpus should only be writable by A1's user
-(the one who distributes the cpus) so that any arbitration between the
-siblings is avoided.
-
-0.02=E2=82=AC,
+Thanks,
 Michal
 
---ji2b3cuc5ipyhw7r
+--ry6ppl3gxnd6r2pn
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iJEEABYKADkWIQRCE24Fn/AcRjnLivR+PQLnlNv4CAUCaTbhSRsUgAAAAAAEAA5t
-YW51MiwyLjUrMS4xMSwyLDIACgkQfj0C55Tb+AiR3QD/SGEhKmZeuPCjZm+gTCIO
-JD8ZSy5Dy5ZU6hpXQCtRXvEBAKsTxFqdq+5hdMBQKpsxhCKKGYjnRsciVMJNZ1AA
-ThYG
-=qpLP
+iJEEABYKADkWIQRCE24Fn/AcRjnLivR+PQLnlNv4CAUCaTbhXxsUgAAAAAAEAA5t
+YW51MiwyLjUrMS4xMSwyLDIACgkQfj0C55Tb+Aih6wD/cjyA4xuIIdSHlZQv1tjO
+E8fEVfV+kLp6i2x5+vWx4J4A/3oTNWRzkIq32YJE3qkJ0EM+NK+SYHT5TcQtvVY8
+l3QF
+=JM8+
 -----END PGP SIGNATURE-----
 
---ji2b3cuc5ipyhw7r--
+--ry6ppl3gxnd6r2pn--
 
