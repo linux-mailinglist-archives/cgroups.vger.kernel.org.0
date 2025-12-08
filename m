@@ -1,210 +1,283 @@
-Return-Path: <cgroups+bounces-12286-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-12287-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id CAE06CABF2A
-	for <lists+cgroups@lfdr.de>; Mon, 08 Dec 2025 04:18:25 +0100 (CET)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
+	by mail.lfdr.de (Postfix) with ESMTPS id 04C41CAC8BC
+	for <lists+cgroups@lfdr.de>; Mon, 08 Dec 2025 09:50:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id DEE503053B13
-	for <lists+cgroups@lfdr.de>; Mon,  8 Dec 2025 03:17:02 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id D999A300253C
+	for <lists+cgroups@lfdr.de>; Mon,  8 Dec 2025 08:49:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F7B42FB612;
-	Mon,  8 Dec 2025 03:10:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BEF912BE657;
+	Mon,  8 Dec 2025 08:49:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="cFepiQxN"
 X-Original-To: cgroups@vger.kernel.org
-Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
+Received: from out-188.mta1.migadu.com (out-188.mta1.migadu.com [95.215.58.188])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7540524DCF9;
-	Mon,  8 Dec 2025 03:10:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 75E292AE78
+	for <cgroups@vger.kernel.org>; Mon,  8 Dec 2025 08:49:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.188
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765163447; cv=none; b=dBhkDQ5H4ns+3fhvqLYdEpC5+mwmVMMlmJl4/NpWsd55w23xOmQR23mdKb1oxPAcSVcHxfZN0qrJBSmfUQXj0GmBM0vaVGCa4uOpv4pmPjcODPKJGDRvhAS6Zkz2TwesQBrb1Fy1yHtTSJyZq4gILLylKYjp/tZWIZgi+cw4Qw4=
+	t=1765183794; cv=none; b=Sfaqu7oPEwSVLfGSF1DtA+tH5XzXo+19arJG74ln//w96xBYqCKe1/BN22XLewwsqT1cdSrePQHYkQl7XBWKzaIMaPXHQDO+EmOS5c327cAS6TaNSmKfpQZXzvSNX004f1hppn7zRKkWH1BKY1vFs7k1Yz5MZYFRJrm1bE04FP8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765163447; c=relaxed/simple;
-	bh=nPTveDZeHNuLSNMhGxJ5EcXwhGBWpYyN20InKHAHIy8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=mA9p90adkW+N2lic5/awH+MWAtTkMQR6rbTkml8nhtOYxEtuIECMMKxtBU0DNUxkDdeXV3WaAeCBOeyATXhBNbb+FOpPrw2ISIbdsvS+IOKvMcpMWVSqTz0QjQwVcrTUDiHxj7INYAdSQbWcW7eDR4D2YOYeLNqEbnTbwXQ4638=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.216])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTPS id 4dPn5h4pgxzKHMMV;
-	Mon,  8 Dec 2025 11:09:44 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.128])
-	by mail.maildlp.com (Postfix) with ESMTP id 136EA1A193F;
-	Mon,  8 Dec 2025 11:10:41 +0800 (CST)
-Received: from [10.67.111.176] (unknown [10.67.111.176])
-	by APP4 (Coremail) with SMTP id gCh0CgA3YZ6tQTZpBrb2Aw--.58034S2;
-	Mon, 08 Dec 2025 11:10:38 +0800 (CST)
-Message-ID: <c0c69863-52f8-44ed-8d85-97531caf4dea@huaweicloud.com>
-Date: Mon, 8 Dec 2025 11:10:36 +0800
+	s=arc-20240116; t=1765183794; c=relaxed/simple;
+	bh=h7nWsRYeCi3W72b4YW32UykCWbgbF+6AvYubkfr/7nc=;
+	h=MIME-Version:Date:Content-Type:From:Message-ID:Subject:To:Cc:
+	 In-Reply-To:References; b=EGKEFWEyJRLjb0ECyd0Er4dP2EUBiLTpUJzlrcMLt/DKzISZLTK9UpP22i4vCowRQk+DynQSJOXmC/rm/4/eM9GkLShbUKOof3R9qkdJqTNH+R+uT1tDQERYZqNMfFPRzgYsC7h9BiE+iYnpG1r8jsNHrfyXx4F8o2hZB7PxUv0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=cFepiQxN; arc=none smtp.client-ip=95.215.58.188
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH -next 1/2] mm/mglru: use mem_cgroup_iter for global
- reclaim
-To: Shakeel Butt <shakeel.butt@linux.dev>
-Cc: akpm@linux-foundation.org, axelrasmussen@google.com, yuanchu@google.com,
- weixugc@google.com, david@kernel.org, lorenzo.stoakes@oracle.com,
- Liam.Howlett@oracle.com, vbabka@suse.cz, rppt@kernel.org, surenb@google.com,
- mhocko@suse.com, corbet@lwn.net, hannes@cmpxchg.org,
- roman.gushchin@linux.dev, muchun.song@linux.dev, yuzhao@google.com,
- zhengqi.arch@bytedance.com, linux-mm@kvack.org, linux-doc@vger.kernel.org,
- linux-kernel@vger.kernel.org, cgroups@vger.kernel.org, lujialin4@huawei.com,
- chenridong@huawei.com
-References: <20251204123124.1822965-1-chenridong@huaweicloud.com>
- <20251204123124.1822965-2-chenridong@huaweicloud.com>
- <tvrspnhlo7x7gpjc4nn7f73b2qoyphkpaxlcnnn4fsxciv6bks@3dibvbs7u5do>
-Content-Language: en-US
-From: Chen Ridong <chenridong@huaweicloud.com>
-In-Reply-To: <tvrspnhlo7x7gpjc4nn7f73b2qoyphkpaxlcnnn4fsxciv6bks@3dibvbs7u5do>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID:gCh0CgA3YZ6tQTZpBrb2Aw--.58034S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxGFW8uF15tFWkur1DGrW8tFb_yoW7Jry8pF
-	Z3Ja4Sk3yrJr1agFnIqF4q9a4Yvw4Ikr13JryYvw1xAF9IqryFvr12krW0yrWUAry8ur1x
-	XFWYvw1ru3yjyFDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUv0b4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxkF7I0En4kS
-	14v26r4a6rW5MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I
-	8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVW8ZVWr
-	XwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x
-	0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_
-	Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU0
-	s2-5UUUUU==
-X-CM-SenderInfo: hfkh02xlgr0w46kxt4xhlfz01xgou0bp/
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1765183779;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=md5rTE5KknOBT4xPJmYQUJv6l5PQ4j1T9Q1h2YConaM=;
+	b=cFepiQxN0YI5olqORmnriQuU0nV4lPqC+Ss7VnbeXlyT0KrwxdFMofkiXOOFWKIE8LvaWO
+	7aWbu9fRckTTsC3E/cIM6HkHBApdiAnnFjcFyIpxPdIyxaK/ilrQEd8tGMH4WDVH8Yc5eV
+	P2Y16lI2B+JdCdUxC2e/7cbhN6nVHjg=
+Date: Mon, 08 Dec 2025 08:49:34 +0000
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: hui.zhu@linux.dev
+Message-ID: <1d9a162605a3f32ac215430131f7745488deaa34@linux.dev>
+TLS-Required: No
+Subject: Re: [PATCH v2 21/23] sched: psi: implement bpf_psi_create_trigger() 
+ kfunc
+To: "Roman Gushchin" <roman.gushchin@linux.dev>, "Andrew Morton"
+ <akpm@linux-foundation.org>
+Cc: linux-kernel@vger.kernel.org, "Alexei Starovoitov" <ast@kernel.org>,
+ "Suren Baghdasaryan" <surenb@google.com>, "Michal Hocko"
+ <mhocko@kernel.org>, "Shakeel Butt" <shakeel.butt@linux.dev>, "Johannes 
+ Weiner" <hannes@cmpxchg.org>, "Andrii Nakryiko" <andrii@kernel.org>, "JP 
+ Kobryn" <inwardvessel@gmail.com>, linux-mm@kvack.org,
+ cgroups@vger.kernel.org, bpf@vger.kernel.org, "Martin KaFai Lau"
+ <martin.lau@kernel.org>, "Song Liu" <song@kernel.org>, "Kumar Kartikeya 
+ Dwivedi" <memxor@gmail.com>, "Tejun Heo" <tj@kernel.org>, "Roman 
+ Gushchin" <roman.gushchin@linux.dev>
+In-Reply-To: <20251027232206.473085-11-roman.gushchin@linux.dev>
+References: <20251027232206.473085-1-roman.gushchin@linux.dev>
+ <20251027232206.473085-11-roman.gushchin@linux.dev>
+X-Migadu-Flow: FLOW_OUT
+
+2025=E5=B9=B410=E6=9C=8828=E6=97=A5 07:22, "Roman Gushchin" <roman.gushch=
+in@linux.dev mailto:roman.gushchin@linux.dev?to=3D%22Roman%20Gushchin%22%=
+20%3Croman.gushchin%40linux.dev%3E > =E5=86=99=E5=88=B0:
+
+
+>=20
+>=20Implement a new bpf_psi_create_trigger() BPF kfunc, which allows
+> to create new PSI triggers and attach them to cgroups or be
+> system-wide.
+>=20
+>=20Created triggers will exist until the struct ops is loaded and
+> if they are attached to a cgroup until the cgroup exists.
+>=20
+>=20Due to a limitation of 5 arguments, the resource type and the "full"
+> bit are squeezed into a single u32.
+>=20
+>=20Signed-off-by: Roman Gushchin <roman.gushchin@linux.dev>
+
+Hi Roman,
+
+I wrote an eBPF program attempting to use bpf_psi struct ops and
+bpf_psi_create_trigger to continuously receive memory-related PSI
+events, but I only received one event.
+
+Looking at the code implementation, when an event occurs:
+if (cmpxchg(&t->event, 0, 1) =3D=3D 0) {
+
+However, in eBPF there appears to be no way to call the equivalent
+of this code from psi_trigger_poll:
+if (cmpxchg(&t->event, 1, 0) =3D=3D 1)
+to reset the event back to 0.
+
+Would it be possible to add an additional BPF helper function to
+handle this? Without a way to acknowledge/reset the event flag,
+the trigger only fires once and cannot be reused for continuous
+monitoring.
+
+Best,
+Hui
 
 
 
-On 2025/12/5 6:29, Shakeel Butt wrote:
-> Hi Chen,
-> 
-> On Thu, Dec 04, 2025 at 12:31:23PM +0000, Chen Ridong wrote:
->> From: Chen Ridong <chenridong@huawei.com>
->>
->> The memcg LRU was originally introduced for global reclaim to enhance
->> scalability. However, its implementation complexity has led to performance
->> regressions when dealing with a large number of memory cgroups [1].
->>
->> As suggested by Johannes [1], this patch adopts mem_cgroup_iter with
->> cookie-based iteration for global reclaim, aligning with the approach
->> already used in shrink_node_memcgs. This simplification removes the
->> dedicated memcg LRU tracking while maintaining the core functionality.
->>
->> It performed a stress test based on Zhao Yu's methodology [2] on a
->> 1 TB, 4-node NUMA system. The results are summarized below:
->>
->> 					memcg LRU    memcg iter
->> stddev(pgsteal) / mean(pgsteal)            91.2%         75.7%
->> sum(pgsteal) / sum(requested)             216.4%        230.5%
->>
->> The new implementation demonstrates a significant improvement in
->> fairness, reducing the standard deviation relative to the mean by
->> 15.5 percentage points. While the reclaim accuracy shows a slight
->> increase in overscan (from 85086871 to 90633890, 6.5%).
->>
->> The primary benefits of this change are:
->> 1. Simplified codebase by removing custom memcg LRU infrastructure
->> 2. Improved fairness in memory reclaim across multiple cgroups
->> 3. Better performance when creating many memory cgroups
->>
->> [1] https://lore.kernel.org/r/20251126171513.GC135004@cmpxchg.org
->> [2] https://lore.kernel.org/r/20221222041905.2431096-7-yuzhao@google.com
->> Signed-off-by: Chen Ridong <chenridong@huawei.com>
-> 
-> Thanks a lot of this awesome work.
-> 
->> ---
->>  mm/vmscan.c | 117 ++++++++++++++++------------------------------------
->>  1 file changed, 36 insertions(+), 81 deletions(-)
->>
->> diff --git a/mm/vmscan.c b/mm/vmscan.c
->> index fddd168a9737..70b0e7e5393c 100644
->> --- a/mm/vmscan.c
->> +++ b/mm/vmscan.c
->> @@ -4895,27 +4895,14 @@ static bool try_to_shrink_lruvec(struct lruvec *lruvec, struct scan_control *sc)
->>  	return nr_to_scan < 0;
->>  }
->>  
->> -static int shrink_one(struct lruvec *lruvec, struct scan_control *sc)
->> +static void shrink_one(struct lruvec *lruvec, struct scan_control *sc)
->>  {
->> -	bool success;
->>  	unsigned long scanned = sc->nr_scanned;
->>  	unsigned long reclaimed = sc->nr_reclaimed;
->> -	struct mem_cgroup *memcg = lruvec_memcg(lruvec);
->>  	struct pglist_data *pgdat = lruvec_pgdat(lruvec);
->> +	struct mem_cgroup *memcg = lruvec_memcg(lruvec);
->>  
->> -	/* lru_gen_age_node() called mem_cgroup_calculate_protection() */
->> -	if (mem_cgroup_below_min(NULL, memcg))
->> -		return MEMCG_LRU_YOUNG;
->> -
->> -	if (mem_cgroup_below_low(NULL, memcg)) {
->> -		/* see the comment on MEMCG_NR_GENS */
->> -		if (READ_ONCE(lruvec->lrugen.seg) != MEMCG_LRU_TAIL)
->> -			return MEMCG_LRU_TAIL;
->> -
->> -		memcg_memory_event(memcg, MEMCG_LOW);
->> -	}
->> -
->> -	success = try_to_shrink_lruvec(lruvec, sc);
->> +	try_to_shrink_lruvec(lruvec, sc);
->>  
->>  	shrink_slab(sc->gfp_mask, pgdat->node_id, memcg, sc->priority);
->>  
->> @@ -4924,86 +4911,55 @@ static int shrink_one(struct lruvec *lruvec, struct scan_control *sc)
->>  			   sc->nr_reclaimed - reclaimed);
->>  
->>  	flush_reclaim_state(sc);
-> 
-> Unrealted to your patch but why this flush_reclaim_state() is at
-> different place from the non-MGLRU code path?
-> 
-
-Thank you Shakeel for you reply.
-
-IIUC, I think adding flush_reclaim_state here makes sense. Currently, shrink_one is only used for
-root-level reclaim in gen-LRU, and flush_reclaim_state is only relevant during root reclaim.
-Flushing after each lruvec is shrunk could help the reclaim loop terminate earlier, as
-sc->nr_reclaimed += current->reclaim_state->reclaimed; may reach nr_to_reclaim sooner.
-
-That said, I'm also wondering whether we should apply flush_reclaim_state for every iteration in
-non-MGLLU reclaim as well. For non-root reclaim, it should be negligible since it effectively does
-nothing. But for root-level reclaim under non-MGLRU, it might similarly help stop the iteration earlier.
-
->> -
->> -	if (success && mem_cgroup_online(memcg))
->> -		return MEMCG_LRU_YOUNG;
->> -
->> -	if (!success && lruvec_is_sizable(lruvec, sc))
->> -		return 0;
->> -
->> -	/* one retry if offlined or too small */
->> -	return READ_ONCE(lruvec->lrugen.seg) != MEMCG_LRU_TAIL ?
->> -	       MEMCG_LRU_TAIL : MEMCG_LRU_YOUNG;
->>  }
->>  
->>  static void shrink_many(struct pglist_data *pgdat, struct scan_control *sc)
-> 
-> This function kind of become very similar to shrink_node_memcgs()
-> function other than shrink_one vs shrink_lruvec. Can you try to combine
-> them and see if it looks not-ugly? Otherwise the code looks good to me.
-> 
-
-Will try to.
-
--- 
-Best regards,
-Ridong
-
+> ---
+>  include/linux/cgroup.h | 4 ++
+>  include/linux/psi.h | 6 +++
+>  kernel/sched/bpf_psi.c | 94 ++++++++++++++++++++++++++++++++++++++++++
+>  3 files changed, 104 insertions(+)
+>=20
+>=20diff --git a/include/linux/cgroup.h b/include/linux/cgroup.h
+> index 6ed477338b16..1a99da44999e 100644
+> --- a/include/linux/cgroup.h
+> +++ b/include/linux/cgroup.h
+> @@ -707,6 +707,10 @@ static inline bool task_under_cgroup_hierarchy(str=
+uct task_struct *task,
+>=20=20
+>=20 static inline void cgroup_path_from_kernfs_id(u64 id, char *buf, siz=
+e_t buflen)
+>  {}
+> +static inline struct cgroup *cgroup_get_from_id(u64 id)
+> +{
+> + return NULL;
+> +}
+>  #endif /* !CONFIG_CGROUPS */
+>=20=20
+>=20 #ifdef CONFIG_CGROUPS
+> diff --git a/include/linux/psi.h b/include/linux/psi.h
+> index 8178e998d94b..8ffe84cd8571 100644
+> --- a/include/linux/psi.h
+> +++ b/include/linux/psi.h
+> @@ -50,6 +50,12 @@ int psi_cgroup_alloc(struct cgroup *cgrp);
+>  void psi_cgroup_free(struct cgroup *cgrp);
+>  void cgroup_move_task(struct task_struct *p, struct css_set *to);
+>  void psi_cgroup_restart(struct psi_group *group);
+> +
+> +#else
+> +static inline struct psi_group *cgroup_psi(struct cgroup *cgrp)
+> +{
+> + return &psi_system;
+> +}
+>  #endif
+>=20=20
+>=20 #else /* CONFIG_PSI */
+> diff --git a/kernel/sched/bpf_psi.c b/kernel/sched/bpf_psi.c
+> index c383a20119a6..7974de56594f 100644
+> --- a/kernel/sched/bpf_psi.c
+> +++ b/kernel/sched/bpf_psi.c
+> @@ -8,6 +8,7 @@
+>  #include <linux/bpf_psi.h>
+>  #include <linux/cgroup-defs.h>
+>=20=20
+>=20+struct bpf_struct_ops bpf_psi_bpf_ops;
+>  static struct workqueue_struct *bpf_psi_wq;
+>=20=20
+>=20 static DEFINE_MUTEX(bpf_psi_lock);
+> @@ -186,6 +187,92 @@ static const struct bpf_verifier_ops bpf_psi_verif=
+ier_ops =3D {
+>  .is_valid_access =3D bpf_psi_ops_is_valid_access,
+>  };
+>=20=20
+>=20+__bpf_kfunc_start_defs();
+> +
+> +/**
+> + * bpf_psi_create_trigger - Create a PSI trigger
+> + * @bpf_psi: bpf_psi struct to attach the trigger to
+> + * @cgroup_id: cgroup Id to attach the trigger; 0 for system-wide scop=
+e
+> + * @resource: resource to monitor (PSI_MEM, PSI_IO, etc) and the full =
+bit.
+> + * @threshold_us: threshold in us
+> + * @window_us: window in us
+> + *
+> + * Creates a PSI trigger and attached is to bpf_psi. The trigger will =
+be
+> + * active unless bpf struct ops is unloaded or the corresponding cgrou=
+p
+> + * is deleted.
+> + *
+> + * Resource's most significant bit encodes whether "some" or "full"
+> + * PSI state should be tracked.
+> + *
+> + * Returns 0 on success and the error code on failure.
+> + */
+> +__bpf_kfunc int bpf_psi_create_trigger(struct bpf_psi *bpf_psi,
+> + u64 cgroup_id, u32 resource,
+> + u32 threshold_us, u32 window_us)
+> +{
+> + enum psi_res res =3D resource & ~BPF_PSI_FULL;
+> + bool full =3D resource & BPF_PSI_FULL;
+> + struct psi_trigger_params params;
+> + struct cgroup *cgroup __maybe_unused =3D NULL;
+> + struct psi_group *group;
+> + struct psi_trigger *t;
+> + int ret =3D 0;
+> +
+> + if (res >=3D NR_PSI_RESOURCES)
+> + return -EINVAL;
+> +
+> + if (IS_ENABLED(CONFIG_CGROUPS) && cgroup_id) {
+> + cgroup =3D cgroup_get_from_id(cgroup_id);
+> + if (IS_ERR_OR_NULL(cgroup))
+> + return PTR_ERR(cgroup);
+> +
+> + group =3D cgroup_psi(cgroup);
+> + } else {
+> + group =3D &psi_system;
+> + }
+> +
+> + params.type =3D PSI_BPF;
+> + params.bpf_psi =3D bpf_psi;
+> + params.privileged =3D capable(CAP_SYS_RESOURCE);
+> + params.res =3D res;
+> + params.full =3D full;
+> + params.threshold_us =3D threshold_us;
+> + params.window_us =3D window_us;
+> +
+> + t =3D psi_trigger_create(group, &params);
+> + if (IS_ERR(t))
+> + ret =3D PTR_ERR(t);
+> + else
+> + t->cgroup_id =3D cgroup_id;
+> +
+> +#ifdef CONFIG_CGROUPS
+> + if (cgroup)
+> + cgroup_put(cgroup);
+> +#endif
+> +
+> + return ret;
+> +}
+> +__bpf_kfunc_end_defs();
+> +
+> +BTF_KFUNCS_START(bpf_psi_kfuncs)
+> +BTF_ID_FLAGS(func, bpf_psi_create_trigger, KF_TRUSTED_ARGS)
+> +BTF_KFUNCS_END(bpf_psi_kfuncs)
+> +
+> +static int bpf_psi_kfunc_filter(const struct bpf_prog *prog, u32 kfunc=
+_id)
+> +{
+> + if (btf_id_set8_contains(&bpf_psi_kfuncs, kfunc_id) &&
+> + prog->aux->st_ops !=3D &bpf_psi_bpf_ops)
+> + return -EACCES;
+> +
+> + return 0;
+> +}
+> +
+> +static const struct btf_kfunc_id_set bpf_psi_kfunc_set =3D {
+> + .owner =3D THIS_MODULE,
+> + .set =3D &bpf_psi_kfuncs,
+> + .filter =3D bpf_psi_kfunc_filter,
+> +};
+> +
+>  static int bpf_psi_ops_reg(void *kdata, struct bpf_link *link)
+>  {
+>  struct bpf_psi_ops *ops =3D kdata;
+> @@ -287,6 +374,13 @@ static int __init bpf_psi_struct_ops_init(void)
+>  if (!bpf_psi_wq)
+>  return -ENOMEM;
+>=20=20
+>=20+ err =3D register_btf_kfunc_id_set(BPF_PROG_TYPE_STRUCT_OPS,
+> + &bpf_psi_kfunc_set);
+> + if (err) {
+> + pr_warn("error while registering bpf psi kfuncs: %d", err);
+> + goto err;
+> + }
+> +
+>  err =3D register_bpf_struct_ops(&bpf_psi_bpf_ops, bpf_psi_ops);
+>  if (err) {
+>  pr_warn("error while registering bpf psi struct ops: %d", err);
+> --=20
+>=202.51.0
+>
 
