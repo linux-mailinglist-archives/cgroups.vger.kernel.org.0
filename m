@@ -1,91 +1,86 @@
-Return-Path: <cgroups+bounces-12290-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-12291-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1434DCADC82
-	for <lists+cgroups@lfdr.de>; Mon, 08 Dec 2025 17:49:03 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7BF18CADF6C
+	for <lists+cgroups@lfdr.de>; Mon, 08 Dec 2025 19:11:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id E107C302C22E
-	for <lists+cgroups@lfdr.de>; Mon,  8 Dec 2025 16:48:55 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 67AF8305A822
+	for <lists+cgroups@lfdr.de>; Mon,  8 Dec 2025 18:11:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 30244219301;
-	Mon,  8 Dec 2025 16:48:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5FA17265606;
+	Mon,  8 Dec 2025 18:11:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="M1xzyeNg"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="R+bV8BGV"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-wm1-f48.google.com (mail-wm1-f48.google.com [209.85.128.48])
+Received: from mail-wr1-f47.google.com (mail-wr1-f47.google.com [209.85.221.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 19F9313AA2F
-	for <cgroups@vger.kernel.org>; Mon,  8 Dec 2025 16:48:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2965A23D7D2
+	for <cgroups@vger.kernel.org>; Mon,  8 Dec 2025 18:11:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765212533; cv=none; b=SZ1hHgm4clb7r0s5zX3jphg8L5pfUmJBbgbtKHgekIl5R36E5JuWy/R2s3c/jgZwcikPI8EJfMvGg96aidcn5Zq0LC3i7EhR7SHn9nRma0n28DDcXTf8MsUPSCGQHWXnFQ2ZMLP5w14py0Kz6gWI1WnHgy5yOtmG4rmlHG/ZuaY=
+	t=1765217497; cv=none; b=F6/0dSEgRM2JMRmH5yzQ2YbSvV2NPiKCQv5ukqXxJygGv/mLPc1WAfcSy1+jIjYkIGMxoROLmZLt9ye92gUsct90e/jEmvHIRsKPAgb77AwAWh3hHcy7EhGov1pvRIDMuk1kIMJkirknc7pjK71bwIkouB5rTppenxuzLhWo+qc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765212533; c=relaxed/simple;
-	bh=NGTtmc49qGm8JmqTcihsC/mRcolGTztLq1MYlXidkeo=;
+	s=arc-20240116; t=1765217497; c=relaxed/simple;
+	bh=lAVxCtgsHDTISHvy9/P05UNsVuYDEFlartNvwhkv40M=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=R9hlwSiSHcrFiYMmPqTPpe3wmVa8i73Sll/IA5YTNHbuUgDG+Q6w1sqWUWhgEpHndZiVdHYGxsGyak8H0xX9Yg9F5xqx9w3OAnRnWf/91sGAqqXhPBlhPJWkZcdPIAVefDVQ2PFLyLi0aG22ae7+YP8KTBUPKrm2bLPjeQp3TFM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=M1xzyeNg; arc=none smtp.client-ip=209.85.128.48
+	 Content-Type:Content-Disposition:In-Reply-To; b=Y8UQNEnGskEYuHKhB9Us9Z6nTqUq9hKZA4IaDbVth8zi+o7NZUv3sXtcn1ZkN5hLF+NmLiLJedoeIrkNDJhIgZp13gszXKeu+KBf+7vwYrdBOofBJXyZX3PGxdEosO4TsFvlnicG4m+1ptSJ3bPE3ZlXBOUiTnjeLtqnaxfASOM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=R+bV8BGV; arc=none smtp.client-ip=209.85.221.47
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-wm1-f48.google.com with SMTP id 5b1f17b1804b1-4775895d69cso23421005e9.0
-        for <cgroups@vger.kernel.org>; Mon, 08 Dec 2025 08:48:50 -0800 (PST)
+Received: by mail-wr1-f47.google.com with SMTP id ffacd0b85a97d-42e2e3c3a83so2165156f8f.1
+        for <cgroups@vger.kernel.org>; Mon, 08 Dec 2025 10:11:34 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1765212529; x=1765817329; darn=vger.kernel.org;
+        d=suse.com; s=google; t=1765217493; x=1765822293; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=NGTtmc49qGm8JmqTcihsC/mRcolGTztLq1MYlXidkeo=;
-        b=M1xzyeNg1qdBDLmQSIcJW/0LctwD5atkNCH+PY3SZYzBB9GPEugIcVSSW9U/YGoPol
-         xE/VYOreEATv98Fixgoc0bffXVTRt2jeIRNbRVA8u3yAdsbag2hjPO5YNDjU12j+B3Dn
-         kVrPyoNq9UII0pVZ8X8IAO/eqRmia3re0S3ajad/pLj8UKZaX8HdXgjaNovcIlo3gGiY
-         A+4W3ZAtQFPLNhkp13hmi3uHJWDZL+MLYULrwJ14LC4eBxi8thT68CSlWxF+UJV9PlMh
-         StKLBzqrLvrRB9zrko+ZOnvzvymldYW3hMY1SYTCxDkWP7RX1Tc04iOVtjTgwBV3YtmG
-         acvQ==
+        bh=lAVxCtgsHDTISHvy9/P05UNsVuYDEFlartNvwhkv40M=;
+        b=R+bV8BGVkHVOy2wVonfG6b+DApZd2HFIu1RuecRpkGqBd6hHEwQbRdYWb3ZQVE/Rmt
+         DABHV9yoz/QS1Md/E2kBDpegggmFo+fGkfjUUAWe0BYfLi/8amQpmzciBTvrVTdZfBnv
+         xCWLIwWOi6yzS+mQnI2x9UUddRZubEzCTkKsBtlRlBfpgfwn9/gauDtvYSuRkxWSwtbd
+         jBNIHUSMI8oJjGtdGFyJKURScx6HTBkUbE7nGpdhunAvlgK2ZIm+j8dC662V0vmZBwo/
+         lwcFt26BBB2hBH5o53errsfNljolO2fXmFB1m/c9SEDzMqS7Y2tWYeJwkQ/jvnVx71a4
+         NgCQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1765212529; x=1765817329;
+        d=1e100.net; s=20230601; t=1765217493; x=1765822293;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=NGTtmc49qGm8JmqTcihsC/mRcolGTztLq1MYlXidkeo=;
-        b=RyQDZXcxGIjl6C2SyO6bANRwz+Ez28QArfOo7EPRFa2rzr69a2hOFS+NudMHsoKE/e
-         SDqvNXXx5HVA8vX+X4HVcJMWUbZ9CWoGmhnZHUPNzqn5jbkyh+wSMh/lzHdEDpLKB3R7
-         51uODR5M2bX8KpEApY8kPAYIFIWV0VVfKxDO4WmX7cdboIuY6Z9M983K9R/gb+jECIB+
-         ecrpa29gtwjoX81uVa1y3sZvaaWDJCydzVfwdL6JG4e9CIvEkoz0TvIbbbiAWtpjc+sf
-         ltQValc31Gx8oxd8pAccqsLDMGRj2azQZpQnh5R5byFRnf+f0VxwdKQ5OF18Up79XBKp
-         BQ3w==
-X-Forwarded-Encrypted: i=1; AJvYcCUIP4oS6hWpbFeAjKtdgaaW+gmFwiMCQD15y02WHWv1nAVNxumBCttKLWLZzT3mRb4LCuShL6we@vger.kernel.org
-X-Gm-Message-State: AOJu0Yy6L7s+PTFrFnnVGTaNuTezLeEcQlIvS4k88MIp1QVBqolbK57m
-	a4QPb3RX1FpTa+uq6eDx8+E+0jp2AWhmcxzm6vPg9BoWEWesaNOxfuOjVSM/se7XTCQ=
-X-Gm-Gg: ASbGncv8sEbS/cLc2dlsMe68kU6CGv48S1bRolwW2VwR0E50crwMM/+kL5L3nKHQrxQ
-	xGV8jvChMwDXryXtMiuEr9ZD/PLBXOfacIP2QYZ9orOCE+1w85DEUpxIrGsIYsUZYJyFXmpH7G0
-	dHNhBRUBZSpBYMdH3KJUjB8xKt6rU8QEG/p2wKSPbHHG0IO8jGjMpMeJPYoQQo6te4G4De10LMs
-	wKtWmUqD//VI2oIXxGw7M2sHS/pkeAoGxSctnatz+vW7FUedCvKIOf8bMzZszMlhWP1xgyxntcb
-	nrCmAUBjZYm6DTG/ii0fMlpywaew4UrQzYVrbiULIWgBakW7EVlioflDbgL9FYHA6pzbAMPvfu+
-	sal9njHeBvrPN1SatvEqTPXCgx4pRAs6LB9bYa+bPvcbisNDPvN+0VgPcDzfMLWi8joqTCHvoGT
-	ENxcZ82KwHDUZzfy/L0e3fIaW438pwhtqfUPWl22Hq6Q==
-X-Google-Smtp-Source: AGHT+IEsJ/iSaDvwNh18lu2wFHnkomxJ8Hvg1XZtgMMg6hpjOz1LIBWnTk3op1li+CYOfSPEkMphCw==
-X-Received: by 2002:a05:600c:1552:b0:477:73cc:82c2 with SMTP id 5b1f17b1804b1-47939dfbb50mr84510895e9.9.1765212529294;
-        Mon, 08 Dec 2025 08:48:49 -0800 (PST)
+        bh=lAVxCtgsHDTISHvy9/P05UNsVuYDEFlartNvwhkv40M=;
+        b=jJfJ+gjs6mxdefqKkN8MYmcB1pttn1oHHj8k8Sdd8lLPUj+xh5aNgdg74SZNnH4epB
+         MmIBaKJUBYVR3qQ5UEY84qfXjuId61ZzrA45/a60/LHADgEIBUMxtOvv+SuRrrwlMMwa
+         AIP8esNezFeJrJf8gMR7uVs8LdyeuSOdFnHOZzwlFlZoPi6PzrlNLBUjmCsrmh07GwC5
+         FKiFRTXj+Y58g3s81hqFU5PQ+eyWTlz1TgA/ARKL5/L274j3NBjgS1yNMCBiOZxPeNSI
+         QCz0Zb6cn9/tjiJupnGAKuLvlJXUvxyL4itkmQD/5rNPoob8AnyeabbrVUb8Jp8ksYav
+         0fRQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUsuzhx/Ny1DMHV5ZGJacKBxWiu9TZrVZBl/+yxasswtD1pjsXIgs1cSc1IUhY0BqpZv2ngtxKx@vger.kernel.org
+X-Gm-Message-State: AOJu0YyjA8wtb1BbnwTyr/Tfk4lqVtRoh6lzaNKtUi48vqPSgZ1UEFnw
+	ThEuUevSm1bGNmAI7MrzKRarAfhadLPE3ZkbNqaA05sWtA2jPMCOJ9I0U/h8MY8uyP8=
+X-Gm-Gg: ASbGncvXzzzYYuUB0RvaQaYAgzXu7mSdMCCqSjFY4S7dbDBhRiNX0yqNDmpY47Gz8Js
+	A5UULkEdiKU/4/B1ybgnelAH7hVMAvON1Tcyp+K+6bhqUGE82oSEZLupFMtfdKNtdt/htPbdpbe
+	xT/PaNSshEoYemuXrqrdFouPMxL6hdFnhweZ4tYmgytiJZuiutlbcFrn0w3xQgaxdYZz2JkWDGa
+	JWaUpGo9Ec6WevWk+7HKKC4qM3Iy+caXitu49kX+TAwNJGij50GV/gEN5xWZA/Hx7xwFEKoxTx4
+	mTUiv7AZiSqXkLtzT51esFZgtbjqxsgyg5y61JMdmHLN5mVYjnXHsFGUzZZghR+PkE8U7hNKm1g
+	V7OmoblyEJk0q5kjmaG/dp5AbMZf6yFy1iozhcbSoQ6iMYmghMR1qtl/LQAlixykkSPG8ooaF2t
+	kxagJTJY2Q+64Po3Tni7veaARzIeRCdF4=
+X-Google-Smtp-Source: AGHT+IE+2cVlYAMMuUHrQ6cEon/NMQFTDjniz+P5clfRxxL6UeMGxUZ/BfmxJjmjGXBtngb+pB63Gw==
+X-Received: by 2002:a05:6000:430d:b0:42b:55a1:2174 with SMTP id ffacd0b85a97d-42f89f70f4emr9230131f8f.59.1765217493354;
+        Mon, 08 Dec 2025 10:11:33 -0800 (PST)
 Received: from blackdock.suse.cz (nat2.prg.suse.com. [195.250.132.146])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-42f7d331e62sm26750068f8f.35.2025.12.08.08.48.48
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-42f7cbff352sm26981207f8f.17.2025.12.08.10.11.32
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 08 Dec 2025 08:48:48 -0800 (PST)
-Date: Mon, 8 Dec 2025 17:48:47 +0100
+        Mon, 08 Dec 2025 10:11:32 -0800 (PST)
+Date: Mon, 8 Dec 2025 19:11:31 +0100
 From: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
-To: Andrei Vagin <avagin@gmail.com>
-Cc: Chen Ridong <chenridong@huaweicloud.com>, 
-	Andrei Vagin <avagin@google.com>, Kees Cook <kees@kernel.org>, linux-kernel@vger.kernel.org, 
-	linux-fsdevel@vger.kernel.org, linux-mm@kvack.org, cgroups@vger.kernel.org, 
-	criu@lists.linux.dev, Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>, 
-	Vipin Sharma <vipinsh@google.com>, Jonathan Corbet <corbet@lwn.net>
-Subject: Re: [PATCH 0/3] cgroup/misc: Add hwcap masks to the misc controller
-Message-ID: <6dmgfe5vbbuqw7ycsm4l2ecpv4eppdsau4t22kitjcjglg2gna@dyjlwhfhviif>
-References: <20251205005841.3942668-1-avagin@google.com>
- <57a7d8c3-a911-4729-bc39-ba3a1d810990@huaweicloud.com>
- <CANaxB-x5qVv_yYR7aYYdrd26uFRk=Zsd243+TeBWMn47wi++eA@mail.gmail.com>
- <bc10cdcb-840f-400e-85b8-3e8ae904f763@huaweicloud.com>
- <CANaxB-yOfS1KPZaZJ_4WG8XeZnB9M_shtWOOONTXQ2CW4mqsSA@mail.gmail.com>
+To: Shakeel Butt <shakeel.butt@linux.dev>
+Cc: Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>, 
+	"Paul E . McKenney" <paulmck@kernel.org>, JP Kobryn <inwardvessel@gmail.com>, 
+	Yosry Ahmed <yosry.ahmed@linux.dev>, linux-mm@kvack.org, cgroups@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, Meta kernel team <kernel-team@meta.com>
+Subject: Re: [PATCH v2] cgroup: rstat: use LOCK CMPXCHG in css_rstat_updated
+Message-ID: <rrpswcxeciypobup7rdwvjknnsjkcnov2xdabbfng7se5yihk5@4wayqftotykw>
+References: <20251205200106.3909330-1-shakeel.butt@linux.dev>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -93,54 +88,77 @@ List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="qhatuyfusoefghqk"
+	protocol="application/pgp-signature"; boundary="xxdwkhj7rhflr6ss"
 Content-Disposition: inline
-In-Reply-To: <CANaxB-yOfS1KPZaZJ_4WG8XeZnB9M_shtWOOONTXQ2CW4mqsSA@mail.gmail.com>
+In-Reply-To: <20251205200106.3909330-1-shakeel.butt@linux.dev>
 
 
---qhatuyfusoefghqk
+--xxdwkhj7rhflr6ss
 Content-Type: text/plain; protected-headers=v1; charset=us-ascii
 Content-Disposition: inline
-Subject: Re: [PATCH 0/3] cgroup/misc: Add hwcap masks to the misc controller
+Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH v2] cgroup: rstat: use LOCK CMPXCHG in css_rstat_updated
 MIME-Version: 1.0
 
-Hello Andrei.
+On Fri, Dec 05, 2025 at 12:01:06PM -0800, Shakeel Butt <shakeel.butt@linux.=
+dev> wrote:
+> On x86-64, this_cpu_cmpxchg() uses CMPXCHG without LOCK prefix which
+> means it is only safe for the local CPU and not for multiple CPUs.
+=2E..
+> The CMPXCNG without LOCK on CPU A is not safe and thus we need LOCK
+> prefix.
 
-On Fri, Dec 05, 2025 at 12:19:04PM -0800, Andrei Vagin <avagin@gmail.com> wrote:
-> If we are talking about C/R use cases, it should be configured when
-> container is started. It can be adjusted dynamically, but all changes
-> will affect only new processes. The auxiliary vectors are set on execve.
+Does it mean that this_cpu_cmpxchg() is generally useless? (It appears
+so from your analysis.)
 
-The questions by Ridong are getting at the reasons why cgroup API
-doesn't sound like a good match for these values.
-I understand it's tempting to implement this by simply copying some
-masks from the enclosing cgroup but since there's little to be done upon
-(dynamic) change or a process migration it's overkill.
+> Now concurrently CPU B is running the flusher and it calls
+> llist_del_first_init() for CPU A and got rstatc_pcpu->lnode of cgroup C
+> which was added by the IRQ/NMI updater.
 
-So I'd look at how other [1] adjustments between fork-exec are done and
-fit it with them. I guess prctl would be an option as a substitute for
-non-existent setauxval().
+Or it's rather the case where rstat code combines both this_cpu_* and
+remote access from the flusher.
+
+Documentation/core-api/this_cpu_ops.rst washes its hands with:
+| Please note that accesses by remote processors to a per cpu area are
+| exceptional situations and may impact performance and/or correctness
+| (remote write operations) of local RMW operations via this_cpu_*.
+
+I see there's currently only one other user of that in kernel/scs.c
+(__scs_alloc() vs scs_cleanup() without even WRITE_ONCE, but the race
+would involve CPU hotplug, so its impact may be limited(?)).
+
+I think your learnt-the-hard-way discovery should not only be in
+cgroup.c but also in this this_cpu_ops.rst document to be wary
+especially with this_cpu_cmpxchg (when dealing with pointers and not
+more tolerable counters).
+
+
+> Consider this scenario: Updater for cgroup stat C on CPU A in process
+> context is after llist_on_list() check and before this_cpu_cmpxchg() in
+> css_rstat_updated() where it get interrupted by IRQ/NMI. In the IRQ/NMI
+> context, a new updater calls css_rstat_updated() for same cgroup C and
+> successfully inserts rstatc_pcpu->lnode.
+>=20
+> Now imagine CPU B calling init_llist_node() on cgroup C's
+> rstatc_pcpu->lnode of CPU A and on CPU A, the process context updater
+> calling this_cpu_cmpxchg(rstatc_pcpu->lnode) concurrently.
+
+Sounds feasible to me.
 
 Thanks,
 Michal
 
-[1] Yes, I admit cgroup migration is among them too. Another one is
-setns(2) which is IMO a closer concept for this modified view of HW, I'm
-not sure whether hardware namespaces had been brought up (and rejected)
-in the past.
-
-
---qhatuyfusoefghqk
+--xxdwkhj7rhflr6ss
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iJEEABYKADkWIQRCE24Fn/AcRjnLivR+PQLnlNv4CAUCaTcBbBsUgAAAAAAEAA5t
-YW51MiwyLjUrMS4xMSwyLDIACgkQfj0C55Tb+Ai8MAEAyeSN6KCarnIABEa5QMqm
-oISbZ1p14CvmHATzKA1bOyEBALyv5+on7iSaLxmoTq8ygkMxgB3VKwZP81DcFFDB
-DEQF
-=v5da
+iJEEABYKADkWIQRCE24Fn/AcRjnLivR+PQLnlNv4CAUCaTcU0RsUgAAAAAAEAA5t
+YW51MiwyLjUrMS4xMSwyLDIACgkQfj0C55Tb+Ah/WgD+KoG41+NA0shwqndSMfLf
+NKaf3TLNxpT5rbMR72AmSkIA/0gUzIXL2v+ADYvYPkK/71qUo+l1A7Ki6u8nCkZi
+f5gN
+=Aghw
 -----END PGP SIGNATURE-----
 
---qhatuyfusoefghqk--
+--xxdwkhj7rhflr6ss--
 
