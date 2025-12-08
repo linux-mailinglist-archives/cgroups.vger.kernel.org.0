@@ -1,283 +1,181 @@
-Return-Path: <cgroups+bounces-12287-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-12288-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
-	by mail.lfdr.de (Postfix) with ESMTPS id 04C41CAC8BC
-	for <lists+cgroups@lfdr.de>; Mon, 08 Dec 2025 09:50:00 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id 967F0CAD72E
+	for <lists+cgroups@lfdr.de>; Mon, 08 Dec 2025 15:32:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id D999A300253C
-	for <lists+cgroups@lfdr.de>; Mon,  8 Dec 2025 08:49:56 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 7A864301AD2D
+	for <lists+cgroups@lfdr.de>; Mon,  8 Dec 2025 14:31:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BEF912BE657;
-	Mon,  8 Dec 2025 08:49:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 69FFD32AAAB;
+	Mon,  8 Dec 2025 14:31:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="cFepiQxN"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="WbYhK0vb"
 X-Original-To: cgroups@vger.kernel.org
-Received: from out-188.mta1.migadu.com (out-188.mta1.migadu.com [95.215.58.188])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f45.google.com (mail-wr1-f45.google.com [209.85.221.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 75E292AE78
-	for <cgroups@vger.kernel.org>; Mon,  8 Dec 2025 08:49:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.188
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5819732AAA8
+	for <cgroups@vger.kernel.org>; Mon,  8 Dec 2025 14:31:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765183794; cv=none; b=Sfaqu7oPEwSVLfGSF1DtA+tH5XzXo+19arJG74ln//w96xBYqCKe1/BN22XLewwsqT1cdSrePQHYkQl7XBWKzaIMaPXHQDO+EmOS5c327cAS6TaNSmKfpQZXzvSNX004f1hppn7zRKkWH1BKY1vFs7k1Yz5MZYFRJrm1bE04FP8=
+	t=1765204318; cv=none; b=NI1DpPEULbdGhG343MB1sOASow6AQMleYfgDxL/gW4SW3ZzmT9T57pX9CqAxQfmSWgzHhxADJJASO8vfni+bwuFqx1QQMYNtbQWsZxClsG3gEY7Sc0eMbCHfAuSap779uxVL4D3PYoc8YcN89kXGlkAEoUISPAwHKqH2T/5uozY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765183794; c=relaxed/simple;
-	bh=h7nWsRYeCi3W72b4YW32UykCWbgbF+6AvYubkfr/7nc=;
-	h=MIME-Version:Date:Content-Type:From:Message-ID:Subject:To:Cc:
-	 In-Reply-To:References; b=EGKEFWEyJRLjb0ECyd0Er4dP2EUBiLTpUJzlrcMLt/DKzISZLTK9UpP22i4vCowRQk+DynQSJOXmC/rm/4/eM9GkLShbUKOof3R9qkdJqTNH+R+uT1tDQERYZqNMfFPRzgYsC7h9BiE+iYnpG1r8jsNHrfyXx4F8o2hZB7PxUv0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=cFepiQxN; arc=none smtp.client-ip=95.215.58.188
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+	s=arc-20240116; t=1765204318; c=relaxed/simple;
+	bh=O3Uh3B4gYAOFneJgek3n7rIoT2td1Ad2IKeXnSRNodk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=r6KpmAnD9kFfiFv51vVZwrAivcxyD2DpA+ZOgONeCrkgF3YpvQ+F4tZDP5DVqkNbCAJCnANp2/Rp0WZwIreRzYo2282+mtlU6udcF4i3TdaO2lMLjfGXOQZabnx8ZNG+se6RMHUhle7TGw1hufzYxhqlYlqlUkR0MYTLNUmxCN0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=WbYhK0vb; arc=none smtp.client-ip=209.85.221.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-wr1-f45.google.com with SMTP id ffacd0b85a97d-42e2e77f519so2894767f8f.2
+        for <cgroups@vger.kernel.org>; Mon, 08 Dec 2025 06:31:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1765204315; x=1765809115; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=zbS/TB8hAZ6DXQ0g6ryy+CyTpWKhfJVHRWKBtDSGFk0=;
+        b=WbYhK0vbg68AsMM99gu2KpRcjgIib3jHGoJ1FhN5HlEHLdWOA0o279/RF5KNYmgWTa
+         9fl1vpBN6CbdLsdmfxAvUdmij9oRUnyTPK3Z/UhB1muwLZcAn+TZJTURJvXLgi49uqaQ
+         WeNA9aoiuZlgbnuShzd3A8FTp9hJAAtUTCqnaKQrrI6uQ16+Jyo7y5OmNuuz2/6VSqiP
+         JeQnie9s5YehgKGXFhtOtvRTS/avzd3zZ5hqC8hVUaE+f1+X8S9YkKyGo53ovYKT3XNN
+         Cu3gkGwKmPH3b4rhqTsS9hJ7aktWqb3c1eTfLSfoTGq9AmHQNBm+mok7EUuUZEhGsSRG
+         Mw6A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1765204315; x=1765809115;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=zbS/TB8hAZ6DXQ0g6ryy+CyTpWKhfJVHRWKBtDSGFk0=;
+        b=ZLXorMbJGlICfgBYS1NcuYJtBXurC2ISnkTk6a0cyhofH8Q37kZBniQpKEOaa0YXkF
+         FnkLc3MfXu7IYZ6yr6W9+J2FNefqiS6a1t/Cy9FDpvJHcicIeq9TqLZ58OstkCEdt/+C
+         u6lNqvBRKnIKQiJnuJoMdcLn2oJ3SEQz7dNrepNeWIV+/xWMMRdJcxhFg9R+LSK13pnh
+         WzYtK79oynqlUO6kg/qA74FI1bmLX9V+6nJVgp/Rcvha5TCUCZ5JcwG4E+zc0D2BOcgm
+         XJ4y4asnylAtkRh1FMa2DIxpOIZdwGrbW4+f5I+G0yqJorvcllBwB4lxNhhs10p1vluf
+         E4lw==
+X-Forwarded-Encrypted: i=1; AJvYcCVBNe6O48fH4TILO3MHHvtj/18Vx8hqHdvmKdT+X4VE2qku1dahWmJQAeBo2lU96GpMt+GEwPXG@vger.kernel.org
+X-Gm-Message-State: AOJu0YxEOrrNKe/yU2fma5pi4TZQTO9lERaEhIZyyoHmTK2foXFdkvXl
+	rxp4SAQZy2goS3I/cnfN/fqb4vSkhLhzjP9l+6KwJ6IbwRokWp4i6TiStam3uF09/TM=
+X-Gm-Gg: ASbGncvP5gK4sZ9bBGRBj0iJrDztgu2B5Umn3SDGlb1ouCKrCvpaezyA/z5PPxakQk3
+	vLTO1XMvitm1tZDBJW9vlVANsbgS4INcl8uvOYsGSNzsmLa0FyX7OvhU3K7bye2cG5xEhVWeJ3Z
+	LGSSiao3r91/FMWSOQVdl+TN82vVuuVeCxEvs3zo50J9twM1j7mL8werN0W5i3nBIoafAOK9waV
+	FgRjlIq73KnU2jbVTSMsKwioAph0tvNolWjeNtPnfY1YqYyqzMnmbHDDrnmPitjw9dNGJNraaN7
+	WBeibSBv395FPzqv1Z3fmMhuokrM4BRQ6BwrCDMdPcj315TWq2rLt4Txpi2AVFOocLxRREROyX8
+	c9OTFha7KG0ukvQ3WKRFnP/jcJ705O6DgsfEysAxTpBNXWOPXL1T20Nu3IQ1kYTy9y4UjQs2jR4
+	YmK05swUApqNa36lmBnVwNL8Xq536gOa4=
+X-Google-Smtp-Source: AGHT+IFE7vUIMGvCnJOjKOCQWrdf18Do3wS1MnUJq3sK9xI/Jc79nYC+PBM3L0+BYybJi+Ost3nvog==
+X-Received: by 2002:a05:6000:2f88:b0:42b:30f9:79c9 with SMTP id ffacd0b85a97d-42f89f455c7mr8439244f8f.37.1765204314477;
+        Mon, 08 Dec 2025 06:31:54 -0800 (PST)
+Received: from blackdock.suse.cz (nat2.prg.suse.com. [195.250.132.146])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-42f7d222506sm27611266f8f.28.2025.12.08.06.31.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 08 Dec 2025 06:31:53 -0800 (PST)
+Date: Mon, 8 Dec 2025 15:31:52 +0100
+From: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
+To: Sun Shaojie <sunshaojie@kylinos.cn>
+Cc: chenridong@huaweicloud.com, cgroups@vger.kernel.org, 
+	hannes@cmpxchg.org, linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org, 
+	llong@redhat.com, shuah@kernel.org, tj@kernel.org
+Subject: Re: [PATCH v5] cpuset: Avoid invalidating sibling partitions on
+ cpuset.cpus conflict.
+Message-ID: <b3umm7mcucmztqqnp6x4e6ichqcml2r2bg7d2xairxajyqrzbt@3nshatmt2evo>
+References: <45f5e2c6-42ec-4d77-9c2d-0e00472a05de@huaweicloud.com>
+ <20251201094447.108278-1-sunshaojie@kylinos.cn>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1765183779;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=md5rTE5KknOBT4xPJmYQUJv6l5PQ4j1T9Q1h2YConaM=;
-	b=cFepiQxN0YI5olqORmnriQuU0nV4lPqC+Ss7VnbeXlyT0KrwxdFMofkiXOOFWKIE8LvaWO
-	7aWbu9fRckTTsC3E/cIM6HkHBApdiAnnFjcFyIpxPdIyxaK/ilrQEd8tGMH4WDVH8Yc5eV
-	P2Y16lI2B+JdCdUxC2e/7cbhN6nVHjg=
-Date: Mon, 08 Dec 2025 08:49:34 +0000
-Content-Type: text/plain; charset="utf-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="ji2b3cuc5ipyhw7r"
+Content-Disposition: inline
+In-Reply-To: <20251201094447.108278-1-sunshaojie@kylinos.cn>
+
+
+--ji2b3cuc5ipyhw7r
+Content-Type: text/plain; protected-headers=v1; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: hui.zhu@linux.dev
-Message-ID: <1d9a162605a3f32ac215430131f7745488deaa34@linux.dev>
-TLS-Required: No
-Subject: Re: [PATCH v2 21/23] sched: psi: implement bpf_psi_create_trigger() 
- kfunc
-To: "Roman Gushchin" <roman.gushchin@linux.dev>, "Andrew Morton"
- <akpm@linux-foundation.org>
-Cc: linux-kernel@vger.kernel.org, "Alexei Starovoitov" <ast@kernel.org>,
- "Suren Baghdasaryan" <surenb@google.com>, "Michal Hocko"
- <mhocko@kernel.org>, "Shakeel Butt" <shakeel.butt@linux.dev>, "Johannes 
- Weiner" <hannes@cmpxchg.org>, "Andrii Nakryiko" <andrii@kernel.org>, "JP 
- Kobryn" <inwardvessel@gmail.com>, linux-mm@kvack.org,
- cgroups@vger.kernel.org, bpf@vger.kernel.org, "Martin KaFai Lau"
- <martin.lau@kernel.org>, "Song Liu" <song@kernel.org>, "Kumar Kartikeya 
- Dwivedi" <memxor@gmail.com>, "Tejun Heo" <tj@kernel.org>, "Roman 
- Gushchin" <roman.gushchin@linux.dev>
-In-Reply-To: <20251027232206.473085-11-roman.gushchin@linux.dev>
-References: <20251027232206.473085-1-roman.gushchin@linux.dev>
- <20251027232206.473085-11-roman.gushchin@linux.dev>
-X-Migadu-Flow: FLOW_OUT
+Subject: Re: [PATCH v5] cpuset: Avoid invalidating sibling partitions on
+ cpuset.cpus conflict.
+MIME-Version: 1.0
 
-2025=E5=B9=B410=E6=9C=8828=E6=97=A5 07:22, "Roman Gushchin" <roman.gushch=
-in@linux.dev mailto:roman.gushchin@linux.dev?to=3D%22Roman%20Gushchin%22%=
-20%3Croman.gushchin%40linux.dev%3E > =E5=86=99=E5=88=B0:
+Hello.
 
-
+On Mon, Dec 01, 2025 at 05:44:47PM +0800, Sun Shaojie <sunshaojie@kylinos.c=
+n> wrote:
+> As for "different operation orders yield different results", Below is an
+> example that is not a corner case.
 >=20
->=20Implement a new bpf_psi_create_trigger() BPF kfunc, which allows
-> to create new PSI triggers and attach them to cgroups or be
-> system-wide.
+>     root cgroup
+>       /    \
+>      A1    B1
 >=20
->=20Created triggers will exist until the struct ops is loaded and
-> if they are attached to a cgroup until the cgroup exists.
+>  #1> echo "0" > A1/cpuset.cpus
+>  #2> echo "0-1" > B1/cpuset.cpus.exclusive --> return error
 >=20
->=20Due to a limitation of 5 arguments, the resource type and the "full"
-> bit are squeezed into a single u32.
+>  #1> echo "0-1" > B1/cpuset.cpus.exclusive
+>  #2> echo "0" > A1/cpuset.cpus
+
+Here it is a combination of remote cs local partitions.
+I'd like to treat the two approaches separately and better not consider
+their combination.
+
+The idea (and permissions check AFACS) behind remote partitions is to
+allow "stealing" CPU ownership so cpuset.cpus.exclusive has different
+behavior.
+
+> >   root cgroup
+> >        |
+> >       A1  //MK: A4 A5 here?
+> >      /  \
+> >    A2    A3... //MK: A4 A5 or here?
+> >
+> > #1> echo "0-1" > A1/cpuset.cpus
+> > #2> echo "root" > A1/cpuset.cpus.partition
+> > #3> echo "0-1" > A2/cpuset.cpus
+> > #4> echo "root" > A2/cpuset.cpus.partition
+> > mkdir A4
+> > mkdir A5
+> > echo "0" > A4/cpuset.cpus
+> > echo $$ > A4/cgroup.procs
+> > echo "1" > A5/cpuset.cpus
+> > echo $$ > A5/cgroup.procs
+> >
 >=20
->=20Signed-off-by: Roman Gushchin <roman.gushchin@linux.dev>
-
-Hi Roman,
-
-I wrote an eBPF program attempting to use bpf_psi struct ops and
-bpf_psi_create_trigger to continuously receive memory-related PSI
-events, but I only received one event.
-
-Looking at the code implementation, when an event occurs:
-if (cmpxchg(&t->event, 0, 1) =3D=3D 0) {
-
-However, in eBPF there appears to be no way to call the equivalent
-of this code from psi_trigger_poll:
-if (cmpxchg(&t->event, 1, 0) =3D=3D 1)
-to reset the event back to 0.
-
-Would it be possible to add an additional BPF helper function to
-handle this? Without a way to acknowledge/reset the event flag,
-the trigger only fires once and cannot be reused for continuous
-monitoring.
-
-Best,
-Hui
-
-
-
-> ---
->  include/linux/cgroup.h | 4 ++
->  include/linux/psi.h | 6 +++
->  kernel/sched/bpf_psi.c | 94 ++++++++++++++++++++++++++++++++++++++++++
->  3 files changed, 104 insertions(+)
+> If A2...A5 all belong to the same user, and that user wants both A4 and A=
+5=20
+> to have effective CPUs, then the user should also understand that A2 needs
+> to be adjusted to "member" instead of "root".
 >=20
->=20diff --git a/include/linux/cgroup.h b/include/linux/cgroup.h
-> index 6ed477338b16..1a99da44999e 100644
-> --- a/include/linux/cgroup.h
-> +++ b/include/linux/cgroup.h
-> @@ -707,6 +707,10 @@ static inline bool task_under_cgroup_hierarchy(str=
-uct task_struct *task,
->=20=20
->=20 static inline void cgroup_path_from_kernfs_id(u64 id, char *buf, siz=
-e_t buflen)
->  {}
-> +static inline struct cgroup *cgroup_get_from_id(u64 id)
-> +{
-> + return NULL;
-> +}
->  #endif /* !CONFIG_CGROUPS */
->=20=20
->=20 #ifdef CONFIG_CGROUPS
-> diff --git a/include/linux/psi.h b/include/linux/psi.h
-> index 8178e998d94b..8ffe84cd8571 100644
-> --- a/include/linux/psi.h
-> +++ b/include/linux/psi.h
-> @@ -50,6 +50,12 @@ int psi_cgroup_alloc(struct cgroup *cgrp);
->  void psi_cgroup_free(struct cgroup *cgrp);
->  void cgroup_move_task(struct task_struct *p, struct css_set *to);
->  void psi_cgroup_restart(struct psi_group *group);
-> +
-> +#else
-> +static inline struct psi_group *cgroup_psi(struct cgroup *cgrp)
-> +{
-> + return &psi_system;
-> +}
->  #endif
->=20=20
->=20 #else /* CONFIG_PSI */
-> diff --git a/kernel/sched/bpf_psi.c b/kernel/sched/bpf_psi.c
-> index c383a20119a6..7974de56594f 100644
-> --- a/kernel/sched/bpf_psi.c
-> +++ b/kernel/sched/bpf_psi.c
-> @@ -8,6 +8,7 @@
->  #include <linux/bpf_psi.h>
->  #include <linux/cgroup-defs.h>
->=20=20
->=20+struct bpf_struct_ops bpf_psi_bpf_ops;
->  static struct workqueue_struct *bpf_psi_wq;
->=20=20
->=20 static DEFINE_MUTEX(bpf_psi_lock);
-> @@ -186,6 +187,92 @@ static const struct bpf_verifier_ops bpf_psi_verif=
-ier_ops =3D {
->  .is_valid_access =3D bpf_psi_ops_is_valid_access,
->  };
->=20=20
->=20+__bpf_kfunc_start_defs();
-> +
-> +/**
-> + * bpf_psi_create_trigger - Create a PSI trigger
-> + * @bpf_psi: bpf_psi struct to attach the trigger to
-> + * @cgroup_id: cgroup Id to attach the trigger; 0 for system-wide scop=
-e
-> + * @resource: resource to monitor (PSI_MEM, PSI_IO, etc) and the full =
-bit.
-> + * @threshold_us: threshold in us
-> + * @window_us: window in us
-> + *
-> + * Creates a PSI trigger and attached is to bpf_psi. The trigger will =
-be
-> + * active unless bpf struct ops is unloaded or the corresponding cgrou=
-p
-> + * is deleted.
-> + *
-> + * Resource's most significant bit encodes whether "some" or "full"
-> + * PSI state should be tracked.
-> + *
-> + * Returns 0 on success and the error code on failure.
-> + */
-> +__bpf_kfunc int bpf_psi_create_trigger(struct bpf_psi *bpf_psi,
-> + u64 cgroup_id, u32 resource,
-> + u32 threshold_us, u32 window_us)
-> +{
-> + enum psi_res res =3D resource & ~BPF_PSI_FULL;
-> + bool full =3D resource & BPF_PSI_FULL;
-> + struct psi_trigger_params params;
-> + struct cgroup *cgroup __maybe_unused =3D NULL;
-> + struct psi_group *group;
-> + struct psi_trigger *t;
-> + int ret =3D 0;
-> +
-> + if (res >=3D NR_PSI_RESOURCES)
-> + return -EINVAL;
-> +
-> + if (IS_ENABLED(CONFIG_CGROUPS) && cgroup_id) {
-> + cgroup =3D cgroup_get_from_id(cgroup_id);
-> + if (IS_ERR_OR_NULL(cgroup))
-> + return PTR_ERR(cgroup);
-> +
-> + group =3D cgroup_psi(cgroup);
-> + } else {
-> + group =3D &psi_system;
-> + }
-> +
-> + params.type =3D PSI_BPF;
-> + params.bpf_psi =3D bpf_psi;
-> + params.privileged =3D capable(CAP_SYS_RESOURCE);
-> + params.res =3D res;
-> + params.full =3D full;
-> + params.threshold_us =3D threshold_us;
-> + params.window_us =3D window_us;
-> +
-> + t =3D psi_trigger_create(group, &params);
-> + if (IS_ERR(t))
-> + ret =3D PTR_ERR(t);
-> + else
-> + t->cgroup_id =3D cgroup_id;
-> +
-> +#ifdef CONFIG_CGROUPS
-> + if (cgroup)
-> + cgroup_put(cgroup);
-> +#endif
-> +
-> + return ret;
-> +}
-> +__bpf_kfunc_end_defs();
-> +
-> +BTF_KFUNCS_START(bpf_psi_kfuncs)
-> +BTF_ID_FLAGS(func, bpf_psi_create_trigger, KF_TRUSTED_ARGS)
-> +BTF_KFUNCS_END(bpf_psi_kfuncs)
-> +
-> +static int bpf_psi_kfunc_filter(const struct bpf_prog *prog, u32 kfunc=
-_id)
-> +{
-> + if (btf_id_set8_contains(&bpf_psi_kfuncs, kfunc_id) &&
-> + prog->aux->st_ops !=3D &bpf_psi_bpf_ops)
-> + return -EACCES;
-> +
-> + return 0;
-> +}
-> +
-> +static const struct btf_kfunc_id_set bpf_psi_kfunc_set =3D {
-> + .owner =3D THIS_MODULE,
-> + .set =3D &bpf_psi_kfuncs,
-> + .filter =3D bpf_psi_kfunc_filter,
-> +};
-> +
->  static int bpf_psi_ops_reg(void *kdata, struct bpf_link *link)
->  {
->  struct bpf_psi_ops *ops =3D kdata;
-> @@ -287,6 +374,13 @@ static int __init bpf_psi_struct_ops_init(void)
->  if (!bpf_psi_wq)
->  return -ENOMEM;
->=20=20
->=20+ err =3D register_btf_kfunc_id_set(BPF_PROG_TYPE_STRUCT_OPS,
-> + &bpf_psi_kfunc_set);
-> + if (err) {
-> + pr_warn("error while registering bpf psi kfuncs: %d", err);
-> + goto err;
-> + }
-> +
->  err =3D register_bpf_struct_ops(&bpf_psi_bpf_ops, bpf_psi_ops);
->  if (err) {
->  pr_warn("error while registering bpf psi struct ops: %d", err);
-> --=20
->=202.51.0
->
+> if A2...A5 belong to different users, must satisfying user A4=E2=80=99s r=
+equirement
+> come at the expense of user A2=E2=80=99s requirement? That is not fair.
+
+If A4 is a sibling at the level of A1, then A2 must be stripped of its
+CPUs to honor the hierarchy hence the apparent unfairness.
+
+If A4 is a sibling at the level of A2 and they have different owning
+users, their respective cpuset.cpus should only be writable by A1's user
+(the one who distributes the cpus) so that any arbitration between the
+siblings is avoided.
+
+0.02=E2=82=AC,
+Michal
+
+--ji2b3cuc5ipyhw7r
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iJEEABYKADkWIQRCE24Fn/AcRjnLivR+PQLnlNv4CAUCaTbhSRsUgAAAAAAEAA5t
+YW51MiwyLjUrMS4xMSwyLDIACgkQfj0C55Tb+AiR3QD/SGEhKmZeuPCjZm+gTCIO
+JD8ZSy5Dy5ZU6hpXQCtRXvEBAKsTxFqdq+5hdMBQKpsxhCKKGYjnRsciVMJNZ1AA
+ThYG
+=qpLP
+-----END PGP SIGNATURE-----
+
+--ji2b3cuc5ipyhw7r--
 
