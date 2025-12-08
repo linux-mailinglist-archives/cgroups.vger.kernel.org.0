@@ -1,382 +1,430 @@
-Return-Path: <cgroups+bounces-12283-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-12284-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 102ACCAB1F1
-	for <lists+cgroups@lfdr.de>; Sun, 07 Dec 2025 07:16:51 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 240DACABD70
+	for <lists+cgroups@lfdr.de>; Mon, 08 Dec 2025 03:27:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id DB42B300854A
-	for <lists+cgroups@lfdr.de>; Sun,  7 Dec 2025 06:16:49 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 11639300307E
+	for <lists+cgroups@lfdr.de>; Mon,  8 Dec 2025 02:27:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D6189237713;
-	Sun,  7 Dec 2025 06:16:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lDdBX+HG"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1116C211499;
+	Mon,  8 Dec 2025 02:27:17 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-ot1-f43.google.com (mail-ot1-f43.google.com [209.85.210.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C8CB2EEB3
-	for <cgroups@vger.kernel.org>; Sun,  7 Dec 2025 06:16:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E3763AC39;
+	Mon,  8 Dec 2025 02:27:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765088208; cv=none; b=p2lugMKilOESa1W58picxOzvXFYoNZN/9EmbZtucCsf695YIFUdDpyD3eAJ6aXPYx35Qdgbu24d1yxJXvRCJ3ND8wmI+VOgD3a543Z1YkKhZELXfbHpkg+VwzvrTJ+QlrylyOs6siLZKdvQKYshLvuxx7u7G+01OZ052cMPX4Ws=
+	t=1765160836; cv=none; b=dCDvi9IEHUao5iZKpf+yvsf6UMOpBFJncN2+XK2aXMVwckLh8wQgPhPjEDBfs1m2ALlps7gW71UGEnBzLO4YHfcyCPebU413WZEv0A1PMK6hkYr0woRJtaRbzRFCLYhK9u6ORrik/NlfnLRbM9qfMc1Yj/EWRXd1cY0NR7Uf6FM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765088208; c=relaxed/simple;
-	bh=Vf6nRuZPEba+Oifq2sGnvE2wxBWCAWdIIwjomCWz4yI=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=LHKtHQPYjykG1zM7B3LykugkOY7qv0wWrnWv7mNSX6XHB+8YExohSBQYP/OVYVKM/nYCr0v+iZQXTlcXvMDhGCAl7EI3O+8GBugDcmSkdmPH9FTPCVlhxIRiFoRGxnhWT4SnJYaDCSR38VNrOMTsFj1JJeK1wS17PUR8NCjTVE0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=lDdBX+HG; arc=none smtp.client-ip=209.85.210.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ot1-f43.google.com with SMTP id 46e09a7af769-7c6d3676455so1660569a34.2
-        for <cgroups@vger.kernel.org>; Sat, 06 Dec 2025 22:16:46 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1765088206; x=1765693006; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Un5sUc5Cx47cq3O9cSCtpokOGHVUQEIffWJ4oCrfNps=;
-        b=lDdBX+HGMAEKYE60gxbiMVUnBtKI/10NEoaBpGBYnl5C7k8NmQC995SmOoVEtC3MZ5
-         PUfZHoKxQ3py/lTQpDS6EGov1KvXCee6LMSMmBLpZVZixE3DtUCZtaYfIRbNQaf4nlp8
-         +Cya8PjYKgX/BN+V9zb1qdX38//qLkKHX5JdrKF/rFiwywU+fDb0zgUy2yq5AmqwlOQM
-         uCZF/9ASqajNQsYgefovqw+I5H/U4aMT+K/oAISB0XvqD/FEJDZkWy9zOAEqkBGb2DRi
-         t7kQ2X/5rDmy5vXqlLgWb8YficBxXH+c65t5+3Ay5UQ2kPTQoMhva1lq3JaexVpuMHIK
-         4CPw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1765088206; x=1765693006;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=Un5sUc5Cx47cq3O9cSCtpokOGHVUQEIffWJ4oCrfNps=;
-        b=nYAtf0tcLxPgd8GHqIXdwtS2x2/BanPC71GFDWMtkYpxVeOKi44Ii7SBX4+GPeQabT
-         8WRXVn8733NqC+XAleico/ifmOvJos6W1WJhpGwgfSsCqa6m2zKu5L1TbinvH4R49Fuh
-         Oc+y0PuCZMzTruUdp/LU6FZ4eFgwGR9I1GDXM6OpJguaCea2vSDWX4E7ZNWN9NkXxotC
-         UngV5tU6VF1q+Dcrv81VObgB4rEiVJsixGIQxk9eKTr5F58OVqn6QoCD5++FuIDraRpd
-         Qyvb7evUXXNIYykIj/nJB3mMBWcksgdhJnEvTmVY48ehrIYfj4A1PplLLdLmn5DQ7gyG
-         HcoQ==
-X-Forwarded-Encrypted: i=1; AJvYcCX+/bPwSgUTR3B/9LatbiYT1xUVjKRdE63PRMEUkDJDKV8pyYIPHx6jSc8+XvxT3BHkAG1rUID1@vger.kernel.org
-X-Gm-Message-State: AOJu0YyrL1v12+m2gzy8myDI9iULVgd3IdZyEvjdpyrUIMkOfe1Zco85
-	XijZtszie5tAqiTaLFT5HnvORD4ncUtiAfDiGKIo5qttDWwEEX829oOU4xCWw94u8PZnf4Anek5
-	pDPWcXdK3AgiGjGGoBX4wGL6S1ac0YBc=
-X-Gm-Gg: ASbGncvVh9nylHamh/Kwkvvk9Ym3xu0ncDDxwq/oxT8cmTQNCFJHlHgI0JtfI00OS3y
-	oyOLZCYy7bV6CqMK9fk4+JW7INRKkR76rQKh1IUP7xsG5RUby7/EKdrgbnFchagvdTzvfsqQcbw
-	v1K0YDqyMDcjI5CaoHlXoWhpIXFJst+uWUGsMPhU43Jrv0QKbVz8cVLGn0irdRxFxsCCYm9YCDr
-	zPS9WsYBUJJB9FInQ7IBkXdQg6Y3qUsVMrtNd4XuPG5CU4pPSUqymstzxHQozY50WQER26Q
-X-Google-Smtp-Source: AGHT+IGTU11em87jeAo6kbD6dSOQffzi00PVFHQ+kjvwjKAEFHYJNasF5rV2kwcoj4CItjdfPWuUhV4Bdq+BX91kfOI=
-X-Received: by 2002:a05:6830:3153:b0:7c7:5385:9ac2 with SMTP id
- 46e09a7af769-7c97078be65mr3441356a34.8.1765088205704; Sat, 06 Dec 2025
- 22:16:45 -0800 (PST)
+	s=arc-20240116; t=1765160836; c=relaxed/simple;
+	bh=HKeFwp5Kma6WpxnWvWcJMj2mbY5s5Jz/s6sn8srgGO4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=GjM3U/iNjkuBp9jS01I+7okgphQQyMKKHxq/fvn6ActOUBWPctG8qyvBiTN/oUZZYc7iNT1YdJU4Mu3oV5R9IEBRqRC1r67sUU1N1ahuE0QP8fKwUYa7b0VcyT81iqH/N+1Dybu7cYf8vI846wAv/uID2ll4blGjpsg8let4lm0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.216])
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTPS id 4dPm7M4KL5zKHMNt;
+	Mon,  8 Dec 2025 10:26:07 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.128])
+	by mail.maildlp.com (Postfix) with ESMTP id ED0B01A15BD;
+	Mon,  8 Dec 2025 10:27:03 +0800 (CST)
+Received: from [10.67.111.176] (unknown [10.67.111.176])
+	by APP4 (Coremail) with SMTP id gCh0CgCXwJ10NzZpuBbzAw--.48454S2;
+	Mon, 08 Dec 2025 10:27:01 +0800 (CST)
+Message-ID: <e657d5ac-6f92-4dbb-bf32-76084988d024@huaweicloud.com>
+Date: Mon, 8 Dec 2025 10:26:59 +0800
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20251205005841.3942668-1-avagin@google.com> <20251205005841.3942668-2-avagin@google.com>
- <25cac682-e6a5-4ab2-bae2-fb4df2d33626@huaweicloud.com>
-In-Reply-To: <25cac682-e6a5-4ab2-bae2-fb4df2d33626@huaweicloud.com>
-From: Andrei Vagin <avagin@gmail.com>
-Date: Sat, 6 Dec 2025 22:16:34 -0800
-X-Gm-Features: AQt7F2p7RekYLuKI-hKafG4DE8Ti31OsLl4BdXgEl5swhlVsRR3s_ZW5SSZKSRw
-Message-ID: <CANaxB-w+j89zVRpwVErT8JdrmKZqw+D7ANZBzk2pA2WCj75XPA@mail.gmail.com>
-Subject: Re: [PATCH 1/3] cgroup, binfmt_elf: Add hwcap masks to the misc controller
-To: Chen Ridong <chenridong@huaweicloud.com>
-Cc: Andrei Vagin <avagin@google.com>, Kees Cook <kees@kernel.org>, linux-kernel@vger.kernel.org, 
-	linux-fsdevel@vger.kernel.org, linux-mm@kvack.org, cgroups@vger.kernel.org, 
-	criu@lists.linux.dev, Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>, 
-	=?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>, 
-	Vipin Sharma <vipinsh@google.com>, Jonathan Corbet <corbet@lwn.net>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH -next 1/2] mm/mglru: use mem_cgroup_iter for global
+ reclaim
+To: Shakeel Butt <shakeel.butt@linux.dev>,
+ Johannes Weiner <hannes@cmpxchg.org>
+Cc: akpm@linux-foundation.org, axelrasmussen@google.com, yuanchu@google.com,
+ weixugc@google.com, david@kernel.org, lorenzo.stoakes@oracle.com,
+ Liam.Howlett@oracle.com, vbabka@suse.cz, rppt@kernel.org, surenb@google.com,
+ mhocko@suse.com, corbet@lwn.net, hannes@cmpxchg.org,
+ roman.gushchin@linux.dev, muchun.song@linux.dev, yuzhao@google.com,
+ zhengqi.arch@bytedance.com, linux-mm@kvack.org, linux-doc@vger.kernel.org,
+ linux-kernel@vger.kernel.org, cgroups@vger.kernel.org, lujialin4@huawei.com,
+ chenridong@huawei.com
+References: <20251204123124.1822965-1-chenridong@huaweicloud.com>
+ <20251204123124.1822965-2-chenridong@huaweicloud.com>
+ <tvrspnhlo7x7gpjc4nn7f73b2qoyphkpaxlcnnn4fsxciv6bks@3dibvbs7u5do>
+Content-Language: en-US
+From: Chen Ridong <chenridong@huaweicloud.com>
+In-Reply-To: <tvrspnhlo7x7gpjc4nn7f73b2qoyphkpaxlcnnn4fsxciv6bks@3dibvbs7u5do>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:gCh0CgCXwJ10NzZpuBbzAw--.48454S2
+X-Coremail-Antispam: 1UD129KBjvAXoW3ZF1UZFWfCr4kCrW5JFWUArb_yoW8XFWDXo
+	W3Zr15Kw1fArW7Zr1kWa1kCrn7XrsrGF1kKrW3uws8Zr1xXa4xKayrA3sF9w1UXw1qyr98
+	GayfKF4SkFySyF93n29KB7ZKAUJUUUU8529EdanIXcx71UUUUU7v73VFW2AGmfu7bjvjm3
+	AaLaJ3UjIYCTnIWjp_UUUY27kC6x804xWl14x267AKxVW5JVWrJwAFc2x0x2IEx4CE42xK
+	8VAvwI8IcIk0rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4
+	AK67xGY2AK021l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF
+	7I0E14v26r4UJVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7
+	CjxVAFwI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8C
+	rVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4
+	IE7xkEbVWUJVW8JwACjcxG0xvEwIxGrwACI402YVCY1x02628vn2kIc2xKxwCY1x0262kK
+	e7AKxVW8ZVWrXwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c
+	02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_GFv_
+	WrylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7
+	CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v2
+	6r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07
+	jIksgUUUUU=
+X-CM-SenderInfo: hfkh02xlgr0w46kxt4xhlfz01xgou0bp/
 
-On Fri, Dec 5, 2025 at 2:11=E2=80=AFAM Chen Ridong <chenridong@huaweicloud.=
-com> wrote:
->
->
->
-> On 2025/12/5 8:58, Andrei Vagin wrote:
-> > Add an interface to the misc cgroup controller that allows masking out
-> > hardware capabilities (AT_HWCAP) reported to user-space processes. This
-> > provides a mechanism to restrict the features a containerized
-> > application can see.
-> >
-> > The new "misc.mask" cgroup file allows users to specify masks for
-> > AT_HWCAP, AT_HWCAP2, AT_HWCAP3, and AT_HWCAP4.
-> >
-> > The output of "misc.mask" is extended to display the effective mask,
-> > which is a combination of the masks from the current cgroup and all its
-> > ancestors.
-> >
-> > Signed-off-by: Andrei Vagin <avagin@google.com>
-> > ---
-> >  fs/binfmt_elf.c             |  24 +++++--
-> >  include/linux/misc_cgroup.h |  25 +++++++
-> >  kernel/cgroup/misc.c        | 126 ++++++++++++++++++++++++++++++++++++
-> >  3 files changed, 171 insertions(+), 4 deletions(-)
-> >
-> > diff --git a/fs/binfmt_elf.c b/fs/binfmt_elf.c
-> > index 3eb734c192e9..59137784e81d 100644
-> > --- a/fs/binfmt_elf.c
-> > +++ b/fs/binfmt_elf.c
-> > @@ -47,6 +47,7 @@
-> >  #include <linux/dax.h>
-> >  #include <linux/uaccess.h>
-> >  #include <uapi/linux/rseq.h>
-> > +#include <linux/misc_cgroup.h>
-> >  #include <asm/param.h>
-> >  #include <asm/page.h>
-> >
-> > @@ -182,6 +183,21 @@ create_elf_tables(struct linux_binprm *bprm, const=
- struct elfhdr *exec,
-> >       int ei_index;
-> >       const struct cred *cred =3D current_cred();
-> >       struct vm_area_struct *vma;
-> > +     struct misc_cg *misc_cg;
-> > +     u64 hwcap_mask[4] =3D {0, 0, 0, 0};
-> > +
-> > +     misc_cg =3D get_current_misc_cg();
-> > +     misc_cg_get_mask(MISC_CG_MASK_HWCAP, misc_cg, &hwcap_mask[0]);
-> > +#ifdef ELF_HWCAP2
-> > +     misc_cg_get_mask(MISC_CG_MASK_HWCAP2, misc_cg, &hwcap_mask[1]);
-> > +#endif
-> > +#ifdef ELF_HWCAP3
-> > +     misc_cg_get_mask(MISC_CG_MASK_HWCAP3, misc_cg, &hwcap_mask[2]);
-> > +#endif
-> > +#ifdef ELF_HWCAP4
-> > +     misc_cg_get_mask(MISC_CG_MASK_HWCAP4, misc_cg, &hwcap_mask[3]);
-> > +#endif
-> > +     put_misc_cg(misc_cg);
-> >
-> >       /*
-> >        * In some cases (e.g. Hyper-Threading), we want to avoid L1
-> > @@ -246,7 +262,7 @@ create_elf_tables(struct linux_binprm *bprm, const =
-struct elfhdr *exec,
-> >        */
-> >       ARCH_DLINFO;
-> >  #endif
-> > -     NEW_AUX_ENT(AT_HWCAP, ELF_HWCAP);
-> > +     NEW_AUX_ENT(AT_HWCAP, ELF_HWCAP & ~hwcap_mask[0]);
-> >       NEW_AUX_ENT(AT_PAGESZ, ELF_EXEC_PAGESIZE);
-> >       NEW_AUX_ENT(AT_CLKTCK, CLOCKS_PER_SEC);
-> >       NEW_AUX_ENT(AT_PHDR, phdr_addr);
-> > @@ -264,13 +280,13 @@ create_elf_tables(struct linux_binprm *bprm, cons=
-t struct elfhdr *exec,
-> >       NEW_AUX_ENT(AT_SECURE, bprm->secureexec);
-> >       NEW_AUX_ENT(AT_RANDOM, (elf_addr_t)(unsigned long)u_rand_bytes);
-> >  #ifdef ELF_HWCAP2
-> > -     NEW_AUX_ENT(AT_HWCAP2, ELF_HWCAP2);
-> > +     NEW_AUX_ENT(AT_HWCAP2, ELF_HWCAP2 & ~hwcap_mask[1]);
-> >  #endif
-> >  #ifdef ELF_HWCAP3
-> > -     NEW_AUX_ENT(AT_HWCAP3, ELF_HWCAP3);
-> > +     NEW_AUX_ENT(AT_HWCAP3, ELF_HWCAP3 & ~hwcap_mask[2]);
-> >  #endif
-> >  #ifdef ELF_HWCAP4
-> > -     NEW_AUX_ENT(AT_HWCAP4, ELF_HWCAP4);
-> > +     NEW_AUX_ENT(AT_HWCAP4, ELF_HWCAP4 & ~hwcap_mask[3]);
-> >  #endif
-> >       NEW_AUX_ENT(AT_EXECFN, bprm->exec);
-> >       if (k_platform) {
-> > diff --git a/include/linux/misc_cgroup.h b/include/linux/misc_cgroup.h
-> > index 0cb36a3ffc47..cff830c238fb 100644
-> > --- a/include/linux/misc_cgroup.h
-> > +++ b/include/linux/misc_cgroup.h
-> > @@ -8,6 +8,8 @@
-> >  #ifndef _MISC_CGROUP_H_
-> >  #define _MISC_CGROUP_H_
-> >
-> > +#include <linux/elf.h>
-> > +
-> >  /**
-> >   * enum misc_res_type - Types of misc cgroup entries supported by the =
-host.
-> >   */
-> > @@ -26,6 +28,20 @@ enum misc_res_type {
-> >       MISC_CG_RES_TYPES
-> >  };
-> >
-> > +enum misc_mask_type {
-> > +     MISC_CG_MASK_HWCAP,
-> > +#ifdef ELF_HWCAP2
-> > +     MISC_CG_MASK_HWCAP2,
-> > +#endif
-> > +#ifdef ELF_HWCAP3
-> > +     MISC_CG_MASK_HWCAP3,
-> > +#endif
-> > +#ifdef ELF_HWCAP4
-> > +     MISC_CG_MASK_HWCAP4,
-> > +#endif
-> > +     MISC_CG_MASK_TYPES
-> > +};
-> > +
-> >  struct misc_cg;
-> >
-> >  #ifdef CONFIG_CGROUP_MISC
-> > @@ -62,12 +78,15 @@ struct misc_cg {
-> >       struct cgroup_file events_local_file;
-> >
-> >       struct misc_res res[MISC_CG_RES_TYPES];
-> > +     u64 mask[MISC_CG_MASK_TYPES];
-> >  };
-> >
-> >  int misc_cg_set_capacity(enum misc_res_type type, u64 capacity);
-> >  int misc_cg_try_charge(enum misc_res_type type, struct misc_cg *cg, u6=
-4 amount);
-> >  void misc_cg_uncharge(enum misc_res_type type, struct misc_cg *cg, u64=
- amount);
-> >
-> > +int misc_cg_get_mask(enum misc_mask_type type, struct misc_cg *cg, u64=
- *pmask);
-> > +
-> >  /**
-> >   * css_misc() - Get misc cgroup from the css.
-> >   * @css: cgroup subsys state object.
-> > @@ -134,5 +153,11 @@ static inline void put_misc_cg(struct misc_cg *cg)
-> >  {
-> >  }
-> >
-> > +static inline int misc_cg_get_mask(enum misc_mask_type type, struct mi=
-sc_cg *cg, u64 *pmask)
-> > +{
-> > +     *pmask =3D 0;
-> > +     return 0;
-> > +}
-> > +
-> >  #endif /* CONFIG_CGROUP_MISC */
-> >  #endif /* _MISC_CGROUP_H_ */
-> > diff --git a/kernel/cgroup/misc.c b/kernel/cgroup/misc.c
-> > index 6a01d91ea4cb..d1386d86060f 100644
-> > --- a/kernel/cgroup/misc.c
-> > +++ b/kernel/cgroup/misc.c
-> > @@ -30,6 +30,19 @@ static const char *const misc_res_name[] =3D {
-> >  #endif
-> >  };
-> >
-> > +static const char *const misc_mask_name[] =3D {
-> > +     "AT_HWCAP",
-> > +#ifdef ELF_HWCAP2
-> > +     "AT_HWCAP2",
-> > +#endif
-> > +#ifdef ELF_HWCAP3
-> > +     "AT_HWCAP3",
-> > +#endif
-> > +#ifdef ELF_HWCAP4
-> > +     "AT_HWCAP4",
-> > +#endif
-> > +};
-> > +
-> >  /* Root misc cgroup */
-> >  static struct misc_cg root_cg;
-> >
-> > @@ -71,6 +84,11 @@ static inline bool valid_type(enum misc_res_type typ=
-e)
-> >       return type >=3D 0 && type < MISC_CG_RES_TYPES;
-> >  }
-> >
-> > +static inline bool valid_mask_type(enum misc_mask_type type)
-> > +{
-> > +     return type >=3D 0 && type < MISC_CG_MASK_TYPES;
-> > +}
-> > +
-> >  /**
-> >   * misc_cg_set_capacity() - Set the capacity of the misc cgroup res.
-> >   * @type: Type of the misc res.
-> > @@ -391,6 +409,109 @@ static int misc_events_local_show(struct seq_file=
- *sf, void *v)
-> >       return __misc_events_show(sf, true);
-> >  }
-> >
-> > +/**
-> > + * misc_cg_get_mask() - Get the mask of the specified type.
-> > + * @type: The misc mask type.
-> > + * @cg: The misc cgroup.
-> > + * @pmask: Pointer to the resulting mask.
-> > + *
-> > + * This function calculates the effective mask for a given cgroup by w=
-alking up
-> > + * the hierarchy and ORing the masks from all parent cgroupfs. The fin=
-al result
-> > + * is stored in the location pointed to by @pmask.
-> > + *
-> > + * Context: Any context.
-> > + * Return: 0 on success, -EINVAL if @type is invalid.
-> > + */
-> > +int misc_cg_get_mask(enum misc_mask_type type, struct misc_cg *cg, u64=
- *pmask)
-> > +{
-> > +     struct misc_cg *i;
-> > +     u64 mask =3D 0;
-> > +
-> > +     if (!(valid_mask_type(type)))
-> > +             return -EINVAL;
-> > +
-> > +     for (i =3D cg; i; i =3D parent_misc(i))
-> > +             mask |=3D READ_ONCE(i->mask[type]);
-> > +
-> > +     *pmask =3D mask;
-> > +     return 0;
-> > +}
-> > +
-> > +/**
-> > + * misc_cg_mask_show() - Show the misc cgroup masks.
-> > + * @sf: Interface file
-> > + * @v: Arguments passed
-> > + *
-> > + * Context: Any context.
-> > + * Return: 0 to denote successful print.
-> > + */
-> > +static int misc_cg_mask_show(struct seq_file *sf, void *v)
-> > +{
-> > +     struct misc_cg *cg =3D css_misc(seq_css(sf));
-> > +     int i;
-> > +
-> > +     for (i =3D 0; i < MISC_CG_MASK_TYPES; i++) {
-> > +             u64 rval, val =3D READ_ONCE(cg->mask[i]);
-> > +
-> > +             misc_cg_get_mask(i, cg, &rval);
-> > +             seq_printf(sf, "%s\t%#016llx\t%#016llx\n", misc_mask_name=
-[i], val, rval);
-> > +     }
-> > +
-> > +     return 0;
-> > +}
-> > +
->
-> I'm concerned about the performance impact of the bottom-up traversal in =
-deeply nested cgroup
-> hierarchies. Could this approach introduce noticeable latency in such sce=
-narios?
->
 
-I wrote an execve benchmark to measure the impact of this change
-(https://github.com/avagin/execve_vs_misccg).
 
-The benchmark results are as follows:
+On 2025/12/5 6:29, Shakeel Butt wrote:
+> Hi Chen,
+> 
+> On Thu, Dec 04, 2025 at 12:31:23PM +0000, Chen Ridong wrote:
+>> From: Chen Ridong <chenridong@huawei.com>
+>>
+>> The memcg LRU was originally introduced for global reclaim to enhance
+>> scalability. However, its implementation complexity has led to performance
+>> regressions when dealing with a large number of memory cgroups [1].
+>>
+>> As suggested by Johannes [1], this patch adopts mem_cgroup_iter with
+>> cookie-based iteration for global reclaim, aligning with the approach
+>> already used in shrink_node_memcgs. This simplification removes the
+>> dedicated memcg LRU tracking while maintaining the core functionality.
+>>
+>> It performed a stress test based on Zhao Yu's methodology [2] on a
+>> 1 TB, 4-node NUMA system. The results are summarized below:
+>>
+>> 					memcg LRU    memcg iter
+>> stddev(pgsteal) / mean(pgsteal)            91.2%         75.7%
+>> sum(pgsteal) / sum(requested)             216.4%        230.5%
+>>
+>> The new implementation demonstrates a significant improvement in
+>> fairness, reducing the standard deviation relative to the mean by
+>> 15.5 percentage points. While the reclaim accuracy shows a slight
+>> increase in overscan (from 85086871 to 90633890, 6.5%).
+>>
+>> The primary benefits of this change are:
+>> 1. Simplified codebase by removing custom memcg LRU infrastructure
+>> 2. Improved fairness in memory reclaim across multiple cgroups
+>> 3. Better performance when creating many memory cgroups
+>>
+>> [1] https://lore.kernel.org/r/20251126171513.GC135004@cmpxchg.org
+>> [2] https://lore.kernel.org/r/20221222041905.2431096-7-yuzhao@google.com
+>> Signed-off-by: Chen Ridong <chenridong@huawei.com>
+> 
+> Thanks a lot of this awesome work.
+> 
 
-depth | before (ops/sec)| after (ops/sec)| ratio %| perf
-------------------------------------------------------
-0     | 4813.06 =C2=B1 11.01 | 4826.78 =C2=B1 19.33| 100.28 |
-2     | 4752.75 =C2=B1 11.28 | 4754.38 =C2=B1 21.93| 100.03 |
-4     | 4767.41 =C2=B1 8.35  | 4729.81 =C2=B1 29.56|  99.21 |
-8     | 4768.01 =C2=B1 10.42 | 4745.23 =C2=B1 27.68|  99.52 |
-16    | 4749.34 =C2=B1 21.03 | 4723.63 =C2=B1 23.57|  99.45 |
-32    | 4758.67 =C2=B1 10.94 | 4728.49 =C2=B1 13.9 |  99.36 |
-64    | 4749.85 =C2=B1 12.33 | 4686.3  =C2=B1 13.06|  98.66 | 0.11%
-128   | 4707.22 =C2=B1 12.01 | 4668.22 =C2=B1 16.9 |  99.17 | 0.33%
-256   | 4725.75 =C2=B1 6.07  | 4629.09 =C2=B1 27.02|  97.95 | 1.61%
+Hello Shakeel and Johannes,
 
-Columns:
-* depth: The nesting level of the cgroup.
-* before: without this patch.
-* after: with this patch applied.
-* ratio: performance of after relative to before.
-* perf: profiling data from perf showing execution time spent in the
-        misc_cg_get_mask function.
+I apologize for the incorrect results I provided earlier. I initially used an AI tool to process the
+data (I admit that was lazy of me—please forget that). When I re-ran the test to re-extracted the
+refault data and processed it again, I found that the AI tool had given me the wrong output.
 
-The performance impact is almost negligible for cgroup depths up to 64.
-Even at a depth of 128, the overhead is less than 1%.
+I have now processed the data manually in Excel, and the correct results are:
 
-Thanks,
-Andrei
+pgsteal：
+						memcg LRU    memcg iter
+stddev(pgsteal) / mean(pgsteal)			106.03%		93.20%
+sum(pgsteal) / sum(requested)			98.10%		99.28%
+
+workingset_refault_anon：
+						memcg LRU    memcg iter
+stddev(refault) / mean(refault)			193.97%		134.67%
+sum(refault)					1963229		2027567
+
+I believe these final results are much better than the previous incorrect ones, especially since the
+pgsteal ratio is now close to 100%, indicating we are not over-scanning. Additionally, refaults
+increased by 64,238 (a 3.2% rise).
+
+Let me know if you have any questions.
+
+----------------------------------------------------------------------
+
+The original data memcg LRU:
+pgsteal:
+SUM: 38572704 AVERAGE: 301349.25 STDEV: 319518.5965
+refault:
+SUM: 1963229 AVERAGE: 15337.72656 STDEV: 29750.03391
+
+pgsteal	655392				workingset_refault_anon	17131
+pgsteal	657308				workingset_refault_anon	24841
+pgsteal	103777				workingset_refault_anon	430
+pgsteal	103134				workingset_refault_anon	884
+pgsteal	964772				workingset_refault_anon	117159
+pgsteal	103462				workingset_refault_anon	539
+pgsteal	102878				workingset_refault_anon	25
+pgsteal	707851				workingset_refault_anon	30634
+pgsteal	103925				workingset_refault_anon	497
+pgsteal	103913				workingset_refault_anon	953
+pgsteal	103020				workingset_refault_anon	110
+pgsteal	102871				workingset_refault_anon	607
+pgsteal	697775				workingset_refault_anon	21529
+pgsteal	102944				workingset_refault_anon	57
+pgsteal	103090				workingset_refault_anon	819
+pgsteal	102988				workingset_refault_anon	583
+pgsteal	102987				workingset_refault_anon	108
+pgsteal	103093				workingset_refault_anon	17
+pgsteal	778016				workingset_refault_anon	79000
+pgsteal	102920				workingset_refault_anon	14
+pgsteal	655447				workingset_refault_anon	9069
+pgsteal	102869				workingset_refault_anon	6
+pgsteal	699920				workingset_refault_anon	34409
+pgsteal	103127				workingset_refault_anon	223
+pgsteal	102876				workingset_refault_anon	646
+pgsteal	103642				workingset_refault_anon	439
+pgsteal	102881				workingset_refault_anon	110
+pgsteal	863202				workingset_refault_anon	77605
+pgsteal	651786				workingset_refault_anon	8322
+pgsteal	102981				workingset_refault_anon	51
+pgsteal	103380				workingset_refault_anon	877
+pgsteal	706377				workingset_refault_anon	27729
+pgsteal	103436				workingset_refault_anon	682
+pgsteal	103839				workingset_refault_anon	336
+pgsteal	103012				workingset_refault_anon	23
+pgsteal	103476				workingset_refault_anon	729
+pgsteal	102867				workingset_refault_anon	12
+pgsteal	102914				workingset_refault_anon	122
+pgsteal	102886				workingset_refault_anon	627
+pgsteal	103736				workingset_refault_anon	514
+pgsteal	102879				workingset_refault_anon	618
+pgsteal	102860				workingset_refault_anon	3
+pgsteal	102877				workingset_refault_anon	27
+pgsteal	103255				workingset_refault_anon	384
+pgsteal	982183				workingset_refault_anon	85362
+pgsteal	102947				workingset_refault_anon	158
+pgsteal	102880				workingset_refault_anon	651
+pgsteal	973764				workingset_refault_anon	81542
+pgsteal	923711				workingset_refault_anon	94596
+pgsteal	102938				workingset_refault_anon	660
+pgsteal	888882				workingset_refault_anon	69549
+pgsteal	102868				workingset_refault_anon	14
+pgsteal	103130				workingset_refault_anon	166
+pgsteal	103388				workingset_refault_anon	467
+pgsteal	102965				workingset_refault_anon	197
+pgsteal	964699				workingset_refault_anon	74903
+pgsteal	103263				workingset_refault_anon	373
+pgsteal	103614				workingset_refault_anon	781
+pgsteal	962228				workingset_refault_anon	72108
+pgsteal	672174				workingset_refault_anon	19739
+pgsteal	102920				workingset_refault_anon	19
+pgsteal	670248				workingset_refault_anon	18411
+pgsteal	102877				workingset_refault_anon	581
+pgsteal	103758				workingset_refault_anon	871
+pgsteal	102874				workingset_refault_anon	609
+pgsteal	103075				workingset_refault_anon	274
+pgsteal	103550				workingset_refault_anon	102
+pgsteal	755180				workingset_refault_anon	44303
+pgsteal	951252				workingset_refault_anon	84566
+pgsteal	929144				workingset_refault_anon	99081
+pgsteal	103207				workingset_refault_anon	30
+pgsteal	103292				workingset_refault_anon	427
+pgsteal	103271				workingset_refault_anon	332
+pgsteal	102865				workingset_refault_anon	4
+pgsteal	923280				workingset_refault_anon	72715
+pgsteal	104682				workingset_refault_anon	372
+pgsteal	102870				workingset_refault_anon	7
+pgsteal	102902				workingset_refault_anon	661
+pgsteal	103053				workingset_refault_anon	40
+pgsteal	103685				workingset_refault_anon	540
+pgsteal	103857				workingset_refault_anon	970
+pgsteal	109210				workingset_refault_anon	2806
+pgsteal	103627				workingset_refault_anon	319
+pgsteal	104029				workingset_refault_anon	42
+pgsteal	918361				workingset_refault_anon	90387
+pgsteal	103489				workingset_refault_anon	626
+pgsteal	103188				workingset_refault_anon	801
+pgsteal	102875				workingset_refault_anon	11
+pgsteal	102994				workingset_refault_anon	79
+pgsteal	102910				workingset_refault_anon	43
+pgsteal	102922				workingset_refault_anon	687
+pgsteal	103941				workingset_refault_anon	1219
+pgsteal	903622				workingset_refault_anon	113751
+pgsteal	664357				workingset_refault_anon	27959
+pgsteal	104947				workingset_refault_anon	11
+pgsteal	701084				workingset_refault_anon	30665
+pgsteal	650719				workingset_refault_anon	20810
+pgsteal	641924				workingset_refault_anon	17137
+pgsteal	933870				workingset_refault_anon	98393
+pgsteal	633231				workingset_refault_anon	15924
+pgsteal	102936				workingset_refault_anon	34
+pgsteal	104020				workingset_refault_anon	781
+pgsteal	104274				workingset_refault_anon	1841
+pgsteal	621672				workingset_refault_anon	5891
+pgsteal	103307				workingset_refault_anon	474
+pgsteal	103386				workingset_refault_anon	27
+pgsteal	103266				workingset_refault_anon	243
+pgsteal	102896				workingset_refault_anon	15
+pgsteal	103905				workingset_refault_anon	988
+pgsteal	103104				workingset_refault_anon	304
+pgsteal	104277				workingset_refault_anon	285
+pgsteal	696374				workingset_refault_anon	24971
+pgsteal	103009				workingset_refault_anon	775
+pgsteal	103849				workingset_refault_anon	747
+pgsteal	102867				workingset_refault_anon	9
+pgsteal	700211				workingset_refault_anon	35289
+pgsteal	102923				workingset_refault_anon	88
+pgsteal	104139				workingset_refault_anon	789
+pgsteal	105152				workingset_refault_anon	1257
+pgsteal	102945				workingset_refault_anon	76
+pgsteal	103227				workingset_refault_anon	343
+pgsteal	102880				workingset_refault_anon	95
+pgsteal	102967				workingset_refault_anon	101
+pgsteal	989176				workingset_refault_anon	89597
+pgsteal	694181				workingset_refault_anon	22499
+pgsteal	784354				workingset_refault_anon	68311
+pgsteal	102882				workingset_refault_anon	24
+pgsteal	103108				workingset_refault_anon	24
+
+-------------------------------------------------------------------
+
+The original data memcg iter:
+pgsteal:
+SUM: 39036863 AVERAGE: 304975.4922 STDEV: 284226.526
+refault:
+SUM: 2027567 AVERAGE: 15840.36719 STDEV: 21332.00262
+
+pgsteal	103167				workingset_refault_anon	203
+pgsteal	714044				workingset_refault_anon	42633
+pgsteal	103209				workingset_refault_anon	581
+pgsteal	103605				workingset_refault_anon	240
+pgsteal	740909				workingset_refault_anon	53177
+pgsteal	103089				workingset_refault_anon	141
+pgsteal	726760				workingset_refault_anon	32624
+pgsteal	104039				workingset_refault_anon	397
+pgsteal	754667				workingset_refault_anon	56144
+pgsteal	713916				workingset_refault_anon	41813
+pgsteal	104104				workingset_refault_anon	307
+pgsteal	109567				workingset_refault_anon	244
+pgsteal	714194				workingset_refault_anon	47076
+pgsteal	711693				workingset_refault_anon	35616
+pgsteal	105026				workingset_refault_anon	2221
+pgsteal	103442				workingset_refault_anon	269
+pgsteal	112773				workingset_refault_anon	5086
+pgsteal	715969				workingset_refault_anon	32457
+pgsteal	127828				workingset_refault_anon	9579
+pgsteal	102885				workingset_refault_anon	109
+pgsteal	112156				workingset_refault_anon	2974
+pgsteal	104242				workingset_refault_anon	948
+pgsteal	701184				workingset_refault_anon	47940
+pgsteal	104080				workingset_refault_anon	836
+pgsteal	106606				workingset_refault_anon	2420
+pgsteal	103666				workingset_refault_anon	129
+pgsteal	103330				workingset_refault_anon	532
+pgsteal	103639				workingset_refault_anon	275
+pgsteal	108494				workingset_refault_anon	3814
+pgsteal	103626				workingset_refault_anon	412
+pgsteal	103697				workingset_refault_anon	577
+pgsteal	103736				workingset_refault_anon	582
+pgsteal	103360				workingset_refault_anon	281
+pgsteal	116733				workingset_refault_anon	6674
+pgsteal	102978				workingset_refault_anon	5
+pgsteal	108945				workingset_refault_anon	3141
+pgsteal	706630				workingset_refault_anon	33241
+pgsteal	103426				workingset_refault_anon	134
+pgsteal	715070				workingset_refault_anon	33575
+pgsteal	102871				workingset_refault_anon	12
+pgsteal	103617				workingset_refault_anon	776
+pgsteal	767084				workingset_refault_anon	64710
+pgsteal	104197				workingset_refault_anon	176
+pgsteal	104488				workingset_refault_anon	1469
+pgsteal	103253				workingset_refault_anon	228
+pgsteal	702800				workingset_refault_anon	26424
+pgsteal	107469				workingset_refault_anon	2838
+pgsteal	104441				workingset_refault_anon	1562
+pgsteal	123013				workingset_refault_anon	13117
+pgsteal	737817				workingset_refault_anon	53330
+pgsteal	103939				workingset_refault_anon	759
+pgsteal	103568				workingset_refault_anon	783
+pgsteal	122707				workingset_refault_anon	11944
+pgsteal	103690				workingset_refault_anon	885
+pgsteal	103456				workingset_refault_anon	145
+pgsteal	104068				workingset_refault_anon	632
+pgsteal	319368				workingset_refault_anon	12579
+pgsteal	103912				workingset_refault_anon	304
+pgsteal	119416				workingset_refault_anon	3350
+pgsteal	717107				workingset_refault_anon	34764
+pgsteal	107163				workingset_refault_anon	535
+pgsteal	103299				workingset_refault_anon	142
+pgsteal	103825				workingset_refault_anon	176
+pgsteal	408564				workingset_refault_anon	14606
+pgsteal	115785				workingset_refault_anon	4622
+pgsteal	119234				workingset_refault_anon	9225
+pgsteal	729060				workingset_refault_anon	54309
+pgsteal	107149				workingset_refault_anon	536
+pgsteal	708839				workingset_refault_anon	43133
+pgsteal	695961				workingset_refault_anon	40182
+pgsteal	723303				workingset_refault_anon	32298
+pgsteal	103581				workingset_refault_anon	1305
+pgsteal	699646				workingset_refault_anon	49924
+pgsteal	717867				workingset_refault_anon	39229
+pgsteal	104148				workingset_refault_anon	1318
+pgsteal	104127				workingset_refault_anon	568
+pgsteal	103168				workingset_refault_anon	322
+pgsteal	103477				workingset_refault_anon	538
+pgsteal	103022				workingset_refault_anon	60
+pgsteal	103305				workingset_refault_anon	323
+pgsteal	103812				workingset_refault_anon	1324
+pgsteal	103139				workingset_refault_anon	126
+pgsteal	723251				workingset_refault_anon	34206
+pgsteal	103068				workingset_refault_anon	861
+pgsteal	742515				workingset_refault_anon	54439
+pgsteal	762161				workingset_refault_anon	52654
+pgsteal	103934				workingset_refault_anon	889
+pgsteal	104065				workingset_refault_anon	315
+pgsteal	383893				workingset_refault_anon	25036
+pgsteal	107929				workingset_refault_anon	2367
+pgsteal	726127				workingset_refault_anon	45809
+pgsteal	675291				workingset_refault_anon	66534
+pgsteal	105585				workingset_refault_anon	2323
+pgsteal	105098				workingset_refault_anon	1625
+pgsteal	104264				workingset_refault_anon	718
+pgsteal	741873				workingset_refault_anon	47045
+pgsteal	103466				workingset_refault_anon	70
+pgsteal	723870				workingset_refault_anon	58780
+pgsteal	104740				workingset_refault_anon	521
+pgsteal	740739				workingset_refault_anon	45099
+pgsteal	752994				workingset_refault_anon	53713
+pgsteal	110164				workingset_refault_anon	2572
+pgsteal	711304				workingset_refault_anon	41135
+pgsteal	746870				workingset_refault_anon	60298
+pgsteal	729166				workingset_refault_anon	42594
+pgsteal	110138				workingset_refault_anon	1511
+pgsteal	103836				workingset_refault_anon	675
+pgsteal	116821				workingset_refault_anon	3952
+pgsteal	104967				workingset_refault_anon	2035
+pgsteal	711362				workingset_refault_anon	31458
+pgsteal	103835				workingset_refault_anon	507
+pgsteal	113846				workingset_refault_anon	2997
+pgsteal	104406				workingset_refault_anon	1724
+pgsteal	103551				workingset_refault_anon	1293
+pgsteal	705340				workingset_refault_anon	44234
+pgsteal	728076				workingset_refault_anon	29849
+pgsteal	103829				workingset_refault_anon	254
+pgsteal	103700				workingset_refault_anon	712
+pgsteal	103382				workingset_refault_anon	506
+pgsteal	728881				workingset_refault_anon	60152
+pgsteal	614645				workingset_refault_anon	43956
+pgsteal	107672				workingset_refault_anon	2768
+pgsteal	123550				workingset_refault_anon	11937
+pgsteal	103747				workingset_refault_anon	899
+pgsteal	747657				workingset_refault_anon	50264
+pgsteal	110949				workingset_refault_anon	1422
+pgsteal	103596				workingset_refault_anon	278
+pgsteal	742471				workingset_refault_anon	69586
+
+-- 
+Best regards,
+Ridong
+
 
