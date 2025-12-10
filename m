@@ -1,132 +1,178 @@
-Return-Path: <cgroups+bounces-12323-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-12324-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 720A9CB2A38
-	for <lists+cgroups@lfdr.de>; Wed, 10 Dec 2025 11:12:16 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id DC34ACB3592
+	for <lists+cgroups@lfdr.de>; Wed, 10 Dec 2025 16:45:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id EC5FE30071A3
-	for <lists+cgroups@lfdr.de>; Wed, 10 Dec 2025 10:11:53 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 16874312BDCB
+	for <lists+cgroups@lfdr.de>; Wed, 10 Dec 2025 15:43:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF681301012;
-	Wed, 10 Dec 2025 10:11:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE6C73191CA;
+	Wed, 10 Dec 2025 15:43:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=cmpxchg.org header.i=@cmpxchg.org header.b="L3e20nzQ"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qt1-f169.google.com (mail-qt1-f169.google.com [209.85.160.169])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B7FCC26CE1A;
-	Wed, 10 Dec 2025 10:11:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=124.126.103.232
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F20DA28934F
+	for <cgroups@vger.kernel.org>; Wed, 10 Dec 2025 15:43:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765361511; cv=none; b=px1ZJeH4ViPAx0qish4yj88tH4eXDCx2GX6yLUAm4GnJAxTMXKV85coxkNTge81fzV4CB+RIMjcRiTRu0mUAWmyivmD21eHaNcC+cnQPdJgLlSiVMHh34ssB1DhNPzY9iWnyzyvOZ2rXfRrGnnS6RVtWzzF5G7l3oUANQ/RrnK4=
+	t=1765381395; cv=none; b=T5KiAxUV5ckcOwI8WYQyaahRPbvEg4NvdKQIB50H5aRx4pGRudO3BPqncVolH6GtBq9AeVAGaSfbt1GbBNoLvvAcTQDbnBtdCE1rtTfXgQdDcjYmeGg/yMUAYlScOFZMhbQ1m9Qu7IWO9zpaetBjX4+VVsRp64iKSCvx0IPV0E4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765361511; c=relaxed/simple;
-	bh=ZBtvFohVFvAiGt4O+rZ2mM2htrgfgswa/EWbtSPe06M=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=ON521xCqSRmrnOUFLJ3GABMdsR9Z6uiTK6WzRPZnmuK+euQAx3E6hDHxPklJtHuHpNHeE7zxe1d8b55n9y0UyIFM+z+OmiayxT7qDyDm89sVyvJEgFyD071BHacJl/b8R5hP6RoQQpT5h5zNbof0JUr2iJBdjZH6kBpzLB2hN1s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn; spf=pass smtp.mailfrom=kylinos.cn; arc=none smtp.client-ip=124.126.103.232
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kylinos.cn
-X-UUID: 9d685946d5b011f0a38c85956e01ac42-20251210
-X-CTIC-Tags:
-	HR_CC_COUNT, HR_CC_DOMAIN_COUNT, HR_CC_NO_NAME, HR_CTE_8B, HR_CTT_TXT
-	HR_DATE_H, HR_DATE_WKD, HR_DATE_ZONE, HR_FROM_NAME, HR_SJ_DIGIT_LEN
-	HR_SJ_LANG, HR_SJ_LEN, HR_SJ_LETTER, HR_SJ_NOR_SYM, HR_SJ_PHRASE
-	HR_SJ_PHRASE_LEN, HR_SJ_PRE_RE, HR_SJ_WS, HR_TO_COUNT, HR_TO_DOMAIN_COUNT
-	HR_TO_NO_NAME, IP_TRUSTED, SRC_TRUSTED, DN_TRUSTED, SA_TRUSTED
-	SA_EXISTED, SN_TRUSTED, SN_EXISTED, SPF_NOPASS, DKIM_NOPASS
-	DMARC_NOPASS, CIE_GOOD, CIE_GOOD_SPF, GTI_FG_BS, GTI_RG_INFO
-	GTI_C_BU, AMN_GOOD, ABX_MISS_RDNS
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.3.6,REQID:11509ef8-c9ee-4467-bf1b-74652f356481,IP:10,U
-	RL:0,TC:0,Content:0,EDM:0,RT:0,SF:-5,FILE:0,BULK:0,RULE:Release_Ham,ACTION
-	:release,TS:5
-X-CID-INFO: VERSION:1.3.6,REQID:11509ef8-c9ee-4467-bf1b-74652f356481,IP:10,URL
-	:0,TC:0,Content:0,EDM:0,RT:0,SF:-5,FILE:0,BULK:0,RULE:Release_Ham,ACTION:r
-	elease,TS:5
-X-CID-META: VersionHash:a9d874c,CLOUDID:ab4f8f7777ea0ac8244219888cc63d6f,BulkI
-	D:251119212056S6LKT8LY,BulkQuantity:27,Recheck:0,SF:17|19|64|66|78|80|81|8
-	2|83|102|127|841|850|898,TC:nil,Content:0|15|50,EDM:-3,IP:-2,URL:0,File:ni
-	l,RT:nil,Bulk:40,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,
-	DKP:0,BRR:0,BRE:0,ARC:0
-X-CID-BVR: 2,SSN|SDN
-X-CID-BAS: 2,SSN|SDN,0,_
-X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_FAS,TF_CID_SPAM_FSD,TF_CID_SPAM_OBB
-X-CID-RHF: D41D8CD98F00B204E9800998ECF8427E
-X-UUID: 9d685946d5b011f0a38c85956e01ac42-20251210
-X-User: sunshaojie@kylinos.cn
-Received: from localhost.localdomain [(223.70.160.239)] by mailgw.kylinos.cn
-	(envelope-from <sunshaojie@kylinos.cn>)
-	(Generic MTA with TLSv1.3 TLS_AES_256_GCM_SHA384 256/256)
-	with ESMTP id 1913206352; Wed, 10 Dec 2025 18:11:38 +0800
-From: Sun Shaojie <sunshaojie@kylinos.cn>
-To: mkoutny@suse.com
-Cc: cgroups@vger.kernel.org,
-	chenridong@huaweicloud.com,
-	hannes@cmpxchg.org,
-	linux-kernel@vger.kernel.org,
-	linux-kselftest@vger.kernel.org,
-	llong@redhat.com,
-	shuah@kernel.org,
-	sunshaojie@kylinos.cn,
-	tj@kernel.org
-Subject: Re: [PATCH v5] cpuset: Avoid invalidating sibling partitions on cpuset.cpus conflict.
-Date: Wed, 10 Dec 2025 18:11:08 +0800
-Message-Id: <20251210101108.969603-1-sunshaojie@kylinos.cn>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <b3umm7mcucmztqqnp6x4e6ichqcml2r2bg7d2xairxajyqrzbt@3nshatmt2evo>
-References: <b3umm7mcucmztqqnp6x4e6ichqcml2r2bg7d2xairxajyqrzbt@3nshatmt2evo>
+	s=arc-20240116; t=1765381395; c=relaxed/simple;
+	bh=9vvPHC+jQ4bu92PPjt/VUPjpIcGJYxmVy2OuZM+XpGY=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=LY8jbUZvRfnY9W+Q9DnuhLJZWgGc5WcGbr4T6QHbTTt0HQO17TsE4HwiXo8krRES8zzvEy72AOrwZ3Ep9TdZaeFT6xTOT5fwBLZCxcUh3AwzIUpsjf66xbd+6/8K+wsIBAQMdZuOmYmKrEpp+RRCi1IDaea7S0eKLaX3AxKsDbs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org; spf=pass smtp.mailfrom=cmpxchg.org; dkim=pass (2048-bit key) header.d=cmpxchg.org header.i=@cmpxchg.org header.b=L3e20nzQ; arc=none smtp.client-ip=209.85.160.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cmpxchg.org
+Received: by mail-qt1-f169.google.com with SMTP id d75a77b69052e-4ed75832448so90085461cf.2
+        for <cgroups@vger.kernel.org>; Wed, 10 Dec 2025 07:43:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cmpxchg.org; s=google; t=1765381392; x=1765986192; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=RK4QBOSJ1ETPPkTsE5aRaLlAhXzJmTbjPxuvjBfxx3M=;
+        b=L3e20nzQeXCCPxE7qCR3uwbw62PA7gpn+Ckw5Lde9PN5L6u/JAtW230MYEFJQCIREU
+         v2z7+FgZxkJBBjBR17LgHgbC+MDtW/D6kdXLNcsK6I3HNuLiXSj/S2c05IiX1AFvUBAZ
+         BzK1xiAkiLJj/qAFL6dw6iXPrl1OAovtkabKQxH6YxjLMUyfrDVucMh5C75/tJ5GsrWf
+         Fb+D7lQTVgfhtUbS1bkVWf1Yqi7GP/FUbARstrfPF7MssKVveK5P33IKcIaEWoxMGybd
+         V3gzW4Z1wZ47D6Vb7gpL1PKVenP0+v34G6OQVs1T0+txQETgNlSTpUTFdsMha9jcbLEY
+         vrKg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1765381392; x=1765986192;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=RK4QBOSJ1ETPPkTsE5aRaLlAhXzJmTbjPxuvjBfxx3M=;
+        b=PednOOd7xjTig1MJADU76LTMRK1vjYS/WdHWm6Al0GmUM24x89nEHdz1eb/Q9h3j0y
+         8/NALeQN6wq2mweCM4zECXtYc+W7nbl/jNc/+FZ2zfyMDVOhWnB+v7lSNdWWBEqkUzQV
+         lDLY4+YdqwAaSJp9c6dIeuKIUExjfT2HwLRN0LzzvAoOXXDUwe5zJ45mNjhq2ZXVysdU
+         smvSETqV061j0PrKzJQDr6hTcUvwUiHXSU854sOnb5d2s6+MhT97OinO0CU3Yv5w/7Zf
+         2jyQaWYdwzsmv4kgc2EbE2J+DdbCV6OZiqijp663mvwL/PKZErlEUrPt0eXF1i4+PkiX
+         9vQw==
+X-Forwarded-Encrypted: i=1; AJvYcCUC43qLuCJuUaneyx6b9pLLbejea82DAMcWSz1NcFcAS7kwo/0Q0snuWpxnccmdbLeLGT1Qeq2K@vger.kernel.org
+X-Gm-Message-State: AOJu0YwX61P85rxuYGYm1GO9DmGPFjc8SMJqznMXKirolf1izMNAmK0w
+	EKrJL/s7akt0XSDoPSFodxgmynclMIIBz8VaO8/4Gdv6GaCxOqCex3igpiZc2Yzw+hA=
+X-Gm-Gg: ASbGncs2eoYackY3zDtMJlhWWxJMJnrGaHl25w+2/+rfXeUBclJ0wjylbAsWnlnzfMo
+	Cxgk/gl0aWBKZsvayjUsJYWzYzeg+pvKv3z3kYyqji5hod2ciiw8tv0Hk1G7ytpgSrXdJZinKb3
+	puJq1737h/E4PzG2pojgQMSxg8M00T5hLkhGKCOBiybV6Qhj52p7dP7J1k1+GHztgGM3yjHMgJ4
+	EYKEOKp/Qtvs4cldgNSr727JjwEnSiHjLrZyZ4um9tVKxOPYOMfXjDgy3nolksASvVITlst0x7n
+	yA2GKCb6rK38eHPBRXefy7nBfyPmEMFLth7QaCEUUP6lweI4+DF60bLCFj9eaJywpO+D9Vlw1o2
+	D+EHWHahj4bU795uMS/F+1iuTh+dVsNKncPBU4JGK24u0CcYmDby7WNXaF8MI1do1rp8wdnFmxB
+	D5ziQ19cN/ew==
+X-Google-Smtp-Source: AGHT+IElOjLE5rbcqYu4F/R+HCfn9jPxWZdNKUhuhWsu8mUAZgrglF0s2qhg7pSLqr7FMjuEMrobIg==
+X-Received: by 2002:ac8:5d14:0:b0:4f1:ac12:b01b with SMTP id d75a77b69052e-4f1b1a7a156mr37209431cf.38.1765381391629;
+        Wed, 10 Dec 2025 07:43:11 -0800 (PST)
+Received: from localhost ([2603:7000:c01:2716:929a:4aff:fe16:c778])
+        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-888287a56d2sm162353706d6.29.2025.12.10.07.43.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 10 Dec 2025 07:43:10 -0800 (PST)
+From: Johannes Weiner <hannes@cmpxchg.org>
+To: Andrew Morton <akpm@linux-foundation.org>
+Cc: Matthew Wilcox <willy@infradead.org>,
+	Vlastimil Babka <vbabka@suse.cz>,
+	Michal Hocko <mhocko@suse.com>,
+	Roman Gushchin <roman.gushchin@linux.dev>,
+	Shakeel Butt <shakeel.butt@linux.dev>,
+	Muchun Song <muchun.song@linux.dev>,
+	linux-mm@kvack.org,
+	cgroups@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] mm: memcontrol: rename mem_cgroup_from_slab_obj()
+Date: Wed, 10 Dec 2025 10:43:01 -0500
+Message-ID: <20251210154301.720133-1-hannes@cmpxchg.org>
+X-Mailer: git-send-email 2.52.0
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-Hi, Michal,
+In addition to slab objects, this function is used for resolving
+non-slab kernel pointers. This has caused confusion in recent
+refactoring work. Rename it to mem_cgroup_from_virt(), sticking with
+terminology established by the virt_to_<foo>() converters.
 
-On Mon, 8 Dec 2025 15:31:52 +0100, Michal Koutný wrote:
->>>   root cgroup
->>>        |
->>>       A1  //MK: A4 A5 here?
->>>      /  \
->>>    A2    A3... //MK: A4 A5 or here?
->>>
->>> #1> echo "0-1" > A1/cpuset.cpus
->>> #2> echo "root" > A1/cpuset.cpus.partition
->>> #3> echo "0-1" > A2/cpuset.cpus
->>> #4> echo "root" > A2/cpuset.cpus.partition
->>> mkdir A4
->>> mkdir A5
->>> echo "0" > A4/cpuset.cpus
->>> echo $$ > A4/cgroup.procs
->>> echo "1" > A5/cpuset.cpus
->>> echo $$ > A5/cgroup.procs
->>>
->>
->>If A2...A5 all belong to the same user, and that user wants both A4 and A5 
->>to have effective CPUs, then the user should also understand that A2 needs
->>to be adjusted to "member" instead of "root".
->>
->>if A2...A5 belong to different users, must satisfying user A4’s requirement
->>come at the expense of user A2’s requirement? That is not fair.
->
->If A4 is a sibling at the level of A1, then A2 must be stripped of its
->CPUs to honor the hierarchy hence the apparent unfairness.
->
->If A4 is a sibling at the level of A2 and they have different owning
->users, their respective cpuset.cpus should only be writable by A1's user
->(the one who distributes the cpus) so that any arbitration between the
->siblings is avoided.
+Link: https://lore.kernel.org/linux-mm/20251113161424.GB3465062@cmpxchg.org/
+Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
+---
+ include/linux/memcontrol.h | 4 ++--
+ mm/list_lru.c              | 4 ++--
+ mm/memcontrol.c            | 4 ++--
+ 3 files changed, 6 insertions(+), 6 deletions(-)
 
-Regardless of whether A1 through A5 belong to the same user or different
-users, arbitration conflicts between sibling nodes can still occur (e.g.,
-due to user misconfiguration). The key question is: when such a conflict
-arises, should all sibling nodes be invalidated, or only the node that
-triggered the conflict?
+diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
+index 0651865a4564..17ad5cf43129 100644
+--- a/include/linux/memcontrol.h
++++ b/include/linux/memcontrol.h
+@@ -1727,7 +1727,7 @@ static inline int memcg_kmem_id(struct mem_cgroup *memcg)
+ 	return memcg ? memcg->kmemcg_id : -1;
+ }
+ 
+-struct mem_cgroup *mem_cgroup_from_slab_obj(void *p);
++struct mem_cgroup *mem_cgroup_from_virt(void *p);
+ 
+ static inline void count_objcg_events(struct obj_cgroup *objcg,
+ 				      enum vm_event_item idx,
+@@ -1799,7 +1799,7 @@ static inline int memcg_kmem_id(struct mem_cgroup *memcg)
+ 	return -1;
+ }
+ 
+-static inline struct mem_cgroup *mem_cgroup_from_slab_obj(void *p)
++static inline struct mem_cgroup *mem_cgroup_from_virt(void *p)
+ {
+ 	return NULL;
+ }
+diff --git a/mm/list_lru.c b/mm/list_lru.c
+index ec48b5dadf51..37b642f6cbda 100644
+--- a/mm/list_lru.c
++++ b/mm/list_lru.c
+@@ -187,7 +187,7 @@ bool list_lru_add_obj(struct list_lru *lru, struct list_head *item)
+ 
+ 	if (list_lru_memcg_aware(lru)) {
+ 		rcu_read_lock();
+-		ret = list_lru_add(lru, item, nid, mem_cgroup_from_slab_obj(item));
++		ret = list_lru_add(lru, item, nid, mem_cgroup_from_virt(item));
+ 		rcu_read_unlock();
+ 	} else {
+ 		ret = list_lru_add(lru, item, nid, NULL);
+@@ -224,7 +224,7 @@ bool list_lru_del_obj(struct list_lru *lru, struct list_head *item)
+ 
+ 	if (list_lru_memcg_aware(lru)) {
+ 		rcu_read_lock();
+-		ret = list_lru_del(lru, item, nid, mem_cgroup_from_slab_obj(item));
++		ret = list_lru_del(lru, item, nid, mem_cgroup_from_virt(item));
+ 		rcu_read_unlock();
+ 	} else {
+ 		ret = list_lru_del(lru, item, nid, NULL);
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index be810c1fbfc3..e552072e346c 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -806,7 +806,7 @@ void mod_lruvec_kmem_state(void *p, enum node_stat_item idx, int val)
+ 	struct lruvec *lruvec;
+ 
+ 	rcu_read_lock();
+-	memcg = mem_cgroup_from_slab_obj(p);
++	memcg = mem_cgroup_from_virt(p);
+ 
+ 	/*
+ 	 * Untracked pages have no memcg, no lruvec. Update only the
+@@ -2619,7 +2619,7 @@ struct mem_cgroup *mem_cgroup_from_obj_slab(struct slab *slab, void *p)
+  * The caller must ensure the memcg lifetime, e.g. by taking rcu_read_lock(),
+  * cgroup_mutex, etc.
+  */
+-struct mem_cgroup *mem_cgroup_from_slab_obj(void *p)
++struct mem_cgroup *mem_cgroup_from_virt(void *p)
+ {
+ 	struct slab *slab;
+ 
+-- 
+2.52.0
 
-Thanks,
-Sun Shaojie
 
