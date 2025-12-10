@@ -1,143 +1,132 @@
-Return-Path: <cgroups+bounces-12322-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-12323-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 38274CB273D
-	for <lists+cgroups@lfdr.de>; Wed, 10 Dec 2025 09:45:24 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 720A9CB2A38
+	for <lists+cgroups@lfdr.de>; Wed, 10 Dec 2025 11:12:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 79F9E3018989
-	for <lists+cgroups@lfdr.de>; Wed, 10 Dec 2025 08:42:20 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id EC5FE30071A3
+	for <lists+cgroups@lfdr.de>; Wed, 10 Dec 2025 10:11:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B32702DEA90;
-	Wed, 10 Dec 2025 08:42:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF681301012;
+	Wed, 10 Dec 2025 10:11:51 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
+Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BBA2A263F5E;
-	Wed, 10 Dec 2025 08:42:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B7FCC26CE1A;
+	Wed, 10 Dec 2025 10:11:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=124.126.103.232
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765356138; cv=none; b=QNgJ3Qd/99QuqhvW6kwD5CLVSsFwjWRog+wKYQfLMVB+yPmVMFwfNPInQptjtc6wBejxLP1hpslMCbgclEtZZvXXHW2r6s2KEK3GItWKJ/CyZYzeOf69PrMqVCggekir9JXAtJDoQ9NCZoJLr7zhPES1JXSjbLkk6T9+k2Jhvu4=
+	t=1765361511; cv=none; b=px1ZJeH4ViPAx0qish4yj88tH4eXDCx2GX6yLUAm4GnJAxTMXKV85coxkNTge81fzV4CB+RIMjcRiTRu0mUAWmyivmD21eHaNcC+cnQPdJgLlSiVMHh34ssB1DhNPzY9iWnyzyvOZ2rXfRrGnnS6RVtWzzF5G7l3oUANQ/RrnK4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765356138; c=relaxed/simple;
-	bh=FH4VIS3DuaKBb89fzHLlBkstNpXh24dwJBR5sodEUAY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=X5VQoSrvGKj2Yh8GCxfKbH42YpRwycPqpem/M8lxp7tRNhCIw7scxAtPT60WmGdFcR9B2GL1NAvMwiVa5/c8dvWpLfzM1VV9EeROTjac/WIroNdphBtgr8CAqEv/cBaFyH8cbs7ZRmeHzNstPEr7nffb4w0tRfMrEQKOhBVELX4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.93.142])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTPS id 4dR8MD29qwzKHMn4;
-	Wed, 10 Dec 2025 16:41:12 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.75])
-	by mail.maildlp.com (Postfix) with ESMTP id 17BC31A084D;
-	Wed, 10 Dec 2025 16:42:12 +0800 (CST)
-Received: from [10.67.111.176] (unknown [10.67.111.176])
-	by APP2 (Coremail) with SMTP id Syh0CgBXOFJiMjlpL9n3BA--.10261S2;
-	Wed, 10 Dec 2025 16:42:11 +0800 (CST)
-Message-ID: <48f734fa-531a-4b3f-9c96-02dd342d41d2@huaweicloud.com>
-Date: Wed, 10 Dec 2025 16:42:09 +0800
+	s=arc-20240116; t=1765361511; c=relaxed/simple;
+	bh=ZBtvFohVFvAiGt4O+rZ2mM2htrgfgswa/EWbtSPe06M=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=ON521xCqSRmrnOUFLJ3GABMdsR9Z6uiTK6WzRPZnmuK+euQAx3E6hDHxPklJtHuHpNHeE7zxe1d8b55n9y0UyIFM+z+OmiayxT7qDyDm89sVyvJEgFyD071BHacJl/b8R5hP6RoQQpT5h5zNbof0JUr2iJBdjZH6kBpzLB2hN1s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn; spf=pass smtp.mailfrom=kylinos.cn; arc=none smtp.client-ip=124.126.103.232
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kylinos.cn
+X-UUID: 9d685946d5b011f0a38c85956e01ac42-20251210
+X-CTIC-Tags:
+	HR_CC_COUNT, HR_CC_DOMAIN_COUNT, HR_CC_NO_NAME, HR_CTE_8B, HR_CTT_TXT
+	HR_DATE_H, HR_DATE_WKD, HR_DATE_ZONE, HR_FROM_NAME, HR_SJ_DIGIT_LEN
+	HR_SJ_LANG, HR_SJ_LEN, HR_SJ_LETTER, HR_SJ_NOR_SYM, HR_SJ_PHRASE
+	HR_SJ_PHRASE_LEN, HR_SJ_PRE_RE, HR_SJ_WS, HR_TO_COUNT, HR_TO_DOMAIN_COUNT
+	HR_TO_NO_NAME, IP_TRUSTED, SRC_TRUSTED, DN_TRUSTED, SA_TRUSTED
+	SA_EXISTED, SN_TRUSTED, SN_EXISTED, SPF_NOPASS, DKIM_NOPASS
+	DMARC_NOPASS, CIE_GOOD, CIE_GOOD_SPF, GTI_FG_BS, GTI_RG_INFO
+	GTI_C_BU, AMN_GOOD, ABX_MISS_RDNS
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.3.6,REQID:11509ef8-c9ee-4467-bf1b-74652f356481,IP:10,U
+	RL:0,TC:0,Content:0,EDM:0,RT:0,SF:-5,FILE:0,BULK:0,RULE:Release_Ham,ACTION
+	:release,TS:5
+X-CID-INFO: VERSION:1.3.6,REQID:11509ef8-c9ee-4467-bf1b-74652f356481,IP:10,URL
+	:0,TC:0,Content:0,EDM:0,RT:0,SF:-5,FILE:0,BULK:0,RULE:Release_Ham,ACTION:r
+	elease,TS:5
+X-CID-META: VersionHash:a9d874c,CLOUDID:ab4f8f7777ea0ac8244219888cc63d6f,BulkI
+	D:251119212056S6LKT8LY,BulkQuantity:27,Recheck:0,SF:17|19|64|66|78|80|81|8
+	2|83|102|127|841|850|898,TC:nil,Content:0|15|50,EDM:-3,IP:-2,URL:0,File:ni
+	l,RT:nil,Bulk:40,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,
+	DKP:0,BRR:0,BRE:0,ARC:0
+X-CID-BVR: 2,SSN|SDN
+X-CID-BAS: 2,SSN|SDN,0,_
+X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_FAS,TF_CID_SPAM_FSD,TF_CID_SPAM_OBB
+X-CID-RHF: D41D8CD98F00B204E9800998ECF8427E
+X-UUID: 9d685946d5b011f0a38c85956e01ac42-20251210
+X-User: sunshaojie@kylinos.cn
+Received: from localhost.localdomain [(223.70.160.239)] by mailgw.kylinos.cn
+	(envelope-from <sunshaojie@kylinos.cn>)
+	(Generic MTA with TLSv1.3 TLS_AES_256_GCM_SHA384 256/256)
+	with ESMTP id 1913206352; Wed, 10 Dec 2025 18:11:38 +0800
+From: Sun Shaojie <sunshaojie@kylinos.cn>
+To: mkoutny@suse.com
+Cc: cgroups@vger.kernel.org,
+	chenridong@huaweicloud.com,
+	hannes@cmpxchg.org,
+	linux-kernel@vger.kernel.org,
+	linux-kselftest@vger.kernel.org,
+	llong@redhat.com,
+	shuah@kernel.org,
+	sunshaojie@kylinos.cn,
+	tj@kernel.org
+Subject: Re: [PATCH v5] cpuset: Avoid invalidating sibling partitions on cpuset.cpus conflict.
+Date: Wed, 10 Dec 2025 18:11:08 +0800
+Message-Id: <20251210101108.969603-1-sunshaojie@kylinos.cn>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <b3umm7mcucmztqqnp6x4e6ichqcml2r2bg7d2xairxajyqrzbt@3nshatmt2evo>
+References: <b3umm7mcucmztqqnp6x4e6ichqcml2r2bg7d2xairxajyqrzbt@3nshatmt2evo>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH -next v2 2/2] memcg: remove mem_cgroup_size()
-To: Michal Hocko <mhocko@suse.com>
-Cc: hannes@cmpxchg.org, roman.gushchin@linux.dev, shakeel.butt@linux.dev,
- muchun.song@linux.dev, akpm@linux-foundation.org, axelrasmussen@google.com,
- yuanchu@google.com, weixugc@google.com, david@kernel.org,
- zhengqi.arch@bytedance.com, lorenzo.stoakes@oracle.com,
- cgroups@vger.kernel.org, linux-mm@kvack.org, linux-kernel@vger.kernel.org,
- lujialin4@huawei.com
-References: <20251210071142.2043478-1-chenridong@huaweicloud.com>
- <20251210071142.2043478-3-chenridong@huaweicloud.com>
- <aTkp1tIIiw8Nti10@tiehlicka>
-Content-Language: en-US
-From: Chen Ridong <chenridong@huaweicloud.com>
-In-Reply-To: <aTkp1tIIiw8Nti10@tiehlicka>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:Syh0CgBXOFJiMjlpL9n3BA--.10261S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7tF4kCFW8Wr18Kw13Wry8Krg_yoW8ur1UpF
-	Wvka45ta15Ary3Jw1Sv348Z3sYv3y0qay5Jry7Cr1fZwsIqrn5tFy2k3WvqryUCF9xZFyI
-	vayY9an3Cw429aUanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUvYb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-	6I80ewAv7VC0I7IYx2IY67AKxVWUGVWUXwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxkF7I0En4kS
-	14v26r1q6r43MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I
-	8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVW8ZVWr
-	XwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x
-	0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_
-	Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8Jr0_Cr1UYxBIdaVFxhVjvjDU0xZFpf9x07
-	UQ6p9UUUUU=
-X-CM-SenderInfo: hfkh02xlgr0w46kxt4xhlfz01xgou0bp/
 
+Hi, Michal,
 
-
-On 2025/12/10 16:05, Michal Hocko wrote:
-> On Wed 10-12-25 07:11:42, Chen Ridong wrote:
->> From: Chen Ridong <chenridong@huawei.com>
+On Mon, 8 Dec 2025 15:31:52 +0100, Michal Koutný wrote:
+>>>   root cgroup
+>>>        |
+>>>       A1  //MK: A4 A5 here?
+>>>      /  \
+>>>    A2    A3... //MK: A4 A5 or here?
+>>>
+>>> #1> echo "0-1" > A1/cpuset.cpus
+>>> #2> echo "root" > A1/cpuset.cpus.partition
+>>> #3> echo "0-1" > A2/cpuset.cpus
+>>> #4> echo "root" > A2/cpuset.cpus.partition
+>>> mkdir A4
+>>> mkdir A5
+>>> echo "0" > A4/cpuset.cpus
+>>> echo $$ > A4/cgroup.procs
+>>> echo "1" > A5/cpuset.cpus
+>>> echo $$ > A5/cgroup.procs
+>>>
 >>
->> The mem_cgroup_size helper is used only in apply_proportional_protection
->> to read the current memory usage. Its semantics are unclear and
->> inconsistent with other sites, which directly call page_counter_read for
->> the same purpose.
+>>If A2...A5 all belong to the same user, and that user wants both A4 and A5 
+>>to have effective CPUs, then the user should also understand that A2 needs
+>>to be adjusted to "member" instead of "root".
 >>
->> Remove this helper and replace its usage with page_counter_read for
->> clarity. Additionally, rename the local variable 'cgroup_size' to 'usage'
->> to better reflect its meaning.
->>
->> This change is safe because page_counter_read() is only called when memcg
->> is enabled in the apply_proportional_protection.
->>
->> No functional changes intended.
-> 
-> I would prefer to keep the code as is. 
-> 
+>>if A2...A5 belong to different users, must satisfying user A4’s requirement
+>>come at the expense of user A2’s requirement? That is not fair.
+>
+>If A4 is a sibling at the level of A1, then A2 must be stripped of its
+>CPUs to honor the hierarchy hence the apparent unfairness.
+>
+>If A4 is a sibling at the level of A2 and they have different owning
+>users, their respective cpuset.cpus should only be writable by A1's user
+>(the one who distributes the cpus) so that any arbitration between the
+>siblings is avoided.
 
-I find the mem_cgroup_size() function name misleading—it suggests counting the number of memory
-cgroups, but it actually returns the current memory usage.
+Regardless of whether A1 through A5 belong to the same user or different
+users, arbitration conflicts between sibling nodes can still occur (e.g.,
+due to user misconfiguration). The key question is: when such a conflict
+arises, should all sibling nodes be invalidated, or only the node that
+triggered the conflict?
 
-When looking for a clearer alternative, I found mem_cgroup_usage(), which is only called by v1. This
-raised the question of whether mem_cgroup_size() is truly necessary. Moreover, I noticed other code
-locations simply call page_counter_read() directly to obtain current usage.
-
-> Btw.
-> [...]
->> diff --git a/mm/vmscan.c b/mm/vmscan.c
->> index 670fe9fae5ba..fe48d0376e7c 100644
->> --- a/mm/vmscan.c
->> +++ b/mm/vmscan.c
->> @@ -2451,6 +2451,7 @@ static inline void calculate_pressure_balance(struct scan_control *sc,
->>  static unsigned long apply_proportional_protection(struct mem_cgroup *memcg,
->>  		struct scan_control *sc, unsigned long scan)
->>  {
->> +#ifdef CONFIG_MEMCG
->>  	unsigned long min, low;
->>  
->>  	mem_cgroup_protection(sc->target_mem_cgroup, memcg, &min, &low);
-> [...]
->> @@ -2508,6 +2509,7 @@ static unsigned long apply_proportional_protection(struct mem_cgroup *memcg,
->>  		 */
->>  		scan = max(scan, SWAP_CLUSTER_MAX);
->>  	}
->> +#endif
->>  	return scan;
->>  }
-> 
-> This returns a random garbage for !CONFIG_MEMCG, doesn't it?
-> 
-
--- 
-Best regards,
-Ridong
-
+Thanks,
+Sun Shaojie
 
