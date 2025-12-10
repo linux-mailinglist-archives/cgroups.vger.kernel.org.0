@@ -1,64 +1,64 @@
-Return-Path: <cgroups+bounces-12312-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-12311-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2357DCB19B0
-	for <lists+cgroups@lfdr.de>; Wed, 10 Dec 2025 02:37:41 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 299E8CB19AA
+	for <lists+cgroups@lfdr.de>; Wed, 10 Dec 2025 02:37:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id B16C9310333D
-	for <lists+cgroups@lfdr.de>; Wed, 10 Dec 2025 01:36:38 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id CFCC930D1FD5
+	for <lists+cgroups@lfdr.de>; Wed, 10 Dec 2025 01:36:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1B11122A4EB;
-	Wed, 10 Dec 2025 01:36:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 29E31225A5B;
+	Wed, 10 Dec 2025 01:36:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="QmLk0fh3"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="hzcKvmtx"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.16])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 51E512222AC;
-	Wed, 10 Dec 2025 01:36:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.10
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4081B13B584;
+	Wed, 10 Dec 2025 01:36:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.16
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765330594; cv=none; b=sswzeELO5vEwCZ73Yj8Fd6xbQleRPczrCbNnmNgt/lk2EyKL6R18bwjG3s5lHZovE9F1QOU9jFkIHpPTd4yrkGjeGLYOx8Ajm/BuRAyRFOiTw1h6+m2U8U0Fwa+6pqqBnB1rWaUQi0S5DnrlI5HLzsYbGgMLTaVUc4jW/7wtcYU=
+	t=1765330593; cv=none; b=ixHy03lqfw6OaqdBiMWW8tUTozmyaamRf0Es81bxoaGjaBnrr4K7J8NygqjIeQOiufPxsKjmMpASQ8LBe7hCkT2MvDBhIpiWyB708kEPnCWSaLqjiJ+EuwM6lLSLZPmkWOdHK6ci3UaPEzm7Ba/gQbpykKoWPV4NbkD0sP1elq4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765330594; c=relaxed/simple;
-	bh=uSDeJjyIQS8Egw5OHsCLIaafNV3WCKJ/9T3J2/OTVzw=;
+	s=arc-20240116; t=1765330593; c=relaxed/simple;
+	bh=khF7mS5pnq1YnL1FTDwYR8u3vG6BRMqesr0++X/h1x0=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=tZ9wM9LrU1SljNTIzooGNMPaXkuAsrmtPuawf4e0Fh9Q2DegIhJfTCogAd5j1nZnssMbqNKgMK+BNAL1/OG46D5KzcmGe3cWDCjF/QtGEOU+TQgmj/Mb4YYExSo5dRkAwmKjnrr2juqBDLopzYx4alhfoGOmsLFxfjma8inxK+c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=QmLk0fh3; arc=none smtp.client-ip=198.175.65.10
+	 Content-Type:Content-Disposition:In-Reply-To; b=SZZSTCwY8WsBzcRrDhDf3NuRt8BgQKtHfAQTaknze2gGmQlsyzJqjZkcra7SI8VU+QK2Nbv3Unfw5zZbPL8Gf//x8Wv+FfVS2ZzjtmHLkFBFlr7vhiJPYX7LOF3uqaHrIupDKgtF1nGVa2nTFyRzEdj4E1DQvAb7pRND8gIa3nY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=hzcKvmtx; arc=none smtp.client-ip=192.198.163.16
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1765330594; x=1796866594;
+  t=1765330592; x=1796866592;
   h=date:from:to:cc:subject:message-id:references:
    mime-version:in-reply-to;
-  bh=uSDeJjyIQS8Egw5OHsCLIaafNV3WCKJ/9T3J2/OTVzw=;
-  b=QmLk0fh3XqNZHZmZ3HBmjEpAS9SXhDfJ48vLgQMiHTgbMblvTeQeb2Yn
-   hNypRKLly4Nr4KLGZPDokHXVU++KU0tljMlnn7sWoiSI7feGwvM6Lc4eY
-   VVcSbOyNZUS4+6n96lyuRQHGiDYcoA7G759F68at7t0T0Ec+9Bt9UCI/e
-   EDku4gczrSX8rfnratckjUjs06JkoUSJJ7J7G7Fqn9B6E6c4UnIVK+dWs
-   i30m4jzitZ7Yhvk4nWPEh8l7mfES2RtY21QpnaZUu0THyIcq4qWiwElAq
-   iZ1nh0sghlzF7DWwkdrWPsgKnbVJdEL50Qh+9Fht/Pu1wbypPviCi1Xpd
-   Q==;
-X-CSE-ConnectionGUID: 8YZw66O7Tyuor6TtjtDRag==
-X-CSE-MsgGUID: iwoBhYVBSu6RPToSVG+KYQ==
-X-IronPort-AV: E=McAfee;i="6800,10657,11637"; a="84711131"
+  bh=khF7mS5pnq1YnL1FTDwYR8u3vG6BRMqesr0++X/h1x0=;
+  b=hzcKvmtxRDgOV88nfQ6J4hrJfB6Dim8dFronn1ZZ6zx+UI2u4ehif+3N
+   pkOkmTt1JYxZuSuP5PPpLA6H7ME1frEG5nTevh95l+WD9CGpFD5OdIkTw
+   7D7PMWHcF+gZjRsEBM4MKHTZWbGWvt/wdgaCnKa61l3QnAzREF9pPmViy
+   Kc7yw8J/RRHMSV194FSKIFILDOL0WUzavAuND8+IdOrn9PmkEa5gk1ZVB
+   G77YGx89tgfOHzOloH8SeZGvl5OO4WIq0Y7pyfFRiWe2j5vIXZ6jvdD4m
+   HYht3uQ3gozB+XEcWZ796CwRGT9PQOl2TVgE1Ntwouqnt0YhiyE/hoItM
+   w==;
+X-CSE-ConnectionGUID: /wS5khPnQtSdMA0rg8HsFQ==
+X-CSE-MsgGUID: kFHiDOk+S9+ZOqyWPmrrwA==
+X-IronPort-AV: E=McAfee;i="6800,10657,11637"; a="54842106"
 X-IronPort-AV: E=Sophos;i="6.20,262,1758610800"; 
-   d="scan'208";a="84711131"
-Received: from fmviesa004.fm.intel.com ([10.60.135.144])
-  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Dec 2025 17:36:32 -0800
-X-CSE-ConnectionGUID: cnOgj/h8THab7ux0gRDrTw==
-X-CSE-MsgGUID: TIzBoRUfRaGjipsGCM573A==
+   d="scan'208";a="54842106"
+Received: from fmviesa006.fm.intel.com ([10.60.135.146])
+  by fmvoesa110.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Dec 2025 17:36:31 -0800
+X-CSE-ConnectionGUID: u3aX/YPmS3elk3EL5uqLTQ==
+X-CSE-MsgGUID: HK6gFFGXSX+9FE+AKcY2hA==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.20,262,1758610800"; 
-   d="scan'208";a="201303729"
+   d="scan'208";a="196281100"
 Received: from lkp-server01.sh.intel.com (HELO d335e3c6db51) ([10.239.97.150])
-  by fmviesa004.fm.intel.com with ESMTP; 09 Dec 2025 17:36:27 -0800
+  by fmviesa006.fm.intel.com with ESMTP; 09 Dec 2025 17:36:27 -0800
 Received: from kbuild by d335e3c6db51 with local (Exim 4.98.2)
 	(envelope-from <lkp@intel.com>)
-	id 1vT97x-000000002Ur-1Se8;
+	id 1vT97x-000000002Ut-1bTw;
 	Wed, 10 Dec 2025 01:36:25 +0000
 Date: Wed, 10 Dec 2025 09:35:54 +0800
 From: kernel test robot <lkp@intel.com>
@@ -68,12 +68,11 @@ To: Chen Ridong <chenridong@huaweicloud.com>, hannes@cmpxchg.org,
 	axelrasmussen@google.com, yuanchu@google.com, weixugc@google.com,
 	david@kernel.org, zhengqi.arch@bytedance.com,
 	lorenzo.stoakes@oracle.com
-Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-	cgroups@vger.kernel.org, linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org, lujialin4@huawei.com,
-	chenridong@huaweicloud.com
+Cc: oe-kbuild-all@lists.linux.dev, cgroups@vger.kernel.org,
+	linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+	lujialin4@huawei.com, chenridong@huaweicloud.com
 Subject: Re: [PATCH -next 2/2] memcg: remove mem_cgroup_size()
-Message-ID: <202512100939.F1LEdUev-lkp@intel.com>
+Message-ID: <202512100924.LqJqXM7P-lkp@intel.com>
 References: <20251209130251.1988615-3-chenridong@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
@@ -95,24 +94,21 @@ url:    https://github.com/intel-lab-lkp/linux/commits/Chen-Ridong/memcg-move-me
 base:   next-20251209
 patch link:    https://lore.kernel.org/r/20251209130251.1988615-3-chenridong%40huaweicloud.com
 patch subject: [PATCH -next 2/2] memcg: remove mem_cgroup_size()
-config: arm-allnoconfig (https://download.01.org/0day-ci/archive/20251210/202512100939.F1LEdUev-lkp@intel.com/config)
-compiler: clang version 22.0.0git (https://github.com/llvm/llvm-project 6ec8c4351cfc1d0627d1633b02ea787bd29c77d8)
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20251210/202512100939.F1LEdUev-lkp@intel.com/reproduce)
+config: i386-allnoconfig (https://download.01.org/0day-ci/archive/20251210/202512100924.LqJqXM7P-lkp@intel.com/config)
+compiler: gcc-14 (Debian 14.2.0-19) 14.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20251210/202512100924.LqJqXM7P-lkp@intel.com/reproduce)
 
 If you fix the issue in a separate patch/commit (i.e. not just a new version of
 the same patch/commit), kindly add following tags
 | Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202512100939.F1LEdUev-lkp@intel.com/
+| Closes: https://lore.kernel.org/oe-kbuild-all/202512100924.LqJqXM7P-lkp@intel.com/
 
 All errors (new ones prefixed by >>):
 
->> mm/vmscan.c:2488:49: error: incomplete definition of type 'struct mem_cgroup'
+   mm/vmscan.c: In function 'apply_proportional_protection':
+>> mm/vmscan.c:2488:63: error: invalid use of undefined type 'struct mem_cgroup'
     2488 |                 unsigned long usage = page_counter_read(&memcg->memory);
-         |                                                          ~~~~~^
-   include/linux/mm_types.h:36:8: note: forward declaration of 'struct mem_cgroup'
-      36 | struct mem_cgroup;
-         |        ^
-   1 error generated.
+         |                                                               ^~
 
 
 vim +2488 mm/vmscan.c
