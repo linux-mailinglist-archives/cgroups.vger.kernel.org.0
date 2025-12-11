@@ -1,197 +1,153 @@
-Return-Path: <cgroups+bounces-12327-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-12328-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id B461FCB4462
-	for <lists+cgroups@lfdr.de>; Thu, 11 Dec 2025 00:38:30 +0100 (CET)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
+	by mail.lfdr.de (Postfix) with ESMTPS id CFB7CCB45CB
+	for <lists+cgroups@lfdr.de>; Thu, 11 Dec 2025 01:43:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 455543060A4A
-	for <lists+cgroups@lfdr.de>; Wed, 10 Dec 2025 23:37:05 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 9C453300093F
+	for <lists+cgroups@lfdr.de>; Thu, 11 Dec 2025 00:43:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8450930BF74;
-	Wed, 10 Dec 2025 23:29:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PAh2LoBP"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C97E2222D0;
+	Thu, 11 Dec 2025 00:43:38 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-ed1-f45.google.com (mail-ed1-f45.google.com [209.85.208.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF7CB2DE70C
-	for <cgroups@vger.kernel.org>; Wed, 10 Dec 2025 23:29:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C6468176ADE;
+	Thu, 11 Dec 2025 00:43:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765409374; cv=none; b=lZZfIx9YChUvm4iDKCxmETe8SRBqOjJ8hCGABfoI4t+/tKo3SS5au6iL6FV0y8brsQhEG27xXzRKuPDs6QgAug4dQsBf1HMigtBrpGG12JfwtO6q9OHiWFngy2r1mtwcWo4py7tIgHHcfOiTt/eyl77m6CBKuxqHa9u9zun8wnY=
+	t=1765413818; cv=none; b=D++ziKxWBg+q86P0l15+64ccj2ImYXR6949gMW3Fdaz95LIKsCawJrkPawpjukhwCcp0/0MMDNZqRj3SCyZCSCqyzpTS0dwAjjhrwJal0uq83vZOLO7PCIwHBsuQaxDbnDa/SihcxHrjkEESEsgXn8Uru3PlzaogMrMslnnTcIY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765409374; c=relaxed/simple;
-	bh=aqF0b14UzprPB5/tmIN8f6wh+mcFPv9LoXj+TufMJqA=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=J/Th6EAUTEEFI9wzpIXrRMTIqA7DgtvuAxsh5NutaA1veI8aU4twAm1kt8w3oHO/I5A2KfpgQw0m3Y0pAUYs3+tCQKl2jiWeIBy26uBewtaiTXoZ2LH66DwOBVFLwEmiTi7Qty2MpnvYkeA6w10M52xoW5iDuT8etI2pDSJYrrY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=PAh2LoBP; arc=none smtp.client-ip=209.85.208.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f45.google.com with SMTP id 4fb4d7f45d1cf-640a0812658so713919a12.0
-        for <cgroups@vger.kernel.org>; Wed, 10 Dec 2025 15:29:30 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1765409368; x=1766014168; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=nS0J0O1eWQ7LAl0fVJkBnyD56Bk+EqzYYTzRp7Kqlh0=;
-        b=PAh2LoBPROnW/UxCEr36AVItv2hO9PDUd5fcFF5xjlULFudKg2SIBrUrDjOMziqn5i
-         +x4/ofdRQebNMVshENcl4XzO1qwiIu+BJdS1+kqJkPXz7Q3o9QR3vXez2yoc4FtHivXj
-         5nDKDzYxo09A1UaG/EkXpSS1f8WqpvK2X7WhMOTZsJ77pIm0HOxpGsL6LVAsKUujzYer
-         iISBIcIqzjLH7tT8p64oogMfSV3+5ZZ0EiBkt3sZzLP1cWVPPcCh+te+EV4S+OiwFE9T
-         t/898Vyy5kXypNVyNaN/cwkxIa9ZhsQpxHGYhbbZbH8Dk89+eWjcRyEEspspTB2BFuTT
-         BuDQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1765409368; x=1766014168;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=nS0J0O1eWQ7LAl0fVJkBnyD56Bk+EqzYYTzRp7Kqlh0=;
-        b=CtXXQgzni9yfmGFY7HC2DeTv1x+0+bF7CHzVVwgdqcerYddMdd0dUJl0XbkKOQ1b+q
-         He6QONEXYsXnIxA7nHhmTSvn0vLY/JWoGdPPK4Y3jBDzda4fpGdMwim1Yy/CQzVuU06B
-         scE224rgkVzJDFGQbfPXLlZcJzoqHk9zmLrPA9A3b2YpjbhKFmMEGsCLufYjGRLvYEaq
-         uuWQ8aeQLe9TjLOAByIzo0TVQMdJzcGF82xE6tks4QRe2ycwH+mzau6gWAn47hQZ0u64
-         pZjLIsfuFCTEKSQYioCsqfayX+5vKqzq5KTVDhwPqxPGlX098x2/qs12GSBZdHJkYerE
-         OmSA==
-X-Forwarded-Encrypted: i=1; AJvYcCVlLS5SVRm4qnZdqKQIJou0PnD3osvrFN+/QXvwzdYh9Bu7l7YDIlftl7zptge+8s1iDAcLAOme@vger.kernel.org
-X-Gm-Message-State: AOJu0Yxtr1/vKDN+RNb+e6r5XN+WKPng/cpt4VQfvYsqPceYDg6RkKsn
-	KFAVl+6pRWpXKkw3VOQoNQoxQ9hiJbzzZRM7x077Camf0/BKb6X4PZr5oY2b7K6dNuy+SiGPax8
-	KbpiAjfx9Tnw9tzZor+7zamPiRCU38EE=
-X-Gm-Gg: AY/fxX58rHHGPy99X9QE9gXXVLIlznEJgHQErrVoAXTi9tRyEV7Ln9Aojk7Fi9Fyqsr
-	ZRi0dddXRaBppgsQn4DDfsyO6Rtqhcp+jLDlrsIj0kmKDPvm1IBYtUZnVv9MbENtoddOUMQLyvr
-	RkBp0BKBvboZv/Om+lD8oyD2w+ofjJ/9XoakdxqlDCvbi07sAqYEtG5MxyLgM4cgzrfKuu8/ZLz
-	KK4c3PuBmmhMPpxJ/GxF27gTFWeMyiEgMChnlrDedfRSmJkjP8sHX31RxmJX9Oeqa1uk90Kjw==
-X-Google-Smtp-Source: AGHT+IFY2YnYNX5FT/khwOBS5XvuY7d1BKMmotDhd8P0VT8JClJq7mTFg7XBz3sw2vVuh5yIn5xaUUThFRZtLG6SNg8=
-X-Received: by 2002:a05:6402:34c3:b0:649:5dbf:fb9c with SMTP id
- 4fb4d7f45d1cf-6496db7a2aamr4068714a12.30.1765409367863; Wed, 10 Dec 2025
- 15:29:27 -0800 (PST)
+	s=arc-20240116; t=1765413818; c=relaxed/simple;
+	bh=Sp1JtYU+ta8HbEjRIFh/Uzr1XWq2rUianePyu70WoTs=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=n61UAaJUWlQZ5ckNBhFvvMZZ4pZLzoCmWzMl4xcmtN4T3LIM74kptnFG5gIDQ721eN/15UKXawkmRmxcudLhAIQo40Lgg+rVb22MXqmPCJjRpM9Z5AbXA3SzPvcnoT7T7r4v+tD7TVyRVI4ORfaRodR+2Aq64nnqkd9bPg/3Uao=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.216])
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTPS id 4dRYhQ70j2zKHMLZ;
+	Thu, 11 Dec 2025 08:42:30 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.75])
+	by mail.maildlp.com (Postfix) with ESMTP id C57BA1A14D3;
+	Thu, 11 Dec 2025 08:43:31 +0800 (CST)
+Received: from [10.67.111.176] (unknown [10.67.111.176])
+	by APP2 (Coremail) with SMTP id Syh0CgAH5k+yEzpp071GBQ--.40689S2;
+	Thu, 11 Dec 2025 08:43:31 +0800 (CST)
+Message-ID: <66201b4a-44a5-4221-810a-897699425195@huaweicloud.com>
+Date: Thu, 11 Dec 2025 08:43:29 +0800
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20251112192936.2574429-1-gourry@gourry.net> <de15aca2-a27c-4a9b-b2bf-3f132990cd98@kernel.org>
- <aSSepu6NDqS8HHCa@gourry-fedora-PF4VCD3F>
-In-Reply-To: <aSSepu6NDqS8HHCa@gourry-fedora-PF4VCD3F>
-From: Yiannis Nikolakopoulos <yiannis.nikolakop@gmail.com>
-Date: Thu, 11 Dec 2025 00:29:15 +0100
-X-Gm-Features: AQt7F2r_GFKD_JRPuqTk3RRhGxs_7478IUrJgqKiJlyTjHAwK1VTUcsA5pzKhMI
-Message-ID: <CAOi6=wTCPDM4xDJyzB1SdU6ChDch27eyTUtTAmajRNFhOFUN=A@mail.gmail.com>
-Subject: Re: [RFC LPC2026 PATCH v2 00/11] Specific Purpose Memory NUMA Nodes
-To: Gregory Price <gourry@gourry.net>
-Cc: "David Hildenbrand (Red Hat)" <david@kernel.org>, linux-mm@kvack.org, kernel-team@meta.com, 
-	linux-cxl@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	nvdimm@lists.linux.dev, linux-fsdevel@vger.kernel.org, 
-	cgroups@vger.kernel.org, dave@stgolabs.net, jonathan.cameron@huawei.com, 
-	dave.jiang@intel.com, alison.schofield@intel.com, vishal.l.verma@intel.com, 
-	ira.weiny@intel.com, dan.j.williams@intel.com, longman@redhat.com, 
-	akpm@linux-foundation.org, lorenzo.stoakes@oracle.com, 
-	Liam.Howlett@oracle.com, vbabka@suse.cz, rppt@kernel.org, surenb@google.com, 
-	mhocko@suse.com, osalvador@suse.de, ziy@nvidia.com, matthew.brost@intel.com, 
-	joshua.hahnjy@gmail.com, rakie.kim@sk.com, byungchul@sk.com, 
-	ying.huang@linux.alibaba.com, apopple@nvidia.com, mingo@redhat.com, 
-	peterz@infradead.org, juri.lelli@redhat.com, vincent.guittot@linaro.org, 
-	dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com, 
-	mgorman@suse.de, vschneid@redhat.com, tj@kernel.org, hannes@cmpxchg.org, 
-	mkoutny@suse.com, kees@kernel.org, muchun.song@linux.dev, 
-	roman.gushchin@linux.dev, shakeel.butt@linux.dev, rientjes@google.com, 
-	jackmanb@google.com, cl@gentwo.org, harry.yoo@oracle.com, 
-	axelrasmussen@google.com, yuanchu@google.com, weixugc@google.com, 
-	zhengqi.arch@bytedance.com, yosry.ahmed@linux.dev, nphamcs@gmail.com, 
-	chengming.zhou@linux.dev, fabio.m.de.francesco@linux.intel.com, 
-	rrichter@amd.com, ming.li@zohomail.com, usamaarif642@gmail.com, 
-	brauner@kernel.org, oleg@redhat.com, namcao@linutronix.de, 
-	escape@linux.alibaba.com, dongjoo.seo1@samsung.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH -next v2 2/2] memcg: remove mem_cgroup_size()
+To: Johannes Weiner <hannes@cmpxchg.org>
+Cc: mhocko@kernel.org, roman.gushchin@linux.dev, shakeel.butt@linux.dev,
+ muchun.song@linux.dev, akpm@linux-foundation.org, axelrasmussen@google.com,
+ yuanchu@google.com, weixugc@google.com, david@kernel.org,
+ zhengqi.arch@bytedance.com, lorenzo.stoakes@oracle.com,
+ cgroups@vger.kernel.org, linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+ lujialin4@huawei.com
+References: <20251210071142.2043478-1-chenridong@huaweicloud.com>
+ <20251210071142.2043478-3-chenridong@huaweicloud.com>
+ <20251210163634.GB643576@cmpxchg.org>
+Content-Language: en-US
+From: Chen Ridong <chenridong@huaweicloud.com>
+In-Reply-To: <20251210163634.GB643576@cmpxchg.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID:Syh0CgAH5k+yEzpp071GBQ--.40689S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7tF4kCFW8Wr18Kw13Wry8Krg_yoW8Kw4xpF
+	yvyay7Kw4aqry5Kr1Yv3sYva4Fvw48ta45try7Gr1IqwnIgr1rtF9Fy3W8Wry5CF93XF17
+	Za90gws7Cw42kFUanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUv0b4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxkF7I0En4kS
+	14v26r1q6r43MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I
+	8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVW8ZVWr
+	XwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x
+	0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_
+	Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU1
+	7KsUUUUUU==
+X-CM-SenderInfo: hfkh02xlgr0w46kxt4xhlfz01xgou0bp/
 
-Just managed to go through the series and I think there are very good
-ideas here. It seems to cover the isolation requirements that are
-needed for the devices with inline compression.
-As an RFC I can try to build something on top of it and test it more.
 
-I hope we find the right abstractions for this to move forward.
 
-On Tue, Nov 25, 2025 at 6:58=E2=80=AFAM Gregory Price <gourry@gourry.net> w=
-rote:
->
-> On Mon, Nov 24, 2025 at 10:19:37AM +0100, David Hildenbrand (Red Hat) wro=
-te:
-> > [...]
-> >
->
-> Apologies in advance for the wall of text, both of your questions really
-> do cut to the core of the series.  The first (SPM nodes) is basically a
-> plumbing problem I haven't had time to address pre-LPC, the second (GFP)
-> is actually a design decision that is definitely up in the air.
->
-> So consider this a dump of everything I wouldn't have had time to cover
-> in the LPC session.
->
-> > > 3) Addition of MHP_SPM_NODE flag to instruct memory_hotplug.c that th=
-e
-> > >     capacity being added should mark the node as an SPM Node.
-> >
-> > Sounds a bit like the wrong interface for configuring this. This smells=
- like
-> > a per-node setting that should be configured before hotplugging any mem=
-ory.
-> >
->
-> Assuming you're specifically talking about the MHP portion of this.
->
-> I agree, and I think the plumbing ultimately goes through acpi and
-> kernel configs.  This was my shortest path to demonstrate a functional
-> prototype by LPC.
->
-> I think the most likely option simply reserving additional NUMA nodes for
-> hotpluggable regions based on a Kconfig setting.
->
-> I think the real setup process should look like follows:
->
-> 1. At __init time, Linux reserves additional SPM nodes based on some
->    configuration (build? runtime? etc)
->
->    Essentially create:  nodes[N_SPM]
->
-> 2. At SPM setup time, a driver registers an "Abstract Type" with
->    mm/memory_tiers.c  which maps SPM->Type.
->
->    This gives the core some management callback infrastructure without
->    polluting the core with device specific nonsense.
->
->    This also gives the driver a change to define things like SLIT
->    distances for those nodes, which otherwise won't exist.
->
-> 3. At hotplug time, memory-hotplug.c should only have to flip a bit
->    in `mt_sysram_nodes` if NID is not in nodes[N_SPM].  That logic
->    is still there to ensure the base filtering works as intended.
->
->
-> I haven't quite figured out how to plumb out nodes[N_SPM] as described
-> above, but I did figure out how to demonstrate roughly the same effect
-> through memory-hotplug.c - hopefully that much is clear.
->
-> The problem with the above plan, is whether that "Makes sense" according
-> to ACPI specs and friends.
->
-> This operates in "Ambiguity Land", which is uncomfortable.
-What you describe in a high level above makes sense. And while I agree
-that ACPI seems like a good layer for this, it could take a while for
-things to converge. At the same time different vendors might do things
-differently (unsurprisingly I guess...). For example, it would not be
-an absurd idea that the "specialness" of the device (e.g. compression)
-appears as a vendor specific capability in CXL. So, it would make
-sense to allow specific device drivers to set the respective node as
-SPM (as I understood you suggest above, right?)
+On 2025/12/11 0:36, Johannes Weiner wrote:
+> On Wed, Dec 10, 2025 at 07:11:42AM +0000, Chen Ridong wrote:
+>> From: Chen Ridong <chenridong@huawei.com>
+>>
+>> The mem_cgroup_size helper is used only in apply_proportional_protection
+>> to read the current memory usage. Its semantics are unclear and
+>> inconsistent with other sites, which directly call page_counter_read for
+>> the same purpose.
+>>
+>> Remove this helper and replace its usage with page_counter_read for
+>> clarity. Additionally, rename the local variable 'cgroup_size' to 'usage'
+>> to better reflect its meaning.
+> 
+> +1
+> 
+> I don't think the helper adds much.
+> 
+>> --- a/mm/vmscan.c
+>> +++ b/mm/vmscan.c
+>> @@ -2451,6 +2451,7 @@ static inline void calculate_pressure_balance(struct scan_control *sc,
+>>  static unsigned long apply_proportional_protection(struct mem_cgroup *memcg,
+>>  		struct scan_control *sc, unsigned long scan)
+>>  {
+>> +#ifdef CONFIG_MEMCG
+>>  	unsigned long min, low;
+>>  
+>>  	mem_cgroup_protection(sc->target_mem_cgroup, memcg, &min, &low);
+>> @@ -2485,7 +2486,7 @@ static unsigned long apply_proportional_protection(struct mem_cgroup *memcg,
+>>  		 * again by how much of the total memory used is under
+>>  		 * hard protection.
+>>  		 */
+>> -		unsigned long cgroup_size = mem_cgroup_size(memcg);
+>> +		unsigned long usage = page_counter_read(&memcg->memory);
+>>  		unsigned long protection;
+>>  
+>>  		/* memory.low scaling, make sure we retry before OOM */
+>> @@ -2497,9 +2498,9 @@ static unsigned long apply_proportional_protection(struct mem_cgroup *memcg,
+>>  		}
+>>  
+>>  		/* Avoid TOCTOU with earlier protection check */
+>> -		cgroup_size = max(cgroup_size, protection);
+>> +		usage = max(usage, protection);
+>>  
+>> -		scan -= scan * protection / (cgroup_size + 1);
+>> +		scan -= scan * protection / (usage + 1);
+>>  
+>>  		/*
+>>  		 * Minimally target SWAP_CLUSTER_MAX pages to keep
+>> @@ -2508,6 +2509,7 @@ static unsigned long apply_proportional_protection(struct mem_cgroup *memcg,
+>>  		 */
+>>  		scan = max(scan, SWAP_CLUSTER_MAX);
+>>  	}
+>> +#endif
+> 
+> To avoid the ifdef, how about making it
+> 
+> 	bool mem_cgroup_protection(root, memcg, &min, &low, &usage)
+> 
+> and branch the scaling on that return value. The compiler should be
+> able to eliminate the entire branch in the !CONFIG_MEMCG case. And it
+> keeps a cleaner split between memcg logic and reclaim logic.
 
-Finally, going back to the isolation, I'm curious to see if this
-covers GPU use cases as Alistair brought up or HBMs in general. Maybe
-there could be synergies with the HBM related talk in the device MC?
+Much better, will update.
 
-Best,
-/Yiannis
+-- 
+Best regards,
+Ridong
+
 
