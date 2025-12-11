@@ -1,221 +1,115 @@
-Return-Path: <cgroups+bounces-12330-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-12332-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id D99D0CB4743
-	for <lists+cgroups@lfdr.de>; Thu, 11 Dec 2025 02:45:23 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id D888CCB4956
+	for <lists+cgroups@lfdr.de>; Thu, 11 Dec 2025 03:58:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id BDCAC3016BB0
-	for <lists+cgroups@lfdr.de>; Thu, 11 Dec 2025 01:45:22 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 9F0123016DDA
+	for <lists+cgroups@lfdr.de>; Thu, 11 Dec 2025 02:58:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 467FC238C2A;
-	Thu, 11 Dec 2025 01:45:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 379372BD01B;
+	Thu, 11 Dec 2025 02:58:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=cmpxchg.org header.i=@cmpxchg.org header.b="uhBougWh"
 X-Original-To: cgroups@vger.kernel.org
-Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qk1-f175.google.com (mail-qk1-f175.google.com [209.85.222.175])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 291851DE8BE;
-	Thu, 11 Dec 2025 01:45:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6443E15B998
+	for <cgroups@vger.kernel.org>; Thu, 11 Dec 2025 02:58:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765417522; cv=none; b=DhP+dIMPRTJ63fTWemaYb1E0MvIfylYtc6JdLiLqsUyWQrj+hXHrQ5zgXqbrcqnUEVtZ0sV4QpYNipXFrrPgxJJQW2NHq5R662HigQmDwJbD++Kh2ArBkugsdgQSiqCc+NFYTljNIqWTk1r5tYNKOjDgUqygyGCD0ncpnOn61II=
+	t=1765421906; cv=none; b=P3APM3aS9lad6kyrS43h4lGZHwphXvkXItCvV8zPPYhwjNhJDqbmv3Pr1+BmeWCWMfrzSEiqJghgJRZNEL8ZBOJpfW3+s/H8jEUx9J/TBCtjZQP9dORF11eHPnX+1Lxu2YOpOo+lYOmNe7TG9O7BEMfTKzHcWr2OMtelA/AdIHQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765417522; c=relaxed/simple;
-	bh=2HekbkaluU8TRZHlvMLWjDLidQwLmuj2r2anhiCtgsI=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=McLGFYeTutaJy3shWWPt3QOz2bc58AqcumkrZqXDx+Y8lTuwvQ/cEvP6rJBeBB6pBtSKm9olbL5KJH0HUtg69tuumrYu5dCqDSyHNNs6ZfKiVRmeN1uaKcpStnBtLVn2fYUuTjsM1iRn/c9HRSRU/VM9ccK62BD9LNJkIA4kTWs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.216])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTPS id 4dRb3g4s87zKHMP3;
-	Thu, 11 Dec 2025 09:44:15 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.75])
-	by mail.maildlp.com (Postfix) with ESMTP id 8BBB81A1938;
-	Thu, 11 Dec 2025 09:45:16 +0800 (CST)
-Received: from hulk-vt.huawei.com (unknown [10.67.174.121])
-	by APP2 (Coremail) with SMTP id Syh0CgB3VlAgIjpp39lLBQ--.49534S4;
-	Thu, 11 Dec 2025 09:45:16 +0800 (CST)
-From: Chen Ridong <chenridong@huaweicloud.com>
-To: hannes@cmpxchg.org,
-	mhocko@kernel.org,
-	roman.gushchin@linux.dev,
-	shakeel.butt@linux.dev,
-	muchun.song@linux.dev,
-	akpm@linux-foundation.org,
-	axelrasmussen@google.com,
-	yuanchu@google.com,
-	weixugc@google.com,
-	david@kernel.org,
-	zhengqi.arch@bytedance.com,
-	lorenzo.stoakes@oracle.com
-Cc: cgroups@vger.kernel.org,
-	linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org,
-	lujialin4@huawei.com,
-	chenridong@huaweicloud.com
-Subject: [PATCH -next v3 2/2] memcg: remove mem_cgroup_size()
-Date: Thu, 11 Dec 2025 01:30:19 +0000
-Message-Id: <20251211013019.2080004-3-chenridong@huaweicloud.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20251211013019.2080004-1-chenridong@huaweicloud.com>
+	s=arc-20240116; t=1765421906; c=relaxed/simple;
+	bh=TDCP8jSTjqvfR2lbb+PqyLvPxdA+5/VnBnQRxLoH4ZI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=SZbeEP+maHqaRFR5yE9zwHd8DZ1ijS+HX9sFbzEk9PeHBhoTiY6dKzTp1I/lQPB7qozW9L0pu5ZFIelmggg1y9t1IdQX/ytVVLCjpnmgkVVoiWbz/q22kyLIDwg+vZwNrz2Gj5Af8nnQO5LI7S/MuIa27036UlfJGgIsZt/orQU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org; spf=pass smtp.mailfrom=cmpxchg.org; dkim=pass (2048-bit key) header.d=cmpxchg.org header.i=@cmpxchg.org header.b=uhBougWh; arc=none smtp.client-ip=209.85.222.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cmpxchg.org
+Received: by mail-qk1-f175.google.com with SMTP id af79cd13be357-8b9d2e33e2dso75166685a.3
+        for <cgroups@vger.kernel.org>; Wed, 10 Dec 2025 18:58:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cmpxchg.org; s=google; t=1765421903; x=1766026703; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=4LfuhWoMqWAloJULoKj1IudIPQc7ilfqshnWS+4Dsvw=;
+        b=uhBougWhGOJ1gplNd8NKYu/zvBOqeKdvkU3dmzOKc7AI8G0MvfciMa6tiofYel1N7n
+         20DX16fMDdDsk9yiNGhvLQ59lz8LlkVRCMtD8LkwkC8jY7uF/E3jkE2HOzVE8PjJprPd
+         QTpDMVOBharrVm4Ppfp2w28o6XdxCYU615yM286YIF3TZ6m/eeM8g4tiJB8ebMfXBy5I
+         2Ch19EO5SIu1STT5Kkei0hBpCrTq8KbvQAyboSxLDdEHaNC9KNY8sGQsuVI0e2i8mNKs
+         1ZxZDp02wdNy6lsBMn7fXxQkz/3+5pWXDt4ouxsYfunNOC9KqbK2VAWkz+i4nog4yVr9
+         pVaQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1765421903; x=1766026703;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=4LfuhWoMqWAloJULoKj1IudIPQc7ilfqshnWS+4Dsvw=;
+        b=oR/F/IU+TrrIcEdmJpevru1gMyKXShvzBzDm0fw4x1NvwBmC899Ajg2DO6LpyYVPFy
+         XM8LGkts0Em/I3TcUDhzikzeFhdUhN4sBI45gUXCJEslsK4Xydudgb1UEmidZ2lvwN4K
+         JoSeVhCoap0Yelr2+NbqhFYwgSB7hLHg6jJndwGqNYjhpLU5KMTF3ILOLY3UVreBc54L
+         wZ836qNA/039ujRw3LGx3EyxYGX6rulOc1bIxZLhVVUM7ftWB+SNFID7x93bOJONYAmu
+         9X7vE7rMUr5VOepFf19ijfayJ2e2NVeempETXpCGJitIDRISjndTJhW3NAxeoDy4NQWn
+         58DA==
+X-Forwarded-Encrypted: i=1; AJvYcCXPMogTo2/0OOyS+lPWAbxYQOtNX8+/bpHdfVg+Joq4vPEKx7Q39nA4X9NVrusqPCSAs3gU1GIh@vger.kernel.org
+X-Gm-Message-State: AOJu0Ywi5r54QtYEitmJ6kHeq+Ssfx20AV7EC/338pXTErmub7LcvRv1
+	TuQejnu+bHcMDE535NSmjzn0qnUDRUI2Ev43/55Wa8Kl7JSTUDxDpYjjB1VjaV2L01k=
+X-Gm-Gg: ASbGncupH8uUaIfTmRieoRFEUESJ0Pb1Udoo6uEa4P0KXhyKtVj1RlNI9z2ef9WeSH6
+	2VLUR1D0TI0ujN6m8GfgnmsxFNm7y4BmNlxKhhqbATOQEvlnUpuAYL6HVYNbZiktWxBvoO2ntJP
+	LqueucnL2gqbg1H1m3uIpAwNq/othurWaNdOE1bofCPhZEL04eSoqiLPL27izQ+TiN7luVfFhfR
+	n3c9AkWrg66EMHShwcq106kbtv4kDqjN9m4US4zmxNwuYheDA4Q3VJ0CvX8YUas/alFPagbC2hq
+	s4hsy9lfFzOnql5IKfEvKG6mJ3pvLPkJnBjO1OEKvjj7MXFLL0j3AgwlZ0fG6H4Wmi69YfPtbtQ
+	M4us+dvtKgmGN8vEgbtAiIRilbC6QP8dPOZ8AGu7qk655rmEkFoVk4RfMHcg6EdPEX+6rT6wO0x
+	5SUQDcjIae2EokvRRoI+/G
+X-Google-Smtp-Source: AGHT+IFoXwBG0n5fP0BNrUvena3y71ni22tWG0aSIY3lZQj1Rng9OU7AuijjB7Oixr4MMXI+LjJMQg==
+X-Received: by 2002:a05:620a:2a11:b0:84a:71fc:a16a with SMTP id af79cd13be357-8ba39d46b56mr689168385a.37.1765421903169;
+        Wed, 10 Dec 2025 18:58:23 -0800 (PST)
+Received: from localhost ([2603:7000:c01:2716:929a:4aff:fe16:c778])
+        by smtp.gmail.com with ESMTPSA id af79cd13be357-8bab47f6f15sm113968985a.0.2025.12.10.18.58.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 10 Dec 2025 18:58:22 -0800 (PST)
+Date: Wed, 10 Dec 2025 21:58:21 -0500
+From: Johannes Weiner <hannes@cmpxchg.org>
+To: Chen Ridong <chenridong@huaweicloud.com>
+Cc: mhocko@kernel.org, roman.gushchin@linux.dev, shakeel.butt@linux.dev,
+	muchun.song@linux.dev, akpm@linux-foundation.org,
+	axelrasmussen@google.com, yuanchu@google.com, weixugc@google.com,
+	david@kernel.org, zhengqi.arch@bytedance.com,
+	lorenzo.stoakes@oracle.com, cgroups@vger.kernel.org,
+	linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+	lujialin4@huawei.com
+Subject: Re: [PATCH -next v3 2/2] memcg: remove mem_cgroup_size()
+Message-ID: <20251211025821.GC643576@cmpxchg.org>
 References: <20251211013019.2080004-1-chenridong@huaweicloud.com>
+ <20251211013019.2080004-3-chenridong@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:Syh0CgB3VlAgIjpp39lLBQ--.49534S4
-X-Coremail-Antispam: 1UD129KBjvJXoWxur1kKF4UtrWrZFWUKw18Grg_yoWrCry7pF
-	sFy3y3tw4YyrW3WrZIka4UZa4fAw48ta45Jry7Gw1xZ3ZIqw15XFy2yw18XFWUCF9aqFy7
-	Za90yr1kC3y2krUanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUmY14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_Jryl82xGYIkIc2
-	x26xkF7I0E14v26ryj6s0DM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2z4x0
-	Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr1j6F4UJw
-	A2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oVCq3wAS
-	0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2
-	IY67AKxVWUGVWUXwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0
-	Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628vn2kIc2
-	xKxwCY1x0262kKe7AKxVW8ZVWrXwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWU
-	JVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67
-	kF1VAFwI0_GFv_WrylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY
-	6xIIjxv20xvEc7CjxVAFwI0_Cr0_Gr1UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42
-	IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIev
-	Ja73UjIFyTuYvjTRRCJPDUUUU
-X-CM-SenderInfo: hfkh02xlgr0w46kxt4xhlfz01xgou0bp/
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20251211013019.2080004-3-chenridong@huaweicloud.com>
 
-From: Chen Ridong <chenridong@huawei.com>
+On Thu, Dec 11, 2025 at 01:30:19AM +0000, Chen Ridong wrote:
+> From: Chen Ridong <chenridong@huawei.com>
+> 
+> The mem_cgroup_size helper is used only in apply_proportional_protection
+> to read the current memory usage. Its semantics are unclear and
+> inconsistent with other sites, which directly call page_counter_read for
+> the same purpose.
+> 
+> Remove this helper and get its usage via mem_cgroup_protection for
+> clarity. Additionally, rename the local variable 'cgroup_size' to 'usage'
+> to better reflect its meaning.
+> 
+> No functional changes intended.
+> 
+> Signed-off-by: Chen Ridong <chenridong@huawei.com>
 
-The mem_cgroup_size helper is used only in apply_proportional_protection
-to read the current memory usage. Its semantics are unclear and
-inconsistent with other sites, which directly call page_counter_read for
-the same purpose.
-
-Remove this helper and get its usage via mem_cgroup_protection for
-clarity. Additionally, rename the local variable 'cgroup_size' to 'usage'
-to better reflect its meaning.
-
-No functional changes intended.
-
-Signed-off-by: Chen Ridong <chenridong@huawei.com>
----
- include/linux/memcontrol.h | 18 +++++++-----------
- mm/memcontrol.c            |  5 -----
- mm/vmscan.c                |  9 ++++-----
- 3 files changed, 11 insertions(+), 21 deletions(-)
-
-diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-index 6a48398a1f4e..603252e3169c 100644
---- a/include/linux/memcontrol.h
-+++ b/include/linux/memcontrol.h
-@@ -557,13 +557,15 @@ static inline bool mem_cgroup_disabled(void)
- static inline void mem_cgroup_protection(struct mem_cgroup *root,
- 					 struct mem_cgroup *memcg,
- 					 unsigned long *min,
--					 unsigned long *low)
-+					 unsigned long *low,
-+					 unsigned long *usage)
- {
--	*min = *low = 0;
-+	*min = *low = *usage = 0;
- 
- 	if (mem_cgroup_disabled())
- 		return;
- 
-+	*usage = page_counter_read(&memcg->memory);
- 	/*
- 	 * There is no reclaim protection applied to a targeted reclaim.
- 	 * We are special casing this specific case here because
-@@ -919,8 +921,6 @@ static inline void mem_cgroup_handle_over_high(gfp_t gfp_mask)
- 
- unsigned long mem_cgroup_get_max(struct mem_cgroup *memcg);
- 
--unsigned long mem_cgroup_size(struct mem_cgroup *memcg);
--
- void mem_cgroup_print_oom_context(struct mem_cgroup *memcg,
- 				struct task_struct *p);
- 
-@@ -1102,9 +1102,10 @@ static inline void memcg_memory_event_mm(struct mm_struct *mm,
- static inline void mem_cgroup_protection(struct mem_cgroup *root,
- 					 struct mem_cgroup *memcg,
- 					 unsigned long *min,
--					 unsigned long *low)
-+					 unsigned long *low,
-+					 unsigned long *usage)
- {
--	*min = *low = 0;
-+	*min = *low = *usage = 0;
- }
- 
- static inline void mem_cgroup_calculate_protection(struct mem_cgroup *root,
-@@ -1328,11 +1329,6 @@ static inline unsigned long mem_cgroup_get_max(struct mem_cgroup *memcg)
- 	return 0;
- }
- 
--static inline unsigned long mem_cgroup_size(struct mem_cgroup *memcg)
--{
--	return 0;
--}
--
- static inline void
- mem_cgroup_print_oom_context(struct mem_cgroup *memcg, struct task_struct *p)
- {
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index dbe7d8f93072..659ce171b1b3 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -1621,11 +1621,6 @@ unsigned long mem_cgroup_get_max(struct mem_cgroup *memcg)
- 	return max;
- }
- 
--unsigned long mem_cgroup_size(struct mem_cgroup *memcg)
--{
--	return page_counter_read(&memcg->memory);
--}
--
- void __memcg_memory_event(struct mem_cgroup *memcg,
- 			  enum memcg_memory_event event, bool allow_spinning)
- {
-diff --git a/mm/vmscan.c b/mm/vmscan.c
-index 670fe9fae5ba..9a6ee80275fc 100644
---- a/mm/vmscan.c
-+++ b/mm/vmscan.c
-@@ -2451,9 +2451,9 @@ static inline void calculate_pressure_balance(struct scan_control *sc,
- static unsigned long apply_proportional_protection(struct mem_cgroup *memcg,
- 		struct scan_control *sc, unsigned long scan)
- {
--	unsigned long min, low;
-+	unsigned long min, low, usage;
- 
--	mem_cgroup_protection(sc->target_mem_cgroup, memcg, &min, &low);
-+	mem_cgroup_protection(sc->target_mem_cgroup, memcg, &min, &low, &usage);
- 
- 	if (min || low) {
- 		/*
-@@ -2485,7 +2485,6 @@ static unsigned long apply_proportional_protection(struct mem_cgroup *memcg,
- 		 * again by how much of the total memory used is under
- 		 * hard protection.
- 		 */
--		unsigned long cgroup_size = mem_cgroup_size(memcg);
- 		unsigned long protection;
- 
- 		/* memory.low scaling, make sure we retry before OOM */
-@@ -2497,9 +2496,9 @@ static unsigned long apply_proportional_protection(struct mem_cgroup *memcg,
- 		}
- 
- 		/* Avoid TOCTOU with earlier protection check */
--		cgroup_size = max(cgroup_size, protection);
-+		usage = max(usage, protection);
- 
--		scan -= scan * protection / (cgroup_size + 1);
-+		scan -= scan * protection / (usage + 1);
- 
- 		/*
- 		 * Minimally target SWAP_CLUSTER_MAX pages to keep
--- 
-2.34.1
-
+Acked-by: Johannes Weiner <hannes@cmpxchg.org>
 
