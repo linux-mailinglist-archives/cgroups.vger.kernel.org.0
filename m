@@ -1,131 +1,142 @@
-Return-Path: <cgroups+bounces-12345-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-12346-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4F076CB889C
-	for <lists+cgroups@lfdr.de>; Fri, 12 Dec 2025 10:55:29 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id E46C4CB8962
+	for <lists+cgroups@lfdr.de>; Fri, 12 Dec 2025 11:12:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id A030030505B6
-	for <lists+cgroups@lfdr.de>; Fri, 12 Dec 2025 09:54:06 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 7FE2B302620B
+	for <lists+cgroups@lfdr.de>; Fri, 12 Dec 2025 10:12:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 30F97315D36;
-	Fri, 12 Dec 2025 09:54:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B350C31691E;
+	Fri, 12 Dec 2025 10:12:15 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F0E4314B66;
-	Fri, 12 Dec 2025 09:54:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F5252F6921;
+	Fri, 12 Dec 2025 10:12:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=124.126.103.232
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765533245; cv=none; b=CYBAMIhzso6JajmsBi3KiijFnG956nICdp3dZWK7R06eCOJZ38NMPAKboH2uVeUXFv352KLVnR4JwTUj9t3JEgNw8Qmdbub5dqrSkckuO136f+NPzAMBrKvHLKWlc2tsXZyhr6Inx4Z1zFh+wg2tJurHVeE7se+GcrqqTjEf1o8=
+	t=1765534335; cv=none; b=QDCWoekT4qm1YHo43rF66vid+gfJbE8SwPVMGQKWC1+yDqcYio9SxER3nqoM2LmAyz0AP0yxW6Kv1IpLzhfSxALtYpHT1BJ6gabdBIUmNtgQ8iPCy4+uLFfkXlqJeTig1NYjb4d+WOF4jy+73GP1t0WyzH2zljsm9MNuih0JDXQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765533245; c=relaxed/simple;
-	bh=e+PVJXn3SNu5RdUqOToWRAPThm1ywlKM0+e510R3cNw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Z0gjrboDkDpa+xCwgZAHWHb1PZLju/nuSMGxq+UWQAkUhiHqhsXbCppBV2wTQEYPTWms/77u32IccypCgGElFN0/76mLnNxTano3b6m44l4q8aYCEflUoc8jaywIOzc1uMEerksl0rJgOU0Zy/x8LXs2eqguFTn+fGYz8VWpBUk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.93.142])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTPS id 4dSPsp34kFzYQv3y;
-	Fri, 12 Dec 2025 17:53:34 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.75])
-	by mail.maildlp.com (Postfix) with ESMTP id AA6FC1A018D;
-	Fri, 12 Dec 2025 17:53:52 +0800 (CST)
-Received: from [10.67.111.176] (unknown [10.67.111.176])
-	by APP2 (Coremail) with SMTP id Syh0CgBHJlAq5jtpR9fqBQ--.55492S2;
-	Fri, 12 Dec 2025 17:53:48 +0800 (CST)
-Message-ID: <5d9ae0e9-d1c3-46cb-9dee-f016359e90f8@huaweicloud.com>
-Date: Fri, 12 Dec 2025 17:53:46 +0800
+	s=arc-20240116; t=1765534335; c=relaxed/simple;
+	bh=PXnSRzi8FmadxcZpsrNXLauxd4MUDOrBRcDnmLzmsus=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=fO9W+7UGAGbvE3ZIYXjssaqa1EyLT5flkePVE3VrcJ5jCcmSlAdeQgFeNPqUImhfC80/1H4Pb8/567lxQ5iAo5bdDs28sYERGoIZMMfRLfRby/Oc23cYZadsjpywh9xVR39pHaHfAvArvb9sG+NJIISrDAIrhx8+HBfh6f+GiIo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn; spf=pass smtp.mailfrom=kylinos.cn; arc=none smtp.client-ip=124.126.103.232
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kylinos.cn
+X-UUID: fa82ab02d74211f0a38c85956e01ac42-20251212
+X-CTIC-Tags:
+	HR_CC_COUNT, HR_CC_DOMAIN_COUNT, HR_CC_NO_NAME, HR_CTE_8B, HR_CTT_TXT
+	HR_DATE_H, HR_DATE_WKD, HR_DATE_ZONE, HR_FROM_NAME, HR_SJ_DIGIT_LEN
+	HR_SJ_LANG, HR_SJ_LEN, HR_SJ_LETTER, HR_SJ_NOR_SYM, HR_SJ_PHRASE
+	HR_SJ_PHRASE_LEN, HR_SJ_PRE_RE, HR_SJ_WS, HR_TO_COUNT, HR_TO_DOMAIN_COUNT
+	HR_TO_NO_NAME, IP_TRUSTED, SRC_TRUSTED, DN_TRUSTED, SA_TRUSTED
+	SA_EXISTED, SN_TRUSTED, SN_EXISTED, SPF_NOPASS, DKIM_NOPASS
+	DMARC_NOPASS, CIE_GOOD, CIE_GOOD_SPF, GTI_FG_BS, GTI_RG_INFO
+	GTI_C_BU, AMN_GOOD, ABX_MISS_RDNS
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.3.6,REQID:47d4b3cf-327d-4b20-8602-fd37bf6e2068,IP:10,U
+	RL:0,TC:0,Content:0,EDM:0,RT:0,SF:-5,FILE:0,BULK:0,RULE:Release_Ham,ACTION
+	:release,TS:5
+X-CID-INFO: VERSION:1.3.6,REQID:47d4b3cf-327d-4b20-8602-fd37bf6e2068,IP:10,URL
+	:0,TC:0,Content:0,EDM:0,RT:0,SF:-5,FILE:0,BULK:0,RULE:Release_Ham,ACTION:r
+	elease,TS:5
+X-CID-META: VersionHash:a9d874c,CLOUDID:78e7f9d771334a2709eaa6ca9b9a0f49,BulkI
+	D:251119212056S6LKT8LY,BulkQuantity:29,Recheck:0,SF:17|19|64|66|78|80|81|8
+	2|83|102|127|841|850|898,TC:nil,Content:0|15|50,EDM:-3,IP:-2,URL:0,File:ni
+	l,RT:nil,Bulk:40,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,
+	DKP:0,BRR:0,BRE:0,ARC:0
+X-CID-BVR: 2,SSN|SDN
+X-CID-BAS: 2,SSN|SDN,0,_
+X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_FAS,TF_CID_SPAM_FSD,TF_CID_SPAM_OBB
+X-CID-RHF: D41D8CD98F00B204E9800998ECF8427E
+X-UUID: fa82ab02d74211f0a38c85956e01ac42-20251212
+X-User: sunshaojie@kylinos.cn
+Received: from localhost.localdomain [(223.70.159.239)] by mailgw.kylinos.cn
+	(envelope-from <sunshaojie@kylinos.cn>)
+	(Generic MTA with TLSv1.3 TLS_AES_256_GCM_SHA384 256/256)
+	with ESMTP id 1627458903; Fri, 12 Dec 2025 18:11:51 +0800
+From: Sun Shaojie <sunshaojie@kylinos.cn>
+To: mkoutny@suse.com
+Cc: cgroups@vger.kernel.org,
+	chenridong@huaweicloud.com,
+	hannes@cmpxchg.org,
+	linux-kernel@vger.kernel.org,
+	linux-kselftest@vger.kernel.org,
+	llong@redhat.com,
+	shuah@kernel.org,
+	sunshaojie@kylinos.cn,
+	tj@kernel.org
+Subject: Re: [PATCH v5] cpuset: Avoid invalidating sibling partitions on cpuset.cpus conflict.
+Date: Fri, 12 Dec 2025 18:10:35 +0800
+Message-Id: <20251212101035.1194896-1-sunshaojie@kylinos.cn>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <in2stxqa2swky4zwzlrm4h5vuz627ruedhq6zqr22xqwv5di7c@vcwc3z2sczx4>
+References: <in2stxqa2swky4zwzlrm4h5vuz627ruedhq6zqr22xqwv5di7c@vcwc3z2sczx4>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH -next 3/5] mm/mglru: extend shrink_one for both lrugen and
- non-lrugen
-To: kernel test robot <lkp@intel.com>, akpm@linux-foundation.org,
- axelrasmussen@google.com, yuanchu@google.com, weixugc@google.com,
- david@kernel.org, lorenzo.stoakes@oracle.com, Liam.Howlett@oracle.com,
- vbabka@suse.cz, rppt@kernel.org, surenb@google.com, mhocko@suse.com,
- corbet@lwn.net, hannes@cmpxchg.org, roman.gushchin@linux.dev,
- shakeel.butt@linux.dev, muchun.song@linux.dev, zhengqi.arch@bytedance.com
-Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev, linux-mm@kvack.org,
- linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
- cgroups@vger.kernel.org, lujialin4@huawei.com, zhongjinji@honor.com
-References: <20251209012557.1949239-4-chenridong@huaweicloud.com>
- <202512121027.03z9qd08-lkp@intel.com>
-Content-Language: en-US
-From: Chen Ridong <chenridong@huaweicloud.com>
-In-Reply-To: <202512121027.03z9qd08-lkp@intel.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID:Syh0CgBHJlAq5jtpR9fqBQ--.55492S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7ZFyftw4xXrWkGrW3CrW5Awb_yoW8uF1rpF
-	WUGw4jvr15Xrs29ayvgF4DWFyjyrs3Gry3GF1kXr1UAay2vF9rGFyI9r4Yqryjg3ykKrWa
-	yr97Wrn5t3WjvaDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUv0b4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxkF7I0En4kS
-	14v26r4a6rW5MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I
-	8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVW8ZVWr
-	XwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x
-	0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_
-	Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU0
-	s2-5UUUUU==
-X-CM-SenderInfo: hfkh02xlgr0w46kxt4xhlfz01xgou0bp/
+Content-Transfer-Encoding: 8bit
 
+Hi, Michal
 
+On Thu, 11 Dec 2025 11:59:27 +0100, Michal Koutný wrote:
+>On Wed, Dec 10, 2025 at 06:11:08PM +0800, Sun Shaojie <sunshaojie@kylinos.cn> wrote:
+>> Regardless of whether A1 through A5 belong to the same user or different
+>> users, arbitration conflicts between sibling nodes can still occur (e.g.,
+>> due to user misconfiguration). The key question is: when such a conflict
+>> arises, should all sibling nodes be invalidated, or only the node that
+>> triggered the conflict?
+>
+>Any serious [1] affinity users should watch for cpuset.cpus.partition
+>already (since it can be invalidated by hotplug or IMO more probable
+>ancestor re-configuration). Do you agree?
+>
+>Then I'd say it's reasonable to invalidate all (same reasoning -- it
+>doesn't matter on the order in which siblings are configured, I consider
+>local partitions). What would you see as the upsides of invalidating
+>only the last offender (under the assumption above about watching)?
 
-On 2025/12/12 10:55, kernel test robot wrote:
-> Hi Chen,
-> 
-> kernel test robot noticed the following build warnings:
-> 
-> [auto build test WARNING on akpm-mm/mm-everything]
-> 
-> url:    https://github.com/intel-lab-lkp/linux/commits/Chen-Ridong/mm-mglru-use-mem_cgroup_iter-for-global-reclaim/20251209-094913
-> base:   https://git.kernel.org/pub/scm/linux/kernel/git/akpm/mm.git mm-everything
-> patch link:    https://lore.kernel.org/r/20251209012557.1949239-4-chenridong%40huaweicloud.com
-> patch subject: [PATCH -next 3/5] mm/mglru: extend shrink_one for both lrugen and non-lrugen
-> config: x86_64-randconfig-004-20251212 (https://download.01.org/0day-ci/archive/20251212/202512121027.03z9qd08-lkp@intel.com/config)
-> compiler: clang version 20.1.8 (https://github.com/llvm/llvm-project 87f0227cb60147a26a1eeb4fb06e3b505e9c7261)
-> reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20251212/202512121027.03z9qd08-lkp@intel.com/reproduce)
-> 
-> If you fix the issue in a separate patch/commit (i.e. not just a new version of
-> the same patch/commit), kindly add following tags
-> | Reported-by: kernel test robot <lkp@intel.com>
-> | Closes: https://lore.kernel.org/oe-kbuild-all/202512121027.03z9qd08-lkp@intel.com/
-> 
-> All warnings (new ones prefixed by >>):
-> 
->>> mm/vmscan.o: warning: objtool: shrink_one+0xeb2: sibling call from callable instruction with modified stack frame
-> 
+I agree that users should watch the state of their cpuset.cpus.partition.
+Moreover, assuming the user is watching, there is no harm in invalidating
+only the last conflicting partition.
 
-This is the first time I've encountered this warning. While adding
-`STACK_FRAME_NON_STANDARD(shrink_one)` resolves it, I noticed this approach isn't widely used in the
-codebase. Is this the standard solution, or are there better alternatives?
+For example
 
-I've tested that the warning persists even when `shrink_one` is simplified to only call `shrink_lruvec`:
+           root cgroup
+                |
+   --------------------------
+   |      |     |    |      |    
+   A      B    ...   M      N
+ (root) (root) ... (root) (root)
 
-```
-static void shrink_one(struct lruvec *lruvec, struct scan_control *sc)
-{
-    shrink_lruvec(lruvec, sc);
-}
-```
+Condition: Node N is the last one configured by the user.
+           After its configuration, it conflicts with all previous nodes
+           (A through M).
 
-How can we properly avoid this warning without using STACK_FRAME_NON_STANDARD?
+When all are invalidated, the user will notice that A-M are all invalidated
+because they are watching. If the user wants to restore the exclusivity
+of A-M, they need to reconfigure A-M once more, as well as N.
 
--- 
-Best regards,
-Ridong
+When only the last conflict is invalidated, the user will notice that N is
+invalidated, and then they only need to reconfigure N.
+This seems more convenient for the user.
 
+However, whether watching is in place is not the key to this issue,
+because watching merely reveals the outcome.
+
+If A through N belong to different users, and when N conflicts with all of
+A through M, then after the users of A-M observe the invalidation result
+through watching, they cannot even restore their exclusive state, because
+they will always conflict with N.
+
+Thanks,
+Sun Shaojie
 
