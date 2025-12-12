@@ -1,160 +1,84 @@
-Return-Path: <cgroups+bounces-12347-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-12348-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 77DBDCB8986
-	for <lists+cgroups@lfdr.de>; Fri, 12 Dec 2025 11:15:40 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id A0304CB8C04
+	for <lists+cgroups@lfdr.de>; Fri, 12 Dec 2025 12:57:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 5511F3004C8A
-	for <lists+cgroups@lfdr.de>; Fri, 12 Dec 2025 10:15:39 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 3BA05304D9E2
+	for <lists+cgroups@lfdr.de>; Fri, 12 Dec 2025 11:57:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 556A531A57C;
-	Fri, 12 Dec 2025 10:15:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5ED7A31ED9B;
+	Fri, 12 Dec 2025 11:57:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="M0XdHj8B"
 X-Original-To: cgroups@vger.kernel.org
-Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F64B31A07C;
-	Fri, 12 Dec 2025 10:15:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1039D31ED84;
+	Fri, 12 Dec 2025 11:57:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765534536; cv=none; b=XlYY343BBfQkS2m3FNiQBqN6eTxdVLi+Xzk+ivgg9XgGNdIo+zBHIcP4yId+5wXAtjvMXUrHHrfGcsJ4DOoq1pJAder223mgbG1vxmJSy/Bc6q9Fv7d4B4iDHJeFD7Uc3NXLE4myDRdcn1s0qWSXQuviIlrzddO74ofHXiZJfgc=
+	t=1765540646; cv=none; b=gQJ/C91ZkTPeAxtCOoMFrfSC+B0Ajhfuk9qXGDQi6pQUtIpSRCx+JdqNnjFnOrHV2NOLFw+xs+3gNgmEmI2RGP1joPGqx1JAFlnANXH1ODKtqNd4DzsxDWmSzhmR70CSaFHzMzXc4EuOTRJekh05YkyqHm0n7LCV6+70PQZUNhQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765534536; c=relaxed/simple;
-	bh=M0sOfmxD3AiO8ypIspot2QyB4955YaY26/MqBq2Fhek=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=mZkCu4pGx6UcyMbi7OCNfv8bxFjy3Xb5OWHlB87hLrNOkd2s0ZFKfZeMcOCpVi89VaHklRWwLoB86lOQRprI/duAr8L1B0rMj4xVf0Lgy91KmL8BAXNCksz7nUgbKW43r7eTA3sbzFh363OtQ4xTSWAZwqh+A4WcrAsT21XwYFA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.216])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTPS id 4dSQM33chrzKHMhw;
-	Fri, 12 Dec 2025 18:15:27 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.112])
-	by mail.maildlp.com (Postfix) with ESMTP id CA85F1A1A70;
-	Fri, 12 Dec 2025 18:15:28 +0800 (CST)
-Received: from [10.67.111.176] (unknown [10.67.111.176])
-	by APP1 (Coremail) with SMTP id cCh0CgCHwX096ztpFD3hBQ--.55276S2;
-	Fri, 12 Dec 2025 18:15:26 +0800 (CST)
-Message-ID: <3eefcf06-e33f-4f5f-bba1-6d53ddc495d5@huaweicloud.com>
-Date: Fri, 12 Dec 2025 18:15:24 +0800
+	s=arc-20240116; t=1765540646; c=relaxed/simple;
+	bh=B8kaJig1Qmy/8VwfW5/KFmQMAdC8lDjti5wIe775VME=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=GNsqR1W0Axkmv+5EY/GWCsmHAAGaFA4lnCY+Nri/026v4PEzlsn9zB0UWP2lm3gbffj50OC+WpZd+twI/1vf/Z6Fetpwrf84qP7deOPVI/GdEAJtRnVu8baUdi1pitVR3LQLppibSDA9eMUSyQN7LgGeaBfOaWHFz2cdpo1iwEY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=M0XdHj8B; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3A1D9C4CEF1;
+	Fri, 12 Dec 2025 11:57:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1765540645;
+	bh=B8kaJig1Qmy/8VwfW5/KFmQMAdC8lDjti5wIe775VME=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=M0XdHj8BE5bQDXI9rljVUy7gBTq4SPI7XwXwOEOBex/YI/XhXqKwJwsK22qElrC+E
+	 pJwMUixAKg8ciHHM+tkBNR68jlb2O+lYzzDJzpPpGog64zwkxsoPKcq6FW8Tw2tJMB
+	 f1R1ZctH8Qfa2ThfuyFfYyHQjwggGaJ4s3Cv+xbbEAQaOdKgBUlIVre1oZrRX69WBY
+	 8lGpCDoMgI7XzXkEQvwYQ5BuL+BS6VcBGTY0oZKrgIIEtDzLW7GxEeC4qRK2KCtu/p
+	 2IQklOV4/khM+FRP+gB3ZtL1Q//EOpbiEMw8WezRmW+nZG6OBMWuX/Mr/aKFsE5ulv
+	 J6Z12aaZ7eS/g==
+Date: Fri, 12 Dec 2025 12:57:22 +0100
+From: Frederic Weisbecker <frederic@kernel.org>
+To: Thomas Gleixner <tglx@linutronix.de>
+Cc: Chris Mason <clm@meta.com>, LKML <linux-kernel@vger.kernel.org>,
+	Marek Szyprowski <m.szyprowski@samsung.com>,
+	Marco Crivellari <marco.crivellari@suse.com>,
+	Waiman Long <llong@redhat.com>, cgroups@vger.kernel.org
+Subject: Re: [PATCH] genirq: Don't overwrite interrupt thread flags on setup
+Message-ID: <aTwDIoiqJECNhIC-@pavilion.home>
+References: <20251212014848.3509622-1-clm@meta.com>
+ <87ikece8ps.ffs@tglx>
+ <87ecp0e4cf.ffs@tglx>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH -next 0/5] mm/mglru: remove memcg lru
-To: akpm@linux-foundation.org, axelrasmussen@google.com, yuanchu@google.com,
- weixugc@google.com, david@kernel.org, lorenzo.stoakes@oracle.com,
- Liam.Howlett@oracle.com, vbabka@suse.cz, rppt@kernel.org, surenb@google.com,
- mhocko@suse.com, corbet@lwn.net, hannes@cmpxchg.org,
- roman.gushchin@linux.dev, shakeel.butt@linux.dev, muchun.song@linux.dev,
- zhengqi.arch@bytedance.com
-Cc: linux-mm@kvack.org, linux-doc@vger.kernel.org,
- linux-kernel@vger.kernel.org, cgroups@vger.kernel.org, lujialin4@huawei.com,
- zhongjinji@honor.com
-References: <20251209012557.1949239-1-chenridong@huaweicloud.com>
-Content-Language: en-US
-From: Chen Ridong <chenridong@huaweicloud.com>
-In-Reply-To: <20251209012557.1949239-1-chenridong@huaweicloud.com>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:cCh0CgCHwX096ztpFD3hBQ--.55276S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxGw4DurWxAF4xJFW8tF13Arb_yoW5Wr1rpF
-	Z3WasIka1rArW7X3Z7KayUu3y8Za1xAw47Wr92g3yfArnIya4ktr47tw4rZFWUCrWSqry7
-	Xr98u3W8XF1DZFJanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUv0b4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxkF7I0En4kS
-	14v26r4a6rW5MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I
-	8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVW8ZVWr
-	XwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x
-	0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_
-	Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU0
-	s2-5UUUUU==
-X-CM-SenderInfo: hfkh02xlgr0w46kxt4xhlfz01xgou0bp/
+In-Reply-To: <87ecp0e4cf.ffs@tglx>
 
+Le Fri, Dec 12, 2025 at 01:01:04PM +0900, Thomas Gleixner a �crit :
+> Chris reported that the recent affinity management changes result in
+> overwriting the already initialized thread flags.
+> 
+> Use set_bit() to set the affinity bit instead of assigning the bit value to
+> the flags.
+> 
+> Fixes: 801afdfbfcd9 ("genirq: Fix interrupt threads affinity vs. cpuset isolated partitions")
+> Reported-by: Chris Mason <clm@meta.com>
+> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+> Closes: https://lore.kernel.org/all/20251212014848.3509622-1-clm@meta.com
 
+Whoops!
 
-On 2025/12/9 9:25, Chen Ridong wrote:
-> From: Chen Ridong <chenridong@huawei.com>
-> 
-> The memcg LRU was introduced to improve scalability in global reclaim,
-> but its implementation has grown complex and can cause performance
-> regressions when creating many memory cgroups [1].
-> 
-> This series implements mem_cgroup_iter with a reclaim cookie in
-> shrink_many() for global reclaim, following the pattern already used in
-> shrink_node_memcgs(), an approach suggested by Johannes [1]. The new
-> design maintains good fairness across cgroups by preserving iteration
-> state between reclaim passes.
-> 
-> Testing was performed using the original stress test from Yu Zhao [2] on a
-> 1 TB, 4-node NUMA system. The results show:
-> 
->     pgsteal:
->                                         memcg LRU    memcg iter
->     stddev(pgsteal) / mean(pgsteal)     106.03%       93.20%
->     sum(pgsteal) / sum(requested)        98.10%       99.28%
->     
->     workingset_refault_anon:
->                                         memcg LRU    memcg iter
->     stddev(refault) / mean(refault)     193.97%      134.67%
->     sum(refault)                       1,963,229    2,027,567
-> 
-> The new implementation shows clear fairness improvements, reducing the
-> standard deviation relative to the mean by 12.8 percentage points for
-> pgsteal and bringing the pgsteal ratio closer to 100%. Refault counts
-> increased by 3.2% (from 1,963,229 to 2,027,567).
-> 
-> To simplify review:
-> 1. Patch 1 uses mem_cgroup_iter with reclaim cookie in shrink_many()
-> 2. Patch 2 removes the now-unused memcg LRU code
-> 3. Patches 3–5 combine shrink_many and shrink_node_memcgs
->    (This reorganization is clearer after switching to mem_cgroup_iter)
-> 
-> ---
-> 
-> Changes from RFC series:
-> 1. Updated the test result data.
-> 2. Added patches 3–5 to combine shrink_many and shrink_node_memcgs.
-> 
-> RFC: https://lore.kernel.org/all/20251204123124.1822965-1-chenridong@huaweicloud.com/
-> 
-> Chen Ridong (5):
->   mm/mglru: use mem_cgroup_iter for global reclaim
->   mm/mglru: remove memcg lru
->   mm/mglru: extend shrink_one for both lrugen and non-lrugen
->   mm/mglru: combine shrink_many into shrink_node_memcgs
->   mm/mglru: factor lrugen state out of shrink_lruvec
-> 
->  Documentation/mm/multigen_lru.rst |  30 ---
->  include/linux/mmzone.h            |  89 --------
->  mm/memcontrol-v1.c                |   6 -
->  mm/memcontrol.c                   |   4 -
->  mm/mm_init.c                      |   1 -
->  mm/vmscan.c                       | 332 ++++--------------------------
->  6 files changed, 44 insertions(+), 418 deletions(-)
-> 
-
-Hello all,
-
-There's a warning from the kernel test robot, and I would like to update the series to fix it along
-with any feedback from your reviews.
-
-I'd appreciate it if you could take a look at this patch series when convenient.
-
-Hi Shakeel, I would be very grateful if you could review patches 3-5. They combine shrink_many and
-shrink_node_memcgs as you suggested — does that look good to you?
+Acked-by: Frederic Weisbecker <frederic@kernel.org>
 
 -- 
-Best regards,
-Ridong
-
+Frederic Weisbecker
+SUSE Labs
 
