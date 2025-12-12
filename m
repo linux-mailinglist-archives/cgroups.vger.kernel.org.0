@@ -1,44 +1,44 @@
-Return-Path: <cgroups+bounces-12338-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-12339-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 73EF8CB7751
-	for <lists+cgroups@lfdr.de>; Fri, 12 Dec 2025 01:37:25 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 682D9CB775A
+	for <lists+cgroups@lfdr.de>; Fri, 12 Dec 2025 01:38:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 14F723018F41
-	for <lists+cgroups@lfdr.de>; Fri, 12 Dec 2025 00:37:07 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id D5454300BA37
+	for <lists+cgroups@lfdr.de>; Fri, 12 Dec 2025 00:38:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 494B521883E;
-	Fri, 12 Dec 2025 00:37:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 40DFB223705;
+	Fri, 12 Dec 2025 00:38:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="HSb/IcFp"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="kkRJhWfy"
 X-Original-To: cgroups@vger.kernel.org
-Received: from out-188.mta0.migadu.com (out-188.mta0.migadu.com [91.218.175.188])
+Received: from out-177.mta1.migadu.com (out-177.mta1.migadu.com [95.215.58.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8B4D4220687
-	for <cgroups@vger.kernel.org>; Fri, 12 Dec 2025 00:37:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.188
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 463CD1F419F
+	for <cgroups@vger.kernel.org>; Fri, 12 Dec 2025 00:38:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765499826; cv=none; b=Rf5o1dr+rg3AJ2wmEVkHHZNE0ltH2D1QFWMTcLt0yJ7eovg72m2EekIOxdxDQsmBp8XW7I5qZ/rRLocynlYLLFwjziHTPoj2gLVpftmtgkzctfk2Gp6S6RWi+zV3ET699METUUAY2/JGsrcv9zepwvnT8LkhyFWZ9q+ezEi6W/4=
+	t=1765499884; cv=none; b=YauFvbmoTWySScRHYdt0u0mnEVQLHvLyrmq7MvWs0nKkV4i6Y+K6PFtZpJfvXN3r61rRWbPHwmTt5zHsVvfpKvCXGvUygpV6pyNJeVDlsbFvecQD50fLFEIQn57W6EOMQs+qi+1+tq2M/xPZxeJJSZuSnp+J4VIWr5JM5koq9Wo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765499826; c=relaxed/simple;
-	bh=FF5zHlJXfLmExREPcWsGJ3mi3P1601As81ATZP2XveU=;
+	s=arc-20240116; t=1765499884; c=relaxed/simple;
+	bh=b6p12NQ2a7BBDAttBzymyEBMAXfquK0jWfHzLE+B4cQ=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=M1FCSo8yZCa1lNzSLHBulLh0UzjamEea6JSzz6YPKBiRxK5eHtIX1HT4jjJgQ2mz0Gm23YwfCnqTfgZYfWYKEaKTxe24PmcLSLDObKpG3zq7D5hxcCjZ4ofRpOgjRC7QjiNgo726OXI8RJMwUXeBw/Ya65IVKyCKQDliGtTZpM8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=HSb/IcFp; arc=none smtp.client-ip=91.218.175.188
+	 Content-Type:Content-Disposition:In-Reply-To; b=AbcJKtYHLvsBKvH925VtEOib/8NEv50CffJN7R/ro6ie6iJsLd1p6qsPNhwNk9okV+TRQTt5RSOpzQiEDtthGpEclgkSwpv2kMzSrsjW3Xi59QwoMRYEcxejjVvFrOqKYRqHoZ4mX4O9zDtEZo9c9rhtXYZZFPnuzBmBjAqDEik=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=kkRJhWfy; arc=none smtp.client-ip=95.215.58.177
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Thu, 11 Dec 2025 16:36:44 -0800
+Date: Thu, 11 Dec 2025 16:37:31 -0800
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1765499811;
+	t=1765499880;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=eAHincoTK5ENt2l8A7VD7dTozjfJCW5AOpMiBUorZz8=;
-	b=HSb/IcFpxJIIZt5/PosJXklalJUrHM+gU7WbmFAyuUxs2fT28/YFkoiucwKFKaodoZO0JW
-	Uiy+u9NIR3phygFK2cNSVzN9aE/qsNKyYYJYeCRXQI/+yfUZdwHoQjAuKIp1eSSP2IZ8MZ
-	PxAAX3FZ2/FjVZQ1a0LP99mcHuk+X0E=
+	bh=/84buoVRor3AbyQ4XPUysinXJkE6bFyrJbz8JP5bRgA=;
+	b=kkRJhWfydO7d1jxdqMBv3LXHEOzvjDzYGajVGH9l65XdjBMd6hClnw5LY65i8Juy3CjBey
+	6asRv5hsSuxaamKAJ2mh/o0O9PL4dGed84piozgm5rfscxthnmK/Gy2NGsPqNHAN6neC7j
+	/mAN46k3Th+KwwE3eIjTuERi93dHb2Y=
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 From: Shakeel Butt <shakeel.butt@linux.dev>
 To: Chen Ridong <chenridong@huaweicloud.com>
@@ -47,10 +47,10 @@ Cc: hannes@cmpxchg.org, mhocko@kernel.org, roman.gushchin@linux.dev,
 	yuanchu@google.com, weixugc@google.com, david@kernel.org, zhengqi.arch@bytedance.com, 
 	lorenzo.stoakes@oracle.com, cgroups@vger.kernel.org, linux-mm@kvack.org, 
 	linux-kernel@vger.kernel.org, lujialin4@huawei.com
-Subject: Re: [PATCH -next v3 1/2] memcg: move mem_cgroup_usage memcontrol-v1.c
-Message-ID: <a3od5xvmpuehxss4bwp2dxo5jfuw5clgweh3ko5bqfidywvs7k@q5zjsb52zw6m>
+Subject: Re: [PATCH -next v3 2/2] memcg: remove mem_cgroup_size()
+Message-ID: <2es3ycavnjvejeawchua6d6ueetxhlr3ldmkdd3d2vn5gkzne4@aho56i5oslmd>
 References: <20251211013019.2080004-1-chenridong@huaweicloud.com>
- <20251211013019.2080004-2-chenridong@huaweicloud.com>
+ <20251211013019.2080004-3-chenridong@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -59,18 +59,24 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20251211013019.2080004-2-chenridong@huaweicloud.com>
+In-Reply-To: <20251211013019.2080004-3-chenridong@huaweicloud.com>
 X-Migadu-Flow: FLOW_OUT
 
-On Thu, Dec 11, 2025 at 01:30:18AM +0000, Chen Ridong wrote:
+On Thu, Dec 11, 2025 at 01:30:19AM +0000, Chen Ridong wrote:
 > From: Chen Ridong <chenridong@huawei.com>
 > 
-> Currently, mem_cgroup_usage is only used for v1, just move it to
-> memcontrol-v1.c
+> The mem_cgroup_size helper is used only in apply_proportional_protection
+> to read the current memory usage. Its semantics are unclear and
+> inconsistent with other sites, which directly call page_counter_read for
+> the same purpose.
+> 
+> Remove this helper and get its usage via mem_cgroup_protection for
+> clarity. Additionally, rename the local variable 'cgroup_size' to 'usage'
+> to better reflect its meaning.
+> 
+> No functional changes intended.
 > 
 > Signed-off-by: Chen Ridong <chenridong@huawei.com>
-> Acked-by: Michal Hocko <mhocko@suse.com>
-> Acked-by: Johannes Weiner <hannes@cmpxchg.org>
 
 Acked-by: Shakeel Butt <shakeel.butt@linux.dev>
 
