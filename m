@@ -1,84 +1,154 @@
-Return-Path: <cgroups+bounces-12348-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-12349-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id A0304CB8C04
-	for <lists+cgroups@lfdr.de>; Fri, 12 Dec 2025 12:57:28 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 778E4CBA215
+	for <lists+cgroups@lfdr.de>; Sat, 13 Dec 2025 01:52:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 3BA05304D9E2
-	for <lists+cgroups@lfdr.de>; Fri, 12 Dec 2025 11:57:27 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id DC2DF3009F7C
+	for <lists+cgroups@lfdr.de>; Sat, 13 Dec 2025 00:52:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5ED7A31ED9B;
-	Fri, 12 Dec 2025 11:57:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="M0XdHj8B"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4134E22541C;
+	Sat, 13 Dec 2025 00:52:19 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1039D31ED84;
-	Fri, 12 Dec 2025 11:57:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C7FC1DF748;
+	Sat, 13 Dec 2025 00:52:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765540646; cv=none; b=gQJ/C91ZkTPeAxtCOoMFrfSC+B0Ajhfuk9qXGDQi6pQUtIpSRCx+JdqNnjFnOrHV2NOLFw+xs+3gNgmEmI2RGP1joPGqx1JAFlnANXH1ODKtqNd4DzsxDWmSzhmR70CSaFHzMzXc4EuOTRJekh05YkyqHm0n7LCV6+70PQZUNhQ=
+	t=1765587139; cv=none; b=cBR+oJlmnO5RflFtieBxkGLX1G/+c6TtDgJ5N9zxwByC2UGrzxB1Ym/4m72GPuRziVCcN88IF5w1KOI0aTHTAhtZ0DUJAg1QlMrEaAHJWK4jC23ryGzoHPmnfF3kE35fuKJ1Rl4VQRKl4xVbs1x4KW8sWkyyJrSygudBMYqd62s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765540646; c=relaxed/simple;
-	bh=B8kaJig1Qmy/8VwfW5/KFmQMAdC8lDjti5wIe775VME=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=GNsqR1W0Axkmv+5EY/GWCsmHAAGaFA4lnCY+Nri/026v4PEzlsn9zB0UWP2lm3gbffj50OC+WpZd+twI/1vf/Z6Fetpwrf84qP7deOPVI/GdEAJtRnVu8baUdi1pitVR3LQLppibSDA9eMUSyQN7LgGeaBfOaWHFz2cdpo1iwEY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=M0XdHj8B; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3A1D9C4CEF1;
-	Fri, 12 Dec 2025 11:57:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1765540645;
-	bh=B8kaJig1Qmy/8VwfW5/KFmQMAdC8lDjti5wIe775VME=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=M0XdHj8BE5bQDXI9rljVUy7gBTq4SPI7XwXwOEOBex/YI/XhXqKwJwsK22qElrC+E
-	 pJwMUixAKg8ciHHM+tkBNR68jlb2O+lYzzDJzpPpGog64zwkxsoPKcq6FW8Tw2tJMB
-	 f1R1ZctH8Qfa2ThfuyFfYyHQjwggGaJ4s3Cv+xbbEAQaOdKgBUlIVre1oZrRX69WBY
-	 8lGpCDoMgI7XzXkEQvwYQ5BuL+BS6VcBGTY0oZKrgIIEtDzLW7GxEeC4qRK2KCtu/p
-	 2IQklOV4/khM+FRP+gB3ZtL1Q//EOpbiEMw8WezRmW+nZG6OBMWuX/Mr/aKFsE5ulv
-	 J6Z12aaZ7eS/g==
-Date: Fri, 12 Dec 2025 12:57:22 +0100
-From: Frederic Weisbecker <frederic@kernel.org>
-To: Thomas Gleixner <tglx@linutronix.de>
-Cc: Chris Mason <clm@meta.com>, LKML <linux-kernel@vger.kernel.org>,
-	Marek Szyprowski <m.szyprowski@samsung.com>,
-	Marco Crivellari <marco.crivellari@suse.com>,
-	Waiman Long <llong@redhat.com>, cgroups@vger.kernel.org
-Subject: Re: [PATCH] genirq: Don't overwrite interrupt thread flags on setup
-Message-ID: <aTwDIoiqJECNhIC-@pavilion.home>
-References: <20251212014848.3509622-1-clm@meta.com>
- <87ikece8ps.ffs@tglx>
- <87ecp0e4cf.ffs@tglx>
+	s=arc-20240116; t=1765587139; c=relaxed/simple;
+	bh=hSf6OhBwSO5bj3V01S56t7c+MIR2jA5g6auz6Bl3sUs=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=QZ4Vex6SOwwN0bQCNNOiHYfwGPJq+LhfoqNmBnnD6XE/XbpbrIMKB7DkkycZ4hlmCqtH9z3jMulxPyA5MegiqcBKzEvQQE0k5qdG56wh31auv/u7RDVFK5toYgaBtyIvLuJMnP+tyO+DO/QHlwUEfHRC8Mn2zwRMev46BH+09Mk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.93.142])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTPS id 4dSnpL270VzYQtlK;
+	Sat, 13 Dec 2025 08:51:54 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.75])
+	by mail.maildlp.com (Postfix) with ESMTP id 991CF1A07BD;
+	Sat, 13 Dec 2025 08:52:13 +0800 (CST)
+Received: from [10.67.111.176] (unknown [10.67.111.176])
+	by APP2 (Coremail) with SMTP id Syh0CgAH51C8uDxpYxE0Bg--.5936S2;
+	Sat, 13 Dec 2025 08:52:13 +0800 (CST)
+Message-ID: <4ab8a086-4200-45c0-9583-abf6e52a354a@huaweicloud.com>
+Date: Sat, 13 Dec 2025 08:52:11 +0800
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v5] cpuset: Avoid invalidating sibling partitions on
+ cpuset.cpus conflict.
+To: Sun Shaojie <sunshaojie@kylinos.cn>
+Cc: cgroups@vger.kernel.org, hannes@cmpxchg.org,
+ linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+ llong@redhat.com, mkoutny@suse.com, shuah@kernel.org, tj@kernel.org
+References: <45f5e2c6-42ec-4d77-9c2d-0e00472a05de@huaweicloud.com>
+ <20251201094447.108278-1-sunshaojie@kylinos.cn>
+Content-Language: en-US
+From: Chen Ridong <chenridong@huaweicloud.com>
+In-Reply-To: <20251201094447.108278-1-sunshaojie@kylinos.cn>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <87ecp0e4cf.ffs@tglx>
+X-CM-TRANSID:Syh0CgAH51C8uDxpYxE0Bg--.5936S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7uFy3WrW8Ar17XryfuF1UGFg_yoW8trWUpF
+	yxK3WDta90qr1rCws2qr4qvF1Fqa4kuF17JFs8GryxGrs5JF1vy3W7CrnxurZ8Xr95Gr1j
+	v3y5uws3CF4DXaDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUymb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
+	0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
+	x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
+	0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lc7CjxVAaw2AFwI0_Jw0_GFyl42xK82IYc2Ij64vI
+	r41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8Gjc
+	xK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0
+	cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8V
+	AvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E
+	14v26r1j6r4UYxBIdaVFxhVjvjDU0xZFpf9x07UAwIDUUUUU=
+X-CM-SenderInfo: hfkh02xlgr0w46kxt4xhlfz01xgou0bp/
 
-Le Fri, Dec 12, 2025 at 01:01:04PM +0900, Thomas Gleixner a �crit :
-> Chris reported that the recent affinity management changes result in
-> overwriting the already initialized thread flags.
+
+
+On 2025/12/1 17:44, Sun Shaojie wrote:
+> Hi, Ridong,
 > 
-> Use set_bit() to set the affinity bit instead of assigning the bit value to
-> the flags.
+> On Thu, 27 Nov 2025 09:55:21, Chen Ridong wrote:
+>> I have to admit that I prefer the current implementation.
+>>
+>> At the very least, it ensures that all partitions are treated fairly[1]. Relaxing this rule would
+>> make it more difficult for users to understand why the cpuset.cpus they configured do not match the
+>> effective CPUs in use, and why different operation orders yield different results.
 > 
-> Fixes: 801afdfbfcd9 ("genirq: Fix interrupt threads affinity vs. cpuset isolated partitions")
-> Reported-by: Chris Mason <clm@meta.com>
-> Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
-> Closes: https://lore.kernel.org/all/20251212014848.3509622-1-clm@meta.com
+> As for "different operation orders yield different results", Below is an
+> example that is not a corner case.
+> 
+>     root cgroup
+>       /    \
+>      A1    B1
+> 
+>  #1> echo "0" > A1/cpuset.cpus
+>  #2> echo "0-1" > B1/cpuset.cpus.exclusive --> return error
+> 
+>  #1> echo "0-1" > B1/cpuset.cpus.exclusive
+>  #2> echo "0" > A1/cpuset.cpus
+> 
 
-Whoops!
+You're looking at one rule, but there's another one—Longman pointed out that setting cpuset.cpu
+should never fail.
 
-Acked-by: Frederic Weisbecker <frederic@kernel.org>
+>>
+>> In another scenario, if we do not invalidate the siblings, new leaf cpusets (marked as member)
+>> created under A1 will end up with empty effective CPUs—and this is not a desired behavior.
+>>
+>>   root cgroup
+>>        |
+>>       A1
+>>      /  \
+>>    A2    A3...
+>>
+>> #1> echo "0-1" > A1/cpuset.cpus
+>> #2> echo "root" > A1/cpuset.cpus.partition
+>> #3> echo "0-1" > A2/cpuset.cpus
+>> #4> echo "root" > A2/cpuset.cpus.partition
+>> mkdir A4
+>> mkdir A5
+>> echo "0" > A4/cpuset.cpus
+>> echo $$ > A4/cgroup.procs
+>> echo "1" > A5/cpuset.cpus
+>> echo $$ > A5/cgroup.procs
+>>
+> 
+> If A2...A5 all belong to the same user, and that user wants both A4 and A5 
+> to have effective CPUs, then the user should also understand that A2 needs
+> to be adjusted to "member" instead of "root".
+> 
+> if A2...A5 belong to different users, must satisfying user A4’s requirement
+> come at the expense of user A2’s requirement? That is not fair.
+> 
+
+Regarding cpuset usage with Docker: when binding CPUs at container startup, do you check the sibling
+CPUs in use? Without this check, A2 will not be invalidated.
+
+Your patch has been discussed for a while. It seems to make the rules more complex.
+
+>>
+>> [1]: "B1 is a second-class partition only because it starts later or why is it OK to not fulfill its
+>> requirement?" --Michal.
+> 
+> Thanks,
+> Sun Shaojie
 
 -- 
-Frederic Weisbecker
-SUSE Labs
+Best regards,
+Ridong
+
 
