@@ -1,43 +1,100 @@
-Return-Path: <cgroups+bounces-12349-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-12350-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 778E4CBA215
-	for <lists+cgroups@lfdr.de>; Sat, 13 Dec 2025 01:52:22 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 42F2FCBA4D8
+	for <lists+cgroups@lfdr.de>; Sat, 13 Dec 2025 05:59:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id DC2DF3009F7C
-	for <lists+cgroups@lfdr.de>; Sat, 13 Dec 2025 00:52:20 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 988E03082A30
+	for <lists+cgroups@lfdr.de>; Sat, 13 Dec 2025 04:59:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4134E22541C;
-	Sat, 13 Dec 2025 00:52:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD8E02080C1;
+	Sat, 13 Dec 2025 04:59:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="IFhkAoac";
+	dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b="lNvE8Mo2"
 X-Original-To: cgroups@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C7FC1DF748;
-	Sat, 13 Dec 2025 00:52:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E36D71F92E
+	for <cgroups@vger.kernel.org>; Sat, 13 Dec 2025 04:59:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765587139; cv=none; b=cBR+oJlmnO5RflFtieBxkGLX1G/+c6TtDgJ5N9zxwByC2UGrzxB1Ym/4m72GPuRziVCcN88IF5w1KOI0aTHTAhtZ0DUJAg1QlMrEaAHJWK4jC23ryGzoHPmnfF3kE35fuKJ1Rl4VQRKl4xVbs1x4KW8sWkyyJrSygudBMYqd62s=
+	t=1765601945; cv=none; b=WZgorJ18GIqIpG6KIIRwnkQDO8SEfcUJM7uYzC1E8okKB4KKGCioxX6yFd4aMl5w9Odi/VNoFtb7+6//wAE8k4BTiTTlNx7M6U2Or/KGDTApT+LPIyCR6L0JiUz/D6oOUsK55SW9+Wg5+2HND98EbIKtlQF3oOMosRnm0y14kGs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765587139; c=relaxed/simple;
-	bh=hSf6OhBwSO5bj3V01S56t7c+MIR2jA5g6auz6Bl3sUs=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=QZ4Vex6SOwwN0bQCNNOiHYfwGPJq+LhfoqNmBnnD6XE/XbpbrIMKB7DkkycZ4hlmCqtH9z3jMulxPyA5MegiqcBKzEvQQE0k5qdG56wh31auv/u7RDVFK5toYgaBtyIvLuJMnP+tyO+DO/QHlwUEfHRC8Mn2zwRMev46BH+09Mk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.93.142])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTPS id 4dSnpL270VzYQtlK;
-	Sat, 13 Dec 2025 08:51:54 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.75])
-	by mail.maildlp.com (Postfix) with ESMTP id 991CF1A07BD;
-	Sat, 13 Dec 2025 08:52:13 +0800 (CST)
-Received: from [10.67.111.176] (unknown [10.67.111.176])
-	by APP2 (Coremail) with SMTP id Syh0CgAH51C8uDxpYxE0Bg--.5936S2;
-	Sat, 13 Dec 2025 08:52:13 +0800 (CST)
-Message-ID: <4ab8a086-4200-45c0-9583-abf6e52a354a@huaweicloud.com>
-Date: Sat, 13 Dec 2025 08:52:11 +0800
+	s=arc-20240116; t=1765601945; c=relaxed/simple;
+	bh=yPzs/f+Lh44vbmrhItPCB7ZJc+MI/3tKjjsKrA9CI9I=;
+	h=From:Message-ID:Date:MIME-Version:Subject:To:Cc:References:
+	 In-Reply-To:Content-Type; b=OEeOXlUXM00BJPH4ttUoc22dHvzCQE/fUtntWGL2ijVBYE9cnrwGAX0HnS64adW2FzbA/FDDyJnMbiinyJci6lYOPKt8W+i2vPUhECTJlqwHZHX6zflKSITLtXwS9o5Hy5er/gYkrvOM6vbWuU4nDCli7kIz6DUx8tUmZnMj4MI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=IFhkAoac; dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b=lNvE8Mo2; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1765601942;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=vJGiqBB7uCME6Sbe4VgAoga7zrBVZpzS1c9EWdQdkYE=;
+	b=IFhkAoaccnGuwxuxp+ngTdTFBfHM3z6lWwQDqQHPI+ANhfNtH7prDX2yQAK/7dBGO8sqCi
+	//30P1s2cCXLsCt4G4q13AWikcShxMCfrn89p+KnQsTQ2UDnldj13dZqb92dImBfM+uG7m
+	cL6LSZjVoSbIAXp+zk9Dtv1B+f2oa3s=
+Received: from mail-pl1-f200.google.com (mail-pl1-f200.google.com
+ [209.85.214.200]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-500-McWcXbsNPW27YpmKDTqmGQ-1; Fri, 12 Dec 2025 23:59:01 -0500
+X-MC-Unique: McWcXbsNPW27YpmKDTqmGQ-1
+X-Mimecast-MFC-AGG-ID: McWcXbsNPW27YpmKDTqmGQ_1765601940
+Received: by mail-pl1-f200.google.com with SMTP id d9443c01a7336-2955f0b8895so19085645ad.0
+        for <cgroups@vger.kernel.org>; Fri, 12 Dec 2025 20:59:01 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=redhat.com; s=google; t=1765601940; x=1766206740; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:content-language:references
+         :cc:to:subject:user-agent:mime-version:date:message-id:from:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=vJGiqBB7uCME6Sbe4VgAoga7zrBVZpzS1c9EWdQdkYE=;
+        b=lNvE8Mo2liI+cWn3q+4T0ifFJW3QL79udDs7ODRxeVFmapI6vxkxZNZkWMYTrWA+ob
+         d44RHd52X46QGqCfXNHaGQsKYCKuPQpnFGDebwDiWK/+Omdpc5kpAKS7k+Vb0UBXh7g/
+         2qCAThHRN6B3+scTgtjPfDWwEefs5z2+hpDEK2z725qgzIjGeraTqQvqyIhyMxu9yqJh
+         cp73gqLxGArRcgzFAmXHMpdHnvOQ0kLDP2txs0LgRNTF0IZC92iSo0f+Gi9Ql2zzNMhL
+         3Lynrcezx3yVDP+h5vDnDN3G58SAQid2q2hdAm+5cfmW4Lb2FCiY0+yIV7gKMBRvpK3D
+         VHIQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1765601940; x=1766206740;
+        h=content-transfer-encoding:in-reply-to:content-language:references
+         :cc:to:subject:user-agent:mime-version:date:message-id:from:x-gm-gg
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=vJGiqBB7uCME6Sbe4VgAoga7zrBVZpzS1c9EWdQdkYE=;
+        b=FFyqHzyw6keSLCmYaqXvITCxV5lEeIwHQiC9QZsN5AyS5jl9x6nZQpSBQn1nDEUOAR
+         zzvzQi1a1n5HfEg9/tb20cUH1++VP78v01BnSGnHqwLK7jcoyK15/T6CHC2cVoDZ3fdY
+         fokFTJlWzsupwJNdbtSKdsWkWCz2WTjWnqnJ4+3AMgfLNd4iiLmUM4EBvBjGUxUNxUl6
+         i5RXw3y2LNjPBHOYr7H0aN3WaE8GmScnZ6+2hWJasLZmBLl5jejNXiqWS3Dwsgo8smJs
+         Enyijd/J5JCB/ge+V+d74Ib0hL4reZdJBOOE84zA/mew9UsjEj99GG0pe2I27nBfkq71
+         ervQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWGj7cEkNIBvmsXg75qlQKSuAPBDlSHIApgLVbP6lGj0jqGabbC9/ZI5vrj1BFJVAsbW7/Rs6z2@vger.kernel.org
+X-Gm-Message-State: AOJu0YwjygNhCxj1P9nj8+N8dTJYkDk6wIWngg9cL4h8Vj4moCBgwL4S
+	Ict+cipDXPKxa/te0u8i22ZmUrK8HMNcvtUuMVW1ckJN17Z3fXVuyg04VHI2BO+xPI1Br2rbTDM
+	u6yZyCXNybO9AbLjnxLYAblLy4EnlTNNHMHGW+tbO0mQXcJKKF9Oz/nevzek=
+X-Gm-Gg: AY/fxX6R0N0HCl/iNKgHurzbrehJNxR2hCZZGX1uh6rWQq1jAbELfcqWupEsZWyZB8h
+	06RhtPTeMXeY9yMLPT+iUMb5f9ZFcefO0MxkvWuF9wNtwLr9+ZOEE6550WXk2ipw/xjISNnUW8y
+	4p66763yVpBCPNVZdJX1Bp4N8JNiZ8YV1HCFZvHhZAx0csZ9WrKPzB0gYIxOlIARo4SfQYRIeze
+	9NsYZ5gM5U1tfIIiZI3oum3tQ6mk9hplocghaXLZNLTLfllaQH3dkHwDCKUgaEf00DxyJXP74CE
+	JZzSjf2bMpHexpPLr/OnnAnY3qxE5v+/KSsegZUFDnIg6cKX2oIBDhmoy165ITFoJIzwact7wzq
+	WEi2w1Rpoy9NRFvn9xHI2GZ0rhNVge1dELqwqaBlkqu4=
+X-Received: by 2002:a17:902:da92:b0:295:28a4:f0c6 with SMTP id d9443c01a7336-29f24800550mr46650805ad.0.1765601940316;
+        Fri, 12 Dec 2025 20:59:00 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IF2XlZ804IhqEpFO2N9sRBt5uGyIMXcNGs6Cj7VK4kPb19a3EfN0cxzXdjmp0UnK+0tBp2ahw==
+X-Received: by 2002:a17:902:da92:b0:295:28a4:f0c6 with SMTP id d9443c01a7336-29f24800550mr46650615ad.0.1765601939917;
+        Fri, 12 Dec 2025 20:58:59 -0800 (PST)
+Received: from [10.200.2.27] (fs98a57d9c.tkyc007.ap.nuro.jp. [152.165.125.156])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-29f2e40765csm30273205ad.0.2025.12.12.20.58.55
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 12 Dec 2025 20:58:59 -0800 (PST)
+From: Waiman Long <llong@redhat.com>
+X-Google-Original-From: Waiman Long <longman@redhat.com>
+Message-ID: <1e2eef0a-4637-4b4f-aea5-71e3e519757d@redhat.com>
+Date: Fri, 12 Dec 2025 23:58:53 -0500
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -47,108 +104,60 @@ MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
 Subject: Re: [PATCH v5] cpuset: Avoid invalidating sibling partitions on
  cpuset.cpus conflict.
-To: Sun Shaojie <sunshaojie@kylinos.cn>
-Cc: cgroups@vger.kernel.org, hannes@cmpxchg.org,
- linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
- llong@redhat.com, mkoutny@suse.com, shuah@kernel.org, tj@kernel.org
-References: <45f5e2c6-42ec-4d77-9c2d-0e00472a05de@huaweicloud.com>
- <20251201094447.108278-1-sunshaojie@kylinos.cn>
+To: =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
+ Waiman Long <llong@redhat.com>
+Cc: Sun Shaojie <sunshaojie@kylinos.cn>, chenridong@huaweicloud.com,
+ cgroups@vger.kernel.org, hannes@cmpxchg.org, linux-kernel@vger.kernel.org,
+ linux-kselftest@vger.kernel.org, shuah@kernel.org, tj@kernel.org
+References: <f32d2f31-630f-450b-911f-b512bbeb380a@huaweicloud.com>
+ <20251119105749.1385946-1-sunshaojie@kylinos.cn>
+ <cae7a3ef-9808-47ac-a061-ab40d3c61020@redhat.com>
+ <ur4ukfqtqq5jfmuia4tbvsdz3jn3zk6nx2ok4xtnlxth6ulrql@nmetgsxm3lik>
+ <d5d635df-94f3-4909-afe3-f2e6141afa32@redhat.com>
+ <3jkvuruuxdykpxjjdwhuqjfqi4nrtxojotswaoc7ehuwxp4s32@hfrvfato6q5b>
 Content-Language: en-US
-From: Chen Ridong <chenridong@huaweicloud.com>
-In-Reply-To: <20251201094447.108278-1-sunshaojie@kylinos.cn>
-Content-Type: text/plain; charset=UTF-8
+In-Reply-To: <3jkvuruuxdykpxjjdwhuqjfqi4nrtxojotswaoc7ehuwxp4s32@hfrvfato6q5b>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:Syh0CgAH51C8uDxpYxE0Bg--.5936S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7uFy3WrW8Ar17XryfuF1UGFg_yoW8trWUpF
-	yxK3WDta90qr1rCws2qr4qvF1Fqa4kuF17JFs8GryxGrs5JF1vy3W7CrnxurZ8Xr95Gr1j
-	v3y5uws3CF4DXaDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUymb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
-	0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
-	x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
-	0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lc7CjxVAaw2AFwI0_Jw0_GFyl42xK82IYc2Ij64vI
-	r41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8Gjc
-	xK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0
-	cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8V
-	AvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E
-	14v26r1j6r4UYxBIdaVFxhVjvjDU0xZFpf9x07UAwIDUUUUU=
-X-CM-SenderInfo: hfkh02xlgr0w46kxt4xhlfz01xgou0bp/
 
-
-
-On 2025/12/1 17:44, Sun Shaojie wrote:
-> Hi, Ridong,
-> 
-> On Thu, 27 Nov 2025 09:55:21, Chen Ridong wrote:
->> I have to admit that I prefer the current implementation.
+On 12/8/25 9:32 AM, Michal Koutný wrote:
+> Hi Waiman.
+>
+> On Wed, Nov 26, 2025 at 02:43:50PM -0500, Waiman Long <llong@redhat.com> wrote:
+>> Modification to cpumasks are all serialized by the cpuset_mutex. If you are
+>> referring to 2 or more tasks doing parallel updates to various cpuset
+>> control files of sibling cpusets, the results can actually vary depending on
+>> the actual serialization results of those operations.
+> I meant the latter when the difference in results when concurrent tasks
+> do the update (e.g. two containers start in parallel), I don't see an
+> issue with the race wrt consistency of in-kernel data. We're on the same
+> page here.
+>
+>> One difference between cpuset.cpus and cpuset.cpus.exclusive is the fact
+>> that operations on cpuset.cpus.exclusive can fail if the result is not
+>> exclusive WRT sibling cpusets, but becoming a valid partition is guaranteed
+>> unless none of the exclusive CPUs are passed down from the parent. The use
+>> of cpuset.cpus.exclusive is required for creating remote partition.
 >>
->> At the very least, it ensures that all partitions are treated fairly[1]. Relaxing this rule would
->> make it more difficult for users to understand why the cpuset.cpus they configured do not match the
->> effective CPUs in use, and why different operation orders yield different results.
-> 
-> As for "different operation orders yield different results", Below is an
-> example that is not a corner case.
-> 
->     root cgroup
->       /    \
->      A1    B1
-> 
->  #1> echo "0" > A1/cpuset.cpus
->  #2> echo "0-1" > B1/cpuset.cpus.exclusive --> return error
-> 
->  #1> echo "0-1" > B1/cpuset.cpus.exclusive
->  #2> echo "0" > A1/cpuset.cpus
-> 
-
-You're looking at one rule, but there's another one—Longman pointed out that setting cpuset.cpu
-should never fail.
-
+>> OTOH, changes to cpuset.cpus will never fail, but becoming a valid partition
+>> root is not guaranteed and is limited to the creation of local partition
+>> only.
 >>
->> In another scenario, if we do not invalidate the siblings, new leaf cpusets (marked as member)
->> created under A1 will end up with empty effective CPUs—and this is not a desired behavior.
->>
->>   root cgroup
->>        |
->>       A1
->>      /  \
->>    A2    A3...
->>
->> #1> echo "0-1" > A1/cpuset.cpus
->> #2> echo "root" > A1/cpuset.cpus.partition
->> #3> echo "0-1" > A2/cpuset.cpus
->> #4> echo "root" > A2/cpuset.cpus.partition
->> mkdir A4
->> mkdir A5
->> echo "0" > A4/cpuset.cpus
->> echo $$ > A4/cgroup.procs
->> echo "1" > A5/cpuset.cpus
->> echo $$ > A5/cgroup.procs
->>
-> 
-> If A2...A5 all belong to the same user, and that user wants both A4 and A5 
-> to have effective CPUs, then the user should also understand that A2 needs
-> to be adjusted to "member" instead of "root".
-> 
-> if A2...A5 belong to different users, must satisfying user A4’s requirement
-> come at the expense of user A2’s requirement? That is not fair.
-> 
+>> Does that answer your question?
+> It does help my understanding. Do you envision that remote and local
+> partitions should be used together (in one subtree)?
 
-Regarding cpuset usage with Docker: when binding CPUs at container startup, do you check the sibling
-CPUs in use? Without this check, A2 will not be invalidated.
+It should be rare to have both remote and local partition enabled in the 
+same system, though it is not disallowed. The local partition should 
+only be used on system that run a small number of applications with one 
+or just a few that need partition support. For systems that run a large 
+number of containerized applications like a Kubernetes managed system, 
+local partition cannot be used because of the way container management 
+is being done as the actual cgroups associated with a container can be a 
+bit far from the cgroup root. Remote partition was created for such a 
+use case where local partition will be used at all.
 
-Your patch has been discussed for a while. It seems to make the rules more complex.
-
->>
->> [1]: "B1 is a second-class partition only because it starts later or why is it OK to not fulfill its
->> requirement?" --Michal.
-> 
-> Thanks,
-> Sun Shaojie
-
--- 
-Best regards,
-Ridong
+Cheers,
+Longman
 
 
