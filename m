@@ -1,180 +1,153 @@
-Return-Path: <cgroups+bounces-12358-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-12359-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 30FC2CBDF73
-	for <lists+cgroups@lfdr.de>; Mon, 15 Dec 2025 14:15:40 +0100 (CET)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0BAAECBE6AD
+	for <lists+cgroups@lfdr.de>; Mon, 15 Dec 2025 15:54:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 0D70F3005A82
-	for <lists+cgroups@lfdr.de>; Mon, 15 Dec 2025 13:15:39 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id 78B823000B1A
+	for <lists+cgroups@lfdr.de>; Mon, 15 Dec 2025 14:54:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6D347287503;
-	Mon, 15 Dec 2025 13:15:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 17D8B308F28;
+	Mon, 15 Dec 2025 14:54:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XJWdGkt7"
 X-Original-To: cgroups@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pj1-f42.google.com (mail-pj1-f42.google.com [209.85.216.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B70FE2BF013;
-	Mon, 15 Dec 2025 13:15:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7EEBB2C0F6E
+	for <cgroups@vger.kernel.org>; Mon, 15 Dec 2025 14:54:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765804537; cv=none; b=q6QA8gxEVa/esNQrCg6cwcViMbnQtIu9GKnxfgEfmm+bHu0VEc2Fkd8K4gRJdGlAL4Lc5qx9HxT1ZhZyTGjNDxpsN/dVOOzlZuLJow87YsrdGDTlQ2f4cOYRI4V7Ihm9GPVC8hCjlsFZ2qVLIrkPcIAClGwVLlORXBrLBeoX0eY=
+	t=1765810468; cv=none; b=iWWht9DXrL8MIW8Q1wzoPwJsnkecW0aeCiPCjIHQLGNa3h+eyAJTeJ3GDzGydcYbddbeVsRzRR64gYSILq49Lq4Emzc/Tn/XCTN6y5JGp29w9ioCPAHzOKhDiyfrKt93nMwY5KjjBBfvMioM0kmgEMp/vBm6bHAgVF/0U3B5qNc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765804537; c=relaxed/simple;
-	bh=iWB8OrXFK+iq5ExLkGwJk2lKp1AUuBkBZ0rkoEPh/mM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=mUygBMI+xHh8dlJJPj4dakdaUw15lrdXi6NcbE82e3OhmsSbgao/Knw1XbUZOkrNu1vDbPUyDG8bucT0v9nnup9t6wY3EkE3lgrZEQ9lPOOQPdv8TkFIqTJWAAYOsl/Cwg272l2bGaDj5BhTrhkQ/XkWKrNNPG1b+eL9aYSt2Q4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.235])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTPS id 4dVLBz1sx7zYQtxs;
-	Mon, 15 Dec 2025 21:15:07 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.128])
-	by mail.maildlp.com (Postfix) with ESMTP id C9D531A06DE;
-	Mon, 15 Dec 2025 21:15:30 +0800 (CST)
-Received: from [10.67.111.176] (unknown [10.67.111.176])
-	by APP4 (Coremail) with SMTP id gCh0CgAXefnxCUBp4OwfAQ--.63649S2;
-	Mon, 15 Dec 2025 21:15:30 +0800 (CST)
-Message-ID: <fc648bbf-8427-4b5c-8981-ba8af2756f0a@huaweicloud.com>
-Date: Mon, 15 Dec 2025 21:15:29 +0800
+	s=arc-20240116; t=1765810468; c=relaxed/simple;
+	bh=MoG4M+eQZLvDl4DSZ2MDVZrFVLWD6KmmSZDm95qZAx0=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=MXuoQPoXJqvnkt5u8JK0X/CHWapivyHTaGVc2CkzrmH5lEGvb4u3FoC+MrkcAGCdlMogV5PdBc8b1DjFwTmclckPaC62PO9apX+LA8A6m5PZdC+U/vcg5+OyoebkdZv/HoagaX1EBIjSBPzgoYvkxFZwLigBKg9uBt6NWFD2YRY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=XJWdGkt7; arc=none smtp.client-ip=209.85.216.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f42.google.com with SMTP id 98e67ed59e1d1-343ea89896eso3620838a91.2
+        for <cgroups@vger.kernel.org>; Mon, 15 Dec 2025 06:54:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1765810467; x=1766415267; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=S3roWa5MIiHY+542QEKCeiaGQ6v+8CYrzauDwIOyQfU=;
+        b=XJWdGkt7R3tSStPyRNjFLC19McYG+yC/fjMfeUmaydzZJxmkquOIZlz9pgbHOHx93b
+         8SfuORdKexJGlkrOuiB5aneCk6d3WWsXv3BuFS3uZ/PMabyEpADk3KqnPPOeOjOfFkGh
+         IqIM73DpqpiJxwIkR6vu3VBpzPPgfh2UtOzmDe3EVfUHNAqq2S6W5khmPs4VK31N57YB
+         9r+mIdaiH6XVaRJT6+h0JInuA6bBCLQrLJ8PUnb4qqdhoBXvCJIew31l4FtZ0ATYYwjK
+         9YXD7EaeSAoPwymnIbo2UcIft8CLVUwHKj6ho/m8EroAqvbfSU7opuMIIRJD9/AfRRxV
+         e3Ow==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1765810467; x=1766415267;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=S3roWa5MIiHY+542QEKCeiaGQ6v+8CYrzauDwIOyQfU=;
+        b=gNlrTSM+8FyS0ErsG+z0lNiuC0iQmQ5Y4Xlo81l+se6dZzHf3MYQbmdqwOWlABy7y9
+         tYBHgvFhHDRHMdh9HCIDVw97HfQv8Cl9F5N0fCuHsexRZpPohnY/3tb7D6p2ei6sGFlM
+         7PWAXF4RK79d75u0xPD4Ntsu8p1hyojLIg+rV71hmbg8+oXsyiFlVY+KjaswhqDbVuTL
+         E706cNHGZTlJk0jP4u0AV3pHT832iNd3QTcbSTiL7ee407DKVr+Z3odEweBvFfW/ftjA
+         o/lJZcRtXFNVDzoVCphqy5w3+awi2cxCEh7AfTQG5FoAbrqo89s+S06H05nKmcqYrrnM
+         2AJw==
+X-Forwarded-Encrypted: i=1; AJvYcCWi+U/hoUv6S0UsJM6mVm6EO1Tcfo/vLJxlqSLsR00GWbHqQwaEgjS8Oc/tykw7YZ5KVN09EAuK@vger.kernel.org
+X-Gm-Message-State: AOJu0YwozjTsd2VzMTaVWG9x9cJDUcM2pLtKqARKQyclA0dElQE96wdM
+	fGZvOU2BBx9kklMs88UJk+heYFC6KiLviLfrFBdK2JxiBOD85W2hzxVCqBCV2bzC6wQ=
+X-Gm-Gg: AY/fxX7QyS/PzcisjMvh9IPsLFDLop0YHsLwAaaFJpFGBOuy4MIoqguh0zw1twrveQe
+	M8xlT4JxV74Dj/XXOpcz6khWhaYzaLoyXMDJTHAcwZTDwxTY6KkmT3rdpTsdcjgrEWYMYYdkNS+
+	0mUcS/eKHV6in8ybP661UxA4aAGFpFaspR0aqP/cEt37O6GxspOmVYmhAKckpUv69IfK1lfHTav
+	W2qYS6VNNqUPG1H3lFLX1aOZZsC4h++5Mh/B96pBSTGA/5DsbQ5aEpy8ZB0/WTuA4blICkHUOeJ
+	6zhtH9EsoMA1oBAlqYUiHrPMw5fwdA7Zdjbr8kaupXled7kCz+M3u9YXuyl2FwWiz6qqOS7uQOF
+	Gv3aFDhlyx7ZePiPV0fYFzIIa+2deZa2cJDZbNKRY4H0ntTKGgFl3Xb31HnnNBPB18OIJamb3eF
+	ZteoFeKGUEKw==
+X-Google-Smtp-Source: AGHT+IG4GmC2JCSdgqBSfS3P0q9Pr3chOIKBF667RgIXXqBS4dAzymKUM3pzhVWLtqecRCwmu+IP3Q==
+X-Received: by 2002:a17:90a:d407:b0:343:c3d1:8b9b with SMTP id 98e67ed59e1d1-34abd768603mr9052686a91.19.1765810466731;
+        Mon, 15 Dec 2025 06:54:26 -0800 (PST)
+Received: from ubuntu.. ([49.207.232.133])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-34abe41237csm9396651a91.17.2025.12.15.06.54.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 15 Dec 2025 06:54:26 -0800 (PST)
+From: Dipendra Khadka <kdipendra88@gmail.com>
+To: akpm@linux-foundation.org
+Cc: hannes@cmpxchg.org,
+	mhocko@kernel.org,
+	roman.gushchin@linux.dev,
+	shakeel.butt@linux.dev,
+	muchun.song@linux.dev,
+	cgroups@vger.kernel.org,
+	linux-mm@kvack.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] mm/memcg: reorder retry checks for clarity in try_charge_memcg
+Date: Mon, 15 Dec 2025 14:54:19 +0000
+Message-ID: <20251215145419.3097-1-kdipendra88@gmail.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH -next 00/21] cpuset: rework local partition logic
-To: Waiman Long <llong@redhat.com>, tj@kernel.org, hannes@cmpxchg.org,
- mkoutny@suse.com
-Cc: cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
- lujialin4@huawei.com, chenridong@huawei.com
-References: <20251117024627.1128037-1-chenridong@huaweicloud.com>
- <2943236a-bb0e-4417-aee4-31146988709a@huaweicloud.com>
- <ca3b31ca-e9c3-41e8-ae88-d4b126f574b3@redhat.com>
-Content-Language: en-US
-From: Chen Ridong <chenridong@huaweicloud.com>
-In-Reply-To: <ca3b31ca-e9c3-41e8-ae88-d4b126f574b3@redhat.com>
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:gCh0CgAXefnxCUBp4OwfAQ--.63649S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxCFy7tw1rKr1UXr1kXrW8WFg_yoWrurW7pF
-	yDGayftryUCF1vk342qF4xA3yrKwnrJa4Dtwn8Z348XrsFyw1v9FW09398ua4UWrWkAr18
-	ZF1DXr4xu3WakF7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUyGb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxkF7I0En4kS14v26r126r1DMxAIw28IcxkI7VAK
-	I48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7
-	xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xII
-	jxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw2
-	0EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x02
-	67AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU1veHDUUUUU==
-X-CM-SenderInfo: hfkh02xlgr0w46kxt4xhlfz01xgou0bp/
 
+In try_charge_memcg(), reorder the retry logic checks to follow the
+early-exit pattern by testing for dying task before decrementing the
+retry counter:
 
+Before:
+    if (nr_retries--)
+        goto retry;
+    
+    if (passed_oom && task_is_dying())
+        goto nomem;
 
-On 2025/11/25 9:09, Waiman Long wrote:
-> On 11/24/25 7:49 PM, Chen Ridong wrote:
->>
->> On 2025/11/17 10:46, Chen Ridong wrote:
->>> From: Chen Ridong <chenridong@huawei.com>
->>>
->>> The current local partition implementation consolidates all operations
->>> (enable, disable, invalidate, and update) within the large
->>> update_parent_effective_cpumask() function, which exceeds 300 lines.
->>> This monolithic approach has become increasingly difficult to understand
->>> and maintain. Additionally, partition-related fields are updated in
->>> multiple locations, leading to redundant code and potential corner case
->>> oversights.
->>>
->>> This patch series refactors the local partition logic by separating
->>> operations into dedicated functions: local_partition_enable(),
->>> local_partition_disable(), and local_partition_update(), creating
->>> symmetry with the existing remote partition infrastructure.
->>>
->>> The series is organized as follows:
->>>
->>> 1. Infrastructure Preparation (Patches 1-2):
->>>     - Code cleanup and preparation for the refactoring work
->>>
->>> 2. Introduce partition operation helpers (Patches 3-5):
->>>     - Introduce out partition_enable(), partition_disable(), and
->>>       partition_update() functions.
->>>
->>> 3. Use new helpers for remote partition (Patches 6-8)
->>>
->>> 4. Local Partition Implementation (Patches 9-12):
->>>     - Separate update_parent_effective_cpumask() into dedicated functions:
->>>       * local_partition_enable()
->>>       * local_partition_disable()
->>>       * local_partition_update()
->>>
->>> 5. Optimization and Cleanup (Patches 13-21):
->>>     - Remove redundant partition-related operations
->>>     - Additional optimizations based on the new architecture
->>>
->>> base-commit: 6d7e7251d03f98f26f2ee0dfd21bb0a0480a2178
->>>
->>> ---
->>>
->>> Changes from RFC v2:
->>> 1. Dropped the bugfix (already merged/fixed upstream)
->>> 2. Rebased onto next
->>> 3. Introduced partition_switch to handle root state switches
->>> 4. Directly use local_partition_disable()—no longer first introduce
->>>     local_partition_invalidate() before unifying the two
->>> 5. Incorporated modifications based on Longman's suggestions
->>>
->>> Changes in RFC v1:
->>> 1. Added bugfix for root partition isolcpus at series start.
->>> 2. Completed helper function implementations when first introduced.
->>> 3. Split larger patches into smaller, more reviewable units.
->>> 4. Incorporated feedback from Longman.
->>>
->>> Chen Ridong (21):
->>>    cpuset: add early empty cpumask check in partition_xcpus_add/del
->>>    cpuset: generalize the validate_partition() interface
->>>    cpuset: introduce partition_enable()
->>>    cpuset: introduce partition_disable()
->>>    cpuset: introduce partition_update()
->>>    cpuset: use partition_enable() for remote partition enablement
->>>    cpuset: use partition_disable() for remote partition disablement
->>>    cpuset: use partition_update() for remote partition update
->>>    cpuset: introduce local_partition_enable()
->>>    cpuset: introduce local_partition_disable()
->>>    cpuset: user local_partition_disable() to invalidate local partition
->>>    cpuset: introduce local_partition_update()
->>>    cpuset: remove update_parent_effective_cpumask
->>>    cpuset: remove redundant partition field updates
->>>    cpuset: simplify partition update logic for hotplug tasks
->>>    cpuset: use partition_disable for compute_partition_effective_cpumask
->>>    cpuset: use validate_local_partition in local_partition_enable
->>>    cpuset: introduce validate_remote_partition
->>>    cpuset: simplify the update_prstate() function
->>>    cpuset: remove prs_err clear when notify_partition_change
->>>    cpuset: Remove unnecessary validation in partition_cpus_change
->>>
->>>   kernel/cgroup/cpuset.c | 1014 ++++++++++++++++++----------------------
->>>   1 file changed, 453 insertions(+), 561 deletions(-)
->>>
->> Hi Longman,
->>
->> I would greatly appreciate it if you could review this series when you are available.
->>
-> I was expecting a v3 and so I had probably missed it. Will take a look sometimes this week.
-> 
+After:
+    if (passed_oom && task_is_dying())
+        goto nomem;
+    
+    if (nr_retries--)
+        goto retry;
 
-Hi Longman,
+This makes the control flow more obvious: check exit conditions first,
+then decide whether to retry. When current task is dying (e.g., has
+received SIGKILL or is exiting), we should exit immediately rather than
+consuming a retry count first.
 
-Just a gentle reminder about this series whenever you have a moment, in case it got buried.
+No functional change for the common case where task is not dying.
 
+Signed-off-by: Dipendra Khadka <kdipendra88@gmail.com>
+---
+ mm/memcontrol.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index be810c1fbfc3..7c9145538683 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -2412,16 +2412,16 @@ static int try_charge_memcg(struct mem_cgroup *memcg, gfp_t gfp_mask,
+ 	if (nr_reclaimed && nr_pages <= (1 << PAGE_ALLOC_COSTLY_ORDER))
+ 		goto retry;
+
++	/* Avoid endless loop for tasks bypassed by the oom killer */
++	if (passed_oom && task_is_dying())
++		goto nomem;
++
+ 	if (nr_retries--)
+ 		goto retry;
+ 
+ 	if (gfp_mask & __GFP_RETRY_MAYFAIL)
+ 		goto nomem;
+ 
+-	/* Avoid endless loop for tasks bypassed by the oom killer */
+-	if (passed_oom && task_is_dying())
+-		goto nomem;
+-
+ 	/*
+ 	 * keep retrying as long as the memcg oom killer is able to make
+ 	 * a forward progress or bypass the charge if the oom killer
 -- 
-Best regards,
-Ridong
+2.43.0
 
 
