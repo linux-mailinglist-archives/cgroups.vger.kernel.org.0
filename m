@@ -1,87 +1,93 @@
-Return-Path: <cgroups+bounces-12366-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-12367-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id C61F2CBFD11
-	for <lists+cgroups@lfdr.de>; Mon, 15 Dec 2025 21:46:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id AB006CBFE09
+	for <lists+cgroups@lfdr.de>; Mon, 15 Dec 2025 22:14:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 89A6530146F8
-	for <lists+cgroups@lfdr.de>; Mon, 15 Dec 2025 20:46:34 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 230A73016ECE
+	for <lists+cgroups@lfdr.de>; Mon, 15 Dec 2025 21:14:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C3109326D6F;
-	Mon, 15 Dec 2025 20:46:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B483C328B60;
+	Mon, 15 Dec 2025 21:14:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cmpxchg.org header.i=@cmpxchg.org header.b="mQKOms3G"
+	dkim=pass (2048-bit key) header.d=cmpxchg.org header.i=@cmpxchg.org header.b="sy3Oehfr"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-qv1-f50.google.com (mail-qv1-f50.google.com [209.85.219.50])
+Received: from mail-qk1-f178.google.com (mail-qk1-f178.google.com [209.85.222.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B52032142D
-	for <cgroups@vger.kernel.org>; Mon, 15 Dec 2025 20:46:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3DD85312828
+	for <cgroups@vger.kernel.org>; Mon, 15 Dec 2025 21:14:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765831592; cv=none; b=SqRE1IBOZFctQoJgik0H3jMn1/uPtZEP8hTV3fo6YFpPp7H5MRGbCCYhA8FJipvKA4VyA3eMUV12rhBAOmE9K6kKDQ/c0oN8bKIuvP1QkyocXY98rPgvgzKz6gYRK3ASoGHKyMZEqdLptyP+pRtkIf9TTo/AXHGQFYcKQNw4/44=
+	t=1765833246; cv=none; b=SjzZiqtoEzK8JKH2TLkuvAXnHq1vt4Czvk5XEPP1YSPTDk10TC4Kh2YQ/vXupC6B9/hI19npBIPbwkD5qbV+m1mqF/EieDvBkhDSFcuPypzsuKFIiKZkLLLYZ6BVFfj9xq21YS/TZWmOcBfP1MybpXYRW49ic4FdB4mh+ve6kKc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765831592; c=relaxed/simple;
-	bh=VCihespKqAvwz4ayGQuB9sxPczkPFI2wbSUtu79RQqM=;
+	s=arc-20240116; t=1765833246; c=relaxed/simple;
+	bh=TCRIkuIVcSPxZmn5Et7klCCCOJga45LGLAby2VGOqVo=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=LI2p5dnHcgQp/E68gjjPU422CAoVBXSYZhtB7Er6MFtUosl/Za3czcAKUtJhso+H7SdxGrVVo11wynMyteuRZ9qrepuxzv9wP+Q7Ycm1Py54YJpqInm4MHMkrcbmd8vw0DWsU3bgJJnbiFJiPhzV8MSP2BDPiivNKvl/X1ZlDLc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org; spf=pass smtp.mailfrom=cmpxchg.org; dkim=pass (2048-bit key) header.d=cmpxchg.org header.i=@cmpxchg.org header.b=mQKOms3G; arc=none smtp.client-ip=209.85.219.50
+	 Content-Type:Content-Disposition:In-Reply-To; b=VAouCUa0lD2K0AeW5SOG5L8msiZICDq6QHmfgniddLoSZudA+Pkht9MIsE4oMvhkmoDmFoO0VUUlqUgm4x7HMPYNJwGk+QKLwo1FSkCMCDEVo1N9CtC6tiHWO3iM6GI40nvzXELmnVg6dEn7k8vUrx8F+1SDJr3T76hUjI2PcaE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org; spf=pass smtp.mailfrom=cmpxchg.org; dkim=pass (2048-bit key) header.d=cmpxchg.org header.i=@cmpxchg.org header.b=sy3Oehfr; arc=none smtp.client-ip=209.85.222.178
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cmpxchg.org
-Received: by mail-qv1-f50.google.com with SMTP id 6a1803df08f44-88a2ad13c24so20462266d6.1
-        for <cgroups@vger.kernel.org>; Mon, 15 Dec 2025 12:46:29 -0800 (PST)
+Received: by mail-qk1-f178.google.com with SMTP id af79cd13be357-8b5ed9e7500so295395485a.0
+        for <cgroups@vger.kernel.org>; Mon, 15 Dec 2025 13:14:02 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg.org; s=google; t=1765831589; x=1766436389; darn=vger.kernel.org;
+        d=cmpxchg.org; s=google; t=1765833242; x=1766438042; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=c/5OmwgaCDghH9Y+B9p9dsz0t3uJjAxYmjjcZ3Iaws4=;
-        b=mQKOms3GNbbYN9xNauU2u61awieNv24TitEmFkylCF397fggvINi0+sxqVUMnyyK4b
-         r0DJ5Ls82S2GeuRtduBRiezdo1bi0zEgAZxtxFmcZLdVEs/jbfI0MF523t2FXmaIwRsU
-         qSP/7c/hvS8L7TlbQxE6+bm/vKcfDQr6xQVyy6UOa3WtBfB8Sg/HGLqHz4wfUsIkBXL1
-         Ke+b9KoXcoZKTrvQTx9Ww/xvz6YpHgW2AomPKIyKS8qcZ9ZaFU8PuGcQtmV6oPvxwmID
-         JV2kTZKqYtHjxPx8Z2VYRMpmnVyyauc/RHBWPaKZ+zdcPNq7wmLbf3zANEICTiDUUMyC
-         cQSA==
+        bh=Sprp7N31vRBp7VCcAwUpV7y0XcoygDpCbBqecnhH9uE=;
+        b=sy3OehfrbW8Mw+6oIZlkj1cJwoZvmYPChowvraxWDle3GbeQJR/L9bq3Xi/QxfpiAb
+         P5bNVO06zTellv8iW8qvxYOhzNsdMYI6TQh9Bp5mesnJapKZc1WGvUs/Qd9LEHJ/HZcf
+         M6UrrwFooFmmcZFR7alMdt5gn98VB9dY88F2uYpe6QYCo0RQzRU4G3BWFXoa7Wf6EDFZ
+         K7HzBytufC8ZiaH6AcR9u/zmzRIENujUcHiVc1vl4nYxulokSZWIiOREneCeTcE8lX0p
+         7rKOwDkS92HFKqeEgDt/PiQ9rG1vz+DqlY0Q1Zgatfb4VzbZ1lb9UX5w9OPbTudiQCnW
+         MKYg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1765831589; x=1766436389;
+        d=1e100.net; s=20230601; t=1765833242; x=1766438042;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=c/5OmwgaCDghH9Y+B9p9dsz0t3uJjAxYmjjcZ3Iaws4=;
-        b=PCcG+RRAE4qPcJCvsIYHhlz/0pETohUXoZAMRfSDc0WcALIUc7BmoMqIPPux1hTLYN
-         8s9QCYjIuGwA0cIN+Bi8H1V4INE7VjlGt36yzVRJp0wGPTScj64jg7zPNM9sid+UpLwy
-         A9jKPL9o+yOGlWv9umdNtdcw+8FkDBJ+qve0zzu+SeH+ZzyLPmtcCYqvQe8l5OqZQk9i
-         6SpwRK/MhRDAruOUZeN4JBq9BgMnnLus2VTin9FCyILR5T4rPbyEnpWqcBuWq/VM4yRI
-         ZnSGga9280Z/95rCbAmRUdq4g70VpNHuGSjpLyoPFYS1Y5CeyesGmDcIKoxjFw+wuLT5
-         RCiw==
-X-Forwarded-Encrypted: i=1; AJvYcCUHcJL5XT55nfXSOubSMWTOtiN1518ogOmX0P3Ngj/O3s/bjI5gKrJYRZP52i454iPjvgzpW/ko@vger.kernel.org
-X-Gm-Message-State: AOJu0YxpUsXB70d5wYc4/COCIA+B4R6HhDl27wQsIIc5G+TVFsB/WWS6
-	dIMKPMTM7mONEO7YkVF/BnTcczr5gcmHr8rfLT+gbqRRKCJbVn0ZHqZIZP0/b80iCCM=
-X-Gm-Gg: AY/fxX5osSbEcAFaq4TPdT3TasINh2qHBOLGWF3wKojOcAZPbtnkjo3GdRjYr0jBkgs
-	Lt48pL6Baul0QrMwGg2yBUXCb3nObVEs36a1BHw/BTQsY/OzikP7HlNAXW5DQdCLTHicDQK5qS9
-	lrWeKGxNF8X4b6fx6AKDAwsR8QJi30aDsOG6iL4LHthU5u5Cl8a23Mppl3Qz4Y9+8zbHskdjaiF
-	sZNbTNTnRJRrvnYuVg0ZdexMWIM+GigyTOoR6mpWrI/rlzOV81D444iPqV3dJFCXZfN/fxB7xUP
-	EHHw+1ttxrLwI6EXuEwrPMNwMbtS0zh/tXbABHR+ug6I3RjZiBK0vQqkCFgkgy53BldeasSMUFn
-	08dJSMaJDBlH5gTa6gE37QjOfl3luEoCxcMMLf6hzQOkMNW1CfXmwM4IlAOXGNJ7I+oQenDniEm
-	UU3bKuivl5Jg==
-X-Google-Smtp-Source: AGHT+IEECaGepI8b2WL9DLllMIh/MG6dmTXrWRWKDLKwFMYbp3fGB5X/Ym5XHJbEgAFZKvqnX0dTkA==
-X-Received: by 2002:a05:6214:4906:b0:88a:2f0f:c173 with SMTP id 6a1803df08f44-88a2f0fc33emr107185346d6.68.1765831588949;
-        Mon, 15 Dec 2025 12:46:28 -0800 (PST)
+        bh=Sprp7N31vRBp7VCcAwUpV7y0XcoygDpCbBqecnhH9uE=;
+        b=LOIDwVBEzY+KxlDkC3NmQPve8XUZMa4eJg0eZxK8jYgTAvX2I047lWZMpu7AYrNZbz
+         3n9lRCx3kmiezkr0Wqu/ki045halgBfrMaoqx7P/53JTqkgheXQ+EvLn+y2M36al5OZT
+         bdXI3FevPYfXQZ8WnFnYAQ+6/SnRpLrfAbVobafuMqKe0Hqgz9P4Y/nmnYa2nGa+j8vn
+         73/Cn2nenWM56hkaRTreeTsXQWPrkD+1PBbsNKe0DqK1UmVkDl9Cga2d0wgD4zmsW4b+
+         V/YmBTKvlPPaRrtbCnokqAuq/P9NQjtaimMH47S9YV6umog3FsOiKKPaY6D4mZBLfEUS
+         5ehw==
+X-Forwarded-Encrypted: i=1; AJvYcCWbN+4eN+farV6IcuCHqalyHxLlDQa/j12hr2Q8GzCRjz77T45daThDCS2BTAZu4hKXSgCjvZXp@vger.kernel.org
+X-Gm-Message-State: AOJu0Yy6hi5usTV/0GFe4Z8BF1ndSoie14vp7yAMcy978iqe+3mavaRT
+	MrUV/Q67qGFxZ8rl7o7pvrzCTTpjHbAp/xbH0DoBUOKU4OPQEgkzGvR6G07GBjqf4aY=
+X-Gm-Gg: AY/fxX60aeaChQR2XQXn89tL3Kd+ZxDB0+Dlvo5qN24VMVZuov2bTvVuEA+ILpUpytn
+	rk4nvJ1MqLwaQfRyZ/z8DuG9RNXu80514ysCplPkZRbmL5oxeqiWxD28hl144ipeY9tvoYxBbQO
+	mLHSR/2UbDOraPtlfy2DxQdXYxSPmXJoVElx9ui7BfC009Sq1u1Nl5UovwEyhRH2+U+Pq52DUGd
+	ptQYN6vGHLjmWIwXaAt44D/dMW/kQk9eYza92VYwJMa0lxCeYWP83LxlXKpxrnXS1J6cCuVrmfB
+	zmRSokbPNp/lUlrZESiIm0BlEbDYAhjrCHi2t0SZ4dhchFo6LsDdBkVgwQoauOw5Yy3I0DfhXrq
+	18OuHoHVVawl8rv0xhaF7UjEGxkfVy+I2brqfkNa15YlKikPGdOErMXhy3HvgahuEtWXiOwV2RS
+	1pkvptALIhRA==
+X-Google-Smtp-Source: AGHT+IHZwGOmPvX/ipW2v8YF+vbttYdToKCmV+QF3O0fIsJWdhQfh5G0IVQ6AYKNvskI6a+jEMbH0g==
+X-Received: by 2002:a05:620a:2a01:b0:8b2:1568:82e8 with SMTP id af79cd13be357-8bb39fb6365mr1568864485a.35.1765833241963;
+        Mon, 15 Dec 2025 13:14:01 -0800 (PST)
 Received: from localhost ([2603:7000:c01:2716:929a:4aff:fe16:c778])
-        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-88993b41dc9sm59677586d6.9.2025.12.15.12.46.27
+        by smtp.gmail.com with ESMTPSA id af79cd13be357-8be303e7e51sm37195385a.7.2025.12.15.13.14.00
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Dec 2025 12:46:28 -0800 (PST)
-Date: Mon, 15 Dec 2025 15:46:24 -0500
+        Mon, 15 Dec 2025 13:14:01 -0800 (PST)
+Date: Mon, 15 Dec 2025 16:13:57 -0500
 From: Johannes Weiner <hannes@cmpxchg.org>
-To: Dipendra Khadka <kdipendra88@gmail.com>
-Cc: akpm@linux-foundation.org, mhocko@kernel.org, roman.gushchin@linux.dev,
-	shakeel.butt@linux.dev, muchun.song@linux.dev,
-	cgroups@vger.kernel.org, linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mm/memcg: reorder retry checks for clarity in
- try_charge_memcg
-Message-ID: <20251215204624.GE905277@cmpxchg.org>
-References: <20251215145419.3097-1-kdipendra88@gmail.com>
+To: Chen Ridong <chenridong@huaweicloud.com>
+Cc: akpm@linux-foundation.org, axelrasmussen@google.com, yuanchu@google.com,
+	weixugc@google.com, david@kernel.org, lorenzo.stoakes@oracle.com,
+	Liam.Howlett@oracle.com, vbabka@suse.cz, rppt@kernel.org,
+	surenb@google.com, mhocko@suse.com, corbet@lwn.net,
+	roman.gushchin@linux.dev, shakeel.butt@linux.dev,
+	muchun.song@linux.dev, zhengqi.arch@bytedance.com,
+	linux-mm@kvack.org, linux-doc@vger.kernel.org,
+	linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+	lujialin4@huawei.com, zhongjinji@honor.com
+Subject: Re: [PATCH -next 3/5] mm/mglru: extend shrink_one for both lrugen
+ and non-lrugen
+Message-ID: <20251215211357.GF905277@cmpxchg.org>
+References: <20251209012557.1949239-1-chenridong@huaweicloud.com>
+ <20251209012557.1949239-4-chenridong@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -90,42 +96,102 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20251215145419.3097-1-kdipendra88@gmail.com>
+In-Reply-To: <20251209012557.1949239-4-chenridong@huaweicloud.com>
 
-On Mon, Dec 15, 2025 at 02:54:19PM +0000, Dipendra Khadka wrote:
-> In try_charge_memcg(), reorder the retry logic checks to follow the
-> early-exit pattern by testing for dying task before decrementing the
-> retry counter:
+On Tue, Dec 09, 2025 at 01:25:55AM +0000, Chen Ridong wrote:
+> From: Chen Ridong <chenridong@huawei.com>
 > 
-> Before:
->     if (nr_retries--)
->         goto retry;
->     
->     if (passed_oom && task_is_dying())
->         goto nomem;
+> Currently, flush_reclaim_state is placed differently between
+> shrink_node_memcgs and shrink_many. shrink_many (only used for gen-LRU)
+> calls it after each lruvec is shrunk, while shrink_node_memcgs calls it
+> only after all lruvecs have been shrunk.
 > 
-> After:
->     if (passed_oom && task_is_dying())
->         goto nomem;
->     
->     if (nr_retries--)
->         goto retry;
+> This patch moves flush_reclaim_state into shrink_node_memcgs and calls it
+> after each lruvec. This unifies the behavior and is reasonable because:
 > 
-> This makes the control flow more obvious: check exit conditions first,
-> then decide whether to retry. When current task is dying (e.g., has
-> received SIGKILL or is exiting), we should exit immediately rather than
-> consuming a retry count first.
+> 1. flush_reclaim_state adds current->reclaim_state->reclaimed to
+>    sc->nr_reclaimed.
+> 2. For non-MGLRU root reclaim, this can help stop the iteration earlier
+>    when nr_to_reclaim is reached.
+> 3. For non-root reclaim, the effect is negligible since flush_reclaim_state
+>    does nothing in that case.
 > 
-> No functional change for the common case where task is not dying.
+> After moving flush_reclaim_state into shrink_node_memcgs, shrink_one can be
+> extended to support both lrugen and non-lrugen paths. It will call
+> try_to_shrink_lruvec for lrugen root reclaim and shrink_lruvec otherwise.
+> 
+> Signed-off-by: Chen Ridong <chenridong@huawei.com>
+> ---
+>  mm/vmscan.c | 57 +++++++++++++++++++++--------------------------------
+>  1 file changed, 23 insertions(+), 34 deletions(-)
+> 
+> diff --git a/mm/vmscan.c b/mm/vmscan.c
+> index 584f41eb4c14..795f5ebd9341 100644
+> --- a/mm/vmscan.c
+> +++ b/mm/vmscan.c
+> @@ -4758,23 +4758,7 @@ static bool try_to_shrink_lruvec(struct lruvec *lruvec, struct scan_control *sc)
+>  	return nr_to_scan < 0;
+>  }
+>  
+> -static void shrink_one(struct lruvec *lruvec, struct scan_control *sc)
+> -{
+> -	unsigned long scanned = sc->nr_scanned;
+> -	unsigned long reclaimed = sc->nr_reclaimed;
+> -	struct pglist_data *pgdat = lruvec_pgdat(lruvec);
+> -	struct mem_cgroup *memcg = lruvec_memcg(lruvec);
+> -
+> -	try_to_shrink_lruvec(lruvec, sc);
+> -
+> -	shrink_slab(sc->gfp_mask, pgdat->node_id, memcg, sc->priority);
+> -
+> -	if (!sc->proactive)
+> -		vmpressure(sc->gfp_mask, memcg, false, sc->nr_scanned - scanned,
+> -			   sc->nr_reclaimed - reclaimed);
+> -
+> -	flush_reclaim_state(sc);
+> -}
+> +static void shrink_one(struct lruvec *lruvec, struct scan_control *sc);
+>  
+>  static void shrink_many(struct pglist_data *pgdat, struct scan_control *sc)
+>  {
+> @@ -5760,6 +5744,27 @@ static inline bool should_continue_reclaim(struct pglist_data *pgdat,
+>  	return inactive_lru_pages > pages_for_compaction;
+>  }
+>  
+> +static void shrink_one(struct lruvec *lruvec, struct scan_control *sc)
+> +{
+> +	unsigned long scanned = sc->nr_scanned;
+> +	unsigned long reclaimed = sc->nr_reclaimed;
+> +	struct pglist_data *pgdat = lruvec_pgdat(lruvec);
+> +	struct mem_cgroup *memcg = lruvec_memcg(lruvec);
+> +
+> +	if (lru_gen_enabled() && root_reclaim(sc))
+> +		try_to_shrink_lruvec(lruvec, sc);
+> +	else
+> +		shrink_lruvec(lruvec, sc);
 
-It's definitely a functional change, not just code clarification.
+Yikes. So we end up with:
 
-The oom kill resets nr_retries. This means that currently, even an OOM
-victim is going to retry a full set of reclaims, even if they are
-hopeless. After your patch, it'll retry for other reasons but can bail
-much earlier as well. Check the other conditions.
+shrink_node_memcgs()
+  shrink_one()
+    if lru_gen_enabled && root_reclaim(sc)
+      try_to_shrink_lruvec(lruvec, sc)
+    else
+      shrink_lruvec()
+        if lru_gen_enabled && !root_reclaim(sc)
+          lru_gen_shrink_lruvec(lruvec, sc)
+            try_to_shrink_lruvec()
 
-The dying task / OOM victim allocation path is tricky and it tends to
-fail us in the rarest and most difficult to debug scenarios. There
-should be a good reason to change it.
+I think it's doing too much at once. Can you get it into the following
+shape:
+
+shrink_node_memcgs()
+  for each memcg:
+    if lru_gen_enabled:
+      lru_gen_shrink_lruvec()
+    else
+      shrink_lruvec()
+
+and handle the differences in those two functions? Then look for
+overlap one level down, and so forth.
 
