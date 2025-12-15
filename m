@@ -1,150 +1,180 @@
-Return-Path: <cgroups+bounces-12357-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-12358-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3D788CBDDD7
-	for <lists+cgroups@lfdr.de>; Mon, 15 Dec 2025 13:45:04 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id 30FC2CBDF73
+	for <lists+cgroups@lfdr.de>; Mon, 15 Dec 2025 14:15:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 748E6303D6A9
-	for <lists+cgroups@lfdr.de>; Mon, 15 Dec 2025 12:40:20 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 0D70F3005A82
+	for <lists+cgroups@lfdr.de>; Mon, 15 Dec 2025 13:15:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 05B9D2E8B9F;
-	Mon, 15 Dec 2025 12:40:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gourry.net header.i=@gourry.net header.b="kOveW9b4"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6D347287503;
+	Mon, 15 Dec 2025 13:15:37 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-pl1-f174.google.com (mail-pl1-f174.google.com [209.85.214.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D0BBB2E7F14
-	for <cgroups@vger.kernel.org>; Mon, 15 Dec 2025 12:40:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B70FE2BF013;
+	Mon, 15 Dec 2025 13:15:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765802418; cv=none; b=drLzn4dxWNk7xaIzU+iJq4LZAkE/9/JmVtEgnPZoMJxuVNVgyB8wWBPdfFliZRHpIIjWHx8EJ50JgxJLGwkL/8ldjUtVbz2GV9PtmMJJJN//n2/c/DT2i5RDvNKFOhYvG6oiiNQVeQhsRFJteUzb1AxuFp17Xkxai1kvU/COm8M=
+	t=1765804537; cv=none; b=q6QA8gxEVa/esNQrCg6cwcViMbnQtIu9GKnxfgEfmm+bHu0VEc2Fkd8K4gRJdGlAL4Lc5qx9HxT1ZhZyTGjNDxpsN/dVOOzlZuLJow87YsrdGDTlQ2f4cOYRI4V7Ihm9GPVC8hCjlsFZ2qVLIrkPcIAClGwVLlORXBrLBeoX0eY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765802418; c=relaxed/simple;
-	bh=+PuE2tLBW1rXXQlqEJWcvvhfVKok2O1mj7zgRKhY0aM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=MN0DYPyWANE4ytzrYYuHfSjYno0n24TBT/qH/n6gOUx2TLBmMksWg/eshz8i0VvTFbAT+KxUp4IQ6qJQ8r6NtUAFv8CHTHNvyeXV0gFjtd3yHUYP92ig9CzSLhwSjhQsJKDBIgrPLcOqyDHxSRn3Rw17EEV+2HlsVKqyWt1EyiE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gourry.net; spf=pass smtp.mailfrom=gourry.net; dkim=pass (2048-bit key) header.d=gourry.net header.i=@gourry.net header.b=kOveW9b4; arc=none smtp.client-ip=209.85.214.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gourry.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gourry.net
-Received: by mail-pl1-f174.google.com with SMTP id d9443c01a7336-29f2676bb21so34258725ad.0
-        for <cgroups@vger.kernel.org>; Mon, 15 Dec 2025 04:40:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gourry.net; s=google; t=1765802416; x=1766407216; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=XQ+e85/bUCohfI0SHpL3374mINgtvuKmw5p+42PCaQ0=;
-        b=kOveW9b4AXg6kOAhCeUg6CqtwBZDeWCxfd1ra6DiRxiZ3SoTdccPJXq498u45xO3G9
-         Wfn/mnRTQd/WuZqCOnNr0K/P3pFa99AoKuNAGyosCFYBvhhLZ+8WugWc6krKHQDRohMa
-         go5jfElG2763BSNBUCIAE/etyWGPWZBk9icPuFqDE/AYW6r39SNi3E59gTDbpmcclysl
-         R+E8oFV54Ou91W9JTqXg1oUsVRCE+NMMp0kmP1B6ozLMbopPAszenvZ0+nhpD3iERtpC
-         ZUgkQBi12GBirC0XgHiAE/Ae8+mihWzELiZyucHnhWi5cjqdUz2HS1th5pWN9uEogorB
-         R4PA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1765802416; x=1766407216;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=XQ+e85/bUCohfI0SHpL3374mINgtvuKmw5p+42PCaQ0=;
-        b=na5Co13LHwCgwD36xkctGDUW8iG8EQBcuwvlQFma7L+3FuxR60O18CxTNVUO90ChWo
-         UBFVViRLNisD/64yEtt8N+XHsti5evmtgceuKN777FkDmU26a3msFnhfHkRyuRpzRI0o
-         KLuvHHjhbY+wYJ14OnLjK3+yzbaadNg6JT7JaUciqsT+4bC2i554QOZkm5Bxocwllmlf
-         iHfgxTSSO6lVRxpmfS5JTy8pkCpp1r7zx5PHacM9ICkcx8HJRV59n0Nd41NucmfBvMef
-         zZCki1/yLpYVuHRD+j2aIZPj5LUfjPBMWVOwg55AtlUkRtvmJjREs6/2I1QpCdENahzj
-         f0QA==
-X-Forwarded-Encrypted: i=1; AJvYcCXJNH/4q/5vqtRmA9z79fe5BNn0V9zHz3H/3lWsfip+uKOMgeeNtQDolejs4qLwNucCZ1ZbkNBb@vger.kernel.org
-X-Gm-Message-State: AOJu0YwGvnkTibjE/b0ZHBqp3NMx/2clXPC6D8mcK4eGkLJifHbiu3fD
-	6vEer5qTkly7CiFhS63G4pBHSXtyiT71WhBNPU74aNzS/Ykbln0dmotK6JQ+VYEchmQ=
-X-Gm-Gg: AY/fxX43xnNJBdw3q1Fpu4l1UA0rin/MeUS5BFG0AVbUTc/FRrDXacvO7zGhnRT4wSE
-	rpWytLNKszSf6eocGQpDZ8X0phrIrDvAEP9khC88EPha+yn1QFGp0PCkcRR4MRU9qEhnWpOkbxt
-	f8xDauatRZ6hPrGWUS/DE1ejO7fYBVPGjmXBDpIg4tKP5xQD/3W6kREydv1qQy3mzxLjppflGyn
-	1h26pCfRZ2ykeBrSH2lr2yF7E1Ek4WqhKb+DVW3eyM129x1dIAIENoSyD2qlrrBlVwLi4zC51qL
-	rmwTugb2hG5w7jPQVJtuCzITkHFfbBuEVL4AQwzCUSqsLeAPN1PXXiBGhuAuiWSryXHkJNYdn1c
-	fbt7e2ewYqhpuIiMvqwkIbEni2kJqULRrdRNP2LWXKNqTNyx8glpg8PMmjgDteUxyYsHmbWaISl
-	DsuvGpecpZcLiAUc9PXDV0cgW3Sk3bHw==
-X-Google-Smtp-Source: AGHT+IGs9Ux4WT36PFE81Ye+THAzlPoeoI649XuOQnWr/+KqI/OdcXZ3NL6DeXTGnqp6jXKC8WolKA==
-X-Received: by 2002:a05:701a:c965:b0:11a:2f10:fa46 with SMTP id a92af1059eb24-11f3484e8cemr6230501c88.0.1765802416021;
-        Mon, 15 Dec 2025 04:40:16 -0800 (PST)
-Received: from gourry-fedora-PF4VCD3F ([205.220.129.38])
-        by smtp.gmail.com with ESMTPSA id a92af1059eb24-11f446460c8sm8475705c88.10.2025.12.15.04.39.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Dec 2025 04:40:15 -0800 (PST)
-Date: Mon, 15 Dec 2025 05:38:47 -0700
-From: Gregory Price <gourry@gourry.net>
-To: Balbir Singh <balbirs@nvidia.com>
-Cc: linux-mm@kvack.org, kernel-team@meta.com, linux-cxl@vger.kernel.org,
-	linux-kernel@vger.kernel.org, nvdimm@lists.linux.dev,
-	linux-fsdevel@vger.kernel.org, cgroups@vger.kernel.org,
-	dave@stgolabs.net, jonathan.cameron@huawei.com,
-	dave.jiang@intel.com, alison.schofield@intel.com,
-	vishal.l.verma@intel.com, ira.weiny@intel.com,
-	dan.j.williams@intel.com, longman@redhat.com,
-	akpm@linux-foundation.org, david@redhat.com,
-	lorenzo.stoakes@oracle.com, Liam.Howlett@oracle.com, vbabka@suse.cz,
-	rppt@kernel.org, surenb@google.com, mhocko@suse.com,
-	osalvador@suse.de, ziy@nvidia.com, matthew.brost@intel.com,
-	joshua.hahnjy@gmail.com, rakie.kim@sk.com, byungchul@sk.com,
-	ying.huang@linux.alibaba.com, apopple@nvidia.com, mingo@redhat.com,
-	peterz@infradead.org, juri.lelli@redhat.com,
-	vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-	rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-	vschneid@redhat.com, tj@kernel.org, hannes@cmpxchg.org,
-	mkoutny@suse.com, kees@kernel.org, muchun.song@linux.dev,
-	roman.gushchin@linux.dev, shakeel.butt@linux.dev,
-	rientjes@google.com, jackmanb@google.com, cl@gentwo.org,
-	harry.yoo@oracle.com, axelrasmussen@google.com, yuanchu@google.com,
-	weixugc@google.com, zhengqi.arch@bytedance.com,
-	yosry.ahmed@linux.dev, nphamcs@gmail.com, chengming.zhou@linux.dev,
-	fabio.m.de.francesco@linux.intel.com, rrichter@amd.com,
-	ming.li@zohomail.com, usamaarif642@gmail.com, brauner@kernel.org,
-	oleg@redhat.com, namcao@linutronix.de, escape@linux.alibaba.com,
-	dongjoo.seo1@samsung.com
-Subject: Re: [RFC PATCH v2 02/11] mm: change callers of __cpuset_zone_allowed
- to cpuset_zone_allowed
-Message-ID: <aUABV3sQyaTksz54@gourry-fedora-PF4VCD3F>
-References: <20251112192936.2574429-1-gourry@gourry.net>
- <20251112192936.2574429-3-gourry@gourry.net>
- <dda1fab7-5cb9-4d83-8b60-f4ed75a03aa8@nvidia.com>
+	s=arc-20240116; t=1765804537; c=relaxed/simple;
+	bh=iWB8OrXFK+iq5ExLkGwJk2lKp1AUuBkBZ0rkoEPh/mM=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=mUygBMI+xHh8dlJJPj4dakdaUw15lrdXi6NcbE82e3OhmsSbgao/Knw1XbUZOkrNu1vDbPUyDG8bucT0v9nnup9t6wY3EkE3lgrZEQ9lPOOQPdv8TkFIqTJWAAYOsl/Cwg272l2bGaDj5BhTrhkQ/XkWKrNNPG1b+eL9aYSt2Q4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.235])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTPS id 4dVLBz1sx7zYQtxs;
+	Mon, 15 Dec 2025 21:15:07 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.128])
+	by mail.maildlp.com (Postfix) with ESMTP id C9D531A06DE;
+	Mon, 15 Dec 2025 21:15:30 +0800 (CST)
+Received: from [10.67.111.176] (unknown [10.67.111.176])
+	by APP4 (Coremail) with SMTP id gCh0CgAXefnxCUBp4OwfAQ--.63649S2;
+	Mon, 15 Dec 2025 21:15:30 +0800 (CST)
+Message-ID: <fc648bbf-8427-4b5c-8981-ba8af2756f0a@huaweicloud.com>
+Date: Mon, 15 Dec 2025 21:15:29 +0800
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <dda1fab7-5cb9-4d83-8b60-f4ed75a03aa8@nvidia.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH -next 00/21] cpuset: rework local partition logic
+To: Waiman Long <llong@redhat.com>, tj@kernel.org, hannes@cmpxchg.org,
+ mkoutny@suse.com
+Cc: cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+ lujialin4@huawei.com, chenridong@huawei.com
+References: <20251117024627.1128037-1-chenridong@huaweicloud.com>
+ <2943236a-bb0e-4417-aee4-31146988709a@huaweicloud.com>
+ <ca3b31ca-e9c3-41e8-ae88-d4b126f574b3@redhat.com>
+Content-Language: en-US
+From: Chen Ridong <chenridong@huaweicloud.com>
+In-Reply-To: <ca3b31ca-e9c3-41e8-ae88-d4b126f574b3@redhat.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:gCh0CgAXefnxCUBp4OwfAQ--.63649S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxCFy7tw1rKr1UXr1kXrW8WFg_yoWrurW7pF
+	yDGayftryUCF1vk342qF4xA3yrKwnrJa4Dtwn8Z348XrsFyw1v9FW09398ua4UWrWkAr18
+	ZF1DXr4xu3WakF7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUyGb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxkF7I0En4kS14v26r126r1DMxAIw28IcxkI7VAK
+	I48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7
+	xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xII
+	jxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw2
+	0EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x02
+	67AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU1veHDUUUUU==
+X-CM-SenderInfo: hfkh02xlgr0w46kxt4xhlfz01xgou0bp/
 
-On Mon, Dec 15, 2025 at 05:14:07PM +1100, Balbir Singh wrote:
-> On 11/13/25 06:29, Gregory Price wrote:
-> > @@ -2829,10 +2829,9 @@ enum compact_result try_to_compact_pages(gfp_t gfp_mask, unsigned int order,
-> >  					ac->highest_zoneidx, ac->nodemask) {
-> >  		enum compact_result status;
-> >  
-> > -		if (cpusets_enabled() &&
-> > -			(alloc_flags & ALLOC_CPUSET) &&
-> > -			!__cpuset_zone_allowed(zone, gfp_mask))
-> > -				continue;
-> > +		if ((alloc_flags & ALLOC_CPUSET) &&
-> > +		    !cpuset_zone_allowed(zone, gfp_mask))
-> > +			continue;
-> >  
+
+
+On 2025/11/25 9:09, Waiman Long wrote:
+> On 11/24/25 7:49 PM, Chen Ridong wrote:
+>>
+>> On 2025/11/17 10:46, Chen Ridong wrote:
+>>> From: Chen Ridong <chenridong@huawei.com>
+>>>
+>>> The current local partition implementation consolidates all operations
+>>> (enable, disable, invalidate, and update) within the large
+>>> update_parent_effective_cpumask() function, which exceeds 300 lines.
+>>> This monolithic approach has become increasingly difficult to understand
+>>> and maintain. Additionally, partition-related fields are updated in
+>>> multiple locations, leading to redundant code and potential corner case
+>>> oversights.
+>>>
+>>> This patch series refactors the local partition logic by separating
+>>> operations into dedicated functions: local_partition_enable(),
+>>> local_partition_disable(), and local_partition_update(), creating
+>>> symmetry with the existing remote partition infrastructure.
+>>>
+>>> The series is organized as follows:
+>>>
+>>> 1. Infrastructure Preparation (Patches 1-2):
+>>>     - Code cleanup and preparation for the refactoring work
+>>>
+>>> 2. Introduce partition operation helpers (Patches 3-5):
+>>>     - Introduce out partition_enable(), partition_disable(), and
+>>>       partition_update() functions.
+>>>
+>>> 3. Use new helpers for remote partition (Patches 6-8)
+>>>
+>>> 4. Local Partition Implementation (Patches 9-12):
+>>>     - Separate update_parent_effective_cpumask() into dedicated functions:
+>>>       * local_partition_enable()
+>>>       * local_partition_disable()
+>>>       * local_partition_update()
+>>>
+>>> 5. Optimization and Cleanup (Patches 13-21):
+>>>     - Remove redundant partition-related operations
+>>>     - Additional optimizations based on the new architecture
+>>>
+>>> base-commit: 6d7e7251d03f98f26f2ee0dfd21bb0a0480a2178
+>>>
+>>> ---
+>>>
+>>> Changes from RFC v2:
+>>> 1. Dropped the bugfix (already merged/fixed upstream)
+>>> 2. Rebased onto next
+>>> 3. Introduced partition_switch to handle root state switches
+>>> 4. Directly use local_partition_disable()—no longer first introduce
+>>>     local_partition_invalidate() before unifying the two
+>>> 5. Incorporated modifications based on Longman's suggestions
+>>>
+>>> Changes in RFC v1:
+>>> 1. Added bugfix for root partition isolcpus at series start.
+>>> 2. Completed helper function implementations when first introduced.
+>>> 3. Split larger patches into smaller, more reviewable units.
+>>> 4. Incorporated feedback from Longman.
+>>>
+>>> Chen Ridong (21):
+>>>    cpuset: add early empty cpumask check in partition_xcpus_add/del
+>>>    cpuset: generalize the validate_partition() interface
+>>>    cpuset: introduce partition_enable()
+>>>    cpuset: introduce partition_disable()
+>>>    cpuset: introduce partition_update()
+>>>    cpuset: use partition_enable() for remote partition enablement
+>>>    cpuset: use partition_disable() for remote partition disablement
+>>>    cpuset: use partition_update() for remote partition update
+>>>    cpuset: introduce local_partition_enable()
+>>>    cpuset: introduce local_partition_disable()
+>>>    cpuset: user local_partition_disable() to invalidate local partition
+>>>    cpuset: introduce local_partition_update()
+>>>    cpuset: remove update_parent_effective_cpumask
+>>>    cpuset: remove redundant partition field updates
+>>>    cpuset: simplify partition update logic for hotplug tasks
+>>>    cpuset: use partition_disable for compute_partition_effective_cpumask
+>>>    cpuset: use validate_local_partition in local_partition_enable
+>>>    cpuset: introduce validate_remote_partition
+>>>    cpuset: simplify the update_prstate() function
+>>>    cpuset: remove prs_err clear when notify_partition_change
+>>>    cpuset: Remove unnecessary validation in partition_cpus_change
+>>>
+>>>   kernel/cgroup/cpuset.c | 1014 ++++++++++++++++++----------------------
+>>>   1 file changed, 453 insertions(+), 561 deletions(-)
+>>>
+>> Hi Longman,
+>>
+>> I would greatly appreciate it if you could review this series when you are available.
+>>
+> I was expecting a v3 and so I had probably missed it. Will take a look sometimes this week.
 > 
-> Shouldn't this become one inline helper -- alloc_flags and cpuset_zone_allowed.
->
 
-I actually went back and took a look at this code and I think there was
-a corner case I missed by re-ordering cpusets_enabled and ALLOC_CPUSET
-when the GFP flag was added.
+Hi Longman,
 
-I will take another look here and see if it can't be fully abstracted
-into a helper, but i remember thinking to myself "Damn, i have to open
-code this to deal with the cpusets_disabled case".
+Just a gentle reminder about this series whenever you have a moment, in case it got buried.
 
-Will double check on next version.
+-- 
+Best regards,
+Ridong
 
-> Balbir
-> <snip>
 
