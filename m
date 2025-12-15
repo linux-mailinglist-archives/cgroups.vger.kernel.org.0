@@ -1,205 +1,153 @@
-Return-Path: <cgroups+bounces-12354-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-12355-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 58F36CBCCBB
-	for <lists+cgroups@lfdr.de>; Mon, 15 Dec 2025 08:39:54 +0100 (CET)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3A7EDCBCF65
+	for <lists+cgroups@lfdr.de>; Mon, 15 Dec 2025 09:29:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id BED213015A92
-	for <lists+cgroups@lfdr.de>; Mon, 15 Dec 2025 07:38:28 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 065C33006737
+	for <lists+cgroups@lfdr.de>; Mon, 15 Dec 2025 08:29:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2923631AF2A;
-	Mon, 15 Dec 2025 07:38:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA30930C36B;
+	Mon, 15 Dec 2025 08:29:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="apngKUST"
 X-Original-To: cgroups@vger.kernel.org
-Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ed1-f54.google.com (mail-ed1-f54.google.com [209.85.208.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C20B32861F;
-	Mon, 15 Dec 2025 07:38:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E384C23D7CF
+	for <cgroups@vger.kernel.org>; Mon, 15 Dec 2025 08:29:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765784307; cv=none; b=aBLHzf8MdQI9GUFHB/B9IXZ3KNouz2D+QO/sl0gdNQgM7CZappGOfCJtAcQ7W9K1rG03+aX2hb0hw2M/HLvnm+l3S+nMpIXgGfs2R3tG8QQxBC9NQqWUrMWc1qKt0S5J2kKyWFeJuZtrnWnu6aRzxrRHxo4S+99m7xc8Uf3CiYY=
+	t=1765787384; cv=none; b=nvB+rY7laeOvTllG20I/s9raa0qlhqUClsQ07gYsVIlbon4HCYt7juQ0Yh+E1BNHs/NxaX/FFYCTfAhDuV2W399kY4nTfN/doZAjwq24xkw9YhI0IAhjfGdxb5fAimB33F/Ko7Q/bmT8fRCUeDjeS/31O+avI8gavbMrT62vg+U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765784307; c=relaxed/simple;
-	bh=f8ES+mGhbxJnpdwQlSnH3S4WMOKAQPFUTR9oaGQ4OYQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=nLA9jCezObc1uYZvnzGgJNWdNVC/6J7Scv+ibPpe/0ZKc7zVl1SRZb8F9L9YNsIaqHHyA8s6pG3+ICQS5sbOuB58+ff7mzdFRK8ts4vK8lW5oRA/eoxNbn8kWOsiXQSfumHg30441SpqIdjth61pWQMpbYEv6uzp/ZEvw7voOMk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.93.142])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTPS id 4dVBkH4ldJzKHMWZ;
-	Mon, 15 Dec 2025 15:38:15 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.112])
-	by mail.maildlp.com (Postfix) with ESMTP id 641691A14A1;
-	Mon, 15 Dec 2025 15:38:21 +0800 (CST)
-Received: from [10.67.111.176] (unknown [10.67.111.176])
-	by APP1 (Coremail) with SMTP id cCh0CgBHtOnpuj9pnAsAAQ--.24033S2;
-	Mon, 15 Dec 2025 15:38:18 +0800 (CST)
-Message-ID: <3edf7d6a-5e32-45f1-a6fc-ca5ca786551b@huaweicloud.com>
-Date: Mon, 15 Dec 2025 15:38:16 +0800
+	s=arc-20240116; t=1765787384; c=relaxed/simple;
+	bh=8+Rae6Tnr4feXWnwHZ1+C9t7FYdcdoho4X2n1jA93Ws=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=oPKmmyDdhxpUlAABaFUMd5m8fuLj/K5A/ewmeiVYcpG1e+nj3OBNMS6gjBWTtHZ819ZiKc5x44Op3alxZoRDNkqr5OL1w21AEA8p1wqdl63W0B5q+2TJN4aLRa0O+XyRd6K5QQy5aMsQD8yCgUFkqCN7Ea/XFrhGVEQ13HGQYZo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=apngKUST; arc=none smtp.client-ip=209.85.208.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f54.google.com with SMTP id 4fb4d7f45d1cf-6419b7b4b80so4774652a12.2
+        for <cgroups@vger.kernel.org>; Mon, 15 Dec 2025 00:29:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1765787381; x=1766392181; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=8+Rae6Tnr4feXWnwHZ1+C9t7FYdcdoho4X2n1jA93Ws=;
+        b=apngKUST5fwxpvTXrBxqjfv0fMcZjzLAqSefJDl/gnyaVXDoKlSrK+yE23Darnu5nm
+         AGYnhkiridTJCx1T5emYVTsOMgBsLMMWiNh0Q1xG2+D1gxSnzRM3hVEI3UvwX3+YkLH/
+         WKcFeaYKq0yhLA/did60G6XPaADD9SUyCEKgrNcJ57j0OnQjSwUFDi2ZWFoiYwii2cqd
+         4IHGCpWbsrQow/wQADnjx0jt/gwgZJwBBnYih24lP0/C9/31qBvlboeBObqDgUvaCX5+
+         oILGgV1+zuubAPYUBVLx3oHFQiCgAF6UbrXrONAPHmJewy+cfRkRvpUsWcbUpEj4tjVA
+         ZpNg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1765787381; x=1766392181;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=8+Rae6Tnr4feXWnwHZ1+C9t7FYdcdoho4X2n1jA93Ws=;
+        b=LKsBpH7H1Bsowp5RoIAYXWcobE//9Urb0y0Kd8dRZ/P1rTpla3zMlADYYLk+OBY/O7
+         Rhk3Ds6qW2TCdp8cGRTI/u56YZYz51FkPSh+TaLECvMAP7UGudTQW7lLFl/FrrNbfp2T
+         fWpk2BuuzRl9iliyXetfDTO/jd4xs0V42iyP1qrU+QRoXYlnWwNPZskTvRQEQWF4KCXX
+         deFJ8z+RkVhnN4fCz0Qtlqs0paG9byFyVcbE7lKjtSy5af8HR9QTdC+rowjXuq11LEMI
+         LlnwSwMS4mjhHJTWFeTWwWXwBt//ELdZKrLQVnTNJ2sFM5rgMFOJ6ch/v6tW8e4U+Tr1
+         BCYQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWbrvisll6RcxhzkY62292P6a/H/1CWq2NPvthxypvjXtlnDW+x0nH831q+cFBUD+mpmdeXpb2t@vger.kernel.org
+X-Gm-Message-State: AOJu0Yy0EQPobLkgCbMNSYjFlpmgj9Il1ZCjkLXMJJDHJiPBv+BWJ0QS
+	mjioHmqN+V0vQSyBHoCATooyWa1lLiMwVOndYXjV40+Ga3JnMhGf+8DOkQzydHBw8Falx+DCVt0
+	xGQEKpYMIMo3Quh6hfn8GQ51QBl3QO0A=
+X-Gm-Gg: AY/fxX4ysGJaky+O4VjlQVMT9J/OmFSkau5XgYvCagosLHkOSHQe2jplrr03zmsk6Xd
+	d7sC016c0xBgAyUx2F10Tn37yr28/lq8Wn5VOFhHAtyrNUDG2at6O43ZGXa6mqaAPB73kZbmpnM
+	jIDbexvMcF0O8a6AsESlIEYU1cbGr42h9k7u0H31RjXRM1yoP6XPwMrkC0ulfxsP8xuPTTumpsw
+	kidiC1VFXlzdDPQ3ls28tWpnpHl7SHwAZzGcHYN9gpUxuZGNfaZVs+2K0RP9lKYP2npke/Qj/4y
+	ocyageWH/xOydBb58MP/zSk6zZo=
+X-Google-Smtp-Source: AGHT+IGRqBc8I0NflOBy3oliVc/I9u/bSrqvpBXQ6UEvCCiezx0ILL3u1RZnZngtw+U69waTs51EIwa6S1lhHAPjrOk=
+X-Received: by 2002:a05:6402:4407:b0:645:d34b:8166 with SMTP id
+ 4fb4d7f45d1cf-6499b3009abmr9662602a12.26.1765787381139; Mon, 15 Dec 2025
+ 00:29:41 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
+References: <20251215-mz-lru-size-cleanup-v1-1-95deb4d5e90f@tencent.com> <3edf7d6a-5e32-45f1-a6fc-ca5ca786551b@huaweicloud.com>
+In-Reply-To: <3edf7d6a-5e32-45f1-a6fc-ca5ca786551b@huaweicloud.com>
+From: Kairui Song <ryncsn@gmail.com>
+Date: Mon, 15 Dec 2025 16:29:04 +0800
+X-Gm-Features: AQt7F2pC9l-pkB50oh7wNbFDZA--Sp8cR3PR99yyO6YmYauKOUVymRwEZdki-V0
+Message-ID: <CAMgjq7DVcpdBskYTRMz1U_k9qt4b0Vgrz3Qt5V7kzdj=GJ7CQg@mail.gmail.com>
 Subject: Re: [PATCH RFC] mm/memcontrol: make lru_zone_size atomic and simplify
  sanity check
-To: Kairui Song <ryncsn@gmail.com>, linux-mm@kvack.org,
- Johannes Weiner <hannes@cmpxchg.org>, Hugh Dickins <hughd@google.com>,
- Michal Hocko <mhocko@kernel.org>, Roman Gushchin <roman.gushchin@linux.dev>,
- Shakeel Butt <shakeel.butt@linux.dev>, Muchun Song <muchun.song@linux.dev>,
- Andrew Morton <akpm@linux-foundation.org>, cgroups@vger.kernel.org,
- linux-kernel@vger.kernel.org
-Cc: Kairui Song <kasong@tencent.com>
-References: <20251215-mz-lru-size-cleanup-v1-1-95deb4d5e90f@tencent.com>
-Content-Language: en-US
-From: Chen Ridong <chenridong@huaweicloud.com>
-In-Reply-To: <20251215-mz-lru-size-cleanup-v1-1-95deb4d5e90f@tencent.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID:cCh0CgBHtOnpuj9pnAsAAQ--.24033S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxuF48Xr1ktw1DXw17KryxAFb_yoWrCr4rpF
-	ZIka40yFZ5ZryY93sFya1Dua4fZa1xKayfJr9rWw1UAr1aq3Zaq34UKr4fuFWUAr95GF4a
-	qF90gFW8C3yYvrDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUv0b4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxkF7I0En4kS
-	14v26r1q6r43MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I
-	8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8
-	ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x
-	0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_
-	Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU1
-	7KsUUUUUU==
-X-CM-SenderInfo: hfkh02xlgr0w46kxt4xhlfz01xgou0bp/
+To: Chen Ridong <chenridong@huaweicloud.com>
+Cc: linux-mm@kvack.org, Johannes Weiner <hannes@cmpxchg.org>, Hugh Dickins <hughd@google.com>, 
+	Michal Hocko <mhocko@kernel.org>, Roman Gushchin <roman.gushchin@linux.dev>, 
+	Shakeel Butt <shakeel.butt@linux.dev>, Muchun Song <muchun.song@linux.dev>, 
+	Andrew Morton <akpm@linux-foundation.org>, cgroups@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
+On Mon, Dec 15, 2025 at 3:38=E2=80=AFPM Chen Ridong <chenridong@huaweicloud=
+.com> wrote:
+>
+> On 2025/12/15 14:45, Kairui Song wrote:
+> > From: Kairui Song <kasong@tencent.com>
+> >
+> > commit ca707239e8a7 ("mm: update_lru_size warn and reset bad lru_size")
+> > introduced a sanity check to catch memcg counter underflow, which is
+> > more like a workaround for another bug: lru_zone_size is unsigned, so
+> > underflow will wrap it around and return an enormously large number,
+> > then the memcg shrinker will loop almost forever as the calculated
+> > number of folios to shrink is huge. That commit also checks if a zero
+> > value matches the empty LRU list, so we have to hold the LRU lock, and
+> > do the counter adding differently depending on whether the nr_pages is
+> > negative.
+> >
+> > But later commit b4536f0c829c ("mm, memcg: fix the active list aging fo=
+r
+> > lowmem requests when memcg is enabled") already removed the LRU
+> > emptiness check, doing the adding differently is meaningless now. And i=
+f
+>
+> Agree.
+>
+> I did submit a patch to address that, but it was not accepted.
+>
+> For reference, here is the link to the discussion:
+> https://lore.kernel.org/lkml/CAOUHufbCCkOBGcSPZqNY+FXcrH8+U7_nRvftzOzKUBS=
+4hn+kuQ@mail.gmail.com/
+>
 
+Thanks for letting me know, I wasn't aware that you noticed this too.
 
-On 2025/12/15 14:45, Kairui Song wrote:
-> From: Kairui Song <kasong@tencent.com>
-> 
-> commit ca707239e8a7 ("mm: update_lru_size warn and reset bad lru_size")
-> introduced a sanity check to catch memcg counter underflow, which is
-> more like a workaround for another bug: lru_zone_size is unsigned, so
-> underflow will wrap it around and return an enormously large number,
-> then the memcg shrinker will loop almost forever as the calculated
-> number of folios to shrink is huge. That commit also checks if a zero
-> value matches the empty LRU list, so we have to hold the LRU lock, and
-> do the counter adding differently depending on whether the nr_pages is
-> negative.
-> 
-> But later commit b4536f0c829c ("mm, memcg: fix the active list aging for
-> lowmem requests when memcg is enabled") already removed the LRU
-> emptiness check, doing the adding differently is meaningless now. And if
+From my side I'm noticing that, lru_zone_size has only one reader:
+shrink_lruvec -> get_scan_count -> lruvec_lru_size, while the updater
+is every folio on LRU.
 
-Agree.
+The oldest commit introduced this was trying to catch an underflow,
+with extra sanity check to catch LRU emptiness mis-match. A later
+commit removed the LRU emptiness mis-match, and the only thing left
+here is the underflow check.
 
-I did submit a patch to address that, but it was not accepted.
+LRU counter leak (if there are) may happen anytime due to different
+reasons, and I think the time an updater sees an underflowed value is
+not unlikely to be the time the actual leak happens. (e.g. A folio was
+removed without updating the counter minutes ago while there are other
+folios still on the LRU, then an updater will trigger the WARN much
+later). So the major issue here is the underflow mitigation.
 
-For reference, here is the link to the discussion:
+Turning it into an atomic long should help mitigate both underflow,
+and race (e.g. forgot to put the counter update inside LRU lock).
+Overflow is really unlikely to happen IMO, and if that's corruption,
+corruption could happen anywhere.
 
-https://lore.kernel.org/lkml/CAOUHufbCCkOBGcSPZqNY+FXcrH8+U7_nRvftzOzKUBS4hn+kuQ@mail.gmail.com/
-
-> we just turn it into an atomic long, underflow isn't a big issue either,
-> and can be checked at the reader side. The reader size is much less
-> frequently called than the updater.
-> 
-> So let's turn the counter into an atomic long and check at the
-> reader side instead, which has a smaller overhead. Use atomic to avoid
-> potential locking issue. The underflow correction is removed, which
-> should be fine as if there is a mass leaking of the LRU size counter,
-> something else may also have gone very wrong, and one should fix that
-> leaking site instead.
-> 
-> For now still keep the LRU lock context, in thoery that can be removed
-> too since the update is atomic, if we can tolerate a temporary
-> inaccurate reading, but currently there is no benefit doing so yet.
-> 
-> Signed-off-by: Kairui Song <kasong@tencent.com>
-> ---
->  include/linux/memcontrol.h |  9 +++++++--
->  mm/memcontrol.c            | 18 +-----------------
->  2 files changed, 8 insertions(+), 19 deletions(-)
-> 
-> diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-> index 0651865a4564..197f48faa8ba 100644
-> --- a/include/linux/memcontrol.h
-> +++ b/include/linux/memcontrol.h
-> @@ -112,7 +112,7 @@ struct mem_cgroup_per_node {
->  	/* Fields which get updated often at the end. */
->  	struct lruvec		lruvec;
->  	CACHELINE_PADDING(_pad2_);
-> -	unsigned long		lru_zone_size[MAX_NR_ZONES][NR_LRU_LISTS];
-> +	atomic_long_t		lru_zone_size[MAX_NR_ZONES][NR_LRU_LISTS];
->  	struct mem_cgroup_reclaim_iter	iter;
->  
->  #ifdef CONFIG_MEMCG_NMI_SAFETY_REQUIRES_ATOMIC
-> @@ -903,10 +903,15 @@ static inline
->  unsigned long mem_cgroup_get_zone_lru_size(struct lruvec *lruvec,
->  		enum lru_list lru, int zone_idx)
->  {
-> +	long val;
->  	struct mem_cgroup_per_node *mz;
->  
->  	mz = container_of(lruvec, struct mem_cgroup_per_node, lruvec);
-> -	return READ_ONCE(mz->lru_zone_size[zone_idx][lru]);
-> +	val = atomic_long_read(&mz->lru_zone_size[zone_idx][lru]);
-> +	if (WARN_ON_ONCE(val < 0))
-> +		return 0;
-> +
-> +	return val;
->  }
->  
->  void __mem_cgroup_handle_over_high(gfp_t gfp_mask);
-> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> index 9b07db2cb232..d5da09fbe43e 100644
-> --- a/mm/memcontrol.c
-> +++ b/mm/memcontrol.c
-> @@ -1273,28 +1273,12 @@ void mem_cgroup_update_lru_size(struct lruvec *lruvec, enum lru_list lru,
->  				int zid, int nr_pages)
->  {
->  	struct mem_cgroup_per_node *mz;
-> -	unsigned long *lru_size;
-> -	long size;
->  
->  	if (mem_cgroup_disabled())
->  		return;
->  
->  	mz = container_of(lruvec, struct mem_cgroup_per_node, lruvec);
-> -	lru_size = &mz->lru_zone_size[zid][lru];
-> -
-> -	if (nr_pages < 0)
-> -		*lru_size += nr_pages;
-> -
-> -	size = *lru_size;
-> -	if (WARN_ONCE(size < 0,
-> -		"%s(%p, %d, %d): lru_size %ld\n",
-> -		__func__, lruvec, lru, nr_pages, size)) {
-> -		VM_BUG_ON(1);
-> -		*lru_size = 0;
-> -	}
-> -
-> -	if (nr_pages > 0)
-> -		*lru_size += nr_pages;
-> +	atomic_long_add(nr_pages, &mz->lru_zone_size[zid][lru]);
->  }
->  
->  /**
-> 
-> ---
-> base-commit: 1ef4e3be45a85a103a667cc39fd68c3826e6acb9
-> change-id: 20251211-mz-lru-size-cleanup-c81deccfd5d7
-> 
-> Best regards,
-
--- 
-Best regards,
-Ridong
-
+The reason I sent this patch is trying to move
+mem_cgroup_update_lru_size out of lru lock scope in another series for
+some other feature, just to gather some comments for this particular
+sanity check, it seems a valid clean up and micro optimization on its
+own.
 
