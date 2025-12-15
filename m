@@ -1,89 +1,88 @@
-Return-Path: <cgroups+bounces-12360-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-12361-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7FF9BCBEDCB
-	for <lists+cgroups@lfdr.de>; Mon, 15 Dec 2025 17:18:59 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 894A0CBEEB8
+	for <lists+cgroups@lfdr.de>; Mon, 15 Dec 2025 17:34:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 33CEE3011005
-	for <lists+cgroups@lfdr.de>; Mon, 15 Dec 2025 16:18:58 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id B8249300E7AA
+	for <lists+cgroups@lfdr.de>; Mon, 15 Dec 2025 16:28:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 81C5030F7EE;
-	Mon, 15 Dec 2025 16:18:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E212B3101AD;
+	Mon, 15 Dec 2025 16:28:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="Uq9ds2Jm"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="NEym9ZV7"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-wr1-f48.google.com (mail-wr1-f48.google.com [209.85.221.48])
+Received: from mail-wm1-f54.google.com (mail-wm1-f54.google.com [209.85.128.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5AAEA30ACF2
-	for <cgroups@vger.kernel.org>; Mon, 15 Dec 2025 16:18:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AA04730BB9B
+	for <cgroups@vger.kernel.org>; Mon, 15 Dec 2025 16:28:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765815536; cv=none; b=lwfYTp8x7b232zhc5sH9apij7pjo/jCwLt9/b0FUdx8p2AEAWmkkVQZphrNOGyc5C/QPpfMJDGO9dJaitzqGt2UWPZ4E2j5CaL/q/iYcgLlIYQpqfytsUqiSx4MAU9SaRWm/VKcVaizmwGwoqBsCbmAqxT7GBnMDKBVFiNsy2vY=
+	t=1765816106; cv=none; b=FdzABSfwv+ctT+IlsqHUiymdeRDa9CeNOm39icpWtnytxTrV7QAnkJfBabKAY+btf4840y68qvck1JeRqFZZH/iuNeWHu8MVgCIe1Oc+VloHCsHmKFdqwmV3zsnIioPHXtShFkSRGBvy71Ll9rou8GyMDCme2qnq47xIH6OLeIo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765815536; c=relaxed/simple;
-	bh=a3PggOap/t9l6ReN+INgXfZpwcU2E7Uq+RppSoZ6FD8=;
+	s=arc-20240116; t=1765816106; c=relaxed/simple;
+	bh=/DxlE5J94ZZdlSh9KO1bZB7j+GGcQwOit2v/TLAm6q4=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=e1bEyQujKfkbUcajlwuwT+xKGBN0XjNIr2N1gkNLRxH1fI0+dD8351lb4+l7R1yk+MPqkUExfjtHV6EzGBzkXqrSmiVPZWbVwFnNM8du8DqxvwJWM+lnGYS3MyDtR4o2Fzvqz/p7NWQxskZYd/mzlH7CY+DPjPj40/dHpc5+lMk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=Uq9ds2Jm; arc=none smtp.client-ip=209.85.221.48
+	 Content-Type:Content-Disposition:In-Reply-To; b=qewA+mSlw5aRKl7NqHNINuo1efDCQoIU1DZXH8yhJOqr9Zo3Q6Axm4fUW0JcHOCe62Moqwvdob5Eg6JKMh/ASlaDiGv0wCFGg/7B6kdg3a2VXQyF6NJGVZhDSIZSbVNY4ca1VQ80ifz3bUlRJsPPqfEi5O1UAtJ/ABMP+UJBShA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=NEym9ZV7; arc=none smtp.client-ip=209.85.128.54
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-wr1-f48.google.com with SMTP id ffacd0b85a97d-430f5ecaa08so837355f8f.3
-        for <cgroups@vger.kernel.org>; Mon, 15 Dec 2025 08:18:54 -0800 (PST)
+Received: by mail-wm1-f54.google.com with SMTP id 5b1f17b1804b1-477b198f4bcso29674725e9.3
+        for <cgroups@vger.kernel.org>; Mon, 15 Dec 2025 08:28:24 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1765815533; x=1766420333; darn=vger.kernel.org;
+        d=suse.com; s=google; t=1765816103; x=1766420903; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=TQYbuy/AGCx7oClZHTrxvnDLHD02xFmPKDiNkJdAECE=;
-        b=Uq9ds2Jm4gKi1CNlN8PtF+s4+1nae/MRQQ4gS9Rn4ehM33aUaY5mmXn0v2lw/YeYVL
-         RJAMxNGST2pObuFcNWvUUmtigIYtspk2nkHX5WmKAvoQjClBbVppco3UPcF9uhviP00O
-         vLWdPgOLRSiwbB4MJ7H6EgAQJwYwsYVWqwFCAC3ZmEMXbEpixwGFUpU+hW0B2Ag/kO42
-         xyBkI5bjddfPAFO2jkQuQXrMdJofI7hBzkSjUHU3HPeIz+p6/ZMJt7kxgu9QaDH7qDjg
-         h/xsle25YhSAW9+Uky6yrE53rNQvLtWlPKIXpeHXfcfuXjQW6IaHvEMPuNtiYMg27RHu
-         xDRw==
+        bh=2VZxtE7Htd0xG0D9835NYXF1K/HCgvvqAiOScoqB/3Q=;
+        b=NEym9ZV7i/lbih04s8MKYMqtdglYS9xH1TAE6MwCzrl4yVWMhe7qpzc9t/TgE8fBUk
+         XLjqA4HZVd1go4XPXWInq1zHrNr62SGPK6HluYlEX2ufcFpwUKybIBOcPz97mMPxX+u+
+         lPtgKXsewkJFohViRBkd6vX4nihJ9i9vIUyuXAVS4ebXX0JsxZDzlan7Z2TYv2Xg6jS9
+         qGP1yvOmB3M1LnYOyOB6GCqiARZiauUav7WgK/VUX1hKuKzPWIe4ZrGnvwLSUlYRx2Ll
+         +YiFQr4WskbqAk9imdmIKECqh2PCgJIgKGNJ4amhmhZpYRisewz7bvkUnGhr11EuLYTc
+         a7Iw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1765815533; x=1766420333;
+        d=1e100.net; s=20230601; t=1765816103; x=1766420903;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=TQYbuy/AGCx7oClZHTrxvnDLHD02xFmPKDiNkJdAECE=;
-        b=uaFeTrZ2gGu5lciTqLtgFHjwBHqat7S4fxfHtb5zfT2WHJEvy434RnGxNaFRsUZdZd
-         ztw7tkV4XNmsCCdEeCSK8IvCKfORYoJkh8XMiiwkA2hnr9V7E0aqG+MwUeXHkHHeDIYG
-         Wvk2xzfDfTljX2ZfYWcagfx25vCsTUu49h/dRvsAUUX+Dt6nSJpWvGk/psAiaVGz/yQK
-         MjzfOsOT8eEnkYuGXfctHdvlUT4INrCh5LJ0tK2aA9R6nh5kMjqwyOjN7VZ95ZF9rNZY
-         VSQeHTScNpi4hmE7gobGI16OVCzUETGP79PmLqNUG1t/89YPwIhIeYI3KiwkTQSJSnz+
-         yi7g==
-X-Forwarded-Encrypted: i=1; AJvYcCXNMHTGzI6ViVeiRR7U3qOpkIRKmE7ZQ6qk6clUxND7SRcZ4rlH9/C1udGbYoHuuMBZ6HaAeBxF@vger.kernel.org
-X-Gm-Message-State: AOJu0Yz55JKffzJk99G3ajnbsVyS8ci15oTAmq9TzDCLgV4ADnveIdSI
-	gX/mG/aKET1YJF/w7GWvnDtnW88YrL4t6QIIQRrv457tB9LcKYF/Yi3DUIQNmmaeUMU=
-X-Gm-Gg: AY/fxX6IHOoB+PYjQVfgo0UWMIcX8Lb6e1F5g7FfsmwDX3SPAdQH8twevVs00gSDgHu
-	KnVoRDQH/m9d3P6extUznyShI/WAsnn/1JifCyoxrPPH0S9TA96n7Dn0KEYkCgmfxBuijD0p56O
-	KoDhka2zU8+VLPzw+rBATIIqu0kuRxuoSC+yfjc50QV9lrvKqvl2CdAc5Q2pMLL1ADbWkEsW7la
-	95sybc4otlVL0eoYqYX39SxQSNs2mQ3jaN1JKZlL29kGZ7hs+c1SqckoEnYQU82cwwVorECQZDa
-	3SaAtmNCwEneMdB/4YyvgPQJxNWdyRQDWxxZ2RGGu6H2nhqYxMZ07w3Wo+oyEeSw21am+HWqo6o
-	NJ6pWqVh6Z3wqXa/db3EDZfBeLiO7Q6jaLTLUI7bMkRrWzsRgW32ZwfWaGHQd4ctj2dJYZBUXtF
-	zeywWvOdHM1+/PEjGap9wE6cq4W+9yk70=
-X-Google-Smtp-Source: AGHT+IHz3DRccVTH0qEnEXmkQ3WMt4897kh6Ax9dU31ug0/MvMOQlOP1t29k+dTkjNzkUa4aYrlpgQ==
-X-Received: by 2002:a05:6000:310f:b0:430:f704:4ef with SMTP id ffacd0b85a97d-430f70407bbmr5833954f8f.61.1765815532434;
-        Mon, 15 Dec 2025 08:18:52 -0800 (PST)
+        bh=2VZxtE7Htd0xG0D9835NYXF1K/HCgvvqAiOScoqB/3Q=;
+        b=NneJ5vcdrVPjnVfLqqZptQHViq012wMIZIkc4/W5i3+Mtk0ayCL0ViJk5T4xQuo7SL
+         EWGM8hWnafHoLW2F4FexJNRkuFzEL+gfqGl5MsLSjMlFmJd7S+NNvCZs61tTHhizn2g7
+         48EjgiF5jy5lJsDuF5zfsG+px59sL7JabB9ikP7665H2caYuDJ9L+BUKyBMf5W3ZqMrG
+         Hztcash2T+9lVJDz6Rw1pPRuNUoQKK50y6gSjvKdXFaFcbMolWaN0rH5TKEBcFpiamMs
+         74WMpQdI1QecyxgTb5vLx7tgjEiKK6yF1GgMDfZLKL2iCG6lplFO9vxXDZMMRgj1CNwW
+         m9Gw==
+X-Forwarded-Encrypted: i=1; AJvYcCVGmRuMWCEAGUhrD1rrORGHcYA9D9oSYX/rb5pi8iiq5ObH1P/r4qjvv27lGHjeZlKQFmPMoj3S@vger.kernel.org
+X-Gm-Message-State: AOJu0YwndtRvjG3fY95LBmWGbOp7CL6reJiYkEYw/sg9pYlj5VQT0AEX
+	IlfjcRbj8W5f8BGa7iXLTwiU9p0uogpQgeDmoRgUly2w9Nz8Ql05ikP3LabqEStDGN8=
+X-Gm-Gg: AY/fxX6utYA5FOm03fwdyHxAUrZF2KtMqFO5WBpmfJb2Pg3ooUCY1RBYT2alyza0nA2
+	Nl2ZpgZYkKRT/furLLX9iOvYPkDIOICqaxxPxuoxst8aLRU7W2wZ1EqR/UqZ+2E65MENvky7qyw
+	zYlM2qhiXokD4h5owst3V6GgNQ01kpO7T5JjRB5NyqZck2SU26/BJvYEVfl7opWgtLXTefqdvr5
+	WckTSWdZJrqMdXzpVlSGFFhYWArI9WR4PM2r6jUJzF0vfDq5b5gXzuPQ4Nepn6NH69fboLSTh24
+	s8rEBvebsbUa5OlLxoJD2tTu9YQo8OxMo153Rd11IQ2W0rUW62cqRnbnB8TUhQHNpwdAsF9umGA
+	0sXfai9N6uUjuFLieZTAJVdf8+vD2P1PNLWmWrOrwHaV2g8JZhJzEqLr6FCRtEJ42ettVHTsd8U
+	d1i5fVYK5nzv9QNNidlBZQbkDWZnZFlILP0wL8o0lHiQ==
+X-Google-Smtp-Source: AGHT+IH+vEtmKMOaFGcV/3hvyaO/eJLWmQIOS8AvWE84qSFAfqhronuuYlLf4lGjWK+MYs+zJqABGA==
+X-Received: by 2002:a05:600c:3ba7:b0:477:7af8:c88b with SMTP id 5b1f17b1804b1-47bd3d41de0mr10847475e9.11.1765816102873;
+        Mon, 15 Dec 2025 08:28:22 -0800 (PST)
 Received: from blackdock.suse.cz (nat2.prg.suse.com. [195.250.132.146])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-430fdcc6bbdsm6333447f8f.14.2025.12.15.08.18.51
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-47a8f38a4b7sm197204695e9.3.2025.12.15.08.28.22
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Dec 2025 08:18:51 -0800 (PST)
-Date: Mon, 15 Dec 2025 17:18:49 +0100
+        Mon, 15 Dec 2025 08:28:22 -0800 (PST)
+Date: Mon, 15 Dec 2025 17:28:20 +0100
 From: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
 To: Chen Ridong <chenridong@huaweicloud.com>
-Cc: akpm@linux-foundation.org, axelrasmussen@google.com, 
-	yuanchu@google.com, weixugc@google.com, david@kernel.org, lorenzo.stoakes@oracle.com, 
-	Liam.Howlett@oracle.com, vbabka@suse.cz, rppt@kernel.org, surenb@google.com, 
-	mhocko@suse.com, corbet@lwn.net, hannes@cmpxchg.org, roman.gushchin@linux.dev, 
-	shakeel.butt@linux.dev, muchun.song@linux.dev, zhengqi.arch@bytedance.com, 
-	linux-mm@kvack.org, linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	cgroups@vger.kernel.org, lujialin4@huawei.com, zhongjinji@honor.com
-Subject: Re: [PATCH -next 0/5] mm/mglru: remove memcg lru
-Message-ID: <oa62a226nagmrqbc23kys3yw3ouxkn5spcizyqqevsuhkurbsv@tvvwqlgu5yum>
-References: <20251209012557.1949239-1-chenridong@huaweicloud.com>
+Cc: hannes@cmpxchg.org, mhocko@kernel.org, roman.gushchin@linux.dev, 
+	shakeel.butt@linux.dev, muchun.song@linux.dev, akpm@linux-foundation.org, 
+	axelrasmussen@google.com, yuanchu@google.com, weixugc@google.com, david@kernel.org, 
+	zhengqi.arch@bytedance.com, lorenzo.stoakes@oracle.com, cgroups@vger.kernel.org, 
+	linux-mm@kvack.org, linux-kernel@vger.kernel.org, lujialin4@huawei.com
+Subject: Re: [PATCH -next v3 2/2] memcg: remove mem_cgroup_size()
+Message-ID: <o3hmzratjkcxms3ylnjiuashclllf7mvz6ttkfrz4lybdiwhhp@yeo5my374trx>
+References: <20251211013019.2080004-1-chenridong@huaweicloud.com>
+ <20251211013019.2080004-3-chenridong@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -91,74 +90,80 @@ List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="46t23aecoxgyn33q"
+	protocol="application/pgp-signature"; boundary="6lc2v3gcqh4z4ltd"
 Content-Disposition: inline
-In-Reply-To: <20251209012557.1949239-1-chenridong@huaweicloud.com>
+In-Reply-To: <20251211013019.2080004-3-chenridong@huaweicloud.com>
 
 
---46t23aecoxgyn33q
+--6lc2v3gcqh4z4ltd
 Content-Type: text/plain; protected-headers=v1; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
-Subject: Re: [PATCH -next 0/5] mm/mglru: remove memcg lru
+Subject: Re: [PATCH -next v3 2/2] memcg: remove mem_cgroup_size()
 MIME-Version: 1.0
 
-Hi.
+Hi Ridong.
 
-On Tue, Dec 09, 2025 at 01:25:52AM +0000, Chen Ridong <chenridong@huaweiclo=
+On Thu, Dec 11, 2025 at 01:30:19AM +0000, Chen Ridong <chenridong@huaweiclo=
 ud.com> wrote:
 > From: Chen Ridong <chenridong@huawei.com>
 >=20
-> The memcg LRU was introduced to improve scalability in global reclaim,
-> but its implementation has grown complex and can cause performance
-> regressions when creating many memory cgroups [1].
+> The mem_cgroup_size helper is used only in apply_proportional_protection
+> to read the current memory usage. Its semantics are unclear and
+> inconsistent with other sites, which directly call page_counter_read for
+> the same purpose.
 >=20
-> This series implements mem_cgroup_iter with a reclaim cookie in
-> shrink_many() for global reclaim, following the pattern already used in
-> shrink_node_memcgs(), an approach suggested by Johannes [1]. The new
-> design maintains good fairness across cgroups by preserving iteration
-> state between reclaim passes.
+> Remove this helper and get its usage via mem_cgroup_protection for
+> clarity. Additionally, rename the local variable 'cgroup_size' to 'usage'
+> to better reflect its meaning.
 >=20
-> Testing was performed using the original stress test from Yu Zhao [2] on a
-> 1 TB, 4-node NUMA system. The results show:
-
-(I think the cover letter somehow lost the targets of [1],[2]. I assume
-I could retrieve those from patch 1/5.)
-
-
+> No functional changes intended.
 >=20
->     pgsteal:
->                                         memcg LRU    memcg iter
->     stddev(pgsteal) / mean(pgsteal)     106.03%       93.20%
->     sum(pgsteal) / sum(requested)        98.10%       99.28%
->    =20
->     workingset_refault_anon:
->                                         memcg LRU    memcg iter
->     stddev(refault) / mean(refault)     193.97%      134.67%
->     sum(refault)                       1,963,229    2,027,567
->=20
-> The new implementation shows clear fairness improvements, reducing the
-> standard deviation relative to the mean by 12.8 percentage points for
-> pgsteal and bringing the pgsteal ratio closer to 100%. Refault counts
-> increased by 3.2% (from 1,963,229 to 2,027,567).
+> Signed-off-by: Chen Ridong <chenridong@huawei.com>
 
-Just as a quick clarification -- this isn't supposed to affect regular
-(CONFIG_LRU_GEN_ENABLED=3Dn) reclaim, correct?
+Why does mem_cgroup_calculate_protection "calculate" usage for its
+callers? Couldn't you just the change source in
+apply_proportional_protection()?
 
 Thanks,
 Michal
 
---46t23aecoxgyn33q
+> @@ -2485,7 +2485,6 @@ static unsigned long apply_proportional_protection(=
+struct mem_cgroup *memcg,
+>  		 * again by how much of the total memory used is under
+>  		 * hard protection.
+>  		 */
+> -		unsigned long cgroup_size =3D mem_cgroup_size(memcg);
++		unsigned long cgroup_size =3D page_counter_read(memcg);
+
+>  		unsigned long protection;
+> =20
+>  		/* memory.low scaling, make sure we retry before OOM */
+> @@ -2497,9 +2496,9 @@ static unsigned long apply_proportional_protection(=
+struct mem_cgroup *memcg,
+>  		}
+> =20
+>  		/* Avoid TOCTOU with earlier protection check */
+> -		cgroup_size =3D max(cgroup_size, protection);
+> +		usage =3D max(usage, protection);
+> =20
+> -		scan -=3D scan * protection / (cgroup_size + 1);
+> +		scan -=3D scan * protection / (usage + 1);
+> =20
+>  		/*
+>  		 * Minimally target SWAP_CLUSTER_MAX pages to keep
+
+--6lc2v3gcqh4z4ltd
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iJEEABYKADkWIQRCE24Fn/AcRjnLivR+PQLnlNv4CAUCaUA05xsUgAAAAAAEAA5t
-YW51MiwyLjUrMS4xMSwyLDIACgkQfj0C55Tb+AipLAEAnlYbPrFblvbBsF7840Nm
-UUv9SDFSYzdEcMfrtpIpBBUA/0OUjcdXVkH5G6MDTafhw6RikY5Fc6vWy/IdPFm+
-6b0B
-=4hsa
+iJEEABYKADkWIQRCE24Fn/AcRjnLivR+PQLnlNv4CAUCaUA3IhsUgAAAAAAEAA5t
+YW51MiwyLjUrMS4xMSwyLDIACgkQfj0C55Tb+AhHDAEA3ePRl1oqqoJs1d3McZRX
+xevo8ebBHTd4DUJSJvbhJhwA/19a+3X/nxewd71A03xJ+bHGn1w01e1sr6huB0U7
+URQP
+=OXfw
 -----END PGP SIGNATURE-----
 
---46t23aecoxgyn33q--
+--6lc2v3gcqh4z4ltd--
 
