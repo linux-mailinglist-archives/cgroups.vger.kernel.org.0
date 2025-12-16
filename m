@@ -1,71 +1,98 @@
-Return-Path: <cgroups+bounces-12381-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-12382-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id C7154CC4F8E
-	for <lists+cgroups@lfdr.de>; Tue, 16 Dec 2025 20:07:09 +0100 (CET)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0726ECC531F
+	for <lists+cgroups@lfdr.de>; Tue, 16 Dec 2025 22:21:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 4BDBB302A752
-	for <lists+cgroups@lfdr.de>; Tue, 16 Dec 2025 19:07:08 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id C5016300252E
+	for <lists+cgroups@lfdr.de>; Tue, 16 Dec 2025 21:21:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE76E2E7165;
-	Tue, 16 Dec 2025 19:07:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1E11A2F1FE4;
+	Tue, 16 Dec 2025 21:21:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="h7MCbrBm"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="ey6woMYF"
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out-172.mta0.migadu.com (out-172.mta0.migadu.com [91.218.175.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A94C486359;
-	Tue, 16 Dec 2025 19:07:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 33DE018BC3D
+	for <cgroups@vger.kernel.org>; Tue, 16 Dec 2025 21:21:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765912026; cv=none; b=jQWmkivsXzwqZZIxT4KkSSjYD9wdppFE+Yjb+79yZ+Lsj6CTmiygFZx4FskBOVfrwYXv4WQ87D/1QaNe0R3rZZ46w869hYoV3PGcKD7koyOtQkQmxc+FvLPpxHFjAd8soycNekpEo7IIuTnl3LFxwcFMiuWquOhMC0e6pKPo7Hc=
+	t=1765920076; cv=none; b=YsSExh9jCtAst7S9Glge/H6IPg1Lbp4nNpsCSfvnDrXl0UEZAXdYqxm9uwhKYUw7mJ0wifDYYF/u6TOe0LB3yoQEzkl/5kr/NOeMQagiDRbxTqXewKxuSWYaxf9b6kXcMuv5wpRwcppN3ImILmHXp6PbU5bO0/C09oE1N2n+TkY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765912026; c=relaxed/simple;
-	bh=1xWcQjK1WzkS7YnW7fIuJybbX59eIvr9KKxXVxlTaWg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=VrsJnqEpJqpKEb4lukD5thbvP3/uFSeIn75AV2ExExi2c4uXJNwREfJ/o2UHtxKIeqXpdqDmBabI8uO1ciLaLN2CMEEotfKi3exA5GRo0e+Sk+6bKF2tmGAS+ku4BojeWlRIL7YLPVWhQrdLSA04xMZn8MXeo7vDFvpgMVQWH58=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=h7MCbrBm; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 08428C4CEF1;
-	Tue, 16 Dec 2025 19:07:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1765912026;
-	bh=1xWcQjK1WzkS7YnW7fIuJybbX59eIvr9KKxXVxlTaWg=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=h7MCbrBma6J400qDKvciB3eCJGQSwVf6bEw/yJNc8dUgqOlDC4xAkMOVsuNoq6go9
-	 RHeUtCjh0dNI/FRgBOpaUdCnA9Xf1KUbu/PPUTajzzSwvU4d2eK4lt+uQj8poOHkLx
-	 /NzzHv6NVLBVJl79eIU4jLExdhFz0VPiAsqdg5hcZ4saGfs98R1WgGVMRxNiLmQ83m
-	 SMQUmME0mQPcAPbBXp/jLn5VG4myNQSM3Eis+zas+R9SOrQoHrsCzhr9ClGj/xGOzz
-	 zjD3VI+DCFNKDTSUEoFlngALJQ5KF542VHJKhslorL2uQwYbOkjRmdWAyJrPg2KEMC
-	 Rxey/RkT0T9Kw==
-Date: Tue, 16 Dec 2025 09:07:05 -1000
-From: Tejun Heo <tj@kernel.org>
-To: Chen Ridong <chenridong@huaweicloud.com>
-Cc: longman@redhat.com, hannes@cmpxchg.org, mkoutny@suse.com,
-	cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
-	lujialin4@huawei.com, chenridong@huawei.com
-Subject: Re: [PATCH -next] cpuset: fix warning when disabling remote partition
-Message-ID: <aUGt2UMveTAhs1yX@slm.duckdns.org>
-References: <20251127030450.1611804-1-chenridong@huaweicloud.com>
- <d43bc75d-0a5f-41e7-b127-df6c3d26f44b@huaweicloud.com>
+	s=arc-20240116; t=1765920076; c=relaxed/simple;
+	bh=8Xo+YlPqEZ2Y1elD3Kdie3P6r3c7tGNOIT866GNXXd4=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=LRXTLSFy6qSYzftYkWonTMC/bc89EAqUVH9FSRnWljcTzyP+Wv+WzfaL3Esf3sqi+IpXUn26dG7FPw7/dfSPJcQO47iDcnK2OtGukyKypovYxNaXFggJXha7W8JH34iAM5jsSSaBZjpqN8a4ZtnqDhKJo1vl1YnXjt5Et2uZbq8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=ey6woMYF; arc=none smtp.client-ip=91.218.175.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1765920067;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=ZfOZ1kb7S1+OirlSYPDDjGrFljxGcHFaYN634TXPH08=;
+	b=ey6woMYFLSuMSGJ1GMOKxV+l8NVP/+hqcWLToOCCN8rcLfAqLUsKHsuJRwZ3uujYyzJ+6J
+	lZYR2kyyxmQ9XQWq2j1kzCRssuqMk0y2gA/0F8U9allCiqWgajBlM8r99+6pDuBt41blWU
+	RGOISzMUDyPXqnXzHwJrh8fqrbDeYZ0=
+From: Shakeel Butt <shakeel.butt@linux.dev>
+To: Andrew Morton <akpm@linux-foundation.org>
+Cc: Johannes Weiner <hannes@cmpxchg.org>,
+	Michal Hocko <mhocko@kernel.org>,
+	Roman Gushchin <roman.gushchin@linux.dev>,
+	Muchun Song <muchun.song@linux.dev>,
+	Vlastimil Babka <vbabka@suse.cz>,
+	Meta kernel team <kernel-team@meta.com>,
+	cgroups@vger.kernel.org,
+	linux-mm@kvack.org,
+	linux-kernel@vger.kernel.org,
+	Chris Mason <clm@fb.com>
+Subject: [PATCH] mm: memcg: fix unit conversion for K() macro in OOM log
+Date: Tue, 16 Dec 2025 13:20:54 -0800
+Message-ID: <20251216212054.484079-1-shakeel.butt@linux.dev>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <d43bc75d-0a5f-41e7-b127-df6c3d26f44b@huaweicloud.com>
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-On Tue, Dec 09, 2025 at 10:56:20AM +0800, Chen Ridong wrote:
-> Friendly ping.
+The commit bc8e51c05ad5 ("mm: memcg: dump memcg protection info on oom
+or alloc failures") added functionality to dump memcg protections on OOM
+or allocation failures. It uses K() macro to dump the information and
+passes bytes to the macro. However the macro take number of pages
+instead of bytes. It is defined as:
 
-Waiman?
+ #define K(x) ((x) << (PAGE_SHIFT-10))
 
-Thanks.
+Let's fix this.
 
+Signed-off-by: Shakeel Butt <shakeel.butt@linux.dev>
+Reported-by: Chris Mason <clm@fb.com>
+Fixes: bc8e51c05ad5 ("mm: memcg: dump memcg protection info on oom or alloc failures")
+---
+ mm/memcontrol.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index e2e49f4ec9e0..6f000f0e76d2 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -5638,6 +5638,6 @@ void mem_cgroup_show_protected_memory(struct mem_cgroup *memcg)
+ 		memcg = root_mem_cgroup;
+ 
+ 	pr_warn("Memory cgroup min protection %lukB -- low protection %lukB",
+-		K(atomic_long_read(&memcg->memory.children_min_usage)*PAGE_SIZE),
+-		K(atomic_long_read(&memcg->memory.children_low_usage)*PAGE_SIZE));
++		K(atomic_long_read(&memcg->memory.children_min_usage)),
++		K(atomic_long_read(&memcg->memory.children_low_usage)));
+ }
 -- 
-tejun
+2.47.3
+
 
