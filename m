@@ -1,115 +1,147 @@
-Return-Path: <cgroups+bounces-12368-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-12369-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 45B29CBFE5B
-	for <lists+cgroups@lfdr.de>; Mon, 15 Dec 2025 22:18:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 87909CC05DA
+	for <lists+cgroups@lfdr.de>; Tue, 16 Dec 2025 01:46:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id E32A23018422
-	for <lists+cgroups@lfdr.de>; Mon, 15 Dec 2025 21:18:04 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 857F530194E6
+	for <lists+cgroups@lfdr.de>; Tue, 16 Dec 2025 00:46:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8422B32D0CC;
-	Mon, 15 Dec 2025 21:18:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cmpxchg.org header.i=@cmpxchg.org header.b="l25U/l6x"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2E831495E5;
+	Tue, 16 Dec 2025 00:46:08 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-qt1-f171.google.com (mail-qt1-f171.google.com [209.85.160.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 35D113254A2
-	for <cgroups@vger.kernel.org>; Mon, 15 Dec 2025 21:17:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C3ADA59;
+	Tue, 16 Dec 2025 00:46:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765833482; cv=none; b=HDthStGAWtq7A2To78yMZMsEEWSdF0oKe7+0fuZGU0JySAJauFhwJ3fHtuF50TCV4bCQj9X5+W2FdAJ4LmWmFJUY9A4QphND/KqynZgFkyFAi6t+4G0pThzKu0A1CHSS9/STfgj7YW8bd/oZ7rGVB1fpY5EtFByv8yxfVxbvCZk=
+	t=1765845968; cv=none; b=Yr0AEkh0lS8Aka0GSrqTmvHkEpy3VYjNKTZDL8aYTL36kRgw0WM8XFBSRQFgA0poMqz1rApzLUgeIrzhqSYyceFE+ORklz0TRlFdpF7AytCAypgWXP4GuEoa+oo9O2knu4Y6WXAblhWJ/wePZcdRG2X3toqti53iWQib4z3/Sjc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765833482; c=relaxed/simple;
-	bh=CKH+FAAjzoon1OSofCyCce54ZroGwUuCKRL8FMDMFd8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ZmG0elMyqQBhQsUa2QpDvUBuhbJMpxtBv7jo4QXDzD0mSiDHizbR0X5a5IWAUjbIPg8aXBqNcRE9M6axdWv8JILhvMmn9uhZGgygmAQJNsD8qoCTUiH6cipkkijywYEI9/X2tPW00Z0RCezU0MRhYv81gnn32wYZ+8vBQxqRYjE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org; spf=pass smtp.mailfrom=cmpxchg.org; dkim=pass (2048-bit key) header.d=cmpxchg.org header.i=@cmpxchg.org header.b=l25U/l6x; arc=none smtp.client-ip=209.85.160.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cmpxchg.org
-Received: by mail-qt1-f171.google.com with SMTP id d75a77b69052e-4ed75832448so52771321cf.2
-        for <cgroups@vger.kernel.org>; Mon, 15 Dec 2025 13:17:58 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg.org; s=google; t=1765833477; x=1766438277; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=rQYOTwdjJwYgvuX1nPstCicu4NCv26qFYc5XYhTLu6s=;
-        b=l25U/l6xkMdk4avz9x8Qm1HZan+6tmYV9fzTGwToDT7VvTcukRzfL3RR3T3ugQxaWN
-         UqBDHXZJpUetn5jyw7oVH1PA5z5xQILInTO6UTFpjXkbUecCC0IJNYM1tzrVXYmQZkMT
-         UWsPoHaizF3jjNtYR8yQ8N/ktY7TYQI7VuJEnd8do1jutD6/dvB0xFPLAdukgfSAxwlu
-         kF5uY/feeddLCy0nSniBEn2szppCC0+9/qde7ugCzERFX9AtJEEaI6C8s2lVPj1aAEK4
-         /htm1tx4FT9aNhby7COhA0DZLz/tFTcMv/j0XjBcTvuJu9O95sBHAEMBWVwlbJ6E8IlF
-         G4Xg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1765833477; x=1766438277;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=rQYOTwdjJwYgvuX1nPstCicu4NCv26qFYc5XYhTLu6s=;
-        b=c0oSq2pZjQp/rZ+AFiHV4SxdtiVIdJ7ktR4Fv9ThXz+hIM7u41Z79A1iJTLbVZYdhY
-         usO5GmTGutm6WV5Zd1dIyorpJ6mVxEjqxqQTn5/1k4Zi//pe1iDupB9cTrnzo3VdO1Ka
-         3IT3OFkvGkRWKwKo3BWrMEQawYQm+hEU+KggwDwdW6b8iaMyfWBJSYt13Ja5WuG7XESl
-         /SH5x51fmiceQtYaPhzTrwMd3ZcRwQBlbu+iI/tnhUvs39rhvytUZEdNo9IfCOvAAkgo
-         1KE2bOxMF0TKYUC7XllvU5tyamZ9GpUCXVgyzJCqDmzTvDUXiyq2PFlU0lMVVZsxKEXI
-         Ko0Q==
-X-Forwarded-Encrypted: i=1; AJvYcCW1U+4gA+cq/z+AmNTq5Maf0d8+N8AjCJafUaH8XygzA9fttgPr+zRi69vL8PYXQ4Jv/uCrJHLE@vger.kernel.org
-X-Gm-Message-State: AOJu0YxIEzwVUZRg5AUSRk5EHkZtqklmHjG4I+q0UOPpzwJ5krez5uAu
-	O/eYDDOKbT+dwJ0+X/tWirpzqCAM/RfU1IV3/GqYPhCU7+uz9aE51+9VwRMlmsyF68k=
-X-Gm-Gg: AY/fxX4VmajsPAqWfAbwqFQ8c9nBMJFpzdgnIGaEIeh3gXx6gi9CSruc0f5LQFNEhcO
-	ntmsVu1fzEe7xRfpv4y3dGwYpXetNNvhV+P2KHS7ETsqOUQ+ZxZhLoUHZndjMvKU6fV11bYB/eB
-	GLmL3gQEfv/vZ+mRW4QCQU75kv6GUgsMttSVBaLOPAkmASsG7KGCsE3U32NUx7xtx1NcGz91Qhp
-	9SeU4yDGj8NxLGt5KreVgdSfe0iLZUppoObtpAMaB6gYU6almYN3Ui9tfTOn/93X2/5beWgiOOR
-	uHP514bK5Y+nC5h5zA2aJGv94GoHKqGeOUx7zB0eSBrs2DEATuUiLrAslOn6AqV5TgU0oSRdR/8
-	DjS4hmdpIb5kS896SdzMcAV8a4LJe2LJbRlIhXlJxFn2mzJSlyFrWraPnLrt2D3tfyE8FF7//Q7
-	7lygqjArgb2w==
-X-Google-Smtp-Source: AGHT+IExtT3C2ce1bnbMtFFEc4vbTu4xnrtsiKWUFgckjaMMD6DyYbjwCUrjL+1tWyqf3FThMCPBWg==
-X-Received: by 2002:a05:622a:4109:b0:4ee:2420:4f7a with SMTP id d75a77b69052e-4f1d047a1aamr167228381cf.2.1765833477067;
-        Mon, 15 Dec 2025 13:17:57 -0800 (PST)
-Received: from localhost ([2603:7000:c01:2716:929a:4aff:fe16:c778])
-        by smtp.gmail.com with ESMTPSA id d75a77b69052e-4f345c2e0ecsm2877711cf.19.2025.12.15.13.17.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 15 Dec 2025 13:17:55 -0800 (PST)
-Date: Mon, 15 Dec 2025 16:17:54 -0500
-From: Johannes Weiner <hannes@cmpxchg.org>
-To: Chen Ridong <chenridong@huaweicloud.com>
-Cc: akpm@linux-foundation.org, axelrasmussen@google.com, yuanchu@google.com,
-	weixugc@google.com, david@kernel.org, lorenzo.stoakes@oracle.com,
-	Liam.Howlett@oracle.com, vbabka@suse.cz, rppt@kernel.org,
-	surenb@google.com, mhocko@suse.com, corbet@lwn.net,
-	roman.gushchin@linux.dev, shakeel.butt@linux.dev,
-	muchun.song@linux.dev, zhengqi.arch@bytedance.com,
-	linux-mm@kvack.org, linux-doc@vger.kernel.org,
-	linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-	lujialin4@huawei.com, zhongjinji@honor.com
-Subject: Re: [PATCH -next 4/5] mm/mglru: combine shrink_many into
- shrink_node_memcgs
-Message-ID: <20251215211754.GG905277@cmpxchg.org>
-References: <20251209012557.1949239-1-chenridong@huaweicloud.com>
- <20251209012557.1949239-5-chenridong@huaweicloud.com>
+	s=arc-20240116; t=1765845968; c=relaxed/simple;
+	bh=1+3Lh7U450ydlqvQpXQTIkg3yK7v4Zeps4wTkwJZaU8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=NMogLGvDquHo3D+BXlq9Xjulip23dDiWX04G+1SqgqmWe/wZTYysRmduPqbsTPU4wPOrDD5MrFjWeh+2kC6FNYScuuLs0YAtCEpch1MxXalXDJUVKXK2BkkJ9oiC3YYA+UD0Tto0NpUPNMev4PoT6RvZAz8nVln1tXsxV5cfInQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.235])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTPS id 4dVdWg2XzYzYQttN;
+	Tue, 16 Dec 2025 08:45:35 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.75])
+	by mail.maildlp.com (Postfix) with ESMTP id AEA161A06D7;
+	Tue, 16 Dec 2025 08:45:59 +0800 (CST)
+Received: from [10.67.111.176] (unknown [10.67.111.176])
+	by APP2 (Coremail) with SMTP id Syh0CgBHYH_Gq0BpmudUAQ--.49701S2;
+	Tue, 16 Dec 2025 08:45:59 +0800 (CST)
+Message-ID: <9c5a5020-107c-4521-9402-41e614bd2803@huaweicloud.com>
+Date: Tue, 16 Dec 2025 08:45:57 +0800
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20251209012557.1949239-5-chenridong@huaweicloud.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH -next 0/5] mm/mglru: remove memcg lru
+To: =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>
+Cc: akpm@linux-foundation.org, axelrasmussen@google.com, yuanchu@google.com,
+ weixugc@google.com, david@kernel.org, lorenzo.stoakes@oracle.com,
+ Liam.Howlett@oracle.com, vbabka@suse.cz, rppt@kernel.org, surenb@google.com,
+ mhocko@suse.com, corbet@lwn.net, hannes@cmpxchg.org,
+ roman.gushchin@linux.dev, shakeel.butt@linux.dev, muchun.song@linux.dev,
+ zhengqi.arch@bytedance.com, linux-mm@kvack.org, linux-doc@vger.kernel.org,
+ linux-kernel@vger.kernel.org, cgroups@vger.kernel.org, lujialin4@huawei.com,
+ zhongjinji@honor.com
+References: <20251209012557.1949239-1-chenridong@huaweicloud.com>
+ <oa62a226nagmrqbc23kys3yw3ouxkn5spcizyqqevsuhkurbsv@tvvwqlgu5yum>
+Content-Language: en-US
+From: Chen Ridong <chenridong@huaweicloud.com>
+In-Reply-To: <oa62a226nagmrqbc23kys3yw3ouxkn5spcizyqqevsuhkurbsv@tvvwqlgu5yum>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:Syh0CgBHYH_Gq0BpmudUAQ--.49701S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7uF4UCFWfJFWkAryUGry7GFg_yoW8urWDpF
+	Wvka48Ka1fJry7Jrs2y3WUZayY9ayxAw4UAr43GryxA3s8ZryFgr4Iqa15uF4kCr48Wr1a
+	qr1q93ZxXFs8AFJanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUv0b4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxkF7I0En4kS
+	14v26r4a6rW5MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I
+	8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVW8ZVWr
+	XwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x
+	0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_
+	Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU0
+	s2-5UUUUU==
+X-CM-SenderInfo: hfkh02xlgr0w46kxt4xhlfz01xgou0bp/
 
-On Tue, Dec 09, 2025 at 01:25:56AM +0000, Chen Ridong wrote:
-> @@ -5822,6 +5779,12 @@ static void shrink_node_memcgs(pg_data_t *pgdat, struct scan_control *sc)
->  
->  		shrink_one(lruvec, sc);
->  
-> +		if (should_abort_scan(lruvec, sc)) {
 
-Can you please rename this and add the jump label check?
 
-		if (lru_gen_enabled() && lru_gen_should_abort_scan())
+On 2025/12/16 0:18, Michal Koutný wrote:
+> Hi.
+> 
+> On Tue, Dec 09, 2025 at 01:25:52AM +0000, Chen Ridong <chenridong@huaweicloud.com> wrote:
+>> From: Chen Ridong <chenridong@huawei.com>
+>>
+>> The memcg LRU was introduced to improve scalability in global reclaim,
+>> but its implementation has grown complex and can cause performance
+>> regressions when creating many memory cgroups [1].
+>>
+>> This series implements mem_cgroup_iter with a reclaim cookie in
+>> shrink_many() for global reclaim, following the pattern already used in
+>> shrink_node_memcgs(), an approach suggested by Johannes [1]. The new
+>> design maintains good fairness across cgroups by preserving iteration
+>> state between reclaim passes.
+>>
+>> Testing was performed using the original stress test from Yu Zhao [2] on a
+>> 1 TB, 4-node NUMA system. The results show:
+> 
+> (I think the cover letter somehow lost the targets of [1],[2]. I assume
+> I could retrieve those from patch 1/5.)
+> 
 
-The majority of the checks in there already happen inside
-shrink_node_memcgs() itself. Factoring those out is probably better in
-another patch, but no need to burden classic LRU in the meantime.
+Hi Michal,
+
+Thanks for the reminder—I appreciate you pointing that out.
+
+Apologies for missing the links in the cover letter. You can find them in patch 1/5.
+
+> 
+>>
+>>     pgsteal:
+>>                                         memcg LRU    memcg iter
+>>     stddev(pgsteal) / mean(pgsteal)     106.03%       93.20%
+>>     sum(pgsteal) / sum(requested)        98.10%       99.28%
+>>     
+>>     workingset_refault_anon:
+>>                                         memcg LRU    memcg iter
+>>     stddev(refault) / mean(refault)     193.97%      134.67%
+>>     sum(refault)                       1,963,229    2,027,567
+>>
+>> The new implementation shows clear fairness improvements, reducing the
+>> standard deviation relative to the mean by 12.8 percentage points for
+>> pgsteal and bringing the pgsteal ratio closer to 100%. Refault counts
+>> increased by 3.2% (from 1,963,229 to 2,027,567).
+> 
+> Just as a quick clarification -- this isn't supposed to affect regular
+> (CONFIG_LRU_GEN_ENABLED=n) reclaim, correct?
+> 
+> Thanks,
+> Michal
+
+That's correct. To be precise, it only affects root reclaim when lru_gen_enabled() returns true.
+
+Note that the generation LRU can still be enabled via /sys/kernel/mm/lru_gen/enabled even when
+CONFIG_LRU_GEN_ENABLED=n.
+
+-- 
+Best regards,
+Ridong
+
 
