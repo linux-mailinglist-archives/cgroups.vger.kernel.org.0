@@ -1,158 +1,133 @@
-Return-Path: <cgroups+bounces-12375-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-12376-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id AD88DCC1DF5
-	for <lists+cgroups@lfdr.de>; Tue, 16 Dec 2025 10:55:08 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id C61BECC2994
+	for <lists+cgroups@lfdr.de>; Tue, 16 Dec 2025 13:17:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 22CD0304D55B
-	for <lists+cgroups@lfdr.de>; Tue, 16 Dec 2025 09:51:51 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id BDB7E302B787
+	for <lists+cgroups@lfdr.de>; Tue, 16 Dec 2025 12:16:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C5D4C33A70D;
-	Tue, 16 Dec 2025 09:51:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="OnRUhq95"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4134C352FBE;
+	Tue, 16 Dec 2025 12:14:02 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-wm1-f50.google.com (mail-wm1-f50.google.com [209.85.128.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D4253328E3
-	for <cgroups@vger.kernel.org>; Tue, 16 Dec 2025 09:51:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B1F2534F250;
+	Tue, 16 Dec 2025 12:13:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765878707; cv=none; b=SrpkL8gApU968ex0soa4MaG5qGMoGKPw6GPUKlcG2xHF9U+tvpK/xoCMTdCSdIRwypvR9YCA8ZB/JQm63Fub9P00Tg8Gj898Ydh+wF9rsIXCi+8Japri7TJ3jYJKk7+xeXvaJPHisRIC1wtBnuSfLDs4UF16utNjlM4Y7YhzF1k=
+	t=1765887241; cv=none; b=neEzwJi7fqxTLg12Omk+nZ0JG0/zKaeR3c3HJ2m4n43AJdDRLyZFhgiTxFr1KnZC1iVm+kMAk+0DJSslydMA+KeNUTdsFZov/bSVJfsNbBplu4sF4rVG5I3Az+MbSGUduYuEZnLtMF5mxB+MTuBoTzgCfUiy1ZxWkXMtzaAKHbY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765878707; c=relaxed/simple;
-	bh=5+tp2UYitv2fm0n21+HdpMnCAaCKdABwxgrNU8zsH+4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=T0f8RX1X4zm5XmWt/T3GGtvy2EgJB0XlW2d265zW/UyjNKcJXv9BU67N3zYKfczRsiUkpyLA9O2DF/IzByX9JB27poMqL5vd2X/zvIF4fWH7QCSadMOS9QcbtLzXWC7OgiHmJqEXtYpAqOpD8u9sZV5X3hvIHuQTi9lOsaRDQuo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=OnRUhq95; arc=none smtp.client-ip=209.85.128.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-wm1-f50.google.com with SMTP id 5b1f17b1804b1-4779a637712so29307275e9.1
-        for <cgroups@vger.kernel.org>; Tue, 16 Dec 2025 01:51:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1765878703; x=1766483503; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=n4KHLKCgdvHljKH0KooqKxxS07H4rqH19ntCiCj9EYE=;
-        b=OnRUhq95Sk1VZFOzu6GuBZUxfXN0WzuZQA82sQAkiCRXJtZNMzz3GH9+xi9zOfbQQ4
-         gH4EQ0CQSfeP75E4i5CSGjtNLTtfTyT7ri1hYgVedNkU9vCaStOv0tZ9jCuTs1fhR41x
-         QZeiIpxoedI2LrZDO0o4DZMYO2cz243Anmi7gdbAsvXK5SewlW9X9ZvwMq45ca0gtxii
-         q6KdkQ7hu4KRjwISxXIRp7C1Zea5DyuupVB8dJmrAvd0eYNaLs6imU1HlXjjNKwR6etI
-         QEEU0EW6SRWgh90gQ/PY6iKjXoZArYoUNJeq4yoyCORMAUSV5m7tQi5uK+f8tCk2yAuw
-         rgPw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1765878703; x=1766483503;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=n4KHLKCgdvHljKH0KooqKxxS07H4rqH19ntCiCj9EYE=;
-        b=wBusenU1+pRAFHU3HtIW2j88yDfyl6LZJzqYPgFQur04ukmvZ/ohiSF255uuBRdsof
-         m+j7T3V/Qu8iBm76VrPO4CdWHKfOlD+ALl/TJe3xHlP2iAJAD0cXC/xH1K+WKAjn6Z0L
-         cnXvUlzza/pdNMqmFggDczW4+FNu897H38VnKSQtID6m6oGQdRP2n8EO9bgI2UV1M2uZ
-         Mbd/vFJ7/ApjXG9p1cdwWe/ziFfKFwvwEGuT/dRHkJ0X06eBIrNjMuROVlEmBQJt/Zdd
-         5W+MkZbt85wU83AfaIHfyVoa3G9g287PnxqwzpTcEpdTYG+PeIFej3IYwpM2lcSBQbY9
-         5S/A==
-X-Forwarded-Encrypted: i=1; AJvYcCX38buy1xNLG+hrp+VLhCKvs65INHAVlDyf/Mjb565XMQ9Pp7l2me7MYsPqwM3ENXe1WgNmt8K8@vger.kernel.org
-X-Gm-Message-State: AOJu0YxfwGCTn48qu01gPuJzco9tuWWQUpGbBIVuRFqnJGbuftVoPP5i
-	tnpDR6WUEyEGlhJfPtv09/6NehFsdi2/M+d++e0X0mkRuO/Fo96LA/5yXPbCK8PVzgU=
-X-Gm-Gg: AY/fxX7HBahNDgmPcMO51RHZS7NfPrCT9Pz7vQUgZ5lKqAwd6B8ff8Zwdwo3liOqV7l
-	6Q470qNSo4LbVjjYzlw2iJOpc8dgqA5j7y0G72dFTTyCcUmZKDzibiT7L5Ogm/uHXIerI22U/m8
-	8g0ie5MEtkRpyrE4LCJzmYJHbRQYdXhkkoWat7Itui6I3DS8+8HL8aiXlVi1JyASutzFNr79tjV
-	SApVv0lXrVRi7YwITrHYsdxeT2eozCVcnfAP2brHd5WMv5fYFYyJqitnthElH8vTwoqooGLw9/N
-	oGmKBUw9W3au9mAmleLd41ZhyvB9T64l6vGtGIMtKqmzfq2bKXmlFJd7rrO6RWwyTsNQCsnq2Jy
-	EVD69GQFGNEneDfj4+EUrSMKdZd3g4ADcMR6PPoI/vxUIhmzGee0bnHbfAP/UA0Eu96s3JJcKZU
-	3ELy10jSXqFY3vkcw8VSLMz+ZRwSAc9go=
-X-Google-Smtp-Source: AGHT+IGa17zKZkqqc3uPVbnBRJzGO+tFfUG7BnwFwvwCM4xVeELcZJhyBxHcq9OVqFTjK/owwWVvew==
-X-Received: by 2002:a05:600c:5252:b0:477:76cb:4812 with SMTP id 5b1f17b1804b1-47a8f708ebamr137710275e9.0.1765878703400;
-        Tue, 16 Dec 2025 01:51:43 -0800 (PST)
-Received: from blackdock.suse.cz (nat2.prg.suse.com. [195.250.132.146])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-47bd909383csm7271035e9.2.2025.12.16.01.51.42
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 16 Dec 2025 01:51:42 -0800 (PST)
-Date: Tue, 16 Dec 2025 10:51:41 +0100
-From: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
-To: Chen Ridong <chenridong@huaweicloud.com>
-Cc: longman@redhat.com, tj@kernel.org, hannes@cmpxchg.org, 
-	cgroups@vger.kernel.org, linux-kernel@vger.kernel.org, lujialin4@huawei.com
-Subject: Re: [PATCH -next] cpuset: add cpuset1_online_css helper for
- v1-specific operations
-Message-ID: <sowksqih3jeosuqa7cqnnwnexrgklttpjpfzdxjv2tmc7ym45r@vrmubshmlyqi>
-References: <20251216012845.2437419-1-chenridong@huaweicloud.com>
+	s=arc-20240116; t=1765887241; c=relaxed/simple;
+	bh=2fKq0fv7tkGX0jDlyAWTqhRbU8gPHZ5i4feABeAa+28=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=jtof3w52poKMvk4Wvoqs2ooWrKnDXxGP1X7AV92qdYgMWOd/sjqHwxDcCZDVncqBv9hVbR48hoZaLile162vxiC4Tv3pqkQFZEetfmeb5AjE08bgdwsov5qGLjSlpxSKrUIwh+pKOjfJ0oyS3YARtMs82564nngOGKSzb3xPYCw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.198])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTPS id 4dVwnP6kzMzYQtHl;
+	Tue, 16 Dec 2025 20:13:29 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.128])
+	by mail.maildlp.com (Postfix) with ESMTP id DEB3D4056B;
+	Tue, 16 Dec 2025 20:13:54 +0800 (CST)
+Received: from [10.67.111.176] (unknown [10.67.111.176])
+	by APP4 (Coremail) with SMTP id gCh0CgA35vYBTUFpIn6SAQ--.7985S2;
+	Tue, 16 Dec 2025 20:13:54 +0800 (CST)
+Message-ID: <a45617e5-7710-49e8-a231-511ae77b5e51@huaweicloud.com>
+Date: Tue, 16 Dec 2025 20:13:53 +0800
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="hi7obu2hrnpqvu4n"
-Content-Disposition: inline
-In-Reply-To: <20251216012845.2437419-1-chenridong@huaweicloud.com>
-
-
---hi7obu2hrnpqvu4n
-Content-Type: text/plain; protected-headers=v1; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
 Subject: Re: [PATCH -next] cpuset: add cpuset1_online_css helper for
  v1-specific operations
-MIME-Version: 1.0
-
-On Tue, Dec 16, 2025 at 01:28:45AM +0000, Chen Ridong <chenridong@huaweiclo=
-ud.com> wrote:
-> From: Chen Ridong <chenridong@huawei.com>
->=20
-> This commit introduces the cpuset1_online_css helper to centralize
-> v1-specific handling during cpuset online. It performs operations such as
-> updating the CS_SPREAD_PAGE, CS_SPREAD_SLAB, and CGRP_CPUSET_CLONE_CHILDR=
-EN
-> flags, which are unique to the cpuset v1 control group interface.
->=20
-> The helper is now placed in cpuset-v1.c to maintain clear separation
-> between v1 and v2 logic.
-
-It makes sense to me.
-
-> +/* v1-specific operation =E2=80=94 caller must hold cpuset_full_lock. */
-> +void cpuset1_online_css(struct cgroup_subsys_state *css)
-> +{
-> +	struct cpuset *tmp_cs;
-> +	struct cgroup_subsys_state *pos_css;
-> +	struct cpuset *cs =3D css_cs(css);
-> +	struct cpuset *parent =3D parent_cs(cs);
-> +
-
-+	lockdep_assert_held(&cpuset_mutex);
-+	lockdep_assert_cpus_held();
-
-When it's carved out from under cpuset_full_lock().
+To: =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>
+Cc: longman@redhat.com, tj@kernel.org, hannes@cmpxchg.org,
+ cgroups@vger.kernel.org, linux-kernel@vger.kernel.org, lujialin4@huawei.com
+References: <20251216012845.2437419-1-chenridong@huaweicloud.com>
+ <sowksqih3jeosuqa7cqnnwnexrgklttpjpfzdxjv2tmc7ym45r@vrmubshmlyqi>
+Content-Language: en-US
+From: Chen Ridong <chenridong@huaweicloud.com>
+In-Reply-To: <sowksqih3jeosuqa7cqnnwnexrgklttpjpfzdxjv2tmc7ym45r@vrmubshmlyqi>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:gCh0CgA35vYBTUFpIn6SAQ--.7985S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxJr1rKr17Cry3Gr4xuw1rZwb_yoW8AF1DpF
+	yDCa1DtF4UJFyxu3Z7X390qryIgwnrKF4UtFyrA3WFyF47AFy7uF1Ig3WYqr15Gr18G34x
+	ZFyYgws2gas0kFJanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUyGb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxkF7I0En4kS14v26r126r1DMxAIw28IcxkI7VAK
+	I48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7
+	xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUAVWUtwCIc40Y0x0EwIxGrwCI42IY6xII
+	jxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw2
+	0EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x02
+	67AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU1veHDUUUUU==
+X-CM-SenderInfo: hfkh02xlgr0w46kxt4xhlfz01xgou0bp/
 
 
-> @@ -3636,39 +3630,8 @@ static int cpuset_css_online(struct cgroup_subsys_=
-state *css)
->  		cs->effective_mems =3D parent->effective_mems;
->  	}
->  	spin_unlock_irq(&callback_lock);
-> +	cpuset1_online_css(css);
 
-guard with !is_in_v2mode()
+On 2025/12/16 17:51, Michal Koutný wrote:
+> On Tue, Dec 16, 2025 at 01:28:45AM +0000, Chen Ridong <chenridong@huaweicloud.com> wrote:
+>> From: Chen Ridong <chenridong@huawei.com>
+>>
+>> This commit introduces the cpuset1_online_css helper to centralize
+>> v1-specific handling during cpuset online. It performs operations such as
+>> updating the CS_SPREAD_PAGE, CS_SPREAD_SLAB, and CGRP_CPUSET_CLONE_CHILDREN
+>> flags, which are unique to the cpuset v1 control group interface.
+>>
+>> The helper is now placed in cpuset-v1.c to maintain clear separation
+>> between v1 and v2 logic.
+> 
+> It makes sense to me.
+> 
+>> +/* v1-specific operation — caller must hold cpuset_full_lock. */
+>> +void cpuset1_online_css(struct cgroup_subsys_state *css)
+>> +{
+>> +	struct cpuset *tmp_cs;
+>> +	struct cgroup_subsys_state *pos_css;
+>> +	struct cpuset *cs = css_cs(css);
+>> +	struct cpuset *parent = parent_cs(cs);
+>> +
+> 
+> +	lockdep_assert_held(&cpuset_mutex);
+> +	lockdep_assert_cpus_held();
+> 
 
-Thanks,
-Michal
+Thanks for the feedback, Michal.
 
---hi7obu2hrnpqvu4n
-Content-Type: application/pgp-signature; name="signature.asc"
+Regarding the lock assertions: cpuset_mutex is defined in cpuset.c and is not visible in
+cpuset-v1.c. Given that cpuset v1 is deprecated, would you prefer that we add a helper to assert
+cpuset_mutex is locked? Is that worth?
 
------BEGIN PGP SIGNATURE-----
+> When it's carved out from under cpuset_full_lock().
+> 
+> 
+>> @@ -3636,39 +3630,8 @@ static int cpuset_css_online(struct cgroup_subsys_state *css)
+>>  		cs->effective_mems = parent->effective_mems;
+>>  	}
+>>  	spin_unlock_irq(&callback_lock);
+>> +	cpuset1_online_css(css);
+> 
+> guard with !is_in_v2mode()
+> 
 
-iJEEABYKADkWIQRCE24Fn/AcRjnLivR+PQLnlNv4CAUCaUErqxsUgAAAAAAEAA5t
-YW51MiwyLjUrMS4xMSwyLDIACgkQfj0C55Tb+AjHCAD/W6zIT4KJZVFTtqCoJXHx
-gQBSzimOVhvWoOGpOeOtxgUBALYhxkJe1K9FQWRHYeSUh8XuKbp45LG/eSrSe6bO
-IB0P
-=mtr2
------END PGP SIGNATURE-----
+Should we guard with !cpuset_v2() or !is_in_v2mode()?
 
---hi7obu2hrnpqvu4n--
+In cgroup v1, if the cpuset is operating in v2 mode, are these flags still valid?
+
+-- 
+Best regards,
+Ridong
+
 
