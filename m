@@ -1,77 +1,77 @@
-Return-Path: <cgroups+bounces-12444-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-12445-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id B0166CC98F7
-	for <lists+cgroups@lfdr.de>; Wed, 17 Dec 2025 22:13:52 +0100 (CET)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id D0FFBCC9961
+	for <lists+cgroups@lfdr.de>; Wed, 17 Dec 2025 22:22:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 746933013721
-	for <lists+cgroups@lfdr.de>; Wed, 17 Dec 2025 21:13:51 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id E67333006727
+	for <lists+cgroups@lfdr.de>; Wed, 17 Dec 2025 21:22:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 26A7530EF83;
-	Wed, 17 Dec 2025 21:13:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B9C130DD0C;
+	Wed, 17 Dec 2025 21:22:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cmpxchg.org header.i=@cmpxchg.org header.b="VxJVgkxL"
+	dkim=pass (2048-bit key) header.d=cmpxchg.org header.i=@cmpxchg.org header.b="bLmP5yRi"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-qk1-f170.google.com (mail-qk1-f170.google.com [209.85.222.170])
+Received: from mail-qv1-f45.google.com (mail-qv1-f45.google.com [209.85.219.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 62AD313A86C
-	for <cgroups@vger.kernel.org>; Wed, 17 Dec 2025 21:13:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D584B30F922
+	for <cgroups@vger.kernel.org>; Wed, 17 Dec 2025 21:22:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1766006029; cv=none; b=kbh+tN3CtA2nQb9tGRo7odqoO2DevhDyboeN8aE0Kiiw3RnFCoeLS+kxQQ25T+aFQ3K7pn2RDZSxPybzXzefcdXG/3qrDVfAFvitqOaH4y3jDBnHO3CccX+RZRJA4D9lJnnVg+6I1UaMcgnWGU87cgmi22ssnuMgAf6OYjEDVZg=
+	t=1766006534; cv=none; b=YFoo7gVmgis55H+oAZ5vS794mQfKjdy3zsxwxoQ2FyMCj+8+fuE+NFfZX7dYF7JpcboU4UkNf3TQvXZSXHQMCg1BNl7YU0+L6SBO4GwMV6h6w0duCgKuaE9EuYI62g8Y0rf+SQTWInh24DBXq8e294jfkjI0ZOkGNqVj6PLirQo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1766006029; c=relaxed/simple;
-	bh=2gTEpwwZsnFbkTdUuykdfyFFKchQrX707OS2a5hGbgY=;
+	s=arc-20240116; t=1766006534; c=relaxed/simple;
+	bh=Excu9vCoi/x7baNVQXP2DdLY1BHeq6L0CDw44UYt9NU=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=RYYy9UVVjayIECRnZZBAu/7WjnLT3A1SOBOQKkpxcJR3b1BInAeD8+FGISvwiGnxY1LvHRU9q80zQg3iAbqKuHzeIayfjHaeGyWfr6mydFPAmw5mIH3uv1wfU1V1WaO7L2va0g4gaMvI1KczK3FYDOLmZZix6Q5wyimzswYVCF4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org; spf=pass smtp.mailfrom=cmpxchg.org; dkim=pass (2048-bit key) header.d=cmpxchg.org header.i=@cmpxchg.org header.b=VxJVgkxL; arc=none smtp.client-ip=209.85.222.170
+	 Content-Type:Content-Disposition:In-Reply-To; b=BWSiy1S6MJ2cnK6cpgwKYvylwPAxkYNxwzI5MLDO8hlrLPz269k9X02NyTHIFuZUyJdceL1pZGg+cBt/a7AVY3i+YjtaS4AqdvMRZrDL66cy9J86/kj5f0O7ZfSF6lL1UgO2P5zheRmMw8EcIdCbpoOqQRhN2ignE9WBNvXIokI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org; spf=pass smtp.mailfrom=cmpxchg.org; dkim=pass (2048-bit key) header.d=cmpxchg.org header.i=@cmpxchg.org header.b=bLmP5yRi; arc=none smtp.client-ip=209.85.219.45
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cmpxchg.org
-Received: by mail-qk1-f170.google.com with SMTP id af79cd13be357-8b25ed53fcbso895343385a.0
-        for <cgroups@vger.kernel.org>; Wed, 17 Dec 2025 13:13:47 -0800 (PST)
+Received: by mail-qv1-f45.google.com with SMTP id 6a1803df08f44-88a2f2e5445so47411676d6.1
+        for <cgroups@vger.kernel.org>; Wed, 17 Dec 2025 13:22:11 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg.org; s=google; t=1766006026; x=1766610826; darn=vger.kernel.org;
+        d=cmpxchg.org; s=google; t=1766006530; x=1766611330; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=RtGb0r/P6zEZ8trF9hUpub5gtg16/YJkxY5mix/dDUM=;
-        b=VxJVgkxLxOWW3G5FrWPkgkKxyg71F7+5deRnJ+eI7htFdVBlLt0Ixx6BGSWkckqbdv
-         kf7HnvTZalo1CfJPCEDa6q00F7GJTHD+qFBAM+OOvDUZX2DmakyfBDfT+aTbNUN1C07U
-         y3waxGnSr3uOHRKIxWABXokUg5z1sTkHs1d1PxkJwg0gl3CNotoTFsRd/DaVY1WQA3FG
-         YYLfAhTWuhowSYP2OwSBHh61LjQRPtiOLZHaFq6/EW38yGb1HzStsx4azknZzm5ZnofQ
-         A+umecUSyp9v3iGpu2YqXLEFG1yG93RhTutjU1WY8kUS8FlaHXNDEhIBwzERPFAMnn1H
-         lTTA==
+        bh=bOOgnzCzdNQgnsHYyEnitX5C1ZN2cK+8ABaNl5MoIv8=;
+        b=bLmP5yRiTnJes8j1VAqLBfuZbIDjQy9epgmH5diCtyzgmeJLPdfs1pZc/gHrCjVZcl
+         huP+uddPAqW1udk5hzaTTR27xFp/rITIitBQ6jo5/CbHzDzt4oJdNMvZ79rzOpou5BON
+         xpYf02ZPvPIZWp8KtA4hNOmKhnKDNfxFRSY/bBOkFzLUVFWlEjYfDZA1r1WyEXSS8aNw
+         n7uzEZMUmTH1bL50QGy5JoJkUhJ6WI6yZs+gY3bGmJsBlXf1mDPIAET4zwxzGTXLbvAl
+         ZUt9aBtPxQp+cFcx3OwTWkHEF8rBrltJ3oqSo6ASuTaYyBERiLaMrKeGYtCkFzeLPt2w
+         0dYA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1766006026; x=1766610826;
+        d=1e100.net; s=20230601; t=1766006530; x=1766611330;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=RtGb0r/P6zEZ8trF9hUpub5gtg16/YJkxY5mix/dDUM=;
-        b=CZwEYx+A0g9jx7R5S4GKqpWaX17sWP/jGPQGAmU0rr3E3fNVSlQFvA1fjPF/YPcVHk
-         RuXtVpDdK4FQeWoroNpoFx+r8TCdhSsbUMqEgZpGF1Pl52qVmalJMzunm7J/E6OKvzDi
-         +BoMId8eqQSHLwufGfc+9Kh/557NzIQt270Zd+Fr82b8s6ikbgJhYuH8pqe/kWhZg1I2
-         rhynBAozV9Pok7OZYqe5jj2YwP8ATH+CRL/HrExxwg6oy9VpRR7jtO9fgTLjXmaDLPOn
-         pUBkyHYgGaVCE3nWjr04a/Qg846L6fIPAvOpinAT20D9BMbAJ7qfbv5gwPIWJ6tnhrJc
-         zNLQ==
-X-Forwarded-Encrypted: i=1; AJvYcCX4ok4v14y7vS1zlGMf3cqdOXslmkyCmbyngozFvzFmOYjEN1mT6Y+eziVr18H+u0bkZfzVOCjw@vger.kernel.org
-X-Gm-Message-State: AOJu0YymC4+++nydOgevBTGYEvegFUTsTnplU3dMX8+5Wg4gGq/g3pgd
-	8jYSj1RyMSMiot8rQNWeyqZaysQiqjmuZ8KnQC19C7knSugBYx1x2iYX3D5Y0Z7JORA=
-X-Gm-Gg: AY/fxX7Aw1u38Du7k0cKBb3N1pZHNn0CqljBKVPYSeesaYcKIy8kuAantV2+c8qWj4/
-	hynE6v8NFBnyrIEAEsba63hD8WuGmN17qJP99izXRr6VxW4FrTSzULozwfyCQBf6qy2kSBDNVU+
-	z4DcKEzDWk0JlE6V/etT2p8qqDva/mzMG6AJ5wIv1SOxwiKInIXG4jKf5tu5oyHErojftn5z56y
-	vjNv1qiFzQIPFw90XAo5UmASGphEgh/d0c20iAPLW09DjZODwmeWdWQrzS/RfClt1aTYxselwsc
-	hVtjbGScVePiLprpfnqV0J2sxVcOjJJR/jDQMKtd/v6JyTyvkvMRTwvdmXXE+WuGJ/Q7YtF4kn5
-	Rpj6cNkG8jaCR2LbTNT7bQOjPYfWLRBBYW9Nz49woNB3xh5kp6GYdxqKjBsnpQoifCHl77mawN+
-	KilJ/rAvbKyw==
-X-Google-Smtp-Source: AGHT+IET4L1o4h7gpr31cJq/0Bv9h1gq6eO5+hWYnncruBpcH76SMVyfZw1AptOE09FasXWhGUSOKg==
-X-Received: by 2002:a05:620a:4116:b0:8b2:e402:20b4 with SMTP id af79cd13be357-8bb398d914bmr2946405485a.10.1766006026195;
-        Wed, 17 Dec 2025 13:13:46 -0800 (PST)
+        bh=bOOgnzCzdNQgnsHYyEnitX5C1ZN2cK+8ABaNl5MoIv8=;
+        b=mJ3c6D2vC2wWyQZspPtbQHIwI6gkL8I1CRLeqsXJ6ULqdPBeZJ6MIdTrMx8vJrnnJS
+         /uNIYwUwGQNoP1RrlcEfJxAdiNAADdxVNL3+uw5Z9FZjXqVcoklqEv136b8olzTkNT/6
+         t0M1nJKCVyeLvLLnWH7zwiabHcvoollKoo/NOvy+mzBuQfoYyMnRqQ3DG14rbc+mjbf/
+         2rtPUwggupB9mDeBMW6GziOtsq3JgQTEuGD4bxgY1zoWcvRmOqaz8ecLbI2gspfdDTsL
+         B4DaV1Niq72L/CLzvc++ZtnG8wq68eudtihwRQwNki6V2w6ysHzGdCNM5ttB1AutY9av
+         NzqA==
+X-Forwarded-Encrypted: i=1; AJvYcCXNTQGzamslUGhuaE40tAgk366rnoULOoUSwLHqyaWA8AlV3Nd/9A8h/qRdLroJxvtF+A/5RmM8@vger.kernel.org
+X-Gm-Message-State: AOJu0YzS3uXPvhel2THjzXMh11Ihs/HRTWF0cNITfvDHoYGb8g6lTk35
+	YEXyWgPfBbCBfFwZ3khhPF5a+USJJXHDgvyDurLdBZj3+soY1bggx40vbSYyZXLbeFE=
+X-Gm-Gg: AY/fxX7znu8bxGYqccrsncJvteMsStxeaDajejYHebImIl7jU3SzN4fsbjDijG2D0SD
+	EE8uokrHjDJa04Pxqe/afb5opvi69DLuDiwAJesUv/xcHI2eiXo6pz2Ud/AsV5xPLjaY4aZWilG
+	zaRbwoKMpPzkzSItv+X4l7LCTQrYIwj4SAB6BW9oZs+YMsLgdVDKw3jy0ewiSADkewLmJuC7mYm
+	UWlPdNFGjupTomUiY21db/rx1dgW/ewQCaFrNR0AsYZ3vu+MuIR3KgmzD4UDXS44lDgTs1vgyRP
+	Ebo6QC/ZEHTcvqnyjTzG5vtCdnr4Spx2YEdjhgCa30+wM3iZx7FrI0QdHRuTLSjm3sl1MkmUD3b
+	FtcH4SjWlNZo91PdEbbPj79PlY4T2ACLdLAKNuat75v0ibiuNDaSzBM8nL69qzGhGdIKuSj9maD
+	jUUcI9vVVZTA==
+X-Google-Smtp-Source: AGHT+IFzXUkRHitQ6VNCbbPfCAE8rsPjnOnwE2wUVrJxtg3mT4weGRzR1Jq+HE4b4SUpjoKCvX7jUg==
+X-Received: by 2002:ad4:5ba8:0:b0:888:4930:82aa with SMTP id 6a1803df08f44-8887e181613mr336351406d6.70.1766006530486;
+        Wed, 17 Dec 2025 13:22:10 -0800 (PST)
 Received: from localhost ([2603:7000:c01:2716:929a:4aff:fe16:c778])
-        by smtp.gmail.com with ESMTPSA id af79cd13be357-8beeb6e987asm28540285a.22.2025.12.17.13.13.45
+        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-88c5dc70a93sm3699666d6.4.2025.12.17.13.22.09
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Dec 2025 13:13:45 -0800 (PST)
-Date: Wed, 17 Dec 2025 16:13:44 -0500
+        Wed, 17 Dec 2025 13:22:09 -0800 (PST)
+Date: Wed, 17 Dec 2025 16:22:08 -0500
 From: Johannes Weiner <hannes@cmpxchg.org>
 To: Qi Zheng <qi.zheng@linux.dev>
 Cc: hughd@google.com, mhocko@suse.com, roman.gushchin@linux.dev,
@@ -83,12 +83,13 @@ Cc: hughd@google.com, mhocko@suse.com, roman.gushchin@linux.dev,
 	akpm@linux-foundation.org, hamzamahfooz@linux.microsoft.com,
 	apais@linux.microsoft.com, lance.yang@linux.dev, linux-mm@kvack.org,
 	linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+	Muchun Song <songmuchun@bytedance.com>,
 	Qi Zheng <zhengqi.arch@bytedance.com>
-Subject: Re: [PATCH v2 04/28] mm: vmscan: prepare for the refactoring the
- move_folios_to_lru()
-Message-ID: <aUMdCIr9-rLrQi0X@cmpxchg.org>
+Subject: Re: [PATCH v2 06/28] mm: memcontrol: allocate object cgroup for
+ non-kmem case
+Message-ID: <aUMfALjD7Q1A3NU8@cmpxchg.org>
 References: <cover.1765956025.git.zhengqi.arch@bytedance.com>
- <4a7ca63e3d872b7e4d117cf4e2696486772facb6.1765956025.git.zhengqi.arch@bytedance.com>
+ <897be76398cb2027d08d1bcda05260ede54dc134.1765956025.git.zhengqi.arch@bytedance.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -97,21 +98,40 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <4a7ca63e3d872b7e4d117cf4e2696486772facb6.1765956025.git.zhengqi.arch@bytedance.com>
+In-Reply-To: <897be76398cb2027d08d1bcda05260ede54dc134.1765956025.git.zhengqi.arch@bytedance.com>
 
-On Wed, Dec 17, 2025 at 03:27:28PM +0800, Qi Zheng wrote:
-> From: Qi Zheng <zhengqi.arch@bytedance.com>
+On Wed, Dec 17, 2025 at 03:27:30PM +0800, Qi Zheng wrote:
+> From: Muchun Song <songmuchun@bytedance.com>
 > 
-> After refactoring the move_folios_to_lru(), its caller no longer needs to
-> hold the lruvec lock, the disabling IRQ is only for __count_vm_events()
-> and __mod_node_page_state().
+> Pagecache pages are charged at allocation time and hold a reference
+> to the original memory cgroup until reclaimed. Depending on memory
+> pressure, page sharing patterns between different cgroups and cgroup
+> creation/destruction rates, many dying memory cgroups can be pinned
+> by pagecache pages, reducing page reclaim efficiency and wasting
+> memory. Converting LRU folios and most other raw memory cgroup pins
+> to the object cgroup direction can fix this long-living problem.
+
+Not a big deal, but since the coverletter will be preserved in git, I
+don't think you need to repeat the full thesis.
+
+> As a result, the objcg infrastructure is no longer solely applicable
+> to the kmem case. In this patch, we extend the scope of the objcg
+> infrastructure beyond the kmem case, enabling LRU folios to reuse
+> it for folio charging purposes.
+
+"To allow LRU page reparenting, the objcg infrastructure [...]"
+
+> It should be noted that LRU folios are not accounted for at the root
+> level, yet the folio->memcg_data points to the root_mem_cgroup. Hence,
+> the folio->memcg_data of LRU folios always points to a valid pointer.
+> However, the root_mem_cgroup does not possess an object cgroup.
+> Therefore, we also allocate an object cgroup for the root_mem_cgroup.
 > 
-> On the PREEMPT_RT kernel, the local_irq_disable() cannot be used. To
-> avoid using local_irq_disable() and reduce the critical section of
-> disabling IRQ, make all callers of move_folios_to_lru() use IRQ-safed
-> count_vm_events() and mod_node_page_state().
-> 
+> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
 > Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
+> Reviewed-by: Harry Yoo <harry.yoo@oracle.com>
+
+Looks good to me.
 
 Acked-by: Johannes Weiner <hannes@cmpxchg.org>
 
