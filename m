@@ -1,77 +1,77 @@
-Return-Path: <cgroups+bounces-12460-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-12461-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 06C36CC9B85
-	for <lists+cgroups@lfdr.de>; Wed, 17 Dec 2025 23:34:56 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 61FF6CC9B91
+	for <lists+cgroups@lfdr.de>; Wed, 17 Dec 2025 23:36:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id C645F303212B
-	for <lists+cgroups@lfdr.de>; Wed, 17 Dec 2025 22:34:54 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id F04AA30198CB
+	for <lists+cgroups@lfdr.de>; Wed, 17 Dec 2025 22:36:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C8D5732694F;
-	Wed, 17 Dec 2025 22:34:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 04C2B3115A2;
+	Wed, 17 Dec 2025 22:36:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cmpxchg.org header.i=@cmpxchg.org header.b="oYkKwvSq"
+	dkim=pass (2048-bit key) header.d=cmpxchg.org header.i=@cmpxchg.org header.b="cywIUXl1"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-qk1-f181.google.com (mail-qk1-f181.google.com [209.85.222.181])
+Received: from mail-qt1-f172.google.com (mail-qt1-f172.google.com [209.85.160.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 23E42308F2A
-	for <cgroups@vger.kernel.org>; Wed, 17 Dec 2025 22:34:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1DAFC1D90DD
+	for <cgroups@vger.kernel.org>; Wed, 17 Dec 2025 22:36:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1766010892; cv=none; b=T1psHgdYeC/+sd6hD1yitiliQ2YFKAaJus3IygM+uGl94H4g6xe3cVMoIF3SHRtVR/cjYxEJvpv1MYoMTX4XQR3UxkVk1i83dJxL8RDBT0z0ud8cH9v2hJsWqzCqoJ2Uk3ucVg/9j6RSk2jlLhZKaPvm7q0A+ze9d57kq5c4Rs4=
+	t=1766010994; cv=none; b=sMtDJEKcYwZbxjQ2M6/fwlw0A7EGi/Q27ibsgTWP54Dh0dkFCkXcFb9x97084KIskUmCAkU7LXSFtTrPVgVIdPq4/ji+6Bec+MUlDZmI0Rfp3lsCquQwnt9Yr69SEAdsU3uwEIDpD9l6L5bivQiofu+ca3Wi3Mb5A0/WUlUHG7o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1766010892; c=relaxed/simple;
-	bh=Ro5HEKGCAvU/Agf6fuC1Ax+MXVFF9pqpkb1oSERcBNU=;
+	s=arc-20240116; t=1766010994; c=relaxed/simple;
+	bh=ZlT3KqTofwvBhqMe18ZKfZ4B3GbTBwIPlOKEwMBXdOo=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=rv9gh2oDK3S1NJnW4VHTvb51AVJNDVGW3PGH4SYXoOnqkurVzSs9JFZmpAKD1/6ONXMSaWl4sNakbRmWm5ktob5zQOVSBDZxNqHyKW1lnH2GVwEVu4Y/ETneZpl4Lc//O0q2gRvbc0ZKVbjE/S5aS3Cy1wNMggaLzzmg649LmQI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org; spf=pass smtp.mailfrom=cmpxchg.org; dkim=pass (2048-bit key) header.d=cmpxchg.org header.i=@cmpxchg.org header.b=oYkKwvSq; arc=none smtp.client-ip=209.85.222.181
+	 Content-Type:Content-Disposition:In-Reply-To; b=tR7aLZ/KkEkbwOjXNxbhTaVQqVbhzbhkk++fepybVqFQHVegLna87v6hxvFH+6y2kKHDsmr1VEO+VrfLvWSs3vWWTpUplfTdTtbocwN/q4MdbcZHXNRtvtW/Xy4I/0n4D5yBjQS3LuHdIJfO/NJ/e/WdYKPZ+r+guim7c0Athy0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org; spf=pass smtp.mailfrom=cmpxchg.org; dkim=pass (2048-bit key) header.d=cmpxchg.org header.i=@cmpxchg.org header.b=cywIUXl1; arc=none smtp.client-ip=209.85.160.172
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cmpxchg.org
-Received: by mail-qk1-f181.google.com with SMTP id af79cd13be357-8b22b1d3e7fso2190185a.3
-        for <cgroups@vger.kernel.org>; Wed, 17 Dec 2025 14:34:50 -0800 (PST)
+Received: by mail-qt1-f172.google.com with SMTP id d75a77b69052e-4edb6e678ddso87093451cf.2
+        for <cgroups@vger.kernel.org>; Wed, 17 Dec 2025 14:36:32 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg.org; s=google; t=1766010890; x=1766615690; darn=vger.kernel.org;
+        d=cmpxchg.org; s=google; t=1766010991; x=1766615791; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=hvYaWzPPdrJtfkJUMIbw9W2hBZKRUblNNmvifflj8gA=;
-        b=oYkKwvSqSDYewZnA6hGdfwUU3B1uZ5kdOk9/rkO8pxW35IT3pZHnsd/UvbrzdoFJ4s
-         Kia0r63ROLj+O3E2JtlPdTbe2DkizjPKMNwRsVALj1B+q0vmnihIL0J880KiOGIItFlw
-         W/I/LJViZXfAXlKcAv5r9yugrINUF84hBs+8oZQJUB31SHYIGT+wv2ZlI6IBM3/VaTFd
-         mTiMGk6DdtvF0y+5E+9JDKkfBX7n5+hIKRfLss5bGqvlmbJoPERT/TUtZROld3WFZQa8
-         ZSVXRvkyZXOHV8xitsPqGy7sBnqxVW7VswqzQtgsZnzaSZ3ASOSJhKcKjSwX+FcDZkr7
-         WIcQ==
+        bh=kR/+xgf6Jhz+E5StwKcRK1JFVZohgr4tToC9Isegfuo=;
+        b=cywIUXl1d+0/ikwRqhwvJtnNsFXsCVQzp1s+Ab8De2GklVPa3KvBj0421B78pa4NEV
+         nZjAd51OxqyheOnHMineFg3nmqM8jQnyOT00Jksf1Eh9fJZYCB3Ley3MwkiI9S3YriZ/
+         //0GPu2pSORy+WaDv5NOIgc69l649t3ryWbdpR4ROmW6+JQFqp5fKrca28n1i8WduJrG
+         OPckdvp7ImGWK91rA72kOR5Nq39XUowhcGYo4OEyojKArPAlHQrBQaumCjcCX+VYdWvq
+         AEnUrMWDiXFzqPy1QuR/SMqEKucLwmCiIVzOnfH7Gm7qpJ/NRhSnkLsmPsmttuidxl3q
+         yH3w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1766010890; x=1766615690;
+        d=1e100.net; s=20230601; t=1766010991; x=1766615791;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=hvYaWzPPdrJtfkJUMIbw9W2hBZKRUblNNmvifflj8gA=;
-        b=qfVC+Kw1EOlOaRHBSnYLszo2Q1W0hUvFf34hz2VrN0KjKg5goo7LIAJGTQA+WmQQuU
-         wxLxHfY9FOYtVYORTVVDQNyQ5QeGeOGRtCP3a3+XeTmKtK9fSxPhE074L2tAs9rkzHTV
-         T88oom4rHvw5hzjEGTeDY4f3raMx6g4XGrH3mj6CSk/tTE/dKXpPQUjRNL7EnztQJf2Z
-         uNp9CMaI57ayI7Mj9SeYJ1CNedXxWQ+fY6soCEGP1BzabXP+y5iDIEGcuxH7DntphAB5
-         cBIAWF7ERmKFpOS/lStMeOGisSrk51TmZN/5mp+l+MG2FnkW7Loz6bOr/GM8WVlRdRSC
-         Nu8Q==
-X-Forwarded-Encrypted: i=1; AJvYcCV+05ExFcjffaboVKP/xUf9dy76lMMc3LZ9fb89Bva5eiBVR7zjLmV4zeKxNIxbQePdts+CUDXV@vger.kernel.org
-X-Gm-Message-State: AOJu0YxyJRgpGqU/mmc5+pyOLOJW7a7G7uhbHIbj5oj0Yw/9WwSquYAS
-	G5r6f/hiBZDYPTr7AiI75fUvSF2qDBQb8abJxMMNlWWdjSBiAbGtbIu0gJPRAiJuhjA=
-X-Gm-Gg: AY/fxX5HfQsE9TTRroYpXBgbBUWdJ1L8ApZfAT5/Z3/yuz4Q5DwFBvwxP9qar6Rl5MJ
-	tDc1MFe299IPIhQYHQtQXJQ3jKiLhtcdRIekRmlSGQjvQtFJqQ1mVcK4yT8vJKZ5rGY4b3nX+Z/
-	txRYBjI2aCbOjmfD1AKKCFrqCo8+vt3ZzFCF3It1NGve+CsBxtmUscz/Q3YU5rbF7c7X/JNeogt
-	Ao74o59ior5RBORT17uFt3wZ6gAFbfhBjqtU3G9fcLJBpTI3qJ8mbJd7Wnwx2+uO7LOa8Wg11M9
-	1xAZ+rCrLREjXEV8JWlbrYH4lWKQ7d3tX/noHWs9wxnR7sD8gBC9rwBY0Ri5sQVYlE40diolm5A
-	BL4BkTS3enAqoUTPOA68RI69+Qze0Jxbs/yg8AR9jDcdqDdljccaEsNlC1Lxkp7ffW/EZkIpl1D
-	HOvqM66BWl8g==
-X-Google-Smtp-Source: AGHT+IGZsFVv6Cr36BxWCjVhDYrl4CGTwr9tOLKn/N9bxObB1v/vFjg3HVjrFrIuNreEatCVr4E83Q==
-X-Received: by 2002:a05:620a:319f:b0:8b2:f145:7f28 with SMTP id af79cd13be357-8bb39dc4d2dmr2734359385a.33.1766010890047;
-        Wed, 17 Dec 2025 14:34:50 -0800 (PST)
+        bh=kR/+xgf6Jhz+E5StwKcRK1JFVZohgr4tToC9Isegfuo=;
+        b=e1ZRj1FUYvmLmsL+f+X9oczEi0l+HDqzmKa5FVMR7tae1TmZQ0sUaLROJLbwlp6eSJ
+         RFPjpbRJqo2bPGvmBSxWH5fMA4W2NcVKNOXeAjZgVWG0hIHfp42wGPVl89dimUBFvTnO
+         Hcgl0X207uiYReLcK2zhGE6Hc5klkAmgt2RPlHTWgXv2HAifa99tFlLyzk9ph5aFqZ5z
+         CrGWQ90pomL74hoNrbCjSxK98nQKJg+69xBlBolPYRWY8pqNJ/fQyDE31HabMFOpIP1R
+         JwVt3+5hQjlkVEYxWnQ2xTznOx+t2n51l8gO+gVxIG4SlGPmZMefK1nR6c8bk2s78zGn
+         Ckpw==
+X-Forwarded-Encrypted: i=1; AJvYcCVhSSmKkL+lGh65BgClWeStwrgiVk9QwK4gbh/ywRFaGUWrQffgG0Ffx4EWNPi//d5yqACls1XL@vger.kernel.org
+X-Gm-Message-State: AOJu0Yx0sVweQxKe82aMSKs3gOn2NYQzFxvw0qlQ0eNQypNy4D/WWp8q
+	zKGxIXSyblic3oy9HKeYKlb2WN/mdm0c9XMVTcB3KgtI+0OpO71tkZs1yv+Lm+6Oslc=
+X-Gm-Gg: AY/fxX6zYf3MXH4f8fPOHsBk9bdsnIfp7msU9J//mI4fwF0OCXfYB3UKXMwo2Jug1Ko
+	siQ4CQAQ5JmwEaxti/R/IgiCIi6nokXrtsQAi2lRKLkljwGv2oeIhXXKX4l2VOF41QpYRli+sZP
+	gfwEdCmiBS3F7U2FqqmYPk3npnJ8Al3rf7zCtOgJsWVWUgNFm32/FrAeWZ6fx0LKsOmLE/jwKsf
+	/tiO/cbbwwI7MYwfcUpGuyQcosi9Qn6cDI5OooaNPf+VFEUeevpwNbnsgQafRfMmLgrzgU/ePAU
+	S9k61bP3oPRUybVHplYjNoVt8W0leyLL8UNzaVmrD7Tleoy1yI2kxhXHK2kWP4bhk/+Rc67VxFm
+	0K5qmMhALmhyQUQETXVfD9p9GLiwDZ8FvMPq6aFEwHHEOXim62VHTtJTqJDhaJq1kpb5fzgvPpu
+	eooRMACma83g==
+X-Google-Smtp-Source: AGHT+IFEnoIqNTzn/beBrrTTMm5NCOBdf6XqjRvcyNax+rsawQ6zsZEDQLLD5Cw+412x47E2IhWIYQ==
+X-Received: by 2002:a05:622a:4d89:b0:4ec:ee2e:1c20 with SMTP id d75a77b69052e-4f1d05a9294mr251307421cf.47.1766010991640;
+        Wed, 17 Dec 2025 14:36:31 -0800 (PST)
 Received: from localhost ([2603:7000:c01:2716:929a:4aff:fe16:c778])
-        by smtp.gmail.com with ESMTPSA id af79cd13be357-8beeb5f2974sm39870385a.19.2025.12.17.14.34.48
+        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-88c5dc728afsm4765666d6.12.2025.12.17.14.36.30
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Dec 2025 14:34:49 -0800 (PST)
-Date: Wed, 17 Dec 2025 17:34:48 -0500
+        Wed, 17 Dec 2025 14:36:30 -0800 (PST)
+Date: Wed, 17 Dec 2025 17:36:30 -0500
 From: Johannes Weiner <hannes@cmpxchg.org>
 To: Qi Zheng <qi.zheng@linux.dev>
 Cc: hughd@google.com, mhocko@suse.com, roman.gushchin@linux.dev,
@@ -85,11 +85,11 @@ Cc: hughd@google.com, mhocko@suse.com, roman.gushchin@linux.dev,
 	linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
 	Muchun Song <songmuchun@bytedance.com>,
 	Qi Zheng <zhengqi.arch@bytedance.com>
-Subject: Re: [PATCH v2 21/28] mm: swap: prevent lruvec release in
- lru_gen_clear_refs()
-Message-ID: <aUMwCOj5aDo5Jmxh@cmpxchg.org>
+Subject: Re: [PATCH v2 22/28] mm: workingset: prevent lruvec release in
+ workingset_activation()
+Message-ID: <aUMwbhEN8WLvSNXb@cmpxchg.org>
 References: <cover.1765956025.git.zhengqi.arch@bytedance.com>
- <42682f81686e31019504a6e025fa08d2c9dea718.1765956026.git.zhengqi.arch@bytedance.com>
+ <195a8cb47b90e48cd1ec6cb93bc33a8e794847f6.1765956026.git.zhengqi.arch@bytedance.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -98,9 +98,9 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <42682f81686e31019504a6e025fa08d2c9dea718.1765956026.git.zhengqi.arch@bytedance.com>
+In-Reply-To: <195a8cb47b90e48cd1ec6cb93bc33a8e794847f6.1765956026.git.zhengqi.arch@bytedance.com>
 
-On Wed, Dec 17, 2025 at 03:27:45PM +0800, Qi Zheng wrote:
+On Wed, Dec 17, 2025 at 03:27:46PM +0800, Qi Zheng wrote:
 > From: Muchun Song <songmuchun@bytedance.com>
 > 
 > In the near future, a folio will no longer pin its corresponding
@@ -109,7 +109,7 @@ On Wed, Dec 17, 2025 at 03:27:45PM +0800, Qi Zheng wrote:
 > cgroup.
 > 
 > In the current patch, the rcu read lock is employed to safeguard
-> against the release of the lruvec in lru_gen_clear_refs().
+> against the release of the lruvec in workingset_activation().
 > 
 > This serves as a preparatory measure for the reparenting of the
 > LRU pages.
