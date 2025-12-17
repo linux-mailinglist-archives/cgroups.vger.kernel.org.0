@@ -1,121 +1,91 @@
-Return-Path: <cgroups+bounces-12431-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-12432-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id A356BCC8D20
-	for <lists+cgroups@lfdr.de>; Wed, 17 Dec 2025 17:39:56 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 484C3CC8D7D
+	for <lists+cgroups@lfdr.de>; Wed, 17 Dec 2025 17:45:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 6B10D30D9A96
-	for <lists+cgroups@lfdr.de>; Wed, 17 Dec 2025 16:30:10 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 4556A30AC3E5
+	for <lists+cgroups@lfdr.de>; Wed, 17 Dec 2025 16:31:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9508C350A22;
-	Wed, 17 Dec 2025 16:28:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E114C34E765;
+	Wed, 17 Dec 2025 16:28:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="UbGQDrg+"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="YSQRfYX4"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-wm1-f54.google.com (mail-wm1-f54.google.com [209.85.128.54])
+Received: from mail-wr1-f65.google.com (mail-wr1-f65.google.com [209.85.221.65])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 08CE41FA859
-	for <cgroups@vger.kernel.org>; Wed, 17 Dec 2025 16:28:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 76F0234EEEB
+	for <cgroups@vger.kernel.org>; Wed, 17 Dec 2025 16:28:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.65
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765988883; cv=none; b=uPb1dnCUMVF5gW6sYskYa4uOXzXCDafU8527mDfdbLu1Y8AbMtXPGOEwblshnOdnom1GyHZPvCrMOYpKO7WdnpZLY55MiirCsWqrR5XbhRwO687bLj1obWSFugs4l4/VhZz5rCyzfeLIGzkv+LucItUX7ZagSp2GvH/DS6gMtVU=
+	t=1765988885; cv=none; b=Wehg2AuOzKnjJG6O88XPn7E0lCINi2Ri5nqqFpQ7EXjWWE8o0mvrfyzjlGCDIJ0nPHixJ4busyCkIvpcIbl56rVwPlZctvglAY9KXdSHNsn3mtiw4MI9LRRUxjvp5siAF0TqbQj2xNWddzJDx8i9sA2X7IlYlKeAAv9/fevz/RE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765988883; c=relaxed/simple;
-	bh=0v6GiZwQmw10VgYg7XmvF5rjkeue5FWN8L2ipdtQVmk=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=c0KQKCrEqLWmNUsMmjDhoWuY/EEKMuIOXHbGYdNtWYfboQnq98d8SQqjf92PE/IUaFnoNry/Ydj48u+95rhNeL8vajy299aLZHv6aDd/6e9v35qzIItbXlEB9g7P8R6XQn8FPZADydIzjWELWmYPGEs90hfIjn+lb9JrPE5dxgs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=UbGQDrg+; arc=none smtp.client-ip=209.85.128.54
+	s=arc-20240116; t=1765988885; c=relaxed/simple;
+	bh=8N1NH3gvQgT8EJmKCkddKOj6r6h0v+SQdz9mI6/X5NU=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=GUjnLE8HzWuX4DuF1cy1V5BM0vS02AtMHY27ysXl9AFsiDgblmkqaUMyhtQO0BqrvvrZbVtWKg1FuYoiNPeO67jOZRL6dZSsZLj3djh1CBFUAao6Qe4yNo1bX11hrODVIsqfZrDLgyDH3p6x64cTxQyVGNkKqGMQTJ4YTvC6atY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=YSQRfYX4; arc=none smtp.client-ip=209.85.221.65
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-wm1-f54.google.com with SMTP id 5b1f17b1804b1-47a8195e515so49384075e9.0
-        for <cgroups@vger.kernel.org>; Wed, 17 Dec 2025 08:28:00 -0800 (PST)
+Received: by mail-wr1-f65.google.com with SMTP id ffacd0b85a97d-42e2d52c24dso3047262f8f.1
+        for <cgroups@vger.kernel.org>; Wed, 17 Dec 2025 08:28:03 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1765988879; x=1766593679; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=AUIBRQ1EfMgD4rZghNrrxsliWBknI9gTPJQu3bDLcJY=;
-        b=UbGQDrg+UUeEvVqqTzNHHL2CAtmr0I9eivMDfiPs4dvksQdkDU/B3/wR9FEybrFdHr
-         SgIjdbP6RwhsIXv5PHq85HSnQFzcXVHnTKEStgGDukUaTAYffZ4OOz6dtGN1coTVe9FO
-         Nehe2UuFXP6JgfANpbTmZK4g+WlyNCbIMgGcsLes3wNE3khOOdj7mNbWAcWsu+5PjlkQ
-         9+URkf7nYwCCb5XIlw3QHFKkzA9OnvR6QP/5eil33+qX9EZRYOuR4wlL5GM+Ay/sqnGv
-         Jr4mfbsJdqrdkWD6uyWFIOvjMcABh1LW7b5DWRBxnP5rg6R4V2AHdYMWnYBuIaRN+gLy
-         72sQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1765988879; x=1766593679;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+        d=suse.com; s=google; t=1765988881; x=1766593681; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=AUIBRQ1EfMgD4rZghNrrxsliWBknI9gTPJQu3bDLcJY=;
-        b=pEa226dDu6f8Pl0+aVB8GIXKlnMkzQUVjkuOA5JJtPlhkGcttVebxyq8jnsaUV6tOm
-         WfPg8/mDSxxneYZj76eLq1uY7jEIiiXm109sf4/Pgescu7zvwI1J4pZ3RUUGLc5iIEzc
-         TyvnrJUhNqRvR0beA38hAZWPGKdsNMe74FAS+sDC97sv/QjGE7qw3PU1ATPUBs8ea3Lp
-         nDVfU1EYChr7sX/okPT9xWyAethsHz3CLPZ2keAQG9VoRlhYYFV0htnJjAvJgetIfyxG
-         wyGuahNbs37nj2G/mY5RWo6Izb6dlkBDEX8V9qqF+safWk94wyMhV7V0Z6N1sPDC4+2U
-         zAYQ==
-X-Forwarded-Encrypted: i=1; AJvYcCV/+NloyrZpyfULnfg8hDEgZh2X3/wTu8Sh8y3XaHYBFWpNrfc+YjEfa6xgSq85G947g1fQmDLs@vger.kernel.org
-X-Gm-Message-State: AOJu0YyMCgqaCqVF9/YIC7+uFKPFutjOFOOB9Xn2iWO5dWZlYUyiw6iZ
-	eIljr/PWmPh5+HhaZxeu2fadPMovTRhnlfRYWdAZ64WbaFrj2G8uw1FEtSajx2vK9Xg=
-X-Gm-Gg: AY/fxX7clyFFSyCNMXDNeG0A4gFFnDBTgewL3YIyHJe3Zz+EXwdYmf/5WFjxG61c3Yh
-	KbqFoGmLygyaS/jDQTSSJ2Gval30y2Hl80Rtl89d+vxYZwV/zxNWeoGRVhC20ml/sAUYRy+VSpE
-	8br7dg/oMkLA2MWZn3JsoweO+Lj5FVIAhL5gg/wzJH56hIJpwSIyxrfF60biEiiXBOxcRD51/sZ
-	PqDW2826ZpQCcn/tCT6VXjU3VM7sr7SDIFeNMepG5hS2p1mQRuY930iMQlEyU/t3ofQij5F7fko
-	uzNtCLTNjpQxP1V8cMN/f3OmV4qIvf6sp2yGOFWS2BWnkxXA9BPLBPAE6Eg9idxJHk4wP50cwZk
-	9NZEIJMViU9X/tU1ExkSKPItZ9vuP3m1ugz3xc0pOglACq4Ett0RI9LBy3w9trv+xu8NeMsx+hz
-	GHRhNzD50OlXeX66yibZSxjOIQOLvZuPY=
-X-Google-Smtp-Source: AGHT+IHGmMOUEefQoO5S3en43Zsul1QO3grq/W53kRWnWoSN5JrVJ1XTvQBX4MbJYn1xXsNPaQdx7A==
-X-Received: by 2002:a05:600c:5298:b0:46e:1a5e:211 with SMTP id 5b1f17b1804b1-47bdf5f0e9dmr21345875e9.21.1765988879254;
-        Wed, 17 Dec 2025 08:27:59 -0800 (PST)
+        bh=miS4ss3MDPMSZCVnSoPtKejAYQtVb4qQrc+Jf4/2A6E=;
+        b=YSQRfYX43BQLOzgtpGn5en6mTceK+gUxvdgrUcw/54adk0PAT0twU1rfpNw+LkihDZ
+         xLF9+30DAM8bH9PAdRvaQomTw30Og8NBHsKo4o0ng1fvrxdoTV15+tWb2ZMv8rEFeW0S
+         m3JlE13pXes0pP7tyvbIQqgCZaZ/1qAPXlitL5An5t9knJKSaWg1zwoL+TDE3WuzfoV9
+         lJ8NoN8cnhdplXHsxGeLhWzRda+WKUKsqHrBke2Jbl9osrkKLdEuV4HAaE9millgRKS4
+         QsYkKhnT8PvCbnBwCnsrzgHRK76OHdWzkaFREPO1W7FtM7FnpHKKnCy69lOCcUvrxU1A
+         sTFA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1765988881; x=1766593681;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=miS4ss3MDPMSZCVnSoPtKejAYQtVb4qQrc+Jf4/2A6E=;
+        b=ta5eYgfZIwYpl5BLQgLnDBQgxYuiHwIuCdkmmbqrvh80A7kdsHHjSEQIoqRAbkAWgA
+         0xH2IIKEs0FmpSckqAWP7E2BNCnrgz6B0zhL4u1r20TLQMscfBZktDmOKJKGB/o1+Iyb
+         0+Np1vUIO7BgSKwxQCPuJ65KUdT61XkXqt/52uA4lLj/TU5ErHoQrwz5E7R8wNgHWIi2
+         twK+1y6YabFLPci5zH/esOq+WIDDr7Kv3vCGE11scAWfMvztoHm6RePEtHsk3hTbZxaI
+         dqZqswwVQzBKPL4q4dFb/iCe8jK3Nid80p6Wv20IiUe40RjhbBJKPElWlRDoRuX1CpHc
+         XNAA==
+X-Gm-Message-State: AOJu0YxchX195llMF4YuGe5lJoJZoF9t0IoJZmG2U1kMLwjYglZDkayZ
+	SSBvA7lxzrSuk+KEej4HzddSG+FJifoRg2t1gQ/UhOLbqkdqkyKLmlEHNEiAeoioEt9dDrQBrIt
+	L+chS
+X-Gm-Gg: AY/fxX5mr1JpSEKIIZM2IcYxYbje6d0J4Is2wxwXHHgKjWaWxrHWT+G0eIwjRNgPYwj
+	89VkL4j5nHI8hYqwaBGqktbOA1YwzmTx/CBmip7DkoFW1bTCkg/tR+mA+TDbBs8UxmnvGoh9oiq
+	k+8aHL8u3OFcqXgxdPAbTh895w8LZ0C6ScCu4/LHoMzFTE4I5hrKOuM2F8WuQDIpIBrONYsSD8i
+	KnYENKLd4B009VPXtCJTtxZ2gfzFKoHU/ukXhCEH4w6To60goSW1NyyQQWTw6z0lQAajLDLIiv6
+	04R7rF2RugCRQvImMHhA4Le+B1+Ps5I+vDbmHWoEGTC6hEfdBPPQFyMgegzhl/cUXb+BNtmYOtc
+	JKeTRbnhQAU2O+YL6V+L3vvgt7aQBwPg4sAZa58YJYYzDYKMCsDrbcACJXBs0UYs/NxTFwx75TL
+	SUrNc7DVetAcwiClD71b4jOkg7hTB0a9M=
+X-Google-Smtp-Source: AGHT+IHcvkh1m9sLAXyNB6eVc7R+7YZBCQwqFGtWv5JoMxfuEBVtQKc5wQlBYiBzOLEKXZOB0xl9aw==
+X-Received: by 2002:a05:6000:240d:b0:431:9b2:61dd with SMTP id ffacd0b85a97d-43109b2636cmr5805555f8f.38.1765988881299;
+        Wed, 17 Dec 2025 08:28:01 -0800 (PST)
 Received: from blackdock.suse.cz (nat2.prg.suse.com. [195.250.132.146])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-4310adeee0esm5728364f8f.29.2025.12.17.08.27.58
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-4310adeee0esm5728364f8f.29.2025.12.17.08.28.00
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Dec 2025 08:27:58 -0800 (PST)
+        Wed, 17 Dec 2025 08:28:00 -0800 (PST)
 From: =?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>
-To: linux-block@vger.kernel.org,
-	bpf@vger.kernel.org,
-	linux-trace-kernel@vger.kernel.org,
-	netfilter-devel@vger.kernel.org,
-	netdev@vger.kernel.org,
-	coreteam@netfilter.org,
-	linux-hardening@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	cgroups@vger.kernel.org
+To: cgroups@vger.kernel.org,
+	linux-kernel@vger.kernel.org
 Cc: =?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>,
-	Hao Luo <haoluo@google.com>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Alexei Starovoitov <ast@kernel.org>,
-	Phil Sutter <phil@nwl.cc>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	Jens Axboe <axboe@kernel.dk>,
-	Jozsef Kadlecsik <kadlec@netfilter.org>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	KP Singh <kpsingh@kernel.org>,
-	Eric Dumazet <edumazet@google.com>,
-	Florian Westphal <fw@strlen.de>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Stanislav Fomichev <sdf@fomichev.me>,
-	Song Liu <song@kernel.org>,
-	"David S. Miller" <davem@davemloft.net>,
-	Simon Horman <horms@kernel.org>,
-	John Fastabend <john.fastabend@gmail.com>,
-	Johannes Weiner <hannes@cmpxchg.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
+	"Gustavo A. R. Silva" <gustavo@embeddedor.com>,
+	David Laight <david.laight.linux@gmail.com>,
 	Tejun Heo <tj@kernel.org>,
-	Josef Bacik <josef@toxicpanda.com>,
-	Paolo Abeni <pabeni@redhat.com>,
-	"Gustavo A. R. Silva" <gustavoars@kernel.org>,
-	Pablo Neira Ayuso <pablo@netfilter.org>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Yu Kuai <yukuai@fnnas.com>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	Kees Cook <kees@kernel.org>,
-	Jakub Kicinski <kuba@kernel.org>
-Subject: [PATCH 0/4] Use __counted_by for ancestor arrays
-Date: Wed, 17 Dec 2025 17:27:32 +0100
-Message-ID: <20251217162744.352391-1-mkoutny@suse.com>
+	Johannes Weiner <hannes@cmpxchg.org>
+Subject: [PATCH 1/4] cgroup: Eliminate cgrp_ancestor_storage in cgroup_root
+Date: Wed, 17 Dec 2025 17:27:33 +0100
+Message-ID: <20251217162744.352391-2-mkoutny@suse.com>
 X-Mailer: git-send-email 2.52.0
+In-Reply-To: <20251217162744.352391-1-mkoutny@suse.com>
+References: <20251217162744.352391-1-mkoutny@suse.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -125,42 +95,99 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-The trick with utilizing space in cgroup_root for cgroup::ancetors flex
-array was an obstacle for kernel reworks for
--Wflex-array-member-not-at-end.
+The cgrp_ancestor_storage has two drawbacks:
+- it's not guaranteed that the member immediately follows struct cgrp in
+  cgroup_root (root cgroup's ancestors[0] might thus point to a padding
+  and not in cgrp_ancestor_storage proper),
+- this idiom raises warnings with -Wflex-array-member-not-at-end.
 
-The first patch fixes that, then I wanted to utilize __counted_by for
-this flex array which required some more rework how cgroup level is
-evaluated.
+Instead of relying on the auxiliary member in cgroup_root, define the
+0-th level ancestor inside struct cgroup (needed for static allocation
+of cgrp_dfl_root), deeper cgroups would allocate flexible
+_low_ancestors[].  Unionized alias through ancestors[] will
+transparently join the two ranges (ancestors is wrapped in a struct to
+avoid 'error: flexible array member in union').
 
-Similar flex array is also in struct ioc_gq where it was tempting to
-simply use __counted_by(level), however, this would be off-by-one as it
-has semantics like cgroup's level (0 == root).
-Proper adjustment for __counted_by() would either need similar
-level/ancestor helpers or abstracted macros for ancestors up/down
-iterations.
+The above change would still leave the flexible array at the end of
+struct cgroup, so move cgrp also towards the end of cgroup_root to
+resolve the -Wflex-array-member-not-at-end.
 
-I only made a simple comment fixup since I'm not sure about benefit of
-__counted_by for structs that aren't sized based on direct user input.
+Link: https://lore.kernel.org/r/5fb74444-2fbb-476e-b1bf-3f3e279d0ced@embeddedor.com/
+Reported-by: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Closes: https://lore.kernel.org/r/b3eb050d-9451-4b60-b06c-ace7dab57497@embeddedor.com/
+Cc: David Laight <david.laight.linux@gmail.com>
+Signed-off-by: Michal Koutný <mkoutny@suse.com>
+---
+ include/linux/cgroup-defs.h | 28 +++++++++++++++++-----------
+ kernel/cgroup/cgroup.c      |  2 +-
+ 2 files changed, 18 insertions(+), 12 deletions(-)
 
-Michal Koutný (4):
-  cgroup: Eliminate cgrp_ancestor_storage in cgroup_root
-  cgroup: Introduce cgroup_level() helper
-  cgroup: Use __counted_by for cgroup::ancestors
-  blk-iocost: Correct comment ioc_gq::level
-
- block/bfq-iosched.c           |  2 +-
- block/blk-iocost.c            |  6 ++---
- include/linux/cgroup-defs.h   | 43 +++++++++++++++++++----------------
- include/linux/cgroup.h        | 18 ++++++++++++---
- include/trace/events/cgroup.h |  8 +++----
- kernel/bpf/helpers.c          |  2 +-
- kernel/cgroup/cgroup.c        |  9 ++++----
- net/netfilter/nft_socket.c    |  2 +-
- 8 files changed, 53 insertions(+), 37 deletions(-)
-
-
-base-commit: 8f0b4cce4481fb22653697cced8d0d04027cb1e8
+diff --git a/include/linux/cgroup-defs.h b/include/linux/cgroup-defs.h
+index b760a3c470a56..9247e437da5ce 100644
+--- a/include/linux/cgroup-defs.h
++++ b/include/linux/cgroup-defs.h
+@@ -626,7 +626,16 @@ struct cgroup {
+ #endif
+ 
+ 	/* All ancestors including self */
+-	struct cgroup *ancestors[];
++	union {
++		struct {
++			void *_sentinel[0]; /* XXX to avoid 'flexible array member in a struct with no named members' */
++			struct cgroup *ancestors[];
++		};
++		struct {
++			struct cgroup *_root_ancestor;
++			struct cgroup *_low_ancestors[];
++		};
++	};
+ };
+ 
+ /*
+@@ -647,16 +656,6 @@ struct cgroup_root {
+ 	struct list_head root_list;
+ 	struct rcu_head rcu;	/* Must be near the top */
+ 
+-	/*
+-	 * The root cgroup. The containing cgroup_root will be destroyed on its
+-	 * release. cgrp->ancestors[0] will be used overflowing into the
+-	 * following field. cgrp_ancestor_storage must immediately follow.
+-	 */
+-	struct cgroup cgrp;
+-
+-	/* must follow cgrp for cgrp->ancestors[0], see above */
+-	struct cgroup *cgrp_ancestor_storage;
+-
+ 	/* Number of cgroups in the hierarchy, used only for /proc/cgroups */
+ 	atomic_t nr_cgrps;
+ 
+@@ -668,6 +667,13 @@ struct cgroup_root {
+ 
+ 	/* The name for this hierarchy - may be empty */
+ 	char name[MAX_CGROUP_ROOT_NAMELEN];
++
++	/*
++	 * The root cgroup. The containing cgroup_root will be destroyed on its
++	 * release. This must be embedded last due to flexible array at the end
++	 * of struct cgroup.
++	 */
++	struct cgroup cgrp;
+ };
+ 
+ /*
+diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
+index e717208cfb185..554a02ee298ba 100644
+--- a/kernel/cgroup/cgroup.c
++++ b/kernel/cgroup/cgroup.c
+@@ -5847,7 +5847,7 @@ static struct cgroup *cgroup_create(struct cgroup *parent, const char *name,
+ 	int ret;
+ 
+ 	/* allocate the cgroup and its ID, 0 is reserved for the root */
+-	cgrp = kzalloc(struct_size(cgrp, ancestors, (level + 1)), GFP_KERNEL);
++	cgrp = kzalloc(struct_size(cgrp, _low_ancestors, level), GFP_KERNEL);
+ 	if (!cgrp)
+ 		return ERR_PTR(-ENOMEM);
+ 
 -- 
 2.52.0
 
