@@ -1,208 +1,165 @@
-Return-Path: <cgroups+bounces-12426-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-12427-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4751ACC6C14
-	for <lists+cgroups@lfdr.de>; Wed, 17 Dec 2025 10:16:31 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id B424ACC6C30
+	for <lists+cgroups@lfdr.de>; Wed, 17 Dec 2025 10:17:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id C3E503051144
-	for <lists+cgroups@lfdr.de>; Wed, 17 Dec 2025 09:08:49 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 1527530F2811
+	for <lists+cgroups@lfdr.de>; Wed, 17 Dec 2025 09:11:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C171C331232;
-	Wed, 17 Dec 2025 09:08:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="vNtMBhb8";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="RLEi5ltn";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="ouloy7it";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="yruZhnva"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C7778280329;
+	Wed, 17 Dec 2025 09:10:30 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3AC4D33B979
-	for <cgroups@vger.kernel.org>; Wed, 17 Dec 2025 09:08:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 44C321E6DC5;
+	Wed, 17 Dec 2025 09:10:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=124.126.103.232
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765962528; cv=none; b=m91qXgabg2MKMEIdCzsX6QplxuC7t8Vkf0O0tl90mS2+lP1RCF0Eo/jxX7W5LHjd1Ei6Ux2RoP9IY8URLGOeLLLwlX15c0joPFBFvyKPCbC6v6KvAPlvCXoyHBTa21JFZogWL9JleQwkvbeuagJ5ccyLiklXpaA3laoslXgSLG8=
+	t=1765962630; cv=none; b=QhXAgCERkKLqvFa36w+DsAGgoFVCZmxpN9soWd8kAe4MMK/EYJu7pznl9LjyDwqky+0z+IYP7w1JYz9VObYvs7o6BIwtU0xNBN0BHobrctkrcHjp9XDVjHHoMOTgpqmesoZrkV9YVwrt4TNyJyCjyJPCBQyOLh14DJTFcaM+l9Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765962528; c=relaxed/simple;
-	bh=isu9y3NLPgRZYmA9fVKND9CB3s7DWU0jt1koEIDoL1Q=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=PjhCCwKmKVUlLS+h7rycdmP/VH2nypIZ+mids4bJq6J7sFtcnsJPmUygdulcUcA5egCgkpeD6ecWlXZ4ftH0OU7UXeorrAudf+Indig89jXpgqg25s9uciuhPZvheEL0hPzEDkrFdjSr+kNQZjRx2yenRosqLypt0QbCRUBSvaE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=vNtMBhb8; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=RLEi5ltn; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=ouloy7it; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=yruZhnva; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 0E10E336C7;
-	Wed, 17 Dec 2025 09:08:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1765962524; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=7xUSD3NVSUMMY86ve39obxcZQZV68mWQy0htU5+nkkA=;
-	b=vNtMBhb8JakSzLAl4z2d65neHE1Q6fzdAEZCLFZqAuNIj4PlOdo48+KmW8zgV88aEglP9z
-	rasI4L78ImWUk07uRx1+gN8+vuQ78n4ZYdDhkpi2nv3ZfBmg+HluIfphmD3YTRYVdKu4oK
-	rh6a2R9ld2c7vsnFJcNbKjPvboyLK+A=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1765962524;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=7xUSD3NVSUMMY86ve39obxcZQZV68mWQy0htU5+nkkA=;
-	b=RLEi5ltnjPu3N/A6Jm8i9JNLcBBkZoY3C7oA/k/wCxvd90boWk6hc2zLyLwroQCc2RkGO9
-	4mqqQKMSJgG9/fBw==
-Authentication-Results: smtp-out1.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1765962523; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=7xUSD3NVSUMMY86ve39obxcZQZV68mWQy0htU5+nkkA=;
-	b=ouloy7itfLqbeTSPCDeY/VXjBvp3x+rjq8HaAzQsxpMyNI+qsuyPWYF0c5j19xOe5WyA7d
-	iRZz8woLt1hEm2Rt0Tm67+pZh4I3msEtWf550MC96LQFd9NCIPUCZPN2w1em1FPlRXR1Rw
-	WMbLX4j6R8MRZsTTnU4928BiwH5LiU4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1765962523;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=7xUSD3NVSUMMY86ve39obxcZQZV68mWQy0htU5+nkkA=;
-	b=yruZhnvayZ9WYcztQ9wyXlW5aPlm/W5nOQ77mZ1IAnTAy39hLqiDCwpX6PyU8JQtu0jhRm
-	1AsoRIs8rwrDMWAA==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 9C3663EA65;
-	Wed, 17 Dec 2025 09:08:42 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id J4qtJRpzQmmtUgAAD6G6ig
-	(envelope-from <vbabka@suse.cz>); Wed, 17 Dec 2025 09:08:42 +0000
-Message-ID: <a3676b26-feca-474a-b09e-33986f53c998@suse.cz>
-Date: Wed, 17 Dec 2025 10:08:42 +0100
+	s=arc-20240116; t=1765962630; c=relaxed/simple;
+	bh=qvl2s/WfXStAyc5oWK7q8S8knivL6lAQyWdFo9dqnu0=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=ikAt6xpg1pTiYt3apuhhxwOvg0W0/3Mi9Ae+XkcHsTSooLrdBmcDuzF+nxW/0WzmHjRUYh+60i/Bm80dPmcFM93pspE5Qj8M2MvwkIgfd1KSjw06nNblPxx485wJr/Tq3Oim6iCMvSnB4n21zatnrJBowiD5KEmueK4QLBn6Ch8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn; spf=pass smtp.mailfrom=kylinos.cn; arc=none smtp.client-ip=124.126.103.232
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kylinos.cn
+X-UUID: 35ac91e6db2811f0a38c85956e01ac42-20251217
+X-CTIC-Tags:
+	HR_CC_COUNT, HR_CC_DOMAIN_COUNT, HR_CC_NO_NAME, HR_CTE_8B, HR_CTT_TXT
+	HR_DATE_H, HR_DATE_WKD, HR_DATE_ZONE, HR_FROM_NAME, HR_SJ_DIGIT_LEN
+	HR_SJ_LANG, HR_SJ_LEN, HR_SJ_LETTER, HR_SJ_NOR_SYM, HR_SJ_PHRASE
+	HR_SJ_PHRASE_LEN, HR_SJ_PRE_RE, HR_SJ_WS, HR_TO_COUNT, HR_TO_DOMAIN_COUNT
+	HR_TO_NO_NAME, IP_UNTRUSTED, SRC_UNTRUSTED, IP_UNFAMILIAR, SRC_UNFAMILIAR
+	DN_TRUSTED, SRC_TRUSTED, SA_TRUSTED, SA_EXISTED, SN_TRUSTED
+	SN_EXISTED, SPF_NOPASS, DKIM_NOPASS, DMARC_NOPASS, CIE_BAD
+	CIE_GOOD, CIE_GOOD_SPF, GTI_FG_BS, GTI_RG_INFO, GTI_C_BU
+	AMN_GOOD, ABX_MISS_RDNS
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.3.6,REQID:9649531c-7707-4c04-a7a2-9d90eee6663e,IP:10,U
+	RL:0,TC:0,Content:0,EDM:0,RT:0,SF:-5,FILE:0,BULK:0,RULE:Release_Ham,ACTION
+	:release,TS:5
+X-CID-INFO: VERSION:1.3.6,REQID:9649531c-7707-4c04-a7a2-9d90eee6663e,IP:10,URL
+	:0,TC:0,Content:0,EDM:0,RT:0,SF:-5,FILE:0,BULK:0,RULE:Release_Ham,ACTION:r
+	elease,TS:5
+X-CID-META: VersionHash:a9d874c,CLOUDID:c459e8b512f21403d802322b9ba122cb,BulkI
+	D:251217171021JN0GV8BQ,BulkQuantity:0,Recheck:0,SF:17|19|64|66|78|80|81|82
+	|83|102|127|841|850|898,TC:nil,Content:0|15|50,EDM:-3,IP:-2,URL:99|1,File:
+	nil,RT:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR
+	:0,DKP:0,BRR:0,BRE:0,ARC:0
+X-CID-BVR: 2,SSN|SDN
+X-CID-BAS: 2,SSN|SDN,0,_
+X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_FAS,TF_CID_SPAM_FSD,TF_CID_SPAM_ULS
+X-CID-RHF: D41D8CD98F00B204E9800998ECF8427E
+X-UUID: 35ac91e6db2811f0a38c85956e01ac42-20251217
+X-User: sunshaojie@kylinos.cn
+Received: from localhost.localdomain [(183.242.174.23)] by mailgw.kylinos.cn
+	(envelope-from <sunshaojie@kylinos.cn>)
+	(Generic MTA with TLSv1.3 TLS_AES_256_GCM_SHA384 256/256)
+	with ESMTP id 2056059356; Wed, 17 Dec 2025 17:10:19 +0800
+From: Sun Shaojie <sunshaojie@kylinos.cn>
+To: chenridong@huaweicloud.com
+Cc: cgroups@vger.kernel.org,
+	hannes@cmpxchg.org,
+	linux-kernel@vger.kernel.org,
+	linux-kselftest@vger.kernel.org,
+	llong@redhat.com,
+	mkoutny@suse.com,
+	shuah@kernel.org,
+	sunshaojie@kylinos.cn,
+	tj@kernel.org
+Subject: Re: [PATCH v5] cpuset: Avoid invalidating sibling partitions on cpuset.cpus conflict
+Date: Wed, 17 Dec 2025 17:09:51 +0800
+Message-Id: <20251217090951.1444326-1-sunshaojie@kylinos.cn>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <4ab8a086-4200-45c0-9583-abf6e52a354a@huaweicloud.com>
+References: <4ab8a086-4200-45c0-9583-abf6e52a354a@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] mm: memcg: fix unit conversion for K() macro in OOM log
-Content-Language: en-US
-To: Shakeel Butt <shakeel.butt@linux.dev>,
- Andrew Morton <akpm@linux-foundation.org>
-Cc: Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>,
- Roman Gushchin <roman.gushchin@linux.dev>,
- Muchun Song <muchun.song@linux.dev>, Meta kernel team
- <kernel-team@meta.com>, cgroups@vger.kernel.org, linux-mm@kvack.org,
- linux-kernel@vger.kernel.org, Chris Mason <clm@fb.com>
-References: <20251216212054.484079-1-shakeel.butt@linux.dev>
-From: Vlastimil Babka <vbabka@suse.cz>
-Autocrypt: addr=vbabka@suse.cz; keydata=
- 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
- m6M14QORSWTLRg==
-In-Reply-To: <20251216212054.484079-1-shakeel.butt@linux.dev>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Flag: NO
-X-Spam-Score: -4.26
-X-Spam-Level: 
-X-Spamd-Result: default: False [-4.26 / 50.00];
-	BAYES_HAM(-3.00)[99.99%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	NEURAL_HAM_SHORT(-0.16)[-0.802];
-	MIME_GOOD(-0.10)[text/plain];
-	FUZZY_RATELIMITED(0.00)[rspamd.com];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	ARC_NA(0.00)[];
-	RCPT_COUNT_SEVEN(0.00)[11];
-	MID_RHS_MATCH_FROM(0.00)[];
-	RCVD_TLS_ALL(0.00)[];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	FROM_HAS_DN(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	FROM_EQ_ENVFROM(0.00)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	TO_DN_SOME(0.00)[]
+Content-Transfer-Encoding: 8bit
 
-On 12/16/25 22:20, Shakeel Butt wrote:
-> The commit bc8e51c05ad5 ("mm: memcg: dump memcg protection info on oom
-> or alloc failures") added functionality to dump memcg protections on OOM
-> or allocation failures. It uses K() macro to dump the information and
-> passes bytes to the macro. However the macro take number of pages
-> instead of bytes. It is defined as:
-> 
->  #define K(x) ((x) << (PAGE_SHIFT-10))
-> 
-> Let's fix this.
-> 
-> Signed-off-by: Shakeel Butt <shakeel.butt@linux.dev>
-> Reported-by: Chris Mason <clm@fb.com>
-> Fixes: bc8e51c05ad5 ("mm: memcg: dump memcg protection info on oom or alloc failures")
+Hi, Ridong
 
-Acked-by: Vlastimil Babka <vbabka@suse.cz>
+On Sat, 13 Dec 2025 08:52:11 +0800, Chen Ridong wrote:
+>On 2025/12/1 17:44, Sun Shaojie wrote:
+>> Hi, Ridong,
+>> 
+>> On Thu, 27 Nov 2025 09:55:21, Chen Ridong wrote:
+>>> I have to admit that I prefer the current implementation.
+>>>
+>>> At the very least, it ensures that all partitions are treated fairly[1]. Relaxing this rule would
+>>> make it more difficult for users to understand why the cpuset.cpus they configured do not match the
+>>> effective CPUs in use, and why different operation orders yield different results.
+>> 
+>> As for "different operation orders yield different results", Below is an
+>> example that is not a corner case.
+>> 
+>>     root cgroup
+>>       /    \
+>>      A1    B1
+>> 
+>>  #1> echo "0" > A1/cpuset.cpus
+>>  #2> echo "0-1" > B1/cpuset.cpus.exclusive --> return error
+>> 
+>>  #1> echo "0-1" > B1/cpuset.cpus.exclusive
+>>  #2> echo "0" > A1/cpuset.cpus
+>> 
+>
+>You're looking at one rule, but there's another one—Longman pointed out that setting cpuset.cpu
+>should never fail.
 
-> ---
->  mm/memcontrol.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> index e2e49f4ec9e0..6f000f0e76d2 100644
-> --- a/mm/memcontrol.c
-> +++ b/mm/memcontrol.c
-> @@ -5638,6 +5638,6 @@ void mem_cgroup_show_protected_memory(struct mem_cgroup *memcg)
->  		memcg = root_mem_cgroup;
->  
->  	pr_warn("Memory cgroup min protection %lukB -- low protection %lukB",
-> -		K(atomic_long_read(&memcg->memory.children_min_usage)*PAGE_SIZE),
-> -		K(atomic_long_read(&memcg->memory.children_low_usage)*PAGE_SIZE));
-> +		K(atomic_long_read(&memcg->memory.children_min_usage)),
-> +		K(atomic_long_read(&memcg->memory.children_low_usage)));
->  }
+Precisely because I know that setting cpuset.cpus should never fail,
+I provided this example, which is why it demonstrates that "different
+operation orders yield different results."
 
+>>>
+>>> In another scenario, if we do not invalidate the siblings, new leaf cpusets (marked as member)
+>>> created under A1 will end up with empty effective CPUs—and this is not a desired behavior.
+>>>
+>>>   root cgroup
+>>>        |
+>>>       A1
+>>>      /  \
+>>>    A2    A3...
+>>>
+>>> #1> echo "0-1" > A1/cpuset.cpus
+>>> #2> echo "root" > A1/cpuset.cpus.partition
+>>> #3> echo "0-1" > A2/cpuset.cpus
+>>> #4> echo "root" > A2/cpuset.cpus.partition
+>>> mkdir A4
+>>> mkdir A5
+>>> echo "0" > A4/cpuset.cpus
+>>> echo $$ > A4/cgroup.procs
+>>> echo "1" > A5/cpuset.cpus
+>>> echo $$ > A5/cgroup.procs
+>>>
+>> 
+>> If A2...A5 all belong to the same user, and that user wants both A4 and A5 
+>> to have effective CPUs, then the user should also understand that A2 needs
+>> to be adjusted to "member" instead of "root".
+>> 
+>> if A2...A5 belong to different users, must satisfying user A4’s requirement
+>> come at the expense of user A2’s requirement? That is not fair.
+>> 
+>
+>Regarding cpuset usage with Docker: when binding CPUs at container startup, do you check the sibling
+>CPUs in use? Without this check, A2 will not be invalidated.
+>
+>Your patch has been discussed for a while. It seems to make the rules more complex.
+
+My aim is to safeguard the independence of sibling nodes while adhering to
+existing rules. I continuously update the patch to uphold these rules, as
+seen in the recently updated patch v6
+(https://lore.kernel.org/cgroups/20251201093806.107157-1-sunshaojie@kylinos.cn/).
+
+Thanks,
+Sun Shaojie
 
