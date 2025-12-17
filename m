@@ -1,135 +1,257 @@
-Return-Path: <cgroups+bounces-12442-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-12443-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id CB5BCCC9590
-	for <lists+cgroups@lfdr.de>; Wed, 17 Dec 2025 20:02:48 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 36DF8CC95AB
+	for <lists+cgroups@lfdr.de>; Wed, 17 Dec 2025 20:06:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id C21E93009F39
-	for <lists+cgroups@lfdr.de>; Wed, 17 Dec 2025 19:02:47 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 5EB6F3072E33
+	for <lists+cgroups@lfdr.de>; Wed, 17 Dec 2025 19:05:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E0D7328312D;
-	Wed, 17 Dec 2025 19:02:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CFB4C299A94;
+	Wed, 17 Dec 2025 19:05:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="Hdpj+mq7"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="h25EzEU9";
+	dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b="FIXlMzBk"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-ej1-f41.google.com (mail-ej1-f41.google.com [209.85.218.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9CD0526CE3F
-	for <cgroups@vger.kernel.org>; Wed, 17 Dec 2025 19:02:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2AEEF257852
+	for <cgroups@vger.kernel.org>; Wed, 17 Dec 2025 19:05:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765998164; cv=none; b=HNkxML1zg8Mb6lF791kDcomerJYJlRZdjyKDDRiLIEDodXoNbfYoyIqmp0XFc4iwdkobiuN09GBLi7Nah/J9x5cwRwJFP26RyK/0/Jl5ssXQ4jutPQZapxgIdmLGf7CXKCVvyYVHB0eEEG7/2CItnNWj/6Ffw2CNsdWhVvMprwM=
+	t=1765998346; cv=none; b=n7HVmxi6QgnbP0XMy/ysrWfIvNhA1KpfmiE6iG/3UOWuuiMw4xedQMI3L9IeN+lrtf7ZWdbRqWj7dLUpo9xp1pG5xDEd1sCl7v8B7q1aOujphAjCbcK1JbGSRSwnwhBsdA9u+8xPEyNvMFAEPWcmj+5mKHzdOXzHpyV6JnPhNbU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765998164; c=relaxed/simple;
-	bh=ioRMY7E5RbGxkWFGQhuvd5E46wuroq12yFc8qIrYi2g=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=M9FvdqTJw9m4u9zGMu6+wdr9XHdzveaGrAuUvY4RU4CH768nM/PX/xrbMJ4zSXAftK7Ze+AVpwBdSVl4vUt3ouuhapL1x5O3XUAMw/zUDpUldIEGXEL4VGTr+1ONX37iCf0aSOyJR75RNtqmfpPR9OU8TBTT3kVoNmORAGvM0Kg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=Hdpj+mq7; arc=none smtp.client-ip=209.85.218.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-ej1-f41.google.com with SMTP id a640c23a62f3a-b7355f6ef12so1193733966b.3
-        for <cgroups@vger.kernel.org>; Wed, 17 Dec 2025 11:02:42 -0800 (PST)
+	s=arc-20240116; t=1765998346; c=relaxed/simple;
+	bh=TV0rjjub+I25Xkm+hLsl+L4zaaLuFCM/LIHWruIf//E=;
+	h=From:Message-ID:Date:MIME-Version:Subject:To:Cc:References:
+	 In-Reply-To:Content-Type; b=PgykQiiCyLaPK+ER8NaKKl7wtqqdUI8tKgxr8uRmY//nKGOEeOldZHT6DUVarXOAK3XR59ild3KFBDnjD4vxJEWU0iPFMI4bI9kHPffzTnKQulGz/PzQlnqVRApGNFXM8oVrI4YV4jS5ciRRcvFYnSEMSxGs+dXC2aDigCaG1cY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=h25EzEU9; dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b=FIXlMzBk; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1765998343;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=OlTSEJRi7dCYSHQr/1YE2xBIR91vQs4bjEv3mQ6RJT4=;
+	b=h25EzEU9B2M+ND/4DY1NXh+xIuCKrt3fpQuKUdaiLdVPe9MMfEK5igLtczLj0f5a1Fa+6Q
+	pYf1Ns3sDe3Q/OINMbKtbDjO3neeTJV5v1FkC4RStsf4nA+YgVD5GJ6/ea/o72Ffl9t8IG
+	RSlY48ifjaITgFb5SUNStDojUBm8BbE=
+Received: from mail-qt1-f197.google.com (mail-qt1-f197.google.com
+ [209.85.160.197]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-607-ps4u6GyFPbCUVdBmFGXFXg-1; Wed, 17 Dec 2025 14:05:42 -0500
+X-MC-Unique: ps4u6GyFPbCUVdBmFGXFXg-1
+X-Mimecast-MFC-AGG-ID: ps4u6GyFPbCUVdBmFGXFXg_1765998341
+Received: by mail-qt1-f197.google.com with SMTP id d75a77b69052e-4edad69b4e8so20132041cf.1
+        for <cgroups@vger.kernel.org>; Wed, 17 Dec 2025 11:05:42 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1765998161; x=1766602961; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=ioRMY7E5RbGxkWFGQhuvd5E46wuroq12yFc8qIrYi2g=;
-        b=Hdpj+mq7s78K5KGIl//aCOfdRhU3PmRC0y29CG1XdylPIio6Fl/dkTTYusYSKSNRcd
-         t3snz+dbj0+aJxVcx45+7+VNgqeyp83HunYc8Bi9JduFDs6L8aAOa9oQ2Ymoada1GV5e
-         H95xJmLdWedra7mqUIWiHeX8rlF30qRwhaKtuyqK9k1S6Zm1iOgVLKoZbN4KrGzlG6EC
-         xh2Z3cs2avO/32fOMllIwip4tP0AeBdRSGvv7oqskSgHZrMROK0Hsyzu7wbofZ2EKxQ8
-         35K2esWbUyRhGO/u5X7VWRvusFOElA+Pmf+pnn5LNg5bE2E7h7CEBHnnbGofPukxw0Wp
-         HefQ==
+        d=redhat.com; s=google; t=1765998341; x=1766603141; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:content-language:references
+         :cc:to:subject:user-agent:mime-version:date:message-id:from:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=OlTSEJRi7dCYSHQr/1YE2xBIR91vQs4bjEv3mQ6RJT4=;
+        b=FIXlMzBkrfs6D3bwkXQ1t0cGXy4wXcfTUfJEWpmJcN+O5yASkOQedj9A0vWEExGvY2
+         r1GeAfxf5IIM46T5tJdfHY7Jhs0VtZfL1j0XPb27ZWELOKqOVy1OKbfLcfUmOnn/Mm9n
+         GFOj6gtSwvxkTtYoW+v4oiUjiyyu0DOZe5ROSfmhmLM7ChxHu99SzXJ/dO0JNY5XT+JK
+         mcGAZKPqtQWRFtjY4L46wxZ3YLzJq3MTfG/yz3PhYfy9rVth0ORyGIJR4pRfTS8uIbRC
+         NnAWHrKwFs3iP/TLSXY0OnjGdbRamK/57N3VQ5QB7Criim/j+xDvvK2GMQu0auifBMoJ
+         tiEg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1765998161; x=1766602961;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ioRMY7E5RbGxkWFGQhuvd5E46wuroq12yFc8qIrYi2g=;
-        b=KQlEb+kacBdPssadWE4In/yRRbDVvj/hdWNl5xmn9H4/ADgFxLCkx3NJo0rAIQWV84
-         fX2wkw/C+Z5Dw0Pw1gEB+6vckAm4Leo+QR1qQ5HPaDakDfTlN5Rz1Cxnms0//hDOAnnh
-         xlC8w0wKtBiCAS4WjEpT/2ahcWfodMvBtDwRyzFm/d9iIF66goaHiUYrj0VqlhTlsPNv
-         OOGln2CfsfFM3YuTexR64JDAlFqFDgF8ZiQK/HRQFEhBnLEdPT3pPouPekQ3QLVhXVkz
-         VRjH+eCzN6f6AsEKJRfXDSwnMX1rm+K0SV9uwvBxgMBF+DBTZTv4CTFVypLXlrZEjLyw
-         vptA==
-X-Gm-Message-State: AOJu0Yxcayjrd12lUwfCRYyUturblVhcgFfWGRGwdm2o0ioxc6SN60KR
-	/t9ERJsc4X/5aXVu/FpQ3ayK3dBZ9l2Yf53JSYlCGhzuMaPCyQM+3xRgzlf98VoQn48=
-X-Gm-Gg: AY/fxX6w94pQz0hTS2pf2i5i49TVbNCD+40gunjNbwWHMPP1VsxoN3YLDZH1I45gpbb
-	Lpk8GyLWsADoLINbHitXsYrn4CmUa4MmDnhumuzc9RyqyQM4UOA9QYzWq0ls+suCjOQxoYOJjLU
-	NHEAWHyFZloe/stbLgCh7osYEI3C5/d+qflzzwqvY5FKBugE+87bqRyN2f2louM3RA1Mairk6vO
-	DgLyL+8K7weQV45EkffeyHWURxF/KgoTyxgqeHSClEaXGd6Ba9VGROlDrgXlHKpnTHDj5aU61fg
-	UBlGuy4atnABuYDJ3prgwaO1WVMzfRGAc0hiSjrS9xaoL7Y4xBcdRKP7n9xtJ0rtmwixJJI3RH+
-	J1YoucJ4Oca3adA89Oh76lxpzePcc80KOVutr29xvyPhTQHAd4c5J8jN1akE2CKkfeNcn/A0/QQ
-	phxg==
-X-Google-Smtp-Source: AGHT+IE+H6U9g+bxlFfZOH3RW+nxi5NOuoDQRCzFkGA8h6dP85Lef0stKzOXNmQ2/6VOXFHJ05uipA==
-X-Received: by 2002:a17:907:94c4:b0:b72:5e2c:9e97 with SMTP id a640c23a62f3a-b7d23c1b851mr1902966766b.36.1765998160748;
-        Wed, 17 Dec 2025 11:02:40 -0800 (PST)
-Received: from blackbook2 ([84.19.86.74])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-b8020c0d40fsm23827966b.49.2025.12.17.11.02.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Dec 2025 11:02:40 -0800 (PST)
-Date: Wed, 17 Dec 2025 20:02:37 +0100
-From: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
-To: Tejun Heo <tj@kernel.org>
-Cc: cgroups@vger.kernel.org, linux-block@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org, 
-	"Gustavo A. R. Silva" <gustavo@embeddedor.com>, Josef Bacik <josef@toxicpanda.com>, Jens Axboe <axboe@kernel.dk>, 
-	Kees Cook <kees@kernel.org>, "Gustavo A. R. Silva" <gustavoars@kernel.org>
-Subject: Re: [PATCH 4/4] blk-iocost: Correct comment ioc_gq::level
-Message-ID: <hqryjrdf4mfcpsfa46hptj6j7ygkjrcahb5tdsa73nxrlngffx@2l6cs5cefi45>
-References: <20251217162744.352391-1-mkoutny@suse.com>
- <20251217162744.352391-5-mkoutny@suse.com>
- <aULg4f_nxLTbXvMh@slm.duckdns.org>
+        d=1e100.net; s=20230601; t=1765998341; x=1766603141;
+        h=content-transfer-encoding:in-reply-to:content-language:references
+         :cc:to:subject:user-agent:mime-version:date:message-id:from:x-gm-gg
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=OlTSEJRi7dCYSHQr/1YE2xBIR91vQs4bjEv3mQ6RJT4=;
+        b=q6/JE3QJ0b4xyHCi6djkULct/+N6B2r98YB3KGCjCdPti8qDQQa9kGM0arbohQVK2i
+         3dJ20pU/ygNm3WvM+fH9Xn0vpZWbRaK/yOjv5eN/iETKSjhJ0gKEYcQ8+deDpm16oqUx
+         J7yOkLZyxqq2TniP6lAfI2Q2zqmv0ebrldZ6e9T0VR6Ha22/gd+n8CX22Xw2f4kLhdBn
+         AxYN5IVoUs5++SjBBm4pX3GGOGErmhZ/bjTNvgp55xdo3Xepfv8yRDc2xciMraEKN5Ae
+         LQO2AHHfBiJLPOCP9tl0Sx4q6TxfJ3qus+lywsy7utW87QDUhG8bUujYgYRFHe/eZYNv
+         pdWw==
+X-Gm-Message-State: AOJu0YwFWcM2A9HF3iEowfJu4j502IHpjxj00nOeJhSVzL0NpjLewN4a
+	z5kZLq59hFpUhVw5ZLNElVo5cmQz8mPZ8ndmAPKtAzkxq1RkH3PZydW6v3ypNY2CFtq9cFBlQN/
+	o9Pr+nnl6Wa2uXL7uelv7h5HiA9RWethmj7KTZNxCSvtRXeSLfvBzsowiWPQ=
+X-Gm-Gg: AY/fxX46fMSuHWE8s71d4YQRYwsq4IjoFv6qgBvlo0pxqMS8DOhz2Z5sN9heZW78yOv
+	zcPZzRvIiMNJkz9VihCdBKekJWPlbMga86qQsKz6DXIHa4hMx7uRJEK9evbSI3t1YoMBWi4t+Pp
+	K6IM/GVY8Kpqm8sxDUsl2LI9p+n7URW0R1n6brryRz/woe8VXravYQCGxnPdxRuE/z1RMm3npjZ
+	pzmE6j71MIKsLQd3/zJTwxuNByoSenAMt6kfTklK6b9KCKE+QpeYmbK6xcCjSfawwVDCGdXyvUL
+	SNUS+wSPw38X1rOZ0JlAV4ELD1XfTl6a/3+YP6SoPaoGGD4T1w1CMW1+AGUAoGxDgu3MBzUwM3Q
+	BFYYi3Q4SCrFIV0x1lClGmAfXSX5IUo/VfWq+ewvHFJ09PhOg4GcX+Ybb
+X-Received: by 2002:a05:622a:7c92:b0:4f1:de87:ad90 with SMTP id d75a77b69052e-4f35f654617mr4551761cf.4.1765998341228;
+        Wed, 17 Dec 2025 11:05:41 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IFQznSQisiUUcnVgm/CLrf2yKzdEiJf0C9rsNCIn1mJpUe3j12gru2r09NEUmy+pEcn/BbE/Q==
+X-Received: by 2002:a05:622a:7c92:b0:4f1:de87:ad90 with SMTP id d75a77b69052e-4f35f654617mr4551331cf.4.1765998340650;
+        Wed, 17 Dec 2025 11:05:40 -0800 (PST)
+Received: from ?IPV6:2601:188:c102:b180:1f8b:71d0:77b1:1f6e? ([2601:188:c102:b180:1f8b:71d0:77b1:1f6e])
+        by smtp.gmail.com with ESMTPSA id d75a77b69052e-4f35fd83984sm657231cf.24.2025.12.17.11.05.39
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 17 Dec 2025 11:05:40 -0800 (PST)
+From: Waiman Long <llong@redhat.com>
+X-Google-Original-From: Waiman Long <longman@redhat.com>
+Message-ID: <47029555-aba6-4d85-ace3-0580ec606e5d@redhat.com>
+Date: Wed, 17 Dec 2025 14:05:39 -0500
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="vblk75m2hqwjzgdg"
-Content-Disposition: inline
-In-Reply-To: <aULg4f_nxLTbXvMh@slm.duckdns.org>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH -next 6/6] cpuset: remove v1-specific code from
+ generate_sched_domains
+To: Chen Ridong <chenridong@huaweicloud.com>, tj@kernel.org,
+ hannes@cmpxchg.org, mkoutny@suse.com
+Cc: cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+ lujialin4@huawei.com
+References: <20251217084942.2666405-1-chenridong@huaweicloud.com>
+ <20251217084942.2666405-7-chenridong@huaweicloud.com>
+Content-Language: en-US
+In-Reply-To: <20251217084942.2666405-7-chenridong@huaweicloud.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
+On 12/17/25 3:49 AM, Chen Ridong wrote:
+> From: Chen Ridong <chenridong@huawei.com>
+>
+> Following the introduction of cpuset1_generate_sched_domains() for v1
+> in the previous patch, v1-specific logic can now be removed from the
+> generic generate_sched_domains(). This patch cleans up the v1-only
+> code and ensures uf_node is only visible when CONFIG_CPUSETS_V1=y.
+>
+> Signed-off-by: Chen Ridong <chenridong@huawei.com>
+> ---
+>   kernel/cgroup/cpuset-internal.h |  10 +--
+>   kernel/cgroup/cpuset-v1.c       |   2 +-
+>   kernel/cgroup/cpuset.c          | 144 +++++---------------------------
+>   3 files changed, 27 insertions(+), 129 deletions(-)
+>
+> diff --git a/kernel/cgroup/cpuset-internal.h b/kernel/cgroup/cpuset-internal.h
+> index bd767f8cb0ed..ef7b7c5afd4c 100644
+> --- a/kernel/cgroup/cpuset-internal.h
+> +++ b/kernel/cgroup/cpuset-internal.h
+> @@ -175,14 +175,14 @@ struct cpuset {
+>   	/* Handle for cpuset.cpus.partition */
+>   	struct cgroup_file partition_file;
+>   
+> -	/* Used to merge intersecting subsets for generate_sched_domains */
+> -	struct uf_node node;
+> -
+>   #ifdef CONFIG_CPUSETS_V1
+>   	struct fmeter fmeter;		/* memory_pressure filter */
+>   
+>   	/* for custom sched domain */
+>   	int relax_domain_level;
+> +
+> +	/* Used to merge intersecting subsets for generate_sched_domains */
+> +	struct uf_node node;
+>   #endif
+>   };
+>   
+> @@ -315,8 +315,6 @@ void cpuset1_hotplug_update_tasks(struct cpuset *cs,
+>   int cpuset1_validate_change(struct cpuset *cur, struct cpuset *trial);
+>   void cpuset1_init(struct cpuset *cs);
+>   void cpuset1_online_css(struct cgroup_subsys_state *css);
+> -void update_domain_attr_tree(struct sched_domain_attr *dattr,
+> -				    struct cpuset *root_cs);
+>   int cpuset1_generate_sched_domains(cpumask_var_t **domains,
+>   			struct sched_domain_attr **attributes);
+>   
+> @@ -331,8 +329,6 @@ static inline int cpuset1_validate_change(struct cpuset *cur,
+>   				struct cpuset *trial) { return 0; }
+>   static inline void cpuset1_init(struct cpuset *cs) {}
+>   static inline void cpuset1_online_css(struct cgroup_subsys_state *css) {}
+> -static inline void update_domain_attr_tree(struct sched_domain_attr *dattr,
+> -				    struct cpuset *root_cs) {}
+>   static inline int cpuset1_generate_sched_domains(cpumask_var_t **domains,
+>   			struct sched_domain_attr **attributes) { return 0; };
+>   
+> diff --git a/kernel/cgroup/cpuset-v1.c b/kernel/cgroup/cpuset-v1.c
+> index 5c0bded46a7c..0226350e704f 100644
+> --- a/kernel/cgroup/cpuset-v1.c
+> +++ b/kernel/cgroup/cpuset-v1.c
+> @@ -560,7 +560,7 @@ update_domain_attr(struct sched_domain_attr *dattr, struct cpuset *c)
+>   		dattr->relax_domain_level = c->relax_domain_level;
+>   }
+>   
+> -void update_domain_attr_tree(struct sched_domain_attr *dattr,
+> +static void update_domain_attr_tree(struct sched_domain_attr *dattr,
+>   				    struct cpuset *root_cs)
+>   {
+>   	struct cpuset *cp;
+> diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
+> index 6bb0b201c34b..3e3468d928f3 100644
+> --- a/kernel/cgroup/cpuset.c
+> +++ b/kernel/cgroup/cpuset.c
+> @@ -789,18 +789,13 @@ static int generate_sched_domains(cpumask_var_t **domains,
+>   {
+>   	struct cpuset *cp;	/* top-down scan of cpusets */
+>   	struct cpuset **csa;	/* array of all cpuset ptrs */
+> -	int csn;		/* how many cpuset ptrs in csa so far */
+>   	int i, j;		/* indices for partition finding loops */
+>   	cpumask_var_t *doms;	/* resulting partition; i.e. sched domains */
+>   	struct sched_domain_attr *dattr;  /* attributes for custom domains */
+>   	int ndoms = 0;		/* number of sched domains in result */
+> -	int nslot;		/* next empty doms[] struct cpumask slot */
+>   	struct cgroup_subsys_state *pos_css;
+> -	bool root_load_balance = is_sched_load_balance(&top_cpuset);
+> -	bool cgrpv2 = cpuset_v2();
+> -	int nslot_update;
+>   
+> -	if (!cgrpv2)
+> +	if (!cpuset_v2())
+>   		return cpuset1_generate_sched_domains(domains, attributes);
+>   
+>   	doms = NULL;
+> @@ -808,70 +803,25 @@ static int generate_sched_domains(cpumask_var_t **domains,
+>   	csa = NULL;
+>   
+>   	/* Special case for the 99% of systems with one, full, sched domain */
+> -	if (root_load_balance && cpumask_empty(subpartitions_cpus)) {
+> -single_root_domain:
+> +	if (cpumask_empty(subpartitions_cpus)) {
+>   		ndoms = 1;
+> -		doms = alloc_sched_domains(ndoms);
+> -		if (!doms)
+> -			goto done;
+> -
+> -		dattr = kmalloc(sizeof(struct sched_domain_attr), GFP_KERNEL);
+> -		if (dattr) {
+> -			*dattr = SD_ATTR_INIT;
+> -			update_domain_attr_tree(dattr, &top_cpuset);
+> -		}
+> -		cpumask_and(doms[0], top_cpuset.effective_cpus,
+> -			    housekeeping_cpumask(HK_TYPE_DOMAIN));
+> -
+> -		goto done;
+> +		goto generate_doms;
 
---vblk75m2hqwjzgdg
-Content-Type: text/plain; protected-headers=v1; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-Subject: Re: [PATCH 4/4] blk-iocost: Correct comment ioc_gq::level
-MIME-Version: 1.0
+That is not correct. The code under the generate_doms label will need to 
+access csa[0] which is not allocated yet and may cause panic. You either 
+need to keep the current code or move it after the csa allocation and 
+assign top_cpuset to csa[0].
 
-On Wed, Dec 17, 2025 at 06:57:05AM -1000, Tejun Heo <tj@kernel.org> wrote:
-> On Wed, Dec 17, 2025 at 05:27:36PM +0100, Michal Koutn=FD wrote:
-> > This comment is simpler than reworking level users for possible
-> > ioc_gq::ancestors __counted_by annotation.
->=20
-> I don't understand the change here. Can you please elaborate a bit more?
+>   	}
+>   
+>   	csa = kmalloc_array(nr_cpusets(), sizeof(cp), GFP_KERNEL);
+>   	if (!csa)
+>   		goto done;
+> -	csn = 0;
+>   
+> +	/* Find how many partitions and cache them to csa[] */
+>   	rcu_read_lock();
+> -	if (root_load_balance)
+> -		csa[csn++] = &top_cpuset;
+>   	cpuset_for_each_descendant_pre(cp, pos_css, &top_cpuset) {
 
-ioc_gq::ancestors includes self but ioc_gq::level doesn't count it in
-(level=3D0 is root, that's like cgroup's level, from which it's copied in
-ioc_pd_init()). Therefore ioc_gq::level cannot be used as size hint of
-the ancestors array :-/ (The comment in the original form tempted to
-simply use __counted_by(level). I see a comment for each member would be
-the clearest.)
+The cpuset_for_each_descendant_pre() macro will visit the root 
+(top_cpuset) first and so it should be OK to remove the above 2 lines of 
+code.
 
-I'm open to more remarks or questions.
+Cheers,
+Longman
 
-Michal
-
---vblk75m2hqwjzgdg
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iJEEABYKADkWIQRCE24Fn/AcRjnLivR+PQLnlNv4CAUCaUL+SxsUgAAAAAAEAA5t
-YW51MiwyLjUrMS4xMSwyLDIACgkQfj0C55Tb+AgW/wD8CddgVSxey23Qt5ED638i
-lD/tTf0uWiVaRFTzwDwf/D0BAM7SnPN0437Gak1dppG6RH7Wlkxsu1F2lDC7R34h
-JkUG
-=BxIi
------END PGP SIGNATURE-----
-
---vblk75m2hqwjzgdg--
 
