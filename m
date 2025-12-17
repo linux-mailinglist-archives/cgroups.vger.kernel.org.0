@@ -1,88 +1,119 @@
-Return-Path: <cgroups+bounces-12432-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-12433-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 484C3CC8D7D
-	for <lists+cgroups@lfdr.de>; Wed, 17 Dec 2025 17:45:25 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id B9577CC8D23
+	for <lists+cgroups@lfdr.de>; Wed, 17 Dec 2025 17:40:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 4556A30AC3E5
-	for <lists+cgroups@lfdr.de>; Wed, 17 Dec 2025 16:31:11 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 0198C3085CA1
+	for <lists+cgroups@lfdr.de>; Wed, 17 Dec 2025 16:31:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E114C34E765;
-	Wed, 17 Dec 2025 16:28:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 179BE3557F4;
+	Wed, 17 Dec 2025 16:28:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="YSQRfYX4"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="g0nSmNmP"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-wr1-f65.google.com (mail-wr1-f65.google.com [209.85.221.65])
+Received: from mail-wr1-f41.google.com (mail-wr1-f41.google.com [209.85.221.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 76F0234EEEB
-	for <cgroups@vger.kernel.org>; Wed, 17 Dec 2025 16:28:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.65
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C7D693557F7
+	for <cgroups@vger.kernel.org>; Wed, 17 Dec 2025 16:28:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765988885; cv=none; b=Wehg2AuOzKnjJG6O88XPn7E0lCINi2Ri5nqqFpQ7EXjWWE8o0mvrfyzjlGCDIJ0nPHixJ4busyCkIvpcIbl56rVwPlZctvglAY9KXdSHNsn3mtiw4MI9LRRUxjvp5siAF0TqbQj2xNWddzJDx8i9sA2X7IlYlKeAAv9/fevz/RE=
+	t=1765988888; cv=none; b=NOwusIbmtKdY4AkldZT5JEy2YbRUTt/vOCSUBtzmM6/W1FSL4aMzB1uUYE8EiNftUaIE2KZhfL2bHPu17DHDRucQ1JLeiK9OVsYIXjJ4sYmF3y4FZgk/Bo5ugNiGHCTREmLf8U7w2xjkk8SkgSf+hZuLb3twi1gFBvWRF/f1VhU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765988885; c=relaxed/simple;
-	bh=8N1NH3gvQgT8EJmKCkddKOj6r6h0v+SQdz9mI6/X5NU=;
+	s=arc-20240116; t=1765988888; c=relaxed/simple;
+	bh=jqBZIn02NWMcecKP606Y1uEX4V9j1/cIbAV2uLmFwFc=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=GUjnLE8HzWuX4DuF1cy1V5BM0vS02AtMHY27ysXl9AFsiDgblmkqaUMyhtQO0BqrvvrZbVtWKg1FuYoiNPeO67jOZRL6dZSsZLj3djh1CBFUAao6Qe4yNo1bX11hrODVIsqfZrDLgyDH3p6x64cTxQyVGNkKqGMQTJ4YTvC6atY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=YSQRfYX4; arc=none smtp.client-ip=209.85.221.65
+	 MIME-Version:Content-Type; b=FTaw8Vlb1uzKyEIu0AVjxXN0cLM0akCPreh4qSTnNwRnm7u7cH525MxoSTIzfCPqwULn/NUlMRbpudYFNQ055j/Od8+CXpYYR5/OTwhGavECnlynfw+4HdVmFeidcG0IWCFOxedCUS1kRSQU+YxjDl4Lj5mGv7+vHU0Z2qiNOTk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=g0nSmNmP; arc=none smtp.client-ip=209.85.221.41
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-wr1-f65.google.com with SMTP id ffacd0b85a97d-42e2d52c24dso3047262f8f.1
-        for <cgroups@vger.kernel.org>; Wed, 17 Dec 2025 08:28:03 -0800 (PST)
+Received: by mail-wr1-f41.google.com with SMTP id ffacd0b85a97d-430f5ecaa08so2075817f8f.3
+        for <cgroups@vger.kernel.org>; Wed, 17 Dec 2025 08:28:05 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1765988881; x=1766593681; darn=vger.kernel.org;
+        d=suse.com; s=google; t=1765988884; x=1766593684; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=miS4ss3MDPMSZCVnSoPtKejAYQtVb4qQrc+Jf4/2A6E=;
-        b=YSQRfYX43BQLOzgtpGn5en6mTceK+gUxvdgrUcw/54adk0PAT0twU1rfpNw+LkihDZ
-         xLF9+30DAM8bH9PAdRvaQomTw30Og8NBHsKo4o0ng1fvrxdoTV15+tWb2ZMv8rEFeW0S
-         m3JlE13pXes0pP7tyvbIQqgCZaZ/1qAPXlitL5An5t9knJKSaWg1zwoL+TDE3WuzfoV9
-         lJ8NoN8cnhdplXHsxGeLhWzRda+WKUKsqHrBke2Jbl9osrkKLdEuV4HAaE9millgRKS4
-         QsYkKhnT8PvCbnBwCnsrzgHRK76OHdWzkaFREPO1W7FtM7FnpHKKnCy69lOCcUvrxU1A
-         sTFA==
+        bh=D5p3p8kAejxs1YQJhv0WnbRr/UVt3w2bGs3E+oMVl6E=;
+        b=g0nSmNmPe0I1hSFsbHvi4tSbETWwrYGb7BvgFGNOZA6f9X+Eq/sAZkF7l8espN3o9L
+         TjHpmufh5VcGptfW1SM5uHG5sa60ZQdS3yiJOmn4Xygh5wvlq6s0oyQZRcVr8tPEXHWe
+         klSU8aGYAEe9BWAP180QufjkwUmjvyZJd65JZ4yx0EoJvlMWHhwEFHhMSESVX70hR8SR
+         j71mbpBqvQNiMcvMaEvtvlixYYrYdnq3gY/o8gyjVBErEAyl8zemnGymBzo/v7SDMy42
+         KY75AkOJgM5pzvBARcfyRRswG6D0wwyrgNMTun2Yp4qdS8mgCHwchnJjdsAyx1fN5ALe
+         eElA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1765988881; x=1766593681;
+        d=1e100.net; s=20230601; t=1765988884; x=1766593684;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=miS4ss3MDPMSZCVnSoPtKejAYQtVb4qQrc+Jf4/2A6E=;
-        b=ta5eYgfZIwYpl5BLQgLnDBQgxYuiHwIuCdkmmbqrvh80A7kdsHHjSEQIoqRAbkAWgA
-         0xH2IIKEs0FmpSckqAWP7E2BNCnrgz6B0zhL4u1r20TLQMscfBZktDmOKJKGB/o1+Iyb
-         0+Np1vUIO7BgSKwxQCPuJ65KUdT61XkXqt/52uA4lLj/TU5ErHoQrwz5E7R8wNgHWIi2
-         twK+1y6YabFLPci5zH/esOq+WIDDr7Kv3vCGE11scAWfMvztoHm6RePEtHsk3hTbZxaI
-         dqZqswwVQzBKPL4q4dFb/iCe8jK3Nid80p6Wv20IiUe40RjhbBJKPElWlRDoRuX1CpHc
-         XNAA==
-X-Gm-Message-State: AOJu0YxchX195llMF4YuGe5lJoJZoF9t0IoJZmG2U1kMLwjYglZDkayZ
-	SSBvA7lxzrSuk+KEej4HzddSG+FJifoRg2t1gQ/UhOLbqkdqkyKLmlEHNEiAeoioEt9dDrQBrIt
-	L+chS
-X-Gm-Gg: AY/fxX5mr1JpSEKIIZM2IcYxYbje6d0J4Is2wxwXHHgKjWaWxrHWT+G0eIwjRNgPYwj
-	89VkL4j5nHI8hYqwaBGqktbOA1YwzmTx/CBmip7DkoFW1bTCkg/tR+mA+TDbBs8UxmnvGoh9oiq
-	k+8aHL8u3OFcqXgxdPAbTh895w8LZ0C6ScCu4/LHoMzFTE4I5hrKOuM2F8WuQDIpIBrONYsSD8i
-	KnYENKLd4B009VPXtCJTtxZ2gfzFKoHU/ukXhCEH4w6To60goSW1NyyQQWTw6z0lQAajLDLIiv6
-	04R7rF2RugCRQvImMHhA4Le+B1+Ps5I+vDbmHWoEGTC6hEfdBPPQFyMgegzhl/cUXb+BNtmYOtc
-	JKeTRbnhQAU2O+YL6V+L3vvgt7aQBwPg4sAZa58YJYYzDYKMCsDrbcACJXBs0UYs/NxTFwx75TL
-	SUrNc7DVetAcwiClD71b4jOkg7hTB0a9M=
-X-Google-Smtp-Source: AGHT+IHcvkh1m9sLAXyNB6eVc7R+7YZBCQwqFGtWv5JoMxfuEBVtQKc5wQlBYiBzOLEKXZOB0xl9aw==
-X-Received: by 2002:a05:6000:240d:b0:431:9b2:61dd with SMTP id ffacd0b85a97d-43109b2636cmr5805555f8f.38.1765988881299;
-        Wed, 17 Dec 2025 08:28:01 -0800 (PST)
+        bh=D5p3p8kAejxs1YQJhv0WnbRr/UVt3w2bGs3E+oMVl6E=;
+        b=BhQqfmTBs7HXAtJrFGG5ZaH/crYLx0mtYDpSE30ElWGMJJ27NGDJExDcfTWhxFhjCa
+         cXsQK02xfPqMO4QzAp+uOEWSww4myiGI32Z1d7knprpXxkiahQ5Wfz5XnM+0TnhFBkKN
+         pC3wocFzhgDujpDwnM60Y9M4OTrBdJzDjd28NBB/s+QXQTxCP0kZwkKQUBPNpZyLj9mM
+         39H79D4hNkF1Ain/qwJ0Q6zrxC1pZBcMb2ZoobDb7oZ5D+RvmUK1RJbSsnGWQZUud3pW
+         ePY3yuJ6drGT5VmwHhmyDrZz0MJl7MDe2AqNILhlM4uLEtA0bgaGTwiUuLeVqfXY7/N9
+         n/tw==
+X-Forwarded-Encrypted: i=1; AJvYcCX+K16XOsrnWTiWNalAGnz98wKH9TXn2jgPt8lRq96v+LjSoYEbjK+TA9oAWrnDonTdLxD41sdT@vger.kernel.org
+X-Gm-Message-State: AOJu0YyWENh2b0B0cOnklny3ixRE1pq4kiLpcdO00GfZ8feJq4UJSMHj
+	9is4ysfmeELrgo11JRehl0DeONhtqIKvFZd4rj7RZxB6/+CtsbVXEZxKmEglY47KhAM=
+X-Gm-Gg: AY/fxX77Jsacj71p9j8CT4MKSFkbXQErrOYExmA215/ILOrOGk8ClILbfmSGCQO03t9
+	3HkMN9i2F9Cfhl0iTiojMCj9JlUspKyrqvmks/JrlW7DpZvNx4clCsl2f7bl22axOSp5SXxDPgR
+	losJ1XjleTV1RL4m0mxHjQkGGQuSng95CYRyGExSefqHyMEHFzp3BHPwiv+WeUwvn1rkBzoCme7
+	BAzvDPOsNh8sMgTfcZXuDBUnsDciQUsLVzoZQzOhxIpRXnrANim/Sw31a0vdBS6gh7sJDGTXATB
+	IYfkUSiQSPy2MwFifig89AVjdLFUwMhBkDMVx+jkPoCAOhpiVKY/YnUIptbp03NQNrJa0s00kbs
+	i6j4ft/PQZOjy4uila7udIuWGrlolx3TXA3ylhYq0nWizWd0xcisLtEApAWkZYVMFHvMoh07Vyf
+	d61ksiAFsSVcc+PWshJvX28edmz/7VHsk=
+X-Google-Smtp-Source: AGHT+IGpydpE/x5zxrviDhKfJqjEaKSG+Hi2wTDqQX9lTrcKDco/8aBmmWcByjoue9ZRozmJ4alpSw==
+X-Received: by 2002:a05:6000:186d:b0:431:5ca:c1b7 with SMTP id ffacd0b85a97d-43105cac2d6mr7328202f8f.23.1765988883910;
+        Wed, 17 Dec 2025 08:28:03 -0800 (PST)
 Received: from blackdock.suse.cz (nat2.prg.suse.com. [195.250.132.146])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-4310adeee0esm5728364f8f.29.2025.12.17.08.28.00
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-4310adeee0esm5728364f8f.29.2025.12.17.08.28.02
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 17 Dec 2025 08:28:00 -0800 (PST)
+        Wed, 17 Dec 2025 08:28:03 -0800 (PST)
 From: =?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>
-To: cgroups@vger.kernel.org,
-	linux-kernel@vger.kernel.org
+To: linux-block@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	cgroups@vger.kernel.org,
+	linux-trace-kernel@vger.kernel.org,
+	bpf@vger.kernel.org,
+	netfilter-devel@vger.kernel.org,
+	coreteam@netfilter.org,
+	netdev@vger.kernel.org
 Cc: =?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>,
-	"Gustavo A. R. Silva" <gustavo@embeddedor.com>,
-	David Laight <david.laight.linux@gmail.com>,
+	Yu Kuai <yukuai@fnnas.com>,
+	Jens Axboe <axboe@kernel.dk>,
 	Tejun Heo <tj@kernel.org>,
-	Johannes Weiner <hannes@cmpxchg.org>
-Subject: [PATCH 1/4] cgroup: Eliminate cgrp_ancestor_storage in cgroup_root
-Date: Wed, 17 Dec 2025 17:27:33 +0100
-Message-ID: <20251217162744.352391-2-mkoutny@suse.com>
+	Josef Bacik <josef@toxicpanda.com>,
+	Johannes Weiner <hannes@cmpxchg.org>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Eduard Zingerman <eddyz87@gmail.com>,
+	Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>,
+	Stanislav Fomichev <sdf@fomichev.me>,
+	Hao Luo <haoluo@google.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	Pablo Neira Ayuso <pablo@netfilter.org>,
+	Jozsef Kadlecsik <kadlec@netfilter.org>,
+	Florian Westphal <fw@strlen.de>,
+	Phil Sutter <phil@nwl.cc>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Simon Horman <horms@kernel.org>
+Subject: [PATCH 2/4] cgroup: Introduce cgroup_level() helper
+Date: Wed, 17 Dec 2025 17:27:34 +0100
+Message-ID: <20251217162744.352391-3-mkoutny@suse.com>
 X-Mailer: git-send-email 2.52.0
 In-Reply-To: <20251217162744.352391-1-mkoutny@suse.com>
 References: <20251217162744.352391-1-mkoutny@suse.com>
@@ -95,98 +126,186 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-The cgrp_ancestor_storage has two drawbacks:
-- it's not guaranteed that the member immediately follows struct cgrp in
-  cgroup_root (root cgroup's ancestors[0] might thus point to a padding
-  and not in cgrp_ancestor_storage proper),
-- this idiom raises warnings with -Wflex-array-member-not-at-end.
+This is a no functional change to hide physical storage of cgroup's
+level and it allows subesequent conversion of the storage.
 
-Instead of relying on the auxiliary member in cgroup_root, define the
-0-th level ancestor inside struct cgroup (needed for static allocation
-of cgrp_dfl_root), deeper cgroups would allocate flexible
-_low_ancestors[].  Unionized alias through ancestors[] will
-transparently join the two ranges (ancestors is wrapped in a struct to
-avoid 'error: flexible array member in union').
-
-The above change would still leave the flexible array at the end of
-struct cgroup, so move cgrp also towards the end of cgroup_root to
-resolve the -Wflex-array-member-not-at-end.
-
-Link: https://lore.kernel.org/r/5fb74444-2fbb-476e-b1bf-3f3e279d0ced@embeddedor.com/
-Reported-by: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Closes: https://lore.kernel.org/r/b3eb050d-9451-4b60-b06c-ace7dab57497@embeddedor.com/
-Cc: David Laight <david.laight.linux@gmail.com>
 Signed-off-by: Michal Koutný <mkoutny@suse.com>
 ---
- include/linux/cgroup-defs.h | 28 +++++++++++++++++-----------
- kernel/cgroup/cgroup.c      |  2 +-
- 2 files changed, 18 insertions(+), 12 deletions(-)
+ block/bfq-iosched.c           |  2 +-
+ block/blk-iocost.c            |  4 ++--
+ include/linux/cgroup.h        | 18 +++++++++++++++---
+ include/trace/events/cgroup.h |  8 ++++----
+ kernel/bpf/helpers.c          |  2 +-
+ kernel/cgroup/cgroup.c        |  4 ++--
+ net/netfilter/nft_socket.c    |  2 +-
+ 7 files changed, 26 insertions(+), 14 deletions(-)
 
-diff --git a/include/linux/cgroup-defs.h b/include/linux/cgroup-defs.h
-index b760a3c470a56..9247e437da5ce 100644
---- a/include/linux/cgroup-defs.h
-+++ b/include/linux/cgroup-defs.h
-@@ -626,7 +626,16 @@ struct cgroup {
- #endif
+diff --git a/block/bfq-iosched.c b/block/bfq-iosched.c
+index 4a8d3d96bfe49..f293bab068274 100644
+--- a/block/bfq-iosched.c
++++ b/block/bfq-iosched.c
+@@ -601,7 +601,7 @@ static bool bfqq_request_over_limit(struct bfq_data *bfqd,
+ 		goto out;
  
- 	/* All ancestors including self */
--	struct cgroup *ancestors[];
-+	union {
-+		struct {
-+			void *_sentinel[0]; /* XXX to avoid 'flexible array member in a struct with no named members' */
-+			struct cgroup *ancestors[];
-+		};
-+		struct {
-+			struct cgroup *_root_ancestor;
-+			struct cgroup *_low_ancestors[];
-+		};
-+	};
- };
+ 	/* +1 for bfqq entity, root cgroup not included */
+-	depth = bfqg_to_blkg(bfqq_group(bfqq))->blkcg->css.cgroup->level + 1;
++	depth = cgroup_level(bfqg_to_blkg(bfqq_group(bfqq))->blkcg->css.cgroup) + 1;
+ 	if (depth > alloc_depth) {
+ 		spin_unlock_irq(&bfqd->lock);
+ 		if (entities != inline_entities)
+diff --git a/block/blk-iocost.c b/block/blk-iocost.c
+index a0416927d33dc..b4eebe61dca7f 100644
+--- a/block/blk-iocost.c
++++ b/block/blk-iocost.c
+@@ -2962,7 +2962,7 @@ static void ioc_cpd_free(struct blkcg_policy_data *cpd)
+ static struct blkg_policy_data *ioc_pd_alloc(struct gendisk *disk,
+ 		struct blkcg *blkcg, gfp_t gfp)
+ {
+-	int levels = blkcg->css.cgroup->level + 1;
++	int levels = cgroup_level(blkcg->css.cgroup) + 1;
+ 	struct ioc_gq *iocg;
  
- /*
-@@ -647,16 +656,6 @@ struct cgroup_root {
- 	struct list_head root_list;
- 	struct rcu_head rcu;	/* Must be near the top */
+ 	iocg = kzalloc_node(struct_size(iocg, ancestors, levels), gfp,
+@@ -3003,7 +3003,7 @@ static void ioc_pd_init(struct blkg_policy_data *pd)
+ 	init_waitqueue_head(&iocg->waitq);
+ 	hrtimer_setup(&iocg->waitq_timer, iocg_waitq_timer_fn, CLOCK_MONOTONIC, HRTIMER_MODE_ABS);
  
--	/*
--	 * The root cgroup. The containing cgroup_root will be destroyed on its
--	 * release. cgrp->ancestors[0] will be used overflowing into the
--	 * following field. cgrp_ancestor_storage must immediately follow.
--	 */
--	struct cgroup cgrp;
--
--	/* must follow cgrp for cgrp->ancestors[0], see above */
--	struct cgroup *cgrp_ancestor_storage;
--
- 	/* Number of cgroups in the hierarchy, used only for /proc/cgroups */
- 	atomic_t nr_cgrps;
+-	iocg->level = blkg->blkcg->css.cgroup->level;
++	iocg->level = cgroup_level(blkg->blkcg->css.cgroup)
  
-@@ -668,6 +667,13 @@ struct cgroup_root {
+ 	for (tblkg = blkg; tblkg; tblkg = tblkg->parent) {
+ 		struct ioc_gq *tiocg = blkg_to_iocg(tblkg);
+diff --git a/include/linux/cgroup.h b/include/linux/cgroup.h
+index bc892e3b37eea..0290878ebad26 100644
+--- a/include/linux/cgroup.h
++++ b/include/linux/cgroup.h
+@@ -525,6 +525,18 @@ static inline struct cgroup *cgroup_parent(struct cgroup *cgrp)
+ 	return NULL;
+ }
  
- 	/* The name for this hierarchy - may be empty */
- 	char name[MAX_CGROUP_ROOT_NAMELEN];
++/**
++ * cgroup_level - cgroup depth
++ * @cgrp: cgroup
++ *
++ * The depth this cgroup is at.  The root is at depth zero and each step down
++ * the hierarchy increments the level.
++ */
++static inline int cgroup_level(struct cgroup *cgrp)
++{
++	return cgrp->level;
++}
 +
-+	/*
-+	 * The root cgroup. The containing cgroup_root will be destroyed on its
-+	 * release. This must be embedded last due to flexible array at the end
-+	 * of struct cgroup.
-+	 */
-+	struct cgroup cgrp;
- };
+ /**
+  * cgroup_is_descendant - test ancestry
+  * @cgrp: the cgroup to be tested
+@@ -537,9 +549,9 @@ static inline struct cgroup *cgroup_parent(struct cgroup *cgrp)
+ static inline bool cgroup_is_descendant(struct cgroup *cgrp,
+ 					struct cgroup *ancestor)
+ {
+-	if (cgrp->root != ancestor->root || cgrp->level < ancestor->level)
++	if (cgrp->root != ancestor->root || cgroup_level(cgrp) < cgroup_level(ancestor))
+ 		return false;
+-	return cgrp->ancestors[ancestor->level] == ancestor;
++	return cgrp->ancestors[cgroup_level(ancestor)] == ancestor;
+ }
  
- /*
+ /**
+@@ -556,7 +568,7 @@ static inline bool cgroup_is_descendant(struct cgroup *cgrp,
+ static inline struct cgroup *cgroup_ancestor(struct cgroup *cgrp,
+ 					     int ancestor_level)
+ {
+-	if (ancestor_level < 0 || ancestor_level > cgrp->level)
++	if (ancestor_level < 0 || ancestor_level > cgroup_level(cgrp))
+ 		return NULL;
+ 	return cgrp->ancestors[ancestor_level];
+ }
+diff --git a/include/trace/events/cgroup.h b/include/trace/events/cgroup.h
+index ba9229af9a343..0a1bc91754b5e 100644
+--- a/include/trace/events/cgroup.h
++++ b/include/trace/events/cgroup.h
+@@ -67,7 +67,7 @@ DECLARE_EVENT_CLASS(cgroup,
+ 	TP_fast_assign(
+ 		__entry->root = cgrp->root->hierarchy_id;
+ 		__entry->id = cgroup_id(cgrp);
+-		__entry->level = cgrp->level;
++		__entry->level = cgroup_level(cgrp);
+ 		__assign_str(path);
+ 	),
+ 
+@@ -136,7 +136,7 @@ DECLARE_EVENT_CLASS(cgroup_migrate,
+ 	TP_fast_assign(
+ 		__entry->dst_root = dst_cgrp->root->hierarchy_id;
+ 		__entry->dst_id = cgroup_id(dst_cgrp);
+-		__entry->dst_level = dst_cgrp->level;
++		__entry->dst_level = cgroup_level(dst_cgrp);
+ 		__assign_str(dst_path);
+ 		__entry->pid = task->pid;
+ 		__assign_str(comm);
+@@ -180,7 +180,7 @@ DECLARE_EVENT_CLASS(cgroup_event,
+ 	TP_fast_assign(
+ 		__entry->root = cgrp->root->hierarchy_id;
+ 		__entry->id = cgroup_id(cgrp);
+-		__entry->level = cgrp->level;
++		__entry->level = cgroup_level(cgrp);
+ 		__assign_str(path);
+ 		__entry->val = val;
+ 	),
+@@ -221,7 +221,7 @@ DECLARE_EVENT_CLASS(cgroup_rstat,
+ 	TP_fast_assign(
+ 		__entry->root = cgrp->root->hierarchy_id;
+ 		__entry->id = cgroup_id(cgrp);
+-		__entry->level = cgrp->level;
++		__entry->level = cgroup_level(cgrp);
+ 		__entry->cpu = cpu;
+ 		__entry->contended = contended;
+ 	),
+diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
+index db72b96f9c8c8..b825f6e0a1c29 100644
+--- a/kernel/bpf/helpers.c
++++ b/kernel/bpf/helpers.c
+@@ -2577,7 +2577,7 @@ __bpf_kfunc struct cgroup *bpf_cgroup_ancestor(struct cgroup *cgrp, int level)
+ {
+ 	struct cgroup *ancestor;
+ 
+-	if (level > cgrp->level || level < 0)
++	if (level > cgroup_level(cgrp) || level < 0)
+ 		return NULL;
+ 
+ 	/* cgrp's refcnt could be 0 here, but ancestors can still be accessed */
 diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
-index e717208cfb185..554a02ee298ba 100644
+index 554a02ee298ba..e011f1dd6d87f 100644
 --- a/kernel/cgroup/cgroup.c
 +++ b/kernel/cgroup/cgroup.c
-@@ -5847,7 +5847,7 @@ static struct cgroup *cgroup_create(struct cgroup *parent, const char *name,
+@@ -5843,7 +5843,7 @@ static struct cgroup *cgroup_create(struct cgroup *parent, const char *name,
+ 	struct cgroup_root *root = parent->root;
+ 	struct cgroup *cgrp, *tcgrp;
+ 	struct kernfs_node *kn;
+-	int i, level = parent->level + 1;
++	int i, level = cgroup_level(parent) + 1;
  	int ret;
  
  	/* allocate the cgroup and its ID, 0 is reserved for the root */
--	cgrp = kzalloc(struct_size(cgrp, ancestors, (level + 1)), GFP_KERNEL);
-+	cgrp = kzalloc(struct_size(cgrp, _low_ancestors, level), GFP_KERNEL);
- 	if (!cgrp)
- 		return ERR_PTR(-ENOMEM);
+@@ -5884,7 +5884,7 @@ static struct cgroup *cgroup_create(struct cgroup *parent, const char *name,
+ 		goto out_stat_exit;
+ 
+ 	for (tcgrp = cgrp; tcgrp; tcgrp = cgroup_parent(tcgrp))
+-		cgrp->ancestors[tcgrp->level] = tcgrp;
++		cgrp->ancestors[cgroup_level(tcgrp)] = tcgrp;
+ 
+ 	/*
+ 	 * New cgroup inherits effective freeze counter, and
+diff --git a/net/netfilter/nft_socket.c b/net/netfilter/nft_socket.c
+index 36affbb697c2f..a5b0340924efb 100644
+--- a/net/netfilter/nft_socket.c
++++ b/net/netfilter/nft_socket.c
+@@ -64,7 +64,7 @@ static noinline int nft_socket_cgroup_subtree_level(void)
+ 	if (IS_ERR(cgrp))
+ 		return PTR_ERR(cgrp);
+ 
+-	level = cgrp->level;
++	level = cgroup_level(cgrp);
+ 
+ 	cgroup_put(cgrp);
  
 -- 
 2.52.0
