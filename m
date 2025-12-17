@@ -1,99 +1,99 @@
-Return-Path: <cgroups+bounces-12439-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-12440-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id ACA47CC9000
-	for <lists+cgroups@lfdr.de>; Wed, 17 Dec 2025 18:15:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id C33B5CC9032
+	for <lists+cgroups@lfdr.de>; Wed, 17 Dec 2025 18:17:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id DF38B317AE9E
-	for <lists+cgroups@lfdr.de>; Wed, 17 Dec 2025 17:03:18 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 543F430B9BFA
+	for <lists+cgroups@lfdr.de>; Wed, 17 Dec 2025 17:09:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 982CC1F0991;
-	Wed, 17 Dec 2025 17:03:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 36273349AFE;
+	Wed, 17 Dec 2025 17:09:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="R/9jzDPd";
-	dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b="qRPrxBID"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="AewiI/QT";
+	dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b="oIddIlAt"
 X-Original-To: cgroups@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9703E32D0DA
-	for <cgroups@vger.kernel.org>; Wed, 17 Dec 2025 17:03:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A773A33F362
+	for <cgroups@vger.kernel.org>; Wed, 17 Dec 2025 17:09:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765990985; cv=none; b=crlq25wc4i7yaWEW244rW95QxMp0p4nUkns3iKnMRaq4P5CPi0me5BgH/nlIrV8J5iTpGNPat9R9wUx7GeeL1pBXwwI8gdWupuDG+tYJRQI2d2KD7ySVH86529TBTZDbmR5YpMh7+Vd76YImln7msT5tv9+sn9RZU0pVa26gjHY=
+	t=1765991382; cv=none; b=EabDIkQBws6+EYtXZDa8BwPfH/RGU8C6Dcky+/7j4IO2zVMngkrFeLtFIyJs7nBpyxJjEuG2bNk1kscxjB63tGcsLjiXi6t9dl4ikoE5FpeA7YDZfulolFfRwofxCZ1jpsRH/VEaxZRpAa4fXaawuG9Ll61FBoEmupDU97e8a9M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765990985; c=relaxed/simple;
-	bh=MkAOw2BSglp2aTNFcNu2h+CZ00Ka1yjH+aL1APkD2FU=;
+	s=arc-20240116; t=1765991382; c=relaxed/simple;
+	bh=kKD4kzhWRMQvtxQzPfFJjPaIuXnbXKAXsUYn+tPm1Rc=;
 	h=From:Message-ID:Date:MIME-Version:Subject:To:Cc:References:
-	 In-Reply-To:Content-Type; b=BKUX6L752vF3S3lLbMFH5FsUxT8wT843fo2LOJo2+roQxIuhLQWQ+cKdAepPkHWvOK/dDbOQAn9HkWcF4IdoXkedMzeCRZm+dLPMDxCE3hwfHWH5zZNoA9XNmN9RVuBWnrNyV+jbSs3gA8U//aR1ZgiB0A9jDBdWRJsnETep/H0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=R/9jzDPd; dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b=qRPrxBID; arc=none smtp.client-ip=170.10.129.124
+	 In-Reply-To:Content-Type; b=nbqvKjw+QAu3YS2u65wBt8aauCyZa0RVQWIaEZuCgH9tUw9dUpTeQOcH/01hbUH3SxbtJSylgGKwhgpKIhi8NXjeLOtJARtG8Q0YRXzzd/XzqrCsNl/a2e0q3qPXDopWIvWvv4GjFi9Up1l+nYDLN1uBRhXSkFbTdQnHt/Cnilg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=AewiI/QT; dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b=oIddIlAt; arc=none smtp.client-ip=170.10.133.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1765990982;
+	s=mimecast20190719; t=1765991378;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=R6D/twUjpVaN7/2LE7FByWy0dht+yFlBfxvyhXSnqag=;
-	b=R/9jzDPdFUWT8oQOk3AkzEL2MA8o8KFfzOQtm5tho1LxuoWy7UieP6rNQMa2mCop/RqKdw
-	uwzCUgbFr9rnsHVjzR5LSFXoOjepjysvfH4ZkH/44R/TzRXFGDFE1PyJpU1xMNiBKgJlnw
-	rTCwKIf6wEHn/SGqA+u6q5z+D7eH0I8=
-Received: from mail-qk1-f198.google.com (mail-qk1-f198.google.com
- [209.85.222.198]) by relay.mimecast.com with ESMTP with STARTTLS
+	bh=cbJakwZRKMBXTIGpQKPp4Wc/aDYWRMed7IM81Pt8zs8=;
+	b=AewiI/QT3H6x25AetdfHPVoyHZSZSSRIgQu94jJs6qlA/bitJxS4mpM40FzByLDQBkXJWF
+	gmMcbXkvGvcCsrc3Nr0jTx4Dob8N4/GFgh8+tGzXFzRuJY/GhnhlefO2LnhS7XaPVW7b9K
+	PevSCZRK7lsshxJPIJ9gHoEb4V66a80=
+Received: from mail-qk1-f197.google.com (mail-qk1-f197.google.com
+ [209.85.222.197]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-569-vtX6SDBnPR-h2y8iAlNgYg-1; Wed, 17 Dec 2025 12:03:01 -0500
-X-MC-Unique: vtX6SDBnPR-h2y8iAlNgYg-1
-X-Mimecast-MFC-AGG-ID: vtX6SDBnPR-h2y8iAlNgYg_1765990981
-Received: by mail-qk1-f198.google.com with SMTP id af79cd13be357-8b9fa6f808cso1578928185a.1
-        for <cgroups@vger.kernel.org>; Wed, 17 Dec 2025 09:03:01 -0800 (PST)
+ us-mta-578-CFokZeWLPMCW_DXuVb87Xg-1; Wed, 17 Dec 2025 12:09:37 -0500
+X-MC-Unique: CFokZeWLPMCW_DXuVb87Xg-1
+X-Mimecast-MFC-AGG-ID: CFokZeWLPMCW_DXuVb87Xg_1765991377
+Received: by mail-qk1-f197.google.com with SMTP id af79cd13be357-8b24383b680so2138453885a.0
+        for <cgroups@vger.kernel.org>; Wed, 17 Dec 2025 09:09:37 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=redhat.com; s=google; t=1765990980; x=1766595780; darn=vger.kernel.org;
+        d=redhat.com; s=google; t=1765991377; x=1766596177; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:content-language:references
          :cc:to:subject:user-agent:mime-version:date:message-id:from:from:to
          :cc:subject:date:message-id:reply-to;
-        bh=R6D/twUjpVaN7/2LE7FByWy0dht+yFlBfxvyhXSnqag=;
-        b=qRPrxBIDfZXpJ04FH2b0w1jqGYk7N9txa+dCsAP4uVU7TLkhlDYTWhzyRDyCi4KdEp
-         INNWAiFxBvATwjOdy846uCg434AdIiRc95qxCrjG6gnyVC9o6mIomecPHODWPepfBV+Z
-         2Hj7K85Aszm132mPHgag4EXXXZHhBRn0UHecK+WB2gto4qT/c7pguVwuPjYXl5cTm6J7
-         cw4D0XHS4ABOO+g7YeH4m26ugGqs6cMzG8Lg9b/6XVeFns+syAgxloLhJIk15gCjRBDw
-         7OwfJTCngbUgucGyn9AFj+jOZyx7Vx7ZizRtCUPKG9uAEA+CQPaZwLpB/8rdaRTiYUxc
-         DC8Q==
+        bh=cbJakwZRKMBXTIGpQKPp4Wc/aDYWRMed7IM81Pt8zs8=;
+        b=oIddIlAtA1uC9Kr5/C5qRLXIzSv8tNRsULA7ke+wo5Ju3YjDtejC/Xl0adArV/yNKK
+         wCZnDjGw7KhNdmBAVeGLSa7SZFsDBAEMc8VA3IauvlXz7NlO6ILu1/bsThL0bjn9/K4S
+         KNfzvM1VymmIjkk/hYDaxhgRtQ1ug9iY0/JA2i5EYJSwapiV9Y334+/+S788HcwcHOug
+         LE74n2/VpD1CD8+4PR6MMUOf55saJbJowUWeNMu4xTf05ycyKREDS2e9z5QVTVCDeu7R
+         8i10BrBsSjdxRWAIV5v9TlCF7aoQO1XLH+q1Rw712PDXeH8S0kdp8UjcJWU6QT9HCoW1
+         TXzA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1765990980; x=1766595780;
+        d=1e100.net; s=20230601; t=1765991377; x=1766596177;
         h=content-transfer-encoding:in-reply-to:content-language:references
          :cc:to:subject:user-agent:mime-version:date:message-id:from:x-gm-gg
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=R6D/twUjpVaN7/2LE7FByWy0dht+yFlBfxvyhXSnqag=;
-        b=WjPIjUqtKdof4oUaW6I3lEPreTyQaTLa8RR3K2aCT6bHcb8j/ohG0qV81IKp8yScLT
-         szk9S9QpQTUU66lk4OH2MOK2YsxRQY08TtZgJ6dgTv0R6KFTv1FJlF2LyBPe5VBiGyXv
-         lXuyCSYd4EE6AQIF9C+BtQpmxnVkJHOYvqcpur8H0F2OGwM1gyAKfOSGHL0+tadff90p
-         47xA4XrCrvg20bkhfKL1mICcp+Ifz4Xovr+PK826iU6HBLoisLOuFrv2cb/I64HbnAYo
-         ieihWaDOctwnGYqQUnC1wmsRPRjMuydEpkwfpnQUDKQcy98rgQqic4HFZ09t8Ao19ex/
-         1JDA==
-X-Gm-Message-State: AOJu0YyFdXeNK8PIe+l6YrYJXlVf8qxNv7a5J4hS9DIMMGFY+ipf91t8
-	cBD6dhrQZjVailWvgxfdOUKIbbTUjeBw1XDccVJ0nibwn9zRKwvC9xS0iW12Hmo4YPiE1YlL0sa
-	Gz4DY7toY1a7RMst9BkHhx8q9jjBulJVyj1UWyddY0I+mhCR+Q8in7PfRiZIZJjfSyok=
-X-Gm-Gg: AY/fxX5hGhST1p0iNAgm/ZMTZPIYVaYkXCm9UH7AS/DbFLxLgMP79Mvve78Ams3Q6Q5
-	wwB0aMwXAzsKy6DcFXT7iG1siBgLFFgzIHi5gXxFZ1bQM6I3X/CbBzP/UfK8XgBuuJ/cUVE1TUx
-	/4x/MiJCAZXo/IK1qhyEWXNGwEPXZ6KGpeJVIFFmmXyX6Ny1D6X88RuNorfmt6oM26xxBeDWFd1
-	U6765VI11HyHbEUtmogITqI/PzhrLPLXQMb/7xIMviTVx9Rgxd5kk/VCCAwXmIoA9Qzd95NpSBi
-	bVvCc0Dg5vY+PsUKgyAhzOhrb18WXVLwMqUJ+meqrOWtX8aiQWzWq2+7tVnsD2R0tHO5bJ1aHaB
-	DG+OcEyImZQTe5gHHBywVEYV0IIoRoRyC/tkIrWwTeHxETcgIG9woPeUT
-X-Received: by 2002:a05:620a:4589:b0:85c:bb2:ad8c with SMTP id af79cd13be357-8bb3a2495abmr2603900885a.74.1765990978821;
-        Wed, 17 Dec 2025 09:02:58 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IFBDyuzbsCeW4xAU+wI9KUPEJo+vLDUjXrnECfI5NKbMOzF1M5IO7XVO1lPhXKQQ68k4qHxJg==
-X-Received: by 2002:a05:620a:4589:b0:85c:bb2:ad8c with SMTP id af79cd13be357-8bb3a2495abmr2603887585a.74.1765990977564;
-        Wed, 17 Dec 2025 09:02:57 -0800 (PST)
+        bh=cbJakwZRKMBXTIGpQKPp4Wc/aDYWRMed7IM81Pt8zs8=;
+        b=VkbTN0tGfpANyi5fdf6fmhJeyDcY6z1LpFPBLJsQOslueVnBapnakXbL5JQNBoopoD
+         ZoHR2SFetcAHJ4JHlSbGz1lSu3uZ5kBHcaqpEP7rhk6Q2SbJKyAUIq8AuO7ihaOvG32I
+         IKywjqN/vqLQEVr1l2tXkOagJw2KVpfo7utqt9LvBWHzt61eVrUrBiMmPVQHgutUPZNP
+         6wVrzgX5MfYszgYHj5bLNaWze1kIXIrWHkwYZigSB3Ja5aoNe9aCtdC76oC9w9fDCHf/
+         vVIXG3xzTa4cSym339X04KZevEuSw4tnjKPCtaJsSjFW98RimcW1k9H4/OjM5sCpY3jM
+         oDUw==
+X-Gm-Message-State: AOJu0YwPpOzNfiXGXveVpxfPx7ntYGjxYLrkjUukFTJKcnkRzPQZgV7G
+	lz9i1SNPm5RJk5dlUmLQfEejgCvj6JQFghuxCksLZWWpjIcDdBP+d5WKuFcdZKCcCFzBgkoaWWN
+	F/AeOho+FTEIbrzwtvRZQC+yoVo66+/x4PC9KzJhdwKfcQndIx6gD5DMByEGP8vwHSLs=
+X-Gm-Gg: AY/fxX4YdUJxta1hr0IWPJ4Jz5uwmwNtUrIBXFKQq2jUryWjIz4OF3raI/pSdhwBL2G
+	GrIavzdSMX6x1jqSzf5SzXmGfYmpXiKy03Dd+uP5OFpPXwN0pJ+NVSBI7zl0zFyydvaawj6ro1t
+	6IRDasMYfc48bj2uuil+qzCwd5FtZOivYS+Q+RuW/uA9j+EbTc8hCuW+43NUonK/7mPF8K6ghXM
+	ugLxMB6+hnGD3cVfJYvH3lutJ1YH1PtSbJ8LQMUD0R8Q97TMARGJU2nw5Py11fK1Z4/wU6b0xi1
+	oMlFP5HRNJHDt+hi98KkYkkxxSOMBxDUwXQlVQ9DZGQr4Rk6ob5W75H9LZij7wyha1KHgbWNfZ2
+	9s/8DidxuzoZS9NWd0uwrX5JTNZK74RYUXELAjy7Ak5u9j54C+VTi1Az7
+X-Received: by 2002:a05:620a:4114:b0:88f:561:d956 with SMTP id af79cd13be357-8bb398d7595mr2382685985a.13.1765991376597;
+        Wed, 17 Dec 2025 09:09:36 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IHFqhJsrNzhCydzFRijBg7qqhqLAk21JTEuiW09xtDklyd0t69U4Zf/j6JkVlZU6SBaA1zm+Q==
+X-Received: by 2002:a05:620a:4114:b0:88f:561:d956 with SMTP id af79cd13be357-8bb398d7595mr2382681385a.13.1765991376127;
+        Wed, 17 Dec 2025 09:09:36 -0800 (PST)
 Received: from ?IPV6:2601:188:c102:b180:1f8b:71d0:77b1:1f6e? ([2601:188:c102:b180:1f8b:71d0:77b1:1f6e])
-        by smtp.gmail.com with ESMTPSA id af79cd13be357-8be31c75b45sm430186385a.52.2025.12.17.09.02.56
+        by smtp.gmail.com with ESMTPSA id af79cd13be357-8be30d869ecsm437757885a.14.2025.12.17.09.09.35
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 17 Dec 2025 09:02:57 -0800 (PST)
+        Wed, 17 Dec 2025 09:09:35 -0800 (PST)
 From: Waiman Long <llong@redhat.com>
 X-Google-Original-From: Waiman Long <longman@redhat.com>
-Message-ID: <198cec94-6d2c-46c0-a46a-9ab810deb7e0@redhat.com>
-Date: Wed, 17 Dec 2025 12:02:55 -0500
+Message-ID: <249786b2-f715-4a46-be47-d6d3d6f35c10@redhat.com>
+Date: Wed, 17 Dec 2025 12:09:34 -0500
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -101,74 +101,150 @@ List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH -next 1/6] cpuset: add assert_cpuset_lock_held helper
+Subject: Re: [PATCH -next 4/6] cpuset: move update_domain_attr_tree to
+ cpuset_v1.c
 To: Chen Ridong <chenridong@huaweicloud.com>, tj@kernel.org,
  hannes@cmpxchg.org, mkoutny@suse.com
 Cc: cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
  lujialin4@huawei.com
 References: <20251217084942.2666405-1-chenridong@huaweicloud.com>
- <20251217084942.2666405-2-chenridong@huaweicloud.com>
+ <20251217084942.2666405-5-chenridong@huaweicloud.com>
 Content-Language: en-US
-In-Reply-To: <20251217084942.2666405-2-chenridong@huaweicloud.com>
+In-Reply-To: <20251217084942.2666405-5-chenridong@huaweicloud.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
+
 
 On 12/17/25 3:49 AM, Chen Ridong wrote:
 > From: Chen Ridong <chenridong@huawei.com>
 >
-> Add assert_cpuset_lock_held() to allow other subsystems to verify that
-> cpuset_mutex is held.
-
-Sorry, I should have added the "lockdep_" prefix when I mentioned adding 
-this helper function to be consistent with the others. Could you update 
-the patch to add that?
-
-Thanks,
-Longman
-
+> Since relax_domain_level is only applicable to v1, move
+> update_domain_attr_tree() to cpuset-v1.c, which solely updates
+> relax_domain_level,
 >
-> Suggested-by: Waiman Long <longman@redhat.com>
+> Additionally, relax_domain_level is now initialized in cpuset1_inited.
+> Accordingly, the initialization of relax_domain_level in top_cpuset is
+> removed. The unnecessary remote_partition initialization in top_cpuset
+> is also cleaned up.
+>
+> As a result, relax_domain_level can be defined in cpuset only when
+> CONFIG_CPUSETS_V1=y.
+>
 > Signed-off-by: Chen Ridong <chenridong@huawei.com>
 > ---
->   include/linux/cpuset.h | 2 ++
->   kernel/cgroup/cpuset.c | 5 +++++
->   2 files changed, 7 insertions(+)
+>   kernel/cgroup/cpuset-internal.h | 11 ++++++++---
+>   kernel/cgroup/cpuset-v1.c       | 28 ++++++++++++++++++++++++++++
+>   kernel/cgroup/cpuset.c          | 31 -------------------------------
+>   3 files changed, 36 insertions(+), 34 deletions(-)
 >
-> diff --git a/include/linux/cpuset.h b/include/linux/cpuset.h
-> index a98d3330385c..af0e76d10476 100644
-> --- a/include/linux/cpuset.h
-> +++ b/include/linux/cpuset.h
-> @@ -74,6 +74,7 @@ extern void inc_dl_tasks_cs(struct task_struct *task);
->   extern void dec_dl_tasks_cs(struct task_struct *task);
->   extern void cpuset_lock(void);
->   extern void cpuset_unlock(void);
-> +extern void assert_cpuset_lock_held(void);
->   extern void cpuset_cpus_allowed_locked(struct task_struct *p, struct cpumask *mask);
->   extern void cpuset_cpus_allowed(struct task_struct *p, struct cpumask *mask);
->   extern bool cpuset_cpus_allowed_fallback(struct task_struct *p);
-> @@ -195,6 +196,7 @@ static inline void inc_dl_tasks_cs(struct task_struct *task) { }
->   static inline void dec_dl_tasks_cs(struct task_struct *task) { }
->   static inline void cpuset_lock(void) { }
->   static inline void cpuset_unlock(void) { }
-> +static inline void assert_cpuset_lock_held(void) { }
+> diff --git a/kernel/cgroup/cpuset-internal.h b/kernel/cgroup/cpuset-internal.h
+> index a32517da8231..677053ffb913 100644
+> --- a/kernel/cgroup/cpuset-internal.h
+> +++ b/kernel/cgroup/cpuset-internal.h
+> @@ -150,9 +150,6 @@ struct cpuset {
+>   	 */
+>   	int attach_in_progress;
 >   
->   static inline void cpuset_cpus_allowed_locked(struct task_struct *p,
->   					struct cpumask *mask)
-> diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
-> index fea577b4016a..a5ad124ea1cf 100644
-> --- a/kernel/cgroup/cpuset.c
-> +++ b/kernel/cgroup/cpuset.c
-> @@ -271,6 +271,11 @@ void cpuset_unlock(void)
->   	mutex_unlock(&cpuset_mutex);
+> -	/* for custom sched domain */
+> -	int relax_domain_level;
+> -
+>   	/* partition root state */
+>   	int partition_root_state;
+>   
+> @@ -182,6 +179,9 @@ struct cpuset {
+>   
+>   #ifdef CONFIG_CPUSETS_V1
+>   	struct fmeter fmeter;		/* memory_pressure filter */
+> +
+> +	/* for custom sched domain */
+> +	int relax_domain_level;
+>   #endif
+>   };
+>   
+> @@ -296,6 +296,8 @@ void cpuset1_hotplug_update_tasks(struct cpuset *cs,
+>   int cpuset1_validate_change(struct cpuset *cur, struct cpuset *trial);
+>   void cpuset1_init(struct cpuset *cs);
+>   void cpuset1_online_css(struct cgroup_subsys_state *css);
+> +void update_domain_attr_tree(struct sched_domain_attr *dattr,
+> +				    struct cpuset *root_cs);
+>   #else
+>   static inline void cpuset1_update_task_spread_flags(struct cpuset *cs,
+>   					struct task_struct *tsk) {}
+> @@ -307,6 +309,9 @@ static inline int cpuset1_validate_change(struct cpuset *cur,
+>   				struct cpuset *trial) { return 0; }
+>   static inline void cpuset1_init(struct cpuset *cs) {}
+>   static inline void cpuset1_online_css(struct cgroup_subsys_state *css) {}
+> +static inline void update_domain_attr_tree(struct sched_domain_attr *dattr,
+> +				    struct cpuset *root_cs) {}
+> +
+>   #endif /* CONFIG_CPUSETS_V1 */
+>   
+>   #endif /* __CPUSET_INTERNAL_H */
+> diff --git a/kernel/cgroup/cpuset-v1.c b/kernel/cgroup/cpuset-v1.c
+> index 574df740f21a..95de6f2a4cc5 100644
+> --- a/kernel/cgroup/cpuset-v1.c
+> +++ b/kernel/cgroup/cpuset-v1.c
+> @@ -502,6 +502,7 @@ static int cpuset_write_u64(struct cgroup_subsys_state *css, struct cftype *cft,
+>   void cpuset1_init(struct cpuset *cs)
+>   {
+>   	fmeter_init(&cs->fmeter);
+> +	cs->relax_domain_level = -1;
 >   }
 >   
-> +void assert_cpuset_lock_held(void)
+>   void cpuset1_online_css(struct cgroup_subsys_state *css)
+> @@ -552,6 +553,33 @@ void cpuset1_online_css(struct cgroup_subsys_state *css)
+>   	cpuset_callback_unlock_irq();
+>   }
+>   
+> +static void
+> +update_domain_attr(struct sched_domain_attr *dattr, struct cpuset *c)
 > +{
-> +	lockdep_assert_held(&cpuset_mutex);
+> +	if (dattr->relax_domain_level < c->relax_domain_level)
+> +		dattr->relax_domain_level = c->relax_domain_level;
 > +}
 > +
->   /**
->    * cpuset_full_lock - Acquire full protection for cpuset modification
->    *
+> +void update_domain_attr_tree(struct sched_domain_attr *dattr,
+> +				    struct cpuset *root_cs)
+> +{
+> +	struct cpuset *cp;
+> +	struct cgroup_subsys_state *pos_css;
+> +
+> +	rcu_read_lock();
+> +	cpuset_for_each_descendant_pre(cp, pos_css, root_cs) {
+> +		/* skip the whole subtree if @cp doesn't have any CPU */
+> +		if (cpumask_empty(cp->cpus_allowed)) {
+> +			pos_css = css_rightmost_descendant(pos_css);
+> +			continue;
+> +		}
+> +
+> +		if (is_sched_load_balance(cp))
+> +			update_domain_attr(dattr, cp);
+> +	}
+> +	rcu_read_unlock();
+> +}
+> +
+>   /*
+>    * for the common functions, 'private' gives the type of file
+>    */
+> diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
+> index e836a1f2b951..88ca8b40e01a 100644
+> --- a/kernel/cgroup/cpuset.c
+> +++ b/kernel/cgroup/cpuset.c
+> @@ -215,8 +215,6 @@ static struct cpuset top_cpuset = {
+>   	.flags = BIT(CS_CPU_EXCLUSIVE) |
+>   		 BIT(CS_MEM_EXCLUSIVE) | BIT(CS_SCHED_LOAD_BALANCE),
+>   	.partition_root_state = PRS_ROOT,
+> -	.relax_domain_level = -1,
+
+As the cpuset1_init() function will not be called for top_cpuset, you 
+should not remove the initialization of relax_domain_level. Instead, put 
+it inside a "ifdef CONFIG_CPUSETS_V1 block.
+
+> -	.remote_partition = false,
+
+Yes, this is not really needed and can be removed.
+
+Cheers,
+Longman
 
 
