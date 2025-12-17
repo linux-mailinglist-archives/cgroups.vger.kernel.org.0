@@ -1,99 +1,99 @@
-Return-Path: <cgroups+bounces-12440-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-12441-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id C33B5CC9032
-	for <lists+cgroups@lfdr.de>; Wed, 17 Dec 2025 18:17:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 7A0D1CC92B9
+	for <lists+cgroups@lfdr.de>; Wed, 17 Dec 2025 19:01:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 543F430B9BFA
-	for <lists+cgroups@lfdr.de>; Wed, 17 Dec 2025 17:09:49 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id A155E30783BF
+	for <lists+cgroups@lfdr.de>; Wed, 17 Dec 2025 17:49:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 36273349AFE;
-	Wed, 17 Dec 2025 17:09:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C9FDB35C1AB;
+	Wed, 17 Dec 2025 17:49:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="AewiI/QT";
-	dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b="oIddIlAt"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="LAQ2Xf3K";
+	dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b="Eo//nOTO"
 X-Original-To: cgroups@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A773A33F362
-	for <cgroups@vger.kernel.org>; Wed, 17 Dec 2025 17:09:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE07035503A
+	for <cgroups@vger.kernel.org>; Wed, 17 Dec 2025 17:49:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765991382; cv=none; b=EabDIkQBws6+EYtXZDa8BwPfH/RGU8C6Dcky+/7j4IO2zVMngkrFeLtFIyJs7nBpyxJjEuG2bNk1kscxjB63tGcsLjiXi6t9dl4ikoE5FpeA7YDZfulolFfRwofxCZ1jpsRH/VEaxZRpAa4fXaawuG9Ll61FBoEmupDU97e8a9M=
+	t=1765993775; cv=none; b=tYf+4aLJiLcf8aGNJWLimdYJJIB7CARSkqMUNqe+h0Z09KJRJKcY3Fl4arR/FLOE3oiL9K8KMtXu+QXjsQ8vwVl72hpY2IOnITEBPZJoSki9BwV/HuZuOHLIvzkGeagfLmCssB5JbSgHX+11bOn0VWhBBfhsjH3HV+dbOdBlH4M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765991382; c=relaxed/simple;
-	bh=kKD4kzhWRMQvtxQzPfFJjPaIuXnbXKAXsUYn+tPm1Rc=;
+	s=arc-20240116; t=1765993775; c=relaxed/simple;
+	bh=r944rE44rL+mOU6FZhTBkAcBmVTsyhoN6fx7uxahIH0=;
 	h=From:Message-ID:Date:MIME-Version:Subject:To:Cc:References:
-	 In-Reply-To:Content-Type; b=nbqvKjw+QAu3YS2u65wBt8aauCyZa0RVQWIaEZuCgH9tUw9dUpTeQOcH/01hbUH3SxbtJSylgGKwhgpKIhi8NXjeLOtJARtG8Q0YRXzzd/XzqrCsNl/a2e0q3qPXDopWIvWvv4GjFi9Up1l+nYDLN1uBRhXSkFbTdQnHt/Cnilg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=AewiI/QT; dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b=oIddIlAt; arc=none smtp.client-ip=170.10.133.124
+	 In-Reply-To:Content-Type; b=OvMac4uEQu35YgeauRo/hIyErYAo5pANcbrcbffYHN7takcKf54qGiQHY1WzFykrQ8YbhC0lGS2PFOU6k2YgGp7FYUgDbFqFjDZSSlRlbGDVh5yLrxlmBKv6Ck6nWcWAukb0n+J0us7y8Gan3i9RfN3J1iOlDasrq4Zxzd97fUg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=LAQ2Xf3K; dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b=Eo//nOTO; arc=none smtp.client-ip=170.10.129.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1765991378;
+	s=mimecast20190719; t=1765993770;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=cbJakwZRKMBXTIGpQKPp4Wc/aDYWRMed7IM81Pt8zs8=;
-	b=AewiI/QT3H6x25AetdfHPVoyHZSZSSRIgQu94jJs6qlA/bitJxS4mpM40FzByLDQBkXJWF
-	gmMcbXkvGvcCsrc3Nr0jTx4Dob8N4/GFgh8+tGzXFzRuJY/GhnhlefO2LnhS7XaPVW7b9K
-	PevSCZRK7lsshxJPIJ9gHoEb4V66a80=
-Received: from mail-qk1-f197.google.com (mail-qk1-f197.google.com
- [209.85.222.197]) by relay.mimecast.com with ESMTP with STARTTLS
+	bh=VeB5aky7S2GM1CFOC4rwKPGWiSh1O8kl+7faRtByBfc=;
+	b=LAQ2Xf3KoEihyL8GE+i+EP05Em4tYYI5DyqTfbfyJ+1S4tMTj3JyU8p0mxJc95eJatfoSL
+	VzTgQz/5bhtGXuNVDhx0tCKkPmUAaQtJtNLuKrwkySSleGHQTEgmvi5GUHdPw7wUHxOWWj
+	Rtf0ae1FxZAdRcbUvx8B1fo98HXliUA=
+Received: from mail-pj1-f71.google.com (mail-pj1-f71.google.com
+ [209.85.216.71]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-578-CFokZeWLPMCW_DXuVb87Xg-1; Wed, 17 Dec 2025 12:09:37 -0500
-X-MC-Unique: CFokZeWLPMCW_DXuVb87Xg-1
-X-Mimecast-MFC-AGG-ID: CFokZeWLPMCW_DXuVb87Xg_1765991377
-Received: by mail-qk1-f197.google.com with SMTP id af79cd13be357-8b24383b680so2138453885a.0
-        for <cgroups@vger.kernel.org>; Wed, 17 Dec 2025 09:09:37 -0800 (PST)
+ us-mta-651-SmAAOb-BP1O35loP6E0rgw-1; Wed, 17 Dec 2025 12:49:01 -0500
+X-MC-Unique: SmAAOb-BP1O35loP6E0rgw-1
+X-Mimecast-MFC-AGG-ID: SmAAOb-BP1O35loP6E0rgw_1765993740
+Received: by mail-pj1-f71.google.com with SMTP id 98e67ed59e1d1-341616a6fb7so6917293a91.0
+        for <cgroups@vger.kernel.org>; Wed, 17 Dec 2025 09:49:00 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=redhat.com; s=google; t=1765991377; x=1766596177; darn=vger.kernel.org;
+        d=redhat.com; s=google; t=1765993739; x=1766598539; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:content-language:references
          :cc:to:subject:user-agent:mime-version:date:message-id:from:from:to
          :cc:subject:date:message-id:reply-to;
-        bh=cbJakwZRKMBXTIGpQKPp4Wc/aDYWRMed7IM81Pt8zs8=;
-        b=oIddIlAtA1uC9Kr5/C5qRLXIzSv8tNRsULA7ke+wo5Ju3YjDtejC/Xl0adArV/yNKK
-         wCZnDjGw7KhNdmBAVeGLSa7SZFsDBAEMc8VA3IauvlXz7NlO6ILu1/bsThL0bjn9/K4S
-         KNfzvM1VymmIjkk/hYDaxhgRtQ1ug9iY0/JA2i5EYJSwapiV9Y334+/+S788HcwcHOug
-         LE74n2/VpD1CD8+4PR6MMUOf55saJbJowUWeNMu4xTf05ycyKREDS2e9z5QVTVCDeu7R
-         8i10BrBsSjdxRWAIV5v9TlCF7aoQO1XLH+q1Rw712PDXeH8S0kdp8UjcJWU6QT9HCoW1
-         TXzA==
+        bh=VeB5aky7S2GM1CFOC4rwKPGWiSh1O8kl+7faRtByBfc=;
+        b=Eo//nOTOqN6Ai7sA0XFZBbl+bUXk3SqTQMCR2dmHJHUoYGIjlq7VRkRA9r08HLpV0r
+         p5Qgjy1UEJzqXUyTSbTkkuXhRQwjDFs+xBYDdApzWGjuET5WCyyecApjPo8hnqIK2qa4
+         XaPie49sDUVtzUxntNfEGqbAfsxEYwUUkCc5ZDKUXi2PuERa6TLSpSzqOFFhPCi37uwg
+         m4Sao/aK8NFrNKHkVaPcw3HZrlnt8KetqetSefoSA5Opta5XILzb5HBJ99vMftRUWLrm
+         BApfWrO+M3pybiGFvQXjbd1ijvgwQU1QQdaKUwxB/cgYneZc4OWSQnMsNHsA+6CuXI/H
+         10Aw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1765991377; x=1766596177;
+        d=1e100.net; s=20230601; t=1765993739; x=1766598539;
         h=content-transfer-encoding:in-reply-to:content-language:references
          :cc:to:subject:user-agent:mime-version:date:message-id:from:x-gm-gg
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=cbJakwZRKMBXTIGpQKPp4Wc/aDYWRMed7IM81Pt8zs8=;
-        b=VkbTN0tGfpANyi5fdf6fmhJeyDcY6z1LpFPBLJsQOslueVnBapnakXbL5JQNBoopoD
-         ZoHR2SFetcAHJ4JHlSbGz1lSu3uZ5kBHcaqpEP7rhk6Q2SbJKyAUIq8AuO7ihaOvG32I
-         IKywjqN/vqLQEVr1l2tXkOagJw2KVpfo7utqt9LvBWHzt61eVrUrBiMmPVQHgutUPZNP
-         6wVrzgX5MfYszgYHj5bLNaWze1kIXIrWHkwYZigSB3Ja5aoNe9aCtdC76oC9w9fDCHf/
-         vVIXG3xzTa4cSym339X04KZevEuSw4tnjKPCtaJsSjFW98RimcW1k9H4/OjM5sCpY3jM
-         oDUw==
-X-Gm-Message-State: AOJu0YwPpOzNfiXGXveVpxfPx7ntYGjxYLrkjUukFTJKcnkRzPQZgV7G
-	lz9i1SNPm5RJk5dlUmLQfEejgCvj6JQFghuxCksLZWWpjIcDdBP+d5WKuFcdZKCcCFzBgkoaWWN
-	F/AeOho+FTEIbrzwtvRZQC+yoVo66+/x4PC9KzJhdwKfcQndIx6gD5DMByEGP8vwHSLs=
-X-Gm-Gg: AY/fxX4YdUJxta1hr0IWPJ4Jz5uwmwNtUrIBXFKQq2jUryWjIz4OF3raI/pSdhwBL2G
-	GrIavzdSMX6x1jqSzf5SzXmGfYmpXiKy03Dd+uP5OFpPXwN0pJ+NVSBI7zl0zFyydvaawj6ro1t
-	6IRDasMYfc48bj2uuil+qzCwd5FtZOivYS+Q+RuW/uA9j+EbTc8hCuW+43NUonK/7mPF8K6ghXM
-	ugLxMB6+hnGD3cVfJYvH3lutJ1YH1PtSbJ8LQMUD0R8Q97TMARGJU2nw5Py11fK1Z4/wU6b0xi1
-	oMlFP5HRNJHDt+hi98KkYkkxxSOMBxDUwXQlVQ9DZGQr4Rk6ob5W75H9LZij7wyha1KHgbWNfZ2
-	9s/8DidxuzoZS9NWd0uwrX5JTNZK74RYUXELAjy7Ak5u9j54C+VTi1Az7
-X-Received: by 2002:a05:620a:4114:b0:88f:561:d956 with SMTP id af79cd13be357-8bb398d7595mr2382685985a.13.1765991376597;
-        Wed, 17 Dec 2025 09:09:36 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IHFqhJsrNzhCydzFRijBg7qqhqLAk21JTEuiW09xtDklyd0t69U4Zf/j6JkVlZU6SBaA1zm+Q==
-X-Received: by 2002:a05:620a:4114:b0:88f:561:d956 with SMTP id af79cd13be357-8bb398d7595mr2382681385a.13.1765991376127;
-        Wed, 17 Dec 2025 09:09:36 -0800 (PST)
+        bh=VeB5aky7S2GM1CFOC4rwKPGWiSh1O8kl+7faRtByBfc=;
+        b=p/eiwSJQ843M/iIjJ+FVhHkOxnRzwtMwrxCVngJp9e6vfGArznaBwrtBpV8g4GF8IA
+         +QeQczn/F2nYNfGzW5ALOJ538hLAfaxIdpYiC7mRzlIelWk2PVpDbgz8flKmDz4H2hbj
+         r/P0LpulpuO7rRpXwowfxJ9FKTl150h/qmaeuUJEjt9g1QcfcJjItYtt3PxnwTgcb4P5
+         dec9BXCqZr/6GtUGSY0ZGaetE8l3VgeZ4B9WQGMgDCHRm8ajA0TLi4f0OGmWKp6O0/tT
+         Ge4VVXm2izUl+3EM8jmC7U393gPUssC0QEnxR4d20I6OJ9yynMvavQ+V4EybFApPBtoQ
+         vnJA==
+X-Gm-Message-State: AOJu0YyFmcufY0ipAwqxVHMtKZQWgdb9k94KS3w4GaFT9jLJmUDGFG9W
+	WFOfGuKC7d4udtvRddwV5UGhX4U8qWSbNJgvMhnHtuUwuYij1Sa11NcRsuiT9AVe9A2uxCcF3lL
+	ZTwaguGQwdEynoY+7HCx14E5ZwIMc3h/RZlUwEV5jo6ZzXIRGv0FvzujQYnQ=
+X-Gm-Gg: AY/fxX5ZDYi02AZfDQREi8ni68RT28+ykODWxwjM9KcoXeRJIC5lPWAkeV8nkPH4Q0J
+	CJDmyIQq131//4AgnsAVgtSMIqGfljb8euMCsTR8RaEFV3D5GlL5uVmWDqUGC6KPMzG6r9N8apV
+	9qnLArn8PEBNiFrfJ0XfiMlRvsdSv+XfFp636zd0XU23NCgij8xM9YOdfPeP5B0zECGxpUA4vkO
+	zJ8SJZh1nyhd2nAI7cJF7/uznekZoSkR8tLeTC7o5bhas00IVabJ2+42HYhqvdClx6j16RsTZhd
+	e1syQJZDbYXfjQ4WD2gTXJbhFTntqPTwLdM+VpnjjIvSVS4qppGGtH+p3mATG32QQzqZolbq+dZ
+	4mjuazHAHQP+o3QGOBQLUBiO0SC1QCripNozPe+BQ3FXvbdMwAgwitM5d
+X-Received: by 2002:a17:90b:3f85:b0:32e:1b1c:f8b8 with SMTP id 98e67ed59e1d1-34abd826facmr17273072a91.26.1765993739521;
+        Wed, 17 Dec 2025 09:48:59 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IEBbsSlP5tLppnMvNMIKV9vOpeVTUaC1xiyKmfmCxH8/hfHpZpf9Zo+9ttGqoFo64DRaWo1Ig==
+X-Received: by 2002:a17:90b:3f85:b0:32e:1b1c:f8b8 with SMTP id 98e67ed59e1d1-34abd826facmr17273061a91.26.1765993739093;
+        Wed, 17 Dec 2025 09:48:59 -0800 (PST)
 Received: from ?IPV6:2601:188:c102:b180:1f8b:71d0:77b1:1f6e? ([2601:188:c102:b180:1f8b:71d0:77b1:1f6e])
-        by smtp.gmail.com with ESMTPSA id af79cd13be357-8be30d869ecsm437757885a.14.2025.12.17.09.09.35
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-34e70dbc9d6sm188945a91.10.2025.12.17.09.48.55
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 17 Dec 2025 09:09:35 -0800 (PST)
+        Wed, 17 Dec 2025 09:48:58 -0800 (PST)
 From: Waiman Long <llong@redhat.com>
 X-Google-Original-From: Waiman Long <longman@redhat.com>
-Message-ID: <249786b2-f715-4a46-be47-d6d3d6f35c10@redhat.com>
-Date: Wed, 17 Dec 2025 12:09:34 -0500
+Message-ID: <8d0ef5fc-f392-40f8-9803-50807c172800@redhat.com>
+Date: Wed, 17 Dec 2025 12:48:53 -0500
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -101,148 +101,221 @@ List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH -next 4/6] cpuset: move update_domain_attr_tree to
- cpuset_v1.c
+Subject: Re: [PATCH -next 5/6] cpuset: separate generate_sched_domains for v1
+ and v2
 To: Chen Ridong <chenridong@huaweicloud.com>, tj@kernel.org,
  hannes@cmpxchg.org, mkoutny@suse.com
 Cc: cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
  lujialin4@huawei.com
 References: <20251217084942.2666405-1-chenridong@huaweicloud.com>
- <20251217084942.2666405-5-chenridong@huaweicloud.com>
+ <20251217084942.2666405-6-chenridong@huaweicloud.com>
 Content-Language: en-US
-In-Reply-To: <20251217084942.2666405-5-chenridong@huaweicloud.com>
+In-Reply-To: <20251217084942.2666405-6-chenridong@huaweicloud.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-
 
 On 12/17/25 3:49 AM, Chen Ridong wrote:
 > From: Chen Ridong <chenridong@huawei.com>
 >
-> Since relax_domain_level is only applicable to v1, move
-> update_domain_attr_tree() to cpuset-v1.c, which solely updates
-> relax_domain_level,
+> The generate_sched_domains() function currently handles both v1 and v2
+> logic. However, the underlying mechanisms for building scheduler domains
+> differ significantly between the two versions. For cpuset v2, scheduler
+> domains are straightforwardly derived from valid partitions, whereas
+> cpuset v1 employs a more complex union-find algorithm to merge overlapping
+> cpusets. Co-locating these implementations complicates maintenance.
 >
-> Additionally, relax_domain_level is now initialized in cpuset1_inited.
-> Accordingly, the initialization of relax_domain_level in top_cpuset is
-> removed. The unnecessary remote_partition initialization in top_cpuset
-> is also cleaned up.
+> This patch, along with subsequent ones, aims to separate the v1 and v2
+> logic. For ease of review, this patch first copies the
+> generate_sched_domains() function into cpuset-v1.c as
+> cpuset1_generate_sched_domains() and removes v2-specific code. Common
+> helpers and top_cpuset are declared in cpuset-internal.h. When operating
+> in v1 mode, the code now calls cpuset1_generate_sched_domains().
 >
-> As a result, relax_domain_level can be defined in cpuset only when
-> CONFIG_CPUSETS_V1=y.
+> Currently there is some code duplication, which will be largely eliminated
+> once v1-specific code is removed from v2 in the following patch.
 >
 > Signed-off-by: Chen Ridong <chenridong@huawei.com>
 > ---
->   kernel/cgroup/cpuset-internal.h | 11 ++++++++---
->   kernel/cgroup/cpuset-v1.c       | 28 ++++++++++++++++++++++++++++
->   kernel/cgroup/cpuset.c          | 31 -------------------------------
->   3 files changed, 36 insertions(+), 34 deletions(-)
+>   kernel/cgroup/cpuset-internal.h |  24 +++++
+>   kernel/cgroup/cpuset-v1.c       | 167 ++++++++++++++++++++++++++++++++
+>   kernel/cgroup/cpuset.c          |  31 +-----
+>   3 files changed, 195 insertions(+), 27 deletions(-)
 >
 > diff --git a/kernel/cgroup/cpuset-internal.h b/kernel/cgroup/cpuset-internal.h
-> index a32517da8231..677053ffb913 100644
+> index 677053ffb913..bd767f8cb0ed 100644
 > --- a/kernel/cgroup/cpuset-internal.h
 > +++ b/kernel/cgroup/cpuset-internal.h
-> @@ -150,9 +150,6 @@ struct cpuset {
->   	 */
->   	int attach_in_progress;
+> @@ -9,6 +9,7 @@
+>   #include <linux/cpuset.h>
+>   #include <linux/spinlock.h>
+>   #include <linux/union_find.h>
+> +#include <linux/sched/isolation.h>
 >   
-> -	/* for custom sched domain */
-> -	int relax_domain_level;
-> -
->   	/* partition root state */
->   	int partition_root_state;
+>   /* See "Frequency meter" comments, below. */
 >   
-> @@ -182,6 +179,9 @@ struct cpuset {
->   
->   #ifdef CONFIG_CPUSETS_V1
->   	struct fmeter fmeter;		/* memory_pressure filter */
-> +
-> +	/* for custom sched domain */
-> +	int relax_domain_level;
+> @@ -185,6 +186,8 @@ struct cpuset {
 >   #endif
 >   };
 >   
-> @@ -296,6 +296,8 @@ void cpuset1_hotplug_update_tasks(struct cpuset *cs,
->   int cpuset1_validate_change(struct cpuset *cur, struct cpuset *trial);
->   void cpuset1_init(struct cpuset *cs);
+> +extern struct cpuset top_cpuset;
+> +
+>   static inline struct cpuset *css_cs(struct cgroup_subsys_state *css)
+>   {
+>   	return css ? container_of(css, struct cpuset, css) : NULL;
+> @@ -242,6 +245,22 @@ static inline int is_spread_slab(const struct cpuset *cs)
+>   	return test_bit(CS_SPREAD_SLAB, &cs->flags);
+>   }
+>   
+> +/*
+> + * Helper routine for generate_sched_domains().
+> + * Do cpusets a, b have overlapping effective cpus_allowed masks?
+> + */
+> +static inline int cpusets_overlap(struct cpuset *a, struct cpuset *b)
+> +{
+> +	return cpumask_intersects(a->effective_cpus, b->effective_cpus);
+> +}
+> +
+> +static inline int nr_cpusets(void)
+> +{
+> +	assert_cpuset_lock_held();
+
+For a simple helper like this one which only does an atomic_read(), I 
+don't think you need to assert that cpuset_mutex is held.
+
+> +	/* jump label reference count + the top-level cpuset */
+> +	return static_key_count(&cpusets_enabled_key.key) + 1;
+> +}
+> +
+>   /**
+>    * cpuset_for_each_child - traverse online children of a cpuset
+>    * @child_cs: loop cursor pointing to the current child
+> @@ -298,6 +317,9 @@ void cpuset1_init(struct cpuset *cs);
 >   void cpuset1_online_css(struct cgroup_subsys_state *css);
-> +void update_domain_attr_tree(struct sched_domain_attr *dattr,
-> +				    struct cpuset *root_cs);
+>   void update_domain_attr_tree(struct sched_domain_attr *dattr,
+>   				    struct cpuset *root_cs);
+> +int cpuset1_generate_sched_domains(cpumask_var_t **domains,
+> +			struct sched_domain_attr **attributes);
+> +
 >   #else
 >   static inline void cpuset1_update_task_spread_flags(struct cpuset *cs,
 >   					struct task_struct *tsk) {}
-> @@ -307,6 +309,9 @@ static inline int cpuset1_validate_change(struct cpuset *cur,
->   				struct cpuset *trial) { return 0; }
->   static inline void cpuset1_init(struct cpuset *cs) {}
+> @@ -311,6 +333,8 @@ static inline void cpuset1_init(struct cpuset *cs) {}
 >   static inline void cpuset1_online_css(struct cgroup_subsys_state *css) {}
-> +static inline void update_domain_attr_tree(struct sched_domain_attr *dattr,
-> +				    struct cpuset *root_cs) {}
-> +
+>   static inline void update_domain_attr_tree(struct sched_domain_attr *dattr,
+>   				    struct cpuset *root_cs) {}
+> +static inline int cpuset1_generate_sched_domains(cpumask_var_t **domains,
+> +			struct sched_domain_attr **attributes) { return 0; };
+>   
 >   #endif /* CONFIG_CPUSETS_V1 */
 >   
->   #endif /* __CPUSET_INTERNAL_H */
 > diff --git a/kernel/cgroup/cpuset-v1.c b/kernel/cgroup/cpuset-v1.c
-> index 574df740f21a..95de6f2a4cc5 100644
+> index 95de6f2a4cc5..5c0bded46a7c 100644
 > --- a/kernel/cgroup/cpuset-v1.c
 > +++ b/kernel/cgroup/cpuset-v1.c
-> @@ -502,6 +502,7 @@ static int cpuset_write_u64(struct cgroup_subsys_state *css, struct cftype *cft,
->   void cpuset1_init(struct cpuset *cs)
->   {
->   	fmeter_init(&cs->fmeter);
-> +	cs->relax_domain_level = -1;
+> @@ -580,6 +580,173 @@ void update_domain_attr_tree(struct sched_domain_attr *dattr,
+>   	rcu_read_unlock();
 >   }
 >   
->   void cpuset1_online_css(struct cgroup_subsys_state *css)
-> @@ -552,6 +553,33 @@ void cpuset1_online_css(struct cgroup_subsys_state *css)
->   	cpuset_callback_unlock_irq();
->   }
->   
-> +static void
-> +update_domain_attr(struct sched_domain_attr *dattr, struct cpuset *c)
+> +/*
+> + * cpuset1_generate_sched_domains()
+> + *
+> + * Finding the best partition (set of domains):
+> + *	The double nested loops below over i, j scan over the load
+> + *	balanced cpusets (using the array of cpuset pointers in csa[])
+> + *	looking for pairs of cpusets that have overlapping cpus_allowed
+> + *	and merging them using a union-find algorithm.
+> + *
+> + *	The union of the cpus_allowed masks from the set of all cpusets
+> + *	having the same root then form the one element of the partition
+> + *	(one sched domain) to be passed to partition_sched_domains().
+> + */
+> +int cpuset1_generate_sched_domains(cpumask_var_t **domains,
+> +			struct sched_domain_attr **attributes)
 > +{
-> +	if (dattr->relax_domain_level < c->relax_domain_level)
-> +		dattr->relax_domain_level = c->relax_domain_level;
-> +}
-> +
-> +void update_domain_attr_tree(struct sched_domain_attr *dattr,
-> +				    struct cpuset *root_cs)
-> +{
-> +	struct cpuset *cp;
+> +	struct cpuset *cp;	/* top-down scan of cpusets */
+> +	struct cpuset **csa;	/* array of all cpuset ptrs */
+> +	int csn;		/* how many cpuset ptrs in csa so far */
+> +	int i, j;		/* indices for partition finding loops */
+> +	cpumask_var_t *doms;	/* resulting partition; i.e. sched domains */
+> +	struct sched_domain_attr *dattr;  /* attributes for custom domains */
+> +	int ndoms = 0;		/* number of sched domains in result */
+> +	int nslot;		/* next empty doms[] struct cpumask slot */
 > +	struct cgroup_subsys_state *pos_css;
+> +	bool root_load_balance = is_sched_load_balance(&top_cpuset);
+> +	int nslot_update;
+> +
+> +	assert_cpuset_lock_held();
+> +
+> +	doms = NULL;
+> +	dattr = NULL;
+> +	csa = NULL;
+> +
+> +	/* Special case for the 99% of systems with one, full, sched domain */
+> +	if (root_load_balance) {
+> +single_root_domain:
+> +		ndoms = 1;
+> +		doms = alloc_sched_domains(ndoms);
+> +		if (!doms)
+> +			goto done;
+> +
+> +		dattr = kmalloc(sizeof(struct sched_domain_attr), GFP_KERNEL);
+> +		if (dattr) {
+> +			*dattr = SD_ATTR_INIT;
+> +			update_domain_attr_tree(dattr, &top_cpuset);
+> +		}
+> +		cpumask_and(doms[0], top_cpuset.effective_cpus,
+> +			    housekeeping_cpumask(HK_TYPE_DOMAIN));
+> +
+> +		goto done;
+> +	}
+> +
+> +	csa = kmalloc_array(nr_cpusets(), sizeof(cp), GFP_KERNEL);
+> +	if (!csa)
+> +		goto done;
+> +	csn = 0;
 > +
 > +	rcu_read_lock();
-> +	cpuset_for_each_descendant_pre(cp, pos_css, root_cs) {
-> +		/* skip the whole subtree if @cp doesn't have any CPU */
-> +		if (cpumask_empty(cp->cpus_allowed)) {
-> +			pos_css = css_rightmost_descendant(pos_css);
+> +	if (root_load_balance)
+> +		csa[csn++] = &top_cpuset;
+> +	cpuset_for_each_descendant_pre(cp, pos_css, &top_cpuset) {
+> +		if (cp == &top_cpuset)
 > +			continue;
-> +		}
 > +
-> +		if (is_sched_load_balance(cp))
-> +			update_domain_attr(dattr, cp);
+> +		/*
+> +		 * v1:
+Remove this v1 line.
+> +		 * Continue traversing beyond @cp iff @cp has some CPUs and
+> +		 * isn't load balancing.  The former is obvious.  The
+> +		 * latter: All child cpusets contain a subset of the
+> +		 * parent's cpus, so just skip them, and then we call
+> +		 * update_domain_attr_tree() to calc relax_domain_level of
+> +		 * the corresponding sched domain.
+> +		 */
+> +		if (!cpumask_empty(cp->cpus_allowed) &&
+> +		    !(is_sched_load_balance(cp) &&
+> +		      cpumask_intersects(cp->cpus_allowed,
+> +					 housekeeping_cpumask(HK_TYPE_DOMAIN))))
+> +			continue;
+> +
+> +		if (is_sched_load_balance(cp) &&
+> +		    !cpumask_empty(cp->effective_cpus))
+> +			csa[csn++] = cp;
+> +
+> +		/* skip @cp's subtree */
+> +		pos_css = css_rightmost_descendant(pos_css);
+> +		continue;
 > +	}
 > +	rcu_read_unlock();
-> +}
 > +
->   /*
->    * for the common functions, 'private' gives the type of file
->    */
-> diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
-> index e836a1f2b951..88ca8b40e01a 100644
-> --- a/kernel/cgroup/cpuset.c
-> +++ b/kernel/cgroup/cpuset.c
-> @@ -215,8 +215,6 @@ static struct cpuset top_cpuset = {
->   	.flags = BIT(CS_CPU_EXCLUSIVE) |
->   		 BIT(CS_MEM_EXCLUSIVE) | BIT(CS_SCHED_LOAD_BALANCE),
->   	.partition_root_state = PRS_ROOT,
-> -	.relax_domain_level = -1,
+> +	/*
+> +	 * If there are only isolated partitions underneath the cgroup root,
+> +	 * we can optimize out unneeded sched domains scanning.
+> +	 */
+> +	if (root_load_balance && (csn == 1))
+> +		goto single_root_domain;
 
-As the cpuset1_init() function will not be called for top_cpuset, you 
-should not remove the initialization of relax_domain_level. Instead, put 
-it inside a "ifdef CONFIG_CPUSETS_V1 block.
-
-> -	.remote_partition = false,
-
-Yes, this is not really needed and can be removed.
+This check is v2 specific and you can remove it as well as the 
+"single_root_domain" label.
 
 Cheers,
 Longman
