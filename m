@@ -1,165 +1,140 @@
-Return-Path: <cgroups+bounces-12427-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-12428-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id B424ACC6C30
-	for <lists+cgroups@lfdr.de>; Wed, 17 Dec 2025 10:17:51 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 92B83CC6CED
+	for <lists+cgroups@lfdr.de>; Wed, 17 Dec 2025 10:33:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 1527530F2811
-	for <lists+cgroups@lfdr.de>; Wed, 17 Dec 2025 09:11:09 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id DC9F1305F3B6
+	for <lists+cgroups@lfdr.de>; Wed, 17 Dec 2025 09:31:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C7778280329;
-	Wed, 17 Dec 2025 09:10:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9415F33A9F5;
+	Wed, 17 Dec 2025 09:31:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="Cgst9XJs"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f65.google.com (mail-wr1-f65.google.com [209.85.221.65])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 44C321E6DC5;
-	Wed, 17 Dec 2025 09:10:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=124.126.103.232
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E3F2A33B95A
+	for <cgroups@vger.kernel.org>; Wed, 17 Dec 2025 09:31:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.65
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1765962630; cv=none; b=QhXAgCERkKLqvFa36w+DsAGgoFVCZmxpN9soWd8kAe4MMK/EYJu7pznl9LjyDwqky+0z+IYP7w1JYz9VObYvs7o6BIwtU0xNBN0BHobrctkrcHjp9XDVjHHoMOTgpqmesoZrkV9YVwrt4TNyJyCjyJPCBQyOLh14DJTFcaM+l9Y=
+	t=1765963900; cv=none; b=QayQBwKAuVK04wi0uI/qSruGV2qjQkO3YxwK/2Vq/ThIrcCbj6MSQjlNB6r1w62viXHN0k+5A1zqWXcq041ELimSNpfLQBQMvhKc5WMjZuuy+NwY/GZ2QBLq1qXlICJP/UxO1JJfEmR+Melo/+LebbYX73tVvR9brKJEK0QYNpM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1765962630; c=relaxed/simple;
-	bh=qvl2s/WfXStAyc5oWK7q8S8knivL6lAQyWdFo9dqnu0=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=ikAt6xpg1pTiYt3apuhhxwOvg0W0/3Mi9Ae+XkcHsTSooLrdBmcDuzF+nxW/0WzmHjRUYh+60i/Bm80dPmcFM93pspE5Qj8M2MvwkIgfd1KSjw06nNblPxx485wJr/Tq3Oim6iCMvSnB4n21zatnrJBowiD5KEmueK4QLBn6Ch8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn; spf=pass smtp.mailfrom=kylinos.cn; arc=none smtp.client-ip=124.126.103.232
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kylinos.cn
-X-UUID: 35ac91e6db2811f0a38c85956e01ac42-20251217
-X-CTIC-Tags:
-	HR_CC_COUNT, HR_CC_DOMAIN_COUNT, HR_CC_NO_NAME, HR_CTE_8B, HR_CTT_TXT
-	HR_DATE_H, HR_DATE_WKD, HR_DATE_ZONE, HR_FROM_NAME, HR_SJ_DIGIT_LEN
-	HR_SJ_LANG, HR_SJ_LEN, HR_SJ_LETTER, HR_SJ_NOR_SYM, HR_SJ_PHRASE
-	HR_SJ_PHRASE_LEN, HR_SJ_PRE_RE, HR_SJ_WS, HR_TO_COUNT, HR_TO_DOMAIN_COUNT
-	HR_TO_NO_NAME, IP_UNTRUSTED, SRC_UNTRUSTED, IP_UNFAMILIAR, SRC_UNFAMILIAR
-	DN_TRUSTED, SRC_TRUSTED, SA_TRUSTED, SA_EXISTED, SN_TRUSTED
-	SN_EXISTED, SPF_NOPASS, DKIM_NOPASS, DMARC_NOPASS, CIE_BAD
-	CIE_GOOD, CIE_GOOD_SPF, GTI_FG_BS, GTI_RG_INFO, GTI_C_BU
-	AMN_GOOD, ABX_MISS_RDNS
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.3.6,REQID:9649531c-7707-4c04-a7a2-9d90eee6663e,IP:10,U
-	RL:0,TC:0,Content:0,EDM:0,RT:0,SF:-5,FILE:0,BULK:0,RULE:Release_Ham,ACTION
-	:release,TS:5
-X-CID-INFO: VERSION:1.3.6,REQID:9649531c-7707-4c04-a7a2-9d90eee6663e,IP:10,URL
-	:0,TC:0,Content:0,EDM:0,RT:0,SF:-5,FILE:0,BULK:0,RULE:Release_Ham,ACTION:r
-	elease,TS:5
-X-CID-META: VersionHash:a9d874c,CLOUDID:c459e8b512f21403d802322b9ba122cb,BulkI
-	D:251217171021JN0GV8BQ,BulkQuantity:0,Recheck:0,SF:17|19|64|66|78|80|81|82
-	|83|102|127|841|850|898,TC:nil,Content:0|15|50,EDM:-3,IP:-2,URL:99|1,File:
-	nil,RT:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR
-	:0,DKP:0,BRR:0,BRE:0,ARC:0
-X-CID-BVR: 2,SSN|SDN
-X-CID-BAS: 2,SSN|SDN,0,_
-X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_FAS,TF_CID_SPAM_FSD,TF_CID_SPAM_ULS
-X-CID-RHF: D41D8CD98F00B204E9800998ECF8427E
-X-UUID: 35ac91e6db2811f0a38c85956e01ac42-20251217
-X-User: sunshaojie@kylinos.cn
-Received: from localhost.localdomain [(183.242.174.23)] by mailgw.kylinos.cn
-	(envelope-from <sunshaojie@kylinos.cn>)
-	(Generic MTA with TLSv1.3 TLS_AES_256_GCM_SHA384 256/256)
-	with ESMTP id 2056059356; Wed, 17 Dec 2025 17:10:19 +0800
-From: Sun Shaojie <sunshaojie@kylinos.cn>
-To: chenridong@huaweicloud.com
-Cc: cgroups@vger.kernel.org,
-	hannes@cmpxchg.org,
-	linux-kernel@vger.kernel.org,
-	linux-kselftest@vger.kernel.org,
-	llong@redhat.com,
-	mkoutny@suse.com,
-	shuah@kernel.org,
-	sunshaojie@kylinos.cn,
-	tj@kernel.org
-Subject: Re: [PATCH v5] cpuset: Avoid invalidating sibling partitions on cpuset.cpus conflict
-Date: Wed, 17 Dec 2025 17:09:51 +0800
-Message-Id: <20251217090951.1444326-1-sunshaojie@kylinos.cn>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <4ab8a086-4200-45c0-9583-abf6e52a354a@huaweicloud.com>
-References: <4ab8a086-4200-45c0-9583-abf6e52a354a@huaweicloud.com>
+	s=arc-20240116; t=1765963900; c=relaxed/simple;
+	bh=Yt8k6jHem+sjqoJ9MdbYAJqiWv3kHqcoVBPkLP9hJ7M=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=oyqgB+2S8qThk4s1cHMN76eGa1Vtd2RSqbY8/xlkUtnuWu0u0PE96eVVbE3lkrq1lrq7HdBT4J8QecdDlWaFmBXY2v6mgEV2MIctLlIiwtb9/OViT8jh4TkjE+fNxUotVNJ9zr9np/5Ogar30mNdKSLKGya6Z74NYg2VsFXbPf8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=Cgst9XJs; arc=none smtp.client-ip=209.85.221.65
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-wr1-f65.google.com with SMTP id ffacd0b85a97d-430f1cd0026so2706889f8f.0
+        for <cgroups@vger.kernel.org>; Wed, 17 Dec 2025 01:31:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1765963896; x=1766568696; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=Zup+NREwv4bDGFbQ2A2HUXZHOK+ZTfY+5pUYXAKCRlU=;
+        b=Cgst9XJsx2bHZs0IePYRFKgYK5zTf62alX0LSd+593nF9vY3cGUecJdb2GHmwqIxln
+         W/D7+95R+VOE1Ao0yOf0rtmpvdbvdXFt+c1RaePfSriGhw3OB10EKX38LQKy3L5zhSB8
+         NKyMiw9KrJoEsqdT6HHi0YC+QcyfGTjtn/TsPgwWWAqeSJA9Yy9zueHuNR9a1owGB0Zn
+         /TiO08EUmjyi/wRqfka4GWOpCUnkSnGwTRImgbFjvArYjmXBhivu/9+Iy2gh9LzYH8KQ
+         mbdU+ZzTb8IXImXyvyallde2jtY9DJwk4C7GuxdhROaEM6WoovfHqdOvIUN63B8wvLpP
+         ulzw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1765963896; x=1766568696;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Zup+NREwv4bDGFbQ2A2HUXZHOK+ZTfY+5pUYXAKCRlU=;
+        b=HhdNmLRya0JNUb/vpWViC6pnb1Mud9YI9cNyMH1KIlE1WKs2aflH6Q/itabCOUFP7K
+         osNEghVpmtoVVSh8ldIeXqREYlt6jQS6gMjrN7tkpQb3KtDSuwimaPgKZM4qSH2CBei1
+         3ItrjGe9XagA6pRGDJWYW7jFrf+tCUczsg6xchkWr22twcDu4REjePT6pHmFRJ13JTVe
+         kFuiUK+yvoQqI++ibrMkE+N28ZecKqZr33kdpNkgGQMXl4tBwvc+mrlXfPkN65mS9hFk
+         4vlA0gCePFE6BCd139Lo2HMn4dfEVvBArTQYPibhf7xeWdBf8qowV+WjOns9QDhIlOXw
+         z+Uw==
+X-Forwarded-Encrypted: i=1; AJvYcCUz2Xms3Ieh5UsE52eV/WJqUjP2JZLSOck3wsby5drDum/15kAwxolzGpo821h8mUnD4M8JiyNh@vger.kernel.org
+X-Gm-Message-State: AOJu0YxLBuSiK0Lm2E1dZP23V95nLT3XasmUdDkBUdqarPyKsAMQ5zrI
+	UlUkoOlJIlXePtKro0ZNn2ik5ZyuQ/XKcb9FSu7Wc0ycVvr33YV8QHi2J1Q2XTBMkPE=
+X-Gm-Gg: AY/fxX58g+QyuCn7q3GrGBr3MTPJaXll7A1p+rue3Ow9Y7M1Ec82wiOA1a/1wIr7LlN
+	vcFZV6RYgJm2yqDCpcqxAzUMr+9ByNskZAYplZV0XS/zMmSwR7E277zl5B0dZIYMOV48+oWOHBd
+	/1gIay3N4ZeQl6kj/r6mL7yJI6yb9oqRwtn8Nk6OFf3LrDN/18FRpqOvfhcdS839uIaDY957eUK
+	0I2tCaMiaNWoPkdbs7ccsGFL17JNJ4g8y+yFBxv/xO1MjPqGjdqOJ878TR68fUcGd6r5aMIVY2L
+	UCGa0vOAsyPhRs3bWTBGPgkHGvVcrC7/0Jp3Ny2Lv06UI0AMyFRqdAkogCndM8JKjjrD04rTdWP
+	IIKS5QlUcHz7QEnhXKjcpUs8RTsQd1/QlJp00G0KdW2UuvkihmyOEyak3WBD8D+gQPd1zukaeCH
+	SJg7SqgH2SUIEY7WkvSI9b6u0z
+X-Google-Smtp-Source: AGHT+IHUg2s9qNRy2h8qzqEF7qPvmz9s/zPHkKaoW/kuwR3Q+5QdFqNBmMhrQm4/Lja8vlq0ergnFA==
+X-Received: by 2002:a05:6000:4285:b0:431:3a5:d9b2 with SMTP id ffacd0b85a97d-43103a5db00mr6698510f8f.39.1765963896012;
+        Wed, 17 Dec 2025 01:31:36 -0800 (PST)
+Received: from localhost (109-81-92-149.rct.o2.cz. [109.81.92.149])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-4310adad05fsm3888033f8f.15.2025.12.17.01.31.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 17 Dec 2025 01:31:35 -0800 (PST)
+Date: Wed, 17 Dec 2025 10:31:34 +0100
+From: Michal Hocko <mhocko@suse.com>
+To: Shakeel Butt <shakeel.butt@linux.dev>
+Cc: Andrew Morton <akpm@linux-foundation.org>,
+	Johannes Weiner <hannes@cmpxchg.org>,
+	Roman Gushchin <roman.gushchin@linux.dev>,
+	Muchun Song <muchun.song@linux.dev>,
+	Vlastimil Babka <vbabka@suse.cz>,
+	Meta kernel team <kernel-team@meta.com>, cgroups@vger.kernel.org,
+	linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+	Chris Mason <clm@fb.com>
+Subject: Re: [PATCH] mm: memcg: fix unit conversion for K() macro in OOM log
+Message-ID: <aUJ4dsVxsUj52hnz@tiehlicka>
+References: <20251216212054.484079-1-shakeel.butt@linux.dev>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20251216212054.484079-1-shakeel.butt@linux.dev>
 
-Hi, Ridong
+On Tue 16-12-25 13:20:54, Shakeel Butt wrote:
+> The commit bc8e51c05ad5 ("mm: memcg: dump memcg protection info on oom
+> or alloc failures") added functionality to dump memcg protections on OOM
+> or allocation failures. It uses K() macro to dump the information and
+> passes bytes to the macro. However the macro take number of pages
+> instead of bytes. It is defined as:
+> 
+>  #define K(x) ((x) << (PAGE_SHIFT-10))
+> 
+> Let's fix this.
+> 
+> Signed-off-by: Shakeel Butt <shakeel.butt@linux.dev>
+> Reported-by: Chris Mason <clm@fb.com>
+> Fixes: bc8e51c05ad5 ("mm: memcg: dump memcg protection info on oom or alloc failures")
 
-On Sat, 13 Dec 2025 08:52:11 +0800, Chen Ridong wrote:
->On 2025/12/1 17:44, Sun Shaojie wrote:
->> Hi, Ridong,
->> 
->> On Thu, 27 Nov 2025 09:55:21, Chen Ridong wrote:
->>> I have to admit that I prefer the current implementation.
->>>
->>> At the very least, it ensures that all partitions are treated fairly[1]. Relaxing this rule would
->>> make it more difficult for users to understand why the cpuset.cpus they configured do not match the
->>> effective CPUs in use, and why different operation orders yield different results.
->> 
->> As for "different operation orders yield different results", Below is an
->> example that is not a corner case.
->> 
->>     root cgroup
->>       /    \
->>      A1    B1
->> 
->>  #1> echo "0" > A1/cpuset.cpus
->>  #2> echo "0-1" > B1/cpuset.cpus.exclusive --> return error
->> 
->>  #1> echo "0-1" > B1/cpuset.cpus.exclusive
->>  #2> echo "0" > A1/cpuset.cpus
->> 
->
->You're looking at one rule, but there's another one—Longman pointed out that setting cpuset.cpu
->should never fail.
+Acked-by: Michal Hocko <mhocko@suse.com>
 
-Precisely because I know that setting cpuset.cpus should never fail,
-I provided this example, which is why it demonstrates that "different
-operation orders yield different results."
+Thanks!
+> ---
+>  mm/memcontrol.c | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
+> 
+> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> index e2e49f4ec9e0..6f000f0e76d2 100644
+> --- a/mm/memcontrol.c
+> +++ b/mm/memcontrol.c
+> @@ -5638,6 +5638,6 @@ void mem_cgroup_show_protected_memory(struct mem_cgroup *memcg)
+>  		memcg = root_mem_cgroup;
+>  
+>  	pr_warn("Memory cgroup min protection %lukB -- low protection %lukB",
+> -		K(atomic_long_read(&memcg->memory.children_min_usage)*PAGE_SIZE),
+> -		K(atomic_long_read(&memcg->memory.children_low_usage)*PAGE_SIZE));
+> +		K(atomic_long_read(&memcg->memory.children_min_usage)),
+> +		K(atomic_long_read(&memcg->memory.children_low_usage)));
+>  }
+> -- 
+> 2.47.3
+> 
 
->>>
->>> In another scenario, if we do not invalidate the siblings, new leaf cpusets (marked as member)
->>> created under A1 will end up with empty effective CPUs—and this is not a desired behavior.
->>>
->>>   root cgroup
->>>        |
->>>       A1
->>>      /  \
->>>    A2    A3...
->>>
->>> #1> echo "0-1" > A1/cpuset.cpus
->>> #2> echo "root" > A1/cpuset.cpus.partition
->>> #3> echo "0-1" > A2/cpuset.cpus
->>> #4> echo "root" > A2/cpuset.cpus.partition
->>> mkdir A4
->>> mkdir A5
->>> echo "0" > A4/cpuset.cpus
->>> echo $$ > A4/cgroup.procs
->>> echo "1" > A5/cpuset.cpus
->>> echo $$ > A5/cgroup.procs
->>>
->> 
->> If A2...A5 all belong to the same user, and that user wants both A4 and A5 
->> to have effective CPUs, then the user should also understand that A2 needs
->> to be adjusted to "member" instead of "root".
->> 
->> if A2...A5 belong to different users, must satisfying user A4’s requirement
->> come at the expense of user A2’s requirement? That is not fair.
->> 
->
->Regarding cpuset usage with Docker: when binding CPUs at container startup, do you check the sibling
->CPUs in use? Without this check, A2 will not be invalidated.
->
->Your patch has been discussed for a while. It seems to make the rules more complex.
-
-My aim is to safeguard the independence of sibling nodes while adhering to
-existing rules. I continuously update the patch to uphold these rules, as
-seen in the recently updated patch v6
-(https://lore.kernel.org/cgroups/20251201093806.107157-1-sunshaojie@kylinos.cn/).
-
-Thanks,
-Sun Shaojie
+-- 
+Michal Hocko
+SUSE Labs
 
