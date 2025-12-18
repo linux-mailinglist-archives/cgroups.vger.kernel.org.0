@@ -1,40 +1,40 @@
-Return-Path: <cgroups+bounces-12496-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-12494-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 59321CCB3E3
-	for <lists+cgroups@lfdr.de>; Thu, 18 Dec 2025 10:47:16 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id B591CCCB3F2
+	for <lists+cgroups@lfdr.de>; Thu, 18 Dec 2025 10:47:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id B1F65301A9A9
-	for <lists+cgroups@lfdr.de>; Thu, 18 Dec 2025 09:46:52 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 7F07C303E656
+	for <lists+cgroups@lfdr.de>; Thu, 18 Dec 2025 09:46:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A9A90331A6B;
-	Thu, 18 Dec 2025 09:46:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 193303321A5;
+	Thu, 18 Dec 2025 09:46:43 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 602CA3328F6;
-	Thu, 18 Dec 2025 09:46:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2F3482EA48F;
+	Thu, 18 Dec 2025 09:46:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1766051206; cv=none; b=HlOCIsthzaCqBaXka6Wyjkn1ME/YSnBdgBBGmR77cifOMglAw9SJYF7837zYeF0By/euJkZnYwxXgDT0sAjZzo6CXkG2i8BHZynNVEQmXvfRPNVqfCZxa+dscfSWLr4b7xc72ChDJ96HlJhQ1qVMRuELtmWvqcLtEpF8NkkWtwA=
+	t=1766051202; cv=none; b=lYlFnwxU8tNAsdFUqpznWsLbonPAimYldOOYfAUBytjFxGEMm3h7NuT1QlFDGnIeUU7VQMpR0CtJ0YgIdNBr2KbwJypyNJ7RngRJJLCX1VFnyMGDuoX/nAXaFqcUItCTqDN9F0DJWtT3iG9vzHtjQlp1ZBzqEk8wnXFv5aWyLEE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1766051206; c=relaxed/simple;
-	bh=n5y+c/A74XVvbdJLbrBLOd3u4NopT0CCszElgJPaD2Q=;
+	s=arc-20240116; t=1766051202; c=relaxed/simple;
+	bh=bvnb+XCxurX3bmAEDIKg/mz9A7UmT8WlyRgF8U9/4Mk=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=LF50Gvqn9+X20bEChopHdQR+voGofXCsYj+IVX328f3m7gcVe7x0pQ9RXyJiFev1lLtsgFWnK+CWNKkhUdmycS4FHXcxGEuEtq5sCfsjBF6pzYOpTuxm7SCMWG7FUWnzZb/S5vtHKpfuwA6JKTqAUJJVbYxjaERcS5pbnP+yrTI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=none smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+	 MIME-Version; b=hYYxMxbOrOiECIZYcm/fca6Ad5Z1axPmR7Em0YXBVpi9Zr3slhddX5iBCYHIcxnJSNcb3xhwF10bMJAYpwMgOZCFyaHHh9u3XkLOG8e8z008U58AruWKzXkI5HshpBCcwMuz6x6rebQJRjB41Au6tXjEBsbsoJRiX1GzhzM9NXc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=none smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=huaweicloud.com
 Received: from mail.maildlp.com (unknown [172.19.163.198])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTPS id 4dX5QS3ZYVzYQv7j;
-	Thu, 18 Dec 2025 17:46:08 +0800 (CST)
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTPS id 4dX5Qp3WN4zKHMmt;
+	Thu, 18 Dec 2025 17:46:26 +0800 (CST)
 Received: from mail02.huawei.com (unknown [10.116.40.128])
-	by mail.maildlp.com (Postfix) with ESMTP id D2E8F40577;
+	by mail.maildlp.com (Postfix) with ESMTP id E006F40579;
 	Thu, 18 Dec 2025 17:46:36 +0800 (CST)
 Received: from hulk-vt.huawei.com (unknown [10.67.174.121])
-	by APP4 (Coremail) with SMTP id gCh0CgA35vZxzUNpHcJzAg--.22754S4;
+	by APP4 (Coremail) with SMTP id gCh0CgA35vZxzUNpHcJzAg--.22754S5;
 	Thu, 18 Dec 2025 17:46:36 +0800 (CST)
 From: Chen Ridong <chenridong@huaweicloud.com>
 To: longman@redhat.com,
@@ -45,9 +45,9 @@ Cc: cgroups@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	lujialin4@huawei.com,
 	chenridong@huaweicloud.com
-Subject: [PATCH -next v2 2/6] cpuset: add cpuset1_online_css helper for v1-specific operations
-Date: Thu, 18 Dec 2025 09:31:37 +0000
-Message-Id: <20251218093141.2687291-3-chenridong@huaweicloud.com>
+Subject: [PATCH -next v2 3/6] cpuset: add cpuset1_init helper for v1 initialization
+Date: Thu, 18 Dec 2025 09:31:38 +0000
+Message-Id: <20251218093141.2687291-4-chenridong@huaweicloud.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20251218093141.2687291-1-chenridong@huaweicloud.com>
 References: <20251218093141.2687291-1-chenridong@huaweicloud.com>
@@ -58,13 +58,13 @@ List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:gCh0CgA35vZxzUNpHcJzAg--.22754S4
-X-Coremail-Antispam: 1UD129KBjvJXoWxtr1UtFWkKFy5JFWUZryUGFg_yoWxJryfpF
-	18CFy3JayUJFyUu3yfJa4DWrZ3Kw40qF45KF95Ca4rJFy3AF1j9F1kZas8XFy5JFyDCrWU
-	Xan0y3yS9a4qkrJanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUBG14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_Jryl82xGYIkIc2
-	x26xkF7I0E14v26r4j6ryUM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2z4x0
+X-CM-TRANSID:gCh0CgA35vZxzUNpHcJzAg--.22754S5
+X-Coremail-Antispam: 1UD129KBjvJXoWxAry5ZF15Zr15CFWkCr17ZFb_yoWrCryfpF
+	y8Ca4Ut3y5JF1xu34kA3yDu393Kwn7tF17KF98K34rJF47tF4UuF1kXwn8Zry5tFWDur43
+	ZFs2yw43uF1qyrJanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUBC14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_JrWl82xGYIkIc2
+	x26xkF7I0E14v26ryj6s0DM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2z4x0
 	Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr1j6F4UJw
 	A2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oVCq3wAS
 	0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2
@@ -74,168 +74,123 @@ X-Coremail-Antispam: 1UD129KBjvJXoWxtr1UtFWkKFy5JFWUZryUGFg_yoWxJryfpF
 	6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64
 	vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_
 	Cr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r4j6F4UMIIF0x
-	vEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x0JUFoGdUUUUU=
+	vEx4A2jsIEc7CjxVAFwI0_Gr1j6F4UJbIYCTnIWIevJa73UjIFyTuYvjfUYdb1UUUUU
 X-CM-SenderInfo: hfkh02xlgr0w46kxt4xhlfz01xgou0bp/
 
 From: Chen Ridong <chenridong@huawei.com>
 
-This commit introduces the cpuset1_online_css helper to centralize
-v1-specific handling during cpuset online. It performs operations such as
-updating the CS_SPREAD_PAGE, CS_SPREAD_SLAB, and CGRP_CPUSET_CLONE_CHILDREN
-flags, which are unique to the cpuset v1 control group interface.
+This patch introduces the cpuset1_init helper in cpuset_v1.c to initialize
+v1-specific fields, including the fmeter and relax_domain_level members.
 
-The helper is now placed in cpuset-v1.c to maintain clear separation
-between v1 and v2 logic.
+The relax_domain_level related code will be moved to cpuset_v1.c in a
+subsequent patch. After this move, v1-specific members will only be
+visible when CONFIG_CPUSETS_V1=y.
 
 Signed-off-by: Chen Ridong <chenridong@huawei.com>
 ---
- kernel/cgroup/cpuset-internal.h |  2 ++
- kernel/cgroup/cpuset-v1.c       | 48 +++++++++++++++++++++++++++++++++
- kernel/cgroup/cpuset.c          | 39 +--------------------------
- 3 files changed, 51 insertions(+), 38 deletions(-)
+ kernel/cgroup/cpuset-internal.h | 10 ++++++----
+ kernel/cgroup/cpuset-v1.c       |  7 ++++++-
+ kernel/cgroup/cpuset.c          |  4 ++--
+ 3 files changed, 14 insertions(+), 7 deletions(-)
 
 diff --git a/kernel/cgroup/cpuset-internal.h b/kernel/cgroup/cpuset-internal.h
-index 01976c8e7d49..6c03cad02302 100644
+index 6c03cad02302..a32517da8231 100644
 --- a/kernel/cgroup/cpuset-internal.h
 +++ b/kernel/cgroup/cpuset-internal.h
-@@ -293,6 +293,7 @@ void cpuset1_hotplug_update_tasks(struct cpuset *cs,
+@@ -144,8 +144,6 @@ struct cpuset {
+ 	 */
+ 	nodemask_t old_mems_allowed;
+ 
+-	struct fmeter fmeter;		/* memory_pressure filter */
+-
+ 	/*
+ 	 * Tasks are being attached to this cpuset.  Used to prevent
+ 	 * zeroing cpus/mems_allowed between ->can_attach() and ->attach().
+@@ -181,6 +179,10 @@ struct cpuset {
+ 
+ 	/* Used to merge intersecting subsets for generate_sched_domains */
+ 	struct uf_node node;
++
++#ifdef CONFIG_CPUSETS_V1
++	struct fmeter fmeter;		/* memory_pressure filter */
++#endif
+ };
+ 
+ static inline struct cpuset *css_cs(struct cgroup_subsys_state *css)
+@@ -285,7 +287,6 @@ void cpuset_full_unlock(void);
+  */
+ #ifdef CONFIG_CPUSETS_V1
+ extern struct cftype cpuset1_files[];
+-void fmeter_init(struct fmeter *fmp);
+ void cpuset1_update_task_spread_flags(struct cpuset *cs,
+ 					struct task_struct *tsk);
+ void cpuset1_update_tasks_flags(struct cpuset *cs);
+@@ -293,9 +294,9 @@ void cpuset1_hotplug_update_tasks(struct cpuset *cs,
  			    struct cpumask *new_cpus, nodemask_t *new_mems,
  			    bool cpus_updated, bool mems_updated);
  int cpuset1_validate_change(struct cpuset *cur, struct cpuset *trial);
-+void cpuset1_online_css(struct cgroup_subsys_state *css);
++void cpuset1_init(struct cpuset *cs);
+ void cpuset1_online_css(struct cgroup_subsys_state *css);
  #else
- static inline void fmeter_init(struct fmeter *fmp) {}
+-static inline void fmeter_init(struct fmeter *fmp) {}
  static inline void cpuset1_update_task_spread_flags(struct cpuset *cs,
-@@ -303,6 +304,7 @@ static inline void cpuset1_hotplug_update_tasks(struct cpuset *cs,
+ 					struct task_struct *tsk) {}
+ static inline void cpuset1_update_tasks_flags(struct cpuset *cs) {}
+@@ -304,6 +305,7 @@ static inline void cpuset1_hotplug_update_tasks(struct cpuset *cs,
  			    bool cpus_updated, bool mems_updated) {}
  static inline int cpuset1_validate_change(struct cpuset *cur,
  				struct cpuset *trial) { return 0; }
-+static inline void cpuset1_online_css(struct cgroup_subsys_state *css) {}
++static inline void cpuset1_init(struct cpuset *cs) {}
+ static inline void cpuset1_online_css(struct cgroup_subsys_state *css) {}
  #endif /* CONFIG_CPUSETS_V1 */
  
- #endif /* __CPUSET_INTERNAL_H */
 diff --git a/kernel/cgroup/cpuset-v1.c b/kernel/cgroup/cpuset-v1.c
-index 12e76774c75b..c296ce47616a 100644
+index c296ce47616a..84f00ab9c81f 100644
 --- a/kernel/cgroup/cpuset-v1.c
 +++ b/kernel/cgroup/cpuset-v1.c
-@@ -499,6 +499,54 @@ static int cpuset_write_u64(struct cgroup_subsys_state *css, struct cftype *cft,
+@@ -62,7 +62,7 @@ struct cpuset_remove_tasks_struct {
+ #define FM_SCALE 1000		/* faux fixed point scale */
+ 
+ /* Initialize a frequency meter */
+-void fmeter_init(struct fmeter *fmp)
++static void fmeter_init(struct fmeter *fmp)
+ {
+ 	fmp->cnt = 0;
+ 	fmp->val = 0;
+@@ -499,6 +499,11 @@ static int cpuset_write_u64(struct cgroup_subsys_state *css, struct cftype *cft,
  	return retval;
  }
  
-+void cpuset1_online_css(struct cgroup_subsys_state *css)
++void cpuset1_init(struct cpuset *cs)
 +{
-+	struct cpuset *tmp_cs;
-+	struct cgroup_subsys_state *pos_css;
-+	struct cpuset *cs = css_cs(css);
-+	struct cpuset *parent = parent_cs(cs);
-+
-+	lockdep_assert_cpus_held();
-+	lockdep_assert_cpuset_lock_held();
-+
-+	if (is_spread_page(parent))
-+		set_bit(CS_SPREAD_PAGE, &cs->flags);
-+	if (is_spread_slab(parent))
-+		set_bit(CS_SPREAD_SLAB, &cs->flags);
-+
-+	if (!test_bit(CGRP_CPUSET_CLONE_CHILDREN, &css->cgroup->flags))
-+		return;
-+
-+	/*
-+	 * Clone @parent's configuration if CGRP_CPUSET_CLONE_CHILDREN is
-+	 * set.  This flag handling is implemented in cgroup core for
-+	 * historical reasons - the flag may be specified during mount.
-+	 *
-+	 * Currently, if any sibling cpusets have exclusive cpus or mem, we
-+	 * refuse to clone the configuration - thereby refusing the task to
-+	 * be entered, and as a result refusing the sys_unshare() or
-+	 * clone() which initiated it.  If this becomes a problem for some
-+	 * users who wish to allow that scenario, then this could be
-+	 * changed to grant parent->cpus_allowed-sibling_cpus_exclusive
-+	 * (and likewise for mems) to the new cgroup.
-+	 */
-+	rcu_read_lock();
-+	cpuset_for_each_child(tmp_cs, pos_css, parent) {
-+		if (is_mem_exclusive(tmp_cs) || is_cpu_exclusive(tmp_cs)) {
-+			rcu_read_unlock();
-+			return;
-+		}
-+	}
-+	rcu_read_unlock();
-+
-+	cpuset_callback_lock_irq();
-+	cs->mems_allowed = parent->mems_allowed;
-+	cs->effective_mems = parent->mems_allowed;
-+	cpumask_copy(cs->cpus_allowed, parent->cpus_allowed);
-+	cpumask_copy(cs->effective_cpus, parent->cpus_allowed);
-+	cpuset_callback_unlock_irq();
++	fmeter_init(&cs->fmeter);
 +}
 +
- /*
-  * for the common functions, 'private' gives the type of file
-  */
+ void cpuset1_online_css(struct cgroup_subsys_state *css)
+ {
+ 	struct cpuset *tmp_cs;
 diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
-index 4fa3080da3be..5d9dbd1aeed3 100644
+index 5d9dbd1aeed3..8ef8b7511659 100644
 --- a/kernel/cgroup/cpuset.c
 +++ b/kernel/cgroup/cpuset.c
-@@ -3616,17 +3616,11 @@ static int cpuset_css_online(struct cgroup_subsys_state *css)
- {
- 	struct cpuset *cs = css_cs(css);
- 	struct cpuset *parent = parent_cs(cs);
--	struct cpuset *tmp_cs;
--	struct cgroup_subsys_state *pos_css;
+@@ -3602,7 +3602,7 @@ cpuset_css_alloc(struct cgroup_subsys_state *parent_css)
+ 		return ERR_PTR(-ENOMEM);
  
- 	if (!parent)
- 		return 0;
+ 	__set_bit(CS_SCHED_LOAD_BALANCE, &cs->flags);
+-	fmeter_init(&cs->fmeter);
++	cpuset1_init(cs);
+ 	cs->relax_domain_level = -1;
  
- 	cpuset_full_lock();
--	if (is_spread_page(parent))
--		set_bit(CS_SPREAD_PAGE, &cs->flags);
--	if (is_spread_slab(parent))
--		set_bit(CS_SPREAD_SLAB, &cs->flags);
- 	/*
- 	 * For v2, clear CS_SCHED_LOAD_BALANCE if parent is isolated
- 	 */
-@@ -3641,39 +3635,8 @@ static int cpuset_css_online(struct cgroup_subsys_state *css)
- 		cs->effective_mems = parent->effective_mems;
- 	}
- 	spin_unlock_irq(&callback_lock);
-+	cpuset1_online_css(css);
+ 	/* Set CS_MEMORY_MIGRATE for default hierarchy */
+@@ -3836,7 +3836,7 @@ int __init cpuset_init(void)
+ 	cpumask_setall(top_cpuset.exclusive_cpus);
+ 	nodes_setall(top_cpuset.effective_mems);
  
--	if (!test_bit(CGRP_CPUSET_CLONE_CHILDREN, &css->cgroup->flags))
--		goto out_unlock;
--
--	/*
--	 * Clone @parent's configuration if CGRP_CPUSET_CLONE_CHILDREN is
--	 * set.  This flag handling is implemented in cgroup core for
--	 * historical reasons - the flag may be specified during mount.
--	 *
--	 * Currently, if any sibling cpusets have exclusive cpus or mem, we
--	 * refuse to clone the configuration - thereby refusing the task to
--	 * be entered, and as a result refusing the sys_unshare() or
--	 * clone() which initiated it.  If this becomes a problem for some
--	 * users who wish to allow that scenario, then this could be
--	 * changed to grant parent->cpus_allowed-sibling_cpus_exclusive
--	 * (and likewise for mems) to the new cgroup.
--	 */
--	rcu_read_lock();
--	cpuset_for_each_child(tmp_cs, pos_css, parent) {
--		if (is_mem_exclusive(tmp_cs) || is_cpu_exclusive(tmp_cs)) {
--			rcu_read_unlock();
--			goto out_unlock;
--		}
--	}
--	rcu_read_unlock();
--
--	spin_lock_irq(&callback_lock);
--	cs->mems_allowed = parent->mems_allowed;
--	cs->effective_mems = parent->mems_allowed;
--	cpumask_copy(cs->cpus_allowed, parent->cpus_allowed);
--	cpumask_copy(cs->effective_cpus, parent->cpus_allowed);
--	spin_unlock_irq(&callback_lock);
--out_unlock:
- 	cpuset_full_unlock();
- 	return 0;
- }
+-	fmeter_init(&top_cpuset.fmeter);
++	cpuset1_init(&top_cpuset);
+ 
+ 	BUG_ON(!alloc_cpumask_var(&cpus_attach, GFP_KERNEL));
+ 
 -- 
 2.34.1
 
