@@ -1,189 +1,255 @@
-Return-Path: <cgroups+bounces-12467-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-12468-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9DCDECCA106
-	for <lists+cgroups@lfdr.de>; Thu, 18 Dec 2025 03:14:54 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2E7C4CCA240
+	for <lists+cgroups@lfdr.de>; Thu, 18 Dec 2025 04:07:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id A70BD301D670
-	for <lists+cgroups@lfdr.de>; Thu, 18 Dec 2025 02:14:51 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 4C92030194D9
+	for <lists+cgroups@lfdr.de>; Thu, 18 Dec 2025 03:06:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 899342D29B7;
-	Thu, 18 Dec 2025 02:14:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4E29B20299B;
+	Thu, 18 Dec 2025 03:06:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Q+HPMu5E";
+	dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b="LfkNcBwD"
 X-Original-To: cgroups@vger.kernel.org
-Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 59A202C11EE;
-	Thu, 18 Dec 2025 02:14:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5DA4D125A9
+	for <cgroups@vger.kernel.org>; Thu, 18 Dec 2025 03:06:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1766024090; cv=none; b=fckYInm8uipMnKW/D2UyseMkwEG7mOSh5d+/MKqT3AHd6Xe1zGRDhFUTmSyTyDE+dFYaT48MX2hoF3JyDAl00WuVlhKJBJSrESotNbbOb5iv8nMsaTEnDGK77qwJg5DpNfcbSKD5E5PveYfwSxd2lizGLu/9c6zpXBFbI8RZSmo=
+	t=1766027189; cv=none; b=BdPa5ckoVmqOU57jYdD+La7s0ATIdQcwIAw9AWzaoaGuaUx3SdIEZRKu1BjNJuzql79R1YuyvJbtIXA+p6Rv578TZjpnc6oOWGRSgj2zj4XGx5gTvGvMxhKlrCJ9wBfo7tn2Sl8J02URanqTQFI7ONZx9Ud4TICPaa7L4LNT2lo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1766024090; c=relaxed/simple;
-	bh=AGtIt/h7j5t7ydj+SdmpwUfnqANNLRl1jKikZSpt7fY=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=gcINLBHEtU4XpRUaQJJYpYNuQO9pv9PwWah5qEnNlLtQGXG2hGyo/JaFP25T/Y5yx8hZ+BnJ1GSbPLBU/0ANzAA//k5xOicBasKFqWXlG3mUgRM7d1bTifDhQ1o8CBBjT5TaoJj6JM1LVLmq83cvSXHbe+z7fynh1iFWX1ihKtc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.170])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTPS id 4dWvPQ63S5zKHLw0;
-	Thu, 18 Dec 2025 10:14:34 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.75])
-	by mail.maildlp.com (Postfix) with ESMTP id CA31F4056D;
-	Thu, 18 Dec 2025 10:14:44 +0800 (CST)
-Received: from hulk-vt.huawei.com (unknown [10.67.174.121])
-	by APP2 (Coremail) with SMTP id Syh0CgD3D3+KY0NpieZGAg--.21752S2;
-	Thu, 18 Dec 2025 10:14:44 +0800 (CST)
-From: Chen Ridong <chenridong@huaweicloud.com>
-To: longman@redhat.com,
-	tj@kernel.org,
-	hannes@cmpxchg.org,
-	mkoutny@suse.com
-Cc: cgroups@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	lujialin4@huawei.com,
-	chenridong@huaweicloud.com
-Subject: [PATCH -next v2] cpuset: fix warning when disabling remote partition
-Date: Thu, 18 Dec 2025 01:59:50 +0000
-Message-Id: <20251218015950.2667813-1-chenridong@huaweicloud.com>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1766027189; c=relaxed/simple;
+	bh=1w3K9erVeAIYiyU1ISwEyluzBAz/NH7/ljYWQPc8q2g=;
+	h=From:Message-ID:Date:MIME-Version:Subject:To:Cc:References:
+	 In-Reply-To:Content-Type; b=Uwn/ppsy1VIYJuKqCc+KMXM1V10fhjm0HzBShjfiA6DH/iApwPlCAXIzLqu7cefMsi1aCwmlZadQY9rtPBGn6GQGvlwas+SJwcUN/ut3XxDS1jp+VcxnfgS0nw1VAyeO8S0xRGCWQOfvir0eg2OiOZZs8U3tq3cVF/L6HfKWdRk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Q+HPMu5E; dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b=LfkNcBwD; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1766027186;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=BMP0RMFq2yOHg1jcSOiR2CNxZZMstan1ZeAu1gLWTB8=;
+	b=Q+HPMu5E0PRkrvrt64PuADVAjsgUIOqrD/BQBRy3j8E9aqMR7nlJ4IqgNrT5GI9gW6ZAQg
+	v9RgFxasgVjCnAGDtNAapuvh7wU0+sDEtrrJ4Qzun2W/nLoPKkuODJ90KrYaag5JOWZqvd
+	TIj0iOapG2cSEoB0Cao8VEm1ntznz28=
+Received: from mail-qk1-f199.google.com (mail-qk1-f199.google.com
+ [209.85.222.199]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-473-IITktprNOJaSqw93JDZtxg-1; Wed, 17 Dec 2025 22:06:25 -0500
+X-MC-Unique: IITktprNOJaSqw93JDZtxg-1
+X-Mimecast-MFC-AGG-ID: IITktprNOJaSqw93JDZtxg_1766027184
+Received: by mail-qk1-f199.google.com with SMTP id af79cd13be357-8b24a25cff5so48382885a.2
+        for <cgroups@vger.kernel.org>; Wed, 17 Dec 2025 19:06:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=redhat.com; s=google; t=1766027184; x=1766631984; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:content-language:references
+         :cc:to:subject:user-agent:mime-version:date:message-id:from:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=BMP0RMFq2yOHg1jcSOiR2CNxZZMstan1ZeAu1gLWTB8=;
+        b=LfkNcBwDal4yU8OB27akMIGigxMI1Eixxem82kmJuhI3QsuwRuHa+Yy1TkW+y8BsxX
+         +a7GCQKOB4gNkTtrsCcghwDZf1unne/TVLEyDYTQ1oZ2DMAC/7bNLrRqWCtPfn3txQ1t
+         bfABCYo7hqGubPT1wCC7yxUMKx+WnSmPPSqK32R7cNflJJSk1NJDFJBYDfugocr8VuWp
+         fxqd/Ru88TgHqB6hq9O7sLK/SsZ4JeUexRbI5FtVOM9KChMTMItZT39Yhuo54HZXqaHX
+         guDHg9FHHlDEXDe6rTtAFsBunuDe6x0PMOWuJPxxh+Pw1fPE5Q4K/Wt8NWaPI4j56E6s
+         l3UQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1766027184; x=1766631984;
+        h=content-transfer-encoding:in-reply-to:content-language:references
+         :cc:to:subject:user-agent:mime-version:date:message-id:from:x-gm-gg
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=BMP0RMFq2yOHg1jcSOiR2CNxZZMstan1ZeAu1gLWTB8=;
+        b=UWFj+EB5ubfFygi82KCE/jKoCBYskAxDoFeucVL0VUkYwDCioKZWIieHtgDUpGF28o
+         YEUJrmkffBvnGbDTYDR4RrfxXUL+yBum1FvPGsSAToifzsYPIXAB+D9SPUpI4Ocw6DHh
+         nZpk76IsOkwr8B+7Qo+4L/zJFgS6ebddJs/IlF6IbJJNnJHJvqxFJCB9hOIl+eeLPjrt
+         JXgmAMDZu5t7pSxWr9mfFrFkLDmCwjB/KpVZR9PYJHdJRXrBpFGO7Mkwh8wp3Yqx/xOh
+         GUd7G/N9mWZ8QMi/p2CJFrqUiLUnqDC+RyHVLEcjRaE5+P+rDyg6mAnbmQTZFVdI8Ri9
+         gMrw==
+X-Gm-Message-State: AOJu0Ywyv62TYc6KPrG1YSN2uwECKJHk1if5hluuDbRsq/Euhjq6dnXQ
+	XYmKHJzcsm8zKM+/Dpe1SUb9muUqqnXz76WeQA0VQDKeYV3QjyXgMY0uFZ1UU4NMmV0kSRmvkzU
+	BDggvXCEPfG/TrQenIlfEKytg/QtiC0CmdQXFeTMOEA74JoZNFm14kXA4GjE=
+X-Gm-Gg: AY/fxX7iuI16ajRkn3SHxeduUpXUYw6KImBVr1szvY6sIJbKnzYYkV0CsZD8FHLUG1D
+	mfJ/MHUwryYTWAryRw6Yl06p5b4LPjsP1nyg+oD4+GEjVEMcpcb8WWtCftpPM7qqQOq9kEPMUfA
+	mLIL/fVl3U+Yve7mlY163KnOsqnHWpoc1VOUCZ/baBsED80whdmUChklE4a7oDzacy++zsJl+R0
+	LYvtLlVe3V1uCc7q3lYjOuuuFQr89FW6yjoI9fKiPJcIz355nczKTWdPJV+gtj9zA3u+xDt3wir
+	Zby67dn/KcBF+hgxJ0Hslsf1emYBGGMhEdStKshhRUUuvbr5nIlLk5x96QZZ3apSHNj6adfsASY
+	sydpoP7FhlcOwVZS2go8aMaSWsffPnoLbZLLtCaK3yWr8O+Y/kuY5DVzx
+X-Received: by 2002:a05:620a:400b:b0:8b1:2fab:30cd with SMTP id af79cd13be357-8bb3a36d380mr3021107585a.52.1766027184439;
+        Wed, 17 Dec 2025 19:06:24 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IEDZjilkkrLLT8zrlhycK20SmmaPwGqIv7DftZyLv8nxFly8G3Hq2cQQ873v8E2YciAYPZ5NQ==
+X-Received: by 2002:a05:620a:400b:b0:8b1:2fab:30cd with SMTP id af79cd13be357-8bb3a36d380mr3021105385a.52.1766027184025;
+        Wed, 17 Dec 2025 19:06:24 -0800 (PST)
+Received: from ?IPV6:2601:188:c102:b180:1f8b:71d0:77b1:1f6e? ([2601:188:c102:b180:1f8b:71d0:77b1:1f6e])
+        by smtp.gmail.com with ESMTPSA id af79cd13be357-8beebb3b75bsm75364685a.52.2025.12.17.19.06.23
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 17 Dec 2025 19:06:23 -0800 (PST)
+From: Waiman Long <llong@redhat.com>
+X-Google-Original-From: Waiman Long <longman@redhat.com>
+Message-ID: <67cabea9-b74f-43da-a860-139e0f52f0e1@redhat.com>
+Date: Wed, 17 Dec 2025 22:06:22 -0500
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH -next 4/6] cpuset: move update_domain_attr_tree to
+ cpuset_v1.c
+To: Chen Ridong <chenridong@huaweicloud.com>, Waiman Long <llong@redhat.com>,
+ tj@kernel.org, hannes@cmpxchg.org, mkoutny@suse.com
+Cc: cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+ lujialin4@huawei.com
+References: <20251217084942.2666405-1-chenridong@huaweicloud.com>
+ <20251217084942.2666405-5-chenridong@huaweicloud.com>
+ <249786b2-f715-4a46-be47-d6d3d6f35c10@redhat.com>
+ <3d9464bd-77ee-4ff7-a9e8-90930b994d00@huaweicloud.com>
+Content-Language: en-US
+In-Reply-To: <3d9464bd-77ee-4ff7-a9e8-90930b994d00@huaweicloud.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:Syh0CgD3D3+KY0NpieZGAg--.21752S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxJw17Jr1UXr4rXw17urW3Jrb_yoWrKry3pF
-	yUKr4UGrW0gr15Cay3JF4xZw1rKan7AFW2yrnrG34rJF17A3WvkFyjk398J34UWrWDGry7
-	ZayDur4FqF9rAw7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUkC14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-	1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
-	JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
-	CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
-	2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
-	W8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lc7CjxVAaw2AFwI0_
-	JF0_Jw1l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67
-	AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIY
-	rxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14
-	v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8
-	JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjfUYCJmUU
-	UUU
-X-CM-SenderInfo: hfkh02xlgr0w46kxt4xhlfz01xgou0bp/
 
-From: Chen Ridong <chenridong@huawei.com>
+On 12/17/25 7:44 PM, Chen Ridong wrote:
+>
+> On 2025/12/18 1:09, Waiman Long wrote:
+>> On 12/17/25 3:49 AM, Chen Ridong wrote:
+>>> From: Chen Ridong <chenridong@huawei.com>
+>>>
+>>> Since relax_domain_level is only applicable to v1, move
+>>> update_domain_attr_tree() to cpuset-v1.c, which solely updates
+>>> relax_domain_level,
+>>>
+>>> Additionally, relax_domain_level is now initialized in cpuset1_inited.
+>>> Accordingly, the initialization of relax_domain_level in top_cpuset is
+>>> removed. The unnecessary remote_partition initialization in top_cpuset
+>>> is also cleaned up.
+>>>
+>>> As a result, relax_domain_level can be defined in cpuset only when
+>>> CONFIG_CPUSETS_V1=y.
+>>>
+>>> Signed-off-by: Chen Ridong <chenridong@huawei.com>
+>>> ---
+>>>    kernel/cgroup/cpuset-internal.h | 11 ++++++++---
+>>>    kernel/cgroup/cpuset-v1.c       | 28 ++++++++++++++++++++++++++++
+>>>    kernel/cgroup/cpuset.c          | 31 -------------------------------
+>>>    3 files changed, 36 insertions(+), 34 deletions(-)
+>>>
+>>> diff --git a/kernel/cgroup/cpuset-internal.h b/kernel/cgroup/cpuset-internal.h
+>>> index a32517da8231..677053ffb913 100644
+>>> --- a/kernel/cgroup/cpuset-internal.h
+>>> +++ b/kernel/cgroup/cpuset-internal.h
+>>> @@ -150,9 +150,6 @@ struct cpuset {
+>>>         */
+>>>        int attach_in_progress;
+>>>    -    /* for custom sched domain */
+>>> -    int relax_domain_level;
+>>> -
+>>>        /* partition root state */
+>>>        int partition_root_state;
+>>>    @@ -182,6 +179,9 @@ struct cpuset {
+>>>      #ifdef CONFIG_CPUSETS_V1
+>>>        struct fmeter fmeter;        /* memory_pressure filter */
+>>> +
+>>> +    /* for custom sched domain */
+>>> +    int relax_domain_level;
+>>>    #endif
+>>>    };
+>>>    @@ -296,6 +296,8 @@ void cpuset1_hotplug_update_tasks(struct cpuset *cs,
+>>>    int cpuset1_validate_change(struct cpuset *cur, struct cpuset *trial);
+>>>    void cpuset1_init(struct cpuset *cs);
+>>>    void cpuset1_online_css(struct cgroup_subsys_state *css);
+>>> +void update_domain_attr_tree(struct sched_domain_attr *dattr,
+>>> +                    struct cpuset *root_cs);
+>>>    #else
+>>>    static inline void cpuset1_update_task_spread_flags(struct cpuset *cs,
+>>>                        struct task_struct *tsk) {}
+>>> @@ -307,6 +309,9 @@ static inline int cpuset1_validate_change(struct cpuset *cur,
+>>>                    struct cpuset *trial) { return 0; }
+>>>    static inline void cpuset1_init(struct cpuset *cs) {}
+>>>    static inline void cpuset1_online_css(struct cgroup_subsys_state *css) {}
+>>> +static inline void update_domain_attr_tree(struct sched_domain_attr *dattr,
+>>> +                    struct cpuset *root_cs) {}
+>>> +
+>>>    #endif /* CONFIG_CPUSETS_V1 */
+>>>      #endif /* __CPUSET_INTERNAL_H */
+>>> diff --git a/kernel/cgroup/cpuset-v1.c b/kernel/cgroup/cpuset-v1.c
+>>> index 574df740f21a..95de6f2a4cc5 100644
+>>> --- a/kernel/cgroup/cpuset-v1.c
+>>> +++ b/kernel/cgroup/cpuset-v1.c
+>>> @@ -502,6 +502,7 @@ static int cpuset_write_u64(struct cgroup_subsys_state *css, struct cftype *cft,
+>>>    void cpuset1_init(struct cpuset *cs)
+>>>    {
+>>>        fmeter_init(&cs->fmeter);
+>>> +    cs->relax_domain_level = -1;
+>>>    }
+>>>      void cpuset1_online_css(struct cgroup_subsys_state *css)
+>>> @@ -552,6 +553,33 @@ void cpuset1_online_css(struct cgroup_subsys_state *css)
+>>>        cpuset_callback_unlock_irq();
+>>>    }
+>>>    +static void
+>>> +update_domain_attr(struct sched_domain_attr *dattr, struct cpuset *c)
+>>> +{
+>>> +    if (dattr->relax_domain_level < c->relax_domain_level)
+>>> +        dattr->relax_domain_level = c->relax_domain_level;
+>>> +}
+>>> +
+>>> +void update_domain_attr_tree(struct sched_domain_attr *dattr,
+>>> +                    struct cpuset *root_cs)
+>>> +{
+>>> +    struct cpuset *cp;
+>>> +    struct cgroup_subsys_state *pos_css;
+>>> +
+>>> +    rcu_read_lock();
+>>> +    cpuset_for_each_descendant_pre(cp, pos_css, root_cs) {
+>>> +        /* skip the whole subtree if @cp doesn't have any CPU */
+>>> +        if (cpumask_empty(cp->cpus_allowed)) {
+>>> +            pos_css = css_rightmost_descendant(pos_css);
+>>> +            continue;
+>>> +        }
+>>> +
+>>> +        if (is_sched_load_balance(cp))
+>>> +            update_domain_attr(dattr, cp);
+>>> +    }
+>>> +    rcu_read_unlock();
+>>> +}
+>>> +
+>>>    /*
+>>>     * for the common functions, 'private' gives the type of file
+>>>     */
+>>> diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
+>>> index e836a1f2b951..88ca8b40e01a 100644
+>>> --- a/kernel/cgroup/cpuset.c
+>>> +++ b/kernel/cgroup/cpuset.c
+>>> @@ -215,8 +215,6 @@ static struct cpuset top_cpuset = {
+>>>        .flags = BIT(CS_CPU_EXCLUSIVE) |
+>>>             BIT(CS_MEM_EXCLUSIVE) | BIT(CS_SCHED_LOAD_BALANCE),
+>>>        .partition_root_state = PRS_ROOT,
+>>> -    .relax_domain_level = -1,
+>> As the cpuset1_init() function will not be called for top_cpuset, you should not remove the
+>> initialization of relax_domain_level. Instead, put it inside a "ifdef CONFIG_CPUSETS_V1 block.
+>>
+> In patch 3/6, I've made cpuset_init call cpuset1_init to initialize top_cpuset.fmeter. Thus, I think
+> we could remove the relax_domain_level initialization here.
 
-A warning was triggered as follows:
+I missed that. You are right. Remove the initialization here should be 
+all right.
 
-WARNING: kernel/cgroup/cpuset.c:1651 at remote_partition_disable+0xf7/0x110
-RIP: 0010:remote_partition_disable+0xf7/0x110
-RSP: 0018:ffffc90001947d88 EFLAGS: 00000206
-RAX: 0000000000007fff RBX: ffff888103b6e000 RCX: 0000000000006f40
-RDX: 0000000000006f00 RSI: ffffc90001947da8 RDI: ffff888103b6e000
-RBP: ffff888103b6e000 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000001 R11: ffff88810b2e2728 R12: ffffc90001947da8
-R13: 0000000000000000 R14: ffffc90001947da8 R15: ffff8881081f1c00
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f55c8bbe0b2 CR3: 000000010b14c000 CR4: 00000000000006f0
-Call Trace:
- <TASK>
- update_prstate+0x2d3/0x580
- cpuset_partition_write+0x94/0xf0
- kernfs_fop_write_iter+0x147/0x200
- vfs_write+0x35d/0x500
- ksys_write+0x66/0xe0
- do_syscall_64+0x6b/0x390
- entry_SYSCALL_64_after_hwframe+0x4b/0x53
-RIP: 0033:0x7f55c8cd4887
+Cheers,
+Longman
 
-Reproduction steps (on a 16-CPU machine):
-
-        # cd /sys/fs/cgroup/
-        # mkdir A1
-        # echo +cpuset > A1/cgroup.subtree_control
-        # echo "0-14" > A1/cpuset.cpus.exclusive
-        # mkdir A1/A2
-        # echo "0-14" > A1/A2/cpuset.cpus.exclusive
-        # echo "root" > A1/A2/cpuset.cpus.partition
-        # echo 0 > /sys/devices/system/cpu/cpu15/online
-        # echo member > A1/A2/cpuset.cpus.partition
-
-When CPU 15 is offlined, subpartitions_cpus gets cleared because no CPUs
-remain available for the top_cpuset, forcing partitions to share CPUs with
-the top_cpuset. In this scenario, disabling the remote partition triggers
-a warning stating that effective_xcpus is not a subset of
-subpartitions_cpus. Partitions should be invalidated in this case to
-inform users that the partition is now invalid(cpus are shared with
-top_cpuset).
-
-To fix this issue:
-1. Only emit the warning only if subpartitions_cpus is not empty and the
-   effective_xcpus is not a subset of subpartitions_cpus.
-2. During the CPU hotplug process, invalidate partitions if
-   subpartitions_cpus is empty.
-
-Fixes: f62a5d39368e ("cgroup/cpuset: Remove remote_partition_check() & make update_cpumasks_hier() handle remote partition")
-Signed-off-by: Chen Ridong <chenridong@huawei.com>
-Reviewed-by: Waiman Long <longman@redhat.com>
----
-
-v2:
-1. update the fixes commit id.
-
- kernel/cgroup/cpuset.c | 21 ++++++++++++++++-----
- 1 file changed, 16 insertions(+), 5 deletions(-)
-
-diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
-index 3e3468d928f3..77ca77e79da9 100644
---- a/kernel/cgroup/cpuset.c
-+++ b/kernel/cgroup/cpuset.c
-@@ -1502,7 +1502,14 @@ static int remote_partition_enable(struct cpuset *cs, int new_prs,
- static void remote_partition_disable(struct cpuset *cs, struct tmpmasks *tmp)
- {
- 	WARN_ON_ONCE(!is_remote_partition(cs));
--	WARN_ON_ONCE(!cpumask_subset(cs->effective_xcpus, subpartitions_cpus));
-+	/*
-+	 * When a CPU is offlined, top_cpuset may end up with no available CPUs,
-+	 * which should clear subpartitions_cpus. We should not emit a warning for this
-+	 * scenario: the hierarchy is updated from top to bottom, so subpartitions_cpus
-+	 * may already be cleared when disabling the partition.
-+	 */
-+	WARN_ON_ONCE(!cpumask_subset(cs->effective_xcpus, subpartitions_cpus) &&
-+		     !cpumask_empty(subpartitions_cpus));
- 
- 	spin_lock_irq(&callback_lock);
- 	cs->remote_partition = false;
-@@ -3772,8 +3779,9 @@ static void cpuset_hotplug_update_tasks(struct cpuset *cs, struct tmpmasks *tmp)
- 	if (remote || (is_partition_valid(cs) && is_partition_valid(parent)))
- 		compute_partition_effective_cpumask(cs, &new_cpus);
- 
--	if (remote && cpumask_empty(&new_cpus) &&
--	    partition_is_populated(cs, NULL)) {
-+	if (remote && (cpumask_empty(subpartitions_cpus) ||
-+			(cpumask_empty(&new_cpus) &&
-+			 partition_is_populated(cs, NULL)))) {
- 		cs->prs_err = PERR_HOTPLUG;
- 		remote_partition_disable(cs, tmp);
- 		compute_effective_cpumask(&new_cpus, cs, parent);
-@@ -3786,9 +3794,12 @@ static void cpuset_hotplug_update_tasks(struct cpuset *cs, struct tmpmasks *tmp)
- 	 * 1) empty effective cpus but not valid empty partition.
- 	 * 2) parent is invalid or doesn't grant any cpus to child
- 	 *    partitions.
-+	 * 3) subpartitions_cpus is empty.
- 	 */
--	if (is_local_partition(cs) && (!is_partition_valid(parent) ||
--				tasks_nocpu_error(parent, cs, &new_cpus)))
-+	if (is_local_partition(cs) &&
-+	    (!is_partition_valid(parent) ||
-+	     tasks_nocpu_error(parent, cs, &new_cpus) ||
-+	     cpumask_empty(subpartitions_cpus)))
- 		partcmd = partcmd_invalidate;
- 	/*
- 	 * On the other hand, an invalid partition root may be transitioned
--- 
-2.34.1
+>
+>>> -    .remote_partition = false,
+>> Yes, this is not really needed and can be removed.
+>>
+>> Cheers,
+>> Longman
+>>
 
 
