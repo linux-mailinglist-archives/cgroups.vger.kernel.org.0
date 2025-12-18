@@ -1,44 +1,44 @@
-Return-Path: <cgroups+bounces-12520-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-12521-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 726E3CCDFD4
-	for <lists+cgroups@lfdr.de>; Fri, 19 Dec 2025 00:43:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id A8148CCDFE9
+	for <lists+cgroups@lfdr.de>; Fri, 19 Dec 2025 00:45:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id A2D8330A663A
-	for <lists+cgroups@lfdr.de>; Thu, 18 Dec 2025 23:34:23 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id EA876304DEEC
+	for <lists+cgroups@lfdr.de>; Thu, 18 Dec 2025 23:39:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 715932FC037;
-	Thu, 18 Dec 2025 23:34:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BAFF529E113;
+	Thu, 18 Dec 2025 23:39:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="SsihqVBI"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="X1oXmx3O"
 X-Original-To: cgroups@vger.kernel.org
-Received: from out-172.mta1.migadu.com (out-172.mta1.migadu.com [95.215.58.172])
+Received: from out-174.mta0.migadu.com (out-174.mta0.migadu.com [91.218.175.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 95E1C2F7ADE
-	for <cgroups@vger.kernel.org>; Thu, 18 Dec 2025 23:34:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C5FCC1531C8;
+	Thu, 18 Dec 2025 23:39:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1766100863; cv=none; b=hcqGLOn4AvSTiZc11gQ5JoDbpXkRmi/ulZ+K8hhNlyomCyOL/uBcilt9JtT5oHtHM31ONVFdiXrWMAl8CzrSGiVMq+AijMIAI9uYnmOdSEXn5ny/WwCobK+bdywRIrIUWkPTNHnrg6nFFus7i+i9nw00WI0HXLpGK2bBlwC4kHQ=
+	t=1766101160; cv=none; b=uUYtgRWYQh4PVKEVca1xIcIKrccMTkVN4EnKWE3Spx9AA1M8k1k7wszF/qI5T+iso462F7Mn9dq1l7/IT6Vwr4kJbqg8959Uf0ZEupC69cY8k1mOQhZbcOmRwbPFx4Z82VyyYrMhsM+WEWpV4MJvLwMNvrHFTCne2XMykXJS5+A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1766100863; c=relaxed/simple;
-	bh=izU0zourZGCySuJ1YSVffE8S0MPI7JkiCTSLkEnuU/c=;
+	s=arc-20240116; t=1766101160; c=relaxed/simple;
+	bh=nqAIujc/v2jmX4j+0eop9dqmY6LCRXvmuao7GptxPXk=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=e0i0fAbNgVFS80R+XzU95G+YtkK+Wm48icVVK/f6KKOgtwOspCIrG0ABUrB0os3g7NKiWYlBRqFKNSQ5rxeZXHs51A4pXsWwIL5nH4GkNQkGG368GtK7F/Bz+YriI3szv5FcpJe4iQfe0q22U6C9es6E9quYSETp8GFaA/8N2mc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=SsihqVBI; arc=none smtp.client-ip=95.215.58.172
+	 Content-Type:Content-Disposition:In-Reply-To; b=Rf2aKqdC2qv478nNZvDo8KWEwX+YgSl+JWynusE031JbzeS4MAQrgqc/C3KQ6p48rtQdp1z503VV8BWm3FKH6QIdBcckuGbzYvecSB0ED0MgWRkMFyzV8GYfMZr1hfUSjIUtMe8Qu1aBVTOpuIZ52bvRndXp3pd8NqQ9DgZ8JWA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=X1oXmx3O; arc=none smtp.client-ip=91.218.175.174
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Thu, 18 Dec 2025 15:34:06 -0800
+Date: Thu, 18 Dec 2025 15:39:04 -0800
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1766100858;
+	t=1766101151;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=FksPB/81q1/fiq/yVCprH0gxfgwUBo6bbyxzq+WvCbg=;
-	b=SsihqVBIK7pZltgy7boa9xHlaoOpOOhjuXXjmAUIa/m5Ghdxm16C+Cc2a+gqS2GScrwDkk
-	iHM2aB3K7g82Dl7lREYLFRpOwQ93lFelkZ5pRcvB9HeHMuIc7XuJwpl2bo5aXy1yWrHBaN
-	hNlpioKEED2g5oW7+DHzXkK0Korhz1I=
+	bh=r6CkT2RsOi/M5LFRuOsJlToUIGbnJ3gyuSS5jGiR0BU=;
+	b=X1oXmx3O15V+dVt0RbBo6pG1IMyg7ztn3Lv6fY3552mlFV2Qwan7UM9z149Md4RCfUnJUg
+	9u4TdsdTByH/1nKtmbfNi5m4EvtF4/Om9a8TV8d+YTp/X+DN048WWFGmFPXEd9rSkoJU6/
+	MpOBs9M2wjg9ZlbhDiIsCQv3vH1t5OE=
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 From: Shakeel Butt <shakeel.butt@linux.dev>
 To: Qi Zheng <qi.zheng@linux.dev>
@@ -49,13 +49,12 @@ Cc: hannes@cmpxchg.org, hughd@google.com, mhocko@suse.com,
 	chenridong@huaweicloud.com, mkoutny@suse.com, akpm@linux-foundation.org, 
 	hamzamahfooz@linux.microsoft.com, apais@linux.microsoft.com, lance.yang@linux.dev, 
 	linux-mm@kvack.org, linux-kernel@vger.kernel.org, cgroups@vger.kernel.org, 
-	Muchun Song <songmuchun@bytedance.com>, Qi Zheng <zhengqi.arch@bytedance.com>, 
-	Chen Ridong <chenridong@huawei.com>
-Subject: Re: [PATCH v2 03/28] mm: rename unlock_page_lruvec_irq and its
- variants
-Message-ID: <w5dudwxtraadmclm6exyjal6lheiw6qqraiq4yz2i3y7heoued@b5ikfcfwiwwy>
+	Qi Zheng <zhengqi.arch@bytedance.com>
+Subject: Re: [PATCH v2 04/28] mm: vmscan: prepare for the refactoring the
+ move_folios_to_lru()
+Message-ID: <ujk7ths3jerzngbbm34xmzpv63osdk6pgnsvpl2q3qbxo4sbpd@a7pxeekhknbs>
 References: <cover.1765956025.git.zhengqi.arch@bytedance.com>
- <a11ca717ddd52fd83e1fff9942fc49c9c5c5b78c.1765956025.git.zhengqi.arch@bytedance.com>
+ <4a7ca63e3d872b7e4d117cf4e2696486772facb6.1765956025.git.zhengqi.arch@bytedance.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -64,24 +63,22 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <a11ca717ddd52fd83e1fff9942fc49c9c5c5b78c.1765956025.git.zhengqi.arch@bytedance.com>
+In-Reply-To: <4a7ca63e3d872b7e4d117cf4e2696486772facb6.1765956025.git.zhengqi.arch@bytedance.com>
 X-Migadu-Flow: FLOW_OUT
 
-On Wed, Dec 17, 2025 at 03:27:27PM +0800, Qi Zheng wrote:
-> From: Muchun Song <songmuchun@bytedance.com>
+On Wed, Dec 17, 2025 at 03:27:28PM +0800, Qi Zheng wrote:
+> From: Qi Zheng <zhengqi.arch@bytedance.com>
 > 
-> It is inappropriate to use folio_lruvec_lock() variants in conjunction
-> with unlock_page_lruvec() variants, as this involves the inconsistent
-> operation of locking a folio while unlocking a page. To rectify this, the
-> functions unlock_page_lruvec{_irq, _irqrestore} are renamed to
-> lruvec_unlock{_irq,_irqrestore}.
+> After refactoring the move_folios_to_lru(), its caller no longer needs to
+> hold the lruvec lock, the disabling IRQ is only for __count_vm_events()
+> and __mod_node_page_state().
 > 
-> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-> Acked-by: Roman Gushchin <roman.gushchin@linux.dev>
-> Acked-by: Johannes Weiner <hannes@cmpxchg.org>
+> On the PREEMPT_RT kernel, the local_irq_disable() cannot be used. To
+> avoid using local_irq_disable() and reduce the critical section of
+> disabling IRQ, make all callers of move_folios_to_lru() use IRQ-safed
+> count_vm_events() and mod_node_page_state().
+> 
 > Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
-> Reviewed-by: Harry Yoo <harry.yoo@oracle.com>
-> Reviewed-by: Chen Ridong <chenridong@huawei.com>
 
 Acked-by: Shakeel Butt <shakeel.butt@linux.dev>
 
