@@ -1,40 +1,40 @@
-Return-Path: <cgroups+bounces-12497-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-12498-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id A0493CCB407
-	for <lists+cgroups@lfdr.de>; Thu, 18 Dec 2025 10:48:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id BDDD4CCB40A
+	for <lists+cgroups@lfdr.de>; Thu, 18 Dec 2025 10:48:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 8FC09309FB05
-	for <lists+cgroups@lfdr.de>; Thu, 18 Dec 2025 09:46:53 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 1708630A3200
+	for <lists+cgroups@lfdr.de>; Thu, 18 Dec 2025 09:46:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E0171332908;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F074733290C;
 	Thu, 18 Dec 2025 09:46:46 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
 Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 601823328ED;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 602143328F3;
 	Thu, 18 Dec 2025 09:46:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1766051206; cv=none; b=YGwH65AThaOnmjHWL/KZN4d9LMV0YYE3YlRcMUuV3EgZLifa47Q0UnQrmpJRjnG5TCTtWJWrcGFL/Eqi0F8XW6m1fE9LhJkrniHnLB/CoTtQ2eiHUAoDMk6CbmqAEESSGTA11dZYgF7QI7pvLtyGuNPAtXlto9OoJ4rZA8ky0AE=
+	t=1766051206; cv=none; b=KHt8ZPvGE8xjORpzvpKiBhtXmchR0dUSd7j0t5W7zuOrHs32QJ6qA8P907RsLDM7NR7HaKBLfQg2FIK8N+G2kucMF2Apqbf3PeVakfRIpPNjiwE6UMHMX6rZ8KcVF+8VqioajioiPnra5XQNP6irO5HWWguWdjVqhNqpV5Wya7s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1766051206; c=relaxed/simple;
-	bh=wZBl7x8+Ne/XNK8QrztwYkC4j/fLfB8EzFHDjngzbK8=;
+	bh=s6FqSO7UAPYGyKrjenr4VMbg3mMAX3ZTlhNX6z4gP38=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=TNicqljMlPD75RK6AYOg4ZRRUnkHyykgCqKfwZCFNwTjMuwxgGtjPIRCzHEJuNm6xQ1N0hFf9jDIK7EF+CzHPE6nFo3kniuOTh+S1gV1sP+2run9UnYmI3XrqedbvWQxzO3a1SJepJvJPH9KWCqVnlJz4RclBrx9blqEluF0V0k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+	 MIME-Version; b=IpaZGqLmKUq3VWW4d5+KmqOBbPCYeocVVbwsxt/trAsAhWyAu9jx4IhX1A17YjmLsJblXwXxVt2+x19h1yUnc6EWsHhjLM7i+CF4g2GzkQkuYkUXnDJkTb8jf7p2/jvarrhaYyYWjeub/8487WOnTE60/wyHymuYQis/loZjgJk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=none smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.198])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTPS id 4dX5QS4hwHzYQv6M;
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.177])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTPS id 4dX5QS52kdzYQv7s;
 	Thu, 18 Dec 2025 17:46:08 +0800 (CST)
 Received: from mail02.huawei.com (unknown [10.116.40.128])
-	by mail.maildlp.com (Postfix) with ESMTP id 0569C40576;
+	by mail.maildlp.com (Postfix) with ESMTP id 145BF4058D;
 	Thu, 18 Dec 2025 17:46:37 +0800 (CST)
 Received: from hulk-vt.huawei.com (unknown [10.67.174.121])
-	by APP4 (Coremail) with SMTP id gCh0CgA35vZxzUNpHcJzAg--.22754S7;
+	by APP4 (Coremail) with SMTP id gCh0CgA35vZxzUNpHcJzAg--.22754S8;
 	Thu, 18 Dec 2025 17:46:36 +0800 (CST)
 From: Chen Ridong <chenridong@huaweicloud.com>
 To: longman@redhat.com,
@@ -45,9 +45,9 @@ Cc: cgroups@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	lujialin4@huawei.com,
 	chenridong@huaweicloud.com
-Subject: [PATCH -next v2 5/6] cpuset: separate generate_sched_domains for v1 and v2
-Date: Thu, 18 Dec 2025 09:31:40 +0000
-Message-Id: <20251218093141.2687291-6-chenridong@huaweicloud.com>
+Subject: [PATCH -next v2 6/6] cpuset: remove v1-specific code from generate_sched_domains
+Date: Thu, 18 Dec 2025 09:31:41 +0000
+Message-Id: <20251218093141.2687291-7-chenridong@huaweicloud.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20251218093141.2687291-1-chenridong@huaweicloud.com>
 References: <20251218093141.2687291-1-chenridong@huaweicloud.com>
@@ -58,11 +58,11 @@ List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:gCh0CgA35vZxzUNpHcJzAg--.22754S7
-X-Coremail-Antispam: 1UD129KBjvJXoWfJr4rGw15Kr1UCry7XF1kZrb_yoWDuFW3pF
-	W8urW2vrWUtr1xu3yrCa18Z34a9wn7JFWUt3W5G3s5AF17tF1DuFy0vF9Ikry5urWDCrWU
-	ZFsIq3y3u3WqyrJanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUPj14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+X-CM-TRANSID:gCh0CgA35vZxzUNpHcJzAg--.22754S8
+X-Coremail-Antispam: 1UD129KBjvJXoW3GrWrWw18Wry3KF4ftrW7XFb_yoWfGryfpF
+	W8Cay2qrW5tr1UG39YkwsrZ34S9wsrGayUK3W5Wwn5ZF17t3Wv9Fy0v3ZxCFWY9FyDCr13
+	ZFZIgr4fW3WqkFJanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUP014x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
 	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_JF0E3s1l82xGYI
 	kIc2x26xkF7I0E14v26ryj6s0DM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2
 	z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr1j6F
@@ -73,331 +73,283 @@ X-Coremail-Antispam: 1UD129KBjvJXoWfJr4rGw15Kr1UCry7XF1kZrb_yoWDuFW3pF
 	WUtwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v2
 	6r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkGc2
 	Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUCVW8JwCI42IY6xIIjxv20xvEc7CjxVAFwI0_
-	Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r4j6F4UMI
-	IF0xvEx4A2jsIEc7CjxVAFwI0_Gr1j6F4UJbIYCTnIWIevJa73UjIFyTuYvjfUYcTQUUUU
-	U
+	Cr0_Gr1UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVW8JVWxJw
+	CI42IY6I8E87Iv6xkF7I0E14v26r4UJVWxJrUvcSsGvfC2KfnxnUUI43ZEXa7VUbx9NDUU
+	UUU==
 X-CM-SenderInfo: hfkh02xlgr0w46kxt4xhlfz01xgou0bp/
 
 From: Chen Ridong <chenridong@huawei.com>
 
-The generate_sched_domains() function currently handles both v1 and v2
-logic. However, the underlying mechanisms for building scheduler domains
-differ significantly between the two versions. For cpuset v2, scheduler
-domains are straightforwardly derived from valid partitions, whereas
-cpuset v1 employs a more complex union-find algorithm to merge overlapping
-cpusets. Co-locating these implementations complicates maintenance.
-
-This patch, along with subsequent ones, aims to separate the v1 and v2
-logic. For ease of review, this patch first copies the
-generate_sched_domains() function into cpuset-v1.c as
-cpuset1_generate_sched_domains() and removes v2-specific code. Common
-helpers and top_cpuset are declared in cpuset-internal.h. When operating
-in v1 mode, the code now calls cpuset1_generate_sched_domains().
-
-Currently there is some code duplication, which will be largely eliminated
-once v1-specific code is removed from v2 in the following patch.
+Following the introduction of cpuset1_generate_sched_domains() for v1
+in the previous patch, v1-specific logic can now be removed from the
+generic generate_sched_domains(). This patch cleans up the v1-only
+code and ensures uf_node is only visible when CONFIG_CPUSETS_V1=y.
 
 Signed-off-by: Chen Ridong <chenridong@huawei.com>
 ---
- kernel/cgroup/cpuset-internal.h |  23 +++++
- kernel/cgroup/cpuset-v1.c       | 158 ++++++++++++++++++++++++++++++++
- kernel/cgroup/cpuset.c          |  31 +------
- 3 files changed, 185 insertions(+), 27 deletions(-)
+ kernel/cgroup/cpuset-internal.h |  10 +--
+ kernel/cgroup/cpuset-v1.c       |   2 +-
+ kernel/cgroup/cpuset.c          | 145 ++++++--------------------------
+ 3 files changed, 28 insertions(+), 129 deletions(-)
 
 diff --git a/kernel/cgroup/cpuset-internal.h b/kernel/cgroup/cpuset-internal.h
-index 677053ffb913..8622a4666170 100644
+index 8622a4666170..e718a4f54360 100644
 --- a/kernel/cgroup/cpuset-internal.h
 +++ b/kernel/cgroup/cpuset-internal.h
-@@ -9,6 +9,7 @@
- #include <linux/cpuset.h>
- #include <linux/spinlock.h>
- #include <linux/union_find.h>
-+#include <linux/sched/isolation.h>
+@@ -175,14 +175,14 @@ struct cpuset {
+ 	/* Handle for cpuset.cpus.partition */
+ 	struct cgroup_file partition_file;
  
- /* See "Frequency meter" comments, below. */
+-	/* Used to merge intersecting subsets for generate_sched_domains */
+-	struct uf_node node;
+-
+ #ifdef CONFIG_CPUSETS_V1
+ 	struct fmeter fmeter;		/* memory_pressure filter */
  
-@@ -185,6 +186,8 @@ struct cpuset {
+ 	/* for custom sched domain */
+ 	int relax_domain_level;
++
++	/* Used to merge intersecting subsets for generate_sched_domains */
++	struct uf_node node;
  #endif
  };
  
-+extern struct cpuset top_cpuset;
-+
- static inline struct cpuset *css_cs(struct cgroup_subsys_state *css)
- {
- 	return css ? container_of(css, struct cpuset, css) : NULL;
-@@ -242,6 +245,21 @@ static inline int is_spread_slab(const struct cpuset *cs)
- 	return test_bit(CS_SPREAD_SLAB, &cs->flags);
- }
- 
-+/*
-+ * Helper routine for generate_sched_domains().
-+ * Do cpusets a, b have overlapping effective cpus_allowed masks?
-+ */
-+static inline int cpusets_overlap(struct cpuset *a, struct cpuset *b)
-+{
-+	return cpumask_intersects(a->effective_cpus, b->effective_cpus);
-+}
-+
-+static inline int nr_cpusets(void)
-+{
-+	/* jump label reference count + the top-level cpuset */
-+	return static_key_count(&cpusets_enabled_key.key) + 1;
-+}
-+
- /**
-  * cpuset_for_each_child - traverse online children of a cpuset
-  * @child_cs: loop cursor pointing to the current child
-@@ -298,6 +316,9 @@ void cpuset1_init(struct cpuset *cs);
+@@ -314,8 +314,6 @@ void cpuset1_hotplug_update_tasks(struct cpuset *cs,
+ int cpuset1_validate_change(struct cpuset *cur, struct cpuset *trial);
+ void cpuset1_init(struct cpuset *cs);
  void cpuset1_online_css(struct cgroup_subsys_state *css);
- void update_domain_attr_tree(struct sched_domain_attr *dattr,
- 				    struct cpuset *root_cs);
-+int cpuset1_generate_sched_domains(cpumask_var_t **domains,
-+			struct sched_domain_attr **attributes);
-+
- #else
- static inline void cpuset1_update_task_spread_flags(struct cpuset *cs,
- 					struct task_struct *tsk) {}
-@@ -311,6 +332,8 @@ static inline void cpuset1_init(struct cpuset *cs) {}
- static inline void cpuset1_online_css(struct cgroup_subsys_state *css) {}
- static inline void update_domain_attr_tree(struct sched_domain_attr *dattr,
- 				    struct cpuset *root_cs) {}
-+static inline int cpuset1_generate_sched_domains(cpumask_var_t **domains,
-+			struct sched_domain_attr **attributes) { return 0; };
+-void update_domain_attr_tree(struct sched_domain_attr *dattr,
+-				    struct cpuset *root_cs);
+ int cpuset1_generate_sched_domains(cpumask_var_t **domains,
+ 			struct sched_domain_attr **attributes);
  
- #endif /* CONFIG_CPUSETS_V1 */
+@@ -330,8 +328,6 @@ static inline int cpuset1_validate_change(struct cpuset *cur,
+ 				struct cpuset *trial) { return 0; }
+ static inline void cpuset1_init(struct cpuset *cs) {}
+ static inline void cpuset1_online_css(struct cgroup_subsys_state *css) {}
+-static inline void update_domain_attr_tree(struct sched_domain_attr *dattr,
+-				    struct cpuset *root_cs) {}
+ static inline int cpuset1_generate_sched_domains(cpumask_var_t **domains,
+ 			struct sched_domain_attr **attributes) { return 0; };
  
 diff --git a/kernel/cgroup/cpuset-v1.c b/kernel/cgroup/cpuset-v1.c
-index a4f8f1c3cfaa..ffa7a8dc6c3a 100644
+index ffa7a8dc6c3a..7303315fdba7 100644
 --- a/kernel/cgroup/cpuset-v1.c
 +++ b/kernel/cgroup/cpuset-v1.c
-@@ -580,6 +580,164 @@ void update_domain_attr_tree(struct sched_domain_attr *dattr,
- 	rcu_read_unlock();
+@@ -560,7 +560,7 @@ update_domain_attr(struct sched_domain_attr *dattr, struct cpuset *c)
+ 		dattr->relax_domain_level = c->relax_domain_level;
  }
  
-+/*
-+ * cpuset1_generate_sched_domains()
-+ *
-+ * Finding the best partition (set of domains):
-+ *	The double nested loops below over i, j scan over the load
-+ *	balanced cpusets (using the array of cpuset pointers in csa[])
-+ *	looking for pairs of cpusets that have overlapping cpus_allowed
-+ *	and merging them using a union-find algorithm.
-+ *
-+ *	The union of the cpus_allowed masks from the set of all cpusets
-+ *	having the same root then form the one element of the partition
-+ *	(one sched domain) to be passed to partition_sched_domains().
-+ */
-+int cpuset1_generate_sched_domains(cpumask_var_t **domains,
-+			struct sched_domain_attr **attributes)
-+{
-+	struct cpuset *cp;	/* top-down scan of cpusets */
-+	struct cpuset **csa;	/* array of all cpuset ptrs */
-+	int csn;		/* how many cpuset ptrs in csa so far */
-+	int i, j;		/* indices for partition finding loops */
-+	cpumask_var_t *doms;	/* resulting partition; i.e. sched domains */
-+	struct sched_domain_attr *dattr;  /* attributes for custom domains */
-+	int ndoms = 0;		/* number of sched domains in result */
-+	int nslot;		/* next empty doms[] struct cpumask slot */
-+	struct cgroup_subsys_state *pos_css;
-+	bool root_load_balance = is_sched_load_balance(&top_cpuset);
-+	int nslot_update;
-+
-+	lockdep_assert_cpuset_lock_held();
-+
-+	doms = NULL;
-+	dattr = NULL;
-+	csa = NULL;
-+
-+	/* Special case for the 99% of systems with one, full, sched domain */
-+	if (root_load_balance) {
-+		ndoms = 1;
-+		doms = alloc_sched_domains(ndoms);
-+		if (!doms)
-+			goto done;
-+
-+		dattr = kmalloc(sizeof(struct sched_domain_attr), GFP_KERNEL);
-+		if (dattr) {
-+			*dattr = SD_ATTR_INIT;
-+			update_domain_attr_tree(dattr, &top_cpuset);
-+		}
-+		cpumask_and(doms[0], top_cpuset.effective_cpus,
-+			    housekeeping_cpumask(HK_TYPE_DOMAIN));
-+
-+		goto done;
-+	}
-+
-+	csa = kmalloc_array(nr_cpusets(), sizeof(cp), GFP_KERNEL);
-+	if (!csa)
-+		goto done;
-+	csn = 0;
-+
-+	rcu_read_lock();
-+	if (root_load_balance)
-+		csa[csn++] = &top_cpuset;
-+	cpuset_for_each_descendant_pre(cp, pos_css, &top_cpuset) {
-+		if (cp == &top_cpuset)
-+			continue;
-+
-+		/*
-+		 * Continue traversing beyond @cp iff @cp has some CPUs and
-+		 * isn't load balancing.  The former is obvious.  The
-+		 * latter: All child cpusets contain a subset of the
-+		 * parent's cpus, so just skip them, and then we call
-+		 * update_domain_attr_tree() to calc relax_domain_level of
-+		 * the corresponding sched domain.
-+		 */
-+		if (!cpumask_empty(cp->cpus_allowed) &&
-+		    !(is_sched_load_balance(cp) &&
-+		      cpumask_intersects(cp->cpus_allowed,
-+					 housekeeping_cpumask(HK_TYPE_DOMAIN))))
-+			continue;
-+
-+		if (is_sched_load_balance(cp) &&
-+		    !cpumask_empty(cp->effective_cpus))
-+			csa[csn++] = cp;
-+
-+		/* skip @cp's subtree */
-+		pos_css = css_rightmost_descendant(pos_css);
-+		continue;
-+	}
-+	rcu_read_unlock();
-+
-+	for (i = 0; i < csn; i++)
-+		uf_node_init(&csa[i]->node);
-+
-+	/* Merge overlapping cpusets */
-+	for (i = 0; i < csn; i++) {
-+		for (j = i + 1; j < csn; j++) {
-+			if (cpusets_overlap(csa[i], csa[j]))
-+				uf_union(&csa[i]->node, &csa[j]->node);
-+		}
-+	}
-+
-+	/* Count the total number of domains */
-+	for (i = 0; i < csn; i++) {
-+		if (uf_find(&csa[i]->node) == &csa[i]->node)
-+			ndoms++;
-+	}
-+
-+	/*
-+	 * Now we know how many domains to create.
-+	 * Convert <csn, csa> to <ndoms, doms> and populate cpu masks.
-+	 */
-+	doms = alloc_sched_domains(ndoms);
-+	if (!doms)
-+		goto done;
-+
-+	/*
-+	 * The rest of the code, including the scheduler, can deal with
-+	 * dattr==NULL case. No need to abort if alloc fails.
-+	 */
-+	dattr = kmalloc_array(ndoms, sizeof(struct sched_domain_attr),
-+			      GFP_KERNEL);
-+
-+	for (nslot = 0, i = 0; i < csn; i++) {
-+		nslot_update = 0;
-+		for (j = i; j < csn; j++) {
-+			if (uf_find(&csa[j]->node) == &csa[i]->node) {
-+				struct cpumask *dp = doms[nslot];
-+
-+				if (i == j) {
-+					nslot_update = 1;
-+					cpumask_clear(dp);
-+					if (dattr)
-+						*(dattr + nslot) = SD_ATTR_INIT;
-+				}
-+				cpumask_or(dp, dp, csa[j]->effective_cpus);
-+				cpumask_and(dp, dp, housekeeping_cpumask(HK_TYPE_DOMAIN));
-+				if (dattr)
-+					update_domain_attr_tree(dattr + nslot, csa[j]);
-+			}
-+		}
-+		if (nslot_update)
-+			nslot++;
-+	}
-+	BUG_ON(nslot != ndoms);
-+
-+done:
-+	kfree(csa);
-+
-+	/*
-+	 * Fallback to the default domain if kmalloc() failed.
-+	 * See comments in partition_sched_domains().
-+	 */
-+	if (doms == NULL)
-+		ndoms = 1;
-+
-+	*domains    = doms;
-+	*attributes = dattr;
-+	return ndoms;
-+}
-+
- /*
-  * for the common functions, 'private' gives the type of file
-  */
+-void update_domain_attr_tree(struct sched_domain_attr *dattr,
++static void update_domain_attr_tree(struct sched_domain_attr *dattr,
+ 				    struct cpuset *root_cs)
+ {
+ 	struct cpuset *cp;
 diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
-index cf2363a9c552..33c929b191e8 100644
+index 33c929b191e8..221da921b4f9 100644
 --- a/kernel/cgroup/cpuset.c
 +++ b/kernel/cgroup/cpuset.c
-@@ -211,7 +211,7 @@ static inline void notify_partition_change(struct cpuset *cs, int old_prs)
-  * If cpu_online_mask is used while a hotunplug operation is happening in
-  * parallel, we may leave an offline CPU in cpu_allowed or some other masks.
-  */
--static struct cpuset top_cpuset = {
-+struct cpuset top_cpuset = {
- 	.flags = BIT(CS_CPU_EXCLUSIVE) |
- 		 BIT(CS_MEM_EXCLUSIVE) | BIT(CS_SCHED_LOAD_BALANCE),
- 	.partition_root_state = PRS_ROOT,
-@@ -744,21 +744,6 @@ static int validate_change(struct cpuset *cur, struct cpuset *trial)
- }
+@@ -789,18 +789,13 @@ static int generate_sched_domains(cpumask_var_t **domains,
+ {
+ 	struct cpuset *cp;	/* top-down scan of cpusets */
+ 	struct cpuset **csa;	/* array of all cpuset ptrs */
+-	int csn;		/* how many cpuset ptrs in csa so far */
+ 	int i, j;		/* indices for partition finding loops */
+ 	cpumask_var_t *doms;	/* resulting partition; i.e. sched domains */
+ 	struct sched_domain_attr *dattr;  /* attributes for custom domains */
+ 	int ndoms = 0;		/* number of sched domains in result */
+-	int nslot;		/* next empty doms[] struct cpumask slot */
+ 	struct cgroup_subsys_state *pos_css;
+-	bool root_load_balance = is_sched_load_balance(&top_cpuset);
+-	bool cgrpv2 = cpuset_v2();
+-	int nslot_update;
  
- #ifdef CONFIG_SMP
--/*
-- * Helper routine for generate_sched_domains().
-- * Do cpusets a, b have overlapping effective cpus_allowed masks?
-- */
--static int cpusets_overlap(struct cpuset *a, struct cpuset *b)
--{
--	return cpumask_intersects(a->effective_cpus, b->effective_cpus);
--}
--
--/* Must be called with cpuset_mutex held.  */
--static inline int nr_cpusets(void)
--{
--	/* jump label reference count + the top-level cpuset */
--	return static_key_count(&cpusets_enabled_key.key) + 1;
--}
+-	if (!cgrpv2)
++	if (!cpuset_v2())
+ 		return cpuset1_generate_sched_domains(domains, attributes);
  
- /*
-  * generate_sched_domains()
-@@ -798,17 +783,6 @@ static inline int nr_cpusets(void)
-  *	   convenient format, that can be easily compared to the prior
-  *	   value to determine what partition elements (sched domains)
-  *	   were changed (added or removed.)
-- *
-- * Finding the best partition (set of domains):
-- *	The double nested loops below over i, j scan over the load
-- *	balanced cpusets (using the array of cpuset pointers in csa[])
-- *	looking for pairs of cpusets that have overlapping cpus_allowed
-- *	and merging them using a union-find algorithm.
-- *
-- *	The union of the cpus_allowed masks from the set of all cpusets
-- *	having the same root then form the one element of the partition
-- *	(one sched domain) to be passed to partition_sched_domains().
-- *
-  */
- static int generate_sched_domains(cpumask_var_t **domains,
- 			struct sched_domain_attr **attributes)
-@@ -826,6 +800,9 @@ static int generate_sched_domains(cpumask_var_t **domains,
- 	bool cgrpv2 = cpuset_v2();
- 	int nslot_update;
- 
-+	if (!cgrpv2)
-+		return cpuset1_generate_sched_domains(domains, attributes);
-+
  	doms = NULL;
- 	dattr = NULL;
+@@ -808,70 +803,26 @@ static int generate_sched_domains(cpumask_var_t **domains,
  	csa = NULL;
+ 
+ 	/* Special case for the 99% of systems with one, full, sched domain */
+-	if (root_load_balance && cpumask_empty(subpartitions_cpus)) {
+-single_root_domain:
++	if (cpumask_empty(subpartitions_cpus)) {
+ 		ndoms = 1;
+-		doms = alloc_sched_domains(ndoms);
+-		if (!doms)
+-			goto done;
+-
+-		dattr = kmalloc(sizeof(struct sched_domain_attr), GFP_KERNEL);
+-		if (dattr) {
+-			*dattr = SD_ATTR_INIT;
+-			update_domain_attr_tree(dattr, &top_cpuset);
+-		}
+-		cpumask_and(doms[0], top_cpuset.effective_cpus,
+-			    housekeeping_cpumask(HK_TYPE_DOMAIN));
+-
+-		goto done;
++		/* !csa will be checked and can be correctly handled */
++		goto generate_doms;
+ 	}
+ 
+ 	csa = kmalloc_array(nr_cpusets(), sizeof(cp), GFP_KERNEL);
+ 	if (!csa)
+ 		goto done;
+-	csn = 0;
+ 
++	/* Find how many partitions and cache them to csa[] */
+ 	rcu_read_lock();
+-	if (root_load_balance)
+-		csa[csn++] = &top_cpuset;
+ 	cpuset_for_each_descendant_pre(cp, pos_css, &top_cpuset) {
+-		if (cp == &top_cpuset)
+-			continue;
+-
+-		if (cgrpv2)
+-			goto v2;
+-
+-		/*
+-		 * v1:
+-		 * Continue traversing beyond @cp iff @cp has some CPUs and
+-		 * isn't load balancing.  The former is obvious.  The
+-		 * latter: All child cpusets contain a subset of the
+-		 * parent's cpus, so just skip them, and then we call
+-		 * update_domain_attr_tree() to calc relax_domain_level of
+-		 * the corresponding sched domain.
+-		 */
+-		if (!cpumask_empty(cp->cpus_allowed) &&
+-		    !(is_sched_load_balance(cp) &&
+-		      cpumask_intersects(cp->cpus_allowed,
+-					 housekeeping_cpumask(HK_TYPE_DOMAIN))))
+-			continue;
+-
+-		if (is_sched_load_balance(cp) &&
+-		    !cpumask_empty(cp->effective_cpus))
+-			csa[csn++] = cp;
+-
+-		/* skip @cp's subtree */
+-		pos_css = css_rightmost_descendant(pos_css);
+-		continue;
+-
+-v2:
+ 		/*
+ 		 * Only valid partition roots that are not isolated and with
+-		 * non-empty effective_cpus will be saved into csn[].
++		 * non-empty effective_cpus will be saved into csa[].
+ 		 */
+ 		if ((cp->partition_root_state == PRS_ROOT) &&
+ 		    !cpumask_empty(cp->effective_cpus))
+-			csa[csn++] = cp;
++			csa[ndoms++] = cp;
+ 
+ 		/*
+ 		 * Skip @cp's subtree if not a partition root and has no
+@@ -882,40 +833,18 @@ static int generate_sched_domains(cpumask_var_t **domains,
+ 	}
+ 	rcu_read_unlock();
+ 
+-	/*
+-	 * If there are only isolated partitions underneath the cgroup root,
+-	 * we can optimize out unneeded sched domains scanning.
+-	 */
+-	if (root_load_balance && (csn == 1))
+-		goto single_root_domain;
+-
+-	for (i = 0; i < csn; i++)
+-		uf_node_init(&csa[i]->node);
+-
+-	/* Merge overlapping cpusets */
+-	for (i = 0; i < csn; i++) {
+-		for (j = i + 1; j < csn; j++) {
+-			if (cpusets_overlap(csa[i], csa[j])) {
++	for (i = 0; i < ndoms; i++) {
++		for (j = i + 1; j < ndoms; j++) {
++			if (cpusets_overlap(csa[i], csa[j]))
+ 				/*
+ 				 * Cgroup v2 shouldn't pass down overlapping
+ 				 * partition root cpusets.
+ 				 */
+-				WARN_ON_ONCE(cgrpv2);
+-				uf_union(&csa[i]->node, &csa[j]->node);
+-			}
++				WARN_ON_ONCE(1);
+ 		}
+ 	}
+ 
+-	/* Count the total number of domains */
+-	for (i = 0; i < csn; i++) {
+-		if (uf_find(&csa[i]->node) == &csa[i]->node)
+-			ndoms++;
+-	}
+-
+-	/*
+-	 * Now we know how many domains to create.
+-	 * Convert <csn, csa> to <ndoms, doms> and populate cpu masks.
+-	 */
++generate_doms:
+ 	doms = alloc_sched_domains(ndoms);
+ 	if (!doms)
+ 		goto done;
+@@ -932,45 +861,19 @@ static int generate_sched_domains(cpumask_var_t **domains,
+ 	 * to SD_ATTR_INIT. Also non-isolating partition root CPUs are a
+ 	 * subset of HK_TYPE_DOMAIN housekeeping CPUs.
+ 	 */
+-	if (cgrpv2) {
+-		for (i = 0; i < ndoms; i++) {
+-			/*
+-			 * The top cpuset may contain some boot time isolated
+-			 * CPUs that need to be excluded from the sched domain.
+-			 */
+-			if (csa[i] == &top_cpuset)
+-				cpumask_and(doms[i], csa[i]->effective_cpus,
+-					    housekeeping_cpumask(HK_TYPE_DOMAIN));
+-			else
+-				cpumask_copy(doms[i], csa[i]->effective_cpus);
+-			if (dattr)
+-				dattr[i] = SD_ATTR_INIT;
+-		}
+-		goto done;
+-	}
+-
+-	for (nslot = 0, i = 0; i < csn; i++) {
+-		nslot_update = 0;
+-		for (j = i; j < csn; j++) {
+-			if (uf_find(&csa[j]->node) == &csa[i]->node) {
+-				struct cpumask *dp = doms[nslot];
+-
+-				if (i == j) {
+-					nslot_update = 1;
+-					cpumask_clear(dp);
+-					if (dattr)
+-						*(dattr + nslot) = SD_ATTR_INIT;
+-				}
+-				cpumask_or(dp, dp, csa[j]->effective_cpus);
+-				cpumask_and(dp, dp, housekeeping_cpumask(HK_TYPE_DOMAIN));
+-				if (dattr)
+-					update_domain_attr_tree(dattr + nslot, csa[j]);
+-			}
+-		}
+-		if (nslot_update)
+-			nslot++;
++	for (i = 0; i < ndoms; i++) {
++		/*
++		 * The top cpuset may contain some boot time isolated
++		 * CPUs that need to be excluded from the sched domain.
++		 */
++		if (!csa || csa[i] == &top_cpuset)
++			cpumask_and(doms[i], top_cpuset.effective_cpus,
++				    housekeeping_cpumask(HK_TYPE_DOMAIN));
++		else
++			cpumask_copy(doms[i], csa[i]->effective_cpus);
++		if (dattr)
++			dattr[i] = SD_ATTR_INIT;
+ 	}
+-	BUG_ON(nslot != ndoms);
+ 
+ done:
+ 	kfree(csa);
 -- 
 2.34.1
 
