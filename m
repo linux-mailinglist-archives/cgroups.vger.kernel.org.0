@@ -1,44 +1,44 @@
-Return-Path: <cgroups+bounces-12542-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-12543-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5EA6DCD24D9
-	for <lists+cgroups@lfdr.de>; Sat, 20 Dec 2025 02:14:24 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3DD70CD24F2
+	for <lists+cgroups@lfdr.de>; Sat, 20 Dec 2025 02:23:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id C96673002150
-	for <lists+cgroups@lfdr.de>; Sat, 20 Dec 2025 01:14:23 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 9BE463022AB1
+	for <lists+cgroups@lfdr.de>; Sat, 20 Dec 2025 01:23:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3C060258EC2;
-	Sat, 20 Dec 2025 01:14:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5AE45218AC4;
+	Sat, 20 Dec 2025 01:23:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Dtns4nj1"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Z2DrjdHS"
 X-Original-To: cgroups@vger.kernel.org
-Received: from out-189.mta0.migadu.com (out-189.mta0.migadu.com [91.218.175.189])
+Received: from out-183.mta1.migadu.com (out-183.mta1.migadu.com [95.215.58.183])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A1DB849C
-	for <cgroups@vger.kernel.org>; Sat, 20 Dec 2025 01:14:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.189
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B9ED413AD1C
+	for <cgroups@vger.kernel.org>; Sat, 20 Dec 2025 01:23:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.183
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1766193262; cv=none; b=F/oItFUgMp+tct7H6PECEUuJlVI45IrmoLV04jFh1i4jiuo0c1CP9ilqHr5ZBK6m4Y0Zo2g9JwlTZwvm72LBFTMbzrqL5syJWHGa7aFV0VTY2PY5H0HvpxVJQexgYP6NtI38zUcgs1+vVJatzHcG8X3HRErzJ1b0asQjKhsVLyo=
+	t=1766193801; cv=none; b=nbf/xs0rosWonkjOw99BSlbmXEwszvjl5SUIJJgC865DSNnooP3RozAfqmlOC4+CI80z3QOKOlulu7zxd4pEYETyN9MqvbofivHe3VRMash1DtNZdSJR4muP66nXcJ7R8CDgkk9kzdTOpNVXT1zxNyjR6MWskHGfEMMRmfrEx+g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1766193262; c=relaxed/simple;
-	bh=6k5HxmzwSuNZtGH7jynF4XgO9V1PpMZvutFTBCgv0Io=;
+	s=arc-20240116; t=1766193801; c=relaxed/simple;
+	bh=G6k+1yE2VbM7zystMBHb84qTCbDVLnhRJmvLaM4Q/ko=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Uu3+EtQa8o66d2Pctp/PYlniyIRRDahI7yNDAqPyfip8/tNoC6ta7NLWQNzNpoqbHMmhgQ53+sAp5KnGA1lMNno9LCEQ8CO623pbBeQvyTXajsX0i0UKl2VPJEGHAUnd7la3PUfrj0P+86d9843o65fRZBVnBezEtes+6cgUKkI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Dtns4nj1; arc=none smtp.client-ip=91.218.175.189
+	 Content-Type:Content-Disposition:In-Reply-To; b=DwVZPzo6KpWkqGXriHBgKV2i/6MaA5u4vqEsASSL7ogbntA9U788hOb49LcSh43HPeQTxmFMTQufsp2kedvldHA95lzGm5JL7miWDsyZBmKCXVVsbO0A6rYvmbcKp90LFWwFE7o7I/yBT6Jk03AMI40kzvW6J6DXKqW+61QXnnk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Z2DrjdHS; arc=none smtp.client-ip=95.215.58.183
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Fri, 19 Dec 2025 17:14:06 -0800
+Date: Fri, 19 Dec 2025 17:23:04 -0800
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1766193253;
+	t=1766193794;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=vxC8T+rn7zYzk/KOZEqUCOjZ+il++GuXxMtPIMNg9q0=;
-	b=Dtns4nj1gZMu9QJEiFoWliG7yIBsL+CqKfiT+cqL34Id9Dly3jB4FPjmyxw1MEORyPLanI
-	W9bYbDaHiMz9rupETo8XGpT6B46d8o7DrEp72sLTfvWU2vOiPOzuggZzOs0xdUFzWtz6ST
-	z962FdLULtNcJR+maixHtF3+WfX2u2U=
+	bh=vlUkmVhyJ1GNMYjC0GvszRdVCka/XpdgbTBxp5bLef8=;
+	b=Z2DrjdHSfFUyAN06z72DqPDM5Ft9xOPMQjKwwBVExyArdllnVPUKVNg6qIZTJh69jM/Wxl
+	zQntOR5rXts0K+atDhcLRwju9Nb1A1ut/rBlArWr4HJWbiRt0Dnfm3RIW/AsH7DOtoErgP
+	hjmSIPwS8dGdRG52EUzpPsLa10PFb9s=
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 From: Shakeel Butt <shakeel.butt@linux.dev>
 To: Qi Zheng <qi.zheng@linux.dev>
@@ -49,12 +49,13 @@ Cc: hannes@cmpxchg.org, hughd@google.com, mhocko@suse.com,
 	chenridong@huaweicloud.com, mkoutny@suse.com, akpm@linux-foundation.org, 
 	hamzamahfooz@linux.microsoft.com, apais@linux.microsoft.com, lance.yang@linux.dev, 
 	linux-mm@kvack.org, linux-kernel@vger.kernel.org, cgroups@vger.kernel.org, 
-	Qi Zheng <zhengqi.arch@bytedance.com>
-Subject: Re: [PATCH v2 18/28] mm: zswap: prevent memory cgroup release in
- zswap_compress()
-Message-ID: <yyuvjavtoiszb4ykd6xafyo6nf3gvqk6wsgpmtid2goiqj3vi5@vryj77fitb4l>
+	Muchun Song <songmuchun@bytedance.com>, Nhat Pham <nphamcs@gmail.com>, 
+	Chengming Zhou <chengming.zhou@linux.dev>, Qi Zheng <zhengqi.arch@bytedance.com>
+Subject: Re: [PATCH v2 20/28] mm: zswap: prevent lruvec release in
+ zswap_folio_swapin()
+Message-ID: <ddofqzx6ek4o6igzpxmmmthwoc22pkag2mhjb6cobjfekzc2nz@ydtptfjxnyxn>
 References: <cover.1765956025.git.zhengqi.arch@bytedance.com>
- <cbd77b6cb5273b75fb2d853f368bcb099f52869e.1765956026.git.zhengqi.arch@bytedance.com>
+ <bd929a89469bff4f1f77dbe6508b06e386b73595.1765956026.git.zhengqi.arch@bytedance.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -63,21 +64,28 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <cbd77b6cb5273b75fb2d853f368bcb099f52869e.1765956026.git.zhengqi.arch@bytedance.com>
+In-Reply-To: <bd929a89469bff4f1f77dbe6508b06e386b73595.1765956026.git.zhengqi.arch@bytedance.com>
 X-Migadu-Flow: FLOW_OUT
 
-On Wed, Dec 17, 2025 at 03:27:42PM +0800, Qi Zheng wrote:
-> From: Qi Zheng <zhengqi.arch@bytedance.com>
+On Wed, Dec 17, 2025 at 03:27:44PM +0800, Qi Zheng wrote:
+> From: Muchun Song <songmuchun@bytedance.com>
 > 
-> In the near future, a folio will no longer pin its corresponding memory
-> cgroup. To ensure safety, it will only be appropriate to hold the rcu read
-> lock or acquire a reference to the memory cgroup returned by
-> folio_memcg(), thereby preventing it from being released.
+> In the near future, a folio will no longer pin its corresponding
+> memory cgroup. So an lruvec returned by folio_lruvec() could be
+> released without the rcu read lock or a reference to its memory
+> cgroup.
 > 
-> In the current patch, the rcu read lock is employed to safeguard against
-> the release of the memory cgroup in zswap_compress().
+> In the current patch, the rcu read lock is employed to safeguard
+> against the release of the lruvec in zswap_folio_swapin().
 > 
+> This serves as a preparatory measure for the reparenting of the
+> LRU pages.
+> 
+> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+> Acked-by: Nhat Pham <nphamcs@gmail.com>
+> Reviewed-by: Chengming Zhou <chengming.zhou@linux.dev>
 > Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
+> Reviewed-by: Harry Yoo <harry.yoo@oracle.com>
 
 Acked-by: Shakeel Butt <shakeel.butt@linux.dev>
 
