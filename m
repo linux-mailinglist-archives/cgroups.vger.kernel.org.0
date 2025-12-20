@@ -1,252 +1,126 @@
-Return-Path: <cgroups+bounces-12551-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-12552-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id C64DCCD2CB3
-	for <lists+cgroups@lfdr.de>; Sat, 20 Dec 2025 10:57:16 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1FDB8CD2D60
+	for <lists+cgroups@lfdr.de>; Sat, 20 Dec 2025 11:31:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id C76B13010E54
-	for <lists+cgroups@lfdr.de>; Sat, 20 Dec 2025 09:57:15 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id DE1C23016721
+	for <lists+cgroups@lfdr.de>; Sat, 20 Dec 2025 10:31:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B32F3009F7;
-	Sat, 20 Dec 2025 09:57:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C40F2F746D;
+	Sat, 20 Dec 2025 10:31:01 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB70C279DA6
-	for <cgroups@vger.kernel.org>; Sat, 20 Dec 2025 09:57:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 33DC021ABBB;
+	Sat, 20 Dec 2025 10:30:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1766224634; cv=none; b=ZcChGYJ1RZMVkj49QhzbKk3Jpi3YaT1nTfR8nJE76JpwyTWm4+Aa73ETmfS5xi3/U9yoWBapt8Mz4JURli0siNeZPdhJ6BESB5USIG9KouSqDc4vMpBH71MkWZD69eLDFPz8dfiDPwDTqmWy+FAZ32VAOh7zkLONOocWbvyi+BI=
+	t=1766226660; cv=none; b=SiREP6PtktUGnVClFyK8I6GcI87x37QtRutMrD3SOEtMYBuLY6Sbr6P8fF5DvFb7HMpfpRxSAxrZgnddtd7R3WIWJPxQLt2fZ9+pinxcFJik8FppDIXt44lSsGuFzr2wLF5/ag9MFXWtDOiZBhGOJnQ403FjwdkmOtWhuTccaoo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1766224634; c=relaxed/simple;
-	bh=xFiqypgQnBHJjZXKE9H4Su3KLUlWqam3jMxsIQA3H90=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=bLCnaztWJJbgBwiqKw8/pkCy+sWl89HPc95BAtum2LTcZgEGTSYPVBdRSB6gdcU+txNyvTnGUweqcyTvogERebkERTL8dFrPllDcSIhmFtT0wVDqjSFLhrumVGBxuT/CxzJPdmF1AfKQWhxLBn9QlJU6BnVdyrWT9dpslIA93nc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+	s=arc-20240116; t=1766226660; c=relaxed/simple;
+	bh=lvsmAcTQuOeo+qf4SvKgakfCn8Kwd0koLbWKnmUCrIA=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=Ct/yMRQKl0vTfUZHG0PwFwiH2oaOX03Dxkf/8ifBZgUEX0a5ObLm9PyKF2lkV7+iSi9IH0Wr58KwHWR7DnaVr4lFDcnkloilWEgRCaSsk3SOIlDtvMGCI1qQ5m3d+4Ccs82xBwuAd5R3fI0DsAKVXBxUyVmvSCt3K/g9zmNksYc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
 Received: from mail.maildlp.com (unknown [172.19.163.198])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTPS id 4dYKYd4F3mzYQtjd
-	for <cgroups@vger.kernel.org>; Sat, 20 Dec 2025 17:56:37 +0800 (CST)
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTPS id 4dYLJx5RgtzKHLtG;
+	Sat, 20 Dec 2025 18:30:41 +0800 (CST)
 Received: from mail02.huawei.com (unknown [10.116.40.128])
-	by mail.maildlp.com (Postfix) with ESMTP id 53B9940573
-	for <cgroups@vger.kernel.org>; Sat, 20 Dec 2025 17:57:09 +0800 (CST)
-Received: from [10.67.111.176] (unknown [10.67.111.176])
-	by APP4 (Coremail) with SMTP id gCh0CgB32PjzckZp8QlhAw--.43249S2;
-	Sat, 20 Dec 2025 17:57:09 +0800 (CST)
-Message-ID: <9a442808-ed53-4657-988b-882cc0014c0d@huaweicloud.com>
-Date: Sat, 20 Dec 2025 17:57:07 +0800
+	by mail.maildlp.com (Postfix) with ESMTP id 50C164056B;
+	Sat, 20 Dec 2025 18:30:55 +0800 (CST)
+Received: from hulk-vt.huawei.com (unknown [10.67.174.121])
+	by APP4 (Coremail) with SMTP id gCh0CgDHdfbRekZpWstjAw--.27423S2;
+	Sat, 20 Dec 2025 18:30:53 +0800 (CST)
+From: Chen Ridong <chenridong@huaweicloud.com>
+To: longman@redhat.com,
+	tj@kernel.org,
+	hannes@cmpxchg.org,
+	mkoutny@suse.com,
+	chenridong@huawei.com
+Cc: cgroups@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	lujialin4@huawei.com,
+	chenridong@huaweicloud.com,
+	dan.carpenter@linaro.org
+Subject: [patch -next] cpuset: remove dead code in cpuset-v1.c
+Date: Sat, 20 Dec 2025 10:15:57 +0000
+Message-Id: <20251220101557.2719064-1-chenridong@huaweicloud.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [bug report] cpuset: separate generate_sched_domains for v1 and
- v2
-To: Dan Carpenter <dan.carpenter@linaro.org>,
- Chen Ridong <chenridong@huawei.com>, Waiman Long <longman@redhat.com>
-Cc: cgroups@vger.kernel.org
-References: <aUZhZUHHDsMpBwIw@stanley.mountain>
-Content-Language: en-US
-From: Chen Ridong <chenridong@huaweicloud.com>
-In-Reply-To: <aUZhZUHHDsMpBwIw@stanley.mountain>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID:gCh0CgB32PjzckZp8QlhAw--.43249S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxWry3KrW5tFWUAry5uFyUKFg_yoW7JF48pF
-	W09FWjvFWDtw1UG3yF93Wku34a9wnrJa1Ut3WFq3yFvF47tF1xCFyxZanxC3s8ur1qkr47
-	uFZFqwsxWa1qgaDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUgqb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
-	0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
-	x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
-	0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_
-	Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1V
-	AY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAI
-	cVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42
-	IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r1j6r4UYxBIdaVFxhVj
-	vjDU0xZFpf9x07UE-erUUUUU=
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:gCh0CgDHdfbRekZpWstjAw--.27423S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7ZrWkKF1DKF18JF1rJw1fWFg_yoW8Cr4UpF
+	4Dua48X3yUtr1UC3yjkFy7uryIv3ykGayUta1UXr1rXF47A3Wj9ry7X3ZxWFWjvr4DCryY
+	yFZFgr42q3WqvFJanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUU9Y14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+	1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
+	JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
+	CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
+	2Ix0cI8IcVAFwI0_JrI_JrylYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
+	W8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2
+	Y2ka0xkIwI1lc7CjxVAaw2AFwI0_Jw0_GFyl42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x
+	0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2
+	zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF
+	4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWU
+	CwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCT
+	nIWIevJa73UjIFyTuYvjfUFg4SDUUUU
 X-CM-SenderInfo: hfkh02xlgr0w46kxt4xhlfz01xgou0bp/
 
+From: Chen Ridong <chenridong@huawei.com>
 
+The commit 6e1d31ce495c ("cpuset: separate generate_sched_domains for v1
+and v2") introduced dead code that was originally added for cpuset-v2
+partition domain generation. Remove the redundant root_load_balance check.
 
-On 2025/12/20 16:42, Dan Carpenter wrote:
-> Hello Chen Ridong,
-> 
-> Commit 6e1d31ce495c ("cpuset: separate generate_sched_domains for v1
-> and v2") from Dec 18, 2025 (linux-next), leads to the following
-> Smatch static checker warning:
-> 
-> 	kernel/cgroup/cpuset-v1.c:641 cpuset1_generate_sched_domains()
-> 	warn: duplicate check 'root_load_balance' (previous on line 618)
-> 
-> kernel/cgroup/cpuset-v1.c
->     596 int cpuset1_generate_sched_domains(cpumask_var_t **domains,
->     597                         struct sched_domain_attr **attributes)
->     598 {
->     599         struct cpuset *cp;        /* top-down scan of cpusets */
->     600         struct cpuset **csa;        /* array of all cpuset ptrs */
->     601         int csn;                /* how many cpuset ptrs in csa so far */
->     602         int i, j;                /* indices for partition finding loops */
->     603         cpumask_var_t *doms;        /* resulting partition; i.e. sched domains */
->     604         struct sched_domain_attr *dattr;  /* attributes for custom domains */
->     605         int ndoms = 0;                /* number of sched domains in result */
->     606         int nslot;                /* next empty doms[] struct cpumask slot */
->     607         struct cgroup_subsys_state *pos_css;
->     608         bool root_load_balance = is_sched_load_balance(&top_cpuset);
->     609         int nslot_update;
->     610 
->     611         lockdep_assert_cpuset_lock_held();
->     612 
->     613         doms = NULL;
->     614         dattr = NULL;
->     615         csa = NULL;
->     616 
->     617         /* Special case for the 99% of systems with one, full, sched domain */
->     618         if (root_load_balance) {
->     619                 ndoms = 1;
->     620                 doms = alloc_sched_domains(ndoms);
->     621                 if (!doms)
->     622                         goto done;
->     623 
->     624                 dattr = kmalloc(sizeof(struct sched_domain_attr), GFP_KERNEL);
->     625                 if (dattr) {
->     626                         *dattr = SD_ATTR_INIT;
->     627                         update_domain_attr_tree(dattr, &top_cpuset);
->     628                 }
->     629                 cpumask_and(doms[0], top_cpuset.effective_cpus,
->     630                             housekeeping_cpumask(HK_TYPE_DOMAIN));
->     631 
->     632                 goto done;
-> 
-> If root_load_balance is true we are done.
-> 
->     633         }
->     634 
->     635         csa = kmalloc_array(nr_cpusets(), sizeof(cp), GFP_KERNEL);
->     636         if (!csa)
->     637                 goto done;
->     638         csn = 0;
->     639 
->     640         rcu_read_lock();
-> --> 641         if (root_load_balance)
->     642                 csa[csn++] = &top_cpuset;
-> 
-> Dead code.
-> 
+Fixes: 6e1d31ce495c ("cpuset: separate generate_sched_domains for v1 and v2")
+Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
+Closes: https://lore.kernel.org/cgroups/9a442808-ed53-4657-988b-882cc0014c0d@huaweicloud.com/T/
+Signed-off-by: Chen Ridong <chenridong@huawei.com>
+---
+ kernel/cgroup/cpuset-v1.c | 5 +----
+ 1 file changed, 1 insertion(+), 4 deletions(-)
 
-Thank you for pointing this out.
-
-You're correct that this can be safely removed. I'll make the fix.
-
->     643         cpuset_for_each_descendant_pre(cp, pos_css, &top_cpuset) {
->     644                 if (cp == &top_cpuset)
->     645                         continue;
->     646 
->     647                 /*
->     648                  * Continue traversing beyond @cp iff @cp has some CPUs and
->     649                  * isn't load balancing.  The former is obvious.  The
->     650                  * latter: All child cpusets contain a subset of the
->     651                  * parent's cpus, so just skip them, and then we call
->     652                  * update_domain_attr_tree() to calc relax_domain_level of
->     653                  * the corresponding sched domain.
->     654                  */
->     655                 if (!cpumask_empty(cp->cpus_allowed) &&
->     656                     !(is_sched_load_balance(cp) &&
->     657                       cpumask_intersects(cp->cpus_allowed,
->     658                                          housekeeping_cpumask(HK_TYPE_DOMAIN))))
->     659                         continue;
->     660 
->     661                 if (is_sched_load_balance(cp) &&
->     662                     !cpumask_empty(cp->effective_cpus))
->     663                         csa[csn++] = cp;
->     664 
->     665                 /* skip @cp's subtree */
->     666                 pos_css = css_rightmost_descendant(pos_css);
->     667                 continue;
->     668         }
->     669         rcu_read_unlock();
->     670 
->     671         for (i = 0; i < csn; i++)
->     672                 uf_node_init(&csa[i]->node);
->     673 
->     674         /* Merge overlapping cpusets */
->     675         for (i = 0; i < csn; i++) {
->     676                 for (j = i + 1; j < csn; j++) {
->     677                         if (cpusets_overlap(csa[i], csa[j]))
->     678                                 uf_union(&csa[i]->node, &csa[j]->node);
->     679                 }
->     680         }
->     681 
->     682         /* Count the total number of domains */
->     683         for (i = 0; i < csn; i++) {
->     684                 if (uf_find(&csa[i]->node) == &csa[i]->node)
->     685                         ndoms++;
->     686         }
->     687 
->     688         /*
->     689          * Now we know how many domains to create.
->     690          * Convert <csn, csa> to <ndoms, doms> and populate cpu masks.
->     691          */
->     692         doms = alloc_sched_domains(ndoms);
->     693         if (!doms)
->     694                 goto done;
->     695 
->     696         /*
->     697          * The rest of the code, including the scheduler, can deal with
->     698          * dattr==NULL case. No need to abort if alloc fails.
->     699          */
->     700         dattr = kmalloc_array(ndoms, sizeof(struct sched_domain_attr),
->     701                               GFP_KERNEL);
->     702 
->     703         for (nslot = 0, i = 0; i < csn; i++) {
->     704                 nslot_update = 0;
->     705                 for (j = i; j < csn; j++) {
->     706                         if (uf_find(&csa[j]->node) == &csa[i]->node) {
->     707                                 struct cpumask *dp = doms[nslot];
->     708 
->     709                                 if (i == j) {
->     710                                         nslot_update = 1;
->     711                                         cpumask_clear(dp);
->     712                                         if (dattr)
->     713                                                 *(dattr + nslot) = SD_ATTR_INIT;
->     714                                 }
->     715                                 cpumask_or(dp, dp, csa[j]->effective_cpus);
->     716                                 cpumask_and(dp, dp, housekeeping_cpumask(HK_TYPE_DOMAIN));
->     717                                 if (dattr)
->     718                                         update_domain_attr_tree(dattr + nslot, csa[j]);
->     719                         }
->     720                 }
->     721                 if (nslot_update)
->     722                         nslot++;
->     723         }
->     724         BUG_ON(nslot != ndoms);
->     725 
->     726 done:
->     727         kfree(csa);
->     728 
->     729         /*
->     730          * Fallback to the default domain if kmalloc() failed.
->     731          * See comments in partition_sched_domains().
->     732          */
->     733         if (doms == NULL)
->     734                 ndoms = 1;
->     735 
->     736         *domains    = doms;
->     737         *attributes = dattr;
->     738         return ndoms;
->     739 }
-> 
-> 
-
+diff --git a/kernel/cgroup/cpuset-v1.c b/kernel/cgroup/cpuset-v1.c
+index 7303315fdba7..ecfea7800f0d 100644
+--- a/kernel/cgroup/cpuset-v1.c
++++ b/kernel/cgroup/cpuset-v1.c
+@@ -605,7 +605,6 @@ int cpuset1_generate_sched_domains(cpumask_var_t **domains,
+ 	int ndoms = 0;		/* number of sched domains in result */
+ 	int nslot;		/* next empty doms[] struct cpumask slot */
+ 	struct cgroup_subsys_state *pos_css;
+-	bool root_load_balance = is_sched_load_balance(&top_cpuset);
+ 	int nslot_update;
+ 
+ 	lockdep_assert_cpuset_lock_held();
+@@ -615,7 +614,7 @@ int cpuset1_generate_sched_domains(cpumask_var_t **domains,
+ 	csa = NULL;
+ 
+ 	/* Special case for the 99% of systems with one, full, sched domain */
+-	if (root_load_balance) {
++	if (is_sched_load_balance(&top_cpuset)) {
+ 		ndoms = 1;
+ 		doms = alloc_sched_domains(ndoms);
+ 		if (!doms)
+@@ -638,8 +637,6 @@ int cpuset1_generate_sched_domains(cpumask_var_t **domains,
+ 	csn = 0;
+ 
+ 	rcu_read_lock();
+-	if (root_load_balance)
+-		csa[csn++] = &top_cpuset;
+ 	cpuset_for_each_descendant_pre(cp, pos_css, &top_cpuset) {
+ 		if (cp == &top_cpuset)
+ 			continue;
 -- 
-Best regards,
-Ridong
+2.34.1
 
 
