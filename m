@@ -1,126 +1,172 @@
-Return-Path: <cgroups+bounces-12552-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-12553-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1FDB8CD2D60
-	for <lists+cgroups@lfdr.de>; Sat, 20 Dec 2025 11:31:17 +0100 (CET)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4A4D6CD315B
+	for <lists+cgroups@lfdr.de>; Sat, 20 Dec 2025 16:00:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id DE1C23016721
-	for <lists+cgroups@lfdr.de>; Sat, 20 Dec 2025 10:31:01 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id 593D23002533
+	for <lists+cgroups@lfdr.de>; Sat, 20 Dec 2025 15:00:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C40F2F746D;
-	Sat, 20 Dec 2025 10:31:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6A5942DF122;
+	Sat, 20 Dec 2025 15:00:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="SA8zPB/F"
 X-Original-To: cgroups@vger.kernel.org
-Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.12])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 33DC021ABBB;
-	Sat, 20 Dec 2025 10:30:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6556D2D94A9;
+	Sat, 20 Dec 2025 15:00:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1766226660; cv=none; b=SiREP6PtktUGnVClFyK8I6GcI87x37QtRutMrD3SOEtMYBuLY6Sbr6P8fF5DvFb7HMpfpRxSAxrZgnddtd7R3WIWJPxQLt2fZ9+pinxcFJik8FppDIXt44lSsGuFzr2wLF5/ag9MFXWtDOiZBhGOJnQ403FjwdkmOtWhuTccaoo=
+	t=1766242821; cv=none; b=rPQyw+ADIFGiBYRgKKtboSWnKDZRlk1xENHtUzaMh8zlbwLPq9O3ZdzVIUgtmgV9oC+S/DMYH/GRs1i5zd+uSHwqJS/xq2M6Pgy8M/pxhYAczMxdKZPolDtDIH3TLAxWJK36Vx9LSHXXiTE3cwXBmussnQveCnKU1MxOXmALvO4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1766226660; c=relaxed/simple;
-	bh=lvsmAcTQuOeo+qf4SvKgakfCn8Kwd0koLbWKnmUCrIA=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=Ct/yMRQKl0vTfUZHG0PwFwiH2oaOX03Dxkf/8ifBZgUEX0a5ObLm9PyKF2lkV7+iSi9IH0Wr58KwHWR7DnaVr4lFDcnkloilWEgRCaSsk3SOIlDtvMGCI1qQ5m3d+4Ccs82xBwuAd5R3fI0DsAKVXBxUyVmvSCt3K/g9zmNksYc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.198])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTPS id 4dYLJx5RgtzKHLtG;
-	Sat, 20 Dec 2025 18:30:41 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.128])
-	by mail.maildlp.com (Postfix) with ESMTP id 50C164056B;
-	Sat, 20 Dec 2025 18:30:55 +0800 (CST)
-Received: from hulk-vt.huawei.com (unknown [10.67.174.121])
-	by APP4 (Coremail) with SMTP id gCh0CgDHdfbRekZpWstjAw--.27423S2;
-	Sat, 20 Dec 2025 18:30:53 +0800 (CST)
-From: Chen Ridong <chenridong@huaweicloud.com>
-To: longman@redhat.com,
-	tj@kernel.org,
-	hannes@cmpxchg.org,
-	mkoutny@suse.com,
-	chenridong@huawei.com
-Cc: cgroups@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	lujialin4@huawei.com,
-	chenridong@huaweicloud.com,
-	dan.carpenter@linaro.org
-Subject: [patch -next] cpuset: remove dead code in cpuset-v1.c
-Date: Sat, 20 Dec 2025 10:15:57 +0000
-Message-Id: <20251220101557.2719064-1-chenridong@huaweicloud.com>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1766242821; c=relaxed/simple;
+	bh=nAnK3wG0RXziPz7E4YON0DH/0jR4RzGtYIeGV6e9eM4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=I9toDTl2u+4CTdrJXyIdhCQVTi+Mu010kQlXa7yy2qMWwzYEJFNFBbWQWvSjweq7K4iEVCswkozTPj8iMV8k0eYgXrBLCaco+I9WZRrHykSgHd+M2afzpFig8OYaNiluC1Qs8aV6VoH54LhnziE4CIlO8bFdVtaZCXZXTL18M3g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=SA8zPB/F; arc=none smtp.client-ip=192.198.163.12
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1766242820; x=1797778820;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=nAnK3wG0RXziPz7E4YON0DH/0jR4RzGtYIeGV6e9eM4=;
+  b=SA8zPB/F25dXNfUQWSddSWwq9NYRdSspS6vv0u/f4B4V6GwQxFVZaSO4
+   AxQ8brZ6lU8Okj2p//7NBoKr5TT2sOU8g2eQoX0Xecxub9n2d/PoV/vMd
+   vYbPTHJTDDuqwT8IhE2ela1zehRlftJUmyJsGXtFUZTAQc2lW0jrzSJQk
+   uW+GiPIWgAhJuNjY2winYYFdw0El1XnP4ELFFmJUvq1mkmoZCsbkaIAHN
+   xrRjZ46sHG70D6UdgWeaqVhmiQUSjX3u+CNc0oGYD6NTf1+sGviE5CeqC
+   p4OD4WnTQciVt8mlfb/kGI9lXebn80hLl1bgZfQwLA6xOlrRod5kbWN9+
+   w==;
+X-CSE-ConnectionGUID: FIIq50q7Tv6dWGyn1brQCg==
+X-CSE-MsgGUID: iYoF0BeXQKiuxSB0xilDrg==
+X-IronPort-AV: E=McAfee;i="6800,10657,11648"; a="72034868"
+X-IronPort-AV: E=Sophos;i="6.21,164,1763452800"; 
+   d="scan'208";a="72034868"
+Received: from orviesa010.jf.intel.com ([10.64.159.150])
+  by fmvoesa106.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Dec 2025 07:00:19 -0800
+X-CSE-ConnectionGUID: eWNAbC0nRfCspnSKssnnHQ==
+X-CSE-MsgGUID: YNbLtCx4Tp+NnLAk2qHUvQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.21,164,1763452800"; 
+   d="scan'208";a="198359996"
+Received: from lkp-server01.sh.intel.com (HELO 0d09efa1b85f) ([10.239.97.150])
+  by orviesa010.jf.intel.com with ESMTP; 20 Dec 2025 07:00:12 -0800
+Received: from kbuild by 0d09efa1b85f with local (Exim 4.98.2)
+	(envelope-from <lkp@intel.com>)
+	id 1vWyRF-000000004hZ-0SYh;
+	Sat, 20 Dec 2025 15:00:09 +0000
+Date: Sat, 20 Dec 2025 22:59:32 +0800
+From: kernel test robot <lkp@intel.com>
+To: Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
+	linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+	cgroups@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+	bpf@vger.kernel.org, netfilter-devel@vger.kernel.org,
+	coreteam@netfilter.org, netdev@vger.kernel.org
+Cc: oe-kbuild-all@lists.linux.dev,
+	Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
+	Yu Kuai <yukuai@fnnas.com>, Jens Axboe <axboe@kernel.dk>,
+	Tejun Heo <tj@kernel.org>, Josef Bacik <josef@toxicpanda.com>,
+	Johannes Weiner <hannes@cmpxchg.org>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>,
+	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
+	Yonghong Song <yonghong.song@linux.dev>,
+	John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@fomichev.me>,
+	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
+	Pablo Neira Ayuso <pablo@netfilter.org>
+Subject: Re: [PATCH 2/4] cgroup: Introduce cgroup_level() helper
+Message-ID: <202512202230.1uoB5chV-lkp@intel.com>
+References: <20251217162744.352391-3-mkoutny@suse.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:gCh0CgDHdfbRekZpWstjAw--.27423S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7ZrWkKF1DKF18JF1rJw1fWFg_yoW8Cr4UpF
-	4Dua48X3yUtr1UC3yjkFy7uryIv3ykGayUta1UXr1rXF47A3Wj9ry7X3ZxWFWjvr4DCryY
-	yFZFgr42q3WqvFJanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUU9Y14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-	1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
-	JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
-	CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
-	2Ix0cI8IcVAFwI0_JrI_JrylYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
-	W8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2
-	Y2ka0xkIwI1lc7CjxVAaw2AFwI0_Jw0_GFyl42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x
-	0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2
-	zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF
-	4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWU
-	CwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCT
-	nIWIevJa73UjIFyTuYvjfUFg4SDUUUU
-X-CM-SenderInfo: hfkh02xlgr0w46kxt4xhlfz01xgou0bp/
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20251217162744.352391-3-mkoutny@suse.com>
 
-From: Chen Ridong <chenridong@huawei.com>
+Hi Michal,
 
-The commit 6e1d31ce495c ("cpuset: separate generate_sched_domains for v1
-and v2") introduced dead code that was originally added for cpuset-v2
-partition domain generation. Remove the redundant root_load_balance check.
+kernel test robot noticed the following build errors:
 
-Fixes: 6e1d31ce495c ("cpuset: separate generate_sched_domains for v1 and v2")
-Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
-Closes: https://lore.kernel.org/cgroups/9a442808-ed53-4657-988b-882cc0014c0d@huaweicloud.com/T/
-Signed-off-by: Chen Ridong <chenridong@huawei.com>
----
- kernel/cgroup/cpuset-v1.c | 5 +----
- 1 file changed, 1 insertion(+), 4 deletions(-)
+[auto build test ERROR on 8f0b4cce4481fb22653697cced8d0d04027cb1e8]
 
-diff --git a/kernel/cgroup/cpuset-v1.c b/kernel/cgroup/cpuset-v1.c
-index 7303315fdba7..ecfea7800f0d 100644
---- a/kernel/cgroup/cpuset-v1.c
-+++ b/kernel/cgroup/cpuset-v1.c
-@@ -605,7 +605,6 @@ int cpuset1_generate_sched_domains(cpumask_var_t **domains,
- 	int ndoms = 0;		/* number of sched domains in result */
- 	int nslot;		/* next empty doms[] struct cpumask slot */
- 	struct cgroup_subsys_state *pos_css;
--	bool root_load_balance = is_sched_load_balance(&top_cpuset);
- 	int nslot_update;
- 
- 	lockdep_assert_cpuset_lock_held();
-@@ -615,7 +614,7 @@ int cpuset1_generate_sched_domains(cpumask_var_t **domains,
- 	csa = NULL;
- 
- 	/* Special case for the 99% of systems with one, full, sched domain */
--	if (root_load_balance) {
-+	if (is_sched_load_balance(&top_cpuset)) {
- 		ndoms = 1;
- 		doms = alloc_sched_domains(ndoms);
- 		if (!doms)
-@@ -638,8 +637,6 @@ int cpuset1_generate_sched_domains(cpumask_var_t **domains,
- 	csn = 0;
- 
- 	rcu_read_lock();
--	if (root_load_balance)
--		csa[csn++] = &top_cpuset;
- 	cpuset_for_each_descendant_pre(cp, pos_css, &top_cpuset) {
- 		if (cp == &top_cpuset)
- 			continue;
+url:    https://github.com/intel-lab-lkp/linux/commits/Michal-Koutn/cgroup-Eliminate-cgrp_ancestor_storage-in-cgroup_root/20251218-004346
+base:   8f0b4cce4481fb22653697cced8d0d04027cb1e8
+patch link:    https://lore.kernel.org/r/20251217162744.352391-3-mkoutny%40suse.com
+patch subject: [PATCH 2/4] cgroup: Introduce cgroup_level() helper
+config: sparc64-randconfig-r134-20251218 (https://download.01.org/0day-ci/archive/20251220/202512202230.1uoB5chV-lkp@intel.com/config)
+compiler: clang version 20.1.8 (https://github.com/llvm/llvm-project 87f0227cb60147a26a1eeb4fb06e3b505e9c7261)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20251220/202512202230.1uoB5chV-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202512202230.1uoB5chV-lkp@intel.com/
+
+All errors (new ones prefixed by >>):
+
+>> block/blk-iocost.c:3006:53: error: expected ';' after expression
+    3006 |         iocg->level = cgroup_level(blkg->blkcg->css.cgroup)
+         |                                                            ^
+         |                                                            ;
+   1 error generated.
+
+
+vim +3006 block/blk-iocost.c
+
+  2981	
+  2982	static void ioc_pd_init(struct blkg_policy_data *pd)
+  2983	{
+  2984		struct ioc_gq *iocg = pd_to_iocg(pd);
+  2985		struct blkcg_gq *blkg = pd_to_blkg(&iocg->pd);
+  2986		struct ioc *ioc = q_to_ioc(blkg->q);
+  2987		struct ioc_now now;
+  2988		struct blkcg_gq *tblkg;
+  2989		unsigned long flags;
+  2990	
+  2991		ioc_now(ioc, &now);
+  2992	
+  2993		iocg->ioc = ioc;
+  2994		atomic64_set(&iocg->vtime, now.vnow);
+  2995		atomic64_set(&iocg->done_vtime, now.vnow);
+  2996		atomic64_set(&iocg->active_period, atomic64_read(&ioc->cur_period));
+  2997		INIT_LIST_HEAD(&iocg->active_list);
+  2998		INIT_LIST_HEAD(&iocg->walk_list);
+  2999		INIT_LIST_HEAD(&iocg->surplus_list);
+  3000		iocg->hweight_active = WEIGHT_ONE;
+  3001		iocg->hweight_inuse = WEIGHT_ONE;
+  3002	
+  3003		init_waitqueue_head(&iocg->waitq);
+  3004		hrtimer_setup(&iocg->waitq_timer, iocg_waitq_timer_fn, CLOCK_MONOTONIC, HRTIMER_MODE_ABS);
+  3005	
+> 3006		iocg->level = cgroup_level(blkg->blkcg->css.cgroup)
+  3007	
+  3008		for (tblkg = blkg; tblkg; tblkg = tblkg->parent) {
+  3009			struct ioc_gq *tiocg = blkg_to_iocg(tblkg);
+  3010			iocg->ancestors[tiocg->level] = tiocg;
+  3011		}
+  3012	
+  3013		spin_lock_irqsave(&ioc->lock, flags);
+  3014		weight_updated(iocg, &now);
+  3015		spin_unlock_irqrestore(&ioc->lock, flags);
+  3016	}
+  3017	
+
 -- 
-2.34.1
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
