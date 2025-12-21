@@ -1,245 +1,154 @@
-Return-Path: <cgroups+bounces-12556-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-12557-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id C972ACD3FE3
-	for <lists+cgroups@lfdr.de>; Sun, 21 Dec 2025 13:08:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 89C70CD473E
+	for <lists+cgroups@lfdr.de>; Mon, 22 Dec 2025 00:39:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 6EE3C300C5E7
-	for <lists+cgroups@lfdr.de>; Sun, 21 Dec 2025 12:08:00 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 473C5303EF6A
+	for <lists+cgroups@lfdr.de>; Sun, 21 Dec 2025 23:36:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B83C2F83B7;
-	Sun, 21 Dec 2025 12:07:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1DFF02848AF;
+	Sun, 21 Dec 2025 23:36:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gourry.net header.i=@gourry.net header.b="LdnxOv0R"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="lkc6uLGG"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-qv1-f41.google.com (mail-qv1-f41.google.com [209.85.219.41])
+Received: from mail-pj1-f73.google.com (mail-pj1-f73.google.com [209.85.216.73])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 503022D12F3
-	for <cgroups@vger.kernel.org>; Sun, 21 Dec 2025 12:07:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5AF88283159
+	for <cgroups@vger.kernel.org>; Sun, 21 Dec 2025 23:36:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.73
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1766318879; cv=none; b=kPHjjqMAMoU0W1dQCxL7YPxtXscgwbQ7d87suVj28vhcIvSuUThHOd+Z+TUp70q6PkGjIt4npKX0dsSr6NfTQpBYcb4d0Bd3r5oAH4MK1oWP9ALtSwTOQKXYN+gkZb437VKVMKJ4X9bgM+hvEaEkNpPRa71Kgh7GHUD79PIBPxM=
+	t=1766360200; cv=none; b=rEP9+mFZOwoHsQ3+vP3gZfNE5gPXDEVbLvGydQY8ib4MCMHOY53/SQMPFN9YMgckN/DyhEnbpDHpOHQr7sMHQsk/o49pvZH/KaFD+oY6miv6f5oEOP5YuF7YVcN1FcfeoTbA4Yjw0szECx/MUAJB0kkKglnCXHXinAbEMZSBnUc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1766318879; c=relaxed/simple;
-	bh=LYDfTSibOB1avS3PUEI0o+L15I/Ok+QT8hDdTTqDFDw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=JMe3RTy8gDEB34gVYlDxXFRLnbxORTwx/IKs+rtvquJItjrgC2Te/Lp1QADnO1NLXQMHx3xmumYgKVq8/LjjfBoqlZIm5pE4bIHw2CHeeYItx2DK5aBwvzoe+74TamdoOIKAP0VwVbmwh3os2tioypHIVq19obLJCTommi/lVSs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gourry.net; spf=pass smtp.mailfrom=gourry.net; dkim=pass (2048-bit key) header.d=gourry.net header.i=@gourry.net header.b=LdnxOv0R; arc=none smtp.client-ip=209.85.219.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gourry.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gourry.net
-Received: by mail-qv1-f41.google.com with SMTP id 6a1803df08f44-88fcc71dbf4so1061026d6.2
-        for <cgroups@vger.kernel.org>; Sun, 21 Dec 2025 04:07:57 -0800 (PST)
+	s=arc-20240116; t=1766360200; c=relaxed/simple;
+	bh=I7bpZx/fGX6q1NB4SWNPZld6CoQtIHxY+wfjKHVWqtE=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=elFRi9uHJN0ivv00RnFFIQzl8c+620YSO33b1e+CcWZJ4bwuVJpLlj9ZXmhNA6YR8OHtXa1SmRvA8IgpoRJlmUiFvERl5xUCKpswwBn1PKbdRoaosEBZmi3/UDUCnfL6VzIwT1oz2henOpnDcSKw2SS/99Dk2SISMYO/Q7d7X4c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--bingjiao.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=lkc6uLGG; arc=none smtp.client-ip=209.85.216.73
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--bingjiao.bounces.google.com
+Received: by mail-pj1-f73.google.com with SMTP id 98e67ed59e1d1-34ab8693a2cso9377334a91.0
+        for <cgroups@vger.kernel.org>; Sun, 21 Dec 2025 15:36:39 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gourry.net; s=google; t=1766318876; x=1766923676; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=ImyYpBYHczXKmZOJ0nv2yp1b5vTgB4LNV5Y2WhaumNQ=;
-        b=LdnxOv0Rdx+pBkPZl/2D5V4KWsj0HGTqmpUfCjhp88dBKpdxE6JOP0aY6gN0XFS/aK
-         o3MiVpHLPjlpKX7IFCVyCyTRerxKj/o7JcY9CiMk+kUD3JHHgUMyGMLbJMVpR0pIX0qc
-         RYzoMxr73HYBnyX7xhyhNuPxY38D9eZXJX1/nXwPlkFzRuscxetn212pBQHS3wJ0shnC
-         WrQ2kdIKExVZaYXP21FtZIC5T2nb4uBv/ZSWC/sm+Jw2dfhADu1gjLTQDNmVvIcBnu2A
-         tnYrv7MyuCKdJXAlOfGYk4HrfHaklcczgVo7yFl166eZl65NrUvBpY15QBVCbE6kZSw8
-         5XPQ==
+        d=google.com; s=20230601; t=1766360198; x=1766964998; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=b/ZL/U7sLuVrIZUvVuD6ozi7k6Z6Ly5Yuo8mcDrUYr4=;
+        b=lkc6uLGG1L5AHh2vYVq7MnAv7d9djYfHoBgquUQ77WwnFCUAWbH7JWSURcEHUUPkdq
+         DfFBHGf0z9xR/QPa5LLb5KfXnqpb6Fl44d/GQGwbc+wnROnhjNL8R0thKXOq6VV8qPm7
+         gH80sYvixqcMizmoOd0kV9PScxzGW1w7P3zZIoFX/tQ6DEjmtVjyfNRDOoDOzGR8ZmmU
+         j5SvrWtgdLT19s1ehkKf6y76Noe5aHlbZGXQGNH+hmMbJj/yUebyjFyoOxYwU0FsvTzO
+         udsOs7oVT/yu8IkkomzXrEZ5EvqRbCiOqLCt7zgIilHijxKuvt4X1zHsN4XOj1lsrmyY
+         nxUA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1766318876; x=1766923676;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ImyYpBYHczXKmZOJ0nv2yp1b5vTgB4LNV5Y2WhaumNQ=;
-        b=oeQHzFcSlfZeRCg6LaNnYZBpPtmUJCMCI1DLlIF8js0OJGshG/NsK+37XbeRDKF2XD
-         wQxlWu3Rsoe3DQBJKCkfwhB8gydABUamhUSxWzdmKVxTQS42OuI4aQPr9nP4QPws4GcJ
-         kQM/M3O4v1TA2jdPeLOjXjDXvZPFsxVDHFvtxSmx76XERcj3HG8OSK/f1BQ2kgbyQgNx
-         M/FROwI+wUeHZGaWpI35nF7xngkYYsSjCJagRbV8Xrj6Okg6FVVeP1ZiuQxVkfr4self
-         RFcjCu5/BHEiDMRsDZHhEeVobBWSkpXVSz4eXx0R8wDx/3S63TxuW+drof5maHABf18V
-         8f9w==
-X-Forwarded-Encrypted: i=1; AJvYcCWNR26QUXBD8B0N0I/N+mxWV8B2ijrIngF4ERD+eH5jMajMKVRMZ0e+Izndk6bjSZEnKEa2wwSn@vger.kernel.org
-X-Gm-Message-State: AOJu0YwkmUYSLPGsFGPFpx9je5+8awhcU5qW3iSO29Ve4l/hRGyudwF8
-	/oIvGf+AtMUOcQ9psheTarDh5s+ypngIDLUG3hSWwRaj0Ut6WJgaWlYKSCImfUu3VN8=
-X-Gm-Gg: AY/fxX7dj7zo2HQcUdSlCmdIap1FV8Q/MqbGv2lR7jYh0NJnvjyPoR9IbBZeUqXgbT9
-	TJyR8BK01FAdxgbbSlnYUyE9mgsDEJEe37/Adti2gtuVp3fAstUjgkJo1NUjaeIa1zd3aQJk2FI
-	/uscqKw5obn3EnwPgWai6tBXVmRCmHb0Z44cJ6j30M/pp7fGGCqLpDB8enJaVRaJChNgTTE6mqo
-	By4JII7bWKcev2piMWIoCDrU7paBzLOGxSPNfirSO9Le14z48OQyIPfax747pQZwaTatYus+suI
-	6e9oZvpfu3q/eagKIFY+2V4tbG4uVrlfvs1LQZ68JzBon1Jz6Id/v0/QEP8hEM1TPyTz8NehsQs
-	ZljpP44IboldlMtUR5aYl3GU7OocsSoVxe/3m8ydFbY5JArNhXS5VuVqeD1U6CqC6qbx8/b7d5J
-	kGvTKGpNy8zst1LRXF9tX9/C7OGxzkqdFls1YDSR0W5lcp5z6XxNfuFv8T8+zwTV96RD43WA==
-X-Google-Smtp-Source: AGHT+IFGNtL1aIwg3HtHmwchYyREfgUlw6VeYgEwe39zkib/ur8gNePpkMwSQGbagQRqT8PUrwoLJw==
-X-Received: by 2002:a05:622a:1b29:b0:4ed:8264:91ba with SMTP id d75a77b69052e-4f4abd86bcamr105538801cf.58.1766318876084;
-        Sun, 21 Dec 2025 04:07:56 -0800 (PST)
-Received: from gourry-fedora-PF4VCD3F (pool-96-255-20-138.washdc.ftas.verizon.net. [96.255.20.138])
-        by smtp.gmail.com with ESMTPSA id af79cd13be357-8c0973ee011sm610870285a.38.2025.12.21.04.07.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 21 Dec 2025 04:07:55 -0800 (PST)
-Date: Sun, 21 Dec 2025 07:07:18 -0500
-From: Gregory Price <gourry@gourry.net>
-To: Bing Jiao <bingjiao@google.com>
-Cc: linux-mm@kvack.org, Waiman Long <longman@redhat.com>,
-	Johannes Weiner <hannes@cmpxchg.org>,
-	Michal Hocko <mhocko@kernel.org>,
-	Roman Gushchin <roman.gushchin@linux.dev>,
-	Shakeel Butt <shakeel.butt@linux.dev>,
-	Muchun Song <muchun.song@linux.dev>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	David Hildenbrand <david@kernel.org>,
-	Lorenzo Stoakes <lorenzo.stoakes@oracle.com>,
-	"Liam R. Howlett" <Liam.Howlett@oracle.com>,
-	Vlastimil Babka <vbabka@suse.cz>, Mike Rapoport <rppt@kernel.org>,
-	Suren Baghdasaryan <surenb@google.com>, Tejun Heo <tj@kernel.org>,
-	Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
-	Qi Zheng <zhengqi.arch@bytedance.com>,
-	Axel Rasmussen <axelrasmussen@google.com>,
-	Yuanchu Xie <yuanchu@google.com>, Wei Xu <weixugc@google.com>,
-	cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] mm/vmscan: respect mems_effective in demote_folio_list()
-Message-ID: <aUfi9gn5HS4u4ShU@gourry-fedora-PF4VCD3F>
-References: <20251220061022.2726028-1-bingjiao@google.com>
+        d=1e100.net; s=20230601; t=1766360199; x=1766964999;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=b/ZL/U7sLuVrIZUvVuD6ozi7k6Z6Ly5Yuo8mcDrUYr4=;
+        b=ScFeXJUOAKNV95j2joIOM39zm7anQqchsgmz8JmH7XEjdAEb7liP8yVTZp6B5t8wul
+         +9NqrrMcNerjoxTziBFzmuvFQGNRtwutvQYZSGIXFKMZqh7T4kDjPlO1DLL22hH+LHik
+         IaT0+G8bhIJ8Gun8nUkZqCeCpIC/1CJ8pqvgRD78pOJ3vpt2ZC81pVHaKu/nGYSgW/IP
+         caJBvF6WkitGrE27rFNcLG5wGBvq+lHxAEU37rEXIaptWfK4mTlD0DHacmCtO3CndTMm
+         XX0ejbskTXDRtow920zTXN4ozGfKVAtCiZz+X72YA8Wd2v99BMcUzVx99sXfQf2Xv1xe
+         XGJA==
+X-Forwarded-Encrypted: i=1; AJvYcCVrPvPHv9sGwHVjPCB95cLnY5XZxTkl0S0C4/dyPCspbh6Jl2XhTNPiowbkan1whdV8FjGiH5aW@vger.kernel.org
+X-Gm-Message-State: AOJu0YyHnZpvd0I8Z20MsisMLJ1GtGj3fE6gZpdiFu1XcYFO1Gxxle2W
+	SKKtPIhpO3Ios8AByx+TD29Zjwawwm/i8awPEAs+2Fqk7j+PagYURLEVezjVP9mB3BcT61+KcAZ
+	QrCUdAAnEdDEAog==
+X-Google-Smtp-Source: AGHT+IFNZ+7Qz1Q6P/PmGGIYsIi2zzA+vh1m/QOlksmFymCij8EksYbFVSEHCVudpiyuUX8ENcyEAn/pbCN7kQ==
+X-Received: from dlkk2.prod.google.com ([2002:a05:7022:6082:b0:121:7c06:d4b5])
+ (user=bingjiao job=prod-delivery.src-stubby-dispatcher) by
+ 2002:a05:7022:248c:b0:11b:3742:1257 with SMTP id a92af1059eb24-121722f63fdmr13386671c88.34.1766360198470;
+ Sun, 21 Dec 2025 15:36:38 -0800 (PST)
+Date: Sun, 21 Dec 2025 23:36:33 +0000
+In-Reply-To: <20251220061022.2726028-1-bingjiao@google.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20251220061022.2726028-1-bingjiao@google.com>
+Mime-Version: 1.0
+References: <20251220061022.2726028-1-bingjiao@google.com>
+X-Mailer: git-send-email 2.52.0.351.gbe84eed79e-goog
+Message-ID: <20251221233635.3761887-1-bingjiao@google.com>
+Subject: [PATCH v2 0/2] fix demotion targets checks in reclaim/demotion
+From: Bing Jiao <bingjiao@google.com>
+To: linux-mm@kvack.org
+Cc: linux-kernel@vger.kernel.org, stable@vger.kernel.org, 
+	akpm@linux-foundation.org, gourry@gourry.net, longman@redhat.com, 
+	hannes@cmpxchg.org, mhocko@kernel.org, roman.gushchin@linux.dev, 
+	shakeel.butt@linux.dev, muchun.song@linux.dev, tj@kernel.org, 
+	mkoutny@suse.com, david@kernel.org, zhengqi.arch@bytedance.com, 
+	lorenzo.stoakes@oracle.com, axelrasmussen@google.com, yuanchu@google.com, 
+	weixugc@google.com, cgroups@vger.kernel.org, Bing Jiao <bingjiao@google.com>
+Content-Type: text/plain; charset="UTF-8"
 
+This patch series addresses two issues in demote_folio_list()
+and can_demote() in reclaim/demotion.
 
-I think this patch can be done without as many changes as proposed here.
+Commit 7d709f49babc ("vmscan,cgroup: apply mems_effective to reclaim")
+introduces the cpuset.mems_effective check and applies it to
+can_demote(). However:
 
-> -bool mem_cgroup_node_allowed(struct mem_cgroup *memcg, int nid);
-> +void mem_cgroup_node_allowed(struct mem_cgroup *memcg, nodemask_t *nodes);
+  1. It does not apply this check in demote_folio_list(), which leads
+     to situations where pages are demoted to nodes that are
+     explicitly excluded from the task's cpuset.mems.
 
-> -static inline bool mem_cgroup_node_allowed(struct mem_cgroup *memcg, int nid)
-> +static inline void mem_cgroup_node_allowed(struct mem_cgroup *memcg,
+  2. It checks only the nodes in the immediate next demotion hierarchy
+     and does not check all allowed demotion targets in can_demote().
+     This can cause pages to never be demoted if the nodes in the next
+     demotion hierarchy are not set in mems_effective.
 
-> -int next_demotion_node(int node);
-> +int next_demotion_node(int node, nodemask_t *mask);
+To address these bugs, implement a new function
+mem_cgroup_filter_mems_allowed() to filter out nodes that are not
+set in mems_effective, and update demote_folio_list() and can_demote()
+accordingly.
 
-> -bool cpuset_node_allowed(struct cgroup *cgroup, int nid)
-> +void cpuset_node_allowed(struct cgroup *cgroup, nodemask_t *nodes)
+Reproduct Bug 1:
+  Assume a system with 4 nodes, where nodes 0-1 are top-tier and
+  nodes 2-3 are far-tier memory. All nodes have equal capacity.
 
-These are some fairly major contract changes, and the names don't make
-much sense as a result.
+  Test script to reproduct:
+    echo 1 > /sys/kernel/mm/numa/demotion_enabled
+    mkdir /sys/fs/cgroup/test
+    echo +cpuset > /sys/fs/cgroup/cgroup.subtree_control
+    echo "0-2" > /sys/fs/cgroup/test/cpuset.mems
+    echo $$ > /sys/fs/cgroup/test/cgroup.procs
+    swapoff -a
+    # Expectation: Should respect node 0-2 limit.
+    # Observation: Node 3 shows significant allocation (MemFree drops)
+    stress-ng --oomable --vm 1 --vm-bytes 150% --mbind 0,1
 
-Would be better to just make something like
+Reproduct Bug 2:
+  Assume a system with 6 nodes, where nodes 0-2 are top-tier,
+  node 3 is far-tier node, and nodes 4-5 are the farthest-tier nodes.
+  All nodes have equal capacity.
 
-/* Filter the given nmask based on cpuset.mems.allowed */
-mem_cgroup_filter_mems_allowed(memg, nmask);
+  Test script:
+    echo 1 > /sys/kernel/mm/numa/demotion_enabled
+    mkdir /sys/fs/cgroup/test
+    echo +cpuset > /sys/fs/cgroup/cgroup.subtree_control
+    echo "0-2,4-5" > /sys/fs/cgroup/test/cpuset.mems
+    echo $$ > /sys/fs/cgroup/test/cgroup.procs
+    swapoff -a
+    # Expectation: Pages are demoted to Nodes 4-5
+    # Observation: No pages are demoted before oom.
+    stress-ng --oomable --vm 1 --vm-bytes 150% --mbind 0,1,2
 
-(or some other, better name)
+Bing Jiao (2):
+  mm/vmscan: respect mems_effective in demote_folio_list()
+  mm/vmscan: check all allowed targets in can_demote()
 
-separate of the existing interfaces, and operate on one scratch-mask if
-possible.
+ include/linux/cpuset.h     |  6 +++---
+ include/linux/memcontrol.h |  6 +++---
+ kernel/cgroup/cpuset.c     | 12 +++++-------
+ mm/memcontrol.c            |  5 +++--
+ mm/vmscan.c                | 27 ++++++++++++++++++---------
+ 5 files changed, 32 insertions(+), 24 deletions(-)
 
-> +static int get_demotion_targets(nodemask_t *targets, struct pglist_data *pgdat,
-> +				struct mem_cgroup *memcg)
-> +{
-> +	nodemask_t allowed_mask;
-> +	nodemask_t preferred_mask;
-> +	int preferred_node;
-> +
-> +	if (!pgdat)
-> +		return NUMA_NO_NODE;
-> +
-> +	preferred_node = next_demotion_node(pgdat->node_id, &preferred_mask);
-> +	if (preferred_node == NUMA_NO_NODE)
-> +		return NUMA_NO_NODE;
-> +
-> +	node_get_allowed_targets(pgdat, &allowed_mask);
-> +	mem_cgroup_node_allowed(memcg, &allowed_mask);
-> +	if (nodes_empty(allowed_mask))
-> +		return NUMA_NO_NODE;
-> +
-> +	if (targets)
-> +		nodes_copy(*targets, allowed_mask);
-> +
-> +	do {
-> +		if (node_isset(preferred_node, allowed_mask))
-> +			return preferred_node;
-> +
-> +		nodes_and(preferred_mask, preferred_mask, allowed_mask);
-> +		if (!nodes_empty(preferred_mask))
-> +			return node_random(&preferred_mask);
-> +
-> +		/*
-> +		 * Hop to the next tier of preferred nodes. Even if
-> +		 * preferred_node is not set in allowed_mask, still can use it
-> +		 * to query the nest-best demotion nodes.
-> +		 */
-> +		preferred_node = next_demotion_node(preferred_node,
-> +						    &preferred_mask);
-> +	} while (preferred_node != NUMA_NO_NODE);
-> +
-
-What you're implementing here is effectively a new feature - allowing
-demotion to jump nodes rather than just target the next demotion node.
-
-This is nice, but it should be a separate patch proposal (I think Andrew
-said something as much already) - not as part of a fix.
-
-> +	/*
-> +	 * Should not reach here, as a non-empty allowed_mask ensures
-> +	 * there must have a target node for demotion.
-
-Does it? What if preferred_node is online when calling
-next_demotion_node(), but then is offline when
-node_get_allowed_targets() is called?
-
-
-> +	 * Otherwise, it suggests something wrong in node_demotion[]->preferred,
-> +	 * where the same-tier nodes have different preferred targets.
-> +	 * E.g., if node 0 identifies both nodes 2 and 3 as preferred targets,
-> +	 * but nodes 2 and 3 themselves have different preferred nodes.
-> +	 */
-> +	WARN_ON_ONCE(1);
-> +	return node_random(&allowed_mask);
-
-Just returning a random allowed node seems like an objectively poor
-result and we should just not demote if we reach this condition. It
-likesly means hotplug was happening and node states changed.
-
-> @@ -1041,10 +1090,10 @@ static unsigned int demote_folio_list(struct list_head *demote_folios,
->  	if (list_empty(demote_folios))
->  		return 0;
-> 
-> +	target_nid = get_demotion_targets(&allowed_mask, pgdat, memcg);
->  	if (target_nid == NUMA_NO_NODE)
->  		return 0;
-> -
-> -	node_get_allowed_targets(pgdat, &allowed_mask);
-
-in the immediate fixup patch, it seems more expedient to just add the
-function i described above
-
-/* Filter the given nmask based on cpuset.mems.allowed */
-mem_cgroup_filter_mems_allowed(memg, nmask);
-
-and then add that immediate after the node_get_allowed_targets() call.
-
-Then come back around afterwards to add the tier/node-skip functionality
-from above in a separate feature patch.
-
-~Gregory
-
----
-
-diff --git a/mm/vmscan.c b/mm/vmscan.c
-index 670fe9fae5ba..1971a8d9475b 100644
---- a/mm/vmscan.c
-+++ b/mm/vmscan.c
-@@ -1046,6 +1046,11 @@ static unsigned int demote_folio_list(struct list_head *demote_folios,
- 
-        node_get_allowed_targets(pgdat, &allowed_mask);
- 
-+       /* Filter based on mems_allowed, fail if the result is empty */
-+       mem_cgroup_filter_nodemask(memcg, &allowed_mask);
-+       if (nodes_empty(allowed_mask))
-+               return 0;
-+
-        /* Demotion ignores all cpuset and mempolicy settings */
-        migrate_pages(demote_folios, alloc_demote_folio, NULL,
-                      (unsigned long)&mtc, MIGRATE_ASYNC, MR_DEMOTION,
-
+--
+2.52.0.351.gbe84eed79e-goog
 
 
