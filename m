@@ -1,94 +1,99 @@
-Return-Path: <cgroups+bounces-12573-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-12574-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 542CACD4C7C
-	for <lists+cgroups@lfdr.de>; Mon, 22 Dec 2025 07:16:36 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id 68293CD4C76
+	for <lists+cgroups@lfdr.de>; Mon, 22 Dec 2025 07:16:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 6D065300BCC0
-	for <lists+cgroups@lfdr.de>; Mon, 22 Dec 2025 06:16:35 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 5282D300529D
+	for <lists+cgroups@lfdr.de>; Mon, 22 Dec 2025 06:16:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D45A0327207;
-	Mon, 22 Dec 2025 06:10:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 65CBF214A8B;
+	Mon, 22 Dec 2025 06:16:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="yybZ+PW2"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="uzcukW13"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-pl1-f173.google.com (mail-pl1-f173.google.com [209.85.214.173])
+Received: from mail-pl1-f179.google.com (mail-pl1-f179.google.com [209.85.214.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 35666326D5D
-	for <cgroups@vger.kernel.org>; Mon, 22 Dec 2025 06:10:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C40B186347
+	for <cgroups@vger.kernel.org>; Mon, 22 Dec 2025 06:16:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1766383808; cv=none; b=kUSWiuyLc9+GrOQbqzlyOPBx2DjZ0dIM5d6nobTc7T633povloGD13S6aE6WynjKT1Jo3+ysiF6WgOoCe2vPK0MADme4dGtytQjAbYfrvQep4diRZ9JjPicwRpNOvNbXpvAKX+e8e46f8bipuaHn9IWfarbKAYorSduLKcU5DWc=
+	t=1766384179; cv=none; b=rbZiyDCMxQiFc/zmz7iXnkBdlajyFdzLxyOfZ2exRGgLSSzOET1nK8lte3OSIM2MKcW2Nc5GFzX2JzILMuK9c1kfi/r4+eDI7qzgbKD4U3nhBHHftGFS3ZyOzYVDP6J+lEqpybPZgKTZkMdb5ZQAOd3lRo3xhTelYp6PNOVKAe0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1766383808; c=relaxed/simple;
-	bh=2ZLm6y+vDWz/IlruQLkF1a1UAxU3uOV5Gb4PE6qBNwA=;
+	s=arc-20240116; t=1766384179; c=relaxed/simple;
+	bh=qJppBJsOhFIxTOsK1hS7LDo+QmNejh8ZeARb+OCK24c=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=syS8aILlzb/x7/GlWV63PYLZNLMSLiYg3II7elWcgh9IYjqZT8aMMJd2R0wQ7INWfWSe5I29hZdOO3wzKIL1e5Slx5cijd6gzRx6N6Mt7PwzrIO80OoxD/y76SCLuMdq9H1wRVKkYpJ2k+NXvBY4N0WmfgAS7q9U+4eDHUWZkJE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=yybZ+PW2; arc=none smtp.client-ip=209.85.214.173
+	 Content-Type:Content-Disposition:In-Reply-To; b=As53/0cDcwWqwWaoxGyUrwyjEKe5AxzQIIcXA0GhMG6S7I2/vdaFvEcK3dW5xdvesKQNGn0LhucITBlW/FKr+xoHuwnTpdN3YXilYLHv6ZTkmSh/NWA2wAGfkGXPfu9wXWfz4pI1fZHN6rqaS/rrIJP84Kc5GX8L8RFg0pTxCFE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=uzcukW13; arc=none smtp.client-ip=209.85.214.179
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-pl1-f173.google.com with SMTP id d9443c01a7336-2a0d06cfa93so419255ad.1
-        for <cgroups@vger.kernel.org>; Sun, 21 Dec 2025 22:10:05 -0800 (PST)
+Received: by mail-pl1-f179.google.com with SMTP id d9443c01a7336-2a0d06cfa93so419765ad.1
+        for <cgroups@vger.kernel.org>; Sun, 21 Dec 2025 22:16:17 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1766383805; x=1766988605; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1766384177; x=1766988977; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=4d4yIf4cTLhpX8RECsjI9Ii+PJ5wkNjuQ9k20d0TZc4=;
-        b=yybZ+PW2uQU6MJQwtRiooTXlyb4Rd/KQXuFSxfO5dAz7Rm3ljQoylFQj7jQdWb2i+l
-         Dxx7CjISy1DPMXeWYtDgzB8FlbGYmwdv7TnrfIcGi/4P1193oUnvkXGatCHSBkHUulsF
-         vSX+80FnKBXTUwfCJ59idlww7Pjd+P8MuQ9DJbnhns4vUZ/v+SuG8ri4YO/uFBpxZp1i
-         s0Y5Y/JT4k63/LuLov369fL5NW4NpOdQa4VUxZ/H7CQYSiGmLYgdqF5UCVuO8Qq3gii3
-         ZM3gT03YAvi1395nbRL6hP0r9hRsbe3qJR+ApxlcWtgu5TWK+ECwbVIfn6Tob+kelYFf
-         VXbg==
+        bh=sKlYwDKHeLnktmF0WJtLvL/mlQQWgFKsDt5lGymxEgs=;
+        b=uzcukW13mDPkoHELudtX0Gsn7hTL6pL6Bj7DEOLZk7Cqz/raQ0+n1zA1TgjBB4Hus1
+         I2CunPoUritJ/5tcnezRmZ5EedK8eWLGXRsbRdHtH/C0rC5Yv5nf8/YqgeO4/SCJPhex
+         SE1/lxyDsBXmgmRFBzzc4RVkLXWkGXQHZU4ddQU/PbTLKA/gAKT4Gl2LJGIlN1MrfJiA
+         DNSb+yL/U+C/b0ZelLgiZsBDih1iaiPVFKyBzTvulMMTQ/tnfkTrX+H+8UR7k4QqYiQM
+         MXRfA1ZZB/1spOKpWhUAjviv8gxab/i3q7rpZ9bHn84eDQIlwc0n8J308U6iySa9nLDl
+         9sZA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1766383805; x=1766988605;
+        d=1e100.net; s=20230601; t=1766384177; x=1766988977;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=4d4yIf4cTLhpX8RECsjI9Ii+PJ5wkNjuQ9k20d0TZc4=;
-        b=StIl3QQfckLTyxnN1ghWMMTLcJNIKjvID8YfYoE0UwlqNy65pNly8Xwf8Kw8uPP5Ad
-         KOy7MiisPkWiRFexFZHVlPG/nkgz39TsIR53BxlwlJY3C5jzW3DW8lxqjpVfejerQKIu
-         u17NW0Be2T82kPLerzHDdctU0UA5EnhIaNNZ5vzaRPYNXDKDGPM51wKSIcrjE1YsBJkV
-         9ZPtBLRx3s2W5Ak6vbhxCr5o/h88AHRuDWd+lM9lPuX/Lr6obAx2bVQvHu58CoVVt6QI
-         P/dZJvfGe4mtu1+73A35YfoxwTwqZX07R2qEICd2JFOuFUAtIMcgrxvsb2Vu1M5vq0iX
-         X94Q==
-X-Forwarded-Encrypted: i=1; AJvYcCUtHG/DizNFQKmn8qY0zLnCm7Y6LsV+mRnPdORPjlNVbREQVzPnvWCino5k38CP2AcP+3cCg31u@vger.kernel.org
-X-Gm-Message-State: AOJu0Yykaa/nvQ367QWjDh1Ak1m+p9O9/2bAGntKyKy2j5BpS0ICOqMv
-	6PclfVfHV13tkIumVoFMqlLfLZpC3cCRt+GS1BkeEwxJ5K9o//oIk6YgdiwazhBAiw==
-X-Gm-Gg: AY/fxX5XN4q9ez6k+RApBs6ub07SxCf7vVssI1ytuaXCiWsreu6sRSt6NzozIFjt7Xf
-	P9Mdefw8dzCz15HXdSyFxobxFYNlVK19vhpYgRuLfKihEIStgPDreFl+rFhH8QaYaAOcyHWv5Vv
-	sC7cEGmWLfUHeu2XnEoQHcOLZ4r5bSV+iuADTU5gpbJKtnwZ3Uju2K0y2yUGZuaBT62awSelMzt
-	08P47exTFODQUYL4DouSsGHeDHEaIuBgjdNJyzrLbXyHCskEhqL7fxPvArg1K9NEjMiZFfEHJBr
-	zWvchrAH1GljlJ8fZv3C+XjYgSkhKdtpcnnYepEq6F1qrk5pXZ/VRn2ckCE8ezdmLmJqvuC+GrI
-	naWOD184VoJOKCwilngpu6mUAYSo3maSLbqIGA0hEOQptrQgJu57YKgKGCtMElK/K38n7294V7l
-	Y6L/R3FJuAzP83ZOjCNAMILaR1WeBld/Ld5qrfuu6W/YIGCSMkIpRd
-X-Google-Smtp-Source: AGHT+IGJHMHvQ2BiL8kGi+L1NEiyq9evaHsD0bUwM82dYISq+7N3XOj+vRLmNpWXWMhfzBHm5bRjRg==
-X-Received: by 2002:a17:902:e788:b0:2a0:7fac:c031 with SMTP id d9443c01a7336-2a311806e37mr2693085ad.14.1766383804712;
-        Sun, 21 Dec 2025 22:10:04 -0800 (PST)
+        bh=sKlYwDKHeLnktmF0WJtLvL/mlQQWgFKsDt5lGymxEgs=;
+        b=PsggMJxHwYz1lB7zQbi3jDEXqbXmk0+WUrwgyV9wAYs0HThOrQ9IHC3/w45sNrzJnV
+         jkWo+bo+XQCmQl0eLM36U2YHnhd05gN/5jU6O/Cya44yzcBSRxVO2YuBDdqJ+SNI2sfs
+         hliIvJavUDoNafRgHhaYhYjwExZGBaN/rIMd9YUcA8iw1fHd3pXTDmUehdWG+oFmTdNr
+         nNz4tliRuGEM9wGGK7bknM/0cmkzVuYK7MeLIjlo+Eo0+AHFpU/F7wNKfAULS7Z+wIt5
+         l6vtW9SRYdZzWA2Ge3hePHrRsDSKwdKyJbIwEGdsHRT6mkWpCj9xF5I3Vw1wc8ipo+2D
+         lgAw==
+X-Forwarded-Encrypted: i=1; AJvYcCXuVbzjT95oGzciBwoGCiQWdaxNappHz+RRLcTLolpm7SBO4D10kTQlUbKFYKFU8sZKB/ZFst8h@vger.kernel.org
+X-Gm-Message-State: AOJu0Yyw3wp3S2cz1gU9Tq6/R+/KL3/Lkn9t+OLIagRY4RFWfQTRTvPg
+	8zBsoSPcm5EOqPMZqkVLTDleOAX8ZG0dVQSlYg9W9HaE6ehTpPeoS41HlOduLpGhEg==
+X-Gm-Gg: AY/fxX5pn4UH8/T4tQxGHIv6RYmTdwvRB32PGtD/k6v3unUSD4ait0dDRgC/odZouUf
+	MIWmHVZTEzPktgCyAKaqP91VXVfmCEK/OzwH14kyqZwybSvDx4BWdLAGBrfHUQ/IB44jUHmREbE
+	9QtkEh/nB0G/JqlWNwy7dAL3Oo61NYrzE1SU6R0HNAYy9F9fRV0vKmN03nPLPkSuvN+8yQowNEY
+	/kZZBHvcMndi73OJuOFvK/mzhJ3CkcZZ2Pu6qN0Mrqf87vY8ejYQz73zI4WjKdq8XnKr2BT04pw
+	N3Wu5+9T/5iEMcKtzqDZmuX0yhGMp/cQ+K86Y74eq++tez93aGArzaOWDbs9LVvt2S+9ZawdvqB
+	xqnZkqGQ8Dh/6qCKMHlWvvgo0+DJAfYKIc6CPM+OvNYqwHMCU5VnTgycNaSOHHUF6pocRIzW2qS
+	dRjZ/Ej52Q96KdGl2Ttw4xBqAyh+MIj82ADEC6rDf0Tb04Trq8BSdt
+X-Google-Smtp-Source: AGHT+IHOweUx0BGgzRR3Uc5xIVtiHnSb9Bezh6rOocQ9AsReM27o8TisrBOm2xsLcgOS2vYsn/Ffgg==
+X-Received: by 2002:a17:902:ef47:b0:2a1:3cdc:7720 with SMTP id d9443c01a7336-2a3142e92d0mr2719085ad.21.1766384176711;
+        Sun, 21 Dec 2025 22:16:16 -0800 (PST)
 Received: from google.com (248.132.125.34.bc.googleusercontent.com. [34.125.132.248])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-7ff7e48f30bsm9091090b3a.48.2025.12.21.22.10.03
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-7ff7e48f258sm9029528b3a.47.2025.12.21.22.16.15
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 21 Dec 2025 22:10:04 -0800 (PST)
-Date: Mon, 22 Dec 2025 06:09:59 +0000
+        Sun, 21 Dec 2025 22:16:16 -0800 (PST)
+Date: Mon, 22 Dec 2025 06:16:10 +0000
 From: Bing Jiao <bingjiao@google.com>
-To: Chen Ridong <chenridong@huaweicloud.com>
-Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-	stable@vger.kernel.org, akpm@linux-foundation.org,
-	gourry@gourry.net, longman@redhat.com, hannes@cmpxchg.org,
-	mhocko@kernel.org, roman.gushchin@linux.dev, shakeel.butt@linux.dev,
-	muchun.song@linux.dev, tj@kernel.org, mkoutny@suse.com,
-	david@kernel.org, zhengqi.arch@bytedance.com,
-	lorenzo.stoakes@oracle.com, axelrasmussen@google.com,
-	yuanchu@google.com, weixugc@google.com, cgroups@vger.kernel.org
-Subject: Re: [PATCH v2 2/2] mm/vmscan: check all allowed targets in
- can_demote()
-Message-ID: <aUjgt4EdBv4UyrTM@google.com>
+To: Andrew Morton <akpm@linux-foundation.org>
+Cc: linux-mm@kvack.org, gourry@gourry.net, Waiman Long <longman@redhat.com>,
+	Johannes Weiner <hannes@cmpxchg.org>,
+	Michal Hocko <mhocko@kernel.org>,
+	Roman Gushchin <roman.gushchin@linux.dev>,
+	Shakeel Butt <shakeel.butt@linux.dev>,
+	Muchun Song <muchun.song@linux.dev>,
+	David Hildenbrand <david@kernel.org>,
+	Lorenzo Stoakes <lorenzo.stoakes@oracle.com>,
+	"Liam R. Howlett" <Liam.Howlett@oracle.com>,
+	Vlastimil Babka <vbabka@suse.cz>, Mike Rapoport <rppt@kernel.org>,
+	Suren Baghdasaryan <surenb@google.com>, Tejun Heo <tj@kernel.org>,
+	 Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
+	Qi Zheng <zhengqi.arch@bytedance.com>,
+	Axel Rasmussen <axelrasmussen@google.com>,
+	Yuanchu Xie <yuanchu@google.com>, Wei Xu <weixugc@google.com>,
+	cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mm/vmscan: respect mems_effective in demote_folio_list()
+Message-ID: <aUjiKmlLEitn2oHU@google.com>
 References: <20251220061022.2726028-1-bingjiao@google.com>
- <20251221233635.3761887-1-bingjiao@google.com>
- <20251221233635.3761887-3-bingjiao@google.com>
- <d5df710a-e0e1-4254-b58f-60ddc5adcbd5@huaweicloud.com>
+ <20251220112044.ee858d2160f819e181598ce1@linux-foundation.org>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -97,45 +102,59 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <d5df710a-e0e1-4254-b58f-60ddc5adcbd5@huaweicloud.com>
+In-Reply-To: <20251220112044.ee858d2160f819e181598ce1@linux-foundation.org>
 
-On Mon, Dec 22, 2025 at 10:51:49AM +0800, Chen Ridong wrote:
+On Sat, Dec 20, 2025 at 11:20:44AM -0800, Andrew Morton wrote:
+> On Sat, 20 Dec 2025 06:10:21 +0000 Bing Jiao <bingjiao@google.com> wrote:
 >
+> > Commit 7d709f49babc ("vmscan,cgroup: apply mems_effective to reclaim")
+> > introduces the cpuset.mems_effective check and applies it to
+> > can_demote().
 >
-> On 2025/12/22 7:36, Bing Jiao wrote:
-> > -void cpuset_node_filter_allowed(struct cgroup *cgroup, nodemask_t *mask)
-> > -{
-> > -	struct cgroup_subsys_state *css;
-> > -	struct cpuset *cs;
-> > -
-> > -	if (!cpuset_v2())
-> > -		return;
-> > -
-> > -	css = cgroup_get_e_css(cgroup, &cpuset_cgrp_subsys);
-> > -	if (!css)
-> > -		return;
-> > -
-> > -	/* Follows the same assumption in cpuset_node_allowed() */
-> > -	cs = container_of(css, struct cpuset, css);
-> >  	nodes_and(*mask, *mask, cs->effective_mems);
-> >  	css_put(css);
-> >  }
+> So we'll want
 >
-> Oh, I see you merged these two functions here.
+> 	Fixes: 7d709f49babc ("vmscan,cgroup: apply mems_effective to reclaim")
 >
-> However, I think cpuset_get_mem_allowed would be more versatile in general use.
+> in the changelog.
 >
-> You can then check whether the returned nodemask intersects with your target mask. In the future,
-> there may be scenarios where users simply want to retrieve the effective masks directly.
+> > However, it does not apply this check in
+> > demote_folio_list(), which leads to situations where pages are demoted
+> > to nodes that are explicitly excluded from the task's cpuset.mems.
+> >
+> > To address the issue that demotion targets do not respect
+> > cpuset.mem_effective in demote_folio_list(), implement a new function
+> > get_demotion_targets(), which returns a preferred demotion target
+> > and all allowed (fallback) nodes against mems_effective,
+> > and update demote_folio_list() and can_demote() accordingly to
+> > use get_demotion_targets().
 >
+> 7d709f49babc fist appeared in 6.16, so we must decide whether to
+> backport this fix into -stable kernels, via a Cc:
+> <stable@vger.kernel.org>.
+>
+> To make this decision it's best to have a clear understanding of the
+> userspace visible impact of the bug.  Putting pages into improper nodes
+> is undesirable, but how much does it affect real-world workloads?
+> Please include in the changelog some words about this to help others
+> understand why we should backport the fix.
+>
+> > Furthermore, update some supporting functions:
+> >   - Add a parameter for next_demotion_node() to return a copy of
+> >     node_demotion[]->preferred, allowing get_demotion_targets()
+> >     to select the next-best node for demotion.
+> >   - Change the parameters for cpuset_node_allowed() and
+> >     mem_cgroup_node_allowed() from nid to nodemask * to allow
+> >     for direct logic-and operations with mems_effective.
+>
+> If we do decide to backport the fix into earlier kernels then it's best
+> to keep the patch as small and as simple as possible.  So non-bugfix
+> changes such as these are best made via a second followup patch which
+> can be merged via the normal -rc staging process.
+>
+Hi Andrew, thank you for the review and suggestions.
 
-Hi Ridong, thank you for the suggestions.
-
-I agree that returning a nodemask would provide greater versatility.
-
-I think cpuset_get_mem_allowed_relax() would be a better name,
-since we do not need the locking and online mem guarantees
-compared to an similar function cpuset_mems_allowed().
+I hvae sent a patch v2 for the backport. However, I forgot to add
+the CC:stable line. I will fix it in v3.
 
 Best,
 Bing
