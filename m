@@ -1,210 +1,100 @@
-Return-Path: <cgroups+bounces-12589-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-12590-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 59259CD6885
-	for <lists+cgroups@lfdr.de>; Mon, 22 Dec 2025 16:30:57 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8E840CD72F0
+	for <lists+cgroups@lfdr.de>; Mon, 22 Dec 2025 22:18:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 811A9304B00E
-	for <lists+cgroups@lfdr.de>; Mon, 22 Dec 2025 15:26:44 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 36962300FE0F
+	for <lists+cgroups@lfdr.de>; Mon, 22 Dec 2025 21:18:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 30F5932C33E;
-	Mon, 22 Dec 2025 15:26:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F7683009C1;
+	Mon, 22 Dec 2025 21:18:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="WJQI3p3Z"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="XXc8sb9N"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-wm1-f42.google.com (mail-wm1-f42.google.com [209.85.128.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-182.mta0.migadu.com (out-182.mta0.migadu.com [91.218.175.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B64232AAB0
-	for <cgroups@vger.kernel.org>; Mon, 22 Dec 2025 15:26:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 55DEB2DEA67
+	for <cgroups@vger.kernel.org>; Mon, 22 Dec 2025 21:18:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1766417203; cv=none; b=OfZwgTGB/69hqKlgGy7rB5w51apGOo6l3TQR+V0e6xRF9tfVScebmDLFVhWsNlrBqaeqCXilVQh35+9s/cGagppbFcCXMPJ8AvnrykMLChAxz+Aj/plwLkHDQF2GuP29zBZ0K+3rMat9zI1SEbheth6tUb4CLmFTPLAtzyNNS3o=
+	t=1766438302; cv=none; b=kPKdWG4WzrFQ7oFGRJ5pbGWB5G12I+MXptrz5AaYgVgyMDASkJQo7/rhS9JdSXqLLYe7d+U6yqaojhPji1hP2GMFmdUuioQvisya42a7M3SlWiFTtF5pB63nVlxFe/mx3B2/iGnyxdsDbkDV21cysD7EiPfzRLD7XclsegK49hs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1766417203; c=relaxed/simple;
-	bh=pwNdHHpa/mgCoIpKqTkujCQuzfwTh0JljZB8DKCH2/8=;
+	s=arc-20240116; t=1766438302; c=relaxed/simple;
+	bh=ttWVVM7HLB5GBVmAMxfx/AMMnlK5gq/P5KJxfQRvi6E=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=bFGf+QNG4fkFbGfADMlDGEKwu0Dx61imB6PiNbL2lA7cxk3lqqaqWqABLr5gGQYO7pictsP0D2pMQ3/FFKhgR2UdwdWPFe8CUhrja0R7MTqcci9CCniEClO7htbQY+r5m/kMTujZPv2vWKkk25Nb9A2MJpySEuFisXhO+WRFedI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=WJQI3p3Z; arc=none smtp.client-ip=209.85.128.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-wm1-f42.google.com with SMTP id 5b1f17b1804b1-47775fb6cb4so25734405e9.0
-        for <cgroups@vger.kernel.org>; Mon, 22 Dec 2025 07:26:41 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1766417200; x=1767022000; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=bjy1Kjs3/ZvkfmJuAkFjz2P1LbrD8XoaWU4C0z0fF0Y=;
-        b=WJQI3p3ZBuwR32N916ckAsnefzTxY32fwEC4yHDoQZwu36RqmiWPzknpQhkpeZvJUa
-         zOf71E+k+AF3jbNSKe8dij+NXC7kPYj9VvBEVgo/wTm2RfQU+tmoSlbUVL/BIWGyYp3b
-         nPaRFflxvL26qvTKOaWnnCwhK7AK/yn62sVjRLR+9FROSjVsomQpIBo6jEHFStfAO87C
-         fj2OSNh2eVGFCJdDY52ac0vmwFJy93KzRzCqP4KgOekIYonsPfhoP7CJLP9KTt5dFUix
-         6y8vMrt5aGAnNjBc4v7DdPsQPzXB1tNL5neq5mTeo5hHe3tuSgRgtWsjocSVdC+9YCpb
-         F8XQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1766417200; x=1767022000;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=bjy1Kjs3/ZvkfmJuAkFjz2P1LbrD8XoaWU4C0z0fF0Y=;
-        b=bYHUFXyq2HrH8Fk7Q1Lm9CX3u6ghOpv2VTgBQp4yWOUro7nPo6Ch+WUzPo3d6El67K
-         78yXUweAhGx3EzXscOPhGXZPUalznw7tJenD2AoQf3wnKh+sf2BAaATM6J/EuZhm79pG
-         yh1NShAtyPtIHftv6pjf/ErCRNn/hjRvmrkBOSferiYxmEmCNaKRcWulR0TuwZmeyb9Y
-         t6PTpSX9iQt0NeBfEGAfzMmkyBA6tLFE5PR4GS/GtKrLEh55E99LrmuNT6KpnqoIZFYy
-         ++Ekf3G+geHHcmKLP837ZWVgm6Pxw0o26gzZ12LB0ACeuLb+jYSrfpqAfyT/YONb0od6
-         JeiA==
-X-Forwarded-Encrypted: i=1; AJvYcCUTL5xTwYdAYXHPQvgar56pKV2fxu3QELVgFaAPxfWbEfKbY7wOfiXAbW+vkYpXFt/S+eLvkJuH@vger.kernel.org
-X-Gm-Message-State: AOJu0Yx/6N2vplJ1CFYVaU45C3xngf3mC6GnUmNpqOzUqY82WXZ35tLo
-	62B7rqj1i/aBq4V5bfB0nuLlV6oEbA64/XGVa1PWRh9HuOyqCDuDEwq6LyuLTV/w8S2qpQ8imfF
-	OJRtk
-X-Gm-Gg: AY/fxX6Ip2Vi0+0jmURWetqtGRoragGu5G8mndLWhZD75f1X384eTnHx0DndlWaGg40
-	fup+Hc1+//uz6H2gxLKb7epmbonkE6dydNRW4ayH2iZtagC4jQ4gA6otLWghZzQp47FX+mwVAdU
-	1gPdlh0iWQb6TdQ4gIoYV38PeI38N1/+gNJWGo0jqz43TmGyPkCEYOiCWmBakY5HU8Yjcx1/NCb
-	EEW4GQY+A5fVDytVbdXCbf3SalnPXjFlRs0a2PsvqIno7rPR/zxTM+NGIzioe6r8F8K/OzszilI
-	2e4U5iZXW+2RGpw2qWKENn3tV2ZiuDVbJmDgf9N/3MOWxevGB50tROKXtpj/cd6g8RGx+8PWwym
-	PwTmMaI9fIHKzmFbKj9WhRMWQrhX3Rj/Jg8EO7RT7JoYes24Tos9SpZuwuYhBJJHCyKbV6sHo2r
-	vs42UBIxQE6+9N55olFU/VSLyAVwLFsZ4=
-X-Google-Smtp-Source: AGHT+IHCWwWWu16oace00eetULfbyQ1yeoAIFkHbV1aagHIcMBr/qJSFaMSGj9gXlACcTBlm/9/a5w==
-X-Received: by 2002:a05:600c:4686:b0:471:9da:5232 with SMTP id 5b1f17b1804b1-47d1954ea05mr132516445e9.15.1766417199600;
-        Mon, 22 Dec 2025 07:26:39 -0800 (PST)
-Received: from blackdock.suse.cz (nat2.prg.suse.com. [195.250.132.146])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-4324ea1b36fsm22585186f8f.5.2025.12.22.07.26.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 22 Dec 2025 07:26:38 -0800 (PST)
-Date: Mon, 22 Dec 2025 16:26:37 +0100
-From: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
-To: Sun Shaojie <sunshaojie@kylinos.cn>
-Cc: llong@redhat.com, cgroups@vger.kernel.org, chenridong@huaweicloud.com, 
-	hannes@cmpxchg.org, linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org, 
-	shuah@kernel.org, tj@kernel.org
-Subject: Re: [PATCH v6] cpuset: Avoid invalidating sibling partitions on
- cpuset.cpus conflict.
-Message-ID: <bzu7va4de6ylaww2xbq67hztyokpui7qm2zcqtiwjlniyvx7dt@wf47lg6etmas>
-References: <cae7a3ef-9808-47ac-a061-ab40d3c61020@redhat.com>
- <20251201093806.107157-1-sunshaojie@kylinos.cn>
+	 Content-Type:Content-Disposition:In-Reply-To; b=OFsP7vQNQODdYSpfAzSUrFfF1wv5xUR16y4YUb3TO9HTIenrKC3VNPqle62TGBdpfyWXI+jDPl4iCvNRTDaUSxU1oFNt+dPwmzGYTI341px4j2rVzkm31Qsssb8t3hpIIKWU2DE2TJnGZ1HEg4KfQAopKnspVLx/IRu7PdJBnCk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=XXc8sb9N; arc=none smtp.client-ip=91.218.175.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Date: Mon, 22 Dec 2025 13:18:11 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1766438298;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=AaxUjlZxSdQz9/5dRF6Cc68Fz36EXnwL9Uc3LhEeHkM=;
+	b=XXc8sb9NyRg7njft/+mJ44wRJyMaMGjFqvXQSSqukW9hsuDuYBVGMhKnxkNAc3w+MM3YzI
+	E3f3eHGP7RLPm2E+XMINKkwPm6wtt35Meyhyh572Afp0YFmi1ks3ZYGHfyQpwtensNeX4Y
+	+kwmwRnsCwqmV6Orlgi6NIpWqTdZitU=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Shakeel Butt <shakeel.butt@linux.dev>
+To: Chen Ridong <chenridong@huaweicloud.com>
+Cc: akpm@linux-foundation.org, axelrasmussen@google.com, 
+	yuanchu@google.com, weixugc@google.com, david@kernel.org, lorenzo.stoakes@oracle.com, 
+	Liam.Howlett@oracle.com, vbabka@suse.cz, rppt@kernel.org, surenb@google.com, 
+	mhocko@suse.com, corbet@lwn.net, hannes@cmpxchg.org, roman.gushchin@linux.dev, 
+	muchun.song@linux.dev, zhengqi.arch@bytedance.com, linux-mm@kvack.org, 
+	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, cgroups@vger.kernel.org, 
+	lujialin4@huawei.com, zhongjinji@honor.com
+Subject: Re: [PATCH -next 1/5] mm/mglru: use mem_cgroup_iter for global
+ reclaim
+Message-ID: <c4fjngkwbjlfnbjl5merldg5k2fiu43p46osagmy3ibr62cgxh@oesgt5l35kns>
+References: <20251209012557.1949239-1-chenridong@huaweicloud.com>
+ <20251209012557.1949239-2-chenridong@huaweicloud.com>
+ <gkudpvytcc3aa5yjaigwtkyyyglmvnnqngrexfuqiv2mzxj5cn@e7rezszexd7l>
+ <702b6c0b-5e65-4f55-9a2f-4d07c3a84e39@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="jhs6khkmokqkwfrw"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20251201093806.107157-1-sunshaojie@kylinos.cn>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <702b6c0b-5e65-4f55-9a2f-4d07c3a84e39@huaweicloud.com>
+X-Migadu-Flow: FLOW_OUT
 
+On Mon, Dec 22, 2025 at 03:27:26PM +0800, Chen Ridong wrote:
+> 
+[...]
+> 
+> >> -		if (should_abort_scan(lruvec, sc))
+> >> +		if (should_abort_scan(lruvec, sc)) {
+> >> +			if (cookie)
+> >> +				mem_cgroup_iter_break(target, memcg);
+> >>  			break;
+> > 
+> > This seems buggy as we may break the loop without calling
+> > mem_cgroup_iter_break(). I think for kswapd the cookie will be NULL and
+> > if should_abort_scan() returns true, we will break the loop without
+> > calling mem_cgroup_iter_break() and will leak a reference to memcg.
+> > 
+> 
+> Thank you for catching that—my mistake.
+> 
+> This also brings up another point: In kswapd, the traditional LRU iterates through all memcgs, but
+> stops for the generational LRU (GENLRU) when should_abort_scan is met (i.e., enough pages are
+> reclaimed or the watermark is satisfied). Shouldn't both behave consistently?
+> 
+> Perhaps we should add should_abort_scan(lruvec, sc) in shrink_node_memcgs for the traditional LRU as
+> well?
 
---jhs6khkmokqkwfrw
-Content-Type: text/plain; protected-headers=v1; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-Subject: Re: [PATCH v6] cpuset: Avoid invalidating sibling partitions on
- cpuset.cpus conflict.
-MIME-Version: 1.0
-
-Hello Shaojie.
-
-On Mon, Dec 01, 2025 at 05:38:06PM +0800, Sun Shaojie <sunshaojie@kylinos.c=
-n> wrote:
-> Currently, when setting a cpuset's cpuset.cpus to a value that conflicts
-> with its sibling partition, the sibling's partition state becomes invalid.
-> However, this invalidation is often unnecessary.
->=20
-> For example: On a machine with 128 CPUs, there are m (m < 128) cpusets
-> under the root cgroup. Each cpuset is used by a single user(user-1 use
-> A1, ... , user-m use Am), and the partition states of these cpusets are
-> configured as follows:
->=20
->                            root cgroup
->         /             /                  \                 \
->        A1            A2        ...       An                Am
->      (root)        (root)      ...     (root) (root/root invalid/member)
->=20
-> Assume that A1 through Am have not set cpuset.cpus.exclusive. When
-> user-m modifies Am's cpuset.cpus to "0-127", it will cause all partition
-> states from A1 to An to change from root to root invalid, as shown
-> below.
->=20
->                            root cgroup
->         /              /                 \                 \
->        A1             A2       ...       An                Am
->  (root invalid) (root invalid) ... (root invalid) (root invalid/member)
->=20
-> This outcome is entirely undeserved for all users from A1 to An.
-
-s/cpuset.cpus/memory.max/=20
-
-When the permissions are such that the last (any) sibling can come and
-claim so much to cause overcommit, then it can set up large limit and
-(potentially) reclaim from others.
-
-s/cpuset.cpus/memory.min/
-
-Here is the overcommit approached by recalculating effective values of
-memory.min, again one sibling can skew toward itself and reduce every
-other's effective value.
-
-Above are not exact analogies because first of them is Limits, the
-second is Protections and cpusets are Allocations (refering to Resource
-Distribution Models from Documentation/admin-guide/cgroup-v2.rst).
-
-But the advice to get some guarantees would be same in all cases -- if
-some guarantees are expected, the permissions (of respective cgroup
-attributes) should be configured so that it decouples the owner of the
-cgroup from the owner of the resource (i.e. Ai/cpuset.cpus belongs to
-root or there's a middle level cgroup that'd cap each of the siblings
-individually).
-
-
-> After applying this patch, the first party to set "root" will maintain
-> its exclusive validity. As follows:
->=20
->  Step                                       | A1's prstate | B1's prstate=
- |
->  #1> echo "0-1" > A1/cpuset.cpus            | member       | member      =
- |
->  #2> echo "root" > A1/cpuset.cpus.partition | root         | member      =
- |
->  #3> echo "1-2" > B1/cpuset.cpus            | root         | member      =
- |
->  #4> echo "root" > B1/cpuset.cpus.partition | root         | root invalid=
- |
->=20
->  Step                                       | A1's prstate | B1's prstate=
- |
->  #1> echo "0-1" > B1/cpuset.cpus            | member       | member      =
- |
->  #2> echo "root" > B1/cpuset.cpus.partition | member       | root        =
- |
->  #3> echo "1-2" > A1/cpuset.cpus            | member       | root        =
- |
->  #4> echo "root" > A1/cpuset.cpus.partition | root invalid | root        =
- |
-
-I'm worried that the ordering dependency would lead to situations where
-users may not be immediately aware their config is overcommitting the syste=
-m.
-Consider that CPUs are vital for A1 but B1 can somehow survive the
-degraded state, depending on the starting order the system may either
-run fine (A1 valid) or fail because of A1.
-
-I'm curious about Waiman's take.
-
-Thanks,
-Michal
-
---jhs6khkmokqkwfrw
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iJEEABYKADkWIQRCE24Fn/AcRjnLivR+PQLnlNv4CAUCaUljKxsUgAAAAAAEAA5t
-YW51MiwyLjUrMS4xMSwyLDIACgkQfj0C55Tb+AjK4gEAnmAgBR1zluxVRUWU0Xru
-zJo9m6L+TLwXGPFVZC4ECHIA/0oinQGJZ9xsp1tBSb/gmb/xtN+FH6zyZye1Eppu
-e1YL
-=XUDG
------END PGP SIGNATURE-----
-
---jhs6khkmokqkwfrw--
+We definitely should discuss about should_abort_scan() for traditional
+reclaim but to keep things simple, let's do that after this series. For
+now, follow Johannes' suggestion of lru_gen_should_abort_scan().
 
