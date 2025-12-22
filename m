@@ -1,78 +1,123 @@
-Return-Path: <cgroups+bounces-12564-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-12565-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5B106CD49F5
-	for <lists+cgroups@lfdr.de>; Mon, 22 Dec 2025 04:25:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 35C56CD4A37
+	for <lists+cgroups@lfdr.de>; Mon, 22 Dec 2025 04:34:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 2484F3009F8D
-	for <lists+cgroups@lfdr.de>; Mon, 22 Dec 2025 03:25:17 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id D3C113006A5B
+	for <lists+cgroups@lfdr.de>; Mon, 22 Dec 2025 03:34:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E048332570D;
-	Mon, 22 Dec 2025 03:25:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E4D06325498;
+	Mon, 22 Dec 2025 03:34:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Sdi7U+P7"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="VMFlsarU"
 X-Original-To: cgroups@vger.kernel.org
-Received: from out-189.mta0.migadu.com (out-189.mta0.migadu.com [91.218.175.189])
+Received: from out-183.mta0.migadu.com (out-183.mta0.migadu.com [91.218.175.183])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 07FE12C3252
-	for <cgroups@vger.kernel.org>; Mon, 22 Dec 2025 03:25:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.189
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 767D2262808
+	for <cgroups@vger.kernel.org>; Mon, 22 Dec 2025 03:34:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.183
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1766373915; cv=none; b=LNeBPBR9UXK3Zh9pUpTqBCttJ0Rr9d7siPrJPKfzQiOQQomxe0xW924xDfeyr1nyq8cIy8s4VfSMOaL1Vq11R8R+NFgh1z9LdWglVVkz1YFTSQ5cyQFwk7FH9nqO2+n6b1HdOdrq/K6AO7Q5FFHekp/eNbZcAB0aDfkjFFbz3mE=
+	t=1766374453; cv=none; b=Gk/AA7GbigwJtRwpeF7oX0OeuKE5QSoJYjTiRIYLjCvxkAxGdVZpk421yzIfO5x6E+zPFHRPdR5UupbCm+OWTM68RknQ/l602EB51DliaZqcYg3/lARrnmvF7sK/DdEjZ29owrJhwYsrehVjIYK0Ox47sZG4TfPjbEdZSpZl1XQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1766373915; c=relaxed/simple;
-	bh=E14KLDJYnbCvau5ukT1PEURZ3MN9M+hiKhHCXwaiop4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=o8QcYQ8AFPyR61E2y3sLXIAwoA5YAX1z9ts63aAbEoQhAMaXg1UkLGvldOW5ksqTlx07jFleqVxiMJwhRlFl/UdfPorvkgtTPMNR1W5hOqhaAVEcFRR7T/zphVjryCG2Zuad4S/iaYFlfZTiYHxzS79t82EFa2Fs0rXm3MG8tOM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Sdi7U+P7; arc=none smtp.client-ip=91.218.175.189
+	s=arc-20240116; t=1766374453; c=relaxed/simple;
+	bh=oM70Tf3uuJzEpVwt8qJafyICt12TZ9lSmVsTOwXHJzk=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=NIVe/9y/i+GtXxmdhvngzH6gV3tSI5l4vB82fDr6j+7dlY9Z/Rdx72cTpnkz6LrpWMTYC0OkbJWgRaFDaasoHJc7OE0rCc41q/X/lm051zpizvHCGCUPMxkpRoaLB/ncwb4mcuRE3WTifQSORYWFiNKtpWfewKr4P+OjTTGj9HE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=VMFlsarU; arc=none smtp.client-ip=91.218.175.183
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Sun, 21 Dec 2025 19:24:57 -0800
+Message-ID: <75f31ec7-1605-4f50-9adb-6d84e9e81101@linux.dev>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1766373906;
+	t=1766374443;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=b0q4BK1/oVFhcJwzFlC5ht870mAKf8HPK6uMRHcO9Sw=;
-	b=Sdi7U+P7Md9MMdxEhS9bY644UrWGJOemPmiAhz09WAvxljkfCRmUjyFOOs4VreUHeK52Vh
-	SNBV2yIPsXL/iVv56ShDHATEYCKpkwEUFEgEBkqnfsbl7jpLS0CG/ivFbn9k+eVvqD8lg6
-	6xQVyC40N7IsI4mFWm8Mc3/JO7HJKPA=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Shakeel Butt <shakeel.butt@linux.dev>
-To: Chen Ridong <chenridong@huaweicloud.com>
-Cc: akpm@linux-foundation.org, axelrasmussen@google.com, 
-	yuanchu@google.com, weixugc@google.com, david@kernel.org, lorenzo.stoakes@oracle.com, 
-	Liam.Howlett@oracle.com, vbabka@suse.cz, rppt@kernel.org, surenb@google.com, 
-	mhocko@suse.com, corbet@lwn.net, hannes@cmpxchg.org, roman.gushchin@linux.dev, 
-	muchun.song@linux.dev, zhengqi.arch@bytedance.com, linux-mm@kvack.org, 
-	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, cgroups@vger.kernel.org, 
-	lujialin4@huawei.com, zhongjinji@honor.com
-Subject: Re: [PATCH -next 2/5] mm/mglru: remove memcg lru
-Message-ID: <ytbajfyzgazpgx7qftafyt2ar6xzpxiarkdih4p2xiihovxci4@ugdmji5uboih>
-References: <20251209012557.1949239-1-chenridong@huaweicloud.com>
- <20251209012557.1949239-3-chenridong@huaweicloud.com>
+	bh=qGqa+G9yooe1hEmvBfRcJmjA7QA8SkNJctdApIJNl98=;
+	b=VMFlsarUjmbbIJb0UCStjyxyJrACCyd77zr3JpIq+0OrxRPujQeEJ28zq7ZaQcUjjSRK+m
+	45woNINIu2xTjOA9jAQGZrhluNaExT/eu5KnzscPJgAt2nP00wenDmKJuQiyJw2LbGvIUu
+	PXSVuQFB4EVTsQET3xVVnLZC6boeT7A=
+Date: Mon, 22 Dec 2025 11:33:48 +0800
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20251209012557.1949239-3-chenridong@huaweicloud.com>
+Subject: Re: [PATCH v2 17/28] mm: thp: prevent memory cgroup release in
+ folio_split_queue_lock{_irqsave}()
+To: Shakeel Butt <shakeel.butt@linux.dev>,
+ Johannes Weiner <hannes@cmpxchg.org>
+Cc: hughd@google.com, mhocko@suse.com, roman.gushchin@linux.dev,
+ muchun.song@linux.dev, david@kernel.org, lorenzo.stoakes@oracle.com,
+ ziy@nvidia.com, harry.yoo@oracle.com, imran.f.khan@oracle.com,
+ kamalesh.babulal@oracle.com, axelrasmussen@google.com, yuanchu@google.com,
+ weixugc@google.com, chenridong@huaweicloud.com, mkoutny@suse.com,
+ akpm@linux-foundation.org, hamzamahfooz@linux.microsoft.com,
+ apais@linux.microsoft.com, lance.yang@linux.dev, linux-mm@kvack.org,
+ linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+ Qi Zheng <zhengqi.arch@bytedance.com>
+References: <cover.1765956025.git.zhengqi.arch@bytedance.com>
+ <4cb81ea06298a3b41873b7086bfc68f64b2ba8be.1765956025.git.zhengqi.arch@bytedance.com>
+ <aUMuRfPVxkfccdmp@cmpxchg.org>
+ <ejywj2fho37z4zdtgvryxzsztgtdrfop4ekenee4fewholyugq@xrbvtg5ui3ty>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Qi Zheng <qi.zheng@linux.dev>
+In-Reply-To: <ejywj2fho37z4zdtgvryxzsztgtdrfop4ekenee4fewholyugq@xrbvtg5ui3ty>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 X-Migadu-Flow: FLOW_OUT
 
-On Tue, Dec 09, 2025 at 01:25:54AM +0000, Chen Ridong wrote:
-> From: Chen Ridong <chenridong@huawei.com>
-> 
-> Now that the previous patch has switched global reclaim to use
-> mem_cgroup_iter, the specialized memcg LRU infrastructure is no longer
-> needed. This patch removes all related code:
-> 
-> Signed-off-by: Chen Ridong <chenridong@huawei.com>
-> Acked-by: Johannes Weiner <hannes@cmpxchg.org>
 
-Acked-by: Shakeel Butt <shakeel.butt@linux.dev>
+
+On 12/20/25 9:11 AM, Shakeel Butt wrote:
+> On Wed, Dec 17, 2025 at 05:27:17PM -0500, Johannes Weiner wrote:
+>> On Wed, Dec 17, 2025 at 03:27:41PM +0800, Qi Zheng wrote:
+>>> From: Qi Zheng <zhengqi.arch@bytedance.com>
+>>>
+>>> In the near future, a folio will no longer pin its corresponding memory
+>>> cgroup. To ensure safety, it will only be appropriate to hold the rcu read
+>>> lock or acquire a reference to the memory cgroup returned by
+>>> folio_memcg(), thereby preventing it from being released.
+>>>
+>>> In the current patch, the rcu read lock is employed to safeguard against
+>>> the release of the memory cgroup in folio_split_queue_lock{_irqsave}().
+>>>
+>>> Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
+>>> Reviewed-by: Harry Yoo <harry.yoo@oracle.com>
+>>> ---
+>>>   mm/huge_memory.c | 16 ++++++++++++++--
+>>>   1 file changed, 14 insertions(+), 2 deletions(-)
+>>>
+>>> diff --git a/mm/huge_memory.c b/mm/huge_memory.c
+>>> index 12b46215b30c1..b9e6855ec0b6a 100644
+>>> --- a/mm/huge_memory.c
+>>> +++ b/mm/huge_memory.c
+>>> @@ -1154,13 +1154,25 @@ split_queue_lock_irqsave(int nid, struct mem_cgroup *memcg, unsigned long *flags
+>>>   
+>>>   static struct deferred_split *folio_split_queue_lock(struct folio *folio)
+>>>   {
+>>> -	return split_queue_lock(folio_nid(folio), folio_memcg(folio));
+>>> +	struct deferred_split *queue;
+>>> +
+>>> +	rcu_read_lock();
+>>> +	queue = split_queue_lock(folio_nid(folio), folio_memcg(folio));
+>>> +	rcu_read_unlock();
+>>
+>> Ah, the memcg destruction path is acquiring the split queue lock for
+>> reparenting. Once you have it locked, it's safe to drop the rcu lock.
+> 
+> Qi, please add the above explanation in a comment and with that:
+
+OK, will do.
+
+> 
+> Acked-by: Shakeel Butt <shakeel.butt@linux.dev>
+
+Thanks!
+
+
 
