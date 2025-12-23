@@ -1,77 +1,76 @@
-Return-Path: <cgroups+bounces-12605-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-12607-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id C30ACCD8C91
-	for <lists+cgroups@lfdr.de>; Tue, 23 Dec 2025 11:25:19 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id C98B3CD8CA0
+	for <lists+cgroups@lfdr.de>; Tue, 23 Dec 2025 11:26:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 487C6302CBA6
-	for <lists+cgroups@lfdr.de>; Tue, 23 Dec 2025 10:24:49 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id AD21E300E806
+	for <lists+cgroups@lfdr.de>; Tue, 23 Dec 2025 10:26:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3AE01361DAD;
-	Tue, 23 Dec 2025 10:24:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 10CBB357A33;
+	Tue, 23 Dec 2025 10:26:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=virtuozzo.com header.i=@virtuozzo.com header.b="k+N4QUFr"
+	dkim=pass (2048-bit key) header.d=virtuozzo.com header.i=@virtuozzo.com header.b="ivkTU+ly"
 X-Original-To: cgroups@vger.kernel.org
-Received: from PA4PR04CU001.outbound.protection.outlook.com (mail-francecentralazon11023107.outbound.protection.outlook.com [40.107.162.107])
+Received: from DUZPR83CU001.outbound.protection.outlook.com (mail-northeuropeazon11022107.outbound.protection.outlook.com [52.101.66.107])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 100F13612EB;
-	Tue, 23 Dec 2025 10:24:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.162.107
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D8623612FB;
+	Tue, 23 Dec 2025 10:26:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.66.107
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1766485488; cv=fail; b=iXeB7Vy/UXmDCH7WILK9FBtPrh29ON8qhT0aWM5KcYvRntx15Kd8tfc5hrq8XMkdyPgcvIkG/jhNYg+zMAD2USdx1h8qryeUvEeGPmuq3HXGKad0gEOQ5xF0mjQZt/qViSUgO1/AU08qGbomHVGaGoatErBSUQbNAmPxHfrG+ng=
+	t=1766485588; cv=fail; b=Z+TwNgFYIK5QxwMKzj6fxjbzevepr2NMw47v6X/rGMmafSnBg2W2FHwYlvqfjBr523jp5zJrUasSiTE1HNkfH4yWVcf14oO5ZfSvejcorWn0RvemQ0jW7Zb81gAsJE8w+tG1/3LS9fslm+gj6iZuBsNuOUn8J1AzGDib97s1Ejk=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1766485488; c=relaxed/simple;
-	bh=fW2izc1WqI8yrFXNjejxFBdgSa6Hh9OSibOln8k2okA=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=nigTY+vWU5rZLhHPR3HmqQOzrzwJeudKtP1xDpbqS/6Jfasu/m5y1FZGhvH4pozJsyu3JS2nbZHLtfvt6AcJe7wDpnrpLFxyzkWgqnYsCn8GNh6SLRZTVnTCxvMXUi6tII9PM0ZH7DSdHv/H5sMMFhfD3x7bY1lo06L22sMNoVM=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=virtuozzo.com; spf=pass smtp.mailfrom=virtuozzo.com; dkim=pass (2048-bit key) header.d=virtuozzo.com header.i=@virtuozzo.com header.b=k+N4QUFr; arc=fail smtp.client-ip=40.107.162.107
+	s=arc-20240116; t=1766485588; c=relaxed/simple;
+	bh=5ycFLKF8eDr/fy88E++8lEgBWk4n7mR26KX/e5UDOFc=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=OBaYzsc6xDmWmnwVcCIF4WY+RFBRRCVtJO+UQ06BM4FQIwayV+GTSczTcbRi3xoYMb99n7husz92OX7sjA90GwlACR/joOxnF8T/W34OqfAw4wANLyHJouqnfZp7+ZhCS3UcS6GYKZMWp0C0FcrmWhIW5khhN0cEorxoP69OSS0=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=virtuozzo.com; spf=pass smtp.mailfrom=virtuozzo.com; dkim=pass (2048-bit key) header.d=virtuozzo.com header.i=@virtuozzo.com header.b=ivkTU+ly; arc=fail smtp.client-ip=52.101.66.107
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=virtuozzo.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=virtuozzo.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=U8tTVwB16k8uef/WJllhrbMzu0id6IBSosBAfWCHYzbQkHcdFb0uLIc+Xhs75UuURzOKGCpaje6q/ZabyiMuPEOyhFliNfpQCTW7JN2q2/SUIzj3/O101T/qMmpbdBrmETqCKNPPIebfqkmSv5gOUVjMGRy3dDzCkYFb13szIs+ULF37ZMo0gAv1VNsZ6IOf7yjbKqzVG+1Q76wweEnpN+qG/l1AWtiogHok7aoJLBUD6JIvg/Npi4xhe+DkNGtDKeHT9KvMN/duSbhL8OqqSQc7pvskNsLGa1Lw1iygihjQg7XiHgsrXIhodJIjIAEqxROV45KZFa22yWrXXZN6Uw==
+ b=KOtF/H9Nt7yU6wAxJrXUwB46YJQVKaKr6m+2+4Zl28p0ImLvYwNVbAUfhbO/mAcaFo1rODFlWopV1ECoqi4PnlD2OjxBfDcNBXaRIUVk1aCREVxwy5YWY8pYnDLtGqkvmqHYs3eOZ+yvR0pYWjFirtIbLAgGFR4MHpYUpypRX60RV6wBzTrGDCIupRh5uyrwT9vendbldcXCAs/kCetCyxmotHbxxtas8chmHo0Bn/pMzYvlG1XCQQ8R15M+2H0RGWm8btNl/oYPFiYPa0dMknu4wtmfbBsSHPGpEZ42m32oCqRKWHv7n0530yd8Tl8Lp+vQ1wyn+OZI387bowcMNA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=gYT5Iqo5w2nCs4ef+5F9gboJTcoaIfuQXdIOgdYRWfY=;
- b=e2xYrtnOK41TKac57tTr+LgakbYqVCwn80LDOevD02rX8W/rr88NPyMRYKmISdTY+ktWsrv4ubqmfLZTstrmLPi98GWycdFWn+CaBLmUZWLk8cwIq2sjyq4KDV1j/uUrLD+xqwxBh0VbrOY7PIDjrpvgPWiv27mXHcGKj6+dIUf4dpp9EuCwb8adhvpCqrdB1aj1n3AzUpOjtzk3ej/4yIWjIEm9SFMqRcNJtvtt5x5Kd5UFSmm0E3HB6PTZd6Rw3EcPLd477bHtqoU4dNeO4cDJxEny6hi4QF7MXXE1FeAJOZVs66saenjQkd2xxawuGcANGUlkZ6aJhzJqSdzRBw==
+ bh=0kjVW1KoI2X3SsBsnWnrhAnVHy2lc2X6IOX0ACkLMfw=;
+ b=BkvxQTjm/X8g09aye/1A/cXAlrgsxNxWD2ZkqnOs9ueOwpZ1rAnhjqhK460bzTaZpx0KziRt6QgNBFXKeht+VR/ELZDq+2JNA2T3CChdm1QVhd9aEyJgfwPPh6AKO0mqdMH4EmiCMgSmSqzD2kGSDQ1I+FSpSh3LVMciGX7Db0X4YwhVQrgpvYu0Ve2rERj/B9aUYcw/+ja3RFMpg0I6foXFfBonGndoFqUj9yUG7DnGaa7wJAsEFrIafEq3xI3WKf3fyqolyJgJxStY0wkOIQWtPfdvGDn83HcztT+UFFc92fMlVdwcBL73qX8CRmEZrWQMIOkWxFQd3hwns4IcAQ==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=virtuozzo.com; dmarc=pass action=none
  header.from=virtuozzo.com; dkim=pass header.d=virtuozzo.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=virtuozzo.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=gYT5Iqo5w2nCs4ef+5F9gboJTcoaIfuQXdIOgdYRWfY=;
- b=k+N4QUFrNVUmhboHXNADLX4x8Ijjf2hgFjBTVovGVKcC+nBxzukLPJj85TUKIpIjsL598ByyP9oFwbuZjaFNMqp6u83TRbesJuZKZeRUxIgr4vMxJynm0MS0tA7dgxKeZ2mxGQFtJ4YXURa6b0N5ZsIQlWzICBeWlzuPQx5OiixlAqTZds/1r2DcO7o5apUs1YmkGwuqcE4hUrkTUqJPp+eoz1DwyXA0BOTLZ8aOYgOPX9vbIs29btNvY1fOPtqYl+SRUxirbRgJdUBjMopNsiCfQTS7uEaSK/4j7F9a0qQx25hNk49bFo0urbRqvH7we14cv/DAlrq9vFKTqjzpXw==
+ bh=0kjVW1KoI2X3SsBsnWnrhAnVHy2lc2X6IOX0ACkLMfw=;
+ b=ivkTU+lyMy/EJf2Oq7Ri5Da4BWE466hIBtiLu+Lg14cycabKg1yjxWXhRH8mQDH0FpANkUutcqwjMKqj4FyM0Hh0EaeqZO0Wqua199gtUR0gDVl5OH0AodqylXcv4+UyoRwarBQBwSGorzL3dzLZjPLtNnodQ07G+Q67gCEHKq6hG/W5GaI9F4CRFFC191FGO1zItQ8Qvo+ZXcKDcer6CK9u3w668EnpD/lmL95uJFPutYQ6Ap1hctKUYjMSEAZvuE1p2aI70JP9xK4zumu0UQPL5AloxoBSxbFMLVhPSl3g5s5tpF7zISUf2epk8XNeubc4NhQVsiCuACCw5czxKg==
 Authentication-Results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=virtuozzo.com;
 Received: from DU0PR08MB9003.eurprd08.prod.outlook.com (2603:10a6:10:471::13)
- by DU4PR08MB10910.eurprd08.prod.outlook.com (2603:10a6:10:575::18) with
+ by AM8PR08MB5569.eurprd08.prod.outlook.com (2603:10a6:20b:1de::19) with
  Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9456.11; Tue, 23 Dec
- 2025 10:23:30 +0000
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9434.11; Tue, 23 Dec
+ 2025 10:26:22 +0000
 Received: from DU0PR08MB9003.eurprd08.prod.outlook.com
  ([fe80::3470:51d7:36e4:36d2]) by DU0PR08MB9003.eurprd08.prod.outlook.com
  ([fe80::3470:51d7:36e4:36d2%4]) with mapi id 15.20.9434.009; Tue, 23 Dec 2025
- 10:23:30 +0000
-From: Pavel Tikhomirov <ptikhomirov@virtuozzo.com>
+ 10:26:22 +0000
+Message-ID: <41787594-3571-4938-a3d5-fdd20587f6ca@virtuozzo.com>
+Date: Tue, 23 Dec 2025 18:25:33 +0800
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/2] cgroup-v2/freezer: allow freezing with kthreads
 To: Tejun Heo <tj@kernel.org>
-Cc: Johannes Weiner <hannes@cmpxchg.org>,
-	=?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>,
-	cgroups@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Pavel Tikhomirov <ptikhomirov@virtuozzo.com>
-Subject: [PATCH 2/2] cgroup-v2/freezer: Print information about unfreezable process
-Date: Tue, 23 Dec 2025 18:20:09 +0800
-Message-ID: <20251223102124.738818-4-ptikhomirov@virtuozzo.com>
-X-Mailer: git-send-email 2.52.0
-In-Reply-To: <20251223102124.738818-1-ptikhomirov@virtuozzo.com>
+Cc: Johannes Weiner <hannes@cmpxchg.org>, =?UTF-8?Q?Michal_Koutn=C3=BD?=
+ <mkoutny@suse.com>, cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
 References: <20251223102124.738818-1-ptikhomirov@virtuozzo.com>
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: KUZPR04CA0028.apcprd04.prod.outlook.com
- (2603:1096:d10:25::12) To DU0PR08MB9003.eurprd08.prod.outlook.com
+ <20251223102124.738818-2-ptikhomirov@virtuozzo.com>
+Content-Language: en-US
+From: Pavel Tikhomirov <ptikhomirov@virtuozzo.com>
+In-Reply-To: <20251223102124.738818-2-ptikhomirov@virtuozzo.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: KL1PR02CA0009.apcprd02.prod.outlook.com
+ (2603:1096:820:c::14) To DU0PR08MB9003.eurprd08.prod.outlook.com
  (2603:10a6:10:471::13)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
@@ -80,295 +79,222 @@ List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DU0PR08MB9003:EE_|DU4PR08MB10910:EE_
-X-MS-Office365-Filtering-Correlation-Id: 4cd0d6de-44d8-486d-d281-08de420d5179
+X-MS-TrafficTypeDiagnostic: DU0PR08MB9003:EE_|AM8PR08MB5569:EE_
+X-MS-Office365-Filtering-Correlation-Id: 4f610946-ca24-42f8-a468-08de420db7ed
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|376014|10070799003|366016|52116014|1800799024;
+X-Microsoft-Antispam: BCL:0;ARA:13230040|1800799024|366016|10070799003|376014;
 X-Microsoft-Antispam-Message-Info:
-	=?us-ascii?Q?YEGS2ReqNoW3ypyRdU9WhR3IjLQdq/ZmZbUxANKK/1jGv5vapdu3Q8yozts1?=
- =?us-ascii?Q?+vPzmKi/EXnyMbq2giQKJF9hHVMfPALCUc62gZiNeQVwHPnlLFasbup3T5gX?=
- =?us-ascii?Q?gsKd3YZIXdfGbDaMfEONSxfOAJfDwk01IeDHlU2dJ65CXFZVHebY90P+KaJr?=
- =?us-ascii?Q?rEmRaTqI1bQlLmbyYbmvXoT5jHsSUt3/wfnles6zaAm/xL19eT2zg8lyjsm1?=
- =?us-ascii?Q?Smx2X4tDct1sV2hQLAKqTpDbV5Y5xoLD4GHp42jUNsZP1xGGpdQBW08n9eAA?=
- =?us-ascii?Q?lRR82bjQv5YZ9hcpataHxTj8i+HDgxtZNE8HCOW7OQkZ3eDcBnPZ+cZIO/nH?=
- =?us-ascii?Q?Kxtefkd1txhLKf0cdHNc5iGRv7p02dIOyDKIMYuJrrGfHByZIpgdp+JjWDXQ?=
- =?us-ascii?Q?BmPCL3MBY1MMTBEFjr8PXOmKO9E9ip1rX7SaXPlBKMI67o9ainfe0KWBsMfd?=
- =?us-ascii?Q?gR3uaeQBqTYWFfVzb9eb9pNm7YFeNT2sDC7tHqYaAsaK768P7YxJHJYhBs7F?=
- =?us-ascii?Q?SBMOx2e/16OrTV40dLlFxyNDBjLvsjZSq2nvPS7B4FW/0bcGd53Py4G4oB9R?=
- =?us-ascii?Q?YsY5xJJywSCitzJzR71SiToiZvweB/nldBqfGUTSz5TDgPMNhqZ2Ni+da/rN?=
- =?us-ascii?Q?ayugzkqHvge26vIC/6K+54nHLNlTkDlq5LJ/S6P6MWmi03zmnjzequaUdouw?=
- =?us-ascii?Q?44Fy4Nl3gETk9EAXhS/IX5ykkESx8rMTayuy9kqCOwkrMW0X9BIyvV7Txb7y?=
- =?us-ascii?Q?PfRcXFOlhWa/DvOElMTDs7r467JKQIIM/DFDaBNFHetUoQWofYhMGrs9Q+7A?=
- =?us-ascii?Q?APwW0vzzPqu5SAW34154ZgB6Ss+1+ce6no0yeFnzV3QIdHfdpz3tpO0++IuM?=
- =?us-ascii?Q?gOvDwhmWK11ZRe6Ide8kab/FLbHjokfbi9lQe2G9j4LSiG3zqI1ug8yh0RQe?=
- =?us-ascii?Q?4y/x2a8+QKbTaW2W+M9EqVAICd9aKWyBBPyqdUnAsi+t60efgjMOJjGoWffr?=
- =?us-ascii?Q?IZLiKcuyeKMJQGqVOp75e/pPRat8mc7j+kaeuOdgxHt7hGr4+kciI9fHWkNi?=
- =?us-ascii?Q?fiHyDMREu06YkeqOD4YmG6GC0QzMGbVEpgy6uzwuZ3do/qfXkFEn8OlMn4bi?=
- =?us-ascii?Q?Klb1FAamJCAinm/OMDP6qlCQlMtZZ3nCWnd3p1Hzm+UBkmCLgsYi3jKBPgxs?=
- =?us-ascii?Q?cHHToD3Jp7WcvG4OVqew1vwxEoo9X4M6omu3FauIG32p742fzkLHBTtNWZYs?=
- =?us-ascii?Q?Yoxdok2f1WZOAvBHvWN/t2SaJS7cVK0zEUF7prOfdMUyr4p0KOSA6c+hzOu3?=
- =?us-ascii?Q?1G2ArSQuUIBxao/eC2zElRh0mccwzP1x/wEAUisq7i1ycoX2/eh8HP4uGDjz?=
- =?us-ascii?Q?a0i/incKVZwF1hDg7Y6GlOzHimIeuQzC5ePoLrWkduM3waZJ8abLCGzvD36n?=
- =?us-ascii?Q?EGfxZmNtdZq10tchm9khaGS7Xf8KQIWq?=
+	=?utf-8?B?NnJHZGlqa2I2R1RCNTVnYWFuaGgyL1RVNmI2cEtYQ080WWVGdTVCUlBZY0ZE?=
+ =?utf-8?B?V3J1a1g3bVdjNnQxcm5kZVI4NUNuRkFBQnpnTUhhc1NvRFkrVWdQOWN5aUgy?=
+ =?utf-8?B?cmhCb0xkckVqbTJiY2dKTW0zTmE1Um1JT3dYUnp2OGJ6L1pFb1pNbTdlejVk?=
+ =?utf-8?B?QTVqeDFzcTZydmZMK3E5UUtNcEQrK3NwOVNCOVdrbDZJa0l0VnRBc0J1SThP?=
+ =?utf-8?B?TjRVZ0x5YndVUmZIalZ1MmJmZG9GUVdLRHY4RnVqYm42NUt1TkJOczlISHZH?=
+ =?utf-8?B?MjNuQ3c5YmpMcFB1RWkzNE9LZHg3QXpWcmNGSUN2WXJxOFdiN2xOeXlOcHRt?=
+ =?utf-8?B?MjR3Qm9OeTQ5VitEZDBQWDhzREZOWERQTUg3ZVlseXRieHhtQkFPbmdCMmw1?=
+ =?utf-8?B?Q2ZXR2JXNTVlM2cvOU9xUCtreHowQkRKdmZrSzlBNkpoQk5Bbnl0Ty82RU94?=
+ =?utf-8?B?MmtqVVdxaThIUTRMdG1QdkFZendMeDR4dE5aUjFqZTJLbUM5RTNKTFFRZHp3?=
+ =?utf-8?B?cU5IME41RmY2WHVoVVA0alU1bmw4eFN6MTh1Zk4zRlV5RGZqRWRpUEFka1Z6?=
+ =?utf-8?B?RUw2QjlqaDlPRzdTbHIvOWQ5aktmd1Zwb3VUT1NHdWROZG8rdWpKSnAyZitY?=
+ =?utf-8?B?QWhPcUJtWGU5ajhCa0VMN24zNDRZV3YvRXlHd3FLeVRRcXJMZUt5cDVHZzI5?=
+ =?utf-8?B?ZG9mNTVLeVV6Ny8wdjU2Z2RZTnpIZDFRSHh4d0FneTdJMFpUQWlpTitESjQv?=
+ =?utf-8?B?aTcweWRWRHZ4VGg0OVg1WWZCVVJOOW45VFFJMm5OQ1haMjR2dDM5eS9HcnFV?=
+ =?utf-8?B?ekJUMjBwQnlyeVd6Slp4T2ljaXZHa2h4eHRsSlNQTURwbTN5UGUwaTRZWXZG?=
+ =?utf-8?B?Zmh5UndpZjRMVC9DRzUxaHZHeFVzN3NwbXdLQ3JlUXFpMXBLcmRZdFZRV0d4?=
+ =?utf-8?B?dnJlRm1lRHJSU1dlWWlleGYydE1KQTNWZ1JOU0dkVG5hbmdiRWxLTzlSL2Jn?=
+ =?utf-8?B?Zm1XYXJqVDN3VnhOY3YyK21PWENDeEJseW9qREN1LzVLUHZZL3BGcmxjSEM3?=
+ =?utf-8?B?dzdtWXVtWlovaWFOOXc5YTBCcTVLRlNEL0VBYUplQ3A1L3lFbTB6ODliYjla?=
+ =?utf-8?B?cjdnaGpNT2t6VnZmWWlTQXVlaHBJRjhhNWl1Nm1RTjk1UTRlYVFzckpBNG02?=
+ =?utf-8?B?K3VXQlk2NHpNRFVzb2Z1LzBzb3pOWmM0WDBZTjU2YUF2VXRVRzdBRjNDNVlM?=
+ =?utf-8?B?MTRDZytoY3BuN1RKMGZhbnFDSlUwaGtRc01jTVpFbUcrSUdzT2tRRXA2RkVs?=
+ =?utf-8?B?QXNXSHg0V1RZZ0VlUWowQ1daZUpmS0NkN0FrV0d1Z3VRNzFhNkRBcFAxZXp4?=
+ =?utf-8?B?YXd4N2NsYWZPak9qaGExTGsrbzNiY3IvYUhDUThkZEtzQXExSE5HWmQ3R1Z5?=
+ =?utf-8?B?R0RKak9Na2VzZU40RE54cHJ0SEdBVDNJczk5bktubVVYbXZlL3J0N2FFWFM2?=
+ =?utf-8?B?RkoxOGlwaXVYMHEvam40UjJsMC96REh4QjBVNDdZYlVVWEpnYXZUc3pZRVB5?=
+ =?utf-8?B?UTh4R0JrTFpla05kUGNNWTM5MUxVeXV4b2ZZYk5nQWF4RmkxQW54ZFNjcUhN?=
+ =?utf-8?B?V0JlMzArb25sLys4Q212UEtMMzFNV1EzV0RrdEx4UDJYbEdUM3F6UHJKRGtJ?=
+ =?utf-8?B?SVl1VFBzcWU4Wk5FejBZaWVUYlYzeTcvNGZaWkRNQ1MyOVY2UmRnQmZUc1lj?=
+ =?utf-8?B?YnBtQ3RwNzFSUG9Vc1V1a0EyNFZLaENCaks2TkhIcUdGSEVxbUUrVnlrd1FN?=
+ =?utf-8?B?Z0hsY3V5YThQQjJHbVlxMXZvd01oRTFjNSs2S3YzSGR4K2lGT2xHZDhaZldC?=
+ =?utf-8?B?Q1NKNjdQQTgzelNleE5DR0xVbmp5SWlCYWRuUjY4b1RVaW5pR0NlTjNPcTh4?=
+ =?utf-8?Q?epzuuOEdZeUfQz48KC0VTL4BcPym5iZv?=
 X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DU0PR08MB9003.eurprd08.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(376014)(10070799003)(366016)(52116014)(1800799024);DIR:OUT;SFP:1102;
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DU0PR08MB9003.eurprd08.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(366016)(10070799003)(376014);DIR:OUT;SFP:1102;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 2
 X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?ZER2tmFwtW7o8YGlfrBBYC+87qPlKWr4YHOonzt2YmUax8bCjhSkhBf15E6v?=
- =?us-ascii?Q?XB8RyStMhp+Dpc0WFFgSqVjCNDSileVI+I44SFneLPh2QbPPFkeplUvUp45J?=
- =?us-ascii?Q?xNXvphPqxYtxm0Vcr64N9aPsfM/OsgLjCWh719FJLzm2npZ1uY26IGHneGOi?=
- =?us-ascii?Q?71W8ZHJZpRioEjrK7nplbwcvBkjq+Mo9O9KbHlaRBbHXlwPi/sgpLnjv+VPk?=
- =?us-ascii?Q?YI+kZMCmSTbjAsiiffstmmLzxQiiOQCZp6ARt7cf7IyYD+nVuU56Z1T38Hau?=
- =?us-ascii?Q?lWeWwS0iZCVQ6UFAVH+gsOD+XkfDtviKiFRUhFA4Z7EcA0fCPEgUugFZ/6bB?=
- =?us-ascii?Q?FcveSEyEwov/lJUbLjvpD917fysIoe7w3xnQOHXuGLaCHii2X12gH/EezNjw?=
- =?us-ascii?Q?aW3ClKAuspoljtpNrB3RCrvxmPUizW1gUHaAbFugT4TpwV1SO+PhQqEgdJYp?=
- =?us-ascii?Q?//ySWiCjaS9r4kSLivWWx9EgQF4zEq3T9aDSrpz8h76RPk20dyHozckcul/l?=
- =?us-ascii?Q?X88w5GYlPxNulibC51m7vRHyF31bxXaRgJjPrURXexqQTXV0PVrtWBHmHFAm?=
- =?us-ascii?Q?Q82RDXOvPfunIxE+ZX7hGCWPtbMd75v4i7FdHlnPBSCqZWJY/6fXirEtd438?=
- =?us-ascii?Q?N8Jv0Gku/UBn4ptgXS0cSvrk3RwqYDVcb3DHUWxLPEHl0x/tAirR7dDbjWbO?=
- =?us-ascii?Q?M36d8yQeqTAvCkEcrVRPAtm5Z3M+CH5ISPhuBrKBp+uZARgHDr60sfQS6nbS?=
- =?us-ascii?Q?32wolbginCu5Qlxwp49CXZHbhmGKH8ePWhp6IDhJxOAO/Abw/8Ht1T8sPaqL?=
- =?us-ascii?Q?9bMwUxCOpgNiUwxCMBogbhMZlFM0eKKM4DomH4ALnFnkWX5gGK+wJJAc86iq?=
- =?us-ascii?Q?GTLZjRprifhecH4kIMwFpnJVaMsumGBpC6GkPlHL5wkf5q6/kgl8Nt/gwk8g?=
- =?us-ascii?Q?8OBJVmAU04Sobxs3rnV2TK9ZJfo5tdAsClXN2L5PtUenZIyYTdhaxEL9YT1T?=
- =?us-ascii?Q?awh5HASSmd7xzXNR3nem9rAnZUR3hIhtTZbvDyZTkRbxch1c4YK3HE1mpaKw?=
- =?us-ascii?Q?73tBY9gYKGeMXe4XLOBrB0m7M02Xtm/xOQzWdfsaqftdCbMvzVkqu7dOHo+9?=
- =?us-ascii?Q?FlqBoUqAV71aqoX64AWpFb034tYvSPCWuNtXJcpJKj+1GMRhxa8dOMSokbcX?=
- =?us-ascii?Q?ciZRZ2T/m1suguIavrAli9NeXI+j3WZM2E7ye0RwTpca8dUoDmdRIndVF+Hf?=
- =?us-ascii?Q?kMVWqbr8TsmjRQ1JGiOC/teyKqwr/K6hcmSaJ4yQMnvNskyvqaoWUFfn0iOr?=
- =?us-ascii?Q?u7uMD9GQ6B4RXUzqNjkPwuhT1t23hhfLBx4auoq58nom5STFe7Ynj9tny4ND?=
- =?us-ascii?Q?Atdg9jCrncf1BuKhjTMmija+Lk7B2oCzilkgvABrN6tyUe6JQp20kOsGvhUA?=
- =?us-ascii?Q?bgZTW0MHuB/dAtUfQgx5KxmbDTf+dz1oH8z7P8vzfI67AwG6h8R5x7kyqExs?=
- =?us-ascii?Q?FZUDX6bEC08lWp7cVL1qwDtu53HMm00XWzPdpjn2mabZphflj4NcfrRgKFgq?=
- =?us-ascii?Q?BtynRmwUYbZWFccGTYUzQ2g8g9WosaoSObinqdBBgH5jDM5C1wjKqqME38gS?=
- =?us-ascii?Q?fUYG9HxQYSRXJhxq8IuC7JYk2o/H44UuGLjjbYZVlBtdIbOurEbJKf2jkfh0?=
- =?us-ascii?Q?1nsVBoMzbWrdb59ZP1Ij0zM/2yUuivivni2veGEkh6iFZkY5LvPZ6woVZcK9?=
- =?us-ascii?Q?GfhjSi/39nKiChQ3Maix6wMWnszfRQavDtCv1EKBmVE7V0ihXIHfcCMLWbnz?=
-X-MS-Exchange-AntiSpam-MessageData-1: gwaj3+AJZN9O+dxwP7G/9wIpLzpimQj7/XU=
+	=?utf-8?B?d1dCYWZkTXpOOGFrbWZRSzVxUmRxUHhBcnVHcnBOLzZZRkhRMDBvdUNmL1FQ?=
+ =?utf-8?B?eW9LaUd6WlBBOFBmTTIrSENBczN0bWN5cVhuRXltRytxajhTbUZqdHBrZzFu?=
+ =?utf-8?B?bXpnK20ybGVTaGZaUHdXeGxDdzVOS2RGclBRVzlueXltSk1XK0UvaXo0MVRJ?=
+ =?utf-8?B?TFZCc2lBb2NGK2xIVzZ6RlUvRXk5NG1Dd3NBSTM4OWUwLzc2cUFkL3hpV2oz?=
+ =?utf-8?B?eXZ5Mjh2Y0ZTREM3Y243TmlhQW9rU3BkQ01TYVRvSzFuSUM2NTlDaEwydFVI?=
+ =?utf-8?B?bk9FRGtJc01xRnJzUXEyZjBkdWpNcE92a0ZTM3F1YnpheVkwQ1YycmpFY2w2?=
+ =?utf-8?B?QXpVSDlWSE5GOE1RNmN6c3piSDJOeVRmalNMblRvS1p2TnozYXNBOCtPYnlU?=
+ =?utf-8?B?aTBZcWFIamlVbVN0TkdlUCtKWXhiK0FXcGRsc3F1VFhGZEZOMnNEcFkxTDhF?=
+ =?utf-8?B?bzVVaXZXenhuRHlzQzR1dE4zTHlFNHRtamkzQmVsTTh1TFUxTWhKYTRoMGND?=
+ =?utf-8?B?WDF5RjFxRGxHNmJTQmNmYmtFSnRYSWFOb3EyOVM3N1pGZjVpazNFUEcrRVAy?=
+ =?utf-8?B?YTlqamxEdWNEWW0xQXBRcG9uRkJvOVdHUkdLT0RkN1Jra2dCR1dwN1V0czVS?=
+ =?utf-8?B?dXZBQ05CUjhycGszWC8yM3VxNnlNS0tvVEt5b3dicDI3VzFnQTJGZkxLOTBR?=
+ =?utf-8?B?Rm1IVE1IWkd5M2k5eEdpTmYrUzBQVTlqdGdBblpnWER4OHpSY2VKblEyZDQz?=
+ =?utf-8?B?WHY2VENaYWhIU2YyWXhOTnlIKy8yTXhyckhvSUtHT2g3UHN4QnkvY2dBY1Rw?=
+ =?utf-8?B?NjVXTjhGMHhsYlJsbVBFRlg2L094eUEyS3lkMnFjZDBrYVBoaEkraS9qcVhr?=
+ =?utf-8?B?OW1CbENoZG8yWkxQa2RwMThsYUZnanhXYnlGWWhXZUZ1M2szZG5LNmg3WWZt?=
+ =?utf-8?B?TTBya0ZzMGd6QXQ2TU12T1dxam9qZTA0T3hoTlhSOFI3ZFJsYnRzSko4WERo?=
+ =?utf-8?B?OHNKY0Y0NEw1MWVwcE1qMVI5WU9iRXFmN2dUVStsRmZiZzRoYUJnZlF2c1R0?=
+ =?utf-8?B?bW9zMi9UREVPbzVjRlFTcUZzM3ZneHhNSmgwNzdXTlkvbUpxT3lMTzFVWExz?=
+ =?utf-8?B?N0ZialY0VUJZb3NwVUJVVlRnQjBIMEgxUXYyU3d4NkRpSUpmdjA0VGdRUG5s?=
+ =?utf-8?B?RTlEMWk0bnRwN1pkZ0l3UmJEK2gwVU5mdlhFVWFXNWVOVGJEMDFyUkpHV3d3?=
+ =?utf-8?B?cTBNTGFPUFkxNmM4dWdMKzZnQTRlMnI4R3Q2RXdHQldEK1NuRFk5K0Y0V1c5?=
+ =?utf-8?B?VmJObXJBaCt0THcybzBWaW5FQXR2ekc3ZkYwd0dhTUhZdzRzdlVsSm9DZW54?=
+ =?utf-8?B?akpuUUFaT3VYcDNUQkJHcUhEZklpN0RRYWNUbzJVR2RIQXJTUEpDVmJiRTg1?=
+ =?utf-8?B?Qm9oelVTZUNlRVZTQWpDTXkvWE92cENLdGJoSDNsZFFabisyY2lEZ09YLysr?=
+ =?utf-8?B?S1FjbEdGNVRyWG92SVpHVkdCMDI4bjM2U3JKUmR5TFdKNlpGZ0luTktaS2Fl?=
+ =?utf-8?B?WE9tRVdQeDc2Nk1YRVY4YVppcllUa2FrNGVZVVRIbnE4UFMvb2tkelBzTzZk?=
+ =?utf-8?B?Q0hpUktVRDlybXZ5cllUS1llVUxUdVNvbWtlYTQ5RjNmOEFRbGdkRnZMMUJF?=
+ =?utf-8?B?cmNKMjJHZCswRlk4TFVWSUdSM2FYYVlMNW9CUU93T0UxeHNsblhjWVdUUU1N?=
+ =?utf-8?B?U0RLOGtmbEJWaE9nb0NTTWR4eE9BMjFyQ0VjL3U1K0t6R01HVnpXdWdsMysz?=
+ =?utf-8?B?VWZ2bU5NS3NnSHg2ZlNGTnZrTVY0QW9Fa3R6K3V6bCt1VUxzSllnRFROQytP?=
+ =?utf-8?B?SmlncVl1UWV4dFdFQlFvUXdkRG5Dc0JhK09jWVhpRUpoeFNHcy9lbEd5cm91?=
+ =?utf-8?B?VEFWQjlBL1N5MXptTnBDOWtPbWxjeDdpd3lWVEs4YUhtbGgwOFRIQzE3emlE?=
+ =?utf-8?B?U3J4UlJJWWpIRnczUXFyQ0tSS2hmbTBScnZnbjRjM2RUb1ZIaFdhQW10bGc1?=
+ =?utf-8?B?K3dseVFXM24zNUN4Uks3d1V5bTlJN1R4Rm15aTJZOVY2aDB1dEtIdUtHUzlZ?=
+ =?utf-8?B?Kyt4WllFaStrSTloenJxM0pQWERDd250TFMzOW1jM3hpOUxiMnFsOHZmZEYw?=
+ =?utf-8?B?RjdSanZZNEc0SWUvbGEyaTVrclJEZU1OV3dHQngyMGs3ZzNONDhxdDhqWlVw?=
+ =?utf-8?B?RnIvdmxmbjFXQzlPRTl0R1d6bUs3TmhFR1Foc0FXdHpCc1lZbGgxemtCcnpE?=
+ =?utf-8?B?SXFCWkdQdThmM2UrQ1BHM1dtcXFVaWk3NlNGbTJsOW5oK1o2YU5PczhaeVJL?=
+ =?utf-8?Q?adFk+wgHsg+e4qwPnSgiOlvSR7rz9xNcDlerdk9Xbc5S5?=
+X-MS-Exchange-AntiSpam-MessageData-1: bjnddcsWuuUJhnKu4E0hFDP9YnDtNIjNYu8=
 X-OriginatorOrg: virtuozzo.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4cd0d6de-44d8-486d-d281-08de420d5179
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4f610946-ca24-42f8-a468-08de420db7ed
 X-MS-Exchange-CrossTenant-AuthSource: DU0PR08MB9003.eurprd08.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Dec 2025 10:23:30.4579
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Dec 2025 10:26:22.2527
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 0bc7f26d-0264-416e-a6fc-8352af79c58f
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: aQoTNYu5UgIxv9tBfghqHsYuKu02fSlWlutxgtcucjWHzTYwf7C2k65hhFhNaaNddPkpazbgBXLh6ZeBiR9Cgn8eeHWxYxGGwkkNr26cxFc=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DU4PR08MB10910
+X-MS-Exchange-CrossTenant-UserPrincipalName: 7z/FWSsjsK+2HnTKU3dQc0iQJSvG9JhrVloagZSasEUzWhz+fnuHK58juOgX8K4lZ7a6VKcwDQkWmzM7LSz70QCMb8T1sGObU4Ul2bX4kbQ=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM8PR08MB5569
 
-There can be a situation when freezer cgroup can not freeze for a long
-time, e.g. we saw some nfs related hangs (due to lost connection) when
-stop and suspend (CRIU) of containers (we use freezer cgroup in both)
-were failing with timeout (waiting for frozen status of cgroup).
+This one is accidental, please ignore.
 
-So we came up with this debugging infrastructure for freezer cgroup
-which points to the stack of the unfreezable task, so that later one can
-identify the problem location in dmesg.
+On 12/23/25 18:20, Pavel Tikhomirov wrote:
+> Cgroup-v2 implementation of freezer ignores kernel threads, but still
+> counts them against nr_frozen_tasks. So the cgroup with kthread inside
+> will never report frozen.
+> 
+> It might be generally beneficial to put kthreads into cgroups. One
+> example is vhost-xxx kthreads used for qemu virtual machines, those are
+> already put into cgroups of their virtual machine. This way they can be
+> restricted by the same limits the instance they belong to is.
+> 
+> To make the cgroups with kthreads freezable, let's count the number of
+> kthreads in each cgroup when it is freezing, and offset nr_frozen_tasks
+> checks with it. This way we can ignore kthreads completely and report
+> cgroup frozen when all non-kthread tasks are frozen.
+> 
+> Note: The nr_kthreads_ignore is protected with css_set_lock. And it is
+> zero unless cgroup is freezing.
+> Note2: This restores parity with cgroup-v1 freezer behavior, which
+> already ignored kthreads when counting frozen tasks.
+> 
+> Signed-off-by: Pavel Tikhomirov <ptikhomirov@virtuozzo.com>
+> ---
+>  include/linux/cgroup-defs.h |  5 +++++
+>  kernel/cgroup/freezer.c     | 37 +++++++++++++++++++++++++++++++------
+>  2 files changed, 36 insertions(+), 6 deletions(-)
+> 
+> diff --git a/include/linux/cgroup-defs.h b/include/linux/cgroup-defs.h
+> index b760a3c470a5..949f80dc33c5 100644
+> --- a/include/linux/cgroup-defs.h
+> +++ b/include/linux/cgroup-defs.h
+> @@ -451,6 +451,11 @@ struct cgroup_freezer_state {
+>  	 */
+>  	int nr_frozen_tasks;
+>  
+> +	/*
+> +	 * Number of kernel threads to ignore while freezing
+> +	 */
+> +	int nr_kthreads_ignore;
+> +
+>  	/* Freeze time data consistency protection */
+>  	seqcount_spinlock_t freeze_seq;
+>  
+> diff --git a/kernel/cgroup/freezer.c b/kernel/cgroup/freezer.c
+> index 6c18854bff34..02a1db180b70 100644
+> --- a/kernel/cgroup/freezer.c
+> +++ b/kernel/cgroup/freezer.c
+> @@ -73,7 +73,8 @@ void cgroup_update_frozen(struct cgroup *cgrp)
+>  	 * the cgroup frozen. Otherwise it's not frozen.
+>  	 */
+>  	frozen = test_bit(CGRP_FREEZE, &cgrp->flags) &&
+> -		cgrp->freezer.nr_frozen_tasks == __cgroup_task_count(cgrp);
+> +		 (cgrp->freezer.nr_frozen_tasks +
+> +		  cgrp->freezer.nr_kthreads_ignore == __cgroup_task_count(cgrp));
+>  
+>  	/* If flags is updated, update the state of ancestor cgroups. */
+>  	if (cgroup_update_frozen_flag(cgrp, frozen))
+> @@ -145,6 +146,17 @@ void cgroup_leave_frozen(bool always_leave)
+>  	spin_unlock_irq(&css_set_lock);
+>  }
+>  
+> +static inline void cgroup_inc_kthread_ignore_cnt(struct cgroup *cgrp)
+> +{
+> +	cgrp->freezer.nr_kthreads_ignore++;
+> +}
+> +
+> +static inline void cgroup_dec_kthread_ignore_cnt(struct cgroup *cgrp)
+> +{
+> +	cgrp->freezer.nr_kthreads_ignore--;
+> +	WARN_ON_ONCE(cgrp->freezer.nr_kthreads_ignore < 0);
+> +}
+> +
+>  /*
+>   * Freeze or unfreeze the task by setting or clearing the JOBCTL_TRAP_FREEZE
+>   * jobctl bit.
+> @@ -199,11 +211,15 @@ static void cgroup_do_freeze(struct cgroup *cgrp, bool freeze, u64 ts_nsec)
+>  	css_task_iter_start(&cgrp->self, 0, &it);
+>  	while ((task = css_task_iter_next(&it))) {
+>  		/*
+> -		 * Ignore kernel threads here. Freezing cgroups containing
+> -		 * kthreads isn't supported.
+> +		 * Count kernel threads to ignore them during freezing.
+>  		 */
+> -		if (task->flags & PF_KTHREAD)
+> +		if (task->flags & PF_KTHREAD) {
+> +			if (freeze)
+> +				cgroup_inc_kthread_ignore_cnt(cgrp);
+> +			else
+> +				cgroup_dec_kthread_ignore_cnt(cgrp);
+>  			continue;
+> +		}
+>  		cgroup_freeze_task(task, freeze);
+>  	}
+>  	css_task_iter_end(&it);
+> @@ -228,10 +244,19 @@ void cgroup_freezer_migrate_task(struct task_struct *task,
+>  	lockdep_assert_held(&css_set_lock);
+>  
+>  	/*
+> -	 * Kernel threads are not supposed to be frozen at all.
+> +	 * Kernel threads are not supposed to be frozen at all, but we need to
+> +	 * count them in order to properly ignore.
+>  	 */
+> -	if (task->flags & PF_KTHREAD)
+> +	if (task->flags & PF_KTHREAD) {
+> +		if (test_bit(CGRP_FREEZE, &dst->flags))
+> +			cgroup_inc_kthread_ignore_cnt(dst);
+> +		if (test_bit(CGRP_FREEZE, &src->flags))
+> +			cgroup_dec_kthread_ignore_cnt(src);
+> +
+> +		cgroup_update_frozen(dst);
+> +		cgroup_update_frozen(src);
+>  		return;
+> +	}
+>  
+>  	/*
+>  	 * It's not necessary to do changes if both of the src and dst cgroups
 
-When one reads from cgroup.events cgroup file, and freeze is in progress
-and time since freeze start is over the timeout we trigger the warning.
-It walks over all the tasks in the cgroup sub-tree which is freezing and
-report the first task which is not frozen.
-
-This patch also adds kernel.freeze_timeout_us sysctl to control the
-timeout for reporting unfreezable tasks. Default is 0, which means
-it is disabled.
-
-Example output:
-
-I used the (https://github.com/Snorch/proc-hang-module) test module
-which introduces proc file, reading from which hangs in kernel, to
-emulate unfreezable process and it produces this stack:
-
-[  220.994136] Freeze of /test took 10 sec, due to unfreezable process 6192:cat.
-[  220.994326] Call Trace:
-[  220.994418]  <TASK>
-[  220.994507]  ? proc_hang_read+0x35/0x60 [proc_hang]
-[  220.994680]  ? proc_hang_read+0x3a/0x60 [proc_hang]
-[  220.994861]  ? proc_reg_read+0x5a/0xa0
-[  220.995021]  ? vfs_read+0xc1/0x370
-[  220.995176]  ? auditd_test_task+0x3d/0x50
-[  220.995344]  ? __audit_syscall_entry+0xf1/0x140
-[  220.995514]  ? ksys_read+0x6b/0xe0
-[  220.995667]  ? do_syscall_64+0x7f/0x6d0
-...
-[  220.998999]  </TASK>
-
-Signed-off-by: Pavel Tikhomirov <ptikhomirov@virtuozzo.com>
----
- kernel/cgroup/cgroup-internal.h |   5 ++
- kernel/cgroup/cgroup.c          |   2 +
- kernel/cgroup/freezer.c         | 118 ++++++++++++++++++++++++++++++++
- 3 files changed, 125 insertions(+)
-
-diff --git a/kernel/cgroup/cgroup-internal.h b/kernel/cgroup/cgroup-internal.h
-index 22051b4f1ccb..7e2f729996c8 100644
---- a/kernel/cgroup/cgroup-internal.h
-+++ b/kernel/cgroup/cgroup-internal.h
-@@ -283,6 +283,11 @@ void cgroup_base_stat_cputime_show(struct seq_file *seq);
-  */
- extern const struct proc_ns_operations cgroupns_operations;
- 
-+/*
-+ * freezer.c
-+ */
-+void check_freeze_timeout(struct cgroup *cgrp);
-+
- /*
-  * cgroup-v1.c
-  */
-diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
-index e717208cfb18..097cebbeed1b 100644
---- a/kernel/cgroup/cgroup.c
-+++ b/kernel/cgroup/cgroup.c
-@@ -3822,6 +3822,8 @@ static int cgroup_events_show(struct seq_file *seq, void *v)
- 	seq_printf(seq, "populated %d\n", cgroup_is_populated(cgrp));
- 	seq_printf(seq, "frozen %d\n", test_bit(CGRP_FROZEN, &cgrp->flags));
- 
-+	check_freeze_timeout(cgrp);
-+
- 	return 0;
- }
- 
-diff --git a/kernel/cgroup/freezer.c b/kernel/cgroup/freezer.c
-index 02a1db180b70..3880ed400879 100644
---- a/kernel/cgroup/freezer.c
-+++ b/kernel/cgroup/freezer.c
-@@ -1,8 +1,11 @@
- // SPDX-License-Identifier: GPL-2.0
- #include <linux/cgroup.h>
-+#include <linux/ratelimit.h>
-+#include <linux/sysctl.h>
- #include <linux/sched.h>
- #include <linux/sched/task.h>
- #include <linux/sched/signal.h>
-+#include <linux/sched/debug.h>
- 
- #include "cgroup-internal.h"
- 
-@@ -349,3 +352,118 @@ void cgroup_freeze(struct cgroup *cgrp, bool freeze)
- 		cgroup_file_notify(&cgrp->events_file);
- 	}
- }
-+
-+#define MAX_STACK_TRACE_DEPTH 64
-+
-+static void warn_freeze_timeout_task(struct cgroup *cgrp, int timeout,
-+				     struct task_struct *task)
-+{
-+	char *buf __free(kfree) = NULL;
-+	pid_t tgid;
-+
-+	buf = kmalloc(PATH_MAX, GFP_KERNEL);
-+	if (!buf)
-+		return;
-+
-+	if (cgroup_path(cgrp, buf, PATH_MAX) < 0)
-+		return;
-+
-+	tgid = task_pid_nr_ns(task, &init_pid_ns);
-+	pr_warn("Freeze of %s took %ld sec, due to unfreezable process %d:%s.\n",
-+		buf, timeout / USEC_PER_SEC, tgid, task->comm);
-+	if (!try_get_task_stack(task))
-+		return;
-+	show_stack(task, NULL, KERN_WARNING);
-+	put_task_stack(task);
-+}
-+
-+static void warn_freeze_timeout(struct cgroup *cgrp, int timeout)
-+{
-+	char *buf __free(kfree) = NULL;
-+	struct cgroup_subsys_state *css;
-+
-+	guard(rcu)();
-+	css_for_each_descendant_post(css, &cgrp->self) {
-+		struct task_struct *task;
-+		struct css_task_iter it;
-+
-+		css_task_iter_start(css, 0, &it);
-+		while ((task = css_task_iter_next(&it))) {
-+			if (task->flags & PF_KTHREAD)
-+				continue;
-+			if (task->frozen)
-+				continue;
-+
-+			warn_freeze_timeout_task(cgrp, timeout, task);
-+			css_task_iter_end(&it);
-+			return;
-+		}
-+		css_task_iter_end(&it);
-+	}
-+
-+	buf = kmalloc(PATH_MAX, GFP_KERNEL);
-+	if (!buf)
-+		return;
-+
-+	if (cgroup_path(cgrp, buf, PATH_MAX) < 0)
-+		return;
-+
-+	pr_warn("Freeze of %s took %ld sec, but no unfreezable process detected.\n",
-+		buf, timeout / USEC_PER_SEC);
-+}
-+
-+#define DEFAULT_FREEZE_RATELIMIT (30 * HZ)
-+int sysctl_freeze_timeout_us;
-+
-+void check_freeze_timeout(struct cgroup *cgrp)
-+{
-+	static DEFINE_RATELIMIT_STATE(freeze_timeout_rs,
-+				      DEFAULT_FREEZE_RATELIMIT, 1);
-+	unsigned int sequence;
-+	u64 last_freeze_start = 0;
-+	u64 last_freeze_time;
-+	int timeout;
-+
-+	timeout = READ_ONCE(sysctl_freeze_timeout_us);
-+	if (!timeout)
-+		return;
-+
-+	do {
-+		sequence = read_seqcount_begin(&cgrp->freezer.freeze_seq);
-+		if (test_bit(CGRP_FREEZE, &cgrp->flags) &&
-+		    !test_bit(CGRP_FROZEN, &cgrp->flags))
-+			last_freeze_start = cgrp->freezer.freeze_start_nsec;
-+	} while (read_seqcount_retry(&cgrp->freezer.freeze_seq, sequence));
-+
-+	if (!last_freeze_start)
-+		return;
-+
-+	last_freeze_time = ktime_get_ns() - last_freeze_start;
-+	do_div(last_freeze_time, NSEC_PER_USEC);
-+
-+	if (last_freeze_time < timeout)
-+		return;
-+
-+	if (!__ratelimit(&freeze_timeout_rs))
-+		return;
-+
-+	warn_freeze_timeout(cgrp, timeout);
-+}
-+
-+static const struct ctl_table freezer_sysctls[] = {
-+	{
-+		.procname	= "freeze_timeout_us",
-+		.data		= &sysctl_freeze_timeout_us,
-+		.maxlen		= sizeof(int),
-+		.mode		= 0644,
-+		.proc_handler	= proc_dointvec_minmax,
-+		.extra1		= SYSCTL_ZERO,
-+	},
-+};
-+
-+static int __init freezer_sysctls_init(void)
-+{
-+	register_sysctl_init("kernel", freezer_sysctls);
-+	return 0;
-+}
-+late_initcall(freezer_sysctls_init);
 -- 
-2.52.0
+Best regards, Pavel Tikhomirov
+Senior Software Developer, Virtuozzo.
 
 
