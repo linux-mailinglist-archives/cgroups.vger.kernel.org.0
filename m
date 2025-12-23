@@ -1,170 +1,126 @@
-Return-Path: <cgroups+bounces-12595-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-12596-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
-	by mail.lfdr.de (Postfix) with ESMTPS id C1B27CD77A2
-	for <lists+cgroups@lfdr.de>; Tue, 23 Dec 2025 01:09:59 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id A2597CD78F0
+	for <lists+cgroups@lfdr.de>; Tue, 23 Dec 2025 01:45:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id 4BD373007B66
-	for <lists+cgroups@lfdr.de>; Tue, 23 Dec 2025 00:09:57 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 7270B302B101
+	for <lists+cgroups@lfdr.de>; Tue, 23 Dec 2025 00:45:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C374EBA3F;
-	Tue, 23 Dec 2025 00:09:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="n+SbMTFR"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D43F4502A;
+	Tue, 23 Dec 2025 00:45:45 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.20])
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 990CB1367;
-	Tue, 23 Dec 2025 00:09:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.20
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 744D94A3E;
+	Tue, 23 Dec 2025 00:45:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1766448594; cv=none; b=Su3x4PKDDQ7KOS8j/y7OKyEzKD/cFMjCycItZQ0xhuR7DQoiiCsSjZ9RpVMbphOW3Q3PO7AZwZLeoZ2lDfEOMJJ6VXhU45b+KOfciNRBl/+LpjloDj3bHYhxkfAKJ56dffY4TK/rKmbSucnbIpSYNIFBFfkdrRgtytAwH2/Ynws=
+	t=1766450745; cv=none; b=iyd/eftrI5J4LZ6X/NwbQTZa2uUR75np54AgExWXljqpB+6E4LDAOup8IDWLpBsUlwVY3lT0gH3bJV74zxIY7SV3BNLmwhltZYlhgpPtz2u3uSKi29jVjKi0I8EU6sA+0oA7WlTvwQ3Hd/lmkeciiHIfmvEUR+h/028r8gxNsqo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1766448594; c=relaxed/simple;
-	bh=scb8dq1HBfysrB12FXHWH+apjzmHxbCBklwomg04vvQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=lI0Bl0B3iiUjewc657jg+ig6oGYifVQda9XffHVp/FSsw/yPJndEtsJ2bAXoAnwlGYgpZgJINVpDm1roJ1IpLYPH09NVOqTezZBi3gStDTrUrVhmYG0V/f42vWHtyhrZ3h9296zQgOFnNmOOMrkWYMt2urgPn25htbM+gZz87eY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=n+SbMTFR; arc=none smtp.client-ip=198.175.65.20
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1766448591; x=1797984591;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=scb8dq1HBfysrB12FXHWH+apjzmHxbCBklwomg04vvQ=;
-  b=n+SbMTFR6D/bZDYdkq7FS6NJx0EsqtOnEiOYrFdi8zxE9pXJ4PVBCZh5
-   ovh9HmhVZBO5pj8sR61RgW5+t0RaggJk13Dn5tQoXL2MI8ybcScKqUe3u
-   3iXbkudeXPDNGAsbJdpLzLg6b5N0Yr2i6eaENwla4OOE8t5QSDkRTvWf6
-   y3A7gPRLR8sSi7r2VXaGUFlQCSAfevHJwQZQjnwaGjStq/XbPWtgAzV6P
-   bz1ubKh7RROkW+GM+uwdYYVjKs+MeLivQXjC9/+Ly6E/VVuf80BnbjPa9
-   +Kfx8feHGNmduUv/Ty+qc6EnD3gT/v7TgftfAwjFDSO9ZWm5o/u+dfZUW
-   Q==;
-X-CSE-ConnectionGUID: zneKAgtgSrSeVzqyPyZFoA==
-X-CSE-MsgGUID: L/249HGHQFywV15Xs1+PDQ==
-X-IronPort-AV: E=McAfee;i="6800,10657,11650"; a="68058077"
-X-IronPort-AV: E=Sophos;i="6.21,169,1763452800"; 
-   d="scan'208";a="68058077"
-Received: from orviesa007.jf.intel.com ([10.64.159.147])
-  by orvoesa112.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Dec 2025 16:09:51 -0800
-X-CSE-ConnectionGUID: zNGOi2JSQ5GX20sFnuD9QQ==
-X-CSE-MsgGUID: 6sBPvKYiRGuXkiAxOW5low==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.21,169,1763452800"; 
-   d="scan'208";a="199634082"
-Received: from lkp-server02.sh.intel.com (HELO dd3453e2b682) ([10.239.97.151])
-  by orviesa007.jf.intel.com with ESMTP; 22 Dec 2025 16:09:45 -0800
-Received: from kbuild by dd3453e2b682 with local (Exim 4.98.2)
-	(envelope-from <lkp@intel.com>)
-	id 1vXpyB-000000001FR-0Qwm;
-	Tue, 23 Dec 2025 00:09:43 +0000
-Date: Tue, 23 Dec 2025 08:08:54 +0800
-From: kernel test robot <lkp@intel.com>
-To: Harry Yoo <harry.yoo@oracle.com>, akpm@linux-foundation.org,
-	vbabka@suse.cz
-Cc: oe-kbuild-all@lists.linux.dev, andreyknvl@gmail.com, cl@gentwo.org,
-	dvyukov@google.com, glider@google.com, hannes@cmpxchg.org,
-	linux-mm@kvack.org, mhocko@kernel.org, muchun.song@linux.dev,
-	rientjes@google.com, roman.gushchin@linux.dev,
-	ryabinin.a.a@gmail.com, shakeel.butt@linux.dev, surenb@google.com,
-	vincenzo.frascino@arm.com, yeoreum.yun@arm.com,
-	harry.yoo@oracle.com, tytso@mit.edu, adilger.kernel@dilger.ca,
-	linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
-	cgroups@vger.kernel.org, hao.li@linux.dev
-Subject: Re: [PATCH V4 4/8] mm/slab: abstract slabobj_ext access via new
- slab_obj_ext() helper
-Message-ID: <202512230727.ktAJv4eA-lkp@intel.com>
-References: <20251222110843.980347-5-harry.yoo@oracle.com>
+	s=arc-20240116; t=1766450745; c=relaxed/simple;
+	bh=9qoJptYo6efb2w6roc6+xkk0qgg6GEed8MiPnNXaHZM=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=fPBHmXuILkn8bGy+3rUwsulslOMnhmLbYLREPCK58TPQRYhfyEuo0eZdnGrKloaa8TOPNBdonKVCUAW3sLg/oGol8eXg7M3/V6e+otXY7HE/UdkbHC19Ef9T1OAz7veRCiH51dYGcuqhKhR+62oIZmfsHa79qEgRqPuPIPm8nzo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.177])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTPS id 4dZx9q5dsDzYQtfr;
+	Tue, 23 Dec 2025 08:45:03 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.128])
+	by mail.maildlp.com (Postfix) with ESMTP id E26F74058C;
+	Tue, 23 Dec 2025 08:45:39 +0800 (CST)
+Received: from [10.67.111.176] (unknown [10.67.111.176])
+	by APP4 (Coremail) with SMTP id gCh0CgB31_cy5klp8wiXBA--.20992S2;
+	Tue, 23 Dec 2025 08:45:39 +0800 (CST)
+Message-ID: <8aff3f15-79d6-48a0-a63d-735fabf6759d@huaweicloud.com>
+Date: Tue, 23 Dec 2025 08:45:38 +0800
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20251222110843.980347-5-harry.yoo@oracle.com>
-
-Hi Harry,
-
-kernel test robot noticed the following build errors:
-
-[auto build test ERROR on akpm-mm/mm-everything]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/Harry-Yoo/mm-slab-use-unsigned-long-for-orig_size-to-ensure-proper-metadata-align/20251222-191144
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/akpm/mm.git mm-everything
-patch link:    https://lore.kernel.org/r/20251222110843.980347-5-harry.yoo%40oracle.com
-patch subject: [PATCH V4 4/8] mm/slab: abstract slabobj_ext access via new slab_obj_ext() helper
-config: parisc-randconfig-002-20251223 (https://download.01.org/0day-ci/archive/20251223/202512230727.ktAJv4eA-lkp@intel.com/config)
-compiler: hppa-linux-gcc (GCC) 8.5.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20251223/202512230727.ktAJv4eA-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202512230727.ktAJv4eA-lkp@intel.com/
-
-All errors (new ones prefixed by >>):
-
-   In file included from include/asm-generic/bug.h:5,
-                    from arch/parisc/include/asm/bug.h:97,
-                    from include/linux/bug.h:5,
-                    from include/linux/mmdebug.h:5,
-                    from include/linux/mm.h:6,
-                    from mm/slub.c:13:
-   mm/slub.c: In function 'mark_objexts_empty':
->> mm/slub.c:2056:36: error: incompatible type for argument 1 of 'is_codetag_empty'
-      if (unlikely(is_codetag_empty(ext->ref)))
-                                    ~~~^~~~~
-   include/linux/compiler.h:77:42: note: in definition of macro 'unlikely'
-    # define unlikely(x) __builtin_expect(!!(x), 0)
-                                             ^
-   In file included from include/linux/workqueue.h:9,
-                    from include/linux/mm_types.h:19,
-                    from include/linux/mmzone.h:22,
-                    from include/linux/gfp.h:7,
-                    from include/linux/mm.h:7,
-                    from mm/slub.c:13:
-   include/linux/alloc_tag.h:52:56: note: expected 'union codetag_ref *' but argument is of type 'union codetag_ref'
-    static inline bool is_codetag_empty(union codetag_ref *ref)
-                                        ~~~~~~~~~~~~~~~~~~~^~~
-
-Kconfig warnings: (for reference only)
-   WARNING: unmet direct dependencies detected for CAN_DEV
-   Depends on [n]: NETDEVICES [=n] && CAN [=y]
-   Selected by [y]:
-   - CAN [=y] && NET [=y]
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH -next 1/5] mm/mglru: use mem_cgroup_iter for global
+ reclaim
+To: Shakeel Butt <shakeel.butt@linux.dev>
+Cc: akpm@linux-foundation.org, axelrasmussen@google.com, yuanchu@google.com,
+ weixugc@google.com, david@kernel.org, lorenzo.stoakes@oracle.com,
+ Liam.Howlett@oracle.com, vbabka@suse.cz, rppt@kernel.org, surenb@google.com,
+ mhocko@suse.com, corbet@lwn.net, hannes@cmpxchg.org,
+ roman.gushchin@linux.dev, muchun.song@linux.dev, zhengqi.arch@bytedance.com,
+ linux-mm@kvack.org, linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+ cgroups@vger.kernel.org, lujialin4@huawei.com, zhongjinji@honor.com
+References: <20251209012557.1949239-1-chenridong@huaweicloud.com>
+ <20251209012557.1949239-2-chenridong@huaweicloud.com>
+ <gkudpvytcc3aa5yjaigwtkyyyglmvnnqngrexfuqiv2mzxj5cn@e7rezszexd7l>
+ <702b6c0b-5e65-4f55-9a2f-4d07c3a84e39@huaweicloud.com>
+ <c4fjngkwbjlfnbjl5merldg5k2fiu43p46osagmy3ibr62cgxh@oesgt5l35kns>
+Content-Language: en-US
+From: Chen Ridong <chenridong@huaweicloud.com>
+In-Reply-To: <c4fjngkwbjlfnbjl5merldg5k2fiu43p46osagmy3ibr62cgxh@oesgt5l35kns>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:gCh0CgB31_cy5klp8wiXBA--.20992S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7Cw1rCw15Gw1DKw47Aw4Utwb_yoW8JFWkpr
+	WDWa42ya1kA3y3GrsaqF4Fgw4Fkw4rJ3y5Xr4fJ343Aws8W3WfAF47Kw429F929w40yF10
+	qFW2v395WFWjvFJanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUv0b4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxkF7I0En4kS
+	14v26r4a6rW5MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I
+	8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVW8ZVWr
+	XwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x
+	0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_
+	Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU0
+	s2-5UUUUU==
+X-CM-SenderInfo: hfkh02xlgr0w46kxt4xhlfz01xgou0bp/
 
 
-vim +/is_codetag_empty +2056 mm/slub.c
 
-  2042	
-  2043	static inline void mark_objexts_empty(struct slabobj_ext *obj_exts)
-  2044	{
-  2045		unsigned long slab_exts;
-  2046		struct slab *obj_exts_slab;
-  2047	
-  2048		obj_exts_slab = virt_to_slab(obj_exts);
-  2049		slab_exts = slab_obj_exts(obj_exts_slab);
-  2050		if (slab_exts) {
-  2051			unsigned int offs = obj_to_index(obj_exts_slab->slab_cache,
-  2052							 obj_exts_slab, obj_exts);
-  2053			struct slabobj_ext *ext = slab_obj_ext(obj_exts_slab,
-  2054							       slab_exts, offs);
-  2055	
-> 2056			if (unlikely(is_codetag_empty(ext->ref)))
-  2057				return;
-  2058	
-  2059			/* codetag should be NULL here */
-  2060			WARN_ON(ext->ref.ct);
-  2061			set_codetag_empty(&ext->ref);
-  2062		}
-  2063	}
-  2064	
+On 2025/12/23 5:18, Shakeel Butt wrote:
+> On Mon, Dec 22, 2025 at 03:27:26PM +0800, Chen Ridong wrote:
+>>
+> [...]
+>>
+>>>> -		if (should_abort_scan(lruvec, sc))
+>>>> +		if (should_abort_scan(lruvec, sc)) {
+>>>> +			if (cookie)
+>>>> +				mem_cgroup_iter_break(target, memcg);
+>>>>  			break;
+>>>
+>>> This seems buggy as we may break the loop without calling
+>>> mem_cgroup_iter_break(). I think for kswapd the cookie will be NULL and
+>>> if should_abort_scan() returns true, we will break the loop without
+>>> calling mem_cgroup_iter_break() and will leak a reference to memcg.
+>>>
+>>
+>> Thank you for catching that—my mistake.
+>>
+>> This also brings up another point: In kswapd, the traditional LRU iterates through all memcgs, but
+>> stops for the generational LRU (GENLRU) when should_abort_scan is met (i.e., enough pages are
+>> reclaimed or the watermark is satisfied). Shouldn't both behave consistently?
+>>
+>> Perhaps we should add should_abort_scan(lruvec, sc) in shrink_node_memcgs for the traditional LRU as
+>> well?
+> 
+> We definitely should discuss about should_abort_scan() for traditional
+> reclaim but to keep things simple, let's do that after this series. For
+> now, follow Johannes' suggestion of lru_gen_should_abort_scan().
+> 
+
+Okey, understood.
 
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Best regards,
+Ridong
+
 
