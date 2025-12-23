@@ -1,258 +1,180 @@
-Return-Path: <cgroups+bounces-12597-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-12598-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3BED9CD799F
-	for <lists+cgroups@lfdr.de>; Tue, 23 Dec 2025 02:01:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 844A3CD7AF6
+	for <lists+cgroups@lfdr.de>; Tue, 23 Dec 2025 02:41:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id A23603078EE2
-	for <lists+cgroups@lfdr.de>; Tue, 23 Dec 2025 01:00:56 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 712633012256
+	for <lists+cgroups@lfdr.de>; Tue, 23 Dec 2025 01:40:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 19C5A1F3B87;
-	Tue, 23 Dec 2025 01:00:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 718B734AAE4;
+	Tue, 23 Dec 2025 01:40:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="dsAZfz7w"
 X-Original-To: cgroups@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EBFE28287E;
-	Tue, 23 Dec 2025 01:00:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AFB8334A79B;
+	Tue, 23 Dec 2025 01:40:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.9
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1766451654; cv=none; b=AA11eFzHOHMPPfxGV0y1D6EfkNWYEnkh0gqyVmJQuC2f8fRaBR6H6bnx4AOlFK3+OB3QMTubxnvDCCvJnoOtS9PKKRkpz+fF6EJFwQiH7asY9hdPmCeget969VDF24rozM251O1kH9l8jIGAG/JF12aO0mFz6T9f9Ef6B7b6lSA=
+	t=1766454058; cv=none; b=DAKo+FGI8ETkAd5hG8Pieuk0i6Be+Y4RoVgrl1qWE/238rwHjV0So9D+TqPXhLwuh3lKSKSSbacf3RcTwU3mLGyYMdX2tIZeVfxE52iBQ6wpXj+f5qObrsvGP9oFG7+TPImunq3L7+AkgW9CE6WUJsGYCJgZmsx4x/vUbdfMifQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1766451654; c=relaxed/simple;
-	bh=HWEy7NuKUyzEZUaStzx7z7/Vb3Y8/BWxdd3NypYkNB8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=NfkNyzY8a7275kmikCMUCklzX2bGN62aUlPatfeRc+/AME8L3Uec6V2PJDh1edj/vwyDn9LPSRIruRCqCYuyjV5pSFATWTDqyl3VeOuqA7MW8T1k8aL0cy2COy6F8lrWD/c93moeB8GoQLB22xmbRNU8/tiFc5mrRiYwmfyOw70=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=none smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.177])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTPS id 4dZxWK0vL7zYQtgL;
-	Tue, 23 Dec 2025 09:00:13 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.128])
-	by mail.maildlp.com (Postfix) with ESMTP id 4396B4058D;
-	Tue, 23 Dec 2025 09:00:49 +0800 (CST)
-Received: from [10.67.111.176] (unknown [10.67.111.176])
-	by APP4 (Coremail) with SMTP id gCh0CgBH9va_6Ulp6keYBA--.39397S2;
-	Tue, 23 Dec 2025 09:00:48 +0800 (CST)
-Message-ID: <135f565e-b660-4773-8f98-fcbef9772f42@huaweicloud.com>
-Date: Tue, 23 Dec 2025 09:00:47 +0800
+	s=arc-20240116; t=1766454058; c=relaxed/simple;
+	bh=p8QndN5AyrEGYCocKeThKwfhP7p3sqHksByq85sFU24=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Or+IaZXjDgeXAsaCbEpd0SpgUWSHJyQlNmyL08x4iSlcHQkVWdfX3lHmG74V9FQEx5BtEcUJSpQp8f7cJ1xHmIy1IwruCoUUvfMdgUOV+qKZpMaUUrxTooT44hmdDBVCg9f2QFW1/ViXXKCZQ8Rf1jWXwmdkWgBXDa7qqxVGjFQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=dsAZfz7w; arc=none smtp.client-ip=198.175.65.9
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1766454057; x=1797990057;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=p8QndN5AyrEGYCocKeThKwfhP7p3sqHksByq85sFU24=;
+  b=dsAZfz7wLQoygcigKybUHZXfiCgDjKOmmETOmCYaHLeDr+zSCNHPUBXo
+   3DMtIq2NKJ/SJhkUmmax/PKjlFBngVS7tpvA4p1YvuQO+xS7Xd01mGcVh
+   XCcTdYaa58+qw7sIPuYrjIlEQBrpi54UHRlAsKQlRDN+kvo/pzfzV0TuV
+   qdoohBIwyCR5dmkuPDA/M4HZRvHLTn5hDjG++zFufLdLJYTrM5YfM0ZAg
+   jAmYJj6FkJEfOH2rRKnHJP6ZOAMgCmNQjJNOdGE1Dl5HDvpGaiWT9RJRr
+   xl9ZyIDmMJxywNhl2ad2kRvAygL3A5dCS/5xC16Ll7d+442nEIVdyn9nk
+   Q==;
+X-CSE-ConnectionGUID: 4C8nY8VTTYK3Tsj/KcR6Yg==
+X-CSE-MsgGUID: NNvNZYu8TC+dy7fGL8+nFA==
+X-IronPort-AV: E=McAfee;i="6800,10657,11650"; a="90966472"
+X-IronPort-AV: E=Sophos;i="6.21,169,1763452800"; 
+   d="scan'208";a="90966472"
+Received: from fmviesa008.fm.intel.com ([10.60.135.148])
+  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Dec 2025 17:40:56 -0800
+X-CSE-ConnectionGUID: HH3KO3ruSFaqe8T5HyubLA==
+X-CSE-MsgGUID: zy40TVviR8+wEyDh/5xXGA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.21,169,1763452800"; 
+   d="scan'208";a="199966668"
+Received: from lkp-server02.sh.intel.com (HELO dd3453e2b682) ([10.239.97.151])
+  by fmviesa008.fm.intel.com with ESMTP; 22 Dec 2025 17:40:50 -0800
+Received: from kbuild by dd3453e2b682 with local (Exim 4.98.2)
+	(envelope-from <lkp@intel.com>)
+	id 1vXrOK-000000001Ij-25Ic;
+	Tue, 23 Dec 2025 01:40:48 +0000
+Date: Tue, 23 Dec 2025 09:40:39 +0800
+From: kernel test robot <lkp@intel.com>
+To: Harry Yoo <harry.yoo@oracle.com>, akpm@linux-foundation.org,
+	vbabka@suse.cz
+Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+	andreyknvl@gmail.com, cl@gentwo.org, dvyukov@google.com,
+	glider@google.com, hannes@cmpxchg.org, linux-mm@kvack.org,
+	mhocko@kernel.org, muchun.song@linux.dev, rientjes@google.com,
+	roman.gushchin@linux.dev, ryabinin.a.a@gmail.com,
+	shakeel.butt@linux.dev, surenb@google.com,
+	vincenzo.frascino@arm.com, yeoreum.yun@arm.com,
+	harry.yoo@oracle.com, tytso@mit.edu, adilger.kernel@dilger.ca,
+	linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+	cgroups@vger.kernel.org, hao.li@linux.dev
+Subject: Re: [PATCH V4 7/8] mm/slab: save memory by allocating slabobj_ext
+ array from leftover
+Message-ID: <202512231042.EEBUajQY-lkp@intel.com>
+References: <20251222110843.980347-8-harry.yoo@oracle.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH -next 3/5] mm/mglru: extend shrink_one for both lrugen and
- non-lrugen
-To: Shakeel Butt <shakeel.butt@linux.dev>
-Cc: Johannes Weiner <hannes@cmpxchg.org>, akpm@linux-foundation.org,
- axelrasmussen@google.com, yuanchu@google.com, weixugc@google.com,
- david@kernel.org, lorenzo.stoakes@oracle.com, Liam.Howlett@oracle.com,
- vbabka@suse.cz, rppt@kernel.org, surenb@google.com, mhocko@suse.com,
- corbet@lwn.net, roman.gushchin@linux.dev, muchun.song@linux.dev,
- zhengqi.arch@bytedance.com, linux-mm@kvack.org, linux-doc@vger.kernel.org,
- linux-kernel@vger.kernel.org, cgroups@vger.kernel.org, lujialin4@huawei.com,
- zhongjinji@honor.com
-References: <20251209012557.1949239-1-chenridong@huaweicloud.com>
- <20251209012557.1949239-4-chenridong@huaweicloud.com>
- <20251215211357.GF905277@cmpxchg.org>
- <6c69c4d9-f154-4ad3-93c8-907fa4f98b27@huaweicloud.com>
- <7kwk3bkvhvflsyxgljnxzvrxco2u2rxjcdwqooeboyrkf2oxjj@2nywxl2sc6g5>
-Content-Language: en-US
-From: Chen Ridong <chenridong@huaweicloud.com>
-In-Reply-To: <7kwk3bkvhvflsyxgljnxzvrxco2u2rxjcdwqooeboyrkf2oxjj@2nywxl2sc6g5>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID:gCh0CgBH9va_6Ulp6keYBA--.39397S2
-X-Coremail-Antispam: 1UD129KBjvJXoW3AF1DGw43Kry5KrW7tF1DJrb_yoW7trWrpa
-	9xJFyjyayrZrnIgr9aqF4jg3sIvw48Jr1IqryDWw1rCFnaqFyrKF17CrWUuFy8ZrWF9r17
-	Jry7Xw17W3yFvFJanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUv0b4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxkF7I0En4kS
-	14v26r4a6rW5MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I
-	8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVW8ZVWr
-	XwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x
-	0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_
-	Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU0
-	s2-5UUUUU==
-X-CM-SenderInfo: hfkh02xlgr0w46kxt4xhlfz01xgou0bp/
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20251222110843.980347-8-harry.yoo@oracle.com>
+
+Hi Harry,
+
+kernel test robot noticed the following build errors:
+
+[auto build test ERROR on akpm-mm/mm-everything]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/Harry-Yoo/mm-slab-use-unsigned-long-for-orig_size-to-ensure-proper-metadata-align/20251222-191144
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/akpm/mm.git mm-everything
+patch link:    https://lore.kernel.org/r/20251222110843.980347-8-harry.yoo%40oracle.com
+patch subject: [PATCH V4 7/8] mm/slab: save memory by allocating slabobj_ext array from leftover
+config: x86_64-buildonly-randconfig-001-20251223 (https://download.01.org/0day-ci/archive/20251223/202512231042.EEBUajQY-lkp@intel.com/config)
+compiler: clang version 20.1.8 (https://github.com/llvm/llvm-project 87f0227cb60147a26a1eeb4fb06e3b505e9c7261)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20251223/202512231042.EEBUajQY-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202512231042.EEBUajQY-lkp@intel.com/
+
+All errors (new ones prefixed by >>):
+
+   mm/slub.c:2140:33: error: passing 'union codetag_ref' to parameter of incompatible type 'union codetag_ref *'; take the address with &
+    2140 |                 if (unlikely(is_codetag_empty(ext->ref))) {
+         |                                               ^~~~~~~~
+         |                                               &
+   include/linux/compiler.h:47:41: note: expanded from macro 'unlikely'
+      47 | #  define unlikely(x)   (__branch_check__(x, 0, __builtin_constant_p(x)))
+         |                                           ^
+   include/linux/compiler.h:32:34: note: expanded from macro '__branch_check__'
+      32 |                         ______r = __builtin_expect(!!(x), expect);      \
+         |                                                       ^
+   include/linux/alloc_tag.h:52:56: note: passing argument to parameter 'ref' here
+      52 | static inline bool is_codetag_empty(union codetag_ref *ref)
+         |                                                        ^
+   mm/slub.c:2140:33: error: passing 'union codetag_ref' to parameter of incompatible type 'union codetag_ref *'; take the address with &
+    2140 |                 if (unlikely(is_codetag_empty(ext->ref))) {
+         |                                               ^~~~~~~~
+         |                                               &
+   include/linux/compiler.h:47:68: note: expanded from macro 'unlikely'
+      47 | #  define unlikely(x)   (__branch_check__(x, 0, __builtin_constant_p(x)))
+         |                                                                      ^
+   include/linux/compiler.h:34:19: note: expanded from macro '__branch_check__'
+      34 |                                              expect, is_constant);      \
+         |                                                      ^~~~~~~~~~~
+   include/linux/alloc_tag.h:52:56: note: passing argument to parameter 'ref' here
+      52 | static inline bool is_codetag_empty(union codetag_ref *ref)
+         |                                                        ^
+>> mm/slub.c:2326:16: error: use of undeclared identifier 'MEMCG_DATA_OBJEXTS'
+    2326 |                         obj_exts |= MEMCG_DATA_OBJEXTS;
+         |                                     ^
+   3 errors generated.
 
 
+vim +/MEMCG_DATA_OBJEXTS +2326 mm/slub.c
 
-On 2025/12/23 5:36, Shakeel Butt wrote:
-> On Tue, Dec 16, 2025 at 09:14:45AM +0800, Chen Ridong wrote:
->>
->>
->> On 2025/12/16 5:13, Johannes Weiner wrote:
->>> On Tue, Dec 09, 2025 at 01:25:55AM +0000, Chen Ridong wrote:
->>>> From: Chen Ridong <chenridong@huawei.com>
->>>>
->>>> Currently, flush_reclaim_state is placed differently between
->>>> shrink_node_memcgs and shrink_many. shrink_many (only used for gen-LRU)
->>>> calls it after each lruvec is shrunk, while shrink_node_memcgs calls it
->>>> only after all lruvecs have been shrunk.
->>>>
->>>> This patch moves flush_reclaim_state into shrink_node_memcgs and calls it
->>>> after each lruvec. This unifies the behavior and is reasonable because:
->>>>
->>>> 1. flush_reclaim_state adds current->reclaim_state->reclaimed to
->>>>    sc->nr_reclaimed.
->>>> 2. For non-MGLRU root reclaim, this can help stop the iteration earlier
->>>>    when nr_to_reclaim is reached.
->>>> 3. For non-root reclaim, the effect is negligible since flush_reclaim_state
->>>>    does nothing in that case.
->>>>
->>>> After moving flush_reclaim_state into shrink_node_memcgs, shrink_one can be
->>>> extended to support both lrugen and non-lrugen paths. It will call
->>>> try_to_shrink_lruvec for lrugen root reclaim and shrink_lruvec otherwise.
->>>>
->>>> Signed-off-by: Chen Ridong <chenridong@huawei.com>
->>>> ---
->>>>  mm/vmscan.c | 57 +++++++++++++++++++++--------------------------------
->>>>  1 file changed, 23 insertions(+), 34 deletions(-)
->>>>
->>>> diff --git a/mm/vmscan.c b/mm/vmscan.c
->>>> index 584f41eb4c14..795f5ebd9341 100644
->>>> --- a/mm/vmscan.c
->>>> +++ b/mm/vmscan.c
->>>> @@ -4758,23 +4758,7 @@ static bool try_to_shrink_lruvec(struct lruvec *lruvec, struct scan_control *sc)
->>>>  	return nr_to_scan < 0;
->>>>  }
->>>>  
->>>> -static void shrink_one(struct lruvec *lruvec, struct scan_control *sc)
->>>> -{
->>>> -	unsigned long scanned = sc->nr_scanned;
->>>> -	unsigned long reclaimed = sc->nr_reclaimed;
->>>> -	struct pglist_data *pgdat = lruvec_pgdat(lruvec);
->>>> -	struct mem_cgroup *memcg = lruvec_memcg(lruvec);
->>>> -
->>>> -	try_to_shrink_lruvec(lruvec, sc);
->>>> -
->>>> -	shrink_slab(sc->gfp_mask, pgdat->node_id, memcg, sc->priority);
->>>> -
->>>> -	if (!sc->proactive)
->>>> -		vmpressure(sc->gfp_mask, memcg, false, sc->nr_scanned - scanned,
->>>> -			   sc->nr_reclaimed - reclaimed);
->>>> -
->>>> -	flush_reclaim_state(sc);
->>>> -}
->>>> +static void shrink_one(struct lruvec *lruvec, struct scan_control *sc);
->>>>  
->>>>  static void shrink_many(struct pglist_data *pgdat, struct scan_control *sc)
->>>>  {
->>>> @@ -5760,6 +5744,27 @@ static inline bool should_continue_reclaim(struct pglist_data *pgdat,
->>>>  	return inactive_lru_pages > pages_for_compaction;
->>>>  }
->>>>  
->>>> +static void shrink_one(struct lruvec *lruvec, struct scan_control *sc)
->>>> +{
->>>> +	unsigned long scanned = sc->nr_scanned;
->>>> +	unsigned long reclaimed = sc->nr_reclaimed;
->>>> +	struct pglist_data *pgdat = lruvec_pgdat(lruvec);
->>>> +	struct mem_cgroup *memcg = lruvec_memcg(lruvec);
->>>> +
->>>> +	if (lru_gen_enabled() && root_reclaim(sc))
->>>> +		try_to_shrink_lruvec(lruvec, sc);
->>>> +	else
->>>> +		shrink_lruvec(lruvec, sc);
->>>
->>
->> Hi Johannes, thank you for your reply.
->>
->>> Yikes. So we end up with:
->>>
->>> shrink_node_memcgs()
->>>   shrink_one()
->>>     if lru_gen_enabled && root_reclaim(sc)
->>>       try_to_shrink_lruvec(lruvec, sc)
->>>     else
->>>       shrink_lruvec()
->>>         if lru_gen_enabled && !root_reclaim(sc)
->>>           lru_gen_shrink_lruvec(lruvec, sc)
->>>             try_to_shrink_lruvec()
->>>
->>> I think it's doing too much at once. Can you get it into the following
->>> shape:
->>>
->>
->> You're absolutely right. This refactoring is indeed what patch 5/5 implements.
->>
->> With patch 5/5 applied, the flow becomes:
->>
->> shrink_node_memcgs()
->>     shrink_one()
->>         if lru_gen_enabled
->> 	    lru_gen_shrink_lruvec  --> symmetric with else shrink_lruvec()
->> 		if (root_reclaim(sc))  --> handle root reclaim.
->> 		    try_to_shrink_lruvec()
->> 		else
->> 		    ...
->> 		    try_to_shrink_lruvec()
->> 	else
->> 	    shrink_lruvec()
->>
->> This matches the structure you described.
->>
->> One note: shrink_one() is also called from lru_gen_shrink_node() when memcg is disabled, so I
->> believe it makes sense to keep this helper.
-> 
-> I think we don't need shrink_one as it can be inlined to its callers and
-> also shrink_node_memcgs() already handles mem_cgroup_disabled() case, so
-> lru_gen_shrink_node() should not need shrink_one for such case.
-> 
-I think you mean:
-
-shrink_node
-    lru_gen_shrink_node
-    // We do not need to handle memcg-disabled case here,
-    // because shrink_node_memcgs can already handle it.
-	shrink_node_memcgs
-	    for each memcg:
-	        if lru_gen_enabled:
-		    lru_gen_shrink_lruvec()
-		else
-		    shrink_lruvec()
-	    shrink_slab(sc->gfp_mask, pgdat->node_id, memcg, sc->priority);
-	    if (!sc->proactive)
-		vmpressure(...)
-	    flush_reclaim_state(sc);
-
-With this structure, both shrink_many and shrink_one are no longer needed. That looks much cleaner.
-I will update it accordingly.
-
-Thank you very much.
-
->>
->>> shrink_node_memcgs()
->>>   for each memcg:
->>>     if lru_gen_enabled:
->>>       lru_gen_shrink_lruvec()
->>>     else
->>>       shrink_lruvec()
->>>
-> 
-> I actually like what Johannes has requested above but if that is not
-> possible without changing some behavior then let's aim to do as much as
-> possible in this series while keeping the same behavior. In a followup
-> we can try to combine the behavior part.
-> 
->>
->> Regarding the patch split, I currently kept patch 3/5 and 5/5 separate to make the changes clearer
->> in each step. Would you prefer that I merge patch 3/5 with patch 5/5, so the full refactoring
->> appears in one patch?
->>
->> Looking forward to your guidance.
+  2302	
+  2303	/*
+  2304	 * Try to allocate slabobj_ext array from unused space.
+  2305	 * This function must be called on a freshly allocated slab to prevent
+  2306	 * concurrency problems.
+  2307	 */
+  2308	static void alloc_slab_obj_exts_early(struct kmem_cache *s, struct slab *slab)
+  2309	{
+  2310		void *addr;
+  2311		unsigned long obj_exts;
+  2312	
+  2313		if (!need_slab_obj_exts(s))
+  2314			return;
+  2315	
+  2316		if (obj_exts_fit_within_slab_leftover(s, slab)) {
+  2317			addr = slab_address(slab) + obj_exts_offset_in_slab(s, slab);
+  2318			addr = kasan_reset_tag(addr);
+  2319			obj_exts = (unsigned long)addr;
+  2320	
+  2321			get_slab_obj_exts(obj_exts);
+  2322			memset(addr, 0, obj_exts_size_in_slab(slab));
+  2323			put_slab_obj_exts(obj_exts);
+  2324	
+  2325			if (IS_ENABLED(CONFIG_MEMCG))
+> 2326				obj_exts |= MEMCG_DATA_OBJEXTS;
+  2327			slab->obj_exts = obj_exts;
+  2328			slab_set_stride(slab, sizeof(struct slabobj_ext));
+  2329		}
+  2330	}
+  2331	
 
 -- 
-Best regards,
-Ridong
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
