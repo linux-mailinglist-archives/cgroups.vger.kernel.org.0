@@ -1,58 +1,76 @@
-Return-Path: <cgroups+bounces-12615-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-12616-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 31C50CDA706
-	for <lists+cgroups@lfdr.de>; Tue, 23 Dec 2025 21:05:06 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1A791CDAA92
+	for <lists+cgroups@lfdr.de>; Tue, 23 Dec 2025 22:03:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id F0979300C5C3
-	for <lists+cgroups@lfdr.de>; Tue, 23 Dec 2025 20:05:04 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 22A17303974C
+	for <lists+cgroups@lfdr.de>; Tue, 23 Dec 2025 20:59:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E4D322D8DD6;
-	Tue, 23 Dec 2025 20:05:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 637A430FC15;
+	Tue, 23 Dec 2025 20:59:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="H8hdM5zn"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="D1FLaU+I"
 X-Original-To: cgroups@vger.kernel.org
-Received: from out-186.mta0.migadu.com (out-186.mta0.migadu.com [91.218.175.186])
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.14])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 954BF16DEB0;
-	Tue, 23 Dec 2025 20:05:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.186
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D5BC3211A05;
+	Tue, 23 Dec 2025 20:59:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.14
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1766520303; cv=none; b=Fe/cdc3L8RU+AhrBpzAvldcpFMlV7fFiAwYsujm/voJp5cHHLWxhC4d1usgFFt5qquIPDjBIrxadXdwrxBdqwbkr4mKD0mpesSlFbI+5NCmFmGUmzJ/YqkQWY8UkJNMo1pc8/LydQWn1RTl/7Go60lF3ziTs/j9X3+2v3I+ytCE=
+	t=1766523569; cv=none; b=lH7Ac0H8DyGfxNqVBwUuGuPI6u5TrFrEL2iUYqDV2HOqLNtY/Y3cuUX5Q+8LJ1wIwD0taqB5xQHajj3bdk+uHlMeIGbm912eNWbLrE2MIDdc9MRo+xmaPwdXJTSLmNggcPXgClJuLu9b4NYKMGY0+x5HHgT1qP2hOX76Ld0YYyI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1766520303; c=relaxed/simple;
-	bh=7eGWYCg3MRGGV0kFxPKuwKhSXdI4MlBHmC//CpKnl44=;
+	s=arc-20240116; t=1766523569; c=relaxed/simple;
+	bh=WFi7cvhAPiPh/XR+92Qqh6vdtwN3HsAQzlz22Tp190A=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=HqgPau4APq1PPrjyKT7NpfDTDAVOIsbADDXIOTMZler6gsPSHwYdxUTBkxDg3NHLOCLqeGi1KqxvCuBrg1ItPjHnb23CWYwOPPtQfLsFH0/VnVugPU/1a6L0mgg8e/+v09UmrNt47XO6/MXDyMu7iVk7MfSV9YulcqAA7ylZ7pM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=H8hdM5zn; arc=none smtp.client-ip=91.218.175.186
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Tue, 23 Dec 2025 20:04:50 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1766520298;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=XWy6KVFFtQzzOr3HVKvKmn30n6ao395KkA0IdN+gNgE=;
-	b=H8hdM5znIHB9z3/IcnRHFtpOqqYGyvzJMcGxT51E0qpc2M88/4ZqgwZc5pI73reEslN3ix
-	cUte1YD5GZd1KEXloFanUZ14kzGYSb0Qv1cPOGZRIcRlAQRAh6nvz7mPjmbfU3pDNQtDGC
-	2ANBqVfaxxXnsbHdt0HT0XpeaqiMCP4=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Yosry Ahmed <yosry.ahmed@linux.dev>
-To: Qi Zheng <qi.zheng@linux.dev>
-Cc: hannes@cmpxchg.org, hughd@google.com, mhocko@suse.com, 
-	roman.gushchin@linux.dev, shakeel.butt@linux.dev, muchun.song@linux.dev, david@kernel.org, 
-	lorenzo.stoakes@oracle.com, ziy@nvidia.com, harry.yoo@oracle.com, imran.f.khan@oracle.com, 
-	kamalesh.babulal@oracle.com, axelrasmussen@google.com, yuanchu@google.com, weixugc@google.com, 
-	chenridong@huaweicloud.com, mkoutny@suse.com, akpm@linux-foundation.org, 
-	hamzamahfooz@linux.microsoft.com, apais@linux.microsoft.com, lance.yang@linux.dev, 
-	linux-mm@kvack.org, linux-kernel@vger.kernel.org, cgroups@vger.kernel.org, 
-	Qi Zheng <zhengqi.arch@bytedance.com>
-Subject: Re: [PATCH v2 00/28] Eliminate Dying Memory Cgroup
-Message-ID: <5dsb6q2r4xsi24kk5gcnckljuvgvvp6nwifwvc4wuho5hsifeg@5ukg2dq6ini5>
-References: <cover.1765956025.git.zhengqi.arch@bytedance.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=AsKtelhCaM9H6Bt8ZRGpLUyJ/EpuxPvPSsRuV4gKiM+z5MT3+7cgBdHe0w66dKsgIfWwll8iPs6WxCW2f1wVG3oYihk8fP7DVpVotPa0tAI/SlLH4okdcs8jKkwU7IOpV8U/rc256I4+hoMTFR+RUh6yOUKUVKNbmzh2XOhlPjA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=D1FLaU+I; arc=none smtp.client-ip=192.198.163.14
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1766523567; x=1798059567;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=WFi7cvhAPiPh/XR+92Qqh6vdtwN3HsAQzlz22Tp190A=;
+  b=D1FLaU+IoRZpmeTdsv3H1Vgt5JBFMTFy4yuCJkdJfBz3AJRCNyX3UarN
+   FmQSrF1AqC31JV83Ej0cioDQnVD3v3oY3UPqqDl7B8zCBhxDKbVf553OD
+   NSBctp0a/ev5xQFRngVQC/7bGqFE3ljyOPF0AqYKmk8BTjGKkycITb1cx
+   1ASX4NLz99DvwFb3TYuvJTZA9OmV1oJW0HqGwyJr621qRCljXvFBL5XIh
+   QmmDmUuy84ONuymSg9rNbGfFC1XPeu4p9nsVzVI/sp1aWu9Lz6Qe742Dc
+   a5uhgU4KZVvTqdPQPHmulC8+woHOlZB4o0JjnKe6yFmZLk8RR0WwAYi9V
+   g==;
+X-CSE-ConnectionGUID: 4dnyDQfKRMG0/hfNstKIig==
+X-CSE-MsgGUID: ty10qx5eSquB6mx8oHH96A==
+X-IronPort-AV: E=McAfee;i="6800,10657,11651"; a="68415523"
+X-IronPort-AV: E=Sophos;i="6.21,171,1763452800"; 
+   d="scan'208";a="68415523"
+Received: from orviesa010.jf.intel.com ([10.64.159.150])
+  by fmvoesa108.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Dec 2025 12:59:26 -0800
+X-CSE-ConnectionGUID: dDDoQCVvRCCDHIFDxhpvxg==
+X-CSE-MsgGUID: kzgOIQu/SqCJ7OoAlAsY/A==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.21,171,1763452800"; 
+   d="scan'208";a="199105678"
+Received: from lkp-server02.sh.intel.com (HELO dd3453e2b682) ([10.239.97.151])
+  by orviesa010.jf.intel.com with ESMTP; 23 Dec 2025 12:59:25 -0800
+Received: from kbuild by dd3453e2b682 with local (Exim 4.98.2)
+	(envelope-from <lkp@intel.com>)
+	id 1vY9TV-000000002N7-2fPV;
+	Tue, 23 Dec 2025 20:59:21 +0000
+Date: Wed, 24 Dec 2025 04:58:39 +0800
+From: kernel test robot <lkp@intel.com>
+To: Pavel Tikhomirov <ptikhomirov@virtuozzo.com>, Tejun Heo <tj@kernel.org>
+Cc: oe-kbuild-all@lists.linux.dev, Johannes Weiner <hannes@cmpxchg.org>,
+	Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
+	cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Pavel Tikhomirov <ptikhomirov@virtuozzo.com>
+Subject: Re: [PATCH 2/2] cgroup-v2/freezer: Print information about
+ unfreezable process
+Message-ID: <202512240409.06R0khaZ-lkp@intel.com>
+References: <20251223102124.738818-4-ptikhomirov@virtuozzo.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -61,264 +79,78 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <cover.1765956025.git.zhengqi.arch@bytedance.com>
-X-Migadu-Flow: FLOW_OUT
+In-Reply-To: <20251223102124.738818-4-ptikhomirov@virtuozzo.com>
 
-On Wed, Dec 17, 2025 at 03:27:24PM +0800, Qi Zheng wrote:
-> From: Qi Zheng <zhengqi.arch@bytedance.com>
-> 
-> Changes in v2:
->  - add [PATCH v2 04/28] and remove local_irq_disable() in evict_folios()
->    (pointed by Harry Yoo)
->  - recheck objcg in [PATCH v2 07/28] (pointed by Harry Yoo)
->  - modify the commit message in [PATCH v2 12/28] and [PATCH v2 21/28]
->    (pointed by Harry Yoo)
->  - use rcu lock to protect mm_state in [PATCH v2 14/28] (pointed by Harry Yoo)
->  - fix bad unlock balance warning in [PATCH v2 23/28]
->  - change nr_pages type to long in [PATCH v2 25/28] (pointed by Harry Yoo)
->  - incease mm_state->seq during reparenting to make mm walker work properly in
->    [PATCH v2 25/28] (pointed by Harry Yoo)
->  - add [PATCH v2 18/28] to fix WARNING in folio_memcg() (pointed by Harry Yoo)
->  - collect Reviewed-bys
->  - rebase onto the next-20251216
-> 
-> Changes in v1:
->  - drop [PATCH RFC 02/28]
->  - drop THP split queue related part, which has been merged as a separate
->    patchset[2]
->  - prevent memory cgroup release in folio_split_queue_lock{_irqsave}() in
->    [PATCH v1 16/26]
->  - Separate the reparenting function of traditional LRU folios to [PATCH v1 22/26]
->  - adapted to the MGLRU scenarios in [PATCH v1 23/26]
->  - refactor memcg_reparent_objcgs() in [PATCH v1 24/26]
->  - collect Acked-bys and Reviewed-bys
->  - rebase onto the next-20251028
-> 
-> Hi all,
-> 
-> Introduction
-> ============
-> 
-> This patchset is intended to transfer the LRU pages to the object cgroup
-> without holding a reference to the original memory cgroup in order to
-> address the issue of the dying memory cgroup. A consensus has already been
-> reached regarding this approach recently [1].
-> 
-> Background
-> ==========
-> 
-> The issue of a dying memory cgroup refers to a situation where a memory
-> cgroup is no longer being used by users, but memory (the metadata
-> associated with memory cgroups) remains allocated to it. This situation
-> may potentially result in memory leaks or inefficiencies in memory
-> reclamation and has persisted as an issue for several years. Any memory
-> allocation that endures longer than the lifespan (from the users'
-> perspective) of a memory cgroup can lead to the issue of dying memory
-> cgroup. We have exerted greater efforts to tackle this problem by
-> introducing the infrastructure of object cgroup [2].
-> 
-> Presently, numerous types of objects (slab objects, non-slab kernel
-> allocations, per-CPU objects) are charged to the object cgroup without
-> holding a reference to the original memory cgroup. The final allocations
-> for LRU pages (anonymous pages and file pages) are charged at allocation
-> time and continues to hold a reference to the original memory cgroup
-> until reclaimed.
-> 
-> File pages are more complex than anonymous pages as they can be shared
-> among different memory cgroups and may persist beyond the lifespan of
-> the memory cgroup. The long-term pinning of file pages to memory cgroups
-> is a widespread issue that causes recurring problems in practical
-> scenarios [3]. File pages remain unreclaimed for extended periods.
-> Additionally, they are accessed by successive instances (second, third,
-> fourth, etc.) of the same job, which is restarted into a new cgroup each
-> time. As a result, unreclaimable dying memory cgroups accumulate,
-> leading to memory wastage and significantly reducing the efficiency
-> of page reclamation.
-> 
-> Fundamentals
-> ============
-> 
-> A folio will no longer pin its corresponding memory cgroup. It is necessary
-> to ensure that the memory cgroup or the lruvec associated with the memory
-> cgroup is not released when a user obtains a pointer to the memory cgroup
-> or lruvec returned by folio_memcg() or folio_lruvec(). Users are required
-> to hold the RCU read lock or acquire a reference to the memory cgroup
-> associated with the folio to prevent its release if they are not concerned
-> about the binding stability between the folio and its corresponding memory
-> cgroup. However, some users of folio_lruvec() (i.e., the lruvec lock)
-> desire a stable binding between the folio and its corresponding memory
-> cgroup. An approach is needed to ensure the stability of the binding while
-> the lruvec lock is held, and to detect the situation of holding the
-> incorrect lruvec lock when there is a race condition during memory cgroup
-> reparenting. The following four steps are taken to achieve these goals.
-> 
-> 1. The first step  to be taken is to identify all users of both functions
->    (folio_memcg() and folio_lruvec()) who are not concerned about binding
->    stability and implement appropriate measures (such as holding a RCU read
->    lock or temporarily obtaining a reference to the memory cgroup for a
->    brief period) to prevent the release of the memory cgroup.
-> 
-> 2. Secondly, the following refactoring of folio_lruvec_lock() demonstrates
->    how to ensure the binding stability from the user's perspective of
->    folio_lruvec().
-> 
->    struct lruvec *folio_lruvec_lock(struct folio *folio)
->    {
->            struct lruvec *lruvec;
-> 
->            rcu_read_lock();
->    retry:
->            lruvec = folio_lruvec(folio);
->            spin_lock(&lruvec->lru_lock);
->            if (unlikely(lruvec_memcg(lruvec) != folio_memcg(folio))) {
->                    spin_unlock(&lruvec->lru_lock);
->                    goto retry;
->            }
-> 
->            return lruvec;
->    }
-> 
->    From the perspective of memory cgroup removal, the entire reparenting
->    process (altering the binding relationship between folio and its memory
->    cgroup and moving the LRU lists to its parental memory cgroup) should be
->    carried out under both the lruvec lock of the memory cgroup being removed
->    and the lruvec lock of its parent.
-> 
-> 3. Finally, transfer the LRU pages to the object cgroup without holding a
->    reference to the original memory cgroup.
+Hi Pavel,
 
-I think there might be a problem with non-hierarchical stats on cgroup
-v1, I brought it up previously [*]. I am not sure if this was addressed
-but I couldn't immediately find anything.
+kernel test robot noticed the following build errors:
 
-In short, if memory is charged to a dying cgroup at the time of
-reparenting, when the memory gets uncharged the stats updates will occur
-at the parent. This will update both hierarchical and non-hierarchical
-stats of the parent, which would corrupt the parent's non-hierarchical
-stats (because those counters were never incremented when the memory was
-charged).
+[auto build test ERROR on tj-cgroup/for-next]
+[also build test ERROR on linus/master v6.19-rc2 next-20251219]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-I didn't track down which stats are affected by this, but off the top of
-my head I think all stats tracking anon, file, etc.
+url:    https://github.com/intel-lab-lkp/linux/commits/Pavel-Tikhomirov/cgroup-v2-freezer-allow-freezing-with-kthreads/20251223-182826
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git for-next
+patch link:    https://lore.kernel.org/r/20251223102124.738818-4-ptikhomirov%40virtuozzo.com
+patch subject: [PATCH 2/2] cgroup-v2/freezer: Print information about unfreezable process
+config: s390-randconfig-r071-20251224 (https://download.01.org/0day-ci/archive/20251224/202512240409.06R0khaZ-lkp@intel.com/config)
+compiler: s390-linux-gcc (GCC) 8.5.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20251224/202512240409.06R0khaZ-lkp@intel.com/reproduce)
 
-The obvious solution is to flush and reparent the stats of a dying memcg
-during reparenting, but I don't think this entirely fixes the problem
-because the dying memcg stats can still be updated after its reparenting
-(e.g. if a ref to the memcg has been held since before reparenting).
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202512240409.06R0khaZ-lkp@intel.com/
 
-AFAICT, the stats of the dying memcg are only stable at release time,
-but reparenting the stats at that point means that we have a potentially
-large window (between reparenting and release) where the parent
-non-hierarchical stats will be wrong and could even underflow.
+All errors (new ones prefixed by >>):
 
-[*]https://lore.kernel.org/all/CAJD7tkazvC+kZgGaV3idapQp-zPFaWBxoHwnrqTFoodHZGQcPA@mail.gmail.com/
+   kernel/cgroup/freezer.c: In function 'warn_freeze_timeout_task':
+>> kernel/cgroup/freezer.c:374:7: error: implicit declaration of function 'try_get_task_stack'; did you mean 'tryget_task_struct'? [-Werror=implicit-function-declaration]
+     if (!try_get_task_stack(task))
+          ^~~~~~~~~~~~~~~~~~
+          tryget_task_struct
+>> kernel/cgroup/freezer.c:377:2: error: implicit declaration of function 'put_task_stack'; did you mean 'put_task_struct'? [-Werror=implicit-function-declaration]
+     put_task_stack(task);
+     ^~~~~~~~~~~~~~
+     put_task_struct
+   cc1: some warnings being treated as errors
 
-> 
-> Effect
-> ======
-> 
-> Finally, it can be observed that the quantity of dying memory cgroups will
-> not experience a significant increase if the following test script is
-> executed to reproduce the issue.
-> 
-> ```bash
-> #!/bin/bash
-> 
-> # Create a temporary file 'temp' filled with zero bytes
-> dd if=/dev/zero of=temp bs=4096 count=1
-> 
-> # Display memory-cgroup info from /proc/cgroups
-> cat /proc/cgroups | grep memory
-> 
-> for i in {0..2000}
-> do
->     mkdir /sys/fs/cgroup/memory/test$i
->     echo $$ > /sys/fs/cgroup/memory/test$i/cgroup.procs
-> 
->     # Append 'temp' file content to 'log'
->     cat temp >> log
-> 
->     echo $$ > /sys/fs/cgroup/memory/cgroup.procs
-> 
->     # Potentially create a dying memory cgroup
->     rmdir /sys/fs/cgroup/memory/test$i
-> done
-> 
-> # Display memory-cgroup info after test
-> cat /proc/cgroups | grep memory
-> 
-> rm -f temp log
-> ```
-> 
-> Comments and suggestions are welcome!
-> 
-> Thanks,
-> Qi
-> 
-> [1].https://lore.kernel.org/linux-mm/Z6OkXXYDorPrBvEQ@hm-sls2/
-> [2].https://lwn.net/Articles/895431/
-> [3].https://github.com/systemd/systemd/pull/36827
-> 
-> Muchun Song (22):
->   mm: memcontrol: remove dead code of checking parent memory cgroup
->   mm: workingset: use folio_lruvec() in workingset_refault()
->   mm: rename unlock_page_lruvec_irq and its variants
->   mm: vmscan: refactor move_folios_to_lru()
->   mm: memcontrol: allocate object cgroup for non-kmem case
->   mm: memcontrol: return root object cgroup for root memory cgroup
->   mm: memcontrol: prevent memory cgroup release in
->     get_mem_cgroup_from_folio()
->   buffer: prevent memory cgroup release in folio_alloc_buffers()
->   writeback: prevent memory cgroup release in writeback module
->   mm: memcontrol: prevent memory cgroup release in
->     count_memcg_folio_events()
->   mm: page_io: prevent memory cgroup release in page_io module
->   mm: migrate: prevent memory cgroup release in folio_migrate_mapping()
->   mm: mglru: prevent memory cgroup release in mglru
->   mm: memcontrol: prevent memory cgroup release in
->     mem_cgroup_swap_full()
->   mm: workingset: prevent memory cgroup release in lru_gen_eviction()
->   mm: workingset: prevent lruvec release in workingset_refault()
->   mm: zswap: prevent lruvec release in zswap_folio_swapin()
->   mm: swap: prevent lruvec release in lru_gen_clear_refs()
->   mm: workingset: prevent lruvec release in workingset_activation()
->   mm: memcontrol: prepare for reparenting LRU pages for lruvec lock
->   mm: memcontrol: eliminate the problem of dying memory cgroup for LRU
->     folios
->   mm: lru: add VM_WARN_ON_ONCE_FOLIO to lru maintenance helpers
-> 
-> Qi Zheng (6):
->   mm: vmscan: prepare for the refactoring the move_folios_to_lru()
->   mm: thp: prevent memory cgroup release in
->     folio_split_queue_lock{_irqsave}()
->   mm: zswap: prevent memory cgroup release in zswap_compress()
->   mm: vmscan: prepare for reparenting traditional LRU folios
->   mm: vmscan: prepare for reparenting MGLRU folios
->   mm: memcontrol: refactor memcg_reparent_objcgs()
-> 
->  fs/buffer.c                      |   4 +-
->  fs/fs-writeback.c                |  22 +-
->  include/linux/memcontrol.h       | 159 ++++++------
->  include/linux/mm_inline.h        |   6 +
->  include/linux/mmzone.h           |  20 ++
->  include/trace/events/writeback.h |   3 +
->  mm/compaction.c                  |  43 +++-
->  mm/huge_memory.c                 |  18 +-
->  mm/memcontrol-v1.c               |  15 +-
->  mm/memcontrol.c                  | 405 ++++++++++++++++++-------------
->  mm/migrate.c                     |   2 +
->  mm/mlock.c                       |   2 +-
->  mm/page_io.c                     |   8 +-
->  mm/percpu.c                      |   2 +-
->  mm/shrinker.c                    |   6 +-
->  mm/swap.c                        |  20 +-
->  mm/vmscan.c                      | 267 ++++++++++++++++----
->  mm/workingset.c                  |  26 +-
->  mm/zswap.c                       |   5 +
->  19 files changed, 677 insertions(+), 356 deletions(-)
-> 
-> -- 
-> 2.20.1
-> 
-> 
+Kconfig warnings: (for reference only)
+   WARNING: unmet direct dependencies detected for CAN_DEV
+   Depends on [n]: NETDEVICES [=n] && CAN [=y]
+   Selected by [y]:
+   - CAN [=y] && NET [=y]
+
+
+vim +374 kernel/cgroup/freezer.c
+
+   357	
+   358	static void warn_freeze_timeout_task(struct cgroup *cgrp, int timeout,
+   359					     struct task_struct *task)
+   360	{
+   361		char *buf __free(kfree) = NULL;
+   362		pid_t tgid;
+   363	
+   364		buf = kmalloc(PATH_MAX, GFP_KERNEL);
+   365		if (!buf)
+   366			return;
+   367	
+   368		if (cgroup_path(cgrp, buf, PATH_MAX) < 0)
+   369			return;
+   370	
+   371		tgid = task_pid_nr_ns(task, &init_pid_ns);
+   372		pr_warn("Freeze of %s took %ld sec, due to unfreezable process %d:%s.\n",
+   373			buf, timeout / USEC_PER_SEC, tgid, task->comm);
+ > 374		if (!try_get_task_stack(task))
+   375			return;
+   376		show_stack(task, NULL, KERN_WARNING);
+ > 377		put_task_stack(task);
+   378	}
+   379	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
