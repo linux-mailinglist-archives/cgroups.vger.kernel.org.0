@@ -1,44 +1,44 @@
-Return-Path: <cgroups+bounces-12662-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-12663-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8689BCDC738
-	for <lists+cgroups@lfdr.de>; Wed, 24 Dec 2025 15:02:08 +0100 (CET)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 34E0CCDC6E4
+	for <lists+cgroups@lfdr.de>; Wed, 24 Dec 2025 14:58:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id AE6DC301E93C
-	for <lists+cgroups@lfdr.de>; Wed, 24 Dec 2025 13:57:10 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id 6C0F5301AB3F
+	for <lists+cgroups@lfdr.de>; Wed, 24 Dec 2025 13:58:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DF385341AAA;
-	Wed, 24 Dec 2025 13:46:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0FC4E3446A7;
+	Wed, 24 Dec 2025 13:46:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="QkYBtnhA"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="REhxuoO3"
 X-Original-To: cgroups@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D648340DAB;
-	Wed, 24 Dec 2025 13:46:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B5BCC2F25F9;
+	Wed, 24 Dec 2025 13:46:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1766584009; cv=none; b=k5YU/YUCu0xWpsOgiI5II+4Py54t9VQxmDipOgU7paq8/I37OEI+qlYaAc7dzNAviAPV89pDfpraNevpcNqUsPfZUpZxJ6z6htdLzXvHk31MhdNTXz4MUJjQo8ditTc0D2TkR/D/e/nefmxy65Q4ibgcPFpYgW/MZn2ZHpOLN2A=
+	t=1766584018; cv=none; b=OGUYhF4Ihtw5y3pCHnzkRdA/pzoOWUvwLJvhL3NJJQGMW8Vs7aefOIpGjkis7uWXXqva4NUWtSNqhQiI0UAA94wRqAcCagjYQ8fCFUlZ6/lwzic9Tguvqbt/7Zs87l1I0oe/itVw8zm+CVYx8i2VvMafm3jzXAiBtRm6iE9npss=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1766584009; c=relaxed/simple;
-	bh=uGe6Ex9InA/ctQyPBwEfQeCRruCOXrYZdOto/ar5f3U=;
+	s=arc-20240116; t=1766584018; c=relaxed/simple;
+	bh=cfBsUi49kwBpo1bGsw5oqJU14C2/JcinY0oHFYzJ/us=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=u4E3dTcijbpplRtWaPY39A6qqZirJlFc1tjdrOLeSEKgtCGrRtNHmW1IPHu0MwYverC0YyF6XOwC8RrfgoV76Gu11iKZiq7zNg3/wZbMPgDkEbqQxHc1E3T9Lq3MSg5/fCZcTfRALcRn2rw2BD/ncvdMaFMqJvkXgkyu4AK63Go=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=QkYBtnhA; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3641FC4CEFB;
-	Wed, 24 Dec 2025 13:46:41 +0000 (UTC)
+	 MIME-Version; b=KFg5T9FzEUgdHn9C8H/nzifSuCwn8Ae2Xmu9npjWSq0cbmtUtGrgLyPyJ6LqctzmJ3/2GSi6CJbNUCYUJTqRhblFA4lA3ZIXq4mBJCVJ9ZitVufRhW7rn/DgZw8WP3J1Cjt2KVnPoGOtiFcvbuz9EkcM3uyDH0uAtrlXOYq0OSk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=REhxuoO3; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9E85BC116D0;
+	Wed, 24 Dec 2025 13:46:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1766584009;
-	bh=uGe6Ex9InA/ctQyPBwEfQeCRruCOXrYZdOto/ar5f3U=;
+	s=k20201202; t=1766584018;
+	bh=cfBsUi49kwBpo1bGsw5oqJU14C2/JcinY0oHFYzJ/us=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=QkYBtnhAQ44/QDhvyD+7F9s+u0UyEIzuX1QswgTK4hn9nB5xybx6i1hFP+3OlC5e2
-	 n3QTVokwjBgbk6ivKWOtdU3iSevx+kpxs7OA6i6eJ/CwW1beUG7tm+q8zZ5DLeEHG8
-	 01i13pW9Hf6tjz3oP4mIP6n00eIg3L/gvfs81iaM9AvkPwBHbSLXFuflUzQAcAnLPl
-	 gGJgYTg7vHeM+EwQmsb9L+8Agyj9XOWgkiM2t2qaxQzfTm8hMC8yE6gHr4XY3BIac3
-	 uQvrHdBPyTk6U0rXMbbBYsrr5CULeDo3AMXZByb6mc07RYSNfapMAKagVHUaH2F5E7
-	 ZsgsPEuaKJTbQ==
+	b=REhxuoO3IX20hXtECaAueG16NscS9v1kyy5t+tUn35175JOSmkEnv4SvDaoazf7ww
+	 YBpD3lRKkH2447ENW80qcP37hFyQ1nh1kM6Hopa6gcqmxGAx4vr2zZBbYP3naQ8kNq
+	 JrEdcRRdPKO2q4yT5ATlv4ZznyMVYjlX6EfL2jmCsj2VIQBRGH8y3lO6py7ylcjmZo
+	 efrxzY9JDKc8YjWfLnEDN1BYAYTzeNsIu534qaYrwScoI/mx5NKToLKPBHQZGg6upA
+	 tyOavV43+aqYi1yHJHwWrGKQTWYuBo3NPayKJq0vqYJU7MJ+xYxwhGTXnBMYZ4J8UH
+	 wWeA2GZaq/CLg==
 From: Frederic Weisbecker <frederic@kernel.org>
 To: LKML <linux-kernel@vger.kernel.org>
 Cc: Frederic Weisbecker <frederic@kernel.org>,
@@ -78,9 +78,9 @@ Cc: Frederic Weisbecker <frederic@kernel.org>,
 	linux-mm@kvack.org,
 	linux-pci@vger.kernel.org,
 	netdev@vger.kernel.org
-Subject: [PATCH 09/33] block: Protect against concurrent isolated cpuset change
-Date: Wed, 24 Dec 2025 14:44:56 +0100
-Message-ID: <20251224134520.33231-10-frederic@kernel.org>
+Subject: [PATCH 10/33] timers/migration: Prevent from lockdep false positive warning
+Date: Wed, 24 Dec 2025 14:44:57 +0100
+Message-ID: <20251224134520.33231-11-frederic@kernel.org>
 X-Mailer: git-send-email 2.51.1
 In-Reply-To: <20251224134520.33231-1-frederic@kernel.org>
 References: <20251224134520.33231-1-frederic@kernel.org>
@@ -92,42 +92,77 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-The block subsystem prevents running the workqueue to isolated CPUs,
-including those defined by cpuset isolated partitions. Since
-HK_TYPE_DOMAIN will soon contain both and be subject to runtime
-modifications, synchronize against housekeeping using the relevant lock.
+Testing housekeeping_cpu() will soon require that either the RCU "lock"
+is held or the cpuset mutex.
 
-For full support of cpuset changes, the block subsystem may need to
-propagate changes to isolated cpumask through the workqueue in the
-future.
+When CPUs get isolated through cpuset, the change is propagated to
+timer migration such that isolation is also performed from the migration
+tree. However that propagation is done using workqueue which tests if
+the target is actually isolated before proceeding.
+
+Lockdep doesn't know that the workqueue caller holds cpuset mutex and
+that it waits for the work, making the housekeeping cpumask read safe.
+
+Shut down the future warning by removing this test. It is unecessary
+beyond hotplug, the workqueue is already targeted towards isolated CPUs.
 
 Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
 ---
- block/blk-mq.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ kernel/time/timer_migration.c | 20 +++++++++++++++-----
+ 1 file changed, 15 insertions(+), 5 deletions(-)
 
-diff --git a/block/blk-mq.c b/block/blk-mq.c
-index 1978eef95dca..0037af1216f3 100644
---- a/block/blk-mq.c
-+++ b/block/blk-mq.c
-@@ -4257,12 +4257,16 @@ static void blk_mq_map_swqueue(struct request_queue *q)
+diff --git a/kernel/time/timer_migration.c b/kernel/time/timer_migration.c
+index 18dda1aa782d..3879575a4975 100644
+--- a/kernel/time/timer_migration.c
++++ b/kernel/time/timer_migration.c
+@@ -1497,7 +1497,7 @@ static int tmigr_clear_cpu_available(unsigned int cpu)
+ 	return 0;
+ }
  
- 		/*
- 		 * Rule out isolated CPUs from hctx->cpumask to avoid
--		 * running block kworker on isolated CPUs
-+		 * running block kworker on isolated CPUs.
-+		 * FIXME: cpuset should propagate further changes to isolated CPUs
-+		 * here.
- 		 */
-+		rcu_read_lock();
- 		for_each_cpu(cpu, hctx->cpumask) {
- 			if (cpu_is_isolated(cpu))
- 				cpumask_clear_cpu(cpu, hctx->cpumask);
- 		}
-+		rcu_read_unlock();
+-static int tmigr_set_cpu_available(unsigned int cpu)
++static int __tmigr_set_cpu_available(unsigned int cpu)
+ {
+ 	struct tmigr_cpu *tmc = this_cpu_ptr(&tmigr_cpu);
  
- 		/*
- 		 * Initialize batch roundrobin counts
+@@ -1505,9 +1505,6 @@ static int tmigr_set_cpu_available(unsigned int cpu)
+ 	if (WARN_ON_ONCE(!tmc->tmgroup))
+ 		return -EINVAL;
+ 
+-	if (tmigr_is_isolated(cpu))
+-		return 0;
+-
+ 	guard(mutex)(&tmigr_available_mutex);
+ 
+ 	cpumask_set_cpu(cpu, tmigr_available_cpumask);
+@@ -1523,6 +1520,14 @@ static int tmigr_set_cpu_available(unsigned int cpu)
+ 	return 0;
+ }
+ 
++static int tmigr_set_cpu_available(unsigned int cpu)
++{
++	if (tmigr_is_isolated(cpu))
++		return 0;
++
++	return __tmigr_set_cpu_available(cpu);
++}
++
+ static void tmigr_cpu_isolate(struct work_struct *ignored)
+ {
+ 	tmigr_clear_cpu_available(smp_processor_id());
+@@ -1530,7 +1535,12 @@ static void tmigr_cpu_isolate(struct work_struct *ignored)
+ 
+ static void tmigr_cpu_unisolate(struct work_struct *ignored)
+ {
+-	tmigr_set_cpu_available(smp_processor_id());
++	/*
++	 * Don't call tmigr_is_isolated() ->housekeeping_cpu() directly because
++	 * the cpuset mutex is correctly held by the workqueue caller but lockdep
++	 * doesn't know that.
++	 */
++	__tmigr_set_cpu_available(smp_processor_id());
+ }
+ 
+ /**
 -- 
 2.51.1
 
