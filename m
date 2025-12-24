@@ -1,378 +1,232 @@
-Return-Path: <cgroups+bounces-12626-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-12627-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 87EDDCDB1D3
-	for <lists+cgroups@lfdr.de>; Wed, 24 Dec 2025 02:49:51 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id C0E12CDB368
+	for <lists+cgroups@lfdr.de>; Wed, 24 Dec 2025 04:07:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id B4B8E301DCEB
-	for <lists+cgroups@lfdr.de>; Wed, 24 Dec 2025 01:49:48 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 77397302B77F
+	for <lists+cgroups@lfdr.de>; Wed, 24 Dec 2025 03:07:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 44C003C07A;
-	Wed, 24 Dec 2025 01:49:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A9634224240;
+	Wed, 24 Dec 2025 03:07:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=virtuozzo.com header.i=@virtuozzo.com header.b="clm2mMBs"
 X-Original-To: cgroups@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+Received: from DUZPR83CU001.outbound.protection.outlook.com (mail-northeuropeazon11022099.outbound.protection.outlook.com [52.101.66.99])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 17ADF1C84CB;
-	Wed, 24 Dec 2025 01:49:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1766540987; cv=none; b=LkyfEir+L3/WC35ghwMxHfjicAfoUad/6G67UIwB9mW4sPHk1BDnndyPrV6/EhoVgGHuSBo58hVicJb9nsm/lgiSYYiWPdgIoX78mEMdXBa8MLf1+Bk45HmsrC0zXrZcdvSGxdNe/Br/nBK3UAhQx/X8nVj6cVnOqVyvGegzdt4=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1766540987; c=relaxed/simple;
-	bh=Ergf4wkQqVXAshYchy3FbFOmi4b7qs1s2uKk18Gjibk=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=AkzLyugHYZEUZ4VBzWLV4kN+NDc5LDe4AJXsMqpsDlUWItWF2509gn5HvR44JD8gBKj2RsgV6pX7ArsD8h54AQaSgJQ4lxtSWqiRgUWxDzfOYnNRmheaiErwWHp4+7KQATtkMwfOF7iQbjLVaP41EHGNkGuFbRUH0U0pIBUXLdE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.170])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTPS id 4dbZYC22YlzYQtf1;
-	Wed, 24 Dec 2025 09:49:03 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.128])
-	by mail.maildlp.com (Postfix) with ESMTP id 2A5054056B;
-	Wed, 24 Dec 2025 09:49:41 +0800 (CST)
-Received: from [10.67.111.176] (unknown [10.67.111.176])
-	by APP4 (Coremail) with SMTP id gCh0CgBXBvezRktprrYSBQ--.50131S2;
-	Wed, 24 Dec 2025 09:49:40 +0800 (CST)
-Message-ID: <646ee1fa-edd1-4588-9720-c3c1df8ebce5@huaweicloud.com>
-Date: Wed, 24 Dec 2025 09:49:38 +0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 612F71E2858;
+	Wed, 24 Dec 2025 03:07:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.66.99
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1766545624; cv=fail; b=keA8VFUevlIpJmBR5XW3hFd1Gw7MiJTlwj0c9tk6iG7XDETjxU3oj4p2NK5wO+CCUKm8Hw9AXu2xDLqgYWcpkQKcHfdfCSVrd+mZf/y5QxvUTdKAgLbPOr/GLPTJ6405etxQsc8UwdYnla1zHuk7nRehBkRvEh61VEQ91LJTFoU=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1766545624; c=relaxed/simple;
+	bh=QDO+WjgdtNdhTo/4D9x0Mk7OvUyvN9xXAR1L69A82vs=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=Or0FpVPD63g3n2U6Qoo/NLYX2iIyOl84vmbydhTTnET6Jyd9pDxxzjVxe09x+ldHPa3xmEya1khZLOdwpd6Z/2wVM+eMraWEX3MFv6+SwpMZYVGnWJY71MBpM6HtZy9T++WN/BTlughcRR6XiE7+P+X8LRk+ydxxCU8PsJM9Z/0=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=virtuozzo.com; spf=pass smtp.mailfrom=virtuozzo.com; dkim=pass (2048-bit key) header.d=virtuozzo.com header.i=@virtuozzo.com header.b=clm2mMBs; arc=fail smtp.client-ip=52.101.66.99
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=virtuozzo.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=virtuozzo.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=oOdYHOaKSFa/05kStHLk0XTV4+S1bEngT8oLoumM1jqlHooQj5DPq9WomQRLzwy9OL5uxMy9J9hCzSUQ2e+UcsAgSrCxTVH2h8Qp4HpUBiOfOPkWr6Vw595VLduWiZpG2M6U1+MbtNCAADcQ/Tqk/RsGfAbLH4iJ12qEXb6AB2BNea9kFC9WiNTqGeBx4NB9sQcsWb2KJ9syl+4VsWky0tOuSSlGL54BxQl6R8l+kXqjUqv4OlHw7kN2FYUU41Z7uNe5/bG1s1hefpU8SVMkX47ebO4zxCdlwdDbnwzhcQqjNW3rAvxHxmf7kMeUqi8h7zfxIq4F4UUzV9IOCfCodg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=la0WJ/43iDjZC+w+RvJA7deR+C8lORRF/shTnMitDy4=;
+ b=uZ/in74BBmRxQ/ITG+s5J0iq6G3bfD1mY/AUvA/Psg3ZklQSZS7T8xUgc0Nq90n1I04zFZ1BfrkaLIhJccoSQBt+EhabUbDxGulL5fzVsrG3ndybvtAA36VVCCmRwI9xPCmqLhHU6oe8k5nSWmPpIwmzl9YxSUOYo5bFN15Cz0cN/qM9yX1E5NX+6DMj06Zw2NbpiLlzvoHV+C81dtvw/5WXkAhyDF4zTTIXrUrmNHwr9F6UAzdvD8qwk8OOl23KtipSpu+piRmmh5nvCkOHUjgD4b1Ke6Ni84z9KCiH4k3QI3kemgZzPehmnAr+AmBE4BQFbiYCamW2y2wMI1tzNw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=virtuozzo.com; dmarc=pass action=none
+ header.from=virtuozzo.com; dkim=pass header.d=virtuozzo.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=virtuozzo.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=la0WJ/43iDjZC+w+RvJA7deR+C8lORRF/shTnMitDy4=;
+ b=clm2mMBsnxqsTx3BlIlVozBOlhfJbXtKQ+JzgjtTwzHXdN4jgIJUCSZrEpm+wd6VIQzkpsjHNquRVaUmOYmDbEAfAmCbQYtZr4sHrvue6Vakfv1OK9FxYMR4Np1cxwXJvQhxOU6SBXw55bsjSD+pWgZtoTUBlL6lV7X8w4/nnsATg2ZcNYWKG7waW9QMFt/BnKIfvs9uMs7xskf1/DghMWaJLaquK41JX80pcJfo3yFkNXdzxUZy63pC+pu0NalW210ayND7EbEVOoauGLOuyFaV18Z660JSR3Hoq8qz5PTNZbgG1usZYb2/4zLbBcJi0/ac5uVkDY/8Y/S7U9CmBQ==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=virtuozzo.com;
+Received: from DU0PR08MB9003.eurprd08.prod.outlook.com (2603:10a6:10:471::13)
+ by AS4PR08MB7654.eurprd08.prod.outlook.com (2603:10a6:20b:4f0::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9434.7; Wed, 24 Dec
+ 2025 03:06:58 +0000
+Received: from DU0PR08MB9003.eurprd08.prod.outlook.com
+ ([fe80::3470:51d7:36e4:36d2]) by DU0PR08MB9003.eurprd08.prod.outlook.com
+ ([fe80::3470:51d7:36e4:36d2%4]) with mapi id 15.20.9434.009; Wed, 24 Dec 2025
+ 03:06:58 +0000
+Message-ID: <df449a6e-bbe1-4dba-9b05-c2ce746e9163@virtuozzo.com>
+Date: Wed, 24 Dec 2025 11:06:47 +0800
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 0/2] cgroup-v2/freezer: small improvements
+To: =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>
+Cc: Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>,
+ cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20251223102124.738818-1-ptikhomirov@virtuozzo.com>
+ <eamvrn5wbcdydffxfxitphfdfv3wec7wdsni3ykzvrammayndw@ecrksjfijhkh>
+Content-Language: en-US
+From: Pavel Tikhomirov <ptikhomirov@virtuozzo.com>
+In-Reply-To: <eamvrn5wbcdydffxfxitphfdfv3wec7wdsni3ykzvrammayndw@ecrksjfijhkh>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: KU2P306CA0032.MYSP306.PROD.OUTLOOK.COM
+ (2603:1096:d10:3d::6) To DU0PR08MB9003.eurprd08.prod.outlook.com
+ (2603:10a6:10:471::13)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3] mm/vmscan: fix demotion targets checks in
- reclaim/demotion
-To: Bing Jiao <bingjiao@google.com>, linux-mm@kvack.org
-Cc: linux-kernel@vger.kernel.org, akpm@linux-foundation.org,
- gourry@gourry.net, longman@redhat.com, hannes@cmpxchg.org,
- mhocko@kernel.org, roman.gushchin@linux.dev, shakeel.butt@linux.dev,
- muchun.song@linux.dev, tj@kernel.org, mkoutny@suse.com, david@kernel.org,
- zhengqi.arch@bytedance.com, lorenzo.stoakes@oracle.com,
- axelrasmussen@google.com, yuanchu@google.com, weixugc@google.com,
- cgroups@vger.kernel.org
-References: <20251221233635.3761887-1-bingjiao@google.com>
- <20251223212032.665731-1-bingjiao@google.com>
-Content-Language: en-US
-From: Chen Ridong <chenridong@huaweicloud.com>
-In-Reply-To: <20251223212032.665731-1-bingjiao@google.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID:gCh0CgBXBvezRktprrYSBQ--.50131S2
-X-Coremail-Antispam: 1UD129KBjvJXoW3uF45Ar47WrWxAFWxGFWkCrg_yoWDuF1rpF
-	s3Ga4rC3yrArW3Gr4Svayq9a4Fvw1kXFW5A34agrn7ArnIqF1UXr1Dtw1fXFy3CFy5ur17
-	JFnxAr18u3yjya7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUv0b4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxkF7I0En4kS
-	14v26r4a6rW5MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I
-	8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVW8ZVWr
-	XwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x
-	0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_
-	Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU0
-	s2-5UUUUU==
-X-CM-SenderInfo: hfkh02xlgr0w46kxt4xhlfz01xgou0bp/
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DU0PR08MB9003:EE_|AS4PR08MB7654:EE_
+X-MS-Office365-Filtering-Correlation-Id: 4c141aba-acc1-46eb-8686-08de42998021
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230040|1800799024|376014|10070799003|366016;
+X-Microsoft-Antispam-Message-Info:
+	=?utf-8?B?b3NhSVBZOGQ0M1lXcXhCY2J0bXVicGV2NmFqVEpadFBqYUNMcDVpTGFKQ21y?=
+ =?utf-8?B?c1hYM1lOM3NkK2lSWHlSVXk5L2doR3l4d2d4a2xCaitySnNFWjlZN0gzR2Iw?=
+ =?utf-8?B?TVhSSWxiYmZJVnpSVVBPVVJDWVN0eTUzekhxcXUvc1M4UU1aTU5Sem9JZFAy?=
+ =?utf-8?B?enFUYmk3YlJ6Q2UreHJoUnRaSE8zYUE5VWViVWNTVThoRERlb0Z5U2h0NG56?=
+ =?utf-8?B?alNtcDlSc05DSzltZlJQdHcvTmE0Mm92eGVFNm55dDlEUG9GazkweTJ6Y0hw?=
+ =?utf-8?B?NWl5V0xhbk05Y3E4MHpvZnpNa3JxZDNDaFd2ODcza0FtekJQR2d4MDk2Q29K?=
+ =?utf-8?B?Y1Z3TmN4aG9wVmJVQjFORU50d21LcGpDeW50WDBON2FMUlJSam5VVHNvSnVF?=
+ =?utf-8?B?TmQvMzRGYUpYU2tzaVNMRjM5c1NsbnJ2ZUFyYjlMdGhpOVNrZEU5alQ3a3Vt?=
+ =?utf-8?B?WSswcFN3T1RwOFRqL3dFUkRuSXp6RlBjTFd3cnJ1MWdCS0E1VDBwb0Rjbktn?=
+ =?utf-8?B?aDY3STZTaTN6UFQ5WXUwV3huTjIreC8vTmE2d1E4MnVkblVzdE14VDZFN2pU?=
+ =?utf-8?B?RlJ2ZmRVYlNQdDBwT2ZsQ1c4RzFpMHlRUGRSVGd5YjJNaTVjdFM2NHFvaW9L?=
+ =?utf-8?B?WDZ3WTgzNlE0MWY2djFUUjN0S2tXR0dNMUU1bXpQbzNzSk5tN3VQRHRnZVFN?=
+ =?utf-8?B?U3g5SlRudFlHNXh0cXJBOElNN1ZCa1J0d2VSU3pJbHNjalRDTDdYRWdkUHNE?=
+ =?utf-8?B?Q1RMYnEvSWIxdkROR092aDRHbU9xTTBBUzFaYm9jSnE3ZDZMOVlPUE1zN3c5?=
+ =?utf-8?B?WlZXRkhpMldBTURINWhqZENOV0U0MHJjenhhNzEwRE1WeFJUVXFKL0JoOTM5?=
+ =?utf-8?B?bXpnTlVhMlhhTS9VVitzMlB1cE5YUERjL25iU3JyM1QvYUJwK3NraThsOWVJ?=
+ =?utf-8?B?TkpNOXBIZnY2NDF0UDdIK1JEMWZSR1U5YndpRURJQmZpYkJKK3l2cnc4dTIv?=
+ =?utf-8?B?SS9wd2NBTU8yR29WODM5MmZ4OVBzWWdrQlR5M0ZhL2ZLTmdwNnlCYjdqOFNK?=
+ =?utf-8?B?V0RMem1hMy83cy9IS2tHd3A2L1hTdCtLeFp3L0pXUnlYMmpXRWY5QkI5L0Nk?=
+ =?utf-8?B?MndqVWF4eTR6ZmgxQmtSWjBKcEUrTGhCU0tscVVueHVnWmhxQUx6NzNGS3N1?=
+ =?utf-8?B?azM5UTNmNmpCYi9jZ0xWK1JiOCtsN1pzUmxzV3VNTnpQNTRGYnhxRm1ibnkr?=
+ =?utf-8?B?YzRjd3V1Q3ZXZzdSc2dDeHMwdnJaWE1JZ2FrdkpGa1dSUkxTNHZ5aWxPYUxU?=
+ =?utf-8?B?WWhrMXBMOXlTL1dYeXBaeldBamFJeGZpeEM0amt4SEFYdHA5UzY4TXM0dHlj?=
+ =?utf-8?B?a3JyNUlzMUxtb3ZReldTTXFQRlFLYTg4QUlYdkZZZjdKakJpZDJvN3pDb1Y2?=
+ =?utf-8?B?UHh1bi9BV2svczRvampVdnVKTHFrSyt0a1plalBneVowNGdaY0IyZHdBNHBr?=
+ =?utf-8?B?cHJwdjBvaXVWNmUvekZwZkxEQ0hvRncxZmRuNHA0TnlVbmRmSUpKWW1hSmQz?=
+ =?utf-8?B?ZWhhSnIwY3kxOWJrUHpxVXV4L3NhVDd2REVldHYwWktFZFdpWWRTVXg1LzFN?=
+ =?utf-8?B?YTF5SS9hSitEaU9ranhuZytodUMxbEtOdGd0RnMxQ0R5Z3h2NVNSeHZKNUNV?=
+ =?utf-8?B?Z1RpMU8yaHEvMytvV2FLUEs0QzRXRFJucHY3WGl5U05RSHJYeXhEeU9udXJr?=
+ =?utf-8?B?U0ZsUnlvaVVmNmh2T2tDSDBveVRwSjFBK255Vy92b3JxaDFQWlEvTGRCZEgy?=
+ =?utf-8?B?NzVHTTZJTE5CbUxCbVNMQ2hxK1pwV2xDcXhsVXo0NS9lL2k1WTBpM0cwOGJs?=
+ =?utf-8?B?bUovZ2ZJM2tsd2t6eXhrOWVyK2t0NEh1WmExbkpITU1oZkx5M1kxeVJJQXZK?=
+ =?utf-8?B?bi9QVERmbFdpd290MThNc3FZS1dZQlJtekd1Sk42Y2N3QkloWXVGR0tKK29J?=
+ =?utf-8?B?SFBPQTRaN3BBPT0=?=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DU0PR08MB9003.eurprd08.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(376014)(10070799003)(366016);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 2
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?TUFwek1PbkVQV2ZrMWx3dDhvWUdQbmxLdFlUN1VLOU8rSk5xL1dISDVUKzhW?=
+ =?utf-8?B?bEdGTVgxVlh5bVo2ZUthMlJ5Nng3YnZWQVhkWXN2OGVlaFNhdU9CSkNRMklm?=
+ =?utf-8?B?cXlGdVg5ZXRzSWdJZWtkbi9LL0dFcjJGZ2RxTWtrWVlBMGc1UGczN2VmL0JQ?=
+ =?utf-8?B?WEVyQVhic1djZjBRMDJxbXlqYWlFbXVQWnRwSFRhbFlQaFIzRG1ISVlSK0hi?=
+ =?utf-8?B?c3J1c244RWFPY1VCTTdZYzBYVVFtL1BQNW9ST01HUGMzajhReFlYOEp4Wnp3?=
+ =?utf-8?B?MkJtQ2syaVY1RkpjUDlmVUhrbVZzWk00NFBUYzJiYmNVdldDbHYycG1BU0RH?=
+ =?utf-8?B?WnBKelk4U0lJRm5obm4zYlB3ZUtTRGxySnU2TWNyekRJQmQ2RVpMMERFMUo0?=
+ =?utf-8?B?anNjc05GRFVPOUFLNVpSa3JCbVExRlFZYVhPSnkxaXBqdFZ0amVmNFo3dVFG?=
+ =?utf-8?B?bnZRWE1lNUFjUU5lcmJSV1l0KzNRL1QxK3phaHRRODI3ZENjeTJZWXp3MVov?=
+ =?utf-8?B?d3dqZGZaK0xZK0doQzBvTGM5Nnd0WE4rVCtqZk1RdVlaV0hKaGtZOHI4bzFj?=
+ =?utf-8?B?NTFaRGRDdUdCZE84UGRCRitlUVhmWDFSM2xTU1poQ0pOSFNkNTR1K2VLK2Vr?=
+ =?utf-8?B?blFEUjBNdmlsZjRiVGFTNHhUd3BNNlN0ZHVXSUJQQUZ1a2pDcUtLeU5uWnp5?=
+ =?utf-8?B?NVF5UzUyRWJITjBPWjk2dUVrT3YrcTByeEZBV25ObmdUdGdkYythTGNXQ1BX?=
+ =?utf-8?B?Qjg3QmlJZmpWQ0lEakFPNE5RVHpSK0daYVNxT293aGhsSk9IV3lvbGkyOEJP?=
+ =?utf-8?B?eW0wTFI0Z0xJalR1eVRPMk94NkxiVmRTaXU4U3dRQm96WFBUMFFpR1VNRWlN?=
+ =?utf-8?B?VVJIWDZOV1pISklNdTJ6YXpOV2wycUx4YlJidnpzUUYycDRXL3o3QWEvSkZU?=
+ =?utf-8?B?aXZZVG5yM1VhOWpCZk1VYUtaNkROMHFHbjliUllYSlpkZzd3Y0lxcDgzVEkr?=
+ =?utf-8?B?TjZZVFZGWGZQS1NkWWlRV2J1OHJrL28xWnlZbmJzUThhS2lONnB0QVVvSkRX?=
+ =?utf-8?B?TDhuSmdUL1VUTy93elF0MlVLRU1hMEMwUmlwNjM3K0J3Vmp1TGlQWXRNdkRD?=
+ =?utf-8?B?UkJCVHVMb0R2VUV3R2sva2VHbXFzeTlNRnAxaFhSZzhDSlRGUFRWREhPcDNr?=
+ =?utf-8?B?MXV3S3ljT0J2K3ZBOStQNGpMQzFHSkVZTzJvVXowNVFDNzNiNkdFTkhnWHdH?=
+ =?utf-8?B?VGhZTGh1S3N2ZTNzL1JGNUFDa0lOWjM0NnhyaTMyTlM0Zys3dGcwL2pFeEdL?=
+ =?utf-8?B?Sm42WmFYRkhqU3p1WG96ajBYUVIxcFA5R2xkWXVUbW84RmZ6ZFg3ak1pWmZU?=
+ =?utf-8?B?T3ZNM1lIQ0ZKUExSdnNKUnBVdE95b0FVYlZRL1J0NVBkQldQdXBwdkE0dUxv?=
+ =?utf-8?B?cmxQeUkyY2VKR1hKUlpRaE5vanN1TzIxbGlNakovbmp3VDFCYlhkVjRoR0xP?=
+ =?utf-8?B?V1pIMmJGak5sNHhWTWt3ZkN0YkgrRTdaN3g1L3ZReTM3c3FTdUNSWG9mc0s0?=
+ =?utf-8?B?SFRlNWFtcTZSK1ZzUVhpKzIxcDFvcFB5RnhHRHl3a2c5Rkw0MWlPQ0dDVkZY?=
+ =?utf-8?B?MG5CU0x1QW9aRHJSUWJJbEM3aStLYy9CSTJxVEs4OWdCb05SbXRDTWdvVjlT?=
+ =?utf-8?B?bnFPM3MrazJoVXg0WjdzRnBtWTRrWGVnek1rM3ZOT2FoRDd6REhPaEVXdzA0?=
+ =?utf-8?B?bzZCb2JSVTZwSnNhOEhUUHk3VzArWFdFTW5QNVJIVWJ4eUpxTDEyMTk3VE9Y?=
+ =?utf-8?B?NDhWbmlzSTd1Tld2WUxWRCt4R3JBaDJRNjlySGM5RXBQL0tLU2ZEWXdmYWsr?=
+ =?utf-8?B?SVR3WnRSZmxRWUV3MlN4dit2TE0yem11ZG0xTk8wL0ZGN0RaYTkyZ1ZHYnVJ?=
+ =?utf-8?B?SkJQL3dleDE2NXZGa3g5eEdxYXlMSWdKWE4xWWJkbE1qZXRnWkxCcUgyWUQ2?=
+ =?utf-8?B?QWhsU2dWZmt5eTd1Z290Zm0xZG1ZSXVEUXFEdDBZUTJLYlVsRERBS2RMNTlL?=
+ =?utf-8?B?L1NpTGxjZm9VcSs4dFJUVWU5RW1jYWxjR3lzbWh6Sm5DaFdyL1k4UFVxdll2?=
+ =?utf-8?B?VG1qeFFVWTZYSFlVMjlXMll4VHF6VVI2akRXOTBEYkp1MGN0a1J4T08rSHNO?=
+ =?utf-8?B?c1poajNYK01oYUpjR0VSOVRScTRsVWRJeHFKQWRsQkpoTnVyeTVGaUMzSlk0?=
+ =?utf-8?B?OXVSSGdscDYyd0tQR1BFSWtYUitNNlZ3cDl3ZUZzaXV0dVRnakQ5U1ZPTGRH?=
+ =?utf-8?B?UzEzRTRrWGcrNmVtQ1QxcStYeVo3TnozQ0Rtc1ZNZjNpS3BQSzRkWXR1MWFn?=
+ =?utf-8?Q?XDCpxQwC3Gdw0J4+PtIqaQFrnIvlmf1dM/WNzRMrZu4Ee?=
+X-MS-Exchange-AntiSpam-MessageData-1: 14LosvDujFHL6XrPfgdoDn3eaFviPEtDrJ4=
+X-OriginatorOrg: virtuozzo.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4c141aba-acc1-46eb-8686-08de42998021
+X-MS-Exchange-CrossTenant-AuthSource: DU0PR08MB9003.eurprd08.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 24 Dec 2025 03:06:58.2962
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 0bc7f26d-0264-416e-a6fc-8352af79c58f
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 93zfvbtML4pwnvBH8M1/qniJIaWe8hRsftQBTgXYrGp9WZoO21w4S9GFDp6zG9909dwkbzJEZjNndlRQbuBxOqwpXSDEiRWUiu8UZ7g9FRs=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS4PR08MB7654
 
+On 12/24/25 01:29, Michal Koutný wrote:
+> On Tue, Dec 23, 2025 at 06:20:06PM +0800, Pavel Tikhomirov <ptikhomirov@virtuozzo.com> wrote:
+>> First allows freezing cgroups with kthreads inside, we still won't
+>> freeze kthreads, we still ignore them, but at the same time we allow
+>> cgroup to report frozen when all other non-kthread tasks are frozen.
+> 
+> kthreads in non-root cgroups are kind of an antipattern.
+> For which kthreads you would like this change? (See for instance the
+> commit d96c77bd4eeba ("KVM: x86: switch hugepage recovery thread to
+> vhost_task") as a possible refactoring of such threads.)
 
+To explain our usecase, I would need to dive a bit into how Virtuozzo containers (OpenVZ) on our custom Virtuozzo kernel works.
 
-On 2025/12/24 5:19, Bing Jiao wrote:
-> Fix two bugs in demote_folio_list() and can_demote() due to incorrect
-> demotion target checks in reclaim/demotion.
-> 
-> Commit 7d709f49babc ("vmscan,cgroup: apply mems_effective to reclaim")
-> introduces the cpuset.mems_effective check and applies it to
-> can_demote(). However:
-> 
->   1. It does not apply this check in demote_folio_list(), which leads
->      to situations where pages are demoted to nodes that are
->      explicitly excluded from the task's cpuset.mems.
-> 
->   2. It checks only the nodes in the immediate next demotion hierarchy
->      and does not check all allowed demotion targets in can_demote().
->      This can cause pages to never be demoted if the nodes in the next
->      demotion hierarchy are not set in mems_effective.
-> 
-> These bugs break resource isolation provided by cpuset.mems.
-> This is visible from userspace because pages can either fail to be
-> demoted entirely or are demoted to nodes that are not allowed
-> in multi-tier memory systems.
-> 
-> To address these bugs, update cpuset_node_allowed() and
-> mem_cgroup_node_allowed() to return effective_mems, allowing directly
-> logic-and operation against demotion targets. Also update can_demote()
-> and demote_folio_list() accordingly.
-> 
-> Reproduct Bug 1:
->   Assume a system with 4 nodes, where nodes 0-1 are top-tier and
->   nodes 2-3 are far-tier memory. All nodes have equal capacity.
-> 
->   Test script:
->     echo 1 > /sys/kernel/mm/numa/demotion_enabled
->     mkdir /sys/fs/cgroup/test
->     echo +cpuset > /sys/fs/cgroup/cgroup.subtree_control
->     echo "0-2" > /sys/fs/cgroup/test/cpuset.mems
->     echo $$ > /sys/fs/cgroup/test/cgroup.procs
->     swapoff -a
->     # Expectation: Should respect node 0-2 limit.
->     # Observation: Node 3 shows significant allocation (MemFree drops)
->     stress-ng --oomable --vm 1 --vm-bytes 150% --mbind 0,1
-> 
-> Reproduct Bug 2:
->   Assume a system with 6 nodes, where nodes 0-2 are top-tier,
->   node 3 is a far-tier node, and nodes 4-5 are the farthest-tier nodes.
->   All nodes have equal capacity.
-> 
->   Test script:
->     echo 1 > /sys/kernel/mm/numa/demotion_enabled
->     mkdir /sys/fs/cgroup/test
->     echo +cpuset > /sys/fs/cgroup/cgroup.subtree_control
->     echo "0-2,4-5" > /sys/fs/cgroup/test/cpuset.mems
->     echo $$ > /sys/fs/cgroup/test/cgroup.procs
->     swapoff -a
->     # Expectation: Pages are demoted to Nodes 4-5
->     # Observation: No pages are demoted before oom.
->     stress-ng --oomable --vm 1 --vm-bytes 150% --mbind 0,1,2
-> 
-> Fixes: 7d709f49babc ("vmscan,cgroup: apply mems_effective to reclaim")
-> Cc: <stable@vger.kernel.org>
-> Signed-off-by: Bing Jiao <bingjiao@google.com>
-> ---
->  include/linux/cpuset.h     |  6 +++---
->  include/linux/memcontrol.h |  6 +++---
->  kernel/cgroup/cpuset.c     | 16 ++++++++--------
->  mm/memcontrol.c            |  6 ++++--
->  mm/vmscan.c                | 35 +++++++++++++++++++++++------------
->  5 files changed, 41 insertions(+), 28 deletions(-)
-> 
-> diff --git a/include/linux/cpuset.h b/include/linux/cpuset.h
-> index a98d3330385c..eb358c3aa9c0 100644
-> --- a/include/linux/cpuset.h
-> +++ b/include/linux/cpuset.h
-> @@ -174,7 +174,7 @@ static inline void set_mems_allowed(nodemask_t nodemask)
->  	task_unlock(current);
->  }
-> 
-> -extern bool cpuset_node_allowed(struct cgroup *cgroup, int nid);
-> +extern nodemask_t cpuset_node_get_allowed(struct cgroup *cgroup);
->  #else /* !CONFIG_CPUSETS */
-> 
->  static inline bool cpusets_enabled(void) { return false; }
-> @@ -301,9 +301,9 @@ static inline bool read_mems_allowed_retry(unsigned int seq)
->  	return false;
->  }
-> 
-> -static inline bool cpuset_node_allowed(struct cgroup *cgroup, int nid)
-> +static inline nodemask_t cpuset_node_get_allowed(struct cgroup *cgroup)
->  {
-> -	return true;
-> +	return node_possible_map;
->  }
->  #endif /* !CONFIG_CPUSETS */
-> 
-> diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-> index fd400082313a..f9463d853bba 100644
-> --- a/include/linux/memcontrol.h
-> +++ b/include/linux/memcontrol.h
-> @@ -1740,7 +1740,7 @@ static inline void count_objcg_events(struct obj_cgroup *objcg,
->  	rcu_read_unlock();
->  }
-> 
-> -bool mem_cgroup_node_allowed(struct mem_cgroup *memcg, int nid);
-> +nodemask_t mem_cgroup_node_get_allowed(struct mem_cgroup *memcg);
-> 
->  void mem_cgroup_show_protected_memory(struct mem_cgroup *memcg);
-> 
-> @@ -1811,9 +1811,9 @@ static inline ino_t page_cgroup_ino(struct page *page)
->  	return 0;
->  }
-> 
-> -static inline bool mem_cgroup_node_allowed(struct mem_cgroup *memcg, int nid)
-> +static inline nodemask_t mem_cgroup_node_get_allowed(struct mem_cgroup *memcg)
->  {
-> -	return true;
-> +	return node_possible_map;
->  }
-> 
->  static inline void mem_cgroup_show_protected_memory(struct mem_cgroup *memcg)
-> diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
-> index 6e6eb09b8db6..abb9afb64205 100644
-> --- a/kernel/cgroup/cpuset.c
-> +++ b/kernel/cgroup/cpuset.c
-> @@ -4416,23 +4416,23 @@ bool cpuset_current_node_allowed(int node, gfp_t gfp_mask)
->  	return allowed;
->  }
-> 
-> -bool cpuset_node_allowed(struct cgroup *cgroup, int nid)
-> +nodemask_t cpuset_node_get_allowed(struct cgroup *cgroup)
->  {
+In our case we have two custom kernel threads for each container: "kthreadd" and "umh".
 
-Could we define it as:
+https://bitbucket.org/openvz/vzkernel/src/662c0172a9d4aecf52dbaea4f903ccc801b569b2/kernel/ve/ve.c#lines-481
+https://bitbucket.org/openvz/vzkernel/src/662c0172a9d4aecf52dbaea4f903ccc801b569b2/kernel/ve/ve.c#lines-581
 
-void cpuset_node_get_allowed(struct cgroup *cgroup, nodemask_t *node)
+The "kthreadd" is used to allow creating per-container kthreads, through it we create kthreads for "umh" (explained below) and to create sunrpc svc kthreads in container.
 
-to align with the naming style of node_get_allowed_targets?
+https://bitbucket.org/openvz/vzkernel/src/662c0172a9d4aecf52dbaea4f903ccc801b569b2/net/sunrpc/svc.c#lines-815
 
-> +	nodemask_t nodes = node_possible_map;
->  	struct cgroup_subsys_state *css;
->  	struct cpuset *cs;
-> -	bool allowed;
-> 
->  	/*
->  	 * In v1, mem_cgroup and cpuset are unlikely in the same hierarchy
->  	 * and mems_allowed is likely to be empty even if we could get to it,
-> -	 * so return true to avoid taking a global lock on the empty check.
-> +	 * so return directly to avoid taking a global lock on the empty check.
->  	 */
-> -	if (!cpuset_v2())
-> -		return true;
-> +	if (!cgroup || !cpuset_v2())
-> +		return nodes;
-> 
->  	css = cgroup_get_e_css(cgroup, &cpuset_cgrp_subsys);
->  	if (!css)
-> -		return true;
-> +		return nodes;
-> 
->  	/*
->  	 * Normally, accessing effective_mems would require the cpuset_mutex
-> @@ -4447,9 +4447,9 @@ bool cpuset_node_allowed(struct cgroup *cgroup, int nid)
->  	 * cannot make strong isolation guarantees, so this is acceptable.
->  	 */
->  	cs = container_of(css, struct cpuset, css);
-> -	allowed = node_isset(nid, cs->effective_mems);
-> +	nodes_copy(nodes, cs->effective_mems);
->  	css_put(css);
-> -	return allowed;
-> +	return nodes;
->  }
-> 
->  /**
-> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> index 75fc22a33b28..c2f4ac50d5c2 100644
-> --- a/mm/memcontrol.c
-> +++ b/mm/memcontrol.c
-> @@ -5597,9 +5597,11 @@ subsys_initcall(mem_cgroup_swap_init);
-> 
->  #endif /* CONFIG_SWAP */
-> 
-> -bool mem_cgroup_node_allowed(struct mem_cgroup *memcg, int nid)
-> +nodemask_t mem_cgroup_node_get_allowed(struct mem_cgroup *memcg)
+The "umh" is used to be able to run userspace commands from kernel in container, e.g.: we use it to virtualize (run in ct) coredump collection, nfs upcall, and cgroup-v1 release-agent.
 
-void mem_cgroup_node_get_allowed(struct mem_cgroup *memcg, nodemask_t *node)
+https://bitbucket.org/openvz/vzkernel/src/662c0172a9d4aecf52dbaea4f903ccc801b569b2/fs/coredump.c#lines-640
+https://bitbucket.org/openvz/vzkernel/src/662c0172a9d4aecf52dbaea4f903ccc801b569b2/fs/nfsd/nfs4recover.c#lines-1849
+https://bitbucket.org/openvz/vzkernel/src/662c0172a9d4aecf52dbaea4f903ccc801b569b2/kernel/cgroup/cgroup-v1.c#lines-930
 
->  {
-> -	return memcg ? cpuset_node_allowed(memcg->css.cgroup, nid) : true;
-> +	if (memcg)
-> +		return cpuset_node_get_allowed(memcg->css.cgroup);
-> +	return node_possible_map;
->  }
-> 
->  void mem_cgroup_show_protected_memory(struct mem_cgroup *memcg)
-> diff --git a/mm/vmscan.c b/mm/vmscan.c
-> index a4b308a2f9ad..711a04baf258 100644
-> --- a/mm/vmscan.c
-> +++ b/mm/vmscan.c
-> @@ -345,18 +345,24 @@ static bool can_demote(int nid, struct scan_control *sc,
->  		       struct mem_cgroup *memcg)
->  {
->  	int demotion_nid;
-> +	struct pglist_data *pgdat = NODE_DATA(nid);
-> +	nodemask_t allowed_mask, allowed_mems;
-> 
-> -	if (!numa_demotion_enabled)
-> +	if (!pgdat || !numa_demotion_enabled)
->  		return false;
->  	if (sc && sc->no_demotion)
->  		return false;
-> 
-> -	demotion_nid = next_demotion_node(nid);
-> -	if (demotion_nid == NUMA_NO_NODE)
-> +	node_get_allowed_targets(pgdat, &allowed_mask);
-> +	if (nodes_empty(allowed_mask))
-> +		return false;
-> +
-> +	allowed_mems = mem_cgroup_node_get_allowed(memcg);
-> +	nodes_and(allowed_mask, allowed_mask, allowed_mems);
-> +	if (nodes_empty(allowed_mask))
->  		return false;
-> 
-	node_get_allowed_targets(pgdat, &allowed_mask);
-	mem_cgroup_node_get_allowed(memcg, allowed_mems);
-	if (!nodes_intersects(allowed_mask, allowed_mems))
-		return false;
+And we really want those threads be restricted by the same cgroups as the container.
 
-	Would it look better?
+The commit you've mentioned is an interesting one, we can try to switch our custom kthreads to "vhost_task" similar to what kvm did. It's not obvious if it will fly until we try =)
 
-> -	/* If demotion node isn't in the cgroup's mems_allowed, fall back */
-> -	if (mem_cgroup_node_allowed(memcg, demotion_nid)) {
-> +	for_each_node_mask(demotion_nid, allowed_mask) {
->  		int z;
->  		struct zone *zone;
->  		struct pglist_data *pgdat = NODE_DATA(demotion_nid);
-> @@ -1029,11 +1035,12 @@ static struct folio *alloc_demote_folio(struct folio *src,
->   * Folios which are not demoted are left on @demote_folios.
->   */
->  static unsigned int demote_folio_list(struct list_head *demote_folios,
-> -				     struct pglist_data *pgdat)
-> +				      struct pglist_data *pgdat,
-> +				      struct mem_cgroup *memcg)
->  {
->  	int target_nid = next_demotion_node(pgdat->node_id);
->  	unsigned int nr_succeeded;
-> -	nodemask_t allowed_mask;
-> +	nodemask_t allowed_mask, allowed_mems;
 > 
->  	struct migration_target_control mtc = {
->  		/*
-> @@ -1043,7 +1050,6 @@ static unsigned int demote_folio_list(struct list_head *demote_folios,
->  		 */
->  		.gfp_mask = (GFP_HIGHUSER_MOVABLE & ~__GFP_RECLAIM) |
->  			__GFP_NOMEMALLOC | GFP_NOWAIT,
-> -		.nid = target_nid,
->  		.nmask = &allowed_mask,
->  		.reason = MR_DEMOTION,
->  	};
-> @@ -1051,10 +1057,15 @@ static unsigned int demote_folio_list(struct list_head *demote_folios,
->  	if (list_empty(demote_folios))
->  		return 0;
+>> Second patch adds information into dmesg to identify processes which
+>> prevent cgroup from being frozen or just don't allow it to freeze fast
+>> enough.
 > 
-> -	if (target_nid == NUMA_NO_NODE)
-> -		return 0;
-> -
->  	node_get_allowed_targets(pgdat, &allowed_mask);
-> +	allowed_mems = mem_cgroup_node_get_allowed(memcg);
-> +	nodes_and(allowed_mask, allowed_mask, allowed_mems);
-> +	if (nodes_empty(allowed_mask))
-> +		return false;
-> +
-> +	if (target_nid == NUMA_NO_NODE || !node_isset(target_nid, allowed_mask))
-> +		target_nid = node_random(&allowed_mask);
-> +	mtc.nid = target_nid;
->
->  	/* Demotion ignores all cpuset and mempolicy settings */
->  	migrate_pages(demote_folios, alloc_demote_folio, NULL,
-> @@ -1576,7 +1587,7 @@ static unsigned int shrink_folio_list(struct list_head *folio_list,
->  	/* 'folio_list' is always empty here */
+> I can see how this can be useful for debugging, however, it resembles
+> the existing CONFIG_DETECT_HUNG_TASK and its
+> kernel.hung_task_timeout_secs. Could that be used instead?
+
+The hung_task_timeout_secs detects the hang task only if it's in D state and didn't schedule, but it's not the only case. For instance the module I used to test the problem with, is not detected by this mechanism (as it schedules) (https://github.com/Snorch/proc-hang-module). 
+
+Previously we saw tasks sleeping in nfs, presumably waiting for reply from server, which prevented freeze, and though hardlockup/softlockup/hang-task warnings were enabled they didn't trigger. Also one might want a separate timeout for freezer than for general hang cases (general hang timeouts should probably be higher). 
+
 > 
->  	/* Migrate folios selected for demotion */
-> -	nr_demoted = demote_folio_list(&demote_folios, pgdat);
-> +	nr_demoted = demote_folio_list(&demote_folios, pgdat, memcg);
->  	nr_reclaimed += nr_demoted;
->  	stat->nr_demoted += nr_demoted;
->  	/* Folios that could not be demoted are still in @demote_folios */
-> --
-> 2.52.0.358.g0dd7633a29-goog
+> Thanks,
+> Michal
 
 -- 
-Best regards,
-Ridong
+Best regards, Pavel Tikhomirov
+Senior Software Developer, Virtuozzo.
 
 
