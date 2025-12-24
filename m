@@ -1,44 +1,44 @@
-Return-Path: <cgroups+bounces-12658-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-12659-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
-	by mail.lfdr.de (Postfix) with ESMTPS id 81CF7CDC633
-	for <lists+cgroups@lfdr.de>; Wed, 24 Dec 2025 14:47:21 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4D5F0CDC65D
+	for <lists+cgroups@lfdr.de>; Wed, 24 Dec 2025 14:48:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id DEB02303D7E5
-	for <lists+cgroups@lfdr.de>; Wed, 24 Dec 2025 13:46:27 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 96AEB302F6BC
+	for <lists+cgroups@lfdr.de>; Wed, 24 Dec 2025 13:47:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E675233B974;
-	Wed, 24 Dec 2025 13:46:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1F5A233C50B;
+	Wed, 24 Dec 2025 13:46:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="htqHmciL"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="h1pwtgfW"
 X-Original-To: cgroups@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 970E023C503;
-	Wed, 24 Dec 2025 13:46:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C439E33B6E6;
+	Wed, 24 Dec 2025 13:46:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1766583975; cv=none; b=p9FvPK8arrLKpVmIdF7H1Uw+e7LXo6wH5NQbbG1k0tUXvQLMRgP3d/g9WCMcA6UyKYG8UPkS1OOqw/Rc174dBfcEeAR0mi1rw4RjqRo6LAejEJQqN+rBKZv36ToRmQ7CmS2sh4F3/VmYEV6V9K9NWfGowM5zXooxhF+kxMp1ur8=
+	t=1766583984; cv=none; b=UEGXtm0plpwYZBW389o70Z4I581J6ffeeSCL0PFp2m77lo2XJL1VcZupFemfGTWlgySPgs+CkcG2srs+GlW025UswU5MRZNI1fnZ+t+577865RD+Wp3LFX3kOxDgjPTy0Wzm3PW9F7lkUgYl/Tw/2kPsbbNDbVWkn7N+GymTVXY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1766583975; c=relaxed/simple;
-	bh=oYIDljVusPRyc5ygPH/YiE7a9Fhd9e2pU1qivro5W4A=;
+	s=arc-20240116; t=1766583984; c=relaxed/simple;
+	bh=++rdiwH6xC2TpgAmAKSO1o1OoJV81/TbDXeB42N/L1I=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=L0sAsuMOMG+eUFePAimEBSWI+txm24meEKxjoS0NXAouafRd+gXvP/FuJnqA2Bps07W+Na4QoKFdxNsGVK0P/PVeaGj5EGFvAAHmC91uQrobHvVUv0ig+MZd+6TJ/dosVVgJm165equ+/7X6OXj8I+1RXZhkQkopSB/985S0TNE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=htqHmciL; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6704AC116D0;
-	Wed, 24 Dec 2025 13:46:07 +0000 (UTC)
+	 MIME-Version; b=AEaeXL8f9xRym+8IVhhMr7rXOSPZROVuIV7bE/eQTNSoIxChDslAqXOe9NLuWQg9JBoWc2O4GxuMSHZHoXfhEogf/2gydYm1lbus3AwVbgifW++9k8ujFH4PvLZAkikinlByETVxGSuPGqe+MHONucxZEyji0zLHmr++JETXedo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=h1pwtgfW; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E4A0CC4CEFB;
+	Wed, 24 Dec 2025 13:46:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1766583975;
-	bh=oYIDljVusPRyc5ygPH/YiE7a9Fhd9e2pU1qivro5W4A=;
+	s=k20201202; t=1766583984;
+	bh=++rdiwH6xC2TpgAmAKSO1o1OoJV81/TbDXeB42N/L1I=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=htqHmciLhDIlwaAafpUU2VX1XDfcCQEG/G/wYBGqRb079YKOzQ4bLKuDSO20ILSbT
-	 x2ty2FrkhGcjZGmNhcNmU/XB8AIWGPf/OFBLStI85bMZdQFAmzFShHb3qUa+DBeXsL
-	 5uUPDkZhhIXRn+GO1UNkvMkdEkkexiOP29/cwdP3Gid83GGZU3YG/Q0/T9P1LqjAKU
-	 F1HAzDo2rY5jq99eUCywOkGr05yck1Ixww1LbBMc0+QCaK7qNicMaB53+WM1SMi1LB
-	 MZmedPl3zj6CvYqKtcScMTcR2Amms6hosgoprArwalGEXKya77EoHgIlGEufV9r9EB
-	 qCBxAiEKpDJQQ==
+	b=h1pwtgfWjJgC7zGWZZU2c+mF7L5Jrz0wfTJuGCYwL4mpOJx7hELqPe6VEfzwbuEJw
+	 PCEvzWe8eCvM+mT+X3JngUiSWewYLizBYnhUb7KbLkQtaH7HdJzJziUgG3VfHR/EQP
+	 DnDiYF6TE/Lo3AnXyPW5ODx+NMqOqINWvofxjswLQwc2UGMSUmnYKES6yEFOB2frlX
+	 CAOPA02Z6LzF4opDsbisvISWRdNKvQcGCFz2ocH2oilUmdSBAv2nQZd2s7aay5cztU
+	 g7Iw+iO9OaV+nZ49/UymEdhJLWHGvM2IPlBVIfnSMG5p0ntGr+xx+W99kthSDV/ilF
+	 e0FVHUiY0o2vA==
 From: Frederic Weisbecker <frederic@kernel.org>
 To: LKML <linux-kernel@vger.kernel.org>
 Cc: Frederic Weisbecker <frederic@kernel.org>,
@@ -78,9 +78,9 @@ Cc: Frederic Weisbecker <frederic@kernel.org>,
 	linux-mm@kvack.org,
 	linux-pci@vger.kernel.org,
 	netdev@vger.kernel.org
-Subject: [PATCH 05/33] sched/isolation: Save boot defined domain flags
-Date: Wed, 24 Dec 2025 14:44:52 +0100
-Message-ID: <20251224134520.33231-6-frederic@kernel.org>
+Subject: [PATCH 06/33] cpuset: Convert boot_hk_cpus to use HK_TYPE_DOMAIN_BOOT
+Date: Wed, 24 Dec 2025 14:44:53 +0100
+Message-ID: <20251224134520.33231-7-frederic@kernel.org>
 X-Mailer: git-send-email 2.51.1
 In-Reply-To: <20251224134520.33231-1-frederic@kernel.org>
 References: <20251224134520.33231-1-frederic@kernel.org>
@@ -92,69 +92,68 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-HK_TYPE_DOMAIN will soon integrate not only boot defined isolcpus= CPUs
-but also cpuset isolated partitions.
-
-Housekeeping still needs a way to record what was initially passed
-to isolcpus= in order to keep these CPUs isolated after a cpuset
-isolated partition is modified or destroyed while containing some of
-them.
-
-Create a new HK_TYPE_DOMAIN_BOOT to keep track of those.
+boot_hk_cpus is an ad-hoc copy of HK_TYPE_DOMAIN_BOOT. Remove it and use
+the official version.
 
 Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
 Reviewed-by: Phil Auld <pauld@redhat.com>
+Reviewed-by: Chen Ridong <chenridong@huawei.com>
 ---
- include/linux/sched/isolation.h | 4 ++++
- kernel/sched/isolation.c        | 5 +++--
- 2 files changed, 7 insertions(+), 2 deletions(-)
+ kernel/cgroup/cpuset.c | 22 +++++++---------------
+ 1 file changed, 7 insertions(+), 15 deletions(-)
 
-diff --git a/include/linux/sched/isolation.h b/include/linux/sched/isolation.h
-index d8501f4709b5..109a2149e21a 100644
---- a/include/linux/sched/isolation.h
-+++ b/include/linux/sched/isolation.h
-@@ -7,8 +7,12 @@
- #include <linux/tick.h>
+diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
+index 6e6eb09b8db6..3afa72f8d579 100644
+--- a/kernel/cgroup/cpuset.c
++++ b/kernel/cgroup/cpuset.c
+@@ -88,12 +88,6 @@ static cpumask_var_t	isolated_cpus;
+  */
+ static bool isolated_cpus_updating;
  
- enum hk_type {
-+	/* Revert of boot-time isolcpus= argument */
-+	HK_TYPE_DOMAIN_BOOT,
- 	HK_TYPE_DOMAIN,
-+	/* Revert of boot-time isolcpus=managed_irq argument */
- 	HK_TYPE_MANAGED_IRQ,
-+	/* Revert of boot-time nohz_full= or isolcpus=nohz arguments */
- 	HK_TYPE_KERNEL_NOISE,
- 	HK_TYPE_MAX,
+-/*
+- * Housekeeping (HK_TYPE_DOMAIN) CPUs at boot
+- */
+-static cpumask_var_t	boot_hk_cpus;
+-static bool		have_boot_isolcpus;
+-
+ /*
+  * A flag to force sched domain rebuild at the end of an operation.
+  * It can be set in
+@@ -1453,15 +1447,16 @@ static bool isolated_cpus_can_update(struct cpumask *add_cpus,
+  * @new_cpus: cpu mask
+  * Return: true if there is conflict, false otherwise
+  *
+- * CPUs outside of boot_hk_cpus, if defined, can only be used in an
++ * CPUs outside of HK_TYPE_DOMAIN_BOOT, if defined, can only be used in an
+  * isolated partition.
+  */
+ static bool prstate_housekeeping_conflict(int prstate, struct cpumask *new_cpus)
+ {
+-	if (!have_boot_isolcpus)
++	if (!housekeeping_enabled(HK_TYPE_DOMAIN_BOOT))
+ 		return false;
  
-diff --git a/kernel/sched/isolation.c b/kernel/sched/isolation.c
-index 3ad0d6df6a0a..11a623fa6320 100644
---- a/kernel/sched/isolation.c
-+++ b/kernel/sched/isolation.c
-@@ -11,6 +11,7 @@
- #include "sched.h"
+-	if ((prstate != PRS_ISOLATED) && !cpumask_subset(new_cpus, boot_hk_cpus))
++	if ((prstate != PRS_ISOLATED) &&
++	    !cpumask_subset(new_cpus, housekeeping_cpumask(HK_TYPE_DOMAIN_BOOT)))
+ 		return true;
  
- enum hk_flags {
-+	HK_FLAG_DOMAIN_BOOT	= BIT(HK_TYPE_DOMAIN_BOOT),
- 	HK_FLAG_DOMAIN		= BIT(HK_TYPE_DOMAIN),
- 	HK_FLAG_MANAGED_IRQ	= BIT(HK_TYPE_MANAGED_IRQ),
- 	HK_FLAG_KERNEL_NOISE	= BIT(HK_TYPE_KERNEL_NOISE),
-@@ -239,7 +240,7 @@ static int __init housekeeping_isolcpus_setup(char *str)
+ 	return false;
+@@ -3892,12 +3887,9 @@ int __init cpuset_init(void)
  
- 		if (!strncmp(str, "domain,", 7)) {
- 			str += 7;
--			flags |= HK_FLAG_DOMAIN;
-+			flags |= HK_FLAG_DOMAIN | HK_FLAG_DOMAIN_BOOT;
- 			continue;
- 		}
+ 	BUG_ON(!alloc_cpumask_var(&cpus_attach, GFP_KERNEL));
  
-@@ -269,7 +270,7 @@ static int __init housekeeping_isolcpus_setup(char *str)
+-	have_boot_isolcpus = housekeeping_enabled(HK_TYPE_DOMAIN);
+-	if (have_boot_isolcpus) {
+-		BUG_ON(!alloc_cpumask_var(&boot_hk_cpus, GFP_KERNEL));
+-		cpumask_copy(boot_hk_cpus, housekeeping_cpumask(HK_TYPE_DOMAIN));
+-		cpumask_andnot(isolated_cpus, cpu_possible_mask, boot_hk_cpus);
+-	}
++	if (housekeeping_enabled(HK_TYPE_DOMAIN_BOOT))
++		cpumask_andnot(isolated_cpus, cpu_possible_mask,
++			       housekeeping_cpumask(HK_TYPE_DOMAIN_BOOT));
  
- 	/* Default behaviour for isolcpus without flags */
- 	if (!flags)
--		flags |= HK_FLAG_DOMAIN;
-+		flags |= HK_FLAG_DOMAIN | HK_FLAG_DOMAIN_BOOT;
- 
- 	return housekeeping_setup(str, flags);
+ 	return 0;
  }
 -- 
 2.51.1
