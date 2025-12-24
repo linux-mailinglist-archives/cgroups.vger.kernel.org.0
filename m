@@ -1,44 +1,44 @@
-Return-Path: <cgroups+bounces-12664-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-12665-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8CEE0CDC7A1
-	for <lists+cgroups@lfdr.de>; Wed, 24 Dec 2025 15:12:44 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id BED6FCDC7D1
+	for <lists+cgroups@lfdr.de>; Wed, 24 Dec 2025 15:16:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 754003033539
-	for <lists+cgroups@lfdr.de>; Wed, 24 Dec 2025 14:11:48 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id ED83630C7BB8
+	for <lists+cgroups@lfdr.de>; Wed, 24 Dec 2025 14:11:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6168E3469EF;
-	Wed, 24 Dec 2025 13:47:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A36A346E78;
+	Wed, 24 Dec 2025 13:47:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="C/dbWhdH"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rCRujogT"
 X-Original-To: cgroups@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0350C2F25F9;
-	Wed, 24 Dec 2025 13:47:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C04F8346E44;
+	Wed, 24 Dec 2025 13:47:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1766584027; cv=none; b=lV21RW0sTqh3QU+7zFcra7ZcshGJENdlwY6Zfz6X2ZmkQaJqBBaWRvOHIDqHpWXkCQ7poLa+mb/ik0ehzOfrpUMcAsjGSksY1VPAGWlbF1g1DCyl2hjbk6ZQeoVrTdz7VsM5guw0W49YNchoLI003DasL8OxmbkzDB2bcPNfUYg=
+	t=1766584035; cv=none; b=qLIC5V45FceCSUpHswR0sWy21JuiqWXaxl2Ys5XJq6C92fL91ukDdgR3BvzMZUR4CMJeryCtXGR4teDEGg8Wke90Ps6B0lnZISCSUF52vzRVnnbe+KO44FA3zBH7j/eHd2QdIfyLGgGc2S1W9C3b9IgKEX8vFtYXhFR6LfyM8dQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1766584027; c=relaxed/simple;
-	bh=JzP68aQ+gy8MFfasMpMI/FZxkM6LDJNtU1916wSaM4Y=;
+	s=arc-20240116; t=1766584035; c=relaxed/simple;
+	bh=v9YrBjmYoXXJcaUrCVcNEergJy1rpdNBj6w7mIgdodQ=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=DZ8FpUu223i3LPFpD9V1IH3kcNar5ccTsyHAgfyV2MkykRKz/jYA7AXRGtXD9FSMYwjRkuxJuOL/JClgjJeQgCSNh9hTMLiY3bVHNdX+1c3H/xcxdACB3ydDICERD4O5w2t+Z+fs/bRg2ZehXZ9v6aqkWAQRvwR+B9AD0VQUJRE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=C/dbWhdH; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BA9B1C4CEFB;
-	Wed, 24 Dec 2025 13:46:58 +0000 (UTC)
+	 MIME-Version:Content-Type; b=eyHR+cDs1wkjeLLqzB6s5PAYBLxxVqts+jG7FV1B0chSikfJYl5z1lwwLjD52ndnvc0//fKRXfYLQh29dtUzY8s4VUoYsUX5ELuMKHHDDJHojNP2N4gOSh3aU8Ikg94ktoveJwauYLBCIgoyW+bZqtS84ztQ5QWzbQFOsE4wmn0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rCRujogT; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 62463C2BC87;
+	Wed, 24 Dec 2025 13:47:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1766584026;
-	bh=JzP68aQ+gy8MFfasMpMI/FZxkM6LDJNtU1916wSaM4Y=;
+	s=k20201202; t=1766584035;
+	bh=v9YrBjmYoXXJcaUrCVcNEergJy1rpdNBj6w7mIgdodQ=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=C/dbWhdHD06GNCGUXvq8KKBGhS7inxWnFb2kSbUh+YG2q13AT4k8yht4myZBTW9LY
-	 WDNXUNliQ70+na3SSKyHYvY7V+6ql7BC6XxDdoV5W4AtjJjpZmEzdCB6ozDZLcJ1mO
-	 gkf8JXfPwIkBk2m8tnSRVdgS5D1AEfuQ7nOTkd7dG+VvdpNZE9eOvYiMUnXmndSnEW
-	 Ar2KWSbHVLdXXQ76iNPCUykCXEXhEgt7voYRxOiehdm+D0PHlUVoGdsVEoCg6uqKr7
-	 gBWMuK68gDVGd6Yv7k/d7GQeg7IrKw8iBmhMPVgLzWRs7C/R64o3e6O6yGXuXTAQsX
-	 KlJDOKZP2jBCQ==
+	b=rCRujogTY+v2D7yNqeA2I4GHSEB5IZ6gjsFGX3G5TJYOT0Mj3Q+Sv7+IKEY0+THzu
+	 7igwa4gdL1xbO5MZz7u8limrG0g71QKHp8uIT8ZKC6DpAC0YOAnM5rFSu74DOYB1Z4
+	 HWuzWKNk7uy1AFlVxMxxei5I5tZizBny1roqv6wsvmjcVEk7JfGl8keToChYW3XFhu
+	 EQiCKpdu5d0aTnR/goCjhSqylvapGUC/fA/wVCXQa8/N83XqgTKj+ec7CKs7WZPg/6
+	 GEg080xTpmoiZRH46UkLLvxB1SXoNxoC/21yOxb0ZK1gAG5CVY8JwfPnOmEfoRaEyU
+	 SdcaeUqbrgKcQ==
 From: Frederic Weisbecker <frederic@kernel.org>
 To: LKML <linux-kernel@vger.kernel.org>
 Cc: Frederic Weisbecker <frederic@kernel.org>,
@@ -78,9 +78,9 @@ Cc: Frederic Weisbecker <frederic@kernel.org>,
 	linux-mm@kvack.org,
 	linux-pci@vger.kernel.org,
 	netdev@vger.kernel.org
-Subject: [PATCH 11/33] cpu: Provide lockdep check for CPU hotplug lock write-held
-Date: Wed, 24 Dec 2025 14:44:58 +0100
-Message-ID: <20251224134520.33231-12-frederic@kernel.org>
+Subject: [PATCH 12/33] cpuset: Provide lockdep check for cpuset lock held
+Date: Wed, 24 Dec 2025 14:44:59 +0100
+Message-ID: <20251224134520.33231-13-frederic@kernel.org>
 X-Mailer: git-send-email 2.51.1
 In-Reply-To: <20251224134520.33231-1-frederic@kernel.org>
 References: <20251224134520.33231-1-frederic@kernel.org>
@@ -90,63 +90,54 @@ List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-cpuset modifies partitions, including isolated, while holding the cpu
-hotplug lock read-held.
+cpuset modifies partitions, including isolated, while holding the cpuset
+mutex.
 
-This means that write-holding the CPU hotplug lock is safe to
-synchronize against housekeeping cpumask changes.
+This means that holding the cpuset mutex is safe to synchronize against
+housekeeping cpumask changes.
 
 Provide a lockdep check to validate that.
 
 Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
 ---
- include/linux/cpuhplock.h    | 1 +
- include/linux/percpu-rwsem.h | 1 +
- kernel/cpu.c                 | 5 +++++
- 3 files changed, 7 insertions(+)
+ include/linux/cpuset.h | 2 ++
+ kernel/cgroup/cpuset.c | 7 +++++++
+ 2 files changed, 9 insertions(+)
 
-diff --git a/include/linux/cpuhplock.h b/include/linux/cpuhplock.h
-index f7aa20f62b87..286b3ab92e15 100644
---- a/include/linux/cpuhplock.h
-+++ b/include/linux/cpuhplock.h
-@@ -13,6 +13,7 @@
- struct device;
+diff --git a/include/linux/cpuset.h b/include/linux/cpuset.h
+index a98d3330385c..1c49ffd2ca9b 100644
+--- a/include/linux/cpuset.h
++++ b/include/linux/cpuset.h
+@@ -18,6 +18,8 @@
+ #include <linux/mmu_context.h>
+ #include <linux/jump_label.h>
  
- extern int lockdep_is_cpus_held(void);
-+extern int lockdep_is_cpus_write_held(void);
- 
- #ifdef CONFIG_HOTPLUG_CPU
- void cpus_write_lock(void);
-diff --git a/include/linux/percpu-rwsem.h b/include/linux/percpu-rwsem.h
-index 288f5235649a..c8cb010d655e 100644
---- a/include/linux/percpu-rwsem.h
-+++ b/include/linux/percpu-rwsem.h
-@@ -161,6 +161,7 @@ extern void percpu_free_rwsem(struct percpu_rw_semaphore *);
- 	__percpu_init_rwsem(sem, #sem, &rwsem_key);		\
- })
- 
-+#define percpu_rwsem_is_write_held(sem)	lockdep_is_held_type(sem, 0)
- #define percpu_rwsem_is_held(sem)	lockdep_is_held(sem)
- #define percpu_rwsem_assert_held(sem)	lockdep_assert_held(sem)
- 
-diff --git a/kernel/cpu.c b/kernel/cpu.c
-index 40b8496f47c5..01968a5c4a16 100644
---- a/kernel/cpu.c
-+++ b/kernel/cpu.c
-@@ -534,6 +534,11 @@ int lockdep_is_cpus_held(void)
- {
- 	return percpu_rwsem_is_held(&cpu_hotplug_lock);
- }
++extern bool lockdep_is_cpuset_held(void);
 +
-+int lockdep_is_cpus_write_held(void)
-+{
-+	return percpu_rwsem_is_write_held(&cpu_hotplug_lock);
-+}
- #endif
+ #ifdef CONFIG_CPUSETS
  
- static void lockdep_acquire_cpus_lock(void)
+ /*
+diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
+index 3afa72f8d579..5e2e3514c22e 100644
+--- a/kernel/cgroup/cpuset.c
++++ b/kernel/cgroup/cpuset.c
+@@ -283,6 +283,13 @@ void cpuset_full_unlock(void)
+ 	cpus_read_unlock();
+ }
+ 
++#ifdef CONFIG_LOCKDEP
++bool lockdep_is_cpuset_held(void)
++{
++	return lockdep_is_held(&cpuset_mutex);
++}
++#endif
++
+ static DEFINE_SPINLOCK(callback_lock);
+ 
+ void cpuset_callback_lock_irq(void)
 -- 
 2.51.1
 
