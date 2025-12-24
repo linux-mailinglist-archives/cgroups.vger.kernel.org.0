@@ -1,44 +1,44 @@
-Return-Path: <cgroups+bounces-12656-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-12657-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id D5C29CDC64E
-	for <lists+cgroups@lfdr.de>; Wed, 24 Dec 2025 14:48:09 +0100 (CET)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
+	by mail.lfdr.de (Postfix) with ESMTPS id C336FCDC624
+	for <lists+cgroups@lfdr.de>; Wed, 24 Dec 2025 14:46:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 4CB52309B495
-	for <lists+cgroups@lfdr.de>; Wed, 24 Dec 2025 13:45:59 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 3BB953035E43
+	for <lists+cgroups@lfdr.de>; Wed, 24 Dec 2025 13:46:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3029F1F3FED;
-	Wed, 24 Dec 2025 13:45:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F09B33385A5;
+	Wed, 24 Dec 2025 13:46:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="F/Tyv4Yz"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="evUDJBdS"
 X-Original-To: cgroups@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B93732DEA78;
-	Wed, 24 Dec 2025 13:45:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 76D0C32FA38;
+	Wed, 24 Dec 2025 13:46:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1766583957; cv=none; b=RSQbjsz/hg9jGySDcwdB4rkZkj1r4rf3j5Eo7poqMzvMSmHrCDfm+SD2ZqfSRPJHC0MuytTzidpdcWLepOPXAs1IrL8MPrugCinANeBBYh8G6NlZ9H50YtS4M+Yq07LwzbQ+pFcoQDJ3bFozzpATepKaJNcyQ9kHe3HdlGQ+yWE=
+	t=1766583967; cv=none; b=A/3T/YQDNJH3oPYve4xy12WFUtEdfmuaUzQ29jdOneeRB/hCTB3C6+yrBL5RV8ZzYx1XnFSE/DI4yjX9pdgiratz4NolJyaFZ+lWFPeWO+gJfbGuhEl/kIBsDNLokSUqjRRYP2uI80ifFI/FdQu4B0XYch58/P1lgomnImj+hOY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1766583957; c=relaxed/simple;
-	bh=7CktjiyIthVdYHa9fRih51rkJO049RvxC4k3gxcrSfU=;
+	s=arc-20240116; t=1766583967; c=relaxed/simple;
+	bh=gBHkj0y4jQxeMV2qzbEciSScfrXq1yZennkNx/2Itiw=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=f/i3nFYs1GS9aPEupnkadLVfCsuojO3VJ8t2wxYE/xSMU5ZiAggEcmvZd5Q0Ms5ifPX4Ol+wSOdiqZnJvY1onlWRbBpJGIsEAC7XbnbhyoMybXlbllN+QsVvPjjjnqB271V+lNXTZU0EdOcZhCOGrr4IiX3oYzL+puvWjVmfGxE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=F/Tyv4Yz; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7455FC116D0;
-	Wed, 24 Dec 2025 13:45:49 +0000 (UTC)
+	 MIME-Version; b=r5uJGRXP4353so5+YPRFJxGryN/cmycpuRE85ZGVWX3gJXicnBBQbHWxRWRBPIKMyYsP5NJDO/ZyhxpxGiTRjUY2IeHzD4ERSk04hNceee7fLrd2Z/2XUT7DPj3cCOUsfwO61qsiOTFD8lJoUBBjUl6Mvh56F2vInqyxwEWrD+k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=evUDJBdS; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 17469C4CEFB;
+	Wed, 24 Dec 2025 13:45:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1766583957;
-	bh=7CktjiyIthVdYHa9fRih51rkJO049RvxC4k3gxcrSfU=;
+	s=k20201202; t=1766583967;
+	bh=gBHkj0y4jQxeMV2qzbEciSScfrXq1yZennkNx/2Itiw=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=F/Tyv4YzP+plPQJKaSLuPEMdFxw3ZtENKHh2pjVToOk5227AiH+ZQI5yPwMVVD29C
-	 kLkFDorQyePgLdHfXM0f/iz+TV4NjaoHCn4ZxTLpmFguw+wHVycblRu+B3MS9Ot8SR
-	 RxgrwTFoKKCTIq/uKNz0JzweWZ1NzoPKFTzSEQvP/JFoQ9mMXKYri+Luvtu9TzJoNz
-	 QbVoDOVhzOZcUdNZVVJTsplPVblFi4XhnJmLIOi8fx3nmRj0w47J+4wn6IY+1U+qOX
-	 Ce3yTydWrvfVzC3nbZRvbYjyZnPWPe7QQKRyBio79sst5IhAMh4/7ipJNG75xSpb+d
-	 cl5g99p2tk0Ug==
+	b=evUDJBdSDfWTSettVdnrBmEWuArMIbMTOqJKbYP3p9elzByKiCT7UXNvzG/XZrMOj
+	 BA9LFmcovhu6mXlJ60rnaVM8FmAA7/x9xbspH5+9InXVw2X7s7ugla6lGwjCX4FfcJ
+	 JC2v9n+hQov6cJNLR2BVz5QIH/VJCx1TFceMK/mt3xc7TDmk+CCAqBDdJv15d5KIXB
+	 T+BcmVnTwkiL+nUwRVs3a/Omke+zPfDhsJkfrmITuRWexeqomKaWoRJcx5EmZh0yk5
+	 +F3C3hJ0nXTfy0QBGT1xSH3YFrqmpt5fEheIK3FTUGtSRTNE3hajKZX++/AoBioaWf
+	 tH5bzsMsmAY+w==
 From: Frederic Weisbecker <frederic@kernel.org>
 To: LKML <linux-kernel@vger.kernel.org>
 Cc: Frederic Weisbecker <frederic@kernel.org>,
@@ -78,9 +78,9 @@ Cc: Frederic Weisbecker <frederic@kernel.org>,
 	linux-mm@kvack.org,
 	linux-pci@vger.kernel.org,
 	netdev@vger.kernel.org
-Subject: [PATCH 03/33] memcg: Prepare to protect against concurrent isolated cpuset change
-Date: Wed, 24 Dec 2025 14:44:50 +0100
-Message-ID: <20251224134520.33231-4-frederic@kernel.org>
+Subject: [PATCH 04/33] mm: vmstat: Prepare to protect against concurrent isolated cpuset change
+Date: Wed, 24 Dec 2025 14:44:51 +0100
+Message-ID: <20251224134520.33231-5-frederic@kernel.org>
 X-Mailer: git-send-email 2.51.1
 In-Reply-To: <20251224134520.33231-1-frederic@kernel.org>
 References: <20251224134520.33231-1-frederic@kernel.org>
@@ -93,60 +93,42 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
 The HK_TYPE_DOMAIN housekeeping cpumask will soon be made modifiable at
-runtime. In order to synchronize against memcg workqueue to make sure
-that no asynchronous draining is pending or executing on a newly made
-isolated CPU, target and queue a drain work under the same RCU critical
-section.
+runtime. In order to synchronize against vmstat workqueue to make sure
+that no asynchronous vmstat work is pending or executing on a newly made
+isolated CPU, target and queue a vmstat work under the same RCU read
+side critical section.
 
-Whenever housekeeping will update the HK_TYPE_DOMAIN cpumask, a memcg
+Whenever housekeeping will update the HK_TYPE_DOMAIN cpumask, a vmstat
 workqueue flush will also be issued in a further change to make sure
 that no work remains pending after a CPU has been made isolated.
 
 Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
 ---
- mm/memcontrol.c | 15 +++++++++++----
- 1 file changed, 11 insertions(+), 4 deletions(-)
+ mm/vmstat.c | 10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
 
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index be810c1fbfc3..c3c473c3dfca 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -2003,6 +2003,13 @@ static bool is_memcg_drain_needed(struct memcg_stock_pcp *stock,
- 	return flush;
- }
+diff --git a/mm/vmstat.c b/mm/vmstat.c
+index 65de88cdf40e..ed19c0d42de6 100644
+--- a/mm/vmstat.c
++++ b/mm/vmstat.c
+@@ -2144,11 +2144,13 @@ static void vmstat_shepherd(struct work_struct *w)
+ 		 * infrastructure ever noticing. Skip regular flushing from vmstat_shepherd
+ 		 * for all isolated CPUs to avoid interference with the isolated workload.
+ 		 */
+-		if (cpu_is_isolated(cpu))
+-			continue;
++		scoped_guard(rcu) {
++			if (cpu_is_isolated(cpu))
++				continue;
  
-+static void schedule_drain_work(int cpu, struct work_struct *work)
-+{
-+	guard(rcu)();
-+	if (!cpu_is_isolated(cpu))
-+		schedule_work_on(cpu, work);
-+}
-+
- /*
-  * Drains all per-CPU charge caches for given root_memcg resp. subtree
-  * of the hierarchy under it.
-@@ -2032,8 +2039,8 @@ void drain_all_stock(struct mem_cgroup *root_memcg)
- 				      &memcg_st->flags)) {
- 			if (cpu == curcpu)
- 				drain_local_memcg_stock(&memcg_st->work);
--			else if (!cpu_is_isolated(cpu))
--				schedule_work_on(cpu, &memcg_st->work);
-+			else
-+				schedule_drain_work(cpu, &memcg_st->work);
- 		}
+-		if (!delayed_work_pending(dw) && need_update(cpu))
+-			queue_delayed_work_on(cpu, mm_percpu_wq, dw, 0);
++			if (!delayed_work_pending(dw) && need_update(cpu))
++				queue_delayed_work_on(cpu, mm_percpu_wq, dw, 0);
++		}
  
- 		if (!test_bit(FLUSHING_CACHED_CHARGE, &obj_st->flags) &&
-@@ -2042,8 +2049,8 @@ void drain_all_stock(struct mem_cgroup *root_memcg)
- 				      &obj_st->flags)) {
- 			if (cpu == curcpu)
- 				drain_local_obj_stock(&obj_st->work);
--			else if (!cpu_is_isolated(cpu))
--				schedule_work_on(cpu, &obj_st->work);
-+			else
-+				schedule_drain_work(cpu, &obj_st->work);
- 		}
+ 		cond_resched();
  	}
- 	migrate_enable();
 -- 
 2.51.1
 
