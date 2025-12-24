@@ -1,289 +1,137 @@
-Return-Path: <cgroups+bounces-12634-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-12635-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 25B42CDB618
-	for <lists+cgroups@lfdr.de>; Wed, 24 Dec 2025 06:21:06 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2700CCDB61B
+	for <lists+cgroups@lfdr.de>; Wed, 24 Dec 2025 06:22:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id 3D063302325B
-	for <lists+cgroups@lfdr.de>; Wed, 24 Dec 2025 05:21:03 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id A682F3017F2A
+	for <lists+cgroups@lfdr.de>; Wed, 24 Dec 2025 05:21:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C766B2D2382;
-	Wed, 24 Dec 2025 05:21:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B38962E2665;
+	Wed, 24 Dec 2025 05:21:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="hWxD8Dwt"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MVRlH+oy"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.13])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A53B3285CB6
-	for <cgroups@vger.kernel.org>; Wed, 24 Dec 2025 05:20:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.13
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B90929E11D;
+	Wed, 24 Dec 2025 05:21:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1766553661; cv=none; b=hV0MUmTe37cZsnrwrKys2a5nTVsQ2+LM/9gd1/b31uqIbV5+yBuLZd6euqAuVBmn86y2xx8/+dO5ruCj3aJ1sEoaS5q+cx+cc4vYFlChIIsSVvJT7wvA/44VUMlZcbJTjnmexiFA9cyRnohGSGWlg78tQFiQnaKHoFxKSyBnLlQ=
+	t=1766553716; cv=none; b=d8dytQCaGDqFLDj734+UN7xEiKdR4q8SeVPAmohXxK8s3CVH/QJbEGrBlcTE/+rSGmyxLDZyb1V8aTD92ZLmpRSUokrr70LF1vCB+HH5dGc6Yn5CRtRShlrH9yatLi0SWFhpONAYffJIp+WMTvRRTEJC4KjchG4UysZip+6Lxco=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1766553661; c=relaxed/simple;
-	bh=x/FU3NmLm0kBUshNwgRX6DeoK8/zgD86FMI0f2r1bmg=;
-	h=Date:From:To:Cc:Subject:Message-ID; b=YBW1Ss7UHYw9Kmb0H3vkKSF7gDrl8xEIP4fn1MYuWRfGb7nw8bFq8BIcvOQsNW+d/aY/11ZKFa2B9sI07AwapuW8IM1GxLtaQb3KTI7OvhADdc1Qquw24FVFnS4PU8GKWQDfuORAPws5j2nX1nppMg2k1dr+TnSF3o+3hm66/p0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=hWxD8Dwt; arc=none smtp.client-ip=198.175.65.13
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1766553659; x=1798089659;
-  h=date:from:to:cc:subject:message-id;
-  bh=x/FU3NmLm0kBUshNwgRX6DeoK8/zgD86FMI0f2r1bmg=;
-  b=hWxD8DwtHgnDi51cK82HGj+CmlC8nmKnVsTsmu6dTwKfhiwBcrasUNxG
-   QXNxx7VyNQ0P827yuja/HZiyit7kpX+jin/cxH/jct5B3U/z51XqQhD05
-   1Rh+ob5/oJcLtTZt20VbW3U3/IsoMJ61XZN+Pdzmo2PDwTYEN7dYfGJdV
-   ijQJtf98pA0mrjn79aZOYurHiX+3YWgomb88YaRMfbxl1uPsR39k5wvwF
-   boLaWvyIPbUVkBWOeKDwuqUiFB3u9FaCEGD6T7KcSjmpBekyawRKsNfFa
-   S5SUiTdUK7S0a7/13SGMnwgwap4mWrmuwfL0Z/UPff+c5njTNW41Wtt7C
-   Q==;
-X-CSE-ConnectionGUID: LEHLJJOHQKiczk6cjJkBVQ==
-X-CSE-MsgGUID: VT4HOisFQNW3xHyMo7xI7A==
-X-IronPort-AV: E=McAfee;i="6800,10657,11651"; a="79514067"
-X-IronPort-AV: E=Sophos;i="6.21,172,1763452800"; 
-   d="scan'208";a="79514067"
-Received: from fmviesa002.fm.intel.com ([10.60.135.142])
-  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Dec 2025 21:20:58 -0800
-X-CSE-ConnectionGUID: aOtq8+RKTl6Lg5Hfj3QJTg==
-X-CSE-MsgGUID: +0+eFSCQTVay/nqYxDL8ig==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.21,172,1763452800"; 
-   d="scan'208";a="223421521"
-Received: from lkp-server02.sh.intel.com (HELO dd3453e2b682) ([10.239.97.151])
-  by fmviesa002.fm.intel.com with ESMTP; 23 Dec 2025 21:20:57 -0800
-Received: from kbuild by dd3453e2b682 with local (Exim 4.98.2)
-	(envelope-from <lkp@intel.com>)
-	id 1vYHIs-000000002in-47jw;
-	Wed, 24 Dec 2025 05:20:54 +0000
-Date: Wed, 24 Dec 2025 13:20:18 +0800
-From: kernel test robot <lkp@intel.com>
-To: Tejun Heo <tj@kernel.org>
-Cc: cgroups@vger.kernel.org
-Subject: [tj-cgroup:for-next] BUILD SUCCESS
- 60ba42e4d7c6a6e6a9d1cf67bc4e494775ca7c5c
-Message-ID: <202512241313.o8y2wMGi-lkp@intel.com>
-User-Agent: s-nail v14.9.25
+	s=arc-20240116; t=1766553716; c=relaxed/simple;
+	bh=1i0AGvXVVrHdy9xcXcgBlco2Ngv8dnUQED7TtSQCPlM=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=u8upnW3BjSywq/qk9Tv7Umbc4G8ZtY7DTYfGWl2VvX6JTZwSBUGFtOWebKZZnj+PT2IcwzhLADEZnZ2olvEv5n3shAWc+QzJ8WAUs53rmqjVGgO3gNcZzgL5ffBnZyV3EZs4km20FfknyJzSF7qG3qDJAgLtPxcGvhyC1+QHhAI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MVRlH+oy; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D318EC4CEFB;
+	Wed, 24 Dec 2025 05:21:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1766553716;
+	bh=1i0AGvXVVrHdy9xcXcgBlco2Ngv8dnUQED7TtSQCPlM=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=MVRlH+oykfekemzk2FwHD+HxDBl/P+HAohM82+BUGVn3Xs2qbZKAzgevGU3mQSa4A
+	 bFPC3hkGmyKkS2YKWZIKn5u0FHtrUW1ClsbyboFV/cyFQn/snsEN+c8bN9lvZlq1Kb
+	 qo69DA5iAGcoKvAHy2Z4sZkZROgvbNkh7rOkdwjmkxwJ7ZjulRSxC1mqICtfBJnpou
+	 yMtW4jiO+qspAv8tFpozGD7E/Pq7M3DPfvFJ6Q/cYG7Mlw0X1Oa3j4DWOQETieS8Nk
+	 eUZCrNtHGv8AVtfQ1SGw/flpI0A+AyX1ESZ9syiYQum5luL2nagBZGYOvOfhfF7+C9
+	 oRe1bFeQR+KaQ==
+From: SeongJae Park <sj@kernel.org>
+To: Shakeel Butt <shakeel.butt@linux.dev>
+Cc: SeongJae Park <sj@kernel.org>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	damon@lists.linux.dev,
+	linux-mm@kvack.org,
+	cgroups@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Meta kernel team <kernel-team@meta.com>
+Subject: Re: [PATCH] memcg: damon: get memcg reference before access
+Date: Tue, 23 Dec 2025 21:21:47 -0800
+Message-ID: <20251224052148.68796-1-sj@kernel.org>
+X-Mailer: git-send-email 2.47.3
+In-Reply-To: <20251224034527.3751306-1-shakeel.butt@linux.dev>
+References: 
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git for-next
-branch HEAD: 60ba42e4d7c6a6e6a9d1cf67bc4e494775ca7c5c  Merge branch 'for-6.20' into for-next
+On Tue, 23 Dec 2025 19:45:27 -0800 Shakeel Butt <shakeel.butt@linux.dev> wrote:
 
-elapsed time: 1297m
+> The commit b74a120bcf507 ("mm/damon/core: implement
+> DAMOS_QUOTA_NODE_MEMCG_USED_BP") added accesses to memcg structure
+> without getting reference to it. This is unsafe. Let's get the reference
+> before accessing the memcg.
 
-configs tested: 198
-configs skipped: 5
+Thank you for catching and fixing this!
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+Nit.  On the subject, could we use 'mm/damon/core:' prefix instead of 'memcg:
+damon:' for keeping the file's commit log subjects consistent?
 
-tested configs:
-alpha                             allnoconfig    gcc-15.1.0
-alpha                            allyesconfig    gcc-15.1.0
-alpha                               defconfig    gcc-15.1.0
-arc                              allmodconfig    gcc-15.1.0
-arc                               allnoconfig    gcc-15.1.0
-arc                              allyesconfig    gcc-15.1.0
-arc                                 defconfig    gcc-15.1.0
-arc                   randconfig-001-20251224    gcc-12.5.0
-arc                   randconfig-002-20251224    gcc-10.5.0
-arm                               allnoconfig    clang-22
-arm                               allnoconfig    gcc-15.1.0
-arm                              allyesconfig    gcc-15.1.0
-arm                         axm55xx_defconfig    clang-22
-arm                         bcm2835_defconfig    clang-22
-arm                                 defconfig    clang-22
-arm                                 defconfig    gcc-15.1.0
-arm                   randconfig-001-20251224    gcc-8.5.0
-arm                   randconfig-002-20251224    gcc-8.5.0
-arm                   randconfig-003-20251224    gcc-12.5.0
-arm                   randconfig-004-20251224    clang-22
-arm                         socfpga_defconfig    gcc-15.1.0
-arm64                             allnoconfig    gcc-15.1.0
-arm64                               defconfig    gcc-15.1.0
-arm64                 randconfig-001-20251223    clang-17
-arm64                 randconfig-001-20251224    gcc-15.1.0
-arm64                 randconfig-002-20251223    clang-22
-arm64                 randconfig-002-20251224    gcc-15.1.0
-arm64                 randconfig-003-20251223    clang-18
-arm64                 randconfig-003-20251224    gcc-15.1.0
-arm64                 randconfig-004-20251223    gcc-9.5.0
-arm64                 randconfig-004-20251224    gcc-15.1.0
-csky                             allmodconfig    gcc-15.1.0
-csky                              allnoconfig    gcc-15.1.0
-csky                                defconfig    gcc-15.1.0
-csky                  randconfig-001-20251223    gcc-11.5.0
-csky                  randconfig-001-20251224    gcc-15.1.0
-csky                  randconfig-002-20251223    gcc-15.1.0
-csky                  randconfig-002-20251224    gcc-15.1.0
-hexagon                          allmodconfig    clang-17
-hexagon                           allnoconfig    clang-22
-hexagon                           allnoconfig    gcc-15.1.0
-hexagon                             defconfig    clang-22
-hexagon                             defconfig    gcc-15.1.0
-hexagon               randconfig-001-20251223    clang-22
-hexagon               randconfig-002-20251223    clang-22
-i386                             allmodconfig    gcc-14
-i386                              allnoconfig    gcc-14
-i386                              allnoconfig    gcc-15.1.0
-i386                             allyesconfig    gcc-14
-i386        buildonly-randconfig-001-20251224    clang-20
-i386        buildonly-randconfig-001-20251224    gcc-14
-i386        buildonly-randconfig-002-20251224    gcc-14
-i386        buildonly-randconfig-003-20251224    clang-20
-i386        buildonly-randconfig-003-20251224    gcc-14
-i386        buildonly-randconfig-004-20251224    gcc-12
-i386        buildonly-randconfig-004-20251224    gcc-14
-i386        buildonly-randconfig-005-20251224    gcc-14
-i386        buildonly-randconfig-006-20251224    clang-20
-i386        buildonly-randconfig-006-20251224    gcc-14
-i386                                defconfig    clang-20
-i386                                defconfig    gcc-15.1.0
-i386                  randconfig-001-20251224    gcc-14
-i386                  randconfig-002-20251224    gcc-14
-i386                  randconfig-003-20251224    gcc-14
-i386                  randconfig-004-20251224    gcc-12
-i386                  randconfig-005-20251224    clang-20
-i386                  randconfig-006-20251224    clang-20
-i386                  randconfig-007-20251224    gcc-14
-i386                  randconfig-013-20251224    clang-20
-i386                  randconfig-014-20251224    clang-20
-loongarch                        allmodconfig    clang-19
-loongarch                         allnoconfig    clang-22
-loongarch                         allnoconfig    gcc-15.1.0
-loongarch                           defconfig    clang-19
-loongarch             randconfig-001-20251223    gcc-15.1.0
-loongarch             randconfig-002-20251223    clang-22
-m68k                             allmodconfig    gcc-15.1.0
-m68k                              allnoconfig    gcc-15.1.0
-m68k                             allyesconfig    gcc-15.1.0
-m68k                                defconfig    gcc-15.1.0
-microblaze                        allnoconfig    gcc-15.1.0
-microblaze                       allyesconfig    gcc-15.1.0
-microblaze                          defconfig    gcc-15.1.0
-mips                             allmodconfig    gcc-15.1.0
-mips                              allnoconfig    gcc-15.1.0
-mips                             allyesconfig    gcc-15.1.0
-mips                           ip22_defconfig    gcc-15.1.0
-nios2                            allmodconfig    gcc-11.5.0
-nios2                             allnoconfig    clang-22
-nios2                             allnoconfig    gcc-11.5.0
-nios2                               defconfig    gcc-11.5.0
-nios2                 randconfig-001-20251223    gcc-11.5.0
-nios2                 randconfig-002-20251223    gcc-11.5.0
-openrisc                         allmodconfig    gcc-15.1.0
-openrisc                          allnoconfig    clang-22
-openrisc                          allnoconfig    gcc-15.1.0
-openrisc                            defconfig    gcc-15.1.0
-parisc                           allmodconfig    gcc-15.1.0
-parisc                            allnoconfig    clang-22
-parisc                            allnoconfig    gcc-15.1.0
-parisc                           allyesconfig    gcc-15.1.0
-parisc                              defconfig    gcc-15.1.0
-parisc                randconfig-001-20251224    clang-22
-parisc                randconfig-001-20251224    gcc-8.5.0
-parisc                randconfig-002-20251224    clang-22
-parisc                randconfig-002-20251224    gcc-9.5.0
-parisc64                            defconfig    gcc-15.1.0
-powerpc                          allmodconfig    gcc-15.1.0
-powerpc                           allnoconfig    clang-22
-powerpc                           allnoconfig    gcc-15.1.0
-powerpc                     mpc5200_defconfig    clang-22
-powerpc                    mvme5100_defconfig    gcc-15.1.0
-powerpc               randconfig-001-20251224    clang-22
-powerpc               randconfig-002-20251224    clang-22
-powerpc64             randconfig-001-20251224    clang-22
-powerpc64             randconfig-001-20251224    gcc-8.5.0
-powerpc64             randconfig-002-20251224    clang-22
-powerpc64             randconfig-002-20251224    gcc-13.4.0
-riscv                             allnoconfig    clang-22
-riscv                             allnoconfig    gcc-15.1.0
-riscv                            allyesconfig    clang-16
-riscv                               defconfig    clang-22
-riscv                 randconfig-001-20251224    gcc-8.5.0
-riscv                 randconfig-002-20251224    clang-22
-s390                             allmodconfig    clang-18
-s390                              allnoconfig    clang-22
-s390                             allyesconfig    gcc-15.1.0
-s390                                defconfig    clang-22
-s390                  randconfig-001-20251224    gcc-10.5.0
-s390                  randconfig-002-20251224    gcc-15.1.0
-sh                               allmodconfig    gcc-15.1.0
-sh                                allnoconfig    clang-22
-sh                                allnoconfig    gcc-15.1.0
-sh                               allyesconfig    gcc-15.1.0
-sh                                  defconfig    gcc-15.1.0
-sh                    randconfig-001-20251224    gcc-14.3.0
-sh                    randconfig-002-20251224    gcc-10.5.0
-sh                            shmin_defconfig    gcc-15.1.0
-sparc                             allnoconfig    clang-22
-sparc                             allnoconfig    gcc-15.1.0
-sparc                               defconfig    gcc-15.1.0
-sparc                 randconfig-001-20251224    gcc-8.5.0
-sparc                 randconfig-002-20251224    gcc-8.5.0
-sparc64                          allmodconfig    clang-22
-sparc64                             defconfig    clang-20
-sparc64               randconfig-001-20251224    gcc-8.5.0
-sparc64               randconfig-002-20251224    clang-20
-um                               allmodconfig    clang-19
-um                                allnoconfig    clang-22
-um                               allyesconfig    gcc-14
-um                                  defconfig    clang-22
-um                             i386_defconfig    gcc-14
-um                    randconfig-001-20251224    gcc-14
-um                    randconfig-002-20251224    gcc-14
-um                           x86_64_defconfig    clang-22
-x86_64                           allmodconfig    clang-20
-x86_64                            allnoconfig    clang-20
-x86_64                            allnoconfig    clang-22
-x86_64                           allyesconfig    clang-20
-x86_64      buildonly-randconfig-001-20251224    clang-20
-x86_64      buildonly-randconfig-002-20251224    gcc-14
-x86_64      buildonly-randconfig-003-20251224    gcc-14
-x86_64      buildonly-randconfig-004-20251224    clang-20
-x86_64      buildonly-randconfig-005-20251224    gcc-14
-x86_64      buildonly-randconfig-006-20251224    clang-20
-x86_64                              defconfig    gcc-14
-x86_64                                  kexec    clang-20
-x86_64                randconfig-001-20251224    gcc-14
-x86_64                randconfig-002-20251224    gcc-14
-x86_64                randconfig-003-20251224    gcc-14
-x86_64                randconfig-004-20251224    gcc-14
-x86_64                randconfig-005-20251224    gcc-14
-x86_64                randconfig-006-20251224    gcc-14
-x86_64                randconfig-011-20251224    gcc-14
-x86_64                randconfig-012-20251224    gcc-14
-x86_64                randconfig-013-20251224    clang-20
-x86_64                randconfig-013-20251224    gcc-14
-x86_64                randconfig-014-20251224    gcc-14
-x86_64                randconfig-015-20251224    gcc-14
-x86_64                randconfig-016-20251224    gcc-14
-x86_64                randconfig-071-20251224    clang-20
-x86_64                randconfig-072-20251224    gcc-14
-x86_64                randconfig-073-20251224    clang-20
-x86_64                randconfig-074-20251224    gcc-14
-x86_64                randconfig-075-20251224    clang-20
-x86_64                randconfig-076-20251224    gcc-14
-x86_64                               rhel-9.4    clang-20
-x86_64                           rhel-9.4-bpf    gcc-14
-x86_64                          rhel-9.4-func    clang-20
-x86_64                    rhel-9.4-kselftests    clang-20
-x86_64                         rhel-9.4-kunit    gcc-14
-x86_64                           rhel-9.4-ltp    gcc-14
-x86_64                          rhel-9.4-rust    clang-20
-xtensa                            allnoconfig    clang-22
-xtensa                            allnoconfig    gcc-15.1.0
-xtensa                           allyesconfig    gcc-15.1.0
-xtensa                randconfig-001-20251224    gcc-15.1.0
-xtensa                randconfig-002-20251224    gcc-8.5.0
+> 
+> Fixes: b74a120bcf507 ("mm/damon/core: implement DAMOS_QUOTA_NODE_MEMCG_USED_BP")
 
---
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+I was firsty thinking we might need to Cc: stable@.  But I realized the broken
+commit has merged into 6.19-rc1.  So Cc: stable@ is not needed.
+
+> Signed-off-by: Shakeel Butt <shakeel.butt@linux.dev>
+
+Other than the tirivial subject prefix inconsistency, looks good to me.
+
+Reviewed-by: SeongJae Park <sj@kernel.org>
+
+> ---
+>  mm/damon/core.c | 8 ++++++--
+>  1 file changed, 6 insertions(+), 2 deletions(-)
+> 
+> diff --git a/mm/damon/core.c b/mm/damon/core.c
+> index 4ad5f290d382..89982e0229f0 100644
+> --- a/mm/damon/core.c
+> +++ b/mm/damon/core.c
+> @@ -2051,13 +2051,15 @@ static unsigned long damos_get_node_memcg_used_bp(
+>  
+>  	rcu_read_lock();
+>  	memcg = mem_cgroup_from_id(goal->memcg_id);
+> -	rcu_read_unlock();
+> -	if (!memcg) {
+> +	if (!memcg || !mem_cgroup_tryget(memcg)) {
+
+For this part, I was thinking '!memcg' part seems not technically needed
+because mem_cgroup_tryget() does the check.  But I think that's just trivial,
+so this also looks good to me.
+
+> +		rcu_read_unlock();
+>  		if (goal->metric == DAMOS_QUOTA_NODE_MEMCG_USED_BP)
+>  			return 0;
+>  		else	/* DAMOS_QUOTA_NODE_MEMCG_FREE_BP */
+>  			return 10000;
+>  	}
+> +	rcu_read_unlock();
+> +
+>  	mem_cgroup_flush_stats(memcg);
+>  	lruvec = mem_cgroup_lruvec(memcg, NODE_DATA(goal->nid));
+>  	used_pages = lruvec_page_state(lruvec, NR_ACTIVE_ANON);
+> @@ -2065,6 +2067,8 @@ static unsigned long damos_get_node_memcg_used_bp(
+>  	used_pages += lruvec_page_state(lruvec, NR_ACTIVE_FILE);
+>  	used_pages += lruvec_page_state(lruvec, NR_INACTIVE_FILE);
+>  
+> +	mem_cgroup_put(memcg);
+> +
+>  	si_meminfo_node(&i, goal->nid);
+>  	if (goal->metric == DAMOS_QUOTA_NODE_MEMCG_USED_BP)
+>  		numerator = used_pages;
+> -- 
+> 2.47.3
+
+
+Thanks,
+SJ
+
+[...]
 
