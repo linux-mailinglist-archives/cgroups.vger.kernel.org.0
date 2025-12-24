@@ -1,44 +1,44 @@
-Return-Path: <cgroups+bounces-12655-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-12656-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id C5DD2CDC62B
-	for <lists+cgroups@lfdr.de>; Wed, 24 Dec 2025 14:47:18 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id D5C29CDC64E
+	for <lists+cgroups@lfdr.de>; Wed, 24 Dec 2025 14:48:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 2C54F3075451
-	for <lists+cgroups@lfdr.de>; Wed, 24 Dec 2025 13:45:51 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 4CB52309B495
+	for <lists+cgroups@lfdr.de>; Wed, 24 Dec 2025 13:45:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BE2482C0281;
-	Wed, 24 Dec 2025 13:45:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3029F1F3FED;
+	Wed, 24 Dec 2025 13:45:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="H7mMb30Q"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="F/Tyv4Yz"
 X-Original-To: cgroups@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F4431E885A;
-	Wed, 24 Dec 2025 13:45:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B93732DEA78;
+	Wed, 24 Dec 2025 13:45:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1766583949; cv=none; b=fSOzPwhpIHj3irTyOEnqtDklpCaihMYETsMFk6bYc7+aAyaZQVSIjD6S/zEQMGBP6HDl8/bqcUgalUA2tKJ83byGyr3mLg3ghleN7Bzq8zptuNOWaOIfgO4z5Cp+nAujzEs0P1apEZx0rKTrTHV9JkGwbakdj3XAoh7BaMFgTu0=
+	t=1766583957; cv=none; b=RSQbjsz/hg9jGySDcwdB4rkZkj1r4rf3j5Eo7poqMzvMSmHrCDfm+SD2ZqfSRPJHC0MuytTzidpdcWLepOPXAs1IrL8MPrugCinANeBBYh8G6NlZ9H50YtS4M+Yq07LwzbQ+pFcoQDJ3bFozzpATepKaJNcyQ9kHe3HdlGQ+yWE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1766583949; c=relaxed/simple;
-	bh=11kVg/bDOXpa/yvnQMWYkjqm5C/SPwrAAGSvfZEuxSQ=;
+	s=arc-20240116; t=1766583957; c=relaxed/simple;
+	bh=7CktjiyIthVdYHa9fRih51rkJO049RvxC4k3gxcrSfU=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=FLwOwQoD4HekASB4JfrfZbXmjMwntvvhQwqMh7GwucCcksaE6Lzv0I9KKTnUpIK8PWMolv4N/ymTAlVqgYT8n+fztGpQGOT+ln798Daa21XBfKNsexVOObbDIn9hAJtzylkLS09zVCNrB/1Qm7tey+kuvu8qCyXN4z5i4ti9MJA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=H7mMb30Q; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2BC57C4CEFB;
-	Wed, 24 Dec 2025 13:45:41 +0000 (UTC)
+	 MIME-Version; b=f/i3nFYs1GS9aPEupnkadLVfCsuojO3VJ8t2wxYE/xSMU5ZiAggEcmvZd5Q0Ms5ifPX4Ol+wSOdiqZnJvY1onlWRbBpJGIsEAC7XbnbhyoMybXlbllN+QsVvPjjjnqB271V+lNXTZU0EdOcZhCOGrr4IiX3oYzL+puvWjVmfGxE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=F/Tyv4Yz; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7455FC116D0;
+	Wed, 24 Dec 2025 13:45:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1766583949;
-	bh=11kVg/bDOXpa/yvnQMWYkjqm5C/SPwrAAGSvfZEuxSQ=;
+	s=k20201202; t=1766583957;
+	bh=7CktjiyIthVdYHa9fRih51rkJO049RvxC4k3gxcrSfU=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=H7mMb30Qrj92/uviIhc1fyEu+nlpB/xOX1eLU8tjIzv3vuprkqSRobPPuypYr4P86
-	 KKG/T/ugcEL7chZ7jENBr+nDTaB3fIQi73GMI/yU4M9CSLpe5XHRfs2aG3MH798ZKl
-	 4W/s54uzqvvTq1KFo01rD6iLvt2JZgIB7Zox3EjCQFHqsDBeakRVEyKAdhPX9plzTc
-	 aF7Nqm7+o5LRlE4Mh0g/fVhpHlIWeUJo9F24g6Tw54kHme7x7rVQ5M2lw44yP9OcQP
-	 8I1gtwsfIgFGPD3ffd6khrIbcSTp71xzfbRWYvyWJ0QW3FHw2OXLZOVvnkrZ4PQwN7
-	 u8QBR2FBdMU/w==
+	b=F/Tyv4YzP+plPQJKaSLuPEMdFxw3ZtENKHh2pjVToOk5227AiH+ZQI5yPwMVVD29C
+	 kLkFDorQyePgLdHfXM0f/iz+TV4NjaoHCn4ZxTLpmFguw+wHVycblRu+B3MS9Ot8SR
+	 RxgrwTFoKKCTIq/uKNz0JzweWZ1NzoPKFTzSEQvP/JFoQ9mMXKYri+Luvtu9TzJoNz
+	 QbVoDOVhzOZcUdNZVVJTsplPVblFi4XhnJmLIOi8fx3nmRj0w47J+4wn6IY+1U+qOX
+	 Ce3yTydWrvfVzC3nbZRvbYjyZnPWPe7QQKRyBio79sst5IhAMh4/7ipJNG75xSpb+d
+	 cl5g99p2tk0Ug==
 From: Frederic Weisbecker <frederic@kernel.org>
 To: LKML <linux-kernel@vger.kernel.org>
 Cc: Frederic Weisbecker <frederic@kernel.org>,
@@ -78,9 +78,9 @@ Cc: Frederic Weisbecker <frederic@kernel.org>,
 	linux-mm@kvack.org,
 	linux-pci@vger.kernel.org,
 	netdev@vger.kernel.org
-Subject: [PATCH 02/33] cpu: Revert "cpu/hotplug: Prevent self deadlock on CPU hot-unplug"
-Date: Wed, 24 Dec 2025 14:44:49 +0100
-Message-ID: <20251224134520.33231-3-frederic@kernel.org>
+Subject: [PATCH 03/33] memcg: Prepare to protect against concurrent isolated cpuset change
+Date: Wed, 24 Dec 2025 14:44:50 +0100
+Message-ID: <20251224134520.33231-4-frederic@kernel.org>
 X-Mailer: git-send-email 2.51.1
 In-Reply-To: <20251224134520.33231-1-frederic@kernel.org>
 References: <20251224134520.33231-1-frederic@kernel.org>
@@ -92,106 +92,61 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-1) The commit:
+The HK_TYPE_DOMAIN housekeeping cpumask will soon be made modifiable at
+runtime. In order to synchronize against memcg workqueue to make sure
+that no asynchronous draining is pending or executing on a newly made
+isolated CPU, target and queue a drain work under the same RCU critical
+section.
 
-	2b8272ff4a70 ("cpu/hotplug: Prevent self deadlock on CPU hot-unplug")
-
-was added to fix an issue where the hotplug control task (BP) was
-throttled between CPUHP_AP_IDLE_DEAD and CPUHP_HRTIMERS_PREPARE waiting
-in the hrtimer blindspot for the bandwidth callback queued in the dead
-CPU.
-
-2) Later on, the commit:
-
-	38685e2a0476 ("cpu/hotplug: Don't offline the last non-isolated CPU")
-
-plugged on the target selection for the workqueue offloaded CPU down
-process to prevent from destroying the last CPU domain.
-
-3) Finally:
-
-	5c0930ccaad5 ("hrtimers: Push pending hrtimers away from outgoing CPU earlier")
-
-removed entirely the conditions for the race exposed and partially fixed
-in 1). The offloading of the CPU down process to a workqueue on another
-CPU then becomes unnecessary. But the last CPU belonging to scheduler
-domains must still remain online.
-
-Therefore revert the now obsolete commit
-2b8272ff4a70b866106ae13c36be7ecbef5d5da2 and move the housekeeping check
-under the cpu_hotplug_lock write held. Since HK_TYPE_DOMAIN will include
-both isolcpus and cpuset isolated partition, the hotplug lock will
-synchronize against concurrent cpuset partition updates.
+Whenever housekeeping will update the HK_TYPE_DOMAIN cpumask, a memcg
+workqueue flush will also be issued in a further change to make sure
+that no work remains pending after a CPU has been made isolated.
 
 Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
 ---
- kernel/cpu.c | 37 +++++++++++--------------------------
- 1 file changed, 11 insertions(+), 26 deletions(-)
+ mm/memcontrol.c | 15 +++++++++++----
+ 1 file changed, 11 insertions(+), 4 deletions(-)
 
-diff --git a/kernel/cpu.c b/kernel/cpu.c
-index 8df2d773fe3b..40b8496f47c5 100644
---- a/kernel/cpu.c
-+++ b/kernel/cpu.c
-@@ -1410,6 +1410,16 @@ static int __ref _cpu_down(unsigned int cpu, int tasks_frozen,
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index be810c1fbfc3..c3c473c3dfca 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -2003,6 +2003,13 @@ static bool is_memcg_drain_needed(struct memcg_stock_pcp *stock,
+ 	return flush;
+ }
  
- 	cpus_write_lock();
- 
-+	/*
-+	 * Keep at least one housekeeping cpu onlined to avoid generating
-+	 * an empty sched_domain span.
-+	 */
-+	if (cpumask_any_and(cpu_online_mask,
-+			    housekeeping_cpumask(HK_TYPE_DOMAIN)) >= nr_cpu_ids) {
-+		ret = -EBUSY;
-+		goto out;
-+	}
++static void schedule_drain_work(int cpu, struct work_struct *work)
++{
++	guard(rcu)();
++	if (!cpu_is_isolated(cpu))
++		schedule_work_on(cpu, work);
++}
 +
- 	cpuhp_tasks_frozen = tasks_frozen;
+ /*
+  * Drains all per-CPU charge caches for given root_memcg resp. subtree
+  * of the hierarchy under it.
+@@ -2032,8 +2039,8 @@ void drain_all_stock(struct mem_cgroup *root_memcg)
+ 				      &memcg_st->flags)) {
+ 			if (cpu == curcpu)
+ 				drain_local_memcg_stock(&memcg_st->work);
+-			else if (!cpu_is_isolated(cpu))
+-				schedule_work_on(cpu, &memcg_st->work);
++			else
++				schedule_drain_work(cpu, &memcg_st->work);
+ 		}
  
- 	prev_state = cpuhp_set_state(cpu, st, target);
-@@ -1456,22 +1466,8 @@ static int __ref _cpu_down(unsigned int cpu, int tasks_frozen,
- 	return ret;
- }
- 
--struct cpu_down_work {
--	unsigned int		cpu;
--	enum cpuhp_state	target;
--};
--
--static long __cpu_down_maps_locked(void *arg)
--{
--	struct cpu_down_work *work = arg;
--
--	return _cpu_down(work->cpu, 0, work->target);
--}
--
- static int cpu_down_maps_locked(unsigned int cpu, enum cpuhp_state target)
- {
--	struct cpu_down_work work = { .cpu = cpu, .target = target, };
--
- 	/*
- 	 * If the platform does not support hotplug, report it explicitly to
- 	 * differentiate it from a transient offlining failure.
-@@ -1480,18 +1476,7 @@ static int cpu_down_maps_locked(unsigned int cpu, enum cpuhp_state target)
- 		return -EOPNOTSUPP;
- 	if (cpu_hotplug_disabled)
- 		return -EBUSY;
--
--	/*
--	 * Ensure that the control task does not run on the to be offlined
--	 * CPU to prevent a deadlock against cfs_b->period_timer.
--	 * Also keep at least one housekeeping cpu onlined to avoid generating
--	 * an empty sched_domain span.
--	 */
--	for_each_cpu_and(cpu, cpu_online_mask, housekeeping_cpumask(HK_TYPE_DOMAIN)) {
--		if (cpu != work.cpu)
--			return work_on_cpu(cpu, __cpu_down_maps_locked, &work);
--	}
--	return -EBUSY;
-+	return _cpu_down(cpu, 0, target);
- }
- 
- static int cpu_down(unsigned int cpu, enum cpuhp_state target)
+ 		if (!test_bit(FLUSHING_CACHED_CHARGE, &obj_st->flags) &&
+@@ -2042,8 +2049,8 @@ void drain_all_stock(struct mem_cgroup *root_memcg)
+ 				      &obj_st->flags)) {
+ 			if (cpu == curcpu)
+ 				drain_local_obj_stock(&obj_st->work);
+-			else if (!cpu_is_isolated(cpu))
+-				schedule_work_on(cpu, &obj_st->work);
++			else
++				schedule_drain_work(cpu, &obj_st->work);
+ 		}
+ 	}
+ 	migrate_enable();
 -- 
 2.51.1
 
