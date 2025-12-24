@@ -1,44 +1,44 @@
-Return-Path: <cgroups+bounces-12685-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-12686-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id F0012CDC92F
-	for <lists+cgroups@lfdr.de>; Wed, 24 Dec 2025 15:50:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 33D3CCDC959
+	for <lists+cgroups@lfdr.de>; Wed, 24 Dec 2025 15:52:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 1389F306D67C
-	for <lists+cgroups@lfdr.de>; Wed, 24 Dec 2025 14:48:24 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id C7CBB309AA79
+	for <lists+cgroups@lfdr.de>; Wed, 24 Dec 2025 14:48:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 26D9C35A93A;
-	Wed, 24 Dec 2025 13:50:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 81BAA35B15D;
+	Wed, 24 Dec 2025 13:50:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ED8aVW74"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ahi82J95"
 X-Original-To: cgroups@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CEDB435A92B;
-	Wed, 24 Dec 2025 13:50:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 37C9A35B14C;
+	Wed, 24 Dec 2025 13:50:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1766584205; cv=none; b=g/olDdBmg30U7WmIhR7erS8l8gK9Bga3Em3YKtfhg/+py9FyUCX22CjbUV8StQ8+PABnJvtTRcOJ8jgbYfwAfvnLjMIEPDSZ39Q3x5fqHCqSpJu7WRrbdipmNs+xF19h+WlWUDx3S1Sth5u3cjKx3havSw0zW/FlKKbnyTRqQ6k=
+	t=1766584214; cv=none; b=H0RRhxsdPX+t3DvKegt1zGGO+L72TRrea3h6jbhaGR5fupMk31dGuzBPmaVQmh5tW9ljgXrX2GDDWplhouMWDuv6RR5NdCSY1qmUppor52JE2UH1h07GCr/5oxnURuwKB7VreKzzhqfqVMng7hxU+5EmNkzUpQE33iikKu7cHQE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1766584205; c=relaxed/simple;
-	bh=kluxsGzh3yUyBuEdMQW2ChyzrN9Wa4B73tu4Iho0QMM=;
+	s=arc-20240116; t=1766584214; c=relaxed/simple;
+	bh=1ThumxDDgpI14i4xI2NJUZlN8OnswY2btiiSypM7sVI=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=So2zAAHQSZICoYUKr7bmB2av6l/5GpaIk+fRexi7lkj3HdtwpkZCL6E0yuUfaGjiaJdZj4hBtxAjiomx3o6CvDG2uz6eQvOldpZIBq8KNPEOi0mebaFa2wySzIzyAN6galN+4kfCiPGg32M+rpLh89vCx9/K7TB9AuxWin8M5jU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ED8aVW74; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 98524C4CEF7;
-	Wed, 24 Dec 2025 13:49:57 +0000 (UTC)
+	 MIME-Version; b=GimD8OR4FDw55PrXGEVErTe1nu7We5u1XqmHJ1VmF58CMM5N1MqiRHIGOJMKA8/6JjRmzkuHtjB24jIwqDRC/Pip169SlO1wxrwfRapMe9Iv4tWSBY4/mVw/w9MIwFwQJEM9P3p4BY+LV47XBixJzAP3MgC+jssAmvTaOp13GY0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ahi82J95; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 270F1C4CEF7;
+	Wed, 24 Dec 2025 13:50:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1766584205;
-	bh=kluxsGzh3yUyBuEdMQW2ChyzrN9Wa4B73tu4Iho0QMM=;
+	s=k20201202; t=1766584213;
+	bh=1ThumxDDgpI14i4xI2NJUZlN8OnswY2btiiSypM7sVI=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=ED8aVW74APnBRvzGpOYVOFXbISRUsSm2ff53aXv0cWlkuHzOa2Q7QLiJId6sHUyzN
-	 rkK7hTT6utUbQFbv9Df3yhyCa4a8EYD50BV5521k0CI2l3AehI+q/A+085+RK2ThGK
-	 wvYl9sJQUScLxm3mKhBNH3YhFcIwGu1GH7wQB4YyxS/SkG4Nvoc4QK5tSR5YexlEny
-	 6f20Uaepl338lDSloLKe39VsAqy2OxcQFbfkUg/+huV1Y3z61CgCJMswZDPm2OK7Ft
-	 bgTx4CvDQ/1YAp+ph0GVI2FQhlYM9WTBhc2gtIOsrRGOMZsvUVeGeCAwy4V9Rh2Ybl
-	 UzfA5FSzot4Kg==
+	b=ahi82J95Ib/ppDRG2oGNZ9HCy4FO7NwJKzhKKQKG1+UUAadEdmqhM1slQjgCbxhV+
+	 /dcBOeXszn7WHt9ZEfzUfR2usAGjc5uAN/OK3ZHVMN6a/GtbA6m05cxKc30/svswW9
+	 lMaao3gqVfU1DJmnwW9fYJagoqE1abjZ+rGDbjrrUpMuwLIh6DIVlL9d2y7zHGdY30
+	 tfIgeKXtzkXkTpfedG0igUK8LV3+nv7+Y8XcfzegBKyVjUAwe8f8Df0/Q+XXlp1ix+
+	 v4BjeCOmS/tbEvleYYDEWcXyh76TNTsAYQ91xgEDVBUpifl3dY9W3RGxk+qIejrkj/
+	 y+oyfRg4KoKWA==
 From: Frederic Weisbecker <frederic@kernel.org>
 To: LKML <linux-kernel@vger.kernel.org>
 Cc: Frederic Weisbecker <frederic@kernel.org>,
@@ -78,9 +78,9 @@ Cc: Frederic Weisbecker <frederic@kernel.org>,
 	linux-mm@kvack.org,
 	linux-pci@vger.kernel.org,
 	netdev@vger.kernel.org
-Subject: [PATCH 32/33] kthread: Document kthread_affine_preferred()
-Date: Wed, 24 Dec 2025 14:45:19 +0100
-Message-ID: <20251224134520.33231-33-frederic@kernel.org>
+Subject: [PATCH 33/33] doc: Add housekeeping documentation
+Date: Wed, 24 Dec 2025 14:45:20 +0100
+Message-ID: <20251224134520.33231-34-frederic@kernel.org>
 X-Mailer: git-send-email 2.51.1
 In-Reply-To: <20251224134520.33231-1-frederic@kernel.org>
 References: <20251224134520.33231-1-frederic@kernel.org>
@@ -92,37 +92,142 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-The documentation of this new API has been overlooked during its
-introduction. Fill the gap.
-
 Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
 ---
- kernel/kthread.c | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
+ Documentation/core-api/housekeeping.rst | 111 ++++++++++++++++++++++++
+ Documentation/core-api/index.rst        |   1 +
+ 2 files changed, 112 insertions(+)
+ create mode 100644 Documentation/core-api/housekeeping.rst
 
-diff --git a/kernel/kthread.c b/kernel/kthread.c
-index 51f419139dea..c50f4c0eabfe 100644
---- a/kernel/kthread.c
-+++ b/kernel/kthread.c
-@@ -856,6 +856,18 @@ int kthreadd(void *unused)
- 	return 0;
- }
+diff --git a/Documentation/core-api/housekeeping.rst b/Documentation/core-api/housekeeping.rst
+new file mode 100644
+index 000000000000..e5417302774c
+--- /dev/null
++++ b/Documentation/core-api/housekeeping.rst
+@@ -0,0 +1,111 @@
++======================================
++Housekeeping
++======================================
++
++
++CPU Isolation moves away kernel work that may otherwise run on any CPU.
++The purpose of its related features is to reduce the OS jitter that some
++extreme workloads can't stand, such as in some DPDK usecases.
++
++The kernel work moved away by CPU isolation is commonly described as
++"housekeeping" because it includes ground work that performs cleanups,
++statistics maintainance and actions relying on them, memory release,
++various deferrals etc...
++
++Sometimes housekeeping is just some unbound work (unbound workqueues,
++unbound timers, ...) that gets easily assigned to non-isolated CPUs.
++But sometimes housekeeping is tied to a specific CPU and requires
++elaborated tricks to be offloaded to non-isolated CPUs (RCU_NOCB, remote
++scheduler tick, etc...).
++
++Thus, a housekeeping CPU can be considered as the reverse of an isolated
++CPU. It is simply a CPU that can execute housekeeping work. There must
++always be at least one online housekeeping CPU at any time. The CPUs that
++are not	isolated are automatically assigned as housekeeping.
++
++Housekeeping is currently divided in four features described
++by the ``enum hk_type type``:
++
++1.	HK_TYPE_DOMAIN matches the work moved away by scheduler domain
++	isolation performed through ``isolcpus=domain`` boot parameter or
++	isolated cpuset partitions in cgroup v2. This includes scheduler
++	load balancing, unbound workqueues and timers.
++
++2.	HK_TYPE_KERNEL_NOISE matches the work moved away by tick isolation
++	performed through ``nohz_full=`` or ``isolcpus=nohz`` boot
++	parameters. This includes remote scheduler tick, vmstat and lockup
++	watchdog.
++
++3.	HK_TYPE_MANAGED_IRQ matches the IRQ handlers moved away by managed
++	IRQ isolation performed through ``isolcpus=managed_irq``.
++
++4.	HK_TYPE_DOMAIN_BOOT matches the work moved away by scheduler domain
++	isolation performed through ``isolcpus=domain`` only. It is similar
++	to HK_TYPE_DOMAIN except it ignores the isolation performed by
++	cpusets.
++
++
++Housekeeping cpumasks
++=================================
++
++Housekeeping cpumasks include the CPUs that can execute the work moved
++away by the matching isolation feature. These cpumasks are returned by
++the following function::
++
++	const struct cpumask *housekeeping_cpumask(enum hk_type type)
++
++By default, if neither ``nohz_full=``, nor ``isolcpus``, nor cpuset's
++isolated partitions are used, which covers most usecases, this function
++returns the cpu_possible_mask.
++
++Otherwise the function returns the cpumask complement of the isolation
++feature. For example:
++
++With isolcpus=domain,7 the following will return a mask with all possible
++CPUs except 7::
++
++	housekeeping_cpumask(HK_TYPE_DOMAIN)
++
++Similarly with nohz_full=5,6 the following will return a mask with all
++possible CPUs except 5,6::
++
++	housekeeping_cpumask(HK_TYPE_KERNEL_NOISE)
++
++
++Synchronization against cpusets
++=================================
++
++Cpuset can modify the HK_TYPE_DOMAIN housekeeping cpumask while creating,
++modifying or deleting an isolated partition.
++
++The users of HK_TYPE_DOMAIN cpumask must then make sure to synchronize
++properly against cpuset in order to make sure that:
++
++1.	The cpumask snapshot stays coherent.
++
++2.	No housekeeping work is queued on a newly made isolated CPU.
++
++3.	Pending housekeeping work that was queued to a non isolated
++	CPU which just turned isolated through cpuset must be flushed
++	before the related created/modified isolated partition is made
++	available to userspace.
++
++This synchronization is maintained by an RCU based scheme. The cpuset update
++side waits for an RCU grace period after updating the HK_TYPE_DOMAIN
++cpumask and before flushing pending works. On the read side, care must be
++taken to gather the housekeeping target election and the work enqueue within
++the same RCU read side critical section.
++
++A typical layout example would look like this on the update side
++(``housekeeping_update()``)::
++
++	rcu_assign_pointer(housekeeping_cpumasks[type], trial);
++	synchronize_rcu();
++	flush_workqueue(example_workqueue);
++
++And then on the read side::
++
++	rcu_read_lock();
++	cpu = housekeeping_any_cpu(HK_TYPE_DOMAIN);
++	queue_work_on(cpu, example_workqueue, work);
++	rcu_read_unlock();
+diff --git a/Documentation/core-api/index.rst b/Documentation/core-api/index.rst
+index 5eb0fbbbc323..79fe7735692e 100644
+--- a/Documentation/core-api/index.rst
++++ b/Documentation/core-api/index.rst
+@@ -25,6 +25,7 @@ it.
+    symbol-namespaces
+    asm-annotations
+    real-time/index
++   housekeeping.rst
  
-+/**
-+ * kthread_affine_preferred - Define a kthread's preferred affinity
-+ * @p: thread created by kthread_create().
-+ * @mask: preferred mask of CPUs (might not be online, must be possible) for @p
-+ *        to run on.
-+ *
-+ * Similar to kthread_bind_mask() except that the affinity is not a requirement
-+ * but rather a preference that can be constrained by CPU isolation or CPU hotplug.
-+ * Must be called before the first wakeup of the kthread.
-+ *
-+ * Returns 0 if the affinity has been applied.
-+ */
- int kthread_affine_preferred(struct task_struct *p, const struct cpumask *mask)
- {
- 	struct kthread *kthread = to_kthread(p);
+ Data structures and low-level utilities
+ =======================================
 -- 
 2.51.1
 
