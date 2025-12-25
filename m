@@ -1,45 +1,45 @@
-Return-Path: <cgroups+bounces-12728-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-12730-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id B23FFCDE283
-	for <lists+cgroups@lfdr.de>; Fri, 26 Dec 2025 00:21:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 76C06CDE295
+	for <lists+cgroups@lfdr.de>; Fri, 26 Dec 2025 00:23:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 0457A300E3DA
-	for <lists+cgroups@lfdr.de>; Thu, 25 Dec 2025 23:21:31 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 737F2300F5AA
+	for <lists+cgroups@lfdr.de>; Thu, 25 Dec 2025 23:21:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B314A2C08DF;
-	Thu, 25 Dec 2025 23:21:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5F6EC2C11C4;
+	Thu, 25 Dec 2025 23:21:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Ts2+6/GS"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="V1Ud422M"
 X-Original-To: cgroups@vger.kernel.org
-Received: from out-178.mta0.migadu.com (out-178.mta0.migadu.com [91.218.175.178])
+Received: from out-187.mta1.migadu.com (out-187.mta1.migadu.com [95.215.58.187])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4878F29E0E5
-	for <cgroups@vger.kernel.org>; Thu, 25 Dec 2025 23:21:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 80001292918
+	for <cgroups@vger.kernel.org>; Thu, 25 Dec 2025 23:21:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.187
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1766704890; cv=none; b=MWI0iaM2wc9F27yHX2UbUttsWsnIdfo7BYMto46Uhe51UMLxLCb1Av/N/AFJgCMcNouzD+BOH79DBk/OZhdNAfgtTV/JJSAAHlEG+X8CE/t3EsvTyZfGe3bX066WEZmYcYaTuM3SIdZLuI8yknYUDkVPTAuI8EJvMApNZQKlYpY=
+	t=1766704909; cv=none; b=sz3gAzq6TgU2KUT3JD3/tvBt9LLZfay8fpdsctYoky6ylMa5WLt4Mg7nrN7+xET3IqyV0nEhtmloEZpwppIUoLnDZxzkPORSJm6gOSMF6HAGn2GRRi4K5Pb3bKvlWIE5P6ZenayxJvSq2bOM1V+J4wk6pRnkH25JA0xH1sfnJVE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1766704890; c=relaxed/simple;
-	bh=Z78CT7pZRDzPjrV0Efox5bZ5O9W9O8EU2fUJBGF9Txc=;
+	s=arc-20240116; t=1766704909; c=relaxed/simple;
+	bh=6sGApEq2wAUJdIA4naJGX1M4w9kayzWqSsFuKwnnP5A=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Pvzzkhoil1jLWj32iMHxqs5BHliDjSmIpkY6BlHHDj+TyRufuwLpFL8xMFt3aA69dvuCQwOqRNCLzHP3TvQvzt2x8WJ/74eGitkRLH2ibcsNgTrR7Xv7HM49vf4GziwyvJJxp2d3MGRfPpfMd2kK4qdk+RaK2jpT9JIzNSjhHkA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Ts2+6/GS; arc=none smtp.client-ip=91.218.175.178
+	 MIME-Version; b=fnD6ghacIZIpZ8aSBPPN+1RxebVg0tdpvlPYNTMaCUvmYM940gT5jYSykMT+oG3JeTYeXIg+DVhA4bdbooKvwjjQwjvxXU75Tx5PBzwBbSOODROiW8TTvMVYDLnSi0ubwMnCin6tqUcgxlTvslO0hQddL7otKvz3109ygFW9lRY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=V1Ud422M; arc=none smtp.client-ip=95.215.58.187
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1766704886;
+	t=1766704895;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=jMuFk6SfrgNzCfHXzFMzuHFFLdc/IVuMulpjk+slEIw=;
-	b=Ts2+6/GSboekRiPCAzSPqJM51w0dkzINhL4AEp3Y0ZdIiFQr5faOs8mLDPxBm0YlkTSu82
-	AKbkZZdps4L0IZ3+v6hIljdvEdWHg6cs+xJQHEsFX6HLblSBVQ9H6XIHWB5U8qvTfZsdru
-	YBUVdLBgtZ+jO2cIZJBQsCYlbysWSzw=
+	bh=k0ch+6yI2tUKJ64buXx3qfBV9aEKwt068abp9sUTgOs=;
+	b=V1Ud422Myo3TSvF6ot7WDW/igs4tzP3Spgllu6/P7t+yRgxB7sI+zS3mDjX1I21L2u889u
+	tqjQR3Orgezg0Y9YJj/O86Yg0JdwIfK39WId2zS0EWkLKrgb9HIm3GEFOB+HcLG+3E5+Sb
+	Gr+pB7+MPupund5xTwfR5NYHdHmprNI=
 From: Shakeel Butt <shakeel.butt@linux.dev>
 To: Andrew Morton <akpm@linux-foundation.org>
 Cc: Johannes Weiner <hannes@cmpxchg.org>,
@@ -52,9 +52,9 @@ Cc: Johannes Weiner <hannes@cmpxchg.org>,
 	cgroups@vger.kernel.org,
 	damon@lists.linux.dev,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH 1/8] memcg: introduce private id API for in-kernel users
-Date: Thu, 25 Dec 2025 15:21:09 -0800
-Message-ID: <20251225232116.294540-2-shakeel.butt@linux.dev>
+Subject: [PATCH 2/8] memcg: expose mem_cgroup_ino() and mem_cgroup_get_from_ino() unconditionally
+Date: Thu, 25 Dec 2025 15:21:10 -0800
+Message-ID: <20251225232116.294540-3-shakeel.butt@linux.dev>
 In-Reply-To: <20251225232116.294540-1-shakeel.butt@linux.dev>
 References: <20251225232116.294540-1-shakeel.butt@linux.dev>
 Precedence: bulk
@@ -66,363 +66,78 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
 
-The memory cgroup maintains a private ID infrastructure decoupled from
-the cgroup IDs for swapout records and shadow entries. The main
-motivation of this private ID infra is best described in the commit
-73f576c04b941 ("mm: memcontrol: fix cgroup creation failure after many
-small jobs").
+Remove the CONFIG_SHRINKER_DEBUG guards around mem_cgroup_ino() and
+mem_cgroup_get_from_ino(). These APIs provide a way to get a memcg's
+cgroup inode number and to look up a memcg from an inode number
+respectively.
 
-Unfortunetely some users have started exposing these private IDs to the
-userspace where they should have used the cgroup IDs which are already
-exposed to the userspace. Let's rename the memcg ID APIs to explicitly
-mark them private.
+Making these functions unconditionally available allows other in-kernel
+users to leverage them without requiring CONFIG_SHRINKER_DEBUG to be
+enabled.
 
-No functional change is intended.
+No functional change for existing users.
 
 Signed-off-by: Shakeel Butt <shakeel.butt@linux.dev>
 ---
- include/linux/memcontrol.h | 24 ++++++++++++++---
- mm/list_lru.c              |  2 +-
- mm/memcontrol-v1.c         |  6 ++---
- mm/memcontrol-v1.h         |  4 +--
- mm/memcontrol.c            | 55 +++++++++++++++++++++-----------------
- mm/workingset.c            |  8 +++---
- 6 files changed, 61 insertions(+), 38 deletions(-)
+ include/linux/memcontrol.h | 4 ----
+ mm/memcontrol.c            | 2 --
+ 2 files changed, 6 deletions(-)
 
 diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-index fd400082313a..1c4224bcfb23 100644
+index 1c4224bcfb23..77f32be26ea8 100644
 --- a/include/linux/memcontrol.h
 +++ b/include/linux/memcontrol.h
-@@ -65,7 +65,7 @@ struct mem_cgroup_reclaim_cookie {
- 
- #define MEM_CGROUP_ID_SHIFT	16
- 
--struct mem_cgroup_id {
-+struct mem_cgroup_private_id {
- 	int id;
- 	refcount_t ref;
- };
-@@ -191,7 +191,7 @@ struct mem_cgroup {
- 	struct cgroup_subsys_state css;
- 
- 	/* Private memcg ID. Used to ID objects that outlive the cgroup */
--	struct mem_cgroup_id id;
-+	struct mem_cgroup_private_id id;
- 
- 	/* Accounted resources */
- 	struct page_counter memory;		/* Both v1 & v2 */
-@@ -821,13 +821,19 @@ void mem_cgroup_iter_break(struct mem_cgroup *, struct mem_cgroup *);
- void mem_cgroup_scan_tasks(struct mem_cgroup *memcg,
- 			   int (*)(struct task_struct *, void *), void *arg);
- 
--static inline unsigned short mem_cgroup_id(struct mem_cgroup *memcg)
-+static inline unsigned short mem_cgroup_private_id(struct mem_cgroup *memcg)
- {
- 	if (mem_cgroup_disabled())
- 		return 0;
- 
- 	return memcg->id.id;
+@@ -836,14 +836,12 @@ static inline unsigned short mem_cgroup_id(struct mem_cgroup *memcg)
  }
-+struct mem_cgroup *mem_cgroup_from_private_id(unsigned short id);
-+
-+static inline unsigned short mem_cgroup_id(struct mem_cgroup *memcg)
-+{
-+	return mem_cgroup_private_id(memcg);
-+}
  struct mem_cgroup *mem_cgroup_from_id(unsigned short id);
  
- #ifdef CONFIG_SHRINKER_DEBUG
-@@ -1290,6 +1296,18 @@ static inline struct mem_cgroup *mem_cgroup_from_id(unsigned short id)
+-#ifdef CONFIG_SHRINKER_DEBUG
+ static inline unsigned long mem_cgroup_ino(struct mem_cgroup *memcg)
+ {
+ 	return memcg ? cgroup_ino(memcg->css.cgroup) : 0;
+ }
+ 
+ struct mem_cgroup *mem_cgroup_get_from_ino(unsigned long ino);
+-#endif
+ 
+ static inline struct mem_cgroup *mem_cgroup_from_seq(struct seq_file *m)
+ {
+@@ -1308,7 +1306,6 @@ static inline struct mem_cgroup *mem_cgroup_from_private_id(unsigned short id)
  	return NULL;
  }
  
-+static inline unsigned short mem_cgroup_private_id(struct mem_cgroup *memcg)
-+{
-+	return 0;
-+}
-+
-+static inline struct mem_cgroup *mem_cgroup_from_private_id(unsigned short id)
-+{
-+	WARN_ON_ONCE(id);
-+	/* XXX: This should always return root_mem_cgroup */
-+	return NULL;
-+}
-+
- #ifdef CONFIG_SHRINKER_DEBUG
+-#ifdef CONFIG_SHRINKER_DEBUG
  static inline unsigned long mem_cgroup_ino(struct mem_cgroup *memcg)
  {
-diff --git a/mm/list_lru.c b/mm/list_lru.c
-index 37b642f6cbda..13b9f66d950e 100644
---- a/mm/list_lru.c
-+++ b/mm/list_lru.c
-@@ -369,7 +369,7 @@ unsigned long list_lru_walk_node(struct list_lru *lru, int nid,
+ 	return 0;
+@@ -1318,7 +1315,6 @@ static inline struct mem_cgroup *mem_cgroup_get_from_ino(unsigned long ino)
+ {
+ 	return NULL;
+ }
+-#endif
  
- 		xa_for_each(&lru->xa, index, mlru) {
- 			rcu_read_lock();
--			memcg = mem_cgroup_from_id(index);
-+			memcg = mem_cgroup_from_private_id(index);
- 			if (!mem_cgroup_tryget(memcg)) {
- 				rcu_read_unlock();
- 				continue;
-diff --git a/mm/memcontrol-v1.c b/mm/memcontrol-v1.c
-index 0b50cb122ff3..0e3d972fad33 100644
---- a/mm/memcontrol-v1.c
-+++ b/mm/memcontrol-v1.c
-@@ -635,14 +635,14 @@ void memcg1_swapout(struct folio *folio, swp_entry_t entry)
- 	 * have an ID allocated to it anymore, charge the closest online
- 	 * ancestor for the swap instead and transfer the memory+swap charge.
- 	 */
--	swap_memcg = mem_cgroup_id_get_online(memcg);
-+	swap_memcg = mem_cgroup_private_id_get_online(memcg);
- 	nr_entries = folio_nr_pages(folio);
- 	/* Get references for the tail pages, too */
- 	if (nr_entries > 1)
--		mem_cgroup_id_get_many(swap_memcg, nr_entries - 1);
-+		mem_cgroup_private_id_get_many(swap_memcg, nr_entries - 1);
- 	mod_memcg_state(swap_memcg, MEMCG_SWAP, nr_entries);
- 
--	swap_cgroup_record(folio, mem_cgroup_id(swap_memcg), entry);
-+	swap_cgroup_record(folio, mem_cgroup_private_id(swap_memcg), entry);
- 
- 	folio_unqueue_deferred_split(folio);
- 	folio->memcg_data = 0;
-diff --git a/mm/memcontrol-v1.h b/mm/memcontrol-v1.h
-index e92b21af92b1..49933925b4ba 100644
---- a/mm/memcontrol-v1.h
-+++ b/mm/memcontrol-v1.h
-@@ -28,8 +28,8 @@ unsigned long memcg_events(struct mem_cgroup *memcg, int event);
- unsigned long memcg_page_state_output(struct mem_cgroup *memcg, int item);
- int memory_stat_show(struct seq_file *m, void *v);
- 
--void mem_cgroup_id_get_many(struct mem_cgroup *memcg, unsigned int n);
--struct mem_cgroup *mem_cgroup_id_get_online(struct mem_cgroup *memcg);
-+void mem_cgroup_private_id_get_many(struct mem_cgroup *memcg, unsigned int n);
-+struct mem_cgroup *mem_cgroup_private_id_get_online(struct mem_cgroup *memcg);
- 
- /* Cgroup v1-specific declarations */
- #ifdef CONFIG_MEMCG_V1
+ static inline struct mem_cgroup *mem_cgroup_from_seq(struct seq_file *m)
+ {
 diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index 75fc22a33b28..25ad8433df2e 100644
+index 25ad8433df2e..e85816960e38 100644
 --- a/mm/memcontrol.c
 +++ b/mm/memcontrol.c
-@@ -3554,38 +3554,38 @@ static void memcg_wb_domain_size_changed(struct mem_cgroup *memcg)
-  */
- 
- #define MEM_CGROUP_ID_MAX	((1UL << MEM_CGROUP_ID_SHIFT) - 1)
--static DEFINE_XARRAY_ALLOC1(mem_cgroup_ids);
-+static DEFINE_XARRAY_ALLOC1(mem_cgroup_private_ids);
- 
--static void mem_cgroup_id_remove(struct mem_cgroup *memcg)
-+static void mem_cgroup_private_id_remove(struct mem_cgroup *memcg)
- {
- 	if (memcg->id.id > 0) {
--		xa_erase(&mem_cgroup_ids, memcg->id.id);
-+		xa_erase(&mem_cgroup_private_ids, memcg->id.id);
- 		memcg->id.id = 0;
- 	}
+@@ -3620,7 +3620,6 @@ struct mem_cgroup *mem_cgroup_from_id(unsigned short id)
+ 	return mem_cgroup_from_private_id(id);
  }
  
--void __maybe_unused mem_cgroup_id_get_many(struct mem_cgroup *memcg,
-+void __maybe_unused mem_cgroup_private_id_get_many(struct mem_cgroup *memcg,
- 					   unsigned int n)
+-#ifdef CONFIG_SHRINKER_DEBUG
+ struct mem_cgroup *mem_cgroup_get_from_ino(unsigned long ino)
  {
- 	refcount_add(n, &memcg->id.ref);
- }
+ 	struct cgroup *cgrp;
+@@ -3641,7 +3640,6 @@ struct mem_cgroup *mem_cgroup_get_from_ino(unsigned long ino)
  
--static void mem_cgroup_id_put_many(struct mem_cgroup *memcg, unsigned int n)
-+static void mem_cgroup_private_id_put_many(struct mem_cgroup *memcg, unsigned int n)
- {
- 	if (refcount_sub_and_test(n, &memcg->id.ref)) {
--		mem_cgroup_id_remove(memcg);
-+		mem_cgroup_private_id_remove(memcg);
- 
- 		/* Memcg ID pins CSS */
- 		css_put(&memcg->css);
- 	}
- }
- 
--static inline void mem_cgroup_id_put(struct mem_cgroup *memcg)
-+static inline void mem_cgroup_private_id_put(struct mem_cgroup *memcg)
- {
--	mem_cgroup_id_put_many(memcg, 1);
-+	mem_cgroup_private_id_put_many(memcg, 1);
- }
- 
--struct mem_cgroup *mem_cgroup_id_get_online(struct mem_cgroup *memcg)
-+struct mem_cgroup *mem_cgroup_private_id_get_online(struct mem_cgroup *memcg)
- {
- 	while (!refcount_inc_not_zero(&memcg->id.ref)) {
- 		/*
-@@ -3604,15 +3604,20 @@ struct mem_cgroup *mem_cgroup_id_get_online(struct mem_cgroup *memcg)
- }
- 
- /**
-- * mem_cgroup_from_id - look up a memcg from a memcg id
-+ * mem_cgroup_from_private_id - look up a memcg from a memcg id
-  * @id: the memcg id to look up
-  *
-  * Caller must hold rcu_read_lock().
-  */
--struct mem_cgroup *mem_cgroup_from_id(unsigned short id)
-+struct mem_cgroup *mem_cgroup_from_private_id(unsigned short id)
- {
- 	WARN_ON_ONCE(!rcu_read_lock_held());
--	return xa_load(&mem_cgroup_ids, id);
-+	return xa_load(&mem_cgroup_private_ids, id);
-+}
-+
-+struct mem_cgroup *mem_cgroup_from_id(unsigned short id)
-+{
-+	return mem_cgroup_from_private_id(id);
- }
- 
- #ifdef CONFIG_SHRINKER_DEBUG
-@@ -3711,7 +3716,7 @@ static struct mem_cgroup *mem_cgroup_alloc(struct mem_cgroup *parent)
- 	if (!memcg)
- 		return ERR_PTR(-ENOMEM);
- 
--	error = xa_alloc(&mem_cgroup_ids, &memcg->id.id, NULL,
-+	error = xa_alloc(&mem_cgroup_private_ids, &memcg->id.id, NULL,
- 			 XA_LIMIT(1, MEM_CGROUP_ID_MAX), GFP_KERNEL);
- 	if (error)
- 		goto fail;
-@@ -3771,7 +3776,7 @@ static struct mem_cgroup *mem_cgroup_alloc(struct mem_cgroup *parent)
- 	lru_gen_init_memcg(memcg);
  	return memcg;
- fail:
--	mem_cgroup_id_remove(memcg);
-+	mem_cgroup_private_id_remove(memcg);
- 	__mem_cgroup_free(memcg);
- 	return ERR_PTR(error);
  }
-@@ -3854,7 +3859,7 @@ static int mem_cgroup_css_online(struct cgroup_subsys_state *css)
- 	css_get(css);
+-#endif
  
- 	/*
--	 * Ensure mem_cgroup_from_id() works once we're fully online.
-+	 * Ensure mem_cgroup_from_private_id() works once we're fully online.
- 	 *
- 	 * We could do this earlier and require callers to filter with
- 	 * css_tryget_online(). But right now there are no users that
-@@ -3863,13 +3868,13 @@ static int mem_cgroup_css_online(struct cgroup_subsys_state *css)
- 	 * publish it here at the end of onlining. This matches the
- 	 * regular ID destruction during offlining.
- 	 */
--	xa_store(&mem_cgroup_ids, memcg->id.id, memcg, GFP_KERNEL);
-+	xa_store(&mem_cgroup_private_ids, memcg->id.id, memcg, GFP_KERNEL);
- 
- 	return 0;
- offline_kmem:
- 	memcg_offline_kmem(memcg);
- remove_id:
--	mem_cgroup_id_remove(memcg);
-+	mem_cgroup_private_id_remove(memcg);
- 	return -ENOMEM;
- }
- 
-@@ -3892,7 +3897,7 @@ static void mem_cgroup_css_offline(struct cgroup_subsys_state *css)
- 
- 	drain_all_stock(memcg);
- 
--	mem_cgroup_id_put(memcg);
-+	mem_cgroup_private_id_put(memcg);
- }
- 
- static void mem_cgroup_css_released(struct cgroup_subsys_state *css)
-@@ -4779,7 +4784,7 @@ int mem_cgroup_swapin_charge_folio(struct folio *folio, struct mm_struct *mm,
- 
- 	id = lookup_swap_cgroup_id(entry);
- 	rcu_read_lock();
--	memcg = mem_cgroup_from_id(id);
-+	memcg = mem_cgroup_from_private_id(id);
- 	if (!memcg || !css_tryget_online(&memcg->css))
- 		memcg = get_mem_cgroup_from_mm(mm);
- 	rcu_read_unlock();
-@@ -5174,22 +5179,22 @@ int __mem_cgroup_try_charge_swap(struct folio *folio, swp_entry_t entry)
- 		return 0;
- 	}
- 
--	memcg = mem_cgroup_id_get_online(memcg);
-+	memcg = mem_cgroup_private_id_get_online(memcg);
- 
- 	if (!mem_cgroup_is_root(memcg) &&
- 	    !page_counter_try_charge(&memcg->swap, nr_pages, &counter)) {
- 		memcg_memory_event(memcg, MEMCG_SWAP_MAX);
- 		memcg_memory_event(memcg, MEMCG_SWAP_FAIL);
--		mem_cgroup_id_put(memcg);
-+		mem_cgroup_private_id_put(memcg);
- 		return -ENOMEM;
- 	}
- 
- 	/* Get references for the tail pages, too */
- 	if (nr_pages > 1)
--		mem_cgroup_id_get_many(memcg, nr_pages - 1);
-+		mem_cgroup_private_id_get_many(memcg, nr_pages - 1);
- 	mod_memcg_state(memcg, MEMCG_SWAP, nr_pages);
- 
--	swap_cgroup_record(folio, mem_cgroup_id(memcg), entry);
-+	swap_cgroup_record(folio, mem_cgroup_private_id(memcg), entry);
- 
- 	return 0;
- }
-@@ -5206,7 +5211,7 @@ void __mem_cgroup_uncharge_swap(swp_entry_t entry, unsigned int nr_pages)
- 
- 	id = swap_cgroup_clear(entry, nr_pages);
- 	rcu_read_lock();
--	memcg = mem_cgroup_from_id(id);
-+	memcg = mem_cgroup_from_private_id(id);
- 	if (memcg) {
- 		if (!mem_cgroup_is_root(memcg)) {
- 			if (do_memsw_account())
-@@ -5215,7 +5220,7 @@ void __mem_cgroup_uncharge_swap(swp_entry_t entry, unsigned int nr_pages)
- 				page_counter_uncharge(&memcg->swap, nr_pages);
- 		}
- 		mod_memcg_state(memcg, MEMCG_SWAP, -nr_pages);
--		mem_cgroup_id_put_many(memcg, nr_pages);
-+		mem_cgroup_private_id_put_many(memcg, nr_pages);
- 	}
- 	rcu_read_unlock();
- }
-diff --git a/mm/workingset.c b/mm/workingset.c
-index e9f05634747a..13422d304715 100644
---- a/mm/workingset.c
-+++ b/mm/workingset.c
-@@ -254,7 +254,7 @@ static void *lru_gen_eviction(struct folio *folio)
- 	hist = lru_hist_from_seq(min_seq);
- 	atomic_long_add(delta, &lrugen->evicted[hist][type][tier]);
- 
--	return pack_shadow(mem_cgroup_id(memcg), pgdat, token, workingset);
-+	return pack_shadow(mem_cgroup_private_id(memcg), pgdat, token, workingset);
- }
- 
- /*
-@@ -271,7 +271,7 @@ static bool lru_gen_test_recent(void *shadow, struct lruvec **lruvec,
- 
- 	unpack_shadow(shadow, &memcg_id, &pgdat, token, workingset);
- 
--	memcg = mem_cgroup_from_id(memcg_id);
-+	memcg = mem_cgroup_from_private_id(memcg_id);
- 	*lruvec = mem_cgroup_lruvec(memcg, pgdat);
- 
- 	max_seq = READ_ONCE((*lruvec)->lrugen.max_seq);
-@@ -395,7 +395,7 @@ void *workingset_eviction(struct folio *folio, struct mem_cgroup *target_memcg)
- 
- 	lruvec = mem_cgroup_lruvec(target_memcg, pgdat);
- 	/* XXX: target_memcg can be NULL, go through lruvec */
--	memcgid = mem_cgroup_id(lruvec_memcg(lruvec));
-+	memcgid = mem_cgroup_private_id(lruvec_memcg(lruvec));
- 	eviction = atomic_long_read(&lruvec->nonresident_age);
- 	eviction >>= bucket_order;
- 	workingset_age_nonresident(lruvec, folio_nr_pages(folio));
-@@ -456,7 +456,7 @@ bool workingset_test_recent(void *shadow, bool file, bool *workingset,
- 	 * would be better if the root_mem_cgroup existed in all
- 	 * configurations instead.
- 	 */
--	eviction_memcg = mem_cgroup_from_id(memcgid);
-+	eviction_memcg = mem_cgroup_from_private_id(memcgid);
- 	if (!mem_cgroup_tryget(eviction_memcg))
- 		eviction_memcg = NULL;
- 	rcu_read_unlock();
+ static void free_mem_cgroup_per_node_info(struct mem_cgroup_per_node *pn)
+ {
 -- 
 2.47.3
 
