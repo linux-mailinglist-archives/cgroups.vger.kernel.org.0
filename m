@@ -1,41 +1,41 @@
-Return-Path: <cgroups+bounces-12723-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-12713-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0A41ECDDC78
-	for <lists+cgroups@lfdr.de>; Thu, 25 Dec 2025 13:48:16 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 38C41CDDC81
+	for <lists+cgroups@lfdr.de>; Thu, 25 Dec 2025 13:49:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 19D42301E6DA
-	for <lists+cgroups@lfdr.de>; Thu, 25 Dec 2025 12:48:03 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id F181C3080645
+	for <lists+cgroups@lfdr.de>; Thu, 25 Dec 2025 12:46:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A9E032862D;
-	Thu, 25 Dec 2025 12:46:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1CA9432570E;
+	Thu, 25 Dec 2025 12:46:01 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 485ED19D8AC;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D89C23242A4;
 	Thu, 25 Dec 2025 12:45:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1766666763; cv=none; b=tgZ8v93UpRzWM/VQvwXkPv4GRXJIF1BWb+J20khZlTRuVVbhifC1HBBk8RW2wWqjXf2vqPeaSUxdBDdYgfrjdD1NMq5skDv3o3rsS7Vj+sdUGT6/OjtuCxC7U3pUskzrqI5q1OY6ZJKsvYnmEWZQuYKqDbFAWqhaW9hIBC2bMg4=
+	t=1766666760; cv=none; b=cXFh0pqAYlGO+da2WixjNKoi9pbc6s+ZU2xWX/cd3zqyaBM/Fjdrmocp9qkYs/iKs0ioc4B0efhdI7Os/lCwH2GRnDPaJKpC4g5srbctKUPutEoTB1a64/2+w6GlZae4WNn/lmETCNEpBvtEI2HkDWeDejjmFOcVNxW4NiHjpMs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1766666763; c=relaxed/simple;
-	bh=jIoHEZruMC6rQrpAdDaA2ixzAXbwvcARUL0amQaZ/Qk=;
+	s=arc-20240116; t=1766666760; c=relaxed/simple;
+	bh=MXyGhiP8Ypkw+qa7sBXRPy6LWOA4tDDAUtV6YiFZV+c=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=rpXHOblgAnvkQAfHXnQ9H0uDabcc6BsUSN8OLJc2khFvoe2ceBNpcY6bKQhOIeJnmGRBRRun65zkzq46g54qoi2frnCskPdKxj5XpfpSHiy1rAE3dXuYmsLAevBqlEMmSe4alt2ncp5wRCSK8GCbzjLJ/NhPA4pLkT/Pz/NENRc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=none smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+	 MIME-Version; b=ualMs+ytKwFBrud10A0b3RuZMRUdr+y/UHheLJUs6j2mLfT2jRFZtJWBjBB90dF1gyBuHBBU18pkIl0pYY1SWaHh3vNP3Z85PWeBpDFQZ9wD9a8SEtHttYFUDsc7eAR5j67r9mq3CD1Ga+Dl+5lnjC/3K/swRj9dBhL8jczjxiE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=none smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.170])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTPS id 4dcT3q5FTjzYQv6s;
-	Thu, 25 Dec 2025 20:45:11 +0800 (CST)
+Received: from mail.maildlp.com (unknown [172.19.163.198])
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTPS id 4dcT4B5hDczKHMlT;
+	Thu, 25 Dec 2025 20:45:30 +0800 (CST)
 Received: from mail02.huawei.com (unknown [10.116.40.128])
-	by mail.maildlp.com (Postfix) with ESMTP id 159634056E;
+	by mail.maildlp.com (Postfix) with ESMTP id 25E6B40574;
 	Thu, 25 Dec 2025 20:45:52 +0800 (CST)
 Received: from hulk-vt.huawei.com (unknown [10.67.174.121])
-	by APP4 (Coremail) with SMTP id gCh0CgDHdfb1MU1pT76_BQ--.27441S20;
-	Thu, 25 Dec 2025 20:45:51 +0800 (CST)
+	by APP4 (Coremail) with SMTP id gCh0CgDHdfb1MU1pT76_BQ--.27441S21;
+	Thu, 25 Dec 2025 20:45:52 +0800 (CST)
 From: Chen Ridong <chenridong@huaweicloud.com>
 To: longman@redhat.com,
 	tj@kernel.org,
@@ -45,9 +45,9 @@ Cc: cgroups@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	lujialin4@huawei.com,
 	chenridong@huaweicloud.com
-Subject: [PATCH RESEND -next 18/21] cpuset: introduce validate_remote_partition
-Date: Thu, 25 Dec 2025 12:30:55 +0000
-Message-Id: <20251225123058.231765-19-chenridong@huaweicloud.com>
+Subject: [PATCH RESEND -next 19/21] cpuset: simplify the update_prstate() function
+Date: Thu, 25 Dec 2025 12:30:56 +0000
+Message-Id: <20251225123058.231765-20-chenridong@huaweicloud.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20251225123058.231765-1-chenridong@huaweicloud.com>
 References: <20251225123058.231765-1-chenridong@huaweicloud.com>
@@ -58,10 +58,10 @@ List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:gCh0CgDHdfb1MU1pT76_BQ--.27441S20
-X-Coremail-Antispam: 1UD129KBjvJXoW3XF4rtr15Gr4UuryxtF17Awb_yoW3Kw1xpF
-	y7Gr4xKFWUJr15C34UJan7uwn5KwsrtF9Fyw13X3ySvFy7A34vyFyjk390ya4UW3srW345
-	Za90gr47WFy7AwUanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+X-CM-TRANSID:gCh0CgDHdfb1MU1pT76_BQ--.27441S21
+X-Coremail-Antispam: 1UD129KBjvJXoWxXFyxZw47Zw43Jw4xGry7Awb_yoWrWrWfpr
+	yYkFWIgFWUtr15u3s8Gan7uw4Fgw4ktFyjyr9xW34rX3W2yas29Fyjy39ayay5WF9rG3y5
+	Z3Z0gr48GF47AwUanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
 	9KBjDU0xBIdaVrnRJUUUPY14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
 	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_JF0E3s1l82xGYI
 	kIc2x26xkF7I0E14v26ryj6s0DM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2
@@ -80,227 +80,119 @@ X-CM-SenderInfo: hfkh02xlgr0w46kxt4xhlfz01xgou0bp/
 
 From: Chen Ridong <chenridong@huawei.com>
 
-This introduces validate_remote_partition() to consolidate validation
-logic for remote partition operations. It will be used by both
-remote_partition_enable() and remote_partition_disable().
+This patch introduces partition_switch to handle both local partition
+and remote partition root state switches between "root" and "isolated".
+It first validates the partition viavalidate_partition() to check its
+validity. If validation fails, it returns an error and disables the
+partition; if validation passes, it enables the partition with the new
+root state.
 
-The new function performs the following checks:
-1. Privilege requirement: only CAP_SYS_ADMIN can add CPUs to a
-   remote partition.
-2. Conflict check: ensure added CPUs are not in any existing
-   sub-partitions and that there is at least one online CPU in the
-   excluded mask.
-3. Resource check: prevent allocating all top cpuset's effective CPUs
-   to remote partitions.
-4. Common partition validation.
-
-Additionally, this patch adds error handling for remote_partition_disable()
-so that cs->prs_err can be updated centrally.
+With partition_switch introduced, update_prstate() can be simplified. The
+partition-related assignments in update_prstate() are redundant, as these
+operations are already handled by partition_enable() and
+partition_disable(). They are therefore removed.
 
 Signed-off-by: Chen Ridong <chenridong@huawei.com>
 ---
- kernel/cgroup/cpuset.c | 118 +++++++++++++++++++++--------------------
- 1 file changed, 60 insertions(+), 58 deletions(-)
+ kernel/cgroup/cpuset.c | 58 +++++++++++++++++-------------------------
+ 1 file changed, 23 insertions(+), 35 deletions(-)
 
 diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
-index 183975c86d0c..9a7b02d79fee 100644
+index 9a7b02d79fee..7f46cead4d97 100644
 --- a/kernel/cgroup/cpuset.c
 +++ b/kernel/cgroup/cpuset.c
-@@ -1583,6 +1583,47 @@ static void partition_update(struct cpuset *cs, int prs, struct cpumask *xcpus,
+@@ -1538,6 +1538,24 @@ static void partition_disable(struct cpuset *cs, struct cpuset *parent,
  	notify_partition_change(cs, old_prs);
  }
  
-+/**
-+ * validate_remote_partition - Validate for remote partition
-+ * @cs: Target cpuset to validate
-+ * @new_prs: New partition root state to validate
-+ * @excpus: New exclusive effectuve CPUs mask to validate
-+ * @add: exclusive CPUs to be added
-+ * @del: exclusive CPUs to be deleted, can be NULL
-+ *
-+ * Return: PERR_NONE if validation passes, appropriate error code otherwise
-+ */
-+static enum prs_errcode validate_remote_partition(struct cpuset *cs,
-+	int new_prs, struct cpumask *excpus, struct cpumask *add, struct cpumask *del)
++static int partition_switch(struct cpuset *cs, int new_prs)
 +{
-+	/*
-+	 * The user must have sysadmin privilege.
-+	 */
-+	if (!cpumask_empty(add) && !capable(CAP_SYS_ADMIN))
-+		return PERR_ACCESS;
-+
-+	/*
-+	 * Additions of remote CPUs is only allowed if those CPUs are
-+	 * not allocated to other partitions and there are effective_cpus
-+	 * left in the top cpuset.
-+	 *
-+	 * The effective_xcpus mask can contain offline CPUs, but there must
-+	 * be at least one or more online CPUs present before it can be enabled.
-+	 */
-+	if (cpumask_intersects(add, subpartitions_cpus) ||
-+	    !cpumask_intersects(excpus, cpu_active_mask))
-+		return PERR_INVCPUS;
-+
-+	/*
-+	 * It is not allowed that all effective_cpus of top_cpuset are
-+	 * distributed remote partition
-+	 */
-+	if (cpumask_subset(top_cpuset.effective_cpus, excpus))
-+		return PERR_NOCPUS;
-+
-+	return validate_partition(cs, new_prs, excpus, add, del);
-+}
-+
- /*
-  * remote_partition_enable - Enable current cpuset as a remote partition root
-  * @cs: the cpuset to update
-@@ -1596,31 +1637,15 @@ static void partition_update(struct cpuset *cs, int prs, struct cpumask *xcpus,
- static int remote_partition_enable(struct cpuset *cs, int new_prs,
- 				   struct tmpmasks *tmp)
- {
--	/*
--	 * The user must have sysadmin privilege.
--	 */
--	if (!capable(CAP_SYS_ADMIN))
--		return PERR_ACCESS;
- 
--	/*
--	 * The requested exclusive_cpus must not be allocated to other
--	 * partitions and it can't use up all the root's effective_cpus.
--	 *
--	 * The effective_xcpus mask can contain offline CPUs, but there must
--	 * be at least one or more online CPUs present before it can be enabled.
--	 *
--	 * Note that creating a remote partition with any local partition root
--	 * above it or remote partition root underneath it is not allowed.
--	 */
 +	enum prs_errcode err;
++	struct cpuset *parent;
 +
- 	compute_excpus(cs, tmp->new_cpus);
- 	WARN_ON_ONCE(cpumask_intersects(tmp->new_cpus, subpartitions_cpus));
--	if (!cpumask_intersects(tmp->new_cpus, cpu_active_mask) ||
--	    cpumask_subset(top_cpuset.effective_cpus, tmp->new_cpus))
--		return PERR_INVCPUS;
--	if (((new_prs == PRS_ISOLATED) &&
--	     !isolated_cpus_can_update(tmp->new_cpus, NULL)) ||
--	    prstate_housekeeping_conflict(new_prs, tmp->new_cpus))
--		return PERR_HKEEPING;
-+	err = validate_remote_partition(cs, new_prs, tmp->new_cpus,
-+					tmp->new_cpus, NULL);
++	lockdep_assert_held(&cpuset_mutex);
++	WARN_ON_ONCE(new_prs < 0 || !is_partition_valid(cs));
++	WARN_ON_ONCE(!cpuset_v2());
++
++	err = validate_partition(cs, new_prs, cs->effective_cpus,
++				 cs->effective_cpus, NULL);
 +	if (err)
 +		return err;
++	parent = is_remote_partition(cs) ? NULL : parent_cs(cs);
++	partition_enable(cs, parent, new_prs, cs->effective_cpus);
++	return 0;
++}
++
+ /**
+  * partition_update - Update an existing partition configuration
+  * @cs: The cpuset to update
+@@ -2784,7 +2802,6 @@ static int update_prstate(struct cpuset *cs, int new_prs)
+ 	int err = PERR_NONE, old_prs = cs->partition_root_state;
+ 	struct cpuset *parent = parent_cs(cs);
+ 	struct tmpmasks tmpmask;
+-	bool isolcpus_updated = false;
  
- 	partition_enable(cs, NULL, new_prs, tmp->new_cpus);
- 	/*
-@@ -1640,7 +1665,8 @@ static int remote_partition_enable(struct cpuset *cs, int new_prs,
-  *
-  * cpuset_mutex must be held by the caller.
-  */
--static void remote_partition_disable(struct cpuset *cs, struct tmpmasks *tmp)
-+static void remote_partition_disable(struct cpuset *cs,
-+		enum prs_errcode prs_err, struct tmpmasks *tmp)
- {
- 	int new_prs;
- 
-@@ -1654,8 +1680,8 @@ static void remote_partition_disable(struct cpuset *cs, struct tmpmasks *tmp)
- 	WARN_ON_ONCE(!cpumask_subset(cs->effective_xcpus, subpartitions_cpus) &&
- 		     !cpumask_empty(subpartitions_cpus));
- 
--	new_prs = cs->prs_err ? -cs->partition_root_state : PRS_MEMBER;
--	partition_disable(cs, NULL, new_prs, cs->prs_err);
-+	new_prs = prs_err ? -cs->partition_root_state : PRS_MEMBER;
-+	partition_disable(cs, NULL, new_prs, prs_err);
- 
- 	/*
- 	 * Propagate changes in top_cpuset's effective_cpus down the hierarchy.
-@@ -1677,39 +1703,19 @@ static void remote_partition_disable(struct cpuset *cs, struct tmpmasks *tmp)
- static void remote_cpus_update(struct cpuset *cs, struct cpumask *xcpus,
- 			       struct cpumask *excpus, struct tmpmasks *tmp)
- {
--	int prs = cs->partition_root_state;
-+	enum prs_errcode err;
- 
- 	if (WARN_ON_ONCE(!is_remote_partition(cs)))
- 		return;
- 
- 	WARN_ON_ONCE(!cpumask_subset(cs->effective_xcpus, subpartitions_cpus));
--
--	if (cpumask_empty(excpus)) {
--		cs->prs_err = PERR_CPUSEMPTY;
--		goto invalidate;
--	}
--
- 	cpumask_andnot(tmp->addmask, excpus, cs->effective_xcpus);
- 	cpumask_andnot(tmp->delmask, cs->effective_xcpus, excpus);
- 
--	/*
--	 * Additions of remote CPUs is only allowed if those CPUs are
--	 * not allocated to other partitions and there are effective_cpus
--	 * left in the top cpuset.
--	 */
--	if (!cpumask_empty(tmp->addmask)) {
--		WARN_ON_ONCE(cpumask_intersects(tmp->addmask, subpartitions_cpus));
--		if (!capable(CAP_SYS_ADMIN))
--			cs->prs_err = PERR_ACCESS;
--		else if (cpumask_intersects(tmp->addmask, subpartitions_cpus) ||
--			 cpumask_subset(top_cpuset.effective_cpus, tmp->addmask))
--			cs->prs_err = PERR_NOCPUS;
--		else if ((prs == PRS_ISOLATED) &&
--			 !isolated_cpus_can_update(tmp->addmask, tmp->delmask))
--			cs->prs_err = PERR_HKEEPING;
--		if (cs->prs_err)
--			goto invalidate;
--	}
-+	err = validate_remote_partition(cs, cs->partition_root_state, excpus,
-+					tmp->addmask, tmp->delmask);
-+	if (err)
-+		return remote_partition_disable(cs, err, tmp);
- 
- 	partition_update(cs, cs->partition_root_state, xcpus, excpus, tmp);
- 	/*
-@@ -1718,9 +1724,6 @@ static void remote_cpus_update(struct cpuset *cs, struct cpumask *xcpus,
- 	cpuset_update_tasks_cpumask(&top_cpuset, tmp->new_cpus);
- 	update_sibling_cpumasks(&top_cpuset, NULL, tmp);
- 	return;
--
--invalidate:
--	remote_partition_disable(cs, tmp);
- }
- 
- static bool is_user_xcpus_exclusive(struct cpuset *cs)
-@@ -2302,11 +2305,11 @@ static void partition_cpus_change(struct cpuset *cs, struct cpuset *trialcs,
- 	prs_err = validate_partition(cs, trialcs->partition_root_state,
- 			trialcs->effective_xcpus, trialcs->effective_xcpus, NULL);
- 	if (prs_err)
--		trialcs->prs_err = cs->prs_err = prs_err;
-+		trialcs->prs_err = prs_err;
- 
- 	if (is_remote_partition(cs)) {
- 		if (trialcs->prs_err)
--			remote_partition_disable(cs, tmp);
-+			remote_partition_disable(cs, trialcs->prs_err, tmp);
+ 	if (old_prs == new_prs)
+ 		return 0;
+@@ -2833,16 +2850,8 @@ static int update_prstate(struct cpuset *cs, int new_prs)
  		else
- 			remote_cpus_update(cs, trialcs->exclusive_cpus,
- 					   trialcs->effective_xcpus, tmp);
-@@ -2846,7 +2849,7 @@ static int update_prstate(struct cpuset *cs, int new_prs)
- 		 * disables child partitions.
- 		 */
- 		if (is_remote_partition(cs))
--			remote_partition_disable(cs, &tmpmask);
-+			remote_partition_disable(cs, PERR_NONE, &tmpmask);
- 		else
- 			local_partition_disable(cs, PERR_NONE, &tmpmask);
+ 			err = remote_partition_enable(cs, new_prs, &tmpmask);
+ 	} else if (old_prs && new_prs) {
+-		/*
+-		 * A change in load balance state only, no change in cpumasks.
+-		 * Need to update isolated_cpus.
+-		 */
+-		if (((new_prs == PRS_ISOLATED) &&
+-		     !isolated_cpus_can_update(cs->effective_xcpus, NULL)) ||
+-		    prstate_housekeeping_conflict(new_prs, cs->effective_xcpus))
+-			err = PERR_HKEEPING;
+-		else
+-			isolcpus_updated = true;
++		/* Root state switches, eg, root --> isolated */
++		err = partition_switch(cs, new_prs);
+ 	} else {
  		/*
-@@ -3696,8 +3699,7 @@ static void cpuset_hotplug_update_tasks(struct cpuset *cs, struct tmpmasks *tmp)
- 		if (cpumask_empty(subpartitions_cpus) ||
- 		    (cpumask_empty(&new_cpus) &&
- 		     partition_is_populated(cs, NULL))) {
--			cs->prs_err = PERR_HOTPLUG;
--			remote_partition_disable(cs, tmp);
-+			remote_partition_disable(cs, PERR_HOTPLUG, tmp);
- 			compute_effective_cpumask(&new_cpus, cs, parent);
- 		}
- 		goto update_tasks;
+ 		 * Switching back to member is always allowed even if it
+@@ -2858,36 +2867,15 @@ static int update_prstate(struct cpuset *cs, int new_prs)
+ 		 */
+ 	}
+ out:
+-	/*
+-	 * Make partition invalid & disable CS_CPU_EXCLUSIVE if an error
+-	 * happens.
+-	 */
+-	if (err) {
+-		new_prs = -new_prs;
+-		update_partition_exclusive_flag(cs, new_prs);
+-	}
+-
+-	spin_lock_irq(&callback_lock);
+-	cs->partition_root_state = new_prs;
+-	WRITE_ONCE(cs->prs_err, err);
+-	if (!is_partition_valid(cs))
+-		reset_partition_data(cs);
+-	else if (isolcpus_updated)
+-		isolated_cpus_update(old_prs, new_prs, cs->effective_xcpus);
+-	spin_unlock_irq(&callback_lock);
+-	update_isolation_cpumasks();
++	/* Make partition invalid if an error happens */
++	if (err)
++		partition_disable(cs, parent, -new_prs, err);
+ 
+ 	/* Force update if switching back to member & update effective_xcpus */
+ 	update_cpumasks_hier(cs, &tmpmask, !new_prs);
+ 
+-	/* A newly created partition must have effective_xcpus set */
+-	WARN_ON_ONCE(!old_prs && (new_prs > 0)
+-			      && cpumask_empty(cs->effective_xcpus));
+-
+ 	/* Update sched domains and load balance flag */
+ 	update_partition_sd_lb(cs, old_prs);
+-
+-	notify_partition_change(cs, old_prs);
+ 	if (force_sd_rebuild)
+ 		rebuild_sched_domains_locked();
+ 	free_tmpmasks(&tmpmask);
 -- 
 2.34.1
 
