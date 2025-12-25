@@ -1,43 +1,99 @@
-Return-Path: <cgroups+bounces-12692-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-12693-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 36517CDD5CC
-	for <lists+cgroups@lfdr.de>; Thu, 25 Dec 2025 07:23:54 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1676BCDD6E5
+	for <lists+cgroups@lfdr.de>; Thu, 25 Dec 2025 08:30:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 035103017F1E
-	for <lists+cgroups@lfdr.de>; Thu, 25 Dec 2025 06:23:53 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 131733012942
+	for <lists+cgroups@lfdr.de>; Thu, 25 Dec 2025 07:30:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 060102D8362;
-	Thu, 25 Dec 2025 06:23:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A8FA32F5474;
+	Thu, 25 Dec 2025 07:30:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="UYfWmsNQ";
+	dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b="MQiBoPu0"
 X-Original-To: cgroups@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D9EA247280;
-	Thu, 25 Dec 2025 06:23:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC99A2D7DC0
+	for <cgroups@vger.kernel.org>; Thu, 25 Dec 2025 07:30:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1766643831; cv=none; b=C74pgPQ2ZyYHpUqFw72ax2jjMe7qd7k+2qMQ8I9PO+1ZtYlsD+u+EJacXVGPxf427987/9N2u1zVRJRyzSwHJ4vcVEgZaFxERXxY3JUEwZY4IGMqUiNT8MzhSgstBcTWDVFyq0gijf0z3lW/JU35RgbB9kJ+kknADzqqXo2SPV4=
+	t=1766647825; cv=none; b=Vt+tsrzUtVlk3qamZSK+ZYhEQ7xw0enkiNeqaqcAlvZhRjpWieIYQwzynUx9PRfUFCJ/wu8F+eq9q9Y19Vb9gkc9hapyqRM7nG8wLSUZXj1rSZDlMd4EQ/hPGhCwISzUSz4xT60W7GHXEQgmhWZIHvw9SiceYICdUkKbXPWfGP0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1766643831; c=relaxed/simple;
-	bh=IfPk9vsLXIaezG+bYlzWKQdFSsp2ueV4zEnCnbLHWRg=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=V+yjY/vHUkOh6l4tIz8jufhQTxYORBtRHwW6yY5xKOIgijLq+G5N8/zeczPrb9/RjOlg8PbL5M4T9lPYjCJEOlecEnK2LITnP38CIZvE1LDh9+BidnKdoFw84nBN7GvSi2I1ooMPp7qSUwCjpp+YS6FACX2gD0MYNDC5BLp+Eok=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=none smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.198])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTPS id 4dcJZx0GPnzYQtGK;
-	Thu, 25 Dec 2025 14:23:05 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.128])
-	by mail.maildlp.com (Postfix) with ESMTP id E20A440573;
-	Thu, 25 Dec 2025 14:23:44 +0800 (CST)
-Received: from [10.67.111.176] (unknown [10.67.111.176])
-	by APP4 (Coremail) with SMTP id gCh0CgAn1vZv2Exp596fBQ--.65098S2;
-	Thu, 25 Dec 2025 14:23:44 +0800 (CST)
-Message-ID: <644493f5-46df-45f7-a071-9ae7faae1f5c@huaweicloud.com>
-Date: Thu, 25 Dec 2025 14:23:42 +0800
+	s=arc-20240116; t=1766647825; c=relaxed/simple;
+	bh=OtUvLQfKemV9fXYyYNYTElN1Y3nmS2CqDBw54m7MmwU=;
+	h=From:Message-ID:Date:MIME-Version:Subject:To:Cc:References:
+	 In-Reply-To:Content-Type; b=hIUfsqHpnZfXTn4kp6esRL96wNH57pOSrjb0EMsPwqce+ZOsriOSFpVu3GBg6t7NBcv9OyDZ6HXYKHDeWjBaagZugwJke/pJouI+QnMdiu24ZT2NJGmczvQsIpgqrXh8d6FSBmqZYL7mz9YHPDcJFAlmirjst4fVCndixEwIg9U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=UYfWmsNQ; dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b=MQiBoPu0; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1766647821;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=imUhEqRS0tgd3QlSgHpKa13LPAK1msZVIQ2TW0Ef7sM=;
+	b=UYfWmsNQJnCXJr4L4hb/hIaRPJRUFYguNI5v/DkHhLUnbz/7Ya1jNs3prlqKwVJc7RJg97
+	e2jb3eSilfW2BhIL9YDInv/mPLQt6iJm29ozWz805XMSKnNGfevajx6PY0cirR31eqTve6
+	SOVSp0i2nes3B2aupOGplycnaADCxtI=
+Received: from mail-qv1-f69.google.com (mail-qv1-f69.google.com
+ [209.85.219.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-27-1y9rXaTaON683clrd3GODw-1; Thu, 25 Dec 2025 02:30:19 -0500
+X-MC-Unique: 1y9rXaTaON683clrd3GODw-1
+X-Mimecast-MFC-AGG-ID: 1y9rXaTaON683clrd3GODw_1766647819
+Received: by mail-qv1-f69.google.com with SMTP id 6a1803df08f44-88a3822c06bso180033396d6.2
+        for <cgroups@vger.kernel.org>; Wed, 24 Dec 2025 23:30:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=redhat.com; s=google; t=1766647819; x=1767252619; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:content-language:references
+         :cc:to:subject:user-agent:mime-version:date:message-id:from:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=imUhEqRS0tgd3QlSgHpKa13LPAK1msZVIQ2TW0Ef7sM=;
+        b=MQiBoPu00GdZyQMU8tfWeoeFOvZguvimB7+9dNLql02POnji4YqT3NkO/PEJcitmhU
+         4fzM3a9oxVJ9nXxCyuRw5OetQq9RbdvNKmaVZCDnrtGyWj82ftwUR242S2GIpWkWCgpf
+         PgpV7ZNZ3j1zCkJtbGkqpEPlthmyZxxyEgmBrZV9uvptYbYnt8WyOCNUDYlDgtCcDX66
+         xXNDa8z7/pkIAXo6A+DgPB+IYZUqS9hsFNwXRJnmfAv7Gpjqk8eFXmQLldU7qhGNdAGz
+         PAZdIOlO0BnuWQDGDbPpKb7blEE1e1EaVuUoKYROoL8WB83H/OGgMIgPMwpKRigpA0ki
+         2bQw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1766647819; x=1767252619;
+        h=content-transfer-encoding:in-reply-to:content-language:references
+         :cc:to:subject:user-agent:mime-version:date:message-id:from:x-gm-gg
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=imUhEqRS0tgd3QlSgHpKa13LPAK1msZVIQ2TW0Ef7sM=;
+        b=f/5JFeLYmGX4PG7IPsaL8H7pZSmujWQlWO5jn/ILvAGlq0/cvIB01aFbmLBBO3Ewhr
+         EZSwPrt6aokpnrtY9FuyAeHNKTUf/dOTcugfcGtVY1JRn85EBNiw+2Fjt8hjqn2nBqK+
+         UTJDRojrQtVt7PIjktPTyi8c3qVa+Qi5k3eWLqIFL7lanNRJvIsDqYkWBcRP3iRVjSuu
+         6jP97b5u/ycwZBOSTZSRhOnrYyylEuIrK3P1v7a4x+5xWbNNJZa3BFfyi5ASdr9+iz1n
+         QZ0nSI/I+2j3NZY8tOwAafAiDPEFfDtCi14fJVGRqQNBMuGxy7TbIGj3mlI+B+KDJbuW
+         AvXQ==
+X-Gm-Message-State: AOJu0YwR4C9yC8CHOLaUJF4I25mRoauY9RZeIGfzbNh66JHhn4wSwSWI
+	DP8g9ZzvuoCP2EJj20/1wT/yvhpwDJQpa2pDuwQmOoCPVoFi4/kgtPU0QRWOO4B5lkbaQKVqws8
+	ak33OHq6eXwe/rlmJkcsQ6H96e1OzgVC4NrVAXafRN3twkE2w6PXVbDsXjSo=
+X-Gm-Gg: AY/fxX7YLNUtzJnpuw546sOXZNh8ch1+dOv86avC0zvA/SyV3bQ78k3r0/mIQzE+smw
+	NtXCsHawoQKD1sL9ktXUnJCYf9pdHyj/P+0HCwyhqrrqcaVlnmnuFASdZWE28cYdzYUQBefaXV1
+	/GHtmO4jRlc2SpmxmnRkFBelA3dhupZXRT+vBR7vllMorVMKQ1QlBQm/1V9K13ZQkiodRzC4DGY
+	hxuWosTXmo7vT8gEX8xundbJ3WsHZ0QEr26wE9/IpJ0wFNR1IS8DlK1vwIhIUdsulVPjxqU9ba6
+	ENrx089RChr5sPBIh6YRT8PR/arBeYW0KZfwylvXPqnppu0fvOCDk3iIzVUW3fCvTOjdUvm8pJJ
+	VQQEOKMySnTq0Nal5URFDmngmCCzoGSCyU3KnNJ61j5zz67Rxyt0RNwnp
+X-Received: by 2002:ad4:4488:0:b0:880:4eac:8689 with SMTP id 6a1803df08f44-88d84ffeddemr222707846d6.57.1766647818807;
+        Wed, 24 Dec 2025 23:30:18 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IEGGuC4qQxfj44bogogwY6oBeKxogdsF88VDw5Hk/EXz94P9lzrp1aCJSQsjI2fXcultV0ufQ==
+X-Received: by 2002:ad4:4488:0:b0:880:4eac:8689 with SMTP id 6a1803df08f44-88d84ffeddemr222707596d6.57.1766647818194;
+        Wed, 24 Dec 2025 23:30:18 -0800 (PST)
+Received: from ?IPV6:2601:600:947f:f020:85dc:d2b2:c5ee:e3c4? ([2601:600:947f:f020:85dc:d2b2:c5ee:e3c4])
+        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-88d96bec1d3sm141066956d6.17.2025.12.24.23.30.16
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 24 Dec 2025 23:30:17 -0800 (PST)
+From: Waiman Long <llong@redhat.com>
+X-Google-Original-From: Waiman Long <longman@redhat.com>
+Message-ID: <a188bfee-7420-4195-a813-2739f3689ba3@redhat.com>
+Date: Thu, 25 Dec 2025 02:30:15 -0500
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -45,206 +101,301 @@ List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 06/28] mm: memcontrol: allocate object cgroup for
- non-kmem case
-To: Qi Zheng <qi.zheng@linux.dev>, hannes@cmpxchg.org, hughd@google.com,
- mhocko@suse.com, roman.gushchin@linux.dev, shakeel.butt@linux.dev,
- muchun.song@linux.dev, david@kernel.org, lorenzo.stoakes@oracle.com,
- ziy@nvidia.com, harry.yoo@oracle.com, imran.f.khan@oracle.com,
- kamalesh.babulal@oracle.com, axelrasmussen@google.com, yuanchu@google.com,
- weixugc@google.com, mkoutny@suse.com, akpm@linux-foundation.org,
- hamzamahfooz@linux.microsoft.com, apais@linux.microsoft.com,
- lance.yang@linux.dev
-Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org,
- cgroups@vger.kernel.org, Muchun Song <songmuchun@bytedance.com>,
- Qi Zheng <zhengqi.arch@bytedance.com>
-References: <cover.1765956025.git.zhengqi.arch@bytedance.com>
- <897be76398cb2027d08d1bcda05260ede54dc134.1765956025.git.zhengqi.arch@bytedance.com>
+Subject: Re: [PATCH v6] cpuset: Avoid invalidating sibling partitions on
+ cpuset.cpus conflict.
+To: Sun Shaojie <sunshaojie@kylinos.cn>, llong@redhat.com
+Cc: cgroups@vger.kernel.org, chenridong@huaweicloud.com, hannes@cmpxchg.org,
+ linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org,
+ mkoutny@suse.com, shuah@kernel.org, tj@kernel.org
+References: <cae7a3ef-9808-47ac-a061-ab40d3c61020@redhat.com>
+ <20251201093806.107157-1-sunshaojie@kylinos.cn>
 Content-Language: en-US
-From: Chen Ridong <chenridong@huaweicloud.com>
-In-Reply-To: <897be76398cb2027d08d1bcda05260ede54dc134.1765956025.git.zhengqi.arch@bytedance.com>
-Content-Type: text/plain; charset=UTF-8
+In-Reply-To: <20251201093806.107157-1-sunshaojie@kylinos.cn>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-CM-TRANSID:gCh0CgAn1vZv2Exp596fBQ--.65098S2
-X-Coremail-Antispam: 1UD129KBjvJXoW3Ary3CFyrJw4rGryfZF4kCrg_yoW7Ar1kpF
-	sxGFy3Aw4rArWUGr1Ska9FvFyFka18XrW5K34xGw1xZrsIqw15tr12kw1UAFyrAFyfGr1x
-	Jrs0yw1kGa1Yya7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUv0b4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxkF7I0En4kS
-	14v26r4a6rW5MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I
-	8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVW8ZVWr
-	XwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x
-	0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_
-	Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU0
-	s2-5UUUUU==
-X-CM-SenderInfo: hfkh02xlgr0w46kxt4xhlfz01xgou0bp/
 
+On 12/1/25 4:38 AM, Sun Shaojie wrote:
+> Currently, when setting a cpuset's cpuset.cpus to a value that conflicts
+> with its sibling partition, the sibling's partition state becomes invalid.
+> However, this invalidation is often unnecessary.
+>
+> For example: On a machine with 128 CPUs, there are m (m < 128) cpusets
+> under the root cgroup. Each cpuset is used by a single user(user-1 use
+> A1, ... , user-m use Am), and the partition states of these cpusets are
+> configured as follows:
+>
+>                             root cgroup
+>          /             /                  \                 \
+>         A1            A2        ...       An                Am
+>       (root)        (root)      ...     (root) (root/root invalid/member)
+>
+> Assume that A1 through Am have not set cpuset.cpus.exclusive. When
+> user-m modifies Am's cpuset.cpus to "0-127", it will cause all partition
+> states from A1 to An to change from root to root invalid, as shown
+> below.
+>
+>                             root cgroup
+>          /              /                 \                 \
+>         A1             A2       ...       An                Am
+>   (root invalid) (root invalid) ... (root invalid) (root invalid/member)
+>
+> This outcome is entirely undeserved for all users from A1 to An.
+>
+> This patch prevents such outcomes by ensuring that modifications to
+> cpuset.cpus do not affect the partition state of other sibling cpusets.
+> Therefore, with this patch applied, when user-m configures Am's
+> cpuset.cpus to "0-127", the result will be as follows.
+>
+>                             root cgroup
+>          /             /                  \                 \
+>         A1            A2        ...       An                Am
+>       (root)        (root)      ...     (root)     (root invalid/member)
+>
+> It is worth noting that, since this patch enforces the exclusivity of
+> sibling cpusets, setting exclusivity now follows a "first-come,
+> first-served" principle.
+>
+> For example, consider the following four steps: before applying this
+> patch, regardless of the order in which they are executed, the final
+> partition state of both A1 and B1 would always be "root invalid."
+>
+>   Step                                       | A1's prstate | B1's prstate |
+>   #1> echo "0-1" > A1/cpuset.cpus            | member       | member       |
+>   #2> echo "root" > A1/cpuset.cpus.partition | root         | member       |
+>   #3> echo "1-2" > B1/cpuset.cpus            | root invalid | member       |
+>   #4> echo "root" > B1/cpuset.cpus.partition | root invalid | root invalid |
+>
+> After applying this patch, the first party to set "root" will maintain
+> its exclusive validity. As follows:
+>
+>   Step                                       | A1's prstate | B1's prstate |
+>   #1> echo "0-1" > A1/cpuset.cpus            | member       | member       |
+>   #2> echo "root" > A1/cpuset.cpus.partition | root         | member       |
+>   #3> echo "1-2" > B1/cpuset.cpus            | root         | member       |
+>   #4> echo "root" > B1/cpuset.cpus.partition | root         | root invalid |
+>
+>   Step                                       | A1's prstate | B1's prstate |
+>   #1> echo "0-1" > B1/cpuset.cpus            | member       | member       |
+>   #2> echo "root" > B1/cpuset.cpus.partition | member       | root         |
+>   #3> echo "1-2" > A1/cpuset.cpus            | member       | root         |
+>   #4> echo "root" > A1/cpuset.cpus.partition | root invalid | root         |
+>
+> In summary, if the current cpuset conflicts with its sibling cpusets on
+> exclusive CPUs (If a cpuset is exclusive and its exclusive CPUs are empty,
+> its allowed CPUs will be treated as exclusive CPUs), only the current
+> cpuset should bear the consequences.
+>
+> Signed-off-by: Sun Shaojie <sunshaojie@kylinos.cn>
 
+I agree with you that it is probably not a good idea to invalidate 
+partitions whenever there is a conflict. However, I have a different 
+idea of how to do it. I am going to post another patch to show my idea. 
+Let me know what you think about it and whether it can meet your need.
 
-On 2025/12/17 15:27, Qi Zheng wrote:
-> From: Muchun Song <songmuchun@bytedance.com>
-> 
-> Pagecache pages are charged at allocation time and hold a reference
-> to the original memory cgroup until reclaimed. Depending on memory
-> pressure, page sharing patterns between different cgroups and cgroup
-> creation/destruction rates, many dying memory cgroups can be pinned
-> by pagecache pages, reducing page reclaim efficiency and wasting
-> memory. Converting LRU folios and most other raw memory cgroup pins
-> to the object cgroup direction can fix this long-living problem.
-> 
-> As a result, the objcg infrastructure is no longer solely applicable
-> to the kmem case. In this patch, we extend the scope of the objcg
-> infrastructure beyond the kmem case, enabling LRU folios to reuse
-> it for folio charging purposes.
-> 
-> It should be noted that LRU folios are not accounted for at the root
-> level, yet the folio->memcg_data points to the root_mem_cgroup. Hence,
-> the folio->memcg_data of LRU folios always points to a valid pointer.
-> However, the root_mem_cgroup does not possess an object cgroup.
-> Therefore, we also allocate an object cgroup for the root_mem_cgroup.
-> 
-> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-> Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
-> Reviewed-by: Harry Yoo <harry.yoo@oracle.com>
+Cheers,
+Longman
+
 > ---
->  mm/memcontrol.c | 51 +++++++++++++++++++++++--------------------------
->  1 file changed, 24 insertions(+), 27 deletions(-)
-> 
-> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> index ae234518d023c..544b3200db12d 100644
-> --- a/mm/memcontrol.c
-> +++ b/mm/memcontrol.c
-> @@ -204,10 +204,10 @@ static struct obj_cgroup *obj_cgroup_alloc(void)
->  	return objcg;
->  }
->  
-> -static void memcg_reparent_objcgs(struct mem_cgroup *memcg,
-> -				  struct mem_cgroup *parent)
-> +static void memcg_reparent_objcgs(struct mem_cgroup *memcg)
->  {
->  	struct obj_cgroup *objcg, *iter;
-> +	struct mem_cgroup *parent = parent_mem_cgroup(memcg);
->  
->  	objcg = rcu_replace_pointer(memcg->objcg, NULL, true);
->  
-> @@ -3294,30 +3294,17 @@ unsigned long mem_cgroup_usage(struct mem_cgroup *memcg, bool swap)
->  	return val;
->  }
->  
-> -static int memcg_online_kmem(struct mem_cgroup *memcg)
-> +static void memcg_online_kmem(struct mem_cgroup *memcg)
->  {
-> -	struct obj_cgroup *objcg;
-> -
->  	if (mem_cgroup_kmem_disabled())
-> -		return 0;
-> +		return;
->  
->  	if (unlikely(mem_cgroup_is_root(memcg)))
-> -		return 0;
-> -
-> -	objcg = obj_cgroup_alloc();
-> -	if (!objcg)
-> -		return -ENOMEM;
-> -
-> -	objcg->memcg = memcg;
-> -	rcu_assign_pointer(memcg->objcg, objcg);
-> -	obj_cgroup_get(objcg);
-> -	memcg->orig_objcg = objcg;
-> +		return;
->  
->  	static_branch_enable(&memcg_kmem_online_key);
->  
-
-Not about this patch.
-
-Should we add?
-	if (!memcg_kmem_online())
-		static_branch_enable(&memcg_kmem_online_key);
-
->  	memcg->kmemcg_id = memcg->id.id;
-> -
-> -	return 0;
->  }
->  
->  static void memcg_offline_kmem(struct mem_cgroup *memcg)
-> @@ -3332,12 +3319,6 @@ static void memcg_offline_kmem(struct mem_cgroup *memcg)
->  
->  	parent = parent_mem_cgroup(memcg);
->  	memcg_reparent_list_lrus(memcg, parent);
-> -
-> -	/*
-> -	 * Objcg's reparenting must be after list_lru's, make sure list_lru
-> -	 * helpers won't use parent's list_lru until child is drained.
-> -	 */
-> -	memcg_reparent_objcgs(memcg, parent);
->  }
->  
->  #ifdef CONFIG_CGROUP_WRITEBACK
-> @@ -3854,9 +3835,9 @@ mem_cgroup_css_alloc(struct cgroup_subsys_state *parent_css)
->  static int mem_cgroup_css_online(struct cgroup_subsys_state *css)
->  {
->  	struct mem_cgroup *memcg = mem_cgroup_from_css(css);
-> +	struct obj_cgroup *objcg;
->  
-> -	if (memcg_online_kmem(memcg))
-> -		goto remove_id;
-> +	memcg_online_kmem(memcg);
->  
->  	/*
->  	 * A memcg must be visible for expand_shrinker_info()
-> @@ -3866,6 +3847,15 @@ static int mem_cgroup_css_online(struct cgroup_subsys_state *css)
->  	if (alloc_shrinker_info(memcg))
->  		goto offline_kmem;
->  
-> +	objcg = obj_cgroup_alloc();
-> +	if (!objcg)
-> +		goto free_shrinker;
+>   kernel/cgroup/cpuset-internal.h               |  3 +
+>   kernel/cgroup/cpuset-v1.c                     | 19 ++++++
+>   kernel/cgroup/cpuset.c                        | 60 ++++++++++++-------
+>   .../selftests/cgroup/test_cpuset_prs.sh       | 12 ++--
+>   4 files changed, 65 insertions(+), 29 deletions(-)
+>
+> diff --git a/kernel/cgroup/cpuset-internal.h b/kernel/cgroup/cpuset-internal.h
+> index 337608f408ce..c53111998432 100644
+> --- a/kernel/cgroup/cpuset-internal.h
+> +++ b/kernel/cgroup/cpuset-internal.h
+> @@ -292,6 +292,7 @@ void cpuset1_hotplug_update_tasks(struct cpuset *cs,
+>   			    struct cpumask *new_cpus, nodemask_t *new_mems,
+>   			    bool cpus_updated, bool mems_updated);
+>   int cpuset1_validate_change(struct cpuset *cur, struct cpuset *trial);
+> +bool cpuset1_cpus_excl_conflict(struct cpuset *cs1, struct cpuset *cs2);
+>   #else
+>   static inline void fmeter_init(struct fmeter *fmp) {}
+>   static inline void cpuset1_update_task_spread_flags(struct cpuset *cs,
+> @@ -302,6 +303,8 @@ static inline void cpuset1_hotplug_update_tasks(struct cpuset *cs,
+>   			    bool cpus_updated, bool mems_updated) {}
+>   static inline int cpuset1_validate_change(struct cpuset *cur,
+>   				struct cpuset *trial) { return 0; }
+> +static inline bool cpuset1_cpus_excl_conflict(struct cpuset *cs1,
+> +				struct cpuset *cs2) {return false; }
+>   #endif /* CONFIG_CPUSETS_V1 */
+>   
+>   #endif /* __CPUSET_INTERNAL_H */
+> diff --git a/kernel/cgroup/cpuset-v1.c b/kernel/cgroup/cpuset-v1.c
+> index 12e76774c75b..5aa0ac092ef6 100644
+> --- a/kernel/cgroup/cpuset-v1.c
+> +++ b/kernel/cgroup/cpuset-v1.c
+> @@ -373,6 +373,25 @@ int cpuset1_validate_change(struct cpuset *cur, struct cpuset *trial)
+>   	return ret;
+>   }
+>   
+> +/*
+> + * cpuset1_cpus_excl_conflict() - Check if two cpusets have exclusive CPU conflicts
+> + *                                to legacy (v1)
+> + * @cs1: first cpuset to check
+> + * @cs2: second cpuset to check
+> + *
+> + * Returns: true if CPU exclusivity conflict exists, false otherwise
+> + *
+> + * If either cpuset is CPU exclusive, their allowed CPUs cannot intersect.
+> + */
+> +bool cpuset1_cpus_excl_conflict(struct cpuset *cs1, struct cpuset *cs2)
+> +{
+> +	if (is_cpu_exclusive(cs1) || is_cpu_exclusive(cs2))
+> +		return cpumask_intersects(cs1->cpus_allowed,
+> +					  cs2->cpus_allowed);
 > +
-> +	objcg->memcg = memcg;
-> +	rcu_assign_pointer(memcg->objcg, objcg);
-> +	obj_cgroup_get(objcg);
-> +	memcg->orig_objcg = objcg;
+> +	return false;
+> +}
 > +
->  	if (unlikely(mem_cgroup_is_root(memcg)) && !mem_cgroup_disabled())
->  		queue_delayed_work(system_unbound_wq, &stats_flush_dwork,
->  				   FLUSH_TIME);
-> @@ -3888,9 +3878,10 @@ static int mem_cgroup_css_online(struct cgroup_subsys_state *css)
->  	xa_store(&mem_cgroup_ids, memcg->id.id, memcg, GFP_KERNEL);
->  
->  	return 0;
-> +free_shrinker:
-> +	free_shrinker_info(memcg);
->  offline_kmem:
->  	memcg_offline_kmem(memcg);
-> -remove_id:
->  	mem_cgroup_id_remove(memcg);
->  	return -ENOMEM;
->  }
-> @@ -3908,6 +3899,12 @@ static void mem_cgroup_css_offline(struct cgroup_subsys_state *css)
->  
->  	memcg_offline_kmem(memcg);
->  	reparent_deferred_split_queue(memcg);
+>   #ifdef CONFIG_PROC_PID_CPUSET
+>   /*
+>    * proc_cpuset_show()
+> diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
+> index 52468d2c178a..e58dd26e074a 100644
+> --- a/kernel/cgroup/cpuset.c
+> +++ b/kernel/cgroup/cpuset.c
+> @@ -586,14 +586,24 @@ static inline bool cpusets_are_exclusive(struct cpuset *cs1, struct cpuset *cs2)
+>    * Returns: true if CPU exclusivity conflict exists, false otherwise
+>    *
+>    * Conflict detection rules:
+> - * 1. If either cpuset is CPU exclusive, they must be mutually exclusive
+> + * For cgroup-v1:
+> + *     see cpuset1_cpus_excl_conflict()
+> + * For cgroup-v2:
+> + * 1. If both cs1 and cs2 are exclusive, cs1 and cs2 must be mutually exclusive
+>    * 2. exclusive_cpus masks cannot intersect between cpusets
+>    * 3. The allowed CPUs of one cpuset cannot be a subset of another's exclusive CPUs
+> + * 4. If a cpuset is exclusive and its exclusive CPUs are empty, its allowed CPUs
+> + *    will be treated as exclusive CPUs; therefore, its allowed CPUs must not
+> + *    intersect with another's exclusive CPUs.
+>    */
+>   static inline bool cpus_excl_conflict(struct cpuset *cs1, struct cpuset *cs2)
+>   {
+> -	/* If either cpuset is exclusive, check if they are mutually exclusive */
+> -	if (is_cpu_exclusive(cs1) || is_cpu_exclusive(cs2))
+> +	/* For cgroup-v1 */
+> +	if (!cpuset_v2())
+> +		return cpuset1_cpus_excl_conflict(cs1, cs2);
+> +
+> +	/* If cpusets are exclusive, check if they are mutually exclusive*/
+> +	if (is_cpu_exclusive(cs1) && is_cpu_exclusive(cs2))
+>   		return !cpusets_are_exclusive(cs1, cs2);
+>   
+>   	/* Exclusive_cpus cannot intersect */
+> @@ -609,6 +619,20 @@ static inline bool cpus_excl_conflict(struct cpuset *cs1, struct cpuset *cs2)
+>   	    cpumask_subset(cs2->cpus_allowed, cs1->exclusive_cpus))
+>   		return true;
+>   
 > +	/*
-> +	 * The reparenting of objcg must be after the reparenting of the
-> +	 * list_lru and deferred_split_queue above, which ensures that they will
-> +	 * not mistakenly get the parent list_lru and deferred_split_queue.
+> +	 * When a cpuset is exclusive and its exclusive CPUs are empty,
+> +	 * its cpus_allowed cannot intersect with another cpuset's exclusive_cpus.
 > +	 */
-> +	memcg_reparent_objcgs(memcg);
->  	reparent_shrinker_deferred(memcg);
->  	wb_memcg_offline(memcg);
->  	lru_gen_offline_memcg(memcg);
-
-
-Reviewed-by: Chen Ridong <chenridong@huawei.com>
-
--- 
-Best regards,
-Ridong
+> +	if (is_cpu_exclusive(cs1) &&
+> +	    cpumask_empty(cs1->exclusive_cpus) &&
+> +	    cpumask_intersects(cs1->cpus_allowed, cs2->exclusive_cpus))
+> +		return true;
+> +
+> +	if (is_cpu_exclusive(cs2) &&
+> +	    cpumask_empty(cs2->exclusive_cpus) &&
+> +	    cpumask_intersects(cs2->cpus_allowed, cs1->exclusive_cpus))
+> +		return true;
+> +
+>   	return false;
+>   }
+>   
+> @@ -2411,34 +2435,17 @@ static int cpus_allowed_validate_change(struct cpuset *cs, struct cpuset *trialc
+>   					struct tmpmasks *tmp)
+>   {
+>   	int retval;
+> -	struct cpuset *parent = parent_cs(cs);
+>   
+>   	retval = validate_change(cs, trialcs);
+>   
+>   	if ((retval == -EINVAL) && cpuset_v2()) {
+> -		struct cgroup_subsys_state *css;
+> -		struct cpuset *cp;
+> -
+>   		/*
+>   		 * The -EINVAL error code indicates that partition sibling
+>   		 * CPU exclusivity rule has been violated. We still allow
+>   		 * the cpumask change to proceed while invalidating the
+> -		 * partition. However, any conflicting sibling partitions
+> -		 * have to be marked as invalid too.
+> +		 * partition.
+>   		 */
+>   		trialcs->prs_err = PERR_NOTEXCL;
+> -		rcu_read_lock();
+> -		cpuset_for_each_child(cp, css, parent) {
+> -			struct cpumask *xcpus = user_xcpus(trialcs);
+> -
+> -			if (is_partition_valid(cp) &&
+> -			    cpumask_intersects(xcpus, cp->effective_xcpus)) {
+> -				rcu_read_unlock();
+> -				update_parent_effective_cpumask(cp, partcmd_invalidate, NULL, tmp);
+> -				rcu_read_lock();
+> -			}
+> -		}
+> -		rcu_read_unlock();
+>   		retval = 0;
+>   	}
+>   	return retval;
+> @@ -2506,8 +2513,15 @@ static int update_cpumask(struct cpuset *cs, struct cpuset *trialcs,
+>   	if (alloc_tmpmasks(&tmp))
+>   		return -ENOMEM;
+>   
+> -	compute_trialcs_excpus(trialcs, cs);
+> -	trialcs->prs_err = PERR_NONE;
+> +	/*
+> +	 * if there is exclusive CPUs conflict with the siblings,
+> +	 * we still allow the cpumask change to proceed while
+> +	 * invalidating the partition.
+> +	 */
+> +	if (compute_trialcs_excpus(trialcs, cs))
+> +		trialcs->prs_err = PERR_NOTEXCL;
+> +	else
+> +		trialcs->prs_err = PERR_NONE;
+>   
+>   	retval = cpus_allowed_validate_change(cs, trialcs, &tmp);
+>   	if (retval < 0)
+> diff --git a/tools/testing/selftests/cgroup/test_cpuset_prs.sh b/tools/testing/selftests/cgroup/test_cpuset_prs.sh
+> index a17256d9f88a..75154e22c702 100755
+> --- a/tools/testing/selftests/cgroup/test_cpuset_prs.sh
+> +++ b/tools/testing/selftests/cgroup/test_cpuset_prs.sh
+> @@ -269,7 +269,7 @@ TEST_MATRIX=(
+>   	" C0-3:S+ C1-3:S+ C2-3     .    X2-3   X3:P2    .      .     0 A1:0-2|A2:3|A3:3 A1:P0|A2:P2 3"
+>   	" C0-3:S+ C1-3:S+ C2-3     .    X2-3   X2-3  X2-3:P2   .     0 A1:0-1|A2:1|A3:2-3 A1:P0|A3:P2 2-3"
+>   	" C0-3:S+ C1-3:S+ C2-3     .    X2-3   X2-3 X2-3:P2:C3 .     0 A1:0-1|A2:1|A3:2-3 A1:P0|A3:P2 2-3"
+> -	" C0-3:S+ C1-3:S+ C2-3   C2-3     .      .      .      P2    0 A1:0-3|A2:1-3|A3:2-3|B1:2-3 A1:P0|A3:P0|B1:P-2"
+> +	" C0-3:S+ C1-3:S+ C2-3   C2-3     .      .      .      P2    0 A1:0-1|A2:1|A3:1|B1:2-3 A1:P0|A3:P0|B1:P2"
+>   	" C0-3:S+ C1-3:S+ C2-3   C4-5     .      .      .      P2    0 B1:4-5 B1:P2 4-5"
+>   	" C0-3:S+ C1-3:S+ C2-3    C4    X2-3   X2-3  X2-3:P2   P2    0 A3:2-3|B1:4 A3:P2|B1:P2 2-4"
+>   	" C0-3:S+ C1-3:S+ C2-3    C4    X2-3   X2-3 X2-3:P2:C1-3 P2  0 A3:2-3|B1:4 A3:P2|B1:P2 2-4"
+> @@ -318,7 +318,7 @@ TEST_MATRIX=(
+>   	# Invalid to valid local partition direct transition tests
+>   	" C1-3:S+:P2 X4:P2  .      .      .      .      .      .     0 A1:1-3|XA1:1-3|A2:1-3:XA2: A1:P2|A2:P-2 1-3"
+>   	" C1-3:S+:P2 X4:P2  .      .      .    X3:P2    .      .     0 A1:1-2|XA1:1-3|A2:3:XA2:3 A1:P2|A2:P2 1-3"
+> -	"  C0-3:P2   .      .    C4-6   C0-4     .      .      .     0 A1:0-4|B1:4-6 A1:P-2|B1:P0"
+> +	"  C0-3:P2   .      .    C4-6   C0-4     .      .      .     0 A1:0-4|B1:5-6 A1:P2|B1:P0"
+>   	"  C0-3:P2   .      .    C4-6 C0-4:C0-3  .      .      .     0 A1:0-3|B1:4-6 A1:P2|B1:P0 0-3"
+>   
+>   	# Local partition invalidation tests
+> @@ -388,10 +388,10 @@ TEST_MATRIX=(
+>   	"  C0-1:S+  C1      .    C2-3     .      P2     .      .     0 A1:0-1|A2:1 A1:P0|A2:P-2"
+>   	"  C0-1:S+ C1:P2    .    C2-3     P1     .      .      .     0 A1:0|A2:1 A1:P1|A2:P2 0-1|1"
+>   
+> -	# A non-exclusive cpuset.cpus change will invalidate partition and its siblings
+> -	"  C0-1:P1   .      .    C2-3   C0-2     .      .      .     0 A1:0-2|B1:2-3 A1:P-1|B1:P0"
+> -	"  C0-1:P1   .      .  P1:C2-3  C0-2     .      .      .     0 A1:0-2|B1:2-3 A1:P-1|B1:P-1"
+> -	"   C0-1     .      .  P1:C2-3  C0-2     .      .      .     0 A1:0-2|B1:2-3 A1:P0|B1:P-1"
+> +	# A non-exclusive cpuset.cpus change will not invalidate its siblings partition.
+> +	"  C0-1:P1   .      .    C2-3   C0-2     .      .      .     0 A1:0-2|B1:3 A1:P1|B1:P0"
+> +	"  C0-1:P1   .      .  P1:C2-3  C0-2     .      .      .     0 A1:0-1|B1:2-3 A1:P-1|B1:P1"
+> +	"   C0-1     .      .  P1:C2-3  C0-2     .      .      .     0 A1:0-1|B1:2-3 A1:P0|B1:P1"
+>   
+>   	# cpuset.cpus can overlap with sibling cpuset.cpus.exclusive but not subsumed by it
+>   	"   C0-3     .      .    C4-5     X5     .      .      .     0 A1:0-3|B1:4-5"
 
 
