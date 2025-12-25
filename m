@@ -1,45 +1,45 @@
-Return-Path: <cgroups+bounces-12731-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-12732-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
-	by mail.lfdr.de (Postfix) with ESMTPS id 92580CDE28C
-	for <lists+cgroups@lfdr.de>; Fri, 26 Dec 2025 00:22:01 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id AB63CCDE2A4
+	for <lists+cgroups@lfdr.de>; Fri, 26 Dec 2025 00:23:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 555BB30019EA
-	for <lists+cgroups@lfdr.de>; Thu, 25 Dec 2025 23:21:57 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 695623011A5B
+	for <lists+cgroups@lfdr.de>; Thu, 25 Dec 2025 23:22:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1CF0E1DF736;
-	Thu, 25 Dec 2025 23:21:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB3102C11CA;
+	Thu, 25 Dec 2025 23:22:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="wylAyIn8"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="fZjyiY2h"
 X-Original-To: cgroups@vger.kernel.org
-Received: from out-170.mta1.migadu.com (out-170.mta1.migadu.com [95.215.58.170])
+Received: from out-173.mta1.migadu.com (out-173.mta1.migadu.com [95.215.58.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DB5B32C11F5
-	for <cgroups@vger.kernel.org>; Thu, 25 Dec 2025 23:21:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C1E901DF736
+	for <cgroups@vger.kernel.org>; Thu, 25 Dec 2025 23:21:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1766704915; cv=none; b=An2dFzEkHsTvhBcIWv2jEMdALemSlhc1QNt+GV/blafrPeLj2iGzRBl1LjCUpUnDWu6KRu/V0LVOfR3U7O56s7sh4Y0AUINOre6HEb40/rXV76B/vnBWwWA+bGVZ+lFtVYGxOtmNWJbbkbIHaugq+9+uJ4UVve1DRWzZHKxcdnY=
+	t=1766704922; cv=none; b=mtBLXH73mTgqiVEr9vQKpxhe7P6UWADxK4SGx8zT634ryHYtqiIDfvwI0osITz+YuPNTnWSogi4JKMplIy46bCx/MVOXx+WJN8l/Py1iu7VW1ecaDu0BcyxVz11D4x2jK2SvMAZ9mlbwaFGMBHu1rk5kgW827n7B6c9D+S12lDo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1766704915; c=relaxed/simple;
-	bh=el8HAB0sOOLSau6RTNfayIxRkLKv+Hwe1XlsZYDYSnM=;
+	s=arc-20240116; t=1766704922; c=relaxed/simple;
+	bh=9D3i4WtWKzPbxlmFJZLWRQmSpACn15plQ0XMaWdeqbY=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=bwhxAq9rI2TwtIfclmA8qwQufkW5B0r6Y5O8C8M14FSniu7FJC6kh9t0BhjxUrc/lJdclMz4Aug3NtAdeXBUMVF9w/U5d8Rczy0ooScZHz2YsACQTshSTp/HFvBCFB910t5/OSrsR671hVEpJ++zffYfy9Pk+vBgGKN6jWglznY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=wylAyIn8; arc=none smtp.client-ip=95.215.58.170
+	 MIME-Version; b=NKDQqx/sFfBgnjto4Xj2P9SBTLWwVkXjm3KfcDL0exis8wvAoz5OfAQaRoSZdqAJ0hfeBBYbDHhYYC5rs+eabLvMalkqw5Pq/jJwhBcXeEs2NGoH38hevrX9lliW1sQTxdY786GH4dsE6GTeGnT6AQbwkQaIPVJ+QaWYlLoHrRc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=fZjyiY2h; arc=none smtp.client-ip=95.215.58.173
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1766704909;
+	t=1766704918;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=WHLUPExoPKnJu0oj7221nxhPbwe4fH4Njx6PIRBvWXw=;
-	b=wylAyIn8SEF0kBQem+PiUWjgcrj8RTvksgBmWjmdsjlPCewjVoa5/4qRUwLPRZOatWv5DT
-	PJJCCmjYTPrTF01gdMkY9TnG6ZoaVWfWaH6T+4WDk/wsvXmE1VTbhbXqBWcdN2+nYpJN7G
-	h8VaIoHLozD6gKU1RUvpW2Aqci9G5P4=
+	bh=qVIJLlIoVbyUjgLSsqavcZQWB6x8jtRLfTLva9jt/vw=;
+	b=fZjyiY2hlAllu5kswXjcYSVUkUmBMWZCRsfjEqoVAjBblu5dGNfXelxww+eCnEshWI70uw
+	b/2xwUsmF3rHJrEjUhxXwBBbuAWCNXmH26YcV+Wfwc6l2oZEEZmcISR5N+INT3oxtY27Bp
+	vkF++kZgRyutqRzDdIJyUXsiWdhq5XQ=
 From: Shakeel Butt <shakeel.butt@linux.dev>
 To: Andrew Morton <akpm@linux-foundation.org>
 Cc: Johannes Weiner <hannes@cmpxchg.org>,
@@ -52,9 +52,9 @@ Cc: Johannes Weiner <hannes@cmpxchg.org>,
 	cgroups@vger.kernel.org,
 	damon@lists.linux.dev,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH 4/8] memcg: use cgroup_id() instead of cgroup_ino() for memcg ID
-Date: Thu, 25 Dec 2025 15:21:12 -0800
-Message-ID: <20251225232116.294540-5-shakeel.butt@linux.dev>
+Subject: [PATCH 5/8] mm/damon: use cgroup ID instead of private memcg ID
+Date: Thu, 25 Dec 2025 15:21:13 -0800
+Message-ID: <20251225232116.294540-6-shakeel.butt@linux.dev>
 In-Reply-To: <20251225232116.294540-1-shakeel.butt@linux.dev>
 References: <20251225232116.294540-1-shakeel.butt@linux.dev>
 Precedence: bulk
@@ -66,106 +66,104 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
 
-Switch mem_cgroup_ino() from using cgroup_ino() to cgroup_id(). The
-cgroup_ino() returns the kernfs inode number while cgroup_id() returns
-the kernfs node ID. For 64-bit systems, they are the same. Also
-cgroup_get_from_id() expects 64-bit node ID which is called by
-mem_cgroup_get_from_ino().
-
-Change the type from unsigned long to u64 to match cgroup_id()'s return
-type, and update the format specifiers accordingly.
-
-Note that the names mem_cgroup_ino() and mem_cgroup_get_from_ino() are
-now misnomers since they deal with cgroup IDs rather than inode numbers.
-A follow-up patch will rename them.
+DAMON was using the internal private memcg ID which is meant for
+tracking kernel objects that outlive their cgroup. Switch to using the
+public cgroup ID instead.
 
 Signed-off-by: Shakeel Butt <shakeel.butt@linux.dev>
 ---
- include/linux/memcontrol.h | 10 +++++-----
- mm/memcontrol.c            |  2 +-
- mm/shrinker_debug.c        |  7 ++++---
- 3 files changed, 10 insertions(+), 9 deletions(-)
+ include/linux/damon.h    | 4 ++--
+ mm/damon/core.c          | 7 ++-----
+ mm/damon/ops-common.c    | 2 +-
+ mm/damon/sysfs-schemes.c | 8 ++++----
+ 4 files changed, 9 insertions(+), 12 deletions(-)
 
-diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-index 77f32be26ea8..c823150ec288 100644
---- a/include/linux/memcontrol.h
-+++ b/include/linux/memcontrol.h
-@@ -836,12 +836,12 @@ static inline unsigned short mem_cgroup_id(struct mem_cgroup *memcg)
- }
- struct mem_cgroup *mem_cgroup_from_id(unsigned short id);
- 
--static inline unsigned long mem_cgroup_ino(struct mem_cgroup *memcg)
-+static inline u64 mem_cgroup_ino(struct mem_cgroup *memcg)
- {
--	return memcg ? cgroup_ino(memcg->css.cgroup) : 0;
-+	return memcg ? cgroup_id(memcg->css.cgroup) : 0;
- }
- 
--struct mem_cgroup *mem_cgroup_get_from_ino(unsigned long ino);
-+struct mem_cgroup *mem_cgroup_get_from_ino(u64 ino);
- 
- static inline struct mem_cgroup *mem_cgroup_from_seq(struct seq_file *m)
- {
-@@ -1306,12 +1306,12 @@ static inline struct mem_cgroup *mem_cgroup_from_private_id(unsigned short id)
- 	return NULL;
- }
- 
--static inline unsigned long mem_cgroup_ino(struct mem_cgroup *memcg)
-+static inline u64 mem_cgroup_ino(struct mem_cgroup *memcg)
- {
- 	return 0;
- }
- 
--static inline struct mem_cgroup *mem_cgroup_get_from_ino(unsigned long ino)
-+static inline struct mem_cgroup *mem_cgroup_get_from_ino(u64 ino)
- {
- 	return NULL;
- }
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index 92beb74482fa..1ff2f9bd820c 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -3620,7 +3620,7 @@ struct mem_cgroup *mem_cgroup_from_id(unsigned short id)
- 	return mem_cgroup_from_private_id(id);
- }
- 
--struct mem_cgroup *mem_cgroup_get_from_ino(unsigned long ino)
-+struct mem_cgroup *mem_cgroup_get_from_ino(u64 ino)
- {
- 	struct cgroup *cgrp;
- 	struct cgroup_subsys_state *css;
-diff --git a/mm/shrinker_debug.c b/mm/shrinker_debug.c
-index 8aaeb8f5c3af..7ef16a0b2959 100644
---- a/mm/shrinker_debug.c
-+++ b/mm/shrinker_debug.c
-@@ -70,7 +70,7 @@ static int shrinker_debugfs_count_show(struct seq_file *m, void *v)
- 					       memcg_aware ? memcg : NULL,
- 					       count_per_node);
- 		if (total) {
--			seq_printf(m, "%lu", mem_cgroup_ino(memcg));
-+			seq_printf(m, "%llu", mem_cgroup_ino(memcg));
- 			for_each_node(nid)
- 				seq_printf(m, " %lu", count_per_node[nid]);
- 			seq_putc(m, '\n');
-@@ -106,7 +106,8 @@ static ssize_t shrinker_debugfs_scan_write(struct file *file,
- 					   size_t size, loff_t *pos)
- {
- 	struct shrinker *shrinker = file->private_data;
--	unsigned long nr_to_scan = 0, ino, read_len;
-+	unsigned long nr_to_scan = 0, read_len;
-+	u64 ino;
- 	struct shrink_control sc = {
- 		.gfp_mask = GFP_KERNEL,
+diff --git a/include/linux/damon.h b/include/linux/damon.h
+index a67292a2f09d..650e7ecfa32b 100644
+--- a/include/linux/damon.h
++++ b/include/linux/damon.h
+@@ -203,7 +203,7 @@ struct damos_quota_goal {
+ 		u64 last_psi_total;
+ 		struct {
+ 			int nid;
+-			unsigned short memcg_id;
++			u64 memcg_id;
+ 		};
  	};
-@@ -119,7 +120,7 @@ static ssize_t shrinker_debugfs_scan_write(struct file *file,
- 		return -EFAULT;
- 	kbuf[read_len] = '\0';
+ 	struct list_head list;
+@@ -419,7 +419,7 @@ struct damos_filter {
+ 	bool matching;
+ 	bool allow;
+ 	union {
+-		unsigned short memcg_id;
++		u64 memcg_id;
+ 		struct damon_addr_range addr_range;
+ 		int target_idx;
+ 		struct damon_size_range sz_range;
+diff --git a/mm/damon/core.c b/mm/damon/core.c
+index 2d3e8006db50..23c44811ff7f 100644
+--- a/mm/damon/core.c
++++ b/mm/damon/core.c
+@@ -2065,16 +2065,13 @@ static unsigned long damos_get_node_memcg_used_bp(
+ 	unsigned long used_pages, numerator;
+ 	struct sysinfo i;
  
--	if (sscanf(kbuf, "%lu %d %lu", &ino, &nid, &nr_to_scan) != 3)
-+	if (sscanf(kbuf, "%llu %d %lu", &ino, &nid, &nr_to_scan) != 3)
- 		return -EINVAL;
+-	rcu_read_lock();
+-	memcg = mem_cgroup_from_id(goal->memcg_id);
+-	if (!memcg || !mem_cgroup_tryget(memcg)) {
+-		rcu_read_unlock();
++	memcg = mem_cgroup_get_from_ino(goal->memcg_id);
++	if (!memcg) {
+ 		if (goal->metric == DAMOS_QUOTA_NODE_MEMCG_USED_BP)
+ 			return 0;
+ 		else	/* DAMOS_QUOTA_NODE_MEMCG_FREE_BP */
+ 			return 10000;
+ 	}
+-	rcu_read_unlock();
  
- 	if (nid < 0 || nid >= nr_node_ids)
+ 	mem_cgroup_flush_stats(memcg);
+ 	lruvec = mem_cgroup_lruvec(memcg, NODE_DATA(goal->nid));
+diff --git a/mm/damon/ops-common.c b/mm/damon/ops-common.c
+index a218d9922234..dd81db95f901 100644
+--- a/mm/damon/ops-common.c
++++ b/mm/damon/ops-common.c
+@@ -274,7 +274,7 @@ bool damos_folio_filter_match(struct damos_filter *filter, struct folio *folio)
+ 		if (!memcg)
+ 			matched = false;
+ 		else
+-			matched = filter->memcg_id == mem_cgroup_id(memcg);
++			matched = filter->memcg_id == mem_cgroup_ino(memcg);
+ 		rcu_read_unlock();
+ 		break;
+ 	case DAMOS_FILTER_TYPE_YOUNG:
+diff --git a/mm/damon/sysfs-schemes.c b/mm/damon/sysfs-schemes.c
+index e198234f0763..79aa917ab3c0 100644
+--- a/mm/damon/sysfs-schemes.c
++++ b/mm/damon/sysfs-schemes.c
+@@ -2492,7 +2492,7 @@ static bool damon_sysfs_memcg_path_eq(struct mem_cgroup *memcg,
+ 	return false;
+ }
+ 
+-static int damon_sysfs_memcg_path_to_id(char *memcg_path, unsigned short *id)
++static int damon_sysfs_memcg_path_to_id(char *memcg_path, u64 *id)
+ {
+ 	struct mem_cgroup *memcg;
+ 	char *path;
+@@ -2507,11 +2507,11 @@ static int damon_sysfs_memcg_path_to_id(char *memcg_path, unsigned short *id)
+ 
+ 	for (memcg = mem_cgroup_iter(NULL, NULL, NULL); memcg;
+ 			memcg = mem_cgroup_iter(NULL, memcg, NULL)) {
+-		/* skip removed memcg */
+-		if (!mem_cgroup_id(memcg))
++		/* skip offlined memcg */
++		if (!mem_cgroup_online(memcg))
+ 			continue;
+ 		if (damon_sysfs_memcg_path_eq(memcg, path, memcg_path)) {
+-			*id = mem_cgroup_id(memcg);
++			*id = mem_cgroup_ino(memcg);
+ 			found = true;
+ 			break;
+ 		}
 -- 
 2.47.3
 
