@@ -1,204 +1,132 @@
-Return-Path: <cgroups+bounces-12726-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-12727-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id D9FFFCDE22A
-	for <lists+cgroups@lfdr.de>; Thu, 25 Dec 2025 23:31:18 +0100 (CET)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 07BC0CDE27D
+	for <lists+cgroups@lfdr.de>; Fri, 26 Dec 2025 00:21:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id AEE0A30014EC
-	for <lists+cgroups@lfdr.de>; Thu, 25 Dec 2025 22:31:15 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id 5996F3000E80
+	for <lists+cgroups@lfdr.de>; Thu, 25 Dec 2025 23:21:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8FD192BD035;
-	Thu, 25 Dec 2025 22:31:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A773D296159;
+	Thu, 25 Dec 2025 23:21:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="E3SB6ibX";
-	dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b="HBq+4AV6"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="T3DbFzf8"
 X-Original-To: cgroups@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+Received: from out-186.mta0.migadu.com (out-186.mta0.migadu.com [91.218.175.186])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B651D74BE1
-	for <cgroups@vger.kernel.org>; Thu, 25 Dec 2025 22:31:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 781F7194A76
+	for <cgroups@vger.kernel.org>; Thu, 25 Dec 2025 23:21:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.186
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1766701872; cv=none; b=rsKgLdModl7hIhW/t6lHGdF1ufJ8V9cg13LvQ5FMf+EyxOKqxGyOsDCeR8frMoWcELrcLutWEqxJlwZxaLhKZcg7JfFKIAYzyvin/6zwu2nax5gdv/ywBNuo/6e5DHU7cfKH/92OtiPOXbDnkS5uGznXFE6SOrdstoeNfhc209U=
+	t=1766704887; cv=none; b=N7MkWxQc5/O/ju0eO7VNTUeAaHLAoNHnvkQzO33as1EWbf2GGsrrYlzjSjClJCa1gyC+JebvGO54ICJ8H3zUB0mhFp7nBLiJisjPCNwLjhKAwRW4W9Aa7bWkExoMR4HEW7YW83slxR0AyItv0ltqmJntKWx8zl51q9Mx/f9Sq6U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1766701872; c=relaxed/simple;
-	bh=pWxufWESdVpjSVMoJonasFKWulN2V2omt68lqo3uzG8=;
-	h=From:Message-ID:Date:MIME-Version:Subject:To:Cc:References:
-	 In-Reply-To:Content-Type; b=seeuf0lWCRnlY2uDAOoREcZzvWlaJ32zTpkntld0Mo2tReVtTJVIKzCsQMQ45buTqsz4QRswvnw9FLH567/uz0YkQbD3xHdzqkUVdtEYI5/sXPUH8nqsR8RRP9oZdx5l7YORScdPfwQKqzSJN39DZepRgFIhB/yk8Wj4ooQe3Bg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=E3SB6ibX; dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b=HBq+4AV6; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1766701869;
+	s=arc-20240116; t=1766704887; c=relaxed/simple;
+	bh=EnphqNESWtyHt33ASJSDE/h8jfRoTHe8z0CPGJZbDWg=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=o07VSHuSpcVqHmYPMUfZ2b6KGdPauO1j4ke2qmHql58qvV/w8ymjk5N0CUTHLQfRGqRRZfeS+qPNvBJQVePy2YN4IzVsfxaYl+tZUhfNDo5EospmJ6srM2cAovMgaq0unGNco8gkJOuwpyye2TUtSazekWHG7qV+FNhHiNdCev0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=T3DbFzf8; arc=none smtp.client-ip=91.218.175.186
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1766704882;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ab+MnheIVRKoBcmzrgSbvk3S4ufWNXWYr9CVeGGgh3o=;
-	b=E3SB6ibXHefP/sYpOnOQ9NEEhL5aHbkO7ZEMJ4ULCi3lIHoMbCtHetgy8I1CwFsaWQXWbs
-	Hs69ZWOLNGPY2/gIcOT6be3bm1qxCNiJQm7uarCrp1rtIVOJB+ENElLrF5+5q8LqkgYKMI
-	A9HAM5G7ZR/rVQe/9+c0uMTQT3pkGE4=
-Received: from mail-qt1-f197.google.com (mail-qt1-f197.google.com
- [209.85.160.197]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-12-r68gSK5CO7udNfWdPpKZ4Q-1; Thu, 25 Dec 2025 17:31:08 -0500
-X-MC-Unique: r68gSK5CO7udNfWdPpKZ4Q-1
-X-Mimecast-MFC-AGG-ID: r68gSK5CO7udNfWdPpKZ4Q_1766701868
-Received: by mail-qt1-f197.google.com with SMTP id d75a77b69052e-4ed7591799eso167929531cf.0
-        for <cgroups@vger.kernel.org>; Thu, 25 Dec 2025 14:31:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=redhat.com; s=google; t=1766701868; x=1767306668; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:content-language:references
-         :cc:to:subject:user-agent:mime-version:date:message-id:from:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=ab+MnheIVRKoBcmzrgSbvk3S4ufWNXWYr9CVeGGgh3o=;
-        b=HBq+4AV66DNfZOvb0tfvWKOYgl0rajg9KIchs5xk+rSIeXZvzmx0sBkqkIN8dgqRP0
-         nOj8o6GMap/8h7EEYWrvRp9vzn0a6EoNrpL9BV/rmsDhrVpVlRo9ZNRCdz2m5d4lobfM
-         3Zv0XAzfJae01+2Y5jEpoSC+4IMsiBdmIFMzxnMiMjJQmahrj4H1Mq+yFvCl893bLvcW
-         V3WWdMVzaHhRfhPSGns0krIJweh/wd/+RaXc3tTe580D5PiIa30hzWEdHtzTDqrsBKnx
-         F2wk97RQWTCzaiQ2QGrCH+unYL3S7ngkgL00XgL8oK781OyI2JLcI7/J7KmYTsNFf1+Q
-         izyg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1766701868; x=1767306668;
-        h=content-transfer-encoding:in-reply-to:content-language:references
-         :cc:to:subject:user-agent:mime-version:date:message-id:from:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ab+MnheIVRKoBcmzrgSbvk3S4ufWNXWYr9CVeGGgh3o=;
-        b=REZNFoKGDjv1YK9BNzcSdDGh9NkkEiJeCLDbuIucocqqBNaLD46Jq2kOiVS99WonfM
-         ls/CZDcGS6/AGTSpjfXgOIu41UMvz02e+O3j2kY4WE+nrpsFJH7z5o5QojpjM7s6DegL
-         /MvEAVkOvY9H+EXQw9bhFFJatOXPkXhpn85a3r05JqCXrozRI6pcIFXXOhlCzD9sjDob
-         nkf8a/7B/JDFNT7zfTanazblYYs+6ZRTWxhaVknb1sVEsdv28cjOw89zSpdlcU107XEG
-         xucECDnk9jTUdpdEGQ+fe95ip8up2Pl64deqoc6giM/IqE0ZLcjjClqgdwx5eArQ8nm3
-         nlqg==
-X-Forwarded-Encrypted: i=1; AJvYcCUegEFJSwqsnxG+DH7qULFeBVRdZXTnf76GN7BIFJDFq3Pnd19Mi2x0MDAexNV033IehZQIYNZm@vger.kernel.org
-X-Gm-Message-State: AOJu0YzNmqdrAI96XS//AsR4SEAQRO3RbnRR3Tak9v+IWHV6mRIy4XoM
-	Td8ZxrFWBrNU9orcAdQwieLMuW/aJEjmKyDlo57lB7lbbP8/MlvRDiQP5rheJ80duiuWaww9Sv4
-	KmJXZ2UTYUDvf2ToUvFpVhIQ3gwbsQJ51sLg/nMcY2lDr8a1gb30jQumKoUI=
-X-Gm-Gg: AY/fxX7vzYW4cQd8t4r5oLUwT8FnWW0p4w7OawKtgsLaT3NI2JVlaSH8QeEFL9fMoIl
-	KZyDKfGCgoFFnexGZwNoZoWeY5j/sbbITrKdwxW6neeiSkIFdZdJSJCWD2yk20hUNSGa5PvduJK
-	h+kEybyzmmJqdEzKFsZdk22tK4czDXskSE6CeVdoiAnYtQFLXqdlgUQ9qC+MBA5AwlPa6J9Y1SF
-	r+OUdV5MQzcpgRaMfXecUVxRSEl898ASBFTi9pChyKMeTsP/xrIROwbn3aMuRIYC9qk2j7t+0zq
-	Ia1GdU2zXAvLSrrHkHb+9MLhtidqttgNWds0O+SiLRhGj2LUyPQweM2gG3KXbcJzZ3KZ/IUS1mo
-	ZK/um1tWRb1MyH5tMah5tMl9Qy0ixjYrq8rY2pQv7kvLg/8ifptxiMMS/
-X-Received: by 2002:a05:622a:341:b0:4ee:24fc:be81 with SMTP id d75a77b69052e-4f4abd400d4mr330935811cf.36.1766701867889;
-        Thu, 25 Dec 2025 14:31:07 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IHthnytoNkit4+7wP+txqxK1npOqoQN/ulutuPL/gqwE7YXGTzVApXUK7yM3kp5hfoASbcRLg==
-X-Received: by 2002:a05:622a:341:b0:4ee:24fc:be81 with SMTP id d75a77b69052e-4f4abd400d4mr330935421cf.36.1766701867385;
-        Thu, 25 Dec 2025 14:31:07 -0800 (PST)
-Received: from ?IPV6:2601:600:947f:f020:85dc:d2b2:c5ee:e3c4? ([2601:600:947f:f020:85dc:d2b2:c5ee:e3c4])
-        by smtp.gmail.com with ESMTPSA id d75a77b69052e-4f4ac65344bsm146923311cf.28.2025.12.25.14.31.03
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 25 Dec 2025 14:31:06 -0800 (PST)
-From: Waiman Long <llong@redhat.com>
-X-Google-Original-From: Waiman Long <longman@redhat.com>
-Message-ID: <006b00ab-c8b4-4a2d-aa38-94a41eadd238@redhat.com>
-Date: Thu, 25 Dec 2025 17:31:02 -0500
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=m0+YWofsDRKAY2wjZda60s9Ihl0H8j0NHCydLBoURug=;
+	b=T3DbFzf8WZWoorj9f/pU6jPkPq5wKy1MmWb4lP3AcYeNNbID9uitveOp11zE6SDET7Qp/C
+	zOvbd/uWs0Q+ifzX1cOS6jExDNhaDTgv+yOFLikLHtcZS9DXehIgavanWYuwcPELPltyOq
+	7aiCehycTAj+UPz9eeoocAffxRFCBKE=
+From: Shakeel Butt <shakeel.butt@linux.dev>
+To: Andrew Morton <akpm@linux-foundation.org>
+Cc: Johannes Weiner <hannes@cmpxchg.org>,
+	Michal Hocko <mhocko@kernel.org>,
+	Roman Gushchin <roman.gushchin@linux.dev>,
+	Muchun Song <muchun.song@linux.dev>,
+	SeongJae Park <sj@kernel.org>,
+	Meta kernel team <kernel-team@meta.com>,
+	linux-mm@kvack.org,
+	cgroups@vger.kernel.org,
+	damon@lists.linux.dev,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH 0/8] memcg: separate private and public ID namespaces
+Date: Thu, 25 Dec 2025 15:21:08 -0800
+Message-ID: <20251225232116.294540-1-shakeel.butt@linux.dev>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 06/33] cpuset: Convert boot_hk_cpus to use
- HK_TYPE_DOMAIN_BOOT
-To: Frederic Weisbecker <frederic@kernel.org>,
- LKML <linux-kernel@vger.kernel.org>
-Cc: =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
- Andrew Morton <akpm@linux-foundation.org>,
- Bjorn Helgaas <bhelgaas@google.com>,
- Catalin Marinas <catalin.marinas@arm.com>,
- Chen Ridong <chenridong@huawei.com>, Danilo Krummrich <dakr@kernel.org>,
- "David S . Miller" <davem@davemloft.net>, Eric Dumazet
- <edumazet@google.com>, Gabriele Monaco <gmonaco@redhat.com>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Ingo Molnar <mingo@redhat.com>, Jakub Kicinski <kuba@kernel.org>,
- Jens Axboe <axboe@kernel.dk>, Johannes Weiner <hannes@cmpxchg.org>,
- Lai Jiangshan <jiangshanlai@gmail.com>,
- Marco Crivellari <marco.crivellari@suse.com>, Michal Hocko
- <mhocko@suse.com>, Muchun Song <muchun.song@linux.dev>,
- Paolo Abeni <pabeni@redhat.com>, Peter Zijlstra <peterz@infradead.org>,
- Phil Auld <pauld@redhat.com>, "Rafael J . Wysocki" <rafael@kernel.org>,
- Roman Gushchin <roman.gushchin@linux.dev>,
- Shakeel Butt <shakeel.butt@linux.dev>, Simon Horman <horms@kernel.org>,
- Tejun Heo <tj@kernel.org>, Thomas Gleixner <tglx@linutronix.de>,
- Vlastimil Babka <vbabka@suse.cz>, Will Deacon <will@kernel.org>,
- cgroups@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-block@vger.kernel.org, linux-mm@kvack.org, linux-pci@vger.kernel.org,
- netdev@vger.kernel.org
-References: <20251224134520.33231-1-frederic@kernel.org>
- <20251224134520.33231-7-frederic@kernel.org>
-Content-Language: en-US
-In-Reply-To: <20251224134520.33231-7-frederic@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-On 12/24/25 8:44 AM, Frederic Weisbecker wrote:
-> boot_hk_cpus is an ad-hoc copy of HK_TYPE_DOMAIN_BOOT. Remove it and use
-> the official version.
->
-> Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
-> Reviewed-by: Phil Auld <pauld@redhat.com>
-> Reviewed-by: Chen Ridong <chenridong@huawei.com>
-> ---
->   kernel/cgroup/cpuset.c | 22 +++++++---------------
->   1 file changed, 7 insertions(+), 15 deletions(-)
->
-> diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
-> index 6e6eb09b8db6..3afa72f8d579 100644
-> --- a/kernel/cgroup/cpuset.c
-> +++ b/kernel/cgroup/cpuset.c
-> @@ -88,12 +88,6 @@ static cpumask_var_t	isolated_cpus;
->    */
->   static bool isolated_cpus_updating;
->   
-> -/*
-> - * Housekeeping (HK_TYPE_DOMAIN) CPUs at boot
-> - */
-> -static cpumask_var_t	boot_hk_cpus;
-> -static bool		have_boot_isolcpus;
-> -
->   /*
->    * A flag to force sched domain rebuild at the end of an operation.
->    * It can be set in
-> @@ -1453,15 +1447,16 @@ static bool isolated_cpus_can_update(struct cpumask *add_cpus,
->    * @new_cpus: cpu mask
->    * Return: true if there is conflict, false otherwise
->    *
-> - * CPUs outside of boot_hk_cpus, if defined, can only be used in an
-> + * CPUs outside of HK_TYPE_DOMAIN_BOOT, if defined, can only be used in an
->    * isolated partition.
->    */
->   static bool prstate_housekeeping_conflict(int prstate, struct cpumask *new_cpus)
->   {
-> -	if (!have_boot_isolcpus)
-> +	if (!housekeeping_enabled(HK_TYPE_DOMAIN_BOOT))
->   		return false;
->   
-> -	if ((prstate != PRS_ISOLATED) && !cpumask_subset(new_cpus, boot_hk_cpus))
-> +	if ((prstate != PRS_ISOLATED) &&
-> +	    !cpumask_subset(new_cpus, housekeeping_cpumask(HK_TYPE_DOMAIN_BOOT)))
->   		return true;
->   
->   	return false;
-> @@ -3892,12 +3887,9 @@ int __init cpuset_init(void)
->   
->   	BUG_ON(!alloc_cpumask_var(&cpus_attach, GFP_KERNEL));
->   
-> -	have_boot_isolcpus = housekeeping_enabled(HK_TYPE_DOMAIN);
-> -	if (have_boot_isolcpus) {
-> -		BUG_ON(!alloc_cpumask_var(&boot_hk_cpus, GFP_KERNEL));
-> -		cpumask_copy(boot_hk_cpus, housekeeping_cpumask(HK_TYPE_DOMAIN));
-> -		cpumask_andnot(isolated_cpus, cpu_possible_mask, boot_hk_cpus);
-> -	}
-> +	if (housekeeping_enabled(HK_TYPE_DOMAIN_BOOT))
-> +		cpumask_andnot(isolated_cpus, cpu_possible_mask,
-> +			       housekeeping_cpumask(HK_TYPE_DOMAIN_BOOT));
->   
->   	return 0;
->   }
-Reviewed-by: Waiman Long <longman@redhat.com>
+The memory cgroup subsystem maintains a private ID infrastructure that
+is decoupled from the cgroup IDs. This private ID system exists because
+some kernel objects (like swap entries and shadow entries in the
+workingset code) can outlive the cgroup they were associated with.
+The motivation is best described in commit 73f576c04b941 ("mm:
+memcontrol: fix cgroup creation failure after many small jobs").
+
+Unfortunately, some in-kernel users (DAMON, LRU gen debugfs interface,
+shrinker debugfs) started exposing these private IDs to userspace.
+This is problematic because:
+
+1. The private IDs are internal implementation details that could change
+2. Userspace already has access to cgroup IDs through the cgroup
+   filesystem
+3. Using different ID namespaces in different interfaces is confusing
+
+This series cleans up the memcg ID infrastructure by:
+
+1. Explicitly marking the private ID APIs with "private" in their names
+   to make it clear they are for internal use only (swap/workingset)
+
+2. Making the public cgroup ID APIs (mem_cgroup_id/mem_cgroup_get_from_id)
+   unconditionally available
+
+3. Converting DAMON, LRU gen, and shrinker debugfs interfaces to use
+   the public cgroup IDs instead of the private IDs
+
+4. Removing the now-unused wrapper functions and renaming the public
+   APIs for clarity
+
+After this series:
+- mem_cgroup_private_id() / mem_cgroup_from_private_id() are used for
+  internal kernel objects that outlive their cgroup (swap, workingset)
+- mem_cgroup_id() / mem_cgroup_get_from_id() return the public cgroup ID
+  (from cgroup_id()) for use in userspace-facing interfaces
+
+Note: please apply this series after the patch at
+https://lore.kernel.org/20251225002904.139543-1-shakeel.butt@linux.dev/
+
+Shakeel Butt (8):
+  memcg: introduce private id API for in-kernel users
+  memcg: expose mem_cgroup_ino() and mem_cgroup_get_from_ino()
+    unconditionally
+  memcg: mem_cgroup_get_from_ino() returns NULL on error
+  memcg: use cgroup_id() instead of cgroup_ino() for memcg ID
+  mm/damon: use cgroup ID instead of private memcg ID
+  mm/vmscan: use cgroup ID instead of private memcg ID in lru_gen
+    interface
+  memcg: remove unused mem_cgroup_id() and mem_cgroup_from_id()
+  memcg: rename mem_cgroup_ino() to mem_cgroup_id()
+
+ include/linux/damon.h      |  4 +--
+ include/linux/memcontrol.h | 26 +++++++----------
+ mm/damon/core.c            |  7 ++---
+ mm/damon/sysfs-schemes.c   |  6 ++--
+ mm/list_lru.c              |  2 +-
+ mm/memcontrol-v1.c         |  6 ++--
+ mm/memcontrol-v1.h         |  4 +--
+ mm/memcontrol.c            | 60 ++++++++++++++++++--------------------
+ mm/shrinker_debug.c        | 13 +++++----
+ mm/vmscan.c                | 17 ++++-------
+ mm/workingset.c            |  8 ++---
+ 11 files changed, 68 insertions(+), 85 deletions(-)
+
+--
+2.47.3
 
 
