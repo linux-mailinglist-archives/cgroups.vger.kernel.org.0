@@ -1,43 +1,43 @@
-Return-Path: <cgroups+bounces-12700-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-12701-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id EBA1DCDD967
-	for <lists+cgroups@lfdr.de>; Thu, 25 Dec 2025 10:31:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 5E0A7CDDB87
+	for <lists+cgroups@lfdr.de>; Thu, 25 Dec 2025 12:54:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 3A3D730145BD
-	for <lists+cgroups@lfdr.de>; Thu, 25 Dec 2025 09:31:03 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 288183019B45
+	for <lists+cgroups@lfdr.de>; Thu, 25 Dec 2025 11:54:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA32123EAB6;
-	Thu, 25 Dec 2025 09:31:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D117E31AAAC;
+	Thu, 25 Dec 2025 11:54:33 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
 Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 06D75632;
-	Thu, 25 Dec 2025 09:30:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 057FB3A1E90;
+	Thu, 25 Dec 2025 11:54:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1766655061; cv=none; b=SlB03Y/K/thf4ZGS+4+QWXLT2UojyOaxXgWJ4MP3DPdTzPiMx/vqFCJJnT3zBpYs183gk6yb+yjo45/NXYTGtMpu3/f0OTiDOo37YRvLBgHsJSi1caTxf1N41dC+/Z+GO/hh2FHVWVX90O/QwpJPfBwd0VQ0M6DQFesFWe6i2m0=
+	t=1766663673; cv=none; b=S37GGDFm/MeVCtp8mjX4tv8eWnv/D2O3/E1gEHZDW1jPW+HMw5rzHfZfLwDItgZPWoNCqV/+d6pw8/z94OYkBe1k6jRx7Mmzw2SU30Aej6KCef/jZ1PkJ4SKvStCkyHgR+dAouXiJvsKKLx8GQV6WgKts5BsFyVRf9LFbBpDpCE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1766655061; c=relaxed/simple;
-	bh=3Y57iyugr01ObIiJn613n0QQp5t4aX3OTuTX+TV9vAg=;
+	s=arc-20240116; t=1766663673; c=relaxed/simple;
+	bh=7HAILs49WdrnS4WcuMD9G6mH9eTAI9yDMxe0W5n7zX0=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=BeAHFTMULrt37TRtMKJDi/X0f8/RWPE70lhG8A1A0r6aIbgqIJIszdkskZThBTL3AgZo0cKAlYv5R09apcLafgFIWhSMkjLNowyjB9ByFGiLANrJVjykRDYSZekcKicVOUZyMY4UF3fiTJXDrnMDr/tzp9Y9jCY4LyJqOC5JS7k=
+	 In-Reply-To:Content-Type; b=LhEMeuFVFFUCFFe+3bLJqLuhDcHC0WCYK0+3P1D1o6DFfrlhZSaqkNEo+1anwGW969HOT3bU7KRYE/4Ybk/OnL/xvX0+gJ+iGoWihIK2E5hL/Gkn97bWAT4JklUO/npFJg6UvfwWz3UDvkC6haHrwensBQWBohwSD0oytz5Qu0w=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.170])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTPS id 4dcNlF5GqGzKHMW3;
-	Thu, 25 Dec 2025 17:30:33 +0800 (CST)
+Received: from mail.maildlp.com (unknown [172.19.163.177])
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTPS id 4dcRwt1DPkzKHMd6;
+	Thu, 25 Dec 2025 19:54:06 +0800 (CST)
 Received: from mail02.huawei.com (unknown [10.116.40.128])
-	by mail.maildlp.com (Postfix) with ESMTP id D6ABE4056B;
-	Thu, 25 Dec 2025 17:30:54 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTP id 721274058C;
+	Thu, 25 Dec 2025 19:54:27 +0800 (CST)
 Received: from [10.67.111.176] (unknown [10.67.111.176])
-	by APP4 (Coremail) with SMTP id gCh0CgBH9vZOBE1pJHyvBQ--.37819S2;
-	Thu, 25 Dec 2025 17:30:54 +0800 (CST)
-Message-ID: <dc9cd447-6431-46f6-b93d-fd2e317aa630@huaweicloud.com>
-Date: Thu, 25 Dec 2025 17:30:53 +0800
+	by APP4 (Coremail) with SMTP id gCh0CgC3F_jyJU1piXu7BQ--.52259S2;
+	Thu, 25 Dec 2025 19:54:27 +0800 (CST)
+Message-ID: <4792e3f5-11ea-4b1c-90fe-f7f202271dae@huaweicloud.com>
+Date: Thu, 25 Dec 2025 19:54:25 +0800
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -58,23 +58,23 @@ Content-Language: en-US
 From: Chen Ridong <chenridong@huaweicloud.com>
 In-Reply-To: <20251225073056.30789-4-longman@redhat.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID:gCh0CgBH9vZOBE1pJHyvBQ--.37819S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxuF4fCw1Utr1DGr1Utr1fZwb_yoWrCr1xpF
-	WUC3W7KFWjgF1UC3y3Kwn7WrsYgw40q3Zrtw15Jw1rAry3KF1Iyrs5JwnxAFy3G395Gw45
-	JFZ3tws3WFn8ArUanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:gCh0CgC3F_jyJU1piXu7BQ--.52259S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxuF4fCw1Utr1DGr1Utr1fZwb_yoWrtr4fpF
+	WUCF17KayjgF1UCw45Kwn7WrsYgw40qFnrtwn8Jr1rAry3JF1IyFn5JwnxAFy3G395Gw45
+	JFZIy393WFn8ArUanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
 	9KBjDU0xBIdaVrnRJUUUyGb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
 	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
 	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
 	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-	6I80ewAv7VC0I7IYx2IY67AKxVWUGVWUXwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
 	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxkF7I0En4kS14v26r1q6r43MxAIw28IcxkI7VAK
 	I48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7
 	xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xII
-	jxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw2
+	jxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw2
 	0EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x02
-	67AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IUbmii3UUUUU==
+	67AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU17KsUUUUUU==
 X-CM-SenderInfo: hfkh02xlgr0w46kxt4xhlfz01xgou0bp/
 
 
@@ -112,12 +112,6 @@ On 2025/12/25 15:30, Waiman Long wrote:
 > + * @sibling:	a sibling cpuset to be checked against
 > + * @new_xcpus:	new exclusive_cpus in trial cpuset
 >   *
-
-Can we rename it to xcpus_changed?
-
-The current name new_xcpus gives me the impression that CPUs are being added.
-For example: if exclusive_cpus is 1, and it changes to 1-7, then new_xcpus would be 2-7.
-
 >   * Returns: true if CPU exclusivity conflict exists, false otherwise
 >   *
 >   * Conflict detection rules:
@@ -175,6 +169,24 @@ For example: if exclusive_cpus is 1, and it changes to 1-7, then new_xcpus would
 >  			goto out;
 >  		if (mems_excl_conflict(trial, c))
 >  			goto out;
+
+validate_change() is also called from cpuset_update_flag(), which may not change any cpus_allowed or
+exclusive_cpus. This could lead to incorrect checks.
+
+i.e,
+
+# cd /sys/fs/cgroup/
+# mkdir a
+# mkdir b
+# echo 1-2 > b/cpuset.cpus.exclusive  -- no conflict with a
+# echo 1 > a/cpuset.cpus
+# echo root > b/cpuset.cpus.partition  -- b becomes root partition, conflict with a, but
+exclusive_cpus unchanged
+# cat b/cpuset.cpus.partition
+root
+
+As a result, cpuset a (as a member) contains CPU 1, which is a subset of partition b's exclusive
+CPUs — a conflict that might be missed.
 
 -- 
 Best regards,
