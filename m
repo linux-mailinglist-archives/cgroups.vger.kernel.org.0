@@ -1,250 +1,336 @@
-Return-Path: <cgroups+bounces-12735-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-12736-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 55C9DCDE29E
-	for <lists+cgroups@lfdr.de>; Fri, 26 Dec 2025 00:23:34 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id DC398CDE308
+	for <lists+cgroups@lfdr.de>; Fri, 26 Dec 2025 02:03:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 162113004F12
-	for <lists+cgroups@lfdr.de>; Thu, 25 Dec 2025 23:23:32 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id EF71F3007EED
+	for <lists+cgroups@lfdr.de>; Fri, 26 Dec 2025 01:03:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2D9DB1E3DED;
-	Thu, 25 Dec 2025 23:23:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="oRUyGsqf"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F0A1315E97;
+	Fri, 26 Dec 2025 01:03:53 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from out-173.mta1.migadu.com (out-173.mta1.migadu.com [95.215.58.173])
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E428C2C032E
-	for <cgroups@vger.kernel.org>; Thu, 25 Dec 2025 23:23:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7534C3A1E8D;
+	Fri, 26 Dec 2025 01:03:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1766705010; cv=none; b=IQL5z6DnvPr2Oj0mdpbgwL+jjxjwXA6j2XAKh2wrEsUH03S3V181rrogG3jWqRjlWaaUXg7KiPzMMzYtwnhMSBa9rnB6QLhmHCpcinsCYlSS6QkWBJ4cCMsCWx6PqgLChIut6D5WiyLahLqGRW1cVg7ZJZ0b7MAw1xwm85zLf5k=
+	t=1766711033; cv=none; b=LEi2geOvUGYI0rXcuPTw7SSHAujAX/rTLFsdjmROIjd6LI5A8CLWWGx6JQEWKX1GDRAD4klkeTRUod30fzkZk8rVc1zKVnf07j5hZ1VGcl1uqNiCV3rfJhha2ka5KMZxWedrTkOj7SrftwkVqD7oOFZ+2me6hZmrjTlUJ4TdbyM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1766705010; c=relaxed/simple;
-	bh=UuruIwdlaQWu4MKY5wBKcA32oRVtj1/hbo/JH66S8RQ=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=G/8VVo0u801obLzuwty0jZzHMxwJvNTqdHrkJCDUH8oaMc4oMxboYftORcC88Pre3QUillO84TRM4hWEcr/a/D4205WiwJOqFuFJx9mtB5avZNiOUIrMUj1k8G0Ud7v4CW2C9JJzIu0IqonfGngryV2CfA42qTf2wlm8cCpb1vk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=oRUyGsqf; arc=none smtp.client-ip=95.215.58.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1766705007;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=8ipsZ9pFNe593ot4ifmspllIFtIPZMuP1LeaIWTARIM=;
-	b=oRUyGsqfO8oIu0XGd1vMKX/zDnb+h/rLJ2bnmz5ROXbpXWcqrk1YtqliVCg/prB5bSjhN+
-	w9UrtORb08uds/G7Wk0VYMylP0zhakfDgUnt4d5VYs3HbRsKCYHo2q/BJCltTzf9lyK251
-	VobCXnbIvW3KJuSDm0yEZWfPIvuFzRM=
-From: Shakeel Butt <shakeel.butt@linux.dev>
-To: Andrew Morton <akpm@linux-foundation.org>
-Cc: Johannes Weiner <hannes@cmpxchg.org>,
-	Michal Hocko <mhocko@kernel.org>,
-	Roman Gushchin <roman.gushchin@linux.dev>,
-	Muchun Song <muchun.song@linux.dev>,
-	SeongJae Park <sj@kernel.org>,
-	Meta kernel team <kernel-team@meta.com>,
-	linux-mm@kvack.org,
-	cgroups@vger.kernel.org,
-	damon@lists.linux.dev,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH 8/8] memcg: rename mem_cgroup_ino() to mem_cgroup_id()
-Date: Thu, 25 Dec 2025 15:21:16 -0800
-Message-ID: <20251225232116.294540-9-shakeel.butt@linux.dev>
-In-Reply-To: <20251225232116.294540-1-shakeel.butt@linux.dev>
-References: <20251225232116.294540-1-shakeel.butt@linux.dev>
+	s=arc-20240116; t=1766711033; c=relaxed/simple;
+	bh=scsak0hLSLKpqyu0qEPaUNQ+sHcmYW6HVJW78FWwcc4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=rP/PGuygs6VsEunmGQ9ZgaZN/Sc0Dlp3Kgz/ckYYy3zqOsgHjMUPmPgvAxhdrgzp7dq5q5j4Ew+2MzkYCr2Cx4dfNVmCkC6822wo+Wx+K9NGexLhQztCtWE7fOWqN77yX7UNg0/+DEBAgcQbRIFrBW/xqPPbFKArLk01lyGUXAU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=none smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.170])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTPS id 4dcnRF3kb0zYQtf3;
+	Fri, 26 Dec 2025 09:03:05 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.128])
+	by mail.maildlp.com (Postfix) with ESMTP id B308E4056D;
+	Fri, 26 Dec 2025 09:03:46 +0800 (CST)
+Received: from [10.67.111.176] (unknown [10.67.111.176])
+	by APP4 (Coremail) with SMTP id gCh0CgAXefnx3k1pTD79BQ--.36305S2;
+	Fri, 26 Dec 2025 09:03:46 +0800 (CST)
+Message-ID: <05500a05-aa90-4b60-a324-2819dc2c5805@huaweicloud.com>
+Date: Fri, 26 Dec 2025 09:03:44 +0800
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 07/28] mm: memcontrol: return root object cgroup for
+ root memory cgroup
+To: Qi Zheng <qi.zheng@linux.dev>, hannes@cmpxchg.org, hughd@google.com,
+ mhocko@suse.com, roman.gushchin@linux.dev, shakeel.butt@linux.dev,
+ muchun.song@linux.dev, david@kernel.org, lorenzo.stoakes@oracle.com,
+ ziy@nvidia.com, harry.yoo@oracle.com, imran.f.khan@oracle.com,
+ kamalesh.babulal@oracle.com, axelrasmussen@google.com, yuanchu@google.com,
+ weixugc@google.com, mkoutny@suse.com, akpm@linux-foundation.org,
+ hamzamahfooz@linux.microsoft.com, apais@linux.microsoft.com,
+ lance.yang@linux.dev
+Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+ cgroups@vger.kernel.org, Muchun Song <songmuchun@bytedance.com>,
+ Qi Zheng <zhengqi.arch@bytedance.com>
+References: <cover.1765956025.git.zhengqi.arch@bytedance.com>
+ <3e454b151f3926dbd67d5df6dc2b129edd927101.1765956025.git.zhengqi.arch@bytedance.com>
+Content-Language: en-US
+From: Chen Ridong <chenridong@huaweicloud.com>
+In-Reply-To: <3e454b151f3926dbd67d5df6dc2b129edd927101.1765956025.git.zhengqi.arch@bytedance.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID:gCh0CgAXefnx3k1pTD79BQ--.36305S2
+X-Coremail-Antispam: 1UD129KBjvJXoW3Xr4DWry7KF1xuF13Cw4DArb_yoW3Zw1DpF
+	srCF9xtw4Fy3yUGrsagayqva4rZa18Xr45JryxGwn7JF4aq3ZxJr1ayr1jyFyrAFZxGry7
+	Jrs0yF43CFWjyFUanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUv0b4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxkF7I0En4kS
+	14v26r4a6rW5MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I
+	8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVW8ZVWr
+	XwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x
+	0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_
+	Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU0
+	s2-5UUUUU==
+X-CM-SenderInfo: hfkh02xlgr0w46kxt4xhlfz01xgou0bp/
 
-Rename mem_cgroup_ino() to mem_cgroup_id() and mem_cgroup_get_from_ino()
-to mem_cgroup_get_from_id(). These functions now use cgroup IDs (from
-cgroup_id()) rather than inode numbers, so the names should reflect that.
 
-Signed-off-by: Shakeel Butt <shakeel.butt@linux.dev>
----
- include/linux/memcontrol.h |  8 ++++----
- mm/damon/core.c            |  2 +-
- mm/damon/ops-common.c      |  2 +-
- mm/damon/sysfs-schemes.c   |  2 +-
- mm/memcontrol.c            |  2 +-
- mm/shrinker_debug.c        | 10 +++++-----
- mm/vmscan.c                |  6 +++---
- 7 files changed, 16 insertions(+), 16 deletions(-)
 
-diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-index 3e7d69020b39..5a1161cadb8d 100644
---- a/include/linux/memcontrol.h
-+++ b/include/linux/memcontrol.h
-@@ -830,12 +830,12 @@ static inline unsigned short mem_cgroup_private_id(struct mem_cgroup *memcg)
- }
- struct mem_cgroup *mem_cgroup_from_private_id(unsigned short id);
- 
--static inline u64 mem_cgroup_ino(struct mem_cgroup *memcg)
-+static inline u64 mem_cgroup_id(struct mem_cgroup *memcg)
- {
- 	return memcg ? cgroup_id(memcg->css.cgroup) : 0;
- }
- 
--struct mem_cgroup *mem_cgroup_get_from_ino(u64 ino);
-+struct mem_cgroup *mem_cgroup_get_from_id(u64 ino);
- 
- static inline struct mem_cgroup *mem_cgroup_from_seq(struct seq_file *m)
- {
-@@ -1288,12 +1288,12 @@ static inline struct mem_cgroup *mem_cgroup_from_private_id(unsigned short id)
- 	return NULL;
- }
- 
--static inline u64 mem_cgroup_ino(struct mem_cgroup *memcg)
-+static inline u64 mem_cgroup_id(struct mem_cgroup *memcg)
- {
- 	return 0;
- }
- 
--static inline struct mem_cgroup *mem_cgroup_get_from_ino(u64 ino)
-+static inline struct mem_cgroup *mem_cgroup_get_from_id(u64 ino)
- {
- 	return NULL;
- }
-diff --git a/mm/damon/core.c b/mm/damon/core.c
-index 23c44811ff7f..a2513db59aee 100644
---- a/mm/damon/core.c
-+++ b/mm/damon/core.c
-@@ -2065,7 +2065,7 @@ static unsigned long damos_get_node_memcg_used_bp(
- 	unsigned long used_pages, numerator;
- 	struct sysinfo i;
- 
--	memcg = mem_cgroup_get_from_ino(goal->memcg_id);
-+	memcg = mem_cgroup_get_from_id(goal->memcg_id);
- 	if (!memcg) {
- 		if (goal->metric == DAMOS_QUOTA_NODE_MEMCG_USED_BP)
- 			return 0;
-diff --git a/mm/damon/ops-common.c b/mm/damon/ops-common.c
-index dd81db95f901..a218d9922234 100644
---- a/mm/damon/ops-common.c
-+++ b/mm/damon/ops-common.c
-@@ -274,7 +274,7 @@ bool damos_folio_filter_match(struct damos_filter *filter, struct folio *folio)
- 		if (!memcg)
- 			matched = false;
- 		else
--			matched = filter->memcg_id == mem_cgroup_ino(memcg);
-+			matched = filter->memcg_id == mem_cgroup_id(memcg);
- 		rcu_read_unlock();
- 		break;
- 	case DAMOS_FILTER_TYPE_YOUNG:
-diff --git a/mm/damon/sysfs-schemes.c b/mm/damon/sysfs-schemes.c
-index 79aa917ab3c0..3beb4456aa51 100644
---- a/mm/damon/sysfs-schemes.c
-+++ b/mm/damon/sysfs-schemes.c
-@@ -2511,7 +2511,7 @@ static int damon_sysfs_memcg_path_to_id(char *memcg_path, u64 *id)
- 		if (!mem_cgroup_online(memcg))
- 			continue;
- 		if (damon_sysfs_memcg_path_eq(memcg, path, memcg_path)) {
--			*id = mem_cgroup_ino(memcg);
-+			*id = mem_cgroup_id(memcg);
- 			found = true;
- 			break;
- 		}
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index ede39dde05df..5b2925a68832 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -3615,7 +3615,7 @@ struct mem_cgroup *mem_cgroup_from_private_id(unsigned short id)
- 	return xa_load(&mem_cgroup_private_ids, id);
- }
- 
--struct mem_cgroup *mem_cgroup_get_from_ino(u64 ino)
-+struct mem_cgroup *mem_cgroup_get_from_id(u64 ino)
- {
- 	struct cgroup *cgrp;
- 	struct cgroup_subsys_state *css;
-diff --git a/mm/shrinker_debug.c b/mm/shrinker_debug.c
-index 7ef16a0b2959..affa64437302 100644
---- a/mm/shrinker_debug.c
-+++ b/mm/shrinker_debug.c
-@@ -70,7 +70,7 @@ static int shrinker_debugfs_count_show(struct seq_file *m, void *v)
- 					       memcg_aware ? memcg : NULL,
- 					       count_per_node);
- 		if (total) {
--			seq_printf(m, "%llu", mem_cgroup_ino(memcg));
-+			seq_printf(m, "%llu", mem_cgroup_id(memcg));
- 			for_each_node(nid)
- 				seq_printf(m, " %lu", count_per_node[nid]);
- 			seq_putc(m, '\n');
-@@ -107,7 +107,7 @@ static ssize_t shrinker_debugfs_scan_write(struct file *file,
- {
- 	struct shrinker *shrinker = file->private_data;
- 	unsigned long nr_to_scan = 0, read_len;
--	u64 ino;
-+	u64 id;
- 	struct shrink_control sc = {
- 		.gfp_mask = GFP_KERNEL,
- 	};
-@@ -120,7 +120,7 @@ static ssize_t shrinker_debugfs_scan_write(struct file *file,
- 		return -EFAULT;
- 	kbuf[read_len] = '\0';
- 
--	if (sscanf(kbuf, "%llu %d %lu", &ino, &nid, &nr_to_scan) != 3)
-+	if (sscanf(kbuf, "%llu %d %lu", &id, &nid, &nr_to_scan) != 3)
- 		return -EINVAL;
- 
- 	if (nid < 0 || nid >= nr_node_ids)
-@@ -130,7 +130,7 @@ static ssize_t shrinker_debugfs_scan_write(struct file *file,
- 		return size;
- 
- 	if (shrinker->flags & SHRINKER_MEMCG_AWARE) {
--		memcg = mem_cgroup_get_from_ino(ino);
-+		memcg = mem_cgroup_get_from_id(id);
- 		if (!memcg)
- 			return -ENOENT;
- 
-@@ -138,7 +138,7 @@ static ssize_t shrinker_debugfs_scan_write(struct file *file,
- 			mem_cgroup_put(memcg);
- 			return -ENOENT;
- 		}
--	} else if (ino != 0) {
-+	} else if (id != 0) {
- 		return -EINVAL;
- 	}
- 
-diff --git a/mm/vmscan.c b/mm/vmscan.c
-index d78043c7e4af..9ad2c2f06bfa 100644
---- a/mm/vmscan.c
-+++ b/mm/vmscan.c
-@@ -5426,7 +5426,7 @@ static int lru_gen_seq_show(struct seq_file *m, void *v)
- 		if (memcg)
- 			cgroup_path(memcg->css.cgroup, m->private, PATH_MAX);
- #endif
--		seq_printf(m, "memcg %llu %s\n", mem_cgroup_ino(memcg), path);
-+		seq_printf(m, "memcg %llu %s\n", mem_cgroup_id(memcg), path);
- 	}
- 
- 	seq_printf(m, " node %5d\n", nid);
-@@ -5522,12 +5522,12 @@ static int run_cmd(char cmd, u64 memcg_id, int nid, unsigned long seq,
- 		return -EINVAL;
- 
- 	if (!mem_cgroup_disabled()) {
--		memcg = mem_cgroup_get_from_ino(memcg_id);
-+		memcg = mem_cgroup_get_from_id(memcg_id);
- 		if (!memcg)
- 			return -EINVAL;
- 	}
- 
--	if (memcg_id != mem_cgroup_ino(memcg))
-+	if (memcg_id != mem_cgroup_id(memcg))
- 		goto done;
- 
- 	sc->target_mem_cgroup = memcg;
+On 2025/12/17 15:27, Qi Zheng wrote:
+> From: Muchun Song <songmuchun@bytedance.com>
+> 
+> Memory cgroup functions such as get_mem_cgroup_from_folio() and
+> get_mem_cgroup_from_mm() return a valid memory cgroup pointer,
+> even for the root memory cgroup. In contrast, the situation for
+> object cgroups has been different.
+> 
+> Previously, the root object cgroup couldn't be returned because
+> it didn't exist. Now that a valid root object cgroup exists, for
+> the sake of consistency, it's necessary to align the behavior of
+> object-cgroup-related operations with that of memory cgroup APIs.
+> 
+> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+> Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
+> ---
+>  include/linux/memcontrol.h | 26 +++++++++++++++++-----
+>  mm/memcontrol.c            | 45 ++++++++++++++++++++------------------
+>  mm/percpu.c                |  2 +-
+>  3 files changed, 45 insertions(+), 28 deletions(-)
+> 
+> diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
+> index 288dd6337f80f..776d9be1f446a 100644
+> --- a/include/linux/memcontrol.h
+> +++ b/include/linux/memcontrol.h
+> @@ -332,6 +332,7 @@ struct mem_cgroup {
+>  #define MEMCG_CHARGE_BATCH 64U
+>  
+>  extern struct mem_cgroup *root_mem_cgroup;
+> +extern struct obj_cgroup *root_obj_cgroup;
+>  
+>  enum page_memcg_data_flags {
+>  	/* page->memcg_data is a pointer to an slabobj_ext vector */
+> @@ -549,6 +550,11 @@ static inline bool mem_cgroup_is_root(struct mem_cgroup *memcg)
+>  	return (memcg == root_mem_cgroup);
+>  }
+>  
+> +static inline bool obj_cgroup_is_root(const struct obj_cgroup *objcg)
+> +{
+> +	return objcg == root_obj_cgroup;
+> +}
+> +
+>  static inline bool mem_cgroup_disabled(void)
+>  {
+>  	return !cgroup_subsys_enabled(memory_cgrp_subsys);
+> @@ -773,23 +779,26 @@ struct mem_cgroup *mem_cgroup_from_css(struct cgroup_subsys_state *css){
+>  
+>  static inline bool obj_cgroup_tryget(struct obj_cgroup *objcg)
+>  {
+> +	if (obj_cgroup_is_root(objcg))
+> +		return true;
+>  	return percpu_ref_tryget(&objcg->refcnt);
+>  }
+>  
+> -static inline void obj_cgroup_get(struct obj_cgroup *objcg)
+> +static inline void obj_cgroup_get_many(struct obj_cgroup *objcg,
+> +				       unsigned long nr)
+>  {
+> -	percpu_ref_get(&objcg->refcnt);
+> +	if (!obj_cgroup_is_root(objcg))
+> +		percpu_ref_get_many(&objcg->refcnt, nr);
+>  }
+>  
+> -static inline void obj_cgroup_get_many(struct obj_cgroup *objcg,
+> -				       unsigned long nr)
+> +static inline void obj_cgroup_get(struct obj_cgroup *objcg)
+>  {
+> -	percpu_ref_get_many(&objcg->refcnt, nr);
+> +	obj_cgroup_get_many(objcg, 1);
+>  }
+>  
+>  static inline void obj_cgroup_put(struct obj_cgroup *objcg)
+>  {
+> -	if (objcg)
+> +	if (objcg && !obj_cgroup_is_root(objcg))
+>  		percpu_ref_put(&objcg->refcnt);
+>  }
+>  
+> @@ -1084,6 +1093,11 @@ static inline bool mem_cgroup_is_root(struct mem_cgroup *memcg)
+>  	return true;
+>  }
+>  
+> +static inline bool obj_cgroup_is_root(const struct obj_cgroup *objcg)
+> +{
+> +	return true;
+> +}
+> +
+>  static inline bool mem_cgroup_disabled(void)
+>  {
+>  	return true;
+> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> index 544b3200db12d..21b5aad34cae7 100644
+> --- a/mm/memcontrol.c
+> +++ b/mm/memcontrol.c
+> @@ -83,6 +83,8 @@ EXPORT_SYMBOL(memory_cgrp_subsys);
+>  struct mem_cgroup *root_mem_cgroup __read_mostly;
+>  EXPORT_SYMBOL(root_mem_cgroup);
+>  
+> +struct obj_cgroup *root_obj_cgroup __read_mostly;
+> +
+>  /* Active memory cgroup to use from an interrupt context */
+>  DEFINE_PER_CPU(struct mem_cgroup *, int_active_memcg);
+>  EXPORT_PER_CPU_SYMBOL_GPL(int_active_memcg);
+> @@ -2634,15 +2636,14 @@ struct mem_cgroup *mem_cgroup_from_slab_obj(void *p)
+>  
+>  static struct obj_cgroup *__get_obj_cgroup_from_memcg(struct mem_cgroup *memcg)
+>  {
+> -	struct obj_cgroup *objcg = NULL;
+> +	for (; memcg; memcg = parent_mem_cgroup(memcg)) {
+> +		struct obj_cgroup *objcg = rcu_dereference(memcg->objcg);
+>  
+> -	for (; !mem_cgroup_is_root(memcg); memcg = parent_mem_cgroup(memcg)) {
+> -		objcg = rcu_dereference(memcg->objcg);
+>  		if (likely(objcg && obj_cgroup_tryget(objcg)))
+> -			break;
+> -		objcg = NULL;
+> +			return objcg;
+>  	}
+> -	return objcg;
+> +
+> +	return NULL;
+>  }
+>  
+>  static struct obj_cgroup *current_objcg_update(void)
+> @@ -2716,18 +2717,17 @@ __always_inline struct obj_cgroup *current_obj_cgroup(void)
+>  		 * Objcg reference is kept by the task, so it's safe
+>  		 * to use the objcg by the current task.
+>  		 */
+> -		return objcg;
+> +		return objcg ? : root_obj_cgroup;
+>  	}
+>  
+>  	memcg = this_cpu_read(int_active_memcg);
+>  	if (unlikely(memcg))
+>  		goto from_memcg;
+>  
+> -	return NULL;
+> +	return root_obj_cgroup;
+>  
+>  from_memcg:
+> -	objcg = NULL;
+> -	for (; !mem_cgroup_is_root(memcg); memcg = parent_mem_cgroup(memcg)) {
+> +	for (; memcg; memcg = parent_mem_cgroup(memcg)) {
+>  		/*
+>  		 * Memcg pointer is protected by scope (see set_active_memcg())
+>  		 * and is pinning the corresponding objcg, so objcg can't go
+> @@ -2736,10 +2736,10 @@ __always_inline struct obj_cgroup *current_obj_cgroup(void)
+>  		 */
+>  		objcg = rcu_dereference_check(memcg->objcg, 1);
+>  		if (likely(objcg))
+> -			break;
+> +			return objcg;
+>  	}
+>  
+> -	return objcg;
+> +	return root_obj_cgroup;
+>  }
+>  
+>  struct obj_cgroup *get_obj_cgroup_from_folio(struct folio *folio)
+> @@ -2753,14 +2753,8 @@ struct obj_cgroup *get_obj_cgroup_from_folio(struct folio *folio)
+>  		objcg = __folio_objcg(folio);
+>  		obj_cgroup_get(objcg);
+>  	} else {
+> -		struct mem_cgroup *memcg;
+> -
+>  		rcu_read_lock();
+> -		memcg = __folio_memcg(folio);
+> -		if (memcg)
+> -			objcg = __get_obj_cgroup_from_memcg(memcg);
+> -		else
+> -			objcg = NULL;
+> +		objcg = __get_obj_cgroup_from_memcg(__folio_memcg(folio));
+>  		rcu_read_unlock();
+>  	}
+>  	return objcg;
+> @@ -2863,7 +2857,7 @@ int __memcg_kmem_charge_page(struct page *page, gfp_t gfp, int order)
+>  	int ret = 0;
+>  
+>  	objcg = current_obj_cgroup();
+> -	if (objcg) {
+> +	if (objcg && !obj_cgroup_is_root(objcg)) {
+>  		ret = obj_cgroup_charge_pages(objcg, gfp, 1 << order);
+>  		if (!ret) {
+>  			obj_cgroup_get(objcg);
+> @@ -3164,7 +3158,7 @@ bool __memcg_slab_post_alloc_hook(struct kmem_cache *s, struct list_lru *lru,
+>  	 * obj_cgroup_get() is used to get a permanent reference.
+>  	 */
+>  	objcg = current_obj_cgroup();
+> -	if (!objcg)
+> +	if (!objcg || obj_cgroup_is_root(objcg))
+>  		return true;
+>  
+>  	/*
+> @@ -3851,6 +3845,9 @@ static int mem_cgroup_css_online(struct cgroup_subsys_state *css)
+>  	if (!objcg)
+>  		goto free_shrinker;
+>  
+> +	if (unlikely(mem_cgroup_is_root(memcg)))
+> +		root_obj_cgroup = objcg;
+> +
+>  	objcg->memcg = memcg;
+>  	rcu_assign_pointer(memcg->objcg, objcg);
+>  	obj_cgroup_get(objcg);
+> @@ -5471,6 +5468,9 @@ void obj_cgroup_charge_zswap(struct obj_cgroup *objcg, size_t size)
+>  	if (!cgroup_subsys_on_dfl(memory_cgrp_subsys))
+>  		return;
+>  
+> +	if (obj_cgroup_is_root(objcg))
+> +		return;
+> +
+>  	VM_WARN_ON_ONCE(!(current->flags & PF_MEMALLOC));
+>  
+>  	/* PF_MEMALLOC context, charging must succeed */
+> @@ -5498,6 +5498,9 @@ void obj_cgroup_uncharge_zswap(struct obj_cgroup *objcg, size_t size)
+>  	if (!cgroup_subsys_on_dfl(memory_cgrp_subsys))
+>  		return;
+>  
+> +	if (obj_cgroup_is_root(objcg))
+> +		return;
+> +
+>  	obj_cgroup_uncharge(objcg, size);
+>  
+
+If we modify zswap by adding MEMCG_ZSWAP_B and MEMCG_ZSWAPPED with obj_cgroup_charge_zswap , then
+remove a control group (via rmdir) and reparent its objects to the root cgroup, then for the root
+cgroup, obj_cgroup_uncharge_zswap will return directly due to the obj_cgroup_is_root check. Would
+this cause us to miss decrementing MEMCG_ZSWAP_B and MEMCG_ZSWAPPED?
+
+>  	rcu_read_lock();
+> diff --git a/mm/percpu.c b/mm/percpu.c
+> index 81462ce5866e1..5c1a9b77d6b93 100644
+> --- a/mm/percpu.c
+> +++ b/mm/percpu.c
+> @@ -1616,7 +1616,7 @@ static bool pcpu_memcg_pre_alloc_hook(size_t size, gfp_t gfp,
+>  		return true;
+>  
+>  	objcg = current_obj_cgroup();
+> -	if (!objcg)
+> +	if (!objcg || obj_cgroup_is_root(objcg))
+>  		return true;
+>  
+>  	if (obj_cgroup_charge(objcg, gfp, pcpu_obj_full_size(size)))
+
 -- 
-2.47.3
+Best regards,
+Ridong
 
 
