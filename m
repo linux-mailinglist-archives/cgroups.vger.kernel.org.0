@@ -1,345 +1,309 @@
-Return-Path: <cgroups+bounces-12744-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-12745-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4CEF7CDE4FC
-	for <lists+cgroups@lfdr.de>; Fri, 26 Dec 2025 04:58:55 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2164FCDE62D
+	for <lists+cgroups@lfdr.de>; Fri, 26 Dec 2025 07:43:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id E521330039E0
-	for <lists+cgroups@lfdr.de>; Fri, 26 Dec 2025 03:58:51 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id DA5E8300955F
+	for <lists+cgroups@lfdr.de>; Fri, 26 Dec 2025 06:43:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A97F224AE0;
-	Fri, 26 Dec 2025 03:58:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 07DF525F99B;
+	Fri, 26 Dec 2025 06:43:11 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
+Received: from localhost.localdomain (unknown [147.136.157.3])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B9551D5CC6;
-	Fri, 26 Dec 2025 03:58:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 65692135A53;
+	Fri, 26 Dec 2025 06:43:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=147.136.157.3
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1766721530; cv=none; b=e2/vv6NV22f8Uq0SXyuBQ7BqhPfGlhWetmWzqeZ2EyI/cWEMKS6whVgUJcbssyWoELy6Sniv9mE4X7VJcWBCQgjuZPoBN8kGwBrX6iNyMA706sEYNJWIZxLA0nzNFXGWZm+zDy9kyO8C10x/cIRDXtCKW5QUAYpuOzVar9EFgyk=
+	t=1766731390; cv=none; b=Cml3iFnn2Lwl6FyUIyKESAoUAx7PVBBm9bq25FYcuBnDeqhWpwSJuFSGKbuCCK+WlgMUhUSkeV5cdbT9s/lOBs8WhmawrOzClv9HrCB+JvI5TIMwowud5e7aJWBAzP0IkP7HM7uKZcvhu9UJhekwqGbwflIOj8jdVNxdWuF1zuY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1766721530; c=relaxed/simple;
-	bh=gC17smebPY/YXbQEc6cXUoTm5DTywp3BiSoQUbQJEn0=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
-	 In-Reply-To:Content-Type; b=bqhjzRZoh0GhjSJZAKnuuR07KMH+93HETald+ZZs/kA6zaFDtnyIsmJNeCMFRnAaFnN+ri16zXsg+BGs8rt3s/2I/JDPOk4LeokvcAuJwm0Q/nOqJjQytWFuIv5QFtFq08gCwQLWIrKI81t33LbCQ0LvUtcLMChd3ED4q2rv4ks=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.170])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTPS id 4dcsKN0KgvzKHMLf;
-	Fri, 26 Dec 2025 11:58:16 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.128])
-	by mail.maildlp.com (Postfix) with ESMTP id 57E8D4056C;
-	Fri, 26 Dec 2025 11:58:38 +0800 (CST)
-Received: from [10.67.111.176] (unknown [10.67.111.176])
-	by APP4 (Coremail) with SMTP id gCh0CgC3ZfbtB05p6uMLBg--.11930S2;
-	Fri, 26 Dec 2025 11:58:38 +0800 (CST)
-Message-ID: <f3fa85e1-d8db-419b-9afd-73e25c36e2fd@huaweicloud.com>
-Date: Fri, 26 Dec 2025 11:58:37 +0800
+	s=arc-20240116; t=1766731390; c=relaxed/simple;
+	bh=85dRWxXAkss1rfCttGCq1dfEscAuYvzzUvD5bUUfauo=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=j+J428W5ES8rz5/qhdVrSvtDYXZsvWHMtFaFVL8nY4RcEHe15ai3DTwfQUMIdMvo3VAm6P1pdokvPPLyEBiePtWw0vp+LSyK1CeS0hteFspYyZ/6nnF4wzrF7uHDJKNv9wdoTjiOlmMkUhy9SR+73Qhh+ywMr87S4YLyHgXQShc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.dev; spf=none smtp.mailfrom=localhost.localdomain; arc=none smtp.client-ip=147.136.157.3
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=localhost.localdomain
+Received: by localhost.localdomain (Postfix, from userid 1007)
+	id A9DBA8B2A3F; Fri, 26 Dec 2025 14:42:59 +0800 (+08)
+From: Jiayuan Chen <jiayuan.chen@linux.dev>
+To: linux-mm@kvack.org,
+	akpm@linux-foundation.org
+Cc: Jiayuan Chen <jiayuan.chen@shopee.com>,
+	Johannes Weiner <hannes@cmpxchg.org>,
+	Michal Hocko <mhocko@kernel.org>,
+	Roman Gushchin <roman.gushchin@linux.dev>,
+	Shakeel Butt <shakeel.butt@linux.dev>,
+	Muchun Song <muchun.song@linux.dev>,
+	Axel Rasmussen <axelrasmussen@google.com>,
+	Yuanchu Xie <yuanchu@google.com>,
+	Wei Xu <weixugc@google.com>,
+	David Hildenbrand <david@kernel.org>,
+	Qi Zheng <zhengqi.arch@bytedance.com>,
+	Lorenzo Stoakes <lorenzo.stoakes@oracle.com>,
+	cgroups@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH v1] mm/memcg: scale memory.high penalty based on refault recency
+Date: Fri, 26 Dec 2025 14:42:55 +0800
+Message-ID: <20251226064257.245581-1-jiayuan.chen@linux.dev>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 07/28] mm: memcontrol: return root object cgroup for
- root memory cgroup
-From: Chen Ridong <chenridong@huaweicloud.com>
-To: Muchun Song <muchun.song@linux.dev>
-Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org,
- cgroups@vger.kernel.org, Muchun Song <songmuchun@bytedance.com>,
- Qi Zheng <zhengqi.arch@bytedance.com>, Qi Zheng <qi.zheng@linux.dev>,
- hannes@cmpxchg.org, hughd@google.com, mhocko@suse.com,
- roman.gushchin@linux.dev, shakeel.butt@linux.dev, david@kernel.org,
- lorenzo.stoakes@oracle.com, ziy@nvidia.com, harry.yoo@oracle.com,
- imran.f.khan@oracle.com, kamalesh.babulal@oracle.com,
- axelrasmussen@google.com, yuanchu@google.com, weixugc@google.com,
- mkoutny@suse.com, akpm@linux-foundation.org,
- hamzamahfooz@linux.microsoft.com, apais@linux.microsoft.com,
- lance.yang@linux.dev
-References: <cover.1765956025.git.zhengqi.arch@bytedance.com>
- <3e454b151f3926dbd67d5df6dc2b129edd927101.1765956025.git.zhengqi.arch@bytedance.com>
- <05500a05-aa90-4b60-a324-2819dc2c5805@huaweicloud.com>
- <a055507f-9c4d-4fb1-b5a6-bda9c2dc20ac@linux.dev>
- <447de988-5f20-4dca-92f4-5c4266e839ec@huaweicloud.com>
-Content-Language: en-US
-In-Reply-To: <447de988-5f20-4dca-92f4-5c4266e839ec@huaweicloud.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:gCh0CgC3ZfbtB05p6uMLBg--.11930S2
-X-Coremail-Antispam: 1UD129KBjvJXoW3ur1kJrW8Xw13ZF4kJr1xAFb_yoWkZr4UpF
-	n7JFyUJrWrCrykJr4jg34jqryFyw48J3WDJr1xJ3WxJr43tFnIgr17Zr1qgFy8AFs3Jr17
-	Jrn8Ar43uFWUJrUanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUvFb4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-	6I80ewAv7VC0I7IYx2IY67AKxVWUGVWUXwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxkF7I0En4kS
-	14v26r4a6rW5MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I
-	8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVW8ZVWr
-	XwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x
-	0267AKxVWxJVW8Jr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v2
-	6r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr1j6F4UJbIYCTnIWIevJa73UjIFyTuYvj
-	xUxo7KDUUUU
-X-CM-SenderInfo: hfkh02xlgr0w46kxt4xhlfz01xgou0bp/
 
+From: Jiayuan Chen <jiayuan.chen@shopee.com>
 
+Problem
+-------
+We observed an issue in production where a workload continuously
+triggering memory.high also generates massive disk IO READ, causing
+system-wide performance degradation.
 
-On 2025/12/26 11:50, Chen Ridong wrote:
-> 
-> 
-> On 2025/12/26 11:10, Muchun Song wrote:
->>
->>
->> On 2025/12/26 09:03, Chen Ridong wrote:
->>>
->>> On 2025/12/17 15:27, Qi Zheng wrote:
->>>> From: Muchun Song <songmuchun@bytedance.com>
->>>>
->>>> Memory cgroup functions such as get_mem_cgroup_from_folio() and
->>>> get_mem_cgroup_from_mm() return a valid memory cgroup pointer,
->>>> even for the root memory cgroup. In contrast, the situation for
->>>> object cgroups has been different.
->>>>
->>>> Previously, the root object cgroup couldn't be returned because
->>>> it didn't exist. Now that a valid root object cgroup exists, for
->>>> the sake of consistency, it's necessary to align the behavior of
->>>> object-cgroup-related operations with that of memory cgroup APIs.
->>>>
->>>> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
->>>> Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
->>>> ---
->>>>   include/linux/memcontrol.h | 26 +++++++++++++++++-----
->>>>   mm/memcontrol.c            | 45 ++++++++++++++++++++------------------
->>>>   mm/percpu.c                |  2 +-
->>>>   3 files changed, 45 insertions(+), 28 deletions(-)
->>>>
->>>> diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
->>>> index 288dd6337f80f..776d9be1f446a 100644
->>>> --- a/include/linux/memcontrol.h
->>>> +++ b/include/linux/memcontrol.h
->>>> @@ -332,6 +332,7 @@ struct mem_cgroup {
->>>>   #define MEMCG_CHARGE_BATCH 64U
->>>>     extern struct mem_cgroup *root_mem_cgroup;
->>>> +extern struct obj_cgroup *root_obj_cgroup;
->>>>     enum page_memcg_data_flags {
->>>>       /* page->memcg_data is a pointer to an slabobj_ext vector */
->>>> @@ -549,6 +550,11 @@ static inline bool mem_cgroup_is_root(struct mem_cgroup *memcg)
->>>>       return (memcg == root_mem_cgroup);
->>>>   }
->>>>   +static inline bool obj_cgroup_is_root(const struct obj_cgroup *objcg)
->>>> +{
->>>> +    return objcg == root_obj_cgroup;
->>>> +}
->>>> +
->>>>   static inline bool mem_cgroup_disabled(void)
->>>>   {
->>>>       return !cgroup_subsys_enabled(memory_cgrp_subsys);
->>>> @@ -773,23 +779,26 @@ struct mem_cgroup *mem_cgroup_from_css(struct cgroup_subsys_state *css){
->>>>     static inline bool obj_cgroup_tryget(struct obj_cgroup *objcg)
->>>>   {
->>>> +    if (obj_cgroup_is_root(objcg))
->>>> +        return true;
->>>>       return percpu_ref_tryget(&objcg->refcnt);
->>>>   }
->>>>   -static inline void obj_cgroup_get(struct obj_cgroup *objcg)
->>>> +static inline void obj_cgroup_get_many(struct obj_cgroup *objcg,
->>>> +                       unsigned long nr)
->>>>   {
->>>> -    percpu_ref_get(&objcg->refcnt);
->>>> +    if (!obj_cgroup_is_root(objcg))
->>>> +        percpu_ref_get_many(&objcg->refcnt, nr);
->>>>   }
->>>>   -static inline void obj_cgroup_get_many(struct obj_cgroup *objcg,
->>>> -                       unsigned long nr)
->>>> +static inline void obj_cgroup_get(struct obj_cgroup *objcg)
->>>>   {
->>>> -    percpu_ref_get_many(&objcg->refcnt, nr);
->>>> +    obj_cgroup_get_many(objcg, 1);
->>>>   }
->>>>     static inline void obj_cgroup_put(struct obj_cgroup *objcg)
->>>>   {
->>>> -    if (objcg)
->>>> +    if (objcg && !obj_cgroup_is_root(objcg))
->>>>           percpu_ref_put(&objcg->refcnt);
->>>>   }
->>>>   @@ -1084,6 +1093,11 @@ static inline bool mem_cgroup_is_root(struct mem_cgroup *memcg)
->>>>       return true;
->>>>   }
->>>>   +static inline bool obj_cgroup_is_root(const struct obj_cgroup *objcg)
->>>> +{
->>>> +    return true;
->>>> +}
->>>> +
->>>>   static inline bool mem_cgroup_disabled(void)
->>>>   {
->>>>       return true;
->>>> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
->>>> index 544b3200db12d..21b5aad34cae7 100644
->>>> --- a/mm/memcontrol.c
->>>> +++ b/mm/memcontrol.c
->>>> @@ -83,6 +83,8 @@ EXPORT_SYMBOL(memory_cgrp_subsys);
->>>>   struct mem_cgroup *root_mem_cgroup __read_mostly;
->>>>   EXPORT_SYMBOL(root_mem_cgroup);
->>>>   +struct obj_cgroup *root_obj_cgroup __read_mostly;
->>>> +
->>>>   /* Active memory cgroup to use from an interrupt context */
->>>>   DEFINE_PER_CPU(struct mem_cgroup *, int_active_memcg);
->>>>   EXPORT_PER_CPU_SYMBOL_GPL(int_active_memcg);
->>>> @@ -2634,15 +2636,14 @@ struct mem_cgroup *mem_cgroup_from_slab_obj(void *p)
->>>>     static struct obj_cgroup *__get_obj_cgroup_from_memcg(struct mem_cgroup *memcg)
->>>>   {
->>>> -    struct obj_cgroup *objcg = NULL;
->>>> +    for (; memcg; memcg = parent_mem_cgroup(memcg)) {
->>>> +        struct obj_cgroup *objcg = rcu_dereference(memcg->objcg);
->>>>   -    for (; !mem_cgroup_is_root(memcg); memcg = parent_mem_cgroup(memcg)) {
->>>> -        objcg = rcu_dereference(memcg->objcg);
->>>>           if (likely(objcg && obj_cgroup_tryget(objcg)))
->>>> -            break;
->>>> -        objcg = NULL;
->>>> +            return objcg;
->>>>       }
->>>> -    return objcg;
->>>> +
->>>> +    return NULL;
->>>>   }
->>>>     static struct obj_cgroup *current_objcg_update(void)
->>>> @@ -2716,18 +2717,17 @@ __always_inline struct obj_cgroup *current_obj_cgroup(void)
->>>>            * Objcg reference is kept by the task, so it's safe
->>>>            * to use the objcg by the current task.
->>>>            */
->>>> -        return objcg;
->>>> +        return objcg ? : root_obj_cgroup;
->>>>       }
->>>>         memcg = this_cpu_read(int_active_memcg);
->>>>       if (unlikely(memcg))
->>>>           goto from_memcg;
->>>>   -    return NULL;
->>>> +    return root_obj_cgroup;
->>>>     from_memcg:
->>>> -    objcg = NULL;
->>>> -    for (; !mem_cgroup_is_root(memcg); memcg = parent_mem_cgroup(memcg)) {
->>>> +    for (; memcg; memcg = parent_mem_cgroup(memcg)) {
->>>>           /*
->>>>            * Memcg pointer is protected by scope (see set_active_memcg())
->>>>            * and is pinning the corresponding objcg, so objcg can't go
->>>> @@ -2736,10 +2736,10 @@ __always_inline struct obj_cgroup *current_obj_cgroup(void)
->>>>            */
->>>>           objcg = rcu_dereference_check(memcg->objcg, 1);
->>>>           if (likely(objcg))
->>>> -            break;
->>>> +            return objcg;
->>>>       }
->>>>   -    return objcg;
->>>> +    return root_obj_cgroup;
->>>>   }
->>>>     struct obj_cgroup *get_obj_cgroup_from_folio(struct folio *folio)
->>>> @@ -2753,14 +2753,8 @@ struct obj_cgroup *get_obj_cgroup_from_folio(struct folio *folio)
->>>>           objcg = __folio_objcg(folio);
->>>>           obj_cgroup_get(objcg);
->>>>       } else {
->>>> -        struct mem_cgroup *memcg;
->>>> -
->>>>           rcu_read_lock();
->>>> -        memcg = __folio_memcg(folio);
->>>> -        if (memcg)
->>>> -            objcg = __get_obj_cgroup_from_memcg(memcg);
->>>> -        else
->>>> -            objcg = NULL;
->>>> +        objcg = __get_obj_cgroup_from_memcg(__folio_memcg(folio));
->>>>           rcu_read_unlock();
->>>>       }
->>>>       return objcg;
->>>> @@ -2863,7 +2857,7 @@ int __memcg_kmem_charge_page(struct page *page, gfp_t gfp, int order)
->>>>       int ret = 0;
->>>>         objcg = current_obj_cgroup();
->>>> -    if (objcg) {
->>>> +    if (objcg && !obj_cgroup_is_root(objcg)) {
->>>>           ret = obj_cgroup_charge_pages(objcg, gfp, 1 << order);
->>>>           if (!ret) {
->>>>               obj_cgroup_get(objcg);
->>>> @@ -3164,7 +3158,7 @@ bool __memcg_slab_post_alloc_hook(struct kmem_cache *s, struct list_lru *lru,
->>>>        * obj_cgroup_get() is used to get a permanent reference.
->>>>        */
->>>>       objcg = current_obj_cgroup();
->>>> -    if (!objcg)
->>>> +    if (!objcg || obj_cgroup_is_root(objcg))
->>>>           return true;
->>>>         /*
->>>> @@ -3851,6 +3845,9 @@ static int mem_cgroup_css_online(struct cgroup_subsys_state *css)
->>>>       if (!objcg)
->>>>           goto free_shrinker;
->>>>   +    if (unlikely(mem_cgroup_is_root(memcg)))
->>>> +        root_obj_cgroup = objcg;
->>>> +
->>>>       objcg->memcg = memcg;
->>>>       rcu_assign_pointer(memcg->objcg, objcg);
->>>>       obj_cgroup_get(objcg);
->>>> @@ -5471,6 +5468,9 @@ void obj_cgroup_charge_zswap(struct obj_cgroup *objcg, size_t size)
->>>>       if (!cgroup_subsys_on_dfl(memory_cgrp_subsys))
->>>>           return;
->>>>   +    if (obj_cgroup_is_root(objcg))
->>>> +        return;
->>>> +
->>>>       VM_WARN_ON_ONCE(!(current->flags & PF_MEMALLOC));
->>>>         /* PF_MEMALLOC context, charging must succeed */
->>>> @@ -5498,6 +5498,9 @@ void obj_cgroup_uncharge_zswap(struct obj_cgroup *objcg, size_t size)
->>>>       if (!cgroup_subsys_on_dfl(memory_cgrp_subsys))
->>>>           return;
->>>>   +    if (obj_cgroup_is_root(objcg))
->>>> +        return;
->>>> +
->>>>       obj_cgroup_uncharge(objcg, size);
->>>>   
->>> If we modify zswap by adding MEMCG_ZSWAP_B and MEMCG_ZSWAPPED with obj_cgroup_charge_zswap , then
->>> remove a control group (via rmdir) and reparent its objects to the root cgroup, then for the root
->>> cgroup, obj_cgroup_uncharge_zswap will return directly due to the obj_cgroup_is_root check. Would
->>> this cause us to miss decrementing MEMCG_ZSWAP_B and MEMCG_ZSWAPPED?
->>
->> I'm not sure I fully understand the problem—how could this happen, given that
->> obj_cgroup_charge_zswap also checks for the root objcg?
->>
->> Muchun,
->> Thanks.
-> 
-> That is:
-> 
-> 1. memcg A is under the root memcg.
-> 2. obj_cgroup_charge_zswap charges memcg A.
-> 3. After rmdir A, the obj of A is reparented to the root memcg.
-> 4. obj_cgroup_uncharge_zswap does nothing and returns, since the object is now associated with the root.
-> 
-> Thus, the root memcg will miss decrementing MEMCG_ZSWAP_B and MEMCG_ZSWAPPED, correct? Or am I
-> missing something?
-> 
+This happens because memory.high penalty is currently based solely on
+the overage amount, not the actual impact of that overage:
 
-Oh, I understand now — please ignore my previous question. Apologies for the noise.
+1. A memcg over memory.high reclaiming cold/unused pages
+   → minimal system impact, light penalty is appropriate
 
-Even after reparenting, the object from A should not be treated as a root object.
+2. A memcg over memory.high with hot pages being continuously
+   reclaimed and refaulted → severe IO pressure, needs heavy penalty
 
->>>
->>>>       rcu_read_lock();
->>>> diff --git a/mm/percpu.c b/mm/percpu.c
->>>> index 81462ce5866e1..5c1a9b77d6b93 100644
->>>> --- a/mm/percpu.c
->>>> +++ b/mm/percpu.c
->>>> @@ -1616,7 +1616,7 @@ static bool pcpu_memcg_pre_alloc_hook(size_t size, gfp_t gfp,
->>>>           return true;
->>>>         objcg = current_obj_cgroup();
->>>> -    if (!objcg)
->>>> +    if (!objcg || obj_cgroup_is_root(objcg))
->>>>           return true;
->>>>         if (obj_cgroup_charge(objcg, gfp, pcpu_obj_full_size(size)))
->>
-> 
+Both cases receive identical penalties today. Users are forced to
+combine memory.high with io.max as a workaround, but this is:
+- The wrong abstraction level (memory policy shouldn't require IO tuning)
+- Hard to configure correctly across different storage devices
+- Unintuitive for users who only want memory control
 
+Reproduction
+------------
+A simple test program demonstrates the issue:
+
+    int fd = open("./200MB.file", O_RDWR|O_CREAT, 777);
+    char *mem = mmap(NULL, size, PROT_READ|PROT_WRITE, MAP_SHARED, fd, 0);
+    while (1) {
+        for (size_t i = 0; i < size; i += 4096) {
+            if (mem[rand() % size] != 0)
+                return -1;
+        }
+    }
+
+Run with memory.high constraint:
+
+    cgcreate -g io,cpu,cpuset,memory:/always_high
+    cgset -r cpuset.cpus=0 always_high
+    cgset -r memory.high=150M always_high
+    cgexec -g cpu,cpuset,memory:/always_high ./high_test 200 &
+
+Solution
+--------
+Incorporate refault recency into the penalty calculation. If a refault
+occurred recently when memory.high is triggered, it indicates active
+thrashing and warrants additional throttling.
+
+Why not use refault counters directly?
+- Refault statistics (WORKINGSET_REFAULT_*) are aggregated periodically,
+  not available in real-time for accurate delta calculation
+- Calling mem_cgroup_flush_stats() on every charge would be prohibitively
+  expensive in the hot path
+- Due to readahead, the same refault count can represent vastly different
+  IO loads, making counter-based estimation unreliable
+
+The timestamp-based approach is:
+- O(1) cost: single timestamp read and comparison
+- Self-calibrating: penalty scales naturally with refault frequency
+- Conservative: only triggers when refault and memory.high event
+  occur in close temporal proximity
+
+When refault_penalty is active:
+- Skip the "reclaim made progress" retry loop to apply throttling sooner
+- Skip the "penalty too small" bypass to ensure some delay is applied
+- Add refault-based delay to the overage-based delay
+
+Results
+-------
+Before this patch (memory.high triggered, severe thrashing):
+
+    sar -d 1
+    Time          DEV       tps     rkB/s    %util
+    04:17:42      sda   3242.00  272684.00   89.60
+    04:17:43      sda   3412.00  251160.00   91.60
+    04:17:44      sda   3185.00  254532.00   88.00
+    04:17:45      sda   3230.00  253332.00   88.40
+    04:17:46      sda   3416.00  224712.00   92.40
+    04:17:47      sda   3613.00  206612.00   94.40
+
+After this patch (memory.high triggered, thrashing mitigated):
+
+    sar -d 1
+    Time          DEV       tps     rkB/s    %util
+    04:08:57      sda    512.00    2048.00    5.60
+    04:08:58      sda    576.00    2304.00    6.80
+    04:08:59      sda    512.00    2048.00    6.80
+    04:09:00      sda    536.00    2144.00    4.80
+    04:09:01      sda    552.00    2208.00   10.40
+    04:09:02      sda    512.00    2048.00    9.20
+
+After this patch with MADV_RANDOM (no readahead):
+
+    sar -d 1
+    Time          DEV       tps     rkB/s    %util
+    04:27:03      sda     40.00    5880.00    0.00
+    04:27:04      sda     41.00    6472.00    0.00
+    04:27:05      sda     37.00    4716.00    0.00
+    04:27:06      sda     48.00    8512.00    0.00
+    04:27:07      sda     33.00    4556.00    0.00
+
+The patch reduces disk utilization from ~90% to ~6-10%, effectively
+preventing memory.high-induced thrashing from overwhelming the IO
+subsystem.
+
+Signed-off-by: Jiayuan Chen <jiayuan.chen@shopee.com>
+---
+ include/linux/memcontrol.h |  3 +++
+ mm/memcontrol.c            | 41 +++++++++++++++++++++++++++++++++++---
+ mm/workingset.c            |  8 ++++++++
+ 3 files changed, 49 insertions(+), 3 deletions(-)
+
+diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
+index fd400082313a..fc53de2485d6 100644
+--- a/include/linux/memcontrol.h
++++ b/include/linux/memcontrol.h
+@@ -321,6 +321,9 @@ struct mem_cgroup {
+ 	spinlock_t event_list_lock;
+ #endif /* CONFIG_MEMCG_V1 */
+ 
++	/* Timestamp of most recent refault, for thrashing detection */
++	u64 last_refault;
++
+ 	struct mem_cgroup_per_node *nodeinfo[];
+ };
+ 
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index 75fc22a33b28..0dd42cce6926 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -2226,6 +2226,38 @@ static unsigned long calculate_high_delay(struct mem_cgroup *memcg,
+ 	return penalty_jiffies * nr_pages / MEMCG_CHARGE_BATCH;
+ }
+ 
++/*
++ * Check if a refault occurred recently, indicating active thrashing.
++ * Returns additional penalty jiffies based on refault recency.
++ *
++ * We use timestamp rather than refault counters because:
++ * 1. Counter aggregation is periodic and expensive to flush
++ * 2. Readahead makes counter-to-IO correlation unreliable
++ * 3. Timestamp gives us recency which directly reflects thrashing intensity
++ */
++static unsigned long calculate_refault(struct mem_cgroup *memcg)
++{
++	unsigned long last_refault = READ_ONCE(memcg->last_refault);
++	unsigned long now = jiffies;
++	long diff;
++
++	/*
++	 * Only care about refaults within the last second. The closer
++	 * the refault is to now, the higher the penalty:
++	 *
++	 *   diff = 1 tick   -> penalty = HZ      (capped to HZ/10 = 100ms)
++	 *   diff = HZ/10    -> penalty = 10 ticks = 10ms
++	 *   diff = HZ/2     -> penalty = 2 ticks  = 2ms
++	 *   diff >= HZ      -> penalty = 0        (too old, not thrashing)
++	 */
++	if (last_refault && time_before(now, last_refault + HZ)) {
++		diff = max((long)now - (long)last_refault, 1L);
++		/* Cap at 100ms to avoid excessive delays */
++		return min(HZ / diff, HZ / 10);
++	}
++	return 0;
++}
++
+ /*
+  * Reclaims memory over the high limit. Called directly from
+  * try_charge() (context permitting), as well as from the userland
+@@ -2233,6 +2265,7 @@ static unsigned long calculate_high_delay(struct mem_cgroup *memcg,
+  */
+ void __mem_cgroup_handle_over_high(gfp_t gfp_mask)
+ {
++	unsigned long refault_penalty;
+ 	unsigned long penalty_jiffies;
+ 	unsigned long pflags;
+ 	unsigned long nr_reclaimed;
+@@ -2279,12 +2312,14 @@ void __mem_cgroup_handle_over_high(gfp_t gfp_mask)
+ 	penalty_jiffies += calculate_high_delay(memcg, nr_pages,
+ 						swap_find_max_overage(memcg));
+ 
++	refault_penalty = calculate_refault(memcg);
++
+ 	/*
+ 	 * Clamp the max delay per usermode return so as to still keep the
+ 	 * application moving forwards and also permit diagnostics, albeit
+ 	 * extremely slowly.
+ 	 */
+-	penalty_jiffies = min(penalty_jiffies, MEMCG_MAX_HIGH_DELAY_JIFFIES);
++	penalty_jiffies = min(penalty_jiffies + refault_penalty, MEMCG_MAX_HIGH_DELAY_JIFFIES);
+ 
+ 	/*
+ 	 * Don't sleep if the amount of jiffies this memcg owes us is so low
+@@ -2292,7 +2327,7 @@ void __mem_cgroup_handle_over_high(gfp_t gfp_mask)
+ 	 * go only a small amount over their memory.high value and maybe haven't
+ 	 * been aggressively reclaimed enough yet.
+ 	 */
+-	if (penalty_jiffies <= HZ / 100)
++	if (!refault_penalty && penalty_jiffies <= HZ / 100)
+ 		goto out;
+ 
+ 	/*
+@@ -2300,7 +2335,7 @@ void __mem_cgroup_handle_over_high(gfp_t gfp_mask)
+ 	 * memory.high, we want to encourage that rather than doing allocator
+ 	 * throttling.
+ 	 */
+-	if (nr_reclaimed || nr_retries--) {
++	if (!refault_penalty && (nr_reclaimed || nr_retries--)) {
+ 		in_retry = true;
+ 		goto retry_reclaim;
+ 	}
+diff --git a/mm/workingset.c b/mm/workingset.c
+index e9f05634747a..96e3c07e38ad 100644
+--- a/mm/workingset.c
++++ b/mm/workingset.c
+@@ -290,6 +290,7 @@ static void lru_gen_refault(struct folio *folio, void *shadow)
+ 	struct lru_gen_folio *lrugen;
+ 	int type = folio_is_file_lru(folio);
+ 	int delta = folio_nr_pages(folio);
++	struct mem_cgroup *memcg;
+ 
+ 	rcu_read_lock();
+ 
+@@ -297,6 +298,10 @@ static void lru_gen_refault(struct folio *folio, void *shadow)
+ 	if (lruvec != folio_lruvec(folio))
+ 		goto unlock;
+ 
++	memcg = folio_memcg(folio);
++	if (memcg)
++		WRITE_ONCE(memcg->last_refault, jiffies);
++
+ 	mod_lruvec_state(lruvec, WORKINGSET_REFAULT_BASE + type, delta);
+ 
+ 	if (!recent)
+@@ -561,6 +566,9 @@ void workingset_refault(struct folio *folio, void *shadow)
+ 	pgdat = folio_pgdat(folio);
+ 	lruvec = mem_cgroup_lruvec(memcg, pgdat);
+ 
++	if (memcg)
++		WRITE_ONCE(memcg->last_refault, jiffies);
++
+ 	mod_lruvec_state(lruvec, WORKINGSET_REFAULT_BASE + file, nr);
+ 
+ 	if (!workingset_test_recent(shadow, file, &workingset, true))
 -- 
-Best regards,
-Ridong
+2.43.0
 
 
