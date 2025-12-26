@@ -1,228 +1,329 @@
-Return-Path: <cgroups+bounces-12760-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-12761-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 80054CDEFFC
-	for <lists+cgroups@lfdr.de>; Fri, 26 Dec 2025 21:48:21 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id 97A2CCDF005
+	for <lists+cgroups@lfdr.de>; Fri, 26 Dec 2025 21:51:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 3B6DA3006593
-	for <lists+cgroups@lfdr.de>; Fri, 26 Dec 2025 20:48:20 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 896A63003048
+	for <lists+cgroups@lfdr.de>; Fri, 26 Dec 2025 20:51:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 47B0630E0D6;
-	Fri, 26 Dec 2025 20:48:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9320D2FB08C;
+	Fri, 26 Dec 2025 20:51:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="DLnarn3B";
-	dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b="H7xOBbyA"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="kGKb5FZg"
 X-Original-To: cgroups@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8C761278753
-	for <cgroups@vger.kernel.org>; Fri, 26 Dec 2025 20:48:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9398120D4FC;
+	Fri, 26 Dec 2025 20:51:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.9
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1766782098; cv=none; b=TiWybeig/hKuUnHv51fxaGnCcbpRMiG7/f5F0IyQaS8gf4P296i9dLZGPAeOAc8awQY/FRedrEla1qlKJ083ytwzjfJkQEBpsfrkPjfdVsOLaaZX5MxyhCTj4e8WfdNwoaejzLRurNo1JjnltZfLvaPHkaoBnOXz+lukv+zWpHU=
+	t=1766782294; cv=none; b=e1MaxHY48wLkyOh0b45bcxUvBpl5nT+8+KYRq7jz0+twndliirbvsLsIfhwOIgxnD4Gh5IL+w9LCm3kBJI2Jpk37Oqyq9OtbfHkuEMYHZxxSDMBwinjf6wNqQXAQJlca/tqvilh6wWAWdyGzi+lllqJHImSH5npzerrweAK3dX0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1766782098; c=relaxed/simple;
-	bh=EAgJ3664AENbLI1S3Tf4CRT9521EaZ0GR7ptn4Sh+c8=;
-	h=From:Message-ID:Date:MIME-Version:Subject:To:Cc:References:
-	 In-Reply-To:Content-Type; b=nXy+aQBeOSYz9ieT7+w41ATxKt+CtIh0xhfawrl/+kbLhmW/CWNUdeIMl5eyr9+BwMDS7KlFag7RPSnoA34AP+M+sjzZIV4VgTsyC4yhJbJHhHbVQr4LHRCqaMRiiwNQi0K75mK0jr2dNfP8apdlcVXOrYCaj28jkYT1Xwij/S8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=DLnarn3B; dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b=H7xOBbyA; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1766782095;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=RM8xUWiPB1W0MgA0qXcU7NgXtzuyc/5Zx2MgNVttglw=;
-	b=DLnarn3BH+CkNjBqtnA4PlfQa2pRx452LmsR2yKVfImPgEWqREbr90ajKcY+7/81nTjaDA
-	uL+/JfbW+rt0XYmrcJynRB2/Mok5Kw55llN1KMU6PBvuigJAdO2QqZLNDCI87cp1gBSFka
-	eHeFdnrh48aRDOfXAN2vcOgsNle5H8A=
-Received: from mail-qk1-f199.google.com (mail-qk1-f199.google.com
- [209.85.222.199]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-378-U3m6XRunP9iyeV0Y5sXDGA-1; Fri, 26 Dec 2025 15:48:13 -0500
-X-MC-Unique: U3m6XRunP9iyeV0Y5sXDGA-1
-X-Mimecast-MFC-AGG-ID: U3m6XRunP9iyeV0Y5sXDGA_1766782093
-Received: by mail-qk1-f199.google.com with SMTP id af79cd13be357-8b55a033a2aso2061349585a.0
-        for <cgroups@vger.kernel.org>; Fri, 26 Dec 2025 12:48:13 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=redhat.com; s=google; t=1766782093; x=1767386893; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:content-language:references
-         :cc:to:subject:user-agent:mime-version:date:message-id:from:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=RM8xUWiPB1W0MgA0qXcU7NgXtzuyc/5Zx2MgNVttglw=;
-        b=H7xOBbyAuo5hdzdfuFjgFSJZ4hdKURvGi1NPWv40M2tg6NlRjrmsFbHhMw3tV5nkjw
-         21MC7Yrw3tHLZ9VmUgdyhh7hSvxfxxARpwh+Uk8DJ8DLI7iZx13FAJiE1e9M/95u1U2l
-         qwsFbPosRAUX8mrJnU1url6puTKNAhsEHKaJ/4wi5nJLcnwwZxIJxlM12HwnJvDVHQR1
-         P6O+1UFWitXQs6PvpkWFB0fxv3TvnT85XCvsEX+WMSClu2r5X2i1UPfdqeADLY1ic7nJ
-         p4LDV7zr7XJ23AbLXSIBuuqyzg+DbchTq/ExVWX+NyII7irnnSJ6v5Fzxag8rCGzn0SK
-         pG8w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1766782093; x=1767386893;
-        h=content-transfer-encoding:in-reply-to:content-language:references
-         :cc:to:subject:user-agent:mime-version:date:message-id:from:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=RM8xUWiPB1W0MgA0qXcU7NgXtzuyc/5Zx2MgNVttglw=;
-        b=tqyAOj86V0COsTAYNvc4zYkMX3YORs+3sBWlVZpLRyMGVt5XUQ0GOVdNV5luYqNg0N
-         tXvnb41ZyIVomwK1CetpiInEoT7r5K5++Gp1VmejvcQ3DPwlUfd8tBTdDIF9ldALcDWW
-         CO7J1ETqCHYB3k1HyBSsRqJ8dnhS4VaWlkCT5xEJkwBx8KqoeUkghaSJ4AddVrlzSmks
-         qW0kOqI9vcD7PmysXvhC5uGIFXN+5H2anHsM5TBK+jGUun4jXOqPRpjIFDpa1ddrJNZa
-         qUEnUbHJMWGOKoFkB/mmmzOQ9K2Zf2vYXkPVVOERXT46ohSwk4t9e5bDyX5lEGF/g1bh
-         33BQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWfN9tDHcbCbjLahz5kaFCvb2fOl3BBJj4IQRJQWko2W50xLR4sMfNJbo2MMANT+DRLODHIf0Z5@vger.kernel.org
-X-Gm-Message-State: AOJu0Ywl1cNWiKcK6ra1YmbahBLIBdHl2Da11rYQdyp6TGWAyvapEZ2L
-	pwrk56O4AL9bBIKFIgRjYN5tmB4zdvetRKaUVF2Ed3Omw8ZlcP5pC1dUcfVl/XK0uZeYvlaq029
-	S+F+s2hpM5tt24JIfzOxl5kSRETmZP3FQvbTYDPE7zkFRDGs74RPtsqfakxw=
-X-Gm-Gg: AY/fxX4omXZrO3B2fVFE7aB8twzDRhzegbweipI2/8SCg6SAU9/MJygxnhU0ZAHAA3H
-	9/8tLR4jVXthDxQUCwj2gNfwTqjhhovAMfdPCYUkYupoTYxLTsSjY9KbiisB0/fLwYZSzeOj2Td
-	xEzTwtU/FhIgGCD4c8BW5UYeWoJ4cmAR2gmIu2l2AY7RfCbZWGP8vudwM573ac2GHDL7JPnMFNN
-	wKKlNlNPP3F/ynPZWPffxDn5kqrOXk9Dnty9xDRADGDYRvS/Gbxm7IbvR/mIPKtNIbylEk1Go+W
-	FMGJhh98BgrSwFwaHshH7pruXnAESmOwu5M2WGS5nwkJaofdgL6LMWY3iPFTVH2fhwJWft4aP4X
-	Z2mNtUH3mZMJGHT0EDxWWbI6zpO21IuqUMLmeInJaflsjNWf08v65w/Qt
-X-Received: by 2002:a05:620a:4450:b0:8b2:f5b5:c9bf with SMTP id af79cd13be357-8bee76c8ecdmr4098090385a.22.1766782093298;
-        Fri, 26 Dec 2025 12:48:13 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IH5vt35jXazmAlmHnLRQK7CDf0928bdO3E07iE5exs1VnuKt+dhmYfT9Sq8ULHkPw+Z5ZFmhA==
-X-Received: by 2002:a05:620a:4450:b0:8b2:f5b5:c9bf with SMTP id af79cd13be357-8bee76c8ecdmr4098087085a.22.1766782092880;
-        Fri, 26 Dec 2025 12:48:12 -0800 (PST)
-Received: from ?IPV6:2601:600:947f:f020:85dc:d2b2:c5ee:e3c4? ([2601:600:947f:f020:85dc:d2b2:c5ee:e3c4])
-        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-88d96ce4e23sm205030136d6.19.2025.12.26.12.48.08
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 26 Dec 2025 12:48:12 -0800 (PST)
-From: Waiman Long <llong@redhat.com>
-X-Google-Original-From: Waiman Long <longman@redhat.com>
-Message-ID: <eb7920d4-bca6-4692-9b8f-7feb715a6ec2@redhat.com>
-Date: Fri, 26 Dec 2025 15:48:08 -0500
+	s=arc-20240116; t=1766782294; c=relaxed/simple;
+	bh=cIai1HhnCTdXbz4D4yQFoHY8vOuTPp1/oRc27ajVe+E=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=AkB1AVCZ6X6wzBpMB94wc6INddBayY6ghWUlw3MIpx/KXGqEtaiMLOf/t8BVOBDirZgePPjI2qluir38yiqT09vDdtf6Vn8ZlgJj3T8bH4wzA/0FeYdpWV5i4xPFKn6hMPGEvJvs9SjSTa3YEXVa3jecx46y5O8jbAeMNEg47CM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=kGKb5FZg; arc=none smtp.client-ip=192.198.163.9
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1766782293; x=1798318293;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=cIai1HhnCTdXbz4D4yQFoHY8vOuTPp1/oRc27ajVe+E=;
+  b=kGKb5FZgGGkV1R480tQRoYU1qJd6/Bv4HROKwNW3oVkCBz47jMWxbrvu
+   HE7btpIQ5/B+sIAIx724XjUmnETmLyvBd/SubILNOy95q5wfVmsPJSAno
+   rD/BZchwzxGnAe43cbeAulZ+dC1r6mqh7IG3C2lC9ht1ylR9G91x77eRS
+   1F1aP64PfLPFMktZYt/K55n9L/jg/vYxflCRhkX7SeOZxlwvic6DMEc1h
+   kWszOqF1eP5Fru+uVDp+GFNJJPcvmIU++NtOv6khynqtb6RF61koDdq7I
+   ByoUBPVSzAWdurHhI/LPnGWcG4wSQX29UrZtdWXyiC/KENTKMt0Q8eurC
+   Q==;
+X-CSE-ConnectionGUID: 3BWX65bfQjqMvcGzMDM7gw==
+X-CSE-MsgGUID: IuxTcoSDRPO7o8IjaZqTtQ==
+X-IronPort-AV: E=McAfee;i="6800,10657,11653"; a="79246670"
+X-IronPort-AV: E=Sophos;i="6.21,178,1763452800"; 
+   d="scan'208";a="79246670"
+Received: from fmviesa010.fm.intel.com ([10.60.135.150])
+  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Dec 2025 12:51:32 -0800
+X-CSE-ConnectionGUID: YqE5d6ZPQYO0wJ3eYfLzyQ==
+X-CSE-MsgGUID: xXoAATubQzuBV+NEBEv4tQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.21,178,1763452800"; 
+   d="scan'208";a="201371819"
+Received: from lkp-server02.sh.intel.com (HELO dd3453e2b682) ([10.239.97.151])
+  by fmviesa010.fm.intel.com with ESMTP; 26 Dec 2025 12:51:27 -0800
+Received: from kbuild by dd3453e2b682 with local (Exim 4.98.2)
+	(envelope-from <lkp@intel.com>)
+	id 1vZEmT-000000005Ld-1ea1;
+	Fri, 26 Dec 2025 20:51:25 +0000
+Date: Sat, 27 Dec 2025 04:51:04 +0800
+From: kernel test robot <lkp@intel.com>
+To: Jiayuan Chen <jiayuan.chen@linux.dev>, linux-mm@kvack.org,
+	akpm@linux-foundation.org
+Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+	Jiayuan Chen <jiayuan.chen@shopee.com>,
+	Johannes Weiner <hannes@cmpxchg.org>,
+	Michal Hocko <mhocko@kernel.org>,
+	Roman Gushchin <roman.gushchin@linux.dev>,
+	Shakeel Butt <shakeel.butt@linux.dev>,
+	Muchun Song <muchun.song@linux.dev>,
+	Axel Rasmussen <axelrasmussen@google.com>,
+	Yuanchu Xie <yuanchu@google.com>, Wei Xu <weixugc@google.com>,
+	David Hildenbrand <david@kernel.org>,
+	Qi Zheng <zhengqi.arch@bytedance.com>,
+	Lorenzo Stoakes <lorenzo.stoakes@oracle.com>,
+	cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1] mm/memcg: scale memory.high penalty based on refault
+ recency
+Message-ID: <202512270405.sx7TY5MG-lkp@intel.com>
+References: <20251226064257.245581-1-jiayuan.chen@linux.dev>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 21/33] cpuset: Remove cpuset_cpu_is_isolated()
-To: Frederic Weisbecker <frederic@kernel.org>,
- LKML <linux-kernel@vger.kernel.org>
-Cc: =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
- Andrew Morton <akpm@linux-foundation.org>,
- Bjorn Helgaas <bhelgaas@google.com>,
- Catalin Marinas <catalin.marinas@arm.com>,
- Chen Ridong <chenridong@huawei.com>, Danilo Krummrich <dakr@kernel.org>,
- "David S . Miller" <davem@davemloft.net>, Eric Dumazet
- <edumazet@google.com>, Gabriele Monaco <gmonaco@redhat.com>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Ingo Molnar <mingo@redhat.com>, Jakub Kicinski <kuba@kernel.org>,
- Jens Axboe <axboe@kernel.dk>, Johannes Weiner <hannes@cmpxchg.org>,
- Lai Jiangshan <jiangshanlai@gmail.com>,
- Marco Crivellari <marco.crivellari@suse.com>, Michal Hocko
- <mhocko@suse.com>, Muchun Song <muchun.song@linux.dev>,
- Paolo Abeni <pabeni@redhat.com>, Peter Zijlstra <peterz@infradead.org>,
- Phil Auld <pauld@redhat.com>, "Rafael J . Wysocki" <rafael@kernel.org>,
- Roman Gushchin <roman.gushchin@linux.dev>,
- Shakeel Butt <shakeel.butt@linux.dev>, Simon Horman <horms@kernel.org>,
- Tejun Heo <tj@kernel.org>, Thomas Gleixner <tglx@linutronix.de>,
- Vlastimil Babka <vbabka@suse.cz>, Will Deacon <will@kernel.org>,
- cgroups@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-block@vger.kernel.org, linux-mm@kvack.org, linux-pci@vger.kernel.org,
- netdev@vger.kernel.org
-References: <20251224134520.33231-1-frederic@kernel.org>
- <20251224134520.33231-22-frederic@kernel.org>
-Content-Language: en-US
-In-Reply-To: <20251224134520.33231-22-frederic@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20251226064257.245581-1-jiayuan.chen@linux.dev>
 
-On 12/24/25 8:45 AM, Frederic Weisbecker wrote:
-> The set of cpuset isolated CPUs is now included in HK_TYPE_DOMAIN
-> housekeeping cpumask. There is no usecase left interested in just
-> checking what is isolated by cpuset and not by the isolcpus= kernel
-> boot parameter.
->
-> Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
-> ---
->   include/linux/cpuset.h          |  6 ------
->   include/linux/sched/isolation.h |  4 +---
->   kernel/cgroup/cpuset.c          | 12 ------------
->   3 files changed, 1 insertion(+), 21 deletions(-)
->
-> diff --git a/include/linux/cpuset.h b/include/linux/cpuset.h
-> index 1c49ffd2ca9b..a4aa2f1767d0 100644
-> --- a/include/linux/cpuset.h
-> +++ b/include/linux/cpuset.h
-> @@ -79,7 +79,6 @@ extern void cpuset_unlock(void);
->   extern void cpuset_cpus_allowed_locked(struct task_struct *p, struct cpumask *mask);
->   extern void cpuset_cpus_allowed(struct task_struct *p, struct cpumask *mask);
->   extern bool cpuset_cpus_allowed_fallback(struct task_struct *p);
-> -extern bool cpuset_cpu_is_isolated(int cpu);
->   extern nodemask_t cpuset_mems_allowed(struct task_struct *p);
->   #define cpuset_current_mems_allowed (current->mems_allowed)
->   void cpuset_init_current_mems_allowed(void);
-> @@ -215,11 +214,6 @@ static inline bool cpuset_cpus_allowed_fallback(struct task_struct *p)
->   	return false;
->   }
->   
-> -static inline bool cpuset_cpu_is_isolated(int cpu)
-> -{
-> -	return false;
-> -}
-> -
->   static inline nodemask_t cpuset_mems_allowed(struct task_struct *p)
->   {
->   	return node_possible_map;
-> diff --git a/include/linux/sched/isolation.h b/include/linux/sched/isolation.h
-> index 6842a1ba4d13..19905adbb705 100644
-> --- a/include/linux/sched/isolation.h
-> +++ b/include/linux/sched/isolation.h
-> @@ -2,7 +2,6 @@
->   #define _LINUX_SCHED_ISOLATION_H
->   
->   #include <linux/cpumask.h>
-> -#include <linux/cpuset.h>
->   #include <linux/init.h>
->   #include <linux/tick.h>
->   
-> @@ -84,8 +83,7 @@ static inline bool housekeeping_cpu(int cpu, enum hk_type type)
->   static inline bool cpu_is_isolated(int cpu)
->   {
->   	return !housekeeping_test_cpu(cpu, HK_TYPE_DOMAIN) ||
-> -	       !housekeeping_test_cpu(cpu, HK_TYPE_TICK) ||
-> -	       cpuset_cpu_is_isolated(cpu);
-> +	       !housekeeping_test_cpu(cpu, HK_TYPE_TICK);
->   }
->   
->   #endif /* _LINUX_SCHED_ISOLATION_H */
-> diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
-> index 25ac6c98113c..cd6119c02beb 100644
-> --- a/kernel/cgroup/cpuset.c
-> +++ b/kernel/cgroup/cpuset.c
-> @@ -29,7 +29,6 @@
->   #include <linux/mempolicy.h>
->   #include <linux/mm.h>
->   #include <linux/memory.h>
-> -#include <linux/export.h>
->   #include <linux/rcupdate.h>
->   #include <linux/sched.h>
->   #include <linux/sched/deadline.h>
-> @@ -1490,17 +1489,6 @@ static void update_isolation_cpumasks(void)
->   	isolated_cpus_updating = false;
->   }
->   
-> -/**
-> - * cpuset_cpu_is_isolated - Check if the given CPU is isolated
-> - * @cpu: the CPU number to be checked
-> - * Return: true if CPU is used in an isolated partition, false otherwise
-> - */
-> -bool cpuset_cpu_is_isolated(int cpu)
-> -{
-> -	return cpumask_test_cpu(cpu, isolated_cpus);
-> -}
-> -EXPORT_SYMBOL_GPL(cpuset_cpu_is_isolated);
-> -
->   /**
->    * rm_siblings_excl_cpus - Remove exclusive CPUs that are used by sibling cpusets
->    * @parent: Parent cpuset containing all siblings
-Reviewed-by: Waiman Long <longman@redhat.com>
+Hi Jiayuan,
 
+kernel test robot noticed the following build errors:
+
+[auto build test ERROR on akpm-mm/mm-everything]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/Jiayuan-Chen/mm-memcg-scale-memory-high-penalty-based-on-refault-recency/20251226-144331
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/akpm/mm.git mm-everything
+patch link:    https://lore.kernel.org/r/20251226064257.245581-1-jiayuan.chen%40linux.dev
+patch subject: [PATCH v1] mm/memcg: scale memory.high penalty based on refault recency
+config: x86_64-allnoconfig (https://download.01.org/0day-ci/archive/20251227/202512270405.sx7TY5MG-lkp@intel.com/config)
+compiler: clang version 20.1.8 (https://github.com/llvm/llvm-project 87f0227cb60147a26a1eeb4fb06e3b505e9c7261)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20251227/202512270405.sx7TY5MG-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202512270405.sx7TY5MG-lkp@intel.com/
+
+All errors (new ones prefixed by >>):
+
+>> mm/workingset.c:570:19: error: incomplete definition of type 'struct mem_cgroup'
+     570 |                 WRITE_ONCE(memcg->last_refault, jiffies);
+         |                            ~~~~~^
+   include/asm-generic/rwonce.h:60:33: note: expanded from macro 'WRITE_ONCE'
+      60 |         compiletime_assert_rwonce_type(x);                              \
+         |                                        ^
+   include/asm-generic/rwonce.h:36:35: note: expanded from macro 'compiletime_assert_rwonce_type'
+      36 |         compiletime_assert(__native_word(t) || sizeof(t) == sizeof(long long),  \
+         |                                          ^
+   include/linux/compiler_types.h:592:10: note: expanded from macro '__native_word'
+     592 |         (sizeof(t) == sizeof(char) || sizeof(t) == sizeof(short) || \
+         |                 ^
+   include/linux/compiler_types.h:631:22: note: expanded from macro 'compiletime_assert'
+     631 |         _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
+         |                             ^~~~~~~~~
+   include/linux/compiler_types.h:619:23: note: expanded from macro '_compiletime_assert'
+     619 |         __compiletime_assert(condition, msg, prefix, suffix)
+         |                              ^~~~~~~~~
+   include/linux/compiler_types.h:611:9: note: expanded from macro '__compiletime_assert'
+     611 |                 if (!(condition))                                       \
+         |                       ^~~~~~~~~
+   include/linux/shrinker.h:55:9: note: forward declaration of 'struct mem_cgroup'
+      55 |         struct mem_cgroup *memcg;
+         |                ^
+>> mm/workingset.c:570:19: error: incomplete definition of type 'struct mem_cgroup'
+     570 |                 WRITE_ONCE(memcg->last_refault, jiffies);
+         |                            ~~~~~^
+   include/asm-generic/rwonce.h:60:33: note: expanded from macro 'WRITE_ONCE'
+      60 |         compiletime_assert_rwonce_type(x);                              \
+         |                                        ^
+   include/asm-generic/rwonce.h:36:35: note: expanded from macro 'compiletime_assert_rwonce_type'
+      36 |         compiletime_assert(__native_word(t) || sizeof(t) == sizeof(long long),  \
+         |                                          ^
+   include/linux/compiler_types.h:592:39: note: expanded from macro '__native_word'
+     592 |         (sizeof(t) == sizeof(char) || sizeof(t) == sizeof(short) || \
+         |                                              ^
+   include/linux/compiler_types.h:631:22: note: expanded from macro 'compiletime_assert'
+     631 |         _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
+         |                             ^~~~~~~~~
+   include/linux/compiler_types.h:619:23: note: expanded from macro '_compiletime_assert'
+     619 |         __compiletime_assert(condition, msg, prefix, suffix)
+         |                              ^~~~~~~~~
+   include/linux/compiler_types.h:611:9: note: expanded from macro '__compiletime_assert'
+     611 |                 if (!(condition))                                       \
+         |                       ^~~~~~~~~
+   include/linux/shrinker.h:55:9: note: forward declaration of 'struct mem_cgroup'
+      55 |         struct mem_cgroup *memcg;
+         |                ^
+>> mm/workingset.c:570:19: error: incomplete definition of type 'struct mem_cgroup'
+     570 |                 WRITE_ONCE(memcg->last_refault, jiffies);
+         |                            ~~~~~^
+   include/asm-generic/rwonce.h:60:33: note: expanded from macro 'WRITE_ONCE'
+      60 |         compiletime_assert_rwonce_type(x);                              \
+         |                                        ^
+   include/asm-generic/rwonce.h:36:35: note: expanded from macro 'compiletime_assert_rwonce_type'
+      36 |         compiletime_assert(__native_word(t) || sizeof(t) == sizeof(long long),  \
+         |                                          ^
+   include/linux/compiler_types.h:593:10: note: expanded from macro '__native_word'
+     593 |          sizeof(t) == sizeof(int) || sizeof(t) == sizeof(long))
+         |                 ^
+   include/linux/compiler_types.h:631:22: note: expanded from macro 'compiletime_assert'
+     631 |         _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
+         |                             ^~~~~~~~~
+   include/linux/compiler_types.h:619:23: note: expanded from macro '_compiletime_assert'
+     619 |         __compiletime_assert(condition, msg, prefix, suffix)
+         |                              ^~~~~~~~~
+   include/linux/compiler_types.h:611:9: note: expanded from macro '__compiletime_assert'
+     611 |                 if (!(condition))                                       \
+         |                       ^~~~~~~~~
+   include/linux/shrinker.h:55:9: note: forward declaration of 'struct mem_cgroup'
+      55 |         struct mem_cgroup *memcg;
+         |                ^
+>> mm/workingset.c:570:19: error: incomplete definition of type 'struct mem_cgroup'
+     570 |                 WRITE_ONCE(memcg->last_refault, jiffies);
+         |                            ~~~~~^
+   include/asm-generic/rwonce.h:60:33: note: expanded from macro 'WRITE_ONCE'
+      60 |         compiletime_assert_rwonce_type(x);                              \
+         |                                        ^
+   include/asm-generic/rwonce.h:36:35: note: expanded from macro 'compiletime_assert_rwonce_type'
+      36 |         compiletime_assert(__native_word(t) || sizeof(t) == sizeof(long long),  \
+         |                                          ^
+   include/linux/compiler_types.h:593:38: note: expanded from macro '__native_word'
+     593 |          sizeof(t) == sizeof(int) || sizeof(t) == sizeof(long))
+         |                                             ^
+   include/linux/compiler_types.h:631:22: note: expanded from macro 'compiletime_assert'
+     631 |         _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
+         |                             ^~~~~~~~~
+   include/linux/compiler_types.h:619:23: note: expanded from macro '_compiletime_assert'
+     619 |         __compiletime_assert(condition, msg, prefix, suffix)
+         |                              ^~~~~~~~~
+   include/linux/compiler_types.h:611:9: note: expanded from macro '__compiletime_assert'
+     611 |                 if (!(condition))                                       \
+         |                       ^~~~~~~~~
+   include/linux/shrinker.h:55:9: note: forward declaration of 'struct mem_cgroup'
+      55 |         struct mem_cgroup *memcg;
+         |                ^
+>> mm/workingset.c:570:19: error: incomplete definition of type 'struct mem_cgroup'
+     570 |                 WRITE_ONCE(memcg->last_refault, jiffies);
+         |                            ~~~~~^
+   include/asm-generic/rwonce.h:60:33: note: expanded from macro 'WRITE_ONCE'
+      60 |         compiletime_assert_rwonce_type(x);                              \
+         |                                        ^
+   include/asm-generic/rwonce.h:36:48: note: expanded from macro 'compiletime_assert_rwonce_type'
+      36 |         compiletime_assert(__native_word(t) || sizeof(t) == sizeof(long long),  \
+         |                                                       ^
+   include/linux/compiler_types.h:631:22: note: expanded from macro 'compiletime_assert'
+     631 |         _compiletime_assert(condition, msg, __compiletime_assert_, __COUNTER__)
+         |                             ^~~~~~~~~
+   include/linux/compiler_types.h:619:23: note: expanded from macro '_compiletime_assert'
+     619 |         __compiletime_assert(condition, msg, prefix, suffix)
+         |                              ^~~~~~~~~
+   include/linux/compiler_types.h:611:9: note: expanded from macro '__compiletime_assert'
+     611 |                 if (!(condition))                                       \
+         |                       ^~~~~~~~~
+   include/linux/shrinker.h:55:9: note: forward declaration of 'struct mem_cgroup'
+      55 |         struct mem_cgroup *memcg;
+         |                ^
+>> mm/workingset.c:570:19: error: incomplete definition of type 'struct mem_cgroup'
+     570 |                 WRITE_ONCE(memcg->last_refault, jiffies);
+         |                            ~~~~~^
+   include/asm-generic/rwonce.h:61:15: note: expanded from macro 'WRITE_ONCE'
+      61 |         __WRITE_ONCE(x, val);                                           \
+         |                      ^
+   include/asm-generic/rwonce.h:55:20: note: expanded from macro '__WRITE_ONCE'
+      55 |         *(volatile typeof(x) *)&(x) = (val);                            \
+         |                           ^
+   include/linux/shrinker.h:55:9: note: forward declaration of 'struct mem_cgroup'
+      55 |         struct mem_cgroup *memcg;
+         |                ^
+>> mm/workingset.c:570:19: error: incomplete definition of type 'struct mem_cgroup'
+     570 |                 WRITE_ONCE(memcg->last_refault, jiffies);
+         |                            ~~~~~^
+   include/asm-generic/rwonce.h:61:15: note: expanded from macro 'WRITE_ONCE'
+      61 |         __WRITE_ONCE(x, val);                                           \
+         |                      ^
+   include/asm-generic/rwonce.h:55:27: note: expanded from macro '__WRITE_ONCE'
+      55 |         *(volatile typeof(x) *)&(x) = (val);                            \
+         |                                  ^
+   include/linux/shrinker.h:55:9: note: forward declaration of 'struct mem_cgroup'
+      55 |         struct mem_cgroup *memcg;
+         |                ^
+   7 errors generated.
+
+
+vim +570 mm/workingset.c
+
+   529	
+   530	/**
+   531	 * workingset_refault - Evaluate the refault of a previously evicted folio.
+   532	 * @folio: The freshly allocated replacement folio.
+   533	 * @shadow: Shadow entry of the evicted folio.
+   534	 *
+   535	 * Calculates and evaluates the refault distance of the previously
+   536	 * evicted folio in the context of the node and the memcg whose memory
+   537	 * pressure caused the eviction.
+   538	 */
+   539	void workingset_refault(struct folio *folio, void *shadow)
+   540	{
+   541		bool file = folio_is_file_lru(folio);
+   542		struct pglist_data *pgdat;
+   543		struct mem_cgroup *memcg;
+   544		struct lruvec *lruvec;
+   545		bool workingset;
+   546		long nr;
+   547	
+   548		VM_BUG_ON_FOLIO(!folio_test_locked(folio), folio);
+   549	
+   550		if (lru_gen_enabled()) {
+   551			lru_gen_refault(folio, shadow);
+   552			return;
+   553		}
+   554	
+   555		/*
+   556		 * The activation decision for this folio is made at the level
+   557		 * where the eviction occurred, as that is where the LRU order
+   558		 * during folio reclaim is being determined.
+   559		 *
+   560		 * However, the cgroup that will own the folio is the one that
+   561		 * is actually experiencing the refault event. Make sure the folio is
+   562		 * locked to guarantee folio_memcg() stability throughout.
+   563		 */
+   564		nr = folio_nr_pages(folio);
+   565		memcg = folio_memcg(folio);
+   566		pgdat = folio_pgdat(folio);
+   567		lruvec = mem_cgroup_lruvec(memcg, pgdat);
+   568	
+   569		if (memcg)
+ > 570			WRITE_ONCE(memcg->last_refault, jiffies);
+   571	
+   572		mod_lruvec_state(lruvec, WORKINGSET_REFAULT_BASE + file, nr);
+   573	
+   574		if (!workingset_test_recent(shadow, file, &workingset, true))
+   575			return;
+   576	
+   577		folio_set_active(folio);
+   578		workingset_age_nonresident(lruvec, nr);
+   579		mod_lruvec_state(lruvec, WORKINGSET_ACTIVATE_BASE + file, nr);
+   580	
+   581		/* Folio was active prior to eviction */
+   582		if (workingset) {
+   583			folio_set_workingset(folio);
+   584			/*
+   585			 * XXX: Move to folio_add_lru() when it supports new vs
+   586			 * putback
+   587			 */
+   588			lru_note_cost_refault(folio);
+   589			mod_lruvec_state(lruvec, WORKINGSET_RESTORE_BASE + file, nr);
+   590		}
+   591	}
+   592	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
