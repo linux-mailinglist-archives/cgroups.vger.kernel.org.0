@@ -1,43 +1,43 @@
-Return-Path: <cgroups+bounces-12736-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-12737-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id DC398CDE308
-	for <lists+cgroups@lfdr.de>; Fri, 26 Dec 2025 02:03:57 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 40019CDE369
+	for <lists+cgroups@lfdr.de>; Fri, 26 Dec 2025 03:01:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id EF71F3007EED
-	for <lists+cgroups@lfdr.de>; Fri, 26 Dec 2025 01:03:55 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 0044E30084EC
+	for <lists+cgroups@lfdr.de>; Fri, 26 Dec 2025 02:01:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F0A1315E97;
-	Fri, 26 Dec 2025 01:03:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E3C331494A8;
+	Fri, 26 Dec 2025 02:01:17 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
 Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7534C3A1E8D;
-	Fri, 26 Dec 2025 01:03:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ACC83347C6;
+	Fri, 26 Dec 2025 02:01:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1766711033; cv=none; b=LEi2geOvUGYI0rXcuPTw7SSHAujAX/rTLFsdjmROIjd6LI5A8CLWWGx6JQEWKX1GDRAD4klkeTRUod30fzkZk8rVc1zKVnf07j5hZ1VGcl1uqNiCV3rfJhha2ka5KMZxWedrTkOj7SrftwkVqD7oOFZ+2me6hZmrjTlUJ4TdbyM=
+	t=1766714477; cv=none; b=J1ungQgwy+va1J0z2Rq7l66lZI2jRebtpCDew9vBjIG7zL71n2MU1JPM9cII1I0Jo9DM6ipzChxPBRvcyRizuWpK8f3az40M9wOo58bsltpJFCqTbfacMPRVYvAfaPWtRBpOlhIbVKvitTfW8i51XJ4Tshajs9FzitJazWcsNZM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1766711033; c=relaxed/simple;
-	bh=scsak0hLSLKpqyu0qEPaUNQ+sHcmYW6HVJW78FWwcc4=;
+	s=arc-20240116; t=1766714477; c=relaxed/simple;
+	bh=faT5geCUqL9UsBl1P1Z9tHsd+svwC8rZOysO1FL4BFE=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=rP/PGuygs6VsEunmGQ9ZgaZN/Sc0Dlp3Kgz/ckYYy3zqOsgHjMUPmPgvAxhdrgzp7dq5q5j4Ew+2MzkYCr2Cx4dfNVmCkC6822wo+Wx+K9NGexLhQztCtWE7fOWqN77yX7UNg0/+DEBAgcQbRIFrBW/xqPPbFKArLk01lyGUXAU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=none smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+	 In-Reply-To:Content-Type; b=ierGO33bFguDs1JXNCz08FdbuuqtW/zZQazwkRWRRpI8Nzmjo5o/LOJwLUd1cca9KFAJCXT0N3ZiH/ah6UZj3PcDzAkIc/IXN+dFeaYxvzr5sB2VNGV7HiQKA+HthnLD3spjmVQ1FGukgkVM4pMY7xSVpe+aZXJYvvkhrDoclvg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
 Received: from mail.maildlp.com (unknown [172.19.163.170])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTPS id 4dcnRF3kb0zYQtf3;
-	Fri, 26 Dec 2025 09:03:05 +0800 (CST)
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTPS id 4dcpjN41jfzYQtdl;
+	Fri, 26 Dec 2025 10:00:24 +0800 (CST)
 Received: from mail02.huawei.com (unknown [10.116.40.128])
-	by mail.maildlp.com (Postfix) with ESMTP id B308E4056D;
-	Fri, 26 Dec 2025 09:03:46 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTP id 9B4FF4056F;
+	Fri, 26 Dec 2025 10:01:05 +0800 (CST)
 Received: from [10.67.111.176] (unknown [10.67.111.176])
-	by APP4 (Coremail) with SMTP id gCh0CgAXefnx3k1pTD79BQ--.36305S2;
-	Fri, 26 Dec 2025 09:03:46 +0800 (CST)
-Message-ID: <05500a05-aa90-4b60-a324-2819dc2c5805@huaweicloud.com>
-Date: Fri, 26 Dec 2025 09:03:44 +0800
+	by APP4 (Coremail) with SMTP id gCh0CgC3ZfZg7E1paw8CBg--.52160S2;
+	Fri, 26 Dec 2025 10:01:05 +0800 (CST)
+Message-ID: <d9997fa4-65a8-40b2-b22f-91bff9962601@huaweicloud.com>
+Date: Fri, 26 Dec 2025 10:01:03 +0800
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -45,289 +45,69 @@ List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 07/28] mm: memcontrol: return root object cgroup for
- root memory cgroup
-To: Qi Zheng <qi.zheng@linux.dev>, hannes@cmpxchg.org, hughd@google.com,
- mhocko@suse.com, roman.gushchin@linux.dev, shakeel.butt@linux.dev,
- muchun.song@linux.dev, david@kernel.org, lorenzo.stoakes@oracle.com,
- ziy@nvidia.com, harry.yoo@oracle.com, imran.f.khan@oracle.com,
- kamalesh.babulal@oracle.com, axelrasmussen@google.com, yuanchu@google.com,
- weixugc@google.com, mkoutny@suse.com, akpm@linux-foundation.org,
+Subject: Re: [PATCH v2 09/28] buffer: prevent memory cgroup release in
+ folio_alloc_buffers()
+To: Shakeel Butt <shakeel.butt@linux.dev>, Qi Zheng <qi.zheng@linux.dev>
+Cc: hannes@cmpxchg.org, hughd@google.com, mhocko@suse.com,
+ roman.gushchin@linux.dev, muchun.song@linux.dev, david@kernel.org,
+ lorenzo.stoakes@oracle.com, ziy@nvidia.com, harry.yoo@oracle.com,
+ imran.f.khan@oracle.com, kamalesh.babulal@oracle.com,
+ axelrasmussen@google.com, yuanchu@google.com, weixugc@google.com,
+ mkoutny@suse.com, akpm@linux-foundation.org,
  hamzamahfooz@linux.microsoft.com, apais@linux.microsoft.com,
- lance.yang@linux.dev
-Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+ lance.yang@linux.dev, linux-mm@kvack.org, linux-kernel@vger.kernel.org,
  cgroups@vger.kernel.org, Muchun Song <songmuchun@bytedance.com>,
  Qi Zheng <zhengqi.arch@bytedance.com>
 References: <cover.1765956025.git.zhengqi.arch@bytedance.com>
- <3e454b151f3926dbd67d5df6dc2b129edd927101.1765956025.git.zhengqi.arch@bytedance.com>
+ <bd87d13b99c159de77f23f61c932724a8b2d000b.1765956025.git.zhengqi.arch@bytedance.com>
+ <63h3n6m5ek623nzq4pwkwkhu72jqjjastxgnsjuvrvwpevv57v@2ki32ihzx7lj>
 Content-Language: en-US
 From: Chen Ridong <chenridong@huaweicloud.com>
-In-Reply-To: <3e454b151f3926dbd67d5df6dc2b129edd927101.1765956025.git.zhengqi.arch@bytedance.com>
+In-Reply-To: <63h3n6m5ek623nzq4pwkwkhu72jqjjastxgnsjuvrvwpevv57v@2ki32ihzx7lj>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-CM-TRANSID:gCh0CgAXefnx3k1pTD79BQ--.36305S2
-X-Coremail-Antispam: 1UD129KBjvJXoW3Xr4DWry7KF1xuF13Cw4DArb_yoW3Zw1DpF
-	srCF9xtw4Fy3yUGrsagayqva4rZa18Xr45JryxGwn7JF4aq3ZxJr1ayr1jyFyrAFZxGry7
-	Jrs0yF43CFWjyFUanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUv0b4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxkF7I0En4kS
-	14v26r4a6rW5MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I
-	8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVW8ZVWr
-	XwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x
-	0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_
-	Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU0
-	s2-5UUUUU==
+X-CM-TRANSID:gCh0CgC3ZfZg7E1paw8CBg--.52160S2
+X-Coremail-Antispam: 1UD129KBjvdXoWrtr43Kr1xJr4fCFWDWFyUWrg_yoWDJrc_Ca
+	y0yr17uw4kWFn7tws09r4agrWSgr4UWF9rWrs3J3yrZFyYyr1xWFn2ywn5Ka47Aa1furyY
+	krn3tFsYkwnxZjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+	9fnUUIcSsGvfJTRUUUbxxYFVCjjxCrM7AC8VAFwI0_Xr0_Wr1l1xkIjI8I6I8E6xAIw20E
+	Y4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwV
+	A0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVWDJVCq3wA2z4x0Y4vE2Ix0cI8IcVCY1x02
+	67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
+	0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
+	x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
+	0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc7CjxVAaw2AF
+	wI0_GFv_Wryl42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4
+	xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a6rW5
+	MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I
+	0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWU
+	JVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUIa
+	0PDUUUU
 X-CM-SenderInfo: hfkh02xlgr0w46kxt4xhlfz01xgou0bp/
 
 
 
-On 2025/12/17 15:27, Qi Zheng wrote:
-> From: Muchun Song <songmuchun@bytedance.com>
+On 2025/12/19 10:14, Shakeel Butt wrote:
+> On Wed, Dec 17, 2025 at 03:27:33PM +0800, Qi Zheng wrote:
+>> From: Muchun Song <songmuchun@bytedance.com>
+>>
+>> In the near future, a folio will no longer pin its corresponding
+>> memory cgroup. To ensure safety, it will only be appropriate to
+>> hold the rcu read lock or acquire a reference to the memory cgroup
+>> returned by folio_memcg(), thereby preventing it from being released.
+>>
+>> In the current patch, the function get_mem_cgroup_from_folio() is
+>> employed to safeguard against the release of the memory cgroup.
+>> This serves as a preparatory measure for the reparenting of the
+>> LRU pages.
+>>
+>> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+>> Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
+>> Reviewed-by: Harry Yoo <harry.yoo@oracle.com>
 > 
-> Memory cgroup functions such as get_mem_cgroup_from_folio() and
-> get_mem_cgroup_from_mm() return a valid memory cgroup pointer,
-> even for the root memory cgroup. In contrast, the situation for
-> object cgroups has been different.
-> 
-> Previously, the root object cgroup couldn't be returned because
-> it didn't exist. Now that a valid root object cgroup exists, for
-> the sake of consistency, it's necessary to align the behavior of
-> object-cgroup-related operations with that of memory cgroup APIs.
-> 
-> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-> Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
-> ---
->  include/linux/memcontrol.h | 26 +++++++++++++++++-----
->  mm/memcontrol.c            | 45 ++++++++++++++++++++------------------
->  mm/percpu.c                |  2 +-
->  3 files changed, 45 insertions(+), 28 deletions(-)
-> 
-> diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-> index 288dd6337f80f..776d9be1f446a 100644
-> --- a/include/linux/memcontrol.h
-> +++ b/include/linux/memcontrol.h
-> @@ -332,6 +332,7 @@ struct mem_cgroup {
->  #define MEMCG_CHARGE_BATCH 64U
->  
->  extern struct mem_cgroup *root_mem_cgroup;
-> +extern struct obj_cgroup *root_obj_cgroup;
->  
->  enum page_memcg_data_flags {
->  	/* page->memcg_data is a pointer to an slabobj_ext vector */
-> @@ -549,6 +550,11 @@ static inline bool mem_cgroup_is_root(struct mem_cgroup *memcg)
->  	return (memcg == root_mem_cgroup);
->  }
->  
-> +static inline bool obj_cgroup_is_root(const struct obj_cgroup *objcg)
-> +{
-> +	return objcg == root_obj_cgroup;
-> +}
-> +
->  static inline bool mem_cgroup_disabled(void)
->  {
->  	return !cgroup_subsys_enabled(memory_cgrp_subsys);
-> @@ -773,23 +779,26 @@ struct mem_cgroup *mem_cgroup_from_css(struct cgroup_subsys_state *css){
->  
->  static inline bool obj_cgroup_tryget(struct obj_cgroup *objcg)
->  {
-> +	if (obj_cgroup_is_root(objcg))
-> +		return true;
->  	return percpu_ref_tryget(&objcg->refcnt);
->  }
->  
-> -static inline void obj_cgroup_get(struct obj_cgroup *objcg)
-> +static inline void obj_cgroup_get_many(struct obj_cgroup *objcg,
-> +				       unsigned long nr)
->  {
-> -	percpu_ref_get(&objcg->refcnt);
-> +	if (!obj_cgroup_is_root(objcg))
-> +		percpu_ref_get_many(&objcg->refcnt, nr);
->  }
->  
-> -static inline void obj_cgroup_get_many(struct obj_cgroup *objcg,
-> -				       unsigned long nr)
-> +static inline void obj_cgroup_get(struct obj_cgroup *objcg)
->  {
-> -	percpu_ref_get_many(&objcg->refcnt, nr);
-> +	obj_cgroup_get_many(objcg, 1);
->  }
->  
->  static inline void obj_cgroup_put(struct obj_cgroup *objcg)
->  {
-> -	if (objcg)
-> +	if (objcg && !obj_cgroup_is_root(objcg))
->  		percpu_ref_put(&objcg->refcnt);
->  }
->  
-> @@ -1084,6 +1093,11 @@ static inline bool mem_cgroup_is_root(struct mem_cgroup *memcg)
->  	return true;
->  }
->  
-> +static inline bool obj_cgroup_is_root(const struct obj_cgroup *objcg)
-> +{
-> +	return true;
-> +}
-> +
->  static inline bool mem_cgroup_disabled(void)
->  {
->  	return true;
-> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> index 544b3200db12d..21b5aad34cae7 100644
-> --- a/mm/memcontrol.c
-> +++ b/mm/memcontrol.c
-> @@ -83,6 +83,8 @@ EXPORT_SYMBOL(memory_cgrp_subsys);
->  struct mem_cgroup *root_mem_cgroup __read_mostly;
->  EXPORT_SYMBOL(root_mem_cgroup);
->  
-> +struct obj_cgroup *root_obj_cgroup __read_mostly;
-> +
->  /* Active memory cgroup to use from an interrupt context */
->  DEFINE_PER_CPU(struct mem_cgroup *, int_active_memcg);
->  EXPORT_PER_CPU_SYMBOL_GPL(int_active_memcg);
-> @@ -2634,15 +2636,14 @@ struct mem_cgroup *mem_cgroup_from_slab_obj(void *p)
->  
->  static struct obj_cgroup *__get_obj_cgroup_from_memcg(struct mem_cgroup *memcg)
->  {
-> -	struct obj_cgroup *objcg = NULL;
-> +	for (; memcg; memcg = parent_mem_cgroup(memcg)) {
-> +		struct obj_cgroup *objcg = rcu_dereference(memcg->objcg);
->  
-> -	for (; !mem_cgroup_is_root(memcg); memcg = parent_mem_cgroup(memcg)) {
-> -		objcg = rcu_dereference(memcg->objcg);
->  		if (likely(objcg && obj_cgroup_tryget(objcg)))
-> -			break;
-> -		objcg = NULL;
-> +			return objcg;
->  	}
-> -	return objcg;
-> +
-> +	return NULL;
->  }
->  
->  static struct obj_cgroup *current_objcg_update(void)
-> @@ -2716,18 +2717,17 @@ __always_inline struct obj_cgroup *current_obj_cgroup(void)
->  		 * Objcg reference is kept by the task, so it's safe
->  		 * to use the objcg by the current task.
->  		 */
-> -		return objcg;
-> +		return objcg ? : root_obj_cgroup;
->  	}
->  
->  	memcg = this_cpu_read(int_active_memcg);
->  	if (unlikely(memcg))
->  		goto from_memcg;
->  
-> -	return NULL;
-> +	return root_obj_cgroup;
->  
->  from_memcg:
-> -	objcg = NULL;
-> -	for (; !mem_cgroup_is_root(memcg); memcg = parent_mem_cgroup(memcg)) {
-> +	for (; memcg; memcg = parent_mem_cgroup(memcg)) {
->  		/*
->  		 * Memcg pointer is protected by scope (see set_active_memcg())
->  		 * and is pinning the corresponding objcg, so objcg can't go
-> @@ -2736,10 +2736,10 @@ __always_inline struct obj_cgroup *current_obj_cgroup(void)
->  		 */
->  		objcg = rcu_dereference_check(memcg->objcg, 1);
->  		if (likely(objcg))
-> -			break;
-> +			return objcg;
->  	}
->  
-> -	return objcg;
-> +	return root_obj_cgroup;
->  }
->  
->  struct obj_cgroup *get_obj_cgroup_from_folio(struct folio *folio)
-> @@ -2753,14 +2753,8 @@ struct obj_cgroup *get_obj_cgroup_from_folio(struct folio *folio)
->  		objcg = __folio_objcg(folio);
->  		obj_cgroup_get(objcg);
->  	} else {
-> -		struct mem_cgroup *memcg;
-> -
->  		rcu_read_lock();
-> -		memcg = __folio_memcg(folio);
-> -		if (memcg)
-> -			objcg = __get_obj_cgroup_from_memcg(memcg);
-> -		else
-> -			objcg = NULL;
-> +		objcg = __get_obj_cgroup_from_memcg(__folio_memcg(folio));
->  		rcu_read_unlock();
->  	}
->  	return objcg;
-> @@ -2863,7 +2857,7 @@ int __memcg_kmem_charge_page(struct page *page, gfp_t gfp, int order)
->  	int ret = 0;
->  
->  	objcg = current_obj_cgroup();
-> -	if (objcg) {
-> +	if (objcg && !obj_cgroup_is_root(objcg)) {
->  		ret = obj_cgroup_charge_pages(objcg, gfp, 1 << order);
->  		if (!ret) {
->  			obj_cgroup_get(objcg);
-> @@ -3164,7 +3158,7 @@ bool __memcg_slab_post_alloc_hook(struct kmem_cache *s, struct list_lru *lru,
->  	 * obj_cgroup_get() is used to get a permanent reference.
->  	 */
->  	objcg = current_obj_cgroup();
-> -	if (!objcg)
-> +	if (!objcg || obj_cgroup_is_root(objcg))
->  		return true;
->  
->  	/*
-> @@ -3851,6 +3845,9 @@ static int mem_cgroup_css_online(struct cgroup_subsys_state *css)
->  	if (!objcg)
->  		goto free_shrinker;
->  
-> +	if (unlikely(mem_cgroup_is_root(memcg)))
-> +		root_obj_cgroup = objcg;
-> +
->  	objcg->memcg = memcg;
->  	rcu_assign_pointer(memcg->objcg, objcg);
->  	obj_cgroup_get(objcg);
-> @@ -5471,6 +5468,9 @@ void obj_cgroup_charge_zswap(struct obj_cgroup *objcg, size_t size)
->  	if (!cgroup_subsys_on_dfl(memory_cgrp_subsys))
->  		return;
->  
-> +	if (obj_cgroup_is_root(objcg))
-> +		return;
-> +
->  	VM_WARN_ON_ONCE(!(current->flags & PF_MEMALLOC));
->  
->  	/* PF_MEMALLOC context, charging must succeed */
-> @@ -5498,6 +5498,9 @@ void obj_cgroup_uncharge_zswap(struct obj_cgroup *objcg, size_t size)
->  	if (!cgroup_subsys_on_dfl(memory_cgrp_subsys))
->  		return;
->  
-> +	if (obj_cgroup_is_root(objcg))
-> +		return;
-> +
->  	obj_cgroup_uncharge(objcg, size);
->  
+> Acked-by: Shakeel Butt <shakeel.butt@linux.dev>
 
-If we modify zswap by adding MEMCG_ZSWAP_B and MEMCG_ZSWAPPED with obj_cgroup_charge_zswap , then
-remove a control group (via rmdir) and reparent its objects to the root cgroup, then for the root
-cgroup, obj_cgroup_uncharge_zswap will return directly due to the obj_cgroup_is_root check. Would
-this cause us to miss decrementing MEMCG_ZSWAP_B and MEMCG_ZSWAPPED?
-
->  	rcu_read_lock();
-> diff --git a/mm/percpu.c b/mm/percpu.c
-> index 81462ce5866e1..5c1a9b77d6b93 100644
-> --- a/mm/percpu.c
-> +++ b/mm/percpu.c
-> @@ -1616,7 +1616,7 @@ static bool pcpu_memcg_pre_alloc_hook(size_t size, gfp_t gfp,
->  		return true;
->  
->  	objcg = current_obj_cgroup();
-> -	if (!objcg)
-> +	if (!objcg || obj_cgroup_is_root(objcg))
->  		return true;
->  
->  	if (obj_cgroup_charge(objcg, gfp, pcpu_obj_full_size(size)))
+Reviewed-by: Chen Ridong <chenridong@huawei.com>
 
 -- 
 Best regards,
