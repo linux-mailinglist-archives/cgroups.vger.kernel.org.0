@@ -1,100 +1,100 @@
-Return-Path: <cgroups+bounces-12774-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-12775-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1631FCDF51A
-	for <lists+cgroups@lfdr.de>; Sat, 27 Dec 2025 08:42:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 98797CDF532
+	for <lists+cgroups@lfdr.de>; Sat, 27 Dec 2025 09:03:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 311B33006A8E
-	for <lists+cgroups@lfdr.de>; Sat, 27 Dec 2025 07:42:41 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 689B63008FAA
+	for <lists+cgroups@lfdr.de>; Sat, 27 Dec 2025 08:03:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 400D325A359;
-	Sat, 27 Dec 2025 07:42:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D8C6C24167F;
+	Sat, 27 Dec 2025 08:03:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="YX52qJ0D";
-	dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b="oSxuZa5v"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="UQYywsrd";
+	dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b="RTUB6Yzj"
 X-Original-To: cgroups@vger.kernel.org
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6FE4E23D291
-	for <cgroups@vger.kernel.org>; Sat, 27 Dec 2025 07:42:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 20A587E0FF
+	for <cgroups@vger.kernel.org>; Sat, 27 Dec 2025 08:03:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1766821360; cv=none; b=rTqk0qNO/UObuDq6OWk5DA4loksHN0zAd6D49msblSxhVzyeqNl2eAzvUpQb5NqiHbzkR8rmwDUzUhDMr5TbnMkh7U968o2D4CJeMyzdQqgWaTK7q9/7kBw59FyCsB4gnJoPEq2iRcSb9126LDqvyJgCVK6b4KKdPoCt4/VGm3A=
+	t=1766822593; cv=none; b=CWkPT/9gT6wQ+dW/tHy3p6Hdniomo+PSV5GL6EeIvZgJK4O7WUACeGFbEtWrAfow3iKL71Cld7fIKcUOWq26isD9E5ZoMsMOuZbtgjcVil6nLjRvHSwOCdiDFw++tz3Z/6pD6GBG5caWMsXZmW66NY/K8n9tLHBDOUc2EcQ/NzI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1766821360; c=relaxed/simple;
-	bh=BocZbYRq6z/au+ST87u3K7kwQZG0Z/SXAcjr75/GKmo=;
+	s=arc-20240116; t=1766822593; c=relaxed/simple;
+	bh=DZaTTRmGwMkx0AKhyFDdVnwST5FPOK+XvG/ZNMqeJfk=;
 	h=From:Message-ID:Date:MIME-Version:Subject:To:Cc:References:
-	 In-Reply-To:Content-Type; b=BfdoGO3k9qkZLuSnmWCdhYbKnzJZSGgf+ikxDXm3h403Kx8v52KR+eeX3gzusqXkbYERWnhCtUhKfc8FHJBUoeyrFc8/oH7UoNMlG2VqJ5Jpz5+fqQC9tOC8xKrXCKWSf918YxZGh/zYJqf6fIK8y22D7RQp9BJi98vP6Q9npz8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=YX52qJ0D; dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b=oSxuZa5v; arc=none smtp.client-ip=170.10.133.124
+	 In-Reply-To:Content-Type; b=kPYXlPWW+fsanKb1RDVrqWPfGGcTET0hPt5e4cDvlhNYpJ3fz6zJsyImcD2WyNkjf1bWJTCn4xc/OGoXLQj19QcOnVN1rksknTTmxyhGdx5W6GH8ASD2v453YTIon8xuXsPuRyCCBphHOpYpzr6djJSowfeAxRADxS1vLtePYQY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=UQYywsrd; dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b=RTUB6Yzj; arc=none smtp.client-ip=170.10.133.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1766821357;
+	s=mimecast20190719; t=1766822590;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=ai5QZoNo9dRmzRpnYcu62kdxHtsGiqg1pjhwu4q+YNg=;
-	b=YX52qJ0DPEwbY5aXX522mi3j98XfZbu2jJdpVgNwZ0f+btUvhrMeLIbJwqmXvdY92k7R0H
-	goRfNzeAn9toTXOs7rf520X8galLKzQDUT1LTNNq6qM4HghyVsoz2nQaeA/rJyOoTh2lDl
-	dCHSZwQWMYOciqMNbCsh5m3C9W9XZt8=
-Received: from mail-qk1-f197.google.com (mail-qk1-f197.google.com
- [209.85.222.197]) by relay.mimecast.com with ESMTP with STARTTLS
+	bh=vIHmpJmeFgG2jYdve53ilaK5jPeHA0qfQ9MchC6O8U0=;
+	b=UQYywsrdEncN9b+Xo3MXYd6j/Bl7DF07LJWqUNBupiy8lwdraal2rCCCvHthpLgQ8DYWEn
+	y01ZPl7+O0vx0mNw4Xl6VaM4kH+rGfY6W8DC8Wla+vTsAvsl+UjsruaOUdETMd31p/gSyv
+	A7DyEJUym7JZFxW4QRL3f4M+Q1UYxFk=
+Received: from mail-qv1-f70.google.com (mail-qv1-f70.google.com
+ [209.85.219.70]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-490-Jsz9iaXBP9KM_7CNcXtlNg-1; Sat, 27 Dec 2025 02:42:35 -0500
-X-MC-Unique: Jsz9iaXBP9KM_7CNcXtlNg-1
-X-Mimecast-MFC-AGG-ID: Jsz9iaXBP9KM_7CNcXtlNg_1766821355
-Received: by mail-qk1-f197.google.com with SMTP id af79cd13be357-8b51db8ebd9so2503805885a.2
-        for <cgroups@vger.kernel.org>; Fri, 26 Dec 2025 23:42:35 -0800 (PST)
+ us-mta-670-UfVeLtlHNyi5Xm-pqRzyrQ-1; Sat, 27 Dec 2025 03:03:08 -0500
+X-MC-Unique: UfVeLtlHNyi5Xm-pqRzyrQ-1
+X-Mimecast-MFC-AGG-ID: UfVeLtlHNyi5Xm-pqRzyrQ_1766822588
+Received: by mail-qv1-f70.google.com with SMTP id 6a1803df08f44-88a32bd53cdso293024616d6.0
+        for <cgroups@vger.kernel.org>; Sat, 27 Dec 2025 00:03:08 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=redhat.com; s=google; t=1766821355; x=1767426155; darn=vger.kernel.org;
+        d=redhat.com; s=google; t=1766822588; x=1767427388; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:content-language:references
          :cc:to:subject:user-agent:mime-version:date:message-id:from:from:to
          :cc:subject:date:message-id:reply-to;
-        bh=ai5QZoNo9dRmzRpnYcu62kdxHtsGiqg1pjhwu4q+YNg=;
-        b=oSxuZa5vzKUr+dMw1Ahha0TB0QpuQXGgHk7N28EP1Qu2ALB7F94naW7TrEC+WSJfKu
-         dRNx7ZrVj6IkrcKYOet0FiLoZnxSKdkT/MFVm6JNrhIH1FJXzLMXV/12PKqttK+Sqg6+
-         nunyWwvxXcSZljJLa21eF6CDYcfg+DRvv/6c4Z3I/i8uDvq/ksd7s6LV9g+/x9yJ1dFx
-         P2gUTJzlTKqeOoIgWSIjC4PuT6B7h4NdSqcfkqbNt5WW9lXhxVJB4LretWXbsjKVbtgE
-         mAA7YcQ2Qm8CnUDThe5ThL28YZfFY6aIP1rxnmOSmkwlEjrqgkcJV211Adx+iHV0z+qv
-         9l1A==
+        bh=vIHmpJmeFgG2jYdve53ilaK5jPeHA0qfQ9MchC6O8U0=;
+        b=RTUB6YzjgtfndGSbrcu6g7ZfkjmNm7VpNGDE5L8Q8CwMF7WK1hfFk3/qTEReGLn7Pa
+         7qH7CuzrC2UxPWwcNCQcF4GDYqmCPT2VXp3LxrqR46XF6B+zKQy06+7w0O/snFH4tWuE
+         Z8VPl1G+pVTDiuRJDLOUTFa8qiRj3W8h7O27OTaLs3oaXjnsrZVqtejgtl5sVOL8z8c4
+         g7cGhp9urGK4Rwv03N3LMmJjcOh5oy7BjEjgLYMWgOohdWj4MjpllMuufzRd4sLVw7RK
+         hx1IO+1GnLL36E+suyNXl2gpnxWotKejy24PmLdJIvwxbjM6bHV1sbczN1+X48yNv/gR
+         6f/w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1766821355; x=1767426155;
+        d=1e100.net; s=20230601; t=1766822588; x=1767427388;
         h=content-transfer-encoding:in-reply-to:content-language:references
          :cc:to:subject:user-agent:mime-version:date:message-id:from:x-gm-gg
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ai5QZoNo9dRmzRpnYcu62kdxHtsGiqg1pjhwu4q+YNg=;
-        b=b/0zLj68gkPQQwN+XBuTt+9A89vh7y50CXdtKj/8c71D5UZb/8fnVVEhzF6vJKpqGL
-         KD3OjiqXe5Sc2g7+CSTco8Je1uinf0DrtrOO/1DeE0VFmKJTEm78atL19pqdGKCz3mXQ
-         8OlA4udHwbaSylHS1YmSLfNd4gzAcm98sUWgHembDM/XAm/5sQ9y9nUpDYDqAVqVLuIq
-         Cf0Y8lm5Mi83o5ku9qxKrrburhdSVRAEoAW4l+xJjhhoPu7DpRNQduiLALMSt3ykXXA0
-         So4uTwGz10k7caAoZ8NE9H9P5dtwzMbqa/GJIjZhygYVYqTmNK/ErwgMS02r0/YzZwOF
-         +/qA==
-X-Forwarded-Encrypted: i=1; AJvYcCXlEZSa6SScGdotGkghzaCLzMlXAm5casWlHaHydWWuIR8V2S0CQvCwLQl4Gl6S/+9f9tEzk2oB@vger.kernel.org
-X-Gm-Message-State: AOJu0YwVXcE2zvkpTQlCyDYy6x3cy74EZzfxNPmacYEEuF/3IKpglIWP
-	Q3MhHwbGvLCC0c/jfRISygYfit+VOjod2ghHFrIJrfbPxOmF9F8ykWDMcYRapJi00ufg2mJ5Ot3
-	RiYx33lp5sBAz8XNjGcpWGQkMr/MtBCEJ6+9ehRhart2BjzAMv+BiC0zHNkMH0amMQX4=
-X-Gm-Gg: AY/fxX5Y1vhRQfVc2fWNl/nCMQ4TRF4AjwvLM0JAfauXKFv8B4iMLwXXGMqWvtayNR5
-	KGqY7kV6ti0ISqe/URycyH21pvAWFwJEtlNpWJw3cTXVV+lkjPIx8wTgXRU+fMpiTaOB5KjRXWG
-	OO1YTjXJsq/1C72O7WQvYHCprp05eJ3gBm3vXIytRfXpSMJ10cYJplYGu1B5jXPfflzPV4Rre3m
-	I3DbQxtFEoO0UCaPo2CTkGdwPvEBt08zEPfZ7xnbxcZUhVfCMj0sQJOhpIf0PBriJPeNIKLqlai
-	xftqAaS6wyhWxJeCFMipPHPLB8NUfEqss5/Eg/gjnh2/lcF+khiXRG5qM89p1ymQnQA577YCLbr
-	/+5GM1f1A+MyMAON7hDod8bnJcsvQHYCq1Xq9xAlQhv9zEuXxFbQruTtv
-X-Received: by 2002:a05:620a:691a:b0:8a3:22d7:6ca3 with SMTP id af79cd13be357-8c08f66c311mr4100430285a.31.1766821354674;
-        Fri, 26 Dec 2025 23:42:34 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IEgUkS9lhL5RJ5RrznVdm76aY6GDLmzlCdRQHSFG0i9N6BzjWpT0CJfzF++onNseQeBYwVs1A==
-X-Received: by 2002:a05:620a:691a:b0:8a3:22d7:6ca3 with SMTP id af79cd13be357-8c08f66c311mr4100428585a.31.1766821354210;
-        Fri, 26 Dec 2025 23:42:34 -0800 (PST)
+        bh=vIHmpJmeFgG2jYdve53ilaK5jPeHA0qfQ9MchC6O8U0=;
+        b=YWoumKBtfQY2809SKO5bSn0et3F63h9Pzpn6cS3ap7jQiZNj6hHVGq0sOGWqT3pODU
+         KFQfZQAxMrsIyNPSBwXe5w0M6PZ0TNc3Rig/5r6d/++mdOrk3C5BTA5zQdbwJFvDiXcu
+         XNnnltK1DTDxRh9vDmNH9SkokGacyEg5MTONU2QnL/1WmvcRhPzbheuE2fMEujQ+yAq2
+         Dv9JiAQyTgIuFzrnErwDqTr9HFY/7IismIXtQ6xceL5MwlkZSGzvrRYneO5WvbSWwWvL
+         FcGih/vlPSJbW+Zhex4wpEBNVLr4yNuEet4pQy2JcmUvKPgwq78q4o6LiysJIC2zLVuu
+         +IqQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVqNhaISkii5ivORWgmRV3O0nFCEWohi2RCo6bZthEnryMfxhJBcBIORIzLTv0zW+N4HqIGn6Wq@vger.kernel.org
+X-Gm-Message-State: AOJu0YyzuPPAKJCDRB2YSCTQkv5GB1WCNG3Zu/4vjrFCDvptCyvXGdf4
+	vUUpAI0mZw6euc0uidtEpFt/KuAa8KulPyrCFMJBorsuUvVAj8N8wGiwCCF2BMhxWWz/hsvkirM
+	qDmOrJ5Bb5a3BlMDutKuH81YnHIxMm/YVcEjXpLUUnJFx8bhYZwNGn0TrYm4=
+X-Gm-Gg: AY/fxX4tGvjnT46tFKfIm9HMWAI6pDAoe3rzQteWboZhaoiv83nTGczgP6LZECNgc+X
+	T0PNa23u0GlLWtmY/MwP2DusG9pohjCnCbdjCfZaAtQxZxPh1RZZTwwolrCHDVfquAdwQ6CFmgY
+	cDA8QU6TYYLSX/AeAHnsGDPInHpEmsigfPAFmwVDc508u9WLyrlj4HtTS+GxlP5NkvjKEXTBn50
+	tLHVbKUKcCNqjF1jqkTcGfvq5rjjdo+J3O2GP81zRP6tSiIV0uGeZ+vXSMcJjhJhXXegWAMAg2A
+	Fh/DkHT4k2EL4sytqFbDA1n1+1TSBpnO7y8I8iN7h8nBpThMWnLU80BbCdn3wVYgvxUfOJeBatd
+	itO3D3Jsk6WUhN3bO19DjmXuCvJWySWxVU9A3LbgY0o6MMe39Cg3ABZEO
+X-Received: by 2002:a05:6214:4e85:b0:880:47e0:19e8 with SMTP id 6a1803df08f44-88d83792f32mr371787946d6.42.1766822587827;
+        Sat, 27 Dec 2025 00:03:07 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IHamzXDFR/0zyuAtNekwk7kwOlfxWU5yMK7+RGGo0p7KaE6gkY0t7BsbZldMTNW/XuhT0ag7Q==
+X-Received: by 2002:a05:6214:4e85:b0:880:47e0:19e8 with SMTP id 6a1803df08f44-88d83792f32mr371787786d6.42.1766822587419;
+        Sat, 27 Dec 2025 00:03:07 -0800 (PST)
 Received: from ?IPV6:2601:600:947f:f020:85dc:d2b2:c5ee:e3c4? ([2601:600:947f:f020:85dc:d2b2:c5ee:e3c4])
-        by smtp.gmail.com with ESMTPSA id af79cd13be357-8c0973f08fcsm1897016385a.40.2025.12.26.23.42.32
+        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-88d9623fdd8sm181516566d6.4.2025.12.27.00.03.05
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 26 Dec 2025 23:42:33 -0800 (PST)
+        Sat, 27 Dec 2025 00:03:06 -0800 (PST)
 From: Waiman Long <llong@redhat.com>
 X-Google-Original-From: Waiman Long <longman@redhat.com>
-Message-ID: <471d1be6-db23-42b2-a5e8-5207fb4dcaeb@redhat.com>
-Date: Sat, 27 Dec 2025 02:42:32 -0500
+Message-ID: <02239162-b42c-43f0-82eb-9f4af8e96639@redhat.com>
+Date: Sat, 27 Dec 2025 03:03:05 -0500
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -111,13 +111,13 @@ Cc: linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
  linux-kselftest@vger.kernel.org, Sun Shaojie <sunshaojie@kylinos.cn>
 References: <20251225073056.30789-1-longman@redhat.com>
  <20251225073056.30789-4-longman@redhat.com>
- <dc9cd447-6431-46f6-b93d-fd2e317aa630@huaweicloud.com>
+ <4792e3f5-11ea-4b1c-90fe-f7f202271dae@huaweicloud.com>
 Content-Language: en-US
-In-Reply-To: <dc9cd447-6431-46f6-b93d-fd2e317aa630@huaweicloud.com>
+In-Reply-To: <4792e3f5-11ea-4b1c-90fe-f7f202271dae@huaweicloud.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-On 12/25/25 4:30 AM, Chen Ridong wrote:
+On 12/25/25 6:54 AM, Chen Ridong wrote:
 >
 > On 2025/12/25 15:30, Waiman Long wrote:
 >> Commit fe8cd2736e75 ("cgroup/cpuset: Delay setting of CS_CPU_EXCLUSIVE
@@ -152,17 +152,6 @@ On 12/25/25 4:30 AM, Chen Ridong wrote:
 >> + * @sibling:	a sibling cpuset to be checked against
 >> + * @new_xcpus:	new exclusive_cpus in trial cpuset
 >>    *
-> Can we rename it to xcpus_changed?
->
-> The current name new_xcpus gives me the impression that CPUs are being added.
-> For example: if exclusive_cpus is 1, and it changes to 1-7, then new_xcpus would be 2-7.
-
-Sure. I will make the change in the next version.
-
-Cheers,
-Longman
-
->
 >>    * Returns: true if CPU exclusivity conflict exists, false otherwise
 >>    *
 >>    * Conflict detection rules:
@@ -220,5 +209,31 @@ Longman
 >>   			goto out;
 >>   		if (mems_excl_conflict(trial, c))
 >>   			goto out;
+> validate_change() is also called from cpuset_update_flag(), which may not change any cpus_allowed or
+> exclusive_cpus. This could lead to incorrect checks.
+>
+> i.e,
+>
+> # cd /sys/fs/cgroup/
+> # mkdir a
+> # mkdir b
+> # echo 1-2 > b/cpuset.cpus.exclusive  -- no conflict with a
+> # echo 1 > a/cpuset.cpus
+> # echo root > b/cpuset.cpus.partition  -- b becomes root partition, conflict with a, but
+> exclusive_cpus unchanged
+> # cat b/cpuset.cpus.partition
+> root
+>
+> As a result, cpuset a (as a member) contains CPU 1, which is a subset of partition b's exclusive
+> CPUs — a conflict that might be missed.
+
+Yes, cpuset a has cpuset.cpus set to 1. In v2, cpuset.cpus can be set to 
+any value but it doesn't mean that the parent will be able to give it to 
+cpuset a. If you look at cpuset.cpus.effective, it will be the same as 
+parent cpuset.cpus.effective, i.e. CPUs 1-2 will be absent. This is an 
+expected behavior and there is nothing wrong.
+
+Cheers,
+Longman
 
 
