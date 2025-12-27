@@ -1,118 +1,110 @@
-Return-Path: <cgroups+bounces-12779-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-12780-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id E0B82CE0289
-	for <lists+cgroups@lfdr.de>; Sat, 27 Dec 2025 23:12:18 +0100 (CET)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
+	by mail.lfdr.de (Postfix) with ESMTPS id 11EC9CE02E2
+	for <lists+cgroups@lfdr.de>; Sat, 27 Dec 2025 23:52:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id A60563008E99
-	for <lists+cgroups@lfdr.de>; Sat, 27 Dec 2025 22:12:15 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id 3A68C30087BC
+	for <lists+cgroups@lfdr.de>; Sat, 27 Dec 2025 22:52:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6254A2698AF;
-	Sat, 27 Dec 2025 22:12:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4ACEF221FBD;
+	Sat, 27 Dec 2025 22:51:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="svlL/IHA"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PQ6uKXz8"
 X-Original-To: cgroups@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0DC611E868;
-	Sat, 27 Dec 2025 22:12:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 042183A1E7E;
+	Sat, 27 Dec 2025 22:51:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1766873534; cv=none; b=FPkO2BqkirjT0kzvTu3hBt2UoCZ9CfrJ7IqQqcJG05wN6Y34Lg7U+MktJVbRO7i9wgC63xclnkr234b69zL/Q3bUZFH87LOkKwttTGImdSljwxMSMdr189byB7icNJ6Xy0x5FOYsRiaZImSPaogIsAqyRfoLA3CskIiMj1tAt6U=
+	t=1766875919; cv=none; b=hvM+n2TLsKR9CGvJYH1eQReMl9KUAm6wmr2RftFmghhRdGgNwDy74QqUSCoISGJ7BARzUmODavQ8vGF62TVdDHGlAHk4pUb2v7u4C844/PODYQ3RVhiJtcqTcQUPH5AuXiRVmV+bVkmV4ceZgrPuU5CZni3j33UhTJs2wLjRmhM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1766873534; c=relaxed/simple;
-	bh=VOh/YL2n8G3f+/QICIKeFajquKb19s2MloMaGXxPaq0=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=M3yYQ9VIEDQwW50/6Mk+d9Dc7egNdZdMDePakpKVrU2GYbtGkKiGSTFuqb1sfdpesZOu/Q7VBQ8QVvS7clxmrQy5QPf/bV6rfTHxo/KMUh4JXWMXSX2AwBoT+aDZepZxFGU2bNYgUzTPuKioPQJEVrPz4XkYVa6Tcb8wqMP2Ydw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=svlL/IHA; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 46F66C4CEF1;
-	Sat, 27 Dec 2025 22:12:13 +0000 (UTC)
+	s=arc-20240116; t=1766875919; c=relaxed/simple;
+	bh=EMYRB+PjNg/uZeUCzx+ySaY14xwN69l12wO2VZsHNtM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=moNo755C+N6Dki1buaeJg8zIx70M/WJFQoMsEHpIHoSzeYUba+yqCR5sxL4g0FN54ueOMrbFVcRh5X4daOgTNw4HcBIBhqPqYcJwVEUed2ETHMCxchMGrHb6a2FliNameFNp5cPe3csYNp5U8OzAmxpYsyBfhWgMmID2xdvzTxQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=PQ6uKXz8; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 63FEBC4CEF1;
+	Sat, 27 Dec 2025 22:51:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1766873533;
-	bh=VOh/YL2n8G3f+/QICIKeFajquKb19s2MloMaGXxPaq0=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=svlL/IHAsDuzcsygJQQL6bqUfHBQ8mf1KQDuQC628cQfUO5fgZbkggax/Xp9mYZxf
-	 /kGaXzp7Xi8L17G7bpdrQUyIwYnJnS1PrAG2EIXZ/q8VVU9pZiUyEewb5inI0uroUL
-	 fqOcS9lBr1s5tC/cZup5FFUXo6EsH0iiXUK09Riavai75+mTex0/z63bVZhZ8qEv+L
-	 uzTkoHX9qPbbm5uy2h0dx92dZDtRFCdpXX/UQ86wpLAXqmy+8+QEUMqneU53wGsRMm
-	 sQaNgp5O3D2u6GzM1hJwKJ7aHNxJP+BFESWpcHumR8vRGAzb6Z/eQBktZgXH3E3fq0
-	 s4fut9++L5D9A==
-From: SeongJae Park <sj@kernel.org>
-To: kernel test robot <lkp@intel.com>
-Cc: SeongJae Park <sj@kernel.org>,
-	Shakeel Butt <shakeel.butt@linux.dev>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	llvm@lists.linux.dev,
-	oe-kbuild-all@lists.linux.dev,
-	Linux Memory Management List <linux-mm@kvack.org>,
-	Johannes Weiner <hannes@cmpxchg.org>,
-	Michal Hocko <mhocko@kernel.org>,
-	Roman Gushchin <roman.gushchin@linux.dev>,
-	Muchun Song <muchun.song@linux.dev>,
-	Meta kernel team <kernel-team@meta.com>,
-	cgroups@vger.kernel.org,
-	damon@lists.linux.dev,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 8/8] memcg: rename mem_cgroup_ino() to mem_cgroup_id()
-Date: Sat, 27 Dec 2025 14:12:05 -0800
-Message-ID: <20251227221206.282703-1-sj@kernel.org>
-X-Mailer: git-send-email 2.47.3
-In-Reply-To: <202512262045.CkWwCNp7-lkp@intel.com>
-References: 
+	s=k20201202; t=1766875918;
+	bh=EMYRB+PjNg/uZeUCzx+ySaY14xwN69l12wO2VZsHNtM=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=PQ6uKXz8GT1DM7zOV/K6+6GZ/fu57ZHQJVCFd44VZ1G+BRyvE3dsnbKCo3AAiQHSh
+	 cICAn9VcAkRSrRGBXtZmmdTJJ0CoIYazbwkmR0gBMtTZrBO93W2Gs1VFkzmzutOA1l
+	 EGa8IY6JapxvfF/4w8C5eWky7rNavYK6Pgt/IsJY7wzJ8hEM+EG2GRJQ0oMPgZTNRH
+	 /miuqBPs0ZywdYTOhZHHGuAlsxR2lJgIPC6hXWMFYIB0//FAQ0pd/goZBUhs/40JDf
+	 MGnBAJIJF8SC4FVyiVfxIWv9jXzrjV63+GYdLdfrTRLyoxfNBcoaDaaLpFvqhPGhRs
+	 X5Dj4quim1/aA==
+Date: Sat, 27 Dec 2025 12:51:57 -1000
+From: Tejun Heo <tj@kernel.org>
+To: Pavel Tikhomirov <ptikhomirov@virtuozzo.com>
+Cc: Johannes Weiner <hannes@cmpxchg.org>,
+	Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
+	cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/2] cgroup-v2/freezer: Print information about
+ unfreezable process
+Message-ID: <aVBjDYPQcKEesoKu@slm.duckdns.org>
+References: <20251223102124.738818-1-ptikhomirov@virtuozzo.com>
+ <20251223102124.738818-4-ptikhomirov@virtuozzo.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20251223102124.738818-4-ptikhomirov@virtuozzo.com>
 
-On Fri, 26 Dec 2025 20:31:38 +0800 kernel test robot <lkp@intel.com> wrote:
+Hello,
 
-> Hi Shakeel,
-> 
-> kernel test robot noticed the following build warnings:
-> 
-> [auto build test WARNING on sj/damon/next]
-> [cannot apply to akpm-mm/mm-everything tj-cgroup/for-next linus/master v6.19-rc2 next-20251219]
-> [If your patch is applied to the wrong git tree, kindly drop us a note.
-> And when submitting patch, we suggest to use '--base' as documented in
-> https://git-scm.com/docs/git-format-patch#_base_tree_information]
-> 
-> url:    https://github.com/intel-lab-lkp/linux/commits/Shakeel-Butt/memcg-introduce-private-id-API-for-in-kernel-users/20251226-072954
-> base:   https://git.kernel.org/pub/scm/linux/kernel/git/sj/linux.git damon/next
+On Tue, Dec 23, 2025 at 06:20:09PM +0800, Pavel Tikhomirov wrote:
+> +static void warn_freeze_timeout(struct cgroup *cgrp, int timeout)
+> +{
+> +	char *buf __free(kfree) = NULL;
+> +	struct cgroup_subsys_state *css;
+> +
+> +	guard(rcu)();
+> +	css_for_each_descendant_post(css, &cgrp->self) {
+> +		struct task_struct *task;
+> +		struct css_task_iter it;
+> +
+> +		css_task_iter_start(css, 0, &it);
+> +		while ((task = css_task_iter_next(&it))) {
+> +			if (task->flags & PF_KTHREAD)
+> +				continue;
+> +			if (task->frozen)
+> +				continue;
+> +
+> +			warn_freeze_timeout_task(cgrp, timeout, task);
+> +			css_task_iter_end(&it);
+> +			return;
+> +		}
+> +		css_task_iter_end(&it);
+> +	}
+> +
+> +	buf = kmalloc(PATH_MAX, GFP_KERNEL);
+> +	if (!buf)
+> +		return;
+> +
+> +	if (cgroup_path(cgrp, buf, PATH_MAX) < 0)
+> +		return;
+> +
+> +	pr_warn("Freeze of %s took %ld sec, but no unfreezable process detected.\n",
+> +		buf, timeout / USEC_PER_SEC);
+> +}
 
-damon/next tree contains some debugging-purpose only changes that not aim to be
-upstreamed.
+This is only suitable for debugging, and, for that, this can be done from
+userspace by walking the tasks and check /proc/PID/wchan. Should be
+do_freezer_trap for everything frozen. If something is not, read and dump
+its /proc/PID/stack. Wouldn't that work?
 
-> patch link:    https://lore.kernel.org/r/20251225232116.294540-9-shakeel.butt%40linux.dev
-> patch subject: [PATCH 8/8] memcg: rename mem_cgroup_ino() to mem_cgroup_id()
-> config: arm64-randconfig-001-20251226 (https://download.01.org/0day-ci/archive/20251226/202512262045.CkWwCNp7-lkp@intel.com/config)
-> compiler: clang version 20.1.8 (https://github.com/llvm/llvm-project 87f0227cb60147a26a1eeb4fb06e3b505e9c7261)
-> reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20251226/202512262045.CkWwCNp7-lkp@intel.com/reproduce)
-> 
-> If you fix the issue in a separate patch/commit (i.e. not just a new version of
-> the same patch/commit), kindly add following tags
-> | Reported-by: kernel test robot <lkp@intel.com>
-> | Closes: https://lore.kernel.org/oe-kbuild-all/202512262045.CkWwCNp7-lkp@intel.com/
-> 
-> All warnings (new ones prefixed by >>):
-> 
-> >> mm/damon/sysfs.c:2704:33: warning: format specifies type 'unsigned int' but the argument has type 'u64' (aka 'unsigned long long') [-Wformat]
->     2704 |                 pr_info("id: %u, path: %s\n", mem_cgroup_id(memcg), path);
->          |                              ~~               ^~~~~~~~~~~~~~~~~~~~
->          |                              %llu
+Thanks.
 
-And this issue happens due to a damon/next chage that made for only debugging
-and thus not aiming to be upstreamed.  Hence, no action from Shakeel is needed.
-
-I will resolve this issue after this patch is added to damon/next.
-
-
-Thanks,
-SJ
-
-[...]
+-- 
+tejun
 
