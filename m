@@ -1,97 +1,94 @@
-Return-Path: <cgroups+bounces-12799-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-12800-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 45929CE6688
-	for <lists+cgroups@lfdr.de>; Mon, 29 Dec 2025 11:53:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 7CF53CE6691
+	for <lists+cgroups@lfdr.de>; Mon, 29 Dec 2025 11:53:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 9F9373006622
-	for <lists+cgroups@lfdr.de>; Mon, 29 Dec 2025 10:52:59 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 5FC21300769E
+	for <lists+cgroups@lfdr.de>; Mon, 29 Dec 2025 10:53:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 62F5C2367DC;
-	Mon, 29 Dec 2025 10:52:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9CC96242D6C;
+	Mon, 29 Dec 2025 10:53:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="CS8ZqZGO"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="DyaLcaAo"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-wm1-f65.google.com (mail-wm1-f65.google.com [209.85.128.65])
+Received: from mail-wr1-f52.google.com (mail-wr1-f52.google.com [209.85.221.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 152524A0C
-	for <cgroups@vger.kernel.org>; Mon, 29 Dec 2025 10:52:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.65
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A81E194098
+	for <cgroups@vger.kernel.org>; Mon, 29 Dec 2025 10:53:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767005578; cv=none; b=PUF+4zfnczOXwiwHoyb052ElWby8NsKFC8nCU0hYl7ypOG5Ml6YbOYGvqW7luM8JqZmYqQSE71+p5qmSEmJX4+fEy9oLXYPJyTHeZLufRW+LI1WhDx34KpyCLj0QGp9EYBocr6429uKz8YXvFqOiSDRHHW51INljs5gH+lVfQmc=
+	t=1767005601; cv=none; b=CJxr1ZlZ2GRRXYMJoqbOXb2XofFl0LwrXqXx6dLn7s2oydPmn1wprvk1YkgBDnPBki0fO+AZD3rzltmNBBRzvrdMKxbGV8g8Tzxu0eY6yC0UgeDkjG2wrw88xzHG0TtDAtw8AbNxrVR33GGyTIrK6zKtPglK30CMRrmLDMBBcDk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767005578; c=relaxed/simple;
-	bh=5Py4gZ4XPY0Wbxx+6Pv8wxOfSLppBo+FLZadyZrV9Ww=;
+	s=arc-20240116; t=1767005601; c=relaxed/simple;
+	bh=u659i9CjwAmmMF9S2IE3CU7qD+oW9Q2rvtmB89/XJAo=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=qm+zSLlIcHSanFcbXry2ex+FmpjVSigVri4c7j+GVUcgrG+NtygqHmaW4/sEkuXQWzJ3Z6aXdwbhA4jjQusUKAvWjlaa9UvzTkZoQosxazmFVj6esfGwG1Q8vrKYThNHEgQvMoLoHyv1vue0fkCaZSC30+I6czWG+i0GrupYX7o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=CS8ZqZGO; arc=none smtp.client-ip=209.85.128.65
+	 Content-Type:Content-Disposition:In-Reply-To; b=qAsvHmuhATco9vICI2BaMfqtTuX28d2M9T30nDeTIau8lp4LFpucZ9ionik5KCNameM3LoeVT0gm/FfZBrHRbVa1H1D+2Gmqfp+S0a4KfEv7bNd2j/1g4yQAwBB+nEfxD47Hyi8B4zTAEWcjcC6bRyuEaRzxWoxWYAho9eoiIYI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=DyaLcaAo; arc=none smtp.client-ip=209.85.221.52
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-wm1-f65.google.com with SMTP id 5b1f17b1804b1-477ba2c1ca2so94499925e9.2
-        for <cgroups@vger.kernel.org>; Mon, 29 Dec 2025 02:52:55 -0800 (PST)
+Received: by mail-wr1-f52.google.com with SMTP id ffacd0b85a97d-42fed090e5fso4142689f8f.1
+        for <cgroups@vger.kernel.org>; Mon, 29 Dec 2025 02:53:19 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1767005574; x=1767610374; darn=vger.kernel.org;
+        d=suse.com; s=google; t=1767005598; x=1767610398; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=2je2Qn3fetVLzu93alqgF/no2c7aUP4V2wy0jPtd70U=;
-        b=CS8ZqZGOgWuTOwwraEhfb0asKDWUiX+5W7bvBGF60Pw3IVPUGnw+PKusHfYpjAc/DZ
-         K7UhoRFMS6cTWn8fegze2Y+Oi1PgnDzqgIxsxUf8AXKjjpaXynWoLO6MkUCRz31ZuM4c
-         D9TGagwOm77KLnYvzXesmQsvDr/r91APP43U/h9O/yHwmCSWW05xy7EysJPqE2kmV7g6
-         xSZWRPcOPSmOUu/80OTQfYKSdOW8ZQhkRJbsPRe+y9LAXT20EQxD7t76ebphYqPmaWn5
-         lfuCPjnAWmEzhqyRjaGCsVsttQNkGAE5wBdpjbM65Of8Rpepd/8oYaiyTxO7jORsSfJP
-         Q9Ig==
+        bh=gkwE6228mnRy5innvr4FWjSNZPYoF0wgLDMAwQ6QHo8=;
+        b=DyaLcaAoq8D2sOX8r3NnBFd6oOkwyqvRsR8ujQ6w+LoZpg/kuTAe8iR7GV3JuQ22QK
+         dPV0uTcCF8wjor7zAHDTMs2qHtmFtXHVFm1Og0SF1uuaBwBv4UapsIYLQppZMdJsE+kr
+         X+aaE/IBoL7ll6z34sc9E7cqw+rbqpCxCmzC7rGGLhywtbER5iIcOG4YkNjxBA8WTWfN
+         9ZUY9bWvGDVLjSQuWQ1ZhgOq8wPw5DhrAi8a6b41GJPVmlvwNd07/3uNsXPA8DFvxJ2l
+         xso+g75cVxoSVRzq500mZkTduGUFXyfbrHTN6h3gaEnvVVObU7lN59jfTXnRR0kpgKuY
+         373A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1767005574; x=1767610374;
+        d=1e100.net; s=20230601; t=1767005598; x=1767610398;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=2je2Qn3fetVLzu93alqgF/no2c7aUP4V2wy0jPtd70U=;
-        b=AGB9FvvpJ8IW9rbaMuBdCxjUbQjOXq7YlPsmh/l4rniMZRD84iO71BBvHeyn0vDAcO
-         bVqBDPzCct8XHJX9H5NPRreXzaaok15HiVNjOtVjj1zU7b8xaG4dN8b0n93TTQfYUHcB
-         Yn3/McpovUhiJgwnnRyxjDIG1fM6RecgGUa0FrFvJq6pX7yEdtacdM7coozBSm/R0UvG
-         NjcddxZW2OBYIOmVOtmftbLUw2FdeNCwMcoWARzGcl65kviWUPrfAmrPhLupo5CQpAE0
-         qO6jsDhPpBswMYQ9fDEHKxrslb40bMKlA3nKGBmaq82wFWMIVmImx6WxYN9rlxteyvCC
-         GeAg==
-X-Forwarded-Encrypted: i=1; AJvYcCUfE89i0utJAwIQz6vZyUg/iA0YbgDb3eEIqlpdfNUwNueAEam0dtWtz87shZcfLahNqw8HosnF@vger.kernel.org
-X-Gm-Message-State: AOJu0YzdeqN/Zms99Bdn00R+Isdrff7bfkuQPjPI7GUkGrZAYv4MaFC9
-	S4kKeJDNm91tpsALNuJRg3dFIpERcJ9juXzXQxy2b2R7RBlyQYRVtpK+nmKgxZxi6+8=
-X-Gm-Gg: AY/fxX53dNtp72htcAmQDPsBbk6QCcJmUuyRcyXAbgNF2jIF6fq1Z0p8ooqL5PBa9AB
-	l68dcReXZ/7HmBdhJem1Vg3e6xw97SUq8aKXEySVQQmHXBKL28DbWBbyYyt81y//qf/4YAAUEGI
-	D77MSlYSfHh2zflq5BUYt/WJ9KIlO0IsNHXk9/W4TwMi9w+feHPiJmFI13wdf6w2YTeQJZA7Sg9
-	yDu6RBdZh3Bjr7DjMh+ykaxfjRdBMaoxAVZqvaVO1WXqK5m7WoqUDYWd82PRqCRuOch2Qu0Y032
-	VhobIIScTz7H3dKudnyIOfxdyt44coox+I34+BObizI7ppcDxi4+7XrzRfJHiWgQ2Ysq1oEs0Y0
-	h2cZJAR3OOABpivM6RC8dwehWUZuQnt27P2GIy/aexJVnRhdCk+SU0U+88HS/unGgGeISOKxRjR
-	RxFmKa7ABzDDBn+vys2uM1NtpcuBptGB0=
-X-Google-Smtp-Source: AGHT+IFAZIRctmetW9tapLi56WB2FNZTvHaLwojYq9Phgcvqi/IEQa13TNzXYWZussaQmRw51uyEfA==
-X-Received: by 2002:a05:600c:4e90:b0:46e:3d41:6001 with SMTP id 5b1f17b1804b1-47d1959440dmr359077865e9.34.1767005574275;
-        Mon, 29 Dec 2025 02:52:54 -0800 (PST)
+        bh=gkwE6228mnRy5innvr4FWjSNZPYoF0wgLDMAwQ6QHo8=;
+        b=R2IOh5I/qbjz8EgBB45Zg0kAKTdANni3pz9dtOIAQxgvKrJkh+L/djFB/zz75bxXcP
+         it72A0E1/DDoy39TBGAS5UVftsI/VK4VtPqCmbF3Gicu63R3reFogZvycnBdheAYEGzm
+         ypwW8mtovjI1a6qtj/ehxZk2mY3TTA1lGJ1P2PhQbvJ1fkwiiiVmkh3FHOtLIwtyXJjb
+         f1lxs7XD5CAY8/LL6BZGeKBS5S1y9m3POiaTr1SUrr6yIy02xWmsNBECf7b7lE/NvMGx
+         YIVst26anSCkhZqw2xq31mEjiiRRjdWLwQuCekQSqDjadRWqzbM4WneFZXnik27aw9AU
+         ktxQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUJ0JWyz+U1A0fwE/PiZXsH/2v7AyN1nIsLSRdr2Z7gETIxvhhCTOQtoW2CYh+eGHi79C0kFeuH@vger.kernel.org
+X-Gm-Message-State: AOJu0YyNjl0mq3A8XYC1EnWOHVPS3m4EdeAlSmFAfBwV7VMJZ3CQ4n8Y
+	aXvdvVjdVhEr/VrmbZ/dsEgWxS5ca43n86tpCtcSwezi9/Azaj3DQZB5tkwBX19YjWs=
+X-Gm-Gg: AY/fxX7KDiw2KfKGM211JdJocjY4tYR67e8a+VfZdu0xYfLBBolN1by1906vG7lzq96
+	/VsTkB6CudZweVXTqrvvzPQOX0Foi/JOSXPCt5imA/K38oU+Otn16OhHI/Rbw/5FqaWEZMqB+WF
+	0/QBU3nTXSEfeD2WA3ZuGMFQOH/R9wzSiozwshYy6xahDgidUXjw8c0Pf67awKw6JnipyJtxKqX
+	4NzQfumEXQjG5C/SkZ+EMDCcFRZeV1b+NczeHD1ZuEgNAmHovoeAansqqycLxXksznVgKZLxEZA
+	3lNTw54ssBFHK+DKHYuhOhkuxp7TSpDqfVV+KamXt5cQvaSuWDbhsWiv+Mlry9RNjmvnp39Zka0
+	tzL53fmYWWLFiMAJQKoXp/EfSOCLpmBxBnW6e+FFOdQj6zQ4lesXqJrv7kEMtwVwySGcvqiOHOC
+	lO9mKkjRMb8xTdVA2M4SHd8V00NJDthY4=
+X-Google-Smtp-Source: AGHT+IHEnj09VtCvhEI1Mnpju384PM/PFXJ6IVisB8INMmaBJgtKDDRSEQKzdcjFHiZGq8ztnAkNxw==
+X-Received: by 2002:a05:6000:240d:b0:432:86f2:791b with SMTP id ffacd0b85a97d-43286f27a87mr8136274f8f.63.1767005597667;
+        Mon, 29 Dec 2025 02:53:17 -0800 (PST)
 Received: from blackdock.suse.cz (nat2.prg.suse.com. [195.250.132.146])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-47be2723d19sm629127655e9.2.2025.12.29.02.52.53
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-4324ea2278dsm62489855f8f.18.2025.12.29.02.53.16
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Dec 2025 02:52:53 -0800 (PST)
-Date: Mon, 29 Dec 2025 11:52:52 +0100
+        Mon, 29 Dec 2025 02:53:17 -0800 (PST)
+Date: Mon, 29 Dec 2025 11:53:15 +0100
 From: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
-To: Qi Zheng <qi.zheng@linux.dev>
-Cc: Shakeel Butt <shakeel.butt@linux.dev>, 
+To: Harry Yoo <harry.yoo@oracle.com>
+Cc: Qi Zheng <qi.zheng@linux.dev>, Shakeel Butt <shakeel.butt@linux.dev>, 
 	Yosry Ahmed <yosry.ahmed@linux.dev>, hannes@cmpxchg.org, hughd@google.com, mhocko@suse.com, 
 	roman.gushchin@linux.dev, muchun.song@linux.dev, david@kernel.org, 
-	lorenzo.stoakes@oracle.com, ziy@nvidia.com, harry.yoo@oracle.com, imran.f.khan@oracle.com, 
+	lorenzo.stoakes@oracle.com, ziy@nvidia.com, imran.f.khan@oracle.com, 
 	kamalesh.babulal@oracle.com, axelrasmussen@google.com, yuanchu@google.com, weixugc@google.com, 
 	chenridong@huaweicloud.com, akpm@linux-foundation.org, hamzamahfooz@linux.microsoft.com, 
 	apais@linux.microsoft.com, lance.yang@linux.dev, linux-mm@kvack.org, 
 	linux-kernel@vger.kernel.org, cgroups@vger.kernel.org, Qi Zheng <zhengqi.arch@bytedance.com>
 Subject: Re: [PATCH v2 00/28] Eliminate Dying Memory Cgroup
-Message-ID: <xlvmvjieqfltqtf5y6y37elcwstrhs6sp7qco2npgucdd4ggus@icfvpgxrwljl>
+Message-ID: <a4fzkz4lznq5hrf3mmrhpt723rb2sl7puo6ziwg32ye6jh7rwk@baexbljj3duu>
 References: <cover.1765956025.git.zhengqi.arch@bytedance.com>
  <5dsb6q2r4xsi24kk5gcnckljuvgvvp6nwifwvc4wuho5hsifeg@5ukg2dq6ini5>
  <vsr4khfsp4unk73a75ky7i35nzdjqsbodyeeuxipu3arormfjr@awi2srdwawfu>
- <utl6esq7jz5e4f7kwgrpwdjc2rm3yi33ljb6xkm5nxzufa4o7s@hblq2piu3vnz>
- <7enyz6xhyjjp5djpj7jnvqiymqfpmb2gmhmmj7r5rkzjyix7o7@mpxpa566abyd>
- <llwoiz4k5l44z2dyo6oubcflfarhep654cr5tvcrnkltbw4eni@kxywzukbgyha>
- <wvj4w7ifmrifnh5bvftdziudsj52fdnwlhbt2oifwmxmi4eore@ob3mrfahhnm5>
- <63c958ae-9db2-4da8-935b-a596cc8535d3@linux.dev>
+ <1264fd2b-e9bd-4a3b-86ad-eb919941f0a4@linux.dev>
+ <aVJDuObeV2Y99em-@hyeyoo>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -99,71 +96,47 @@ List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="illqhsqtgan5bpog"
+	protocol="application/pgp-signature"; boundary="qya2ibtxqvkulq4p"
 Content-Disposition: inline
-In-Reply-To: <63c958ae-9db2-4da8-935b-a596cc8535d3@linux.dev>
+In-Reply-To: <aVJDuObeV2Y99em-@hyeyoo>
 
 
---illqhsqtgan5bpog
-Content-Type: text/plain; protected-headers=v1; charset=utf-8
+--qya2ibtxqvkulq4p
+Content-Type: text/plain; protected-headers=v1; charset=us-ascii
 Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 Subject: Re: [PATCH v2 00/28] Eliminate Dying Memory Cgroup
 MIME-Version: 1.0
 
-On Tue, Dec 23, 2025 at 04:36:18PM -0800, Shakeel Butt <shakeel.butt@linux.=
-dev> wrote:
-=2E..
-> The core stats update functions are mod_memcg_state() and
-> mod_memcg_lruvec_state(). If for v1 only, we add additional check for
-> CSS_DYING and go to parent if CSS_DYING is set then shouldn't we avoid
-> this issue?
-
-=2E..and go to first !CSS_DYING ancestor :-/ (as the whole chain of memcgs
-can be offlined)
-
-IIUC thanks to the reparenting charging (modifying state) to an offlined
-memcg should be an exception...
-
-
-On Mon, Dec 29, 2025 at 05:42:43PM +0800, Qi Zheng <qi.zheng@linux.dev> wro=
-te:
-
-> > We do reparenting in css_offline() callback and cgroup offlining
-> > happen somewhat like this:
-> >=20
-> > 1. Set CSS_DYING
-> > 2. Trigger percpu ref kill
-> > 3. Kernel makes sure css ref killed is seen by all CPUs and then trigger
-> >     css_offline callback.
+On Mon, Dec 29, 2025 at 06:35:22PM +0900, Harry Yoo <harry.yoo@oracle.com> =
+wrote:
+> > The memcg-v1 was originally planned to be removed, could we skip
+> > supporting v1?
 >=20
-> it seems that we can add the following to
-> mem_cgroup_css_free():
->=20
-> parent->vmstats->state_local +=3D child->vmstats->state_local;
->=20
-> Right? I will continue to take a closer look.
+> You mean not reparenting LRU pages if CONFIG_MEMCG_V1 is set?
 
-=2E..and the time between offlining and free'ing a memcg should not be
-arbitrarily long anymore (right?, the crux of the series).
-So only transferring local stats in mem_cgroup_css_free should yield a
-correct result after limited time range (with possible underflows
-between) with no special precaution for CSS_DYING on charging side.
+More precisely it should be dynamic
+	!cgroup_subsys_on_dfl(memory_cgrp_subsys)
 
-0.02=E2=82=AC,
+> That may work,
+
+But would it make the code actually simpler? (Keeping two versions at
+multiple places vs transferring local stats at the right moment.)
+
+Thanks,
 Michal
 
---illqhsqtgan5bpog
+--qya2ibtxqvkulq4p
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iJEEABYKADkWIQRCE24Fn/AcRjnLivR+PQLnlNv4CAUCaVJdgRsUgAAAAAAEAA5t
-YW51MiwyLjUrMS4xMSwyLDIACgkQfj0C55Tb+Ah51gD/doiKV5VyTZFiXLb4HtUI
-bo6/lt/P2BnUD8eq16i80doA/2jQKFn6l9VxvBFRi5i/AuI8/e+ynY2uvwooHwCr
-c5IO
-=7fmn
+iJEEABYKADkWIQRCE24Fn/AcRjnLivR+PQLnlNv4CAUCaVJdmRsUgAAAAAAEAA5t
+YW51MiwyLjUrMS4xMSwyLDIACgkQfj0C55Tb+AjcmwEA40zUj0sp6cAAd3bXgrQF
+sR0AqL6ydZGZfdd4i1DDccAA/0xU+vWaUPKB0gC3zq4HkdYA+8vTysTe6W9hZxPW
+eCII
+=A4Sk
 -----END PGP SIGNATURE-----
 
---illqhsqtgan5bpog--
+--qya2ibtxqvkulq4p--
 
