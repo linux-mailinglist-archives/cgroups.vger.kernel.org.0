@@ -1,165 +1,169 @@
-Return-Path: <cgroups+bounces-12798-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-12799-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 247D9CE6679
-	for <lists+cgroups@lfdr.de>; Mon, 29 Dec 2025 11:45:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 45929CE6688
+	for <lists+cgroups@lfdr.de>; Mon, 29 Dec 2025 11:53:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 6B021302B11F
-	for <lists+cgroups@lfdr.de>; Mon, 29 Dec 2025 10:43:12 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 9F9373006622
+	for <lists+cgroups@lfdr.de>; Mon, 29 Dec 2025 10:52:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3FE432F4A0C;
-	Mon, 29 Dec 2025 10:43:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 62F5C2367DC;
+	Mon, 29 Dec 2025 10:52:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="cwzNfY/x"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="CS8ZqZGO"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mout.web.de (mout.web.de [212.227.15.3])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f65.google.com (mail-wm1-f65.google.com [209.85.128.65])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 32EC42F3C0E;
-	Mon, 29 Dec 2025 10:42:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.3
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 152524A0C
+	for <cgroups@vger.kernel.org>; Mon, 29 Dec 2025 10:52:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.65
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767004981; cv=none; b=ow70eKNoifsWpQI4OvsTNBqpgK8GGdsp4POb7KbdLoVS0gTcZ5Tul0CeHghjwzcHvX7s2qL95pbkaqkVuF4Pp65g2iRdEVo1bvEKSzjfrt47VVGmaL72gUna2ZOkAQ0vmfYudUmN4HyfohxtUtGqJFltaoBdkqzoxzQVJqmQccU=
+	t=1767005578; cv=none; b=PUF+4zfnczOXwiwHoyb052ElWby8NsKFC8nCU0hYl7ypOG5Ml6YbOYGvqW7luM8JqZmYqQSE71+p5qmSEmJX4+fEy9oLXYPJyTHeZLufRW+LI1WhDx34KpyCLj0QGp9EYBocr6429uKz8YXvFqOiSDRHHW51INljs5gH+lVfQmc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767004981; c=relaxed/simple;
-	bh=cO4aZ4iVA+7eKwHnry4hgpa2mXWtxl8mp8VEmcMiE64=;
-	h=Message-ID:Date:MIME-Version:To:Cc:References:Subject:From:
-	 In-Reply-To:Content-Type; b=MBh8lznPqvb2uGO9bGTCIvC4EquEfe67i7wneodP5OdfjNZTuG9ucLTQou6rLKiZGjrWFwZUGAOlNfLd1dCxafxlf/hw8JKAZCkBOvgC5fJzFSKySqijljlPePu8l8/ng3eY6HQEZHAWvo5P3/gRa9VQFmRF9EI3sUPbkNatavs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de; spf=pass smtp.mailfrom=web.de; dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b=cwzNfY/x; arc=none smtp.client-ip=212.227.15.3
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=web.de;
-	s=s29768273; t=1767004950; x=1767609750; i=markus.elfring@web.de;
-	bh=cO4aZ4iVA+7eKwHnry4hgpa2mXWtxl8mp8VEmcMiE64=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:To:Cc:References:
-	 Subject:From:In-Reply-To:Content-Type:Content-Transfer-Encoding:
-	 cc:content-transfer-encoding:content-type:date:from:message-id:
-	 mime-version:reply-to:subject:to;
-	b=cwzNfY/xIANdOpBQDwkNEAJ6OqSBwIKlg84PXLTN7eVpMSj7KMVGdW7+aKtUcS/r
-	 C9ehiUbU0DDvb6Jpf+Mg8s/dZI3twjQ+yTT8IRnuYUoXH7+VFIJgo1mtFiBe6+Z8p
-	 pdVBcPdZPPXbJZwWfuNYyUNS+JzXDRpIeBPsdxKuoWQqd86fE2lSHFxr4ukzxlC0s
-	 +MhhjYumR6K/BYoTtnVrbAYeSqVMpwN0KdaUpeVtqVa4OBGSPCs6/lOIASfKm35ya
-	 8NSL80WqC05zpeg/ubMXoEET6p1kuAlPo11vveLCLhCWebiDTwIE9bBUSRJxVlb+2
-	 Ge7llqmjktG7u5aNbw==
-X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
-Received: from [192.168.178.29] ([94.31.69.231]) by smtp.web.de (mrweb006
- [213.165.67.108]) with ESMTPSA (Nemesis) id 1MY5bV-1vQUUF2SL7-00Jlwu; Mon, 29
- Dec 2025 11:42:30 +0100
-Message-ID: <6b4a6310-ae36-4726-88f8-46b749c8163f@web.de>
-Date: Mon, 29 Dec 2025 11:42:28 +0100
+	s=arc-20240116; t=1767005578; c=relaxed/simple;
+	bh=5Py4gZ4XPY0Wbxx+6Pv8wxOfSLppBo+FLZadyZrV9Ww=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=qm+zSLlIcHSanFcbXry2ex+FmpjVSigVri4c7j+GVUcgrG+NtygqHmaW4/sEkuXQWzJ3Z6aXdwbhA4jjQusUKAvWjlaa9UvzTkZoQosxazmFVj6esfGwG1Q8vrKYThNHEgQvMoLoHyv1vue0fkCaZSC30+I6czWG+i0GrupYX7o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=CS8ZqZGO; arc=none smtp.client-ip=209.85.128.65
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-wm1-f65.google.com with SMTP id 5b1f17b1804b1-477ba2c1ca2so94499925e9.2
+        for <cgroups@vger.kernel.org>; Mon, 29 Dec 2025 02:52:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1767005574; x=1767610374; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=2je2Qn3fetVLzu93alqgF/no2c7aUP4V2wy0jPtd70U=;
+        b=CS8ZqZGOgWuTOwwraEhfb0asKDWUiX+5W7bvBGF60Pw3IVPUGnw+PKusHfYpjAc/DZ
+         K7UhoRFMS6cTWn8fegze2Y+Oi1PgnDzqgIxsxUf8AXKjjpaXynWoLO6MkUCRz31ZuM4c
+         D9TGagwOm77KLnYvzXesmQsvDr/r91APP43U/h9O/yHwmCSWW05xy7EysJPqE2kmV7g6
+         xSZWRPcOPSmOUu/80OTQfYKSdOW8ZQhkRJbsPRe+y9LAXT20EQxD7t76ebphYqPmaWn5
+         lfuCPjnAWmEzhqyRjaGCsVsttQNkGAE5wBdpjbM65Of8Rpepd/8oYaiyTxO7jORsSfJP
+         Q9Ig==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1767005574; x=1767610374;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=2je2Qn3fetVLzu93alqgF/no2c7aUP4V2wy0jPtd70U=;
+        b=AGB9FvvpJ8IW9rbaMuBdCxjUbQjOXq7YlPsmh/l4rniMZRD84iO71BBvHeyn0vDAcO
+         bVqBDPzCct8XHJX9H5NPRreXzaaok15HiVNjOtVjj1zU7b8xaG4dN8b0n93TTQfYUHcB
+         Yn3/McpovUhiJgwnnRyxjDIG1fM6RecgGUa0FrFvJq6pX7yEdtacdM7coozBSm/R0UvG
+         NjcddxZW2OBYIOmVOtmftbLUw2FdeNCwMcoWARzGcl65kviWUPrfAmrPhLupo5CQpAE0
+         qO6jsDhPpBswMYQ9fDEHKxrslb40bMKlA3nKGBmaq82wFWMIVmImx6WxYN9rlxteyvCC
+         GeAg==
+X-Forwarded-Encrypted: i=1; AJvYcCUfE89i0utJAwIQz6vZyUg/iA0YbgDb3eEIqlpdfNUwNueAEam0dtWtz87shZcfLahNqw8HosnF@vger.kernel.org
+X-Gm-Message-State: AOJu0YzdeqN/Zms99Bdn00R+Isdrff7bfkuQPjPI7GUkGrZAYv4MaFC9
+	S4kKeJDNm91tpsALNuJRg3dFIpERcJ9juXzXQxy2b2R7RBlyQYRVtpK+nmKgxZxi6+8=
+X-Gm-Gg: AY/fxX53dNtp72htcAmQDPsBbk6QCcJmUuyRcyXAbgNF2jIF6fq1Z0p8ooqL5PBa9AB
+	l68dcReXZ/7HmBdhJem1Vg3e6xw97SUq8aKXEySVQQmHXBKL28DbWBbyYyt81y//qf/4YAAUEGI
+	D77MSlYSfHh2zflq5BUYt/WJ9KIlO0IsNHXk9/W4TwMi9w+feHPiJmFI13wdf6w2YTeQJZA7Sg9
+	yDu6RBdZh3Bjr7DjMh+ykaxfjRdBMaoxAVZqvaVO1WXqK5m7WoqUDYWd82PRqCRuOch2Qu0Y032
+	VhobIIScTz7H3dKudnyIOfxdyt44coox+I34+BObizI7ppcDxi4+7XrzRfJHiWgQ2Ysq1oEs0Y0
+	h2cZJAR3OOABpivM6RC8dwehWUZuQnt27P2GIy/aexJVnRhdCk+SU0U+88HS/unGgGeISOKxRjR
+	RxFmKa7ABzDDBn+vys2uM1NtpcuBptGB0=
+X-Google-Smtp-Source: AGHT+IFAZIRctmetW9tapLi56WB2FNZTvHaLwojYq9Phgcvqi/IEQa13TNzXYWZussaQmRw51uyEfA==
+X-Received: by 2002:a05:600c:4e90:b0:46e:3d41:6001 with SMTP id 5b1f17b1804b1-47d1959440dmr359077865e9.34.1767005574275;
+        Mon, 29 Dec 2025 02:52:54 -0800 (PST)
+Received: from blackdock.suse.cz (nat2.prg.suse.com. [195.250.132.146])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-47be2723d19sm629127655e9.2.2025.12.29.02.52.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 29 Dec 2025 02:52:53 -0800 (PST)
+Date: Mon, 29 Dec 2025 11:52:52 +0100
+From: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
+To: Qi Zheng <qi.zheng@linux.dev>
+Cc: Shakeel Butt <shakeel.butt@linux.dev>, 
+	Yosry Ahmed <yosry.ahmed@linux.dev>, hannes@cmpxchg.org, hughd@google.com, mhocko@suse.com, 
+	roman.gushchin@linux.dev, muchun.song@linux.dev, david@kernel.org, 
+	lorenzo.stoakes@oracle.com, ziy@nvidia.com, harry.yoo@oracle.com, imran.f.khan@oracle.com, 
+	kamalesh.babulal@oracle.com, axelrasmussen@google.com, yuanchu@google.com, weixugc@google.com, 
+	chenridong@huaweicloud.com, akpm@linux-foundation.org, hamzamahfooz@linux.microsoft.com, 
+	apais@linux.microsoft.com, lance.yang@linux.dev, linux-mm@kvack.org, 
+	linux-kernel@vger.kernel.org, cgroups@vger.kernel.org, Qi Zheng <zhengqi.arch@bytedance.com>
+Subject: Re: [PATCH v2 00/28] Eliminate Dying Memory Cgroup
+Message-ID: <xlvmvjieqfltqtf5y6y37elcwstrhs6sp7qco2npgucdd4ggus@icfvpgxrwljl>
+References: <cover.1765956025.git.zhengqi.arch@bytedance.com>
+ <5dsb6q2r4xsi24kk5gcnckljuvgvvp6nwifwvc4wuho5hsifeg@5ukg2dq6ini5>
+ <vsr4khfsp4unk73a75ky7i35nzdjqsbodyeeuxipu3arormfjr@awi2srdwawfu>
+ <utl6esq7jz5e4f7kwgrpwdjc2rm3yi33ljb6xkm5nxzufa4o7s@hblq2piu3vnz>
+ <7enyz6xhyjjp5djpj7jnvqiymqfpmb2gmhmmj7r5rkzjyix7o7@mpxpa566abyd>
+ <llwoiz4k5l44z2dyo6oubcflfarhep654cr5tvcrnkltbw4eni@kxywzukbgyha>
+ <wvj4w7ifmrifnh5bvftdziudsj52fdnwlhbt2oifwmxmi4eore@ob3mrfahhnm5>
+ <63c958ae-9db2-4da8-935b-a596cc8535d3@linux.dev>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-To: Jiayuan Chen <jiayuan.chen@shopee.com>, linux-mm@kvack.org,
- cgroups@vger.kernel.org
-Cc: Jiayuan Chen <jiayuan.chen@linux.dev>, LKML
- <linux-kernel@vger.kernel.org>, Andrew Morton <akpm@linux-foundation.org>,
- Axel Rasmussen <axelrasmussen@google.com>,
- David Hildenbrand <david@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>,
- Lorenzo Stoakes <lorenzo.stoakes@oracle.com>,
- Michal Hocko <mhocko@kernel.org>, Muchun Song <muchun.song@linux.dev>,
- Qi Zheng <zhengqi.arch@bytedance.com>,
- Roman Gushchin <roman.gushchin@linux.dev>,
- Shakeel Butt <shakeel.butt@linux.dev>, Wei Xu <weixugc@google.com>,
- Yuanchu Xie <yuanchu@google.com>
-References: <20251229033957.296257-1-jiayuan.chen@linux.dev>
-Subject: Re: [PATCH v2] mm/memcg: scale memory.high penalty based on refault
- recency
-Content-Language: en-GB, de-DE
-From: Markus Elfring <Markus.Elfring@web.de>
-In-Reply-To: <20251229033957.296257-1-jiayuan.chen@linux.dev>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="illqhsqtgan5bpog"
+Content-Disposition: inline
+In-Reply-To: <63c958ae-9db2-4da8-935b-a596cc8535d3@linux.dev>
+
+
+--illqhsqtgan5bpog
+Content-Type: text/plain; protected-headers=v1; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:mONcxwL8dcOUof/iuLBHR1VVvzj2He8VP+9VNSYi4yhSe+wyvrt
- MvsGFpkSpIqFEHMXd1ZL52fs8XYv59DwHTEp8xMWyBbjn5dr8tqMFWh6bT3Vjzkx2Tz80jR
- CRsrPv0DkTSg2IwhV+pmZiN5gidlDdtRseVTBrHI1d46oyL7IhOSBKip13jIEN7DQGzeatH
- GNfQbV7qROTL3ukTa1qmw==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:W5p+PrDPuck=;OlSmmtO/pSPpgC196z5rOEnGx5t
- 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
- cqPRpHjwtqtsRQ96M=
+Subject: Re: [PATCH v2 00/28] Eliminate Dying Memory Cgroup
+MIME-Version: 1.0
 
-=E2=80=A6
-> We observed an issue in production where a workload continuously
-=E2=80=A6
+On Tue, Dec 23, 2025 at 04:36:18PM -0800, Shakeel Butt <shakeel.butt@linux.=
+dev> wrote:
+=2E..
+> The core stats update functions are mod_memcg_state() and
+> mod_memcg_lruvec_state(). If for v1 only, we add additional check for
+> CSS_DYING and go to parent if CSS_DYING is set then shouldn't we avoid
+> this issue?
 
-Please avoid a typo in the summary phrase.
+=2E..and go to first !CSS_DYING ancestor :-/ (as the whole chain of memcgs
+can be offlined)
 
-Regards,
-Markus
+IIUC thanks to the reparenting charging (modifying state) to an offlined
+memcg should be an exception...
+
+
+On Mon, Dec 29, 2025 at 05:42:43PM +0800, Qi Zheng <qi.zheng@linux.dev> wro=
+te:
+
+> > We do reparenting in css_offline() callback and cgroup offlining
+> > happen somewhat like this:
+> >=20
+> > 1. Set CSS_DYING
+> > 2. Trigger percpu ref kill
+> > 3. Kernel makes sure css ref killed is seen by all CPUs and then trigger
+> >     css_offline callback.
+>=20
+> it seems that we can add the following to
+> mem_cgroup_css_free():
+>=20
+> parent->vmstats->state_local +=3D child->vmstats->state_local;
+>=20
+> Right? I will continue to take a closer look.
+
+=2E..and the time between offlining and free'ing a memcg should not be
+arbitrarily long anymore (right?, the crux of the series).
+So only transferring local stats in mem_cgroup_css_free should yield a
+correct result after limited time range (with possible underflows
+between) with no special precaution for CSS_DYING on charging side.
+
+0.02=E2=82=AC,
+Michal
+
+--illqhsqtgan5bpog
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iJEEABYKADkWIQRCE24Fn/AcRjnLivR+PQLnlNv4CAUCaVJdgRsUgAAAAAAEAA5t
+YW51MiwyLjUrMS4xMSwyLDIACgkQfj0C55Tb+Ah51gD/doiKV5VyTZFiXLb4HtUI
+bo6/lt/P2BnUD8eq16i80doA/2jQKFn6l9VxvBFRi5i/AuI8/e+ynY2uvwooHwCr
+c5IO
+=7fmn
+-----END PGP SIGNATURE-----
+
+--illqhsqtgan5bpog--
 
