@@ -1,100 +1,89 @@
-Return-Path: <cgroups+bounces-12802-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-12803-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0C45ECE6BE9
-	for <lists+cgroups@lfdr.de>; Mon, 29 Dec 2025 13:43:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 10061CE7C38
+	for <lists+cgroups@lfdr.de>; Mon, 29 Dec 2025 18:39:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 789233009F05
-	for <lists+cgroups@lfdr.de>; Mon, 29 Dec 2025 12:43:39 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id E086D300E839
+	for <lists+cgroups@lfdr.de>; Mon, 29 Dec 2025 17:39:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B18E5311941;
-	Mon, 29 Dec 2025 12:43:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D7C732C305;
+	Mon, 29 Dec 2025 17:39:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fk840Rfp"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D9C453115B0;
-	Mon, 29 Dec 2025 12:43:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=124.126.103.232
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4921623182D;
+	Mon, 29 Dec 2025 17:39:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767012215; cv=none; b=JAe6041CM4/PmZx+3wVQmllLujDD11MNvvKzjDDZa5/A9pu4Hb9tKMK/q+WzWDCNUdu1bj9MKFQHr/UMeCeQCgfHHZWL28ineRlZ0HEWr6Rl8Ammn6jiNyeLLizz+Nxcltze3E1cxTcsbBAX8Y7gp+crAkhI0RSQHt/AkKlBtOA=
+	t=1767029957; cv=none; b=F7AE9YRiQyEEeyyc0/hhaRL5sC5sNFKiW1fb/dcQik5QbM6qTxhTj6tFL++hP4YSjjLo82EKDT+rT4IMZ4BYYCpGE8nVQ4MwCH20bIdQPbsfutjUNeDEiGn/RWZEora5VxWvC6/GomTkgMTzOtzfEITX/zVtkP4aYpD3xq0NjuU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767012215; c=relaxed/simple;
-	bh=7iVcfZVwYE4+COVE20kwEf4UXswQ2x3ADqrQJI72Aws=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=pJ+XjxiMKUtqV4pGC2g6Q0YZiivGPgtci4xkOQvPItDhzinGLndp9iO3aoAILDledUWcjz/YWRbeYqRov0XHv3eL+YQ+Clqw4712LAkdklLU6BLsvhig6fOmjIYK1aWEE3EvvxfAH0h74twiFDph+8iH0NKM46oYF7+lQLTsqxg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn; spf=pass smtp.mailfrom=kylinos.cn; arc=none smtp.client-ip=124.126.103.232
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kylinos.cn
-X-UUID: f3760484e4b311f0a38c85956e01ac42-20251229
-X-CTIC-Tags:
-	HR_CC_COUNT, HR_CC_DOMAIN_COUNT, HR_CC_NO_NAME, HR_CTE_8B, HR_CTT_MISS
-	HR_DATE_H, HR_DATE_WKD, HR_DATE_ZONE, HR_FROM_NAME, HR_SJ_DIGIT_LEN
-	HR_SJ_LANG, HR_SJ_LEN, HR_SJ_LETTER, HR_SJ_NOR_SYM, HR_SJ_PHRASE
-	HR_SJ_PHRASE_LEN, HR_SJ_PRE_RE, HR_SJ_WS, HR_TO_COUNT, HR_TO_DOMAIN_COUNT
-	HR_TO_NO_NAME, DN_TRUSTED, SRC_TRUSTED, SA_TRUSTED, SA_EXISTED
-	SN_TRUSTED, SN_EXISTED, SPF_NOPASS, DKIM_NOPASS, DMARC_NOPASS
-	CIE_BAD, CIE_GOOD, CIE_GOOD_SPF, GTI_FG_BS, GTI_RG_INFO
-	GTI_C_BU, AMN_GOOD, ABX_MISS_RDNS
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.3.6,REQID:fda32ff5-ca34-48eb-a841-f96540ae7366,IP:10,U
-	RL:0,TC:0,Content:0,EDM:0,RT:0,SF:-5,FILE:0,BULK:0,RULE:Release_Ham,ACTION
-	:release,TS:5
-X-CID-INFO: VERSION:1.3.6,REQID:fda32ff5-ca34-48eb-a841-f96540ae7366,IP:10,URL
-	:0,TC:0,Content:0,EDM:0,RT:0,SF:-5,FILE:0,BULK:0,RULE:Release_Ham,ACTION:r
-	elease,TS:5
-X-CID-META: VersionHash:a9d874c,CLOUDID:7c10afaa05ef2f72d0b16370eff7b87c,BulkI
-	D:251229204321PH03D0T5,BulkQuantity:0,Recheck:0,SF:17|19|64|66|78|80|81|82
-	|83|102|127|841|850|898,TC:nil,Content:0|15|50,EDM:-3,IP:-2,URL:0,File:nil
-	,RT:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,
-	DKP:0,BRR:0,BRE:0,ARC:0
-X-CID-BVR: 2,SSN|SDN
-X-CID-BAS: 2,SSN|SDN,0,_
-X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_FAS,TF_CID_SPAM_FSD
-X-CID-RHF: D41D8CD98F00B204E9800998ECF8427E
-X-UUID: f3760484e4b311f0a38c85956e01ac42-20251229
-X-User: sunshaojie@kylinos.cn
-Received: from localhost.localdomain [(183.242.174.20)] by mailgw.kylinos.cn
-	(envelope-from <sunshaojie@kylinos.cn>)
-	(Generic MTA with TLSv1.3 TLS_AES_256_GCM_SHA384 256/256)
-	with ESMTP id 1768079757; Mon, 29 Dec 2025 20:43:18 +0800
-From: Sun Shaojie <sunshaojie@kylinos.cn>
-To: longman@redhat.com
-Cc: cgroups@vger.kernel.org,
-	chenridong@huaweicloud.com,
-	hannes@cmpxchg.org,
-	linux-kernel@vger.kernel.org,
-	linux-kselftest@vger.kernel.org,
-	mkoutny@suse.com,
-	shuah@kernel.org,
-	sunshaojie@kylinos.cn,
-	tj@kernel.org
-Subject: Re: [cgroup/for-6.20 PATCH 0/4] cgroup/cpuset: Don't invalidate sibling partitions on cpuset.cpus conflict
-Date: Mon, 29 Dec 2025 20:42:51 +0800
-Message-Id: <20251229124251.261697-1-sunshaojie@kylinos.cn>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20251225073056.30789-1-longman@redhat.com>
-References: <20251225073056.30789-1-longman@redhat.com>
+	s=arc-20240116; t=1767029957; c=relaxed/simple;
+	bh=5sgY48DeFt6LZVv6AA4skmGB5LL1KiEINGNQH9CCg1s=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=S11CO+XropRIQw1gASvzvdswpYuiMysFpIVhdNozLlGY/gZXe80jkRELiygxjjiCO5ygQsx0PiSUCaTYFerItNjNuxlsW5WSmAFqgXcOTshyHhR6zDAtN9dp3m7Eka0TvLvxWmcrSAL50jYlf9lFM33sYsr8WFa1j/lxbXTiIfw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fk840Rfp; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4657CC4CEF7;
+	Mon, 29 Dec 2025 17:39:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1767029956;
+	bh=5sgY48DeFt6LZVv6AA4skmGB5LL1KiEINGNQH9CCg1s=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=fk840RfpFBaXBRJKCW1UPyDZzPN/FYE+rOEqTP1Zml7dhTvDHJ2APcZcOIEYLrfcx
+	 SAW/Pp91iph7HL/ONiixJej1ljpbESgiZCOh997uKjJLFcnGrshmwnj4hf9F56cnzY
+	 blDWNuJHOJ3BJudwrfp9mMYMnWThzQtdbhIDrI+DfEDJATKvJGkZP+uPzbwCGc3nTW
+	 pn8NzbIY+66LrUq3Wd+YCbwMtrOfEU7FHIxPBGKRksl3rWJiXsjO8Php/Yzr5qhzs9
+	 +oLUTXVIBFQLU6CAHAeNtusQsy6/tku+2ynY2CkFCBJhhB7cWc/51/4xV60YPBj2oB
+	 l4UxRwJxkPNVg==
+Date: Mon, 29 Dec 2025 07:39:15 -1000
+From: Tejun Heo <tj@kernel.org>
+To: Pavel Tikhomirov <ptikhomirov@virtuozzo.com>
+Cc: Johannes Weiner <hannes@cmpxchg.org>,
+	Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
+	cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/2] cgroup-v2/freezer: Print information about
+ unfreezable process
+Message-ID: <aVK8w5vjzf384-m1@slm.duckdns.org>
+References: <20251223102124.738818-1-ptikhomirov@virtuozzo.com>
+ <20251223102124.738818-4-ptikhomirov@virtuozzo.com>
+ <aVBjDYPQcKEesoKu@slm.duckdns.org>
+ <80d36215-de7e-448c-85ea-9e848496c210@virtuozzo.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <80d36215-de7e-448c-85ea-9e848496c210@virtuozzo.com>
 
-Hi, Waiman,
+Hello,
 
-On Thu, 25 Dec 2025 02:30:52, Waiman Long wrote:
->This patch series is inspired by the cpuset patch sent by Sun Shaojie [1].
->The idea is to avoid invalidating sibling partitions when there is a
->cpuset.cpus conflict. However this patch series does it in a slightly
->different way to make its behavior more consistent with other cpuset
->properties.
+On Mon, Dec 29, 2025 at 01:32:11PM +0800, Pavel Tikhomirov wrote:
+> > This is only suitable for debugging, and, for that, this can be done from
+> > userspace by walking the tasks and check /proc/PID/wchan. Should be
+> > do_freezer_trap for everything frozen. If something is not, read and dump
+> > its /proc/PID/stack. Wouldn't that work?
+> 
+> Yes, I think that will do, Thanks.
+> 
+> Though the trace printing in /proc/PID/stack is a bit less informative
+> than show_stack(), e.g. for my test module
+> (https://github.com/Snorch/proc-hang-module) the stack in /proc/PID/stack
+> will be just empty. (I guess it has to do with the fact that you need less
+> privileges to read /proc/PID/stack than dmesg, so you can do a more
+> informative thing in dmesg).
 
-Thank you for implementing and enriching my idea.
+You can use drgn, bpftrace or any other bpf tools to read way more detailed
+backtraces.
 
-Thanks,
-Sun Shaojie
+Thanks.
+
+-- 
+tejun
 
