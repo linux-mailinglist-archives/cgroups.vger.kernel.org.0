@@ -1,337 +1,266 @@
-Return-Path: <cgroups+bounces-12787-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-12788-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id AFAA2CE5E0C
-	for <lists+cgroups@lfdr.de>; Mon, 29 Dec 2025 04:48:30 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 47A0CCE5E48
+	for <lists+cgroups@lfdr.de>; Mon, 29 Dec 2025 04:54:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id D80C430076AA
-	for <lists+cgroups@lfdr.de>; Mon, 29 Dec 2025 03:48:28 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 1A5413007945
+	for <lists+cgroups@lfdr.de>; Mon, 29 Dec 2025 03:54:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB8ED1E633C;
-	Mon, 29 Dec 2025 03:48:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2E08D26463A;
+	Mon, 29 Dec 2025 03:54:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="HCtlTqKH";
+	dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b="Dzpich9C"
 X-Original-To: cgroups@vger.kernel.org
-Received: from localhost.localdomain (unknown [147.136.157.0])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 85D45EEB3;
-	Mon, 29 Dec 2025 03:48:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=147.136.157.0
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4669D23717F
+	for <cgroups@vger.kernel.org>; Mon, 29 Dec 2025 03:53:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1766980107; cv=none; b=XXFREN0tcKxOoMKI305JXmCh8j1QBJ5nJjp9YnWWS5QVzU8YLkDS4wfBSwYJSgU6ysFVxkCmMO3F3sHSezFeuO5W3/n+kQDQdbnTaXK7Zbo9xK5OHwsXx+bAESl5z2NNWp/QjGkYVgPbuEiDs6fJ+l+9qzCo+1kA9NF1CkVS7ew=
+	t=1766980440; cv=none; b=An/MztiMeRBMPOhzm5rBEKF+MO+vpQhxY/14MK4LLKZravtJjIGI5EHb5XIJSmowR4WP1SzKnZX6Mnf0uGJn2ti2c4pxRF2ADj2bdMgRRSJ8DiY56jHJJ3SbiG6Gfpgn9J5UAtLi5/+MIqODx2SNMGTibl1/TbmbfSiCsN1UOxQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1766980107; c=relaxed/simple;
-	bh=emCgqtNTEaNbbpQqbd2eL5PlJ1A5CdzCYzojCqudhd8=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=qXgfRLEoxoeyOGMBV9NCAqphdjA3O7SkHkAjLvLTjbwpK+oUiB5a7TrzE5q3dCU3AV8fZNwT6/MzJL7FsQHMZu64cNZCaupOh/wc4bUwijcw1XgPm00ysy10KK8DD9VciWfuGzatkwgMeGeRIbv50lSbUo71ZsG8XmMDDnJr9ho=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.dev; spf=none smtp.mailfrom=localhost.localdomain; arc=none smtp.client-ip=147.136.157.0
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=localhost.localdomain
-Received: by localhost.localdomain (Postfix, from userid 1007)
-	id 6FB4A8AA380; Mon, 29 Dec 2025 11:40:09 +0800 (+08)
-From: Jiayuan Chen <jiayuan.chen@linux.dev>
-To: linux-mm@kvack.org
-Cc: Jiayuan Chen <jiayuan.chen@shopee.com>,
-	Johannes Weiner <hannes@cmpxchg.org>,
-	Michal Hocko <mhocko@kernel.org>,
-	Roman Gushchin <roman.gushchin@linux.dev>,
-	Shakeel Butt <shakeel.butt@linux.dev>,
-	Muchun Song <muchun.song@linux.dev>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	David Hildenbrand <david@kernel.org>,
-	Qi Zheng <zhengqi.arch@bytedance.com>,
-	Lorenzo Stoakes <lorenzo.stoakes@oracle.com>,
-	Axel Rasmussen <axelrasmussen@google.com>,
-	Yuanchu Xie <yuanchu@google.com>,
-	Wei Xu <weixugc@google.com>,
-	cgroups@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH v2] mm/memcg: scale memory.high penalty based on refault recency
-Date: Mon, 29 Dec 2025 11:39:55 +0800
-Message-ID: <20251229033957.296257-1-jiayuan.chen@linux.dev>
-X-Mailer: git-send-email 2.43.0
+	s=arc-20240116; t=1766980440; c=relaxed/simple;
+	bh=i/2pV3I6wfGKU/F6zki7C+oop7j6XFoO7cS1k967DAI=;
+	h=From:Message-ID:Date:MIME-Version:Subject:To:Cc:References:
+	 In-Reply-To:Content-Type; b=tPh+B087wbQhHjcoYFc8PDv5x3qgIe/1btVBZ079svisy23aVXO56WSXx1RB29A7AiiMRFv51sH/fFCyiOfjtA/GvzYv0N/JvyZ20slKQWxnZ5psARnlF474zwusF7sIUbTqGP26gbHri23iDVQOH3/AbmJyNZKd2PyNBvFHL+4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=HCtlTqKH; dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b=Dzpich9C; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1766980438;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=CS1U9kbXClTn3ClPyOJkBE6Q0JxlFOFOmyrM4XYp2Bs=;
+	b=HCtlTqKHCWpuLpTEmpjiR7Sq7HBpV063dko44Alv2Xt6LT9kOovD7L7yU1qGUbsHJNuXH4
+	N5VhrXivjxS9mco4QetyNkvbrnRRFIU5UWxx7pgrBaDgURUBskMCjEnDMitTkipPe9snun
+	Tq45oBVZ4j+0xFY3MA7mkGzHNYSQ/h0=
+Received: from mail-pg1-f197.google.com (mail-pg1-f197.google.com
+ [209.85.215.197]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-161-xrqRUQeIO_icQqPLO6S7vw-1; Sun, 28 Dec 2025 22:53:56 -0500
+X-MC-Unique: xrqRUQeIO_icQqPLO6S7vw-1
+X-Mimecast-MFC-AGG-ID: xrqRUQeIO_icQqPLO6S7vw_1766980436
+Received: by mail-pg1-f197.google.com with SMTP id 41be03b00d2f7-b9d73d57328so9065388a12.1
+        for <cgroups@vger.kernel.org>; Sun, 28 Dec 2025 19:53:56 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=redhat.com; s=google; t=1766980436; x=1767585236; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:content-language:references
+         :cc:to:subject:user-agent:mime-version:date:message-id:from:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=CS1U9kbXClTn3ClPyOJkBE6Q0JxlFOFOmyrM4XYp2Bs=;
+        b=Dzpich9CW7mmDdLzp4v+RbuYrzNb9L/kJAoqrMIipAFj0bqK4f4EMQLGLpKwgybxl4
+         +8CWXYsyw+LYdUsFVOJ7toXF4cY4rg+wtHCNwFpO5ZJ3yAuqxF/67uUy+L+SMIInpD0w
+         fGT7Jo26uUohYMu4FcEs8hUqq/Yn7pyLXO1wnR3/Om/Wzu48G43+sd/+zUwy1/ML1Fh3
+         11FU0zdHXpOA3aBDqanPnjidnaATwr//Oz4k2ar75SY4bObtl96qUeQ4MjMZdwf2Im2q
+         PYnoRrL3golc9Otb6H4dT6oN2DMAOQwdfZfvTTdCeEi93i0ZZVW4LjPGcGXMKrAlDIkR
+         VrQA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1766980436; x=1767585236;
+        h=content-transfer-encoding:in-reply-to:content-language:references
+         :cc:to:subject:user-agent:mime-version:date:message-id:from:x-gm-gg
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=CS1U9kbXClTn3ClPyOJkBE6Q0JxlFOFOmyrM4XYp2Bs=;
+        b=srBggNv/fAcEfmVDktTnO/56fvFxHJDeeBeMx309VJazq4yjM8Tqf0OwS7Plswxf+X
+         +IRO8nxxUYZKvXGnFSp2e4WCYUOoCzodtfgoeysrehlylF2jwhdT9NWYp32fQ+V8bznV
+         tuC8hCYxMfx4v8QSAIacF9A1zxIOkXj8wV4h3Fr+txpzY5URoAj4+vwlsY4rXgAaemmz
+         GdO913goF+DMRzDBGrtcCqrdjg6LtQCM0yCSz5ZKD2okHErI35CADG9KPF7H1QA+NDOZ
+         6SOwlOVkQ3HHL9fab+MOPYrbs1a72P67UQ7EeyNSzdPWEtgdNRZAeI+LML5QQevR37ce
+         f3gg==
+X-Forwarded-Encrypted: i=1; AJvYcCWQhvn7wXkCVfcu/1Q65M/z9/QXZLkmcbLBHUvdXawvuHOHeujSs1ERGrLMDIs7EnHi7Q0LAtBw@vger.kernel.org
+X-Gm-Message-State: AOJu0Yx7+WZt/2wPy6p98ZXO+HhF+lrpvU9T0Cqz1SnuyxsLITrLa3Pa
+	22xs1BsbTJ1AJU5CNu5bh51BW3vHbCvhpYHXpaipcWe6Rj0r4M0rJlFhemnjDmM8E7tJyR94Pin
+	68QvHJB7hRvNiTLE8ht3lTTpk67jEC8nMnFb6cEDTw5kAZlfbaOD7OodIoxI=
+X-Gm-Gg: AY/fxX7AvILs6EQ9iqgxNWNyThwt/Y4AZHgV2AtBVnLretD005wg8DvlM2tMDHh5X3b
+	QLtmtGYO8Q2KlE0SaBYDHk5OIalP8faO3kvSIiCKOoH3t2FHQp0I69+rtsc2ityoUUr41Xb3OEZ
+	AJWZg19/2ZfyCmw6BjxH12FAEjjP4Uw0QZ2UgX5komn8X7tGPeToJ9CyiWRidheg6hb+EAk0BT3
+	6orFtcBje3078jvloFxMUtIob7WNVASmXBp7//LZhWHjkpB7O40+ycTgfNTV1z/PbAIclJYqW02
+	9z4FfT1dADRnFGMYr5ktNpo83siYR6FU+6kE1TqFwKOXS80uZLgB1hVg+ZmDxXEYJFsxFC+twt5
+	eUEE6IO31zsCy+TIv8VpJgaP8su43XqUwzqF/pVDEJuZbcKUeZrIbudl+
+X-Received: by 2002:a05:7301:508a:b0:2af:7429:e53d with SMTP id 5a478bee46e88-2b05ebf88e5mr14193638eec.10.1766980435160;
+        Sun, 28 Dec 2025 19:53:55 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IFwUgAvkgKwyfAg/XY7OmY8/35HtixZhtufU5RpA+DoSNpJWPgIxTe0gLEz02J7RhXsL5qbsA==
+X-Received: by 2002:a05:7301:508a:b0:2af:7429:e53d with SMTP id 5a478bee46e88-2b05ebf88e5mr14193600eec.10.1766980434676;
+        Sun, 28 Dec 2025 19:53:54 -0800 (PST)
+Received: from ?IPV6:2601:188:c102:b180:1f8b:71d0:77b1:1f6e? ([2601:188:c102:b180:1f8b:71d0:77b1:1f6e])
+        by smtp.gmail.com with ESMTPSA id 5a478bee46e88-2b05ff8634csm69342683eec.3.2025.12.28.19.53.43
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 28 Dec 2025 19:53:54 -0800 (PST)
+From: Waiman Long <llong@redhat.com>
+X-Google-Original-From: Waiman Long <longman@redhat.com>
+Message-ID: <81f201cc-395a-48d7-a1b0-db8c62b93c9e@redhat.com>
+Date: Sun, 28 Dec 2025 22:53:41 -0500
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 01/33] PCI: Prepare to protect against concurrent isolated
+ cpuset change
+To: Zhang Qiao <zhangqiao22@huawei.com>,
+ Frederic Weisbecker <frederic@kernel.org>,
+ LKML <linux-kernel@vger.kernel.org>
+Cc: =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
+ Andrew Morton <akpm@linux-foundation.org>,
+ Bjorn Helgaas <bhelgaas@google.com>,
+ Catalin Marinas <catalin.marinas@arm.com>,
+ Chen Ridong <chenridong@huawei.com>, Danilo Krummrich <dakr@kernel.org>,
+ "David S . Miller" <davem@davemloft.net>, Eric Dumazet
+ <edumazet@google.com>, Gabriele Monaco <gmonaco@redhat.com>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Ingo Molnar <mingo@redhat.com>, Jakub Kicinski <kuba@kernel.org>,
+ Jens Axboe <axboe@kernel.dk>, Johannes Weiner <hannes@cmpxchg.org>,
+ Lai Jiangshan <jiangshanlai@gmail.com>,
+ Marco Crivellari <marco.crivellari@suse.com>, Michal Hocko
+ <mhocko@suse.com>, Muchun Song <muchun.song@linux.dev>,
+ Paolo Abeni <pabeni@redhat.com>, Peter Zijlstra <peterz@infradead.org>,
+ Phil Auld <pauld@redhat.com>, "Rafael J . Wysocki" <rafael@kernel.org>,
+ Roman Gushchin <roman.gushchin@linux.dev>,
+ Shakeel Butt <shakeel.butt@linux.dev>, Simon Horman <horms@kernel.org>,
+ Tejun Heo <tj@kernel.org>, Thomas Gleixner <tglx@linutronix.de>,
+ Vlastimil Babka <vbabka@suse.cz>, Will Deacon <will@kernel.org>,
+ cgroups@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-block@vger.kernel.org, linux-mm@kvack.org, linux-pci@vger.kernel.org,
+ netdev@vger.kernel.org
+References: <20251224134520.33231-1-frederic@kernel.org>
+ <20251224134520.33231-2-frederic@kernel.org>
+ <e01189e1-d8ef-2791-632c-90d4d897859b@huawei.com>
+Content-Language: en-US
+In-Reply-To: <e01189e1-d8ef-2791-632c-90d4d897859b@huawei.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
-From: Jiayuan Chen <jiayuan.chen@shopee.com>
+On 12/28/25 10:23 PM, Zhang Qiao wrote:
+> Hi, Weisbecker，
+>
+> 在 2025/12/24 21:44, Frederic Weisbecker 写道:
+>> HK_TYPE_DOMAIN will soon integrate cpuset isolated partitions and
+>> therefore be made modifiable at runtime. Synchronize against the cpumask
+>> update using RCU.
+>>
+>> The RCU locked section includes both the housekeeping CPU target
+>> election for the PCI probe work and the work enqueue.
+>>
+>> This way the housekeeping update side will simply need to flush the
+>> pending related works after updating the housekeeping mask in order to
+>> make sure that no PCI work ever executes on an isolated CPU. This part
+>> will be handled in a subsequent patch.
+>>
+>> Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
+>> ---
+>>   drivers/pci/pci-driver.c | 47 ++++++++++++++++++++++++++++++++--------
+>>   1 file changed, 38 insertions(+), 9 deletions(-)
+>>
+>> diff --git a/drivers/pci/pci-driver.c b/drivers/pci/pci-driver.c
+>> index 7c2d9d596258..786d6ce40999 100644
+>> --- a/drivers/pci/pci-driver.c
+>> +++ b/drivers/pci/pci-driver.c
+>> @@ -302,9 +302,8 @@ struct drv_dev_and_id {
+>>   	const struct pci_device_id *id;
+>>   };
+>>   
+>> -static long local_pci_probe(void *_ddi)
+>> +static int local_pci_probe(struct drv_dev_and_id *ddi)
+>>   {
+>> -	struct drv_dev_and_id *ddi = _ddi;
+>>   	struct pci_dev *pci_dev = ddi->dev;
+>>   	struct pci_driver *pci_drv = ddi->drv;
+>>   	struct device *dev = &pci_dev->dev;
+>> @@ -338,6 +337,19 @@ static long local_pci_probe(void *_ddi)
+>>   	return 0;
+>>   }
+>>   
+>> +struct pci_probe_arg {
+>> +	struct drv_dev_and_id *ddi;
+>> +	struct work_struct work;
+>> +	int ret;
+>> +};
+>> +
+>> +static void local_pci_probe_callback(struct work_struct *work)
+>> +{
+>> +	struct pci_probe_arg *arg = container_of(work, struct pci_probe_arg, work);
+>> +
+>> +	arg->ret = local_pci_probe(arg->ddi);
+>> +}
+>> +
+>>   static bool pci_physfn_is_probed(struct pci_dev *dev)
+>>   {
+>>   #ifdef CONFIG_PCI_IOV
+>> @@ -362,34 +374,51 @@ static int pci_call_probe(struct pci_driver *drv, struct pci_dev *dev,
+>>   	dev->is_probed = 1;
+>>   
+>>   	cpu_hotplug_disable();
+>> -
+>>   	/*
+>>   	 * Prevent nesting work_on_cpu() for the case where a Virtual Function
+>>   	 * device is probed from work_on_cpu() of the Physical device.
+>>   	 */
+>>   	if (node < 0 || node >= MAX_NUMNODES || !node_online(node) ||
+>>   	    pci_physfn_is_probed(dev)) {
+>> -		cpu = nr_cpu_ids;
+>> +		error = local_pci_probe(&ddi);
+>>   	} else {
+>>   		cpumask_var_t wq_domain_mask;
+>> +		struct pci_probe_arg arg = { .ddi = &ddi };
+>> +
+>> +		INIT_WORK_ONSTACK(&arg.work, local_pci_probe_callback);
+>>   
+>>   		if (!zalloc_cpumask_var(&wq_domain_mask, GFP_KERNEL)) {
+>>   			error = -ENOMEM;
+> If we return from here, arg.work will not be destroyed.
+>
+>
+Right. INIT_WORK_ONSTACK() should be called after successful 
+cpumask_var_t allocation.
 
-Problem
--------
-We observed an issue in production where a workload continuously
-triggering memory.high also generates massive disk IO READ, causing
-system-wide performance degradation.
+Cheers,
+Longman
 
-This happens because memory.high penalty is currently based solely on
-the overage amount, not the actual impact of that overage:
-
-1. A memcg over memory.high reclaiming cold/unused pages
-   → minimal system impact, light penalty is appropriate
-
-2. A memcg over memory.high with hot pages being continuously
-   reclaimed and refaulted → severe IO pressure, needs heavy penalty
-
-Both cases receive identical penalties today. Users are forced to
-combine memory.high with io.max as a workaround, but this is:
-- The wrong abstraction level (memory policy shouldn't require IO tuning)
-- Hard to configure correctly across different storage devices
-- Unintuitive for users who only want memory control
-
-Reproduction
-------------
-A simple test program demonstrates the issue:
-
-    int fd = open("./200MB.file", O_RDWR|O_CREAT, 777);
-    char *mem = mmap(NULL, size, PROT_READ|PROT_WRITE, MAP_SHARED, fd, 0);
-    while (1) {
-        for (size_t i = 0; i < size; i += 4096) {
-            if (mem[rand() % size] != 0)
-                return -1;
-        }
-    }
-
-Run with memory.high constraint:
-
-    cgcreate -g io,cpu,cpuset,memory:/always_high
-    cgset -r cpuset.cpus=0 always_high
-    cgset -r memory.high=150M always_high
-    cgexec -g cpu,cpuset,memory:/always_high ./high_test 200 &
-
-Solution
---------
-Incorporate refault recency into the penalty calculation. If a refault
-occurred recently when memory.high is triggered, it indicates active
-thrashing and warrants additional throttling.
-
-Why not use refault counters directly?
-- Refault statistics (WORKINGSET_REFAULT_*) are aggregated periodically,
-  not available in real-time for accurate delta calculation
-- Calling mem_cgroup_flush_stats() on every charge would be prohibitively
-  expensive in the hot path
-- Due to readahead, the same refault count can represent vastly different
-  IO loads, making counter-based estimation unreliable
-
-The timestamp-based approach is:
-- O(1) cost: single timestamp read and comparison
-- Self-calibrating: penalty scales naturally with refault frequency
-- Conservative: only triggers when refault and memory.high event
-  occur in close temporal proximity
-
-When refault_penalty is active:
-- Skip the "reclaim made progress" retry loop to apply throttling sooner
-- Skip the "penalty too small" bypass to ensure some delay is applied
-- Add refault-based delay to the overage-based delay
-
-Results
--------
-Before this patch (memory.high triggered, severe thrashing):
-
-    sar -d 1
-    Time          DEV       tps     rkB/s    %util
-    04:17:42      sda   3242.00  272684.00   89.60
-    04:17:43      sda   3412.00  251160.00   91.60
-    04:17:44      sda   3185.00  254532.00   88.00
-    04:17:45      sda   3230.00  253332.00   88.40
-    04:17:46      sda   3416.00  224712.00   92.40
-    04:17:47      sda   3613.00  206612.00   94.40
-
-After this patch with MADV_RANDOM (no readahead):
-
-    sar -d 1
-    Time          DEV       tps     rkB/s    %util
-    04:08:57      sda    512.00    2048.00    5.60
-    04:08:58      sda    576.00    2304.00    6.80
-    04:08:59      sda    512.00    2048.00    6.80
-    04:09:00      sda    536.00    2144.00    4.80
-    04:09:01      sda    552.00    2208.00   10.40
-    04:09:02      sda    512.00    2048.00    9.20
-
-After this patch (memory.high triggered, thrashing mitigated):
-    sar -d 1
-    Time          DEV       tps     rkB/s    %util
-    04:27:03      sda     40.00    5880.00    0.00
-    04:27:04      sda     41.00    6472.00    0.00
-    04:27:05      sda     37.00    4716.00    0.00
-    04:27:06      sda     48.00    8512.00    0.00
-    04:27:07      sda     33.00    4556.00    0.00
-
-The patch reduces disk utilization from ~90% to ~6-10%, effectively
-preventing memory.high-induced thrashing from overwhelming the IO
-subsystem.
-
-Signed-off-by: Jiayuan Chen <jiayuan.chen@shopee.com>
-
----
-v1 -> v2 : fix compile error when CONFIG_MEMCG is disabled
----
- include/linux/memcontrol.h | 26 ++++++++++++++++++++++++
- mm/memcontrol.c            | 41 +++++++++++++++++++++++++++++++++++---
- mm/workingset.c            |  4 ++++
- 3 files changed, 68 insertions(+), 3 deletions(-)
-
-diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-index fd400082313a..98d4268457c0 100644
---- a/include/linux/memcontrol.h
-+++ b/include/linux/memcontrol.h
-@@ -321,6 +321,9 @@ struct mem_cgroup {
- 	spinlock_t event_list_lock;
- #endif /* CONFIG_MEMCG_V1 */
- 
-+	/* Timestamp of most recent refault, for thrashing detection */
-+	u64 last_refault;
-+
- 	struct mem_cgroup_per_node *nodeinfo[];
- };
- 
-@@ -1038,6 +1041,20 @@ static inline u64 cgroup_id_from_mm(struct mm_struct *mm)
- }
- 
- extern int mem_cgroup_init(void);
-+
-+static inline void mem_cgroup_update_last_refault(struct mem_cgroup *memcg)
-+{
-+	if (memcg)
-+		WRITE_ONCE(memcg->last_refault, jiffies);
-+}
-+
-+static inline unsigned long mem_cgroup_get_last_refault(struct mem_cgroup *memcg)
-+{
-+	if (memcg)
-+		return READ_ONCE(memcg->last_refault);
-+
-+	return 0;
-+}
- #else /* CONFIG_MEMCG */
- 
- #define MEM_CGROUP_ID_SHIFT	0
-@@ -1433,6 +1450,15 @@ static inline u64 cgroup_id_from_mm(struct mm_struct *mm)
- }
- 
- static inline int mem_cgroup_init(void) { return 0; }
-+
-+static inline void mem_cgroup_update_last_refault(struct mem_cgroup *memcg)
-+{
-+}
-+
-+static inline unsigned long mem_cgroup_get_last_refault(struct mem_cgroup *memcg)
-+{
-+	return 0;
-+}
- #endif /* CONFIG_MEMCG */
- 
- /*
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index 75fc22a33b28..04f3a2511cbb 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -2226,6 +2226,38 @@ static unsigned long calculate_high_delay(struct mem_cgroup *memcg,
- 	return penalty_jiffies * nr_pages / MEMCG_CHARGE_BATCH;
- }
- 
-+/*
-+ * Check if a refault occurred recently, indicating active thrashing.
-+ * Returns additional penalty jiffies based on refault recency.
-+ *
-+ * We use timestamp rather than refault counters because:
-+ * 1. Counter aggregation is periodic and expensive to flush
-+ * 2. Readahead makes counter-to-IO correlation unreliable
-+ * 3. Timestamp gives us recency which directly reflects thrashing intensity
-+ */
-+static unsigned long calculate_refault(struct mem_cgroup *memcg)
-+{
-+	unsigned long last_refault = mem_cgroup_get_last_refault(memcg);
-+	unsigned long now = jiffies;
-+	long diff;
-+
-+	/*
-+	 * Only care about refaults within the last second. The closer
-+	 * the refault is to now, the higher the penalty:
-+	 *
-+	 *   diff = 1 tick   -> penalty = HZ      (capped to HZ/10 = 100ms)
-+	 *   diff = HZ/10    -> penalty = 10 ticks = 10ms
-+	 *   diff = HZ/2     -> penalty = 2 ticks  = 2ms
-+	 *   diff >= HZ      -> penalty = 0        (too old, not thrashing)
-+	 */
-+	if (last_refault && time_before(now, last_refault + HZ)) {
-+		diff = max((long)now - (long)last_refault, 1L);
-+		/* Cap at 100ms to avoid excessive delays */
-+		return min(HZ / diff, HZ / 10);
-+	}
-+	return 0;
-+}
-+
- /*
-  * Reclaims memory over the high limit. Called directly from
-  * try_charge() (context permitting), as well as from the userland
-@@ -2233,6 +2265,7 @@ static unsigned long calculate_high_delay(struct mem_cgroup *memcg,
-  */
- void __mem_cgroup_handle_over_high(gfp_t gfp_mask)
- {
-+	unsigned long refault_penalty;
- 	unsigned long penalty_jiffies;
- 	unsigned long pflags;
- 	unsigned long nr_reclaimed;
-@@ -2279,12 +2312,14 @@ void __mem_cgroup_handle_over_high(gfp_t gfp_mask)
- 	penalty_jiffies += calculate_high_delay(memcg, nr_pages,
- 						swap_find_max_overage(memcg));
- 
-+	refault_penalty = calculate_refault(memcg);
-+
- 	/*
- 	 * Clamp the max delay per usermode return so as to still keep the
- 	 * application moving forwards and also permit diagnostics, albeit
- 	 * extremely slowly.
- 	 */
--	penalty_jiffies = min(penalty_jiffies, MEMCG_MAX_HIGH_DELAY_JIFFIES);
-+	penalty_jiffies = min(penalty_jiffies + refault_penalty, MEMCG_MAX_HIGH_DELAY_JIFFIES);
- 
- 	/*
- 	 * Don't sleep if the amount of jiffies this memcg owes us is so low
-@@ -2292,7 +2327,7 @@ void __mem_cgroup_handle_over_high(gfp_t gfp_mask)
- 	 * go only a small amount over their memory.high value and maybe haven't
- 	 * been aggressively reclaimed enough yet.
- 	 */
--	if (penalty_jiffies <= HZ / 100)
-+	if (!refault_penalty && penalty_jiffies <= HZ / 100)
- 		goto out;
- 
- 	/*
-@@ -2300,7 +2335,7 @@ void __mem_cgroup_handle_over_high(gfp_t gfp_mask)
- 	 * memory.high, we want to encourage that rather than doing allocator
- 	 * throttling.
- 	 */
--	if (nr_reclaimed || nr_retries--) {
-+	if (!refault_penalty && (nr_reclaimed || nr_retries--)) {
- 		in_retry = true;
- 		goto retry_reclaim;
- 	}
-diff --git a/mm/workingset.c b/mm/workingset.c
-index e9f05634747a..597fcab497f4 100644
---- a/mm/workingset.c
-+++ b/mm/workingset.c
-@@ -297,6 +297,8 @@ static void lru_gen_refault(struct folio *folio, void *shadow)
- 	if (lruvec != folio_lruvec(folio))
- 		goto unlock;
- 
-+	mem_cgroup_update_last_refault(folio_memcg(folio));
-+
- 	mod_lruvec_state(lruvec, WORKINGSET_REFAULT_BASE + type, delta);
- 
- 	if (!recent)
-@@ -561,6 +563,8 @@ void workingset_refault(struct folio *folio, void *shadow)
- 	pgdat = folio_pgdat(folio);
- 	lruvec = mem_cgroup_lruvec(memcg, pgdat);
- 
-+	mem_cgroup_update_last_refault(memcg);
-+
- 	mod_lruvec_state(lruvec, WORKINGSET_REFAULT_BASE + file, nr);
- 
- 	if (!workingset_test_recent(shadow, file, &workingset, true))
--- 
-2.43.0
+>>   			goto out;
+>>   		}
+>> +
+>> +		/*
+>> +		 * The target election and the enqueue of the work must be within
+>> +		 * the same RCU read side section so that when the workqueue pool
+>> +		 * is flushed after a housekeeping cpumask update, further readers
+>> +		 * are guaranteed to queue the probing work to the appropriate
+>> +		 * targets.
+>> +		 */
+>> +		rcu_read_lock();
+>>   		cpumask_and(wq_domain_mask,
+>>   			    housekeeping_cpumask(HK_TYPE_WQ),
+>>   			    housekeeping_cpumask(HK_TYPE_DOMAIN));
+>>   
+>>   		cpu = cpumask_any_and(cpumask_of_node(node),
+>>   				      wq_domain_mask);
+>> +		if (cpu < nr_cpu_ids) {
+>> +			schedule_work_on(cpu, &arg.work);
+>> +			rcu_read_unlock();
+>> +			flush_work(&arg.work);
+>> +			error = arg.ret;
+>> +		} else {
+>> +			rcu_read_unlock();
+>> +			error = local_pci_probe(&ddi);
+>> +		}
+>> +
+>>   		free_cpumask_var(wq_domain_mask);
+>> +		destroy_work_on_stack(&arg.work);
+>>   	}
+>> -
+>> -	if (cpu < nr_cpu_ids)
+>> -		error = work_on_cpu(cpu, local_pci_probe, &ddi);
+>> -	else
+>> -		error = local_pci_probe(&ddi);
+>>   out:
+>>   	dev->is_probed = 0;
+>>   	cpu_hotplug_enable();
+>>
 
 
