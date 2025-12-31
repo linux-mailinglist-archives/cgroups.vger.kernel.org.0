@@ -1,49 +1,48 @@
-Return-Path: <cgroups+bounces-12835-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-12836-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1D2A6CEC055
-	for <lists+cgroups@lfdr.de>; Wed, 31 Dec 2025 14:19:07 +0100 (CET)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2FAFACEC082
+	for <lists+cgroups@lfdr.de>; Wed, 31 Dec 2025 14:45:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 8E6D43007287
-	for <lists+cgroups@lfdr.de>; Wed, 31 Dec 2025 13:19:05 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id 86A2D300E466
+	for <lists+cgroups@lfdr.de>; Wed, 31 Dec 2025 13:45:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6DE2A322C73;
-	Wed, 31 Dec 2025 13:19:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F3B13164B6;
+	Wed, 31 Dec 2025 13:45:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="sqJJ3lmV"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Vx1P2FfS"
 X-Original-To: cgroups@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C5691EEA55;
-	Wed, 31 Dec 2025 13:19:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E09F405F7;
+	Wed, 31 Dec 2025 13:45:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767187143; cv=none; b=I/B6lw2pr9m8qFA8/sbIoztjV2rPOBhx2wB0tdGlcNsnm2k/fnP7JWenXoDNkPHqzqDoFvR4F8pUxVZ3qVX43OWXmXy0NAt3ea5ekLv4aGo8tECb5f4xzoASz3kmNb1pgrWQfVrD9gs+gLmwihfpPNZCgp64xNefLNvW1OMRq7g=
+	t=1767188734; cv=none; b=XrIkTdety54Ng/HtVV9t11igEptJVTx84JCsiM3cZAOjTYPJpzfgJZAK8X68ymMyJ0dsW0mOvt6FXjpyFVn+3xsDcoKMoi2d/5WKoFHKY3vOUxHuv8nNGb2eKBkd00av9KYgYGUdadZuZI1xRYtvf9xzAW+kXuFJavyaA/6h5yQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767187143; c=relaxed/simple;
-	bh=ypn/q+ILRrt5uVnU9TRkKLrfFM5tQxriCjP5mEvYBRY=;
+	s=arc-20240116; t=1767188734; c=relaxed/simple;
+	bh=Y5lTmiVqic6uOses6/RBPW3lvTquV7zqhHPq8aQw34M=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=NU/kSGWG3Khlkv3+V0KPP92OszZEySzGg/x8qFJKB5ke3V/MD02AP79C4j9ioGyMIbP5zmbfTyJtSUwIDemOin1VcL3Mw6iWjv1IePAPp/3BjLY+Wqal/XUyyZ7L3UIDIfgUtoTpoW1+EfKXrbNF+UXXpyvcNWGuiIwVwmkYbck=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=sqJJ3lmV; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1A1A3C113D0;
-	Wed, 31 Dec 2025 13:19:02 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=MRPNo5DfqSw/oTMqRA3Jcxkdxob/fY0RDEnL4YABPEzw8fPVOSx0fbPYoiFZJ7oNtLD0aa6HYwveVpHuT2/ulHlG7nhFxrTaBFl3Aj+Pez9v//NDj+3R4JJ014eVCl6aW9LY+RbP3qoIOldtFLbYhmZwD14cOa+OBIhWZYckuLQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Vx1P2FfS; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 438F4C113D0;
+	Wed, 31 Dec 2025 13:45:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1767187142;
-	bh=ypn/q+ILRrt5uVnU9TRkKLrfFM5tQxriCjP5mEvYBRY=;
+	s=k20201202; t=1767188732;
+	bh=Y5lTmiVqic6uOses6/RBPW3lvTquV7zqhHPq8aQw34M=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=sqJJ3lmVMf3teCNuAdVsjiRVupecIds4UPxN86Cxl9KA2fwWuX6h3c50j+Jw9b3mL
-	 rCqKrw8OoWIjhaI2tYqbnk0gExYsfn3LbQAa2vQj8o+hbrwPOWtDg6Rjm1DLv13mVm
-	 MC5ly2S3u2zhzuY4tSWXwxE7HNPL6YBvMCjC2ff3u3MG+mlfHFcuf6gr5p6k5L4qp8
-	 bvHV9dc+xaGru5y/5nJGRRHHaf+Pq3JYeutXzbOGpqsuTFm28PzP8lX+UrxPZuRxh1
-	 Xj8ccKa6cuxj20i6EcP4HOb8zAbp0t8x44gLAREO+hbs10vbn7IRasxXyGloGJMJVS
-	 suVKTc9BXvBtg==
-Date: Wed, 31 Dec 2025 14:18:59 +0100
+	b=Vx1P2FfSkiM9kppodGYA35GpPxHALVz4tqlXMJw7IRuRoyhQc3Qx9tILc+uax6TC7
+	 E9oNlkBRd2Rs1GjCPqIEDj2UtwboDm+nyiXhVS4cpKvGjduLnDZUAkhmBouab0kgAE
+	 9iFHz545GjGqBURbPFBcct+xIbjqRKoEQGe2nWxgG+6p4IO8R8Au9Jm7Y9Krmwprxc
+	 HS8s1ug8q6nJc7bHQCVkjEoCysFcYtunXpn0pt+/iwuaDQ6zXF+kyUJavHNXJgl7UT
+	 Y4URPh1rDmzsjeYecL3DpbBHbSEjLZfzNZGbTbp/0Hdxg9F9Won6RzlhHNOiKEJBL1
+	 sy0xjelFd82aw==
+Date: Wed, 31 Dec 2025 14:45:29 +0100
 From: Frederic Weisbecker <frederic@kernel.org>
 To: Waiman Long <llong@redhat.com>
-Cc: Zhang Qiao <zhangqiao22@huawei.com>,
-	LKML <linux-kernel@vger.kernel.org>,
+Cc: LKML <linux-kernel@vger.kernel.org>,
 	Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
 	Andrew Morton <akpm@linux-foundation.org>,
 	Bjorn Helgaas <bhelgaas@google.com>,
@@ -70,13 +69,11 @@ Cc: Zhang Qiao <zhangqiao22@huawei.com>,
 	cgroups@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
 	linux-block@vger.kernel.org, linux-mm@kvack.org,
 	linux-pci@vger.kernel.org, netdev@vger.kernel.org
-Subject: Re: [PATCH 01/33] PCI: Prepare to protect against concurrent
- isolated cpuset change
-Message-ID: <aVUiw34NAG3OfOV8@localhost.localdomain>
+Subject: Re: [PATCH 05/33] sched/isolation: Save boot defined domain flags
+Message-ID: <aVUo-csI1gqZL89O@localhost.localdomain>
 References: <20251224134520.33231-1-frederic@kernel.org>
- <20251224134520.33231-2-frederic@kernel.org>
- <e01189e1-d8ef-2791-632c-90d4d897859b@huawei.com>
- <81f201cc-395a-48d7-a1b0-db8c62b93c9e@redhat.com>
+ <20251224134520.33231-6-frederic@kernel.org>
+ <04708b57-7ffe-4a97-925f-926d577061a6@redhat.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -86,28 +83,55 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <81f201cc-395a-48d7-a1b0-db8c62b93c9e@redhat.com>
+In-Reply-To: <04708b57-7ffe-4a97-925f-926d577061a6@redhat.com>
 
-Le Sun, Dec 28, 2025 at 10:53:41PM -0500, Waiman Long a écrit :
-> On 12/28/25 10:23 PM, Zhang Qiao wrote:
-> > >   	if (node < 0 || node >= MAX_NUMNODES || !node_online(node) ||
-> > >   	    pci_physfn_is_probed(dev)) {
-> > > -		cpu = nr_cpu_ids;
-> > > +		error = local_pci_probe(&ddi);
-> > >   	} else {
-> > >   		cpumask_var_t wq_domain_mask;
-> > > +		struct pci_probe_arg arg = { .ddi = &ddi };
-> > > +
-> > > +		INIT_WORK_ONSTACK(&arg.work, local_pci_probe_callback);
-> > >   		if (!zalloc_cpumask_var(&wq_domain_mask, GFP_KERNEL)) {
-> > >   			error = -ENOMEM;
-> > If we return from here, arg.work will not be destroyed.
+Le Thu, Dec 25, 2025 at 05:27:54PM -0500, Waiman Long a écrit :
+> On 12/24/25 8:44 AM, Frederic Weisbecker wrote:
+> > HK_TYPE_DOMAIN will soon integrate not only boot defined isolcpus= CPUs
+> > but also cpuset isolated partitions.
 > > 
+> > Housekeeping still needs a way to record what was initially passed
+> > to isolcpus= in order to keep these CPUs isolated after a cpuset
+> > isolated partition is modified or destroyed while containing some of
+> > them.
 > > 
-> Right. INIT_WORK_ONSTACK() should be called after successful cpumask_var_t
-> allocation.
+> > Create a new HK_TYPE_DOMAIN_BOOT to keep track of those.
+> > 
+> > Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
+> > Reviewed-by: Phil Auld <pauld@redhat.com>
+> > ---
+> >   include/linux/sched/isolation.h | 4 ++++
+> >   kernel/sched/isolation.c        | 5 +++--
+> >   2 files changed, 7 insertions(+), 2 deletions(-)
+> > 
+> > diff --git a/include/linux/sched/isolation.h b/include/linux/sched/isolation.h
+> > index d8501f4709b5..109a2149e21a 100644
+> > --- a/include/linux/sched/isolation.h
+> > +++ b/include/linux/sched/isolation.h
+> > @@ -7,8 +7,12 @@
+> >   #include <linux/tick.h>
+> >   enum hk_type {
+> > +	/* Revert of boot-time isolcpus= argument */
+> > +	HK_TYPE_DOMAIN_BOOT,
+> >   	HK_TYPE_DOMAIN,
+> > +	/* Revert of boot-time isolcpus=managed_irq argument */
+> >   	HK_TYPE_MANAGED_IRQ,
+> > +	/* Revert of boot-time nohz_full= or isolcpus=nohz arguments */
+> >   	HK_TYPE_KERNEL_NOISE,
+> >   	HK_TYPE_MAX,
+> 
+> "Revert" is a verb. The term "Revert of" sound strange to me. I think using
+> "Inverse of" will sound better.
 
-Doing that, thank you both!
+Somehow I thought it could be a noun as well. At least I wouldn't mind if
+it ever turns that way.
+
+Fixing that, thanks.
+
+> 
+> Cheers,
+> Longman
+> 
 
 -- 
 Frederic Weisbecker
