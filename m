@@ -1,47 +1,47 @@
-Return-Path: <cgroups+bounces-12837-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-12838-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 85062CEC0F1
-	for <lists+cgroups@lfdr.de>; Wed, 31 Dec 2025 15:04:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 4ECA3CEC143
+	for <lists+cgroups@lfdr.de>; Wed, 31 Dec 2025 15:22:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 665043026BDF
-	for <lists+cgroups@lfdr.de>; Wed, 31 Dec 2025 14:02:41 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 9D6513015840
+	for <lists+cgroups@lfdr.de>; Wed, 31 Dec 2025 14:22:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B1D721D5AF;
-	Wed, 31 Dec 2025 14:02:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7EBA526B971;
+	Wed, 31 Dec 2025 14:22:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="V/KYCPL7"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fdkIy6Sz"
 X-Original-To: cgroups@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E0501217F53;
-	Wed, 31 Dec 2025 14:02:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 76E87261B8F;
+	Wed, 31 Dec 2025 14:22:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767189758; cv=none; b=ZEiGfeuF/HOCT+JVYNeMJbFvN70P3/Q5eHOImgqng5qr1MWmUDkcDsBP0f6i4z0t4bldvJym1V7xeD9TDdi+DQKUtfWJ5BKbuIF8Xmc7hBzl7crFvDznID0sd9yxRfci82J6NxMjuveyL14O/S4K3blbYJu/MWYjfnEfPbugveU=
+	t=1767190920; cv=none; b=Fb/Kh7D5vztFGXNsicELqVgYhP1fL0y/94w+1Wh2iWPiAbuPYgWsaajpi90p86YUpMGKwPwnxcg5bcvUhgLeR1+CKn7P2u9o1KLLJsIraVqJYjRcEvxFIpjM2xEOVJdYRiJOM+kNyplqBv62znHKsqrAdjD1lfrb87/91n+F8GU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767189758; c=relaxed/simple;
-	bh=CBFfLku7dIdIU6H6oIpUvPWYyR6ucYYMUyo6GlFZdAE=;
+	s=arc-20240116; t=1767190920; c=relaxed/simple;
+	bh=ThxbPyVAuuGbA1hxol61p5aRyqgSEJPk5GSWaXCro3w=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=B9OyGoe2LJ+Ze3m/J6cf+4H3/QKBQ+FlbIYRrc0fLjX2TqYmJMFLdcCtcID9tPwibNx4oMXurVE02zFArN0xZh3crzWEd/y2lKR0luZaj17sXb0+ku+W+20v1MAdKnq543jUXAwcwa7/8UccNYO2V2utcYNBY3WGUOF6b5YNPDU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=V/KYCPL7; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EAA17C113D0;
-	Wed, 31 Dec 2025 14:02:36 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=f8SCTw0xSkPTp8d/7Y3ZhXEMfcaoWyPeiRompqq6daBUCL9HqHPUSCTn2urzRlM8k3sfqkJl81ExJpPoMPnq94Or/QWxUNU5J/fy/2mlfrqCPCA8ir0tMHBgJFfhWgY6h4ZeH2+WbxTopBccJMBzwMGRXonBHYOnyCX77AHHCpE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fdkIy6Sz; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 41D7AC113D0;
+	Wed, 31 Dec 2025 14:21:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1767189757;
-	bh=CBFfLku7dIdIU6H6oIpUvPWYyR6ucYYMUyo6GlFZdAE=;
+	s=k20201202; t=1767190919;
+	bh=ThxbPyVAuuGbA1hxol61p5aRyqgSEJPk5GSWaXCro3w=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=V/KYCPL7ZtkMijc6GCGy07DqTpJm2bcO1Hyk7oeLdmLDr4cryXHiAbYSa0rdHoTmz
-	 xO1R86BMlXOvB7Bi6HCf0I6MrrXlvW4Tifmo/YaGV1r6/hXHdzochqy+Rx9CDugnW8
-	 KL0pY73twndKcZdjNDfVh7l6tZDUjQW4VDWv/nAL9ad6qz6ZAUtNrHXDCfP2Cywtm6
-	 ugYPs4h+jagAwy6hsofbysUt3OS9gH+6R84kJxL4x3DsSiKIXbQvIHr3qZRG6sMKpf
-	 M6jkkbfhDqzpVpnYKxH0r6jDyw29DBX9RAwbViO1Y+CIGYDKBMqcVEFznqc1PXd0Hw
-	 Qai/24OW/4z9w==
-Date: Wed, 31 Dec 2025 15:02:34 +0100
+	b=fdkIy6Szlw8k7WZ5M4sr0W+mpchR0nIFJWieDi+fUljSS8EAjYlSchHFr67dKhexm
+	 KJJMdMWfYo8IWLH2chBoG8s+ZzgqZmkjbUlBC+Vq0AxW4efi7nbP/ljmMjJI+NbTL1
+	 sLgKSLCCNSmx6D/VujTYD1MVuxw2wr6bHhfmYE3B+2Va+JDWfgi0fQhFtPsUzwhJdE
+	 cLIAzLkpUT7dXDv7EQ9Fky4+vRRiwgjcI8gk7iiqsUR7/k1wzYboc2OATWu/Ld1MR1
+	 jUVkuUAHST53zHzaocUECX2wUK5wFha+6qsdBMVyGyNbCMW4qKIWzEnCyzkbvzH2oB
+	 lq9ruU1QKaHig==
+Date: Wed, 31 Dec 2025 15:21:56 +0100
 From: Frederic Weisbecker <frederic@kernel.org>
-To: Jens Axboe <axboe@kernel.dk>
+To: Chen Ridong <chenridong@huaweicloud.com>
 Cc: LKML <linux-kernel@vger.kernel.org>,
 	Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
 	Andrew Morton <akpm@linux-foundation.org>,
@@ -54,7 +54,7 @@ Cc: LKML <linux-kernel@vger.kernel.org>,
 	Gabriele Monaco <gmonaco@redhat.com>,
 	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
 	Ingo Molnar <mingo@redhat.com>, Jakub Kicinski <kuba@kernel.org>,
-	Johannes Weiner <hannes@cmpxchg.org>,
+	Jens Axboe <axboe@kernel.dk>, Johannes Weiner <hannes@cmpxchg.org>,
 	Lai Jiangshan <jiangshanlai@gmail.com>,
 	Marco Crivellari <marco.crivellari@suse.com>,
 	Michal Hocko <mhocko@suse.com>, Muchun Song <muchun.song@linux.dev>,
@@ -70,12 +70,11 @@ Cc: LKML <linux-kernel@vger.kernel.org>,
 	linux-arm-kernel@lists.infradead.org, linux-block@vger.kernel.org,
 	linux-mm@kvack.org, linux-pci@vger.kernel.org,
 	netdev@vger.kernel.org
-Subject: Re: [PATCH 09/33] block: Protect against concurrent isolated cpuset
- change
-Message-ID: <aVUs-mFYCO2qGmqT@localhost.localdomain>
+Subject: Re: [PATCH 14/33] cpuset: Update HK_TYPE_DOMAIN cpumask from cpuset
+Message-ID: <aVUxhNlKaT0r6F5c@localhost.localdomain>
 References: <20251224134520.33231-1-frederic@kernel.org>
- <20251224134520.33231-10-frederic@kernel.org>
- <0f65c4fe-8b10-403d-b5b6-ed33fc4eb69c@kernel.dk>
+ <20251224134520.33231-15-frederic@kernel.org>
+ <8ecb22ab-d719-44b4-ad40-5af0a185682a@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -85,60 +84,45 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <0f65c4fe-8b10-403d-b5b6-ed33fc4eb69c@kernel.dk>
+In-Reply-To: <8ecb22ab-d719-44b4-ad40-5af0a185682a@huaweicloud.com>
 
-Le Mon, Dec 29, 2025 at 05:37:29PM -0700, Jens Axboe a écrit :
-> On 12/24/25 6:44 AM, Frederic Weisbecker wrote:
-> > The block subsystem prevents running the workqueue to isolated CPUs,
-> > including those defined by cpuset isolated partitions. Since
-> > HK_TYPE_DOMAIN will soon contain both and be subject to runtime
-> > modifications, synchronize against housekeeping using the relevant lock.
-> > 
-> > For full support of cpuset changes, the block subsystem may need to
-> > propagate changes to isolated cpumask through the workqueue in the
-> > future.
-> > 
-> > Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
-> > ---
-> >  block/blk-mq.c | 6 +++++-
-> >  1 file changed, 5 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/block/blk-mq.c b/block/blk-mq.c
-> > index 1978eef95dca..0037af1216f3 100644
-> > --- a/block/blk-mq.c
-> > +++ b/block/blk-mq.c
-> > @@ -4257,12 +4257,16 @@ static void blk_mq_map_swqueue(struct request_queue *q)
-> >  
-> >  		/*
-> >  		 * Rule out isolated CPUs from hctx->cpumask to avoid
-> > -		 * running block kworker on isolated CPUs
-> > +		 * running block kworker on isolated CPUs.
-> > +		 * FIXME: cpuset should propagate further changes to isolated CPUs
-> > +		 * here.
-> >  		 */
-> > +		rcu_read_lock();
-> >  		for_each_cpu(cpu, hctx->cpumask) {
-> >  			if (cpu_is_isolated(cpu))
-> >  				cpumask_clear_cpu(cpu, hctx->cpumask);
-> >  		}
-> > +		rcu_read_unlock();
+Le Fri, Dec 26, 2025 at 04:08:04PM +0800, Chen Ridong a écrit :
+> > +int housekeeping_update(struct cpumask *isol_mask, enum hk_type type)
+> > +{
+> > +	struct cpumask *trial, *old = NULL;
+> > +
+> > +	if (type != HK_TYPE_DOMAIN)
+> > +		return -ENOTSUPP;
+> > +
 > 
-> Want me to just take this one separately and get it out of your hair?
-> Doesn't seem to have any dependencies.
+> Nit:
+> 
+> The current if statement indicates that we only support modifying the cpumask for HK_TYPE_DOMAIN,
+> which makes the type argument seem unnecessary. This seems to be designed for better scalability.
+> However, when a new type needs to be supported in the future, this statement would have to be
+> removed. Also, the use of cpumask_andnot below is not a general operation.
+> 
+> Anyway, looks good to me.
 
-The patch could be applied alone but the rest of the patchset needs it,
-otherwise it may dereference freed memory. So I fear it needs to stay
-within the lot.
+Ok, let's remove the parameter for now.
 
-I appreciate the offer though. But an ack would help, even if I must admit
-this single patch (which doesn't change current behaviour) leaves a
-bitter taste because complete handling of cpuset isolated partition change
-will require more work.
+> > diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
+> > index 475bdab3b8db..653e898a996a 100644
+> > --- a/kernel/sched/sched.h
+> > +++ b/kernel/sched/sched.h
+> > @@ -30,6 +30,7 @@
+> >  #include <linux/context_tracking.h>
+> >  #include <linux/cpufreq.h>
+> >  #include <linux/cpumask_api.h>
+> > +#include <linux/cpuset.h>
+> >  #include <linux/ctype.h>
+> >  #include <linux/file.h>
+> >  #include <linux/fs_api.h>
+> 
+> Reviewed-by: Chen Ridong <chenridong@huawei.com>
 
-Speaking of, is there a way that I missed to define/overwrite the above
-hctx->cpumask on runtime?
+Thanks!
 
-Thanks.
 -- 
 Frederic Weisbecker
 SUSE Labs
