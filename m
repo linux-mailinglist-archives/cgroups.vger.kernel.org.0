@@ -1,44 +1,44 @@
-Return-Path: <cgroups+bounces-12867-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-12868-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
-	by mail.lfdr.de (Postfix) with ESMTPS id 05C67CED7B6
-	for <lists+cgroups@lfdr.de>; Thu, 01 Jan 2026 23:46:39 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2BE13CED7E9
+	for <lists+cgroups@lfdr.de>; Thu, 01 Jan 2026 23:47:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 41AEE30012DF
-	for <lists+cgroups@lfdr.de>; Thu,  1 Jan 2026 22:46:37 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 5AF513021E54
+	for <lists+cgroups@lfdr.de>; Thu,  1 Jan 2026 22:46:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0A5DC3009C8;
-	Thu,  1 Jan 2026 22:16:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6F4673019B2;
+	Thu,  1 Jan 2026 22:16:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RlhVF70R"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Q2Ouwrvp"
 X-Original-To: cgroups@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF3AA3002B9;
-	Thu,  1 Jan 2026 22:16:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 23F0D301702;
+	Thu,  1 Jan 2026 22:16:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767305801; cv=none; b=LnbtI125ufnaofCjZAP0s6l+drJC/9bAW0gDMsaCY6lb9BcN9JvYIOPcP3oyy+gR95HdqBCUE+f1nNFnFGKLd1BX67YyUUr6xl8puEjumVmCvSrcCFbHj+KQuwcTr35ehjTsiD/4bk94+cPbpcUqQtEL9wFzuqVYjN7SlIhUShA=
+	t=1767305810; cv=none; b=nXm2RbfIfepbo+LMmTtRFTt5bn2m5wwZA7aV+7Pq74WLYPzHss0UYwyNvaP6iSyrs6etoCydecGNXcbzQabfaLRefa869OvqZJqAaSYbIVr8x9Q6tAwO0fvwtPN+RuDK1eCTNXdKMlZruT2cb8cEU0t5G+WVZnmXPCD0JyBoRO4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767305801; c=relaxed/simple;
-	bh=tu0Lky1m6SezXDNrHXq/nqZLGO2PMXmZz7CmrPNyvdU=;
+	s=arc-20240116; t=1767305810; c=relaxed/simple;
+	bh=gHNQqhw7VVZ8HDLj3PD4gbaFv3v5iPq7Y3Tkp7jU9lg=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=Uq/hF9Xn4OxXMt+7uAAbPLyOwgPuRKy+ybiGS31/ZVM+M5dm3omGs4rJVn0iSb+78n7toLhA9sBLUPCZLWqbda07l3bFY0L8Nu9Lcaks6heiGd+jSCNhYgm9Cu/h+nIxKTLQHOP+RPGTEy//WdpWURdLbR0RoFik1TGzpKy/wOc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RlhVF70R; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CF2E4C4CEF7;
-	Thu,  1 Jan 2026 22:16:33 +0000 (UTC)
+	 MIME-Version; b=QvlhLjUcr5XB2O9yKEScoyxTwvjB1IYSm+bLor9I6bcab2dOa4RjF1pO6ykrqGnLfzFyvaIYZ4w7YVPPIl/DzQ3K7MNhNGVbG2Y9W80rRELiovdZ4v9Xc8fYGrmcjcOpelBqucs7RNpusrsQ4KZ9KbmjHMnkW+LfY9RgrNhI/Lk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Q2Ouwrvp; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 07E77C4CEF7;
+	Thu,  1 Jan 2026 22:16:41 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1767305801;
-	bh=tu0Lky1m6SezXDNrHXq/nqZLGO2PMXmZz7CmrPNyvdU=;
+	s=k20201202; t=1767305810;
+	bh=gHNQqhw7VVZ8HDLj3PD4gbaFv3v5iPq7Y3Tkp7jU9lg=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=RlhVF70R2AS65IRO8RII+UUUzNJvMlGQuAXpStDftU6+lQxMvG6CvCo0T4ebR1GHD
-	 KlemMADSBO0tvUv0JMxOQi7RwC2e5e9qOd+wDiuvFMg/edsouocn8bnuJoESu1XhRh
-	 QuXEEBx8UVESHmdRJLs0dX2OXFAV2XWAoFGqHwHDWsKOJg9aibmeBgVYXX0v6lMSvB
-	 +HPmgBG6Gck9OZ7A0k1ClGdpKiq0hYFF4Y8QBbkBJBvCp9I5cerain9DStAsMVmlPT
-	 rd7kxh18ZUP43Z72fmFx+NnjMAUkUDL3bNYP7U4ceR5rMhiU1AMUNbQkirgphi0P3e
-	 XtpkPNO/7faLQ==
+	b=Q2Ouwrvp911JzA1XOUT9i1PXT2TImUcJ292gV1k9bzM8Z48Nu5G39zXRCd7XiMHvb
+	 aNik9aNs647YqthJkcEskFhllX1LhrZDWfe+1ctM3768mJsf7gQq5EN55ryfdkRAhP
+	 K4j/qAOHEidsOnpB982JjlxYPZF8/m+O2D2X17v4WKfESJLHnkJmRCUH1Ui6XE0WUe
+	 0PI44xkxibtnf3j+PlSun3PxXSwrPwckMDuOvI/OzSnPUEFQjwd54MLgl8u38AtP22
+	 VgL6pjrPdo2ZmLhJVr+5PxWUfWuG5ABgmW5ZG+AGxAIJ0drQDPLssux7e4m3Oo6Qyk
+	 oMI3wMcafwcfQ==
 From: Frederic Weisbecker <frederic@kernel.org>
 To: LKML <linux-kernel@vger.kernel.org>
 Cc: Frederic Weisbecker <frederic@kernel.org>,
@@ -78,9 +78,9 @@ Cc: Frederic Weisbecker <frederic@kernel.org>,
 	linux-mm@kvack.org,
 	linux-pci@vger.kernel.org,
 	netdev@vger.kernel.org
-Subject: [PATCH 18/33] cpuset: Propagate cpuset isolation update to workqueue through housekeeping
-Date: Thu,  1 Jan 2026 23:13:43 +0100
-Message-ID: <20260101221359.22298-19-frederic@kernel.org>
+Subject: [PATCH 19/33] cpuset: Propagate cpuset isolation update to timers through housekeeping
+Date: Thu,  1 Jan 2026 23:13:44 +0100
+Message-ID: <20260101221359.22298-20-frederic@kernel.org>
 X-Mailer: git-send-email 2.51.1
 In-Reply-To: <20260101221359.22298-1-frederic@kernel.org>
 References: <20260101221359.22298-1-frederic@kernel.org>
@@ -90,143 +90,54 @@ List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
 Until now, cpuset would propagate isolated partition changes to
-workqueues so that unbound workers get properly reaffined.
+timer migration so that unbound timers don't get migrated to isolated
+CPUs.
 
 Since housekeeping now centralizes, synchronize and propagates isolation
 cpumask changes, perform the work from that subsystem for consolidation
 and consistency purposes.
 
-For simplification purpose, the target function is adapted to take the
-new housekeeping mask instead of the isolated mask.
-
-Suggested-by: Tejun Heo <tj@kernel.org>
 Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
-Reviewed-by: Waiman Long <longman@redhat.com>
-Acked-by: Tejun Heo <tj@kernel.org>
 ---
- include/linux/workqueue.h |  2 +-
- init/Kconfig              |  1 +
- kernel/cgroup/cpuset.c    |  9 +++------
- kernel/sched/isolation.c  |  3 +++
- kernel/workqueue.c        | 17 ++++++++++-------
- 5 files changed, 18 insertions(+), 14 deletions(-)
+ kernel/cgroup/cpuset.c   | 3 ---
+ kernel/sched/isolation.c | 4 ++++
+ 2 files changed, 4 insertions(+), 3 deletions(-)
 
-diff --git a/include/linux/workqueue.h b/include/linux/workqueue.h
-index dabc351cc127..a4749f56398f 100644
---- a/include/linux/workqueue.h
-+++ b/include/linux/workqueue.h
-@@ -588,7 +588,7 @@ struct workqueue_attrs *alloc_workqueue_attrs_noprof(void);
- void free_workqueue_attrs(struct workqueue_attrs *attrs);
- int apply_workqueue_attrs(struct workqueue_struct *wq,
- 			  const struct workqueue_attrs *attrs);
--extern int workqueue_unbound_exclude_cpumask(cpumask_var_t cpumask);
-+extern int workqueue_unbound_housekeeping_update(const struct cpumask *hk);
- 
- extern bool queue_work_on(int cpu, struct workqueue_struct *wq,
- 			struct work_struct *work);
-diff --git a/init/Kconfig b/init/Kconfig
-index fa79feb8fe57..518830fb812f 100644
---- a/init/Kconfig
-+++ b/init/Kconfig
-@@ -1254,6 +1254,7 @@ config CPUSETS
- 	bool "Cpuset controller"
- 	depends on SMP
- 	select UNION_FIND
-+	select CPU_ISOLATION
- 	help
- 	  This option will let you create and manage CPUSETs which
- 	  allow dynamically partitioning a system into sets of CPUs and
 diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
-index 1c0475e384dc..ea9925652d99 100644
+index ea9925652d99..12a47922b7ce 100644
 --- a/kernel/cgroup/cpuset.c
 +++ b/kernel/cgroup/cpuset.c
-@@ -1484,15 +1484,12 @@ static void update_isolation_cpumasks(void)
- 
- 	lockdep_assert_cpus_held();
- 
--	ret = workqueue_unbound_exclude_cpumask(isolated_cpus);
--	WARN_ON_ONCE(ret < 0);
--
--	ret = tmigr_isolated_exclude_cpumask(isolated_cpus);
--	WARN_ON_ONCE(ret < 0);
--
+@@ -1487,9 +1487,6 @@ static void update_isolation_cpumasks(void)
  	ret = housekeeping_update(isolated_cpus);
  	WARN_ON_ONCE(ret < 0);
  
-+	ret = tmigr_isolated_exclude_cpumask(isolated_cpus);
-+	WARN_ON_ONCE(ret < 0);
-+
+-	ret = tmigr_isolated_exclude_cpumask(isolated_cpus);
+-	WARN_ON_ONCE(ret < 0);
+-
  	isolated_cpus_updating = false;
  }
  
 diff --git a/kernel/sched/isolation.c b/kernel/sched/isolation.c
-index 5239f556745d..2f4f184cef2b 100644
+index 2f4f184cef2b..61580023cf9d 100644
 --- a/kernel/sched/isolation.c
 +++ b/kernel/sched/isolation.c
-@@ -121,6 +121,7 @@ EXPORT_SYMBOL_GPL(housekeeping_test_cpu);
- int housekeeping_update(struct cpumask *isol_mask)
- {
- 	struct cpumask *trial, *old = NULL;
-+	int err;
- 
- 	trial = kmalloc(cpumask_size(), GFP_KERNEL);
- 	if (!trial)
-@@ -146,6 +147,8 @@ int housekeeping_update(struct cpumask *isol_mask)
+@@ -147,9 +147,13 @@ int housekeeping_update(struct cpumask *isol_mask)
  	pci_probe_flush_workqueue();
  	mem_cgroup_flush_workqueue();
  	vmstat_flush_workqueue();
-+	err = workqueue_unbound_housekeeping_update(housekeeping_cpumask(HK_TYPE_DOMAIN));
-+	WARN_ON_ONCE(err < 0);
++
+ 	err = workqueue_unbound_housekeeping_update(housekeeping_cpumask(HK_TYPE_DOMAIN));
+ 	WARN_ON_ONCE(err < 0);
  
++	err = tmigr_isolated_exclude_cpumask(isol_mask);
++	WARN_ON_ONCE(err < 0);
++
  	kfree(old);
  
-diff --git a/kernel/workqueue.c b/kernel/workqueue.c
-index 253311af47c6..eb5660013222 100644
---- a/kernel/workqueue.c
-+++ b/kernel/workqueue.c
-@@ -6959,13 +6959,16 @@ static int workqueue_apply_unbound_cpumask(const cpumask_var_t unbound_cpumask)
- }
- 
- /**
-- * workqueue_unbound_exclude_cpumask - Exclude given CPUs from unbound cpumask
-- * @exclude_cpumask: the cpumask to be excluded from wq_unbound_cpumask
-+ * workqueue_unbound_housekeeping_update - Propagate housekeeping cpumask update
-+ * @hk: the new housekeeping cpumask
-  *
-- * This function can be called from cpuset code to provide a set of isolated
-- * CPUs that should be excluded from wq_unbound_cpumask.
-+ * Update the unbound workqueue cpumask on top of the new housekeeping cpumask such
-+ * that the effective unbound affinity is the intersection of the new housekeeping
-+ * with the requested affinity set via nohz_full=/isolcpus= or sysfs.
-+ *
-+ * Return: 0 on success and -errno on failure.
-  */
--int workqueue_unbound_exclude_cpumask(cpumask_var_t exclude_cpumask)
-+int workqueue_unbound_housekeeping_update(const struct cpumask *hk)
- {
- 	cpumask_var_t cpumask;
- 	int ret = 0;
-@@ -6981,14 +6984,14 @@ int workqueue_unbound_exclude_cpumask(cpumask_var_t exclude_cpumask)
- 	 * (HK_TYPE_WQ ∩ HK_TYPE_DOMAIN) house keeping mask and rewritten
- 	 * by any subsequent write to workqueue/cpumask sysfs file.
- 	 */
--	if (!cpumask_andnot(cpumask, wq_requested_unbound_cpumask, exclude_cpumask))
-+	if (!cpumask_and(cpumask, wq_requested_unbound_cpumask, hk))
- 		cpumask_copy(cpumask, wq_requested_unbound_cpumask);
- 	if (!cpumask_equal(cpumask, wq_unbound_cpumask))
- 		ret = workqueue_apply_unbound_cpumask(cpumask);
- 
- 	/* Save the current isolated cpumask & export it via sysfs */
- 	if (!ret)
--		cpumask_copy(wq_isolated_cpumask, exclude_cpumask);
-+		cpumask_andnot(wq_isolated_cpumask, cpu_possible_mask, hk);
- 
- 	mutex_unlock(&wq_pool_mutex);
- 	free_cpumask_var(cpumask);
+ 	return 0;
 -- 
 2.51.1
 
