@@ -1,44 +1,44 @@
-Return-Path: <cgroups+bounces-12872-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-12873-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2597ACED7FE
-	for <lists+cgroups@lfdr.de>; Thu, 01 Jan 2026 23:48:41 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id A40A1CED813
+	for <lists+cgroups@lfdr.de>; Thu, 01 Jan 2026 23:49:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 56C123001185
-	for <lists+cgroups@lfdr.de>; Thu,  1 Jan 2026 22:48:40 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id C197F300EA22
+	for <lists+cgroups@lfdr.de>; Thu,  1 Jan 2026 22:46:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AE8DA309DB1;
-	Thu,  1 Jan 2026 22:17:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1841030AD06;
+	Thu,  1 Jan 2026 22:17:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nc0F+mQs"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="g9oq21WU"
 X-Original-To: cgroups@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 61AD23093CA;
-	Thu,  1 Jan 2026 22:17:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C2ECC30ACEB;
+	Thu,  1 Jan 2026 22:17:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767305843; cv=none; b=NOlt0BjSUq4l77FVsl/uk9kUffc8LFoWGzh4Jd5dc/C5y+D2yZaOZqRYkW1HrQsSPYV3rZbu+GfeS3ECY1RpcH+0hWIVSONgmWqxh+C6H8BX48tvFO3EbuTGiduOfCg/TAUU1PMY0MDAbl9veW5EpyFpSwxHEI0xSEFXROzo2Qg=
+	t=1767305850; cv=none; b=C+lQFV9R1zYkcbtbik24ya0wsktyO6DNGpqAB1sZriPdUalMK2kBpi6TrLlzZUEgyWIdHvUibM0rIA5hMpBLGDy2K3e3XfA1rsYS0RqT5rcr62R3XZCwHHPHh9zPaX7Cm3qb0RjpYgkOBg4vKNEXkFM9cpb7gueddTjZDiuBDAY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767305843; c=relaxed/simple;
-	bh=BrnLJAuZFcClCQM0uX4BfjC7tqOUNhvTqWQot+DI0W8=;
+	s=arc-20240116; t=1767305850; c=relaxed/simple;
+	bh=9wXcGCZqYAJGFwoghpjYmoH+2WL5WXQJ0azxL3BmHRY=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=TIEdU+7inpGBeAh0V7psegQn1ZwHJ81o2E6816cHEKP1eg3kmOIOqsfBEfOpIjCyGTBC8XsMYpbXeepdmG8YxicyOBIwqq8LiBZqJL3iqEJVoLvaXT/0OKfO9gF3U8DyR2Syjx9HWgNS6rUe4KNYl79wAsx0nNNxb3CeY33eLmM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nc0F+mQs; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 694CDC4CEF7;
-	Thu,  1 Jan 2026 22:17:14 +0000 (UTC)
+	 MIME-Version; b=dYwQD2/p3Ls3/F9FGJeaRK6HVYAb3YLrD5Yh0z/kXdBIwd5ZBzVzLu7wa+SNJsZm0iw+9QS8YGVPD7872/M+Z2xGf1jMmkvPQsVqiH261WgUzo4Vnvox3M9QbGEWWrngijJELC1fvQGa7jrAx4n2xlCJEFiMFzfJ63/ZiDacwN8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=g9oq21WU; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5BC3FC116D0;
+	Thu,  1 Jan 2026 22:17:22 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1767305841;
-	bh=BrnLJAuZFcClCQM0uX4BfjC7tqOUNhvTqWQot+DI0W8=;
+	s=k20201202; t=1767305850;
+	bh=9wXcGCZqYAJGFwoghpjYmoH+2WL5WXQJ0azxL3BmHRY=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=nc0F+mQsr+cgVMYnh5k6lAsn2xDmg+rX1K4udSpWNHPUAsjLU+AN4EETfnsPESYPZ
-	 xXDcffmnrKhDT/yVw0aQVVpwsfwuQu4uB/6170eI8FK8Avs9N2xCcfrezsGC3yyBBj
-	 HhQrRG4tH0jPrOPbSHUJpaKzAWGJQ2q4iR0dPMKcNRn1vNMk0LhdlT0RZJOWbofHEi
-	 8g4NUiG/Z/j9QuKQCwRydQseX7NAJNIiqExcLqQ+e0/cu0VxKZIee5SD//+2BZ6s6j
-	 qmOvrcIxbRavzymbWowbvrMis0Rew4MXv1vnJOmpW5s9b63Vsk7eW7lX50Eh5pmQIX
-	 97TPVFj1WXptQ==
+	b=g9oq21WUCSC9/OwMtP02aP+LKfuyP4kYwo32TkRpa0R3GEVyItpW2xdt5TsQ8px7w
+	 KOYa0zIReJE24qH3uyrQI69LumAM1w2VW5Muq6an21EFetBZwX+ghiR8MGoLll8pZa
+	 Grf0QhLyYxz+6c5k0RlzzEvY1FgNVf13Dx8LwwDOAUsBeBeestfbDJ/bcBkfyyk46T
+	 B1qvUJ1xauqWykSaNT1jWVtE2ZlOOpKgPYpyqjW2SijootHw/wpYpnEeS0pAVzKwMj
+	 Qd/25qKpu/WlwmyRYUyxMwRydQAHhEqa7Oj+MF5/FNfpGrT+4s9srD9geS0nLM5iM1
+	 8o6BlmW893OEQ==
 From: Frederic Weisbecker <frederic@kernel.org>
 To: LKML <linux-kernel@vger.kernel.org>
 Cc: Frederic Weisbecker <frederic@kernel.org>,
@@ -78,9 +78,9 @@ Cc: Frederic Weisbecker <frederic@kernel.org>,
 	linux-mm@kvack.org,
 	linux-pci@vger.kernel.org,
 	netdev@vger.kernel.org
-Subject: [PATCH 23/33] PCI: Remove superfluous HK_TYPE_WQ check
-Date: Thu,  1 Jan 2026 23:13:48 +0100
-Message-ID: <20260101221359.22298-24-frederic@kernel.org>
+Subject: [PATCH 24/33] kthread: Refine naming of affinity related fields
+Date: Thu,  1 Jan 2026 23:13:49 +0100
+Message-ID: <20260101221359.22298-25-frederic@kernel.org>
 X-Mailer: git-send-email 2.51.1
 In-Reply-To: <20260101221359.22298-1-frederic@kernel.org>
 References: <20260101221359.22298-1-frederic@kernel.org>
@@ -92,74 +92,133 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-It doesn't make sense to use nohz_full without also isolating the
-related CPUs from the domain topology, either through the use of
-isolcpus= or cpuset isolated partitions.
+The kthreads preferred affinity related fields use "hotplug" as the base
+of their naming because the affinity management was initially deemed to
+deal with CPU hotplug.
 
-And now HK_TYPE_DOMAIN includes all kinds of domain isolated CPUs.
+The scope of this role is going to broaden now and also deal with
+cpuset isolated partition updates.
 
-This means that HK_TYPE_KERNEL_NOISE (of which HK_TYPE_WQ is only an
-alias) should always be a subset of HK_TYPE_DOMAIN.
-
-Therefore sane configurations verify:
-
-	HK_TYPE_KERNEL_NOISE | HK_TYPE_DOMAIN == HK_TYPE_DOMAIN
-
-Simplify the PCI probe target election accordingly.
+Switch the naming accordingly.
 
 Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
+Acked-by: Waiman Long <longman@redhat.com>
 ---
- drivers/pci/pci-driver.c | 17 +++--------------
- 1 file changed, 3 insertions(+), 14 deletions(-)
+ kernel/kthread.c | 38 +++++++++++++++++++-------------------
+ 1 file changed, 19 insertions(+), 19 deletions(-)
 
-diff --git a/drivers/pci/pci-driver.c b/drivers/pci/pci-driver.c
-index b902d8adf9a5..a9590601835a 100644
---- a/drivers/pci/pci-driver.c
-+++ b/drivers/pci/pci-driver.c
-@@ -384,16 +384,9 @@ static int pci_call_probe(struct pci_driver *drv, struct pci_dev *dev,
- 	    pci_physfn_is_probed(dev)) {
- 		error = local_pci_probe(&ddi);
- 	} else {
--		cpumask_var_t wq_domain_mask;
- 		struct pci_probe_arg arg = { .ddi = &ddi };
+diff --git a/kernel/kthread.c b/kernel/kthread.c
+index 99a3808d086f..f1e4f1f35cae 100644
+--- a/kernel/kthread.c
++++ b/kernel/kthread.c
+@@ -35,8 +35,8 @@ static DEFINE_SPINLOCK(kthread_create_lock);
+ static LIST_HEAD(kthread_create_list);
+ struct task_struct *kthreadd_task;
  
--		if (!zalloc_cpumask_var(&wq_domain_mask, GFP_KERNEL)) {
--			error = -ENOMEM;
--			goto out;
--		}
--
- 		INIT_WORK_ONSTACK(&arg.work, local_pci_probe_callback);
--
- 		/*
- 		 * The target election and the enqueue of the work must be within
- 		 * the same RCU read side section so that when the workqueue pool
-@@ -402,12 +395,9 @@ static int pci_call_probe(struct pci_driver *drv, struct pci_dev *dev,
- 		 * targets.
- 		 */
- 		rcu_read_lock();
--		cpumask_and(wq_domain_mask,
--			    housekeeping_cpumask(HK_TYPE_WQ),
--			    housekeeping_cpumask(HK_TYPE_DOMAIN));
--
- 		cpu = cpumask_any_and(cpumask_of_node(node),
--				      wq_domain_mask);
-+				      housekeeping_cpumask(HK_TYPE_DOMAIN));
-+
- 		if (cpu < nr_cpu_ids) {
- 			struct workqueue_struct *wq = pci_probe_wq;
+-static LIST_HEAD(kthreads_hotplug);
+-static DEFINE_MUTEX(kthreads_hotplug_lock);
++static LIST_HEAD(kthread_affinity_list);
++static DEFINE_MUTEX(kthread_affinity_lock);
  
-@@ -422,10 +412,9 @@ static int pci_call_probe(struct pci_driver *drv, struct pci_dev *dev,
- 			error = local_pci_probe(&ddi);
+ struct kthread_create_info
+ {
+@@ -69,7 +69,7 @@ struct kthread {
+ 	/* To store the full name if task comm is truncated. */
+ 	char *full_name;
+ 	struct task_struct *task;
+-	struct list_head hotplug_node;
++	struct list_head affinity_node;
+ 	struct cpumask *preferred_affinity;
+ };
+ 
+@@ -128,7 +128,7 @@ bool set_kthread_struct(struct task_struct *p)
+ 
+ 	init_completion(&kthread->exited);
+ 	init_completion(&kthread->parked);
+-	INIT_LIST_HEAD(&kthread->hotplug_node);
++	INIT_LIST_HEAD(&kthread->affinity_node);
+ 	p->vfork_done = &kthread->exited;
+ 
+ 	kthread->task = p;
+@@ -323,10 +323,10 @@ void __noreturn kthread_exit(long result)
+ {
+ 	struct kthread *kthread = to_kthread(current);
+ 	kthread->result = result;
+-	if (!list_empty(&kthread->hotplug_node)) {
+-		mutex_lock(&kthreads_hotplug_lock);
+-		list_del(&kthread->hotplug_node);
+-		mutex_unlock(&kthreads_hotplug_lock);
++	if (!list_empty(&kthread->affinity_node)) {
++		mutex_lock(&kthread_affinity_lock);
++		list_del(&kthread->affinity_node);
++		mutex_unlock(&kthread_affinity_lock);
+ 
+ 		if (kthread->preferred_affinity) {
+ 			kfree(kthread->preferred_affinity);
+@@ -390,9 +390,9 @@ static void kthread_affine_node(void)
+ 			return;
  		}
  
--		free_cpumask_var(wq_domain_mask);
- 		destroy_work_on_stack(&arg.work);
+-		mutex_lock(&kthreads_hotplug_lock);
+-		WARN_ON_ONCE(!list_empty(&kthread->hotplug_node));
+-		list_add_tail(&kthread->hotplug_node, &kthreads_hotplug);
++		mutex_lock(&kthread_affinity_lock);
++		WARN_ON_ONCE(!list_empty(&kthread->affinity_node));
++		list_add_tail(&kthread->affinity_node, &kthread_affinity_list);
+ 		/*
+ 		 * The node cpumask is racy when read from kthread() but:
+ 		 * - a racing CPU going down will either fail on the subsequent
+@@ -402,7 +402,7 @@ static void kthread_affine_node(void)
+ 		 */
+ 		kthread_fetch_affinity(kthread, affinity);
+ 		set_cpus_allowed_ptr(current, affinity);
+-		mutex_unlock(&kthreads_hotplug_lock);
++		mutex_unlock(&kthread_affinity_lock);
+ 
+ 		free_cpumask_var(affinity);
  	}
--out:
-+
- 	dev->is_probed = 0;
- 	cpu_hotplug_enable();
- 	return error;
+@@ -873,16 +873,16 @@ int kthread_affine_preferred(struct task_struct *p, const struct cpumask *mask)
+ 		goto out;
+ 	}
+ 
+-	mutex_lock(&kthreads_hotplug_lock);
++	mutex_lock(&kthread_affinity_lock);
+ 	cpumask_copy(kthread->preferred_affinity, mask);
+-	WARN_ON_ONCE(!list_empty(&kthread->hotplug_node));
+-	list_add_tail(&kthread->hotplug_node, &kthreads_hotplug);
++	WARN_ON_ONCE(!list_empty(&kthread->affinity_node));
++	list_add_tail(&kthread->affinity_node, &kthread_affinity_list);
+ 	kthread_fetch_affinity(kthread, affinity);
+ 
+ 	scoped_guard (raw_spinlock_irqsave, &p->pi_lock)
+ 		set_cpus_allowed_force(p, affinity);
+ 
+-	mutex_unlock(&kthreads_hotplug_lock);
++	mutex_unlock(&kthread_affinity_lock);
+ out:
+ 	free_cpumask_var(affinity);
+ 
+@@ -903,9 +903,9 @@ static int kthreads_online_cpu(unsigned int cpu)
+ 	struct kthread *k;
+ 	int ret;
+ 
+-	guard(mutex)(&kthreads_hotplug_lock);
++	guard(mutex)(&kthread_affinity_lock);
+ 
+-	if (list_empty(&kthreads_hotplug))
++	if (list_empty(&kthread_affinity_list))
+ 		return 0;
+ 
+ 	if (!zalloc_cpumask_var(&affinity, GFP_KERNEL))
+@@ -913,7 +913,7 @@ static int kthreads_online_cpu(unsigned int cpu)
+ 
+ 	ret = 0;
+ 
+-	list_for_each_entry(k, &kthreads_hotplug, hotplug_node) {
++	list_for_each_entry(k, &kthread_affinity_list, affinity_node) {
+ 		if (WARN_ON_ONCE((k->task->flags & PF_NO_SETAFFINITY) ||
+ 				 kthread_is_per_cpu(k->task))) {
+ 			ret = -EINVAL;
 -- 
 2.51.1
 
