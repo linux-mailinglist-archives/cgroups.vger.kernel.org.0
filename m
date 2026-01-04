@@ -1,517 +1,372 @@
-Return-Path: <cgroups+bounces-12887-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-12888-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2871CCF0BBB
-	for <lists+cgroups@lfdr.de>; Sun, 04 Jan 2026 08:54:27 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 40CB4CF0C5A
+	for <lists+cgroups@lfdr.de>; Sun, 04 Jan 2026 09:54:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id 78B233013C07
-	for <lists+cgroups@lfdr.de>; Sun,  4 Jan 2026 07:54:19 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id D7AC9300F310
+	for <lists+cgroups@lfdr.de>; Sun,  4 Jan 2026 08:54:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 71DD12E6116;
-	Sun,  4 Jan 2026 07:54:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C92B279792;
+	Sun,  4 Jan 2026 08:54:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Eas3CMK9"
 X-Original-To: cgroups@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f202.google.com (mail-pl1-f202.google.com [209.85.214.202])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5BC9F1BD035;
-	Sun,  4 Jan 2026 07:54:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AF07F275AFD
+	for <cgroups@vger.kernel.org>; Sun,  4 Jan 2026 08:54:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767513252; cv=none; b=VQfD0OavRq800+waoWD58LO2CwKS10wIr7w0Q/GMvy+qCgmi15me2ThYTpU6kwutvL/yY699V3DUCuCc9zACIGyBGjbng/bY3CNhI4tEada7QJ3OkMcoxP8wuKrp3PASN7SSUF6157p5rhXHUj2v94AJUpxsXNysPJuvBgYLNDE=
+	t=1767516883; cv=none; b=OgnphbkAthKQSaJ4SbGXgRxnluVlTl/RrVpRW4D/CpYOpue538wDglW2H8mQIrX+oS80Rzmczj6ycwB+0ozXOo9fUTKMDznFPPrQGeuSQKtZkYVibFE2BUg1or9PIDBEL/xNoIqhpVa07s8FyuVjLl9NUKZllPqso+RjabzLjZ0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767513252; c=relaxed/simple;
-	bh=bzCmtIphZ5eygiEYq24gBP/+sbN8IUylVWfButmuHBk=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=qB6I5+g1qN4zcs/t8K35p3r1j5jmm1qtDnts9u5VtGGhUzbZBmBhxGj4mSvhsb5sGTGaN/o91Krq2TSXWEdityxOdIvjLPi1DmztUvLe99dq1d1qyo8FMzKNfSfJ6T9AVwVNIDmOKJ1PV/IdYhNk8OkkxcRsKZj2/bJyWWxTOX8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.170])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTPS id 4dkV6D4qG3zYQtGW;
-	Sun,  4 Jan 2026 15:53:08 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.75])
-	by mail.maildlp.com (Postfix) with ESMTP id 778FD4056C;
-	Sun,  4 Jan 2026 15:54:05 +0800 (CST)
-Received: from [10.67.111.176] (unknown [10.67.111.176])
-	by APP2 (Coremail) with SMTP id Syh0CgAnQH+YHFppzx40Cg--.47879S2;
-	Sun, 04 Jan 2026 15:54:01 +0800 (CST)
-Message-ID: <f561b413-7fdc-45d9-9d89-8bd55e960d51@huaweicloud.com>
-Date: Sun, 4 Jan 2026 15:53:59 +0800
+	s=arc-20240116; t=1767516883; c=relaxed/simple;
+	bh=f2sLCcb9RyE1po0dKUyLcsrgCF3v01QGNQgcKfzcvLg=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=WyyF9oKa6q+xTbxFOmIHepJhs80Me6e5qC6aMGqYKgeaXgNcj90GzHu/lzjqJfMSeciIbrhfdmbzAI8xtVJn0BLndeRmeGPYS2GUTMpow2Qe6OR6WkAahKQfzC5Qsh3BFRxZiP5H0UHenoM9Tp1YFl//hbHGHVi9eS2LoigcL7E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--bingjiao.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Eas3CMK9; arc=none smtp.client-ip=209.85.214.202
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--bingjiao.bounces.google.com
+Received: by mail-pl1-f202.google.com with SMTP id d9443c01a7336-2a0bb1192cbso270746845ad.1
+        for <cgroups@vger.kernel.org>; Sun, 04 Jan 2026 00:54:41 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1767516881; x=1768121681; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=y8elJMWPjMs0XkG/FEkWBkLMbCQyfYnBpuHl89Qv1Qc=;
+        b=Eas3CMK971FUESAPnmV3bDCkHbtPZ01WhPtt6mTckS7op+6NP1LvX+4SP1Ymt9mWJu
+         HUYifuNKQ6Q4adOR0Kifxgs+WT0U10qjloauPEdzWVatmcudE7O53gCeQzfwJ/7kfvsx
+         AitTI6EKIEJBeDuWbe7mkkkix5nIj1eXsBhThxRtLDDFUSFtbpUaaZgA547oDVFt2zSX
+         V9+JUqfq2EjR3VvX+R3yMVNBEyH5wgkvA4PD8BSWMl5i30nQyIWRs7TAkeUbo2UQMw2l
+         Rn/qJEORkPDHTiaHPP2FL8SjD0YBC7/aK1XoG8rffZ77dUJaCHBBsm7sR80UHAFxj2aH
+         vguw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1767516881; x=1768121681;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=y8elJMWPjMs0XkG/FEkWBkLMbCQyfYnBpuHl89Qv1Qc=;
+        b=L2YCLij92RRJAXMUshP6+XJi0JYZEl326J7Hwu+UCVcmxK5d0Qoey1X85A4RiUiG1m
+         ano7f5ArPne31gsEcSEgsSxG9hyI9uQgoDF3zoQCThTOvB4/DyejIkivWpMpzFGNPgzz
+         12fDO20fTifRgD8sgHEBGWT4FEj4al1vEHdH9QuEzPj4ANpfXK3PVYB5+rv/ML/n0SVH
+         1cjblqSiIDQCMB2t1R5DlxYg/xj97DmixZh9e2GEJ+F9y+tEPurpEsgvjQ++GPjcqAVt
+         HHvC/qH3f39YjZ0qntIeOxvmzH2z7pEf+DU2C2Tblat+si59ML3uM3zwtpT1OnLLURuF
+         KRKg==
+X-Forwarded-Encrypted: i=1; AJvYcCUlSvCnNsReoEJocKWxzi0YhTX141sKDrpXniETTVmyYR488RfMlaSziAqnV+wtIALtpWCZscSd@vger.kernel.org
+X-Gm-Message-State: AOJu0YyrM2seOq0CWMr1j40rDONw/MiTp9j1XSQHqYkv4juz9+owFZK8
+	QfwZ2xhwC/0HodoJ2T4Plh2FVQx9rorfSm7PHUE0sRMrNUu6KiEip4WgynThYw0F0b7wdiY890R
+	NrIog+5rCyT3ZzQ==
+X-Google-Smtp-Source: AGHT+IFkkIq48VPz0jCSFUEY3kHRMnJcthmvmoml7S8VPslj3aDivZGf4nrCSTp69Tv0P+luUh/xpxWXxsZCKw==
+X-Received: from dlaj14.prod.google.com ([2002:a05:701b:280e:b0:11f:464f:4c69])
+ (user=bingjiao job=prod-delivery.src-stubby-dispatcher) by
+ 2002:a05:7022:258d:b0:11d:f464:5c97 with SMTP id a92af1059eb24-1217230621bmr41689090c88.39.1767516880809;
+ Sun, 04 Jan 2026 00:54:40 -0800 (PST)
+Date: Sun,  4 Jan 2026 08:54:05 +0000
+In-Reply-To: <20251223212032.665731-1-bingjiao@google.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [cgroup/for-6.20 PATCH v2 4/4] cgroup/cpuset: Don't invalidate
- sibling partitions on cpuset.cpus conflict
-To: Waiman Long <longman@redhat.com>, Tejun Heo <tj@kernel.org>,
- Johannes Weiner <hannes@cmpxchg.org>, =?UTF-8?Q?Michal_Koutn=C3=BD?=
- <mkoutny@suse.com>, Jonathan Corbet <corbet@lwn.net>,
- Shuah Khan <shuah@kernel.org>
-Cc: linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
- linux-kselftest@vger.kernel.org, linux-doc@vger.kernel.org,
- Sun Shaojie <sunshaojie@kylinos.cn>
-References: <20260101191558.434446-1-longman@redhat.com>
- <20260101191558.434446-5-longman@redhat.com>
-Content-Language: en-US
-From: Chen Ridong <chenridong@huaweicloud.com>
-In-Reply-To: <20260101191558.434446-5-longman@redhat.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID:Syh0CgAnQH+YHFppzx40Cg--.47879S2
-X-Coremail-Antispam: 1UD129KBjvAXoW3uFWUGry8JrykAr4kKw1DAwb_yoW8Cw4DZo
-	WfJw4xAwn5X3y7XF4kAwnFkrWvg397ta47tw1jqr1DCFy5Ar12k3WUKw1vvFy3XFs5tr4D
-	XF9av3Z5ury2v3WDn29KB7ZKAUJUUUU8529EdanIXcx71UUUUU7v73VFW2AGmfu7bjvjm3
-	AaLaJ3UjIYCTnIWjp_UUUY77kC6x804xWl14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK
-	8VAvwI8IcIk0rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4
-	AK67xGY2AK021l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF
-	7I0E14v26F4j6r4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxkF7I0En4kS
-	14v26r1q6r43MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I
-	8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8
-	ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x
-	0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_
-	Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU1
-	7KsUUUUUU==
-X-CM-SenderInfo: hfkh02xlgr0w46kxt4xhlfz01xgou0bp/
+Mime-Version: 1.0
+References: <20251223212032.665731-1-bingjiao@google.com>
+X-Mailer: git-send-email 2.52.0.358.g0dd7633a29-goog
+Message-ID: <20260104085439.4076810-1-bingjiao@google.com>
+Subject: [PATCH v4] mm/vmscan: fix demotion targets checks in reclaim/demotion
+From: Bing Jiao <bingjiao@google.com>
+To: linux-mm@kvack.org
+Cc: linux-kernel@vger.kernel.org, akpm@linux-foundation.org, gourry@gourry.net, 
+	longman@redhat.com, hannes@cmpxchg.org, mhocko@kernel.org, 
+	roman.gushchin@linux.dev, shakeel.butt@linux.dev, muchun.song@linux.dev, 
+	tj@kernel.org, mkoutny@suse.com, david@kernel.org, zhengqi.arch@bytedance.com, 
+	lorenzo.stoakes@oracle.com, axelrasmussen@google.com, 
+	chenridong@huaweicloud.com, yuanchu@google.com, weixugc@google.com, 
+	cgroups@vger.kernel.org, bingjiao@google.com
+Content-Type: text/plain; charset="UTF-8"
 
+Fix two bugs in demote_folio_list() and can_demote() due to incorrect
+demotion target checks in reclaim/demotion.
 
+Commit 7d709f49babc ("vmscan,cgroup: apply mems_effective to reclaim")
+introduces the cpuset.mems_effective check and applies it to
+can_demote(). However:
 
-On 2026/1/2 3:15, Waiman Long wrote:
-> Currently, when setting a cpuset's cpuset.cpus to a value that conflicts
-> with the cpuset.cpus/cpuset.cpus.exclusive of a sibling partition,
-> the sibling's partition state becomes invalid. This is overly harsh and
-> is probably not necessary.
-> 
-> The cpuset.cpus.exclusive control file, if set, will override the
-> cpuset.cpus of the same cpuset when creating a cpuset partition.
-> So cpuset.cpus has less priority than cpuset.cpus.exclusive in setting up
-> a partition.  However, it cannot override a conflicting cpuset.cpus file
-> in a sibling cpuset and the partition creation process will fail. This
-> is inconsistent.  That will also make using cpuset.cpus.exclusive less
-> valuable as a tool to set up cpuset partitions as the users have to
-> check if such a cpuset.cpus conflict exists or not.
-> 
-> Fix these problems by strictly adhering to the setting of the
-> following control files in descending order of priority when setting
-> up a partition.
-> 
->  1. cpuset.cpus.exclusive.effective of a valid partition
->  2. cpuset.cpus.exclusive
->  3. cpuset.cpus
-> 
+  1. It does not apply this check in demote_folio_list(), which leads
+     to situations where pages are demoted to nodes that are
+     explicitly excluded from the task's cpuset.mems.
 
-Hi, Longman,
+  2. It checks only the nodes in the immediate next demotion hierarchy
+     and does not check all allowed demotion targets in can_demote().
+     This can cause pages to never be demoted if the nodes in the next
+     demotion hierarchy are not set in mems_effective.
 
-This description is a bit confusing to me. cpuset.cpus.exclusive and cpuset.cpus are user-settable
-control files, while cpuset.cpus.exclusive.effective is a read-only file that reflects the result of
-applying cpuset.cpus.exclusive and cpuset.cpus after conflict resolution.
+These bugs break resource isolation provided by cpuset.mems.
+This is visible from userspace because pages can either fail to be
+demoted entirely or are demoted to nodes that are not allowed
+in multi-tier memory systems.
 
-A partition can be established as long as cpuset.cpus.exclusive.effective is not empty. I believe
-cpuset.cpus.exclusive.effective represents the final effective CPU mask used for the partition, so
-it shouldn't be compared in priority with cpuset.cpus.exclusive or cpuset.cpus. Rather, the latter
-two are inputs that determine the former.
+To address these bugs, update cpuset_node_allowed() and
+mem_cgroup_node_allowed() to return effective_mems, allowing directly
+logic-and operation against demotion targets. Also update can_demote()
+and demote_folio_list() accordingly.
 
-> So once a cpuset.cpus.exclusive is set without failure, it will
-> always be allowed to form a valid partition as long as at least one
-> CPU can be granted from its parent irrespective of the state of the
-> siblings' cpuset.cpus values. Of course, setting cpuset.cpus.exclusive
-> will fail if it conflicts with the cpuset.cpus.exclusive or the
-> cpuset.cpus.exclusive.effective value of a sibling.
-> 
-> Partition can still be created by setting only cpuset.cpus without
-> setting cpuset.cpus.exclusive. However, any conflicting CPUs in sibling's
-> cpuset.cpus.exclusive.effective and cpuset.cpus.exclusive values will
-> be removed from its cpuset.cpus.exclusive.effective as long as there
-> is still one or more CPUs left and can be granted from its parent. This
-> CPU stripping is currently done in rm_siblings_excl_cpus().
-> 
-> The new code will now try its best to enable the creation of new
-> partitions with only cpuset.cpus set without invalidating existing ones.
-> However it is not guaranteed that all the CPUs requested in cpuset.cpus
-> will be used in the new partition even when all these CPUs can be
-> granted from the parent.
-> 
-> This is similar to the fact that cpuset.cpus.effective may not be
-> able to include all the CPUs requested in cpuset.cpus. In this case,
-> the parent may not able to grant all the exclusive CPUs requested in
-> cpuset.cpus to cpuset.cpus.exclusive.effective if some of them have
-> already been granted to other partitions earlier.
-> 
-> With the creation of multiple sibling partitions by setting
-> only cpuset.cpus, this does have the side effect that their exact
-> cpuset.cpus.exclusive.effective settings will depend on the order of
-> partition creation if there are conflicts. Due to the exclusive nature
-> of the CPUs in a partition, it is not easy to make it fair other than
-> the old behavior of invalidating all the conflicting partitions.
-> 
-> For example,
->   # echo "0-2" > A1/cpuset.cpus
->   # echo "root" > A1/cpuset.cpus.partition
->   # echo A1/cpuset.cpus.partition
->   root
->   # echo A1/cpuset.cpus.exclusive.effective
->   0-2
->   # echo "2-4" > B1/cpuset.cpus
->   # echo "root" > B1/cpuset.cpus.partition
->   # echo B1/cpuset.cpus.partition
->   root
->   # echo B1/cpuset.cpus.exclusive.effective
->   3-4
->   # echo B1/cpuset.cpus.effective
->   3-4
-> 
-> For users who want to be sure that they can get most of the CPUs they
-> want, cpuset.cpus.exclusive should be used instead if they can set
-> it successfully without failure. Setting cpuset.cpus.exclusive will
-> guarantee that sibling conflicts from then onward is no longer possible.
-> 
-> To make this change, we have to separate out the is_cpu_exclusive()
-> check in cpus_excl_conflict() into a cgroup v1 only
-> cpuset1_cpus_excl_conflict() helper. The cpus_allowed_validate_change()
-> helper is now no longer needed and can be removed.
-> 
-> Some existing tests in test_cpuset_prs.sh are updated and new ones are
-> added to reflect the new behavior. The cgroup-v2.rst doc file is also
-> updated the clarify what exclusive CPUs will be used when a partition
-> is created.
-> 
-> Reported-by: Sun Shaojie <sunshaojie@kylinos.cn>
-> Closes: https://lore.kernel.org/lkml/20251117015708.977585-1-sunshaojie@kylinos.cn/
-> Signed-off-by: Waiman Long <longman@redhat.com>
-> ---
->  Documentation/admin-guide/cgroup-v2.rst       | 32 +++++---
->  kernel/cgroup/cpuset-internal.h               |  3 +
->  kernel/cgroup/cpuset-v1.c                     | 19 +++++
->  kernel/cgroup/cpuset.c                        | 81 +++++++------------
->  .../selftests/cgroup/test_cpuset_prs.sh       | 26 ++++--
->  5 files changed, 90 insertions(+), 71 deletions(-)
-> 
-> diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admin-guide/cgroup-v2.rst
-> index 510df2461aff..a3446db96cea 100644
-> --- a/Documentation/admin-guide/cgroup-v2.rst
-> +++ b/Documentation/admin-guide/cgroup-v2.rst
-> @@ -2584,9 +2584,9 @@ Cpuset Interface Files
->  	of this file will always be a subset of its parent's
->  	"cpuset.cpus.exclusive.effective" if its parent is not the root
->  	cgroup.  It will also be a subset of "cpuset.cpus.exclusive"
-> -	if it is set.  If "cpuset.cpus.exclusive" is not set, it is
-> -	treated to have an implicit value of "cpuset.cpus" in the
-> -	formation of local partition.
-> +	if it is set.  This file should only be non-empty if either
-> +	"cpuset.cpus.exclusive" is set or when the current cpuset is
-> +	a valid partition root.
->  
->    cpuset.cpus.isolated
->  	A read-only and root cgroup only multiple values file.
-> @@ -2618,13 +2618,22 @@ Cpuset Interface Files
->  	There are two types of partitions - local and remote.  A local
->  	partition is one whose parent cgroup is also a valid partition
->  	root.  A remote partition is one whose parent cgroup is not a
-> -	valid partition root itself.  Writing to "cpuset.cpus.exclusive"
-> -	is optional for the creation of a local partition as its
-> -	"cpuset.cpus.exclusive" file will assume an implicit value that
-> -	is the same as "cpuset.cpus" if it is not set.	Writing the
-> -	proper "cpuset.cpus.exclusive" values down the cgroup hierarchy
-> -	before the target partition root is mandatory for the creation
-> -	of a remote partition.
-> +	valid partition root itself.
-> +
-> +	Writing to "cpuset.cpus.exclusive" is optional for the creation
-> +	of a local partition as its "cpuset.cpus.exclusive" file will
-> +	assume an implicit value that is the same as "cpuset.cpus" if it
-> +	is not set.  Writing the proper "cpuset.cpus.exclusive" values
-> +	down the cgroup hierarchy before the target partition root is
-> +	mandatory for the creation of a remote partition.
-> +
-> +	Not all the CPUs requested in "cpuset.cpus.exclusive" can be
-> +	used to form a new partition.  Only those that were present
-> +	in its parent's "cpuset.cpus.exclusive.effective" control
-> +	file can be used.  For partitions created without setting
-> +	"cpuset.cpus.exclusive", exclusive CPUs specified in sibling's
-> +	"cpuset.cpus.exclusive" or "cpuset.cpus.exclusive.effective"
-> +	also cannot be used.
->  
->  	Currently, a remote partition cannot be created under a local
->  	partition.  All the ancestors of a remote partition root except
-> @@ -2632,6 +2641,9 @@ Cpuset Interface Files
->  
->  	The root cgroup is always a partition root and its state cannot
->  	be changed.  All other non-root cgroups start out as "member".
-> +	Even though the "cpuset.cpus.exclusive*" control files are not
-> +	present in the root cgroup, they are implicitly the same as
-> +	"cpuset.cpus".
->  
->  	When set to "root", the current cgroup is the root of a new
->  	partition or scheduling domain.  The set of exclusive CPUs is
-> diff --git a/kernel/cgroup/cpuset-internal.h b/kernel/cgroup/cpuset-internal.h
-> index e718a4f54360..e8e2683cb067 100644
-> --- a/kernel/cgroup/cpuset-internal.h
-> +++ b/kernel/cgroup/cpuset-internal.h
-> @@ -312,6 +312,7 @@ void cpuset1_hotplug_update_tasks(struct cpuset *cs,
->  			    struct cpumask *new_cpus, nodemask_t *new_mems,
->  			    bool cpus_updated, bool mems_updated);
->  int cpuset1_validate_change(struct cpuset *cur, struct cpuset *trial);
-> +bool cpuset1_cpus_excl_conflict(struct cpuset *cs1, struct cpuset *cs2);
->  void cpuset1_init(struct cpuset *cs);
->  void cpuset1_online_css(struct cgroup_subsys_state *css);
->  int cpuset1_generate_sched_domains(cpumask_var_t **domains,
-> @@ -326,6 +327,8 @@ static inline void cpuset1_hotplug_update_tasks(struct cpuset *cs,
->  			    bool cpus_updated, bool mems_updated) {}
->  static inline int cpuset1_validate_change(struct cpuset *cur,
->  				struct cpuset *trial) { return 0; }
-> +static inline bool cpuset1_cpus_excl_conflict(struct cpuset *cs1,
-> +					struct cpuset *cs2) { return false; }
->  static inline void cpuset1_init(struct cpuset *cs) {}
->  static inline void cpuset1_online_css(struct cgroup_subsys_state *css) {}
->  static inline int cpuset1_generate_sched_domains(cpumask_var_t **domains,
-> diff --git a/kernel/cgroup/cpuset-v1.c b/kernel/cgroup/cpuset-v1.c
-> index ecfea7800f0d..04124c38a774 100644
-> --- a/kernel/cgroup/cpuset-v1.c
-> +++ b/kernel/cgroup/cpuset-v1.c
-> @@ -373,6 +373,25 @@ int cpuset1_validate_change(struct cpuset *cur, struct cpuset *trial)
->  	return ret;
->  }
->  
-> +/*
-> + * cpuset1_cpus_excl_conflict() - Check if two cpusets have exclusive CPU conflicts
-> + *                                to legacy (v1)
-> + * @cs1: first cpuset to check
-> + * @cs2: second cpuset to check
-> + *
-> + * Returns: true if CPU exclusivity conflict exists, false otherwise
-> + *
-> + * If either cpuset is CPU exclusive, their allowed CPUs cannot intersect.
-> + */
-> +bool cpuset1_cpus_excl_conflict(struct cpuset *cs1, struct cpuset *cs2)
-> +{
-> +	if (is_cpu_exclusive(cs1) || is_cpu_exclusive(cs2))
-> +		return cpumask_intersects(cs1->cpus_allowed,
-> +					  cs2->cpus_allowed);
-> +
-> +	return false;
-> +}
-> +
->  #ifdef CONFIG_PROC_PID_CPUSET
->  /*
->   * proc_cpuset_show()
-> diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
-> index 30e31fac4fe3..c091b63dd3c9 100644
-> --- a/kernel/cgroup/cpuset.c
-> +++ b/kernel/cgroup/cpuset.c
-> @@ -129,6 +129,18 @@ static bool force_sd_rebuild;
->   *  For simplicity, a local partition can be created under a local or remote
->   *  partition but a remote partition cannot have any partition root in its
->   *  ancestor chain except the cgroup root.
-> + *
-> + *  A valid partition can be formed by setting either cpus_allowed or
-> + *  exclusive_cpus. If there are exclusive CPU conflicts, the conflicting
-> + *  CPUs will be assigned to the effective_xcpus of the partition according
-> + *  to the appearance of those CPUs in cpumasks (in descending order of
-> + *  priority).
-> + *  1. effective_xcpus of a valid partition
-> + *  2. exclusive_cpus
-> + *  3. cpus_allowed
-> + *
-> + *  exclusive_cpus should be used for setting up partition if the users want
-> + *  to get as many CPUs as possible.
->   */
+Bug 1 reproduction:
+  Assume a system with 4 nodes, where nodes 0-1 are top-tier and
+  nodes 2-3 are far-tier memory. All nodes have equal capacity.
 
-Ditto
+  Test script:
+    echo 1 > /sys/kernel/mm/numa/demotion_enabled
+    mkdir /sys/fs/cgroup/test
+    echo +cpuset > /sys/fs/cgroup/cgroup.subtree_control
+    echo "0-2" > /sys/fs/cgroup/test/cpuset.mems
+    echo $$ > /sys/fs/cgroup/test/cgroup.procs
+    swapoff -a
+    # Expectation: Should respect node 0-2 limit.
+    # Observation: Node 3 shows significant allocation (MemFree drops)
+    stress-ng --oomable --vm 1 --vm-bytes 150% --mbind 0,1
 
->  #define PRS_MEMBER		0
->  #define PRS_ROOT		1
-> @@ -616,27 +628,25 @@ static inline bool cpusets_are_exclusive(struct cpuset *cs1, struct cpuset *cs2)
->   * Returns: true if CPU exclusivity conflict exists, false otherwise
->   *
->   * Conflict detection rules:
-> - * 1. If either cpuset is CPU exclusive, they must be mutually exclusive
-> - * 2. exclusive_cpus masks cannot intersect between cpusets
-> - * 3. The allowed CPUs of a sibling cpuset cannot be a subset of the new exclusive CPUs
-> + *  o cgroup v1
-> + *    See cpuset1_cpus_excl_conflict()
-> + *  o cgroup v2
-> + *    - The exclusive_cpus values cannot overlap.
-> + *    - New exclusive_cpus cannot be a superset of a sibling's cpus_allowed.
->   */
->  static inline bool cpus_excl_conflict(struct cpuset *trial, struct cpuset *sibling,
->  				      bool xcpus_changed)
->  {
-> -	/* If either cpuset is exclusive, check if they are mutually exclusive */
-> -	if (is_cpu_exclusive(trial) || is_cpu_exclusive(sibling))
-> -		return !cpusets_are_exclusive(trial, sibling);
-> -
-> -	/* Exclusive_cpus cannot intersect */
-> -	if (cpumask_intersects(trial->exclusive_cpus, sibling->exclusive_cpus))
-> -		return true;
-> +	if (!cpuset_v2())
-> +		return cpuset1_cpus_excl_conflict(trial, sibling);
->  
->  	/* The cpus_allowed of a sibling cpuset cannot be a subset of the new exclusive_cpus */
->  	if (xcpus_changed && !cpumask_empty(sibling->cpus_allowed) &&
->  	    cpumask_subset(sibling->cpus_allowed, trial->exclusive_cpus))
->  		return true;
->  
-> -	return false;
-> +	/* Exclusive_cpus cannot intersect */
-> +	return cpumask_intersects(trial->exclusive_cpus, sibling->exclusive_cpus);
->  }
->  
->  static inline bool mems_excl_conflict(struct cpuset *cs1, struct cpuset *cs2)
-> @@ -2312,43 +2322,6 @@ static enum prs_errcode validate_partition(struct cpuset *cs, struct cpuset *tri
->  	return PERR_NONE;
->  }
->  
-> -static int cpus_allowed_validate_change(struct cpuset *cs, struct cpuset *trialcs,
-> -					struct tmpmasks *tmp)
-> -{
-> -	int retval;
-> -	struct cpuset *parent = parent_cs(cs);
-> -
-> -	retval = validate_change(cs, trialcs);
-> -
-> -	if ((retval == -EINVAL) && cpuset_v2()) {
-> -		struct cgroup_subsys_state *css;
-> -		struct cpuset *cp;
-> -
-> -		/*
-> -		 * The -EINVAL error code indicates that partition sibling
-> -		 * CPU exclusivity rule has been violated. We still allow
-> -		 * the cpumask change to proceed while invalidating the
-> -		 * partition. However, any conflicting sibling partitions
-> -		 * have to be marked as invalid too.
-> -		 */
-> -		trialcs->prs_err = PERR_NOTEXCL;
-> -		rcu_read_lock();
-> -		cpuset_for_each_child(cp, css, parent) {
-> -			struct cpumask *xcpus = user_xcpus(trialcs);
-> -
-> -			if (is_partition_valid(cp) &&
-> -			    cpumask_intersects(xcpus, cp->effective_xcpus)) {
-> -				rcu_read_unlock();
-> -				update_parent_effective_cpumask(cp, partcmd_invalidate, NULL, tmp);
-> -				rcu_read_lock();
-> -			}
-> -		}
-> -		rcu_read_unlock();
-> -		retval = 0;
-> -	}
-> -	return retval;
-> -}
-> -
->  /**
->   * partition_cpus_change - Handle partition state changes due to CPU mask updates
->   * @cs: The target cpuset being modified
-> @@ -2408,15 +2381,15 @@ static int update_cpumask(struct cpuset *cs, struct cpuset *trialcs,
->  	if (cpumask_equal(cs->cpus_allowed, trialcs->cpus_allowed))
->  		return 0;
->  
-> -	if (alloc_tmpmasks(&tmp))
-> -		return -ENOMEM;
-> -
->  	compute_trialcs_excpus(trialcs, cs);
->  	trialcs->prs_err = PERR_NONE;
->  
-> -	retval = cpus_allowed_validate_change(cs, trialcs, &tmp);
-> +	retval = validate_change(cs, trialcs);
->  	if (retval < 0)
-> -		goto out_free;
-> +		return retval;
-> +
-> +	if (alloc_tmpmasks(&tmp))
-> +		return -ENOMEM;
->  
->  	/*
->  	 * Check all the descendants in update_cpumasks_hier() if
-> @@ -2439,7 +2412,7 @@ static int update_cpumask(struct cpuset *cs, struct cpuset *trialcs,
->  	/* Update CS_SCHED_LOAD_BALANCE and/or sched_domains, if necessary */
->  	if (cs->partition_root_state)
->  		update_partition_sd_lb(cs, old_prs);
-> -out_free:
-> +
->  	free_tmpmasks(&tmp);
->  	return retval;
->  }
-> diff --git a/tools/testing/selftests/cgroup/test_cpuset_prs.sh b/tools/testing/selftests/cgroup/test_cpuset_prs.sh
-> index a17256d9f88a..ff4540b0490e 100755
-> --- a/tools/testing/selftests/cgroup/test_cpuset_prs.sh
-> +++ b/tools/testing/selftests/cgroup/test_cpuset_prs.sh
-> @@ -269,7 +269,7 @@ TEST_MATRIX=(
->  	" C0-3:S+ C1-3:S+ C2-3     .    X2-3   X3:P2    .      .     0 A1:0-2|A2:3|A3:3 A1:P0|A2:P2 3"
->  	" C0-3:S+ C1-3:S+ C2-3     .    X2-3   X2-3  X2-3:P2   .     0 A1:0-1|A2:1|A3:2-3 A1:P0|A3:P2 2-3"
->  	" C0-3:S+ C1-3:S+ C2-3     .    X2-3   X2-3 X2-3:P2:C3 .     0 A1:0-1|A2:1|A3:2-3 A1:P0|A3:P2 2-3"
-> -	" C0-3:S+ C1-3:S+ C2-3   C2-3     .      .      .      P2    0 A1:0-3|A2:1-3|A3:2-3|B1:2-3 A1:P0|A3:P0|B1:P-2"
-> +	" C0-3:S+ C1-3:S+ C2-3   C2-3     .      .      .      P2    0 A1:0-1|A2:1|A3:1|B1:2-3 A1:P0|A3:P0|B1:P2"
->  	" C0-3:S+ C1-3:S+ C2-3   C4-5     .      .      .      P2    0 B1:4-5 B1:P2 4-5"
->  	" C0-3:S+ C1-3:S+ C2-3    C4    X2-3   X2-3  X2-3:P2   P2    0 A3:2-3|B1:4 A3:P2|B1:P2 2-4"
->  	" C0-3:S+ C1-3:S+ C2-3    C4    X2-3   X2-3 X2-3:P2:C1-3 P2  0 A3:2-3|B1:4 A3:P2|B1:P2 2-4"
-> @@ -318,7 +318,7 @@ TEST_MATRIX=(
->  	# Invalid to valid local partition direct transition tests
->  	" C1-3:S+:P2 X4:P2  .      .      .      .      .      .     0 A1:1-3|XA1:1-3|A2:1-3:XA2: A1:P2|A2:P-2 1-3"
->  	" C1-3:S+:P2 X4:P2  .      .      .    X3:P2    .      .     0 A1:1-2|XA1:1-3|A2:3:XA2:3 A1:P2|A2:P2 1-3"
-> -	"  C0-3:P2   .      .    C4-6   C0-4     .      .      .     0 A1:0-4|B1:4-6 A1:P-2|B1:P0"
-> +	"  C0-3:P2   .      .    C4-6   C0-4     .      .      .     0 A1:0-4|B1:5-6 A1:P2|B1:P0"
->  	"  C0-3:P2   .      .    C4-6 C0-4:C0-3  .      .      .     0 A1:0-3|B1:4-6 A1:P2|B1:P0 0-3"
->  
->  	# Local partition invalidation tests
-> @@ -388,10 +388,10 @@ TEST_MATRIX=(
->  	"  C0-1:S+  C1      .    C2-3     .      P2     .      .     0 A1:0-1|A2:1 A1:P0|A2:P-2"
->  	"  C0-1:S+ C1:P2    .    C2-3     P1     .      .      .     0 A1:0|A2:1 A1:P1|A2:P2 0-1|1"
->  
-> -	# A non-exclusive cpuset.cpus change will invalidate partition and its siblings
-> -	"  C0-1:P1   .      .    C2-3   C0-2     .      .      .     0 A1:0-2|B1:2-3 A1:P-1|B1:P0"
-> -	"  C0-1:P1   .      .  P1:C2-3  C0-2     .      .      .     0 A1:0-2|B1:2-3 A1:P-1|B1:P-1"
-> -	"   C0-1     .      .  P1:C2-3  C0-2     .      .      .     0 A1:0-2|B1:2-3 A1:P0|B1:P-1"
-> +	# A non-exclusive cpuset.cpus change will not invalidate its siblings partition.
-> +	"  C0-1:P1   .      .    C2-3   C0-2     .      .      .     0 A1:0-2|B1:3 A1:P1|B1:P0"
-> +	"  C0-1:P1   .      .  P1:C2-3  C0-2     .      .      .     0 A1:0-1|XA1:0-1|B1:2-3 A1:P1|B1:P1"
-> +	"   C0-1     .      .  P1:C2-3  C0-2     .      .      .     0 A1:0-1|B1:2-3 A1:P0|B1:P1"
->  
->  	# cpuset.cpus can overlap with sibling cpuset.cpus.exclusive but not subsumed by it
->  	"   C0-3     .      .    C4-5     X5     .      .      .     0 A1:0-3|B1:4-5"
-> @@ -417,6 +417,14 @@ TEST_MATRIX=(
->  	" CX1-4:S+ CX2-4:P2 .    C5-6      .     .      .   P1:C3-6  0 A1:1|A2:2-4|B1:5-6 \
->  								       A1:P0|A2:P2:B1:P-1 2-4"
->  
-> +	# When multiple partitions with conflicting cpuset.cpus are created, the
-> +	# latter created ones will only get what are left of the available exclusive
-> +	# CPUs.
-> +	"  C1-3:P1   .      .      .       .     .      .   C3-5:P1  0 A1:1-3|B1:4-5:XB1:4-5 A1:P1|B1:P1"
-> +
-> +	# cpuset.cpus can be set to a subset of sibling's cpuset.cpus.exclusive
-> +	" C1-3:X1-3  .      .    C4-5      .     .      .     C1-2   0 A1:1-3|B1:1-2"
-> +
->  	#  old-A1 old-A2 old-A3 old-B1 new-A1 new-A2 new-A3 new-B1 fail ECPUs Pstate ISOLCPUS
->  	#  ------ ------ ------ ------ ------ ------ ------ ------ ---- ----- ------ --------
->  	# Failure cases:
-> @@ -427,7 +435,7 @@ TEST_MATRIX=(
->  	# Changes to cpuset.cpus.exclusive that violate exclusivity rule is rejected
->  	"   C0-3     .      .    C4-5   X0-3     .      .     X3-5   1 A1:0-3|B1:4-5"
->  
-> -	# cpuset.cpus cannot be a subset of sibling cpuset.cpus.exclusive
-> +	# cpuset.cpus.exclusive cannot be set to a superset of sibling's cpuset.cpus
->  	"   C0-3     .      .    C4-5   X3-5     .      .      .     1 A1:0-3|B1:4-5"
->  )
->  
-> @@ -477,6 +485,10 @@ REMOTE_TEST_MATRIX=(
->  	      .      .   X1-2:P2  X4-5:P1  .     X1-7:P2 p1:3|c11:1-2|c12:4:c22:5-6 \
->  							 p1:P0|p2:P1|c11:P2|c12:P1|c22:P2 \
->  							 1-2,4-6|1-2,5-6"
-> +	# c12 whose cpuset.cpus CPUs are all granted to c11 will become invalid partition
-> +	" C1-5:P1:S+ .  C1-4:P1   C2-3     .       .  \
-> +	      .      .     .       P1      .       .     p1:5|c11:1-4|c12:5 \
-> +							 p1:P1|c11:P1|c12:P-1"
->  )
->  
->  #
+Bug 2 reproduction:
+  Assume a system with 6 nodes, where nodes 0-2 are top-tier,
+  node 3 is a far-tier node, and nodes 4-5 are the farthest-tier nodes.
+  All nodes have equal capacity.
 
--- 
-Best regards,
-Ridong
+  Test script:
+    echo 1 > /sys/kernel/mm/numa/demotion_enabled
+    mkdir /sys/fs/cgroup/test
+    echo +cpuset > /sys/fs/cgroup/cgroup.subtree_control
+    echo "0-2,4-5" > /sys/fs/cgroup/test/cpuset.mems
+    echo $$ > /sys/fs/cgroup/test/cgroup.procs
+    swapoff -a
+    # Expectation: Pages are demoted to Nodes 4-5
+    # Observation: No pages are demoted before oom.
+    stress-ng --oomable --vm 1 --vm-bytes 150% --mbind 0,1,2
+
+Fixes: 7d709f49babc ("vmscan,cgroup: apply mems_effective to reclaim")
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Bing Jiao <bingjiao@google.com>
+
+---
+v3 -> v4:
+Update functions to filter out nodes that are not in cgroup's
+mems_allowed rather than returning mems_allowed directly.
+It minimizes stack usage and remains versatile enough to return
+mems_allowed when all possible nodes are set in the passed
+nodemask_t pointer.
+---
+
+ include/linux/cpuset.h     |  7 ++++---
+ include/linux/memcontrol.h |  6 +++---
+ kernel/cgroup/cpuset.c     | 24 +++++++++++++++---------
+ mm/memcontrol.c            |  5 +++--
+ mm/vmscan.c                | 32 +++++++++++++++++++++-----------
+ 5 files changed, 46 insertions(+), 28 deletions(-)
+
+diff --git a/include/linux/cpuset.h b/include/linux/cpuset.h
+index a98d3330385c..c937537f318a 100644
+--- a/include/linux/cpuset.h
++++ b/include/linux/cpuset.h
+@@ -174,7 +174,8 @@ static inline void set_mems_allowed(nodemask_t nodemask)
+ 	task_unlock(current);
+ }
+
+-extern bool cpuset_node_allowed(struct cgroup *cgroup, int nid);
++extern void cpuset_nodes_filter_allowed(struct cgroup *cgroup,
++					nodemask_t *mask);
+ #else /* !CONFIG_CPUSETS */
+
+ static inline bool cpusets_enabled(void) { return false; }
+@@ -301,9 +302,9 @@ static inline bool read_mems_allowed_retry(unsigned int seq)
+ 	return false;
+ }
+
+-static inline bool cpuset_node_allowed(struct cgroup *cgroup, int nid)
++static inline void cpuset_nodes_filter_allowed(struct cgroup *cgroup,
++					       nodemask_t *mask)
+ {
+-	return true;
+ }
+ #endif /* !CONFIG_CPUSETS */
+
+diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
+index fd400082313a..911e0c71453e 100644
+--- a/include/linux/memcontrol.h
++++ b/include/linux/memcontrol.h
+@@ -1740,7 +1740,7 @@ static inline void count_objcg_events(struct obj_cgroup *objcg,
+ 	rcu_read_unlock();
+ }
+
+-bool mem_cgroup_node_allowed(struct mem_cgroup *memcg, int nid);
++void mem_cgroup_node_filter_allowed(struct mem_cgroup *memcg, nodemask_t *mask);
+
+ void mem_cgroup_show_protected_memory(struct mem_cgroup *memcg);
+
+@@ -1811,9 +1811,9 @@ static inline ino_t page_cgroup_ino(struct page *page)
+ 	return 0;
+ }
+
+-static inline bool mem_cgroup_node_allowed(struct mem_cgroup *memcg, int nid)
++static inline void mem_cgroup_node_filter_allowed(struct mem_cgroup *memcg,
++						  nodemask_t *mask)
+ {
+-	return true;
+ }
+
+ static inline void mem_cgroup_show_protected_memory(struct mem_cgroup *memcg)
+diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
+index 6e6eb09b8db6..cc0e1d42611c 100644
+--- a/kernel/cgroup/cpuset.c
++++ b/kernel/cgroup/cpuset.c
+@@ -4416,27 +4416,34 @@ bool cpuset_current_node_allowed(int node, gfp_t gfp_mask)
+ 	return allowed;
+ }
+
+-bool cpuset_node_allowed(struct cgroup *cgroup, int nid)
++/**
++ * cpuset_nodes_filter_allowed - filter out nodes not in cgroup's mems_allowed.
++ * @cgroup: pointer to struct cgroup.
++ * @mask: pointer to struct nodemask_t to be filtered.
++ *
++ * Description: Filters out nodes that are not in mems_allowed for @cgroup.
++ * Nodes returned in @mask are not guaranteed to be online.
++ **/
++void cpuset_nodes_filter_allowed(struct cgroup *cgroup, nodemask_t *mask)
+ {
+ 	struct cgroup_subsys_state *css;
+ 	struct cpuset *cs;
+-	bool allowed;
+
+ 	/*
+ 	 * In v1, mem_cgroup and cpuset are unlikely in the same hierarchy
+ 	 * and mems_allowed is likely to be empty even if we could get to it,
+-	 * so return true to avoid taking a global lock on the empty check.
++	 * so return directly to avoid taking a global lock on the empty check.
+ 	 */
+-	if (!cpuset_v2())
+-		return true;
++	if (!cgroup || !cpuset_v2())
++		return;
+
+ 	css = cgroup_get_e_css(cgroup, &cpuset_cgrp_subsys);
+ 	if (!css)
+-		return true;
++		return;
+
+ 	/*
+ 	 * Normally, accessing effective_mems would require the cpuset_mutex
+-	 * or callback_lock - but node_isset is atomic and the reference
++	 * or callback_lock - but not doing so is acceptable and the reference
+ 	 * taken via cgroup_get_e_css is sufficient to protect css.
+ 	 *
+ 	 * Since this interface is intended for use by migration paths, we
+@@ -4447,9 +4454,8 @@ bool cpuset_node_allowed(struct cgroup *cgroup, int nid)
+ 	 * cannot make strong isolation guarantees, so this is acceptable.
+ 	 */
+ 	cs = container_of(css, struct cpuset, css);
+-	allowed = node_isset(nid, cs->effective_mems);
++	nodes_and(*mask, *mask, cs->effective_mems);
+ 	css_put(css);
+-	return allowed;
+ }
+
+ /**
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index 75fc22a33b28..4c850805b7a9 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -5597,9 +5597,10 @@ subsys_initcall(mem_cgroup_swap_init);
+
+ #endif /* CONFIG_SWAP */
+
+-bool mem_cgroup_node_allowed(struct mem_cgroup *memcg, int nid)
++void mem_cgroup_node_filter_allowed(struct mem_cgroup *memcg, nodemask_t *mask)
+ {
+-	return memcg ? cpuset_node_allowed(memcg->css.cgroup, nid) : true;
++	if (memcg)
++		cpuset_nodes_filter_allowed(memcg->css.cgroup, mask);
+ }
+
+ void mem_cgroup_show_protected_memory(struct mem_cgroup *memcg)
+diff --git a/mm/vmscan.c b/mm/vmscan.c
+index ac16b6b984ab..919e116ddaf3 100644
+--- a/mm/vmscan.c
++++ b/mm/vmscan.c
+@@ -345,18 +345,24 @@ static bool can_demote(int nid, struct scan_control *sc,
+ 		       struct mem_cgroup *memcg)
+ {
+ 	int demotion_nid;
++	struct pglist_data *pgdat = NODE_DATA(nid);
++	nodemask_t allowed_mask;
+
+-	if (!numa_demotion_enabled)
++	if (!pgdat || !numa_demotion_enabled)
+ 		return false;
+ 	if (sc && sc->no_demotion)
+ 		return false;
+
+-	demotion_nid = next_demotion_node(nid);
+-	if (demotion_nid == NUMA_NO_NODE)
++	node_get_allowed_targets(pgdat, &allowed_mask);
++	if (nodes_empty(allowed_mask))
++		return false;
++
++	/* Filter out nodes that are not in cgroup's mems_allowed. */
++	mem_cgroup_node_filter_allowed(memcg, &allowed_mask);
++	if (nodes_empty(allowed_mask))
+ 		return false;
+
+-	/* If demotion node isn't in the cgroup's mems_allowed, fall back */
+-	if (mem_cgroup_node_allowed(memcg, demotion_nid)) {
++	for_each_node_mask(demotion_nid, allowed_mask) {
+ 		int z;
+ 		struct zone *zone;
+ 		struct pglist_data *pgdat = NODE_DATA(demotion_nid);
+@@ -1029,7 +1035,8 @@ static struct folio *alloc_demote_folio(struct folio *src,
+  * Folios which are not demoted are left on @demote_folios.
+  */
+ static unsigned int demote_folio_list(struct list_head *demote_folios,
+-				     struct pglist_data *pgdat)
++				      struct pglist_data *pgdat,
++				      struct mem_cgroup *memcg)
+ {
+ 	int target_nid = next_demotion_node(pgdat->node_id);
+ 	unsigned int nr_succeeded;
+@@ -1043,7 +1050,6 @@ static unsigned int demote_folio_list(struct list_head *demote_folios,
+ 		 */
+ 		.gfp_mask = (GFP_HIGHUSER_MOVABLE & ~__GFP_RECLAIM) |
+ 			__GFP_NOMEMALLOC | GFP_NOWAIT,
+-		.nid = target_nid,
+ 		.nmask = &allowed_mask,
+ 		.reason = MR_DEMOTION,
+ 	};
+@@ -1051,10 +1057,14 @@ static unsigned int demote_folio_list(struct list_head *demote_folios,
+ 	if (list_empty(demote_folios))
+ 		return 0;
+
+-	if (target_nid == NUMA_NO_NODE)
+-		return 0;
+-
+ 	node_get_allowed_targets(pgdat, &allowed_mask);
++	mem_cgroup_node_filter_allowed(memcg, &allowed_mask);
++	if (nodes_empty(allowed_mask))
++		return false;
++
++	if (!node_isset(target_nid, allowed_mask))
++		target_nid = node_random(&allowed_mask);
++	mtc.nid = target_nid;
+
+ 	/* Demotion ignores all cpuset and mempolicy settings */
+ 	migrate_pages(demote_folios, alloc_demote_folio, NULL,
+@@ -1576,7 +1586,7 @@ static unsigned int shrink_folio_list(struct list_head *folio_list,
+ 	/* 'folio_list' is always empty here */
+
+ 	/* Migrate folios selected for demotion */
+-	nr_demoted = demote_folio_list(&demote_folios, pgdat);
++	nr_demoted = demote_folio_list(&demote_folios, pgdat, memcg);
+ 	nr_reclaimed += nr_demoted;
+ 	stat->nr_demoted += nr_demoted;
+ 	/* Folios that could not be demoted are still in @demote_folios */
+--
+2.52.0.358.g0dd7633a29-goog
 
 
