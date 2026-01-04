@@ -1,132 +1,255 @@
-Return-Path: <cgroups+bounces-12889-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-12890-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5D595CF0C6D
-	for <lists+cgroups@lfdr.de>; Sun, 04 Jan 2026 10:04:28 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8D8BCCF0C9E
+	for <lists+cgroups@lfdr.de>; Sun, 04 Jan 2026 10:30:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 3590C3009F07
-	for <lists+cgroups@lfdr.de>; Sun,  4 Jan 2026 09:04:27 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 3BFAE3009ABE
+	for <lists+cgroups@lfdr.de>; Sun,  4 Jan 2026 09:30:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 67CFD248F47;
-	Sun,  4 Jan 2026 09:04:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E928230BCB;
+	Sun,  4 Jan 2026 09:30:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="phjW9tbY"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="nvW/V5ES"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-pl1-f170.google.com (mail-pl1-f170.google.com [209.85.214.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-177.mta0.migadu.com (out-177.mta0.migadu.com [91.218.175.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C4F434C98
-	for <cgroups@vger.kernel.org>; Sun,  4 Jan 2026 09:04:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0926E16DEB0
+	for <cgroups@vger.kernel.org>; Sun,  4 Jan 2026 09:30:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767517465; cv=none; b=Tb2H2tqiU/Ylm2p83oB7q4R5YS6l1MqVPtV327esrs7rbzZEuAALMdviThOWbX5F2dtq+9ABEcIU/PTm+cY08F7soAF6s9SepIqvAP8Oewph0bt45dRZtNIa0TOuAj0wFRNcKBrU/wrBl4mZLfBARKfrZc/P9UVbZVuFaRcat7U=
+	t=1767519053; cv=none; b=QTkGR3gcTb1f+G3DYOokKR4tm08UkJkglnAnTAtyrmHXN9IhY8NRll6+bbDN/UUSCU4chusVF+Z8S6NlavBEqgqN6VR+PCGmsV4yHd9yuI5U8MAoL5MksC77zDKN3HJquYj1Hd5fmfq9m+rumYfiq8XLlzgnEVS447MZfzAW/+I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767517465; c=relaxed/simple;
-	bh=QSOiATV59Jt7zF0mcNusY/T1zTDz582l3BXZAoUYnUk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ljW7nNx0wgkjoXxuHQu+zw8o83eoJU37fB5SeZthgkJ1E+16LYHQimewBEMu1FFYxO6WYZM3jm2SFvbAPnlUWx9FIiqcznP/jZast1YDsaZaPuE6xTW/zLZD+DdBk0A59/pwxo0m+wrcr8Lp4srKzE24rPU4K+KtjVh2TgGSdQ8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=phjW9tbY; arc=none smtp.client-ip=209.85.214.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-pl1-f170.google.com with SMTP id d9443c01a7336-2a35ae38bdfso91235ad.1
-        for <cgroups@vger.kernel.org>; Sun, 04 Jan 2026 01:04:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1767517463; x=1768122263; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=QSOiATV59Jt7zF0mcNusY/T1zTDz582l3BXZAoUYnUk=;
-        b=phjW9tbYadSKf1Lzs4m08kwD+zVofwZCBt8+dMH8BBXm0OpSMCJ4eCKfBbodS+M62w
-         0IblGitRNFhqPcDy5Fa7ULOttD11JUa69k5haDBPjt1fjk9Afh3F4MIoye5D5wD3+Q1G
-         flyK6RiGJ8bUwMxQoUIOHyCNeW/Qafo/KFvhD/v61OCUnUqgDbdHrbWxFC7nLT2SL2J0
-         vIaDo4Ixm6fBEeO7xJSoCSFOUAavFMsADC/eUr4fUgPguRjGOQXXRIKzGlcgOi/MnDHG
-         8G4TnJLlPxnOM/TB6ygSTZjDEsxHvt799qbTS+EiXTVaemAoRF6xvd2E8ivtTvYEFW4e
-         2L3w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1767517463; x=1768122263;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=QSOiATV59Jt7zF0mcNusY/T1zTDz582l3BXZAoUYnUk=;
-        b=A0ENgfWNFgwxISSaoaubdA3drjJlP1Ibtwy7tiRRlCZ+CqcPJKcQe75kwfOLEv+nbM
-         bke+oKfPReYnOZQVK0FTDg5fati8H5Fy47F7Ieha9YV+oPBAJa8F92UV47UjAMHJS2g4
-         bqYt7TffXs1VZqSNUWcHiVkd05TdJP1kBC4Io3GyVbNEcKHYAwiRik+c7J5F+2fKD/J/
-         /hYdWshqm9DIgkXcUdiHsfbazP5bjSLTF5i3CUkLsBJd0jeuqOnGI5Ure1z5TwC29nD+
-         iw/w8d3KSqT3+QFYIQm1z+Xi6rXH16fYLDF9YfwZI1USwTF02jGow1xYLK5jXSpiMfG4
-         LVvg==
-X-Forwarded-Encrypted: i=1; AJvYcCWFnk4Wh98jhWO2qRnV5Z2UPxGPqt4zO4iyXJ/bReE8D7iC+uXporNYps0vFpe20xqi2f9Hu4Xx@vger.kernel.org
-X-Gm-Message-State: AOJu0Ywpcd3DvguCRxyhL86f0ZBc++DsdDlEXlwVvfpgUDL/dxUQgDWn
-	4wODY4ftWsCb1b8IZgxf7qQQYEMy8n0VUqe/PrxIY3Zts3OJkHsOC2HRUJY82KLCpw==
-X-Gm-Gg: AY/fxX437LpzmHLSgu+V0LZOLOWeBO4T3rLFj5RvcsHkIb6HrPnehqUMKNLo2+X5b2v
-	LRrydQMe0u0Ofm6uQsLx1c/FuxZcvn7/07BQ9/PfnA8p5AXdDlhZnpZ9uK+LvHmkNijVBG9smk4
-	09zqeMvWWDaBqfCbKrs12p68C9rc/p76NcrhNIDm6z7zHOy6yUNAJrZSFhjZicxlvXWHppixyNh
-	Kj6DEXzzBch+wn1rwGzAjreXx3O2swxUeHDewplgxdezZk1g3JCKEWTFFr05U4TD/pa+rzIYa7c
-	o1dYRdkS3q/Yb1+jSUhbR1EnD0TGovmJgjg0zNhZR8FQn9ugmf6D0LAdG0kM0c293BXApGnHWK5
-	yCLRhUN5Q1Pp/LRDsnB0oBE+lkuCkr17cK4Gn0Txak7etV73LaNb3WjjZAT/jnGhnWwWxIoU5Ts
-	qZSJkitZJyKKqrvZgoKFUonWCr9ZwQI7ep+m0WtCOIlEzmSsHJsG1Ln4Av34TLLDc=
-X-Google-Smtp-Source: AGHT+IF2f+qqRGbSWLY+axONWjGzW67AvjyMri7/vyDsrV41RpaLChtAfH7ihOiJuNWMSfi+MREU5Q==
-X-Received: by 2002:a17:902:ebc4:b0:295:1351:f63e with SMTP id d9443c01a7336-2a3c1c1615dmr1696435ad.10.1767517462607;
-        Sun, 04 Jan 2026 01:04:22 -0800 (PST)
-Received: from google.com (248.132.125.34.bc.googleusercontent.com. [34.125.132.248])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2a2f3d5dea1sm411421835ad.81.2026.01.04.01.04.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 04 Jan 2026 01:04:22 -0800 (PST)
-Date: Sun, 4 Jan 2026 09:04:16 +0000
-From: Bing Jiao <bingjiao@google.com>
-To: Waiman Long <llong@redhat.com>
-Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-	akpm@linux-foundation.org, gourry@gourry.net, hannes@cmpxchg.org,
-	mhocko@kernel.org, roman.gushchin@linux.dev, shakeel.butt@linux.dev,
-	muchun.song@linux.dev, tj@kernel.org, mkoutny@suse.com,
-	david@kernel.org, zhengqi.arch@bytedance.com,
-	lorenzo.stoakes@oracle.com, axelrasmussen@google.com,
-	chenridong@huaweicloud.com, yuanchu@google.com, weixugc@google.com,
-	cgroups@vger.kernel.org
-Subject: Re: [PATCH v3] mm/vmscan: fix demotion targets checks in
- reclaim/demotion
-Message-ID: <aVotEFFHwTPF_K1h@google.com>
-References: <20251221233635.3761887-1-bingjiao@google.com>
- <20251223212032.665731-1-bingjiao@google.com>
- <84ed9b5d-41d5-44a1-a1ad-2b3de8b50a50@redhat.com>
+	s=arc-20240116; t=1767519053; c=relaxed/simple;
+	bh=lzSJURf3FpHYA4PkKC1xnAbqZ8zjtsvDpO+a0PvDcMw=;
+	h=MIME-Version:Date:Content-Type:From:Message-ID:Subject:To:Cc:
+	 In-Reply-To:References; b=L1rAqzh+w7nm7i459sOn/+I5ckV3lm0Z5zZliR1n42yH0UYGa7wnPa9eQ4n7uX7vNoQnEZmwF5KGbMVrInbw9lCek256L+bI/HKC0r/JvgbtroCj3EJijpcotoRZkPDF2U3zg2cxGx2mckFTxqaJpA1VZAldoePKqS2XLFuDX4A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=nvW/V5ES; arc=none smtp.client-ip=91.218.175.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <84ed9b5d-41d5-44a1-a1ad-2b3de8b50a50@redhat.com>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1767519049;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=FbFb4vZ8Kx6nmpMz19A349GuNGVDXKPfDjacOVYnMgo=;
+	b=nvW/V5ES2PyczNjvZpVF1t4am9BRAzUTJJ8Ripk0DAHp9pBEiaGEXddUhOWuwRRl16WYwf
+	FcLA1KDM4BywKQp7vaskve6uH79z18mGt5fj8gLWE8191p8slVi95gYjZwtGEqKTF0vinH
+	vWBB5y302lWNigXRCR1R+Fah5EtOfbo=
+Date: Sun, 04 Jan 2026 09:30:46 +0000
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: hui.zhu@linux.dev
+Message-ID: <a935563217affe85b2a6d0689914d7aba2ce127f@linux.dev>
+TLS-Required: No
+Subject: Re: [RFC PATCH v2 0/3] Memory Controller eBPF support
+To: "=?utf-8?B?TWljaGFsIEtvdXRuw70=?=" <mkoutny@suse.com>,
+ chenridong@huaweicloud.com
+Cc: "Andrew Morton" <akpm@linux-foundation.org>, "Johannes Weiner"
+ <hannes@cmpxchg.org>, "Michal Hocko" <mhocko@kernel.org>, "Roman  
+ Gushchin" <roman.gushchin@linux.dev>, "Shakeel Butt"
+ <shakeel.butt@linux.dev>, "Muchun Song" <muchun.song@linux.dev>, "Alexei 
+  Starovoitov" <ast@kernel.org>, "Daniel Borkmann" <daniel@iogearbox.net>,
+ "Andrii Nakryiko" <andrii@kernel.org>, "Martin KaFai Lau"
+ <martin.lau@linux.dev>, "Eduard Zingerman" <eddyz87@gmail.com>, "Song  
+ Liu" <song@kernel.org>, "Yonghong Song" <yonghong.song@linux.dev>, "John 
+  Fastabend" <john.fastabend@gmail.com>, "KP Singh" <kpsingh@kernel.org>,
+ "Stanislav Fomichev" <sdf@fomichev.me>, "Hao Luo" <haoluo@google.com>,
+ "Jiri Olsa" <jolsa@kernel.org>, "Shuah Khan" <shuah@kernel.org>, "Peter  
+ Zijlstra" <peterz@infradead.org>, "Miguel Ojeda" <ojeda@kernel.org>,
+ "Nathan Chancellor" <nathan@kernel.org>, "Kees Cook" <kees@kernel.org>,
+ "Tejun Heo" <tj@kernel.org>, "Jeff Xu" <jeffxu@chromium.org>, "Jan  
+ Hendrik Farr" <kernel@jfarr.cc>, "Christian Brauner"
+ <brauner@kernel.org>, "Randy Dunlap" <rdunlap@infradead.org>, "Brian  
+ Gerst" <brgerst@gmail.com>, "Masahiro Yamada" <masahiroy@kernel.org>,
+ davem@davemloft.net, "Jakub Kicinski" <kuba@kernel.org>, "Jesper Dangaard
+   Brouer" <hawk@kernel.org>, linux-kernel@vger.kernel.org,
+ linux-mm@kvack.org, cgroups@vger.kernel.org, bpf@vger.kernel.org,
+ linux-kselftest@vger.kernel.org, "Hui Zhu" <zhuhui@kylinos.cn>
+In-Reply-To: <enlefo5mmoha2htsrvv76tdmj6yum4jan6hgym76adtpxuhvrp@aug6qh3ocde5>
+References: <cover.1767012332.git.zhuhui@kylinos.cn>
+ <enlefo5mmoha2htsrvv76tdmj6yum4jan6hgym76adtpxuhvrp@aug6qh3ocde5>
+X-Migadu-Flow: FLOW_OUT
 
-On Fri, Dec 26, 2025 at 03:24:29PM -0500, Waiman Long wrote:
-> The nodemask_t type can be large depending on the setting of
-> CONFIG_NODES_SHIFT. Passing a large data structure on stack may not be a
-> good idea. You can return a pointer to nodemask_t instead. In that case, you
-> will have a add a "const" qualifier to the return type to make sure that the
-> node mask won't get accidentally modified. Alternatively, you can pass a
-> nodemask_t pointer as an output parameter and copy out the nodemask_t data.
+2025=E5=B9=B412=E6=9C=8830=E6=97=A5 17:49, "Michal Koutn=C3=BD" <mkoutny@=
+suse.com mailto:mkoutny@suse.com?to=3D%22Michal%20Koutn%C3%BD%22%20%3Cmko=
+utny%40suse.com%3E > =E5=86=99=E5=88=B0:
+
+
+Hi Michal and Ridong,
+
+>=20
+>=20Hi Hui.
+>=20
+>=20On Tue, Dec 30, 2025 at 11:01:58AM +0800, Hui Zhu <hui.zhu@linux.dev>=
+ wrote:
+>=20
+>=20>=20
+>=20> This allows administrators to suppress low-priority cgroups' memory
+> >  usage based on custom policies implemented in BPF programs.
+> >=20
+>=20BTW memory.low was conceived as a work-conserving mechanism for
+> prioritization of different workloads. Have you tried that? No need to
+> go directly to (high) limits. (<- Main question, below are some
+> secondary implementation questions/remarks.)
+>=20
+>=20...
+>=20
+
+memory.low=20is a helpful feature, but it can struggle to effectively
+throttle low-priority processes that continuously access their memory.
+
+For instance, consider the following example I ran:
+root@ubuntu:~# echo $((4 * 1024 * 1024 * 1024)) > /sys/fs/cgroup/high/mem=
+ory.low
+root@ubuntu:~# cgexec -g memory:low stress-ng --vm 4 --vm-keep --vm-bytes=
+ 80% --vm-method all --seed 2025 --metrics -t 60 & cgexec -g memory:high =
+stress-ng --vm 4 --vm-keep --vm-bytes 80% --vm-method all --seed 2025 --m=
+etrics -t 60
+[1] 2011
+stress-ng: info:  [2011] setting to a 1 min, 0 secs run per stressor
+stress-ng: info:  [2012] setting to a 1 min, 0 secs run per stressor
+stress-ng: info:  [2011] dispatching hogs: 4 vm
+stress-ng: info:  [2012] dispatching hogs: 4 vm
+stress-ng: metrc: [2012] stressor       bogo ops real time  usr time  sys=
+ time   bogo ops/s     bogo ops/s CPU used per       RSS Max
+stress-ng: metrc: [2012]                           (secs)    (secs)    (s=
+ecs)   (real time) (usr+sys time) instance (%)          (KB)
+stress-ng: metrc: [2012] vm                23584     60.21      2.75     =
+15.94       391.73        1262.07         7.76        649988
+stress-ng: info:  [2012] skipped: 0
+stress-ng: info:  [2012] passed: 4: vm (4)
+stress-ng: info:  [2012] failed: 0
+stress-ng: info:  [2012] metrics untrustworthy: 0
+stress-ng: info:  [2012] successful run completed in 1 min, 0.22 secs
+stress-ng: metrc: [2011] stressor       bogo ops real time  usr time  sys=
+ time   bogo ops/s     bogo ops/s CPU used per       RSS Max
+stress-ng: metrc: [2011]                           (secs)    (secs)    (s=
+ecs)   (real time) (usr+sys time) instance (%)          (KB)
+stress-ng: metrc: [2011] vm                23584     60.22      3.06     =
+16.19       391.63        1224.97         7.99        688836
+stress-ng: info:  [2011] skipped: 0
+stress-ng: info:  [2011] passed: 4: vm (4)
+stress-ng: info:  [2011] failed: 0
+stress-ng: info:  [2011] metrics untrustworthy: 0
+stress-ng: info:  [2011] successful run completed in 1 min, 0.23 secs
+
+As the results show, setting memory.low on the cgroup with the
+high-priority workload did not improve its memory performance.
+
+However, memory.low is beneficial in many other scenarios.
+Perhaps extending it with eBPF support could help address a wider
+range of issues.
+
+> >=20
+>=20> This series introduces a BPF hook that allows reporting
+> >  additional "pages over high" for specific cgroups, effectively
+> >  increasing memory pressure and throttling for lower-priority
+> >  workloads when higher-priority cgroups need resources.
+> >=20
+>=20Have you considered hooking into calculate_high_delay() instead? (Tha=
+t
+> function has undergone some evolution so it'd seem like the candidate
+> for BPFication.)
+>=20
+
+It=20seems that try_charge_memcg will not reach
+__mem_cgroup_handle_over_high if it only hook calculate_high_delay
+without setting memory.high.
+
+What do you think about hooking try_charge_memcg as well,
+so that it ensures __mem_cgroup_handle_over_high is called?
+
+
+> ...
+>=20
+>=20>=20
+>=20> 3. Cgroup hierarchy management (inheritance during online/offline)
+> >=20
+>=20I see you're copying the program upon memcg creation.
+> Configuration copies aren't such a good way to properly handle
+> hierarchical behavior.
+> I wonder if this could follow the more generic pattern of how BPF progs
+> are evaluated in hierarchies, see BPF_F_ALLOW_OVERRIDE and
+> BPF_F_ALLOW_MULTI.
+
+I will support them in the next version.
+
+>=20
+>=20>=20
+>=20> Example Results
+> >=20
+>=20...
+>=20
+>=20>=20
+>=20> Results show the low-priority cgroup (/sys/fs/cgroup/low) was
+> >  significantly throttled:
+> >  - High-priority cgroup: 21,033,377 bogo ops at 347,825 ops/s
+> >  - Low-priority cgroup: 11,568 bogo ops at 177 ops/s
+> >=20=20
+>=20>  The stress-ng process in the low-priority cgroup experienced a
+> >  ~99.9% slowdown in memory operations compared to the
+> >  high-priority cgroup, demonstrating effective priority
+> >  enforcement through BPF-controlled memory pressure.
+> >=20
+>=20As a demonstrator, it'd be good to compare this with a baseline witho=
+ut
+> any extra progs, e.g. show that high-prio performed better and low-prio
+> wasn't throttled for nothing.
+
+Thanks for your remind.
+This is a test log in the test environment without any extra progs:
+
+root@ubuntu:~# cgexec -g memory:low stress-ng --vm 4 --vm-keep --vm-bytes=
+ 80% \
+--vm-method all --seed 2025 --metrics -t 60 \
+& cgexec -g memory:high stress-ng --vm 4 --vm-keep --vm-bytes 80% \
+--vm-method all --seed 2025 --metrics -t 60
+[1] 982
+stress-ng: info:  [982] setting to a 1 min, 0 secs run per stressor
+stress-ng: info:  [983] setting to a 1 min, 0 secs run per stressor
+stress-ng: info:  [982] dispatching hogs: 4 vm
+stress-ng: info:  [983] dispatching hogs: 4 vm
+
+stress-ng: metrc: [982] stressor       bogo ops real time  usr time  sys =
+time   bogo ops/s     bogo ops/s CPU used per       RSS Max
+stress-ng: metrc: [982]                           (secs)    (secs)    (se=
+cs)   (real time) (usr+sys time) instance (%)          (KB)
+stress-ng: metrc: [982] vm                23544     60.08      2.90     1=
+5.74       391.85        1263.43         7.75        524708
+stress-ng: info:  [982] skipped: 0
+stress-ng: info:  [982] passed: 4: vm (4)
+stress-ng: info:  [982] failed: 0
+stress-ng: info:  [982] metrics untrustworthy: 0
+stress-ng: info:  [982] successful run completed in 1 min, 0.09 secs
+stress-ng: metrc: [983] stressor       bogo ops real time  usr time  sys =
+time   bogo ops/s     bogo ops/s CPU used per       RSS Max
+stress-ng: metrc: [983]                           (secs)    (secs)    (se=
+cs)   (real time) (usr+sys time) instance (%)          (KB)
+stress-ng: metrc: [983] vm                23544     60.09      3.12     1=
+5.91       391.81        1237.10         7.92        705076
+stress-ng: info:  [983] skipped: 0
+stress-ng: info:  [983] passed: 4: vm (4)
+stress-ng: info:  [983] failed: 0
+stress-ng: info:  [983] metrics untrustworthy: 0
+stress-ng: info:  [983] successful run completed in 1 min, 0.09 secs
+
+Best,
+Hui
+
+
+>=20
+>=20Thanks,
+> Michal
 >
-> The name "cpuset_node_get_allowed" doesn't fit the cpuset naming convention.
-> There is a "cpuset_mems_allowed(struct task_struct *)" to return
-> "mems_allowed" of a task. This new helper is for returning the mems_allowed
-> defined in the cpuset. Perhaps we could just use
-> "cpuset_nodes_allowed(struct cgroup *)".
->
-> Cheers,
-> Longman
-
-Thank you for the explanation and suggestion.
-
-I have updated v4, which updates the functions to filter out nodes
-rather than returning mems_allowed. In v3, the caller need to declare
-a temp nodemask_t to store mems_allowed and then intersect with
-lower-tier nodemask, which is unnecessarily increase the stack size.
-
-The function name is updated as "cpuset_nodes_filter_allowed".
-Do you think it is still better to use "cpuset_nodes_allowed"
-when doing the filtering thing?
-
-Thanks,
-Bing
-
 
