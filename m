@@ -1,255 +1,144 @@
-Return-Path: <cgroups+bounces-12890-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-12891-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8D8BCCF0C9E
-	for <lists+cgroups@lfdr.de>; Sun, 04 Jan 2026 10:30:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 76908CF130E
+	for <lists+cgroups@lfdr.de>; Sun, 04 Jan 2026 19:28:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 3BFAE3009ABE
-	for <lists+cgroups@lfdr.de>; Sun,  4 Jan 2026 09:30:55 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 435BA3008E8A
+	for <lists+cgroups@lfdr.de>; Sun,  4 Jan 2026 18:27:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E928230BCB;
-	Sun,  4 Jan 2026 09:30:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E1CE285071;
+	Sun,  4 Jan 2026 18:27:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="nvW/V5ES"
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="ZDCFqu9L"
 X-Original-To: cgroups@vger.kernel.org
-Received: from out-177.mta0.migadu.com (out-177.mta0.migadu.com [91.218.175.177])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0926E16DEB0
-	for <cgroups@vger.kernel.org>; Sun,  4 Jan 2026 09:30:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D57911D130E;
+	Sun,  4 Jan 2026 18:27:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767519053; cv=none; b=QTkGR3gcTb1f+G3DYOokKR4tm08UkJkglnAnTAtyrmHXN9IhY8NRll6+bbDN/UUSCU4chusVF+Z8S6NlavBEqgqN6VR+PCGmsV4yHd9yuI5U8MAoL5MksC77zDKN3HJquYj1Hd5fmfq9m+rumYfiq8XLlzgnEVS447MZfzAW/+I=
+	t=1767551267; cv=none; b=KX2i79ZxilbuyhscmghtJjTGZQF6ltRfbif1Vuenj0JC1ac5DOMF49HSu6ZcpE1KATfqe+GlHVW6mrxYlenJfAZC85xggg5d+7eIm+SBtjGar3apqvKu89Dg6OAe5YXo0p8irV9b/KduzVNW0lse+3e4VckhqBolfI9s6kz+sU0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767519053; c=relaxed/simple;
-	bh=lzSJURf3FpHYA4PkKC1xnAbqZ8zjtsvDpO+a0PvDcMw=;
-	h=MIME-Version:Date:Content-Type:From:Message-ID:Subject:To:Cc:
-	 In-Reply-To:References; b=L1rAqzh+w7nm7i459sOn/+I5ckV3lm0Z5zZliR1n42yH0UYGa7wnPa9eQ4n7uX7vNoQnEZmwF5KGbMVrInbw9lCek256L+bI/HKC0r/JvgbtroCj3EJijpcotoRZkPDF2U3zg2cxGx2mckFTxqaJpA1VZAldoePKqS2XLFuDX4A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=nvW/V5ES; arc=none smtp.client-ip=91.218.175.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+	s=arc-20240116; t=1767551267; c=relaxed/simple;
+	bh=ncBLtjyDgpOU9nUGlYr/lR60bzhWGn+9CqIvEOL0bQg=;
+	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
+	 Mime-Version:Content-Type; b=PCjIm8oBaigK9tAQq4UMWgD6fEAQww3jGD4GW41LPmWB/lTwNgNlXG2itImX5VmIg3lZWMGWw+2w43nWl+vd8ushYU8rf4x8Djvv4LeFYysrxNtjCLf0CShaPE4BCA+mwBXi3Vn9p5NoCQrZ7vU7alec0w4oAm2iffgfor81H94=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=ZDCFqu9L; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AE170C4CEF7;
+	Sun,  4 Jan 2026 18:27:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+	s=korg; t=1767551266;
+	bh=ncBLtjyDgpOU9nUGlYr/lR60bzhWGn+9CqIvEOL0bQg=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=ZDCFqu9LkYtIhO1nOFih2qPFuzrbgULNTICSEuJzXgTv0atk0QwQhewhTZBIhtbYq
+	 OnDoQCNk+g8uOFfgdbhr72l1zUocTUsaDoS6VLSnSg/1623eFWM2W99/ikh1C8O+7X
+	 M7+l3ArIO6KJeeM7Q/7qhB2IxduoGupzddf7bvq8=
+Date: Sun, 4 Jan 2026 10:27:45 -0800
+From: Andrew Morton <akpm@linux-foundation.org>
+To: Bing Jiao <bingjiao@google.com>
+Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org, gourry@gourry.net,
+ longman@redhat.com, hannes@cmpxchg.org, mhocko@kernel.org,
+ roman.gushchin@linux.dev, shakeel.butt@linux.dev, muchun.song@linux.dev,
+ tj@kernel.org, mkoutny@suse.com, david@kernel.org,
+ zhengqi.arch@bytedance.com, lorenzo.stoakes@oracle.com,
+ axelrasmussen@google.com, chenridong@huaweicloud.com, yuanchu@google.com,
+ weixugc@google.com, cgroups@vger.kernel.org, Akinobu Mita
+ <akinobu.mita@gmail.com>
+Subject: Re: [PATCH v4] mm/vmscan: fix demotion targets checks in
+ reclaim/demotion
+Message-Id: <20260104102745.cfd4f6bd661e8e817afcdba8@linux-foundation.org>
+In-Reply-To: <20260104085439.4076810-1-bingjiao@google.com>
+References: <20251223212032.665731-1-bingjiao@google.com>
+	<20260104085439.4076810-1-bingjiao@google.com>
+X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1767519049;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=FbFb4vZ8Kx6nmpMz19A349GuNGVDXKPfDjacOVYnMgo=;
-	b=nvW/V5ES2PyczNjvZpVF1t4am9BRAzUTJJ8Ripk0DAHp9pBEiaGEXddUhOWuwRRl16WYwf
-	FcLA1KDM4BywKQp7vaskve6uH79z18mGt5fj8gLWE8191p8slVi95gYjZwtGEqKTF0vinH
-	vWBB5y302lWNigXRCR1R+Fah5EtOfbo=
-Date: Sun, 04 Jan 2026 09:30:46 +0000
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: hui.zhu@linux.dev
-Message-ID: <a935563217affe85b2a6d0689914d7aba2ce127f@linux.dev>
-TLS-Required: No
-Subject: Re: [RFC PATCH v2 0/3] Memory Controller eBPF support
-To: "=?utf-8?B?TWljaGFsIEtvdXRuw70=?=" <mkoutny@suse.com>,
- chenridong@huaweicloud.com
-Cc: "Andrew Morton" <akpm@linux-foundation.org>, "Johannes Weiner"
- <hannes@cmpxchg.org>, "Michal Hocko" <mhocko@kernel.org>, "Roman  
- Gushchin" <roman.gushchin@linux.dev>, "Shakeel Butt"
- <shakeel.butt@linux.dev>, "Muchun Song" <muchun.song@linux.dev>, "Alexei 
-  Starovoitov" <ast@kernel.org>, "Daniel Borkmann" <daniel@iogearbox.net>,
- "Andrii Nakryiko" <andrii@kernel.org>, "Martin KaFai Lau"
- <martin.lau@linux.dev>, "Eduard Zingerman" <eddyz87@gmail.com>, "Song  
- Liu" <song@kernel.org>, "Yonghong Song" <yonghong.song@linux.dev>, "John 
-  Fastabend" <john.fastabend@gmail.com>, "KP Singh" <kpsingh@kernel.org>,
- "Stanislav Fomichev" <sdf@fomichev.me>, "Hao Luo" <haoluo@google.com>,
- "Jiri Olsa" <jolsa@kernel.org>, "Shuah Khan" <shuah@kernel.org>, "Peter  
- Zijlstra" <peterz@infradead.org>, "Miguel Ojeda" <ojeda@kernel.org>,
- "Nathan Chancellor" <nathan@kernel.org>, "Kees Cook" <kees@kernel.org>,
- "Tejun Heo" <tj@kernel.org>, "Jeff Xu" <jeffxu@chromium.org>, "Jan  
- Hendrik Farr" <kernel@jfarr.cc>, "Christian Brauner"
- <brauner@kernel.org>, "Randy Dunlap" <rdunlap@infradead.org>, "Brian  
- Gerst" <brgerst@gmail.com>, "Masahiro Yamada" <masahiroy@kernel.org>,
- davem@davemloft.net, "Jakub Kicinski" <kuba@kernel.org>, "Jesper Dangaard
-   Brouer" <hawk@kernel.org>, linux-kernel@vger.kernel.org,
- linux-mm@kvack.org, cgroups@vger.kernel.org, bpf@vger.kernel.org,
- linux-kselftest@vger.kernel.org, "Hui Zhu" <zhuhui@kylinos.cn>
-In-Reply-To: <enlefo5mmoha2htsrvv76tdmj6yum4jan6hgym76adtpxuhvrp@aug6qh3ocde5>
-References: <cover.1767012332.git.zhuhui@kylinos.cn>
- <enlefo5mmoha2htsrvv76tdmj6yum4jan6hgym76adtpxuhvrp@aug6qh3ocde5>
-X-Migadu-Flow: FLOW_OUT
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-2025=E5=B9=B412=E6=9C=8830=E6=97=A5 17:49, "Michal Koutn=C3=BD" <mkoutny@=
-suse.com mailto:mkoutny@suse.com?to=3D%22Michal%20Koutn%C3%BD%22%20%3Cmko=
-utny%40suse.com%3E > =E5=86=99=E5=88=B0:
+On Sun,  4 Jan 2026 08:54:05 +0000 Bing Jiao <bingjiao@google.com> wrote:
 
+> Fix two bugs in demote_folio_list() and can_demote() due to incorrect
+> demotion target checks in reclaim/demotion.
 
-Hi Michal and Ridong,
+Thanks.
 
->=20
->=20Hi Hui.
->=20
->=20On Tue, Dec 30, 2025 at 11:01:58AM +0800, Hui Zhu <hui.zhu@linux.dev>=
- wrote:
->=20
->=20>=20
->=20> This allows administrators to suppress low-priority cgroups' memory
-> >  usage based on custom policies implemented in BPF programs.
-> >=20
->=20BTW memory.low was conceived as a work-conserving mechanism for
-> prioritization of different workloads. Have you tried that? No need to
-> go directly to (high) limits. (<- Main question, below are some
-> secondary implementation questions/remarks.)
->=20
->=20...
->=20
+> Commit 7d709f49babc ("vmscan,cgroup: apply mems_effective to reclaim")
+> introduces the cpuset.mems_effective check and applies it to
+> can_demote(). However:
+> 
+>   1. It does not apply this check in demote_folio_list(), which leads
+>      to situations where pages are demoted to nodes that are
+>      explicitly excluded from the task's cpuset.mems.
+> 
+>   2. It checks only the nodes in the immediate next demotion hierarchy
+>      and does not check all allowed demotion targets in can_demote().
+>      This can cause pages to never be demoted if the nodes in the next
+>      demotion hierarchy are not set in mems_effective.
+> 
+> These bugs break resource isolation provided by cpuset.mems.
+> This is visible from userspace because pages can either fail to be
+> demoted entirely or are demoted to nodes that are not allowed
+> in multi-tier memory systems.
+> 
+> To address these bugs, update cpuset_node_allowed() and
+> mem_cgroup_node_allowed() to return effective_mems, allowing directly
+> logic-and operation against demotion targets. Also update can_demote()
+> and demote_folio_list() accordingly.
+> 
+> Bug 1 reproduction:
+>   Assume a system with 4 nodes, where nodes 0-1 are top-tier and
+>   nodes 2-3 are far-tier memory. All nodes have equal capacity.
+> 
+>   Test script:
+>     echo 1 > /sys/kernel/mm/numa/demotion_enabled
+>     mkdir /sys/fs/cgroup/test
+>     echo +cpuset > /sys/fs/cgroup/cgroup.subtree_control
+>     echo "0-2" > /sys/fs/cgroup/test/cpuset.mems
+>     echo $$ > /sys/fs/cgroup/test/cgroup.procs
+>     swapoff -a
+>     # Expectation: Should respect node 0-2 limit.
+>     # Observation: Node 3 shows significant allocation (MemFree drops)
+>     stress-ng --oomable --vm 1 --vm-bytes 150% --mbind 0,1
+> 
+> Bug 2 reproduction:
+>   Assume a system with 6 nodes, where nodes 0-2 are top-tier,
+>   node 3 is a far-tier node, and nodes 4-5 are the farthest-tier nodes.
+>   All nodes have equal capacity.
+> 
+>   Test script:
+>     echo 1 > /sys/kernel/mm/numa/demotion_enabled
+>     mkdir /sys/fs/cgroup/test
+>     echo +cpuset > /sys/fs/cgroup/cgroup.subtree_control
+>     echo "0-2,4-5" > /sys/fs/cgroup/test/cpuset.mems
+>     echo $$ > /sys/fs/cgroup/test/cgroup.procs
+>     swapoff -a
+>     # Expectation: Pages are demoted to Nodes 4-5
+>     # Observation: No pages are demoted before oom.
+>     stress-ng --oomable --vm 1 --vm-bytes 150% --mbind 0,1,2
+> 
+> Fixes: 7d709f49babc ("vmscan,cgroup: apply mems_effective to reclaim")
+> Cc: <stable@vger.kernel.org>
 
-memory.low=20is a helpful feature, but it can struggle to effectively
-throttle low-priority processes that continuously access their memory.
+We'll want to fix these things in 6.16.X and later, but you've prepared
+this patch against "mm/vmscan: don't demote if there is not enough free
+memory in the lower memory tier", which is presently under test/review
+in mm.git's mm-unstable branch.
 
-For instance, consider the following example I ran:
-root@ubuntu:~# echo $((4 * 1024 * 1024 * 1024)) > /sys/fs/cgroup/high/mem=
-ory.low
-root@ubuntu:~# cgexec -g memory:low stress-ng --vm 4 --vm-keep --vm-bytes=
- 80% --vm-method all --seed 2025 --metrics -t 60 & cgexec -g memory:high =
-stress-ng --vm 4 --vm-keep --vm-bytes 80% --vm-method all --seed 2025 --m=
-etrics -t 60
-[1] 2011
-stress-ng: info:  [2011] setting to a 1 min, 0 secs run per stressor
-stress-ng: info:  [2012] setting to a 1 min, 0 secs run per stressor
-stress-ng: info:  [2011] dispatching hogs: 4 vm
-stress-ng: info:  [2012] dispatching hogs: 4 vm
-stress-ng: metrc: [2012] stressor       bogo ops real time  usr time  sys=
- time   bogo ops/s     bogo ops/s CPU used per       RSS Max
-stress-ng: metrc: [2012]                           (secs)    (secs)    (s=
-ecs)   (real time) (usr+sys time) instance (%)          (KB)
-stress-ng: metrc: [2012] vm                23584     60.21      2.75     =
-15.94       391.73        1262.07         7.76        649988
-stress-ng: info:  [2012] skipped: 0
-stress-ng: info:  [2012] passed: 4: vm (4)
-stress-ng: info:  [2012] failed: 0
-stress-ng: info:  [2012] metrics untrustworthy: 0
-stress-ng: info:  [2012] successful run completed in 1 min, 0.22 secs
-stress-ng: metrc: [2011] stressor       bogo ops real time  usr time  sys=
- time   bogo ops/s     bogo ops/s CPU used per       RSS Max
-stress-ng: metrc: [2011]                           (secs)    (secs)    (s=
-ecs)   (real time) (usr+sys time) instance (%)          (KB)
-stress-ng: metrc: [2011] vm                23584     60.22      3.06     =
-16.19       391.63        1224.97         7.99        688836
-stress-ng: info:  [2011] skipped: 0
-stress-ng: info:  [2011] passed: 4: vm (4)
-stress-ng: info:  [2011] failed: 0
-stress-ng: info:  [2011] metrics untrustworthy: 0
-stress-ng: info:  [2011] successful run completed in 1 min, 0.23 secs
+This seems to be incorrect ordering - this fix should go ahead of
+Akinobu Mita's series "mm: fix oom-killer not being invoked when
+demotion is enabled v2".
 
-As the results show, setting memory.low on the cgroup with the
-high-priority workload did not improve its memory performance.
+So can you please redo this patch against current mainline?  And please
+also review the "mm: fix oom-killer not being invoked when demotion is
+enabled" series to ensure that things will work together nicely when
+that time comes.
 
-However, memory.low is beneficial in many other scenarios.
-Perhaps extending it with eBPF support could help address a wider
-range of issues.
-
-> >=20
->=20> This series introduces a BPF hook that allows reporting
-> >  additional "pages over high" for specific cgroups, effectively
-> >  increasing memory pressure and throttling for lower-priority
-> >  workloads when higher-priority cgroups need resources.
-> >=20
->=20Have you considered hooking into calculate_high_delay() instead? (Tha=
-t
-> function has undergone some evolution so it'd seem like the candidate
-> for BPFication.)
->=20
-
-It=20seems that try_charge_memcg will not reach
-__mem_cgroup_handle_over_high if it only hook calculate_high_delay
-without setting memory.high.
-
-What do you think about hooking try_charge_memcg as well,
-so that it ensures __mem_cgroup_handle_over_high is called?
-
-
-> ...
->=20
->=20>=20
->=20> 3. Cgroup hierarchy management (inheritance during online/offline)
-> >=20
->=20I see you're copying the program upon memcg creation.
-> Configuration copies aren't such a good way to properly handle
-> hierarchical behavior.
-> I wonder if this could follow the more generic pattern of how BPF progs
-> are evaluated in hierarchies, see BPF_F_ALLOW_OVERRIDE and
-> BPF_F_ALLOW_MULTI.
-
-I will support them in the next version.
-
->=20
->=20>=20
->=20> Example Results
-> >=20
->=20...
->=20
->=20>=20
->=20> Results show the low-priority cgroup (/sys/fs/cgroup/low) was
-> >  significantly throttled:
-> >  - High-priority cgroup: 21,033,377 bogo ops at 347,825 ops/s
-> >  - Low-priority cgroup: 11,568 bogo ops at 177 ops/s
-> >=20=20
->=20>  The stress-ng process in the low-priority cgroup experienced a
-> >  ~99.9% slowdown in memory operations compared to the
-> >  high-priority cgroup, demonstrating effective priority
-> >  enforcement through BPF-controlled memory pressure.
-> >=20
->=20As a demonstrator, it'd be good to compare this with a baseline witho=
-ut
-> any extra progs, e.g. show that high-prio performed better and low-prio
-> wasn't throttled for nothing.
-
-Thanks for your remind.
-This is a test log in the test environment without any extra progs:
-
-root@ubuntu:~# cgexec -g memory:low stress-ng --vm 4 --vm-keep --vm-bytes=
- 80% \
---vm-method all --seed 2025 --metrics -t 60 \
-& cgexec -g memory:high stress-ng --vm 4 --vm-keep --vm-bytes 80% \
---vm-method all --seed 2025 --metrics -t 60
-[1] 982
-stress-ng: info:  [982] setting to a 1 min, 0 secs run per stressor
-stress-ng: info:  [983] setting to a 1 min, 0 secs run per stressor
-stress-ng: info:  [982] dispatching hogs: 4 vm
-stress-ng: info:  [983] dispatching hogs: 4 vm
-
-stress-ng: metrc: [982] stressor       bogo ops real time  usr time  sys =
-time   bogo ops/s     bogo ops/s CPU used per       RSS Max
-stress-ng: metrc: [982]                           (secs)    (secs)    (se=
-cs)   (real time) (usr+sys time) instance (%)          (KB)
-stress-ng: metrc: [982] vm                23544     60.08      2.90     1=
-5.74       391.85        1263.43         7.75        524708
-stress-ng: info:  [982] skipped: 0
-stress-ng: info:  [982] passed: 4: vm (4)
-stress-ng: info:  [982] failed: 0
-stress-ng: info:  [982] metrics untrustworthy: 0
-stress-ng: info:  [982] successful run completed in 1 min, 0.09 secs
-stress-ng: metrc: [983] stressor       bogo ops real time  usr time  sys =
-time   bogo ops/s     bogo ops/s CPU used per       RSS Max
-stress-ng: metrc: [983]                           (secs)    (secs)    (se=
-cs)   (real time) (usr+sys time) instance (%)          (KB)
-stress-ng: metrc: [983] vm                23544     60.09      3.12     1=
-5.91       391.81        1237.10         7.92        705076
-stress-ng: info:  [983] skipped: 0
-stress-ng: info:  [983] passed: 4: vm (4)
-stress-ng: info:  [983] failed: 0
-stress-ng: info:  [983] metrics untrustworthy: 0
-stress-ng: info:  [983] successful run completed in 1 min, 0.09 secs
-
-Best,
-Hui
-
-
->=20
->=20Thanks,
-> Michal
->
 
