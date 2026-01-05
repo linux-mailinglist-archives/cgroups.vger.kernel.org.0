@@ -1,43 +1,43 @@
-Return-Path: <cgroups+bounces-12907-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-12908-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
-	by mail.lfdr.de (Postfix) with ESMTPS id DFAA0CF20DF
-	for <lists+cgroups@lfdr.de>; Mon, 05 Jan 2026 07:21:32 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id D518BCF2124
+	for <lists+cgroups@lfdr.de>; Mon, 05 Jan 2026 07:29:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 4D55530012DB
-	for <lists+cgroups@lfdr.de>; Mon,  5 Jan 2026 06:21:32 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 2E14D30111A8
+	for <lists+cgroups@lfdr.de>; Mon,  5 Jan 2026 06:29:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 40D1731ED63;
-	Mon,  5 Jan 2026 06:21:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2D42D325490;
+	Mon,  5 Jan 2026 06:29:20 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3CBDC25F984;
-	Mon,  5 Jan 2026 06:21:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4DA9526AAAB;
+	Mon,  5 Jan 2026 06:29:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767594090; cv=none; b=PIO+dA9qNhtEj4u+VM7ej2xRkCOtwysO58TVmN87etPU9gJkWsTxdqUIMrkQ14ufMjM/N+kxWGxgZNbEylk+LDHaDJLmWMC8jVGapo90hKAb3FWtsCVo594DLLZmdju7nJ7J5KjC+WUrVTrxkKGYAlNbpQB8gRoiwW29M2gbDe0=
+	t=1767594560; cv=none; b=FzGxjBemXbseK0t1hzOJCoTpVDbDR8p7/6Sr4WB+dchsV6ZbPeIpmAk3clC1b/JCYEkXv/AYyMTCzWwr/XNGENADhVs5DWv+ixUAW53eusaTK0Kp0rM9M1RUOCxYTh4IgkJA7qeAOHrdl2Wx/aZtPQt/iMr3ND4CSlaPz1MqMlw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767594090; c=relaxed/simple;
-	bh=SoFHKmS2lo9UKFPvbW2I50B2ai+khb2osMCwGrk5sqs=;
+	s=arc-20240116; t=1767594560; c=relaxed/simple;
+	bh=fkaRtJ1GZG3uHElvewc8pbJAO2Zp61gs+kwI0wHz0MA=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=SvIMp01aXgXA+3+l/qMY5XJZ1iEl6SZyfDDT7itzI4dlG1KG219sKIGhjsCrNiR/tTuvjI/QggvQXKnQmDJowar/xJIGNkkTYZK2UQccKcnhirk9727++9v50hoNqSQ3FCTrnOJMZLHjn/Ja6yvBboc9sGJQxWgXqIHtgXOS+Vk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
+	 In-Reply-To:Content-Type; b=lGrzJyBtrO+jJCLiEKjtCLotjerRw2CF0Sf7AJGphFjpodRKDVBXhrnqcvh9vcqGYDFYZuU4mLGdWAM6Pi4niBdael+2NpipjqwwShGQ0pAPWDsmrxKN4xpRj528X/VHYJvJiR6SmC0R/aI+9579EduoqmSPmmocqSnI1snZtoI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
 Received: from mail.maildlp.com (unknown [172.19.163.177])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTPS id 4dl4143XvYzKHMHr;
-	Mon,  5 Jan 2026 14:20:40 +0800 (CST)
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTPS id 4dl49q6QZnzYQtqv;
+	Mon,  5 Jan 2026 14:28:15 +0800 (CST)
 Received: from mail02.huawei.com (unknown [10.116.40.128])
-	by mail.maildlp.com (Postfix) with ESMTP id 4F29540596;
-	Mon,  5 Jan 2026 14:21:18 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTP id 4B6FA4058C;
+	Mon,  5 Jan 2026 14:29:14 +0800 (CST)
 Received: from [10.67.111.176] (unknown [10.67.111.176])
-	by APP4 (Coremail) with SMTP id gCh0CgBXt_dcWFtp_fvCCg--.13396S2;
-	Mon, 05 Jan 2026 14:21:18 +0800 (CST)
-Message-ID: <38d87eb0-a670-4df2-b68f-f0173ad39c90@huaweicloud.com>
-Date: Mon, 5 Jan 2026 14:21:16 +0800
+	by APP4 (Coremail) with SMTP id gCh0CgDnR_g5WltpqKXDCg--.33945S2;
+	Mon, 05 Jan 2026 14:29:14 +0800 (CST)
+Message-ID: <556672f7-b9b9-46a2-8a67-54ac615383d4@huaweicloud.com>
+Date: Mon, 5 Jan 2026 14:29:13 +0800
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -45,147 +45,163 @@ List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH RESEND -next 00/21] cpuset: rework local partition logic
-To: Waiman Long <llong@redhat.com>, tj@kernel.org, hannes@cmpxchg.org,
- mkoutny@suse.com
-Cc: cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
- lujialin4@huawei.com
-References: <20251225123058.231765-1-chenridong@huaweicloud.com>
- <7937ad21-8c98-4bd8-8a5d-93f868bcb8b5@huaweicloud.com>
- <13975af6-97af-49d8-ae85-d126a65715ee@redhat.com>
+Subject: Re: [cgroup/for-6.20 PATCH v2 2/4] cgroup/cpuset: Consistently
+ compute effective_xcpus in update_cpumasks_hier()
+To: Waiman Long <llong@redhat.com>, Tejun Heo <tj@kernel.org>,
+ Johannes Weiner <hannes@cmpxchg.org>, =?UTF-8?Q?Michal_Koutn=C3=BD?=
+ <mkoutny@suse.com>, Jonathan Corbet <corbet@lwn.net>,
+ Shuah Khan <shuah@kernel.org>
+Cc: linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+ linux-kselftest@vger.kernel.org, linux-doc@vger.kernel.org,
+ Sun Shaojie <sunshaojie@kylinos.cn>
+References: <20260101191558.434446-1-longman@redhat.com>
+ <20260101191558.434446-3-longman@redhat.com>
+ <758f42df-52c2-4660-8ef7-1cbacb9323d2@huaweicloud.com>
+ <f8539426-92b0-42f3-99c4-70962c2db96d@redhat.com>
+ <c17051c3-82ac-4ca5-8823-33327cadd073@huaweicloud.com>
+ <ec6e1ee4-b52e-417f-9413-3dfca0ec8eb3@redhat.com>
+ <d49cc8af-509b-44b8-ada4-f8bbdbd37f89@huaweicloud.com>
+ <f541b93b-7bbf-4530-bca6-dc5b5b1f481c@redhat.com>
 Content-Language: en-US
 From: Chen Ridong <chenridong@huaweicloud.com>
-In-Reply-To: <13975af6-97af-49d8-ae85-d126a65715ee@redhat.com>
+In-Reply-To: <f541b93b-7bbf-4530-bca6-dc5b5b1f481c@redhat.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:gCh0CgBXt_dcWFtp_fvCCg--.13396S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxtF4rWryxuFyfJr4rZrW7CFg_yoW7WFyrpF
-	98KayftryUCr10k3sFqF4xA3yFgwnrJFyDtwn8W348XrsFyw1v9FW09398ua4UWrWkCr1U
-	ZF1qqr4xu3W2yaDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUyGb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+X-CM-TRANSID:gCh0CgDnR_g5WltpqKXDCg--.33945S2
+X-Coremail-Antispam: 1UD129KBjvJXoW3AF15uF1rCFyxuw1rZr1xuFg_yoWxGFyUpr
+	y8JF4UJrWUtr1rC3yjgF17Xry8Kw4Dtw1DXw1DtF1rXFyDKF1jgr1jvws09r1UJr4kJr15
+	Zr1UXr4IvFn8AwUanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUv0b4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
 	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
 	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
 	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxkF7I0En4kS14v26r126r1DMxAIw28IcxkI7VAK
-	I48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7
-	xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUAVWUtwCIc40Y0x0EwIxGrwCI42IY6xII
-	jxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw2
-	0EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x02
-	67AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU1veHDUUUUU==
+	6I80ewAv7VC0I7IYx2IY67AKxVWUGVWUXwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxkF7I0En4kS
+	14v26r1q6r43MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I
+	8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8
+	ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x
+	0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_
+	Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IUb
+	mii3UUUUU==
 X-CM-SenderInfo: hfkh02xlgr0w46kxt4xhlfz01xgou0bp/
 
 
 
-On 2026/1/5 12:33, Waiman Long wrote:
-> On 1/4/26 11:01 PM, Chen Ridong wrote:
+On 2026/1/5 12:06, Waiman Long wrote:
+> On 1/4/26 10:58 PM, Chen Ridong wrote:
 >>
->> On 2025/12/25 20:30, Chen Ridong wrote:
->>> From: Chen Ridong <chenridong@huawei.com>
+>> On 2026/1/5 11:50, Waiman Long wrote:
+>>> On 1/4/26 8:15 PM, Chen Ridong wrote:
+>>>> On 2026/1/5 5:25, Waiman Long wrote:
+>>>>> On 1/3/26 9:48 PM, Chen Ridong wrote:
+>>>>>> On 2026/1/2 3:15, Waiman Long wrote:
+>>>>>>> Since commit f62a5d39368e ("cgroup/cpuset: Remove remote_partition_check()
+>>>>>>> & make update_cpumasks_hier() handle remote partition"), the
+>>>>>>> compute_effective_exclusive_cpumask() helper was extended to
+>>>>>>> strip exclusive CPUs from siblings when computing effective_xcpus
+>>>>>>> (cpuset.cpus.exclusive.effective). This helper was later renamed to
+>>>>>>> compute_excpus() in commit 86bbbd1f33ab ("cpuset: Refactor exclusive
+>>>>>>> CPU mask computation logic").
+>>>>>>>
+>>>>>>> This helper is supposed to be used consistently to compute
+>>>>>>> effective_xcpus. However, there is an exception within the callback
+>>>>>>> critical section in update_cpumasks_hier() when exclusive_cpus of a
+>>>>>>> valid partition root is empty. This can cause effective_xcpus value to
+>>>>>>> differ depending on where exactly it is last computed. Fix this by using
+>>>>>>> compute_excpus() in this case to give a consistent result.
+>>>>>>>
+>>>>>>> Signed-off-by: Waiman Long <longman@redhat.com>
+>>>>>>> ---
+>>>>>>>     kernel/cgroup/cpuset.c | 14 +++++---------
+>>>>>>>     1 file changed, 5 insertions(+), 9 deletions(-)
+>>>>>>>
+>>>>>>> diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
+>>>>>>> index da2b3b51630e..37d118a9ad4d 100644
+>>>>>>> --- a/kernel/cgroup/cpuset.c
+>>>>>>> +++ b/kernel/cgroup/cpuset.c
+>>>>>>> @@ -2168,17 +2168,13 @@ static void update_cpumasks_hier(struct cpuset *cs, struct tmpmasks
+>>>>>>> *tmp,
+>>>>>>>             spin_lock_irq(&callback_lock);
+>>>>>>>             cpumask_copy(cp->effective_cpus, tmp->new_cpus);
+>>>>>>>             cp->partition_root_state = new_prs;
+>>>>>>> -        if (!cpumask_empty(cp->exclusive_cpus) && (cp != cs))
+>>>>>>> -            compute_excpus(cp, cp->effective_xcpus);
+>>>>>>> -
+>>>>>>>             /*
+>>>>>>> -         * Make sure effective_xcpus is properly set for a valid
+>>>>>>> -         * partition root.
+>>>>>>> +         * Need to compute effective_xcpus if either exclusive_cpus
+>>>>>>> +         * is non-empty or it is a valid partition root.
+>>>>>>>              */
+>>>>>>> -        if ((new_prs > 0) && cpumask_empty(cp->exclusive_cpus))
+>>>>>>> -            cpumask_and(cp->effective_xcpus,
+>>>>>>> -                    cp->cpus_allowed, parent->effective_xcpus);
+>>>>>>> -        else if (new_prs < 0)
+>>>>>>> +        if ((new_prs > 0) || !cpumask_empty(cp->exclusive_cpus))
+>>>>>>> +            compute_excpus(cp, cp->effective_xcpus);
+>>>>>>> +        if (new_prs < 0)
+>>>>>>>                 reset_partition_data(cp);
+>>>>>>>             spin_unlock_irq(&callback_lock);
+>>>>>>>     
+>>>>>> The code resets partition data only for new_prs < 0. My understanding is that a partition is
+>>>>>> invalid
+>>>>>> when new_prs <= 0. Shouldn't reset_partition_data() also be called when new_prs = 0? Is there a
+>>>>>> specific reason to skip the reset in that case?
+>>>>> update_cpumasks_hier() is called when changes in a cpuset or hotplug affects other cpusets in the
+>>>>> hierarchy. With respect to changes in partition state, it is either from valid to invalid or vice
+>>>>> versa. It will not change from a valid partition to member. The only way new_prs = 0 is when
+>>>>> old_prs
+>>>>> = 0. Even if the affected cpuset is processed again in update_cpumask_hier(), any state change
+>>>>> from
+>>>>> valid partition to member (update_prstate()), reset_partition_data() should have been called
+>>>>> there.
+>>>>> That is why we only care about when new_prs != 0.
+>>>>>
+>>>> Thank you for your patience.
+>>>>
+>>>>> The code isn't wrong here. However I can change the condition to (new_prs <= 0) if it makes it
+>>>>> easier to understand.
+>>>>>
+>>>> I agree there's nothing wrong with the current logic. However, for clarity, I suggest changing the
+>>>> condition to (new_prs <= 0). This allows the function's logic to be fully self-consistent and
+>>>> focused on a single responsibility. This approach would allow us to simplify the code to:
+>>>>
+>>>>      if (new_prs > 0)
+>>>>          compute_excpus(cp, cp->effective_xcpus);
+>>>>      else
+>>>>          reset_partition_data(cp);
+>>>>
+>>>> Since reset_partition_data() already handles cases whether cp->exclusive_cpus is empty or not, this
+>>>> implementation would be more concise while correctly covering all scenarios.
+>>> effective_xcpus should be set when exclusive_cpus is not empty or when the cpuset is a valid
+>>> partition root. So just checking new_prs for compute_excpus() is not enough.
 >>>
->>> The current local partition implementation consolidates all operations
->>> (enable, disable, invalidate, and update) within the large
->>> update_parent_effective_cpumask() function, which exceeds 300 lines.
->>> This monolithic approach has become increasingly difficult to understand
->>> and maintain. Additionally, partition-related fields are updated in
->>> multiple locations, leading to redundant code and potential corner case
->>> oversights.
->>>
->>> This patch series refactors the local partition logic by separating
->>> operations into dedicated functions: local_partition_enable(),
->>> local_partition_disable(), and local_partition_update(), creating
->>> symmetry with the existing remote partition infrastructure.
->>>
->>> The series is organized as follows:
->>>
->>> 1. Infrastructure Preparation (Patches 1-2):
->>>     - Code cleanup and preparation for the refactoring work
->>>
->>> 2. Introduce partition operation helpers (Patches 3-5):
->>>     - Introduce out partition_enable(), partition_disable(), and
->>>       partition_update() functions.
->>>
->>> 3. Use new helpers for remote partition (Patches 6-8)
->>>
->>> 4. Local Partition Implementation (Patches 9-12):
->>>     - Separate update_parent_effective_cpumask() into dedicated functions:
->>>       * local_partition_enable()
->>>       * local_partition_disable()
->>>       * local_partition_update()
->>>
->>> 5. Optimization and Cleanup (Patches 13-21):
->>>     - Remove redundant partition-related operations
->>>     - Additional optimizations based on the new architecture
->>>
->>> base-commit: cc3aa43b44bdb43dfbac0fcb51c56594a11338a8
->>>
->>> ---
->>>
->>> Changes in RESEND:
->>> 1. Rebase on the next-20251219
->>>
->>> Changes from RFC v2:
->>> 1. Dropped the bugfix (already merged/fixed upstream)
->>> 2. Rebased onto next
->>> 3. Introduced partition_switch to handle root state switches
->>> 4. Directly use local_partition_disable()—no longer first introduce
->>>     local_partition_invalidate() before unifying the two
->>> 5. Incorporated modifications based on Longman's suggestions
->>>
->>> Changes in RFC v1:
->>> 1. Added bugfix for root partition isolcpus at series start.
->>> 2. Completed helper function implementations when first introduced.
->>> 3. Split larger patches into smaller, more reviewable units.
->>> 4. Incorporated feedback from Longman.
->>>
->>> Chen Ridong (21):
->>>    cpuset: add early empty cpumask check in partition_xcpus_add/del
->>>    cpuset: generalize the validate_partition() interface
->>>    cpuset: introduce partition_enable()
->>>    cpuset: introduce partition_disable()
->>>    cpuset: introduce partition_update()
->>>    cpuset: use partition_enable() for remote partition enablement
->>>    cpuset: use partition_disable() for remote partition disablement
->>>    cpuset: use partition_update() for remote partition update
->>>    cpuset: introduce local_partition_enable()
->>>    cpuset: introduce local_partition_disable()
->>>    cpuset: user local_partition_disable() to invalidate local partition
->>>    cpuset: introduce local_partition_update()
->>>    cpuset: remove update_parent_effective_cpumask
->>>    cpuset: remove redundant partition field updates
->>>    cpuset: simplify partition update logic for hotplug tasks
->>>    cpuset: use partition_disable for compute_partition_effective_cpumask
->>>    cpuset: use validate_local_partition in local_partition_enable
->>>    cpuset: introduce validate_remote_partition
->>>    cpuset: simplify the update_prstate() function
->>>    cpuset: remove prs_err clear when notify_partition_change
->>>    cpuset: Remove unnecessary validation in partition_cpus_change
->>>
->>>   kernel/cgroup/cpuset.c | 1023 ++++++++++++++++++----------------------
->>>   1 file changed, 454 insertions(+), 569 deletions(-)
->>>
->> Hi Longman,
->>
->> This series has been out for a while. I'd appreciate it if you could take some time to review it.
->>
-> Sorry for being late in reviewing this updated series. However, there are also other cpuset related
-> patch series that are being reviewed at the moment. Since this is mainly a cleanup patch making the
-> code easier to understand, but it does a major restructuring of the existing code which will likely
-> make the other patches harder to merge. So I would like to prioritize the other fix and feature
-> patches first. I will try to review the patches when I have time, but I want this series to be
-> merged after other cpuset patches are done.
+>> If we change the condition to (new_prs <= 0), it will reset the partition data even when we call
+>> compute_excpus (for !cpumask_empty(cp->exclusive_cpus)), so we should still get the same result,
+>> right?
 > 
-> Sorry for the inconvenience caused as you may have to redo the patch series again when the code base
-> is settled down.
+> Changing the condition to (new_prs <= 0) won't affect the result except for a bit of wasted cpu
+> cycles. That is why I am planning to make the change in the next version to make it easier to
+> understand.
 > 
 
-It is all right.
+Sorry, I should have been clearer. If we change the condition, the code would essentially be:
 
-Do you mean the series titled "cgroup/cpuset: Don't invalidate sibling partitions on cpuset.cpus
-conflict"?
+	if ((new_prs > 0) || !cpumask_empty(cp->exclusive_cpus))
+		compute_excpus(cp, cp->effective_xcpus);
+        if (new_prs <= 0)
+		reset_partition_data(cp);
 
-I mainly want to know when I should redo it. I don't see many conflicts beyond those in this series.
+For cases where new_prs <= 0 && !cpumask_empty(cp->exclusive_cpus), both compute_excpus() and
+reset_partition_data() would be called.
+
+Is this functionally equivalent to:
+
+	if (new_prs > 0)
+		compute_excpus(cp, cp->effective_xcpus);
+        else (new_prs <= 0)
+		reset_partition_data(cp);
 
 -- 
 Best regards,
