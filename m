@@ -1,100 +1,43 @@
-Return-Path: <cgroups+bounces-12894-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-12895-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 111B9CF1692
-	for <lists+cgroups@lfdr.de>; Sun, 04 Jan 2026 23:26:28 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id E5F20CF18B8
+	for <lists+cgroups@lfdr.de>; Mon, 05 Jan 2026 02:15:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 042B63003BD8
-	for <lists+cgroups@lfdr.de>; Sun,  4 Jan 2026 22:26:27 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 1D8B1300C5CA
+	for <lists+cgroups@lfdr.de>; Mon,  5 Jan 2026 01:15:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A9C127A469;
-	Sun,  4 Jan 2026 22:26:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="GaKhDeAW";
-	dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b="aLdtya1F"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6464C23C8A0;
+	Mon,  5 Jan 2026 01:15:19 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 423A942049
-	for <cgroups@vger.kernel.org>; Sun,  4 Jan 2026 22:26:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E742944F;
+	Mon,  5 Jan 2026 01:15:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767565585; cv=none; b=u/7HLR/dkA/aGLlaE1o29R1JUopnc7tFtA6awK99Dbh/iXjFkNKIZ+G9lxz9JpLOa++fE5ppuggILZ0IMczgqrmQ6XRdtA2kvTIMC75+CpwCDTLixeWkxG7OIa3fJWSsS/zC0nEQZ/7tVSVYaolP1YvAErUtygnEURFgqy5kF1Q=
+	t=1767575719; cv=none; b=qpMMYHPseW9ENwDhcuOiaYRngdKKJvMXZL5P0Qve9QevcJszmOPtGwm23GMkwsk2DMnzC5WLlLnXDaUVqxFyyIVLA61mSgQ2z4T78GiN5yLFzAjnjrJ+IU7eyo2oY5BmuSXRpiTvXQLJGh4CJOYWEWyviSRFx8vQ7PTrfdJyth0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767565585; c=relaxed/simple;
-	bh=18zqbZPHCZfC4IECcFh5Oo9n88sS/9RdXF1BYxgm8CY=;
-	h=From:Message-ID:Date:MIME-Version:Subject:To:Cc:References:
-	 In-Reply-To:Content-Type; b=ECKPbefbwhdrJH2ODbipcrZsU81Ct4Fng5jz0l3EhObQKHcKU416fgJTQaApfEaqE5busl8JQEmJJ23+m9kHCgAPer1lhPRwUpoYDqKcEeyYx19GDYBY48P602iLjsgkzCSeBUs37tzddQpT398D4+HwfbIFn24+nOLGWZQW0mg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=GaKhDeAW; dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b=aLdtya1F; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1767565582;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=MX6wynQZFsiu7Tz4PLzaszcf/RQEoHul08Z9Zkyf+Is=;
-	b=GaKhDeAWx+ogPJFWrFWWkOhcjODQhbhIw9jcPIvgbsbuX4TOLb9zIfpscFW72RahTc647A
-	L946Cklp971uchvXwojo7opQpEalMGZYeVNiAYjpSigw/nQ7IsOwl5v6sl2tZE0GllHpIK
-	4SrG7SdPAjkI2w6HTfrKRTcLDslKDns=
-Received: from mail-qk1-f199.google.com (mail-qk1-f199.google.com
- [209.85.222.199]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-118-JTWrbk7zMOyorkrxxoK7tw-1; Sun, 04 Jan 2026 17:26:20 -0500
-X-MC-Unique: JTWrbk7zMOyorkrxxoK7tw-1
-X-Mimecast-MFC-AGG-ID: JTWrbk7zMOyorkrxxoK7tw_1767565580
-Received: by mail-qk1-f199.google.com with SMTP id af79cd13be357-8c1cffa1f2dso386179485a.1
-        for <cgroups@vger.kernel.org>; Sun, 04 Jan 2026 14:26:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=redhat.com; s=google; t=1767565580; x=1768170380; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:content-language:references
-         :cc:to:subject:user-agent:mime-version:date:message-id:from:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=MX6wynQZFsiu7Tz4PLzaszcf/RQEoHul08Z9Zkyf+Is=;
-        b=aLdtya1F1GDOdz1hTflB7L6wy3yPREOMaiqfJ5Ck8NYpDiRd8ZcLsqYNfzaQTMMJiL
-         ribdYnwTe2ri594qkNwlKANnEOWOFOoj9y52PShxpd0Ey7Dz9U7F4s782NF90lQGx3mw
-         KR8hqu0dEgW+etnTcevicCcqJVt9id8KN0ev38lFm4SlsZ1aKWVbTcKCWeLl7CgVm+tm
-         4zk8woOBUidyyBd9xHBvy5KGYGw06LrrIE7Ts6CG/yT7+2jtkU9yaZeUaY4pSa+TBFjK
-         09ajFFCoMgs2FAJ1+IlFjfHoJ4eyVAqjM0M26K4d5Ozc6noYunHULfApOySPqcLp6+iL
-         BrYw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1767565580; x=1768170380;
-        h=content-transfer-encoding:in-reply-to:content-language:references
-         :cc:to:subject:user-agent:mime-version:date:message-id:from:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=MX6wynQZFsiu7Tz4PLzaszcf/RQEoHul08Z9Zkyf+Is=;
-        b=T4R9xegC4ot+sKLwcrnClAoGpmQg8l0rojTviKOV0gnvdudUISWu39M+t8dBj2AlWD
-         UZPXwSZO7bMqnNI9Hhod4tpLXCU64TH34Yxwp72omnwsE8ebe6mz+XuaRwy35ezdf84g
-         EBKi7rOn4GHA9p12CVPsLB60/e68jr2EceUfWPKcFA6lsMgxZGV5BG7kCkp5eMTHpTe7
-         4mBmggznkDQFJmQakriGXqXxkxcB6Ynsj8j29ZPZYGjK9A16teqnYv2ylEO/bhirU7qc
-         Ulh98ipcTk9uIzKAJB0t5KRZc/Jq6wbLSTxW1EV0t2wwPybyWDjGbjoWpayQlB8cj7II
-         9qSw==
-X-Forwarded-Encrypted: i=1; AJvYcCWg4+0RWIocpUmGMtTdpyfyGuBzoUCiW49zOYjcVY1EjyNe/HkiGC/PXaxmmB0089znJa9YAYd1@vger.kernel.org
-X-Gm-Message-State: AOJu0YzBuLzKg8BQTt95wbcI79YhpaLBjnH7OCzytsmQCj3jGtTe6jYH
-	cg4XSqaTMI98c5U4EDU+ODRKONvKCFU6B4fR8m7lulVEY8rWsYY5abEZ4CgGklJ7mHi7BRa03yb
-	MZq7SYtRPRYgX859+kJo/+K4sMlO42bZitzMI7qP9YK1qs9qBtXLwvKO9ZTM=
-X-Gm-Gg: AY/fxX72Ugi5RISlBWGqSRMAvLCgIYvv6tARdaiET6226RJrc95OT6KPRdVZgMt+qB7
-	lph0zDaY1SwgmWUmKHxh1LMCfGFiGHojU2zFD7WGQIj3kBxx96dZa7uX/jkcc/p1R8HdjKe7rUq
-	AtLd9eVyAnAc2dbwtkMrg7zphJtkf3BXtdEH9sR/CizdynUBOA2Grfl57Qp45Otbqq16lX4CGEP
-	YYUAglfuWeXmHRh3GNEIILcTHh3sVgNK0vteDySQD5XdrCNPhQnqyGOjhXtKe8JuYC8tzyb9pgJ
-	G0bFCoQmzPyL5uO554Fp0e28QG2P+ynW6+vLu5SEa30R//F8yLmxpX2DmpO11pISwxf0En2eG2c
-	u3/SZz2m2aJuwUrSp8mVaitLITAc3PYgYeF9FmvuDABBZTw6gFdb8yU5U
-X-Received: by 2002:a05:620a:2993:b0:88e:1be9:cf65 with SMTP id af79cd13be357-8c356f610f2mr826664185a.39.1767565580443;
-        Sun, 04 Jan 2026 14:26:20 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IH1alN5adMavXwg0qoPb9OAbKBalJiqdid2PFcZ88dBnIGljKevyz4sWtBubRBFhtfzz1Bexw==
-X-Received: by 2002:a05:620a:2993:b0:88e:1be9:cf65 with SMTP id af79cd13be357-8c356f610f2mr826661785a.39.1767565580057;
-        Sun, 04 Jan 2026 14:26:20 -0800 (PST)
-Received: from ?IPV6:2601:188:c102:b180:1f8b:71d0:77b1:1f6e? ([2601:188:c102:b180:1f8b:71d0:77b1:1f6e])
-        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-88d9aa363e3sm337038506d6.57.2026.01.04.14.26.18
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 04 Jan 2026 14:26:19 -0800 (PST)
-From: Waiman Long <llong@redhat.com>
-X-Google-Original-From: Waiman Long <longman@redhat.com>
-Message-ID: <5ed163d8-c229-4aed-bc8a-ae9cba9b78ec@redhat.com>
-Date: Sun, 4 Jan 2026 17:26:18 -0500
+	s=arc-20240116; t=1767575719; c=relaxed/simple;
+	bh=M8ulOvV2PN1+g9NdgEOGsO6VFmoCgn664qm0q7kFl4E=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=WuOvnpQSNFYAZbRJJzjoOGh8q+Ox7xe+atoG53bV1qbqOt8KAPbI1Cj1mkAp+h8SVRf/TXRdnRabB44jpdQIghOZUqGsqbLSlpSoeuMexC/0A3VDEbdMMu+9kseVHPA9YPWftr2OJowCm2m6rbTCDgdPkCxQayI0cbVWZ/8E11M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.198])
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTPS id 4dkxCv2sxWzKHLtN;
+	Mon,  5 Jan 2026 09:14:35 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.128])
+	by mail.maildlp.com (Postfix) with ESMTP id D867540575;
+	Mon,  5 Jan 2026 09:15:12 +0800 (CST)
+Received: from [10.67.111.176] (unknown [10.67.111.176])
+	by APP4 (Coremail) with SMTP id gCh0CgDnR_ifEFtp3ZOpCg--.37063S2;
+	Mon, 05 Jan 2026 09:15:12 +0800 (CST)
+Message-ID: <c17051c3-82ac-4ca5-8823-33327cadd073@huaweicloud.com>
+Date: Mon, 5 Jan 2026 09:15:11 +0800
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -102,9 +45,9 @@ List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [cgroup/for-6.20 PATCH v2 4/4] cgroup/cpuset: Don't invalidate
- sibling partitions on cpuset.cpus conflict
-To: Chen Ridong <chenridong@huaweicloud.com>, Tejun Heo <tj@kernel.org>,
+Subject: Re: [cgroup/for-6.20 PATCH v2 2/4] cgroup/cpuset: Consistently
+ compute effective_xcpus in update_cpumasks_hier()
+To: Waiman Long <llong@redhat.com>, Tejun Heo <tj@kernel.org>,
  Johannes Weiner <hannes@cmpxchg.org>, =?UTF-8?Q?Michal_Koutn=C3=BD?=
  <mkoutny@suse.com>, Jonathan Corbet <corbet@lwn.net>,
  Shuah Khan <shuah@kernel.org>
@@ -112,53 +55,118 @@ Cc: linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
  linux-kselftest@vger.kernel.org, linux-doc@vger.kernel.org,
  Sun Shaojie <sunshaojie@kylinos.cn>
 References: <20260101191558.434446-1-longman@redhat.com>
- <20260101191558.434446-5-longman@redhat.com>
- <f561b413-7fdc-45d9-9d89-8bd55e960d51@huaweicloud.com>
+ <20260101191558.434446-3-longman@redhat.com>
+ <758f42df-52c2-4660-8ef7-1cbacb9323d2@huaweicloud.com>
+ <f8539426-92b0-42f3-99c4-70962c2db96d@redhat.com>
 Content-Language: en-US
-In-Reply-To: <f561b413-7fdc-45d9-9d89-8bd55e960d51@huaweicloud.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+From: Chen Ridong <chenridong@huaweicloud.com>
+In-Reply-To: <f8539426-92b0-42f3-99c4-70962c2db96d@redhat.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:gCh0CgDnR_ifEFtp3ZOpCg--.37063S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxGFW8Kr13JFyrKF45Kry8Zrb_yoWrZF4Dpr
+	y8JF4UXrWjgr1rC3yDWF17ZryrGw4Dt3WDJw1DtF4rXFy3GF1qgr1jvwsI9r1UJF4kJr15
+	Ary5Xr4SvF98AwUanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUv0b4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxkF7I0En4kS
+	14v26r1q6r43MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I
+	8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8
+	ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x
+	0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_
+	Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU1
+	7KsUUUUUU==
+X-CM-SenderInfo: hfkh02xlgr0w46kxt4xhlfz01xgou0bp/
 
-On 1/4/26 2:53 AM, Chen Ridong wrote:
->
-> On 2026/1/2 3:15, Waiman Long wrote:
->> Currently, when setting a cpuset's cpuset.cpus to a value that conflicts
->> with the cpuset.cpus/cpuset.cpus.exclusive of a sibling partition,
->> the sibling's partition state becomes invalid. This is overly harsh and
->> is probably not necessary.
->>
->> The cpuset.cpus.exclusive control file, if set, will override the
->> cpuset.cpus of the same cpuset when creating a cpuset partition.
->> So cpuset.cpus has less priority than cpuset.cpus.exclusive in setting up
->> a partition.  However, it cannot override a conflicting cpuset.cpus file
->> in a sibling cpuset and the partition creation process will fail. This
->> is inconsistent.  That will also make using cpuset.cpus.exclusive less
->> valuable as a tool to set up cpuset partitions as the users have to
->> check if such a cpuset.cpus conflict exists or not.
->>
->> Fix these problems by strictly adhering to the setting of the
->> following control files in descending order of priority when setting
->> up a partition.
->>
->>   1. cpuset.cpus.exclusive.effective of a valid partition
->>   2. cpuset.cpus.exclusive
->>   3. cpuset.cpus
->>
-> Hi, Longman,
->
-> This description is a bit confusing to me. cpuset.cpus.exclusive and cpuset.cpus are user-settable
-> control files, while cpuset.cpus.exclusive.effective is a read-only file that reflects the result of
-> applying cpuset.cpus.exclusive and cpuset.cpus after conflict resolution.
->
-> A partition can be established as long as cpuset.cpus.exclusive.effective is not empty. I believe
-> cpuset.cpus.exclusive.effective represents the final effective CPU mask used for the partition, so
-> it shouldn't be compared in priority with cpuset.cpus.exclusive or cpuset.cpus. Rather, the latter
-> two are inputs that determine the former.
 
-Yes, that priority list can be somewhat confusing. I will take out this 
-paragraph. The next 2 paragraphs in the commit log should be good enough.
 
-Thanks,
-Longman
+On 2026/1/5 5:25, Waiman Long wrote:
+> On 1/3/26 9:48 PM, Chen Ridong wrote:
+>>
+>> On 2026/1/2 3:15, Waiman Long wrote:
+>>> Since commit f62a5d39368e ("cgroup/cpuset: Remove remote_partition_check()
+>>> & make update_cpumasks_hier() handle remote partition"), the
+>>> compute_effective_exclusive_cpumask() helper was extended to
+>>> strip exclusive CPUs from siblings when computing effective_xcpus
+>>> (cpuset.cpus.exclusive.effective). This helper was later renamed to
+>>> compute_excpus() in commit 86bbbd1f33ab ("cpuset: Refactor exclusive
+>>> CPU mask computation logic").
+>>>
+>>> This helper is supposed to be used consistently to compute
+>>> effective_xcpus. However, there is an exception within the callback
+>>> critical section in update_cpumasks_hier() when exclusive_cpus of a
+>>> valid partition root is empty. This can cause effective_xcpus value to
+>>> differ depending on where exactly it is last computed. Fix this by using
+>>> compute_excpus() in this case to give a consistent result.
+>>>
+>>> Signed-off-by: Waiman Long <longman@redhat.com>
+>>> ---
+>>>   kernel/cgroup/cpuset.c | 14 +++++---------
+>>>   1 file changed, 5 insertions(+), 9 deletions(-)
+>>>
+>>> diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
+>>> index da2b3b51630e..37d118a9ad4d 100644
+>>> --- a/kernel/cgroup/cpuset.c
+>>> +++ b/kernel/cgroup/cpuset.c
+>>> @@ -2168,17 +2168,13 @@ static void update_cpumasks_hier(struct cpuset *cs, struct tmpmasks *tmp,
+>>>           spin_lock_irq(&callback_lock);
+>>>           cpumask_copy(cp->effective_cpus, tmp->new_cpus);
+>>>           cp->partition_root_state = new_prs;
+>>> -        if (!cpumask_empty(cp->exclusive_cpus) && (cp != cs))
+>>> -            compute_excpus(cp, cp->effective_xcpus);
+>>> -
+>>>           /*
+>>> -         * Make sure effective_xcpus is properly set for a valid
+>>> -         * partition root.
+>>> +         * Need to compute effective_xcpus if either exclusive_cpus
+>>> +         * is non-empty or it is a valid partition root.
+>>>            */
+>>> -        if ((new_prs > 0) && cpumask_empty(cp->exclusive_cpus))
+>>> -            cpumask_and(cp->effective_xcpus,
+>>> -                    cp->cpus_allowed, parent->effective_xcpus);
+>>> -        else if (new_prs < 0)
+>>> +        if ((new_prs > 0) || !cpumask_empty(cp->exclusive_cpus))
+>>> +            compute_excpus(cp, cp->effective_xcpus);
+>>> +        if (new_prs < 0)
+>>>               reset_partition_data(cp);
+>>>           spin_unlock_irq(&callback_lock);
+>>>   
+>> The code resets partition data only for new_prs < 0. My understanding is that a partition is invalid
+>> when new_prs <= 0. Shouldn't reset_partition_data() also be called when new_prs = 0? Is there a
+>> specific reason to skip the reset in that case?
+> 
+> update_cpumasks_hier() is called when changes in a cpuset or hotplug affects other cpusets in the
+> hierarchy. With respect to changes in partition state, it is either from valid to invalid or vice
+> versa. It will not change from a valid partition to member. The only way new_prs = 0 is when old_prs
+> = 0. Even if the affected cpuset is processed again in update_cpumask_hier(), any state change from
+> valid partition to member (update_prstate()), reset_partition_data() should have been called there.
+> That is why we only care about when new_prs != 0.
+> 
+
+Thank you for your patience.
+
+> The code isn't wrong here. However I can change the condition to (new_prs <= 0) if it makes it
+> easier to understand.
+> 
+
+I agree there's nothing wrong with the current logic. However, for clarity, I suggest changing the
+condition to (new_prs <= 0). This allows the function's logic to be fully self-consistent and
+focused on a single responsibility. This approach would allow us to simplify the code to:
+
+	if (new_prs > 0)
+		compute_excpus(cp, cp->effective_xcpus);
+	else
+		reset_partition_data(cp);
+
+Since reset_partition_data() already handles cases whether cp->exclusive_cpus is empty or not, this
+implementation would be more concise while correctly covering all scenarios.
+
+-- 
+Best regards,
+Ridong
 
 
