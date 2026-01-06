@@ -1,54 +1,57 @@
-Return-Path: <cgroups+bounces-12936-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-12937-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 36D15CFAA7C
-	for <lists+cgroups@lfdr.de>; Tue, 06 Jan 2026 20:28:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id B7A7ECFAF36
+	for <lists+cgroups@lfdr.de>; Tue, 06 Jan 2026 21:35:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 5F01532938D4
-	for <lists+cgroups@lfdr.de>; Tue,  6 Jan 2026 18:50:50 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id E5E7430B40D7
+	for <lists+cgroups@lfdr.de>; Tue,  6 Jan 2026 20:31:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2CFAE2DC336;
-	Tue,  6 Jan 2026 18:50:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 89BDF34AAE0;
+	Tue,  6 Jan 2026 19:36:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="uzgfWQKK"
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="Ag1bDF4X"
 X-Original-To: cgroups@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B9CB82BDC3F;
-	Tue,  6 Jan 2026 18:50:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2850534A76D;
+	Tue,  6 Jan 2026 19:36:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767725440; cv=none; b=u+Am2cVWOpZv2zmgV76DVCM1luCKnU8JmzaCzIysbRM3gG//Oxmm6qJP/v9PHcEmeNESXMtFEdVXQqzuJNQyA1fW3iCigFgMp5JaIdqqGLUxYGXzDkvqXxojA+89xInu1qLZ4VIAIJL8kNuKaykJ6FN9e1fnPprSupon1uRDFoo=
+	t=1767728217; cv=none; b=gqdaBrZSoNn4KieK28pPNK10U7adHkDXFSqWMDNFfULb6T3szw7NZxWVq7wsixr7ALvowIrb/d1J1OeL++GlROc8jT/x73Hg8xN7Vv35x7BYdp1V/0IH1D/UietIqcuP1n+Zzuadtg+15wcrwOlu9QGXft6D7rJvJQA77VmqUC0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767725440; c=relaxed/simple;
-	bh=BGJr4bLtW5UW/a277QKOKmHsnFt20Odg1H9gTtbyE1s=;
+	s=arc-20240116; t=1767728217; c=relaxed/simple;
+	bh=aX5ErCx74e37nAMgsGg4wnwmylSVnqj+pGJPEHPS6Vw=;
 	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
-	 Mime-Version:Content-Type; b=Iyc9okw2CrnrcYTTWY56QA1bE99SsJalR7ujWWI32H/BcvSUY4Ez2PeJiDQ/iZQfWlXlwP7XuME23pngIpn92iT8uT+pvBPnXsK4rrgD6JxhVB1Slk5csxxpW2suf/Z74th9JOLkT1f3VSVodxQuTYMDatl9zfvzXOolh6K/nBs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=uzgfWQKK; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DF539C19422;
-	Tue,  6 Jan 2026 18:50:39 +0000 (UTC)
+	 Mime-Version:Content-Type; b=X1SG+Kgq3lAzicKkOcdEQNZPyFifv4fe1sW+WqiNASavJPnExvyjo/jU4glyCrMDAJlg0hdGCY0Haldjbyd4q3iiSfwbzIuIgnoVb3VnQaf6Ro5BaJ2SuWqhPA3DUDVNlAVJ5rIIft+siYZStcyjKq5b2ry0hjm+fukomRKX9tg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=Ag1bDF4X; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 164C8C116C6;
+	Tue,  6 Jan 2026 19:36:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-	s=korg; t=1767725440;
-	bh=BGJr4bLtW5UW/a277QKOKmHsnFt20Odg1H9gTtbyE1s=;
+	s=korg; t=1767728216;
+	bh=aX5ErCx74e37nAMgsGg4wnwmylSVnqj+pGJPEHPS6Vw=;
 	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=uzgfWQKKLTZB1dDYmXUoV0mbXXgbygdMa6q5F+JbPdi5wCqV/md1YPFhVTLmxdXWE
-	 2ibS+rwuIr9LAPOSD0Q2ern1ti+UqhyzqBUy/LkEFSmDoeJvARo2crGd5UdY/cmmGx
-	 kj9K0yvRMDC86cki2gcu5A8aKn+QXC71u83F6Bug=
-Date: Tue, 6 Jan 2026 10:50:39 -0800
+	b=Ag1bDF4Xddc+QOPO1lE2eYtZg53Kw95IbRIng9dnbEd262GkFTAPEgxDrWUD9r/bq
+	 FPz2e7CnWXV9/e4OiWlPTLRlsNhV8OQBVKqVj9+FQzvAngP8oQ4SeNKJL/TfRSz8Sr
+	 tCvdTuIeY5KmZtKus8eRUWkM/moqtyZT40d9hUME=
+Date: Tue, 6 Jan 2026 11:36:55 -0800
 From: Andrew Morton <akpm@linux-foundation.org>
-To: Michal Hocko <mhocko@suse.com>
-Cc: Shakeel Butt <shakeel.butt@linux.dev>, Johannes Weiner
- <hannes@cmpxchg.org>, Roman Gushchin <roman.gushchin@linux.dev>, Muchun
- Song <muchun.song@linux.dev>, SeongJae Park <sj@kernel.org>, Meta kernel
- team <kernel-team@meta.com>, linux-mm@kvack.org, cgroups@vger.kernel.org,
- damon@lists.linux.dev, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/8] memcg: separate private and public ID namespaces
-Message-Id: <20260106105039.6f1cdcead82934422e755ac3@linux-foundation.org>
-In-Reply-To: <aVzjN5z3w114fNB4@tiehlicka>
-References: <20251225232116.294540-1-shakeel.butt@linux.dev>
-	<aVzjN5z3w114fNB4@tiehlicka>
+To: Bing Jiao <bingjiao@google.com>
+Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org, gourry@gourry.net,
+ longman@redhat.com, hannes@cmpxchg.org, mhocko@kernel.org,
+ roman.gushchin@linux.dev, shakeel.butt@linux.dev, muchun.song@linux.dev,
+ tj@kernel.org, mkoutny@suse.com, david@kernel.org,
+ zhengqi.arch@bytedance.com, lorenzo.stoakes@oracle.com,
+ axelrasmussen@google.com, chenridong@huaweicloud.com, yuanchu@google.com,
+ weixugc@google.com, cgroups@vger.kernel.org
+Subject: Re: [PATCH v6] mm/vmscan: fix demotion targets checks in
+ reclaim/demotion
+Message-Id: <20260106113655.52d71d43595aca9296cb02a1@linux-foundation.org>
+In-Reply-To: <20260106075703.1420072-1-bingjiao@google.com>
+References: <20260105050203.328095-1-bingjiao@google.com>
+	<20260106075703.1420072-1-bingjiao@google.com>
 X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
@@ -59,22 +62,73 @@ Mime-Version: 1.0
 Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 
-On Tue, 6 Jan 2026 11:25:59 +0100 Michal Hocko <mhocko@suse.com> wrote:
+On Tue,  6 Jan 2026 07:56:54 +0000 Bing Jiao <bingjiao@google.com> wrote:
 
-> > Note: please apply this series after the patch at
-> > https://lore.kernel.org/20251225002904.139543-1-shakeel.butt@linux.dev/
-
-OK, that's in mm-hotfixes-unstable.
-
-> Makes sense to me. Originally I was not supper happy about the private
-> interface as this should be really private to memcg proper but then I
-> have noticed the lru code needs this outside and dealing with that would
-> be quite messy so an explicit name is probably better in the end.
+> Fix two bugs in demote_folio_list() and can_demote() due to incorrect
+> demotion target checks in reclaim/demotion.
 > 
-> Feel free to add
-> Acked-by: Michal Hocko <mhocko@suse.com>
+> Commit 7d709f49babc ("vmscan,cgroup: apply mems_effective to reclaim")
+> introduces the cpuset.mems_effective check and applies it to
+> can_demote(). However:
+> 
+>   1. It does not apply this check in demote_folio_list(), which leads
+>      to situations where pages are demoted to nodes that are
+>      explicitly excluded from the task's cpuset.mems.
+> 
+>   2. It checks only the nodes in the immediate next demotion hierarchy
+>      and does not check all allowed demotion targets in can_demote().
+>      This can cause pages to never be demoted if the nodes in the next
+>      demotion hierarchy are not set in mems_effective.
+> 
+> These bugs break resource isolation provided by cpuset.mems.
+> This is visible from userspace because pages can either fail to be
+> demoted entirely or are demoted to nodes that are not allowed
+> in multi-tier memory systems.
+> 
+> To address these bugs, update cpuset_node_allowed() and
+> mem_cgroup_node_allowed() to return effective_mems, allowing directly
+> logic-and operation against demotion targets. Also update can_demote()
+> and demote_folio_list() accordingly.
+> 
+> Bug 1 reproduction:
+>   Assume a system with 4 nodes, where nodes 0-1 are top-tier and
+>   nodes 2-3 are far-tier memory. All nodes have equal capacity.
+> 
+>   Test script:
+>     echo 1 > /sys/kernel/mm/numa/demotion_enabled
+>     mkdir /sys/fs/cgroup/test
+>     echo +cpuset > /sys/fs/cgroup/cgroup.subtree_control
+>     echo "0-2" > /sys/fs/cgroup/test/cpuset.mems
+>     echo $$ > /sys/fs/cgroup/test/cgroup.procs
+>     swapoff -a
+>     # Expectation: Should respect node 0-2 limit.
+>     # Observation: Node 3 shows significant allocation (MemFree drops)
+>     stress-ng --oomable --vm 1 --vm-bytes 150% --mbind 0,1
+> 
+> Bug 2 reproduction:
+>   Assume a system with 6 nodes, where nodes 0-2 are top-tier,
+>   node 3 is a far-tier node, and nodes 4-5 are the farthest-tier nodes.
+>   All nodes have equal capacity.
+> 
+>   Test script:
+>     echo 1 > /sys/kernel/mm/numa/demotion_enabled
+>     mkdir /sys/fs/cgroup/test
+>     echo +cpuset > /sys/fs/cgroup/cgroup.subtree_control
+>     echo "0-2,4-5" > /sys/fs/cgroup/test/cpuset.mems
+>     echo $$ > /sys/fs/cgroup/test/cgroup.procs
+>     swapoff -a
+>     # Expectation: Pages are demoted to Nodes 4-5
+>     # Observation: No pages are demoted before oom.
+>     stress-ng --oomable --vm 1 --vm-bytes 150% --mbind 0,1,2
 
-Great, thanks, I'll add it.  The series in somewhat old (Dec 25) but
-nothing seems to have changed.
+Thanks.
 
+I'm not confident in my attempts to resolve Akinobu Mita's "mm/vmscan:
+don't demote if there is not enough free memory in the lower memory
+tier" against this.  In can_demote().  So I'll drop Akinobu's series,
+sorry.
+
+Akinobu, can you please redo that series against tomorrow's linux-next?
+it looks like it needs a resend anyway to try to create some reviewer
+input.
 
