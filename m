@@ -1,145 +1,200 @@
-Return-Path: <cgroups+bounces-12933-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-12934-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 87E4CCF8CA2
-	for <lists+cgroups@lfdr.de>; Tue, 06 Jan 2026 15:31:28 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 5989CCF984B
+	for <lists+cgroups@lfdr.de>; Tue, 06 Jan 2026 18:02:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id DB9C2300FE30
-	for <lists+cgroups@lfdr.de>; Tue,  6 Jan 2026 14:24:15 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 56A8B300FFA2
+	for <lists+cgroups@lfdr.de>; Tue,  6 Jan 2026 16:53:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D807B296BBF;
-	Tue,  6 Jan 2026 14:24:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 22F5A338F52;
+	Tue,  6 Jan 2026 16:52:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gourry.net header.i=@gourry.net header.b="eS+yV8wE"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="qSC/XXQz"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-qk1-f181.google.com (mail-qk1-f181.google.com [209.85.222.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-185.mta0.migadu.com (out-185.mta0.migadu.com [91.218.175.185])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1704B2F85B
-	for <cgroups@vger.kernel.org>; Tue,  6 Jan 2026 14:24:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AFA273385B3
+	for <cgroups@vger.kernel.org>; Tue,  6 Jan 2026 16:52:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.185
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767709453; cv=none; b=LQVDAhrW6gg5S/ClPtl31hofO3N1OEFOGUJeqbp1Bz8qh9O84/zCk1YvlwihrtfstCIScwg1jGPaErV5R3/PfwGdQyPao6WjIgYRkLGdiksiS1lk2ANiNg5XyvDzehD3sFzH9neEGxVApl2Z6phrPKh9HFDNWWIZwXZW9PAzEGo=
+	t=1767718329; cv=none; b=BYRi+TuQAoKJyhJfoyJknF8aR1E1+k9egH59ALwndKxs4aJQhyoOU2hZUZ1n7hBXZkCrDkQSVLcx3koVrWuLejp9X4anEpdNWUHRAF9gvWdaW12oZE7uVdheRmUQEoGwsuWSbUA9XMzS+iH6w17rik0H//avz2bI5kdpv3vcmQg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767709453; c=relaxed/simple;
-	bh=nNdVsV52KdhqeNC8yMCpQklGTglYaP6EfhxMiSNTDdw=;
+	s=arc-20240116; t=1767718329; c=relaxed/simple;
+	bh=/cozL3/Rh/PlDZC1K3Uq/siJXAJfJfX35y05ub3Fuu8=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=H2A3l+4lfJmPKbemghtANzDhypnx/4eGOLgwXVmi+xL95HnraaERtk0bVhitosmkE9CiTvrtWQzhYnns0dQLHej+O+aylBH0pMoFU6QBK0jsLwg2+C/yqoysFVmmdbZFe/OoBIudvrj9YwxqrVmk9nRpmdc7W2TDB8TZQxiciSQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gourry.net; spf=pass smtp.mailfrom=gourry.net; dkim=pass (2048-bit key) header.d=gourry.net header.i=@gourry.net header.b=eS+yV8wE; arc=none smtp.client-ip=209.85.222.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gourry.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gourry.net
-Received: by mail-qk1-f181.google.com with SMTP id af79cd13be357-8bb6a27d407so84672985a.0
-        for <cgroups@vger.kernel.org>; Tue, 06 Jan 2026 06:24:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gourry.net; s=google; t=1767709451; x=1768314251; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=gKFtmrwYJffjJ5vAfa993qtRrR2MOeXl2weKUw1hfgg=;
-        b=eS+yV8wEHN/g/QxuijgGEe/W0Z6wgFpCwu4b8oeJoM8i4HcXsulQEJm3gsmn0asqn5
-         aaoY/tRtFDUITVQtOHKCPbTtqcCWhE2TGxwXnknaENOuiITnC+6mbKLWOwVY2au4Glfe
-         L2GzpqT9E5pg4yihKw2SKJAyvMMfl8nV66g8O1a/X3NlhUMjpYr90W3ph8jtWSYO1PG/
-         WWpFeHrs7UdLkuczPiKinaJWS7HP67EW2AJU0D1l0CcorJ+kZYVgMV64crT8UBcunN1n
-         M2USWBDr4IEpf54Miy1qslLj2Z17K8gKukptcPlru54/gQZe4gF3oAHo0y58ZlDty/F7
-         b12w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1767709451; x=1768314251;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=gKFtmrwYJffjJ5vAfa993qtRrR2MOeXl2weKUw1hfgg=;
-        b=nrJ0tYKDMvurahkvxW5YXcbrNLl2midenz6bWqAhTN7zjDoM55FTp1TDaznuXv01p0
-         guBINr2A/zujaK1dd6lgJdW0CgxmjSBQsLVNvfdf9itF96zup2gJeLNTMK+k7u3FRV1y
-         yHMIgrpeO4dc+PcEKDWAsgUWFmyihdlIbZMiYS/gl2WHQU7F744Iy2mW7PzYP0NAfkm0
-         mh7wTp/zRLoNNm8MijVx2HC2MlVsJWHJRfANJvRo05LLhDy4MbEQqJ6VsXj9yC4209/t
-         xXqcaSmOCoTITYpoqxNrhLjACVBUTRVEz1CEfQ0j+qGPyh7u45xeldmiZWv/pfEXVXb9
-         +CwQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXsr33svzOQjUJVKa0KpY6WJel26dInSYw2TDjsr1mA9h3/qkm4m+ekOdCK+rvOr9f3CPm+5C1E@vger.kernel.org
-X-Gm-Message-State: AOJu0YzXhauex5TVT/DbpyTLRj96FnU+h29MYyKBnjgdJ+qnZsF7Uux7
-	I9Imms7K6BjdVc1yGM4Zf8a9vyL6Onw1OuFoW+xhMaqMVtEWxvw6eD2piHP25BvpzNHeJS0pT6R
-	TPCR3
-X-Gm-Gg: AY/fxX6dMO2Q2PaDViNB3NETEqsqInFcO9+CtcxMNYzsMqhFzkgFpLLyviWTgQoEFEK
-	pG/v/OvYc/oqqpb0GKQj0dTrQ36z51jwykxY8fxyOg2WRjxs31YkJTxm0iXMK2nbaRlTDsxonzq
-	Xvu+9DNEmtsgs0GMrZytlVY1RLFXJf6+B7eZRHfCKtPg/0+01Lwu/TAlVs+w/zsdBjnKrYPlafF
-	mn2jOE5C8rA3iFcEYcnXjPdR3H295xtFYEwc4dywqT+k9T82GNDB3Ca1qGd+xzvWxYdDxzgObGO
-	IjC3bKTUUc62MgGH2vD4PV9Ni5Tqvl3lZm4odixWJ23D1MXDFhuaTvqMtRW+927oE9kTC5eydDJ
-	+j+BYkOo7xyKRpOJGQAGvioEdXMivzgsC3bjxmhPJImxQ6F60xpljhWZj0vSIODndxZj2/oC3mh
-	2Zfh/nHOEL8yHE+FrhU0nvsiLy4j6yAEenOEGtOByZiEq4DW1VfFv/Mwca6HRdo50AAlnfRg==
-X-Google-Smtp-Source: AGHT+IGMO4IFrkX9A1M1kgyKKyomZ/Tm009TfQhyVAXfXHBjJcxasAIany0LY092XpBTY+2rtwysZA==
-X-Received: by 2002:a05:620a:4808:b0:8b2:e3d1:f7e0 with SMTP id af79cd13be357-8c37ead0b5cmr435049585a.0.1767709449546;
-        Tue, 06 Jan 2026 06:24:09 -0800 (PST)
-Received: from gourry-fedora-PF4VCD3F (pool-96-255-20-138.washdc.ftas.verizon.net. [96.255.20.138])
-        by smtp.gmail.com with ESMTPSA id af79cd13be357-8c37f4b917dsm178740585a.17.2026.01.06.06.24.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Jan 2026 06:24:09 -0800 (PST)
-Date: Tue, 6 Jan 2026 09:23:34 -0500
-From: Gregory Price <gourry@gourry.net>
-To: Bing Jiao <bingjiao@google.com>
-Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-	akpm@linux-foundation.org, longman@redhat.com, hannes@cmpxchg.org,
-	mhocko@kernel.org, roman.gushchin@linux.dev, shakeel.butt@linux.dev,
-	muchun.song@linux.dev, tj@kernel.org, mkoutny@suse.com,
-	david@kernel.org, zhengqi.arch@bytedance.com,
-	lorenzo.stoakes@oracle.com, axelrasmussen@google.com,
-	chenridong@huaweicloud.com, yuanchu@google.com, weixugc@google.com,
-	cgroups@vger.kernel.org
-Subject: Re: [PATCH v6] mm/vmscan: fix demotion targets checks in
- reclaim/demotion
-Message-ID: <aV0a5pYLNV61WJGk@gourry-fedora-PF4VCD3F>
-References: <20260105050203.328095-1-bingjiao@google.com>
- <20260106075703.1420072-1-bingjiao@google.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=MYAwKYG/VD4iqZv4Z5LdWg8gJiB5W5JxwDA0wtBPgDPSbhQY+2KIoW8SJdeutjb6kVTUHe9uqJFg15KjuJ3Le0jKXgxgLUygdtex/PqffM0ZnklOEPZMQesliiD+gjbKpPwACwu0oAUPiRdaWjVuxxUNmAwsD9tsxIr/7vBSxz4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=qSC/XXQz; arc=none smtp.client-ip=91.218.175.185
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Date: Tue, 6 Jan 2026 16:51:54 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1767718325;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=6UD2crwKJYyiE4FPL7vLzqYvJnd70fea19UnIDBPEH4=;
+	b=qSC/XXQzEPYB8mYYbl5kz8Iup6+I0c+PuosEUAn+P0l9OnYITWEyFnsWS3YHzC7RxSIjKX
+	/ECPfpMCnkTAj2RVpOrTblRbAci0VykKCsjWwTcG7ZfT9X5zQX7BnNVm/9gc0O2TW7HiWI
+	dUS79Urxyls4YO/zMZdZWzyz/HWMOAI=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Yosry Ahmed <yosry.ahmed@linux.dev>
+To: Qi Zheng <qi.zheng@linux.dev>
+Cc: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>, hannes@cmpxchg.org, 
+	hughd@google.com, mhocko@suse.com, roman.gushchin@linux.dev, 
+	shakeel.butt@linux.dev, muchun.song@linux.dev, david@kernel.org, 
+	lorenzo.stoakes@oracle.com, ziy@nvidia.com, harry.yoo@oracle.com, imran.f.khan@oracle.com, 
+	kamalesh.babulal@oracle.com, axelrasmussen@google.com, yuanchu@google.com, weixugc@google.com, 
+	chenridong@huaweicloud.com, akpm@linux-foundation.org, hamzamahfooz@linux.microsoft.com, 
+	apais@linux.microsoft.com, lance.yang@linux.dev, linux-mm@kvack.org, 
+	linux-kernel@vger.kernel.org, cgroups@vger.kernel.org, Muchun Song <songmuchun@bytedance.com>, 
+	Qi Zheng <zhengqi.arch@bytedance.com>
+Subject: Re: [PATCH v2 27/28] mm: memcontrol: eliminate the problem of dying
+ memory cgroup for LRU folios
+Message-ID: <rga5pjrjnrzzminflnwfd2lckedg4pdzaypwsa4ad2ovyjkavt@kegiy7cthefu>
+References: <cover.1765956025.git.zhengqi.arch@bytedance.com>
+ <c08f964513f9eb6a04f80f1a900e3494a99b7e0d.1765956026.git.zhengqi.arch@bytedance.com>
+ <prqhodx7wc3cbrlh7tqf632b3gpcciwmn5n22qqv7c7rbtsoy3@lsnd7rtdhfmh>
+ <hrxsjzcyj2uvxi5h5edtkoc3br4ljvz7m36nczoctyyoinrz56@27gcuui7wfpw>
+ <d016b76d-581a-4582-920d-21f64318090a@linux.dev>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20260106075703.1420072-1-bingjiao@google.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <d016b76d-581a-4582-920d-21f64318090a@linux.dev>
+X-Migadu-Flow: FLOW_OUT
 
-On Tue, Jan 06, 2026 at 07:56:54AM +0000, Bing Jiao wrote:
+On Tue, Jan 06, 2026 at 03:08:57PM +0800, Qi Zheng wrote:
 > 
-> Bug 1 reproduction:
->   Assume a system with 4 nodes, where nodes 0-1 are top-tier and
->   nodes 2-3 are far-tier memory. All nodes have equal capacity.
 > 
->   Test script:
->     echo 1 > /sys/kernel/mm/numa/demotion_enabled
->     mkdir /sys/fs/cgroup/test
->     echo +cpuset > /sys/fs/cgroup/cgroup.subtree_control
->     echo "0-2" > /sys/fs/cgroup/test/cpuset.mems
->     echo $$ > /sys/fs/cgroup/test/cgroup.procs
->     swapoff -a
->     # Expectation: Should respect node 0-2 limit.
->     # Observation: Node 3 shows significant allocation (MemFree drops)
->     stress-ng --oomable --vm 1 --vm-bytes 150% --mbind 0,1
+> On 1/6/26 12:14 AM, Yosry Ahmed wrote:
+> > On Mon, Jan 05, 2026 at 11:41:46AM +0100, Michal Koutný wrote:
+> > > Hi Qi.
+> > > 
+> > > On Wed, Dec 17, 2025 at 03:27:51PM +0800, Qi Zheng <qi.zheng@linux.dev> wrote:
+> > > 
+> > > > @@ -5200,22 +5238,27 @@ int __mem_cgroup_try_charge_swap(struct folio *folio, swp_entry_t entry)
+> > > >   	unsigned int nr_pages = folio_nr_pages(folio);
+> > > >   	struct page_counter *counter;
+> > > >   	struct mem_cgroup *memcg;
+> > > > +	struct obj_cgroup *objcg;
+> > > >   	if (do_memsw_account())
+> > > >   		return 0;
+> > > > -	memcg = folio_memcg(folio);
+> > > > -
+> > > > -	VM_WARN_ON_ONCE_FOLIO(!memcg, folio);
+> > > > -	if (!memcg)
+> > > > +	objcg = folio_objcg(folio);
+> > > > +	VM_WARN_ON_ONCE_FOLIO(!objcg, folio);
+> > > > +	if (!objcg)
+> > > >   		return 0;
+> > > > +	rcu_read_lock();
+> > > > +	memcg = obj_cgroup_memcg(objcg);
+> > > >   	if (!entry.val) {
+> > > >   		memcg_memory_event(memcg, MEMCG_SWAP_FAIL);
+> > > > +		rcu_read_unlock();
+> > > >   		return 0;
+> > > >   	}
+> > > >   	memcg = mem_cgroup_id_get_online(memcg);
+> > > > +	/* memcg is pined by memcg ID. */
+> > > > +	rcu_read_unlock();
+> > > >   	if (!mem_cgroup_is_root(memcg) &&
+> > > >   	    !page_counter_try_charge(&memcg->swap, nr_pages, &counter)) {
+> > > 
+> > > Later there is:
+> > > 	swap_cgroup_record(folio, mem_cgroup_id(memcg), entry);
+> > > 
+> > > As per the comment memcg remains pinned by the ID which is associated
+> > > with a swap slot, i.e. theoretically time unbound (shmem).
+> > > (This was actually brought up by Yosry in stats subthread [1])
+> > > 
+> > > I think that should be tackled too to eliminate the problem completely.
+> > 
+> > FWIW, I am not sure if swap entries is the last cause of pinning memcgs,
+> > I am pretty sure there will be others that we haven't found yet. This is
 > 
-> Bug 2 reproduction:
->   Assume a system with 6 nodes, where nodes 0-2 are top-tier,
->   node 3 is a far-tier node, and nodes 4-5 are the farthest-tier nodes.
->   All nodes have equal capacity.
+> Agree.
 > 
->   Test script:
->     echo 1 > /sys/kernel/mm/numa/demotion_enabled
->     mkdir /sys/fs/cgroup/test
->     echo +cpuset > /sys/fs/cgroup/cgroup.subtree_control
->     echo "0-2,4-5" > /sys/fs/cgroup/test/cpuset.mems
->     echo $$ > /sys/fs/cgroup/test/cgroup.procs
->     swapoff -a
->     # Expectation: Pages are demoted to Nodes 4-5
->     # Observation: No pages are demoted before oom.
->     stress-ng --oomable --vm 1 --vm-bytes 150% --mbind 0,1,2
+> > why I think we shouldn't assume that the time between offlining and
+> > releasing a memcg is short or bounded when fixing the stats problem.
 > 
-> Fixes: 7d709f49babc ("vmscan,cgroup: apply mems_effective to reclaim")
-> Cc: <stable@vger.kernel.org>
-> Signed-off-by: Bing Jiao <bingjiao@google.com>
+> If I have not misunderstood your suggestion in the other thread, I plan
+> to do the following in v3:
+> 
+> 1. define a memcgv1-only function:
+> 
+> void memcg1_reparent_state_local(struct mem_cgroup *memcg, struct mem_cgroup
+> *parent)
+> {
+> 	int i;
+> 
+> 	synchronize_rcu();
+> 
+> 	for (i = 0; i < ARRAY_SIZE(memcg1_stats); i++) {
+> 		int idx = memcg1_stats[i];
+> 		unsigned long value = memcg_page_state_local(memcg, idx);
+> 
+> 		mod_memcg_page_state_local(parent, idx, value);
+> 	}
+> }
+> 
+> 2. call it after reparent_unlocks():
+> 
+> memcg_reparent_objcgs
+> --> objcg = __memcg_reparent_objcgs(memcg, parent);
+>     reparent_unlocks(memcg, parent);
+>     reparent_state_local(memcg, parent);
+>     --> memcg1_reparent_state_local()
 
-This looks ok now, haven't tested it myself yet, but looks good.
+Something like that, yeah. I think we can avoid introducing
+mod_memcg_page_state_local() if we just use mod_memcg_state() to
+subtract the stat from the child then add it to the parent.
 
-Thank you for the fix.
+We should probably also flush the stats before reading them to
+aggregate all per-CPU counters.
 
-Reviewed-by: Gregory Price <gourry@gourry.net>
+I think we also need to ensure that all stat updates happen within the
+same RCU read section where we read the memcg pointer from the page,
+ideally with safeguards to prevent misuse.
 
-~Gregory
+> 
+> > 
+> > > 
+> > > As I look at the code, these memcg IDs (private [2]) could be converted
+> > > to objcg IDs so that reparenting applies also to folios that are
+> > > currently swapped out. (Or convert to swap_cgroup_ctrl from the vector
+> > > of IDs to a vector of objcg pointers, depending on space.)
+> > 
+> > I think we can do objcg IDs, but be careful to keep the same behavior as
+> > today and avoid overexhausting the 16 bit ID space. So we need to also
+> > drop the ref to the objcg ID when the memcg is offlined and the objcg is
+> > reparented, such that the objcg ID is deleted unless there are swapped
+> > out entries.
+> > 
+> > I think this can be done on top of this series, not necessarily as part
+> > of it.
+> 
+> Agree, I prefer to address this issue in a separate patchset.
+> 
+> Thanks,
+> Qi
+> 
+> > 
+> > > 
+> > > Thanks,
+> > > Michal
+> > > 
+> > > [1] https://lore.kernel.org/r/ebdhvcwygvnfejai5azhg3sjudsjorwmlcvmzadpkhexoeq3tb@5gj5y2exdhpn
+> > > [2] https://lore.kernel.org/r/20251225232116.294540-1-shakeel.butt@linux.dev
+> > 
+> > 
+> 
 
