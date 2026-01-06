@@ -1,77 +1,80 @@
-Return-Path: <cgroups+bounces-12935-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-12936-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5AEBACFA8C3
-	for <lists+cgroups@lfdr.de>; Tue, 06 Jan 2026 20:17:24 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 36D15CFAA7C
+	for <lists+cgroups@lfdr.de>; Tue, 06 Jan 2026 20:28:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 0B27F30124C0
-	for <lists+cgroups@lfdr.de>; Tue,  6 Jan 2026 19:17:09 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 5F01532938D4
+	for <lists+cgroups@lfdr.de>; Tue,  6 Jan 2026 18:50:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1111334B1AD;
-	Tue,  6 Jan 2026 18:03:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2CFAE2DC336;
+	Tue,  6 Jan 2026 18:50:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="iHFxpVwb"
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="uzgfWQKK"
 X-Original-To: cgroups@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C00542868A7;
-	Tue,  6 Jan 2026 18:03:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B9CB82BDC3F;
+	Tue,  6 Jan 2026 18:50:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767722631; cv=none; b=gjgP8VJVNnZ2D4jK2nACfmsQNJA9IGpL5AkplsWf6RZbkJC13Z9TFqT/LqYvqikC6MUk7gUHvkq6ji+TpKuGp37hDvyt/59e/Jpc78ckD9ijO0wPHmqtdXgkZZSd3baIth4g1351naSXBOlxU3q7g9RoVcS4kpHnnC5De6k/taw=
+	t=1767725440; cv=none; b=u+Am2cVWOpZv2zmgV76DVCM1luCKnU8JmzaCzIysbRM3gG//Oxmm6qJP/v9PHcEmeNESXMtFEdVXQqzuJNQyA1fW3iCigFgMp5JaIdqqGLUxYGXzDkvqXxojA+89xInu1qLZ4VIAIJL8kNuKaykJ6FN9e1fnPprSupon1uRDFoo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767722631; c=relaxed/simple;
-	bh=p3Jt3MN1IXIrOPC99GF2WJoelTHqrcIxGdkKgV0seao=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=GM0tRTgSicpIwMipjaj8x2wXxAMrtJbGMN2hsbZT9KayDVAuK9fJo4CBOsxu86dLwl1siOKI7KEZpvc2gc24A0qcsdMRF9XGT92Ndw6mVyZ20S9tRi3s4+pMYathlNCgivh+ohl4hiFF1blC0kHcLTZWoAHkxdCPLvlOdqgki68=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=iHFxpVwb; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 654FAC116C6;
-	Tue,  6 Jan 2026 18:03:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1767722631;
-	bh=p3Jt3MN1IXIrOPC99GF2WJoelTHqrcIxGdkKgV0seao=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=iHFxpVwbCvVpQLiYAuAFVliW0Z+5kXkyhKtcDwwiHaHj3l6snsgACo7/nF9rvwOYr
-	 9++gj33po4TVILxHZk7WfSid4qzeJ0DE8hx9mYQs1YlXPVM4kUlZn+V/akZuEZlbr5
-	 huJIon9cKc2t80CiVBfqmsuD5w4uxJs3twG+jbTjkaNBVlZQ21h80wgnmWLHx1a0BZ
-	 gDF/VWqJ71enfPo0Xo6n1lIt9cxpatOS07MLopajIcBkq9yOnrPmFRGMJHJ7hYqL44
-	 Lleht1/bskufG+9MZ9qIz55USca05uNNy2u/KY4PQEgVes9xRNAIlekC9aX8Pr76bs
-	 FKjDPZ8NqPehQ==
-Date: Tue, 6 Jan 2026 08:03:50 -1000
-From: Tejun Heo <tj@kernel.org>
-To: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Cc: Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
-	cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
-	David Laight <david.laight.linux@gmail.com>,
-	Johannes Weiner <hannes@cmpxchg.org>
-Subject: Re: [PATCH 1/4] cgroup: Eliminate cgrp_ancestor_storage in
- cgroup_root
-Message-ID: <aV1OhkWD9fZgrVtz@slm.duckdns.org>
-References: <20251217162744.352391-1-mkoutny@suse.com>
- <20251217162744.352391-2-mkoutny@suse.com>
- <4e2d8a58-a78f-46e3-81a1-342e571b4273@embeddedor.com>
+	s=arc-20240116; t=1767725440; c=relaxed/simple;
+	bh=BGJr4bLtW5UW/a277QKOKmHsnFt20Odg1H9gTtbyE1s=;
+	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
+	 Mime-Version:Content-Type; b=Iyc9okw2CrnrcYTTWY56QA1bE99SsJalR7ujWWI32H/BcvSUY4Ez2PeJiDQ/iZQfWlXlwP7XuME23pngIpn92iT8uT+pvBPnXsK4rrgD6JxhVB1Slk5csxxpW2suf/Z74th9JOLkT1f3VSVodxQuTYMDatl9zfvzXOolh6K/nBs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=uzgfWQKK; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DF539C19422;
+	Tue,  6 Jan 2026 18:50:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+	s=korg; t=1767725440;
+	bh=BGJr4bLtW5UW/a277QKOKmHsnFt20Odg1H9gTtbyE1s=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=uzgfWQKKLTZB1dDYmXUoV0mbXXgbygdMa6q5F+JbPdi5wCqV/md1YPFhVTLmxdXWE
+	 2ibS+rwuIr9LAPOSD0Q2ern1ti+UqhyzqBUy/LkEFSmDoeJvARo2crGd5UdY/cmmGx
+	 kj9K0yvRMDC86cki2gcu5A8aKn+QXC71u83F6Bug=
+Date: Tue, 6 Jan 2026 10:50:39 -0800
+From: Andrew Morton <akpm@linux-foundation.org>
+To: Michal Hocko <mhocko@suse.com>
+Cc: Shakeel Butt <shakeel.butt@linux.dev>, Johannes Weiner
+ <hannes@cmpxchg.org>, Roman Gushchin <roman.gushchin@linux.dev>, Muchun
+ Song <muchun.song@linux.dev>, SeongJae Park <sj@kernel.org>, Meta kernel
+ team <kernel-team@meta.com>, linux-mm@kvack.org, cgroups@vger.kernel.org,
+ damon@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/8] memcg: separate private and public ID namespaces
+Message-Id: <20260106105039.6f1cdcead82934422e755ac3@linux-foundation.org>
+In-Reply-To: <aVzjN5z3w114fNB4@tiehlicka>
+References: <20251225232116.294540-1-shakeel.butt@linux.dev>
+	<aVzjN5z3w114fNB4@tiehlicka>
+X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <4e2d8a58-a78f-46e3-81a1-342e571b4273@embeddedor.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Tue, Jan 06, 2026 at 04:06:47PM +0900, Gustavo A. R. Silva wrote:
-> Instead of the above anonymous struct, we can use the DECLARE_FLEX_ARRAY()
-> helper here:
+On Tue, 6 Jan 2026 11:25:59 +0100 Michal Hocko <mhocko@suse.com> wrote:
+
+> > Note: please apply this series after the patch at
+> > https://lore.kernel.org/20251225002904.139543-1-shakeel.butt@linux.dev/
+
+OK, that's in mm-hotfixes-unstable.
+
+> Makes sense to me. Originally I was not supper happy about the private
+> interface as this should be really private to memcg proper but then I
+> have noticed the lru code needs this outside and dealing with that would
+> be quite messy so an explicit name is probably better in the end.
 > 
-> 		DECLARE_FLEX_ARRAY(struct cgroup, *ancestors);
+> Feel free to add
+> Acked-by: Michal Hocko <mhocko@suse.com>
 
-Michal, can you update the patch with the above and resend?
+Great, thanks, I'll add it.  The series in somewhat old (Dec 25) but
+nothing seems to have changed.
 
-Thanks.
-
--- 
-tejun
 
