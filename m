@@ -1,261 +1,113 @@
-Return-Path: <cgroups+bounces-12948-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-12949-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7ABD9CFF882
-	for <lists+cgroups@lfdr.de>; Wed, 07 Jan 2026 19:47:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 114F9CFFD2A
+	for <lists+cgroups@lfdr.de>; Wed, 07 Jan 2026 20:46:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 2A6B2329664E
-	for <lists+cgroups@lfdr.de>; Wed,  7 Jan 2026 17:57:37 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id EE6EA330AB50
+	for <lists+cgroups@lfdr.de>; Wed,  7 Jan 2026 19:06:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7837935CB8B;
-	Wed,  7 Jan 2026 17:43:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B60A31326C;
+	Wed,  7 Jan 2026 19:05:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="C9B4IYW1";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="nMQDgDvq";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="C9B4IYW1";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="nMQDgDvq"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="A4RHJTdV"
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 18537346A00
-	for <cgroups@vger.kernel.org>; Wed,  7 Jan 2026 17:43:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D8FCF1EB9E1;
+	Wed,  7 Jan 2026 19:05:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767807823; cv=none; b=MfkWJoXZugwb1p/+zImMimiNnnDxJ8zBSfpdY0DqmWg+d7lA529rf3HBQVCwRiLkXmuR707Mp0bUp/+bNthkekS+RH5euxLJArC2Mel7VTCqJ4JzPrGG4i0JhvxHBceWOgH9B7mUCHxGmvVnpDh/181CReEUdzwGDEVh5A1nnc0=
+	t=1767812736; cv=none; b=oRKZozxZSSjwdTs+XF5CkwfYYHV0+IJmC5Yr9FleceiiYhmjFOnlWyJt1A6+9rGPhtpodPcTKZIK8MtsWCzBqqA1CnCDJ9zTOPVVFMm2zH2I+BfD5eGrkUb021Ywr57A4/xuiDhO163hZwgnEknaWLZ7ieTKiFJtl3Tp6CcrJds=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767807823; c=relaxed/simple;
-	bh=CVy31zC43f9X0TWwOZEkd2ypj+Ac0oN4odsdsmAQO9k=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Ncn961kzPM+GbO9aj1LUdGWQxIO9LebuEvwjxAa1Zmct9gpdOedZCrbvpYsHv59hfDvhbPa8vx9pFjn/xNQHdiTOrW/2Mbu1cxIzoAG0HRIGbVuqodRkb9lqYEJaspqHwbwWyv/lHZJjFQAmJSf4l9d/A6e+xE1NiGzcSlOEBnc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=C9B4IYW1; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=nMQDgDvq; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=C9B4IYW1; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=nMQDgDvq; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 931F034063;
-	Wed,  7 Jan 2026 17:43:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1767807810; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=lGUqL9KTjnVMejcKxQZbj5hWRTaoZ4PIKb1md3pmVag=;
-	b=C9B4IYW1tY4C+ZJ2UHAd8pkP14AIBeOdhDzu7v/kYuLhCkc459lT2SPvknmFHmejAj6b/b
-	AehJmPCzv+nGGuYM4WAgotAcbwJ5UPTlJtaTmLYJCyo4p1qdreBAGoiKpsaF0p5fbxdMkT
-	jQSYgr/D5eCC1bE1mvHXPq6OO9i3upE=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1767807810;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=lGUqL9KTjnVMejcKxQZbj5hWRTaoZ4PIKb1md3pmVag=;
-	b=nMQDgDvqcs2P8S8lZDsu4LIgdj1cdscIovkzKG8qU9Adp4kjmGQmuMM8DmqPEgOXpWKNhO
-	iY/uddSdv47QKfCA==
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=C9B4IYW1;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=nMQDgDvq
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1767807810; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=lGUqL9KTjnVMejcKxQZbj5hWRTaoZ4PIKb1md3pmVag=;
-	b=C9B4IYW1tY4C+ZJ2UHAd8pkP14AIBeOdhDzu7v/kYuLhCkc459lT2SPvknmFHmejAj6b/b
-	AehJmPCzv+nGGuYM4WAgotAcbwJ5UPTlJtaTmLYJCyo4p1qdreBAGoiKpsaF0p5fbxdMkT
-	jQSYgr/D5eCC1bE1mvHXPq6OO9i3upE=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1767807810;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=lGUqL9KTjnVMejcKxQZbj5hWRTaoZ4PIKb1md3pmVag=;
-	b=nMQDgDvqcs2P8S8lZDsu4LIgdj1cdscIovkzKG8qU9Adp4kjmGQmuMM8DmqPEgOXpWKNhO
-	iY/uddSdv47QKfCA==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 6EFAD3EA63;
-	Wed,  7 Jan 2026 17:43:30 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id vPLGGkKbXmk2BgAAD6G6ig
-	(envelope-from <vbabka@suse.cz>); Wed, 07 Jan 2026 17:43:30 +0000
-Message-ID: <14a0f149-5d22-4a3b-9cbf-3336d0783e9d@suse.cz>
-Date: Wed, 7 Jan 2026 18:43:30 +0100
+	s=arc-20240116; t=1767812736; c=relaxed/simple;
+	bh=cXrxAzv98+rTuAo6AZR2IpL01l/GgbnBK6hzUkgo918=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition:In-Reply-To; b=JgW3CwVayZkeEv8ASfTK2hgrZg9l9Ds+Vy1KmLG2IHtz2ENkZi7Na8ie8hFo8KwC0Kng3X7ijrci6B6lOfPlXSi/54Bbiap9dxphnsAok6SYZ+YcP39BtNQBwuJPOI69yaOFewP/u9UyqEX7R5fBszfNvOyARhrGQ0HgAZvnWaE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=A4RHJTdV; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3F10CC4CEF1;
+	Wed,  7 Jan 2026 19:05:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1767812735;
+	bh=cXrxAzv98+rTuAo6AZR2IpL01l/GgbnBK6hzUkgo918=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:From;
+	b=A4RHJTdVg2eo8w4IuucYp7SsRoCH3YT//hVw93Zkkrf5yuY7VdVHzXn5p17rzjL12
+	 qFhnYO1sBxAF8pzvUHMpneAhxajxGMSSn/P5eWKV8DgEr+V8cC0I0it/mxBoIwnpzA
+	 ZTG5e65Y87dMZvAKJQ5K5dt9Ppt1bkZCnEZg46y9U/FleUdZZwCi/IwOgRoSRZueGl
+	 wWU3xb2cH5R7JKWBRu+isqhIrXzOJQiW5H8Z0OLzuYO0YHMw3moiytq6UZetkvnrs/
+	 q+BCtxWtQqAd1Xg6v3hFI08liH2/hzx+9bPTHbu7bb9UT4hw/68aVlXtLjWeg5+mZk
+	 TljZ3k+3lL8bg==
+Date: Wed, 7 Jan 2026 13:05:34 -0600
+From: Bjorn Helgaas <helgaas@kernel.org>
+To: Frederic Weisbecker <frederic@kernel.org>
+Cc: LKML <linux-kernel@vger.kernel.org>,
+	Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Bjorn Helgaas <bhelgaas@google.com>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Chen Ridong <chenridong@huawei.com>,
+	Danilo Krummrich <dakr@kernel.org>,
+	"David S . Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Gabriele Monaco <gmonaco@redhat.com>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Ingo Molnar <mingo@redhat.com>, Jakub Kicinski <kuba@kernel.org>,
+	Jens Axboe <axboe@kernel.dk>, Johannes Weiner <hannes@cmpxchg.org>,
+	Lai Jiangshan <jiangshanlai@gmail.com>,
+	Marco Crivellari <marco.crivellari@suse.com>,
+	Michal Hocko <mhocko@suse.com>, Muchun Song <muchun.song@linux.dev>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Peter Zijlstra <peterz@infradead.org>, Phil Auld <pauld@redhat.com>,
+	"Rafael J . Wysocki" <rafael@kernel.org>,
+	Roman Gushchin <roman.gushchin@linux.dev>,
+	Shakeel Butt <shakeel.butt@linux.dev>,
+	Simon Horman <horms@kernel.org>, Tejun Heo <tj@kernel.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Vlastimil Babka <vbabka@suse.cz>, Waiman Long <longman@redhat.com>,
+	Will Deacon <will@kernel.org>, cgroups@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org, linux-block@vger.kernel.org,
+	linux-mm@kvack.org, linux-pci@vger.kernel.org,
+	netdev@vger.kernel.org, Jinhui Guo <guojinhui.liam@bytedance.com>
+Subject: Re: [PATCH 01/33] PCI: Prepare to protect against concurrent
+ isolated cpuset change
+Message-ID: <20260107190534.GA441483@bhelgaas>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH V5 0/8] mm/slab: reduce slab accounting memory overhead by
- allocating slabobj_ext metadata within unsed slab space
-Content-Language: en-US
-To: Harry Yoo <harry.yoo@oracle.com>, akpm@linux-foundation.org
-Cc: andreyknvl@gmail.com, cl@gentwo.org, dvyukov@google.com,
- glider@google.com, hannes@cmpxchg.org, linux-mm@kvack.org,
- mhocko@kernel.org, muchun.song@linux.dev, rientjes@google.com,
- roman.gushchin@linux.dev, ryabinin.a.a@gmail.com, shakeel.butt@linux.dev,
- surenb@google.com, vincenzo.frascino@arm.com, yeoreum.yun@arm.com,
- tytso@mit.edu, adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
- linux-kernel@vger.kernel.org, cgroups@vger.kernel.org, hao.li@linux.dev
-References: <20260105080230.13171-1-harry.yoo@oracle.com>
-From: Vlastimil Babka <vbabka@suse.cz>
-Autocrypt: addr=vbabka@suse.cz; keydata=
- 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
- m6M14QORSWTLRg==
-In-Reply-To: <20260105080230.13171-1-harry.yoo@oracle.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spamd-Result: default: False [-3.01 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	SUSPICIOUS_RECIPS(1.50)[];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	FUZZY_RATELIMITED(0.00)[rspamd.com];
-	ARC_NA(0.00)[];
-	TAGGED_RCPT(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[23];
-	MIME_TRACE(0.00)[0:+];
-	RCVD_TLS_ALL(0.00)[];
-	FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	TO_DN_SOME(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	FREEMAIL_CC(0.00)[gmail.com,gentwo.org,google.com,cmpxchg.org,kvack.org,kernel.org,linux.dev,arm.com,mit.edu,dilger.ca,vger.kernel.org];
-	MID_RHS_MATCH_FROM(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	DKIM_TRACE(0.00)[suse.cz:+]
-X-Rspamd-Action: no action
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spam-Level: 
-X-Rspamd-Queue-Id: 931F034063
-X-Spam-Flag: NO
-X-Spam-Score: -3.01
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20260101221359.22298-2-frederic@kernel.org>
 
-On 1/5/26 09:02, Harry Yoo wrote:
-> Happy new year!
-> 
-> V4: https://lore.kernel.org/linux-mm/20251027122847.320924-1-harry.yoo@oracle.com
-> V4 -> V5:
-> - Patch 4: Fixed returning false when the return type is unsigned long
-> - Patch 7: Fixed incorrect calculation of slabobj_ext offset (Thanks Hao!)
+[+cc Jinhui]
 
-Besides the stuff pointed out the rest seemed ok to me. Can you resend with
-those addressed, and rebased on slab.git slab/for-7.0/obj_metadata to avoid
-a conflict in patch 8/8 with Hao's comment update patch there? I will add
-the series on top there then. Thanks!
+On Thu, Jan 01, 2026 at 11:13:26PM +0100, Frederic Weisbecker wrote:
+> HK_TYPE_DOMAIN will soon integrate cpuset isolated partitions and
+> therefore be made modifiable at runtime. Synchronize against the cpumask
+> update using RCU.
+> 
+> The RCU locked section includes both the housekeeping CPU target
+> election for the PCI probe work and the work enqueue.
+> 
+> This way the housekeeping update side will simply need to flush the
+> pending related works after updating the housekeeping mask in order to
+> make sure that no PCI work ever executes on an isolated CPU. This part
+> will be handled in a subsequent patch.
+> 
+> Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
 
-> When CONFIG_MEMCG and CONFIG_MEM_ALLOC_PROFILING are enabled,
-> the kernel allocates two pointers per object: one for the memory cgroup
-> (actually, obj_cgroup) to which it belongs, and another for the code
-> location that requested the allocation.
-> 
-> In two special cases, this overhead can be eliminated by allocating
-> slabobj_ext metadata from unused space within a slab:
-> 
->   Case 1. The "leftover" space after the last slab object is larger than
->           the size of an array of slabobj_ext.
-> 
->   Case 2. The per-object alignment padding is larger than
->           sizeof(struct slabobj_ext).
-> 
-> For these two cases, one or two pointers can be saved per slab object.
-> Examples: ext4 inode cache (case 1) and xfs inode cache (case 2).
-> That's approximately 0.7-0.8% (memcg) or 1.5-1.6% (memcg + mem profiling)
-> of the total inode cache size.
-> 
-> Implementing case 2 is not straightforward, because the existing code
-> assumes that slab->obj_exts is an array of slabobj_ext, while case 2
-> breaks the assumption.
-> 
-> As suggested by Vlastimil, abstract access to individual slabobj_ext
-> metadata via a new helper named slab_obj_ext():
-> 
-> static inline struct slabobj_ext *slab_obj_ext(struct slab *slab,
->                                                unsigned long obj_exts,
->                                                unsigned int index)
-> {
->         return (struct slabobj_ext *)(obj_exts + slab_get_stride(slab) * index);
-> } 
-> 
-> In the normal case (including case 1), slab->obj_exts points to an array
-> of slabobj_ext, and the stride is sizeof(struct slabobj_ext).
-> 
-> In case 2, the stride is s->size and
-> slab->obj_exts = slab_address(slab) + s->red_left_pad + (offset of slabobj_ext)
-> 
-> With this approach, the memcg charging fastpath doesn't need to care the
-> storage method of slabobj_ext.
-> 
-> Harry Yoo (8):
->   mm/slab: use unsigned long for orig_size to ensure proper metadata
->     align
->   mm/slab: allow specifying free pointer offset when using constructor
->   ext4: specify the free pointer offset for ext4_inode_cache
->   mm/slab: abstract slabobj_ext access via new slab_obj_ext() helper
->   mm/slab: use stride to access slabobj_ext
->   mm/memcontrol,alloc_tag: handle slabobj_ext access under KASAN poison
->   mm/slab: save memory by allocating slabobj_ext array from leftover
->   mm/slab: place slabobj_ext metadata in unused space within s->size
-> 
->  fs/ext4/super.c      |  20 ++-
->  include/linux/slab.h |  39 +++--
->  mm/memcontrol.c      |  31 +++-
->  mm/slab.h            | 120 ++++++++++++++-
->  mm/slab_common.c     |   8 +-
->  mm/slub.c            | 345 +++++++++++++++++++++++++++++++++++--------
->  6 files changed, 466 insertions(+), 97 deletions(-)
-> 
+Just FYI, Jinhui posted a series that touches this same code and might
+need some coordination:
 
+  https://lore.kernel.org/r/20260107175548.1792-1-guojinhui.liam@bytedance.com
+
+IIUC, Jinhui's series adds some more NUMA smarts in the driver core
+sync probing path and removes corresponding NUMA code from the PCI
+core probe path.
+
+Bjorn
 
