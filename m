@@ -1,215 +1,195 @@
-Return-Path: <cgroups+bounces-12944-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-12945-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3937DCFF9B9
-	for <lists+cgroups@lfdr.de>; Wed, 07 Jan 2026 20:00:54 +0100 (CET)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9F98ACFF1B0
+	for <lists+cgroups@lfdr.de>; Wed, 07 Jan 2026 18:31:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id A53A733F7091
-	for <lists+cgroups@lfdr.de>; Wed,  7 Jan 2026 18:23:54 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 62252300671E
+	for <lists+cgroups@lfdr.de>; Wed,  7 Jan 2026 17:29:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A2EBF37997E;
-	Wed,  7 Jan 2026 15:53:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 869E93570AE;
+	Wed,  7 Jan 2026 17:02:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="O2Md2+Sb"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="BSIwDP13"
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f52.google.com (mail-wm1-f52.google.com [209.85.128.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7BE7C3A1E8A;
-	Wed,  7 Jan 2026 15:53:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E95CF348867
+	for <cgroups@vger.kernel.org>; Wed,  7 Jan 2026 17:02:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767801222; cv=none; b=iPOuC2ZR1305UWwbQACoyrTjV3+4Xu5t+fQqnoSDvg3sEZCGuDcuiO5LOpdQ3hHl+PwrAUGXCDQn0EejdIah7M/kcMDH7IefSLdbeEiMNNsBkzhin3Ndkb3pJ3Pq5qjj4wrOEGW3eG7lSFB2gYVsWoXjC0onhYzg4sAVgCYnHgE=
+	t=1767805333; cv=none; b=Ou03XtlT6irv9aZ2qnS5qJT3oa6I2Pwe7fStdTKnq0ChZFqWBtWR+PgB/e9Iux/GXyMcvHf5QjD48L4rJR5RexOTqyEoTc8xy2pAllSwmscznM+IFvO+F3HWkrjz1GSbUQGQzoJ5wYINl3bXmSBf06Eoq2RhdHfPEpMRwxQ1YDw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767801222; c=relaxed/simple;
-	bh=qQGX8sJg7E+NIZxbnSahNhBWSN94VZt80XshswfflZw=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=oiNsa8TYWtnRFYlzQAspNBwJkSLHS+qQ6h1f43Yb4o8YDWRNYvkGHBXBHwrBpGHCBeAbaz4nrcEkWeNgT2qbUtv562s3TBs+/A5oZsBpoYd/AuyO3IWK5qhnJdyxnYknPG3J5WBQwKQJXuky0h98+Vx5RHVcOhOeJCEt9fuEOBE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=O2Md2+Sb; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 96A06C19422;
-	Wed,  7 Jan 2026 15:53:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1767801220;
-	bh=qQGX8sJg7E+NIZxbnSahNhBWSN94VZt80XshswfflZw=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=O2Md2+SbVS2RYfE0WhtZbDgiq7LKhj2JQ1Le19TWForiKAyMcc9CpiJITOBAUqYan
-	 YCQsGNvLB8saf300p63M7B4trx25YiD+G6i5YqLueLmasEORHdXi79bH7EakFSc9Hk
-	 NlmtyzYMEGUGBgGzA1AYP5xQhnjECVs2LbURr18vJCWwpvwvQZJiuqWR3vXWsUuuPb
-	 gPllsy074hzDxaQhFX0FnX6opSh1gZldjiRQhenM/MV0S5FkQcU4YXKH0C6ksHlRaA
-	 SB9sggfXYs7lMfGNQnlMOYUSgxh2CfPda/NHanb01mpA3766XND2x3jTBxzJOfArJq
-	 3B87/HxVGBjdw==
-From: Sasha Levin <sashal@kernel.org>
-To: patches@lists.linux.dev,
-	stable@vger.kernel.org
-Cc: shechenglong <shechenglong@xfusion.com>,
-	Yu Kuai <yukuai@fnnas.com>,
-	Jens Axboe <axboe@kernel.dk>,
-	Sasha Levin <sashal@kernel.org>,
-	tj@kernel.org,
-	josef@toxicpanda.com,
-	linux-block@vger.kernel.org,
-	cgroups@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.18-5.10] block,bfq: fix aux stat accumulation destination
-Date: Wed,  7 Jan 2026 10:53:09 -0500
-Message-ID: <20260107155329.4063936-7-sashal@kernel.org>
-X-Mailer: git-send-email 2.51.0
-In-Reply-To: <20260107155329.4063936-1-sashal@kernel.org>
-References: <20260107155329.4063936-1-sashal@kernel.org>
+	s=arc-20240116; t=1767805333; c=relaxed/simple;
+	bh=tWFeLnDDz/em1zg/E8BbEXwCSep7COgZ1jMf56WRGho=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=si5iXt5MibVqP6p3fZndbW6iWpVDux6k+GnZTXrGnNuqMypzXmr7NGFI3PBCcYilfnBpw+rHiAtggEG3msh/DYNlvbTQOt9m2gtSlyMG6joxThJIr6LdXBTrO0xg62sPNvAVRckwtkHe7va9V0rb6R74fAHt79hQwR+9y5uXFds=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=BSIwDP13; arc=none smtp.client-ip=209.85.128.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-wm1-f52.google.com with SMTP id 5b1f17b1804b1-47aa03d3326so19832055e9.3
+        for <cgroups@vger.kernel.org>; Wed, 07 Jan 2026 09:02:08 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1767805327; x=1768410127; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=L49E8GK0L61Xb+Ow/6X+q4Ipvp5Im1cS6u2eq6FB63A=;
+        b=BSIwDP13V9ZT/6Ty4pe8Lo2nBLjfq8yruRndt7Ac3Fy8AewH0VdfHMW0yuLJHBIQ5F
+         2da3wM/wTqoEqrIoa2tdMuELM4UTUtdOX2zdvGZIpjjgvPuqCv8GSC3Olr1nKRQGAXsl
+         +5IHXf7qOokkWifqL2bRmwxKc8mFvxiz1MXtLBoAyALgK33eCkrpdjAER+infMPfT5QN
+         NkN6L9e7MWX+OHnZcYuOy6WUn3iwj2L0zopuadpwD6z4dgGsqlwPdRnVvCBDnU4VLIKQ
+         DNEl4ZBVphVc2tiK33cO6XAdafPKn9f3B1tEDnJOynIO9nQrxKubgMEFlEOMnbh1ST4Q
+         ArmQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1767805327; x=1768410127;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=L49E8GK0L61Xb+Ow/6X+q4Ipvp5Im1cS6u2eq6FB63A=;
+        b=O+NLHwO2qu5Fry4UEQPgtY8CNCkShuNSCbieVadXe+Fia1jBShMbde6jZaB9B2jtDr
+         keTvVNvNmiMsPj71pkIpZhTeD7Y8NQSLcsHLJrU8wyBTHfmuJhbflMOlMNjcuZ/dgfna
+         OtXZXL2EHujvvYSzl8fZXtpA0LX2yopUrgCiOBOk+aRuIE5Vz4JiEOGGuVUmygGl3UYs
+         okShAVG5MPqCVu1l2///tX2aOg3UoyeE2Qs/UbwTkX8nGVaIWBpBHnF5BCwKhvkO/JoW
+         FDaAqkljO6oDWwhzENAZ+33GduP2SOr0gYXSeyEIcvP7t4WxtGHhdSJI0clCNd5JTV+S
+         tQDQ==
+X-Gm-Message-State: AOJu0YwYyzi8jijSgd4hCco7EqOCFQLkWdDSD2IQ2IJey3CWqc3a2gIx
+	It9jwB67NU6zb2ABv54SL+IfE37RyBTr3W2eEPyRHpyla6fM8U8QFM079/XfuHjld79a92bCPbi
+	4bW8h
+X-Gm-Gg: AY/fxX6U3UgpZrF3uw/SzkTr76qxKn0vgtd8zhd2nANvCfHkxjCkNYSQQQDyjZPH/VR
+	w6wTsYulxtHFQ03+rEaJHHwgsHzj0xxQF5779NjsffnMVmRwk0lpmpiFWOHubzDLX5Z6VnqZxze
+	eQbtbQmm29TSUt5C74i4mnGElM4JSMplGfFyrQDl2YqL53ToSnMtBELELQInEyifMtE7eaXaNUy
+	WdR8RkTLUMIYvUA0egJ71psquA5yrzae/ffdiba4zbke3dgcmXACLylwX3vOPNMUK5hcPk1jBX0
+	NSIdOqG9dsnCk40I3r542Ljsf8ZG5HcbONnVDq/Z1x0DGDXhntxuL5jJi31lQxPiHrYm+6T1h8a
+	Kwnv3BCmurwIxw2Cg5yb5vzseAjBnjv4QArpYGq5qUlyeL42yZIjKTsaxVAbWvURVzMitwzu442
+	wk/lGWrZt4EoGtmy4r2hVJZF8aA1CUGec=
+X-Google-Smtp-Source: AGHT+IEg3eq4eSlFYkLOWLPuVP+Buf7OIMrTZ/OdJp8hfUfEblFjlugkX6dHGbDV+Go/PXS4KGbfpQ==
+X-Received: by 2002:a05:600c:3b28:b0:477:8a2a:123e with SMTP id 5b1f17b1804b1-47d84b41bbfmr39523105e9.33.1767805326694;
+        Wed, 07 Jan 2026 09:02:06 -0800 (PST)
+Received: from blackdock.suse.cz (nat2.prg.suse.com. [195.250.132.146])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-47d7f6f0e15sm103041885e9.10.2026.01.07.09.02.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 07 Jan 2026 09:02:06 -0800 (PST)
+From: =?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>
+To: cgroups@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-hardening@vger.kernel.org
+Cc: =?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>,
+	"Gustavo A. R. Silva" <gustavo@embeddedor.com>,
+	David Laight <david.laight.linux@gmail.com>,
+	"Gustavo A. R. Silva" <gustavoars@kernel.org>,
+	Tejun Heo <tj@kernel.org>,
+	Johannes Weiner <hannes@cmpxchg.org>,
+	Kees Cook <kees@kernel.org>
+Subject: [PATCH v2] cgroup: Eliminate cgrp_ancestor_storage in cgroup_root
+Date: Wed,  7 Jan 2026 17:59:41 +0100
+Message-ID: <20260107165942.95340-1-mkoutny@suse.com>
+X-Mailer: git-send-email 2.52.0
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-X-stable-base: Linux 6.18.3
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-From: shechenglong <shechenglong@xfusion.com>
+The cgrp_ancestor_storage has two drawbacks:
+- it's not guaranteed that the member immediately follows struct cgrp in
+  cgroup_root (root cgroup's ancestors[0] might thus point to a padding
+  and not in cgrp_ancestor_storage proper),
+- this idiom raises warnings with -Wflex-array-member-not-at-end.
 
-[ Upstream commit 04bdb1a04d8a2a89df504c1e34250cd3c6e31a1c ]
+Instead of relying on the auxiliary member in cgroup_root, define the
+0-th level ancestor inside struct cgroup (needed for static allocation
+of cgrp_dfl_root), deeper cgroups would allocate flexible
+_low_ancestors[].  Unionized alias through ancestors[] will
+transparently join the two ranges.
 
-Route bfqg_stats_add_aux() time accumulation into the destination
-stats object instead of the source, aligning with other stat fields.
+The above change would still leave the flexible array at the end of
+struct cgroup inside cgroup_root, so move cgrp also towards the end of
+cgroup_root to resolve the -Wflex-array-member-not-at-end.
 
-Reviewed-by: Yu Kuai <yukuai@fnnas.com>
-Signed-off-by: shechenglong <shechenglong@xfusion.com>
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
+Link: https://lore.kernel.org/r/5fb74444-2fbb-476e-b1bf-3f3e279d0ced@embeddedor.com/
+Reported-by: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Closes: https://lore.kernel.org/r/b3eb050d-9451-4b60-b06c-ace7dab57497@embeddedor.com/
+Cc: David Laight <david.laight.linux@gmail.com>
+Acked-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+Signed-off-by: Michal Koutný <mkoutny@suse.com>
 ---
+ include/linux/cgroup-defs.h | 25 ++++++++++++++-----------
+ kernel/cgroup/cgroup.c      |  2 +-
+ 2 files changed, 15 insertions(+), 12 deletions(-)
 
-LLM Generated explanations, may be completely bogus:
+Changes from v1 (https://lore.kernel.org/r/20251217162744.352391-1-mkoutny@suse.com
+- drop __counted_by patches (2--4), too intrusive rework (Michal)
+- utilize DECLARE_FLEX_ARRAY (Gustavo)
+- trailers
 
-## Analysis of Commit: block,bfq: fix aux stat accumulation destination
-
-### 1. COMMIT MESSAGE ANALYSIS
-
-The commit message clearly indicates this is a bug fix: "fix aux stat
-accumulation destination". It describes that `bfqg_stats_add_aux()` was
-routing time accumulation into the wrong destination (source instead of
-destination). The fix aligns this field with all other stat fields in
-the same function.
-
-- Has `Reviewed-by: Yu Kuai` - BFQ subsystem expertise
-- Signed off by Jens Axboe (block subsystem maintainer)
-
-### 2. CODE CHANGE ANALYSIS
-
-The change is a single-line fix in `block/bfq-cgroup.c`:
-
-```c
-- bfq_stat_add_aux(&from->time, &from->time);
-+       bfq_stat_add_aux(&to->time, &from->time);
-```
-
-**The Bug:** The function `bfqg_stats_add_aux()` is documented with `/*
-@to += @from */` - it should add stats FROM source TO destination. The
-buggy line was adding `from->time` to itself (`&from->time,
-&from->time`), which is clearly wrong.
-
-**Root Cause:** A simple typo - `from` was used instead of `to` for the
-first argument.
-
-**Pattern Evidence:** Looking at surrounding code, every other line
-follows the correct pattern:
-- `blkg_rwstat_add_aux(&to->merged, &from->merged)`
-- `blkg_rwstat_add_aux(&to->service_time, &from->service_time)`
-- `bfq_stat_add_aux(&to->avg_queue_size_sum, &from->avg_queue_size_sum)`
-- etc.
-
-Only `time` had the incorrect `&from` as the first argument.
-
-### 3. CLASSIFICATION
-
-- **Bug type:** Logic error (typo) causing incorrect stat accumulation
-- **Category:** Clear bug fix - not a feature, not a cleanup
-- **Subsystem:** BFQ I/O scheduler cgroup support (debug statistics)
-
-### 4. SCOPE AND RISK ASSESSMENT
-
-- **Lines changed:** 1 line, essentially a single character change
-  (`from` → `to`)
-- **Files touched:** 1 file
-- **Risk level:** Extremely LOW
-- **Code location:** Under `CONFIG_BFQ_CGROUP_DEBUG` - debug statistics
-  only
-
-This is about as surgical as a fix can get. Even if the fix were somehow
-wrong (which it clearly isn't), it only affects debug statistics output,
-not actual I/O scheduling behavior.
-
-### 5. USER IMPACT
-
-- **Affected users:** Those using BFQ I/O scheduler with cgroup
-  debugging enabled
-- **Symptom:** The `time` statistic would be lost (not transferred to
-  parent) when a BFQ cgroup is destroyed, causing inaccurate cumulative
-  statistics
-- **Severity:** Low to moderate - affects accuracy of debug/monitoring
-  data, not data integrity or system stability
-
-### 6. STABILITY INDICATORS
-
-- Reviewed by Yu Kuai (BFQ expert)
-- Accepted by Jens Axboe (block maintainer)
-- Trivially correct fix - the pattern is obvious from surrounding code
-
-### 7. DEPENDENCY CHECK
-
-- **Dependencies:** None - this is a self-contained fix
-- **Affected code existence:** BFQ cgroup code has existed in stable
-  trees for years
-- **Clean backport:** Should apply cleanly to any kernel with BFQ cgroup
-  support
-
-### VERDICT
-
-**Pros:**
-- Obviously correct fix (typo/copy-paste error)
-- Minimal change (1 line)
-- Zero regression risk
-- Fixes incorrect behavior in statistics accumulation
-- Well-reviewed and accepted by maintainers
-- No dependencies on other commits
-
-**Cons:**
-- Only affects debug code (`CONFIG_BFQ_CGROUP_DEBUG`)
-- Low-impact bug (statistics accuracy, not data/system integrity)
-
-This commit meets all stable kernel criteria:
-1. ✅ Obviously correct - trivially evident typo fix
-2. ✅ Fixes a real bug - stats were accumulated to wrong destination
-3. ✅ Small and contained - single line change
-4. ✅ No new features - pure bug fix
-5. ✅ Should apply cleanly to stable
-
-While the impact is limited to debug statistics users, the fix is so
-trivially correct and low-risk that there's no reason not to backport
-it. Users relying on BFQ cgroup statistics for monitoring or debugging
-would benefit from accurate data.
-
-**YES**
-
- block/bfq-cgroup.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/block/bfq-cgroup.c b/block/bfq-cgroup.c
-index 9fb9f3533150..6a75fe1c7a5c 100644
---- a/block/bfq-cgroup.c
-+++ b/block/bfq-cgroup.c
-@@ -380,7 +380,7 @@ static void bfqg_stats_add_aux(struct bfqg_stats *to, struct bfqg_stats *from)
- 	blkg_rwstat_add_aux(&to->merged, &from->merged);
- 	blkg_rwstat_add_aux(&to->service_time, &from->service_time);
- 	blkg_rwstat_add_aux(&to->wait_time, &from->wait_time);
--	bfq_stat_add_aux(&from->time, &from->time);
-+	bfq_stat_add_aux(&to->time, &from->time);
- 	bfq_stat_add_aux(&to->avg_queue_size_sum, &from->avg_queue_size_sum);
- 	bfq_stat_add_aux(&to->avg_queue_size_samples,
- 			  &from->avg_queue_size_samples);
+diff --git a/include/linux/cgroup-defs.h b/include/linux/cgroup-defs.h
+index b760a3c470a56..f7cc60de00583 100644
+--- a/include/linux/cgroup-defs.h
++++ b/include/linux/cgroup-defs.h
+@@ -626,7 +626,13 @@ struct cgroup {
+ #endif
+ 
+ 	/* All ancestors including self */
+-	struct cgroup *ancestors[];
++	union {
++		DECLARE_FLEX_ARRAY(struct cgroup *, ancestors);
++		struct {
++			struct cgroup *_root_ancestor;
++			DECLARE_FLEX_ARRAY(struct cgroup *, _low_ancestors);
++		};
++	};
+ };
+ 
+ /*
+@@ -647,16 +653,6 @@ struct cgroup_root {
+ 	struct list_head root_list;
+ 	struct rcu_head rcu;	/* Must be near the top */
+ 
+-	/*
+-	 * The root cgroup. The containing cgroup_root will be destroyed on its
+-	 * release. cgrp->ancestors[0] will be used overflowing into the
+-	 * following field. cgrp_ancestor_storage must immediately follow.
+-	 */
+-	struct cgroup cgrp;
+-
+-	/* must follow cgrp for cgrp->ancestors[0], see above */
+-	struct cgroup *cgrp_ancestor_storage;
+-
+ 	/* Number of cgroups in the hierarchy, used only for /proc/cgroups */
+ 	atomic_t nr_cgrps;
+ 
+@@ -668,6 +664,13 @@ struct cgroup_root {
+ 
+ 	/* The name for this hierarchy - may be empty */
+ 	char name[MAX_CGROUP_ROOT_NAMELEN];
++
++	/*
++	 * The root cgroup. The containing cgroup_root will be destroyed on its
++	 * release. This must be embedded last due to flexible array at the end
++	 * of struct cgroup.
++	 */
++	struct cgroup cgrp;
+ };
+ 
+ /*
+diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
+index e717208cfb185..554a02ee298ba 100644
+--- a/kernel/cgroup/cgroup.c
++++ b/kernel/cgroup/cgroup.c
+@@ -5847,7 +5847,7 @@ static struct cgroup *cgroup_create(struct cgroup *parent, const char *name,
+ 	int ret;
+ 
+ 	/* allocate the cgroup and its ID, 0 is reserved for the root */
+-	cgrp = kzalloc(struct_size(cgrp, ancestors, (level + 1)), GFP_KERNEL);
++	cgrp = kzalloc(struct_size(cgrp, _low_ancestors, level), GFP_KERNEL);
+ 	if (!cgrp)
+ 		return ERR_PTR(-ENOMEM);
+ 
 -- 
-2.51.0
+2.52.0
 
 
