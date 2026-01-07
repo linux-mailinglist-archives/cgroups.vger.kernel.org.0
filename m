@@ -1,49 +1,49 @@
-Return-Path: <cgroups+bounces-12951-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-12952-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id DF1B6D00659
-	for <lists+cgroups@lfdr.de>; Thu, 08 Jan 2026 00:30:40 +0100 (CET)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9ED34D00681
+	for <lists+cgroups@lfdr.de>; Thu, 08 Jan 2026 00:40:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 64BA13030930
-	for <lists+cgroups@lfdr.de>; Wed,  7 Jan 2026 23:30:18 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 5C8AC3002D07
+	for <lists+cgroups@lfdr.de>; Wed,  7 Jan 2026 23:40:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0BC552EBDD9;
-	Wed,  7 Jan 2026 23:30:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 95A342F8BDF;
+	Wed,  7 Jan 2026 23:39:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FD9BLnDO"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="QWc2qayR"
 X-Original-To: cgroups@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB50018027;
-	Wed,  7 Jan 2026 23:30:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3FA561A256E;
+	Wed,  7 Jan 2026 23:39:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767828616; cv=none; b=VZ1//yZUmabkmACj3soZFimTup1EZR6eltK+fs8CPfwAmg/6Nhd4twmynGJAsa4RuiClT36ePvHX5j6EZ5AiSbZl6IJwOw8Vy3j0XizdblQi6OIHDtV2wIQrcLr8LVA/MYAP52Z9ceaNf1W9Bn7H+OT0NURxv3b++38IOVQYUIk=
+	t=1767829199; cv=none; b=KFQwdKYqvHpNT2tvj8vZhhmVSg2wdB48Ob5RQUXKooQJhUfAtBEWcZd24RUG7qWuNEhS79ZUmyYvY//RMwtEFR3VUO6u0TKaDnG5ni8O7/2wKM0mupwluNKTLuOHFRmRgZlPqeubCx2oXNejkzrvFR1Dtn0qXwin+LpqAVzHnGg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767828616; c=relaxed/simple;
-	bh=JJUKBnRRM9z3Ei4dz7JLCEY8pd+eY/BXxSmSJZTydcU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=k0jkOtoNnfFIRi2LkuyWre6vIHAAY+MIFr53c8ayVjYxubCC1BBJPj/BxtKHdb7lJGExts9VqYdWKSM64iqyh8icPg8MN+Jsc8DLmpgZsIlM2gfTGrDGsMeML20IYsrAadaE9E8/pnooqxtgdkGzx71Q8/tvxAMn2/URZvUkDEM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FD9BLnDO; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8E29CC4CEF1;
-	Wed,  7 Jan 2026 23:30:15 +0000 (UTC)
+	s=arc-20240116; t=1767829199; c=relaxed/simple;
+	bh=TkPExvuLRdk+twI/ygMh7+/Ril+KIPyMUG6oDC8D2N0=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition:In-Reply-To; b=lFn2nBW2RyKqkYzO+Zo+GZH/ECk8kwpCseAhv42IlryT4r9jpt1SS/W+Ryt+7hhUkBGq4zW62UAqczVV8XQ4AYhNVkt28tDdcaR1ZUhkBCIE2co7a6XJ9vQpG8DusWvgNfzJ5oPxmBYfU1ttQ/4Ajg0UbMVrGXmVQC7gB9dtwsw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=QWc2qayR; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 96B94C19421;
+	Wed,  7 Jan 2026 23:39:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1767828616;
-	bh=JJUKBnRRM9z3Ei4dz7JLCEY8pd+eY/BXxSmSJZTydcU=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=FD9BLnDOkE5gza7p0aI13xDJW1xjmBlp99SMKC13B/Vu4oiy+78aPYh+cbVuLnYGy
-	 Fl7pXOjBsyLlmELBlm+4tVm4lT63RyIqyfDl24wlumHGuh2jgrHdHOEDbXU7Y+iG4J
-	 /cHcKtewu+hEeQy6sIPWCWmwhQ3xTmh8+irt2gmFHTE1PNT3SnQzutRbgCHg4kMkqJ
-	 1v0+eyQaw8MBLlsvVmyyPvKgWUeroyNXlpAAQskjsL5sHDX2UY4zCFhfUJoa3jI8OP
-	 30a4z9OUHiAqzAQ4p/IXy7EOUGqDGWTd1vqf2YxHqqwsrhtrrNFsIBVPovzyz95bcV
-	 p1KJ2zvhxZYtA==
-Date: Thu, 8 Jan 2026 00:30:13 +0100
-From: Frederic Weisbecker <frederic@kernel.org>
-To: Bjorn Helgaas <helgaas@kernel.org>
+	s=k20201202; t=1767829197;
+	bh=TkPExvuLRdk+twI/ygMh7+/Ril+KIPyMUG6oDC8D2N0=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:From;
+	b=QWc2qayRWh0hWdOy89mtUEyGFJiHeys6+PiJCJTh8FCimQmcF4f3KQLBEmA88hw10
+	 /bZvZR94ATDjonBzReJDFiH2CWArObd+a8i78tc4q18E6ySfp6xu9HbUNc002v+3Yq
+	 RGKRTbINxcjSZwP2MCkG/EPm88+Wt+jCjRwufGQCj4FqHeIPPOqf1yag/eYPs1lfGY
+	 0bomX+d4DHXHvJjAMgVdrHQ5b5Gkap3ilsfChy/O55qxjVWHBeLNB4E2bl8dBsU0At
+	 VIu+/mFZCjqTLTppjOwLawF4UDXaj7ciEXXMrX3JN+4r082FGEWMC4M7mH52MCEL+J
+	 Klea0ah1V/qsA==
+Date: Wed, 7 Jan 2026 17:39:56 -0600
+From: Bjorn Helgaas <helgaas@kernel.org>
+To: Frederic Weisbecker <frederic@kernel.org>
 Cc: LKML <linux-kernel@vger.kernel.org>,
-	Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
+	Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>,
 	Andrew Morton <akpm@linux-foundation.org>,
 	Bjorn Helgaas <bhelgaas@google.com>,
 	Catalin Marinas <catalin.marinas@arm.com>,
@@ -72,59 +72,55 @@ Cc: LKML <linux-kernel@vger.kernel.org>,
 	netdev@vger.kernel.org, Jinhui Guo <guojinhui.liam@bytedance.com>
 Subject: Re: [PATCH 01/33] PCI: Prepare to protect against concurrent
  isolated cpuset change
-Message-ID: <aV7sheFKQWb23lsc@pavilion.home>
-References: <20260101221359.22298-2-frederic@kernel.org>
- <20260107190534.GA441483@bhelgaas>
+Message-ID: <20260107233956.GA453841@bhelgaas>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <20260107190534.GA441483@bhelgaas>
+In-Reply-To: <aV7sheFKQWb23lsc@pavilion.home>
 
-Le Wed, Jan 07, 2026 at 01:05:34PM -0600, Bjorn Helgaas a écrit :
-> [+cc Jinhui]
-> 
-> On Thu, Jan 01, 2026 at 11:13:26PM +0100, Frederic Weisbecker wrote:
-> > HK_TYPE_DOMAIN will soon integrate cpuset isolated partitions and
-> > therefore be made modifiable at runtime. Synchronize against the cpumask
-> > update using RCU.
+On Thu, Jan 08, 2026 at 12:30:13AM +0100, Frederic Weisbecker wrote:
+> Le Wed, Jan 07, 2026 at 01:05:34PM -0600, Bjorn Helgaas a Ã©crit :
+> > On Thu, Jan 01, 2026 at 11:13:26PM +0100, Frederic Weisbecker wrote:
+> > > HK_TYPE_DOMAIN will soon integrate cpuset isolated partitions and
+> > > therefore be made modifiable at runtime. Synchronize against the cpumask
+> > > update using RCU.
+> > > 
+> > > The RCU locked section includes both the housekeeping CPU target
+> > > election for the PCI probe work and the work enqueue.
+> > > 
+> > > This way the housekeeping update side will simply need to flush the
+> > > pending related works after updating the housekeeping mask in order to
+> > > make sure that no PCI work ever executes on an isolated CPU. This part
+> > > will be handled in a subsequent patch.
+> > > 
+> > > Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
 > > 
-> > The RCU locked section includes both the housekeeping CPU target
-> > election for the PCI probe work and the work enqueue.
+> > Just FYI, Jinhui posted a series that touches this same code and might
+> > need some coordination:
 > > 
-> > This way the housekeeping update side will simply need to flush the
-> > pending related works after updating the housekeeping mask in order to
-> > make sure that no PCI work ever executes on an isolated CPU. This part
-> > will be handled in a subsequent patch.
+> >   https://lore.kernel.org/r/20260107175548.1792-1-guojinhui.liam@bytedance.com
 > > 
-> > Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
+> > IIUC, Jinhui's series adds some more NUMA smarts in the driver core
+> > sync probing path and removes corresponding NUMA code from the PCI
+> > core probe path.
 > 
-> Just FYI, Jinhui posted a series that touches this same code and might
-> need some coordination:
+> I see. I can't drop my change, otherwise my series alone could crash
+> dereferencing garbage. But Jinhui's series removes the need for my
+> changes.
 > 
->   https://lore.kernel.org/r/20260107175548.1792-1-guojinhui.liam@bytedance.com
-> 
-> IIUC, Jinhui's series adds some more NUMA smarts in the driver core
-> sync probing path and removes corresponding NUMA code from the PCI
-> core probe path.
+> So an unpleasant conflict will happen in -next (and if everything
+> goes well, further in next merge window) and it should be resolved
+> with simply ignoring my changes and only apply those of Jinhui.
 
-I see. I can't drop my change, otherwise my series alone could crash
-dereferencing garbage. But Jinhui's series removes the need for my changes.
+I don't want to derail your series, and I don't think you need to
+change anything right now.  Jinhui's series is early and might not be
+ready to merge until after yours, which should be fine.
 
-So an unpleasant conflict will happen in -next (and if everything goes well,
-further in next merge window) and it should be resolved with simply ignoring
-my changes and only apply those of Jinhui.
-
-Should we inform Linux Next people ahead?
-
-Thanks for making me notice!
-
--- 
-Frederic Weisbecker
-SUSE Labs
+Bjorn
 
