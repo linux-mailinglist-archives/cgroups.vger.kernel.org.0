@@ -1,113 +1,157 @@
-Return-Path: <cgroups+bounces-12949-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-12950-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 114F9CFFD2A
-	for <lists+cgroups@lfdr.de>; Wed, 07 Jan 2026 20:46:17 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id 205E2CFFE02
+	for <lists+cgroups@lfdr.de>; Wed, 07 Jan 2026 20:57:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id EE6EA330AB50
-	for <lists+cgroups@lfdr.de>; Wed,  7 Jan 2026 19:06:06 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 2692E300949C
+	for <lists+cgroups@lfdr.de>; Wed,  7 Jan 2026 19:57:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B60A31326C;
-	Wed,  7 Jan 2026 19:05:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 69AAD318BBC;
+	Wed,  7 Jan 2026 19:57:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="A4RHJTdV"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="b+5UJpAh";
+	dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b="UPQoEvvw"
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D8FCF1EB9E1;
-	Wed,  7 Jan 2026 19:05:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 63E513016F5
+	for <cgroups@vger.kernel.org>; Wed,  7 Jan 2026 19:57:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767812736; cv=none; b=oRKZozxZSSjwdTs+XF5CkwfYYHV0+IJmC5Yr9FleceiiYhmjFOnlWyJt1A6+9rGPhtpodPcTKZIK8MtsWCzBqqA1CnCDJ9zTOPVVFMm2zH2I+BfD5eGrkUb021Ywr57A4/xuiDhO163hZwgnEknaWLZ7ieTKiFJtl3Tp6CcrJds=
+	t=1767815834; cv=none; b=gonvppgHuUdTfZq1iVkCV+LFbiw5gW2tLbcfcFyDHqsnOlzqRJzlmhudgoEdmYJyf+ayf45LbnH/3aXpt7nMSX6J3+se94ynilbWtV4+daA+qo38FvblSWfpjvv9Y98zBHnsJ6U7mkh8Wx/pGw0nwHoy9naT1JyLObWWdxc5PoU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767812736; c=relaxed/simple;
-	bh=cXrxAzv98+rTuAo6AZR2IpL01l/GgbnBK6hzUkgo918=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition:In-Reply-To; b=JgW3CwVayZkeEv8ASfTK2hgrZg9l9Ds+Vy1KmLG2IHtz2ENkZi7Na8ie8hFo8KwC0Kng3X7ijrci6B6lOfPlXSi/54Bbiap9dxphnsAok6SYZ+YcP39BtNQBwuJPOI69yaOFewP/u9UyqEX7R5fBszfNvOyARhrGQ0HgAZvnWaE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=A4RHJTdV; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3F10CC4CEF1;
-	Wed,  7 Jan 2026 19:05:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1767812735;
-	bh=cXrxAzv98+rTuAo6AZR2IpL01l/GgbnBK6hzUkgo918=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:From;
-	b=A4RHJTdVg2eo8w4IuucYp7SsRoCH3YT//hVw93Zkkrf5yuY7VdVHzXn5p17rzjL12
-	 qFhnYO1sBxAF8pzvUHMpneAhxajxGMSSn/P5eWKV8DgEr+V8cC0I0it/mxBoIwnpzA
-	 ZTG5e65Y87dMZvAKJQ5K5dt9Ppt1bkZCnEZg46y9U/FleUdZZwCi/IwOgRoSRZueGl
-	 wWU3xb2cH5R7JKWBRu+isqhIrXzOJQiW5H8Z0OLzuYO0YHMw3moiytq6UZetkvnrs/
-	 q+BCtxWtQqAd1Xg6v3hFI08liH2/hzx+9bPTHbu7bb9UT4hw/68aVlXtLjWeg5+mZk
-	 TljZ3k+3lL8bg==
-Date: Wed, 7 Jan 2026 13:05:34 -0600
-From: Bjorn Helgaas <helgaas@kernel.org>
-To: Frederic Weisbecker <frederic@kernel.org>
-Cc: LKML <linux-kernel@vger.kernel.org>,
-	Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Bjorn Helgaas <bhelgaas@google.com>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Chen Ridong <chenridong@huawei.com>,
-	Danilo Krummrich <dakr@kernel.org>,
-	"David S . Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Gabriele Monaco <gmonaco@redhat.com>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Ingo Molnar <mingo@redhat.com>, Jakub Kicinski <kuba@kernel.org>,
-	Jens Axboe <axboe@kernel.dk>, Johannes Weiner <hannes@cmpxchg.org>,
-	Lai Jiangshan <jiangshanlai@gmail.com>,
-	Marco Crivellari <marco.crivellari@suse.com>,
-	Michal Hocko <mhocko@suse.com>, Muchun Song <muchun.song@linux.dev>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Peter Zijlstra <peterz@infradead.org>, Phil Auld <pauld@redhat.com>,
-	"Rafael J . Wysocki" <rafael@kernel.org>,
-	Roman Gushchin <roman.gushchin@linux.dev>,
-	Shakeel Butt <shakeel.butt@linux.dev>,
-	Simon Horman <horms@kernel.org>, Tejun Heo <tj@kernel.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Vlastimil Babka <vbabka@suse.cz>, Waiman Long <longman@redhat.com>,
-	Will Deacon <will@kernel.org>, cgroups@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org, linux-block@vger.kernel.org,
-	linux-mm@kvack.org, linux-pci@vger.kernel.org,
-	netdev@vger.kernel.org, Jinhui Guo <guojinhui.liam@bytedance.com>
-Subject: Re: [PATCH 01/33] PCI: Prepare to protect against concurrent
- isolated cpuset change
-Message-ID: <20260107190534.GA441483@bhelgaas>
+	s=arc-20240116; t=1767815834; c=relaxed/simple;
+	bh=6KkNeExA7CKywiEokQ1a0mgoybRkOeNnvWya3+2zXy8=;
+	h=From:Message-ID:Date:MIME-Version:Subject:To:Cc:References:
+	 In-Reply-To:Content-Type; b=g/Hf2ZmxguDakyGyIV02qYrrtVvMy/9RZND3pKVnYvgOI+KOUb+zEEFklmFkbDq7+emaCdjVJe4uBv2Ygtrwaom8a4ysc2Qhxkm0btRmpPqy9tS2Xs3dbwkChedg3xvVYYzaPdQ4Km1Mah+R9qqEJ0Rk4uZieH3QZwXrvmocTbE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=b+5UJpAh; dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b=UPQoEvvw; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1767815831;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=98wbyDYOiVM9lVvm96PIUZwPmx3Asqpf8X6e4K1BRHU=;
+	b=b+5UJpAhoBEprm3P9Vu5/t37SuH6SmzrfAbMky29BtZo5V8OJiQGtrvYWEBiMG9W7J5Vsc
+	vkJJYWiM7UJpqaafI8tyoDFXG2FULlG0ZBuxqlH8PtVfzJcNRhgUpDszDmrR9JC7Kxeneg
+	cvLsbw6kNT+/McsRkWZASspj48OWP24=
+Received: from mail-vk1-f197.google.com (mail-vk1-f197.google.com
+ [209.85.221.197]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-659-fBajg_WqMyqafMxNIp6o3A-1; Wed, 07 Jan 2026 14:57:09 -0500
+X-MC-Unique: fBajg_WqMyqafMxNIp6o3A-1
+X-Mimecast-MFC-AGG-ID: fBajg_WqMyqafMxNIp6o3A_1767815829
+Received: by mail-vk1-f197.google.com with SMTP id 71dfb90a1353d-55fc5f8498dso2098528e0c.3
+        for <cgroups@vger.kernel.org>; Wed, 07 Jan 2026 11:57:09 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=redhat.com; s=google; t=1767815829; x=1768420629; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:content-language:references
+         :cc:to:subject:user-agent:mime-version:date:message-id:from:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=98wbyDYOiVM9lVvm96PIUZwPmx3Asqpf8X6e4K1BRHU=;
+        b=UPQoEvvweG2qf4+jJiNWCm9emX15loDiACTp9snDgzCRsnbYHmWZsVeirbMQDaLdcB
+         +fK+u6A7hB2wbnqff3Y0djlEkmZMEMKT7Hb/EVZ68Hzag6IZ4NOp+OpJwtIROxASna2s
+         ix0Q7+86ByLJRUtdU9Xzlenatg4ax1PGjH7GUZ5+/g7RtGX89gmwCgJz3ZvNpHP5kCkc
+         EP1f4u0+z50jicR2KezMSB7dpjBqu8eUTB/LpiSTvdtKv38jcySlsK3inmdGbJkNR0jR
+         iLafn0We/PpYz1ljdYypoQprY2Sj0SLCL59Koq4xfRfrrEFcEyc2HOqbMOVpjHbxm+jw
+         QBJg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1767815829; x=1768420629;
+        h=content-transfer-encoding:in-reply-to:content-language:references
+         :cc:to:subject:user-agent:mime-version:date:message-id:from:x-gm-gg
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=98wbyDYOiVM9lVvm96PIUZwPmx3Asqpf8X6e4K1BRHU=;
+        b=boUkn5nZgAVkPnuw2nF8wM+OGi/6SVHoGT7G67A7RT43mGw3mLwRIIU9tcuBSHhPXu
+         8BqJ0OEa7n0h/w4qz4FLHhhRVgjh4qOTLlpkPXXVCNoOWgzRo514T/MiojdlR9AqZ7Qe
+         awDyeWAaKu2t/o18D/jMKBJ7xbjjWRrMuwafCF92BHwauFZcFlZeimT4ODhQ7hJYTJpu
+         cD2YoPDUwow9dFlCBWIH68sgjJQlCOA38PJzhAhz3ZUF6X1UV803Vl/HOQuZvSlC7Yib
+         2FmymXdz7iRDBRMob/G0Xv4E+QG3iOOgwYWdyxlJQ8Pym62fU5NOMnn/X6aYxuMrV+6o
+         cCZg==
+X-Gm-Message-State: AOJu0YxFAG/630RiBBAp+6aSCmSuouLynzaKmJSkhqSpRgt3MyRPVGDv
+	OMidRagTwK/BpL5TKycT5gacqXJqLWiMaXg05KY72q/ZyJjdusu88k1ZcDR1O+GwLVHo3fIs/P8
+	kTpXcLgWkVq4WyDMNuBM4qNRPNK5qHSeDYv/Iye5IUXUJqgi0u4mSYwxQs1A=
+X-Gm-Gg: AY/fxX6BJdqVFYmY6SUPvJw29G7msiB2HbwmLqD/0EuQAhhzDq+U+RD7RknGWhB+POO
+	QIAffbpHgBQRztK4uCST7KerMXiElvkzm4CvpSnDXSEippBVx3O6pfZpW/fb+C+9y+mP0KKcSxm
+	+rOBq6QH5A4lJYRs+JpYj0IalnnxIXoufqpvfN/SgUqIcmYqyhnJk4TZh2ekrMZZvABfWvftqn8
+	SdmPuTdQaq6PvYxCZOmRsMgWxVvgeJmH4PpK0b5MV5dE895IdXC6j1FbtDeH4102Y4+ARHumrpt
+	ebFc54Sm3XNI9sx/kUMEh9/H0/mgkil+19zF9DUb37A+Y6zPcI/JPXPVDNfK9s4+C3SfkfrQlF1
+	70Z5uhMRyaLycvAfDa5iYoIpN5NIOzPpj5+vGti5e2ie1qw2OHWQ2h59s
+X-Received: by 2002:a05:6122:8d4:b0:559:6b7f:b110 with SMTP id 71dfb90a1353d-56347d3a261mr1539013e0c.2.1767815829389;
+        Wed, 07 Jan 2026 11:57:09 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IHG0X3qf/hyMn6mBbAMEAUok+y9+txGhueuwDwjIhfkqolDutAjKTI0pytjF+WHbiJLH/hybQ==
+X-Received: by 2002:a05:6122:8d4:b0:559:6b7f:b110 with SMTP id 71dfb90a1353d-56347d3a261mr1538995e0c.2.1767815828965;
+        Wed, 07 Jan 2026 11:57:08 -0800 (PST)
+Received: from ?IPV6:2601:188:c102:b180:1f8b:71d0:77b1:1f6e? ([2601:188:c102:b180:1f8b:71d0:77b1:1f6e])
+        by smtp.gmail.com with ESMTPSA id 71dfb90a1353d-5633ad02b3bsm3973267e0c.2.2026.01.07.11.57.02
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 07 Jan 2026 11:57:08 -0800 (PST)
+From: Waiman Long <llong@redhat.com>
+X-Google-Original-From: Waiman Long <longman@redhat.com>
+Message-ID: <9deefb73-fb3a-4bb0-a808-88c478ea3240@redhat.com>
+Date: Wed, 7 Jan 2026 14:57:00 -0500
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20260101221359.22298-2-frederic@kernel.org>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCHv2 0/2] sched/deadline: Fix potential race in
+ dl_add_task_root_domain()
+To: Peter Zijlstra <peterz@infradead.org>
+Cc: cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+ Tejun Heo <tj@kernel.org>, Chen Ridong <chenridong@huaweicloud.com>,
+ Pierre Gondois <pierre.gondois@arm.com>, Ingo Molnar <mingo@redhat.com>,
+ Vincent Guittot <vincent.guittot@linaro.org>,
+ Dietmar Eggemann <dietmar.eggemann@arm.com>,
+ Steven Rostedt <rostedt@goodmis.org>, Ben Segall <bsegall@google.com>,
+ Mel Gorman <mgorman@suse.de>, Valentin Schneider <vschneid@redhat.com>,
+ Juri Lelli <juri.lelli@redhat.com>, Pingfan Liu <piliu@redhat.com>
+References: <20251119095525.12019-3-piliu@redhat.com>
+ <20251125032630.8746-1-piliu@redhat.com>
+ <aSVlX5Rk1y2FuThP@jlelli-thinkpadt14gen4.remote.csb>
+Content-Language: en-US
+In-Reply-To: <aSVlX5Rk1y2FuThP@jlelli-thinkpadt14gen4.remote.csb>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-[+cc Jinhui]
 
-On Thu, Jan 01, 2026 at 11:13:26PM +0100, Frederic Weisbecker wrote:
-> HK_TYPE_DOMAIN will soon integrate cpuset isolated partitions and
-> therefore be made modifiable at runtime. Synchronize against the cpumask
-> update using RCU.
-> 
-> The RCU locked section includes both the housekeeping CPU target
-> election for the PCI probe work and the work enqueue.
-> 
-> This way the housekeeping update side will simply need to flush the
-> pending related works after updating the housekeeping mask in order to
-> make sure that no PCI work ever executes on an isolated CPU. This part
-> will be handled in a subsequent patch.
-> 
-> Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
+On 11/25/25 3:14 AM, Juri Lelli wrote:
+> Hi,
+>
+> On 25/11/25 11:26, Pingfan Liu wrote:
+>> These two patches address the issue reported by Juri [1] (thanks!).
+>>
+>> The first removes an unnecessary comment, the second is the actual fix.
+>>
+>> @Tejun, while these could be squashed together, I kept them separate to
+>> maintain the one-patch-one-purpose rule. let me know if you'd like me to
+>> resend these in a different format, or feel free to adjust as needed.
+>>
+>> [1]: https://lore.kernel.org/lkml/aSBjm3mN_uIy64nz@jlelli-thinkpadt14gen4.remote.csb
+>>
+>> Pingfan Liu (2):
+>>    sched/deadline: Remove unnecessary comment in
+>>      dl_add_task_root_domain()
+>>    sched/deadline: Fix potential race in dl_add_task_root_domain()
+>>
+>>   kernel/sched/deadline.c | 12 ++----------
+>>   1 file changed, 2 insertions(+), 10 deletions(-)
+> For both
+>
+> Acked-by: Juri Lelli <juri.lelli@redhat.com>
 
-Just FYI, Jinhui posted a series that touches this same code and might
-need some coordination:
+Peter,
 
-  https://lore.kernel.org/r/20260107175548.1792-1-guojinhui.liam@bytedance.com
+Are these 2 patches eligible to be merged into the the scheduler branch 
+of the tip tree? These are bug fixes to the deadline scheduler code.
 
-IIUC, Jinhui's series adds some more NUMA smarts in the driver core
-sync probing path and removes corresponding NUMA code from the PCI
-core probe path.
+Cheers,
+Longman
 
-Bjorn
 
