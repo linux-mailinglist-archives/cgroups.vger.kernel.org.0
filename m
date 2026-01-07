@@ -1,228 +1,144 @@
-Return-Path: <cgroups+bounces-12939-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-12940-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 231C7CFD72F
-	for <lists+cgroups@lfdr.de>; Wed, 07 Jan 2026 12:43:54 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id D152ECFD82B
+	for <lists+cgroups@lfdr.de>; Wed, 07 Jan 2026 12:57:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id C199E302410B
-	for <lists+cgroups@lfdr.de>; Wed,  7 Jan 2026 11:43:26 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 4236930146C1
+	for <lists+cgroups@lfdr.de>; Wed,  7 Jan 2026 11:57:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 63DE6313E23;
-	Wed,  7 Jan 2026 11:43:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D160130DD2C;
+	Wed,  7 Jan 2026 11:57:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="slLWsE6I";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="+fH55pNq";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="slLWsE6I";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="+fH55pNq"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="LeOVqk9+"
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 58B113002A5
-	for <cgroups@vger.kernel.org>; Wed,  7 Jan 2026 11:43:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F2C7238166;
+	Wed,  7 Jan 2026 11:57:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767786203; cv=none; b=NeTVz/rbZsH1KS29S3Zkrdx5ou5khJrpgHwSHNCyN+pVExFJPErG2LhBlNBOHgnLRGfFHghwpbeNoM/HndXUZKB/qVdbrfQSbLdTjQFY6zkqA+5RKHJh4tX6IB2yPGSeoeSYzv8CMl0YyYLPAldCD+9tGl/hO2nnKpq3+hxbQI0=
+	t=1767787023; cv=none; b=eImndedoxtpdBeEKAbFojQdvPfOo1JJr0qWpY2Ulp4xJOJovB6gnSSJZIeDa45deCIxmtQQLyOFMdScfuCCxsAj6xVSv32bhhU4cIXlqw8Jnbv0cGDglmWrNw+5wvIGeafJEMX1FOQrtpuz6pMR7oyKWh+Ajk9rznKCnXgOv21s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767786203; c=relaxed/simple;
-	bh=6fddz0c/OCuYunmMpZQCle/wCrCjFU0rgDMFu0lNqGY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Re0tqnw7aBobDlzd/7tgQhSH3jVjdC3+fCC5kfOm8GKNM3Bltq5DzUKRGrZIC+QX6gSY6GlPJHvuu66I7aCNWwi3U8l6C1SI7DRCN8RQsziScenWKIqP9vAywxvwZW4I+qpTjlLXIruZBn4WY7yQFyhLnevjBfwrnqPcslPupis=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=slLWsE6I; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=+fH55pNq; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=slLWsE6I; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=+fH55pNq; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 483715BE2D;
-	Wed,  7 Jan 2026 11:43:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1767786198; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=HP5iOFWigyyHdMk0fMVZgSA96wcLk4dUN4Yd9D7Dqac=;
-	b=slLWsE6IA4HrnC/+3AnDwSnNIC/SYT01MYQIHrNUvto4luJirwJuq9dJvdkjm0VTI799bq
-	t9iCPDYY7yLS3tpR24yJp67pJPVW9+Q+OGVuRnC15fsgJhihtFHlaUXPg5wKH0jmkIvZqq
-	GC8GF2kNjuvZ2rOKunBA61AlwoSDI9Q=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1767786198;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=HP5iOFWigyyHdMk0fMVZgSA96wcLk4dUN4Yd9D7Dqac=;
-	b=+fH55pNqLCtoXaA6LScKkANSV+qeZmJwHtoiylnmFutu8Syi1ilJnJMye5IF2mrWx+3vta
-	wT2LwOcMZs82I2DQ==
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=slLWsE6I;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=+fH55pNq
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1767786198; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=HP5iOFWigyyHdMk0fMVZgSA96wcLk4dUN4Yd9D7Dqac=;
-	b=slLWsE6IA4HrnC/+3AnDwSnNIC/SYT01MYQIHrNUvto4luJirwJuq9dJvdkjm0VTI799bq
-	t9iCPDYY7yLS3tpR24yJp67pJPVW9+Q+OGVuRnC15fsgJhihtFHlaUXPg5wKH0jmkIvZqq
-	GC8GF2kNjuvZ2rOKunBA61AlwoSDI9Q=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1767786198;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=HP5iOFWigyyHdMk0fMVZgSA96wcLk4dUN4Yd9D7Dqac=;
-	b=+fH55pNqLCtoXaA6LScKkANSV+qeZmJwHtoiylnmFutu8Syi1ilJnJMye5IF2mrWx+3vta
-	wT2LwOcMZs82I2DQ==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 175853EA63;
-	Wed,  7 Jan 2026 11:43:18 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id e+dgBdZGXmlpIQAAD6G6ig
-	(envelope-from <vbabka@suse.cz>); Wed, 07 Jan 2026 11:43:18 +0000
-Message-ID: <1372138e-5837-4634-81de-447a1ef0a5ad@suse.cz>
-Date: Wed, 7 Jan 2026 12:43:17 +0100
+	s=arc-20240116; t=1767787023; c=relaxed/simple;
+	bh=mNpHcF+MwpeYkX9EkT3dgyo2t+tch8FndQ1ofJbAPRQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Lib/rEo2TrXGAw+PwoEEnmtV50OFHN2E6F4GrqAT+AFvXbCPDYi94svYY6vv8LQbQ5WLrW2OlLuKOsxW1JsMBKQSDjELNCqMO2KZ2DW1fn/romiRl0LMmSmjxI0RMQtPMDLdLxwMzcboqKBzUsdnDvAxuvRSx7hgpxBlLAoFMGs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=LeOVqk9+; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B7530C2BC86;
+	Wed,  7 Jan 2026 11:56:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1767787023;
+	bh=mNpHcF+MwpeYkX9EkT3dgyo2t+tch8FndQ1ofJbAPRQ=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=LeOVqk9+TU5kCP+FDRa6whXFCQVaVEbDllyqM6h//SAX5uiVAXQ8VG7Am0rvJsC1H
+	 GqoHmEPSiac74Rt53FFrHdVYKM4/rFVqh30AdgVeV6vLWbAjvELEI1HTUOnJqZhRcl
+	 WUKTPSBfeNtl/h9hRKM1nu0OKjKz29OOH9dTct1GoghBZrfukj/3dyGolifM9h+2bh
+	 wbVLW2c8CGbXntqacDOCLSp8UU61M7HCX59PbmrBJjXYcCtF5Cx56s4+CUuypQTiMs
+	 aUdEwgtI6C7dlhy4lPby3E841CBfyCwkeyWL2UmPv7fe8h0pBCK+OfBWitaUqoPHxs
+	 uX/nyikfJSLNw==
+Date: Wed, 7 Jan 2026 11:56:53 +0000
+From: Simon Horman <horms@kernel.org>
+To: Frederic Weisbecker <frederic@kernel.org>
+Cc: LKML <linux-kernel@vger.kernel.org>,
+	Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Bjorn Helgaas <bhelgaas@google.com>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Chen Ridong <chenridong@huawei.com>,
+	Danilo Krummrich <dakr@kernel.org>,
+	"David S . Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Gabriele Monaco <gmonaco@redhat.com>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Ingo Molnar <mingo@redhat.com>, Jakub Kicinski <kuba@kernel.org>,
+	Jens Axboe <axboe@kernel.dk>, Johannes Weiner <hannes@cmpxchg.org>,
+	Lai Jiangshan <jiangshanlai@gmail.com>,
+	Marco Crivellari <marco.crivellari@suse.com>,
+	Michal Hocko <mhocko@suse.com>, Muchun Song <muchun.song@linux.dev>,
+	Paolo Abeni <pabeni@redhat.com>,
+	Peter Zijlstra <peterz@infradead.org>, Phil Auld <pauld@redhat.com>,
+	"Rafael J . Wysocki" <rafael@kernel.org>,
+	Roman Gushchin <roman.gushchin@linux.dev>,
+	Shakeel Butt <shakeel.butt@linux.dev>, Tejun Heo <tj@kernel.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Vlastimil Babka <vbabka@suse.cz>, Waiman Long <longman@redhat.com>,
+	Will Deacon <will@kernel.org>, cgroups@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org, linux-block@vger.kernel.org,
+	linux-mm@kvack.org, linux-pci@vger.kernel.org,
+	netdev@vger.kernel.org
+Subject: Re: [PATCH 13/33] sched/isolation: Convert housekeeping cpumasks to
+ rcu pointers
+Message-ID: <20260107115653.GA196631@kernel.org>
+References: <20260101221359.22298-1-frederic@kernel.org>
+ <20260101221359.22298-14-frederic@kernel.org>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH V5 1/8] mm/slab: use unsigned long for orig_size to ensure
- proper metadata align
-Content-Language: en-US
-To: Harry Yoo <harry.yoo@oracle.com>, akpm@linux-foundation.org
-Cc: andreyknvl@gmail.com, cl@gentwo.org, dvyukov@google.com,
- glider@google.com, hannes@cmpxchg.org, linux-mm@kvack.org,
- mhocko@kernel.org, muchun.song@linux.dev, rientjes@google.com,
- roman.gushchin@linux.dev, ryabinin.a.a@gmail.com, shakeel.butt@linux.dev,
- surenb@google.com, vincenzo.frascino@arm.com, yeoreum.yun@arm.com,
- tytso@mit.edu, adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
- linux-kernel@vger.kernel.org, cgroups@vger.kernel.org, hao.li@linux.dev,
- stable@vger.kernel.org
-References: <20260105080230.13171-1-harry.yoo@oracle.com>
- <20260105080230.13171-2-harry.yoo@oracle.com>
-From: Vlastimil Babka <vbabka@suse.cz>
-Autocrypt: addr=vbabka@suse.cz; keydata=
- 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
- m6M14QORSWTLRg==
-In-Reply-To: <20260105080230.13171-2-harry.yoo@oracle.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spamd-Result: default: False [-3.01 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	SUSPICIOUS_RECIPS(1.50)[];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	ARC_NA(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[24];
-	FUZZY_RATELIMITED(0.00)[rspamd.com];
-	MIME_TRACE(0.00)[0:+];
-	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	FREEMAIL_CC(0.00)[gmail.com,gentwo.org,google.com,cmpxchg.org,kvack.org,kernel.org,linux.dev,arm.com,mit.edu,dilger.ca,vger.kernel.org];
-	RCVD_TLS_ALL(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	TO_DN_SOME(0.00)[];
-	MID_RHS_MATCH_FROM(0.00)[];
-	TAGGED_RCPT(0.00)[];
-	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
-	DKIM_TRACE(0.00)[suse.cz:+];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns]
-X-Rspamd-Action: no action
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spam-Level: 
-X-Rspamd-Queue-Id: 483715BE2D
-X-Spam-Flag: NO
-X-Spam-Score: -3.01
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20260101221359.22298-14-frederic@kernel.org>
 
-On 1/5/26 09:02, Harry Yoo wrote:
-> When both KASAN and SLAB_STORE_USER are enabled, accesses to
-> struct kasan_alloc_meta fields can be misaligned on 64-bit architectures.
-> This occurs because orig_size is currently defined as unsigned int,
-> which only guarantees 4-byte alignment. When struct kasan_alloc_meta is
-> placed after orig_size, it may end up at a 4-byte boundary rather than
-> the required 8-byte boundary on 64-bit systems.
-
-Oops.
-
-> Note that 64-bit architectures without HAVE_EFFICIENT_UNALIGNED_ACCESS
-> are assumed to require 64-bit accesses to be 64-bit aligned.
-> See HAVE_64BIT_ALIGNED_ACCESS and commit adab66b71abf ("Revert:
-> "ring-buffer: Remove HAVE_64BIT_ALIGNED_ACCESS"") for more details.
+On Thu, Jan 01, 2026 at 11:13:38PM +0100, Frederic Weisbecker wrote:
+> HK_TYPE_DOMAIN's cpumask will soon be made modifiable by cpuset.
+> A synchronization mechanism is then needed to synchronize the updates
+> with the housekeeping cpumask readers.
 > 
-> Change orig_size from unsigned int to unsigned long to ensure proper
-> alignment for any subsequent metadata. This should not waste additional
-> memory because kmalloc objects are already aligned to at least
-> ARCH_KMALLOC_MINALIGN.
+> Turn the housekeeping cpumasks into RCU pointers. Once a housekeeping
+> cpumask will be modified, the update side will wait for an RCU grace
+> period and propagate the change to interested subsystem when deemed
+> necessary.
+> 
+> Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
+> ---
+>  kernel/sched/isolation.c | 58 +++++++++++++++++++++++++---------------
+>  kernel/sched/sched.h     |  1 +
+>  2 files changed, 37 insertions(+), 22 deletions(-)
+> 
+> diff --git a/kernel/sched/isolation.c b/kernel/sched/isolation.c
+> index 11a623fa6320..83be49ec2b06 100644
+> --- a/kernel/sched/isolation.c
+> +++ b/kernel/sched/isolation.c
+> @@ -21,7 +21,7 @@ DEFINE_STATIC_KEY_FALSE(housekeeping_overridden);
+>  EXPORT_SYMBOL_GPL(housekeeping_overridden);
+>  
+>  struct housekeeping {
+> -	cpumask_var_t cpumasks[HK_TYPE_MAX];
+> +	struct cpumask __rcu *cpumasks[HK_TYPE_MAX];
+>  	unsigned long flags;
+>  };
+>  
+> @@ -33,17 +33,28 @@ bool housekeeping_enabled(enum hk_type type)
+>  }
+>  EXPORT_SYMBOL_GPL(housekeeping_enabled);
+>  
+> +const struct cpumask *housekeeping_cpumask(enum hk_type type)
+> +{
+> +	if (static_branch_unlikely(&housekeeping_overridden)) {
+> +		if (housekeeping.flags & BIT(type)) {
+> +			return rcu_dereference_check(housekeeping.cpumasks[type], 1);
+> +		}
+> +	}
+> +	return cpu_possible_mask;
+> +}
+> +EXPORT_SYMBOL_GPL(housekeeping_cpumask);
+> +
 
-I'll add:
+Hi Frederic,
 
-Closes: https://lore.kernel.org/all/aPrLF0OUK651M4dk@hyeyoo/
+I think this patch should also update the access to housekeeping.cpumasks
+in housekeeping_setup(), on line 200, to use housekeeping_cpumask().
 
-since that's useful context and discussion.
+As is, sparse flags __rcu a annotation miss match there.
 
-> Suggested-by: Andrey Ryabinin <ryabinin.a.a@gmail.com>
-> Cc: stable@vger.kernel.org
-> Fixes: 6edf2576a6cc ("mm/slub: enable debugging memory wasting of kmalloc")
-> Signed-off-by: Harry Yoo <harry.yoo@oracle.com>
+  kernel/sched/isolation.c:200:80: warning: incorrect type in argument 3 (different address spaces)
+  kernel/sched/isolation.c:200:80:    expected struct cpumask const *srcp3
+  kernel/sched/isolation.c:200:80:    got struct cpumask [noderef] __rcu *
 
-As the problem was introduced in 6.1, doesn't seem urgent to push as 6.19 rc
-fix, so keeping it as part of the series (where it's a necessary
-prerequisity per the Closes: link above) and stable backporting later seems
-indeed sufficient. Thanks.
-
+...
 
