@@ -1,195 +1,256 @@
-Return-Path: <cgroups+bounces-12945-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-12946-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9F98ACFF1B0
-	for <lists+cgroups@lfdr.de>; Wed, 07 Jan 2026 18:31:06 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id BB8A2CFF6E8
+	for <lists+cgroups@lfdr.de>; Wed, 07 Jan 2026 19:24:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id 62252300671E
-	for <lists+cgroups@lfdr.de>; Wed,  7 Jan 2026 17:29:46 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id B07F531F54F2
+	for <lists+cgroups@lfdr.de>; Wed,  7 Jan 2026 17:22:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 869E93570AE;
-	Wed,  7 Jan 2026 17:02:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 10FB73904D1;
+	Wed,  7 Jan 2026 17:09:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="BSIwDP13"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="yOr4dsBY";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="2Vjs7QAK";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="yOr4dsBY";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="2Vjs7QAK"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-wm1-f52.google.com (mail-wm1-f52.google.com [209.85.128.52])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E95CF348867
-	for <cgroups@vger.kernel.org>; Wed,  7 Jan 2026 17:02:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C50F538A9B1
+	for <cgroups@vger.kernel.org>; Wed,  7 Jan 2026 17:08:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767805333; cv=none; b=Ou03XtlT6irv9aZ2qnS5qJT3oa6I2Pwe7fStdTKnq0ChZFqWBtWR+PgB/e9Iux/GXyMcvHf5QjD48L4rJR5RexOTqyEoTc8xy2pAllSwmscznM+IFvO+F3HWkrjz1GSbUQGQzoJ5wYINl3bXmSBf06Eoq2RhdHfPEpMRwxQ1YDw=
+	t=1767805742; cv=none; b=QtYdwfInHvAkPrZHkZTLhZWblUbJ4TnXUEZU6hfQb1ImAxfCmTmbkFIihXVuG3X1G+TlPEdNEktk/WjmhlzjaqfCvsZGzB34NDJQPKuq/G/A2DGzdrhmNNrWI1kzdOXLEIYoQBDrNXNNh/OjQi66IcBe9MBSTwKBgNlNLZjjNPs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767805333; c=relaxed/simple;
-	bh=tWFeLnDDz/em1zg/E8BbEXwCSep7COgZ1jMf56WRGho=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=si5iXt5MibVqP6p3fZndbW6iWpVDux6k+GnZTXrGnNuqMypzXmr7NGFI3PBCcYilfnBpw+rHiAtggEG3msh/DYNlvbTQOt9m2gtSlyMG6joxThJIr6LdXBTrO0xg62sPNvAVRckwtkHe7va9V0rb6R74fAHt79hQwR+9y5uXFds=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=BSIwDP13; arc=none smtp.client-ip=209.85.128.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-wm1-f52.google.com with SMTP id 5b1f17b1804b1-47aa03d3326so19832055e9.3
-        for <cgroups@vger.kernel.org>; Wed, 07 Jan 2026 09:02:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1767805327; x=1768410127; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=L49E8GK0L61Xb+Ow/6X+q4Ipvp5Im1cS6u2eq6FB63A=;
-        b=BSIwDP13V9ZT/6Ty4pe8Lo2nBLjfq8yruRndt7Ac3Fy8AewH0VdfHMW0yuLJHBIQ5F
-         2da3wM/wTqoEqrIoa2tdMuELM4UTUtdOX2zdvGZIpjjgvPuqCv8GSC3Olr1nKRQGAXsl
-         +5IHXf7qOokkWifqL2bRmwxKc8mFvxiz1MXtLBoAyALgK33eCkrpdjAER+infMPfT5QN
-         NkN6L9e7MWX+OHnZcYuOy6WUn3iwj2L0zopuadpwD6z4dgGsqlwPdRnVvCBDnU4VLIKQ
-         DNEl4ZBVphVc2tiK33cO6XAdafPKn9f3B1tEDnJOynIO9nQrxKubgMEFlEOMnbh1ST4Q
-         ArmQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1767805327; x=1768410127;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=L49E8GK0L61Xb+Ow/6X+q4Ipvp5Im1cS6u2eq6FB63A=;
-        b=O+NLHwO2qu5Fry4UEQPgtY8CNCkShuNSCbieVadXe+Fia1jBShMbde6jZaB9B2jtDr
-         keTvVNvNmiMsPj71pkIpZhTeD7Y8NQSLcsHLJrU8wyBTHfmuJhbflMOlMNjcuZ/dgfna
-         OtXZXL2EHujvvYSzl8fZXtpA0LX2yopUrgCiOBOk+aRuIE5Vz4JiEOGGuVUmygGl3UYs
-         okShAVG5MPqCVu1l2///tX2aOg3UoyeE2Qs/UbwTkX8nGVaIWBpBHnF5BCwKhvkO/JoW
-         FDaAqkljO6oDWwhzENAZ+33GduP2SOr0gYXSeyEIcvP7t4WxtGHhdSJI0clCNd5JTV+S
-         tQDQ==
-X-Gm-Message-State: AOJu0YwYyzi8jijSgd4hCco7EqOCFQLkWdDSD2IQ2IJey3CWqc3a2gIx
-	It9jwB67NU6zb2ABv54SL+IfE37RyBTr3W2eEPyRHpyla6fM8U8QFM079/XfuHjld79a92bCPbi
-	4bW8h
-X-Gm-Gg: AY/fxX6U3UgpZrF3uw/SzkTr76qxKn0vgtd8zhd2nANvCfHkxjCkNYSQQQDyjZPH/VR
-	w6wTsYulxtHFQ03+rEaJHHwgsHzj0xxQF5779NjsffnMVmRwk0lpmpiFWOHubzDLX5Z6VnqZxze
-	eQbtbQmm29TSUt5C74i4mnGElM4JSMplGfFyrQDl2YqL53ToSnMtBELELQInEyifMtE7eaXaNUy
-	WdR8RkTLUMIYvUA0egJ71psquA5yrzae/ffdiba4zbke3dgcmXACLylwX3vOPNMUK5hcPk1jBX0
-	NSIdOqG9dsnCk40I3r542Ljsf8ZG5HcbONnVDq/Z1x0DGDXhntxuL5jJi31lQxPiHrYm+6T1h8a
-	Kwnv3BCmurwIxw2Cg5yb5vzseAjBnjv4QArpYGq5qUlyeL42yZIjKTsaxVAbWvURVzMitwzu442
-	wk/lGWrZt4EoGtmy4r2hVJZF8aA1CUGec=
-X-Google-Smtp-Source: AGHT+IEg3eq4eSlFYkLOWLPuVP+Buf7OIMrTZ/OdJp8hfUfEblFjlugkX6dHGbDV+Go/PXS4KGbfpQ==
-X-Received: by 2002:a05:600c:3b28:b0:477:8a2a:123e with SMTP id 5b1f17b1804b1-47d84b41bbfmr39523105e9.33.1767805326694;
-        Wed, 07 Jan 2026 09:02:06 -0800 (PST)
-Received: from blackdock.suse.cz (nat2.prg.suse.com. [195.250.132.146])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-47d7f6f0e15sm103041885e9.10.2026.01.07.09.02.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 07 Jan 2026 09:02:06 -0800 (PST)
-From: =?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>
-To: cgroups@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-hardening@vger.kernel.org
-Cc: =?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>,
-	"Gustavo A. R. Silva" <gustavo@embeddedor.com>,
-	David Laight <david.laight.linux@gmail.com>,
-	"Gustavo A. R. Silva" <gustavoars@kernel.org>,
-	Tejun Heo <tj@kernel.org>,
-	Johannes Weiner <hannes@cmpxchg.org>,
-	Kees Cook <kees@kernel.org>
-Subject: [PATCH v2] cgroup: Eliminate cgrp_ancestor_storage in cgroup_root
-Date: Wed,  7 Jan 2026 17:59:41 +0100
-Message-ID: <20260107165942.95340-1-mkoutny@suse.com>
-X-Mailer: git-send-email 2.52.0
+	s=arc-20240116; t=1767805742; c=relaxed/simple;
+	bh=33VQ/B0khT7h2r+xzoWJPmE/F0JYIe0DJsk1VnqJBAY=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=cX5CI3gLCK3gGsX8M48OkUJjm+LkM41YmFD7qmbWcJA7ROtJ55woWDie46Eyx1wSW0178bzwPJdUukz6+DXCQM2RDNbMKapZ8ZcLPmE02BpoM9gxRqxtJe38QJqGr4I+UgQQDQHjhf8dio4h2SR6vHgobvVdx7ZNgKWRkUoe73o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=yOr4dsBY; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=2Vjs7QAK; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=yOr4dsBY; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=2Vjs7QAK; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id AE8A334070;
+	Wed,  7 Jan 2026 17:08:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1767805737; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=8QD95a0wYk6luGnaJtfq/jQEMVDXv++XppQOZcRLczQ=;
+	b=yOr4dsBY3Mj6ddqZlcFAyjmHUnkutVjvpYhe/yfO3KwWX6wM81RvVif2llgQeTTN/LhaIZ
+	CSkFnd+PQfLge8g3V7uecRF808fPIR7psh3k4JUC8Ljhq+TtVP64AEJNpZoKBGC/NjRVxi
+	zXa0+hvA44bRlL6+evOP69SJKFaVHjA=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1767805737;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=8QD95a0wYk6luGnaJtfq/jQEMVDXv++XppQOZcRLczQ=;
+	b=2Vjs7QAK/XGu5nVeTnzQMI17QMocDVk3y+fvR1i143vkBdJeo+mwp4u8lzZ9/zpdGs+yfT
+	xduaLzItQXt3qIDw==
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=yOr4dsBY;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=2Vjs7QAK
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1767805737; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=8QD95a0wYk6luGnaJtfq/jQEMVDXv++XppQOZcRLczQ=;
+	b=yOr4dsBY3Mj6ddqZlcFAyjmHUnkutVjvpYhe/yfO3KwWX6wM81RvVif2llgQeTTN/LhaIZ
+	CSkFnd+PQfLge8g3V7uecRF808fPIR7psh3k4JUC8Ljhq+TtVP64AEJNpZoKBGC/NjRVxi
+	zXa0+hvA44bRlL6+evOP69SJKFaVHjA=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1767805737;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=8QD95a0wYk6luGnaJtfq/jQEMVDXv++XppQOZcRLczQ=;
+	b=2Vjs7QAK/XGu5nVeTnzQMI17QMocDVk3y+fvR1i143vkBdJeo+mwp4u8lzZ9/zpdGs+yfT
+	xduaLzItQXt3qIDw==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 863873EA63;
+	Wed,  7 Jan 2026 17:08:57 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id RE9wICmTXmlUYwAAD6G6ig
+	(envelope-from <vbabka@suse.cz>); Wed, 07 Jan 2026 17:08:57 +0000
+Message-ID: <644e163d-edd9-4128-9516-0f70a25526df@suse.cz>
+Date: Wed, 7 Jan 2026 18:08:57 +0100
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH V5 7/8] mm/slab: save memory by allocating slabobj_ext
+ array from leftover
+Content-Language: en-US
+To: Harry Yoo <harry.yoo@oracle.com>, akpm@linux-foundation.org
+Cc: andreyknvl@gmail.com, cl@gentwo.org, dvyukov@google.com,
+ glider@google.com, hannes@cmpxchg.org, linux-mm@kvack.org,
+ mhocko@kernel.org, muchun.song@linux.dev, rientjes@google.com,
+ roman.gushchin@linux.dev, ryabinin.a.a@gmail.com, shakeel.butt@linux.dev,
+ surenb@google.com, vincenzo.frascino@arm.com, yeoreum.yun@arm.com,
+ tytso@mit.edu, adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
+ linux-kernel@vger.kernel.org, cgroups@vger.kernel.org, hao.li@linux.dev
+References: <20260105080230.13171-1-harry.yoo@oracle.com>
+ <20260105080230.13171-8-harry.yoo@oracle.com>
+From: Vlastimil Babka <vbabka@suse.cz>
+Autocrypt: addr=vbabka@suse.cz; keydata=
+ xsFNBFZdmxYBEADsw/SiUSjB0dM+vSh95UkgcHjzEVBlby/Fg+g42O7LAEkCYXi/vvq31JTB
+ KxRWDHX0R2tgpFDXHnzZcQywawu8eSq0LxzxFNYMvtB7sV1pxYwej2qx9B75qW2plBs+7+YB
+ 87tMFA+u+L4Z5xAzIimfLD5EKC56kJ1CsXlM8S/LHcmdD9Ctkn3trYDNnat0eoAcfPIP2OZ+
+ 9oe9IF/R28zmh0ifLXyJQQz5ofdj4bPf8ecEW0rhcqHfTD8k4yK0xxt3xW+6Exqp9n9bydiy
+ tcSAw/TahjW6yrA+6JhSBv1v2tIm+itQc073zjSX8OFL51qQVzRFr7H2UQG33lw2QrvHRXqD
+ Ot7ViKam7v0Ho9wEWiQOOZlHItOOXFphWb2yq3nzrKe45oWoSgkxKb97MVsQ+q2SYjJRBBH4
+ 8qKhphADYxkIP6yut/eaj9ImvRUZZRi0DTc8xfnvHGTjKbJzC2xpFcY0DQbZzuwsIZ8OPJCc
+ LM4S7mT25NE5kUTG/TKQCk922vRdGVMoLA7dIQrgXnRXtyT61sg8PG4wcfOnuWf8577aXP1x
+ 6mzw3/jh3F+oSBHb/GcLC7mvWreJifUL2gEdssGfXhGWBo6zLS3qhgtwjay0Jl+kza1lo+Cv
+ BB2T79D4WGdDuVa4eOrQ02TxqGN7G0Biz5ZLRSFzQSQwLn8fbwARAQABzSBWbGFzdGltaWwg
+ QmFia2EgPHZiYWJrYUBzdXNlLmN6PsLBlAQTAQoAPgIbAwULCQgHAwUVCgkICwUWAgMBAAIe
+ AQIXgBYhBKlA1DSZLC6OmRA9UCJPp+fMgqZkBQJnyBr8BQka0IFQAAoJECJPp+fMgqZkqmMQ
+ AIbGN95ptUMUvo6aAdhxaOCHXp1DfIBuIOK/zpx8ylY4pOwu3GRe4dQ8u4XS9gaZ96Gj4bC+
+ jwWcSmn+TjtKW3rH1dRKopvC07tSJIGGVyw7ieV/5cbFffA8NL0ILowzVg8w1ipnz1VTkWDr
+ 2zcfslxJsJ6vhXw5/npcY0ldeC1E8f6UUoa4eyoskd70vO0wOAoGd02ZkJoox3F5ODM0kjHu
+ Y97VLOa3GG66lh+ZEelVZEujHfKceCw9G3PMvEzyLFbXvSOigZQMdKzQ8D/OChwqig8wFBmV
+ QCPS4yDdmZP3oeDHRjJ9jvMUKoYODiNKsl2F+xXwyRM2qoKRqFlhCn4usVd1+wmv9iLV8nPs
+ 2Db1ZIa49fJet3Sk3PN4bV1rAPuWvtbuTBN39Q/6MgkLTYHb84HyFKw14Rqe5YorrBLbF3rl
+ M51Dpf6Egu1yTJDHCTEwePWug4XI11FT8lK0LNnHNpbhTCYRjX73iWOnFraJNcURld1jL1nV
+ r/LRD+/e2gNtSTPK0Qkon6HcOBZnxRoqtazTU6YQRmGlT0v+rukj/cn5sToYibWLn+RoV1CE
+ Qj6tApOiHBkpEsCzHGu+iDQ1WT0Idtdynst738f/uCeCMkdRu4WMZjteQaqvARFwCy3P/jpK
+ uvzMtves5HvZw33ZwOtMCgbpce00DaET4y/UzsBNBFsZNTUBCACfQfpSsWJZyi+SHoRdVyX5
+ J6rI7okc4+b571a7RXD5UhS9dlVRVVAtrU9ANSLqPTQKGVxHrqD39XSw8hxK61pw8p90pg4G
+ /N3iuWEvyt+t0SxDDkClnGsDyRhlUyEWYFEoBrrCizbmahOUwqkJbNMfzj5Y7n7OIJOxNRkB
+ IBOjPdF26dMP69BwePQao1M8Acrrex9sAHYjQGyVmReRjVEtv9iG4DoTsnIR3amKVk6si4Ea
+ X/mrapJqSCcBUVYUFH8M7bsm4CSxier5ofy8jTEa/CfvkqpKThTMCQPNZKY7hke5qEq1CBk2
+ wxhX48ZrJEFf1v3NuV3OimgsF2odzieNABEBAAHCwXwEGAEKACYCGwwWIQSpQNQ0mSwujpkQ
+ PVAiT6fnzIKmZAUCZ8gcVAUJFhTonwAKCRAiT6fnzIKmZLY8D/9uo3Ut9yi2YCuASWxr7QQZ
+ lJCViArjymbxYB5NdOeC50/0gnhK4pgdHlE2MdwF6o34x7TPFGpjNFvycZqccSQPJ/gibwNA
+ zx3q9vJT4Vw+YbiyS53iSBLXMweeVV1Jd9IjAoL+EqB0cbxoFXvnjkvP1foiiF5r73jCd4PR
+ rD+GoX5BZ7AZmFYmuJYBm28STM2NA6LhT0X+2su16f/HtummENKcMwom0hNu3MBNPUOrujtW
+ khQrWcJNAAsy4yMoJ2Lw51T/5X5Hc7jQ9da9fyqu+phqlVtn70qpPvgWy4HRhr25fCAEXZDp
+ xG4RNmTm+pqorHOqhBkI7wA7P/nyPo7ZEc3L+ZkQ37u0nlOyrjbNUniPGxPxv1imVq8IyycG
+ AN5FaFxtiELK22gvudghLJaDiRBhn8/AhXc642/Z/yIpizE2xG4KU4AXzb6C+o7LX/WmmsWP
+ Ly6jamSg6tvrdo4/e87lUedEqCtrp2o1xpn5zongf6cQkaLZKQcBQnPmgHO5OG8+50u88D9I
+ rywqgzTUhHFKKF6/9L/lYtrNcHU8Z6Y4Ju/MLUiNYkmtrGIMnkjKCiRqlRrZE/v5YFHbayRD
+ dJKXobXTtCBYpLJM4ZYRpGZXne/FAtWNe4KbNJJqxMvrTOrnIatPj8NhBVI0RSJRsbilh6TE
+ m6M14QORSWTLRg==
+In-Reply-To: <20260105080230.13171-8-harry.yoo@oracle.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
+X-Spam-Flag: NO
+X-Spam-Score: -3.01
+X-Rspamd-Queue-Id: AE8A334070
+X-Spamd-Result: default: False [-3.01 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	SUSPICIOUS_RECIPS(1.50)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	FUZZY_RATELIMITED(0.00)[rspamd.com];
+	FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	ARC_NA(0.00)[];
+	TAGGED_RCPT(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[23];
+	MIME_TRACE(0.00)[0:+];
+	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+	MID_RHS_MATCH_FROM(0.00)[];
+	TO_DN_SOME(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	FREEMAIL_CC(0.00)[gmail.com,gentwo.org,google.com,cmpxchg.org,kvack.org,kernel.org,linux.dev,arm.com,mit.edu,dilger.ca,vger.kernel.org];
+	RCVD_TLS_ALL(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	DKIM_TRACE(0.00)[suse.cz:+]
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Rspamd-Action: no action
+X-Spam-Level: 
 
-The cgrp_ancestor_storage has two drawbacks:
-- it's not guaranteed that the member immediately follows struct cgrp in
-  cgroup_root (root cgroup's ancestors[0] might thus point to a padding
-  and not in cgrp_ancestor_storage proper),
-- this idiom raises warnings with -Wflex-array-member-not-at-end.
+On 1/5/26 09:02, Harry Yoo wrote:
+> The leftover space in a slab is always smaller than s->size, and
+> kmem caches for large objects that are not power-of-two sizes tend to have
+> a greater amount of leftover space per slab. In some cases, the leftover
+> space is larger than the size of the slabobj_ext array for the slab.
+> 
+> An excellent example of such a cache is ext4_inode_cache. On my system,
+> the object size is 1136, with a preferred order of 3, 28 objects per slab,
+> and 960 bytes of leftover space per slab.
+> 
+> Since the size of the slabobj_ext array is only 224 bytes (w/o mem
+> profiling) or 448 bytes (w/ mem profiling) per slab, the entire array
+> fits within the leftover space.
+> 
+> Allocate the slabobj_exts array from this unused space instead of using
+> kcalloc() when it is large enough. The array is allocated from unused
+> space only when creating new slabs, and it doesn't try to utilize unused
+> space if alloc_slab_obj_exts() is called after slab creation because
+> implementing lazy allocation involves more expensive synchronization.
+> 
+> The implementation and evaluation of lazy allocation from unused space
+> is left as future-work. As pointed by Vlastimil Babka [1], it could be
+> beneficial when a slab cache without SLAB_ACCOUNT can be created, and
+> some of the allocations from the cache use __GFP_ACCOUNT. For example,
+> xarray does that.
+> 
+> To avoid unnecessary overhead when MEMCG (with SLAB_ACCOUNT) and
+> MEM_ALLOC_PROFILING are not used for the cache, allocate the slabobj_ext
+> array only when either of them is enabled on slab allocation.
+> 
+> [ MEMCG=y, MEM_ALLOC_PROFILING=n ]
+> 
+> Before patch (creating ~2.64M directories on ext4):
+>   Slab:            4747880 kB
+>   SReclaimable:    4169652 kB
+>   SUnreclaim:       578228 kB
+> 
+> After patch (creating ~2.64M directories on ext4):
+>   Slab:            4724020 kB
+>   SReclaimable:    4169188 kB
+>   SUnreclaim:       554832 kB (-22.84 MiB)
+> 
+> Enjoy the memory savings!
+> 
+> Link: https://lore.kernel.org/linux-mm/48029aab-20ea-4d90-bfd1-255592b2018e@suse.cz [1]
+> Signed-off-by: Harry Yoo <harry.yoo@oracle.com>
 
-Instead of relying on the auxiliary member in cgroup_root, define the
-0-th level ancestor inside struct cgroup (needed for static allocation
-of cgrp_dfl_root), deeper cgroups would allocate flexible
-_low_ancestors[].  Unionized alias through ancestors[] will
-transparently join the two ranges.
+> +static inline bool obj_exts_in_slab(struct kmem_cache *s, struct slab *slab)
+> +{
+> +	unsigned long expected;
+> +	unsigned long obj_exts;
+> +
+> +	obj_exts = slab_obj_exts(slab);
+> +	if (!obj_exts)
+> +		return false;
+> +
+> +	if (!obj_exts_fit_within_slab_leftover(s, slab))
+> +		return false;
+> +
+> +	expected = (unsigned long)slab_address(slab);
+> +	expected += obj_exts_offset_in_slab(s, slab);
+> +	return obj_exts == expected;
+> +}
 
-The above change would still leave the flexible array at the end of
-struct cgroup inside cgroup_root, so move cgrp also towards the end of
-cgroup_root to resolve the -Wflex-array-member-not-at-end.
-
-Link: https://lore.kernel.org/r/5fb74444-2fbb-476e-b1bf-3f3e279d0ced@embeddedor.com/
-Reported-by: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Closes: https://lore.kernel.org/r/b3eb050d-9451-4b60-b06c-ace7dab57497@embeddedor.com/
-Cc: David Laight <david.laight.linux@gmail.com>
-Acked-by: Gustavo A. R. Silva <gustavoars@kernel.org>
-Signed-off-by: Michal Koutný <mkoutny@suse.com>
----
- include/linux/cgroup-defs.h | 25 ++++++++++++++-----------
- kernel/cgroup/cgroup.c      |  2 +-
- 2 files changed, 15 insertions(+), 12 deletions(-)
-
-Changes from v1 (https://lore.kernel.org/r/20251217162744.352391-1-mkoutny@suse.com
-- drop __counted_by patches (2--4), too intrusive rework (Michal)
-- utilize DECLARE_FLEX_ARRAY (Gustavo)
-- trailers
-
-diff --git a/include/linux/cgroup-defs.h b/include/linux/cgroup-defs.h
-index b760a3c470a56..f7cc60de00583 100644
---- a/include/linux/cgroup-defs.h
-+++ b/include/linux/cgroup-defs.h
-@@ -626,7 +626,13 @@ struct cgroup {
- #endif
- 
- 	/* All ancestors including self */
--	struct cgroup *ancestors[];
-+	union {
-+		DECLARE_FLEX_ARRAY(struct cgroup *, ancestors);
-+		struct {
-+			struct cgroup *_root_ancestor;
-+			DECLARE_FLEX_ARRAY(struct cgroup *, _low_ancestors);
-+		};
-+	};
- };
- 
- /*
-@@ -647,16 +653,6 @@ struct cgroup_root {
- 	struct list_head root_list;
- 	struct rcu_head rcu;	/* Must be near the top */
- 
--	/*
--	 * The root cgroup. The containing cgroup_root will be destroyed on its
--	 * release. cgrp->ancestors[0] will be used overflowing into the
--	 * following field. cgrp_ancestor_storage must immediately follow.
--	 */
--	struct cgroup cgrp;
--
--	/* must follow cgrp for cgrp->ancestors[0], see above */
--	struct cgroup *cgrp_ancestor_storage;
--
- 	/* Number of cgroups in the hierarchy, used only for /proc/cgroups */
- 	atomic_t nr_cgrps;
- 
-@@ -668,6 +664,13 @@ struct cgroup_root {
- 
- 	/* The name for this hierarchy - may be empty */
- 	char name[MAX_CGROUP_ROOT_NAMELEN];
-+
-+	/*
-+	 * The root cgroup. The containing cgroup_root will be destroyed on its
-+	 * release. This must be embedded last due to flexible array at the end
-+	 * of struct cgroup.
-+	 */
-+	struct cgroup cgrp;
- };
- 
- /*
-diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
-index e717208cfb185..554a02ee298ba 100644
---- a/kernel/cgroup/cgroup.c
-+++ b/kernel/cgroup/cgroup.c
-@@ -5847,7 +5847,7 @@ static struct cgroup *cgroup_create(struct cgroup *parent, const char *name,
- 	int ret;
- 
- 	/* allocate the cgroup and its ID, 0 is reserved for the root */
--	cgrp = kzalloc(struct_size(cgrp, ancestors, (level + 1)), GFP_KERNEL);
-+	cgrp = kzalloc(struct_size(cgrp, _low_ancestors, level), GFP_KERNEL);
- 	if (!cgrp)
- 		return ERR_PTR(-ENOMEM);
- 
--- 
-2.52.0
+Wonder if we could just check if the pointer is within the slab page's
+virtual address range. And if we need to distinguish if it's slab_leftover
+or unused within s->size, determine it by the stride?
 
 
