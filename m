@@ -1,90 +1,88 @@
-Return-Path: <cgroups+bounces-12989-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-12990-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 77190D05C3C
-	for <lists+cgroups@lfdr.de>; Thu, 08 Jan 2026 20:11:52 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4F83CD05C24
+	for <lists+cgroups@lfdr.de>; Thu, 08 Jan 2026 20:10:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 6EBE930A3F36
-	for <lists+cgroups@lfdr.de>; Thu,  8 Jan 2026 19:04:00 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id C8C5330B9BBA
+	for <lists+cgroups@lfdr.de>; Thu,  8 Jan 2026 19:04:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0F6B631A545;
-	Thu,  8 Jan 2026 19:03:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8CF53314A80;
+	Thu,  8 Jan 2026 19:04:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="ghFisv38"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="EbK0dhYz"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-wm1-f41.google.com (mail-wm1-f41.google.com [209.85.128.41])
+Received: from mail-wr1-f49.google.com (mail-wr1-f49.google.com [209.85.221.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5FF0322A4F6
-	for <cgroups@vger.kernel.org>; Thu,  8 Jan 2026 19:03:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B88CB313E20
+	for <cgroups@vger.kernel.org>; Thu,  8 Jan 2026 19:04:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767899037; cv=none; b=dTrTMBpXowve74EKKFzbKewx1wRtAtIZOPnf1ZuPwFwAqAfqQXGQOP+io5jR0vE/+Dau/pdE3G2vVfRPbUZEkhhpWoutR0UgRGnwGu6/+QZpZHRiOt/gEXYLwG/uKN7CTwZlC+afqCri5REHj/ftpiw64lUDbEcWY+aFS/MNLG0=
+	t=1767899049; cv=none; b=QzkJ9Ox4K7zgW00pJeT1cxK6b3DMMPNVzSO4eEhdLIAZQ94ROVN3O0wfOSQ21brQfMC+Sq8zuK7M1fVNo7/RitkBIOf1NasXKQS3WDPfLVY9c27vTLY3oHjeVeVnDmAG7bA91SWN0II0MhVrsYRosLS1oI4Memmg0z0gARzbuz4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767899037; c=relaxed/simple;
-	bh=xhgT28dkad/D1y4uVnpRXe0VRSx18poyKWXduC4zXJ8=;
+	s=arc-20240116; t=1767899049; c=relaxed/simple;
+	bh=S12pBgkM00sJgWSyCC4FkH4Wm/puv/dLWj/scQoC99g=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Q/t8hBEmmjbJ1C2KZF3F0U3ZmpkSyxVjvjfB4ejPjis1fshLzhpERPZlQS0oYnTyCcaVwbfZNrlTPsxaLlzuJDJYHoFL18+MUrKLpjHlbskAtNxgt/71HxOH+D7dW/5YAacmuQTzoVgXDguW2xSBpHMJa7lI+gJn7MLMDa7hiE4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=ghFisv38; arc=none smtp.client-ip=209.85.128.41
+	 Content-Type:Content-Disposition:In-Reply-To; b=RVmtt6IvS5Hfh3XtiO30x0CjUm82uK2QeqY//saev/5doZW/K3D1aqQvIZtaSTdms+kinMr3smXsSI2Z8+MbLWJnV9vufnBkljT5DjfynIoXAae15+ZpMQbtIualDsTjLluofypiqE6dqvhS+zOH/J10LHF9gp1t5vVk+fd2hX4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=EbK0dhYz; arc=none smtp.client-ip=209.85.221.49
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-wm1-f41.google.com with SMTP id 5b1f17b1804b1-47d63594f7eso21917365e9.0
-        for <cgroups@vger.kernel.org>; Thu, 08 Jan 2026 11:03:56 -0800 (PST)
+Received: by mail-wr1-f49.google.com with SMTP id ffacd0b85a97d-42fb5810d39so1923352f8f.2
+        for <cgroups@vger.kernel.org>; Thu, 08 Jan 2026 11:04:07 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1767899035; x=1768503835; darn=vger.kernel.org;
+        d=suse.com; s=google; t=1767899046; x=1768503846; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=S2fxq2ALIuH1OtiNQCl1rhI7NjLzA8vs5p2zuiJ3iwA=;
-        b=ghFisv38O9Tzqk/aczTfr5DZ7S6uaoCSxAUpb4Olw6JbCyY22c70ZLkNV+LBHm+HS0
-         EPW3pdJCGqCie7cHWVyjIdAq0GUfvs8An0KaDQc8XwelpHsRg3ybj2UjNFMj8Zr7fKqD
-         kK8uZx8oqcQjgjjIHCHMYCeaNqWfUdnSd8X0eJ4gRy09Cy8AgCZ+OkVCBcCWYPaID8zP
-         HkR2lcb0xudlmuRI7toZmmDDP0ChJW3V8hr7yoLFBCWZzUoH2i7A51YNqz4yTw3Hzyg+
-         Ypt7HmZvS0tVJKV5GRGqX5LjSElTDsR+PvKYhqM+PmjhkadKn0R37/AlaUyPPXucflYb
-         4QVw==
+        bh=uZk8shAToyPHM8UaZssBAOmYkCAywr9xb/VP5NyVsRI=;
+        b=EbK0dhYzVojwnPPj08VHnVT19WhzhbWlWPfkl99lgasOaAOE35Gr2ivnr4OPSK/k4v
+         Wp5m/ddBsD3+g5RvY2zfV9QkTNYNkKxcpHT/ayK7R4AIgi+7DaOj22vvEfaNEGqJbVn5
+         TD1b2yZmQRp5Uru9Kheb/NwtS4BYcW/Mjaib4/o5oD8VED4W89AicSezlMhi8leaVHh8
+         0w2UV8CIWzVJilXtnbXiweq0jGuXNTfAVYnDr8RkYbUhN5zoaVpcuvhIpa36emfGWUU+
+         UjTzR52WyS0OYe9MN+cTLvAEBxwgDr2qDkNBXy6LDO/gcGI75GEl2J53z+Fzj0whd7fS
+         zFyw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1767899035; x=1768503835;
+        d=1e100.net; s=20230601; t=1767899046; x=1768503846;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=S2fxq2ALIuH1OtiNQCl1rhI7NjLzA8vs5p2zuiJ3iwA=;
-        b=IMhOZ9nRl9Y3KJNuYE1U6L1kQX8o0IuihhZe6Xv0baWw+lgC1Z3agBfYz6ewOHfuwe
-         jlzlqvUBqbFiaoKp9tcpSrl4pb9Ut5zWLZz04VABKjXld9AX83qpnUV7LkxW1LheBEPO
-         6DHVcAgUBEMCmu/d08QMMOYkvlia0ZOejot46TwEmdInQEBfn1Up0KxgewfBIbYNlZvP
-         MR9fiol4URKhcwPg0e5o25ptA3roN5Mg6Q9MUmPVutZ1eb2HT4WYFjCKxkhOhRl64DRI
-         wjE9FrpY2eK9Hx2Cr75mgc6JL1rU2fupR9ukVXujv0Mt3fW44MjC+1aO3U7dUriK8m9s
-         t4pA==
-X-Forwarded-Encrypted: i=1; AJvYcCWzY0CeBgWFMnRELqNEI8xPSKX1QaZALn2X5kbwjMobKoabgCkpKiw8yRE6mcHiaj8JSfA0x+HL@vger.kernel.org
-X-Gm-Message-State: AOJu0YzE7cBKAeGx0x5SU647pSjeE6cz3NTadFgf5iwBM07ceyPuoHwo
-	9UkEb4zdkNejvdbKP1yKH50KXMTZwzHuWw/gIj6tTCfzBSwdF7v/VvHeP/oKHKc8B+g=
-X-Gm-Gg: AY/fxX5HdsxWZajs/GZOuIfdL5WhhbWRVJfpyDvSRHVgWOYdg0k6TnE3WTmAYKPTV1t
-	YFpyqxyaik9+7sLOKJ8Uy++8O+THN4KzAJLrkjUdRRlO5z5QP081CpjLSrSWxf8cOOQzr5IsTcO
-	cqj9vqQhp0x4rb4JxC9Oxb9qqqIyUNyZOv1pMLdaQRxS+uMXf/FJDsSq/HPbYEbBj7I5m7HI/lu
-	VLdsasDZk9XbTevdcvSJRaK2sJR6bH4+qxw09KtJbdZeQDBKsr8gpEWvULjFj+8dyjh0eOMR0jx
-	7Gal3L8RTM/BFUP91gTIKagtp1jBkws5Nc6w11nej3+1Zm2G6tJmZRvE8yEAT1rLSh2NjA5QJF9
-	B6R0Ho8Ga8K5lFUR59nB3U1sPNRDStLdAcPn3w9OZ4tti4HmhTPgnWfQZoWIgOlYEOt+uDJXjiL
-	N5ikgMpPufKMonLmBhvRrIYP8S9k/f95E=
-X-Google-Smtp-Source: AGHT+IHKBn5HwApDCk9pjRfiuMOygdOPqiU/qGu+fBNW2y9CtjCYUhbtVuWgL2X2bFThHx0vI6yGeA==
-X-Received: by 2002:a05:600c:b86:b0:479:3a86:dc1e with SMTP id 5b1f17b1804b1-47d84b41007mr86003605e9.36.1767899034659;
-        Thu, 08 Jan 2026 11:03:54 -0800 (PST)
+        bh=uZk8shAToyPHM8UaZssBAOmYkCAywr9xb/VP5NyVsRI=;
+        b=OfP1R3qILKvjY+nZx08Tad9VRhdnJ0KyzhAnUHsD8j44WEt3i37lYOMUWYlUFrcn15
+         mVvJulSj46EV4e6ivpOIp8owgD5oDzVbdR8upqFr29/IZGIRDSOF1OsPi4pWd2JAyS1s
+         zxrIcam+ZyrtVJVbOmFbR49JHtIXBq+992VWvSsySy/HYxbMrSKePhKck0M5oOu+69oE
+         BGsai7ck0XMVrPL/hMx+Qkslsx6ZiASxR5EoYcvR9rI2hf+VdEqRWg6kDDJCg0s49/TL
+         oW3TG+pcMrPBPIXiiTNkYkY/KFELRIQYZKh2AeGvhWkX+Kngt76BXMdmjpMXniYLK3u7
+         9UDQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXNHhbjovWAx++o9YawiHFRSPrjWIy0DdgeoXsTTUsuQ+0M4KfpXDnteiZA5UYuuVs1MlCcUm6r@vger.kernel.org
+X-Gm-Message-State: AOJu0YyBArleDXn9UMO59/I0wvaVNHi6x3XPgJYj8hxlO/sS8gek6qva
+	jJkGlrMhIxBfEVPJ81U5melzp7fSRHXrXcBM17X7TJMaNhRXwIYUWGScsUAhTvFgH5w=
+X-Gm-Gg: AY/fxX73xB1jxED3GcEJ+5Lt/zwewm6efc3fCCuABIgr0rXDnqT/JLnX58tB82rN0cS
+	rTbqeBrqn//YE2xyQLz1eUmHh5j59FgOJeepvX901JjO8CgtqJj4FX1H3hJjAmbG0Yt9u/Yo9QB
+	v7iPPUrZjtFTmyc+e/0BFzyYkEC5yfr5toWwID7Qxq0zayV2lZC/+jAb8OEIw5KsHDEpBmLKLLc
+	ewirwoV73Q95XpBP/XBhecp9apTmln8vINXJVEf60SanGXNSUcenGFKNFeeVILu8AVJdVeMF6I8
+	ZaY3cOeve8NWP/fzllxxGw4bAwJjcynFQAkbyprjRJDt3IhfKlV6K3GGFCBztM1VyQnbFKdChp9
+	pdZYjpjJ/PvPFd9Z4Lb9pokE2Ha7/Hk4HMLFTnbS9YkRMIRISoQ9trkuW3yWixSa5u4LlZcJUCj
+	inIx3SnFZ8wGP7498hSu4YQPPNSYkSN1U=
+X-Google-Smtp-Source: AGHT+IE4b6xRdNURXAWWpyFhWm/3C4nzAZftETaWGTbobTlLIsQkJxHqXKOQjLz13Zvy5+0CZcW5yw==
+X-Received: by 2002:a05:6000:290b:b0:431:266:d150 with SMTP id ffacd0b85a97d-432c3761103mr10035954f8f.44.1767899045993;
+        Thu, 08 Jan 2026 11:04:05 -0800 (PST)
 Received: from blackdock.suse.cz (nat2.prg.suse.com. [195.250.132.146])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-47d8916436bsm29433825e9.18.2026.01.08.11.03.53
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-432bd5dfa46sm17922112f8f.27.2026.01.08.11.04.05
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 08 Jan 2026 11:03:54 -0800 (PST)
-Date: Thu, 8 Jan 2026 20:03:52 +0100
+        Thu, 08 Jan 2026 11:04:05 -0800 (PST)
+Date: Thu, 8 Jan 2026 20:04:04 +0100
 From: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
-To: Waiman Long <llong@redhat.com>
-Cc: Chen Ridong <chenridong@huaweicloud.com>, Tejun Heo <tj@kernel.org>, 
-	Johannes Weiner <hannes@cmpxchg.org>, Jonathan Corbet <corbet@lwn.net>, Shuah Khan <shuah@kernel.org>, 
-	linux-kernel@vger.kernel.org, cgroups@vger.kernel.org, linux-kselftest@vger.kernel.org, 
-	linux-doc@vger.kernel.org, Sun Shaojie <sunshaojie@kylinos.cn>
-Subject: Re: [cgroup/for-6.20 PATCH v2 3/4] cgroup/cpuset: Don't fail
- cpuset.cpus change in v2
-Message-ID: <gscfzr3lfd2gynec3ci6puz2cyvftrv35udrzzyfi4kjdicfcp@6vdgm645fmmj>
+To: Waiman Long <longman@redhat.com>
+Cc: Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>, 
+	Jonathan Corbet <corbet@lwn.net>, Shuah Khan <shuah@kernel.org>, linux-kernel@vger.kernel.org, 
+	cgroups@vger.kernel.org, linux-kselftest@vger.kernel.org, linux-doc@vger.kernel.org, 
+	Sun Shaojie <sunshaojie@kylinos.cn>, Chen Ridong <chenridong@huaweicloud.com>
+Subject: Re: [cgroup/for-6.20 PATCH v2 4/4] cgroup/cpuset: Don't invalidate
+ sibling partitions on cpuset.cpus conflict
+Message-ID: <chijw6gvtql74beputm3ue2zu2vmrwvtg5a2bn3wabgkqldq4d@obrdh4znejaw>
 References: <20260101191558.434446-1-longman@redhat.com>
- <20260101191558.434446-4-longman@redhat.com>
- <efdcd90c-95ed-4cfc-af9a-3dc0e8f0a488@huaweicloud.com>
- <6eedf67b-3538-4fd1-903b-b7d8db4ff43d@redhat.com>
+ <20260101191558.434446-5-longman@redhat.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -92,58 +90,157 @@ List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="blzurjhfhk33az2p"
+	protocol="application/pgp-signature"; boundary="2ixtbe63ri56p3pp"
 Content-Disposition: inline
-In-Reply-To: <6eedf67b-3538-4fd1-903b-b7d8db4ff43d@redhat.com>
+In-Reply-To: <20260101191558.434446-5-longman@redhat.com>
 
 
---blzurjhfhk33az2p
-Content-Type: text/plain; protected-headers=v1; charset=us-ascii
+--2ixtbe63ri56p3pp
+Content-Type: text/plain; protected-headers=v1; charset=utf-8
 Content-Disposition: inline
-Subject: Re: [cgroup/for-6.20 PATCH v2 3/4] cgroup/cpuset: Don't fail
- cpuset.cpus change in v2
+Content-Transfer-Encoding: quoted-printable
+Subject: Re: [cgroup/for-6.20 PATCH v2 4/4] cgroup/cpuset: Don't invalidate
+ sibling partitions on cpuset.cpus conflict
 MIME-Version: 1.0
 
-On Sun, Jan 04, 2026 at 04:48:06PM -0500, Waiman Long <llong@redhat.com> wrote:
-> Before the introduction of cpuset partition, writing to cpuset.cpus will
-> only fail if the cpu list is invalid like containing CPUs outside of the
-> valid cpu range. What I mean by "never-fail" is that if the cpu list is
-> valid, the write action should not fail. The rule is not explicitly stated
-> in the documentation, but it is a pre-existing behavior which we should try
-> to keep to avoid breaking existing applications.
+Hi.
 
-The justification for such behavior is that when the configuration
-cannot be satisfied immediately (insufficient resources in ancestors),
-the original user's intention should be stored somewhere and if the
-conditions higher up the hiearchy possibly change, the intended config
-is effected transparently (w/out the need to re-write values by user
-again).
+On Thu, Jan 01, 2026 at 02:15:58PM -0500, Waiman Long <longman@redhat.com> =
+wrote:
+> Currently, when setting a cpuset's cpuset.cpus to a value that conflicts
+> with the cpuset.cpus/cpuset.cpus.exclusive of a sibling partition,
+> the sibling's partition state becomes invalid. This is overly harsh and
+> is probably not necessary.
+>=20
+> The cpuset.cpus.exclusive control file, if set, will override the
+> cpuset.cpus of the same cpuset when creating a cpuset partition.
+> So cpuset.cpus has less priority than cpuset.cpus.exclusive in setting up
+> a partition.  However, it cannot override a conflicting cpuset.cpus file
+> in a sibling cpuset and the partition creation process will fail. This
+> is inconsistent.  That will also make using cpuset.cpus.exclusive less
+> valuable as a tool to set up cpuset partitions as the users have to
+> check if such a cpuset.cpus conflict exists or not.
+>=20
+> Fix these problems by strictly adhering to the setting of the
+> following control files in descending order of priority when setting
+> up a partition.
+>=20
+>  1. cpuset.cpus.exclusive.effective of a valid partition
+>  2. cpuset.cpus.exclusive
+>  3. cpuset.cpus
 
-So I appreciate that cpuset.cpus.exclusive writes fail early -- for
-sibling conflicts -- otherwise the order of creation would need to be
-evaluated post hoc.
-For illustration:
-	a1/cpuset.cpus.exclusive=0,1
-	a2/cpuset.cpus.exclusive=1,2
-	a3/cpuset.cpus.exclusive=1,3
-If this was allowed and a1 was rmdir'd, the (new) resolution of conflict
-between a2 and a3 would need to determine which of a2, a3 was created
-first.
 
-HTH,
+>=20
+> So once a cpuset.cpus.exclusive is set without failure, it will
+> always be allowed to form a valid partition as long as at least one
+> CPU can be granted from its parent irrespective of the state of the
+> siblings' cpuset.cpus values. Of course, setting cpuset.cpus.exclusive
+> will fail if it conflicts with the cpuset.cpus.exclusive or the
+> cpuset.cpus.exclusive.effective value of a sibling.
+
+Concept question:=20
+When a/b/cpuset.cpus.exclusive =E2=8A=82 a/b/cpuset.cpus (proper subset)
+and a/b/cpuset.cpus.partition =3D=3D root, a/cpuset.cpus.partition =3D=3D r=
+oot
+(b is valid partition)
+should a/b/cpuset.cpus.exclusive.effective be equal to cpuset.cpus (as
+all of them happen to be exclusive) or "only" cpuset.cpus.exclusive?
+
+> Partition can still be created by setting only cpuset.cpus without
+> setting cpuset.cpus.exclusive. However, any conflicting CPUs in sibling's
+> cpuset.cpus.exclusive.effective and cpuset.cpus.exclusive values will
+> be removed from its cpuset.cpus.exclusive.effective as long as there
+> is still one or more CPUs left and can be granted from its parent. This
+> CPU stripping is currently done in rm_siblings_excl_cpus().
+>=20
+> The new code will now try its best to enable the creation of new
+> partitions with only cpuset.cpus set without invalidating existing ones.
+
+OK. (After I re-learnt benefits of remote partitions or more precisely
+cpuset.cpus.effective.)
+
+> However it is not guaranteed that all the CPUs requested in cpuset.cpus
+> will be used in the new partition even when all these CPUs can be
+> granted from the parent.
+>=20
+> This is similar to the fact that cpuset.cpus.effective may not be
+> able to include all the CPUs requested in cpuset.cpus. In this case,
+> the parent may not able to grant all the exclusive CPUs requested in
+> cpuset.cpus to cpuset.cpus.exclusive.effective if some of them have
+> already been granted to other partitions earlier.
+>=20
+> With the creation of multiple sibling partitions by setting
+> only cpuset.cpus, this does have the side effect that their exact
+> cpuset.cpus.exclusive.effective settings will depend on the order of
+> partition creation if there are conflicts. Due to the exclusive nature
+> of the CPUs in a partition, it is not easy to make it fair other than
+> the old behavior of invalidating all the conflicting partitions.
+>=20
+> For example,
+>   # echo "0-2" > A1/cpuset.cpus
+>   # echo "root" > A1/cpuset.cpus.partition
+>   # echo A1/cpuset.cpus.partition
+>   root
+>   # echo A1/cpuset.cpus.exclusive.effective
+>   0-2
+>   # echo "2-4" > B1/cpuset.cpus
+>   # echo "root" > B1/cpuset.cpus.partition
+>   # echo B1/cpuset.cpus.partition
+>   root
+>   # echo B1/cpuset.cpus.exclusive.effective
+>   3-4
+>   # echo B1/cpuset.cpus.effective
+>   3-4
+>=20
+> For users who want to be sure that they can get most of the CPUs they
+> want,
+
+Slightly OT but I'd say that users want:
+a) confinement (some cpuset.cpus in leaves)
+b) isolation (cpuset.cpus.exclusive in leaves)
+c) hierarchical organization
+  - confinment generalizes OK
+  - children can only claim what parent allowed
+
+Conflicting exclusivity configs should be no users intention or a want :-p
+
+
+> cpuset.cpus.exclusive should be used instead if they can set
+> it successfully without failure. Setting cpuset.cpus.exclusive will
+> guarantee that sibling conflicts from then onward is no longer possible.
+
+I think the background idea of the paragraph (shift away from local to
+remote partitions, also mentioned the other day) could be somehow fitted
+into the Documentation/ hunks.
+
+> diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admi=
+n-guide/cgroup-v2.rst
+> ...
+> @@ -2632,6 +2641,9 @@ Cpuset Interface Files
+> =20
+>  	The root cgroup is always a partition root and its state cannot
+>  	be changed.  All other non-root cgroups start out as "member".
+> +	Even though the "cpuset.cpus.exclusive*" control files are not
+> +	present in the root cgroup, they are implicitly the same as
+> +	"cpuset.cpus".
+
+Even "cpuset.cpus" have CFTYPE_NOT_ON_ROOT, so this formulation might be
+confusing. Maybe it's same as "cpuset.cpus.effective"?
+
+Thanks,
 Michal
 
---blzurjhfhk33az2p
+--2ixtbe63ri56p3pp
 Content-Type: application/pgp-signature; name="signature.asc"
 
 -----BEGIN PGP SIGNATURE-----
 
-iJEEABYKADkWIQRCE24Fn/AcRjnLivR+PQLnlNv4CAUCaV//jhsUgAAAAAAEAA5t
-YW51MiwyLjUrMS4xMSwyLDIACgkQfj0C55Tb+Ag2EAEA1kVYbvQJlJ41fvGL47iG
-M8FIlLpc0GtmcjU3WMUkTlIA/j40WZ0IMgCmmmKhTn3BCHibQbXnnB6/V4tPlv50
-p1QO
-=Ngzr
+iJEEABYKADkWIQRCE24Fn/AcRjnLivR+PQLnlNv4CAUCaV//ohsUgAAAAAAEAA5t
+YW51MiwyLjUrMS4xMSwyLDIACgkQfj0C55Tb+AjFcgD/befAIpWDsnrIRvSGMNh7
+2ZNzdia/UxMmNfbALez+7vQBAOiQ6u9XV7+K0KdPF27pphDL7Ro9/wghUgiQ+qBM
+f+kN
+=RCBX
 -----END PGP SIGNATURE-----
 
---blzurjhfhk33az2p--
+--2ixtbe63ri56p3pp--
 
