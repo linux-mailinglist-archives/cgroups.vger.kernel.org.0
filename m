@@ -1,61 +1,70 @@
-Return-Path: <cgroups+bounces-12974-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-12979-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id A580CD0335A
-	for <lists+cgroups@lfdr.de>; Thu, 08 Jan 2026 15:01:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id D25B0D02FB6
+	for <lists+cgroups@lfdr.de>; Thu, 08 Jan 2026 14:23:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 6B7E13041F4F
-	for <lists+cgroups@lfdr.de>; Thu,  8 Jan 2026 13:59:14 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id AA899316B03B
+	for <lists+cgroups@lfdr.de>; Thu,  8 Jan 2026 12:56:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 568D2421A12;
-	Thu,  8 Jan 2026 09:53:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 31E423D3324;
+	Thu,  8 Jan 2026 11:42:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="gUjrkfjA"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="DNkbDbQW"
 X-Original-To: cgroups@vger.kernel.org
-Received: from out-174.mta1.migadu.com (out-174.mta1.migadu.com [95.215.58.174])
+Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9EF9542315E
-	for <cgroups@vger.kernel.org>; Thu,  8 Jan 2026 09:52:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6EE81338592;
+	Thu,  8 Jan 2026 11:42:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767865980; cv=none; b=FGnTP6BnOclRsMJSqUUNbdQBPkg13Px4Oa+ieVhTlEzLZem4f15Yh15YKdgKo4A8u7bxNVkDbesN41tSH0aLof+ug2H7+ReVsKnm7k1qdM2VyG3PaZBzGgb4gmBp8uCNMF8fCU7EqSDcK6bkzRnqvJYY2VMFg0zCi2870c7MAiY=
+	t=1767872539; cv=none; b=udr3EQ4yQdnl20ORWSuIqbUmJzQ75yeS0W4466tUVd0wfpW0ecswDPAQbAPelIKYlDtKQlqRb3EEIDO7fWqG0QPoYVK80SS1ThWPJoP6CzUU/ooLS8FH1gg2vEmv5icuwkBWiq4sAj9JSw9J9DPcIXnpykESlyCD7qOj4VUyKv4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767865980; c=relaxed/simple;
-	bh=bO6KZMXOUIL5pfEiqfs7/ImweeEy4Fx/m66twiWO6z8=;
+	s=arc-20240116; t=1767872539; c=relaxed/simple;
+	bh=ttupqEGkMEcEuPViZy3HWzygBgTOKjkQ58B9GvzZqPo=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=gLkvtjR47fdNxrNrS2d1tixYXienyW0A4AOBGaEanYzCIovOgOyJCu1d4wRTKAD4Adr3JJ5ltWLVc3xwjFdnwTeSRvGHNIeU31t2LFblR3w/aJLYc1bdV6mQQWalJ1dZW4Ww/ozZxZlyPdtCL2g+mMkdyOfuYJgIm9RIU1q7T5k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=gUjrkfjA; arc=none smtp.client-ip=95.215.58.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Thu, 8 Jan 2026 17:52:27 +0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1767865966;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=EvzdJy+9zMHN27Ed9/NnkvWwqWU86nRfgPXwwBdMWUY=;
-	b=gUjrkfjAhdKKfbMv/eiJaUta2YOhQyBJ7HZUUfgaP6FBr5rYm01/XZ+qMxw4ZMlMELB2dN
-	ibCm1rZ3M7V81o8nDuv4lyG91PsbFGgSzuu2WldMaCvevXx2lSVhYisgFCHJ6tiqFaXxOK
-	phROM+SBVI0qFg84BcCLqHKFaox/Il4=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Hao Li <hao.li@linux.dev>
-To: Harry Yoo <harry.yoo@oracle.com>
-Cc: akpm@linux-foundation.org, vbabka@suse.cz, andreyknvl@gmail.com, 
-	cl@gentwo.org, dvyukov@google.com, glider@google.com, hannes@cmpxchg.org, 
-	linux-mm@kvack.org, mhocko@kernel.org, muchun.song@linux.dev, rientjes@google.com, 
-	roman.gushchin@linux.dev, ryabinin.a.a@gmail.com, shakeel.butt@linux.dev, 
-	surenb@google.com, vincenzo.frascino@arm.com, yeoreum.yun@arm.com, tytso@mit.edu, 
-	adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	cgroups@vger.kernel.org
-Subject: Re: [PATCH V5 8/8] mm/slab: place slabobj_ext metadata in unused
- space within s->size
-Message-ID: <7uiizca4ejiqw6zegjwmou5va4kw7na7wivy4kxebrju7dsdwo@5brr7vhwf5oh>
-References: <20260105080230.13171-1-harry.yoo@oracle.com>
- <20260105080230.13171-9-harry.yoo@oracle.com>
- <fgx3lapibabra4x7tewx55nuvxz235ruvm3agpprjbdcmt3rc6@h54ln5tfdssz>
- <aV9tnLlsecX8ukMv@hyeyoo>
+	 Content-Type:Content-Disposition:In-Reply-To; b=O6jZF41Fnu1HmjDIKnYRVaDrgfE7d5YrsZNsXwipF9a7qS1pNMSpP/npEwY2UiKigJC3bo2l1A5Uzy+emydD1Dy+3g6x/o1s/iUuRByUidFrEYBa76xtfvoLbAOJcNlBXw05TQby+uehJVqbjYaDH4Lff4u0MApeZ1+AjmToNSE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=DNkbDbQW; arc=none smtp.client-ip=90.155.50.34
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=auld4VZzwjVZ31uDi1pYt/0YjX5oiUGQGK3GzcaTNUs=; b=DNkbDbQWcWwr1ypqVVlaMKGHEK
+	zB2ik2MFJ67Fd97QEp38RHTpH+a3EJRrUWQR2vOT/NIf3/6WdEJnn9743FkjVsWh3YM/tZanTwtb/
+	AMIKbzaTVmKCnjnEE2icYVImYDXEld1WKF2gx1IkDU3aleDda9qUuBBwxsrUpIp+qvcjgttsrYTIK
+	aJ60s2W+IL20lO4h7NVdMjuvEcStMLq/DpOQS5l7hUVc54SaTJuozrRlzseICl7c51mwlEl3udKtd
+	+AAdD4W8CVKGdbGZ2I1nsjIzTr6gk24/lH+GV84qEBg7IBgc8LESR3w9sdjhlAagl0s2X0yVEAX/b
+	hZNXEmlw==;
+Received: from 77-249-17-252.cable.dynamic.v4.ziggo.nl ([77.249.17.252] helo=noisy.programming.kicks-ass.net)
+	by casper.infradead.org with esmtpsa (Exim 4.98.2 #2 (Red Hat Linux))
+	id 1vdoP0-0000000EsPO-0AbM;
+	Thu, 08 Jan 2026 11:42:06 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+	id 42184300E8E; Thu, 08 Jan 2026 12:42:05 +0100 (CET)
+Date: Thu, 8 Jan 2026 12:42:05 +0100
+From: Peter Zijlstra <peterz@infradead.org>
+To: Waiman Long <llong@redhat.com>
+Cc: cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Tejun Heo <tj@kernel.org>, Chen Ridong <chenridong@huaweicloud.com>,
+	Pierre Gondois <pierre.gondois@arm.com>,
+	Ingo Molnar <mingo@redhat.com>,
+	Vincent Guittot <vincent.guittot@linaro.org>,
+	Dietmar Eggemann <dietmar.eggemann@arm.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+	Valentin Schneider <vschneid@redhat.com>,
+	Juri Lelli <juri.lelli@redhat.com>, Pingfan Liu <piliu@redhat.com>
+Subject: Re: [PATCHv2 0/2] sched/deadline: Fix potential race in
+ dl_add_task_root_domain()
+Message-ID: <20260108114205.GJ272712@noisy.programming.kicks-ass.net>
+References: <20251119095525.12019-3-piliu@redhat.com>
+ <20251125032630.8746-1-piliu@redhat.com>
+ <aSVlX5Rk1y2FuThP@jlelli-thinkpadt14gen4.remote.csb>
+ <9deefb73-fb3a-4bb0-a808-88c478ea3240@redhat.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -64,52 +73,44 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <aV9tnLlsecX8ukMv@hyeyoo>
-X-Migadu-Flow: FLOW_OUT
+In-Reply-To: <9deefb73-fb3a-4bb0-a808-88c478ea3240@redhat.com>
 
-On Thu, Jan 08, 2026 at 05:41:00PM +0900, Harry Yoo wrote:
-> On Thu, Jan 08, 2026 at 01:52:09PM +0800, Hao Li wrote:
-> > On Mon, Jan 05, 2026 at 05:02:30PM +0900, Harry Yoo wrote:
-> > > When a cache has high s->align value and s->object_size is not aligned
-> > > to it, each object ends up with some unused space because of alignment.
-> > > If this wasted space is big enough, we can use it to store the
-> > > slabobj_ext metadata instead of wasting it.
+On Wed, Jan 07, 2026 at 02:57:00PM -0500, Waiman Long wrote:
+> 
+> On 11/25/25 3:14 AM, Juri Lelli wrote:
+> > Hi,
 > > 
-> > Hi, Harry,
+> > On 25/11/25 11:26, Pingfan Liu wrote:
+> > > These two patches address the issue reported by Juri [1] (thanks!).
+> > > 
+> > > The first removes an unnecessary comment, the second is the actual fix.
+> > > 
+> > > @Tejun, while these could be squashed together, I kept them separate to
+> > > maintain the one-patch-one-purpose rule. let me know if you'd like me to
+> > > resend these in a different format, or feel free to adjust as needed.
+> > > 
+> > > [1]: https://lore.kernel.org/lkml/aSBjm3mN_uIy64nz@jlelli-thinkpadt14gen4.remote.csb
+> > > 
+> > > Pingfan Liu (2):
+> > >    sched/deadline: Remove unnecessary comment in
+> > >      dl_add_task_root_domain()
+> > >    sched/deadline: Fix potential race in dl_add_task_root_domain()
+> > > 
+> > >   kernel/sched/deadline.c | 12 ++----------
+> > >   1 file changed, 2 insertions(+), 10 deletions(-)
+> > For both
+> > 
+> > Acked-by: Juri Lelli <juri.lelli@redhat.com>
 > 
-> Hi Hao,
+> Peter,
 > 
-> > When we save obj_ext in s->size space, it seems that slab_ksize() might
-> > be missing the corresponding handling.
-> 
-> Oops.
-> 
-> > It still returns s->size, which could cause callers of slab_ksize()
-> > to see unexpected data (i.e. obj_ext), or even overwrite the obj_ext data.
-> 
-> Yes indeed.
-> Great point, thanks!
-> 
-> I'll fix it by checking if the slab has obj_exts within the object
-> layout and returning s->object_size if so.
+> Are these 2 patches eligible to be merged into the the scheduler branch of
+> the tip tree? These are bug fixes to the deadline scheduler code.
 
-Makes sense - I think there's one more nuance worth capturing.
-slab_ksize() seems to compute the maximum safe size by applying layout
-constraints from most-restrictive to least-restrictive:
-redzones/poison/KASAN clamp it to object_size, tail metadata
-(SLAB_TYPESAFE_BY_RCU / SLAB_STORE_USER) clamps it to inuse, and only
-when nothing metadata lives does it return s->size.
+Thanks for the ping -- just to double check, I need to take the v2
+patches, that are posted inside the v7 thread?
 
-With that ordering in mind, SLAB_OBJ_EXT_IN_OBJ should behave like
-another "tail metadata" cap: put the check right before `return s->size`,
-and if it's set, return s->inuse instead. Curious what you think.
-
--- 
-Thanks,
-Hao
-
-> 
-> -- 
-> Cheers,
-> Harry / Hyeonggon
+I mean; I absolutely detest posting new series in the same thread as an
+older series and then you go and do non-linear versioning just to make
+it absolutely impossible to tell what's what. :-(
 
