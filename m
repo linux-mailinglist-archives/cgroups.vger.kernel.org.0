@@ -1,75 +1,75 @@
-Return-Path: <cgroups+bounces-12972-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-12973-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id B4FFFD02A05
-	for <lists+cgroups@lfdr.de>; Thu, 08 Jan 2026 13:29:02 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 29341D02D08
+	for <lists+cgroups@lfdr.de>; Thu, 08 Jan 2026 14:01:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id F1D283142FCA
-	for <lists+cgroups@lfdr.de>; Thu,  8 Jan 2026 12:06:24 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 0CE3E33E2360
+	for <lists+cgroups@lfdr.de>; Thu,  8 Jan 2026 12:12:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D870E2C21F0;
-	Thu,  8 Jan 2026 09:36:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 22503441036;
+	Thu,  8 Jan 2026 09:38:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZBM4+8Qs"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NnnfVN/Q"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-pj1-f51.google.com (mail-pj1-f51.google.com [209.85.216.51])
+Received: from mail-pg1-f170.google.com (mail-pg1-f170.google.com [209.85.215.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E33783C1997
-	for <cgroups@vger.kernel.org>; Thu,  8 Jan 2026 09:36:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A3D643C048
+	for <cgroups@vger.kernel.org>; Thu,  8 Jan 2026 09:37:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767864992; cv=none; b=r+0qIEv0TPRDlrZWyiUA4saddKj+h+VsaTj8hp9J7yRuu23ciTvCt910GieN/nPV0V54kjcZDYozPPUj0hkebNtG3JfWsL8kr7zNLUwh7KOKTLLp+GOKzKL3wyfQTDRXLKk7fabLTmQsIAzQahPRHoLzUAmp31pmG9d1lmUMTYQ=
+	t=1767865083; cv=none; b=oY8QqJ7DdDJzPTRImRJ2cw2p/MsMaI8lItnwb+8xS/RTRLsqsTaxmcl9Dx26s2sbGGzepV7GV6TJ7CwPsQsdwy78rSkh7KMNtjE9+dSkgdxi/r947GINg+1wldeyRS8IJw8y1DhCBujMG01HLmpQAkXuP8DqOYO8/LH/fjC/56s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767864992; c=relaxed/simple;
-	bh=z5vkkbGDVR6r6tL312e5eblDlnh/A3XrI22sJyNt0bE=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=tQt+yiz4GMT37Jb08U6s2SwV4TTBe4bp4KLjoAlQ234czQ1Qa+EuMJ462tfQY4e1T/gHxyL9JHDiuLAozM6pBgbigqWpIFbZhYTAnaT5zQAeFwe1RPdfgUy5degEGf7m1d14FGeRKLSWuLuZEIxRkEjNJ9U/Wd9FM1rfBQoWhok=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ZBM4+8Qs; arc=none smtp.client-ip=209.85.216.51
+	s=arc-20240116; t=1767865083; c=relaxed/simple;
+	bh=LPmJyIdtWlGV2rEhF9arq8DtkSWceM338ygfDfIpexw=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=becZfb0IncuSOsq4oRhuV1mKLWVtilQdLBV5wyWfetZ3piv1XEIIgnjqOZ153kNsS9DAcl0RNoHGwkfd4rx7A+/JRU1urNWBZLE3q3NsxKDiea0GEn467Og5CisnXSmeK4ewxjinjLdPFD7n1EW/I2ZR4VqHctKHDyn4K6GAPLI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=NnnfVN/Q; arc=none smtp.client-ip=209.85.215.170
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f51.google.com with SMTP id 98e67ed59e1d1-34f2a0c4574so2386380a91.1
-        for <cgroups@vger.kernel.org>; Thu, 08 Jan 2026 01:36:24 -0800 (PST)
+Received: by mail-pg1-f170.google.com with SMTP id 41be03b00d2f7-bc2abdcfc6fso1272120a12.2
+        for <cgroups@vger.kernel.org>; Thu, 08 Jan 2026 01:37:56 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1767864983; x=1768469783; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1767865073; x=1768469873; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=miqdi3JWBKoxNnDoIDRRY9WTssFbqfALy728r5SCWyA=;
-        b=ZBM4+8Qs1lwBkzYtf/BgkSLN3ebPtIVWZQdIXILLD7Sr7sR40kVTC6tj0Dsy+bVi7k
-         t8bUHMkaCMDg1RsOgxVdXV7voDZzYPnsEE8U/0xbvUZBg6Uu7fWaUdiPLjaIcjpKeVB6
-         OssJ7ef5JC32D8jXHMwGT/nVdqVQA8quUi7q4PO0SlRfH/aSxNAT86Lf4WDupnRl9ydY
-         7oI9SKjKUBNSI3tBY2Lddi7W2hpBVXCZr7DDbit8B2V4I2v23Y1sH4y0VUtemVGtmJtq
-         dds64sjLqN5NTvzDDwazMpt+SUIHHSrhRhvfQtprn0fOp4uCK0ZNad9+1xgDRICv922f
-         KNZg==
+        bh=ik6S3AEviz5X31TZw7OV/Nia5XaM7NiA7FEx+an3VHo=;
+        b=NnnfVN/QK2j8YdLMK26Cx8kMNrn13IB7zLY3aQyQ1aLb3iaH3gNcvdxXpZpfeii80b
+         JRQ7uxXwX1tJmYJjWnc1iFaV4jBoZEew01QClk52LetYlmLdjYRD54F1g/ooBRAyCq1W
+         ngQwwVvRROmUDxLSL+oTQod1iaM3Tb1x/kXgh6ZMa/zk9ZhO/HI2shBvHf9x+pgJqqq7
+         mAGg+nLhpx+b4CUQ163scBPsNCHn6nid9xEPty+cBrri+hLO+Pz+zZVpItNPhwVtaXUb
+         PBtIVSkgCC/YUMi2Wzv0fafx+eRGj66mzFufkhcWFe1uJ4Qif4UfvbekazoNTl47ZSDa
+         JuxA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1767864983; x=1768469783;
+        d=1e100.net; s=20230601; t=1767865073; x=1768469873;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=miqdi3JWBKoxNnDoIDRRY9WTssFbqfALy728r5SCWyA=;
-        b=aZEeWdU6RiqTr0ozNb+w3E2CXQ/BcuodnPrRvRUU1MeEbMnS2QWU2meVNF+YVvqe56
-         hKgNj5pdNcJs/CqH4A23uiqxgksHHX/Pm8R8q4C/SRWMkAGgCJsvjmkBg0ZJKxvrXfVj
-         YCxDOytjWZQNKYXQXsI+DFZ5DJdcgY9knHZeMTcuqJ7RTfWCJeqJ/P4fhB2l1XE8thUC
-         VZh3qciPF4NJxPnx9GnuiLdjovF4csE/2KIioaowd7bN6SsHaNn840szmF1wRMIiI6M0
-         5itn9ZFfNyu5jZY9nujHdZEYv40J4ZzKQaJI3hXoGfR7ascj5r9UU/6veiDPqyWQe2Yj
-         7Alw==
-X-Forwarded-Encrypted: i=1; AJvYcCVl649YTxKQJhtQYSUTXC1FH2a5qeER9FjEKh+flxnmeM7swIo4geGriYABxePh/U7fABB52hGU@vger.kernel.org
-X-Gm-Message-State: AOJu0YwBDUZm6/gNZZpQrlv+P96U83TlXlqOhQjtnrQh/YVqYD5Z2d77
-	bktjvTFVON/uLsTo01Zg+ruP/NHNmWn7I3IB1t1RYmv8s3UUuU2LWl8540n+Ug==
-X-Gm-Gg: AY/fxX5BXt+imwu2pleYthipcCz7B+E6ybNKVLmebXAjxrdtqrfjnctL3pOQXqVs/xp
-	3ngJUNVkovMCIuXOwkCZpodA3HVofRewAdp5v/qNeObhdAKqSqlk07dM7McVYsQYM84owCrYRaO
-	/Ee/AJVKIdXfPsPYTVh+CRZR3fZLrhpQGBoA9p3tUH42OWo2OAs9aKY1ulW3sanlrnncWHR93mO
-	SOouNnnWC6Igkwl/EsvX6xPJiy2ry3DXmcGuwPb2kFqmfm6mamo2QJzAatJSEnwS9FZa1HNhKVD
-	zrvlhMYLRZU1SilbrHdrwcZJ7yhlcseZ4cddY8X8H8XJ/p6YTfLBqf4UroyT4w3uFg8WFOFKYqV
-	Ll/HnRR/grlB1d6Ra73vZzFFu6uM5ZNp63klBjiZ1bOb/7rXoNHAxdqdPjE54R6pLg2O6lBb1ma
-	VNk+cZZ78y1c6++9umNcuZ+k8=
-X-Google-Smtp-Source: AGHT+IHSReaBoY0payJlLNXxYuXOcysW/4kuuotsiPj+TOOyIlWaCgj/F8BpW7CjLFi/EpDUUEbMPg==
-X-Received: by 2002:a17:903:1b4c:b0:2a1:3cd9:a734 with SMTP id d9443c01a7336-2a3ee49cfc7mr47710045ad.43.1767864982383;
-        Thu, 08 Jan 2026 01:36:22 -0800 (PST)
+        bh=ik6S3AEviz5X31TZw7OV/Nia5XaM7NiA7FEx+an3VHo=;
+        b=NsOqlm92wofPIn9fszlZE/732tf85Skl44cGwhk2aX1nuBNapif7LF+2X2XQp3fR4y
+         6OUE04sOJyWtXHf36EQqGLAYTZlHcGskPKMQSDGMNaLbCVMAFHHLfRlh5roPoKqwecgC
+         NTP6a6AJT9MOvzlhUYETDQS0NH5WnblKQgGbrUGHvsXw8VXEVa9dRdu/NXtpJ9nB3CLv
+         ufNXt41xVZZOIODvUtz+BqyZZ6XvHO2qT+bfBdOmgpLRaZGTQtZd/RJ+dwzV+C4hq27p
+         Y1CKIaCgs/fH5Vc1ZlCObYmd/irtaVNuhwT7v+TLveOTpvdQ+GL/baI6hE3lq3IVeZAl
+         mcxw==
+X-Forwarded-Encrypted: i=1; AJvYcCUEC9gdtCVx4KynLhVjQOZhlr9arof3hTbqVVUwvTBre6HzQjF/ckZVhV1BOTzNS0Sw0Ra70Qzr@vger.kernel.org
+X-Gm-Message-State: AOJu0Yxgi0XfB5YYUaQx6uxxBX3JYYOu208hlkwrD3qwjaYVMZoxUyGR
+	rpvbqBEPgH8fJNE6bZ9P1Y/QiDnz1f16PMvZO1ofqBHglIV/JPUCTdWo
+X-Gm-Gg: AY/fxX6qsgQIVfLLmrMdMPSyy/Y9mlbAytpbHuEqXAXSbVRz987L7l6b94+tbfM1iTj
+	wK7NnygK+byb7Li9hX23gk6bda5u0XxlawYa1FQt67IdPfjC9c2PEqPCyP3OnFysjtlWG78ZKQe
+	nVW1/ap9zyS4Ji8vDQkrN4wFg5VBGE7Uo5C+/Vn6dJ4gao4ohrgdCYfK+a72BV9bwm+z3uaJf1Y
+	aPoGivIr9cm/xKlopa3evV/pwtcnJ3773pXWPST4AiJjREYFygECB7QA3djPzvY01bjaLHUHjBq
+	iD5zUQx/Tm0XVTSXWodqsuUIdQE3jELB5pVMXcStcmK4doWTTpTqBvtBC1LxTVtwEUWuinJ/OYs
+	b3gcwssKXPnklmkVwHkeR67/+t9tmjOLjhIlAlYUcufTMtXdrSpgvMasdOonAcQhkxESkUxiFwX
+	kbAVXgxeNr6dh1w32cWI1/jys=
+X-Google-Smtp-Source: AGHT+IGkD4u4OKuGOJgEG43r3UTN8L33GIpPSdazeL3qKL9eMPR7k9R7p/x03ji4npCAFVH6SBCXCw==
+X-Received: by 2002:a17:90a:da8f:b0:340:f05a:3ec2 with SMTP id 98e67ed59e1d1-34f68cc2a86mr5562215a91.17.1767865072538;
+        Thu, 08 Jan 2026 01:37:52 -0800 (PST)
 Received: from NV-J4GCB44.nvidia.com ([103.74.125.162])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2a3f3115682sm37460985ad.55.2026.01.08.01.36.19
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-34f5f8b0d7esm7373677a91.16.2026.01.08.01.37.49
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 08 Jan 2026 01:36:21 -0800 (PST)
+        Thu, 08 Jan 2026 01:37:51 -0800 (PST)
 From: Jianyue Wu <wujianyue000@gmail.com>
 X-Google-Original-From: Jianyue Wu <jianyuew@nvidia.com>
 To: jianyuew@nvidia.com,
@@ -84,8 +84,8 @@ Cc: Jianyue Wu <wujianyue000@gmail.com>,
 	cgroups@vger.kernel.org,
 	linux-kernel@vger.kernel.org
 Subject: [PATCH] mm: optimize stat output for 11% sys time reduce
-Date: Thu,  8 Jan 2026 17:36:02 +0800
-Message-ID: <20260108093610.212023-1-jianyuew@nvidia.com>
+Date: Thu,  8 Jan 2026 17:37:29 +0800
+Message-ID: <20260108093741.212333-1-jianyuew@nvidia.com>
 X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
@@ -119,7 +119,6 @@ Tests:
   done
 
 Signed-off-by: Jianyue Wu <wujianyue000@gmail.com>
-Signed-off-by: Jianyue Wu <jianyuew@nvidia.com>
 ---
  mm/memcontrol-v1.c | 97 ++++++++++++++++++++++++++--------------------
  mm/memcontrol-v1.h | 34 ++++++++++++++++
