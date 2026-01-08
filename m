@@ -1,68 +1,68 @@
-Return-Path: <cgroups+bounces-12959-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-12960-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 544BED00E1F
-	for <lists+cgroups@lfdr.de>; Thu, 08 Jan 2026 04:35:35 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id E6531D00E04
+	for <lists+cgroups@lfdr.de>; Thu, 08 Jan 2026 04:33:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 6DF0F303D882
-	for <lists+cgroups@lfdr.de>; Thu,  8 Jan 2026 03:32:55 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 67F13301294A
+	for <lists+cgroups@lfdr.de>; Thu,  8 Jan 2026 03:32:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A34882857FA;
-	Thu,  8 Jan 2026 03:32:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 16E8225A659;
+	Thu,  8 Jan 2026 03:32:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="PQnFZ0Y4"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Bba9Jat9"
 X-Original-To: cgroups@vger.kernel.org
 Received: from mail-dl1-f74.google.com (mail-dl1-f74.google.com [74.125.82.74])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D4E0127FD7C
-	for <cgroups@vger.kernel.org>; Thu,  8 Jan 2026 03:32:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 34D9422DA1C
+	for <cgroups@vger.kernel.org>; Thu,  8 Jan 2026 03:32:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.82.74
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767843174; cv=none; b=he9g9o2CPGecvuwUxxu0Gz7X+YJaKWHsoKEHwHfyAp65Yljzhs2p3Y2hH4H9eV/8Et2w2eYhcxOKURy0JrfzmwfEabA2Mv+ThxMk3ibw/mUHMu/o2SBbecixFzOFyohW+uJhw1R+zX7WyTGop/5KB1mlNOnT6dOGGxF/nan+ZZQ=
+	t=1767843174; cv=none; b=qlkl3MA6OVCgZsdrmc40fjaPU7V7U5SrP/ma3BKM7gcimOR6r8My83+9NQQ0e42Hq/wOBq/1pnDdlkfM0137gTcr0dW6pkzsOcDFkP8BklL/9iPP4moM8TLOQNBD6+5mFLaHqSL1lseDftb5rrqs7b1ewRdJjfzCyibcEie/Eyg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1767843174; c=relaxed/simple;
-	bh=iQWqGoeqWEkDBX1rok0Mxskcqbxv4uP5Z3rsFWDsOmc=;
+	bh=O1H9cupxImTjG4VSJ+SQ9gmFZN5OaflzX60g018VxZk=;
 	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=pbq65RS5DM6fb67uBLQZaST4sT20dn/SnyVa9GZQLl2I5+3UA2QTK1K+c82gqQiKvQIzQ2v8pwpzg2PGmworS/WyX96wTQrTThdZljseG91a+3SPwa5705ylIOHynf0jZ6943rmDp88EGdrhuhk4qk6Un9aIWDVZ1Ys9P3dtSiU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--bingjiao.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=PQnFZ0Y4; arc=none smtp.client-ip=74.125.82.74
+	 To:Cc:Content-Type; b=hee8AWMIBRLb7MXEzIFm8L6+8rGJ22hRX5t4q/0OrKYDLSULFRSmQ8WCRCyiWaepjsolMX4hRiweU49/+ey+YU0AErGMl+sC7VucDVOcnFwMBk6VcoDDMqY2V3Mplr0E6pSMjQfddJ0cMZaqQ/IjsJgJsmWQ42yX8BzflksLwNg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--bingjiao.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Bba9Jat9; arc=none smtp.client-ip=74.125.82.74
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--bingjiao.bounces.google.com
-Received: by mail-dl1-f74.google.com with SMTP id a92af1059eb24-11f3b54cfdeso2586368c88.1
-        for <cgroups@vger.kernel.org>; Wed, 07 Jan 2026 19:32:51 -0800 (PST)
+Received: by mail-dl1-f74.google.com with SMTP id a92af1059eb24-121b1cb8377so3400555c88.0
+        for <cgroups@vger.kernel.org>; Wed, 07 Jan 2026 19:32:53 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1767843171; x=1768447971; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1767843172; x=1768447972; darn=vger.kernel.org;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=9N2n/A/xFOqww0bLkR+BJFNf/bzifVLVBrJ3PRlBCJs=;
-        b=PQnFZ0Y4fdNpKYzyR5QiTR3acDrYNud9BfEz6MY43x4ckDeeh1dKSHXFMsT9wJVKEj
-         jf6+fevTMuMGtTGgknSwPvHtNoeWCxhnmdMKnJO+7GpipbE4hN12arkzSHtT16wS/0I/
-         gqJfgyG5OY3+yBZoWgMtTReAhDwO9YxsXFYmsTN3bFZKvFNtjY7V+CNhh1OFXeBb+hwp
-         Kcyfhrj+6XYLdtf3ENdROnp+vV63DVxt5OuSRPrM8Rty4k9xJykhGQuMW/U+cJ1F5nMA
-         PORyBhGfpC1iOBpI180DayqlT+2J2p0a8P+3V7TdNwlRZwgOAqM+2mSctnOZV70BajRD
-         YfbQ==
+        bh=PLgkCamneE/qgvT8SRDRrY5Fa+Nn2NhKwpUQgrc0C+o=;
+        b=Bba9Jat9G345BFR6Mt7050E8DfqERFsulIjdFC+2jC9vA3ackaKRQwHR6+5ul3d+7d
+         yOcimVh15/EQhXGIVCNH/z2aN+olhBSuqgMORb9HV4/aVxtoFSWTK2XXsztjaXFh+xzY
+         m2g/W+xgg1O081tDj8Au5DmfDMQ87coaq0o3BPyOUr/XSDZt+ihuIwbTxA5i+EVIL1nI
+         vBbmmHnt2AuhE64fDEkj1M99W4xhslLszJE3+CTXBuzCAq+qblyh29wYU6NnjD4KOcW6
+         z1HwCX4iPgtGO97PJUKElYv4lmUBUvbGJV8M3aySkc2Mit2urz3KcHhCXVeFd/DAgsX4
+         TxSQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1767843171; x=1768447971;
+        d=1e100.net; s=20230601; t=1767843172; x=1768447972;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=9N2n/A/xFOqww0bLkR+BJFNf/bzifVLVBrJ3PRlBCJs=;
-        b=S0ry+urew418vNXC7ghJTQlRBRFC3Xutdla4tJX41f2RBwUgJfCFxupAsy2YTQ0eMK
-         e33MjzY4PbxuTWw/oRqbVBgCNRDfSqTFCxrdJBmx4H5RtAvQ8pzdiRTqUjiSFFhswEd6
-         Uc60koOO9dRGapj11CLmWHk4K0O6a8Wg+9P/wh2Zb680P1Xv2TkowlMd07Cm3i/fp6WY
-         MmKptnanTpJKmXX1uYBzwOd+dGYslw/od6p5sxlTJQVED+KxqeCKFYNq0CkQT7UdP1wu
-         7GjjSI6MUCM0woq/Z3W2yz+8IQL6vt7TUNZhyWMbbBtE3iQEaRuoOnB/o6FWdxyK1bSU
-         Bq2w==
-X-Forwarded-Encrypted: i=1; AJvYcCUvzF3tftL/YF5C4pgbSf6tFj9rZehkCL9SEk1hFP3e1zqCGQ2X/MkLtsu6mwPyRkL9pavxt9dI@vger.kernel.org
-X-Gm-Message-State: AOJu0YwDZs7BE/D5Tq+iq1krNunvSUKSZNCl9Y1toBSPfFjBJz92yKld
-	IU+ayBZGXTkjcaTsED1fm2jCVOd2CD0LGSuabNGoTyShJR4cNxPNgaSKmBks9G9Ok8kDG6+gYuI
-	ayFLlt8IYb4o2QQ==
-X-Google-Smtp-Source: AGHT+IET88LLYKot81//F0JV+NGuMdk/eaOIcylgr5aPKD6MRjRxkZFDdcQCJxhMMoo4KCWk6qJGUBI8WeDuhA==
-X-Received: from dlbrs6.prod.google.com ([2002:a05:7022:f686:b0:11b:b064:f5dc])
+        bh=PLgkCamneE/qgvT8SRDRrY5Fa+Nn2NhKwpUQgrc0C+o=;
+        b=RmHR9S7yPB8n76vidoB8GmjLGUT9peS9EEC9BnPMNWt+6yJNVnRY73fOFk3/RfnnTM
+         KlPaQil7BJH+XU9afE50DExqfadofHJaskasfbvM1Km7sdM5mp35jo29NcLJfaIe3zok
+         RcATsaqj4OtmTJ217IYEF3H3NDujg4PeOXOW3ykANaigyBGtVOgi8f3hYdOkl0U5xFtR
+         v7aXuT+LNdnURDtmYRBp8E9Y/3iYO2wKfK2vPycIOL/Gj7HL/s7tOHr+QEL/O+e9MUp1
+         tdOPd/bgT9rX6arm7nYn+PYZJsvKXR5LItv5STjfAc3lG1gAmKjl2zZ0O0FxQFDMWR1t
+         dS4w==
+X-Forwarded-Encrypted: i=1; AJvYcCX31z0KRHUNAkWL/2v1N8QKr9EvCRxyzQSXWvI4cKoU/3dKeo//1mhsF1/XTgYW6ddZQ2nPHrBY@vger.kernel.org
+X-Gm-Message-State: AOJu0Yyknx2a+aBPJ1si3SpC765+L2SPuu8uwlzdczOBZ3xzZ7avUc84
+	LHR3BQjTM/ISZo4OTw07omyHahpyL1/ocAep6PZb0prfsYFJobK2vME4QEE6IfXFs4vOkNtvPS7
+	g5Fpmb5+/eEVJPA==
+X-Google-Smtp-Source: AGHT+IHSAuslRhY4gBeVWlWCY57NP//mIwPdmFsednmABv35QVXB/P5EPW9tyKa6wChhWbzbdD3cD9E5vhcVPg==
+X-Received: from dlbdx24.prod.google.com ([2002:a05:7022:e18:b0:11d:cd2a:4c1b])
  (user=bingjiao job=prod-delivery.src-stubby-dispatcher) by
- 2002:a05:701b:2089:20b0:11b:2138:4758 with SMTP id a92af1059eb24-121f8b2bc09mr3374643c88.21.1767843170786;
- Wed, 07 Jan 2026 19:32:50 -0800 (PST)
-Date: Thu,  8 Jan 2026 03:32:46 +0000
+ 2002:a05:7022:629a:b0:11b:9386:a386 with SMTP id a92af1059eb24-121f8b8ded3mr4212238c88.41.1767843172292;
+ Wed, 07 Jan 2026 19:32:52 -0800 (PST)
+Date: Thu,  8 Jan 2026 03:32:47 +0000
 In-Reply-To: <20260108033248.2791579-1-bingjiao@google.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
@@ -72,8 +72,8 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
 References: <20260106075703.1420072-1-bingjiao@google.com> <20260108033248.2791579-1-bingjiao@google.com>
 X-Mailer: git-send-email 2.52.0.457.g6b5491de43-goog
-Message-ID: <20260108033248.2791579-2-bingjiao@google.com>
-Subject: [PATCH v7 1/2] mm/vmscan: fix demotion targets checks in reclaim/demotion
+Message-ID: <20260108033248.2791579-3-bingjiao@google.com>
+Subject: [PATCH v7 2/2] mm/vmscan: select the closest preferred node in demote_folio_list()
 From: Bing Jiao <bingjiao@google.com>
 To: linux-mm@kvack.org
 Cc: linux-kernel@vger.kernel.org, akpm@linux-foundation.org, gourry@gourry.net, 
@@ -85,318 +85,130 @@ Cc: linux-kernel@vger.kernel.org, akpm@linux-foundation.org, gourry@gourry.net,
 	cgroups@vger.kernel.org, joshua.hahnjy@gmail.com, bingjiao@google.com
 Content-Type: text/plain; charset="UTF-8"
 
-Fix two bugs in demote_folio_list() and can_demote() due to incorrect
-demotion target checks in reclaim/demotion.
+The preferred demotion node (migration_target_control.nid) should be
+the one closest to the source node to minimize migration latency.
+Currently, a discrepancy exists where demote_folio_list() randomly
+selects an allowed node if the preferred node from next_demotion_node()
+is not set in mems_allowed.
 
-Commit 7d709f49babc ("vmscan,cgroup: apply mems_effective to reclaim")
-introduces the cpuset.mems_effective check and applies it to can_demote().
-However:
+To address it, update next_demotion_node() to return preferred nodes,
+allowing the caller to select the preferred one.
+Also update demote_folio_list() to traverse the demotion targets
+hierarchically until a preferred node within mems_allowed is found.
+It ensures that the selected demotion target is consistently
+the closest available node.
 
-  1. It does not apply this check in demote_folio_list(), which leads
-     to situations where pages are demoted to nodes that are
-     explicitly excluded from the task's cpuset.mems.
-
-  2. It checks only the nodes in the immediate next demotion hierarchy
-     and does not check all allowed demotion targets in can_demote().
-     This can cause pages to never be demoted if the nodes in the next
-     demotion hierarchy are not set in mems_effective.
-
-These bugs break resource isolation provided by cpuset.mems.  This is
-visible from userspace because pages can either fail to be demoted
-entirely or are demoted to nodes that are not allowed in multi-tier memory
-systems.
-
-To address these bugs, update cpuset_node_allowed() to return
-effective_mems and mem_cgroup_node_allowed() to filter out nodes
-that are not set in effective_mems. Also update can_demote()
-and demote_folio_list() accordingly.
-
-Bug 1 reproduction:
-  Assume a system with 4 nodes, where nodes 0-1 are top-tier and
-  nodes 2-3 are far-tier memory. All nodes have equal capacity.
-
-  Test script:
-    echo 1 > /sys/kernel/mm/numa/demotion_enabled
-    mkdir /sys/fs/cgroup/test
-    echo +cpuset > /sys/fs/cgroup/cgroup.subtree_control
-    echo "0-2" > /sys/fs/cgroup/test/cpuset.mems
-    echo $$ > /sys/fs/cgroup/test/cgroup.procs
-    swapoff -a
-    # Expectation: Should respect node 0-2 limit.
-    # Observation: Node 3 shows significant allocation (MemFree drops)
-    stress-ng --oomable --vm 1 --vm-bytes 150% --mbind 0,1
-
-Bug 2 reproduction:
-  Assume a system with 6 nodes, where nodes 0-2 are top-tier,
-  node 3 is a far-tier node, and nodes 4-5 are the farthest-tier nodes.
-  All nodes have equal capacity.
-
-  Test script:
-    echo 1 > /sys/kernel/mm/numa/demotion_enabled
-    mkdir /sys/fs/cgroup/test
-    echo +cpuset > /sys/fs/cgroup/cgroup.subtree_control
-    echo "0-2,4-5" > /sys/fs/cgroup/test/cpuset.mems
-    echo $$ > /sys/fs/cgroup/test/cgroup.procs
-    swapoff -a
-    # Expectation: Pages are demoted to Nodes 4-5
-    # Observation: No pages are demoted before oom.
-    stress-ng --oomable --vm 1 --vm-bytes 150% --mbind 0,1,2
-
-Fixes: 7d709f49babc ("vmscan,cgroup: apply mems_effective to reclaim")
 Signed-off-by: Bing Jiao <bingjiao@google.com>
-Cc: <stable@vger.kernel.org>
 ---
+ include/linux/memory-tiers.h |  6 +++---
+ mm/memory-tiers.c            | 11 +++++++----
+ mm/vmscan.c                  | 25 ++++++++++++++++++++++---
+ 3 files changed, 32 insertions(+), 10 deletions(-)
 
-v6 -> v7: fix buggy code in v6.
-
-Specifically, next_demotion_node() may return NUMA_NO_NODE if nodes were
-hot-unplugged. V6 directly checks node_isset(target_nid, allowed_mask),
-which will cause out-of-boundary bug if target_nid is NUMA_NO_NODE (-1).
-
----
- include/linux/cpuset.h     |  6 ++---
- include/linux/memcontrol.h |  6 ++---
- kernel/cgroup/cpuset.c     | 54 +++++++++++++++++++++++++-------------
- mm/memcontrol.c            | 16 +++++++++--
- mm/vmscan.c                | 28 +++++++++++++-------
- 5 files changed, 75 insertions(+), 35 deletions(-)
-
-diff --git a/include/linux/cpuset.h b/include/linux/cpuset.h
-index a98d3330385c..631577384677 100644
---- a/include/linux/cpuset.h
-+++ b/include/linux/cpuset.h
-@@ -174,7 +174,7 @@ static inline void set_mems_allowed(nodemask_t nodemask)
- 	task_unlock(current);
- }
-
--extern bool cpuset_node_allowed(struct cgroup *cgroup, int nid);
-+extern void cpuset_nodes_allowed(struct cgroup *cgroup, nodemask_t *mask);
- #else /* !CONFIG_CPUSETS */
-
- static inline bool cpusets_enabled(void) { return false; }
-@@ -301,9 +301,9 @@ static inline bool read_mems_allowed_retry(unsigned int seq)
- 	return false;
- }
-
--static inline bool cpuset_node_allowed(struct cgroup *cgroup, int nid)
-+static inline void cpuset_nodes_allowed(struct cgroup *cgroup, nodemask_t *mask)
+diff --git a/include/linux/memory-tiers.h b/include/linux/memory-tiers.h
+index 7a805796fcfd..87652042f2c2 100644
+--- a/include/linux/memory-tiers.h
++++ b/include/linux/memory-tiers.h
+@@ -53,11 +53,11 @@ struct memory_dev_type *mt_find_alloc_memory_type(int adist,
+ 						  struct list_head *memory_types);
+ void mt_put_memory_types(struct list_head *memory_types);
+ #ifdef CONFIG_MIGRATION
+-int next_demotion_node(int node);
++int next_demotion_node(int node, nodemask_t *preferred_nodes);
+ void node_get_allowed_targets(pg_data_t *pgdat, nodemask_t *targets);
+ bool node_is_toptier(int node);
+ #else
+-static inline int next_demotion_node(int node)
++static inline int next_demotion_node(int node, nodemask_t *preferred_nodes)
  {
--	return true;
-+	nodes_copy(*mask, node_states[N_MEMORY]);
+ 	return NUMA_NO_NODE;
  }
- #endif /* !CONFIG_CPUSETS */
+@@ -101,7 +101,7 @@ static inline void clear_node_memory_type(int node, struct memory_dev_type *memt
 
-diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-index 0651865a4564..412db7663357 100644
---- a/include/linux/memcontrol.h
-+++ b/include/linux/memcontrol.h
-@@ -1744,7 +1744,7 @@ static inline void count_objcg_events(struct obj_cgroup *objcg,
- 	rcu_read_unlock();
  }
 
--bool mem_cgroup_node_allowed(struct mem_cgroup *memcg, int nid);
-+void mem_cgroup_node_filter_allowed(struct mem_cgroup *memcg, nodemask_t *mask);
-
- void mem_cgroup_show_protected_memory(struct mem_cgroup *memcg);
-
-@@ -1815,9 +1815,9 @@ static inline ino_t page_cgroup_ino(struct page *page)
- 	return 0;
- }
-
--static inline bool mem_cgroup_node_allowed(struct mem_cgroup *memcg, int nid)
-+static inline void mem_cgroup_node_filter_allowed(struct mem_cgroup *memcg,
-+						  nodemask_t *mask)
+-static inline int next_demotion_node(int node)
++static inline int next_demotion_node(int node, nodemask_t *preferred_nodes)
  {
--	return true;
+ 	return NUMA_NO_NODE;
  }
-
- static inline void mem_cgroup_show_protected_memory(struct mem_cgroup *memcg)
-diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
-index 6e6eb09b8db6..289fb1a72550 100644
---- a/kernel/cgroup/cpuset.c
-+++ b/kernel/cgroup/cpuset.c
-@@ -4416,40 +4416,58 @@ bool cpuset_current_node_allowed(int node, gfp_t gfp_mask)
- 	return allowed;
- }
-
--bool cpuset_node_allowed(struct cgroup *cgroup, int nid)
-+/**
-+ * cpuset_nodes_allowed - return effective_mems mask from a cgroup cpuset.
-+ * @cgroup: pointer to struct cgroup.
-+ * @mask: pointer to struct nodemask_t to be returned.
-+ *
-+ * Returns effective_mems mask from a cgroup cpuset if it is cgroup v2 and
-+ * has cpuset subsys. Otherwise, returns node_states[N_MEMORY].
-+ *
-+ * This function intentionally avoids taking the cpuset_mutex or callback_lock
-+ * when accessing effective_mems. This is because the obtained effective_mems
-+ * is stale immediately after the query anyway (e.g., effective_mems is updated
-+ * immediately after releasing the lock but before returning).
-+ *
-+ * As a result, returned @mask may be empty because cs->effective_mems can be
-+ * rebound during this call. Besides, nodes in @mask are not guaranteed to be
-+ * online due to hot plugins. Callers should check the mask for validity on
-+ * return based on its subsequent use.
-+ **/
-+void cpuset_nodes_allowed(struct cgroup *cgroup, nodemask_t *mask)
- {
- 	struct cgroup_subsys_state *css;
- 	struct cpuset *cs;
--	bool allowed;
-
- 	/*
- 	 * In v1, mem_cgroup and cpuset are unlikely in the same hierarchy
- 	 * and mems_allowed is likely to be empty even if we could get to it,
--	 * so return true to avoid taking a global lock on the empty check.
-+	 * so return directly to avoid taking a global lock on the empty check.
- 	 */
--	if (!cpuset_v2())
--		return true;
-+	if (!cgroup || !cpuset_v2()) {
-+		nodes_copy(*mask, node_states[N_MEMORY]);
-+		return;
-+	}
-
- 	css = cgroup_get_e_css(cgroup, &cpuset_cgrp_subsys);
--	if (!css)
--		return true;
-+	if (!css) {
-+		nodes_copy(*mask, node_states[N_MEMORY]);
-+		return;
-+	}
-
- 	/*
--	 * Normally, accessing effective_mems would require the cpuset_mutex
--	 * or callback_lock - but node_isset is atomic and the reference
--	 * taken via cgroup_get_e_css is sufficient to protect css.
--	 *
--	 * Since this interface is intended for use by migration paths, we
--	 * relax locking here to avoid taking global locks - while accepting
--	 * there may be rare scenarios where the result may be innaccurate.
-+	 * The reference taken via cgroup_get_e_css is sufficient to
-+	 * protect css, but it does not imply safe accesses to effective_mems.
- 	 *
--	 * Reclaim and migration are subject to these same race conditions, and
--	 * cannot make strong isolation guarantees, so this is acceptable.
-+	 * Normally, accessing effective_mems would require the cpuset_mutex
-+	 * or callback_lock - but the correctness of this information is stale
-+	 * immediately after the query anyway. We do not acquire the lock
-+	 * during this process to save lock contention in exchange for racing
-+	 * against mems_allowed rebinds.
- 	 */
- 	cs = container_of(css, struct cpuset, css);
--	allowed = node_isset(nid, cs->effective_mems);
-+	nodes_copy(*mask, cs->effective_mems);
- 	css_put(css);
--	return allowed;
- }
-
+diff --git a/mm/memory-tiers.c b/mm/memory-tiers.c
+index 864811fff409..286e4b5fa0e5 100644
+--- a/mm/memory-tiers.c
++++ b/mm/memory-tiers.c
+@@ -320,13 +320,14 @@ void node_get_allowed_targets(pg_data_t *pgdat, nodemask_t *targets)
  /**
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index 86f43b7e5f71..702c3db624a0 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -5624,9 +5624,21 @@ subsys_initcall(mem_cgroup_swap_init);
-
- #endif /* CONFIG_SWAP */
-
--bool mem_cgroup_node_allowed(struct mem_cgroup *memcg, int nid)
-+void mem_cgroup_node_filter_allowed(struct mem_cgroup *memcg, nodemask_t *mask)
+  * next_demotion_node() - Get the next node in the demotion path
+  * @node: The starting node to lookup the next node
++ * @preferred_nodes: The pointer to nodemask of all preferred nodes to return
+  *
+  * Return: node id for next memory node in the demotion path hierarchy
+- * from @node; NUMA_NO_NODE if @node is terminal.  This does not keep
+- * @node online or guarantee that it *continues* to be the next demotion
+- * target.
++ * from @node; NUMA_NO_NODE if @node is terminal. Also returns all preferred
++ * nodes in @preferred_nodes. This does not keep @node online or guarantee
++ * that it *continues* to be the next demotion target.
+  */
+-int next_demotion_node(int node)
++int next_demotion_node(int node, nodemask_t *preferred_nodes)
  {
--	return memcg ? cpuset_node_allowed(memcg->css.cgroup, nid) : true;
-+	nodemask_t allowed;
-+
-+	if (!memcg)
-+		return;
-+
-+	/*
-+	 * Since this interface is intended for use by migration paths, and
-+	 * reclaim and migration are subject to race conditions such as changes
-+	 * in effective_mems and hot-unpluging of nodes, inaccurate allowed
-+	 * mask is acceptable.
-+	 */
-+	cpuset_nodes_allowed(memcg->css.cgroup, &allowed);
-+	nodes_and(*mask, *mask, allowed);
- }
+ 	struct demotion_nodes *nd;
+ 	int target;
+@@ -357,6 +358,8 @@ int next_demotion_node(int node)
+ 	 * target node randomly seems better until now.
+ 	 */
+ 	target = node_random(&nd->preferred);
++	if (preferred_nodes)
++		nodes_copy(*preferred_nodes, nd->preferred);
+ 	rcu_read_unlock();
 
- void mem_cgroup_show_protected_memory(struct mem_cgroup *memcg)
+ 	return target;
 diff --git a/mm/vmscan.c b/mm/vmscan.c
-index 670fe9fae5ba..94ff5aa7c4fb 100644
+index 94ff5aa7c4fb..213ee75b3306 100644
 --- a/mm/vmscan.c
 +++ b/mm/vmscan.c
-@@ -344,19 +344,21 @@ static void flush_reclaim_state(struct scan_control *sc)
- static bool can_demote(int nid, struct scan_control *sc,
- 		       struct mem_cgroup *memcg)
+@@ -1024,9 +1024,10 @@ static unsigned int demote_folio_list(struct list_head *demote_folios,
+ 				      struct pglist_data *pgdat,
+ 				      struct mem_cgroup *memcg)
  {
--	int demotion_nid;
-+	struct pglist_data *pgdat = NODE_DATA(nid);
-+	nodemask_t allowed_mask;
-
--	if (!numa_demotion_enabled)
-+	if (!pgdat || !numa_demotion_enabled)
- 		return false;
- 	if (sc && sc->no_demotion)
- 		return false;
-
--	demotion_nid = next_demotion_node(nid);
--	if (demotion_nid == NUMA_NO_NODE)
-+	node_get_allowed_targets(pgdat, &allowed_mask);
-+	if (nodes_empty(allowed_mask))
- 		return false;
-
--	/* If demotion node isn't in the cgroup's mems_allowed, fall back */
--	return mem_cgroup_node_allowed(memcg, demotion_nid);
-+	/* Filter out nodes that are not in cgroup's mems_allowed. */
-+	mem_cgroup_node_filter_allowed(memcg, &allowed_mask);
-+	return !nodes_empty(allowed_mask);
- }
-
- static inline bool can_reclaim_anon_pages(struct mem_cgroup *memcg,
-@@ -1019,7 +1021,8 @@ static struct folio *alloc_demote_folio(struct folio *src,
-  * Folios which are not demoted are left on @demote_folios.
-  */
- static unsigned int demote_folio_list(struct list_head *demote_folios,
--				     struct pglist_data *pgdat)
-+				      struct pglist_data *pgdat,
-+				      struct mem_cgroup *memcg)
- {
- 	int target_nid = next_demotion_node(pgdat->node_id);
+-	int target_nid = next_demotion_node(pgdat->node_id);
++	int target_nid;
  	unsigned int nr_succeeded;
-@@ -1033,7 +1036,6 @@ static unsigned int demote_folio_list(struct list_head *demote_folios,
- 		 */
- 		.gfp_mask = (GFP_HIGHUSER_MOVABLE & ~__GFP_RECLAIM) |
- 			__GFP_NOMEMALLOC | GFP_NOWAIT,
--		.nid = target_nid,
- 		.nmask = &allowed_mask,
- 		.reason = MR_DEMOTION,
- 	};
-@@ -1042,9 +1044,17 @@ static unsigned int demote_folio_list(struct list_head *demote_folios,
+ 	nodemask_t allowed_mask;
++	nodemask_t preferred;
+
+ 	struct migration_target_control mtc = {
+ 		/*
+@@ -1052,8 +1053,26 @@ static unsigned int demote_folio_list(struct list_head *demote_folios,
+ 	if (nodes_empty(allowed_mask))
  		return 0;
 
- 	if (target_nid == NUMA_NO_NODE)
-+		/* No lower-tier nodes or nodes were hot-unplugged. */
- 		return 0;
-
- 	node_get_allowed_targets(pgdat, &allowed_mask);
-+	mem_cgroup_node_filter_allowed(memcg, &allowed_mask);
-+	if (nodes_empty(allowed_mask))
-+		return 0;
+-	if (!node_isset(target_nid, allowed_mask))
+-		target_nid = node_random(&allowed_mask);
++	target_nid = next_demotion_node(pgdat->node_id, &preferred);
++	while (target_nid != NUMA_NO_NODE &&
++	       !node_isset(target_nid, allowed_mask)) {
++		/* Filter out preferred nodes that are not in allowed. */
++		nodes_and(preferred, preferred, allowed_mask);
++		if (!nodes_empty(preferred)) {
++			/* Randomly select one node from preferred. */
++			target_nid = node_random(&preferred);
++			break;
++		}
++		/*
++		 * Preferred nodes in the lower tier are not set in allowed.
++		 * Recursively get preferred from the next lower tier.
++		 */
++		target_nid = next_demotion_node(target_nid, &preferred);
++	}
 +
-+	if (!node_isset(target_nid, allowed_mask))
-+		target_nid = node_random(&allowed_mask);
-+	mtc.nid = target_nid;
++	if (target_nid == NUMA_NO_NODE)
++		/* Nodes are gone (e.g., hot-unplugged). */
++		return 0;
+ 	mtc.nid = target_nid;
 
  	/* Demotion ignores all cpuset and mempolicy settings */
- 	migrate_pages(demote_folios, alloc_demote_folio, NULL,
-@@ -1566,7 +1576,7 @@ static unsigned int shrink_folio_list(struct list_head *folio_list,
- 	/* 'folio_list' is always empty here */
-
- 	/* Migrate folios selected for demotion */
--	nr_demoted = demote_folio_list(&demote_folios, pgdat);
-+	nr_demoted = demote_folio_list(&demote_folios, pgdat, memcg);
- 	nr_reclaimed += nr_demoted;
- 	stat->nr_demoted += nr_demoted;
- 	/* Folios that could not be demoted are still in @demote_folios */
 --
 2.52.0.457.g6b5491de43-goog
 
