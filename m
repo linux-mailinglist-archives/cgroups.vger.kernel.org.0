@@ -1,78 +1,78 @@
-Return-Path: <cgroups+bounces-12997-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-12998-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 12736D06241
-	for <lists+cgroups@lfdr.de>; Thu, 08 Jan 2026 21:42:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 5A7C5D06259
+	for <lists+cgroups@lfdr.de>; Thu, 08 Jan 2026 21:42:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 5C96430477E1
-	for <lists+cgroups@lfdr.de>; Thu,  8 Jan 2026 20:39:29 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 56A2A307EF9B
+	for <lists+cgroups@lfdr.de>; Thu,  8 Jan 2026 20:39:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6BEFE331205;
-	Thu,  8 Jan 2026 20:39:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C5A413321BE;
+	Thu,  8 Jan 2026 20:39:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gourry.net header.i=@gourry.net header.b="AAJhU+QG"
+	dkim=pass (2048-bit key) header.d=gourry.net header.i=@gourry.net header.b="Bu/wvCUS"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-qt1-f193.google.com (mail-qt1-f193.google.com [209.85.160.193])
+Received: from mail-qk1-f175.google.com (mail-qk1-f175.google.com [209.85.222.175])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0BB26330B3F
-	for <cgroups@vger.kernel.org>; Thu,  8 Jan 2026 20:38:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.193
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 79759331214
+	for <cgroups@vger.kernel.org>; Thu,  8 Jan 2026 20:39:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767904745; cv=none; b=pdC3s+DChs2rnXAV3knfAZ8xRBZBPJBOAialU1a0pguVZrNlIEFlLRRt5OZwi3tKwEbu/5H692UC8j36YJyvGFExoSApGCvytF6XDeET5pERo9l9iDt2diFb56G1EhgWpusnLTf3VSExkKUHwmRFiRM2liJtBL7esvGkOL8cW2E=
+	t=1767904749; cv=none; b=V8/qwq1URAthngEg47k8Ur3PgtJU/v0ePR7qEp9f5Zo1XlCEYmSdTnH0738sL7oQ9bfMtTEmrcW9m9NS2Dv3BcIC7h3XM47Ur+jQs0w/gAz0TgiH7YwGFx5xgidSzsrDqcf/KUza86XrXKS0SnQEtE64NsS9wFoguksLdgFiCfM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767904745; c=relaxed/simple;
-	bh=a5FayHYeLOjpSYndVEQNyEbTMfQR+C/FVM2n6KXYrYo=;
+	s=arc-20240116; t=1767904749; c=relaxed/simple;
+	bh=xii4wO1lEnLuXt5FEyh6bs/i4HOiIb27LXChmEfzilo=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=W1O+Fn9gzhnqHNyRtAAEG7WYmJZCPzOHPBQQZKJprgmhg+GdTtThsqc6agrvKLUW99v0pL7xwTR78DuEBaLqQoIJF4+O48486pXF9hoqsu2tr/9QtPkON2j+ndx+yvZV2QjuRoKLjUB66UUsD+6hRGUsDbjISzrLjzByY7+5wNg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gourry.net; spf=pass smtp.mailfrom=gourry.net; dkim=pass (2048-bit key) header.d=gourry.net header.i=@gourry.net header.b=AAJhU+QG; arc=none smtp.client-ip=209.85.160.193
+	 MIME-Version; b=oRZj6d1XfNhNI3VYvj+4pPJYss3urRUq8cA45WtXawyEZ/GvmF9kdQ3/S55p/PxiSR6O2oM7PDbRuKzkGpbjuAAOgbFEIFiR8pK99Fwp2Xfat9fsKhMyfaFUu57d7zk6MGT4EXZHjA5seqt0YcETOzwBcgHPArhcWqazB+7Zs78=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gourry.net; spf=pass smtp.mailfrom=gourry.net; dkim=pass (2048-bit key) header.d=gourry.net header.i=@gourry.net header.b=Bu/wvCUS; arc=none smtp.client-ip=209.85.222.175
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gourry.net
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gourry.net
-Received: by mail-qt1-f193.google.com with SMTP id d75a77b69052e-4eddfb8c7f5so34659121cf.1
-        for <cgroups@vger.kernel.org>; Thu, 08 Jan 2026 12:38:59 -0800 (PST)
+Received: by mail-qk1-f175.google.com with SMTP id af79cd13be357-8b2ed01b95dso388096285a.0
+        for <cgroups@vger.kernel.org>; Thu, 08 Jan 2026 12:39:05 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gourry.net; s=google; t=1767904739; x=1768509539; darn=vger.kernel.org;
+        d=gourry.net; s=google; t=1767904744; x=1768509544; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=rRDiJ+UlJzmE9gGlU0qCIeblmwRaclHqLNtsuAzr4HM=;
-        b=AAJhU+QGRlNWe4lqt0GifqyTq3VXjRFKFEaeOF3zUUdmCGLDtQCJuVwfCae5+OLl9Q
-         I8c21JA5zmeklBxwY1CTf8h9SPlgGcA7DIa/1Y8cUBk+YkExbsGDIwYq1FIqoE2LCAVV
-         PTCdoIG+LfI6qYBqTdv75rwfU5I3MK356ni6uKREs/ATTAsohSfn4u2fDHtYZN3yG1hH
-         dlirk7CFoMIDjOM5p/k/cyVdebpjRH2FOPptO/jZcCFwCGnn4096ONOS8sVQU6hTliW+
-         2IVQgg8fRoB5tUccO86rOR2auxmqOu5AXjasjRAs4VUKxl9ZTI3iDxoY7VVPIjYc++6n
-         jCIQ==
+        bh=mwgM57cBzuIgAiPMK5GxhnYsXF2RBvqFNs+qFbak5h0=;
+        b=Bu/wvCUSzvE1wOrM1YeQH/zu/nTFQkmi/JULxPvAXca4qSjAhWGwiUvRUT89s2X6xE
+         r5CnFWg01qf11wPsRE5OmpeoETNGxmtlwaGcCSH3JyhfX5Vq0LKgn22h7EyHHHUNZxW6
+         RSPDle7YU7Bl0z/G00liKYzEwSq1NCubdSUHrXwAH0y09MNg7bITTrHNoG4j7pq6D4Pl
+         ZYROv9A6/IbC3tu8J4qZNHJa67t8MGPwFGr3cddg9MBn8K84aJNQs+9zb4Kdi6L7YFX7
+         UE+SZ5/9MLwVQgRlC7Ms/PDMzAS1qHCbB9q5Oanrre2bLosixNWZ1jPZDV8TplyyZgKN
+         JK8g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1767904739; x=1768509539;
+        d=1e100.net; s=20230601; t=1767904744; x=1768509544;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=rRDiJ+UlJzmE9gGlU0qCIeblmwRaclHqLNtsuAzr4HM=;
-        b=QRsEJ5wkTyaE4awqyB35nrFIP60aZvfPOhRrAtVN2fvIr47ZkbrHKFOm42Pih6fXjw
-         IeERy1i3MLwSWAxc7NfYLhTbgn8UxQM+0ytA/i8ujWP2Bui4FM6AUPeoqKT/SDSRB+0r
-         7cC0pN2JLkSMTv6PG70q/+OkhaF53zjv5uh1JOnnEOPTYqzPSDmJ1VEau33HaWBPBJ94
-         rIGEkVhidVhQJBnBcWPJKmeEhcfFKs4N2e8OjTxKOu68AQGWKpqswAlSefK/y31oTbwh
-         FyaX59/CI1Iigbxei/kKArrQ2/mDV5aark2QyIfLwYIM0aUEJHqPyiNN1MOqIT8lO6Yd
-         sHpA==
-X-Forwarded-Encrypted: i=1; AJvYcCWgLHiXpjkuacIt86PrbAjKgc0eQwCYluQlCDBL0iYwx8kz2ZRt8nRyzrgNUwILrG5T6/EcjyGl@vger.kernel.org
-X-Gm-Message-State: AOJu0YwujWwwimqu7ztNiCo0W/5Bp8RBRpDbsIWwgdmKBxKQBatjgbmp
-	dswJfIgZE+PJ/LKB7WSNWwJwnBKexdAvGkFk/rmFroTQ3AmzSReOyaPr0DGv8ZesKdQ=
-X-Gm-Gg: AY/fxX6sbrHum2LCLucvqzEnt/IhiCTMZPkEg7ohYNEslUFpeQWnhbe8tK8eKzNTSAY
-	fGLDTg5JvVycYfLxb8uJkkAf679p5OoMeDnk6x0zYPXXSYor5R60lHAEU01+1IHrK3PPAC9Qbfz
-	o42W11iaoudBHNPdxSaRBTrynRasVHxaf/mA8Xgg5zKoao8+VRRsauahm6Gj++mPfQvquNDepB2
-	Qj6qFF3Eo4dFSPtLjZhSpqxaBndIDUBUGBWSAwFHnTK9FG1JeFwolu749xSAvF7TYQ+FqfoEWxY
-	YbtDqNZkl/aMEef3dew/WSFP+1pqf3291srHXccd+nI3OLI9EEulzUBddgm5kSwXtwHWw4KIS9o
-	ZoxU7VVu8TM2uQ1GKCRIqSlEzW0UYhrlwfjGeEJjEc/0S6Q/8NOl8NItKLsRzN+HhdiKI0IlqxD
-	WTDz5UsJfqhL2PuQeF6GsmNdZAQ/UP5vb5UR8GkI5V9p2qkT4pF6hXICe8EfBNyNvrIi23Ae8fI
-	cQ=
-X-Google-Smtp-Source: AGHT+IFQyuUju0Z/aUbfqpVDbDingg5jj0Y3CKeme4WYcUfzCc6+dQALyvDYUzyj67d/yfod1gGU5A==
-X-Received: by 2002:a05:622a:1101:b0:4ed:df09:a6a6 with SMTP id d75a77b69052e-4ffb48a8a54mr84063441cf.25.1767904738761;
-        Thu, 08 Jan 2026 12:38:58 -0800 (PST)
+        bh=mwgM57cBzuIgAiPMK5GxhnYsXF2RBvqFNs+qFbak5h0=;
+        b=wTVjijiGjupJL/Bu/7T/iNPDay5dTjpT7FzE34Z/gUhPSe+ruroDTfROd2BDxfyZK3
+         CSioAoMlN4bDp+STRc2v0QY1KgQ73alhe1sldzatTVRWdrXuEXa0wFkaDrUsNHPZxzTr
+         kTEsoHU3roTS6RlMtiybZo4rbx0HH/Q6UzenMwUBz7NYvtKW+FwjQmV3lTYSMBrbqIQd
+         WlyKdNFSyJR9CYWQcv4XOBD1BuUhgP2orWHkjjytq0Uz/WadGXuuXNNjgItefiuJtReo
+         oGDinfmP06iyVBUtREFbKHl3TdZta2Ao+pxLpyo9Z+v0NLUYhxE5r0ypYFLSy9tMpT+V
+         JyCQ==
+X-Forwarded-Encrypted: i=1; AJvYcCU02Gt0Xl1BmHP5/8Q1OHBoQkuZ5a0o4mmLMKf4i9UpBjCZhwlJdGyfx61C8b1lyAistCgmODWJ@vger.kernel.org
+X-Gm-Message-State: AOJu0Yxehtcg2ydtvM4S+FEUKpp4+PbNllv8+QNLspvNQFHUqQ9gWItE
+	FxjIxuNboA4O0trD45haZ1DVB+DU+ThT9NMBijeouI613NV47XB9vOEU9gPbh0v/vYg=
+X-Gm-Gg: AY/fxX4/4buJFxTvjB/6zIQHRv1r46h8VZ0snqSfkA9DAvMKmXr84RNeGX0AxdLqexu
+	UuJbRlM/b+3+OifDEz7QBeRJAbAT19GVtB4BPV9z0hXHUYDlX1M218MGA/6Oh3wKQNCsPg5iqqW
+	F2Zz6fiLBTYPK7fin4LpayumbEq4xrv43J8mygHFGTNN8e2FLK8/aOfCFDHRRhQ2RMVWwWX8vlA
+	gCCN8bzHFOOijprZ/lZ3RVvTFRhpGSw77CeLx3to6kKnNEKE6sgbS1Y9zl4hsfV8bt2MEbevAGW
+	EBRb+KOTGqCuKmHz12AanW9SgzI53JQ5sml75Qx92GEFmxFYvSfJwBmuTYbC+/N1LFZ0VMoputX
+	vEANBA2abtRb1LakkpcdGvA0uo9RtXM/PXyhPq9274DEviil9ilxl2q9kxHMEisFMvZ1rcjgKen
+	XE2YVtXqAyqrWz6PTQeBKEgn52HfsT4C/QCg6ELf9Gnimy6yNAat7bWB2nIMjLXWt+5yJ/W0FgB
+	/Y=
+X-Google-Smtp-Source: AGHT+IEohul7eh/tCSXsk4Ov9Y1GsfVyXy+u/Ko/qY44ZfRMGDZ1/y3sswNjUUv0CUGvS9SQKMHaSg==
+X-Received: by 2002:a05:620a:1a9d:b0:8b2:d6eb:8204 with SMTP id af79cd13be357-8c389416dbfmr982794985a.71.1767904744299;
+        Thu, 08 Jan 2026 12:39:04 -0800 (PST)
 Received: from gourry-fedora-PF4VCD3F.lan (pool-96-255-20-138.washdc.ftas.verizon.net. [96.255.20.138])
-        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-890770e472csm60483886d6.23.2026.01.08.12.38.57
+        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-890770e472csm60483886d6.23.2026.01.08.12.39.01
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 08 Jan 2026 12:38:58 -0800 (PST)
+        Thu, 08 Jan 2026 12:39:03 -0800 (PST)
 From: Gregory Price <gourry@gourry.net>
 To: linux-mm@kvack.org,
 	cgroups@vger.kernel.org,
@@ -134,9 +134,9 @@ Cc: linux-doc@vger.kernel.org,
 	cl@gentwo.org,
 	harry.yoo@oracle.com,
 	zhengqi.arch@bytedance.com
-Subject: [RFC PATCH v3 5/8] Documentation/admin-guide/cgroups: update docs for mems_allowed
-Date: Thu,  8 Jan 2026 15:37:52 -0500
-Message-ID: <20260108203755.1163107-6-gourry@gourry.net>
+Subject: [RFC PATCH v3 6/8] drivers/cxl/core/region: add private_region
+Date: Thu,  8 Jan 2026 15:37:53 -0500
+Message-ID: <20260108203755.1163107-7-gourry@gourry.net>
 X-Mailer: git-send-email 2.52.0
 In-Reply-To: <20260108203755.1163107-1-gourry@gourry.net>
 References: <20260108203755.1163107-1-gourry@gourry.net>
@@ -148,134 +148,446 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Add new information about mems_allowed and sysram_nodes, which says
-mems_allowed may contain union(N_MEMORY, N_PRIVATE) nodes, while
-sysram_nodes may only contain a subset of N_MEMORY nodes.
+A private_region is just a RAM region which attempts to set the
+target_node to N_PRIVATE before continuing to create a DAX device and
+subsequently hotplugging memory onto the system.
 
-cpuset.mems.sysram is a new RO ABI which reports the list of
-N_MEMORY nodes the cpuset is allowed to use, while
-cpusets.mems and mems.effective may also contain N_PRIVATE.
+A CXL device driver would create a private_region with the intent to
+manage how the memory can be used more granuarly than typical SystemRAM.
+
+This patch adds the infrastructure for a private memory region. Added
+as a separate folder to keep private region types organized.
+
+usage:
+    echo regionN > decoderX.Y/create_private_region
+    echo type    > regionN/private_type
 
 Signed-off-by: Gregory Price <gourry@gourry.net>
 ---
- .../admin-guide/cgroup-v1/cpusets.rst         | 19 +++++++++++---
- Documentation/admin-guide/cgroup-v2.rst       | 26 +++++++++++++++++--
- Documentation/filesystems/proc.rst            |  2 +-
- 3 files changed, 40 insertions(+), 7 deletions(-)
+ drivers/cxl/core/Makefile                     |   1 +
+ drivers/cxl/core/core.h                       |   4 +
+ drivers/cxl/core/port.c                       |   4 +
+ drivers/cxl/core/private_region/Makefile      |   9 ++
+ .../cxl/core/private_region/private_region.c  | 119 ++++++++++++++++++
+ .../cxl/core/private_region/private_region.h  |  10 ++
+ drivers/cxl/core/region.c                     |  63 ++++++++--
+ drivers/cxl/cxl.h                             |  20 +++
+ 8 files changed, 219 insertions(+), 11 deletions(-)
+ create mode 100644 drivers/cxl/core/private_region/Makefile
+ create mode 100644 drivers/cxl/core/private_region/private_region.c
+ create mode 100644 drivers/cxl/core/private_region/private_region.h
 
-diff --git a/Documentation/admin-guide/cgroup-v1/cpusets.rst b/Documentation/admin-guide/cgroup-v1/cpusets.rst
-index c7909e5ac136..6d326056f7b4 100644
---- a/Documentation/admin-guide/cgroup-v1/cpusets.rst
-+++ b/Documentation/admin-guide/cgroup-v1/cpusets.rst
-@@ -158,21 +158,26 @@ new system calls are added for cpusets - all support for querying and
- modifying cpusets is via this cpuset file system.
+diff --git a/drivers/cxl/core/Makefile b/drivers/cxl/core/Makefile
+index 5ad8fef210b5..2dd882a52609 100644
+--- a/drivers/cxl/core/Makefile
++++ b/drivers/cxl/core/Makefile
+@@ -17,6 +17,7 @@ cxl_core-y += cdat.o
+ cxl_core-y += ras.o
+ cxl_core-$(CONFIG_TRACING) += trace.o
+ cxl_core-$(CONFIG_CXL_REGION) += region.o
++obj-$(CONFIG_CXL_REGION) += private_region/
+ cxl_core-$(CONFIG_CXL_MCE) += mce.o
+ cxl_core-$(CONFIG_CXL_FEATURES) += features.o
+ cxl_core-$(CONFIG_CXL_EDAC_MEM_FEATURES) += edac.o
+diff --git a/drivers/cxl/core/core.h b/drivers/cxl/core/core.h
+index 1fb66132b777..159f92e4bea1 100644
+--- a/drivers/cxl/core/core.h
++++ b/drivers/cxl/core/core.h
+@@ -21,6 +21,7 @@ enum cxl_detach_mode {
+ #ifdef CONFIG_CXL_REGION
+ extern struct device_attribute dev_attr_create_pmem_region;
+ extern struct device_attribute dev_attr_create_ram_region;
++extern struct device_attribute dev_attr_create_private_region;
+ extern struct device_attribute dev_attr_delete_region;
+ extern struct device_attribute dev_attr_region;
+ extern const struct device_type cxl_pmem_region_type;
+@@ -30,6 +31,9 @@ extern const struct device_type cxl_region_type;
+ int cxl_decoder_detach(struct cxl_region *cxlr,
+ 		       struct cxl_endpoint_decoder *cxled, int pos,
+ 		       enum cxl_detach_mode mode);
++int devm_cxl_add_dax_region(struct cxl_region *cxlr);
++struct cxl_region *to_cxl_region(struct device *dev);
++extern struct device_attribute dev_attr_private_type;
  
- The /proc/<pid>/status file for each task has four added lines,
--displaying the task's cpus_allowed (on which CPUs it may be scheduled)
--and mems_allowed (on which Memory Nodes it may obtain memory),
--in the two formats seen in the following example::
-+displaying the task's cpus_allowed (on which CPUs it may be scheduled),
-+and mems_allowed (on which SystemRAM nodes it may obtain memory),
-+in the formats seen in the following example::
+ #define CXL_REGION_ATTR(x) (&dev_attr_##x.attr)
+ #define CXL_REGION_TYPE(x) (&cxl_region_type)
+diff --git a/drivers/cxl/core/port.c b/drivers/cxl/core/port.c
+index fef3aa0c6680..aedecb83e59b 100644
+--- a/drivers/cxl/core/port.c
++++ b/drivers/cxl/core/port.c
+@@ -333,6 +333,7 @@ static struct attribute *cxl_decoder_root_attrs[] = {
+ 	&dev_attr_qos_class.attr,
+ 	SET_CXL_REGION_ATTR(create_pmem_region)
+ 	SET_CXL_REGION_ATTR(create_ram_region)
++	SET_CXL_REGION_ATTR(create_private_region)
+ 	SET_CXL_REGION_ATTR(delete_region)
+ 	NULL,
+ };
+@@ -362,6 +363,9 @@ static umode_t cxl_root_decoder_visible(struct kobject *kobj, struct attribute *
+ 	if (a == CXL_REGION_ATTR(create_ram_region) && !can_create_ram(cxlrd))
+ 		return 0;
  
-   Cpus_allowed:   ffffffff,ffffffff,ffffffff,ffffffff
-   Cpus_allowed_list:      0-127
-   Mems_allowed:   ffffffff,ffffffff
-   Mems_allowed_list:      0-63
- 
-+Note that Mems_allowed only shows SystemRAM nodes (N_MEMORY), not
-+Private Nodes.  Private Nodes may be accessible via __GFP_THISNODE
-+allocations if they appear in the task's cpuset.effective_mems.
++	if (a == CXL_REGION_ATTR(create_private_region) && !can_create_ram(cxlrd))
++		return 0;
 +
- Each cpuset is represented by a directory in the cgroup file system
- containing (on top of the standard cgroup files) the following
- files describing that cpuset:
- 
-  - cpuset.cpus: list of CPUs in that cpuset
-  - cpuset.mems: list of Memory Nodes in that cpuset
-+ - cpuset.mems.sysram: read-only list of SystemRAM nodes (excludes Private Nodes)
-  - cpuset.memory_migrate flag: if set, move pages to cpusets nodes
-  - cpuset.cpu_exclusive flag: is cpu placement exclusive?
-  - cpuset.mem_exclusive flag: is memory placement exclusive?
-@@ -227,7 +232,9 @@ nodes with memory--using the cpuset_track_online_nodes() hook.
- 
- The cpuset.effective_cpus and cpuset.effective_mems files are
- normally read-only copies of cpuset.cpus and cpuset.mems files
--respectively.  If the cpuset cgroup filesystem is mounted with the
-+respectively.  The cpuset.effective_mems file may include both
-+regular SystemRAM nodes (N_MEMORY) and Private Nodes (N_PRIVATE).
-+If the cpuset cgroup filesystem is mounted with the
- special "cpuset_v2_mode" option, the behavior of these files will become
- similar to the corresponding files in cpuset v2.  In other words, hotplug
- events will not change cpuset.cpus and cpuset.mems.  Those events will
-@@ -236,6 +243,10 @@ the actual cpus and memory nodes that are currently used by this cpuset.
- See Documentation/admin-guide/cgroup-v2.rst for more information about
- cpuset v2 behavior.
- 
-+The cpuset.mems.sysram file shows only the SystemRAM nodes (N_MEMORY)
-+from cpuset.effective_mems, excluding any Private Nodes. This
-+represents the nodes available for general memory allocation.
+ 	if (a == CXL_REGION_ATTR(delete_region) &&
+ 	    !(can_create_pmem(cxlrd) || can_create_ram(cxlrd)))
+ 		return 0;
+diff --git a/drivers/cxl/core/private_region/Makefile b/drivers/cxl/core/private_region/Makefile
+new file mode 100644
+index 000000000000..d17498129ba6
+--- /dev/null
++++ b/drivers/cxl/core/private_region/Makefile
+@@ -0,0 +1,9 @@
++# SPDX-License-Identifier: GPL-2.0
++#
++# CXL Private Region type implementations
++#
 +
- 
- 1.4 What are exclusive cpusets ?
- --------------------------------
-diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admin-guide/cgroup-v2.rst
-index 7f5b59d95fce..6af54efb84a2 100644
---- a/Documentation/admin-guide/cgroup-v2.rst
-+++ b/Documentation/admin-guide/cgroup-v2.rst
-@@ -2530,8 +2530,11 @@ Cpuset Interface Files
- 	cpuset-enabled cgroups.
- 
- 	It lists the onlined memory nodes that are actually granted to
--	this cgroup by its parent. These memory nodes are allowed to
--	be used by tasks within the current cgroup.
-+	this cgroup by its parent.  This includes both regular SystemRAM
-+	nodes (N_MEMORY) and Private Nodes (N_PRIVATE) that provide
-+	device-specific memory not intended for general consumption.
-+	Tasks within this cgroup may access Private Nodes using explicit
-+	__GFP_THISNODE allocations if the node is in this mask.
- 
- 	If "cpuset.mems" is empty, it shows all the memory nodes from the
- 	parent cgroup that will be available to be used by this cgroup.
-@@ -2541,6 +2544,25 @@ Cpuset Interface Files
- 
- 	Its value will be affected by memory nodes hotplug events.
- 
-+  cpuset.mems.sysram
-+	A read-only multiple values file which exists on all
-+	cpuset-enabled cgroups.
++ccflags-y += -I$(srctree)/drivers/cxl
 +
-+	It lists the SystemRAM nodes (N_MEMORY) that are available for
-+	general memory allocation by tasks within this cgroup.  This is
-+	a subset of "cpuset.mems.effective" that excludes Private Nodes.
++# Core dispatch and sysfs
++obj-$(CONFIG_CXL_REGION) += private_region.o
+diff --git a/drivers/cxl/core/private_region/private_region.c b/drivers/cxl/core/private_region/private_region.c
+new file mode 100644
+index 000000000000..ead48abb9fc7
+--- /dev/null
++++ b/drivers/cxl/core/private_region/private_region.c
+@@ -0,0 +1,119 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * CXL Private Region - dispatch and lifecycle management
++ *
++ * This file implements the main registration and unregistration dispatch
++ * for CXL private regions. It handles common initialization and delegates
++ * to type-specific implementations.
++ */
 +
-+	Normal page allocations are restricted to nodes in this mask.
-+	The kernel page allocator, slab allocator, and compaction only
-+	consider SystemRAM nodes when allocating memory for tasks.
++#include <linux/device.h>
++#include <linux/cleanup.h>
++#include "../../cxl.h"
++#include "../core.h"
++#include "private_region.h"
 +
-+	Private Nodes are excluded from this mask because their memory
-+	is managed by device drivers for specific purposes (e.g., CXL
-+	compressed memory, accelerator memory) and should not be used
-+	for general allocations.
++static const char *private_type_to_string(enum cxl_private_region_type type)
++{
++	switch (type) {
++	default:
++		return "";
++	}
++}
 +
-+	Its value will be affected by memory nodes hotplug events.
++static enum cxl_private_region_type string_to_private_type(const char *str)
++{
++	return CXL_PRIVATE_NONE;
++}
 +
-   cpuset.cpus.exclusive
- 	A read-write multiple values file which exists on non-root
- 	cpuset-enabled cgroups.
-diff --git a/Documentation/filesystems/proc.rst b/Documentation/filesystems/proc.rst
-index c92e95e28047..68f3d8ffc03b 100644
---- a/Documentation/filesystems/proc.rst
-+++ b/Documentation/filesystems/proc.rst
-@@ -294,7 +294,7 @@ It's slow but very precise.
-  Cpus_active_mm              mask of CPUs on which this process has an active
-                              memory context
-  Cpus_active_mm_list         Same as previous, but in "list format"
-- Mems_allowed                mask of memory nodes allowed to this process
-+ Mems_allowed                mask of SystemRAM nodes for general allocations
-  Mems_allowed_list           Same as previous, but in "list format"
-  voluntary_ctxt_switches     number of voluntary context switches
-  nonvoluntary_ctxt_switches  number of non voluntary context switches
++static ssize_t private_type_show(struct device *dev,
++				 struct device_attribute *attr, char *buf)
++{
++	struct cxl_region *cxlr = to_cxl_region(dev);
++
++	return sysfs_emit(buf, "%s\n", private_type_to_string(cxlr->private_type));
++}
++
++static ssize_t private_type_store(struct device *dev,
++				  struct device_attribute *attr,
++				  const char *buf, size_t len)
++{
++	struct cxl_region *cxlr = to_cxl_region(dev);
++	struct cxl_region_params *p = &cxlr->params;
++	enum cxl_private_region_type type;
++	ssize_t rc;
++
++	type = string_to_private_type(buf);
++	if (type == CXL_PRIVATE_NONE)
++		return -EINVAL;
++
++	ACQUIRE(rwsem_write_kill, rwsem)(&cxl_rwsem.region);
++	if ((rc = ACQUIRE_ERR(rwsem_write_kill, &rwsem)))
++		return rc;
++
++	/* Can only change type before region is committed */
++	if (p->state >= CXL_CONFIG_COMMIT)
++		return -EBUSY;
++
++	cxlr->private_type = type;
++
++	return len;
++}
++DEVICE_ATTR_RW(private_type);
++
++/*
++ * Register a private CXL region based on its private_type.
++ *
++ * This function is called during commit. It validates the private_type,
++ * initializes the private_ops, and dispatches to the appropriate
++ * registration function which handles memtype, callbacks, and node
++ * registration.
++ */
++int cxl_register_private_region(struct cxl_region *cxlr)
++{
++	int rc = 0;
++
++	if (!cxlr->params.res)
++		return -EINVAL;
++
++	if (cxlr->private_type == CXL_PRIVATE_NONE) {
++		dev_err(&cxlr->dev, "private_type must be set before commit\n");
++		return -EINVAL;
++	}
++
++	/* Initialize the private_ops with region info */
++	cxlr->private_ops.res_start = cxlr->params.res->start;
++	cxlr->private_ops.res_end = cxlr->params.res->end;
++	cxlr->private_ops.data = cxlr;
++
++	/* Call type-specific registration which sets memtype and callbacks */
++	switch (cxlr->private_type) {
++	default:
++		dev_dbg(&cxlr->dev, "unsupported private_type: %d\n",
++			cxlr->private_type);
++		rc = -EINVAL;
++		break;
++	}
++
++	if (!rc)
++		set_bit(CXL_REGION_F_PRIVATE_REGISTERED, &cxlr->flags);
++	return rc;
++}
++
++/*
++ * Unregister a private CXL region.
++ *
++ * This function is called during region reset or device release.
++ * It dispatches to the appropriate type-specific cleanup function.
++ */
++void cxl_unregister_private_region(struct cxl_region *cxlr)
++{
++	if (!test_and_clear_bit(CXL_REGION_F_PRIVATE_REGISTERED, &cxlr->flags))
++		return;
++
++	/* Dispatch to type-specific cleanup */
++	switch (cxlr->private_type) {
++	default:
++		break;
++	}
++}
+diff --git a/drivers/cxl/core/private_region/private_region.h b/drivers/cxl/core/private_region/private_region.h
+new file mode 100644
+index 000000000000..9b34e51d8df4
+--- /dev/null
++++ b/drivers/cxl/core/private_region/private_region.h
+@@ -0,0 +1,10 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++#ifndef __CXL_PRIVATE_REGION_H__
++#define __CXL_PRIVATE_REGION_H__
++
++struct cxl_region;
++
++int cxl_register_private_region(struct cxl_region *cxlr);
++void cxl_unregister_private_region(struct cxl_region *cxlr);
++
++#endif /* __CXL_PRIVATE_REGION_H__ */
+diff --git a/drivers/cxl/core/region.c b/drivers/cxl/core/region.c
+index ae899f68551f..c60eef96c0ca 100644
+--- a/drivers/cxl/core/region.c
++++ b/drivers/cxl/core/region.c
+@@ -15,6 +15,7 @@
+ #include <cxlmem.h>
+ #include <cxl.h>
+ #include "core.h"
++#include "private_region/private_region.h"
+ 
+ /**
+  * DOC: cxl core region
+@@ -38,8 +39,6 @@
+  */
+ static nodemask_t nodemask_region_seen = NODE_MASK_NONE;
+ 
+-static struct cxl_region *to_cxl_region(struct device *dev);
+-
+ #define __ACCESS_ATTR_RO(_level, _name) {				\
+ 	.attr	= { .name = __stringify(_name), .mode = 0444 },		\
+ 	.show	= _name##_access##_level##_show,			\
+@@ -398,9 +397,6 @@ static int __commit(struct cxl_region *cxlr)
+ 		return rc;
+ 
+ 	rc = cxl_region_decode_commit(cxlr);
+-	if (rc)
+-		return rc;
+-
+ 	p->state = CXL_CONFIG_COMMIT;
+ 
+ 	return 0;
+@@ -615,12 +611,17 @@ static ssize_t mode_show(struct device *dev, struct device_attribute *attr,
+ 	struct cxl_region *cxlr = to_cxl_region(dev);
+ 	const char *desc;
+ 
+-	if (cxlr->mode == CXL_PARTMODE_RAM)
+-		desc = "ram";
+-	else if (cxlr->mode == CXL_PARTMODE_PMEM)
++	switch (cxlr->mode) {
++	case CXL_PARTMODE_RAM:
++		desc = cxlr->private ? "private" : "ram";
++		break;
++	case CXL_PARTMODE_PMEM:
+ 		desc = "pmem";
+-	else
++		break;
++	default:
+ 		desc = "";
++		break;
++	}
+ 
+ 	return sysfs_emit(buf, "%s\n", desc);
+ }
+@@ -772,6 +773,7 @@ static struct attribute *cxl_region_attrs[] = {
+ 	&dev_attr_size.attr,
+ 	&dev_attr_mode.attr,
+ 	&dev_attr_extended_linear_cache_size.attr,
++	&dev_attr_private_type.attr,
+ 	NULL,
+ };
+ 
+@@ -2400,6 +2402,9 @@ static void cxl_region_release(struct device *dev)
+ 	struct cxl_region *cxlr = to_cxl_region(dev);
+ 	int id = atomic_read(&cxlrd->region_id);
+ 
++	/* Ensure private region is cleaned up if not already done */
++	cxl_unregister_private_region(cxlr);
++
+ 	/*
+ 	 * Try to reuse the recently idled id rather than the cached
+ 	 * next id to prevent the region id space from increasing
+@@ -2429,7 +2434,7 @@ bool is_cxl_region(struct device *dev)
+ }
+ EXPORT_SYMBOL_NS_GPL(is_cxl_region, "CXL");
+ 
+-static struct cxl_region *to_cxl_region(struct device *dev)
++struct cxl_region *to_cxl_region(struct device *dev)
+ {
+ 	if (dev_WARN_ONCE(dev, dev->type != &cxl_region_type,
+ 			  "not a cxl_region device\n"))
+@@ -2638,6 +2643,13 @@ static ssize_t create_ram_region_show(struct device *dev,
+ 	return __create_region_show(to_cxl_root_decoder(dev), buf);
+ }
+ 
++static ssize_t create_private_region_show(struct device *dev,
++					  struct device_attribute *attr,
++					  char *buf)
++{
++	return __create_region_show(to_cxl_root_decoder(dev), buf);
++}
++
+ static struct cxl_region *__create_region(struct cxl_root_decoder *cxlrd,
+ 					  enum cxl_partition_mode mode, int id)
+ {
+@@ -2698,6 +2710,28 @@ static ssize_t create_ram_region_store(struct device *dev,
+ }
+ DEVICE_ATTR_RW(create_ram_region);
+ 
++static ssize_t create_private_region_store(struct device *dev,
++					   struct device_attribute *attr,
++					   const char *buf, size_t len)
++{
++	struct cxl_root_decoder *cxlrd = to_cxl_root_decoder(dev);
++	struct cxl_region *cxlr;
++	int rc, id;
++
++	rc = sscanf(buf, "region%d\n", &id);
++	if (rc != 1)
++		return -EINVAL;
++
++	cxlr = __create_region(cxlrd, CXL_PARTMODE_RAM, id);
++	if (IS_ERR(cxlr))
++		return PTR_ERR(cxlr);
++
++	cxlr->private = true;
++
++	return len;
++}
++DEVICE_ATTR_RW(create_private_region);
++
+ static ssize_t region_show(struct device *dev, struct device_attribute *attr,
+ 			   char *buf)
+ {
+@@ -3431,7 +3465,7 @@ static void cxlr_dax_unregister(void *_cxlr_dax)
+ 	device_unregister(&cxlr_dax->dev);
+ }
+ 
+-static int devm_cxl_add_dax_region(struct cxl_region *cxlr)
++int devm_cxl_add_dax_region(struct cxl_region *cxlr)
+ {
+ 	struct cxl_dax_region *cxlr_dax;
+ 	struct device *dev;
+@@ -3974,6 +4008,13 @@ static int cxl_region_probe(struct device *dev)
+ 					p->res->start, p->res->end, cxlr,
+ 					is_system_ram) > 0)
+ 			return 0;
++
++
++		if (cxlr->private) {
++			rc = cxl_register_private_region(cxlr);
++			if (rc)
++				return rc;
++		}
+ 		return devm_cxl_add_dax_region(cxlr);
+ 	default:
+ 		dev_dbg(&cxlr->dev, "unsupported region mode: %d\n",
+diff --git a/drivers/cxl/cxl.h b/drivers/cxl/cxl.h
+index ba17fa86d249..b276956ff88d 100644
+--- a/drivers/cxl/cxl.h
++++ b/drivers/cxl/cxl.h
+@@ -525,6 +525,20 @@ enum cxl_partition_mode {
+  */
+ #define CXL_REGION_F_LOCK 2
+ 
++/*
++ * Indicate that this region has been registered as a private region.
++ * Used to track lifecycle and prevent double-unregistration.
++ */
++#define CXL_REGION_F_PRIVATE_REGISTERED 3
++
++/**
++ * enum cxl_private_region_type - CXL private region types
++ * @CXL_PRIVATE_NONE: No private region type set
++ */
++enum cxl_private_region_type {
++	CXL_PRIVATE_NONE,
++};
++
+ /**
+  * struct cxl_region - CXL region
+  * @dev: This region's device
+@@ -534,10 +548,13 @@ enum cxl_partition_mode {
+  * @cxl_nvb: nvdimm bridge for coordinating @cxlr_pmem setup / shutdown
+  * @cxlr_pmem: (for pmem regions) cached copy of the nvdimm bridge
+  * @flags: Region state flags
++ * @private: Region is private (not exposed to system memory)
+  * @params: active + config params for the region
+  * @coord: QoS access coordinates for the region
+  * @node_notifier: notifier for setting the access coordinates to node
+  * @adist_notifier: notifier for calculating the abstract distance of node
++ * @private_type: CXL private region type for dispatch (set via sysfs)
++ * @private_ops: private node operations for callbacks (if mode is PRIVATE)
+  */
+ struct cxl_region {
+ 	struct device dev;
+@@ -547,10 +564,13 @@ struct cxl_region {
+ 	struct cxl_nvdimm_bridge *cxl_nvb;
+ 	struct cxl_pmem_region *cxlr_pmem;
+ 	unsigned long flags;
++	bool private;
+ 	struct cxl_region_params params;
+ 	struct access_coordinate coord[ACCESS_COORDINATE_MAX];
+ 	struct notifier_block node_notifier;
+ 	struct notifier_block adist_notifier;
++	enum cxl_private_region_type private_type;
++	struct private_node_ops private_ops;
+ };
+ 
+ struct cxl_nvdimm_bridge {
 -- 
 2.52.0
 
