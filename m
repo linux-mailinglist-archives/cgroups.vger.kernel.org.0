@@ -1,249 +1,393 @@
-Return-Path: <cgroups+bounces-13019-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-13020-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 92DF7D0C29D
-	for <lists+cgroups@lfdr.de>; Fri, 09 Jan 2026 21:18:09 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id C3640D0C5A4
+	for <lists+cgroups@lfdr.de>; Fri, 09 Jan 2026 22:41:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 5CDD7304EF7A
-	for <lists+cgroups@lfdr.de>; Fri,  9 Jan 2026 20:16:06 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 0932030612BE
+	for <lists+cgroups@lfdr.de>; Fri,  9 Jan 2026 21:40:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1854B366DD9;
-	Fri,  9 Jan 2026 20:16:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3ABC633DEF7;
+	Fri,  9 Jan 2026 21:40:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="ZDP1ehfe";
-	dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b="boG82I/d"
+	dkim=pass (2048-bit key) header.d=gourry.net header.i=@gourry.net header.b="cRnbtg6n"
 X-Original-To: cgroups@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qk1-f172.google.com (mail-qk1-f172.google.com [209.85.222.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 61394366DDA
-	for <cgroups@vger.kernel.org>; Fri,  9 Jan 2026 20:16:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C7D1933DEE0
+	for <cgroups@vger.kernel.org>; Fri,  9 Jan 2026 21:40:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1767989765; cv=none; b=CmVbyak8+UXlcGmFjLXAY5LD0ASriV0Z86BK/DqfFaiahM7w2G3FSUx3Z756CMVFb4C1+LsKujOEHw4lhz70sf3hVrf38F1w06UYCLslqDi7leH7/0mruK+S7VNXY452hr1ypLCKlQBbcIXXTv3DwMz18cPouWJr78OoXpJ2fuQ=
+	t=1767994847; cv=none; b=Q1H1DR49Cr99aBWciwa/rI7I2166kOGZpzXGrtxaABQcOYEUkwpnq9ri0uUQyPcGmfH4etEOrXls67D7/WRp3vlnMizpK7+4QA4nsg8vhXIt7MpfHp3yCr4HXMF31ejPNmR6aa1LcaSNvUmOcUCHf4d0xWl7MoGBAStdA8zCe8Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1767989765; c=relaxed/simple;
-	bh=rvJ38UMzE8ZlTaHPsSbXdymEzp3uBM8+aX58pIa4PJU=;
-	h=From:Message-ID:Date:MIME-Version:Subject:To:Cc:References:
-	 In-Reply-To:Content-Type; b=GpZrLjA36SEVR/fh5Qdb/PTjk1uaUs5WK4816i6Br56bgGLPD7qCSDCCD9L4Mfvss2E85j83F5WMzmlw0QarKdooOQHz7TD+QL+F4mLW9lnQS4dxGNNDj0ekM2bqjcs2s1uw5GJtC/oefP3Pk3xePYQiECMnyP+41g6c8gq/MEw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=ZDP1ehfe; dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b=boG82I/d; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1767989763;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=wHNNo39ERes87rvUHSVM+mGvySKBMq9Lj/fLe+R3e2U=;
-	b=ZDP1ehfexCOz6bjQEQcJ94wgZMbOaUf9S0DbZGIOW2ZrOLnf0VRnIADVTAZDCwnXgi6SOv
-	xGh3L9ZhxHiiwDmVS66lgebKYyZn5OE87XeAbINBFYSDWePNkoAVHWAIDCNstJoYmBhOlH
-	doeJB6AM7Aejg8fvxvU7N9aQfGwxpNk=
-Received: from mail-qk1-f200.google.com (mail-qk1-f200.google.com
- [209.85.222.200]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-2-Ssw_TYWHP7OW3-cpZ7s8EQ-1; Fri, 09 Jan 2026 15:16:02 -0500
-X-MC-Unique: Ssw_TYWHP7OW3-cpZ7s8EQ-1
-X-Mimecast-MFC-AGG-ID: Ssw_TYWHP7OW3-cpZ7s8EQ_1767989762
-Received: by mail-qk1-f200.google.com with SMTP id af79cd13be357-8b17194d321so704703985a.0
-        for <cgroups@vger.kernel.org>; Fri, 09 Jan 2026 12:16:02 -0800 (PST)
+	s=arc-20240116; t=1767994847; c=relaxed/simple;
+	bh=rokgdpNlEFvXSrJ3DO0WB3cNAjfaaYjpYXIICls+Z14=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=W5tc2WJ6bSg1n5taw1TguGt+i7/PINBr1GEF/Jy2CpyFnARMFAd3q+wBNWBGAbpIJpsb5v/eDSo4NP5WGLkhS7MPvRPVACgr7g2R7heHkZ7visiVgMolahvFoc7aS7eM1KjpFjUc2MdGx5yoGxTVauk7Kt95OgsjsE9JiO6I71o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gourry.net; spf=pass smtp.mailfrom=gourry.net; dkim=pass (2048-bit key) header.d=gourry.net header.i=@gourry.net header.b=cRnbtg6n; arc=none smtp.client-ip=209.85.222.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gourry.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gourry.net
+Received: by mail-qk1-f172.google.com with SMTP id af79cd13be357-8bb6a27d390so301087085a.3
+        for <cgroups@vger.kernel.org>; Fri, 09 Jan 2026 13:40:44 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=redhat.com; s=google; t=1767989762; x=1768594562; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:content-language:references
-         :cc:to:subject:user-agent:mime-version:date:message-id:from:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=wHNNo39ERes87rvUHSVM+mGvySKBMq9Lj/fLe+R3e2U=;
-        b=boG82I/d0tvZWk/gb+wphDOeJwNkNYqleHDt1omjn4j5Z5GtMcg6yWjTmqi4Rxm+Gd
-         TlbwjC3zfUUCZ93jc2H+3jBCuFLJYxfkOjgOduRUg0nbrbxgVb+Jux+bKv4Fqwxku2WV
-         Zw/yXLKf29oDmTrxIb/xzpEDQ0P3rAgeIC3P8VPzxh/yJoNCZnihEOY+MLT6mFjhNxyT
-         keog1SGqaC+zkqrtdUTrzzrXe118TodfOu8jv6HiSHr84mWKLhswjLW18ij5ttlzm8I2
-         mMxR+sCzTC9AnpwMarZdGW6ifX7r95pLjiZF7rVgaKSY8yNCvxwuhhvCS//+VkaXCmOK
-         G1RA==
+        d=gourry.net; s=google; t=1767994843; x=1768599643; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=1T5Jfe8diqm3ahhuEtgg+KQ26xQUqcKW5qWJWdj6z0g=;
+        b=cRnbtg6nxRxHPymwel7ryQQxFzD0V6RnfH41PZcSiqDg2O9KwY8mDVQ0kO4e1XRZUK
+         BUwYPE7HarDmXSHC2FcUZtKs5Zp2ot0eQzcfjicbBhbNFBCTK6jQnfEn0F03R0PUsRIU
+         FtvJhxG9J92W69pmFEBaS366yjx7JPFp4j2UislvqbVR2NcOBWYBhnkSLYHr8jqHbN+d
+         sTp6YJ3fo4tnomCPzAdFMjLXZLiI0rDXJETC7D4eWVgjktTo20nf4cz/eHR/6n0/kjsy
+         jszyg24DdEVK3X4fIQRpDBaEqaukJO3d52pNWOEaNnsfsk55ulCJfTybBSi/6rA1WcQZ
+         /hbg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1767989762; x=1768594562;
-        h=content-transfer-encoding:in-reply-to:content-language:references
-         :cc:to:subject:user-agent:mime-version:date:message-id:from:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=wHNNo39ERes87rvUHSVM+mGvySKBMq9Lj/fLe+R3e2U=;
-        b=deWz2L+J0RAA0aXHoE1aHCKlt1xJQ1JYRL5ESZF4Fs6v6CJJtguI9e65046+1ql8PV
-         YzTBtHUVXltJOvseUrhxx+f+ZhO5nd2hBRoZOpJ9U16zAM5GaztJ2eg984D9hbQP4lht
-         zHWoThrkPmDlAUU8WHAYpi5CWXrOvtLJz+dqBDjM7GQphAs9Z9iNYnVsRukdP6tLol9+
-         FwEKCFLySUNj+XhVCPXSQoPUMU1YhaiLsFON92CAY0Mgcqtn+T0N6nVBCi20cN3x5nKw
-         jWlaxKYvLbCoUycLABppMUa6TUY9Rij4j+yI94IdEHsbaSiNaeMDoj8SrR+plYadSv2o
-         dQCg==
-X-Forwarded-Encrypted: i=1; AJvYcCVvS+lTr3OGnj52RQJsPkvb3YFLYM/Tua4VmEnBIhsU/yX4a8kGEDg6RnaGhSyHX1nTr8ukTsrs@vger.kernel.org
-X-Gm-Message-State: AOJu0YwzFPAAczmAr8eQnXG664i5rG42vOZxmY4LqcVl7lrBLHiwA8zV
-	DcpOloCA/Myq7hOJIMotRxWb0wekIo/A8bwU6LK85DYDvLZaEhoWkEE+LFipxHyMp0NX6QDlTse
-	upoc+uee33PlpGgWmngpZ1XuDEZw1J3621I+7+lXHMDUxtdeSfgNMYzDMk7s=
-X-Gm-Gg: AY/fxX6iej+aW22LRk42CLxN8L9lsfk3z+EqLY3aGTJcC5tPtXKereJ/ctsD+DVD6pN
-	B1zm329RwU06pXGHLaEHq+GrWGwKRdjWGNda3xUi1lA1JY0iJQK13MeQHr9DrbP7iKffmra0mFU
-	YhrbBC2beJZcbMFSkOWCUxa9Wa7gFtETabD2ihmk1QwCNeAp6uvkRNFPXCXtWl5vpvGa6gxIg6b
-	/kE6kjctpiDZbiFd6lOazuHTFWgvNQeToWGeVxXYzwHTYXKbV5ymAZGr1yuofwR3RY+E2Wtbyw4
-	Xd3ZPxVLVTAUcYM7DEiLyeFeJcdM+H5JbuKYRanfqCwKZZdS1130Xe2eq1Etb/2OCiKPCNd5iS9
-	mp3hY9rV6KCL0glMx0UOKJlF87x+cMhV01NaZgH9QJiF4IrFijtvuvTXx
-X-Received: by 2002:a05:6214:2347:b0:7f5:eda2:a54b with SMTP id 6a1803df08f44-890842e1b55mr158596656d6.62.1767989760541;
-        Fri, 09 Jan 2026 12:16:00 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IE7TVCdYN8leHhBwHPD8xom1NBdADFr0CHJ5abumSLsDJvK3oiOK+Hvt1acvPLkIJZlhitrww==
-X-Received: by 2002:a05:6214:2347:b0:7f5:eda2:a54b with SMTP id 6a1803df08f44-890842e1b55mr158596076d6.62.1767989759917;
-        Fri, 09 Jan 2026 12:15:59 -0800 (PST)
-Received: from ?IPV6:2601:188:c102:b180:1f8b:71d0:77b1:1f6e? ([2601:188:c102:b180:1f8b:71d0:77b1:1f6e])
-        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-8907725ffc7sm81022946d6.44.2026.01.09.12.15.58
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 09 Jan 2026 12:15:59 -0800 (PST)
-From: Waiman Long <llong@redhat.com>
-X-Google-Original-From: Waiman Long <longman@redhat.com>
-Message-ID: <0384dc28-bfff-4a74-9153-66d287888ce7@redhat.com>
-Date: Fri, 9 Jan 2026 15:15:57 -0500
+        d=1e100.net; s=20230601; t=1767994843; x=1768599643;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=1T5Jfe8diqm3ahhuEtgg+KQ26xQUqcKW5qWJWdj6z0g=;
+        b=lEPjbQ7Pw2SSLfYf8hNYIhvAk1xsTBA11xvQzrwYSTQvQRo5xYScHpCmqxCE8troLu
+         HoEkzYfzIWNpVjfmsZ9BeRZ2WeyZS+2AjfZncAghzHd3MWk2hjMJ2rbVfyvi55NPAFwD
+         S7JQ3HfcYARo5uwaLEsTnSipJVrocT9R9i2g4IZIxhPMgzoXT97PBI+pc+pBtvlAWe6k
+         zBvV4GpteBxyz9qHWs7GWPpoj0GHaWzIHXNcVuNJrx+yh3AWSSiY1BGHvVV2U0g0cOVc
+         AuLRXd/7OdHNRVnxjCqqdM1PW9NGfmkuyM7bwL6iGS4hDa9FVe+StK0qqcWhzUjaD0OV
+         HOmQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVisTXfvjwZfpWJ0KMBm2DjLAzpJQ40+UBjLMzJ4vZYiHO/yEJjWiyxQ+Nba8yPPIO0E7KJkTJJ@vger.kernel.org
+X-Gm-Message-State: AOJu0YxIO6aU3lnwVYPt9exa2l9fDD0JI0thgwbs4qJBb+hxAKSOdusL
+	ph+amddY0sYCXSiOkXiHiMXP1+GE0UXOxyaBKHFlwB29G+mSD7tZbBHcNiK/ZaR7nQU=
+X-Gm-Gg: AY/fxX4ZyBhVWq+n+gpcTj4yxtDLN4El1jmcL7z7jT2PE71MW+SFTe8bEoD8xFsMHvl
+	68ZR6Y1IJnzSHxlrEaszCxuqXxqUbaUZMJ/z3fhw6+BwpuBDgnRFqVT5gowxlnlM5W8tEntsb04
+	Cvd4qKN1Fjee3fVzZQqlt3Bu17qLlakwsr8Z06OgxO/tZRUwdD1w6s6hYAjoGUjhj43/xanvz30
+	iZf5n4JaFL0H5wH3HmE6PmXRC7BqZTLJktOqsjo+mElCwb82F8waoBWJ9KHMhxhIJjoni5FecvX
+	4PzJhDsQZSPTxNCO9ChMY0RSsYpSCRcQPv3z3DAdrBe4CVzieqIiNA6N1wpG6hGMkM2YM9DB4ar
+	eQA/5AbcpW2qw1ZYL+Q+E/gqG9X2J61tybjHxp0xlc9XqRG2S95yQgFobAftKmVroe4ryCJUMCh
+	v+WtObecZe6pgmxweJE7LMJY/c9ffRFzvhZwyti9ShZW57Q9niorjQKJuRrb3yIsU76XOUfw==
+X-Google-Smtp-Source: AGHT+IECZ50vj1hnAePHBzinDlZDGYs+7/mlvEWHygZHTAQz3MseJ7eUXnsVQ1HRY8SD8qWK1C+CIw==
+X-Received: by 2002:a05:620a:1709:b0:8b2:a0cd:90f1 with SMTP id af79cd13be357-8c3893de7c3mr1525931485a.61.1767994843351;
+        Fri, 09 Jan 2026 13:40:43 -0800 (PST)
+Received: from gourry-fedora-PF4VCD3F (pool-96-255-20-138.washdc.ftas.verizon.net. [96.255.20.138])
+        by smtp.gmail.com with ESMTPSA id af79cd13be357-8c37f4ccdf8sm924975985a.23.2026.01.09.13.40.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 09 Jan 2026 13:40:42 -0800 (PST)
+Date: Fri, 9 Jan 2026 16:40:08 -0500
+From: Gregory Price <gourry@gourry.net>
+To: Yosry Ahmed <yosry.ahmed@linux.dev>
+Cc: linux-mm@kvack.org, cgroups@vger.kernel.org, linux-cxl@vger.kernel.org,
+	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org, kernel-team@meta.com,
+	longman@redhat.com, tj@kernel.org, hannes@cmpxchg.org,
+	mkoutny@suse.com, corbet@lwn.net, gregkh@linuxfoundation.org,
+	rafael@kernel.org, dakr@kernel.org, dave@stgolabs.net,
+	jonathan.cameron@huawei.com, dave.jiang@intel.com,
+	alison.schofield@intel.com, vishal.l.verma@intel.com,
+	ira.weiny@intel.com, dan.j.williams@intel.com,
+	akpm@linux-foundation.org, vbabka@suse.cz, surenb@google.com,
+	mhocko@suse.com, jackmanb@google.com, ziy@nvidia.com,
+	david@kernel.org, lorenzo.stoakes@oracle.com,
+	Liam.Howlett@oracle.com, rppt@kernel.org, axelrasmussen@google.com,
+	yuanchu@google.com, weixugc@google.com, yury.norov@gmail.com,
+	linux@rasmusvillemoes.dk, rientjes@google.com,
+	shakeel.butt@linux.dev, chrisl@kernel.org, kasong@tencent.com,
+	shikemeng@huaweicloud.com, nphamcs@gmail.com, bhe@redhat.com,
+	baohua@kernel.org, chengming.zhou@linux.dev,
+	roman.gushchin@linux.dev, muchun.song@linux.dev, osalvador@suse.de,
+	matthew.brost@intel.com, joshua.hahnjy@gmail.com, rakie.kim@sk.com,
+	byungchul@sk.com, ying.huang@linux.alibaba.com, apopple@nvidia.com,
+	cl@gentwo.org, harry.yoo@oracle.com, zhengqi.arch@bytedance.com
+Subject: Re: [RFC PATCH v3 7/8] mm/zswap: compressed ram direct integration
+Message-ID: <aWF1uDdP75gOCGLm@gourry-fedora-PF4VCD3F>
+References: <20260108203755.1163107-1-gourry@gourry.net>
+ <20260108203755.1163107-8-gourry@gourry.net>
+ <i6o5k4xumd5i3ehl6ifk3554sowd2qe7yul7vhaqlh2zo6y7is@z2ky4m432wd6>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [cgroup/for-6.20 PATCH v2 2/4] cgroup/cpuset: Consistently
- compute effective_xcpus in update_cpumasks_hier()
-To: Chen Ridong <chenridong@huaweicloud.com>, Waiman Long <llong@redhat.com>,
- Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>,
- =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
- Jonathan Corbet <corbet@lwn.net>, Shuah Khan <shuah@kernel.org>
-Cc: linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
- linux-kselftest@vger.kernel.org, linux-doc@vger.kernel.org,
- Sun Shaojie <sunshaojie@kylinos.cn>
-References: <20260101191558.434446-1-longman@redhat.com>
- <20260101191558.434446-3-longman@redhat.com>
- <758f42df-52c2-4660-8ef7-1cbacb9323d2@huaweicloud.com>
- <f8539426-92b0-42f3-99c4-70962c2db96d@redhat.com>
- <c17051c3-82ac-4ca5-8823-33327cadd073@huaweicloud.com>
- <ec6e1ee4-b52e-417f-9413-3dfca0ec8eb3@redhat.com>
- <d49cc8af-509b-44b8-ada4-f8bbdbd37f89@huaweicloud.com>
- <f541b93b-7bbf-4530-bca6-dc5b5b1f481c@redhat.com>
- <556672f7-b9b9-46a2-8a67-54ac615383d4@huaweicloud.com>
-Content-Language: en-US
-In-Reply-To: <556672f7-b9b9-46a2-8a67-54ac615383d4@huaweicloud.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <i6o5k4xumd5i3ehl6ifk3554sowd2qe7yul7vhaqlh2zo6y7is@z2ky4m432wd6>
 
-On 1/5/26 1:29 AM, Chen Ridong wrote:
+On Fri, Jan 09, 2026 at 04:00:00PM +0000, Yosry Ahmed wrote:
+> On Thu, Jan 08, 2026 at 03:37:54PM -0500, Gregory Price wrote:
+> 
+> If the memory is byte-addressable, using it as a second tier makes it
+> directly accessible without page faults, so the access latency is much
+> better than a swapped out page in zswap.
+> 
+> Are there some HW limitations that allow a node to be used as a backend
+> for zswap but not a second tier?
 >
-> On 2026/1/5 12:06, Waiman Long wrote:
->> On 1/4/26 10:58 PM, Chen Ridong wrote:
->>> On 2026/1/5 11:50, Waiman Long wrote:
->>>> On 1/4/26 8:15 PM, Chen Ridong wrote:
->>>>> On 2026/1/5 5:25, Waiman Long wrote:
->>>>>> On 1/3/26 9:48 PM, Chen Ridong wrote:
->>>>>>> On 2026/1/2 3:15, Waiman Long wrote:
->>>>>>>> Since commit f62a5d39368e ("cgroup/cpuset: Remove remote_partition_check()
->>>>>>>> & make update_cpumasks_hier() handle remote partition"), the
->>>>>>>> compute_effective_exclusive_cpumask() helper was extended to
->>>>>>>> strip exclusive CPUs from siblings when computing effective_xcpus
->>>>>>>> (cpuset.cpus.exclusive.effective). This helper was later renamed to
->>>>>>>> compute_excpus() in commit 86bbbd1f33ab ("cpuset: Refactor exclusive
->>>>>>>> CPU mask computation logic").
->>>>>>>>
->>>>>>>> This helper is supposed to be used consistently to compute
->>>>>>>> effective_xcpus. However, there is an exception within the callback
->>>>>>>> critical section in update_cpumasks_hier() when exclusive_cpus of a
->>>>>>>> valid partition root is empty. This can cause effective_xcpus value to
->>>>>>>> differ depending on where exactly it is last computed. Fix this by using
->>>>>>>> compute_excpus() in this case to give a consistent result.
->>>>>>>>
->>>>>>>> Signed-off-by: Waiman Long <longman@redhat.com>
->>>>>>>> ---
->>>>>>>>      kernel/cgroup/cpuset.c | 14 +++++---------
->>>>>>>>      1 file changed, 5 insertions(+), 9 deletions(-)
->>>>>>>>
->>>>>>>> diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
->>>>>>>> index da2b3b51630e..37d118a9ad4d 100644
->>>>>>>> --- a/kernel/cgroup/cpuset.c
->>>>>>>> +++ b/kernel/cgroup/cpuset.c
->>>>>>>> @@ -2168,17 +2168,13 @@ static void update_cpumasks_hier(struct cpuset *cs, struct tmpmasks
->>>>>>>> *tmp,
->>>>>>>>              spin_lock_irq(&callback_lock);
->>>>>>>>              cpumask_copy(cp->effective_cpus, tmp->new_cpus);
->>>>>>>>              cp->partition_root_state = new_prs;
->>>>>>>> -        if (!cpumask_empty(cp->exclusive_cpus) && (cp != cs))
->>>>>>>> -            compute_excpus(cp, cp->effective_xcpus);
->>>>>>>> -
->>>>>>>>              /*
->>>>>>>> -         * Make sure effective_xcpus is properly set for a valid
->>>>>>>> -         * partition root.
->>>>>>>> +         * Need to compute effective_xcpus if either exclusive_cpus
->>>>>>>> +         * is non-empty or it is a valid partition root.
->>>>>>>>               */
->>>>>>>> -        if ((new_prs > 0) && cpumask_empty(cp->exclusive_cpus))
->>>>>>>> -            cpumask_and(cp->effective_xcpus,
->>>>>>>> -                    cp->cpus_allowed, parent->effective_xcpus);
->>>>>>>> -        else if (new_prs < 0)
->>>>>>>> +        if ((new_prs > 0) || !cpumask_empty(cp->exclusive_cpus))
->>>>>>>> +            compute_excpus(cp, cp->effective_xcpus);
->>>>>>>> +        if (new_prs < 0)
->>>>>>>>                  reset_partition_data(cp);
->>>>>>>>              spin_unlock_irq(&callback_lock);
->>>>>>>>      
->>>>>>> The code resets partition data only for new_prs < 0. My understanding is that a partition is
->>>>>>> invalid
->>>>>>> when new_prs <= 0. Shouldn't reset_partition_data() also be called when new_prs = 0? Is there a
->>>>>>> specific reason to skip the reset in that case?
->>>>>> update_cpumasks_hier() is called when changes in a cpuset or hotplug affects other cpusets in the
->>>>>> hierarchy. With respect to changes in partition state, it is either from valid to invalid or vice
->>>>>> versa. It will not change from a valid partition to member. The only way new_prs = 0 is when
->>>>>> old_prs
->>>>>> = 0. Even if the affected cpuset is processed again in update_cpumask_hier(), any state change
->>>>>> from
->>>>>> valid partition to member (update_prstate()), reset_partition_data() should have been called
->>>>>> there.
->>>>>> That is why we only care about when new_prs != 0.
->>>>>>
->>>>> Thank you for your patience.
->>>>>
->>>>>> The code isn't wrong here. However I can change the condition to (new_prs <= 0) if it makes it
->>>>>> easier to understand.
->>>>>>
->>>>> I agree there's nothing wrong with the current logic. However, for clarity, I suggest changing the
->>>>> condition to (new_prs <= 0). This allows the function's logic to be fully self-consistent and
->>>>> focused on a single responsibility. This approach would allow us to simplify the code to:
->>>>>
->>>>>       if (new_prs > 0)
->>>>>           compute_excpus(cp, cp->effective_xcpus);
->>>>>       else
->>>>>           reset_partition_data(cp);
->>>>>
->>>>> Since reset_partition_data() already handles cases whether cp->exclusive_cpus is empty or not, this
->>>>> implementation would be more concise while correctly covering all scenarios.
->>>> effective_xcpus should be set when exclusive_cpus is not empty or when the cpuset is a valid
->>>> partition root. So just checking new_prs for compute_excpus() is not enough.
->>>>
->>> If we change the condition to (new_prs <= 0), it will reset the partition data even when we call
->>> compute_excpus (for !cpumask_empty(cp->exclusive_cpus)), so we should still get the same result,
->>> right?
->> Changing the condition to (new_prs <= 0) won't affect the result except for a bit of wasted cpu
->> cycles. That is why I am planning to make the change in the next version to make it easier to
->> understand.
->>
-> Sorry, I should have been clearer. If we change the condition, the code would essentially be:
->
-> 	if ((new_prs > 0) || !cpumask_empty(cp->exclusive_cpus))
-> 		compute_excpus(cp, cp->effective_xcpus);
->          if (new_prs <= 0)
-> 		reset_partition_data(cp);
->
-> For cases where new_prs <= 0 && !cpumask_empty(cp->exclusive_cpus), both compute_excpus() and
-> reset_partition_data() would be called.
->
-> Is this functionally equivalent to:
->
-> 	if (new_prs > 0)
-> 		compute_excpus(cp, cp->effective_xcpus);
->          else (new_prs <= 0)
-> 		reset_partition_data(cp);
 
-They are not equivalent because reset_partition_data() won't do a 
-compute_excpus(). In fact, one of the tests in test_cpuset_prs.sh will 
-fail if we make this change.
+Coming back around - presumably any compressed node capable of hosting a
+proper tier would be compatible with zswap, but you might have hardware
+which is sufficiently slow(er than dram, faster than storage) that using
+it as a proper tier may be less efficient than incurring faults.
 
-Cheers,
-Longman
+The standard I've been using is 500ns+ cacheline fetches, but this is
+somewhat arbitrary.  Even 500ns might be better than accessing multi-us
+storage, but then when you add compression you might hit 600ns-1us.
 
+This is besides the point, and apologies for the wall of text below,
+feel free to skip this next section - writing out what hardware-specific
+details I can share for the sake of completeness.
+
+
+Some hardware details
+=====================
+The way every proposed piece of compressed memory hardware I have seen
+would operate is essentially by lying about its capacity to the
+operating system - and then providing mechanisms to determine when the
+compression ratio becomes is dropping to dangerous levels.
+
+Hardware Says : 8GB
+Hardware Has  : 1GB
+Node Capacity : 8GB
+
+The capacity numbers are static.  Even with hotplug, they must be
+considered static - because the runtime compression ratio can change.
+
+If the device fails to achieve a 4:1 compression ratio, and real usage
+starts to exceed real capacity - the system will fail.
+(dropped writes, poisons, machine checks, etc).
+
+We can mitigate this with strong write-controls and querying the device
+for compression ratio data prior to actually migrating a page. 
+
+Why Zswap to start
+==================
+ZSwap is an existing, clean read and write control path control.
+   - We fault on all accesses.
+   - It otherwise uses system memory under the hood (kmalloc)
+
+I decided to use zswap as a proving ground for the concept.  While the
+design in this patch is simplistic (and as you suggest below, can
+clearly be improved), it demonstrates the entire concept:
+
+on demotion:
+- allocate a page from private memory
+- ask the driver if it's safe to use
+- if safe -> migrate
+  if unsafe -> fallback
+
+on memory access:
+- "promote" to a real page
+- inform the driver the page has been released (zero or discard)
+
+As you point out, the real value in byte-accessible memory is leaving
+the memory mapped, the only difference on cram.c and zswap.c in the
+above pattern would be:
+
+on demotion:
+- allocate a page from private memory
+- ask the driver if it's safe to use
+- if safe -> migrate and remap the page as RO in page tables
+  if unsafe
+     -> trigger reclaim on cram node
+     -> fallback to another demotion
+
+on *write* access:
+- promote to real page
+- clean up the compressed page
+
+> Or is the idea to make promotions from compressed memory to normal
+> memory fault-driver instead of relying on page hotness?
+> 
+> I also think there are some design decisions that need to be made before
+> we commit to this, see the comments below for more.
+>
+
+100% agreed, i'm absolutely not locked into a design, this just gets the
+ball rolling :].
+
+> >  /* RCU-protected iteration */
+> >  static LIST_HEAD(zswap_pools);
+> >  /* protects zswap_pools list modification */
+> > @@ -716,7 +732,13 @@ static void zswap_entry_cache_free(struct zswap_entry *entry)
+> >  static void zswap_entry_free(struct zswap_entry *entry)
+> >  {
+> >  	zswap_lru_del(&zswap_list_lru, entry);
+> > -	zs_free(entry->pool->zs_pool, entry->handle);
+> > +	if (entry->direct) {
+> > +		struct page *page = (struct page *)entry->handle;
+> 
+> Would it be cleaner to add a union in zswap_entry that has entry->handle
+> and entry->page?
+> 
+
+Absolutely. Ack.
+
+> > +		/* Skip nodes we've already tried and failed */
+> > +		if (node_isset(nid, tried_nodes))
+> > +			continue;
+> 
+> Why do we need this? Does for_each_node_mask() iterate each node more
+> than once?
+>
+
+This is just me being stupid, i will clean this up.  I think i wrote
+this when i was using a _next nodemask variant that can loop around and
+just left this in when i got it working.
+
+> I think we can drop the 'found' label by moving things around, would
+> this be simpler?
+> 	for_each_node_mask(..) {
+> 		...
+> 		ret = node_private_allocated(dst);
+> 		if (!ret)
+> 			break;
+> 
+> 		__free_page(dst);
+> 		dst = NULL;
+> 	}
+> 
+
+ack, thank you.
+
+> So the CXL code tells zswap what nodes are usable, then zswap tries
+> getting a page from these nodes and checking them using APIs provided by
+> the CXL code.
+> 
+> Wouldn't it be a better abstraction if the nodemask lived in the CXL
+> code and an API was exposed to zswap just to allocate a page to copy to?
+> Or we can abstract the copy as well and provide an API that directly
+> tries to copy the page to the compressible node.
+>
+> IOW move zswap_compress_direct() (probably under a different name?) and
+> zswap_direct_nodes into CXL code since it's not really zswap logic.
+> 
+> Also, I am not sure if the zswap_compress_direct() call and check would
+> introduce any latency, since almost all existing callers will pay for it
+> without benefiting.
+> 
+> If we move the function into CXL code, we could probably have an inline
+> wrapper in a header with a static key guarding it to make there is no
+> overhead for existing users.
+> 
+
+
+CXL is also the wrong place to put it - cxl is just one potential
+source of such a node.  We'd want that abstracted...
+
+So this looks like a good use of memor-tiers.c - do dispatch there and
+have it set static branches for various features on node registration.
+
+struct page* mt_migrate_page_to(NODE_TYPE, src, &size);
+-> on success return dst page and the size of the page on hardware
+   (target_size would address your accounting notes below)
+
+Then have the migrate function in mt do all the node_private callbacks.
+
+So that would limit the zswap internal change to
+
+if (zswap_node_check()) { /* static branch check */
+    cpage = mt_migrate_page_to(NODE_PRIVATE_ZSWAP, src, &size);
+    if (compressed_page) {
+        entry->page_handle = cpage;
+        entry->length = size;
+        entry->direct = true;
+	return true;
+    }
+}
+/* Fallthrough */
+
+ack. this is all great, thank you.
+
+... snip ...
+> > entry->length = size
+>
+> I don't think this works. Setting entry->length = PAGE_SIZE will cause a
+> few problems, off the top of my head:
+> 
+> 1. An entire page of memory will be charged to the memcg, so swapping
+> out the page won't reduce the memcg usage, which will cause thrashing
+> (reclaim with no progress when hitting the limit).
+>
+> Ideally we'd get the compressed length from HW and record it here to
+> charge it appropriately, but I am not sure how we actually want to
+> charge memory on a compressed node. Do we charge the compressed size as
+> normal memory? Does it need separate charging and a separate limit?
+> 
+> There are design discussions to be had before we commit to something.
+
+I have a feeling tracking individual page usage would be way too
+granular / inefficient, but I will consult with some folks on whether
+this can be quieried.  If so, we can add way to get that info.
+
+node_private_page_size(page) -> returns device reported page size.
+
+or work it directly into the migrate() call like above
+
+--- assuming there isn't a way and we have to deal with fuzzy math ---
+
+The goal should definitely be to leave the charging statistics the same
+from the perspective of services - i.e zswap should charge a whole page,
+because according to the OS it just used a whole page.
+
+What this would mean is memcg would have to work with fuzzy data.
+If 1GB is charged and the compression ratio is 4:1, reclaim should
+operate (by way of callback) like it has used 256MB.
+
+I think this is the best you can do without tracking individual pages.
+
+> 
+> 2. The page will be incorrectly counted in
+> zswap_stored_incompressible_pages.
+> 
+
+If we can track individual page size, then we can fix that.
+
+If we can't, then we'd need zswap_stored_direct_pages and to do the
+accounting a bit differently.  Probably want direct_pages accounting
+anyway, so i might just add that.
+
+> Aside from that, zswap_total_pages() will be wrong now, as it gets the
+> pool size from zsmalloc and these pages are not allocated from zsmalloc.
+> This is used when checking the pool limits and is exposed in stats.
+>
+
+This is ignorance of zswap on my part, and yeah good point.  Will look
+into this accounting a little more.
+
+> > +		memcpy_folio(folio, 0, zfolio, 0, PAGE_SIZE);
+> 
+> Why are we using memcpy_folio() here but copy_mc_highpage() on the
+> compression path? Are they equivalent?
+> 
+
+both are in include/linux/highmem.h
+
+I was avoiding page->folio conversions in the compression path because
+I had a struct page already.
+
+tl;dr: I'm still looking for the "right" way to do this.  I originally
+had a "HACK:" tag here previously but seems I definitely dropped it
+prematurely.
+
+(I also think this code can be pushed into mt_ or callbacks)
+
+> > +	if (entry->direct) {
+> > +		struct page *freepage = (struct page *)entry->handle;
+> > +
+> > +		node_private_freed(freepage);
+> > +		__free_page(freepage);
+> > +	} else
+> > +		zs_free(pool->zs_pool, entry->handle);
+> 
+> This code is repeated in zswap_entry_free(), we should probably wrap it
+> in a helper that frees the private page or the zsmalloc entry based on
+> entry->direct.
+>
+
+ack.
+
+Thank you again for taking a look, this has been enlightening.  Good
+takeaways for the rest of the N_PRIVATE design.
+
+I think we can minimize zswap changes even further given this.
+
+~Gregory
 
