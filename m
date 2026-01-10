@@ -1,94 +1,89 @@
-Return-Path: <cgroups+bounces-13027-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-13028-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id B8232D0CF18
-	for <lists+cgroups@lfdr.de>; Sat, 10 Jan 2026 05:23:11 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2C16CD0D0B3
+	for <lists+cgroups@lfdr.de>; Sat, 10 Jan 2026 07:46:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 3462F30136F5
-	for <lists+cgroups@lfdr.de>; Sat, 10 Jan 2026 04:23:05 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 3D4E73024D49
+	for <lists+cgroups@lfdr.de>; Sat, 10 Jan 2026 06:46:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0DFEB31A81A;
-	Sat, 10 Jan 2026 04:23:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C0968311592;
+	Sat, 10 Jan 2026 06:46:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="K7+HtXEZ"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OMQ6UoW5"
 X-Original-To: cgroups@vger.kernel.org
 Received: from mail-pl1-f182.google.com (mail-pl1-f182.google.com [209.85.214.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 12288223336
-	for <cgroups@vger.kernel.org>; Sat, 10 Jan 2026 04:23:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4BAC022097
+	for <cgroups@vger.kernel.org>; Sat, 10 Jan 2026 06:46:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768018982; cv=none; b=LGCzwKr8w4+qn5GpoeWn4biGJwt7mb2KA1AIGWN9IwyM6ECDfZ9fvt4bSLMsvmSLIsUV2lRjhVKSDxlhEkU791uvfDgsTZPoACHD5O6PdPglMq75lESsMVkxV0AX1kkNxuJ/C8wc8DRRR2NF0728FXTy1NVUaTUcoXl8O91TaOI=
+	t=1768027583; cv=none; b=GuqTtNloVtJhMIJPh1JFX+6UwEWTk0lBaGzvIXUR0UHf+nM+X7E2hJ8erwrA+qAZY+X4Mw4FUpf+8XyTG7wW+asl6eUsn7ZKM65fz+3Cqr5rGLxH9A/Uxfkc8P79WLqWYrsqUQNFPW3C3jIHb0coS7abiniRpN30swxYNPEQfjM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768018982; c=relaxed/simple;
-	bh=Kc8Y4DGa+7P/OtnzgO9mKM9m4bi7xUrnIc9uBPkSYD8=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=nDJ8dcgQRKHqwe1bJu1NrS5mhIG/6TsApJ79AMsg/cHrjQfd4TnjNNhr+vPsbhdIYVkDfVW/uYjYgqsCLNp8hnGJ5pTWcJQ0LQB77WzCLjbgJdBD63OBnbfIM4QDszCGaQafgk2yl/PfgIWbUA5scOKcTqr76V7f4RINwXj8id8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=K7+HtXEZ; arc=none smtp.client-ip=209.85.214.182
+	s=arc-20240116; t=1768027583; c=relaxed/simple;
+	bh=cQV8/MBD0nnc/1hD9Er5zxldFxzhLYdeS8IBRzexO/Y=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Dyt9rrO/9z+zUPRrr6rKBv9+E6oQfabN+dSeR0R4VZmsYTtxr6XqZJK2VpSOLqEQkLBJrPLzeXo4rHZehydYmeIrlQcmfrljsIQA4Lgl8d6jwqZ3aP0nXbusO13GBLdCS2c7I6iBOvxR7tB5Bm/sAHFQFP8p4Q6Pu1P+8qDRlp0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=OMQ6UoW5; arc=none smtp.client-ip=209.85.214.182
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f182.google.com with SMTP id d9443c01a7336-2a0834769f0so35147415ad.2
-        for <cgroups@vger.kernel.org>; Fri, 09 Jan 2026 20:23:00 -0800 (PST)
+Received: by mail-pl1-f182.google.com with SMTP id d9443c01a7336-2a0f3f74587so39045235ad.2
+        for <cgroups@vger.kernel.org>; Fri, 09 Jan 2026 22:46:22 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1768018980; x=1768623780; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ZuGajgbOhtllK5iA/JMNyngOQnUdopOuJRy7LIg0oag=;
-        b=K7+HtXEZw8646MNMISMfKmUsPIMuHJtrCtD0STF4+qZ3/soLx7NofP8cx+W5Jh3YYq
-         L4hqyZcX0bfKyCzWSDzN1yFIa0p0SZFNfSoVeJTibRBzg2bHt89B/M7zHk/6J63C9+2W
-         fVZoYCrWG5pSewmcPCdXAvN/ZU8A3s64Ywv0FERa5MclUr2MRzuNeh6xg0Q8pEBLAser
-         po0VxV7sY1kQXIfB8E/knVwgTBze6gqsi+pZADXyJfWebnIHsILT5jeBuLC9PdKQnlNG
-         aDL0lcDwhSzvhj+ILhoP+jTl8v/jeDNhMLYL7eHYXxe8DJp6iQstAPonbmVuvvtinvzw
-         xxDw==
+        d=gmail.com; s=20230601; t=1768027581; x=1768632381; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=9Ou5lC76BYaJdteXUTMwt+L2/JNxHr6qaLeaM9sIinw=;
+        b=OMQ6UoW5tZvChFWuMZcex1WLDifi3quo+esmlz7/AsrMqdd0p967RCvh+TEVg2s1YS
+         pPvj66rQNnBqkDmBOAyppjP1yB4he7ozRGTE55SdT8z14KW0JMhksW+6Dzz9Z2O9vsM/
+         OGp6c4mJ8SPqOX/UBTL3f1PFoyhNYQ35Z5JrCaabRtArXmVcfgd56+/BMuA7xTIOB4nZ
+         RankMwDRnVmlsZ02XB8lAolHYCGGgaPNBaDwrpVDlCQwSlV34lGfVDu5AhmMS5dA11C1
+         ugHRujVniRxtAUqiwOZtC4Jt42gOU8Y1i23zfPXIhf0qHW4aEPpHZSzP3CWXTOvApclS
+         wciw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1768018980; x=1768623780;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=ZuGajgbOhtllK5iA/JMNyngOQnUdopOuJRy7LIg0oag=;
-        b=Dh1xRsUgbQn3d/XSkQAYJEI7APZrsPtxo1unSdMuFN0XfwfNFsQZvz+XQEBa+YoZlT
-         Nx2HgEck8j+gc4LAXTcJwODpmrbXnHq/Q4Iw+1HbY+2h2DZgpnf7UTS4cGdT0N5BzT4U
-         0tUi9Zt6dtajlisK/tAAQTX5cANg/4Chc1mcPbLzfOVRFYjzYhJ56y1vESOj+2DhjLuW
-         iqCYylWJ+LydQdlBY2YlBr7PkXse2hF1A1OvGqWiNYvDB4zVbWs1A2ZCKaBKRGOMJTMK
-         USjR2OSqYnmmUP5yEheI9CDhCzq1Yv/HnTCoyUAE/faIYgC/wed6g0tYR30JQZYbVHOF
-         uwmw==
-X-Gm-Message-State: AOJu0YwtmDoSw4+xmG6XUx/3Di5qTbomD8S9H9Ij0gpPIGWIuDb/0DlO
-	lWNF3lRVaXgd0FaGZlexVq7/F7WSTo6UgH4kwLVvfptisF6dOAJVLLI8JqPlTN/Y
-X-Gm-Gg: AY/fxX7zVVjyCyNeqPYD/2uKOcG1AkhQ2OLGKDOUHShoO6SqGZJGDN0RtWlU4ktFvov
-	9ernPV7jCB/Pcr9GZ0Xvo71RVqL/BCiSPf9PjX8r+bIh3qzqfFJMZH9TMXql79A//60Y/b1M2JH
-	nkCx/e2+pCb8f9iZsqhswjknXPCgBJ3h2letl0m2beMN3OO9aEXGn3R6HDQtantaSA7VUyt/C89
-	QRtp9tRS6oXx3UyvMk2vI9T+A18ftYZ/KyDphnQf+qdNwewD/t3JaztxHYxnEoZaMxEkYoYXava
-	m4unT6S68LSf+9Ji5zRtFdkZtN5zAgWivgL06z5V++d4eB9qpRXjQ4QLrjWSfaDp8eZiuwT7qI/
-	D1XM2xkWfibbWOj1ygS4b7Am7zK7r9DqcXmgweDPmMbcmE/RMgLfoHQW+uWs/ubKkdRuqy0XWEl
-	KCKF6t3IlBQy5y0CbILZdsflE=
-X-Google-Smtp-Source: AGHT+IHOi+Z2IIX+mSe99ACWUS+CbiL3EtzLQMARp/J1Q9VpYjl9eOEvoew72+57710MLHfqzWZXWw==
-X-Received: by 2002:a17:902:cf05:b0:2a0:97d2:a264 with SMTP id d9443c01a7336-2a3ee49015dmr104360085ad.37.1768018980237;
-        Fri, 09 Jan 2026 20:23:00 -0800 (PST)
-Received: from NV-J4GCB44.nvidia.com ([103.74.125.162])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2a3e3cd4401sm119131145ad.92.2026.01.09.20.22.57
+        d=1e100.net; s=20230601; t=1768027581; x=1768632381;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=9Ou5lC76BYaJdteXUTMwt+L2/JNxHr6qaLeaM9sIinw=;
+        b=na8lm17WvBy5UdPmL1+0UDLiPBrYLbeYhEa07Niywl9zuhO8WmYW4+PukUw+enM8tq
+         GamU5QrFvS4nGQkaVRH7ZAl+hPO5ntKh1eV6dfjcY0OOAZiVxwa1b65CXcwDk2S2jsy4
+         tQSLMGK/R9M0+w3sCpDD/BEkEU+GJ56+MGzgKMLUg2XDEKa1lXgmOsor5q3x146nPPiX
+         FAis9wXsur3bGXfeKdaY2ktgyLyl8Tzm7x9q9RT/IEzxH0cy6OXwPbIRmPymlWrohxEi
+         iNkkYvc8wXDxEW62LKp9RQgsChS3xJnjlOnUARQak3z744o81SPykNgjGkCxa9mw32PX
+         RSbA==
+X-Gm-Message-State: AOJu0YxK/xY9LqEDBQ+oyoHdCqPuWGPrv2nfakwKIP5Z/JcDf6lveZRn
+	7/R8ZNN0gRJiRaLfcltO7uWkUs3Bclio2EP25xy3ySK1z+wN/3CvHGo0MntpSg==
+X-Gm-Gg: AY/fxX7v+5Gw6qIrM1De1pI8Rhn9ni2eiX3d4xuaaM7gmC3SN1vHHtiDNSPPq71l0jm
+	jT8sNf93o8DjkItFCl9yPEyoHtAziAFfFudU/c4eMnWP5ms7Td9TicPY1lxorFYsAzJtdgIu/pj
+	sgh7bDqsV2PSDvdylAnSNpMltKGJ2GhOvZZ4mSN8ftXcFYXeyxIT6tWZSUS50QybbmwBS6GsibE
+	tsHDm9RjoiMhPVQB3TvYyeRt3W3JZxIS/FyRvhAgxjVSia21R14kLlFkWMtga/0yGk9Jh2grehk
+	3SlQIxe7WCSH0v7D0Y6ScFircexiwOjwONgYf0vz0uryi1LQNOg0VZLgNM9s80ImxkQXEcmmlQT
+	xiANUQzeoInk+zgxiGWlj3z/KGdrgmdA0jqCwPxjqhfABG9g9ShDu3Ikzmpserc7vjOrYyp8B4+
+	pNu9EQlXRkcJDzRq/QH1VolNZW/AstrtL6/WTblyDbnk7AU+Ea5muLYQ1EJC0RBcuarLY=
+X-Google-Smtp-Source: AGHT+IHGuQt22SdTcAc4PZYM+XsESzmpxcEWJWs9UUXAO5SJX6AiSx1GNlfqbJQp7/JvjdqURXdu0A==
+X-Received: by 2002:a17:903:32d1:b0:2a1:3895:e0d8 with SMTP id d9443c01a7336-2a3ee50926fmr104894095ad.60.1768027581447;
+        Fri, 09 Jan 2026 22:46:21 -0800 (PST)
+Received: from deepanshu-kernel-hacker.. ([2405:201:682f:389d:3fae:1049:5d45:ed6a])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2a3e3c3a512sm122712385ad.10.2026.01.09.22.46.17
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 09 Jan 2026 20:22:59 -0800 (PST)
-From: Jianyue Wu <wujianyue000@gmail.com>
-X-Google-Original-From: Jianyue Wu <jianyuew@nvidia.com>
-To: linux-mm@kvack.org
-Cc: cgroups@vger.kernel.org,
-	hannes@cmpxchg.org,
+        Fri, 09 Jan 2026 22:46:20 -0800 (PST)
+From: Deepanshu Kartikey <kartikey406@gmail.com>
+To: hannes@cmpxchg.org,
 	mhocko@kernel.org,
 	roman.gushchin@linux.dev,
 	shakeel.butt@linux.dev,
 	muchun.song@linux.dev,
-	akpm@linux-foundation.org,
-	linux-kernel@vger.kernel.org,
-	Jianyue Wu <wujianyue000@gmail.com>
-Subject: [PATCH v2] mm: optimize stat output for 11% sys time reduce
-Date: Sat, 10 Jan 2026 12:22:49 +0800
-Message-ID: <20260110042249.31960-1-jianyuew@nvidia.com>
+	akpm@linux-foundation.org
+Cc: cgroups@vger.kernel.org,
+	linux-mm@kvack.org,
+	Deepanshu Kartikey <kartikey406@gmail.com>,
+	syzbot+d97580a8cceb9b03c13e@syzkaller.appspotmail.com
+Subject: [PATCH] mm/swap_cgroup: fix kernel BUG in swap_cgroup_record
+Date: Sat, 10 Jan 2026 12:16:13 +0530
+Message-ID: <20260110064613.606532-1-kartikey406@gmail.com>
 X-Mailer: git-send-email 2.43.0
-In-Reply-To: <CAJxJ_jioPFeTL3og-5qO+Xu4UE7ohcGUSQuodNSfYuX32Xj=EQ@mail.gmail.com>
-References: <CAJxJ_jioPFeTL3og-5qO+Xu4UE7ohcGUSQuodNSfYuX32Xj=EQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -97,485 +92,83 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-From: Jianyue Wu <wujianyue000@gmail.com>
+When using MADV_PAGEOUT, pages can remain in swapcache with their swap
+entries assigned. If MADV_PAGEOUT is called again on these pages, they
+reuse the same swap entries, causing memcg1_swapout() to call
+swap_cgroup_record() with an already-recorded entry.
 
-Replace seq_printf/seq_buf_printf with lightweight helpers to avoid
-printf parsing in memcg stats output.
+The existing code assumes swap entries are always being recorded for the
+first time (oldid == 0), triggering VM_BUG_ON when it encounters an
+already-recorded entry:
 
-Key changes:
-- Add memcg_seq_put_name_val() for seq_file "name value\n" formatting
-- Add memcg_seq_buf_put_name_val() for seq_buf "name value\n" formatting
-- Update __memory_events_show(), swap_events_show(),
-  memory_stat_format(), memory_numa_stat_show(), and related helpers
-- Introduce local variables to improve readability and reduce line length
+  ------------[ cut here ]------------
+  kernel BUG at mm/swap_cgroup.c:78!
+  Oops: invalid opcode: 0000 [#1] SMP KASAN PTI
+  CPU: 0 UID: 0 PID: 6176 Comm: syz.0.30 Not tainted
+  RIP: 0010:swap_cgroup_record+0x19c/0x1c0 mm/swap_cgroup.c:78
+  Call Trace:
+   memcg1_swapout+0x2fa/0x830 mm/memcontrol-v1.c:623
+   __remove_mapping+0xac5/0xe30 mm/vmscan.c:773
+   shrink_folio_list+0x2786/0x4f40 mm/vmscan.c:1528
+   reclaim_folio_list+0xeb/0x4e0 mm/vmscan.c:2208
+   reclaim_pages+0x454/0x520 mm/vmscan.c:2245
+   madvise_cold_or_pageout_pte_range+0x19a0/0x1ce0 mm/madvise.c:563
+   ...
+   do_madvise+0x1bc/0x270 mm/madvise.c:2030
+   __do_sys_madvise mm/madvise.c:2039
 
-Performance:
-- 1M reads of memory.stat+memory.numa_stat
-- Before: real 0m9.663s, user 0m4.840s, sys 0m4.823s
-- After:  real 0m9.051s, user 0m4.775s, sys 0m4.275s (~11.4% sys drop)
+This bug occurs because pages in swapcache can be targeted by
+MADV_PAGEOUT multiple times without being swapped in between. Each time,
+the same swap entry is reused, but swap_cgroup_record() expects to only
+record new, unused entries.
 
-Tests:
-- Script:
-  for ((i=1; i<=1000000; i++)); do
-      : > /dev/null < /sys/fs/cgroup/memory.stat
-      : > /dev/null < /sys/fs/cgroup/memory.numa_stat
-  done
+Fix this by checking if the swap entry already has the correct cgroup ID
+recorded before attempting to record it. Use the existing
+lookup_swap_cgroup_id() to read the current cgroup ID, and return early
+from memcg1_swapout() if the entry is already correctly recorded. Only
+call swap_cgroup_record() when the entry needs to be set or updated.
 
-Signed-off-by: Jianyue Wu <wujianyue000@gmail.com>
+This approach avoids unnecessary atomic operations, reference count
+manipulations, and statistics updates when the entry is already correct.
+
+Link: https://syzkaller.appspot.com/bug?extid=d97580a8cceb9b03c13e
+Reported-by: syzbot+d97580a8cceb9b03c13e@syzkaller.appspotmail.com
+Closes: https://syzkaller.appspot.com/bug?extid=d97580a8cceb9b03c13e
+Tested-by: syzbot+d97580a8cceb9b03c13e@syzkaller.appspotmail.com
+Signed-off-by: Deepanshu Kartikey <kartikey406@gmail.com>
 ---
-Changes in v2:
-- Fixed indentation issues
-- Added local variables in helper functions to improve code readability
-  and avoid overly long parameter lines
-
-v1: Initial submission
-
- mm/memcontrol-v1.c | 120 ++++++++++++++++++++++++++++-----------------
- mm/memcontrol-v1.h |  34 +++++++++++++
- mm/memcontrol.c    | 102 +++++++++++++++++++++++---------------
- 3 files changed, 173 insertions(+), 83 deletions(-)
+ mm/memcontrol-v1.c | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
 
 diff --git a/mm/memcontrol-v1.c b/mm/memcontrol-v1.c
-index 6eed14bff742..482475333876 100644
+index 56d27baf93ab..982cfe5af225 100644
 --- a/mm/memcontrol-v1.c
 +++ b/mm/memcontrol-v1.c
-@@ -10,7 +10,7 @@
- #include <linux/poll.h>
- #include <linux/sort.h>
- #include <linux/file.h>
--#include <linux/seq_buf.h>
-+#include <linux/string.h>
- 
- #include "internal.h"
- #include "swap.h"
-@@ -1795,25 +1795,36 @@ static int memcg_numa_stat_show(struct seq_file *m, void *v)
- 	mem_cgroup_flush_stats(memcg);
- 
- 	for (stat = stats; stat < stats + ARRAY_SIZE(stats); stat++) {
--		seq_printf(m, "%s=%lu", stat->name,
--			   mem_cgroup_nr_lru_pages(memcg, stat->lru_mask,
--						   false));
--		for_each_node_state(nid, N_MEMORY)
--			seq_printf(m, " N%d=%lu", nid,
--				   mem_cgroup_node_nr_lru_pages(memcg, nid,
--							stat->lru_mask, false));
-+		u64 nr_pages;
-+
-+		seq_puts(m, stat->name);
-+		nr_pages = mem_cgroup_nr_lru_pages(memcg, stat->lru_mask,
-+						   false);
-+		seq_put_decimal_ull(m, "=", nr_pages);
-+		for_each_node_state(nid, N_MEMORY) {
-+			nr_pages = mem_cgroup_node_nr_lru_pages(memcg, nid,
-+								stat->lru_mask,
-+								false);
-+			seq_put_decimal_ull(m, " N", nid);
-+			seq_put_decimal_ull(m, "=", nr_pages);
-+		}
- 		seq_putc(m, '\n');
- 	}
- 
- 	for (stat = stats; stat < stats + ARRAY_SIZE(stats); stat++) {
--
--		seq_printf(m, "hierarchical_%s=%lu", stat->name,
--			   mem_cgroup_nr_lru_pages(memcg, stat->lru_mask,
--						   true));
--		for_each_node_state(nid, N_MEMORY)
--			seq_printf(m, " N%d=%lu", nid,
--				   mem_cgroup_node_nr_lru_pages(memcg, nid,
--							stat->lru_mask, true));
-+		u64 nr_pages;
-+
-+		seq_puts(m, "hierarchical_");
-+		seq_puts(m, stat->name);
-+		nr_pages = mem_cgroup_nr_lru_pages(memcg, stat->lru_mask, true);
-+		seq_put_decimal_ull(m, "=", nr_pages);
-+		for_each_node_state(nid, N_MEMORY) {
-+			nr_pages = mem_cgroup_node_nr_lru_pages(memcg, nid,
-+								stat->lru_mask,
-+								true);
-+			seq_put_decimal_ull(m, " N", nid);
-+			seq_put_decimal_ull(m, "=", nr_pages);
-+		}
- 		seq_putc(m, '\n');
- 	}
- 
-@@ -1870,6 +1881,7 @@ void memcg1_stat_format(struct mem_cgroup *memcg, struct seq_buf *s)
- 	unsigned long memory, memsw;
- 	struct mem_cgroup *mi;
- 	unsigned int i;
-+	u64 memory_limit, memsw_limit;
- 
- 	BUILD_BUG_ON(ARRAY_SIZE(memcg1_stat_names) != ARRAY_SIZE(memcg1_stats));
- 
-@@ -1879,17 +1891,24 @@ void memcg1_stat_format(struct mem_cgroup *memcg, struct seq_buf *s)
- 		unsigned long nr;
- 
- 		nr = memcg_page_state_local_output(memcg, memcg1_stats[i]);
--		seq_buf_printf(s, "%s %lu\n", memcg1_stat_names[i], nr);
-+		memcg_seq_buf_put_name_val(s, memcg1_stat_names[i], (u64)nr);
- 	}
- 
--	for (i = 0; i < ARRAY_SIZE(memcg1_events); i++)
--		seq_buf_printf(s, "%s %lu\n", vm_event_name(memcg1_events[i]),
--			       memcg_events_local(memcg, memcg1_events[i]));
-+	for (i = 0; i < ARRAY_SIZE(memcg1_events); i++) {
-+		u64 events;
- 
--	for (i = 0; i < NR_LRU_LISTS; i++)
--		seq_buf_printf(s, "%s %lu\n", lru_list_name(i),
--			       memcg_page_state_local(memcg, NR_LRU_BASE + i) *
--			       PAGE_SIZE);
-+		events = memcg_events_local(memcg, memcg1_events[i]);
-+		memcg_seq_buf_put_name_val(s, vm_event_name(memcg1_events[i]),
-+					   events);
-+	}
-+
-+	for (i = 0; i < NR_LRU_LISTS; i++) {
-+		u64 nr_pages;
-+
-+		nr_pages = memcg_page_state_local(memcg, NR_LRU_BASE + i) *
-+			   PAGE_SIZE;
-+		memcg_seq_buf_put_name_val(s, lru_list_name(i), nr_pages);
-+	}
- 
- 	/* Hierarchical information */
- 	memory = memsw = PAGE_COUNTER_MAX;
-@@ -1897,28 +1916,38 @@ void memcg1_stat_format(struct mem_cgroup *memcg, struct seq_buf *s)
- 		memory = min(memory, READ_ONCE(mi->memory.max));
- 		memsw = min(memsw, READ_ONCE(mi->memsw.max));
- 	}
--	seq_buf_printf(s, "hierarchical_memory_limit %llu\n",
--		       (u64)memory * PAGE_SIZE);
--	seq_buf_printf(s, "hierarchical_memsw_limit %llu\n",
--		       (u64)memsw * PAGE_SIZE);
-+	memory_limit = (u64)memory * PAGE_SIZE;
-+	memsw_limit = (u64)memsw * PAGE_SIZE;
-+
-+	memcg_seq_buf_put_name_val(s, "hierarchical_memory_limit",
-+				   memory_limit);
-+	memcg_seq_buf_put_name_val(s, "hierarchical_memsw_limit",
-+				   memsw_limit);
- 
- 	for (i = 0; i < ARRAY_SIZE(memcg1_stats); i++) {
- 		unsigned long nr;
- 
- 		nr = memcg_page_state_output(memcg, memcg1_stats[i]);
--		seq_buf_printf(s, "total_%s %llu\n", memcg1_stat_names[i],
--			       (u64)nr);
-+		seq_buf_puts(s, "total_");
-+		memcg_seq_buf_put_name_val(s, memcg1_stat_names[i], (u64)nr);
-+	}
-+
-+	for (i = 0; i < ARRAY_SIZE(memcg1_events); i++) {
-+		u64 events;
-+
-+		events = memcg_events(memcg, memcg1_events[i]);
-+		seq_buf_puts(s, "total_");
-+		memcg_seq_buf_put_name_val(s, vm_event_name(memcg1_events[i]),
-+					   events);
- 	}
- 
--	for (i = 0; i < ARRAY_SIZE(memcg1_events); i++)
--		seq_buf_printf(s, "total_%s %llu\n",
--			       vm_event_name(memcg1_events[i]),
--			       (u64)memcg_events(memcg, memcg1_events[i]));
-+	for (i = 0; i < NR_LRU_LISTS; i++) {
-+		u64 nr_pages;
- 
--	for (i = 0; i < NR_LRU_LISTS; i++)
--		seq_buf_printf(s, "total_%s %llu\n", lru_list_name(i),
--			       (u64)memcg_page_state(memcg, NR_LRU_BASE + i) *
--			       PAGE_SIZE);
-+		nr_pages = memcg_page_state(memcg, NR_LRU_BASE + i) * PAGE_SIZE;
-+		seq_buf_puts(s, "total_");
-+		memcg_seq_buf_put_name_val(s, lru_list_name(i), nr_pages);
-+	}
- 
- #ifdef CONFIG_DEBUG_VM
- 	{
-@@ -1933,8 +1962,8 @@ void memcg1_stat_format(struct mem_cgroup *memcg, struct seq_buf *s)
- 			anon_cost += mz->lruvec.anon_cost;
- 			file_cost += mz->lruvec.file_cost;
- 		}
--		seq_buf_printf(s, "anon_cost %lu\n", anon_cost);
--		seq_buf_printf(s, "file_cost %lu\n", file_cost);
-+		memcg_seq_buf_put_name_val(s, "anon_cost", (u64)anon_cost);
-+		memcg_seq_buf_put_name_val(s, "file_cost", (u64)file_cost);
- 	}
- #endif
- }
-@@ -1968,11 +1997,14 @@ static int mem_cgroup_swappiness_write(struct cgroup_subsys_state *css,
- static int mem_cgroup_oom_control_read(struct seq_file *sf, void *v)
+@@ -614,6 +614,7 @@ void memcg1_swapout(struct folio *folio, swp_entry_t entry)
  {
- 	struct mem_cgroup *memcg = mem_cgroup_from_seq(sf);
-+	u64 oom_kill;
-+
-+	memcg_seq_put_name_val(sf, "oom_kill_disable",
-+			       READ_ONCE(memcg->oom_kill_disable));
-+	memcg_seq_put_name_val(sf, "under_oom", (bool)memcg->under_oom);
+ 	struct mem_cgroup *memcg, *swap_memcg;
+ 	unsigned int nr_entries;
++	unsigned short oldid;
  
--	seq_printf(sf, "oom_kill_disable %d\n", READ_ONCE(memcg->oom_kill_disable));
--	seq_printf(sf, "under_oom %d\n", (bool)memcg->under_oom);
--	seq_printf(sf, "oom_kill %lu\n",
--		   atomic_long_read(&memcg->memory_events[MEMCG_OOM_KILL]));
-+	oom_kill = atomic_long_read(&memcg->memory_events[MEMCG_OOM_KILL]);
-+	memcg_seq_put_name_val(sf, "oom_kill", oom_kill);
- 	return 0;
- }
+ 	VM_BUG_ON_FOLIO(folio_test_lru(folio), folio);
+ 	VM_BUG_ON_FOLIO(folio_ref_count(folio), folio);
+@@ -630,6 +631,16 @@ void memcg1_swapout(struct folio *folio, swp_entry_t entry)
+ 	if (!memcg)
+ 		return;
  
-diff --git a/mm/memcontrol-v1.h b/mm/memcontrol-v1.h
-index 6358464bb416..a4ac2d869506 100644
---- a/mm/memcontrol-v1.h
-+++ b/mm/memcontrol-v1.h
-@@ -4,6 +4,9 @@
- #define __MM_MEMCONTROL_V1_H
- 
- #include <linux/cgroup-defs.h>
-+#include <linux/seq_buf.h>
-+#include <linux/seq_file.h>
-+#include <linux/sprintf.h>
- 
- /* Cgroup v1 and v2 common declarations */
- 
-@@ -33,6 +36,37 @@ int memory_stat_show(struct seq_file *m, void *v);
- void mem_cgroup_id_get_many(struct mem_cgroup *memcg, unsigned int n);
- struct mem_cgroup *mem_cgroup_id_get_online(struct mem_cgroup *memcg);
- 
-+/* Max 2^64 - 1 = 18446744073709551615 (20 digits) */
-+#define MEMCG_DEC_U64_MAX_LEN 20
-+
-+static inline void memcg_seq_put_name_val(struct seq_file *m, const char *name,
-+					  u64 val)
-+{
-+	seq_puts(m, name);
-+	/* need a space between name and value */
-+	seq_put_decimal_ull(m, " ", val);
-+	seq_putc(m, '\n');
-+}
-+
-+static inline void memcg_seq_buf_put_name_val(struct seq_buf *s,
-+					      const char *name, u64 val)
-+{
-+	char num_buf[MEMCG_DEC_U64_MAX_LEN];
-+	int num_len;
-+
-+	num_len = num_to_str(num_buf, sizeof(num_buf), val, 0);
-+	if (num_len <= 0)
++	/*
++	 * Check if this swap entry is already recorded. This can happen
++	 * when MADV_PAGEOUT is called multiple times on pages that remain
++	 * in swapcache, reusing the same swap entries.
++	 */
++	oldid = lookup_swap_cgroup_id(entry);
++	if (oldid == mem_cgroup_id(memcg))
 +		return;
++	VM_WARN_ON_ONCE(oldid != 0);
 +
-+	if (seq_buf_puts(s, name))
-+		return;
-+	if (seq_buf_putc(s, ' '))
-+		return;
-+	if (seq_buf_putmem(s, num_buf, num_len))
-+		return;
-+	seq_buf_putc(s, '\n');
-+}
-+
- /* Cgroup v1-specific declarations */
- #ifdef CONFIG_MEMCG_V1
- 
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index 86f43b7e5f71..52dde3b8e386 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -42,6 +42,7 @@
- #include <linux/bit_spinlock.h>
- #include <linux/rcupdate.h>
- #include <linux/limits.h>
-+#include <linux/sprintf.h>
- #include <linux/export.h>
- #include <linux/list.h>
- #include <linux/mutex.h>
-@@ -1463,6 +1464,7 @@ static bool memcg_accounts_hugetlb(void)
- static void memcg_stat_format(struct mem_cgroup *memcg, struct seq_buf *s)
- {
- 	int i;
-+	u64 pgscan, pgsteal;
- 
  	/*
- 	 * Provide statistics on the state of the memory subsystem as
-@@ -1485,36 +1487,40 @@ static void memcg_stat_format(struct mem_cgroup *memcg, struct seq_buf *s)
- 			continue;
- #endif
- 		size = memcg_page_state_output(memcg, memory_stats[i].idx);
--		seq_buf_printf(s, "%s %llu\n", memory_stats[i].name, size);
-+		memcg_seq_buf_put_name_val(s, memory_stats[i].name, size);
- 
- 		if (unlikely(memory_stats[i].idx == NR_SLAB_UNRECLAIMABLE_B)) {
- 			size += memcg_page_state_output(memcg,
- 							NR_SLAB_RECLAIMABLE_B);
--			seq_buf_printf(s, "slab %llu\n", size);
-+			memcg_seq_buf_put_name_val(s, "slab", size);
- 		}
- 	}
- 
- 	/* Accumulated memory events */
--	seq_buf_printf(s, "pgscan %lu\n",
--		       memcg_events(memcg, PGSCAN_KSWAPD) +
--		       memcg_events(memcg, PGSCAN_DIRECT) +
--		       memcg_events(memcg, PGSCAN_PROACTIVE) +
--		       memcg_events(memcg, PGSCAN_KHUGEPAGED));
--	seq_buf_printf(s, "pgsteal %lu\n",
--		       memcg_events(memcg, PGSTEAL_KSWAPD) +
--		       memcg_events(memcg, PGSTEAL_DIRECT) +
--		       memcg_events(memcg, PGSTEAL_PROACTIVE) +
--		       memcg_events(memcg, PGSTEAL_KHUGEPAGED));
-+	pgscan = memcg_events(memcg, PGSCAN_KSWAPD) +
-+		 memcg_events(memcg, PGSCAN_DIRECT) +
-+		 memcg_events(memcg, PGSCAN_PROACTIVE) +
-+		 memcg_events(memcg, PGSCAN_KHUGEPAGED);
-+	pgsteal = memcg_events(memcg, PGSTEAL_KSWAPD) +
-+		  memcg_events(memcg, PGSTEAL_DIRECT) +
-+		  memcg_events(memcg, PGSTEAL_PROACTIVE) +
-+		  memcg_events(memcg, PGSTEAL_KHUGEPAGED);
-+
-+	memcg_seq_buf_put_name_val(s, "pgscan", pgscan);
-+	memcg_seq_buf_put_name_val(s, "pgsteal", pgsteal);
- 
- 	for (i = 0; i < ARRAY_SIZE(memcg_vm_event_stat); i++) {
-+		u64 events;
-+
- #ifdef CONFIG_MEMCG_V1
- 		if (memcg_vm_event_stat[i] == PGPGIN ||
- 		    memcg_vm_event_stat[i] == PGPGOUT)
- 			continue;
- #endif
--		seq_buf_printf(s, "%s %lu\n",
--			       vm_event_name(memcg_vm_event_stat[i]),
--			       memcg_events(memcg, memcg_vm_event_stat[i]));
-+		events = memcg_events(memcg, memcg_vm_event_stat[i]);
-+		memcg_seq_buf_put_name_val(s,
-+					   vm_event_name(memcg_vm_event_stat[i]),
-+					   events);
- 	}
- }
- 
-@@ -4218,10 +4224,12 @@ static void mem_cgroup_attach(struct cgroup_taskset *tset)
- 
- static int seq_puts_memcg_tunable(struct seq_file *m, unsigned long value)
- {
--	if (value == PAGE_COUNTER_MAX)
-+	if (value == PAGE_COUNTER_MAX) {
- 		seq_puts(m, "max\n");
--	else
--		seq_printf(m, "%llu\n", (u64)value * PAGE_SIZE);
-+	} else {
-+		seq_put_decimal_ull(m, "", (u64)value * PAGE_SIZE);
-+		seq_putc(m, '\n');
-+	}
- 
- 	return 0;
- }
-@@ -4247,7 +4255,8 @@ static int peak_show(struct seq_file *sf, void *v, struct page_counter *pc)
- 	else
- 		peak = max(fd_peak, READ_ONCE(pc->local_watermark));
- 
--	seq_printf(sf, "%llu\n", peak * PAGE_SIZE);
-+	seq_put_decimal_ull(sf, "", peak * PAGE_SIZE);
-+	seq_putc(sf, '\n');
- 	return 0;
- }
- 
-@@ -4480,16 +4489,24 @@ static ssize_t memory_max_write(struct kernfs_open_file *of,
-  */
- static void __memory_events_show(struct seq_file *m, atomic_long_t *events)
- {
--	seq_printf(m, "low %lu\n", atomic_long_read(&events[MEMCG_LOW]));
--	seq_printf(m, "high %lu\n", atomic_long_read(&events[MEMCG_HIGH]));
--	seq_printf(m, "max %lu\n", atomic_long_read(&events[MEMCG_MAX]));
--	seq_printf(m, "oom %lu\n", atomic_long_read(&events[MEMCG_OOM]));
--	seq_printf(m, "oom_kill %lu\n",
--		   atomic_long_read(&events[MEMCG_OOM_KILL]));
--	seq_printf(m, "oom_group_kill %lu\n",
--		   atomic_long_read(&events[MEMCG_OOM_GROUP_KILL]));
--	seq_printf(m, "sock_throttled %lu\n",
--		   atomic_long_read(&events[MEMCG_SOCK_THROTTLED]));
-+	u64 low, high, max, oom, oom_kill;
-+	u64 oom_group_kill, sock_throttled;
-+
-+	low = atomic_long_read(&events[MEMCG_LOW]);
-+	high = atomic_long_read(&events[MEMCG_HIGH]);
-+	max = atomic_long_read(&events[MEMCG_MAX]);
-+	oom = atomic_long_read(&events[MEMCG_OOM]);
-+	oom_kill = atomic_long_read(&events[MEMCG_OOM_KILL]);
-+	oom_group_kill = atomic_long_read(&events[MEMCG_OOM_GROUP_KILL]);
-+	sock_throttled = atomic_long_read(&events[MEMCG_SOCK_THROTTLED]);
-+
-+	memcg_seq_put_name_val(m, "low", low);
-+	memcg_seq_put_name_val(m, "high", high);
-+	memcg_seq_put_name_val(m, "max", max);
-+	memcg_seq_put_name_val(m, "oom", oom);
-+	memcg_seq_put_name_val(m, "oom_kill", oom_kill);
-+	memcg_seq_put_name_val(m, "oom_group_kill", oom_group_kill);
-+	memcg_seq_put_name_val(m, "sock_throttled", sock_throttled);
- }
- 
- static int memory_events_show(struct seq_file *m, void *v)
-@@ -4544,7 +4561,7 @@ static int memory_numa_stat_show(struct seq_file *m, void *v)
- 		if (memory_stats[i].idx >= NR_VM_NODE_STAT_ITEMS)
- 			continue;
- 
--		seq_printf(m, "%s", memory_stats[i].name);
-+		seq_puts(m, memory_stats[i].name);
- 		for_each_node_state(nid, N_MEMORY) {
- 			u64 size;
- 			struct lruvec *lruvec;
-@@ -4552,7 +4569,10 @@ static int memory_numa_stat_show(struct seq_file *m, void *v)
- 			lruvec = mem_cgroup_lruvec(memcg, NODE_DATA(nid));
- 			size = lruvec_page_state_output(lruvec,
- 							memory_stats[i].idx);
--			seq_printf(m, " N%d=%llu", nid, size);
-+
-+			seq_put_decimal_ull(m, " N", nid);
-+			seq_putc(m, '=');
-+			seq_put_decimal_ull(m, "", size);
- 		}
- 		seq_putc(m, '\n');
- 	}
-@@ -4565,7 +4585,8 @@ static int memory_oom_group_show(struct seq_file *m, void *v)
- {
- 	struct mem_cgroup *memcg = mem_cgroup_from_seq(m);
- 
--	seq_printf(m, "%d\n", READ_ONCE(memcg->oom_group));
-+	seq_put_decimal_ll(m, "", READ_ONCE(memcg->oom_group));
-+	seq_putc(m, '\n');
- 
- 	return 0;
- }
-@@ -5372,13 +5393,15 @@ static ssize_t swap_max_write(struct kernfs_open_file *of,
- static int swap_events_show(struct seq_file *m, void *v)
- {
- 	struct mem_cgroup *memcg = mem_cgroup_from_seq(m);
-+	u64 swap_high, swap_max, swap_fail;
-+
-+	swap_high = atomic_long_read(&memcg->memory_events[MEMCG_SWAP_HIGH]);
-+	swap_max = atomic_long_read(&memcg->memory_events[MEMCG_SWAP_MAX]);
-+	swap_fail = atomic_long_read(&memcg->memory_events[MEMCG_SWAP_FAIL]);
- 
--	seq_printf(m, "high %lu\n",
--		   atomic_long_read(&memcg->memory_events[MEMCG_SWAP_HIGH]));
--	seq_printf(m, "max %lu\n",
--		   atomic_long_read(&memcg->memory_events[MEMCG_SWAP_MAX]));
--	seq_printf(m, "fail %lu\n",
--		   atomic_long_read(&memcg->memory_events[MEMCG_SWAP_FAIL]));
-+	memcg_seq_put_name_val(m, "high", swap_high);
-+	memcg_seq_put_name_val(m, "max", swap_max);
-+	memcg_seq_put_name_val(m, "fail", swap_fail);
- 
- 	return 0;
- }
-@@ -5564,7 +5587,8 @@ static int zswap_writeback_show(struct seq_file *m, void *v)
- {
- 	struct mem_cgroup *memcg = mem_cgroup_from_seq(m);
- 
--	seq_printf(m, "%d\n", READ_ONCE(memcg->zswap_writeback));
-+	seq_put_decimal_ll(m, "", READ_ONCE(memcg->zswap_writeback));
-+	seq_putc(m, '\n');
- 	return 0;
- }
- 
+ 	 * In case the memcg owning these pages has been offlined and doesn't
+ 	 * have an ID allocated to it anymore, charge the closest online
 -- 
 2.43.0
 
