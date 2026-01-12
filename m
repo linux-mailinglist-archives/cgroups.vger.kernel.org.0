@@ -1,42 +1,42 @@
-Return-Path: <cgroups+bounces-13059-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-13060-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0487AD10CBD
-	for <lists+cgroups@lfdr.de>; Mon, 12 Jan 2026 08:05:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 323D2D10D60
+	for <lists+cgroups@lfdr.de>; Mon, 12 Jan 2026 08:20:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 050AD30080CF
-	for <lists+cgroups@lfdr.de>; Mon, 12 Jan 2026 07:05:44 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 139643028D6F
+	for <lists+cgroups@lfdr.de>; Mon, 12 Jan 2026 07:20:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4382531ED8A;
-	Mon, 12 Jan 2026 07:05:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 21A0632E68D;
+	Mon, 12 Jan 2026 07:20:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=126.com header.i=@126.com header.b="O/vABpDb"
+	dkim=pass (1024-bit key) header.d=126.com header.i=@126.com header.b="YCYYWbfE"
 X-Original-To: cgroups@vger.kernel.org
-Received: from m16.mail.126.com (m16.mail.126.com [220.197.31.9])
+Received: from m16.mail.126.com (m16.mail.126.com [220.197.31.8])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F44B30BF68;
-	Mon, 12 Jan 2026 07:05:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=220.197.31.9
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB19732E72B;
+	Mon, 12 Jan 2026 07:20:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=220.197.31.8
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768201543; cv=none; b=f5Pmezg4SE9c2WgquP0HiQRa4YTSj9C5Yo2XndIZz79HxaX0VrA8LIPzZcInSBT7SIDJaBW1SHjPTGK3SzpDj0PpRascf78EYwlUBQmFwatex4ShcSXQsjCr+ssNWRi1z9Dn0+uXl4NnraY+QKmzpapHi9cTfy3mC9E5OSbGu1o=
+	t=1768202410; cv=none; b=lswiIQt7WLtY9rv3nNd66LJmioCPOURkwwO+eHQBOcySgtoWiZjkTVJ0UUYT+dcciqXQaPKGQEWYNHS/2PVtkZasjuUwB4SiH54bCZVe2J86JXvkfbA/4VO6Or70EF7529y4yBbGtY1Svir4l7vY5GNop9KMN1GVhNKCizHbEvo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768201543; c=relaxed/simple;
+	s=arc-20240116; t=1768202410; c=relaxed/simple;
 	bh=+eDzYP/LfsxOFeUuQWUeafx+EqO5hhR2zS9iHy2mbQg=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=VpXo3Aq5UY2IXR8Rzgf58v6Oc2Gw7UIlXMHgUTE6DlwXIOe+7/AgxKhyXxK+s9KPgns0BVUfOUhvbgvhDL1Dxlscw8eoooenLHvFfVvUuGmq0R1CRMk1QL5+G417oALi+1HEN4xH9M6Z0msJaTM5zv6o9dibgKfT4Z9SgPeGv+8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=126.com; spf=pass smtp.mailfrom=126.com; dkim=pass (1024-bit key) header.d=126.com header.i=@126.com header.b=O/vABpDb; arc=none smtp.client-ip=220.197.31.9
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=ZF3S4QaYBKnHLtC39awMJiI0P6Jfx4vTN5u72p6NENwXU3lLuaByO2NElqhbzhGz8XA6yJyfQ0DTPksznKrAlSI9c3oQGpCdse8becGUOWkFWXpa9ozUmgtCbsoTnIr1OVoke5uLSMyFMSSUsRPU2NFv6Ipr/qBFIL8oRNxJ7ig=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=126.com; spf=pass smtp.mailfrom=126.com; dkim=pass (1024-bit key) header.d=126.com header.i=@126.com header.b=YCYYWbfE; arc=none smtp.client-ip=220.197.31.8
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=126.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=126.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=126.com;
 	s=s110527; h=From:To:Subject:Date:Message-ID:MIME-Version; bh=pH
-	NYFOcQM11YRJbnVQvxctU1eYf8uhkNNwR1233d158=; b=O/vABpDbRCz97xeOK2
-	8df7H1B7QEoxmNKrUt4DJULtanA0iMmnSz7gtf8WlZdviL24SWBjWDPjZKjsjvYi
-	jdGG6h/5Hjld7abfbeZ7a5tGPYyU7pGrucQaPAUf1qJU3WL1QCDeF4owQSLSGymT
-	pRCeSy/fcp4ugqQiiMyb7aZQs=
+	NYFOcQM11YRJbnVQvxctU1eYf8uhkNNwR1233d158=; b=YCYYWbfEouXAPLBwbu
+	bGQQkIVewQDr0IZAbNEP1WRuuG4wirnEb78dmdoHMOQ8kG2MlRtWKftOeP+Q26Or
+	xKoKVJnecJpewEVRY8G6P4jxGz4V5ho6vKeKRC1S85UE7T5uo8tPUtgnfwhRkr6F
+	ygZIN2YD9DGPe8hSKS09s1sNo=
 Received: from localhost.localdomain (unknown [])
-	by gzga-smtp-mtada-g0-3 (Coremail) with SMTP id _____wD3fz0XnWRpMmFLBg--.3040S2;
-	Mon, 12 Jan 2026 15:04:56 +0800 (CST)
+	by gzga-smtp-mtada-g1-0 (Coremail) with SMTP id _____wD3V+GDoGRpFy0rBQ--.62356S2;
+	Mon, 12 Jan 2026 15:19:32 +0800 (CST)
 From: Zhao Mengmeng <zhaomzhao@126.com>
 To: longman@redhat.com,
 	tj@kernel.org,
@@ -45,9 +45,9 @@ To: longman@redhat.com,
 Cc: zhaomengmeng@kylinos.cn,
 	cgroups@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH] cpuset: replace direct lockdep_assert_held() with lockdep_assert_cpuset_lock_held()
-Date: Mon, 12 Jan 2026 15:04:53 +0800
-Message-ID: <20260112070453.203370-1-zhaomzhao@126.com>
+Subject: [cgroup/for-next PATCH RESEND] cpuset: replace direct lockdep_assert_held() with lockdep_assert_cpuset_lock_held()
+Date: Mon, 12 Jan 2026 15:19:27 +0800
+Message-ID: <20260112071927.211682-1-zhaomzhao@126.com>
 X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
@@ -56,12 +56,12 @@ List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:_____wD3fz0XnWRpMmFLBg--.3040S2
+X-CM-TRANSID:_____wD3V+GDoGRpFy0rBQ--.62356S2
 X-Coremail-Antispam: 1Uf129KBjvJXoWxWw4ktry8GrWkJw17JFWxCrg_yoW5AFy3pF
 	1Uur4xtrW0qF18ua1Dta9rXr1Igwn5GFW5JF45K3yrAF13XFW8ZFy8XFnIyF43WryxGFs3
 	XFnFqw42g3ZrCa7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07Ul0PDUUUUU=
-X-CM-SenderInfo: 52kd0zp2kd0qqrswhudrp/xtbBlhjgWGlknRgy2gAA3W
+	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07ULo7_UUUUU=
+X-CM-SenderInfo: 52kd0zp2kd0qqrswhudrp/xtbBqwS8NGlkoITEIgAA3o
 
 From: Zhao Mengmeng <zhaomengmeng@kylinos.cn>
 
