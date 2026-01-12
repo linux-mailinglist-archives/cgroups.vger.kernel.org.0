@@ -1,78 +1,64 @@
-Return-Path: <cgroups+bounces-13095-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-13096-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id D0840D15165
-	for <lists+cgroups@lfdr.de>; Mon, 12 Jan 2026 20:37:43 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1F2C7D150A8
+	for <lists+cgroups@lfdr.de>; Mon, 12 Jan 2026 20:32:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 0F82330215D9
-	for <lists+cgroups@lfdr.de>; Mon, 12 Jan 2026 19:31:55 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id EAE203043F03
+	for <lists+cgroups@lfdr.de>; Mon, 12 Jan 2026 19:32:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 416413246ED;
-	Mon, 12 Jan 2026 19:31:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E5CB3242BC;
+	Mon, 12 Jan 2026 19:32:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="L0jfj09o"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="aISKZsF5"
 X-Original-To: cgroups@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E89EF320CD6;
-	Mon, 12 Jan 2026 19:31:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 028642DF122;
+	Mon, 12 Jan 2026 19:32:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768246314; cv=none; b=izIoAI27Irvydf7ioBL/tpDOAnRmqtyTfg0MNtDQWEtBMzJCXDie43Tmb98akmMmrZD0NhKuKH9aDvFQ4bg8ENzyqc3A9iUHNCpk81AsfwnzMVUopqqklfU1dUwOgYmhBwrGJMjXtf7914T4gDQytFPsoDvwZ4virAbsBFPG+jE=
+	t=1768246324; cv=none; b=RTQGghtiKHmxovRLGcZAkm5hSMwY5pA5uLQvjy7ksF/ygoIcr/2ipqDfho0HIWjQ1lSr994INzms0CI+yfNU195lpGHG/013Zx4h+ItlDdKVT8BkGb6KhZ/NXADCtAZ6ywjg/+bRcifj/EMxl5rntIyk3CW+0f7f0nehh+qhuKs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768246314; c=relaxed/simple;
-	bh=3w3xFY/eST79iIZcVPfsOoZTYgJHV2ZKR0p8iXN/9iM=;
-	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References; b=iSBvCn00oeAC9dczm5r6MxzMRV0ZV+dgp6yDXI/hXDossV72f/+A4f04P8bmfs6XZRtzsores0CDbdzBEemNngmgh+ide+KnBM3pnfb918Kx4G8quw6Yrt0ZyMn1/7gGLzYhT2TQTKo9Pd8iqWZh/36Gnzn6OPHUgTHZkggqhAc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=L0jfj09o; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 48400C16AAE;
-	Mon, 12 Jan 2026 19:31:53 +0000 (UTC)
+	s=arc-20240116; t=1768246324; c=relaxed/simple;
+	bh=mmyRYWrNXyiFol1EzO2ZXS7h+n3gTjk3EHTt7AJJ+sg=;
+	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References; b=dHigPtUm02ikemxwnAhbnpYJc+Afh7XX7lQHhIV+r3SWiou2Ii7V1Vct0MHUyaORyBEo8JMV6+W/p8jPxuVn7ABkDXBwbl8lFmHt4uSok/AgJYi9LSwgaOQAZ2156UuBcqkmRsAa8zYicguktCBrklTQIJ/1BL3iSP57FPWrWLo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=aISKZsF5; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7D1CFC116D0;
+	Mon, 12 Jan 2026 19:32:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1768246313;
-	bh=3w3xFY/eST79iIZcVPfsOoZTYgJHV2ZKR0p8iXN/9iM=;
+	s=k20201202; t=1768246323;
+	bh=mmyRYWrNXyiFol1EzO2ZXS7h+n3gTjk3EHTt7AJJ+sg=;
 	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=L0jfj09o0YxZ1CIKdrXiC8QqZrFkuUi61rdXvAhWZF5VPdKfPtCONH36gPGYAJKEm
-	 mYOogEeDtvlkbW8wTpd2ny3edxhRtCictiPamE2x+0MYGM0uVCYGgp8iIRjf9vuqo+
-	 T81sIK/XCmVWSEszBcGjnK5Mwhnevjf3AhJd1kx4Kkcy4OUNfyv2SKWjqxJOPlAH1J
-	 DYM9b3ExyQr1eXdEUevet/rF+dCKiNdg2a1SV6iIfyMmqn3i6U9AOGHywu1d6QaoZi
-	 yIN8I+w6KPqCmJtenloDSbLZgRW03WPShWijKacPU1/CAM0DB5i1iaNK7e+fnB9cR/
-	 fqpbDpIUigzag==
-Date: Mon, 12 Jan 2026 09:31:52 -1000
-Message-ID: <47f7e8ef86973528cfc6a03174127a2e@kernel.org>
+	b=aISKZsF548wqdnnznxChDJHMSRsN2SLTIJ2VkOkILoprWtIuDiJTlCxgcIzP+lc9c
+	 UnVdCZAIOcFzS0ERoBGEhv8e1mMAt9mTfko5I00ta1p2F9kU82qTdYkMr1G4wuQL6+
+	 ln3mKkbAMbsrJp8ZJB15SfJws/Q22UfYVuKyUvxHgSUtv1avcqax943A5WnMFQoHtB
+	 2yqhPG90wtbm3uywWVSnpBfk3Pd5BVhvylaUxy9cNAZuacZ0/mjh1wGsoUuJOPN5aB
+	 LnbaoBLhKJ4QW1GJ2k7x+bANw5NO3ESEiOjhhdTghNo+md3ic6PJr0iwtvfk4qFad5
+	 YP+7U0OeR/0aQ==
+Date: Mon, 12 Jan 2026 09:32:02 -1000
+Message-ID: <7aefe9e72d50112957940405affd3d4e@kernel.org>
 From: Tejun Heo <tj@kernel.org>
-To: Waiman Long <longman@redhat.com>
-Cc: Johannes Weiner <hannes@cmpxchg.org>,
+To: Zhao Mengmeng <zhaomzhao@126.com>
+Cc: Waiman Long <longman@redhat.com>,
+ Johannes Weiner <hannes@cmpxchg.org>,
  Michal Koutný <mkoutny@suse.com>,
- Jonathan Corbet <corbet@lwn.net>,
- Shuah Khan <shuah@kernel.org>,
- linux-kernel@vger.kernel.org,
  cgroups@vger.kernel.org,
- linux-kselftest@vger.kernel.org,
- linux-doc@vger.kernel.org,
- Sun Shaojie <sunshaojie@kylinos.cn>,
- Chen Ridong <chenridong@huaweicloud.com>
-Subject: Re: [PATCH cgroup/for-6.20 v5 0/5] cgroup/cpuset: Don't invalidate
- sibling partitions on cpuset.cpus conflict
-In-Reply-To: <20260112160021.483561-1-longman@redhat.com>
-References: <20260112160021.483561-1-longman@redhat.com>
+ linux-kernel@vger.kernel.org
+Subject: Re: [cgroup/for-next PATCH RESEND] cpuset: replace direct
+ lockdep_assert_held() with lockdep_assert_cpuset_lock_held()
+In-Reply-To: <20260112071927.211682-1-zhaomzhao@126.com>
+References: <20260112071927.211682-1-zhaomzhao@126.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 
-> Waiman Long (5):
->   cgroup/cpuset: Streamline rm_siblings_excl_cpus()
->   cgroup/cpuset: Consistently compute effective_xcpus in
->     update_cpumasks_hier()
->   cgroup/cpuset: Don't fail cpuset.cpus change in v2
->   cgroup/cpuset: Don't invalidate sibling partitions on cpuset.cpus
->     conflict
->   cgroup/cpuset: Move the v1 empty cpus/mems check to
->     cpuset1_validate_change()
-
-Applied 1-5 to cgroup/for-6.20.
+Applied to cgroup/for-6.20 with the cpuset_is_populated() hunk dropped as
+the function was moved to the header file by a preceding patch.
 
 Thanks.
 
