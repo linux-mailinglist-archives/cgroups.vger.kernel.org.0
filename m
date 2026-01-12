@@ -1,132 +1,269 @@
-Return-Path: <cgroups+bounces-13064-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-13065-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 72127D12397
-	for <lists+cgroups@lfdr.de>; Mon, 12 Jan 2026 12:18:27 +0100 (CET)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id A35D7D1258B
+	for <lists+cgroups@lfdr.de>; Mon, 12 Jan 2026 12:42:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id BED9E304919E
-	for <lists+cgroups@lfdr.de>; Mon, 12 Jan 2026 11:18:13 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id 1075B3019BDC
+	for <lists+cgroups@lfdr.de>; Mon, 12 Jan 2026 11:42:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D54DD3563E5;
-	Mon, 12 Jan 2026 11:18:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6AEAE356A1E;
+	Mon, 12 Jan 2026 11:42:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=readmodwrite-com.20230601.gappssmtp.com header.i=@readmodwrite-com.20230601.gappssmtp.com header.b="gz8zYUrZ"
+	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="hr7s7myz"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-wm1-f41.google.com (mail-wm1-f41.google.com [209.85.128.41])
+Received: from mail-yx1-f100.google.com (mail-yx1-f100.google.com [74.125.224.100])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1DDAF3563CA
-	for <cgroups@vger.kernel.org>; Mon, 12 Jan 2026 11:18:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 87485356A23
+	for <cgroups@vger.kernel.org>; Mon, 12 Jan 2026 11:42:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.224.100
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768216692; cv=none; b=U6yhVQe5CsLw7DRDveGHq9Ay4u+XTbHPwJ/NIzHgyGZcAIUUh8pxb086utu7yMS8lVe7r0d1wIJAjOwMappm5QDYqqB7dl+o67u3IKkl9OGM1EhmnYxZ+touq7edwdGTCIMc60WORocyr0vSbx6S+ls12sWXD4aET6jcu8YU+zs=
+	t=1768218173; cv=none; b=RktKYT6oCEK4OmSVQbPqb43DiFI2Du+wlmIZ4IpssEykAyBAP61ssHVnq0DHzD0EkQ2GR3yFPnyAZ6R9sPAmUF4nF9YAz2GBaP91m3dfcMR7sWpQDZrCqtfbdwR9aVQxSZczs7dhJ3F8iSorfolPdlTIKRHxKY19LZf4odhJ8DE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768216692; c=relaxed/simple;
-	bh=+lzNnO3EZoAX6937LfVXAUk38eYprgK6ZLoVn7TWovE=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=dn733oT4XOoKwsZoPCwnDanPDvNlKf+PTo3eOpLwMj5LVfoJzS6L9mr9wkOoPE7Q7qT1EWZLRwRQUnMS03gIViwGCBXPcZE2IHNUep1C8B98OZxo6ttxQxM22xWVci3OB9eCUFPbTZaF7r8RIKrL9dQNz/OrKprczP6qA2EoLRA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=readmodwrite.com; spf=none smtp.mailfrom=readmodwrite.com; dkim=pass (2048-bit key) header.d=readmodwrite-com.20230601.gappssmtp.com header.i=@readmodwrite-com.20230601.gappssmtp.com header.b=gz8zYUrZ; arc=none smtp.client-ip=209.85.128.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=readmodwrite.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=readmodwrite.com
-Received: by mail-wm1-f41.google.com with SMTP id 5b1f17b1804b1-477619f8ae5so46257865e9.3
-        for <cgroups@vger.kernel.org>; Mon, 12 Jan 2026 03:18:10 -0800 (PST)
+	s=arc-20240116; t=1768218173; c=relaxed/simple;
+	bh=c95WO/l5Yh3ODJc5THKGAjEQryf6UWGtacSfjwHl9EA=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=eC/Z5f+Qoma6nEs6hbQ64ACYxi7oeXokKMd7iOSw+QN2Oi5Yn7Old5JKUkZonRA+WWl60C98tur+xWz97ACxhuXoFdYZrjzbHJKM0PBjcjYXuJ4WSXqHy44l3HXynoyIFBstlOl+4LAqIgAbWb05/HbFbdXcAZkMh/07QJdihjE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=hr7s7myz; arc=none smtp.client-ip=74.125.224.100
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=broadcom.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
+Received: by mail-yx1-f100.google.com with SMTP id 956f58d0204a3-6469e4b0ff6so817704d50.2
+        for <cgroups@vger.kernel.org>; Mon, 12 Jan 2026 03:42:51 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1768218170; x=1768822970;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:dkim-signature:x-gm-gg:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=fzFvHeJhDdP4ilFE2+bLWYgTIbgx2yUf1NNqPTKhjnU=;
+        b=I0I5H0gmeHOXPkIHTNUu9nhKc+2QNCYGi8iU9zZGbKA3ck8Jh8M50WSBxoFrP8eBNS
+         XQn7zFgradSR7Xzam/4grKYbDQ3DCjA9Xj7JxSbvPUdqcWfay98rCT+Lm4J2D9SRVUGy
+         AADtEg2pgiTMoeBeFAKtab3uklUEaTMLt2HYhoJaFLG5QLXAgy+1VHPISQSytvvFx84x
+         RyFrHwKyt8ImrB+f/9upPwyODyXasfRiVR9IYZ/oTTNrsoKZvDEGl0PjnVV203l+fOM+
+         /wETRfM8CgZjXa6K7SCcQ6EhOau/mQnMz5NPV1Ou6KLBXB3AelFPJT/P7A7u2qt1Amiv
+         NSEA==
+X-Forwarded-Encrypted: i=1; AJvYcCWcjp9HmfeP6e1XeHlIe85tiB5Gq4vQDpXpRfAkayhKzu0976gr/nEmbxozxoqTdZBI2BbgjPmn@vger.kernel.org
+X-Gm-Message-State: AOJu0YwxURlOrzsl2k3sN1E3moh/mQc9XNlCEcJvO8+Sd7E1FEwMBcjz
+	9mg77VRC4H0IiH/w54mYqv5v7y8caFbfyPZG7gUo/UKnexLg2KfR55wQQMxzgHaL2Iq0bQa/4en
+	7WtQV1ILto5K+e3/rco0f3SCrv+KiQMC6+53rgprUD2f6Not5bI0SNJ2WjJDGB4XpdPhT9lTGHk
+	f6btynClMClpgfK0EZZK7xzw1ioazaBzpjs0+F7bpNePJbBMUrQMECGnaEnyS5IfzO9fhccoPON
+	KtEaSLS46uB0HG8ter4XaoWNpkRiy0T
+X-Gm-Gg: AY/fxX73aNI9Q6n8pmGukQlBaoU1YSwgZtdc2367KTVV0DCz5Fm0zezHn4DuKeexQnA
+	+JB/xXiLckTYEtMT1wd+4v6kSV0O6GrdIYR3P44Nn/AxhWO+hpqJfXHwUtxt9+15sIp5WChAsXO
+	rN/q0gwcEYZSJeTWK0TlQTeBR3P7tDyuUltsgshQuOhWkUPXl+2kXzzNmEEVhOXi1D7IliQkROI
+	u5M7sdwMbhE6GbejAlGqByRp4K7P2gPC7tUPjzt4HABsHDJdg89M914//0GZsWgp3NAhK2jWh/F
+	IYHAt5jf7EyBvA/yLUrX6HNmXtM4jPDYMIvwzq3zF0+zFM0dLuYmbCUp75rjwXHB8u/AvK607ZP
+	v836GCzG65cMwEGNdhSMhhdw3My3wjyIHvbW9zTTmEEVcRqj9ODPsb4UQIC+tGG1d/eX5uv5Uwh
+	20PBOa4X9Or9buXKlC19UhqpVzewAYfoxymCKiZFsKSgcbzZgaSZOOc68Ga/g=
+X-Google-Smtp-Source: AGHT+IFidcRuRmEbXuUXNUFZoGl/Infg7GjzpwQyxWtzBH5YP+Uxucfp8r9jehSg5GjsSrBdIRGSQkFMFgXa
+X-Received: by 2002:a05:690e:4189:b0:644:730d:622e with SMTP id 956f58d0204a3-64716c5c480mr12080683d50.3.1768218170523;
+        Mon, 12 Jan 2026 03:42:50 -0800 (PST)
+Received: from smtp-us-east1-p01-i01-si01.dlp.protect.broadcom.com (address-144-49-247-2.dlp.protect.broadcom.com. [144.49.247.2])
+        by smtp-relay.gmail.com with ESMTPS id 00721157ae682-790aa5a795dsm14416657b3.14.2026.01.12.03.42.50
+        for <cgroups@vger.kernel.org>
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 12 Jan 2026 03:42:50 -0800 (PST)
+X-Relaying-Domain: broadcom.com
+X-CFilter-Loop: Reflected
+Received: by mail-pl1-f199.google.com with SMTP id d9443c01a7336-2a094144faaso12047235ad.2
+        for <cgroups@vger.kernel.org>; Mon, 12 Jan 2026 03:42:50 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=readmodwrite-com.20230601.gappssmtp.com; s=20230601; t=1768216689; x=1768821489; darn=vger.kernel.org;
+        d=broadcom.com; s=google; t=1768218169; x=1768822969; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=p9T3d71YKL4EMfDR/cWS8mNsqGkj5jXmfI0Eur6XceY=;
-        b=gz8zYUrZuW0PqzKDkayI00wCsS+qzZ0lR7jNXHjkBj/HOrBuJ5cvfYYtOo5XzPV/Pq
-         4KDb9axtElo4JfmGtpLaDI5+On3t7YfWBzU3Wv782JSVbZPtkbjN9UWPsiAvCjz2HfcR
-         MKtLjbkiMatSSkMw2h5aDcZT96t6IYYQLze4XD0EyeDN1ODoDZVMJegPuPeiiTCQ306H
-         gTxFdw/U1qV1DpoMzLvuEPsByM5/y0pdv2fjuUDjc+Y8EgAPGd6fk8XjQz8W7FLhnGJF
-         4A/uItsDyt/WR7P8LL6XOqkSIXbkt+Fdkq75NUaXB7OPimahaeIKxLkI6Wb4gLVtRv5l
-         b5kg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1768216689; x=1768821489;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=p9T3d71YKL4EMfDR/cWS8mNsqGkj5jXmfI0Eur6XceY=;
-        b=qoHwhrwWQGFBB3C4LxkcgAvepDI2vENc6yiE+f5NrXt+1JQ3Wqp1zHhbGx2Mlb+N+m
-         wdSzJIOM1I0nNlQEiA8HO0tJzRe02lXOiRN7bu/BtyUWorOoF3NKpRrMSxHlp4la9Glt
-         ob1VPS1lx8jAbExqx6UvC8gN0J0lVkix/i2xpp+huQPpeHKyYyd8RWlX23dRSCYOVnmI
-         foUQ4yEGnFl+S59uhFywY1ENJNeZ47pz1JP4rsVllM+uEGgNvGL6xOQSJNFTTjp1B8qG
-         NB5BQ3MDo0s1pps9TwDGrOtVOQW5ISH+3CRelx37h+Dw9xV/ELqjiZCXAL+d1VougBpK
-         z9Zg==
-X-Gm-Message-State: AOJu0Yzx2mhEa/ydLlH2tgvuoVgND5/cHxtrAfup8NCH6W2xu7PXxylk
-	nQokhumXXp0eHjW8ycl3PqtLHe1uz6PoyOzFOJoy5x90Xyr4SanSH3lG/t61GKwx1Jc=
-X-Gm-Gg: AY/fxX7AZWhWIYj601MUVQV3Spf18D29MYjjN81fm1wvf/2JSxR7mZ8USKnXaPh52h3
-	N9gvUCYFmy0uySlkCSXX1IlBudUQ2px2v/A4oixtvBOn0qNUewab9e40lGEeB35qoZKmbl7U+F5
-	jvMU0mdv7yB1ESnwBM5wTN59C71xq+9o8pwoSGHfMgs3xCVftVnL+mozBpLbUsGXNL13Q3d0AVg
-	EUrApIxsmoq6vxGJIXlsRjE0HQAPVZF6U7oV5ja1BZiWAqUVKwl02Ag6rC7c/sHl9z6s6dnF83m
-	l9Wp3h06hjcNj1jVUe2v2TFByh2gU/oHUstFA0pWvqX3+dktO/uf6VIM3Z7bCpA2uWEGNTH4ev1
-	lUSWuZMLpRVvg9OrtFCMynMOYkpz+xTCoYrJj9OF6COls6Tx4Q3sEKR0Slh8OBLOykEJ+Vl6wHl
-	RKItFLVOmKoOEOm3KYpK5E5JIitkFrIEQneuI=
-X-Google-Smtp-Source: AGHT+IE8VvQD2h057zZTq10HWR7xOcvU+coYtUX2017x46qZjQsqBv/YBw6sYjaUyLmpStwwKSLG3A==
-X-Received: by 2002:a05:600c:198e:b0:479:2f95:5179 with SMTP id 5b1f17b1804b1-47d84b2cf2dmr203924545e9.15.1768216688934;
-        Mon, 12 Jan 2026 03:18:08 -0800 (PST)
-Received: from matt-Precision-5490.. ([104.28.192.51])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-432bd5dfa07sm37852759f8f.25.2026.01.12.03.18.07
+        bh=fzFvHeJhDdP4ilFE2+bLWYgTIbgx2yUf1NNqPTKhjnU=;
+        b=hr7s7myzXDppYeBDqEA5fUIGcoPByswxXfPxIojG06oZOGZ2UbehVKRzSLtnZiOxTh
+         mNCQ82cn3Mi3UV+OXLwXEp2FEvaW23kPz2daPd7Z/A45s10k/chs9WzoX5xwpNhwOmk1
+         jS4IC+P4pIuLBS3orwsEbQbRRsobQTC5q6z00=
+X-Forwarded-Encrypted: i=1; AJvYcCUbkrVDJf8UqLaLb6nx+YsXfahVB0WvsUTIu1CEDUu6hRRwjM/olHHc+Rowpc/azW2z4e9lD3yO@vger.kernel.org
+X-Received: by 2002:a17:902:ea01:b0:2a0:9424:7dc7 with SMTP id d9443c01a7336-2a3ee4917d2mr129653735ad.4.1768218169335;
+        Mon, 12 Jan 2026 03:42:49 -0800 (PST)
+X-Received: by 2002:a17:902:ea01:b0:2a0:9424:7dc7 with SMTP id d9443c01a7336-2a3ee4917d2mr129653635ad.4.1768218168930;
+        Mon, 12 Jan 2026 03:42:48 -0800 (PST)
+Received: from keerthanak-ph5-dev.. ([192.19.161.250])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2a3e3c48c0asm175905495ad.31.2026.01.12.03.42.40
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 12 Jan 2026 03:18:08 -0800 (PST)
-From: Matt Fleming <matt@readmodwrite.com>
-To: Jan Kara <jack@suse.cz>
-Cc: cgroups@vger.kernel.org,
+        Mon, 12 Jan 2026 03:42:47 -0800 (PST)
+From: Keerthana K <keerthana.kalyanasundaram@broadcom.com>
+To: stable@vger.kernel.org,
+	gregkh@linuxfoundation.org
+Cc: tj@kernel.org,
+	axboe@kernel.dk,
+	cgroups@vger.kernel.org,
+	linux-block@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
-	Tejun Heo <tj@kernel.org>,
-	Christian Brauner <brauner@kernel.org>,
-	linux-fsdevel@vger.kernel.org,
-	kernel-team@cloudflare.com
-Subject: [REGRESSION] 6.12: Workqueue lockups in inode_switch_wbs_work_fn (suspect commit 66c14dccd810)
-Date: Mon, 12 Jan 2026 11:18:04 +0000
-Message-ID: <20260112111804.3773280-1-matt@readmodwrite.com>
-X-Mailer: git-send-email 2.43.0
+	ajay.kaher@broadcom.com,
+	alexey.makhalov@broadcom.com,
+	vamsi-krishna.brahmajosyula@broadcom.com,
+	yin.ding@broadcom.com,
+	tapas.kundu@broadcom.com,
+	Laibin Qiu <qiulaibin@huawei.com>,
+	Ming Lei <ming.lei@redhat.com>,
+	Sasha Levin <sashal@kernel.org>,
+	Keerthana K <keerthana.kalyanasundaram@broadcom.com>,
+	Shivani Agarwal <shivani.agarwal@broadcom.com>
+Subject: [PATCH v5.10-v5.15] blk-throttle: Set BIO_THROTTLED when bio has been throttled
+Date: Mon, 12 Jan 2026 11:39:36 +0000
+Message-ID: <20260112113936.3291786-1-keerthana.kalyanasundaram@broadcom.com>
+X-Mailer: git-send-email 2.43.7
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
+X-DetectorID-Processed: b00c1d49-9d2e-4205-b15f-d015386d3d5e
 
-Hi Jan, it's me again :)
+From: Laibin Qiu <qiulaibin@huawei.com>
 
-I’m writing to report a regression we are observing in our production
-environment running kernel 6.12. We are seeing severe workqueue lockups that
-appear to be triggered by high-volume cgroup destruction. We have isolated the
-issue to 66c14dccd810 ("writeback: Avoid softlockup when switching many
-inodes").
+[ Upstream commit 5a011f889b4832aa80c2a872a5aade5c48d2756f ]
 
-We're seeing stalled tasks in the inode_switch_wbs workqueue. The worker
-appears to be CPU-bound within inode_switch_wbs_work_fn, leading to RCU stalls
-and eventual system lockups.
+1.In current process, all bio will set the BIO_THROTTLED flag
+after __blk_throtl_bio().
 
-Here is a representative trace from a stalled CPU-bound worker pool:
+2.If bio needs to be throttled, it will start the timer and
+stop submit bio directly. Bio will submit in
+blk_throtl_dispatch_work_fn() when the timer expires.But in
+the current process, if bio is throttled. The BIO_THROTTLED
+will be set to bio after timer start. If the bio has been
+completed, it may cause use-after-free blow.
 
-[1437023.584832][    C0] Showing backtraces of running workers in stalled CPU-bound worker pools:
-[1437023.733923][    C0] pool 358:
-[1437023.733924][    C0] task:kworker/89:0    state:R  running task     stack:0     pid:3136989 tgid:3136989 ppid:2      task_flags:0x4208060 flags:0x00004000
-[1437023.733929][    C0] Workqueue: inode_switch_wbs inode_switch_wbs_work_fn
-[1437023.733933][    C0] Call Trace:
-[1437023.733934][    C0]  <TASK>
-[1437023.733937][    C0]  __schedule+0x4fb/0xbf0
-[1437023.733942][    C0]  __cond_resched+0x33/0x60
-[1437023.733944][    C0]  inode_switch_wbs_work_fn+0x481/0x710
-[1437023.733948][    C0]  process_one_work+0x17b/0x330
-[1437023.733950][    C0]  worker_thread+0x2ce/0x3f0
+BUG: KASAN: use-after-free in blk_throtl_bio+0x12f0/0x2c70
+Read of size 2 at addr ffff88801b8902d4 by task fio/26380
 
-Our environment makes heavy use of cgroup-based services. When these services
--- specifically our caching layer -- are shut down, they can trigger the
-offlining of a massive number of inodes (approx. 200k-250k+ inodes per service).
+ dump_stack+0x9b/0xce
+ print_address_description.constprop.6+0x3e/0x60
+ kasan_report.cold.9+0x22/0x3a
+ blk_throtl_bio+0x12f0/0x2c70
+ submit_bio_checks+0x701/0x1550
+ submit_bio_noacct+0x83/0xc80
+ submit_bio+0xa7/0x330
+ mpage_readahead+0x380/0x500
+ read_pages+0x1c1/0xbf0
+ page_cache_ra_unbounded+0x471/0x6f0
+ do_page_cache_ra+0xda/0x110
+ ondemand_readahead+0x442/0xae0
+ page_cache_async_ra+0x210/0x300
+ generic_file_buffered_read+0x4d9/0x2130
+ generic_file_read_iter+0x315/0x490
+ blkdev_read_iter+0x113/0x1b0
+ aio_read+0x2ad/0x450
+ io_submit_one+0xc8e/0x1d60
+ __se_sys_io_submit+0x125/0x350
+ do_syscall_64+0x2d/0x40
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
 
-We have verified that reverting 66c14dccd810 completely eliminates these
-lockups in our production environment.
+Allocated by task 26380:
+ kasan_save_stack+0x19/0x40
+ __kasan_kmalloc.constprop.2+0xc1/0xd0
+ kmem_cache_alloc+0x146/0x440
+ mempool_alloc+0x125/0x2f0
+ bio_alloc_bioset+0x353/0x590
+ mpage_alloc+0x3b/0x240
+ do_mpage_readpage+0xddf/0x1ef0
+ mpage_readahead+0x264/0x500
+ read_pages+0x1c1/0xbf0
+ page_cache_ra_unbounded+0x471/0x6f0
+ do_page_cache_ra+0xda/0x110
+ ondemand_readahead+0x442/0xae0
+ page_cache_async_ra+0x210/0x300
+ generic_file_buffered_read+0x4d9/0x2130
+ generic_file_read_iter+0x315/0x490
+ blkdev_read_iter+0x113/0x1b0
+ aio_read+0x2ad/0x450
+ io_submit_one+0xc8e/0x1d60
+ __se_sys_io_submit+0x125/0x350
+ do_syscall_64+0x2d/0x40
+ entry_SYSCALL_64_after_hwframe+0x44/0xa9
 
-I am currently working on creating a synthetic reproduction case in the lab to
-replicate the inode/cgroup density required to trigger this on demand. In the
-meantime, I wanted to share these findings to see if you have any insights.
+Freed by task 0:
+ kasan_save_stack+0x19/0x40
+ kasan_set_track+0x1c/0x30
+ kasan_set_free_info+0x1b/0x30
+ __kasan_slab_free+0x111/0x160
+ kmem_cache_free+0x94/0x460
+ mempool_free+0xd6/0x320
+ bio_free+0xe0/0x130
+ bio_put+0xab/0xe0
+ bio_endio+0x3a6/0x5d0
+ blk_update_request+0x590/0x1370
+ scsi_end_request+0x7d/0x400
+ scsi_io_completion+0x1aa/0xe50
+ scsi_softirq_done+0x11b/0x240
+ blk_mq_complete_request+0xd4/0x120
+ scsi_mq_done+0xf0/0x200
+ virtscsi_vq_done+0xbc/0x150
+ vring_interrupt+0x179/0x390
+ __handle_irq_event_percpu+0xf7/0x490
+ handle_irq_event_percpu+0x7b/0x160
+ handle_irq_event+0xcc/0x170
+ handle_edge_irq+0x215/0xb20
+ common_interrupt+0x60/0x120
+ asm_common_interrupt+0x1e/0x40
 
-Thanks,
-Matt
+Fix this by move BIO_THROTTLED set into the queue_lock.
+
+Signed-off-by: Laibin Qiu <qiulaibin@huawei.com>
+Reviewed-by: Ming Lei <ming.lei@redhat.com>
+Link: https://lore.kernel.org/r/20220301123919.2381579-1-qiulaibin@huawei.com
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+[ Keerthana: Remove 'out' and handle return with reference to commit 81c7a63 ]
+Signed-off-by: Keerthana K <keerthana.kalyanasundaram@broadcom.com>
+Signed-off-by: Shivani Agarwal <shivani.agarwal@broadcom.com>
+---
+ block/blk-throttle.c | 16 ++++++++++------
+ 1 file changed, 10 insertions(+), 6 deletions(-)
+
+diff --git a/block/blk-throttle.c b/block/blk-throttle.c
+index 4bf514a7b..4d3436cd6 100644
+--- a/block/blk-throttle.c
++++ b/block/blk-throttle.c
+@@ -2216,8 +2216,10 @@ bool blk_throtl_bio(struct bio *bio)
+ 	rcu_read_lock();
+ 
+ 	/* see throtl_charge_bio() */
+-	if (bio_flagged(bio, BIO_THROTTLED))
+-		goto out;
++	if (bio_flagged(bio, BIO_THROTTLED)) {
++		rcu_read_unlock();
++		return false;
++	}
+ 
+ 	if (!cgroup_subsys_on_dfl(io_cgrp_subsys)) {
+ 		blkg_rwstat_add(&tg->stat_bytes, bio->bi_opf,
+@@ -2225,8 +2227,10 @@ bool blk_throtl_bio(struct bio *bio)
+ 		blkg_rwstat_add(&tg->stat_ios, bio->bi_opf, 1);
+ 	}
+ 
+-	if (!tg->has_rules[rw])
+-		goto out;
++	if (!tg->has_rules[rw]) {
++		rcu_read_unlock();
++		return false;
++	}
+ 
+ 	spin_lock_irq(&q->queue_lock);
+ 
+@@ -2310,14 +2314,14 @@ bool blk_throtl_bio(struct bio *bio)
+ 	}
+ 
+ out_unlock:
+-	spin_unlock_irq(&q->queue_lock);
+-out:
+ 	bio_set_flag(bio, BIO_THROTTLED);
+ 
+ #ifdef CONFIG_BLK_DEV_THROTTLING_LOW
+ 	if (throttled || !td->track_bio_latency)
+ 		bio->bi_issue.value |= BIO_ISSUE_THROTL_SKIP_LATENCY;
+ #endif
++	spin_unlock_irq(&q->queue_lock);
++
+ 	rcu_read_unlock();
+ 	return throttled;
+ }
+-- 
+2.40.4
+
 
