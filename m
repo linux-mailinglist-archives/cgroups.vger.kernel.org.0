@@ -1,194 +1,111 @@
-Return-Path: <cgroups+bounces-13074-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-13075-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5AE9CD13BF9
-	for <lists+cgroups@lfdr.de>; Mon, 12 Jan 2026 16:42:51 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 62A18D13BD2
+	for <lists+cgroups@lfdr.de>; Mon, 12 Jan 2026 16:40:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id B3C413019873
-	for <lists+cgroups@lfdr.de>; Mon, 12 Jan 2026 15:26:29 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id B8F4F305965C
+	for <lists+cgroups@lfdr.de>; Mon, 12 Jan 2026 15:27:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A07D52F39DE;
-	Mon, 12 Jan 2026 15:26:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3DB5B2FD68B;
+	Mon, 12 Jan 2026 15:27:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gourry.net header.i=@gourry.net header.b="IYbYov2W"
+	dkim=pass (2048-bit key) header.d=cmpxchg.org header.i=@cmpxchg.org header.b="GvNwP+2a"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-qk1-f193.google.com (mail-qk1-f193.google.com [209.85.222.193])
+Received: from mail-qk1-f172.google.com (mail-qk1-f172.google.com [209.85.222.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD8CB2F5A25
-	for <cgroups@vger.kernel.org>; Mon, 12 Jan 2026 15:26:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.193
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 636A92F8BCA
+	for <cgroups@vger.kernel.org>; Mon, 12 Jan 2026 15:27:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768231584; cv=none; b=tOrvCprhbW8Qs2ml5rYmH4d0PkpipOelqu+gvCpOKMNMrgf7SyG/DBp+PXsOvIzV3CYAiRql6UF+zKbeXIe2JLJNWC42HSD9KC0a/0ANzQjyJLKDwnlSnMtdiG/WlZFCByCMTjsfID9yzTcp4eT0kuvZp40OMqAXJ8KDU0ih2/o=
+	t=1768231638; cv=none; b=RJxWk3jyctyF8LUZjpIeKHquMwUSEr3TuDJgZrJwn/T43Dv6FOZ1pOVp9XxB+75cv1NCnL4fcmXlbRbftr+SpQ0EvtWpH41S4JsbzTwn+4508ntiWLK5uZVRAfEdX16PzLCzsxuH9dFr/iFoolEr6uDAn9pAN/1tVPNwL50PLTc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768231584; c=relaxed/simple;
-	bh=EULRbDh2eWrxKTzxeqVj7dyOdGXNsrU4bT7mvwNID8s=;
+	s=arc-20240116; t=1768231638; c=relaxed/simple;
+	bh=/KZrNpTOv53Hf6emFKpIDyGwi6CuZM71jTQ4Nu4PF2M=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=DJyTr69OOOfwKQaxOXyDeqH71bTatDlDYMVCeFD0Q+YPFS+PqxMJLweCQvGcrHChBzsmATr6M4T8rtcYQEOcZeAukvntZZK+llSVDmxf6gTXhImYCKwIGNU3il8+TghBmNZqeh+6Fv007c7u2ZS1eenuBwbWAv8hUaFOI+Fscuk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gourry.net; spf=pass smtp.mailfrom=gourry.net; dkim=pass (2048-bit key) header.d=gourry.net header.i=@gourry.net header.b=IYbYov2W; arc=none smtp.client-ip=209.85.222.193
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gourry.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gourry.net
-Received: by mail-qk1-f193.google.com with SMTP id af79cd13be357-8b2a4b6876fso1004720885a.3
-        for <cgroups@vger.kernel.org>; Mon, 12 Jan 2026 07:26:20 -0800 (PST)
+	 Content-Type:Content-Disposition:In-Reply-To; b=QgXFggN7dXBX0MyqPWKkPbQ48caku47BN5tauuGsnFcNdXVPzNVwO2TQyW3bDzPykP3CobcbXiXywiVDQq6F1ncdKiLgQZtnKd+kl8eN0j+VseNVpWiNALdvuvU1Id6ePsmCYQpzo7/Kg2uy8zSkV+aedyO4uARlNA7eLdVTzy8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org; spf=pass smtp.mailfrom=cmpxchg.org; dkim=pass (2048-bit key) header.d=cmpxchg.org header.i=@cmpxchg.org header.b=GvNwP+2a; arc=none smtp.client-ip=209.85.222.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cmpxchg.org
+Received: by mail-qk1-f172.google.com with SMTP id af79cd13be357-8b2d32b9777so985444885a.2
+        for <cgroups@vger.kernel.org>; Mon, 12 Jan 2026 07:27:13 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gourry.net; s=google; t=1768231579; x=1768836379; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=57UuhljdncFCr/JytocOWEZRWmlPR6Nv3ccaWVm2VXI=;
-        b=IYbYov2W9czkLWI6VyMzlenE6G8F92zW/RL6fC79g8xfvBcwtysPEjGuxKdft9iGWt
-         tPc4NFzIep1NbXA3rC5KnCqzwbz93sfzLwFimFf82zEBPuJDW18oNGlnG11+SJylEfha
-         ek8hwl2288dHGcvZQIiwTGuuVJnrRzLfXZBOS/OOpkGQc/EwI+slj+Crm9PdFvSEGJ+W
-         IhdbfwBt2T/r+E7mMyvlfXrbedq+H6dIzsQDT2yfCXXvUdpVtZbg1VzBt4o8bUJ/YCZ4
-         vlHA+WkSbs6rb0PYrAJRtA7JepyDZCMgLLek3WRknkhaGnE5n5XC+PTwfc96/ckeR0lS
-         4F+w==
+        d=cmpxchg.org; s=google; t=1768231632; x=1768836432; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=/KZrNpTOv53Hf6emFKpIDyGwi6CuZM71jTQ4Nu4PF2M=;
+        b=GvNwP+2a1sO1BX/0MILpf88sBLr0zKy7FXnrGi3MPc8yqdSzId6U9YXXVUDpMWg42y
+         Kyp8B5+2JV8nVY9hMv/BWTo3TBBCzFZtn9OQGaBpbQefjvY8kgZAHw/Ozl7cpckgaw4U
+         QvkVf2f15Ceuew3yY4c4CubQlZo/dBJ7Pf85xoRvhEZVZW8vUywY77gbe6hWqXyJQ3oK
+         eUD+jV6WtPxFNsCi2cPrpBidgLyoWeS8OiXdkqilZs12ojqVXFTnU0u68zGypaxx4mMk
+         w8X2WYPrS8voElo849lFYTo120+SirepBp9kXwaKtz7fEjVgUdUKhAF80AwRKdUu4yqn
+         u/rg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1768231579; x=1768836379;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=57UuhljdncFCr/JytocOWEZRWmlPR6Nv3ccaWVm2VXI=;
-        b=KV7vBCVEnjceCBwiVPUuxPLR0d8FjXlwT+9PLm5UNLLQEF7f+0hHwGID4GZdwW5PpK
-         WTAQ6v8OtS7JicL7O8xB/QwHkEGBAVxaEvE4zkWF4ZBKPc7DMRKw8CR5iRHZEcNB3+Vs
-         f43QDIFq2C+mfjEnsVv69WVWC8ri/rC1zNFBKs7CQ0AZ04ERtEVHDdGrPi5eIpl39xLV
-         w75cjhXpfndThWYIoGiTj8RGWUnQv5Gl7F3U2uA2Vp9Yj6GXaMFw8uJ6PjwI3vO+FxV8
-         IdL8kmUMR0XFC+u3JchDOi+BPB+4WOoTAf+Pul99mP6NKPfEsqxT0eWv/Df2v2D+j3g/
-         FMjg==
-X-Forwarded-Encrypted: i=1; AJvYcCWEBMXYmQF4Gn6uLK05o+Gk8J+mvDue47GeIw7LCoMoWcqEWcvmWxFJIV5o7ZUSU2QBRrV5FZ/3@vger.kernel.org
-X-Gm-Message-State: AOJu0YwwF5WNTi/KLLC6O+WDpUIUNtlwo/tAl4ekjSpExrNwqNUGO1Uu
-	O+42eH7D1nt9C0dWrv8lz4yeelLlPpSNcs55PGZ3DgHc2WwF05z1y3p0fbfb2cwNlHY=
-X-Gm-Gg: AY/fxX5943ZHStbn/R9EsNQvqIjdUEDNCUBsrIYjX3ltcMkeyku+ckQvHAaH475eBNt
-	BlDWOXO/GEXhmVk7kqPbantqzcMO0jHTVacP/Ajr/X/hKDX8//H4ria1642ibgjXhOFf2nHxW7l
-	xMXZGDrRmg4AqdMsg+R0B+a15h9SJjj/xhm6gXz9SkiSHKjmFd4oVV4Gy7aKddvJaNraGjZ14rH
-	HIvPBWbciSr9ZhAd5sXzzK1gbqe6PjuEs2HeYpsFqMgpPY5KqDSRgZQaQNXF4W6Wb4Y5mEeGoGq
-	lc4kqpY9CG1eckjfQbZmEGkK20HDK7vWYP/CPtWfdb9MdREWgp4ha7QyjejloxHJ9/5PrJWTUGE
-	ZmBXzf6HyrdH8Qd7O/p4qGEkUzvcdIOmHZe7rYHWFkCMhADBBok+w/+iY/BLoXClAEVKyPkIMGk
-	TVZa+/4D/uUJxwBs8sfcR85E71qySE4hRgj0w0N5RPkV3rIZTSq7Pr0qxQ+7bGCpbgK3grX2qMl
-	40AKjTl
-X-Google-Smtp-Source: AGHT+IF7YU4wyH5DCnIa1xHNwfOTUxRN3Z3UmWPqqY8/JzoeuGL9L4VducxuPGVH8SICTsnA4+h6Uw==
-X-Received: by 2002:a05:620a:318a:b0:8b4:ebbe:ae04 with SMTP id af79cd13be357-8c3893a5c0bmr2745515485a.35.1768231579175;
-        Mon, 12 Jan 2026 07:26:19 -0800 (PST)
-Received: from gourry-fedora-PF4VCD3F (pool-96-255-20-138.washdc.ftas.verizon.net. [96.255.20.138])
-        by smtp.gmail.com with ESMTPSA id af79cd13be357-8c37f5439cbsm1508794985a.55.2026.01.12.07.26.17
+        d=1e100.net; s=20230601; t=1768231632; x=1768836432;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=/KZrNpTOv53Hf6emFKpIDyGwi6CuZM71jTQ4Nu4PF2M=;
+        b=wQlj2IjlhZU/Owg7k3lby6244+RM2HJAnCIF1ScjlSfeAWpaNOGppJTECqAmhKBmNf
+         52Wik/z8Kx/QUoL9Bf6wBsZcObytlA8qYtTwG4b+D2TPiCd0ZI8Ng9wJeCd27eFKF1gq
+         4TqHGJvJFzbeypQHiw8WOVnyTdSG0tXRdCOWsPkkEMu09CDLjpI0WaEYmA15oNKO6XdJ
+         eiC6+kbZccTc05bg0xXV9uPtvWMfwVbEjFoLVuWO0oUIwByDIXPXYY26waRYchWv5ZhF
+         iElI3VlRhIX9QABMdEBPMKxOsSg0tv32vQsybp/LNL9UNiJszlrERpvoUaNW8ulOa/V1
+         cHnQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUuwxrmPjZoVFrb7C3yu/QXqwhFyELDZiKRI7Jp/an6ASJ6kwrDlgrT7Jv1pqatPuBNEwiU4CWk@vger.kernel.org
+X-Gm-Message-State: AOJu0YzrSt3+bG91UMDIgnrXhT1/RNwPmp7k2D/wEl9T5Da3e5k1XTmu
+	e6AdKzeC48o3ij2tzP7GgsOswT0AODCBOS6n3KD7i9wGonbIgUJcD/fftBGwC0AqaHY=
+X-Gm-Gg: AY/fxX6IiL/RoMEPkc2xQ0z2Neb/vJSeR3kaKtHcQCGu6yzWzdgDDGJDBBuTXUWiTN1
+	pdWjtlq9xWUk+9VX0499xNWDN1iTMg++lWst568k7e6DK5Skjw6Mu5ZrYXNm9YUSS2u+UfaJvDn
+	5ZhI6iXMkUGPrG7RMbxZfJ+6hhV+1EBlVP5pSJumLTFvTCTgRSilqUpPLVQBP21sTxevEjbBYXP
+	0trS1IIjCuibUUMOby1iQd6ZV7cROjM7LuVPquWan5Cr0PT8+Y1nge8kHoFMBs+5pxOGGe75eDk
+	fWw0sSakTljnc5LGdAxexLqKEvqKlMRqsSI9m5AXhAozqsM69aQxyV92buewloAjyK/Wr72COz/
+	58Dz89Rs3I0qGWzGLl+ESKX36q/48/8bYsZlRTH2M3Z2GfAoZN5pZW5A3v23nkL8lSB+l0+H6ku
+	JoD2K2ncSoKDDRbkEAWu73
+X-Google-Smtp-Source: AGHT+IEMJiA/1eid9s4j9DWQmqT6T/1kpjdK8HlfZHWC5kbrB6Xvn594oXzyY6TZwshoZ0nf0OGjPg==
+X-Received: by 2002:a05:620a:7087:b0:8b2:f182:694e with SMTP id af79cd13be357-8c3893f4e8amr2476371785a.54.1768231632134;
+        Mon, 12 Jan 2026 07:27:12 -0800 (PST)
+Received: from localhost ([2603:7000:c01:2716:365a:60ff:fe62:ff29])
+        by smtp.gmail.com with ESMTPSA id af79cd13be357-8c37f4a97fesm1512326085a.4.2026.01.12.07.27.11
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 12 Jan 2026 07:26:18 -0800 (PST)
-Date: Mon, 12 Jan 2026 10:25:44 -0500
-From: Gregory Price <gourry@gourry.net>
-To: Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
-Cc: linux-mm@kvack.org, cgroups@vger.kernel.org, linux-cxl@vger.kernel.org,
-	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org, kernel-team@meta.com,
-	longman@redhat.com, tj@kernel.org, hannes@cmpxchg.org,
-	corbet@lwn.net, gregkh@linuxfoundation.org, rafael@kernel.org,
-	dakr@kernel.org, dave@stgolabs.net, jonathan.cameron@huawei.com,
-	dave.jiang@intel.com, alison.schofield@intel.com,
-	vishal.l.verma@intel.com, ira.weiny@intel.com,
-	dan.j.williams@intel.com, akpm@linux-foundation.org, vbabka@suse.cz,
-	surenb@google.com, mhocko@suse.com, jackmanb@google.com,
-	ziy@nvidia.com, david@kernel.org, lorenzo.stoakes@oracle.com,
-	Liam.Howlett@oracle.com, rppt@kernel.org, axelrasmussen@google.com,
-	yuanchu@google.com, weixugc@google.com, yury.norov@gmail.com,
-	linux@rasmusvillemoes.dk, rientjes@google.com,
-	shakeel.butt@linux.dev, chrisl@kernel.org, kasong@tencent.com,
-	shikemeng@huaweicloud.com, nphamcs@gmail.com, bhe@redhat.com,
-	baohua@kernel.org, yosry.ahmed@linux.dev, chengming.zhou@linux.dev,
-	roman.gushchin@linux.dev, muchun.song@linux.dev, osalvador@suse.de,
-	matthew.brost@intel.com, joshua.hahnjy@gmail.com, rakie.kim@sk.com,
-	byungchul@sk.com, ying.huang@linux.alibaba.com, apopple@nvidia.com,
-	cl@gentwo.org, harry.yoo@oracle.com, zhengqi.arch@bytedance.com
-Subject: Re: [RFC PATCH v3 5/8] Documentation/admin-guide/cgroups: update
- docs for mems_allowed
-Message-ID: <aWUSeFzxouq2vwg8@gourry-fedora-PF4VCD3F>
-References: <20260108203755.1163107-1-gourry@gourry.net>
- <20260108203755.1163107-6-gourry@gourry.net>
- <o6eky3g4jyvtc2cy6lk7rjc6or6tcvwbhdarrlpn4geuibvrul@65fygkf6vg44>
+        Mon, 12 Jan 2026 07:27:11 -0800 (PST)
+Date: Mon, 12 Jan 2026 10:27:07 -0500
+From: Johannes Weiner <hannes@cmpxchg.org>
+To: Deepanshu Kartikey <kartikey406@gmail.com>
+Cc: mhocko@kernel.org, roman.gushchin@linux.dev, shakeel.butt@linux.dev,
+	muchun.song@linux.dev, akpm@linux-foundation.org,
+	cgroups@vger.kernel.org, linux-mm@kvack.org,
+	syzbot+d97580a8cceb9b03c13e@syzkaller.appspotmail.com,
+	Kairui Song <ryncsn@gmail.com>
+Subject: Re: [PATCH] mm/swap_cgroup: fix kernel BUG in swap_cgroup_record
+Message-ID: <aWUSyzHcaDwEg6_c@cmpxchg.org>
+References: <20260110064613.606532-1-kartikey406@gmail.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <o6eky3g4jyvtc2cy6lk7rjc6or6tcvwbhdarrlpn4geuibvrul@65fygkf6vg44>
+In-Reply-To: <20260110064613.606532-1-kartikey406@gmail.com>
 
-On Mon, Jan 12, 2026 at 03:30:26PM +0100, Michal Koutný wrote:
-> Hello.
-> 
-> On Thu, Jan 08, 2026 at 03:37:52PM -0500, Gregory Price <gourry@gourry.net> wrote:
-> > --- a/Documentation/admin-guide/cgroup-v2.rst
-> > +++ b/Documentation/admin-guide/cgroup-v2.rst
-> > @@ -2530,8 +2530,11 @@ Cpuset Interface Files
-> >  	cpuset-enabled cgroups.
-> >  
-> >  	It lists the onlined memory nodes that are actually granted to
-> > -	this cgroup by its parent. These memory nodes are allowed to
-> > -	be used by tasks within the current cgroup.
-> > +	this cgroup by its parent.  This includes both regular SystemRAM
-> > +	nodes (N_MEMORY) and Private Nodes (N_PRIVATE) that provide
-> > +	device-specific memory not intended for general consumption.
-> > +	Tasks within this cgroup may access Private Nodes using explicit
-> > +	__GFP_THISNODE allocations if the node is in this mask.
-> 
-> Notice that these files are exposed for userspace. Hence I'm not sure
-> they'd be able to ask for allocations like this (or even need to know
-> about this implementation detail).
->
+On Sat, Jan 10, 2026 at 12:16:13PM +0530, Deepanshu Kartikey wrote:
+> When using MADV_PAGEOUT, pages can remain in swapcache with their swap
+> entries assigned. If MADV_PAGEOUT is called again on these pages,
 
-Fair, I can drop this, the intent is actually to limit user-space
-knowledge of this at all.
+This doesn't add up to me - maybe I'm missing something.
 
-> >  
-> >  	If "cpuset.mems" is empty, it shows all the memory nodes from the
-> >  	parent cgroup that will be available to be used by this cgroup.
-> > @@ -2541,6 +2544,25 @@ Cpuset Interface Files
-> >  
-> >  	Its value will be affected by memory nodes hotplug events.
-> >  
-> > +  cpuset.mems.sysram
-> > +	A read-only multiple values file which exists on all
-> > +	cpuset-enabled cgroups.
-> > +
-> > +	It lists the SystemRAM nodes (N_MEMORY) that are available for
-> > +	general memory allocation by tasks within this cgroup.  This is
-> > +	a subset of "cpuset.mems.effective" that excludes Private Nodes.
-> > +
-> > +	Normal page allocations are restricted to nodes in this mask.
-> > +	The kernel page allocator, slab allocator, and compaction only
-> > +	consider SystemRAM nodes when allocating memory for tasks.
-> > +
-> > +	Private Nodes are excluded from this mask because their memory
-> > +	is managed by device drivers for specific purposes (e.g., CXL
-> > +	compressed memory, accelerator memory) and should not be used
-> > +	for general allocations.
-> 
-> So I wonder whether the N_PRIVATE nodes should be included in
-> cpuset.mems[.effective] at all.
+memcg1_swapout() is called at the very end of reclaim, from
+__remove_mapping(), which *removes the folio from swapcache*. At this
+point the folio is exclusive to *that* thread - there are no more
+present ptes that another madvise could even be acting on.
 
-I think it makes the control path easier (both more intuitive and easier
-to write in the cpuset code), but I can take another look at this.
+How could we reach here twice for the same swap entry?
 
-Although omitting them from .effective i think prevents the user from
-controlling whether their memory ends up on that node. 
-
-i.e. the user might be aware that they have compressed memory on node N,
-and they have a cgroup that they don't want on node N - not having it
-included in mems.allowed / mems.effective means they can't control this.
-
-> (It resembles CPU isolation to me a bit ~ cpuset.cpus.isolated.)
-> Maybe you only want to expose it on the root cpuset cg and inverted like
-> cpuset.mems.private?
->
-
-Hm, I had not considered adding the separate mask for .private as
-opposed to sysram.
-
-If all we actually need to change is the allowed() callback to check an
-additional nodemask, that might end up cleaner.
-
-Thank you, I'll take another look at this piece.
-
-~Gregory
+It seems more likely that we're missing a swapin notification, fail to
+clear the swap entry from the cgroup records, and then trip up when
+the entry is recycled to a totally different page down the line. No?
 
