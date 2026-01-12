@@ -1,147 +1,198 @@
-Return-Path: <cgroups+bounces-13084-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-13085-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id B0B75D13EE5
-	for <lists+cgroups@lfdr.de>; Mon, 12 Jan 2026 17:17:23 +0100 (CET)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4A642D14569
+	for <lists+cgroups@lfdr.de>; Mon, 12 Jan 2026 18:26:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id 772B8300297F
-	for <lists+cgroups@lfdr.de>; Mon, 12 Jan 2026 16:17:20 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 4F59530777CC
+	for <lists+cgroups@lfdr.de>; Mon, 12 Jan 2026 17:08:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 67F22364E97;
-	Mon, 12 Jan 2026 16:17:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F51C37E2E7;
+	Mon, 12 Jan 2026 17:05:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="EDubA/9F"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="P64DBTfX";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="awRxqMr0";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="P64DBTfX";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="awRxqMr0"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-ej1-f44.google.com (mail-ej1-f44.google.com [209.85.218.44])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A4FE01CD1E4
-	for <cgroups@vger.kernel.org>; Mon, 12 Jan 2026 16:17:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 972783793B5
+	for <cgroups@vger.kernel.org>; Mon, 12 Jan 2026 17:05:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768234639; cv=none; b=VSn00taIfoNM8qUBlwilCLcYXTau5WjBS9xXAhg/uH7YtjzEW/my1Jkb+8lLkNqPB6wspvcyieCn4seK88wdwKLxOENbQz7zg+phtJli3PF+T2yfdIjGYu4A99di0IdMtxIkOxee0cLaDfApCDy0cvKi4cSTOEQUsO8OHEq+Kq0=
+	t=1768237502; cv=none; b=ciRfehq74TMRQVTk06z7UHT6E5l5dutB1KXqA9iKIHOcBH/91dgIFommLFRKKhcTWEZVsnuir3MjTpS45fc967FUlLUGV97Gqz6QXczeUm+ySuv+aDEg8z+CkPalVGYh50z3jqh3/DITSUwHEQrH5AAKnlEaN9Qk28aV9y8eieE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768234639; c=relaxed/simple;
-	bh=f6kD8+ufnSvROiZtUrO1jfgPCWDyPJMAQlV8s6KiEYo=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=swdCg0SaefkhXUtcVulog7aT+URKvdUw2m/DWaeAI6V6tlEOaq02clzAt9klW1ITR+jiMSYaU7n7mfjmJDxMYKDheQ463zm9OsdjcROVZke9wnvEl1ht3uDfBSIOfhBCquEsp3pVhaG1cVNa1IIohAgnkNv/06P3fwPH65CkNTA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=EDubA/9F; arc=none smtp.client-ip=209.85.218.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f44.google.com with SMTP id a640c23a62f3a-b870732cce2so208883366b.3
-        for <cgroups@vger.kernel.org>; Mon, 12 Jan 2026 08:17:17 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1768234636; x=1768839436; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Vqb4Hn5493L1mZt0rxFOjY5Siy0ns6XDE52wWf3HhJM=;
-        b=EDubA/9Fgp58TkUug+G+/hN3hjkMchxk4/62kINUtlwU70VuT359ibWDUaSPOJ9UE/
-         leUWYzqGoRHleQVKqR38+EN6nSHQNpx2PYo7tF4Y/uaw3nWGqHm+brQsawXZt8YJUoMW
-         ByVH1/bhnY246Db0SKuqpPbqaBwBagRMM7VJ9LlOLqtWZY7DiqsVv4qg88LdKaYypGWR
-         J8/c3/5t2xNWnjLEjKetLds6vcsUIeWzaZdw6kNtTEl5v2xmpvpt3rEGVjmoFRrW0oOT
-         R/E4jFdEw0pDaiX8YI626LST5hvKsOrrRsuP/3CpUXNmM4Xo5k70sh4br/3VBQy4hxIR
-         aYig==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1768234636; x=1768839436;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=Vqb4Hn5493L1mZt0rxFOjY5Siy0ns6XDE52wWf3HhJM=;
-        b=DSXnLkrg1W+xoInHCmWWijPeNG99lABrK1bhzXVoPaMMyUaJweUIpYAfUn3P60VtQw
-         J7amm/iqa8wlavbo0d73+iQMfJ86shIbXKOvjK1vG25L6LcKnmlqoYu0ms1+hOhV1w0z
-         UbtbSJDnyjA2Xvi6ioZPyJLr5oBfqq7TryvcAjuy7180v+A68dtmqk9m3+KpbqlmwSuf
-         AZ2cYpyExx0ER62m6pLJtFpDYhB4p8VkxjJEhS8p6XthTmuIXOg8Tq7H2tBfr0p9ReAj
-         WH8iu9JDnzHdLXeplvlzdKT/ozWlREgih+OHYzxrs5JU6gxad/a2b34u+lUr0X2BAEV2
-         G7+w==
-X-Forwarded-Encrypted: i=1; AJvYcCU7H6CrQeBq7kpV0ZqEO9vPjkc1Dyz2unv/d9ti46GhoSwYy8YYIdpJCf8QS0IPcR2v/6mRYjlD@vger.kernel.org
-X-Gm-Message-State: AOJu0YxHU1rggjUhblICgWk/fysh0kTAMFpcykkixPGyHv01ce05Zo7b
-	4T5WzWhqBBOz807KSllLknzC1C5dpn8UdFc0pwSyvj0YoIT3PpyUTi9XBn581NjHpXPAixFj+aT
-	lOWMFw5n6nVHdAIalQ0T+y9CYsDN+J1k=
-X-Gm-Gg: AY/fxX4qUeL1ZjNrqkCbrac+MtdtU8EOH2Cnt85YVFSGOEWeEJiRpZtZ9Zfdf2xTl0p
-	H7rnHlj1lA22+ZasFo7Zko4yxRsrZx98KqyJWOrP6z7j+jwOCejCSIQaEciNhnVgV9Qa+Inuq2Z
-	zblWl3oVtjXMVFwELq4r23kLxQP2KhNR5+clOsTUAiIQAAT48f0MA8gNGKNzxCJ0Ibu/MwJYzC8
-	ZcGR0wsxNME4WUjAU5fKlAfwU85kZeZOlUCfGKMOgCPacnFXYBOnSN3aTrmi2AFeWAwn1mNCMDZ
-	r8rOUKiUkUpD9ZeDeIqeK8hgXMz4
-X-Google-Smtp-Source: AGHT+IEHT2Wmj8ARHOeq+QXdeZhO2RV1mWXnMgHXcWT0v3RIri68i3/VYSsb62Dl7FZ899QtqfuzeanTuJydxAH+Cf8=
-X-Received: by 2002:a17:907:3c94:b0:b79:f4e4:b55d with SMTP id
- a640c23a62f3a-b84453a0281mr1946626666b.51.1768234635616; Mon, 12 Jan 2026
- 08:17:15 -0800 (PST)
+	s=arc-20240116; t=1768237502; c=relaxed/simple;
+	bh=kPgy+GkRbWl8K8v+3CSwgn4Fbt0J8obwjsTPR/Pi/HI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=K81E0rYyDwFLVnZNlLV/arSlFKXn6Mtfwr0iFQySCOuptVbtNFcY1Kg3vvSpJiH1p8T6CNhSViAVhgLkC5y3h+CsxGpLWmOB6gSAvInyREqap4kFEgCd4zXxGyN7YywwvpPBkws0J3Imqk7dClqD2cxaFUy0IC7CMYWwKHJbHm8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=P64DBTfX; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=awRxqMr0; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=P64DBTfX; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=awRxqMr0; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 0531A5BCCA;
+	Mon, 12 Jan 2026 17:04:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1768237499; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=/IXu27wphLmF3IpnHNL6mk/rCkepaFM+R+4ydOLIFsE=;
+	b=P64DBTfXH3WS5H8Z2my81xHmfFAfjKOx0+sTDCqvSV7S54xkWXX9v18qC8qKqEZtyOuA4B
+	HKBpYXga7qxFAHxWqS0NlIsnDrNkwVBOqqvd6HZHv3QewyuRA3a9cvb55UDXm9Pjauk31d
+	arHeNeu+RYxUkNH2jIkIy6m6p1goEaE=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1768237499;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=/IXu27wphLmF3IpnHNL6mk/rCkepaFM+R+4ydOLIFsE=;
+	b=awRxqMr0j2r4NGShEEw35590SdYgIasWSrvfpnDhzvGkqxJ4nL6dJim9qgKuoluqVyigqC
+	kaVg7mmpLoi4HEDQ==
+Authentication-Results: smtp-out2.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1768237499; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=/IXu27wphLmF3IpnHNL6mk/rCkepaFM+R+4ydOLIFsE=;
+	b=P64DBTfXH3WS5H8Z2my81xHmfFAfjKOx0+sTDCqvSV7S54xkWXX9v18qC8qKqEZtyOuA4B
+	HKBpYXga7qxFAHxWqS0NlIsnDrNkwVBOqqvd6HZHv3QewyuRA3a9cvb55UDXm9Pjauk31d
+	arHeNeu+RYxUkNH2jIkIy6m6p1goEaE=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1768237499;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=/IXu27wphLmF3IpnHNL6mk/rCkepaFM+R+4ydOLIFsE=;
+	b=awRxqMr0j2r4NGShEEw35590SdYgIasWSrvfpnDhzvGkqxJ4nL6dJim9qgKuoluqVyigqC
+	kaVg7mmpLoi4HEDQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id EF7723EA63;
+	Mon, 12 Jan 2026 17:04:58 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id vSByOropZWlmAgAAD6G6ig
+	(envelope-from <jack@suse.cz>); Mon, 12 Jan 2026 17:04:58 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id 9B747A09FC; Mon, 12 Jan 2026 18:04:50 +0100 (CET)
+Date: Mon, 12 Jan 2026 18:04:50 +0100
+From: Jan Kara <jack@suse.cz>
+To: Matt Fleming <matt@readmodwrite.com>
+Cc: Jan Kara <jack@suse.cz>, cgroups@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, Tejun Heo <tj@kernel.org>, 
+	Christian Brauner <brauner@kernel.org>, linux-fsdevel@vger.kernel.org, kernel-team@cloudflare.com
+Subject: Re: [REGRESSION] 6.12: Workqueue lockups in inode_switch_wbs_work_fn
+ (suspect commit 66c14dccd810)
+Message-ID: <isa6ohzad6b6l55kbdqa35r5fsp4wnifpncx3kit6m35266d7z@463ckwplt5w3>
+References: <20260112111804.3773280-1-matt@readmodwrite.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20260110064613.606532-1-kartikey406@gmail.com> <aWUSyzHcaDwEg6_c@cmpxchg.org>
-In-Reply-To: <aWUSyzHcaDwEg6_c@cmpxchg.org>
-From: Kairui Song <ryncsn@gmail.com>
-Date: Tue, 13 Jan 2026 00:16:39 +0800
-X-Gm-Features: AZwV_QifkK-8AO58M8_ctp22Xy7Bmh0O4VYVW6iSEyCGW44qb3SEfE5iCfTbZNg
-Message-ID: <CAMgjq7CMsAMZZJL1=a=EtfWCOuDFE62RKR_0hUdPC4H+QF5GfQ@mail.gmail.com>
-Subject: Re: [PATCH] mm/swap_cgroup: fix kernel BUG in swap_cgroup_record
-To: Johannes Weiner <hannes@cmpxchg.org>
-Cc: Deepanshu Kartikey <kartikey406@gmail.com>, mhocko@kernel.org, roman.gushchin@linux.dev, 
-	shakeel.butt@linux.dev, muchun.song@linux.dev, akpm@linux-foundation.org, 
-	cgroups@vger.kernel.org, linux-mm@kvack.org, 
-	syzbot+d97580a8cceb9b03c13e@syzkaller.appspotmail.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20260112111804.3773280-1-matt@readmodwrite.com>
+X-Spam-Score: -3.80
+X-Spamd-Result: default: False [-3.80 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	MID_RHS_NOT_FQDN(0.50)[];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	ARC_NA(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	MISSING_XM_UA(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	FUZZY_RATELIMITED(0.00)[rspamd.com];
+	RCVD_COUNT_THREE(0.00)[3];
+	TO_DN_SOME(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	RCPT_COUNT_SEVEN(0.00)[8];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	RCVD_TLS_LAST(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo]
+X-Spam-Level: 
+X-Spam-Flag: NO
 
-On Mon, Jan 12, 2026 at 11:27=E2=80=AFPM Johannes Weiner <hannes@cmpxchg.or=
-g> wrote:
->
-> On Sat, Jan 10, 2026 at 12:16:13PM +0530, Deepanshu Kartikey wrote:
-> > When using MADV_PAGEOUT, pages can remain in swapcache with their swap
-> > entries assigned. If MADV_PAGEOUT is called again on these pages,
->
-> This doesn't add up to me - maybe I'm missing something.
->
-> memcg1_swapout() is called at the very end of reclaim, from
-> __remove_mapping(), which *removes the folio from swapcache*. At this
-> point the folio is exclusive to *that* thread - there are no more
-> present ptes that another madvise could even be acting on.
->
-> How could we reach here twice for the same swap entry?
->
-> It seems more likely that we're missing a swapin notification, fail to
-> clear the swap entry from the cgroup records, and then trip up when
-> the entry is recycled to a totally different page down the line. No?
+Hi Matt!
 
-Thank you so much for Ccing me!
+On Mon 12-01-26 11:18:04, Matt Fleming wrote:
+> I’m writing to report a regression we are observing in our production
+> environment running kernel 6.12. We are seeing severe workqueue lockups
+> that appear to be triggered by high-volume cgroup destruction. We have
+> isolated the issue to 66c14dccd810 ("writeback: Avoid softlockup when
+> switching many inodes").
+> 
+> We're seeing stalled tasks in the inode_switch_wbs workqueue. The worker
+> appears to be CPU-bound within inode_switch_wbs_work_fn, leading to RCU
+> stalls and eventual system lockups.
 
-Deepanshu's patch is helpful but that's not the root cause. I did see
-the problem locally sometime ago, but I completely forgot about this
-one :(
+I agree we are CPU bound in inode_switch_wbs_work_fn() but I don't think we
+are really hogging the CPU. The backtrace below indicates the worker just
+got rescheduled in cond_resched() to give other tasks a chance to run. Is
+the machine dying completely or does it eventually finish the cgroup
+teardown?
 
-I think the following fix should be good?
+> Here is a representative trace from a stalled CPU-bound worker pool:
+> 
+> [1437023.584832][    C0] Showing backtraces of running workers in stalled CPU-bound worker pools:
+> [1437023.733923][    C0] pool 358:
+> [1437023.733924][    C0] task:kworker/89:0    state:R  running task     stack:0     pid:3136989 tgid:3136989 ppid:2      task_flags:0x4208060 flags:0x00004000
+> [1437023.733929][    C0] Workqueue: inode_switch_wbs inode_switch_wbs_work_fn
+> [1437023.733933][    C0] Call Trace:
+> [1437023.733934][    C0]  <TASK>
+> [1437023.733937][    C0]  __schedule+0x4fb/0xbf0
+> [1437023.733942][    C0]  __cond_resched+0x33/0x60
+> [1437023.733944][    C0]  inode_switch_wbs_work_fn+0x481/0x710
+> [1437023.733948][    C0]  process_one_work+0x17b/0x330
+> [1437023.733950][    C0]  worker_thread+0x2ce/0x3f0
+> 
+> Our environment makes heavy use of cgroup-based services. When these
+> services -- specifically our caching layer -- are shut down, they can
+> trigger the offlining of a massive number of inodes (approx. 200k-250k+
+> inodes per service).
 
-diff --git a/mm/vmscan.c b/mm/vmscan.c
-index 453d654727c1..e8b5b8f514ab 100644
---- a/mm/vmscan.c
-+++ b/mm/vmscan.c
-@@ -758,8 +758,8 @@ static int __remove_mapping(struct address_space
-*mapping, struct folio *folio,
+Well, these changes were introduced because some services are switching
+over 1m inodes on their exit and they were softlocking up the machine :).
+So there's some commonality, just something in that setup behaves
+differently from your setup. Are the inodes clean, dirty, or only with
+dirty timestamps? Also since you mention 6.12 kernel but this series was
+only merged in 6.18, do you carry full series ending with merge commit
+9426414f0d42f?
 
-                if (reclaimed && !mapping_exiting(mapping))
-                        shadow =3D workingset_eviction(folio, target_memcg)=
-;
--               __swap_cache_del_folio(ci, folio, swap, shadow);
-                memcg1_swapout(folio, swap);
-+               __swap_cache_del_folio(ci, folio, swap, shadow);
-                swap_cluster_unlock_irq(ci);
-        } else {
-                void (*free_folio)(struct folio *);
+> We have verified that reverting 66c14dccd810 completely eliminates these
+> lockups in our production environment.
+> 
+> I am currently working on creating a synthetic reproduction case in the
+> lab to replicate the inode/cgroup density required to trigger this on
+> demand. In the meantime, I wanted to share these findings to see if you
+> have any insights.
 
----
+Yes, having the reproducer would certainly simplify debugging what exactly
+is going on that your system is locking up. Because I was able to tear down
+a cgroup doing switching of millions of inodes in couple of seconds without
+any issue in my testing...
 
-It's caused by https://lore.kernel.org/linux-mm/20251220-swap-table-p2-v5-1=
-2-8862a265a033@tencent.com/
-
-Before that patch, if the folio's swap entries are already freed and
-have swap count of zero, memcg1_swapout records a stalled value but
-the put_swap_folio below will clear the cgroup info as it frees the
-folio's swap slots. After that commit, put_swap_folio is merged into
-__swap_cache_del_folio so the stalled value will stay.
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
