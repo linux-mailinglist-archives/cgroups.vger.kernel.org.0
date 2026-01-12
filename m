@@ -1,79 +1,43 @@
-Return-Path: <cgroups+bounces-13031-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-13032-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 924C2D0E12B
-	for <lists+cgroups@lfdr.de>; Sun, 11 Jan 2026 05:38:05 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4E3FAD10395
+	for <lists+cgroups@lfdr.de>; Mon, 12 Jan 2026 02:04:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 4321530145BD
-	for <lists+cgroups@lfdr.de>; Sun, 11 Jan 2026 04:37:55 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 490603016FAE
+	for <lists+cgroups@lfdr.de>; Mon, 12 Jan 2026 01:04:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3023D21ADCB;
-	Sun, 11 Jan 2026 04:37:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GaXpFLd+"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3BEF9202F71;
+	Mon, 12 Jan 2026 01:04:36 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-pg1-f170.google.com (mail-pg1-f170.google.com [209.85.215.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CDA2B1862
-	for <cgroups@vger.kernel.org>; Sun, 11 Jan 2026 04:37:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 295DD29408;
+	Mon, 12 Jan 2026 01:04:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768106274; cv=none; b=A7GGyuYhiYpQWXDqMx5LAI8xB9fWwL6IzWZYoZIQXq3AXNTokHd8VoWqYkmoDiJ2equ7XJ8202kM8wIDykwZHqntAT11pAtH8X+IuRm+6UoJMEQ8qUzKoA5VApTqgFW6PlGRDRdwg0NYcqA8ogbvRDbrzfw+dQHoOWRSxm219jA=
+	t=1768179876; cv=none; b=k0JSdYG1Fi3xA+1+pnM5hhAjb4k+xtrr2nsIo2fzDIrQzddlKY8MnK9f50xDINfsEZ6BlGVSnXpAHBFdrT9+tHbekrFLwhFr+Ty6Z/I+2LfD87xpq0PTaxygLK2oxADaRpAw5Cr9cPPBDTOCopGv/s9TyTXbq3DnHVcKf4EsIic=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768106274; c=relaxed/simple;
-	bh=hjLWyIMfXve/7USHSBgB8047m2M6oT9dUUbbUhUxm/k=;
+	s=arc-20240116; t=1768179876; c=relaxed/simple;
+	bh=H4p3+C4o1YxbR2wbTXJQSehTNtb2xC1maGQgtk7t8To=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=fk4eZ2jemkw6/wXs8nEkMKLSiCWcZHrEvpxKI6PYm8N8N3Qt5X0/KVIswiFBBvsIU01KnKa3KhaQiHCo/AYDHOat80ev2tcQK54L0glxJWIEsDIlxVopPIle8PKohkhRP7jNwERV9kluvFXg+ubUZ5hhtsThCiU+qQqiwyCOhCQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=GaXpFLd+; arc=none smtp.client-ip=209.85.215.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f170.google.com with SMTP id 41be03b00d2f7-c3e921afad1so2292596a12.1
-        for <cgroups@vger.kernel.org>; Sat, 10 Jan 2026 20:37:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1768106272; x=1768711072; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
-         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=RNTdXLWPuwQ2gqvJAF5I8RETChv7O8Xp8mYA5oOn2BQ=;
-        b=GaXpFLd+2aJlmREAcC73oNEisH4tUAsilDW8pxuWdyW5toEQTnIUuYz5KEDoxHvWSy
-         OYfUdnnFuNJEy7BvpmOXeG/lR4cFQwgbEHwSwr2jv5Ty9K8FwVfuKxZ8q5HLGqc2+oG5
-         XNED8LJprOjzHdvimQW28QaT1wZiylLIfKmN+zZaA/gZLo+WjupeBBRj0yhxDU4KboqX
-         JVONTBKCT6nVd/HncUu/TzJdqxEU7jXk9VUeg9N4eeMIdxzVFVngOYwd+jD2SndZq5zZ
-         WvuhO31cszV5gbTltr16fj3+X9sVPIxzYtmbFcb5PQjs6vqpP0X5HnWegxjdTQNg0MY3
-         6p7w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1768106272; x=1768711072;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
-         :user-agent:mime-version:date:message-id:x-gm-gg:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=RNTdXLWPuwQ2gqvJAF5I8RETChv7O8Xp8mYA5oOn2BQ=;
-        b=EdEy0+IfnIsV8tEd+RKstJOCKp3WPEODf9u10cTRT7t83mrsian94EGORZVzIOJ0+2
-         1qiceS8mnbGEoqDTXvsvIIGoa+L+1x+Zrj3Di9WXV3UnUQxF8LdHeGkVU8sk2LUus3n4
-         /gOuaWZp7peqJJ542mCKMVS/pYsWtnMvn8pFSQ251DDIvztkpYWruuWkQv56aRCzrlAv
-         XCH6mjat4N1V4E+0c7UeDTPsOm0V8WeWkvbAt5D9nFGU08eJ6gS8vnTzTkM5LOMAxrF2
-         IoMrnbT3fIx669kgVSJ0VkbcZRqxg50ZEZfNIuDdPrcXZjLRjLRm9Jd7XZ7HaH0daoAD
-         IfWw==
-X-Forwarded-Encrypted: i=1; AJvYcCX52Y78HXrSHnHK73zzUy+A/u95rCRDp6KYI8TWhQpgv3zem9Fkk6dPl0Dp9AuYB9RM3Na9rQ3+@vger.kernel.org
-X-Gm-Message-State: AOJu0YxpZrNJxZkzZEcNSZo7b5nA7lhguqdZ0dSN7nZEtQt61Fj4Ol0m
-	3VA2gDSwY6dMiWFcvH0xu0vA3TJXvE9Gq53HNPtx8A8JiXcLSIpTI1iyf3z4J4GC
-X-Gm-Gg: AY/fxX4wWhBJLmhdi5r5UrNZMA1BebpsigW9/4eJcluoGfctEoi+FQaA/a2p6HOOsc1
-	rDHDgqN3uCJZ0ga4ywzS11rmtt0gjcTuPt35SDD94P1UxHG3kmG1yA/PRf8ku5aSoZKtfFZPRbn
-	XHztM4ZRTQHKE5BGOTUjuL6S0PSEYtJS9hwbVC8dJAM8da4TP5URHctrkzpqY8Jf6UW3xS0ZDxN
-	mDPeoSyFk7AYvfP9Cc9eyBKLEB8NpxcriIDXYeB9Rmeyw6g1y8+JQzrcKgVxauyu0atarw3tH7c
-	fyeif3tRT+fX2jhSfXBXSKBLKyTX+6vLfgT9uf4oON0pXc5qL3f5lIM+VaMnBBD4Di2MzvdfVE0
-	JYHzY7Iy/j3fj+aYhqDgu3KbY+YQh56cPzwMuBRyQ/00dqDr6LJncVPWm/p3R0CfeGCsn7XUhxf
-	5ENgNRpo28UxIeaZ5fckBU8sPGVw4IbgykcAQ=
-X-Google-Smtp-Source: AGHT+IHUjVKIUncy/1zb6Wdvi6STOzA2v6PUBocX3XLH54HTDpNmKPMrWhTth1yxgQUS2bUbP5n5oA==
-X-Received: by 2002:a05:6a21:3387:b0:35f:5fc4:d886 with SMTP id adf61e73a8af0-3898f9cf3d7mr13042946637.43.1768106272064;
-        Sat, 10 Jan 2026 20:37:52 -0800 (PST)
-Received: from [172.29.225.215] ([103.74.125.162])
-        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-c4cbfc2f476sm165049a12.8.2026.01.10.20.37.48
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 10 Jan 2026 20:37:51 -0800 (PST)
-Message-ID: <7210e5e0-2a93-4d3b-a564-85c0fe117ef5@gmail.com>
-Date: Sun, 11 Jan 2026 12:37:45 +0800
+	 In-Reply-To:Content-Type; b=PkOJocDXXJzoJfjOJ4KnXCalwSdQZb0G65t3JdoS9iISj/ehfXIJZfgdw8xNIYeUELqiNAzcCe/JnU3iqRPOFyry8NsOq1Z2pg2HZFwnyAyAeebwqYpB2bS4nL6jK88IYBn/y09PIiKEiw/vWxkiH1EDC7xIHbvbeLZ6fNZQN5Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.170])
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTPS id 4dqDdz3zt2zKHMHx;
+	Mon, 12 Jan 2026 09:03:35 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.128])
+	by mail.maildlp.com (Postfix) with ESMTP id BE7AF4056D;
+	Mon, 12 Jan 2026 09:04:23 +0800 (CST)
+Received: from [10.174.178.72] (unknown [10.174.178.72])
+	by APP4 (Coremail) with SMTP id gCh0CgDXOPmVSGRpd4rwDQ--.2205S3;
+	Mon, 12 Jan 2026 09:04:23 +0800 (CST)
+Message-ID: <38634756-1a01-4e22-8af2-e9a2071c1aaa@huaweicloud.com>
+Date: Mon, 12 Jan 2026 09:04:18 +0800
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -81,30 +45,58 @@ List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] mm: optimize stat output for 11% sys time reduce
-To: Andrew Morton <akpm@linux-foundation.org>
-Cc: linux-mm@kvack.org, cgroups@vger.kernel.org, hannes@cmpxchg.org,
- mhocko@kernel.org, roman.gushchin@linux.dev, shakeel.butt@linux.dev,
- muchun.song@linux.dev, linux-kernel@vger.kernel.org
-References: <CAJxJ_jioPFeTL3og-5qO+Xu4UE7ohcGUSQuodNSfYuX32Xj=EQ@mail.gmail.com>
- <20260110042249.31960-1-jianyuew@nvidia.com>
- <20260110153342.7e689e794ce43a0a39c699fc@linux-foundation.org>
-From: Jianyue Wu <wujianyue000@gmail.com>
-In-Reply-To: <20260110153342.7e689e794ce43a0a39c699fc@linux-foundation.org>
+Subject: Re: [PATCH 1/3] blk-cgroup: factor policy pd teardown loop into
+ helper
+To: =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>
+Cc: tj@kernel.org, josef@toxicpanda.com, axboe@kernel.dk, yukuai@fnnas.com,
+ cgroups@vger.kernel.org, linux-block@vger.kernel.org,
+ linux-kernel@vger.kernel.org, yi.zhang@huawei.com, yangerkun@huawei.com,
+ houtao1@huawei.com, zhengqixing@huawei.com
+References: <20260108014416.3656493-1-zhengqixing@huaweicloud.com>
+ <20260108014416.3656493-2-zhengqixing@huaweicloud.com>
+ <heoizkdewdbvczav4xa4fylnkbswb7sjybt5naw7jlafbzmvin@tctcbn5oxqmb>
+From: Zheng Qixing <zhengqixing@huaweicloud.com>
+In-Reply-To: <heoizkdewdbvczav4xa4fylnkbswb7sjybt5naw7jlafbzmvin@tctcbn5oxqmb>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:gCh0CgDXOPmVSGRpd4rwDQ--.2205S3
+X-Coremail-Antispam: 1UD129KBjvdXoW5tw15Cry7XF1ruF45JryxZrb_yoWxXFX_uF
+	97Cr18Ca1rJr48JFZavF1rJrs0ga4UKr18Jr1293sFga4jyr9xGanYkasYvF1Fka4xXFnx
+	Krn8ta1Iyr43KjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+	9fnUUIcSsGvfJTRUUUbxxYFVCjjxCrM7AC8VAFwI0_Gr0_Xr1l1xkIjI8I6I8E6xAIw20E
+	Y4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwV
+	A0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVWDJVCq3wA2z4x0Y4vE2Ix0cI8IcVCY1x02
+	67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
+	0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
+	x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
+	0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc7CjxVAaw2AF
+	wI0_Jw0_GFyl42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4
+	xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43
+	MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I
+	0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWU
+	JVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUF1
+	v3UUUUU
+X-CM-SenderInfo: x2kh0wptl0x03j6k3tpzhluzxrxghudrp/
 
-On 1/11/2026 7:33 AM, Andrew Morton wrote:
-> On Sat, 10 Jan 2026 12:22:49 +0800 Jianyue Wu <wujianyue000@gmail.com> wrote:
+
+在 2026/1/9 22:44, Michal Koutný 写道:
+> Hi Qixing.
 >
->> Replace seq_printf/seq_buf_printf with lightweight helpers to avoid
->> printf parsing in memcg stats output.
+> On Thu, Jan 08, 2026 at 09:44:14AM +0800, Zheng Qixing <zhengqixing@huaweicloud.com> wrote:
+>> From: Zheng Qixing <zhengqixing@huawei.com>
 >>
-> I don't understand - your previous email led me to believe that the new
-> BPF interface can be used to address this issue?
+>> Move the teardown sequence which offlines and frees per-policy
+>> blkg_policy_data (pd) into a helper for readability.
+>>
+>> No functional change intended.
+> This rework isn't so big, so I'd leave it upon your discretion but
+> consider please moving this patch towards the end of the series.
+> (Generally, eases backports of such fixes.)
 
-Yes, previously I think can directly use BPF interface to speedup. Later 
-I think maybe this is still needed, as some platform didn't have BPF 
-installed might still use these sysfs files.
+Good point. I will move this patch to the end of the series in v2.
+
+Kind Regards,
+
+Qixing
 
 
