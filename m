@@ -1,269 +1,148 @@
-Return-Path: <cgroups+bounces-13065-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-13066-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id A35D7D1258B
-	for <lists+cgroups@lfdr.de>; Mon, 12 Jan 2026 12:42:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 0D648D12F42
+	for <lists+cgroups@lfdr.de>; Mon, 12 Jan 2026 14:58:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 1075B3019BDC
-	for <lists+cgroups@lfdr.de>; Mon, 12 Jan 2026 11:42:56 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id 8B98330019D7
+	for <lists+cgroups@lfdr.de>; Mon, 12 Jan 2026 13:57:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6AEAE356A1E;
-	Mon, 12 Jan 2026 11:42:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6F0D735B139;
+	Mon, 12 Jan 2026 13:57:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b="hr7s7myz"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="cENMWRhK"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-yx1-f100.google.com (mail-yx1-f100.google.com [74.125.224.100])
+Received: from mail-wm1-f68.google.com (mail-wm1-f68.google.com [209.85.128.68])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 87485356A23
-	for <cgroups@vger.kernel.org>; Mon, 12 Jan 2026 11:42:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.224.100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E70235B144
+	for <cgroups@vger.kernel.org>; Mon, 12 Jan 2026 13:57:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.68
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768218173; cv=none; b=RktKYT6oCEK4OmSVQbPqb43DiFI2Du+wlmIZ4IpssEykAyBAP61ssHVnq0DHzD0EkQ2GR3yFPnyAZ6R9sPAmUF4nF9YAz2GBaP91m3dfcMR7sWpQDZrCqtfbdwR9aVQxSZczs7dhJ3F8iSorfolPdlTIKRHxKY19LZf4odhJ8DE=
+	t=1768226251; cv=none; b=n+8iUgpjuhlcCWHxhMn97g5kCjqBfyvWk8G60ipJe+DvP9LBDA+KZt5BmoiZ9VkmrHTFIKuTwjj0Ao+GpKURNtX//ChxcF0mcsLwWFPAHgAOQcwv913Pf4xuU2eSGRQHyPR8zh9dqUIc5/+pfvekPTZatPytCwI/GBaOxWBr8wo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768218173; c=relaxed/simple;
-	bh=c95WO/l5Yh3ODJc5THKGAjEQryf6UWGtacSfjwHl9EA=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=eC/Z5f+Qoma6nEs6hbQ64ACYxi7oeXokKMd7iOSw+QN2Oi5Yn7Old5JKUkZonRA+WWl60C98tur+xWz97ACxhuXoFdYZrjzbHJKM0PBjcjYXuJ4WSXqHy44l3HXynoyIFBstlOl+4LAqIgAbWb05/HbFbdXcAZkMh/07QJdihjE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=broadcom.com; spf=fail smtp.mailfrom=broadcom.com; dkim=pass (1024-bit key) header.d=broadcom.com header.i=@broadcom.com header.b=hr7s7myz; arc=none smtp.client-ip=74.125.224.100
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=broadcom.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=broadcom.com
-Received: by mail-yx1-f100.google.com with SMTP id 956f58d0204a3-6469e4b0ff6so817704d50.2
-        for <cgroups@vger.kernel.org>; Mon, 12 Jan 2026 03:42:51 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1768218170; x=1768822970;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:dkim-signature:x-gm-gg:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=fzFvHeJhDdP4ilFE2+bLWYgTIbgx2yUf1NNqPTKhjnU=;
-        b=I0I5H0gmeHOXPkIHTNUu9nhKc+2QNCYGi8iU9zZGbKA3ck8Jh8M50WSBxoFrP8eBNS
-         XQn7zFgradSR7Xzam/4grKYbDQ3DCjA9Xj7JxSbvPUdqcWfay98rCT+Lm4J2D9SRVUGy
-         AADtEg2pgiTMoeBeFAKtab3uklUEaTMLt2HYhoJaFLG5QLXAgy+1VHPISQSytvvFx84x
-         RyFrHwKyt8ImrB+f/9upPwyODyXasfRiVR9IYZ/oTTNrsoKZvDEGl0PjnVV203l+fOM+
-         /wETRfM8CgZjXa6K7SCcQ6EhOau/mQnMz5NPV1Ou6KLBXB3AelFPJT/P7A7u2qt1Amiv
-         NSEA==
-X-Forwarded-Encrypted: i=1; AJvYcCWcjp9HmfeP6e1XeHlIe85tiB5Gq4vQDpXpRfAkayhKzu0976gr/nEmbxozxoqTdZBI2BbgjPmn@vger.kernel.org
-X-Gm-Message-State: AOJu0YwxURlOrzsl2k3sN1E3moh/mQc9XNlCEcJvO8+Sd7E1FEwMBcjz
-	9mg77VRC4H0IiH/w54mYqv5v7y8caFbfyPZG7gUo/UKnexLg2KfR55wQQMxzgHaL2Iq0bQa/4en
-	7WtQV1ILto5K+e3/rco0f3SCrv+KiQMC6+53rgprUD2f6Not5bI0SNJ2WjJDGB4XpdPhT9lTGHk
-	f6btynClMClpgfK0EZZK7xzw1ioazaBzpjs0+F7bpNePJbBMUrQMECGnaEnyS5IfzO9fhccoPON
-	KtEaSLS46uB0HG8ter4XaoWNpkRiy0T
-X-Gm-Gg: AY/fxX73aNI9Q6n8pmGukQlBaoU1YSwgZtdc2367KTVV0DCz5Fm0zezHn4DuKeexQnA
-	+JB/xXiLckTYEtMT1wd+4v6kSV0O6GrdIYR3P44Nn/AxhWO+hpqJfXHwUtxt9+15sIp5WChAsXO
-	rN/q0gwcEYZSJeTWK0TlQTeBR3P7tDyuUltsgshQuOhWkUPXl+2kXzzNmEEVhOXi1D7IliQkROI
-	u5M7sdwMbhE6GbejAlGqByRp4K7P2gPC7tUPjzt4HABsHDJdg89M914//0GZsWgp3NAhK2jWh/F
-	IYHAt5jf7EyBvA/yLUrX6HNmXtM4jPDYMIvwzq3zF0+zFM0dLuYmbCUp75rjwXHB8u/AvK607ZP
-	v836GCzG65cMwEGNdhSMhhdw3My3wjyIHvbW9zTTmEEVcRqj9ODPsb4UQIC+tGG1d/eX5uv5Uwh
-	20PBOa4X9Or9buXKlC19UhqpVzewAYfoxymCKiZFsKSgcbzZgaSZOOc68Ga/g=
-X-Google-Smtp-Source: AGHT+IFidcRuRmEbXuUXNUFZoGl/Infg7GjzpwQyxWtzBH5YP+Uxucfp8r9jehSg5GjsSrBdIRGSQkFMFgXa
-X-Received: by 2002:a05:690e:4189:b0:644:730d:622e with SMTP id 956f58d0204a3-64716c5c480mr12080683d50.3.1768218170523;
-        Mon, 12 Jan 2026 03:42:50 -0800 (PST)
-Received: from smtp-us-east1-p01-i01-si01.dlp.protect.broadcom.com (address-144-49-247-2.dlp.protect.broadcom.com. [144.49.247.2])
-        by smtp-relay.gmail.com with ESMTPS id 00721157ae682-790aa5a795dsm14416657b3.14.2026.01.12.03.42.50
-        for <cgroups@vger.kernel.org>
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 12 Jan 2026 03:42:50 -0800 (PST)
-X-Relaying-Domain: broadcom.com
-X-CFilter-Loop: Reflected
-Received: by mail-pl1-f199.google.com with SMTP id d9443c01a7336-2a094144faaso12047235ad.2
-        for <cgroups@vger.kernel.org>; Mon, 12 Jan 2026 03:42:50 -0800 (PST)
+	s=arc-20240116; t=1768226251; c=relaxed/simple;
+	bh=gAMH2uvs/CgwkSg3WF3gErnuTMUlm803mdW74R4jxXc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=e6EfNz5FaSRfDMq4poJNdOi7jz6MYXiBru6AKCplNmogaGjnzotkDN99XSR7d0fjeaYhu4FiHNVOWcQ1PQB5q2NI2pF1p1yRoW0riC7uJZ2lJqiwlHzdA8ER8h4HWGKphx8PJW4LuGH2XnGY+MCr52oOPeQveFnrdGJ36lKM0VU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=cENMWRhK; arc=none smtp.client-ip=209.85.128.68
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-wm1-f68.google.com with SMTP id 5b1f17b1804b1-47d1d8a49f5so41486995e9.3
+        for <cgroups@vger.kernel.org>; Mon, 12 Jan 2026 05:57:29 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=broadcom.com; s=google; t=1768218169; x=1768822969; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=fzFvHeJhDdP4ilFE2+bLWYgTIbgx2yUf1NNqPTKhjnU=;
-        b=hr7s7myzXDppYeBDqEA5fUIGcoPByswxXfPxIojG06oZOGZ2UbehVKRzSLtnZiOxTh
-         mNCQ82cn3Mi3UV+OXLwXEp2FEvaW23kPz2daPd7Z/A45s10k/chs9WzoX5xwpNhwOmk1
-         jS4IC+P4pIuLBS3orwsEbQbRRsobQTC5q6z00=
-X-Forwarded-Encrypted: i=1; AJvYcCUbkrVDJf8UqLaLb6nx+YsXfahVB0WvsUTIu1CEDUu6hRRwjM/olHHc+Rowpc/azW2z4e9lD3yO@vger.kernel.org
-X-Received: by 2002:a17:902:ea01:b0:2a0:9424:7dc7 with SMTP id d9443c01a7336-2a3ee4917d2mr129653735ad.4.1768218169335;
-        Mon, 12 Jan 2026 03:42:49 -0800 (PST)
-X-Received: by 2002:a17:902:ea01:b0:2a0:9424:7dc7 with SMTP id d9443c01a7336-2a3ee4917d2mr129653635ad.4.1768218168930;
-        Mon, 12 Jan 2026 03:42:48 -0800 (PST)
-Received: from keerthanak-ph5-dev.. ([192.19.161.250])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2a3e3c48c0asm175905495ad.31.2026.01.12.03.42.40
+        d=suse.com; s=google; t=1768226248; x=1768831048; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=ojfjuEZT6516dXGjj7cFzWBDB5vqwECXd9Bz2SUP+mg=;
+        b=cENMWRhKoybH1EnF8zefbklP7+JoEXrKIKsYYyMuDN3od3HUng7xvPua2we/xwP3q5
+         JSy65zS+Z4Q9gkka/GMuY6nt6rL3jx1g5VlRwQiR2ljLIJB2NWUrVjHvcC6jMcPk/ot4
+         FP2ZQ497Kvcy3r9fR4bH0fRynENXwJsO3liJBPPKTJiWNAY1Q8+NVavuFCBqJNSBZxQq
+         38BrzUvlaqRnXVJLal4WTH9GMxNeMkDqyaiN3lix0dWsg6eTFzZ+6jK3djl6v2fR4ue3
+         zTAV8jlDusOEGr7KVYYltKE7WruMZiUjAiS+NtJDFcWdPYSApfH4gI2dWwgQaMQVaMtZ
+         6rKw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1768226248; x=1768831048;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ojfjuEZT6516dXGjj7cFzWBDB5vqwECXd9Bz2SUP+mg=;
+        b=oOoUXIVzFeH/XOTWsOpHNMdKxVm7po7byT3ykdJ60BZTiKPtpNKW8ooF0hrCGbVmOL
+         v1zKV7mhWes0bNQlJjs+dgXSHsw3YtJEtEY4WGvAK9Yq46GA2vaEQjRiBQh69aIqDtKI
+         2WgfeZEb/GJ5cRhuv9UgEMxOmrh5c6gCPTB1RACEhA9fu1HquoHzmpxZaWwt0vu5lpdo
+         VYElS4dh/tTKWxUMfcF3bQCmegV67wP1dhGedn8x4OyMZRgd24dLo+HkQlwUoDLiwnZ8
+         rAsfSRLhbIejJKZHxmsTZVkdVg1dfBrpGJPjVdx1RnlIREUtzHYx8V1XuKwg1JZy9cqU
+         YtGA==
+X-Forwarded-Encrypted: i=1; AJvYcCUhz6uh8BL9kLgrTlrpyjPugvyGbHf7TSbUoSwTAU3wedVk1TWUu0Wwehuv9G2j9zkUuc8IsgAf@vger.kernel.org
+X-Gm-Message-State: AOJu0YwM2wEFAR5mxKIuVw1O+WBsERJ7D8KOwDVqG9XxnvSEUQDdOBNk
+	q9Op8wVU4Zu5aYemIoiHS1fb7NWhC78w2mVnRpYSN6nGz3NpbhQUaZR8vioYqaqIipg=
+X-Gm-Gg: AY/fxX6VhW3uzAFud5nIH8jwtu0l9Z7SYGxCnUdLFAmqiGnuly2bvN18Tks7wXVft9X
+	fsWVW4q1iNF9a45+wRiUbDHGBqrXI+ppzwh1PznWCIFwL/m+lFtOaKTw8cwMtt+IawCfzRbeYCc
+	B4amn5irAeyT32ufVAlBIJCvv7z1+1j6KW1vvanqaWzdFUunXVbMReUAxnUbyds1fOUoAa4uDxK
+	pHmHYYT2qwXH92o/T3cSnMZkqQ54BKYk6b/es8zbRNeoFsE4MHuRwiMcpe65TC4nf2WUBPstTAQ
+	jHO4mSFcCYo0QL5/RmQP3ZYeY6cipAhExr29XCr3N41+KzkK6uv5D9SEEv5Tv9CMveuvNnzSIgF
+	SxuNm7tkpIfvSJSNF0K0OmJlROZUcSfLaDy+SPOraYz+MuNRFSREgoE8F7zrUsduAgcrMuauU2c
+	OanYhVSNjzFNKoos4ki6EbnxwT
+X-Google-Smtp-Source: AGHT+IH29GDIodJ0Iy57eZZOTR2mLdkX+1IGe3kPs2cJRyAcm1ljENQAhNQdsf2vi8k6BuFrEYkAGg==
+X-Received: by 2002:a05:600c:1f8c:b0:477:7d94:5d0e with SMTP id 5b1f17b1804b1-47d84b40955mr197307005e9.27.1768226247504;
+        Mon, 12 Jan 2026 05:57:27 -0800 (PST)
+Received: from localhost (109-81-19-111.rct.o2.cz. [109.81.19.111])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-432bd0e199bsm38478758f8f.16.2026.01.12.05.57.26
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 12 Jan 2026 03:42:47 -0800 (PST)
-From: Keerthana K <keerthana.kalyanasundaram@broadcom.com>
-To: stable@vger.kernel.org,
-	gregkh@linuxfoundation.org
-Cc: tj@kernel.org,
-	axboe@kernel.dk,
-	cgroups@vger.kernel.org,
-	linux-block@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	ajay.kaher@broadcom.com,
-	alexey.makhalov@broadcom.com,
-	vamsi-krishna.brahmajosyula@broadcom.com,
-	yin.ding@broadcom.com,
-	tapas.kundu@broadcom.com,
-	Laibin Qiu <qiulaibin@huawei.com>,
-	Ming Lei <ming.lei@redhat.com>,
-	Sasha Levin <sashal@kernel.org>,
-	Keerthana K <keerthana.kalyanasundaram@broadcom.com>,
-	Shivani Agarwal <shivani.agarwal@broadcom.com>
-Subject: [PATCH v5.10-v5.15] blk-throttle: Set BIO_THROTTLED when bio has been throttled
-Date: Mon, 12 Jan 2026 11:39:36 +0000
-Message-ID: <20260112113936.3291786-1-keerthana.kalyanasundaram@broadcom.com>
-X-Mailer: git-send-email 2.43.7
+        Mon, 12 Jan 2026 05:57:27 -0800 (PST)
+Date: Mon, 12 Jan 2026 14:57:26 +0100
+From: Michal Hocko <mhocko@suse.com>
+To: Deepanshu Kartikey <kartikey406@gmail.com>
+Cc: hannes@cmpxchg.org, roman.gushchin@linux.dev, shakeel.butt@linux.dev,
+	muchun.song@linux.dev, akpm@linux-foundation.org,
+	cgroups@vger.kernel.org, linux-mm@kvack.org,
+	syzbot+d97580a8cceb9b03c13e@syzkaller.appspotmail.com
+Subject: Re: [PATCH] mm/swap_cgroup: fix kernel BUG in swap_cgroup_record
+Message-ID: <aWT9xnrRQsvMLVkL@tiehlicka>
+References: <20260110064613.606532-1-kartikey406@gmail.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-DetectorID-Processed: b00c1d49-9d2e-4205-b15f-d015386d3d5e
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20260110064613.606532-1-kartikey406@gmail.com>
 
-From: Laibin Qiu <qiulaibin@huawei.com>
+On Sat 10-01-26 12:16:13, Deepanshu Kartikey wrote:
+> When using MADV_PAGEOUT, pages can remain in swapcache with their swap
+> entries assigned. If MADV_PAGEOUT is called again on these pages, they
+> reuse the same swap entries, causing memcg1_swapout() to call
+> swap_cgroup_record() with an already-recorded entry.
+> 
+> The existing code assumes swap entries are always being recorded for the
+> first time (oldid == 0), triggering VM_BUG_ON when it encounters an
+> already-recorded entry:
+> 
+>   ------------[ cut here ]------------
+>   kernel BUG at mm/swap_cgroup.c:78!
+>   Oops: invalid opcode: 0000 [#1] SMP KASAN PTI
+>   CPU: 0 UID: 0 PID: 6176 Comm: syz.0.30 Not tainted
+>   RIP: 0010:swap_cgroup_record+0x19c/0x1c0 mm/swap_cgroup.c:78
+>   Call Trace:
+>    memcg1_swapout+0x2fa/0x830 mm/memcontrol-v1.c:623
+>    __remove_mapping+0xac5/0xe30 mm/vmscan.c:773
+>    shrink_folio_list+0x2786/0x4f40 mm/vmscan.c:1528
+>    reclaim_folio_list+0xeb/0x4e0 mm/vmscan.c:2208
+>    reclaim_pages+0x454/0x520 mm/vmscan.c:2245
+>    madvise_cold_or_pageout_pte_range+0x19a0/0x1ce0 mm/madvise.c:563
+>    ...
+>    do_madvise+0x1bc/0x270 mm/madvise.c:2030
+>    __do_sys_madvise mm/madvise.c:2039
+> 
+> This bug occurs because pages in swapcache can be targeted by
+> MADV_PAGEOUT multiple times without being swapped in between. Each time,
+> the same swap entry is reused, but swap_cgroup_record() expects to only
+> record new, unused entries.
 
-[ Upstream commit 5a011f889b4832aa80c2a872a5aade5c48d2756f ]
+Shouldn't madvise path avoid paging out swap cache pages instead? IIRC
+this is what the normal reclaim path does.
 
-1.In current process, all bio will set the BIO_THROTTLED flag
-after __blk_throtl_bio().
+> Fix this by checking if the swap entry already has the correct cgroup ID
+> recorded before attempting to record it. Use the existing
+> lookup_swap_cgroup_id() to read the current cgroup ID, and return early
+> from memcg1_swapout() if the entry is already correctly recorded. Only
+> call swap_cgroup_record() when the entry needs to be set or updated.
+> 
+> This approach avoids unnecessary atomic operations, reference count
+> manipulations, and statistics updates when the entry is already correct.
+> 
+> Link: https://syzkaller.appspot.com/bug?extid=d97580a8cceb9b03c13e
+> Reported-by: syzbot+d97580a8cceb9b03c13e@syzkaller.appspotmail.com
+> Closes: https://syzkaller.appspot.com/bug?extid=d97580a8cceb9b03c13e
+> Tested-by: syzbot+d97580a8cceb9b03c13e@syzkaller.appspotmail.com
+> Signed-off-by: Deepanshu Kartikey <kartikey406@gmail.com>
 
-2.If bio needs to be throttled, it will start the timer and
-stop submit bio directly. Bio will submit in
-blk_throtl_dispatch_work_fn() when the timer expires.But in
-the current process, if bio is throttled. The BIO_THROTTLED
-will be set to bio after timer start. If the bio has been
-completed, it may cause use-after-free blow.
-
-BUG: KASAN: use-after-free in blk_throtl_bio+0x12f0/0x2c70
-Read of size 2 at addr ffff88801b8902d4 by task fio/26380
-
- dump_stack+0x9b/0xce
- print_address_description.constprop.6+0x3e/0x60
- kasan_report.cold.9+0x22/0x3a
- blk_throtl_bio+0x12f0/0x2c70
- submit_bio_checks+0x701/0x1550
- submit_bio_noacct+0x83/0xc80
- submit_bio+0xa7/0x330
- mpage_readahead+0x380/0x500
- read_pages+0x1c1/0xbf0
- page_cache_ra_unbounded+0x471/0x6f0
- do_page_cache_ra+0xda/0x110
- ondemand_readahead+0x442/0xae0
- page_cache_async_ra+0x210/0x300
- generic_file_buffered_read+0x4d9/0x2130
- generic_file_read_iter+0x315/0x490
- blkdev_read_iter+0x113/0x1b0
- aio_read+0x2ad/0x450
- io_submit_one+0xc8e/0x1d60
- __se_sys_io_submit+0x125/0x350
- do_syscall_64+0x2d/0x40
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-Allocated by task 26380:
- kasan_save_stack+0x19/0x40
- __kasan_kmalloc.constprop.2+0xc1/0xd0
- kmem_cache_alloc+0x146/0x440
- mempool_alloc+0x125/0x2f0
- bio_alloc_bioset+0x353/0x590
- mpage_alloc+0x3b/0x240
- do_mpage_readpage+0xddf/0x1ef0
- mpage_readahead+0x264/0x500
- read_pages+0x1c1/0xbf0
- page_cache_ra_unbounded+0x471/0x6f0
- do_page_cache_ra+0xda/0x110
- ondemand_readahead+0x442/0xae0
- page_cache_async_ra+0x210/0x300
- generic_file_buffered_read+0x4d9/0x2130
- generic_file_read_iter+0x315/0x490
- blkdev_read_iter+0x113/0x1b0
- aio_read+0x2ad/0x450
- io_submit_one+0xc8e/0x1d60
- __se_sys_io_submit+0x125/0x350
- do_syscall_64+0x2d/0x40
- entry_SYSCALL_64_after_hwframe+0x44/0xa9
-
-Freed by task 0:
- kasan_save_stack+0x19/0x40
- kasan_set_track+0x1c/0x30
- kasan_set_free_info+0x1b/0x30
- __kasan_slab_free+0x111/0x160
- kmem_cache_free+0x94/0x460
- mempool_free+0xd6/0x320
- bio_free+0xe0/0x130
- bio_put+0xab/0xe0
- bio_endio+0x3a6/0x5d0
- blk_update_request+0x590/0x1370
- scsi_end_request+0x7d/0x400
- scsi_io_completion+0x1aa/0xe50
- scsi_softirq_done+0x11b/0x240
- blk_mq_complete_request+0xd4/0x120
- scsi_mq_done+0xf0/0x200
- virtscsi_vq_done+0xbc/0x150
- vring_interrupt+0x179/0x390
- __handle_irq_event_percpu+0xf7/0x490
- handle_irq_event_percpu+0x7b/0x160
- handle_irq_event+0xcc/0x170
- handle_edge_irq+0x215/0xb20
- common_interrupt+0x60/0x120
- asm_common_interrupt+0x1e/0x40
-
-Fix this by move BIO_THROTTLED set into the queue_lock.
-
-Signed-off-by: Laibin Qiu <qiulaibin@huawei.com>
-Reviewed-by: Ming Lei <ming.lei@redhat.com>
-Link: https://lore.kernel.org/r/20220301123919.2381579-1-qiulaibin@huawei.com
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
-[ Keerthana: Remove 'out' and handle return with reference to commit 81c7a63 ]
-Signed-off-by: Keerthana K <keerthana.kalyanasundaram@broadcom.com>
-Signed-off-by: Shivani Agarwal <shivani.agarwal@broadcom.com>
----
- block/blk-throttle.c | 16 ++++++++++------
- 1 file changed, 10 insertions(+), 6 deletions(-)
-
-diff --git a/block/blk-throttle.c b/block/blk-throttle.c
-index 4bf514a7b..4d3436cd6 100644
---- a/block/blk-throttle.c
-+++ b/block/blk-throttle.c
-@@ -2216,8 +2216,10 @@ bool blk_throtl_bio(struct bio *bio)
- 	rcu_read_lock();
- 
- 	/* see throtl_charge_bio() */
--	if (bio_flagged(bio, BIO_THROTTLED))
--		goto out;
-+	if (bio_flagged(bio, BIO_THROTTLED)) {
-+		rcu_read_unlock();
-+		return false;
-+	}
- 
- 	if (!cgroup_subsys_on_dfl(io_cgrp_subsys)) {
- 		blkg_rwstat_add(&tg->stat_bytes, bio->bi_opf,
-@@ -2225,8 +2227,10 @@ bool blk_throtl_bio(struct bio *bio)
- 		blkg_rwstat_add(&tg->stat_ios, bio->bi_opf, 1);
- 	}
- 
--	if (!tg->has_rules[rw])
--		goto out;
-+	if (!tg->has_rules[rw]) {
-+		rcu_read_unlock();
-+		return false;
-+	}
- 
- 	spin_lock_irq(&q->queue_lock);
- 
-@@ -2310,14 +2314,14 @@ bool blk_throtl_bio(struct bio *bio)
- 	}
- 
- out_unlock:
--	spin_unlock_irq(&q->queue_lock);
--out:
- 	bio_set_flag(bio, BIO_THROTTLED);
- 
- #ifdef CONFIG_BLK_DEV_THROTTLING_LOW
- 	if (throttled || !td->track_bio_latency)
- 		bio->bi_issue.value |= BIO_ISSUE_THROTL_SKIP_LATENCY;
- #endif
-+	spin_unlock_irq(&q->queue_lock);
-+
- 	rcu_read_unlock();
- 	return throttled;
- }
+I would use
+Fixes: 1a4e58cce84e ("mm: introduce MADV_PAGEOUT")
 -- 
-2.40.4
-
+Michal Hocko
+SUSE Labs
 
