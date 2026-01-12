@@ -1,108 +1,187 @@
-Return-Path: <cgroups+bounces-13067-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-13068-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id A2E3FD132AB
-	for <lists+cgroups@lfdr.de>; Mon, 12 Jan 2026 15:34:12 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id F10F8D134DC
+	for <lists+cgroups@lfdr.de>; Mon, 12 Jan 2026 15:51:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id 66F40305D7F4
-	for <lists+cgroups@lfdr.de>; Mon, 12 Jan 2026 14:25:09 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 334A831C73AC
+	for <lists+cgroups@lfdr.de>; Mon, 12 Jan 2026 14:34:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2BF0A2E173B;
-	Mon, 12 Jan 2026 14:21:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 459102DF132;
+	Mon, 12 Jan 2026 14:30:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="HMVa2lPe"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="DbJ85YSe"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-wm1-f52.google.com (mail-wm1-f52.google.com [209.85.128.52])
+Received: from mail-wm1-f66.google.com (mail-wm1-f66.google.com [209.85.128.66])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A0AC0350A29
-	for <cgroups@vger.kernel.org>; Mon, 12 Jan 2026 14:21:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1909D2BF019
+	for <cgroups@vger.kernel.org>; Mon, 12 Jan 2026 14:30:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.66
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768227688; cv=none; b=uW1xPgnY2esKs6Wkkhp8fjtGvfCZl2rI8Lgo9NVGMtQsDHG25SGb7SETG+ES+U2Z4dHJEQdcWLcE634/K+Nx9AcWwktGAdzyeQjPncW29varLGScUWpshkgfDLvHADH+aw/wYzJWmZsxdVg8Kys5vDfkY00IRZETqxOjUkymrNc=
+	t=1768228233; cv=none; b=fawkrEjB1CSL8wkSYy8waYuLpLPnOZ2KwCWaGcTUhzrynQlyMHCMbFTYvu5DWSMvlJNMtyMja9TM4PSU03eFf23qjyIDDM0VS9xfjNZXnoQa3vAPSDZr4wpB0e0UqQiTYnJpdOAnx0HhljVy6Dy3wGhwOCIqic5ZRaBH+Bxd8tw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768227688; c=relaxed/simple;
-	bh=RcKivajkARIlhF6bn55BhdPhao9Jezu69Ku2BkIVRvM=;
+	s=arc-20240116; t=1768228233; c=relaxed/simple;
+	bh=VeWksy66lpkvgMhVOcEq/CQua3k6ndGuRBBIBT86hX0=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=PidxEXW2ksgnFBWXRSpw7jcJ9jGZI6NDrYdiHdABNhyuUbgQ43KutK4FN6GreVohDy4HanI1P77dyHje8tqoN+2ZPakJvSeYDbUSjYlNOKnemIn/ObmJnDtGqz2vOIbAOgw2CuoILn/DGs4+KI2v4tfPjDWPmj/Z08NGOh5lS/c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=HMVa2lPe; arc=none smtp.client-ip=209.85.128.52
+	 Content-Type:Content-Disposition:In-Reply-To; b=FoXOpmXUXXnjcbseVb0hoJoVZq7o000PFkIEwLHyi9HKKREjFufynOvXZHICQCsFJh9tjsCfT8e//WviJOy00NJ9Cksc/iDgsoZY240bx5tD4xjyn2yxYxXlPAOm5iDjwDvzo1cRvp0kfNzktno/HyxxWL0Ctmu5fym1sCbIYKc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=DbJ85YSe; arc=none smtp.client-ip=209.85.128.66
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-wm1-f52.google.com with SMTP id 5b1f17b1804b1-4779aa4f928so66204265e9.1
-        for <cgroups@vger.kernel.org>; Mon, 12 Jan 2026 06:21:21 -0800 (PST)
+Received: by mail-wm1-f66.google.com with SMTP id 5b1f17b1804b1-4779adb38d3so44498575e9.2
+        for <cgroups@vger.kernel.org>; Mon, 12 Jan 2026 06:30:30 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1768227680; x=1768832480; darn=vger.kernel.org;
+        d=suse.com; s=google; t=1768228229; x=1768833029; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=0u70BhNwJ4UADpInQUk67N2/5xRXcFkwdnBCb21aVvI=;
-        b=HMVa2lPeOCeRSb0mRse3LJ/3EuSaEhKDdwChRgGl5pd0/AZQ5KVGPt3uf1Omd7pLVa
-         UtbjsGV3DJ3NwYQygk1bbtD5IN6vgR9DNSd3dSmOYJXuMaf6sm9uJHsFoqY5msnQQgDn
-         NsbLIXlBAg/Vk5tmIVl9As28E3sBMYo/qFCg4ZvQ9O5+uePPt7CLEUbnhcSrSRjQUegA
-         OeXN36BOlIvtMSQhlrd1sXenVXgn/b6+4tet8yAXqESS60zoooQ7rAgwCPOkieAV7eNt
-         x+unXPJ1Q6bQbQVG1H4emdG0K4LG3g6Evt15lWCSX8ulgSukotiXD7SBKysXBXlnaLox
-         aW+w==
+        bh=Ufp0SZFe0MebuLzATEI2/9d5yfpShZoQXYWtR9jnTtQ=;
+        b=DbJ85YSee6JqVyq3jcPhZ7x0S03Ty9JPFZP7J/rcQTAU7p5oMws5b8tP6sdCe4lDWd
+         gthz4pNGruFz5FUvS99CDZUAlif5iJgEk4+MHSQazQyDXyEWa2fytpVjzPrPJ8nHAWBZ
+         rjpOmqyoozwU7ejlGZ92CGnZy1EKx42NXBX2I4z7+28ohYEClym2/2iUjJNYxg9iprZO
+         IVUEiLcUy2g+/J4WQcdJXwA4PT4lyHdO9ufhbXe5aEHmJB5593HAZ8lw6Yzvw+cAbYl8
+         ZZ8aJVv3pwscNc9uuh/QuxuC01S6vvJqcW+kmpGoL/1VCjU01Ilu8+eJEs/jWb+nX823
+         xmQg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1768227680; x=1768832480;
+        d=1e100.net; s=20230601; t=1768228229; x=1768833029;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=0u70BhNwJ4UADpInQUk67N2/5xRXcFkwdnBCb21aVvI=;
-        b=mDaLi/EoAuFhiF9M/NxbCoY6naQH+IFyZJtzu8PyVf0QfUijJGTzbIAZVEw6H+J0YG
-         mWC/XThERT3uU8m1xuIxiAsbKFPnPfPvdEwmVMlG/JQAJLhONiFWnl897xg+JUcs+ycV
-         m1LMaWJE1MKs0LUQwmPADuYq51ktEMaxJWi6HJZ+QOnhEfPWkeikljvEuXNTX/rXtgGt
-         k3EeWzXK+BLJGvgDPewYvGpvu1rpje5mfkWpLAxKBjft8FvlDQyOyzxHLPunHyStj38/
-         zI2gJUX1l8TAGIHRcoPGJx5JeYIHRVAWcUtsII3PgIsDO+0EcxRPxx0u7sQu1/+O1/OY
-         wMIA==
-X-Forwarded-Encrypted: i=1; AJvYcCXmlEfXt3cuNHRy+uiKnuc+dh6LF3zsZLWQctDpj9ooh5HUkrOB3nl0dBHEgyfd5jSOlD0CyYkE@vger.kernel.org
-X-Gm-Message-State: AOJu0Yzttmj7+K+V2YgSRsUxIJwx7aRt50nCoOuBjqLZq78yZ3tf8PqJ
-	UFHYBqxEpYpMY31aX2/icxL7DFUARspWlQ26y3T270V/iZmbWLTPkYqy2MkKlhH+8pw=
-X-Gm-Gg: AY/fxX4Q964kmH3+0PAnW/4bN0oTtCrwQ1x1fOEjCMwitFhKPjySu5ABqh3rmIxCRaz
-	SVsdv6Xm93vJUhdWECyMYzVok8EU3EJ1UcQpX0OO54azraa1gW9wZZagTrCGPYk/zbzg1xkGlMU
-	7dbLkxzEqoP61cYw/8jGCknFbNf7Pkp1/RzTHV2p8PIG3+mFoDfNZlus8xlpB2FiV8Mq8g3Bh2+
-	v0gXTSUUSDMxESrl98TX726KqOQm+0kgGgoebPGJX6PhzSe/ZHbK4TGHA4niRPhPnuNQrTwZ9OG
-	/ZH4gBoy+z86Uci1WHmv5OtRLFWCLHP84C37LBV56/hevNdlPE1F37C+cUJLDFOeGo2+6/Cz6Jz
-	gmpuPNJ6WA4gK5KpJbE3+n9xf7JmgMEPtGnEXHuvGS0ffhR4Z9YswqSb179dNbY/cgsgEADee2x
-	79rOZYWmnbk/1paD4x90ZL2+aI
-X-Google-Smtp-Source: AGHT+IGIVOzY/cGAUFVZ2fQ9qezTazmo1GKR7XGdOwz+0gwuiBBZTolmYl/t4yWNr8wQgBMrbFb62g==
-X-Received: by 2002:a05:600c:4e86:b0:477:9574:d641 with SMTP id 5b1f17b1804b1-47d84b3281fmr206518015e9.22.1768227679644;
-        Mon, 12 Jan 2026 06:21:19 -0800 (PST)
-Received: from localhost (109-81-19-111.rct.o2.cz. [109.81.19.111])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-432bd0e180csm38011941f8f.10.2026.01.12.06.21.18
+        bh=Ufp0SZFe0MebuLzATEI2/9d5yfpShZoQXYWtR9jnTtQ=;
+        b=vbk86iYiw8hov9fOQ2Aouno5d/iVdvc36sfc5dZoyPukO3rUobyca0eih/65HN4dfl
+         v+EAf1LrmpxwLNkheUP0+C53heiaN2rskjxYZ79pRllKV9EIJ/jiMtEaa8zW5fN0VAHu
+         tMiH/8d4jYz5Dvs9yBdofFvT79DIHUmvrJ1WROQbicAyGoPhheN3xWtem6sWmpUsbTbb
+         ustoWZeBYKhh5+BBbHFlMN1vJiSLDX5WaYLkaT8NU1qNKhx2syHNz57WSlFcHElWBQvE
+         yCeiEV55dzOQaOp+d7oYWzdrZDwuswx3XqLTqEqJ++I7Uvm7ALyi5dFLe5Xx6AJM4EQ7
+         mBOQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWKm3H9A0JhlXfWHmA1zz6GeY5IJe7PFETop/re2zHsxnjbsEkGPPcSB+x4S9J8aRsUi049jHFA@vger.kernel.org
+X-Gm-Message-State: AOJu0YypeQJSCSeuFfqzLXC7F9f6Vu+T8HZMS8npe5bHdbXhigKz/BsN
+	EjttzqoCU5ep5vmPnPCoNfU9yx6/YMuD5ogGTwlJiYdcViZQlmQqNYV+aI1ZMW8NsSM=
+X-Gm-Gg: AY/fxX4Rm2oOf/n7bVWqaQCgMCfzOjF87wkGGJcbZ/pynkSBavcnffv95L12Lmx9Ozt
+	xGIKYu1brEFPw6HXD32goOrJZkS7d2x7vZ2oyaUYnaEkrBsXr+gAUsysHDtSi6orii38P5GEwEe
+	pJJSaRFo9rES0aGP5gZ1MXhtjITJpAn9LnC+6WJBKd8adN3PeIN/e5NV9a5GRz3gDtAGIBdTnNr
+	3QTOhSPVb7l5zvoVwaHWW2cDeOZ/Gzu9oemdHHZsbLAJUf4iddAYOlgkbZSUkyp5No12Lf4QNIV
+	LTaGBHrAX96kV7pecBr9/zFwPxezUhIZdACKGSZHdIasamqsfHaObdKUOkRBSUZvshhWJvBELCt
+	xLVFw2B7xHpP1neBnskZrjeh0frfpHgrq/Y9xpj4yuaFPiTeYARCUaBnmLbkB3hkQ02VCyb1dWZ
+	NNeutmSnVYmoOBs+8L0y4VB68sfbq/CI8=
+X-Google-Smtp-Source: AGHT+IHDVuFl+T/cu+HZzO3h+yAn0G+FdrWgV6XO6swWljps8VItMR+Lttj4fdxMmzgr/HRFuS5nGg==
+X-Received: by 2002:a05:600c:82c3:b0:475:de68:3c30 with SMTP id 5b1f17b1804b1-47d84b21466mr211537245e9.16.1768228229374;
+        Mon, 12 Jan 2026 06:30:29 -0800 (PST)
+Received: from blackdock.suse.cz (nat2.prg.suse.com. [195.250.132.146])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-47d865f84besm139369365e9.1.2026.01.12.06.30.27
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 12 Jan 2026 06:21:19 -0800 (PST)
-Date: Mon, 12 Jan 2026 15:21:18 +0100
-From: Michal Hocko <mhocko@suse.com>
-To: Qi Zheng <qi.zheng@linux.dev>
-Cc: hannes@cmpxchg.org, hughd@google.com, roman.gushchin@linux.dev,
-	shakeel.butt@linux.dev, muchun.song@linux.dev, david@kernel.org,
-	lorenzo.stoakes@oracle.com, ziy@nvidia.com, harry.yoo@oracle.com,
-	imran.f.khan@oracle.com, kamalesh.babulal@oracle.com,
-	axelrasmussen@google.com, yuanchu@google.com, weixugc@google.com,
-	chenridong@huaweicloud.com, mkoutny@suse.com,
-	akpm@linux-foundation.org, hamzamahfooz@linux.microsoft.com,
-	apais@linux.microsoft.com, lance.yang@linux.dev, linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-	Qi Zheng <zhengqi.arch@bytedance.com>
-Subject: Re: [PATCH v2 00/28] Eliminate Dying Memory Cgroup
-Message-ID: <aWUDXtsdnk0gFueK@tiehlicka>
-References: <cover.1765956025.git.zhengqi.arch@bytedance.com>
+        Mon, 12 Jan 2026 06:30:28 -0800 (PST)
+Date: Mon, 12 Jan 2026 15:30:26 +0100
+From: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
+To: Gregory Price <gourry@gourry.net>
+Cc: linux-mm@kvack.org, cgroups@vger.kernel.org, linux-cxl@vger.kernel.org, 
+	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
+	kernel-team@meta.com, longman@redhat.com, tj@kernel.org, hannes@cmpxchg.org, 
+	corbet@lwn.net, gregkh@linuxfoundation.org, rafael@kernel.org, dakr@kernel.org, 
+	dave@stgolabs.net, jonathan.cameron@huawei.com, dave.jiang@intel.com, 
+	alison.schofield@intel.com, vishal.l.verma@intel.com, ira.weiny@intel.com, 
+	dan.j.williams@intel.com, akpm@linux-foundation.org, vbabka@suse.cz, surenb@google.com, 
+	mhocko@suse.com, jackmanb@google.com, ziy@nvidia.com, david@kernel.org, 
+	lorenzo.stoakes@oracle.com, Liam.Howlett@oracle.com, rppt@kernel.org, 
+	axelrasmussen@google.com, yuanchu@google.com, weixugc@google.com, yury.norov@gmail.com, 
+	linux@rasmusvillemoes.dk, rientjes@google.com, shakeel.butt@linux.dev, chrisl@kernel.org, 
+	kasong@tencent.com, shikemeng@huaweicloud.com, nphamcs@gmail.com, bhe@redhat.com, 
+	baohua@kernel.org, yosry.ahmed@linux.dev, chengming.zhou@linux.dev, 
+	roman.gushchin@linux.dev, muchun.song@linux.dev, osalvador@suse.de, 
+	matthew.brost@intel.com, joshua.hahnjy@gmail.com, rakie.kim@sk.com, byungchul@sk.com, 
+	ying.huang@linux.alibaba.com, apopple@nvidia.com, cl@gentwo.org, harry.yoo@oracle.com, 
+	zhengqi.arch@bytedance.com
+Subject: Re: [RFC PATCH v3 5/8] Documentation/admin-guide/cgroups: update
+ docs for mems_allowed
+Message-ID: <o6eky3g4jyvtc2cy6lk7rjc6or6tcvwbhdarrlpn4geuibvrul@65fygkf6vg44>
+References: <20260108203755.1163107-1-gourry@gourry.net>
+ <20260108203755.1163107-6-gourry@gourry.net>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="zsg7ffk6fb5gx5vt"
 Content-Disposition: inline
-In-Reply-To: <cover.1765956025.git.zhengqi.arch@bytedance.com>
+In-Reply-To: <20260108203755.1163107-6-gourry@gourry.net>
 
-I can see that Johannes, Shakeel and others have done a review and also
-suggested some minor improvements/modifications. Are you planning to
-consolidate those and repost anytime soon?
 
-Thanks
--- 
-Michal Hocko
-SUSE Labs
+--zsg7ffk6fb5gx5vt
+Content-Type: text/plain; protected-headers=v1; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+Subject: Re: [RFC PATCH v3 5/8] Documentation/admin-guide/cgroups: update
+ docs for mems_allowed
+MIME-Version: 1.0
+
+Hello.
+
+On Thu, Jan 08, 2026 at 03:37:52PM -0500, Gregory Price <gourry@gourry.net>=
+ wrote:
+> --- a/Documentation/admin-guide/cgroup-v2.rst
+> +++ b/Documentation/admin-guide/cgroup-v2.rst
+> @@ -2530,8 +2530,11 @@ Cpuset Interface Files
+>  	cpuset-enabled cgroups.
+> =20
+>  	It lists the onlined memory nodes that are actually granted to
+> -	this cgroup by its parent. These memory nodes are allowed to
+> -	be used by tasks within the current cgroup.
+> +	this cgroup by its parent.  This includes both regular SystemRAM
+> +	nodes (N_MEMORY) and Private Nodes (N_PRIVATE) that provide
+> +	device-specific memory not intended for general consumption.
+> +	Tasks within this cgroup may access Private Nodes using explicit
+> +	__GFP_THISNODE allocations if the node is in this mask.
+
+Notice that these files are exposed for userspace. Hence I'm not sure
+they'd be able to ask for allocations like this (or even need to know
+about this implementation detail).
+
+> =20
+>  	If "cpuset.mems" is empty, it shows all the memory nodes from the
+>  	parent cgroup that will be available to be used by this cgroup.
+> @@ -2541,6 +2544,25 @@ Cpuset Interface Files
+> =20
+>  	Its value will be affected by memory nodes hotplug events.
+> =20
+> +  cpuset.mems.sysram
+> +	A read-only multiple values file which exists on all
+> +	cpuset-enabled cgroups.
+> +
+> +	It lists the SystemRAM nodes (N_MEMORY) that are available for
+> +	general memory allocation by tasks within this cgroup.  This is
+> +	a subset of "cpuset.mems.effective" that excludes Private Nodes.
+> +
+> +	Normal page allocations are restricted to nodes in this mask.
+> +	The kernel page allocator, slab allocator, and compaction only
+> +	consider SystemRAM nodes when allocating memory for tasks.
+> +
+> +	Private Nodes are excluded from this mask because their memory
+> +	is managed by device drivers for specific purposes (e.g., CXL
+> +	compressed memory, accelerator memory) and should not be used
+> +	for general allocations.
+
+So I wonder whether the N_PRIVATE nodes should be included in
+cpuset.mems[.effective] at all.
+(It resembles CPU isolation to me a bit ~ cpuset.cpus.isolated.)
+Maybe you only want to expose it on the root cpuset cg and inverted like
+cpuset.mems.private?
+
+Thanks,
+Michal
+
+--zsg7ffk6fb5gx5vt
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iJEEABYKADkWIQRCE24Fn/AcRjnLivR+PQLnlNv4CAUCaWUFgBsUgAAAAAAEAA5t
+YW51MiwyLjUrMS4xMSwyLDIACgkQfj0C55Tb+AivpwD+JBcYsTGjsYsxubfnEPsa
+ZpJvMAA2jVDEmQNiB588agwBAPoLqRDiK7ZtFi8f8bY/cXcHgh+krN2tOGh2v+x0
+RlAB
+=oogw
+-----END PGP SIGNATURE-----
+
+--zsg7ffk6fb5gx5vt--
 
