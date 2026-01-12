@@ -1,136 +1,143 @@
-Return-Path: <cgroups+bounces-13072-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-13073-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
-	by mail.lfdr.de (Postfix) with ESMTPS id 63E0FD137E0
-	for <lists+cgroups@lfdr.de>; Mon, 12 Jan 2026 16:10:08 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 984D7D13ABA
+	for <lists+cgroups@lfdr.de>; Mon, 12 Jan 2026 16:29:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 225823005185
-	for <lists+cgroups@lfdr.de>; Mon, 12 Jan 2026 15:08:57 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id B8E94303F37B
+	for <lists+cgroups@lfdr.de>; Mon, 12 Jan 2026 15:15:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7FD532DECAA;
-	Mon, 12 Jan 2026 15:08:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E44AB2E7BDE;
+	Mon, 12 Jan 2026 15:15:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="DP6dRaIZ"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="OquIy3yk";
+	dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b="ioGvxbv3"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-wr1-f42.google.com (mail-wr1-f42.google.com [209.85.221.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C56B82BDC0E
-	for <cgroups@vger.kernel.org>; Mon, 12 Jan 2026 15:08:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B56D2E5B19
+	for <cgroups@vger.kernel.org>; Mon, 12 Jan 2026 15:15:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768230515; cv=none; b=aVBMGhsXWUkgctTLEZqOfVGfM5waOSShoSvVxC0VrZenienyQ2KbVLCgQuEI8zDBOtxonLeJUXUWNCkmiDlpz0QJi9/Hrt/TLD8VsgMxu2stX7sePyKPE9HsmTmuz41N2z2uhzcYm0gMmElN6FkuMXO55VJqQGo0ljVTj8zX7Eo=
+	t=1768230925; cv=none; b=Crj00UoHHRq1K8Ubw5MdUWwBldCsvmu8eDQUwF3+wGg0JedJVsWeuyvFwheDJGjsrbs8LASXLAkWbh8L4tirR37XF9gKNZoXraEjG+GELMNve3/jo835GpmYlc56RaPC21WjzAChV8vFleddTE+1ROt4t7+FwGVClboZNFxxYHw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768230515; c=relaxed/simple;
-	bh=2LlAdcFOMuNXqy8VLk9nvlKy5s1t5Qbb33Ri0Pt3etU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=beHzX0CZRQf82GKzXY+JG7GM1uWWEf4wMWFEpw8O3c32rVb1z3Jx14HQhz25vkPgtx6J9T+U0ry0KdPEccxQNhp8uEVGJ/mXNGNeeVGxg/M42paMxQ5qHK33qdi2T4wxhYN4UCcaLuEGQIeCnld6Do8eLoQbggi4c6yQffHBlBo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=DP6dRaIZ; arc=none smtp.client-ip=209.85.221.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-wr1-f42.google.com with SMTP id ffacd0b85a97d-42fb2314eb0so5437638f8f.2
-        for <cgroups@vger.kernel.org>; Mon, 12 Jan 2026 07:08:33 -0800 (PST)
+	s=arc-20240116; t=1768230925; c=relaxed/simple;
+	bh=UWmSshBEHQ7KxE8MnHPkIfsFEU9/Q6SjGSI/Gge/kD8=;
+	h=From:Message-ID:Date:MIME-Version:Subject:To:Cc:References:
+	 In-Reply-To:Content-Type; b=k3vzlimCEXdo7SStB4cxLNHOlrvf8SgrR495NWVQNPKe5N2r6lxHBXW29vPDywl3sqSwaLQOMkE7HXg2bxaQIHj52znkiRxC7FHfa9+wUbNfc3wyCKfCgDnKtil+9dnw+3GoZybrlNJGVbcGXT262WbcZSlgrh9VernKQ0pZqXg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=OquIy3yk; dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b=ioGvxbv3; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1768230923;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=yBnEhkF7Qdzoo2GNW/2wAAQ4zQejO2Ma9rGc252Ro1o=;
+	b=OquIy3ykPivdZ4P3JfPsaDY8hP4Rxp3Wbq8INII1kreH92PLKkSqo9vg/PcyOphmZtNKNQ
+	Jixtypw/kDeJdBj4bzNL02vB4hukIC/LfpYO+LDlmD9TujviMcUM6jXS3MSb1F0gwzUZeP
+	4mLNWwmEGuz6XuXEluoh1LVXXsQ7yjs=
+Received: from mail-qv1-f72.google.com (mail-qv1-f72.google.com
+ [209.85.219.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-138-gmWEhXG-MUehHG7u8qtgGA-1; Mon, 12 Jan 2026 10:15:21 -0500
+X-MC-Unique: gmWEhXG-MUehHG7u8qtgGA-1
+X-Mimecast-MFC-AGG-ID: gmWEhXG-MUehHG7u8qtgGA_1768230921
+Received: by mail-qv1-f72.google.com with SMTP id 6a1803df08f44-88a32bd53cdso202383616d6.0
+        for <cgroups@vger.kernel.org>; Mon, 12 Jan 2026 07:15:21 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1768230512; x=1768835312; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=2LlAdcFOMuNXqy8VLk9nvlKy5s1t5Qbb33Ri0Pt3etU=;
-        b=DP6dRaIZSrMKN4qVhz6g/WgTf35PDGl+VFZw/EDha+a+cA+3myVw7WOKXDS2So94Py
-         DA2TSiGdlx7nLSwpNWFFEcPXM0d7rfzwJP2IyDsx/sH4NBl75K3RnJD2wt5JjtTLn6We
-         bqm965mwxDAZwKLgGKNK6h03qUwhbedVdPgBW+EGOpWDW73Iiy8NXxB9WFcNGeMEC4on
-         /qGWZMeZzRuPnsd/VGPHYkacC+hziO3XR+tY3flqQ2Hbmqm7RPaAya5r57Ag3Nm26T41
-         Hhbf1O1W8scP3LJR8TtakvX2HMOvGOU78+A4KwNEzQ3VdDcqb/D0ivWaaWyNTcASpOL3
-         8ANA==
+        d=redhat.com; s=google; t=1768230921; x=1768835721; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:content-language:references
+         :cc:to:subject:user-agent:mime-version:date:message-id:from:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=yBnEhkF7Qdzoo2GNW/2wAAQ4zQejO2Ma9rGc252Ro1o=;
+        b=ioGvxbv3KePlaaSTy5wqTAqfaMPBb7jFEBOvmyp1gXHqCeS6U7WOtjPN+HGMDrEI4V
+         p6FfEQy1kafw0OI9oqueCm7CMl4tFj6NByWvaFm07qVReKjisc/pDAl9pFvmtL7qK3BT
+         Ck8zDj8dk4i6RUTc17Uc2lU5hB3hMb+035RVg3LnvSX6xHyQwdvg6MFpKA2/luEQ0pFg
+         h5Luum8SQ40G05TbtnelPwm+XVQ6K/mCG1jBdlnt3yroW3Hquyj7MqpF9wBshxuygRWL
+         MnWrGsHolYYrJfZj5ZAYMneMzUqob4EHAE00kRblHCg9XKvS/vaG1EkrcJtS1vx+Qdyp
+         1lHA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1768230512; x=1768835312;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=2LlAdcFOMuNXqy8VLk9nvlKy5s1t5Qbb33Ri0Pt3etU=;
-        b=h98LI0yDHYWN9ovKsfp2sja1NZ+K40MH62a5Ul5UsOl8yZTHvdYR5KQFfPsGuJ1mS4
-         kGmXKZ3HDAR7AlDzw2aqbuxSUtmAZsW/3p4F6HEFrGaOieNalMPLhJcS4OfUKcVBdym1
-         C4uZtPA2nGfaZtsGYsSG22J8uJGF0ug5up9gOB+2VxwudLb/RiFhnTKlGiVx/ffSRwRP
-         Y8bBoI8V1Ke9trCY+3HoNLTbDi1H4o5meLaT8l1wfsD8aCwIU38+jo8c9nEYBdd4dl1w
-         j2c3dYL5W+qmeUNllbldOrSdxvW73f8mlpBtcGUQcM2r4cX+ypFB1OK8WCzzc1SWC5rl
-         Z0Ow==
-X-Forwarded-Encrypted: i=1; AJvYcCVDQge2zQ4EwIDpV+5apQCCM22sHJgXuKZJOwhKdkl6thxgHOCDGR7oY7mru78je9vx9zFw7Zil@vger.kernel.org
-X-Gm-Message-State: AOJu0Yy6Vu4/jwzWOQG55m65RG2ylDf/Dr/VwIDibfDY4LVtcJ8Xln0A
-	xcOhA8Otb+2KoYVYV1brqEG01ErwVJhYYF9v9psMwgXDxMOrW8VC5BFSMze2oIwy8Gw=
-X-Gm-Gg: AY/fxX5CT1H3CH8QblFFh5sFdaO90IUgqsPpxSPCiTpHyyDh0ixZLdD5C2rqnRg0P9u
-	5Ye2JbeeGTABTaeAGedZOhcMeOUuOfpbkIjTAyT1u1evLLtvSQwsRPWjnbwXxWTf+HqJbXs4Z2H
-	meK5mZdZ3b0c8YtM2GtTHEG63fdV4Zl1zs3TnB19eKj2mTTyijW3n9hTlKaPDK/GBhKOGstfK1W
-	hFErfO3SDCO222H8zb84NYJKslhCL/sGaKjLY7tNc2ua/VPcgmFHb7uZN4v6fXTwqrA3H2CuI9U
-	GRpvPfFkFOE1A2c2cIZb06uFKKxuIw7WsstC3glMqU2MoC3OqBcYLy9Mr7dnRNdaIY8SAH3YpLB
-	ki7+i1pF+vjg3gNI7w4OAcySgr8O2BWB56zdhLv/I7rP5Wo2Pnpoay8aqQ8/wsNHvKq2yowI9GV
-	qt7iZDexWdoYhKBB+bXIPWQN6itEj0Lot3n+T80QhzeA==
-X-Google-Smtp-Source: AGHT+IHKV1LEX2Kg3/u/Laf0CuUnSDbfVay62iMr9BZEu/EkpT7Nz24/p9OPfOdHBurpeZ+kYCwV8Q==
-X-Received: by 2002:a05:6000:2311:b0:42f:b707:56dd with SMTP id ffacd0b85a97d-432c37c878bmr22055424f8f.33.1768230512058;
-        Mon, 12 Jan 2026 07:08:32 -0800 (PST)
-Received: from blackdock.suse.cz (nat2.prg.suse.com. [195.250.132.146])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-432bd0e16f4sm40089995f8f.11.2026.01.12.07.08.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 12 Jan 2026 07:08:31 -0800 (PST)
-Date: Mon, 12 Jan 2026 16:08:30 +0100
-From: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
-To: Waiman Long <llong@redhat.com>
-Cc: Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>, 
-	Jonathan Corbet <corbet@lwn.net>, Shuah Khan <shuah@kernel.org>, linux-kernel@vger.kernel.org, 
-	cgroups@vger.kernel.org, linux-kselftest@vger.kernel.org, linux-doc@vger.kernel.org, 
-	Sun Shaojie <sunshaojie@kylinos.cn>, Chen Ridong <chenridong@huaweicloud.com>, 
-	Chen Ridong <chenridong@huawei.com>
-Subject: Re: [PATCH cgroup/for-6.20 v4 4/5] cgroup/cpuset: Don't invalidate
- sibling partitions on cpuset.cpus conflict
-Message-ID: <uogjuuvcu7vsazm53xztqg2tiqeeestcfxwjyopeapoi3nji3d@7dsxwvynzcah>
-References: <20260112040856.460904-1-longman@redhat.com>
- <20260112040856.460904-5-longman@redhat.com>
- <2naek52bbrod4wf5dbyq2s3odqswy2urrwzsqxv3ozrtugioaw@sjw5m6gizl33>
- <f33eb2b3-c2f4-48ae-b2cd-67c0fc0b4877@redhat.com>
+        d=1e100.net; s=20230601; t=1768230921; x=1768835721;
+        h=content-transfer-encoding:in-reply-to:content-language:references
+         :cc:to:subject:user-agent:mime-version:date:message-id:from:x-gm-gg
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=yBnEhkF7Qdzoo2GNW/2wAAQ4zQejO2Ma9rGc252Ro1o=;
+        b=UmCf70AFruKkLSZkg25hyW1uEoeIn7Bde6oYyVA6JScgyHl+MtopYFauOj0OGS/AZA
+         22EC/5zSL6sO1KuXDHMxjdfsKrJwxm6neLW098y7ct9YMC8dYFSniGxehaUQMWg2EAJ9
+         xsng68S/NidaY2u4A+kiEiU1ccQeBMtBhQFIOXRgxUo/v6hF3bc2s+4cqNz/rE8r6i6B
+         Okh6Md28RQ02KGhNmmj5RUDHeik2rnu9wI2pFDwmMFc+50mvFUtXuUc93oEDgS6w1xAJ
+         XowL4H4Nu4LIYKg8SzQBBeleus5CLUBpor11G3PQ0dnWy1qusWkQONTYtgSCKw4R0By+
+         IchQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWv8vcpjD6blqmuI4vJ0oXZjmeZBl87Up9TpGmMe29oEF6TfBAaWisfX8rmcrhyRdHcUNlHCTfg@vger.kernel.org
+X-Gm-Message-State: AOJu0YyR/0YA2mYJl26gpSescqnTs1d1TVAzl37gFBW83rMSe9J3cxKG
+	5FMepVCo2Xx1XOJqd3E59izZHQnPdPh5ZQJA+QnWB+DOUEBojDCc1KRp0kDXU/1RaRgkZhbDiVt
+	QFCGiQaoQ1rzomK0TQnh1E2333PBZqTNysdf9zW97lRi8a5H+l9UAyA0BnIQ=
+X-Gm-Gg: AY/fxX47oqPOiJSK9Ux1CtY8PsDK9xoHhhQCcoXQluSV2T4LpdsbeaiB8GEGQlacOwc
+	Ybrz406F7ck2+TJg0BkAyS0s4gcwALhu+xeXX+IV0IBmKXYTx/T7a8vaBXxh8GxRLM2jLoYBanL
+	+siAUqR+Yb8gYTkjm95R4NyoM/RRZUuO98VnaExHiY4dLAvW97ixMzKrRV1svyhXYXrZAMMspeC
+	9Nie7btv0FvCUwmwqNb9Ot55LEOyq/6u3dwVwveUbaZBv5RIFas1kBsZfOXtAP37oYh+VKZcd8M
+	E9WJwAj9LeLpBwXxU8+rDJ+moLwBryLeSFn3a6921fhfzaKdOnXBno4z74xn1ZU6Nuuxp1BJRW2
+	oFKcrx17XCmELhmUlH80vBQD1Isl8zi0BIbnOq5HlolkBCfabuoZXVb+T
+X-Received: by 2002:ad4:5b87:0:b0:87f:e1b3:2014 with SMTP id 6a1803df08f44-890842d60cdmr242991886d6.66.1768230920856;
+        Mon, 12 Jan 2026 07:15:20 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IEEEvjOnKFKxOB5sHeF3FHbEdls66ozWBRKEY9iiOUfJDVYVV2wAJMexcKiVyLElIE1U7IUUw==
+X-Received: by 2002:ad4:5b87:0:b0:87f:e1b3:2014 with SMTP id 6a1803df08f44-890842d60cdmr242991006d6.66.1768230920201;
+        Mon, 12 Jan 2026 07:15:20 -0800 (PST)
+Received: from ?IPV6:2601:188:c102:b180:1f8b:71d0:77b1:1f6e? ([2601:188:c102:b180:1f8b:71d0:77b1:1f6e])
+        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-89077253218sm137736816d6.43.2026.01.12.07.15.19
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 12 Jan 2026 07:15:19 -0800 (PST)
+From: Waiman Long <llong@redhat.com>
+X-Google-Original-From: Waiman Long <longman@redhat.com>
+Message-ID: <9a1b7583-7695-484f-a290-807b6db06799@redhat.com>
+Date: Mon, 12 Jan 2026 10:15:17 -0500
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="57d4b62ug42tsq4v"
-Content-Disposition: inline
-In-Reply-To: <f33eb2b3-c2f4-48ae-b2cd-67c0fc0b4877@redhat.com>
-
-
---57d4b62ug42tsq4v
-Content-Type: text/plain; protected-headers=v1; charset=us-ascii
-Content-Disposition: inline
+User-Agent: Mozilla Thunderbird
 Subject: Re: [PATCH cgroup/for-6.20 v4 4/5] cgroup/cpuset: Don't invalidate
  sibling partitions on cpuset.cpus conflict
-MIME-Version: 1.0
+To: =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
+ Waiman Long <llong@redhat.com>
+Cc: Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>,
+ Jonathan Corbet <corbet@lwn.net>, Shuah Khan <shuah@kernel.org>,
+ linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+ linux-kselftest@vger.kernel.org, linux-doc@vger.kernel.org,
+ Sun Shaojie <sunshaojie@kylinos.cn>, Chen Ridong
+ <chenridong@huaweicloud.com>, Chen Ridong <chenridong@huawei.com>
+References: <20260112040856.460904-1-longman@redhat.com>
+ <20260112040856.460904-5-longman@redhat.com>
+ <2naek52bbrod4wf5dbyq2s3odqswy2urrwzsqxv3ozrtugioaw@sjw5m6gizl33>
+ <f33eb2b3-c2f4-48ae-b2cd-67c0fc0b4877@redhat.com>
+ <uogjuuvcu7vsazm53xztqg2tiqeeestcfxwjyopeapoi3nji3d@7dsxwvynzcah>
+Content-Language: en-US
+In-Reply-To: <uogjuuvcu7vsazm53xztqg2tiqeeestcfxwjyopeapoi3nji3d@7dsxwvynzcah>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Mon, Jan 12, 2026 at 09:51:28AM -0500, Waiman Long <llong@redhat.com> wrote:
-> Sorry, I might have missed this comment of yours. The
-> "cpuset.cpus.exclusive" file lists all the CPUs that can be granted to its
-> children as exclusive CPUs. The cgroup root is an implicit partition root
-> where all its CPUs can be granted to its children whether they are online or
-> offline. "cpuset.cpus.effective" OTOH ignores the offline CPUs as well as
-> exclusive CPUs that have been passed down to existing descendant partition
-> roots so it may differ from the implicit "cpuset.cpus.exclusive".
+On 1/12/26 10:08 AM, Michal Koutný wrote:
+> On Mon, Jan 12, 2026 at 09:51:28AM -0500, Waiman Long <llong@redhat.com> wrote:
+>> Sorry, I might have missed this comment of yours. The
+>> "cpuset.cpus.exclusive" file lists all the CPUs that can be granted to its
+>> children as exclusive CPUs. The cgroup root is an implicit partition root
+>> where all its CPUs can be granted to its children whether they are online or
+>> offline. "cpuset.cpus.effective" OTOH ignores the offline CPUs as well as
+>> exclusive CPUs that have been passed down to existing descendant partition
+>> roots so it may differ from the implicit "cpuset.cpus.exclusive".
+> Howewer, there's no "cpuset.cpus" configurable nor visible on the root
+> cgroup. So possibly drop this hunk altogether for simplicity?
 
-Howewer, there's no "cpuset.cpus" configurable nor visible on the root
-cgroup. So possibly drop this hunk altogether for simplicity?
+Ah, you are right. I thought there was a read-only copy in cgroup root. 
+Will correct that.
 
+Thanks,
+Longman
 
-Michal
-
---57d4b62ug42tsq4v
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iJEEABYKADkWIQRCE24Fn/AcRjnLivR+PQLnlNv4CAUCaWUObBsUgAAAAAAEAA5t
-YW51MiwyLjUrMS4xMSwyLDIACgkQfj0C55Tb+AgfBQD+LRMv2fmPFzKZKYK7xH07
-xkhePTg1NW33sf1/vTxdhDQBAOhjME1GIwRPEdrHWZa/OJA8akS3jrgvjUc32oNZ
-W/AE
-=x6DT
------END PGP SIGNATURE-----
-
---57d4b62ug42tsq4v--
 
