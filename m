@@ -1,83 +1,83 @@
-Return-Path: <cgroups+bounces-13129-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-13131-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 13F9FD16D2B
-	for <lists+cgroups@lfdr.de>; Tue, 13 Jan 2026 07:24:38 +0100 (CET)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6BE68D16CB6
+	for <lists+cgroups@lfdr.de>; Tue, 13 Jan 2026 07:20:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 5A15430B2381
-	for <lists+cgroups@lfdr.de>; Tue, 13 Jan 2026 06:19:58 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id DD7FC300F6B8
+	for <lists+cgroups@lfdr.de>; Tue, 13 Jan 2026 06:20:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E3507369204;
-	Tue, 13 Jan 2026 06:19:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3C8F7369223;
+	Tue, 13 Jan 2026 06:19:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="ITM0xymN";
-	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="Wd/V/wUG"
+	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="kD7JNVO6";
+	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="UqIzZVP9"
 X-Original-To: cgroups@vger.kernel.org
 Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 99E03368295;
-	Tue, 13 Jan 2026 06:19:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 661C228B4F0;
+	Tue, 13 Jan 2026 06:19:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.165.32
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768285197; cv=fail; b=K6f3UKDZHgEOEuV8lgvLaHchxMcJkUsPEJvATmgzxUym6cjYQtPteIM2rQB6dFWOnQkghSMBjtdUoUqD4He5619fiiOM1FNp05XYoUKG1/L+QME+ZKKQe/BJtjx/UQ6cHwJX6uh+9ST4+VPsmj4VsaiZHcSWzq/WaudvvvtOLcs=
+	t=1768285197; cv=fail; b=gNruuZ9Ur2Pgs9X7dHIrXhQPJj8VzpqDHFetkzwayhZiurHmbZKfkjfcAT4mm1iW9cj0UAplcwtPBobeHPujX/7OHk6MAwHB9Fkd6SLdxeDTij4YjF/cAe1NtS4lYCizgbWpEaJNT+9lDZ8Rpjr0Nv/Vo+LpeXk/3EYggJgPj40=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1768285197; c=relaxed/simple;
-	bh=B5J+Kvw3uTSTkX7TBkjveYgVldrv53q2pVKZdKJNZww=;
+	bh=htWTjVlKTRTeWPDqukVmZtjJgU9GByl8+dQuUD+R0lY=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=MuNhuVKIyApw1PFXJCfm4DmrGIfiSeuwqX8C3X6eDaaX9fpeZHuBVNTXao2MEJIMVYmPr97qfXEscW9gjybeR81l0iPgbVeuMCAZ0/FWW2zAUE03PLLIx+rcGAggA0m9sGh1kHeA6M49vqoTYjfgw17+5/tT5wxuW/TrHUye1dg=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=ITM0xymN; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=Wd/V/wUG; arc=fail smtp.client-ip=205.220.165.32
+	 Content-Type:MIME-Version; b=hWanHVuObYwidCdygVSriR2NQ2FjSL/U+ZMeFU1vBDN5bPxQ0xgqefVXDb1zijWk2/mgefvWGTScrr05erJMQ6tjms/dDc6IgsseqFYVba3OrSyza9qhWokhttVBZg/bl+0zK6ljYrREtEny+P7x/KnOzR7zg4g4/+eNmNpOWKs=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=kD7JNVO6; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=UqIzZVP9; arc=fail smtp.client-ip=205.220.165.32
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
 Received: from pps.filterd (m0333521.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 60D1hHuT2677746;
-	Tue, 13 Jan 2026 06:19:22 GMT
+	by mx0b-00069f02.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 60D1hE2M2677475;
+	Tue, 13 Jan 2026 06:19:25 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=cc
 	:content-transfer-encoding:content-type:date:from:in-reply-to
 	:message-id:mime-version:references:subject:to; s=
-	corp-2025-04-25; bh=VSXF4WY+x3GbPBut42bRuKa7SMEue5CzGxaBtSfEHNo=; b=
-	ITM0xymNN5b23hsidvC9Xy3rrw5850fqTZm+9ryQo4MRtcs2oKWZ/KwfcjJJNgdb
-	0ne4jDxzZIZQh//rPdeUPceLBIIaXk8M6EYBJmsIe26bpNK7gInnpjPmRlpo8/tn
-	IB0EBPcTn3XniZB4z0Anu7Off8Zn7U+IQq54SOH6cStFktLxeFv178e4mQcon2zN
-	FZDBw6QYtEABLeemAKqW8eVazaRU2004AQlao5zDL5qGkgt2RnsTxlnwW/Kh0OzI
-	t7B5qiWqRLMq0wisQG4Wc1P37NONjLlOyTjT28h5ZykrivvUvwlj93HPccFCsAAJ
-	SG5u6zrwFB0jxCo11B/Vdg==
-Received: from phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta03.appoci.oracle.com [138.1.37.129])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 4bkrgntwc7-1
+	corp-2025-04-25; bh=xhfiwp+MrCpdoeTV5cOsFGGRbQPLILDsQ27JS/GQNYA=; b=
+	kD7JNVO6yU+XEVaul0pfUPauAP7ZZYXv4i39xQZFl66LAcFpN9clfvkcEOdEAJD4
+	8S/P+SPIeJOEMtlHENRWE/HV17cApJgkcYeyD6IkEo5f2deQD6PfIM5CE6ZmXK2y
+	Vv4RLy6/Vb62gYSIV8F4ZEhGohXG2yka2k0JKh5DKz5Et4xscSll1Gx3LeOGVIzk
+	go6YAJsf4SZvjceWsnq0D05DJGtEaS6fuMNPPqh97g644m8XJBZLz6b6cvTrNYaf
+	Wbv5FBvwJZwCy/tjvulSX6ksFXZvxs/4zcvo5osPdd542//UJtJfOTZl5EQ0ZTUw
+	2mHqJes1J3q/ChN6ClHmsQ==
+Received: from phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta02.appoci.oracle.com [147.154.114.232])
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 4bkrgntwc8-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Tue, 13 Jan 2026 06:19:21 +0000 (GMT)
-Received: from pps.filterd (phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-	by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (8.18.1.2/8.18.1.2) with ESMTP id 60D41IPR035319;
-	Tue, 13 Jan 2026 06:19:21 GMT
-Received: from ph7pr06cu001.outbound.protection.outlook.com (mail-westus3azon11010020.outbound.protection.outlook.com [52.101.201.20])
-	by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 4bkd78brs7-1
+	Tue, 13 Jan 2026 06:19:25 +0000 (GMT)
+Received: from pps.filterd (phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+	by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (8.18.1.2/8.18.1.2) with ESMTP id 60D5TI0C028706;
+	Tue, 13 Jan 2026 06:19:25 GMT
+Received: from ch1pr05cu001.outbound.protection.outlook.com (mail-northcentralusazon11010060.outbound.protection.outlook.com [52.101.193.60])
+	by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 4bkd78b1qb-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Tue, 13 Jan 2026 06:19:21 +0000
+	Tue, 13 Jan 2026 06:19:24 +0000
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=skgM7Limw7yB7nu0+bxV6k9gywSKU/9tBnmfi/ttV5juuvtg/ZOCQksv5YuELiKjdrXBsVRUda6r8ssIgjY8NCrUMJSOLXFIwLTKH/KNNxq42mDWFWlqIknEispgfb/Ft4H8iIRWAHUrQ4qzYgdAFnzl2uvaYTb5ZvKdFavbiLPP/sJEHI7/r6boEIhSoA9UmrQfLbHqM4fiVDNk/ZyV6DHajXZHgZrdKlD1n5vEaTCOe7gcpDZUSVGkWWANesFXzGmpDm0CVthzfrSXGRxNuPnawIHQcC1Gl/zZ5PMSirWyFn6Tuibjxmb6l03me4p8MkliejXOAugDrHmpFIbJbg==
+ b=dKf3VbGQHqEj864mPvuN9UMzoNjNo0AwoVc/Dp1b/eo4w9dKhgRv1E3P1DG4AT36j3wopxl58Q9oK6rcqRSZBtbt2AA+AbFN69pIrNqTVNsUnkZD0e61L8BJ6IItvBh4GDqTuPtod6wvVDgLf92RtwIdstLKtC6AYEst1KN755IcSlM7CCAzTzFXJuSjMCITL8EUFr33s/+HuDM1vpzUGxweXaKL7/JpRxMV+OpM8x4DlsonQyvmPIq0qXnO70a6GQCMnxn2H/VojZwfvlxflgFqsa90FIa4iSPFN8NTOLx0D5OzqA6JH9Or0K8naEVtcsRmIOO7JJnIQudzz6akOA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=VSXF4WY+x3GbPBut42bRuKa7SMEue5CzGxaBtSfEHNo=;
- b=jeccwCZ3sleqs0vyLLvxom2+vrTESJnudh2Z5kyJA6iO7KZCEDL1594xvTAIP/wMYxORngeCnyg9qifp3g3iZ6J8wLh3zNxjtfoRq5nb0Znc/qMcgznMhBGS51kbBKUcsaoAKG1/Oyo/OCHIu9oAsd60rZXyOTJ6cjlWPfLqjut7NycMro65CYKKYzzWxc1TC8BW7hyHrX6rxbjjG6SLBJfGQxj3/bjmtZFWhTOZ0j3gwMe2sVYpcAbOpExDOwsxmI24Vtbubfmg8rqK4VEOJkaQ49yW3ccr/SgOx82sGIEkm3nRw3kGlo2blpMwjLQvCkmIAqLN98cESvh+emtF1g==
+ bh=xhfiwp+MrCpdoeTV5cOsFGGRbQPLILDsQ27JS/GQNYA=;
+ b=CGFszEdSIpW+F8C4xph+gws9hLBEggGmGCvuWtGFXBAAR8chSw6vgUbFJa31AcqUCNN2RoV6G86Z2ZuoPn1kyq09TZ7GoHCLBEf7lUnRyiKlWAKWmFciuwJ4WrNDysUSWMPwbLZRiVex8Gsw/RdQAhWx9WEIZYQl73P+aD6QveSLUrfbajFvrIA3VWsciYKqw4vO4PHvRtIlEFGX8jcFZW/klYxb7k6dFeDIiRwFVq0zZzoU9/LAV8gBYjRTSmc0wh302bqqG4/bnuFn6Hi53dl4NtoOjMPp0+xuCJ2r+AQT4IA3W2QKSdygF9tDXYVboHr6Ul3Qj7gggc57tEn83w==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
  dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=VSXF4WY+x3GbPBut42bRuKa7SMEue5CzGxaBtSfEHNo=;
- b=Wd/V/wUGv/PwIZ8Uj8RgFBB4+vZcz8pFFdb4M+e26PHI59vLTHBUbEQgJX9kfna9RirUsaw6MEqd24COJT4x3vRb8HhCSJsBQZtY3r2I5zy1jW1p7BkTMMoYSpSgVvtW7K3w0z3G6S/nDpYLgpdtvef65F9f0JasEAxwuXzT9LA=
+ bh=xhfiwp+MrCpdoeTV5cOsFGGRbQPLILDsQ27JS/GQNYA=;
+ b=UqIzZVP9jWQEi1BJ8ht91qAzjC/Qj97WLhuUhgj3Z+f/tKQw9x/VmiVpPKClRoYHn5rpvXfReXYVH2MffUltkb84WlQjOsg7ic0M4kkcn7NgIWB+SiyfchU3hkCiCgZzPCSsxEud1VmwK7p+v0zPwhVglwMsgi9KUFMp3OI4/cU=
 Received: from CH3PR10MB7329.namprd10.prod.outlook.com (2603:10b6:610:12c::16)
  by SN4PR10MB5622.namprd10.prod.outlook.com (2603:10b6:806:209::18) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9499.7; Tue, 13 Jan
- 2026 06:19:18 +0000
+ 2026 06:19:21 +0000
 Received: from CH3PR10MB7329.namprd10.prod.outlook.com
  ([fe80::c2a4:fdda:f0c2:6f71]) by CH3PR10MB7329.namprd10.prod.outlook.com
  ([fe80::c2a4:fdda:f0c2:6f71%7]) with mapi id 15.20.9499.005; Tue, 13 Jan 2026
- 06:19:18 +0000
+ 06:19:21 +0000
 From: Harry Yoo <harry.yoo@oracle.com>
 To: akpm@linux-foundation.org, vbabka@suse.cz
 Cc: andreyknvl@gmail.com, cl@gentwo.org, dvyukov@google.com, glider@google.com,
@@ -88,16 +88,16 @@ Cc: andreyknvl@gmail.com, cl@gentwo.org, dvyukov@google.com, glider@google.com,
         tytso@mit.edu, adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
         linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
         hao.li@linux.dev
-Subject: [PATCH V6 7/9] mm/slab: save memory by allocating slabobj_ext array from leftover
-Date: Tue, 13 Jan 2026 15:18:43 +0900
-Message-ID: <20260113061845.159790-8-harry.yoo@oracle.com>
+Subject: [PATCH V6 8/9] mm/slab: move [__]ksize and slab_ksize() to mm/slub.c
+Date: Tue, 13 Jan 2026 15:18:44 +0900
+Message-ID: <20260113061845.159790-9-harry.yoo@oracle.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20260113061845.159790-1-harry.yoo@oracle.com>
 References: <20260113061845.159790-1-harry.yoo@oracle.com>
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-ClientProxiedBy: SEWP216CA0048.KORP216.PROD.OUTLOOK.COM
- (2603:1096:101:2bd::17) To CH3PR10MB7329.namprd10.prod.outlook.com
+X-ClientProxiedBy: SL2P216CA0194.KORP216.PROD.OUTLOOK.COM
+ (2603:1096:101:1a::19) To CH3PR10MB7329.namprd10.prod.outlook.com
  (2603:10b6:610:12c::16)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
@@ -107,371 +107,330 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
 X-MS-TrafficTypeDiagnostic: CH3PR10MB7329:EE_|SN4PR10MB5622:EE_
-X-MS-Office365-Filtering-Correlation-Id: 68722a1b-a77b-4b6c-3d59-08de526baec6
+X-MS-Office365-Filtering-Correlation-Id: d1481879-1309-4c2d-0e62-08de526bb0f1
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;ARA:13230040|1800799024|376014|7416014|366016;
 X-Microsoft-Antispam-Message-Info:
-	=?us-ascii?Q?f5iYX0M+Q7q6F28dS8h8NfzKwpi7qUu7TVzy9ihfzUu+FItyJ3tGOVy+Qfyk?=
- =?us-ascii?Q?3PdM3vpU2w6M2z3X5LRgejDqxmyCfqDgkBQwo7S8zvCGxyDfwRrvOqmHdC0F?=
- =?us-ascii?Q?WMhEID/S+i1Tmq00bhVUIxWPFYPoAqBDcEhVgqbfXMoQEwKu1LIkbmzvNFJA?=
- =?us-ascii?Q?4l5pNFPY89PFNuZOHmxog3GrwLeDtoL3SGchaDyNn6fCCQoXlnQo9J6/myKC?=
- =?us-ascii?Q?LWzyvxQN4cjV57SILyKXUZVsUggfnvyNQciO4p1qgN6L1mOZ+dUXLNZp7ucK?=
- =?us-ascii?Q?Pm5OvmPlfv9PaUq3LQ6twB/6I5VcbMbbATnnz3ki7zrE/l1syEhH7WEZoWML?=
- =?us-ascii?Q?ISsZ+HeES33NDhn6sFOWhkFKOtexI4myEjfpCw+PC/1a4FzeQwsCCWedgU33?=
- =?us-ascii?Q?wCeN8gl42maNwgj6Sb1GhGExCjhE1bSsKq2o8CTIwbEIOmD+UdkvEsbIwfPZ?=
- =?us-ascii?Q?PQceXkB2XN/rl3Uvke0SRK7NOpCoTrr/uc68qhhUoVyySn+9iRdaL8972N0Z?=
- =?us-ascii?Q?rLl9yTOZ9QMmgniCeVvncvey9mTbE1e33kNVIsc8WNEMBI+Y3I5N2jctomb9?=
- =?us-ascii?Q?hpYBhSZzoTcv95BiDQJ0hBNfVX3pIdH33mN1fpfDJv/YW6nPIVJq7QlB7dyj?=
- =?us-ascii?Q?DeDYeWzgKEH9nv+I1CFCZrZv/OKOIx6mLa4GIvwPVPfZ0I78ld2dlB8+svpa?=
- =?us-ascii?Q?LqVgekkGODH91gyK+nIsD4NdpgS/sHOM8j9QNKq1jSaxFb2noxDHB5xw5q0f?=
- =?us-ascii?Q?VoY4C1GVmFWiYRYAWDlILQp1RwBrjYgOrUL9tapoLPcml7MTxIG6oigx+n6e?=
- =?us-ascii?Q?l7ZErBPO/PqIs68E23s5OS8Df1CDpJ88uQhFDEmHIdJ0ICC4VJpVohUdVLDY?=
- =?us-ascii?Q?Id4eYd5G82JANO9dlMgFusA6Hi3DW4pPj94/3Xv0zc2+97qA4qxeHsI9S/Qn?=
- =?us-ascii?Q?DPSjn/zdzUxaSkEyBNqTbtp4t7CHu/3rNgiJT4ojkyxbOpWeuaamc3haM2cX?=
- =?us-ascii?Q?jIt/L+YWDSDO9YQe0cBBmn5mHj5cpzFTdOMnA7TtLKu8JGmXa5nrOtE7rOmO?=
- =?us-ascii?Q?+PG4Vx8QKOE5mJKUCYp/+1/FNk+cSPnHus/b5Yw1FtrJErm59/fViODDK2lm?=
- =?us-ascii?Q?kozhtG7HL3YdsViz90A86GX1XhbeVf4e7yi4Fp4YZpCNKQQnnLdLREzQMgCW?=
- =?us-ascii?Q?rc0jzNIqB6YLbS7UsSYpUCA4jeqoBN3598tDYC5arx6uaERHS6qPffFU4OOp?=
- =?us-ascii?Q?JfTiTn4j834TLRKjEqNGUCHQ1AT4dJY2WdDaTiU4iwCc54sHn32Q3dFMgJKO?=
- =?us-ascii?Q?nefqixYhIrSdxUFOVETDoaaQLaYioXpJiFTR3FoFxyLvwMRZVemyaZ2Fbz/X?=
- =?us-ascii?Q?qQmozIMdRnY7bWAAs6wN+DPJ3NtBf3fxXUVvsbiSA189cFggR0WQjScBWKUC?=
- =?us-ascii?Q?lOdsRkwwql67FJcXQ+Kn907WBcMZ3Y57BEiCIyhERhtSRkKvACbsCg=3D=3D?=
+	=?us-ascii?Q?LKUnHQ4GXQ2k69yrTgIrbcmDbAkAAcDuervXbVbvoK7pSI7yt2qJdU5Y6/Uh?=
+ =?us-ascii?Q?u+Lx95C11otWOOMOIXQdNonZMQYLdCq6TmvvvyhbECF7HveizEVqQX7N9OUD?=
+ =?us-ascii?Q?qulP+gT5mIRJ4x7BORgM0Fz76cuFf/Co8TYIHSu7fVWcup2eAGHWLzr3SJqN?=
+ =?us-ascii?Q?xrPp6d3i3UN1VKg/nt+aZDVyK+JZM6c18cVj/XL2hELNJV8AAmjESmEsWxcA?=
+ =?us-ascii?Q?cOetTnJmwG4wleXD64BbLN8NmrNa2LX5i/QUNp3ZCkU095+qrQh0jVAAMAJI?=
+ =?us-ascii?Q?qUcAc9fbspIDQ9tzd7tkcmn2X1HgrAJUcgYpV021BHowEV2zPcb8LQqLHtrV?=
+ =?us-ascii?Q?RMvBv4AgOIFHz9dp78TxPUMyLsvMgqEWKweeQlGNolSiszZOoUwjC2t1qpa1?=
+ =?us-ascii?Q?67JTTg34b1MV2xeDsr4yFzSLT0Tq3geFDJNj+EdpYLdhOCj7pL5rHWH3MEtk?=
+ =?us-ascii?Q?6XIiTAM73+u7SkJdurkDTxbdokXg8cMkmfi5pLa7CXZckCSHQSpUPG4ctt3N?=
+ =?us-ascii?Q?acgey2RCZ/d34+AjmUXvmGx1RQ0aw3TaD5fV59i2qHNY1MUvvRRe03ztW7TG?=
+ =?us-ascii?Q?N1NPLWhf0OOcQ11QyBW/h/1/Iu/xGrHvBJVPy4/K9uCR+27RuP3QHwTXEELD?=
+ =?us-ascii?Q?d8gl7k7gP02kRqoPA8mTdJfin+YhF05KZCvq6pdV5bXa7XNxJYGygihtYYcz?=
+ =?us-ascii?Q?HfIAdilKoA1WpUCCHNlwfKX3K7DfYJyzjC3QY51gvWMHYq4IWVD9fZr8XmO/?=
+ =?us-ascii?Q?POiHXGtK3ARDTP2SocRi4zbdkZUaEvsCejy+t+afkUyI53l+hV/+iMn1Viiw?=
+ =?us-ascii?Q?knIFr1CLLaSsZ3JMfiXnu89qBGmtTZNT4wjzdI2CnzZBMpbLDWIvKrmMuk/F?=
+ =?us-ascii?Q?+/0L38spLmP0xgrCKKGZPeG68mmyLc1NPHxmncGjdQv2j7zIrYtmZJojNMaB?=
+ =?us-ascii?Q?UROMhx+vEJP8WNRrWaZYwuZQ2Tm1Sz06UM7JvUg3K53xcGHwUWDmdVn3o7Ky?=
+ =?us-ascii?Q?yy5Aagm1f8RIy2c2hwzBSfeN851BJiUi1PjIzBva2PhTcYjQD6KhB8V7j2OG?=
+ =?us-ascii?Q?Vqo9oTWQQ/uXDI56Sdp4CMlXQ4knErBL6r2vSZLxBxqcEyMc4KniolwYA5Os?=
+ =?us-ascii?Q?0n7swGhQ7kqrYI0KCfrxo0CN53/hmjiT+fha4UhMgamOoYP1mfC8cN1FjTAL?=
+ =?us-ascii?Q?SZwoflnvLXUW4mwHc4Did68V6USK1HKP3vIo4xOkSW3m8COXErlQztUNDdQw?=
+ =?us-ascii?Q?IUq6uqGqneHFVKQK3Guc4qp0xLdlnF9cGKobIcaP5LrHX6eO/9nRo9Ls1e0W?=
+ =?us-ascii?Q?OhCf8uzJGKoWs0Lk1v6g7xD0YCo3lGnn0qq7ytRciDuVSCWgk2xOAIGdoNab?=
+ =?us-ascii?Q?O2PSIQtfZb4QiJIlTxyXRUjPWWRTGwN0O5q5g8qqSEMIYN5dy9QefyBHK4ZY?=
+ =?us-ascii?Q?UGpCky5NbPVSEq1l3bCjodjQNMwn7ktO?=
 X-Forefront-Antispam-Report:
 	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH3PR10MB7329.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(376014)(7416014)(366016);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?wLIAX6hPENF8ywjjVXzsLILjoGvEMT15lHh4QfKA+jXkkPFscUaToXfvQGDi?=
- =?us-ascii?Q?LUyd3LrTF2f0dt7+bYM+gjCwTcyu7Xt2ao5bMu4UuA2avJTEoTfTfT5TvNbT?=
- =?us-ascii?Q?8f9fRzXtnkSsm+V57HlJ9wTsy9CfnzWPH/fQ5kfei5S8P4BVxE+/kUKeUGiy?=
- =?us-ascii?Q?n0E/PEW57ov1zmhI6KO0htSwOAmqUqE85IyfIqc9iKCsi4W9lDTfvfgJ2fT1?=
- =?us-ascii?Q?e5PDP90JlgKP8haha3o0NAEIdaoP24ErrL3AenBBj1Z/LwLEITSg1/DSJlQ0?=
- =?us-ascii?Q?EzHnrx3MxYMlwf5UQdg/xrvBzz7XSr3K9srG0kkVafgLX1c8Ko8W04KVOJ8/?=
- =?us-ascii?Q?khaNH6UQQIYloCqwps33sZuWFoTrTIvBNdEMDjMV1A6OMJuFUzwmRSmsR5or?=
- =?us-ascii?Q?0ONib9dormfrPuzuFJ4u+7pG7Q2yoWndGRhUAKrNaNThKxFZqiektCmR/qvF?=
- =?us-ascii?Q?6EeRcPuIjH+U8kYAQ8kQMdeN57aZ3cNwSh45aw0hxFmMWYARsyP4jcnCa0te?=
- =?us-ascii?Q?r/s1X85jDSbjq4BITMVXY0MBzEADqlpehzibUqaksKB3NRoQrhW4txtjBLnJ?=
- =?us-ascii?Q?wCmOwrO3l5RQJUS/C9CpSZx2uGSpwqEhc8ZmOyBXFhMdlZMr/KjF/F/UA7FV?=
- =?us-ascii?Q?/f/Zi3JNlytzy/HZ4eQCjk+KLpQCsvfaq/2I5mDxKeN+dAtKekoRW2x6QDjI?=
- =?us-ascii?Q?o7pgJ1rcSBUt3vXUk/yh5WYGuCAH4KTT2fucXRoctAHUh70iDtjQ5ussvFm5?=
- =?us-ascii?Q?N4E+3SVt7ZIqIURXrbJdtcsRwHQWPJPWz0s2Q2O0oUyqR0CKgc2ZBMzui1Wl?=
- =?us-ascii?Q?82fRM+P2lbrJYlJLSC7xrU+Xte7Jov9qV3VxD7e+gyMjAbK60jioogbdnKH6?=
- =?us-ascii?Q?/m19LNrYaNQ28njwR8WQoZF7JwsXhBbkTQKrk7tdieuBkYSnyxabxO20DtRB?=
- =?us-ascii?Q?HOle/bGeb7CIWqHEkL6+efgNq/wdW2+oxkob+2ReCX+C2V3DrKtgCjsJJkPV?=
- =?us-ascii?Q?tnW/h4p6nFVDZbhOlia/cvuWY/qsztq5GltETtA1G8FY/3BPMz0p0jJ66jd+?=
- =?us-ascii?Q?SdAiZe27OtF0NGTZGBQKEQsr94AgG/JfUIXo62akuCrGinH1L4fWNkJ476VA?=
- =?us-ascii?Q?Ms01LRrgHbl+fvrOj2bdQSG8c0Dnp5dl7TJ18vSbqzsEDgc6iMAH0sB0m7wF?=
- =?us-ascii?Q?cR9pvpq3HyaF+QIuVkBJjIGxBGMDvVDrs3+2nMxKwwi7CCKlordRXU1Yf6KN?=
- =?us-ascii?Q?6MHKM6PSKdv70OA9tFK7D3b8xSbxxn6cfi0kmTBOQDRTbFeyMryuDWIf4FBa?=
- =?us-ascii?Q?477Vl662s8cR6LPqfs8NBTMOE55jOwzz/mJ9a/Wha8OQ/+fVX0eMLAg+gBG9?=
- =?us-ascii?Q?6FukVldn0E8kr90TvUvOM7r1w6zP1mCAem3oKqdXdXAX5XlfqBd4b8ZpNFmm?=
- =?us-ascii?Q?qaHyB94QQEX1YnEMf7hk5IJmFTCij04k6RJXsbJhITki4PnvCfhxuez+5M+3?=
- =?us-ascii?Q?0kwtnwqEaXCg2mmh0nhK1ealJ7dqxcaQWjBu3Z/ICDr2UyZ/AQ0SoWiQrQkM?=
- =?us-ascii?Q?9blA0PebYipn0jRDQ44fjATagM+DytNs0xmbJ7YynW8DlMfe3HRSLqumW+Nw?=
- =?us-ascii?Q?LiwyLQv1DZc1EWDt4RVEO6bvTN9r+1A5yQgQLtyw2upHAgFizprYMbSKj0NL?=
- =?us-ascii?Q?wJl5Q9kMg0q+/f+4KV4wIbbMs0V00LyE1njIZ2ldzwPRnLzeZaxTLn5HF6mY?=
- =?us-ascii?Q?2cdWoS1k8Q=3D=3D?=
+	=?us-ascii?Q?o1UoNR+YrzfxHmqFJgsQFx9/1sRv1ShTxR4Cx9GtTSu9yT4w6vhd90qMkffT?=
+ =?us-ascii?Q?xG59HgzAzFjKE9/Dam4/cL85+q/RygbDlSXkkVW8VD09P4/yAJ0nu7FUMvDE?=
+ =?us-ascii?Q?04gA6WpCsdTRa5NPqPIc1slVNIkJQujuNkijc8bLazCSUlH32E0LX1a4GUIR?=
+ =?us-ascii?Q?7Zvrm+JQpy+KurC9zv89bnqYs9iMfWbdTKXXD71OCu1MiW986F50rfJkGLon?=
+ =?us-ascii?Q?LfHWAHbsd+FqWnARoCA6Z0opTsEUj+5HU5C4/i8Zr0h5oYb994S4uD2Y9GMy?=
+ =?us-ascii?Q?61ggH3WBvwrVvvGHLY79jB15/lKMX94k0TPkMJAMLXCImNiYJoHy5zZ6DK3h?=
+ =?us-ascii?Q?vHKuQbofj1LfenfL2nGVNL1OwxcnwKYb1cirlvDK+57tjzIIHp5+Ag6hBjqr?=
+ =?us-ascii?Q?N9paZSNJ3LS0Xq/372hvGB81jrHRr8h2Y52ZK0/nRS7rKIAKEoUKtQXY0Fgr?=
+ =?us-ascii?Q?Hb5hxM6/uiRlGkO9AK1gtQFEwTe2DW514iJqMTG0MHm7fNkVt7GRqBPnLlfa?=
+ =?us-ascii?Q?kPyt6CQt1Dqm1GWiL0Kx6sMap99r8zFnitvwzSy0mdOSBDd10JiV+88RbsmY?=
+ =?us-ascii?Q?LJ3MOKiXA60IR2HE2FOdxTQFBfTniLHhn7Xceci7/Gl5LpC3QpATdTpPckaO?=
+ =?us-ascii?Q?0fX9xPhlzctMXDMasTDdp5+dczmNKPXxx/Ho8AOhhOJyZykGCY0NAl+rQk9m?=
+ =?us-ascii?Q?kU81qm560gSb1JGdi646PkX2TcZfnE67orKZVuDZ6qsCdBxZfCgG5/KcdD29?=
+ =?us-ascii?Q?nVJtk7zRK1WcfU1qFllEVEnVVmjFLqSzJyk7ewJ42J6NAFCPQaJifT9NCMjd?=
+ =?us-ascii?Q?WtdLprqWzvUA9H68NISHx22j56DTLB4vePp71VO0Qg0SGnQ9Dsud9D0KM5Eh?=
+ =?us-ascii?Q?M0+dnYBRKguigAmQ3hAHEJCTKlH803Md4q0S4Bp1N6Ufx7FgluWkSMtbRL2t?=
+ =?us-ascii?Q?phfEglvo3JkjqK7U1fKWH+hB/hRlfRlAB7/Re+nhFaOhbq+jjMvlAqlYouTr?=
+ =?us-ascii?Q?631/zbj8u6dHfVJJZp31Gtu7IB4dbzOq+3SAMbE6EyXxeES7IlAO1Y8N0wXn?=
+ =?us-ascii?Q?pyAT8oPORK67sAVayH+DL+z65Pxl+6RZHuJ2fHkzUbHrtefG9wNBj+FL2PPX?=
+ =?us-ascii?Q?NIoiyHRvkFAwJFEB4xMdqTO838ZkWOm68EaUE2k3SadKwgzfR0xxM+RLafAU?=
+ =?us-ascii?Q?pOIJYb9z29/KfudiL2vVGHjLON5X7FsL+dmVEHAyl9iZxttLPzI/22Yrjq/N?=
+ =?us-ascii?Q?lCf7ZR0QGodIj86ngX3slmSjT0cCPM054ppfHFvt9xOFyM4m3zUGeqvWH+l3?=
+ =?us-ascii?Q?rom7EotAP8MdkSmnxxfBSFSOkHSYAfWNLo6YURUd0/23s6yaBbL+48BRWVCq?=
+ =?us-ascii?Q?G6m++A6b8n7EVBgywFoJA0s0obKu4IP5gBijhe+oYRpkE5U9+byazYwuNCNj?=
+ =?us-ascii?Q?v4cuCjax11WTxaGNLSwP4Y5RUEuy4jKZgyUEwuojyGeZMz2CDgCgdxXxzVwk?=
+ =?us-ascii?Q?4YRXy+WanDQPbw5JnRn+4sIn/j0c1MaRdVGuh4ci26Ajy4bO188TuJZgjS0P?=
+ =?us-ascii?Q?HVES2MRcJLYDtzxI21/2wOxC/ip/GdMmYiwnOHjCJJ2cNW3gO0DHdA/IwOXZ?=
+ =?us-ascii?Q?zbohvB4OMhC+ejtnn35JVTBRCY5Qn8bXUg6HjuFZrgsg8eZLWayerwsEu+DZ?=
+ =?us-ascii?Q?wJrYZ+LJCsCV+aiBUKaiiHEi7CJBWwNZy5e1mjtcEvc8AZErYqiUR9cy1FmA?=
+ =?us-ascii?Q?t+JBAEyo7g=3D=3D?=
 X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0:
-	lyY4oPrEq0nUSVv1Amq2A60xG13p12TFnkO0DMaax8kJXLQalBZE0rP3tIaPwm5Vw66xbt6q48vPaOUAQv9S1267bTGx8zIBAtBKwZ5B+mg3p6WjIH8nr1ryTiTAyY5LkI4uAdyTdfQzi+8PLI1EFcOL0XIFol1kU2hx1Wvy7IiMbL56NKYUsmE8R8Kkd8sGfwi5+Y/2t+SrB1nvW3zGNN3CxEGrHdG2KMjb973TrUjSo8Rk8662D5+9tqa+0hSkrz2o+gox9rWbE8QmWZwqcNg7nhH7gBUH0uqAGVMlODRtInhfbsKpDicj3zkUoZ9LpxfNB+pEGgm06X1Vk9LPrlbwx0RvHW7NTd7krvoCyIlH9r5/2MbPfRpjvrsAFDTd6rnl5fBuYcn52V1rpPnmIDLmYBM0UbTZSQWKY38fqvHmEzPYv6n+tNt8fYO4x8WySBvOZOCMpXU5JIQUxQlOOvnRCr65/EXhEC6g+HdS/I19v4jlGl/8vn1Gjwwjo+Hbfc//PJfY2sB/RJTqB6PhaJFmjIGreXvUyU9NKrUvA/PaP/j1CekNUmvBsZM7kb8HWebJkZujuyT7OV5FRY7fOcJMEQ8v/KTe35ZgL48L2hk=
+	JdrAwxJ0sS3Hz7mYGPAM8E5SkSy+4DhQVWx+OGx7H06SJhYc4/ELhStw74Pg92xaI9ci5NNFioa2RW7hGkYId/LgakPVPB5vrT4q7o2xqIvX4WOf7s/JZP7AyHAChOScaCBLAL/4zn2mVgQpQfEL1l6YW1NPI9rZ3jJCHKjXiiw/2p3FBmu+u3RHi7wsUJWxy3ogL3kstsvXHM+0oAAiq35B3oBjbFXQyM76IzzjY1Q7wJoyV/kuUB06fT4nDZhZrXdV+9klXjSQeFX5udDHDQEYPkI7N9EXEqL8aiiPZlH99vETXdDvvpOYMED/pcVKJt66rbPn5qQF3ARVeoYQmkxSXddElcA+LVIScICIX6NmhifSvrzD7ihq7dWKVY29WuYzSSa+Z71D5LGVjOE5ZZ6futgQVyMVhE8poWdnzkQIUp4fS5zKQrBvSV6URMpLKeAH1bSnwlQgXUSStmTK3airbAQJWn59/o6bjzZxe3wfmen30myQiD0y3IOlUZ/uwiMokxgFMDmbBgQTYAp1NUrMBXjCj7F3fa1tnFPG3LilOczPB36WdmKXAFW/k+a6FFfUemRQZC86Li/jVI2zU6A8YXX60ajvaUunwjAsPsk=
 X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 68722a1b-a77b-4b6c-3d59-08de526baec6
+X-MS-Exchange-CrossTenant-Network-Message-Id: d1481879-1309-4c2d-0e62-08de526bb0f1
 X-MS-Exchange-CrossTenant-AuthSource: CH3PR10MB7329.namprd10.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Jan 2026 06:19:18.1501
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Jan 2026 06:19:21.7855
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: eCmvYXM7ZM2p4YXRJUi3kat8fktrGLhp/2PPY8DkEPABk0fAqGYEouUji0t3lpODF+Djf/0W01o9N2VuQUmzYw==
+X-MS-Exchange-CrossTenant-UserPrincipalName: A3qOgOoTVe10V2yV6yNQllTzxFIFRHsBasUxdZbES6A1zgn/r7YTwQqpuYtGbnaM+K2re6PCwkeu/Ce/85JnvQ==
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN4PR10MB5622
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.293,Aquarius:18.0.1121,Hydra:6.1.9,FMLib:17.12.100.49
  definitions=2026-01-13_01,2026-01-09_02,2025-10-01_01
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 mlxscore=0 suspectscore=0
- mlxlogscore=999 bulkscore=0 malwarescore=0 phishscore=0 adultscore=0
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxscore=0 malwarescore=0 phishscore=0
+ mlxlogscore=999 adultscore=0 suspectscore=0 spamscore=0 bulkscore=0
  classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2512120000
  definitions=main-2601130050
-X-Authority-Analysis: v=2.4 cv=B/G0EetM c=1 sm=1 tr=0 ts=6965e3e9 b=1 cx=c_pps
- a=WeWmnZmh0fydH62SvGsd2A==:117 a=WeWmnZmh0fydH62SvGsd2A==:17
+X-Authority-Analysis: v=2.4 cv=B/G0EetM c=1 sm=1 tr=0 ts=6965e3ed cx=c_pps
+ a=OOZaFjgC48PWsiFpTAqLcw==:117 a=OOZaFjgC48PWsiFpTAqLcw==:17
  a=6eWqkTHjU83fiwn7nKZWdM+Sl24=:19 a=z/mQ4Ysz8XfWz/Q5cLBRGdckG28=:19
  a=lCpzRmAYbLLaTzLvsPZ7Mbvzbb8=:19 a=xqWC_Br6kY4A:10 a=vUbySO9Y5rIA:10
- a=GoEa3M9JfhUA:10 a=VkNPw1HP01LnGYTKEx00:22 a=VwQbUJbxAAAA:8 a=yPCof4ZbAAAA:8
- a=ii5H1995EiaHVXO47u0A:9
-X-Proofpoint-GUID: YMnwmAHO6ajR62Uj2oHz-PEQ2BX_Ca6t
-X-Proofpoint-ORIG-GUID: YMnwmAHO6ajR62Uj2oHz-PEQ2BX_Ca6t
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwMTEzMDA1MCBTYWx0ZWRfXxHmmbLqZ+EYd
- 38XN6FiAIaCWEy2xTXdYNH44nM3C3SL3i2KtkJEggN+RiryDB4WjuXmGT7/jN1T3eFG7PBGqmEL
- DXYCuE9sVOuX6SVM48Rkxx1C5IO7YLtAyLDvKM0VoVgdTqYJcBeFu2H+i/Jit2o3nBCsS3iqhEp
- N0xJh/r269OoKT1zXE/eaxjjHLB+xlyrJdVuB3BFplwuaNYUChYnM1IJc97fO1cRkB9BQHyBnwO
- oB09h3ZBTmpoaXf/6QlClGAgbnPRni0ss6LS8bPPUquu9ltxFFgfmLEo3nLfh2QN5X+gUN6/p05
- BPJsqyTr/au7DmjV27NzH8RI9w1a4IlB9WFWF5MYDWjvpzqXD7hXwMiZsectZtcskpzvKNaqicb
- 3oZRoJethxvnXU0hCQkLzledKvU7GTwN6TG4Cbv+EdGdY9kvyrQe2Gof3erlj9RICxoh5lGFf3h
- QLkOYKjyWZ/4R/0fRyg==
+ a=GoEa3M9JfhUA:10 a=VkNPw1HP01LnGYTKEx00:22 a=yPCof4ZbAAAA:8
+ a=YIe_a-Ur92Aa_-LeloIA:9
+X-Proofpoint-GUID: wtu-u8L-TMgfCrO2I9K9uImY4SWPXJz0
+X-Proofpoint-ORIG-GUID: wtu-u8L-TMgfCrO2I9K9uImY4SWPXJz0
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwMTEzMDA1MCBTYWx0ZWRfX/ah1nOYWnVs3
+ tdz1/RR3f7WKfhdwMwQSw8TAroHmeb0ONWsdaTHMvE/5tUFchJQauCtv/bPzJbrQt2R/kXCUhrM
+ LAZia+t1jo8hiNnLFh8a6Ljt8bL2cg9T+2HTQRXR1zXxeAUpPM7V3Fu6wWUQfle7qw6/2SC1OF7
+ 4dS1ElcBEDl06W1b1poyYBpxwcF7KNjAui/updkMC5qLVhplHKXQ8ID1mDu2KR/ia16YSqbtx+F
+ uCviBgZD19uVO2F/jnHKXmmB+OMKajzD7xy8OUhHWDD9Ky6taDN7ITXK+LAL5SKMOEPpbvezNRD
+ P/5xhk84pkLCm7pOh4QOQ+HA5sDpKZo1MOXH03lb/ZDN5aLQZb82ZuHA9xxpW39sYpUeTRrDio8
+ fCnQFvuYYxkDk1ia6RtK9GRAZ3dNPbAMypYIUXfxyn9pYAA7WREqra5NFmmF3YK7q2EJbzb90Sc
+ aBXAewbYMiDfBAnqdug==
 
-The leftover space in a slab is always smaller than s->size, and
-kmem caches for large objects that are not power-of-two sizes tend to have
-a greater amount of leftover space per slab. In some cases, the leftover
-space is larger than the size of the slabobj_ext array for the slab.
+To access SLUB's internal implementation details beyond cache flags in
+ksize(), move __ksize(), ksize(), and slab_ksize() to mm/slub.c.
 
-An excellent example of such a cache is ext4_inode_cache. On my system,
-the object size is 1136, with a preferred order of 3, 28 objects per slab,
-and 960 bytes of leftover space per slab.
-
-Since the size of the slabobj_ext array is only 224 bytes (w/o mem
-profiling) or 448 bytes (w/ mem profiling) per slab, the entire array
-fits within the leftover space.
-
-Allocate the slabobj_exts array from this unused space instead of using
-kcalloc() when it is large enough. The array is allocated from unused
-space only when creating new slabs, and it doesn't try to utilize unused
-space if alloc_slab_obj_exts() is called after slab creation because
-implementing lazy allocation involves more expensive synchronization.
-
-The implementation and evaluation of lazy allocation from unused space
-is left as future-work. As pointed by Vlastimil Babka [1], it could be
-beneficial when a slab cache without SLAB_ACCOUNT can be created, and
-some of the allocations from the cache use __GFP_ACCOUNT. For example,
-xarray does that.
-
-To avoid unnecessary overhead when MEMCG (with SLAB_ACCOUNT) and
-MEM_ALLOC_PROFILING are not used for the cache, allocate the slabobj_ext
-array only when either of them is enabled on slab allocation.
-
-[ MEMCG=y, MEM_ALLOC_PROFILING=n ]
-
-Before patch (creating ~2.64M directories on ext4):
-  Slab:            4747880 kB
-  SReclaimable:    4169652 kB
-  SUnreclaim:       578228 kB
-
-After patch (creating ~2.64M directories on ext4):
-  Slab:            4724020 kB
-  SReclaimable:    4169188 kB
-  SUnreclaim:       554832 kB (-22.84 MiB)
-
-Enjoy the memory savings!
-
-Link: https://lore.kernel.org/linux-mm/48029aab-20ea-4d90-bfd1-255592b2018e@suse.cz [1]
 Signed-off-by: Harry Yoo <harry.yoo@oracle.com>
 ---
- mm/slub.c | 154 ++++++++++++++++++++++++++++++++++++++++++++++++++++--
- 1 file changed, 149 insertions(+), 5 deletions(-)
+ mm/slab.h        | 25 --------------
+ mm/slab_common.c | 61 ----------------------------------
+ mm/slub.c        | 86 ++++++++++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 86 insertions(+), 86 deletions(-)
 
+diff --git a/mm/slab.h b/mm/slab.h
+index 5176c762ec7c..957586d68b3c 100644
+--- a/mm/slab.h
++++ b/mm/slab.h
+@@ -665,31 +665,6 @@ void kvfree_rcu_cb(struct rcu_head *head);
+ 
+ size_t __ksize(const void *objp);
+ 
+-static inline size_t slab_ksize(const struct kmem_cache *s)
+-{
+-#ifdef CONFIG_SLUB_DEBUG
+-	/*
+-	 * Debugging requires use of the padding between object
+-	 * and whatever may come after it.
+-	 */
+-	if (s->flags & (SLAB_RED_ZONE | SLAB_POISON))
+-		return s->object_size;
+-#endif
+-	if (s->flags & SLAB_KASAN)
+-		return s->object_size;
+-	/*
+-	 * If we have the need to store the freelist pointer
+-	 * back there or track user information then we can
+-	 * only use the space before that information.
+-	 */
+-	if (s->flags & (SLAB_TYPESAFE_BY_RCU | SLAB_STORE_USER))
+-		return s->inuse;
+-	/*
+-	 * Else we can use all the padding etc for the allocation
+-	 */
+-	return s->size;
+-}
+-
+ static inline unsigned int large_kmalloc_order(const struct page *page)
+ {
+ 	return page[1].flags.f & 0xff;
+diff --git a/mm/slab_common.c b/mm/slab_common.c
+index c4cf9ed2ec92..aed91fd6fd10 100644
+--- a/mm/slab_common.c
++++ b/mm/slab_common.c
+@@ -983,43 +983,6 @@ void __init create_kmalloc_caches(void)
+ 						       0, SLAB_NO_MERGE, NULL);
+ }
+ 
+-/**
+- * __ksize -- Report full size of underlying allocation
+- * @object: pointer to the object
+- *
+- * This should only be used internally to query the true size of allocations.
+- * It is not meant to be a way to discover the usable size of an allocation
+- * after the fact. Instead, use kmalloc_size_roundup(). Using memory beyond
+- * the originally requested allocation size may trigger KASAN, UBSAN_BOUNDS,
+- * and/or FORTIFY_SOURCE.
+- *
+- * Return: size of the actual memory used by @object in bytes
+- */
+-size_t __ksize(const void *object)
+-{
+-	const struct page *page;
+-	const struct slab *slab;
+-
+-	if (unlikely(object == ZERO_SIZE_PTR))
+-		return 0;
+-
+-	page = virt_to_page(object);
+-
+-	if (unlikely(PageLargeKmalloc(page)))
+-		return large_kmalloc_size(page);
+-
+-	slab = page_slab(page);
+-	/* Delete this after we're sure there are no users */
+-	if (WARN_ON(!slab))
+-		return page_size(page);
+-
+-#ifdef CONFIG_SLUB_DEBUG
+-	skip_orig_size_check(slab->slab_cache, object);
+-#endif
+-
+-	return slab_ksize(slab->slab_cache);
+-}
+-
+ gfp_t kmalloc_fix_flags(gfp_t flags)
+ {
+ 	gfp_t invalid_mask = flags & GFP_SLAB_BUG_MASK;
+@@ -1235,30 +1198,6 @@ void kfree_sensitive(const void *p)
+ }
+ EXPORT_SYMBOL(kfree_sensitive);
+ 
+-size_t ksize(const void *objp)
+-{
+-	/*
+-	 * We need to first check that the pointer to the object is valid.
+-	 * The KASAN report printed from ksize() is more useful, then when
+-	 * it's printed later when the behaviour could be undefined due to
+-	 * a potential use-after-free or double-free.
+-	 *
+-	 * We use kasan_check_byte(), which is supported for the hardware
+-	 * tag-based KASAN mode, unlike kasan_check_read/write().
+-	 *
+-	 * If the pointed to memory is invalid, we return 0 to avoid users of
+-	 * ksize() writing to and potentially corrupting the memory region.
+-	 *
+-	 * We want to perform the check before __ksize(), to avoid potentially
+-	 * crashing in __ksize() due to accessing invalid metadata.
+-	 */
+-	if (unlikely(ZERO_OR_NULL_PTR(objp)) || !kasan_check_byte(objp))
+-		return 0;
+-
+-	return kfence_ksize(objp) ?: __ksize(objp);
+-}
+-EXPORT_SYMBOL(ksize);
+-
+ #ifdef CONFIG_BPF_SYSCALL
+ #include <linux/btf.h>
+ 
 diff --git a/mm/slub.c b/mm/slub.c
-index 14c58038a37e..e4a4e01de42f 100644
+index e4a4e01de42f..2b76f352c3b0 100644
 --- a/mm/slub.c
 +++ b/mm/slub.c
-@@ -886,6 +886,97 @@ static inline unsigned long get_orig_size(struct kmem_cache *s, void *object)
- 	return *(unsigned long *)p;
+@@ -6948,6 +6948,92 @@ void kmem_cache_free(struct kmem_cache *s, void *x)
  }
+ EXPORT_SYMBOL(kmem_cache_free);
  
-+#ifdef CONFIG_SLAB_OBJ_EXT
++static inline size_t slab_ksize(const struct kmem_cache *s)
++{
++#ifdef CONFIG_SLUB_DEBUG
++	/*
++	 * Debugging requires use of the padding between object
++	 * and whatever may come after it.
++	 */
++	if (s->flags & (SLAB_RED_ZONE | SLAB_POISON))
++		return s->object_size;
++#endif
++	if (s->flags & SLAB_KASAN)
++		return s->object_size;
++	/*
++	 * If we have the need to store the freelist pointer
++	 * back there or track user information then we can
++	 * only use the space before that information.
++	 */
++	if (s->flags & (SLAB_TYPESAFE_BY_RCU | SLAB_STORE_USER))
++		return s->inuse;
++	/*
++	 * Else we can use all the padding etc for the allocation
++	 */
++	return s->size;
++}
 +
-+/*
-+ * Check if memory cgroup or memory allocation profiling is enabled.
-+ * If enabled, SLUB tries to reduce memory overhead of accounting
-+ * slab objects. If neither is enabled when this function is called,
-+ * the optimization is simply skipped to avoid affecting caches that do not
-+ * need slabobj_ext metadata.
++/**
++ * __ksize -- Report full size of underlying allocation
++ * @object: pointer to the object
 + *
-+ * However, this may disable optimization when memory cgroup or memory
-+ * allocation profiling is used, but slabs are created too early
-+ * even before those subsystems are initialized.
++ * This should only be used internally to query the true size of allocations.
++ * It is not meant to be a way to discover the usable size of an allocation
++ * after the fact. Instead, use kmalloc_size_roundup(). Using memory beyond
++ * the originally requested allocation size may trigger KASAN, UBSAN_BOUNDS,
++ * and/or FORTIFY_SOURCE.
++ *
++ * Return: size of the actual memory used by @object in bytes
 + */
-+static inline bool need_slab_obj_exts(struct kmem_cache *s)
++size_t __ksize(const void *object)
 +{
-+	if (memcg_kmem_online() && (s->flags & SLAB_ACCOUNT))
-+		return true;
++	const struct page *page;
++	const struct slab *slab;
 +
-+	if (mem_alloc_profiling_enabled())
-+		return true;
++	if (unlikely(object == ZERO_SIZE_PTR))
++		return 0;
 +
-+	return false;
-+}
++	page = virt_to_page(object);
 +
-+static inline unsigned int obj_exts_size_in_slab(struct slab *slab)
-+{
-+	return sizeof(struct slabobj_ext) * slab->objects;
-+}
++	if (unlikely(PageLargeKmalloc(page)))
++		return large_kmalloc_size(page);
 +
-+static inline unsigned long obj_exts_offset_in_slab(struct kmem_cache *s,
-+						    struct slab *slab)
-+{
-+	unsigned long objext_offset;
++	slab = page_slab(page);
++	/* Delete this after we're sure there are no users */
++	if (WARN_ON(!slab))
++		return page_size(page);
 +
-+	objext_offset = s->size * slab->objects;
-+	objext_offset = ALIGN(objext_offset, sizeof(struct slabobj_ext));
-+	return objext_offset;
-+}
-+
-+static inline bool obj_exts_fit_within_slab_leftover(struct kmem_cache *s,
-+						     struct slab *slab)
-+{
-+	unsigned long objext_offset = obj_exts_offset_in_slab(s, slab);
-+	unsigned long objext_size = obj_exts_size_in_slab(slab);
-+
-+	return objext_offset + objext_size <= slab_size(slab);
-+}
-+
-+static inline bool obj_exts_in_slab(struct kmem_cache *s, struct slab *slab)
-+{
-+	unsigned long obj_exts;
-+	unsigned long start;
-+	unsigned long end;
-+
-+	obj_exts = slab_obj_exts(slab);
-+	if (!obj_exts)
-+		return false;
-+
-+	start = (unsigned long)slab_address(slab);
-+	end = start + slab_size(slab);
-+	return (obj_exts >= start) && (obj_exts < end);
-+}
-+#else
-+static inline bool need_slab_obj_exts(struct kmem_cache *s)
-+{
-+	return false;
-+}
-+
-+static inline unsigned int obj_exts_size_in_slab(struct slab *slab)
-+{
-+	return 0;
-+}
-+
-+static inline unsigned long obj_exts_offset_in_slab(struct kmem_cache *s,
-+						    struct slab *slab)
-+{
-+	return 0;
-+}
-+
-+static inline bool obj_exts_fit_within_slab_leftover(struct kmem_cache *s,
-+						     struct slab *slab)
-+{
-+	return false;
-+}
-+
-+static inline bool obj_exts_in_slab(struct kmem_cache *s, struct slab *slab)
-+{
-+	return false;
-+}
++#ifdef CONFIG_SLUB_DEBUG
++	skip_orig_size_check(slab->slab_cache, object);
 +#endif
 +
- #ifdef CONFIG_SLUB_DEBUG
- 
- /*
-@@ -1421,7 +1512,15 @@ slab_pad_check(struct kmem_cache *s, struct slab *slab)
- 	start = slab_address(slab);
- 	length = slab_size(slab);
- 	end = start + length;
--	remainder = length % s->size;
-+
-+	if (obj_exts_in_slab(s, slab)) {
-+		remainder = length;
-+		remainder -= obj_exts_offset_in_slab(s, slab);
-+		remainder -= obj_exts_size_in_slab(slab);
-+	} else {
-+		remainder = length % s->size;
-+	}
-+
- 	if (!remainder)
- 		return;
- 
-@@ -2195,6 +2294,11 @@ static inline void free_slab_obj_exts(struct slab *slab)
- 		return;
- 	}
- 
-+	if (obj_exts_in_slab(slab->slab_cache, slab)) {
-+		slab->obj_exts = 0;
-+		return;
-+	}
-+
- 	/*
- 	 * obj_exts was created with __GFP_NO_OBJ_EXT flag, therefore its
- 	 * corresponding extension will be NULL. alloc_tag_sub() will throw a
-@@ -2210,6 +2314,35 @@ static inline void free_slab_obj_exts(struct slab *slab)
- 	slab->obj_exts = 0;
- }
- 
-+/*
-+ * Try to allocate slabobj_ext array from unused space.
-+ * This function must be called on a freshly allocated slab to prevent
-+ * concurrency problems.
-+ */
-+static void alloc_slab_obj_exts_early(struct kmem_cache *s, struct slab *slab)
-+{
-+	void *addr;
-+	unsigned long obj_exts;
-+
-+	if (!need_slab_obj_exts(s))
-+		return;
-+
-+	if (obj_exts_fit_within_slab_leftover(s, slab)) {
-+		addr = slab_address(slab) + obj_exts_offset_in_slab(s, slab);
-+		addr = kasan_reset_tag(addr);
-+		obj_exts = (unsigned long)addr;
-+
-+		get_slab_obj_exts(obj_exts);
-+		memset(addr, 0, obj_exts_size_in_slab(slab));
-+		put_slab_obj_exts(obj_exts);
-+
-+		if (IS_ENABLED(CONFIG_MEMCG))
-+			obj_exts |= MEMCG_DATA_OBJEXTS;
-+		slab->obj_exts = obj_exts;
-+		slab_set_stride(slab, sizeof(struct slabobj_ext));
-+	}
++	return slab_ksize(slab->slab_cache);
 +}
 +
- #else /* CONFIG_SLAB_OBJ_EXT */
- 
- static inline void init_slab_obj_exts(struct slab *slab)
-@@ -2226,6 +2359,11 @@ static inline void free_slab_obj_exts(struct slab *slab)
- {
- }
- 
-+static inline void alloc_slab_obj_exts_early(struct kmem_cache *s,
-+						       struct slab *slab)
++size_t ksize(const void *objp)
 +{
-+}
-+
- #endif /* CONFIG_SLAB_OBJ_EXT */
- 
- #ifdef CONFIG_MEM_ALLOC_PROFILING
-@@ -3222,7 +3360,9 @@ static inline bool shuffle_freelist(struct kmem_cache *s, struct slab *slab)
- static __always_inline void account_slab(struct slab *slab, int order,
- 					 struct kmem_cache *s, gfp_t gfp)
- {
--	if (memcg_kmem_online() && (s->flags & SLAB_ACCOUNT))
-+	if (memcg_kmem_online() &&
-+			(s->flags & SLAB_ACCOUNT) &&
-+			!slab_obj_exts(slab))
- 		alloc_slab_obj_exts(slab, s, gfp, true);
- 
- 	mod_node_page_state(slab_pgdat(slab), cache_vmstat_idx(s),
-@@ -3286,9 +3426,6 @@ static struct slab *allocate_slab(struct kmem_cache *s, gfp_t flags, int node)
- 	slab->objects = oo_objects(oo);
- 	slab->inuse = 0;
- 	slab->frozen = 0;
--	init_slab_obj_exts(slab);
--
--	account_slab(slab, oo_order(oo), s, flags);
- 
- 	slab->slab_cache = s;
- 
-@@ -3297,6 +3434,13 @@ static struct slab *allocate_slab(struct kmem_cache *s, gfp_t flags, int node)
- 	start = slab_address(slab);
- 
- 	setup_slab_debug(s, slab, start);
-+	init_slab_obj_exts(slab);
 +	/*
-+	 * Poison the slab before initializing the slabobj_ext array
-+	 * to prevent the array from being overwritten.
++	 * We need to first check that the pointer to the object is valid.
++	 * The KASAN report printed from ksize() is more useful, then when
++	 * it's printed later when the behaviour could be undefined due to
++	 * a potential use-after-free or double-free.
++	 *
++	 * We use kasan_check_byte(), which is supported for the hardware
++	 * tag-based KASAN mode, unlike kasan_check_read/write().
++	 *
++	 * If the pointed to memory is invalid, we return 0 to avoid users of
++	 * ksize() writing to and potentially corrupting the memory region.
++	 *
++	 * We want to perform the check before __ksize(), to avoid potentially
++	 * crashing in __ksize() due to accessing invalid metadata.
 +	 */
-+	alloc_slab_obj_exts_early(s, slab);
-+	account_slab(slab, oo_order(oo), s, flags);
- 
- 	shuffle = shuffle_freelist(s, slab);
- 
++	if (unlikely(ZERO_OR_NULL_PTR(objp)) || !kasan_check_byte(objp))
++		return 0;
++
++	return kfence_ksize(objp) ?: __ksize(objp);
++}
++EXPORT_SYMBOL(ksize);
++
+ static void free_large_kmalloc(struct page *page, void *object)
+ {
+ 	unsigned int order = compound_order(page);
 -- 
 2.43.0
 
