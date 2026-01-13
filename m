@@ -1,159 +1,85 @@
-Return-Path: <cgroups+bounces-13110-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-13111-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 76767D15DBD
-	for <lists+cgroups@lfdr.de>; Tue, 13 Jan 2026 00:46:51 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 993D9D15FC3
+	for <lists+cgroups@lfdr.de>; Tue, 13 Jan 2026 01:27:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id 09BD23002855
-	for <lists+cgroups@lfdr.de>; Mon, 12 Jan 2026 23:46:48 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id B8739303DD12
+	for <lists+cgroups@lfdr.de>; Tue, 13 Jan 2026 00:23:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 07F792BE031;
-	Mon, 12 Jan 2026 23:46:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD53D21FF5B;
+	Tue, 13 Jan 2026 00:23:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gourry.net header.i=@gourry.net header.b="UqrI3UXZ"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="BFyTCu9/"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-qt1-f171.google.com (mail-qt1-f171.google.com [209.85.160.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-183.mta0.migadu.com (out-183.mta0.migadu.com [91.218.175.183])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E1EF241CB7
-	for <cgroups@vger.kernel.org>; Mon, 12 Jan 2026 23:46:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 10FF221CC5C
+	for <cgroups@vger.kernel.org>; Tue, 13 Jan 2026 00:23:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.183
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768261604; cv=none; b=EcHRFp+2vLbN+BX7nDfpu47hI640Bt3RY8NVQVyNjSeeXVXPQESjgBN9EfmHIQVZL8iikxZdei0s+lQJvPK/0zWoHdaCajNdHAgC42yQsVT7NVtcSoUKQkzkjh47GME56lUKTD1mGbNgny5o8zfhd0g/lsrLef8p/MrfQk4E3Vo=
+	t=1768263807; cv=none; b=OQYMooqaBJKnpXIawqckHgl9PzmmLDouZ4Ofclr+tbGlOLUACO3vbrefDhgu4QzP1vgdeRAFmW9ljuu6M7CjtTcQIObun/T2LH/oR1caN8Y+fzR9uuDvU/oBElhuxrwtervc56KFbB/lw5eLvXS2/iSW07DPZVzFAtzz595Qr4o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768261604; c=relaxed/simple;
-	bh=5jG1tPSFDGwVGx2fOLIQipqpQEiX+dEX85OrETf90AA=;
+	s=arc-20240116; t=1768263807; c=relaxed/simple;
+	bh=dDqj+3o1GwOA7Ts5boUOHm3elRAMwOwI1Ebqof49pGY=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=F+vuU2nFAqRRq9w5GkNr+xAgJEh9RSactJqu0sHW9eg50uokFGH9+gYPGWWbBWxkc8paweawg91KXy9mNfAeoIYLIoy1ZHPuv90kcWeNeuoYfdVJR8W+BW+z58gSRZeU3gHU7GEVXIWPjA344UjMqX+KLjEKYlgFFWZfAXej+z8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gourry.net; spf=pass smtp.mailfrom=gourry.net; dkim=pass (2048-bit key) header.d=gourry.net header.i=@gourry.net header.b=UqrI3UXZ; arc=none smtp.client-ip=209.85.160.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gourry.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gourry.net
-Received: by mail-qt1-f171.google.com with SMTP id d75a77b69052e-5013d111a46so171421cf.1
-        for <cgroups@vger.kernel.org>; Mon, 12 Jan 2026 15:46:43 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gourry.net; s=google; t=1768261602; x=1768866402; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=gt/AVyATGJCjg02bpOukDf7tzsy1q7kJHO83Jx5UbtM=;
-        b=UqrI3UXZq9jAXv6AFYXS1jPHxOz9ewGQA8y/stLlNbNV9iUNJ+mb0ITRzwskUwjQl3
-         zzmhIwF1yzveIyS8MMn6GmV4ARtFZC9rwwX5EtGET03q0MoVw3gNE+6w4xYC8vxfCAaJ
-         a+UYFs6Ckh8iEA7QGPDbkIIY/M7Rqkcbzu4Xb3Q1lhalmBRJa/adzrx+B22XVr8EPk28
-         5SwYZWvDs0LY9mIvF+D79H7buzUESwxckaePaOddHcbxOk1v4A/+5uakVrG/h2WXPjuI
-         lL8Mu+gv83BqBWgIkBfjuKYWlX7fuNYDSpG4qTcCB9x31panvpFGPhLAyiVZh6i2MTsJ
-         QesQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1768261602; x=1768866402;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=gt/AVyATGJCjg02bpOukDf7tzsy1q7kJHO83Jx5UbtM=;
-        b=UzLyUpQNLfAVjTjoEqhvGnCWdAGENk7B8uLWpfZP/KEuxKY+AqihiFVEtTFkWRmTHq
-         UL+LNbKSRr5l80BMQ7i6XGBb53XGnQzBQ83xIxPUz+cHkIHcMZTiOncV33QlWk6WV5dA
-         Zc7qRByDw+cmiSccdZ5xucmPK32SoX7o7+OIrskfj9WBU6RRxYBaBZVpEvuWUjEm2X1K
-         UyhNE7lBXfjSYZWg1Q4RlCMxYNrNlDWQ7yturaUQBazKEEWMNYPCjFX0yldu/QgJuU+I
-         VantUXACx9Wn45nJw8CbHjTfCF5mCEP/HJiNRICKyMNeXt+Q5BXfWA0OnISP09pIkYKt
-         o0ng==
-X-Forwarded-Encrypted: i=1; AJvYcCV2vYM5MyLrZDusVGt9Xy+IjcECYR2I8XZzU3jDPgTwoneMS//xv1NujjWIIYaElN+SSgA9s/4T@vger.kernel.org
-X-Gm-Message-State: AOJu0YwYBTUWfnXt2FH20r7qkJ/o38ZdazIvdlr3vM2S075xciaT+9Nz
-	vZurAnF8c3HY62gEnH9dE9tCU2q6QcMycQ4ZizF4FU+46sMhuPiFxF0XhpNWQsJDpBI=
-X-Gm-Gg: AY/fxX4FtrjmfOvX7TH44jTuDOvvN6xKtJFj/wcw+t31tqNzCN73G5bvxBGuELFwdGi
-	ZDR1J0eL4Z8N9qgOUw6zdzEFEcBUM0zRoJ/x/LBYJc9XELFJLqc5Ei8kgKKIvjaNvVpFVia7/oU
-	FbRKEnyB92EjAqstGYx1nszlrkOfc69G3RA5Jyfs5zaWo11zp5JH0BSQLAkex8xp2glTNYsUH4G
-	8/DH5OnESYM8owzJoTOCsL3l/Cb+YnFrZsE+xVML/D4zXvhyaT1sarmtG1MAL+bNMA82XBpuHTR
-	fP9jfCxCbf1t6b0xEY2oOuN4Z5PJMPvSMsJ86O9UJV9dhrtZtaDU7zsJ8UF5A4Ykvl4fNYqAyP3
-	dnmh3OurjK9RUDfTCc6Qh3rjMwMM9rmerHOng8piqFb+c9RdlnOJavRYqh29B1ieQ8i+K2G4esH
-	7ESGfpGCmgB19/brN4Rr5W54EH5KL2+/F8TSVxCM4o7+V1iu3JcoIf3EDBtK3b1Kwq84vr2w==
-X-Google-Smtp-Source: AGHT+IGFud8YvEm7ATsxYNdlgRbfkjm9D9grRrxO3octkolx4kKDFiysT5UJJvHSioxVBl6DqcPzKQ==
-X-Received: by 2002:a05:622a:34b:b0:4f0:5dd:c963 with SMTP id d75a77b69052e-4ffb484a53amr283188541cf.7.1768261602494;
-        Mon, 12 Jan 2026 15:46:42 -0800 (PST)
-Received: from gourry-fedora-PF4VCD3F (pool-96-255-20-138.washdc.ftas.verizon.net. [96.255.20.138])
-        by smtp.gmail.com with ESMTPSA id d75a77b69052e-4ffa8d3d92esm136264811cf.5.2026.01.12.15.46.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 12 Jan 2026 15:46:41 -0800 (PST)
-Date: Mon, 12 Jan 2026 18:46:07 -0500
-From: Gregory Price <gourry@gourry.net>
-To: Yosry Ahmed <yosry.ahmed@linux.dev>
-Cc: linux-mm@kvack.org, cgroups@vger.kernel.org, linux-cxl@vger.kernel.org,
-	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org, kernel-team@meta.com,
-	longman@redhat.com, tj@kernel.org, hannes@cmpxchg.org,
-	mkoutny@suse.com, corbet@lwn.net, gregkh@linuxfoundation.org,
-	rafael@kernel.org, dakr@kernel.org, dave@stgolabs.net,
-	jonathan.cameron@huawei.com, dave.jiang@intel.com,
-	alison.schofield@intel.com, vishal.l.verma@intel.com,
-	ira.weiny@intel.com, dan.j.williams@intel.com,
-	akpm@linux-foundation.org, vbabka@suse.cz, surenb@google.com,
-	mhocko@suse.com, jackmanb@google.com, ziy@nvidia.com,
-	david@kernel.org, lorenzo.stoakes@oracle.com,
-	Liam.Howlett@oracle.com, rppt@kernel.org, axelrasmussen@google.com,
-	yuanchu@google.com, weixugc@google.com, yury.norov@gmail.com,
-	linux@rasmusvillemoes.dk, rientjes@google.com,
-	shakeel.butt@linux.dev, chrisl@kernel.org, kasong@tencent.com,
-	shikemeng@huaweicloud.com, nphamcs@gmail.com, bhe@redhat.com,
-	baohua@kernel.org, chengming.zhou@linux.dev,
-	roman.gushchin@linux.dev, muchun.song@linux.dev, osalvador@suse.de,
-	matthew.brost@intel.com, joshua.hahnjy@gmail.com, rakie.kim@sk.com,
-	byungchul@sk.com, ying.huang@linux.alibaba.com, apopple@nvidia.com,
-	cl@gentwo.org, harry.yoo@oracle.com, zhengqi.arch@bytedance.com
-Subject: Re: [RFC PATCH v3 7/8] mm/zswap: compressed ram direct integration
-Message-ID: <aWWHv-G6cZAiQZJY@gourry-fedora-PF4VCD3F>
-References: <20260108203755.1163107-1-gourry@gourry.net>
- <20260108203755.1163107-8-gourry@gourry.net>
- <i6o5k4xumd5i3ehl6ifk3554sowd2qe7yul7vhaqlh2zo6y7is@z2ky4m432wd6>
- <aWF1uDdP75gOCGLm@gourry-fedora-PF4VCD3F>
- <4ftthovin57fi4blr2mardw4elwfsiv6vrkhrjqjsfvvuuugjj@uivjc5uzj5ys>
- <aWWEvAaUmpA_0ERP@gourry-fedora-PF4VCD3F>
+	 Content-Type:Content-Disposition:In-Reply-To; b=TJvZwTHcBI/3reXK+ntwutbckQJ/XhrVIC3nI4awmuZDRoD/R23olg4D+CA0FnUafp0Vk0AN/+P1V/ZR1pMlVccmIcNn4h+tnA20+zA47c9EpLSIt+xphYkm9ANYwaCXzQMxeDwlvqM8CEGcWAcj3lF2/aJBTiQutgw6quXxdu4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=BFyTCu9/; arc=none smtp.client-ip=91.218.175.183
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Date: Mon, 12 Jan 2026 16:23:19 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1768263804;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=JniOifvm0Vzj6b4Lw5mELotZ+645Lbbt+efHkzvLxps=;
+	b=BFyTCu9/dziGMM32LOcrDBcuPgHKuuM2p77Bv8VDrwgAr5KvXtq38cnD8LDJEVosDVorfh
+	Vbsk8Q6kpRoB+W/58rQAFCJCv7jLhu0chTkZgu6+y7ohVODlQHHU5TSDvNHbabijAFR7VN
+	D9ah+6bw5qFnYvsFBDmL/twdwTiCcZo=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Shakeel Butt <shakeel.butt@linux.dev>
+To: Jianyue Wu <wujianyue000@gmail.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org, 
+	cgroups@vger.kernel.org, hannes@cmpxchg.org, mhocko@kernel.org, roman.gushchin@linux.dev, 
+	muchun.song@linux.dev, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] mm: optimize stat output for 11% sys time reduce
+Message-ID: <uvmqfu2ms7itmfl2bk47yxtbafccscc2hlsw56uq2qy3q6fri3@sl56sf33fvyj>
+References: <CAJxJ_jioPFeTL3og-5qO+Xu4UE7ohcGUSQuodNSfYuX32Xj=EQ@mail.gmail.com>
+ <20260110042249.31960-1-jianyuew@nvidia.com>
+ <20260110153342.7e689e794ce43a0a39c699fc@linux-foundation.org>
+ <7210e5e0-2a93-4d3b-a564-85c0fe117ef5@gmail.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <aWWEvAaUmpA_0ERP@gourry-fedora-PF4VCD3F>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <7210e5e0-2a93-4d3b-a564-85c0fe117ef5@gmail.com>
+X-Migadu-Flow: FLOW_OUT
 
-On Mon, Jan 12, 2026 at 06:33:16PM -0500, Gregory Price wrote:
-> One of the assumptions you have in zswap is that there's some known
-> REAL chunk of memory X-GB, and the compression ratio dictates that you
-> get to cram more than X-GB of data in there.
+On Sun, Jan 11, 2026 at 12:37:45PM +0800, Jianyue Wu wrote:
+> On 1/11/2026 7:33 AM, Andrew Morton wrote:
+> > On Sat, 10 Jan 2026 12:22:49 +0800 Jianyue Wu <wujianyue000@gmail.com> wrote:
+> > 
+> > > Replace seq_printf/seq_buf_printf with lightweight helpers to avoid
+> > > printf parsing in memcg stats output.
+> > > 
+> > I don't understand - your previous email led me to believe that the new
+> > BPF interface can be used to address this issue?
 > 
-> This device flips that on its head.  It lies to the system and says
-> there's X-GB, and you can only actually use a fraction of it in the
-> worst case - and in the best case you use all of it.
-> 
-> So in that sense, zswap has "infinite upside" (if you're infinitely
-> compressible), whereas this device has "limited upside" (node capacity).
-> 
-> That changes how you account for things entirely, and that's why
-> entry->length always has to be PAGE_SIZE.  Even if the device can tell
-> us the real size, i'm not sure how useful that is - you still have to
-> charge for an entire `struct page`.
-> 
-> Time for a good long :think:
+> Yes, previously I think can directly use BPF interface to speedup. Later I
+> think maybe this is still needed, as some platform didn't have BPF installed
+> might still use these sysfs files.
 > 
 
-
-hmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm
-
-now that i have written this out, I wonder if the answer here is for the
-zswap_node controller (cxl driver or whatever) to detect high memory
-usage and online a new memory block if there is additional capacity
-available.
-
-This would look like the swap file increasing in size dynamically,
-which is *also* problematic, but it's at least in the same ballpark.
-
-From a CXL perspective, this would look like a dynamic capacity device.
-
-And the catch would be that we would need the opposite interface:
-
-  zswap.c or cram.c would need an explicit evict interface to allow
-  capacity to be offlined if the device needs to shrink the "fake"
-  capacity in response to shrinking compression ratios.
-
-Time for a much, much longer :think:
-
-~Gregory
+It seems like this patch adds measurable improvement for the traditional
+stat readers. The high performance ones can be switched to the bpf based
+interface. So, I see no harm in taking this patch in.
 
