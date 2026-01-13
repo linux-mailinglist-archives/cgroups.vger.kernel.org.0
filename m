@@ -1,72 +1,101 @@
-Return-Path: <cgroups+bounces-13145-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-13146-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id D95A3D1899F
-	for <lists+cgroups@lfdr.de>; Tue, 13 Jan 2026 12:58:39 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 35A8CD189ED
+	for <lists+cgroups@lfdr.de>; Tue, 13 Jan 2026 13:04:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 6028B3046994
-	for <lists+cgroups@lfdr.de>; Tue, 13 Jan 2026 11:56:31 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 6F8503023555
+	for <lists+cgroups@lfdr.de>; Tue, 13 Jan 2026 12:02:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8341E38E121;
-	Tue, 13 Jan 2026 11:56:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D850438E104;
+	Tue, 13 Jan 2026 12:02:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="eWz50Dd1"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="JFqecNvs";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="R+eFA9Mk";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="JFqecNvs";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="R+eFA9Mk"
 X-Original-To: cgroups@vger.kernel.org
-Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9DB4138BF99;
-	Tue, 13 Jan 2026 11:56:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F4D92FC876
+	for <cgroups@vger.kernel.org>; Tue, 13 Jan 2026 12:02:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768305390; cv=none; b=p44PAeumjONv5/+ugFC0ig5eL3Ffl+slMOilCKVTk1UmERmPkFO0zN9d89Lj1XhPrLYX2RbCoFyrx2+d4CLdDyleAAiXj/KWVxLGon3qnqfre55rItmWRm4/aJiOzbe37fOlfLvhdQMLX3mezI5Rqi1B3Hweu5j9kz8kdglLBkk=
+	t=1768305776; cv=none; b=ctewheEnegHmXEbZkuO1wURtweqQtTiIZVSbJ8DtbW6hb7mUfpU6TvayJc/xLpr0vi1byOP9cJaDQM6ZXZGKkiGZGfveqr5zRVGUxCxs/8S/QO/EBufhXZEv2r8NMNHur42EAQBwlP7DdSHsYAAgVYbvYZNXw1yFFOWR8NwbtY4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768305390; c=relaxed/simple;
-	bh=PLINpjm7eUCp1HsiKUyIP4tyjri37fh+wD1dDfgZ1d0=;
+	s=arc-20240116; t=1768305776; c=relaxed/simple;
+	bh=HpoDaUrvXKO/vMiKw0KXXyW0rOtoOCsbl/mokc7lZhQ=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=m0sMPVOOuSzbELUQOEnmZ2OqLVjWWm/iI0s3eYHqayne4RDjIknJ4P60elEGkHMyQCXszZM+f9mH1rK9byf3yY/B0P+3zCGomAt8FJH86hvLnwokDafPlBgmTbZ81v6QCfwMawX/GEl9rmWEp6M+7wRQpEE88eTTZw5pFWUdz74=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=eWz50Dd1; arc=none smtp.client-ip=90.155.50.34
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=4Z3s2IJr2MRvr+ihpTUvHpk2NWB1i3v1041MBc/NhTo=; b=eWz50Dd1vGagt/tZizYceGdgz2
-	YisyKS9vruWQeSnN/Bh0mfdMXNjHtOTUAVyqRUG4UWXd4iXqr2JE+UAN/DgHjn8y/G0O1DRoBmmSi
-	yDtyEYqvfhA5wqnh7W4agOZ+jDf+Xuz8OoIGf4BCPCU6tSLUmctNofXD2D7dHh9Ri5SwNjvSQhZD7
-	fDoAJmspfeM/kElDT5U74eEW8u5IrhjCqiyjWJcgz99PlUVbeZZklW4xRd0tb2cX66Z9DMjoG3YIG
-	NZ7owagkXQrjpqWN65ekIFX9nmWPgSTA9toXlLK7A68fqYLUR139y5lowj4YglPXF2Pw6SyN/ZFeW
-	HQn4Gjyw==;
-Received: from 2001-1c00-8d85-5700-266e-96ff-fe07-7dcc.cable.dynamic.v6.ziggo.nl ([2001:1c00:8d85:5700:266e:96ff:fe07:7dcc] helo=noisy.programming.kicks-ass.net)
-	by casper.infradead.org with esmtpsa (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vfd0Y-00000004fWO-2lwm;
-	Tue, 13 Jan 2026 11:56:22 +0000
-Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-	id 3B27730049A; Tue, 13 Jan 2026 12:56:22 +0100 (CET)
-Date: Tue, 13 Jan 2026 12:56:22 +0100
-From: Peter Zijlstra <peterz@infradead.org>
-To: K Prateek Nayak <kprateek.nayak@amd.com>
-Cc: Pierre Gondois <pierre.gondois@arm.com>, tj@kernel.org,
-	linux-kernel@vger.kernel.org, mingo@kernel.org,
-	juri.lelli@redhat.com, vincent.guittot@linaro.org,
-	dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
-	mgorman@suse.de, vschneid@redhat.com, longman@redhat.com,
-	hannes@cmpxchg.org, mkoutny@suse.com, void@manifault.com,
-	arighi@nvidia.com, changwoo@igalia.com, cgroups@vger.kernel.org,
-	sched-ext@lists.linux.dev, liuwenfang@honor.com, tglx@linutronix.de,
-	Christian Loehle <christian.loehle@arm.com>
-Subject: Re: [PATCH 05/12] sched: Move sched_class::prio_changed() into the
- change pattern
-Message-ID: <20260113115622.GA831285@noisy.programming.kicks-ass.net>
-References: <20251006104402.946760805@infradead.org>
- <20251006104527.083607521@infradead.org>
- <ab9b37c9-e826-44db-a6b8-a789fcc1582d@arm.com>
- <caa2329c-d985-4a7c-b83a-c4f96d5f154a@amd.com>
- <717a0743-6d8f-4e35-8f2f-70a158b31147@arm.com>
- <ef8d8e46-06eb-46c1-9402-d292c2eb51f9@amd.com>
- <20260113115309.GB831050@noisy.programming.kicks-ass.net>
+	 Content-Type:Content-Disposition:In-Reply-To; b=gTarCHk1yOqlG6fxJ1SlErWgcntueJpYEsdQTnS3EKc9sLakwtB8grokKry2h8gK8QVUejvRpBteB6avGzQ/2uXKmuKhe1vgwUNiGMhFtqTdNGfKHpaaRokRWZ3D8MvFWE0MsJM/q7Pa98/6qnjBZ9lr2LUdRMtxmKsB8vq34B0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=JFqecNvs; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=R+eFA9Mk; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=JFqecNvs; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=R+eFA9Mk; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 82495336A4;
+	Tue, 13 Jan 2026 12:02:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1768305773; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=quWB+ncw16QigYIMJTO3AxPEs75h+kf19eNvkCeDQ4U=;
+	b=JFqecNvstZ2gTQoUc1R3vwruf/dQsmsfcTTxCKKHSHn5WfcLpsgjxRHrPp3GrNCcXJzcE/
+	7QqsJmVqFrsRAzc+mKqlWoVL4IrNAMIiw6OLc/eRlFCCYvBYE2d5XKcYhEGIhvTBzlKJwC
+	FUUs7nDkRl771/Ont2SJuHLnZEiahUg=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1768305773;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=quWB+ncw16QigYIMJTO3AxPEs75h+kf19eNvkCeDQ4U=;
+	b=R+eFA9MkY6IAwFtT4kUJ1qKU7l2ZTQCQd1PsYer4bpeOXvEX6jRChQljWL9nhtn9aWUhEN
+	qpOOp43O2ZEIEABg==
+Authentication-Results: smtp-out1.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1768305773; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=quWB+ncw16QigYIMJTO3AxPEs75h+kf19eNvkCeDQ4U=;
+	b=JFqecNvstZ2gTQoUc1R3vwruf/dQsmsfcTTxCKKHSHn5WfcLpsgjxRHrPp3GrNCcXJzcE/
+	7QqsJmVqFrsRAzc+mKqlWoVL4IrNAMIiw6OLc/eRlFCCYvBYE2d5XKcYhEGIhvTBzlKJwC
+	FUUs7nDkRl771/Ont2SJuHLnZEiahUg=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1768305773;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=quWB+ncw16QigYIMJTO3AxPEs75h+kf19eNvkCeDQ4U=;
+	b=R+eFA9MkY6IAwFtT4kUJ1qKU7l2ZTQCQd1PsYer4bpeOXvEX6jRChQljWL9nhtn9aWUhEN
+	qpOOp43O2ZEIEABg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 784DB3EA63;
+	Tue, 13 Jan 2026 12:02:53 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id XpBUHW00ZmmPOwAAD6G6ig
+	(envelope-from <jack@suse.cz>); Tue, 13 Jan 2026 12:02:53 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id 3D508A08CF; Tue, 13 Jan 2026 13:02:53 +0100 (CET)
+Date: Tue, 13 Jan 2026 13:02:53 +0100
+From: Jan Kara <jack@suse.cz>
+To: Matt Fleming <matt@readmodwrite.com>
+Cc: Jan Kara <jack@suse.cz>, cgroups@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, Tejun Heo <tj@kernel.org>, 
+	Christian Brauner <brauner@kernel.org>, linux-fsdevel@vger.kernel.org, kernel-team@cloudflare.com
+Subject: Re: [REGRESSION] 6.12: Workqueue lockups in inode_switch_wbs_work_fn
+ (suspect commit 66c14dccd810)
+Message-ID: <xyivos2a76rpgmyp6kvvpskmuhheo2wtaqs5s4qvvbn6p3f3lb@3sc7xufujt57>
+References: <20260112111804.3773280-1-matt@readmodwrite.com>
+ <isa6ohzad6b6l55kbdqa35r5fsp4wnifpncx3kit6m35266d7z@463ckwplt5w3>
+ <eiilrap7jcpk7bneqvovbrqu6hdtzo2xra5tgqbg3wje2emzha@q3may6rqs5zl>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -75,37 +104,85 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20260113115309.GB831050@noisy.programming.kicks-ass.net>
+In-Reply-To: <eiilrap7jcpk7bneqvovbrqu6hdtzo2xra5tgqbg3wje2emzha@q3may6rqs5zl>
+X-Spam-Score: -3.80
+X-Spamd-Result: default: False [-3.80 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	MID_RHS_NOT_FQDN(0.50)[];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	ARC_NA(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	MISSING_XM_UA(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	FUZZY_RATELIMITED(0.00)[rspamd.com];
+	RCVD_COUNT_THREE(0.00)[3];
+	TO_DN_SOME(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	RCPT_COUNT_SEVEN(0.00)[8];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	RCVD_TLS_LAST(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.com:email]
+X-Spam-Level: 
+X-Spam-Flag: NO
 
-On Tue, Jan 13, 2026 at 12:53:09PM +0100, Peter Zijlstra wrote:
-> On Tue, Jan 13, 2026 at 04:35:02PM +0530, K Prateek Nayak wrote:
+On Tue 13-01-26 11:46:35, Matt Fleming wrote:
+> On Mon, Jan 12, 2026 at 06:04:50PM +0100, Jan Kara wrote:
+> > 
+> > I agree we are CPU bound in inode_switch_wbs_work_fn() but I don't think we
+> > are really hogging the CPU. The backtrace below indicates the worker just
+> > got rescheduled in cond_resched() to give other tasks a chance to run. Is
+> > the machine dying completely or does it eventually finish the cgroup
+> > teardown?
+>  
+> Yeah you're right, the CPU isn't hogged but the interaction with the
+> workqueue subsystem leads to the machine choking. I've seen 150+
+> instances of inode_switch_wbs_work_fn() queued up in the workqueue
+> subsystem:
 > 
-> > Does enabling WARN_DOUBLE_CLOCK warn of a double clock update before
-> > hitting this warning?
+>   [1437017.446174][    C0]     in-flight: 3139338:inode_switch_wbs_work_fn ,2420392:inode_switch_wbs_work_fn ,2914179:inode_switch_wbs_work_fn
+>   [1437017.446181][    C0]     pending: 11*inode_switch_wbs_work_fn
+>   [1437017.446185][    C0]   pwq 6: cpus=1 node=0 flags=0x2 nice=0 active=23 refcnt=24
+>   [1437017.446186][    C0]     in-flight: 2723771:inode_switch_wbs_work_fn ,1710617:inode_switch_wbs_work_fn ,3228683:inode_switch_wbs_work_fn ,3149692:inode_switch_wbs_work_fn ,3224195:inode_switch_wbs_work_fn
+>   [1437017.446193][    C0]     pending: 18*inode_switch_wbs_work_fn
+>   [1437017.446195][    C0]   pwq 10: cpus=2 node=0 flags=0x2 nice=0 active=17 refcnt=18
+>   [1437017.446196][    C0]     in-flight: 3224135:inode_switch_wbs_work_fn ,3193118:inode_switch_wbs_work_fn ,3224106:inode_switch_wbs_work_fn ,3228725:inode_switch_wbs_work_fn ,3087195:inode_switch_wbs_work_fn ,1853835:inode_switch_wbs_work_fn
+>   [1437017.446204][    C0]     pending: 11*inode_switch_wbs_work_fn
 > 
-> setup_new_dl_entity() -> update_rq_clock() seems like it will trip that
-> in this case.
+> It sometimes finishes the cgroup teardown and sometimes hard locks up.
+> When workqueue items aren't completing things get really bad :) 
+> 
+> > Well, these changes were introduced because some services are switching
+> > over 1m inodes on their exit and they were softlocking up the machine :).
+> > So there's some commonality, just something in that setup behaves
+> > differently from your setup. Are the inodes clean, dirty, or only with
+> > dirty timestamps?
+> 
+> Good question. I don't know but I'll get back to you.
+> 
+> > Also since you mention 6.12 kernel but this series was
+> > only merged in 6.18, do you carry full series ending with merge commit
+> > 9426414f0d42f?
+>  
+> We always run the latest 6.12 LTS release and it looks like only these
+> two commits got backported:
+> 
+>   9a6ebbdbd412 ("writeback: Avoid excessively long inode switching times")
+>   66c14dccd810 ("writeback: Avoid softlockup when switching many inodes")
 
-Something like so to fix: 9f239df55546 ("sched/deadline: Initialize dl_servers after SMP")
+Ah, OK. Then you're missing e1b849cfa6b61f ("writeback: Avoid contention on
+wb->list_lock when switching inodes") which might explain why my system
+behaves differently from your one because that commit *heavily* reduces
+contention on wb->list_lock when switching inodes and also avoids hogging
+multiple workers with the switching works when only one of them can proceed
+at a time (others are just spinning on the list_lock). So I'd suggest you
+backport that commit and try whether it fixes your issues.
 
-
---- a/kernel/sched/deadline.c
-+++ b/kernel/sched/deadline.c
-@@ -752,8 +752,6 @@ static inline void setup_new_dl_entity(s
- 	struct dl_rq *dl_rq = dl_rq_of_se(dl_se);
- 	struct rq *rq = rq_of_dl_rq(dl_rq);
- 
--	update_rq_clock(rq);
--
- 	WARN_ON(is_dl_boosted(dl_se));
- 	WARN_ON(dl_time_before(rq_clock(rq), dl_se->deadline));
- 
-@@ -1834,6 +1832,7 @@ void sched_init_dl_servers(void)
- 		rq = cpu_rq(cpu);
- 
- 		guard(rq_lock_irq)(rq);
-+		update_rq_clock(rq);
- 
- 		dl_se = &rq->fair_server;
- 
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
