@@ -1,145 +1,89 @@
-Return-Path: <cgroups+bounces-13162-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-13163-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 22E68D1ACE5
-	for <lists+cgroups@lfdr.de>; Tue, 13 Jan 2026 19:13:41 +0100 (CET)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id BD9F0D1B522
+	for <lists+cgroups@lfdr.de>; Tue, 13 Jan 2026 21:58:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 61D993036AE9
-	for <lists+cgroups@lfdr.de>; Tue, 13 Jan 2026 18:13:39 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 10BA5300816C
+	for <lists+cgroups@lfdr.de>; Tue, 13 Jan 2026 20:58:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A304832E120;
-	Tue, 13 Jan 2026 18:13:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B105B3203A5;
+	Tue, 13 Jan 2026 20:58:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="N0HM/vfR"
+	dkim=pass (2048-bit key) header.d=lwn.net header.i=@lwn.net header.b="KFbKNiGe"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.21])
+Received: from ms.lwn.net (ms.lwn.net [45.79.88.28])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 209EA30DD1E
-	for <cgroups@vger.kernel.org>; Tue, 13 Jan 2026 18:13:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.21
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 57608318B9E;
+	Tue, 13 Jan 2026 20:58:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.79.88.28
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768328018; cv=none; b=jpF8wHxasZ/FUdh4hhPiy63qsRy+LpyemcHrccUP874rmLgmNRzs3KuzkbGquJOhw+0a53IK0egGQta1pRgWvH+Rmm3CQgBsL3E4N7WgGUuELju5qerYTG3TWoiI1t0URTDQRYYoJpSKzIJ5Mz+bjX/pfAIN5YsjfY9X0QQhdSs=
+	t=1768337888; cv=none; b=eSyLN2F3X9oZiAfSX41+vyLzISrSvzSHn7lj/tDz+h3DYXdacIKdvhz9ImVOyC3c3sFRG65Bqc+4Tpj7aOEn8NbVfGHXcPI1peNR86i9lS/UJ3IuIsFMiYk9jIzrluGMmAJph8kVBrFqQd34olSSfYszbuhLfxbqAtHKMwH/fAI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768328018; c=relaxed/simple;
-	bh=ZdCLIO2Ox/sZtcs53afAaPS0XChRB4NarvXVQW4ax7Q=;
-	h=Date:From:To:Cc:Subject:Message-ID; b=kQiCUa6L5l7o/PkTky4i0pKxFUu8P9dlpPyX7MbCRTRWKAd9EGK5WCDAjnMuBhBHKM822DZ0zZscs7JzA9XkvaYiXu3E5VK0Rt+quaylrce6a+oaQYnFTh00FGZSnhcekGZRjV1+wcFP9H7I5SQqQQ2Vd84zfD83Hm6qD9kkXu4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=N0HM/vfR; arc=none smtp.client-ip=198.175.65.21
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1768328017; x=1799864017;
-  h=date:from:to:cc:subject:message-id;
-  bh=ZdCLIO2Ox/sZtcs53afAaPS0XChRB4NarvXVQW4ax7Q=;
-  b=N0HM/vfRMoWPA2ROaJ/pgHKKTcNKzP7jyRuqhNicta03FhAgBG75XG0U
-   THBk9q469/bbnqJxaeWX5KK5liNd7ZwevLDa/byB0BRaoZ3lLPedAzHw3
-   aDw0yX6aacF8ml+9mqzDrNzoYFp35/kkSv7UBrIA0oc2cfjbuI4Cft4qK
-   FNQ+ed8SOvl5vUGvj2UxKRwQmFCAnMHU/VDnqk2mggh9X6CjiizQejkN0
-   OykG2hMtNsD3M8ityuQPwjHwyMrZcnkS0wwJgK43csxsGV9V93wtvkxhf
-   RazKrd3eqWI5PEbAvuT3WAjy5qjx4EQ/d4WD8cGIZv/tZvf7rd7i1Ss86
-   g==;
-X-CSE-ConnectionGUID: W3kqJH3xQvOfuRhApax0jg==
-X-CSE-MsgGUID: y+/9d/MjTCOIIK4TQ8To/Q==
-X-IronPort-AV: E=McAfee;i="6800,10657,11670"; a="69541930"
-X-IronPort-AV: E=Sophos;i="6.21,222,1763452800"; 
-   d="scan'208";a="69541930"
-Received: from fmviesa006.fm.intel.com ([10.60.135.146])
-  by orvoesa113.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Jan 2026 10:13:36 -0800
-X-CSE-ConnectionGUID: /PR14+/ERcKzUI3qZVSsjQ==
-X-CSE-MsgGUID: wzx3DtcjQv+gyKcUs/Ifog==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.21,222,1763452800"; 
-   d="scan'208";a="204343020"
-Received: from lkp-server01.sh.intel.com (HELO 765f4a05e27f) ([10.239.97.150])
-  by fmviesa006.fm.intel.com with ESMTP; 13 Jan 2026 10:13:36 -0800
-Received: from kbuild by 765f4a05e27f with local (Exim 4.98.2)
-	(envelope-from <lkp@intel.com>)
-	id 1vfitZ-00000000FDZ-0MmD;
-	Tue, 13 Jan 2026 18:13:33 +0000
-Date: Wed, 14 Jan 2026 02:12:57 +0800
-From: kernel test robot <lkp@intel.com>
-To: Tejun Heo <tj@kernel.org>
-Cc: cgroups@vger.kernel.org
-Subject: [tj-cgroup:for-6.19-fixes] BUILD SUCCESS
- ef56578274d2b98423c8ef82bb450223f5811b59
-Message-ID: <202601140252.JBRFAlCD-lkp@intel.com>
-User-Agent: s-nail v14.9.25
+	s=arc-20240116; t=1768337888; c=relaxed/simple;
+	bh=TD2Vm9wqBzFMKU8+rXMduQiJ/DYduTKCttxOJrynlJY=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=XwKzJWOGDWQkvHSrK0NIr86RvfeUq/IpLYm5gNYhqHZxUXs397C98BfWAkXtFmoKN9Vrz/DxahB8fpizxO/TnThCvCOng0yDmNlA173Hf+QpZM3tLK6+XAWgL2S2WJM5GK4GP/dA2p4qL5CbIdZ05cqi9mw1tETSRXoiBcnQyMs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lwn.net; spf=pass smtp.mailfrom=lwn.net; dkim=pass (2048-bit key) header.d=lwn.net header.i=@lwn.net header.b=KFbKNiGe; arc=none smtp.client-ip=45.79.88.28
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lwn.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lwn.net
+DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 8ECE440C7C
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
+	t=1768337886; bh=jqbRJsomiPWk6cLkmHUFygsj5IDMKDpLe8eU/EmOQZg=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+	b=KFbKNiGe2YaK8agCCcuhtI6+jquk1zq0gG+KF8tf26qgrt+mu/JiJ+gzbKP6bqQMN
+	 o7GNTc4J3fQM8W/8z9Yx+/EG84EKlxLg/7D0V7II0cgTusmeD6IcxuPu8sgGfOQzpy
+	 4N4Gkr2u0sDZzk9fId6gcMxp8Ciq4WMgzd/vmlwqjgiD+v3Cy9kMqvJz2MNhhjW7gN
+	 lpVos9KUAT0bDV2gX0BhW+OGZIfJ9cCaY9mK+GH8vWLbsEG7FHDMcQKw3rsAHsVS4d
+	 Cc/SUpnN4GZzmtLCv3EguW3eyNyTVrc0OnxJvFwbyJ5loGgMWHfxEQXNZaBGW3v4kw
+	 xXElLZXpMaoyw==
+Received: from localhost (unknown [IPv6:2601:280:4600:27b::1fe])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (prime256v1) server-signature ECDSA (prime256v1) server-digest SHA256)
+	(No client certificate requested)
+	by ms.lwn.net (Postfix) with ESMTPSA id 8ECE440C7C;
+	Tue, 13 Jan 2026 20:58:06 +0000 (UTC)
+From: Jonathan Corbet <corbet@lwn.net>
+To: Nauman Sabir <officialnaumansabir@gmail.com>
+Cc: linux-doc@vger.kernel.org, cgroups@vger.kernel.org,
+ linux-erofs@lists.ozlabs.org, linux-kbuild@vger.kernel.org, Nauman Sabir
+ <officialnaumansabir@gmail.com>
+Subject: Re: [PATCH v3 3/3] Documentation: Fix typos and grammatical errors
+In-Reply-To: <20260112160820.19075-1-officialnaumansabir@gmail.com>
+References: <20260112160820.19075-1-officialnaumansabir@gmail.com>
+Date: Tue, 13 Jan 2026 13:58:05 -0700
+Message-ID: <87o6mxw7qa.fsf@trenco.lwn.net>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git for-6.19-fixes
-branch HEAD: ef56578274d2b98423c8ef82bb450223f5811b59  cgroup: Eliminate cgrp_ancestor_storage in cgroup_root
+Nauman Sabir <officialnaumansabir@gmail.com> writes:
 
-elapsed time: 8200m
+> Fix various typos and grammatical errors across documentation files:
+>
+> - Fix missing preposition 'in' in process/changes.rst
+> - Correct 'result by' to 'result from' in admin-guide/README.rst
+> - Fix 'before hand' to 'beforehand' in cgroup-v1/hugetlb.rst
+> - Correct 'allows to limit' to 'allows limiting' in hugetlb.rst,
+>   cgroup-v2.rst, and kconfig-language.rst
+> - Fix 'needs precisely know' to 'needs to precisely know'
+> - Correct 'overcommited' to 'overcommitted' in hugetlb.rst
+> - Fix subject-verb agreement: 'never causes' to 'never cause'
+> - Fix 'there is enough' to 'there are enough' in hugetlb.rst
+> - Fix 'metadatas' to 'metadata' in filesystems/erofs.rst
+> - Fix 'hardwares' to 'hardware' in scsi/ChangeLog.sym53c8xx
+>
+> Signed-off-by: Nauman Sabir <officialnaumansabir@gmail.com>
 
-configs tested: 54
-configs skipped: 8
+The "3/3" in the subject suggests there's two other patches somewhere?
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+Thanks,
 
-tested configs:
-alpha         allnoconfig    gcc-15.2.0
-alpha        allyesconfig    gcc-15.2.0
-arc          allmodconfig    gcc-15.2.0
-arc           allnoconfig    gcc-15.2.0
-arc          allyesconfig    gcc-15.2.0
-arm           allnoconfig    clang-22
-arm          allyesconfig    gcc-15.2.0
-arm64        allmodconfig    clang-19
-arm64         allnoconfig    gcc-15.2.0
-csky         allmodconfig    gcc-15.2.0
-csky          allnoconfig    gcc-15.2.0
-hexagon      allmodconfig    clang-17
-hexagon       allnoconfig    clang-22
-i386         allmodconfig    gcc-14
-i386          allnoconfig    gcc-14
-i386         allyesconfig    gcc-14
-loongarch    allmodconfig    clang-19
-loongarch     allnoconfig    clang-22
-m68k         allmodconfig    gcc-15.2.0
-m68k          allnoconfig    gcc-15.2.0
-m68k         allyesconfig    gcc-15.2.0
-microblaze    allnoconfig    gcc-15.2.0
-microblaze   allyesconfig    gcc-15.2.0
-mips         allmodconfig    gcc-15.2.0
-mips          allnoconfig    gcc-15.2.0
-mips         allyesconfig    gcc-15.2.0
-nios2        allmodconfig    gcc-11.5.0
-nios2         allnoconfig    gcc-11.5.0
-openrisc     allmodconfig    gcc-15.2.0
-openrisc      allnoconfig    gcc-15.2.0
-parisc       allmodconfig    gcc-15.2.0
-parisc        allnoconfig    gcc-15.2.0
-parisc       allyesconfig    gcc-15.2.0
-powerpc      allmodconfig    gcc-15.2.0
-powerpc       allnoconfig    gcc-15.2.0
-riscv        allmodconfig    clang-22
-riscv         allnoconfig    gcc-15.2.0
-riscv        allyesconfig    clang-16
-s390         allmodconfig    clang-18
-s390          allnoconfig    clang-22
-s390         allyesconfig    gcc-15.2.0
-sh           allmodconfig    gcc-15.2.0
-sh            allnoconfig    gcc-15.2.0
-sh           allyesconfig    gcc-15.2.0
-sparc         allnoconfig    gcc-15.2.0
-sparc64      allmodconfig    clang-22
-um           allmodconfig    clang-19
-um            allnoconfig    clang-22
-um           allyesconfig    gcc-14
-x86_64       allmodconfig    clang-20
-x86_64        allnoconfig    clang-20
-x86_64       allyesconfig    clang-20
-x86_64      rhel-9.4-rust    clang-20
-xtensa        allnoconfig    gcc-15.2.0
-
---
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+jon
 
