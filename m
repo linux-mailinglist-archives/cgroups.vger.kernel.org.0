@@ -1,80 +1,80 @@
-Return-Path: <cgroups+bounces-13158-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-13159-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
-	by mail.lfdr.de (Postfix) with ESMTPS id 41A84D19616
-	for <lists+cgroups@lfdr.de>; Tue, 13 Jan 2026 15:19:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 50939D1969A
+	for <lists+cgroups@lfdr.de>; Tue, 13 Jan 2026 15:24:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 32A00300DB21
-	for <lists+cgroups@lfdr.de>; Tue, 13 Jan 2026 14:16:31 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id 39FB53017C47
+	for <lists+cgroups@lfdr.de>; Tue, 13 Jan 2026 14:22:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7741B284662;
-	Tue, 13 Jan 2026 14:16:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E626287516;
+	Tue, 13 Jan 2026 14:22:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gourry.net header.i=@gourry.net header.b="SPc2JJKa"
+	dkim=pass (2048-bit key) header.d=gourry.net header.i=@gourry.net header.b="nxRwG7nR"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-qt1-f169.google.com (mail-qt1-f169.google.com [209.85.160.169])
+Received: from mail-qv1-f50.google.com (mail-qv1-f50.google.com [209.85.219.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C04C427B34D
-	for <cgroups@vger.kernel.org>; Tue, 13 Jan 2026 14:16:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C0D332857EE
+	for <cgroups@vger.kernel.org>; Tue, 13 Jan 2026 14:22:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768313789; cv=none; b=JM+SiFKeltET8drYWdqmzmLQ4diXxmcMyX5G2NYN982XBVAHofJDErV3WU+PAPecHaw6xl3/EQKjWH/sMc/rDe6+TJRLtsdoENL1W1uf7L4nON4YVaZJA4zc6dpRlV5idWR7V5QGR8ukaCmKnl44cJyglkporvmV0Jv1Vs9K9QE=
+	t=1768314138; cv=none; b=H10w3/mFTTrRGaI5MI4AacDuYxMrW5VRxdDXG65lXnXNYq9AulbBfdGrkKZ8bVzFl5fUZ7vMgy4z1x245ynHGSmdywIqac9tqwANMVI4hyUGsqMUdsZH/HwVKYgqrMzxbHkjnkipg0VhyRFWVotsM4e+EdVyldzhBYGWoArlQFQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768313789; c=relaxed/simple;
-	bh=L8RKTSgZzn96TggX+YEpwMvvmrSwzzrKlYFGRXKLwfE=;
+	s=arc-20240116; t=1768314138; c=relaxed/simple;
+	bh=eGYf2Wx7+bxI9fnoEdaKbM+ix0y39iZXCpZ7Kf2dgqM=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=NbyzXcNMl2YcVI4Xsvcimey6H2G8XhcjfEhKT1tZlFnXLf1DhWrUWgYadiED78R8QgcDTmemyYXxUXNMpDMANfhP1CWTiUcGjlogPWMu9fO6maRkWoDXFKZHR6SalZgQhbJJbXnxCyK0idb6LaaAHhbt+Nd1Mu7VfFrgwpL26FY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gourry.net; spf=pass smtp.mailfrom=gourry.net; dkim=pass (2048-bit key) header.d=gourry.net header.i=@gourry.net header.b=SPc2JJKa; arc=none smtp.client-ip=209.85.160.169
+	 Content-Type:Content-Disposition:In-Reply-To; b=Rmc/nOrv70W6mjMmyvrs/FDp+hNJ8W3Tx3Gi/hAPoxz0ktRHZweH49DEvWGXY+tca4hjQ7whbpT3XETQ0CLXAwuHfB8QQWnCuVkZMAmaTvqhc0KA+08qTkFvz4k8qNqqnUQOQEQywkzrIMF9nrBByynFpnlSYGgkS++m77XeLy0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gourry.net; spf=pass smtp.mailfrom=gourry.net; dkim=pass (2048-bit key) header.d=gourry.net header.i=@gourry.net header.b=nxRwG7nR; arc=none smtp.client-ip=209.85.219.50
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gourry.net
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gourry.net
-Received: by mail-qt1-f169.google.com with SMTP id d75a77b69052e-5014600ad12so1106881cf.2
-        for <cgroups@vger.kernel.org>; Tue, 13 Jan 2026 06:16:27 -0800 (PST)
+Received: by mail-qv1-f50.google.com with SMTP id 6a1803df08f44-88fcc71dbf4so47901396d6.2
+        for <cgroups@vger.kernel.org>; Tue, 13 Jan 2026 06:22:16 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gourry.net; s=google; t=1768313787; x=1768918587; darn=vger.kernel.org;
+        d=gourry.net; s=google; t=1768314136; x=1768918936; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=EA4FEA3d8sqza+07mct2btPiz1RY5DfLWXNlCi+Rawg=;
-        b=SPc2JJKaFMa5z9jtGsClwMIJjee1JQTyEBNqKdkrc3uH9J+E/PabY7k7e4RsFS+nNe
-         ygwe9iDzAihYKkBJvwP51qg3ZweUgRj4gW4bHr9bwmQ3xyiId1T0jj94vqPhnFu7fzYo
-         E/FNpnJ2/4VUfRoAmUNf0huLGzScIFipAcrl7sT0TvRn4ISpK6/5heQn89bZ3dEYVpT4
-         0m9JuZdvZf6ofqNhendiguV8rzdZSVy5RCIRDGP8+GaqRrinzSPIXT1QuKQcoxkPSBFV
-         apbkp+Si0LNTWKy5r8+rtrdqWDvwTESHlC2wXBzYDSfNQm00tP9VlQMIy+5+uWW2F8oe
-         5mbA==
+        bh=m4O37FQr+LOdMRqQ+TweaC2/Sd4OM2JtWu1rpX/F7Rk=;
+        b=nxRwG7nRohedhtQXF/V6ET8r6E1hCKNpxlzftno1dvf+aoyTKgKLEYFzotdFeaS82j
+         PF36RsbR9oCEBJ+Aifu/nMLKi92wqbSQLnLLXOg5k4/I3+y9ylsJqOsnxVrfBTXSPhhA
+         a2Twusxuh6BCFzYh33Se9RWnDujRooZp51B5TRm8ti6koUW+ItEDiMvrUSeqaww1fb7g
+         4vHvS+jZhJTia75hPeLrHZ025L0uWyeEzdeunVnF6lKaIb2WysxZfrbb9fjPPp49REjv
+         zcH+mqYHu6lxocF+QYu0G+BkjBun6GwlthswaI19nEGuSJHyNpztiK9m+0cGVwNDRV0n
+         DWqg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1768313787; x=1768918587;
+        d=1e100.net; s=20230601; t=1768314136; x=1768918936;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=EA4FEA3d8sqza+07mct2btPiz1RY5DfLWXNlCi+Rawg=;
-        b=VKnJ1mva3q3Fb5ovPsNbpUSxcRFNvwHjJg/vPhNO2zIV8dbBtM1nY9aP9EtJDTkXgy
-         uNjQzSbV6BZhdHFQMM6X8ol/1OtWXzkCjaS6q4t62k8sQBzdaN1MjZGldKteKA2sdA+T
-         i7OpcnBjPyrhx8I0So4kYEV4JQeX54iaxpVQGfnyaqQiXaaPBzUhOWIm3x3X2ylZHHTi
-         9zPRP7Lbq2Orx9NEAsgRaKa24QpzKpUjwv2qPdCOsmDCpmUF8LarSmHZK3hdDZJ3QPzU
-         N2VUancty60CliPH/0AY7ah/Wg++ayNYgRYgzohGbY2HFjw6cazhy4+ZiN3jjqF8pBY+
-         nCHg==
-X-Forwarded-Encrypted: i=1; AJvYcCUyONbZsQ4MjgTdcKb8TUIqro5be/XqM2R2tsKGApiNZS07PTGnm7ce6nT/koDZEEL0uHsBr1Jg@vger.kernel.org
-X-Gm-Message-State: AOJu0Yx/JpxFWIkYxNRSVgI9bJuM4IGPpx6d23yUbhRkPpDzEzErnlWc
-	/TnicCS9ZjOzFoZjwEHSAVH3Jb5iqtDPhZyZJ2xsNX45/nuAwdv1cJ/LVnqV3ipWESg=
-X-Gm-Gg: AY/fxX7oKZHQmSCOVe5LDVXvpFAvTlP8g09VBdrlDjRCafs4FRjG5JCjnOZuVAAy0F3
-	eIdH59TyjE+Zhp6KJ3DoyfopSlB2LzGhiip3pJnNN1mioYdENkUvIvuvMqbwcBuJs9gZ3t9PUjn
-	FI86rjtBVJ9wMp37M+Kcn2x1Lm4L7DJ4ixLaILL2ohmUaLBpdVV6we3Tr7TvCVTI72Eg4328mnh
-	4FHmiOMqlJVZ0hunvjS6NiH2xNwUSenjTrBqMghg9O2HlupvQP3A4gzVEktrYYtnEuRKIAfx/es
-	yICjU0CLA4nrzNIlMiy4aHd4w51QdglXAa6vydFu2OVyGBWcHgGn6+KrEU9pK8yTI1V+Tsc+Obz
-	wkkLXncPdJReyOLyyr54IYzRTWp7STpaSVpctVjrnslU5u0NN9mI2+vHntzIqhGzKN6GB39yteF
-	7/nVuocNYispkaLtoiYFZe/MVPuQHp5YFClNEDZ23jNE6fDbWLXDi42yzzXsn8/V0zfs1YnA==
-X-Google-Smtp-Source: AGHT+IENvQu0lA+w8r7eNtBm9WUJ3/lNNLy7qp1W9GClRyOkBrOA+5+QqmRhEmTzN0zeeABQ2fhjWQ==
-X-Received: by 2002:a05:622a:1823:b0:4e8:9704:7c83 with SMTP id d75a77b69052e-4ffb47d759bmr323881271cf.14.1768313786490;
-        Tue, 13 Jan 2026 06:16:26 -0800 (PST)
+        bh=m4O37FQr+LOdMRqQ+TweaC2/Sd4OM2JtWu1rpX/F7Rk=;
+        b=XSGV77sxQJmzTOSaEoA7fZnrI/ZhIQP36/04eKmk6PhYeIunhAZ8/4XjffZAcsc8B2
+         +coINDt+5KkbdFnbzjZ9JiG9lekd9x6TDRF19WyTq/9xwKwy+YWPbqIMmye9LcTkxhfm
+         V0eljeknsErp22tIqqpa7CZqH++gsPmi2ayYuffUnEQOblSwzsIfX42bJCMVo+9cuqLo
+         2ZSRLciTVMQV2PgpLTfbHZOOVugbaRoZ4QMjy33sGJkA1qjdqCiIW9IF7LqWBvLX/0OX
+         Jirbqi3a1TesemNKAGAJ5773Q/8Mn9zcOZl/ByTCTQHEkwaMBVQ/08IHJYC8uzi7hUkH
+         9y7w==
+X-Forwarded-Encrypted: i=1; AJvYcCWbWFgToQeegklpRogUw/+0lYBrpDWQC36WsiM//i82ZGP9GfXcY0bYeaLNJAexXGRAW/DVnSbF@vger.kernel.org
+X-Gm-Message-State: AOJu0YyM9FLDXqgQz7vjC3M/2myjGbxP+QczKlnQuq78REOXW4h9U/e+
+	L+2Os8XgcQ/7H7I+H4hR8oyUYspqxPnEdo9+ic/AtPbzxcobs+gODgVY4+/Z9AFMBqU=
+X-Gm-Gg: AY/fxX6OsFP5ubHv5QmnUVEsg64UqqNXCjwkOYRrF6VTgxOGNoIrUiDrCmwZv3+50z6
+	a46fE+dwDsxzaMjuul6TTMVd+KBVXJeV2ABVwps2y9VYzWe7BDS3Qyftp/VMZ/Eth9rQG6UKIKq
+	zCyOnO03Ll7MchvorRwOpTBacfFJEb6QPfs6yupvZeWsGXNpltzu8bXiRRhy9JWfiS2sAqFFJMS
+	va7ZY3yhyPh4UYNiqN27FxlSw8cmRK1XDMTfguhLwGsZ4eWmrZ7mOfhs5HEs3AwwcdoevExG7M3
+	v03DJjJX963MZDF0nuS35156zLCK8Th3OziwVkCJp9v2If2NUzSH36eL1D3DXt7Xu65BzZO8LTS
+	c6MyXQKX9SzcwuZB2rWwIW3y64Js9xTKm3KXcKEByk2ae5YLTrNaaIYFwKe0Re2xB1EC2omnTly
+	r7VL5vhrDXe5APiYLF+JdYYYOEplYWrVp0vZbPZ+2nx/5R4cglms+3nWP447GhJbHHKIUeZQ==
+X-Google-Smtp-Source: AGHT+IFjEUG/kkt8lULhTKW8EjcJ76aqeW9gt0lwSGT7fyOizprTUn0Us5awKcQHUHtWfOIUP8T8rQ==
+X-Received: by 2002:a05:6214:5090:b0:888:8187:1547 with SMTP id 6a1803df08f44-890842a23b8mr315841516d6.48.1768314135363;
+        Tue, 13 Jan 2026 06:22:15 -0800 (PST)
 Received: from gourry-fedora-PF4VCD3F (pool-96-255-20-138.washdc.ftas.verizon.net. [96.255.20.138])
-        by smtp.gmail.com with ESMTPSA id d75a77b69052e-4ffa8d39230sm147458241cf.6.2026.01.13.06.16.16
+        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-890772681desm157803516d6.51.2026.01.13.06.22.13
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 13 Jan 2026 06:16:21 -0800 (PST)
-Date: Tue, 13 Jan 2026 09:15:43 -0500
+        Tue, 13 Jan 2026 06:22:14 -0800 (PST)
+Date: Tue, 13 Jan 2026 09:21:41 -0500
 From: Gregory Price <gourry@gourry.net>
-To: dan.j.williams@intel.com
-Cc: Balbir Singh <balbirs@nvidia.com>, Yury Norov <ynorov@nvidia.com>,
+To: Balbir Singh <balbirs@nvidia.com>
+Cc: dan.j.williams@intel.com, Yury Norov <ynorov@nvidia.com>,
 	linux-mm@kvack.org, cgroups@vger.kernel.org,
 	linux-cxl@vger.kernel.org, linux-doc@vger.kernel.org,
 	linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
@@ -99,7 +99,7 @@ Cc: Balbir Singh <balbirs@nvidia.com>, Yury Norov <ynorov@nvidia.com>,
 	cl@gentwo.org, harry.yoo@oracle.com, zhengqi.arch@bytedance.com
 Subject: Re: [RFC PATCH v3 0/8] mm,numa: N_PRIVATE node isolation for
  device-managed memory
-Message-ID: <aWZTjzW54LMedKMH@gourry-fedora-PF4VCD3F>
+Message-ID: <aWZU9YZLmpX7wxbb@gourry-fedora-PF4VCD3F>
 References: <aWUHAboKw28XepWr@gourry-fedora-PF4VCD3F>
  <aWUs8Fx2CG07F81e@yury>
  <696566a1e228d_2071810076@dwillia2-mobl4.notmuch>
@@ -109,7 +109,7 @@ References: <aWUHAboKw28XepWr@gourry-fedora-PF4VCD3F>
  <aWWGZVsY84D7YNu1@gourry-fedora-PF4VCD3F>
  <69659d418650a_207181009a@dwillia2-mobl4.notmuch>
  <aWWuU8xphCP_g6KI@gourry-fedora-PF4VCD3F>
- <6965b80a887d5_875d100b5@dwillia2-mobl4.notmuch>
+ <91015dcc-6164-4728-a512-1486333d7275@nvidia.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -118,18 +118,18 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <6965b80a887d5_875d100b5@dwillia2-mobl4.notmuch>
+In-Reply-To: <91015dcc-6164-4728-a512-1486333d7275@nvidia.com>
 
-On Mon, Jan 12, 2026 at 07:12:10PM -0800, dan.j.williams@intel.com wrote:
-> Gregory Price wrote:
+On Tue, Jan 13, 2026 at 02:24:40PM +1100, Balbir Singh wrote:
+> On 1/13/26 12:30, Gregory Price wrote:
 > > On Mon, Jan 12, 2026 at 05:17:53PM -0800, dan.j.williams@intel.com wrote:
-> > > 
-> > > I think what Balbir is saying is that the _PUBLIC is implied and can be
-> > > omitted. It is true that N_MEMORY[_PUBLIC] already indicates multi-zone
-> > > support. So N_MEMORY_PRIVATE makes sense to me as something that it is
-> > > distinct from N_{HIGH,NORMAL}_MEMORY which are subsets of N_MEMORY.
-> > > Distinct to prompt "go read the documentation to figure out why this
-> > > thing looks not like the others".
+> >>
+> >> I think what Balbir is saying is that the _PUBLIC is implied and can be
+> >> omitted. It is true that N_MEMORY[_PUBLIC] already indicates multi-zone
+> >> support. So N_MEMORY_PRIVATE makes sense to me as something that it is
+> >> distinct from N_{HIGH,NORMAL}_MEMORY which are subsets of N_MEMORY.
+> >> Distinct to prompt "go read the documentation to figure out why this
+> >> thing looks not like the others".
 > > 
 > > Ah, ack.  Will update for v4 once i give some thought to the compression
 > > stuff and the cgroups notes.
@@ -137,48 +137,40 @@ On Mon, Jan 12, 2026 at 07:12:10PM -0800, dan.j.williams@intel.com wrote:
 > > I would love if the ZONE_DEVICE folks could also chime in on whether the
 > > callback structures for pgmap and hmm might be re-usable here, but might
 > > take a few more versions to get the attention of everyone.
+> > 
 > 
-> page->pgmap clobbers page->lru, i.e. they share the same union, so you
-> could not directly use the current ZONE_DEVICE scheme. That is because
-> current ZONE_DEVICE scheme needs to support ZONE_DEVICE mixed with
-> ZONE_NORMAL + ZONE_MOVABLE in the same node.
+> I see ZONE_DEVICE as a parallel construct to N_MEMORY_PRIVATE. ZONE_DEVICE
+> is memory managed by devices and already isolated from the allocator. Do you
+> see a need for both? I do see the need for migration between the two, but
+> I suspect you want to have ZONE_DEVICE as a valid zone inside of N_MEMORY_PRIVATE?
 > 
-> However, with N_MEMORY_PRIVATE effectively enabling a "node per device"
-> construct, you could move 'struct dev_pagemap' to node scope. I.e.
-> rather than annotate each page with which device it belongs teach
-> pgmap->ops callers to consider that the dev_pagemap instance may come
-> from the node instead.
 
-Hmmmmmmm... this is interesting.
+I see N_MEMORY_PRIVATE replacing some ZONE_DEVICE patterns.
 
-should be able to do that cleanly with page_pgmap() and/or folio_pgmap()
-and update direct accessors.
+N_MEMORY_PRIVATE essentially means some driver controls how allocation
+occurs, and some components of mm/ can be enlightened to allow certain
+types of N_MEMORY_PRIVATE nodes to be used directly (e.g. DEMOTE_ONLY
+nodes could be used by vmscan.c but not by page_alloc.c as a fallback
+node).
 
-probably we'd want mildly different patterns for N_PRIVATE that does
-something like
+But you could totally have a driver hotplug an N_PRIVATE node and not
+register the NID anywhere.  In that case the driver would allow
+allocation either via something like
 
-if (is_private_page(page)) {
-	... send to private router ...
-}
+fd = open("/dev/my_driver_file", ...);
+buf = mmap(fd, ...);
+buf[0] = 0x0;
+/* Fault into driver, driver allocates w/ __GFP flag for private node */
 
-bool is_private_page(page) {
-	pgdat = NODE_DATA(page_to_nid(page));
-	return pgdat && pgdat->pgmap;
+or just some ioctl()
 
-	/* or this, but seems less efficient */
-	return node_state(page_to_nid, N_PRIVATE);
-}
+ioctl(fd, ALLOC_SOME_MEMORY, ...);
 
-Then we can add all the callbacks to pgmap instead of dumping them in
-node.c.  Shouldn't affect any existing users, since this doesn't
-intersect with ZONE_DEVICE.
-
-Technically you COULD have ZONE_DEVICE in N_PRIVATE, but that would be
-per-page pgmap, and probably you'd have to have the private router
-handle the is_device_page() pattern like everyone else does.
-
-(Seems pointless though, feels like N_PRIVATE replaces ZONE_DEVICE for
- some use cases)
+The driver wouldn't have to reimplement allocator logic, and could
+register its own set of callbacks to manage how the memory is allowed to
+be mapped into page tables and such (my understanding is hmm.c already
+has some of this control, that could be re-used - and pgmap exists for
+ZONE_DEVICE, this could be re-used in some way).
 
 ~Gregory
 
