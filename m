@@ -1,89 +1,187 @@
-Return-Path: <cgroups+bounces-13163-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-13164-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id BD9F0D1B522
-	for <lists+cgroups@lfdr.de>; Tue, 13 Jan 2026 21:58:13 +0100 (CET)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
+	by mail.lfdr.de (Postfix) with ESMTPS id E5E83D1B84E
+	for <lists+cgroups@lfdr.de>; Tue, 13 Jan 2026 23:03:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id 10BA5300816C
-	for <lists+cgroups@lfdr.de>; Tue, 13 Jan 2026 20:58:10 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id 44EDA30158E6
+	for <lists+cgroups@lfdr.de>; Tue, 13 Jan 2026 22:03:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B105B3203A5;
-	Tue, 13 Jan 2026 20:58:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 028C3352C37;
+	Tue, 13 Jan 2026 22:02:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=lwn.net header.i=@lwn.net header.b="KFbKNiGe"
+	dkim=pass (2048-bit key) header.d=meta.com header.i=@meta.com header.b="a9HRVjTd"
 X-Original-To: cgroups@vger.kernel.org
-Received: from ms.lwn.net (ms.lwn.net [45.79.88.28])
+Received: from mx0b-00082601.pphosted.com (mx0b-00082601.pphosted.com [67.231.153.30])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 57608318B9E;
-	Tue, 13 Jan 2026 20:58:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.79.88.28
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 21E9D2ED164;
+	Tue, 13 Jan 2026 22:02:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=67.231.153.30
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768337888; cv=none; b=eSyLN2F3X9oZiAfSX41+vyLzISrSvzSHn7lj/tDz+h3DYXdacIKdvhz9ImVOyC3c3sFRG65Bqc+4Tpj7aOEn8NbVfGHXcPI1peNR86i9lS/UJ3IuIsFMiYk9jIzrluGMmAJph8kVBrFqQd34olSSfYszbuhLfxbqAtHKMwH/fAI=
+	t=1768341777; cv=none; b=SlFhs/DE91uNx/5gVcOz412PkyDhS1z+Bvdajx7nC6KU+skNZze1oiopKSpckCUFp3O+MBnxlGzTsRd2fPCQMVrtv3ikyb3Wu5K5hSauwiyihLQWN4IyOqwrnYQb52WaVZX4d6gtFJ61aeL5YVqK2bwpY6vDqPjJ6nQMDraAWkE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768337888; c=relaxed/simple;
-	bh=TD2Vm9wqBzFMKU8+rXMduQiJ/DYduTKCttxOJrynlJY=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=XwKzJWOGDWQkvHSrK0NIr86RvfeUq/IpLYm5gNYhqHZxUXs397C98BfWAkXtFmoKN9Vrz/DxahB8fpizxO/TnThCvCOng0yDmNlA173Hf+QpZM3tLK6+XAWgL2S2WJM5GK4GP/dA2p4qL5CbIdZ05cqi9mw1tETSRXoiBcnQyMs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lwn.net; spf=pass smtp.mailfrom=lwn.net; dkim=pass (2048-bit key) header.d=lwn.net header.i=@lwn.net header.b=KFbKNiGe; arc=none smtp.client-ip=45.79.88.28
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lwn.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lwn.net
-DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net 8ECE440C7C
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
-	t=1768337886; bh=jqbRJsomiPWk6cLkmHUFygsj5IDMKDpLe8eU/EmOQZg=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-	b=KFbKNiGe2YaK8agCCcuhtI6+jquk1zq0gG+KF8tf26qgrt+mu/JiJ+gzbKP6bqQMN
-	 o7GNTc4J3fQM8W/8z9Yx+/EG84EKlxLg/7D0V7II0cgTusmeD6IcxuPu8sgGfOQzpy
-	 4N4Gkr2u0sDZzk9fId6gcMxp8Ciq4WMgzd/vmlwqjgiD+v3Cy9kMqvJz2MNhhjW7gN
-	 lpVos9KUAT0bDV2gX0BhW+OGZIfJ9cCaY9mK+GH8vWLbsEG7FHDMcQKw3rsAHsVS4d
-	 Cc/SUpnN4GZzmtLCv3EguW3eyNyTVrc0OnxJvFwbyJ5loGgMWHfxEQXNZaBGW3v4kw
-	 xXElLZXpMaoyw==
-Received: from localhost (unknown [IPv6:2601:280:4600:27b::1fe])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (prime256v1) server-signature ECDSA (prime256v1) server-digest SHA256)
-	(No client certificate requested)
-	by ms.lwn.net (Postfix) with ESMTPSA id 8ECE440C7C;
-	Tue, 13 Jan 2026 20:58:06 +0000 (UTC)
-From: Jonathan Corbet <corbet@lwn.net>
-To: Nauman Sabir <officialnaumansabir@gmail.com>
-Cc: linux-doc@vger.kernel.org, cgroups@vger.kernel.org,
- linux-erofs@lists.ozlabs.org, linux-kbuild@vger.kernel.org, Nauman Sabir
- <officialnaumansabir@gmail.com>
-Subject: Re: [PATCH v3 3/3] Documentation: Fix typos and grammatical errors
-In-Reply-To: <20260112160820.19075-1-officialnaumansabir@gmail.com>
-References: <20260112160820.19075-1-officialnaumansabir@gmail.com>
-Date: Tue, 13 Jan 2026 13:58:05 -0700
-Message-ID: <87o6mxw7qa.fsf@trenco.lwn.net>
+	s=arc-20240116; t=1768341777; c=relaxed/simple;
+	bh=W0fvo92xO+YH7MNGKEXtMmj9UxeMNplB+Dp3NStPvr8=;
+	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=CaEq6ZhA5BLstUGcXDBSET71Tdixay8haBxvsV5W93Gj1+5DGO0lcS5SpRvSeUubFnW9zfaA9NC68/KxTmnUV4xpMPSyG3SzEOZxY7lFhBLVhONkMxq4jBz1zuJJf0FdrTpwmNVBC1aPoCmHnU4SVgUT+Neg5xFV5woE2j3MBcY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=meta.com; spf=pass smtp.mailfrom=meta.com; dkim=pass (2048-bit key) header.d=meta.com header.i=@meta.com header.b=a9HRVjTd; arc=none smtp.client-ip=67.231.153.30
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=meta.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=meta.com
+Received: from pps.filterd (m0109332.ppops.net [127.0.0.1])
+	by mx0a-00082601.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 60DJ7cQo970108;
+	Tue, 13 Jan 2026 14:01:04 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=meta.com; h=cc
+	:content-transfer-encoding:content-type:date:from:in-reply-to
+	:message-id:mime-version:references:subject:to; s=s2048-2025-q2;
+	 bh=qFJSz6HWUVroy5Xeu7AQq6OJ493rMP5IhTgqTexfW2w=; b=a9HRVjTdtKCO
+	qhYRLwS050zCl1IeRph1U0HkB2sbmOicaN1r6fntX+P1z8iiAyUZpp1WqJTrFWRM
+	DpmkaFQEgiM9ibecfBRASqbhxZNvuUU5ddTeVGoMlbqL/RvjTuNP71sX5jUagX3f
+	1rHGQTe1Qi4fvSPhPnYEAWGxzPworvnBbfSM97mFBJiGiUAND3BTuM3gFDA+L2ea
+	3w8oFA3EWQsnDAehjDehdruwZBl5UvvJK/n7P5QwI+xvVCnDUfJ886nEvIWmsnfR
+	yfU2buf5aWgt0p900yK0re0M03DUNP5MUFVB17pdUcWdd3SX7p3g44BxNCcH+xLe
+	BDgwRKrhew==
+Received: from maileast.thefacebook.com ([163.114.135.16])
+	by mx0a-00082601.pphosted.com (PPS) with ESMTPS id 4bnuxc1hw3-3
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+	Tue, 13 Jan 2026 14:01:04 -0800 (PST)
+Received: from devbig003.atn7.facebook.com (2620:10d:c0a8:1b::2d) by
+ mail.thefacebook.com (2620:10d:c0a9:6f::237c) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.2.2562.29; Tue, 13 Jan 2026 22:01:02 +0000
+From: Chris Mason <clm@meta.com>
+To: Qi Zheng <qi.zheng@linux.dev>
+CC: Chris Mason <clm@meta.com>, <hannes@cmpxchg.org>, <hughd@google.com>,
+        <mhocko@suse.com>, <roman.gushchin@linux.dev>,
+        <shakeel.butt@linux.dev>, <muchun.song@linux.dev>, <david@redhat.com>,
+        <lorenzo.stoakes@oracle.com>, <ziy@nvidia.com>, <harry.yoo@oracle.com>,
+        <baolin.wang@linux.alibaba.com>, <Liam.Howlett@oracle.com>,
+        <npache@redhat.com>, <ryan.roberts@arm.com>, <dev.jain@arm.com>,
+        <baohua@kernel.org>, <lance.yang@linux.dev>,
+        <akpm@linux-foundation.org>, <richard.weiyang@gmail.com>,
+        <linux-mm@kvack.org>, <linux-kernel@vger.kernel.org>,
+        <cgroups@vger.kernel.org>, Qi Zheng <zhengqi.arch@bytedance.com>
+Subject: Re: [PATCH v6 4/4] mm: thp: reparent the split queue during memcg offline
+Date: Tue, 13 Jan 2026 14:00:43 -0800
+Message-ID: <20260113220046.2274684-1-clm@meta.com>
+X-Mailer: git-send-email 2.47.3
+In-Reply-To: <8703f907c4d1f7e8a2ef2bfed3036a84fa53028b.1762762324.git.zhengqi.arch@bytedance.com>
+References:
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
+X-Proofpoint-ORIG-GUID: JjIO1_e8ho5mXlIbvHaG4iVAEGRmmuK7
+X-Proofpoint-GUID: JjIO1_e8ho5mXlIbvHaG4iVAEGRmmuK7
+X-Authority-Analysis: v=2.4 cv=ZfwQ98VA c=1 sm=1 tr=0 ts=6966c0a0 cx=c_pps
+ a=MfjaFnPeirRr97d5FC5oHw==:117 a=MfjaFnPeirRr97d5FC5oHw==:17
+ a=vUbySO9Y5rIA:10 a=VkNPw1HP01LnGYTKEx00:22 a=968KyxNXAAAA:8
+ a=v-Gz4QzHp4V9PmqzfvMA:9
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwMTEzMDE3OSBTYWx0ZWRfX4ckwhbLA9Bim
+ jNqv1Km9MpjYJlz0/8inX1dUbSk5CpyBj2jckX24emS7wb8CzcsBhQxzhgxaNwQ0SvflJWONVTa
+ haUN8rx9VJcqUhRcYT0mY1gmej2leDsFntn/Z7cTq47RgkuYtYT1XLSoIboxipSEo9VY2t3jOlP
+ LnGT9eRnbIMbX1OxDg4cRO5SyBBc+PkBmCrPgQTmVJFrCLFWomL1BDom7mscs2pA9H2TMWIaXuT
+ XAYuSs0iizUtkFPG9+ltZ+Qpj60RV5AolvTdlHiRLyqvCVpdYr93qDpWrQqWieYD0NlDtiU5Fs3
+ Hn2jkzQ4wb1rGeYu3t8ogIIXOiLOUNPXPyyezqothWAIC/CnZCbMwySgrbsd3oCJwW6Ed7O6Jei
+ njb+Z7CxulHf6wpXrLLISbI7tiH0kxGpI939sbTyArq09/n2AU5es9ZsBTiH5EOrAwIUh2XWJBH
+ tO8MFZWr3hxa139TAWA==
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1121,Hydra:6.1.9,FMLib:17.12.100.49
+ definitions=2026-01-13_04,2026-01-09_02,2025-10-01_01
 
-Nauman Sabir <officialnaumansabir@gmail.com> writes:
+On Mon, 10 Nov 2025 16:17:58 +0800 Qi Zheng <qi.zheng@linux.dev> wrote:
 
-> Fix various typos and grammatical errors across documentation files:
+> From: Qi Zheng <zhengqi.arch@bytedance.com>
+> 
+> Similar to list_lru, the split queue is relatively independent and does
+> not need to be reparented along with objcg and LRU folios (holding
+> objcg lock and lru lock). So let's apply the similar mechanism as list_lru
+> to reparent the split queue separately when memcg is offine.
+> 
+
+Hi everyone,
+
+I'm running all of the MM commits since v6.18 through the AI patch review
+tools, and this one was flagged.  I'm much less confident in this report,
+AI tends to get these races wrong:
+
+[AI review output]
+
+> diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
+> index b0c6a4635c67b..cc6db20d7dca0 100644
+> --- a/include/linux/memcontrol.h
+> +++ b/include/linux/memcontrol.h
+> @@ -1775,6 +1775,12 @@ static inline void count_objcg_events(struct obj_cgroup *objcg,
+>  bool mem_cgroup_node_allowed(struct mem_cgroup *memcg, int nid);
 >
-> - Fix missing preposition 'in' in process/changes.rst
-> - Correct 'result by' to 'result from' in admin-guide/README.rst
-> - Fix 'before hand' to 'beforehand' in cgroup-v1/hugetlb.rst
-> - Correct 'allows to limit' to 'allows limiting' in hugetlb.rst,
->   cgroup-v2.rst, and kconfig-language.rst
-> - Fix 'needs precisely know' to 'needs to precisely know'
-> - Correct 'overcommited' to 'overcommitted' in hugetlb.rst
-> - Fix subject-verb agreement: 'never causes' to 'never cause'
-> - Fix 'there is enough' to 'there are enough' in hugetlb.rst
-> - Fix 'metadatas' to 'metadata' in filesystems/erofs.rst
-> - Fix 'hardwares' to 'hardware' in scsi/ChangeLog.sym53c8xx
+>  void mem_cgroup_show_protected_memory(struct mem_cgroup *memcg);
+> +
+> +static inline bool memcg_is_dying(struct mem_cgroup *memcg)
+> +{
+> +	return memcg ? css_is_dying(&memcg->css) : false;
+> +}
+
+[ ... ]
+
+> diff --git a/mm/huge_memory.c b/mm/huge_memory.c
+> index 13684e5376e82..d17d3810a882c 100644
+
+[ ... ]
+
+> @@ -1129,8 +1140,14 @@ split_queue_lock_irqsave(int nid, struct mem_cgroup *memcg, unsigned long *flags
+>  {
+>  	struct deferred_split *queue;
 >
-> Signed-off-by: Nauman Sabir <officialnaumansabir@gmail.com>
+> +retry:
+>  	queue = memcg_split_queue(nid, memcg);
+>  	spin_lock_irqsave(&queue->split_queue_lock, *flags);
+> +	if (unlikely(memcg_is_dying(memcg))) {
+> +		spin_unlock_irqrestore(&queue->split_queue_lock, *flags);
+> +		memcg = parent_mem_cgroup(memcg);
+> +		goto retry;
+> +	}
+>
+>  	return queue;
+>  }
 
-The "3/3" in the subject suggests there's two other patches somewhere?
+There appears to be a race window that can cause split_queue_len counter
+mismatch. Between the time CSS_DYING is set (in kill_css()) and when
+reparent_deferred_split_queue() actually runs (asynchronously in
+css_offline), folios can be unqueued via __folio_unqueue_deferred_split().
 
-Thanks,
+In this scenario:
+  __folio_unqueue_deferred_split()
+    -> folio_split_queue_lock_irqsave()
+       -> split_queue_lock_irqsave() sees memcg_is_dying() == true
+       -> returns parent's queue (locked)
+    -> ds_queue->split_queue_len-- decrements parent's counter
+    -> list_del_init() removes folio from child's list
 
-jon
+The folio is correctly removed from the child's list (list_del_init is
+self-referential), but the wrong queue's counter is decremented. If the
+parent queue was empty (split_queue_len == 0), this would cause an
+unsigned long underflow to ULONG_MAX.
+
+Could this be addressed by checking that the folio is actually in the
+queue being unlocked, perhaps by verifying the list head matches before
+decrementing split_queue_len?
+
+[ ... ]
+
+> @@ -3920,6 +3920,7 @@ static void mem_cgroup_css_offline(struct cgroup_subsys_state *css)
+>  	zswap_memcg_offline_cleanup(memcg);
+>
+>  	memcg_offline_kmem(memcg);
+> +	reparent_deferred_split_queue(memcg);
+
+The race window exists because CSS_DYING is set in kill_css() before
+css_offline() callbacks run asynchronously. The comment in split_queue_lock
+mentions that THPs will be "hidden from the shrinker side" during this
+period, but does not address the counter accounting issue when folios
+are unqueued.
 
