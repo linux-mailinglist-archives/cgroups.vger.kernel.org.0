@@ -1,219 +1,231 @@
-Return-Path: <cgroups+bounces-13168-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-13169-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id AC715D1CB64
-	for <lists+cgroups@lfdr.de>; Wed, 14 Jan 2026 07:47:42 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9124DD1CCC2
+	for <lists+cgroups@lfdr.de>; Wed, 14 Jan 2026 08:20:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 486C73005497
-	for <lists+cgroups@lfdr.de>; Wed, 14 Jan 2026 06:47:39 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 5571B3008EBF
+	for <lists+cgroups@lfdr.de>; Wed, 14 Jan 2026 07:20:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DC83136C599;
-	Wed, 14 Jan 2026 06:47:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1452D359712;
+	Wed, 14 Jan 2026 07:20:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="duuVDALo"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="M/7FT5Lk"
 X-Original-To: cgroups@vger.kernel.org
-Received: from SN4PR0501CU005.outbound.protection.outlook.com (mail-southcentralusazon11011025.outbound.protection.outlook.com [40.93.194.25])
+Received: from out-177.mta0.migadu.com (out-177.mta0.migadu.com [91.218.175.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AAA5D30EF7D;
-	Wed, 14 Jan 2026 06:47:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.93.194.25
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768373257; cv=fail; b=l2fVaG/nqUXze82gfoQyw7VLuUB9gW5/earO3uXvA2CnINi3Ql+18Q+ILmG9IIx1XZfOW0SVb+XK7sPEKwXzenLiOYKoU9+H+w83Qk79E1OIMgGbwzRJSNbGPYR7UxtoZVXD87IzU3K7r5Oc8WQdE9Jl9Ey6tmQ3uNPiObC98oA=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768373257; c=relaxed/simple;
-	bh=K5DfkAO9O91cYppwzjSlmnd6vi+PwSnV/sWWdn3E/30=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=OVggjME39EXmLe3K7ocBDBytawXRjQ5cD0QE9kendvu46Hl4b3O+e61vESNdCMHuZLdMKvvvEOd0uJWaRlV+LpkfY22ylLlyF9UZj+ab35l1HqZAR3eBJfYSU4rOQmFQu7Ri+7x6kSqIcrEMDu8BRfwyWF02dCKGMn91v+uxdgI=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=duuVDALo; arc=fail smtp.client-ip=40.93.194.25
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=iikTxRcZ1/DPEe2V+IEg5BKmN+u2nnISGMbU8OTEuE+VQF1AIHGX4SmOBZDqImiUEOQc3orAOrLwHRnT5KqUdCLTHyC2q11DACXyRNTHxXvR+QR4Zg5tDv3pokK7/CAFZic6RCxdzcFW/lDAYJuh6HYsTNAu4aC6oY0BpqnTLVI5AXXl6UW/CqdhT8HsJFACZHsHP7+dy65QBzVtXKU02h5Gd3+BFRbeyTLDAGLb1Uw0lt4KBPZS91+6rfPsgAlxqpxyi3pIPqpiAL9tbDtWIrD6GHBQUXwTK3S0F5Af5r0iBnHg8ufAf8qh8sFXvSEfWDCkWkARtESuqzK0xb2P/g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=kvCkYiexx50e0Navry2IteYzqghozLjw0C5PEs/Ytfs=;
- b=uGhGhmtGR7D5ggG176Kbnw7iYHHh7FUdbzxIOnd8cNMxiw9/JbeLqTPHvW2vFbfz9B7PtbfVe6wAPwhpu+9OGxSogNyQb/+0nhW6bEbapNedn+3rWlpTs7HyFWmEc5N4uRWOrm7hz8ANBxJuMo9imL6LFhu4ZjKdntDwVdDrXb5uaHbQCybIF2eSNg754o3fTWnCroG3XySa4dzU31IuqMnOxYE/NcyZaP5jpabf9GTFEV93SkXip54ftB32c/a+V53I2dUfMiHAqd+/EmPT3uZaSXeNweiz74wm3j3UPBnMYb9MjBJA0PvMY5lYDMUZGFHS+AA/37i6TMKBX0O4Wg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=infradead.org smtp.mailfrom=amd.com;
- dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
- header.from=amd.com; dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=kvCkYiexx50e0Navry2IteYzqghozLjw0C5PEs/Ytfs=;
- b=duuVDALosRx3L4n3zLkHFwzBQIB4Aai2GBuRdzyvvwC/dzwVbw6h2edbe/kh9yrExvrk5JkAKnIGYGgS4LakIHI6XRAFL+qIV0jrvLxjrzp/dON72O8LQ9y2nsWTh7VMZaYQGcaLXvWCY3QfSlG4DbwcPcq32jaotW+ybOH+YsQ=
-Received: from SN1PR12CA0068.namprd12.prod.outlook.com (2603:10b6:802:20::39)
- by MW3PR12MB4395.namprd12.prod.outlook.com (2603:10b6:303:5c::23) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9520.5; Wed, 14 Jan
- 2026 06:47:19 +0000
-Received: from SA2PEPF00001507.namprd04.prod.outlook.com
- (2603:10b6:802:20:cafe::6d) by SN1PR12CA0068.outlook.office365.com
- (2603:10b6:802:20::39) with Microsoft SMTP Server (version=TLS1_3,
- cipher=TLS_AES_256_GCM_SHA384) id 15.20.9520.5 via Frontend Transport; Wed,
- 14 Jan 2026 06:47:19 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=satlexmb08.amd.com; pr=C
-Received: from satlexmb08.amd.com (165.204.84.17) by
- SA2PEPF00001507.mail.protection.outlook.com (10.167.242.39) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.9520.1 via Frontend Transport; Wed, 14 Jan 2026 06:47:18 +0000
-Received: from Satlexmb09.amd.com (10.181.42.218) by satlexmb08.amd.com
- (10.181.42.217) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.17; Wed, 14 Jan
- 2026 00:47:18 -0600
-Received: from satlexmb07.amd.com (10.181.42.216) by satlexmb09.amd.com
- (10.181.42.218) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.2562.17; Tue, 13 Jan
- 2026 22:47:18 -0800
-Received: from [10.136.46.14] (10.180.168.240) by satlexmb07.amd.com
- (10.181.42.216) with Microsoft SMTP Server id 15.2.2562.17 via Frontend
- Transport; Tue, 13 Jan 2026 22:47:12 -0800
-Message-ID: <f9e4e4a2-dadd-4f79-a83e-48ac4663f91c@amd.com>
-Date: Wed, 14 Jan 2026 12:17:11 +0530
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 67BAE3502BF
+	for <cgroups@vger.kernel.org>; Wed, 14 Jan 2026 07:20:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.177
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1768375220; cv=none; b=uvGG93o3XtDe8Adrqidlt245kQ/SPOb62UgFrVy3zaltUhHSa1i0U0DtsC+c8ww7tgGEODMuEpHSArokuFOVmyivAysd0i66mSjx5UCde0id4D1QAmGSFNNbmlc+JFsl4pek+QN1T0Sim/g+u3jgoau8gG/Qf2OawL3BCRKgHj8=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1768375220; c=relaxed/simple;
+	bh=NDTG66GhCGm989GVOep7bEj1PIw65VfHHrqHcVitZw8=;
+	h=Content-Type:Mime-Version:Subject:From:In-Reply-To:Date:Cc:
+	 Message-Id:References:To; b=N7vCNnXl2MkJyUYnp4CGhZltx7MC8W1ZT/VrDBl+F//izEUJlqOqvcGlU/AS5t0Tnd21PaNTxO/recxsriugSjpK14yyuDRylexLBpXN02pFUrUmOdK1Vlv70iKO0IqQrlWhAvbTfk8zgnFyG34uAwsmz+E9Iq4fMTz5D6xvxfY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=M/7FT5Lk; arc=none smtp.client-ip=91.218.175.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Content-Type: text/plain;
+	charset=utf-8
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1768375209;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=bZhuQ4Kj6PEI3Wh95q/aQ/X7uFCtTD8uLx3UOMlw/Og=;
+	b=M/7FT5LkHJfTtlvj1MpmkPypLWsVSfMh7dQpCKJjFQQakzEied/8pKbIeQ/Bpy1ujuzlwv
+	JCdzG8dWTDZ+rGCkA0WZDuhKEk5JxI2WzjjYtOJYW8ZqXXQzTDpqPu7pZ5IrygKsLN0ELm
+	4vz+i99TpW10TuJoCzUWRN9bF8ROlt4=
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 05/12] sched: Move sched_class::prio_changed() into the
- change pattern
-To: Peter Zijlstra <peterz@infradead.org>, Pierre Gondois
-	<pierre.gondois@arm.com>
-CC: <tj@kernel.org>, <linux-kernel@vger.kernel.org>, <mingo@kernel.org>,
-	<juri.lelli@redhat.com>, <vincent.guittot@linaro.org>,
-	<dietmar.eggemann@arm.com>, <rostedt@goodmis.org>, <bsegall@google.com>,
-	<mgorman@suse.de>, <vschneid@redhat.com>, <longman@redhat.com>,
-	<hannes@cmpxchg.org>, <mkoutny@suse.com>, <void@manifault.com>,
-	<arighi@nvidia.com>, <changwoo@igalia.com>, <cgroups@vger.kernel.org>,
-	<sched-ext@lists.linux.dev>, <liuwenfang@honor.com>, <tglx@linutronix.de>,
-	Christian Loehle <christian.loehle@arm.com>
-References: <20251006104402.946760805@infradead.org>
- <20251006104527.083607521@infradead.org>
- <ab9b37c9-e826-44db-a6b8-a789fcc1582d@arm.com>
- <caa2329c-d985-4a7c-b83a-c4f96d5f154a@amd.com>
- <717a0743-6d8f-4e35-8f2f-70a158b31147@arm.com>
- <20260113114718.GA831050@noisy.programming.kicks-ass.net>
-Content-Language: en-US
-From: K Prateek Nayak <kprateek.nayak@amd.com>
-In-Reply-To: <20260113114718.GA831050@noisy.programming.kicks-ass.net>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SA2PEPF00001507:EE_|MW3PR12MB4395:EE_
-X-MS-Office365-Filtering-Correlation-Id: e6b3564e-8f31-4375-9029-08de5338c312
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|36860700013|1800799024|82310400026|7416014|376014;
-X-Microsoft-Antispam-Message-Info:
-	=?utf-8?B?MEZoaWZ5UGYwcTdWL3NlZlYxbHR4WmF0ekNXQTQvUXY1NXJQZzdtYkZBc2cz?=
- =?utf-8?B?cUkxcFl4dmRKaTNVcGY3U1FmSlNQUkw2Tzg4WTVNMmZxOTcwMXpVenZpRWc0?=
- =?utf-8?B?Qk1Lb2M2RDVxSlBZK2ZYQ3J6SHJuckgza3RLZ05SUWVPY1VHNEs5TW9rYmps?=
- =?utf-8?B?RHZrZFJYSk1LRlB5VXRFUmUzVlpoOGZ5MmdjMTA2YTdrVlNpaUVmOVVDUjQ2?=
- =?utf-8?B?emFyZEpYYXlJSnRyVXpIOVpPcXI1ZUJGYjhpa3loZVJUMElKK2hYMVZVV0Vu?=
- =?utf-8?B?dDhvd2ZEVEpMbzU4bDZiOHIzQTFWcVlXNjFmajNQTUYvZ01NaVVJYlZ0VGFU?=
- =?utf-8?B?Z0tNVkkrck1BZVdoSUw4ZHhJNXBwUEVBU0lKZTlpWC9kTGd1ZEpZdnVuSDJ0?=
- =?utf-8?B?OUZDYmNsQm13a2RvVTE2dkFpbk1JTVE4UTduOGV4dXVRVFBWcHU0bU9nSWhV?=
- =?utf-8?B?UjlJN3YvQ1hJTVBCRGNlc0JDdHFtUGJiWmV6aWdFZnIvN3JIb2NMWTErb0o3?=
- =?utf-8?B?TENSbE14em9LU0RucHlwemRaZkNaU09Ub0pIeUUvR3AvQzZsNUFMWlpBdHd6?=
- =?utf-8?B?RnhIWXo1MnVjOUlXWEgyZ3VOMFNjRDFjQzhCSTB5bjIzMHNDNEhCUVRmTlM3?=
- =?utf-8?B?Q2xMWGl6NFBtcEx6NlZKNDNmVE9kL3k4ZHdpdmU5Qk5VL0JrZHhJVVJsekpF?=
- =?utf-8?B?OVVkamNiKzg3L2RVdEJTcGhVRWRsS2RULzF5eGJuTVpaTGZwdC80SkhRMzNM?=
- =?utf-8?B?QjJLTFJPbVVQcnpIUGtnUnJRTDFJb1JwU0Z5b0RyWGE0b2N5VCtEM3ppbVo2?=
- =?utf-8?B?bFQvVG9aVU9ZMmlFUGxPQUlaWFFSNlJOZ3FYMzlkQ2NoMEYybFlZWjlrcU12?=
- =?utf-8?B?cFl1bmNvM0EzNW9pcUl1a1ZsWWNjTFNadnNYWUxjZHZ5VXZ6UzUzS2RYVVp3?=
- =?utf-8?B?VE5OTXRrdS8xY3UxY2xKUktzS21oREJIYm0xVlBTU0hid2dQWTAxdzFjUDQy?=
- =?utf-8?B?TzB2L2VMdnplTE5LZWk3WENxVVBBdldYV1ZGMFhaNDJ2OGljaThBeWEzYU5j?=
- =?utf-8?B?T0VSUFF0eFpFcDNUd0hOMFNyZmhhcE5CU29QNytGYXhVb0RpbUJIRXBpdmpN?=
- =?utf-8?B?MkViRmV0cWRIcU9ISzVmWWE2M2I1U2dTbmVJSzZmSWNwM09yajBoQjNDSUZB?=
- =?utf-8?B?eDFWVEdGM1g3Y1lDYmVkeXU0ait5TjVHRWJtRnBGMTV5ZU5VWFV1eXl1WE0x?=
- =?utf-8?B?ditubE81aXIyN05CYittakRMMWFuRmpvY1A4Vlc4aXhkNndiOVRMVytKb1d1?=
- =?utf-8?B?TDF0a1JRS2dTQWJLbXZieW1sNjdhUEUweGNEZUhVUWtsY2YrdDUrMGNLTmMv?=
- =?utf-8?B?UUhWdWxoMnBrU25oRmFjMVdlNEd2KzdKRllNeFpUNzV2U3MzbkFpcC84Yklo?=
- =?utf-8?B?Ty9QS1ljNUJsUGwzWnRRemo5bm9kRVZYQ3dzckZ1NzFTMTFjZGNnUjhMTGJZ?=
- =?utf-8?B?WmFVR2Rlbk9peFJ6b05WTHg5R2R0NDJRcWpPTjlDc3pONXJQbE50b3pnaXFk?=
- =?utf-8?B?QmhxSXJ6emxteVVJd2RncDhsL1dlV0Q2WEpMWVFnV1NrMmx6b2FxVWowV01W?=
- =?utf-8?B?akhRRGpEUEs2VzNtSDJJUkNFbGhOK0VRV09jQUNCRDVueGZxcmhVNWZSNDBo?=
- =?utf-8?B?NHpidWl5dVB0OG9XL2RUSXRrSjljZ0JxOUx0K2EwYjBmWVlPd3FySVFCY0lx?=
- =?utf-8?B?U0NzYTRSVmRFcU9td2x1NU5pc0NMelh1cDFWc3dZcVYrYUtBK25RNDN0Z1RI?=
- =?utf-8?B?NDIyOS9LVndYK2daRG9laFU4cDZEZ0xZeHNmME1uUXB4ck5PdTdXc1VkNDcy?=
- =?utf-8?B?R1puU29DdUJrc3ExR2NsNVliRlpadU1LOGU1VGttTGRiKzlRcDBkVFF2a1dw?=
- =?utf-8?B?Q1QvVHR0cGo1cEx2RmtzQVljc0FrVnZ3MHdUQlJxNE40ck1XZFVhTDJrWUFw?=
- =?utf-8?B?cHN1SytTdktmbW5jQjJrZE9Ia0dkOC9ZZmZIM0tjY05kaitDTEdFb1lCd3pM?=
- =?utf-8?B?WndUYmhTMzB2OUZGTXFoZTQ1QkF4T1hxblN5RWRFNUltVEtkSEx0d1NOeGZx?=
- =?utf-8?Q?GelE=3D?=
-X-Forefront-Antispam-Report:
-	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:satlexmb08.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230040)(36860700013)(1800799024)(82310400026)(7416014)(376014);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Jan 2026 06:47:18.8510
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: e6b3564e-8f31-4375-9029-08de5338c312
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[satlexmb08.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	SA2PEPF00001507.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW3PR12MB4395
+Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3864.300.41.1.7\))
+Subject: Re: [PATCH v6 4/4] mm: thp: reparent the split queue during memcg
+ offline
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Muchun Song <muchun.song@linux.dev>
+In-Reply-To: <3d8dd14c-d3a7-4cae-99e3-10ebe4ad52aa@linux.dev>
+Date: Wed, 14 Jan 2026 15:19:25 +0800
+Cc: Harry Yoo <harry.yoo@oracle.com>,
+ Chris Mason <clm@meta.com>,
+ hannes@cmpxchg.org,
+ hughd@google.com,
+ mhocko@suse.com,
+ roman.gushchin@linux.dev,
+ shakeel.butt@linux.dev,
+ david@redhat.com,
+ lorenzo.stoakes@oracle.com,
+ ziy@nvidia.com,
+ baolin.wang@linux.alibaba.com,
+ Liam.Howlett@oracle.com,
+ npache@redhat.com,
+ ryan.roberts@arm.com,
+ dev.jain@arm.com,
+ baohua@kernel.org,
+ lance.yang@linux.dev,
+ akpm@linux-foundation.org,
+ richard.weiyang@gmail.com,
+ linux-mm@kvack.org,
+ linux-kernel@vger.kernel.org,
+ cgroups@vger.kernel.org,
+ Qi Zheng <zhengqi.arch@bytedance.com>
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <C5A78F53-47F6-4A98-AB66-0CBD3D8B10B4@linux.dev>
+References: <8703f907c4d1f7e8a2ef2bfed3036a84fa53028b.1762762324.git.zhengqi.arch@bytedance.com>
+ <20260113220046.2274684-1-clm@meta.com> <aWcrVRT_RjxdjoN7@hyeyoo>
+ <3d8dd14c-d3a7-4cae-99e3-10ebe4ad52aa@linux.dev>
+To: Qi Zheng <qi.zheng@linux.dev>
+X-Migadu-Flow: FLOW_OUT
 
-Hello Peter,
 
-On 1/13/2026 5:17 PM, Peter Zijlstra wrote:
-> Hum... so this one is a little more tricky.
-> 
-> So the normal rules are that DEQUEUE_SAVE + ENQUEUE_RESTORE should be as
-> invariant as possible.
-> 
-> But what I think happens here is that at the point of dequeue we are
-> effectively ready to throttle/replenish, but we don't.
-> 
-> Then at enqueue, we do. The replenish changes the deadline and we're up
-> a creek.
 
-I've the following data from the scenario in which I observe
-the same splat as Pierre splat wit the two fixes on top of tip:
+> On Jan 14, 2026, at 14:25, Qi Zheng <qi.zheng@linux.dev> wrote:
+>=20
+>=20
+>=20
+> On 1/14/26 1:36 PM, Harry Yoo wrote:
+>> On Tue, Jan 13, 2026 at 02:00:43PM -0800, Chris Mason wrote:
+>>> On Mon, 10 Nov 2025 16:17:58 +0800 Qi Zheng <qi.zheng@linux.dev> =
+wrote:
+>>>=20
+>>>> From: Qi Zheng <zhengqi.arch@bytedance.com>
+>>>>=20
+>>>> Similar to list_lru, the split queue is relatively independent and =
+does
+>>>> not need to be reparented along with objcg and LRU folios (holding
+>>>> objcg lock and lru lock). So let's apply the similar mechanism as =
+list_lru
+>>>> to reparent the split queue separately when memcg is offine.
+>>>>=20
+>>>=20
+>>> Hi everyone,
+>>>=20
+>>> I'm running all of the MM commits since v6.18 through the AI patch =
+review
+>>> tools, and this one was flagged.  I'm much less confident in this =
+report,
+>>> AI tends to get these races wrong:
+>>>=20
+>>> [AI review output]
+>>>=20
+>>>> diff --git a/include/linux/memcontrol.h =
+b/include/linux/memcontrol.h
+>>>> index b0c6a4635c67b..cc6db20d7dca0 100644
+>>>> --- a/include/linux/memcontrol.h
+>>>> +++ b/include/linux/memcontrol.h
+>>>> @@ -1775,6 +1775,12 @@ static inline void count_objcg_events(struct =
+obj_cgroup *objcg,
+>>>>  bool mem_cgroup_node_allowed(struct mem_cgroup *memcg, int nid);
+>>>>=20
+>>>>  void mem_cgroup_show_protected_memory(struct mem_cgroup *memcg);
+>>>> +
+>>>> +static inline bool memcg_is_dying(struct mem_cgroup *memcg)
+>>>> +{
+>>>> + return memcg ? css_is_dying(&memcg->css) : false;
+>>>> +}
+>>>=20
+>>> [ ... ]
+>>>=20
+>>>> diff --git a/mm/huge_memory.c b/mm/huge_memory.c
+>>>> index 13684e5376e82..d17d3810a882c 100644
+>>>=20
+>>> [ ... ]
+>>>=20
+>>>> @@ -1129,8 +1140,14 @@ split_queue_lock_irqsave(int nid, struct =
+mem_cgroup *memcg, unsigned long *flags
+>>>>  {
+>>>>   struct deferred_split *queue;
+>>>>=20
+>>>> +retry:
+>>>>   queue =3D memcg_split_queue(nid, memcg);
+>>>>   spin_lock_irqsave(&queue->split_queue_lock, *flags);
+>>>> + if (unlikely(memcg_is_dying(memcg))) {
+>>>> + spin_unlock_irqrestore(&queue->split_queue_lock, *flags);
+>>>> + memcg =3D parent_mem_cgroup(memcg);
+>>>> + goto retry;
+>>>> + }
+>>>>=20
+>>>>   return queue;
+>>>>  }
+>>>=20
+>>> There appears to be a race window that can cause split_queue_len =
+counter
+>>> mismatch. Between the time CSS_DYING is set (in kill_css()) and when
+>>> reparent_deferred_split_queue() actually runs (asynchronously in
+>>> css_offline), folios can be unqueued via =
+__folio_unqueue_deferred_split().
+>>>=20
+>>> In this scenario:
+>>>   __folio_unqueue_deferred_split()
+>>>     -> folio_split_queue_lock_irqsave()
+>>>        -> split_queue_lock_irqsave() sees memcg_is_dying() =3D=3D =
+true
+>>>        -> returns parent's queue (locked)
+>>>     -> ds_queue->split_queue_len-- decrements parent's counter
+>>>     -> list_del_init() removes folio from child's list
+>>>=20
+>>> The folio is correctly removed from the child's list (list_del_init =
+is
+>>> self-referential), but the wrong queue's counter is decremented.
+>> Good point. Sounds pretty possible to me?
+>> I don't think there's anything that prevents it from unqueued
+>> before it's reparented.
+>>> If the parent queue was empty (split_queue_len =3D=3D 0), this would =
+cause an
+>>> unsigned long underflow to ULONG_MAX.
+>> Although the accounting mismatch will only persist until
+>> reparent_deferred_split_queue() reparents the deferred split queue.
+>=20
+> This period is very short, and the only thing affected should be
+> deferred_split_count(), but it does not cause a system error.
+>=20
+> So I think maybe we can leave it unrepaired.
 
-    yes-4108    [194] d..2.    53.396872: get_prio_dl: get_prio_dl: clock(53060728757)
-    yes-4108    [194] d..2.    53.396873: update_curr_dl_se: update_curr_dl_se: past throttle label
-    yes-4108    [194] d..2.    53.396873: update_curr_dl_se: dl_throttled(0) dl_overrun(0) timer_queued(0) server?(0)
-    yes-4108    [194] d..2.    53.396873: update_curr_dl_se: dl_se->runtime(190623) rq->dl.overloaded(0)
-    yes-4108    [194] d..2.    53.396874: get_prio_dl: get_prio_dl: deadline(53060017809)
+I didn=E2=80=99t look closely at the specific issue, but based on Qi=E2=80=
+=99s point,
+we can actually take a cue from list_lru_count_one and provide a similar
+workaround to keep deferred_split_count from returning an enormous
+value=E2=80=94see commit 41d17431df4aa.
 
-    yes-4108    [194] d..2.    53.396878: enqueue_dl_entity: ENQUEUE_RESTORE update_dl_entity
-    yes-4108    [194] d..2.    53.396878: enqueue_dl_entity: setup_new_dl_entity
-    yes-4108    [194] d..2.    53.396878: enqueue_dl_entity: Replenish: Old: 53060017809 dl_deadline(1000000)
-    yes-4108    [194] d..2.    53.396879: enqueue_dl_entity: Replenish: New: 53061728757
-    yes-4108    [194] d..2.    53.396882: prio_changed_dl.part.0: Woops! prio_changed_dl: CPU(194) clock(53060728757) overloaded(0): Task: yes(4108), Curr: yes(4108) deadline: 53060017809 -> 53061728757
-
-get_prio_dl() sees "deadline < rq->clock" but dl_se->runtime is still
-positive so update_curr_dl_se() doesn't fiddle with the deadline.
-
-ENQUEUE_RESTORE sees "deadline" before "rq->clock" and calls
-setup_new_dl_entity() which calls replenish.
-
-sched_change_end() will call prio_changed() with the old deadline from
-get_prio_dl() but enqueue advanced the deadline so we land in a
-pickle.
-
-> 
-> Let me think about this for a bit...
-
-Should prio_changed_dl() care about "dl_se->dl_deadline" having changed
-within the sched_change guard since that is the attribute that can be
-changed using sched_setattr() right?
-
--- 
-Thanks and Regards,
-Prateek
+>=20
+>> Ideally this should be fixed by checking if the folio has been
+>> reparented after acquiring the split queue lock, but since we don't =
+reparent
+>> LRU pages yet ... do we need a band-aid before then?
+>> Do we want to have is_dying property in the split queue as it was in =
+v2? [1]
+>> [1] =
+https://lore.kernel.org/linux-mm/55370bda7b2df617033ac12116c1712144bb7591.=
+1758618527.git.zhengqi.arch@bytedance.com
+>>> Could this be addressed by checking that the folio is actually in =
+the
+>>> queue being unlocked, perhaps by verifying the list head matches =
+before
+>>> decrementing split_queue_len?
+>>> [ ... ]
+>>>=20
+>>>> @@ -3920,6 +3920,7 @@ static void mem_cgroup_css_offline(struct =
+cgroup_subsys_state *css)
+>>>>   zswap_memcg_offline_cleanup(memcg);
+>>>>=20
+>>>>   memcg_offline_kmem(memcg);
+>>>> + reparent_deferred_split_queue(memcg);
+>>>=20
+>>> The race window exists because CSS_DYING is set in kill_css() before
+>>> css_offline() callbacks run asynchronously. The comment in =
+split_queue_lock
+>>> mentions that THPs will be "hidden from the shrinker side" during =
+this
+>>> period, but does not address the counter accounting issue when =
+folios
+>>> are unqueued.
+>=20
 
 
