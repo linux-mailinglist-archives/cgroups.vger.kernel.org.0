@@ -1,45 +1,45 @@
-Return-Path: <cgroups+bounces-13193-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-13194-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
-	by mail.lfdr.de (Postfix) with ESMTPS id 78B86D1E72A
-	for <lists+cgroups@lfdr.de>; Wed, 14 Jan 2026 12:37:01 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0399CD1E782
+	for <lists+cgroups@lfdr.de>; Wed, 14 Jan 2026 12:40:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id 1FADD3021558
-	for <lists+cgroups@lfdr.de>; Wed, 14 Jan 2026 11:35:06 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 23544304F65B
+	for <lists+cgroups@lfdr.de>; Wed, 14 Jan 2026 11:35:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F0D51396B6D;
-	Wed, 14 Jan 2026 11:34:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D7441346E46;
+	Wed, 14 Jan 2026 11:34:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="EGUnEaVZ"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="LvLhdk0U"
 X-Original-To: cgroups@vger.kernel.org
-Received: from out-172.mta0.migadu.com (out-172.mta0.migadu.com [91.218.175.172])
+Received: from out-177.mta0.migadu.com (out-177.mta0.migadu.com [91.218.175.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE320395DB3
-	for <cgroups@vger.kernel.org>; Wed, 14 Jan 2026 11:34:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3208B396B6B
+	for <cgroups@vger.kernel.org>; Wed, 14 Jan 2026 11:34:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768390489; cv=none; b=hHfGK9jrJu91O6WLoZAGQ/naIAlNMpziUdz/1N3G9be69oly2z5btcOaOv1uCg7c2uMRx0BtkplNDqIqq48wE/W5x7pktazAtMi6Q/Wc0uahaq1oYR0Javl3jKqK445sxLrol4VzxriYaACGpYhR61DbQX3eKlSkvUgPeywyo8E=
+	t=1768390494; cv=none; b=eHGh+yGdr3v+Y/07fLD4Fz9ypn0k5qBFJHVNFaWTOmvbQhAyr5FoPxGo6TL5zCTC5YK9SQ7vpxuCPJT1Tn/iWA+9d+At90hSdpkB5Kz7HtWEtDpBZitqdtHpfc/L8DXmXWip4cXZy5xWdMrgKbhub+NT4OuaeXjAj3+p4vsmYRQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768390489; c=relaxed/simple;
-	bh=MHHSOgvUdCZto5erXagrpCq4y4e/w8pSQO+C4apjFoM=;
+	s=arc-20240116; t=1768390494; c=relaxed/simple;
+	bh=woWq8Dm0jueluZ7aNqvePpFM/PGAR03m/bOaA4AlNfQ=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=lCoJkIZ5pP3dggA3/eVZNAXjfVvxbSAooBH0yZQKRHiendQQMOYvSudoE215gs6NPguX2dot7cZGkHtmMB55BCuY4Oq1FutiJ8nHMMx4Hze4seO+T2d0Ep8EruTrlY/z9gLQsRkBfXitaDfmTqiofBvofKu0j1W9h4tGSHreSXg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=EGUnEaVZ; arc=none smtp.client-ip=91.218.175.172
+	 MIME-Version; b=ReExI0znb62KzqQIQ1/ikIY5CQgpjtGD3VdSDV/770+J9wLCh+z8W7P2oYOowlL2cM8WgIJaHNlqxaGXyUGKCV4aOf5AWHjFELD4aOtwN8TDmIqg+Q20AD5H2L/VuznL8s2d002dmHjGmX/DlHrHQ9i/LSpKqFvEAkOmRulyfEs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=LvLhdk0U; arc=none smtp.client-ip=91.218.175.177
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1768390482;
+	t=1768390491;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=QCopSypjYe82peR7lY73wGmY04x1cNXQciUkTwdGqJY=;
-	b=EGUnEaVZY5ecLmqLWynQvM1889GDtdaiRYfuzcFinAOWYaXuSUoNw9++8ch5q+nFpsNkwv
-	TZvM57lPQIOOMPKpVkSNKlF6qt4KGBSImERx5HgN6Ir16WQscR1fE94QGhIY5LdBI0Qb30
-	0xvcPfgqOk4+Ey/3r42TnZgFMnvgdh8=
+	bh=MWUbb2PaVbUJH475DQjZe6rbHPDEA+XsOVjT/pIzyrg=;
+	b=LvLhdk0UApVUyxUSypnJIgJrYQ6X2IGJW+uU7OMEp1p35yOrmvZWgmAHbYfFk6DzD46EDz
+	cwzGgQ1xZPkamMR256J5q//zc+X0r39cFT/v1cwDkcMkoOdyE6G1hFz6bLP0YLOayOkXaW
+	omE7DlXRwzBCLg/I/OP5LO3r8Um5ONg=
 From: Qi Zheng <qi.zheng@linux.dev>
 To: hannes@cmpxchg.org,
 	hughd@google.com,
@@ -67,9 +67,9 @@ Cc: linux-mm@kvack.org,
 	linux-kernel@vger.kernel.org,
 	cgroups@vger.kernel.org,
 	Qi Zheng <zhengqi.arch@bytedance.com>
-Subject: [PATCH v3 17/30] mm: thp: prevent memory cgroup release in folio_split_queue_lock{_irqsave}()
-Date: Wed, 14 Jan 2026 19:32:44 +0800
-Message-ID: <061b1110696ba51e454ad0f7549603ec92cdb5ea.1768389889.git.zhengqi.arch@bytedance.com>
+Subject: [PATCH v3 18/30] mm: zswap: prevent memory cgroup release in zswap_compress()
+Date: Wed, 14 Jan 2026 19:32:45 +0800
+Message-ID: <592f65bbe05587c01a2718443a70e639cc611f3d.1768389889.git.zhengqi.arch@bytedance.com>
 In-Reply-To: <cover.1768389889.git.zhengqi.arch@bytedance.com>
 References: <cover.1768389889.git.zhengqi.arch@bytedance.com>
 Precedence: bulk
@@ -89,53 +89,34 @@ lock or acquire a reference to the memory cgroup returned by
 folio_memcg(), thereby preventing it from being released.
 
 In the current patch, the rcu read lock is employed to safeguard against
-the release of the memory cgroup in folio_split_queue_lock{_irqsave}().
+the release of the memory cgroup in zswap_compress().
 
 Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
-Reviewed-by: Harry Yoo <harry.yoo@oracle.com>
 Acked-by: Johannes Weiner <hannes@cmpxchg.org>
 Acked-by: Shakeel Butt <shakeel.butt@linux.dev>
-Acked-by: David Hildenbrand (Red Hat) <david@kernel.org>
 ---
- mm/huge_memory.c | 20 ++++++++++++++++++--
- 1 file changed, 18 insertions(+), 2 deletions(-)
+ mm/zswap.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-diff --git a/mm/huge_memory.c b/mm/huge_memory.c
-index 99515838faa51..eb611239c1a74 100644
---- a/mm/huge_memory.c
-+++ b/mm/huge_memory.c
-@@ -1154,13 +1154,29 @@ split_queue_lock_irqsave(int nid, struct mem_cgroup *memcg, unsigned long *flags
- 
- static struct deferred_split *folio_split_queue_lock(struct folio *folio)
- {
--	return split_queue_lock(folio_nid(folio), folio_memcg(folio));
-+	struct deferred_split *queue;
-+
-+	rcu_read_lock();
-+	queue = split_queue_lock(folio_nid(folio), folio_memcg(folio));
-+	/*
-+	 * The memcg destruction path is acquiring the split queue lock for
-+	 * reparenting. Once you have it locked, it's safe to drop the rcu lock.
-+	 */
-+	rcu_read_unlock();
-+
-+	return queue;
- }
- 
- static struct deferred_split *
- folio_split_queue_lock_irqsave(struct folio *folio, unsigned long *flags)
- {
--	return split_queue_lock_irqsave(folio_nid(folio), folio_memcg(folio), flags);
-+	struct deferred_split *queue;
-+
-+	rcu_read_lock();
-+	queue = split_queue_lock_irqsave(folio_nid(folio), folio_memcg(folio), flags);
-+	rcu_read_unlock();
-+
-+	return queue;
- }
- 
- static inline void split_queue_unlock(struct deferred_split *queue)
+diff --git a/mm/zswap.c b/mm/zswap.c
+index a3811b05ab579..cd926e1c03c92 100644
+--- a/mm/zswap.c
++++ b/mm/zswap.c
+@@ -892,11 +892,14 @@ static bool zswap_compress(struct page *page, struct zswap_entry *entry,
+ 	 * to the active LRU list in the case.
+ 	 */
+ 	if (comp_ret || !dlen || dlen >= PAGE_SIZE) {
++		rcu_read_lock();
+ 		if (!mem_cgroup_zswap_writeback_enabled(
+ 					folio_memcg(page_folio(page)))) {
++			rcu_read_unlock();
+ 			comp_ret = comp_ret ? comp_ret : -EINVAL;
+ 			goto unlock;
+ 		}
++		rcu_read_unlock();
+ 		comp_ret = 0;
+ 		dlen = PAGE_SIZE;
+ 		dst = kmap_local_page(page);
 -- 
 2.20.1
 
