@@ -1,159 +1,142 @@
-Return-Path: <cgroups+bounces-13174-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-13175-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
-	by mail.lfdr.de (Postfix) with ESMTPS id 28771D1E346
-	for <lists+cgroups@lfdr.de>; Wed, 14 Jan 2026 11:47:53 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id B72D8D1E529
+	for <lists+cgroups@lfdr.de>; Wed, 14 Jan 2026 12:10:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id EFF6B30708F4
-	for <lists+cgroups@lfdr.de>; Wed, 14 Jan 2026 10:43:53 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 76EAB30453B1
+	for <lists+cgroups@lfdr.de>; Wed, 14 Jan 2026 11:08:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 15ACC393DCE;
-	Wed, 14 Jan 2026 10:42:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D948F3921D4;
+	Wed, 14 Jan 2026 11:08:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="GzRKFDjN"
+	dkim=pass (2048-bit key) header.d=shopee.com header.i=@shopee.com header.b="AjzIh0RA"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-wr1-f53.google.com (mail-wr1-f53.google.com [209.85.221.53])
+Received: from mail-pl1-f174.google.com (mail-pl1-f174.google.com [209.85.214.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 688A838BDD4
-	for <cgroups@vger.kernel.org>; Wed, 14 Jan 2026 10:42:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 68F82392C4D
+	for <cgroups@vger.kernel.org>; Wed, 14 Jan 2026 11:08:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768387378; cv=none; b=EQa60TtMbjS0u6WPPNOVmvJfCy1s7FEYZHvDn+HrF454zLWKwNMJ1/41UtERZiu5tS2pwdmjTMPkkCNJeynvg7j6HDAVKwiF3qUEc1p69lvuuq6w0MCnKpt1IcUnCLL1yLlt7iEn3dOn4qXUY0pP8YyOBFmbt2amRgR7q77qdB0=
+	t=1768388931; cv=none; b=lTWgiHAT2Bn7Jnry4FnDRlagcK2ujbxAwdE908mdh5jjWM+5EBEc06V0qG7LxYksPQ0OZKjlqv6neEWDKvKGJywHpDMfjSpRGNFKkZfznCloqyvQ6Rv6mn0hRGx4kVat8KtvYHSQsgKy1Kjx9vEJ4ie8ylAqbgVp17VSfxaivjY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768387378; c=relaxed/simple;
-	bh=+vIwBrKzHnkSMHQdsPfaLF3TYnIAbQBfXAzgK5yUmb0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=mQl8q53qfJp3d0NkfpAQxGm2scVFTNU2N1OnQHvvFzWVtmfewIOGeIxviu1m9jitymev1zoTS4cy1ywUnHzracegmhI5Kfpg/Wx7+/iuWGNMT1XmSDXQU9RGwIgnzrO2jvwOi18ukdjikRPtJhLZSXOBizk/C1s1Y9UnaCuWHZk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=GzRKFDjN; arc=none smtp.client-ip=209.85.221.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-wr1-f53.google.com with SMTP id ffacd0b85a97d-42fbc305552so6362360f8f.0
-        for <cgroups@vger.kernel.org>; Wed, 14 Jan 2026 02:42:57 -0800 (PST)
+	s=arc-20240116; t=1768388931; c=relaxed/simple;
+	bh=NGDpNgaYAnKJpFJ27LdnKRDIF7bjbzvgTyRhQktCjO4=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=CdlImqUBRiiEUUERBOwmxIMf4J7xje8+wzelo+hUZb5hCSXpNc3ioJnc+Cg9s/TQ7TQJEzuGB2t20mpFVHzMXacMlnlgtsxtBy+m2HrkL67jSpSwmjZzVbGSjmAweToBGFFT5ylFbWYrfZrVdrInIqsZFkxbq3pEvwLxjEuVP7U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=shopee.com; spf=pass smtp.mailfrom=shopee.com; dkim=pass (2048-bit key) header.d=shopee.com header.i=@shopee.com header.b=AjzIh0RA; arc=none smtp.client-ip=209.85.214.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=shopee.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=shopee.com
+Received: by mail-pl1-f174.google.com with SMTP id d9443c01a7336-2a07fac8aa1so64362715ad.1
+        for <cgroups@vger.kernel.org>; Wed, 14 Jan 2026 03:08:46 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1768387376; x=1768992176; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=zwfgtP9/g/A15dl8mmuQig8NwUMLjVDzDDzXGmLWXwY=;
-        b=GzRKFDjN35wlyA9iD8pEQhxfdRyu1rZnqqNzhs/JXN7Aj4UpmM0VfBVXt+ef0b+W0s
-         t2ya8Q3PXXoOM/MfP/y36EZiMoPEVeELPvlUB/PxEpBcJvtvWXFGv/4D3hLEv/9iVevN
-         qofbCZVv4AzvwP9cngQW6K4k6GtQ34XPwUo+wnsnCVATknuWrYvsgyL+lttGsXZhO+A9
-         mcSUk+nyhsHM5F0deFWwRFGxzgBBRqqw6Elu0uIYiKiXBCJXyj8HN8L/VBPXLm5EiPM6
-         P+vhDGOgBV5rNyNgrlOw858P5l0Xsw43V6woh+9R80Mcu4aOz2H7B38vLVU4dO43Pu2Z
-         HpwA==
+        d=shopee.com; s=shopee.com; t=1768388926; x=1768993726; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=rp+ERt1dfU/la6Ha2tXOSz2jWN3a9Tr4qXg0gnWoaNY=;
+        b=AjzIh0RArrWimh5hKL1MDgEkrBOHoLNgMq5EiwNcySzypMjPTjqCX64siqpiSNN56b
+         SmeTA5PQAM0EyhqIRMLfq+bQ0qDBAIxcxYbntdZxXmrKaf6cNigi5+TVmZYbRQ4Murcr
+         M+P3N4WhtF5p51/ofqEWiFcOUQrMa5Va40ApfVoclVX+ZD2gOB6x/8bdIke5LnDXqTF3
+         1wIbE/hCDYn0l/r1TNd8vnbGGjMJGEoUrAfmd1KmKMOrjAFzKbRAW5JScqKjlV7S9sVA
+         cRGmT0KvIDO3oX9SjJRu5P/B1xbR79oaBCl5LEWKzXuvhkK5r/DJO/vMGG6eGZuUGwHF
+         uTmw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1768387376; x=1768992176;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=zwfgtP9/g/A15dl8mmuQig8NwUMLjVDzDDzXGmLWXwY=;
-        b=U6Hgec1XEx9Eyl8ZhSd/lM/DD9STvxgM1aXxzKmzC+ZfOkxu6OIzpJCoaDRAsgcYLt
-         HGh3bSMipoNEJEi90DuFC7M3mdFkCIgT5QJFS4S6W65YkqmWS/lOtqduQDG+PMyLhJsF
-         GwRU2u2oHj9XK5uBKaTVYCXhVu+gRykI30xI77HpVh8hDKiSCDLcDeAoqTmJdcoKzhfX
-         R5QCC3eGENAzoFQJU1jJcSPoYd1IbygNE4UK3pvpdITBgGmRS1SWqswHjmttY04maRu9
-         luZhkKKGMJQ7C0zDJ1Exb3xJW4csNEDDKOjXk33FRl2Jrf5xVBUnaAT56nzSi6FY1fmu
-         KVSQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXZOCNBAOdm46zPSsf2Ka6GCD3QzlLswMHfZ1Bjk3gwgC7WiWI3Kym/seeC8srVfb+zs3p/7iUO@vger.kernel.org
-X-Gm-Message-State: AOJu0YxM4VwvDM4X3s8DjySPfJnCA82jlLTqtAyGW8HyeF/T5WkaZRn8
-	nLPq0mRl/UeK/Rz0755OVJDPfqtkUh/LUPJeYBK1gAbDZ7FV+ZyjaFO12oCxD4QtQ9s=
-X-Gm-Gg: AY/fxX5wpL/liH1Bu/O8sLMxWi2EhlbAor9YkLs2fzOQ2x4IcbwcTBlHoZG0VYuNPJ9
-	o66m3Y80zScS1vHn1xO14WjQb+vwIibv2PkE4eSA1c2eJjBoKVKHbfWrsdOvgCid1fjM47i+LZe
-	nDFw/lErwq5MWpDMVmS6U8paWIeGi99YjY8NFHOTvMJ0cVEFUb8wuvc0+o6NvM49Jq1Y9aqM8gw
-	0+ZaqNo4vUBa5NjYeagVCCS1JpS3P9VzeSoOGn8tmik1eYxkNtcMkMxJOAx3DfTVPw5wedVjNmy
-	FgCFc744A6xJU4DT8EeAF0ZtPwrEgSJEAetRIRoGauOkE7T4wfSjHvlujxaGjSP45KRQZn8XK4t
-	NnYyzkkOyjVqnjB81mt2p5+yN6hFc9IeXPw4gYBjdQCA4Fv1fgzMYYtmrwI3vweezKsGDNjS82B
-	d/W81olQVvEwy8tRerMXQWliwGftuSLbk=
-X-Received: by 2002:a05:6000:2c02:b0:432:5bac:391c with SMTP id ffacd0b85a97d-4342c557730mr2244061f8f.52.1768387375721;
-        Wed, 14 Jan 2026 02:42:55 -0800 (PST)
-Received: from blackdock.suse.cz (nat2.prg.suse.com. [195.250.132.146])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-432bd0e19bfsm48998983f8f.18.2026.01.14.02.42.54
+        d=1e100.net; s=20230601; t=1768388926; x=1768993726;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=rp+ERt1dfU/la6Ha2tXOSz2jWN3a9Tr4qXg0gnWoaNY=;
+        b=LfbeqcZW+VFMFCMfQLIHd8kjTtzs+/ogo7vpfvb3YPPe7azZL0q3fHwdZE4pqpyQMu
+         QuUSfPsh7d0/qOn4upDb2JVGiHC5s5h80BM+8/ly7+DjEzo5YyOlfC5svpZ7EWUNwB3+
+         i9BEbOehTSyyuRLhCIAc9SzpcZb5ebEMJywZrMTzuJxZuT+Dy3Q/d2OjZH+qTT1jq09y
+         QjIcEd50qRPoG8t3Q4SAvbkpybszlO1hR7ZooqWixAuuRyaNK3uF6CHOEDRFk2unC2Xo
+         /mhN3R9qqg11x63geY7eQjM5Bsem7PKyIv2lBlDm1k+n3KUuKTDUsXk0vNWSY8e22E9Y
+         WqIg==
+X-Gm-Message-State: AOJu0Yz76BZMrBiBNRntG4U2xsA6dUI2np5BhR4YPdN1ksVPnkd7WQYP
+	nMKN1oJbKmlySwVQYHGOY1QDvuF5+k23HeHFx+o6WUTnmWh9yKsgrfbCZhzpn26LsNlbV5RxVDV
+	G2R/4JNg=
+X-Gm-Gg: AY/fxX7c007mzpxysVw6P6a7gu5mmBs01fT3UCtYse4xkR3RkwRvidoDCcPkC7xqoU1
+	RJbIGj0e1djomc1zpcBAKNU4TIAvbUua+vo5LpR7TIbYG4Jep5ju9TLjt8vP0u3Lgzohv77Lqgr
+	ATe82Kk//cBFF3Tt1VLPgax3W+9NabW8y3B5rGVJEOXAd+xibWWU0D4CggM7gRXiuHREv7qLdV0
+	FyJZQJFWp6XqhCrElbDpytFCFkBqE09uR5ed0I0fSxC0uunaEgRuifdyZWLMX/LEkQ2If5lhOSl
+	zWFisypmdFvNodWSw34OqI8qDAfDBO2TgtKIF4qs3YPZxwLk6Mhphmrf8ZdklwL3OqP9rB6SHso
+	993yjDEWiaPnKUSrWsYy6SEJxS66ztN7yCQzV8bKAwGPijKlnNEor6nTjseS8OHpPpLQM2ii1
+X-Received: by 2002:a17:902:f686:b0:2a0:d728:2e79 with SMTP id d9443c01a7336-2a599e05654mr24223935ad.16.1768388925818;
+        Wed, 14 Jan 2026 03:08:45 -0800 (PST)
+Received: from localhost.localdomain ([147.136.157.2])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2a3e3cd492fsm103732285ad.98.2026.01.14.03.08.43
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 Jan 2026 02:42:55 -0800 (PST)
-Date: Wed, 14 Jan 2026 11:42:53 +0100
-From: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
-To: Zheng Qixing <zhengqixing@huaweicloud.com>
-Cc: tj@kernel.org, josef@toxicpanda.com, axboe@kernel.dk, 
-	yukuai3@huawei.com, hch@infradead.org, cgroups@vger.kernel.org, 
-	linux-block@vger.kernel.org, linux-kernel@vger.kernel.org, yi.zhang@huawei.com, 
-	yangerkun@huawei.com, houtao1@huawei.com, zhengqixing@huawei.com
-Subject: Re: [PATCH v2 2/3] blk-cgroup: skip dying blkg in
- blkcg_activate_policy()
-Message-ID: <mjftw7q6ho6rvxwf3pg2rhu4ivqiys23uaaxfzj5aejx2m7raz@sxbrihmy2waq>
-References: <20260113061035.1902522-1-zhengqixing@huaweicloud.com>
- <20260113061035.1902522-3-zhengqixing@huaweicloud.com>
+        Wed, 14 Jan 2026 03:08:45 -0800 (PST)
+From: Tang Yizhou <yizhou.tang@shopee.com>
+X-Google-Original-From: Tang Yizhou
+To: tj@kernel.org,
+	corbet@lwn.net,
+	axboe@kernel.dk,
+	hch@lst.de
+Cc: cgroups@vger.kernel.org,
+	linux-doc@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Tang Yizhou <yizhou.tang@shopee.com>
+Subject: [PATCH] docs: Fix blk-iolatency peer throttling description
+Date: Wed, 14 Jan 2026 19:08:37 +0800
+Message-ID: <20260114110837.84126-1-yizhou.tang@shopee.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="do7flgpxj3gdayty"
-Content-Disposition: inline
-In-Reply-To: <20260113061035.1902522-3-zhengqixing@huaweicloud.com>
+Content-Transfer-Encoding: 8bit
 
+From: Tang Yizhou <yizhou.tang@shopee.com>
 
---do7flgpxj3gdayty
-Content-Type: text/plain; protected-headers=v1; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-Subject: Re: [PATCH v2 2/3] blk-cgroup: skip dying blkg in
- blkcg_activate_policy()
-MIME-Version: 1.0
+The current text states that peers with a lower latency target are
+throttled, which is the opposite of the actual behavior. In fact,
+blk-iolatency throttles peer groups with a higher latency target in order
+to protect the more latency-sensitive group.
 
-On Tue, Jan 13, 2026 at 02:10:34PM +0800, Zheng Qixing <zhengqixing@huaweic=
-loud.com> wrote:
-> From: Zheng Qixing <zhengqixing@huawei.com>
->=20
-> When switching IO schedulers on a block device, blkcg_activate_policy()
-> can race with concurrent blkcg deletion, leading to a use-after-free in
-> rcu_accelerate_cbs.
->=20
-> T1:                               T2:
-> 		                  blkg_destroy
->                  		  kill(&blkg->refcnt) // blkg->refcnt=3D1->0
-> 				  blkg_release // call_rcu(__blkg_release)
->                                   ...
-> 				  blkg_free_workfn
->                                   ->pd_free_fn(pd)
-> elv_iosched_store
-> elevator_switch
-> ...
-> iterate blkg list
-> blkg_get(blkg) // blkg->refcnt=3D0->1
->                                   list_del_init(&blkg->q_node)
-> blkg_put(pinned_blkg) // blkg->refcnt=3D1->0
-> blkg_release // call_rcu again
-> rcu_accelerate_cbs // uaf
->=20
-> Fix this by replacing blkg_get() with blkg_tryget(), which fails if
-> the blkg's refcount has already reached zero. If blkg_tryget() fails,
-> skip processing this blkg since it's already being destroyed.
->=20
-> Link: https://lore.kernel.org/all/20260108014416.3656493-4-zhengqixing@hu=
-aweicloud.com/
-> Fixes: f1c006f1c685 ("blk-cgroup: synchronize pd_free_fn() from blkg_free=
-_workfn() and blkcg_deactivate_policy()")
-> Signed-off-by: Zheng Qixing <zhengqixing@huawei.com>
-> Reviewed-by: Christoph Hellwig <hch@lst.de>
-> ---
->  block/blk-cgroup.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
+In addition, peer groups without a configured latency target are also
+throttled, as they are treated as lower priority compared to groups with
+explicit latency requirements.
 
-Reviewed-by: Michal Koutn=FD <mkoutny@suse.com>
+Update the documentation to reflect the correct throttling behavior.
 
---do7flgpxj3gdayty
-Content-Type: application/pgp-signature; name="signature.asc"
+Signed-off-by: Tang Yizhou <yizhou.tang@shopee.com>
+---
+ Documentation/admin-guide/cgroup-v2.rst | 10 ++++++----
+ 1 file changed, 6 insertions(+), 4 deletions(-)
 
------BEGIN PGP SIGNATURE-----
+diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admin-guide/cgroup-v2.rst
+index 7f5b59d95fce..d6f7ef08b67d 100644
+--- a/Documentation/admin-guide/cgroup-v2.rst
++++ b/Documentation/admin-guide/cgroup-v2.rst
+@@ -2238,8 +2238,9 @@ IO Latency
+ 
+ This is a cgroup v2 controller for IO workload protection.  You provide a group
+ with a latency target, and if the average latency exceeds that target the
+-controller will throttle any peers that have a lower latency target than the
+-protected workload.
++controller will throttle any peers that have a higher latency target than the
++protected workload, as well as peers that do not have a latency target
++configured.
+ 
+ The limits are only applied at the peer level in the hierarchy.  This means that
+ in the diagram below, only groups A, B, and C will influence each other, and
+@@ -2265,8 +2266,9 @@ How IO Latency Throttling Works
+ 
+ io.latency is work conserving; so as long as everybody is meeting their latency
+ target the controller doesn't do anything.  Once a group starts missing its
+-target it begins throttling any peer group that has a higher target than itself.
+-This throttling takes 2 forms:
++target it begins throttling any peer group that has a higher target than itself,
++as well as any peer group without a latency target. This throttling takes 2
++forms:
+ 
+ - Queue depth throttling.  This is the number of outstanding IO's a group is
+   allowed to have.  We will clamp down relatively quickly, starting at no limit
+-- 
+2.43.0
 
-iJEEABYKADkWIQRCE24Fn/AcRjnLivR+PQLnlNv4CAUCaWdzKxsUgAAAAAAEAA5t
-YW51MiwyLjUrMS4xMSwyLDIACgkQfj0C55Tb+AhfAQD/cTBKiAQVDh35CKPtO4Em
-OtUUjEzwjwL9m71Op4J5pk0A/0z5/yXz9h8uHXr3hqLQjtCsADUG9ndqsheU7xuN
-o9YD
-=SA3L
------END PGP SIGNATURE-----
-
---do7flgpxj3gdayty--
 
