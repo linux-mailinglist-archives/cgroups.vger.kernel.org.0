@@ -1,307 +1,223 @@
-Return-Path: <cgroups+bounces-13209-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-13210-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 26F38D1F65E
-	for <lists+cgroups@lfdr.de>; Wed, 14 Jan 2026 15:23:48 +0100 (CET)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
+	by mail.lfdr.de (Postfix) with ESMTPS id 646BBD1FCC3
+	for <lists+cgroups@lfdr.de>; Wed, 14 Jan 2026 16:36:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 88D7130454A5
-	for <lists+cgroups@lfdr.de>; Wed, 14 Jan 2026 14:20:59 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 841353003FFD
+	for <lists+cgroups@lfdr.de>; Wed, 14 Jan 2026 15:26:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED4662D97BB;
-	Wed, 14 Jan 2026 14:20:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA584395275;
+	Wed, 14 Jan 2026 15:26:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="XueP6IYn";
-	dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b="WKjEwBc+"
+	dkim=pass (1024-bit key) header.d=santannapisa.it header.i=@santannapisa.it header.b="vThBwWe3"
 X-Original-To: cgroups@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+Received: from PA4PR04CU001.outbound.protection.outlook.com (mail-francecentralazon11023085.outbound.protection.outlook.com [40.107.162.85])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 33FEE21D585
-	for <cgroups@vger.kernel.org>; Wed, 14 Jan 2026 14:20:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768400456; cv=none; b=MLiSOhyqUM4W+7nj32PC5jOAPKiRum0WbMt+ooWmrzUfx3PAYOrMsTPpvf5NR4r4IS2U5jlXLcIKr1Tvj+za8AdyUtfzSbF1VKoo8esnWLPSEs94zMGsM6AibNnAPmEJslwI2QCCdo4mOun14YNierIwjmTD0xoziCkeFsjQXWo=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768400456; c=relaxed/simple;
-	bh=XMj4ssOkyrzw5suqQ9n8OiEK3bHMp4fUmo//LSS0zBE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=cYTndlM8WXXlCn+gOrWz4mkcWv1tvhKxK9ekX3zCHUuJ/hRGBYkFWUrt9pkjGgrxx43V8EfzSsz5JIWW59wmN1UjvQqKNUuEhMyJX2NVA0MnNfblmNYYqFD/yCBkd/Q5UTx5I0oBj8g3ADYE7Fs2u6nB1nfh6Mb5MfFRIKhycBA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=XueP6IYn; dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b=WKjEwBc+; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1768400454;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=nAAVPKAhdXdYSTKcBmSZbQ487SONxLb+XK4TvVsSDGA=;
-	b=XueP6IYnQU1FhWnVDl28TlR2t2QFgwL71xp0Z2mAj2o+G68M4tCyMnaCLMwLdiu3Q9ronA
-	N0+dXLNIRhfplYFUl8nyQ8PTYgmKNcPMyf/mzisfPdOBLLWSDSUV2ewpLWqF295jXoEjdI
-	z9RdQ2TaRNNXtYSWNEYxWwPKTuKQJi0=
-Received: from mail-wr1-f72.google.com (mail-wr1-f72.google.com
- [209.85.221.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-208-yUGLCp3POB2CpOSU14vyXg-1; Wed, 14 Jan 2026 09:20:53 -0500
-X-MC-Unique: yUGLCp3POB2CpOSU14vyXg-1
-X-Mimecast-MFC-AGG-ID: yUGLCp3POB2CpOSU14vyXg_1768400452
-Received: by mail-wr1-f72.google.com with SMTP id ffacd0b85a97d-430fc153d50so6458825f8f.1
-        for <cgroups@vger.kernel.org>; Wed, 14 Jan 2026 06:20:52 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=redhat.com; s=google; t=1768400452; x=1769005252; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=nAAVPKAhdXdYSTKcBmSZbQ487SONxLb+XK4TvVsSDGA=;
-        b=WKjEwBc+DpI6RF0VGtR5pUebMvX8hPtm/CYlh0EOVt1FAN907qFoOAEI4Enq9NcrkA
-         C2Y/EYemCbiBhSb7xuFfHWL3k6mVsXdnO4hDIplMA52t4L5j1p3r91MswABmHOyuYxBY
-         pY7+bgrQ04AY3No0B3K3RWGMPxgLcIj8+2Wj83vyozSMRQPQs2WKfaEyrpMV7wBAQ8bM
-         uYR6w2Gv1QqYvG7kK6n4Lvp8XAaskGc1ZhNmDEPC6CMx0v2JmqtEvhvcLlVkmihwwR/f
-         6pf+Z3AE0YEIXbxrKjd5I4Q2XdiO0464UzAoUcQ3XSQkfiqKQgm+XLWw/CTHgAIwW/d9
-         QK4w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1768400452; x=1769005252;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=nAAVPKAhdXdYSTKcBmSZbQ487SONxLb+XK4TvVsSDGA=;
-        b=kWJFTPSMwODTSebhVXydChetIPsLY3VDvfG5ghzE4Kq6AU7hdJMWDMbdte2Igcf7w4
-         hLFbr4Vp46QtQu6um2AiNSDQ18sfihnRF/IRdwWiafTReRET5ES9QBYJZgWLyUssZ2jW
-         gyR05pmxgKnECiyg1R+cS/ldoiQdqFwIQ+W0QQqon6mfOMs0Yok+87IXe4S9zdp40JgT
-         MPLlI09QOMssUUts8x19VhmZSWds806y8ZwddfWj/8acr3gkR2EIhoOEiYK0V4hNbu9Z
-         mhkZWupc0HWS/k84e/EIzE7dUv7WZPNPHKN8Jut1BT7EcpZaDQsZroI/qLtbtZXgr/xt
-         RUPA==
-X-Forwarded-Encrypted: i=1; AJvYcCWqRmo2vcxVF3N1Ny2zJFWHqok6VgzJq+P3FCcTjgFnlVs+7jFxgDPn4FOAvjChH1j67ux/v60Y@vger.kernel.org
-X-Gm-Message-State: AOJu0Yw9OxTixYUnMh9k7fCZS4F5lz90xXPoEPfgIOZQ/7fipgwHWjll
-	pNX0q7vqibiKN3OSc6Wa8KZElphdqVlp7hq1nqf1K1b3QNlShmzEyuCAgnPafaMsw2ADV2pnrRW
-	OCU9V9D5u0hNCYzwIO0DF46CTScG1kICWh3k+2FeILWVu5eC83SGcVDMytck=
-X-Gm-Gg: AY/fxX6Gd529dbiGfIj8kg2ONMP7K8WBaVkxcQ39JuhTFm8z0LdSebRz+vKUmqAjDYF
-	KJU19Nton3TxexhGjddd0U3zzcvdofToIuvhLNDvcrIZO2QfZqQh3hzeO6C6VAVBPrfK6OjqDGS
-	hBFO84AgQlIPDj1qbu8yPuEKTaZmVZIQCQ4lE7QtCfBB2mySzrzIK0f7HAAL7qF4vUAR1cvKoB4
-	3KXQWYO5Qi4vx4WuaxG8ZJlgjbUWSGrPIOgL7X3chVV+AYQF70/5L8zs/+tOrupKbMwMYwuKyqP
-	/bU+hTo/1EUTcvUj5IdN15YURPaw7Sl/fT3ZSWUxEmhDMR991X5t4wV7TeWUQIzPmZPnS573TSh
-	onYhFWR8CP0IJTnyx5xS+MoDCqVVIBPcdvmyGzkzB
-X-Received: by 2002:a05:6000:200d:b0:430:fd9f:e6e2 with SMTP id ffacd0b85a97d-4342c4ee846mr2866423f8f.9.1768400451817;
-        Wed, 14 Jan 2026 06:20:51 -0800 (PST)
-X-Received: by 2002:a05:6000:200d:b0:430:fd9f:e6e2 with SMTP id ffacd0b85a97d-4342c4ee846mr2866361f8f.9.1768400451309;
-        Wed, 14 Jan 2026 06:20:51 -0800 (PST)
-Received: from jlelli-thinkpadt14gen4.remote.csb ([151.29.129.40])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-432bd0e180csm48924149f8f.10.2026.01.14.06.20.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 14 Jan 2026 06:20:50 -0800 (PST)
-Date: Wed, 14 Jan 2026 15:20:48 +0100
-From: Juri Lelli <juri.lelli@redhat.com>
-To: Peter Zijlstra <peterz@infradead.org>
-Cc: K Prateek Nayak <kprateek.nayak@amd.com>,
-	Pierre Gondois <pierre.gondois@arm.com>, tj@kernel.org,
-	linux-kernel@vger.kernel.org, mingo@kernel.org,
-	vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
-	rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
-	vschneid@redhat.com, longman@redhat.com, hannes@cmpxchg.org,
-	mkoutny@suse.com, void@manifault.com, arighi@nvidia.com,
-	changwoo@igalia.com, cgroups@vger.kernel.org,
-	sched-ext@lists.linux.dev, liuwenfang@honor.com, tglx@linutronix.de,
-	Christian Loehle <christian.loehle@arm.com>,
-	luca.abeni@santannapisa.it
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E9B962E0914;
+	Wed, 14 Jan 2026 15:25:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.162.85
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1768404362; cv=fail; b=myZjGCdMHCsCKKFymZgTYBqtC+yHlBRIiXSnvXyvzcaXtNQwFeCt96lOqkKYK6Wz4QfAElnuOg55gKLCnwzuJR6Tx+OB+C9wJZ56dzA8u9xLIyvzHb5Poo5SvgRjEa5bZgK+KDQ6gZDygxxQCMMXnMtfy6m8QN2Ak6tFrZt+cE8=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1768404362; c=relaxed/simple;
+	bh=fpBFqjQ+YR1RRhrFhWA4ugeLYroyT54u++Gtzb+GOIE=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=HQIutHsJwKlmdmfGm7uT/nQJzGLZqLQh/1qPnZ2WJrQmOIOMFXTw/P9NO6PIbVCZYPM7R1gYc3ADdtkzBF8puLPI6The0Z6Ej8tXvF+DoQYs32iUHhna/KeNrGiasUqxd17h8DrzDaLfpti6xWTB7ApU1yU8+KlstqAnwSi+sE8=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=santannapisa.it; spf=pass smtp.mailfrom=santannapisa.it; dkim=pass (1024-bit key) header.d=santannapisa.it header.i=@santannapisa.it header.b=vThBwWe3; arc=fail smtp.client-ip=40.107.162.85
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=santannapisa.it
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=santannapisa.it
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=wPZANKloX9aXcDfxWPzj40YARvVMQPa5NQnv5r4Scft1kluMKC++mkmz7+5oQw90EnJohPW5eKby8nEJOfc+RO6KPqdFoIP1XFHVWyeXOWO7pcvVvoekjVhpOQgEUDhfXF5irR9OIiQPpWB/w2SrEMBXan4LDyf4W5xRNYK6KqJdEppXTllCIdDNyyt98HWscFbGb5KGumlQ63lxtYwSvI2uXwvCgWiTLIsOLarIqI0KIHy0pc8dRU1ECesOQibChCEhgyE1vyAxvwuXXKMrjuFODk7zId55gACTQB6to+e4oUJ3dNfAJ3xwNVY5A+5krHZPbQDK3ZUBqECn3kO0zA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=rGZ4u46cf+KWbWBxHktdWLCeNC5DOetqWnOtf4fdkXk=;
+ b=H42uUyOWCZjJaat4VXHWLSfi9+c2F7Ji2YtptyXA2rrR7lDN4VqrDh2HV9IEvZMyD0Q6NDoWTYv6xrMoTIetNErsicmNzRt+nEgQOxJkQC4YD7QByn62SKED/Aiyfg0ZpDfmeh/5y+RRFpZmbDoprtwxlCF8JfezBNyVUfAW1dBrvTWtLzWPyhqNdbYsjtDDw7rRih/TTVY2dL+rfK5PnKFhHzLnbtp2lxPJjWor70LCRE1CNM46iuTmt+SMixV7D292f9MW7cxCruHiEKm25lFw+E4rx0OXvtzG9245jjAh/vPmEFKNwPalUfZ7g90EdKcsQLPwlt6fm6li6WkTJQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=santannapisa.it; dmarc=pass action=none
+ header.from=santannapisa.it; dkim=pass header.d=santannapisa.it; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=santannapisa.it;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=rGZ4u46cf+KWbWBxHktdWLCeNC5DOetqWnOtf4fdkXk=;
+ b=vThBwWe3GMMI5XtCDr8xX/DdBur1mYf9Yf7STMXSW9WbEeIlXiqJJXu/ROZYMBwVJTj/1J1gvv4+FJPpQl6XINR8ByvhFWj/hCtghEwKAH1qt954VO6ghaq6rvwbxZr5y0pID+yB4zZk6UA3o6dDl7dKSJq1Sbq3fmiCA6eGrgY=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=santannapisa.it;
+Received: from PAVPR03MB8969.eurprd03.prod.outlook.com (2603:10a6:102:32e::7)
+ by DU0PR03MB8462.eurprd03.prod.outlook.com (2603:10a6:10:3b6::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9520.5; Wed, 14 Jan
+ 2026 15:25:55 +0000
+Received: from PAVPR03MB8969.eurprd03.prod.outlook.com
+ ([fe80::6bbe:2e22:5b77:7235]) by PAVPR03MB8969.eurprd03.prod.outlook.com
+ ([fe80::6bbe:2e22:5b77:7235%4]) with mapi id 15.20.9520.005; Wed, 14 Jan 2026
+ 15:25:55 +0000
+Date: Wed, 14 Jan 2026 16:25:49 +0100
+From: luca abeni <luca.abeni@santannapisa.it>
+To: Juri Lelli <juri.lelli@redhat.com>
+Cc: Peter Zijlstra <peterz@infradead.org>, K Prateek Nayak
+ <kprateek.nayak@amd.com>, Pierre Gondois <pierre.gondois@arm.com>,
+ tj@kernel.org, linux-kernel@vger.kernel.org, mingo@kernel.org,
+ vincent.guittot@linaro.org, dietmar.eggemann@arm.com, rostedt@goodmis.org,
+ bsegall@google.com, mgorman@suse.de, vschneid@redhat.com,
+ longman@redhat.com, hannes@cmpxchg.org, mkoutny@suse.com,
+ void@manifault.com, arighi@nvidia.com, changwoo@igalia.com,
+ cgroups@vger.kernel.org, sched-ext@lists.linux.dev, liuwenfang@honor.com,
+ tglx@linutronix.de, Christian Loehle <christian.loehle@arm.com>
 Subject: Re: [PATCH 05/12] sched: Move sched_class::prio_changed() into the
  change pattern
-Message-ID: <aWemQDHyF2FpNU2P@jlelli-thinkpadt14gen4.remote.csb>
+Message-ID: <20260114162549.613551f2@nowhere>
+In-Reply-To: <aWemQDHyF2FpNU2P@jlelli-thinkpadt14gen4.remote.csb>
 References: <20251006104402.946760805@infradead.org>
- <20251006104527.083607521@infradead.org>
- <ab9b37c9-e826-44db-a6b8-a789fcc1582d@arm.com>
- <caa2329c-d985-4a7c-b83a-c4f96d5f154a@amd.com>
- <717a0743-6d8f-4e35-8f2f-70a158b31147@arm.com>
- <20260113114718.GA831050@noisy.programming.kicks-ass.net>
- <f9e4e4a2-dadd-4f79-a83e-48ac4663f91c@amd.com>
- <20260114102336.GZ830755@noisy.programming.kicks-ass.net>
- <20260114130528.GB831285@noisy.programming.kicks-ass.net>
+	<20251006104527.083607521@infradead.org>
+	<ab9b37c9-e826-44db-a6b8-a789fcc1582d@arm.com>
+	<caa2329c-d985-4a7c-b83a-c4f96d5f154a@amd.com>
+	<717a0743-6d8f-4e35-8f2f-70a158b31147@arm.com>
+	<20260113114718.GA831050@noisy.programming.kicks-ass.net>
+	<f9e4e4a2-dadd-4f79-a83e-48ac4663f91c@amd.com>
+	<20260114102336.GZ830755@noisy.programming.kicks-ass.net>
+	<20260114130528.GB831285@noisy.programming.kicks-ass.net>
+	<aWemQDHyF2FpNU2P@jlelli-thinkpadt14gen4.remote.csb>
+Organization: Scuola Superiore Sant'Anna
+X-Mailer: Claws Mail 4.3.1 (GTK 3.24.50; x86_64-pc-linux-gnu)
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: MI1P293CA0017.ITAP293.PROD.OUTLOOK.COM
+ (2603:10a6:290:3::13) To PAVPR03MB8969.eurprd03.prod.outlook.com
+ (2603:10a6:102:32e::7)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20260114130528.GB831285@noisy.programming.kicks-ass.net>
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PAVPR03MB8969:EE_|DU0PR03MB8462:EE_
+X-MS-Office365-Filtering-Correlation-Id: ef88cf1d-a449-4f07-dadb-08de53813602
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam:
+	BCL:0;ARA:13230040|10070799003|366016|7416014|376014|786006|1800799024|7053199007;
+X-Microsoft-Antispam-Message-Info:
+	=?us-ascii?Q?SXBy+kd5T7jY4eKffXmjG57VavlVDiY1hj8WTOpEUmUPDwdhJxk1B+1PuEzE?=
+ =?us-ascii?Q?3mJZChGYcJJPfx6XQwEEQd1yQ9+uK62ILmX8OvP5o/usyXVb1AF8zfIZBovQ?=
+ =?us-ascii?Q?cc92WFjayv64vOJ05fNoJq/duoQzdZMA7RAdI53EHcMQuNuoVimGvgxfvhvn?=
+ =?us-ascii?Q?QG7q4MSndUQgg09hzrPN50nuoOL5I8csiLZWlJmSg3CUOc53QYEt9kZySN9Y?=
+ =?us-ascii?Q?5VKKsCCAC3GZOeZInjpEFekPFxYh/xCZR0ESU/CK6V8BuFqPHJvEkoEpdxTT?=
+ =?us-ascii?Q?UUHUkEX0FPPP91xzZxI7HZRGUBZGf3pUp1if58p5cSqW2oe8aQ4DSfpdXSQ8?=
+ =?us-ascii?Q?+2dk+44Di1smARYtDAqF6uLwqsgHsPYGsnP1zKetCPG/pCnLU4fRpLHAQ+0q?=
+ =?us-ascii?Q?IQ4lbMvFTfP2rT6WgnyG2vduQBzWdGl2wtKVWmNDdn9pu5X95thvefwl7VSR?=
+ =?us-ascii?Q?d5AfLJ/ljIJC+sRz0MPMkHZjFURIdn5IWKb4HmVWWcUvlIzM8sQKaAJ/RJQj?=
+ =?us-ascii?Q?ChlNRDvXQyXxkhTBzF9XwLXpPbdGXH8pqEjUc5NJW2R/ubgzkgfjHDFZUv4t?=
+ =?us-ascii?Q?1DbtWO7fYhxVVXLhPFLmtALmKpfeF2ciLWZrMqmvrh4uBXbU3FCwC0OgbZeo?=
+ =?us-ascii?Q?p2ZrSYuPWYvZ1k5hO77v3Uz+Bzf0twq19jPY2R9fD92vzOxSQP9sbGRUVqJU?=
+ =?us-ascii?Q?P2klx65Ad+tB1UJ44YW7my3F0jXh+3DA/y4NSxRORX2RHKmnuPVTlhnH7Dim?=
+ =?us-ascii?Q?vPf9RIq+tSSd73ZiYT7o92UrwUqwy78sCTdI0pGv2NzGD5b/vJjamjwhFo3Y?=
+ =?us-ascii?Q?L4Hdj4fF6s+Ul33R4Dn3O7FegfX7L/IA7282Op+40AfhPSZbyvYRUeInaTKP?=
+ =?us-ascii?Q?5ZsXsEoKUERDs6rh5v+mE20Y2fZqc7gdRy+zkZoPFGSC38cOD8lYQIIcXcZb?=
+ =?us-ascii?Q?GCEpROa4/5LhqK6X4Mg+WggwV87EB6t7EdNDtFhiTY7rzK71B8WHeNuCH+VL?=
+ =?us-ascii?Q?WuIR1h7TPx1YC9eqZvcO5iflsUhYLmJWKNZLFqpzKsZgGcG2b81M8ddgc5Gx?=
+ =?us-ascii?Q?EScfYHedAe36rrv0fNoSWVyFtqlKIIPBSbreXT8eH821aR/gEl6mrAY1AfLN?=
+ =?us-ascii?Q?Ordz+51tI/UOUpEo7QduzR22LYVMnDn765XAvYFloxCg0KcVEfYVrOcPOs/b?=
+ =?us-ascii?Q?EzFObex4q6UMGAxDhwZypS9iiOdFYNfPz+6NMetyKW9GICcJDbB1UW959rDk?=
+ =?us-ascii?Q?D+xspipLzBYl5NoFgmDDMmnacaVgxOLMcC18pmsYf16+tHPsCLQs9sqhFEns?=
+ =?us-ascii?Q?c1MwpG2+pj6/jJWtPuzQMYUl95nEUSAowkJDw5V+o0Yds24gg1xttkOZBJZX?=
+ =?us-ascii?Q?RYmVxCcgbaNNhyR2pg2TG06ZGU6CnxUQOqdoQ0M5una3/LzpmxmrMehzd4eN?=
+ =?us-ascii?Q?Ome8C4uSELMHHqE3NENE3HbC6cRpasj6MOuGPRrqY7yjuv9GAHRXYhyxbSca?=
+ =?us-ascii?Q?PNK3Ie/ZUlcEhgOuSuFnzt05hoQmeAImIYCzASICwREY66IuJ5qypWpBYSWE?=
+ =?us-ascii?Q?BqPiMXlFlWVg4WGspKQ=3D?=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PAVPR03MB8969.eurprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(10070799003)(366016)(7416014)(376014)(786006)(1800799024)(7053199007);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 2
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?0wJ7/B2LFRPqvzAuDM1V8fBCUjlS7igoY3PcWOF979ntpBP2meZW8ZO5PpQS?=
+ =?us-ascii?Q?lmhxRdXg/3wKyPtRJ8z1grBI51jRn6uPmkyJ2EdROkEygJeuAr2NLgpXtOUQ?=
+ =?us-ascii?Q?Ppg1tD9cceap/dJU9VHMCJ9qQuoXtmIzEBPf3qGXn3DhzINF2Am3dJ2W4qkB?=
+ =?us-ascii?Q?LKeTowoS0p6yGgu+Q+HlH+AXBO7Mbx8xkO5hHO7i+ve81HUMu8FmnHMg2Yjs?=
+ =?us-ascii?Q?lVPJE2P1zN1ltu6Cg15GH50o5wfT6QYVvDpmFpnCL/4evppvXUbiCKqJhkhJ?=
+ =?us-ascii?Q?27rxecl1W8kxP0bEIDpMrjgRaqFcK6gcn4qT6W+0sEc8swKepNnL+LQMhHGz?=
+ =?us-ascii?Q?BrSP+6fQKyPNiyrk3Ak42jzN/fAVM7hfk7JEiaI5Uphvfvl5XAF+CIqWrQ8X?=
+ =?us-ascii?Q?tkPgKxLyBrOH/M4a/x1b38ixoWNQFjpMq6tp9rla9IeoaYwM7u+Y+YtGSfTV?=
+ =?us-ascii?Q?3q2KC28pqC+/wHArNpjZ0fJ1BZO3G8Z49xHGFxxLNCD+Wj1yMqH/Rp5U5POI?=
+ =?us-ascii?Q?sNfvuCC8dDMx3sH9k+WQ4Gnzabnlzg/lhflpwcQE/sKFKVc+lv4rYkTeTVvk?=
+ =?us-ascii?Q?WQhY+iGx/4pSZRF+C0B6sGCeUmwTsTg0BezsMfpCYSSgkWCHmeqxshTcBer8?=
+ =?us-ascii?Q?jLEFrfIO6UM+ohy7TfwSrhUhtzfLRkZRI1cGzeJwqc3m3kQT4mvsOpsBdk+v?=
+ =?us-ascii?Q?euHK/F2mto8G4sRZSol/ja0PWAhzaKvc+dF1A0bVA3QFR6hwotGH+3egzie5?=
+ =?us-ascii?Q?Qsk//Akr9mXnL83U57nMAHPY2+GdOEKxxuJpMAAXs2TNgM/8imWFK7NNFkkU?=
+ =?us-ascii?Q?ICGLdWrZnoQi3s9DIISHsFHeTaCzyyn30tJHULl4mdQ1DZe//RN82AhO3O/7?=
+ =?us-ascii?Q?RHWGhoqu6fJM4cg7TRUfDzqf7jhit8vpYNzXelYo7SjyaWSQ5g/Yb5RJetcx?=
+ =?us-ascii?Q?Es7RMoK/tbfqyw+MiYY70/exNGOTX8uOhFvU32xmZSaut9AF3f2whZokQQN5?=
+ =?us-ascii?Q?FNH7wxDCrjwQVo6g3DbxK1Nsv9RhVg51/musGC3V3MHpHWp7lHHAgAGyCUWu?=
+ =?us-ascii?Q?8RaaKb91geVo++4ph0MEIloemUJxzsD+m931eF0hvRjhfP7sRxco922qTrWz?=
+ =?us-ascii?Q?Wc6w8k+RTrF+761hZ6h7E3OVJ/QjqCmjUrnzUK7vF1AKrhWBqmBsqG48vhYK?=
+ =?us-ascii?Q?1Rn4Byj1AhfYgZrId79W+yrrOtvbuyu4jSE8KaoaxE88jibpoW6+9eCtsLFM?=
+ =?us-ascii?Q?CSxYbQS4jMkfC85ZW6XuUlDg4adVafYGxLZjnDhUmol88x5aUIuyQv4wmpPw?=
+ =?us-ascii?Q?kDXXDusLp6pSe9k0uMC1qbVlnRQ/ts17rhNz6WeJFxr/NCdmraAJAQoRT+Mn?=
+ =?us-ascii?Q?cN7uzEvPCUxLBECILPyatiq0KtZfrU08YjqFfnWG/YRBnHQ4yUFpTmofxwzC?=
+ =?us-ascii?Q?Vgjn58AorSbO1Dl1A4c6RfxoFOyNPbHM5Dt9GED27t1htkjScjJlNKE89GZG?=
+ =?us-ascii?Q?thCT+mJDkjRH52pNC3NtkKK6AhCc3ge3DPCZdElVX0MtGGrXTU5c+lzd+8qR?=
+ =?us-ascii?Q?QQyBTTHsMXwdXmgQmSCZFDmizQPfEciwvijET7eeeOyJgGDW1a3Q0EHrlJ/a?=
+ =?us-ascii?Q?332WCvxd9Betc4PliN6Ic00vdzITyjepIIqirDCN82X7ud95Ha3sUIBsQsGS?=
+ =?us-ascii?Q?8pkcUO8pk56pRpfD9JPVJaSCMaXDWeIsfj1rIEhOFhdCiQ6zDDgpsRL4nZTw?=
+ =?us-ascii?Q?QrRbQbd1/DSUgVWMNI4QmqxyeTOU75OpBlAhpgVlh/F2bHhNGMwP22msJYoN?=
+X-MS-Exchange-AntiSpam-MessageData-1: 2Hr6oV4JW0A9fB3+j8iu1P7v6SK0gsbxSaM=
+X-OriginatorOrg: santannapisa.it
+X-MS-Exchange-CrossTenant-Network-Message-Id: ef88cf1d-a449-4f07-dadb-08de53813602
+X-MS-Exchange-CrossTenant-AuthSource: PAVPR03MB8969.eurprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Jan 2026 15:25:55.6376
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: d97360e3-138d-4b5f-956f-a646c364a01e
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: wkBpDoM/Vwz70alMGNQeXYMj4Lq8uMtB+0czNl4NHzTZwoFl/X1ZtLv+0GNfF4wOHuwz5wIg8q7k2haxKiIYhhiPECqVAkusCJw6S81ziOQ=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DU0PR03MB8462
 
-On 14/01/26 14:05, Peter Zijlstra wrote:
-> On Wed, Jan 14, 2026 at 11:23:36AM +0100, Peter Zijlstra wrote:
-> 
-> > Juri, Luca, I'm tempted to suggest to simply remove the replenish on
-> > RESTORE entirely -- that would allow the task to continue as it had
-> > been, irrespective of it being 'late'.
-> > 
-> > Something like so -- what would this break?
-> > 
-> > --- a/kernel/sched/deadline.c
-> > +++ b/kernel/sched/deadline.c
-> > @@ -2214,10 +2214,6 @@ enqueue_dl_entity(struct sched_dl_entity
-> >  		update_dl_entity(dl_se);
-> >  	} else if (flags & ENQUEUE_REPLENISH) {
-> >  		replenish_dl_entity(dl_se);
-> > -	} else if ((flags & ENQUEUE_RESTORE) &&
-> > -		   !is_dl_boosted(dl_se) &&
-> > -		   dl_time_before(dl_se->deadline, rq_clock(rq_of_dl_se(dl_se)))) {
-> > -		setup_new_dl_entity(dl_se);
-> >  	}
-> >  
-> >  	/*
-> 
-> Ah, this is de-boost, right? Boosting allows one to break the CBS rules
-> and then we have to rein in the excesses.
-> 
-> But we have {DE,EN}QUEUE_MOVE for this, that explicitly allows priority
-> to change and is set for rt_mutex_setprio() (among others).
-> 
-> So doing s/RESTORE/MOVE/ above.
-> 
-> The corollary to all this is that everybody that sets MOVE must be able
-> to deal with balance callbacks, so audit that too.
-> 
-> This then gives something like so.. which builds and boots for me, but
-> clearly I haven't been able to trigger these funny cases.
-> 
-> ---
-> --- a/kernel/sched/core.c
-> +++ b/kernel/sched/core.c
-> @@ -4969,9 +4969,13 @@ struct balance_callback *splice_balance_
->  	return __splice_balance_callbacks(rq, true);
->  }
->  
-> -static void __balance_callbacks(struct rq *rq)
-> +void __balance_callbacks(struct rq *rq, struct rq_flags *rf)
->  {
-> +	if (rf)
-> +		rq_unpin_lock(rq, rf);
->  	do_balance_callbacks(rq, __splice_balance_callbacks(rq, false));
-> +	if (rf)
-> +		rq_repin_lock(rq, rf);
->  }
->  
->  void balance_callbacks(struct rq *rq, struct balance_callback *head)
-> @@ -5018,7 +5022,7 @@ static inline void finish_lock_switch(st
->  	 * prev into current:
->  	 */
->  	spin_acquire(&__rq_lockp(rq)->dep_map, 0, 0, _THIS_IP_);
-> -	__balance_callbacks(rq);
-> +	__balance_callbacks(rq, NULL);
->  	raw_spin_rq_unlock_irq(rq);
->  }
->  
-> @@ -6901,7 +6905,7 @@ static void __sched notrace __schedule(i
->  			proxy_tag_curr(rq, next);
->  
->  		rq_unpin_lock(rq, &rf);
-> -		__balance_callbacks(rq);
-> +		__balance_callbacks(rq, NULL);
->  		raw_spin_rq_unlock_irq(rq);
->  	}
->  	trace_sched_exit_tp(is_switch);
-> @@ -7350,7 +7354,7 @@ void rt_mutex_setprio(struct task_struct
->  	trace_sched_pi_setprio(p, pi_task);
->  	oldprio = p->prio;
->  
-> -	if (oldprio == prio)
-> +	if (oldprio == prio && !dl_prio(prio))
->  		queue_flag &= ~DEQUEUE_MOVE;
->  
->  	prev_class = p->sched_class;
-> @@ -7396,9 +7400,7 @@ void rt_mutex_setprio(struct task_struct
->  out_unlock:
->  	/* Caller holds task_struct::pi_lock, IRQs are still disabled */
->  
-> -	rq_unpin_lock(rq, &rf);
-> -	__balance_callbacks(rq);
-> -	rq_repin_lock(rq, &rf);
-> +	__balance_callbacks(rq, &rf);
->  	__task_rq_unlock(rq, p, &rf);
->  }
->  #endif /* CONFIG_RT_MUTEXES */
-> @@ -9167,6 +9169,8 @@ void sched_move_task(struct task_struct
->  
->  	if (resched)
->  		resched_curr(rq);
-> +
-> +	__balance_callbacks(rq, &rq_guard.rf);
->  }
->  
->  static struct cgroup_subsys_state *
-> @@ -10891,6 +10895,9 @@ void sched_change_end(struct sched_chang
->  				resched_curr(rq);
->  		}
->  	} else {
-> +		/*
-> +		 * XXX validate prio only really changed when ENQUEUE_MOVE is set.
-> +		 */
->  		p->sched_class->prio_changed(rq, p, ctx->prio);
->  	}
->  }
-> --- a/kernel/sched/deadline.c
-> +++ b/kernel/sched/deadline.c
-> @@ -2214,9 +2214,14 @@ enqueue_dl_entity(struct sched_dl_entity
->  		update_dl_entity(dl_se);
->  	} else if (flags & ENQUEUE_REPLENISH) {
->  		replenish_dl_entity(dl_se);
-> -	} else if ((flags & ENQUEUE_RESTORE) &&
-> +	} else if ((flags & ENQUEUE_MOVE) &&
->  		   !is_dl_boosted(dl_se) &&
->  		   dl_time_before(dl_se->deadline, rq_clock(rq_of_dl_se(dl_se)))) {
-> +		/*
-> +		 * Deals with the de-boost case, and ENQUEUE_MOVE explicitly
-> +		 * allows us to change priority. Callers are expected to deal
-> +		 * with balance_callbacks.
-> +		 */
->  		setup_new_dl_entity(dl_se);
->  	}
->  
-> --- a/kernel/sched/ext.c
-> +++ b/kernel/sched/ext.c
-> @@ -545,6 +545,7 @@ static void scx_task_iter_start(struct s
->  static void __scx_task_iter_rq_unlock(struct scx_task_iter *iter)
->  {
->  	if (iter->locked_task) {
-> +		__balance_callbacks(iter->rq, &iter->rf);
->  		task_rq_unlock(iter->rq, iter->locked_task, &iter->rf);
->  		iter->locked_task = NULL;
->  	}
-> --- a/kernel/sched/sched.h
-> +++ b/kernel/sched/sched.h
-> @@ -2430,7 +2430,8 @@ extern const u32		sched_prio_to_wmult[40
->   *                should preserve as much state as possible.
->   *
->   * MOVE - paired with SAVE/RESTORE, explicitly does not preserve the location
-> - *        in the runqueue.
-> + *        in the runqueue. IOW the priority is allowed to change. Callers
-> + *        must expect to deal with balance callbacks.
->   *
->   * NOCLOCK - skip the update_rq_clock() (avoids double updates)
->   *
-> @@ -4019,6 +4020,8 @@ extern void enqueue_task(struct rq *rq,
->  extern bool dequeue_task(struct rq *rq, struct task_struct *p, int flags);
->  
->  extern struct balance_callback *splice_balance_callbacks(struct rq *rq);
-> +
-> +extern void __balance_callbacks(struct rq *rq, struct rq_flags *rf);
->  extern void balance_callbacks(struct rq *rq, struct balance_callback *head);
->  
->  /*
-> --- a/kernel/sched/syscalls.c
-> +++ b/kernel/sched/syscalls.c
-> @@ -639,7 +639,7 @@ int __sched_setscheduler(struct task_str
->  		 * itself.
->  		 */
->  		newprio = rt_effective_prio(p, newprio);
-> -		if (newprio == oldprio)
-> +		if (newprio == oldprio && !dl_prio(newprio))
->  			queue_flags &= ~DEQUEUE_MOVE;
->  	}
+Hi Juri,
 
-We have been using (improperly?) ENQUEUE_SAVE also to know when a new
-entity gets setscheduled to DEADLINE (or its parameters are changed) and
-it looks like this keeps that happening with DEQUEUE_MOVE. So, from a
-quick first look, it does sound good to me.
+On Wed, 14 Jan 2026 15:20:48 +0100
+Juri Lelli <juri.lelli@redhat.com> wrote:
+[...]
+> > > --- a/kernel/sched/deadline.c
+> > > +++ b/kernel/sched/deadline.c
+> > > @@ -2214,10 +2214,6 @@ enqueue_dl_entity(struct sched_dl_entity
+> > >  		update_dl_entity(dl_se);
+> > >  	} else if (flags & ENQUEUE_REPLENISH) {
+> > >  		replenish_dl_entity(dl_se);
+> > > -	} else if ((flags & ENQUEUE_RESTORE) &&
+> > > -		   !is_dl_boosted(dl_se) &&
+> > > -		   dl_time_before(dl_se->deadline,
+> > > rq_clock(rq_of_dl_se(dl_se)))) {
+> > > -		setup_new_dl_entity(dl_se);
+> > >  	}
+> > >  
+> > >  	/*  
+[...]
+> > --- a/kernel/sched/syscalls.c
+> > +++ b/kernel/sched/syscalls.c
+> > @@ -639,7 +639,7 @@ int __sched_setscheduler(struct task_str
+> >  		 * itself.
+> >  		 */
+> >  		newprio = rt_effective_prio(p, newprio);
+> > -		if (newprio == oldprio)
+> > +		if (newprio == oldprio && !dl_prio(newprio))
+> >  			queue_flags &= ~DEQUEUE_MOVE;
+> >  	}  
+> 
+> We have been using (improperly?) ENQUEUE_SAVE also to know when a new
+> entity gets setscheduled to DEADLINE (or its parameters are changed)
+> and it looks like this keeps that happening with DEQUEUE_MOVE.
 
-Thanks!
-Juri
+You are right: double thinking about it, I seem to remember that the
+"flags & ENQUEUE_RESTORE" check above was introduced to fix tasks
+switching to SCHED_DEADLINE...
 
+So, I agree that changing "ENQUEUE_RESTORE" to "ENQUEUE_MOVE" should be
+the right thing to do
+
+
+			Luca
 
