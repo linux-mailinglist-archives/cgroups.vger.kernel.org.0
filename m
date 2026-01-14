@@ -1,45 +1,45 @@
-Return-Path: <cgroups+bounces-13191-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-13192-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 59CDBD1E7CB
-	for <lists+cgroups@lfdr.de>; Wed, 14 Jan 2026 12:43:33 +0100 (CET)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
+	by mail.lfdr.de (Postfix) with ESMTPS id DA6CBD1E6E0
+	for <lists+cgroups@lfdr.de>; Wed, 14 Jan 2026 12:34:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 63DAA30F0ABA
-	for <lists+cgroups@lfdr.de>; Wed, 14 Jan 2026 11:34:38 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id DD8D53010BE5
+	for <lists+cgroups@lfdr.de>; Wed, 14 Jan 2026 11:34:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA3DA396B6C;
-	Wed, 14 Jan 2026 11:34:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1495D395DB6;
+	Wed, 14 Jan 2026 11:34:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Y7jeyurN"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="RZa0bHSM"
 X-Original-To: cgroups@vger.kernel.org
-Received: from out-170.mta0.migadu.com (out-170.mta0.migadu.com [91.218.175.170])
+Received: from out-173.mta0.migadu.com (out-173.mta0.migadu.com [91.218.175.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AA5B1395DBE
-	for <cgroups@vger.kernel.org>; Wed, 14 Jan 2026 11:34:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E9F8395D91;
+	Wed, 14 Jan 2026 11:34:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768390468; cv=none; b=lf2caCodQgNpEfto8Q3NPDJdnf/AIYaaJauPxis8IiF98jD1GdDUb1XtRyJGUklXh31HBcQ8/HesGWbyXKyydzVl56gtE+VYUsYBSC+QuuaX1qtfkBDleB+pwdYYxoOUSQOVSUB+p3Ua7ovTmCUBjmL6LmHsTh8uLMrBWOVk43E=
+	t=1768390478; cv=none; b=npITszBFlDtCuc/7g13UHOML0nvQh99gccRZgt4InwSxqek/PLIxnl9iWdb/IDn2ZcTIGQYUwQYcoowRsrSHCcgrbg2iAf2iMeoZijJ9LXrIBOer1m9dJNOLQdHxQe2ZGmU50p2QbZhofTlywQxJ+EhFCyt++WoQHsfSWuUFMm8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768390468; c=relaxed/simple;
-	bh=CMUNtUKoZfDrBGF1gYUu5Q5mAZM62opAF3LzbJZ+JdQ=;
+	s=arc-20240116; t=1768390478; c=relaxed/simple;
+	bh=hlfcmgL3BviRZV8CmfwHwiaooKYiNNSHcvyaeQlMKD4=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=uz3UxDb3YSbexxafD3/A/HgcL0UHgvrEUtC19aahmqEOfRfd5DvTAxnidJIwKDC+3mMYslqMxlIUssHHwiMP/3TGCT5IvYLTPblyCYcoXRJ0ut4UYZtRu/knDaj8LRS8xM29PWhCuM0Hr0GHjEZAoyun3IkrZi2g+u38Z6VlTNc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Y7jeyurN; arc=none smtp.client-ip=91.218.175.170
+	 MIME-Version; b=aEFwZZtJSvdqpLRxB2dbNGJWHa6NiHJk8VoBtJrTKvQsVbkCJT+/eZV4R75iZtQGVnnMnW1baHNKS+KyjVwz1dcm9kH8nVZZZv3PRP02hyT6NGbEzEpOAGOBUwbhxald6/VrsE68bBs1a6cpHYqe+xF5ZuzPKcnLAGztaUIqagU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=RZa0bHSM; arc=none smtp.client-ip=91.218.175.173
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1768390464;
+	t=1768390474;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=em4Iy6O35b1A8UR+0FO08xHRW0BrOK64xODkveylgXo=;
-	b=Y7jeyurNAc4uvEAfTJbTgqIYsRk+83DVSW416xY5r0eDb6iv3XH27yMYQ2bGbyNYhYd72+
-	PYMpbf/+shaKQ4FIyWr49L4PdVygdOGf/27V1nmPR89IlgW132TbT8c2ORTn1N6AVBlUfc
-	xP0YLXfIhN8VvEXDrmrtOeYrYTwrmV0=
+	bh=rymsx9n8FiJjOLGrnYBXKfgUUaI2hrPCz4qLX634Ge8=;
+	b=RZa0bHSMnBv4z04m8iKhHmvmezJQtBM0Vg+Wh8tydTdx82myO67skK7NKMcKtapdBXXvPK
+	gzNs5lgORvLMJ4DeCHCRGu1sQsfPuhxgBXJCi/5SEUvHrRmXXlc6H9qlhjc+QVTOAcN3fo
+	gE6vn04RhlOKnnFL0K2Z3ynvb9c+4kk=
 From: Qi Zheng <qi.zheng@linux.dev>
 To: hannes@cmpxchg.org,
 	hughd@google.com,
@@ -68,9 +68,9 @@ Cc: linux-mm@kvack.org,
 	cgroups@vger.kernel.org,
 	Muchun Song <songmuchun@bytedance.com>,
 	Qi Zheng <zhengqi.arch@bytedance.com>
-Subject: [PATCH v3 15/30] mm: memcontrol: prevent memory cgroup release in mem_cgroup_swap_full()
-Date: Wed, 14 Jan 2026 19:32:42 +0800
-Message-ID: <3e739f195644611749093c8dd2c8dd2cea1d2485.1768389889.git.zhengqi.arch@bytedance.com>
+Subject: [PATCH v3 16/30] mm: workingset: prevent memory cgroup release in lru_gen_eviction()
+Date: Wed, 14 Jan 2026 19:32:43 +0800
+Message-ID: <a673d7a2babdb37d60d51f19c72319b326eed260.1768389889.git.zhengqi.arch@bytedance.com>
 In-Reply-To: <cover.1768389889.git.zhengqi.arch@bytedance.com>
 References: <cover.1768389889.git.zhengqi.arch@bytedance.com>
 Precedence: bulk
@@ -90,7 +90,7 @@ hold the rcu read lock or acquire a reference to the memory cgroup
 returned by folio_memcg(), thereby preventing it from being released.
 
 In the current patch, the rcu read lock is employed to safeguard
-against the release of the memory cgroup in mem_cgroup_swap_full().
+against the release of the memory cgroup in lru_gen_eviction().
 
 This serves as a preparatory measure for the reparenting of the
 LRU pages.
@@ -101,51 +101,41 @@ Reviewed-by: Harry Yoo <harry.yoo@oracle.com>
 Acked-by: Johannes Weiner <hannes@cmpxchg.org>
 Acked-by: Shakeel Butt <shakeel.butt@linux.dev>
 ---
- mm/memcontrol.c | 18 ++++++++++--------
- 1 file changed, 10 insertions(+), 8 deletions(-)
+ mm/workingset.c | 9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
 
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index b5d4139ea1aaa..548e67dbf2386 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -5283,27 +5283,29 @@ long mem_cgroup_get_nr_swap_pages(struct mem_cgroup *memcg)
- bool mem_cgroup_swap_full(struct folio *folio)
- {
- 	struct mem_cgroup *memcg;
-+	bool ret = false;
+diff --git a/mm/workingset.c b/mm/workingset.c
+index ed12744d93a29..79b40f058cd48 100644
+--- a/mm/workingset.c
++++ b/mm/workingset.c
+@@ -241,11 +241,14 @@ static void *lru_gen_eviction(struct folio *folio)
+ 	int refs = folio_lru_refs(folio);
+ 	bool workingset = folio_test_workingset(folio);
+ 	int tier = lru_tier_from_refs(refs, workingset);
+-	struct mem_cgroup *memcg = folio_memcg(folio);
++	struct mem_cgroup *memcg;
+ 	struct pglist_data *pgdat = folio_pgdat(folio);
++	unsigned short memcg_id;
  
- 	VM_BUG_ON_FOLIO(!folio_test_locked(folio), folio);
- 
- 	if (vm_swap_full())
- 		return true;
--	if (do_memsw_account())
--		return false;
-+	if (do_memsw_account() || !folio_memcg_charged(folio))
-+		return ret;
+ 	BUILD_BUG_ON(LRU_GEN_WIDTH + LRU_REFS_WIDTH > BITS_PER_LONG - EVICTION_SHIFT);
  
 +	rcu_read_lock();
- 	memcg = folio_memcg(folio);
--	if (!memcg)
--		return false;
--
- 	for (; !mem_cgroup_is_root(memcg); memcg = parent_mem_cgroup(memcg)) {
- 		unsigned long usage = page_counter_read(&memcg->swap);
++	memcg = folio_memcg(folio);
+ 	lruvec = mem_cgroup_lruvec(memcg, pgdat);
+ 	lrugen = &lruvec->lrugen;
+ 	min_seq = READ_ONCE(lrugen->min_seq[type]);
+@@ -253,8 +256,10 @@ static void *lru_gen_eviction(struct folio *folio)
  
- 		if (usage * 2 >= READ_ONCE(memcg->swap.high) ||
--		    usage * 2 >= READ_ONCE(memcg->swap.max))
--			return true;
-+		    usage * 2 >= READ_ONCE(memcg->swap.max)) {
-+			ret = true;
-+			break;
-+		}
- 	}
+ 	hist = lru_hist_from_seq(min_seq);
+ 	atomic_long_add(delta, &lrugen->evicted[hist][type][tier]);
++	memcg_id = mem_cgroup_private_id(memcg);
 +	rcu_read_unlock();
  
--	return false;
-+	return ret;
+-	return pack_shadow(mem_cgroup_private_id(memcg), pgdat, token, workingset);
++	return pack_shadow(memcg_id, pgdat, token, workingset);
  }
  
- static int __init setup_swap_account(char *s)
+ /*
 -- 
 2.20.1
 
