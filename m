@@ -1,45 +1,45 @@
-Return-Path: <cgroups+bounces-13188-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-13189-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id B0767D1E6CD
-	for <lists+cgroups@lfdr.de>; Wed, 14 Jan 2026 12:34:39 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 88E58D1E7C4
+	for <lists+cgroups@lfdr.de>; Wed, 14 Jan 2026 12:43:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id 0DE5B300E4F1
-	for <lists+cgroups@lfdr.de>; Wed, 14 Jan 2026 11:34:04 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 6E58830DFC12
+	for <lists+cgroups@lfdr.de>; Wed, 14 Jan 2026 11:34:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EAA7D395DA6;
-	Wed, 14 Jan 2026 11:34:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD006395DA1;
+	Wed, 14 Jan 2026 11:34:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="HmrG1zrR"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="YoU4Iky8"
 X-Original-To: cgroups@vger.kernel.org
-Received: from out-185.mta0.migadu.com (out-185.mta0.migadu.com [91.218.175.185])
+Received: from out-178.mta0.migadu.com (out-178.mta0.migadu.com [91.218.175.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1A8D2395D9A
-	for <cgroups@vger.kernel.org>; Wed, 14 Jan 2026 11:33:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.185
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3594A38A705
+	for <cgroups@vger.kernel.org>; Wed, 14 Jan 2026 11:34:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768390440; cv=none; b=ADx5ayx5CC5d89vYzMdxJE49m0umctq6uC4NQs/wJ5rUfPt7bWWEMDgw5ywaeqetZlze/UiwKXOSVA6c8hyKeMgecjOZ7Lrf314iwVAe+zb8fPmv7U4Jwxp1o+cGkTGxeLjtZbXuQrKZJT0UqMStpHifQk/OgnTSR1jOUOIdYsE=
+	t=1768390449; cv=none; b=rpixjjH2ygJiO0XG8k1hV1XZuFhTdpZZmk15T4p9wFzT+A/23s6RXP+LHvMKzIy1D5G4b0yPaQg9BByRkQvHMN7CtUz/YQ8lDsxqMIzc0uuZav40UP6qHnNp9/XLkU4ZUsZH0y6tf1l/1/NKqchW/UzzRXhMbFc2FLcaAlGztQ4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768390440; c=relaxed/simple;
-	bh=7BX7FySXEpJHlQa6BXTxiXtffFu7ZL8irUZf80TSL0s=;
+	s=arc-20240116; t=1768390449; c=relaxed/simple;
+	bh=fii8P6n9zfdAnG0LmjBLziDV1WKRvVaIXpeZMkRmqmQ=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=p1qWrHvnHlPS2uIYZ6psKKU9uLFNR+AWMgic6HI97WStFpD9jENSvHweZ8aA7W20mJEQaZ5dwPE58LSZFzeOKMPmGG09hdBqrYwq3czDvqnFYWQt8evvc4ifyefjIv9gv9JTNQBYqtuhwiHTjYKvkrFSg+rQNknXnwfTyh3nV6g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=HmrG1zrR; arc=none smtp.client-ip=91.218.175.185
+	 MIME-Version; b=b2sLz4rl3LfNNUySfqJHNEQdlwcRVSkanqtBufctbpAdLEkPoPkpNBaUth8/Tjv4MhgaXA7ZWyTPfK9ELXnT3OSKUXS3ig/HqSpsTYVWC/Vta9mu+dOLtxcWwjvTq60idVWAl2LKhZ0k2lwbhr5r0vwajZ7Ggp39cCNBOJ6NoMc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=YoU4Iky8; arc=none smtp.client-ip=91.218.175.178
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1768390436;
+	t=1768390446;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=s82tZFT3iNsr3WMx/4d8Ml9gjp1Ep9qgTy0gWjRVe+I=;
-	b=HmrG1zrRF9bILjq52W5M0fEv/Kh1W49u+KPtADu7tHudamR6wf/d+m8tGOauHvXjCtLxt0
-	SAGGpGRko4EltwHQF42dxC+zQLNuRLzEivYmePLOfQl/bjCpK8oakNCbMzF1SdgNcXjczG
-	ggkH48Uzs8Fts/TIPgaIlQNj1AaZhJo=
+	bh=642wzt5sbJwBZzq4cokZbiQed5LcU+/gP3D7+Nkqfps=;
+	b=YoU4Iky8HLVffHiXRoGwvgVGzlVPeumBdrWGgRX3FHJHeSUAOcRyplIqVBvX9ZV4PECp/m
+	wVNVWs204n5weRpItm0WRWIOH/sVQ0v44YN9b6egvXft4ZURKshYA+NNhwh95UbPIEutz7
+	4pgDms5mDpXAR/EA0KbeGFqdVrblkV4=
 From: Qi Zheng <qi.zheng@linux.dev>
 To: hannes@cmpxchg.org,
 	hughd@google.com,
@@ -68,9 +68,9 @@ Cc: linux-mm@kvack.org,
 	cgroups@vger.kernel.org,
 	Muchun Song <songmuchun@bytedance.com>,
 	Qi Zheng <zhengqi.arch@bytedance.com>
-Subject: [PATCH v3 12/30] mm: page_io: prevent memory cgroup release in page_io module
-Date: Wed, 14 Jan 2026 19:32:39 +0800
-Message-ID: <0242e03552f49b54cecef97d90ad1b61e7904703.1768389889.git.zhengqi.arch@bytedance.com>
+Subject: [PATCH v3 13/30] mm: migrate: prevent memory cgroup release in folio_migrate_mapping()
+Date: Wed, 14 Jan 2026 19:32:40 +0800
+Message-ID: <f25ed2b09f4b6d5e72354249a516248752cf4f1e.1768389889.git.zhengqi.arch@bytedance.com>
 In-Reply-To: <cover.1768389889.git.zhengqi.arch@bytedance.com>
 References: <cover.1768389889.git.zhengqi.arch@bytedance.com>
 Precedence: bulk
@@ -89,9 +89,8 @@ memory cgroup. To ensure safety, it will only be appropriate to
 hold the rcu read lock or acquire a reference to the memory cgroup
 returned by folio_memcg(), thereby preventing it from being released.
 
-In the current patch, the rcu read lock is employed to safeguard
-against the release of the memory cgroup in swap_writeout() and
-bio_associate_blkg_from_page().
+In __folio_migrate_mapping(), the rcu read lock is employed to safeguard
+against the release of the memory cgroup in folio_migrate_mapping().
 
 This serves as a preparatory measure for the reparenting of the
 LRU pages.
@@ -102,42 +101,29 @@ Reviewed-by: Harry Yoo <harry.yoo@oracle.com>
 Acked-by: Johannes Weiner <hannes@cmpxchg.org>
 Acked-by: Shakeel Butt <shakeel.butt@linux.dev>
 ---
- mm/page_io.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
+ mm/migrate.c | 2 ++
+ 1 file changed, 2 insertions(+)
 
-diff --git a/mm/page_io.c b/mm/page_io.c
-index a2c034660c805..63b262f4c5a9b 100644
---- a/mm/page_io.c
-+++ b/mm/page_io.c
-@@ -276,10 +276,14 @@ int swap_writeout(struct folio *folio, struct swap_iocb **swap_plug)
- 		count_mthp_stat(folio_order(folio), MTHP_STAT_ZSWPOUT);
- 		goto out_unlock;
- 	}
-+
-+	rcu_read_lock();
- 	if (!mem_cgroup_zswap_writeback_enabled(folio_memcg(folio))) {
+diff --git a/mm/migrate.c b/mm/migrate.c
+index 4688b9e38cd2f..1aec3f5509538 100644
+--- a/mm/migrate.c
++++ b/mm/migrate.c
+@@ -671,6 +671,7 @@ static int __folio_migrate_mapping(struct address_space *mapping,
+ 		struct lruvec *old_lruvec, *new_lruvec;
+ 		struct mem_cgroup *memcg;
+ 
++		rcu_read_lock();
+ 		memcg = folio_memcg(folio);
+ 		old_lruvec = mem_cgroup_lruvec(memcg, oldzone->zone_pgdat);
+ 		new_lruvec = mem_cgroup_lruvec(memcg, newzone->zone_pgdat);
+@@ -698,6 +699,7 @@ static int __folio_migrate_mapping(struct address_space *mapping,
+ 			mod_lruvec_state(new_lruvec, NR_FILE_DIRTY, nr);
+ 			__mod_zone_page_state(newzone, NR_ZONE_WRITE_PENDING, nr);
+ 		}
 +		rcu_read_unlock();
- 		folio_mark_dirty(folio);
- 		return AOP_WRITEPAGE_ACTIVATE;
  	}
-+	rcu_read_unlock();
+ 	local_irq_enable();
  
- 	__swap_writepage(folio, swap_plug);
- 	return 0;
-@@ -307,11 +311,11 @@ static void bio_associate_blkg_from_page(struct bio *bio, struct folio *folio)
- 	struct cgroup_subsys_state *css;
- 	struct mem_cgroup *memcg;
- 
--	memcg = folio_memcg(folio);
--	if (!memcg)
-+	if (!folio_memcg_charged(folio))
- 		return;
- 
- 	rcu_read_lock();
-+	memcg = folio_memcg(folio);
- 	css = cgroup_e_css(memcg->css.cgroup, &io_cgrp_subsys);
- 	bio_associate_blkg_from_css(bio, css);
- 	rcu_read_unlock();
 -- 
 2.20.1
 
