@@ -1,45 +1,45 @@
-Return-Path: <cgroups+bounces-13199-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-13200-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
-	by mail.lfdr.de (Postfix) with ESMTPS id C751AD1E723
-	for <lists+cgroups@lfdr.de>; Wed, 14 Jan 2026 12:36:38 +0100 (CET)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id ACFDCD1E77E
+	for <lists+cgroups@lfdr.de>; Wed, 14 Jan 2026 12:39:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 07837301AB98
-	for <lists+cgroups@lfdr.de>; Wed, 14 Jan 2026 11:36:06 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id BF5B0301C556
+	for <lists+cgroups@lfdr.de>; Wed, 14 Jan 2026 11:36:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A101C395DB3;
-	Wed, 14 Jan 2026 11:35:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 40AC538A705;
+	Wed, 14 Jan 2026 11:35:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="lHtmZUQd"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="slZ/TAA8"
 X-Original-To: cgroups@vger.kernel.org
-Received: from out-179.mta0.migadu.com (out-179.mta0.migadu.com [91.218.175.179])
+Received: from out-170.mta0.migadu.com (out-170.mta0.migadu.com [91.218.175.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F3DDA381715
-	for <cgroups@vger.kernel.org>; Wed, 14 Jan 2026 11:35:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5197834A797
+	for <cgroups@vger.kernel.org>; Wed, 14 Jan 2026 11:35:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768390540; cv=none; b=sQXwVUzu2lvI30CqopJvUu77nwaY31z7nXzZxiPXf4V4ApE/ogFKVWfExQ28GEB1KFV5qdYaFgz8/wG4E0FPOy7oduZDOZim4gEcA+m6P8MP6csYWth3gBbKGwMeugjDmiJmDO3R24fJ9ev51+ZS1Jr5gWMhOHKEzjEX9Pr0L7c=
+	t=1768390552; cv=none; b=Hua+uh/woQFKQC2GfhYQdQ7kK1RxTVrIwnb2R1lN9GBag7mt+WJ3WeJqAkiBXdHqfz0hehKa7anuP4j1RahoikcQMbEnPhdzgqNA/UF6gvZuSs+e/0C/3IjjUIwJ+6A4KbMrfViCR2VpMbwxwWjKhe9zHdHber4GmxMgcp4n+KA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768390540; c=relaxed/simple;
-	bh=mKCR9H5XpMftKla9CnNc3QX6Tbf0h/CU2M6eQ0Ryfic=;
+	s=arc-20240116; t=1768390552; c=relaxed/simple;
+	bh=vTwX+VOvDpMiN0UZkoDNkbw/qxPAWL2YeOjuNlJMaeQ=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=SexekRCWnUVsCKapnBBgLPL4MjLotnYadCVFwPpYWpP8hrWLMU978UYiPWKCKMfH+SMWBNEBSpeYj7TKtvhWMltW5qOQaUHYl691VTAMhviM7+uRsSB5U3yUpw9lruYlyCv5GZYXbXyok2p1DWLYRyofuoLbM2x2jpKoH4cFlnA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=lHtmZUQd; arc=none smtp.client-ip=91.218.175.179
+	 MIME-Version; b=F12tCFO1qA3z3BePUf8d2jhQFVpeQa87PSIbMhDBH3Xl7Prw11Pl8eIbe5GgM7q564OLsAKUy079EaAuDKqs0JXZ4yyrCHYYUToXOMBFec38o1nZBPAej1ly1vK9waSsGzJKNlKLxRiywhtbofP3f5bcG2Dhif5/EcGSopi4sK8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=slZ/TAA8; arc=none smtp.client-ip=91.218.175.170
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1768390537;
+	t=1768390548;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=egA9OCpvJUUfZlVg68Gp5bUnsvQAjKiqm/PvYeVMrFQ=;
-	b=lHtmZUQdxzcSHug7u6aLnbAP2ZssjbFwLCca9btr5YQ4kWE//QnuhiDJXybsJtvIgKJ28a
-	0MFrVPqOxTxCcrqVJKy2o1MmXRRB+XWy/GgAFZyMjvVUpsUdzJtOEKVoi/QsQm/eKiB41M
-	nVMyUjNd8e72GBYUHikZEDz7JbD8boc=
+	bh=kw4Qx13Tz3w3N8Y7Uh6WKDafDqfBEeECCeDokmS4kMk=;
+	b=slZ/TAA86DEIeNudqQJ5V0R8NYkJXXIB125k2oTP7ccdKCy8bXS04PWSXtw/q3syli8p+F
+	LyNzkPW9HqixQFPkntiq83ZtVMFOVyQQqwiniNN4kepMhU4FsUu5kByKacVh2APOVbv3dv
+	foJ+8zHqPOk2C8Of+uO6G/w5dkwmIAw=
 From: Qi Zheng <qi.zheng@linux.dev>
 To: hannes@cmpxchg.org,
 	hughd@google.com,
@@ -66,10 +66,11 @@ To: hannes@cmpxchg.org,
 Cc: linux-mm@kvack.org,
 	linux-kernel@vger.kernel.org,
 	cgroups@vger.kernel.org,
+	Muchun Song <songmuchun@bytedance.com>,
 	Qi Zheng <zhengqi.arch@bytedance.com>
-Subject: [PATCH v3 23/30] mm: do not open-code lruvec lock
-Date: Wed, 14 Jan 2026 19:32:50 +0800
-Message-ID: <33fef62fd821f669fcdc999e54c4035a4e91b47d.1768389889.git.zhengqi.arch@bytedance.com>
+Subject: [PATCH v3 24/30] mm: memcontrol: prepare for reparenting LRU pages for lruvec lock
+Date: Wed, 14 Jan 2026 19:32:51 +0800
+Message-ID: <0252f9acc29d4b1e9b8252dc003aff065c8ac1f6.1768389889.git.zhengqi.arch@bytedance.com>
 In-Reply-To: <cover.1768389889.git.zhengqi.arch@bytedance.com>
 References: <cover.1768389889.git.zhengqi.arch@bytedance.com>
 Precedence: bulk
@@ -81,192 +82,395 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
 
-From: Qi Zheng <zhengqi.arch@bytedance.com>
+From: Muchun Song <songmuchun@bytedance.com>
 
-Now we have lruvec_unlock(), lruvec_unlock_irq() and
-lruvec_unlock_irqrestore(), but not the paired lruvec_lock(),
-lruvec_lock_irq() and lruvec_lock_irqsave().
+The following diagram illustrates how to ensure the safety of the folio
+lruvec lock when LRU folios undergo reparenting.
 
-There is currently no use case for lruvec_lock_irqsave(), so only
-introduce lruvec_lock() and lruvec_lock_irq(), and change all open-code
-places to use these helper function. This looks cleaner and prepares for
-reparenting LRU pages, preventing user from missing RCU lock calls due to
-open-code lruvec lock.
+In the folio_lruvec_lock(folio) function:
+```
+    rcu_read_lock();
+retry:
+    lruvec = folio_lruvec(folio);
+    /* There is a possibility of folio reparenting at this point. */
+    spin_lock(&lruvec->lru_lock);
+    if (unlikely(lruvec_memcg(lruvec) != folio_memcg(folio))) {
+        /*
+         * The wrong lruvec lock was acquired, and a retry is required.
+         * This is because the folio resides on the parent memcg lruvec
+         * list.
+         */
+        spin_unlock(&lruvec->lru_lock);
+        goto retry;
+    }
 
+    /* Reaching here indicates that folio_memcg() is stable. */
+```
+
+In the memcg_reparent_objcgs(memcg) function:
+```
+    spin_lock(&lruvec->lru_lock);
+    spin_lock(&lruvec_parent->lru_lock);
+    /* Transfer folios from the lruvec list to the parent's. */
+    spin_unlock(&lruvec_parent->lru_lock);
+    spin_unlock(&lruvec->lru_lock);
+```
+
+After acquiring the lruvec lock, it is necessary to verify whether
+the folio has been reparented. If reparenting has occurred, the new
+lruvec lock must be reacquired. During the LRU folio reparenting
+process, the lruvec lock will also be acquired (this will be
+implemented in a subsequent patch). Therefore, folio_memcg() remains
+unchanged while the lruvec lock is held.
+
+Given that lruvec_memcg(lruvec) is always equal to folio_memcg(folio)
+after the lruvec lock is acquired, the lruvec_memcg_debug() check is
+redundant. Hence, it is removed.
+
+This patch serves as a preparation for the reparenting of LRU folios.
+
+Signed-off-by: Muchun Song <songmuchun@bytedance.com>
 Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
+Acked-by: Johannes Weiner <hannes@cmpxchg.org>
 ---
- include/linux/memcontrol.h |  5 +++++
- mm/vmscan.c                | 38 +++++++++++++++++++-------------------
- 2 files changed, 24 insertions(+), 19 deletions(-)
+ include/linux/memcontrol.h | 45 +++++++++++++++++++----------
+ include/linux/swap.h       |  1 +
+ mm/compaction.c            | 29 +++++++++++++++----
+ mm/memcontrol.c            | 59 +++++++++++++++++++++-----------------
+ mm/swap.c                  |  4 +++
+ 5 files changed, 91 insertions(+), 47 deletions(-)
 
 diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-index f1556759d0d3f..4b6f20dc694ba 100644
+index 4b6f20dc694ba..26c3c0e375f58 100644
 --- a/include/linux/memcontrol.h
 +++ b/include/linux/memcontrol.h
-@@ -1499,6 +1499,11 @@ static inline struct lruvec *parent_lruvec(struct lruvec *lruvec)
- 	return mem_cgroup_lruvec(memcg, lruvec_pgdat(lruvec));
+@@ -742,7 +742,15 @@ static inline struct lruvec *mem_cgroup_lruvec(struct mem_cgroup *memcg,
+  * folio_lruvec - return lruvec for isolating/putting an LRU folio
+  * @folio: Pointer to the folio.
+  *
+- * This function relies on folio->mem_cgroup being stable.
++ * Call with rcu_read_lock() held to ensure the lifetime of the returned lruvec.
++ * Note that this alone will NOT guarantee the stability of the folio->lruvec
++ * association; the folio can be reparented to an ancestor if this races with
++ * cgroup deletion.
++ *
++ * Use folio_lruvec_lock() to ensure both lifetime and stability of the binding.
++ * Once a lruvec is locked, folio_lruvec() can be called on other folios, and
++ * their binding is stable if the returned lruvec matches the one the caller has
++ * locked. Useful for lock batching.
+  */
+ static inline struct lruvec *folio_lruvec(struct folio *folio)
+ {
+@@ -761,18 +769,15 @@ struct mem_cgroup *get_mem_cgroup_from_current(void);
+ struct mem_cgroup *get_mem_cgroup_from_folio(struct folio *folio);
+ 
+ struct lruvec *folio_lruvec_lock(struct folio *folio);
++	__acquires(&lruvec->lru_lock)
++	__acquires(rcu)
+ struct lruvec *folio_lruvec_lock_irq(struct folio *folio);
++	__acquires(&lruvec->lru_lock)
++	__acquires(rcu)
+ struct lruvec *folio_lruvec_lock_irqsave(struct folio *folio,
+ 						unsigned long *flags);
+-
+-#ifdef CONFIG_DEBUG_VM
+-void lruvec_memcg_debug(struct lruvec *lruvec, struct folio *folio);
+-#else
+-static inline
+-void lruvec_memcg_debug(struct lruvec *lruvec, struct folio *folio)
+-{
+-}
+-#endif
++	__acquires(&lruvec->lru_lock)
++	__acquires(rcu)
+ 
+ static inline
+ struct mem_cgroup *mem_cgroup_from_css(struct cgroup_subsys_state *css){
+@@ -1199,11 +1204,6 @@ static inline struct lruvec *folio_lruvec(struct folio *folio)
+ 	return &pgdat->__lruvec;
  }
  
-+static inline void lruvec_lock_irq(struct lruvec *lruvec)
-+{
-+	spin_lock_irq(&lruvec->lru_lock);
-+}
-+
+-static inline
+-void lruvec_memcg_debug(struct lruvec *lruvec, struct folio *folio)
+-{
+-}
+-
+ static inline struct mem_cgroup *parent_mem_cgroup(struct mem_cgroup *memcg)
+ {
+ 	return NULL;
+@@ -1262,6 +1262,7 @@ static inline struct lruvec *folio_lruvec_lock(struct folio *folio)
+ {
+ 	struct pglist_data *pgdat = folio_pgdat(folio);
+ 
++	rcu_read_lock();
+ 	spin_lock(&pgdat->__lruvec.lru_lock);
+ 	return &pgdat->__lruvec;
+ }
+@@ -1270,6 +1271,7 @@ static inline struct lruvec *folio_lruvec_lock_irq(struct folio *folio)
+ {
+ 	struct pglist_data *pgdat = folio_pgdat(folio);
+ 
++	rcu_read_lock();
+ 	spin_lock_irq(&pgdat->__lruvec.lru_lock);
+ 	return &pgdat->__lruvec;
+ }
+@@ -1279,6 +1281,7 @@ static inline struct lruvec *folio_lruvec_lock_irqsave(struct folio *folio,
+ {
+ 	struct pglist_data *pgdat = folio_pgdat(folio);
+ 
++	rcu_read_lock();
+ 	spin_lock_irqsave(&pgdat->__lruvec.lru_lock, *flagsp);
+ 	return &pgdat->__lruvec;
+ }
+@@ -1500,24 +1503,36 @@ static inline struct lruvec *parent_lruvec(struct lruvec *lruvec)
+ }
+ 
+ static inline void lruvec_lock_irq(struct lruvec *lruvec)
++	__acquires(&lruvec->lru_lock)
++	__acquires(rcu)
+ {
++	rcu_read_lock();
+ 	spin_lock_irq(&lruvec->lru_lock);
+ }
+ 
  static inline void lruvec_unlock(struct lruvec *lruvec)
++	__releases(&lruvec->lru_lock)
++	__releases(rcu)
  {
  	spin_unlock(&lruvec->lru_lock);
-diff --git a/mm/vmscan.c b/mm/vmscan.c
-index f206d4dac9e77..c48ff6e05e004 100644
---- a/mm/vmscan.c
-+++ b/mm/vmscan.c
-@@ -2020,7 +2020,7 @@ static unsigned long shrink_inactive_list(unsigned long nr_to_scan,
- 
- 	lru_add_drain();
- 
--	spin_lock_irq(&lruvec->lru_lock);
-+	lruvec_lock_irq(lruvec);
- 
- 	nr_taken = isolate_lru_folios(nr_to_scan, lruvec, &folio_list,
- 				     &nr_scanned, sc, lru);
-@@ -2032,7 +2032,7 @@ static unsigned long shrink_inactive_list(unsigned long nr_to_scan,
- 	count_memcg_events(lruvec_memcg(lruvec), item, nr_scanned);
- 	__count_vm_events(PGSCAN_ANON + file, nr_scanned);
- 
--	spin_unlock_irq(&lruvec->lru_lock);
-+	lruvec_unlock_irq(lruvec);
- 
- 	if (nr_taken == 0)
- 		return 0;
-@@ -2051,7 +2051,7 @@ static unsigned long shrink_inactive_list(unsigned long nr_to_scan,
- 	count_memcg_events(lruvec_memcg(lruvec), item, nr_reclaimed);
- 	count_vm_events(PGSTEAL_ANON + file, nr_reclaimed);
- 
--	spin_lock_irq(&lruvec->lru_lock);
-+	lruvec_lock_irq(lruvec);
- 	lru_note_cost_unlock_irq(lruvec, file, stat.nr_pageout,
- 					nr_scanned - nr_reclaimed);
- 
-@@ -2130,7 +2130,7 @@ static void shrink_active_list(unsigned long nr_to_scan,
- 
- 	lru_add_drain();
- 
--	spin_lock_irq(&lruvec->lru_lock);
-+	lruvec_lock_irq(lruvec);
- 
- 	nr_taken = isolate_lru_folios(nr_to_scan, lruvec, &l_hold,
- 				     &nr_scanned, sc, lru);
-@@ -2141,7 +2141,7 @@ static void shrink_active_list(unsigned long nr_to_scan,
- 		__count_vm_events(PGREFILL, nr_scanned);
- 	count_memcg_events(lruvec_memcg(lruvec), PGREFILL, nr_scanned);
- 
--	spin_unlock_irq(&lruvec->lru_lock);
-+	lruvec_unlock_irq(lruvec);
- 
- 	while (!list_empty(&l_hold)) {
- 		struct folio *folio;
-@@ -2197,7 +2197,7 @@ static void shrink_active_list(unsigned long nr_to_scan,
- 	count_memcg_events(lruvec_memcg(lruvec), PGDEACTIVATE, nr_deactivate);
- 	mod_node_page_state(pgdat, NR_ISOLATED_ANON + file, -nr_taken);
- 
--	spin_lock_irq(&lruvec->lru_lock);
-+	lruvec_lock_irq(lruvec);
- 	lru_note_cost_unlock_irq(lruvec, file, 0, nr_rotated);
- 	trace_mm_vmscan_lru_shrink_active(pgdat->node_id, nr_taken, nr_activate,
- 			nr_deactivate, nr_rotated, sc->priority, file);
-@@ -3832,9 +3832,9 @@ static void walk_mm(struct mm_struct *mm, struct lru_gen_mm_walk *walk)
- 		}
- 
- 		if (walk->batched) {
--			spin_lock_irq(&lruvec->lru_lock);
-+			lruvec_lock_irq(lruvec);
- 			reset_batch_size(walk);
--			spin_unlock_irq(&lruvec->lru_lock);
-+			lruvec_unlock_irq(lruvec);
- 		}
- 
- 		cond_resched();
-@@ -3993,7 +3993,7 @@ static bool inc_max_seq(struct lruvec *lruvec, unsigned long seq, int swappiness
- 	if (seq < READ_ONCE(lrugen->max_seq))
- 		return false;
- 
--	spin_lock_irq(&lruvec->lru_lock);
-+	lruvec_lock_irq(lruvec);
- 
- 	VM_WARN_ON_ONCE(!seq_is_valid(lruvec));
- 
-@@ -4008,7 +4008,7 @@ static bool inc_max_seq(struct lruvec *lruvec, unsigned long seq, int swappiness
- 		if (inc_min_seq(lruvec, type, swappiness))
- 			continue;
- 
--		spin_unlock_irq(&lruvec->lru_lock);
-+		lruvec_unlock_irq(lruvec);
- 		cond_resched();
- 		goto restart;
- 	}
-@@ -4043,7 +4043,7 @@ static bool inc_max_seq(struct lruvec *lruvec, unsigned long seq, int swappiness
- 	/* make sure preceding modifications appear */
- 	smp_store_release(&lrugen->max_seq, lrugen->max_seq + 1);
- unlock:
--	spin_unlock_irq(&lruvec->lru_lock);
-+	lruvec_unlock_irq(lruvec);
- 
- 	return success;
++	rcu_read_unlock();
  }
-@@ -4739,7 +4739,7 @@ static int evict_folios(unsigned long nr_to_scan, struct lruvec *lruvec,
- 	struct mem_cgroup *memcg = lruvec_memcg(lruvec);
- 	struct pglist_data *pgdat = lruvec_pgdat(lruvec);
  
--	spin_lock_irq(&lruvec->lru_lock);
-+	lruvec_lock_irq(lruvec);
+ static inline void lruvec_unlock_irq(struct lruvec *lruvec)
++	__releases(&lruvec->lru_lock)
++	__releases(rcu)
+ {
+ 	spin_unlock_irq(&lruvec->lru_lock);
++	rcu_read_unlock();
+ }
  
- 	scanned = isolate_folios(nr_to_scan, lruvec, sc, swappiness, &type, &list);
+ static inline void lruvec_unlock_irqrestore(struct lruvec *lruvec,
+ 		unsigned long flags)
++	__releases(&lruvec->lru_lock)
++	__releases(rcu)
+ {
+ 	spin_unlock_irqrestore(&lruvec->lru_lock, flags);
++	rcu_read_unlock();
+ }
  
-@@ -4748,7 +4748,7 @@ static int evict_folios(unsigned long nr_to_scan, struct lruvec *lruvec,
- 	if (evictable_min_seq(lrugen->min_seq, swappiness) + MIN_NR_GENS > lrugen->max_seq)
- 		scanned = 0;
+ /* Test requires a stable folio->memcg binding, see folio_memcg() */
+diff --git a/include/linux/swap.h b/include/linux/swap.h
+index 62fc7499b4089..e60f45b48e74d 100644
+--- a/include/linux/swap.h
++++ b/include/linux/swap.h
+@@ -330,6 +330,7 @@ extern unsigned long totalreserve_pages;
+ void lru_note_cost_unlock_irq(struct lruvec *lruvec, bool file,
+ 		unsigned int nr_io, unsigned int nr_rotated)
+ 		__releases(lruvec->lru_lock);
++		__releases(rcu)
+ void lru_note_cost_refault(struct folio *);
+ void folio_add_lru(struct folio *);
+ void folio_add_lru_vma(struct folio *, struct vm_area_struct *);
+diff --git a/mm/compaction.c b/mm/compaction.c
+index c3e338aaa0ffb..3648ce22c8072 100644
+--- a/mm/compaction.c
++++ b/mm/compaction.c
+@@ -518,6 +518,24 @@ static bool compact_lock_irqsave(spinlock_t *lock, unsigned long *flags,
+ 	return true;
+ }
  
--	spin_unlock_irq(&lruvec->lru_lock);
-+	lruvec_unlock_irq(lruvec);
++static struct lruvec *
++compact_folio_lruvec_lock_irqsave(struct folio *folio, unsigned long *flags,
++				  struct compact_control *cc)
++{
++	struct lruvec *lruvec;
++
++	rcu_read_lock();
++retry:
++	lruvec = folio_lruvec(folio);
++	compact_lock_irqsave(&lruvec->lru_lock, flags, cc);
++	if (unlikely(lruvec_memcg(lruvec) != folio_memcg(folio))) {
++		spin_unlock_irqrestore(&lruvec->lru_lock, *flags);
++		goto retry;
++	}
++
++	return lruvec;
++}
++
+ /*
+  * Compaction requires the taking of some coarse locks that are potentially
+  * very heavily contended. The lock should be periodically unlocked to avoid
+@@ -839,7 +857,7 @@ isolate_migratepages_block(struct compact_control *cc, unsigned long low_pfn,
+ {
+ 	pg_data_t *pgdat = cc->zone->zone_pgdat;
+ 	unsigned long nr_scanned = 0, nr_isolated = 0;
+-	struct lruvec *lruvec;
++	struct lruvec *lruvec = NULL;
+ 	unsigned long flags = 0;
+ 	struct lruvec *locked = NULL;
+ 	struct folio *folio = NULL;
+@@ -1153,18 +1171,17 @@ isolate_migratepages_block(struct compact_control *cc, unsigned long low_pfn,
+ 		if (!folio_test_clear_lru(folio))
+ 			goto isolate_fail_put;
  
- 	if (list_empty(&list))
- 		return scanned;
-@@ -4786,9 +4786,9 @@ static int evict_folios(unsigned long nr_to_scan, struct lruvec *lruvec,
- 	walk = current->reclaim_state->mm_walk;
- 	if (walk && walk->batched) {
- 		walk->lruvec = lruvec;
--		spin_lock_irq(&lruvec->lru_lock);
-+		lruvec_lock_irq(lruvec);
- 		reset_batch_size(walk);
--		spin_unlock_irq(&lruvec->lru_lock);
-+		lruvec_unlock_irq(lruvec);
+-		lruvec = folio_lruvec(folio);
++		if (locked)
++			lruvec = folio_lruvec(folio);
+ 
+ 		/* If we already hold the lock, we can skip some rechecking */
+-		if (lruvec != locked) {
++		if (lruvec != locked || !locked) {
+ 			if (locked)
+ 				lruvec_unlock_irqrestore(locked, flags);
+ 
+-			compact_lock_irqsave(&lruvec->lru_lock, &flags, cc);
++			lruvec = compact_folio_lruvec_lock_irqsave(folio, &flags, cc);
+ 			locked = lruvec;
+ 
+-			lruvec_memcg_debug(lruvec, folio);
+-
+ 			/*
+ 			 * Try get exclusive access under lock. If marked for
+ 			 * skip, the scan is aborted unless the current context
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index 548e67dbf2386..a1573600d4188 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -1201,23 +1201,6 @@ void mem_cgroup_scan_tasks(struct mem_cgroup *memcg,
+ 	}
+ }
+ 
+-#ifdef CONFIG_DEBUG_VM
+-void lruvec_memcg_debug(struct lruvec *lruvec, struct folio *folio)
+-{
+-	struct mem_cgroup *memcg;
+-
+-	if (mem_cgroup_disabled())
+-		return;
+-
+-	memcg = folio_memcg(folio);
+-
+-	if (!memcg)
+-		VM_BUG_ON_FOLIO(!mem_cgroup_is_root(lruvec_memcg(lruvec)), folio);
+-	else
+-		VM_BUG_ON_FOLIO(lruvec_memcg(lruvec) != memcg, folio);
+-}
+-#endif
+-
+ /**
+  * folio_lruvec_lock - Lock the lruvec for a folio.
+  * @folio: Pointer to the folio.
+@@ -1227,14 +1210,22 @@ void lruvec_memcg_debug(struct lruvec *lruvec, struct folio *folio)
+  * - folio_test_lru false
+  * - folio frozen (refcount of 0)
+  *
+- * Return: The lruvec this folio is on with its lock held.
++ * Return: The lruvec this folio is on with its lock held and rcu read lock held.
+  */
+ struct lruvec *folio_lruvec_lock(struct folio *folio)
++	__acquires(&lruvec->lru_lock)
++	__acquires(rcu)
+ {
+-	struct lruvec *lruvec = folio_lruvec(folio);
++	struct lruvec *lruvec;
+ 
++	rcu_read_lock();
++retry:
++	lruvec = folio_lruvec(folio);
+ 	spin_lock(&lruvec->lru_lock);
+-	lruvec_memcg_debug(lruvec, folio);
++	if (unlikely(lruvec_memcg(lruvec) != folio_memcg(folio))) {
++		spin_unlock(&lruvec->lru_lock);
++		goto retry;
++	}
+ 
+ 	return lruvec;
+ }
+@@ -1249,14 +1240,22 @@ struct lruvec *folio_lruvec_lock(struct folio *folio)
+  * - folio frozen (refcount of 0)
+  *
+  * Return: The lruvec this folio is on with its lock held and interrupts
+- * disabled.
++ * disabled and rcu read lock held.
+  */
+ struct lruvec *folio_lruvec_lock_irq(struct folio *folio)
++	__acquires(&lruvec->lru_lock)
++	__acquires(rcu)
+ {
+-	struct lruvec *lruvec = folio_lruvec(folio);
++	struct lruvec *lruvec;
+ 
++	rcu_read_lock();
++retry:
++	lruvec = folio_lruvec(folio);
+ 	spin_lock_irq(&lruvec->lru_lock);
+-	lruvec_memcg_debug(lruvec, folio);
++	if (unlikely(lruvec_memcg(lruvec) != folio_memcg(folio))) {
++		spin_unlock_irq(&lruvec->lru_lock);
++		goto retry;
++	}
+ 
+ 	return lruvec;
+ }
+@@ -1272,15 +1271,23 @@ struct lruvec *folio_lruvec_lock_irq(struct folio *folio)
+  * - folio frozen (refcount of 0)
+  *
+  * Return: The lruvec this folio is on with its lock held and interrupts
+- * disabled.
++ * disabled and rcu read lock held.
+  */
+ struct lruvec *folio_lruvec_lock_irqsave(struct folio *folio,
+ 		unsigned long *flags)
++	__acquires(&lruvec->lru_lock)
++	__acquires(rcu)
+ {
+-	struct lruvec *lruvec = folio_lruvec(folio);
++	struct lruvec *lruvec;
+ 
++	rcu_read_lock();
++retry:
++	lruvec = folio_lruvec(folio);
+ 	spin_lock_irqsave(&lruvec->lru_lock, *flags);
+-	lruvec_memcg_debug(lruvec, folio);
++	if (unlikely(lruvec_memcg(lruvec) != folio_memcg(folio))) {
++		spin_unlock_irqrestore(&lruvec->lru_lock, *flags);
++		goto retry;
++	}
+ 
+ 	return lruvec;
+ }
+diff --git a/mm/swap.c b/mm/swap.c
+index cb1148a92d8ec..7e53479ca1732 100644
+--- a/mm/swap.c
++++ b/mm/swap.c
+@@ -240,6 +240,7 @@ void folio_rotate_reclaimable(struct folio *folio)
+ void lru_note_cost_unlock_irq(struct lruvec *lruvec, bool file,
+ 		unsigned int nr_io, unsigned int nr_rotated)
+ 		__releases(lruvec->lru_lock)
++		__releases(rcu)
+ {
+ 	unsigned long cost;
+ 
+@@ -253,6 +254,7 @@ void lru_note_cost_unlock_irq(struct lruvec *lruvec, bool file,
+ 	cost = nr_io * SWAP_CLUSTER_MAX + nr_rotated;
+ 	if (!cost) {
+ 		spin_unlock_irq(&lruvec->lru_lock);
++		rcu_read_unlock();
+ 		return;
  	}
  
- 	mod_lruvec_state(lruvec, PGDEMOTE_KSWAPD + reclaimer_offset(sc),
-@@ -5226,7 +5226,7 @@ static void lru_gen_change_state(bool enabled)
- 		for_each_node(nid) {
- 			struct lruvec *lruvec = get_lruvec(memcg, nid);
- 
--			spin_lock_irq(&lruvec->lru_lock);
-+			lruvec_lock_irq(lruvec);
- 
- 			VM_WARN_ON_ONCE(!seq_is_valid(lruvec));
- 			VM_WARN_ON_ONCE(!state_is_valid(lruvec));
-@@ -5234,12 +5234,12 @@ static void lru_gen_change_state(bool enabled)
- 			lruvec->lrugen.enabled = enabled;
- 
- 			while (!(enabled ? fill_evictable(lruvec) : drain_evictable(lruvec))) {
--				spin_unlock_irq(&lruvec->lru_lock);
-+				lruvec_unlock_irq(lruvec);
- 				cond_resched();
--				spin_lock_irq(&lruvec->lru_lock);
-+				lruvec_lock_irq(lruvec);
- 			}
- 
--			spin_unlock_irq(&lruvec->lru_lock);
-+			lruvec_unlock_irq(lruvec);
+@@ -284,9 +286,11 @@ void lru_note_cost_unlock_irq(struct lruvec *lruvec, bool file,
  		}
  
- 		cond_resched();
+ 		spin_unlock_irq(&lruvec->lru_lock);
++		rcu_read_unlock();
+ 		lruvec = parent_lruvec(lruvec);
+ 		if (!lruvec)
+ 			break;
++		rcu_read_lock();
+ 		spin_lock_irq(&lruvec->lru_lock);
+ 	}
+ }
 -- 
 2.20.1
 
