@@ -1,43 +1,43 @@
-Return-Path: <cgroups+bounces-13228-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-13229-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 92AF4D21E95
-	for <lists+cgroups@lfdr.de>; Thu, 15 Jan 2026 01:55:41 +0100 (CET)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5E574D224C6
+	for <lists+cgroups@lfdr.de>; Thu, 15 Jan 2026 04:28:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 40F47303D147
-	for <lists+cgroups@lfdr.de>; Thu, 15 Jan 2026 00:52:59 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id F38683009D65
+	for <lists+cgroups@lfdr.de>; Thu, 15 Jan 2026 03:27:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 78F841DD0EF;
-	Thu, 15 Jan 2026 00:52:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C85229AAFD;
+	Thu, 15 Jan 2026 03:27:57 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE702B665;
-	Thu, 15 Jan 2026 00:52:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C629F23EA80;
+	Thu, 15 Jan 2026 03:27:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768438378; cv=none; b=GvfPGktrTig1To6iJLAAyByloyV4owN4iWaEUkBtS88BXHf4ohZ/vXP3GILWZPcr0DKroEH95YXIUsj0FMuVBraz5x5ZVUu0I2Hbeyj1oWvQvQMmSY0YB8GSO2gUSpksaIK7W9CTrNLQPY0Yypd/qDCVAqMXF6jKt6REAoVKa4g=
+	t=1768447677; cv=none; b=deKQtjF8eda9pH+i5dbwjQGvzXonUkrg3uZ+fVPOE3+YGNdBzKtR5y5RnKSq3wD6LhU9NzmtzJy/ukpC03LoNLA932zFFbGAMPVCCmf47lnZlhAPWXBn5oehg//v6LuF41ct/vqIJxPFPGTQMFpOvKmDULv8nG8dNJ5E1H3PszQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768438378; c=relaxed/simple;
-	bh=UJNw2NzEqJ8GMhmjLvD9IaXdESoyf1TzIcGWll0En7Q=;
+	s=arc-20240116; t=1768447677; c=relaxed/simple;
+	bh=oW5Umyq9d0GZwFlcKfm3gLZPED6RWLLNZ2U+pNP0lbQ=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=BD1QB0MxnQqrOJMVaJvaXvoJrWSjpNRvOSRhMDjc7T3dFvxDrCv7Xlw0chdmx7p2UvU5lZ44u7yF+sOqk86tY2Gl+r6RM1Wkzi9rPxELI0cW8s9xSlPurHsUDHFfEFCfD9F+VydCK0mJM1AqnoHHJSZ5QzAQ1Gt4If2tG+vcaUc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+	 In-Reply-To:Content-Type; b=Mk21T5AOWbEy9ZhFgR39M4byRA77CPLRA3+ILOxwOUqTtQO43N4ruLwRKCSFavuYpa5nRj7+WevHz2C4CFqno+X07Ts6Ju/3DZyB8lgiLe3BujcfzydD+RFlQybQB6izxNHKXaMDoVQ3SbF0LBoyf3cYGumgrBdgj0J91Vhka9E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=none smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.198])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTPS id 4ds4Fy3SRlzYQv21;
-	Thu, 15 Jan 2026 08:52:38 +0800 (CST)
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.177])
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTPS id 4ds7h31JXDzKHM04;
+	Thu, 15 Jan 2026 11:26:59 +0800 (CST)
 Received: from mail02.huawei.com (unknown [10.116.40.128])
-	by mail.maildlp.com (Postfix) with ESMTP id 08A7F40539;
-	Thu, 15 Jan 2026 08:52:53 +0800 (CST)
-Received: from [10.67.111.176] (unknown [10.67.111.176])
-	by APP4 (Coremail) with SMTP id gCh0CgBH9vZjOmhpd_JZDw--.10605S2;
-	Thu, 15 Jan 2026 08:52:52 +0800 (CST)
-Message-ID: <2e8bf48a-b819-40b9-bb9b-f6ac6672059a@huaweicloud.com>
-Date: Thu, 15 Jan 2026 08:52:50 +0800
+	by mail.maildlp.com (Postfix) with ESMTP id 2A6234057D;
+	Thu, 15 Jan 2026 11:27:52 +0800 (CST)
+Received: from [10.174.178.72] (unknown [10.174.178.72])
+	by APP4 (Coremail) with SMTP id gCh0CgAXePi2Xmhpl_JmDw--.705S3;
+	Thu, 15 Jan 2026 11:27:51 +0800 (CST)
+Message-ID: <edf84e44-d7e3-4a34-ad49-90ab5a4f545e@huaweicloud.com>
+Date: Thu, 15 Jan 2026 11:27:47 +0800
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -45,97 +45,111 @@ List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 3/3] cgroup: use nodes_and() output where appropriate
-To: Waiman Long <llong@redhat.com>, Yury Norov <ynorov@nvidia.com>,
- Andrew Morton <akpm@linux-foundation.org>,
- Alistair Popple <apopple@nvidia.com>, Byungchul Park <byungchul@sk.com>,
- David Hildenbrand <david@kernel.org>, Gregory Price <gourry@gourry.net>,
- Johannes Weiner <hannes@cmpxchg.org>, Joshua Hahn <joshua.hahnjy@gmail.com>,
- "Liam R. Howlett" <Liam.Howlett@oracle.com>,
- Lorenzo Stoakes <lorenzo.stoakes@oracle.com>,
- Matthew Brost <matthew.brost@intel.com>, Michal Hocko <mhocko@suse.com>,
- =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
- Mike Rapoport <rppt@kernel.org>, Rakie Kim <rakie.kim@sk.com>,
- Suren Baghdasaryan <surenb@google.com>, Tejun Heo <tj@kernel.org>,
- Vlastimil Babka <vbabka@suse.cz>, Ying Huang <ying.huang@linux.alibaba.com>,
- Zi Yan <ziy@nvidia.com>, cgroups@vger.kernel.org
-Cc: Yury Norov <yury.norov@gmail.com>,
- Rasmus Villemoes <linux@rasmusvillemoes.dk>, linux-mm@kvack.org,
- linux-kernel@vger.kernel.org
-References: <20260114172217.861204-1-ynorov@nvidia.com>
- <20260114172217.861204-4-ynorov@nvidia.com>
- <51675d7c-5c9d-4596-8e5c-692c90b79e06@redhat.com>
-Content-Language: en-US
-From: Chen Ridong <chenridong@huaweicloud.com>
-In-Reply-To: <51675d7c-5c9d-4596-8e5c-692c90b79e06@redhat.com>
-Content-Type: text/plain; charset=UTF-8
+Subject: Re: [PATCH v2 1/3] blk-cgroup: fix race between policy activation and
+ blkg destruction
+To: =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>
+Cc: tj@kernel.org, josef@toxicpanda.com, axboe@kernel.dk, yukuai3@huawei.com,
+ hch@infradead.org, cgroups@vger.kernel.org, linux-block@vger.kernel.org,
+ linux-kernel@vger.kernel.org, yi.zhang@huawei.com, yangerkun@huawei.com,
+ houtao1@huawei.com, zhengqixing@huawei.com
+References: <20260113061035.1902522-1-zhengqixing@huaweicloud.com>
+ <20260113061035.1902522-2-zhengqixing@huaweicloud.com>
+ <le5sjny634ffj6piswnkhkh33eq5cbclgysedyjl2bcuijiutf@f3j6ozw7zuuc>
+From: Zheng Qixing <zhengqixing@huaweicloud.com>
+In-Reply-To: <le5sjny634ffj6piswnkhkh33eq5cbclgysedyjl2bcuijiutf@f3j6ozw7zuuc>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:gCh0CgBH9vZjOmhpd_JZDw--.10605S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7ZF45KFyxArWkKFykGw4xCrg_yoW8tFy8pF
-	1kCry7Gay5AF1xGrWxXFyDW3s5Ja18Ja1UJr1UAF93JFnrJr10vF1UX34YgrWDCrW8Gr15
-	Jrn0vw1IvFy3Jr7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUv0b4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
+X-CM-TRANSID:gCh0CgAXePi2Xmhpl_JmDw--.705S3
+X-Coremail-Antispam: 1UD129KBjvJXoWxXryUXr4fuFy7ArWxZrWxXrb_yoW5Xw47pr
+	WSgr9xArykXrWxJr4Duw18Wry8tw45Gw47GrW8GFs5Cr45urWFqr1UZr4v9FyfAFZ7Jr45
+	Zw40grZ7ZF1DAaUanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUkEb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
 	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
 	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxkF7I0En4kS
-	14v26r4a6rW5MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I
-	8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVW8ZVWr
-	XwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x
-	0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_
-	Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU0
-	s2-5UUUUU==
-X-CM-SenderInfo: hfkh02xlgr0w46kxt4xhlfz01xgou0bp/
+	xVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxV
+	AFwI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2
+	j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7x
+	kEbVWUJVW8JwACjcxG0xvEwIxGrwACI402YVCY1x02628vn2kIc2xKxwCY1x0262kKe7AK
+	xVWUtVW8ZwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F4
+	0E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFyl
+	IxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxV
+	AFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j
+	6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07UAwI
+	DUUUUU=
+X-CM-SenderInfo: x2kh0wptl0x03j6k3tpzhluzxrxghudrp/
 
 
-
-On 2026/1/15 6:33, Waiman Long wrote:
-> On 1/14/26 12:22 PM, Yury Norov wrote:
->> Now that nodes_and() returns true if the result nodemask is not empty,
->> drop useless nodes_intersects() in guarantee_online_mems() and
->> nodes_empty() in update_nodemasks_hier(), which both are O(N).
+在 2026/1/14 18:40, Michal Koutný 写道:
+> On Tue, Jan 13, 2026 at 02:10:33PM +0800, Zheng Qixing <zhengqixing@huaweicloud.com> wrote:
+>> From: Zheng Qixing <zhengqixing@huawei.com>
 >>
->> Signed-off-by: Yury Norov <ynorov@nvidia.com>
->> ---
->>   kernel/cgroup/cpuset.c | 7 +++----
->>   1 file changed, 3 insertions(+), 4 deletions(-)
+>> When switching an IO scheduler on a block device, blkcg_activate_policy()
+>> allocates blkg_policy_data (pd) for all blkgs attached to the queue.
+>> However, blkcg_activate_policy() may race with concurrent blkcg deletion,
+>> leading to use-after-free and memory leak issues.
 >>
->> diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
->> index 3e8cc34d8d50..e962efbb300d 100644
->> --- a/kernel/cgroup/cpuset.c
->> +++ b/kernel/cgroup/cpuset.c
->> @@ -456,9 +456,8 @@ static void guarantee_active_cpus(struct task_struct *tsk,
->>    */
->>   static void guarantee_online_mems(struct cpuset *cs, nodemask_t *pmask)
->>   {
->> -    while (!nodes_intersects(cs->effective_mems, node_states[N_MEMORY]))
->> +    while (!nodes_and(*pmask, cs->effective_mems, node_states[N_MEMORY]))
->>           cs = parent_cs(cs);
->> -    nodes_and(*pmask, cs->effective_mems, node_states[N_MEMORY]);
->>   }
->>     /**
->> @@ -2862,13 +2861,13 @@ static void update_nodemasks_hier(struct cpuset *cs, nodemask_t *new_mems)
->>       cpuset_for_each_descendant_pre(cp, pos_css, cs) {
->>           struct cpuset *parent = parent_cs(cp);
->>   -        nodes_and(*new_mems, cp->mems_allowed, parent->effective_mems);
->> +        bool has_mems = nodes_and(*new_mems, cp->mems_allowed, parent->effective_mems);
->>             /*
->>            * If it becomes empty, inherit the effective mask of the
->>            * parent, which is guaranteed to have some MEMs.
->>            */
->> -        if (is_in_v2_mode() && nodes_empty(*new_mems))
->> +        if (is_in_v2_mode() && !has_mems)
->>               *new_mems = parent->effective_mems;
->>             /* Skip the whole subtree if the nodemask remains the same. */
-> Reviewed-by: Waiman Long <longman@redhat.com>
-> 
+>> The use-after-free occurs in the following race:
+>>
+>> T1 (blkcg_activate_policy):
+>>    - Successfully allocates pd for blkg1 (loop0->queue, blkcgA)
+>>    - Fails to allocate pd for blkg2 (loop0->queue, blkcgB)
+>>    - Enters the enomem rollback path to release blkg1 resources
+>>
+>> T2 (blkcg deletion):
+>>    - blkcgA is deleted concurrently
+>>    - blkg1 is freed via blkg_free_workfn()
+>>    - blkg1->pd is freed
+>>
+>> T1 (continued):
+>>    - Rollback path accesses blkg1->pd->online after pd is freed
+> The rollback path is under q->queue_lock same like the list removal in
+> blkg_free_workfn().
+> Why is queue_lock not enough for synchronization in this case?
+>
+> (BTW have you observed this case "naturally" or have you injected the
+> memory allocation failure?)
+>
+Yes, this issue was discovered by injecting memory allocation failure at
+->pd_alloc_fn(..., GFP_KERNEL) in blkcg_activate_policy().
 
-Reviewed-by: Chen Ridong <chenridong@huaweicloud.com>
+In blkg_free_workfn(), q->queue_lock only protects the
+list_del_init(&blkg->q_node). However, ->pd_free_fn() is called before
+list_del_init(), meaning the pd is already freed before the blkg is removed
+from the queue's list.
 
--- 
-Best regards,
-Ridong
+     blkcg_activate_policy()                  blkg_free_workfn()
+     -------------------                          ------------------
+     spin_lock(&q->queue_lock)
+     ...
+     if (!pd) {
+         spin_unlock(&q->queue_lock)
+         ...
+         goto enomem
+     }
+     enomem:
+         spin_lock(&q->queue_lock)
+         if (pd) {
+->pd_free_fn()  // pd freed
+            pd->online // uaf
+         ...
+         }
+spin_lock(&q->queue_lock)
+list_del_init(&blkg->q_node)
+spin_unlock(&q->queue_lock)
+>>    - Triggers use-after-free
+>>
+>> In addition, blkg_free_workfn() frees pd before removing the blkg from
+>> q->blkg_list.
+> Yeah, this looks weirdly reversed.
+
+Commit f1c006f1c685 ("blk-cgroup: synchronize pd_free_fn() from 
+blkg_free_workfn() and blkcg_deactivate_policy()") delays 
+list_del_init(&blkg->q_node) until after pd_free_fn() in 
+blkg_free_workfn(). This keeps blkgs visible in the queue list during 
+policy deactivation, preventing parent policy data from being freed 
+before child policy data and avoiding use-after-free.
+
+Kind Regards,
+Qixing
 
 
