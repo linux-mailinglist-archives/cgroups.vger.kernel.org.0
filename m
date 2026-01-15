@@ -1,145 +1,139 @@
-Return-Path: <cgroups+bounces-13232-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-13233-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 49A80D226B1
-	for <lists+cgroups@lfdr.de>; Thu, 15 Jan 2026 06:19:42 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4B706D226D0
+	for <lists+cgroups@lfdr.de>; Thu, 15 Jan 2026 06:25:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 9087130313E2
-	for <lists+cgroups@lfdr.de>; Thu, 15 Jan 2026 05:19:26 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 13C0C304869B
+	for <lists+cgroups@lfdr.de>; Thu, 15 Jan 2026 05:25:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B2DA72D780C;
-	Thu, 15 Jan 2026 05:19:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8AD8E2D59E8;
+	Thu, 15 Jan 2026 05:24:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=fnnas-com.20200927.dkim.feishu.cn header.i=@fnnas-com.20200927.dkim.feishu.cn header.b="h8/zdKfM"
+	dkim=pass (2048-bit key) header.d=fnnas-com.20200927.dkim.feishu.cn header.i=@fnnas-com.20200927.dkim.feishu.cn header.b="BO/v8l4R"
 X-Original-To: cgroups@vger.kernel.org
-Received: from sg-1-18.ptr.blmpb.com (sg-1-18.ptr.blmpb.com [118.26.132.18])
+Received: from sg-1-33.ptr.blmpb.com (sg-1-33.ptr.blmpb.com [118.26.132.33])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DFF4521ABD7
-	for <cgroups@vger.kernel.org>; Thu, 15 Jan 2026 05:19:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=118.26.132.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6865F2D1F64
+	for <cgroups@vger.kernel.org>; Thu, 15 Jan 2026 05:24:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=118.26.132.33
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768454364; cv=none; b=tos23Is7rN3T33vicGLH8HfTmwkuIbaHxniKAsXoGx/Zaonb2gndZ0YY17bOPg72VmPZhCgM2ue/UCY1Mh9ixvZwfXjGndlKRv2615tfD650KpWoFYuug+hsG/oB/S6JApVqEulL9OLIFIKufCECoIDGU1DfHZLap0lBweNFj3I=
+	t=1768454698; cv=none; b=NOW0vuMtBxCX/N2FbgckZ/2NUmeKDmcnJZIeHghr67CKMgL0odCMB1MPSWqYGCnp1/9Kcv2bPFFSzh/IpdW4mT9BTuIcn2C4i8mX7K4dt63Pm/ayr0LZl1dBepmdg6o/RLu4/MZ+qMGsLfD/ZMXqogZM7ax/YbP8+lIPXzuy2i0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768454364; c=relaxed/simple;
-	bh=J5+GPKKsSS70BOEa6mrDQkKtYmDlU3a6K86LcO/geAE=;
-	h=To:Date:Cc:Message-Id:In-Reply-To:From:Content-Type:Subject:
-	 Mime-Version:References; b=AGOqyXA2DMhhw1tjGs3TKvNhe7Qfhf+gXgO8odD5OHMkeWG9BQx5qNNmsi/Df/kgwoBukFeBw+St8vHKJ/7jqDcQA+ii3L6xpc2+8FMkkmXfVvxj+PGNnzE3LEmCCYSoNmFdlq5Zg3ebVB+Dlc3UXR6gJodncnn4lilAfSDVn+M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=fnnas.com; spf=pass smtp.mailfrom=fnnas.com; dkim=pass (2048-bit key) header.d=fnnas-com.20200927.dkim.feishu.cn header.i=@fnnas-com.20200927.dkim.feishu.cn header.b=h8/zdKfM; arc=none smtp.client-ip=118.26.132.18
+	s=arc-20240116; t=1768454698; c=relaxed/simple;
+	bh=udqXm+27Da4QgLfqsQ8AYjGfU336UmclFiiWtl3OOmk=;
+	h=Cc:Message-Id:To:Subject:Mime-Version:Content-Type:From:Date:
+	 In-Reply-To:References; b=WVvVkn4WvT7gT5GZFssQPIV1GMXC3t9zSlJUoFW0ymzFrXzxFPct16SxK71WpGSVtgobdj9++Nep80nlDhNaEw7wtI9CXEoHqIO/l0T04NHBng1kvyuQ3bENkZ8WNoIJm8W+4xBJMkYreTxHp6fxUtpcH+UvzfcfUfEPg0zA4tY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=fnnas.com; spf=pass smtp.mailfrom=fnnas.com; dkim=pass (2048-bit key) header.d=fnnas-com.20200927.dkim.feishu.cn header.i=@fnnas-com.20200927.dkim.feishu.cn header.b=BO/v8l4R; arc=none smtp.client-ip=118.26.132.33
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=fnnas.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fnnas.com
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
- s=s1; d=fnnas-com.20200927.dkim.feishu.cn; t=1768454349;
+ s=s1; d=fnnas-com.20200927.dkim.feishu.cn; t=1768454678;
   h=from:subject:mime-version:from:date:message-id:subject:to:cc:
  reply-to:content-type:mime-version:in-reply-to:message-id;
- bh=PXjNp8bXiyilIsgVjU9MQr0q0JiVU44Qar9z6Igxt9E=;
- b=h8/zdKfMbqomEu3M6l6tOMPfB4H33O7wUChiiKCRG2MBzNbIbBGaaxexC7eM9WraWSjCVu
- QQnJvIfbvHgwsyMdYBxiOoM1kglVrNZHexzbMTnhhnPJ9W+n/30mqtxWfV8BP49XNSAws1
- 91flaDvnE8aPTt+vFoeRHUPvWUJz/yU9naTQzl/2NEDhfEpIDW/tk20/Usczq7KsrVyG/j
- oNa5KTsgrjbTHtaNplpLT6ez7aEgCo0etu1zL/u603VN5JtyRRO+6s0rEwe8Sqv5gHg7DK
- pSGMxdHvHi47Z8/Srvhs2pM2KJ7ZQjCkOkbejscLTPaAVMrJo1Bg1B2Ti3rTuA==
-To: "Zheng Qixing" <zhengqixing@huaweicloud.com>, <tj@kernel.org>, 
-	<josef@toxicpanda.com>, <axboe@kernel.dk>, <hch@infradead.org>
-Date: Thu, 15 Jan 2026 13:19:05 +0800
-Received: from [192.168.1.104] ([39.182.0.185]) by smtp.feishu.cn with ESMTPS; Thu, 15 Jan 2026 13:19:06 +0800
-Content-Language: en-US
-X-Original-From: Yu Kuai <yukuai@fnnas.com>
+ bh=pGbqDVxaaSoXeisy9oAv4kNo2B4S4W5koTiOhYTomKs=;
+ b=BO/v8l4RCc8nzg9R4V2jGmXLFefTMIHla/yPxitsbomzjp5M40vYeG26L09awMybW5KWO/
+ itO9TTvpuYWVGE2HZTzUSQZbLtfIHIBYZ0i0DUthH6eTBl5ym6kNuyNQ9z1x8BtLU8ETMt
+ jegOPoXGma0T3WO94wb8HD3aCHqzM8EmvUt+s2M5hOtZztchVJOh+25v+NJUcdqs6+L4Mg
+ DxAv2I1S1KdkrsERD9kVzLxhsGmjQqxTJ3WN+1b/SB7z0Mf58eJBMXNkFao/uwVXF+b0JC
+ 2Dg+vSlQGsmW70e6z63Pi+GkFzOcp9xDl3R6seI+mLzq/Vfu+F1RzO5svInNlw==
 Cc: <cgroups@vger.kernel.org>, <linux-block@vger.kernel.org>, 
 	<linux-kernel@vger.kernel.org>, <mkoutny@suse.com>, 
 	<yi.zhang@huawei.com>, <yangerkun@huawei.com>, <houtao1@huawei.com>, 
 	<zhengqixing@huawei.com>, <yukuai@fnnas.com>
-Message-Id: <b004989f-900f-447f-a931-93c91082ca63@fnnas.com>
-In-Reply-To: <20260113061035.1902522-2-zhengqixing@huaweicloud.com>
-User-Agent: Mozilla Thunderbird
+Message-Id: <50d63ff3-97ef-499f-961d-cf6766a8028b@fnnas.com>
+X-Original-From: Yu Kuai <yukuai@fnnas.com>
+X-Lms-Return-Path: <lba+269687a14+0652d4+vger.kernel.org+yukuai@fnnas.com>
 Reply-To: yukuai@fnnas.com
-From: "Yu Kuai" <yukuai@fnnas.com>
-X-Lms-Return-Path: <lba+2696878cb+1a2408+vger.kernel.org+yukuai@fnnas.com>
-Content-Type: text/plain; charset=UTF-8
-Subject: Re: [PATCH v2 1/3] blk-cgroup: fix race between policy activation and blkg destruction
+To: "Zheng Qixing" <zhengqixing@huaweicloud.com>, <tj@kernel.org>, 
+	<josef@toxicpanda.com>, <axboe@kernel.dk>, <hch@infradead.org>
+Subject: Re: [PATCH v2 2/3] blk-cgroup: skip dying blkg in blkcg_activate_policy()
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
-References: <20260113061035.1902522-1-zhengqixing@huaweicloud.com> <20260113061035.1902522-2-zhengqixing@huaweicloud.com>
+From: "Yu Kuai" <yukuai@fnnas.com>
+Date: Thu, 15 Jan 2026 13:24:33 +0800
+In-Reply-To: <20260113061035.1902522-3-zhengqixing@huaweicloud.com>
+Received: from [192.168.1.104] ([39.182.0.185]) by smtp.feishu.cn with ESMTPS; Thu, 15 Jan 2026 13:24:35 +0800
+References: <20260113061035.1902522-1-zhengqixing@huaweicloud.com> <20260113061035.1902522-3-zhengqixing@huaweicloud.com>
+Content-Language: en-US
+User-Agent: Mozilla Thunderbird
 
 Hi,
-
-You are sending to my invalid huawei email address, so I didn't see this pa=
-tch.
 
 =E5=9C=A8 2026/1/13 14:10, Zheng Qixing =E5=86=99=E9=81=93:
 > From: Zheng Qixing <zhengqixing@huawei.com>
 >
-> When switching an IO scheduler on a block device, blkcg_activate_policy()
-> allocates blkg_policy_data (pd) for all blkgs attached to the queue.
-> However, blkcg_activate_policy() may race with concurrent blkcg deletion,
-> leading to use-after-free and memory leak issues.
+> When switching IO schedulers on a block device, blkcg_activate_policy()
+> can race with concurrent blkcg deletion, leading to a use-after-free in
+> rcu_accelerate_cbs.
 >
-> The use-after-free occurs in the following race:
+> T1:                               T2:
+> 		                  blkg_destroy
+>                   		  kill(&blkg->refcnt) // blkg->refcnt=3D1->0
+> 				  blkg_release // call_rcu(__blkg_release)
+>                                    ...
+> 				  blkg_free_workfn
+>                                    ->pd_free_fn(pd)
+> elv_iosched_store
+> elevator_switch
+> ...
+> iterate blkg list
+> blkg_get(blkg) // blkg->refcnt=3D0->1
+>                                    list_del_init(&blkg->q_node)
+> blkg_put(pinned_blkg) // blkg->refcnt=3D1->0
+> blkg_release // call_rcu again
+> rcu_accelerate_cbs // uaf
 >
-> T1 (blkcg_activate_policy):
->    - Successfully allocates pd for blkg1 (loop0->queue, blkcgA)
->    - Fails to allocate pd for blkg2 (loop0->queue, blkcgB)
->    - Enters the enomem rollback path to release blkg1 resources
+> Fix this by replacing blkg_get() with blkg_tryget(), which fails if
+> the blkg's refcount has already reached zero. If blkg_tryget() fails,
+> skip processing this blkg since it's already being destroyed.
 >
-> T2 (blkcg deletion):
->    - blkcgA is deleted concurrently
->    - blkg1 is freed via blkg_free_workfn()
->    - blkg1->pd is freed
->
-> T1 (continued):
->    - Rollback path accesses blkg1->pd->online after pd is freed
->    - Triggers use-after-free
->
-> In addition, blkg_free_workfn() frees pd before removing the blkg from
-> q->blkg_list. This allows blkcg_activate_policy() to allocate a new pd
-> for a blkg that is being destroyed, leaving the newly allocated pd
-> unreachable when the blkg is finally freed.
->
-> Fix these races by extending blkcg_mutex coverage to serialize
-> blkcg_activate_policy() rollback and blkg destruction, ensuring pd
-> lifecycle is synchronized with blkg list visibility.
->
-> Link: https://lore.kernel.org/all/20260108014416.3656493-3-zhengqixing@hu=
+> Link: https://lore.kernel.org/all/20260108014416.3656493-4-zhengqixing@hu=
 aweicloud.com/
 > Fixes: f1c006f1c685 ("blk-cgroup: synchronize pd_free_fn() from blkg_free=
 _workfn() and blkcg_deactivate_policy()")
 > Signed-off-by: Zheng Qixing <zhengqixing@huawei.com>
+> Reviewed-by: Christoph Hellwig <hch@lst.de>
 > ---
->   block/blk-cgroup.c | 3 +++
->   1 file changed, 3 insertions(+)
+>   block/blk-cgroup.c | 3 ++-
+>   1 file changed, 2 insertions(+), 1 deletion(-)
 >
 > diff --git a/block/blk-cgroup.c b/block/blk-cgroup.c
-> index 3cffb68ba5d8..600f8c5843ea 100644
+> index 600f8c5843ea..5dbc107eec53 100644
 > --- a/block/blk-cgroup.c
 > +++ b/block/blk-cgroup.c
-> @@ -1596,6 +1596,8 @@ int blkcg_activate_policy(struct gendisk *disk, con=
-st struct blkcg_policy *pol)
->  =20
->   	if (queue_is_mq(q))
->   		memflags =3D blk_mq_freeze_queue(q);
-> +
-> +	mutex_lock(&q->blkcg_mutex);
->   retry:
->   	spin_lock_irq(&q->queue_lock);
->  =20
-> @@ -1658,6 +1660,7 @@ int blkcg_activate_policy(struct gendisk *disk, con=
-st struct blkcg_policy *pol)
->  =20
->   	spin_unlock_irq(&q->queue_lock);
->   out:
-> +	mutex_unlock(&q->blkcg_mutex);
->   	if (queue_is_mq(q))
->   		blk_mq_unfreeze_queue(q, memflags);
->   	if (pinned_blkg)
+> @@ -1622,9 +1622,10 @@ int blkcg_activate_policy(struct gendisk *disk, co=
+nst struct blkcg_policy *pol)
+>   			 * GFP_NOWAIT failed.  Free the existing one and
+>   			 * prealloc for @blkg w/ GFP_KERNEL.
+>   			 */
+> +			if (!blkg_tryget(blkg))
+> +				continue;
 
-Can you also protect blkg_destroy_all() will blkcg_mutex as well? Then all =
-access for q->blkg_list will
-be protected.
+So, why this check is still before the pd_alloc_fn()?
+
+See blkg_destroy(), can you replace this by the same checking:
+
+list_for_each_entry_reverse()
+	if (hlist_unhashed(&blkg->blkcg_node))
+		continue;
+	if (blkg->pd[pol->plid])
+		continue;
+
+>   			if (pinned_blkg)
+>   				blkg_put(pinned_blkg);
+> -			blkg_get(blkg);
+>   			pinned_blkg =3D blkg;
+>  =20
+>   			spin_unlock_irq(&q->queue_lock);
 
 --=20
 Thansk,
