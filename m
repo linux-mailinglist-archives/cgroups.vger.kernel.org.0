@@ -1,78 +1,128 @@
-Return-Path: <cgroups+bounces-13257-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-13258-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id AB9A6D27B52
-	for <lists+cgroups@lfdr.de>; Thu, 15 Jan 2026 19:43:07 +0100 (CET)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
+	by mail.lfdr.de (Postfix) with ESMTPS id EAC95D27983
+	for <lists+cgroups@lfdr.de>; Thu, 15 Jan 2026 19:34:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id 1BD86310524C
-	for <lists+cgroups@lfdr.de>; Thu, 15 Jan 2026 17:47:35 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 51C99323B83A
+	for <lists+cgroups@lfdr.de>; Thu, 15 Jan 2026 18:15:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F1B963BFE4B;
-	Thu, 15 Jan 2026 17:47:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9A8353C00A2;
+	Thu, 15 Jan 2026 18:12:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="YT77vFZ2"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KQPEU50m"
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f171.google.com (mail-pf1-f171.google.com [209.85.210.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B39B53BF309;
-	Thu, 15 Jan 2026 17:47:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 16A333C0094
+	for <cgroups@vger.kernel.org>; Thu, 15 Jan 2026 18:12:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768499225; cv=none; b=orTqyUSfPB/zMjQQvr8MwRzQTOG5RjRcX76SCVZZxON9PBn9EmH8GSMPQaRV5LDxbAsrdNA/qqxY0aUkh5Lyp1Ozy9gpNgeRLMPiEX/fJS5RbSImizR3aZ6dsXkTlsL6b4xXRXFvIKW/t7EfLMfQ6S/FZYv0fLXxiW94wD9CVj4=
+	t=1768500757; cv=none; b=Gwj35feRIrHbzjUVX2mmMTv81YmSybSYbw2MjKS3r/Ux8p6BRQI3z5zTKN3xaNZYrl1AcnZe6S0NAJky0BsLpWLHW1ZQKPGY91U+blIb3SNZxoYP7eL2+JGkRD1ljFTjnyZNWfj6cvA+JavmOtm3C0EH4vupq0DbCMUfTCjoefY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768499225; c=relaxed/simple;
-	bh=C0SodaDfVTiyD9izfNenedvQEytBtrnvMR6/MpPi0+Q=;
-	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
-	 Mime-Version:Content-Type; b=dyslXeCUFdx+/nFvQVIkfrERRMdh5ycgUrHny6kCECR6KtzL7ybo4v/JF505hVSkSsajjlBuXv/rDCl69DwFRlJkDyfP7McUVn2Dw8pR/M8ZQPE9sPDqVec5mnNkhglheeGN5kQu4gPHgemN8hnmuKHLP5dSrxstK/qJzXDZjds=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=YT77vFZ2; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A4442C116D0;
-	Thu, 15 Jan 2026 17:47:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-	s=korg; t=1768499225;
-	bh=C0SodaDfVTiyD9izfNenedvQEytBtrnvMR6/MpPi0+Q=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=YT77vFZ2+7Mb4JRJnlkEcCnCQ3FdCi/XnGOboKt/d4mGB5ja5LxRc2AK/LHwAQK1D
-	 r2IzpDbFlLtgWyVyyl0Dy4RU9OnH55YSUvc85GZ7VFqSc7zqtiR4SALjv7HmtZs/Jj
-	 i1UfLPTGugFvU3Ffxhzzq9yBJ3aZKF79RmfCPLJY=
-Date: Thu, 15 Jan 2026 09:47:04 -0800
-From: Andrew Morton <akpm@linux-foundation.org>
-To: Qi Zheng <qi.zheng@linux.dev>
-Cc: hannes@cmpxchg.org, hughd@google.com, mhocko@suse.com,
- roman.gushchin@linux.dev, shakeel.butt@linux.dev, muchun.song@linux.dev,
- david@kernel.org, lorenzo.stoakes@oracle.com, ziy@nvidia.com,
- harry.yoo@oracle.com, yosry.ahmed@linux.dev, imran.f.khan@oracle.com,
- kamalesh.babulal@oracle.com, axelrasmussen@google.com, yuanchu@google.com,
- weixugc@google.com, chenridong@huaweicloud.com, mkoutny@suse.com,
- hamzamahfooz@linux.microsoft.com, apais@linux.microsoft.com,
- lance.yang@linux.dev, linux-mm@kvack.org, linux-kernel@vger.kernel.org,
- cgroups@vger.kernel.org, Qi Zheng <zhengqi.arch@bytedance.com>
-Subject: Re: [PATCH v3 28/30 fix 1/2] mm: memcontrol: fix
- lruvec_stats->state_local reparenting
-Message-Id: <20260115094704.17d35583bbcff28677b5bc12@linux-foundation.org>
-In-Reply-To: <e5afd1b5ae95d70f82433b9b4e13201342d16707.1768473427.git.zhengqi.arch@bytedance.com>
-References: <b11a0bde9fe18673a61a79398f226ad7cb04a894.1768389889.git.zhengqi.arch@bytedance.com>
-	<e5afd1b5ae95d70f82433b9b4e13201342d16707.1768473427.git.zhengqi.arch@bytedance.com>
-X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1768500757; c=relaxed/simple;
+	bh=jmCS3Eb/Caa2A/NEtHVTaZDmAlTTPtXeXUmluff264E=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=tdMKCbnq1ye3gQiyc9yrW6evWu2qRahxdDhHED1MzSw8/d95xsPwCvpUMy1mxMbDpSSkolye9izTbgmvl4eNsrmRzhIHJRiExruSJDq27aBrI2YGQg6C6vMSyUfAgBdf8Qz1tCb/DHe4A9nmR30m2+gj3s4j/p/qdubnjhbVBXQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=KQPEU50m; arc=none smtp.client-ip=209.85.210.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f171.google.com with SMTP id d2e1a72fcca58-81db1530173so597767b3a.1
+        for <cgroups@vger.kernel.org>; Thu, 15 Jan 2026 10:12:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1768500755; x=1769105555; darn=vger.kernel.org;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=zUtEq9E7qiL8dJjHmHDx5LMsOLb73VrWL6F69DedpRQ=;
+        b=KQPEU50mi4uMtaIJV92WmC3+5pfTiVl09B8QO7SBAkEjwvfQtVK2Puuj0ELLImtLz5
+         EBBkSxYdr01zQcPRdaUxoUJnRLsPBfHQu5jAQInt+oWRRIWzJ0sQkL4rQUTNU8bMOtG6
+         /wr7ro3lu5huBYbtOJKQwyrSCNFcSwcZdTzDj1eF8nVhDIYXSXGolhB4XIQRV6zWJJIy
+         W5dmhCiKT1ZALGQmXmnd5ubiH/xcwMCWXMUt2VlXu0M++OEGuIv5gG53oKZaq1o8PPg4
+         /48FJNguAcGciTw0ArKkHZT3r/uVecQYGvbnbZuRjSqTa8afhAidNkgY8XBcqDELSmjh
+         xhiQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1768500755; x=1769105555;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=zUtEq9E7qiL8dJjHmHDx5LMsOLb73VrWL6F69DedpRQ=;
+        b=KHGMYs06kJxMI2dFImoUgQJpNf3COgIT8qd2bSC/5ng4vZrnzumZ+bvGFtQ6Ioxibp
+         8GGCAU9E5X1w9ZPvi5aRjEiXXkysHLaibwA5Fe6GFbkHDI/06ct/UPmH+Oxpwh07Rl+y
+         KAdZGrUp+IrA2ByfkrSq9CppBDP2pJyP5/fqK3KscAKff63b+gS7+PCYdxO41hZ9/4ky
+         Btld45eefDR40Rq2mmbUFAvepTqpsbbFUEkH/IPuWIELvp0rkQFHu6UGvSBPeX41x/qU
+         QvmxF6NjO2qbXx+4KYReeTLikNJciWHBa9+XYaPj6fbF88hafxMd5fAQ1PpMxIe4i44t
+         afug==
+X-Gm-Message-State: AOJu0YzzOwtT2x3whVd1qEscu8HZWD/8ZFXGlDUJr6epnNslo4pNqqtD
+	2/WCIYXOc6c/91N4yK2KZYQquc0UNzndDrruPxeCIxoM3AInBqBQJOdZ
+X-Gm-Gg: AY/fxX7OVM8Q4TwFfPNPLog1ESZHjTLm/7xHZwfA2nPw41/IJgb5JcEy3EJHijk30bK
+	33uGW48ge9u/dEcs1MoaTNveIWYY+zasmShzJwN/d2eSrtWZJNRlwIke0zjBlM3JjZuLQ2eUvOK
+	Ota4+L0yYIpcF3tUmI6sfZ+yEPaGCJeZQg4Ash4Dq50qwkAUhoH7HlhEFDqSyWBbwqp+Ak9VpKX
+	tJGldQeCSTT/Q1mRN+mufUaMWxjeUPX7c4o3rtJMzGz3Toomuu37Zzp01lVGkj6IthDUZVfgsrf
+	et6tb8pN6Bs9y9w3LwNgeqPm3jdzLwchu/GmSWqFx9ahB3Eqm5PTxVz1lvQ6eR2P44NF9g+MM8j
+	s7uJcAAx8Ie/bVyloDZgjBu/rOUjxo24ZYjMb2rJ6k0NOpuboMuonWRg+nzgyoxHxsVyD8P6uED
+	NJhB1j85EbVTcu+13jbZA=
+X-Received: by 2002:a05:6a00:f8f:b0:81f:47ad:6a7b with SMTP id d2e1a72fcca58-81fa01eb473mr401131b3a.33.1768500755228;
+        Thu, 15 Jan 2026 10:12:35 -0800 (PST)
+Received: from [172.16.80.107] ([210.228.119.9])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-81fa1094e23sm61988b3a.4.2026.01.15.10.12.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 15 Jan 2026 10:12:34 -0800 (PST)
+From: Ryota Sakamoto <sakamo.ryota@gmail.com>
+Date: Fri, 16 Jan 2026 03:12:14 +0900
+Subject: [PATCH] cgroup/rstat: fix missing prototype warning for
+ bpf_rstat_flush()
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
+Message-Id: <20260116-fix-bpf_rstat_flush-v1-1-b068c230fdff@gmail.com>
+X-B4-Tracking: v=1; b=H4sIAAAAAAAC/x2MQQqAIBAAvxJ7TmiFLPpKRGituRAVbkUQ/j3pO
+ DAzLwhFJoGueCHSzcL7lgHLAqZgt4UUz5lBV9pUiEZ5fpQ7/BjltOfo10uCMmZC29Stdhohl0e
+ krP3XfkjpA38DRv5lAAAA
+X-Change-ID: 20260116-fix-bpf_rstat_flush-66c1a7582b21
+To: Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>, 
+ =?utf-8?q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>
+Cc: cgroups@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ bpf@vger.kernel.org, Ryota Sakamoto <sakamo.ryota@gmail.com>
+X-Mailer: b4 0.14.2
 
-On Thu, 15 Jan 2026 18:41:38 +0800 Qi Zheng <qi.zheng@linux.dev> wrote:
+Add the prototype to cgroup-internal.h to resolve the Sparse warning.
 
-> From: Qi Zheng <zhengqi.arch@bytedance.com>
-> 
-> Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
+The function bpf_rstat_flush() is defined as __weak and global in
+kernel/cgroup/rstat.c, but lack of prototype in header file causes warning
+with Sparse (C=1):
 
-What was "fixed"?
+  kernel/cgroup/rstat.c:342:22: warning: symbol 'bpf_rstat_flush' was not declared. Should it be static?
 
-I queued this and [2/2] as squashable fixes against "mm: memcontrol:
-prepare for reparenting state_local".
+Signed-off-by: Ryota Sakamoto <sakamo.ryota@gmail.com>
+---
+ kernel/cgroup/cgroup-internal.h | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/kernel/cgroup/cgroup-internal.h b/kernel/cgroup/cgroup-internal.h
+index 22051b4f1ccbc0812641e4716b7a5b5f7138bbc9..ecb2b3a2f06ffcc3d747adf666a6134cc54059e1 100644
+--- a/kernel/cgroup/cgroup-internal.h
++++ b/kernel/cgroup/cgroup-internal.h
+@@ -277,6 +277,7 @@ int css_rstat_init(struct cgroup_subsys_state *css);
+ void css_rstat_exit(struct cgroup_subsys_state *css);
+ int ss_rstat_init(struct cgroup_subsys *ss);
+ void cgroup_base_stat_cputime_show(struct seq_file *seq);
++void bpf_rstat_flush(struct cgroup *cgrp, struct cgroup *parent, int cpu);
+ 
+ /*
+  * namespace.c
+
+---
+base-commit: 944aacb68baf7624ab8d277d0ebf07f025ca137c
+change-id: 20260116-fix-bpf_rstat_flush-66c1a7582b21
+
+Best regards,
+-- 
+Ryota Sakamoto <sakamo.ryota@gmail.com>
 
 
