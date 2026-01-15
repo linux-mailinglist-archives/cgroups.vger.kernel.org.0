@@ -1,103 +1,113 @@
-Return-Path: <cgroups+bounces-13237-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-13238-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9A52CD227CB
-	for <lists+cgroups@lfdr.de>; Thu, 15 Jan 2026 07:06:53 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id A378DD231CF
+	for <lists+cgroups@lfdr.de>; Thu, 15 Jan 2026 09:29:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id F33F0304A93C
-	for <lists+cgroups@lfdr.de>; Thu, 15 Jan 2026 06:06:10 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 4383830D032D
+	for <lists+cgroups@lfdr.de>; Thu, 15 Jan 2026 08:24:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A621D285074;
-	Thu, 15 Jan 2026 06:06:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC73532FA1B;
+	Thu, 15 Jan 2026 08:24:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="scuVfxqH"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="IFUp94qq"
 X-Original-To: cgroups@vger.kernel.org
-Received: from out-170.mta0.migadu.com (out-170.mta0.migadu.com [91.218.175.170])
+Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0C0172D839C
-	for <cgroups@vger.kernel.org>; Thu, 15 Jan 2026 06:06:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F2266329391;
+	Thu, 15 Jan 2026 08:24:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.92.199
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768457170; cv=none; b=HwOUlnLpkLYbNznIqJkGk8f5JOt1OezgdbrhN4plq72kE1ZKA2XJnJkgDodD6RmfDsu8kPevsrb9S8LI6Ia4pe4lO9SUvXWDBBLsaOYr+5pXwHDqbrxAcB9ZvWC2eACltFFtApm0QlEMKcSp4gxfHdDkgY053sx2WmM0uTPD2nI=
+	t=1768465489; cv=none; b=P6nX7DECY9fGs5/Qb43ZE6Ie39nIz/NqHP657v9/Ua+fEsIdYRfYu4mlTWdU4Afx0ecvHA2lp179oqPnPp4oBCJV6dNcEXvmAf5jw1HjHeu2luIr11bcbW2yP52cJhc/ANQHdjraAfSkAi+lN+w8U+GlxFujBjE/8EpapviSCm0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768457170; c=relaxed/simple;
-	bh=Wot21i1ixzzeTT2lKY5qJYV4zcsj9xuTLbIjZ1Cr4Go=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ajLvXcklJNd83NwMngLelGHaQRn4Ve9PvgkK+ZGbVybKKy80JnIxYjxoTmh4gLoLFh1VaJ5HGq4BgaS3YPd3zN8i699wr7aI7NdavLlCwZAyUC8mnb6qJFkHlD2Kfnxt0WReMaPkzMyl/6zCv5AQK8T4perWaQVwchLMDpfRHOY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=scuVfxqH; arc=none smtp.client-ip=91.218.175.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <f91fb10b-19cc-471a-8a45-2cf52d62156a@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1768457156;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Cp95f05P+xA83/rUgh+jT3tO7oOGwmlpf1fGjpsoUdo=;
-	b=scuVfxqH0RS0DP4ECtaLqxeLhUm/MS0pkZ3DN29Jl1v51x5jAQDJI0sam/Mebc5IBmiJbY
-	Cr2n1UfaQcHd+BT4UCQczYjJLbH/dlfcEVIsG2SsS1SwNM0LRFM8kw055llt0WrMPuOiFt
-	sI7eKBZ+FvUrwZ4wof0jBQiTUgrTEh8=
-Date: Thu, 15 Jan 2026 14:05:46 +0800
+	s=arc-20240116; t=1768465489; c=relaxed/simple;
+	bh=GEaJaYja87liXR/q22FlYoPhaUg3S5zvknrgF1mAW8Q=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=gPpBhJnEehJvAi9vIRLntFA+IDU2ryd963vPmX5RG8AUvsUxvRxDriAWW5hWSRCt+kd5AdNUNqN/O5lnyqFc9BWYxvGZ05yjqbeHBw/XNFzCBwRhGu1LDRAGpZMJZ0lh4iThsLWRfrXyV06k4qBgYU4T/euT95sFrVhxEjQnfBE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=IFUp94qq; arc=none smtp.client-ip=90.155.92.199
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=e8bAwWOZUjeh0Al8L+kGdtyWhBXYH7ec6q2qya2+mgM=; b=IFUp94qqSjhIRMhAwhzWLblRyM
+	8mLv1AoTNZQBe30imwXjgVnSC26vrj68N/qQU/VqfVimaVgoDTAx2xFJkCvzZrZZRbaSM/oxRYv4V
+	ppFKA/nGg30+k4VoBFCJoEpaftVvv8t3TbU5G08zlLMoFWcOoWFTE0VqhbATRkm8AS+32cqZv1rps
+	oOVJ3qbm7nXC8Ei8xwT9EPIxJu15gJyXBXvYxD4cBqY4QkTP+f1F/ARaWPLakIAtNy8IRXOkBr+Ki
+	nTM4opEQpJriyUsO9zO7Y/50Xb1ZJPqRAZbxWUwuJgkhkLfR2NbACweBziuJDOppvlDZy7pYSYbU1
+	gkFJHZ/g==;
+Received: from 2001-1c00-8d85-5700-266e-96ff-fe07-7dcc.cable.dynamic.v6.ziggo.nl ([2001:1c00:8d85:5700:266e:96ff:fe07:7dcc] helo=noisy.programming.kicks-ass.net)
+	by desiato.infradead.org with esmtpsa (Exim 4.98.2 #2 (Red Hat Linux))
+	id 1vgIee-00000006J0Q-0WWn;
+	Thu, 15 Jan 2026 08:24:32 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+	id 758CF30049A; Thu, 15 Jan 2026 09:24:31 +0100 (CET)
+Date: Thu, 15 Jan 2026 09:24:31 +0100
+From: Peter Zijlstra <peterz@infradead.org>
+To: Juri Lelli <juri.lelli@redhat.com>
+Cc: K Prateek Nayak <kprateek.nayak@amd.com>,
+	Pierre Gondois <pierre.gondois@arm.com>, tj@kernel.org,
+	linux-kernel@vger.kernel.org, mingo@kernel.org,
+	vincent.guittot@linaro.org, dietmar.eggemann@arm.com,
+	rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de,
+	vschneid@redhat.com, longman@redhat.com, hannes@cmpxchg.org,
+	mkoutny@suse.com, void@manifault.com, arighi@nvidia.com,
+	changwoo@igalia.com, cgroups@vger.kernel.org,
+	sched-ext@lists.linux.dev, liuwenfang@honor.com, tglx@linutronix.de,
+	Christian Loehle <christian.loehle@arm.com>,
+	luca.abeni@santannapisa.it
+Subject: Re: [PATCH 05/12] sched: Move sched_class::prio_changed() into the
+ change pattern
+Message-ID: <20260115082431.GE830755@noisy.programming.kicks-ass.net>
+References: <20251006104402.946760805@infradead.org>
+ <20251006104527.083607521@infradead.org>
+ <ab9b37c9-e826-44db-a6b8-a789fcc1582d@arm.com>
+ <caa2329c-d985-4a7c-b83a-c4f96d5f154a@amd.com>
+ <717a0743-6d8f-4e35-8f2f-70a158b31147@arm.com>
+ <20260113114718.GA831050@noisy.programming.kicks-ass.net>
+ <f9e4e4a2-dadd-4f79-a83e-48ac4663f91c@amd.com>
+ <20260114102336.GZ830755@noisy.programming.kicks-ass.net>
+ <20260114130528.GB831285@noisy.programming.kicks-ass.net>
+ <aWemQDHyF2FpNU2P@jlelli-thinkpadt14gen4.remote.csb>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH v3 00/30] Eliminate Dying Memory Cgroup
-To: Andrew Morton <akpm@linux-foundation.org>
-Cc: hannes@cmpxchg.org, hughd@google.com, mhocko@suse.com,
- roman.gushchin@linux.dev, shakeel.butt@linux.dev, muchun.song@linux.dev,
- david@kernel.org, lorenzo.stoakes@oracle.com, ziy@nvidia.com,
- harry.yoo@oracle.com, yosry.ahmed@linux.dev, imran.f.khan@oracle.com,
- kamalesh.babulal@oracle.com, axelrasmussen@google.com, yuanchu@google.com,
- weixugc@google.com, chenridong@huaweicloud.com, mkoutny@suse.com,
- hamzamahfooz@linux.microsoft.com, apais@linux.microsoft.com,
- lance.yang@linux.dev, linux-mm@kvack.org, linux-kernel@vger.kernel.org,
- cgroups@vger.kernel.org, Qi Zheng <zhengqi.arch@bytedance.com>
-References: <cover.1768389889.git.zhengqi.arch@bytedance.com>
- <20260114095839.eabf8106e97bf3bcf0917341@linux-foundation.org>
- <98819615-5001-45f6-8e63-c4220a242257@linux.dev>
- <20260114215917.8eee7b9fa4da37305b74d6f2@linux-foundation.org>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Qi Zheng <qi.zheng@linux.dev>
-In-Reply-To: <20260114215917.8eee7b9fa4da37305b74d6f2@linux-foundation.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <aWemQDHyF2FpNU2P@jlelli-thinkpadt14gen4.remote.csb>
 
+On Wed, Jan 14, 2026 at 03:20:48PM +0100, Juri Lelli wrote:
 
-
-On 1/15/26 1:59 PM, Andrew Morton wrote:
-> On Thu, 15 Jan 2026 11:52:04 +0800 Qi Zheng <qi.zheng@linux.dev> wrote:
+> > --- a/kernel/sched/syscalls.c
+> > +++ b/kernel/sched/syscalls.c
+> > @@ -639,7 +639,7 @@ int __sched_setscheduler(struct task_str
+> >  		 * itself.
+> >  		 */
+> >  		newprio = rt_effective_prio(p, newprio);
+> > -		if (newprio == oldprio)
+> > +		if (newprio == oldprio && !dl_prio(newprio))
+> >  			queue_flags &= ~DEQUEUE_MOVE;
+> >  	}
 > 
->>
->>
->> On 1/15/26 1:58 AM, Andrew Morton wrote:
->>> On Wed, 14 Jan 2026 19:26:43 +0800 Qi Zheng <qi.zheng@linux.dev> wrote:
->>>
->>>> This patchset is intended to transfer the LRU pages to the object cgroup
->>>> without holding a reference to the original memory cgroup in order to
->>>> address the issue of the dying memory cgroup.
->>>
->>> Thanks.  I'll add this to mm.git for testing.  A patchset of this
->>> magnitude at -rc5 is a little ambitious, but Linus is giving us an rc8
->>> so let's see.
->>>
->>> I'll suppress the usual added-to-mm email spray.
->>
->> Hi Andrew,
->>
->> The issue reported by syzbot needs to be addressed. If you want to test
->> this patchset, would you like me to provide a fix patch, or would you
->> prefer me to update to v4?
-> 
-> A fix would be preferred if that's reasonable - it's a lot of patches
-> be resending!
+> We have been using (improperly?) ENQUEUE_SAVE also to know when a new
+> entity gets setscheduled to DEADLINE (or its parameters are changed) and
+> it looks like this keeps that happening with DEQUEUE_MOVE. So, from a
+> quick first look, it does sound good to me.
 
-OK, I'll send the fix ASAP.
+If this is strictly about tasks coming into SCHED_DEADLINE there are a
+number of alternative options:
 
+ - there are the sched_class::switch{ing,ed}_to() callbacks;
+ - there is (the fairly recent) ENQUEUE_CLASS.
+
+Anyway, let me break up this one patch into individual bits and write
+changelogs. I'll stick them in queue/sched/urgent for now; hopefully
+Pierre can given them a spin and report back if it all sorts his
+problem).
 
