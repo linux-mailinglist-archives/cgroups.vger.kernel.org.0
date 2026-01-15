@@ -1,46 +1,46 @@
-Return-Path: <cgroups+bounces-13260-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-13261-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id E5E0AD286CF
-	for <lists+cgroups@lfdr.de>; Thu, 15 Jan 2026 21:32:17 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id BD95DD286D9
+	for <lists+cgroups@lfdr.de>; Thu, 15 Jan 2026 21:32:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 615ED30141F9
-	for <lists+cgroups@lfdr.de>; Thu, 15 Jan 2026 20:32:16 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 6C188302106C
+	for <lists+cgroups@lfdr.de>; Thu, 15 Jan 2026 20:32:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A20642BDC0C;
-	Thu, 15 Jan 2026 20:32:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA7FA2D9EEC;
+	Thu, 15 Jan 2026 20:32:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="oRarhh0Y"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fEJIQfP9"
 X-Original-To: cgroups@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 63F2F27732;
-	Thu, 15 Jan 2026 20:32:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B80C27381E;
+	Thu, 15 Jan 2026 20:32:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768509135; cv=none; b=QSg6N/8/xyPat+dzRBQ8NS5YAS3UoGtuDUNZPizH+FqMJUnxGDTBEPmMWzM42zrCCLnMISUrh0cNytvE2jXRvwDvc7r7KylC3wzRElKzHvZO9brA89CFQFQESCsa6+lTAyl5WgwWGyQsMLFxZxdUho3dCaTJciYcC5fT/qeoHyE=
+	t=1768509177; cv=none; b=Bm0rno9Y7/ljNrz89kNW1olfgRZgPZlRR6a5WzXfMaj3KSZyQJUwMxqPkfzsRflR3uE9OssVMLO+KCBPICjvQAaTy7RWiJEwhwE7A6vGh4cU/fH085GP0DvkwGPDslxt4L6bhWsPOwSAi2PAxcCFIxwxd0X6RGT+1+VgqBe45ZM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768509135; c=relaxed/simple;
-	bh=cmj3833hotxY1oRntmtkl+ykczZyy1Qii4tX7N5CuZo=;
+	s=arc-20240116; t=1768509177; c=relaxed/simple;
+	bh=n84jUXZgJMWY9VaIzCspmt6QuYtqGAcwUf5ea6q90Dc=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=hBGd3kTzJe3aE1W7xIp3Q4cIeia0Ob62iuWzbNucnjHMbW8mN4maEh6MRUk3aUCe8l7RAg42iGCsZ1aaPwDFYZbW5SLB3ZRmrlxxMqUwc/w8ohVqUSAXKRvN4W2zcPVveCeqD14tMt0wa1M2Kvz5J/yH/lbvlICMvoIJX7iinRo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=oRarhh0Y; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id ADACCC116D0;
-	Thu, 15 Jan 2026 20:32:08 +0000 (UTC)
+	 In-Reply-To:Content-Type; b=rLvm5Sc3kAK0mx/u6pDbNhNBrF394cSbWR6AeTWdUPXSuhdKG3OVaYaaSzqYwDD/9QlWiOI3QCRo69xYr8CdqT9MEWAm2ny7kxNltOuo8CDsUOY1pbbthym0VVjoWazGU4Xt6OpfpQEn727bExoNM6RJqy3zqaVRvLXjHPqWxoQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fEJIQfP9; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4BC3CC116D0;
+	Thu, 15 Jan 2026 20:32:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1768509135;
-	bh=cmj3833hotxY1oRntmtkl+ykczZyy1Qii4tX7N5CuZo=;
+	s=k20201202; t=1768509177;
+	bh=n84jUXZgJMWY9VaIzCspmt6QuYtqGAcwUf5ea6q90Dc=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=oRarhh0YHIIo8PX4jeox4uEB+M/H9/rMRXVXxZj3mb0Nd0aqs2A5/GNynyXcSA3Y+
-	 uTiOLffWXpTQRuti7kAER8SRIxDmT45V2J/iSsQqviNWL0yaRwOH7taUU80h4PZqbQ
-	 RQCPVIfPUU35ncOdipSmV2CPft0nCq/mNJfBjQmnCEpUAZpEn7I8R2iHLBoyH6HUtw
-	 qqgxZDYat4UTZUj4i1eWm4K7E+qT6aFgznZzhk1OvvyKqscoZwbfDI1I+Ex7bQkO/N
-	 KPXaKnawSRtOHohMGGyODsGoElx4rjRxDDogkVy7gQPgm+5zLb7rJkyK4yCn/cU/gt
-	 ouLUyYlPfUtMg==
-Message-ID: <39e03f57-7a6a-4526-afc6-986646d2e84b@kernel.org>
-Date: Thu, 15 Jan 2026 21:32:06 +0100
+	b=fEJIQfP9+zYw6kYjcJ+ig069WspPjqhx1SQpc6mQKfxfBYZlapuhZ2TIhprqUOE5d
+	 SL5KkFFAlL5jn7NMbIIRQ9KwcaXO+LdmZlLY6YY91/3R+iD0ZcAT1HJENKijnPm+4i
+	 UZ3jziGNrsfeCxNfLT3+Fp5vOThVAcp7G/wqZVYLHb7/KHDvLs0/Olx8/5PgCacTOX
+	 q4XMQSdrT/Oz2iPfX9pkUvO1XeWGuuOM+jjiH7VfOfDWUATOrYZNKpa0ak/L0FZe/O
+	 nnuufoLb6yDv8/z3Z0/mXiqFol0d2VKE/6yC09ZCoqWsFXJsk1oz7521gZhvlRQP1I
+	 eOJecmuL523nA==
+Message-ID: <222db635-e326-42ed-a121-ca302f0fdcbe@kernel.org>
+Date: Thu, 15 Jan 2026 21:32:49 +0100
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -48,7 +48,8 @@ List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/3] nodemask: propagate boolean for nodes_and{,not}
+Subject: Re: [PATCH 2/3] mm: use nodes_and() return value to simplify client
+ code
 To: Yury Norov <ynorov@nvidia.com>, Andrew Morton
  <akpm@linux-foundation.org>, Alistair Popple <apopple@nvidia.com>,
  Byungchul Park <byungchul@sk.com>, Gregory Price <gourry@gourry.net>,
@@ -66,7 +67,7 @@ Cc: Yury Norov <yury.norov@gmail.com>,
  Rasmus Villemoes <linux@rasmusvillemoes.dk>, linux-mm@kvack.org,
  linux-kernel@vger.kernel.org
 References: <20260114172217.861204-1-ynorov@nvidia.com>
- <20260114172217.861204-2-ynorov@nvidia.com>
+ <20260114172217.861204-3-ynorov@nvidia.com>
 From: "David Hildenbrand (Red Hat)" <david@kernel.org>
 Content-Language: en-US
 Autocrypt: addr=david@kernel.org; keydata=
@@ -112,22 +113,18 @@ Autocrypt: addr=david@kernel.org; keydata=
  cFAM8nBWrEmNU2vvIGJzjJ/NVYYIY0TgOc5bS9wh6jKHL2+chrfDW5neLJjY2x3snF8q7U9G
  EIbBfNHDlOV8SyhEjtX0DyKxQKioTYPOHcW9gdV5fhSz5tEv+ipqt4kIgWqBgzK8ePtDTqRM
  qZq457g1/SXSoSQi4jN+gsneqvlTJdzaEu1bJP0iv6ViVf15+qHuY5iojCz8fa0=
-In-Reply-To: <20260114172217.861204-2-ynorov@nvidia.com>
+In-Reply-To: <20260114172217.861204-3-ynorov@nvidia.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
 On 1/14/26 18:22, Yury Norov wrote:
-> Bitmap functions bitmap_and{,not} return boolean depending on emptiness
-> of the result bitmap. The corresponding nodemask helpers ignore the
-> returned value.
-> 
-> Propagate the underlying bitmaps result to nodemasks users, as it
-> simplifies user code.
+> establish_demotion_targets() and kernel_migrate_pages() call
+> node_empty() immediately after calling nodes_and(). Now that
+> nodes_and() return false if nodemask is empty, drop the latter.
 > 
 > Signed-off-by: Yury Norov <ynorov@nvidia.com>
-> ---
 
-Reviewed-by: David Hildenbrand (Red Hat) <david@kernel.org>
+Acked-by: David Hildenbrand (Red Hat) <david@kernel.org>
 
 -- 
 Cheers
