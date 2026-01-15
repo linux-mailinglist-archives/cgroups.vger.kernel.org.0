@@ -1,148 +1,242 @@
-Return-Path: <cgroups+bounces-13252-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-13253-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 38A3AD2606D
-	for <lists+cgroups@lfdr.de>; Thu, 15 Jan 2026 18:02:54 +0100 (CET)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id EB7E3D2666B
+	for <lists+cgroups@lfdr.de>; Thu, 15 Jan 2026 18:29:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 1074D3059A68
-	for <lists+cgroups@lfdr.de>; Thu, 15 Jan 2026 17:00:34 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id C573630449EB
+	for <lists+cgroups@lfdr.de>; Thu, 15 Jan 2026 17:22:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 103483BC4D7;
-	Thu, 15 Jan 2026 17:00:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 33BEB2F619D;
+	Thu, 15 Jan 2026 17:22:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="wT445DsQ"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="EAtr4zbT";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="htmAa3Xt";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="EAtr4zbT";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="htmAa3Xt"
 X-Original-To: cgroups@vger.kernel.org
-Received: from out-185.mta0.migadu.com (out-185.mta0.migadu.com [91.218.175.185])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 35A602C11F8;
-	Thu, 15 Jan 2026 17:00:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.185
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B2C8C27B340
+	for <cgroups@vger.kernel.org>; Thu, 15 Jan 2026 17:22:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768496431; cv=none; b=dsL00357EA97mEXvVOWYZU/1hC6FifnEJF6m3iPuVuscz02WmbF8p4KmboLR0SnJUC2KniIKM/F8uKFNsLHsL/chhifLCG1Sy0az2zL/FgWjJdYk+9SkBao1AxuToLHVAwYvgWZoj6hni7maEu8zMmGbmpLoQs/Ktw7kBt5+WT4=
+	t=1768497756; cv=none; b=NHDU82rsv5zeOgOz+6QVAyTlB05ET8YTKj7qB4Ph7SlOYXxoWiK3x2UytA4RtMM/gpjJKcE4t5gZCZfShHAiE9nUem393/yNpSQSUetSfB3Y+F3GbEm8cAzHbirvQ96lhHhlrQonpfYTXsyLiXk2HtCd9Onj4rRPqtlHDaR/PMw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768496431; c=relaxed/simple;
-	bh=BtokHh4+lGUXhkRc80WbQQozqtSuNo+ZLaEDaAPJVvA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=h10e2BZ0vyWgBbFg8AfQaAc06tthMWiK0FYNZexuecfYPedi7HYEDHdk33hxWmY6H/QHqUkDwa7Ok5cNIyAYTwrKFJC+/uJ+yxk3GmPWiR/mv9AOa3JOcKvcTIelzc+hhPzo3iSFnY4FYjfDJRyFFkaG6/PmpHuNmExnH/xjKTU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=wT445DsQ; arc=none smtp.client-ip=91.218.175.185
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Thu, 15 Jan 2026 17:00:04 +0000
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1768496417;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	s=arc-20240116; t=1768497756; c=relaxed/simple;
+	bh=XpPHNVifQQK2FTEkm6tfNXe+gQQqw9wqju3HsojCgyI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=HuvuVvaxeO6chAoI0fvLA3ph5onAFI5n+R9Ec0D/NlliZ20MKd1bDmlVymGMkq10RAE2Q7aKsfTZWaTJRc/0RkwHNJAIx4NUELISRUvb1KHvOmoGC2TiEtgbT2wWtpmUXSy+q6AyTNqL0tdO9ZOVNY5Wi7IeB4Ry0VFwawNwgS8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=EAtr4zbT; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=htmAa3Xt; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=EAtr4zbT; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=htmAa3Xt; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 7B9455BD4C;
+	Thu, 15 Jan 2026 17:22:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1768497752; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=VFhntWShXHgOAIorUq2E/j9pvFsqctkiMpQmDw8UuZQ=;
-	b=wT445DsQd4/3Xmj+RvJ2Ntg8GFkTgTIfwuwltdPW2wrMKBYK1L/wQAA7vFELJHski3hyGh
-	MmBUfmpJyjXE7E7f69igcg9ZrmSZjp6krqT/hyIEEmg+mPBDUzac1RCa+KgWCgebP2ws3G
-	mIFyVcZuKu0Q3CLBz6F5nVMY3RU3Z6Y=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Yosry Ahmed <yosry.ahmed@linux.dev>
-To: Nhat Pham <nphamcs@gmail.com>
-Cc: Gregory Price <gourry@gourry.net>, linux-mm@kvack.org, 
-	cgroups@vger.kernel.org, linux-cxl@vger.kernel.org, linux-doc@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org, kernel-team@meta.com, 
-	longman@redhat.com, tj@kernel.org, hannes@cmpxchg.org, mkoutny@suse.com, 
-	corbet@lwn.net, gregkh@linuxfoundation.org, rafael@kernel.org, dakr@kernel.org, 
-	dave@stgolabs.net, jonathan.cameron@huawei.com, dave.jiang@intel.com, 
-	alison.schofield@intel.com, vishal.l.verma@intel.com, ira.weiny@intel.com, 
-	dan.j.williams@intel.com, akpm@linux-foundation.org, vbabka@suse.cz, surenb@google.com, 
-	mhocko@suse.com, jackmanb@google.com, ziy@nvidia.com, david@kernel.org, 
-	lorenzo.stoakes@oracle.com, Liam.Howlett@oracle.com, rppt@kernel.org, 
-	axelrasmussen@google.com, yuanchu@google.com, weixugc@google.com, yury.norov@gmail.com, 
-	linux@rasmusvillemoes.dk, rientjes@google.com, shakeel.butt@linux.dev, chrisl@kernel.org, 
-	kasong@tencent.com, shikemeng@huaweicloud.com, bhe@redhat.com, baohua@kernel.org, 
-	chengming.zhou@linux.dev, roman.gushchin@linux.dev, muchun.song@linux.dev, 
-	osalvador@suse.de, matthew.brost@intel.com, joshua.hahnjy@gmail.com, 
-	rakie.kim@sk.com, byungchul@sk.com, ying.huang@linux.alibaba.com, 
-	apopple@nvidia.com, cl@gentwo.org, harry.yoo@oracle.com, zhengqi.arch@bytedance.com
-Subject: Re: [RFC PATCH v3 7/8] mm/zswap: compressed ram direct integration
-Message-ID: <e6eydzdvuiktmalhcmoiwsgzjbw5v7t4532fkbroylwr5cqetx@v6pgjaoxgmyz>
-References: <20260108203755.1163107-1-gourry@gourry.net>
- <20260108203755.1163107-8-gourry@gourry.net>
- <i6o5k4xumd5i3ehl6ifk3554sowd2qe7yul7vhaqlh2zo6y7is@z2ky4m432wd6>
- <aWF1uDdP75gOCGLm@gourry-fedora-PF4VCD3F>
- <4ftthovin57fi4blr2mardw4elwfsiv6vrkhrjqjsfvvuuugjj@uivjc5uzj5ys>
- <CAKEwX=MftJXOE8H=m1C=_RVL8cu516efixTwcaQMBB9pdj=K+g@mail.gmail.com>
- <CAKEwX=M8=vDO_pg5EJWiaNnJQpob8=NWvbZzssKKPpzs24wj+A@mail.gmail.com>
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=kQkTbSOqov3gFGYP77dR9tb9xxqrfKQr/r07REBkWp0=;
+	b=EAtr4zbTquzNS66eexwnv3w2SnYkOdAxhtja89ESCPzhXUQo723mRsQOzOsHrT6PdMM3L9
+	8onP3ajBm3DIdgIQVzHNxOBcD3cKtSSgV03AXkouRAmTDcPob/6Qm45lXTPNqynpdrXlOh
+	Lu7JuxYwXqZSNpfkq4dS1rxo2k+l80Q=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1768497752;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=kQkTbSOqov3gFGYP77dR9tb9xxqrfKQr/r07REBkWp0=;
+	b=htmAa3XtModxVehRTDKrHQhV7nQdZ4VrbI7EcM4oi/HSYfQjSexYqvCfPZ/AE+YGIEo0pC
+	Whm8gKRAcNKAraAQ==
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=EAtr4zbT;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=htmAa3Xt
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1768497752; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=kQkTbSOqov3gFGYP77dR9tb9xxqrfKQr/r07REBkWp0=;
+	b=EAtr4zbTquzNS66eexwnv3w2SnYkOdAxhtja89ESCPzhXUQo723mRsQOzOsHrT6PdMM3L9
+	8onP3ajBm3DIdgIQVzHNxOBcD3cKtSSgV03AXkouRAmTDcPob/6Qm45lXTPNqynpdrXlOh
+	Lu7JuxYwXqZSNpfkq4dS1rxo2k+l80Q=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1768497752;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=kQkTbSOqov3gFGYP77dR9tb9xxqrfKQr/r07REBkWp0=;
+	b=htmAa3XtModxVehRTDKrHQhV7nQdZ4VrbI7EcM4oi/HSYfQjSexYqvCfPZ/AE+YGIEo0pC
+	Whm8gKRAcNKAraAQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 563BE3EA63;
+	Thu, 15 Jan 2026 17:22:32 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id LMW8FFgiaWmFDQAAD6G6ig
+	(envelope-from <vbabka@suse.cz>); Thu, 15 Jan 2026 17:22:32 +0000
+Message-ID: <88beb165-cb8a-4c13-af96-2a7e39653f17@suse.cz>
+Date: Thu, 15 Jan 2026 18:22:31 +0100
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAKEwX=M8=vDO_pg5EJWiaNnJQpob8=NWvbZzssKKPpzs24wj+A@mail.gmail.com>
-X-Migadu-Flow: FLOW_OUT
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/3] mm: use nodes_and() return value to simplify client
+ code
+Content-Language: en-US
+To: Yury Norov <ynorov@nvidia.com>, Andrew Morton
+ <akpm@linux-foundation.org>, Alistair Popple <apopple@nvidia.com>,
+ Byungchul Park <byungchul@sk.com>, David Hildenbrand <david@kernel.org>,
+ Gregory Price <gourry@gourry.net>, Johannes Weiner <hannes@cmpxchg.org>,
+ Joshua Hahn <joshua.hahnjy@gmail.com>,
+ "Liam R. Howlett" <Liam.Howlett@oracle.com>,
+ Lorenzo Stoakes <lorenzo.stoakes@oracle.com>,
+ Matthew Brost <matthew.brost@intel.com>, Michal Hocko <mhocko@suse.com>,
+ =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
+ Mike Rapoport <rppt@kernel.org>, Rakie Kim <rakie.kim@sk.com>,
+ Suren Baghdasaryan <surenb@google.com>, Tejun Heo <tj@kernel.org>,
+ Waiman Long <longman@redhat.com>, Ying Huang <ying.huang@linux.alibaba.com>,
+ Zi Yan <ziy@nvidia.com>, cgroups@vger.kernel.org
+Cc: Yury Norov <yury.norov@gmail.com>,
+ Rasmus Villemoes <linux@rasmusvillemoes.dk>, linux-mm@kvack.org,
+ linux-kernel@vger.kernel.org
+References: <20260114172217.861204-1-ynorov@nvidia.com>
+ <20260114172217.861204-3-ynorov@nvidia.com>
+From: Vlastimil Babka <vbabka@suse.cz>
+Autocrypt: addr=vbabka@suse.cz; keydata=
+ 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
+ m6M14QORSWTLRg==
+In-Reply-To: <20260114172217.861204-3-ynorov@nvidia.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spamd-Result: default: False [-3.01 / 50.00];
+	BAYES_HAM(-3.00)[99.99%];
+	SUSPICIOUS_RECIPS(1.50)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	FREEMAIL_TO(0.00)[nvidia.com,linux-foundation.org,sk.com,kernel.org,gourry.net,cmpxchg.org,gmail.com,oracle.com,intel.com,suse.com,google.com,redhat.com,linux.alibaba.com,vger.kernel.org];
+	ARC_NA(0.00)[];
+	FUZZY_RATELIMITED(0.00)[rspamd.com];
+	RCPT_COUNT_TWELVE(0.00)[25];
+	MIME_TRACE(0.00)[0:+];
+	FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	RCVD_TLS_ALL(0.00)[];
+	TO_DN_SOME(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	DNSWL_BLOCKED(0.00)[2a07:de40:b281:104:10:150:64:97:from,2a07:de40:b281:106:10:150:64:167:received];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	FREEMAIL_CC(0.00)[gmail.com,rasmusvillemoes.dk,kvack.org,vger.kernel.org];
+	MID_RHS_MATCH_FROM(0.00)[];
+	TAGGED_RCPT(0.00)[];
+	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+	DKIM_TRACE(0.00)[suse.cz:+];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.cz:mid,suse.cz:dkim,suse.cz:email]
+X-Spam-Flag: NO
+X-Spam-Score: -3.01
+X-Rspamd-Queue-Id: 7B9455BD4C
+X-Rspamd-Action: no action
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spam-Level: 
 
-On Tue, Jan 13, 2026 at 04:49:20PM +0900, Nhat Pham wrote:
-> On Tue, Jan 13, 2026 at 4:35 PM Nhat Pham <nphamcs@gmail.com> wrote:
-> >
-> > > This part needs more thought. Zswap cannot charge a full page because
-> > > then from the memcg perspective reclaim is not making any progress.
-> > > OTOH, as you mention, from the system perspective we just consumed a
-> > > full page, so not charging that would be inconsistent.
-> > >
-> > > This is not a zswap-specific thing though, even with cram.c we have to
-> > > figure out how to charge memory on the compressed node to the memcg.
-> > > It's perhaps not as much of a problem as with zswap because we are not
-> > > dealing with reclaim not making progress.
-> > >
-> > > Maybe the memcg limits need to be "enlightened" about different tiers?
-> > > We did have such discussions in the past outside the context of
-> > > compressed memory, for memory tiering in general.
-> >
-> > What if we add a reclaim flag that says "hey, we are hitting actual
-> > memory limit and need to make memory reclaim forward progress".
-> >
-> > Then, we can have zswap skip compressed cxl backend and fall back to
-> > real compression.
-> >
-> > (Maybe also demotion, which only move memory from one node to another,
-> > as well as the new cram.c stuff? This will technically also save some
-> > wasted work, as in the status quo we will need to do a demotion pass
-> > first, before having to reclaiom memory from the bottom tier anyway?
-> > But not sure if we want this).
+On 1/14/26 18:22, Yury Norov wrote:
+> establish_demotion_targets() and kernel_migrate_pages() call
+> node_empty() immediately after calling nodes_and(). Now that
+> nodes_and() return false if nodemask is empty, drop the latter.
 > 
-> Some more thoughts - right now demotion is kinda similar, right? We
-> move pages from one node (fast tier) to another (slow tier). This
-> frees up space in the fast tier, but it actually doesn't change the
-> memcg memory usage. So we are not making "forward progress" with this
-> either.
-> 
-> I suppose this is fine-ish, because reclaim subsystem can then proceed
-> by reclaiming from the bottom tier, which will now go to disk swap,
-> zswap, etc.
-> 
-> Can we achieve the same effect by making pages in
-> zswap-backed-by-compressed-cxl reclaimable:
-> 
-> 1. Recompression - take them off compressed cxl and store them in
-> zswap proper (i.e in-memory compression).
+> Signed-off-by: Yury Norov <ynorov@nvidia.com>
 
-I think the whole point of using compressed cxl with zswap is saving
-memory in the top-tier, so this would be counter-productive (probably
-even if we use slightly less memory in the top-tier).
+Acked-by: Vlastimil Babka <vbabka@suse.cz>
 
+> ---
+>  mm/memory-tiers.c | 3 +--
+>  mm/mempolicy.c    | 3 +--
+>  2 files changed, 2 insertions(+), 4 deletions(-)
 > 
-> 2. Just enable zswap shrinker and have memory reclaim move these pages
-> into disk swap. This will have a much more drastic performance
-> implications though :)
+> diff --git a/mm/memory-tiers.c b/mm/memory-tiers.c
+> index 864811fff409..2cbef49a587d 100644
+> --- a/mm/memory-tiers.c
+> +++ b/mm/memory-tiers.c
+> @@ -475,8 +475,7 @@ static void establish_demotion_targets(void)
+>  	 */
+>  	list_for_each_entry_reverse(memtier, &memory_tiers, list) {
+>  		tier_nodes = get_memtier_nodemask(memtier);
+> -		nodes_and(tier_nodes, node_states[N_CPU], tier_nodes);
+> -		if (!nodes_empty(tier_nodes)) {
+> +		if (nodes_and(tier_nodes, node_states[N_CPU], tier_nodes)) {
+>  			/*
+>  			 * abstract distance below the max value of this memtier
+>  			 * is considered toptier.
+> diff --git a/mm/mempolicy.c b/mm/mempolicy.c
+> index 68a98ba57882..92a0bf7619a2 100644
+> --- a/mm/mempolicy.c
+> +++ b/mm/mempolicy.c
+> @@ -1909,8 +1909,7 @@ static int kernel_migrate_pages(pid_t pid, unsigned long maxnode,
+>  	}
+>  
+>  	task_nodes = cpuset_mems_allowed(current);
+> -	nodes_and(*new, *new, task_nodes);
+> -	if (nodes_empty(*new))
+> +	if (!nodes_and(*new, *new, task_nodes))
+>  		goto out_put;
+>  
+>  	err = security_task_movememory(task);
 
-I think what you're getting it as that we can still make forward
-progress after memory lands in compressed cxl. But moving memory to
-compressed cxl is already forward progress that reclaim won't capture if
-we charge memory as a full page. I think this is the crux of the issue.
-
-We need to figure out how to make accounting work such that moving
-memory to compressed cxl is forward progress, but make sure we don't
-break the overall accounting consisteny. If we only charge the actual
-compressed size, then from the system perspective there is a page that
-is only partially charged and the rest of it is more-or-less leaked.
 
