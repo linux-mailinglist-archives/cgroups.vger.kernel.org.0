@@ -1,279 +1,141 @@
-Return-Path: <cgroups+bounces-13242-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-13243-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id EE616D238F5
-	for <lists+cgroups@lfdr.de>; Thu, 15 Jan 2026 10:32:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id DDECED23A15
+	for <lists+cgroups@lfdr.de>; Thu, 15 Jan 2026 10:39:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 9AD58302EF57
-	for <lists+cgroups@lfdr.de>; Thu, 15 Jan 2026 09:32:39 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 38181309A6F4
+	for <lists+cgroups@lfdr.de>; Thu, 15 Jan 2026 09:39:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 01CDB359FB4;
-	Thu, 15 Jan 2026 09:32:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD9DE35BDD9;
+	Thu, 15 Jan 2026 09:39:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="GcsVSwgK"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="dbsaX3Tv"
 X-Original-To: cgroups@vger.kernel.org
-Received: from out-174.mta0.migadu.com (out-174.mta0.migadu.com [91.218.175.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f49.google.com (mail-wm1-f49.google.com [209.85.128.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EAD03346765
-	for <cgroups@vger.kernel.org>; Thu, 15 Jan 2026 09:32:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E99922C08DC
+	for <cgroups@vger.kernel.org>; Thu, 15 Jan 2026 09:39:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768469558; cv=none; b=OnfIWutsl1Q5CfgeKNzkjaHhG0+vcov1xxxEWZMue3wJzN+TjMLv++Zh/i6GWx4XW1JGeMsYiHl/UtPlXP6ISj9bFQOgGfJgWSl4Tat3hRlJJIEkijFHU8sdJtvTiJ6bY6WKl6cVmSM1fCDRPyXuurLs3mRIMGRNV32XJmCW8l8=
+	t=1768469954; cv=none; b=PEKBcVcsQgYvI3UGPiY4bSaPNKOOWFSrZHdui9eGkTDrCWrV0dbQv2bdRk3VprMQ0bW/mXiKyZhXX5IDQfw8Pt+qU8dnshcC5+xSX9Mw9b+1JhXQzF/TAmFQXyOKOohYIvtvsiFfm6VD7oNxLw9WBqrX8gxtuyx7Wvll8S09kKk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768469558; c=relaxed/simple;
-	bh=6mb6VFI0MLzl8UW6nAgTjfQwiWBLbhWxDvrM6W4yKdo=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=EV/UwdVUtrlmBtg7n4fY+Lky3uz9/0PjP5sft4HRchNLeurNE9FRnTJkmPeVtY53w7BAfOnxzS79KeL1ycgV5YG6nnDKqyAzDgAlwOfZDNBKexs/zhXvzIfAv7NUDdJK9IhXSPB4fXWPop2uG1IUPV2oyGJdTcBPXSK6ecSCO/4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=GcsVSwgK; arc=none smtp.client-ip=91.218.175.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <01395cef-a258-412d-b9d2-0f61283d4578@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1768469543;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=+iUgOjFTTbfQE7v33IT3NHTL6I0hG/q7V1catUOwvKs=;
-	b=GcsVSwgKXy4alPkRnDgg2qI+A++Z9txlnnBJi5pNZvhr78GeYOahv8qeXEbWbZJduOSwno
-	an4CS+iaHDlSLa+i0No+4LXxYeBiUG9Mft5PAKZf+xMcRu7x58EWOcGJUxmHDCgojiuhaa
-	NSpEeJKKKZ1z7HE4mnkjjvrLz/ebCRY=
-Date: Thu, 15 Jan 2026 17:31:51 +0800
+	s=arc-20240116; t=1768469954; c=relaxed/simple;
+	bh=IpKdm4vm1xXiTCAlkhSwSqOJm8VYAroIug3XCsnyJgo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=CLrZwW28K0R+RmQ0xh8UPCq9AQuGp3zs3fa5sy6REC3/n5mmB4JMdM8bFkF219CvGYtn+mMqIDd4A89+crLvPdfzfKzS7ErWSyoOvGtnETxhiT1o1YCbEvXeDJdqqU6Y7HHPx9DKuGAcF+EfzXHUHnwnliJ/tshWzULzAkQjK7w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=dbsaX3Tv; arc=none smtp.client-ip=209.85.128.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-wm1-f49.google.com with SMTP id 5b1f17b1804b1-4801c314c84so1463405e9.0
+        for <cgroups@vger.kernel.org>; Thu, 15 Jan 2026 01:39:12 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1768469951; x=1769074751; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=IpKdm4vm1xXiTCAlkhSwSqOJm8VYAroIug3XCsnyJgo=;
+        b=dbsaX3TvS3zLj/8HBTXY1PQPRgAwkuIm1De8IuyGdZDraFiJdbh0nox8oK3YZQUH7J
+         ZhyNaxvbkxM+Jdk4/Difgtj5y48E3UXY1It57q8LT+Ms1WQxxLbKzevXduR2BiTbE0lf
+         jgwsX/WE4lRxoDe1VjRolIIKL7rRE5EcotMw35qYTSElvTEO7HitpfBJHsJNYqmhVJnD
+         1RVtunosc6TKz83erKNmHj9tuzB8p4UkLkDiuwxexIHuqJTLW8Y79jslTNXatAE4XD9f
+         i2Yp2lszMWhF7Hcpi0Rik3u4twVnBzGUplW5Q+rEkrM3cFaFEHGCWozmKoS0ZOEIuNlo
+         7N0g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1768469951; x=1769074751;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=IpKdm4vm1xXiTCAlkhSwSqOJm8VYAroIug3XCsnyJgo=;
+        b=BwhhBfpeVuBu3/juyCK1RxF+UIxgHbFtX3van9Xcze/cchdsji8Dh+WX7+nyoeARJp
+         9AG3aIypgaCQdU/Zpp4I4pYseNBPuUG5yS8Qee0T//qiZX5nTuHmYDG2JA3GosmxfpZ0
+         2V9MrzKCVhTUmMonlvJZ8OE7dRyy+VpMjTS89S/FWgdN7h3r8Zk4pe3GxwRGFbiPJHtf
+         z4sOKJF84NRma5AyYtxAHbpiMDxh3mcUpXtYjyKmKvMoXTS9jirXhkZGzzYLzcYQxGiQ
+         W4BbnkR6ZEYpEjldfe2saEy1CGRPYRmfcHg8WFyHBjDsK15XhuzUtyZG1CCsIIISoXuq
+         nNoA==
+X-Forwarded-Encrypted: i=1; AJvYcCUvIcmeL7ht+jvVRtcQBkCvODwga/WFHsTiK65N3HArnVf7MdDO4DkOek11cW3NLRu9DpaG6ilr@vger.kernel.org
+X-Gm-Message-State: AOJu0YyE5hnAJVgm2rLNYnYZ9Oe5kYRHHKMxFJLy1+rHCS1N5Iwkt/j3
+	fiZdF3n/h9gxgttV77N0aDEj3TUdWE/J8bhGTL8tejoRd2nqOTVtIgT8Jqb9+682bjQ=
+X-Gm-Gg: AY/fxX5Y5sbf+WEIMSYbnCbvEThilumrJpI72XKxtlBCADYEgXSDSKMHteud6bPUY+j
+	ThdM4NJJ7pH3DQ1+5qKCY8HZj7EHDWmV4SXWBqTCeG2d2qOpVqCiwi6ENCKPwG8tCB/tpJxLQii
+	DzwlDb5M2ky4ZvH9icsxsBxszoefPmHiVVr+lnJhri8dpjvgpqIBIYhCbjKrpA2gC/cJBdNMeYq
+	McjekHmvz8C23pTEW1hHLGPFLKQ/wJP6ergL8L5QfqtHPqgikACwnE9DgOLJJ/awkysD8MpmWZj
+	+EHy/6i6ashGJTKGJSMCu943Kxj9804jwvgSn0bbmxluRsGJBmNwmeovmvq2Jniihs9qV2JzPSB
+	xQILCJsFaxnlKSqVIgBumv1YtPtHBGo78JGRZ11DLaGLeuiiYLtJveI+2O8YvgVtCPXqWR3AwMD
+	WLzJzs02VQfF2GFksVLxAAkUxI0EwX/Fg=
+X-Received: by 2002:a05:600c:4750:b0:480:1c75:407c with SMTP id 5b1f17b1804b1-4801c754220mr4477325e9.2.1768469951289;
+        Thu, 15 Jan 2026 01:39:11 -0800 (PST)
+Received: from blackdock.suse.cz (nat2.prg.suse.com. [195.250.132.146])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-47f428ac749sm37266595e9.5.2026.01.15.01.39.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 15 Jan 2026 01:39:10 -0800 (PST)
+Date: Thu, 15 Jan 2026 10:39:09 +0100
+From: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
+To: Zheng Qixing <zhengqixing@huaweicloud.com>
+Cc: Yu Kuai <yukuai@fnnas.com>, tj@kernel.org, josef@toxicpanda.com, 
+	axboe@kernel.dk, hch@infradead.org, cgroups@vger.kernel.org, 
+	linux-block@vger.kernel.org, linux-kernel@vger.kernel.org, yi.zhang@huawei.com, 
+	yangerkun@huawei.com, houtao1@huawei.com, zhengqixing@huawei.com
+Subject: Re: [PATCH v2 1/3] blk-cgroup: fix race between policy activation
+ and blkg destruction
+Message-ID: <xjwdgvoc6fw65yvtuyz7ku6dtjqzpf2ipty7ei5qcrfo7brxee@slit46ljmaoz>
+References: <20260113061035.1902522-1-zhengqixing@huaweicloud.com>
+ <20260113061035.1902522-2-zhengqixing@huaweicloud.com>
+ <le5sjny634ffj6piswnkhkh33eq5cbclgysedyjl2bcuijiutf@f3j6ozw7zuuc>
+ <edf84e44-d7e3-4a34-ad49-90ab5a4f545e@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH v3 23/30] mm: do not open-code lruvec lock
-To: Baoquan He <bhe@redhat.com>
-Cc: hannes@cmpxchg.org, hughd@google.com, mhocko@suse.com,
- roman.gushchin@linux.dev, shakeel.butt@linux.dev, muchun.song@linux.dev,
- david@kernel.org, lorenzo.stoakes@oracle.com, ziy@nvidia.com,
- harry.yoo@oracle.com, yosry.ahmed@linux.dev, imran.f.khan@oracle.com,
- kamalesh.babulal@oracle.com, axelrasmussen@google.com, yuanchu@google.com,
- weixugc@google.com, chenridong@huaweicloud.com, mkoutny@suse.com,
- akpm@linux-foundation.org, hamzamahfooz@linux.microsoft.com,
- apais@linux.microsoft.com, lance.yang@linux.dev, linux-mm@kvack.org,
- linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
- Qi Zheng <zhengqi.arch@bytedance.com>
-References: <cover.1768389889.git.zhengqi.arch@bytedance.com>
- <33fef62fd821f669fcdc999e54c4035a4e91b47d.1768389889.git.zhengqi.arch@bytedance.com>
- <aWiy0mDN0Ed9mLiG@MiWiFi-R3L-srv>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Qi Zheng <qi.zheng@linux.dev>
-In-Reply-To: <aWiy0mDN0Ed9mLiG@MiWiFi-R3L-srv>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="l27swnkbzqhelwte"
+Content-Disposition: inline
+In-Reply-To: <edf84e44-d7e3-4a34-ad49-90ab5a4f545e@huaweicloud.com>
 
 
+--l27swnkbzqhelwte
+Content-Type: text/plain; protected-headers=v1; charset=us-ascii
+Content-Disposition: inline
+Subject: Re: [PATCH v2 1/3] blk-cgroup: fix race between policy activation
+ and blkg destruction
+MIME-Version: 1.0
 
-On 1/15/26 5:26 PM, Baoquan He wrote:
-> On 01/14/26 at 07:32pm, Qi Zheng wrote:
->> From: Qi Zheng <zhengqi.arch@bytedance.com>
->>
->> Now we have lruvec_unlock(), lruvec_unlock_irq() and
->> lruvec_unlock_irqrestore(), but not the paired lruvec_lock(),
->                                    ~~ typo, 'no'?
->> lruvec_lock_irq() and lruvec_lock_irqsave().
->>
->> There is currently no use case for lruvec_lock_irqsave(), so only
->> introduce lruvec_lock() and lruvec_lock_irq(), and change all open-code
-> 
->    I didn't see lruvec_lock() is introduced in this patch, do I miss
->    anthing?
+On Thu, Jan 15, 2026 at 11:27:47AM +0800, Zheng Qixing <zhengqixing@huaweicloud.com> wrote:
+> Yes, this issue was discovered by injecting memory allocation failure at
+> ->pd_alloc_fn(..., GFP_KERNEL) in blkcg_activate_policy().
 
-I forgot to update commit message when I deleted lruvec_lock(), will
-modify it in the next version.
+Fair enough.
 
-Thanks!
+> Commit f1c006f1c685 ("blk-cgroup: synchronize pd_free_fn() from
+> blkg_free_workfn() and blkcg_deactivate_policy()") delays
+> list_del_init(&blkg->q_node) until after pd_free_fn() in blkg_free_workfn().
 
-> 
->> places to use these helper function. This looks cleaner and prepares for
->> reparenting LRU pages, preventing user from missing RCU lock calls due to
->> open-code lruvec lock.
->>
->> Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
->> ---
->>   include/linux/memcontrol.h |  5 +++++
->>   mm/vmscan.c                | 38 +++++++++++++++++++-------------------
->>   2 files changed, 24 insertions(+), 19 deletions(-)
->>
->> diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
->> index f1556759d0d3f..4b6f20dc694ba 100644
->> --- a/include/linux/memcontrol.h
->> +++ b/include/linux/memcontrol.h
->> @@ -1499,6 +1499,11 @@ static inline struct lruvec *parent_lruvec(struct lruvec *lruvec)
->>   	return mem_cgroup_lruvec(memcg, lruvec_pgdat(lruvec));
->>   }
->>   
->> +static inline void lruvec_lock_irq(struct lruvec *lruvec)
->> +{
->> +	spin_lock_irq(&lruvec->lru_lock);
->> +}
->> +
->>   static inline void lruvec_unlock(struct lruvec *lruvec)
->>   {
->>   	spin_unlock(&lruvec->lru_lock);
->> diff --git a/mm/vmscan.c b/mm/vmscan.c
->> index f206d4dac9e77..c48ff6e05e004 100644
->> --- a/mm/vmscan.c
->> +++ b/mm/vmscan.c
->> @@ -2020,7 +2020,7 @@ static unsigned long shrink_inactive_list(unsigned long nr_to_scan,
->>   
->>   	lru_add_drain();
->>   
->> -	spin_lock_irq(&lruvec->lru_lock);
->> +	lruvec_lock_irq(lruvec);
->>   
->>   	nr_taken = isolate_lru_folios(nr_to_scan, lruvec, &folio_list,
->>   				     &nr_scanned, sc, lru);
->> @@ -2032,7 +2032,7 @@ static unsigned long shrink_inactive_list(unsigned long nr_to_scan,
->>   	count_memcg_events(lruvec_memcg(lruvec), item, nr_scanned);
->>   	__count_vm_events(PGSCAN_ANON + file, nr_scanned);
->>   
->> -	spin_unlock_irq(&lruvec->lru_lock);
->> +	lruvec_unlock_irq(lruvec);
->>   
->>   	if (nr_taken == 0)
->>   		return 0;
->> @@ -2051,7 +2051,7 @@ static unsigned long shrink_inactive_list(unsigned long nr_to_scan,
->>   	count_memcg_events(lruvec_memcg(lruvec), item, nr_reclaimed);
->>   	count_vm_events(PGSTEAL_ANON + file, nr_reclaimed);
->>   
->> -	spin_lock_irq(&lruvec->lru_lock);
->> +	lruvec_lock_irq(lruvec);
->>   	lru_note_cost_unlock_irq(lruvec, file, stat.nr_pageout,
->>   					nr_scanned - nr_reclaimed);
->>   
->> @@ -2130,7 +2130,7 @@ static void shrink_active_list(unsigned long nr_to_scan,
->>   
->>   	lru_add_drain();
->>   
->> -	spin_lock_irq(&lruvec->lru_lock);
->> +	lruvec_lock_irq(lruvec);
->>   
->>   	nr_taken = isolate_lru_folios(nr_to_scan, lruvec, &l_hold,
->>   				     &nr_scanned, sc, lru);
->> @@ -2141,7 +2141,7 @@ static void shrink_active_list(unsigned long nr_to_scan,
->>   		__count_vm_events(PGREFILL, nr_scanned);
->>   	count_memcg_events(lruvec_memcg(lruvec), PGREFILL, nr_scanned);
->>   
->> -	spin_unlock_irq(&lruvec->lru_lock);
->> +	lruvec_unlock_irq(lruvec);
->>   
->>   	while (!list_empty(&l_hold)) {
->>   		struct folio *folio;
->> @@ -2197,7 +2197,7 @@ static void shrink_active_list(unsigned long nr_to_scan,
->>   	count_memcg_events(lruvec_memcg(lruvec), PGDEACTIVATE, nr_deactivate);
->>   	mod_node_page_state(pgdat, NR_ISOLATED_ANON + file, -nr_taken);
->>   
->> -	spin_lock_irq(&lruvec->lru_lock);
->> +	lruvec_lock_irq(lruvec);
->>   	lru_note_cost_unlock_irq(lruvec, file, 0, nr_rotated);
->>   	trace_mm_vmscan_lru_shrink_active(pgdat->node_id, nr_taken, nr_activate,
->>   			nr_deactivate, nr_rotated, sc->priority, file);
->> @@ -3832,9 +3832,9 @@ static void walk_mm(struct mm_struct *mm, struct lru_gen_mm_walk *walk)
->>   		}
->>   
->>   		if (walk->batched) {
->> -			spin_lock_irq(&lruvec->lru_lock);
->> +			lruvec_lock_irq(lruvec);
->>   			reset_batch_size(walk);
->> -			spin_unlock_irq(&lruvec->lru_lock);
->> +			lruvec_unlock_irq(lruvec);
->>   		}
->>   
->>   		cond_resched();
->> @@ -3993,7 +3993,7 @@ static bool inc_max_seq(struct lruvec *lruvec, unsigned long seq, int swappiness
->>   	if (seq < READ_ONCE(lrugen->max_seq))
->>   		return false;
->>   
->> -	spin_lock_irq(&lruvec->lru_lock);
->> +	lruvec_lock_irq(lruvec);
->>   
->>   	VM_WARN_ON_ONCE(!seq_is_valid(lruvec));
->>   
->> @@ -4008,7 +4008,7 @@ static bool inc_max_seq(struct lruvec *lruvec, unsigned long seq, int swappiness
->>   		if (inc_min_seq(lruvec, type, swappiness))
->>   			continue;
->>   
->> -		spin_unlock_irq(&lruvec->lru_lock);
->> +		lruvec_unlock_irq(lruvec);
->>   		cond_resched();
->>   		goto restart;
->>   	}
->> @@ -4043,7 +4043,7 @@ static bool inc_max_seq(struct lruvec *lruvec, unsigned long seq, int swappiness
->>   	/* make sure preceding modifications appear */
->>   	smp_store_release(&lrugen->max_seq, lrugen->max_seq + 1);
->>   unlock:
->> -	spin_unlock_irq(&lruvec->lru_lock);
->> +	lruvec_unlock_irq(lruvec);
->>   
->>   	return success;
->>   }
->> @@ -4739,7 +4739,7 @@ static int evict_folios(unsigned long nr_to_scan, struct lruvec *lruvec,
->>   	struct mem_cgroup *memcg = lruvec_memcg(lruvec);
->>   	struct pglist_data *pgdat = lruvec_pgdat(lruvec);
->>   
->> -	spin_lock_irq(&lruvec->lru_lock);
->> +	lruvec_lock_irq(lruvec);
->>   
->>   	scanned = isolate_folios(nr_to_scan, lruvec, sc, swappiness, &type, &list);
->>   
->> @@ -4748,7 +4748,7 @@ static int evict_folios(unsigned long nr_to_scan, struct lruvec *lruvec,
->>   	if (evictable_min_seq(lrugen->min_seq, swappiness) + MIN_NR_GENS > lrugen->max_seq)
->>   		scanned = 0;
->>   
->> -	spin_unlock_irq(&lruvec->lru_lock);
->> +	lruvec_unlock_irq(lruvec);
->>   
->>   	if (list_empty(&list))
->>   		return scanned;
->> @@ -4786,9 +4786,9 @@ static int evict_folios(unsigned long nr_to_scan, struct lruvec *lruvec,
->>   	walk = current->reclaim_state->mm_walk;
->>   	if (walk && walk->batched) {
->>   		walk->lruvec = lruvec;
->> -		spin_lock_irq(&lruvec->lru_lock);
->> +		lruvec_lock_irq(lruvec);
->>   		reset_batch_size(walk);
->> -		spin_unlock_irq(&lruvec->lru_lock);
->> +		lruvec_unlock_irq(lruvec);
->>   	}
->>   
->>   	mod_lruvec_state(lruvec, PGDEMOTE_KSWAPD + reclaimer_offset(sc),
->> @@ -5226,7 +5226,7 @@ static void lru_gen_change_state(bool enabled)
->>   		for_each_node(nid) {
->>   			struct lruvec *lruvec = get_lruvec(memcg, nid);
->>   
->> -			spin_lock_irq(&lruvec->lru_lock);
->> +			lruvec_lock_irq(lruvec);
->>   
->>   			VM_WARN_ON_ONCE(!seq_is_valid(lruvec));
->>   			VM_WARN_ON_ONCE(!state_is_valid(lruvec));
->> @@ -5234,12 +5234,12 @@ static void lru_gen_change_state(bool enabled)
->>   			lruvec->lrugen.enabled = enabled;
->>   
->>   			while (!(enabled ? fill_evictable(lruvec) : drain_evictable(lruvec))) {
->> -				spin_unlock_irq(&lruvec->lru_lock);
->> +				lruvec_unlock_irq(lruvec);
->>   				cond_resched();
->> -				spin_lock_irq(&lruvec->lru_lock);
->> +				lruvec_lock_irq(lruvec);
->>   			}
->>   
->> -			spin_unlock_irq(&lruvec->lru_lock);
->> +			lruvec_unlock_irq(lruvec);
->>   		}
->>   
->>   		cond_resched();
->> -- 
->> 2.20.1
->>
->>
-> 
+IIUC, the point was to delay it from blkg_destroy until blkg_free_workfn
+but then inside blkg_free_workfn it may have gone too far where it calls
+pd_free_fn's before actual list removal.
 
+(I'm Cc'ing the correct Kuai's address now.)
+IOW, I'm wondering whether mere swap of these two actions (pd_free_fn
+and list removal) wouldn't be a sufficient fix for the discovered issue
+(instead of expanding lock coverage).
+
+Thanks,
+Michal
+
+--l27swnkbzqhelwte
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iJEEABYKADkWIQRCE24Fn/AcRjnLivR+PQLnlNv4CAUCaWi1uxsUgAAAAAAEAA5t
+YW51MiwyLjUrMS4xMSwyLDIACgkQfj0C55Tb+AjBoQD+P0vwCMjZtjVGS9olloNJ
+W00FAlkbpKQbdfBF2UpOw6gA/3cd7/jS+Q2klkyaKhjtBWnmlIXM9qQIMhNR6dfO
+P9EA
+=EJwI
+-----END PGP SIGNATURE-----
+
+--l27swnkbzqhelwte--
 
