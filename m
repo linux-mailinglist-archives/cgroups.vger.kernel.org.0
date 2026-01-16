@@ -1,58 +1,57 @@
-Return-Path: <cgroups+bounces-13275-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-13276-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id ABB52D2EAD8
-	for <lists+cgroups@lfdr.de>; Fri, 16 Jan 2026 10:23:13 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 38396D2EB18
+	for <lists+cgroups@lfdr.de>; Fri, 16 Jan 2026 10:24:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id CF6B1300E795
-	for <lists+cgroups@lfdr.de>; Fri, 16 Jan 2026 09:19:27 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 2F96E301119C
+	for <lists+cgroups@lfdr.de>; Fri, 16 Jan 2026 09:21:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 500512E1758;
-	Fri, 16 Jan 2026 09:19:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 83A1D34E743;
+	Fri, 16 Jan 2026 09:21:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Tjdo9qjv"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="EQvt5dKU"
 X-Original-To: cgroups@vger.kernel.org
-Received: from out-177.mta1.migadu.com (out-177.mta1.migadu.com [95.215.58.177])
+Received: from out-170.mta1.migadu.com (out-170.mta1.migadu.com [95.215.58.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B20F7345CAF
-	for <cgroups@vger.kernel.org>; Fri, 16 Jan 2026 09:19:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 883AC34DB6F
+	for <cgroups@vger.kernel.org>; Fri, 16 Jan 2026 09:21:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768555167; cv=none; b=C2G8Hrq63zCNdPDlJQyPKxiCow7eCK8vcoKN7LNmJV6wOc/L9CRosvLZS/Lp8qgmGly8D+M/asssg9skiGxtMVKb/Jdsyp/cPeUmDUBav1r33XfgnDoIs/RAfuRFdU2NXtIIcxBYGNxBggq5Z9gLOOupD+p8foctvjqgIJTZwcQ=
+	t=1768555280; cv=none; b=GFeTxoCCLnVDpack8MJHEjLGrPnEj3okcQQh9kcD5MvJCmwCf5iwY2EE+aw/qBsqF9z9L8IVaZLYTRDp88F/IcNUPXnaVXnL8VDBPrCBV11yUf9gBvuYiXmrzaD+21O6sAGFvQrf46b3AvSeRSDllDOIV++IToYyC+C9+Kly9OA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768555167; c=relaxed/simple;
-	bh=r4fBhFb0tGH/vamI7QiLXeUGMpSfIJE7JupsViH8vjI=;
+	s=arc-20240116; t=1768555280; c=relaxed/simple;
+	bh=j14bovFJxfplgiusOjALiL9Bw/S3pAZ821NTcxpDbQE=;
 	h=Content-Type:Mime-Version:Subject:From:In-Reply-To:Date:Cc:
-	 Message-Id:References:To; b=opfn84fq9+Vlr2Gr94N8Kv9KC5CSENRfCU6kfR1fiRAjed5TJTT88msANXgfWu26tBzrZjZYXEbm7g7/CSA3S8o4o8C/6Jg0EsNr2szODIinLS31yofvF6ZYrL35AFCPzsgslxagdsIN9twXXcVwNz3zLT3yIOUgQqlIR1cghyA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Tjdo9qjv; arc=none smtp.client-ip=95.215.58.177
+	 Message-Id:References:To; b=PmCjgXSmrfwwq661GRbo7XpKONFElj6oZDc27492reoVg2UrUO7vNTy84C5CUPhcpr6E3qXclKI66z+mnoEwYFR1tsoqTUgJagHVlsKkMNb5Cr59Lw3oonNGhB2OBJ13QbBUKX94BH/E6bNjZiqQ/f6p/YOs5WeCbxTK/Aj6MYY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=EQvt5dKU; arc=none smtp.client-ip=95.215.58.170
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Content-Type: text/plain;
 	charset=us-ascii
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1768555153;
+	t=1768555275;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=bXuUSWKmDb91gc+pCaKfgPo7v9igVSa8mgzQJr7mqZ0=;
-	b=Tjdo9qjv4nbnRggvBlfTo4iCjKhhyopfmT6r+E9ka6pIQLEFxcX+5m+rQOgPZ3AW+K7Zyt
-	dyBNG2c+9l1V7U2sbthxgjh/qwT5EzyvLD7xzJCoPSGpdWEGN5VVVJqjCa2lM8GOoIGn71
-	YyJHqRRHnKsz68I0TKilPJf08I/jcQw=
+	bh=CUd3/WmA+J5BNqqwVB9Fpj2XCO58RHNi4/wu2oPQXwE=;
+	b=EQvt5dKUNhmjcAClSgNl2oSdYNzQw3bV5H6zQYo4/3MMJncvtIIxUJ30Z7b4DKnHrjlV9d
+	chYH/jrA7vpANEpjHgFEb8PvM5NbPFCr8w1xDumij3rF/aninUxbLe+jU1qpvhC6S2BH7m
+	n4Iby+e6+RKZ+CGpLeTECxPeN+DbLLM=
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3864.300.41.1.7\))
-Subject: Re: [PATCH v3 18/30] mm: zswap: prevent memory cgroup release in
- zswap_compress()
+Subject: Re: [PATCH v3 23/30] mm: do not open-code lruvec lock
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 From: Muchun Song <muchun.song@linux.dev>
-In-Reply-To: <592f65bbe05587c01a2718443a70e639cc611f3d.1768389889.git.zhengqi.arch@bytedance.com>
-Date: Fri, 16 Jan 2026 17:18:16 +0800
+In-Reply-To: <33fef62fd821f669fcdc999e54c4035a4e91b47d.1768389889.git.zhengqi.arch@bytedance.com>
+Date: Fri, 16 Jan 2026 17:20:14 +0800
 Cc: hannes@cmpxchg.org,
  hughd@google.com,
  mhocko@suse.com,
@@ -79,9 +78,9 @@ Cc: hannes@cmpxchg.org,
  cgroups@vger.kernel.org,
  Qi Zheng <zhengqi.arch@bytedance.com>
 Content-Transfer-Encoding: 7bit
-Message-Id: <0924D73A-5DE4-464D-B606-B0187C72EB96@linux.dev>
+Message-Id: <038534F8-F695-4660-A18A-875214C3FE8B@linux.dev>
 References: <cover.1768389889.git.zhengqi.arch@bytedance.com>
- <592f65bbe05587c01a2718443a70e639cc611f3d.1768389889.git.zhengqi.arch@bytedance.com>
+ <33fef62fd821f669fcdc999e54c4035a4e91b47d.1768389889.git.zhengqi.arch@bytedance.com>
 To: Qi Zheng <qi.zheng@linux.dev>
 X-Migadu-Flow: FLOW_OUT
 
@@ -91,17 +90,17 @@ X-Migadu-Flow: FLOW_OUT
 > 
 > From: Qi Zheng <zhengqi.arch@bytedance.com>
 > 
-> In the near future, a folio will no longer pin its corresponding memory
-> cgroup. To ensure safety, it will only be appropriate to hold the rcu read
-> lock or acquire a reference to the memory cgroup returned by
-> folio_memcg(), thereby preventing it from being released.
+> Now we have lruvec_unlock(), lruvec_unlock_irq() and
+> lruvec_unlock_irqrestore(), but not the paired lruvec_lock(),
+> lruvec_lock_irq() and lruvec_lock_irqsave().
 > 
-> In the current patch, the rcu read lock is employed to safeguard against
-> the release of the memory cgroup in zswap_compress().
+> There is currently no use case for lruvec_lock_irqsave(), so only
+> introduce lruvec_lock() and lruvec_lock_irq(), and change all open-code
+> places to use these helper function. This looks cleaner and prepares for
+> reparenting LRU pages, preventing user from missing RCU lock calls due to
+> open-code lruvec lock.
 > 
 > Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
-> Acked-by: Johannes Weiner <hannes@cmpxchg.org>
-> Acked-by: Shakeel Butt <shakeel.butt@linux.dev>
 
 Acked-by: Muchun Song <muchun.song@linux.dev>
 
