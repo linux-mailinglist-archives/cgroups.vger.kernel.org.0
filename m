@@ -1,98 +1,141 @@
-Return-Path: <cgroups+bounces-13265-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-13266-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id BB7C0D2ABB7
-	for <lists+cgroups@lfdr.de>; Fri, 16 Jan 2026 04:28:22 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id A5832D2CD84
+	for <lists+cgroups@lfdr.de>; Fri, 16 Jan 2026 08:00:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 99C903032E8A
-	for <lists+cgroups@lfdr.de>; Fri, 16 Jan 2026 03:28:21 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 57B3D30245DA
+	for <lists+cgroups@lfdr.de>; Fri, 16 Jan 2026 07:00:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA68F3385BE;
-	Fri, 16 Jan 2026 03:28:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E6635270540;
+	Fri, 16 Jan 2026 07:00:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="kawZwRZ0"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Up1EMB8O"
 X-Original-To: cgroups@vger.kernel.org
-Received: from out-172.mta1.migadu.com (out-172.mta1.migadu.com [95.215.58.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f169.google.com (mail-pl1-f169.google.com [209.85.214.169])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D4489338594
-	for <cgroups@vger.kernel.org>; Fri, 16 Jan 2026 03:28:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 872A0E555
+	for <cgroups@vger.kernel.org>; Fri, 16 Jan 2026 07:00:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768534100; cv=none; b=f8mXpuRmnKqbf67IngHRlglCaBTkK5AN++Y5YnfiA+4Y2itu/eDOONdXB0dR/KJrUPI+Uc5x+zCAwOSGm0WcWXBTjCLVCl3xsJ9jZtImsNHe2RBVwNSWgirxs2B5cXHl0at4P/WBouUqJs1n/8fiYrHDOBYVqxnTdsRmtvXxAKw=
+	t=1768546845; cv=none; b=EU+Cav7etHAwhknGlS+Hoc03g8gpvXjXBQuIink6pvTrtCq6g7iHjYt5XVsQpRVgGGm4FdB/i/3P4Xe0zNcqAnBY4I/Lxwuri0L7yvKhgoGCzkoqadfh4iu1biRgHwhhYtIifTIo/KOcCp5Fvlp0d9MxrNrqu+/lho0bENMECg0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768534100; c=relaxed/simple;
-	bh=D4eEoiTsek1sJGNZSQI6hNZiuu4TWe6MsmZNEeN4N1A=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=UbASK42mtwFl/fzhvkC9AqIOBfk76+WQ7AyMHdwMQBPb4Zx9JjRw4y+NrAhNkbe8A+6SwRifDiAx9OFu1UEK/QClEnEiCih7rQ4Xoc0Z0SDpGgLwnB0MQiVpx5tX8/NRvI4GhISZaSiOx12Ncs4P0pW7hRpLySEHW8EHY+Jwo30=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=kawZwRZ0; arc=none smtp.client-ip=95.215.58.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <19a35b15-b7ce-40fc-8f6e-ed84cff84a17@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1768534096;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=5DzqnhNxvLI0laCKLwCbDwSiE4A2VzYWibr9B0HZ9UY=;
-	b=kawZwRZ0yr6J0LNYij00kshaTdb5nuUx2T60E4pjQvKILtWpaKJycNZR71fhyREdb2Xrnw
-	+gzfIZeJs9TXKrTUoxf5Y9o6O7rQD1+i0WNl7mXlwmpPfVKn1+64txNPh4r6WZLMfOUWQy
-	29o/khTKalijqtl9LKWABLc9TQ6Oa9U=
-Date: Fri, 16 Jan 2026 11:27:46 +0800
+	s=arc-20240116; t=1768546845; c=relaxed/simple;
+	bh=dYxTOubKvkA7tWmjuxqaKdwdnW63JufKL+TPAWpNhbQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=uWBrbUQFNYpOFiNrOYSdjKip3bIfDaDVggRMRBofSfw0JbP42obZyGtfAvBcGPIE6nPrM261HO7GEqqdz8M/m9BGPg35bXAUKjXALvU1bu04XioS0AynCkaH1HLVoZWe2qQuA/zUdCUj3QXIvmGXy2OX0dz5ROWia4E61Iq5b18=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Up1EMB8O; arc=none smtp.client-ip=209.85.214.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-pl1-f169.google.com with SMTP id d9443c01a7336-29f02651fccso48065ad.0
+        for <cgroups@vger.kernel.org>; Thu, 15 Jan 2026 23:00:44 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1768546844; x=1769151644; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=Yjk/HuTCyBmTrKEgW/VvGyUH8+Hoy04Wh+N75d7lrKA=;
+        b=Up1EMB8Odo22rD3WeSULo7G+twhz3BY8qdbcCEYbcNFDLrsLRxTLRgb48UIcOVmvUb
+         N8C69Frs3qKc0FPO9G6YKzrTh1Qdv/Zh1mwlI+UST13OGWTYEgs0shVXF6XXh5zDWyBa
+         5GRP4CDLpQKIVlNf57SpEzAVasMyrzkR7E5bxQIWmL6OBUpTJJHJNDNh04XggWjqX4/a
+         mm0qOEK/+1z0cmA8MNDuIu7LqtciWvLQiWuVqY6nRXQgu3+Z4jGOglyYDG6MQp1tjAG3
+         rmEQqXfniPwBoUeD9nwwwqsgaCWnZzDowlKNIke01OMw1DtD4X4rsaxrH4IFuJzrrel3
+         g4Lw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1768546844; x=1769151644;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:x-gm-gg
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Yjk/HuTCyBmTrKEgW/VvGyUH8+Hoy04Wh+N75d7lrKA=;
+        b=jdhF2eu4anF5RhRAIhKV7AiQE25k4yXUD623/Q5y8Pv7RJGNFQ4ie7vasNpSuJsmps
+         TgxF0TVbr6wC1RkXE6bkLokIcctBMdnY5yWOUekZKroD4dBIoWct8rF8NsFuKH6nz9gj
+         ecVMfvvS6hgc+s8Pt+eS2nKZJsqwgsE8i+KzDEJY3HRXxTx4meiDsGtbvcnztYIS3Phj
+         5HqL9aAqMVSEEeTdecnghRuSpNbW+qodttsu0LEEk7bf83QiHtgNuzGBJ8BpnRxrFVs0
+         dqbVgjwgAP0NYs+r6ghC5hx5WjaYaCdxNRoint0v1lO0YYHK24BlTqnN2QUcA2Ipiar3
+         FhTQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXhWF8Lh8MpUjvQWo92htv7IYgsDQj5I/GrE0jlE8MFbprX+Y/STDVCKLlbMQ1sHrE77zEfFh+7@vger.kernel.org
+X-Gm-Message-State: AOJu0YxrBxdH8SI9sNApALE5zPHyX1sXzPR71pZCyTYsUtQt4g07CUpQ
+	wdvQ6pD+ac7nWzNb0MjCWEwHZxEq3BpJxb8p4GydsH1gAhbtgBucWeYEHwFHp8QpAg==
+X-Gm-Gg: AY/fxX7T+gx4+jwMBXrbc/jliC9rs1GBmB+Q01x+BSm/tFsIZdjaEIWUrPdHg9NA2uv
+	9R2LQKISYyQz0pp93bDdXqVYjaWTVbgNW5CE8RS+Xgdk7iLI+IdO7RJC3mvmLbzzI/JT8Z3dp+a
+	NxyaHJaVU5th2in2vtad5S1YYw6wxUr2vHqyPgLOe5AdYy3FkRb9cBDjGtZpR6knPPC6XHZ7nhP
+	pXcixN7eCek2XWx89OnL3fFtKhk5LxH49yTsQxt+zkiVwRvpmKDVmRwfUvCzCIq5FD4s/7G0Qor
+	nAoWT3GLkxEYcScXojfIEnMtTCbhXc5CneODzOhs7I6iqrLxEWm4twcsLhghEEYEyAhS1rd5G+4
+	fuUjuLWxvqjVLT35hr3EFMhXdXVWONY0WvFtnTD3FJcpK/hTj7EYvSq6nImu3UTlXggNPzFZIut
+	rEFh1xZNqjShCmDoe8BzZrbZQTZ82l/T0SjD0bJy6MmMu4Ab+alw==
+X-Received: by 2002:a17:902:ecc9:b0:2a3:ccfa:c41f with SMTP id d9443c01a7336-2a71a96bcf1mr1526965ad.1.1768546843624;
+        Thu, 15 Jan 2026 23:00:43 -0800 (PST)
+Received: from google.com (130.15.125.34.bc.googleusercontent.com. [34.125.15.130])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-81fa1094e23sm1195803b3a.4.2026.01.15.23.00.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 15 Jan 2026 23:00:43 -0800 (PST)
+Date: Fri, 16 Jan 2026 07:00:37 +0000
+From: Bing Jiao <bingjiao@google.com>
+To: Andrew Morton <akpm@linux-foundation.org>
+Cc: David Hildenbrand <david@kernel.org>,
+	Lorenzo Stoakes <lorenzo.stoakes@oracle.com>,
+	"Liam R. Howlett" <Liam.Howlett@oracle.com>,
+	Vlastimil Babka <vbabka@suse.cz>, Mike Rapoport <rppt@kernel.org>,
+	Suren Baghdasaryan <surenb@google.com>,
+	Michal Hocko <mhocko@suse.com>,
+	Axel Rasmussen <axelrasmussen@google.com>,
+	Yuanchu Xie <yuanchu@google.com>, Wei Xu <weixugc@google.com>,
+	Johannes Weiner <hannes@cmpxchg.org>,
+	Qi Zheng <zhengqi.arch@bytedance.com>,
+	Shakeel Butt <shakeel.butt@linux.dev>,
+	Gregory Price <gourry@gourry.net>,
+	Joshua Hahn <joshua.hahnjy@gmail.com>, muchun.song@linux.dev,
+	roman.gushchin@linux.dev, tj@kernel.org, longman@redhat.com,
+	chenridong@huaweicloud.com, linux-mm@kvack.org,
+	linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
+Subject: Re: [PATCH v9 0/2] mm/vmscan: fix demotion targets checks in
+ reclaim/demotion
+Message-ID: <aWniFUZgiuNEDe9O@google.com>
+References: <20260114070053.2446770-1-bingjiao@google.com>
+ <20260114205305.2869796-1-bingjiao@google.com>
+ <20260115160011.29dca1c262ab1fb887857508@linux-foundation.org>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH v3 28/30 fix 1/2] mm: memcontrol: fix
- lruvec_stats->state_local reparenting
-To: Andrew Morton <akpm@linux-foundation.org>
-Cc: hannes@cmpxchg.org, hughd@google.com, mhocko@suse.com,
- roman.gushchin@linux.dev, shakeel.butt@linux.dev, muchun.song@linux.dev,
- david@kernel.org, lorenzo.stoakes@oracle.com, ziy@nvidia.com,
- harry.yoo@oracle.com, yosry.ahmed@linux.dev, imran.f.khan@oracle.com,
- kamalesh.babulal@oracle.com, axelrasmussen@google.com, yuanchu@google.com,
- weixugc@google.com, chenridong@huaweicloud.com, mkoutny@suse.com,
- hamzamahfooz@linux.microsoft.com, apais@linux.microsoft.com,
- lance.yang@linux.dev, linux-mm@kvack.org, linux-kernel@vger.kernel.org,
- cgroups@vger.kernel.org, Qi Zheng <zhengqi.arch@bytedance.com>
-References: <b11a0bde9fe18673a61a79398f226ad7cb04a894.1768389889.git.zhengqi.arch@bytedance.com>
- <e5afd1b5ae95d70f82433b9b4e13201342d16707.1768473427.git.zhengqi.arch@bytedance.com>
- <20260115094704.17d35583bbcff28677b5bc12@linux-foundation.org>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Qi Zheng <qi.zheng@linux.dev>
-In-Reply-To: <20260115094704.17d35583bbcff28677b5bc12@linux-foundation.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20260115160011.29dca1c262ab1fb887857508@linux-foundation.org>
 
+On Thu, Jan 15, 2026 at 04:00:11PM -0800, Andrew Morton wrote:
+> On Wed, 14 Jan 2026 20:53:01 +0000 Bing Jiao <bingjiao@google.com> wrote:
+>
+> > I’m resubmitting the full refreshed patch series together this time.
+> > I just realized it is better to include the unmodified patches alongside
+> > the modified ones to ensure compatibility with upstream automated tools
+> > and to simplify your review process.
+>
+> No probs.
+>
+> [1/2] is cc:stable whereas [2/2] is not.  Ordinarily that means I must
+> split the series apart (they take different routes) and often discard
+> the [0/n].
 
+Hi Andrew,
 
-On 1/16/26 1:47 AM, Andrew Morton wrote:
-> On Thu, 15 Jan 2026 18:41:38 +0800 Qi Zheng <qi.zheng@linux.dev> wrote:
-> 
->> From: Qi Zheng <zhengqi.arch@bytedance.com>
->>
->> Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
-> 
-> What was "fixed"?
+Thank you for the explanation. I appreciate the insight into the upstream
+process and the time you have taken to review this series. I wish I had
+known this earlier so as not to add to your workload.
 
-[1/2] fixed the issue reported by 
-https://lore.kernel.org/all/6967cd38.050a0220.58bed.0001.GAE@google.com/.
+> In this case I think I'll leave things as-is, so [1/2]'s entry into the
+> -stable pipeline will occur a few weeks later.  I don't think the
+> problem is serious enough to need super-fast-tracking?
+>
+> Hopefully this approach means we'll get some Reviewed-bys ;)
 
-Previuosly, state_local was protected by ss_rstat_lock. Since
-[PATCH v3 28/30] added a concurrent path, [2/2] changed state_local
-to the atomic_long_t type for protection.
+I agree that the issue does not require urgent fast-tracking, so leaving
+the series as-is for the standard pipeline is appropriate.
 
-> 
-> I queued this and [2/2] as squashable fixes against "mm: memcontrol:
-> prepare for reparenting state_local".
-
-Thanks!
-
-> 
-
+Best regards,
+Bing
 
