@@ -1,209 +1,198 @@
-Return-Path: <cgroups+bounces-13303-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-13304-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id F16FDD399DA
-	for <lists+cgroups@lfdr.de>; Sun, 18 Jan 2026 21:53:15 +0100 (CET)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id EE605D39CBF
+	for <lists+cgroups@lfdr.de>; Mon, 19 Jan 2026 04:20:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 91EB8300942B
-	for <lists+cgroups@lfdr.de>; Sun, 18 Jan 2026 20:53:13 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id DC3E930019F6
+	for <lists+cgroups@lfdr.de>; Mon, 19 Jan 2026 03:20:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E28AA212542;
-	Sun, 18 Jan 2026 20:53:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 10B201EFFB7;
+	Mon, 19 Jan 2026 03:20:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="wAwy4dum"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="hdfhqaVd"
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out-182.mta1.migadu.com (out-182.mta1.migadu.com [95.215.58.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9AED723EA81;
-	Sun, 18 Jan 2026 20:53:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB2EB1A3164
+	for <cgroups@vger.kernel.org>; Mon, 19 Jan 2026 03:20:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768769592; cv=none; b=h16MGpLI50R7LFN5MDkMm/wTVPwOexHsguIdmXRlq3+rvqi5AJPjEmq4+Cb12HEL5bAtqdaFy9T5+WjA03MWpDbLQuY1UWxNw9YJ0wsD7ERZ0ybaNjKljzzornMX8B4yOi8C50ouIDi2ygevaf+RmCbnAhtzy8BFWcJGXui4mbw=
+	t=1768792839; cv=none; b=id3AdN0RgzOV8bf2lPsmFfemrvIsOUxmyIeIS5B0EP7QpDDpTibQfkMfvJE6TbI5IRCcCJsYZyX61DGUeAFJgcc8o69W8l4lxSx8IpUAuSuD2B8JHHMq5OoZKe0S5p7UUEAYvR8JXNq9wkELhDecbmOUWSC7imIvu0R7ts2n3jo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768769592; c=relaxed/simple;
-	bh=fK9ac9RPhRZgFPiQNcPRY83rlzyBRy0paqxUcXHrxlY=;
-	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
-	 Mime-Version:Content-Type; b=DfrIwmtuFNpirhHy+HPqHcHmCl3224mMRDAB3P2uezQy4jYWXnC3ZW/mHgSNYV51mYee/XiXhve8PLQ2t+zoujm0o1lr3KKWYmhyPHQGcJPUBjkjtx7tjGrqZ0VeTene/+4iqmGJG5ZmDOv+0d1TDT8vrJVYk1GEgjYdzgcSc9M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=wAwy4dum; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AC5E4C116D0;
-	Sun, 18 Jan 2026 20:53:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-	s=korg; t=1768769592;
-	bh=fK9ac9RPhRZgFPiQNcPRY83rlzyBRy0paqxUcXHrxlY=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=wAwy4dumj3QkHo2j4/DFpsskq0L2LT+YaKl/VWlDSldxxke7hgauSAAaCEQdxQ/rM
-	 35l6yp40Je1qZG1ZgTWzwr0eHET0Wp4AjTK9It/U+kfCFKjZTw/tDbw++Y2TB/bEuQ
-	 p4KTqMMB/Rkp7GfG3dmQt7Tca4Ph5/U6dNUvAAqY=
-Date: Sun, 18 Jan 2026 12:53:11 -0800
-From: Andrew Morton <akpm@linux-foundation.org>
-To: Deepanshu Kartikey <kartikey406@gmail.com>
-Cc: syzbot <syzbot+079a3b213add54dd18a7@syzkaller.appspotmail.com>,
- cgroups@vger.kernel.org, linux-kernel@vger.kernel.org, linux-mm@kvack.org,
- mhocko@kernel.org, roman.gushchin@linux.dev, shakeel.butt@linux.dev,
- syzkaller-bugs@googlegroups.com, Johannes Weiner <hannes@cmpxchg.org>,
- Muchun Song <muchun.song@linux.dev>, Minchan Kim <minchan@kernel.org>
-Subject: Re: [syzbot] [cgroups?] [mm?] WARNING in memcg1_swapout
-Message-Id: <20260118125311.e1894f598e2a8ef626f47f25@linux-foundation.org>
-In-Reply-To: <CADhLXY7FJqRLjX7X2yJfa0=iDbUAMwhS35cOEExW+qBJWAnt+A@mail.gmail.com>
-References: <696b56b1.050a0220.3390f1.0007.GAE@google.com>
-	<20260117165722.6dc25d72fd58254cb89e711b@linux-foundation.org>
-	<CADhLXY6ACKeyLrjARTTdfWyrvUdLbtD-wXiQvsvhsbGjwmUqDA@mail.gmail.com>
-	<CADhLXY7FJqRLjX7X2yJfa0=iDbUAMwhS35cOEExW+qBJWAnt+A@mail.gmail.com>
-X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1768792839; c=relaxed/simple;
+	bh=6Ird/YJAGamQS9pATV0ibxkGqtnF/uRt/syENrfRcnc=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=TU66Nt02iTrMa3IKD91n1NaP2fW2U2QEO5fC1eKTCxGX+hF8n4H+DGGeM0gMBqztxeSazgq1393MEDq4jlxzg2HlzIZWdB1P9u/EWqSCT1n73SCmoJHKQGkb32k7bJ1YeZrIogLE1LGuVQEj5Vdk6xrWOa711RqHsDMe1Y9p8VQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=hdfhqaVd; arc=none smtp.client-ip=95.215.58.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <f2b2d0e6-0690-41e5-9718-ef4a1985e50c@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1768792834;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=pd6kZGNbyNYE8tPLcAsqL3zBFM4wIaBCbTnO8h62LzA=;
+	b=hdfhqaVdUy2hJ5povwHWvJH4g07Wa6Kmf/JVODLiU5Fp9De+Ho7k9WyFuc+U4pD1cqVdLB
+	oeu4dSx2lKbMq72W34qHqDZEz/ZdAlRuDR0vJuFNUQR3WpiyyCsiD/7+7Rt73FiwhGNGvI
+	yIRlAM+lX63AEX1QPjs39nfRRXxNHvY=
+Date: Mon, 19 Jan 2026 11:20:11 +0800
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+MIME-Version: 1.0
+Subject: Re: [PATCH v3 08/30] mm: memcontrol: prevent memory cgroup release in
+ get_mem_cgroup_from_folio()
+To: Shakeel Butt <shakeel.butt@linux.dev>
+Cc: hannes@cmpxchg.org, hughd@google.com, mhocko@suse.com,
+ roman.gushchin@linux.dev, muchun.song@linux.dev, david@kernel.org,
+ lorenzo.stoakes@oracle.com, ziy@nvidia.com, harry.yoo@oracle.com,
+ yosry.ahmed@linux.dev, imran.f.khan@oracle.com, kamalesh.babulal@oracle.com,
+ axelrasmussen@google.com, yuanchu@google.com, weixugc@google.com,
+ chenridong@huaweicloud.com, mkoutny@suse.com, akpm@linux-foundation.org,
+ hamzamahfooz@linux.microsoft.com, apais@linux.microsoft.com,
+ lance.yang@linux.dev, linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+ cgroups@vger.kernel.org, Muchun Song <songmuchun@bytedance.com>,
+ Qi Zheng <zhengqi.arch@bytedance.com>
+References: <cover.1768389889.git.zhengqi.arch@bytedance.com>
+ <c5c8eba771ab90d03f4c024c2384b8342ec41452.1768389889.git.zhengqi.arch@bytedance.com>
+ <qdfq2vxdma4qnt7pyfvuiyiib6ffuv46jyqsfgab643ihzttb6@h4hodwsqkmom>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Qi Zheng <qi.zheng@linux.dev>
+In-Reply-To: <qdfq2vxdma4qnt7pyfvuiyiib6ffuv46jyqsfgab643ihzttb6@h4hodwsqkmom>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
-On Sun, 18 Jan 2026 12:31:43 +0530 Deepanshu Kartikey <kartikey406@gmail.com> wrote:
 
-> > >
-> > > That's
-> > >
-> > >         VM_WARN_ON_ONCE(oldid != 0);
-> > >
-> > > which was added by Deepanshu's "mm/swap_cgroup: fix kernel BUG in
-> > > swap_cgroup_record".
-> > >
-> > > This patch has Fixes: 1a4e58cce84e ("mm: introduce MADV_PAGEOUT"),
-> > > which is six years old.  For some reason it has no cc:stable.
-> > >
-> > > Deepanshu's patch has no reviews.
-> > >
-> > > So can I please do the memcg maintainer summoning dance here?  We have a
-> > > repeatable BUG happening in mainline Linux.
-> > >
-> >
-> > Hi Andrew,
-> >
-> > I checked the git blame output for commit 0f853ca2a798:
-> >
-> > Line 763: memcg1_swapout(folio, swap);
-> > Line 764: __swap_cache_del_folio(ci, folio, swap, shadow);
-> >                     (d7a7b2f91f36b - Kairui Song, 2026-01-13 02:33:36 +0800)
-> >
-> > Kairui's reordering patch appears to have been merged on Jan 13.
 
-Eek, there are many patches, it helps to identify them carefully.
-
-I think you're referring to
-https://git.kernel.org/pub/scm/linux/kernel/git/akpm/25-new.git/tree/patches/mm-swap-use-swap-cache-as-the-swap-in-synchronize-layer-fix.patch
-
-> > The syzbot report is also from Jan 13, likely from earlier in the
-> > day before the reordering patch was merged.
-> >
-> > So this report is from before the fix. The warning should not appear
-> > in linux-next builds after Jan 13.
-> >
-> > Thanks,
-> >
-> > Deepanshu
+On 1/18/26 8:31 AM, Shakeel Butt wrote:
+> On Wed, Jan 14, 2026 at 07:32:35PM +0800, Qi Zheng wrote:
+>> From: Muchun Song <songmuchun@bytedance.com>
+>>
+>> In the near future, a folio will no longer pin its corresponding
+>> memory cgroup. To ensure safety, it will only be appropriate to
+>> hold the rcu read lock or acquire a reference to the memory cgroup
+>> returned by folio_memcg(), thereby preventing it from being released.
+>>
+>> In the current patch, the rcu read lock is employed to safeguard
+>> against the release of the memory cgroup in get_mem_cgroup_from_folio().
+>>
+>> This serves as a preparatory measure for the reparenting of the
+>> LRU pages.
+>>
+>> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+>> Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
+>> Reviewed-by: Harry Yoo <harry.yoo@oracle.com>
+>> ---
+>>   mm/memcontrol.c | 10 +++++++---
+>>   1 file changed, 7 insertions(+), 3 deletions(-)
+>>
+>> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+>> index 982c9f5cf72cb..0458fc2e810ff 100644
+>> --- a/mm/memcontrol.c
+>> +++ b/mm/memcontrol.c
+>> @@ -991,14 +991,18 @@ struct mem_cgroup *get_mem_cgroup_from_current(void)
+>>    */
+>>   struct mem_cgroup *get_mem_cgroup_from_folio(struct folio *folio)
+>>   {
+>> -	struct mem_cgroup *memcg = folio_memcg(folio);
+>> +	struct mem_cgroup *memcg;
+>>   
+>>   	if (mem_cgroup_disabled())
+>>   		return NULL;
+>>   
+>> +	if (!folio_memcg_charged(folio))
+>> +		return root_mem_cgroup;
+>> +
+>>   	rcu_read_lock();
+>> -	if (!memcg || WARN_ON_ONCE(!css_tryget(&memcg->css)))
+>> -		memcg = root_mem_cgroup;
+>> +	do {
+>> +		memcg = folio_memcg(folio);
+>> +	} while (unlikely(!css_tryget(&memcg->css)));
 > 
-> Hi Andrew,
+> I went back to [1] where AI raised the following concern which I want to
+> address:
 > 
-> I tested with the latest linux-next in sysbot. It is working fine
+>> If css_tryget() fails (e.g. refcount is 0), this loop spins indefinitely
+>> with the RCU read lock held. Is it guaranteed that folio_memcg() will
+>> return a different, alive memcg in subsequent iterations?
+> 
+> Will css_tryget() ever fail for the memcg returned by folio_memcg()?
+> Let's suppose memcg of a given folio is being offlined. The objcg
+> reparenting happens in memcg_reparent_objcgs() which is called in
+> offline_css() chain and we know that the offline context holds a
+> reference on the css being offlined (see css_killed_work_fn()).
+> 
+> Also let's suppose the offline process has the last reference on the
+> memcg's css. Now we have following two scenarios:
+> 
+> Scenario 1:
+> 
+> get_mem_cgroup_from_folio()		css_killed_work_fn()
+>    memcg = folio_memcg(folio)		  offline_css(css)
+>    					    memcg_reparent_objcgs()
+>    css_tryget(memcg)
+>    					  css_put(css)
+> 
+> In the above case css_tryget() will not fail.
+> 
+> 
+> Scenario 2:
+> 
+> get_mem_cgroup_from_folio()		css_killed_work_fn()
+>    memcg = folio_memcg(folio)		  offline_css(css)
+>    					    memcg_reparent_objcgs()
+>    					  css_put(css) // last reference
+>    css_tryget(memcg)
+>    // retry on failure
+> 
+> In the above case the context in get_mem_cgroup_from_folio() will retry
+> and will get different memcg during reparenting happening before the
+> last css_put(css).
+> 
+> So, I think we are good and AI is mistaken.
+> 
+> Folks, please check if I missed something.
 
-Great, thanks.  But we still don't have review for this one.
+LGTM, thank you for such a detailed analysis!
 
-For some reason I don't have cc:stable on this - could people
-make a recommendation?
-
-
-
-From: Deepanshu Kartikey <kartikey406@gmail.com>
-Subject: mm/swap_cgroup: fix kernel BUG in swap_cgroup_record
-Date: Sat, 10 Jan 2026 12:16:13 +0530
-
-When using MADV_PAGEOUT, pages can remain in swapcache with their swap
-entries assigned.  If MADV_PAGEOUT is called again on these pages, they
-reuse the same swap entries, causing memcg1_swapout() to call
-swap_cgroup_record() with an already-recorded entry.
-
-The existing code assumes swap entries are always being recorded for the
-first time (oldid == 0), triggering VM_BUG_ON when it encounters an
-already-recorded entry:
-
-  ------------[ cut here ]------------
-  kernel BUG at mm/swap_cgroup.c:78!
-  Oops: invalid opcode: 0000 [#1] SMP KASAN PTI
-  CPU: 0 UID: 0 PID: 6176 Comm: syz.0.30 Not tainted
-  RIP: 0010:swap_cgroup_record+0x19c/0x1c0 mm/swap_cgroup.c:78
-  Call Trace:
-   memcg1_swapout+0x2fa/0x830 mm/memcontrol-v1.c:623
-   __remove_mapping+0xac5/0xe30 mm/vmscan.c:773
-   shrink_folio_list+0x2786/0x4f40 mm/vmscan.c:1528
-   reclaim_folio_list+0xeb/0x4e0 mm/vmscan.c:2208
-   reclaim_pages+0x454/0x520 mm/vmscan.c:2245
-   madvise_cold_or_pageout_pte_range+0x19a0/0x1ce0 mm/madvise.c:563
-   ...
-   do_madvise+0x1bc/0x270 mm/madvise.c:2030
-   __do_sys_madvise mm/madvise.c:2039
-
-This bug occurs because pages in swapcache can be targeted by MADV_PAGEOUT
-multiple times without being swapped in between.  Each time, the same swap
-entry is reused, but swap_cgroup_record() expects to only record new,
-unused entries.
-
-Fix this by checking if the swap entry already has the correct cgroup ID
-recorded before attempting to record it.  Use the existing
-lookup_swap_cgroup_id() to read the current cgroup ID, and return early
-from memcg1_swapout() if the entry is already correctly recorded.  Only
-call swap_cgroup_record() when the entry needs to be set or updated.
-
-This approach avoids unnecessary atomic operations, reference count
-manipulations, and statistics updates when the entry is already correct.
-
-Link: https://syzkaller.appspot.com/bug?extid=d97580a8cceb9b03c13e
-Link: https://lkml.kernel.org/r/20260110064613.606532-1-kartikey406@gmail.com
-Fixes: 1a4e58cce84e ("mm: introduce MADV_PAGEOUT")
-Signed-off-by: Deepanshu Kartikey <kartikey406@gmail.com>
-Reported-by: syzbot+d97580a8cceb9b03c13e@syzkaller.appspotmail.com
-Closes: https://syzkaller.appspot.com/bug?extid=d97580a8cceb9b03c13e
-Tested-by: syzbot+d97580a8cceb9b03c13e@syzkaller.appspotmail.com
-Cc: Johannes Weiner <hannes@cmpxchg.org>
-Cc: Michal Hocko <mhocko@kernel.org>
-Cc: Muchun Song <muchun.song@linux.dev>
-Cc: Roman Gushchin <roman.gushchin@linux.dev>
-Cc: Shakeel Butt <shakeel.butt@linux.dev>
-Signed-off-by: Andrew Morton <akpm@linux-foundation.org>
----
-
- mm/memcontrol-v1.c |   11 +++++++++++
- 1 file changed, 11 insertions(+)
-
---- a/mm/memcontrol-v1.c~mm-swap_cgroup-fix-kernel-bug-in-swap_cgroup_record
-+++ a/mm/memcontrol-v1.c
-@@ -592,6 +592,7 @@ void memcg1_swapout(struct folio *folio,
- {
- 	struct mem_cgroup *memcg, *swap_memcg;
- 	unsigned int nr_entries;
-+	unsigned short oldid;
- 
- 	VM_BUG_ON_FOLIO(folio_test_lru(folio), folio);
- 	VM_BUG_ON_FOLIO(folio_ref_count(folio), folio);
-@@ -609,6 +610,16 @@ void memcg1_swapout(struct folio *folio,
- 		return;
- 
- 	/*
-+	 * Check if this swap entry is already recorded. This can happen
-+	 * when MADV_PAGEOUT is called multiple times on pages that remain
-+	 * in swapcache, reusing the same swap entries.
-+	 */
-+	oldid = lookup_swap_cgroup_id(entry);
-+	if (oldid == mem_cgroup_id(memcg))
-+		return;
-+	VM_WARN_ON_ONCE(oldid != 0);
-+
-+	/*
- 	 * In case the memcg owning these pages has been offlined and doesn't
- 	 * have an ID allocated to it anymore, charge the closest online
- 	 * ancestor for the swap instead and transfer the memory+swap charge.
-_
+> 
+>>
+>> If the folio is isolated (e.g. via migrate_misplaced_folio()), it might be
+>> missed by reparenting logic that iterates LRU lists.
+> 
+> LRU isolation will not impact reparenting logic, so we can discount this
+> as well.
+> 
+>> In that case, the
+>> folio would continue pointing to the dying memcg, leading to a hard lockup.
+>>
+>> Also, folio_memcg() calls __folio_memcg(), which reads folio->memcg_data
+>> without READ_ONCE().
+> 
+> Oh I think I know why AI is confused. It is because it is looking at
+> folio->memcg i.e. state with this patch only and not the state after the
+> series. In the current state the folio holds the reference on memcg, so
+> css_tryget() will never fail.
+> 
+>> Since this loop waits for memcg_data to be updated
+>> by another CPU (reparenting), could the compiler hoist the load out of
+>> the loop, preventing the update from being seen?
+>>
+>> Finally, the previous code fell back to root_mem_cgroup on failure. Is it
+>> safe to remove that fallback? If css_tryget() fails unexpectedly, hanging
+>> seems more severe than the previous behavior of warning and falling back.
+> 
+> [1] https://lore.kernel.org/all/7ia4ldikrbsj.fsf@castle.c.googlers.com/
+> 
+> 
 
 
