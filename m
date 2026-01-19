@@ -1,54 +1,54 @@
-Return-Path: <cgroups+bounces-13304-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-13305-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id EE605D39CBF
-	for <lists+cgroups@lfdr.de>; Mon, 19 Jan 2026 04:20:44 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id A2ADCD39CC1
+	for <lists+cgroups@lfdr.de>; Mon, 19 Jan 2026 04:24:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id DC3E930019F6
-	for <lists+cgroups@lfdr.de>; Mon, 19 Jan 2026 03:20:41 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 2FC483005FEE
+	for <lists+cgroups@lfdr.de>; Mon, 19 Jan 2026 03:24:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 10B201EFFB7;
-	Mon, 19 Jan 2026 03:20:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C90922156C;
+	Mon, 19 Jan 2026 03:24:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="hdfhqaVd"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="OskWVJCa"
 X-Original-To: cgroups@vger.kernel.org
-Received: from out-182.mta1.migadu.com (out-182.mta1.migadu.com [95.215.58.182])
+Received: from out-185.mta0.migadu.com (out-185.mta0.migadu.com [91.218.175.185])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB2EB1A3164
-	for <cgroups@vger.kernel.org>; Mon, 19 Jan 2026 03:20:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 796011A3164
+	for <cgroups@vger.kernel.org>; Mon, 19 Jan 2026 03:24:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.185
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768792839; cv=none; b=id3AdN0RgzOV8bf2lPsmFfemrvIsOUxmyIeIS5B0EP7QpDDpTibQfkMfvJE6TbI5IRCcCJsYZyX61DGUeAFJgcc8o69W8l4lxSx8IpUAuSuD2B8JHHMq5OoZKe0S5p7UUEAYvR8JXNq9wkELhDecbmOUWSC7imIvu0R7ts2n3jo=
+	t=1768793090; cv=none; b=soS6aRpteRBACqyDxdYMB1mBv2rMGPuLUhRra8bSXGLZtkaEch4fXLKgY42SLuH31qLK0mA3bEUr1QzQysf61xyfabwA9xN1GshyQdTbhKtwy3QO2XSGxdEp1dcaHYnqKnZCaXJim8qlW+O3yqNI8nzHjWOlGWC5uGTMbj6SkXg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768792839; c=relaxed/simple;
-	bh=6Ird/YJAGamQS9pATV0ibxkGqtnF/uRt/syENrfRcnc=;
+	s=arc-20240116; t=1768793090; c=relaxed/simple;
+	bh=jzXsGxtT70+MWEo53uhk4O3ogtfSqP+0Oy7gA2WYtZ4=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=TU66Nt02iTrMa3IKD91n1NaP2fW2U2QEO5fC1eKTCxGX+hF8n4H+DGGeM0gMBqztxeSazgq1393MEDq4jlxzg2HlzIZWdB1P9u/EWqSCT1n73SCmoJHKQGkb32k7bJ1YeZrIogLE1LGuVQEj5Vdk6xrWOa711RqHsDMe1Y9p8VQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=hdfhqaVd; arc=none smtp.client-ip=95.215.58.182
+	 In-Reply-To:Content-Type; b=dULo6v21S13mw9qVmdHZ5GbNUkA2cduNUhhknMQWqy1e4qvs7blYqWCvrIRJaqKsV3TFzK0ou380yoTMBQDPYT2ZNz2ZHPJeHafj2jA+p227ObUMh9Pnfbtw7Pbu5gTBVOewWH2aubAeeIZ4gnlp1gLpDXqiQYZgXycco9KuNrA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=OskWVJCa; arc=none smtp.client-ip=91.218.175.185
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <f2b2d0e6-0690-41e5-9718-ef4a1985e50c@linux.dev>
+Message-ID: <4d666f52-1494-4a93-b541-b02b46a887e3@linux.dev>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1768792834;
+	t=1768793086;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=pd6kZGNbyNYE8tPLcAsqL3zBFM4wIaBCbTnO8h62LzA=;
-	b=hdfhqaVdUy2hJ5povwHWvJH4g07Wa6Kmf/JVODLiU5Fp9De+Ho7k9WyFuc+U4pD1cqVdLB
-	oeu4dSx2lKbMq72W34qHqDZEz/ZdAlRuDR0vJuFNUQR3WpiyyCsiD/7+7Rt73FiwhGNGvI
-	yIRlAM+lX63AEX1QPjs39nfRRXxNHvY=
-Date: Mon, 19 Jan 2026 11:20:11 +0800
+	bh=/u7bgCCXQygRKXDqWsDO9xgbjYn7erHByh7PdAeVAHI=;
+	b=OskWVJCaxAXJlAIn800rXjaLTv7UE7fT/d6va/GzZJ7d2syED6eSb5Xu1Z+9EZAk+4B0YH
+	aGRijvZNaPzjg5K3vMcPaLahpdM1ZodPqVONh11wLhj/ivSymTcMcUFdLdJW8RlqcdxYzT
+	7mos5S1EPq9w+NQZx/lxjE/iGikc11g=
+Date: Mon, 19 Jan 2026 11:24:22 +0800
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH v3 08/30] mm: memcontrol: prevent memory cgroup release in
- get_mem_cgroup_from_folio()
+Subject: Re: [PATCH v3 25/30] mm: vmscan: prepare for reparenting traditional
+ LRU folios
 To: Shakeel Butt <shakeel.butt@linux.dev>
 Cc: hannes@cmpxchg.org, hughd@google.com, mhocko@suse.com,
  roman.gushchin@linux.dev, muchun.song@linux.dev, david@kernel.org,
@@ -58,140 +58,80 @@ Cc: hannes@cmpxchg.org, hughd@google.com, mhocko@suse.com,
  chenridong@huaweicloud.com, mkoutny@suse.com, akpm@linux-foundation.org,
  hamzamahfooz@linux.microsoft.com, apais@linux.microsoft.com,
  lance.yang@linux.dev, linux-mm@kvack.org, linux-kernel@vger.kernel.org,
- cgroups@vger.kernel.org, Muchun Song <songmuchun@bytedance.com>,
- Qi Zheng <zhengqi.arch@bytedance.com>
+ cgroups@vger.kernel.org, Qi Zheng <zhengqi.arch@bytedance.com>
 References: <cover.1768389889.git.zhengqi.arch@bytedance.com>
- <c5c8eba771ab90d03f4c024c2384b8342ec41452.1768389889.git.zhengqi.arch@bytedance.com>
- <qdfq2vxdma4qnt7pyfvuiyiib6ffuv46jyqsfgab643ihzttb6@h4hodwsqkmom>
+ <3adb367000706f9ef681b34d0a2b0eb34c494c84.1768389889.git.zhengqi.arch@bytedance.com>
+ <6hlbucao3tfp2bxyaekcrvhqclji4hyhq4wen4sccc2qcdr6x2@rtmqrfwfsy4s>
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 From: Qi Zheng <qi.zheng@linux.dev>
-In-Reply-To: <qdfq2vxdma4qnt7pyfvuiyiib6ffuv46jyqsfgab643ihzttb6@h4hodwsqkmom>
+In-Reply-To: <6hlbucao3tfp2bxyaekcrvhqclji4hyhq4wen4sccc2qcdr6x2@rtmqrfwfsy4s>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 X-Migadu-Flow: FLOW_OUT
 
 
 
-On 1/18/26 8:31 AM, Shakeel Butt wrote:
-> On Wed, Jan 14, 2026 at 07:32:35PM +0800, Qi Zheng wrote:
->> From: Muchun Song <songmuchun@bytedance.com>
+On 1/18/26 9:11 AM, Shakeel Butt wrote:
+> On Wed, Jan 14, 2026 at 07:32:52PM +0800, Qi Zheng wrote:
+>> From: Qi Zheng <zhengqi.arch@bytedance.com>
 >>
->> In the near future, a folio will no longer pin its corresponding
->> memory cgroup. To ensure safety, it will only be appropriate to
->> hold the rcu read lock or acquire a reference to the memory cgroup
->> returned by folio_memcg(), thereby preventing it from being released.
->>
->> In the current patch, the rcu read lock is employed to safeguard
->> against the release of the memory cgroup in get_mem_cgroup_from_folio().
->>
->> This serves as a preparatory measure for the reparenting of the
->> LRU pages.
->>
->> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
->> Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
->> Reviewed-by: Harry Yoo <harry.yoo@oracle.com>
->> ---
->>   mm/memcontrol.c | 10 +++++++---
->>   1 file changed, 7 insertions(+), 3 deletions(-)
->>
->> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
->> index 982c9f5cf72cb..0458fc2e810ff 100644
->> --- a/mm/memcontrol.c
->> +++ b/mm/memcontrol.c
->> @@ -991,14 +991,18 @@ struct mem_cgroup *get_mem_cgroup_from_current(void)
->>    */
->>   struct mem_cgroup *get_mem_cgroup_from_folio(struct folio *folio)
->>   {
->> -	struct mem_cgroup *memcg = folio_memcg(folio);
->> +	struct mem_cgroup *memcg;
+> [...]
+>> --- a/mm/swap.c
+>> +++ b/mm/swap.c
+>> @@ -1090,6 +1090,43 @@ void folio_batch_remove_exceptionals(struct folio_batch *fbatch)
+>>   	fbatch->nr = j;
+>>   }
 >>   
->>   	if (mem_cgroup_disabled())
->>   		return NULL;
->>   
->> +	if (!folio_memcg_charged(folio))
->> +		return root_mem_cgroup;
+> 
+> Why not define the following two functions in memcontrol.c?
+
+Ah, Because Johannes previously suggested [1] putting it in swap.c:
+
+```
+Lastly, vmscan.c is the reclaim policy. Mechanical LRU shuffling like
+this is better placed in mm/swap.c.
+```
+
+[1]. https://lore.kernel.org/all/aUQCfdnoLQDLoVyg@cmpxchg.org/
+
+> 
+>> +#ifdef CONFIG_MEMCG
+>> +static void lruvec_reparent_lru(struct lruvec *child_lruvec,
+>> +				struct lruvec *parent_lruvec,
+>> +				enum lru_list lru, int nid)
+>> +{
+>> +	int zid;
+>> +	struct zone *zone;
 >> +
->>   	rcu_read_lock();
->> -	if (!memcg || WARN_ON_ONCE(!css_tryget(&memcg->css)))
->> -		memcg = root_mem_cgroup;
->> +	do {
->> +		memcg = folio_memcg(folio);
->> +	} while (unlikely(!css_tryget(&memcg->css)));
-> 
-> I went back to [1] where AI raised the following concern which I want to
-> address:
-> 
->> If css_tryget() fails (e.g. refcount is 0), this loop spins indefinitely
->> with the RCU read lock held. Is it guaranteed that folio_memcg() will
->> return a different, alive memcg in subsequent iterations?
-> 
-> Will css_tryget() ever fail for the memcg returned by folio_memcg()?
-> Let's suppose memcg of a given folio is being offlined. The objcg
-> reparenting happens in memcg_reparent_objcgs() which is called in
-> offline_css() chain and we know that the offline context holds a
-> reference on the css being offlined (see css_killed_work_fn()).
-> 
-> Also let's suppose the offline process has the last reference on the
-> memcg's css. Now we have following two scenarios:
-> 
-> Scenario 1:
-> 
-> get_mem_cgroup_from_folio()		css_killed_work_fn()
->    memcg = folio_memcg(folio)		  offline_css(css)
->    					    memcg_reparent_objcgs()
->    css_tryget(memcg)
->    					  css_put(css)
-> 
-> In the above case css_tryget() will not fail.
-> 
-> 
-> Scenario 2:
-> 
-> get_mem_cgroup_from_folio()		css_killed_work_fn()
->    memcg = folio_memcg(folio)		  offline_css(css)
->    					    memcg_reparent_objcgs()
->    					  css_put(css) // last reference
->    css_tryget(memcg)
->    // retry on failure
-> 
-> In the above case the context in get_mem_cgroup_from_folio() will retry
-> and will get different memcg during reparenting happening before the
-> last css_put(css).
-> 
-> So, I think we are good and AI is mistaken.
-> 
-> Folks, please check if I missed something.
-
-LGTM, thank you for such a detailed analysis!
-
-> 
->>
->> If the folio is isolated (e.g. via migrate_misplaced_folio()), it might be
->> missed by reparenting logic that iterates LRU lists.
-> 
-> LRU isolation will not impact reparenting logic, so we can discount this
-> as well.
-> 
->> In that case, the
->> folio would continue pointing to the dying memcg, leading to a hard lockup.
->>
->> Also, folio_memcg() calls __folio_memcg(), which reads folio->memcg_data
->> without READ_ONCE().
-> 
-> Oh I think I know why AI is confused. It is because it is looking at
-> folio->memcg i.e. state with this patch only and not the state after the
-> series. In the current state the folio holds the reference on memcg, so
-> css_tryget() will never fail.
-> 
->> Since this loop waits for memcg_data to be updated
->> by another CPU (reparenting), could the compiler hoist the load out of
->> the loop, preventing the update from being seen?
->>
->> Finally, the previous code fell back to root_mem_cgroup on failure. Is it
->> safe to remove that fallback? If css_tryget() fails unexpectedly, hanging
->> seems more severe than the previous behavior of warning and falling back.
-> 
-> [1] https://lore.kernel.org/all/7ia4ldikrbsj.fsf@castle.c.googlers.com/
+>> +	if (lru != LRU_UNEVICTABLE)
+>> +		list_splice_tail_init(&child_lruvec->lists[lru], &parent_lruvec->lists[lru]);
+>> +
+>> +	for_each_managed_zone_pgdat(zone, NODE_DATA(nid), zid, MAX_NR_ZONES - 1) {
+>> +		unsigned long size = mem_cgroup_get_zone_lru_size(child_lruvec, lru, zid);
+>> +
+>> +		mem_cgroup_update_lru_size(parent_lruvec, lru, zid, size);
+>> +	}
+>> +}
+>> +
+>> +void lru_reparent_memcg(struct mem_cgroup *memcg, struct mem_cgroup *parent)
+>> +{
+>> +	int nid;
+>> +
+>> +	for_each_node(nid) {
+>> +		enum lru_list lru;
+>> +		struct lruvec *child_lruvec, *parent_lruvec;
+>> +
+>> +		child_lruvec = mem_cgroup_lruvec(memcg, NODE_DATA(nid));
+>> +		parent_lruvec = mem_cgroup_lruvec(parent, NODE_DATA(nid));
+>> +		parent_lruvec->anon_cost += child_lruvec->anon_cost;
+>> +		parent_lruvec->file_cost += child_lruvec->file_cost;
+>> +
+>> +		for_each_lru(lru)
+>> +			lruvec_reparent_lru(child_lruvec, parent_lruvec, lru, nid);
+>> +	}
+>> +}
+>> +#endif
+>> +
 > 
 > 
 
