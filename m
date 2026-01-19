@@ -1,54 +1,54 @@
-Return-Path: <cgroups+bounces-13305-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-13306-lists+cgroups=lfdr.de@vger.kernel.org>
 X-Original-To: lists+cgroups@lfdr.de
 Delivered-To: lists+cgroups@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id A2ADCD39CC1
-	for <lists+cgroups@lfdr.de>; Mon, 19 Jan 2026 04:24:53 +0100 (CET)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
+	by mail.lfdr.de (Postfix) with ESMTPS id 59801D39D12
+	for <lists+cgroups@lfdr.de>; Mon, 19 Jan 2026 04:35:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 2FC483005FEE
-	for <lists+cgroups@lfdr.de>; Mon, 19 Jan 2026 03:24:52 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 9A6E930019E4
+	for <lists+cgroups@lfdr.de>; Mon, 19 Jan 2026 03:35:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C90922156C;
-	Mon, 19 Jan 2026 03:24:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6A20818D636;
+	Mon, 19 Jan 2026 03:35:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="OskWVJCa"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="iPpPBLFj"
 X-Original-To: cgroups@vger.kernel.org
-Received: from out-185.mta0.migadu.com (out-185.mta0.migadu.com [91.218.175.185])
+Received: from out-171.mta0.migadu.com (out-171.mta0.migadu.com [91.218.175.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 796011A3164
-	for <cgroups@vger.kernel.org>; Mon, 19 Jan 2026 03:24:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.185
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 60E941F4176
+	for <cgroups@vger.kernel.org>; Mon, 19 Jan 2026 03:35:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768793090; cv=none; b=soS6aRpteRBACqyDxdYMB1mBv2rMGPuLUhRra8bSXGLZtkaEch4fXLKgY42SLuH31qLK0mA3bEUr1QzQysf61xyfabwA9xN1GshyQdTbhKtwy3QO2XSGxdEp1dcaHYnqKnZCaXJim8qlW+O3yqNI8nzHjWOlGWC5uGTMbj6SkXg=
+	t=1768793735; cv=none; b=srNFcQtBCT5AepUTlYJ5YE0XAjvgte6Tur3+6JAg3iz+5bY2f2GUg5zu+uVMklFU7jsoPJL3fzud8In7pVVweF9qKBALEyfw64PXOKyffX8qrZorOgFWUtSyou5gfRxuEouWzmYUiK8oQCGwAT191dxZKKJ3kuJEQbK3o3v5yD8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768793090; c=relaxed/simple;
-	bh=jzXsGxtT70+MWEo53uhk4O3ogtfSqP+0Oy7gA2WYtZ4=;
+	s=arc-20240116; t=1768793735; c=relaxed/simple;
+	bh=d3H+CCBjBu6cHNEi+mhJhjMZvsyqhyiX8CTEc966zAg=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=dULo6v21S13mw9qVmdHZ5GbNUkA2cduNUhhknMQWqy1e4qvs7blYqWCvrIRJaqKsV3TFzK0ou380yoTMBQDPYT2ZNz2ZHPJeHafj2jA+p227ObUMh9Pnfbtw7Pbu5gTBVOewWH2aubAeeIZ4gnlp1gLpDXqiQYZgXycco9KuNrA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=OskWVJCa; arc=none smtp.client-ip=91.218.175.185
+	 In-Reply-To:Content-Type; b=Rsp/+24QGWRICkLpWlVCyrDncdBpuETL+aiKZ7ti/wqI5fsI/hzGEBKUOSuV5RdWgg17QGfLKig7CRXFJ8DaeZISi9S2DpOZa9i22Wf/7/dvGekePmZsexEER8W/bdGSNcqVTy/FiEnjdZ44kug7jb6FVMKsiJ1PrX06TVKoakM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=iPpPBLFj; arc=none smtp.client-ip=91.218.175.171
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <4d666f52-1494-4a93-b541-b02b46a887e3@linux.dev>
+Message-ID: <9b9057f8-4c4c-4067-b6ba-0791888c25e8@linux.dev>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1768793086;
+	t=1768793702;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=/u7bgCCXQygRKXDqWsDO9xgbjYn7erHByh7PdAeVAHI=;
-	b=OskWVJCaxAXJlAIn800rXjaLTv7UE7fT/d6va/GzZJ7d2syED6eSb5Xu1Z+9EZAk+4B0YH
-	aGRijvZNaPzjg5K3vMcPaLahpdM1ZodPqVONh11wLhj/ivSymTcMcUFdLdJW8RlqcdxYzT
-	7mos5S1EPq9w+NQZx/lxjE/iGikc11g=
-Date: Mon, 19 Jan 2026 11:24:22 +0800
+	bh=A2DwTuePUycHQ/sZnpKkhBxd7ANgEf/6qnp7jSSdIz0=;
+	b=iPpPBLFjReNZJL6MQN0s8qLiVxa2/AWyFPmjz8D9Gb1HpGV0B9CiYg2GxYgDkoDu1QUDHl
+	FvZzGD9XHP/jh3U68r/UuLZcezwR0fcWjyFUX24Ik9X00TdTOjw7ZPW4LKkx/5kbHk3NSI
+	rEL74nvf/6sh8rpkScJFwmMkO7xgF2M=
+Date: Mon, 19 Jan 2026 11:34:53 +0800
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH v3 25/30] mm: vmscan: prepare for reparenting traditional
- LRU folios
+Subject: Re: [PATCH v3 28/30] mm: memcontrol: prepare for reparenting
+ state_local
 To: Shakeel Butt <shakeel.butt@linux.dev>
 Cc: hannes@cmpxchg.org, hughd@google.com, mhocko@suse.com,
  roman.gushchin@linux.dev, muchun.song@linux.dev, david@kernel.org,
@@ -60,79 +60,203 @@ Cc: hannes@cmpxchg.org, hughd@google.com, mhocko@suse.com,
  lance.yang@linux.dev, linux-mm@kvack.org, linux-kernel@vger.kernel.org,
  cgroups@vger.kernel.org, Qi Zheng <zhengqi.arch@bytedance.com>
 References: <cover.1768389889.git.zhengqi.arch@bytedance.com>
- <3adb367000706f9ef681b34d0a2b0eb34c494c84.1768389889.git.zhengqi.arch@bytedance.com>
- <6hlbucao3tfp2bxyaekcrvhqclji4hyhq4wen4sccc2qcdr6x2@rtmqrfwfsy4s>
+ <b11a0bde9fe18673a61a79398f226ad7cb04a894.1768389889.git.zhengqi.arch@bytedance.com>
+ <iu27pt5nqs6myshw57e7dotld33v6lwuyouvquoqc2zmc5loi6@f23auf7hqbdp>
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 From: Qi Zheng <qi.zheng@linux.dev>
-In-Reply-To: <6hlbucao3tfp2bxyaekcrvhqclji4hyhq4wen4sccc2qcdr6x2@rtmqrfwfsy4s>
+In-Reply-To: <iu27pt5nqs6myshw57e7dotld33v6lwuyouvquoqc2zmc5loi6@f23auf7hqbdp>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 X-Migadu-Flow: FLOW_OUT
 
 
 
-On 1/18/26 9:11 AM, Shakeel Butt wrote:
-> On Wed, Jan 14, 2026 at 07:32:52PM +0800, Qi Zheng wrote:
+On 1/18/26 11:20 AM, Shakeel Butt wrote:
+> On Wed, Jan 14, 2026 at 07:32:55PM +0800, Qi Zheng wrote:
 >> From: Qi Zheng <zhengqi.arch@bytedance.com>
 >>
-> [...]
->> --- a/mm/swap.c
->> +++ b/mm/swap.c
->> @@ -1090,6 +1090,43 @@ void folio_batch_remove_exceptionals(struct folio_batch *fbatch)
->>   	fbatch->nr = j;
->>   }
+>> To resolve the dying memcg issue, we need to reparent LRU folios of child
+>> memcg to its parent memcg. The following counts are all non-hierarchical
+>> and need to be reparented to prevent the counts of parent memcg overflow.
+>>
+>> 1. memcg->vmstats->state_local[i]
+>> 2. pn->lruvec_stats->state_local[i]
+>>
+>> This commit implements the specific function, which will be used during
+>> the reparenting process.
+> 
+> Please add more explanation which was discussed in the email chain at
+> https://lore.kernel.org/all/5dsb6q2r4xsi24kk5gcnckljuvgvvp6nwifwvc4wuho5hsifeg@5ukg2dq6ini5/
+
+OK, will do.
+
+> 
+> Also move the upward traversal code in mod_memcg_state() and
+> mod_memcg_lruvec_state() you added in later patch to this patch and make
+> it under CONFIG_MEMCG_V1.
+> 
+> Something like:
+> 
+> #ifdef CONFIG_MEMCG_V1
+> 	while (memcg_is_dying(memcg))
+> 		memcg = parent_mem_cgroup(memcg);
+> #endif
+
+OK, will do.
+
+> 		
+> 
+>>
+>> Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
+>> ---
+>>   include/linux/memcontrol.h |  4 +++
+>>   mm/memcontrol-v1.c         | 16 +++++++++++
+>>   mm/memcontrol-v1.h         |  3 ++
+>>   mm/memcontrol.c            | 56 ++++++++++++++++++++++++++++++++++++++
+>>   4 files changed, 79 insertions(+)
+>>
+>> diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
+>> index 26c3c0e375f58..f84a23f13ffb4 100644
+>> --- a/include/linux/memcontrol.h
+>> +++ b/include/linux/memcontrol.h
+>> @@ -963,12 +963,16 @@ static inline void mod_memcg_page_state(struct page *page,
 >>   
-> 
-> Why not define the following two functions in memcontrol.c?
-
-Ah, Because Johannes previously suggested [1] putting it in swap.c:
-
-```
-Lastly, vmscan.c is the reclaim policy. Mechanical LRU shuffling like
-this is better placed in mm/swap.c.
-```
-
-[1]. https://lore.kernel.org/all/aUQCfdnoLQDLoVyg@cmpxchg.org/
-
-> 
->> +#ifdef CONFIG_MEMCG
->> +static void lruvec_reparent_lru(struct lruvec *child_lruvec,
->> +				struct lruvec *parent_lruvec,
->> +				enum lru_list lru, int nid)
+>>   unsigned long memcg_events(struct mem_cgroup *memcg, int event);
+>>   unsigned long memcg_page_state(struct mem_cgroup *memcg, int idx);
+>> +void reparent_memcg_state_local(struct mem_cgroup *memcg,
+>> +				struct mem_cgroup *parent, int idx);
+>>   unsigned long memcg_page_state_output(struct mem_cgroup *memcg, int item);
+>>   bool memcg_stat_item_valid(int idx);
+>>   bool memcg_vm_event_item_valid(enum vm_event_item idx);
+>>   unsigned long lruvec_page_state(struct lruvec *lruvec, enum node_stat_item idx);
+>>   unsigned long lruvec_page_state_local(struct lruvec *lruvec,
+>>   				      enum node_stat_item idx);
+>> +void reparent_memcg_lruvec_state_local(struct mem_cgroup *memcg,
+>> +				       struct mem_cgroup *parent, int idx);
+>>   
+>>   void mem_cgroup_flush_stats(struct mem_cgroup *memcg);
+>>   void mem_cgroup_flush_stats_ratelimited(struct mem_cgroup *memcg);
+>> diff --git a/mm/memcontrol-v1.c b/mm/memcontrol-v1.c
+>> index f0ef650d2317b..800606135e7ba 100644
+>> --- a/mm/memcontrol-v1.c
+>> +++ b/mm/memcontrol-v1.c
+>> @@ -1898,6 +1898,22 @@ static const unsigned int memcg1_events[] = {
+>>   	PGMAJFAULT,
+>>   };
+>>   
+>> +void reparent_memcg1_state_local(struct mem_cgroup *memcg, struct mem_cgroup *parent)
 >> +{
->> +	int zid;
->> +	struct zone *zone;
+>> +	int i;
 >> +
->> +	if (lru != LRU_UNEVICTABLE)
->> +		list_splice_tail_init(&child_lruvec->lists[lru], &parent_lruvec->lists[lru]);
->> +
->> +	for_each_managed_zone_pgdat(zone, NODE_DATA(nid), zid, MAX_NR_ZONES - 1) {
->> +		unsigned long size = mem_cgroup_get_zone_lru_size(child_lruvec, lru, zid);
->> +
->> +		mem_cgroup_update_lru_size(parent_lruvec, lru, zid, size);
->> +	}
+>> +	for (i = 0; i < ARRAY_SIZE(memcg1_stats); i++)
+>> +		reparent_memcg_state_local(memcg, parent, memcg1_stats[i]);
 >> +}
 >> +
->> +void lru_reparent_memcg(struct mem_cgroup *memcg, struct mem_cgroup *parent)
+>> +void reparent_memcg1_lruvec_state_local(struct mem_cgroup *memcg, struct mem_cgroup *parent)
 >> +{
->> +	int nid;
+>> +	int i;
 >> +
->> +	for_each_node(nid) {
->> +		enum lru_list lru;
->> +		struct lruvec *child_lruvec, *parent_lruvec;
+>> +	for (i = 0; i < ARRAY_SIZE(memcg1_stats); i++)
+>> +		reparent_memcg_lruvec_state_local(memcg, parent, memcg1_stats[i]);
+>> +}
 >> +
->> +		child_lruvec = mem_cgroup_lruvec(memcg, NODE_DATA(nid));
->> +		parent_lruvec = mem_cgroup_lruvec(parent, NODE_DATA(nid));
->> +		parent_lruvec->anon_cost += child_lruvec->anon_cost;
->> +		parent_lruvec->file_cost += child_lruvec->file_cost;
+>>   void memcg1_stat_format(struct mem_cgroup *memcg, struct seq_buf *s)
+>>   {
+>>   	unsigned long memory, memsw;
+>> diff --git a/mm/memcontrol-v1.h b/mm/memcontrol-v1.h
+>> index eb3c3c1056574..45528195d3578 100644
+>> --- a/mm/memcontrol-v1.h
+>> +++ b/mm/memcontrol-v1.h
+>> @@ -41,6 +41,7 @@ static inline bool do_memsw_account(void)
+>>   
+>>   unsigned long memcg_events_local(struct mem_cgroup *memcg, int event);
+>>   unsigned long memcg_page_state_local(struct mem_cgroup *memcg, int idx);
+>> +void mod_memcg_page_state_local(struct mem_cgroup *memcg, int idx, unsigned long val);
+>>   unsigned long memcg_page_state_local_output(struct mem_cgroup *memcg, int item);
+>>   bool memcg1_alloc_events(struct mem_cgroup *memcg);
+>>   void memcg1_free_events(struct mem_cgroup *memcg);
+>> @@ -73,6 +74,8 @@ void memcg1_uncharge_batch(struct mem_cgroup *memcg, unsigned long pgpgout,
+>>   			   unsigned long nr_memory, int nid);
+>>   
+>>   void memcg1_stat_format(struct mem_cgroup *memcg, struct seq_buf *s);
+>> +void reparent_memcg1_state_local(struct mem_cgroup *memcg, struct mem_cgroup *parent);
+>> +void reparent_memcg1_lruvec_state_local(struct mem_cgroup *memcg, struct mem_cgroup *parent);
+>>   
+>>   void memcg1_account_kmem(struct mem_cgroup *memcg, int nr_pages);
+>>   static inline bool memcg1_tcpmem_active(struct mem_cgroup *memcg)
+>> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+>> index 70583394f421f..7aa32b97c9f17 100644
+>> --- a/mm/memcontrol.c
+>> +++ b/mm/memcontrol.c
+>> @@ -225,6 +225,28 @@ static inline struct obj_cgroup *__memcg_reparent_objcgs(struct mem_cgroup *memc
+>>   	return objcg;
+>>   }
+>>   
+>> +#ifdef CONFIG_MEMCG_V1
+>> +static void __mem_cgroup_flush_stats(struct mem_cgroup *memcg, bool force);
 >> +
->> +		for_each_lru(lru)
->> +			lruvec_reparent_lru(child_lruvec, parent_lruvec, lru, nid);
->> +	}
+>> +static inline void reparent_state_local(struct mem_cgroup *memcg, struct mem_cgroup *parent)
+>> +{
+>> +	if (cgroup_subsys_on_dfl(memory_cgrp_subsys))
+>> +		return;
+>> +
+>> +	synchronize_rcu();
+> 
+> Hmm synchrinuze_rcu() is a heavy hammer here. Also you would need rcu
+> read lock in mod_memcg_state() & mod_memcg_lruvec_state() for this
+> synchronize_rcu().
+
+Since these two functions require memcg or lruvec, they are already
+within the critical section of the RCU lock.
+
+> 
+> Hmm instead of synchronize_rcu() here, we can use queue_rcu_work() in
+> css_killed_ref_fn(). It would be as simple as the following:
+
+It does look much simpler, will do.
+
+Thanks,
+Qi
+
+> 
+> diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
+> index e717208cfb18..549a8e026194 100644
+> --- a/kernel/cgroup/cgroup.c
+> +++ b/kernel/cgroup/cgroup.c
+> @@ -6046,8 +6046,8 @@ int cgroup_mkdir(struct kernfs_node *parent_kn, const char *name, umode_t mode)
+>    */
+>   static void css_killed_work_fn(struct work_struct *work)
+>   {
+> -	struct cgroup_subsys_state *css =
+> -		container_of(work, struct cgroup_subsys_state, destroy_work);
+> +	struct cgroup_subsys_state *css = container_of(to_rcu_work(work),
+> +				 struct cgroup_subsys_state, destroy_rwork);
+>   
+>   	cgroup_lock();
+>   
+> @@ -6068,8 +6068,8 @@ static void css_killed_ref_fn(struct percpu_ref *ref)
+>   		container_of(ref, struct cgroup_subsys_state, refcnt);
+>   
+>   	if (atomic_dec_and_test(&css->online_cnt)) {
+> -		INIT_WORK(&css->destroy_work, css_killed_work_fn);
+> -		queue_work(cgroup_offline_wq, &css->destroy_work);
+> +		INIT_RCU_WORK(&css->destroy_rwork, css_killed_work_fn);
+> +		queue_rcu_work(cgroup_offline_wq, &css->destroy_rwork);
+>   	}
+>   }
+>   
+>> +
+>> +	__mem_cgroup_flush_stats(memcg, true);
+>> +
+>> +	/* The following counts are all non-hierarchical and need to be reparented. */
+>> +	reparent_memcg1_state_local(memcg, parent);
+>> +	reparent_memcg1_lruvec_state_local(memcg, parent);
+>> +}
+>> +#else
+>> +static inline void reparent_state_local(struct mem_cgroup *memcg, struct mem_cgroup *parent)
+>> +{
 >> +}
 >> +#endif
 >> +
-> 
-> 
 
 
