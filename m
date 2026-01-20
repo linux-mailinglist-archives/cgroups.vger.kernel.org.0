@@ -1,332 +1,197 @@
-Return-Path: <cgroups+bounces-13318-lists+cgroups=lfdr.de@vger.kernel.org>
-X-Original-To: lists+cgroups@lfdr.de
+Return-Path: <cgroups+bounces-13324-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [IPv6:2605:f480:58:1:0:1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1FACBD3C2BA
-	for <lists+cgroups@lfdr.de>; Tue, 20 Jan 2026 09:58:28 +0100 (CET)
+Received: from mail.lfdr.de
+	by lfdr with LMTP
+	id QOMZJ42qb2lUEwAAu9opvQ
+	(envelope-from <cgroups+bounces-13324-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Tue, 20 Jan 2026 17:17:17 +0100
+X-Original-To: lists+cgroups@lfdr.de
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0ABD24742D
+	for <lists+cgroups@lfdr.de>; Tue, 20 Jan 2026 17:17:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id A5C6E606F75
-	for <lists+cgroups@lfdr.de>; Tue, 20 Jan 2026 08:28:47 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id D573556C5D1
+	for <lists+cgroups@lfdr.de>; Tue, 20 Jan 2026 13:59:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE9FC3A9D98;
-	Tue, 20 Jan 2026 08:23:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="RLn5eY98";
-	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="Yw0WkX8Q"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D32A0438FED;
+	Tue, 20 Jan 2026 13:57:52 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
+Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF6D63A35AA;
-	Tue, 20 Jan 2026 08:23:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.165.32
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768897393; cv=fail; b=mH8MyAJ7KwfPazb7dl45buaeaQhzLVtezLx2oIG7EHdM75h1+oM1/OQukOxasmqLK4TuvWcrn8GDOvG+VFkwuHR9jeOEp+hQtZk2Qz6C8Dd6Xp0cw9qK3kmfZ4/eDrT8Dle9Vaz2+At+Yo7c46bOEjwgAKZNN3VXqWMJIAfcygY=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768897393; c=relaxed/simple;
-	bh=oIs612h24KScP/tRPGB9WOc++VwB4TwJk/vdjgANHiQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=raDHZkwVp9yY9eNkuJoqqYBOhaAoOCj0i4Ny3jvK2Kv7GJ5SXdSyF+/rMLI7WVQwNTAScHZPC/T4Aa7k67JxUeZB2KgDgZcX9l6pLnbJc29SbFjgiR8JxgOiR0O+UKJFhe2jHduFIYfWz58aNgPDm4KAV4gIta/mwXuwSgYBkeo=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=RLn5eY98; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=Yw0WkX8Q; arc=fail smtp.client-ip=205.220.165.32
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
-Received: from pps.filterd (m0246629.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 60K7v8rb3430913;
-	Tue, 20 Jan 2026 08:21:34 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=cc
-	:content-type:date:from:in-reply-to:message-id:mime-version
-	:references:subject:to; s=corp-2025-04-25; bh=BfYHl3Or6iuRiNrO+F
-	sjAWkAcwtYBHxt/Yf++f8NuEw=; b=RLn5eY98j+Yh/fLMQMHlKRQAwLL2Q78YgT
-	q+svgyD1lbDTLB6KOVwujX9UFxJB/MH71VNZl9VS7Jv5F4U7SkSPbCmBZa0lkhgd
-	SPsEeXLmjs844a3luox3tcrKdkxyAQe7ydDH6zAgJTUvlc3I6vBDgqtTp8YhYJSD
-	cDD5MwYlYY17sJxViIGCTrHBnf0+kGwQgki82K3kYJLyZV4VvwMYcIpIrGPn2RLX
-	PsqXHYhMUrdahneJovu7gJWO7F2/yTcCiLs9RFN2flD7y/utefk1/VhsA+KCe3cb
-	HcHaQSQJRuqAgYVd4Cq06DLq5gouP7knhwl8Ipsv15JWo8Ei81RA==
-Received: from iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta02.appoci.oracle.com [147.154.18.20])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 4br2a5k5hv-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Tue, 20 Jan 2026 08:21:33 +0000 (GMT)
-Received: from pps.filterd (iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-	by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (8.18.1.2/8.18.1.2) with ESMTP id 60K6JdxO032191;
-	Tue, 20 Jan 2026 08:21:32 GMT
-Received: from dm1pr04cu001.outbound.protection.outlook.com (mail-centralusazon11010049.outbound.protection.outlook.com [52.101.61.49])
-	by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 4br0vd2dv3-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Tue, 20 Jan 2026 08:21:32 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=eGpW0T3tCmBDYZe/Ibj1meN3Qo4QEHRkkDDQQFdNynJ3ZC5SoTVl9jYQpoNinXCez/bTkfu5wJB9yfYI/AWvhA/tJinpzbdPQXQsy8GlILDgeozA0W2W28mluKRVuj+qVIrJKIpqfzJy2iBlYoW675XJ1tUZeu1XifYyEjp4pbDBYQogh78zSsBOrQhTjL+6Fw/gaBiSQjFQv4Crp0WjnA7jnD79LtYZ9kfS8dLjCzDfU6qOazyNuDfp7Hs40nLqQ0Ag/NQOo0tFfP2MF41apC82c2BlGepwEy5NL/V97It4D3xHmQfLEHb0ItJ92EmaB8Kft5ivJ+BjJiK04cAKqw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=BfYHl3Or6iuRiNrO+FsjAWkAcwtYBHxt/Yf++f8NuEw=;
- b=HfbDt4e5utsFdFLKThDBdaxTCJhHjDJ/9Ht0BmVKRBvkQZu/vpVXcKv1DJmhgzeQL41E3KXGnPflIVbsHc+MphkW3KaxuVnbl3KBGdMfSmdGs/K9xgbk6OQljLKSfO1213yIDn27Z2hn+6GEN9gWjYb+qPGP7RzeFHJTSrGe/6ne4Dwq39Lu995HmLu1Fk3l3XK5ghjorM2Lx/t+72a2ivE3tHZL58I0GWANdgcrDGKpdVLTRkRXxYMsEKH/TrjOXJEKYOgBOP5j3MBJfDEAXXFTdeMkoYMu/zXvKl+QW6dSVukk4BVQhAHs607tItNQbmqws7jxaIOrqRahBaNlTw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=BfYHl3Or6iuRiNrO+FsjAWkAcwtYBHxt/Yf++f8NuEw=;
- b=Yw0WkX8Qn3/L1myQqZxvDeLCtpPXPPNPuOBS1+K0m9vxsedSkyp3l6ZO/RS69ER7+8a6VSp3YjdSoWzA6ofcSwz756RrQkVhwudUu/Q0m1KcYaQrT7qr3KQiZMAUmZ+Bao0plcpMkhRQcSjocJk2RRk/ce2npQgG6V0OPn/ILpA=
-Received: from CH3PR10MB7329.namprd10.prod.outlook.com (2603:10b6:610:12c::16)
- by CH2PR10MB4343.namprd10.prod.outlook.com (2603:10b6:610:a9::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9520.11; Tue, 20 Jan
- 2026 08:21:29 +0000
-Received: from CH3PR10MB7329.namprd10.prod.outlook.com
- ([fe80::c2a4:fdda:f0c2:6f71]) by CH3PR10MB7329.namprd10.prod.outlook.com
- ([fe80::c2a4:fdda:f0c2:6f71%7]) with mapi id 15.20.9520.011; Tue, 20 Jan 2026
- 08:21:29 +0000
-Date: Tue, 20 Jan 2026 17:21:19 +0900
-From: Harry Yoo <harry.yoo@oracle.com>
-To: Qi Zheng <qi.zheng@linux.dev>
-Cc: hannes@cmpxchg.org, hughd@google.com, mhocko@suse.com,
-        roman.gushchin@linux.dev, shakeel.butt@linux.dev,
-        muchun.song@linux.dev, david@kernel.org, lorenzo.stoakes@oracle.com,
-        ziy@nvidia.com, yosry.ahmed@linux.dev, imran.f.khan@oracle.com,
-        kamalesh.babulal@oracle.com, axelrasmussen@google.com,
-        yuanchu@google.com, weixugc@google.com, chenridong@huaweicloud.com,
-        mkoutny@suse.com, akpm@linux-foundation.org,
-        hamzamahfooz@linux.microsoft.com, apais@linux.microsoft.com,
-        lance.yang@linux.dev, linux-mm@kvack.org, linux-kernel@vger.kernel.org,
-        cgroups@vger.kernel.org, Muchun Song <songmuchun@bytedance.com>,
-        Qi Zheng <zhengqi.arch@bytedance.com>
-Subject: Re: [PATCH v3 24/30] mm: memcontrol: prepare for reparenting LRU
- pages for lruvec lock
-Message-ID: <aW86_5SOdtQQnVr7@hyeyoo>
-References: <cover.1768389889.git.zhengqi.arch@bytedance.com>
- <0252f9acc29d4b1e9b8252dc003aff065c8ac1f6.1768389889.git.zhengqi.arch@bytedance.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <0252f9acc29d4b1e9b8252dc003aff065c8ac1f6.1768389889.git.zhengqi.arch@bytedance.com>
-X-ClientProxiedBy: SE2P216CA0153.KORP216.PROD.OUTLOOK.COM
- (2603:1096:101:2c1::9) To CH3PR10MB7329.namprd10.prod.outlook.com
- (2603:10b6:610:12c::16)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 609C542E00E;
+	Tue, 20 Jan 2026 13:57:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1768917472; cv=none; b=BHnmprvOMUdrkvb1hpwv+JC5fP2SaQyowRo4BXYPMTwLz/lFUUfIBhzGo5b0D0fKDyvlZpyqb4ZgephGEwziestQCMiW+VdRAdNv/BnYVinMk4o7JOEj/sGoxidKz9BYHWb/ZfHcs+fzlHn9Y1g3n8Ics7HQWSM82a7Ow8sCsTU=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1768917472; c=relaxed/simple;
+	bh=gO7haeB6OAyoc4gP3Xe+GTNXWpzZNpvHWJr/7KgmN5I=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=LhW31i9BNKKwmiq7gsG9i5AnW0syobwWFNa9qf+KxatcYloqseQdga0idXTE6vwbhLaMOX+Wk5JTEosXzQDiJw/0UlMF9ibdLrh4PbIay0w+kxCpwi42lLT0SIyodNi2eDVbQfF9GQ1aM5LJ7YjLKfBDeGQiKhq7CL/EHByxmKs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.170])
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTPS id 4dwTQP42y4zKHMjv;
+	Tue, 20 Jan 2026 21:56:45 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.128])
+	by mail.maildlp.com (Postfix) with ESMTP id DFF3A4056D;
+	Tue, 20 Jan 2026 21:57:46 +0800 (CST)
+Received: from hulk-vt.huawei.com (unknown [10.67.174.121])
+	by APP4 (Coremail) with SMTP id gCh0CgCnCPnQiW9pwhTxEQ--.10691S2;
+	Tue, 20 Jan 2026 21:57:43 +0800 (CST)
+From: Chen Ridong <chenridong@huaweicloud.com>
+To: akpm@linux-foundation.org,
+	axelrasmussen@google.com,
+	yuanchu@google.com,
+	weixugc@google.com,
+	david@kernel.org,
+	lorenzo.stoakes@oracle.com,
+	Liam.Howlett@oracle.com,
+	vbabka@suse.cz,
+	rppt@kernel.org,
+	surenb@google.com,
+	mhocko@suse.com,
+	corbet@lwn.net,
+	skhan@linuxfoundation.org,
+	hannes@cmpxchg.org,
+	roman.gushchin@linux.dev,
+	shakeel.butt@linux.dev,
+	muchun.song@linux.dev,
+	zhengqi.arch@bytedance.com
+Cc: linux-mm@kvack.org,
+	linux-doc@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	cgroups@vger.kernel.org,
+	lujialin4@huawei.com,
+	chenridong@huaweicloud.com,
+	ryncsn@gmail.com
+Subject: [RFC PATCH -next 0/7] Introduce heat-level memcg reclaim
+Date: Tue, 20 Jan 2026 13:42:49 +0000
+Message-Id: <20260120134256.2271710-1-chenridong@huaweicloud.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CH3PR10MB7329:EE_|CH2PR10MB4343:EE_
-X-MS-Office365-Filtering-Correlation-Id: cebc0681-ea37-4d38-2d4c-08de57fce97c
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|376014|7416014|366016|1800799024;
-X-Microsoft-Antispam-Message-Info:
-	=?us-ascii?Q?ZNYKHHxEGlAEN/sueFx6LzVOZyhNf3+xPkTbnj1T/0rgxWcnribOekSedb06?=
- =?us-ascii?Q?e/fRxCaJ+jZUSdHLYBmOjnqYC/GPvengMnJwK2Pb6Dw/iDvSD62B+bpbhVFa?=
- =?us-ascii?Q?Wk2/gg4cT+YFgzFVHKaugxzHmQHQTT1/g2zb25m7YgNOXWRF4/oz6FDyHTTd?=
- =?us-ascii?Q?MQQW14ux3+Zd5slt39VoLln+xytGOEOr6Zt04MlwjaHGq9jumkPspiX2gF1U?=
- =?us-ascii?Q?/znEq+9FICLVG9FURlCmd+nR3prxbzXsRJNi+CISGaC/apPtD3rEYg50xt3M?=
- =?us-ascii?Q?+SwKC5ospyeGWU0Sr0HsZkfbYgjRrUdydsbN6vdPUKUvGUwEoR7fJnZBfmy/?=
- =?us-ascii?Q?bw5NMGIDf21+5nci1Rd1Nd9d4OxbdqwmhO0dVF66JPGQoMcm1+Vum7L41Btw?=
- =?us-ascii?Q?TjFA+9e/9rh2F1dxROSgWyTEI1RWeZg8ZplyGXTs5YGIfDROOA8GxEHCrMJ5?=
- =?us-ascii?Q?iGBgaLDwLB2kMl9P8bmFss2RNZZ7CDT9aRwcQ5NvR4Fu1gE5LG3n2LvhYTUv?=
- =?us-ascii?Q?vEhj4to9tjMTSeXLI2YMAOIl3pB7uCZWnR4mr1eNnXqvpO5Nvtmv3Do7BfB7?=
- =?us-ascii?Q?gdhqzbBYUKnla5XWUS75jRAYjaOcs3Lg/ynsZ6Q7k25V+7NKheGskOcKrpnV?=
- =?us-ascii?Q?xyTup8e7WTOQWKo3tPncM8SDjOl+sY0PEqqFLtcV5iBQiOTZaEDH2qQMIxHu?=
- =?us-ascii?Q?neoYcfz0HpvOsBixU/zNq3BpprgfzXYAktcmk0MVizIlPpAVkjcyYXdICsgl?=
- =?us-ascii?Q?fTNT7J1zsledh8MNrHqhVYo0WpUFSDQcAsSmQ6t3GjZTerE9gjmhl+DLmmkY?=
- =?us-ascii?Q?hjB/KRHtwvqA5jAkFJp+7IYES8RSjOBLHVh2r97Ug3hDJriqBeGUDgjM9NyR?=
- =?us-ascii?Q?dIxsguPV/F6FrR8J8OkbBIDZOC5DH2XQLgRX3t1HxzRIdlLNWbTljCGE/z+V?=
- =?us-ascii?Q?ssrPUz/s5C+ywoRvg0y5+Pu0cI7JRB/wv8ylvV0zO60kDN//aDelGpkR4wIb?=
- =?us-ascii?Q?DkZEI2BJFehBOZYF2KjGkX+dYKPzLYkuUW8kTWAROuuSD7H1nv3vo8CqHhdI?=
- =?us-ascii?Q?iJ5LAl8tGq6jJrLiGB86Pclidjbd3M2OG2DmqoCDGnVglTYQqsUvfcK9C8Qp?=
- =?us-ascii?Q?tdEGayMDAKwZ2sEoKE+x9B1fGS82m5g8i8MnlipXgAm//C9jB/+/fSvgZ8L4?=
- =?us-ascii?Q?b+8oak3bGgvJvDbS6pVBcEjfuod+ZpQ3cP5Oj5EZXlE298rK7Zo48T8jEhaK?=
- =?us-ascii?Q?JgsROicMwVoyv5+DvY0EB5m4/PCqy/dRe5UBo1oR8PEyZQ7DGckFntsiGYPZ?=
- =?us-ascii?Q?NmsL4tZVie581K/iAD7xKx+6gcqCOWFhjzZpwD3o8UVw50UMT4H4vyLigVWa?=
- =?us-ascii?Q?wWIiqe0y9sZIzUJTZTutPEG1CNWNMvFxmJCkMOheq4VzWkhK+ju7fUZT4/Db?=
- =?us-ascii?Q?jzJoi8crjbityVHS2E5DgIe5LQvx3M6QUB+jaCNEwm/a1arMB4dNUzifLh29?=
- =?us-ascii?Q?qIzCEF4VUWost9/JW9OCT1tSvHLyu/vak7+gHa3tPHZ3IAYi0VV5ia+IAf96?=
- =?us-ascii?Q?tGiftTwb2fw2wfF7ODc=3D?=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH3PR10MB7329.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(376014)(7416014)(366016)(1800799024);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?M1bAP1VDg8DIhInHYTNMf35Yiz0qixe0GIx3ia/6Ni7HOBT7ijN0Xdr+gUIh?=
- =?us-ascii?Q?t/W8kyPFZPMKCGO2VlgiiW0UWY41rmZUBpbEwnodAUW+H4UZ4jXkoHVBXKn3?=
- =?us-ascii?Q?mXb0niOXsRa9g8mBPqLzGlKnZnlZdTimqjfbDrGvqhVwv9JUsipfn7kZeuTh?=
- =?us-ascii?Q?FREA7b/XdOGh3Tj0IROsQg3mr/BfiFZnULDVzLn+1NptGZTZb7bFHPDlC1CS?=
- =?us-ascii?Q?yFJdap1Ux50RxigIH7BJKCVEShe+A+kAbrGoLL1/46WP426VKH6BrsgEZ7gF?=
- =?us-ascii?Q?WTpmZDwCrsxdutfwHo8MyBMJ3cubEPoWtrKX3i9oBrcBAeJFyRqvZhamNs1y?=
- =?us-ascii?Q?W56Obx5jQhDVg5OwG3iYoEt2eILk4W5PdNduOtGzz+ru9v/sr1Ss5pxDBaGR?=
- =?us-ascii?Q?dVRN3gMz2V+Fdrffun/JN+cHYYQzZyvBrkOtMrNvtuFNoHbqmp5KkiWnqf2f?=
- =?us-ascii?Q?rQFQoCconh742aW4PVyTK/rd9twzH2aQCJ63QKUz7uj/UDcwt0cyPsPE9Zmd?=
- =?us-ascii?Q?j1hhIc9b/2aaVJH9wCtRg2yTGJCON51GrIVVEzpA5QhBeMHZg9bH3p70u6ja?=
- =?us-ascii?Q?brr78TT2MtgytAOYqAf1UZH5wHQDwtkjN/StQeBQaUH+DZ4CnLbvyq7+RFbn?=
- =?us-ascii?Q?ekh8tf8I4XutytjdI0FEzyFGk1ojgu6BvJNF0gM5GggzYgl7cFtiMW3h3TJ7?=
- =?us-ascii?Q?xTrkF48hDKCPw2QpyuuRS9z4xvsMeKIpSuFgcPclg1h6tiT/WmwLDIqRbdC9?=
- =?us-ascii?Q?fjSp0zqkLEFH/KuH7DSGjb5lp6Ku1GqroImJs0Z8nQYtAkbLdQ+3zDOGpuUC?=
- =?us-ascii?Q?aegbO017QAcSTwiLk/i4lx5KORoMRJZWHlIh8ZTvZEpNm16E4eSmFpzAg8bM?=
- =?us-ascii?Q?0R1zGf/xtvkXYgxGRsG5pTlSiDTTI9giZz+oevMwXHiSgwtktOo0GzPlq9Qi?=
- =?us-ascii?Q?QaNyw1QayZmWI/1O2grrCNw3+RoVq06yAZDMbVGMCivqDnaIWuQdUjEdUvqK?=
- =?us-ascii?Q?IL070/IEU5mBZeeuzIR4/HdIUFyN974tOb6ssTsZrJgwl6Ou3KW3DzUravT4?=
- =?us-ascii?Q?AQ/tYlssGNYK0c1UkabouwBAtHuZvicVxXzyU6MmrlxJ1mGG+lWXgChzgkF+?=
- =?us-ascii?Q?ss7Mido/QAnMSeU7Yxa0AZT8mBpNzZqFc9Y6CaGrp4XrvpjekGCTfniL+Lhb?=
- =?us-ascii?Q?U+Jfqm3d4gr6SjRdfe70ZRw0VBj1KYlqRBNC8K0PpQ2+aVsyakGuXRqwHIY/?=
- =?us-ascii?Q?EsfXQlWVHnVBx3wj72Fww5/gBsSyII3xGkBdtcxAy3kbqMy2t3UF5gsWrqPP?=
- =?us-ascii?Q?WgHQ7eclcBFNLVD2Hw1sxIJ9czZx5FRWengpxxI4jwyu8IHxNa2p9+i3loP/?=
- =?us-ascii?Q?9yhjFKSd3ob491Bvi0kn/Ejq6+q5N7Nxyiw5abygn3OT2fVywOz1dDVIqOrv?=
- =?us-ascii?Q?KSL4lbJEfnI24Q6tXAjxk7P/OUvPX/ScjPbDzEF4RIld0s2p/KTiAev1b+Cr?=
- =?us-ascii?Q?UReC377+j7iU8AKRsQvi2+GpQ54q8tUhgX/+skEpkPj8DMNq6nXt8Wfl4nox?=
- =?us-ascii?Q?LAXId8LBXhi1TB26EK1yyqQ4LUzPc9lQMdpDOBftmmMMBkDVjOGG6sNPKPPc?=
- =?us-ascii?Q?7vdRb8Ofec89yEQIJcUgNySyuNR4wuZAeAnvKyIrl7fbBIY1kFMJ5u4VHrhE?=
- =?us-ascii?Q?+RVX/ktrABTDMmfxJ9MPrURmhyEeSuUOX19AU2t9XVqCtvFopJ/REpxRrXSa?=
- =?us-ascii?Q?h+03rB6Sow=3D=3D?=
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0:
-	XcjmrYCG8snNl3HUT4g9ubLRIq8yRE5DMP3Z+TpTsBozAspVKJyMWYqBlCGErva6/9IX/xl56WExcoTadDGyQYN7FOhlFA4dSVe88zGLFnOdmOESeD9xpoJ6tiXmxcTrpTST3IZdpWKCUrvkIxL6m+RAJy+0nt4Cu3xsgo6hY1scy5a4KXZpyfX1obE2awjFzUBOiLNnHrRhUOtg36ogqLKBRdoetMuE7HE12gJH+RDfLuYCgocJnQzCNuSrcMbEwyQAoRORne8MzLaI3goIkns3vXdm5TNWZTLU/w8rQvQQ7YSLSJjRHwGispIcw9/z3TbYxAaKzLtFDfxzJ/nj0IOaXfbdnDe1qutXLWcKLSoWmL6AmBP1FJrH7r/52DPbkLHK548ARpU589C+n4KOVEhNCytADDL/D9yBQaZESifXMwfv0PbP3WHAEJR5ltY4D54h5AVV7dpvL8LISgisyYmFv0EbCZ15LWrf4X3ET3Q1zfrqW/4y1L4Q16h/dFPlwQmto9QrpbItTQ6VtngrOhg0pDQ9BhqFBQrWGDoo9Jqo/FfJYedB2Ed32wzqHBBBATUrxk/1Y1KskD/uO+dWe/SgYKEkOXM5kgz5Fprka+o=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: cebc0681-ea37-4d38-2d4c-08de57fce97c
-X-MS-Exchange-CrossTenant-AuthSource: CH3PR10MB7329.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Jan 2026 08:21:29.7277
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: l/8YBRGf0A6FPdOY5GyFfxCQgSJj17OK7+aBcu6qAkt7SHaWV9FyOXHOWurRxJ2z7Ab7guDuUBbZIE4OWBMjXg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH2PR10MB4343
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1121,Hydra:6.1.9,FMLib:17.12.100.49
- definitions=2026-01-20_02,2026-01-19_03,2025-10-01_01
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 bulkscore=0 adultscore=0
- spamscore=0 phishscore=0 mlxscore=0 mlxlogscore=999 suspectscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2601150000
- definitions=main-2601200068
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwMTIwMDA2OSBTYWx0ZWRfX6cGjk665MKov
- pylElzjtplYWjX9tZB6jp0/UOeo9ZIppnKAt0Aj13jMv1sRwxe/FVeSzcF2yXw5juzZNiOMhr25
- I4TZS9iLX/th0NWg0Cz7YkjG71HQ5Owia7PjwKgljAoyRMo5fpP9daCEDZEfoB32x9yFyFw3Kr5
- CD10a9+XQAMUv1H75B2q26EwigNNoaKjOZgoSQgsosiHQNcSb2OBwquyqxCcGGrA1MCXnU9WGTN
- TutALSPAS2V11BL/ZMkdReEfCDyWylPz6P4xI47bsXb9QlpveRi5FgBw9H7+j8JicuPHjCQBLzd
- tBNqbkNogyJWULIM01lRycuTtkrQyUbR8+VC63qL+qRGfPu378TWA4jHEhLfuqegdrp304QiDB4
- YqJAhwWqF7aWwSksIcX9fvKe9xEDGp1flW2Fosqr+WDX9B5fHFbwBpV/+acSAtXpUhaxBlJJHJ5
- cUv73I5T/OgOCEpDPtUySeGvwGtrVIoAtYyRBpzg=
-X-Proofpoint-GUID: 8QtRc0FT0nOmivcni2smPMxY2dmpFZaf
-X-Authority-Analysis: v=2.4 cv=XK49iAhE c=1 sm=1 tr=0 ts=696f3b0d b=1 cx=c_pps
- a=e1sVV491RgrpLwSTMOnk8w==:117 a=e1sVV491RgrpLwSTMOnk8w==:17
- a=6eWqkTHjU83fiwn7nKZWdM+Sl24=:19 a=z/mQ4Ysz8XfWz/Q5cLBRGdckG28=:19
- a=lCpzRmAYbLLaTzLvsPZ7Mbvzbb8=:19 a=xqWC_Br6kY4A:10 a=kj9zAlcOel0A:10
- a=vUbySO9Y5rIA:10 a=GoEa3M9JfhUA:10 a=VkNPw1HP01LnGYTKEx00:22
- a=968KyxNXAAAA:8 a=ufHFDILaAAAA:8 a=vnbn0GdLyxwCu2Ke3TIA:9 a=CjuIK1q_8ugA:10
- a=ZmIg1sZ3JBWsdXgziEIF:22 cc=ntf awl=host:13654
-X-Proofpoint-ORIG-GUID: 8QtRc0FT0nOmivcni2smPMxY2dmpFZaf
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:gCh0CgCnCPnQiW9pwhTxEQ--.10691S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxZw1Utw1rJFW7WrWUWw1Utrb_yoW5AFyUpa
+	93Wasxtws5JF15AanrAayUWrWfZrn7J3W3XF98Kr97Ar13AFyvvFWIkr1ruFWDCrWxtry3
+	XrnF93WDWF4DAFJanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUU9Y14x267AKxVW5JVWrJwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+	1l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
+	JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
+	CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
+	2Ix0cI8IcVAFwI0_JrI_JrylYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
+	W8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2
+	Y2ka0xkIwI1lc7CjxVAaw2AFwI0_GFv_Wryl42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x
+	0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2
+	zVAF1VAY17CE14v26r4a6rW5MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF
+	4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWU
+	CwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCT
+	nIWIevJa73UjIFyTuYvjTRRBT5DUUUU
+X-CM-SenderInfo: hfkh02xlgr0w46kxt4xhlfz01xgou0bp/
+X-Spamd-Result: default: False [0.24 / 15.00];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+	MID_CONTAINS_FROM(1.00)[];
+	R_MISSING_CHARSET(0.50)[];
+	MAILLIST(-0.15)[generic];
+	MIME_GOOD(-0.10)[text/plain];
+	HAS_LIST_UNSUB(-0.01)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	FREEMAIL_CC(0.00)[kvack.org,vger.kernel.org,huawei.com,huaweicloud.com,gmail.com];
+	RCVD_TLS_LAST(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	TAGGED_FROM(0.00)[bounces-13324-lists,cgroups=lfdr.de];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	DMARC_NA(0.00)[huaweicloud.com];
+	ASN(0.00)[asn:7979, ipnet:142.0.200.0/24, country:US];
+	TAGGED_RCPT(0.00)[cgroups];
+	R_DKIM_NA(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[chenridong@huaweicloud.com,cgroups@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[25];
+	PRECEDENCE_BULK(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[6];
+	R_SPF_SOFTFAIL(0.00)[~all:c];
+	TO_DN_NONE(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[dfw.mirrors.kernel.org:rdns,dfw.mirrors.kernel.org:helo,huawei.com:email,huaweicloud.com:mid]
+X-Rspamd-Queue-Id: 0ABD24742D
+X-Rspamd-Action: no action
+X-Rspamd-Server: lfdr
 
-On Wed, Jan 14, 2026 at 07:32:51PM +0800, Qi Zheng wrote:
-> From: Muchun Song <songmuchun@bytedance.com>
-> 
-> The following diagram illustrates how to ensure the safety of the folio
-> lruvec lock when LRU folios undergo reparenting.
-> 
-> In the folio_lruvec_lock(folio) function:
-> ```
->     rcu_read_lock();
-> retry:
->     lruvec = folio_lruvec(folio);
->     /* There is a possibility of folio reparenting at this point. */
->     spin_lock(&lruvec->lru_lock);
->     if (unlikely(lruvec_memcg(lruvec) != folio_memcg(folio))) {
->         /*
->          * The wrong lruvec lock was acquired, and a retry is required.
->          * This is because the folio resides on the parent memcg lruvec
->          * list.
->          */
->         spin_unlock(&lruvec->lru_lock);
->         goto retry;
->     }
-> 
->     /* Reaching here indicates that folio_memcg() is stable. */
-> ```
-> 
-> In the memcg_reparent_objcgs(memcg) function:
-> ```
->     spin_lock(&lruvec->lru_lock);
->     spin_lock(&lruvec_parent->lru_lock);
->     /* Transfer folios from the lruvec list to the parent's. */
->     spin_unlock(&lruvec_parent->lru_lock);
->     spin_unlock(&lruvec->lru_lock);
-> ```
-> 
-> After acquiring the lruvec lock, it is necessary to verify whether
-> the folio has been reparented. If reparenting has occurred, the new
-> lruvec lock must be reacquired. During the LRU folio reparenting
-> process, the lruvec lock will also be acquired (this will be
-> implemented in a subsequent patch). Therefore, folio_memcg() remains
-> unchanged while the lruvec lock is held.
-> 
-> Given that lruvec_memcg(lruvec) is always equal to folio_memcg(folio)
-> after the lruvec lock is acquired, the lruvec_memcg_debug() check is
-> redundant. Hence, it is removed.
-> 
-> This patch serves as a preparation for the reparenting of LRU folios.
-> 
-> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-> Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
-> Acked-by: Johannes Weiner <hannes@cmpxchg.org>
-> ---
->  include/linux/memcontrol.h | 45 +++++++++++++++++++----------
->  include/linux/swap.h       |  1 +
->  mm/compaction.c            | 29 +++++++++++++++----
->  mm/memcontrol.c            | 59 +++++++++++++++++++++-----------------
->  mm/swap.c                  |  4 +++
->  5 files changed, 91 insertions(+), 47 deletions(-)
-> 
-> diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-> index 4b6f20dc694ba..26c3c0e375f58 100644
-> --- a/include/linux/memcontrol.h
-> +++ b/include/linux/memcontrol.h
-> @@ -742,7 +742,15 @@ static inline struct lruvec *mem_cgroup_lruvec(struct mem_cgroup *memcg,
->   * folio_lruvec - return lruvec for isolating/putting an LRU folio
->   * @folio: Pointer to the folio.
->   *
-> - * This function relies on folio->mem_cgroup being stable.
-> + * Call with rcu_read_lock() held to ensure the lifetime of the returned lruvec.
-> + * Note that this alone will NOT guarantee the stability of the folio->lruvec
-> + * association; the folio can be reparented to an ancestor if this races with
-> + * cgroup deletion.
-> + *
-> + * Use folio_lruvec_lock() to ensure both lifetime and stability of the binding.
-> + * Once a lruvec is locked, folio_lruvec() can be called on other folios, and
-> + * their binding is stable if the returned lruvec matches the one the caller has
-> + * locked. Useful for lock batching.
->   */
->  static inline struct lruvec *folio_lruvec(struct folio *folio)
->  {
-> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> index 548e67dbf2386..a1573600d4188 100644
-> --- a/mm/memcontrol.c
-> +++ b/mm/memcontrol.c
-> diff --git a/mm/swap.c b/mm/swap.c
-> index cb1148a92d8ec..7e53479ca1732 100644
-> --- a/mm/swap.c
-> +++ b/mm/swap.c
-> @@ -284,9 +286,11 @@ void lru_note_cost_unlock_irq(struct lruvec *lruvec, bool file,
->  		}
->  
->  		spin_unlock_irq(&lruvec->lru_lock);
-> +		rcu_read_unlock();
->  		lruvec = parent_lruvec(lruvec);
+From: Chen Ridong <chenridong@huawei.com>
 
-It looks bit weird to call parent_lruvec(lruvec) outside RCU read lock
-because the reason why it holds RCU read lock is to prevent release of
-memory cgroup and its lruvec.
+The memcg LRU was originally introduced to improve scalability during
+global reclaim, but it only supports gen lru global reclaim and its
+implementation has become complex. Moreover, it has caused performance
+regressions when dealing with a large number of memory cgroups [1].
 
-I guess this isn't broken (for now) because all callers of
-lru_note_cost_unlock_irq() are holding a reference to the memcg?
+Previous attempts to remove memcg LRU by switching back to iteration
+implementation brought performance regression [3].
 
->  		if (!lruvec)
->  			break;
-> +		rcu_read_lock();
->  		spin_lock_irq(&lruvec->lru_lock);
->  	}
->  }
+This series introduces a per-memcg heat level mechanism for reclaim,
+aiming to unify gen lru and traditional LRU global reclaim. The core
+idea is to track per-node per-memcg reclaim state, including heat,
+last_decay, and last_refault. Three reclaim heat levels are defined:
+cold, warm, and hot. Cold memcgs are reclaimed first; only if cold
+memcgs cannot reclaim enough pages, warm memcgs become eligible for
+reclaim. Hot memcgs are reclaimed last.
+
+While the heat level design can be applied to all memcg reclaim scenarios,
+this series takes a conservative approach and initially applies it only
+to global reclaim. The first few patches introduce the heat level
+infrastructure and apply it to traditional LRU global reclaim. The
+subsequent patches gradually migrate gen lru global reclaim to the
+heat-level-based approach, with the final patch combining shrink_many
+into shrink_node_memcgs to complete the transition.
+
+Performance results show significant improvements:
+
+Traditional LRU results (2-hour run of test [2]):
+Throughput (number of requests)         before     after        Change
+Total                                   1,734,169  2,353,717    +35%
+
+Gen LRU results (24-hour run of test [2]):
+Throughput (number of requests)         before     after        Change
+Total                                   22,879,701 25,331,956   +10%
+
+The performance tests are based on next branch commit:
+commit ef0d146624b0 ("Add linux-next specific files for 20251219")
+
+This series has been rebased on next-20260119:
+commit d08c85ac8894 ("Add linux-next specific files for 20260119")
+
+[1] https://lore.kernel.org/r/20251126171513.GC135004@cmpxchg.org
+[2] https://lore.kernel.org/r/20221222041905.2431096-7-yuzhao@google.com
+[3] https://lore.kernel.org/lkml/20251224073032.161911-1-chenridong@huaweicloud.com/
+
+Chen Ridong (7):
+  vmscan: add memcg heat level for reclaim
+  mm/mglru: make calls to flush_reclaim_state() similar for MGLRU and
+    non-MGLRU
+  mm/mglru: rename should_abort_scan to lru_gen_should_abort_scan
+  mm/mglru: extend lru_gen_shrink_lruvec to support root reclaim
+  mm/mglru: combine shrink_many into shrink_node_memcgs
+  mm/mglru: remove memcg disable handling from lru_gen_shrink_node
+  mm/mglru: remove memcg lru
+
+ Documentation/mm/multigen_lru.rst |  30 --
+ include/linux/memcontrol.h        |   7 +
+ include/linux/mmzone.h            |  89 -----
+ mm/memcontrol-v1.c                |   6 -
+ mm/memcontrol.c                   |   7 +-
+ mm/mm_init.c                      |   1 -
+ mm/vmscan.c                       | 547 ++++++++++++------------------
+ 7 files changed, 231 insertions(+), 456 deletions(-)
 
 -- 
-Cheers,
-Harry / Hyeonggon
+2.34.1
+
 
