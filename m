@@ -1,339 +1,227 @@
-Return-Path: <cgroups+bounces-13332-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-13319-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id qEU4L0u+b2kOMQAAu9opvQ
-	(envelope-from <cgroups+bounces-13332-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Tue, 20 Jan 2026 18:41:31 +0100
+	id aGl/CaRqcGkVXwAAu9opvQ
+	(envelope-from <cgroups+bounces-13319-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Wed, 21 Jan 2026 06:56:52 +0100
 X-Original-To: lists+cgroups@lfdr.de
-Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5AB1A48BDF
-	for <lists+cgroups@lfdr.de>; Tue, 20 Jan 2026 18:41:31 +0100 (CET)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8340A51C7A
+	for <lists+cgroups@lfdr.de>; Wed, 21 Jan 2026 06:56:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id CD295A2BD41
-	for <lists+cgroups@lfdr.de>; Tue, 20 Jan 2026 17:09:16 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 1FA9D643BD9
+	for <lists+cgroups@lfdr.de>; Tue, 20 Jan 2026 11:51:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3845434E75A;
-	Tue, 20 Jan 2026 17:09:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AAF3040757D;
+	Tue, 20 Jan 2026 11:51:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UIpZmNkQ"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="FoBP3E4u"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-ej1-f49.google.com (mail-ej1-f49.google.com [209.85.218.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-185.mta0.migadu.com (out-185.mta0.migadu.com [91.218.175.185])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D05934E774
-	for <cgroups@vger.kernel.org>; Tue, 20 Jan 2026 17:09:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 317822D6E61
+	for <cgroups@vger.kernel.org>; Tue, 20 Jan 2026 11:51:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.185
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768928952; cv=none; b=VkKI7B3i2JmekvplSnfIkt6K23EO5/kGeFtjRKU1GsqTfZcXfgBCfAHjzZIGEmiwHx8M/0sq+D+CVQWUDP0iGKkeLAIV3DMp0nGKf1LHuGb01g9GILDKLRggOET84EevxsU/aINoubNAeQy5KVuW6XGgKuvO1vnxBPSpYaZY71Y=
+	t=1768909912; cv=none; b=BNdL2cTggolB+iW7+rTJIi3IYe7SYwa95SJR5l6TxER7J5ly8mO1rIEVPMvhomeI2P2upGLggkoQvsGdQuadr/NO/YvcgmRBpD4fwXPizOQWEJ2BALojkz8rQnZBDBVJp3cFVUCesGtAnCmUk9yGUdRjo0ef7+c641TRR4a0aNI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768928952; c=relaxed/simple;
-	bh=kr7yBZlFs4v5mTRyHBuStMqJ7KcAT5LdX2UKtFW8lOQ=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=F7qIHBzYBkzHUsSgyE598x9e1vsJ1oRKWMSKpBml8cKu1tfVjoNaPHyZLPbLQAz3w9d5LOQrMOfOcRy/XroM7PZvnv3TQs9ETBZDRpopsPS7iqFE/b5U70Qt7/HbhMrOuJzIH9Li5LKWobP0KCzeXhdIHz8U1ZnYmRKGcBsiA+A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=UIpZmNkQ; arc=none smtp.client-ip=209.85.218.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f49.google.com with SMTP id a640c23a62f3a-b876c0d5318so755674766b.0
-        for <cgroups@vger.kernel.org>; Tue, 20 Jan 2026 09:09:09 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1768928948; x=1769533748; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=lty+/9ZQzucJOhyOUFJ57+6O2KRarMnOEKlOmEePGSU=;
-        b=UIpZmNkQ5ltXdA+j+NziBU8Y2dW6hmR8sTryrTIYxDUvvpc1EWUrybQalWa1lOBOwW
-         3/YmiSDV9TvUOdzLuOpcUKdwSDGVpjLBNfGmv/fYBjl99ivOO0XhbPJFK7XeJYhgkjhl
-         21w/ly+rDgFAQb9AAGhUWa4MCB4BmRKAAw4FFtaJFaV3h7kUNvi3tY5k34e7S5NXh/lD
-         RJm4PzjTNb6/yuYIGFmASdkiYWIfmSLF3qModa3DjUjAhaf2JmUALm7uOw9u2YoQOkH7
-         neoYCgiBplNQU4+DTJW/g5fat7a2dC5EQVOK2V6b7WeYeuZm2eaBUTHOnUykOBLPJL4u
-         PqJA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1768928948; x=1769533748;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=lty+/9ZQzucJOhyOUFJ57+6O2KRarMnOEKlOmEePGSU=;
-        b=g7syXfGfoxx6FLPvJ/McPARSMXnWkTFEgiL3FAUcNYsNfMeAbK3WcTNRGyPJEhK2R7
-         8IpLg+mNJ6DWZ77AMnKJPvFLlNtVS7IXSoZeWoFPFtJgtLnJ5nhEzYJSujdbPmC/eluN
-         AwRIWZY9r5nAlyXtKNp2WqG2TnJBVWyDJQTLg/2aX7CfSAzl9N+IiAuGasDdgZcAJcBc
-         crGAPlg99TaiHSjQ99vBh+/XvXIZ/C6xtXBs/TI7TjfqvN75c66dKuoeI/92yEYZViT5
-         mhDqNcGXndSG6OKbM/bEKMHL2hCcQP7Hn8g+kzp4n2tKR8GIWuSUbbkE86+nmTjPr2Bu
-         NAzQ==
-X-Forwarded-Encrypted: i=1; AJvYcCU075r6PR6ZbdniCDsDZj5lBegGjBgwzRsZMDmobK0tgVvrLDkrjahdVgKqUjY627R3Wklqjpm1@vger.kernel.org
-X-Gm-Message-State: AOJu0YyDa/utgGyZ4wyplLEvxyzG+KEDw3Gu6Ix7ZdkYubbQYmjHAUzD
-	/8AfhrQKUw+Qrkv1/FkFLRKvRZnOjK8dbRKU4JLJQz14nZmd1kHq9l+X
-X-Gm-Gg: AY/fxX6E/k47kMikf4bF265R4QX8XoQjGIUcxI4HQRtSx26wvuWoNI9nzadNhk73gBy
-	moAocET6sOJy7lOLPBJpWG4IkbjxGhFJdRTZwtF6rkZM69qgqQk5tFRUNUBobuWrrKb9DgFjNPA
-	WB+ifw2oj3xQlp6CbOB/9WP+uJM/7e/hqkp0ctKRP/EVD3AmmSSXHSkHTnASy5scQ9sqQrPS5FQ
-	0KEweA1z7KzZGaTGjfPkR9/Gt9X9Mm9GETN1Tdb+GXEu4kwHD/yLv+F30S1EFccaU9lLh2rtPRa
-	z0ZrZtAs4+NY1TiJfydcSy5+FYXx4fQ10NH/ccqRE5tPcaiVPPWVY/FwZmKm3FAC7szz9kUwtDm
-	2cPOI8yG3S1EZRwailnZES7q/txugPPMh5N7RhzxPgarbeBQXc9bKJk/gNkwlmC69lDDmcGmAaM
-	dNxpRVPcTjGcjwep0kbC00CL65ubXS8qHpiZAUR2v0guyvpavmRp8gsCnfuLSClw==
-X-Received: by 2002:a17:907:fdc1:b0:b87:4c74:b316 with SMTP id a640c23a62f3a-b8800364d26mr238859566b.50.1768928947973;
-        Tue, 20 Jan 2026 09:09:07 -0800 (PST)
-Received: from f.. (cst-prg-85-136.cust.vodafone.cz. [46.135.85.136])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-b87959c9bc9sm1421895966b.33.2026.01.20.09.09.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 20 Jan 2026 09:09:07 -0800 (PST)
-From: Mateusz Guzik <mjguzik@gmail.com>
-To: tj@kernel.org,
-	hannes@cmpxchg.org,
-	mkoutny@suse.com
-Cc: brauner@kernel.org,
-	linux-kernel@vger.kernel.org,
-	cgroups@vger.kernel.org,
-	Mateusz Guzik <mjguzik@gmail.com>
-Subject: [PATCH] cgroup: avoid css_set_lock in cgroup_css_set_fork()
-Date: Tue, 20 Jan 2026 18:08:59 +0100
-Message-ID: <20260120170859.1467868-1-mjguzik@gmail.com>
-X-Mailer: git-send-email 2.43.0
+	s=arc-20240116; t=1768909912; c=relaxed/simple;
+	bh=DcBZF4Ct6AA2MM2+TYCml14It0rlK9s2VHXmWNBQ/4o=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=gM7ZrubyZqqy5shvnwDainLIhAmmMYkryWknbS3TTZGwzr0MCRcZ/QNVpxrEFXjqXwW3LJ/+BVVpyv5nhoS4N9Au1BCyGe2CoYcGWhKkRMdwELywadBzTCPQ2YYY56L9Ks1f7coHZErBAxbU6gLFUbXtDfQdggkuOLI/0rtM/Ys=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=FoBP3E4u; arc=none smtp.client-ip=91.218.175.185
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <88d90d30-8f54-43f5-98d6-1769aa05a10a@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1768909908;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=x9xxVtMuSeOSiPFHs2DPvF1bZM+k4doJowUTIgEXb84=;
+	b=FoBP3E4uU4cp25iVs0YnuLXf8CmTrLWVI1GO/15ajs+mzhMyEradq4fhK4j0VFhngoJ5kb
+	qw0gnnUyDkR14vYXjGlGgA9V4nPaMOxs8iZwchUgWN6gFNOpS0ruLM+dl7Uex3jPp9EbCf
+	oGjXSaTppQvh1No36QGTU8/5TF9RLj8=
+Date: Tue, 20 Jan 2026 19:51:29 +0800
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spamd-Result: default: False [-0.46 / 15.00];
-	MID_CONTAINS_FROM(1.00)[];
+Subject: Re: [PATCH v3 24/30] mm: memcontrol: prepare for reparenting LRU
+ pages for lruvec lock
+To: Harry Yoo <harry.yoo@oracle.com>
+Cc: hannes@cmpxchg.org, hughd@google.com, mhocko@suse.com,
+ roman.gushchin@linux.dev, shakeel.butt@linux.dev, muchun.song@linux.dev,
+ david@kernel.org, lorenzo.stoakes@oracle.com, ziy@nvidia.com,
+ yosry.ahmed@linux.dev, imran.f.khan@oracle.com, kamalesh.babulal@oracle.com,
+ axelrasmussen@google.com, yuanchu@google.com, weixugc@google.com,
+ chenridong@huaweicloud.com, mkoutny@suse.com, akpm@linux-foundation.org,
+ hamzamahfooz@linux.microsoft.com, apais@linux.microsoft.com,
+ lance.yang@linux.dev, linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+ cgroups@vger.kernel.org, Muchun Song <songmuchun@bytedance.com>,
+ Qi Zheng <zhengqi.arch@bytedance.com>
+References: <cover.1768389889.git.zhengqi.arch@bytedance.com>
+ <0252f9acc29d4b1e9b8252dc003aff065c8ac1f6.1768389889.git.zhengqi.arch@bytedance.com>
+ <aW86_5SOdtQQnVr7@hyeyoo>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Qi Zheng <qi.zheng@linux.dev>
+In-Reply-To: <aW86_5SOdtQQnVr7@hyeyoo>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
+X-Spamd-Result: default: False [-1.96 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_MISSING_CHARSET(0.50)[];
 	DMARC_POLICY_ALLOW_WITH_FAILURES(-0.50)[];
-	R_DKIM_ALLOW(-0.20)[gmail.com:s=20230601];
+	R_DKIM_ALLOW(-0.20)[linux.dev:s=key1];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TO_DN_SOME(0.00)[];
-	DMARC_POLICY_ALLOW(0.00)[gmail.com,none];
 	RCVD_TLS_LAST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-13319-lists,cgroups=lfdr.de];
+	RCPT_COUNT_TWELVE(0.00)[27];
 	MIME_TRACE(0.00)[0:+];
-	TAGGED_FROM(0.00)[bounces-13332-lists,cgroups=lfdr.de];
-	FREEMAIL_CC(0.00)[kernel.org,vger.kernel.org,gmail.com];
+	RCVD_COUNT_THREE(0.00)[3];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	DKIM_TRACE(0.00)[gmail.com:+];
-	ASN(0.00)[asn:7979, ipnet:142.0.200.0/24, country:US];
-	FREEMAIL_FROM(0.00)[gmail.com];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[mjguzik@gmail.com,cgroups@vger.kernel.org];
+	DMARC_POLICY_ALLOW(0.00)[linux.dev,none];
+	DKIM_TRACE(0.00)[linux.dev:+];
 	FROM_HAS_DN(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	TO_DN_SOME(0.00)[];
 	R_SPF_SOFTFAIL(0.00)[~all:c];
-	RCPT_COUNT_SEVEN(0.00)[7];
-	RCVD_COUNT_FIVE(0.00)[5];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[qi.zheng@linux.dev,cgroups@vger.kernel.org];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	MID_RHS_MATCH_FROM(0.00)[];
+	ASN(0.00)[asn:7979, ipnet:2a01:60a::/32, country:US];
 	TAGGED_RCPT(0.00)[cgroups];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[dfw.mirrors.kernel.org:rdns,dfw.mirrors.kernel.org:helo]
-X-Rspamd-Queue-Id: 5AB1A48BDF
+	MISSING_XM_UA(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[ams.mirrors.kernel.org:rdns,ams.mirrors.kernel.org:helo,linux.dev:mid,linux.dev:dkim,bytedance.com:email]
+X-Rspamd-Queue-Id: 8340A51C7A
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-In the stock kernel the css_set_lock is taken three times during thread
-life cycle, turning it into the primary bottleneck in fork-heavy
-workloads.
 
-The acquire in perparation for clone can be avoided with a sequence
-counter, which in turn pushes the lock down.
 
-Accounts only for 6% speed up when creating threads in parallel on 20
-cores as most of the contention shifts to pidmap_lock (from about 740k
-ops/s to 790k ops/s).
+On 1/20/26 4:21 PM, Harry Yoo wrote:
+> On Wed, Jan 14, 2026 at 07:32:51PM +0800, Qi Zheng wrote:
+>> From: Muchun Song <songmuchun@bytedance.com>
+>>
+>> The following diagram illustrates how to ensure the safety of the folio
+>> lruvec lock when LRU folios undergo reparenting.
+>>
+>> In the folio_lruvec_lock(folio) function:
+>> ```
+>>      rcu_read_lock();
+>> retry:
+>>      lruvec = folio_lruvec(folio);
+>>      /* There is a possibility of folio reparenting at this point. */
+>>      spin_lock(&lruvec->lru_lock);
+>>      if (unlikely(lruvec_memcg(lruvec) != folio_memcg(folio))) {
+>>          /*
+>>           * The wrong lruvec lock was acquired, and a retry is required.
+>>           * This is because the folio resides on the parent memcg lruvec
+>>           * list.
+>>           */
+>>          spin_unlock(&lruvec->lru_lock);
+>>          goto retry;
+>>      }
+>>
+>>      /* Reaching here indicates that folio_memcg() is stable. */
+>> ```
+>>
+>> In the memcg_reparent_objcgs(memcg) function:
+>> ```
+>>      spin_lock(&lruvec->lru_lock);
+>>      spin_lock(&lruvec_parent->lru_lock);
+>>      /* Transfer folios from the lruvec list to the parent's. */
+>>      spin_unlock(&lruvec_parent->lru_lock);
+>>      spin_unlock(&lruvec->lru_lock);
+>> ```
+>>
+>> After acquiring the lruvec lock, it is necessary to verify whether
+>> the folio has been reparented. If reparenting has occurred, the new
+>> lruvec lock must be reacquired. During the LRU folio reparenting
+>> process, the lruvec lock will also be acquired (this will be
+>> implemented in a subsequent patch). Therefore, folio_memcg() remains
+>> unchanged while the lruvec lock is held.
+>>
+>> Given that lruvec_memcg(lruvec) is always equal to folio_memcg(folio)
+>> after the lruvec lock is acquired, the lruvec_memcg_debug() check is
+>> redundant. Hence, it is removed.
+>>
+>> This patch serves as a preparation for the reparenting of LRU folios.
+>>
+>> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+>> Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
+>> Acked-by: Johannes Weiner <hannes@cmpxchg.org>
+>> ---
+>>   include/linux/memcontrol.h | 45 +++++++++++++++++++----------
+>>   include/linux/swap.h       |  1 +
+>>   mm/compaction.c            | 29 +++++++++++++++----
+>>   mm/memcontrol.c            | 59 +++++++++++++++++++++-----------------
+>>   mm/swap.c                  |  4 +++
+>>   5 files changed, 91 insertions(+), 47 deletions(-)
+>>
+>> diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
+>> index 4b6f20dc694ba..26c3c0e375f58 100644
+>> --- a/include/linux/memcontrol.h
+>> +++ b/include/linux/memcontrol.h
+>> @@ -742,7 +742,15 @@ static inline struct lruvec *mem_cgroup_lruvec(struct mem_cgroup *memcg,
+>>    * folio_lruvec - return lruvec for isolating/putting an LRU folio
+>>    * @folio: Pointer to the folio.
+>>    *
+>> - * This function relies on folio->mem_cgroup being stable.
+>> + * Call with rcu_read_lock() held to ensure the lifetime of the returned lruvec.
+>> + * Note that this alone will NOT guarantee the stability of the folio->lruvec
+>> + * association; the folio can be reparented to an ancestor if this races with
+>> + * cgroup deletion.
+>> + *
+>> + * Use folio_lruvec_lock() to ensure both lifetime and stability of the binding.
+>> + * Once a lruvec is locked, folio_lruvec() can be called on other folios, and
+>> + * their binding is stable if the returned lruvec matches the one the caller has
+>> + * locked. Useful for lock batching.
+>>    */
+>>   static inline struct lruvec *folio_lruvec(struct folio *folio)
+>>   {
+>> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+>> index 548e67dbf2386..a1573600d4188 100644
+>> --- a/mm/memcontrol.c
+>> +++ b/mm/memcontrol.c
+>> diff --git a/mm/swap.c b/mm/swap.c
+>> index cb1148a92d8ec..7e53479ca1732 100644
+>> --- a/mm/swap.c
+>> +++ b/mm/swap.c
+>> @@ -284,9 +286,11 @@ void lru_note_cost_unlock_irq(struct lruvec *lruvec, bool file,
+>>   		}
+>>   
+>>   		spin_unlock_irq(&lruvec->lru_lock);
+>> +		rcu_read_unlock();
+>>   		lruvec = parent_lruvec(lruvec);
+> 
+> It looks bit weird to call parent_lruvec(lruvec) outside RCU read lock
+> because the reason why it holds RCU read lock is to prevent release of
+> memory cgroup and its lruvec.
+> 
+> I guess this isn't broken (for now) because all callers of
+> lru_note_cost_unlock_irq() are holding a reference to the memcg?
 
-Signed-off-by: Mateusz Guzik <mjguzik@gmail.com>
----
+I checked all the callers again, and they do indeed hold the refcnt
+for the memcg, so it's safe for now. But it seems rather fragile,
+perhaps we should also include parent_lruvec() within the RCU lock.
 
-I don't really care for cgroups, I merely need the thing out of the way
-for fork. If someone wants to handle this differently, I'm not going to
-argue as long as the bottleneck is taken care of.
-
-On the stock kernel pidmap_lock is still the biggest problem, but
-there is a patch to fix it:
-https://lore.kernel.org/linux-fsdevel/CAGudoHFuhbkJ+8iA92LYPmphBboJB7sxxC2L7A8OtBXA22UXzA@mail.gmail.com/T/#m832ac70f5e8f5ea14e69ca78459578d687efdd9f
-
-.. afterwards it is cgroups and the commit message was written
-pretending it already landed.
-
-with the patch below contention is back on pidmap_lock
-
- kernel/cgroup/cgroup-internal.h | 11 ++++--
- kernel/cgroup/cgroup.c          | 60 ++++++++++++++++++++++++++-------
- 2 files changed, 55 insertions(+), 16 deletions(-)
-
-diff --git a/kernel/cgroup/cgroup-internal.h b/kernel/cgroup/cgroup-internal.h
-index 22051b4f1ccb..04a3aadcbc7f 100644
---- a/kernel/cgroup/cgroup-internal.h
-+++ b/kernel/cgroup/cgroup-internal.h
-@@ -194,6 +194,9 @@ static inline bool notify_on_release(const struct cgroup *cgrp)
- 	return test_bit(CGRP_NOTIFY_ON_RELEASE, &cgrp->flags);
- }
- 
-+/*
-+ * refcounted get/put for css_set objects
-+ */
- void put_css_set_locked(struct css_set *cset);
- 
- static inline void put_css_set(struct css_set *cset)
-@@ -213,14 +216,16 @@ static inline void put_css_set(struct css_set *cset)
- 	spin_unlock_irqrestore(&css_set_lock, flags);
- }
- 
--/*
-- * refcounted get/put for css_set objects
-- */
- static inline void get_css_set(struct css_set *cset)
- {
- 	refcount_inc(&cset->refcount);
- }
- 
-+static inline bool get_css_set_not_zero(struct css_set *cset)
-+{
-+	return refcount_inc_not_zero(&cset->refcount);
-+}
-+
- bool cgroup_ssid_enabled(int ssid);
- bool cgroup_on_dfl(const struct cgroup *cgrp);
- 
-diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
-index 94788bd1fdf0..16d2a8d204e8 100644
---- a/kernel/cgroup/cgroup.c
-+++ b/kernel/cgroup/cgroup.c
-@@ -87,7 +87,12 @@
-  * cgroup.h can use them for lockdep annotations.
-  */
- DEFINE_MUTEX(cgroup_mutex);
--DEFINE_SPINLOCK(css_set_lock);
-+__cacheline_aligned DEFINE_SPINLOCK(css_set_lock);
-+/*
-+ * css_set_for_clone_seq is used to allow lockless operation in cgroup_css_set_fork()
-+ */
-+static __cacheline_aligned seqcount_spinlock_t css_set_for_clone_seq =
-+	SEQCNT_SPINLOCK_ZERO(css_set_for_clone_seq, &css_set_lock);
- 
- #if (defined CONFIG_PROVE_RCU || defined CONFIG_LOCKDEP)
- EXPORT_SYMBOL_GPL(cgroup_mutex);
-@@ -907,6 +912,7 @@ static void css_set_skip_task_iters(struct css_set *cset,
-  * @from_cset: css_set @task currently belongs to (may be NULL)
-  * @to_cset: new css_set @task is being moved to (may be NULL)
-  * @use_mg_tasks: move to @to_cset->mg_tasks instead of ->tasks
-+ * @is_clone: indicator whether @task is amids clone
-  *
-  * Move @task from @from_cset to @to_cset.  If @task didn't belong to any
-  * css_set, @from_cset can be NULL.  If @task is being disassociated
-@@ -918,13 +924,16 @@ static void css_set_skip_task_iters(struct css_set *cset,
-  */
- static void css_set_move_task(struct task_struct *task,
- 			      struct css_set *from_cset, struct css_set *to_cset,
--			      bool use_mg_tasks)
-+			      bool use_mg_tasks, bool is_clone)
- {
- 	lockdep_assert_held(&css_set_lock);
- 
- 	if (to_cset && !css_set_populated(to_cset))
- 		css_set_update_populated(to_cset, true);
- 
-+	if (!is_clone)
-+		raw_write_seqcount_begin(&css_set_for_clone_seq);
-+
- 	if (from_cset) {
- 		WARN_ON_ONCE(list_empty(&task->cg_list));
- 
-@@ -949,6 +958,9 @@ static void css_set_move_task(struct task_struct *task,
- 		list_add_tail(&task->cg_list, use_mg_tasks ? &to_cset->mg_tasks :
- 							     &to_cset->tasks);
- 	}
-+
-+	if (!is_clone)
-+		raw_write_seqcount_end(&css_set_for_clone_seq);
- }
- 
- /*
-@@ -2723,7 +2735,7 @@ static int cgroup_migrate_execute(struct cgroup_mgctx *mgctx)
- 
- 			get_css_set(to_cset);
- 			to_cset->nr_tasks++;
--			css_set_move_task(task, from_cset, to_cset, true);
-+			css_set_move_task(task, from_cset, to_cset, true, false);
- 			from_cset->nr_tasks--;
- 			/*
- 			 * If the source or destination cgroup is frozen,
-@@ -4183,7 +4195,9 @@ static void __cgroup_kill(struct cgroup *cgrp)
- 	lockdep_assert_held(&cgroup_mutex);
- 
- 	spin_lock_irq(&css_set_lock);
-+	raw_write_seqcount_begin(&css_set_for_clone_seq);
- 	cgrp->kill_seq++;
-+	raw_write_seqcount_end(&css_set_for_clone_seq);
- 	spin_unlock_irq(&css_set_lock);
- 
- 	css_task_iter_start(&cgrp->self, CSS_TASK_ITER_PROCS | CSS_TASK_ITER_THREADED, &it);
-@@ -6690,20 +6704,40 @@ static int cgroup_css_set_fork(struct kernel_clone_args *kargs)
- 	struct cgroup *dst_cgrp = NULL;
- 	struct css_set *cset;
- 	struct super_block *sb;
-+	bool need_lock;
- 
- 	if (kargs->flags & CLONE_INTO_CGROUP)
- 		cgroup_lock();
- 
- 	cgroup_threadgroup_change_begin(current);
- 
--	spin_lock_irq(&css_set_lock);
--	cset = task_css_set(current);
--	get_css_set(cset);
--	if (kargs->cgrp)
--		kargs->kill_seq = kargs->cgrp->kill_seq;
--	else
--		kargs->kill_seq = cset->dfl_cgrp->kill_seq;
--	spin_unlock_irq(&css_set_lock);
-+	need_lock = true;
-+	scoped_guard(rcu) {
-+		unsigned seq = raw_read_seqcount_begin(&css_set_for_clone_seq);
-+		cset = task_css_set(current);
-+		if (unlikely(!cset || !get_css_set_not_zero(cset)))
-+			break;
-+		if (kargs->cgrp)
-+			kargs->kill_seq = kargs->cgrp->kill_seq;
-+		else
-+			kargs->kill_seq = cset->dfl_cgrp->kill_seq;
-+		if (read_seqcount_retry(&css_set_for_clone_seq, seq)) {
-+			put_css_set(cset);
-+			break;
-+		}
-+		need_lock = false;
-+	}
-+
-+	if (unlikely(need_lock)) {
-+		spin_lock_irq(&css_set_lock);
-+		cset = task_css_set(current);
-+		get_css_set(cset);
-+		if (kargs->cgrp)
-+			kargs->kill_seq = kargs->cgrp->kill_seq;
-+		else
-+			kargs->kill_seq = cset->dfl_cgrp->kill_seq;
-+		spin_unlock_irq(&css_set_lock);
-+	}
- 
- 	if (!(kargs->flags & CLONE_INTO_CGROUP)) {
- 		kargs->cset = cset;
-@@ -6907,7 +6941,7 @@ void cgroup_post_fork(struct task_struct *child,
- 
- 		WARN_ON_ONCE(!list_empty(&child->cg_list));
- 		cset->nr_tasks++;
--		css_set_move_task(child, NULL, cset, false);
-+		css_set_move_task(child, NULL, cset, false, true);
- 	} else {
- 		put_css_set(cset);
- 		cset = NULL;
-@@ -6995,7 +7029,7 @@ static void do_cgroup_task_dead(struct task_struct *tsk)
- 
- 	WARN_ON_ONCE(list_empty(&tsk->cg_list));
- 	cset = task_css_set(tsk);
--	css_set_move_task(tsk, cset, NULL, false);
-+	css_set_move_task(tsk, cset, NULL, false, false);
- 	cset->nr_tasks--;
- 	/* matches the signal->live check in css_task_iter_advance() */
- 	if (thread_group_leader(tsk) && atomic_read(&tsk->signal->live))
--- 
-2.48.1
+> 
+>>   		if (!lruvec)
+>>   			break;
+>> +		rcu_read_lock();
+>>   		spin_lock_irq(&lruvec->lru_lock);
+>>   	}
+>>   }
+> 
 
 
