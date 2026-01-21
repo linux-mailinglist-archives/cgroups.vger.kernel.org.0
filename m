@@ -1,50 +1,50 @@
-Return-Path: <cgroups+bounces-13338-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-13339-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id QJ4XCi2GcGkEYQAAu9opvQ
-	(envelope-from <cgroups+bounces-13338-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Wed, 21 Jan 2026 08:54:21 +0100
+	id 8NdnB92LcGkEYQAAu9opvQ
+	(envelope-from <cgroups+bounces-13339-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Wed, 21 Jan 2026 09:18:37 +0100
 X-Original-To: lists+cgroups@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
-	by mail.lfdr.de (Postfix) with ESMTPS id 97FB65317B
-	for <lists+cgroups@lfdr.de>; Wed, 21 Jan 2026 08:54:20 +0100 (CET)
+Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6A10A53616
+	for <lists+cgroups@lfdr.de>; Wed, 21 Jan 2026 09:18:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 7FC93348001
-	for <lists+cgroups@lfdr.de>; Wed, 21 Jan 2026 07:53:37 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id D88DC50254C
+	for <lists+cgroups@lfdr.de>; Wed, 21 Jan 2026 08:13:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E71E546AED1;
-	Wed, 21 Jan 2026 07:53:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7C034472787;
+	Wed, 21 Jan 2026 08:13:13 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
 Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA3DA46AED6;
-	Wed, 21 Jan 2026 07:53:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 31F18313268;
+	Wed, 21 Jan 2026 08:13:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768982001; cv=none; b=VRsZkNxXKqSEo3TNOwf5guQKhiYOsgFBSF8k+266BnIy2bPhVZdRhDhX3/tPvHUkCiffUYZXTuY6S7qDu26I4DnrfG49g1iWq97PEa+AZjaGIZOk5wcz0IZqp/99K0p6iXxILdulTldllILXKIyieSrwbIOI+/panw0JBIoaNg0=
+	t=1768983193; cv=none; b=kjR70IFpEJFLvjnySjK/VTW5JhIK60Xz+zdY4dSIWUVmmSAxV5AFUHEbWv6M0MLt06t7zlIiIbqSxKL5IU2aZt2a7D5JaEGAgX7LdkAAj+5CxfV9cDgeeNadfn5mdhMGShcHanCutghxcEOhndstYXsnI6B49finDQo8vrCpS98=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768982001; c=relaxed/simple;
-	bh=ZnphPD9EtahcPp+gJ22HutJXYG0lP2uVTwpDRM35uGA=;
+	s=arc-20240116; t=1768983193; c=relaxed/simple;
+	bh=YNRK0q3WfOOaI3Wm+irdw7fXpf1P2DUh2dyGP5XDseI=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=s/HsMCv4L87QCbfIUrmh94ESovgjyLjZPpl9NPyJM3bQHK85yMMrSb5/SUcoQYuvvtgkGfTHAV+HmhTjfy4jim1fn4xNLXpd5jchjt1/T2wVuGfgRR9pAEqEpBHDhlkmfykDMDGKftBbas72L+yKoWbmXUJTE15/+AGr1qkcCOc=
+	 In-Reply-To:Content-Type; b=EqU1sC7wUwNDMVM9UCoDZRg6CSH5U2L7D1uZja1+yhEORFY3Wak5YIUobzB89RZHUu6Ze8iewmjtcpFj6apyVjKBbadqqqpBFr8t+OZVOPM7TVTdZmc9IVhHceu2JQnDTMVBTdLOXI512L6phPXdrMpGVSQiuq/y8mOHzGgsTbs=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.198])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTPS id 4dwxJS1HDyzKHrpc;
-	Wed, 21 Jan 2026 15:53:12 +0800 (CST)
+Received: from mail.maildlp.com (unknown [172.19.163.177])
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTPS id 4dwxlK4sm9zKHqFt;
+	Wed, 21 Jan 2026 16:13:01 +0800 (CST)
 Received: from mail02.huawei.com (unknown [10.116.40.128])
-	by mail.maildlp.com (Postfix) with ESMTP id 9343740573;
-	Wed, 21 Jan 2026 15:53:13 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTP id 21C094058F;
+	Wed, 21 Jan 2026 16:13:03 +0800 (CST)
 Received: from [10.67.111.176] (unknown [10.67.111.176])
-	by APP4 (Coremail) with SMTP id gCh0CgDXhfbnhXBpZ7ZKEg--.52232S2;
-	Wed, 21 Jan 2026 15:53:13 +0800 (CST)
-Message-ID: <6561bee6-fbe3-4f59-bc4d-17ec56768d3c@huaweicloud.com>
-Date: Wed, 21 Jan 2026 15:53:11 +0800
+	by APP4 (Coremail) with SMTP id gCh0CgCnCPmNinBpxGZMEg--.2389S2;
+	Wed, 21 Jan 2026 16:13:02 +0800 (CST)
+Message-ID: <81fdb4ce-a212-4b9c-83aa-8d127d75df8e@huaweicloud.com>
+Date: Wed, 21 Jan 2026 16:13:00 +0800
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -52,7 +52,8 @@ List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH -next 1/7] vmscan: add memcg heat level for reclaim
+Subject: Re: [RFC PATCH -next 5/7] mm/mglru: combine shrink_many into
+ shrink_node_memcgs
 To: akpm@linux-foundation.org, axelrasmussen@google.com, yuanchu@google.com,
  weixugc@google.com, david@kernel.org, lorenzo.stoakes@oracle.com,
  Liam.Howlett@oracle.com, vbabka@suse.cz, rppt@kernel.org, surenb@google.com,
@@ -63,29 +64,29 @@ Cc: linux-mm@kvack.org, linux-doc@vger.kernel.org,
  linux-kernel@vger.kernel.org, cgroups@vger.kernel.org, lujialin4@huawei.com,
  ryncsn@gmail.com
 References: <20260120134256.2271710-1-chenridong@huaweicloud.com>
- <20260120134256.2271710-2-chenridong@huaweicloud.com>
+ <20260120134256.2271710-6-chenridong@huaweicloud.com>
 Content-Language: en-US
 From: Chen Ridong <chenridong@huaweicloud.com>
-In-Reply-To: <20260120134256.2271710-2-chenridong@huaweicloud.com>
+In-Reply-To: <20260120134256.2271710-6-chenridong@huaweicloud.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-CM-TRANSID:gCh0CgDXhfbnhXBpZ7ZKEg--.52232S2
-X-Coremail-Antispam: 1UD129KBjvAXoWfCF1DArW5uF1Utr1fCr1DAwb_yoW5Zw4kJo
-	Wxtw1jva1qg3s8Cw1vya13WF4Y9Fn3Zws5Zw1DJrW8K3W3Cws5A3WfWa47Kw15ZrWSyayk
-	Zws8Z3WrJw4xGFn7n29KB7ZKAUJUUUU8529EdanIXcx71UUUUU7v73VFW2AGmfu7bjvjm3
-	AaLaJ3UjIYCTnIWjp_UUUY77kC6x804xWl14x267AKxVW5JVWrJwAFc2x0x2IEx4CE42xK
+X-CM-TRANSID:gCh0CgCnCPmNinBpxGZMEg--.2389S2
+X-Coremail-Antispam: 1UD129KBjvAXoWfCF1DArW5uF1Utr1fCr1DAwb_yoW5tFy8to
+	W3t3W29F4DW3s8Ar1kJa13WF4rWFy8Zr4kAw4vqrW8Ka9IkrWFywn3W3WUGw45ZryIya9r
+	Zws8Z3WrJw4xGF97n29KB7ZKAUJUUUU8529EdanIXcx71UUUUU7v73VFW2AGmfu7bjvjm3
+	AaLaJ3UjIYCTnIWjp_UUUY27kC6x804xWl14x267AKxVW5JVWrJwAFc2x0x2IEx4CE42xK
 	8VAvwI8IcIk0rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4
 	AK67xGY2AK021l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF
-	7I0E14v26F4j6r4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxkF7I0En4kS
-	14v26r4a6rW5MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I
-	8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVW8ZVWr
-	XwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x
-	0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_
-	Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU0
-	s2-5UUUUU==
+	7I0E14v26r4UJVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7
+	CjxVAFwI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8C
+	rVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4
+	IE7xkEbVWUJVW8JwACjcxG0xvEwIxGrwACI402YVCY1x02628vn2kIc2xKxwCY1x0262kK
+	e7AKxVW8ZVWrXwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c
+	02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_GFv_
+	WrylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7
+	CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v2
+	6r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07
+	jIksgUUUUU=
 X-CM-SenderInfo: hfkh02xlgr0w46kxt4xhlfz01xgou0bp/
 X-Spamd-Result: default: False [-1.26 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
@@ -96,7 +97,7 @@ X-Spamd-Result: default: False [-1.26 / 15.00];
 	R_DKIM_NA(0.00)[];
 	MID_RHS_MATCH_FROM(0.00)[];
 	TAGGED_RCPT(0.00)[cgroups];
-	ASN(0.00)[asn:7979, ipnet:2a01:60a::/32, country:US];
+	ASN(0.00)[asn:7979, ipnet:142.0.200.0/24, country:US];
 	FREEMAIL_CC(0.00)[kvack.org,vger.kernel.org,huawei.com,gmail.com];
 	MIME_TRACE(0.00)[0:+];
 	DMARC_NA(0.00)[huaweicloud.com];
@@ -107,11 +108,11 @@ X-Spamd-Result: default: False [-1.26 / 15.00];
 	FROM_HAS_DN(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	R_SPF_SOFTFAIL(0.00)[~all:c];
-	TAGGED_FROM(0.00)[bounces-13338-lists,cgroups=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-13339-lists,cgroups=lfdr.de];
 	RCVD_COUNT_FIVE(0.00)[6];
 	RCVD_TLS_LAST(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[ams.mirrors.kernel.org:rdns,ams.mirrors.kernel.org:helo,huawei.com:email,localhost:email,huaweicloud.com:mid,client.py:url,common.by:url]
-X-Rspamd-Queue-Id: 97FB65317B
+	DBL_BLOCKED_OPENRESOLVER(0.00)[huawei.com:email,dfw.mirrors.kernel.org:rdns,dfw.mirrors.kernel.org:helo,client.py:url,huaweicloud.com:mid,js_benchmark.sh:url,common.by:url,localhost:email]
+X-Rspamd-Queue-Id: 6A10A53616
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
@@ -121,41 +122,23 @@ On 2026/1/20 21:42, Chen Ridong wrote:
 > From: Chen Ridong <chenridong@huawei.com>
 > 
 > The memcg LRU was originally introduced to improve scalability during
-> global reclaim. However, it is complex and only works with gen lru
-> global reclaim. Moreover, its implementation complexity has led to
-> performance regressions when handling a large number of memory cgroups [1].
+> global reclaim, but it only supports gen lru global reclaim and remains
+> complex in implementation.
 > 
-> This patch introduces a per-memcg heat level for reclaim, aiming to unify
-> gen lru and traditional LRU global reclaim. The core idea is to track
-> per-node per-memcg reclaim state, including heat, last_decay, and
-> last_refault. The last_refault records the total reclaimed data from the
-> previous memcg reclaim. The last_decay is a time-based parameter; the heat
-> level decays over time if the memcg is not reclaimed again. Both last_decay
-> and last_refault are used to calculate the current heat level when reclaim
-> starts.
+> Previous patches have introduced heat-level-based memcg reclaim, which is
+> significantly simpler. This patch switches gen lru global reclaim to the
+> heat-level-based reclaim mechanism.
 > 
-> Three reclaim heat levels are defined: cold, warm, and hot. Cold memcgs are
-> reclaimed first; only if cold memcgs cannot reclaim enough pages, warm
-> memcgs become eligible for reclaim. Hot memcgs are reclaimed last.
+> The following results are from a 24-hour test provided by YU Zhao [1]:
 > 
-> While this design can be applied to all memcg reclaim scenarios, this patch
-> is conservative and only introduces heat levels for traditional LRU global
-> reclaim. Subsequent patches will replace the memcg LRU with
-> heat-level-based reclaim.
+> Throughput (number of requests)         before     after        Change
+> Total                                   22879701    25331956      +10%
 > 
-> Based on tests provided by YU Zhao, traditional LRU global reclaim shows
-> significant performance improvement with heat-level reclaim enabled.
-> 
-> The results below are from a 2-hour run of the test [2].
-> 
-> Throughput (number of requests)		before	   after	Change
-> Total					1734169    2353717	+35%
-> 
-> Tail latency (number of requests)	before	   after	Change
-> [128s, inf)				1231	   1057		-14%
-> [64s, 128s)				586	   444		-24%
-> [32s, 64s)				1658	   1061		-36%
-> [16s, 32s)				4611	   2863		-38%
+> Tail latency (number of requests)       before     after        Change
+> [128s, inf)                             19197	    15628	-19%
+> [64s, 128s)                             4500	    3815	-29%
+> [32s, 64s)                              14971	    13755	-36%
+> [16s, 32s)                              46117	    42942	-7%
 > 
 
 The original data:
@@ -490,273 +473,273 @@ for ((memcg = 0; memcg < $memcgs; memcg++)); do
     run $memcg &
 done
 
-sleep $((2 * 60 * 60))
+sleep $((24 * 60 * 60))
 trap 'wait' SIGINT
 kill -INT 0
 ```
-Results(run 2h)
+Results(run 24h)
 =======
 Before
 ------
-client: 8000 total:   5833, 0:   5624, 1:     49, 2:     43, 4:     32, 8:     18, 16:     17, 32:     14, 64:      2, 128:     34
-client: 8001 total:  14862, 0:  14256, 1:    175, 2:    148, 4:    116, 8:     94, 16:     49, 32:     19, 64:      4, 128:      1
-client: 8002 total:  18719, 0:  18160, 1:    172, 2:    118, 4:    112, 8:    111, 16:     25, 32:     16, 64:      4, 128:      1
-client: 8003 total:  12010, 0:  11524, 1:    122, 2:    107, 4:    106, 8:     80, 16:     43, 32:     13, 64:      3, 128:     12
-client: 8004 total:  15991, 0:  15529, 1:    135, 2:    113, 4:     94, 8:     58, 16:     37, 32:     10, 64:     11, 128:      4
-client: 8005 total:  10693, 0:  10168, 1:    178, 2:    107, 4:     99, 8:     67, 16:     41, 32:     15, 64:      7, 128:     11
-client: 8006 total:    138, 0:     64, 1:      3, 2:      5, 4:      0, 8:      3, 16:      3, 32:      3, 64:      4, 128:     53
-client: 8007 total:  14807, 0:  14282, 1:    164, 2:    114, 4:    103, 8:     90, 16:     25, 32:     16, 64:      6, 128:      7
-client: 8008 total:  18257, 0:  17700, 1:    169, 2:    130, 4:    114, 8:     84, 16:     37, 32:     20, 64:      3, 128:      0
-client: 8009 total:    126, 0:     53, 1:      2, 2:      2, 4:      3, 8:      4, 16:      1, 32:      7, 64:      2, 128:     52
-client: 8010 total:  17669, 0:  17160, 1:    163, 2:     99, 4:    123, 8:     68, 16:     37, 32:     11, 64:      5, 128:      3
-client: 8011 total:  13321, 0:  12763, 1:    161, 2:    115, 4:    121, 8:    100, 16:     38, 32:     11, 64:      9, 128:      3
-client: 8012 total:  14495, 0:  14050, 1:    119, 2:    115, 4:     90, 8:     73, 16:     28, 32:      6, 64:      2, 128:     12
-client: 8013 total:    141, 0:     63, 1:      3, 2:      3, 4:      4, 8:      3, 16:      3, 32:      4, 64:      8, 128:     50
-client: 8014 total:  17179, 0:  16681, 1:    165, 2:    106, 4:    100, 8:     73, 16:     31, 32:     14, 64:      4, 128:      5
-client: 8015 total:  13015, 0:  12451, 1:    162, 2:    111, 4:    123, 8:    103, 16:     35, 32:     19, 64:      6, 128:      5
-client: 8016 total:  15668, 0:  15183, 1:    143, 2:    117, 4:    101, 8:     66, 16:     36, 32:      9, 64:      4, 128:      9
-client: 8017 total:  13804, 0:  13238, 1:    160, 2:    117, 4:    118, 8:     91, 16:     51, 32:     20, 64:      7, 128:      2
-client: 8018 total:  17278, 0:  16733, 1:    158, 2:    128, 4:    110, 8:     88, 16:     47, 32:      9, 64:      1, 128:      4
-client: 8019 total:  14696, 0:  14115, 1:    163, 2:    140, 4:    130, 8:     90, 16:     33, 32:     15, 64:      4, 128:      6
-client: 8020 total:  16383, 0:  15816, 1:    181, 2:    147, 4:    110, 8:     68, 16:     41, 32:     13, 64:      5, 128:      2
-client: 8021 total:  13550, 0:  12928, 1:    198, 2:    147, 4:     96, 8:    104, 16:     50, 32:     19, 64:      3, 128:      5
-client: 8022 total:  17587, 0:  17053, 1:    160, 2:    112, 4:    131, 8:     84, 16:     30, 32:      6, 64:      8, 128:      3
-client: 8023 total:  12916, 0:  12418, 1:    145, 2:    107, 4:    103, 8:     70, 16:     42, 32:     14, 64:      9, 128:      8
-client: 8024 total:  16559, 0:  15965, 1:    181, 2:    143, 4:    127, 8:     77, 16:     44, 32:     19, 64:      3, 128:      0
-client: 8025 total:  11129, 0:  10603, 1:    141, 2:    117, 4:    112, 8:     85, 16:     43, 32:     14, 64:      6, 128:      8
-client: 8026 total:  15903, 0:  15412, 1:    156, 2:    116, 4:     85, 8:     64, 16:     44, 32:     15, 64:      6, 128:      5
-client: 8027 total:  14609, 0:  14013, 1:    166, 2:    158, 4:     97, 8:    103, 16:     43, 32:     22, 64:      7, 128:      0
-client: 8028 total:    120, 0:     54, 1:      0, 2:      0, 4:      1, 8:      1, 16:      4, 32:      3, 64:      4, 128:     53
-client: 8029 total:  14575, 0:  13926, 1:    202, 2:    156, 4:    136, 8:     87, 16:     43, 32:     16, 64:      5, 128:      4
-client: 8030 total:  17857, 0:  17341, 1:    140, 2:    125, 4:    106, 8:     85, 16:     41, 32:     11, 64:      6, 128:      2
-client: 8031 total:  14276, 0:  13660, 1:    169, 2:    130, 4:    151, 8:     93, 16:     51, 32:     15, 64:      4, 128:      3
-client: 8032 total:  14026, 0:  13372, 1:    227, 2:    158, 4:    123, 8:     84, 16:     43, 32:     10, 64:      5, 128:      4
-client: 8033 total:  15025, 0:  14387, 1:    182, 2:    151, 4:    144, 8:     96, 16:     47, 32:     10, 64:      4, 128:      4
-client: 8034 total:  14369, 0:  14001, 1:     96, 2:     89, 4:     69, 8:     49, 16:     35, 32:     12, 64:      4, 128:     14
-client: 8035 total:  14531, 0:  14069, 1:    123, 2:    102, 4:     94, 8:     77, 16:     32, 32:     23, 64:      5, 128:      6
-client: 8036 total:  10785, 0:  10289, 1:    124, 2:    138, 4:    100, 8:     66, 16:     34, 32:     15, 64:      2, 128:     17
-client: 8037 total:  12991, 0:  12504, 1:    135, 2:    100, 4:    110, 8:     67, 16:     51, 32:      7, 64:      7, 128:     10
-client: 8038 total:    418, 0:    313, 1:     11, 2:      8, 4:     10, 8:      9, 16:      7, 32:      8, 64:      4, 128:     48
-client: 8039 total:  14650, 0:  14058, 1:    169, 2:    130, 4:    123, 8:     92, 16:     55, 32:     17, 64:      2, 128:      4
-client: 8040 total:  14276, 0:  13646, 1:    211, 2:    146, 4:    133, 8:     80, 16:     40, 32:     13, 64:      3, 128:      4
-client: 8041 total:  14555, 0:  13951, 1:    202, 2:    136, 4:    117, 8:     87, 16:     34, 32:     18, 64:      7, 128:      3
-client: 8042 total:  14046, 0:  13491, 1:    165, 2:    132, 4:    101, 8:     99, 16:     34, 32:     14, 64:      6, 128:      4
-client: 8043 total:  14914, 0:  14348, 1:    168, 2:    128, 4:    113, 8:     86, 16:     46, 32:     18, 64:      4, 128:      3
-client: 8044 total:  18829, 0:  18172, 1:    182, 2:    178, 4:    150, 8:     91, 16:     42, 32:     14, 64:      0, 128:      0
-client: 8045 total:  14583, 0:  14004, 1:    198, 2:    110, 4:    119, 8:     81, 16:     43, 32:     18, 64:      7, 128:      3
-client: 8046 total:  16892, 0:  16328, 1:    176, 2:    139, 4:    108, 8:     85, 16:     38, 32:     11, 64:      2, 128:      5
-client: 8047 total:  15658, 0:  15082, 1:    179, 2:    127, 4:    124, 8:     75, 16:     47, 32:     16, 64:      6, 128:      2
-client: 8048 total:  18318, 0:  17713, 1:    184, 2:    147, 4:    143, 8:     77, 16:     38, 32:     11, 64:      4, 128:      1
-client: 8049 total:  14599, 0:  13960, 1:    212, 2:    118, 4:    141, 8:    113, 16:     31, 32:     18, 64:      5, 128:      1
-client: 8050 total:  16382, 0:  15913, 1:    142, 2:    103, 4:     97, 8:     82, 16:     24, 32:     14, 64:      3, 128:      4
-client: 8051 total:  10185, 0:   9657, 1:    156, 2:    108, 4:    101, 8:     95, 16:     37, 32:     14, 64:      2, 128:     15
-client: 8052 total:  17210, 0:  16658, 1:    165, 2:    134, 4:    118, 8:     73, 16:     47, 32:      9, 64:      5, 128:      1
-client: 8053 total:  10534, 0:  10043, 1:    134, 2:    107, 4:    103, 8:     88, 16:     28, 32:     16, 64:      5, 128:     10
-client: 8054 total:  12906, 0:  12451, 1:    130, 2:    103, 4:     94, 8:     70, 16:     31, 32:     12, 64:      7, 128:      8
-client: 8055 total:  15115, 0:  14492, 1:    192, 2:    152, 4:    131, 8:     77, 16:     45, 32:     18, 64:      6, 128:      2
-client: 8056 total:   6574, 0:   6206, 1:     95, 2:     81, 4:     59, 8:     65, 16:     30, 32:      6, 64:      2, 128:     30
-client: 8057 total:  15547, 0:  14932, 1:    194, 2:    140, 4:    126, 8:     81, 16:     50, 32:     19, 64:      2, 128:      3
-client: 8058 total:  17972, 0:  17438, 1:    160, 2:    120, 4:    106, 8:     88, 16:     45, 32:     10, 64:      4, 128:      1
-client: 8059 total:    132, 0:     64, 1:      2, 2:      0, 4:      1, 8:      4, 16:      2, 32:      5, 64:      1, 128:     53
-client: 8060 total:  17869, 0:  17225, 1:    212, 2:    152, 4:    133, 8:     94, 16:     40, 32:     11, 64:      2, 128:      0
-client: 8061 total:  15195, 0:  14569, 1:    204, 2:    143, 4:    122, 8:     84, 16:     44, 32:     23, 64:      5, 128:      1
-client: 8062 total:   4702, 0:   4435, 1:     72, 2:     45, 4:     56, 8:     34, 16:     16, 32:      5, 64:      5, 128:     34
-client: 8063 total:   9854, 0:   9361, 1:    121, 2:    106, 4:    117, 8:     70, 16:     43, 32:     17, 64:      6, 128:     13
-client: 8064 total:  15976, 0:  15365, 1:    204, 2:    151, 4:    107, 8:     84, 16:     43, 32:     16, 64:      6, 128:      0
-client: 8065 total:  14062, 0:  13493, 1:    162, 2:    132, 4:    101, 8:    100, 16:     51, 32:     15, 64:      6, 128:      2
-client: 8066 total:    138, 0:     70, 1:      3, 2:      1, 4:      1, 8:      1, 16:      2, 32:      5, 64:      3, 128:     52
-client: 8067 total:  15074, 0:  14482, 1:    160, 2:    138, 4:    139, 8:     88, 16:     42, 32:     16, 64:      6, 128:      3
-client: 8068 total:  18564, 0:  18065, 1:    142, 2:    142, 4:     97, 8:     69, 16:     26, 32:     15, 64:      3, 128:      5
-client: 8069 total:  15186, 0:  14548, 1:    189, 2:    137, 4:    150, 8:     94, 16:     45, 32:     18, 64:      4, 128:      1
-client: 8070 total:  16936, 0:  16355, 1:    207, 2:    116, 4:    129, 8:     71, 16:     37, 32:     15, 64:      4, 128:      2
-client: 8071 total:  15182, 0:  14521, 1:    214, 2:    147, 4:    124, 8:    103, 16:     49, 32:     20, 64:      4, 128:      0
-client: 8072 total:  17663, 0:  17160, 1:    162, 2:    130, 4:    106, 8:     51, 16:     28, 32:     15, 64:      8, 128:      3
-client: 8073 total:  15204, 0:  14634, 1:    173, 2:    134, 4:    127, 8:     79, 16:     32, 32:     13, 64:      9, 128:      3
-client: 8074 total:  13763, 0:  13391, 1:     93, 2:     77, 4:     79, 8:     62, 16:     34, 32:     11, 64:      4, 128:     12
-client: 8075 total:   4408, 0:   4111, 1:     78, 2:     57, 4:     52, 8:     41, 16:     28, 32:      6, 64:      6, 128:     29
-client: 8076 total:  17754, 0:  17211, 1:    171, 2:    135, 4:    107, 8:     73, 16:     37, 32:     15, 64:      3, 128:      2
-client: 8077 total:   5200, 0:   4911, 1:     84, 2:     49, 4:     53, 8:     33, 16:     22, 32:      8, 64:     10, 128:     30
-client: 8078 total:  17384, 0:  16864, 1:    163, 2:    119, 4:    100, 8:     81, 16:     33, 32:     16, 64:      5, 128:      3
-client: 8079 total:  15168, 0:  14605, 1:    182, 2:    114, 4:    120, 8:     86, 16:     34, 32:     17, 64:      5, 128:      5
-client: 8080 total:  15633, 0:  15074, 1:    147, 2:    147, 4:    132, 8:     84, 16:     30, 32:      9, 64:      6, 128:      4
-client: 8081 total:   1879, 0:   1662, 1:     44, 2:     29, 4:     36, 8:     32, 16:     28, 32:      4, 64:      2, 128:     42
-client: 8082 total:  17095, 0:  16579, 1:    153, 2:    120, 4:     93, 8:     78, 16:     52, 32:     14, 64:      3, 128:      3
-client: 8083 total:   4241, 0:   4019, 1:     58, 2:     42, 4:     32, 8:     35, 16:      9, 32:      7, 64:      8, 128:     31
-client: 8084 total:  16458, 0:  15833, 1:    188, 2:    159, 4:    133, 8:     97, 16:     33, 32:      8, 64:      3, 128:      4
-client: 8085 total:  13510, 0:  12968, 1:    160, 2:    132, 4:    118, 8:     76, 16:     28, 32:     11, 64:      9, 128:      8
-client: 8086 total:  18212, 0:  17715, 1:    139, 2:    124, 4:     93, 8:     77, 16:     41, 32:     15, 64:      7, 128:      1
-client: 8087 total:    125, 0:     55, 1:      2, 2:      5, 4:      2, 8:      1, 16:      2, 32:      7, 64:      2, 128:     49
-client: 8088 total:  15769, 0:  15230, 1:    139, 2:    144, 4:    120, 8:     72, 16:     43, 32:     14, 64:      3, 128:      4
-client: 8089 total:  12778, 0:  12184, 1:    184, 2:    132, 4:    123, 8:     94, 16:     35, 32:     14, 64:      5, 128:      7
-client: 8090 total:  18351, 0:  17817, 1:    170, 2:    105, 4:    113, 8:     84, 16:     39, 32:     20, 64:      2, 128:      1
-client: 8091 total:  14935, 0:  14393, 1:    170, 2:    113, 4:    107, 8:     91, 16:     36, 32:     14, 64:      5, 128:      6
-client: 8092 total:  18215, 0:  17610, 1:    195, 2:    136, 4:    132, 8:     88, 16:     41, 32:      8, 64:      4, 128:      1
-client: 8093 total:  15437, 0:  14807, 1:    187, 2:    166, 4:    123, 8:     86, 16:     44, 32:     17, 64:      4, 128:      3
-client: 8094 total:  18319, 0:  17758, 1:    170, 2:    129, 4:    118, 8:     91, 16:     40, 32:      7, 64:      3, 128:      3
-client: 8095 total:  16463, 0:  15862, 1:    176, 2:    131, 4:    131, 8:     99, 16:     49, 32:      7, 64:      4, 128:      4
-client: 8096 total:  17984, 0:  17393, 1:    188, 2:    128, 4:    126, 8:     82, 16:     51, 32:     14, 64:      2, 128:      0
-client: 8097 total:  15794, 0:  15180, 1:    202, 2:    132, 4:    139, 8:     85, 16:     32, 32:     13, 64:      8, 128:      3
-client: 8098 total:  16847, 0:  16297, 1:    163, 2:    122, 4:    125, 8:     77, 16:     41, 32:     19, 64:      1, 128:      2
-client: 8099 total:  14232, 0:  13658, 1:    175, 2:    125, 4:    115, 8:     89, 16:     43, 32:     17, 64:      7, 128:      3
-client: 8100 total:  11554, 0:  11213, 1:     95, 2:     77, 4:     48, 8:     60, 16:     30, 32:      9, 64:      3, 128:     19
-client: 8101 total:  14600, 0:  13966, 1:    184, 2:    143, 4:    134, 8:     91, 16:     61, 32:     17, 64:      4, 128:      0
-client: 8102 total:  17841, 0:  17247, 1:    175, 2:    124, 4:    124, 8:    105, 16:     57, 32:      7, 64:      1, 128:      1
-client: 8103 total:  16135, 0:  15532, 1:    188, 2:    134, 4:    112, 8:     95, 16:     52, 32:     15, 64:      6, 128:      1
-client: 8104 total:  18159, 0:  17600, 1:    155, 2:    146, 4:    119, 8:     83, 16:     42, 32:     11, 64:      2, 128:      1
-client: 8105 total:  14533, 0:  13851, 1:    218, 2:    148, 4:    147, 8:    100, 16:     51, 32:     13, 64:      4, 128:      1
-client: 8106 total:  18494, 0:  17959, 1:    173, 2:    129, 4:     98, 8:     75, 16:     43, 32:     11, 64:      3, 128:      3
-client: 8107 total:  14925, 0:  14314, 1:    165, 2:    151, 4:    125, 8:     97, 16:     48, 32:     19, 64:      5, 128:      1
-client: 8108 total:  16885, 0:  16302, 1:    150, 2:    146, 4:    143, 8:     88, 16:     40, 32:     11, 64:      4, 128:      1
-client: 8109 total:  14011, 0:  13411, 1:    180, 2:    155, 4:    134, 8:     73, 16:     32, 32:     14, 64:      6, 128:      6
-client: 8110 total:  16774, 0:  16227, 1:    174, 2:    120, 4:    104, 8:     80, 16:     47, 32:     16, 64:      4, 128:      2
-client: 8111 total:  15467, 0:  14885, 1:    162, 2:    127, 4:    117, 8:    104, 16:     46, 32:     20, 64:      5, 128:      1
-client: 8112 total:  17131, 0:  16595, 1:    180, 2:    114, 4:    113, 8:     67, 16:     38, 32:     17, 64:      4, 128:      3
-client: 8113 total:  15269, 0:  14640, 1:    208, 2:    131, 4:    136, 8:     92, 16:     40, 32:     15, 64:      4, 128:      3
-client: 8114 total:   9933, 0:   9575, 1:     92, 2:     85, 4:     74, 8:     44, 16:     27, 32:     10, 64:      4, 128:     22
-client: 8115 total:   9741, 0:   9295, 1:    108, 2:    113, 4:     74, 8:     85, 16:     31, 32:     12, 64:      7, 128:     16
-client: 8116 total:  16756, 0:  16206, 1:    162, 2:    142, 4:    125, 8:     72, 16:     26, 32:      9, 64:      9, 128:      5
-client: 8117 total:    130, 0:     61, 1:      2, 2:      5, 4:      2, 8:      1, 16:      1, 32:      1, 64:      3, 128:     54
-client: 8118 total:  17050, 0:  16494, 1:    174, 2:    132, 4:    106, 8:     89, 16:     34, 32:     14, 64:      7, 128:      0
-client: 8119 total:  13867, 0:  13291, 1:    178, 2:    129, 4:    110, 8:     94, 16:     34, 32:     18, 64:      9, 128:      4
-client: 8120 total:  17247, 0:  16684, 1:    174, 2:    148, 4:    103, 8:     87, 16:     34, 32:      8, 64:      3, 128:      6
-client: 8121 total:  13990, 0:  13436, 1:    175, 2:    125, 4:    110, 8:     80, 16:     39, 32:     13, 64:      4, 128:      8
-client: 8122 total:  17500, 0:  16948, 1:    181, 2:    130, 4:    109, 8:     67, 16:     43, 32:     16, 64:      2, 128:      4
-client: 8123 total:  14558, 0:  13954, 1:    154, 2:    135, 4:    149, 8:     90, 16:     52, 32:     18, 64:      6, 128:      0
-client: 8124 total:  18510, 0:  17944, 1:    162, 2:    154, 4:    110, 8:     79, 16:     46, 32:      8, 64:      7, 128:      0
-client: 8125 total:  12900, 0:  12388, 1:    153, 2:    135, 4:    104, 8:     65, 16:     27, 32:     11, 64:      5, 128:     12
-client: 8126 total:   6292, 0:   5908, 1:    102, 2:     96, 4:     73, 8:     50, 16:     26, 32:      5, 64:      4, 128:     28
-client: 8127 total:   6170, 0:   5760, 1:    120, 2:     73, 4:     78, 8:     71, 16:     32, 32:     10, 64:      3, 128:     23
+client: 8000 total: 203354, 0: 195960, 1:   3194, 2:   1622, 4:   1007, 8:    825, 16:    521, 32:    138, 64:     28, 128:     59
+client: 8001 total: 221354, 0: 215938, 1:   2094, 2:   1177, 4:    813, 8:    683, 16:    404, 32:    125, 64:     36, 128:     84
+client: 8002 total: 197570, 0: 191087, 1:   2674, 2:   1455, 4:    962, 8:    731, 16:    401, 32:    116, 64:     46, 128:     98
+client: 8003 total: 198080, 0: 190687, 1:   3002, 2:   1666, 4:   1224, 8:    868, 16:    377, 32:    141, 64:     26, 128:     89
+client: 8004 total: 226324, 0: 220995, 1:   1982, 2:   1147, 4:    902, 8:    662, 16:    367, 32:    130, 64:     34, 128:    105
+client: 8005 total: 189168, 0: 182905, 1:   2648, 2:   1428, 4:    865, 8:    662, 16:    384, 32:    142, 64:     44, 128:     90
+client: 8006 total: 197030, 0: 190547, 1:   2640, 2:   1449, 4:    972, 8:    744, 16:    429, 32:    116, 64:     32, 128:    101
+client: 8007 total: 160381, 0: 152282, 1:   3590, 2:   1862, 4:   1159, 8:    816, 16:    392, 32:    124, 64:     37, 128:    119
+client: 8008 total:    730, 0:     46, 1:      1, 2:      0, 4:      0, 8:      1, 16:      2, 32:      2, 64:      3, 128:    675
+client: 8009 total: 198599, 0: 194010, 1:   1618, 2:    949, 4:    738, 8:    611, 16:    355, 32:    119, 64:     45, 128:    154
+client: 8010 total: 186917, 0: 180492, 1:   2603, 2:   1466, 4:    942, 8:    758, 16:    386, 32:    112, 64:     32, 128:    126
+client: 8011 total: 192189, 0: 185203, 1:   2807, 2:   1527, 4:   1181, 8:    855, 16:    359, 32:    105, 64:     24, 128:    128
+client: 8012 total: 238234, 0: 231221, 1:   2869, 2:   1541, 4:   1027, 8:    851, 16:    524, 32:    143, 64:     37, 128:     21
+client: 8013 total: 205769, 0: 199608, 1:   2743, 2:   1335, 4:    803, 8:    635, 16:    391, 32:    132, 64:     34, 128:     88
+client: 8014 total: 217792, 0: 212037, 1:   2201, 2:   1289, 4:    914, 8:    742, 16:    349, 32:    123, 64:     33, 128:    104
+client: 8015 total: 158164, 0: 150414, 1:   3426, 2:   1805, 4:   1046, 8:    788, 16:    395, 32:    134, 64:     39, 128:    117
+client: 8016 total: 200305, 0: 194212, 1:   2667, 2:   1287, 4:    859, 8:    631, 16:    373, 32:    113, 64:     50, 128:    113
+client: 8017 total: 199062, 0: 192285, 1:   2984, 2:   1473, 4:    943, 8:    699, 16:    441, 32:    108, 64:     45, 128:     84
+client: 8018 total: 207037, 0: 201816, 1:   1972, 2:   1183, 4:    816, 8:    625, 16:    323, 32:    123, 64:     41, 128:    138
+client: 8019 total: 187363, 0: 180069, 1:   3070, 2:   1685, 4:   1092, 8:    815, 16:    358, 32:    134, 64:     37, 128:    103
+client: 8020 total: 190469, 0: 183580, 1:   3200, 2:   1535, 4:    880, 8:    623, 16:    356, 32:    156, 64:     39, 128:    100
+client: 8021 total: 186108, 0: 179330, 1:   3004, 2:   1521, 4:    868, 8:    682, 16:    421, 32:    154, 64:     33, 128:     95
+client: 8022 total: 204060, 0: 197872, 1:   2412, 2:   1368, 4:   1006, 8:    755, 16:    382, 32:    125, 64:     45, 128:     95
+client: 8023 total: 182051, 0: 174786, 1:   3025, 2:   1645, 4:   1132, 8:    823, 16:    360, 32:    140, 64:     30, 128:    110
+client: 8024 total: 194985, 0: 188045, 1:   3105, 2:   1551, 4:    944, 8:    665, 16:    423, 32:    117, 64:     24, 128:    111
+client: 8025 total: 178930, 0: 172231, 1:   2789, 2:   1528, 4:    921, 8:    726, 16:    448, 32:    148, 64:     46, 128:     93
+client: 8026 total: 200200, 0: 193698, 1:   2559, 2:   1497, 4:   1005, 8:    766, 16:    420, 32:    121, 64:     36, 128:     98
+client: 8027 total:   1210, 0:    465, 1:     13, 2:      5, 4:      8, 8:     16, 16:     16, 32:      7, 64:      6, 128:    674
+client: 8028 total: 184813, 0: 178238, 1:   2827, 2:   1422, 4:    899, 8:    677, 16:    453, 32:    147, 64:     43, 128:    107
+client: 8029 total: 214989, 0: 209477, 1:   2174, 2:   1228, 4:    856, 8:    611, 16:    363, 32:    150, 64:     38, 128:     92
+client: 8030 total: 197567, 0: 191157, 1:   2618, 2:   1472, 4:    965, 8:    671, 16:    399, 32:    144, 64:     49, 128:     92
+client: 8031 total: 205532, 0: 197038, 1:   3687, 2:   2046, 4:   1271, 8:    930, 16:    350, 32:     79, 64:     30, 128:    101
+client: 8032 total: 206078, 0: 200350, 1:   2365, 2:   1251, 4:    863, 8:    629, 16:    348, 32:    111, 64:     34, 128:    127
+client: 8033 total: 213999, 0: 208093, 1:   2373, 2:   1287, 4:    848, 8:    700, 16:    427, 32:    153, 64:     39, 128:     79
+client: 8034 total: 212129, 0: 205917, 1:   2581, 2:   1336, 4:    946, 8:    721, 16:    390, 32:    101, 64:     25, 128:    112
+client: 8035 total: 162439, 0: 154590, 1:   3521, 2:   1781, 4:   1082, 8:    789, 16:    378, 32:    147, 64:     47, 128:    104
+client: 8036 total: 203706, 0: 197140, 1:   2754, 2:   1465, 4:    972, 8:    682, 16:    437, 32:    131, 64:     32, 128:     93
+client: 8037 total: 215559, 0: 209578, 1:   2547, 2:   1257, 4:    871, 8:    660, 16:    376, 32:    145, 64:     47, 128:     78
+client: 8038 total: 205566, 0: 198917, 1:   2667, 2:   1484, 4:    976, 8:    818, 16:    465, 32:    117, 64:     37, 128:     85
+client: 8039 total: 189199, 0: 181020, 1:   3677, 2:   1989, 4:   1169, 8:    764, 16:    335, 32:     95, 64:     38, 128:    112
+client: 8040 total: 176658, 0: 168852, 1:   3566, 2:   1722, 4:    997, 8:    778, 16:    487, 32:    144, 64:     35, 128:     77
+client: 8041 total: 205764, 0: 199420, 1:   2707, 2:   1409, 4:    874, 8:    679, 16:    407, 32:    149, 64:     35, 128:     84
+client: 8042 total: 207689, 0: 201830, 1:   2350, 2:   1303, 4:    922, 8:    653, 16:    365, 32:    112, 64:     34, 128:    120
+client: 8043 total: 175372, 0: 167791, 1:   3376, 2:   1679, 4:   1101, 8:    821, 16:    337, 32:    117, 64:     42, 128:    108
+client: 8044 total: 177436, 0: 169996, 1:   3245, 2:   1689, 4:   1009, 8:    800, 16:    432, 32:    145, 64:     24, 128:     96
+client: 8045 total:    742, 0:     49, 1:      2, 2:      1, 4:      2, 8:      1, 16:      1, 32:      5, 64:      4, 128:    677
+client: 8046 total: 204207, 0: 197971, 1:   2489, 2:   1435, 4:    918, 8:    749, 16:    395, 32:    111, 64:     27, 128:    112
+client: 8047 total: 170068, 0: 162797, 1:   3096, 2:   1662, 4:   1051, 8:    799, 16:    375, 32:    115, 64:     46, 128:    127
+client: 8048 total: 192235, 0: 184906, 1:   3301, 2:   1638, 4:   1000, 8:    717, 16:    416, 32:    133, 64:     29, 128:     95
+client: 8049 total: 217400, 0: 211590, 1:   2358, 2:   1288, 4:    818, 8:    708, 16:    392, 32:    125, 64:     37, 128:     84
+client: 8050 total: 194428, 0: 188239, 1:   2462, 2:   1459, 4:    940, 8:    694, 16:    356, 32:    117, 64:     42, 128:    119
+client: 8051 total: 161159, 0: 153218, 1:   3423, 2:   1824, 4:   1158, 8:    859, 16:    403, 32:    118, 64:     43, 128:    113
+client: 8052 total: 194639, 0: 187743, 1:   2961, 2:   1507, 4:    922, 8:    771, 16:    467, 32:    152, 64:     42, 128:     74
+client: 8053 total: 215419, 0: 208860, 1:   2651, 2:   1412, 4:   1005, 8:    767, 16:    476, 32:    160, 64:     31, 128:     57
+client: 8054 total: 208002, 0: 201134, 1:   2905, 2:   1523, 4:    996, 8:    760, 16:    435, 32:    130, 64:     36, 128:     83
+client: 8055 total: 192324, 0: 183365, 1:   4180, 2:   2119, 4:   1214, 8:    836, 16:    380, 32:    124, 64:     33, 128:     73
+client: 8056 total: 176504, 0: 169140, 1:   3203, 2:   1674, 4:   1001, 8:    724, 16:    488, 32:    150, 64:     30, 128:     94
+client: 8057 total: 196675, 0: 190174, 1:   2674, 2:   1455, 4:    966, 8:    743, 16:    397, 32:    132, 64:     30, 128:    104
+client: 8058 total:    744, 0:     44, 1:      1, 2:      3, 4:      2, 8:      2, 16:      3, 32:      2, 64:      2, 128:    685
+client: 8059 total: 166395, 0: 159333, 1:   2935, 2:   1540, 4:   1083, 8:    811, 16:    393, 32:    129, 64:     41, 128:    130
+client: 8060 total: 213156, 0: 207022, 1:   2580, 2:   1324, 4:    945, 8:    656, 16:    385, 32:    101, 64:     37, 128:    106
+client: 8061 total: 190561, 0: 184265, 1:   2727, 2:   1432, 4:    864, 8:    619, 16:    365, 32:    148, 64:     33, 128:    108
+client: 8062 total: 203531, 0: 197486, 1:   2359, 2:   1347, 4:    910, 8:    745, 16:    413, 32:    130, 64:     34, 128:    107
+client: 8063 total: 180376, 0: 172771, 1:   3286, 2:   1704, 4:   1112, 8:    811, 16:    420, 32:    139, 64:     47, 128:     86
+client: 8064 total: 192414, 0: 185316, 1:   3220, 2:   1573, 4:    947, 8:    697, 16:    404, 32:    132, 64:     35, 128:     90
+client: 8065 total: 205772, 0: 199587, 1:   2596, 2:   1324, 4:    899, 8:    713, 16:    386, 32:    136, 64:     46, 128:     85
+client: 8066 total: 201973, 0: 195612, 1:   2613, 2:   1389, 4:    928, 8:    786, 16:    387, 32:    124, 64:     29, 128:    105
+client: 8067 total: 166548, 0: 158598, 1:   3394, 2:   1830, 4:   1133, 8:    909, 16:    403, 32:    137, 64:     53, 128:     91
+client: 8068 total: 223967, 0: 217559, 1:   2666, 2:   1381, 4:    958, 8:    733, 16:    425, 32:    130, 64:     41, 128:     74
+client: 8069 total: 190651, 0: 184960, 1:   2365, 2:   1275, 4:    838, 8:    579, 16:    350, 32:    111, 64:     40, 128:    133
+client: 8070 total: 209102, 0: 203178, 1:   2365, 2:   1336, 4:    926, 8:    700, 16:    339, 32:     98, 64:     20, 128:    140
+client: 8071 total: 177921, 0: 170560, 1:   3157, 2:   1664, 4:   1181, 8:    776, 16:    325, 32:     94, 64:     50, 128:    114
+client: 8072 total: 179407, 0: 171815, 1:   3507, 2:   1673, 4:    951, 8:    749, 16:    452, 32:    131, 64:     42, 128:     87
+client: 8073 total:    801, 0:     95, 1:      4, 2:      3, 4:      6, 8:      5, 16:      3, 32:      4, 64:      7, 128:    674
+client: 8074 total: 187788, 0: 181400, 1:   2577, 2:   1535, 4:    979, 8:    674, 16:    353, 32:    103, 64:     35, 128:    132
+client: 8075 total: 160161, 0: 152337, 1:   3382, 2:   1797, 4:   1139, 8:    830, 16:    382, 32:    130, 64:     51, 128:    113
+client: 8076 total: 183443, 0: 176245, 1:   3102, 2:   1670, 4:    972, 8:    756, 16:    440, 32:    120, 64:     37, 128:    101
+client: 8077 total:    796, 0:     79, 1:      7, 2:      6, 4:      8, 8:      3, 16:      3, 32:      8, 64:     10, 128:    672
+client: 8078 total: 199109, 0: 192478, 1:   2630, 2:   1493, 4:   1030, 8:    798, 16:    413, 32:    136, 64:     42, 128:     89
+client: 8079 total: 196467, 0: 189511, 1:   2863, 2:   1588, 4:   1109, 8:    821, 16:    309, 32:    104, 64:     38, 128:    124
+client: 8080 total: 205522, 0: 198965, 1:   2812, 2:   1406, 4:    926, 8:    674, 16:    486, 32:    132, 64:     37, 128:     84
+client: 8081 total: 229116, 0: 222744, 1:   2555, 2:   1371, 4:    925, 8:    781, 16:    520, 32:    151, 64:     38, 128:     31
+client: 8082 total: 225808, 0: 219978, 1:   2326, 2:   1274, 4:    935, 8:    690, 16:    346, 32:    121, 64:     38, 128:    100
+client: 8083 total: 193709, 0: 186636, 1:   3057, 2:   1545, 4:   1094, 8:    782, 16:    324, 32:    119, 64:     46, 128:    106
+client: 8084 total: 205218, 0: 199256, 1:   2421, 2:   1332, 4:    859, 8:    693, 16:    392, 32:    122, 64:     33, 128:    110
+client: 8085 total: 191134, 0: 184666, 1:   2595, 2:   1519, 4:    926, 8:    689, 16:    477, 32:    136, 64:     45, 128:     81
+client: 8086 total: 193092, 0: 186555, 1:   2795, 2:   1498, 4:    936, 8:    656, 16:    385, 32:    115, 64:     41, 128:    111
+client: 8087 total: 170128, 0: 162650, 1:   3390, 2:   1700, 4:   1085, 8:    726, 16:    295, 32:    104, 64:     41, 128:    137
+client: 8088 total: 202090, 0: 195919, 1:   2684, 2:   1378, 4:    880, 8:    616, 16:    330, 32:    126, 64:     41, 128:    116
+client: 8089 total: 191086, 0: 184479, 1:   2854, 2:   1433, 4:    933, 8:    673, 16:    452, 32:    140, 64:     39, 128:     83
+client: 8090 total: 237621, 0: 231570, 1:   2396, 2:   1316, 4:    966, 8:    732, 16:    405, 32:    121, 64:     37, 128:     78
+client: 8091 total: 179095, 0: 172068, 1:   2930, 2:   1595, 4:   1135, 8:    758, 16:    328, 32:    109, 64:     45, 128:    127
+client: 8092 total: 191448, 0: 184137, 1:   3310, 2:   1561, 4:    975, 8:    712, 16:    486, 32:    163, 64:     27, 128:     77
+client: 8093 total: 216782, 0: 211072, 1:   2401, 2:   1202, 4:    837, 8:    660, 16:    355, 32:    122, 64:     41, 128:     92
+client: 8094 total: 183654, 0: 177557, 1:   2448, 2:   1420, 4:    855, 8:    688, 16:    398, 32:    122, 64:     39, 128:    127
+client: 8095 total: 190868, 0: 183676, 1:   2971, 2:   1627, 4:   1160, 8:    817, 16:    348, 32:    118, 64:     43, 128:    108
+client: 8096 total: 176162, 0: 168853, 1:   3285, 2:   1629, 4:    978, 8:    726, 16:    428, 32:    116, 64:     44, 128:    103
+client: 8097 total: 214428, 0: 207698, 1:   2742, 2:   1511, 4:    977, 8:    808, 16:    438, 32:    167, 64:     41, 128:     46
+client: 8098 total: 195961, 0: 189339, 1:   2762, 2:   1475, 4:    932, 8:    753, 16:    413, 32:    163, 64:     28, 128:     96
+client: 8099 total: 169085, 0: 161977, 1:   3096, 2:   1643, 4:   1035, 8:    727, 16:    304, 32:    119, 64:     49, 128:    135
+client: 8100 total: 192446, 0: 186094, 1:   2795, 2:   1338, 4:    923, 8:    670, 16:    352, 32:    115, 64:     31, 128:    128
+client: 8101 total: 219653, 0: 213812, 1:   2486, 2:   1182, 4:    838, 8:    717, 16:    372, 32:    132, 64:     31, 128:     83
+client: 8102 total: 195028, 0: 188633, 1:   2637, 2:   1466, 4:    942, 8:    678, 16:    384, 32:    138, 64:     42, 128:    108
+client: 8103 total: 164776, 0: 157047, 1:   3338, 2:   1773, 4:   1104, 8:    840, 16:    376, 32:    151, 64:     53, 128:     94
+client: 8104 total:   3151, 0:   2369, 1:     19, 2:     21, 4:      7, 8:     13, 16:     16, 32:     16, 64:     20, 128:    670
+client: 8105 total: 195378, 0: 189177, 1:   2587, 2:   1397, 4:    831, 8:    717, 16:    391, 32:    141, 64:     24, 128:    113
+client: 8106 total:    747, 0:     46, 1:      3, 2:      1, 4:      3, 8:      1, 16:      4, 32:      4, 64:      4, 128:    681
+client: 8107 total: 198212, 0: 189418, 1:   3992, 2:   2184, 4:   1232, 8:    846, 16:    311, 32:     94, 64:     38, 128:     97
+client: 8108 total: 211511, 0: 204983, 1:   2828, 2:   1416, 4:    989, 8:    675, 16:    380, 32:    103, 64:     30, 128:    107
+client: 8109 total: 204092, 0: 197622, 1:   2664, 2:   1470, 4:    897, 8:    721, 16:    454, 32:    157, 64:     24, 128:     83
+client: 8110 total:    764, 0:     60, 1:      3, 2:      1, 4:      2, 8:      0, 16:      5, 32:      4, 64:      6, 128:    683
+client: 8111 total: 193024, 0: 184405, 1:   3916, 2:   2047, 4:   1262, 8:    806, 16:    328, 32:    125, 64:     38, 128:     97
+client: 8112 total: 202223, 0: 195502, 1:   2835, 2:   1508, 4:    966, 8:    736, 16:    423, 32:    129, 64:     37, 128:     87
+client: 8113 total: 217014, 0: 211225, 1:   2339, 2:   1297, 4:    861, 8:    666, 16:    365, 32:    134, 64:     43, 128:     84
+client: 8114 total: 203656, 0: 196931, 1:   2757, 2:   1500, 4:   1040, 8:    759, 16:    435, 32:    114, 64:     37, 128:     83
+client: 8115 total: 175496, 0: 167710, 1:   3476, 2:   1721, 4:   1102, 8:    860, 16:    363, 32:    114, 64:     45, 128:    105
+client: 8116 total: 208901, 0: 202884, 1:   2549, 2:   1268, 4:    905, 8:    697, 16:    341, 32:    108, 64:     30, 128:    119
+client: 8117 total: 197603, 0: 191415, 1:   2575, 2:   1379, 4:    924, 8:    611, 16:    420, 32:    143, 64:     49, 128:     87
+client: 8118 total: 207889, 0: 202032, 1:   2368, 2:   1298, 4:    905, 8:    661, 16:    349, 32:    112, 64:     34, 128:    130
+client: 8119 total: 172456, 0: 165113, 1:   3126, 2:   1669, 4:   1148, 8:    783, 16:    339, 32:    123, 64:     32, 128:    123
+client: 8120 total: 203588, 0: 196939, 1:   2919, 2:   1464, 4:    877, 8:    712, 16:    425, 32:    122, 64:     45, 128:     85
+client: 8121 total: 194930, 0: 189163, 1:   2477, 2:   1204, 4:    833, 8:    646, 16:    329, 32:    122, 64:     33, 128:    123
+client: 8122 total: 182088, 0: 175669, 1:   2580, 2:   1518, 4:    919, 8:    723, 16:    396, 32:    130, 64:     42, 128:    111
+client: 8123 total:    993, 0:    267, 1:      6, 2:      4, 4:     10, 8:     18, 16:      8, 32:      2, 64:      2, 128:    676
+client: 8124 total:    745, 0:     49, 1:      0, 2:      1, 4:      3, 8:      2, 16:      2, 32:      2, 64:      4, 128:    682
+client: 8125 total: 186300, 0: 179881, 1:   2791, 2:   1356, 4:    927, 8:    659, 16:    406, 32:    146, 64:     45, 128:     89
+client: 8126 total: 185359, 0: 178779, 1:   2775, 2:   1475, 4:    940, 8:    697, 16:    406, 32:    126, 64:     64, 128:     97
+client: 8127 total: 166856, 0: 159496, 1:   3137, 2:   1684, 4:   1042, 8:    826, 16:    387, 32:    124, 64:     33, 128:    127
 
 After
------
-client: 8000 total:  17468, 0:  16965, 1:    183, 2:    153, 4:     97, 8:     38, 16:      7, 32:      8, 64:      4, 128:     13
-client: 8001 total:  17679, 0:  17277, 1:    106, 2:     89, 4:     92, 8:     69, 16:     23, 32:     15, 64:      4, 128:      4
-client: 8002 total:  23029, 0:  22623, 1:    129, 2:     90, 4:     91, 8:     53, 16:     31, 32:      9, 64:      2, 128:      1
-client: 8003 total:  22498, 0:  22067, 1:    135, 2:    127, 4:     90, 8:     48, 16:     20, 32:      5, 64:      4, 128:      2
-client: 8004 total:  14136, 0:  13648, 1:    190, 2:    129, 4:     89, 8:     36, 16:     14, 32:      8, 64:      3, 128:     19
-client: 8005 total:  18527, 0:  18098, 1:     92, 2:    112, 4:     97, 8:     79, 16:     28, 32:     16, 64:      4, 128:      1
-client: 8006 total:   6436, 0:   6285, 1:     28, 2:     30, 4:     27, 8:     25, 16:      2, 32:      1, 64:      3, 128:     35
-client: 8007 total:  12236, 0:  11980, 1:     72, 2:     53, 4:     59, 8:     36, 16:      4, 32:      4, 64:      4, 128:     24
-client: 8008 total:  25641, 0:  25088, 1:    223, 2:    176, 4:     93, 8:     37, 16:     11, 32:      6, 64:      4, 128:      3
-client: 8009 total:  19214, 0:  18735, 1:    155, 2:    108, 4:     86, 8:     91, 16:     23, 32:     10, 64:      4, 128:      2
-client: 8010 total:  18909, 0:  18560, 1:     89, 2:     80, 4:     68, 8:     64, 16:     27, 32:     10, 64:      7, 128:      4
-client: 8011 total:  22242, 0:  21834, 1:    100, 2:    119, 4:    104, 8:     48, 16:     22, 32:     12, 64:      3, 128:      0
-client: 8012 total:    120, 0:     48, 1:      2, 2:      3, 4:      5, 8:      1, 16:      3, 32:      3, 64:      3, 128:     52
-client: 8013 total:  19254, 0:  18809, 1:    121, 2:    110, 4:    103, 8:     73, 16:     20, 32:     11, 64:      3, 128:      4
-client: 8014 total:    617, 0:    509, 1:      8, 2:     12, 4:      3, 8:     13, 16:     16, 32:      2, 64:      8, 128:     46
-client: 8015 total:  22097, 0:  21625, 1:    155, 2:    117, 4:    112, 8:     51, 16:     25, 32:      8, 64:      4, 128:      0
-client: 8016 total:  21352, 0:  20858, 1:    192, 2:    146, 4:     77, 8:     40, 16:     16, 32:     10, 64:      1, 128:     12
-client: 8017 total:  18049, 0:  17589, 1:    125, 2:    103, 4:    112, 8:     64, 16:     35, 32:     16, 64:      5, 128:      0
-client: 8018 total:  19155, 0:  18797, 1:     88, 2:     89, 4:     78, 8:     63, 16:     26, 32:      8, 64:      3, 128:      3
-client: 8019 total:  22008, 0:  21534, 1:    135, 2:    117, 4:    122, 8:     72, 16:     19, 32:      7, 64:      1, 128:      1
-client: 8020 total:  15444, 0:  15025, 1:    176, 2:    133, 4:     61, 8:     22, 16:      4, 32:      2, 64:      4, 128:     17
-client: 8021 total:   9252, 0:   9028, 1:     58, 2:     47, 4:     41, 8:     21, 16:     15, 32:      5, 64:     14, 128:     23
-client: 8022 total:  22300, 0:  21952, 1:     83, 2:     79, 4:    109, 8:     42, 16:     21, 32:      6, 64:      5, 128:      3
-client: 8023 total:    134, 0:     61, 1:      2, 2:      2, 4:      2, 8:      1, 16:      6, 32:      4, 64:      5, 128:     51
-client: 8024 total:  22997, 0:  22479, 1:    220, 2:    146, 4:     89, 8:     32, 16:     10, 32:      7, 64:      3, 128:     11
-client: 8025 total:    140, 0:     73, 1:      2, 2:      3, 4:      0, 8:      0, 16:      1, 32:      3, 64:      5, 128:     53
-client: 8026 total:  21543, 0:  21149, 1:    103, 2:     92, 4:    110, 8:     58, 16:     13, 32:     13, 64:      3, 128:      2
-client: 8027 total:    347, 0:    256, 1:      9, 2:      3, 4:      6, 8:      7, 16:      7, 32:      5, 64:      4, 128:     50
-client: 8028 total:  21340, 0:  20823, 1:    187, 2:    165, 4:     87, 8:     44, 16:     14, 32:      4, 64:      8, 128:      8
-client: 8029 total:  18430, 0:  17933, 1:    153, 2:    138, 4:     88, 8:     70, 16:     29, 32:     13, 64:      3, 128:      3
-client: 8030 total:  17339, 0:  17004, 1:     91, 2:     70, 4:     63, 8:     62, 16:     25, 32:     10, 64:      5, 128:      9
-client: 8031 total:    679, 0:    586, 1:      3, 2:     10, 4:      4, 8:      5, 16:     11, 32:      8, 64:      4, 128:     48
-client: 8032 total:  15330, 0:  14890, 1:    169, 2:    112, 4:     78, 8:     41, 16:     14, 32:      3, 64:      3, 128:     20
-client: 8033 total:  18419, 0:  18044, 1:     89, 2:    100, 4:     86, 8:     61, 16:     21, 32:      7, 64:      3, 128:      8
-client: 8034 total:  19947, 0:  19540, 1:    103, 2:     98, 4:     88, 8:     68, 16:     36, 32:     10, 64:      4, 128:      0
-client: 8035 total:  22006, 0:  21573, 1:    130, 2:    122, 4:    103, 8:     50, 16:     14, 32:      9, 64:      2, 128:      3
-client: 8036 total:  19452, 0:  18918, 1:    200, 2:    169, 4:     96, 8:     41, 16:      6, 32:      5, 64:      2, 128:     15
-client: 8037 total:  19846, 0:  19371, 1:    129, 2:    137, 4:     99, 8:     68, 16:     30, 32:      8, 64:      1, 128:      3
-client: 8038 total:  22000, 0:  21589, 1:    103, 2:     90, 4:    104, 8:     77, 16:     27, 32:      8, 64:      2, 128:      0
-client: 8039 total:  20612, 0:  20176, 1:    137, 2:    112, 4:     88, 8:     59, 16:     26, 32:     10, 64:      3, 128:      1
-client: 8040 total:  21084, 0:  20555, 1:    211, 2:    136, 4:    100, 8:     51, 16:     15, 32:      4, 64:      2, 128:     10
-client: 8041 total:  11465, 0:  11106, 1:     82, 2:     72, 4:     88, 8:     60, 16:     24, 32:     15, 64:      9, 128:      9
-client: 8042 total:  21455, 0:  21057, 1:    100, 2:     97, 4:    102, 8:     54, 16:     29, 32:     13, 64:      2, 128:      1
-client: 8043 total:  22832, 0:  22389, 1:    118, 2:    133, 4:    106, 8:     51, 16:     23, 32:     10, 64:      2, 128:      0
-client: 8044 total:  20445, 0:  19895, 1:    206, 2:    176, 4:     86, 8:     42, 16:     24, 32:      6, 64:      4, 128:      6
-client: 8045 total:  19368, 0:  18880, 1:    139, 2:    118, 4:    127, 8:     56, 16:     31, 32:     13, 64:      4, 128:      0
-client: 8046 total:  22747, 0:  22335, 1:    108, 2:     90, 4:    115, 8:     55, 16:     37, 32:      6, 64:      0, 128:      1
-client: 8047 total:  24223, 0:  23816, 1:    110, 2:    110, 4:     97, 8:     61, 16:     23, 32:      4, 64:      1, 128:      1
-client: 8048 total:  19573, 0:  19010, 1:    210, 2:    170, 4:     97, 8:     51, 16:     19, 32:      6, 64:      5, 128:      5
-client: 8049 total:  19436, 0:  18974, 1:    111, 2:    123, 4:    107, 8:     77, 16:     27, 32:     15, 64:      1, 128:      1
-client: 8050 total:  16210, 0:  15741, 1:    144, 2:    106, 4:     97, 8:     74, 16:     29, 32:     15, 64:      1, 128:      3
-client: 8051 total:  19325, 0:  18876, 1:    150, 2:    105, 4:     97, 8:     61, 16:     22, 32:      7, 64:      2, 128:      5
-client: 8052 total:  20278, 0:  19715, 1:    231, 2:    152, 4:    100, 8:     41, 16:     16, 32:     11, 64:      1, 128:     11
-client: 8053 total:  19534, 0:  19084, 1:    103, 2:    125, 4:     97, 8:     83, 16:     27, 32:     10, 64:      3, 128:      2
-client: 8054 total:  18630, 0:  18273, 1:    100, 2:     81, 4:     69, 8:     61, 16:     29, 32:      9, 64:      4, 128:      4
-client: 8055 total:  22449, 0:  22046, 1:    104, 2:    112, 4:     94, 8:     59, 16:     24, 32:      6, 64:      0, 128:      4
-client: 8056 total:  14745, 0:  14284, 1:    171, 2:    138, 4:     81, 8:     31, 16:     11, 32:     10, 64:      4, 128:     15
-client: 8057 total:  18698, 0:  18243, 1:    127, 2:    103, 4:    109, 8:     64, 16:     38, 32:      8, 64:      5, 128:      1
-client: 8058 total:  20386, 0:  19985, 1:     91, 2:    101, 4:     93, 8:     67, 16:     39, 32:      4, 64:      4, 128:      2
-client: 8059 total:  16392, 0:  16050, 1:     93, 2:     90, 4:     81, 8:     29, 16:     25, 32:     12, 64:      3, 128:      9
-client: 8060 total:  14156, 0:  13685, 1:    183, 2:    145, 4:     75, 8:     30, 16:      9, 32:      2, 64:      7, 128:     20
-client: 8061 total:  15487, 0:  15090, 1:    100, 2:    101, 4:     85, 8:     57, 16:     29, 32:     10, 64:      4, 128:     11
-client: 8062 total:  21870, 0:  21480, 1:     93, 2:     89, 4:     92, 8:     72, 16:     34, 32:      9, 64:      0, 128:      1
-client: 8063 total:  21548, 0:  21108, 1:    114, 2:    123, 4:    114, 8:     54, 16:     24, 32:      7, 64:      3, 128:      1
-client: 8064 total:  15865, 0:  15416, 1:    164, 2:    133, 4:     65, 8:     41, 16:     18, 32:      7, 64:      4, 128:     17
-client: 8065 total:  19300, 0:  18846, 1:    139, 2:     97, 4:    103, 8:     67, 16:     29, 32:     15, 64:      3, 128:      1
-client: 8066 total:  21636, 0:  21258, 1:     95, 2:     83, 4:     86, 8:     65, 16:     33, 32:     13, 64:      3, 128:      0
-client: 8067 total:  22998, 0:  22534, 1:    142, 2:    139, 4:     97, 8:     53, 16:     25, 32:      5, 64:      3, 128:      0
-client: 8068 total:  20846, 0:  20291, 1:    236, 2:    154, 4:     94, 8:     45, 16:      7, 32:      3, 64:      2, 128:     14
-client: 8069 total:  18455, 0:  18041, 1:    117, 2:     93, 4:     89, 8:     68, 16:     35, 32:      5, 64:      4, 128:      3
-client: 8070 total:  20788, 0:  20391, 1:    116, 2:     89, 4:     87, 8:     67, 16:     27, 32:      3, 64:      6, 128:      2
-client: 8071 total:  21160, 0:  20752, 1:    114, 2:    107, 4:     91, 8:     57, 16:     24, 32:     11, 64:      4, 128:      0
-client: 8072 total:  17179, 0:  16631, 1:    217, 2:    160, 4:     99, 8:     32, 16:     15, 32:      9, 64:      4, 128:     12
-client: 8073 total:  19738, 0:  19279, 1:    123, 2:    105, 4:     98, 8:     81, 16:     37, 32:     13, 64:      2, 128:      0
-client: 8074 total:  22019, 0:  21660, 1:     91, 2:     90, 4:     76, 8:     66, 16:     22, 32:      9, 64:      4, 128:      1
-client: 8075 total:  21195, 0:  20723, 1:    142, 2:    122, 4:    114, 8:     58, 16:     23, 32:      9, 64:      4, 128:      0
-client: 8076 total:  15700, 0:  15169, 1:    205, 2:    148, 4:    102, 8:     35, 16:     15, 32:      6, 64:      4, 128:     16
-client: 8077 total:  19681, 0:  19214, 1:    116, 2:    122, 4:    106, 8:     70, 16:     42, 32:      7, 64:      4, 128:      0
-client: 8078 total:  11631, 0:  11375, 1:     69, 2:     44, 4:     52, 8:     39, 16:     21, 32:      2, 64:      2, 128:     27
-client: 8079 total:  20008, 0:  19660, 1:     82, 2:     87, 4:     93, 8:     44, 16:     28, 32:      7, 64:      2, 128:      5
-client: 8080 total:  20259, 0:  19726, 1:    218, 2:    159, 4:     91, 8:     34, 16:     11, 32:      3, 64:      2, 128:     15
-client: 8081 total:  19811, 0:  19324, 1:    122, 2:    114, 4:    127, 8:     85, 16:     23, 32:     10, 64:      5, 128:      1
-client: 8082 total:  21245, 0:  20822, 1:    121, 2:     92, 4:     98, 8:     67, 16:     34, 32:      9, 64:      1, 128:      1
-client: 8083 total:  21712, 0:  21300, 1:    109, 2:    117, 4:     90, 8:     63, 16:     20, 32:      7, 64:      6, 128:      0
-client: 8084 total:   8961, 0:   8720, 1:     49, 2:     63, 4:     41, 8:     35, 16:     13, 32:      9, 64:      2, 128:     29
-client: 8085 total:  16346, 0:  15931, 1:     98, 2:    118, 4:     89, 8:     57, 16:     25, 32:     19, 64:      4, 128:      5
-client: 8086 total:  22391, 0:  22036, 1:     83, 2:     80, 4:     78, 8:     76, 16:     23, 32:     13, 64:      2, 128:      0
-client: 8087 total:  22899, 0:  22496, 1:    115, 2:    102, 4:     93, 8:     54, 16:     26, 32:     12, 64:      1, 128:      0
-client: 8088 total:  10856, 0:  10436, 1:    136, 2:    117, 4:     79, 8:     36, 16:     18, 32:      8, 64:      7, 128:     19
-client: 8089 total:  15974, 0:  15631, 1:     79, 2:     86, 4:     71, 8:     62, 16:     22, 32:      8, 64:      5, 128:     10
-client: 8090 total:  13596, 0:  13301, 1:     73, 2:     70, 4:     55, 8:     47, 16:     21, 32:      7, 64:      6, 128:     16
-client: 8091 total:  23783, 0:  23384, 1:     98, 2:    105, 4:    104, 8:     62, 16:     21, 32:      7, 64:      1, 128:      1
-client: 8092 total:  20799, 0:  20261, 1:    205, 2:    167, 4:    102, 8:     37, 16:     11, 32:      0, 64:      5, 128:     11
-client: 8093 total:  18659, 0:  18257, 1:    100, 2:     83, 4:     91, 8:     63, 16:     45, 32:     16, 64:      2, 128:      2
-client: 8094 total:  21400, 0:  21008, 1:    103, 2:     87, 4:     98, 8:     54, 16:     37, 32:     12, 64:      1, 128:      0
-client: 8095 total:  15427, 0:  15079, 1:     93, 2:     94, 4:     74, 8:     45, 16:     21, 32:      7, 64:      2, 128:     12
-client: 8096 total:  17711, 0:  17137, 1:    228, 2:    166, 4:    100, 8:     35, 16:     23, 32:      6, 64:      4, 128:     12
-client: 8097 total:  19350, 0:  18853, 1:    168, 2:    106, 4:     97, 8:     78, 16:     33, 32:     12, 64:      3, 128:      0
-client: 8098 total:  23316, 0:  22909, 1:    108, 2:     95, 4:     85, 8:     72, 16:     41, 32:      5, 64:      1, 128:      0
-client: 8099 total:  19561, 0:  19178, 1:     95, 2:    111, 4:     90, 8:     45, 16:     28, 32:      8, 64:      2, 128:      4
-client: 8100 total:  17246, 0:  16819, 1:    141, 2:    129, 4:     85, 8:     35, 16:      7, 32:      6, 64:      5, 128:     19
-client: 8101 total:  18356, 0:  17890, 1:    127, 2:    121, 4:     95, 8:     72, 16:     34, 32:     11, 64:      4, 128:      2
-client: 8102 total:  20836, 0:  20469, 1:     97, 2:     86, 4:     89, 8:     59, 16:     21, 32:      8, 64:      5, 128:      2
-client: 8103 total:  24089, 0:  23695, 1:    102, 2:    103, 4:    111, 8:     47, 16:     20, 32:     10, 64:      1, 128:      0
-client: 8104 total:  15747, 0:  15241, 1:    222, 2:    141, 4:     74, 8:     32, 16:     10, 32:      6, 64:      5, 128:     16
-client: 8105 total:  17002, 0:  16535, 1:    168, 2:    111, 4:     77, 8:     65, 16:     22, 32:     14, 64:      6, 128:      4
-client: 8106 total:  22628, 0:  22240, 1:    106, 2:     82, 4:     88, 8:     69, 16:     32, 32:     10, 64:      1, 128:      0
-client: 8107 total:  22023, 0:  21626, 1:    100, 2:    114, 4:     93, 8:     60, 16:     19, 32:      5, 64:      4, 128:      2
-client: 8108 total:  18144, 0:  17629, 1:    190, 2:    163, 4:     92, 8:     40, 16:      8, 32:      3, 64:      4, 128:     15
-client: 8109 total:  17561, 0:  17154, 1:    107, 2:     95, 4:     83, 8:     68, 16:     36, 32:      8, 64:      5, 128:      5
-client: 8110 total:  22314, 0:  21910, 1:     95, 2:     93, 4:     98, 8:     73, 16:     38, 32:      5, 64:      2, 128:      0
-client: 8111 total:  22880, 0:  22425, 1:    134, 2:    126, 4:    110, 8:     51, 16:     23, 32:      8, 64:      2, 128:      1
-client: 8112 total:  12952, 0:  12537, 1:    137, 2:    124, 4:     75, 8:     41, 16:      9, 32:      2, 64:      3, 128:     24
-client: 8113 total:  16787, 0:  16351, 1:    110, 2:    104, 4:     95, 8:     72, 16:     32, 32:     14, 64:      4, 128:      5
-client: 8114 total:  20322, 0:  19945, 1:    104, 2:     88, 4:     76, 8:     58, 16:     36, 32:     10, 64:      3, 128:      2
-client: 8115 total:  22593, 0:  22202, 1:    102, 2:    105, 4:    104, 8:     43, 16:     27, 32:      7, 64:      0, 128:      3
-client: 8116 total:  20900, 0:  20358, 1:    213, 2:    147, 4:     99, 8:     48, 16:     15, 32:      5, 64:      6, 128:      9
-client: 8117 total:  14035, 0:  13670, 1:     82, 2:     83, 4:     89, 8:     52, 16:     28, 32:     15, 64:      2, 128:     14
-client: 8118 total:  20964, 0:  20596, 1:    106, 2:     87, 4:     69, 8:     59, 16:     31, 32:     12, 64:      3, 128:      1
-client: 8119 total:  23436, 0:  23014, 1:    108, 2:    108, 4:    118, 8:     55, 16:     23, 32:      8, 64:      2, 128:      0
-client: 8120 total:  24200, 0:  23686, 1:    186, 2:    163, 4:     91, 8:     40, 16:     14, 32:      9, 64:      5, 128:      6
-client: 8121 total:  17591, 0:  17102, 1:    123, 2:    132, 4:    100, 8:     82, 16:     35, 32:     10, 64:      6, 128:      1
-client: 8122 total:  23257, 0:  22843, 1:     94, 2:    103, 4:    110, 8:     72, 16:     26, 32:      7, 64:      2, 128:      0
-client: 8123 total:  23511, 0:  23087, 1:    120, 2:    126, 4:     96, 8:     48, 16:     24, 32:      6, 64:      4, 128:      0
-client: 8124 total:  19985, 0:  19447, 1:    210, 2:    153, 4:    103, 8:     42, 16:      8, 32:      6, 64:      5, 128:     11
-client: 8125 total:  18987, 0:  18497, 1:    145, 2:    101, 4:     99, 8:     98, 16:     29, 32:     16, 64:      2, 128:      0
-client: 8126 total:  20228, 0:  19836, 1:     95, 2:     90, 4:     86, 8:     79, 16:     28, 32:      9, 64:      4, 128:      1
-client: 8127 total:  22328, 0:  21935, 1:    100, 2:    111, 4:     94, 8:     54, 16:     21, 32:      8, 64:      4, 128:      1
+------
+client: 8000 total:    826, 0:    113, 1:      8, 2:      8, 4:      3, 8:      2, 16:      1, 32:      9, 64:      6, 128:    676
+client: 8001 total: 187479, 0: 180584, 1:   2867, 2:   1516, 4:   1142, 8:    722, 16:    399, 32:    116, 64:     33, 128:    100
+client: 8002 total: 218099, 0: 212681, 1:   2224, 2:    957, 4:    865, 8:    723, 16:    422, 32:     89, 64:     19, 128:    119
+client: 8003 total:    772, 0:     75, 1:      4, 2:      2, 4:      2, 8:      4, 16:      6, 32:      1, 64:      4, 128:    674
+client: 8004 total: 217000, 0: 210967, 1:   2594, 2:   1292, 4:    921, 8:    609, 16:    378, 32:    131, 64:     44, 128:     64
+client: 8005 total: 218804, 0: 211998, 1:   2742, 2:   1586, 4:   1136, 8:    762, 16:    381, 32:    115, 64:     26, 128:     58
+client: 8006 total: 213593, 0: 206364, 1:   2945, 2:   1632, 4:   1114, 8:    900, 16:    461, 32:    102, 64:     21, 128:     54
+client: 8007 total: 225687, 0: 219903, 1:   2401, 2:   1286, 4:    890, 8:    641, 16:    353, 32:    120, 64:     22, 128:     71
+client: 8008 total: 206299, 0: 199848, 1:   2792, 2:   1418, 4:    913, 8:    668, 16:    412, 32:    145, 64:     31, 128:     72
+client: 8009 total: 141460, 0: 134974, 1:   3226, 2:   1210, 4:    783, 8:    601, 16:    326, 32:     61, 64:     30, 128:    249
+client: 8010 total: 218211, 0: 212780, 1:   2261, 2:   1108, 4:    830, 8:    639, 16:    346, 32:    136, 64:     32, 128:     79
+client: 8011 total: 215633, 0: 209719, 1:   2502, 2:   1392, 4:    918, 8:    579, 16:    306, 32:     95, 64:     28, 128:     94
+client: 8012 total: 214308, 0: 208234, 1:   2647, 2:   1323, 4:    896, 8:    621, 16:    361, 32:    118, 64:     26, 128:     82
+client: 8013 total: 198949, 0: 191569, 1:   3089, 2:   1695, 4:   1166, 8:    791, 16:    425, 32:    124, 64:     22, 128:     68
+client: 8014 total: 225869, 0: 219898, 1:   2444, 2:   1329, 4:    935, 8:    681, 16:    357, 32:    139, 64:     52, 128:     34
+client: 8015 total: 236350, 0: 230533, 1:   2310, 2:   1314, 4:    936, 8:    688, 16:    384, 32:    107, 64:     33, 128:     45
+client: 8016 total: 190757, 0: 184435, 1:   2660, 2:   1447, 4:    899, 8:    658, 16:    375, 32:    162, 64:     32, 128:     89
+client: 8017 total:   1145, 0:    405, 1:     12, 2:      4, 4:      6, 8:     19, 16:     18, 32:      2, 64:      1, 128:    678
+client: 8018 total: 206997, 0: 200262, 1:   2863, 2:   1509, 4:   1065, 8:    718, 16:    356, 32:    129, 64:     30, 128:     65
+client: 8019 total: 226798, 0: 220975, 1:   2386, 2:   1307, 4:    903, 8:    655, 16:    351, 32:    120, 64:     32, 128:     69
+client: 8020 total: 240272, 0: 234430, 1:   2377, 2:   1222, 4:    853, 8:    731, 16:    451, 32:    132, 64:     40, 128:     36
+client: 8021 total: 205954, 0: 199098, 1:   2915, 2:   1480, 4:   1079, 8:    758, 16:    416, 32:    109, 64:     28, 128:     71
+client: 8022 total: 224141, 0: 218573, 1:   2247, 2:   1232, 4:    879, 8:    636, 16:    346, 32:    127, 64:     31, 128:     70
+client: 8023 total: 222299, 0: 216070, 1:   2613, 2:   1412, 4:    909, 8:    698, 16:    373, 32:    150, 64:     27, 128:     47
+client: 8024 total: 198426, 0: 192316, 1:   2630, 2:   1295, 4:    853, 8:    659, 16:    412, 32:    137, 64:     38, 128:     86
+client: 8025 total: 220631, 0: 214085, 1:   2786, 2:   1444, 4:   1015, 8:    744, 16:    346, 32:    114, 64:     28, 128:     69
+client: 8026 total:  74213, 0:  72214, 1:    624, 2:    324, 4:    279, 8:    175, 16:     58, 32:     24, 64:     11, 128:    504
+client: 8027 total: 217572, 0: 212055, 1:   2255, 2:   1214, 4:    839, 8:    668, 16:    320, 32:    110, 64:     18, 128:     93
+client: 8028 total: 218263, 0: 212325, 1:   2514, 2:   1340, 4:    895, 8:    609, 16:    343, 32:    123, 64:     31, 128:     83
+client: 8029 total: 195349, 0: 188353, 1:   3131, 2:   1539, 4:   1054, 8:    711, 16:    334, 32:    109, 64:     31, 128:     87
+client: 8030 total: 222428, 0: 217414, 1:   1939, 2:   1060, 4:    854, 8:    595, 16:    336, 32:    113, 64:     33, 128:     84
+client: 8031 total: 205126, 0: 199365, 1:   2471, 2:   1337, 4:    864, 8:    526, 16:    315, 32:    116, 64:     33, 128:     99
+client: 8032 total: 215655, 0: 209182, 1:   2823, 2:   1502, 4:    967, 8:    614, 16:    340, 32:    123, 64:     41, 128:     63
+client: 8033 total: 216838, 0: 210673, 1:   2419, 2:   1400, 4:   1026, 8:    709, 16:    392, 32:    126, 64:     38, 128:     55
+client: 8034 total: 216907, 0: 211076, 1:   2345, 2:   1252, 4:    951, 8:    707, 16:    343, 32:    141, 64:     36, 128:     56
+client: 8035 total: 217258, 0: 211130, 1:   2613, 2:   1374, 4:    955, 8:    647, 16:    335, 32:    102, 64:     33, 128:     69
+client: 8036 total:    892, 0:    159, 1:      8, 2:     11, 4:      6, 8:     13, 16:     10, 32:      5, 64:      6, 128:    674
+client: 8037 total: 168185, 0: 163818, 1:   1450, 2:    781, 4:    760, 8:    621, 16:    391, 32:     76, 64:     29, 128:    259
+client: 8038 total: 233536, 0: 228013, 1:   2236, 2:   1246, 4:    847, 8:    650, 16:    354, 32:     99, 64:     34, 128:     57
+client: 8039 total:    785, 0:     74, 1:      9, 2:      4, 4:      2, 8:      4, 16:      5, 32:      6, 64:      7, 128:    674
+client: 8040 total: 209903, 0: 202741, 1:   3226, 2:   1511, 4:   1002, 8:    758, 16:    420, 32:    145, 64:     33, 128:     67
+client: 8041 total:  60905, 0:  58483, 1:    968, 2:    446, 4:    233, 8:    149, 16:     68, 32:     20, 64:     28, 128:    510
+client: 8042 total: 218146, 0: 212491, 1:   2340, 2:   1163, 4:    915, 8:    655, 16:    357, 32:    108, 64:     33, 128:     84
+client: 8043 total: 220248, 0: 214512, 1:   2318, 2:   1238, 4:    935, 8:    675, 16:    325, 32:    137, 64:     43, 128:     65
+client: 8044 total: 228576, 0: 222838, 1:   2319, 2:   1286, 4:    847, 8:    690, 16:    384, 32:    119, 64:     28, 128:     65
+client: 8045 total: 215406, 0: 210699, 1:   1570, 2:   1008, 4:    865, 8:    672, 16:    314, 32:    109, 64:     16, 128:    153
+client: 8046 total: 211941, 0: 206837, 1:   2082, 2:   1120, 4:    803, 8:    585, 16:    280, 32:     81, 64:     35, 128:    118
+client: 8047 total:    751, 0:     55, 1:      2, 2:      3, 4:      4, 8:      5, 16:      1, 32:      2, 64:      6, 128:    673
+client: 8048 total: 216334, 0: 211585, 1:   1920, 2:    944, 4:    725, 8:    527, 16:    367, 32:    129, 64:     30, 128:    107
+client: 8049 total: 209452, 0: 203392, 1:   2599, 2:   1323, 4:    940, 8:    625, 16:    338, 32:    103, 64:     36, 128:     96
+client: 8050 total: 221092, 0: 215941, 1:   1991, 2:   1099, 4:    855, 8:    611, 16:    361, 32:    124, 64:     32, 128:     78
+client: 8051 total: 214427, 0: 209076, 1:   2147, 2:   1261, 4:    838, 8:    537, 16:    327, 32:    109, 64:     26, 128:    106
+client: 8052 total: 209110, 0: 203588, 1:   2237, 2:   1274, 4:    830, 8:    591, 16:    328, 32:    124, 64:     30, 128:    108
+client: 8053 total: 214102, 0: 207888, 1:   2630, 2:   1397, 4:    976, 8:    643, 16:    344, 32:    103, 64:     36, 128:     85
+client: 8054 total: 226241, 0: 220167, 1:   2477, 2:   1450, 4:    950, 8:    675, 16:    318, 32:    107, 64:     27, 128:     70
+client: 8055 total: 216226, 0: 210305, 1:   2487, 2:   1343, 4:    881, 8:    610, 16:    355, 32:    141, 64:     41, 128:     63
+client: 8056 total: 212978, 0: 206439, 1:   2782, 2:   1526, 4:    950, 8:    679, 16:    354, 32:    147, 64:     44, 128:     57
+client: 8057 total: 223873, 0: 217261, 1:   2676, 2:   1536, 4:   1033, 8:    794, 16:    376, 32:    115, 64:     27, 128:     55
+client: 8058 total: 225306, 0: 219020, 1:   2567, 2:   1417, 4:    996, 8:    701, 16:    407, 32:    119, 64:     38, 128:     41
+client: 8059 total: 232767, 0: 228125, 1:   1638, 2:    942, 4:    812, 8:    686, 16:    349, 32:     79, 64:     20, 128:    116
+client: 8060 total: 182886, 0: 174937, 1:   3590, 2:   1729, 4:   1102, 8:    806, 16:    483, 32:    146, 64:     37, 128:     56
+client: 8061 total: 213775, 0: 207061, 1:   2730, 2:   1521, 4:   1123, 8:    731, 16:    402, 32:    123, 64:     37, 128:     47
+client: 8062 total: 224452, 0: 218559, 1:   2431, 2:   1251, 4:    953, 8:    668, 16:    382, 32:    120, 64:     41, 128:     47
+client: 8063 total: 230913, 0: 224881, 1:   2490, 2:   1333, 4:    913, 8:    732, 16:    361, 32:    115, 64:     17, 128:     71
+client: 8064 total: 227459, 0: 221552, 1:   2488, 2:   1295, 4:    866, 8:    681, 16:    356, 32:    116, 64:     43, 128:     62
+client: 8065 total: 220354, 0: 214140, 1:   2485, 2:   1406, 4:   1094, 8:    677, 16:    332, 32:    118, 64:     41, 128:     61
+client: 8066 total: 225227, 0: 219540, 1:   2227, 2:   1276, 4:    934, 8:    667, 16:    361, 32:    127, 64:     36, 128:     59
+client: 8067 total: 194002, 0: 188130, 1:   2500, 2:   1319, 4:    917, 8:    569, 16:    306, 32:    111, 64:     31, 128:    119
+client: 8068 total: 215053, 0: 209164, 1:   2437, 2:   1282, 4:    931, 8:    625, 16:    365, 32:    148, 64:     45, 128:     56
+client: 8069 total: 209049, 0: 202544, 1:   2697, 2:   1453, 4:   1067, 8:    716, 16:    348, 32:    118, 64:     40, 128:     66
+client: 8070 total: 224840, 0: 218293, 1:   2725, 2:   1439, 4:   1024, 8:    768, 16:    413, 32:    110, 64:     24, 128:     44
+client: 8071 total: 219303, 0: 212725, 1:   2844, 2:   1431, 4:    970, 8:    745, 16:    381, 32:    132, 64:     28, 128:     47
+client: 8072 total: 218213, 0: 212357, 1:   2487, 2:   1355, 4:    846, 8:    582, 16:    352, 32:    120, 64:     28, 128:     86
+client: 8073 total: 203373, 0: 196998, 1:   2682, 2:   1360, 4:    999, 8:    700, 16:    414, 32:    114, 64:     33, 128:     73
+client: 8074 total: 226430, 0: 220875, 1:   2207, 2:   1252, 4:    926, 8:    676, 16:    306, 32:     71, 64:     34, 128:     83
+client: 8075 total: 211444, 0: 205329, 1:   2622, 2:   1410, 4:    918, 8:    653, 16:    288, 32:    111, 64:     30, 128:     83
+client: 8076 total: 221535, 0: 215699, 1:   2503, 2:   1252, 4:    890, 8:    607, 16:    356, 32:    117, 64:     38, 128:     73
+client: 8077 total: 220035, 0: 214364, 1:   2240, 2:   1241, 4:    948, 8:    660, 16:    351, 32:    111, 64:     39, 128:     81
+client: 8078 total: 221190, 0: 215154, 1:   2654, 2:   1351, 4:    898, 8:    648, 16:    294, 32:     83, 64:     22, 128:     86
+client: 8079 total: 223874, 0: 217901, 1:   2518, 2:   1328, 4:    895, 8:    643, 16:    389, 32:    119, 64:     36, 128:     45
+client: 8080 total: 210692, 0: 204650, 1:   2561, 2:   1390, 4:    921, 8:    594, 16:    339, 32:    115, 64:     26, 128:     96
+client: 8081 total: 207248, 0: 200853, 1:   2630, 2:   1459, 4:    987, 8:    728, 16:    361, 32:    117, 64:     33, 128:     80
+client: 8082 total: 205767, 0: 198328, 1:   3210, 2:   1671, 4:   1105, 8:    834, 16:    425, 32:    112, 64:     27, 128:     55
+client: 8083 total: 215896, 0: 210398, 1:   2237, 2:   1273, 4:    837, 8:    607, 16:    321, 32:     97, 64:     31, 128:     95
+client: 8084 total:  87046, 0:  84258, 1:   1238, 2:    481, 4:    324, 8:    175, 16:     64, 32:     29, 64:     15, 128:    462
+client: 8085 total: 193786, 0: 186755, 1:   3414, 2:   1415, 4:    899, 8:    689, 16:    379, 32:     81, 64:     21, 128:    133
+client: 8086 total: 224098, 0: 217866, 1:   2591, 2:   1344, 4:    948, 8:    759, 16:    386, 32:    139, 64:     31, 128:     34
+client: 8087 total: 222304, 0: 216511, 1:   2508, 2:   1261, 4:    836, 8:    635, 16:    361, 32:     87, 64:     30, 128:     75
+client: 8088 total: 236297, 0: 230406, 1:   2385, 2:   1277, 4:    923, 8:    686, 16:    406, 32:    140, 64:     33, 128:     41
+client: 8089 total: 211643, 0: 205052, 1:   2665, 2:   1492, 4:   1127, 8:    737, 16:    368, 32:    100, 64:     29, 128:     73
+client: 8090 total: 232231, 0: 225965, 1:   2571, 2:   1318, 4:    993, 8:    762, 16:    424, 32:    135, 64:     32, 128:     31
+client: 8091 total: 209019, 0: 202298, 1:   2841, 2:   1375, 4:   1030, 8:    818, 16:    455, 32:     92, 64:     19, 128:     91
+client: 8092 total: 212086, 0: 205590, 1:   2849, 2:   1482, 4:    927, 8:    629, 16:    372, 32:    127, 64:     47, 128:     63
+client: 8093 total: 217893, 0: 211074, 1:   2849, 2:   1387, 4:   1121, 8:    826, 16:    429, 32:    103, 64:     30, 128:     74
+client: 8094 total: 195241, 0: 192199, 1:    585, 2:    554, 4:    602, 8:    602, 16:    357, 32:     78, 64:     17, 128:    247
+client: 8095 total: 220209, 0: 214317, 1:   2457, 2:   1352, 4:    839, 8:    648, 16:    366, 32:    132, 64:     34, 128:     64
+client: 8096 total: 219150, 0: 213091, 1:   2515, 2:   1349, 4:    936, 8:    663, 16:    359, 32:    141, 64:     31, 128:     65
+client: 8097 total: 232578, 0: 227631, 1:   1648, 2:   1092, 4:    888, 8:    704, 16:    409, 32:     80, 64:     21, 128:    105
+client: 8098 total: 216775, 0: 210992, 1:   2382, 2:   1296, 4:    852, 8:    718, 16:    311, 32:    115, 64:     30, 128:     79
+client: 8099 total: 229158, 0: 223753, 1:   2156, 2:   1213, 4:    875, 8:    636, 16:    317, 32:     93, 64:     22, 128:     93
+client: 8100 total: 208238, 0: 202766, 1:   2322, 2:   1185, 4:    782, 8:    571, 16:    349, 32:    124, 64:     28, 128:    111
+client: 8101 total: 207255, 0: 201375, 1:   2329, 2:   1381, 4:    987, 8:    620, 16:    321, 32:    111, 64:     33, 128:     98
+client: 8102 total: 226474, 0: 220582, 1:   2439, 2:   1320, 4:    945, 8:    688, 16:    312, 32:     95, 64:     17, 128:     76
+client: 8103 total: 232852, 0: 227275, 1:   2246, 2:   1209, 4:    890, 8:    693, 16:    334, 32:    119, 64:     37, 128:     49
+client: 8104 total: 216731, 0: 210048, 1:   2919, 2:   1548, 4:    933, 8:    656, 16:    393, 32:    146, 64:     42, 128:     46
+client: 8105 total: 203953, 0: 196757, 1:   3079, 2:   1597, 4:   1128, 8:    774, 16:    394, 32:    127, 64:     33, 128:     64
+client: 8106 total: 225447, 0: 219508, 1:   2406, 2:   1348, 4:    978, 8:    644, 16:    343, 32:    128, 64:     35, 128:     57
+client: 8107 total: 216212, 0: 210273, 1:   2587, 2:   1370, 4:    848, 8:    598, 16:    311, 32:    103, 64:     38, 128:     84
+client: 8108 total: 209421, 0: 202370, 1:   3105, 2:   1553, 4:    977, 8:    732, 16:    462, 32:    134, 64:     20, 128:     68
+client: 8109 total: 192910, 0: 185879, 1:   2946, 2:   1555, 4:   1116, 8:    807, 16:    378, 32:    129, 64:     33, 128:     67
+client: 8110 total: 221571, 0: 215820, 1:   2369, 2:   1268, 4:    921, 8:    668, 16:    332, 32:     78, 64:     29, 128:     86
+client: 8111 total: 217168, 0: 209860, 1:   3204, 2:   1605, 4:   1080, 8:    794, 16:    422, 32:    137, 64:     23, 128:     43
+client: 8112 total: 219046, 0: 212406, 1:   2849, 2:   1564, 4:    921, 8:    668, 16:    410, 32:    141, 64:     50, 128:     37
+client: 8113 total: 214189, 0: 207319, 1:   2822, 2:   1538, 4:   1140, 8:    769, 16:    394, 32:    119, 64:     35, 128:     53
+client: 8114 total:  78876, 0:  76209, 1:   1200, 2:    444, 4:    274, 8:    173, 16:     47, 32:     22, 64:     10, 128:    497
+client: 8115 total: 184834, 0: 177229, 1:   3360, 2:   1697, 4:   1066, 8:    790, 16:    448, 32:    150, 64:     40, 128:     54
+client: 8116 total:  68876, 0:     94, 1:      5, 2:      2, 4:      2, 8:      6, 16:      6, 32:      4, 64:      0, 128:    62
+client: 8117 total: 220961, 0: 215074, 1:   2341, 2:   1305, 4:    963, 8:    662, 16:    385, 32:    126, 64:     35, 128:     70
+client: 8118 total:    797, 0:     94, 1:      5, 2:      2, 4:      2, 8:      6, 16:      6, 32:      4, 64:      0, 128:    678
+client: 8119 total: 211943, 0: 205822, 1:   2616, 2:   1396, 4:    897, 8:    628, 16:    343, 32:    129, 64:     44, 128:     68
+client: 8120 total: 209269, 0: 202188, 1:   3195, 2:   1445, 4:    985, 8:    749, 16:    499, 32:    115, 64:     22, 128:     71
+client: 8121 total: 214751, 0: 208175, 1:   2757, 2:   1503, 4:   1041, 8:    686, 16:    365, 32:    113, 64:     36, 128:     75
+client: 8122 total: 231016, 0: 225169, 1:   2282, 2:   1299, 4:    968, 8:    709, 16:    378, 32:    140, 64:     38, 128:     33
+client: 8123 total: 215626, 0: 209266, 1:   2645, 2:   1443, 4:    942, 8:    745, 16:    367, 32:    129, 64:     41, 128:     48
+client: 8124 total: 222754, 0: 216959, 1:   2415, 2:   1303, 4:    910, 8:    597, 16:    334, 32:    121, 64:     47, 128:     68
+client: 8125 total: 218399, 0: 212569, 1:   2214, 2:   1305, 4:    975, 8:    710, 16:    396, 32:    118, 64:     41, 128:     71
+client: 8126 total: 222317, 0: 216123, 1:   2583, 2:   1380, 4:    922, 8:    712, 16:    383, 32:    134, 64:     38, 128:     42
+client: 8127 total: 219996, 0: 213620, 1:   2779, 2:   1445, 4:    899, 8:    668, 16:    370, 32:    132, 64:     25, 128:     58
 
 -- 
 Best regards,
