@@ -1,180 +1,131 @@
-Return-Path: <cgroups+bounces-13352-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-13353-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id sONJMQErcWniewAAu9opvQ
-	(envelope-from <cgroups+bounces-13352-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Wed, 21 Jan 2026 20:37:37 +0100
+	id QBK3D/ZRcWkXCwAAu9opvQ
+	(envelope-from <cgroups+bounces-13353-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Wed, 21 Jan 2026 23:23:50 +0100
 X-Original-To: lists+cgroups@lfdr.de
 Received: from dfw.mirrors.kernel.org (dfw.mirrors.kernel.org [142.0.200.124])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3B0765C510
-	for <lists+cgroups@lfdr.de>; Wed, 21 Jan 2026 20:37:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id DAF7C5EBDD
+	for <lists+cgroups@lfdr.de>; Wed, 21 Jan 2026 23:23:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 819D2AABBC1
-	for <lists+cgroups@lfdr.de>; Wed, 21 Jan 2026 17:34:54 +0000 (UTC)
+	by dfw.mirrors.kernel.org (Postfix) with ESMTPS id 3A7688610D3
+	for <lists+cgroups@lfdr.de>; Wed, 21 Jan 2026 22:20:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E5796496901;
-	Wed, 21 Jan 2026 17:06:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C9C2543D4E6;
+	Wed, 21 Jan 2026 22:19:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YurHeLrj"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="bRcPWOGZ"
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out-170.mta0.migadu.com (out-170.mta0.migadu.com [91.218.175.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 498A8494A0E;
-	Wed, 21 Jan 2026 17:06:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D3019346E51
+	for <cgroups@vger.kernel.org>; Wed, 21 Jan 2026 22:19:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1769015171; cv=none; b=S9sK5ih3pYzR/lnnfLQjZdBp06O5AtYMZasX3Fjxb5KbsXe4fpngUMbNtjp/NWpvBaUHuJ/iu3E4hoR38VsxD2/uSjOajTnGzznoqwMX52bwgP1uQVeLnSpdrCScj/yTnsJdmiwAgGfzw7c/2aVE+/qthFmT0aVWQqFifvU0C2M=
+	t=1769033994; cv=none; b=l33a7VEWoAb5StQsuvvnwnRq9+HwzJB7JeDlUr4jgXUTJOBj0Ebx8+he+wk0CqEy1vAjYlmllV+MarMTgjm7ob9/+Dhb4kyNGFLh7a9DRC2aLxBtbok+M9WAgVKwiXjal7BLNLR1Qi511BedGNJQ4PRQgGLnbzE5+3OZ93XrRxg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1769015171; c=relaxed/simple;
-	bh=ida7uC1+IcLm3mH5OnwxhdYHy+GE2IR1NjNzomFuB9g=;
+	s=arc-20240116; t=1769033994; c=relaxed/simple;
+	bh=yb3EVg95+PjCTvf2Xtv6yyaE4fFqLPPjH+MGY6BGmeQ=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=VNQRhm7O2eSVBMjpyKOkwzg0ugFP3BsiXeiR52+8L5PH5+1POdegu3kR8P+EuRdHSSW3s1FzEaxvxDC9i3TgCDOmeIJg/9AKTeEkhxkFLEZQtRX3qGFdpB8yxe6am5VemxUYGcHHzpQPPOpridnsKDDNNBzzW1N8Vsc4YMdB8Pk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YurHeLrj; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4A976C4CEF1;
-	Wed, 21 Jan 2026 17:06:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1769015170;
-	bh=ida7uC1+IcLm3mH5OnwxhdYHy+GE2IR1NjNzomFuB9g=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=YurHeLrj0Kc1Z0kXwWObFZEVHgWtGcldhLnc/9rTtIWDrfOF5OHZhBDWWdjOE+462
-	 fvExXn7KnbYEhXpWGo0kukD1NpS4gyjv+Pr7pHR+Giv+UGDKpFQR4jiFII2JYw6KuB
-	 7Y8ozd5liCmajIIf/Gyx/RwYNYOZ5mWwJctr8S8J+TzMEv3rCWxOO3RhAdYzLaQL+n
-	 6gnoTvdwYhSMdpeIgae4LwcnvIuh1RGjcBa0Uwy7/qPLVdXh1CzAp+l96r9ZaxuEan
-	 Q0gajJnqRVo0ClKW8SRy7uN+F5eE04OGnRK255rIs66OEyyWUFcE6wDDLeD0IN5rPp
-	 vKuYKaTb2eaLg==
-Date: Wed, 21 Jan 2026 18:06:07 +0100
-From: Frederic Weisbecker <frederic@kernel.org>
-To: Will Deacon <will@kernel.org>
-Cc: LKML <linux-kernel@vger.kernel.org>,
-	Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Bjorn Helgaas <bhelgaas@google.com>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Chen Ridong <chenridong@huawei.com>,
-	Danilo Krummrich <dakr@kernel.org>,
-	"David S . Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Gabriele Monaco <gmonaco@redhat.com>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Ingo Molnar <mingo@redhat.com>, Jakub Kicinski <kuba@kernel.org>,
-	Jens Axboe <axboe@kernel.dk>, Johannes Weiner <hannes@cmpxchg.org>,
-	Lai Jiangshan <jiangshanlai@gmail.com>,
-	Marco Crivellari <marco.crivellari@suse.com>,
-	Michal Hocko <mhocko@suse.com>, Muchun Song <muchun.song@linux.dev>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Peter Zijlstra <peterz@infradead.org>, Phil Auld <pauld@redhat.com>,
-	"Rafael J . Wysocki" <rafael@kernel.org>,
-	Roman Gushchin <roman.gushchin@linux.dev>,
-	Shakeel Butt <shakeel.butt@linux.dev>,
-	Simon Horman <horms@kernel.org>, Tejun Heo <tj@kernel.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Vlastimil Babka <vbabka@suse.cz>, Waiman Long <longman@redhat.com>,
-	cgroups@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	linux-block@vger.kernel.org, linux-mm@kvack.org,
-	linux-pci@vger.kernel.org, netdev@vger.kernel.org
-Subject: Re: [PATCH 29/33] sched/arm64: Move fallback task cpumask to
- HK_TYPE_DOMAIN
-Message-ID: <aXEHf5nbZMI8LT4b@localhost.localdomain>
-References: <20260101221359.22298-1-frederic@kernel.org>
- <20260101221359.22298-30-frederic@kernel.org>
- <aW-cAlJCtI5Qtify@willie-the-truck>
+	 Content-Type:Content-Disposition:In-Reply-To; b=Oiwjq/gHS5KURwn0K+BgLxn+6A2RTmiUaMhl+HUlGtvuIMmMhvL0L34PtVt6Ga2BI6pz7BdoYF7T7URswD6GBpx8OwbBshaAmApBAXqaoWW5DKYN4iGQKh+TBLJnsvuGD5xh1YpwjO04joqUX3qEAWQsGMUyEaC/15qZusan3p4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=bRcPWOGZ; arc=none smtp.client-ip=91.218.175.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Date: Wed, 21 Jan 2026 14:19:44 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1769033989;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=HoQi6KkVwO2LhgzMpx+nRVqZde/RMh0LYhGYMNHF+wI=;
+	b=bRcPWOGZvCAF46Vb6d+TQK7NJXXCA1nyBDuGiR30fw6T2n2RgwTpzNZsEoy7Sw8d7wFm6H
+	dFr++EqcJGqK4eMkbiF/b08+spW4WaOIL49mAPk8Xb9i4ovQiwLgdCvZbi5lkyrSgh6UW+
+	dV28mKXR+f8sdVTOAWqWhdjoPIBVXz8=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Shakeel Butt <shakeel.butt@linux.dev>
+To: Jiayuan Chen <jiayuan.chen@linux.dev>
+Cc: linux-mm@kvack.org, Tejun Heo <tj@kernel.org>, 
+	Johannes Weiner <hannes@cmpxchg.org>, Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>, 
+	Jonathan Corbet <corbet@lwn.net>, Andrew Morton <akpm@linux-foundation.org>, 
+	Axel Rasmussen <axelrasmussen@google.com>, Yuanchu Xie <yuanchu@google.com>, Wei Xu <weixugc@google.com>, 
+	David Hildenbrand <david@kernel.org>, Lorenzo Stoakes <lorenzo.stoakes@oracle.com>, 
+	"Liam R. Howlett" <Liam.Howlett@oracle.com>, Vlastimil Babka <vbabka@suse.cz>, 
+	Mike Rapoport <rppt@kernel.org>, Suren Baghdasaryan <surenb@google.com>, 
+	Michal Hocko <mhocko@suse.com>, Roman Gushchin <roman.gushchin@linux.dev>, 
+	Muchun Song <muchun.song@linux.dev>, Qi Zheng <zhengqi.arch@bytedance.com>, cgroups@vger.kernel.org, 
+	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [RFC PATCH 0/3] mm/lru_gen: add memory.lru_gen interface for
+ cgroup v2
+Message-ID: <aXFPhnOn4oGllq_Q@linux.dev>
+References: <20260121123955.84806-1-jiayuan.chen@linux.dev>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <aW-cAlJCtI5Qtify@willie-the-truck>
+In-Reply-To: <20260121123955.84806-1-jiayuan.chen@linux.dev>
+X-Migadu-Flow: FLOW_OUT
+X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-1.96 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	DMARC_POLICY_ALLOW_WITH_FAILURES(-0.50)[];
-	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
+	R_DKIM_ALLOW(-0.20)[linux.dev:s=key1];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FREEMAIL_CC(0.00)[vger.kernel.org,suse.com,linux-foundation.org,google.com,arm.com,huawei.com,kernel.org,davemloft.net,redhat.com,linuxfoundation.org,kernel.dk,cmpxchg.org,gmail.com,linux.dev,infradead.org,linutronix.de,suse.cz,lists.infradead.org,kvack.org];
-	TAGGED_FROM(0.00)[bounces-13352-lists,cgroups=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	DMARC_POLICY_ALLOW(0.00)[kernel.org,quarantine];
-	RCPT_COUNT_TWELVE(0.00)[37];
+	TAGGED_FROM(0.00)[bounces-13353-lists,cgroups=lfdr.de];
+	RCPT_COUNT_TWELVE(0.00)[23];
 	MIME_TRACE(0.00)[0:+];
-	DKIM_TRACE(0.00)[kernel.org:+];
+	RCVD_COUNT_THREE(0.00)[3];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	DMARC_POLICY_ALLOW(0.00)[linux.dev,none];
+	DKIM_TRACE(0.00)[linux.dev:+];
 	FROM_HAS_DN(0.00)[];
 	TO_DN_SOME(0.00)[];
-	R_SPF_SOFTFAIL(0.00)[~all];
+	R_SPF_SOFTFAIL(0.00)[~all:c];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[frederic@kernel.org,cgroups@vger.kernel.org];
+	FROM_NEQ_ENVFROM(0.00)[shakeel.butt@linux.dev,cgroups@vger.kernel.org];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	TAGGED_RCPT(0.00)[cgroups];
+	MID_RHS_MATCH_FROM(0.00)[];
 	ASN(0.00)[asn:7979, ipnet:142.0.200.0/24, country:US];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
+	TAGGED_RCPT(0.00)[cgroups];
 	MISSING_XM_UA(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[dfw.mirrors.kernel.org:rdns,dfw.mirrors.kernel.org:helo,localhost.localdomain:mid]
-X-Rspamd-Queue-Id: 3B0765C510
+	DBL_BLOCKED_OPENRESOLVER(0.00)[linux.dev:mid,linux.dev:dkim,dfw.mirrors.kernel.org:helo,dfw.mirrors.kernel.org:rdns]
+X-Rspamd-Queue-Id: DAF7C5EBDD
 X-Rspamd-Action: no action
-X-Rspamd-Server: lfdr
 
-Le Tue, Jan 20, 2026 at 03:15:14PM +0000, Will Deacon a écrit :
-> Hi Frederic,
+On Wed, Jan 21, 2026 at 08:39:46PM +0800, Jiayuan Chen wrote:
+> This patchset adds a memory.lru_gen interface to cgroup v2, allowing users
+> to interact with MGLRU directly on a specific cgroup without needing to
+> know the internal memcg_id.
+
+Unfortunetely we don't want to expose reclaim implementation specific
+interface to a cgroup. 
+
 > 
-> On Thu, Jan 01, 2026 at 11:13:54PM +0100, Frederic Weisbecker wrote:
-> > When none of the allowed CPUs of a task are online, it gets migrated
-> > to the fallback cpumask which is all the non nohz_full CPUs.
-> > 
-> > However just like nohz_full CPUs, domain isolated CPUs don't want to be
-> > disturbed by tasks that have lost their CPU affinities.
-> > 
-> > And since nohz_full rely on domain isolation to work correctly, the
-> > housekeeping mask of domain isolated CPUs should always be a superset of
-> > the housekeeping mask of nohz_full CPUs (there can be CPUs that are
-> > domain isolated but not nohz_full, OTOH there shouldn't be nohz_full
-> > CPUs that are not domain isolated):
-> > 
-> > 	HK_TYPE_DOMAIN | HK_TYPE_KERNEL_NOISE == HK_TYPE_DOMAIN
-> > 
-> > Therefore use HK_TYPE_DOMAIN as the appropriate fallback target for
-> > tasks and since this cpumask can be modified at runtime, make sure
-> > that 32 bits support CPUs on ARM64 mismatched systems are not isolated
-> > by cpusets.
-> > 
-> > Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
-> > Reviewed-by: Waiman Long <longman@redhat.com>
-> > ---
-> >  arch/arm64/kernel/cpufeature.c | 18 +++++++++++++++---
-> >  include/linux/cpu.h            |  4 ++++
-> >  kernel/cgroup/cpuset.c         | 17 ++++++++++++++---
-> >  3 files changed, 33 insertions(+), 6 deletions(-)
-> 
-> tbh, I'd also be fine just saying that isolation isn't reliable on these
-> systems and then you don't need to add the extra arch hook.
+> Motivation
+> ==========
+> Currently, the only way to perform aging or eviction on a specific memcg
+> is through the debugfs interface (/sys/kernel/debug/lru_gen), which
+> requires the memcg_id. However, there's no straightforward way to get the
+> memcg_id for a given cgroup path. This makes it difficult for users to
+> leverage MGLRU's proactive reclaim capabilities on specific cgroups.
 
-Hmm, I think I heard about nohz_full usage on arm64 but I'm not sure.
-And I usually expect isolcpus or cpuset isolated partitions to be even
-more broadly used, it's lighter isolation with less constraints.
+From the next kernel version, this memcg_id will be inode number of the
+cgroup for this interface. So, a simple 'ls -id cgroup_path' would  be
+sufficient for your use-case.
 
-Anyway you're probably right that we could remove isolation support here
-but I don't want to break any existing user.
+The relevant series [1] is in mm-tree at the moment and if you want, you
+can backport it to your kernels.
 
-> Whatever you prefer, but please can you update the text in
-> Documentation/arch/arm64/asymmetric-32bit.rst to cover the interaction
-> between the asymmetric stuff and cpu isolation?
-
-I'll keep that path and update the documentation. I guess we can still
-consider removing that support afterward. If we do so anyway, it would
-deserve its own patchset and shouldn't be hidden in this pile.
-
-Thanks.
-
--- 
-Frederic Weisbecker
-SUSE Labs
+[1] https://lkml.kernel.org/r/20251225232116.294540-1-shakeel.butt@linux.dev
 
