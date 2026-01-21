@@ -1,165 +1,140 @@
-Return-Path: <cgroups+bounces-13334-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-13335-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id WJ/EL7f+b2mUUgAAu9opvQ
-	(envelope-from <cgroups+bounces-13334-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Tue, 20 Jan 2026 23:16:23 +0100
+	id qGlFF09McGnXXAAAu9opvQ
+	(envelope-from <cgroups+bounces-13335-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Wed, 21 Jan 2026 04:47:27 +0100
 X-Original-To: lists+cgroups@lfdr.de
-Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [213.196.21.55])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6C54A4CD56
-	for <lists+cgroups@lfdr.de>; Tue, 20 Jan 2026 23:16:23 +0100 (CET)
+Received: from ams.mirrors.kernel.org (ams.mirrors.kernel.org [IPv6:2a01:60a::1994:3:14])
+	by mail.lfdr.de (Postfix) with ESMTPS id 293F2508F8
+	for <lists+cgroups@lfdr.de>; Wed, 21 Jan 2026 04:47:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ams.mirrors.kernel.org (Postfix) with ESMTPS id A45BA928787
-	for <lists+cgroups@lfdr.de>; Tue, 20 Jan 2026 21:21:17 +0000 (UTC)
+	by ams.mirrors.kernel.org (Postfix) with ESMTPS id 17DBC484BC6
+	for <lists+cgroups@lfdr.de>; Wed, 21 Jan 2026 03:44:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 087413A63E1;
-	Tue, 20 Jan 2026 21:21:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 99E7D339878;
+	Wed, 21 Jan 2026 03:44:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="c85e1UcQ"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Na4E4y7R"
 X-Original-To: cgroups@vger.kernel.org
-Received: from out-171.mta1.migadu.com (out-171.mta1.migadu.com [95.215.58.171])
+Received: from out-178.mta0.migadu.com (out-178.mta0.migadu.com [91.218.175.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8BB963A4F5B
-	for <cgroups@vger.kernel.org>; Tue, 20 Jan 2026 21:21:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 916B0364041;
+	Wed, 21 Jan 2026 03:44:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1768944069; cv=none; b=M0iIp957XI4DwFF3jwVUBwfgRkGElrBSQtvTJqFJZKGdWrManGNlAmksGEWMvNHDRy//ers0TZc6vlMrqPdqi7/KCDSN/pLnJKAo5Zu/CCkJemlgb32ZbTBtlwfHYQ0KclZx07+2yZA7BehaE74sApygmSgeNgr6l/Wgu5LwKzg=
+	t=1768967047; cv=none; b=PtDVHW72Xz8vQpeh8dQOzzKMRzaDxeB9tSkQKP2165Bg4z0NSluVBufl+s9Y+BCWR3aFxvfdog8lQhF0ghPsxpLtCakDqmARcetjCVr1iTBHAD7tbJKSR4QLrmTce1s89SL/PKxQRDggHMP/4aWUid2sqC6fQeZzVdcmFQBY040=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1768944069; c=relaxed/simple;
-	bh=e6W4BifA5HvGHrDS6Cz6FjIkz1q7lelYIgz6NgrsTCc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=cXPuRPVQPu87nRFvz2W+zEC93YRUFH4NqBpxXBdhjN4Yn0KhdMaMlhYQxKr34lHgL+pb8P4JOAzhhZqu9XOlEsr+GEP1QmPtCNUSJbRrm6s7LVRf0jEuZ8e40p88cLwqPrMpgReGcBvvSYAvJTmAqpc4JM2aB1wKs805DjHg9FY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=c85e1UcQ; arc=none smtp.client-ip=95.215.58.171
+	s=arc-20240116; t=1768967047; c=relaxed/simple;
+	bh=pc6PFxiB92WScgXPXOss5T9AeKb2BZmC2H47noT3FWY=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=cYB4/IB3NevNjWJjWjTfJK+XUUEsLLm9CsrNQIEqeX3MstgHNNYqM2NM6F8YZ1qT/B+OD2ebE+UnyH6+8Ze5Ju22QjHmnJ13aY/YPO66lFBmEmctHIcAePb2qZC4KdfPQ9J1/fBFEKat9LSdGEgqDrQa1tXyAxnc/7l7RIwVgWg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Na4E4y7R; arc=none smtp.client-ip=91.218.175.178
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Tue, 20 Jan 2026 13:20:42 -0800
+Message-ID: <37734a82-1544-4015-b4dc-30583441a7ba@linux.dev>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1768944052;
+	t=1768967040;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=Yb9J55L/oOgj+YxKZBhjF2oPSx3+TwVoTURevVUwM98=;
-	b=c85e1UcQiD93oYWn8CGxFNRUdeC/dijRaVuPuqh/n1pqqs4pLlBB5oXTGsSy1VX4rPt/KA
-	cY+uAKK3+ANKyfSoJK1d4RoG9OsWJHnDimqQ9lNQPiGBfCATF9PvPZvDhq6jTMC6/FOTId
-	jf4QJhRkdiOL28wH4NTZ8E988vqbaAk=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Shakeel Butt <shakeel.butt@linux.dev>
-To: Andrew Morton <akpm@linux-foundation.org>
-Cc: Deepanshu Kartikey <kartikey406@gmail.com>, 
-	syzbot <syzbot+079a3b213add54dd18a7@syzkaller.appspotmail.com>, cgroups@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-mm@kvack.org, mhocko@kernel.org, roman.gushchin@linux.dev, 
-	syzkaller-bugs@googlegroups.com, Johannes Weiner <hannes@cmpxchg.org>, 
-	Muchun Song <muchun.song@linux.dev>, Minchan Kim <minchan@kernel.org>
-Subject: Re: [syzbot] [cgroups?] [mm?] WARNING in memcg1_swapout
-Message-ID: <aW_xUoiCM6Po1Pm0@linux.dev>
-References: <696b56b1.050a0220.3390f1.0007.GAE@google.com>
- <20260117165722.6dc25d72fd58254cb89e711b@linux-foundation.org>
- <CADhLXY6ACKeyLrjARTTdfWyrvUdLbtD-wXiQvsvhsbGjwmUqDA@mail.gmail.com>
- <CADhLXY7FJqRLjX7X2yJfa0=iDbUAMwhS35cOEExW+qBJWAnt+A@mail.gmail.com>
- <20260118125311.e1894f598e2a8ef626f47f25@linux-foundation.org>
+	bh=dwFI19rHKuXMHgysj9bfGW48tJBo1CHyFN+/G60RpAs=;
+	b=Na4E4y7RhOpKWm1ULIll2sSG85tYL68sEW3f6Hvb1fr+XbIegK2R6fEGdm32+KOAUCMoVz
+	dVxDtmmujwNa4ugYnRTV467zixs0i4F1VkAmcRGhagZdGLjJVIIe2CA/+SaZXNf44bxClx
+	bVB5eCBt1made05ad31kGVo+G9fxQ2w=
+Date: Wed, 21 Jan 2026 11:43:50 +0800
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20260118125311.e1894f598e2a8ef626f47f25@linux-foundation.org>
+Subject: Re: [PATCH v3 28/30 fix 1/2] mm: memcontrol: fix
+ lruvec_stats->state_local reparenting
+To: Shakeel Butt <shakeel.butt@linux.dev>, Muchun Song <muchun.song@linux.dev>
+Cc: hannes@cmpxchg.org, hughd@google.com, mhocko@suse.com,
+ roman.gushchin@linux.dev, david@kernel.org, lorenzo.stoakes@oracle.com,
+ ziy@nvidia.com, harry.yoo@oracle.com, yosry.ahmed@linux.dev,
+ imran.f.khan@oracle.com, kamalesh.babulal@oracle.com,
+ axelrasmussen@google.com, yuanchu@google.com, weixugc@google.com,
+ chenridong@huaweicloud.com, mkoutny@suse.com, akpm@linux-foundation.org,
+ hamzamahfooz@linux.microsoft.com, apais@linux.microsoft.com,
+ lance.yang@linux.dev, linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+ cgroups@vger.kernel.org, Qi Zheng <zhengqi.arch@bytedance.com>
+References: <b11a0bde9fe18673a61a79398f226ad7cb04a894.1768389889.git.zhengqi.arch@bytedance.com>
+ <e5afd1b5ae95d70f82433b9b4e13201342d16707.1768473427.git.zhengqi.arch@bytedance.com>
+ <ifcth3hxyrwmmeo3nejettdtkw2ndxdjbylszmhq3vohuhsncl@k23pew6gywko>
+ <5a18658e-2076-4cbf-bc53-5b6e99c1035f@linux.dev>
+ <A13923AA-8200-4863-8080-EC4B254BA3AA@linux.dev>
+ <moupi2ch2cpuyrurthk66igh275ks62pltjk2zfngxozj52oxs@64lxvcgh3ays>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Qi Zheng <qi.zheng@linux.dev>
+In-Reply-To: <moupi2ch2cpuyrurthk66igh275ks62pltjk2zfngxozj52oxs@64lxvcgh3ays>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 X-Migadu-Flow: FLOW_OUT
-X-Spamd-Result: default: False [-0.46 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
+X-Spamd-Result: default: False [-1.96 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	DMARC_POLICY_ALLOW_WITH_FAILURES(-0.50)[];
 	R_DKIM_ALLOW(-0.20)[linux.dev:s=key1];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCPT_COUNT_TWELVE(0.00)[12];
-	FREEMAIL_CC(0.00)[gmail.com,syzkaller.appspotmail.com,vger.kernel.org,kvack.org,kernel.org,linux.dev,googlegroups.com,cmpxchg.org];
-	TAGGED_FROM(0.00)[bounces-13334-lists,cgroups=lfdr.de];
-	RCVD_COUNT_THREE(0.00)[3];
-	MIME_TRACE(0.00)[0:+];
-	FORGED_SENDER_MAILLIST(0.00)[];
 	RCVD_TLS_LAST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-13335-lists,cgroups=lfdr.de];
+	RCPT_COUNT_TWELVE(0.00)[26];
+	MIME_TRACE(0.00)[0:+];
+	RCVD_COUNT_THREE(0.00)[3];
+	FORGED_SENDER_MAILLIST(0.00)[];
 	DMARC_POLICY_ALLOW(0.00)[linux.dev,none];
 	DKIM_TRACE(0.00)[linux.dev:+];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[ams.mirrors.kernel.org:rdns,ams.mirrors.kernel.org:helo,linux.dev:mid,linux.dev:dkim];
-	TO_DN_SOME(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[shakeel.butt@linux.dev,cgroups@vger.kernel.org];
 	FROM_HAS_DN(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	TO_DN_SOME(0.00)[];
 	R_SPF_SOFTFAIL(0.00)[~all:c];
-	TAGGED_RCPT(0.00)[cgroups,079a3b213add54dd18a7];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[qi.zheng@linux.dev,cgroups@vger.kernel.org];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	MID_RHS_MATCH_FROM(0.00)[];
+	ASN(0.00)[asn:7979, ipnet:2a01:60a::/32, country:US];
+	TAGGED_RCPT(0.00)[cgroups];
 	MISSING_XM_UA(0.00)[];
-	ASN(0.00)[asn:7979, ipnet:213.196.21.0/24, country:US];
-	SUBJECT_HAS_QUESTION(0.00)[]
-X-Rspamd-Queue-Id: 6C54A4CD56
+	DBL_BLOCKED_OPENRESOLVER(0.00)[linux.dev:mid,linux.dev:dkim,ams.mirrors.kernel.org:rdns,ams.mirrors.kernel.org:helo]
+X-Rspamd-Queue-Id: 293F2508F8
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-On Sun, Jan 18, 2026 at 12:53:11PM -0800, Andrew Morton wrote:
-> On Sun, 18 Jan 2026 12:31:43 +0530 Deepanshu Kartikey <kartikey406@gmail.com> wrote:
-> 
-> > > >
-> > > > That's
-> > > >
-> > > >         VM_WARN_ON_ONCE(oldid != 0);
-> > > >
-> > > > which was added by Deepanshu's "mm/swap_cgroup: fix kernel BUG in
-> > > > swap_cgroup_record".
-> > > >
-> > > > This patch has Fixes: 1a4e58cce84e ("mm: introduce MADV_PAGEOUT"),
-> > > > which is six years old.  For some reason it has no cc:stable.
-> > > >
-> > > > Deepanshu's patch has no reviews.
-> > > >
-> > > > So can I please do the memcg maintainer summoning dance here?  We have a
-> > > > repeatable BUG happening in mainline Linux.
-> > > >
-> > >
-> > > Hi Andrew,
-> > >
-> > > I checked the git blame output for commit 0f853ca2a798:
-> > >
-> > > Line 763: memcg1_swapout(folio, swap);
-> > > Line 764: __swap_cache_del_folio(ci, folio, swap, shadow);
-> > >                     (d7a7b2f91f36b - Kairui Song, 2026-01-13 02:33:36 +0800)
-> > >
-> > > Kairui's reordering patch appears to have been merged on Jan 13.
-> 
-> Eek, there are many patches, it helps to identify them carefully.
-> 
-> I think you're referring to
-> https://git.kernel.org/pub/scm/linux/kernel/git/akpm/25-new.git/tree/patches/mm-swap-use-swap-cache-as-the-swap-in-synchronize-layer-fix.patch
-> 
-> > > The syzbot report is also from Jan 13, likely from earlier in the
-> > > day before the reordering patch was merged.
-> > >
-> > > So this report is from before the fix. The warning should not appear
-> > > in linux-next builds after Jan 13.
-> > >
-> > > Thanks,
-> > >
-> > > Deepanshu
-> > 
-> > Hi Andrew,
-> > 
-> > I tested with the latest linux-next in sysbot. It is working fine
-> 
-> Great, thanks.  But we still don't have review for this one.
-> 
-> For some reason I don't have cc:stable on this - could people
-> make a recommendation?
-> 
 
-I will get to this in couple of days (hopefully sooner). I think
-Johannes was looking into this as well.
+
+On 1/21/26 2:47 AM, Shakeel Butt wrote:
+> On Tue, Jan 20, 2026 at 03:19:00PM +0800, Muchun Song wrote:
+>>
+>>
+>>>> No reparenting local stats for v2.
+>>>
+>>> It seems that lruvec_stats->state_local (non-hierarchical) needs to be
+>>> relocated in both v1 and v2.
+>>
+>> Here we might need to elaborate a bit. Specifically, in the function
+>> `count_shadow_nodes`, the use of `lruvec_page_state_local` to obtain
+>> LRU and SLAB pages seems to also require these logics to work correctly.
+>> For SLAB, it appears that the statistics here have already been
+>> problematic for a while since SLAB pages have been reparented, right?
+>>
+> 
+> Thanks a lot, now it is clear and yes it seems like SLAB is problematic
+> but now I am wondering if it is really worth fixing. For LRU pages, how
+> about using lruvec_lru_size() defined in vmscan.c. That would at least
+> keep count_shadow_nodes() working irrespective of LRU reparenting.
+
+Do you mean calling lruvec_lru_size() in count_shadow_nodes()? But
+numa_stat interface also reads lruvec_stats->state and make it visible
+to the user.
+
+> 
 
 
