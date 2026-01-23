@@ -1,65 +1,65 @@
-Return-Path: <cgroups+bounces-13398-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-13400-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id iFjAJwY+c2kztgAAu9opvQ
-	(envelope-from <cgroups+bounces-13398-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Fri, 23 Jan 2026 10:23:18 +0100
+	id AFofIitAc2m0twAAu9opvQ
+	(envelope-from <cgroups+bounces-13400-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Fri, 23 Jan 2026 10:32:27 +0100
 X-Original-To: lists+cgroups@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3DC627335D
-	for <lists+cgroups@lfdr.de>; Fri, 23 Jan 2026 10:23:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2FCF17368A
+	for <lists+cgroups@lfdr.de>; Fri, 23 Jan 2026 10:32:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id EB60A3097C7C
-	for <lists+cgroups@lfdr.de>; Fri, 23 Jan 2026 09:19:18 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id C43DC3065E74
+	for <lists+cgroups@lfdr.de>; Fri, 23 Jan 2026 09:29:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD3D1318EE9;
-	Fri, 23 Jan 2026 09:19:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C9F036AB53;
+	Fri, 23 Jan 2026 09:29:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CobmJcP0"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="F4nwAcHu"
 X-Original-To: cgroups@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1DE9E23D28C;
-	Fri, 23 Jan 2026 09:19:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3369935CBA7;
+	Fri, 23 Jan 2026 09:29:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1769159949; cv=none; b=HS9SzE6r+ywlAk4xnvIhcWYosUw+1MfB0UQ5JYq/tnNnNthODfOu914zguMXwMlLBMwZZAeP0C7wFHqTDrNcIT9i5C6gxB/yBIQ0JoeLe5aamYXgQqCw3tylPBc0NjaijfaoI72lbkeGqV9aBRZ0hsoyj/pj6wSD9nB3t/DVX3U=
+	t=1769160585; cv=none; b=LHiJSD3Gob+r5JX9zETb/awZSr2ea/ZK2ZEDUS1ksZ+hzzmKUC2X5URcw5IfGlIHpTq/tDu4rbQllC7mVM+I6Y7LANrojWQ3kcqMu5OjjcSHYAI9i1PRW04zmy6RVDtjG8CgrBBJHkP5V5Fex/vy7Rl2L0ebm48tSBAYOfqxTEs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1769159949; c=relaxed/simple;
-	bh=H12UDh2LI6aLgmcHOsAxDY/SKGsGeNOCjHscsd4qfzU=;
+	s=arc-20240116; t=1769160585; c=relaxed/simple;
+	bh=UyNyhPZNlArXXC7DbgAjDuFCRG6qfF3Bxd1E4/+otZQ=;
 	h=Content-Type:MIME-Version:Message-Id:In-Reply-To:References:
-	 Subject:From:To:Cc:Date; b=D2qvkM7n4IPfuDNHSHSY7MZCCesAuSielA1toU3i4OAdt8iRS7vyl+N2fmGzXpFIgWR8cDjXDmjkrpLbiiKRzdU5Sg1DqN7FrNnoEPYv7D4eEbptas0kXUHjzLBd06Rydzrr4dcZHju+Btcwc84XFHnory67Bdx5aQa9EvSGEyI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=CobmJcP0; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6B6A4C4CEF1;
-	Fri, 23 Jan 2026 09:19:07 +0000 (UTC)
+	 Subject:From:To:Cc:Date; b=Dh523JGo0n+bew7FNcysg2vc1aZDalWamyBmQM94M5BkypMKgUTzfY5mDa36DRxj0nbyW9z6EoC1N2Kj9GMr7tK2PK5yHOhMoWUDfav9DyMhggsN0r0Rs8CCw1fhyY8rnFqqhsf2NK/2sHsQwY9apJkZP0kc6tKXg7A9Rf2NFHo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=F4nwAcHu; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6B97AC116D0;
+	Fri, 23 Jan 2026 09:29:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1769159948;
-	bh=H12UDh2LI6aLgmcHOsAxDY/SKGsGeNOCjHscsd4qfzU=;
+	s=k20201202; t=1769160584;
+	bh=UyNyhPZNlArXXC7DbgAjDuFCRG6qfF3Bxd1E4/+otZQ=;
 	h=In-Reply-To:References:Subject:From:To:Cc:Date:From;
-	b=CobmJcP0dYaI8MHKuRjINgU6o4ybjdtD/skBYy1WVINmCZGH/jgqb8ez7lXxcnnfL
-	 7b8wmFduH+OQHTuBY4MhX5RGK2quSii5I6twltTi2BT6pdkhtMzjTqHTjnSU3i5hoM
-	 Sbu5josCT9Tu7c7hqqpqLAUlwxNoOsvaDKGS2iW2EBUXLh+KbDok7zhwMhrKjQ/y4w
-	 YfnCEZji+S6hyOBYcFmCEdW9YwU0xujNVeeKEa7W90jUDNPf/p8otTwdTaBHZMlaV4
-	 986B1olKGrlwA6B94ODvJGxHRL1WDbV1VQJh5Kr6Vq92MbNIc0xuy28O4vXwAM5xK1
-	 DKG8ru1UP/gkA==
-Content-Type: multipart/mixed; boundary="===============3584986258708126564=="
+	b=F4nwAcHuuogXfFilu9ZLMVOGjf65Q6kn1NjG9xHyDQjxcKw8mechHmV/2UoKNz9eX
+	 yJdAhjb8zATwBjMJEYORx1exA7ugxyGbFhiybcChfKths7LymkhEC8uUfdVAqQ+Cnk
+	 /o1gx/rRVWYfwSVJFVNyAAXiwr1O1zLo//uJpXLFBwn0PcbFklSM0Rpv0xAMtPn4j2
+	 8YndREmYbf+pnDgoHlMqu3Gq3NgBZT0dv6A66E1CQjJOxJ8Zib3HFLfoE1BkDFnBx4
+	 NoGBDqusxbltNqeA4KQjr/pVHZpn9vRTit7GBPlVxmcI/2vSzgNvZoaVTOpUcKsHcM
+	 nAuh2eNSimJrg==
+Content-Type: multipart/mixed; boundary="===============7572374899106477181=="
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-Id: <9ab6aaa78c0dcba8b563eab2807eccb0c24bd14fa02d7417cff4284204de7d2d@mail.kernel.org>
-In-Reply-To: <c44accaaaebfc32be13234f82b501a3852ba3f0f.1769157382.git.zhuhui@kylinos.cn>
-References: <c44accaaaebfc32be13234f82b501a3852ba3f0f.1769157382.git.zhuhui@kylinos.cn>
-Subject: Re: [RFC PATCH bpf-next v3 09/12] selftests/bpf: Add tests for memcg_bpf_ops
+Message-Id: <d2161f4252546f252dd0a84c461ba5dbb3b63e22d4826771edd8f1f30df050bc@mail.kernel.org>
+In-Reply-To: <9f072e53f79ceaea43e3730476494517e453530a.1769157382.git.zhuhui@kylinos.cn>
+References: <9f072e53f79ceaea43e3730476494517e453530a.1769157382.git.zhuhui@kylinos.cn>
+Subject: Re: [RFC PATCH bpf-next v3 10/12] mm/bpf: Add BPF_F_ALLOW_OVERRIDE support for  memcg_bpf_ops
 From: bot+bpf-ci@kernel.org
 To: hui.zhu@linux.dev,akpm@linux-foundation.org,hannes@cmpxchg.org,mhocko@kernel.org,roman.gushchin@linux.dev,shakeel.butt@linux.dev,muchun.song@linux.dev,ast@kernel.org,daniel@iogearbox.net,andrii@kernel.org,martin.lau@linux.dev,eddyz87@gmail.com,song@kernel.org,yonghong.song@linux.dev,john.fastabend@gmail.com,kpsingh@kernel.org,sdf@fomichev.me,haoluo@google.com,jolsa@kernel.org,shuah@kernel.org,peterz@infradead.org,ojeda@kernel.org,nathan@kernel.org,kees@kernel.org,tj@kernel.org,jeffxu@chromium.org,mkoutny@suse.com,kernel@jfarr.cc,brauner@kernel.org,rdunlap@infradead.org,brgerst@gmail.com,masahiroy@kernel.org,davem@davemloft.net,kuba@kernel.org,hawk@kernel.org,inwardvessel@gmail.com,willemb@google.com,kerneljasonxing@gmail.com,paul.chaignon@gmail.com,a.s.protopopov@gmail.com,ameryhung@gmail.com,chenridong@huaweicloud.com,lance.yang@linux.dev,jiayuan.chen@linux.dev,linux-kernel@vger.kernel.org,linux-mm@kvack.org,cgroups@vger.kernel.org,bpf@vger.kernel.org,netdev@vger.kernel.org,linu
  x-kselftest@vger.kernel.org
 Cc: zhuhui@kylinos.cn,geliang@kernel.org,ast@kernel.org,andrii@kernel.org,daniel@iogearbox.net,martin.lau@kernel.org,eddyz87@gmail.com,yonghong.song@linux.dev,clm@meta.com,ihor.solodrai@linux.dev
-Date: Fri, 23 Jan 2026 09:19:07 +0000 (UTC)
+Date: Fri, 23 Jan 2026 09:29:42 +0000 (UTC)
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [2.54 / 15.00];
 	SUSPICIOUS_RECIPS(1.50)[];
@@ -72,13 +72,13 @@ X-Spamd-Result: default: False [2.54 / 15.00];
 	HAS_LIST_UNSUB(-0.01)[];
 	FROM_NEQ_ENVFROM(0.00)[bot@kernel.org,cgroups@vger.kernel.org];
 	R_DKIM_REJECT(0.00)[kernel.org:s=k20201202];
-	TAGGED_FROM(0.00)[bounces-13398-lists,cgroups=lfdr.de,bpf-ci];
+	TAGGED_FROM(0.00)[bounces-13400-lists,cgroups=lfdr.de,bpf-ci];
 	RCVD_TLS_LAST(0.00)[];
 	RCVD_COUNT_THREE(0.00)[4];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	FREEMAIL_CC(0.00)[kylinos.cn,kernel.org,iogearbox.net,gmail.com,linux.dev,meta.com];
 	FREEMAIL_TO(0.00)[linux.dev,linux-foundation.org,cmpxchg.org,kernel.org,iogearbox.net,gmail.com,fomichev.me,google.com,infradead.org,chromium.org,suse.com,jfarr.cc,davemloft.net,huaweicloud.com,vger.kernel.org,kvack.org];
-	NEURAL_SPAM(0.00)[0.869];
+	NEURAL_SPAM(0.00)[0.871];
 	DMARC_POLICY_ALLOW(0.00)[kernel.org,quarantine];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	MIME_TRACE(0.00)[0:+,1:+];
@@ -92,137 +92,88 @@ X-Spamd-Result: default: False [2.54 / 15.00];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	MISSING_XM_UA(0.00)[];
 	FROM_NO_DN(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[mail.kernel.org:mid,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 3DC627335D
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,mail.kernel.org:mid]
+X-Rspamd-Queue-Id: 2FCF17368A
 X-Rspamd-Action: no action
 
---===============3584986258708126564==
+--===============7572374899106477181==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 
-> diff --git a/tools/testing/selftests/bpf/prog_tests/memcg_ops.c b/tools/testing/selftests/bpf/prog_tests/memcg_ops.c
-> new file mode 100644
-> index 000000000000..9a8d16296f2d
-> --- /dev/null
-> +++ b/tools/testing/selftests/bpf/prog_tests/memcg_ops.c
+> diff --git a/mm/bpf_memcontrol.c b/mm/bpf_memcontrol.c
+> index 415e3c59b6a6..0ded1fdd0de8 100644
+> --- a/mm/bpf_memcontrol.c
+> +++ b/mm/bpf_memcontrol.c
 
 [ ... ]
 
-> +static void real_test_memcg_ops(int read_times)
-> +{
-> +	int ret;
-> +	char data_file1[] = "/tmp/test_data_XXXXXX";
-> +	char data_file2[] = "/tmp/test_data_XXXXXX";
-> +	char time_file1[] = "/tmp/test_time_XXXXXX";
-> +	char time_file2[] = "/tmp/test_time_XXXXXX";
-> +	pid_t pid1, pid2;
-> +	double time1, time2;
-
-[ ... ]
-
-> +	pid1 = fork();
-> +	if (!ASSERT_GE(pid1, 0, "fork"))
-> +		goto cleanup;
-> +	if (pid1 == 0)
-> +		real_test_memcg_ops_child_work(CG_LOW_DIR,
-> +					       data_file1,
-> +					       time_file1,
-> +					       read_times);
+> static int bpf_memcg_ops_reg(void *kdata, struct bpf_link *link)
+> {
+> 	struct bpf_struct_ops_link *ops_link
+> 		= container_of(link, struct bpf_struct_ops_link, link);
+> 	struct memcg_bpf_ops *ops = kdata;
+> 	struct mem_cgroup *memcg, *iter = NULL;
+> 	int err = 0;
+>
+> +	if (ops_link->flags & ~BPF_F_ALLOW_OVERRIDE) {
+> +		pr_err("attach only support BPF_F_ALLOW_OVERRIDE\n");
+> +		return -EOPNOTSUPP;
+> +	}
 > +
-> +	pid2 = fork();
-> +	if (!ASSERT_GE(pid1, 0, "fork"))
-                       ^^^^
-
-Should this check pid2 instead of pid1?  After assigning pid2 = fork(),
-checking pid1 means a failed second fork() would go undetected if the
-first fork() succeeded.
-
-> +		goto cleanup;
-> +	if (pid2 == 0)
-> +		real_test_memcg_ops_child_work(CG_HIGH_DIR,
-> +					       data_file2,
-> +					       time_file2,
-> +					       read_times);
-
-[ ... ]
-
-> +void test_memcg_ops_over_high(void)
-> +{
-> +	int err, map_fd;
-> +	struct memcg_ops *skel;
-              ^^^^^^^^^^^^^^^
-
-The skel variable is not initialized to NULL here.  If setup_cgroup()
-fails early and jumps to the out label, memcg_ops__detach(skel) would
-be called with an uninitialized pointer.
-
-Also, the cleanup path calls memcg_ops__detach() but never calls
-memcg_ops__destroy().  Would this leak the skeleton object and its
-associated BPF resources?
-
-> +	struct bpf_map *map;
-> +	size_t bss_sz;
-> +	struct memcg_ops__bss *bss_data;
-> +	__u32 key = 0;
-> +	struct bpf_program *prog = NULL;
-> +	struct bpf_link *link = NULL, *link2 = NULL;
-> +	DECLARE_LIBBPF_OPTS(bpf_struct_ops_opts, opts);
-> +	int high_cgroup_id, low_cgroup_fd = -1;
+> 	memcg = mem_cgroup_get_from_ino(ops_link->cgroup_id);
+> 	if (IS_ERR_OR_NULL(memcg))
+> 		return PTR_ERR(memcg);
+>
+> 	cgroup_lock();
 > +
-> +	err = setup_cgroup(&high_cgroup_id, &low_cgroup_fd, NULL);
-> +	if (!ASSERT_OK(err, "setup_cgroup"))
-> +		goto out;
+> +	if (READ_ONCE(memcg->bpf_ops)) {
+> +		/* Check if bpf_ops of the parent is BPF_F_ALLOW_OVERRIDE. */
+> +		if (memcg->bpf_ops_flags & BPF_F_ALLOW_OVERRIDE) {
+> +			iter = parent_mem_cgroup(memcg);
 > +
-> +	skel = memcg_ops__open_and_load();
+> +			if (!iter)
+> +				goto busy_out;
+> +			if (READ_ONCE(iter->bpf_ops) !=
+> +			    READ_ONCE(memcg->bpf_ops))
+> +				goto busy_out;
+> +		} else {
+> +busy_out:
+> +			err = -EBUSY;
+> +			goto unlock_out;
+> +		}
+> +	}
+> +
+> 	while ((iter = mem_cgroup_iter(memcg, iter, NULL))) {
+                                      ^^^^
+
+When the override check passes (all conditions at lines 363-377 are met),
+iter is set to parent_mem_cgroup(memcg) but is never reset to NULL before
+this loop. Should iter be reset to NULL here?
+
+The mem_cgroup_iter() function expects prev (iter) to be either NULL or a
+previous result from iterating within memcg's descendants. When iter points
+to memcg's parent, the iteration will not correctly traverse memcg's
+subtree since parent is outside that subtree.
+
+For comparison, bpf_memcg_ops_unreg() correctly resets iter to NULL before
+its loop:
+
+> +	iter = NULL;
+> +	while ((iter = mem_cgroup_iter(memcg, iter, NULL))) {
+
+> 		if (READ_ONCE(iter->bpf_ops)) {
+> -			mem_cgroup_iter_break(memcg, iter);
+> -			err = -EBUSY;
+> -			break;
+> +			/* cannot override existing bpf_ops of sub-cgroup. */
+> +			continue;
+> 		}
+> 		WRITE_ONCE(iter->bpf_ops, ops);
+> +		iter->bpf_ops_flags = ops_link->flags;
+> 	}
 
 [ ... ]
-
-> +out:
-> +	bpf_link__destroy(link);
-> +	bpf_link__destroy(link2);
-> +	memcg_ops__detach(skel);
-> +	close(low_cgroup_fd);
-> +	cleanup_cgroup_environment();
-> +}
-
-[ ... ]
-
-> +void test_memcg_ops_below_low_over_high(void)
-> +{
-> +	int err, map_fd;
-> +	struct memcg_ops *skel;
-
-Same issue here - skel is not initialized to NULL.
-
-[ ... ]
-
-> +out:
-> +	bpf_link__destroy(link);
-> +	bpf_link__destroy(link_high);
-> +	bpf_link__destroy(link_low);
-> +	memcg_ops__detach(skel);
-
-[ ... ]
-
-> +void test_memcg_ops_below_min_over_high(void)
-> +{
-> +	int err, map_fd;
-> +	struct memcg_ops *skel;
-
-Same issue here as well - skel is not initialized to NULL.
-
-[ ... ]
-
-> +out:
-> +	bpf_link__destroy(link);
-> +	bpf_link__destroy(link_high);
-> +	bpf_link__destroy(link_low);
-> +	memcg_ops__detach(skel);
-> +	close(high_cgroup_fd);
-> +	close(low_cgroup_fd);
-> +	cleanup_cgroup_environment();
-> +}
 
 
 ---
@@ -231,5 +182,5 @@ See: https://github.com/kernel-patches/vmtest/blob/master/ci/claude/README.md
 
 CI run summary: https://github.com/kernel-patches/bpf/actions/runs/21280790825
 
---===============3584986258708126564==--
+--===============7572374899106477181==--
 
