@@ -1,50 +1,50 @@
-Return-Path: <cgroups+bounces-13385-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-13386-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id cIwSGVk4c2lItAAAu9opvQ
-	(envelope-from <cgroups+bounces-13385-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Fri, 23 Jan 2026 09:59:05 +0100
+	id UIU5FGg4c2lItAAAu9opvQ
+	(envelope-from <cgroups+bounces-13386-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Fri, 23 Jan 2026 09:59:20 +0100
 X-Original-To: lists+cgroups@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 19B0672D84
-	for <lists+cgroups@lfdr.de>; Fri, 23 Jan 2026 09:59:05 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id C92EA72DA4
+	for <lists+cgroups@lfdr.de>; Fri, 23 Jan 2026 09:59:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 3A039305220E
-	for <lists+cgroups@lfdr.de>; Fri, 23 Jan 2026 08:56:46 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 47257301CCC9
+	for <lists+cgroups@lfdr.de>; Fri, 23 Jan 2026 08:58:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D4F39330667;
-	Fri, 23 Jan 2026 08:56:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4673E320A04;
+	Fri, 23 Jan 2026 08:58:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="G/KkPluM"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="s1F4hAcN"
 X-Original-To: cgroups@vger.kernel.org
-Received: from out-172.mta0.migadu.com (out-172.mta0.migadu.com [91.218.175.172])
+Received: from out-174.mta1.migadu.com (out-174.mta1.migadu.com [95.215.58.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 05D27314D1D
-	for <cgroups@vger.kernel.org>; Fri, 23 Jan 2026 08:56:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 13B8D313274;
+	Fri, 23 Jan 2026 08:58:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1769158604; cv=none; b=sLe3QVAS/5PnenjqYdXGy7agNYiihtSGP+IgAP1s2ke3qh49Jl9ooAN8/WlAjL/dJgXGFlQJ0vUx1LnLEwu4nU4omAf23ZUymvkaM9/iYYFQ3HA1qmJ17ZxXhi3Zxlfcc0a+RSNA29o9RP004RC/wUU4S7HzY2AF7YZV+h3yGQk=
+	t=1769158727; cv=none; b=F3q3u1qqjogDrUwUmVrD06U7LEur8jMCGVtqS9scjnhvKTNygOS2v2bWeQRFw1sxpCG/Y+YG/CcDXC6eTWbRDzSiQreCxSaMqBNX9nntsPlHtZyOEOcV/h13yvYnQ4Ax5ndbERUrOZa9jR3itpRNe3ahGQm10TRuHd3he4Dexss=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1769158604; c=relaxed/simple;
-	bh=1UvSBdgGuBgiQRwX3e7nYHkdgZ7JTX6rdeF6qDJwPQo=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=ginzYY+b+kj7zWYmAIr3VeFVyRoFj/Fyb3MH5XLlMIfZBulW0xxLW/0RznBGF0ABYQVRA6qSTyrw4jpzf+7mUWcbikOfgiIOCnuWnhzwJ6RMnU8JkShDrJZAK/I3xZoK+AWNzjnJb1QBhI7hxObM2+nIzqNnNe/JuQUsxUqdqnU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=G/KkPluM; arc=none smtp.client-ip=91.218.175.172
+	s=arc-20240116; t=1769158727; c=relaxed/simple;
+	bh=2k9LiI+M//qM4q+K2IyZ0CNDJt0ZnwZ2pxw6XNWmxxQ=;
+	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=jWj3xpV8782eIPub/Da5j5uQwlnfXmXD+YmHQAs0eKxehpwP2fld7lYAepWKGjOLnQrYDriZrkwXhp88Hz4b/28TG58/qWvGZjdeVq+a/XdPmpiMPgXcM+iAWmWexqi3iw8xgmG8SfwBnsOoP9gPWSbkqSr/dyqhXyBuShuQkdM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=s1F4hAcN; arc=none smtp.client-ip=95.215.58.174
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1769158600;
+	t=1769158710;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
+	 to:to:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=ev1nwp2jqQHVpe3TXk2x9AVEGB6Nj6mx2yP0IpcUZW4=;
-	b=G/KkPluM8KiVv/KlXXvon+NjDg2D+OVXWkHzALnwohFtZK4prPRR6w8tcl7XhnGO9L1O5L
-	yoLCuV9BE9e/bPYYrRXc1CFx1c+BQkJAnwkDsEou9XN8/GXO2/DN8T+qUPqi4V4YqtegaR
-	vdecvuwC7H3OEHkwZGZukpN6hW5pqn8=
+	bh=MZDHd5qG1jM6uT5/JnPwA06VDLOpkfHtWx6qC88p08g=;
+	b=s1F4hAcNIr7FO7zIIhXOc52f/ar923r2DlaIfnkq9t9LXEKwLC/zJvy/Jwl45AvVrjQ7V1
+	oM0I6+NJkSSr0xpaHsAfkzNd+jZZOEZBJTWEjJ9HsKumn8IOWsUJTw6yBQ9aPRHuFekepj
+	Sqw7JE/M2z8LvOE2rpvDvCmlnRkH+nQ=
 From: Hui Zhu <hui.zhu@linux.dev>
 To: Andrew Morton <akpm@linux-foundation.org>,
 	Johannes Weiner <hannes@cmpxchg.org>,
@@ -95,10 +95,9 @@ To: Andrew Morton <akpm@linux-foundation.org>,
 	bpf@vger.kernel.org,
 	netdev@vger.kernel.org,
 	linux-kselftest@vger.kernel.org
-Cc: Kumar Kartikeya Dwivedi <memxor@gmail.com>
-Subject: [RFC PATCH bpf-next v3 03/12] bpf: mark struct oom_control's memcg field as TRUSTED_OR_NULL
-Date: Fri, 23 Jan 2026 16:55:21 +0800
-Message-ID: <27af33f679846a2783cc8d82111ebeac170b004c.1769157382.git.zhuhui@kylinos.cn>
+Subject: [RFC PATCH bpf-next v3 04/12] mm: define mem_cgroup_get_from_ino() outside of CONFIG_SHRINKER_DEBUG
+Date: Fri, 23 Jan 2026 16:57:58 +0800
+Message-ID: <f627edee18f43dbfcd4c2eb06a8188e88dc6bda9.1769157382.git.zhuhui@kylinos.cn>
 In-Reply-To: <cover.1769157382.git.zhuhui@kylinos.cn>
 References: <cover.1769157382.git.zhuhui@kylinos.cn>
 Precedence: bulk
@@ -115,71 +114,92 @@ X-Spamd-Result: default: False [-0.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	R_MISSING_CHARSET(0.50)[];
 	DMARC_POLICY_ALLOW(-0.50)[linux.dev,none];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	R_DKIM_ALLOW(-0.20)[linux.dev:s=key1];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FREEMAIL_TO(0.00)[linux-foundation.org,cmpxchg.org,kernel.org,linux.dev,iogearbox.net,gmail.com,fomichev.me,google.com,infradead.org,chromium.org,suse.com,jfarr.cc,davemloft.net,huaweicloud.com,vger.kernel.org,kvack.org];
-	MIME_TRACE(0.00)[0:+];
-	FREEMAIL_CC(0.00)[gmail.com];
-	TAGGED_FROM(0.00)[bounces-13385-lists,cgroups=lfdr.de];
-	RCVD_COUNT_THREE(0.00)[3];
 	FORGED_SENDER_MAILLIST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-13386-lists,cgroups=lfdr.de];
+	RCVD_COUNT_THREE(0.00)[3];
 	RCVD_TLS_LAST(0.00)[];
-	MISSING_XM_UA(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[49];
+	MIME_TRACE(0.00)[0:+];
+	FREEMAIL_TO(0.00)[linux-foundation.org,cmpxchg.org,kernel.org,linux.dev,iogearbox.net,gmail.com,fomichev.me,google.com,infradead.org,chromium.org,suse.com,jfarr.cc,davemloft.net,huaweicloud.com,vger.kernel.org,kvack.org];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	TO_DN_SOME(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[hui.zhu@linux.dev,cgroups@vger.kernel.org];
 	FROM_HAS_DN(0.00)[];
 	DKIM_TRACE(0.00)[linux.dev:+];
-	RCPT_COUNT_GT_50(0.00)[50];
+	NEURAL_HAM(-0.00)[-0.995];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
 	TAGGED_RCPT(0.00)[cgroups];
-	NEURAL_HAM(-0.00)[-0.982];
-	TO_DN_SOME(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[kylinos.cn:mid,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,linux.dev:email,linux.dev:dkim]
-X-Rspamd-Queue-Id: 19B0672D84
+	MISSING_XM_UA(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[linux.dev:email,linux.dev:dkim,kylinos.cn:mid,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: C92EA72DA4
 X-Rspamd-Action: no action
 
 From: Roman Gushchin <roman.gushchin@linux.dev>
 
-Struct oom_control is used to describe the OOM context.
-It's memcg field defines the scope of OOM: it's NULL for global
-OOMs and a valid memcg pointer for memcg-scoped OOMs.
-Teach bpf verifier to recognize it as trusted or NULL pointer.
-It will provide the bpf OOM handler a trusted memcg pointer,
-which for example is required for iterating the memcg's subtree.
+mem_cgroup_get_from_ino() can be reused by the BPF OOM implementation,
+but currently depends on CONFIG_SHRINKER_DEBUG. Remove this dependency.
 
 Signed-off-by: Roman Gushchin <roman.gushchin@linux.dev>
-Acked-by: Kumar Kartikeya Dwivedi <memxor@gmail.com>
 ---
- kernel/bpf/verifier.c | 5 +++++
- 1 file changed, 5 insertions(+)
+ include/linux/memcontrol.h | 4 ++--
+ mm/memcontrol.c            | 2 --
+ 2 files changed, 2 insertions(+), 4 deletions(-)
 
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 7a375f608263..e59acdbb5062 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -7152,6 +7152,10 @@ BTF_TYPE_SAFE_TRUSTED_OR_NULL(struct vm_area_struct) {
- 	struct file *vm_file;
- };
+diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
+index 229ac9835adb..f3b8c71870d8 100644
+--- a/include/linux/memcontrol.h
++++ b/include/linux/memcontrol.h
+@@ -833,9 +833,9 @@ static inline unsigned long mem_cgroup_ino(struct mem_cgroup *memcg)
+ {
+ 	return memcg ? cgroup_ino(memcg->css.cgroup) : 0;
+ }
++#endif
  
-+BTF_TYPE_SAFE_TRUSTED_OR_NULL(struct oom_control) {
-+	struct mem_cgroup *memcg;
-+};
-+
- static bool type_is_rcu(struct bpf_verifier_env *env,
- 			struct bpf_reg_state *reg,
- 			const char *field_name, u32 btf_id)
-@@ -7194,6 +7198,7 @@ static bool type_is_trusted_or_null(struct bpf_verifier_env *env,
- 	BTF_TYPE_EMIT(BTF_TYPE_SAFE_TRUSTED_OR_NULL(struct socket));
- 	BTF_TYPE_EMIT(BTF_TYPE_SAFE_TRUSTED_OR_NULL(struct dentry));
- 	BTF_TYPE_EMIT(BTF_TYPE_SAFE_TRUSTED_OR_NULL(struct vm_area_struct));
-+	BTF_TYPE_EMIT(BTF_TYPE_SAFE_TRUSTED_OR_NULL(struct oom_control));
+ struct mem_cgroup *mem_cgroup_get_from_ino(unsigned long ino);
+-#endif
  
- 	return btf_nested_type_is_trusted(&env->log, reg, field_name, btf_id,
- 					  "__safe_trusted_or_null");
+ static inline struct mem_cgroup *mem_cgroup_from_seq(struct seq_file *m)
+ {
+@@ -1298,12 +1298,12 @@ static inline unsigned long mem_cgroup_ino(struct mem_cgroup *memcg)
+ {
+ 	return 0;
+ }
++#endif
+ 
+ static inline struct mem_cgroup *mem_cgroup_get_from_ino(unsigned long ino)
+ {
+ 	return NULL;
+ }
+-#endif
+ 
+ static inline struct mem_cgroup *mem_cgroup_from_seq(struct seq_file *m)
+ {
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index 3808845bc8cc..1f74fce27677 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -3658,7 +3658,6 @@ struct mem_cgroup *mem_cgroup_from_id(unsigned short id)
+ 	return xa_load(&mem_cgroup_ids, id);
+ }
+ 
+-#ifdef CONFIG_SHRINKER_DEBUG
+ struct mem_cgroup *mem_cgroup_get_from_ino(unsigned long ino)
+ {
+ 	struct cgroup *cgrp;
+@@ -3679,7 +3678,6 @@ struct mem_cgroup *mem_cgroup_get_from_ino(unsigned long ino)
+ 
+ 	return memcg;
+ }
+-#endif
+ 
+ static void free_mem_cgroup_per_node_info(struct mem_cgroup_per_node *pn)
+ {
 -- 
 2.43.0
 
