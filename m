@@ -1,84 +1,84 @@
-Return-Path: <cgroups+bounces-13400-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-13401-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id AFofIitAc2m0twAAu9opvQ
-	(envelope-from <cgroups+bounces-13400-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Fri, 23 Jan 2026 10:32:27 +0100
+	id 6Ck6GIRAc2mWtwAAu9opvQ
+	(envelope-from <cgroups+bounces-13401-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Fri, 23 Jan 2026 10:33:56 +0100
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2FCF17368A
-	for <lists+cgroups@lfdr.de>; Fri, 23 Jan 2026 10:32:27 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id C711B736FC
+	for <lists+cgroups@lfdr.de>; Fri, 23 Jan 2026 10:33:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id C43DC3065E74
-	for <lists+cgroups@lfdr.de>; Fri, 23 Jan 2026 09:29:54 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 8E9A0306EA06
+	for <lists+cgroups@lfdr.de>; Fri, 23 Jan 2026 09:30:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C9F036AB53;
-	Fri, 23 Jan 2026 09:29:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0A9E036EAAD;
+	Fri, 23 Jan 2026 09:29:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="F4nwAcHu"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="P+Da/JIQ"
 X-Original-To: cgroups@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3369935CBA7;
-	Fri, 23 Jan 2026 09:29:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E6CF34DCFD;
+	Fri, 23 Jan 2026 09:29:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1769160585; cv=none; b=LHiJSD3Gob+r5JX9zETb/awZSr2ea/ZK2ZEDUS1ksZ+hzzmKUC2X5URcw5IfGlIHpTq/tDu4rbQllC7mVM+I6Y7LANrojWQ3kcqMu5OjjcSHYAI9i1PRW04zmy6RVDtjG8CgrBBJHkP5V5Fex/vy7Rl2L0ebm48tSBAYOfqxTEs=
+	t=1769160587; cv=none; b=Tgn+/pHPpsdUfASbZGDPr/S43re+vUOvY70iAVkkLnAzW6JL4HfrKTXnivMjlkNdsPV3R/+741aVNrsC1uY1IycByg4NDQxUk6dpNGxCL8g8IlsrjcvbmkAlFUH83RkKzB4SXXRqvq9UeYzEpIsSRtLxhq4xAyIBdn2s9x3sax0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1769160585; c=relaxed/simple;
-	bh=UyNyhPZNlArXXC7DbgAjDuFCRG6qfF3Bxd1E4/+otZQ=;
+	s=arc-20240116; t=1769160587; c=relaxed/simple;
+	bh=66bJXTJk22/mLio1RAI3vsCprk6nUWyXhsTyMDG/6mE=;
 	h=Content-Type:MIME-Version:Message-Id:In-Reply-To:References:
-	 Subject:From:To:Cc:Date; b=Dh523JGo0n+bew7FNcysg2vc1aZDalWamyBmQM94M5BkypMKgUTzfY5mDa36DRxj0nbyW9z6EoC1N2Kj9GMr7tK2PK5yHOhMoWUDfav9DyMhggsN0r0Rs8CCw1fhyY8rnFqqhsf2NK/2sHsQwY9apJkZP0kc6tKXg7A9Rf2NFHo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=F4nwAcHu; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6B97AC116D0;
-	Fri, 23 Jan 2026 09:29:42 +0000 (UTC)
+	 Subject:From:To:Cc:Date; b=MiAFttJFAawC/GSuHY5aDyTWZn2Nwx/aOVH65tVPoA3o1pOElVzXh/OZgWecHuEhWuvwj/YWLvLNn2MCDXQnWssvRxocafgM8ovyFkD4Rekq+9NlEvgptgz7h+M55LsJbjAifaqNENVEdj0AIybfV7CgKH1iriaeMXNPgY/KtHg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=P+Da/JIQ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A4FCBC116D0;
+	Fri, 23 Jan 2026 09:29:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1769160584;
-	bh=UyNyhPZNlArXXC7DbgAjDuFCRG6qfF3Bxd1E4/+otZQ=;
+	s=k20201202; t=1769160586;
+	bh=66bJXTJk22/mLio1RAI3vsCprk6nUWyXhsTyMDG/6mE=;
 	h=In-Reply-To:References:Subject:From:To:Cc:Date:From;
-	b=F4nwAcHuuogXfFilu9ZLMVOGjf65Q6kn1NjG9xHyDQjxcKw8mechHmV/2UoKNz9eX
-	 yJdAhjb8zATwBjMJEYORx1exA7ugxyGbFhiybcChfKths7LymkhEC8uUfdVAqQ+Cnk
-	 /o1gx/rRVWYfwSVJFVNyAAXiwr1O1zLo//uJpXLFBwn0PcbFklSM0Rpv0xAMtPn4j2
-	 8YndREmYbf+pnDgoHlMqu3Gq3NgBZT0dv6A66E1CQjJOxJ8Zib3HFLfoE1BkDFnBx4
-	 NoGBDqusxbltNqeA4KQjr/pVHZpn9vRTit7GBPlVxmcI/2vSzgNvZoaVTOpUcKsHcM
-	 nAuh2eNSimJrg==
-Content-Type: multipart/mixed; boundary="===============7572374899106477181=="
+	b=P+Da/JIQVUBFdjvtmkdMKF6CSdvIICA7ZvyHGDVa0wEg3lX968hjg0HzrYc1dY9cA
+	 82tsjt/LJncXYHEM2ytyit/TamThZnQoqQWOkSPiXqwMwEOd95l9wxc7pAMiFHADfW
+	 IRvr+kW47fQvxH1kFQYIjm014r0sqN7WBVhN4uZkELWsf/oHqk20Y/N2OvivUjNqFW
+	 qLXomYcSYWhPgCanwfxrYY8n+ltGd22kDDkB+GOg3v5314j4lfZ078NboWEMtZi0Z4
+	 JIHHi+hqh0o0zsdkduLL6j+/y9vYhEchxkVHpomNftsBShx6bQ+Q4Fp+DHNRriZ28d
+	 ruoT8dTtoWs2A==
+Content-Type: multipart/mixed; boundary="===============7258097213843698012=="
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-Id: <d2161f4252546f252dd0a84c461ba5dbb3b63e22d4826771edd8f1f30df050bc@mail.kernel.org>
-In-Reply-To: <9f072e53f79ceaea43e3730476494517e453530a.1769157382.git.zhuhui@kylinos.cn>
-References: <9f072e53f79ceaea43e3730476494517e453530a.1769157382.git.zhuhui@kylinos.cn>
-Subject: Re: [RFC PATCH bpf-next v3 10/12] mm/bpf: Add BPF_F_ALLOW_OVERRIDE support for  memcg_bpf_ops
+Message-Id: <f02212613904023c5e4f900ee1efdb15e8266c3c4f7d0572db4f515da3a700e5@mail.kernel.org>
+In-Reply-To: <863b91cb85097f137bc741e7cb686ff78d9bb95e.1769157382.git.zhuhui@kylinos.cn>
+References: <863b91cb85097f137bc741e7cb686ff78d9bb95e.1769157382.git.zhuhui@kylinos.cn>
+Subject: Re: [RFC PATCH bpf-next v3 08/12] mm: memcontrol: Add BPF struct_ops for memory controller
 From: bot+bpf-ci@kernel.org
 To: hui.zhu@linux.dev,akpm@linux-foundation.org,hannes@cmpxchg.org,mhocko@kernel.org,roman.gushchin@linux.dev,shakeel.butt@linux.dev,muchun.song@linux.dev,ast@kernel.org,daniel@iogearbox.net,andrii@kernel.org,martin.lau@linux.dev,eddyz87@gmail.com,song@kernel.org,yonghong.song@linux.dev,john.fastabend@gmail.com,kpsingh@kernel.org,sdf@fomichev.me,haoluo@google.com,jolsa@kernel.org,shuah@kernel.org,peterz@infradead.org,ojeda@kernel.org,nathan@kernel.org,kees@kernel.org,tj@kernel.org,jeffxu@chromium.org,mkoutny@suse.com,kernel@jfarr.cc,brauner@kernel.org,rdunlap@infradead.org,brgerst@gmail.com,masahiroy@kernel.org,davem@davemloft.net,kuba@kernel.org,hawk@kernel.org,inwardvessel@gmail.com,willemb@google.com,kerneljasonxing@gmail.com,paul.chaignon@gmail.com,a.s.protopopov@gmail.com,ameryhung@gmail.com,chenridong@huaweicloud.com,lance.yang@linux.dev,jiayuan.chen@linux.dev,linux-kernel@vger.kernel.org,linux-mm@kvack.org,cgroups@vger.kernel.org,bpf@vger.kernel.org,netdev@vger.kernel.org,linu
  x-kselftest@vger.kernel.org
 Cc: zhuhui@kylinos.cn,geliang@kernel.org,ast@kernel.org,andrii@kernel.org,daniel@iogearbox.net,martin.lau@kernel.org,eddyz87@gmail.com,yonghong.song@linux.dev,clm@meta.com,ihor.solodrai@linux.dev
-Date: Fri, 23 Jan 2026 09:29:42 +0000 (UTC)
+Date: Fri, 23 Jan 2026 09:29:45 +0000 (UTC)
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [2.54 / 15.00];
 	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_REJECT(1.00)[signature check failed: fail, {[1] = sig:subspace.kernel.org:reject}];
 	CTYPE_MIXED_BOGUS(1.00)[];
 	DMARC_POLICY_ALLOW_WITH_FAILURES(-0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[multipart/mixed,text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	FROM_NEQ_ENVFROM(0.00)[bot@kernel.org,cgroups@vger.kernel.org];
 	R_DKIM_REJECT(0.00)[kernel.org:s=k20201202];
-	TAGGED_FROM(0.00)[bounces-13400-lists,cgroups=lfdr.de,bpf-ci];
+	TAGGED_FROM(0.00)[bounces-13401-lists,cgroups=lfdr.de,bpf-ci];
 	RCVD_TLS_LAST(0.00)[];
 	RCVD_COUNT_THREE(0.00)[4];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	FREEMAIL_CC(0.00)[kylinos.cn,kernel.org,iogearbox.net,gmail.com,linux.dev,meta.com];
 	FREEMAIL_TO(0.00)[linux.dev,linux-foundation.org,cmpxchg.org,kernel.org,iogearbox.net,gmail.com,fomichev.me,google.com,infradead.org,chromium.org,suse.com,jfarr.cc,davemloft.net,huaweicloud.com,vger.kernel.org,kvack.org];
-	NEURAL_SPAM(0.00)[0.871];
+	NEURAL_SPAM(0.00)[0.887];
 	DMARC_POLICY_ALLOW(0.00)[kernel.org,quarantine];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	MIME_TRACE(0.00)[0:+,1:+];
@@ -88,92 +88,114 @@ X-Spamd-Result: default: False [2.54 / 15.00];
 	PRECEDENCE_BULK(0.00)[];
 	DKIM_TRACE(0.00)[kernel.org:-];
 	TAGGED_RCPT(0.00)[cgroups];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	MISSING_XM_UA(0.00)[];
 	FROM_NO_DN(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,mail.kernel.org:mid]
-X-Rspamd-Queue-Id: 2FCF17368A
+	DBL_BLOCKED_OPENRESOLVER(0.00)[mail.kernel.org:mid,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: C711B736FC
 X-Rspamd-Action: no action
 
---===============7572374899106477181==
+--===============7258097213843698012==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 
+> diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
+> index f3b8c71870d8..d71e86b85ba7 100644
+> --- a/include/linux/memcontrol.h
+> +++ b/include/linux/memcontrol.h
+
+[ ... ]
+
+> +#else /* CONFIG_BPF_SYSCALL */
+> +
+> +static inline unsigned long
+> +bpf_memcg_get_high_delay(struct mem_cgroup *memcg) { return 0 }
+> +static inline bpf_memcg_below_low(struct mem_cgroup *memcg) { return false }
+> +static inline bpf_memcg_below_min(struct mem_cgroup *memcg) { return false }
+                 ^^^^^^^^^^^^^^^^^^^^
+
+These stub functions appear to have syntax issues that would prevent
+compilation when CONFIG_BPF_SYSCALL is disabled:
+
+1. bpf_memcg_get_high_delay() is missing a semicolon after "return 0"
+2. bpf_memcg_below_low() is missing the "bool" return type
+3. bpf_memcg_below_min() is missing the "bool" return type
+
+Should these be:
+
+  static inline unsigned long
+  bpf_memcg_get_high_delay(struct mem_cgroup *memcg) { return 0; }
+  static inline bool bpf_memcg_below_low(struct mem_cgroup *memcg) { return false; }
+  static inline bool bpf_memcg_below_min(struct mem_cgroup *memcg) { return false; }
+
+> +static inline void memcontrol_bpf_online(struct mem_cgroup *memcg) { }
+> +static inline void memcontrol_bpf_offline(struct mem_cgroup *memcg) { }
+> +
+> +#endif /* CONFIG_BPF_SYSCALL */
+
+[ ... ]
+
 > diff --git a/mm/bpf_memcontrol.c b/mm/bpf_memcontrol.c
-> index 415e3c59b6a6..0ded1fdd0de8 100644
+> index 716df49d7647..415e3c59b6a6 100644
 > --- a/mm/bpf_memcontrol.c
 > +++ b/mm/bpf_memcontrol.c
 
 [ ... ]
 
-> static int bpf_memcg_ops_reg(void *kdata, struct bpf_link *link)
-> {
-> 	struct bpf_struct_ops_link *ops_link
-> 		= container_of(link, struct bpf_struct_ops_link, link);
-> 	struct memcg_bpf_ops *ops = kdata;
-> 	struct mem_cgroup *memcg, *iter = NULL;
-> 	int err = 0;
->
-> +	if (ops_link->flags & ~BPF_F_ALLOW_OVERRIDE) {
-> +		pr_err("attach only support BPF_F_ALLOW_OVERRIDE\n");
-> +		return -EOPNOTSUPP;
-> +	}
+> +static void clean_memcg_bpf_ops(struct mem_cgroup *memcg,
+> +				struct memcg_bpf_ops *ops)
+> +{
+> +	struct mem_cgroup *iter = NULL;
 > +
-> 	memcg = mem_cgroup_get_from_ino(ops_link->cgroup_id);
-> 	if (IS_ERR_OR_NULL(memcg))
-> 		return PTR_ERR(memcg);
->
-> 	cgroup_lock();
-> +
-> +	if (READ_ONCE(memcg->bpf_ops)) {
-> +		/* Check if bpf_ops of the parent is BPF_F_ALLOW_OVERRIDE. */
-> +		if (memcg->bpf_ops_flags & BPF_F_ALLOW_OVERRIDE) {
-> +			iter = parent_mem_cgroup(memcg);
-> +
-> +			if (!iter)
-> +				goto busy_out;
-> +			if (READ_ONCE(iter->bpf_ops) !=
-> +			    READ_ONCE(memcg->bpf_ops))
-> +				goto busy_out;
-> +		} else {
-> +busy_out:
-> +			err = -EBUSY;
-> +			goto unlock_out;
-> +		}
-> +	}
-> +
-> 	while ((iter = mem_cgroup_iter(memcg, iter, NULL))) {
-                                      ^^^^
-
-When the override check passes (all conditions at lines 363-377 are met),
-iter is set to parent_mem_cgroup(memcg) but is never reset to NULL before
-this loop. Should iter be reset to NULL here?
-
-The mem_cgroup_iter() function expects prev (iter) to be either NULL or a
-previous result from iterating within memcg's descendants. When iter points
-to memcg's parent, the iteration will not correctly traverse memcg's
-subtree since parent is outside that subtree.
-
-For comparison, bpf_memcg_ops_unreg() correctly resets iter to NULL before
-its loop:
-
-> +	iter = NULL;
 > +	while ((iter = mem_cgroup_iter(memcg, iter, NULL))) {
+> +		if (ops) {
+> +			if (!WARN_ON(READ_ONCE(memcg->bpf_ops) != ops))
+> +				WRITE_ONCE(memcg->bpf_ops, NULL);
+                                         ^^^^^
 
-> 		if (READ_ONCE(iter->bpf_ops)) {
-> -			mem_cgroup_iter_break(memcg, iter);
-> -			err = -EBUSY;
-> -			break;
-> +			/* cannot override existing bpf_ops of sub-cgroup. */
-> +			continue;
-> 		}
-> 		WRITE_ONCE(iter->bpf_ops, ops);
-> +		iter->bpf_ops_flags = ops_link->flags;
-> 	}
+When ops is non-NULL, this code checks and writes to memcg->bpf_ops, but
+should it be using iter->bpf_ops instead? The else branch at the bottom
+correctly uses iter. As written, when called from bpf_memcg_ops_unreg()
+with a non-NULL ops argument, this only clears the root cgroup's bpf_ops
+pointer while leaving all descendant cgroups with stale pointers to the
+ops structure that will be freed after synchronize_srcu().
+
+> +		} else
+> +			WRITE_ONCE(iter->bpf_ops, NULL);
+> +	}
+> +}
 
 [ ... ]
+
+> +static int __init bpf_memcontrol_init(void)
+> +{
+> +	int err, err2;
+> +
+> +	err = register_btf_kfunc_id_set(BPF_PROG_TYPE_UNSPEC,
+> +					&bpf_memcontrol_kfunc_set);
+> +	if (err)
+> +		pr_warn("error while registering bpf memcontrol kfuncs: %d", err);
+> +
+> +	err2 = register_bpf_struct_ops(&bpf_memcg_bpf_ops, memcg_bpf_ops);
+> +	if (err)
+            ^^^
+
+The condition here checks err but prints err2. Should this be "if (err2)"
+to log when the struct_ops registration fails?
+
+> +		pr_warn("error while registering memcontrol bpf ops: %d", err2);
+> +
+> +	return err ? err : err2;
+> +}
+> +late_initcall(bpf_memcontrol_init);
+
+Note: The clean_memcg_bpf_ops() issue appears to be addressed in a later
+commit in this series (90eaa9cd0346 "mm/bpf: Add BPF_F_ALLOW_OVERRIDE
+support for memcg_bpf_ops") which removes and rewrites the function
+entirely. However, the syntax errors in the stubs and the error check
+typo in bpf_memcontrol_init() do not appear to be fixed in the series.
 
 
 ---
@@ -182,5 +204,5 @@ See: https://github.com/kernel-patches/vmtest/blob/master/ci/claude/README.md
 
 CI run summary: https://github.com/kernel-patches/bpf/actions/runs/21280790825
 
---===============7572374899106477181==--
+--===============7258097213843698012==--
 
