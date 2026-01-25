@@ -1,49 +1,49 @@
-Return-Path: <cgroups+bounces-13415-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-13416-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id UJspHZOddmmOTAEAu9opvQ
-	(envelope-from <cgroups+bounces-13415-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Sun, 25 Jan 2026 23:47:47 +0100
+	id +CHHKLCddmmOTAEAu9opvQ
+	(envelope-from <cgroups+bounces-13416-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Sun, 25 Jan 2026 23:48:16 +0100
 X-Original-To: lists+cgroups@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 35B9982C6D
-	for <lists+cgroups@lfdr.de>; Sun, 25 Jan 2026 23:47:47 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id CA45A82C8A
+	for <lists+cgroups@lfdr.de>; Sun, 25 Jan 2026 23:48:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id D16D0300D179
-	for <lists+cgroups@lfdr.de>; Sun, 25 Jan 2026 22:47:01 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 35F04300E5D6
+	for <lists+cgroups@lfdr.de>; Sun, 25 Jan 2026 22:47:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 29CE830F53E;
-	Sun, 25 Jan 2026 22:46:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3798F30F53E;
+	Sun, 25 Jan 2026 22:47:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NeWRcvHf"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="temhnd07"
 X-Original-To: cgroups@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D3F2130DEA9;
-	Sun, 25 Jan 2026 22:46:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EAE3E30C626;
+	Sun, 25 Jan 2026 22:47:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1769381216; cv=none; b=Z48FII7qhNXAPyHl1V5sYtwoR6ov8qY6KXm2DlRe9r39zGs9qU67t7TSBGQpsNqjVIRrWEzb1qwgS9htcZu6O1DpHek9zUtYnTeltRuRlbCtYOcMY/7J2jYcaaWqKpwY+Pv5Rc0NPX2zU+7u5pSODjhwlVAehhYxwpAdT4lHykI=
+	t=1769381225; cv=none; b=KWv1whrs5N7zGhG8/lDlb1xT7dTkzJnQeb0+amby0WEelhlnhI/DG1w7XoomX1dP040JgRvuflRer8FY3+TDpQm23G7+MvLJu/z6zh9HP/8bNWnqBD5FWtP/6sp5Q5ocO/hDIBpSRzYmrJ2YzQXqYX/NDnPYup6WSvpIZo7lwSw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1769381216; c=relaxed/simple;
-	bh=gHL1k3Ce/0Yqnu3RKEhMFCTtXjaAjQ9JVob0E5Uoa3s=;
+	s=arc-20240116; t=1769381225; c=relaxed/simple;
+	bh=CSBqMHaVS4LYUH4nZYK0n1Q3mrGckGoVFLRQaFReEXw=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=IEb+dhcsFEJ55f3RefIz4pc21GdNhdt4CmxQx1JqLBPS+gXz8OJiK+CA8pHgcxqvAHEtTqjXVLDo/pgVRH0vq2O3LwxlajNYPmLfiEMrObobUM6lM0L/NcbMlqGA+06PBEYKEEYgzcl0TzVLvQcWZK3ZaiI8bXKUqdUYM7gwxY4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NeWRcvHf; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 16F61C4CEF1;
-	Sun, 25 Jan 2026 22:46:48 +0000 (UTC)
+	 MIME-Version; b=MWwMIOom0BcOfG0zLH2CgUKxXXOXe5L+VeY4iPuSSTjuiEzXLu4vcx7mB/43X+j75E4hUOz/T4BGwqX2E4X2LQvFAj9/wk0OXM8udVEz1ELqUY0mRB71e3k6XyGRytUdI2uPmMzVpTfkluKdTj5RXQxz3vntmaDAZWr360XG43Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=temhnd07; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E2BFEC16AAE;
+	Sun, 25 Jan 2026 22:46:56 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1769381216;
-	bh=gHL1k3Ce/0Yqnu3RKEhMFCTtXjaAjQ9JVob0E5Uoa3s=;
+	s=k20201202; t=1769381224;
+	bh=CSBqMHaVS4LYUH4nZYK0n1Q3mrGckGoVFLRQaFReEXw=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=NeWRcvHfyNkP41Y23+BOqfICl2kcKZg/8wKK47gGHMusAHbGA2Wo7fFtJRW7vJrCX
-	 yzl5Q2dYHHh5Nj+MLKzPGz5ditBgiu1Kh6txj3s/1tsBYFB5jUDpfDzgKJQ78xA9i+
-	 vzkzY62pMpw+HbiFUi5N7D8TXWBRLwsIO0Tqs7qfREjVLgSIKCbdetc5JvC/vbLtFM
-	 sGym7Mn6+sf/Pr7KMZUdgSqsox+/Y5NuRSqcvqjRsqx4KegjDVKO/x50YepFOOMc8H
-	 RLpX2Ta4FLD8OVTkqUJ7OsFBHGf137O0zSliVHv7zlt4cT0w7Y8qThUAZgqeYQBe+k
-	 qk4tadz39hsKw==
+	b=temhnd07RHCs6lNSYUz4dbj0AdS6VgNvDbHHoQlwXOwUJoMRDGW6YISibUt7MpdLw
+	 jnI8yaWSPfggyIWb9RllrE4gvUIzfbvX7Wkkex438uhX1Q6DMwMifEXgCIYovYdPi2
+	 Nz4roDXgmETt+bVRRIuD7SU6+baquysP7zPZFV0nRG/4zl4hxV7Rb9tZdivbsT5sd6
+	 jRm8usW5uMG/cXmbECMxPFLPyK7QOV71u+IsduLIES03OtEaV2UMKcf37Gn97vcjpL
+	 vmQQtoDswbo1ah3b/RS/Or1mUjKopIJ+G4wDoUQgpGQ9VxlcCsO/MsQZlJ6NkPPfEK
+	 elrCpb0Jw4Vxw==
 From: Frederic Weisbecker <frederic@kernel.org>
 To: LKML <linux-kernel@vger.kernel.org>
 Cc: Frederic Weisbecker <frederic@kernel.org>,
@@ -83,9 +83,9 @@ Cc: Frederic Weisbecker <frederic@kernel.org>,
 	linux-mm@kvack.org,
 	linux-pci@vger.kernel.org,
 	netdev@vger.kernel.org
-Subject: [PATCH 08/33] net: Keep ignoring isolated cpuset change
-Date: Sun, 25 Jan 2026 23:45:15 +0100
-Message-ID: <20260125224541.50226-9-frederic@kernel.org>
+Subject: [PATCH 09/33] block: Protect against concurrent isolated cpuset change
+Date: Sun, 25 Jan 2026 23:45:16 +0100
+Message-ID: <20260125224541.50226-10-frederic@kernel.org>
 X-Mailer: git-send-email 2.51.1
 In-Reply-To: <20260125224541.50226-1-frederic@kernel.org>
 References: <20260125224541.50226-1-frederic@kernel.org>
@@ -100,9 +100,9 @@ X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-0.66 / 15.00];
 	MID_CONTAINS_FROM(1.00)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_MISSING_CHARSET(0.50)[];
 	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
+	R_MISSING_CHARSET(0.50)[];
+	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
 	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
@@ -110,51 +110,60 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	FREEMAIL_CC(0.00)[kernel.org,suse.com,linux-foundation.org,google.com,arm.com,huawei.com,davemloft.net,redhat.com,linuxfoundation.org,kernel.dk,cmpxchg.org,gmail.com,linux.dev,infradead.org,linutronix.de,suse.cz,vger.kernel.org,lists.infradead.org,kvack.org];
 	MIME_TRACE(0.00)[0:+];
-	TAGGED_FROM(0.00)[bounces-13415-lists,cgroups=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-13416-lists,cgroups=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
 	RCPT_COUNT_TWELVE(0.00)[38];
 	RCVD_COUNT_THREE(0.00)[4];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	TO_DN_SOME(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[frederic@kernel.org,cgroups@vger.kernel.org];
 	FROM_HAS_DN(0.00)[];
 	DKIM_TRACE(0.00)[kernel.org:+];
-	NEURAL_HAM(-0.00)[-0.971];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
 	TAGGED_RCPT(0.00)[cgroups];
-	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 35B9982C6D
+	NEURAL_HAM(-0.00)[-0.972];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,kernel.dk:email]
+X-Rspamd-Queue-Id: CA45A82C8A
 X-Rspamd-Action: no action
 
-RPS cpumask can be overriden through sysfs/syctl. The boot defined
-isolated CPUs are then excluded from that cpumask.
+The block subsystem prevents running the workqueue to isolated CPUs,
+including those defined by cpuset isolated partitions. Since
+HK_TYPE_DOMAIN will soon contain both and be subject to runtime
+modifications, synchronize against housekeeping using the relevant lock.
 
-However HK_TYPE_DOMAIN will soon integrate cpuset isolated
-CPUs updates and the RPS infrastructure needs more thoughts to be able
-to propagate such changes and synchronize against them.
-
-Keep handling only what was passed through "isolcpus=" for now.
+For full support of cpuset changes, the block subsystem may need to
+propagate changes to isolated cpumask through the workqueue in the
+future.
 
 Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
+Acked-by: Jens Axboe <axboe@kernel.dk>
 ---
- net/core/net-sysfs.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ block/blk-mq.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-diff --git a/net/core/net-sysfs.c b/net/core/net-sysfs.c
-index ca878525ad7c..07624b682b08 100644
---- a/net/core/net-sysfs.c
-+++ b/net/core/net-sysfs.c
-@@ -1022,7 +1022,7 @@ static int netdev_rx_queue_set_rps_mask(struct netdev_rx_queue *queue,
- int rps_cpumask_housekeeping(struct cpumask *mask)
- {
- 	if (!cpumask_empty(mask)) {
--		cpumask_and(mask, mask, housekeeping_cpumask(HK_TYPE_DOMAIN));
-+		cpumask_and(mask, mask, housekeeping_cpumask(HK_TYPE_DOMAIN_BOOT));
- 		cpumask_and(mask, mask, housekeeping_cpumask(HK_TYPE_WQ));
- 		if (cpumask_empty(mask))
- 			return -EINVAL;
+diff --git a/block/blk-mq.c b/block/blk-mq.c
+index 1978eef95dca..0037af1216f3 100644
+--- a/block/blk-mq.c
++++ b/block/blk-mq.c
+@@ -4257,12 +4257,16 @@ static void blk_mq_map_swqueue(struct request_queue *q)
+ 
+ 		/*
+ 		 * Rule out isolated CPUs from hctx->cpumask to avoid
+-		 * running block kworker on isolated CPUs
++		 * running block kworker on isolated CPUs.
++		 * FIXME: cpuset should propagate further changes to isolated CPUs
++		 * here.
+ 		 */
++		rcu_read_lock();
+ 		for_each_cpu(cpu, hctx->cpumask) {
+ 			if (cpu_is_isolated(cpu))
+ 				cpumask_clear_cpu(cpu, hctx->cpumask);
+ 		}
++		rcu_read_unlock();
+ 
+ 		/*
+ 		 * Initialize batch roundrobin counts
 -- 
 2.51.1
 
