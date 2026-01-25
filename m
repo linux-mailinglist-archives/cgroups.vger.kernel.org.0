@@ -1,49 +1,49 @@
-Return-Path: <cgroups+bounces-13438-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-13439-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id cH9HFFOhdmmOTAEAu9opvQ
-	(envelope-from <cgroups+bounces-13438-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Mon, 26 Jan 2026 00:03:47 +0100
+	id yLKtLPqgdmmOTAEAu9opvQ
+	(envelope-from <cgroups+bounces-13439-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Mon, 26 Jan 2026 00:02:18 +0100
 X-Original-To: lists+cgroups@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 665618311F
-	for <lists+cgroups@lfdr.de>; Mon, 26 Jan 2026 00:03:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 4938583107
+	for <lists+cgroups@lfdr.de>; Mon, 26 Jan 2026 00:02:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 3FADB305FCA0
-	for <lists+cgroups@lfdr.de>; Sun, 25 Jan 2026 22:52:13 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 60D25306AD3F
+	for <lists+cgroups@lfdr.de>; Sun, 25 Jan 2026 22:52:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 46ABE31196A;
-	Sun, 25 Jan 2026 22:50:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7057F3242CA;
+	Sun, 25 Jan 2026 22:50:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="szmnbFCF"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PwIC4g98"
 X-Original-To: cgroups@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 073DB30E0F9;
-	Sun, 25 Jan 2026 22:50:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2FB2031AAAF;
+	Sun, 25 Jan 2026 22:50:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1769381405; cv=none; b=V3AsQEiDprMfGA5R+/ele561K6WO76229n098C5ajrqDoyFDP4mnnkw+JfKF28mlUMooprUrW5YHnzGdZTATnjQXeu4MnIuNVKwwnzl4Ha5vuKPtCmkz/gMbc9rBm4oOcLM2ymrRNZcGjOWSueaJ7/PHZJeU9fwij05V9haxIz4=
+	t=1769381413; cv=none; b=f7jvC0njbL55NMulb0JwPqVsxs9jCu/N9kuZqVipa6TwajtLGYFqXBhd21TcRhy38BIMkQWXEZlOPhM92U/PGDtHoTCKd+IMr4N/g+Z2zy1u3yPGh8ufRUithdrnIzvDtcDwQQdPgRm3DoE/W+XM9S8WweSjX9oktBG3jlSRpDM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1769381405; c=relaxed/simple;
-	bh=cybpUb9IFSrtSEn6CVNh90w6y5FCshbAQhcAn4rc9bQ=;
+	s=arc-20240116; t=1769381413; c=relaxed/simple;
+	bh=kluxsGzh3yUyBuEdMQW2ChyzrN9Wa4B73tu4Iho0QMM=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=XwQdKl/jIxMS42kc6VmbIYRMN0xOt9CfmJaeC3CX2fyKi1x8qGjwGFywTmCTV+6qcOpqpQcy1qi6WjNM5xrPhcvH2jxKKhjCv4f3h3SIR49BHntjUUGYf0KJzToKT1tO3tyrxSFgfLvP5/neO/tGNRNsKNANARa0wQyo1adYc8E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=szmnbFCF; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6663EC4CEF1;
-	Sun, 25 Jan 2026 22:49:57 +0000 (UTC)
+	 MIME-Version; b=ZyeSOy4UENBWOOuzBVMyG6CkP/i9d0hjN+0cPzfsMeAaHvbM7/DQ5IAbICvFTsE0TnSBtSv66MXnDBNqdg2vJeX9eVg3/83CqjqMNvMIyNECxuvR4OK61gI3UinmHQ5P+F5uMdzQtIxcvRSY1qFxJza08PCOoYbkgSzo/4RSc4E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=PwIC4g98; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 120E4C19425;
+	Sun, 25 Jan 2026 22:50:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1769381404;
-	bh=cybpUb9IFSrtSEn6CVNh90w6y5FCshbAQhcAn4rc9bQ=;
+	s=k20201202; t=1769381413;
+	bh=kluxsGzh3yUyBuEdMQW2ChyzrN9Wa4B73tu4Iho0QMM=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=szmnbFCF+vyRguPs+qTjhgn0jgwAxnTgIPrBfdW/GdN/D7mcBxVuZHNNiCj3DokE+
-	 8u2aqDutKHZoWAe9XmC3IYWWqKSGUc/71rTf+st24SadAtLG/5tVE/jHMtduy4FUkz
-	 SUAJb8ld4SDph1t42LM8gIYOi58uwgPrAnn5YD3a1P8uxg9qB72/8ZQGGOIi74olWd
-	 CFCrf6sohYmd90ny+Aju0E7DCjeBioTCp58AJPJYv8B1r5e24LmqFQ57VDbkaj4U1B
-	 ROdap0VewRCNie09oE4Flv5Uo1LqjdEi7bFQzZQH0fJGsTjtkrDTq829RCaRtYO8AD
-	 d3bzLzh17qang==
+	b=PwIC4g988r+B+FQPa2FGhJt4tSrnNd2nr3Tz4JrNby9d+xw96kD0fCjntTLY1+H1n
+	 uXxDNbXKSPe2PPZHG2MkM8KfxPUVZcHV22WrAGuzzmO872gdpB+rEYMVaPF9zDiHeA
+	 4DAVOo0ZX1apu66trrhs8xQp/0u1Hpi6J1VWvFy9lMGJMwfhvoSf3REVbWUSMv1fy3
+	 w9NNX6yNDqcaFM+CfcvB1OrCkCSjmfni8NhXoeV3iRN0cEMtFRoxEHfQHvq7WzyJd8
+	 2Ta3I7sXvWD+IW/l3nN7TVys5aR+iJcCHXKGctB2PGpo2OIwb6AJNGfhBRwGPUwOXV
+	 m2Z/opj23gBYw==
 From: Frederic Weisbecker <frederic@kernel.org>
 To: LKML <linux-kernel@vger.kernel.org>
 Cc: Frederic Weisbecker <frederic@kernel.org>,
@@ -83,9 +83,9 @@ Cc: Frederic Weisbecker <frederic@kernel.org>,
 	linux-mm@kvack.org,
 	linux-pci@vger.kernel.org,
 	netdev@vger.kernel.org
-Subject: [PATCH 31/33] kthread: Comment on the purpose and placement of kthread_affine_node() call
-Date: Sun, 25 Jan 2026 23:45:38 +0100
-Message-ID: <20260125224541.50226-32-frederic@kernel.org>
+Subject: [PATCH 32/33] kthread: Document kthread_affine_preferred()
+Date: Sun, 25 Jan 2026 23:45:39 +0100
+Message-ID: <20260125224541.50226-33-frederic@kernel.org>
 X-Mailer: git-send-email 2.51.1
 In-Reply-To: <20260125224541.50226-1-frederic@kernel.org>
 References: <20260125224541.50226-1-frederic@kernel.org>
@@ -110,7 +110,7 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	FREEMAIL_CC(0.00)[kernel.org,suse.com,linux-foundation.org,google.com,arm.com,huawei.com,davemloft.net,redhat.com,linuxfoundation.org,kernel.dk,cmpxchg.org,gmail.com,linux.dev,infradead.org,linutronix.de,suse.cz,vger.kernel.org,lists.infradead.org,kvack.org];
 	MIME_TRACE(0.00)[0:+];
-	TAGGED_FROM(0.00)[bounces-13438-lists,cgroups=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-13439-lists,cgroups=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
 	RCPT_COUNT_TWELVE(0.00)[38];
 	RCVD_COUNT_THREE(0.00)[4];
@@ -121,42 +121,43 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	DKIM_TRACE(0.00)[kernel.org:+];
 	PRECEDENCE_BULK(0.00)[];
 	TAGGED_RCPT(0.00)[cgroups];
-	NEURAL_HAM(-0.00)[-0.966];
+	NEURAL_HAM(-0.00)[-0.968];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,infradead.org:email]
-X-Rspamd-Queue-Id: 665618311F
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: 4938583107
 X-Rspamd-Action: no action
 
-It may not appear obvious why kthread_affine_node() is not called before
-the kthread creation completion instead of after the first wake-up.
+The documentation of this new API has been overlooked during its
+introduction. Fill the gap.
 
-The reason is that kthread_affine_node() applies a default affinity
-behaviour that only takes place if no affinity preference have already
-been passed by the kthread creation call site.
-
-Add a comment to clarify that.
-
-Reported-by: Peter Zijlstra <peterz@infradead.org>
 Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
 ---
- kernel/kthread.c | 4 ++++
- 1 file changed, 4 insertions(+)
+ kernel/kthread.c | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
 
 diff --git a/kernel/kthread.c b/kernel/kthread.c
-index 03008154249c..51f419139dea 100644
+index 51f419139dea..c50f4c0eabfe 100644
 --- a/kernel/kthread.c
 +++ b/kernel/kthread.c
-@@ -453,6 +453,10 @@ static int kthread(void *_create)
+@@ -856,6 +856,18 @@ int kthreadd(void *unused)
+ 	return 0;
+ }
  
- 	self->started = 1;
- 
-+	/*
-+	 * Apply default node affinity if no call to kthread_bind[_mask]() nor
-+	 * kthread_affine_preferred() was issued before the first wake-up.
-+	 */
- 	if (!(current->flags & PF_NO_SETAFFINITY) && !self->preferred_affinity)
- 		kthread_affine_node();
- 
++/**
++ * kthread_affine_preferred - Define a kthread's preferred affinity
++ * @p: thread created by kthread_create().
++ * @mask: preferred mask of CPUs (might not be online, must be possible) for @p
++ *        to run on.
++ *
++ * Similar to kthread_bind_mask() except that the affinity is not a requirement
++ * but rather a preference that can be constrained by CPU isolation or CPU hotplug.
++ * Must be called before the first wakeup of the kthread.
++ *
++ * Returns 0 if the affinity has been applied.
++ */
+ int kthread_affine_preferred(struct task_struct *p, const struct cpumask *mask)
+ {
+ 	struct kthread *kthread = to_kthread(p);
 -- 
 2.51.1
 
