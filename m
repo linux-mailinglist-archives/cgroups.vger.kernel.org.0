@@ -1,49 +1,49 @@
-Return-Path: <cgroups+bounces-13426-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-13427-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id gBqfJeuedmmOTAEAu9opvQ
-	(envelope-from <cgroups+bounces-13426-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Sun, 25 Jan 2026 23:53:31 +0100
+	id wA02FQGfdmmOTAEAu9opvQ
+	(envelope-from <cgroups+bounces-13427-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Sun, 25 Jan 2026 23:53:53 +0100
 X-Original-To: lists+cgroups@lfdr.de
 Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1290782E6C
-	for <lists+cgroups@lfdr.de>; Sun, 25 Jan 2026 23:53:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 149E782E90
+	for <lists+cgroups@lfdr.de>; Sun, 25 Jan 2026 23:53:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 06F3B30234E7
-	for <lists+cgroups@lfdr.de>; Sun, 25 Jan 2026 22:48:50 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 7C7AC3025F6E
+	for <lists+cgroups@lfdr.de>; Sun, 25 Jan 2026 22:49:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 09A4B30FC2D;
-	Sun, 25 Jan 2026 22:48:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2799C30FC06;
+	Sun, 25 Jan 2026 22:48:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WiokbWY+"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="QmeExAOs"
 X-Original-To: cgroups@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB3402F3622;
-	Sun, 25 Jan 2026 22:48:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF7C92F362A;
+	Sun, 25 Jan 2026 22:48:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1769381306; cv=none; b=FU8utDYklHTrN9gY+8k19xm05yyJyISxSorJ3gLFiPIfMqyz3Gqhp6g/wRpNCp820FtFuX8l3sAV8nqXWJsy98KE3ct4J7SFzvSiO/4aQwbLv26b2kxft1WozCeHA+IlJLDuXtUQ2GfEaWLuzLhvtVUVnxKEpZAKP3bJxAJFWvg=
+	t=1769381314; cv=none; b=d69r0w0zynyMz1LJCF9stQkqyoqb74P3mAsWglOXsaX6Jqml19Wcte7ZcsjVJ5Rrp7B53jpx1yko7KB46ZyvFUC4HoU1IGymyvG5uQKnHOrUXr14gUD6qndlH1hUxxoY7VIxQ1EiWBqRY6iZe0PFZl82PgPlKQXCDs2m8Nw6HAI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1769381306; c=relaxed/simple;
-	bh=1KNWx87QTGRb7i2dGJVg+gYyletvaK/k+GQ/bIy3PfI=;
+	s=arc-20240116; t=1769381314; c=relaxed/simple;
+	bh=xcMcLXp9lSxfZhVrsREHiMXj3hvNw6ylCQ2N03wRKM0=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=nO6rQf4+nocuTWF2sZ3FmXyAAtkc0Gp+jVZyzytjC5v2hcq0Zs3f65nKOfPr74lq4FqCvaSooAyDcoK8m5iI6gCypWB8ZNEImF2Y/nFuNplIqeNK1177ulJKCSe2d9g5MfVZ3QCEDXycApzPdhJeKdpKqdR+K6/yED+2WmKa8OA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WiokbWY+; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B8D7DC19425;
-	Sun, 25 Jan 2026 22:48:18 +0000 (UTC)
+	 MIME-Version; b=rI+Y8KlxuHvYwQJU80SwKeXyGIKkmeqcteTAOmiedpUnzVdgGIBJAeWFuLrDRy0QrAeWyxGcPp6UvtpvMx3zpkB7tSpLknWWgKxDAHlJf8K5T+HyRkn3p6l1HYwScrb1Zu0RTYP7hak4dHhEn62urynnqycuRNMEPLP8/TjGiQY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=QmeExAOs; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BC069C2BC87;
+	Sun, 25 Jan 2026 22:48:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1769381306;
-	bh=1KNWx87QTGRb7i2dGJVg+gYyletvaK/k+GQ/bIy3PfI=;
+	s=k20201202; t=1769381314;
+	bh=xcMcLXp9lSxfZhVrsREHiMXj3hvNw6ylCQ2N03wRKM0=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=WiokbWY+u72D6ZGtYKo/OejDhCbcUqCRW/Ivk54y8e59YMvltE6LmCSSlZrvA8P3I
-	 6533dVvqWDSARpKKhgZXSIH72E2CbBiqihh/IqGhW6IPa4I/961XuV77GnI9QSY3Tf
-	 wNow3A9qvtm2p7ZVWY4n8JyrVrgbRLGQklV+793Dg1WHR6Pc8W6pddLNM4lAOAeZ9m
-	 fLORz+IDKeCldynaM9+BMlVges/4tcKZn7jJxWhO501pASCEFErJHshoUU6sjNsv4i
-	 S2abbTLmRK73kWuAb2arxixwfUPO4O7J2fCOjEHn+OAleh3vPMqvugS5gwfJIcyM7y
-	 RP4+wnYr93doA==
+	b=QmeExAOsPNVoad+FjY6nF+vUq/CT43QF/yEuMh6eHWpIhuE6ZhsTyd5DgYVaFdhRA
+	 KSrOxbUrqW5spLkd02FS+St8WkGKBIm+v3PMxvJLp1CI21bHFT5B83sW9aoEvZd7EZ
+	 wLGM69jCyrsM0H58qDzzf0R8iRbdcsrDdiowQ99KVna6CUb5V2fJVSJxg5AUF6Qw9u
+	 FAWcSRhFRJXdqspv5nZhIU/oCRP5Wf0+b2FMOnlohs0YeAWa9QzyeMxmiuo5sfIrrr
+	 3ETdzmebs0OLqjVcHCp0rHJFMPuaSujPyR7DCLDzl/Lv+WMKVs8eZVXX99M8M05ujn
+	 feLcLjAzWadHg==
 From: Frederic Weisbecker <frederic@kernel.org>
 To: LKML <linux-kernel@vger.kernel.org>
 Cc: Frederic Weisbecker <frederic@kernel.org>,
@@ -83,9 +83,9 @@ Cc: Frederic Weisbecker <frederic@kernel.org>,
 	linux-mm@kvack.org,
 	linux-pci@vger.kernel.org,
 	netdev@vger.kernel.org
-Subject: [PATCH 19/33] cpuset: Propagate cpuset isolation update to timers through housekeeping
-Date: Sun, 25 Jan 2026 23:45:26 +0100
-Message-ID: <20260125224541.50226-20-frederic@kernel.org>
+Subject: [PATCH 20/33] timers/migration: Remove superfluous cpuset isolation test
+Date: Sun, 25 Jan 2026 23:45:27 +0100
+Message-ID: <20260125224541.50226-21-frederic@kernel.org>
 X-Mailer: git-send-email 2.51.1
 In-Reply-To: <20260125224541.50226-1-frederic@kernel.org>
 References: <20260125224541.50226-1-frederic@kernel.org>
@@ -110,7 +110,7 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	FREEMAIL_CC(0.00)[kernel.org,suse.com,linux-foundation.org,google.com,arm.com,huawei.com,davemloft.net,redhat.com,linuxfoundation.org,kernel.dk,cmpxchg.org,gmail.com,linux.dev,infradead.org,linutronix.de,suse.cz,vger.kernel.org,lists.infradead.org,kvack.org];
 	MIME_TRACE(0.00)[0:+];
-	TAGGED_FROM(0.00)[bounces-13426-lists,cgroups=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-13427-lists,cgroups=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
 	RCPT_COUNT_TWELVE(0.00)[38];
 	RCVD_COUNT_THREE(0.00)[4];
@@ -120,60 +120,41 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	FROM_NEQ_ENVFROM(0.00)[frederic@kernel.org,cgroups@vger.kernel.org];
 	FROM_HAS_DN(0.00)[];
 	DKIM_TRACE(0.00)[kernel.org:+];
-	NEURAL_HAM(-0.00)[-0.966];
+	NEURAL_HAM(-0.00)[-0.964];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[cgroups];
 	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
 	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 1290782E6C
+X-Rspamd-Queue-Id: 149E782E90
 X-Rspamd-Action: no action
 
-Until now, cpuset would propagate isolated partition changes to
-timer migration so that unbound timers don't get migrated to isolated
-CPUs.
+Cpuset isolated partitions are now included in HK_TYPE_DOMAIN. Testing
+if a CPU is part of an isolated partition alone is now useless.
 
-Since housekeeping now centralizes, synchronize and propagates isolation
-cpumask changes, perform the work from that subsystem for consolidation
-and consistency purposes.
+Remove the superflous test.
 
 Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
+Reviewed-by: Waiman Long <longman@redhat.com>
 ---
- kernel/cgroup/cpuset.c   | 3 ---
- kernel/sched/isolation.c | 4 ++++
- 2 files changed, 4 insertions(+), 3 deletions(-)
+ kernel/time/timer_migration.c | 5 ++---
+ 1 file changed, 2 insertions(+), 3 deletions(-)
 
-diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
-index 6309ec5d7b2a..080fa2fb10c7 100644
---- a/kernel/cgroup/cpuset.c
-+++ b/kernel/cgroup/cpuset.c
-@@ -1485,9 +1485,6 @@ static void update_isolation_cpumasks(void)
- 	ret = housekeeping_update(isolated_cpus);
- 	WARN_ON_ONCE(ret < 0);
- 
--	ret = tmigr_isolated_exclude_cpumask(isolated_cpus);
--	WARN_ON_ONCE(ret < 0);
--
- 	isolated_cpus_updating = false;
+diff --git a/kernel/time/timer_migration.c b/kernel/time/timer_migration.c
+index 3879575a4975..6da9cd562b20 100644
+--- a/kernel/time/timer_migration.c
++++ b/kernel/time/timer_migration.c
+@@ -466,9 +466,8 @@ static inline bool tmigr_is_isolated(int cpu)
+ {
+ 	if (!static_branch_unlikely(&tmigr_exclude_isolated))
+ 		return false;
+-	return (!housekeeping_cpu(cpu, HK_TYPE_DOMAIN) ||
+-		cpuset_cpu_is_isolated(cpu)) &&
+-	       housekeeping_cpu(cpu, HK_TYPE_KERNEL_NOISE);
++	return (!housekeeping_cpu(cpu, HK_TYPE_DOMAIN) &&
++		housekeeping_cpu(cpu, HK_TYPE_KERNEL_NOISE));
  }
  
-diff --git a/kernel/sched/isolation.c b/kernel/sched/isolation.c
-index 5bcb6d760f20..a30d19b641f7 100644
---- a/kernel/sched/isolation.c
-+++ b/kernel/sched/isolation.c
-@@ -149,9 +149,13 @@ int housekeeping_update(struct cpumask *isol_mask)
- 	pci_probe_flush_workqueue();
- 	mem_cgroup_flush_workqueue();
- 	vmstat_flush_workqueue();
-+
- 	err = workqueue_unbound_housekeeping_update(housekeeping_cpumask(HK_TYPE_DOMAIN));
- 	WARN_ON_ONCE(err < 0);
- 
-+	err = tmigr_isolated_exclude_cpumask(isol_mask);
-+	WARN_ON_ONCE(err < 0);
-+
- 	kfree(old);
- 
- 	return 0;
+ /*
 -- 
 2.51.1
 
