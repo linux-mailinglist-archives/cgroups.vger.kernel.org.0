@@ -1,50 +1,50 @@
-Return-Path: <cgroups+bounces-13443-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-13444-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id APIeFwQud2kvdAEAu9opvQ
-	(envelope-from <cgroups+bounces-13443-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Mon, 26 Jan 2026 10:04:04 +0100
+	id sDAXJjcud2kvdAEAu9opvQ
+	(envelope-from <cgroups+bounces-13444-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Mon, 26 Jan 2026 10:04:55 +0100
 X-Original-To: lists+cgroups@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id CBDA485BBC
-	for <lists+cgroups@lfdr.de>; Mon, 26 Jan 2026 10:04:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 28AA085BEA
+	for <lists+cgroups@lfdr.de>; Mon, 26 Jan 2026 10:04:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 7AB283014C13
-	for <lists+cgroups@lfdr.de>; Mon, 26 Jan 2026 09:03:22 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 08A33300B9E9
+	for <lists+cgroups@lfdr.de>; Mon, 26 Jan 2026 09:03:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E437A303A01;
-	Mon, 26 Jan 2026 09:03:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9F257302753;
+	Mon, 26 Jan 2026 09:03:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="O10fHPKl"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="ud2bx3TE"
 X-Original-To: cgroups@vger.kernel.org
 Received: from out-174.mta1.migadu.com (out-174.mta1.migadu.com [95.215.58.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 34DD43019C5;
-	Mon, 26 Jan 2026 09:03:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DB204248880;
+	Mon, 26 Jan 2026 09:03:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1769418200; cv=none; b=L6FoAuQCzo4bNXAetzPN+QFacorhDSu/F5nc55D4XJq1JLOGCqQ8p/+/57E7TRjSA2WAqfeqdxjvdKcii/im1sFO6vQJY6QJHdDXZ4h33kdCoxlAe0iYw94ixcNxlVx4DDAZArUtu2isRQqD3U4cDXxmiqBKjPjg0rcNO45F6vI=
+	t=1769418213; cv=none; b=ZV9h56fF9tyLma3TNSgFQPicZJXbhFnTE720w2Vp0haNgcV9p28Prl16VqUZAvBolQ6Yw2i0qnhsWHNnkrFZS9aDtxvUKpAJIX7cIyITZSQTDD2sYVixDXBCzOtJ0En4ECKpji2u4McZ2fUT3f2T9moGKQAuFTPgyLumedgMs34=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1769418200; c=relaxed/simple;
-	bh=ICuHoMZgwyeQHMZZvgMtyo6q66wG5W6MOEIDq951aKE=;
+	s=arc-20240116; t=1769418213; c=relaxed/simple;
+	bh=1QNC2bfHfbW9SQUgfvnKGdBr0YOvFpgcnrQNCW/0a+Y=;
 	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=mlqsoiRK+XZlwJPIf92L95xfeOFb24mew5cqBaaLEvtRuu15g7/mlRTDCOtMJsJUxzooi26mSwK0SGkgz5SBeNwrjnIa+VHXlbTM7TBwkdjwDiO3zwLh4yIbGa9EzCbCczqBdtCYm6Ho2pgyZD6+gZ64zxRnkdsZJh2lMZBCZeg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=O10fHPKl; arc=none smtp.client-ip=95.215.58.174
+	 MIME-Version; b=Gl+dZYdjkwjY9CgVlPZQaN5WdndlP/qcWZq6DK1Lj/RjNZhUBr8IbOhnPJaqmGx1ae9I4IvHhMRqB8n4fjFQBbbR8PO1ezTQ/Ez8CJnsvCvHMs0MwN0I7ixpFPcdkV0x/q92XtF3Itl88IRojEGKobwD/vME2wmnu2ZCqfh3dbk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=ud2bx3TE; arc=none smtp.client-ip=95.215.58.174
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1769418196;
+	t=1769418209;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=RkVeShES4B2VgCiXTgzhTlETaaAj+olyI2gU3ClsRew=;
-	b=O10fHPKlKdFZ/Yi788FotJKbzD4VjaoFeypk+NZQorir1kC9RdW6L3vR+CzlcnKOZbL8yG
-	GCtjC1SsiJZikVD1hmcM24c3ab3v6CNMIN/9hLkkwSvw5a0c9mf/TEAGf7bCcPqtfKJpMk
-	+4sGOOZ/TBVSqgB6QFsg56vkvSIZJV8=
+	bh=ycrFyw6aXaYmQPmQruEJsfLSWjPHoV8ar+xnlNHnd9w=;
+	b=ud2bx3TEMtPgGp8z9l0owlnpj/NWdkQzdMWzUV6IHhmPv+afJYoJ7IIdwVRMloPKltQlvw
+	FQmrztNLMufNKeF1BrzsNQbomsBldDjN2Hfb8Z2Z9HFOPwzyYDRyM+oobxVNJMwW2QDu6U
+	/uEQiGHQD90+yXc7b4Gz4aNQFNrWppE=
 From: Hui Zhu <hui.zhu@linux.dev>
 To: Andrew Morton <akpm@linux-foundation.org>,
 	Johannes Weiner <hannes@cmpxchg.org>,
@@ -95,9 +95,9 @@ To: Andrew Morton <akpm@linux-foundation.org>,
 	bpf@vger.kernel.org,
 	netdev@vger.kernel.org,
 	linux-kselftest@vger.kernel.org
-Subject: [RFC PATCH bpf-next v4 01/12] bpf: move bpf_struct_ops_link into bpf.h
-Date: Mon, 26 Jan 2026 17:02:25 +0800
-Message-ID: <3a6694566eedbf17f84dbe5ffafe9aa0aa32108c.1769417588.git.zhuhui@kylinos.cn>
+Subject: [RFC PATCH bpf-next v4 02/12] bpf: initial support for attaching struct ops to cgroups
+Date: Mon, 26 Jan 2026 17:02:26 +0800
+Message-ID: <1c5845208d235e5deb37807f3be93af325033ba5.1769417588.git.zhuhui@kylinos.cn>
 In-Reply-To: <cover.1769417588.git.zhuhui@kylinos.cn>
 References: <cover.1769417588.git.zhuhui@kylinos.cn>
 Precedence: bulk
@@ -119,7 +119,7 @@ X-Spamd-Result: default: False [-0.16 / 15.00];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-13443-lists,cgroups=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-13444-lists,cgroups=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
 	RCPT_COUNT_TWELVE(0.00)[49];
 	MIME_TRACE(0.00)[0:+];
@@ -136,58 +136,69 @@ X-Spamd-Result: default: False [-0.16 / 15.00];
 	TAGGED_RCPT(0.00)[cgroups];
 	MISSING_XM_UA(0.00)[];
 	FROM_HAS_DN(0.00)[]
-X-Rspamd-Queue-Id: CBDA485BBC
+X-Rspamd-Queue-Id: 28AA085BEA
 X-Rspamd-Action: no action
 
 From: Roman Gushchin <roman.gushchin@linux.dev>
 
-Move struct bpf_struct_ops_link's definition into bpf.h,
-where other custom bpf links definitions are.
+When a struct ops is being attached and a bpf link is created,
+allow to pass a cgroup fd using bpf attr, so that struct ops
+can be attached to a cgroup instead of globally.
 
-It's necessary to access its members from outside of generic
-bpf_struct_ops implementation, which will be done by following
-patches in the series.
+Attached struct ops doesn't hold a reference to the cgroup,
+only preserves cgroup id.
 
 Signed-off-by: Roman Gushchin <roman.gushchin@linux.dev>
 ---
- include/linux/bpf.h         | 6 ++++++
- kernel/bpf/bpf_struct_ops.c | 6 ------
- 2 files changed, 6 insertions(+), 6 deletions(-)
+ include/linux/bpf.h         |  1 +
+ kernel/bpf/bpf_struct_ops.c | 15 +++++++++++++++
+ 2 files changed, 16 insertions(+)
 
 diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-index 4427c6e98331..899dd911dc82 100644
+index 899dd911dc82..720055d1dbce 100644
 --- a/include/linux/bpf.h
 +++ b/include/linux/bpf.h
-@@ -1891,6 +1891,12 @@ struct bpf_raw_tp_link {
- 	u64 cookie;
+@@ -1895,6 +1895,7 @@ struct bpf_struct_ops_link {
+ 	struct bpf_link link;
+ 	struct bpf_map __rcu *map;
+ 	wait_queue_head_t wait_hup;
++	u64 cgroup_id;
  };
  
-+struct bpf_struct_ops_link {
-+	struct bpf_link link;
-+	struct bpf_map __rcu *map;
-+	wait_queue_head_t wait_hup;
-+};
-+
  struct bpf_link_primer {
- 	struct bpf_link *link;
- 	struct file *file;
 diff --git a/kernel/bpf/bpf_struct_ops.c b/kernel/bpf/bpf_struct_ops.c
-index c43346cb3d76..de01cf3025b3 100644
+index de01cf3025b3..c807793e7633 100644
 --- a/kernel/bpf/bpf_struct_ops.c
 +++ b/kernel/bpf/bpf_struct_ops.c
-@@ -55,12 +55,6 @@ struct bpf_struct_ops_map {
- 	struct bpf_struct_ops_value kvalue;
- };
+@@ -13,6 +13,7 @@
+ #include <linux/btf_ids.h>
+ #include <linux/rcupdate_wait.h>
+ #include <linux/poll.h>
++#include <linux/cgroup.h>
  
--struct bpf_struct_ops_link {
--	struct bpf_link link;
--	struct bpf_map __rcu *map;
--	wait_queue_head_t wait_hup;
--};
--
- static DEFINE_MUTEX(update_mutex);
+ struct bpf_struct_ops_value {
+ 	struct bpf_struct_ops_common_value common;
+@@ -1377,6 +1378,20 @@ int bpf_struct_ops_link_create(union bpf_attr *attr)
+ 	}
+ 	bpf_link_init(&link->link, BPF_LINK_TYPE_STRUCT_OPS, &bpf_struct_ops_map_lops, NULL,
+ 		      attr->link_create.attach_type);
++#ifdef CONFIG_CGROUPS
++	if (attr->link_create.cgroup.relative_fd) {
++		struct cgroup *cgrp;
++
++		cgrp = cgroup_get_from_fd(attr->link_create.cgroup.relative_fd);
++		if (IS_ERR(cgrp)) {
++			err = PTR_ERR(cgrp);
++			goto err_out;
++		}
++
++		link->cgroup_id = cgroup_id(cgrp);
++		cgroup_put(cgrp);
++	}
++#endif /* CONFIG_CGROUPS */
  
- #define VALUE_PREFIX "bpf_struct_ops_"
+ 	err = bpf_link_prime(&link->link, &link_primer);
+ 	if (err)
 -- 
 2.43.0
 
