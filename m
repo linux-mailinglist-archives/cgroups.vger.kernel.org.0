@@ -1,271 +1,282 @@
-Return-Path: <cgroups+bounces-13440-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-13441-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id gPPkEICgdmmOTAEAu9opvQ
-	(envelope-from <cgroups+bounces-13440-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Mon, 26 Jan 2026 00:00:16 +0100
+	id 4PT6OR/Gdml7WAEAu9opvQ
+	(envelope-from <cgroups+bounces-13441-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Mon, 26 Jan 2026 02:40:47 +0100
 X-Original-To: lists+cgroups@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id C0E1983070
-	for <lists+cgroups@lfdr.de>; Mon, 26 Jan 2026 00:00:15 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 92D178357A
+	for <lists+cgroups@lfdr.de>; Mon, 26 Jan 2026 02:40:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 0AB4F30120FE
-	for <lists+cgroups@lfdr.de>; Sun, 25 Jan 2026 22:53:11 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 2ED583008206
+	for <lists+cgroups@lfdr.de>; Mon, 26 Jan 2026 01:40:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 86803310785;
-	Sun, 25 Jan 2026 22:50:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1D8B41DE3AD;
+	Mon, 26 Jan 2026 01:40:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="O9eNU6FB"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="JtIvEjky"
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out-171.mta0.migadu.com (out-171.mta0.migadu.com [91.218.175.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 461AE31195C;
-	Sun, 25 Jan 2026 22:50:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 27C1B1850A4
+	for <cgroups@vger.kernel.org>; Mon, 26 Jan 2026 01:40:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1769381421; cv=none; b=P6LzzLpJaxISPc8th48b61ZaV61CNJ0ZBexvVIyfWEFX4vaz1How2Q8BG+LOpddzrixnewXk6WSEGah4HX6CmWxCc1XrU+zdSOmhDZhp1wj4t/hvHFsi3w0cXZKMlWKh+a4GIUkg3agG1gx5DP1+XG7wqhSx+xboXRqU8iuvql8=
+	t=1769391631; cv=none; b=i3ipkP4ExgUVUi8x1te6bbM57wIqX5BCEGztmGdN53vEbOzkkB8D9FxZLU0N4BOyS0ysCaFZ88oVOcenAnxLf8Ax+G8J6MFVTswJ7wkJpq8DbR7d030SdnPM5hXsceiD/+Ce0CFwCmkctWIVZe79XXMw98zyoomC6PxkkBFcPsI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1769381421; c=relaxed/simple;
-	bh=soOg+pSguRYShDvlBT6z+CExBTh9mpEwKqBDpU+MvVA=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=r211aD/MjNFJP/I/vC720IJbw7NyF9nmniDbdW+3xKNC7OzssMzM5lqxhiOv4ge/1rfVjO641tmfgMWwFBRj7I4QdGVaIFfup2+c7DLC4Yqj2eUBMjMkQwjPlGdw9OHPoBTdV7ojuqwpfvr/3xlkpvPcrvuzzLas5IZBCIm8duM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=O9eNU6FB; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 63F9BC16AAE;
-	Sun, 25 Jan 2026 22:50:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1769381420;
-	bh=soOg+pSguRYShDvlBT6z+CExBTh9mpEwKqBDpU+MvVA=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=O9eNU6FBgsG9hyVi/+uWzwzBcb3jcShb7uOmQsjIIjUrQdwd6h2E2hlOYXFcXB/ql
-	 qdKPPIOMoMFnsXK4JR327RdmvVp12tzAKc3mdCuECy36dJ+ULwoOd7XxIR96MFfnRS
-	 Tf/BhWFSthB4dknZzQT+VDMKWaiGk1piYc4/1SvoEyWQPVWOMbGzCOX50wyM0HhBgo
-	 zQY6jjB6xI7BeQI9xaby26nk/VdbQlcrksM8alFh3VGgf4VPNgHrdrPRTG1yHtNs6B
-	 LJOghmDwx1hiHEaoiXnunqOam5DBew91Q1zeucjxGqoQn4ndm/rwNY/R4fMGcCaLal
-	 ZHqk/ey3wxMIw==
-From: Frederic Weisbecker <frederic@kernel.org>
-To: LKML <linux-kernel@vger.kernel.org>
-Cc: Frederic Weisbecker <frederic@kernel.org>,
-	=?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Bjorn Helgaas <bhelgaas@google.com>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Chen Ridong <chenridong@huawei.com>,
-	Danilo Krummrich <dakr@kernel.org>,
-	"David S . Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Gabriele Monaco <gmonaco@redhat.com>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Ingo Molnar <mingo@redhat.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Jens Axboe <axboe@kernel.dk>,
-	Johannes Weiner <hannes@cmpxchg.org>,
-	Lai Jiangshan <jiangshanlai@gmail.com>,
-	Marco Crivellari <marco.crivellari@suse.com>,
-	Michal Hocko <mhocko@suse.com>,
-	Muchun Song <muchun.song@linux.dev>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Phil Auld <pauld@redhat.com>,
-	"Rafael J . Wysocki" <rafael@kernel.org>,
-	Roman Gushchin <roman.gushchin@linux.dev>,
-	Shakeel Butt <shakeel.butt@linux.dev>,
-	Simon Horman <horms@kernel.org>,
-	Tejun Heo <tj@kernel.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Vlastimil Babka <vbabka@suse.cz>,
-	Waiman Long <longman@redhat.com>,
-	Will Deacon <will@kernel.org>,
-	cgroups@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-block@vger.kernel.org,
-	linux-mm@kvack.org,
-	linux-pci@vger.kernel.org,
-	netdev@vger.kernel.org
-Subject: [PATCH 33/33] doc: Add housekeeping documentation
-Date: Sun, 25 Jan 2026 23:45:40 +0100
-Message-ID: <20260125224541.50226-34-frederic@kernel.org>
-X-Mailer: git-send-email 2.51.1
-In-Reply-To: <20260125224541.50226-1-frederic@kernel.org>
-References: <20260125224541.50226-1-frederic@kernel.org>
+	s=arc-20240116; t=1769391631; c=relaxed/simple;
+	bh=st4oG32XzB15pUzcYQ7SBJEdkYV85I4fNj6S9F09L7I=;
+	h=MIME-Version:Date:Content-Type:From:Message-ID:Subject:To:Cc:
+	 In-Reply-To:References; b=CAeTfXhQbn5p+aFrzkQ+VK82kjGS1LB/qlH5V3xUAIPxS6dVpdCiFRkntGWNYuoaeuApCTC3oDhCkMNeJyykGjXzhy/MZdOECzx7cd4oWhgDJWO3Enc35rOlE+UwI3Z8CYqh5Q+U9XgJeZsE9AUZt4R2zQTRBV5IhE4SRuY3g+0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=JtIvEjky; arc=none smtp.client-ip=91.218.175.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1769391617;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=qOS/I3qY1vByTUV0rzQTBMazz/yNAmJFWVeZH3R10+Y=;
+	b=JtIvEjkyz6fJcB1qcAm9UeGr45TrQiuC4U97SwoSQWERAEd26ARBHVe7+Pw+4xl7KifCNB
+	9NYXe7CylOwE4gcUYajwfyysJZAzkYijiu3765UOhj/R84ibbkDA0AHNiazLN02H6fY7JY
+	Q2NWiGJKpBl1suunAWTwKhLgjyy1ZxU=
+Date: Mon, 26 Jan 2026 01:40:13 +0000
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: hui.zhu@linux.dev
+Message-ID: <8ee851c5676facd43c45cdd5d434d92d85628e43@linux.dev>
+TLS-Required: No
+Subject: Re: [RFC PATCH bpf-next v3 09/12] selftests/bpf: Add tests for
+ memcg_bpf_ops
+To: "JP Kobryn" <inwardvessel@gmail.com>, "Andrew Morton"
+ <akpm@linux-foundation.org>, "Johannes Weiner" <hannes@cmpxchg.org>,
+ "Michal Hocko" <mhocko@kernel.org>, "Roman Gushchin"
+ <roman.gushchin@linux.dev>, "Shakeel Butt" <shakeel.butt@linux.dev>,
+ "Muchun Song" <muchun.song@linux.dev>, "Alexei Starovoitov"
+ <ast@kernel.org>, "Daniel Borkmann" <daniel@iogearbox.net>, "Andrii
+ Nakryiko" <andrii@kernel.org>, "Martin KaFai Lau" <martin.lau@linux.dev>,
+ "Eduard Zingerman" <eddyz87@gmail.com>, "Song Liu" <song@kernel.org>,
+ "Yonghong Song" <yonghong.song@linux.dev>, "John Fastabend"
+ <john.fastabend@gmail.com>, "KP Singh" <kpsingh@kernel.org>, "Stanislav
+ Fomichev" <sdf@fomichev.me>, "Hao Luo" <haoluo@google.com>, "Jiri Olsa"
+ <jolsa@kernel.org>, "Shuah Khan" <shuah@kernel.org>, "Peter Zijlstra"
+ <peterz@infradead.org>, "Miguel Ojeda" <ojeda@kernel.org>, "Nathan
+ Chancellor" <nathan@kernel.org>, "Kees Cook" <kees@kernel.org>, "Tejun
+ Heo" <tj@kernel.org>, "Jeff Xu" <jeffxu@chromium.org>, mkoutny@suse.com,
+ "Jan Hendrik Farr" <kernel@jfarr.cc>, "Christian Brauner"
+ <brauner@kernel.org>, "Randy Dunlap" <rdunlap@infradead.org>, "Brian
+ Gerst" <brgerst@gmail.com>, "Masahiro Yamada" <masahiroy@kernel.org>,
+ davem@davemloft.net, "Jakub Kicinski" <kuba@kernel.org>, "Jesper Dangaard
+ Brouer" <hawk@kernel.org>, "Willem de Bruijn" <willemb@google.com>,
+ "Jason Xing" <kerneljasonxing@gmail.com>, "Paul Chaignon"
+ <paul.chaignon@gmail.com>, "Anton Protopopov" <a.s.protopopov@gmail.com>,
+ "Amery Hung" <ameryhung@gmail.com>, "Chen Ridong"
+ <chenridong@huaweicloud.com>, "Lance Yang" <lance.yang@linux.dev>,
+ "Jiayuan Chen" <jiayuan.chen@linux.dev>, linux-kernel@vger.kernel.org,
+ linux-mm@kvack.org, cgroups@vger.kernel.org, bpf@vger.kernel.org,
+ netdev@vger.kernel.org, linux-kselftest@vger.kernel.org
+Cc: "Hui Zhu" <zhuhui@kylinos.cn>, "Geliang Tang" <geliang@kernel.org>
+In-Reply-To: <b90069a3-86b4-4fba-9ff3-fe5f6c4e425d@gmail.com>
+References: <cover.1769157382.git.zhuhui@kylinos.cn>
+ <c44accaaaebfc32be13234f82b501a3852ba3f0f.1769157382.git.zhuhui@kylinos.cn>
+ <b90069a3-86b4-4fba-9ff3-fe5f6c4e425d@gmail.com>
+X-Migadu-Flow: FLOW_OUT
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-0.66 / 15.00];
-	MID_CONTAINS_FROM(1.00)[];
+	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_MISSING_CHARSET(0.50)[];
-	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
-	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
+	DMARC_POLICY_ALLOW(-0.50)[linux.dev,none];
+	R_DKIM_ALLOW(-0.20)[linux.dev:s=key1];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	FREEMAIL_CC(0.00)[kernel.org,suse.com,linux-foundation.org,google.com,arm.com,huawei.com,davemloft.net,redhat.com,linuxfoundation.org,kernel.dk,cmpxchg.org,gmail.com,linux.dev,infradead.org,linutronix.de,suse.cz,vger.kernel.org,lists.infradead.org,kvack.org];
-	MIME_TRACE(0.00)[0:+];
-	TAGGED_FROM(0.00)[bounces-13440-lists,cgroups=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[38];
-	RCVD_COUNT_THREE(0.00)[4];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-13441-lists,cgroups=lfdr.de];
+	FROM_NEQ_ENVFROM(0.00)[hui.zhu@linux.dev,cgroups@vger.kernel.org];
+	RCVD_COUNT_THREE(0.00)[3];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	FREEMAIL_TO(0.00)[gmail.com,linux-foundation.org,cmpxchg.org,kernel.org,linux.dev,iogearbox.net,fomichev.me,google.com,infradead.org,chromium.org,suse.com,jfarr.cc,davemloft.net,huaweicloud.com,vger.kernel.org,kvack.org];
+	MIME_TRACE(0.00)[0:+];
+	DKIM_TRACE(0.00)[linux.dev:+];
+	MISSING_XM_UA(0.00)[];
 	TO_DN_SOME(0.00)[];
+	NEURAL_HAM(-0.00)[-1.000];
+	RCPT_COUNT_GT_50(0.00)[51];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[frederic@kernel.org,cgroups@vger.kernel.org];
-	FROM_HAS_DN(0.00)[];
-	DKIM_TRACE(0.00)[kernel.org:+];
-	NEURAL_HAM(-0.00)[-0.958];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	MID_RHS_MATCH_FROM(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
 	TAGGED_RCPT(0.00)[cgroups];
-	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: C0E1983070
+	FROM_NO_DN(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[kylinos.cn:email,linux.dev:mid,linux.dev:dkim,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: 92D178357A
 X-Rspamd-Action: no action
 
-Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
-Acked-by: Waiman Long <longman@redhat.com>
----
- Documentation/core-api/housekeeping.rst | 111 ++++++++++++++++++++++++
- Documentation/core-api/index.rst        |   1 +
- 2 files changed, 112 insertions(+)
- create mode 100644 Documentation/core-api/housekeeping.rst
+2026=E5=B9=B41=E6=9C=8824=E6=97=A5 04:47, "JP Kobryn" <inwardvessel@gmail=
+.com mailto:inwardvessel@gmail.com?to=3D%22JP%20Kobryn%22%20%3Cinwardvess=
+el%40gmail.com%3E > =E5=86=99=E5=88=B0:
 
-diff --git a/Documentation/core-api/housekeeping.rst b/Documentation/core-api/housekeeping.rst
-new file mode 100644
-index 000000000000..e5417302774c
---- /dev/null
-+++ b/Documentation/core-api/housekeeping.rst
-@@ -0,0 +1,111 @@
-+======================================
-+Housekeeping
-+======================================
-+
-+
-+CPU Isolation moves away kernel work that may otherwise run on any CPU.
-+The purpose of its related features is to reduce the OS jitter that some
-+extreme workloads can't stand, such as in some DPDK usecases.
-+
-+The kernel work moved away by CPU isolation is commonly described as
-+"housekeeping" because it includes ground work that performs cleanups,
-+statistics maintainance and actions relying on them, memory release,
-+various deferrals etc...
-+
-+Sometimes housekeeping is just some unbound work (unbound workqueues,
-+unbound timers, ...) that gets easily assigned to non-isolated CPUs.
-+But sometimes housekeeping is tied to a specific CPU and requires
-+elaborated tricks to be offloaded to non-isolated CPUs (RCU_NOCB, remote
-+scheduler tick, etc...).
-+
-+Thus, a housekeeping CPU can be considered as the reverse of an isolated
-+CPU. It is simply a CPU that can execute housekeeping work. There must
-+always be at least one online housekeeping CPU at any time. The CPUs that
-+are not	isolated are automatically assigned as housekeeping.
-+
-+Housekeeping is currently divided in four features described
-+by the ``enum hk_type type``:
-+
-+1.	HK_TYPE_DOMAIN matches the work moved away by scheduler domain
-+	isolation performed through ``isolcpus=domain`` boot parameter or
-+	isolated cpuset partitions in cgroup v2. This includes scheduler
-+	load balancing, unbound workqueues and timers.
-+
-+2.	HK_TYPE_KERNEL_NOISE matches the work moved away by tick isolation
-+	performed through ``nohz_full=`` or ``isolcpus=nohz`` boot
-+	parameters. This includes remote scheduler tick, vmstat and lockup
-+	watchdog.
-+
-+3.	HK_TYPE_MANAGED_IRQ matches the IRQ handlers moved away by managed
-+	IRQ isolation performed through ``isolcpus=managed_irq``.
-+
-+4.	HK_TYPE_DOMAIN_BOOT matches the work moved away by scheduler domain
-+	isolation performed through ``isolcpus=domain`` only. It is similar
-+	to HK_TYPE_DOMAIN except it ignores the isolation performed by
-+	cpusets.
-+
-+
-+Housekeeping cpumasks
-+=================================
-+
-+Housekeeping cpumasks include the CPUs that can execute the work moved
-+away by the matching isolation feature. These cpumasks are returned by
-+the following function::
-+
-+	const struct cpumask *housekeeping_cpumask(enum hk_type type)
-+
-+By default, if neither ``nohz_full=``, nor ``isolcpus``, nor cpuset's
-+isolated partitions are used, which covers most usecases, this function
-+returns the cpu_possible_mask.
-+
-+Otherwise the function returns the cpumask complement of the isolation
-+feature. For example:
-+
-+With isolcpus=domain,7 the following will return a mask with all possible
-+CPUs except 7::
-+
-+	housekeeping_cpumask(HK_TYPE_DOMAIN)
-+
-+Similarly with nohz_full=5,6 the following will return a mask with all
-+possible CPUs except 5,6::
-+
-+	housekeeping_cpumask(HK_TYPE_KERNEL_NOISE)
-+
-+
-+Synchronization against cpusets
-+=================================
-+
-+Cpuset can modify the HK_TYPE_DOMAIN housekeeping cpumask while creating,
-+modifying or deleting an isolated partition.
-+
-+The users of HK_TYPE_DOMAIN cpumask must then make sure to synchronize
-+properly against cpuset in order to make sure that:
-+
-+1.	The cpumask snapshot stays coherent.
-+
-+2.	No housekeeping work is queued on a newly made isolated CPU.
-+
-+3.	Pending housekeeping work that was queued to a non isolated
-+	CPU which just turned isolated through cpuset must be flushed
-+	before the related created/modified isolated partition is made
-+	available to userspace.
-+
-+This synchronization is maintained by an RCU based scheme. The cpuset update
-+side waits for an RCU grace period after updating the HK_TYPE_DOMAIN
-+cpumask and before flushing pending works. On the read side, care must be
-+taken to gather the housekeeping target election and the work enqueue within
-+the same RCU read side critical section.
-+
-+A typical layout example would look like this on the update side
-+(``housekeeping_update()``)::
-+
-+	rcu_assign_pointer(housekeeping_cpumasks[type], trial);
-+	synchronize_rcu();
-+	flush_workqueue(example_workqueue);
-+
-+And then on the read side::
-+
-+	rcu_read_lock();
-+	cpu = housekeeping_any_cpu(HK_TYPE_DOMAIN);
-+	queue_work_on(cpu, example_workqueue, work);
-+	rcu_read_unlock();
-diff --git a/Documentation/core-api/index.rst b/Documentation/core-api/index.rst
-index 5eb0fbbbc323..79fe7735692e 100644
---- a/Documentation/core-api/index.rst
-+++ b/Documentation/core-api/index.rst
-@@ -25,6 +25,7 @@ it.
-    symbol-namespaces
-    asm-annotations
-    real-time/index
-+   housekeeping.rst
- 
- Data structures and low-level utilities
- =======================================
--- 
-2.51.1
 
+>=20
+>=20Hi Hui,
+>=20
+>=20On 1/23/26 1:00 AM, Hui Zhu wrote:
+>=20
+>=20>=20
+>=20> From: Hui Zhu <zhuhui@kylinos.cn>
+> >  Add a comprehensive selftest suite for the `memcg_bpf_ops`
+> >  functionality. These tests validate that BPF programs can correctly
+> >  influence memory cgroup throttling behavior by implementing the new
+> >  hooks.
+> >  The test suite is added in `prog_tests/memcg_ops.c` and covers
+> >  several key scenarios:
+> >  1. `test_memcg_ops_over_high`:
+> >  Verifies that a BPF program can trigger throttling on a low-priority
+> >  cgroup by returning a delay from the `get_high_delay_ms` hook when a
+> >  high-priority cgroup is under pressure.
+> >  2. `test_memcg_ops_below_low_over_high`:
+> >  Tests the combination of the `below_low` and `get_high_delay_ms`
+> >  hooks, ensuring they work together as expected.
+> >  3. `test_memcg_ops_below_min_over_high`:
+> >  Validates the interaction between the `below_min` and
+> >  `get_high_delay_ms` hooks.
+> >  The test framework sets up a cgroup hierarchy with high and low
+> >  priority groups, attaches BPF programs, runs memory-intensive
+> >  workloads, and asserts that the observed throttling (measured by
+> >  workload execution time) matches expectations.
+> >  The BPF program (`progs/memcg_ops.c`) uses a tracepoint on
+> >  `memcg:count_memcg_events` (specifically PGFAULT) to detect memory
+> >  pressure and trigger the appropriate hooks in response. This test
+> >  suite provides essential validation for the new memory control
+> >  mechanisms.
+> >  Signed-off-by: Geliang Tang <geliang@kernel.org>
+> >  Signed-off-by: Hui Zhu <zhuhui@kylinos.cn>
+> >  ---
+> >=20
+>=20[..]
+>=20
+>=20>=20
+>=20> diff --git a/tools/testing/selftests/bpf/prog_tests/memcg_ops.c b/t=
+ools/testing/selftests/bpf/prog_tests/memcg_ops.c
+> >  new file mode 100644
+> >  index 000000000000..9a8d16296f2d
+> >  --- /dev/null
+> >  +++ b/tools/testing/selftests/bpf/prog_tests/memcg_ops.c
+> >  @@ -0,0 +1,537 @@
+> >=20
+>=20[..]
+>=20
+>=20>=20
+>=20> +
+> >  +static void
+> >  +real_test_memcg_ops_child_work(const char *cgroup_path,
+> >  + char *data_filename,
+> >  + char *time_filename,
+> >  + int read_times)
+> >  +{
+> >  + struct timeval start, end;
+> >  + double elapsed;
+> >  + FILE *fp;
+> >  +
+> >  + if (!ASSERT_OK(join_parent_cgroup(cgroup_path), "join_parent_cgrou=
+p"))
+> >  + goto out;
+> >  +
+> >  + if (env.verbosity >=3D VERBOSE_NORMAL)
+> >  + printf("%s %d begin\n", __func__, getpid());
+> >  +
+> >  + gettimeofday(&start, NULL);
+> >  +
+> >  + if (!ASSERT_OK(write_file(data_filename), "write_file"))
+> >  + goto out;
+> >  +
+> >  + if (env.verbosity >=3D VERBOSE_NORMAL)
+> >  + printf("%s %d write_file done\n", __func__, getpid());
+> >  +
+> >  + if (!ASSERT_OK(read_file(data_filename, read_times), "read_file"))
+> >  + goto out;
+> >  +
+> >  + gettimeofday(&end, NULL);
+> >  +
+> >  + elapsed =3D (end.tv_sec - start.tv_sec) +
+> >  + (end.tv_usec - start.tv_usec) / 1000000.0;
+> >  +
+> >  + if (env.verbosity >=3D VERBOSE_NORMAL)
+> >  + printf("%s %d end %.6f\n", __func__, getpid(), elapsed);
+> >  +
+> >  + fp =3D fopen(time_filename, "w");
+> >  + if (!ASSERT_OK_PTR(fp, "fopen"))
+> >  + goto out;
+> >  + fprintf(fp, "%.6f", elapsed);
+> >  + fclose(fp);
+> >  +
+> >  +out:
+> >  + exit(0);
+> >  +}
+> >  +
+> >=20
+>=20[..]
+>=20
+>=20>=20
+>=20> +static void real_test_memcg_ops(int read_times)
+> >  +{
+> >  + int ret;
+> >  + char data_file1[] =3D "/tmp/test_data_XXXXXX";
+> >  + char data_file2[] =3D "/tmp/test_data_XXXXXX";
+> >  + char time_file1[] =3D "/tmp/test_time_XXXXXX";
+> >  + char time_file2[] =3D "/tmp/test_time_XXXXXX";
+> >  + pid_t pid1, pid2;
+> >  + double time1, time2;
+> >  +
+> >  + ret =3D mkstemp(data_file1);
+> >  + if (!ASSERT_GT(ret, 0, "mkstemp"))
+> >  + return;
+> >  + close(ret);
+> >  + ret =3D mkstemp(data_file2);
+> >  + if (!ASSERT_GT(ret, 0, "mkstemp"))
+> >  + goto cleanup_data_file1;
+> >  + close(ret);
+> >  + ret =3D mkstemp(time_file1);
+> >  + if (!ASSERT_GT(ret, 0, "mkstemp"))
+> >  + goto cleanup_data_file2;
+> >  + close(ret);
+> >  + ret =3D mkstemp(time_file2);
+> >  + if (!ASSERT_GT(ret, 0, "mkstemp"))
+> >  + goto cleanup_time_file1;
+> >  + close(ret);
+> >  +
+> >  + pid1 =3D fork();
+> >  + if (!ASSERT_GE(pid1, 0, "fork"))
+> >  + goto cleanup;
+> >  + if (pid1 =3D=3D 0)
+> >  + real_test_memcg_ops_child_work(CG_LOW_DIR,
+> >  + data_file1,
+> >  + time_file1,
+> >  + read_times);
+> >=20
+>=20Would it be better to call exit() after real_test_memcg_ops_child_wor=
+k()
+> instead of within it? This way the fork/exit/wait logic is contained in
+> the same scope making the lifetimes easier to track. I had to go back
+> and search for the call to exit() since at a glance this function
+> appears to proceed to call fork() and waitpid() from within both parent
+> and child procs (though it really does not).
+>
+
+I will fix it.
+
+Best,
+Hui
 
