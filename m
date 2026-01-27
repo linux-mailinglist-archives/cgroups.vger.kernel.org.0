@@ -1,50 +1,50 @@
-Return-Path: <cgroups+bounces-13465-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-13466-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id oHcoLluKeGn5qwEAu9opvQ
-	(envelope-from <cgroups+bounces-13465-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Tue, 27 Jan 2026 10:50:19 +0100
+	id QEt0I5yJeGmqqwEAu9opvQ
+	(envelope-from <cgroups+bounces-13466-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Tue, 27 Jan 2026 10:47:08 +0100
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
-	by mail.lfdr.de (Postfix) with ESMTPS id 31A6792104
-	for <lists+cgroups@lfdr.de>; Tue, 27 Jan 2026 10:50:19 +0100 (CET)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6EFBC9200C
+	for <lists+cgroups@lfdr.de>; Tue, 27 Jan 2026 10:47:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id EA7563019333
-	for <lists+cgroups@lfdr.de>; Tue, 27 Jan 2026 09:46:26 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id 9B1D4300E0EC
+	for <lists+cgroups@lfdr.de>; Tue, 27 Jan 2026 09:46:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF2DB335060;
-	Tue, 27 Jan 2026 09:46:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E2C003358D3;
+	Tue, 27 Jan 2026 09:46:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="P7Htg7Dy"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="GybHeuHi"
 X-Original-To: cgroups@vger.kernel.org
-Received: from out-176.mta1.migadu.com (out-176.mta1.migadu.com [95.215.58.176])
+Received: from out-183.mta1.migadu.com (out-183.mta1.migadu.com [95.215.58.183])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 442712E0923;
-	Tue, 27 Jan 2026 09:46:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D48D334C2C
+	for <cgroups@vger.kernel.org>; Tue, 27 Jan 2026 09:46:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.183
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1769507182; cv=none; b=NY5Kfhym4lywPp4/WkcR+jJ9CLZpF9b9M2w0+JvBKcfWhXVbBZEokOCano7RUuAh5zw84Gaw72GOkKAv9ZjjbyHpp086QNqOZsUfIpvr5xZ5jTMciRnLiaX1zjgrR6n01Kuqp6hG0AcCfTU9xKWXKsVbwJCEaiGeyIzG0kk10gI=
+	t=1769507195; cv=none; b=ltziWwFdxTeYf5qxDAI+xw77uOEWqYZzByHQTDM+2nV8NKQ8JQrC/lZgBawA7d9PeVV4zkfEzNHlkiehiILxoN0YYEBEcHEdRg/qd6AB9z3dsEWikfsNBlSy10oeN8x1OyVLf06twKO+79UGUSq5fcNsinIfnx1aCPxdEZFmZR4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1769507182; c=relaxed/simple;
-	bh=FST42ieyWdVzaafbTT/pjnBN12hvGiGjV8DHVrhn4G0=;
+	s=arc-20240116; t=1769507195; c=relaxed/simple;
+	bh=9PcymUN+ZCg2e50rgIRHOfTXaJvfmhQQChu88MTol/Q=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=UZN/ef6JZ+3DvdlgvA7/utRKd03tvEccVLF/KLCJj9SBWxMiZuD7HsxBjecNCR9PlyrP30hHMRJorRwp6Cx4xLFFc2oa1T27mK6oDDj4B4Rl1XnzmxL4Dx7fPjp8zTBVqKHhBiTo224jAv4pq+Xw6JN+0QP6TtkCXPy+HBp6l4U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=P7Htg7Dy; arc=none smtp.client-ip=95.215.58.176
+	 MIME-Version; b=nMO3t2wE3y7vxClgYplv1fa16yDi9dnlfkDbRMs1wY/WzA+EV78LuVOR+QxbYchqJPf7Sc2N7TS3jV6KAn5Ldbw9hhsjxLtT2G+o52mH73Bve0xJWSBNkxQB3iFUFrF7PKki8AEf/zs7kcemsu1mQVw5//ncXvJHgtPKIYgAIgg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=GybHeuHi; arc=none smtp.client-ip=95.215.58.183
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1769507179;
+	t=1769507191;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=qJzfS1JLGvEK+FxWqw8ITpq79hNz1KKD0GGXddU0FBc=;
-	b=P7Htg7Dy6LcFd8R8VdXfIlRFf756CP3aQQqE0Z/k6TdgZY0LGPPqD7tubppy+ucyIppTJs
-	XszAcPfj7QDhMZd//Q4CaJNlXtS7x69b7nbUy3/UywCdzCv5CntwBtC4qKsYL3g4YWzCCM
-	7Ul2OpmeuFE7OHLo8g03BDqHNO0XCr4=
+	bh=li2p2tnFJJjJ5INNx6uZKzhFQ5sqAQSEauna4Y+cr5o=;
+	b=GybHeuHiFgFrkJ7AI5shcktmPnd9xH64DeeRqlQBhSV0NblYrsh06r9lIa9PvDUqRdVvH8
+	G3IBrJjSqgSsbon2DrgvqkcEKLa3thyT+3AQ0GiRVk7tXtDpinuyKvLRIKacq4yEPFwPrZ
+	d2++W8afsihpFC/CQhgMyILVg9H3cic=
 From: Hui Zhu <hui.zhu@linux.dev>
 To: Andrew Morton <akpm@linux-foundation.org>,
 	Johannes Weiner <hannes@cmpxchg.org>,
@@ -97,9 +97,9 @@ To: Andrew Morton <akpm@linux-foundation.org>,
 	linux-kselftest@vger.kernel.org
 Cc: Hui Zhu <zhuhui@kylinos.cn>,
 	Geliang Tang <geliang@kernel.org>
-Subject: [RFC PATCH bpf-next v5 06/12] bpf: Pass flags in bpf_link_create for struct_ops
-Date: Tue, 27 Jan 2026 17:45:50 +0800
-Message-ID: <6b2d4fa8e5209d363f553d7851d5a1156137d9fb.1769506741.git.zhuhui@kylinos.cn>
+Subject: [RFC PATCH bpf-next v5 07/12] libbpf: Support passing user-defined flags for struct_ops
+Date: Tue, 27 Jan 2026 17:45:51 +0800
+Message-ID: <63d543aec9ade803afcd95461e3089e3d44caca6.1769506741.git.zhuhui@kylinos.cn>
 In-Reply-To: <cover.1769506741.git.zhuhui@kylinos.cn>
 References: <cover.1769506741.git.zhuhui@kylinos.cn>
 Precedence: bulk
@@ -117,11 +117,11 @@ X-Spamd-Result: default: False [-0.16 / 15.00];
 	R_MISSING_CHARSET(0.50)[];
 	DMARC_POLICY_ALLOW(-0.50)[linux.dev,none];
 	R_DKIM_ALLOW(-0.20)[linux.dev:s=key1];
-	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-13465-lists,cgroups=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-13466-lists,cgroups=lfdr.de];
 	MIME_TRACE(0.00)[0:+];
 	RCVD_COUNT_THREE(0.00)[3];
 	FORGED_SENDER_MAILLIST(0.00)[];
@@ -137,68 +137,43 @@ X-Spamd-Result: default: False [-0.16 / 15.00];
 	RCPT_COUNT_GT_50(0.00)[51];
 	TAGGED_RCPT(0.00)[cgroups];
 	NEURAL_HAM(-0.00)[-1.000];
-	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[kylinos.cn:mid,kylinos.cn:email,sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns,linux.dev:dkim]
-X-Rspamd-Queue-Id: 31A6792104
+	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[linux.dev:dkim,sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns,kylinos.cn:mid,kylinos.cn:email]
+X-Rspamd-Queue-Id: 6EFBC9200C
 X-Rspamd-Action: no action
 
 From: Hui Zhu <zhuhui@kylinos.cn>
 
-To support features like allowing overrides in cgroup hierarchies,
-we need a way to pass flags from userspace to the kernel when
-attaching a struct_ops.
+Building on the previous change that added flags to the kernel's link
+creation path, this patch exposes this functionality through libbpf.
 
-Extend `bpf_struct_ops_link` to include a `flags` field. This field
-is populated from `attr->link_create.flags` during link creation. This
-will allow struct_ops implementations, such as the upcoming memory
-controller ops, to interpret these flags and modify their attachment
-behavior accordingly.
+The `bpf_struct_ops_opts` struct is extended with a `flags` member,
+which is then passed to the `bpf_link_create` syscall within
+`bpf_map__attach_struct_ops_opts`.
+
+This enables userspace applications to pass flags, such as
+`BPF_F_ALLOW_OVERRIDE`, when attaching struct_ops to cgroups,
+providing more control over the attachment behavior in nested
+hierarchies.
 
 Signed-off-by: Geliang Tang <geliang@kernel.org>
 Signed-off-by: Hui Zhu <zhuhui@kylinos.cn>
 ---
- include/linux/bpf.h            | 1 +
- kernel/bpf/bpf_struct_ops.c    | 1 +
- tools/include/uapi/linux/bpf.h | 2 +-
- 3 files changed, 3 insertions(+), 1 deletion(-)
+ tools/lib/bpf/libbpf.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-index 720055d1dbce..13c933cfc614 100644
---- a/include/linux/bpf.h
-+++ b/include/linux/bpf.h
-@@ -1896,6 +1896,7 @@ struct bpf_struct_ops_link {
- 	struct bpf_map __rcu *map;
- 	wait_queue_head_t wait_hup;
- 	u64 cgroup_id;
-+	u32 flags;
- };
- 
- struct bpf_link_primer {
-diff --git a/kernel/bpf/bpf_struct_ops.c b/kernel/bpf/bpf_struct_ops.c
-index c807793e7633..0df608c88403 100644
---- a/kernel/bpf/bpf_struct_ops.c
-+++ b/kernel/bpf/bpf_struct_ops.c
-@@ -1392,6 +1392,7 @@ int bpf_struct_ops_link_create(union bpf_attr *attr)
- 		cgroup_put(cgrp);
+diff --git a/tools/lib/bpf/libbpf.c b/tools/lib/bpf/libbpf.c
+index 70a00da54ff5..06c936bad211 100644
+--- a/tools/lib/bpf/libbpf.c
++++ b/tools/lib/bpf/libbpf.c
+@@ -13511,6 +13511,7 @@ struct bpf_link *bpf_map__attach_struct_ops_opts(const struct bpf_map *map,
  	}
- #endif /* CONFIG_CGROUPS */
-+	link->flags = attr->link_create.flags;
  
- 	err = bpf_link_prime(&link->link, &link_primer);
- 	if (err)
-diff --git a/tools/include/uapi/linux/bpf.h b/tools/include/uapi/linux/bpf.h
-index 3ca7d76e05f0..4e1c5d6d91ae 100644
---- a/tools/include/uapi/linux/bpf.h
-+++ b/tools/include/uapi/linux/bpf.h
-@@ -1185,7 +1185,7 @@ enum bpf_perf_event_type {
- 	BPF_PERF_EVENT_EVENT = 6,
- };
+ 	link_opts.cgroup.relative_fd = OPTS_GET(opts, relative_fd, 0);
++	link_opts.flags = OPTS_GET(opts, flags, 0);
  
--/* cgroup-bpf attach flags used in BPF_PROG_ATTACH command
-+/* cgroup-bpf attach flags used in BPF_PROG_ATTACH and BPF_LINK_CREATE command
-  *
-  * NONE(default): No further bpf programs allowed in the subtree.
-  *
+ 	fd = bpf_link_create(map->fd, 0, BPF_STRUCT_OPS, &link_opts);
+ 	if (fd < 0) {
 -- 
 2.43.0
 
