@@ -1,50 +1,50 @@
-Return-Path: <cgroups+bounces-13469-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-13470-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id mOUCL1eKeGmqqwEAu9opvQ
-	(envelope-from <cgroups+bounces-13469-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Tue, 27 Jan 2026 10:50:15 +0100
+	id OFV8LXKKeGmqqwEAu9opvQ
+	(envelope-from <cgroups+bounces-13470-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Tue, 27 Jan 2026 10:50:42 +0100
 X-Original-To: lists+cgroups@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3E8FE920ED
-	for <lists+cgroups@lfdr.de>; Tue, 27 Jan 2026 10:50:15 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2D32A92131
+	for <lists+cgroups@lfdr.de>; Tue, 27 Jan 2026 10:50:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 8ECE93045A3C
-	for <lists+cgroups@lfdr.de>; Tue, 27 Jan 2026 09:48:15 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id EC6BF305A95A
+	for <lists+cgroups@lfdr.de>; Tue, 27 Jan 2026 09:48:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E9A2F33554B;
-	Tue, 27 Jan 2026 09:48:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E31803358A9;
+	Tue, 27 Jan 2026 09:48:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="KimfuEVO"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="O6bFglpo"
 X-Original-To: cgroups@vger.kernel.org
-Received: from out-187.mta1.migadu.com (out-187.mta1.migadu.com [95.215.58.187])
+Received: from out-181.mta1.migadu.com (out-181.mta1.migadu.com [95.215.58.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 968DE335077
-	for <cgroups@vger.kernel.org>; Tue, 27 Jan 2026 09:48:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.187
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 07CD533372E;
+	Tue, 27 Jan 2026 09:48:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1769507294; cv=none; b=o7EmUkiV1P5nec3XlBO+x8uuDIl2El7Fms9Preh1MohemVchhHqGAy3bwAcYzOcnRLkq6KQbM/v7uGpv38Z0TikEcw4n/bD+i2JFLnJQLhDD/qJOSbeITFu0myMbtT/kK86PObNOGJ8sJNJX0VaJaepGbJcrkah8GXi6tLfW7QA=
+	t=1769507305; cv=none; b=rhAAgekobGBIHiD3xQWwpHUAkii3Dyd2OrPVoIKN5mQC9/rkdkj11NRIbaIM4mdsF34cxmZcMAmd3PSAqz0D2TqQPm1pcRYYTs8iRsYn5Htx8R+DCSRKoQBpftjwWm1cIFwweMtIAmQYsGbtuj0CcyEduxNVeUrihUnzG5kong8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1769507294; c=relaxed/simple;
-	bh=FCFy1j/Ma2OsiV9AvUNgxQIAPG/9M6RdjHZidkT7GR8=;
+	s=arc-20240116; t=1769507305; c=relaxed/simple;
+	bh=aDizkIIrISoiSOmQOCh/qH2aJrcVckHeAXd0H3mi6To=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=gsUbHL2epqZqcbKrY68q1oUUrLzzOVwZaKoYKknKDQaW+Ac4cauwnzkBewhjqXFmIo0kxZTUfpVsHNRGs53zRrskfIgz9+q6BGpn8P1WwriB65bVZy2dkx53LNWeff/qczRxig/No7HmUKKDHQu5g+1apTDMjwQVdqaSSBLjkfg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=KimfuEVO; arc=none smtp.client-ip=95.215.58.187
+	 MIME-Version; b=pyrfo8HfpPRfnZ5mLoSqBOuz+b9UBTNNcVAt0vKHkb79fkXsZ4cgJaqvmTIqblPCsEczTOGvCj4Iwo5hEmQrRQgmVDfEgb5kARluqz/6+W6jLKW5wl77HjC+p9vUfucRO8sv/XmOXhh2nRRmGTaSMUaeTFCGnLiKq8wc/Mrjw2I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=O6bFglpo; arc=none smtp.client-ip=95.215.58.181
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1769507290;
+	t=1769507302;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=ZDAnxBm956aOF5ZEWN5PM3SfgIASeIOgGwSIT/GymGw=;
-	b=KimfuEVO0LaSFIx1vLjDfszO3hna5+Nma5FK1NDslPhcUrH/gP7YCHp6FkQNCIp4Rrzvxh
-	HcXQNqhZRXxjjgOraT/91ord6ZcUnFisKaRTUxDxWmtCQ3F8UykYDH28W8zxPQ9101jV/z
-	YcM2Z+FHQD7uvJ4j8I97lOIPgKGAtUo=
+	bh=38FTcR+0kk8dvZzN/w/J+BLbrBHVmHWXDv78hCgH2EM=;
+	b=O6bFglpozchYmTk8MyWF7zSH8QHQ/5EZph8UjcURHY/I6G6u9aXp2ss64fZKkFnKeTpNvs
+	tqZkyPA0egpf98Jjir8s3OFqJBVHPe/YdMWqAaDUaIlv3XWSiPw7BNJnNlyC8/LXNOvDMD
+	WP6OVk0NbAaZUqMMsVcEI9DpEPS0RyQ=
 From: Hui Zhu <hui.zhu@linux.dev>
 To: Andrew Morton <akpm@linux-foundation.org>,
 	Johannes Weiner <hannes@cmpxchg.org>,
@@ -97,9 +97,9 @@ To: Andrew Morton <akpm@linux-foundation.org>,
 	linux-kselftest@vger.kernel.org
 Cc: Hui Zhu <zhuhui@kylinos.cn>,
 	Geliang Tang <geliang@kernel.org>
-Subject: [RFC PATCH bpf-next v5 10/12] mm/bpf: Add BPF_F_ALLOW_OVERRIDE support for memcg_bpf_ops
-Date: Tue, 27 Jan 2026 17:47:35 +0800
-Message-ID: <4a1ad099a2db96b92318cb924d2a7b76ee530209.1769506741.git.zhuhui@kylinos.cn>
+Subject: [RFC PATCH bpf-next v5 11/12] selftests/bpf: Add test for memcg_bpf_ops hierarchies
+Date: Tue, 27 Jan 2026 17:47:36 +0800
+Message-ID: <0b2c894a6544aa44db25d01def2c6c3e23a8bcb4.1769506741.git.zhuhui@kylinos.cn>
 In-Reply-To: <cover.1769506741.git.zhuhui@kylinos.cn>
 References: <cover.1769506741.git.zhuhui@kylinos.cn>
 Precedence: bulk
@@ -117,11 +117,11 @@ X-Spamd-Result: default: False [-0.16 / 15.00];
 	R_MISSING_CHARSET(0.50)[];
 	DMARC_POLICY_ALLOW(-0.50)[linux.dev,none];
 	R_DKIM_ALLOW(-0.20)[linux.dev:s=key1];
-	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-13469-lists,cgroups=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-13470-lists,cgroups=lfdr.de];
 	MIME_TRACE(0.00)[0:+];
 	RCVD_COUNT_THREE(0.00)[3];
 	FORGED_SENDER_MAILLIST(0.00)[];
@@ -137,186 +137,116 @@ X-Spamd-Result: default: False [-0.16 / 15.00];
 	RCPT_COUNT_GT_50(0.00)[51];
 	TAGGED_RCPT(0.00)[cgroups];
 	NEURAL_HAM(-0.00)[-1.000];
-	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
 	DBL_BLOCKED_OPENRESOLVER(0.00)[linux.dev:dkim,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,kylinos.cn:mid,kylinos.cn:email]
-X-Rspamd-Queue-Id: 3E8FE920ED
+X-Rspamd-Queue-Id: 2D32A92131
 X-Rspamd-Action: no action
 
 From: Hui Zhu <zhuhui@kylinos.cn>
 
-To allow for more flexible attachment policies in nested cgroup
-hierarchies, this patch introduces support for the
-`BPF_F_ALLOW_OVERRIDE` flag for `memcg_bpf_ops`.
+Add a new selftest, `test_memcg_ops_hierarchies`, to validate the
+behavior of attaching `memcg_bpf_ops` in a nested cgroup hierarchy,
+specifically testing the `BPF_F_ALLOW_OVERRIDE` flag.
 
-When a `memcg_bpf_ops` is attached to a cgroup with this flag, it
-permits child cgroups to attach their own, different `memcg_bpf_ops`,
-overriding the parent's inherited program. Without this flag,
-attaching a BPF program to a cgroup that already has one (either
-directly or via inheritance) will fail.
+The test case performs the following steps:
+1. Creates a three-level deep cgroup hierarchy: `/cg`, `/cg/cg`, and
+   `/cg/cg/cg`.
+2. Attaches a BPF struct_ops to the top-level cgroup (`/cg`) with the
+   `BPF_F_ALLOW_OVERRIDE` flag.
+3. Successfully attaches a new struct_ops to the middle cgroup
+   (`/cg/cg`) without the flag, overriding the inherited one.
+4. Asserts that attaching another struct_ops to the deepest cgroup
+   (`/cg/cg/cg`) fails with -EBUSY, because its parent did not specify
+   `BPF_F_ALLOW_OVERRIDE`.
 
-The implementation involves:
-- Adding a `bpf_ops_flags` field to `struct mem_cgroup`.
-- During registration (`bpf_memcg_ops_reg`), checking for existing
-  programs and the `BPF_F_ALLOW_OVERRIDE` flag.
-- During unregistration (`bpf_memcg_ops_unreg`), correctly restoring
-  the parent's BPF program to the cgroup hierarchy.
-- Ensuring flags are inherited by child cgroups during online events.
-
-This change enables complex, multi-level policy enforcement where
-different subtrees of the cgroup hierarchy can have distinct memory
-management BPF programs.
+This test ensures that the attachment logic correctly enforces the
+override rules across a cgroup subtree.
 
 Signed-off-by: Geliang Tang <geliang@kernel.org>
 Signed-off-by: Hui Zhu <zhuhui@kylinos.cn>
 ---
- include/linux/memcontrol.h |  1 +
- mm/bpf_memcontrol.c        | 82 ++++++++++++++++++++++++++------------
- 2 files changed, 57 insertions(+), 26 deletions(-)
+ .../selftests/bpf/prog_tests/memcg_ops.c      | 71 +++++++++++++++++++
+ 1 file changed, 71 insertions(+)
 
-diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-index 24c4df864401..98c16e8dcd5b 100644
---- a/include/linux/memcontrol.h
-+++ b/include/linux/memcontrol.h
-@@ -354,6 +354,7 @@ struct mem_cgroup {
- 
- #ifdef CONFIG_BPF_SYSCALL
- 	struct memcg_bpf_ops *bpf_ops;
-+	u32 bpf_ops_flags;
- #endif
- 
- 	struct mem_cgroup_per_node *nodeinfo[];
-diff --git a/mm/bpf_memcontrol.c b/mm/bpf_memcontrol.c
-index e746eb9cbd56..7cd983e350d7 100644
---- a/mm/bpf_memcontrol.c
-+++ b/mm/bpf_memcontrol.c
-@@ -213,6 +213,7 @@ void memcontrol_bpf_online(struct mem_cgroup *memcg)
- 		goto out;
- 
- 	WRITE_ONCE(memcg->bpf_ops, ops);
-+	memcg->bpf_ops_flags = parent_memcg->bpf_ops_flags;
- 
- 	/*
- 	 * If the BPF program implements it, call the online handler to
-@@ -338,33 +339,19 @@ static int bpf_memcg_ops_init_member(const struct btf_type *t,
- 	return 0;
+diff --git a/tools/testing/selftests/bpf/prog_tests/memcg_ops.c b/tools/testing/selftests/bpf/prog_tests/memcg_ops.c
+index a596926ea233..91084e8acc32 100644
+--- a/tools/testing/selftests/bpf/prog_tests/memcg_ops.c
++++ b/tools/testing/selftests/bpf/prog_tests/memcg_ops.c
+@@ -533,3 +533,74 @@ void test_memcg_ops_below_min_over_high(void)
+ 	close(low_cgroup_fd);
+ 	cleanup_cgroup_environment();
  }
- 
--/**
-- * clean_memcg_bpf_ops - Clear BPF ops from a memory cgroup hierarchy
-- * @memcg: Root memory cgroup to start from
-- * @ops: The specific BPF ops to remove
-- *
-- * Walks the cgroup hierarchy and clears bpf_ops for any cgroup that
-- * matches @ops.
-- */
--static void clean_memcg_bpf_ops(struct mem_cgroup *memcg,
--				struct memcg_bpf_ops *ops)
--{
--	struct mem_cgroup *iter = NULL;
--
--	while ((iter = mem_cgroup_iter(memcg, iter, NULL))) {
--		if (READ_ONCE(iter->bpf_ops) == ops)
--			WRITE_ONCE(iter->bpf_ops, NULL);
--	}
--}
--
- static int bpf_memcg_ops_reg(void *kdata, struct bpf_link *link)
- {
- 	struct bpf_struct_ops_link *ops_link
- 		= container_of(link, struct bpf_struct_ops_link, link);
--	struct memcg_bpf_ops *ops = kdata;
-+	struct memcg_bpf_ops *ops = kdata, *old_ops;
- 	struct mem_cgroup *memcg, *iter = NULL;
- 	int err = 0;
- 
-+	if (ops_link->flags & ~BPF_F_ALLOW_OVERRIDE) {
-+		pr_err("attach only support BPF_F_ALLOW_OVERRIDE\n");
-+		return -EOPNOTSUPP;
-+	}
 +
- 	memcg = mem_cgroup_get_from_ino(ops_link->cgroup_id);
- 	if (!memcg)
- 		return -ENOENT;
-@@ -372,16 +359,41 @@ static int bpf_memcg_ops_reg(void *kdata, struct bpf_link *link)
- 		return PTR_ERR(memcg);
- 
- 	cgroup_lock();
++void test_memcg_ops_hierarchies(void)
++{
++	int ret, first = -1, second = -1, third = -1;
++	struct memcg_ops *skel = NULL;
++	struct bpf_map *map;
++	struct bpf_link *link1 = NULL, *link2 = NULL, *link3 = NULL;
++	DECLARE_LIBBPF_OPTS(bpf_struct_ops_opts, opts);
 +
-+	/*
-+	 * Check if memcg has bpf_ops and whether it is inherited from
-+	 * parent.
-+	 * If inherited and BPF_F_ALLOW_OVERRIDE is set, allow override.
-+	 */
-+	old_ops = READ_ONCE(memcg->bpf_ops);
-+	if (old_ops) {
-+		struct mem_cgroup *parent_memcg = parent_mem_cgroup(memcg);
++	ret = setup_cgroup_environment();
++	if (!ASSERT_OK(ret, "setup_cgroup_environment"))
++		goto cleanup;
 +
-+		if (!parent_memcg ||
-+		    !(memcg->bpf_ops_flags & BPF_F_ALLOW_OVERRIDE) ||
-+		    READ_ONCE(parent_memcg->bpf_ops) != old_ops) {
-+			err = -EBUSY;
-+			goto unlock_out;
-+		}
-+	}
++	first = create_and_get_cgroup("/cg");
++	if (!ASSERT_GE(first, 0, "create_and_get_cgroup /cg"))
++		goto cleanup;
++	ret = enable_controllers("/cg", "memory");
++	if (!ASSERT_OK(ret, "enable_controllers"))
++		goto cleanup;
 +
-+	/* Check for incompatible bpf_ops in descendants. */
- 	while ((iter = mem_cgroup_iter(memcg, iter, NULL))) {
--		if (READ_ONCE(iter->bpf_ops)) {
--			mem_cgroup_iter_break(memcg, iter);
-+		struct memcg_bpf_ops *iter_ops = READ_ONCE(iter->bpf_ops);
++	second = create_and_get_cgroup("/cg/cg");
++	if (!ASSERT_GE(second, 0, "create_and_get_cgroup /cg/cg"))
++		goto cleanup;
++	ret = enable_controllers("/cg/cg", "memory");
++	if (!ASSERT_OK(ret, "enable_controllers"))
++		goto cleanup;
 +
-+		if (iter_ops && iter_ops != old_ops) {
-+			/* cannot override existing bpf_ops of sub-cgroup. */
- 			err = -EBUSY;
--			break;
-+			goto unlock_out;
- 		}
-+	}
++	third = create_and_get_cgroup("/cg/cg/cg");
++	if (!ASSERT_GE(third, 0, "create_and_get_cgroup /cg/cg/cg"))
++		goto cleanup;
++	ret = enable_controllers("/cg/cg/cg", "memory");
++	if (!ASSERT_OK(ret, "enable_controllers"))
++		goto cleanup;
 +
-+	while ((iter = mem_cgroup_iter(memcg, iter, NULL))) {
- 		WRITE_ONCE(iter->bpf_ops, ops);
-+		iter->bpf_ops_flags = ops_link->flags;
- 	}
--	if (err)
--		clean_memcg_bpf_ops(memcg, ops);
++	skel = memcg_ops__open_and_load();
++	if (!ASSERT_OK_PTR(skel, "memcg_ops__open_and_load"))
++		goto cleanup;
 +
-+unlock_out:
- 	cgroup_unlock();
- 
- 	mem_cgroup_put(memcg);
-@@ -395,13 +407,31 @@ static void bpf_memcg_ops_unreg(void *kdata, struct bpf_link *link)
- 		= container_of(link, struct bpf_struct_ops_link, link);
- 	struct memcg_bpf_ops *ops = kdata;
- 	struct mem_cgroup *memcg;
-+	struct mem_cgroup *iter;
-+	struct memcg_bpf_ops *parent_bpf_ops = NULL;
-+	u32 parent_bpf_ops_flags = 0;
- 
- 	memcg = mem_cgroup_get_from_ino(ops_link->cgroup_id);
- 	if (IS_ERR_OR_NULL(memcg))
- 		goto out;
- 
- 	cgroup_lock();
--	clean_memcg_bpf_ops(memcg, ops);
++	map = bpf_object__find_map_by_name(skel->obj, "low_mcg_ops");
++	if (!ASSERT_OK_PTR(map, "bpf_object__find_map_by_name low_mcg_ops"))
++		goto cleanup;
 +
-+	/* Get the parent bpf_ops and bpf_ops_flags */
-+	iter = parent_mem_cgroup(memcg);
-+	if (iter) {
-+		parent_bpf_ops = READ_ONCE(iter->bpf_ops);
-+		parent_bpf_ops_flags = iter->bpf_ops_flags;
-+	}
++	opts.relative_fd = first;
++	opts.flags = BPF_F_ALLOW_OVERRIDE;
++	link1 = bpf_map__attach_struct_ops_opts(map, &opts);
++	if (!ASSERT_OK_PTR(link1, "bpf_map__attach_struct_ops_opts"))
++		goto cleanup;
 +
-+	iter = NULL;
-+	while ((iter = mem_cgroup_iter(memcg, iter, NULL))) {
-+		if (READ_ONCE(iter->bpf_ops) == ops) {
-+			WRITE_ONCE(iter->bpf_ops, parent_bpf_ops);
-+			iter->bpf_ops_flags = parent_bpf_ops_flags;
-+		}
-+	}
++	opts.relative_fd = second;
++	opts.flags = 0;
++	link2 = bpf_map__attach_struct_ops_opts(map, &opts);
++	if (!ASSERT_OK_PTR(link2, "bpf_map__attach_struct_ops_opts"))
++		goto cleanup;
 +
- 	cgroup_unlock();
- 
- 	mem_cgroup_put(memcg);
++	opts.relative_fd = third;
++	opts.flags = 0;
++	link3 = bpf_map__attach_struct_ops_opts(map, &opts);
++	if (!ASSERT_ERR_PTR(link3, "bpf_map__attach_struct_ops_opts"))
++		goto cleanup;
++
++cleanup:
++	bpf_link__destroy(link1);
++	bpf_link__destroy(link2);
++	bpf_link__destroy(link3);
++	memcg_ops__detach(skel);
++	memcg_ops__destroy(skel);
++	close(first);
++	close(second);
++	close(third);
++	cleanup_cgroup_environment();
++}
 -- 
 2.43.0
 
