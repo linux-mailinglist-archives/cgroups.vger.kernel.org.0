@@ -1,65 +1,65 @@
-Return-Path: <cgroups+bounces-13472-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-13473-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id kMh0HpaPeGmarAEAu9opvQ
-	(envelope-from <cgroups+bounces-13472-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Tue, 27 Jan 2026 11:12:38 +0100
+	id 0EA6FMWPeGmarAEAu9opvQ
+	(envelope-from <cgroups+bounces-13473-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Tue, 27 Jan 2026 11:13:25 +0100
 X-Original-To: lists+cgroups@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id DC8B392872
-	for <lists+cgroups@lfdr.de>; Tue, 27 Jan 2026 11:12:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id E2950928A8
+	for <lists+cgroups@lfdr.de>; Tue, 27 Jan 2026 11:13:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 6D9D23062F94
-	for <lists+cgroups@lfdr.de>; Tue, 27 Jan 2026 10:08:31 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id A5B243078C91
+	for <lists+cgroups@lfdr.de>; Tue, 27 Jan 2026 10:08:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 553E32E9EAC;
-	Tue, 27 Jan 2026 10:08:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 51ADB2EBBB7;
+	Tue, 27 Jan 2026 10:08:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="O77Lqwib"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Miit5XPl"
 X-Original-To: cgroups@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D2F812E8B66;
-	Tue, 27 Jan 2026 10:08:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0DE882E7F39;
+	Tue, 27 Jan 2026 10:08:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1769508508; cv=none; b=oj3TImT4j7nW03AWyG9CEvKEKaLoBRMjSKapshW0qiEg3JSOA7MttzJY/X2MGoxrHVoj5VI4FqxMuY1H7lLpIhmRDG5UIulITNFQyl43+1QxYdhJBkXEayFUgbr8zuZQoJ3rrrpgOoI6BIdMYUmJw2MhUekzcmm+vjTdstQlUVQ=
+	t=1769508511; cv=none; b=MvPEuf14aLLkcOR8yEPA/KgmEE1g4tIiqrEIWgsYRAEruzKmaVyrT3MI7ydVjWDH4eAdHSKlcMqkUrepyc8bDaoUSURHOMshC4sY28V4gx0ii/Ic11MJMouPCG2yqbVVqp058DzojkJOb/IS6sQ50j3JElSFSGdv1TVyFBZVIGQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1769508508; c=relaxed/simple;
-	bh=eXH7LTpBzt1Nf5PxVt/Zw5NAmsupLUnjjKZooxxdMvw=;
+	s=arc-20240116; t=1769508511; c=relaxed/simple;
+	bh=YzokodqmRv7baDmZfSZRrm1pBfaNJEn2jzrXGQM+254=;
 	h=Content-Type:MIME-Version:Message-Id:In-Reply-To:References:
-	 Subject:From:To:Cc:Date; b=RE51NVntuaajX8LQ0WIOuosIMe9NgZD8NF2QIkM1oRijlTm5hUECRxsC59Jz/1T7uamYJM2cp/Ol6rkfPJkodmn4+DQSVGdNJfl0aDOgmV989iEd6Fo/KYYcdi8XhIwkahmTeHmYxz7lJXeHzaMz3kN4/yRtvf6W+EXath4acpA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=O77Lqwib; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 93118C116C6;
-	Tue, 27 Jan 2026 10:08:27 +0000 (UTC)
+	 Subject:From:To:Cc:Date; b=bPUnJHdsMGt+1UF66fbtxe1k6756wuzwP9TEMT4X8OlV+QlB2rvQFnthJS5gHaO4XhZ4rmBK+t1+NYXl+LDu/vcX2tAOasS7/faSJXF4pcP2gtuZTwMchZ7EBt98zQneYvxkBPRdVxYkQqt8budp0r77Tqh9tIH1ttxOwbSe8ZY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Miit5XPl; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A086EC116C6;
+	Tue, 27 Jan 2026 10:08:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1769508508;
-	bh=eXH7LTpBzt1Nf5PxVt/Zw5NAmsupLUnjjKZooxxdMvw=;
+	s=k20201202; t=1769508510;
+	bh=YzokodqmRv7baDmZfSZRrm1pBfaNJEn2jzrXGQM+254=;
 	h=In-Reply-To:References:Subject:From:To:Cc:Date:From;
-	b=O77LqwibsgbYXv0sPD4MPA6EMA9pdPtxYNvTmdpyBaPZO3JR9RX/r9DQXxVe/yrQT
-	 zlfOBASL3XdUncbooj9HoX4VQ0r4dWQfGK1fJCtOOjH8L6Kbu0EkPeF40wAJK65kKk
-	 BrHXV23nDTtyCLnyhC8Ht6V+PquWe3ZQ6ueqZ9eIi91cHkd6HfX3WugtNcxzDAYsQM
-	 gbg06EV0f5oa32Z3/1n7eXZnQ9KCxAUzcPlGsIKSpLxX1wmSI3IhWlHv6Gqb4aubrT
-	 z2jQS0azW95V10FADHw+ibbhTtxXkWyVFhUn2ShVFrIlY9ulYiRMG1smlKXVmaPZuL
-	 HGrjvItPTNinQ==
-Content-Type: multipart/mixed; boundary="===============4938179612018120319=="
+	b=Miit5XPld5MLyihi4exevpHeI+AjmN2+wmSrfG28Uw6DBocXcUTH5DWZNBbFNeuXj
+	 yoHBAcucJ/42ARYyBUhwwVSn47ytuFHXJ/RlBtyCtWh/q/WBj3zzCmOA+h6riy191D
+	 s6rS0C9mUgE0xPPu2NaUa5+vdCpDZGlzWT86CTkqgHL0Mih7pJLCUle1biVayEGoTS
+	 YrZ2+fJ2Qxx2Ie3yEmAiilU9FI2AcfC7zG/Sq1bl5va3BmHOgu/iU7R4XUA7cZJwHc
+	 bCJQtJgDYqyMO4lqWjnmlmVClDSorbh0lSUCQfVuIMZuhQjtQ6drF8+R5nBixvP3p3
+	 QdQg8Q9FqpUfg==
+Content-Type: multipart/mixed; boundary="===============2579571787754050133=="
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-Id: <12bedb9d4fc0676edf3812bfcc8ff7c761286fc6d2e8ae4ca457a6602ec98dfe@mail.kernel.org>
-In-Reply-To: <4a1ad099a2db96b92318cb924d2a7b76ee530209.1769506741.git.zhuhui@kylinos.cn>
-References: <4a1ad099a2db96b92318cb924d2a7b76ee530209.1769506741.git.zhuhui@kylinos.cn>
-Subject: Re: [RFC PATCH bpf-next v5 10/12] mm/bpf: Add BPF_F_ALLOW_OVERRIDE support for memcg_bpf_ops
+Message-Id: <25d7b7ce5d8358f2d2dd9fc50e74596872b86aae1488b67cea6f85715e8f91de@mail.kernel.org>
+In-Reply-To: <ef784786a2e38c2effca5f331f11658eeafd5f3e.1769506741.git.zhuhui@kylinos.cn>
+References: <ef784786a2e38c2effca5f331f11658eeafd5f3e.1769506741.git.zhuhui@kylinos.cn>
+Subject: Re: [RFC PATCH bpf-next v5 12/12] samples/bpf: Add memcg priority control example
 From: bot+bpf-ci@kernel.org
 To: hui.zhu@linux.dev,akpm@linux-foundation.org,hannes@cmpxchg.org,mhocko@kernel.org,roman.gushchin@linux.dev,shakeel.butt@linux.dev,muchun.song@linux.dev,ast@kernel.org,daniel@iogearbox.net,andrii@kernel.org,martin.lau@linux.dev,eddyz87@gmail.com,song@kernel.org,yonghong.song@linux.dev,john.fastabend@gmail.com,kpsingh@kernel.org,sdf@fomichev.me,haoluo@google.com,jolsa@kernel.org,shuah@kernel.org,peterz@infradead.org,ojeda@kernel.org,nathan@kernel.org,kees@kernel.org,tj@kernel.org,jeffxu@chromium.org,mkoutny@suse.com,kernel@jfarr.cc,brauner@kernel.org,rdunlap@infradead.org,brgerst@gmail.com,masahiroy@kernel.org,davem@davemloft.net,kuba@kernel.org,hawk@kernel.org,inwardvessel@gmail.com,willemb@google.com,kerneljasonxing@gmail.com,paul.chaignon@gmail.com,a.s.protopopov@gmail.com,ameryhung@gmail.com,chenridong@huaweicloud.com,lance.yang@linux.dev,jiayuan.chen@linux.dev,linux-kernel@vger.kernel.org,linux-mm@kvack.org,cgroups@vger.kernel.org,bpf@vger.kernel.org,netdev@vger.kernel.org,linu
  x-kselftest@vger.kernel.org
 Cc: zhuhui@kylinos.cn,geliang@kernel.org,ast@kernel.org,andrii@kernel.org,daniel@iogearbox.net,martin.lau@kernel.org,eddyz87@gmail.com,yonghong.song@linux.dev,clm@meta.com,ihor.solodrai@linux.dev
-Date: Tue, 27 Jan 2026 10:08:27 +0000 (UTC)
+Date: Tue, 27 Jan 2026 10:08:29 +0000 (UTC)
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [2.54 / 15.00];
 	SUSPICIOUS_RECIPS(1.50)[];
@@ -72,7 +72,7 @@ X-Spamd-Result: default: False [2.54 / 15.00];
 	HAS_LIST_UNSUB(-0.01)[];
 	FREEMAIL_CC(0.00)[kylinos.cn,kernel.org,iogearbox.net,gmail.com,linux.dev,meta.com];
 	R_DKIM_REJECT(0.00)[kernel.org:s=k20201202];
-	TAGGED_FROM(0.00)[bounces-13472-lists,cgroups=lfdr.de,bpf-ci];
+	TAGGED_FROM(0.00)[bounces-13473-lists,cgroups=lfdr.de,bpf-ci];
 	RCVD_TLS_LAST(0.00)[];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	DMARC_POLICY_ALLOW(0.00)[kernel.org,quarantine];
@@ -82,7 +82,7 @@ X-Spamd-Result: default: False [2.54 / 15.00];
 	FROM_NEQ_ENVFROM(0.00)[bot@kernel.org,cgroups@vger.kernel.org];
 	MIME_TRACE(0.00)[0:+,1:+];
 	RCPT_COUNT_GT_50(0.00)[60];
-	NEURAL_HAM(-0.00)[-0.998];
+	NEURAL_HAM(-0.00)[-0.997];
 	TO_DN_NONE(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
@@ -93,76 +93,56 @@ X-Spamd-Result: default: False [2.54 / 15.00];
 	FROM_NO_DN(0.00)[];
 	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
 	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,mail.kernel.org:mid]
-X-Rspamd-Queue-Id: DC8B392872
+X-Rspamd-Queue-Id: E2950928A8
 X-Rspamd-Action: no action
 
---===============4938179612018120319==
+--===============2579571787754050133==
 Content-Type: text/plain; charset="us-ascii"
 MIME-Version: 1.0
 Content-Transfer-Encoding: 7bit
 
-> diff --git a/mm/bpf_memcontrol.c b/mm/bpf_memcontrol.c
-> index e746eb9cbd56..7cd983e350d7 100644
-> --- a/mm/bpf_memcontrol.c
-> +++ b/mm/bpf_memcontrol.c
+> diff --git a/samples/bpf/memcg.bpf.c b/samples/bpf/memcg.bpf.c
+> new file mode 100644
+> index 000000000000..e611ac0e641a
+> --- /dev/null
+> +++ b/samples/bpf/memcg.bpf.c
 
 [ ... ]
 
-> static int bpf_memcg_ops_reg(void *kdata, struct bpf_link *link)
-> {
-> 	struct bpf_struct_ops_link *ops_link
-> 		= container_of(link, struct bpf_struct_ops_link, link);
->-	struct memcg_bpf_ops *ops = kdata;
->+	struct memcg_bpf_ops *ops = kdata, *old_ops;
-> 	struct mem_cgroup *memcg, *iter = NULL;
-> 	int err = 0;
+> +SEC("tp/memcg/count_memcg_events")
+> +int
+> +handle_count_memcg_events(struct trace_event_raw_memcg_rstat_events *ctx)
+> +{
+> +	u32 key = 0;
+> +	struct AggregationData *data;
+> +	u64 current_ts;
+> +
+> +	if (ctx->id != local_config.high_cgroup_id ||
+> +	    (ctx->item != PGFAULT))
+                         ^^^^^^^
+
+The BPF code monitors PGFAULT events here.
+
+> diff --git a/samples/bpf/memcg.c b/samples/bpf/memcg.c
+> new file mode 100644
+> index 000000000000..0c47ed53f6ae
+> --- /dev/null
+> +++ b/samples/bpf/memcg.c
 
 [ ... ]
 
->+	/* Check for incompatible bpf_ops in descendants. */
-> 	while ((iter = mem_cgroup_iter(memcg, iter, NULL))) {
->-		if (READ_ONCE(iter->bpf_ops)) {
->-			mem_cgroup_iter_break(memcg, iter);
->+		struct memcg_bpf_ops *iter_ops = READ_ONCE(iter->bpf_ops);
->+
->+		if (iter_ops && iter_ops != old_ops) {
->+			/* cannot override existing bpf_ops of sub-cgroup. */
-> 			err = -EBUSY;
->-			break;
->+			goto unlock_out;
-                        ^^^^
-
-It looks like this error path leaks a CSS reference. The original code
-called mem_cgroup_iter_break(memcg, iter) before breaking out of the loop,
-which releases the CSS reference held on iter. The new code jumps directly
-to unlock_out without releasing this reference.
-
-mem_cgroup_iter() acquires a reference on each returned memcg via
-css_tryget() in mm/memcontrol.c. When breaking out of the loop early,
-mem_cgroup_iter_break() must be called to release that reference.
-
-Should this be:
-
-    if (iter_ops && iter_ops != old_ops) {
-        mem_cgroup_iter_break(memcg, iter);
-        err = -EBUSY;
-        goto unlock_out;
-    }
-
-> 		}
->+	}
->+
->+	while ((iter = mem_cgroup_iter(memcg, iter, NULL))) {
-> 		WRITE_ONCE(iter->bpf_ops, ops);
->+		iter->bpf_ops_flags = ops_link->flags;
-> 	}
->-	if (err)
->-		clean_memcg_bpf_ops(memcg, ops);
->+
->+unlock_out:
-> 	cgroup_unlock();
+> +static void usage(char *name)
+> +{
 
 [ ... ]
+
+> +	fprintf(stderr,
+> +		"  -t, --threshold=VALUE  The sum of 'val' PGSCAN of\n");
+                                                     ^^^^^^
+
+Should this say PGFAULT instead of PGSCAN? The commit message and the BPF
+code in memcg.bpf.c both indicate that the program monitors PGFAULT events,
+but the help text here mentions PGSCAN.
 
 
 ---
@@ -172,10 +152,10 @@ See: https://github.com/kernel-patches/vmtest/blob/master/ci/claude/README.md
 CI run summary: https://github.com/kernel-patches/bpf/actions/runs/21392729810
 
 AI-authorship-score: low
-AI-authorship-explanation: The commit follows standard kernel documentation patterns without distinctive AI markers.
+AI-authorship-explanation: Code is a straightforward adaptation of existing selftest code with standard kernel patterns; documentation error is more consistent with human copy-paste mistake than AI generation.
 issues-found: 1
-issue-severity-score: medium
-issue-severity-explanation: CSS reference leak in error path leads to memcg lifetime issues but does not cause immediate system instability.
+issue-severity-score: low
+issue-severity-explanation: Documentation mismatch in help text (PGSCAN vs PGFAULT) could cause user confusion but has no runtime impact.
 
---===============4938179612018120319==--
+--===============2579571787754050133==--
 
