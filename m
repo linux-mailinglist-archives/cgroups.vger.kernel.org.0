@@ -1,247 +1,212 @@
-Return-Path: <cgroups+bounces-13494-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-13495-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id eHxwEyOEemnx7AEAu9opvQ
-	(envelope-from <cgroups+bounces-13494-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Wed, 28 Jan 2026 22:48:19 +0100
+	id ALInOgmsemmv9AEAu9opvQ
+	(envelope-from <cgroups+bounces-13495-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Thu, 29 Jan 2026 01:38:33 +0100
 X-Original-To: lists+cgroups@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9FD31A9389
-	for <lists+cgroups@lfdr.de>; Wed, 28 Jan 2026 22:48:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 5262EAA466
+	for <lists+cgroups@lfdr.de>; Thu, 29 Jan 2026 01:38:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 71DB830125CC
-	for <lists+cgroups@lfdr.de>; Wed, 28 Jan 2026 21:47:55 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 37AD5302C5D0
+	for <lists+cgroups@lfdr.de>; Thu, 29 Jan 2026 00:38:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B564A314D0F;
-	Wed, 28 Jan 2026 21:47:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C4A8526158B;
+	Thu, 29 Jan 2026 00:37:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="x4/lfl4R"
+	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="k3z974Mo"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-ua1-f46.google.com (mail-ua1-f46.google.com [209.85.222.46])
+Received: from mail-qk1-f181.google.com (mail-qk1-f181.google.com [209.85.222.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B6057314B9A
-	for <cgroups@vger.kernel.org>; Wed, 28 Jan 2026 21:47:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.222.46
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1769636874; cv=pass; b=W1enz1QENqORse1lZUpoD/i+ObRJdEej+wr389WOpQGtOnUY2fKieaLxj0MMSNl92POEY+3aGsESvGlAqwI74yMOptD6P9KBnx0SiT709ors4fQSGCrqcVho5ujYBod0Wc2zTbtFNlgjKPEWc2EvVp6GCTvy8TiqO5OzUYA7D0Y=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1769636874; c=relaxed/simple;
-	bh=YC36ImuZe9JdqUv+pVkMpluokr4Llii9CFTV9lQL1NI=;
-	h=From:In-Reply-To:References:MIME-Version:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Ws/SDkoa1ZNAe6hK0/NuxIUajgXX5Mox3u1+yYq9oLMXXiW91GwCAW/hIQ5xiibJulPBMBz4iEVOMiMN1c1D+tII614OJuRPIG2Xopy4NUWtHv/VuSyjVu+RaFxeR9MyUin4Urgbvp2uLgJogU87pOpUWSi3AIQ2ovW4j+l2ul4=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=x4/lfl4R; arc=pass smtp.client-ip=209.85.222.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ua1-f46.google.com with SMTP id a1e0cc1a2514c-94803734b11so193188241.2
-        for <cgroups@vger.kernel.org>; Wed, 28 Jan 2026 13:47:52 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; t=1769636872; cv=none;
-        d=google.com; s=arc-20240605;
-        b=ed7/MlemlQvB7nxPXx/uAmbnYhUf8sVffNQnNcDg646/JlqHWxlBGM9SHB+CTaRT3I
-         RhIUlZLUskwenBWNSfDW0jhG2OaK42+ncETms2gOr6pBLmWEziJbo1z6NUQ6DcAhd+p9
-         6njPVKXKaR0FsIwwEBMsvQaG3gbsJAfGSgnUlHygQNG155zyo9ZA1HeFkASIrrR3l965
-         FyFBLNvESY6+1DkR+kDmwUeMWiG3pDsBfDXt+bsX8df5MxlXS8gW6DUZpqERXb+h97Es
-         kYOtPcOXlZMXCaMo9xKzlp/lyqwS1F+OE6mSEFgiewFGZ78X6Up5D7gzKaAshCpRNtEQ
-         Bghg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
-        h=content-transfer-encoding:cc:to:subject:message-id:date
-         :mime-version:references:in-reply-to:from:dkim-signature;
-        bh=8KRtsUWTPrRQfD/St3Ag63nt0POKWslcjlDyzaxfyec=;
-        fh=YagYOAPqvZnK8UUoRn5z9oREC0jhohomr+uASY4eYh4=;
-        b=k9U0by+eZ/A2SmRGn1Prk9I8GOBlSWCPNRhNkBhktUVzWktFf91bIltf33VldUWPIe
-         UPqISv8OVmi/AzJv5Z82PAwDdwwYFc6bTywpnDy+qOwpD98ofneN/xhG3b8hf0jIb8pZ
-         FCrLVShgLte3194Nw60jTvoOwXNYnoMuxB5ItHYAOmvL/HbXAVDxe9tIVP6nAd+XE5DK
-         HCy0EVNInzY7xs4zQU9X2KHB4fZZqT8EPDKG1UU3SzpGm+H3peisIUxfXlyxgtE89DHm
-         HRJhPvyQEyqHRKgILlF1bytPRND2sisSquypDhIE1O91GITJ/pXG5ZvAQMK1tpERZ9ls
-         bPMA==;
-        darn=vger.kernel.org
-ARC-Authentication-Results: i=1; mx.google.com; arc=none
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D9DE023C50A
+	for <cgroups@vger.kernel.org>; Thu, 29 Jan 2026 00:37:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.181
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1769647078; cv=none; b=tdUm7UkTsricXweAm2dM3OZ6Cs9H8Sqpo+sIogw0hAP+mGlUz5Va66144xmZWu2nCDqm6upY1HVR3Ms+2tPj8IXPVpgpoHnbfgEtcLmNXIJC1A1XStcsS3tuCDagQeh1VAZtEAcekmBvfYXraGMue7Zfade+wfc/JPOiwXMs9kI=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1769647078; c=relaxed/simple;
+	bh=tXNj0V0FG3jDHp0sl6ptuF//zDhb0DbdK89SgU01AH4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=WaU3JNLIe3dWx6ToHTfW8gbKIJQ5AUks60DpF8Qgn1isaY+7fTGGBxOoGiwPr06DS9fcsTKSgYTA/BfQxUfN0pnHmtD7sn/mZcsnLlCnGBpF21cQscxbom8ooOh+ByMi9IgfghFisT3a7SPl0iBC0vYa8BAxvOtAXppmlH7h3rM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca; spf=pass smtp.mailfrom=ziepe.ca; dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b=k3z974Mo; arc=none smtp.client-ip=209.85.222.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ziepe.ca
+Received: by mail-qk1-f181.google.com with SMTP id af79cd13be357-8c0f13e4424so59588285a.1
+        for <cgroups@vger.kernel.org>; Wed, 28 Jan 2026 16:37:55 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1769636872; x=1770241672; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date
-         :mime-version:references:in-reply-to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=8KRtsUWTPrRQfD/St3Ag63nt0POKWslcjlDyzaxfyec=;
-        b=x4/lfl4RC4R6AZIvM1WTIKqANtJTykk9eIGt6qOukMOE1QRTKe0Nd4Kufq4/kTBDvg
-         O4gLZ1kkXS5Wi30V8TZbW4QI2U7WSmlwAyOQseQ0Kk86PWxdg+SbVc3mEsim2I63sEvG
-         auosx2itHw4eTN+FT8gJmnxpeIRAt/VFWkDpCj2LWJtWlU7MoxlQCFH8mZdrCaD5JeMn
-         Eri6ZQ+0pAdOorAluQAH/B4RRioCPqJ6ECaJ0QKnEW0i5Oi8aieYvFzIVSLRMFe+CQHE
-         UXxnGatvUwlrhNlh9IwMSkTcDBMYXAFS38Ys5DU1A4L/wOz5EVnX2gsj+2vKxJXrZFW5
-         CbbA==
+        d=ziepe.ca; s=google; t=1769647075; x=1770251875; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=1OWzBPKnyrz01i64zQ4S/hZaAIPcGy0JKcdMQLZXMgA=;
+        b=k3z974MoBekrskW+4yDuSvtzoUeR4tzTJU2yvyD4rQigVuBdm4BzN3Xg8Zzela1ij1
+         PtIBJOHG+48zicSasaJj88LsAp9Idss6arEvECeDPDvI1+/bGMecOxg2xZIYwnFVlh0e
+         N0DvTFOVBrdLgm2SKMS+gRiwkBiRJcJWUntisKKjBYWClnHFRtNhDwWc+rSNwr+1UjqW
+         hx681JKT5lyNNWCAUjt1BcDoxqd1Xi1LEySTm+fAhUY0zEB5n4V31HSnaVxU+vLpaw6P
+         OslVl70bntspz23oY0Aox/yOyL0R7Sg8jXzzls2Zxn0sc+rXC4pcAybAV0qWKdtqzTn8
+         u/Ag==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1769636872; x=1770241672;
-        h=content-transfer-encoding:cc:to:subject:message-id:date
-         :mime-version:references:in-reply-to:from:x-gm-gg:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=8KRtsUWTPrRQfD/St3Ag63nt0POKWslcjlDyzaxfyec=;
-        b=kAnA4PYEEoNAhNrorImPLR2OIbAaGcoGBG1Zsc9BJAWiffZCmIIYnwnNHYOorLfWdp
-         Ulwet6TaB5tYM46dBCmdL4Mzjy8BuW5yWuIiT2s1KDmfhMnK+D5hY2hEK1zT3d8zElma
-         hgiNtEvzT/Ktez3jHtHqHpfrz6FWxkv6dct64b9iB1M3DpM1mavapLN5gW+MgUBpFTGb
-         fEYJOosg8LJDEBU9XW/cKbyyHD+7jJRElZDFgmcR1i/uwzRY0oU9FFXyJslbzdeDlIqF
-         l4mPuI6RkoeKrWkk0OtGw0Dl7oF8JPiGKjpD/k3VzhVyeMLgMmutZomuzY7JTvDV3EVd
-         c2cQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUTXFDxcQW1lExBH0BbbHgYvSPiCBHTgFaxn/fAPc3UEQWIAyerMWw/B/FHF7UpPBh2d4gx8ZlJ@vger.kernel.org
-X-Gm-Message-State: AOJu0YyoWjQPThgNs4D8ppEISeuB2O0spRqLF/VWg/JaOeMMBakH5nrj
-	3P5s4f2xXGUw9E3HEGSuNX0a0qac84AHqQ9PblsV2IPSCCzDARjLHN0gkAuXRGmBU0LrYIUiAYV
-	EHewYjMjYQ1N8X7ha4E8QSuVYRtgs7KggC3C3uAge
-X-Gm-Gg: AZuq6aLe6qDwnUmX1HwJQvMAipAAtDtzrRMuPlWnHczhXYSYZYs7V/jrSDlvvfo3M4K
-	nyVltcHQ5WSbU4o7/xq2zFv9kgbVlUYu4WXW44pfeG05t+ZpzjRg6XfSDF8pXJ1lHqlVOBdMy8m
-	5SuV7uZLvaPL6LBeO1Pufhg+pyv/7RZ99xsw4faiRG0knKwpzZYsD4qstkwdHeJsDM8ed7tV28N
-	fzD8q3As9+X0cEYb2U1U2PZzXjDpP7I6NOs8DrWytqGRVj/4OfYfgXy6OdJU/0OpGi6QtwyIvVO
-	scfr31gw6ERZtVLqO/Yp5pbRIQ==
-X-Received: by 2002:a05:6102:144b:20b0:5f7:24e9:ece2 with SMTP id
- ada2fe7eead31-5f724e9edc6mr2295689137.28.1769636871290; Wed, 28 Jan 2026
- 13:47:51 -0800 (PST)
-Received: from 176938342045 named unknown by gmailapi.google.com with
- HTTPREST; Wed, 28 Jan 2026 13:47:50 -0800
-Received: from 176938342045 named unknown by gmailapi.google.com with
- HTTPREST; Wed, 28 Jan 2026 13:47:50 -0800
-From: Ackerley Tng <ackerleytng@google.com>
-In-Reply-To: <07836b1d-d0d8-40f2-8f7b-7805beca31d0@amd.com>
-References: <cover.1760731772.git.ackerleytng@google.com> <071a3c6603809186e914fe5fed939edee4e11988.1760731772.git.ackerleytng@google.com>
+        d=1e100.net; s=20230601; t=1769647075; x=1770251875;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=1OWzBPKnyrz01i64zQ4S/hZaAIPcGy0JKcdMQLZXMgA=;
+        b=lAyLVXZd4b7cUOwcc0OuSovZg/xqupcjxnkROb0f0/fgZsZPVIzfTobAIB3zsVEI1v
+         6IFmDnPLkg8tJ+Qca/9LlfAlS8185W7vqqEAbKhdDMndF3EyOp/Ahop1P/bxV6nYnGPI
+         uGItxWyqQOsD6y9/Xxy5iKNfXFjlXFYsjYynXH06xUYTMy9ATpjTL2SVbFx9zjm8wdjT
+         zzWJMHMdmTp2YYggeB4FrZakbVARrCJOxZvxPcwUH50eGxZ7qyPFo3uJNzuPERfhaMrU
+         DTyc/0IQdkwxOfmpvCDAIqspS2p0lJumICDm36650uo0INWHr1EvAI5unQ10jSJRGwg6
+         QMMw==
+X-Forwarded-Encrypted: i=1; AJvYcCXKjYpIpPf/75zXDAlWzBT2vmfLcuGMrJzfyzMK8hlpHStdWJOWE7dT/LfwHp03iM8WeTzF6gHP@vger.kernel.org
+X-Gm-Message-State: AOJu0Yyihsd10e8RUjuA5jirSoVZHSdqTr/gr/YbMUABEI935xcgecep
+	Fy60khy3KHDi3hPo0g45Je21Pm6F0h0DGGZgH04SO/dJSk660IBXaa+kvz0BuujL+fo=
+X-Gm-Gg: AZuq6aKb4kDTnFsW94eYr72T4KQ6jF7sGZVL91lF7shwP4VHNI9B4yBIzKiMfoQOc8E
+	w0jG1g/+fFl/T/gzBJzLjsDVP78B7h/NYwc2EJJo3DNMAYwAFMjAPBqgPIcFT1lSY8Qifo+Z78X
+	HOrsdiF6bS/2gxsQP94/NLYA794X/VyiEe4rB1GXXSC5dWWj6BX1noGI44rYvJ26VVESzP1sIXk
+	AGoOF30qSDJVQq1+qFbDD2KpoQx8i7fo8o0X52gnUx7EKtk6D5yhzy8q0kmOOmitbQEbGlRiaMf
+	uzdb24LaiHJuvSUX80Vj+RjAPJRk4P9qc5NIWUWiAVThrzceMPvg/qtFtn3G4p98eVkDsP3Jcoe
+	PMTrZV/d52PbeJfYbfQyFts7i55SOi/clNGc7FzrSh4zq/r3En7k8BACGcRucF2rsofu3lTPJXO
+	ZXOhuWvSfcCKyf5RFVdqOF+QSiiHpmfdWACr7IBLdaeINUtVhGQKVepLVmeqRbvt/+mDk=
+X-Received: by 2002:ae9:c202:0:b0:8c7:126e:e901 with SMTP id af79cd13be357-8c7126eeb1amr465687985a.22.1769647074488;
+        Wed, 28 Jan 2026 16:37:54 -0800 (PST)
+Received: from ziepe.ca (hlfxns017vw-142-162-112-119.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.112.119])
+        by smtp.gmail.com with ESMTPSA id af79cd13be357-8c711d29aa2sm294243485a.35.2026.01.28.16.37.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 28 Jan 2026 16:37:53 -0800 (PST)
+Received: from jgg by wakko with local (Exim 4.97)
+	(envelope-from <jgg@ziepe.ca>)
+	id 1vlG2j-00000009g5p-04Lm;
+	Wed, 28 Jan 2026 20:37:53 -0400
+Date: Wed, 28 Jan 2026 20:37:53 -0400
+From: Jason Gunthorpe <jgg@ziepe.ca>
+To: Ackerley Tng <ackerleytng@google.com>
+Cc: Alexey Kardashevskiy <aik@amd.com>, cgroups@vger.kernel.org,
+	kvm@vger.kernel.org, linux-doc@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-kselftest@vger.kernel.org, linux-mm@kvack.org,
+	linux-trace-kernel@vger.kernel.org, x86@kernel.org,
+	akpm@linux-foundation.org, binbin.wu@linux.intel.com, bp@alien8.de,
+	brauner@kernel.org, chao.p.peng@intel.com, chenhuacai@kernel.org,
+	corbet@lwn.net, dave.hansen@intel.com, dave.hansen@linux.intel.com,
+	david@redhat.com, dmatlack@google.com, erdemaktas@google.com,
+	fan.du@intel.com, fvdl@google.com, haibo1.xu@intel.com,
+	hannes@cmpxchg.org, hch@infradead.org, hpa@zytor.com,
+	hughd@google.com, ira.weiny@intel.com, isaku.yamahata@intel.com,
+	jack@suse.cz, james.morse@arm.com, jarkko@kernel.org,
+	jgowans@amazon.com, jhubbard@nvidia.com, jroedel@suse.de,
+	jthoughton@google.com, jun.miao@intel.com, kai.huang@intel.com,
+	keirf@google.com, kent.overstreet@linux.dev,
+	liam.merwick@oracle.com, maciej.wieczor-retman@intel.com,
+	mail@maciej.szmigiero.name, maobibo@loongson.cn,
+	mathieu.desnoyers@efficios.com, maz@kernel.org, mhiramat@kernel.org,
+	mhocko@kernel.org, mic@digikod.net, michael.roth@amd.com,
+	mingo@redhat.com, mlevitsk@redhat.com, mpe@ellerman.id.au,
+	muchun.song@linux.dev, nikunj@amd.com, nsaenz@amazon.es,
+	oliver.upton@linux.dev, palmer@dabbelt.com, pankaj.gupta@amd.com,
+	paul.walmsley@sifive.com, pbonzini@redhat.com, peterx@redhat.com,
+	pgonda@google.com, prsampat@amd.com, pvorel@suse.cz,
+	qperret@google.com, richard.weiyang@gmail.com,
+	rick.p.edgecombe@intel.com, rientjes@google.com,
+	rostedt@goodmis.org, roypat@amazon.co.uk, rppt@kernel.org,
+	seanjc@google.com, shakeel.butt@linux.dev, shuah@kernel.org,
+	steven.price@arm.com, steven.sistare@oracle.com,
+	suzuki.poulose@arm.com, tabba@google.com, tglx@linutronix.de,
+	thomas.lendacky@amd.com, vannapurve@google.com, vbabka@suse.cz,
+	viro@zeniv.linux.org.uk, vkuznets@redhat.com, wei.w.wang@intel.com,
+	will@kernel.org, willy@infradead.org, wyihan@google.com,
+	xiaoyao.li@intel.com, yan.y.zhao@intel.com, yilun.xu@intel.com,
+	yuzenghui@huawei.com, zhiquan1.li@intel.com
+Subject: Re: [RFC PATCH v1 05/37] KVM: guest_memfd: Wire up
+ kvm_get_memory_attributes() to per-gmem attributes
+Message-ID: <20260129003753.GZ1641016@ziepe.ca>
+References: <cover.1760731772.git.ackerleytng@google.com>
+ <071a3c6603809186e914fe5fed939edee4e11988.1760731772.git.ackerleytng@google.com>
  <07836b1d-d0d8-40f2-8f7b-7805beca31d0@amd.com>
+ <CAEvNRgEuez=JbArRf2SApLAL0usv5-Q6q=nBPOFMHrHGaKAtMw@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Date: Wed, 28 Jan 2026 13:47:50 -0800
-X-Gm-Features: AZwV_QgPf8aOvxqDX4gr94R7SzOt27JuvroRVjSaL4ACWGO_5lJuitif3BKdULg
-Message-ID: <CAEvNRgEuez=JbArRf2SApLAL0usv5-Q6q=nBPOFMHrHGaKAtMw@mail.gmail.com>
-Subject: Re: [RFC PATCH v1 05/37] KVM: guest_memfd: Wire up
- kvm_get_memory_attributes() to per-gmem attributes
-To: Alexey Kardashevskiy <aik@amd.com>, cgroups@vger.kernel.org, kvm@vger.kernel.org, 
-	linux-doc@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org, 
-	linux-mm@kvack.org, linux-trace-kernel@vger.kernel.org, x86@kernel.org
-Cc: akpm@linux-foundation.org, binbin.wu@linux.intel.com, bp@alien8.de, 
-	brauner@kernel.org, chao.p.peng@intel.com, chenhuacai@kernel.org, 
-	corbet@lwn.net, dave.hansen@intel.com, dave.hansen@linux.intel.com, 
-	david@redhat.com, dmatlack@google.com, erdemaktas@google.com, 
-	fan.du@intel.com, fvdl@google.com, haibo1.xu@intel.com, hannes@cmpxchg.org, 
-	hch@infradead.org, hpa@zytor.com, hughd@google.com, ira.weiny@intel.com, 
-	isaku.yamahata@intel.com, jack@suse.cz, james.morse@arm.com, 
-	jarkko@kernel.org, jgg@ziepe.ca, jgowans@amazon.com, jhubbard@nvidia.com, 
-	jroedel@suse.de, jthoughton@google.com, jun.miao@intel.com, 
-	kai.huang@intel.com, keirf@google.com, kent.overstreet@linux.dev, 
-	liam.merwick@oracle.com, maciej.wieczor-retman@intel.com, 
-	mail@maciej.szmigiero.name, maobibo@loongson.cn, 
-	mathieu.desnoyers@efficios.com, maz@kernel.org, mhiramat@kernel.org, 
-	mhocko@kernel.org, mic@digikod.net, michael.roth@amd.com, mingo@redhat.com, 
-	mlevitsk@redhat.com, mpe@ellerman.id.au, muchun.song@linux.dev, 
-	nikunj@amd.com, nsaenz@amazon.es, oliver.upton@linux.dev, palmer@dabbelt.com, 
-	pankaj.gupta@amd.com, paul.walmsley@sifive.com, pbonzini@redhat.com, 
-	peterx@redhat.com, pgonda@google.com, prsampat@amd.com, pvorel@suse.cz, 
-	qperret@google.com, richard.weiyang@gmail.com, rick.p.edgecombe@intel.com, 
-	rientjes@google.com, rostedt@goodmis.org, roypat@amazon.co.uk, 
-	rppt@kernel.org, seanjc@google.com, shakeel.butt@linux.dev, shuah@kernel.org, 
-	steven.price@arm.com, steven.sistare@oracle.com, suzuki.poulose@arm.com, 
-	tabba@google.com, tglx@linutronix.de, thomas.lendacky@amd.com, 
-	vannapurve@google.com, vbabka@suse.cz, viro@zeniv.linux.org.uk, 
-	vkuznets@redhat.com, wei.w.wang@intel.com, will@kernel.org, 
-	willy@infradead.org, wyihan@google.com, xiaoyao.li@intel.com, 
-	yan.y.zhao@intel.com, yilun.xu@intel.com, yuzenghui@huawei.com, 
-	zhiquan1.li@intel.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAEvNRgEuez=JbArRf2SApLAL0usv5-Q6q=nBPOFMHrHGaKAtMw@mail.gmail.com>
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-0.66 / 15.00];
+X-Spamd-Result: default: False [-0.16 / 15.00];
 	SUSPICIOUS_RECIPS(1.50)[];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=2];
-	DMARC_POLICY_ALLOW(-0.50)[google.com,reject];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
-	R_DKIM_ALLOW(-0.20)[google.com:s=20230601];
+	R_DKIM_ALLOW(-0.20)[ziepe.ca:s=google];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FREEMAIL_CC(0.00)[linux-foundation.org,linux.intel.com,alien8.de,kernel.org,intel.com,lwn.net,redhat.com,google.com,cmpxchg.org,infradead.org,zytor.com,suse.cz,arm.com,ziepe.ca,amazon.com,nvidia.com,suse.de,linux.dev,oracle.com,maciej.szmigiero.name,loongson.cn,efficios.com,digikod.net,amd.com,ellerman.id.au,amazon.es,dabbelt.com,sifive.com,gmail.com,goodmis.org,amazon.co.uk,linutronix.de,zeniv.linux.org.uk,huawei.com];
-	FROM_HAS_DN(0.00)[];
-	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-13494-lists,cgroups=lfdr.de];
+	FREEMAIL_CC(0.00)[amd.com,vger.kernel.org,kvack.org,kernel.org,linux-foundation.org,linux.intel.com,alien8.de,intel.com,lwn.net,redhat.com,google.com,cmpxchg.org,infradead.org,zytor.com,suse.cz,arm.com,amazon.com,nvidia.com,suse.de,linux.dev,oracle.com,maciej.szmigiero.name,loongson.cn,efficios.com,digikod.net,ellerman.id.au,amazon.es,dabbelt.com,sifive.com,gmail.com,goodmis.org,amazon.co.uk,linutronix.de,zeniv.linux.org.uk,huawei.com];
+	DKIM_TRACE(0.00)[ziepe.ca:+];
 	MIME_TRACE(0.00)[0:+];
+	DMARC_NA(0.00)[ziepe.ca];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	DKIM_TRACE(0.00)[google.com:+];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	RCVD_TLS_LAST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-13495-lists,cgroups=lfdr.de];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	MISSING_XM_UA(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	TO_DN_SOME(0.00)[];
 	RCVD_COUNT_FIVE(0.00)[6];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[ackerleytng@google.com,cgroups@vger.kernel.org];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[jgg@ziepe.ca,cgroups@vger.kernel.org];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
 	RCPT_COUNT_GT_50(0.00)[97];
-	TAGGED_RCPT(0.00)[cgroups];
+	MID_RHS_MATCH_FROM(0.00)[];
 	NEURAL_HAM(-0.00)[-1.000];
-	TO_DN_SOME(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,amd.com:email,mail.gmail.com:mid]
-X-Rspamd-Queue-Id: 9FD31A9389
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	TAGGED_RCPT(0.00)[cgroups];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[amd.com:email,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,ziepe.ca:mid,ziepe.ca:dkim]
+X-Rspamd-Queue-Id: 5262EAA466
 X-Rspamd-Action: no action
 
-Alexey Kardashevskiy <aik@amd.com> writes:
+On Wed, Jan 28, 2026 at 01:47:50PM -0800, Ackerley Tng wrote:
+> Alexey Kardashevskiy <aik@amd.com> writes:
+> 
+> >
+> > [...snip...]
+> >
+> >
+> 
+> Thanks for bringing this up!
+> 
+> > I am trying to make it work with TEE-IO where fd of VFIO MMIO is a dmabuf fd while the rest (guest RAM) is gmemfd. The above suggests that if there is gmemfd - then the memory attributes are handled by gmemfd which is... expected?
+> >
+> 
+> I think this is not expected.
+> 
+> IIUC MMIO guest physical addresses don't have an associated memslot, but
+> if you managed to get to that line in kvm_gmem_get_memory_attributes(),
+> then there is an associated memslot (slot != NULL)?
 
->
-> [...snip...]
->
->
+I think they should have a memslot, shouldn't they? I imagine creating
+a memslot from a FD and the FD can be memfd, guestmemfd, dmabuf, etc,
+etc ?
 
-Thanks for bringing this up!
+> Either way, guest_memfd shouldn't store attributes for guest physical
+> addresses that don't belong to some guest_memfd memslot.
+> 
+> I think we need a broader discussion for this on where to store memory
+> attributes for MMIO addresses.
+> 
+> I think we should at least have line of sight to storing memory
+> attributes for MMIO addresses, in case we want to design something else,
+> since we're putting vm_memory_attributes on a deprecation path with this
+> series.
 
-> I am trying to make it work with TEE-IO where fd of VFIO MMIO is a dmabuf=
- fd while the rest (guest RAM) is gmemfd. The above suggests that if there =
-is gmemfd - then the memory attributes are handled by gmemfd which is... ex=
-pected?
->
+I don't know where you want to store them in KVM long term, but they
+need to come from the dmabuf itself (probably via a struct
+p2pdma_provider) and currently it is OK to assume all DMABUFs are
+uncachable MMIO that is safe for the VM to convert into "write
+combining" (eg Normal-NC on ARM)
 
-I think this is not expected.
+Jason
 
-IIUC MMIO guest physical addresses don't have an associated memslot, but
-if you managed to get to that line in kvm_gmem_get_memory_attributes(),
-then there is an associated memslot (slot !=3D NULL)?
-
-Either way, guest_memfd shouldn't store attributes for guest physical
-addresses that don't belong to some guest_memfd memslot.
-
-I think we need a broader discussion for this on where to store memory
-attributes for MMIO addresses.
-
-I think we should at least have line of sight to storing memory
-attributes for MMIO addresses, in case we want to design something else,
-since we're putting vm_memory_attributes on a deprecation path with this
-series.
-
-Sean, what do you think?
-
-Alexey, shall we discuss this at either the upcoming PUCK or guest_memfd
-biweekly session?
-
-> The problem at hand is that kvm_mmu_faultin_pfn() fails at "if (fault->is=
-_private !=3D kvm_mem_is_private(kvm, fault->gfn))" and marking MMIO as pri=
-vate using kvm_vm_ioctl_set_mem_attributes() does not work as kvm_gmem_get_=
-memory_attributes() fails on dmabuf fds.
->
-> I worked around this like below but wonder what is the proper way? Thanks=
-,
->
->
-> @@ -768,13 +768,13 @@ unsigned long kvm_gmem_get_memory_attributes(struct=
- kvm *kvm, gfn_t gfn)
->   	 */
->   	if (!slot)
->   		return 0;
->
->   	CLASS(gmem_get_file, file)(slot);
->   	if (!file)
-> -		return false;
-> +		return kvm_get_vm_memory_attributes(kvm, gfn);
->
->   	/*
->   	 * Don't take the filemap invalidation lock, as temporarily acquiring
->   	 * that lock wouldn't provide any meaningful protection.  The caller
->   	 * _must_ protect consumption of private vs. shared by checking
->   	 * mmu_invalidate_retry_gfn() under mmu_lock.
->
->
->
-> --
-> Alexey
 
