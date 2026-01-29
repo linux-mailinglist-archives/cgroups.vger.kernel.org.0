@@ -1,201 +1,188 @@
-Return-Path: <cgroups+bounces-13506-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-13507-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id aDPxNpwfe2msBQIAu9opvQ
-	(envelope-from <cgroups+bounces-13506-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Thu, 29 Jan 2026 09:51:40 +0100
+	id qNlRBAUne2nXBgIAu9opvQ
+	(envelope-from <cgroups+bounces-13507-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Thu, 29 Jan 2026 10:23:17 +0100
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8394CADC02
-	for <lists+cgroups@lfdr.de>; Thu, 29 Jan 2026 09:51:40 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9B64AAE175
+	for <lists+cgroups@lfdr.de>; Thu, 29 Jan 2026 10:23:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 3E73030054C1
-	for <lists+cgroups@lfdr.de>; Thu, 29 Jan 2026 08:51:39 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 9732C30157F1
+	for <lists+cgroups@lfdr.de>; Thu, 29 Jan 2026 09:23:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F15737C11B;
-	Thu, 29 Jan 2026 08:51:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB96F37F756;
+	Thu, 29 Jan 2026 09:23:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="vvxYXiUm"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="cKvxPK4F"
 X-Original-To: cgroups@vger.kernel.org
-Received: from out-182.mta1.migadu.com (out-182.mta1.migadu.com [95.215.58.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com [209.85.128.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 51A9937C0E6
-	for <cgroups@vger.kernel.org>; Thu, 29 Jan 2026 08:51:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 022C837754A
+	for <cgroups@vger.kernel.org>; Thu, 29 Jan 2026 09:23:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1769676695; cv=none; b=mkQ9AhS8PadTdXOZq0S2wPgmhlwTA+ZqC0QU1CBRp5DMKeN4DzGup1CDrVreDdNgyoKoCmkyLNUUU3Cu7UXkNnWKB3lLWGrwchWhR/GqPfdV5KSyS9t0mdr0Nt1stLcNmRXnjUTyv/SBuUBKhlevgt/ZuWGQLNckSlbBnxzP/o0=
+	t=1769678592; cv=none; b=J8JtJFB315oLIyJqxCq2o/Uhba/dt7q5/PQhOLv4raQWjToEHr68ITcHBLCLKFkwhETUfIahNz+gPDczMZ38TSlkSB5K8aMJLvsaJx6xW5+Wr9pSTuOhasKM8CZ4RYiGFjat6YZn7yI6HOBcQqk0asFKUQkgjF6WaWc2n0evlY0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1769676695; c=relaxed/simple;
-	bh=rzFwTbcGlRFqg/XzbyvFBTLjJtfVORh5u9QmF3dfJic=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=hjtb4gjE1SpnXGLGL0h8ddHzT0RGguQ8gs1NfBuXEy8IykOKaMHZ7QXrSQ7jv9Wpq/K7rdGZsW3tsImpZDJYrnCS8u8nz6jkY7x0C3bvXI3qO12Ay+EWnDFbCNUXS/9OEyAzBXQ/vVjB2CWMTX/I2q7C99ArDZRG9ShH1vFdIKw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=vvxYXiUm; arc=none smtp.client-ip=95.215.58.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <6860146b-be12-4d5f-bec1-bbcec1dffbc6@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1769676676;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=uAdXb4bfUsmEDEKXvxCCDPoLM2r4WzvPltJYWV3bwtA=;
-	b=vvxYXiUm1xh5hSI0HndFd1wGYWaZAXe1kxDlslz5niCHLt+NR7Yn1ohQi7vhPZBTvXJ7mV
-	1TOrUgLmqGZQW99e0EBT4XQfvagxB0MBQuERtxdBLv5eBFvZmMTRRTrcUfg5c03zZwDx1O
-	c0M/oTunUTmd9zvO4CMOmjcmhXbsWRo=
-Date: Thu, 29 Jan 2026 16:50:39 +0800
+	s=arc-20240116; t=1769678592; c=relaxed/simple;
+	bh=IjWCFFJ8d5prVvuohkK6B/sQJwGGIMm8kSomcID2yqw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=mXgkc6jJFSLs+/3fFIvFiHJnvaHJy7dTW1Xp7FwBZEv1eHMYBLT7Jq3wIwRAHvI1tYCqB0BUMRq96oUs5c0ohyge856FVnWTXwVyE1Smc1oFgY2VSe21xMkG84hMoCz0W/FwjgfqMknKA3luGRVuuvaVa8ElrcBqRf0QFnYx46M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=cKvxPK4F; arc=none smtp.client-ip=209.85.128.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-wm1-f51.google.com with SMTP id 5b1f17b1804b1-47edd9024b1so5766105e9.3
+        for <cgroups@vger.kernel.org>; Thu, 29 Jan 2026 01:23:10 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1769678589; x=1770283389; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=IjWCFFJ8d5prVvuohkK6B/sQJwGGIMm8kSomcID2yqw=;
+        b=cKvxPK4FDF8GKRCcvzgSA6qomlDhEgTNwp/e0OQQwTzwAkyp/JQ2W51GWAnH1tYhpO
+         MVNcJtCB8arPeYhWREK1NNGngG2rSFl3eFrzTOc4hCCvybuVMjQYj7gsR3ChPBDGQOjo
+         AN12Tx0QoD4Ut37+9kYosMHAVjKMsfso6OEbbxFD4fa1xMELzw1hwAEMsOxCIsnlY5Fd
+         tkihPH4mFcjhoQcPAF/F63EZFSLiw1XSqYUIgkvjAC50lO0T2V3sNSUlu3pBmudXI0dI
+         hBLD37ommN/NmnJVwHFVmyy8IORh16frKSseIP13ugRGTe0QDn02xL8U+cTVgoW9+qfx
+         RCKg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1769678589; x=1770283389;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=IjWCFFJ8d5prVvuohkK6B/sQJwGGIMm8kSomcID2yqw=;
+        b=i1YRLAeghmf+7Kxt8BdYF0VextwWiQNbsdiARTUSPm2IhqQ0uRRCeX2C9KkG0xEmJq
+         gZvNP7MC3Mj1G27WBYK7/hGv3Lo5haYJApQE9hWM/Ta7/QDF1UJjyldyf60IVaRLKp58
+         0YF0d08GwV9zWA3opW2gXe9c6gwQroLSU2L3mSX/HNDxEILkvnzOl5Idx/DmUDdJyuj2
+         dY0VV1kt29sUdZffgone9HcBvBulcA3orUp0V7Ya0tWa6GTIRdKT6YBsMbWVTxxjeiTX
+         zKQ27eEzo45cn/yG6TlY7fEsk0jqUrp2/inQb0mTlY9vZK2PFqzCxLHHYj53LY1xAW/n
+         SfXw==
+X-Forwarded-Encrypted: i=1; AJvYcCVE1bnYOx42GpTifMTyTqLA0Vw7DXkS7Jo/QmNvjdDFOwdezNKSJ1LLNtHJtk+Btdo4Qh3LSrsp@vger.kernel.org
+X-Gm-Message-State: AOJu0YwHF6MccCfEF4QJ0I1uCQXYI+um7mgoZNwk2XObxywDhJAzKvLW
+	3D9nW0fTTM8VMY8YWQKBv+oAyugNaQjmWDGghD7ZD82SayWih1jMoUSUhI45Nw2qamA=
+X-Gm-Gg: AZuq6aLaE8wjQLE2NicjEvedYOoP9k0qCvmZm2X5SIcy0ACcwyD+0gPVpw3a8ILClEB
+	1DUkZW2YyB7GgDqkWSFzK/u7CrxvxuOHXaJz+G3mz7BCJhhfCaZboFKIAahRAtfPMAK+XKuDWiy
+	cMrNoEPfV4I4MZ2DzykCDeS4a74zJRiD9DRMFFqQrdZoYywfhDRR5gTfjezgmvQFo9C9tru0fo7
+	B0J4qH6fcxQIjUIKYhxig+Vdfv7E4dMpZp+t8ccuo75Gy6EqwD6WW+HPOQEPnn3uruPfJ6qawIV
+	IURC5BfrEWAHsJnkKlXHe/TRrJaosFxj3sRS5oFB3Xn/bXlKcVCAhIIfnBaM2jIc6M9aXyykhc4
+	N2nM0SBxL1O4NmRLUZSG9pGLZro76xCMgpwsFkAak5q1YT7yaKFx6NV8n0+W6BYVfoW6S8IKpis
+	1vojlCw4f0EeHbOUwTNB+9P2MeaP7qlcM=
+X-Received: by 2002:a05:600c:1d16:b0:47a:8088:439c with SMTP id 5b1f17b1804b1-48069c9ec08mr116607785e9.35.1769678589240;
+        Thu, 29 Jan 2026 01:23:09 -0800 (PST)
+Received: from blackdock.suse.cz (nat2.prg.suse.com. [195.250.132.146])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4806cdd77b8sm118657505e9.3.2026.01.29.01.23.08
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 29 Jan 2026 01:23:08 -0800 (PST)
+Date: Thu, 29 Jan 2026 10:23:07 +0100
+From: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
+To: Chen Ridong <chenridong@huaweicloud.com>
+Cc: tj@kernel.org, hannes@cmpxchg.org, rostedt@goodmis.org, 
+	mhiramat@kernel.org, mathieu.desnoyers@efficios.com, inwardvessel@gmail.com, 
+	shakeel.butt@linux.dev, cgroups@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-trace-kernel@vger.kernel.org, lujialin4@huawei.com
+Subject: Re: [PATCH -next] cgroup: increase maximum subsystem count from 16
+ to 32
+Message-ID: <asryf3kk6c337l33faqpeznk7d4a3rxblzmqrawxffq7sfbaf7@5yfzzdroltjq>
+References: <20260129063133.209874-1-chenridong@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH v3 28/30] mm: memcontrol: prepare for reparenting
- state_local
-To: Harry Yoo <harry.yoo@oracle.com>
-Cc: Shakeel Butt <shakeel.butt@linux.dev>, hannes@cmpxchg.org,
- hughd@google.com, mhocko@suse.com, roman.gushchin@linux.dev,
- muchun.song@linux.dev, david@kernel.org, lorenzo.stoakes@oracle.com,
- ziy@nvidia.com, yosry.ahmed@linux.dev, imran.f.khan@oracle.com,
- kamalesh.babulal@oracle.com, axelrasmussen@google.com, yuanchu@google.com,
- weixugc@google.com, chenridong@huaweicloud.com, mkoutny@suse.com,
- akpm@linux-foundation.org, hamzamahfooz@linux.microsoft.com,
- apais@linux.microsoft.com, lance.yang@linux.dev, linux-mm@kvack.org,
- linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
- Qi Zheng <zhengqi.arch@bytedance.com>
-References: <cover.1768389889.git.zhengqi.arch@bytedance.com>
- <b11a0bde9fe18673a61a79398f226ad7cb04a894.1768389889.git.zhengqi.arch@bytedance.com>
- <iu27pt5nqs6myshw57e7dotld33v6lwuyouvquoqc2zmc5loi6@f23auf7hqbdp>
- <9b9057f8-4c4c-4067-b6ba-0791888c25e8@linux.dev> <aXrBiPlpEOOC3cMZ@hyeyoo>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Qi Zheng <qi.zheng@linux.dev>
-In-Reply-To: <aXrBiPlpEOOC3cMZ@hyeyoo>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="t6fk4azqrf6lix7c"
+Content-Disposition: inline
+In-Reply-To: <20260129063133.209874-1-chenridong@huaweicloud.com>
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-2.16 / 15.00];
+X-Spamd-Result: default: False [-3.76 / 15.00];
+	SIGNED_PGP(-2.00)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[linux.dev,none];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64:c];
-	R_DKIM_ALLOW(-0.20)[linux.dev:s=key1];
+	DMARC_POLICY_ALLOW(-0.50)[suse.com,quarantine];
+	MID_RHS_NOT_FQDN(0.50)[];
+	MIME_GOOD(-0.20)[multipart/signed,text/plain];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
+	R_DKIM_ALLOW(-0.20)[suse.com:s=google];
 	MAILLIST(-0.15)[generic];
-	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
+	FREEMAIL_CC(0.00)[kernel.org,cmpxchg.org,goodmis.org,efficios.com,gmail.com,linux.dev,vger.kernel.org,huawei.com];
+	TAGGED_FROM(0.00)[bounces-13507-lists,cgroups=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-13506-lists,cgroups=lfdr.de];
 	FROM_HAS_DN(0.00)[];
-	RCVD_COUNT_THREE(0.00)[3];
-	MIME_TRACE(0.00)[0:+];
+	MIME_TRACE(0.00)[0:+,1:+,2:~];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[26];
-	DKIM_TRACE(0.00)[linux.dev:+];
+	RCPT_COUNT_TWELVE(0.00)[12];
+	DKIM_TRACE(0.00)[suse.com:+];
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
 	MISSING_XM_UA(0.00)[];
-	TO_DN_SOME(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[5];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[qi.zheng@linux.dev,cgroups@vger.kernel.org];
+	FROM_NEQ_ENVFROM(0.00)[mkoutny@suse.com,cgroups@vger.kernel.org];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	NEURAL_HAM(-0.00)[-1.000];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[cgroups];
-	MID_RHS_MATCH_FROM(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[bytedance.com:email,sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns,linux.dev:mid,linux.dev:dkim]
-X-Rspamd-Queue-Id: 8394CADC02
+	TO_DN_SOME(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[huawei.com:email,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,suse.com:dkim]
+X-Rspamd-Queue-Id: 9B64AAE175
 X-Rspamd-Action: no action
 
 
+--t6fk4azqrf6lix7c
+Content-Type: text/plain; protected-headers=v1; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH -next] cgroup: increase maximum subsystem count from 16
+ to 32
+MIME-Version: 1.0
 
-On 1/29/26 10:10 AM, Harry Yoo wrote:
-> On Mon, Jan 19, 2026 at 11:34:53AM +0800, Qi Zheng wrote:
->>
->>
->> On 1/18/26 11:20 AM, Shakeel Butt wrote:
->>> On Wed, Jan 14, 2026 at 07:32:55PM +0800, Qi Zheng wrote:
->>>> From: Qi Zheng <zhengqi.arch@bytedance.com>
->>>>
->>>> To resolve the dying memcg issue, we need to reparent LRU folios of child
->>>> memcg to its parent memcg. The following counts are all non-hierarchical
->>>> and need to be reparented to prevent the counts of parent memcg overflow.
->>>>
->>>> 1. memcg->vmstats->state_local[i]
->>>> 2. pn->lruvec_stats->state_local[i]
->>>>
->>>> This commit implements the specific function, which will be used during
->>>> the reparenting process.
->>>
->>> Please add more explanation which was discussed in the email chain at
->>> https://lore.kernel.org/all/5dsb6q2r4xsi24kk5gcnckljuvgvvp6nwifwvc4wuho5hsifeg@5ukg2dq6ini5/
->>
->> OK, will do.
->>
->>>> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
->>>> index 70583394f421f..7aa32b97c9f17 100644
->>>> --- a/mm/memcontrol.c
->>>> +++ b/mm/memcontrol.c
->>>> @@ -225,6 +225,28 @@ static inline struct obj_cgroup *__memcg_reparent_objcgs(struct mem_cgroup *memc
->>>>    	return objcg;
->>>>    }
->>>> +#ifdef CONFIG_MEMCG_V1
->>>> +static void __mem_cgroup_flush_stats(struct mem_cgroup *memcg, bool force);
->>>> +
->>>> +static inline void reparent_state_local(struct mem_cgroup *memcg, struct mem_cgroup *parent)
->>>> +{
->>>> +	if (cgroup_subsys_on_dfl(memory_cgrp_subsys))
->>>> +		return;
->>>> +
->>>> +	synchronize_rcu();
->>>
->>> Hmm synchrinuze_rcu() is a heavy hammer here. Also you would need rcu
->>> read lock in mod_memcg_state() & mod_memcg_lruvec_state() for this
->>> synchronize_rcu().
->>
->> Since these two functions require memcg or lruvec, they are already
->> within the critical section of the RCU lock.
-> 
-> What happens if someone grabbed a refcount and then release the rcu read
-> lock before percpu refkill and then call mod_memcg[_lruvec]_state()?
-> 
-> In this case, can we end up reparenting in the middle of non-hierarchical
-> stat update because they don't have RCU grace period?
-> 
-> Something like
-> 
-> T1				T2
-> 
-> 				- rcu_read_lock()
-> 				- get memcg refcnt
-> 				- rcu_read_unlock()
-> 
-> 				- call mod_memcg_state()
-> 				- CSS_IS_DYING is not set
-> - Set CSS_IS_DYING
-> - Trigger percpu refkill
-> 				
-> - Trigger offline_css()
->    -> reparent non-hierarchical	- update non-hierarchical stats
->       stats
-> 				- put memcg refcount
+On Thu, Jan 29, 2026 at 06:31:33AM +0000, Chen Ridong <chenridong@huaweiclo=
+ud.com> wrote:
+> From: Chen Ridong <chenridong@huawei.com>
+>=20
+> The current cgroup subsystem limit of 16 is insufficient, as the number of
+> subsystems has already reached this maximum.
 
-Good catch, I think you are right.
+Indeed. But some of them are legacy (and some novel). Do you really need
+one kernel image with every subsys config enabled?
 
-The rcu lock should be added to mod_memcg_state() and
-mod_memcg_lruvec_state().
+> Attempting to add new subsystems beyond this limit results in boot
+> failures.
 
-I will update to v4 as soon as possible.
+That sounds like BUILD_BUG_ON(CGROUP_SUBSYS_COUNT > 16) doesn't trigger
+during build for you. Is the macro broken?
+
+> This patch increases the maximum number of supported cgroup subsystems fr=
+om
+> 16 to 32, providing adequate headroom for future subsystem additions.
+
+It may be needed one day but I'd suggest binding this change with
+introduction of actual new controller.
+
+
+(As we have some CONFIG_*_V1 options that default to N, I'm thinking
+about switching config's default to N as well (like:
+CONFIG_CGROUP_CPUACCT CONFIG_CGROUP_DEVICE CONFIG_CGROUP_FREEZER
+CONFIG_CGROUP_DEBGU), arch/x86/configs/x86_64_defconfig is not exactly
+pinnacle of freshness :-/)
+
 
 Thanks,
-Qi
+Michal
 
-> 
->>> Hmm instead of synchronize_rcu() here, we can use queue_rcu_work() in
->>> css_killed_ref_fn(). It would be as simple as the following:
->>
->> It does look much simpler, will do.
->>
->> Thanks,
->> Qi
-> 
+--t6fk4azqrf6lix7c
+Content-Type: application/pgp-signature; name="signature.asc"
 
+-----BEGIN PGP SIGNATURE-----
+
+iJEEABYKADkWIQRCE24Fn/AcRjnLivR+PQLnlNv4CAUCaXsm2xsUgAAAAAAEAA5t
+YW51MiwyLjUrMS4xMSwyLDIACgkQfj0C55Tb+AgrCwEA64lWaPMJqVPfz3lW0yM8
+oLTj7UBAylF/bNzMNZhWzNYA/0gnAST31yIA8yujaEqUnPi4bptZCIayMmkgaupI
+BPcL
+=GgdH
+-----END PGP SIGNATURE-----
+
+--t6fk4azqrf6lix7c--
 
