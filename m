@@ -1,188 +1,166 @@
-Return-Path: <cgroups+bounces-13507-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-13508-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id qNlRBAUne2nXBgIAu9opvQ
-	(envelope-from <cgroups+bounces-13507-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Thu, 29 Jan 2026 10:23:17 +0100
+	id QNr0IrEte2mbCAIAu9opvQ
+	(envelope-from <cgroups+bounces-13508-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Thu, 29 Jan 2026 10:51:45 +0100
 X-Original-To: lists+cgroups@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9B64AAE175
-	for <lists+cgroups@lfdr.de>; Thu, 29 Jan 2026 10:23:16 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id DCBECAE45E
+	for <lists+cgroups@lfdr.de>; Thu, 29 Jan 2026 10:51:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 9732C30157F1
-	for <lists+cgroups@lfdr.de>; Thu, 29 Jan 2026 09:23:15 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 509C7300B461
+	for <lists+cgroups@lfdr.de>; Thu, 29 Jan 2026 09:51:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB96F37F756;
-	Thu, 29 Jan 2026 09:23:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="cKvxPK4F"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A16DD376BD2;
+	Thu, 29 Jan 2026 09:51:40 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com [209.85.128.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 022C837754A
-	for <cgroups@vger.kernel.org>; Thu, 29 Jan 2026 09:23:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD1F0EAE7;
+	Thu, 29 Jan 2026 09:51:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1769678592; cv=none; b=J8JtJFB315oLIyJqxCq2o/Uhba/dt7q5/PQhOLv4raQWjToEHr68ITcHBLCLKFkwhETUfIahNz+gPDczMZ38TSlkSB5K8aMJLvsaJx6xW5+Wr9pSTuOhasKM8CZ4RYiGFjat6YZn7yI6HOBcQqk0asFKUQkgjF6WaWc2n0evlY0=
+	t=1769680300; cv=none; b=lxo78cHU62XhD9MjFYe0E7aG7RBHvpTZba7gTrTPpDwbaAu3LYIDHnpVgmrxXnlSMq18OR4ImUa9GqubIkcfvWFh0L9L8iY35BUHqE4brVxmEgt6WTWSUqjeyP6GIFQW3fWYSa2raKxwb8GlHoybUMa7MgiTd1OEpB2S6Gs/WfE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1769678592; c=relaxed/simple;
-	bh=IjWCFFJ8d5prVvuohkK6B/sQJwGGIMm8kSomcID2yqw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=mXgkc6jJFSLs+/3fFIvFiHJnvaHJy7dTW1Xp7FwBZEv1eHMYBLT7Jq3wIwRAHvI1tYCqB0BUMRq96oUs5c0ohyge856FVnWTXwVyE1Smc1oFgY2VSe21xMkG84hMoCz0W/FwjgfqMknKA3luGRVuuvaVa8ElrcBqRf0QFnYx46M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=cKvxPK4F; arc=none smtp.client-ip=209.85.128.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-wm1-f51.google.com with SMTP id 5b1f17b1804b1-47edd9024b1so5766105e9.3
-        for <cgroups@vger.kernel.org>; Thu, 29 Jan 2026 01:23:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1769678589; x=1770283389; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=IjWCFFJ8d5prVvuohkK6B/sQJwGGIMm8kSomcID2yqw=;
-        b=cKvxPK4FDF8GKRCcvzgSA6qomlDhEgTNwp/e0OQQwTzwAkyp/JQ2W51GWAnH1tYhpO
-         MVNcJtCB8arPeYhWREK1NNGngG2rSFl3eFrzTOc4hCCvybuVMjQYj7gsR3ChPBDGQOjo
-         AN12Tx0QoD4Ut37+9kYosMHAVjKMsfso6OEbbxFD4fa1xMELzw1hwAEMsOxCIsnlY5Fd
-         tkihPH4mFcjhoQcPAF/F63EZFSLiw1XSqYUIgkvjAC50lO0T2V3sNSUlu3pBmudXI0dI
-         hBLD37ommN/NmnJVwHFVmyy8IORh16frKSseIP13ugRGTe0QDn02xL8U+cTVgoW9+qfx
-         RCKg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1769678589; x=1770283389;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=IjWCFFJ8d5prVvuohkK6B/sQJwGGIMm8kSomcID2yqw=;
-        b=i1YRLAeghmf+7Kxt8BdYF0VextwWiQNbsdiARTUSPm2IhqQ0uRRCeX2C9KkG0xEmJq
-         gZvNP7MC3Mj1G27WBYK7/hGv3Lo5haYJApQE9hWM/Ta7/QDF1UJjyldyf60IVaRLKp58
-         0YF0d08GwV9zWA3opW2gXe9c6gwQroLSU2L3mSX/HNDxEILkvnzOl5Idx/DmUDdJyuj2
-         dY0VV1kt29sUdZffgone9HcBvBulcA3orUp0V7Ya0tWa6GTIRdKT6YBsMbWVTxxjeiTX
-         zKQ27eEzo45cn/yG6TlY7fEsk0jqUrp2/inQb0mTlY9vZK2PFqzCxLHHYj53LY1xAW/n
-         SfXw==
-X-Forwarded-Encrypted: i=1; AJvYcCVE1bnYOx42GpTifMTyTqLA0Vw7DXkS7Jo/QmNvjdDFOwdezNKSJ1LLNtHJtk+Btdo4Qh3LSrsp@vger.kernel.org
-X-Gm-Message-State: AOJu0YwHF6MccCfEF4QJ0I1uCQXYI+um7mgoZNwk2XObxywDhJAzKvLW
-	3D9nW0fTTM8VMY8YWQKBv+oAyugNaQjmWDGghD7ZD82SayWih1jMoUSUhI45Nw2qamA=
-X-Gm-Gg: AZuq6aLaE8wjQLE2NicjEvedYOoP9k0qCvmZm2X5SIcy0ACcwyD+0gPVpw3a8ILClEB
-	1DUkZW2YyB7GgDqkWSFzK/u7CrxvxuOHXaJz+G3mz7BCJhhfCaZboFKIAahRAtfPMAK+XKuDWiy
-	cMrNoEPfV4I4MZ2DzykCDeS4a74zJRiD9DRMFFqQrdZoYywfhDRR5gTfjezgmvQFo9C9tru0fo7
-	B0J4qH6fcxQIjUIKYhxig+Vdfv7E4dMpZp+t8ccuo75Gy6EqwD6WW+HPOQEPnn3uruPfJ6qawIV
-	IURC5BfrEWAHsJnkKlXHe/TRrJaosFxj3sRS5oFB3Xn/bXlKcVCAhIIfnBaM2jIc6M9aXyykhc4
-	N2nM0SBxL1O4NmRLUZSG9pGLZro76xCMgpwsFkAak5q1YT7yaKFx6NV8n0+W6BYVfoW6S8IKpis
-	1vojlCw4f0EeHbOUwTNB+9P2MeaP7qlcM=
-X-Received: by 2002:a05:600c:1d16:b0:47a:8088:439c with SMTP id 5b1f17b1804b1-48069c9ec08mr116607785e9.35.1769678589240;
-        Thu, 29 Jan 2026 01:23:09 -0800 (PST)
-Received: from blackdock.suse.cz (nat2.prg.suse.com. [195.250.132.146])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4806cdd77b8sm118657505e9.3.2026.01.29.01.23.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Jan 2026 01:23:08 -0800 (PST)
-Date: Thu, 29 Jan 2026 10:23:07 +0100
-From: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
-To: Chen Ridong <chenridong@huaweicloud.com>
-Cc: tj@kernel.org, hannes@cmpxchg.org, rostedt@goodmis.org, 
-	mhiramat@kernel.org, mathieu.desnoyers@efficios.com, inwardvessel@gmail.com, 
-	shakeel.butt@linux.dev, cgroups@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-trace-kernel@vger.kernel.org, lujialin4@huawei.com
-Subject: Re: [PATCH -next] cgroup: increase maximum subsystem count from 16
- to 32
-Message-ID: <asryf3kk6c337l33faqpeznk7d4a3rxblzmqrawxffq7sfbaf7@5yfzzdroltjq>
-References: <20260129063133.209874-1-chenridong@huaweicloud.com>
+	s=arc-20240116; t=1769680300; c=relaxed/simple;
+	bh=iPKeHQY/SEe8RmowNYDTmXbl8B82NqPO9DGJuPCk04Y=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=UMYJU8sUwGEJGOkmnZoSXG70Dg7NSnki+FD6QQtYGTdOqNVDnaZhBlS7s+k+C1PHapSOl3+DxRoByzCaaR753psa/RuVGQ9ZEqzd3NYcxi9ZRyUCgwve8IsAwvaLAVASkt3qMk2o0MDBpKCreAnffTFF8KayehbUTdnR7yBNfzw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.170])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTPS id 4f1vXc2ns0zYQvHn;
+	Thu, 29 Jan 2026 17:50:56 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.128])
+	by mail.maildlp.com (Postfix) with ESMTP id 24B004056D;
+	Thu, 29 Jan 2026 17:51:35 +0800 (CST)
+Received: from [10.67.111.176] (unknown [10.67.111.176])
+	by APP4 (Coremail) with SMTP id gCh0CgCXQ_SlLXtpnyQWFg--.58350S2;
+	Thu, 29 Jan 2026 17:51:34 +0800 (CST)
+Message-ID: <3a12eb16-3a91-4278-9dfd-6c6f424e7f9f@huaweicloud.com>
+Date: Thu, 29 Jan 2026 17:51:33 +0800
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="t6fk4azqrf6lix7c"
-Content-Disposition: inline
-In-Reply-To: <20260129063133.209874-1-chenridong@huaweicloud.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH -next] cgroup: increase maximum subsystem count from 16 to
+ 32
+To: =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>
+Cc: tj@kernel.org, hannes@cmpxchg.org, rostedt@goodmis.org,
+ mhiramat@kernel.org, mathieu.desnoyers@efficios.com, inwardvessel@gmail.com,
+ shakeel.butt@linux.dev, cgroups@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+ lujialin4@huawei.com
+References: <20260129063133.209874-1-chenridong@huaweicloud.com>
+ <asryf3kk6c337l33faqpeznk7d4a3rxblzmqrawxffq7sfbaf7@5yfzzdroltjq>
+Content-Language: en-US
+From: Chen Ridong <chenridong@huaweicloud.com>
+In-Reply-To: <asryf3kk6c337l33faqpeznk7d4a3rxblzmqrawxffq7sfbaf7@5yfzzdroltjq>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:gCh0CgCXQ_SlLXtpnyQWFg--.58350S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7ur4kZr47tryUAF1ruw48WFg_yoW8Aw1Upr
+	Wvqw17Ka1kJF1fCw4vv3WIgryrt3Z3Gw1UtFn5GryxJw4Uu342gr1Igr4jvFy7Xr1fCw47
+	JFWj9F9Fya4DA3DanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUv0b4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
+	0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
+	x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
+	0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc7CjxVAaw2AF
+	wI0_Jw0_GFyl42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4
+	xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43
+	MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I
+	0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWU
+	JVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4UJVWxJrUvcSsGvfC2KfnxnUUI43ZEXa7IU1
+	7KsUUUUUU==
+X-CM-SenderInfo: hfkh02xlgr0w46kxt4xhlfz01xgou0bp/
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-3.76 / 15.00];
-	SIGNED_PGP(-2.00)[];
+X-Spamd-Result: default: False [-1.46 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[suse.com,quarantine];
-	MID_RHS_NOT_FQDN(0.50)[];
-	MIME_GOOD(-0.20)[multipart/signed,text/plain];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
-	R_DKIM_ALLOW(-0.20)[suse.com:s=google];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	MAILLIST(-0.15)[generic];
+	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FREEMAIL_CC(0.00)[kernel.org,cmpxchg.org,goodmis.org,efficios.com,gmail.com,linux.dev,vger.kernel.org,huawei.com];
-	TAGGED_FROM(0.00)[bounces-13507-lists,cgroups=lfdr.de];
-	RCVD_TLS_LAST(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	MIME_TRACE(0.00)[0:+,1:+,2:~];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[12];
-	DKIM_TRACE(0.00)[suse.com:+];
-	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
-	MISSING_XM_UA(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[5];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[mkoutny@suse.com,cgroups@vger.kernel.org];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	NEURAL_HAM(-0.00)[-1.000];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	FREEMAIL_CC(0.00)[kernel.org,cmpxchg.org,goodmis.org,efficios.com,gmail.com,linux.dev,vger.kernel.org,huawei.com];
+	TAGGED_FROM(0.00)[bounces-13508-lists,cgroups=lfdr.de];
+	RCVD_TLS_LAST(0.00)[];
+	DMARC_NA(0.00)[huaweicloud.com];
+	MIME_TRACE(0.00)[0:+];
+	RCPT_COUNT_TWELVE(0.00)[12];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	FROM_HAS_DN(0.00)[];
 	TAGGED_RCPT(0.00)[cgroups];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[chenridong@huaweicloud.com,cgroups@vger.kernel.org];
 	TO_DN_SOME(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[huawei.com:email,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,suse.com:dkim]
-X-Rspamd-Queue-Id: 9B64AAE175
+	RCVD_COUNT_FIVE(0.00)[6];
+	R_DKIM_NA(0.00)[];
+	NEURAL_HAM(-0.00)[-0.905];
+	MID_RHS_MATCH_FROM(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[huawei.com:email,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: DCBECAE45E
 X-Rspamd-Action: no action
 
 
---t6fk4azqrf6lix7c
-Content-Type: text/plain; protected-headers=v1; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-Subject: Re: [PATCH -next] cgroup: increase maximum subsystem count from 16
- to 32
-MIME-Version: 1.0
 
-On Thu, Jan 29, 2026 at 06:31:33AM +0000, Chen Ridong <chenridong@huaweiclo=
-ud.com> wrote:
-> From: Chen Ridong <chenridong@huawei.com>
->=20
-> The current cgroup subsystem limit of 16 is insufficient, as the number of
-> subsystems has already reached this maximum.
+On 2026/1/29 17:23, Michal Koutný wrote:
+> On Thu, Jan 29, 2026 at 06:31:33AM +0000, Chen Ridong <chenridong@huaweicloud.com> wrote:
+>> From: Chen Ridong <chenridong@huawei.com>
+>>
+>> The current cgroup subsystem limit of 16 is insufficient, as the number of
+>> subsystems has already reached this maximum.
+> 
+> Indeed. But some of them are legacy (and some novel). Do you really need
+> one kernel image with every subsys config enabled?
+> 
 
-Indeed. But some of them are legacy (and some novel). Do you really need
-one kernel image with every subsys config enabled?
+We compiled with 'make allmodconfig'.
 
-> Attempting to add new subsystems beyond this limit results in boot
-> failures.
+>> Attempting to add new subsystems beyond this limit results in boot
+>> failures.
+> 
+> That sounds like BUILD_BUG_ON(CGROUP_SUBSYS_COUNT > 16) doesn't trigger
+> during build for you. Is the macro broken?
+> 
 
-That sounds like BUILD_BUG_ON(CGROUP_SUBSYS_COUNT > 16) doesn't trigger
-during build for you. Is the macro broken?
+The BUILD_BUG_ON(CGROUP_SUBSYS_COUNT > 16) macro worked correctly. However, I
+only modified the code to allow compilation to pass, and the system subsequently
+failed to boot.
 
-> This patch increases the maximum number of supported cgroup subsystems fr=
-om
-> 16 to 32, providing adequate headroom for future subsystem additions.
+>> This patch increases the maximum number of supported cgroup subsystems from
+>> 16 to 32, providing adequate headroom for future subsystem additions.
+> 
+> It may be needed one day but I'd suggest binding this change with
+> introduction of actual new controller.
+> >
+> (As we have some CONFIG_*_V1 options that default to N, I'm thinking
+> about switching config's default to N as well (like:
+> CONFIG_CGROUP_CPUACCT CONFIG_CGROUP_DEVICE CONFIG_CGROUP_FREEZER
+> CONFIG_CGROUP_DEBGU), arch/x86/configs/x86_64_defconfig is not exactly
+> pinnacle of freshness :-/)
+> 
+> 
 
-It may be needed one day but I'd suggest binding this change with
-introduction of actual new controller.
+Can I propose increasing the maximum number now? If we switch certain configs to
+default N and then a new subsystem is added later, the default configuration may
+work fine, but it will become a problem under allmodconfig — which some users
+actually rely on.
 
+Besides, this shouldn't be a major change, right?
 
-(As we have some CONFIG_*_V1 options that default to N, I'm thinking
-about switching config's default to N as well (like:
-CONFIG_CGROUP_CPUACCT CONFIG_CGROUP_DEVICE CONFIG_CGROUP_FREEZER
-CONFIG_CGROUP_DEBGU), arch/x86/configs/x86_64_defconfig is not exactly
-pinnacle of freshness :-/)
+-- 
+Best regards,
+Ridong
 
-
-Thanks,
-Michal
-
---t6fk4azqrf6lix7c
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iJEEABYKADkWIQRCE24Fn/AcRjnLivR+PQLnlNv4CAUCaXsm2xsUgAAAAAAEAA5t
-YW51MiwyLjUrMS4xMSwyLDIACgkQfj0C55Tb+AgrCwEA64lWaPMJqVPfz3lW0yM8
-oLTj7UBAylF/bNzMNZhWzNYA/0gnAST31yIA8yujaEqUnPi4bptZCIayMmkgaupI
-BPcL
-=GgdH
------END PGP SIGNATURE-----
-
---t6fk4azqrf6lix7c--
 
