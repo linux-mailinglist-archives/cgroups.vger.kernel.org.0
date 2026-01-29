@@ -1,337 +1,416 @@
-Return-Path: <cgroups+bounces-13499-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-13500-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id gMBlMSzcemlE/AEAu9opvQ
-	(envelope-from <cgroups+bounces-13499-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Thu, 29 Jan 2026 05:03:56 +0100
+	id qPWeJ0gCe2kYAgIAu9opvQ
+	(envelope-from <cgroups+bounces-13500-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Thu, 29 Jan 2026 07:46:32 +0100
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2FF3DAB96F
-	for <lists+cgroups@lfdr.de>; Thu, 29 Jan 2026 05:03:56 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1736DAC506
+	for <lists+cgroups@lfdr.de>; Thu, 29 Jan 2026 07:46:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id B56A930182AC
-	for <lists+cgroups@lfdr.de>; Thu, 29 Jan 2026 04:03:52 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id F3EA7301D307
+	for <lists+cgroups@lfdr.de>; Thu, 29 Jan 2026 06:46:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 69EC5288C96;
-	Thu, 29 Jan 2026 04:03:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C9A653783C9;
+	Thu, 29 Jan 2026 06:46:27 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0DCC225F7A9;
-	Thu, 29 Jan 2026 04:03:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3DEB01D6AA;
+	Thu, 29 Jan 2026 06:46:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1769659431; cv=none; b=e4Ryd8nq6g0MfRUWHeNQoBWB0RC8iUskhDtoEqD0RT5dU9Y+Bag55yiQYRC0mEyxPEqd2D8So8e63oD0JUx+tGEeInUFxMkqBVosHOQza5FHH2GFKfCLUnaMEEqIr6VaTgI8Kqs/1iHtcpgNoKgEM3eODkfubfxiqXnmr6tQosA=
+	t=1769669187; cv=none; b=ed3nqCKcjSpK+80Nv168ZF8DXh5Q5Ev6JbvCDV2vsrptBZhcAJf/s3nFb6lmrfNgWMhVIQfO9HZ/boy8b3eL1Bxmg1NeCO+qtuDQ88Qs9Z4kX8bxx7gpswVwTKUDX6Qs6A74XOSmlnOKc+5PyUpNPNbOM0HD5fj0bsxC2j17Z4k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1769659431; c=relaxed/simple;
-	bh=qJkVBlaEbB0GI9ptpuChZz007VyTHOo92hXivG515Rw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=QvdViqnmPpyoi6eL8NbEgtB7flZEht6aJVhDLpP/0RNJqnDfRRS3E1DQLx6zwqnhgknhyRCenYe+ywhvWG8roiicLJQ/1KS8IKxvzA2jWIQgVAmi7lg1R8XHth7lTFCNIisdf7E5Nstx1OAne9LZzsO7V7pdGidXqQ7YnW/QxT4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=none smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
+	s=arc-20240116; t=1769669187; c=relaxed/simple;
+	bh=coRVbfW6qjqsxjzXhvVrkWEmpeehWw5xhDCivtP/ZqQ=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=gsYMbEB/+fsi+4Q99gafyGlmUl/W6GsZ57R1mRiank1W4hVoP9WlDIBD+TSqxkmE6MZFJBOTebNzaBSPjYKN5hQ11VmKleu9FBRoqLD6fBYfCJSAnJUXV+xuP1QE1AbA8NJ/06qfoUnW1fWr0niSxtYeuqjNIJ7E8VQ3iNMVvZM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.170])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTPS id 4f1lqm1gFzzKHMPk;
-	Thu, 29 Jan 2026 12:03:32 +0800 (CST)
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.177])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTPS id 4f1qQv1M4JzYQtlb;
+	Thu, 29 Jan 2026 14:45:43 +0800 (CST)
 Received: from mail02.huawei.com (unknown [10.116.40.128])
-	by mail.maildlp.com (Postfix) with ESMTP id ADD434056E;
-	Thu, 29 Jan 2026 12:03:45 +0800 (CST)
-Received: from [10.67.111.176] (unknown [10.67.111.176])
-	by APP4 (Coremail) with SMTP id gCh0CgD3ovMg3HppQ0b5FQ--.60774S2;
-	Thu, 29 Jan 2026 12:03:45 +0800 (CST)
-Message-ID: <ccca8790-2bf9-46db-b355-ce8695ea7093@huaweicloud.com>
-Date: Thu, 29 Jan 2026 12:03:43 +0800
+	by mail.maildlp.com (Postfix) with ESMTP id B329840590;
+	Thu, 29 Jan 2026 14:46:21 +0800 (CST)
+Received: from hulk-vt.huawei.com (unknown [10.67.174.121])
+	by APP4 (Coremail) with SMTP id gCh0CgAHs_M1Antp1b0GFg--.25582S2;
+	Thu, 29 Jan 2026 14:46:21 +0800 (CST)
+From: Chen Ridong <chenridong@huaweicloud.com>
+To: tj@kernel.org,
+	hannes@cmpxchg.org,
+	mkoutny@suse.com,
+	rostedt@goodmis.org,
+	mhiramat@kernel.org,
+	mathieu.desnoyers@efficios.com,
+	inwardvessel@gmail.com,
+	shakeel.butt@linux.dev
+Cc: cgroups@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-trace-kernel@vger.kernel.org,
+	lujialin4@huawei.com,
+	chenridong@huaweicloud.com
+Subject: [PATCH -next] cgroup: increase maximum subsystem count from 16 to 32
+Date: Thu, 29 Jan 2026 06:31:33 +0000
+Message-Id: <20260129063133.209874-1-chenridong@huaweicloud.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH/for-next 1/2] cgroup/cpuset: Defer housekeeping_update()
- call from CPU hotplug to task_work
-To: Waiman Long <longman@redhat.com>, Tejun Heo <tj@kernel.org>,
- Johannes Weiner <hannes@cmpxchg.org>, =?UTF-8?Q?Michal_Koutn=C3=BD?=
- <mkoutny@suse.com>, Ingo Molnar <mingo@redhat.com>,
- Peter Zijlstra <peterz@infradead.org>, Juri Lelli <juri.lelli@redhat.com>,
- Vincent Guittot <vincent.guittot@linaro.org>,
- Steven Rostedt <rostedt@goodmis.org>, Ben Segall <bsegall@google.com>,
- Mel Gorman <mgorman@suse.de>, Valentin Schneider <vschneid@redhat.com>,
- Anna-Maria Behnsen <anna-maria@linutronix.de>,
- Frederic Weisbecker <frederic@kernel.org>,
- Thomas Gleixner <tglx@linutronix.de>, Shuah Khan <shuah@kernel.org>
-Cc: cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-kselftest@vger.kernel.org
-References: <20260128044251.1229702-1-longman@redhat.com>
- <20260128044251.1229702-2-longman@redhat.com>
-Content-Language: en-US
-From: Chen Ridong <chenridong@huaweicloud.com>
-In-Reply-To: <20260128044251.1229702-2-longman@redhat.com>
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:gCh0CgD3ovMg3HppQ0b5FQ--.60774S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxKr1DAr1UJw1ruF48JrW5Wrg_yoWxtF17pr
-	y5KFWIyayqqF1a9343XwsrWr1rKws7J3W5Kr43Xr1xZFsxWFn7Z348KFnxtrWrWr95GFWr
-	ZFWDGw4fWF4UArUanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUv0b4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxkF7I0En4kS
-	14v26r4a6rW5MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I
-	8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVW8ZVWr
-	XwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x
-	0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_
-	Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU0
-	s2-5UUUUU==
+X-CM-TRANSID:gCh0CgAHs_M1Antp1b0GFg--.25582S2
+X-Coremail-Antispam: 1UD129KBjvJXoW3trWfGF1xAr4fWw1UAw4fKrg_yoWkJr1rpF
+	nrCr17K3yFyFW5CF4Iya4j9F1fWw4kXw4UGrWDG34ftry7Jr13XFn29Fy8XFy8ZF97Kw13
+	Ar4Yyryjkr18tF7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUU9Y14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+	1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
+	JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
+	CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
+	2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
+	W8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2
+	Y2ka0xkIwI1lc7CjxVAaw2AFwI0_Jw0_GFyl42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x
+	0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2
+	zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF
+	4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWU
+	CwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCT
+	nIWIevJa73UjIFyTuYvjfUonmRUUUUU
 X-CM-SenderInfo: hfkh02xlgr0w46kxt4xhlfz01xgou0bp/
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-1.46 / 15.00];
+X-Spamd-Result: default: False [0.04 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	MID_CONTAINS_FROM(1.00)[];
+	R_MISSING_CHARSET(0.50)[];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	NEURAL_HAM(-0.00)[-1.000];
+	RCVD_TLS_LAST(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[6];
+	TAGGED_FROM(0.00)[bounces-13500-lists,cgroups=lfdr.de];
+	DMARC_NA(0.00)[huaweicloud.com];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	FROM_HAS_DN(0.00)[];
+	FREEMAIL_TO(0.00)[kernel.org,cmpxchg.org,suse.com,goodmis.org,efficios.com,gmail.com,linux.dev];
 	MIME_TRACE(0.00)[0:+];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	TO_DN_SOME(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[19];
-	TAGGED_RCPT(0.00)[cgroups];
-	MID_RHS_MATCH_FROM(0.00)[];
-	R_DKIM_NA(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[chenridong@huaweicloud.com,cgroups@vger.kernel.org];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[6];
-	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-13499-lists,cgroups=lfdr.de];
-	DMARC_NA(0.00)[huaweicloud.com];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 2FF3DAB96F
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
+	FROM_NEQ_ENVFROM(0.00)[chenridong@huaweicloud.com,cgroups@vger.kernel.org];
+	NEURAL_HAM(-0.00)[-1.000];
+	TO_DN_NONE(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	R_DKIM_NA(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[13];
+	TAGGED_RCPT(0.00)[cgroups];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[huawei.com:email,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,huaweicloud.com:mid]
+X-Rspamd-Queue-Id: 1736DAC506
 X-Rspamd-Action: no action
 
+From: Chen Ridong <chenridong@huawei.com>
 
+The current cgroup subsystem limit of 16 is insufficient, as the number of
+subsystems has already reached this maximum. Attempting to add new
+subsystems beyond this limit results in boot failures.
 
-On 2026/1/28 12:42, Waiman Long wrote:
-> The update_isolation_cpumasks() function can be called either directly
-> from regular cpuset control file write with cpuset_full_lock() called
-> or via the CPU hotplug path with cpus_write_lock and cpuset_mutex held.
-> 
-> As we are going to enable dynamic update to the nozh_full housekeeping
-> cpumask (HK_TYPE_KERNEL_NOISE) soon with the help of CPU hotplug,
-> allowing the CPU hotplug path to call into housekeeping_update()
-> directly from update_isolation_cpumasks() will cause deadlock. So we
-> have to defer any call to housekeeping_update() after the CPU hotplug
-> operation has finished. This can be done via the task_work_add(...,
-> TWA_RESUME) API where the actual housekeeping_update() call, if needed,
-> will happen right before existing back to userspace.
-> 
-> Since the HK_TYPE_DOMAIN housekeeping cpumask should now track the
-> changes in "cpuset.cpus.isolated", add a check in test_cpuset_prs.sh to
-> confirm that the CPU hotplug deferral, if needed, is working as expected.
-> 
-> Signed-off-by: Waiman Long <longman@redhat.com>
-> ---
->  kernel/cgroup/cpuset.c                        | 49 ++++++++++++++++++-
->  .../selftests/cgroup/test_cpuset_prs.sh       |  9 ++++
->  2 files changed, 56 insertions(+), 2 deletions(-)
-> 
-> diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
-> index 7b7d12ab1006..98c7cb732206 100644
-> --- a/kernel/cgroup/cpuset.c
-> +++ b/kernel/cgroup/cpuset.c
-> @@ -84,6 +84,10 @@ static cpumask_var_t	isolated_cpus;
->   */
->  static bool isolated_cpus_updating;
->  
-> +/* Both cpuset_mutex and cpus_read_locked acquired */
-> +static bool cpuset_full_locked;
-> +static bool isolation_task_work_queued;
-> +
->  /*
->   * A flag to force sched domain rebuild at the end of an operation.
->   * It can be set in
-> @@ -285,10 +289,12 @@ void cpuset_full_lock(void)
->  {
->  	cpus_read_lock();
->  	mutex_lock(&cpuset_mutex);
-> +	cpuset_full_locked = true;
->  }
->  
->  void cpuset_full_unlock(void)
->  {
-> +	cpuset_full_locked = false;
->  	mutex_unlock(&cpuset_mutex);
->  	cpus_read_unlock();
->  }
-> @@ -1285,25 +1291,64 @@ static bool prstate_housekeeping_conflict(int prstate, struct cpumask *new_cpus)
->  	return false;
->  }
->  
-> +static void __update_isolation_cpumasks(bool twork);
-> +static void isolation_task_work_fn(struct callback_head *cb)
-> +{
-> +	cpuset_full_lock();
-> +	__update_isolation_cpumasks(true);
-> +	cpuset_full_lock();
-> +}
-> +
->  /*
-> - * update_isolation_cpumasks - Update external isolation related CPU masks
-> + * __update_isolation_cpumasks - Update external isolation related CPU masks
-> + * @twork - set if call from isolation_task_work_fn()
->   *
->   * The following external CPU masks will be updated if necessary:
->   * - workqueue unbound cpumask
->   */
-> -static void update_isolation_cpumasks(void)
-> +static void __update_isolation_cpumasks(bool twork)
->  {
->  	int ret;
->  
-> +	if (twork)
-> +		isolation_task_work_queued = false;
-> +
->  	if (!isolated_cpus_updating)
->  		return;
->  
-> +	/*
-> +	 * This function can be reached either directly from regular cpuset
-> +	 * control file write (cpuset_full_locked) or via hotplug
-> +	 * (cpus_write_lock && cpuset_mutex held). In the later case, we
-> +	 * defer the housekeeping_update() call to a task_work to avoid
-> +	 * the possibility of deadlock. The task_work will be run right
-> +	 * before exiting back to userspace.
-> +	 */
-> +	if (!cpuset_full_locked) {
-> +		static struct callback_head twork_cb;
-> +
-> +		if (!isolation_task_work_queued) {
-> +			init_task_work(&twork_cb, isolation_task_work_fn);
-> +			if (!task_work_add(current, &twork_cb, TWA_RESUME))
-> +				isolation_task_work_queued = true;
-> +			else
-> +				/* Current task shouldn't be exiting */
-> +				WARN_ON_ONCE(1);
-> +		}
-> +		return;
-> +	}
-> +
->  	ret = housekeeping_update(isolated_cpus);
->  	WARN_ON_ONCE(ret < 0);
->  
->  	isolated_cpus_updating = false;
->  }
->  
+This patch increases the maximum number of supported cgroup subsystems from
+16 to 32, providing adequate headroom for future subsystem additions.
 
-The logic is not straightforward; perhaps we can simplify it as follows,
-maybe I missed something, just correct me.
+Signed-off-by: Chen Ridong <chenridong@huawei.com>
+---
+ include/linux/cgroup-defs.h     |  8 +++---
+ include/trace/events/cgroup.h   |  2 +-
+ kernel/cgroup/cgroup-internal.h |  8 +++---
+ kernel/cgroup/cgroup-v1.c       | 12 ++++-----
+ kernel/cgroup/cgroup.c          | 46 ++++++++++++++++-----------------
+ kernel/cgroup/debug.c           |  2 +-
+ 6 files changed, 39 insertions(+), 39 deletions(-)
 
-static void isolation_task_work_fn(struct callback_head *cb)
-{
-	guard(mutex)(&isolcpus_update_mutex);
-	WARN_ON_ONCE(housekeeping_update(isolated_cpus) < 0);
-}
-
-/*
- * __update_isolation_cpumasks - Update external isolation related CPU masks
- * @twork - set if call from isolation_task_work_fn()
- *
- * The following external CPU masks will be updated if necessary:
- * - workqueue unbound cpumask
- */
-static void __update_isolation_cpumasks(bool twork)
-{
-	if (!isolated_cpus_updating)
-		return;
-
-	/*
-	 * This function can be reached either directly from regular cpuset
-	 * control file write (cpuset_full_locked) or via hotplug
-	 * (cpus_write_lock && cpuset_mutex held). In the later case, we
-	 * defer the housekeeping_update() call to a task_work to avoid
-	 * the possibility of deadlock. The task_work will be run right
-	 * before exiting back to userspace.
-	 */
-	if (twork) {
-		static struct callback_head twork_cb;
-
-		init_task_work(&twork_cb, isolation_task_work_fn);
-		if (task_work_add(current, &twork_cb, TWA_RESUME))
-			/* Current task shouldn't be exiting */
-			WARN_ON_ONCE(1);
-
-		return;
-	}
-
-	lockdep_assert_held(&isolcpus_update_mutex);
-	/*
-	 * Release cpus_read_lock & cpuset_mutex before calling
-	 * housekeeping_update() and re-acquiring them afterward if not
-	 * calling from task_work.
-	 */
-
-	cpuset_full_unlock();
-	WARN_ON_ONCE(housekeeping_update(isolated_cpus) < 0);
-	cpuset_full_lock();
-
-	isolated_cpus_updating = false;
-}
-
-static inline void update_isolation_cpumasks(void)
-{
-	__update_isolation_cpumasks(false);
-}
-
-If twork is true, add it directly to the work queue — note that this requires
-holding isolcpus_update_mutex and then calling housekeeping_update. Otherwise,
-release the 'full' lock before invoking housekeeping_update.
-
-> +static inline void update_isolation_cpumasks(void)
-> +{
-> +	__update_isolation_cpumasks(false);
-> +}
-> +
->  /**
->   * rm_siblings_excl_cpus - Remove exclusive CPUs that are used by sibling cpusets
->   * @parent: Parent cpuset containing all siblings
-> diff --git a/tools/testing/selftests/cgroup/test_cpuset_prs.sh b/tools/testing/selftests/cgroup/test_cpuset_prs.sh
-> index 5dff3ad53867..af4a2532cb3e 100755
-> --- a/tools/testing/selftests/cgroup/test_cpuset_prs.sh
-> +++ b/tools/testing/selftests/cgroup/test_cpuset_prs.sh
-> @@ -773,6 +773,7 @@ check_isolcpus()
->  	EXPECTED_ISOLCPUS=$1
->  	ISCPUS=${CGROUP2}/cpuset.cpus.isolated
->  	ISOLCPUS=$(cat $ISCPUS)
-> +	HKICPUS=$(cat /sys/devices/system/cpu/isolated)
->  	LASTISOLCPU=
->  	SCHED_DOMAINS=/sys/kernel/debug/sched/domains
->  	if [[ $EXPECTED_ISOLCPUS = . ]]
-> @@ -810,6 +811,14 @@ check_isolcpus()
->  	ISOLCPUS=
->  	EXPECTED_ISOLCPUS=$EXPECTED_SDOMAIN
->  
-> +	#
-> +	# The inverse of HK_TYPE_DOMAIN cpumask in $HKICPUS should match $ISOLCPUS
-> +	#
-> +	[[ "$ISOLCPUS" != "$HKICPUS" ]] && {
-> +		echo "Housekeeping isolated CPUs mismatch - $HKICPUS"
-> +		return 1
-> +	}
-> +
->  	#
->  	# Use the sched domain in debugfs to check isolated CPUs, if available
->  	#
-
+diff --git a/include/linux/cgroup-defs.h b/include/linux/cgroup-defs.h
+index f7cc60de0058..bb92f5c169ca 100644
+--- a/include/linux/cgroup-defs.h
++++ b/include/linux/cgroup-defs.h
+@@ -535,10 +535,10 @@ struct cgroup {
+ 	 * one which may have more subsystems enabled.  Controller knobs
+ 	 * are made available iff it's enabled in ->subtree_control.
+ 	 */
+-	u16 subtree_control;
+-	u16 subtree_ss_mask;
+-	u16 old_subtree_control;
+-	u16 old_subtree_ss_mask;
++	u32 subtree_control;
++	u32 subtree_ss_mask;
++	u32 old_subtree_control;
++	u32 old_subtree_ss_mask;
+ 
+ 	/* Private pointers for each registered subsystem */
+ 	struct cgroup_subsys_state __rcu *subsys[CGROUP_SUBSYS_COUNT];
+diff --git a/include/trace/events/cgroup.h b/include/trace/events/cgroup.h
+index ba9229af9a34..b736da06340a 100644
+--- a/include/trace/events/cgroup.h
++++ b/include/trace/events/cgroup.h
+@@ -16,7 +16,7 @@ DECLARE_EVENT_CLASS(cgroup_root,
+ 
+ 	TP_STRUCT__entry(
+ 		__field(	int,		root			)
+-		__field(	u16,		ss_mask			)
++		__field(	u32,		ss_mask			)
+ 		__string(	name,		root->name		)
+ 	),
+ 
+diff --git a/kernel/cgroup/cgroup-internal.h b/kernel/cgroup/cgroup-internal.h
+index 22051b4f1ccb..3bfe37693d68 100644
+--- a/kernel/cgroup/cgroup-internal.h
++++ b/kernel/cgroup/cgroup-internal.h
+@@ -52,7 +52,7 @@ struct cgroup_fs_context {
+ 	bool		cpuset_clone_children;
+ 	bool		none;			/* User explicitly requested empty subsystem */
+ 	bool		all_ss;			/* Seen 'all' option */
+-	u16		subsys_mask;		/* Selected subsystems */
++	u32		subsys_mask;		/* Selected subsystems */
+ 	char		*name;			/* Hierarchy name */
+ 	char		*release_agent;		/* Path for release notifications */
+ };
+@@ -146,7 +146,7 @@ struct cgroup_mgctx {
+ 	struct cgroup_taskset	tset;
+ 
+ 	/* subsystems affected by migration */
+-	u16			ss_mask;
++	u32			ss_mask;
+ };
+ 
+ #define CGROUP_TASKSET_INIT(tset)						\
+@@ -235,8 +235,8 @@ int cgroup_path_ns_locked(struct cgroup *cgrp, char *buf, size_t buflen,
+ void cgroup_favor_dynmods(struct cgroup_root *root, bool favor);
+ void cgroup_free_root(struct cgroup_root *root);
+ void init_cgroup_root(struct cgroup_fs_context *ctx);
+-int cgroup_setup_root(struct cgroup_root *root, u16 ss_mask);
+-int rebind_subsystems(struct cgroup_root *dst_root, u16 ss_mask);
++int cgroup_setup_root(struct cgroup_root *root, u32 ss_mask);
++int rebind_subsystems(struct cgroup_root *dst_root, u32 ss_mask);
+ int cgroup_do_get_tree(struct fs_context *fc);
+ 
+ int cgroup_migrate_vet_dst(struct cgroup *dst_cgrp);
+diff --git a/kernel/cgroup/cgroup-v1.c b/kernel/cgroup/cgroup-v1.c
+index a9e029b570c8..724950c4b690 100644
+--- a/kernel/cgroup/cgroup-v1.c
++++ b/kernel/cgroup/cgroup-v1.c
+@@ -28,7 +28,7 @@
+ #define CGROUP_PIDLIST_DESTROY_DELAY	HZ
+ 
+ /* Controllers blocked by the commandline in v1 */
+-static u16 cgroup_no_v1_mask;
++static u32 cgroup_no_v1_mask;
+ 
+ /* disable named v1 mounts */
+ static bool cgroup_no_v1_named;
+@@ -1037,13 +1037,13 @@ int cgroup1_parse_param(struct fs_context *fc, struct fs_parameter *param)
+ static int check_cgroupfs_options(struct fs_context *fc)
+ {
+ 	struct cgroup_fs_context *ctx = cgroup_fc2context(fc);
+-	u16 mask = U16_MAX;
+-	u16 enabled = 0;
++	u32 mask = U32_MAX;
++	u32 enabled = 0;
+ 	struct cgroup_subsys *ss;
+ 	int i;
+ 
+ #ifdef CONFIG_CPUSETS
+-	mask = ~((u16)1 << cpuset_cgrp_id);
++	mask = ~((u32)1 << cpuset_cgrp_id);
+ #endif
+ 	for_each_subsys(ss, i)
+ 		if (cgroup_ssid_enabled(i) && !cgroup1_ssid_disabled(i) &&
+@@ -1095,7 +1095,7 @@ int cgroup1_reconfigure(struct fs_context *fc)
+ 	struct kernfs_root *kf_root = kernfs_root_from_sb(fc->root->d_sb);
+ 	struct cgroup_root *root = cgroup_root_from_kf(kf_root);
+ 	int ret = 0;
+-	u16 added_mask, removed_mask;
++	u32 added_mask, removed_mask;
+ 
+ 	cgroup_lock_and_drain_offline(&cgrp_dfl_root.cgrp);
+ 
+@@ -1343,7 +1343,7 @@ static int __init cgroup_no_v1(char *str)
+ 			continue;
+ 
+ 		if (!strcmp(token, "all")) {
+-			cgroup_no_v1_mask = U16_MAX;
++			cgroup_no_v1_mask = U32_MAX;
+ 			continue;
+ 		}
+ 
+diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
+index 94788bd1fdf0..8af4351536cf 100644
+--- a/kernel/cgroup/cgroup.c
++++ b/kernel/cgroup/cgroup.c
+@@ -203,13 +203,13 @@ EXPORT_SYMBOL_GPL(cgrp_dfl_root);
+ bool cgrp_dfl_visible;
+ 
+ /* some controllers are not supported in the default hierarchy */
+-static u16 cgrp_dfl_inhibit_ss_mask;
++static u32 cgrp_dfl_inhibit_ss_mask;
+ 
+ /* some controllers are implicitly enabled on the default hierarchy */
+-static u16 cgrp_dfl_implicit_ss_mask;
++static u32 cgrp_dfl_implicit_ss_mask;
+ 
+ /* some controllers can be threaded on the default hierarchy */
+-static u16 cgrp_dfl_threaded_ss_mask;
++static u32 cgrp_dfl_threaded_ss_mask;
+ 
+ /* The list of hierarchy roots */
+ LIST_HEAD(cgroup_roots);
+@@ -231,10 +231,10 @@ static u64 css_serial_nr_next = 1;
+  * These bitmasks identify subsystems with specific features to avoid
+  * having to do iterative checks repeatedly.
+  */
+-static u16 have_fork_callback __read_mostly;
+-static u16 have_exit_callback __read_mostly;
+-static u16 have_release_callback __read_mostly;
+-static u16 have_canfork_callback __read_mostly;
++static u32 have_fork_callback __read_mostly;
++static u32 have_exit_callback __read_mostly;
++static u32 have_release_callback __read_mostly;
++static u32 have_canfork_callback __read_mostly;
+ 
+ static bool have_favordynmods __ro_after_init = IS_ENABLED(CONFIG_CGROUP_FAVOR_DYNMODS);
+ 
+@@ -472,13 +472,13 @@ static bool cgroup_is_valid_domain(struct cgroup *cgrp)
+ }
+ 
+ /* subsystems visibly enabled on a cgroup */
+-static u16 cgroup_control(struct cgroup *cgrp)
++static u32 cgroup_control(struct cgroup *cgrp)
+ {
+ 	struct cgroup *parent = cgroup_parent(cgrp);
+-	u16 root_ss_mask = cgrp->root->subsys_mask;
++	u32 root_ss_mask = cgrp->root->subsys_mask;
+ 
+ 	if (parent) {
+-		u16 ss_mask = parent->subtree_control;
++		u32 ss_mask = parent->subtree_control;
+ 
+ 		/* threaded cgroups can only have threaded controllers */
+ 		if (cgroup_is_threaded(cgrp))
+@@ -493,12 +493,12 @@ static u16 cgroup_control(struct cgroup *cgrp)
+ }
+ 
+ /* subsystems enabled on a cgroup */
+-static u16 cgroup_ss_mask(struct cgroup *cgrp)
++static u32 cgroup_ss_mask(struct cgroup *cgrp)
+ {
+ 	struct cgroup *parent = cgroup_parent(cgrp);
+ 
+ 	if (parent) {
+-		u16 ss_mask = parent->subtree_ss_mask;
++		u32 ss_mask = parent->subtree_ss_mask;
+ 
+ 		/* threaded cgroups can only have threaded controllers */
+ 		if (cgroup_is_threaded(cgrp))
+@@ -1633,9 +1633,9 @@ static umode_t cgroup_file_mode(const struct cftype *cft)
+  * This function calculates which subsystems need to be enabled if
+  * @subtree_control is to be applied while restricted to @this_ss_mask.
+  */
+-static u16 cgroup_calc_subtree_ss_mask(u16 subtree_control, u16 this_ss_mask)
++static u32 cgroup_calc_subtree_ss_mask(u32 subtree_control, u32 this_ss_mask)
+ {
+-	u16 cur_ss_mask = subtree_control;
++	u32 cur_ss_mask = subtree_control;
+ 	struct cgroup_subsys *ss;
+ 	int ssid;
+ 
+@@ -1644,7 +1644,7 @@ static u16 cgroup_calc_subtree_ss_mask(u16 subtree_control, u16 this_ss_mask)
+ 	cur_ss_mask |= cgrp_dfl_implicit_ss_mask;
+ 
+ 	while (true) {
+-		u16 new_ss_mask = cur_ss_mask;
++		u32 new_ss_mask = cur_ss_mask;
+ 
+ 		do_each_subsys_mask(ss, ssid, cur_ss_mask) {
+ 			new_ss_mask |= ss->depends_on;
+@@ -1848,12 +1848,12 @@ static int css_populate_dir(struct cgroup_subsys_state *css)
+ 	return ret;
+ }
+ 
+-int rebind_subsystems(struct cgroup_root *dst_root, u16 ss_mask)
++int rebind_subsystems(struct cgroup_root *dst_root, u32 ss_mask)
+ {
+ 	struct cgroup *dcgrp = &dst_root->cgrp;
+ 	struct cgroup_subsys *ss;
+ 	int ssid, ret;
+-	u16 dfl_disable_ss_mask = 0;
++	u32 dfl_disable_ss_mask = 0;
+ 
+ 	lockdep_assert_held(&cgroup_mutex);
+ 
+@@ -2149,7 +2149,7 @@ void init_cgroup_root(struct cgroup_fs_context *ctx)
+ 		set_bit(CGRP_CPUSET_CLONE_CHILDREN, &root->cgrp.flags);
+ }
+ 
+-int cgroup_setup_root(struct cgroup_root *root, u16 ss_mask)
++int cgroup_setup_root(struct cgroup_root *root, u32 ss_mask)
+ {
+ 	LIST_HEAD(tmp_links);
+ 	struct cgroup *root_cgrp = &root->cgrp;
+@@ -3131,7 +3131,7 @@ void cgroup_procs_write_finish(struct task_struct *task,
+ 	put_task_struct(task);
+ }
+ 
+-static void cgroup_print_ss_mask(struct seq_file *seq, u16 ss_mask)
++static void cgroup_print_ss_mask(struct seq_file *seq, u32 ss_mask)
+ {
+ 	struct cgroup_subsys *ss;
+ 	bool printed = false;
+@@ -3496,9 +3496,9 @@ static void cgroup_finalize_control(struct cgroup *cgrp, int ret)
+ 	cgroup_apply_control_disable(cgrp);
+ }
+ 
+-static int cgroup_vet_subtree_control_enable(struct cgroup *cgrp, u16 enable)
++static int cgroup_vet_subtree_control_enable(struct cgroup *cgrp, u32 enable)
+ {
+-	u16 domain_enable = enable & ~cgrp_dfl_threaded_ss_mask;
++	u32 domain_enable = enable & ~cgrp_dfl_threaded_ss_mask;
+ 
+ 	/* if nothing is getting enabled, nothing to worry about */
+ 	if (!enable)
+@@ -3541,7 +3541,7 @@ static ssize_t cgroup_subtree_control_write(struct kernfs_open_file *of,
+ 					    char *buf, size_t nbytes,
+ 					    loff_t off)
+ {
+-	u16 enable = 0, disable = 0;
++	u32 enable = 0, disable = 0;
+ 	struct cgroup *cgrp, *child;
+ 	struct cgroup_subsys *ss;
+ 	char *tok;
+@@ -6347,7 +6347,7 @@ int __init cgroup_init(void)
+ 	struct cgroup_subsys *ss;
+ 	int ssid;
+ 
+-	BUILD_BUG_ON(CGROUP_SUBSYS_COUNT > 16);
++	BUILD_BUG_ON(CGROUP_SUBSYS_COUNT > 32);
+ 	BUG_ON(cgroup_init_cftypes(NULL, cgroup_base_files));
+ 	BUG_ON(cgroup_init_cftypes(NULL, cgroup_psi_files));
+ 	BUG_ON(cgroup_init_cftypes(NULL, cgroup1_base_files));
+diff --git a/kernel/cgroup/debug.c b/kernel/cgroup/debug.c
+index c1623d03137d..e5c7c56a0b68 100644
+--- a/kernel/cgroup/debug.c
++++ b/kernel/cgroup/debug.c
+@@ -230,7 +230,7 @@ static int cgroup_subsys_states_read(struct seq_file *seq, void *v)
+ }
+ 
+ static void cgroup_masks_read_one(struct seq_file *seq, const char *name,
+-				  u16 mask)
++				  u32 mask)
+ {
+ 	struct cgroup_subsys *ss;
+ 	int ssid;
 -- 
-Best regards,
-Ridong
+2.34.1
 
 
