@@ -1,208 +1,204 @@
-Return-Path: <cgroups+bounces-13516-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-13517-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id tZryHh2oe2m1HgIAu9opvQ
-	(envelope-from <cgroups+bounces-13516-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Thu, 29 Jan 2026 19:34:05 +0100
+	id 2Go5ODaqe2m8HgIAu9opvQ
+	(envelope-from <cgroups+bounces-13517-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Thu, 29 Jan 2026 19:43:02 +0100
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id CA33DB39A8
-	for <lists+cgroups@lfdr.de>; Thu, 29 Jan 2026 19:34:04 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 40E71B3AC2
+	for <lists+cgroups@lfdr.de>; Thu, 29 Jan 2026 19:43:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 83808301572F
-	for <lists+cgroups@lfdr.de>; Thu, 29 Jan 2026 18:34:03 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 50E29300DF53
+	for <lists+cgroups@lfdr.de>; Thu, 29 Jan 2026 18:41:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0137013959D;
-	Thu, 29 Jan 2026 18:34:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C98BE2F90C5;
+	Thu, 29 Jan 2026 18:41:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="cEOJNTjf";
-	dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b="dtRll92L"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="EQTSuFqu"
 X-Original-To: cgroups@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+Received: from out-174.mta1.migadu.com (out-174.mta1.migadu.com [95.215.58.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6370C2F3618
-	for <cgroups@vger.kernel.org>; Thu, 29 Jan 2026 18:34:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C8DE82FBE0F
+	for <cgroups@vger.kernel.org>; Thu, 29 Jan 2026 18:41:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1769711642; cv=none; b=eLiyujY4f59PYYsMR8Fuq5hAKgipQg9c2Sx2juilsaDLE8rfOtheSiNfSrq+HKiYg08XS+H+pQeWhiNzqoN5I1u7wvlga/HwNX5D7fdGbnlAnmzZYJ5wvTmFPC/mgVnBGDkzJgA+TfEggrPUZu968MXBQTeRzJ5abj6xNlUOW/U=
+	t=1769712089; cv=none; b=gWMiLvrcmct9MGZTN9z+M/WaTvWjzDWFunZaSy2C+XVbSXjX+s6158+pCUOBGoIzLqxMmGAWP6rHEAfY4hQ/43XmR44oMWPlhJpgRTjKytJYyWrJn3v9EHM+3hmMxtb/MDAvCmAQ3BIUyyJhM8UIySDdWx6oOa5ndaxsCS1Vl2k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1769711642; c=relaxed/simple;
-	bh=A52a0n6mXX/vpDsPDw1aYNuXCv9EMo1cdZdHaWNhQXE=;
-	h=From:Message-ID:Date:MIME-Version:Subject:To:Cc:References:
-	 In-Reply-To:Content-Type; b=oqBd+DylPmpn1b4bJqJ75aVP330ru6nbDxx0DtbKflkvP0SVpKjuwDWf1QRwFImVd14LyzZ6iJAEcYWxUG/qZFte5tbaJ4Qk/7zuJ8qFRkuSCl+jGjv1vGh7NrzLyIJ9pnElm0mfY5u7UKYG1vF0UmAnwgOifsh/K74/w6FKaso=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=cEOJNTjf; dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b=dtRll92L; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1769711640;
+	s=arc-20240116; t=1769712089; c=relaxed/simple;
+	bh=+ExvWFoTikYc/HLg4vWR4/vq/2/rFal2AzTRP9Izhy0=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=qxidJszZOYqBVJytSB7r3x0+7WpuxDOJ/FO8oxCQLB3CrQBEd7OrJE2b0g6+koiqI557qQf3pVjKCN5GOCgl54nMOzrjNmlnNct9bNZoygq9KM6y6/j8a3yRKWWqc1q93t9kAtLNa/AdXIdQwzSGaDubvxo84dJCFu7heg1ewmQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=EQTSuFqu; arc=none smtp.client-ip=95.215.58.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1769712084;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=m1KTQVsHamBVnOnmhCi9myxR4ebuO1ZMb0FARjaKcqs=;
-	b=cEOJNTjfEVBiTzTPF4YUBlUGSjMHxd12eBQW9bLJW1Zd8BjdTRWPkxTXbUdwk87NMXqRGw
-	AqebLern3UihMOYDPdcuBeZSzM0sSNBdKK7DDcDL7GztZspv8/kb7mP7wPXKIb//9ydffJ
-	7dYhyqgzz5Fts+V/OKYdVi8EcdGQhMk=
-Received: from mail-qv1-f71.google.com (mail-qv1-f71.google.com
- [209.85.219.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-157-vj6PFfvLPI-M-YqkPe7NlQ-1; Thu, 29 Jan 2026 13:33:59 -0500
-X-MC-Unique: vj6PFfvLPI-M-YqkPe7NlQ-1
-X-Mimecast-MFC-AGG-ID: vj6PFfvLPI-M-YqkPe7NlQ_1769711638
-Received: by mail-qv1-f71.google.com with SMTP id 6a1803df08f44-894727de401so45450976d6.1
-        for <cgroups@vger.kernel.org>; Thu, 29 Jan 2026 10:33:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=redhat.com; s=google; t=1769711638; x=1770316438; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:content-language:references
-         :cc:to:subject:user-agent:mime-version:date:message-id:from:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=m1KTQVsHamBVnOnmhCi9myxR4ebuO1ZMb0FARjaKcqs=;
-        b=dtRll92LeyiLtlBurKKGf2etDQtxbPsyt0WBmr89g7zYORvVi+KAgIdZdzckTluUNT
-         H/GL+EwPzE21Kf3Uu0XPoJ+d6e0z0rLN+s0mBaJ+FdpdL4hffZQPOKoM6k2bUzuo0wdK
-         vOOr0tv6j8gl3C4AAR27C9rE3LpdOgrr0l2M3+106+JnVbNEXG7nXMgUnwObgCXBp2YJ
-         Qd4+T4M0Q/O0OdGX0HA8uNbPEyCcwqGsH+2A61vIXvpF75iesCeTdjaW1QwOOsjDVhok
-         T+fsTb1MbgaKRMOxEbCubFXsETb5GsU2ZVsTo+am1eg/kf+7w/D0CKfCfA9AFb4D4G9Y
-         eqbg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1769711638; x=1770316438;
-        h=content-transfer-encoding:in-reply-to:content-language:references
-         :cc:to:subject:user-agent:mime-version:date:message-id:from:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=m1KTQVsHamBVnOnmhCi9myxR4ebuO1ZMb0FARjaKcqs=;
-        b=Vic1RX0XlC7kLDu5e/qpwYDolId4IeEhAzfEi3VljCfC35pfkwhKJHgZwf2vLvVQJO
-         Nfhl8INJfnA7WxPxIgG/5OUjLObppsx6MdDbIPOJBUtslx86nHbWR3UN0Rz80QU2kGVB
-         E0xEuJIeIxlxMJCJYZ/MVFt3QDtjU2dzIRIX3K97IJEQPbbCNT3Rr79OV0n7PnqhdaYM
-         1D1WbM36V5HiE8AES+WeKjFWnUuBzrLJkUo67vQYJh1CnP1Y5J3AY3xTWTJVz0nzisPb
-         4Lq8/xcsSkpY9+kUBDgPOlQSTtI4Qzoj2fmjANNFBQpsNHrCp8ZywmSs0e0iDnvlOVYE
-         p6ew==
-X-Forwarded-Encrypted: i=1; AJvYcCWIcP7biqBpLE7w0BZno/K63q93Zpnksqt+izoNNNQLgEbI6NjvcTDf+NlMSVuIfLhucbcfbsdO@vger.kernel.org
-X-Gm-Message-State: AOJu0YwszccUaYMtdOei0OrOcLRQ7HLE4SvvT3dFNBgzNCSTUTOOCaoq
-	m5aVkAgfokQ2+rlzFy87aYf95ib/x1nW35CPBidLSAealDsTTB2lAttOdgh00oNCSAMqaXyhz1X
-	VLJ/VDbTmaOyTQc2nRegEux/0/NssDalOOBOs6RP7VDS8SvgGo30J0G81R1E=
-X-Gm-Gg: AZuq6aJOLgFpSE7jdMAwjA7+MtnFpnbZRi43mpMB7PfeNDuOtIZ5OsU6lJBkS7U1gqO
-	ii7lZaPowONqdIT9PjJ2ZqtVOrB2zqDoMFQaBLBwyHJ3XQJnPLV1REAM+D2N+aw2ZghI+OHuYlf
-	1LW3w5ZtZgO7Qbq0WtbdRsLB3STjmE4MgYplDJ5v485pEGMRiolz8jBnEk2syREAmtnSh8vOYtv
-	DJS0zVzFlYW5/1SnZvJ2UABC24/x6PhFdPj1RfnxlEsAtaHlnOSCWdEsuls7oXMwWktl5JNFLJr
-	RTQj6r9kxMM4CC6mdg9fmFdCoCZmMEArijlyt+wJ3bSzrA0WMADg5Kazp/P8W77XPrqti6Dge/6
-	7i7wmKp8/X/oxg8jkAxcPIoCZlLwpSfstxfCliC65+Mluq0N2ZyyEEakO
-X-Received: by 2002:a05:6214:1304:b0:894:74cf:d2fe with SMTP id 6a1803df08f44-894ea8c1941mr2388046d6.1.1769711638490;
-        Thu, 29 Jan 2026 10:33:58 -0800 (PST)
-X-Received: by 2002:a05:6214:1304:b0:894:74cf:d2fe with SMTP id 6a1803df08f44-894ea8c1941mr2387736d6.1.1769711638134;
-        Thu, 29 Jan 2026 10:33:58 -0800 (PST)
-Received: from ?IPV6:2601:188:c102:b180:1f8b:71d0:77b1:1f6e? ([2601:188:c102:b180:1f8b:71d0:77b1:1f6e])
-        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-894d375ce71sm42775696d6.45.2026.01.29.10.33.57
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 29 Jan 2026 10:33:57 -0800 (PST)
-From: Waiman Long <llong@redhat.com>
-X-Google-Original-From: Waiman Long <longman@redhat.com>
-Message-ID: <6fc1fb93-7010-4381-a9a9-68a9b81acf88@redhat.com>
-Date: Thu, 29 Jan 2026 13:33:56 -0500
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=Xlnz6aumZlbTSchYue5J7VboFXhHLrpxFx7kxdM7jFE=;
+	b=EQTSuFqu2W3JWsXY4FbUgQCd0SKbNN90pOEAd2Qp3H1CxbG+umwpCdeFrwFn5VozImAsV7
+	P2i18zlTAQta3caaUmOBL2jwk+HHw6WVSXKd2mcH3MYqYrvfK+rEW73UDNfzPqey+njdS9
+	ZCaq5KgPZNWPDSjkwN/KypqKs8hUWJM=
+From: Shakeel Butt <shakeel.butt@linux.dev>
+To: Andrew Morton <akpm@linux-foundation.org>
+Cc: Johannes Weiner <hannes@cmpxchg.org>,
+	Rik van Riel <riel@surriel.com>,
+	Song Liu <songliubraving@fb.com>,
+	Kiryl Shutsemau <kas@kernel.org>,
+	Usama Arif <usamaarif642@gmail.com>,
+	David Hildenbrand <david@kernel.org>,
+	Lorenzo Stoakes <lorenzo.stoakes@oracle.com>,
+	Zi Yan <ziy@nvidia.com>,
+	Baolin Wang <baolin.wang@linux.alibaba.com>,
+	"Liam R . Howlett" <Liam.Howlett@oracle.com>,
+	Nico Pache <npache@redhat.com>,
+	Ryan Roberts <ryan.roberts@arm.com>,
+	Dev Jain <dev.jain@arm.com>,
+	Barry Song <baohua@kernel.org>,
+	Lance Yang <lance.yang@linux.dev>,
+	Meta kernel team <kernel-team@meta.com>,
+	linux-mm@kvack.org,
+	cgroups@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] mm: khugepaged: fix NR_FILE_PAGES accounting in collapse_file()
+Date: Thu, 29 Jan 2026 10:40:54 -0800
+Message-ID: <20260129184054.910897-1-shakeel.butt@linux.dev>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH -next] cgroup: increase maximum subsystem count from 16 to
- 32
-To: Chen Ridong <chenridong@huaweicloud.com>, =?UTF-8?Q?Michal_Koutn=C3=BD?=
- <mkoutny@suse.com>
-Cc: tj@kernel.org, hannes@cmpxchg.org, rostedt@goodmis.org,
- mhiramat@kernel.org, mathieu.desnoyers@efficios.com, inwardvessel@gmail.com,
- shakeel.butt@linux.dev, cgroups@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
- lujialin4@huawei.com
-References: <20260129063133.209874-1-chenridong@huaweicloud.com>
- <asryf3kk6c337l33faqpeznk7d4a3rxblzmqrawxffq7sfbaf7@5yfzzdroltjq>
- <3a12eb16-3a91-4278-9dfd-6c6f424e7f9f@huaweicloud.com>
-Content-Language: en-US
-In-Reply-To: <3a12eb16-3a91-4278-9dfd-6c6f424e7f9f@huaweicloud.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-2.16 / 15.00];
+X-Spamd-Result: default: False [-0.66 / 15.00];
+	MID_CONTAINS_FROM(1.00)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[redhat.com,quarantine];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
-	R_DKIM_ALLOW(-0.20)[redhat.com:s=mimecast20190719,redhat.com:s=google];
+	R_MISSING_CHARSET(0.50)[];
+	DMARC_POLICY_ALLOW(-0.50)[linux.dev,none];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_DKIM_ALLOW(-0.20)[linux.dev:s=key1];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCPT_COUNT_TWELVE(0.00)[13];
-	FREEMAIL_CC(0.00)[kernel.org,cmpxchg.org,goodmis.org,efficios.com,gmail.com,linux.dev,vger.kernel.org,huawei.com];
-	MIME_TRACE(0.00)[0:+];
-	TAGGED_FROM(0.00)[bounces-13516-lists,cgroups=lfdr.de];
-	RCVD_TLS_LAST(0.00)[];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	DKIM_TRACE(0.00)[redhat.com:+];
+	FREEMAIL_CC(0.00)[cmpxchg.org,surriel.com,fb.com,kernel.org,gmail.com,oracle.com,nvidia.com,linux.alibaba.com,redhat.com,arm.com,linux.dev,meta.com,kvack.org,vger.kernel.org];
+	MIME_TRACE(0.00)[0:+];
+	TAGGED_FROM(0.00)[bounces-13517-lists,cgroups=lfdr.de];
+	RCPT_COUNT_TWELVE(0.00)[20];
+	RCVD_TLS_LAST(0.00)[];
+	RCVD_COUNT_THREE(0.00)[3];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	FROM_HAS_DN(0.00)[];
 	TO_DN_SOME(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[6];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[llong@redhat.com,cgroups@vger.kernel.org];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	NEURAL_HAM(-0.00)[-0.999];
+	FROM_NEQ_ENVFROM(0.00)[shakeel.butt@linux.dev,cgroups@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	DKIM_TRACE(0.00)[linux.dev:+];
+	NEURAL_HAM(-0.00)[-0.998];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
 	TAGGED_RCPT(0.00)[cgroups];
-	MID_RHS_MATCH_FROM(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[huaweicloud.com:email,huawei.com:email,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: CA33DB39A8
+	MISSING_XM_UA(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,linux.dev:email,linux.dev:dkim,linux.dev:mid]
+X-Rspamd-Queue-Id: 40E71B3AC2
 X-Rspamd-Action: no action
 
-On 1/29/26 4:51 AM, Chen Ridong wrote:
->
-> On 2026/1/29 17:23, Michal Koutný wrote:
->> On Thu, Jan 29, 2026 at 06:31:33AM +0000, Chen Ridong <chenridong@huaweicloud.com> wrote:
->>> From: Chen Ridong <chenridong@huawei.com>
->>>
->>> The current cgroup subsystem limit of 16 is insufficient, as the number of
->>> subsystems has already reached this maximum.
->> Indeed. But some of them are legacy (and some novel). Do you really need
->> one kernel image with every subsys config enabled?
->>
-> We compiled with 'make allmodconfig'.
->
->>> Attempting to add new subsystems beyond this limit results in boot
->>> failures.
->> That sounds like BUILD_BUG_ON(CGROUP_SUBSYS_COUNT > 16) doesn't trigger
->> during build for you. Is the macro broken?
->>
-> The BUILD_BUG_ON(CGROUP_SUBSYS_COUNT > 16) macro worked correctly. However, I
-> only modified the code to allow compilation to pass, and the system subsequently
-> failed to boot.
->
->>> This patch increases the maximum number of supported cgroup subsystems from
->>> 16 to 32, providing adequate headroom for future subsystem additions.
->> It may be needed one day but I'd suggest binding this change with
->> introduction of actual new controller.
->> (As we have some CONFIG_*_V1 options that default to N, I'm thinking
->> about switching config's default to N as well (like:
->> CONFIG_CGROUP_CPUACCT CONFIG_CGROUP_DEVICE CONFIG_CGROUP_FREEZER
->> CONFIG_CGROUP_DEBGU), arch/x86/configs/x86_64_defconfig is not exactly
->> pinnacle of freshness :-/)
->>
->>
-> Can I propose increasing the maximum number now? If we switch certain configs to
-> default N and then a new subsystem is added later, the default configuration may
-> work fine, but it will become a problem under allmodconfig — which some users
-> actually rely on.
->
-> Besides, this shouldn't be a major change, right?
+In META's fleet, we are seeing high level cgroups with zero file memcg
+stat but their descendants have non-zero file stat. This should not be
+possible. On further inspection by looking at kernel data structures
+though drgn, it was revealed that the high level cgroups have negative
+file stat which was aggregated from their children.
 
-Yes, I agreed that it is not a major change. I count the number of 
-SUBSYS() in include/linux/cgroup_subsys.h and there are exactly 16 of 
-them. So introduction of a new cgroup subsystem will break the current 
-limit. I remember that there was talk about adding scheduling cgroup on 
-the GPU side. One day, a new cgroup subsystem may be added without the 
-awareness that the subsystem limit has to be extended causing issue down 
-the line. So I support the idea of extending it now so that there is one 
-less thing to worry about when a new cgroup subsystem is added in the 
-future.
+Another interesting point was that this specific issue start happening
+more often as we started deploying thp-always more widely which
+indicates some correlation between file memory and THPs and indeed it
+was found that file memcg stat accounting is buggy in the collapse code
+path from the start.
 
-Acked-by: Waiman Long <longman@redhat.com>
+When collapse_file() replaces small folios with a large THP, it fails to
+properly update the NR_FILE_PAGES memcg stat for both the old folios
+being freed and the new THP being added. It assumes the old and new
+folios belong to the same cgroup. However this assumption breaks in
+couple of scenarios:
+
+1. Binary (executable) package downloader running in a different cgroup
+   than the actual job executing the downloaded package.
+
+2. File shared and mapped by processes running in different cgroups. One
+   process read-in the file and the second process either through
+   madvise(COLLAPSE) or khugepaged on behalf of second process
+   collapsing the file.
+
+So, the current code has two bugs:
+
+1. For non-shmem files, NR_FILE_PAGES is never incremented for the new
+   THP because nr_none is always 0 for non-shmem, and the stat update is
+   inside the "if (nr_none)" block.
+
+2. When freeing old folios, NR_FILE_PAGES is never decremented because
+   folio->mapping is set to NULL directly without calling
+   filemap_unaccount_folio().
+
+These bugs cause incorrect per-memcg accounting when the process
+triggering the collapse (MADV_COLLAPSE or khugepaged) belongs to a
+different memcg than the process that originally faulted in the pages:
+
+  - Process A (memcg X) reads file, creating 512 small page cache folios
+    charged to memcg X (NR_FILE_PAGES += 512 for memcg X)
+
+  - Process B (memcg Y) triggers collapse via MADV_COLLAPSE or khugepaged
+    scans B's mm. The new THP is charged to memcg Y.
+
+  - Old folios freed: NR_FILE_PAGES not decremented (bug)
+    New THP added: NR_FILE_PAGES not incremented (bug)
+
+  - Later, THP removed from page cache: NR_FILE_PAGES -= 512 for memcg Y
+
+Result: memcg X has +512 inflated pages, memcg Y has -512 (negative!)
+
+Fix this by:
+1. Always incrementing NR_FILE_PAGES by HPAGE_PMD_NR for the new THP
+2. Decrementing NR_FILE_PAGES for each old folio before clearing its
+   mapping pointer
+
+For shmem with holes (nr_none > 0), the net change is still +nr_none
+since we decrement (HPAGE_PMD_NR - nr_none) old pages and increment
+HPAGE_PMD_NR new pages.
+
+Fixes: 99cb0dbd47a1 ("mm,thp: add read-only THP support for (non-shmem) FS")
+Signed-off-by: Shakeel Butt <shakeel.butt@linux.dev>
+---
+ mm/khugepaged.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/mm/khugepaged.c b/mm/khugepaged.c
+index 1d994b6c58c6..1cf8e154e214 100644
+--- a/mm/khugepaged.c
++++ b/mm/khugepaged.c
+@@ -2200,8 +2200,8 @@ static enum scan_result collapse_file(struct mm_struct *mm, unsigned long addr,
+ 	else
+ 		lruvec_stat_mod_folio(new_folio, NR_FILE_THPS, HPAGE_PMD_NR);
+ 
++	lruvec_stat_mod_folio(new_folio, NR_FILE_PAGES, HPAGE_PMD_NR);
+ 	if (nr_none) {
+-		lruvec_stat_mod_folio(new_folio, NR_FILE_PAGES, nr_none);
+ 		/* nr_none is always 0 for non-shmem. */
+ 		lruvec_stat_mod_folio(new_folio, NR_SHMEM, nr_none);
+ 	}
+@@ -2238,6 +2238,8 @@ static enum scan_result collapse_file(struct mm_struct *mm, unsigned long addr,
+ 	 */
+ 	list_for_each_entry_safe(folio, tmp, &pagelist, lru) {
+ 		list_del(&folio->lru);
++		lruvec_stat_mod_folio(folio, NR_FILE_PAGES,
++				      -folio_nr_pages(folio));
+ 		folio->mapping = NULL;
+ 		folio_clear_active(folio);
+ 		folio_clear_unevictable(folio);
+-- 
+2.47.3
 
 
