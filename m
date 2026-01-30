@@ -1,191 +1,186 @@
-Return-Path: <cgroups+bounces-13543-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-13544-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id kLFLIp9nfGk/MQIAu9opvQ
-	(envelope-from <cgroups+bounces-13543-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Fri, 30 Jan 2026 09:11:11 +0100
+	id QAdpBICGfGmbNgIAu9opvQ
+	(envelope-from <cgroups+bounces-13544-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Fri, 30 Jan 2026 11:22:56 +0100
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2D24EB831F
-	for <lists+cgroups@lfdr.de>; Fri, 30 Jan 2026 09:11:11 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 843B4B94EC
+	for <lists+cgroups@lfdr.de>; Fri, 30 Jan 2026 11:22:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 674013004DED
-	for <lists+cgroups@lfdr.de>; Fri, 30 Jan 2026 08:11:10 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 84317302AE0E
+	for <lists+cgroups@lfdr.de>; Fri, 30 Jan 2026 10:22:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B59E132694A;
-	Fri, 30 Jan 2026 08:11:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5299A35E544;
+	Fri, 30 Jan 2026 10:22:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="Gr4vNUXs"
 X-Original-To: cgroups@vger.kernel.org
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BEFEE30594F;
-	Fri, 30 Jan 2026 08:11:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+Received: from mail-wr1-f53.google.com (mail-wr1-f53.google.com [209.85.221.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D40135CB92
+	for <cgroups@vger.kernel.org>; Fri, 30 Jan 2026 10:22:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1769760666; cv=none; b=if57Tx9D8awCkqmuh0C7oL9P1OtK30S6OOvNRIjFbL2xpcEhY+CvOjdZfCUd4IkC3pLWGgjXLgYYFOFBWyKf1LGzTIhJ2Ve+rb+hKJetYtWG1TdXNoL7edCr5oXKALLg0ptVMC4ZK9ncJq0/j25xnYBf9kOCA6JgtrnmtZ1hUJQ=
+	t=1769768544; cv=none; b=twstbbOrDddyDYrrUCS6H0kyLx4ruJApwNKhLsA4UUPjVWvmQ1Bwl4T3ojyVM0yg0jOAUZPlpn8lMoPh/+tU9R7N9ihIwnyaDttA8BXg/BE6B+Q2Yv+Q2Pqzhrew4hMVEJfF8kq6bqucu+TxntBm5gjIC8z7ALtQpyiM3y51oZw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1769760666; c=relaxed/simple;
-	bh=/s65cuwG2s7quRiocr+iGjbTPoSdj2e6uUzazyRUKBI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=nffS46tY2rYB3lpWd3toY7uN+tcN3tCjV3TuOJCklErnKMCRyYbs/bWAIamovRtN6NUyr9T6XYkCcL0rMn1o/7B172hxutU4xU/2BvyZ4ek5JC7gdLUxkDgYTbbHH5sGw/FlWc5IV7fvXHA+/A/cRAo2byhbKt6+Aa7mY+1wh5A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 343F1153B;
-	Fri, 30 Jan 2026 00:10:56 -0800 (PST)
-Received: from [10.164.18.94] (unknown [10.164.18.94])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 20D8D3F632;
-	Fri, 30 Jan 2026 00:10:56 -0800 (PST)
-Message-ID: <1a33fe3e-b0dd-4553-95b4-89619b9229d2@arm.com>
-Date: Fri, 30 Jan 2026 13:40:54 +0530
+	s=arc-20240116; t=1769768544; c=relaxed/simple;
+	bh=2C6M3tSHSfSWufF6RUJ85n9Nm2/4nxP6ALy7z2Z7v60=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=m5IKKc4GPb3qBYZ3s6O3JE22QzQHOY0a+nk/IdeCa/Taq715qJhlP/mvfpkjsG46MPirBvJPp2mxKV5AJ5guP+TjF11T6SbpjAKqv18YuvAX6z4AQ0OZCtNDyY6xXjTRCtw5lOyA5HM86pY7mOidb+pVUhToUrOnXe5FrsMKI/8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=Gr4vNUXs; arc=none smtp.client-ip=209.85.221.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-wr1-f53.google.com with SMTP id ffacd0b85a97d-42fbc544b09so1893720f8f.1
+        for <cgroups@vger.kernel.org>; Fri, 30 Jan 2026 02:22:22 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1769768541; x=1770373341; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=2C6M3tSHSfSWufF6RUJ85n9Nm2/4nxP6ALy7z2Z7v60=;
+        b=Gr4vNUXsb+lf9QOsJ/Jmn80Hn5LmaoTN4KXvT/eB6ITDJP9Cyl10UhjEBzpLlviyPN
+         FVp1RfJrue+IQrZBzw5uHmcXSopGtOqTyr3qyGJYOFAZlwL5etPl9Ck0rID4s8nk1YYf
+         /nxVD385g3RGfbDRyPIaH35cXtQyEM1o8TfFTWS3qqjHS7v54+Mh2d1Sr9Hb5x+me5KC
+         QgCQlljImlhPGjXJ4vV2sZVHpTJqE44QFQLAZshjYx915X3Hm96avnlH2KfCuM3wnwkf
+         dXr+U90HHDJnKA4rHxFmMAdwicM+H1UKf23HsiD+6ZrxCVSdfSv1KXz2sySuFrYgdmwa
+         xgAQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1769768541; x=1770373341;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=2C6M3tSHSfSWufF6RUJ85n9Nm2/4nxP6ALy7z2Z7v60=;
+        b=SlT+XoUTmaen75rjPjF+BR8SZrgR+91SOp5m3vLemNmCuH2VPzfyCLniWrQqhl/pPP
+         pS0icDxBdSa4JzrFV7VSu9LFiQOqlFqrzT+tDZG/z05uRHu5z3dRzYLv4UZSKwOSmSCf
+         /x7A4zMOkkBsZKQE1yIDa5rcrQYqVZPDFjHdcauFFNS7ab3oajBZ5rIrAlSoUYI1qSSW
+         0XCFCqU0KlD2iHpf9Q0SXvpnOzZUx1lAb8JO2Lj7ehg0m/nmxAWMANCRO7CIjIUtrnc0
+         vPl7suRLnKEV5nBg5YFiN6CzNyERtK2shj4TuyP60mCH1O2Mcd72jrwU5JVySNgL6sNk
+         fvHg==
+X-Forwarded-Encrypted: i=1; AJvYcCWNEBnr1Dp+Ngk+0ctqbE5iSNy7PM4mcUjqX8mHcrysTSiPC0gu90+3i7ygdjlr5kiFRKR4FLm2@vger.kernel.org
+X-Gm-Message-State: AOJu0YyEyQPAwHK3491mohZwfhThPSAMKJVZo1/JNBM22fPuRZXMf0eK
+	/fbo1wPFaQv/Ok9Rcx6qH/2SSEb0P1HPpdVUOzdqx6AFGlkXMQAtYW20ieUcNSd54C12yjKSI3X
+	HCPPB
+X-Gm-Gg: AZuq6aKjPbMvztq5PMar21TDRjAG/PzWBm3KafhsVEO90Ih3AEaEFAaaqs8Eg3WfIda
+	PQf4PJENzRbS0MKBMLzE8UTOlj5cwFlzFZLidWUPKsZUEnDIdd7wtJLIqeuuGwTce0ySQqFACl8
+	/afAYuuGCVr7f+T0n+M2kf7WfI78+tY3odeEQkFB0OFW4zhc9OYrUJ5fd4LxrRrK66EeNW1sD1a
+	pZ50EVLNu7zcoSa7pLO70hx8rUpXYeYSgrWJtdVpog8R+KFijt5VWBHfrGX/SYbpNNOcanMMwVq
+	b6V3TVOfz7T7FwBHEMrhfJR48/AugtmU58BlL1dNeRLtIU5/ohmmdqPBW0WPZnI4cZQbtxN5P6/
+	geC0b/BUoJn0mjYIeS1KQgel84hutCAX6I1tEVBco++hnYo05T3FQUlvLjEoRP4JWowRtsdWi1+
+	YjHo4wTUfUJQ4c4Ff5wX8R/9L9wATfeAo=
+X-Received: by 2002:a05:6000:2305:b0:432:da3b:5949 with SMTP id ffacd0b85a97d-435f3a72ae9mr3679398f8f.21.1769768540911;
+        Fri, 30 Jan 2026 02:22:20 -0800 (PST)
+Received: from blackdock.suse.cz (nat2.prg.suse.com. [195.250.132.146])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-435e1354d43sm22606824f8f.43.2026.01.30.02.22.19
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 30 Jan 2026 02:22:20 -0800 (PST)
+Date: Fri, 30 Jan 2026 11:22:18 +0100
+From: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
+To: Chen Ridong <chenridong@huaweicloud.com>
+Cc: tj@kernel.org, hannes@cmpxchg.org, rostedt@goodmis.org, 
+	mhiramat@kernel.org, mathieu.desnoyers@efficios.com, inwardvessel@gmail.com, 
+	shakeel.butt@linux.dev, cgroups@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-trace-kernel@vger.kernel.org, lujialin4@huawei.com
+Subject: Re: [PATCH -next] cgroup: increase maximum subsystem count from 16
+ to 32
+Message-ID: <stsf73lnkx2luuak3a7oi3q4l5axosrxogi2lncw4dkndnc2ge@3tioqa6ww5q7>
+References: <20260129063133.209874-1-chenridong@huaweicloud.com>
+ <asryf3kk6c337l33faqpeznk7d4a3rxblzmqrawxffq7sfbaf7@5yfzzdroltjq>
+ <3a12eb16-3a91-4278-9dfd-6c6f424e7f9f@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] mm: khugepaged: fix NR_FILE_PAGES and NR_SHMEM in
- collapse_file()
-To: Shakeel Butt <shakeel.butt@linux.dev>,
- Andrew Morton <akpm@linux-foundation.org>
-Cc: Johannes Weiner <hannes@cmpxchg.org>, Rik van Riel <riel@surriel.com>,
- Song Liu <songliubraving@fb.com>, Kiryl Shutsemau <kas@kernel.org>,
- Usama Arif <usamaarif642@gmail.com>, David Hildenbrand <david@kernel.org>,
- Lorenzo Stoakes <lorenzo.stoakes@oracle.com>, Zi Yan <ziy@nvidia.com>,
- Baolin Wang <baolin.wang@linux.alibaba.com>,
- "Liam R . Howlett" <Liam.Howlett@oracle.com>, Nico Pache
- <npache@redhat.com>, Ryan Roberts <ryan.roberts@arm.com>,
- Barry Song <baohua@kernel.org>, Lance Yang <lance.yang@linux.dev>,
- Matthew Wilcox <willy@infradead.org>, Meta kernel team
- <kernel-team@meta.com>, linux-mm@kvack.org, cgroups@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <20260130042925.2797946-1-shakeel.butt@linux.dev>
-Content-Language: en-US
-From: Dev Jain <dev.jain@arm.com>
-In-Reply-To: <20260130042925.2797946-1-shakeel.butt@linux.dev>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="zispwon7xf4glpk3"
+Content-Disposition: inline
+In-Reply-To: <3a12eb16-3a91-4278-9dfd-6c6f424e7f9f@huaweicloud.com>
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-1.36 / 15.00];
+X-Spamd-Result: default: False [-3.76 / 15.00];
+	SIGNED_PGP(-2.00)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
+	DMARC_POLICY_ALLOW(-0.50)[suse.com,quarantine];
+	MID_RHS_NOT_FQDN(0.50)[];
+	MIME_GOOD(-0.20)[multipart/signed,text/plain];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_DKIM_ALLOW(-0.20)[suse.com:s=google];
 	MAILLIST(-0.15)[generic];
-	MIME_GOOD(-0.10)[text/plain];
-	DMARC_POLICY_SOFTFAIL(0.10)[arm.com : SPF not aligned (relaxed), No valid DKIM,none];
 	HAS_LIST_UNSUB(-0.01)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	FREEMAIL_CC(0.00)[cmpxchg.org,surriel.com,fb.com,kernel.org,gmail.com,oracle.com,nvidia.com,linux.alibaba.com,redhat.com,arm.com,linux.dev,infradead.org,meta.com,kvack.org,vger.kernel.org];
-	TAGGED_FROM(0.00)[bounces-13543-lists,cgroups=lfdr.de];
-	FROM_HAS_DN(0.00)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
+	FREEMAIL_CC(0.00)[kernel.org,cmpxchg.org,goodmis.org,efficios.com,gmail.com,linux.dev,vger.kernel.org,huawei.com];
+	TAGGED_FROM(0.00)[bounces-13544-lists,cgroups=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[21];
-	MIME_TRACE(0.00)[0:+];
-	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
+	FROM_HAS_DN(0.00)[];
+	MIME_TRACE(0.00)[0:+,1:+,2:~];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[12];
+	DKIM_TRACE(0.00)[suse.com:+];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	MISSING_XM_UA(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[5];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[mkoutny@suse.com,cgroups@vger.kernel.org];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	NEURAL_HAM(-0.00)[-1.000];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[cgroups];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[dev.jain@arm.com,cgroups@vger.kernel.org];
 	TO_DN_SOME(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[5];
-	R_DKIM_NA(0.00)[];
-	NEURAL_HAM(-0.00)[-1.000];
-	MID_RHS_MATCH_FROM(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns,linux.dev:email,arm.com:mid,arm.com:email]
-X-Rspamd-Queue-Id: 2D24EB831F
+	DBL_BLOCKED_OPENRESOLVER(0.00)[huaweicloud.com:email,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,suse.com:dkim]
+X-Rspamd-Queue-Id: 843B4B94EC
 X-Rspamd-Action: no action
 
 
-On 30/01/26 9:59 am, Shakeel Butt wrote:
-> In META's fleet, we observed high-level cgroups showing zero file memcg
-> stats while their descendants had non-zero values. Investigation using
-> drgn revealed that these parent cgroups actually had negative file stats,
-> aggregated from their children.
->
-> This issue became more frequent after deploying thp-always more widely,
-> pointing to a correlation with THP file collapsing. The root cause is
-> that collapse_file() assumes old folios and the new THP belong to the
-> same node and memcg. When this assumption breaks, stats become skewed.
-> The bug affects not just memcg stats but also per-numa stats, and not
-> just NR_FILE_PAGES but also NR_SHMEM.
->
-> The assumption breaks in scenarios such as:
->
-> 1. Small folios allocated on one node while the THP gets allocated on a
->    different node.
->
-> 2. A package downloader running in one cgroup populates the page cache,
->    while a job in a different cgroup executes the downloaded binary.
->
-> 3. A file shared between processes in different cgroups, where one
->    process faults in the pages and khugepaged (or madvise(COLLAPSE))
->    collapses them on behalf of the other.
->
-> Fix the accounting by explicitly incrementing stats for the new THP and
-> decrementing stats for the old folios being replaced.
->
-> Fixes: f3f0e1d2150b ("khugepaged: add support of collapse for tmpfs/shmem pages")
-> Signed-off-by: Shakeel Butt <shakeel.butt@linux.dev>
-> ---
+--zispwon7xf4glpk3
+Content-Type: text/plain; protected-headers=v1; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH -next] cgroup: increase maximum subsystem count from 16
+ to 32
+MIME-Version: 1.0
 
-Thanks.
+On Thu, Jan 29, 2026 at 05:51:33PM +0800, Chen Ridong <chenridong@huaweiclo=
+ud.com> wrote:
+> We compiled with 'make allmodconfig'.
 
-Reviewed-by: Dev Jain <dev.jain@arm.com>
+A-ha.
 
->  mm/khugepaged.c | 16 +++++++++-------
->  1 file changed, 9 insertions(+), 7 deletions(-)
->
-> diff --git a/mm/khugepaged.c b/mm/khugepaged.c
-> index 1d994b6c58c6..fa1e57fd2c46 100644
-> --- a/mm/khugepaged.c
-> +++ b/mm/khugepaged.c
-> @@ -2195,16 +2195,13 @@ static enum scan_result collapse_file(struct mm_struct *mm, unsigned long addr,
->  		xas_lock_irq(&xas);
->  	}
->  
-> -	if (is_shmem)
-> +	if (is_shmem) {
-> +		lruvec_stat_mod_folio(new_folio, NR_SHMEM, HPAGE_PMD_NR);
->  		lruvec_stat_mod_folio(new_folio, NR_SHMEM_THPS, HPAGE_PMD_NR);
-> -	else
-> +	} else {
->  		lruvec_stat_mod_folio(new_folio, NR_FILE_THPS, HPAGE_PMD_NR);
-> -
-> -	if (nr_none) {
-> -		lruvec_stat_mod_folio(new_folio, NR_FILE_PAGES, nr_none);
-> -		/* nr_none is always 0 for non-shmem. */
-> -		lruvec_stat_mod_folio(new_folio, NR_SHMEM, nr_none);
->  	}
-> +	lruvec_stat_mod_folio(new_folio, NR_FILE_PAGES, HPAGE_PMD_NR);
->  
->  	/*
->  	 * Mark new_folio as uptodate before inserting it into the
-> @@ -2238,6 +2235,11 @@ static enum scan_result collapse_file(struct mm_struct *mm, unsigned long addr,
->  	 */
->  	list_for_each_entry_safe(folio, tmp, &pagelist, lru) {
->  		list_del(&folio->lru);
-> +		lruvec_stat_mod_folio(folio, NR_FILE_PAGES,
-> +				      -folio_nr_pages(folio));
-> +		if (is_shmem)
-> +			lruvec_stat_mod_folio(folio, NR_SHMEM,
-> +					      -folio_nr_pages(folio));
+> The BUILD_BUG_ON(CGROUP_SUBSYS_COUNT > 16) macro worked correctly.
 
-I notice here that we don't need to do accounting for NR_SHMEM_THPS or NR_FILE_THPS -
-but the following bit:
+Good.
 
-if (folio_order(folio) == HPAGE_PMD_ORDER && folio->index == start)
+> Can I propose increasing the maximum number now? If we switch certain con=
+figs to
+> default N and then a new subsystem is added later, the default configurat=
+ion may
+> work fine, but it will become a problem under allmodconfig =E2=80=94 whic=
+h some users
+> actually rely on.
+>=20
+> Besides, this shouldn't be a major change, right?
 
-in the khugepaged code, seems to suggest that we can reach this stat accounting path
-with a PMD order old folio, if folio->index != start. But this condition should not be possible;
-a folio is always order-aligned within the file, which means the folio->index here
-is PMD-aligned. The entry of collapse_file() asserts that start is also PMD-aligned (guaranteed
-by thp_vma_allowable_order in khugepaged_scan_mm_slot). Therefore start must equal folio->index.
+I'd like there to be gradual move away from legacy controllers code
+captured in config defaults.
+Could you adjust the commit message to stress out the allmodconfig tests?
 
-If I am not missing something here, I'll send a patch to convert this to a VM_WARN_ON.
- 
+The change is OK technically.
 
->  		folio->mapping = NULL;
->  		folio_clear_active(folio);
->  		folio_clear_unevictable(folio);
+Thanks,
+Michal
+
+--zispwon7xf4glpk3
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iJEEABYKADkWIQRCE24Fn/AcRjnLivR+PQLnlNv4CAUCaXyGSxsUgAAAAAAEAA5t
+YW51MiwyLjUrMS4xMSwyLDIACgkQfj0C55Tb+Ai/3gD+Pqinek9yDHfUrKo9Kffa
+e6XIsBNZyHtXPceaa55CI3gA/0dRtNVhHx0+A1IfBm3aDf/gT/fX1P09yTJj8Mt/
+8Y4E
+=Tf8X
+-----END PGP SIGNATURE-----
+
+--zispwon7xf4glpk3--
 
