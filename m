@@ -1,83 +1,103 @@
-Return-Path: <cgroups+bounces-13533-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-13534-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id OJRkEJcIfGnqKAIAu9opvQ
-	(envelope-from <cgroups+bounces-13533-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Fri, 30 Jan 2026 02:25:43 +0100
+	id uFpTK+gKfGkEKQIAu9opvQ
+	(envelope-from <cgroups+bounces-13534-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Fri, 30 Jan 2026 02:35:36 +0100
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 962C9B6266
-	for <lists+cgroups@lfdr.de>; Fri, 30 Jan 2026 02:25:42 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1765FB62FF
+	for <lists+cgroups@lfdr.de>; Fri, 30 Jan 2026 02:35:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id DD8B0300E71D
-	for <lists+cgroups@lfdr.de>; Fri, 30 Jan 2026 01:25:03 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 654D73011788
+	for <lists+cgroups@lfdr.de>; Fri, 30 Jan 2026 01:35:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB948330320;
-	Fri, 30 Jan 2026 01:25:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5649032FA18;
+	Fri, 30 Jan 2026 01:35:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UE5sX8U9"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="C1kNNovF";
+	dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b="OODMM4SU"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-dl1-f44.google.com (mail-dl1-f44.google.com [74.125.82.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D5DC30F7E2
-	for <cgroups@vger.kernel.org>; Fri, 30 Jan 2026 01:25:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.82.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 897662E093C
+	for <cgroups@vger.kernel.org>; Fri, 30 Jan 2026 01:35:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1769736302; cv=none; b=c/W55eLdO8ubj8vxKEpax5mJC/Q3duge/VcBcm7mAe5keAeS3TZssBjHYqc43Crl2FtGFzYn+uJ9BsRt5WVnMfc55Y4T/IhCM8sPUWUXipgc6ZeWW9agSFEEeuF+V/hfAPlx97LhT1QSJd+SyZSTOPWgpYo+5nhMoS5XWo2KjwM=
+	t=1769736933; cv=none; b=M3Ky0nTSyvUjIBhfVVUYpsBdU5sb2nM59RsmwBb7yNfFYfFpzRG1zDzArqCP3D1/3IZrubQ6p9q2mivS/w/see+Ud6qsBrLZ/rt2ARAMBkWHfmpLqtIElCYIAGbaC6np/5AOrdiRDOpND9SOg1PSwZTtV9fuhuBWivc3jVpomOc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1769736302; c=relaxed/simple;
-	bh=QPCRSENA4SFJhAH+HmqmvpZoOVaVA5wKYXLmrxDmbR4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=YA82ursgEnkj6J1eA24XLpc1DQE3h7tGMcOHzNwBQKK/qmpPeXbi03dP7K15i8sw+EDvswufYO+FndCedBs6Y2Ly6dMBry1TMEVZfupDygt3otUvRfLHQRvtmwq+DtFaC+4wEbzOdcCVRSvo5C8X0o2Xmkd857jLCz/KgSPZEjY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=UE5sX8U9; arc=none smtp.client-ip=74.125.82.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-dl1-f44.google.com with SMTP id a92af1059eb24-124b117776fso1290286c88.0
-        for <cgroups@vger.kernel.org>; Thu, 29 Jan 2026 17:25:01 -0800 (PST)
+	s=arc-20240116; t=1769736933; c=relaxed/simple;
+	bh=yNqlr+g/dAVXBHRwuF9me3BcgwA3Yv8lNZBTDFDN7tI=;
+	h=From:Message-ID:Date:MIME-Version:Subject:To:Cc:References:
+	 In-Reply-To:Content-Type; b=ufhk4aVJ01KBxL21hpdIs5Ch6Fkl26+vmlaUOhYO/6Qn95oPjNjnyfp8TWCS956lJBmgmwNr2bV8etP8QV3b4M8IZoCUxblOypqRQhjYMvDx74u633v5KDoUtHMLuaZpnE7XnWghFnomy20f4E/6V38JihxU4+R1Bz575n6mHpA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=C1kNNovF; dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b=OODMM4SU; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1769736930;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=tfw5mJCevCS/+1BMTGHFbRfoHE7pIKNdXZrhR2HqMDk=;
+	b=C1kNNovFQeGpugsYsVHF12Yo4hsAfNel4mHGih+iy8TQbU09M/Crs48AQlulFKZpT9YfDX
+	OXl1ykRdrS/t3kewkD1X/evfk/cr/XOEzZYNO1oadEOkblHRJwWVV7vutgky2HwVgGcHdB
+	as/XbWPBgTyDFUg7FVSC5OZgwR2WYcQ=
+Received: from mail-qv1-f69.google.com (mail-qv1-f69.google.com
+ [209.85.219.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-241-8eEw5f1OMqGP1NVOanNrsQ-1; Thu, 29 Jan 2026 20:35:29 -0500
+X-MC-Unique: 8eEw5f1OMqGP1NVOanNrsQ-1
+X-Mimecast-MFC-AGG-ID: 8eEw5f1OMqGP1NVOanNrsQ_1769736928
+Received: by mail-qv1-f69.google.com with SMTP id 6a1803df08f44-89473f5a755so52041296d6.0
+        for <cgroups@vger.kernel.org>; Thu, 29 Jan 2026 17:35:29 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1769736300; x=1770341100; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=ryNCiIbjOxXcd/t0kCSD2wpxWRoodaQ92ia7l5T9br8=;
-        b=UE5sX8U9LI3MzdfQoGoE4Pk7IEbEt5SrNS19zUhpKD6Br/xVh9BpD/tD0vdu3fW/Ht
-         t9yxpqUHJcJ1VlTleZ4IH2vH+wYLXjCHR/o84++C70wch8mkRoPlzBEezJKC+78gTV2N
-         NCKCRCUaeX8JrYhH3LpBMq7agdjo9FK5MLJzY+ghSLkclQSgvXzyTwSHK4x3zZwPraOw
-         g/74oCTY1xd+JDrRA9duVM3+jYF58IjmJHm/R2r8Ao2aom2tO6XQhUckVwzZ0CaFgVIn
-         +djCRYGViVEcXi8Ryp0KrGbXqj8llvr1VbvEP9WsGX7p5dzNeFVYuBP55CGi3Pxs3YDa
-         kn3g==
+        d=redhat.com; s=google; t=1769736928; x=1770341728; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:content-language:references
+         :cc:to:subject:user-agent:mime-version:date:message-id:from:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=tfw5mJCevCS/+1BMTGHFbRfoHE7pIKNdXZrhR2HqMDk=;
+        b=OODMM4SUW6hVpCd+LTBynzVCR9erhy1FSGzPRnsua+iCP8HlUGBmRpmW56iCHMGNRl
+         KDkRhtxPBuy4irLa0dyflCqRrZMmFWLX/wKmA+s+c+oPDpH4/RjbmAPjbgrwIvXQTpQz
+         h9au0mNfnQx9PaNCkIA6rUX7mPy4CwWW4qgv5uq5PvDtGeD0RXLTIAN6dg1dGoc7cOvH
+         rmNKawuUb0nSs3aa5WH/FJHYc4GH2unJ6B9BuJId6XadIMqrxxbOTN9auFDLZbNB3K/7
+         9r2PhEbmDACNNlNzhDMwUhBxJsg5A1XWOu56KL1W++Wbt6Mw8jeMfWXOCQsREKslIl3W
+         Ftmw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1769736300; x=1770341100;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=ryNCiIbjOxXcd/t0kCSD2wpxWRoodaQ92ia7l5T9br8=;
-        b=tPvEAu5TZyoOAk5td+PZHxY7LJplPRf1NSlCuyo6SwL3hF8lAS4zaBGHbAK5efRj0n
-         KXzESHK3gQMcrItgA9+NNmkoHBKb/wg63JRVw0+Cum5zKNhdJmVK7FlxdYfNi6HLYKmd
-         Lx5AMGFnrJjcfLYJSHLPRkjKrpl+7VFckSNRVR+WWPefzT+D7uHgpqim5SXur7TD57Ra
-         ILxBglQoiS2zrh/tdMPv2TxvNEJ3AJgMv78QtLzIt8j846LOs9CcjtRXtkabAqvvL9YY
-         hkdW1RB+/Pw6RS2plclro5m1SVNQP65Ml8YacrTC3ErJF8cg0d0DfpvI/3Oz/FpJn6Zf
-         hepA==
-X-Gm-Message-State: AOJu0YwriVjCwMFN1KPuOpCAIVCLaee/v0ICnf5R/1/kbg+CGJ9R6aku
-	29HgF+8kM+SfeY/PBHSpxGpmQWXATV7vw13EcOqAk0z92tdQ9d+T3KyF
-X-Gm-Gg: AZuq6aJm+5l5F4AaBBsghfzpvLPg2Q8VUJwh45fODGOkqhxUclV6V6y0U8OzJAjc7wV
-	CriylqEaRlXDnxlyIDky9ZoEoZecLEdJjXfBoTfRe9Dlv3WCgnmEnluuooq581njD3WDuojf5Wy
-	049vJ7nMKdU16Mwmn7/It+Y/0bfvamMi8THwJAgi9LEbvpRVNz9dkAkDSgWd2Ew0dZcFQnBapME
-	t9cmXncyi62T2cvuhn3ImRL8L53TuXFEqthhE280mzOqDx4rbjKM/3G/w8UbCVz5kwcotNP7+9x
-	uc8SLmhMu/WWaonHtiGEwMrmieE7wDQxIBFmSgTHFz4hdDluVI+XrLlJLboCqXMHn0F03ga87xA
-	bFHDsAuqMPrKF81gR88ltC2ah/5OHMLYUknLoXKllWmKlurKeBCQ1zSis3a+VVVCPi4L8sWgmuw
-	QnUdW+ElTtk9IqcMN89X5Z1DANmMR8WE088c6vjnBKdMHs
-X-Received: by 2002:a05:7022:b91:b0:11f:3483:bbaa with SMTP id a92af1059eb24-125c0fa0ed6mr768887c88.19.1769736300463;
-        Thu, 29 Jan 2026 17:25:00 -0800 (PST)
-Received: from ?IPV6:2a03:83e0:1151:15:416e:86d1:92cd:3741? ([2620:10d:c090:500::2:15ff])
-        by smtp.gmail.com with ESMTPSA id a92af1059eb24-124a9d7f789sm8300091c88.6.2026.01.29.17.24.59
+        d=1e100.net; s=20230601; t=1769736928; x=1770341728;
+        h=content-transfer-encoding:in-reply-to:content-language:references
+         :cc:to:subject:user-agent:mime-version:date:message-id:from:x-gm-gg
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=tfw5mJCevCS/+1BMTGHFbRfoHE7pIKNdXZrhR2HqMDk=;
+        b=ExEaDcGLuClWfq3aSEipmfKm7Eto8Nv29ODHkuCUKUXVHrwEMSj/e/GSTBTPURzLVQ
+         1JSMxoVPkE3S99WaG/vGjtERqUqLoG8cvc1BcUQfn0jkNjHhdpX/JDhmvT2w0YZIFD9w
+         Wt1CYA6c2+y2T5jpcljP4hNgzUadjlKu/AkVA+kbp+0m4fgGqnwrZAR95VortgWY9/AA
+         SealuL01haQ4SOblUyeV0FdEZCKmwxi9MRm6RQLKe6VNgg+Y0QAL8e773Dv+rhgRpjau
+         eb1MZ8nPWA6zDRXDvbHeTDJjawgv6ceToWSp7Obb52BQ5iNgFaLVGT7UBF/ROLLQ/7c+
+         HlCA==
+X-Gm-Message-State: AOJu0YzJvNWBssVQLAJIS14GUG+/18vaNdjWaQAWdmaAVidaAgLs+h3f
+	eE2z/ZGTwnv0xdZEKWFh62lqIKWuJsg1bGFcEf0QfNdjFyHJcgqgKfjr13wFXsJlsiZSV+j7aXC
+	SZ9ILaOHrXF2s8Pl/uDCZiROal5x0HhVRvGavfhLcVtYvkNKvCJ8/h1J3jNo=
+X-Gm-Gg: AZuq6aJiR0hMz/zLyXxQVy/sDFssshZAFLaEk93dqVnyLNNRd3+vMksEa9yCVFVq1Sx
+	B1rgcOhfa+J9iXAdWQ2ITmnIcydXOZnPF4/TL94w3nkIAim8q9oFGusffzl45FMzpDZzzY50MZc
+	9AyYtUdi9SukGz0kK3jO1L5RIOAdhMjQh6znQpQg4xwf+TKU/5/7atp+mU4Io7vkTRa9pRpvQMr
+	SbidKMFHhe1Rpm0WVtmtWnblsvw8f9prWA21uK5w/fPjfk/YJBoxlh+JF7qD4w3b2cn9Fx1VnGS
+	dyNteFIhudxgg+YnnjxorbbV1Ac+XF2I7BNyn8t9k5zj3eTxl3OhUhoKMkSBqTbZAqjENFq4GTX
+	guzBSUUpn9VT5ZTP3M+RYLhniP8+du3qfvMPOsyKp0KbKpFgQ9ugBiPoO
+X-Received: by 2002:a05:6214:2aa3:b0:894:71b0:6b11 with SMTP id 6a1803df08f44-894e9f27757mr23304196d6.14.1769736928451;
+        Thu, 29 Jan 2026 17:35:28 -0800 (PST)
+X-Received: by 2002:a05:6214:2aa3:b0:894:71b0:6b11 with SMTP id 6a1803df08f44-894e9f27757mr23303976d6.14.1769736928041;
+        Thu, 29 Jan 2026 17:35:28 -0800 (PST)
+Received: from ?IPV6:2601:188:c102:b180:1f8b:71d0:77b1:1f6e? ([2601:188:c102:b180:1f8b:71d0:77b1:1f6e])
+        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-894d36ad309sm49846046d6.6.2026.01.29.17.35.26
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 29 Jan 2026 17:25:00 -0800 (PST)
-Message-ID: <d1a0f008-1834-4e9d-8c6e-6ae7cffa4c08@gmail.com>
-Date: Thu, 29 Jan 2026 17:24:58 -0800
+        Thu, 29 Jan 2026 17:35:27 -0800 (PST)
+From: Waiman Long <llong@redhat.com>
+X-Google-Original-From: Waiman Long <longman@redhat.com>
+Message-ID: <80842353-e054-4c70-a560-f67401c5b4a2@redhat.com>
+Date: Thu, 29 Jan 2026 20:35:26 -0500
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -85,69 +105,184 @@ List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH -next] cgroup: increase maximum subsystem count from 16 to
- 32
-To: Chen Ridong <chenridong@huaweicloud.com>, tj@kernel.org,
- hannes@cmpxchg.org, mkoutny@suse.com, rostedt@goodmis.org,
- mhiramat@kernel.org, mathieu.desnoyers@efficios.com, shakeel.butt@linux.dev
+Subject: Re: [PATCH/for-next 2/2] cgroup/cpuset: Introduce a new top level
+ isolcpus_update_mutex
+To: Chen Ridong <chenridong@huaweicloud.com>, Waiman Long <llong@redhat.com>,
+ Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>,
+ =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
+ Ingo Molnar <mingo@redhat.com>, Peter Zijlstra <peterz@infradead.org>,
+ Juri Lelli <juri.lelli@redhat.com>,
+ Vincent Guittot <vincent.guittot@linaro.org>,
+ Steven Rostedt <rostedt@goodmis.org>, Ben Segall <bsegall@google.com>,
+ Mel Gorman <mgorman@suse.de>, Valentin Schneider <vschneid@redhat.com>,
+ Anna-Maria Behnsen <anna-maria@linutronix.de>,
+ Frederic Weisbecker <frederic@kernel.org>,
+ Thomas Gleixner <tglx@linutronix.de>, Shuah Khan <shuah@kernel.org>
 Cc: cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-trace-kernel@vger.kernel.org, lujialin4@huawei.com
-References: <20260129063133.209874-1-chenridong@huaweicloud.com>
+ linux-kselftest@vger.kernel.org
+References: <20260128044251.1229702-1-longman@redhat.com>
+ <20260128044251.1229702-3-longman@redhat.com>
+ <08c3fad6-b881-4089-b081-bde6efbafbd2@huaweicloud.com>
+ <a6f6a5f6-ca71-424d-a56f-96a896a151ae@redhat.com>
+ <11d8ff97-74e5-440e-b56a-af590da5a3f6@huaweicloud.com>
 Content-Language: en-US
-From: JP Kobryn <inwardvessel@gmail.com>
-In-Reply-To: <20260129063133.209874-1-chenridong@huaweicloud.com>
+In-Reply-To: <11d8ff97-74e5-440e-b56a-af590da5a3f6@huaweicloud.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
-	R_DKIM_ALLOW(-0.20)[gmail.com:s=20230601];
+	DMARC_POLICY_ALLOW(-0.50)[redhat.com,quarantine];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64];
+	R_DKIM_ALLOW(-0.20)[redhat.com:s=mimecast20190719,redhat.com:s=google];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-13533-lists,cgroups=lfdr.de];
-	RCVD_TLS_LAST(0.00)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
 	MIME_TRACE(0.00)[0:+];
-	DKIM_TRACE(0.00)[gmail.com:+];
-	FREEMAIL_FROM(0.00)[gmail.com];
-	RCPT_COUNT_TWELVE(0.00)[12];
+	RCPT_COUNT_TWELVE(0.00)[20];
+	TAGGED_FROM(0.00)[bounces-13534-lists,cgroups=lfdr.de];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	RCVD_TLS_LAST(0.00)[];
+	DKIM_TRACE(0.00)[redhat.com:+];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	FROM_HAS_DN(0.00)[];
 	TO_DN_SOME(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[5];
+	RCVD_COUNT_FIVE(0.00)[6];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[inwardvessel@gmail.com,cgroups@vger.kernel.org];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	FROM_NEQ_ENVFROM(0.00)[llong@redhat.com,cgroups@vger.kernel.org];
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
 	NEURAL_HAM(-0.00)[-1.000];
 	TAGGED_RCPT(0.00)[cgroups];
 	MID_RHS_MATCH_FROM(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,huawei.com:email]
-X-Rspamd-Queue-Id: 962C9B6266
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: 1765FB62FF
 X-Rspamd-Action: no action
 
-Hi Chen,
+On 1/29/26 7:56 PM, Chen Ridong wrote:
+>
+> On 2026/1/30 5:16, Waiman Long wrote:
+>> On 1/29/26 3:01 AM, Chen Ridong wrote:
+>>> On 2026/1/28 12:42, Waiman Long wrote:
+>>>> The current cpuset partition code is able to dynamically update
+>>>> the sched domains of a running system and the corresponding
+>>>> HK_TYPE_DOMAIN housekeeping cpumask to perform what is essentally the
+>>>> "isolcpus=domain,..." boot command line feature at run time.
+>>>>
+>>>> The housekeeping cpumask update requires flushing a number of different
+>>>> workqueues which may not be safe with cpus_read_lock() held as the
+>>>> workqueue flushing code may acquire cpus_read_lock() or acquiring locks
+>>>> which have locking dependency with cpus_read_lock() down the chain. Below
+>>>> is an example of such circular locking problem.
+>>>>
+>>>>     ======================================================
+>>>>     WARNING: possible circular locking dependency detected
+>>>>     6.18.0-test+ #2 Tainted: G S
+>>>>     ------------------------------------------------------
+>>>>     test_cpuset_prs/10971 is trying to acquire lock:
+>>>>     ffff888112ba4958 ((wq_completion)sync_wq){+.+.}-{0:0}, at:
+>>>> touch_wq_lockdep_map+0x7a/0x180
+>>>>
+>>>>     but task is already holding lock:
+>>>>     ffffffffae47f450 (cpuset_mutex){+.+.}-{4:4}, at:
+>>>> cpuset_partition_write+0x85/0x130
+>>>>
+>>>>     which lock already depends on the new lock.
+>>>>
+>>>>     the existing dependency chain (in reverse order) is:
+>>>>     -> #4 (cpuset_mutex){+.+.}-{4:4}:
+>>>>     -> #3 (cpu_hotplug_lock){++++}-{0:0}:
+>>>>     -> #2 (rtnl_mutex){+.+.}-{4:4}:
+>>>>     -> #1 ((work_completion)(&arg.work)){+.+.}-{0:0}:
+>>>>     -> #0 ((wq_completion)sync_wq){+.+.}-{0:0}:
+>>>>
+>>>>     Chain exists of:
+>>>>       (wq_completion)sync_wq --> cpu_hotplug_lock --> cpuset_mutex
+>>>>
+>>>>     5 locks held by test_cpuset_prs/10971:
+>>>>      #0: ffff88816810e440 (sb_writers#7){.+.+}-{0:0}, at: ksys_write+0xf9/0x1d0
+>>>>      #1: ffff8891ab620890 (&of->mutex#2){+.+.}-{4:4}, at:
+>>>> kernfs_fop_write_iter+0x260/0x5f0
+>>>>      #2: ffff8890a78b83e8 (kn->active#187){.+.+}-{0:0}, at:
+>>>> kernfs_fop_write_iter+0x2b6/0x5f0
+>>>>      #3: ffffffffadf32900 (cpu_hotplug_lock){++++}-{0:0}, at:
+>>>> cpuset_partition_write+0x77/0x130
+>>>>      #4: ffffffffae47f450 (cpuset_mutex){+.+.}-{4:4}, at:
+>>>> cpuset_partition_write+0x85/0x130
+>>>>
+>>>>     Call Trace:
+>>>>      <TASK>
+>>>>        :
+>>>>      touch_wq_lockdep_map+0x93/0x180
+>>>>      __flush_workqueue+0x111/0x10b0
+>>>>      housekeeping_update+0x12d/0x2d0
+>>>>      update_parent_effective_cpumask+0x595/0x2440
+>>>>      update_prstate+0x89d/0xce0
+>>>>      cpuset_partition_write+0xc5/0x130
+>>>>      cgroup_file_write+0x1a5/0x680
+>>>>      kernfs_fop_write_iter+0x3df/0x5f0
+>>>>      vfs_write+0x525/0xfd0
+>>>>      ksys_write+0xf9/0x1d0
+>>>>      do_syscall_64+0x95/0x520
+>>>>      entry_SYSCALL_64_after_hwframe+0x76/0x7e
+>>>>
+>>>> To avoid such a circular locking dependency problem, we have to
+>>>> call housekeeping_update() without holding the cpus_read_lock()
+>>>> and cpuset_mutex. One way to do that is to introduce a new top level
+>>>> isolcpus_update_mutex which will be acquired first if the set of isolated
+>>>> CPUs may have to be updated. This new isolcpus_update_mutex will provide
+>>>> the need mutual exclusion without the need to hold cpus_read_lock().
+>>>>
+>>>> As cpus_read_lock() is now no longer held when
+>>>> tmigr_isolated_exclude_cpumask() is called, it needs to acquire it
+>>>> directly.
+>>>>
+>>>> The lockdep_is_cpuset_held() is also updated to check the new
+>>>> isolcpus_update_mutex.
+>>>>
+>>> I worry about the issue:
+>>>
+>>> CPU1                CPU2
+>>> rmdir
+>>> css->ss->css_killed(css);
+>>> cpuset_css_killed
+>>>                  __update_isolation_cpumasks
+>>>                  cpuset_full_unlock
+>>> css->flags |= CSS_DYING;
+>>> css_clear_dir(css);
+>>> ...
+>>> // offline and free do not
+>>> // get isolcpus_update_mutex
+>>> cpuset_css_offline
+>>> cpuset_css_free
+>>>                  cpuset_full_lock
+>>>                  ...
+>>>                  // UAF?
+>>>
+> Hi, Longman,
+>
+> In this patch, I noticed that cpuset_css_offline and cpuset_css_free do not
+> acquire the isolcpus_update_mutex. This could potentially lead to a UAF issue.
+>
+>> That is the reason why I add a new top-level isolcpus_update_mutex.
+>> cpuset_css_killed() and the update_isolation_cpumasks()'s unlock/lock sequence
+>> will have to acquire this isolcpus_update_mutex first.
+>>
+> However, simply adding isolcpus_update_mutex to cpuset_css_killed and
+> update_isolation_cpumasks may not be sufficient.
+>
+> As I mentioned, the path that calls __update_isolation_cpumasks may first
+> acquire isolcpus_update_mutex and cpuset_full_lock, but once cpuset_css_killed
+> is completed, it will release the “full” lock and then attempt to reacquire it
+> later. During this intermediate period, the cpuset may have already been freed,
+> because cpuset_css_offline and cpuset_css_free do not currently acquire the
+> isolcpus_update_mutex.
 
-On 1/28/26 10:31 PM, Chen Ridong wrote:
-> From: Chen Ridong <chenridong@huawei.com>
-> 
-> The current cgroup subsystem limit of 16 is insufficient, as the number of
-> subsystems has already reached this maximum. Attempting to add new
-> subsystems beyond this limit results in boot failures.
-> 
-> This patch increases the maximum number of supported cgroup subsystems from
-> 16 to 32, providing adequate headroom for future subsystem additions.
-> 
-> Signed-off-by: Chen Ridong <chenridong@huawei.com>
-> ---
-[...]
+You are right that acquisition of the new isolcpus_update_mutex should 
+be in all the places where cpuset_full_lock() is acquired. Will update 
+the patch to do that. That should eliminate the risk.
 
-I gave this a run with with 32 controllers enabled (16 pre-existing, 16
-custom) and can confirm it works as expected.
+Cheers,
+Longman
 
-Tested-by: JP Kobryn <inwardvessel@gmail.com>
-Acked-by: JP Kobryn <inwardvessel@gmail.com>
 
