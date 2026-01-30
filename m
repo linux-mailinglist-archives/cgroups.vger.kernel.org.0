@@ -1,49 +1,48 @@
-Return-Path: <cgroups+bounces-13540-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-13541-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id UOU1EudFfGnfLgIAu9opvQ
-	(envelope-from <cgroups+bounces-13540-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Fri, 30 Jan 2026 06:47:19 +0100
+	id yIy0HsJKfGlGLwIAu9opvQ
+	(envelope-from <cgroups+bounces-13541-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Fri, 30 Jan 2026 07:08:02 +0100
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9BCDEB76AF
-	for <lists+cgroups@lfdr.de>; Fri, 30 Jan 2026 06:47:18 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0BD4BB7911
+	for <lists+cgroups@lfdr.de>; Fri, 30 Jan 2026 07:08:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id EEF27301455D
-	for <lists+cgroups@lfdr.de>; Fri, 30 Jan 2026 05:47:14 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id B9FBE30157CC
+	for <lists+cgroups@lfdr.de>; Fri, 30 Jan 2026 06:08:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 014E9326D53;
-	Fri, 30 Jan 2026 05:47:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="WMI9hY1q"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C719C2DCF46;
+	Fri, 30 Jan 2026 06:07:56 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from out30-119.freemail.mail.aliyun.com (out30-119.freemail.mail.aliyun.com [115.124.30.119])
+Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 007D2DDA9;
-	Fri, 30 Jan 2026 05:47:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.119
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4031623D7FC;
+	Fri, 30 Jan 2026 06:07:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1769752033; cv=none; b=gIKOc5SLJv6UNkBfA05sNA0VnV4nPVWHy16VaY56Bb/nGUTX/kJp9q6tYqKptE1lg0iytEpbW6/uV5VCXVyEEg8+rbPcxJOArhoI7O/jm0wUWLR27ZXTejBEEH6tijKw9zhcsIqelwOzaZ0JqHpNGxsm3bINXF5mXUOCgKe+/uI=
+	t=1769753276; cv=none; b=ptaujgrQjLFQ88QknshB2MRPcWy05ctDzM1YTYYSxB3hVKg2rc7OpplMf9CBmyVjSVxeCek3zO/lNvyUnHzGhA/ndXWpJCEeGqIEasCQRUlSu8MhGAyOL25DxfipAsVOfFjs+EVCxaPyrCxV1AMc7EHrcTe6neDPLp5aUedC6jg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1769752033; c=relaxed/simple;
-	bh=awPp0FjH9ERIyGnhqtmOy/OpGwF5NWUfk7BBuldl+0k=;
+	s=arc-20240116; t=1769753276; c=relaxed/simple;
+	bh=WntBD+BsLsF61BF2dOjdR5PK0ct9Uua/v+riOILFUf0=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=k9gElMLn3h/naRfWNGw5SkMXn16qf3v70128ZxB78oTVZi+tK2iU6U348/iPKLE3yMQoNRLCD4TdrY9GQeg3VG5372SH65dlY+L/kkBCy1axeShxondPf3CRQc6R6lDCsjSH1/shL4R3Ymta/3gRoSr1rJKZNmqPPa5BoTssiTw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=WMI9hY1q; arc=none smtp.client-ip=115.124.30.119
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=linux.alibaba.com; s=default;
-	t=1769752023; h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type;
-	bh=77Nrg4O5LoXp8ea1NF3SV8uU8VwqaIAVT4aaN0oPDq8=;
-	b=WMI9hY1qCP4M3Jf/mN1vNukwdcL2LGZBKpFvu5r99pUH/W7dAYIwYl16Q46XeaBIcdm7hhMjDjL398gxVNOrLAx25Aai60A3qF2HzTmv7zWx69LNt0lj5xS8WlUacCcmoWyHAd/bh6dEAEcMGq4EHHCNO8bkDZ05tyVQxFP2WOQ=
-Received: from 30.74.144.133(mailfrom:baolin.wang@linux.alibaba.com fp:SMTPD_---0Wy9eGt5_1769752021 cluster:ay36)
-          by smtp.aliyun-inc.com;
-          Fri, 30 Jan 2026 13:47:01 +0800
-Message-ID: <98256ecd-2b1f-42e9-9569-445909a1d223@linux.alibaba.com>
-Date: Fri, 30 Jan 2026 13:47:00 +0800
+	 In-Reply-To:Content-Type; b=p16tZqZ34ntAG23EPIOLtIZVme10jIfDB9GQBArPOOOEIqRuwNwmD5NeHpQxvuiDRAJc6uTgZVv444cmIOZ9SAGVcNRn+cx6U6NoHtFOC7T2sFBsHJXhLLfmn9hpxvgKHwDrzSI0vKvdWM34+o3QOHKdkwLf2MwrVLQ6XzBkU2s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.198])
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTPS id 4f2QXR4tpdzKHMhT;
+	Fri, 30 Jan 2026 14:07:35 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.128])
+	by mail.maildlp.com (Postfix) with ESMTP id CBB1540573;
+	Fri, 30 Jan 2026 14:07:50 +0800 (CST)
+Received: from [10.67.111.176] (unknown [10.67.111.176])
+	by APP4 (Coremail) with SMTP id gCh0CgAn1fW1SnxptM17Fg--.31100S2;
+	Fri, 30 Jan 2026 14:07:50 +0800 (CST)
+Message-ID: <202df44d-11e6-4dc6-8fbf-c89c0ceff73f@huaweicloud.com>
+Date: Fri, 30 Jan 2026 14:07:48 +0800
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -51,90 +50,231 @@ List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] mm: khugepaged: fix NR_FILE_PAGES and NR_SHMEM in
- collapse_file()
-To: Shakeel Butt <shakeel.butt@linux.dev>,
- Andrew Morton <akpm@linux-foundation.org>
-Cc: Johannes Weiner <hannes@cmpxchg.org>, Rik van Riel <riel@surriel.com>,
- Song Liu <songliubraving@fb.com>, Kiryl Shutsemau <kas@kernel.org>,
- Usama Arif <usamaarif642@gmail.com>, David Hildenbrand <david@kernel.org>,
- Lorenzo Stoakes <lorenzo.stoakes@oracle.com>, Zi Yan <ziy@nvidia.com>,
- "Liam R . Howlett" <Liam.Howlett@oracle.com>, Nico Pache
- <npache@redhat.com>, Ryan Roberts <ryan.roberts@arm.com>,
- Dev Jain <dev.jain@arm.com>, Barry Song <baohua@kernel.org>,
- Lance Yang <lance.yang@linux.dev>, Matthew Wilcox <willy@infradead.org>,
- Meta kernel team <kernel-team@meta.com>, linux-mm@kvack.org,
- cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20260130042925.2797946-1-shakeel.butt@linux.dev>
-From: Baolin Wang <baolin.wang@linux.alibaba.com>
-In-Reply-To: <20260130042925.2797946-1-shakeel.butt@linux.dev>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Subject: Re: [PATCH/for-next 2/2] cgroup/cpuset: Introduce a new top level
+ isolcpus_update_mutex
+To: Waiman Long <llong@redhat.com>, Tejun Heo <tj@kernel.org>,
+ Johannes Weiner <hannes@cmpxchg.org>, =?UTF-8?Q?Michal_Koutn=C3=BD?=
+ <mkoutny@suse.com>, Ingo Molnar <mingo@redhat.com>,
+ Peter Zijlstra <peterz@infradead.org>, Juri Lelli <juri.lelli@redhat.com>,
+ Vincent Guittot <vincent.guittot@linaro.org>,
+ Steven Rostedt <rostedt@goodmis.org>, Ben Segall <bsegall@google.com>,
+ Mel Gorman <mgorman@suse.de>, Valentin Schneider <vschneid@redhat.com>,
+ Anna-Maria Behnsen <anna-maria@linutronix.de>,
+ Frederic Weisbecker <frederic@kernel.org>,
+ Thomas Gleixner <tglx@linutronix.de>, Shuah Khan <shuah@kernel.org>
+Cc: cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-kselftest@vger.kernel.org
+References: <20260128044251.1229702-1-longman@redhat.com>
+ <20260128044251.1229702-3-longman@redhat.com>
+ <08c3fad6-b881-4089-b081-bde6efbafbd2@huaweicloud.com>
+ <a6f6a5f6-ca71-424d-a56f-96a896a151ae@redhat.com>
+ <11d8ff97-74e5-440e-b56a-af590da5a3f6@huaweicloud.com>
+ <80842353-e054-4c70-a560-f67401c5b4a2@redhat.com>
+ <7a67b419-1f94-441d-9d15-66dce03f9268@huaweicloud.com>
+ <f5adfdc9-4972-4437-8cc9-843b28e7414c@redhat.com>
+Content-Language: en-US
+From: Chen Ridong <chenridong@huaweicloud.com>
+In-Reply-To: <f5adfdc9-4972-4437-8cc9-843b28e7414c@redhat.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:gCh0CgAn1fW1SnxptM17Fg--.31100S2
+X-Coremail-Antispam: 1UD129KBjvJXoW3AFy7uF4kCFy8XF4Dtw15CFg_yoWxtrWkpr
+	95KFWxtrW5Jr18Ar17tr1UXry8tw1UJ3WUXr1kJFy8JFsFyr1Fvr4UXr1q9ryUGrWkAr1U
+	tF15J3y7Zr1UJr7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUv0b4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxkF7I0En4kS
+	14v26r4a6rW5MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I
+	8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVW8ZVWr
+	XwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x
+	0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_
+	Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU0
+	s2-5UUUUU==
+X-CM-SenderInfo: hfkh02xlgr0w46kxt4xhlfz01xgou0bp/
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-9.16 / 15.00];
-	WHITELIST_DMARC(-7.00)[alibaba.com:D:+];
+X-Spamd-Result: default: False [-1.46 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[linux.alibaba.com,none];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
-	R_DKIM_ALLOW(-0.20)[linux.alibaba.com:s=default];
+	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-13540-lists,cgroups=lfdr.de];
-	RCVD_COUNT_THREE(0.00)[4];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	FREEMAIL_CC(0.00)[cmpxchg.org,surriel.com,fb.com,kernel.org,gmail.com,oracle.com,nvidia.com,redhat.com,arm.com,linux.dev,infradead.org,meta.com,kvack.org,vger.kernel.org];
-	RCPT_COUNT_TWELVE(0.00)[21];
-	MIME_TRACE(0.00)[0:+];
-	FROM_HAS_DN(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[baolin.wang@linux.alibaba.com,cgroups@vger.kernel.org];
-	DKIM_TRACE(0.00)[linux.alibaba.com:+];
 	NEURAL_HAM(-0.00)[-0.999];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
+	TO_DN_SOME(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[19];
 	TAGGED_RCPT(0.00)[cgroups];
 	MID_RHS_MATCH_FROM(0.00)[];
-	TO_DN_SOME(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,linux.dev:email]
-X-Rspamd-Queue-Id: 9BCDEB76AF
+	R_DKIM_NA(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[chenridong@huaweicloud.com,cgroups@vger.kernel.org];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[6];
+	RCVD_TLS_LAST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-13541-lists,cgroups=lfdr.de];
+	DMARC_NA(0.00)[huaweicloud.com];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: 0BD4BB7911
 X-Rspamd-Action: no action
 
 
 
-On 1/30/26 12:29 PM, Shakeel Butt wrote:
-> In META's fleet, we observed high-level cgroups showing zero file memcg
-> stats while their descendants had non-zero values. Investigation using
-> drgn revealed that these parent cgroups actually had negative file stats,
-> aggregated from their children.
+On 2026/1/30 11:53, Waiman Long wrote:
+> On 1/29/26 8:42 PM, Chen Ridong wrote:
+>>
+>> On 2026/1/30 9:35, Waiman Long wrote:
+>>> On 1/29/26 7:56 PM, Chen Ridong wrote:
+>>>> On 2026/1/30 5:16, Waiman Long wrote:
+>>>>> On 1/29/26 3:01 AM, Chen Ridong wrote:
+>>>>>> On 2026/1/28 12:42, Waiman Long wrote:
+>>>>>>> The current cpuset partition code is able to dynamically update
+>>>>>>> the sched domains of a running system and the corresponding
+>>>>>>> HK_TYPE_DOMAIN housekeeping cpumask to perform what is essentally the
+>>>>>>> "isolcpus=domain,..." boot command line feature at run time.
+>>>>>>>
+>>>>>>> The housekeeping cpumask update requires flushing a number of different
+>>>>>>> workqueues which may not be safe with cpus_read_lock() held as the
+>>>>>>> workqueue flushing code may acquire cpus_read_lock() or acquiring locks
+>>>>>>> which have locking dependency with cpus_read_lock() down the chain. Below
+>>>>>>> is an example of such circular locking problem.
+>>>>>>>
+>>>>>>>      ======================================================
+>>>>>>>      WARNING: possible circular locking dependency detected
+>>>>>>>      6.18.0-test+ #2 Tainted: G S
+>>>>>>>      ------------------------------------------------------
+>>>>>>>      test_cpuset_prs/10971 is trying to acquire lock:
+>>>>>>>      ffff888112ba4958 ((wq_completion)sync_wq){+.+.}-{0:0}, at:
+>>>>>>> touch_wq_lockdep_map+0x7a/0x180
+>>>>>>>
+>>>>>>>      but task is already holding lock:
+>>>>>>>      ffffffffae47f450 (cpuset_mutex){+.+.}-{4:4}, at:
+>>>>>>> cpuset_partition_write+0x85/0x130
+>>>>>>>
+>>>>>>>      which lock already depends on the new lock.
+>>>>>>>
+>>>>>>>      the existing dependency chain (in reverse order) is:
+>>>>>>>      -> #4 (cpuset_mutex){+.+.}-{4:4}:
+>>>>>>>      -> #3 (cpu_hotplug_lock){++++}-{0:0}:
+>>>>>>>      -> #2 (rtnl_mutex){+.+.}-{4:4}:
+>>>>>>>      -> #1 ((work_completion)(&arg.work)){+.+.}-{0:0}:
+>>>>>>>      -> #0 ((wq_completion)sync_wq){+.+.}-{0:0}:
+>>>>>>>
+>>>>>>>      Chain exists of:
+>>>>>>>        (wq_completion)sync_wq --> cpu_hotplug_lock --> cpuset_mutex
+>>>>>>>
+>>>>>>>      5 locks held by test_cpuset_prs/10971:
+>>>>>>>       #0: ffff88816810e440 (sb_writers#7){.+.+}-{0:0}, at:
+>>>>>>> ksys_write+0xf9/0x1d0
+>>>>>>>       #1: ffff8891ab620890 (&of->mutex#2){+.+.}-{4:4}, at:
+>>>>>>> kernfs_fop_write_iter+0x260/0x5f0
+>>>>>>>       #2: ffff8890a78b83e8 (kn->active#187){.+.+}-{0:0}, at:
+>>>>>>> kernfs_fop_write_iter+0x2b6/0x5f0
+>>>>>>>       #3: ffffffffadf32900 (cpu_hotplug_lock){++++}-{0:0}, at:
+>>>>>>> cpuset_partition_write+0x77/0x130
+>>>>>>>       #4: ffffffffae47f450 (cpuset_mutex){+.+.}-{4:4}, at:
+>>>>>>> cpuset_partition_write+0x85/0x130
+>>>>>>>
+>>>>>>>      Call Trace:
+>>>>>>>       <TASK>
+>>>>>>>         :
+>>>>>>>       touch_wq_lockdep_map+0x93/0x180
+>>>>>>>       __flush_workqueue+0x111/0x10b0
+>>>>>>>       housekeeping_update+0x12d/0x2d0
+>>>>>>>       update_parent_effective_cpumask+0x595/0x2440
+>>>>>>>       update_prstate+0x89d/0xce0
+>>>>>>>       cpuset_partition_write+0xc5/0x130
+>>>>>>>       cgroup_file_write+0x1a5/0x680
+>>>>>>>       kernfs_fop_write_iter+0x3df/0x5f0
+>>>>>>>       vfs_write+0x525/0xfd0
+>>>>>>>       ksys_write+0xf9/0x1d0
+>>>>>>>       do_syscall_64+0x95/0x520
+>>>>>>>       entry_SYSCALL_64_after_hwframe+0x76/0x7e
+>>>>>>>
+>>>>>>> To avoid such a circular locking dependency problem, we have to
+>>>>>>> call housekeeping_update() without holding the cpus_read_lock()
+>>>>>>> and cpuset_mutex. One way to do that is to introduce a new top level
+>>>>>>> isolcpus_update_mutex which will be acquired first if the set of isolated
+>>>>>>> CPUs may have to be updated. This new isolcpus_update_mutex will provide
+>>>>>>> the need mutual exclusion without the need to hold cpus_read_lock().
+>>>>>>>
+>>>>>>> As cpus_read_lock() is now no longer held when
+>>>>>>> tmigr_isolated_exclude_cpumask() is called, it needs to acquire it
+>>>>>>> directly.
+>>>>>>>
+>>>>>>> The lockdep_is_cpuset_held() is also updated to check the new
+>>>>>>> isolcpus_update_mutex.
+>>>>>>>
+>>>>>> I worry about the issue:
+>>>>>>
+>>>>>> CPU1                CPU2
+>>>>>> rmdir
+>>>>>> css->ss->css_killed(css);
+>>>>>> cpuset_css_killed
+>>>>>>                   __update_isolation_cpumasks
+>>>>>>                   cpuset_full_unlock
+>>>>>> css->flags |= CSS_DYING;
+>>>>>> css_clear_dir(css);
+>>>>>> ...
+>>>>>> // offline and free do not
+>>>>>> // get isolcpus_update_mutex
+>>>>>> cpuset_css_offline
+>>>>>> cpuset_css_free
+>>>>>>                   cpuset_full_lock
+>>>>>>                   ...
+>>>>>>                   // UAF?
+>>>>>>
+>>>> Hi, Longman,
+>>>>
+>>>> In this patch, I noticed that cpuset_css_offline and cpuset_css_free do not
+>>>> acquire the isolcpus_update_mutex. This could potentially lead to a UAF issue.
+>>>>
+>>>>> That is the reason why I add a new top-level isolcpus_update_mutex.
+>>>>> cpuset_css_killed() and the update_isolation_cpumasks()'s unlock/lock sequence
+>>>>> will have to acquire this isolcpus_update_mutex first.
+>>>>>
+>>>> However, simply adding isolcpus_update_mutex to cpuset_css_killed and
+>>>> update_isolation_cpumasks may not be sufficient.
+>>>>
+>>>> As I mentioned, the path that calls __update_isolation_cpumasks may first
+>>>> acquire isolcpus_update_mutex and cpuset_full_lock, but once cpuset_css_killed
+>>>> is completed, it will release the “full” lock and then attempt to reacquire it
+>>>> later. During this intermediate period, the cpuset may have already been freed,
+>>>> because cpuset_css_offline and cpuset_css_free do not currently acquire the
+>>>> isolcpus_update_mutex.
+>>> You are right that acquisition of the new isolcpus_update_mutex should be in all
+>>> the places where cpuset_full_lock() is acquired. Will update the patch to do
+>>> that. That should eliminate the risk.
+>>>
+>> I suggest that putting isolcpus_update_mutex into cpuset_full_lock, since this
+>> function means that all the locks needed have been acquired.
+>>
+>> void cpuset_full_lock(void)
+>> {
+>>     mutex_lock(&isolcpus_update_mutex);
+>>     cpus_read_lock();
+>>     mutex_lock(&cpuset_mutex);
+>> }
+>>
+>> void cpuset_full_unlock(void)
+>> {
+>>     mutex_unlock(&cpuset_mutex);
+>>     cpus_read_unlock();
+>>     mutex_unlock(&isolcpus_update_mutex);
+>> }
 > 
-> This issue became more frequent after deploying thp-always more widely,
-> pointing to a correlation with THP file collapsing. The root cause is
-> that collapse_file() assumes old folios and the new THP belong to the
-> same node and memcg. When this assumption breaks, stats become skewed.
-> The bug affects not just memcg stats but also per-numa stats, and not
-> just NR_FILE_PAGES but also NR_SHMEM.
+> That is what I had done.
 > 
-> The assumption breaks in scenarios such as:
-> 
-> 1. Small folios allocated on one node while the THP gets allocated on a
->     different node.
-> 
-> 2. A package downloader running in one cgroup populates the page cache,
->     while a job in a different cgroup executes the downloaded binary.
-> 
-> 3. A file shared between processes in different cgroups, where one
->     process faults in the pages and khugepaged (or madvise(COLLAPSE))
->     collapses them on behalf of the other.
-> 
-> Fix the accounting by explicitly incrementing stats for the new THP and
-> decrementing stats for the old folios being replaced.
-> 
-> Fixes: f3f0e1d2150b ("khugepaged: add support of collapse for tmpfs/shmem pages")
-> Signed-off-by: Shakeel Butt <shakeel.butt@linux.dev>
-> ---
 
-Thanks for the fix. LGTM.
-Reviewed-by: Baolin Wang <baolin.wang@linux.alibaba.com>
+Great.
+
+-- 
+Best regards,
+Ridong
+
 
