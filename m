@@ -1,225 +1,194 @@
-Return-Path: <cgroups+bounces-13545-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-13546-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 6NRdAxK0fGm7OQIAu9opvQ
-	(envelope-from <cgroups+bounces-13545-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Fri, 30 Jan 2026 14:37:22 +0100
+	id QFkOA5u5fGk0OgIAu9opvQ
+	(envelope-from <cgroups+bounces-13546-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Fri, 30 Jan 2026 15:00:59 +0100
 X-Original-To: lists+cgroups@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5E1D0BB202
-	for <lists+cgroups@lfdr.de>; Fri, 30 Jan 2026 14:37:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 202B8BB6D9
+	for <lists+cgroups@lfdr.de>; Fri, 30 Jan 2026 15:00:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 0929230547C8
-	for <lists+cgroups@lfdr.de>; Fri, 30 Jan 2026 13:34:57 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id C2C5F300D303
+	for <lists+cgroups@lfdr.de>; Fri, 30 Jan 2026 14:00:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 746952E6CDE;
-	Fri, 30 Jan 2026 13:34:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1E5BD3161AB;
+	Fri, 30 Jan 2026 14:00:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="KT/rqX0Q"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bhwIw5kK"
 X-Original-To: cgroups@vger.kernel.org
-Received: from out-179.mta0.migadu.com (out-179.mta0.migadu.com [91.218.175.179])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qv1-f52.google.com (mail-qv1-f52.google.com [209.85.219.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC673306B37;
-	Fri, 30 Jan 2026 13:34:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.179
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1769780092; cv=none; b=MOiQpKYLJ3Xo8NcsbG6N1vLU+32+3VjLockMIcRHIn3clTR/WT/bf0puclm/1ONzK2GNf+xpb+Y3wAjx/pPA3JEbKypZ4DThgaHIH6In7YnzUfLboF5VPFPeENu7ApLcFiQQuuxEQBd0oZGiERBTUpyjdASCBoHnVADZIc9HvR0=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1769780092; c=relaxed/simple;
-	bh=h7OZTQW8HL4CAVftwpzjxLZ/SxIGP8730RoVB6HG7Aw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=M7Qt940Wq5VN7vJvmlX+YDW3F2wKVf8KoLOykEF3Xcd7bkDE/DjKqr/2S3+uuUdoETzWsHCeskWm64xMrtvzzBUwSEkFISOFzVDZvyJaghcv+0czXAz+9FY4/kOFH9E1oSppwH0+N2tWKQvgy3Ace14Fo/j0Zu2J6za0a9Y+O1U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=KT/rqX0Q; arc=none smtp.client-ip=91.218.175.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <b62d0a63-624f-4822-b0b3-07e75d97721c@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1769780086;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=IBlsa1vr6ZeB2QvpQ71ZYV6glQGH5Ds/8UMAFBywU/c=;
-	b=KT/rqX0Q1rH5fQrJsOvYoaGjogI6RddJi+9rCtaewr/0tgz/SMGbybWw/IYOyxs1XiP4TN
-	Xu3bblr5El/xMJUdM4Px7qCtcaKe0SmuDphEJJP0PjpBkye4qZUKb73WYI7wGHMClnpEvb
-	W4AALt8EBn6nd7JEsA1WycJFXDZi0fk=
-Date: Fri, 30 Jan 2026 21:34:21 +0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 97B4330E82D
+	for <cgroups@vger.kernel.org>; Fri, 30 Jan 2026 14:00:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.219.52
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1769781654; cv=pass; b=GEXMT0wFncNpyJzaPX6dQ4b0f6++Hm70ORma4Sh4ZBW6LgeIsuYeyDv1ZjkCQ7k/a3HcLguDiCl1SGknxXKTkXO6BVPdQt9b2S7UDQNbjdUpwMvFiPtl5Cu3CCXnv5vBX4NAXdYmRR2B1JzQWlnXHymrtmHdVSFg9Bj3wOW1MqY=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1769781654; c=relaxed/simple;
+	bh=EuxjmqKleduipeidVWxiySOlmtsbbfNRbzRtx4jo0Z4=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=QQBSWzcLMiWGt53EaGiPjNA1xFyhLzycTI+IAQI9+jwJbNl7klIhaaXWnRFNzQEAKkR4HkeIAu0yKLz4mOC7Kaz5ZYTrXdLmWCUzE5WHkanAR35zKs0PXuwTOTjBtkyXswjaXJJjWRiTztbTBcftME5fLRwWM8gAwuTc3Vqq5fY=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=bhwIw5kK; arc=pass smtp.client-ip=209.85.219.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-qv1-f52.google.com with SMTP id 6a1803df08f44-89461ccc46eso34042076d6.2
+        for <cgroups@vger.kernel.org>; Fri, 30 Jan 2026 06:00:53 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; t=1769781653; cv=none;
+        d=google.com; s=arc-20240605;
+        b=Oq1VgLcgyiHvskXT/AswjxQq95kX7+/0LyHiw0nMn/svTQFNixUfHxa7BOcVTvibqp
+         31nmS/oBdII+BF+3G45Sd2muB6RWzzQmsPu6HzjPle1BlWGLr78iQkM2V7AHw3MnE4AX
+         o4SPULPcP0wWuD0YbhyzS90YVR/7GPYIFWV3Y8aVHtMBNhMF14p0iWqeQBNguZ4duq/7
+         sTnuFpqtxNeqPnv9MoDE1zkeTmwfDgr2c16fjlHzPn/kEQoAnUQYcd85QAHaZpM+HY3D
+         t3hUiVaUtnJLqVQoMqnIDJbIc9FPRIRwgrrcN3MphFmGAxIPfxJXHNkTjgI9MotsZaY6
+         swuQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:dkim-signature;
+        bh=nM/SdAiqzbUu7ru7oIiet8XstWPtQwFu8sHUWw12G0Q=;
+        fh=Yqdf1rDUSkhcCzSbOarTeP4gmqUBXnDpevveTJ021pc=;
+        b=M/BO6Xkb5vCsoQTPqp+iDPi9SasdCFnfeBKRht3WCEjdTWeylXwkdG2OvvGchT6T6z
+         XlaJb3375XU+93ZO52jbQuiCCQ08cw3OgUlGYpikjLCGFHTd6rUg75tBudwuHA9itghK
+         q7TQXmaehg1tbpyGZtpemjfR+YJ0R1C4IgXMxzAEXpDT/WDgmg1UpAv7g9S1OeAQHRDI
+         s4n2rueFbLq/AXlkCDkswIr7nnKyNLN0wgCCtHNHsghe5GtFoKjr9cWL+m23m8QQKvbC
+         S+TmLTcvtU+lWtGvPAghOffh67X4rRE7idsJcrTztPI6Q53kz5ecNqGrvtogas2klLse
+         tCtA==;
+        darn=vger.kernel.org
+ARC-Authentication-Results: i=1; mx.google.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1769781652; x=1770386452; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=nM/SdAiqzbUu7ru7oIiet8XstWPtQwFu8sHUWw12G0Q=;
+        b=bhwIw5kKiBvf6sk4gBj4U689xaZJmCHoTLJDXT7eK9OGl8yf8tYf4mdBivcZz2+sIE
+         pRLnuOo0E0E3T/CWrJRWzqfvJfBT4VZL/6RAxjzvcNX6zr6b/8KLBnuxy45B3xLAacDV
+         P/xbzcqKAr6ye/YZlR0MsOnJ9vh4xyVqu3fwdJQ1zmZnshWZSH0tyTKziab86Q6WQVlo
+         NNR2p6CLTU57itJKo5K56HgHJqaf2MVenb0ac5V4PPcbj9oCMukw5aR56Ng1ocdOAwIG
+         3r81J0CDDLma14xzrq0VG+/t3iWkjQTZ5TVXcm8rUiG9VS32iPjj3kYPB/xHvSGHSmA7
+         8/wA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1769781652; x=1770386452;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=nM/SdAiqzbUu7ru7oIiet8XstWPtQwFu8sHUWw12G0Q=;
+        b=TJjX8xuLPasqqjCG2hUv6EVK+3t1VCPJMJ0Ha1l0XcuFEV8E9TF5Ryk9VVMgXP/EV9
+         OWyVmbmemv9rR9YpTC5/EK6c21TCKe9KxyFm7I/LVqP5hBYGcwgQoBnYhcS6LtcHnyDb
+         V6365JWL/8TZNqDd2oOAvkOFSqe4TEY0eN6F9fvLAmQaIt/YrZd1I8aOEICerCdtaDU/
+         J2lnM6hLPrxFCypEp5e9VlI1ypDJS7yPyvZH66QKU8Ywm4PltdJraB7wS5AOrBr73F1K
+         e2c5G9ORidNl49/D8h79BcyhdsRRjwQup7er7C8Ym3h3klOkoPkhPfXBgTKAy+Q4x1NN
+         Cciw==
+X-Forwarded-Encrypted: i=1; AJvYcCV8Ypu1DYixPb4WCNUXL/nClKrE9WhLmxEUNeK5/qAxyXJTGjrzpivxjESUv2szKfX6iGISEOJb@vger.kernel.org
+X-Gm-Message-State: AOJu0Yxn8wZSmrkGPP9jwyldAVrLHbfe2+EHS8ffeI92BQSX7grJKskf
+	e1gIkMHG5n5OU5Z7JH5Bz+HBtUQkFoFYRziDtuznXANjqotgF8k53q7isZ2RUP0a/htqmvzUhXc
+	ErdLjJ/rvOu3UcmxdcS2Ilh4LYtv0iZc=
+X-Gm-Gg: AZuq6aJjIRvuV4l5AbcbAT5ZAvuW/Yyg4D/yTv+gT9qq+pfSsgXPfqI06ZfRbv7W25I
+	k2hoHSPhV8598navWCvAlFaCbkclvlDwq5PGhD42Pni/U3GiU3LI/1SClJAdhFANTOTqYLTQkZa
+	+SIh6I0J6aStBNMYk6xKFNTbrZ41pxxLgNto9PV69FKb42FidIsujZ0BJar4E49l+HyTfQflP5p
+	iIShE/Deo2M/RkuNh9Tx/51NFlE59bbkVOlxHudRYqaM0qlFY5zS6Rz4xVRpe5HiiQLMQiJ
+X-Received: by 2002:ad4:5749:0:b0:894:6ff2:191c with SMTP id
+ 6a1803df08f44-894ea034885mr37076256d6.33.1769781652275; Fri, 30 Jan 2026
+ 06:00:52 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH v2] mm: khugepaged: fix NR_FILE_PAGES and NR_SHMEM in
- collapse_file()
-Content-Language: en-US
-To: Dev Jain <dev.jain@arm.com>
-Cc: Johannes Weiner <hannes@cmpxchg.org>, Rik van Riel <riel@surriel.com>,
- Song Liu <songliubraving@fb.com>, Kiryl Shutsemau <kas@kernel.org>,
- Usama Arif <usamaarif642@gmail.com>, David Hildenbrand <david@kernel.org>,
- Andrew Morton <akpm@linux-foundation.org>,
- Lorenzo Stoakes <lorenzo.stoakes@oracle.com>, Zi Yan <ziy@nvidia.com>,
- Shakeel Butt <shakeel.butt@linux.dev>,
- Baolin Wang <baolin.wang@linux.alibaba.com>,
- "Liam R . Howlett" <Liam.Howlett@oracle.com>, Nico Pache
- <npache@redhat.com>, Ryan Roberts <ryan.roberts@arm.com>,
- Barry Song <baohua@kernel.org>, Matthew Wilcox <willy@infradead.org>,
- Meta kernel team <kernel-team@meta.com>, linux-mm@kvack.org,
- cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
 References: <20260130042925.2797946-1-shakeel.butt@linux.dev>
- <1a33fe3e-b0dd-4553-95b4-89619b9229d2@arm.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Lance Yang <lance.yang@linux.dev>
-In-Reply-To: <1a33fe3e-b0dd-4553-95b4-89619b9229d2@arm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+In-Reply-To: <20260130042925.2797946-1-shakeel.butt@linux.dev>
+From: Barry Song <21cnbao@gmail.com>
+Date: Fri, 30 Jan 2026 22:00:40 +0800
+X-Gm-Features: AZwV_Qh8eUHpePAv_A_lOlwdp6GVUu1KAmqw4DrtwBjVbWAU-tLa-e42BVT3QeM
+Message-ID: <CAGsJ_4xQhkEOe2Juqgy_3u7PNJ+hhby2qrpdf_X8YCuEwK8Yrw@mail.gmail.com>
+Subject: Re: [PATCH v2] mm: khugepaged: fix NR_FILE_PAGES and NR_SHMEM in collapse_file()
+To: Shakeel Butt <shakeel.butt@linux.dev>
+Cc: Andrew Morton <akpm@linux-foundation.org>, Johannes Weiner <hannes@cmpxchg.org>, 
+	Rik van Riel <riel@surriel.com>, Song Liu <songliubraving@fb.com>, 
+	Kiryl Shutsemau <kas@kernel.org>, Usama Arif <usamaarif642@gmail.com>, 
+	David Hildenbrand <david@kernel.org>, Lorenzo Stoakes <lorenzo.stoakes@oracle.com>, Zi Yan <ziy@nvidia.com>, 
+	Baolin Wang <baolin.wang@linux.alibaba.com>, 
+	"Liam R . Howlett" <Liam.Howlett@oracle.com>, Nico Pache <npache@redhat.com>, 
+	Ryan Roberts <ryan.roberts@arm.com>, Dev Jain <dev.jain@arm.com>, 
+	Lance Yang <lance.yang@linux.dev>, Matthew Wilcox <willy@infradead.org>, 
+	Meta kernel team <kernel-team@meta.com>, linux-mm@kvack.org, cgroups@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-2.16 / 15.00];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[linux.dev,none];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=2];
+	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
+	R_DKIM_ALLOW(-0.20)[gmail.com:s=20230601];
 	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
-	R_DKIM_ALLOW(-0.20)[linux.dev:s=key1];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-13545-lists,cgroups=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-13546-lists,cgroups=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	RCVD_COUNT_THREE(0.00)[3];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	FREEMAIL_CC(0.00)[cmpxchg.org,surriel.com,fb.com,kernel.org,gmail.com,linux-foundation.org,oracle.com,nvidia.com,linux.dev,linux.alibaba.com,redhat.com,arm.com,infradead.org,meta.com,kvack.org,vger.kernel.org];
+	FREEMAIL_CC(0.00)[linux-foundation.org,cmpxchg.org,surriel.com,fb.com,kernel.org,gmail.com,oracle.com,nvidia.com,linux.alibaba.com,redhat.com,arm.com,linux.dev,infradead.org,meta.com,kvack.org,vger.kernel.org];
+	FREEMAIL_FROM(0.00)[gmail.com];
+	RCVD_COUNT_THREE(0.00)[4];
 	RCPT_COUNT_TWELVE(0.00)[21];
 	MIME_TRACE(0.00)[0:+];
 	FROM_HAS_DN(0.00)[];
-	MISSING_XM_UA(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	TO_DN_SOME(0.00)[];
 	NEURAL_HAM(-0.00)[-1.000];
+	FROM_NEQ_ENVFROM(0.00)[21cnbao@gmail.com,cgroups@vger.kernel.org];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[lance.yang@linux.dev,cgroups@vger.kernel.org];
-	DKIM_TRACE(0.00)[linux.dev:+];
-	MID_RHS_MATCH_FROM(0.00)[];
+	DKIM_TRACE(0.00)[gmail.com:+];
+	MID_RHS_MATCH_FROMTLD(0.00)[];
 	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
 	TAGGED_RCPT(0.00)[cgroups];
-	TO_DN_SOME(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,arm.com:email,linux.dev:email,linux.dev:dkim,linux.dev:mid]
-X-Rspamd-Queue-Id: 5E1D0BB202
+	MISSING_XM_UA(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[linux.dev:email,mail.gmail.com:mid,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: 202B8BB6D9
 X-Rspamd-Action: no action
 
+On Fri, Jan 30, 2026 at 12:29=E2=80=AFPM Shakeel Butt <shakeel.butt@linux.d=
+ev> wrote:
+>
+> In META's fleet, we observed high-level cgroups showing zero file memcg
+> stats while their descendants had non-zero values. Investigation using
+> drgn revealed that these parent cgroups actually had negative file stats,
+> aggregated from their children.
+>
+> This issue became more frequent after deploying thp-always more widely,
+> pointing to a correlation with THP file collapsing. The root cause is
+> that collapse_file() assumes old folios and the new THP belong to the
+> same node and memcg. When this assumption breaks, stats become skewed.
+> The bug affects not just memcg stats but also per-numa stats, and not
+> just NR_FILE_PAGES but also NR_SHMEM.
+>
+> The assumption breaks in scenarios such as:
+>
+> 1. Small folios allocated on one node while the THP gets allocated on a
+>    different node.
+>
+> 2. A package downloader running in one cgroup populates the page cache,
+>    while a job in a different cgroup executes the downloaded binary.
+>
+> 3. A file shared between processes in different cgroups, where one
+>    process faults in the pages and khugepaged (or madvise(COLLAPSE))
+>    collapses them on behalf of the other.
+>
+> Fix the accounting by explicitly incrementing stats for the new THP and
+> decrementing stats for the old folios being replaced.
+>
+> Fixes: f3f0e1d2150b ("khugepaged: add support of collapse for tmpfs/shmem=
+ pages")
+> Signed-off-by: Shakeel Butt <shakeel.butt@linux.dev>
 
+Thanks!
 
-On 2026/1/30 16:10, Dev Jain wrote:
-> 
-> On 30/01/26 9:59 am, Shakeel Butt wrote:
->> In META's fleet, we observed high-level cgroups showing zero file memcg
->> stats while their descendants had non-zero values. Investigation using
->> drgn revealed that these parent cgroups actually had negative file stats,
->> aggregated from their children.
->>
->> This issue became more frequent after deploying thp-always more widely,
->> pointing to a correlation with THP file collapsing. The root cause is
->> that collapse_file() assumes old folios and the new THP belong to the
->> same node and memcg. When this assumption breaks, stats become skewed.
->> The bug affects not just memcg stats but also per-numa stats, and not
->> just NR_FILE_PAGES but also NR_SHMEM.
->>
->> The assumption breaks in scenarios such as:
->>
->> 1. Small folios allocated on one node while the THP gets allocated on a
->>     different node.
->>
->> 2. A package downloader running in one cgroup populates the page cache,
->>     while a job in a different cgroup executes the downloaded binary.
->>
->> 3. A file shared between processes in different cgroups, where one
->>     process faults in the pages and khugepaged (or madvise(COLLAPSE))
->>     collapses them on behalf of the other.
->>
->> Fix the accounting by explicitly incrementing stats for the new THP and
->> decrementing stats for the old folios being replaced.
->>
->> Fixes: f3f0e1d2150b ("khugepaged: add support of collapse for tmpfs/shmem pages")
->> Signed-off-by: Shakeel Butt <shakeel.butt@linux.dev>
->> ---
-> 
-> Thanks.
-> 
-> Reviewed-by: Dev Jain <dev.jain@arm.com>
-> 
->>   mm/khugepaged.c | 16 +++++++++-------
->>   1 file changed, 9 insertions(+), 7 deletions(-)
->>
->> diff --git a/mm/khugepaged.c b/mm/khugepaged.c
->> index 1d994b6c58c6..fa1e57fd2c46 100644
->> --- a/mm/khugepaged.c
->> +++ b/mm/khugepaged.c
->> @@ -2195,16 +2195,13 @@ static enum scan_result collapse_file(struct mm_struct *mm, unsigned long addr,
->>   		xas_lock_irq(&xas);
->>   	}
->>   
->> -	if (is_shmem)
->> +	if (is_shmem) {
->> +		lruvec_stat_mod_folio(new_folio, NR_SHMEM, HPAGE_PMD_NR);
->>   		lruvec_stat_mod_folio(new_folio, NR_SHMEM_THPS, HPAGE_PMD_NR);
->> -	else
->> +	} else {
->>   		lruvec_stat_mod_folio(new_folio, NR_FILE_THPS, HPAGE_PMD_NR);
->> -
->> -	if (nr_none) {
->> -		lruvec_stat_mod_folio(new_folio, NR_FILE_PAGES, nr_none);
->> -		/* nr_none is always 0 for non-shmem. */
->> -		lruvec_stat_mod_folio(new_folio, NR_SHMEM, nr_none);
->>   	}
->> +	lruvec_stat_mod_folio(new_folio, NR_FILE_PAGES, HPAGE_PMD_NR);
->>   
->>   	/*
->>   	 * Mark new_folio as uptodate before inserting it into the
->> @@ -2238,6 +2235,11 @@ static enum scan_result collapse_file(struct mm_struct *mm, unsigned long addr,
->>   	 */
->>   	list_for_each_entry_safe(folio, tmp, &pagelist, lru) {
->>   		list_del(&folio->lru);
->> +		lruvec_stat_mod_folio(folio, NR_FILE_PAGES,
->> +				      -folio_nr_pages(folio));
->> +		if (is_shmem)
->> +			lruvec_stat_mod_folio(folio, NR_SHMEM,
->> +					      -folio_nr_pages(folio));
-> 
-> I notice here that we don't need to do accounting for NR_SHMEM_THPS or NR_FILE_THPS -
-> but the following bit:
-> 
-> if (folio_order(folio) == HPAGE_PMD_ORDER && folio->index == start)
-> 
-> in the khugepaged code, seems to suggest that we can reach this stat accounting path
-> with a PMD order old folio, if folio->index != start. But this condition should not be possible;
-> a folio is always order-aligned within the file, which means the folio->index here
-> is PMD-aligned. The entry of collapse_file() asserts that start is also PMD-aligned (guaranteed
+Reviewed-by: Barry Song <baohua@kernel.org>
 
-
-Yep, good catch! There are checks in __filemap_add_folio():
-
-	VM_BUG_ON_FOLIO(index & (folio_nr_pages(folio) - 1), folio);
-
-and at the top of collapse_file():
-
-	VM_BUG_ON(start & (HPAGE_PMD_NR - 1));
-
-guarantee that any PMD folio in the scan range [start, start + HPAGE_PMD_NR)
-must have index == start.
-
-Converting this to a VM_WARN_ON looks good to me :)
-
-
-Cheers,
-Lance
-
-> by thp_vma_allowable_order in khugepaged_scan_mm_slot). Therefore start must equal folio->index.
-> 
-> If I am not missing something here, I'll send a patch to convert this to a VM_WARN_ON.
->   
-> 
->>   		folio->mapping = NULL;
->>   		folio_clear_active(folio);
->>   		folio_clear_unevictable(folio);
-
+> ---
+>  mm/khugepaged.c | 16 +++++++++-------
+>  1 file changed, 9 insertions(+), 7 deletions(-)
 
