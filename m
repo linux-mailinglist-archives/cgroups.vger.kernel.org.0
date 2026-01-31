@@ -1,44 +1,45 @@
-Return-Path: <cgroups+bounces-13564-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-13566-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id //kdM+DKfWn5TgIAu9opvQ
-	(envelope-from <cgroups+bounces-13564-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Sat, 31 Jan 2026 10:26:56 +0100
+	id gBh7MuvKfWn5TgIAu9opvQ
+	(envelope-from <cgroups+bounces-13566-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Sat, 31 Jan 2026 10:27:07 +0100
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6109EC15B3
-	for <lists+cgroups@lfdr.de>; Sat, 31 Jan 2026 10:26:56 +0100 (CET)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5F006C15CA
+	for <lists+cgroups@lfdr.de>; Sat, 31 Jan 2026 10:27:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id A26343003372
-	for <lists+cgroups@lfdr.de>; Sat, 31 Jan 2026 09:26:55 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id 513AF300460E
+	for <lists+cgroups@lfdr.de>; Sat, 31 Jan 2026 09:27:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D02F33438F;
-	Sat, 31 Jan 2026 09:26:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6551533D4FB;
+	Sat, 31 Jan 2026 09:26:53 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 09EDF2FF664;
-	Sat, 31 Jan 2026 09:26:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9CD27320CD3;
+	Sat, 31 Jan 2026 09:26:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1769851612; cv=none; b=CIv70RLcETuDbTYR1qnnKBN2Yu1m1clmJXVsNXpOfXZKdMMaAg7bgkLJgu0cP8atiG0J6tZhcyxE+S9M2efbvjX8nD4vlIOAqW5z5KNAy2z6Rrhe3/bOuyzXg19V4ozxOVsCyeWWLlVFb4/NMderXoSoiDKkQEOi4d1kynJb7LQ=
+	t=1769851613; cv=none; b=mNElP9T+kDPzDQ86tl87QEMEorhfaFT6AIfT334jQ/1ytJ0O2+541K+SORb1xYDsxyBgNUGS3L0FmGkayIohuCebXh5j4I9tEUqJTHcaaFLfKDqf6wxAzGQEusAfg2E5HokZrdontfr70KvLRhgH+PA9TbOkqRYnUrhnLyeGE1w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1769851612; c=relaxed/simple;
-	bh=7Ipm0wQ1ap/lpUFLo8RMxtk6d/EXU+hziSKGYstB2LY=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=s6CVbskP5Pxv7H0lfnO8WQqHAR7m86zgU75kWBrsaJt0NokNbTGF39Tb1gKzCBugAvUrxJDGfN/9NQygINOsJYgM8qbyp/u8RcXOttCYJFmdlwZhED9pEH9VIn8D4luoVdEdQyZUSGdYx4FZDiv2vnZzzKlLaUX/D6D1ie9PtxU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+	s=arc-20240116; t=1769851613; c=relaxed/simple;
+	bh=qsJMYZ9ZxtoTtuMeuV9GCm6NuMeRwc/l/ijmxiGTkj4=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=pay1sKYIwM61lJ43ody5wMgpZseU55Ipfiqfmbabral5EhI2qS5WH3xNG+MxHHhC4bd8A9e8jE0x1jFQ86bEB2KF+ojHjje+j/qyMfkNtmPxcaeBABMCAF8Fl5Wz/mMCyDX33o7V1OIA9fItzS+ggMpYhVjgImgUYCtJ1w0vHs0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
 Received: from mail.maildlp.com (unknown [172.19.163.170])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTPS id 4f36v15hfzzYQtm7;
-	Sat, 31 Jan 2026 17:26:05 +0800 (CST)
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTPS id 4f36vW0V3XzKHMVv;
+	Sat, 31 Jan 2026 17:26:31 +0800 (CST)
 Received: from mail02.huawei.com (unknown [10.116.40.128])
-	by mail.maildlp.com (Postfix) with ESMTP id DDD1D4056E;
+	by mail.maildlp.com (Postfix) with ESMTP id ED61540539;
 	Sat, 31 Jan 2026 17:26:47 +0800 (CST)
 Received: from hulk-vt.huawei.com (unknown [10.67.174.121])
-	by APP4 (Coremail) with SMTP id gCh0CgD3V_jRyn1pwSIEFw--.14901S2;
+	by APP4 (Coremail) with SMTP id gCh0CgD3V_jRyn1pwSIEFw--.14901S3;
 	Sat, 31 Jan 2026 17:26:47 +0800 (CST)
 From: Chen Ridong <chenridong@huaweicloud.com>
 To: dev@lankhorst.se,
@@ -52,10 +53,12 @@ Cc: cgroups@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	lujialin4@huawei.com,
 	chenridong@huaweicloud.com
-Subject: [PATCH -next 0/3] cgroup/dmem: bugfixes
-Date: Sat, 31 Jan 2026 09:11:59 +0000
-Message-Id: <20260131091202.344788-1-chenridong@huaweicloud.com>
+Subject: [PATCH -next 1/3] cgroup/dmem: fix NULL pointer dereference when setting max
+Date: Sat, 31 Jan 2026 09:12:00 +0000
+Message-Id: <20260131091202.344788-2-chenridong@huaweicloud.com>
 X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20260131091202.344788-1-chenridong@huaweicloud.com>
+References: <20260131091202.344788-1-chenridong@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -63,33 +66,36 @@ List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:gCh0CgD3V_jRyn1pwSIEFw--.14901S2
-X-Coremail-Antispam: 1UD129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73
-	VFW2AGmfu7bjvjm3AaLaJ3UjIYCTnIWjp_UUUYm7AC8VAFwI0_Gr0_Xr1l1xkIjI8I6I8E
-	6xAIw20EY4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28Cjx
-	kF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVWDJVCq3wA2z4x0Y4vE2Ix0cI8I
-	cVCY1x0267AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87
-	Iv6xkF7I0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE
-	6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1Y6r17McIj6I8E87Iv67AKxVWUJVW8JwAm72
-	CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7
-	M4IIrI8v6xkF7I0E8cxan2IY04v7MxAIw28IcxkI7VAKI48JMxAqzxv26xkF7I0En4kS14
-	v26r1q6r43MxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2Iq
-	xVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42
-	IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY
-	6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aV
-	CY1x0267AKxVW8Jr0_Cr1UYxBIdaVFxhVjvjDU0xZFpf9x0JUp6wZUUUUU=
+X-CM-TRANSID:gCh0CgD3V_jRyn1pwSIEFw--.14901S3
+X-Coremail-Antispam: 1UD129KBjvJXoW7CFWrtF1xXryrAryDtF4ruFg_yoW8uw15pr
+	45GryUCr48Kr1UAF4jyFyYvry5Ga1Iya17Jw1xJwn5XF1jkw1UtrykJ3yUJF98Jry7uw4S
+	qFn8Zw4Iq348taDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUQm14x267AKxVW5JVWrJwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_Jr4l82xGYIkIc2
+	x26xkF7I0E14v26r4j6ryUM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2z4x0
+	Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr1j6F4UJw
+	A2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oVCq3wAS
+	0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2
+	IY67AKxVWUXVWUAwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0
+	Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628vn2kIc2
+	xKxwCY1x0262kKe7AKxVWUtVW8ZwCF04k20xvY0x0EwIxGrwCF54CYxVCY1x0262kKe7AK
+	xVWUtVW8ZwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I
+	0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAI
+	cVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcV
+	CF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIE
+	c7CjxVAFwI0_Gr1j6F4UJbIYCTnIWIevJa73UjIFyTuYvjfU05r4UUUUU
 X-CM-SenderInfo: hfkh02xlgr0w46kxt4xhlfz01xgou0bp/
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [0.04 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	MID_CONTAINS_FROM(1.00)[];
 	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-13564-lists,cgroups=lfdr.de];
-	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
+	TAGGED_FROM(0.00)[bounces-13566-lists,cgroups=lfdr.de];
+	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
 	FREEMAIL_TO(0.00)[lankhorst.se,kernel.org,gmx.de,cmpxchg.org,suse.com];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	DMARC_NA(0.00)[huaweicloud.com];
@@ -105,22 +111,68 @@ X-Spamd-Result: default: False [0.04 / 15.00];
 	NEURAL_HAM(-0.00)[-1.000];
 	TO_DN_NONE(0.00)[];
 	R_DKIM_NA(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns,huaweicloud.com:mid,huawei.com:email]
-X-Rspamd-Queue-Id: 6109EC15B3
+	DBL_BLOCKED_OPENRESOLVER(0.00)[huawei.com:email,huaweicloud.com:mid,sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: 5F006C15CA
 X-Rspamd-Action: no action
 
 From: Chen Ridong <chenridong@huawei.com>
 
-This series fix three bugs.
+An issue was triggered:
 
-Chen Ridong (3):
-  cgroup/dmem: fix NULL pointer dereference when setting max
-  cgroup/dmem: avoid rcu warning when unregister region
-  cgroup/dmem: avoid pool UAF
+ BUG: kernel NULL pointer dereference, address: 0000000000000000
+ #PF: supervisor read access in kernel mode
+ #PF: error_code(0x0000) - not-present page
+ PGD 0 P4D 0
+ Oops: Oops: 0000 [#1] SMP NOPTI
+ CPU: 15 UID: 0 PID: 658 Comm: bash Tainted: 6.19.0-rc6-next-2026012
+ Tainted: [O]=OOT_MODULE
+ Hardware name: QEMU Standard PC (i440FX + PIIX, 1996),
+ RIP: 0010:strcmp+0x10/0x30
+ RSP: 0018:ffffc900017f7dc0 EFLAGS: 00000246
+ RAX: 0000000000000000 RBX: 0000000000000000 RCX: ffff888107cd4358
+ RDX: 0000000019f73907 RSI: ffffffff82cc381a RDI: 0000000000000000
+ RBP: ffff8881016bef0d R08: 000000006c0e7145 R09: 0000000056c0e714
+ R10: 0000000000000001 R11: ffff888107cd4358 R12: 0007ffffffffffff
+ R13: ffff888101399200 R14: ffff888100fcb360 R15: 0007ffffffffffff
+ CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+ CR2: 0000000000000000 CR3: 0000000105c79000 CR4: 00000000000006f0
+ Call Trace:
+  <TASK>
+  dmemcg_limit_write.constprop.0+0x16d/0x390
+  ? __pfx_set_resource_max+0x10/0x10
+  kernfs_fop_write_iter+0x14e/0x200
+  vfs_write+0x367/0x510
+  ksys_write+0x66/0xe0
+  do_syscall_64+0x6b/0x390
+  entry_SYSCALL_64_after_hwframe+0x76/0x7e
+ RIP: 0033:0x7f42697e1887
 
- kernel/cgroup/dmem.c | 72 +++++++++++++++++++++++++++++++++++++++-----
- 1 file changed, 65 insertions(+), 7 deletions(-)
+It was trriggered setting max without limitation, the command is like:
+"echo test/region0 > dmem.max". To fix this issue, add check whether
+options is valid after parsing the region_name.
 
+Fixes: b168ed458dde ("kernel/cgroup: Add "dmem" memory accounting cgroup")
+Signed-off-by: Chen Ridong <chenridong@huawei.com>
+---
+ kernel/cgroup/dmem.c | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/kernel/cgroup/dmem.c b/kernel/cgroup/dmem.c
+index e12b946278b6..30f96627860c 100644
+--- a/kernel/cgroup/dmem.c
++++ b/kernel/cgroup/dmem.c
+@@ -700,6 +700,11 @@ static ssize_t dmemcg_limit_write(struct kernfs_open_file *of,
+ 		if (!region_name[0])
+ 			continue;
+ 
++		if (!options || !*options) {
++			err = -EINVAL;
++			goto out_put;
++		}
++
+ 		rcu_read_lock();
+ 		region = dmemcg_get_region_by_name(region_name);
+ 		rcu_read_unlock();
 -- 
 2.34.1
 
