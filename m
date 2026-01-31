@@ -1,39 +1,39 @@
-Return-Path: <cgroups+bounces-13571-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-13572-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 2EAjKDP8fWkmUwIAu9opvQ
-	(envelope-from <cgroups+bounces-13571-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Sat, 31 Jan 2026 13:57:23 +0100
+	id uCEIBU78fWkmUwIAu9opvQ
+	(envelope-from <cgroups+bounces-13572-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Sat, 31 Jan 2026 13:57:50 +0100
 X-Original-To: lists+cgroups@lfdr.de
 Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 15515C1D9E
-	for <lists+cgroups@lfdr.de>; Sat, 31 Jan 2026 13:57:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 7D3FDC1DBD
+	for <lists+cgroups@lfdr.de>; Sat, 31 Jan 2026 13:57:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 2A61030292EE
-	for <lists+cgroups@lfdr.de>; Sat, 31 Jan 2026 12:56:26 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 611F63015A45
+	for <lists+cgroups@lfdr.de>; Sat, 31 Jan 2026 12:56:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 77711279336;
-	Sat, 31 Jan 2026 12:56:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1D85124A06B;
+	Sat, 31 Jan 2026 12:56:31 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
 Received: from lgeamrelo03.lge.com (lgeamrelo03.lge.com [156.147.51.102])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 34C8325A640
-	for <cgroups@vger.kernel.org>; Sat, 31 Jan 2026 12:56:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 20234274669
+	for <cgroups@vger.kernel.org>; Sat, 31 Jan 2026 12:56:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.147.51.102
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1769864180; cv=none; b=B/yEfTBECtmQk4BuTYsEJkBCTSL7qusXqfojAovb6mV0aZjGgTPAqI31PGN82bkMVFDGcgE4mzAGqi0wImG8BO6T45B9E5sfvrJrIwiS1M0jwbliQ+/0E+N+HfcjPl/pDFZkJ9mCSnsu/kJ4Xf9GbcNP1SknB4Cf4wvTNOVBP9I=
+	t=1769864190; cv=none; b=qbHvHoC1tqBhbCZwlOzI3O53cJGznzw3gTNkjSW+OX7/EQi4l/sWvSR7zfzmxAeCfUxirDiMXnEwQFiechJV1k0RGktWpu1Br/886yfs8SVBhEffNcJn/oc29/Ypi+YPJwScPIbcq/+EdcxDGE4pv9FkLRhJ3JYD50aGT6RM2aA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1769864180; c=relaxed/simple;
-	bh=aYFBQp/xBdjvMhL6Oe09UjWrgOAst8Z/rG7MbY5eIyo=;
+	s=arc-20240116; t=1769864190; c=relaxed/simple;
+	bh=6gZY8gbKKPjjKx2S+wB6FuCLbbWcMbcNPstuxpPQZmA=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=pVOtZmKryrcrxcKnRTnHH7xNMyNzEomyVtv62fVIumwMBCN5t+EzCMcCx/yu/N6xOFE0UPhiDC6FL8LN/Xu4qSeLE3WHFODJLyOBDVtrbjcbZnK+cQ2bUTFtU7DTJtN78Y1uF6xkUPtik4rwS1gJ/zSAGyQxYNtPFGABsu/ZKXM=
+	 MIME-Version; b=O2zalf3dibvbxisatcErpm5iX0RG3nB9R7f458jh4xpyOBSrJMGcd/vbeGAMERapiqNxopxAekSLnjSmUF+eQvy6DEMa9xlWZowczAjX/n+6dVXDhL4pyDUL9Y83QriCUlveb9+olddO51z2K+A3dH5gVTwkyvgPsfX/xsSCdbg=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lge.com; spf=pass smtp.mailfrom=lge.com; arc=none smtp.client-ip=156.147.51.102
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lge.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lge.com
 Received: from unknown (HELO yjaykim-PowerEdge-T330.lge.net) (10.177.112.156)
-	by 156.147.51.102 with ESMTP; 31 Jan 2026 21:56:08 +0900
+	by 156.147.51.102 with ESMTP; 31 Jan 2026 21:56:20 +0900
 X-Original-SENDERIP: 10.177.112.156
 X-Original-MAILFROM: youngjun.park@lge.com
 From: Youngjun Park <youngjun.park@lge.com>
@@ -55,9 +55,9 @@ Cc: chrisl@kernel.org,
 	gunho.lee@lge.com,
 	youngjun.park@lge.com,
 	taejoon.song@lge.com
-Subject: [RFC PATCH v3 3/5] mm: memcontrol: add interface for swap tier selection
-Date: Sat, 31 Jan 2026 21:54:52 +0900
-Message-Id: <20260131125454.3187546-4-youngjun.park@lge.com>
+Subject: [RFC PATCH v3 4/5] mm, swap: change back to use each swap device's percpu cluster
+Date: Sat, 31 Jan 2026 21:54:53 +0900
+Message-Id: <20260131125454.3187546-5-youngjun.park@lge.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20260131125454.3187546-1-youngjun.park@lge.com>
 References: <20260131125454.3187546-1-youngjun.park@lge.com>
@@ -78,7 +78,7 @@ X-Spamd-Result: default: False [0.14 / 15.00];
 	DMARC_POLICY_SOFTFAIL(0.10)[lge.com : SPF not aligned (relaxed), No valid DKIM,none];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-13571-lists,cgroups=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-13572-lists,cgroups=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
 	RCVD_COUNT_THREE(0.00)[4];
@@ -94,445 +94,372 @@ X-Spamd-Result: default: False [0.14 / 15.00];
 	R_DKIM_NA(0.00)[];
 	RCPT_COUNT_TWELVE(0.00)[18];
 	TAGGED_RCPT(0.00)[cgroups];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[lge.com:mid,lge.com:email,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,swap.events:url]
-X-Rspamd-Queue-Id: 15515C1D9E
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,lge.com:mid,lge.com:email,tencent.com:email]
+X-Rspamd-Queue-Id: 7D3FDC1DBD
 X-Rspamd-Action: no action
 
-This patch integrates the swap tier infrastructure with cgroup,
-enabling the selection of specific swap devices per cgroup by
-configuring allowed swap tiers.
+This reverts commit 1b7e90020eb7 ("mm, swap: use percpu cluster as
+allocation fast path").
 
-The new `memory.swap.tiers` interface controls allowed swap tiers via a mask.
-By default, the mask is set to include all tiers, allowing specific tiers to
-be excluded or restored. Note that effective tiers are calculated separately
-using a dedicated mask to respect the cgroup hierarchy. Consequently,
-configured tiers may differ from effective ones, as they must be a subset
-of the parent's.
+Because in the newly introduced swap tiers, the global percpu cluster
+will cause two issues:
+1) it will cause caching oscillation in the same order of different si
+   if two different memcg can only be allowed to access different si and
+   both of them are swapping out.
+2) It can cause priority inversion on swap devices. Imagine a case where
+   there are two memcg, say memcg1 and memcg2. Memcg1 can access si A, B
+   and A is higher priority device. While memcg2 can only access si B.
+   Then memcg 2 could write the global percpu cluster with si B, then
+   memcg1 take si B in fast path even though si A is not exhausted.
 
-Note that cgroups do not pin swap tiers. This is similar to the
-`cpuset` controller, which does not prevent CPU hotplug. This
-approach ensures flexibility by allowing tier configuration changes
-regardless of cgroup usage.
+Hence in order to support swap tier, revert commit to use
+each swap device's percpu cluster.
 
+Suggested-by: Kairui Song <kasong@tencent.com>
+Co-developed-by: Baoquan He <bhe@redhat.com>
+Signed-off-by: Baoquan He <bhe@redhat.com>
 Signed-off-by: Youngjun Park <youngjun.park@lge.com>
 ---
- Documentation/admin-guide/cgroup-v2.rst | 27 ++++++++
- include/linux/memcontrol.h              |  3 +-
- mm/memcontrol.c                         | 85 +++++++++++++++++++++++
- mm/swap_state.c                         |  6 +-
- mm/swap_tier.c                          | 89 ++++++++++++++++++++++++-
- mm/swap_tier.h                          | 39 ++++++++++-
- mm/swapfile.c                           |  4 ++
- 7 files changed, 246 insertions(+), 7 deletions(-)
+ include/linux/swap.h |  17 +++--
+ mm/swapfile.c        | 149 +++++++++++++++----------------------------
+ 2 files changed, 62 insertions(+), 104 deletions(-)
 
-diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admin-guide/cgroup-v2.rst
-index 7f5b59d95fce..776a908ce1b9 100644
---- a/Documentation/admin-guide/cgroup-v2.rst
-+++ b/Documentation/admin-guide/cgroup-v2.rst
-@@ -1848,6 +1848,33 @@ The following nested keys are defined.
- 	Swap usage hard limit.  If a cgroup's swap usage reaches this
- 	limit, anonymous memory of the cgroup will not be swapped out.
- 
-+  memory.swap.tiers
-+        A read-write nested-keyed file which exists on non-root
-+        cgroups. The default is to enable all tiers.
-+
-+        This interface allows selecting which swap tiers a cgroup can
-+        use for swapping out memory.
-+
-+        The effective tiers are inherited from the parent. Only tiers
-+        effective in the parent can be effective in the child. However,
-+        the child can explicitly disable tiers allowed by the parent.
-+
-+        When read, the file shows two lines:
-+          - The first line shows the operation string that was
-+            written to this file.
-+          - The second line shows the effective operation after
-+            merging with parent settings.
-+
-+        When writing, the format is:
-+          (+/-)(TIER_NAME) (+/-)(TIER_NAME) ...
-+
-+        Valid tier names are those configured in
-+        /sys/kernel/mm/swap/tiers.
-+
-+        Each tier can be prefixed with:
-+          +    Enable this tier
-+          -    Disable this tier
-+
-   memory.swap.events
- 	A read-only flat-keyed file which exists on non-root cgroups.
- 	The following entries are defined.  Unless specified
-diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-index b6c82c8f73e1..542bee1b5f60 100644
---- a/include/linux/memcontrol.h
-+++ b/include/linux/memcontrol.h
-@@ -283,7 +283,8 @@ struct mem_cgroup {
- 	/* per-memcg mm_struct list */
- 	struct lru_gen_mm_list mm_list;
+diff --git a/include/linux/swap.h b/include/linux/swap.h
+index 1e68c220a0e7..6921e22b14d3 100644
+--- a/include/linux/swap.h
++++ b/include/linux/swap.h
+@@ -247,11 +247,18 @@ enum {
+ #define SWAP_NR_ORDERS		1
  #endif
--
-+	int tier_mask;
-+	int tier_effective_mask;
- #ifdef CONFIG_MEMCG_V1
- 	/* Legacy consumer-oriented counters */
- 	struct page_counter kmem;		/* v1 only */
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index 007413a53b45..5fcf8ebe0ca8 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -68,6 +68,7 @@
- #include <net/ip.h>
- #include "slab.h"
- #include "memcontrol-v1.h"
-+#include "swap_tier.h"
  
- #include <linux/uaccess.h>
- 
-@@ -3691,6 +3692,7 @@ static void mem_cgroup_free(struct mem_cgroup *memcg)
- {
- 	lru_gen_exit_memcg(memcg);
- 	memcg_wb_domain_exit(memcg);
-+	swap_tiers_memcg_sync_mask(memcg);
- 	__mem_cgroup_free(memcg);
- }
- 
-@@ -3792,6 +3794,9 @@ mem_cgroup_css_alloc(struct cgroup_subsys_state *parent_css)
- 	WRITE_ONCE(memcg->zswap_writeback, true);
- #endif
- 	page_counter_set_high(&memcg->swap, PAGE_COUNTER_MAX);
-+	memcg->tier_mask = TIER_ALL_MASK;
-+	swap_tiers_memcg_inherit_mask(memcg, parent);
+-/*
+- * We keep using same cluster for rotational device so IO will be sequential.
+- * The purpose is to optimize SWAP throughput on these device.
+- */
++ /*
++  * We assign a cluster to each CPU, so each CPU can allocate swap entry from
++  * its own cluster and swapout sequentially. The purpose is to optimize swapout
++  * throughput.
++  */
++struct percpu_cluster {
++	local_lock_t lock; /* Protect the percpu_cluster above */
++	unsigned int next[SWAP_NR_ORDERS]; /* Likely next allocation offset */
++};
 +
- 	if (parent) {
- 		WRITE_ONCE(memcg->swappiness, mem_cgroup_swappiness(parent));
- 
-@@ -5352,6 +5357,80 @@ static int swap_events_show(struct seq_file *m, void *v)
- 	return 0;
- }
- 
-+static int swap_tier_show(struct seq_file *m, void *v)
-+{
-+	struct mem_cgroup *memcg = mem_cgroup_from_seq(m);
-+
-+	swap_tiers_mask_show(m, memcg->tier_mask);
-+	swap_tiers_mask_show(m, memcg->tier_effective_mask);
-+
-+	return 0;
-+}
-+
-+static ssize_t swap_tier_write(struct kernfs_open_file *of,
-+				char *buf, size_t nbytes, loff_t off)
-+{
-+	struct mem_cgroup *memcg = mem_cgroup_from_css(of_css(of));
-+	char *pos, *token;
-+	int ret = 0;
-+	int original_mask;
-+
-+	pos = strstrip(buf);
-+
-+	spin_lock(&swap_tier_lock);
-+	if (!*pos) {
-+		memcg->tier_mask = TIER_ALL_MASK;
-+		goto sync;
-+	}
-+
-+	original_mask = memcg->tier_mask;
-+
-+	while ((token = strsep(&pos, " \t\n")) != NULL) {
-+		int mask;
-+
-+		if (!*token)
-+			continue;
-+
-+		if (token[0] != '-' && token[0] != '+') {
-+			ret = -EINVAL;
-+			goto err;
-+		}
-+
-+		mask = swap_tiers_mask_lookup(token+1);
-+		if (!mask) {
-+			ret = -EINVAL;
-+			goto err;
-+		}
-+
-+		/*
-+		 * if child already set, cannot add that tiers for hierarch mismatching.
-+		 * parent compatible, child must respect parent selected swap device.
-+		 */
-+		switch (token[0]) {
-+		case '-':
-+			memcg->tier_mask &= ~mask;
-+			break;
-+		case '+':
-+			memcg->tier_mask |= mask;
-+			break;
-+		default:
-+			ret = -EINVAL;
-+			break;
-+		}
-+
-+		if (ret)
-+			goto err;
-+	}
-+
-+sync:
-+	__swap_tiers_memcg_sync_mask(memcg);
-+err:
-+	if (ret)
-+		memcg->tier_mask = original_mask;
-+	spin_unlock(&swap_tier_lock);
-+	return ret ? ret : nbytes;
-+}
-+
- static struct cftype swap_files[] = {
- 	{
- 		.name = "swap.current",
-@@ -5384,6 +5463,12 @@ static struct cftype swap_files[] = {
- 		.file_offset = offsetof(struct mem_cgroup, swap_events_file),
- 		.seq_show = swap_events_show,
- 	},
-+	{
-+		.name = "swap.tiers",
-+		.flags = CFTYPE_NOT_ON_ROOT,
-+		.seq_show = swap_tier_show,
-+		.write = swap_tier_write,
-+	},
- 	{ }	/* terminate */
+ struct swap_sequential_cluster {
++	spinlock_t lock; /* Serialize usage of global cluster */
+ 	unsigned int next[SWAP_NR_ORDERS]; /* Likely next allocation offset */
  };
  
-diff --git a/mm/swap_state.c b/mm/swap_state.c
-index d46ca61d2e42..c0dcab74779d 100644
---- a/mm/swap_state.c
-+++ b/mm/swap_state.c
-@@ -961,6 +961,8 @@ static ssize_t tiers_store(struct kobject *kobj,
- 	char *p, *token, *name, *tmp;
- 	int ret = 0;
- 	short prio;
-+	int mask = 0;
-+
- 	DEFINE_SWAP_TIER_SAVE_CTX(ctx);
- 
- 	tmp = kstrdup(buf, GFP_KERNEL);
-@@ -978,7 +980,7 @@ static ssize_t tiers_store(struct kobject *kobj,
- 			continue;
- 
- 		if (token[0] == '-') {
--			ret = swap_tiers_remove(token + 1);
-+			ret = swap_tiers_remove(token + 1, &mask);
- 		} else {
- 
- 			name = strsep(&token, ":");
-@@ -997,7 +999,7 @@ static ssize_t tiers_store(struct kobject *kobj,
- 			goto restore;
- 	}
- 
--	if (!swap_tiers_update()) {
-+	if (!swap_tiers_update(mask)) {
- 		ret = -EINVAL;
- 		goto restore;
- 	}
-diff --git a/mm/swap_tier.c b/mm/swap_tier.c
-index 7741214312c7..0e067ba545cb 100644
---- a/mm/swap_tier.c
-+++ b/mm/swap_tier.c
-@@ -232,7 +232,7 @@ int swap_tiers_add(const char *name, int prio)
- 	return ret;
- }
- 
--int swap_tiers_remove(const char *name)
-+int swap_tiers_remove(const char *name, int *mask)
- {
- 	int ret = 0;
- 	struct swap_tier *tier;
-@@ -255,6 +255,8 @@ int swap_tiers_remove(const char *name)
- 		list_prev_entry(tier, list)->prio = DEF_SWAP_PRIO;
- 
- 	list_move(&tier->list, &swap_tier_inactive_list);
-+	*mask |= TIER_MASK(tier);
-+
- 	return ret;
- }
- 
-@@ -351,7 +353,17 @@ void swap_tiers_assign_dev(struct swap_info_struct *swp)
- 	swp->tier_mask = TIER_DEFAULT_MASK;
- }
- 
--bool swap_tiers_update(void)
-+static void swap_tier_memcg_propagate(int mask)
-+{
-+	struct mem_cgroup *child;
-+
-+	for_each_mem_cgroup_tree(child, root_mem_cgroup) {
-+		child->tier_mask |= mask;
-+		child->tier_effective_mask |= mask;
-+	}
-+}
-+
-+bool swap_tiers_update(int mask)
- {
- 	struct swap_tier *tier;
- 	struct swap_info_struct *swp;
-@@ -379,6 +391,79 @@ bool swap_tiers_update(void)
- 			break;
- 		swap_tiers_assign_dev(swp);
- 	}
-+	/*
-+	 * XXX: Unused tiers default to ON, disabled after next tier added.
-+	 * Use removed tier mask to clear settings for removed/re-added tiers.
-+	 * (Could hold tier refs, but better to keep cgroup config independent)
-+	 */
-+	if (mask)
-+		swap_tier_memcg_propagate(mask);
- 
- 	return true;
- }
-+
-+void swap_tiers_mask_show(struct seq_file *m, int mask)
-+{
-+	struct swap_tier *tier;
-+
-+	spin_lock(&swap_tier_lock);
-+	for_each_active_tier(tier) {
-+		if (mask & TIER_MASK(tier))
-+			seq_printf(m, "%s ", tier->name);
-+	}
-+	spin_unlock(&swap_tier_lock);
-+	seq_puts(m, "\n");
-+}
-+
-+int swap_tiers_mask_lookup(const char *name)
-+{
-+	struct swap_tier *tier;
-+
-+	lockdep_assert_held(&swap_tier_lock);
-+
-+	for_each_active_tier(tier) {
-+		if (!strcmp(name, tier->name))
-+			return TIER_MASK(tier);
-+	}
-+
-+	return 0;
-+}
-+
-+static void __swap_tier_memcg_inherit_mask(struct mem_cgroup *memcg,
-+	struct mem_cgroup *parent)
-+{
-+	int effective_mask
-+		= parent ? parent->tier_effective_mask : TIER_ALL_MASK;
-+
-+	memcg->tier_effective_mask
-+		= effective_mask & memcg->tier_mask;
-+}
-+
-+void swap_tiers_memcg_inherit_mask(struct mem_cgroup *memcg,
-+	struct mem_cgroup *parent)
-+{
-+	spin_lock(&swap_tier_lock);
-+	__swap_tier_memcg_inherit_mask(memcg, parent);
-+	spin_unlock(&swap_tier_lock);
-+}
-+
-+void __swap_tiers_memcg_sync_mask(struct mem_cgroup *memcg)
-+{
-+	struct mem_cgroup *child;
-+
-+	lockdep_assert_held(&swap_tier_lock);
-+
-+	if (memcg == root_mem_cgroup)
-+		return;
-+
-+	for_each_mem_cgroup_tree(child, memcg)
-+		__swap_tier_memcg_inherit_mask(child, parent_mem_cgroup(child));
-+}
-+
-+void swap_tiers_memcg_sync_mask(struct mem_cgroup *memcg)
-+{
-+	spin_lock(&swap_tier_lock);
-+	memcg->tier_mask = TIER_ALL_MASK;
-+	__swap_tiers_memcg_sync_mask(memcg);
-+	spin_unlock(&swap_tier_lock);
-+}
-diff --git a/mm/swap_tier.h b/mm/swap_tier.h
-index de81d540e3b5..9024c82c807a 100644
---- a/mm/swap_tier.h
-+++ b/mm/swap_tier.h
-@@ -31,19 +31,54 @@ struct swap_tier_save_ctx {
- #define TIER_DEFAULT_IDX	(31)
- #define TIER_DEFAULT_MASK	(1 << TIER_DEFAULT_IDX)
- 
-+#ifdef CONFIG_MEMCG
-+static inline int folio_tier_effective_mask(struct folio *folio)
-+{
-+	struct mem_cgroup *memcg = folio_memcg(folio);
-+
-+	return memcg ? memcg->tier_effective_mask : TIER_ALL_MASK;
-+}
-+#else
-+static inline int folio_tier_effective_mask(struct folio *folio)
-+{
-+	return TIER_ALL_MASK;
-+}
-+#endif
-+
- /* Initialization and application */
- void swap_tiers_init(void);
- ssize_t swap_tiers_sysfs_show(char *buf);
- 
- int swap_tiers_add(const char *name, int prio);
--int swap_tiers_remove(const char *name);
-+int swap_tiers_remove(const char *name, int *mask);
- int swap_tiers_modify(const char *name, int prio);
- 
- void swap_tiers_save(struct swap_tier_save_ctx ctx[]);
- void swap_tiers_restore(struct swap_tier_save_ctx ctx[]);
--bool swap_tiers_update(void);
-+bool swap_tiers_update(int mask);
- 
- /* Tier assignment */
- void swap_tiers_assign_dev(struct swap_info_struct *swp);
- 
-+/* Memcg related functions */
-+void swap_tiers_mask_show(struct seq_file *m, int mask);
-+void swap_tiers_memcg_inherit_mask(struct mem_cgroup *memcg,
-+	struct mem_cgroup *parent);
-+void swap_tiers_memcg_sync_mask(struct mem_cgroup *memcg);
-+void __swap_tiers_memcg_sync_mask(struct mem_cgroup *memcg);
-+
-+/* Mask and tier lookup */
-+int swap_tiers_mask_lookup(const char *name);
-+
-+/**
-+ * swap_tiers_mask_test - Check if the tier mask is valid
-+ * @tier_mask: The tier mask to check
-+ * @mask: The mask to compare against
-+ *
-+ * Return: true if condition matches, false otherwise
-+ */
-+static inline bool swap_tiers_mask_test(int tier_mask, int mask)
-+{
-+	return tier_mask & mask;
-+}
- #endif /* _SWAP_TIER_H */
+@@ -277,8 +284,8 @@ struct swap_info_struct {
+ 					/* list of cluster that are fragmented or contented */
+ 	unsigned int pages;		/* total of usable pages of swap */
+ 	atomic_long_t inuse_pages;	/* number of those currently in use */
++	struct percpu_cluster	__percpu *percpu_cluster; /* per cpu's swap location */
+ 	struct swap_sequential_cluster *global_cluster; /* Use one global cluster for rotating device */
+-	spinlock_t global_cluster_lock;	/* Serialize usage of global cluster */
+ 	struct rb_root swap_extent_root;/* root of the swap extent rbtree */
+ 	struct block_device *bdev;	/* swap device or bdev of swap file */
+ 	struct file *swap_file;		/* seldom referenced */
 diff --git a/mm/swapfile.c b/mm/swapfile.c
-index 4f8ce021c5bd..e04811e10431 100644
+index e04811e10431..4708014c96c4 100644
 --- a/mm/swapfile.c
 +++ b/mm/swapfile.c
-@@ -1348,10 +1348,14 @@ static bool swap_alloc_fast(struct folio *folio)
- static void swap_alloc_slow(struct folio *folio)
+@@ -118,18 +118,6 @@ static atomic_t proc_poll_event = ATOMIC_INIT(0);
+ 
+ atomic_t nr_rotate_swap = ATOMIC_INIT(0);
+ 
+-struct percpu_swap_cluster {
+-	struct swap_info_struct *si[SWAP_NR_ORDERS];
+-	unsigned long offset[SWAP_NR_ORDERS];
+-	local_lock_t lock;
+-};
+-
+-static DEFINE_PER_CPU(struct percpu_swap_cluster, percpu_swap_cluster) = {
+-	.si = { NULL },
+-	.offset = { SWAP_ENTRY_INVALID },
+-	.lock = INIT_LOCAL_LOCK(),
+-};
+-
+ /* May return NULL on invalid type, caller must check for NULL return */
+ static struct swap_info_struct *swap_type_to_info(int type)
+ {
+@@ -477,8 +465,10 @@ swap_cluster_alloc_table(struct swap_info_struct *si,
+ 	 * Swap allocator uses percpu clusters and holds the local lock.
+ 	 */
+ 	lockdep_assert_held(&ci->lock);
+-	lockdep_assert_held(&this_cpu_ptr(&percpu_swap_cluster)->lock);
+-
++	if (si->flags & SWP_SOLIDSTATE)
++		lockdep_assert_held(this_cpu_ptr(&si->percpu_cluster->lock));
++	else
++		lockdep_assert_held(&si->global_cluster->lock);
+ 	/* The cluster must be free and was just isolated from the free list. */
+ 	VM_WARN_ON_ONCE(ci->flags || !cluster_is_empty(ci));
+ 
+@@ -494,9 +484,10 @@ swap_cluster_alloc_table(struct swap_info_struct *si,
+ 	 * the potential recursive allocation is limited.
+ 	 */
+ 	spin_unlock(&ci->lock);
+-	if (!(si->flags & SWP_SOLIDSTATE))
+-		spin_unlock(&si->global_cluster_lock);
+-	local_unlock(&percpu_swap_cluster.lock);
++	if (si->flags & SWP_SOLIDSTATE)
++		local_unlock(&si->percpu_cluster->lock);
++	else
++		spin_unlock(&si->global_cluster->lock);
+ 
+ 	table = swap_table_alloc(__GFP_HIGH | __GFP_NOMEMALLOC | GFP_KERNEL);
+ 
+@@ -508,9 +499,9 @@ swap_cluster_alloc_table(struct swap_info_struct *si,
+ 	 * could happen with ignoring the percpu cluster is fragmentation,
+ 	 * which is acceptable since this fallback and race is rare.
+ 	 */
+-	local_lock(&percpu_swap_cluster.lock);
++	local_lock(&si->percpu_cluster->lock);
+ 	if (!(si->flags & SWP_SOLIDSTATE))
+-		spin_lock(&si->global_cluster_lock);
++		spin_lock(&si->global_cluster->lock);
+ 	spin_lock(&ci->lock);
+ 
+ 	/* Nothing except this helper should touch a dangling empty cluster. */
+@@ -622,7 +613,7 @@ static bool swap_do_scheduled_discard(struct swap_info_struct *si)
+ 		ci = list_first_entry(&si->discard_clusters, struct swap_cluster_info, list);
+ 		/*
+ 		 * Delete the cluster from list to prepare for discard, but keep
+-		 * the CLUSTER_FLAG_DISCARD flag, percpu_swap_cluster could be
++		 * the CLUSTER_FLAG_DISCARD flag, there could be percpu_cluster
+ 		 * pointing to it, or ran into by relocate_cluster.
+ 		 */
+ 		list_del(&ci->list);
+@@ -953,12 +944,11 @@ static unsigned int alloc_swap_scan_cluster(struct swap_info_struct *si,
+ out:
+ 	relocate_cluster(si, ci);
+ 	swap_cluster_unlock(ci);
+-	if (si->flags & SWP_SOLIDSTATE) {
+-		this_cpu_write(percpu_swap_cluster.offset[order], next);
+-		this_cpu_write(percpu_swap_cluster.si[order], si);
+-	} else {
++	if (si->flags & SWP_SOLIDSTATE)
++		this_cpu_write(si->percpu_cluster->next[order], next);
++	else
+ 		si->global_cluster->next[order] = next;
+-	}
++
+ 	return found;
+ }
+ 
+@@ -1052,13 +1042,17 @@ static unsigned long cluster_alloc_swap_entry(struct swap_info_struct *si,
+ 	if (order && !(si->flags & SWP_BLKDEV))
+ 		return 0;
+ 
+-	if (!(si->flags & SWP_SOLIDSTATE)) {
++	if (si->flags & SWP_SOLIDSTATE) {
++		/* Fast path using per CPU cluster */
++		local_lock(&si->percpu_cluster->lock);
++		offset = __this_cpu_read(si->percpu_cluster->next[order]);
++	} else {
+ 		/* Serialize HDD SWAP allocation for each device. */
+-		spin_lock(&si->global_cluster_lock);
++		spin_lock(&si->global_cluster->lock);
+ 		offset = si->global_cluster->next[order];
+-		if (offset == SWAP_ENTRY_INVALID)
+-			goto new_cluster;
++	}
+ 
++	if (offset != SWAP_ENTRY_INVALID) {
+ 		ci = swap_cluster_lock(si, offset);
+ 		/* Cluster could have been used by another order */
+ 		if (cluster_is_usable(ci, order)) {
+@@ -1072,7 +1066,6 @@ static unsigned long cluster_alloc_swap_entry(struct swap_info_struct *si,
+ 			goto done;
+ 	}
+ 
+-new_cluster:
+ 	/*
+ 	 * If the device need discard, prefer new cluster over nonfull
+ 	 * to spread out the writes.
+@@ -1129,8 +1122,10 @@ static unsigned long cluster_alloc_swap_entry(struct swap_info_struct *si,
+ 			goto done;
+ 	}
+ done:
+-	if (!(si->flags & SWP_SOLIDSTATE))
+-		spin_unlock(&si->global_cluster_lock);
++	if (si->flags & SWP_SOLIDSTATE)
++		local_unlock(&si->percpu_cluster->lock);
++	else
++		spin_unlock(&si->global_cluster->lock);
+ 
+ 	return found;
+ }
+@@ -1311,41 +1306,8 @@ static bool get_swap_device_info(struct swap_info_struct *si)
+ 	return true;
+ }
+ 
+-/*
+- * Fast path try to get swap entries with specified order from current
+- * CPU's swap entry pool (a cluster).
+- */
+-static bool swap_alloc_fast(struct folio *folio)
+-{
+-	unsigned int order = folio_order(folio);
+-	struct swap_cluster_info *ci;
+-	struct swap_info_struct *si;
+-	unsigned int offset;
+-
+-	/*
+-	 * Once allocated, swap_info_struct will never be completely freed,
+-	 * so checking it's liveness by get_swap_device_info is enough.
+-	 */
+-	si = this_cpu_read(percpu_swap_cluster.si[order]);
+-	offset = this_cpu_read(percpu_swap_cluster.offset[order]);
+-	if (!si || !offset || !get_swap_device_info(si))
+-		return false;
+-
+-	ci = swap_cluster_lock(si, offset);
+-	if (cluster_is_usable(ci, order)) {
+-		if (cluster_is_empty(ci))
+-			offset = cluster_offset(si, ci);
+-		alloc_swap_scan_cluster(si, ci, folio, offset);
+-	} else {
+-		swap_cluster_unlock(ci);
+-	}
+-
+-	put_swap_device(si);
+-	return folio_test_swapcache(folio);
+-}
+-
+ /* Rotate the device and switch to a new cluster */
+-static void swap_alloc_slow(struct folio *folio)
++static void swap_alloc_entry(struct folio *folio)
  {
  	struct swap_info_struct *si, *next;
-+	int mask = folio_tier_effective_mask(folio);
- 
- 	spin_lock(&swap_avail_lock);
- start_over:
- 	plist_for_each_entry_safe(si, next, &swap_avail_head, avail_list) {
-+		if (!swap_tiers_mask_test(si->tier_mask, mask))
-+			continue;
+ 	int mask = folio_tier_effective_mask(folio);
+@@ -1362,6 +1324,7 @@ static void swap_alloc_slow(struct folio *folio)
+ 		if (get_swap_device_info(si)) {
+ 			cluster_alloc_swap_entry(si, folio);
+ 			put_swap_device(si);
 +
- 		/* Rotate the device and switch to a new cluster */
- 		plist_requeue(&si->avail_list, &swap_avail_head);
- 		spin_unlock(&swap_avail_lock);
+ 			if (folio_test_swapcache(folio))
+ 				return;
+ 			if (folio_test_large(folio))
+@@ -1521,11 +1484,7 @@ int folio_alloc_swap(struct folio *folio)
+ 	}
+ 
+ again:
+-	local_lock(&percpu_swap_cluster.lock);
+-	if (!swap_alloc_fast(folio))
+-		swap_alloc_slow(folio);
+-	local_unlock(&percpu_swap_cluster.lock);
+-
++	swap_alloc_entry(folio);
+ 	if (!order && unlikely(!folio_test_swapcache(folio))) {
+ 		if (swap_sync_discard())
+ 			goto again;
+@@ -1944,9 +1903,7 @@ swp_entry_t swap_alloc_hibernation_slot(int type)
+ 			 * Grab the local lock to be compliant
+ 			 * with swap table allocation.
+ 			 */
+-			local_lock(&percpu_swap_cluster.lock);
+ 			offset = cluster_alloc_swap_entry(si, NULL);
+-			local_unlock(&percpu_swap_cluster.lock);
+ 			if (offset)
+ 				entry = swp_entry(si->type, offset);
+ 		}
+@@ -2750,28 +2707,6 @@ static void free_cluster_info(struct swap_cluster_info *cluster_info,
+ 	kvfree(cluster_info);
+ }
+ 
+-/*
+- * Called after swap device's reference count is dead, so
+- * neither scan nor allocation will use it.
+- */
+-static void flush_percpu_swap_cluster(struct swap_info_struct *si)
+-{
+-	int cpu, i;
+-	struct swap_info_struct **pcp_si;
+-
+-	for_each_possible_cpu(cpu) {
+-		pcp_si = per_cpu_ptr(percpu_swap_cluster.si, cpu);
+-		/*
+-		 * Invalidate the percpu swap cluster cache, si->users
+-		 * is dead, so no new user will point to it, just flush
+-		 * any existing user.
+-		 */
+-		for (i = 0; i < SWAP_NR_ORDERS; i++)
+-			cmpxchg(&pcp_si[i], si, NULL);
+-	}
+-}
+-
+-
+ SYSCALL_DEFINE1(swapoff, const char __user *, specialfile)
+ {
+ 	struct swap_info_struct *p = NULL;
+@@ -2855,7 +2790,6 @@ SYSCALL_DEFINE1(swapoff, const char __user *, specialfile)
+ 
+ 	flush_work(&p->discard_work);
+ 	flush_work(&p->reclaim_work);
+-	flush_percpu_swap_cluster(p);
+ 
+ 	destroy_swap_extents(p);
+ 	if (p->flags & SWP_CONTINUED)
+@@ -2884,6 +2818,8 @@ SYSCALL_DEFINE1(swapoff, const char __user *, specialfile)
+ 	arch_swap_invalidate_area(p->type);
+ 	zswap_swapoff(p->type);
+ 	mutex_unlock(&swapon_mutex);
++	free_percpu(p->percpu_cluster);
++	p->percpu_cluster = NULL;
+ 	kfree(p->global_cluster);
+ 	p->global_cluster = NULL;
+ 	vfree(swap_map);
+@@ -3267,7 +3203,7 @@ static struct swap_cluster_info *setup_clusters(struct swap_info_struct *si,
+ {
+ 	unsigned long nr_clusters = DIV_ROUND_UP(maxpages, SWAPFILE_CLUSTER);
+ 	struct swap_cluster_info *cluster_info;
+-	int err = -ENOMEM;
++	int cpu, err = -ENOMEM;
+ 	unsigned long i;
+ 
+ 	cluster_info = kvcalloc(nr_clusters, sizeof(*cluster_info), GFP_KERNEL);
+@@ -3277,14 +3213,27 @@ static struct swap_cluster_info *setup_clusters(struct swap_info_struct *si,
+ 	for (i = 0; i < nr_clusters; i++)
+ 		spin_lock_init(&cluster_info[i].lock);
+ 
+-	if (!(si->flags & SWP_SOLIDSTATE)) {
++	if (si->flags & SWP_SOLIDSTATE) {
++		si->percpu_cluster = alloc_percpu(struct percpu_cluster);
++		if (!si->percpu_cluster)
++			goto err;
++
++		for_each_possible_cpu(cpu) {
++			struct percpu_cluster *cluster;
++
++			cluster = per_cpu_ptr(si->percpu_cluster, cpu);
++			for (i = 0; i < SWAP_NR_ORDERS; i++)
++				cluster->next[i] = SWAP_ENTRY_INVALID;
++			local_lock_init(&cluster->lock);
++		}
++	} else {
+ 		si->global_cluster = kmalloc(sizeof(*si->global_cluster),
+ 				     GFP_KERNEL);
+ 		if (!si->global_cluster)
+ 			goto err;
+ 		for (i = 0; i < SWAP_NR_ORDERS; i++)
+ 			si->global_cluster->next[i] = SWAP_ENTRY_INVALID;
+-		spin_lock_init(&si->global_cluster_lock);
++		spin_lock_init(&si->global_cluster->lock);
+ 	}
+ 
+ 	/*
+@@ -3565,6 +3514,8 @@ SYSCALL_DEFINE2(swapon, const char __user *, specialfile, int, swap_flags)
+ bad_swap_unlock_inode:
+ 	inode_unlock(inode);
+ bad_swap:
++	free_percpu(si->percpu_cluster);
++	si->percpu_cluster = NULL;
+ 	kfree(si->global_cluster);
+ 	si->global_cluster = NULL;
+ 	inode = NULL;
 -- 
 2.34.1
 
