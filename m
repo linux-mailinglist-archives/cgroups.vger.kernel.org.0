@@ -1,48 +1,48 @@
-Return-Path: <cgroups+bounces-13554-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-13555-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 8CjyDTxRfWneRQIAu9opvQ
-	(envelope-from <cgroups+bounces-13554-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Sat, 31 Jan 2026 01:47:56 +0100
+	id aBDLJXFWfWn9RQIAu9opvQ
+	(envelope-from <cgroups+bounces-13555-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Sat, 31 Jan 2026 02:10:09 +0100
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id CB168BFB0D
-	for <lists+cgroups@lfdr.de>; Sat, 31 Jan 2026 01:47:55 +0100 (CET)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0F129BFE34
+	for <lists+cgroups@lfdr.de>; Sat, 31 Jan 2026 02:10:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id AFAA2300D470
-	for <lists+cgroups@lfdr.de>; Sat, 31 Jan 2026 00:47:52 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 79C393032E56
+	for <lists+cgroups@lfdr.de>; Sat, 31 Jan 2026 01:00:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C83C9315D48;
-	Sat, 31 Jan 2026 00:47:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7C0C331A7F1;
+	Sat, 31 Jan 2026 00:58:48 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DAE107261A;
-	Sat, 31 Jan 2026 00:47:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D01D2318BB0;
+	Sat, 31 Jan 2026 00:58:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1769820471; cv=none; b=u27C6AWHLm3WbuKe+Xroryib8Tf4I3XtEx5/aVHcVFrUiIBeWS6KslxqcM83yxJDN1qEO+M4sZ1GEkxK6sKhQT8ZAlg/3D2RfcBiL8IXOy/kQ9hDErEuVta5mYMEkYu+6MZVvbgd5apzB5upD8vzlC77j8w1iSRz0ooTqt/DZOQ=
+	t=1769821128; cv=none; b=QzPECfYomo7+PHpwEMC9qkOBJKfqu572WyJJf5mWoMhHHhmdJPw8ojsePaqCGpAceHERko9nyelQzJwnTP0mJFZbQ0F2Kr+TZt06JVDv2/u5PQAju8TJGgS8EDmXoXwyZJRnGs4SJ1HdF4dPUxDkxJWvZ56HxI1R6MnDmfYlbMc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1769820471; c=relaxed/simple;
-	bh=6YUy3EGUzavSE3JC4NM2cqgi5dw2VTnlldAwE5Cnw1w=;
+	s=arc-20240116; t=1769821128; c=relaxed/simple;
+	bh=KIaJ76b8uDt6IJi0UM2JpM2Zs7VG90NWm+XK4uCAy4c=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=FMgmb7B7q1am+4ciACsp/crrOrivWc76OQvYiBUd5ABjuL54rPsMTT/KFsAhiiglfVWc1RnVHBs0CmuPokhwI6YDdl/Dxq4SGbwLftbOs+qrZ+1g5gLdH/GqSIi+iA6cD9GBirNnqyRcRSdw7HfQqV0xPw8SUfVHyadO57QAxAY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
+	 In-Reply-To:Content-Type; b=UouCsgyqwe+/NVM+9aV5vbaGj7ens4biGgGh++oOjhCb2dqm6jrcgb807e+CXOITVzGK1wXgEOfQDu4ChnNWaKTUkRNoVr1360/oUHD3Kbc/idwLZO1pKlxUQ7pNlSDf9ykcgyfKQe+96/a2li2JZjQ+uSvA9qedzY+2CcCiGBQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.170])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTPS id 4f2vNW28LqzKHMLG;
-	Sat, 31 Jan 2026 08:47:23 +0800 (CST)
+Received: from mail.maildlp.com (unknown [172.19.163.177])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTPS id 4f2vcm5jVczYQtfQ;
+	Sat, 31 Jan 2026 08:58:00 +0800 (CST)
 Received: from mail02.huawei.com (unknown [10.116.40.128])
-	by mail.maildlp.com (Postfix) with ESMTP id 9B8734056B;
-	Sat, 31 Jan 2026 08:47:39 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTP id 4C0434058F;
+	Sat, 31 Jan 2026 08:58:42 +0800 (CST)
 Received: from [10.67.111.176] (unknown [10.67.111.176])
-	by APP4 (Coremail) with SMTP id gCh0CgC3Y_QqUX1pBZXYFg--.24541S2;
-	Sat, 31 Jan 2026 08:47:39 +0800 (CST)
-Message-ID: <647ad3d2-364c-4e83-b46d-49a2a30b8f94@huaweicloud.com>
-Date: Sat, 31 Jan 2026 08:47:37 +0800
+	by APP4 (Coremail) with SMTP id gCh0CgC3Y_TAU31pHobZFg--.26482S2;
+	Sat, 31 Jan 2026 08:58:42 +0800 (CST)
+Message-ID: <7c7fddf5-9d32-415b-a1c4-3b9402e78d72@huaweicloud.com>
+Date: Sat, 31 Jan 2026 08:58:40 +0800
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -71,28 +71,28 @@ From: Chen Ridong <chenridong@huaweicloud.com>
 In-Reply-To: <20260130154254.1422113-2-longman@redhat.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-CM-TRANSID:gCh0CgC3Y_QqUX1pBZXYFg--.24541S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxKw43XryDZrW5Zw1fuFWfXwb_yoWxXFyUpF
-	yFgrWIyrZ0gr13ua4SvwnrXr4F9wn7J3WUKanxJr1UZF13JFn2vr1kKrnxJrWrCr98CrZ8
-	ZF9rG397Wa1jy37anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUvjb4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
+X-CM-TRANSID:gCh0CgC3Y_TAU31pHobZFg--.26482S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxKw43XryDZrW5Zw1fKryDWrg_yoWxXF4rpF
+	y0grWSyrsIgr13ua4Sv3ZrXr4Fgws7J3WUtan3Jr1UZF13tFn2vryvgwnxJrWrCr98CrZ8
+	ZF9rGw4DWa1jy37anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUv0b4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
 	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
 	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
-	0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
-	x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
-	0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc7CjxVAaw2AF
-	wI0_GFv_Wryl42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4
-	xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a6rW5
-	MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I
-	0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWU
-	JVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUIa
-	0PDUUUU
+	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+	6I80ewAv7VC0I7IYx2IY67AKxVWUGVWUXwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxkF7I0En4kS
+	14v26r4a6rW5MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I
+	8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVW8ZVWr
+	XwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x
+	0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_
+	Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU0
+	bAw3UUUUU==
 X-CM-SenderInfo: hfkh02xlgr0w46kxt4xhlfz01xgou0bp/
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-1.46 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
@@ -100,7 +100,7 @@ X-Spamd-Result: default: False [-1.46 / 15.00];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	FROM_HAS_DN(0.00)[];
 	MIME_TRACE(0.00)[0:+];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
 	TO_DN_SOME(0.00)[];
 	RCPT_COUNT_TWELVE(0.00)[19];
 	TAGGED_RCPT(0.00)[cgroups];
@@ -111,10 +111,10 @@ X-Spamd-Result: default: False [-1.46 / 15.00];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	RCVD_COUNT_FIVE(0.00)[6];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-13554-lists,cgroups=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-13555-lists,cgroups=lfdr.de];
 	DMARC_NA(0.00)[huaweicloud.com];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[test_cpuset_prs.sh:url,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: CB168BFB0D
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns,huaweicloud.com:mid,test_cpuset_prs.sh:url]
+X-Rspamd-Queue-Id: 0F129BFE34
 X-Rspamd-Action: no action
 
 
@@ -203,25 +203,6 @@ On 2026/1/30 23:42, Waiman Long wrote:
 >  	if (!isolated_cpus_updating)
 >  		return;
 >  
-
-Can this happen?
-
-cpu0					cpu1
-[...]
-
-isolated_cpus_updating = true;
-...
-// 'full_lock' is not acquired
-update_isolation_cpumasks
-					// exec worker concurrently
-					isolcpus_workfn
-					cpuset_full_lock
-					isolated_cpus_updating = false;
-					cpuset_full_unlock();
-// This returns uncorrectly
-if (!isolated_cpus_updating)
-	return;
-
 > -	ret = housekeeping_update(isolated_cpus);
 > -	WARN_ON_ONCE(ret < 0);
 > +	/*
@@ -234,6 +215,14 @@ if (!isolated_cpus_updating)
 > +	 * behind isolated_cpus.
 > +	 */
 > +	if (!cpuset_locked) {
+
+Adding a global variable makes this difficult to handle, especially in
+concurrent scenarios, since we could read it outside of a critical region.
+
+I suggest removing cpuset_locked and adding async_update_isolation_cpumasks
+instead, which can indicate to the caller it should call without holding the
+full lock.
+
 > +		/*
 > +		 * We rely on WORK_STRUCT_PENDING_BIT to not requeue a work
 > +		 * item that is still pending.
