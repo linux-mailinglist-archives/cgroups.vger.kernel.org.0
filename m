@@ -1,51 +1,51 @@
-Return-Path: <cgroups+bounces-13595-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-13596-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id CFqjMchmgGlA7wIAu9opvQ
-	(envelope-from <cgroups+bounces-13595-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Mon, 02 Feb 2026 09:56:40 +0100
+	id WOXiLxZngGlA7wIAu9opvQ
+	(envelope-from <cgroups+bounces-13596-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Mon, 02 Feb 2026 09:57:58 +0100
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 26F45C9D50
-	for <lists+cgroups@lfdr.de>; Mon, 02 Feb 2026 09:56:40 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1E5C1C9D7D
+	for <lists+cgroups@lfdr.de>; Mon, 02 Feb 2026 09:57:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 7DEC33022947
-	for <lists+cgroups@lfdr.de>; Mon,  2 Feb 2026 08:54:30 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 0782F300DE05
+	for <lists+cgroups@lfdr.de>; Mon,  2 Feb 2026 08:55:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CBAA829D269;
-	Mon,  2 Feb 2026 08:54:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F1422BF00B;
+	Mon,  2 Feb 2026 08:55:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qcBNFCom"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qj4t1a7p"
 X-Original-To: cgroups@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8EBB71EA84;
-	Mon,  2 Feb 2026 08:54:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 108174A3C;
+	Mon,  2 Feb 2026 08:55:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1770022469; cv=none; b=cXS3A4UGI1zaMv8kldCYC1jHY+75TFaxTYLuN9uZfFaBNHFAmbSTRotuf/0tzlrO9hJwd6BYgtTYAK0TiV0qjrZ7u+xXx646KIHDN+e5bUz29oMkaWWzVdQ34glBw9anoW/ibZcybncknms/BcaVv6uF55404Jqs5vqoZwP5rEE=
+	t=1770022537; cv=none; b=WqFqE9TtlN1eFjnNnA3wz5WZjempu3+WUEYV4SQ7o35YCYZF7482zrtA6uvUHzVjVPd9EwIc0ya0b+wS7uHHs0lL+CQIXRR2tJmy+vDEh5AdRkDrt2Y2diG4MpbVsqYaDEStw05i+lJf6hwlLKV7A6hZCR9pxAnmgnVOUXuKGk4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1770022469; c=relaxed/simple;
-	bh=MQ//LRuRwIOcuIdtbZVPm+JV7pTg2KFfd8sRxJWPxA8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=EmLavgZ3kZUF9F5A9OddB2mFilWi0TpkaBcFGJpWrgEEitnDdJO/svONytFor/2woCqHvWJGgD6YNABw6jbwJtaCgTGi+Tv3pmO7XhyiE8h4IjX0sZfpMprFZE3QAOt9wRKI8ojNzbcynkiZQzTSHU30ZBwBlW61Ovw/G1KI2QM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qcBNFCom; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C5749C116C6;
-	Mon,  2 Feb 2026 08:54:24 +0000 (UTC)
+	s=arc-20240116; t=1770022537; c=relaxed/simple;
+	bh=BDzkEXTSn4OsyMImxJsTqnJmwvMEHbv2lChkyPpJg2U=;
+	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
+	 In-Reply-To:Content-Type; b=pYUHr1Eqb3mImipCLUxNq4dK0KLLHZwONsQuQkQlxGt9nC4C0y3PdevrZDbGaBjXBphU+QtIC5Gybek4VuXJqbmM+pKGBAyur04aUjtx0G9x4OrdFpiwc2J65nz/9Ei3pVDKUq4hcSUDMVPbtRibibBvVuJXnzEZFqPQhelfKnM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qj4t1a7p; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0F611C116C6;
+	Mon,  2 Feb 2026 08:55:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1770022469;
-	bh=MQ//LRuRwIOcuIdtbZVPm+JV7pTg2KFfd8sRxJWPxA8=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=qcBNFCom2YKxtvDr5sWJo4j8GKmxq0ElE/v7IWinJfipbyDOuouxfnCz2AtIe7RNh
-	 SkFGm9CCSCmuUCOgac3BTVJfYnn5Pa7IB4OA07iT/PCZGixe10UkY9N0+ZDAhcBDt8
-	 4VMphSJslcqbSsdZrQW6rqJuH1nowgPWN0e6XjN0umv+O+6+jLnFOuBq8oJ6rcn9wV
-	 K4UeIWmADalAgc7zztRfw2TQMpUed2ZIqR96v0i0dxyi/Fqecc5iKhJtum3TNp73ya
-	 BC2vvMeScPd0DtmME4k8qIiUeXuLXdKu7Az8hL96nrbC3A/+DW6xP+e0k/mL0yhwTx
-	 iYkTsHUJ3lNig==
-Message-ID: <10e483b2-2aa2-48a9-bc96-2cfb8125824d@kernel.org>
-Date: Mon, 2 Feb 2026 09:54:22 +0100
+	s=k20201202; t=1770022536;
+	bh=BDzkEXTSn4OsyMImxJsTqnJmwvMEHbv2lChkyPpJg2U=;
+	h=Date:Subject:From:To:Cc:References:In-Reply-To:From;
+	b=qj4t1a7p41f5H39L2b4xDJNgIgNDKQHW0XEb1YYzmWWL6Bx3POHiVAaLh0VnLIhY/
+	 6QXOQo5d7NsaJ1qW2UW0NS+n8+clnWz7Oe0jfjFWT297upD7mB0F4nuPOeDAYJ7k1r
+	 R8vF6RnWBNr0T314Ow+Kk6ZHWmPxFpltzGwZhl44s2ACnsxMQ+2ykoKEunETDBgGge
+	 VoI52D2RtMqu17s6fIkZKLrCuPJlsJnGw4XiyC9WGJyqTKexrvhEkr3CsxOkhrEwU4
+	 FTwCbTIPOLMHk+xGMwJzUFIMGZMdk2iSpIVWyZauTTL9GoCvcMyd59CJsY9nN7eGol
+	 0HG9TSYTjo9Mw==
+Message-ID: <3edb394e-ecc4-4bee-973c-a801aa6e7282@kernel.org>
+Date: Mon, 2 Feb 2026 09:55:28 +0100
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -55,6 +55,7 @@ MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
 Subject: Re: [PATCH v2] mm: khugepaged: fix NR_FILE_PAGES and NR_SHMEM in
  collapse_file()
+From: "David Hildenbrand (arm)" <david@kernel.org>
 To: Shakeel Butt <shakeel.butt@linux.dev>,
  Andrew Morton <akpm@linux-foundation.org>
 Cc: Johannes Weiner <hannes@cmpxchg.org>, Rik van Riel <riel@surriel.com>,
@@ -69,7 +70,7 @@ Cc: Johannes Weiner <hannes@cmpxchg.org>, Rik van Riel <riel@surriel.com>,
  Meta kernel team <kernel-team@meta.com>, linux-mm@kvack.org,
  cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
 References: <20260130042925.2797946-1-shakeel.butt@linux.dev>
-From: "David Hildenbrand (arm)" <david@kernel.org>
+ <10e483b2-2aa2-48a9-bc96-2cfb8125824d@kernel.org>
 Content-Language: en-US
 Autocrypt: addr=david@kernel.org; keydata=
  xsFNBFXLn5EBEAC+zYvAFJxCBY9Tr1xZgcESmxVNI/0ffzE/ZQOiHJl6mGkmA1R7/uUpiCjJ
@@ -114,7 +115,7 @@ Autocrypt: addr=david@kernel.org; keydata=
  cFAM8nBWrEmNU2vvIGJzjJ/NVYYIY0TgOc5bS9wh6jKHL2+chrfDW5neLJjY2x3snF8q7U9G
  EIbBfNHDlOV8SyhEjtX0DyKxQKioTYPOHcW9gdV5fhSz5tEv+ipqt4kIgWqBgzK8ePtDTqRM
  qZq457g1/SXSoSQi4jN+gsneqvlTJdzaEu1bJP0iv6ViVf15+qHuY5iojCz8fa0=
-In-Reply-To: <20260130042925.2797946-1-shakeel.butt@linux.dev>
+In-Reply-To: <10e483b2-2aa2-48a9-bc96-2cfb8125824d@kernel.org>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 X-Rspamd-Server: lfdr
@@ -122,11 +123,11 @@ X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
 	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-13595-lists,cgroups=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-13596-lists,cgroups=lfdr.de];
 	FREEMAIL_CC(0.00)[cmpxchg.org,surriel.com,fb.com,kernel.org,gmail.com,oracle.com,nvidia.com,linux.alibaba.com,redhat.com,arm.com,linux.dev,infradead.org,meta.com,kvack.org,vger.kernel.org];
 	FROM_HAS_DN(0.00)[];
 	RCVD_COUNT_THREE(0.00)[4];
@@ -134,7 +135,7 @@ X-Spamd-Result: default: False [-2.16 / 15.00];
 	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	DKIM_TRACE(0.00)[kernel.org:+];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
 	RCPT_COUNT_TWELVE(0.00)[21];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[david@kernel.org,cgroups@vger.kernel.org];
@@ -144,42 +145,47 @@ X-Spamd-Result: default: False [-2.16 / 15.00];
 	MID_RHS_MATCH_FROM(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TO_DN_SOME(0.00)[]
-X-Rspamd-Queue-Id: 26F45C9D50
+X-Rspamd-Queue-Id: 1E5C1C9D7D
 X-Rspamd-Action: no action
 
-On 1/30/26 05:29, Shakeel Butt wrote:
-> In META's fleet, we observed high-level cgroups showing zero file memcg
-> stats while their descendants had non-zero values. Investigation using
-> drgn revealed that these parent cgroups actually had negative file stats,
-> aggregated from their children.
+On 2/2/26 09:54, David Hildenbrand (arm) wrote:
+> On 1/30/26 05:29, Shakeel Butt wrote:
+>> In META's fleet, we observed high-level cgroups showing zero file memcg
+>> stats while their descendants had non-zero values. Investigation using
+>> drgn revealed that these parent cgroups actually had negative file stats,
+>> aggregated from their children.
+>>
+>> This issue became more frequent after deploying thp-always more widely,
+>> pointing to a correlation with THP file collapsing. The root cause is
+>> that collapse_file() assumes old folios and the new THP belong to the
+>> same node and memcg. When this assumption breaks, stats become skewed.
+>> The bug affects not just memcg stats but also per-numa stats, and not
+>> just NR_FILE_PAGES but also NR_SHMEM.
+>>
+>> The assumption breaks in scenarios such as:
+>>
+>> 1. Small folios allocated on one node while the THP gets allocated on a
+>>      different node.
+>>
+>> 2. A package downloader running in one cgroup populates the page cache,
+>>      while a job in a different cgroup executes the downloaded binary.
+>>
+>> 3. A file shared between processes in different cgroups, where one
+>>      process faults in the pages and khugepaged (or madvise(COLLAPSE))
+>>      collapses them on behalf of the other.
+>>
+>> Fix the accounting by explicitly incrementing stats for the new THP and
+>> decrementing stats for the old folios being replaced.
+>>
+>> Fixes: f3f0e1d2150b ("khugepaged: add support of collapse for tmpfs/shmem pages")
+>> Signed-off-by: Shakeel Butt <shakeel.butt@linux.dev>
+>> ---
 > 
-> This issue became more frequent after deploying thp-always more widely,
-> pointing to a correlation with THP file collapsing. The root cause is
-> that collapse_file() assumes old folios and the new THP belong to the
-> same node and memcg. When this assumption breaks, stats become skewed.
-> The bug affects not just memcg stats but also per-numa stats, and not
-> just NR_FILE_PAGES but also NR_SHMEM.
-> 
-> The assumption breaks in scenarios such as:
-> 
-> 1. Small folios allocated on one node while the THP gets allocated on a
->     different node.
-> 
-> 2. A package downloader running in one cgroup populates the page cache,
->     while a job in a different cgroup executes the downloaded binary.
-> 
-> 3. A file shared between processes in different cgroups, where one
->     process faults in the pages and khugepaged (or madvise(COLLAPSE))
->     collapses them on behalf of the other.
-> 
-> Fix the accounting by explicitly incrementing stats for the new THP and
-> decrementing stats for the old folios being replaced.
-> 
-> Fixes: f3f0e1d2150b ("khugepaged: add support of collapse for tmpfs/shmem pages")
-> Signed-off-by: Shakeel Butt <shakeel.butt@linux.dev>
-> ---
+> Acked-by: David Hildenbrand (Red Hat) <david@kernel.org>
 
-Acked-by: David Hildenbrand (Red Hat) <david@kernel.org>
+Heh, forgot to adjust the shortcut
+
+Acked-by: David Hildenbrand (arm) <david@kernel.org>
 
 -- 
 Cheers
