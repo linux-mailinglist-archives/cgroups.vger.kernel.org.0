@@ -1,48 +1,48 @@
-Return-Path: <cgroups+bounces-13584-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-13585-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id aPD/JNj3f2lI0wIAu9opvQ
-	(envelope-from <cgroups+bounces-13584-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Mon, 02 Feb 2026 02:03:20 +0100
+	id ZIPZBN/5f2m+0wIAu9opvQ
+	(envelope-from <cgroups+bounces-13585-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Mon, 02 Feb 2026 02:11:59 +0100
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id C2107C7B43
-	for <lists+cgroups@lfdr.de>; Mon, 02 Feb 2026 02:03:19 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id A0662C7BA1
+	for <lists+cgroups@lfdr.de>; Mon, 02 Feb 2026 02:11:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 1ACF6301BF61
-	for <lists+cgroups@lfdr.de>; Mon,  2 Feb 2026 00:59:00 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 5394B3004C17
+	for <lists+cgroups@lfdr.de>; Mon,  2 Feb 2026 01:11:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 74E531D61A3;
-	Mon,  2 Feb 2026 00:58:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E411E1C549F;
+	Mon,  2 Feb 2026 01:11:55 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
 Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A6D12B2D7;
-	Mon,  2 Feb 2026 00:58:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E8DE21C01;
+	Mon,  2 Feb 2026 01:11:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1769993938; cv=none; b=Ih6TiOaRUKaWJ+nCxIaA29d6EvEp6sRUSyWz59W1wrOm0IPdXGsEmCKAK8MyVvI71B7xmENR16Jgh/fNKj6OyC9pGz1bb5PabbLgY7CzcWdJQQT/oijDKfwLFod0Kr1gq21G5AruRH81ReiqyNovJ7TFdffR/uHB/wWG7/ejq/M=
+	t=1769994715; cv=none; b=mnE+SXH5nYD5R4KqyxG2Hn7bg779gPo8dRAJ4hqZ0nHX5aKSDBoroQKpEVftNfTZxDC3D22Lhe4pEqCtNzJZ3Cpp0qHqK9RA35kqV63IiwtU8lMqqjn2bGWoR5t1yS60H3lMv5uU1TPyxNJ7p8hP1DrWk7JNjt23qfJZbLmBRzY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1769993938; c=relaxed/simple;
-	bh=aGkTxyZNrEuaxISgw/tFQ5XN+kaSv2O8fLncKnldUKc=;
+	s=arc-20240116; t=1769994715; c=relaxed/simple;
+	bh=l/bCTFmjkufIayN9AzcLxFD71b/jsW+nxnHGpX4cLd8=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=OodBitGoivO1zr9mSxy3MIG8xLrmt5q7EYAiX0+PxeCZ0NtCWls1p6ty8lBzl5FcyIExRzT6SnIoDFIgQ1I33G308NA8CZwWS+67bIOQebJ+rZRu06V/KrlM6y8bTCYf68mp5+U6SzeBxEA9kTFS9Lcrl3Wuc2dLmDd3eURadcQ=
+	 In-Reply-To:Content-Type; b=ADYWQTW+gLhdkliUqlW6eVfP/JsKLC99EW+VBCYJ2sGrUN36Bb3zyo3M+0hkL4xmf5JRv47+0v/l4N4nmC9R2r12fM0/BeTQ33KjLYyEMnpM99N1hyxxKCqAZjuFcH42ot2GcbSmEs7GvrKM+L7iFvgd706O+YYjkMyswMKzUM0=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
 Received: from mail.maildlp.com (unknown [172.19.163.198])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTPS id 4f47XR659TzKHMNp;
-	Mon,  2 Feb 2026 08:58:31 +0800 (CST)
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTPS id 4f47qN40PlzKHMJg;
+	Mon,  2 Feb 2026 09:11:28 +0800 (CST)
 Received: from mail02.huawei.com (unknown [10.116.40.128])
-	by mail.maildlp.com (Postfix) with ESMTP id 4619040575;
-	Mon,  2 Feb 2026 08:58:51 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTP id 0106E40574;
+	Mon,  2 Feb 2026 09:11:48 +0800 (CST)
 Received: from [10.67.111.176] (unknown [10.67.111.176])
-	by APP4 (Coremail) with SMTP id gCh0CgCHM_TK9n9p6MPJFw--.28536S2;
-	Mon, 02 Feb 2026 08:58:51 +0800 (CST)
-Message-ID: <d47d4dfb-12cb-4bba-9bcb-b33c84f08e1f@huaweicloud.com>
-Date: Mon, 2 Feb 2026 08:58:49 +0800
+	by APP4 (Coremail) with SMTP id gCh0CgA34_PR+X9pxNnKFw--.29041S2;
+	Mon, 02 Feb 2026 09:11:47 +0800 (CST)
+Message-ID: <0c26006b-fe0f-4743-88d0-29b21fa82ee7@huaweicloud.com>
+Date: Mon, 2 Feb 2026 09:11:45 +0800
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -50,8 +50,8 @@ List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH/for-next v2 1/2] cgroup/cpuset: Defer
- housekeeping_update() call from CPU hotplug to workqueue
+Subject: Re: [PATCH/for-next v2 2/2] cgroup/cpuset: Introduce a new top level
+ cpuset_top_mutex
 To: Waiman Long <llong@redhat.com>, Tejun Heo <tj@kernel.org>,
  Johannes Weiner <hannes@cmpxchg.org>, =?UTF-8?Q?Michal_Koutn=C3=BD?=
  <mkoutny@suse.com>, Ingo Molnar <mingo@redhat.com>,
@@ -65,20 +65,18 @@ To: Waiman Long <llong@redhat.com>, Tejun Heo <tj@kernel.org>,
 Cc: cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
  linux-kselftest@vger.kernel.org
 References: <20260130154254.1422113-1-longman@redhat.com>
- <20260130154254.1422113-2-longman@redhat.com>
- <7c7fddf5-9d32-415b-a1c4-3b9402e78d72@huaweicloud.com>
- <781c0d8e-7cb6-4f3e-913a-b2a6b0bfed5e@redhat.com>
- <444c73fd-bd24-41d9-8642-597a546de781@huaweicloud.com>
- <2bd82e80-564b-4ec7-a97a-4722248a1a4a@redhat.com>
+ <20260130154254.1422113-3-longman@redhat.com>
+ <62022397-287c-4046-94de-058ff87ad728@huaweicloud.com>
+ <a2fc3448-dd5c-42fe-ac21-c8e1c10e94b4@redhat.com>
 Content-Language: en-US
 From: Chen Ridong <chenridong@huaweicloud.com>
-In-Reply-To: <2bd82e80-564b-4ec7-a97a-4722248a1a4a@redhat.com>
+In-Reply-To: <a2fc3448-dd5c-42fe-ac21-c8e1c10e94b4@redhat.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:gCh0CgCHM_TK9n9p6MPJFw--.28536S2
-X-Coremail-Antispam: 1UD129KBjvJXoW3Jr4DtrWkJr47Zw4kXFy3CFg_yoWxWr1rpr
-	ykKFW3trZ8Xr1rGw1aqw1UJrySqw18J3WDXrn5JFy8ArsrtFn29F4jqrnIgr18GrWfGr4U
-	ZF98WrZruFnrArDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+X-CM-TRANSID:gCh0CgA34_PR+X9pxNnKFw--.29041S2
+X-Coremail-Antispam: 1UD129KBjvJXoW3Jw13WrWxury5Kw1xKr17ZFb_yoW7WFW7pF
+	ZY9FyIyrW5Kr97Cw17tr4rXr18t3y7Ga17Jrn5G348AFsIvF1v9F4jqrn3uF98KrZ7C3y2
+	vas0g3y7Z34DAw7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
 	9KBjDU0xBIdaVrnRJUUUv0b4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
 	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
 	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
@@ -96,7 +94,7 @@ X-CM-SenderInfo: hfkh02xlgr0w46kxt4xhlfz01xgou0bp/
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-1.46 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
@@ -104,7 +102,7 @@ X-Spamd-Result: default: False [-1.46 / 15.00];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	FROM_HAS_DN(0.00)[];
 	MIME_TRACE(0.00)[0:+];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
 	TO_DN_SOME(0.00)[];
 	RCPT_COUNT_TWELVE(0.00)[19];
 	TAGGED_RCPT(0.00)[cgroups];
@@ -115,147 +113,119 @@ X-Spamd-Result: default: False [-1.46 / 15.00];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	RCVD_COUNT_FIVE(0.00)[6];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-13584-lists,cgroups=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-13585-lists,cgroups=lfdr.de];
 	DMARC_NA(0.00)[huaweicloud.com];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,test_cpuset_prs.sh:url]
-X-Rspamd-Queue-Id: C2107C7B43
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,huaweicloud.com:mid]
+X-Rspamd-Queue-Id: A0662C7BA1
 X-Rspamd-Action: no action
 
 
 
-On 2026/2/1 7:00, Waiman Long wrote:
-> On 1/30/26 9:05 PM, Chen Ridong wrote:
->>
->> On 2026/1/31 9:45, Waiman Long wrote:
->>> On 1/30/26 7:58 PM, Chen Ridong wrote:
->>>> On 2026/1/30 23:42, Waiman Long wrote:
->>>>> The update_isolation_cpumasks() function can be called either directly
->>>>> from regular cpuset control file write with cpuset_full_lock() called
->>>>> or via the CPU hotplug path with cpus_write_lock and cpuset_mutex held.
->>>>>
->>>>> As we are going to enable dynamic update to the nozh_full housekeeping
->>>>> cpumask (HK_TYPE_KERNEL_NOISE) soon with the help of CPU hotplug,
->>>>> allowing the CPU hotplug path to call into housekeeping_update() directly
->>>>> from update_isolation_cpumasks() will likely cause deadlock. So we
->>>>> have to defer any call to housekeeping_update() after the CPU hotplug
->>>>> operation has finished. This is now done via the workqueue where
->>>>> the actual housekeeping_update() call, if needed, will happen after
->>>>> cpus_write_lock is released.
->>>>>
->>>>> We can't use the synchronous task_work API as call from CPU hotplug
->>>>> path happen in the per-cpu kthread of the CPU that is being shut down
->>>>> or brought up. Because of the asynchronous nature of workqueue, the
->>>>> HK_TYPE_DOMAIN housekeeping cpumask will be updated a bit later than the
->>>>> "cpuset.cpus.isolated" control file in this case.
->>>>>
->>>>> Also add a check in test_cpuset_prs.sh and modify some existing
->>>>> test cases to confirm that "cpuset.cpus.isolated" and HK_TYPE_DOMAIN
->>>>> housekeeping cpumask will both be updated.
->>>>>
->>>>> Signed-off-by: Waiman Long <longman@redhat.com>
->>>>> ---
->>>>>    kernel/cgroup/cpuset.c                        | 37 +++++++++++++++++--
->>>>>    .../selftests/cgroup/test_cpuset_prs.sh       | 13 +++++--
->>>>>    2 files changed, 44 insertions(+), 6 deletions(-)
->>>>>
->>>>> diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
->>>>> index 7b7d12ab1006..0b0eb1df09d5 100644
->>>>> --- a/kernel/cgroup/cpuset.c
->>>>> +++ b/kernel/cgroup/cpuset.c
->>>>> @@ -84,6 +84,9 @@ static cpumask_var_t    isolated_cpus;
->>>>>     */
->>>>>    static bool isolated_cpus_updating;
->>>>>    +/* Both cpuset_mutex and cpus_read_locked acquired */
->>>>> +static bool cpuset_locked;
->>>>> +
->>>>>    /*
->>>>>     * A flag to force sched domain rebuild at the end of an operation.
->>>>>     * It can be set in
->>>>> @@ -285,10 +288,12 @@ void cpuset_full_lock(void)
->>>>>    {
->>>>>        cpus_read_lock();
->>>>>        mutex_lock(&cpuset_mutex);
->>>>> +    cpuset_locked = true;
->>>>>    }
->>>>>      void cpuset_full_unlock(void)
->>>>>    {
->>>>> +    cpuset_locked = false;
->>>>>        mutex_unlock(&cpuset_mutex);
->>>>>        cpus_read_unlock();
->>>>>    }
->>>>> @@ -1285,6 +1290,16 @@ static bool prstate_housekeeping_conflict(int prstate,
->>>>> struct cpumask *new_cpus)
->>>>>        return false;
->>>>>    }
->>>>>    +static void isolcpus_workfn(struct work_struct *work)
->>>>> +{
->>>>> +    cpuset_full_lock();
->>>>> +    if (isolated_cpus_updating) {
->>>>> +        WARN_ON_ONCE(housekeeping_update(isolated_cpus) < 0);
->>>>> +        isolated_cpus_updating = false;
->>>>> +    }
->>>>> +    cpuset_full_unlock();
->>>>> +}
->>>>> +
->>>>>    /*
->>>>>     * update_isolation_cpumasks - Update external isolation related CPU masks
->>>>>     *
->>>>> @@ -1293,14 +1308,30 @@ static bool prstate_housekeeping_conflict(int
->>>>> prstate, struct cpumask *new_cpus)
->>>>>     */
->>>>>    static void update_isolation_cpumasks(void)
->>>>>    {
->>>>> -    int ret;
->>>>> +    static DECLARE_WORK(isolcpus_work, isolcpus_workfn);
->>>>>          if (!isolated_cpus_updating)
->>>>>            return;
->>>>>    -    ret = housekeeping_update(isolated_cpus);
->>>>> -    WARN_ON_ONCE(ret < 0);
->>>>> +    /*
->>>>> +     * This function can be reached either directly from regular cpuset
->>>>> +     * control file write (cpuset_locked) or via hotplug (cpus_write_lock
->>>>> +     * && cpuset_mutex held). In the later case, we defer the
->>>>> +     * housekeeping_update() call to the system_unbound_wq to avoid the
->>>>> +     * possibility of deadlock. This also means that there will be a short
->>>>> +     * period of time where HK_TYPE_DOMAIN housekeeping cpumask will lag
->>>>> +     * behind isolated_cpus.
->>>>> +     */
->>>>> +    if (!cpuset_locked) {
->>>> Adding a global variable makes this difficult to handle, especially in
->>>> concurrent scenarios, since we could read it outside of a critical region.
->>> No, cpuset_locked is always read from or written into inside a critical section.
->>> It is under cpuset_mutex up to this point and then with the cpuset_top_mutex
->>> with the next patch.
->> This is somewhat confusing. cpuset_locked is only set to true when the "full
->> lock" has been acquired. If cpuset_locked is false, that should mean we are
->> outside of any critical region. Conversely, if we are inside a critical region,
->> cpuset_locked should be true.
->>
->> The situation is a bit messy, it’s not clearly which lock protects which global
->> variable.
+On 2026/2/1 7:13, Waiman Long wrote:
 > 
-> There is a comment above "cpuset_locked" which state which lock protect it. The
-> locking situation is becoming more complicated. I think I will add a new patch
-> to more clearly document what each global variable is being protected by.
-> 
-
-Yes, We need that.
-
-> 
+> On 1/30/26 9:53 PM, Chen Ridong wrote:
 >>
->>>> I suggest removing cpuset_locked and adding async_update_isolation_cpumasks
->>>> instead, which can indicate to the caller it should call without holding the
->>>> full lock.
->>> The point of this global variable is to distinguish between calling from CPU
->>> hotplug and the other regular cpuset code paths. The only difference between
->>> these two are having cpus_read_lock or cpus_write_lock held. That is why I think
->>> adding a global variable in cpuset_full_lock() is the easy way. Otherwise, we
->>> will to add extra argument to some of the functions to distinguish these two
->>> cases.
+>> On 2026/1/30 23:42, Waiman Long wrote:
+>>> The current cpuset partition code is able to dynamically update
+>>> the sched domains of a running system and the corresponding
+>>> HK_TYPE_DOMAIN housekeeping cpumask to perform what is essentally the
+>>> "isolcpus=domain,..." boot command line feature at run time.
 >>>
->>> Cheers,
->>> Longman
+>>> The housekeeping cpumask update requires flushing a number of different
+>>> workqueues which may not be safe with cpus_read_lock() held as the
+>>> workqueue flushing code may acquire cpus_read_lock() or acquiring locks
+>>> which have locking dependency with cpus_read_lock() down the chain. Below
+>>> is an example of such circular locking problem.
 >>>
+>>>    ======================================================
+>>>    WARNING: possible circular locking dependency detected
+>>>    6.18.0-test+ #2 Tainted: G S
+>>>    ------------------------------------------------------
+>>>    test_cpuset_prs/10971 is trying to acquire lock:
+>>>    ffff888112ba4958 ((wq_completion)sync_wq){+.+.}-{0:0}, at:
+>>> touch_wq_lockdep_map+0x7a/0x180
+>>>
+>>>    but task is already holding lock:
+>>>    ffffffffae47f450 (cpuset_mutex){+.+.}-{4:4}, at:
+>>> cpuset_partition_write+0x85/0x130
+>>>
+>>>    which lock already depends on the new lock.
+>>>
+>>>    the existing dependency chain (in reverse order) is:
+>>>    -> #4 (cpuset_mutex){+.+.}-{4:4}:
+>>>    -> #3 (cpu_hotplug_lock){++++}-{0:0}:
+>>>    -> #2 (rtnl_mutex){+.+.}-{4:4}:
+>>>    -> #1 ((work_completion)(&arg.work)){+.+.}-{0:0}:
+>>>    -> #0 ((wq_completion)sync_wq){+.+.}-{0:0}:
+>>>
+>>>    Chain exists of:
+>>>      (wq_completion)sync_wq --> cpu_hotplug_lock --> cpuset_mutex
+>>>
+>>>    5 locks held by test_cpuset_prs/10971:
+>>>     #0: ffff88816810e440 (sb_writers#7){.+.+}-{0:0}, at: ksys_write+0xf9/0x1d0
+>>>     #1: ffff8891ab620890 (&of->mutex#2){+.+.}-{4:4}, at:
+>>> kernfs_fop_write_iter+0x260/0x5f0
+>>>     #2: ffff8890a78b83e8 (kn->active#187){.+.+}-{0:0}, at:
+>>> kernfs_fop_write_iter+0x2b6/0x5f0
+>>>     #3: ffffffffadf32900 (cpu_hotplug_lock){++++}-{0:0}, at:
+>>> cpuset_partition_write+0x77/0x130
+>>>     #4: ffffffffae47f450 (cpuset_mutex){+.+.}-{4:4}, at:
+>>> cpuset_partition_write+0x85/0x130
+>>>
+>>>    Call Trace:
+>>>     <TASK>
+>>>       :
+>>>     touch_wq_lockdep_map+0x93/0x180
+>>>     __flush_workqueue+0x111/0x10b0
+>>>     housekeeping_update+0x12d/0x2d0
+>>>     update_parent_effective_cpumask+0x595/0x2440
+>>>     update_prstate+0x89d/0xce0
+>>>     cpuset_partition_write+0xc5/0x130
+>>>     cgroup_file_write+0x1a5/0x680
+>>>     kernfs_fop_write_iter+0x3df/0x5f0
+>>>     vfs_write+0x525/0xfd0
+>>>     ksys_write+0xf9/0x1d0
+>>>     do_syscall_64+0x95/0x520
+>>>     entry_SYSCALL_64_after_hwframe+0x76/0x7e
+>>>
+>>> To avoid such a circular locking dependency problem, we have to
+>>> call housekeeping_update() without holding the cpus_read_lock() and
+>>> cpuset_mutex. The current set of wq's flushed by housekeeping_update()
+>>> may not have work functions that call cpus_read_lock() directly,
+>>> but we are likely to extend the list of wq's that are flushed in the
+>>> future. Moreover, the current set of work functions may hold locks that
+>>> may have cpu_hotplug_lock down the dependency chain.
+>>>
+>>> One way to do that is to introduce a new top level cpuset_top_mutex
+>>> which will be acquired first.  This new cpuset_top_mutex will provide
+>>> the need mutual exclusion without the need to hold cpus_read_lock().
+>>>
+>> Introducing a new global lock warrants careful consideration. I wonder if we
+>> could make all updates to isolated_cpus asynchronous. If that is feasible, we
+>> could avoid adding a global lock altogether. If not, we need to clarify which
+>> updates must remain synchronous and which ones can be handled asynchronously.
+> 
+> Almost all the cpuset code are run with cpuset_mutex held with either
+> cpus_read_lock or cpus_write_lock. So there is no concurrent access/update to
+> any of the cpuset internal data. The new cpuset_top_mutex is aded to resolve the
+> possible deadlock scenarios with the new housekeeping_update() call without
+> breaking this model. Allow parallel concurrent access/update to cpuset data will
+> greatly complicate the code and we will likely missed some corner cases that we
+
+I agree with that point. However, we already have paths where isolated_cpus is
+updated asynchronously, meaning parallel concurrent access/update is already
+happening. Therefore, we cannot entirely avoid such scenarios, so why not keep
+the locking simple(make all updates to isolated_cpus asynchronous)?
+
+This is just a thought in my mind.
+
+> have to fix in the future. We will only do that if cpuset is in a critical
+> performance path, but it is not. It is not just isolated_cpus that we are
+> protecting, all the other cpuset data may be at risk if we don't have another
+> top level mutex to protect them.
+> 
+> Cheers,
+> Longman
 > 
 
 -- 
