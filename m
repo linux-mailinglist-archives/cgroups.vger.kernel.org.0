@@ -1,185 +1,178 @@
-Return-Path: <cgroups+bounces-13598-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-13602-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id SOq/A9ebgGl2/wIAu9opvQ
-	(envelope-from <cgroups+bounces-13598-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Mon, 02 Feb 2026 13:43:03 +0100
+	id mMx1IIShgGni/wIAu9opvQ
+	(envelope-from <cgroups+bounces-13602-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Mon, 02 Feb 2026 14:07:16 +0100
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 62DFCCC701
-	for <lists+cgroups@lfdr.de>; Mon, 02 Feb 2026 13:43:02 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 22B73CC98F
+	for <lists+cgroups@lfdr.de>; Mon, 02 Feb 2026 14:07:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id B4ED7302978F
-	for <lists+cgroups@lfdr.de>; Mon,  2 Feb 2026 12:42:20 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id AC28F301F33B
+	for <lists+cgroups@lfdr.de>; Mon,  2 Feb 2026 13:05:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C37F3644CF;
-	Mon,  2 Feb 2026 12:42:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B975D366547;
+	Mon,  2 Feb 2026 13:05:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="pF3ZFb+y"
 X-Original-To: cgroups@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9325E2DCF71;
-	Mon,  2 Feb 2026 12:42:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E64035E53C;
+	Mon,  2 Feb 2026 13:05:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1770036138; cv=none; b=EcaXX0DXYxRKDJYH5wC6IhqQ/WlDGRXG2s7KnBaK2bWtU3ANr0ewoeUX2EedALxhV3MHtvR4k9/DeehAKgj4kGbSN1uSy+j1GpD8C2PpSWvAPDkjnmo8bvx2Tz053AgDJQfeSBwGG+rtkmqyU/yrFa3nwwBz1iyKKPFLUa+QW1Y=
+	t=1770037539; cv=none; b=jT6W1ifUOGqJXcH7MwbD+lhClZR2saAL85Bquqaay+eZSLt1cktl9AL8O9kbQzYE8OFwaTzX78lF8lFGOElDbd2Omw8Iv5LtpsCHKpYluCmxJiRdDaXwldlJxibj9i4LlITK8wbjERFAKsiTJ37f9U9KXDfE5XdfBdwI2CsHLoU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1770036138; c=relaxed/simple;
-	bh=7wmnCue5Y0C6XF5PJuLF8gkAiY38K7W7twqYFuQ2yiU=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=g3YXCUTmin9e+qKRklXqKGhlMavz0lCOkO5GF5cFbhGsliYGfORh0mTbpCurTf2KEA9uhcUVonVQGxcoHEdJi+40YuBNPS6Et+rGKNhnYg5Pyngf+PLiOWX/KOf87XQ/uxrQwDhOHZ0Gisg3cAkwbWvgnibVm89f4ngGh/09bN0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.170])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTPS id 4f4R7S6MjTzYQv6b;
-	Mon,  2 Feb 2026 20:41:24 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.112])
-	by mail.maildlp.com (Postfix) with ESMTP id 921404056E;
-	Mon,  2 Feb 2026 20:42:10 +0800 (CST)
-Received: from hulk-vt.huawei.com (unknown [10.67.174.121])
-	by APP1 (Coremail) with SMTP id cCh0CgDXj+WWm4Bpt7ipFw--.14648S6;
-	Mon, 02 Feb 2026 20:42:10 +0800 (CST)
-From: Chen Ridong <chenridong@huaweicloud.com>
-To: dev@lankhorst.se,
-	mripard@kernel.org,
-	natalie.vock@gmx.de,
-	tj@kernel.org,
-	hannes@cmpxchg.org,
-	mkoutny@suse.com
-Cc: cgroups@vger.kernel.org,
-	dri-devel@lists.freedesktop.org,
-	linux-kernel@vger.kernel.org,
-	lujialin4@huawei.com,
-	chenridong@huaweicloud.com
-Subject: [PATCH -next v2 4/4] cgroup/dmem: add argument checks in helpers
-Date: Mon,  2 Feb 2026 12:27:19 +0000
-Message-Id: <20260202122719.414466-5-chenridong@huaweicloud.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20260202122719.414466-1-chenridong@huaweicloud.com>
-References: <20260202122719.414466-1-chenridong@huaweicloud.com>
+	s=arc-20240116; t=1770037539; c=relaxed/simple;
+	bh=F8crWnNiW1I5eGPcpKlPggbez0s5Ewo7AQLN4ei6+kM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=GijowU/UqTsYXoS0fIMrKtl6q+CbGj8s9wbyBbbr6UftcVfJQJwzOpoxOYeQxUR6RzEjX5eZfuFPtkgav5NWZ1fyd9TBA1XQzPW2aUXKgIpIuGjgc/95pCPyqvCYEB0nnwVRgpkNmwz2waYisvjhEAdRctVC269z9GUxMNzMguI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=pF3ZFb+y; arc=none smtp.client-ip=90.155.50.34
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=WjzS76ZEx91D+z7A9/8sYiyzf4PTQPs3YN9XfWKCgtc=; b=pF3ZFb+yciTFja/40tXjEOuvgo
+	yrElhcy7bKt/xk0cEvyTjkRke0yv5oIN5Ml7PRqiOmjxGKbkydNnuuZM7Os8SeJ6+d+2nFVPT6wpa
+	SfQ53pF/16SfXLZz7KLbcKN9OKr17D3x8HDLP2Cq0fnz0g3hspkWDvqlXedI2UNRrSa942SK+/HLs
+	RATTy5+7bp5yclCUCIKklffARUoMxjFG0sFUPof5fSGTz2fHE7AIjoIvoVt1VfLmAeS0yHXOZ8gjf
+	MFN7vtryUH/v1T/HWsxW9q+ribGGxVggE3aVjE1OnfpPdADE7d/ey0hTWe+cryQbNlzw72yi51l0v
+	6RqZmtdA==;
+Received: from 2001-1c00-8d85-5700-266e-96ff-fe07-7dcc.cable.dynamic.v6.ziggo.nl ([2001:1c00:8d85:5700:266e:96ff:fe07:7dcc] helo=noisy.programming.kicks-ass.net)
+	by casper.infradead.org with esmtpsa (Exim 4.98.2 #2 (Red Hat Linux))
+	id 1vmtcN-0000000GWAx-23vt;
+	Mon, 02 Feb 2026 13:05:27 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+	id DCC80300208; Mon, 02 Feb 2026 14:05:26 +0100 (CET)
+Date: Mon, 2 Feb 2026 14:05:26 +0100
+From: Peter Zijlstra <peterz@infradead.org>
+To: Waiman Long <longman@redhat.com>
+Cc: Chen Ridong <chenridong@huaweicloud.com>, Tejun Heo <tj@kernel.org>,
+	Johannes Weiner <hannes@cmpxchg.org>,
+	Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
+	Ingo Molnar <mingo@redhat.com>, Juri Lelli <juri.lelli@redhat.com>,
+	Vincent Guittot <vincent.guittot@linaro.org>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+	Valentin Schneider <vschneid@redhat.com>,
+	Anna-Maria Behnsen <anna-maria@linutronix.de>,
+	Frederic Weisbecker <frederic@kernel.org>,
+	Thomas Gleixner <tglx@linutronix.de>, Shuah Khan <shuah@kernel.org>,
+	cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH/for-next v2 1/2] cgroup/cpuset: Defer
+ housekeeping_update() call from CPU hotplug to workqueue
+Message-ID: <20260202130526.GE1395266@noisy.programming.kicks-ass.net>
+References: <20260130154254.1422113-1-longman@redhat.com>
+ <20260130154254.1422113-2-longman@redhat.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:cCh0CgDXj+WWm4Bpt7ipFw--.14648S6
-X-Coremail-Antispam: 1UD129KBjvJXoW7Ww13ZryrGFWfXFW5urykZrb_yoW8Cw48pF
-	4qka45Kw4FvF47Zws2ya4xZFyFka1xtw1UC3y7Xr4SvF1xJw1rGr47Jw1jqF1FyF9rGr18
-	XFZ0yF1akrWSyrUanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUma14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_JF0E3s1l82xGYI
-	kIc2x26xkF7I0E14v26ryj6s0DM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2
-	z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr1j6F
-	4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oVCq
-	3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7
-	IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4U
-	M4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628vn2
-	kIc2xKxwCY1x0262kKe7AKxVWUtVW8ZwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkE
-	bVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67
-	AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI
-	42IY6xIIjxv20xvEc7CjxVAFwI0_Cr0_Gr1UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCw
-	CI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4UJVWxJrUvcSsG
-	vfC2KfnxnUUI43ZEXa7VUbPC7UUUUUU==
-X-CM-SenderInfo: hfkh02xlgr0w46kxt4xhlfz01xgou0bp/
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20260130154254.1422113-2-longman@redhat.com>
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [0.04 / 15.00];
+X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_CONTAINS_FROM(1.00)[];
-	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	DMARC_POLICY_ALLOW(-0.50)[infradead.org,none];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_DKIM_ALLOW(-0.20)[infradead.org:s=casper.20170209];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-13598-lists,cgroups=lfdr.de];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	FREEMAIL_TO(0.00)[lankhorst.se,kernel.org,gmx.de,cmpxchg.org,suse.com];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	DMARC_NA(0.00)[huaweicloud.com];
-	FORGED_SENDER_MAILLIST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-13602-lists,cgroups=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_RCPT(0.00)[cgroups];
-	RCPT_COUNT_SEVEN(0.00)[11];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[chenridong@huaweicloud.com,cgroups@vger.kernel.org];
 	FROM_HAS_DN(0.00)[];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	DKIM_TRACE(0.00)[infradead.org:+];
+	RCPT_COUNT_TWELVE(0.00)[19];
 	MIME_TRACE(0.00)[0:+];
-	RCVD_COUNT_FIVE(0.00)[6];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	TO_DN_SOME(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[peterz@infradead.org,cgroups@vger.kernel.org];
+	MISSING_XM_UA(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[5];
+	TAGGED_RCPT(0.00)[cgroups];
 	NEURAL_HAM(-0.00)[-1.000];
-	TO_DN_NONE(0.00)[];
-	R_DKIM_NA(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[huaweicloud.com:mid,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,huawei.com:email]
-X-Rspamd-Queue-Id: 62DFCCC701
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[noisy.programming.kicks-ass.net:mid,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,infradead.org:dkim]
+X-Rspamd-Queue-Id: 22B73CC98F
 X-Rspamd-Action: no action
 
-From: Chen Ridong <chenridong@huawei.com>
+On Fri, Jan 30, 2026 at 10:42:53AM -0500, Waiman Long wrote:
 
-Add WARN_ON_ONCE guards for NULL-sensitive arguments in dmem helpers to
-avoid NULL dereferences on misused APIs. Valid callers are unaffected.
+> +/* Both cpuset_mutex and cpus_read_locked acquired */
+> +static bool cpuset_locked;
+> +
+>  /*
+>   * A flag to force sched domain rebuild at the end of an operation.
+>   * It can be set in
+> @@ -285,10 +288,12 @@ void cpuset_full_lock(void)
+>  {
+>  	cpus_read_lock();
+>  	mutex_lock(&cpuset_mutex);
+> +	cpuset_locked = true;
+>  }
+>  
+>  void cpuset_full_unlock(void)
+>  {
+> +	cpuset_locked = false;
+>  	mutex_unlock(&cpuset_mutex);
+>  	cpus_read_unlock();
+>  }
 
-Signed-off-by: Chen Ridong <chenridong@huawei.com>
----
- kernel/cgroup/dmem.c | 15 +++++++++++++--
- 1 file changed, 13 insertions(+), 2 deletions(-)
+> @@ -1293,14 +1308,30 @@ static bool prstate_housekeeping_conflict(int prstate, struct cpumask *new_cpus)
+>   */
+>  static void update_isolation_cpumasks(void)
+>  {
+> -	int ret;
+> +	static DECLARE_WORK(isolcpus_work, isolcpus_workfn);
+>  
+>  	if (!isolated_cpus_updating)
+>  		return;
+>  
+> -	ret = housekeeping_update(isolated_cpus);
+> -	WARN_ON_ONCE(ret < 0);
+> +	/*
+> +	 * This function can be reached either directly from regular cpuset
+> +	 * control file write (cpuset_locked) or via hotplug (cpus_write_lock
+> +	 * && cpuset_mutex held). In the later case, we defer the
+> +	 * housekeeping_update() call to the system_unbound_wq to avoid the
+> +	 * possibility of deadlock. This also means that there will be a short
+> +	 * period of time where HK_TYPE_DOMAIN housekeeping cpumask will lag
+> +	 * behind isolated_cpus.
+> +	 */
+> +	if (!cpuset_locked) {
 
-diff --git a/kernel/cgroup/dmem.c b/kernel/cgroup/dmem.c
-index 1ea6afffa985..aa5bacf5fe45 100644
---- a/kernel/cgroup/dmem.c
-+++ b/kernel/cgroup/dmem.c
-@@ -307,6 +307,9 @@ bool dmem_cgroup_state_evict_valuable(struct dmem_cgroup_pool_state *limit_pool,
- 	struct page_counter *ctest;
- 	u64 used, min, low;
- 
-+	if (WARN_ON_ONCE(!test_pool))
-+		return false;
-+
- 	/* Can always evict from current pool, despite limits */
- 	if (limit_pool == test_pool)
- 		return true;
-@@ -343,7 +346,8 @@ bool dmem_cgroup_state_evict_valuable(struct dmem_cgroup_pool_state *limit_pool,
- 		low = READ_ONCE(ctest->elow);
- 		if (used > low)
- 			return true;
--
-+		if (WARN_ON_ONCE(!ret_hit_low))
-+			return false;
- 		*ret_hit_low = true;
- 		return false;
- 	}
-@@ -512,7 +516,7 @@ struct dmem_cgroup_region *dmem_cgroup_register_region(u64 size, const char *fmt
- 	char *region_name;
- 	va_list ap;
- 
--	if (!size)
-+	if (WARN_ON_ONCE(!size || !fmt))
- 		return NULL;
- 
- 	va_start(ap, fmt);
-@@ -520,6 +524,10 @@ struct dmem_cgroup_region *dmem_cgroup_register_region(u64 size, const char *fmt
- 	va_end(ap);
- 	if (!region_name)
- 		return ERR_PTR(-ENOMEM);
-+	if (WARN_ON_ONCE(!region_name[0])) {
-+		kfree(region_name);
-+		return ERR_PTR(-EINVAL);
-+	}
- 
- 	ret = kzalloc(sizeof(*ret), GFP_KERNEL);
- 	if (!ret) {
-@@ -657,6 +665,9 @@ int dmem_cgroup_try_charge(struct dmem_cgroup_region *region, u64 size,
- 	struct page_counter *fail;
- 	int ret;
- 
-+	if (WARN_ON_ONCE(!region || !ret_pool))
-+		return -EINVAL;
-+
- 	*ret_pool = NULL;
- 	if (ret_limit_pool)
- 		*ret_limit_pool = NULL;
--- 
-2.34.1
+I agree with Chen that this is bloody terrible.
 
+At the very least this should have:
+
+	lockdep_assert_held(&cpuset_mutex);
+
+But ideally you'd do patches against this and tip/locking/core that add
+proper __guarded_by() annotations to this.
+
+> +		/*
+> +		 * We rely on WORK_STRUCT_PENDING_BIT to not requeue a work
+> +		 * item that is still pending.
+> +		 */
+> +		queue_work(system_unbound_wq, &isolcpus_work);
+> +		return;
+> +	}
+>  
+> +	WARN_ON_ONCE(housekeeping_update(isolated_cpus) < 0);
+>  	isolated_cpus_updating = false;
+>  }
 
