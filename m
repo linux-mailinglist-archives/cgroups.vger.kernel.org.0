@@ -1,134 +1,165 @@
-Return-Path: <cgroups+bounces-13607-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-13608-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 6L9/MusDgWnZDgMAu9opvQ
-	(envelope-from <cgroups+bounces-13607-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Mon, 02 Feb 2026 21:07:07 +0100
+	id V7kEKS8FgWn5DgMAu9opvQ
+	(envelope-from <cgroups+bounces-13608-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Mon, 02 Feb 2026 21:12:31 +0100
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0C92FD0EEB
-	for <lists+cgroups@lfdr.de>; Mon, 02 Feb 2026 21:07:06 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0C372D0F59
+	for <lists+cgroups@lfdr.de>; Mon, 02 Feb 2026 21:12:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id 531BC3008092
-	for <lists+cgroups@lfdr.de>; Mon,  2 Feb 2026 20:06:22 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id D8D4B302C314
+	for <lists+cgroups@lfdr.de>; Mon,  2 Feb 2026 20:12:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9526130DD21;
-	Mon,  2 Feb 2026 20:06:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C277030EF8E;
+	Mon,  2 Feb 2026 20:12:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="pAi98Agg"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="CBYO7CFa"
 X-Original-To: cgroups@vger.kernel.org
-Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 320E02DA750;
-	Mon,  2 Feb 2026 20:06:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1E087274B3A
+	for <cgroups@vger.kernel.org>; Mon,  2 Feb 2026 20:12:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1770062778; cv=none; b=PvNmk075uL4NJoBIJCPgn/Kjz4btBAaOI+xs0eejoTBpo7OY9xNy2Gmzwx0TXdANsWNShCMB83dFLvl2xnqrBRdpLo7PNViVs4JIU+6HwYe7orHKrQDOTjQxrC+uwoth8IuRVvn9++jC9gw2GwdFBchTav8BSc+q9JJzFuHkoN4=
+	t=1770063146; cv=none; b=n6zrQsbJdh157coSjjIkLNuA7rNLXTK8RMIjg48Lsiwx4/LXLCl9DQYrN6Uk/0Ytj2n/9EiK1rIH2fJB1ET1diqeZG0RtM3hsM6evK5HPJZmVL/3wueGheEBhgAgy58EfdrcOQPBvt/KDUgATJBp6eDjTQxakCqJOHnlhJrBCVk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1770062778; c=relaxed/simple;
-	bh=HHrXkej/f/a2t9EQOmJlB/QYwWVipv0R/r6Z2wXnlXo=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=fEbHXpHGUvPB5VqWxBqgbU/5LG7006JZB6R4EAQzAsLuZtm+7C0VGKNNE/cYdJzZjYr9mF1nqGlO7uBs/CjsdLSGWUuQO8w7N5yx8lmDcTx0+NbXeAzZhDj9HNP37pwTCbox1tkZoVNu2MMFMPbRk3E5XRpvK9IPlaPrVzbAsiU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=pAi98Agg; arc=none smtp.client-ip=90.155.50.34
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=ZhU0N631qBi+iE52tj9a+dPE2D9hgfFQrTqnyjNKhFg=; b=pAi98AggagaMHaEsNgavBewaYs
-	OgZ3EqIMz3qy8QydkF78WIZMIFkgDgpLfn79YIS6QGcpgqFwp9DdDg+3SDHr2fLCx0BTn6zsrtgmt
-	tgZkCmHnBDK+ECG0V5S/54nQgUvvv4RnHkQg21DmRnhceq9ddQTFSo5t3xyLOxtL8ZmowKUhHfPVu
-	di3b+UP6IrKqqu7pi6fVrWAZQqPIW2yaAmdvAyO1BZKPv5SBazl7I3/k5iqIqZ2Xgi8FuVvqtP4Cz
-	LJAQIhxRiA/g702hZi0wv/tsQMV0ZNeDvoTCYjolk6PNse438lGNzLrMNufOFjgobs5Hm36yt9tTO
-	CQrzKEzA==;
-Received: from 2001-1c00-8d85-5700-266e-96ff-fe07-7dcc.cable.dynamic.v6.ziggo.nl ([2001:1c00:8d85:5700:266e:96ff:fe07:7dcc] helo=noisy.programming.kicks-ass.net)
-	by casper.infradead.org with esmtpsa (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vn0BX-0000000H06o-0N9p;
-	Mon, 02 Feb 2026 20:06:11 +0000
-Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-	id A49613008E2; Mon, 02 Feb 2026 21:06:10 +0100 (CET)
-Date: Mon, 2 Feb 2026 21:06:10 +0100
-From: Peter Zijlstra <peterz@infradead.org>
-To: Waiman Long <llong@redhat.com>
-Cc: Chen Ridong <chenridong@huaweicloud.com>, Tejun Heo <tj@kernel.org>,
+	s=arc-20240116; t=1770063146; c=relaxed/simple;
+	bh=ueRSvYYdurwtvG1dLZKyDVVAIWihUZ0006OF7PLyNaQ=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Z6YrxMMSIhBqzFUmFPRp0Z7zXClpzy26s2/oAcG8I+sXRCPPQtC1f2Vln2wjW5dTmvmE8gWe+qHcrJMrlgWDIzC4SLXuCqxCgUbj9jLTMwRogXWuIWA26QEZzfkdbNwCD7gBUByU4O5fzerxwdCGU3wblFUCr8c1V/kUiHHCDKg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=CBYO7CFa; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1770063144;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=e/0NqJBMI2AZg98TeES+DEh0xbNUNHI/7I7le89mk0U=;
+	b=CBYO7CFaTlIh95+eeSOKxPrEEFcryRcsiNgQbRfezJqDxJwgjBA9uqoD63+UKSj7eAx9vc
+	Or8pZcNbh6mcReD9+bEDHEMWWEDn2qXF2qGK/aQRrVbhwhvN//eTdOqDf6inzic33NvGLb
+	ynF/e7KOXQ9cJrX4ccrSCxV/oSUD8Aw=
+Received: from mx-prod-mc-08.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-35-165-154-97.us-west-2.compute.amazonaws.com [35.165.154.97]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-634-T1_5I4JXOa-Yf87dyiwvIg-1; Mon,
+ 02 Feb 2026 15:12:20 -0500
+X-MC-Unique: T1_5I4JXOa-Yf87dyiwvIg-1
+X-Mimecast-MFC-AGG-ID: T1_5I4JXOa-Yf87dyiwvIg_1770063138
+Received: from mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.12])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mx-prod-mc-08.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id A5A5D180044D;
+	Mon,  2 Feb 2026 20:12:17 +0000 (UTC)
+Received: from llong-thinkpadp16vgen1.westford.csb (unknown [10.22.65.20])
+	by mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id 37DA719560B2;
+	Mon,  2 Feb 2026 20:12:12 +0000 (UTC)
+From: Waiman Long <longman@redhat.com>
+To: Chen Ridong <chenridong@huaweicloud.com>,
+	Tejun Heo <tj@kernel.org>,
 	Johannes Weiner <hannes@cmpxchg.org>,
-	Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
-	Ingo Molnar <mingo@redhat.com>, Juri Lelli <juri.lelli@redhat.com>,
+	=?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>,
+	Ingo Molnar <mingo@redhat.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Juri Lelli <juri.lelli@redhat.com>,
 	Vincent Guittot <vincent.guittot@linaro.org>,
 	Steven Rostedt <rostedt@goodmis.org>,
-	Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+	Ben Segall <bsegall@google.com>,
+	Mel Gorman <mgorman@suse.de>,
 	Valentin Schneider <vschneid@redhat.com>,
 	Anna-Maria Behnsen <anna-maria@linutronix.de>,
 	Frederic Weisbecker <frederic@kernel.org>,
-	Thomas Gleixner <tglx@linutronix.de>, Shuah Khan <shuah@kernel.org>,
-	cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH/for-next v2 1/2] cgroup/cpuset: Defer
- housekeeping_update() call from CPU hotplug to workqueue
-Message-ID: <20260202200610.GD1395416@noisy.programming.kicks-ass.net>
-References: <20260130154254.1422113-1-longman@redhat.com>
- <20260130154254.1422113-2-longman@redhat.com>
- <20260202130526.GE1395266@noisy.programming.kicks-ass.net>
- <ca4e6c43-2bf3-42b9-91eb-dfce4777b5da@redhat.com>
- <20260202200457.GJ1282955@noisy.programming.kicks-ass.net>
+	Thomas Gleixner <tglx@linutronix.de>,
+	Shuah Khan <shuah@kernel.org>
+Cc: cgroups@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-kselftest@vger.kernel.org,
+	Waiman Long <longman@redhat.com>
+Subject: [PATCH/for-next v3 0/3] cgroup/cpuset: Fix partition related locking issues
+Date: Mon,  2 Feb 2026 15:11:41 -0500
+Message-ID: <20260202201144.1669260-1-longman@redhat.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20260202200457.GJ1282955@noisy.programming.kicks-ass.net>
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.0 on 10.30.177.12
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-2.16 / 15.00];
+X-Spamd-Result: default: False [-0.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[infradead.org,none];
-	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
-	R_DKIM_ALLOW(-0.20)[infradead.org:s=casper.20170209];
+	MID_CONTAINS_FROM(1.00)[];
+	R_MISSING_CHARSET(0.50)[];
+	DMARC_POLICY_ALLOW(-0.50)[redhat.com,quarantine];
+	R_DKIM_ALLOW(-0.20)[redhat.com:s=mimecast20190719];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-13607-lists,cgroups=lfdr.de];
-	RCVD_TLS_LAST(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	DKIM_TRACE(0.00)[infradead.org:+];
-	RCPT_COUNT_TWELVE(0.00)[19];
 	MIME_TRACE(0.00)[0:+];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
-	TO_DN_SOME(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[peterz@infradead.org,cgroups@vger.kernel.org];
+	RCPT_COUNT_TWELVE(0.00)[20];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	RCVD_TLS_LAST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-13608-lists,cgroups=lfdr.de];
+	DKIM_TRACE(0.00)[redhat.com:+];
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
 	MISSING_XM_UA(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[5];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[longman@redhat.com,cgroups@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[6];
 	TAGGED_RCPT(0.00)[cgroups];
 	NEURAL_HAM(-0.00)[-1.000];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[infradead.org:dkim,sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns,noisy.programming.kicks-ass.net:mid]
-X-Rspamd-Queue-Id: 0C92FD0EEB
+	TO_DN_SOME(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,test-cpuset-prs.sh:url]
+X-Rspamd-Queue-Id: 0C372D0F59
 X-Rspamd-Action: no action
 
-On Mon, Feb 02, 2026 at 09:04:57PM +0100, Peter Zijlstra wrote:
-> On Mon, Feb 02, 2026 at 01:21:43PM -0500, Waiman Long wrote:
-> 
-> > Yes, I am going to remove cpuset_locked in the next version. As for
-> > __guarded_by() annotation, I need to set up a clang environment that I can
-> > use to test it before I will work on that. I usually just use gcc for my
-> > compilation need.
-> 
-> Debian experimental has clang-22, but there is also:
-> 
->   https://github.com/llvm/llvm-project/releases/tag/llvmorg-22.1.0-rc2
+ v3:
+  - Add a new patch to clarify the locking rules for internal variables
+  - Defer all housekeeping_update() calls with associated
+    rebuild_sched_domains*() calls to either workqueue or task_work.
 
-Damn, copied wrong link:
+ v2:
+  - Change patch 1 to use workqueue instead of task run as it is a
+    per-cpu kthread that performs the cpuset shutdown and bringup work.
+  - Simplify and streamline some of the code.
 
-  https://www.kernel.org/pub/tools/llvm/files/llvm-22.1.0-rc2-x86_64.tar.xz
+After booting the latest cgroup for-next debug kernel with the latest
+cgroup changes as well as Federic's "cpuset/isolation: Honour kthreads
+preferred affinity" patch series [1] merged on top and running the
+test-cpuset-prs.sh test, a circular locking dependency lockdep splat
+was reported. See patch 2 for details.
 
-> See: Documentation/kbuild/llvm.rst
-> 
+To fix this issue, a new top level cpuset_top_mutex is added and the
+call to housekeeping_update() is deferred to either a task_work or to
+a workqueue.
+
+With these changes in place, the cpuset test ran to completion with no
+failure and no lockdep splat.
+
+[1] https://lore.kernel.org/lkml/20260125224541.50226-1-frederic@kernel.org/
+
+Waiman Long (3):
+  cgroup/cpuset: Clarify exclusion rules for cpuset internal variables
+  cgroup/cpuset: Defer housekeeping_update() calls from CPU hotplug to
+    workqueue
+  cgroup/cpuset: Call housekeeping_update() without holding
+    cpus_read_lock
+
+ kernel/cgroup/cpuset.c                        | 211 ++++++++++++++----
+ kernel/sched/isolation.c                      |   4 +-
+ kernel/time/timer_migration.c                 |   3 +-
+ .../selftests/cgroup/test_cpuset_prs.sh       |  13 +-
+ 4 files changed, 174 insertions(+), 57 deletions(-)
+
+-- 
+2.52.0
+
 
