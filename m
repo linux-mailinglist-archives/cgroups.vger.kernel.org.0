@@ -1,48 +1,48 @@
-Return-Path: <cgroups+bounces-13583-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-13584-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id aPFmOtj0f2ks0wIAu9opvQ
-	(envelope-from <cgroups+bounces-13583-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Mon, 02 Feb 2026 01:50:32 +0100
+	id aPD/JNj3f2lI0wIAu9opvQ
+	(envelope-from <cgroups+bounces-13584-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Mon, 02 Feb 2026 02:03:20 +0100
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9B07CC7A7C
-	for <lists+cgroups@lfdr.de>; Mon, 02 Feb 2026 01:50:32 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id C2107C7B43
+	for <lists+cgroups@lfdr.de>; Mon, 02 Feb 2026 02:03:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id D50BB30010E0
-	for <lists+cgroups@lfdr.de>; Mon,  2 Feb 2026 00:50:31 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 1ACF6301BF61
+	for <lists+cgroups@lfdr.de>; Mon,  2 Feb 2026 00:59:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2B7BD1B81D3;
-	Mon,  2 Feb 2026 00:50:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 74E531D61A3;
+	Mon,  2 Feb 2026 00:58:58 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
 Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1BA0C2B2D7;
-	Mon,  2 Feb 2026 00:50:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A6D12B2D7;
+	Mon,  2 Feb 2026 00:58:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1769993428; cv=none; b=eN4b1ydC7XTkLXJNaFGEYzgUT6G55xgOzpQZJpGA57+VOEgRmTPOQv0cE22KY7zv6Yhf1zHmmnLejN+1yUri19/8s+boLBaYDg6k979hYIZ2PNNefxejtBtIBBi/TuwzEV7fxGinPAxtvWTL7udjeu0nL2hMTatVDV7qdNCBH5k=
+	t=1769993938; cv=none; b=Ih6TiOaRUKaWJ+nCxIaA29d6EvEp6sRUSyWz59W1wrOm0IPdXGsEmCKAK8MyVvI71B7xmENR16Jgh/fNKj6OyC9pGz1bb5PabbLgY7CzcWdJQQT/oijDKfwLFod0Kr1gq21G5AruRH81ReiqyNovJ7TFdffR/uHB/wWG7/ejq/M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1769993428; c=relaxed/simple;
-	bh=8krE+cPVT1dJGrSZRNIWVo5bnyd5Uyeps2g4ImC0rB4=;
+	s=arc-20240116; t=1769993938; c=relaxed/simple;
+	bh=aGkTxyZNrEuaxISgw/tFQ5XN+kaSv2O8fLncKnldUKc=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=TIOZFct5s2rmsH9HYgk7oygTrbrIXo4ZHhZGfBsJlRnDveYl6J7WPwjd2FRGOBFGdG5nVlKRnw2R7itlJJGGtGsvKn6xHIPpxK4nQBg4YltP1CbRrCOZV4W+pQW5fvaxoRfYqRRzcivXrrzhOftBgM0BzdBDQM+393iGoTaGxG8=
+	 In-Reply-To:Content-Type; b=OodBitGoivO1zr9mSxy3MIG8xLrmt5q7EYAiX0+PxeCZ0NtCWls1p6ty8lBzl5FcyIExRzT6SnIoDFIgQ1I33G308NA8CZwWS+67bIOQebJ+rZRu06V/KrlM6y8bTCYf68mp5+U6SzeBxEA9kTFS9Lcrl3Wuc2dLmDd3eURadcQ=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.177])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTPS id 4f47LR4Tl5zKHMNp;
-	Mon,  2 Feb 2026 08:49:51 +0800 (CST)
+Received: from mail.maildlp.com (unknown [172.19.163.198])
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTPS id 4f47XR659TzKHMNp;
+	Mon,  2 Feb 2026 08:58:31 +0800 (CST)
 Received: from mail02.huawei.com (unknown [10.116.40.128])
-	by mail.maildlp.com (Postfix) with ESMTP id 10A3C4058F;
-	Mon,  2 Feb 2026 08:50:11 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTP id 4619040575;
+	Mon,  2 Feb 2026 08:58:51 +0800 (CST)
 Received: from [10.67.111.176] (unknown [10.67.111.176])
-	by APP4 (Coremail) with SMTP id gCh0CgCXQvO99H9pvgrJFw--.27306S2;
-	Mon, 02 Feb 2026 08:50:06 +0800 (CST)
-Message-ID: <9c7d1cc5-a462-4524-9e1c-f5d94575dc73@huaweicloud.com>
-Date: Mon, 2 Feb 2026 08:50:05 +0800
+	by APP4 (Coremail) with SMTP id gCh0CgCHM_TK9n9p6MPJFw--.28536S2;
+	Mon, 02 Feb 2026 08:58:51 +0800 (CST)
+Message-ID: <d47d4dfb-12cb-4bba-9bcb-b33c84f08e1f@huaweicloud.com>
+Date: Mon, 2 Feb 2026 08:58:49 +0800
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -50,194 +50,212 @@ List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH -next 1/3] cgroup/dmem: fix NULL pointer dereference when
- setting max
-To: kernel test robot <lkp@intel.com>, dev@lankhorst.se, mripard@kernel.org,
- natalie.vock@gmx.de, tj@kernel.org, hannes@cmpxchg.org, mkoutny@suse.com
-Cc: oe-kbuild-all@lists.linux.dev, cgroups@vger.kernel.org,
- dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
- lujialin4@huawei.com
-References: <20260131091202.344788-2-chenridong@huaweicloud.com>
- <202602010100.5CjcoPFh-lkp@intel.com>
+Subject: Re: [PATCH/for-next v2 1/2] cgroup/cpuset: Defer
+ housekeeping_update() call from CPU hotplug to workqueue
+To: Waiman Long <llong@redhat.com>, Tejun Heo <tj@kernel.org>,
+ Johannes Weiner <hannes@cmpxchg.org>, =?UTF-8?Q?Michal_Koutn=C3=BD?=
+ <mkoutny@suse.com>, Ingo Molnar <mingo@redhat.com>,
+ Peter Zijlstra <peterz@infradead.org>, Juri Lelli <juri.lelli@redhat.com>,
+ Vincent Guittot <vincent.guittot@linaro.org>,
+ Steven Rostedt <rostedt@goodmis.org>, Ben Segall <bsegall@google.com>,
+ Mel Gorman <mgorman@suse.de>, Valentin Schneider <vschneid@redhat.com>,
+ Anna-Maria Behnsen <anna-maria@linutronix.de>,
+ Frederic Weisbecker <frederic@kernel.org>,
+ Thomas Gleixner <tglx@linutronix.de>, Shuah Khan <shuah@kernel.org>
+Cc: cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-kselftest@vger.kernel.org
+References: <20260130154254.1422113-1-longman@redhat.com>
+ <20260130154254.1422113-2-longman@redhat.com>
+ <7c7fddf5-9d32-415b-a1c4-3b9402e78d72@huaweicloud.com>
+ <781c0d8e-7cb6-4f3e-913a-b2a6b0bfed5e@redhat.com>
+ <444c73fd-bd24-41d9-8642-597a546de781@huaweicloud.com>
+ <2bd82e80-564b-4ec7-a97a-4722248a1a4a@redhat.com>
 Content-Language: en-US
 From: Chen Ridong <chenridong@huaweicloud.com>
-In-Reply-To: <202602010100.5CjcoPFh-lkp@intel.com>
+In-Reply-To: <2bd82e80-564b-4ec7-a97a-4722248a1a4a@redhat.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID:gCh0CgCXQvO99H9pvgrJFw--.27306S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxXr43XF4xGw13GF4xKFyxAFb_yoWrCF13pa
-	yru3yYgryrWr10qw4qy340vr9Yyw1kJa17C3y8Jw4UWr4Iv3s0yF4xKr4agryakr97KrWY
-	qF90vFnaq3yjvw7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUvjb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:gCh0CgCHM_TK9n9p6MPJFw--.28536S2
+X-Coremail-Antispam: 1UD129KBjvJXoW3Jr4DtrWkJr47Zw4kXFy3CFg_yoWxWr1rpr
+	ykKFW3trZ8Xr1rGw1aqw1UJrySqw18J3WDXrn5JFy8ArsrtFn29F4jqrnIgr18GrWfGr4U
+	ZF98WrZruFnrArDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUv0b4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
 	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
-	0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
-	x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
-	0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc7CjxVAaw2AF
-	wI0_Jw0_GFyl42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4
-	xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43
-	MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I
-	0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWU
-	JVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUF1
-	v3UUUUU
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+	6I80ewAv7VC0I7IYx2IY67AKxVWUGVWUXwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxkF7I0En4kS
+	14v26r4a6rW5MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I
+	8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVW8ZVWr
+	XwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x
+	0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_
+	Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU0
+	bAw3UUUUU==
 X-CM-SenderInfo: hfkh02xlgr0w46kxt4xhlfz01xgou0bp/
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-1.46 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	NEURAL_HAM(-0.00)[-1.000];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-13583-lists,cgroups=lfdr.de];
-	RCVD_TLS_LAST(0.00)[];
-	DMARC_NA(0.00)[huaweicloud.com];
-	FREEMAIL_TO(0.00)[intel.com,lankhorst.se,kernel.org,gmx.de,cmpxchg.org,suse.com];
-	MIME_TRACE(0.00)[0:+];
-	RCPT_COUNT_TWELVE(0.00)[12];
-	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
 	FROM_HAS_DN(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	TO_DN_SOME(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[19];
 	TAGGED_RCPT(0.00)[cgroups];
+	MID_RHS_MATCH_FROM(0.00)[];
+	R_DKIM_NA(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[chenridong@huaweicloud.com,cgroups@vger.kernel.org];
-	TO_DN_SOME(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	RCVD_COUNT_FIVE(0.00)[6];
-	R_DKIM_NA(0.00)[];
-	NEURAL_HAM(-0.00)[-1.000];
-	MID_RHS_MATCH_FROM(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns,intel.com:email]
-X-Rspamd-Queue-Id: 9B07CC7A7C
+	RCVD_TLS_LAST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-13584-lists,cgroups=lfdr.de];
+	DMARC_NA(0.00)[huaweicloud.com];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,test_cpuset_prs.sh:url]
+X-Rspamd-Queue-Id: C2107C7B43
 X-Rspamd-Action: no action
 
 
 
-On 2026/2/1 1:26, kernel test robot wrote:
-> Hi Chen,
+On 2026/2/1 7:00, Waiman Long wrote:
+> On 1/30/26 9:05 PM, Chen Ridong wrote:
+>>
+>> On 2026/1/31 9:45, Waiman Long wrote:
+>>> On 1/30/26 7:58 PM, Chen Ridong wrote:
+>>>> On 2026/1/30 23:42, Waiman Long wrote:
+>>>>> The update_isolation_cpumasks() function can be called either directly
+>>>>> from regular cpuset control file write with cpuset_full_lock() called
+>>>>> or via the CPU hotplug path with cpus_write_lock and cpuset_mutex held.
+>>>>>
+>>>>> As we are going to enable dynamic update to the nozh_full housekeeping
+>>>>> cpumask (HK_TYPE_KERNEL_NOISE) soon with the help of CPU hotplug,
+>>>>> allowing the CPU hotplug path to call into housekeeping_update() directly
+>>>>> from update_isolation_cpumasks() will likely cause deadlock. So we
+>>>>> have to defer any call to housekeeping_update() after the CPU hotplug
+>>>>> operation has finished. This is now done via the workqueue where
+>>>>> the actual housekeeping_update() call, if needed, will happen after
+>>>>> cpus_write_lock is released.
+>>>>>
+>>>>> We can't use the synchronous task_work API as call from CPU hotplug
+>>>>> path happen in the per-cpu kthread of the CPU that is being shut down
+>>>>> or brought up. Because of the asynchronous nature of workqueue, the
+>>>>> HK_TYPE_DOMAIN housekeeping cpumask will be updated a bit later than the
+>>>>> "cpuset.cpus.isolated" control file in this case.
+>>>>>
+>>>>> Also add a check in test_cpuset_prs.sh and modify some existing
+>>>>> test cases to confirm that "cpuset.cpus.isolated" and HK_TYPE_DOMAIN
+>>>>> housekeeping cpumask will both be updated.
+>>>>>
+>>>>> Signed-off-by: Waiman Long <longman@redhat.com>
+>>>>> ---
+>>>>>    kernel/cgroup/cpuset.c                        | 37 +++++++++++++++++--
+>>>>>    .../selftests/cgroup/test_cpuset_prs.sh       | 13 +++++--
+>>>>>    2 files changed, 44 insertions(+), 6 deletions(-)
+>>>>>
+>>>>> diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
+>>>>> index 7b7d12ab1006..0b0eb1df09d5 100644
+>>>>> --- a/kernel/cgroup/cpuset.c
+>>>>> +++ b/kernel/cgroup/cpuset.c
+>>>>> @@ -84,6 +84,9 @@ static cpumask_var_t    isolated_cpus;
+>>>>>     */
+>>>>>    static bool isolated_cpus_updating;
+>>>>>    +/* Both cpuset_mutex and cpus_read_locked acquired */
+>>>>> +static bool cpuset_locked;
+>>>>> +
+>>>>>    /*
+>>>>>     * A flag to force sched domain rebuild at the end of an operation.
+>>>>>     * It can be set in
+>>>>> @@ -285,10 +288,12 @@ void cpuset_full_lock(void)
+>>>>>    {
+>>>>>        cpus_read_lock();
+>>>>>        mutex_lock(&cpuset_mutex);
+>>>>> +    cpuset_locked = true;
+>>>>>    }
+>>>>>      void cpuset_full_unlock(void)
+>>>>>    {
+>>>>> +    cpuset_locked = false;
+>>>>>        mutex_unlock(&cpuset_mutex);
+>>>>>        cpus_read_unlock();
+>>>>>    }
+>>>>> @@ -1285,6 +1290,16 @@ static bool prstate_housekeeping_conflict(int prstate,
+>>>>> struct cpumask *new_cpus)
+>>>>>        return false;
+>>>>>    }
+>>>>>    +static void isolcpus_workfn(struct work_struct *work)
+>>>>> +{
+>>>>> +    cpuset_full_lock();
+>>>>> +    if (isolated_cpus_updating) {
+>>>>> +        WARN_ON_ONCE(housekeeping_update(isolated_cpus) < 0);
+>>>>> +        isolated_cpus_updating = false;
+>>>>> +    }
+>>>>> +    cpuset_full_unlock();
+>>>>> +}
+>>>>> +
+>>>>>    /*
+>>>>>     * update_isolation_cpumasks - Update external isolation related CPU masks
+>>>>>     *
+>>>>> @@ -1293,14 +1308,30 @@ static bool prstate_housekeeping_conflict(int
+>>>>> prstate, struct cpumask *new_cpus)
+>>>>>     */
+>>>>>    static void update_isolation_cpumasks(void)
+>>>>>    {
+>>>>> -    int ret;
+>>>>> +    static DECLARE_WORK(isolcpus_work, isolcpus_workfn);
+>>>>>          if (!isolated_cpus_updating)
+>>>>>            return;
+>>>>>    -    ret = housekeeping_update(isolated_cpus);
+>>>>> -    WARN_ON_ONCE(ret < 0);
+>>>>> +    /*
+>>>>> +     * This function can be reached either directly from regular cpuset
+>>>>> +     * control file write (cpuset_locked) or via hotplug (cpus_write_lock
+>>>>> +     * && cpuset_mutex held). In the later case, we defer the
+>>>>> +     * housekeeping_update() call to the system_unbound_wq to avoid the
+>>>>> +     * possibility of deadlock. This also means that there will be a short
+>>>>> +     * period of time where HK_TYPE_DOMAIN housekeeping cpumask will lag
+>>>>> +     * behind isolated_cpus.
+>>>>> +     */
+>>>>> +    if (!cpuset_locked) {
+>>>> Adding a global variable makes this difficult to handle, especially in
+>>>> concurrent scenarios, since we could read it outside of a critical region.
+>>> No, cpuset_locked is always read from or written into inside a critical section.
+>>> It is under cpuset_mutex up to this point and then with the cpuset_top_mutex
+>>> with the next patch.
+>> This is somewhat confusing. cpuset_locked is only set to true when the "full
+>> lock" has been acquired. If cpuset_locked is false, that should mean we are
+>> outside of any critical region. Conversely, if we are inside a critical region,
+>> cpuset_locked should be true.
+>>
+>> The situation is a bit messy, it’s not clearly which lock protects which global
+>> variable.
 > 
-> kernel test robot noticed the following build warnings:
+> There is a comment above "cpuset_locked" which state which lock protect it. The
+> locking situation is becoming more complicated. I think I will add a new patch
+> to more clearly document what each global variable is being protected by.
 > 
-> [auto build test WARNING on next-20260130]
-> 
-> url:    https://github.com/intel-lab-lkp/linux/commits/Chen-Ridong/cgroup-dmem-fix-NULL-pointer-dereference-when-setting-max/20260131-173002
-> base:   next-20260130
-> patch link:    https://lore.kernel.org/r/20260131091202.344788-2-chenridong%40huaweicloud.com
-> patch subject: [PATCH -next 1/3] cgroup/dmem: fix NULL pointer dereference when setting max
-> config: x86_64-randconfig-161-20260131 (https://download.01.org/0day-ci/archive/20260201/202602010100.5CjcoPFh-lkp@intel.com/config)
-> compiler: clang version 20.1.8 (https://github.com/llvm/llvm-project 87f0227cb60147a26a1eeb4fb06e3b505e9c7261)
-> smatch version: v0.5.0-8994-gd50c5a4c
-> reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20260201/202602010100.5CjcoPFh-lkp@intel.com/reproduce)
-> 
-> If you fix the issue in a separate patch/commit (i.e. not just a new version of
-> the same patch/commit), kindly add following tags
-> | Reported-by: kernel test robot <lkp@intel.com>
-> | Closes: https://lore.kernel.org/oe-kbuild-all/202602010100.5CjcoPFh-lkp@intel.com/
-> 
-> All warnings (new ones prefixed by >>):
-> 
->>> kernel/cgroup/dmem.c:703:7: warning: variable 'region' is used uninitialized whenever 'if' condition is true [-Wsometimes-uninitialized]
->      703 |                 if (!options || !*options) {
->          |                     ^~~~~~~~~~~~~~~~~~~~~
->    kernel/cgroup/dmem.c:729:13: note: uninitialized use occurs here
->      729 |                 kref_put(&region->ref, dmemcg_free_region);
->          |                           ^~~~~~
->    kernel/cgroup/dmem.c:703:3: note: remove the 'if' if its condition is always false
->      703 |                 if (!options || !*options) {
->          |                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
->      704 |                         err = -EINVAL;
->          |                         ~~~~~~~~~~~~~~
->      705 |                         goto out_put;
->          |                         ~~~~~~~~~~~~~
->      706 |                 }
->          |                 ~
->>> kernel/cgroup/dmem.c:703:7: warning: variable 'region' is used uninitialized whenever '||' condition is true [-Wsometimes-uninitialized]
->      703 |                 if (!options || !*options) {
->          |                     ^~~~~~~~
->    kernel/cgroup/dmem.c:729:13: note: uninitialized use occurs here
->      729 |                 kref_put(&region->ref, dmemcg_free_region);
->          |                           ^~~~~~
->    kernel/cgroup/dmem.c:703:7: note: remove the '||' if its condition is always false
->      703 |                 if (!options || !*options) {
->          |                     ^~~~~~~~~~~
->    kernel/cgroup/dmem.c:685:36: note: initialize the variable 'region' to silence this warning
->      685 |                 struct dmem_cgroup_region *region;
->          |                                                  ^
->          |                                                   = NULL
->    2 warnings generated.
-> 
-> 
-> vim +703 kernel/cgroup/dmem.c
-> 
->    674	
->    675	static ssize_t dmemcg_limit_write(struct kernfs_open_file *of,
->    676					 char *buf, size_t nbytes, loff_t off,
->    677					 void (*apply)(struct dmem_cgroup_pool_state *, u64))
->    678	{
->    679		struct dmemcg_state *dmemcs = css_to_dmemcs(of_css(of));
->    680		int err = 0;
->    681	
->    682		while (buf && !err) {
->    683			struct dmem_cgroup_pool_state *pool = NULL;
->    684			char *options, *region_name;
->    685			struct dmem_cgroup_region *region;
->    686			u64 new_limit;
->    687	
->    688			options = buf;
->    689			buf = strchr(buf, '\n');
->    690			if (buf)
->    691				*buf++ = '\0';
->    692	
->    693			options = strstrip(options);
->    694	
->    695			/* eat empty lines */
->    696			if (!options[0])
->    697				continue;
->    698	
->    699			region_name = strsep(&options, " \t");
->    700			if (!region_name[0])
->    701				continue;
->    702	
->  > 703			if (!options || !*options) {
->    704				err = -EINVAL;
->    705				goto out_put;
->    706			}
->    707	
 
-Thanks.
+Yes, We need that.
 
-I missed that region is uninitialized. It could just return -EINVAL.
-I'll fix it in the next version. If anyone has other opinions, I would like to
-update together.
-
->    708			rcu_read_lock();
->    709			region = dmemcg_get_region_by_name(region_name);
->    710			rcu_read_unlock();
->    711	
->    712			if (!region)
->    713				return -EINVAL;
->    714	
->    715			err = dmemcg_parse_limit(options, region, &new_limit);
->    716			if (err < 0)
->    717				goto out_put;
->    718	
->    719			pool = get_cg_pool_unlocked(dmemcs, region);
->    720			if (IS_ERR(pool)) {
->    721				err = PTR_ERR(pool);
->    722				goto out_put;
->    723			}
->    724	
->    725			/* And commit */
->    726			apply(pool, new_limit);
->    727	
->    728	out_put:
->    729			kref_put(&region->ref, dmemcg_free_region);
->    730		}
->    731	
->    732	
->    733		return err ?: nbytes;
->    734	}
->    735	
+> 
+>>
+>>>> I suggest removing cpuset_locked and adding async_update_isolation_cpumasks
+>>>> instead, which can indicate to the caller it should call without holding the
+>>>> full lock.
+>>> The point of this global variable is to distinguish between calling from CPU
+>>> hotplug and the other regular cpuset code paths. The only difference between
+>>> these two are having cpus_read_lock or cpus_write_lock held. That is why I think
+>>> adding a global variable in cpuset_full_lock() is the easy way. Otherwise, we
+>>> will to add extra argument to some of the functions to distinguish these two
+>>> cases.
+>>>
+>>> Cheers,
+>>> Longman
+>>>
 > 
 
 -- 
