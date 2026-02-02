@@ -1,100 +1,247 @@
-Return-Path: <cgroups+bounces-13582-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-13583-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id aHTlEMOEf2mxsgIAu9opvQ
-	(envelope-from <cgroups+bounces-13582-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Sun, 01 Feb 2026 17:52:19 +0100
+	id aPFmOtj0f2ks0wIAu9opvQ
+	(envelope-from <cgroups+bounces-13583-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Mon, 02 Feb 2026 01:50:32 +0100
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id CC0DCC690A
-	for <lists+cgroups@lfdr.de>; Sun, 01 Feb 2026 17:52:18 +0100 (CET)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9B07CC7A7C
+	for <lists+cgroups@lfdr.de>; Mon, 02 Feb 2026 01:50:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id F179A300F9EA
-	for <lists+cgroups@lfdr.de>; Sun,  1 Feb 2026 16:51:48 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id D50BB30010E0
+	for <lists+cgroups@lfdr.de>; Mon,  2 Feb 2026 00:50:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 925731B532F;
-	Sun,  1 Feb 2026 16:51:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Z5TTiNl/"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2B7BD1B81D3;
+	Mon,  2 Feb 2026 00:50:28 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 54BA726E71E;
-	Sun,  1 Feb 2026 16:51:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1BA0C2B2D7;
+	Mon,  2 Feb 2026 00:50:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1769964708; cv=none; b=VG0pcsikOUE8toq470uXgdZNKjsMzwC5AF4X0HrMc4917Wq3Bv5SgjG4ZzFkopxjTIjRQbc7Ai77giEDW3ZxZ3/vhThivRNvcEziDzVjCsDCoOvFmrVXprfU3P6O+xvIaiV1dFZWuw5wqO/CVYlzAXAkqpJdzX7pDJxey0rplw0=
+	t=1769993428; cv=none; b=eN4b1ydC7XTkLXJNaFGEYzgUT6G55xgOzpQZJpGA57+VOEgRmTPOQv0cE22KY7zv6Yhf1zHmmnLejN+1yUri19/8s+boLBaYDg6k979hYIZ2PNNefxejtBtIBBi/TuwzEV7fxGinPAxtvWTL7udjeu0nL2hMTatVDV7qdNCBH5k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1769964708; c=relaxed/simple;
-	bh=AvgjU4pq3tQBOXYv2Cm4Oz/DnPNOIpwzLhpGB43kziI=;
-	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References; b=BvQBJhBUiKCn9Yuh1Zy9l4AhaQrz/2r53zgJAkEqaaLRLy0w4LKuyK0Kvr+jvpzlOLi7CxjVkYSOCBPCq/JtV4sb5gHBTSnx/wP5CE5U+Y6EHGaAgrDYuupGZP4TiA6G/YPeOfUh4OFkCz45/82VpVJSgkOunZwgemAKh+5h7PM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Z5TTiNl/; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 10910C19425;
-	Sun,  1 Feb 2026 16:51:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1769964708;
-	bh=AvgjU4pq3tQBOXYv2Cm4Oz/DnPNOIpwzLhpGB43kziI=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=Z5TTiNl/bNLMA7Ahq6drqGMN4cL2C8C50es4Iz+HqHuJCmQjo5OX9dMcrT3D5vJYv
-	 f5LIDiUZlKpzzs52LgyAnpzwB8GiHSwTfSi39OVPklzulB6WuP3yxT6x0jtMp4C7d7
-	 CXsk0of9nJ6v5uNrHDPgcaFrzpEZ6hxvGL2xMPimHB9wnci9CeuoFiUPCDlMRNRUR+
-	 b27Dv+sBQYsiavj23wtql20vazo9nwdU6v5dgte+kYVrCpE7j/HBbwf0qZaBh0WXsq
-	 xB4gvc0AAR6sC16XrPYlTlVeY4yKLwXzKaRqG5bLcsw1+l+sbON/SG8fOYjqiKyCNp
-	 ypqrl85xsf/vQ==
-Date: Sun, 01 Feb 2026 06:51:47 -1000
-Message-ID: <3a1538ab6d0d1063dc49855cc5b303a8@kernel.org>
-From: Tejun Heo <tj@kernel.org>
-To: Chen Ridong <chenridong@huaweicloud.com>
-Cc: longman@redhat.com, hannes@cmpxchg.org, mkoutny@suse.com,
- cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
- lujialin4@huawei.com
-Subject: Re: [PATCH -next] cpuset: fix overlap of partition effective CPUs
-In-Reply-To: <20260129064516.210203-1-chenridong@huaweicloud.com>
-References: <20260129064516.210203-1-chenridong@huaweicloud.com>
+	s=arc-20240116; t=1769993428; c=relaxed/simple;
+	bh=8krE+cPVT1dJGrSZRNIWVo5bnyd5Uyeps2g4ImC0rB4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=TIOZFct5s2rmsH9HYgk7oygTrbrIXo4ZHhZGfBsJlRnDveYl6J7WPwjd2FRGOBFGdG5nVlKRnw2R7itlJJGGtGsvKn6xHIPpxK4nQBg4YltP1CbRrCOZV4W+pQW5fvaxoRfYqRRzcivXrrzhOftBgM0BzdBDQM+393iGoTaGxG8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.177])
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTPS id 4f47LR4Tl5zKHMNp;
+	Mon,  2 Feb 2026 08:49:51 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.128])
+	by mail.maildlp.com (Postfix) with ESMTP id 10A3C4058F;
+	Mon,  2 Feb 2026 08:50:11 +0800 (CST)
+Received: from [10.67.111.176] (unknown [10.67.111.176])
+	by APP4 (Coremail) with SMTP id gCh0CgCXQvO99H9pvgrJFw--.27306S2;
+	Mon, 02 Feb 2026 08:50:06 +0800 (CST)
+Message-ID: <9c7d1cc5-a462-4524-9e1c-f5d94575dc73@huaweicloud.com>
+Date: Mon, 2 Feb 2026 08:50:05 +0800
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH -next 1/3] cgroup/dmem: fix NULL pointer dereference when
+ setting max
+To: kernel test robot <lkp@intel.com>, dev@lankhorst.se, mripard@kernel.org,
+ natalie.vock@gmx.de, tj@kernel.org, hannes@cmpxchg.org, mkoutny@suse.com
+Cc: oe-kbuild-all@lists.linux.dev, cgroups@vger.kernel.org,
+ dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+ lujialin4@huawei.com
+References: <20260131091202.344788-2-chenridong@huaweicloud.com>
+ <202602010100.5CjcoPFh-lkp@intel.com>
+Content-Language: en-US
+From: Chen Ridong <chenridong@huaweicloud.com>
+In-Reply-To: <202602010100.5CjcoPFh-lkp@intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID:gCh0CgCXQvO99H9pvgrJFw--.27306S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxXr43XF4xGw13GF4xKFyxAFb_yoWrCF13pa
+	yru3yYgryrWr10qw4qy340vr9Yyw1kJa17C3y8Jw4UWr4Iv3s0yF4xKr4agryakr97KrWY
+	qF90vFnaq3yjvw7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUvjb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
+	0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
+	x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
+	0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc7CjxVAaw2AF
+	wI0_Jw0_GFyl42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4
+	xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43
+	MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I
+	0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWU
+	JVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUF1
+	v3UUUUU
+X-CM-SenderInfo: hfkh02xlgr0w46kxt4xhlfz01xgou0bp/
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-1.66 / 15.00];
+X-Spamd-Result: default: False [-1.46 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
-	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
+	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	MIME_TRACE(0.00)[0:+];
-	DKIM_TRACE(0.00)[kernel.org:+];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	FORGED_SENDER_MAILLIST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-13583-lists,cgroups=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-13582-lists,cgroups=lfdr.de];
-	RCVD_COUNT_THREE(0.00)[4];
-	MISSING_XM_UA(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	TO_DN_SOME(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[tj@kernel.org,cgroups@vger.kernel.org];
+	DMARC_NA(0.00)[huaweicloud.com];
+	FREEMAIL_TO(0.00)[intel.com,lankhorst.se,kernel.org,gmx.de,cmpxchg.org,suse.com];
+	MIME_TRACE(0.00)[0:+];
+	RCPT_COUNT_TWELVE(0.00)[12];
+	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
 	FROM_HAS_DN(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	NEURAL_HAM(-0.00)[-1.000];
-	RCPT_COUNT_SEVEN(0.00)[7];
-	MID_RHS_MATCH_FROM(0.00)[];
-	SINGLE_SHORT_PART(0.00)[];
 	TAGGED_RCPT(0.00)[cgroups];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: CC0DCC690A
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[chenridong@huaweicloud.com,cgroups@vger.kernel.org];
+	TO_DN_SOME(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[6];
+	R_DKIM_NA(0.00)[];
+	NEURAL_HAM(-0.00)[-1.000];
+	MID_RHS_MATCH_FROM(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns,intel.com:email]
+X-Rspamd-Queue-Id: 9B07CC7A7C
 X-Rspamd-Action: no action
 
-Applied to cgroup/for-6.20.
+
+
+On 2026/2/1 1:26, kernel test robot wrote:
+> Hi Chen,
+> 
+> kernel test robot noticed the following build warnings:
+> 
+> [auto build test WARNING on next-20260130]
+> 
+> url:    https://github.com/intel-lab-lkp/linux/commits/Chen-Ridong/cgroup-dmem-fix-NULL-pointer-dereference-when-setting-max/20260131-173002
+> base:   next-20260130
+> patch link:    https://lore.kernel.org/r/20260131091202.344788-2-chenridong%40huaweicloud.com
+> patch subject: [PATCH -next 1/3] cgroup/dmem: fix NULL pointer dereference when setting max
+> config: x86_64-randconfig-161-20260131 (https://download.01.org/0day-ci/archive/20260201/202602010100.5CjcoPFh-lkp@intel.com/config)
+> compiler: clang version 20.1.8 (https://github.com/llvm/llvm-project 87f0227cb60147a26a1eeb4fb06e3b505e9c7261)
+> smatch version: v0.5.0-8994-gd50c5a4c
+> reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20260201/202602010100.5CjcoPFh-lkp@intel.com/reproduce)
+> 
+> If you fix the issue in a separate patch/commit (i.e. not just a new version of
+> the same patch/commit), kindly add following tags
+> | Reported-by: kernel test robot <lkp@intel.com>
+> | Closes: https://lore.kernel.org/oe-kbuild-all/202602010100.5CjcoPFh-lkp@intel.com/
+> 
+> All warnings (new ones prefixed by >>):
+> 
+>>> kernel/cgroup/dmem.c:703:7: warning: variable 'region' is used uninitialized whenever 'if' condition is true [-Wsometimes-uninitialized]
+>      703 |                 if (!options || !*options) {
+>          |                     ^~~~~~~~~~~~~~~~~~~~~
+>    kernel/cgroup/dmem.c:729:13: note: uninitialized use occurs here
+>      729 |                 kref_put(&region->ref, dmemcg_free_region);
+>          |                           ^~~~~~
+>    kernel/cgroup/dmem.c:703:3: note: remove the 'if' if its condition is always false
+>      703 |                 if (!options || !*options) {
+>          |                 ^~~~~~~~~~~~~~~~~~~~~~~~~~~~
+>      704 |                         err = -EINVAL;
+>          |                         ~~~~~~~~~~~~~~
+>      705 |                         goto out_put;
+>          |                         ~~~~~~~~~~~~~
+>      706 |                 }
+>          |                 ~
+>>> kernel/cgroup/dmem.c:703:7: warning: variable 'region' is used uninitialized whenever '||' condition is true [-Wsometimes-uninitialized]
+>      703 |                 if (!options || !*options) {
+>          |                     ^~~~~~~~
+>    kernel/cgroup/dmem.c:729:13: note: uninitialized use occurs here
+>      729 |                 kref_put(&region->ref, dmemcg_free_region);
+>          |                           ^~~~~~
+>    kernel/cgroup/dmem.c:703:7: note: remove the '||' if its condition is always false
+>      703 |                 if (!options || !*options) {
+>          |                     ^~~~~~~~~~~
+>    kernel/cgroup/dmem.c:685:36: note: initialize the variable 'region' to silence this warning
+>      685 |                 struct dmem_cgroup_region *region;
+>          |                                                  ^
+>          |                                                   = NULL
+>    2 warnings generated.
+> 
+> 
+> vim +703 kernel/cgroup/dmem.c
+> 
+>    674	
+>    675	static ssize_t dmemcg_limit_write(struct kernfs_open_file *of,
+>    676					 char *buf, size_t nbytes, loff_t off,
+>    677					 void (*apply)(struct dmem_cgroup_pool_state *, u64))
+>    678	{
+>    679		struct dmemcg_state *dmemcs = css_to_dmemcs(of_css(of));
+>    680		int err = 0;
+>    681	
+>    682		while (buf && !err) {
+>    683			struct dmem_cgroup_pool_state *pool = NULL;
+>    684			char *options, *region_name;
+>    685			struct dmem_cgroup_region *region;
+>    686			u64 new_limit;
+>    687	
+>    688			options = buf;
+>    689			buf = strchr(buf, '\n');
+>    690			if (buf)
+>    691				*buf++ = '\0';
+>    692	
+>    693			options = strstrip(options);
+>    694	
+>    695			/* eat empty lines */
+>    696			if (!options[0])
+>    697				continue;
+>    698	
+>    699			region_name = strsep(&options, " \t");
+>    700			if (!region_name[0])
+>    701				continue;
+>    702	
+>  > 703			if (!options || !*options) {
+>    704				err = -EINVAL;
+>    705				goto out_put;
+>    706			}
+>    707	
 
 Thanks.
 
+I missed that region is uninitialized. It could just return -EINVAL.
+I'll fix it in the next version. If anyone has other opinions, I would like to
+update together.
+
+>    708			rcu_read_lock();
+>    709			region = dmemcg_get_region_by_name(region_name);
+>    710			rcu_read_unlock();
+>    711	
+>    712			if (!region)
+>    713				return -EINVAL;
+>    714	
+>    715			err = dmemcg_parse_limit(options, region, &new_limit);
+>    716			if (err < 0)
+>    717				goto out_put;
+>    718	
+>    719			pool = get_cg_pool_unlocked(dmemcs, region);
+>    720			if (IS_ERR(pool)) {
+>    721				err = PTR_ERR(pool);
+>    722				goto out_put;
+>    723			}
+>    724	
+>    725			/* And commit */
+>    726			apply(pool, new_limit);
+>    727	
+>    728	out_put:
+>    729			kref_put(&region->ref, dmemcg_free_region);
+>    730		}
+>    731	
+>    732	
+>    733		return err ?: nbytes;
+>    734	}
+>    735	
+> 
+
 -- 
-tejun
+Best regards,
+Ridong
+
 
