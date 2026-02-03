@@ -1,182 +1,153 @@
-Return-Path: <cgroups+bounces-13640-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-13641-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id OFzxASj6gWmhNQMAu9opvQ
-	(envelope-from <cgroups+bounces-13640-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Tue, 03 Feb 2026 14:37:44 +0100
+	id 0Mq3JRgCgmmYNgMAu9opvQ
+	(envelope-from <cgroups+bounces-13641-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Tue, 03 Feb 2026 15:11:36 +0100
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
-	by mail.lfdr.de (Postfix) with ESMTPS id 92983D9F83
-	for <lists+cgroups@lfdr.de>; Tue, 03 Feb 2026 14:37:43 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 00446DA628
+	for <lists+cgroups@lfdr.de>; Tue, 03 Feb 2026 15:11:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 489203038873
-	for <lists+cgroups@lfdr.de>; Tue,  3 Feb 2026 13:37:30 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 6B30D30CC2B1
+	for <lists+cgroups@lfdr.de>; Tue,  3 Feb 2026 14:08:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5770239E6F3;
-	Tue,  3 Feb 2026 13:37:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 13DA63A63F5;
+	Tue,  3 Feb 2026 14:08:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Tt4Eh980"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="VJbCqeA5"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.21])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A514D39E195;
-	Tue,  3 Feb 2026 13:37:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.21
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 69B303A63F9
+	for <cgroups@vger.kernel.org>; Tue,  3 Feb 2026 14:08:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1770125845; cv=none; b=i2mAVxZjVdE34aK+Qqdhtou8GJu+CvS55i6Emslr167OmbltTEvPy6cVOHtIyBhaqIOvS7KrHKeiFd7VQ9fUD/hrRFUZaoesY8H0RlTAmJ4KSni/fTR/IXvvCjHPoMZEY1LZfCcsjxahixVIBWlU1iB66tkB4HaBXSOjk7RL6iY=
+	t=1770127709; cv=none; b=Q3pQAE9o1iq8X7/tklPqon+qUqwLkBYv4I9lgn9F+ij4F8hg38dPHRjgZKthAsHy3F5zlVJ7Vw4WQi+4GRIquOKRukbBWivjxfXgw1xjOWQc+LurRM8jp+sfm3qUo1OhzVcm0aybxMmdqbVoeqHUm1hZh3/xsU8XxsUEUT9ufdg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1770125845; c=relaxed/simple;
-	bh=2EsoMGquMyOlbD2ictea78FL3793nbF4OYOmbSs9hGU=;
+	s=arc-20240116; t=1770127709; c=relaxed/simple;
+	bh=eFlFuS35sO+2MxnOmBZjU/WCcv1Q3blX+r1MsIMzRCk=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=CuSBpzrOUcBZNVGniBW6/PLjCMpMpsHoPbwtQnk/5BudN0IkfPEVPZ+ZtDBoGtGpn/pPsFgZpPc9hgLnFi/w0VtTFXAp1v9cACgHrcarUhVnCcCZXIH15AfgkP6AR4KhEcXUmuS4vl8Q7Lrwx6o7TGik0Y9/LnlIpY1gJCysrfs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Tt4Eh980; arc=none smtp.client-ip=198.175.65.21
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1770125839; x=1801661839;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=2EsoMGquMyOlbD2ictea78FL3793nbF4OYOmbSs9hGU=;
-  b=Tt4Eh980sg52CE/QSJ50o0an6ow13xwWZqZmGP3JMnekEyo6rzQcbvIx
-   R1jxTwrWyAJ3k8tr3gcWNdXR0hc0yL4Yr0w+uu8aiV1bL5YlO8imtrOvT
-   nIYBJMtKOSYi6On7pE4CzcAar7JgZZW0QmOEteeOFcvCLGC3LXpvdM0Sp
-   lLzXWPWYTSN+krFXZ5DRtN+9NOrsJ1kWHA0kMhUdH9BSWSPj5BfaHOdbJ
-   nAcUbflw1vcSknZkKL9yCtElml6vi1TQQPx84s/KRW9aez6kZJISs5Yn7
-   RhVhpbCZIZODmGVnxqYxKtx/emDUjbbgLEXwgWXA6niCcqB7UobM1HAcS
-   Q==;
-X-CSE-ConnectionGUID: 8gchjDJpTwecO1iMXTU8EA==
-X-CSE-MsgGUID: VrUvjAJBTFaJ8Wlt8sBQBg==
-X-IronPort-AV: E=McAfee;i="6800,10657,11690"; a="71201994"
-X-IronPort-AV: E=Sophos;i="6.21,270,1763452800"; 
-   d="scan'208";a="71201994"
-Received: from fmviesa003.fm.intel.com ([10.60.135.143])
-  by orvoesa113.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Feb 2026 05:37:15 -0800
-X-CSE-ConnectionGUID: Pi+iOTn+TUmPJYJvu1hYJw==
-X-CSE-MsgGUID: i7n0Rbc6QMqmKejyMb34ZQ==
-X-ExtLoop1: 1
-Received: from lkp-server01.sh.intel.com (HELO 765f4a05e27f) ([10.239.97.150])
-  by fmviesa003.fm.intel.com with ESMTP; 03 Feb 2026 05:37:12 -0800
-Received: from kbuild by 765f4a05e27f with local (Exim 4.98.2)
-	(envelope-from <lkp@intel.com>)
-	id 1vnGab-00000000ghI-399c;
-	Tue, 03 Feb 2026 13:37:09 +0000
-Date: Tue, 3 Feb 2026 21:36:52 +0800
-From: kernel test robot <lkp@intel.com>
-To: Yu Kuai <yukuai@fnnas.com>, tj@kernel.org, josef@toxicpanda.com,
-	axboe@kernel.dk
-Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-	cgroups@vger.kernel.org, linux-block@vger.kernel.org,
-	linux-kernel@vger.kernel.org, yukuai@fnnas.com,
-	zhengqixing@huawei.com, mkoutny@suse.com, hch@infradead.org,
-	ming.lei@redhat.com, nilay@linux.ibm.com
-Subject: Re: [PATCH v2 2/7] bfq: protect q->blkg_list iteration in
- bfq_end_wr_async() with blkcg_mutex
-Message-ID: <202602032109.oYgANNeZ-lkp@intel.com>
-References: <20260203080602.726505-3-yukuai@fnnas.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=IHXG9csYd6gEPWRa4y0Dg1C1UVDWjf3gVfjuDEv5Pvv0osb2VXVhlm0tUKH37SIyHtqg1UYNNffyGSltChBeCSLmTdhX7KjcPGO7A0/0xMU8GlibT0H/GqVVgh7MrrZl/Kk1r4fQooE1GiZJ/LxY92iXgGAsgXexNBU/8eNZhxg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=VJbCqeA5; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1770127706;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=FbTsR4y5gPUMx2z7X8415ZTujJFmeurjHL+sbGjeZX0=;
+	b=VJbCqeA5qLl4vzgWILidY59ezGFHWmp7p7SBeFfgq4OOy0EmTzq/WEchHeUcS9puSlOcnK
+	P2VCserDPOTqBv9hnP/5OwegZQVkFxWFw6tT9gAfMEra25FKtrV4KahDC6JF/vgMXRngn0
+	Zl7q365SCwosQSGbB3xA7h0gUMAcmWM=
+Received: from mx-prod-mc-01.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-659-3EKy4Sm3MyCrGXA0dtIWHw-1; Tue,
+ 03 Feb 2026 09:08:23 -0500
+X-MC-Unique: 3EKy4Sm3MyCrGXA0dtIWHw-1
+X-Mimecast-MFC-AGG-ID: 3EKy4Sm3MyCrGXA0dtIWHw_1770127701
+Received: from mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.17])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mx-prod-mc-01.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id E424D1954B0B;
+	Tue,  3 Feb 2026 14:08:20 +0000 (UTC)
+Received: from fedora (unknown [10.72.116.35])
+	by mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 7504C1956053;
+	Tue,  3 Feb 2026 14:08:12 +0000 (UTC)
+Date: Tue, 3 Feb 2026 22:08:07 +0800
+From: Ming Lei <ming.lei@redhat.com>
+To: Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
+Cc: =?utf-8?B?5p2O6b6Z5YW0?= <coregee2000@gmail.com>,
+	syzkaller@googlegroups.com, tj@kernel.org, josef@toxicpanda.com,
+	axboe@kernel.dk, cgroups@vger.kernel.org,
+	linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+	yukuai@fnnas.com
+Subject: Re: [Kernel Bug] KASAN: slab-use-after-free Read in
+ __blkcg_rstat_flush
+Message-ID: <aYIBR6eeudRUQ9q8@fedora>
+References: <CAHPqNmwT9oRpem3J3erS_W0uSQND47LGGSBsNxP8E6uSUish1w@mail.gmail.com>
+ <aYFlZf9p4cY0rIbc@fedora>
+ <ffzrfu62npwacsl3225qqyjbhd6oue3x3rt46l2wcyp5oq4eli@26gvvst6hrmu>
+ <aYHXzyRJbzFSohNm@fedora>
+ <l55sz3sgogoyniecolvzscjamxqrxlzgk7w7scds3tt42z6atj@nrfvjqg2agib>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20260203080602.726505-3-yukuai@fnnas.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <l55sz3sgogoyniecolvzscjamxqrxlzgk7w7scds3tt42z6atj@nrfvjqg2agib>
+X-Scanned-By: MIMEDefang 3.0 on 10.30.177.17
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-1.16 / 15.00];
+X-Spamd-Result: default: False [-1.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_CONTAINS_FROM(1.00)[];
-	DMARC_POLICY_ALLOW(-0.50)[intel.com,none];
-	R_DKIM_ALLOW(-0.20)[intel.com:s=Intel];
-	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
+	MID_RHS_NOT_FQDN(0.50)[];
+	DMARC_POLICY_ALLOW(-0.50)[redhat.com,quarantine];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_DKIM_ALLOW(-0.20)[redhat.com:s=mimecast20190719];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-13640-lists,cgroups=lfdr.de];
+	FREEMAIL_CC(0.00)[gmail.com,googlegroups.com,kernel.org,toxicpanda.com,kernel.dk,vger.kernel.org,fnnas.com];
+	TAGGED_FROM(0.00)[bounces-13641-lists,cgroups=lfdr.de];
 	FROM_HAS_DN(0.00)[];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	RCVD_TLS_LAST(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[15];
 	MIME_TRACE(0.00)[0:+];
-	DKIM_TRACE(0.00)[intel.com:+];
+	DKIM_TRACE(0.00)[redhat.com:+];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
 	MISSING_XM_UA(0.00)[];
-	TO_DN_SOME(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[lkp@intel.com,cgroups@vger.kernel.org];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	RCVD_COUNT_FIVE(0.00)[6];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[ming.lei@redhat.com,cgroups@vger.kernel.org];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	NEURAL_HAM(-0.00)[-1.000];
 	TAGGED_RCPT(0.00)[cgroups];
-	NEURAL_HAM(-0.00)[-0.999];
-	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[intel.com:email,intel.com:dkim,intel.com:mid,sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns,01.org:url,git-scm.com:url]
-X-Rspamd-Queue-Id: 92983D9F83
+	RCPT_COUNT_SEVEN(0.00)[10];
+	TO_DN_SOME(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: 00446DA628
 X-Rspamd-Action: no action
 
-Hi Yu,
+On Tue, Feb 03, 2026 at 01:53:40PM +0100, Michal Koutný wrote:
+> On Tue, Feb 03, 2026 at 07:11:11PM +0800, Ming Lei <ming.lei@redhat.com> wrote:
+> > RCU supports this way, here is just 2-stage RCU chain, and everything
+> > is deterministic.
+> 
+> The time when RCU callback runs is noisy, moreover when chained after
+> each other.
+> (I don't mean it doesn't work but it's debugging/testing nuisance. And
+> it also looks awkward.)
 
-kernel test robot noticed the following build errors:
+IMO it is one correct & simple fix for this complicated race.
 
-[auto build test ERROR on axboe/for-next]
-[also build test ERROR on linus/master v6.19-rc8 next-20260202]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+> 
+> > I thought about this way, but ->lqueued is lockless, and in theory the `blkg_iostat_set`
+> > can be added again after WRITE_ONCE(bisc->lqueued, false) happens, so this way looks
+> > fragile.
+> 
+> Right, I brushed up on the cycles from the commit 20cb1c2fb7568
+> ("blk-cgroup: Flush stats before releasing blkcg_gq") and it'd be a step
+> back.
+> 
+> Does anything prevent doing the each-cpu flush in blkg_release() (before
+> __blkg_release())?
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Yu-Kuai/blk-cgroup-protect-q-blkg_list-iteration-in-blkg_destroy_all-with-blkcg_mutex/20260203-161356
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/axboe/linux.git for-next
-patch link:    https://lore.kernel.org/r/20260203080602.726505-3-yukuai%40fnnas.com
-patch subject: [PATCH v2 2/7] bfq: protect q->blkg_list iteration in bfq_end_wr_async() with blkcg_mutex
-config: s390-randconfig-002-20260203 (https://download.01.org/0day-ci/archive/20260203/202602032109.oYgANNeZ-lkp@intel.com/config)
-compiler: clang version 22.0.0git (https://github.com/llvm/llvm-project 9b8addffa70cee5b2acc5454712d9cf78ce45710)
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20260203/202602032109.oYgANNeZ-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202602032109.oYgANNeZ-lkp@intel.com/
-
-All errors (new ones prefixed by >>):
-
->> block/bfq-iosched.c:2648:27: error: no member named 'blkcg_mutex' in 'struct request_queue'
-    2648 |         mutex_lock(&bfqd->queue->blkcg_mutex);
-         |                     ~~~~~~~~~~~  ^
-   include/linux/mutex.h:193:44: note: expanded from macro 'mutex_lock'
-     193 | #define mutex_lock(lock) mutex_lock_nested(lock, 0)
-         |                                            ^~~~
-   block/bfq-iosched.c:2660:29: error: no member named 'blkcg_mutex' in 'struct request_queue'
-    2660 |         mutex_unlock(&bfqd->queue->blkcg_mutex);
-         |                       ~~~~~~~~~~~  ^
-   2 errors generated.
+I can't parse your question, here blkg_release() simply needs to flush
+all stats. Why do you talk about preventing new flush? why is it related
+with this UAF?
 
 
-vim +2648 block/bfq-iosched.c
+Thanks, 
+Ming
 
-  2642	
-  2643	static void bfq_end_wr(struct bfq_data *bfqd)
-  2644	{
-  2645		struct bfq_queue *bfqq;
-  2646		int i;
-  2647	
-> 2648		mutex_lock(&bfqd->queue->blkcg_mutex);
-  2649		spin_lock_irq(&bfqd->lock);
-  2650	
-  2651		for (i = 0; i < bfqd->num_actuators; i++) {
-  2652			list_for_each_entry(bfqq, &bfqd->active_list[i], bfqq_list)
-  2653				bfq_bfqq_end_wr(bfqq);
-  2654		}
-  2655		list_for_each_entry(bfqq, &bfqd->idle_list, bfqq_list)
-  2656			bfq_bfqq_end_wr(bfqq);
-  2657		bfq_end_wr_async(bfqd);
-  2658	
-  2659		spin_unlock_irq(&bfqd->lock);
-  2660		mutex_unlock(&bfqd->queue->blkcg_mutex);
-  2661	}
-  2662	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
 
