@@ -1,75 +1,75 @@
-Return-Path: <cgroups+bounces-13622-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-13623-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id uHl1ITd+gWnlGgMAu9opvQ
-	(envelope-from <cgroups+bounces-13622-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Tue, 03 Feb 2026 05:48:55 +0100
+	id 0H9hK6t+gWnlGgMAu9opvQ
+	(envelope-from <cgroups+bounces-13623-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Tue, 03 Feb 2026 05:50:51 +0100
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
-	by mail.lfdr.de (Postfix) with ESMTPS id B0941D47BC
-	for <lists+cgroups@lfdr.de>; Tue, 03 Feb 2026 05:48:54 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 250C0D47DA
+	for <lists+cgroups@lfdr.de>; Tue, 03 Feb 2026 05:50:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id 5F55F3006D4F
-	for <lists+cgroups@lfdr.de>; Tue,  3 Feb 2026 04:48:52 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 2255E30166F2
+	for <lists+cgroups@lfdr.de>; Tue,  3 Feb 2026 04:50:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 585F8207DE2;
-	Tue,  3 Feb 2026 04:48:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 79B15207DE2;
+	Tue,  3 Feb 2026 04:50:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="TtW/dPkF"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="nFTex8Ke"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.13])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE3E41C84DC
-	for <cgroups@vger.kernel.org>; Tue,  3 Feb 2026 04:48:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 39D4B1C6FF5
+	for <cgroups@vger.kernel.org>; Tue,  3 Feb 2026 04:50:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.13
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1770094129; cv=none; b=hEg2ibLDiR6n34t2bXmT/EQNgEEwBsAzOEj5lxaCVuggGwjhbB9+WaQjkc3z7JN+Wb04lDmjpwYLFoT/P2AEyV+8SHqa5khjKCGlJnnK82rWt5iL4FF5+3MzcuMJ6cA0ws45DvQraOvvi0YZqfI/ZUsPib0WCcZq7iUjRlIxM8E=
+	t=1770094249; cv=none; b=HN9SRUEHtmK8fpfqeOVo3Vp9UFci1ot1t+AZyQXdBsdv895pTOkCV53c907DYS6SM3AP4OFdOZzzfTk5vEFXVR28eGgYOfpcLX0WdNHD5J1Jcp6n0MHdzGpPEJTq/jnpVl74ovKz6bhjwMake2PJNnrtVOTZ4NUjxV/BPLrwfWI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1770094129; c=relaxed/simple;
-	bh=NJIR+qxfSLb3enSFtIEf1sMXyWE6apTfwvAT4BjkbCo=;
-	h=Date:From:To:Cc:Subject:Message-ID; b=JyYLPy2jCFtjOsVjifaepk10iV6XafBQ5Ya1XcMvAZ7lqEknT4VWA0ZSwVtkcY940GFotIN7ccXZ3w0oqkOC1cbTEzb+WmuvVZsBZ7B3v7k8XQNn7Q/+46ydR3P5JuDqmHt5tY1HOuNZ00ciAwFYpR0pLhDkFgPn0JI7wgTVrZ8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=TtW/dPkF; arc=none smtp.client-ip=192.198.163.7
+	s=arc-20240116; t=1770094249; c=relaxed/simple;
+	bh=p2LMewFQ3i4kX4XUxwIxccQrpYNrA0bjW/dGwJoisMY=;
+	h=Date:From:To:Cc:Subject:Message-ID; b=MbqfuTb1VDhAjM1PCgfSWXDFvYusZCWs0AK5R7KSut/2kLqgYU+uGUMO4R+HeOYaq4HRkTD7Rx0UARaGhlQFaClZBzzbfq35O1y94MB1dinvPsnsLeC3oKoJPOjfEBGSDazy1amgGdA3uLgDnS8nDeFZBOgJ3SZg3ytns+ni08w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=nFTex8Ke; arc=none smtp.client-ip=198.175.65.13
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1770094126; x=1801630126;
+  t=1770094248; x=1801630248;
   h=date:from:to:cc:subject:message-id;
-  bh=NJIR+qxfSLb3enSFtIEf1sMXyWE6apTfwvAT4BjkbCo=;
-  b=TtW/dPkFfHMoRpQ6mLfckYhtsfo3YNGS6C04pXLyQ/U7dbX1qbredqry
-   6j97LY6nbToCKp6U+iBX69uynahxA2nfd1wc92kns1xbn/0CoWS4A5qdv
-   7EHX20W1IKfumMRahToa9OTzyIvQ7iZ5n8Cg9YPgNVuzrt7PdMM0ZS5XT
-   +bEBy+Q9Fh2wxv5UGYESaxVtets2RuLQ85tzxReIJV8vJRkl+2i6h5Wc/
-   Rm+luUQqsg6xZJMqP/eOXAD0DpDKcDpMi7+1HXVkjbKZ7JFx8QTp61j2I
-   ydp+T2eAyNoSP0iWOiSReq192BRBsiVm0YY8w5rPTv5eU5DMj7armlUm9
-   w==;
-X-CSE-ConnectionGUID: hdwuZDpIT/qnF5jZlXNV3Q==
-X-CSE-MsgGUID: Cb8R4gj9RWeReARnPCGQZA==
-X-IronPort-AV: E=McAfee;i="6800,10657,11690"; a="96714880"
+  bh=p2LMewFQ3i4kX4XUxwIxccQrpYNrA0bjW/dGwJoisMY=;
+  b=nFTex8KeWZuQb9N1sq68uLFJb2nnRy6U20jekTmCGqtv4cVWyWeeju5h
+   QD/Sbd1PS8JYq5Pt6pKukx1h9j0sKahVdQFhiDUIar6Ha27cdjQlRK5wq
+   Po2Jqt1Vc9Orv/lyuFWYJRuVbjZxU/yIcd1WugtmXrOa8fXciI61UuKVB
+   NmBEduhDsehoanm8H24IGPFJfLF/gRto+4gPfNWlQCkB7oq2uusfDkAtu
+   NU9XdaecxIq3R/z6eyjx3QwGjMW1H+3FMJfY3Fj2jz6np00iKZzkdsgHa
+   2TflR3tuMcz8mqJaZW4S9keOplsHfAgtH7pOd4Y2wbKqu6Cd35RxircB1
+   g==;
+X-CSE-ConnectionGUID: onwDJJD3R8WbReNMl7deKA==
+X-CSE-MsgGUID: UeHfHFTiTl+zOyZSwVdWoA==
+X-IronPort-AV: E=McAfee;i="6800,10657,11690"; a="82368086"
 X-IronPort-AV: E=Sophos;i="6.21,270,1763452800"; 
-   d="scan'208";a="96714880"
-Received: from orviesa001.jf.intel.com ([10.64.159.141])
-  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Feb 2026 20:48:46 -0800
-X-CSE-ConnectionGUID: MAK7CFowTcqpgC5JXxr2qQ==
-X-CSE-MsgGUID: 7aG0fs90RZK4Xueqf93iSw==
+   d="scan'208";a="82368086"
+Received: from fmviesa004.fm.intel.com ([10.60.135.144])
+  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 02 Feb 2026 20:50:47 -0800
+X-CSE-ConnectionGUID: /Vr2RORHRxGKfqBzzA7J+w==
+X-CSE-MsgGUID: WRhOw+W5QiWvWsieDYOKmA==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.21,270,1763452800"; 
-   d="scan'208";a="247326291"
+   d="scan'208";a="214495681"
 Received: from lkp-server01.sh.intel.com (HELO 765f4a05e27f) ([10.239.97.150])
-  by orviesa001.jf.intel.com with ESMTP; 02 Feb 2026 20:48:45 -0800
+  by fmviesa004.fm.intel.com with ESMTP; 02 Feb 2026 20:50:45 -0800
 Received: from kbuild by 765f4a05e27f with local (Exim 4.98.2)
 	(envelope-from <lkp@intel.com>)
-	id 1vn8LC-00000000gFx-28Ja;
-	Tue, 03 Feb 2026 04:48:42 +0000
-Date: Tue, 03 Feb 2026 12:47:58 +0800
+	id 1vn8N8-00000000gG7-2emc;
+	Tue, 03 Feb 2026 04:50:42 +0000
+Date: Tue, 03 Feb 2026 12:50:27 +0800
 From: kernel test robot <lkp@intel.com>
 To: Tejun Heo <tj@kernel.org>
 Cc: cgroups@vger.kernel.org
-Subject: [tj-cgroup:for-next] BUILD SUCCESS
- cdab91959f725a63396b947212e185556bc4539a
-Message-ID: <202602031249.8w5sasKw-lkp@intel.com>
+Subject: [tj-cgroup:for-6.19-fixes] BUILD SUCCESS
+ 99a2ef500906138ba58093b9893972a5c303c734
+Message-ID: <202602031219.lwtZWs5V-lkp@intel.com>
 User-Agent: s-nail v14.9.25
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
@@ -83,7 +83,7 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	R_MISSING_CHARSET(0.50)[];
 	DMARC_POLICY_ALLOW(-0.50)[intel.com,none];
 	R_DKIM_ALLOW(-0.20)[intel.com:s=Intel];
-	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
@@ -91,9 +91,9 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	MIME_TRACE(0.00)[0:+];
 	RCPT_COUNT_TWO(0.00)[2];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-13622-lists,cgroups=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-13623-lists,cgroups=lfdr.de];
 	DKIM_TRACE(0.00)[intel.com:+];
-	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
 	TO_DN_SOME(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[lkp@intel.com,cgroups@vger.kernel.org];
 	FROM_HAS_DN(0.00)[];
@@ -102,16 +102,16 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	NEURAL_HAM(-0.00)[-1.000];
 	RCVD_COUNT_FIVE(0.00)[6];
 	TAGGED_RCPT(0.00)[cgroups];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns,intel.com:mid,intel.com:dkim]
-X-Rspamd-Queue-Id: B0941D47BC
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,intel.com:mid,intel.com:dkim]
+X-Rspamd-Queue-Id: 250C0D47DA
 X-Rspamd-Action: no action
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git for-next
-branch HEAD: cdab91959f725a63396b947212e185556bc4539a  Merge branch 'for-6.19-fixes' into for-next
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git for-6.19-fixes
+branch HEAD: 99a2ef500906138ba58093b9893972a5c303c734  cgroup/dmem: avoid pool UAF
 
-elapsed time: 734m
+elapsed time: 737m
 
-configs tested: 179
+configs tested: 177
 configs skipped: 3
 
 The following configs have been built successfully.
@@ -152,7 +152,6 @@ csky                              allnoconfig    gcc-15.2.0
 csky                                defconfig    gcc-15.2.0
 csky                  randconfig-001-20260203    gcc-15.2.0
 csky                  randconfig-002-20260203    gcc-15.2.0
-hexagon                          allmodconfig    clang-17
 hexagon                          allmodconfig    gcc-15.2.0
 hexagon                           allnoconfig    gcc-15.2.0
 hexagon                             defconfig    gcc-15.2.0
@@ -262,7 +261,6 @@ sparc64               randconfig-001-20260203    gcc-13.4.0
 sparc64               randconfig-002-20260203    gcc-13.4.0
 um                               allmodconfig    clang-19
 um                                allnoconfig    clang-22
-um                               allyesconfig    gcc-14
 um                               allyesconfig    gcc-15.2.0
 um                                  defconfig    gcc-14
 um                             i386_defconfig    gcc-14
