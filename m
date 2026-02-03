@@ -1,114 +1,204 @@
-Return-Path: <cgroups+bounces-13620-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-13621-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id uO27IJdNgWlMFgMAu9opvQ
-	(envelope-from <cgroups+bounces-13620-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Tue, 03 Feb 2026 02:21:27 +0100
+	id QFUNJntlgWlMGAMAu9opvQ
+	(envelope-from <cgroups+bounces-13621-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Tue, 03 Feb 2026 04:03:23 +0100
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id DA3E9D3542
-	for <lists+cgroups@lfdr.de>; Tue, 03 Feb 2026 02:21:26 +0100 (CET)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
+	by mail.lfdr.de (Postfix) with ESMTPS id BF62AD3F7A
+	for <lists+cgroups@lfdr.de>; Tue, 03 Feb 2026 04:03:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id CC049301DE3F
-	for <lists+cgroups@lfdr.de>; Tue,  3 Feb 2026 01:19:53 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 502D13006D55
+	for <lists+cgroups@lfdr.de>; Tue,  3 Feb 2026 03:03:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F394221F34;
-	Tue,  3 Feb 2026 01:19:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 778FD22D795;
+	Tue,  3 Feb 2026 03:03:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FOBJLlDv"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="et9Agve4"
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 02BCA1891A9;
-	Tue,  3 Feb 2026 01:19:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D0BD513DBA0
+	for <cgroups@vger.kernel.org>; Tue,  3 Feb 2026 03:03:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1770081593; cv=none; b=QZXC4f0nZmdoFY2Q7HqafHtV09um0cyh8MqIBSCyd+2jsmfp775DOHeRaZb9GKWU1C7yjwYcu7MZN5klQA2v8x3nqhTrYgJqByr4edEkm9liH3MVPBJa0NjgQxCTrVEc2uqW6gfN4DzEOQwwkaut+R16AGNMYPoc8DfXKiBuRQo=
+	t=1770087799; cv=none; b=g067uEDuTorVfgkvqdcmJ0UkJfFzH0CprisUOqXIp1fUD2kFDDBSdxadpqaQgvhrMk8aJuWzmLiK/LPw8njvzEor0iw9DkOfHW7Ec9T+6StZ6X0CHzOEFKeW12Y48BNiu9J/9na6KnXlbKzx7raP5UudY7iGyJcpZs5wDeOA5H0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1770081593; c=relaxed/simple;
-	bh=/FYS35MMKL2tNo84SVyfH8r3fkD9uXXdm1le6ysArqE=;
-	h=Subject:From:In-Reply-To:References:Message-Id:Date:To:Cc; b=tkhb5yw5CR7TOY2y4alk69DMB2BePKqdSK34xHP5UtPfnTrtZ7aTYFgpCB8tFDimRa2Dw6VyFesLYQl4Mx8FCjyXZ9sqn6uzDp1IubbOXsrbSu3wxCgXX2qkaQMq6qUCUgQy2S0zROVYq0RjrV64f1BrhKAsNo3HS4yDhPoq++Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FOBJLlDv; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 93C0EC116C6;
-	Tue,  3 Feb 2026 01:19:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1770081592;
-	bh=/FYS35MMKL2tNo84SVyfH8r3fkD9uXXdm1le6ysArqE=;
-	h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-	b=FOBJLlDviMB4Lu5twl1e4nZCkD+TYBBwLSZZDCjisDeTRpsnljF/20iZcno0xd8GM
-	 rVSPHjf01IurEtORwWErRrFDjagHP5MVuMlgIbmgG8Vi71ZNLCkEVSKU7gvUmzhtJr
-	 ufszGdyZ+jrfbyFE/Myrc+6R9dwt9HdrVhpOD5QJGxCkfLgiQKuh7DaVgb3LO3+y+g
-	 3I30sUL69wh0pRZJkmyt9/rcDy8nEcxk3nF4kaWZXYIuP6V79adr3YcoCNPabYRxdu
-	 WgY6WG3QEfXNc6gSdJu8za5ygxN3jZIB201dZgEZ+VGaoYgHogPgwBur7eCkARANcL
-	 eE2FPGYYgUnpQ==
-Received: from [10.30.226.235] (localhost [IPv6:::1])
-	by aws-us-west-2-korg-oddjob-rhel9-1.codeaurora.org (Postfix) with ESMTP id 9115A3808200;
-	Tue,  3 Feb 2026 01:19:50 +0000 (UTC)
-Subject: Re: [GIT PULL] cgroup fixes for v6.19-rc8
-From: pr-tracker-bot@kernel.org
-In-Reply-To: <2fe2b534479363ab3aad3db25fa65377@kernel.org>
-References: <2fe2b534479363ab3aad3db25fa65377@kernel.org>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <2fe2b534479363ab3aad3db25fa65377@kernel.org>
-X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git tags/cgroup-for-6.19-rc8-fixes
-X-PR-Tracked-Commit-Id: 99a2ef500906138ba58093b9893972a5c303c734
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 6bd9ed02871f22beb0e50690b0c3caf457104f7c
-Message-Id: <177008158913.1261185.17599032125609778758.pr-tracker-bot@kernel.org>
-Date: Tue, 03 Feb 2026 01:19:49 +0000
-To: Tejun Heo <tj@kernel.org>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>, Chen Ridong <chenridong@huawei.com>, Maarten Lankhorst <dev@lankhorst.se>, Maxime Ripard <mripard@kernel.org>, Natalie Vock <natalie.vock@gmx.de>, Waiman Long <longman@redhat.com>, cgroups@vger.kernel.org, dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+	s=arc-20240116; t=1770087799; c=relaxed/simple;
+	bh=qxtCPipVDr+RKM3sJBs6cRaK84ZyHIu2vKgQKn3Jryg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=CzahOWoCymrz4XIqatjDbaPgn5IWaEmvWjIUFWBfrPHnphsh8uWSD83EEXILm8BAnxbZXtaW9TrjJJ8pk1EDYxqlnS0JGcv5hFfNJ8T0GB0TVyRwJD3PhxRAmFq2t2PSa2dVdAQ5dmWaA67OCR+Av9PI8j8jMEzMuL0pHgKTsz0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=et9Agve4; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1770087797;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=HeAmQVy00RD7jeYCsWOxBUsTUuPFNsMvQMA6zTsXuxo=;
+	b=et9Agve4PvCD+uSe/zDr2wZtShXmJ3Ongp/Wl/Cxh4qroFYHVtnPJpXOwDjk8a/aorIXBd
+	ZBPrHg0KBEadmHP2kEB/IuJLV4+IjrtK+zrqxKBjPAmcim138y+tP9LobNZyo3EVDNDZgC
+	Di+HMnBuoZ6agsBhjftP/KUS5Pj6l64=
+Received: from mx-prod-mc-08.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-35-165-154-97.us-west-2.compute.amazonaws.com [35.165.154.97]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-675-T5xMpRwZNK2pBEaLjLFP6w-1; Mon,
+ 02 Feb 2026 22:03:13 -0500
+X-MC-Unique: T5xMpRwZNK2pBEaLjLFP6w-1
+X-Mimecast-MFC-AGG-ID: T5xMpRwZNK2pBEaLjLFP6w_1770087792
+Received: from mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.4])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mx-prod-mc-08.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id BD569180034F;
+	Tue,  3 Feb 2026 03:03:11 +0000 (UTC)
+Received: from fedora (unknown [10.72.116.35])
+	by mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 7BAB930001A7;
+	Tue,  3 Feb 2026 03:03:06 +0000 (UTC)
+Date: Tue, 3 Feb 2026 11:03:01 +0800
+From: Ming Lei <ming.lei@redhat.com>
+To: =?utf-8?B?5p2O6b6Z5YW0?= <coregee2000@gmail.com>
+Cc: syzkaller@googlegroups.com, tj@kernel.org, josef@toxicpanda.com,
+	axboe@kernel.dk, cgroups@vger.kernel.org,
+	linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [Kernel Bug] KASAN: slab-use-after-free Read in
+ __blkcg_rstat_flush
+Message-ID: <aYFlZf9p4cY0rIbc@fedora>
+References: <CAHPqNmwT9oRpem3J3erS_W0uSQND47LGGSBsNxP8E6uSUish1w@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAHPqNmwT9oRpem3J3erS_W0uSQND47LGGSBsNxP8E6uSUish1w@mail.gmail.com>
+X-Scanned-By: MIMEDefang 3.4.1 on 10.30.177.4
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-0.66 / 15.00];
-	MID_CONTAINS_FROM(1.00)[];
+X-Spamd-Result: default: False [-1.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_MISSING_CHARSET(0.50)[];
-	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
-	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
+	MID_RHS_NOT_FQDN(0.50)[];
+	DMARC_POLICY_ALLOW(-0.50)[redhat.com,quarantine];
+	R_DKIM_ALLOW(-0.20)[redhat.com:s=mimecast20190719];
+	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FREEMAIL_CC(0.00)[linux-foundation.org,huawei.com,lankhorst.se,kernel.org,gmx.de,redhat.com,vger.kernel.org,lists.freedesktop.org];
+	TAGGED_FROM(0.00)[bounces-13621-lists,cgroups=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	DKIM_TRACE(0.00)[kernel.org:+];
-	TAGGED_FROM(0.00)[bounces-13620-lists,cgroups=lfdr.de];
-	MIME_TRACE(0.00)[0:+];
+	FROM_HAS_DN(0.00)[];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	FROM_NO_DN(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[5];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[pr-tracker-bot@kernel.org,cgroups@vger.kernel.org];
+	FREEMAIL_TO(0.00)[gmail.com];
+	MIME_TRACE(0.00)[0:+];
+	DKIM_TRACE(0.00)[redhat.com:+];
+	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
 	MISSING_XM_UA(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[6];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[ming.lei@redhat.com,cgroups@vger.kernel.org];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	NEURAL_HAM(-0.00)[-1.000];
 	TAGGED_RCPT(0.00)[cgroups];
-	RCPT_COUNT_SEVEN(0.00)[10];
+	RCPT_COUNT_SEVEN(0.00)[8];
 	TO_DN_SOME(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: DA3E9D3542
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: BF62AD3F7A
 X-Rspamd-Action: no action
 
-The pull request you sent on Mon, 02 Feb 2026 11:12:59 -1000:
+Hello,
 
-> https://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git tags/cgroup-for-6.19-rc8-fixes
+On Mon, Feb 02, 2026 at 02:19:07PM +0800, 李龙兴 wrote:
+> Dear Linux kernel developers and maintainers,
+> 
+> We would like to report a new kernel bug found by our tool. KASAN:
+> slab-use-after-free Read in __blkcg_rstat_flush. Details are as
+> follows.
+> 
+> Kernel commit: v6.18.2
+> Kernel config: see attachment
+> report: see attachment
+> 
+> We are currently analyzing the root cause and  working on a
+> reproducible PoC. We will provide further updates in this thread as
+> soon as we have more information.
+> 
+> Best regards,
+> Longxing Li
+> 
+> ==================================================================
+> BUG: KASAN: slab-use-after-free in
+> __blkcg_rstat_flush.isra.0+0x73c/0x800 block/blk-cgroup.c:1069
+> Read of size 8 at addr ffff88810a8ba830 by task pool_workqueue_/3
+> 
+> CPU: 1 UID: 0 PID: 3 Comm: pool_workqueue_ Not tainted 6.18.2 #1 PREEMPT(full)
+> Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.15.0-1 04/01/2014
+> Call Trace:
+>  <IRQ>
+>  __dump_stack lib/dump_stack.c:94 [inline]
+>  dump_stack_lvl+0x116/0x1f0 lib/dump_stack.c:120
+>  print_address_description mm/kasan/report.c:378 [inline]
+>  print_report+0xcd/0x630 mm/kasan/report.c:482
+>  kasan_report+0xe0/0x110 mm/kasan/report.c:595
+>  __blkcg_rstat_flush.isra.0+0x73c/0x800 block/blk-cgroup.c:1069
+>  __blkg_release+0x1a6/0x2d0 block/blk-cgroup.c:179
+>  rcu_do_batch kernel/rcu/tree.c:2605 [inline]
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/6bd9ed02871f22beb0e50690b0c3caf457104f7c
+Can you try the following patch?
 
-Thank you!
 
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+diff --git a/block/blk-cgroup.c b/block/blk-cgroup.c
+index 3cffb68ba5d8..dc0cccfdca68 100644
+--- a/block/blk-cgroup.c
++++ b/block/blk-cgroup.c
+@@ -160,6 +160,20 @@ static void blkg_free(struct blkcg_gq *blkg)
+ 	schedule_work(&blkg->free_work);
+ }
+ 
++/*
++ * RCU callback to free blkg after an additional grace period.
++ * This ensures any concurrent __blkcg_rstat_flush() that might have
++ * removed our iostat entries via llist_del_all() has completed.
++ */
++static void __blkg_release_free_rcu(struct rcu_head *rcu)
++{
++	struct blkcg_gq *blkg = container_of(rcu, struct blkcg_gq, rcu_head);
++
++	/* release the blkcg and parent blkg refs this blkg has been holding */
++	css_put(&blkg->blkcg->css);
++	blkg_free(blkg);
++}
++
+ static void __blkg_release(struct rcu_head *rcu)
+ {
+ 	struct blkcg_gq *blkg = container_of(rcu, struct blkcg_gq, rcu_head);
+@@ -178,9 +192,14 @@ static void __blkg_release(struct rcu_head *rcu)
+ 	for_each_possible_cpu(cpu)
+ 		__blkcg_rstat_flush(blkcg, cpu);
+ 
+-	/* release the blkcg and parent blkg refs this blkg has been holding */
+-	css_put(&blkg->blkcg->css);
+-	blkg_free(blkg);
++	/*
++	 * Defer freeing via another call_rcu() to ensure any concurrent
++	 * __blkcg_rstat_flush() (under rcu_read_lock) that might have removed
++	 * our iostat entries via llist_del_all() has completed its iteration.
++	 * The second grace period guarantees those RCU read-side critical
++	 * sections have finished.
++	 */
++	call_rcu(&blkg->rcu_head, __blkg_release_free_rcu);
+ }
+ 
+ /*
+
+
+thanks,
+Ming
+
 
