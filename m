@@ -1,368 +1,242 @@
-Return-Path: <cgroups+bounces-13631-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-13632-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id AJKxFretgWn0IQMAu9opvQ
-	(envelope-from <cgroups+bounces-13631-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Tue, 03 Feb 2026 09:11:35 +0100
+	id 0J3VApq7gWm7JAMAu9opvQ
+	(envelope-from <cgroups+bounces-13632-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Tue, 03 Feb 2026 10:10:50 +0100
 X-Original-To: lists+cgroups@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 03138D60C7
-	for <lists+cgroups@lfdr.de>; Tue, 03 Feb 2026 09:11:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 53EB9D69C6
+	for <lists+cgroups@lfdr.de>; Tue, 03 Feb 2026 10:10:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 286E13116E8D
-	for <lists+cgroups@lfdr.de>; Tue,  3 Feb 2026 08:06:31 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 55B0430305D7
+	for <lists+cgroups@lfdr.de>; Tue,  3 Feb 2026 09:06:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C9E74392C5F;
-	Tue,  3 Feb 2026 08:06:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D98E395DBC;
+	Tue,  3 Feb 2026 09:06:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="ZUvIt8fg"
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f54.google.com (mail-wm1-f54.google.com [209.85.128.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9EF58392C32;
-	Tue,  3 Feb 2026 08:06:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8B90830C614
+	for <cgroups@vger.kernel.org>; Tue,  3 Feb 2026 09:06:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1770105990; cv=none; b=fkq4JJxvwzz7AeBHpxQljooUV9bDWtV/T3/nly/25DD75DUtizIT6OM2TqVPJRAEuuaq84il2QcTwEUYt7ci6Bu1ZYbVQFM7i/xQcqFASnaLlXt57NDLfXRw4GYgIHXA7sI+iRLhkBAWOSYZ3ph9QUvPCobmlzRCE9WPe9cI2XM=
+	t=1770109604; cv=none; b=VnIcS4vh2HtBNK23Pb31KR8mDpqze6ALjM5mmW1TgbmDLOJ7/DwBiuzlTgC0k2KhmyXhHTeH2FRkwQvw0jgWf19tdH05Zp4q2+s+ew5tt/PogLFejyehB4i2INW+QJw8mRkfI5h7WQJHyIH09fedRh89RrgOmc/LutA8z77xvOI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1770105990; c=relaxed/simple;
-	bh=IALjKEOLR0+k6Jpr19pd2DLmBqx2bWcQEj5oCCFwaJU=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=LMTgdo2GcfsyHGOYt4EdRYLoDvE2FnmhYMGr8Ql7j7PLeu+LDD16ia/APyYT3KyrqP6k+jT7h/WCZ2JlGVKTnb5jdQyNw/sRKNjegYQl+5+RTEimMFykT3O0UhEHXvk5jbvVuaQdXcSrcNZwHW9DO3tCsb4s/38ky0YeLhCiLz8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 73485C116D0;
-	Tue,  3 Feb 2026 08:06:27 +0000 (UTC)
-From: Yu Kuai <yukuai@fnnas.com>
-To: tj@kernel.org,
-	josef@toxicpanda.com,
-	axboe@kernel.dk
-Cc: cgroups@vger.kernel.org,
-	linux-block@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	yukuai@fnnas.com,
-	zhengqixing@huawei.com,
-	mkoutny@suse.com,
-	hch@infradead.org,
-	ming.lei@redhat.com,
-	nilay@linux.ibm.com
-Subject: [PATCH v2 7/7] blk-rq-qos: move rq_qos_mutex acquisition inside rq_qos_add/del
-Date: Tue,  3 Feb 2026 16:06:02 +0800
-Message-ID: <20260203080602.726505-8-yukuai@fnnas.com>
-X-Mailer: git-send-email 2.51.0
-In-Reply-To: <20260203080602.726505-1-yukuai@fnnas.com>
+	s=arc-20240116; t=1770109604; c=relaxed/simple;
+	bh=MOKpDNTqNF8fAwtcWjo9j4D4UG1yJPkppdfmDHB9hNk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=V4Pg0dgzbdIaPljtizQEYDyPwIjQvuvG2np7tp8RCFAc/eA9G36zmVrtrl3E5s55G92zPg7ALhfgoTcqn//HXhWCK4k6yvF3ofcZG+SYFZQpSQrMscjcRABHSQT7+xxSGBn3vo3P69MkgmXK975J+BJN0VtHJ1WlxI9GQd8sck8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=ZUvIt8fg; arc=none smtp.client-ip=209.85.128.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-wm1-f54.google.com with SMTP id 5b1f17b1804b1-4806bf39419so2983715e9.1
+        for <cgroups@vger.kernel.org>; Tue, 03 Feb 2026 01:06:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1770109601; x=1770714401; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=eaA9Uux9+RofOmmDHbyRFguFePFUhjemsJOqSAyT258=;
+        b=ZUvIt8fgmgGCjFssb1+TXvQeDodNR3iSAIdKeBbWit1oy4XyOESYEtL4vY3Mh9qffi
+         w3jtY8i+o6fF2RXMkUjvK52LBwklyRtqVTVWjBjreG3QnlQy9PC4URcWurr9RoAfonHQ
+         sVKcruz8kZDTxWQsP+q3n6kJcgB3Tpj7qAva7FzhXCFDkhtnztMHU4mMsgld+bNnnMSQ
+         Ra7MThdzfjF0VUAZN0yAOVf1YTU4vBfIGCCJzNDquMhUgetPbQBJ3RxE4aOJBUdPrxLc
+         lUNNj2ykc1Kms+LHbrCjJxiPX/hW++COXOP7mt+gvrp0TBUYNj0jCxLsd6L45UYgK/y4
+         /LmA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1770109601; x=1770714401;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=eaA9Uux9+RofOmmDHbyRFguFePFUhjemsJOqSAyT258=;
+        b=ea46XoFh52LNsW9Fo/F+8bxJ12VSANSYxCcfewQWfwgqqYcYXMmxhmRdNiGONT1S9D
+         zAYqNRnrj9yK+18FKUPGb7f2sD3qUq+WhP05nUvhgf3Y9MPKSj+iXRij+NWBKiPs3P6b
+         SlOen2nF2oHtjuOafsEUDO5Xg2Ijzm5moe0ulgX22bcxd4E8VVRS15UErk2geiq8pBrE
+         URLmdFCXsv4b9jp5gPHIABznWlKHQrUbWN4SVrhEX5ZA/PEsvSct1kA/zfPQcih5IW27
+         lJ5uhqoi0usLN78OKq/MiWQ72fGWDXl0IiMMWKWKujcfkCVzM2Gh857zs/+A6Qj4I8gQ
+         rKZQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVBxmTrMkp4v+muSrGNegjxYJqeRFlY9MFE/61DiwY6lDmkUQBODSbu6u0fjngPmyHS8SW3lIrP@vger.kernel.org
+X-Gm-Message-State: AOJu0Yzh7jIBDxXWXiLtLSXYrQEvronmNEJKOo0bTgqhYPFbC5l7+R9Q
+	OWkSkUW/hSiyx/8F0QoqRvRVZmS4nbhvlc/84NKP9a1fpMoOx/BLrlsmAVXZOtUYlbg=
+X-Gm-Gg: AZuq6aJDeFIHRhLTrYjQq0MvqCh7A6/Vv+9pMTddfxYPKbvKfnaKZ+LvWmNFDQuZD1G
+	kGjLXE8KJX+XiXPREcVoo50GXRFQ9v+tE9SVobQ8hrJxp9SshpcEMpECdfvQsXsUpNpux/4aPQh
+	cEN8C+971zsHOCt9dlSH6Zq1oXfT3+mrH3E7sG4mPRoMiibWmSyCEJH2lbIv995P2ynMejB0LVy
+	PgJiDR6iwxnpdqnfMHgZ96LNIE3WEUIqQSruD15gbfWlZaaLr3mkmsQ4jmXJ0xmb45FwKvNZ7LH
+	CHwiiRPNrbCWAcKj5X+MlUE9RDJ1umTlmQd7DAhjse/9AyPjhS56AEeKXfpyUXHV4Fk2hOWpp6e
+	dEhnPOOAA/vk++Qpm4w1tNG4lK0pDRplfVW8RNWIj7cX4zwxSUAbsF5YQ2bRIYoULwiIDgcAIyb
+	k2gdIIzUMx7Xh+vD/q9q6dkG6zH71RcP7sTv7B//Q2zA==
+X-Received: by 2002:a05:600c:5394:b0:480:4a90:1afd with SMTP id 5b1f17b1804b1-483050f3f03mr32702305e9.0.1770109600817;
+        Tue, 03 Feb 2026 01:06:40 -0800 (PST)
+Received: from blackdock.suse.cz (nat2.prg.suse.com. [195.250.132.146])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4830515381esm52449765e9.11.2026.02.03.01.06.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 03 Feb 2026 01:06:40 -0800 (PST)
+Date: Tue, 3 Feb 2026 10:06:38 +0100
+From: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
+To: Yu Kuai <yukuai@fnnas.com>
+Cc: tj@kernel.org, josef@toxicpanda.com, axboe@kernel.dk, 
+	cgroups@vger.kernel.org, linux-block@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	zhengqixing@huawei.com, hch@infradead.org, ming.lei@redhat.com, nilay@linux.ibm.com
+Subject: Re: [PATCH v2 6/7] blk-cgroup: allocate pds before freezing queue in
+ blkcg_activate_policy()
+Message-ID: <gq45vl55n2gucipjc5jk5e5kp7ups3nw672ua6nvksooycezv5@lfr62hy5br4f>
 References: <20260203080602.726505-1-yukuai@fnnas.com>
+ <20260203080602.726505-7-yukuai@fnnas.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="dg37qi5glisvi4nl"
+Content-Disposition: inline
+In-Reply-To: <20260203080602.726505-7-yukuai@fnnas.com>
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-0.46 / 15.00];
+X-Spamd-Result: default: False [-3.76 / 15.00];
+	SIGNED_PGP(-2.00)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_CONTAINS_FROM(1.00)[];
+	MID_RHS_NOT_FQDN(0.50)[];
+	DMARC_POLICY_ALLOW(-0.50)[suse.com,quarantine];
+	R_DKIM_ALLOW(-0.20)[suse.com:s=google];
 	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	MIME_GOOD(-0.20)[multipart/signed,text/plain];
 	MAILLIST(-0.15)[generic];
-	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-13631-lists,cgroups=lfdr.de];
-	RCVD_TLS_LAST(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
-	DMARC_NA(0.00)[fnnas.com];
-	MIME_TRACE(0.00)[0:+];
-	FORGED_SENDER_MAILLIST(0.00)[];
+	MIME_TRACE(0.00)[0:+,1:+,2:~];
+	DKIM_TRACE(0.00)[suse.com:+];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[12];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	RCVD_TLS_LAST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-13632-lists,cgroups=lfdr.de];
+	MISSING_XM_UA(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	TO_DN_SOME(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[5];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[yukuai@fnnas.com,cgroups@vger.kernel.org];
+	FROM_NEQ_ENVFROM(0.00)[mkoutny@suse.com,cgroups@vger.kernel.org];
 	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	TO_DN_NONE(0.00)[];
-	R_DKIM_NA(0.00)[];
 	NEURAL_HAM(-0.00)[-1.000];
 	TAGGED_RCPT(0.00)[cgroups];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[fnnas.com:mid,fnnas.com:email,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 03138D60C7
+	RCPT_COUNT_SEVEN(0.00)[11];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[fnnas.com:email,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,suse.com:dkim]
+X-Rspamd-Queue-Id: 53EB9D69C6
 X-Rspamd-Action: no action
 
-The current rq_qos_mutex handling has an awkward pattern where callers
-must acquire the mutex before calling rq_qos_add()/rq_qos_del(), and
-blkg_conf_open_bdev_frozen() had to release and re-acquire the mutex
-around queue freezing to maintain proper locking order (freeze queue
-before mutex).
 
-On the other hand, with rq_qos_mutex held after blkg_conf_prep(), there
-are many possible deadlocks:
+--dg37qi5glisvi4nl
+Content-Type: text/plain; protected-headers=v1; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH v2 6/7] blk-cgroup: allocate pds before freezing queue in
+ blkcg_activate_policy()
+MIME-Version: 1.0
 
-- allocating memory with GFP_KERNEL, like blk_throtl_init();
-- allocating percpu memory, like pd_alloc_fn() for iocost/iolatency;
+On Tue, Feb 03, 2026 at 04:06:01PM +0800, Yu Kuai <yukuai@fnnas.com> wrote:
+> Some policies like iocost and iolatency perform percpu allocation in
+> pd_alloc_fn(). Percpu allocation with queue frozen can cause deadlock
+> because percpu memory reclaim may issue IO.
+>=20
+> Now that q->blkg_list is protected by blkcg_mutex,
 
-This patch refactors the locking by:
+With this ^^^
 
-1. Moving queue freeze and rq_qos_mutex acquisition inside
-   rq_qos_add()/rq_qos_del(), with the correct order: freeze first,
-   then acquire mutex.
+=2E..
+> restructure
+> blkcg_activate_policy() to allocate all pds before freezing the queue:
+> 1. Allocate all pds with GFP_KERNEL before freezing the queue
+> 2. Freeze the queue
+> 3. Initialize and online all pds
+>=20
+> Note: Future work is to remove all queue freezing before
+> blkcg_activate_policy() to fix the deadlocks thoroughly.
+>=20
+> Signed-off-by: Yu Kuai <yukuai@fnnas.com>
+> ---
+>  block/blk-cgroup.c | 90 +++++++++++++++++-----------------------------
+>  1 file changed, 32 insertions(+), 58 deletions(-)
+>=20
+> diff --git a/block/blk-cgroup.c b/block/blk-cgroup.c
+> index 0206050f81ea..7fcb216917d0 100644
+> --- a/block/blk-cgroup.c
+> +++ b/block/blk-cgroup.c
+> @@ -1606,8 +1606,7 @@ static void blkcg_policy_teardown_pds(struct reques=
+t_queue *q,
+>  int blkcg_activate_policy(struct gendisk *disk, const struct blkcg_polic=
+y *pol)
+>  {
+>  	struct request_queue *q =3D disk->queue;
+> -	struct blkg_policy_data *pd_prealloc =3D NULL;
+> -	struct blkcg_gq *blkg, *pinned_blkg =3D NULL;
+> +	struct blkcg_gq *blkg;
+>  	unsigned int memflags;
+>  	int ret;
+> =20
+> @@ -1622,90 +1621,65 @@ int blkcg_activate_policy(struct gendisk *disk, c=
+onst struct blkcg_policy *pol)
+=2E..
 
-2. Removing external mutex handling from wbt_init() since rq_qos_add()
-   now handles it internally.
+> +	/* Now freeze queue and initialize/online all pds */
+> +	if (queue_is_mq(q))
+> +		memflags =3D blk_mq_freeze_queue(q);
+> +
+> +	spin_lock_irq(&q->queue_lock);
+> +	list_for_each_entry_reverse(blkg, &q->blkg_list, q_node) {
+> +		struct blkg_policy_data *pd =3D blkg->pd[pol->plid];
+> +
+> +		/* Skip dying blkg */
+> +		if (hlist_unhashed(&blkg->blkcg_node))
+> +			continue;
+> +
+> +		spin_lock(&blkg->blkcg->lock);
+>  		if (pol->pd_init_fn)
+>  			pol->pd_init_fn(pd);
+> -
+>  		if (pol->pd_online_fn)
+>  			pol->pd_online_fn(pd);
+>  		pd->online =3D true;
+> -
+>  		spin_unlock(&blkg->blkcg->lock);
+>  	}
+> =20
+>  	__set_bit(pol->plid, q->blkcg_pols);
+> -	ret =3D 0;
+> -
+>  	spin_unlock_irq(&q->queue_lock);
+> -out:
+> -	mutex_unlock(&q->blkcg_mutex);
+> +
+>  	if (queue_is_mq(q))
+>  		blk_mq_unfreeze_queue(q, memflags);
+> -	if (pinned_blkg)
+> -		blkg_put(pinned_blkg);
+> -	if (pd_prealloc)
+> -		pol->pd_free_fn(pd_prealloc);
+> -	return ret;
+> +	mutex_unlock(&q->blkcg_mutex);
+> +	return 0;
 
-3. Removing rq_qos_mutex handling from blkg_conf_open_bdev() entirely,
-   making it only responsible for parsing MAJ:MIN and opening the bdev.
+Why is q->queue_lock still needed here?
 
-4. Removing blkg_conf_open_bdev_frozen() and blkg_conf_exit_frozen()
-   functions which are no longer needed.
+Thanks,
+Michal
 
-5. Updating ioc_qos_write() to use the simpler blkg_conf_open_bdev()
-   and blkg_conf_exit() functions.
+--dg37qi5glisvi4nl
+Content-Type: application/pgp-signature; name="signature.asc"
 
-This eliminates the release-and-reacquire pattern and makes
-rq_qos_add()/rq_qos_del() self-contained, which is cleaner and reduces
-complexity. Each function now properly manages its own locking with
-the correct order: queue freeze → mutex acquire → modify → mutex
-release → queue unfreeze.
+-----BEGIN PGP SIGNATURE-----
 
-Signed-off-by: Yu Kuai <yukuai@fnnas.com>
----
- block/blk-cgroup.c | 50 ----------------------------------------------
- block/blk-cgroup.h |  2 --
- block/blk-iocost.c | 11 ++++------
- block/blk-rq-qos.c | 31 ++++++++++++++++------------
- block/blk-wbt.c    |  2 --
- 5 files changed, 22 insertions(+), 74 deletions(-)
+iJEEABYKADkWIQRCE24Fn/AcRjnLivR+PQLnlNv4CAUCaYG6kBsUgAAAAAAEAA5t
+YW51MiwyLjUrMS4xMSwyLDIACgkQfj0C55Tb+AjEEQD/S6QTA3Md9Aw4rFLx2TGh
+sAf5TpmWFXBsYFlAeJMSE9kBALzTT27YQL8oCWii6gU0StNOW5kiSEH01UyxNckM
++9UN
+=BbWt
+-----END PGP SIGNATURE-----
 
-diff --git a/block/blk-cgroup.c b/block/blk-cgroup.c
-index 7fcb216917d0..d17d2b44df43 100644
---- a/block/blk-cgroup.c
-+++ b/block/blk-cgroup.c
-@@ -802,10 +802,8 @@ int blkg_conf_open_bdev(struct blkg_conf_ctx *ctx)
- 		return -ENODEV;
- 	}
- 
--	mutex_lock(&bdev->bd_queue->rq_qos_mutex);
- 	if (!disk_live(bdev->bd_disk)) {
- 		blkdev_put_no_open(bdev);
--		mutex_unlock(&bdev->bd_queue->rq_qos_mutex);
- 		return -ENODEV;
- 	}
- 
-@@ -813,38 +811,6 @@ int blkg_conf_open_bdev(struct blkg_conf_ctx *ctx)
- 	ctx->bdev = bdev;
- 	return 0;
- }
--/*
-- * Similar to blkg_conf_open_bdev, but additionally freezes the queue,
-- * ensures the correct locking order between freeze queue and q->rq_qos_mutex.
-- *
-- * This function returns negative error on failure. On success it returns
-- * memflags which must be saved and later passed to blkg_conf_exit_frozen
-- * for restoring the memalloc scope.
-- */
--unsigned long __must_check blkg_conf_open_bdev_frozen(struct blkg_conf_ctx *ctx)
--{
--	int ret;
--	unsigned long memflags;
--
--	if (ctx->bdev)
--		return -EINVAL;
--
--	ret = blkg_conf_open_bdev(ctx);
--	if (ret < 0)
--		return ret;
--	/*
--	 * At this point, we haven’t started protecting anything related to QoS,
--	 * so we release q->rq_qos_mutex here, which was first acquired in blkg_
--	 * conf_open_bdev. Later, we re-acquire q->rq_qos_mutex after freezing
--	 * the queue to maintain the correct locking order.
--	 */
--	mutex_unlock(&ctx->bdev->bd_queue->rq_qos_mutex);
--
--	memflags = blk_mq_freeze_queue(ctx->bdev->bd_queue);
--	mutex_lock(&ctx->bdev->bd_queue->rq_qos_mutex);
--
--	return memflags;
--}
- 
- /**
-  * blkg_conf_prep - parse and prepare for per-blkg config update
-@@ -978,7 +944,6 @@ EXPORT_SYMBOL_GPL(blkg_conf_prep);
-  */
- void blkg_conf_exit(struct blkg_conf_ctx *ctx)
- 	__releases(&ctx->bdev->bd_queue->queue_lock)
--	__releases(&ctx->bdev->bd_queue->rq_qos_mutex)
- {
- 	if (ctx->blkg) {
- 		spin_unlock_irq(&bdev_get_queue(ctx->bdev)->queue_lock);
-@@ -986,7 +951,6 @@ void blkg_conf_exit(struct blkg_conf_ctx *ctx)
- 	}
- 
- 	if (ctx->bdev) {
--		mutex_unlock(&ctx->bdev->bd_queue->rq_qos_mutex);
- 		blkdev_put_no_open(ctx->bdev);
- 		ctx->body = NULL;
- 		ctx->bdev = NULL;
-@@ -994,20 +958,6 @@ void blkg_conf_exit(struct blkg_conf_ctx *ctx)
- }
- EXPORT_SYMBOL_GPL(blkg_conf_exit);
- 
--/*
-- * Similar to blkg_conf_exit, but also unfreezes the queue. Should be used
-- * when blkg_conf_open_bdev_frozen is used to open the bdev.
-- */
--void blkg_conf_exit_frozen(struct blkg_conf_ctx *ctx, unsigned long memflags)
--{
--	if (ctx->bdev) {
--		struct request_queue *q = ctx->bdev->bd_queue;
--
--		blkg_conf_exit(ctx);
--		blk_mq_unfreeze_queue(q, memflags);
--	}
--}
--
- static void blkg_iostat_add(struct blkg_iostat *dst, struct blkg_iostat *src)
- {
- 	int i;
-diff --git a/block/blk-cgroup.h b/block/blk-cgroup.h
-index 1cce3294634d..d4e7f78ba545 100644
---- a/block/blk-cgroup.h
-+++ b/block/blk-cgroup.h
-@@ -219,11 +219,9 @@ struct blkg_conf_ctx {
- 
- void blkg_conf_init(struct blkg_conf_ctx *ctx, char *input);
- int blkg_conf_open_bdev(struct blkg_conf_ctx *ctx);
--unsigned long blkg_conf_open_bdev_frozen(struct blkg_conf_ctx *ctx);
- int blkg_conf_prep(struct blkcg *blkcg, const struct blkcg_policy *pol,
- 		   struct blkg_conf_ctx *ctx);
- void blkg_conf_exit(struct blkg_conf_ctx *ctx);
--void blkg_conf_exit_frozen(struct blkg_conf_ctx *ctx, unsigned long memflags);
- 
- /**
-  * bio_issue_as_root_blkg - see if this bio needs to be issued as root blkg
-diff --git a/block/blk-iocost.c b/block/blk-iocost.c
-index ef543d163d46..104a9a9f563f 100644
---- a/block/blk-iocost.c
-+++ b/block/blk-iocost.c
-@@ -3220,16 +3220,13 @@ static ssize_t ioc_qos_write(struct kernfs_open_file *of, char *input,
- 	u32 qos[NR_QOS_PARAMS];
- 	bool enable, user;
- 	char *body, *p;
--	unsigned long memflags;
- 	int ret;
- 
- 	blkg_conf_init(&ctx, input);
- 
--	memflags = blkg_conf_open_bdev_frozen(&ctx);
--	if (IS_ERR_VALUE(memflags)) {
--		ret = memflags;
-+	ret = blkg_conf_open_bdev(&ctx);
-+	if (ret)
- 		goto err;
--	}
- 
- 	body = ctx.body;
- 	disk = ctx.bdev->bd_disk;
-@@ -3346,14 +3343,14 @@ static ssize_t ioc_qos_write(struct kernfs_open_file *of, char *input,
- 
- 	blk_mq_unquiesce_queue(disk->queue);
- 
--	blkg_conf_exit_frozen(&ctx, memflags);
-+	blkg_conf_exit(&ctx);
- 	return nbytes;
- einval:
- 	spin_unlock_irq(&ioc->lock);
- 	blk_mq_unquiesce_queue(disk->queue);
- 	ret = -EINVAL;
- err:
--	blkg_conf_exit_frozen(&ctx, memflags);
-+	blkg_conf_exit(&ctx);
- 	return ret;
- }
- 
-diff --git a/block/blk-rq-qos.c b/block/blk-rq-qos.c
-index 85cf74402a09..fe96183bcc75 100644
---- a/block/blk-rq-qos.c
-+++ b/block/blk-rq-qos.c
-@@ -327,8 +327,7 @@ int rq_qos_add(struct rq_qos *rqos, struct gendisk *disk, enum rq_qos_id id,
- {
- 	struct request_queue *q = disk->queue;
- 	unsigned int memflags;
--
--	lockdep_assert_held(&q->rq_qos_mutex);
-+	int ret = 0;
- 
- 	rqos->disk = disk;
- 	rqos->id = id;
-@@ -337,20 +336,24 @@ int rq_qos_add(struct rq_qos *rqos, struct gendisk *disk, enum rq_qos_id id,
- 	/*
- 	 * No IO can be in-flight when adding rqos, so freeze queue, which
- 	 * is fine since we only support rq_qos for blk-mq queue.
-+	 *
-+	 * Acquire rq_qos_mutex after freezing the queue to ensure proper
-+	 * locking order.
- 	 */
- 	memflags = blk_mq_freeze_queue(q);
-+	mutex_lock(&q->rq_qos_mutex);
- 
--	if (rq_qos_id(q, rqos->id))
--		goto ebusy;
--	rqos->next = q->rq_qos;
--	q->rq_qos = rqos;
--	blk_queue_flag_set(QUEUE_FLAG_QOS_ENABLED, q);
-+	if (rq_qos_id(q, rqos->id)) {
-+		ret = -EBUSY;
-+	} else {
-+		rqos->next = q->rq_qos;
-+		q->rq_qos = rqos;
-+		blk_queue_flag_set(QUEUE_FLAG_QOS_ENABLED, q);
-+	}
- 
-+	mutex_unlock(&q->rq_qos_mutex);
- 	blk_mq_unfreeze_queue(q, memflags);
--	return 0;
--ebusy:
--	blk_mq_unfreeze_queue(q, memflags);
--	return -EBUSY;
-+	return ret;
- }
- 
- void rq_qos_del(struct rq_qos *rqos)
-@@ -359,9 +362,9 @@ void rq_qos_del(struct rq_qos *rqos)
- 	struct rq_qos **cur;
- 	unsigned int memflags;
- 
--	lockdep_assert_held(&q->rq_qos_mutex);
--
- 	memflags = blk_mq_freeze_queue(q);
-+	mutex_lock(&q->rq_qos_mutex);
-+
- 	for (cur = &q->rq_qos; *cur; cur = &(*cur)->next) {
- 		if (*cur == rqos) {
- 			*cur = rqos->next;
-@@ -370,5 +373,7 @@ void rq_qos_del(struct rq_qos *rqos)
- 	}
- 	if (!q->rq_qos)
- 		blk_queue_flag_clear(QUEUE_FLAG_QOS_ENABLED, q);
-+
-+	mutex_unlock(&q->rq_qos_mutex);
- 	blk_mq_unfreeze_queue(q, memflags);
- }
-diff --git a/block/blk-wbt.c b/block/blk-wbt.c
-index 1415f2bf8611..a636dea27270 100644
---- a/block/blk-wbt.c
-+++ b/block/blk-wbt.c
-@@ -960,9 +960,7 @@ static int wbt_init(struct gendisk *disk, struct rq_wb *rwb)
- 	/*
- 	 * Assign rwb and add the stats callback.
- 	 */
--	mutex_lock(&q->rq_qos_mutex);
- 	ret = rq_qos_add(&rwb->rqos, disk, RQ_QOS_WBT, &wbt_rqos_ops);
--	mutex_unlock(&q->rq_qos_mutex);
- 	if (ret)
- 		return ret;
- 
--- 
-2.51.0
-
+--dg37qi5glisvi4nl--
 
