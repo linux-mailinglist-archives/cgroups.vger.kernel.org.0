@@ -1,217 +1,193 @@
-Return-Path: <cgroups+bounces-13646-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-13647-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id iKQsBr47gmmVQgMAu9opvQ
-	(envelope-from <cgroups+bounces-13646-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Tue, 03 Feb 2026 19:17:34 +0100
+	id AMLjNvCdgmlgWwMAu9opvQ
+	(envelope-from <cgroups+bounces-13647-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Wed, 04 Feb 2026 02:16:32 +0100
 X-Original-To: lists+cgroups@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 677B4DD709
-	for <lists+cgroups@lfdr.de>; Tue, 03 Feb 2026 19:17:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 57F0FE05FA
+	for <lists+cgroups@lfdr.de>; Wed, 04 Feb 2026 02:16:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id E2381308FEAE
-	for <lists+cgroups@lfdr.de>; Tue,  3 Feb 2026 18:16:23 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id EFAFA3149F91
+	for <lists+cgroups@lfdr.de>; Wed,  4 Feb 2026 01:12:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9A4A836656F;
-	Tue,  3 Feb 2026 18:16:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="Mniz/5oy"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E1A1F24A07C;
+	Wed,  4 Feb 2026 01:12:12 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-qv1-f41.google.com (mail-qv1-f41.google.com [209.85.219.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from lgeamrelo07.lge.com (lgeamrelo07.lge.com [156.147.51.103])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C30351C8626
-	for <cgroups@vger.kernel.org>; Tue,  3 Feb 2026 18:16:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9CD64244694
+	for <cgroups@vger.kernel.org>; Wed,  4 Feb 2026 01:12:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.147.51.103
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1770142582; cv=none; b=ik+CcRzJ0vYemgk345E0Zhq1hhUfhnGudOHfy6YF80GiI2kqHyKJXe4syNh3BFby3EIB6Azg302mGx8hNE2MsZMxmMMwIwbLd7Fm1QQCrrucHtUGDmEpZEBalO9Rw4M+okOIznQcLWC9Xa0sFaMH2kH4pfUZ5TH7t3wjK1ojESQ=
+	t=1770167532; cv=none; b=Ob0dNGjtKZVsktz6l+cvnUrLB3R2sJAA0zjOyxebTcqBOijTexcko4v9ZFPnAlRh8gDASbq3wJn5OqVC/Lb9KOSQunMXrM5RRmm6T6i5Ep3ZNVtPy9v4RzAuganBh4RJyLUzNtX3KjMUr1Qlkgmj8Cp4indDDMrG9EkQ9rf97uk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1770142582; c=relaxed/simple;
-	bh=Qt7o89VltFIBegDzasIbqnP3PJ+WPuTLLON/GuX+fRQ=;
+	s=arc-20240116; t=1770167532; c=relaxed/simple;
+	bh=okEvMS4+F38RGvkQSjQkSGMKTwwreNqalPT5OmUTUGg=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=YeGjnKwaXhxlxzIEe+xU/tSWvI/Dm6Ympv/nCAuTUaiPyrf6NzMU6E58YMZB545JzUmy52L3dP3h6UgDERfUbGRsnvcc/beMsuev4m/hGJsynEz/+XI1E1itCV4d4cDeZgEOvZALbtO+5mE9guGl8vUqWnic8iI3qFf8+GxYIVE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca; spf=pass smtp.mailfrom=ziepe.ca; dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b=Mniz/5oy; arc=none smtp.client-ip=209.85.219.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ziepe.ca
-Received: by mail-qv1-f41.google.com with SMTP id 6a1803df08f44-8947e6ffd30so70834846d6.0
-        for <cgroups@vger.kernel.org>; Tue, 03 Feb 2026 10:16:20 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google; t=1770142580; x=1770747380; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=mu1la4UZlbEX7cvXzj/Z/hgnRFrqjHU+qKtYtW0dmkY=;
-        b=Mniz/5oynk/qOI64zPIe8E+PNEyixk4fEB611FX5soFdbulK6R9KmPQtOu4aEAXjcB
-         efjpn/kLP3vsSPGaHohVu6/Rt0K9qXP7QtNggw4Y7iGiQ+lb7Btklx97aDYTLAlUztFI
-         h5yvBEF6xvd6QNj3f/5Rq9dS5pMAQ/wKBPWuMCDaLEXtmpFbJnXArLI2UIvYnmp155Zy
-         0b+yLcNYyG0uUnOruupOuHumm/8Fat9UIruRUI37sLCEsgtmT6QSkgWJF1h0NEiROxuz
-         1abL4IMKxz9NUHd0G1V4nEtr6+1cDHCJ7YB1uyGxhcm0aubd+Dk72keMw16xEPt7BDo4
-         yQIw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1770142580; x=1770747380;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=mu1la4UZlbEX7cvXzj/Z/hgnRFrqjHU+qKtYtW0dmkY=;
-        b=i/rTScW+JiqmnNaLvftVXJyFpEgbGNYQR7TmjkQzaKJftTOLZ5sGuy0IL0MdmZxDTL
-         HY62vHV5ePXfUfgewvqW5/53YxRLbJFJVB+PkEJcn+7s/72zf6OKSddbB6+HOdMH7gWg
-         G4zhywNmPyNRwY4ELT/ltbPdk+vf/+t0bW4P+OVQ8VdkS0/5zjEKQq8iVcyWivDWQok1
-         UtxNH7yTujdIqsRASwHRKq8kaisZZFcPzWu0DAeE5uZc7u974ouyOreRBRWxejms4amj
-         EsA7CkaLW8uf4OXExRdpDG1fRxNLtBVYLHcKSNtLh7YzFZv0Ni5Karnd8+k2d5pOE+Z5
-         ac/g==
-X-Forwarded-Encrypted: i=1; AJvYcCV7ozC+DEgg5eaEu7gzXf52HvRlLnakpA+QpRnk0Dlbh/WhRhQNdv87ScSOf51myDFwA5DdJpUa@vger.kernel.org
-X-Gm-Message-State: AOJu0YwMouA6/RuSiKlmVU0OHmCmwBadjWb/u8OEuyGzTTLiPiRHc1XD
-	VBY5+gsFmDGB53xZOQt8eHwALZSyqYaK9+noaUCjhEy2qKBbf748jDsTMW+1mr02wWM=
-X-Gm-Gg: AZuq6aLSgZ2D4asKofkeWpyHLC9pZLv02gxMnsSxtjghc0/7BldQZ7GS3IRYchL3I+6
-	zfKX4687bq44rEFBKoIUJYANxhu/t+/ay+DpLfrolZJjbLNfeJaCKtpLUOQJDROa0vYHUN5Rq99
-	O5U+X2Fwc5Bu8TLUJQLZhumGWSbyRyfUsKnz+Blngx59iL+tt19V/VblQpU5ec4vCjax15YO/aH
-	7jpfFcdp/zAF1R49AOQ6TJWAe/iY5padW5u/AQ5Fs89g19enlghUhGxiCd+9yM3P3DXq0sNUgAk
-	VgDX3DF+/3penH175AHYVqR+2y9ePnuc/ZvURHSFAHosErnREkO86dCKh9ZzdIAP87J9dvKXc2s
-	cgOVZDQtvOimvuNQyzYwircNYvavWryfwe/ofGrYNJJk1A4MNmgSkZCkJybam8nb6ACMyLf6ITD
-	3fSGj2kxYIC8SB05my4drCkgZq6fFD8IyQFbjrONVQEjgfEqKtt0H9gE/f35tY4M6WxHM=
-X-Received: by 2002:a05:6214:20ab:b0:87c:22f9:dac4 with SMTP id 6a1803df08f44-8952210b4a5mr5192876d6.15.1770142579616;
-        Tue, 03 Feb 2026 10:16:19 -0800 (PST)
-Received: from ziepe.ca (hlfxns017vw-142-162-112-119.dhcp-dynamic.fibreop.ns.bellaliant.net. [142.162.112.119])
-        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-89521c00173sm2728446d6.12.2026.02.03.10.16.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 03 Feb 2026 10:16:18 -0800 (PST)
-Received: from jgg by wakko with local (Exim 4.97)
-	(envelope-from <jgg@ziepe.ca>)
-	id 1vnKwk-0000000Gah4-0kfw;
-	Tue, 03 Feb 2026 14:16:18 -0400
-Date: Tue, 3 Feb 2026 14:16:18 -0400
-From: Jason Gunthorpe <jgg@ziepe.ca>
-To: Xu Yilun <yilun.xu@linux.intel.com>
-Cc: Sean Christopherson <seanjc@google.com>,
-	Ackerley Tng <ackerleytng@google.com>,
-	Alexey Kardashevskiy <aik@amd.com>, cgroups@vger.kernel.org,
-	kvm@vger.kernel.org, linux-doc@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-kselftest@vger.kernel.org, linux-mm@kvack.org,
-	linux-trace-kernel@vger.kernel.org, x86@kernel.org,
-	akpm@linux-foundation.org, binbin.wu@linux.intel.com, bp@alien8.de,
-	brauner@kernel.org, chao.p.peng@intel.com, chenhuacai@kernel.org,
-	corbet@lwn.net, dave.hansen@intel.com, dave.hansen@linux.intel.com,
-	david@redhat.com, dmatlack@google.com, erdemaktas@google.com,
-	fan.du@intel.com, fvdl@google.com, haibo1.xu@intel.com,
-	hannes@cmpxchg.org, hch@infradead.org, hpa@zytor.com,
-	hughd@google.com, ira.weiny@intel.com, isaku.yamahata@intel.com,
-	jack@suse.cz, james.morse@arm.com, jarkko@kernel.org,
-	jgowans@amazon.com, jhubbard@nvidia.com, jroedel@suse.de,
-	jthoughton@google.com, jun.miao@intel.com, kai.huang@intel.com,
-	keirf@google.com, kent.overstreet@linux.dev,
-	liam.merwick@oracle.com, maciej.wieczor-retman@intel.com,
-	mail@maciej.szmigiero.name, maobibo@loongson.cn,
-	mathieu.desnoyers@efficios.com, maz@kernel.org, mhiramat@kernel.org,
-	mhocko@kernel.org, mic@digikod.net, michael.roth@amd.com,
-	mingo@redhat.com, mlevitsk@redhat.com, mpe@ellerman.id.au,
-	muchun.song@linux.dev, nikunj@amd.com, nsaenz@amazon.es,
-	oliver.upton@linux.dev, palmer@dabbelt.com, pankaj.gupta@amd.com,
-	paul.walmsley@sifive.com, pbonzini@redhat.com, peterx@redhat.com,
-	pgonda@google.com, prsampat@amd.com, pvorel@suse.cz,
-	qperret@google.com, richard.weiyang@gmail.com,
-	rick.p.edgecombe@intel.com, rientjes@google.com,
-	rostedt@goodmis.org, roypat@amazon.co.uk, rppt@kernel.org,
-	shakeel.butt@linux.dev, shuah@kernel.org, steven.price@arm.com,
-	steven.sistare@oracle.com, suzuki.poulose@arm.com, tabba@google.com,
-	tglx@linutronix.de, thomas.lendacky@amd.com, vannapurve@google.com,
-	vbabka@suse.cz, viro@zeniv.linux.org.uk, vkuznets@redhat.com,
-	wei.w.wang@intel.com, will@kernel.org, willy@infradead.org,
-	wyihan@google.com, xiaoyao.li@intel.com, yan.y.zhao@intel.com,
-	yilun.xu@intel.com, yuzenghui@huawei.com, zhiquan1.li@intel.com
-Subject: Re: [RFC PATCH v1 05/37] KVM: guest_memfd: Wire up
- kvm_get_memory_attributes() to per-gmem attributes
-Message-ID: <20260203181618.GY2328995@ziepe.ca>
-References: <cover.1760731772.git.ackerleytng@google.com>
- <071a3c6603809186e914fe5fed939edee4e11988.1760731772.git.ackerleytng@google.com>
- <07836b1d-d0d8-40f2-8f7b-7805beca31d0@amd.com>
- <CAEvNRgEuez=JbArRf2SApLAL0usv5-Q6q=nBPOFMHrHGaKAtMw@mail.gmail.com>
- <20260129003753.GZ1641016@ziepe.ca>
- <aXqx3_eE0rNh6nP0@google.com>
- <aYHGVQTF6RUs7r3g@yilunxu-OptiPlex-7050>
+	 Content-Type:Content-Disposition:In-Reply-To; b=QhNevyXzX5WVCdDo7C4HY55CBH0LVI+5LKlArEh78mLCXMQV+XBfX054rOC4aB5uKTXUylp7Y6qtmplpBuXvGCuX6ERWPKWZ6Dg4LqIs4bxYiqa3vvbaffZRdhu7Zex+HkuwsL5kzne/KnYU87cqQ5br7EEUefwNecUpGkf3A3Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lge.com; spf=pass smtp.mailfrom=lge.com; arc=none smtp.client-ip=156.147.51.103
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lge.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lge.com
+Received: from unknown (HELO yjaykim-PowerEdge-T330) (10.177.112.156)
+	by 156.147.51.103 with ESMTP; 4 Feb 2026 10:12:00 +0900
+X-Original-SENDERIP: 10.177.112.156
+X-Original-MAILFROM: youngjun.park@lge.com
+Date: Wed, 4 Feb 2026 10:11:59 +0900
+From: YoungJun Park <youngjun.park@lge.com>
+To: Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
+Cc: akpm@linux-foundation.org, chrisl@kernel.org, kasong@tencent.com,
+	hannes@cmpxchg.org, mhocko@kernel.org, roman.gushchin@linux.dev,
+	shakeel.butt@linux.dev, muchun.song@linux.dev,
+	shikemeng@huaweicloud.com, nphamcs@gmail.com, bhe@redhat.com,
+	baohua@kernel.org, cgroups@vger.kernel.org, linux-mm@kvack.org,
+	linux-kernel@vger.kernel.org, gunho.lee@lge.com,
+	taejoon.song@lge.com, youngjun.park@lge.com
+Subject: Re: [RFC PATCH v3 3/5] mm: memcontrol: add interface for swap tier
+ selection
+Message-ID: <aYKc3yFmlZzKG3wr@yjaykim-PowerEdge-T330>
+References: <20260131125454.3187546-1-youngjun.park@lge.com>
+ <20260131125454.3187546-4-youngjun.park@lge.com>
+ <ixlef27mi6vm5pek775kyddai7rkzls6mjo434rvwwp5gulcp5@n3uzy35ta7me>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <aYHGVQTF6RUs7r3g@yilunxu-OptiPlex-7050>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <ixlef27mi6vm5pek775kyddai7rkzls6mjo434rvwwp5gulcp5@n3uzy35ta7me>
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-0.16 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
+X-Spamd-Result: default: False [-0.86 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+	MID_RHS_NOT_FQDN(0.50)[];
 	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
-	R_DKIM_ALLOW(-0.20)[ziepe.ca:s=google];
 	MAILLIST(-0.15)[generic];
+	DMARC_POLICY_SOFTFAIL(0.10)[lge.com : SPF not aligned (relaxed), No valid DKIM,none];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FREEMAIL_CC(0.00)[google.com,amd.com,vger.kernel.org,kvack.org,kernel.org,linux-foundation.org,linux.intel.com,alien8.de,intel.com,lwn.net,redhat.com,cmpxchg.org,infradead.org,zytor.com,suse.cz,arm.com,amazon.com,nvidia.com,suse.de,linux.dev,oracle.com,maciej.szmigiero.name,loongson.cn,efficios.com,digikod.net,ellerman.id.au,amazon.es,dabbelt.com,sifive.com,gmail.com,goodmis.org,amazon.co.uk,linutronix.de,zeniv.linux.org.uk,huawei.com];
-	DKIM_TRACE(0.00)[ziepe.ca:+];
-	MIME_TRACE(0.00)[0:+];
-	DMARC_NA(0.00)[ziepe.ca];
-	FORGED_SENDER_MAILLIST(0.00)[];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-13646-lists,cgroups=lfdr.de];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	MISSING_XM_UA(0.00)[];
 	FROM_HAS_DN(0.00)[];
+	RCVD_COUNT_THREE(0.00)[4];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-13647-lists,cgroups=lfdr.de];
+	RCPT_COUNT_TWELVE(0.00)[19];
+	MIME_TRACE(0.00)[0:+];
+	FREEMAIL_CC(0.00)[linux-foundation.org,kernel.org,tencent.com,cmpxchg.org,linux.dev,huaweicloud.com,gmail.com,redhat.com,vger.kernel.org,kvack.org,lge.com];
+	MISSING_XM_UA(0.00)[];
 	TO_DN_SOME(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[6];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[jgg@ziepe.ca,cgroups@vger.kernel.org];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	RCPT_COUNT_GT_50(0.00)[98];
-	MID_RHS_MATCH_FROM(0.00)[];
-	NEURAL_HAM(-0.00)[-1.000];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[youngjun.park@lge.com,cgroups@vger.kernel.org];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	NEURAL_HAM(-0.00)[-0.980];
 	TAGGED_RCPT(0.00)[cgroups];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[ziepe.ca:mid,ziepe.ca:dkim,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 677B4DD709
+	R_DKIM_NA(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[lge.com:email,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: 57F0FE05FA
 X-Rspamd-Action: no action
 
-On Tue, Feb 03, 2026 at 05:56:37PM +0800, Xu Yilun wrote:
-> > +1.  For guest_memfd, we initially defined per-VM memory attributes to track
-> > private vs. shared.  But as Ackerley noted, we are in the process of deprecating
-> > that support, e.g. by making it incompatible with various guest_memfd features,
-> > in favor of having each guest_memfd instance track the state of a given page.
-> > 
-> > The original guest_memfd design was that it would _only_ hold private pages, and
-> > so tracking private vs. shared in guest_memfd didn't make any sense.  As we've
-> > pivoted to in-place conversion, tracking private vs. shared in the guest_memfd
-> > has basically become mandatory.  We could maaaaaybe make it work with per-VM
-> > attributes, but it would be insanely complex.
-> > 
-> > For a dmabuf fd, the story is the same as guest_memfd.  Unless private vs. shared
-> > is all or nothing, and can never change, then the only entity that can track that
-> > info is the owner of the dmabuf.  And even if the private vs. shared attributes
-> > are constant, tracking it external to KVM makes sense, because then the provider
-> > can simply hardcode %true/%false.  
+On Tue, Feb 03, 2026 at 11:54:41AM +0100, Michal Koutný wrote:
+> Hi.
 > 
-> For CoCo-VM and Tee-IO, I'm wondering if host or KVM has to maintain
-> the private/shared attribute for "assigned MMIO". I'm not naming them
-> "host MMIO" cause unlike RAM host never needs to access them, either in
-> private manner or shared manner.
+> This is merely the API feedback.
 > 
-> Traditionally, host maps these MMIOs only because KVM needs HVA->HPA
-> mapping to find pfn and setup KVM MMU.
+> (Feedback to the propsed form, I'm not sure whether/how this should
+> interact with memory.swap.max (formally cf io.weight).)
+> 
+> On Sat, Jan 31, 2026 at 09:54:52PM +0900, Youngjun Park <youngjun.park@lge.com> wrote:
+> > This patch integrates the swap tier infrastructure with cgroup,
+> > enabling the selection of specific swap devices per cgroup by
+> > configuring allowed swap tiers.
+> > 
+> > The new `memory.swap.tiers` interface controls allowed swap tiers via a mask.
+> > By default, the mask is set to include all tiers, allowing specific tiers to
+> > be excluded or restored. Note that effective tiers are calculated separately
+> > using a dedicated mask to respect the cgroup hierarchy. Consequently,
+> > configured tiers may differ from effective ones, as they must be a subset
+> > of the parent's.
+> > 
+> > Note that cgroups do not pin swap tiers. This is similar to the
+> > `cpuset` controller, which does not prevent CPU hotplug. This
+> > approach ensures flexibility by allowing tier configuration changes
+> > regardless of cgroup usage.
+> > 
+> > Signed-off-by: Youngjun Park <youngjun.park@lge.com>
+> > ---
+> >  Documentation/admin-guide/cgroup-v2.rst | 27 ++++++++
+> >  include/linux/memcontrol.h              |  3 +-
+> >  mm/memcontrol.c                         | 85 +++++++++++++++++++++++
+> >  mm/swap_state.c                         |  6 +-
+> >  mm/swap_tier.c                          | 89 ++++++++++++++++++++++++-
+> >  mm/swap_tier.h                          | 39 ++++++++++-
+> >  mm/swapfile.c                           |  4 ++
+> >  7 files changed, 246 insertions(+), 7 deletions(-)
+> > 
+> > diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admin-guide/cgroup-v2.rst
+> > index 7f5b59d95fce..776a908ce1b9 100644
+> > --- a/Documentation/admin-guide/cgroup-v2.rst
+> > +++ b/Documentation/admin-guide/cgroup-v2.rst
+> > @@ -1848,6 +1848,33 @@ The following nested keys are defined.
+> >  	Swap usage hard limit.  If a cgroup's swap usage reaches this
+> >  	limit, anonymous memory of the cgroup will not be swapped out.
+> >  
+> > +  memory.swap.tiers
+> > +        A read-write nested-keyed file which exists on non-root
+> 
+> "nested-keyed" format is something else in this document's lingo, see
+> e.g. io.stat.
+> 
+> I think you wanted to make this resemble cgroup.subtree_control (which
+> is fine).
 
-This is not actually completely true, the host mapping still ends up
-being used by KVM if it happens to trap and emulate a MMIO touching
-instruction.
+You are right, I used the wrong expression. 
+Simply describing it as a "file" seems sufficient.
 
-It really shouldn't do this, but there is a whole set of complex
-machinery in KVM and qemu to handle this case.
+> 
+> > +        cgroups. The default is to enable all tiers.
+> > +
+> > +        This interface allows selecting which swap tiers a cgroup can
+> > +        use for swapping out memory.
+> > +
+> > +        The effective tiers are inherited from the parent. Only tiers
+> > +        effective in the parent can be effective in the child. However,
+> > +        the child can explicitly disable tiers allowed by the parent.
+> > +
+> > +        When read, the file shows two lines:
+> > +          - The first line shows the operation string that was
+> > +            written to this file.
+> > +          - The second line shows the effective operation after
+> > +            merging with parent settings.
+> 
+> The convention (in cpuset) is to split it in two files like
+> memory.swap.tiers and memory.swap.tiers.effective.
 
-For example if the MSI-X window is not properly aligned then you have
-some MMIO that is trapped and must be reflected to real HW.
+I will separate the two according to the convention. 
+Thanks for correction.
 
-So the sharable parts of the BAR should still end up being mmaped into
-userspace, I think.
+> > +
+> > +        When writing, the format is:
+> > +          (+/-)(TIER_NAME) (+/-)(TIER_NAME) ...
+> > +
+> > +        Valid tier names are those configured in
+> > +        /sys/kernel/mm/swap/tiers.
+> > +
+> > +        Each tier can be prefixed with:
+> > +          +    Enable this tier
+> > +          -    Disable this tier
+> > +
+> 
+> I believe these are only superficial adjustments not affecting the
+> implementation.
+> 
+> Thanks,
+> Michal
 
-Which means we need VFIO to know what they are, and hopefully it is
-just static based on the TDISP reports..
-
-Jason
+Thanks for the review, Michal.
+Youngjun Park
 
