@@ -1,274 +1,215 @@
-Return-Path: <cgroups+bounces-13651-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-13655-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id +J5XEQ+9gmk4ZgMAu9opvQ
-	(envelope-from <cgroups+bounces-13651-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Wed, 04 Feb 2026 04:29:19 +0100
+	id yFM3KuLSgml5cQMAu9opvQ
+	(envelope-from <cgroups+bounces-13655-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Wed, 04 Feb 2026 06:02:26 +0100
 X-Original-To: lists+cgroups@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9D76FE1419
-	for <lists+cgroups@lfdr.de>; Wed, 04 Feb 2026 04:29:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2F1D3E1A3B
+	for <lists+cgroups@lfdr.de>; Wed, 04 Feb 2026 06:02:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id C2BAE3121824
-	for <lists+cgroups@lfdr.de>; Wed,  4 Feb 2026 03:28:07 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 35A873038F42
+	for <lists+cgroups@lfdr.de>; Wed,  4 Feb 2026 05:02:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 087192E0407;
-	Wed,  4 Feb 2026 03:28:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E9B7350D6B;
+	Wed,  4 Feb 2026 05:02:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="mVgo4JZw"
 X-Original-To: cgroups@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.20])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2ECD92DECA0;
-	Wed,  4 Feb 2026 03:28:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD22C34F257;
+	Wed,  4 Feb 2026 05:02:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.20
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1770175686; cv=none; b=V8NCpPJ0m1MOyOPsiHTM8bqCTe99khixrAMI3hThfRjd9Sx39G2+VH8LR3Cc1Gam7x31PYT/Smtq9STnDdL4HsVca/caqGz1YMStge7EBdf+xkS09NUNAlm9d+G6Z2Z1XsEwKOqTKUz0bO5TSNuuZ6VHSCZsvui/JSJlArtjZCs=
+	t=1770181334; cv=none; b=k3TQ0TNzvgQrVpSj4S38IBt/s5qC9I5rxmxCSHEQonZwUGRO1BWSU9cbmwC6u0ihNGUBnzSCDzYOgF2d5WBanvyyQxAzrkMVrf1Ry31ujrnR9GNEgBFrA6uGHF/otaXMVtJ2koJtDalS5y3+XZTLN2WNLWQcTPNNOHaqPICc2Ws=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1770175686; c=relaxed/simple;
-	bh=HC5jeYQAu3u6Y01BVOW+OAVSxxRAV1q5oOHjgOxLllw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=grNlo1WxxcP3EfSfBiBckdbsUC66c6P/vEG/xj+tdGWDJwJQvwIUDZZb8dc1gB14LsZVHD61aaySXBCS0dW7H4BjAKh+gq4T1MDK7EcizA/fbw1VIZN0S1hHkKS+H75l0nsb7X1mR9b3fn7elar82W/oS+mk8+Y4Ce6SS/DPYT4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.170])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTPS id 4f5Ql54W74zYQtkM;
-	Wed,  4 Feb 2026 11:27:13 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.112])
-	by mail.maildlp.com (Postfix) with ESMTP id 0BF184056E;
-	Wed,  4 Feb 2026 11:28:02 +0800 (CST)
-Received: from [10.67.111.176] (unknown [10.67.111.176])
-	by APP1 (Coremail) with SMTP id cCh0CgD3ZevAvIJpAthnGA--.16729S2;
-	Wed, 04 Feb 2026 11:28:01 +0800 (CST)
-Message-ID: <bddeef2f-1bde-480d-ba36-c0a59b6467b3@huaweicloud.com>
-Date: Wed, 4 Feb 2026 11:27:59 +0800
+	s=arc-20240116; t=1770181334; c=relaxed/simple;
+	bh=BssClzJli42sqwnuhq7EEp2oGu8Z3L8cVPtpreDMGtc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=EMEmgBok5BMinqtA/PK1ZNMeHYkK8Sr4VkRzbcwu5FbfjJfB3TqfGIQBSXrtm83sgH1GzCCzprpVcNX6ZdynrNTSUlV6QlKdpn03MZEAWOjbv2Dtr6GNYawHQx0JeN0ZEoQkPvZCik3JrfdJ6oBYKi3vuHWaggjHx5SSE0p9PfE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=pass smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=mVgo4JZw; arc=none smtp.client-ip=198.175.65.20
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1770181334; x=1801717334;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=BssClzJli42sqwnuhq7EEp2oGu8Z3L8cVPtpreDMGtc=;
+  b=mVgo4JZwFyU56rcObsmZRQVRlWYJGQiWb+dOGnrZg0ONCbgf/rPeTBj9
+   vb6UtP4JjGW6BVXQTbZjqbu2WjN3SLNHNVqVsfktj5ARuulkbNHADqtKV
+   VLzBbmXUiB+fMFjjEsEwNX9KTJ5RQMJIQ7FLOLChdXKUSxTHgCMqMVeaK
+   Bm6smQqgLZuxg7WaRyPSiq2Jjjjl/wp3rimW8Ke4ml/IVqGbfJtM4IEGJ
+   ok7coKSNpIgSELHUK3JsyzH6tgLu/UGWUG0nBGlxoAs29M5ltAsaDlpXb
+   cvKz6GdMfLqToH41rZD8OFkuWddRIIZt9RkBFo+SUxq6W4zM2yB1zUFBP
+   w==;
+X-CSE-ConnectionGUID: l/PZ6WedTyueOgh/uO1g1w==
+X-CSE-MsgGUID: 4rWHnChQRHGPOjkfHOmxdQ==
+X-IronPort-AV: E=McAfee;i="6800,10657,11691"; a="71086376"
+X-IronPort-AV: E=Sophos;i="6.21,272,1763452800"; 
+   d="scan'208";a="71086376"
+Received: from orviesa002.jf.intel.com ([10.64.159.142])
+  by orvoesa112.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Feb 2026 21:02:13 -0800
+X-CSE-ConnectionGUID: r6WIlB3hRYOB1WMvBCSX1g==
+X-CSE-MsgGUID: 4L+xrWR+RMKF3IcyS644EA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.21,272,1763452800"; 
+   d="scan'208";a="240739427"
+Received: from yilunxu-optiplex-7050.sh.intel.com (HELO localhost) ([10.239.159.165])
+  by orviesa002.jf.intel.com with ESMTP; 03 Feb 2026 21:01:47 -0800
+Date: Wed, 4 Feb 2026 12:43:16 +0800
+From: Xu Yilun <yilun.xu@linux.intel.com>
+To: Jason Gunthorpe <jgg@ziepe.ca>
+Cc: Sean Christopherson <seanjc@google.com>,
+	Ackerley Tng <ackerleytng@google.com>,
+	Alexey Kardashevskiy <aik@amd.com>, cgroups@vger.kernel.org,
+	kvm@vger.kernel.org, linux-doc@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-kselftest@vger.kernel.org, linux-mm@kvack.org,
+	linux-trace-kernel@vger.kernel.org, x86@kernel.org,
+	akpm@linux-foundation.org, binbin.wu@linux.intel.com, bp@alien8.de,
+	brauner@kernel.org, chao.p.peng@intel.com, chenhuacai@kernel.org,
+	corbet@lwn.net, dave.hansen@intel.com, dave.hansen@linux.intel.com,
+	david@redhat.com, dmatlack@google.com, erdemaktas@google.com,
+	fan.du@intel.com, fvdl@google.com, haibo1.xu@intel.com,
+	hannes@cmpxchg.org, hch@infradead.org, hpa@zytor.com,
+	hughd@google.com, ira.weiny@intel.com, isaku.yamahata@intel.com,
+	jack@suse.cz, james.morse@arm.com, jarkko@kernel.org,
+	jgowans@amazon.com, jhubbard@nvidia.com, jroedel@suse.de,
+	jthoughton@google.com, jun.miao@intel.com, kai.huang@intel.com,
+	keirf@google.com, kent.overstreet@linux.dev,
+	liam.merwick@oracle.com, maciej.wieczor-retman@intel.com,
+	mail@maciej.szmigiero.name, maobibo@loongson.cn,
+	mathieu.desnoyers@efficios.com, maz@kernel.org, mhiramat@kernel.org,
+	mhocko@kernel.org, mic@digikod.net, michael.roth@amd.com,
+	mingo@redhat.com, mlevitsk@redhat.com, mpe@ellerman.id.au,
+	muchun.song@linux.dev, nikunj@amd.com, nsaenz@amazon.es,
+	oliver.upton@linux.dev, palmer@dabbelt.com, pankaj.gupta@amd.com,
+	paul.walmsley@sifive.com, pbonzini@redhat.com, peterx@redhat.com,
+	pgonda@google.com, prsampat@amd.com, pvorel@suse.cz,
+	qperret@google.com, richard.weiyang@gmail.com,
+	rick.p.edgecombe@intel.com, rientjes@google.com,
+	rostedt@goodmis.org, roypat@amazon.co.uk, rppt@kernel.org,
+	shakeel.butt@linux.dev, shuah@kernel.org, steven.price@arm.com,
+	steven.sistare@oracle.com, suzuki.poulose@arm.com, tabba@google.com,
+	tglx@linutronix.de, thomas.lendacky@amd.com, vannapurve@google.com,
+	vbabka@suse.cz, viro@zeniv.linux.org.uk, vkuznets@redhat.com,
+	wei.w.wang@intel.com, will@kernel.org, willy@infradead.org,
+	wyihan@google.com, xiaoyao.li@intel.com, yan.y.zhao@intel.com,
+	yilun.xu@intel.com, yuzenghui@huawei.com, zhiquan1.li@intel.com
+Subject: Re: [RFC PATCH v1 05/37] KVM: guest_memfd: Wire up
+ kvm_get_memory_attributes() to per-gmem attributes
+Message-ID: <aYLOZIZU0nwk+0UN@yilunxu-OptiPlex-7050>
+References: <cover.1760731772.git.ackerleytng@google.com>
+ <071a3c6603809186e914fe5fed939edee4e11988.1760731772.git.ackerleytng@google.com>
+ <07836b1d-d0d8-40f2-8f7b-7805beca31d0@amd.com>
+ <CAEvNRgEuez=JbArRf2SApLAL0usv5-Q6q=nBPOFMHrHGaKAtMw@mail.gmail.com>
+ <20260129003753.GZ1641016@ziepe.ca>
+ <aXqx3_eE0rNh6nP0@google.com>
+ <aYHGVQTF6RUs7r3g@yilunxu-OptiPlex-7050>
+ <20260203181618.GY2328995@ziepe.ca>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH/for-next v3 2/3] cgroup/cpuset: Defer
- housekeeping_update() calls from CPU hotplug to workqueue
-To: Waiman Long <longman@redhat.com>, Tejun Heo <tj@kernel.org>,
- Johannes Weiner <hannes@cmpxchg.org>, =?UTF-8?Q?Michal_Koutn=C3=BD?=
- <mkoutny@suse.com>, Ingo Molnar <mingo@redhat.com>,
- Peter Zijlstra <peterz@infradead.org>, Juri Lelli <juri.lelli@redhat.com>,
- Vincent Guittot <vincent.guittot@linaro.org>,
- Steven Rostedt <rostedt@goodmis.org>, Ben Segall <bsegall@google.com>,
- Mel Gorman <mgorman@suse.de>, Valentin Schneider <vschneid@redhat.com>,
- Anna-Maria Behnsen <anna-maria@linutronix.de>,
- Frederic Weisbecker <frederic@kernel.org>,
- Thomas Gleixner <tglx@linutronix.de>, Shuah Khan <shuah@kernel.org>
-Cc: cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-kselftest@vger.kernel.org
-References: <20260202201144.1669260-1-longman@redhat.com>
- <20260202201144.1669260-3-longman@redhat.com>
-Content-Language: en-US
-From: Chen Ridong <chenridong@huaweicloud.com>
-In-Reply-To: <20260202201144.1669260-3-longman@redhat.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID:cCh0CgD3ZevAvIJpAthnGA--.16729S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxKw43tF1fGr43Jr1kJrW3trb_yoW7KFW3pF
-	y8KrWSyrW5Kr13uasa93srXr4F9ws7J3W7twsxGr1UZF13KFn29r1vqrnxJrWrur98urW5
-	ZF9xG39xWa1jyrDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUvjb4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
-	0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
-	x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
-	0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc7CjxVAaw2AF
-	wI0_GFv_Wryl42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4
-	xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a6rW5
-	MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I
-	0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWU
-	JVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUIa
-	0PDUUUU
-X-CM-SenderInfo: hfkh02xlgr0w46kxt4xhlfz01xgou0bp/
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20260203181618.GY2328995@ziepe.ca>
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-1.46 / 15.00];
+X-Spamd-Result: default: False [-0.16 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+	MID_RHS_NOT_FQDN(0.50)[];
+	DMARC_POLICY_ALLOW(-0.50)[intel.com,none];
+	R_DKIM_ALLOW(-0.20)[intel.com:s=Intel];
 	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	NEURAL_HAM(-0.00)[-0.990];
-	FORGED_SENDER_MAILLIST(0.00)[];
+	FREEMAIL_CC(0.00)[google.com,amd.com,vger.kernel.org,kvack.org,kernel.org,linux-foundation.org,linux.intel.com,alien8.de,intel.com,lwn.net,redhat.com,cmpxchg.org,infradead.org,zytor.com,suse.cz,arm.com,amazon.com,nvidia.com,suse.de,linux.dev,oracle.com,maciej.szmigiero.name,loongson.cn,efficios.com,digikod.net,ellerman.id.au,amazon.es,dabbelt.com,sifive.com,gmail.com,goodmis.org,amazon.co.uk,linutronix.de,zeniv.linux.org.uk,huawei.com];
 	FROM_HAS_DN(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	TO_DN_SOME(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[19];
-	TAGGED_RCPT(0.00)[cgroups];
-	MID_RHS_MATCH_FROM(0.00)[];
-	R_DKIM_NA(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[chenridong@huaweicloud.com,cgroups@vger.kernel.org];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[6];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-13651-lists,cgroups=lfdr.de];
-	DMARC_NA(0.00)[huaweicloud.com];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[huaweicloud.com:mid,test_cpuset_prs.sh:url,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 9D76FE1419
+	TAGGED_FROM(0.00)[bounces-13655-lists,cgroups=lfdr.de];
+	MIME_TRACE(0.00)[0:+];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	DKIM_TRACE(0.00)[intel.com:+];
+	MISSING_XM_UA(0.00)[];
+	TO_DN_SOME(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[5];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[yilun.xu@linux.intel.com,cgroups@vger.kernel.org];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	RCPT_COUNT_GT_50(0.00)[98];
+	TAGGED_RCPT(0.00)[cgroups];
+	NEURAL_HAM(-0.00)[-0.999];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,intel.com:dkim]
+X-Rspamd-Queue-Id: 2F1D3E1A3B
 X-Rspamd-Action: no action
 
-
-
-On 2026/2/3 4:11, Waiman Long wrote:
-> The update_isolation_cpumasks() function can be called either directly
-> from regular cpuset control file write with cpuset_full_lock() called
-> or via the CPU hotplug path with cpus_write_lock and cpuset_mutex held.
+On Tue, Feb 03, 2026 at 02:16:18PM -0400, Jason Gunthorpe wrote:
+> On Tue, Feb 03, 2026 at 05:56:37PM +0800, Xu Yilun wrote:
+> > > +1.  For guest_memfd, we initially defined per-VM memory attributes to track
+> > > private vs. shared.  But as Ackerley noted, we are in the process of deprecating
+> > > that support, e.g. by making it incompatible with various guest_memfd features,
+> > > in favor of having each guest_memfd instance track the state of a given page.
+> > > 
+> > > The original guest_memfd design was that it would _only_ hold private pages, and
+> > > so tracking private vs. shared in guest_memfd didn't make any sense.  As we've
+> > > pivoted to in-place conversion, tracking private vs. shared in the guest_memfd
+> > > has basically become mandatory.  We could maaaaaybe make it work with per-VM
+> > > attributes, but it would be insanely complex.
+> > > 
+> > > For a dmabuf fd, the story is the same as guest_memfd.  Unless private vs. shared
+> > > is all or nothing, and can never change, then the only entity that can track that
+> > > info is the owner of the dmabuf.  And even if the private vs. shared attributes
+> > > are constant, tracking it external to KVM makes sense, because then the provider
+> > > can simply hardcode %true/%false.  
+> > 
+> > For CoCo-VM and Tee-IO, I'm wondering if host or KVM has to maintain
+> > the private/shared attribute for "assigned MMIO". I'm not naming them
+> > "host MMIO" cause unlike RAM host never needs to access them, either in
+> > private manner or shared manner.
+> > 
+> > Traditionally, host maps these MMIOs only because KVM needs HVA->HPA
+> > mapping to find pfn and setup KVM MMU.
 > 
-> As we are going to enable dynamic update to the nozh_full housekeeping
-> cpumask (HK_TYPE_KERNEL_NOISE) soon with the help of CPU hotplug,
-> allowing the CPU hotplug path to call into housekeeping_update() directly
-> from update_isolation_cpumasks() will likely cause deadlock. So we
-> have to defer any call to housekeeping_update() after the CPU hotplug
-> operation has finished. This is now done via the workqueue where
-> the actual housekeeping_update() call, if needed, will happen after
-> cpus_write_lock is released.
+> This is not actually completely true, the host mapping still ends up
+> being used by KVM if it happens to trap and emulate a MMIO touching
+> instruction.
 > 
-> We can't use the synchronous task_work API as call from CPU hotplug
-> path happen in the per-cpu kthread of the CPU that is being shut down
-> or brought up. Because of the asynchronous nature of workqueue, the
-> HK_TYPE_DOMAIN housekeeping cpumask will be updated a bit later than the
-> "cpuset.cpus.isolated" control file in this case.
+> It really shouldn't do this, but there is a whole set of complex
+> machinery in KVM and qemu to handle this case.
 > 
-> Also add a check in test_cpuset_prs.sh and modify some existing
-> test cases to confirm that "cpuset.cpus.isolated" and HK_TYPE_DOMAIN
-> housekeeping cpumask will both be updated.
+> For example if the MSI-X window is not properly aligned then you have
+> some MMIO that is trapped and must be reflected to real HW.
+
+In this case, the affected pages are not assigned MMIOs and KVM won't
+import them. Mapping them is just OK.
+
 > 
-> Signed-off-by: Waiman Long <longman@redhat.com>
-> ---
->  kernel/cgroup/cpuset.c                        | 37 +++++++++++++++++--
->  .../selftests/cgroup/test_cpuset_prs.sh       | 13 +++++--
->  2 files changed, 44 insertions(+), 6 deletions(-)
+> So the sharable parts of the BAR should still end up being mmaped into
+> userspace, I think.
+
+This does mean we can't make VFIO totally unmappable. But VFIO can still
+try to create unmappable dmabufs for assigned MMIO regions, fail dmabuf
+creation or fail mmap() based on the addresses.
+
 > 
-> diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
-> index d705c5ba64a7..e98a2e953392 100644
-> --- a/kernel/cgroup/cpuset.c
-> +++ b/kernel/cgroup/cpuset.c
-> @@ -1302,6 +1302,17 @@ static bool prstate_housekeeping_conflict(int prstate, struct cpumask *new_cpus)
->  	return false;
->  }
->  
-> +static void isolcpus_workfn(struct work_struct *work)
-> +{
-> +	cpuset_full_lock();
-> +	if (isolated_cpus_updating) {
-> +		isolated_cpus_updating = false;
-> +		WARN_ON_ONCE(housekeeping_update(isolated_cpus) < 0);
-> +		rebuild_sched_domains_locked();
-> +	}
-> +	cpuset_full_unlock();
-> +}
-> +
->  /*
->   * update_isolation_cpumasks - Update external isolation related CPU masks
->   *
-> @@ -1310,14 +1321,34 @@ static bool prstate_housekeeping_conflict(int prstate, struct cpumask *new_cpus)
->   */
->  static void update_isolation_cpumasks(void)
->  {
-> -	int ret;
-> +	static DECLARE_WORK(isolcpus_work, isolcpus_workfn);
->  
->  	if (!isolated_cpus_updating)
->  		return;
->  
-> -	ret = housekeeping_update(isolated_cpus);
-> -	WARN_ON_ONCE(ret < 0);
-> +	/*
-> +	 * This function can be reached either directly from regular cpuset
-> +	 * control file write or via CPU hotplug. In the latter case, it is
-> +	 * the per-cpu kthread that calls cpuset_handle_hotplug() on behalf
-> +	 * of the task that initiates CPU shutdown or bringup.
-> +	 *
-> +	 * To have better flexibility and prevent the possibility of deadlock
-> +	 * when calling from CPU hotplug, we defer the housekeeping_update()
-> +	 * call to after the current cpuset critical section has finished.
-> +	 * This is done via workqueue.
-> +	 */
-> +	if (current->flags & PF_KTHREAD) {
-> +		/*
-> +		 * We rely on WORK_STRUCT_PENDING_BIT to not requeue a work
-> +		 * item that is still pending.
-> +		 */
-> +		queue_work(system_unbound_wq, &isolcpus_work);
-> +		/* Also defer sched domains regeneration to the work function */
-> +		force_sd_rebuild = false;
+> Which means we need VFIO to know what they are, and hopefully it is
+> just static based on the TDISP reports..
 
-Eh, looking at the call path:
+I don't think VMM need to check TDISP report. The only special thing is
+the MSI-X mixed pages which can be figured out by standard PCI
+discovery.
 
-cpuset_hotplug_update_tasks
-	update_parent_effective_cpumask
-		update_isolation_cpumasks
-		force_sd_rebuild = false;
-	cpuset_force_rebuild();
-
-Setting force_sd_rebuild to false here might be redundant, given that
-cpuset_force_rebuild() is called immediately afterward.
-
-> +		return;
-> +	}
->  
-> +	WARN_ON_ONCE(housekeeping_update(isolated_cpus) < 0);
->  	isolated_cpus_updating = false;
->  }
->  
-> diff --git a/tools/testing/selftests/cgroup/test_cpuset_prs.sh b/tools/testing/selftests/cgroup/test_cpuset_prs.sh
-> index 5dff3ad53867..0502b156582b 100755
-> --- a/tools/testing/selftests/cgroup/test_cpuset_prs.sh
-> +++ b/tools/testing/selftests/cgroup/test_cpuset_prs.sh
-> @@ -245,8 +245,9 @@ TEST_MATRIX=(
->  	"C2-3:P1:S+  C3:P2  .      .     O2=0   O2=1    .      .     0 A1:2|A2:3 A1:P1|A2:P2"
->  	"C2-3:P1:S+  C3:P1  .      .     O2=0    .      .      .     0 A1:|A2:3 A1:P1|A2:P1"
->  	"C2-3:P1:S+  C3:P1  .      .     O3=0    .      .      .     0 A1:2|A2: A1:P1|A2:P1"
-> -	"C2-3:P1:S+  C3:P1  .      .    T:O2=0   .      .      .     0 A1:3|A2:3 A1:P1|A2:P-1"
-> -	"C2-3:P1:S+  C3:P1  .      .      .    T:O3=0   .      .     0 A1:2|A2:2 A1:P1|A2:P-1"
-> +	"C2-3:P1:S+  C3:P2  .      .    T:O2=0   .      .      .     0 A1:3|A2:3 A1:P1|A2:P-2"
-> +	"C1-3:P1:S+  C3:P2  .      .      .    T:O3=0   .      .     0 A1:1-2|A2:1-2 A1:P1|A2:P-2 3|"
-> +	"C1-3:P1:S+  C3:P2  .      .      .    T:O3=0  O3=1    .     0 A1:1-2|A2:3 A1:P1|A2:P2  3"
->  	"$SETUP_A123_PARTITIONS    .     O1=0    .      .      .     0 A1:|A2:2|A3:3 A1:P1|A2:P1|A3:P1"
->  	"$SETUP_A123_PARTITIONS    .     O2=0    .      .      .     0 A1:1|A2:|A3:3 A1:P1|A2:P1|A3:P1"
->  	"$SETUP_A123_PARTITIONS    .     O3=0    .      .      .     0 A1:1|A2:2|A3: A1:P1|A2:P1|A3:P1"
-> @@ -764,7 +765,7 @@ check_cgroup_states()
->  # only CPUs in isolated partitions as well as those that are isolated at
->  # boot time.
->  #
-> -# $1 - expected isolated cpu list(s) <isolcpus1>{,<isolcpus2>}
-> +# $1 - expected isolated cpu list(s) <isolcpus1>{|<isolcpus2>}
->  # <isolcpus1> - expected sched/domains value
->  # <isolcpus2> - cpuset.cpus.isolated value = <isolcpus1> if not defined
->  #
-> @@ -773,6 +774,7 @@ check_isolcpus()
->  	EXPECTED_ISOLCPUS=$1
->  	ISCPUS=${CGROUP2}/cpuset.cpus.isolated
->  	ISOLCPUS=$(cat $ISCPUS)
-> +	HKICPUS=$(cat /sys/devices/system/cpu/isolated)
->  	LASTISOLCPU=
->  	SCHED_DOMAINS=/sys/kernel/debug/sched/domains
->  	if [[ $EXPECTED_ISOLCPUS = . ]]
-> @@ -810,6 +812,11 @@ check_isolcpus()
->  	ISOLCPUS=
->  	EXPECTED_ISOLCPUS=$EXPECTED_SDOMAIN
->  
-> +	#
-> +	# The inverse of HK_TYPE_DOMAIN cpumask in $HKICPUS should match $ISOLCPUS
-> +	#
-> +	[[ "$ISOLCPUS" != "$HKICPUS" ]] && return 1
-> +
->  	#
->  	# Use the sched domain in debugfs to check isolated CPUs, if available
->  	#
-
--- 
-Best regards,
-Ridong
-
+Seems this doesn't impact the idea that KVM needs no implication of
+Private/Shared from VFIO, as long as VFIO keeps exported dmabufs
+unmapped.
 
