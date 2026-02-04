@@ -1,215 +1,195 @@
-Return-Path: <cgroups+bounces-13655-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-13652-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id yFM3KuLSgml5cQMAu9opvQ
-	(envelope-from <cgroups+bounces-13655-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Wed, 04 Feb 2026 06:02:26 +0100
+	id SCWTNnzPgmk8cAMAu9opvQ
+	(envelope-from <cgroups+bounces-13652-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Wed, 04 Feb 2026 05:47:56 +0100
 X-Original-To: lists+cgroups@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2F1D3E1A3B
-	for <lists+cgroups@lfdr.de>; Wed, 04 Feb 2026 06:02:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 42303E199F
+	for <lists+cgroups@lfdr.de>; Wed, 04 Feb 2026 05:47:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 35A873038F42
-	for <lists+cgroups@lfdr.de>; Wed,  4 Feb 2026 05:02:16 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 368C6305E9A9
+	for <lists+cgroups@lfdr.de>; Wed,  4 Feb 2026 04:47:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E9B7350D6B;
-	Wed,  4 Feb 2026 05:02:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 23EF434E74B;
+	Wed,  4 Feb 2026 04:47:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="mVgo4JZw"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="H4npHxxH";
+	dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b="q7TMnUtl"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.20])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD22C34F257;
-	Wed,  4 Feb 2026 05:02:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.20
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ABFF83358D4
+	for <cgroups@vger.kernel.org>; Wed,  4 Feb 2026 04:47:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1770181334; cv=none; b=k3TQ0TNzvgQrVpSj4S38IBt/s5qC9I5rxmxCSHEQonZwUGRO1BWSU9cbmwC6u0ihNGUBnzSCDzYOgF2d5WBanvyyQxAzrkMVrf1Ry31ujrnR9GNEgBFrA6uGHF/otaXMVtJ2koJtDalS5y3+XZTLN2WNLWQcTPNNOHaqPICc2Ws=
+	t=1770180427; cv=none; b=oDyCxLHs7CJw1O0eVoVfYyglgcxyi8gkoBqPG+6Z0CU60ru5bSWaii4DcGrdE0ATE6jmoXyikpnJfsaL5HZ7FFrl7Et/wqCugMQger2cF/SqYKrccRnB3owlm1L5Y9VOUmjf2kxtdHOKQubIDDI6uWbP1uKLOIH0WRc7uQe4Wyg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1770181334; c=relaxed/simple;
-	bh=BssClzJli42sqwnuhq7EEp2oGu8Z3L8cVPtpreDMGtc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=EMEmgBok5BMinqtA/PK1ZNMeHYkK8Sr4VkRzbcwu5FbfjJfB3TqfGIQBSXrtm83sgH1GzCCzprpVcNX6ZdynrNTSUlV6QlKdpn03MZEAWOjbv2Dtr6GNYawHQx0JeN0ZEoQkPvZCik3JrfdJ6oBYKi3vuHWaggjHx5SSE0p9PfE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=pass smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=mVgo4JZw; arc=none smtp.client-ip=198.175.65.20
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1770181334; x=1801717334;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=BssClzJli42sqwnuhq7EEp2oGu8Z3L8cVPtpreDMGtc=;
-  b=mVgo4JZwFyU56rcObsmZRQVRlWYJGQiWb+dOGnrZg0ONCbgf/rPeTBj9
-   vb6UtP4JjGW6BVXQTbZjqbu2WjN3SLNHNVqVsfktj5ARuulkbNHADqtKV
-   VLzBbmXUiB+fMFjjEsEwNX9KTJ5RQMJIQ7FLOLChdXKUSxTHgCMqMVeaK
-   Bm6smQqgLZuxg7WaRyPSiq2Jjjjl/wp3rimW8Ke4ml/IVqGbfJtM4IEGJ
-   ok7coKSNpIgSELHUK3JsyzH6tgLu/UGWUG0nBGlxoAs29M5ltAsaDlpXb
-   cvKz6GdMfLqToH41rZD8OFkuWddRIIZt9RkBFo+SUxq6W4zM2yB1zUFBP
-   w==;
-X-CSE-ConnectionGUID: l/PZ6WedTyueOgh/uO1g1w==
-X-CSE-MsgGUID: 4rWHnChQRHGPOjkfHOmxdQ==
-X-IronPort-AV: E=McAfee;i="6800,10657,11691"; a="71086376"
-X-IronPort-AV: E=Sophos;i="6.21,272,1763452800"; 
-   d="scan'208";a="71086376"
-Received: from orviesa002.jf.intel.com ([10.64.159.142])
-  by orvoesa112.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 Feb 2026 21:02:13 -0800
-X-CSE-ConnectionGUID: r6WIlB3hRYOB1WMvBCSX1g==
-X-CSE-MsgGUID: 4L+xrWR+RMKF3IcyS644EA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.21,272,1763452800"; 
-   d="scan'208";a="240739427"
-Received: from yilunxu-optiplex-7050.sh.intel.com (HELO localhost) ([10.239.159.165])
-  by orviesa002.jf.intel.com with ESMTP; 03 Feb 2026 21:01:47 -0800
-Date: Wed, 4 Feb 2026 12:43:16 +0800
-From: Xu Yilun <yilun.xu@linux.intel.com>
-To: Jason Gunthorpe <jgg@ziepe.ca>
-Cc: Sean Christopherson <seanjc@google.com>,
-	Ackerley Tng <ackerleytng@google.com>,
-	Alexey Kardashevskiy <aik@amd.com>, cgroups@vger.kernel.org,
-	kvm@vger.kernel.org, linux-doc@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-kselftest@vger.kernel.org, linux-mm@kvack.org,
-	linux-trace-kernel@vger.kernel.org, x86@kernel.org,
-	akpm@linux-foundation.org, binbin.wu@linux.intel.com, bp@alien8.de,
-	brauner@kernel.org, chao.p.peng@intel.com, chenhuacai@kernel.org,
-	corbet@lwn.net, dave.hansen@intel.com, dave.hansen@linux.intel.com,
-	david@redhat.com, dmatlack@google.com, erdemaktas@google.com,
-	fan.du@intel.com, fvdl@google.com, haibo1.xu@intel.com,
-	hannes@cmpxchg.org, hch@infradead.org, hpa@zytor.com,
-	hughd@google.com, ira.weiny@intel.com, isaku.yamahata@intel.com,
-	jack@suse.cz, james.morse@arm.com, jarkko@kernel.org,
-	jgowans@amazon.com, jhubbard@nvidia.com, jroedel@suse.de,
-	jthoughton@google.com, jun.miao@intel.com, kai.huang@intel.com,
-	keirf@google.com, kent.overstreet@linux.dev,
-	liam.merwick@oracle.com, maciej.wieczor-retman@intel.com,
-	mail@maciej.szmigiero.name, maobibo@loongson.cn,
-	mathieu.desnoyers@efficios.com, maz@kernel.org, mhiramat@kernel.org,
-	mhocko@kernel.org, mic@digikod.net, michael.roth@amd.com,
-	mingo@redhat.com, mlevitsk@redhat.com, mpe@ellerman.id.au,
-	muchun.song@linux.dev, nikunj@amd.com, nsaenz@amazon.es,
-	oliver.upton@linux.dev, palmer@dabbelt.com, pankaj.gupta@amd.com,
-	paul.walmsley@sifive.com, pbonzini@redhat.com, peterx@redhat.com,
-	pgonda@google.com, prsampat@amd.com, pvorel@suse.cz,
-	qperret@google.com, richard.weiyang@gmail.com,
-	rick.p.edgecombe@intel.com, rientjes@google.com,
-	rostedt@goodmis.org, roypat@amazon.co.uk, rppt@kernel.org,
-	shakeel.butt@linux.dev, shuah@kernel.org, steven.price@arm.com,
-	steven.sistare@oracle.com, suzuki.poulose@arm.com, tabba@google.com,
-	tglx@linutronix.de, thomas.lendacky@amd.com, vannapurve@google.com,
-	vbabka@suse.cz, viro@zeniv.linux.org.uk, vkuznets@redhat.com,
-	wei.w.wang@intel.com, will@kernel.org, willy@infradead.org,
-	wyihan@google.com, xiaoyao.li@intel.com, yan.y.zhao@intel.com,
-	yilun.xu@intel.com, yuzenghui@huawei.com, zhiquan1.li@intel.com
-Subject: Re: [RFC PATCH v1 05/37] KVM: guest_memfd: Wire up
- kvm_get_memory_attributes() to per-gmem attributes
-Message-ID: <aYLOZIZU0nwk+0UN@yilunxu-OptiPlex-7050>
-References: <cover.1760731772.git.ackerleytng@google.com>
- <071a3c6603809186e914fe5fed939edee4e11988.1760731772.git.ackerleytng@google.com>
- <07836b1d-d0d8-40f2-8f7b-7805beca31d0@amd.com>
- <CAEvNRgEuez=JbArRf2SApLAL0usv5-Q6q=nBPOFMHrHGaKAtMw@mail.gmail.com>
- <20260129003753.GZ1641016@ziepe.ca>
- <aXqx3_eE0rNh6nP0@google.com>
- <aYHGVQTF6RUs7r3g@yilunxu-OptiPlex-7050>
- <20260203181618.GY2328995@ziepe.ca>
+	s=arc-20240116; t=1770180427; c=relaxed/simple;
+	bh=rLaRsKu7CREx5s6WYnmkbwSOEU+GT9F+qtG079ipLls=;
+	h=From:Message-ID:Date:MIME-Version:Subject:To:Cc:References:
+	 In-Reply-To:Content-Type; b=lGVkMU0PrTNZNztZ0DlOk9coRsgeijr5CI5k2hemyDymVAAs0RuabVQBRu1Wsl4SXUmBOcYzz6NhI8YfFfDea4tlr2t0M5+ZI00F32N94zgZ1IrbYLqIRn22qF3k3HG7+qZwdSp9RaKosIjw1atPyn4yW2KebK/6r+dRmQGt/sU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=H4npHxxH; dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b=q7TMnUtl; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1770180426;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=3Y69ODIoURgASqSeV5hS5rWlgMMnpQL1tFExn4zKMhQ=;
+	b=H4npHxxHt1//mEeJ4NpmonyREjSg9qWws+IFXvBIdR5h6PNVl9q8CLE4HZGVV6kI4syge7
+	j9oSxvq/vxHghbvo+NvP71jBEVqI5NiEa1CDGgvk9corY1qoyE6Nk27u1+gqeaMkAwcPyw
+	HvjGXOB6MibJG3AI/GsIdXheYtPJ9Ww=
+Received: from mail-qk1-f199.google.com (mail-qk1-f199.google.com
+ [209.85.222.199]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-6-55UZMnKkP3K1-ph97DAIMw-1; Tue, 03 Feb 2026 23:47:03 -0500
+X-MC-Unique: 55UZMnKkP3K1-ph97DAIMw-1
+X-Mimecast-MFC-AGG-ID: 55UZMnKkP3K1-ph97DAIMw_1770180423
+Received: by mail-qk1-f199.google.com with SMTP id af79cd13be357-8c6a5bc8c43so158054385a.2
+        for <cgroups@vger.kernel.org>; Tue, 03 Feb 2026 20:47:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=redhat.com; s=google; t=1770180423; x=1770785223; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:content-language:references
+         :cc:to:subject:user-agent:mime-version:date:message-id:from:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=3Y69ODIoURgASqSeV5hS5rWlgMMnpQL1tFExn4zKMhQ=;
+        b=q7TMnUtlLpR71OVK5RBkXvhVFslYIer3Xjk6uD94PVju8pZsHHDJK3aZR17nir5LfF
+         cL0vI6BZK0giaecQla+3OcyXvy+lAQJg0ngGa1EtaAG5w+42Ia30CKZPltc4DqhGYs5a
+         /plzFsLGqbSdsCTcGqK4DquF9NQv0HPErfUCSIuOjWA9ZslXetgjxALYykIt/Zc9RhoH
+         ne2MDXncSiNInnHq3OQAumAaDxEVmOLTCeFjSqdqWER6U8MQTqApO0u1rSoUt1poV4Vb
+         UhM0rwKQvGRfVLtzopFcht1ho1lS9hgVJgj7x1Er6UbkDN3USsX3BzTgFMupHOUxZ5lL
+         GNfA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1770180423; x=1770785223;
+        h=content-transfer-encoding:in-reply-to:content-language:references
+         :cc:to:subject:user-agent:mime-version:date:message-id:from:x-gm-gg
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=3Y69ODIoURgASqSeV5hS5rWlgMMnpQL1tFExn4zKMhQ=;
+        b=DDPs1yVmaLCugdtz/OkvpMq+UF0XQ5MfIqEO4rVGpkVpD6K1CFYsjqmgI3JV6bdME+
+         k9g8KTMWUhtINkdliUcklu4m5WJhzuwV16h6bqD7JzUsNn+sIVYb7W+XNgjXBZ2J6j+q
+         Ew3uRyKZCdlqrDwJIcD6fpuYgiTs8kmi4d4hkIuxHkLS9ys2KCZzz4jOBcy1ZXHkKVt/
+         3JA66JPxFED47M6NGgCOnyZqzvOhROiNTEf8jE3GAVhg583RRTW7YLFWxvjLgW1G3Cbr
+         OcqrBwI+4s8vTD33cDvSMvUP8aTz6bfGicf7zZDie11RDiYadq2bKA4HHJNzxd/aCUOA
+         KmVQ==
+X-Gm-Message-State: AOJu0YwTR8Kx5NFhUUSTSnMcexsf07gnTqm6R7T4Njo9/PPpsVdtcySp
+	/o8NMjF1v6S80pHVGRK1fDM0Y4P3/5eAkGLUk754r6X7/wl2UzlScboZtVIBuO80OJIIWL8SfJC
+	0RCKXJbJPH4m+rpPBuvtyjvgNs2S+5FWXz2uWZIFIrW0GC3zi4OK1eam5qWg=
+X-Gm-Gg: AZuq6aIHhC36KMWv0NkLk0Sh35ga1MA+sSlIGqb4uV1WjV3rW4FnPk72pYbGBgPweT6
+	83X9SuBmFs1tjymYajgJ5f3x8ZWgACY1R2edJv6PT/Of1XjJN4VBEX7pIq9kBD/a87cDusaJmMD
+	3//1lPFCNzuzr7vQClxb9C8Yb9f6Ck3xwpksf+VPw1pvDeUbsOGWydJT2hAvrbGywUjR0B5XZ6R
+	80pcahxejtJgPgXGdMAFHzaCOIc7aUmP+2/k4j+gd9YWha9ZFwfVJwzwXEoAxHqkdR0m9rl93q4
+	UjXmmnhutbo3K7k7I6cJqwE8Ll/3Z5UxanM0byRnT6OteVUfOkRlj9qEqNer0K4BFvtDtu77Jsp
+	CH9R5bLQIVSzyLBiGUVr4UPGZ7J19T+B8SyS74aRebWxEe8i9YvX1S4kj
+X-Received: by 2002:a05:620a:4805:b0:8c5:38ee:2fad with SMTP id af79cd13be357-8ca2fa5ea0amr230627385a.84.1770180423170;
+        Tue, 03 Feb 2026 20:47:03 -0800 (PST)
+X-Received: by 2002:a05:620a:4805:b0:8c5:38ee:2fad with SMTP id af79cd13be357-8ca2fa5ea0amr230625685a.84.1770180422748;
+        Tue, 03 Feb 2026 20:47:02 -0800 (PST)
+Received: from ?IPV6:2601:188:c102:b180:1f8b:71d0:77b1:1f6e? ([2601:188:c102:b180:1f8b:71d0:77b1:1f6e])
+        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-89521d2788asm11831606d6.47.2026.02.03.20.47.01
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 03 Feb 2026 20:47:02 -0800 (PST)
+From: Waiman Long <llong@redhat.com>
+X-Google-Original-From: Waiman Long <longman@redhat.com>
+Message-ID: <83d0426d-92ea-4e2b-83bc-62998218b212@redhat.com>
+Date: Tue, 3 Feb 2026 23:47:00 -0500
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20260203181618.GY2328995@ziepe.ca>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH/for-next v3 3/3] cgroup/cpuset: Call housekeeping_update()
+ without holding cpus_read_lock
+To: Chen Ridong <chenridong@huaweicloud.com>, Tejun Heo <tj@kernel.org>,
+ Johannes Weiner <hannes@cmpxchg.org>, =?UTF-8?Q?Michal_Koutn=C3=BD?=
+ <mkoutny@suse.com>, Ingo Molnar <mingo@redhat.com>,
+ Peter Zijlstra <peterz@infradead.org>, Juri Lelli <juri.lelli@redhat.com>,
+ Vincent Guittot <vincent.guittot@linaro.org>,
+ Steven Rostedt <rostedt@goodmis.org>, Ben Segall <bsegall@google.com>,
+ Mel Gorman <mgorman@suse.de>, Valentin Schneider <vschneid@redhat.com>,
+ Anna-Maria Behnsen <anna-maria@linutronix.de>,
+ Frederic Weisbecker <frederic@kernel.org>,
+ Thomas Gleixner <tglx@linutronix.de>, Shuah Khan <shuah@kernel.org>
+Cc: cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-kselftest@vger.kernel.org
+References: <20260202201144.1669260-1-longman@redhat.com>
+ <20260202201144.1669260-4-longman@redhat.com>
+ <1fff6bd2-b62a-48d9-9408-af3b5552815e@huaweicloud.com>
+Content-Language: en-US
+In-Reply-To: <1fff6bd2-b62a-48d9-9408-af3b5552815e@huaweicloud.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-0.16 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
+X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_RHS_NOT_FQDN(0.50)[];
-	DMARC_POLICY_ALLOW(-0.50)[intel.com,none];
-	R_DKIM_ALLOW(-0.20)[intel.com:s=Intel];
+	DMARC_POLICY_ALLOW(-0.50)[redhat.com,quarantine];
 	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_DKIM_ALLOW(-0.20)[redhat.com:s=mimecast20190719,redhat.com:s=google];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FREEMAIL_CC(0.00)[google.com,amd.com,vger.kernel.org,kvack.org,kernel.org,linux-foundation.org,linux.intel.com,alien8.de,intel.com,lwn.net,redhat.com,cmpxchg.org,infradead.org,zytor.com,suse.cz,arm.com,amazon.com,nvidia.com,suse.de,linux.dev,oracle.com,maciej.szmigiero.name,loongson.cn,efficios.com,digikod.net,ellerman.id.au,amazon.es,dabbelt.com,sifive.com,gmail.com,goodmis.org,amazon.co.uk,linutronix.de,zeniv.linux.org.uk,huawei.com];
-	FROM_HAS_DN(0.00)[];
-	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-13655-lists,cgroups=lfdr.de];
 	MIME_TRACE(0.00)[0:+];
+	RCPT_COUNT_TWELVE(0.00)[19];
+	TAGGED_FROM(0.00)[bounces-13652-lists,cgroups=lfdr.de];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	DKIM_TRACE(0.00)[intel.com:+];
-	MISSING_XM_UA(0.00)[];
-	TO_DN_SOME(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[5];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[yilun.xu@linux.intel.com,cgroups@vger.kernel.org];
+	RCVD_TLS_LAST(0.00)[];
+	DKIM_TRACE(0.00)[redhat.com:+];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCPT_COUNT_GT_50(0.00)[98];
-	TAGGED_RCPT(0.00)[cgroups];
-	NEURAL_HAM(-0.00)[-0.999];
+	FROM_HAS_DN(0.00)[];
+	TO_DN_SOME(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[6];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[llong@redhat.com,cgroups@vger.kernel.org];
 	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,intel.com:dkim]
-X-Rspamd-Queue-Id: 2F1D3E1A3B
+	NEURAL_HAM(-0.00)[-1.000];
+	TAGGED_RCPT(0.00)[cgroups];
+	MID_RHS_MATCH_FROM(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: 42303E199F
 X-Rspamd-Action: no action
 
-On Tue, Feb 03, 2026 at 02:16:18PM -0400, Jason Gunthorpe wrote:
-> On Tue, Feb 03, 2026 at 05:56:37PM +0800, Xu Yilun wrote:
-> > > +1.  For guest_memfd, we initially defined per-VM memory attributes to track
-> > > private vs. shared.  But as Ackerley noted, we are in the process of deprecating
-> > > that support, e.g. by making it incompatible with various guest_memfd features,
-> > > in favor of having each guest_memfd instance track the state of a given page.
-> > > 
-> > > The original guest_memfd design was that it would _only_ hold private pages, and
-> > > so tracking private vs. shared in guest_memfd didn't make any sense.  As we've
-> > > pivoted to in-place conversion, tracking private vs. shared in the guest_memfd
-> > > has basically become mandatory.  We could maaaaaybe make it work with per-VM
-> > > attributes, but it would be insanely complex.
-> > > 
-> > > For a dmabuf fd, the story is the same as guest_memfd.  Unless private vs. shared
-> > > is all or nothing, and can never change, then the only entity that can track that
-> > > info is the owner of the dmabuf.  And even if the private vs. shared attributes
-> > > are constant, tracking it external to KVM makes sense, because then the provider
-> > > can simply hardcode %true/%false.  
-> > 
-> > For CoCo-VM and Tee-IO, I'm wondering if host or KVM has to maintain
-> > the private/shared attribute for "assigned MMIO". I'm not naming them
-> > "host MMIO" cause unlike RAM host never needs to access them, either in
-> > private manner or shared manner.
-> > 
-> > Traditionally, host maps these MMIOs only because KVM needs HVA->HPA
-> > mapping to find pfn and setup KVM MMU.
-> 
-> This is not actually completely true, the host mapping still ends up
-> being used by KVM if it happens to trap and emulate a MMIO touching
-> instruction.
-> 
-> It really shouldn't do this, but there is a whole set of complex
-> machinery in KVM and qemu to handle this case.
-> 
-> For example if the MSI-X window is not properly aligned then you have
-> some MMIO that is trapped and must be reflected to real HW.
+On 2/3/26 9:51 PM, Chen Ridong wrote:
+>
+> On 2026/2/3 4:11, Waiman Long wrote:
+>> --- a/kernel/time/timer_migration.c
+>> +++ b/kernel/time/timer_migration.c
+>> @@ -1559,8 +1559,6 @@ int tmigr_isolated_exclude_cpumask(struct cpumask *exclude_cpumask)
+>>   	cpumask_var_t cpumask __free(free_cpumask_var) = CPUMASK_VAR_NULL;
+>>   	int cpu;
+>>   
+>> -	lockdep_assert_cpus_held();
+>> -
+>>   	if (!works)
+>>   		return -ENOMEM;
+>>   	if (!alloc_cpumask_var(&cpumask, GFP_KERNEL))
+>> @@ -1570,6 +1568,7 @@ int tmigr_isolated_exclude_cpumask(struct cpumask *exclude_cpumask)
+>>   	 * First set previously isolated CPUs as available (unisolate).
+>>   	 * This cpumask contains only CPUs that switched to available now.
+>>   	 */
+>> +	guard(cpus_read_lock)();
+>>   	cpumask_andnot(cpumask, cpu_online_mask, exclude_cpumask);
+>>   	cpumask_andnot(cpumask, cpumask, tmigr_available_cpumask);
+>>   
+> It may lead to lockdep issue.
+>
+> tmigr_init_isolation
+> 	guard(cpus_read_lock)()
+> 	tmigr_isolated_exclude_cpumask(cpumask)
+> 		guard(cpus_read_lock)()
+>
+Good catch. I haven't set up "isolcpus" in my test environment. That is 
+why this lockdep splat didn't get triggered. I will fix that in the next 
+version.
 
-In this case, the affected pages are not assigned MMIOs and KVM won't
-import them. Mapping them is just OK.
+Cheers,
+Longman
 
-> 
-> So the sharable parts of the BAR should still end up being mmaped into
-> userspace, I think.
-
-This does mean we can't make VFIO totally unmappable. But VFIO can still
-try to create unmappable dmabufs for assigned MMIO regions, fail dmabuf
-creation or fail mmap() based on the addresses.
-
-> 
-> Which means we need VFIO to know what they are, and hopefully it is
-> just static based on the TDISP reports..
-
-I don't think VMM need to check TDISP report. The only special thing is
-the MSI-X mixed pages which can be figured out by standard PCI
-discovery.
-
-Seems this doesn't impact the idea that KVM needs no implication of
-Private/Shared from VFIO, as long as VFIO keeps exported dmabufs
-unmapped.
 
