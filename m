@@ -1,50 +1,50 @@
-Return-Path: <cgroups+bounces-13685-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-13686-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 0EgxOOFchGmn2gMAu9opvQ
-	(envelope-from <cgroups+bounces-13685-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Thu, 05 Feb 2026 10:03:29 +0100
+	id cMt1JvdbhGl92gMAu9opvQ
+	(envelope-from <cgroups+bounces-13686-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Thu, 05 Feb 2026 09:59:35 +0100
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 67819F03D9
-	for <lists+cgroups@lfdr.de>; Thu, 05 Feb 2026 10:03:29 +0100 (CET)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3CB12F02E3
+	for <lists+cgroups@lfdr.de>; Thu, 05 Feb 2026 09:59:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id DBAB8306BD38
-	for <lists+cgroups@lfdr.de>; Thu,  5 Feb 2026 08:57:05 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id D109D300E5B1
+	for <lists+cgroups@lfdr.de>; Thu,  5 Feb 2026 08:57:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E6D5838F24C;
-	Thu,  5 Feb 2026 08:56:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9689F39280D;
+	Thu,  5 Feb 2026 08:56:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="LRkYdPgJ"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="mrRpODm6"
 X-Original-To: cgroups@vger.kernel.org
-Received: from out-170.mta1.migadu.com (out-170.mta1.migadu.com [95.215.58.170])
+Received: from out-174.mta1.migadu.com (out-174.mta1.migadu.com [95.215.58.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 565E738F22D
-	for <cgroups@vger.kernel.org>; Thu,  5 Feb 2026 08:56:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 32E713921F1
+	for <cgroups@vger.kernel.org>; Thu,  5 Feb 2026 08:56:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1770281796; cv=none; b=uchDti03nv6KD8KlBE9peJzUX/UPQabQXGCwiswPNP8yeiY+MNNw0dGdrvQzQc/xwjxM3c8YmiEIYv9Upw3lbwygFoFgvFq5+mBtzqRa96ILfHqEyEoXWKY6Iualiic56nE6iJ9sjyOFX/0y7gUvPoPEAtT/u2riy+HdzgslefQ=
+	t=1770281804; cv=none; b=py56bvaKcLz8ruidQIFM5eWS1kdztdJQU9XKgJtBExm5sKYwY6Chi07d20DIGbDmpLbl8bMZm978uiXVGqQwhhf3wVEScd5RW0hM8k0Cu+W0IDTa/H6g1/W1hbV52TKT4UU8HknHoDVKQq7ZeAoPqNjz1yl6QsDeaS8Sp8JDwZw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1770281796; c=relaxed/simple;
-	bh=QfGMjKk7MvEQ5yuic1BhQLMniEzVRA3pOVkTJernfNo=;
+	s=arc-20240116; t=1770281804; c=relaxed/simple;
+	bh=wjU8nJ0rV5VkR0fA2IthLTuZ8yCghBL7zQo+XBTU6bA=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=cGYYTgNX3a8opB0Ed7iu97GZUILt3Sbp3LG6z2rzK94iD6wwEyVInZdtK/Fp4zagJR7fgijdbrlUY9D7Wldn0LI6phq1Nu3lJ/V6yACfVMCC/M38Ktx1AQgUAmIc4tJw+Jr84Yn++5vQYXhSpyfUnOr8xwgThtBK3NrGandMROQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=LRkYdPgJ; arc=none smtp.client-ip=95.215.58.170
+	 MIME-Version; b=mY3d+P5mKA4pWBqzd9avXveUOiFOA4QzoTynXfmm/pzxjrpd+mtD+GnjtSRJd+C7E6caHJwxWvaU9tWHY7z713Pwhzgf8qKMY26undkgrTkow3+Dq2xfwwvbbI7V5ZrRkC+DxCarYXpyKmVTvC3cVGSnONC9902xh1KZC3BsYkA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=mrRpODm6; arc=none smtp.client-ip=95.215.58.174
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1770281793;
+	t=1770281802;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=8dwQ4ivLYmtr2b7Y96V9uq4Z1sJnMO6h/66mf7WpDnM=;
-	b=LRkYdPgJMCg2yjFaMTf80KajUiQErFG88Y0kog/cwdqa1bHO+OtW05ZgTqLE1/arPXY1+W
-	aACjXS6lz59xu6WJtfOPo4K9uMb4WDVqi3NRU8Gi3mxXmwBi+NwA45b3uNgqLVAikdmjBH
-	17tAzzirNBlIYG15ZnmxX0/A55Qm1o0=
+	bh=H/ZtRh+PZKPvv3IjQqGSMfDaDrKWTZ3Ss0PAhqLZQg4=;
+	b=mrRpODm6Hra4KkUO1FlT4nkooqcHFQ/lKsguxYtgkV2UdPPYT6fOLOPKzJOpfggMIGq89q
+	GaoilPLEKDhhowTXRn1F5GxBtOxMdQvHzb3xMj9lEZsvZ1xinnP0OocftfbjlCWfsjAYQW
+	FJq+AqtmOxrmlwvuviDc/Nfmt6vPblM=
 From: Qi Zheng <qi.zheng@linux.dev>
 To: hannes@cmpxchg.org,
 	hughd@google.com,
@@ -73,11 +73,10 @@ Cc: linux-mm@kvack.org,
 	linux-kernel@vger.kernel.org,
 	cgroups@vger.kernel.org,
 	Muchun Song <songmuchun@bytedance.com>,
-	Qi Zheng <zhengqi.arch@bytedance.com>,
-	Chen Ridong <chenridong@huawei.com>
-Subject: [PATCH v4 01/31] mm: memcontrol: remove dead code of checking parent memory cgroup
-Date: Thu,  5 Feb 2026 16:54:30 +0800
-Message-ID: <fb7411b67dc59eaecbbc1f769164d6786595f9de.1770279888.git.zhengqi.arch@bytedance.com>
+	Qi Zheng <zhengqi.arch@bytedance.com>
+Subject: [PATCH v4 02/31] mm: workingset: use folio_lruvec() in workingset_refault()
+Date: Thu,  5 Feb 2026 16:54:31 +0800
+Message-ID: <ebeec4d468aca5d314ccb6a0324ee4c8731fbc2a.1770279888.git.zhengqi.arch@bytedance.com>
 In-Reply-To: <cover.1770279888.git.zhengqi.arch@bytedance.com>
 References: <cover.1770279888.git.zhengqi.arch@bytedance.com>
 Precedence: bulk
@@ -93,7 +92,7 @@ X-Spamd-Result: default: False [-1.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	R_MISSING_CHARSET(0.50)[];
 	DMARC_POLICY_ALLOW(-0.50)[linux.dev,none];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64:c];
 	R_DKIM_ALLOW(-0.20)[linux.dev:s=key1];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
@@ -101,8 +100,8 @@ X-Spamd-Result: default: False [-1.66 / 15.00];
 	MIME_TRACE(0.00)[0:+];
 	RCVD_TLS_LAST(0.00)[];
 	RCVD_COUNT_THREE(0.00)[3];
-	TAGGED_FROM(0.00)[bounces-13685-lists,cgroups=lfdr.de];
-	RCPT_COUNT_TWELVE(0.00)[29];
+	TAGGED_FROM(0.00)[bounces-13686-lists,cgroups=lfdr.de];
+	RCPT_COUNT_TWELVE(0.00)[28];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	MISSING_XM_UA(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
@@ -110,79 +109,51 @@ X-Spamd-Result: default: False [-1.66 / 15.00];
 	FROM_NEQ_ENVFROM(0.00)[qi.zheng@linux.dev,cgroups@vger.kernel.org];
 	DKIM_TRACE(0.00)[linux.dev:+];
 	NEURAL_HAM(-0.00)[-0.999];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
 	TAGGED_RCPT(0.00)[cgroups];
 	TO_DN_SOME(0.00)[];
 	FROM_HAS_DN(0.00)[]
-X-Rspamd-Queue-Id: 67819F03D9
+X-Rspamd-Queue-Id: 3CB12F02E3
 X-Rspamd-Action: no action
 
 From: Muchun Song <songmuchun@bytedance.com>
 
-Since the no-hierarchy mode has been deprecated after the commit:
-
-  commit bef8620cd8e0 ("mm: memcg: deprecate the non-hierarchical mode").
-
-As a result, parent_mem_cgroup() will not return NULL except when passing
-the root memcg, and the root memcg cannot be offline. Hence, it's safe to
-remove the check on the returned value of parent_mem_cgroup(). Remove the
-corresponding dead code.
+Use folio_lruvec() to simplify the code.
 
 Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-Acked-by: Roman Gushchin <roman.gushchin@linux.dev>
 Acked-by: Johannes Weiner <hannes@cmpxchg.org>
 Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
 Reviewed-by: Harry Yoo <harry.yoo@oracle.com>
-Reviewed-by: Chen Ridong <chenridong@huawei.com>
 Acked-by: Shakeel Butt <shakeel.butt@linux.dev>
 ---
- mm/memcontrol.c | 5 -----
- mm/shrinker.c   | 6 +-----
- 2 files changed, 1 insertion(+), 10 deletions(-)
+ mm/workingset.c | 7 +------
+ 1 file changed, 1 insertion(+), 6 deletions(-)
 
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index f2b87e02574e0..43dbd18150e97 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -3352,9 +3352,6 @@ static void memcg_offline_kmem(struct mem_cgroup *memcg)
- 		return;
- 
- 	parent = parent_mem_cgroup(memcg);
--	if (!parent)
--		parent = root_mem_cgroup;
--
- 	memcg_reparent_list_lrus(memcg, parent);
- 
- 	/*
-@@ -3645,8 +3642,6 @@ struct mem_cgroup *mem_cgroup_private_id_get_online(struct mem_cgroup *memcg)
- 			break;
- 		}
- 		memcg = parent_mem_cgroup(memcg);
--		if (!memcg)
--			memcg = root_mem_cgroup;
- 	}
- 	return memcg;
- }
-diff --git a/mm/shrinker.c b/mm/shrinker.c
-index 4a93fd433689a..e8e092a2f7f41 100644
---- a/mm/shrinker.c
-+++ b/mm/shrinker.c
-@@ -286,14 +286,10 @@ void reparent_shrinker_deferred(struct mem_cgroup *memcg)
+diff --git a/mm/workingset.c b/mm/workingset.c
+index 13422d3047158..ed12744d93a29 100644
+--- a/mm/workingset.c
++++ b/mm/workingset.c
+@@ -534,8 +534,6 @@ bool workingset_test_recent(void *shadow, bool file, bool *workingset,
+ void workingset_refault(struct folio *folio, void *shadow)
  {
- 	int nid, index, offset;
+ 	bool file = folio_is_file_lru(folio);
+-	struct pglist_data *pgdat;
+-	struct mem_cgroup *memcg;
+ 	struct lruvec *lruvec;
+ 	bool workingset;
  	long nr;
--	struct mem_cgroup *parent;
-+	struct mem_cgroup *parent = parent_mem_cgroup(memcg);
- 	struct shrinker_info *child_info, *parent_info;
- 	struct shrinker_info_unit *child_unit, *parent_unit;
- 
--	parent = parent_mem_cgroup(memcg);
--	if (!parent)
--		parent = root_mem_cgroup;
+@@ -557,10 +555,7 @@ void workingset_refault(struct folio *folio, void *shadow)
+ 	 * locked to guarantee folio_memcg() stability throughout.
+ 	 */
+ 	nr = folio_nr_pages(folio);
+-	memcg = folio_memcg(folio);
+-	pgdat = folio_pgdat(folio);
+-	lruvec = mem_cgroup_lruvec(memcg, pgdat);
 -
- 	/* Prevent from concurrent shrinker_info expand */
- 	mutex_lock(&shrinker_mutex);
- 	for_each_node(nid) {
++	lruvec = folio_lruvec(folio);
+ 	mod_lruvec_state(lruvec, WORKINGSET_REFAULT_BASE + file, nr);
+ 
+ 	if (!workingset_test_recent(shadow, file, &workingset, true))
 -- 
 2.20.1
 
