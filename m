@@ -1,293 +1,294 @@
-Return-Path: <cgroups+bounces-13679-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-13680-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 0IqRO6EohGlU0AMAu9opvQ
-	(envelope-from <cgroups+bounces-13679-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Thu, 05 Feb 2026 06:20:34 +0100
+	id gEwJDFsrhGla0QMAu9opvQ
+	(envelope-from <cgroups+bounces-13680-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Thu, 05 Feb 2026 06:32:11 +0100
 X-Original-To: lists+cgroups@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3A2DDEEADF
-	for <lists+cgroups@lfdr.de>; Thu, 05 Feb 2026 06:20:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 859CAEEBD9
+	for <lists+cgroups@lfdr.de>; Thu, 05 Feb 2026 06:32:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 04CF43010DB1
-	for <lists+cgroups@lfdr.de>; Thu,  5 Feb 2026 05:20:16 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id E645D301A73C
+	for <lists+cgroups@lfdr.de>; Thu,  5 Feb 2026 05:30:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C623831A7FD;
-	Thu,  5 Feb 2026 05:20:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6D0A031AF1E;
+	Thu,  5 Feb 2026 05:30:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Ea1grlml"
 X-Original-To: cgroups@vger.kernel.org
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 946DA21FF33;
-	Thu,  5 Feb 2026 05:20:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+Received: from out-180.mta0.migadu.com (out-180.mta0.migadu.com [91.218.175.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 421747640E
+	for <cgroups@vger.kernel.org>; Thu,  5 Feb 2026 05:30:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1770268814; cv=none; b=lomzVIV4dT+1J4VcTd7TKIwM/uAnp67XoUalNhxt7vjvSBrLTWJpZAv8B665ow3KqTCLOcNjwAH4PCXbJUaB7Qh8Hru1hCLdCnoHWDidGvWNhV1CKCUIB+ox8bQogWkpkG/bQkOUWysQ1AduzbnTxSZRpcU2uR+a+n5WSpjCiXI=
+	t=1770269451; cv=none; b=MKhvb3wWoqoSDd7Bfu7iuEEX2h6spvsMfGvsuuaJ0jo+nOJRVlTyh4EAf9xrqHOvmoQZMtGw285xTYVDSGn/Q8PRFZ03SU1SM8x3kRizQlCiiHpG2hPScIG60dnTGIolALCuRr2kSM2N0KCilHHYp1ek21RbnEPqIKOZfym9fxE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1770268814; c=relaxed/simple;
-	bh=XrbqjBl4jfVzCtolm20Qq09f6J7bZh3LGmvyf7AOKBg=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=fD/or5imVqGHNeMaMfnMCIKydnjvlQvFcIlP5ej9wgFgsTpaRzE0q3Nl7zWhkRq2v08vvwItISF0+kgWMFi92kwLczmlTPt66WjLEhchr/Uh7OvwC9JnvsiVjKeMCBIqz0tOAGSgmImYPGmB1zXNDurnXvYGodYIjw+7zbM4vCE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 68930339;
-	Wed,  4 Feb 2026 21:20:06 -0800 (PST)
-Received: from [10.164.18.70] (MacBook-Pro.blr.arm.com [10.164.18.70])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 557FC3F778;
-	Wed,  4 Feb 2026 21:20:09 -0800 (PST)
-Message-ID: <4847c300-c7bb-4259-867c-4bbf4d760576@arm.com>
-Date: Thu, 5 Feb 2026 10:50:06 +0530
+	s=arc-20240116; t=1770269451; c=relaxed/simple;
+	bh=MN4dodstiSzwVoQe0arnevGJiTIMdlCZ2Xm7aQ1cqdU=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=jN+JJkv3f1BLMDYcJfoVIZq2bgO+zOd88t2dKEMSLhVL6Rtt5sMF6XbYTa1wgaidJLUwk0H0DcZd8HGFg/FpG/acFKeQMMU0CFpvzhCx36YeXsYNQ1ZEvM8ykMIPR1uaVN+WJNZS5YyUfwWDzzHM5sS/A4qgsu6JDoVoT06nlXc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Ea1grlml; arc=none smtp.client-ip=91.218.175.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1770269447;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=GgqfJdQjw9jeJ36Z1N0ESMnPon9eBH43wGJH8jQ18rY=;
+	b=Ea1grlmlpc2e8TGxhyQfULCO/EY//nNMVo9ETJNbi3Irw3qu0wfzrfC9vtkfSXj+07s0HJ
+	0kO/NCx7ZavnuuCcB4ZuISd3uuAsmXmocWhOymciFIpNREGdZ1GJX2/AxRiVyI+ZvGg7SZ
+	SFf2JUZzIOYrbum/+CFxaXd+WWdZ2IA=
+From: Jiayuan Chen <jiayuan.chen@linux.dev>
+To: linux-mm@kvack.org
+Cc: jiayuan.chen@linux.dev,
+	Jiayuan Chen <jiayuan.chen@shopee.com>,
+	Johannes Weiner <hannes@cmpxchg.org>,
+	Michal Hocko <mhocko@kernel.org>,
+	Roman Gushchin <roman.gushchin@linux.dev>,
+	Shakeel Butt <shakeel.butt@linux.dev>,
+	Muchun Song <muchun.song@linux.dev>,
+	Yosry Ahmed <yosry.ahmed@linux.dev>,
+	Nhat Pham <nphamcs@gmail.com>,
+	Chengming Zhou <chengming.zhou@linux.dev>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Nick Terrell <terrelln@fb.com>,
+	David Sterba <dsterba@suse.com>,
+	cgroups@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH v1] mm: zswap: add per-memcg stat for incompressible pages
+Date: Thu,  5 Feb 2026 13:30:12 +0800
+Message-ID: <20260205053013.25134-1-jiayuan.chen@linux.dev>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/4] memcg: use mod_node_page_state to update stats
-To: Shakeel Butt <shakeel.butt@linux.dev>
-Cc: Andrew Morton <akpm@linux-foundation.org>,
- Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>,
- Roman Gushchin <roman.gushchin@linux.dev>,
- Muchun Song <muchun.song@linux.dev>, Harry Yoo <harry.yoo@oracle.com>,
- Qi Zheng <qi.zheng@linux.dev>, Vlastimil Babka <vbabka@suse.cz>,
- linux-mm@kvack.org, cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
- Meta kernel team <kernel-team@meta.com>
-References: <20251110232008.1352063-1-shakeel.butt@linux.dev>
- <20251110232008.1352063-2-shakeel.butt@linux.dev>
- <1052a452-9ba3-4da7-be47-7d27d27b3d1d@arm.com> <aYAmGc6lu973jRwu@linux.dev>
- <2638bd96-d8cc-4733-a4ce-efdf8f223183@arm.com>
- <51819ca5a15d8928caac720426cd1ce82e89b429@linux.dev>
- <05aec69b-8e73-49ac-aa89-47b371fb6269@arm.com> <aYOuCmjQ5lGm8Mup@linux.dev>
-Content-Language: en-US
-From: Dev Jain <dev.jain@arm.com>
-In-Reply-To: <aYOuCmjQ5lGm8Mup@linux.dev>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-1.36 / 15.00];
+X-Spamd-Result: default: False [-0.66 / 15.00];
+	MID_CONTAINS_FROM(1.00)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+	R_MISSING_CHARSET(0.50)[];
+	DMARC_POLICY_ALLOW(-0.50)[linux.dev,none];
 	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_DKIM_ALLOW(-0.20)[linux.dev:s=key1];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
-	DMARC_POLICY_SOFTFAIL(0.10)[arm.com : SPF not aligned (relaxed), No valid DKIM,none];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-13679-lists,cgroups=lfdr.de];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	RCVD_TLS_LAST(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	RCPT_COUNT_TWELVE(0.00)[13];
+	FREEMAIL_CC(0.00)[linux.dev,shopee.com,cmpxchg.org,kernel.org,gmail.com,linux-foundation.org,fb.com,suse.com,vger.kernel.org];
 	MIME_TRACE(0.00)[0:+];
-	FROM_HAS_DN(0.00)[];
+	TAGGED_FROM(0.00)[bounces-13680-lists,cgroups=lfdr.de];
+	RCPT_COUNT_TWELVE(0.00)[16];
+	RCVD_TLS_LAST(0.00)[];
+	RCVD_COUNT_THREE(0.00)[3];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	TO_DN_SOME(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[5];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[dev.jain@arm.com,cgroups@vger.kernel.org];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	NEURAL_HAM(-0.00)[-0.992];
-	MID_RHS_MATCH_FROM(0.00)[];
-	R_DKIM_NA(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[jiayuan.chen@linux.dev,cgroups@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	DKIM_TRACE(0.00)[linux.dev:+];
+	NEURAL_HAM(-0.00)[-1.000];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
 	TAGGED_RCPT(0.00)[cgroups];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,linux.dev:email,arm.com:url,arm.com:mid]
-X-Rspamd-Queue-Id: 3A2DDEEADF
+	MISSING_XM_UA(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[shopee.com:email,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,linux.dev:mid,linux.dev:dkim]
+X-Rspamd-Queue-Id: 859CAEEBD9
 X-Rspamd-Action: no action
 
+From: Jiayuan Chen <jiayuan.chen@shopee.com>
 
-On 05/02/26 2:08 am, Shakeel Butt wrote:
-> On Mon, Feb 02, 2026 at 02:23:54PM +0530, Dev Jain wrote:
->> On 02/02/26 10:24 am, Shakeel Butt wrote:
->>>>>> Hello Shakeel,
->>>>>>
->>>>>>  We are seeing a regression in micromm/munmap benchmark with this patch, on arm64 -
->>>>>>  the benchmark mmmaps a lot of memory, memsets it, and measures the time taken
->>>>>>  to munmap. Please see below if my understanding of this patch is correct.
->>>>>>
->>>>>  Thanks for the report. Are you seeing regression in just the benchmark
->>>>>  or some real workload as well? Also how much regression are you seeing?
->>>>>  I have a kernel rebot regression report [1] for this patch as well which
->>>>>  says 2.6% regression and thus it was on the back-burner for now. I will
->>>>>  take look at this again soon.
->>>>>
->>>> The munmap regression is ~24%. Haven't observed a regression in any other
->>>> benchmark yet.
->>> Please share the code/benchmark which shows such regression, also if you can
->>> share the perf profile, that would be awesome.
->> https://gitlab.arm.com/tooling/fastpath/-/blob/main/containers/microbench/micromm.c
->> You can run this with
->> ./micromm 0 munmap 10
->>
->> Don't have a perf profile, I measured the time taken by above command, with and
->> without the patch.
->>
-> Hi Dev, can you please try the following patch?
->
->
-> From 40155feca7e7bc846800ab8449735bdb03164d6d Mon Sep 17 00:00:00 2001
-> From: Shakeel Butt <shakeel.butt@linux.dev>
-> Date: Wed, 4 Feb 2026 08:46:08 -0800
-> Subject: [PATCH] vmstat: use preempt disable instead of try_cmpxchg
->
-> Signed-off-by: Shakeel Butt <shakeel.butt@linux.dev>
-> ---
->  include/linux/mmzone.h |  2 +-
->  mm/vmstat.c            | 58 ++++++++++++++++++------------------------
->  2 files changed, 26 insertions(+), 34 deletions(-)
->
-> diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
-> index 3e51190a55e4..499cd53efdd6 100644
-> --- a/include/linux/mmzone.h
-> +++ b/include/linux/mmzone.h
-> @@ -776,7 +776,7 @@ struct per_cpu_zonestat {
->  
->  struct per_cpu_nodestat {
->  	s8 stat_threshold;
-> -	s8 vm_node_stat_diff[NR_VM_NODE_STAT_ITEMS];
-> +	long vm_node_stat_diff[NR_VM_NODE_STAT_ITEMS];
->  };
->  
->  #endif /* !__GENERATING_BOUNDS.H */
-> diff --git a/mm/vmstat.c b/mm/vmstat.c
-> index 86b14b0f77b5..0930695597bb 100644
-> --- a/mm/vmstat.c
-> +++ b/mm/vmstat.c
-> @@ -377,7 +377,7 @@ void __mod_node_page_state(struct pglist_data *pgdat, enum node_stat_item item,
->  				long delta)
->  {
->  	struct per_cpu_nodestat __percpu *pcp = pgdat->per_cpu_nodestats;
-> -	s8 __percpu *p = pcp->vm_node_stat_diff + item;
-> +	long __percpu *p = pcp->vm_node_stat_diff + item;
->  	long x;
->  	long t;
->  
-> @@ -456,8 +456,8 @@ void __inc_zone_state(struct zone *zone, enum zone_stat_item item)
->  void __inc_node_state(struct pglist_data *pgdat, enum node_stat_item item)
->  {
->  	struct per_cpu_nodestat __percpu *pcp = pgdat->per_cpu_nodestats;
-> -	s8 __percpu *p = pcp->vm_node_stat_diff + item;
-> -	s8 v, t;
-> +	long __percpu *p = pcp->vm_node_stat_diff + item;
-> +	long v, t;
->  
->  	VM_WARN_ON_ONCE(vmstat_item_in_bytes(item));
->  
-> @@ -467,7 +467,7 @@ void __inc_node_state(struct pglist_data *pgdat, enum node_stat_item item)
->  	v = __this_cpu_inc_return(*p);
->  	t = __this_cpu_read(pcp->stat_threshold);
->  	if (unlikely(v > t)) {
-> -		s8 overstep = t >> 1;
-> +		long overstep = t >> 1;
->  
->  		node_page_state_add(v + overstep, pgdat, item);
->  		__this_cpu_write(*p, -overstep);
-> @@ -512,8 +512,8 @@ void __dec_zone_state(struct zone *zone, enum zone_stat_item item)
->  void __dec_node_state(struct pglist_data *pgdat, enum node_stat_item item)
->  {
->  	struct per_cpu_nodestat __percpu *pcp = pgdat->per_cpu_nodestats;
-> -	s8 __percpu *p = pcp->vm_node_stat_diff + item;
-> -	s8 v, t;
-> +	long __percpu *p = pcp->vm_node_stat_diff + item;
-> +	long v, t;
->  
->  	VM_WARN_ON_ONCE(vmstat_item_in_bytes(item));
->  
-> @@ -523,7 +523,7 @@ void __dec_node_state(struct pglist_data *pgdat, enum node_stat_item item)
->  	v = __this_cpu_dec_return(*p);
->  	t = __this_cpu_read(pcp->stat_threshold);
->  	if (unlikely(v < - t)) {
-> -		s8 overstep = t >> 1;
-> +		long overstep = t >> 1;
->  
->  		node_page_state_add(v - overstep, pgdat, item);
->  		__this_cpu_write(*p, overstep);
-> @@ -619,9 +619,8 @@ static inline void mod_node_state(struct pglist_data *pgdat,
->         enum node_stat_item item, int delta, int overstep_mode)
->  {
->  	struct per_cpu_nodestat __percpu *pcp = pgdat->per_cpu_nodestats;
-> -	s8 __percpu *p = pcp->vm_node_stat_diff + item;
-> -	long n, t, z;
-> -	s8 o;
-> +	long __percpu *p = pcp->vm_node_stat_diff + item;
-> +	long o, n, t, z;
->  
->  	if (vmstat_item_in_bytes(item)) {
->  		/*
-> @@ -634,32 +633,25 @@ static inline void mod_node_state(struct pglist_data *pgdat,
->  		delta >>= PAGE_SHIFT;
->  	}
->  
-> +	preempt_disable();
-> +
->  	o = this_cpu_read(*p);
-> -	do {
-> -		z = 0;  /* overflow to node counters */
-> +	n = o + delta;
->  
-> -		/*
-> -		 * The fetching of the stat_threshold is racy. We may apply
-> -		 * a counter threshold to the wrong the cpu if we get
-> -		 * rescheduled while executing here. However, the next
-> -		 * counter update will apply the threshold again and
-> -		 * therefore bring the counter under the threshold again.
-> -		 *
-> -		 * Most of the time the thresholds are the same anyways
-> -		 * for all cpus in a node.
-> -		 */
-> -		t = this_cpu_read(pcp->stat_threshold);
-> +	t = this_cpu_read(pcp->stat_threshold);
-> +	z = 0;
->  
-> -		n = delta + (long)o;
-> +	if (abs(n) > t) {
-> +		int os = overstep_mode * (t >> 1);
->  
-> -		if (abs(n) > t) {
-> -			int os = overstep_mode * (t >> 1) ;
-> +		/* Overflow must be added to node counters */
-> +		z = n + os;
-> +		n = -os;
-> +	}
->  
-> -			/* Overflow must be added to node counters */
-> -			z = n + os;
-> -			n = -os;
-> -		}
-> -	} while (!this_cpu_try_cmpxchg(*p, &o, n));
-> +	this_cpu_add(*p, n - o);
-> +
-> +	preempt_enable();
->  
->  	if (z)
->  		node_page_state_add(z, pgdat, item);
-> @@ -866,7 +858,7 @@ static bool refresh_cpu_vm_stats(bool do_pagesets)
->  		struct per_cpu_nodestat __percpu *p = pgdat->per_cpu_nodestats;
->  
->  		for (i = 0; i < NR_VM_NODE_STAT_ITEMS; i++) {
-> -			int v;
-> +			long v;
->  
->  			v = this_cpu_xchg(p->vm_node_stat_diff[i], 0);
->  			if (v) {
-> @@ -929,7 +921,7 @@ void cpu_vm_stats_fold(int cpu)
->  
->  		for (i = 0; i < NR_VM_NODE_STAT_ITEMS; i++)
->  			if (p->vm_node_stat_diff[i]) {
-> -				int v;
-> +				long v;
->  
->  				v = p->vm_node_stat_diff[i];
->  				p->vm_node_stat_diff[i] = 0;
+The global zswap_stored_incompressible_pages counter was added in commit
+dca4437a5861 ("mm/zswap: store <PAGE_SIZE compression failed page as-is")
+to track how many pages are stored in raw (uncompressed) form in zswap.
+However, in containerized environments, knowing which cgroup is
+contributing incompressible pages is essential for effective resource
+management.
 
-Thanks for looking into this.
+Add a new memcg stat 'zswpraw' to track incompressible pages per cgroup.
+This helps administrators and orchestrators to:
 
-But this doesn't solve it :( preempt_disable() contains a compiler barrier,
-probably that's why.
+1. Identify workloads that produce incompressible data (e.g., encrypted
+   data, already-compressed media, random data) and may not benefit from
+   zswap.
 
-Also can you confirm whether my analysis of the regression was correct?
-Because if it was, then this diff looks wrong - AFAIU preempt_disable()
-won't stop an irq handler from interrupting the execution, so this
-will introduce a bug for code paths running in irq context.
+2. Make informed decisions about workload placement - moving
+   incompressible workloads to nodes with larger swap backing devices
+   rather than relying on zswap.
 
+3. Debug zswap efficiency issues at the cgroup level without needing to
+   correlate global stats with individual cgroups.
+
+While the compression ratio can be estimated from existing stats
+(zswap / zswapped * PAGE_SIZE), this doesn't distinguish between
+"uniformly poor compression" and "a few completely incompressible pages
+mixed with highly compressible ones". The zswpraw stat provides direct
+visibility into the latter case.
+
+Changes
+-------
+
+1. Add zswap_is_raw() helper (include/linux/zswap.h)
+   - Abstract the PAGE_SIZE comparison logic for identifying raw entries
+   - Keep the incompressible check in one place for maintainability
+
+2. Add MEMCG_ZSWAP_RAW stat definition (include/linux/memcontrol.h,
+   mm/memcontrol.c)
+   - Add MEMCG_ZSWAP_RAW to memcg_stat_item enum
+   - Register in memcg_stat_items[] and memory_stats[] arrays
+   - Export as "zswpraw" in memory.stat
+
+3. Update statistics accounting (mm/memcontrol.c, mm/zswap.c)
+   - Track MEMCG_ZSWAP_RAW in obj_cgroup_charge/uncharge_zswap()
+   - Use zswap_is_raw() helper in zswap.c for consistency
+
+Test
+----
+
+I wrote a simple test program[1] that allocates memory and compresses it
+with zstd, so kernel zswap cannot compress further.
+
+  $ cgcreate -g memory:test
+  $ cgexec -g memory:test ./test_zswpraw &
+  $ cat /sys/fs/cgroup/test/memory.stat | grep zswp
+  zswpraw 0
+  zswpin 0
+  zswpout 0
+  zswpwb 0
+
+  $ echo "100M" > /sys/fs/cgroup/test/memory.reclaim
+  $ cat /sys/fs/cgroup/test/memory.stat | grep zswp
+  zswpraw 104800256
+  zswpin 0
+  zswpout 51222
+  zswpwb 0
+
+  $ pkill test_zswpraw
+  $ cat /sys/fs/cgroup/test/memory.stat | grep zswp
+  zswpraw 0
+  zswpin 1
+  zswpout 51222
+  zswpwb 0
+
+[1] https://gist.github.com/mrpre/00432c6154250326994fbeaf62e0e6f1
+
+Signed-off-by: Jiayuan Chen <jiayuan.chen@shopee.com>
+---
+ include/linux/memcontrol.h | 1 +
+ include/linux/zswap.h      | 9 +++++++++
+ mm/memcontrol.c            | 6 ++++++
+ mm/zswap.c                 | 6 +++---
+ 4 files changed, 19 insertions(+), 3 deletions(-)
+
+diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
+index b6c82c8f73e1..83d1328f81d1 100644
+--- a/include/linux/memcontrol.h
++++ b/include/linux/memcontrol.h
+@@ -39,6 +39,7 @@ enum memcg_stat_item {
+ 	MEMCG_KMEM,
+ 	MEMCG_ZSWAP_B,
+ 	MEMCG_ZSWAPPED,
++	MEMCG_ZSWAP_RAW,
+ 	MEMCG_NR_STAT,
+ };
+ 
+diff --git a/include/linux/zswap.h b/include/linux/zswap.h
+index 30c193a1207e..94f84b154b71 100644
+--- a/include/linux/zswap.h
++++ b/include/linux/zswap.h
+@@ -7,6 +7,15 @@
+ 
+ struct lruvec;
+ 
++/*
++ * Check if a zswap entry is stored in raw (uncompressed) form.
++ * This happens when compression doesn't reduce the size.
++ */
++static inline bool zswap_is_raw(size_t size)
++{
++	return size == PAGE_SIZE;
++}
++
+ extern atomic_long_t zswap_stored_pages;
+ 
+ #ifdef CONFIG_ZSWAP
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index 007413a53b45..32fb801530a3 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -341,6 +341,7 @@ static const unsigned int memcg_stat_items[] = {
+ 	MEMCG_KMEM,
+ 	MEMCG_ZSWAP_B,
+ 	MEMCG_ZSWAPPED,
++	MEMCG_ZSWAP_RAW,
+ };
+ 
+ #define NR_MEMCG_NODE_STAT_ITEMS ARRAY_SIZE(memcg_node_stat_items)
+@@ -1346,6 +1347,7 @@ static const struct memory_stat memory_stats[] = {
+ #ifdef CONFIG_ZSWAP
+ 	{ "zswap",			MEMCG_ZSWAP_B			},
+ 	{ "zswapped",			MEMCG_ZSWAPPED			},
++	{ "zswpraw",			MEMCG_ZSWAP_RAW			},
+ #endif
+ 	{ "file_mapped",		NR_FILE_MAPPED			},
+ 	{ "file_dirty",			NR_FILE_DIRTY			},
+@@ -5458,6 +5460,8 @@ void obj_cgroup_charge_zswap(struct obj_cgroup *objcg, size_t size)
+ 	memcg = obj_cgroup_memcg(objcg);
+ 	mod_memcg_state(memcg, MEMCG_ZSWAP_B, size);
+ 	mod_memcg_state(memcg, MEMCG_ZSWAPPED, 1);
++	if (zswap_is_raw(size))
++		mod_memcg_state(memcg, MEMCG_ZSWAP_RAW, 1);
+ 	rcu_read_unlock();
+ }
+ 
+@@ -5481,6 +5485,8 @@ void obj_cgroup_uncharge_zswap(struct obj_cgroup *objcg, size_t size)
+ 	memcg = obj_cgroup_memcg(objcg);
+ 	mod_memcg_state(memcg, MEMCG_ZSWAP_B, -size);
+ 	mod_memcg_state(memcg, MEMCG_ZSWAPPED, -1);
++	if (zswap_is_raw(size))
++		mod_memcg_state(memcg, MEMCG_ZSWAP_RAW, -1);
+ 	rcu_read_unlock();
+ }
+ 
+diff --git a/mm/zswap.c b/mm/zswap.c
+index 3d2d59ac3f9c..54ab4d126f64 100644
+--- a/mm/zswap.c
++++ b/mm/zswap.c
+@@ -723,7 +723,7 @@ static void zswap_entry_free(struct zswap_entry *entry)
+ 		obj_cgroup_uncharge_zswap(entry->objcg, entry->length);
+ 		obj_cgroup_put(entry->objcg);
+ 	}
+-	if (entry->length == PAGE_SIZE)
++	if (zswap_is_raw(entry->length))
+ 		atomic_long_dec(&zswap_stored_incompressible_pages);
+ 	zswap_entry_cache_free(entry);
+ 	atomic_long_dec(&zswap_stored_pages);
+@@ -941,7 +941,7 @@ static bool zswap_decompress(struct zswap_entry *entry, struct folio *folio)
+ 	zs_obj_read_sg_begin(pool->zs_pool, entry->handle, input, entry->length);
+ 
+ 	/* zswap entries of length PAGE_SIZE are not compressed. */
+-	if (entry->length == PAGE_SIZE) {
++	if (zswap_is_raw(entry->length)) {
+ 		WARN_ON_ONCE(input->length != PAGE_SIZE);
+ 		memcpy_from_sglist(kmap_local_folio(folio, 0), input, 0, PAGE_SIZE);
+ 		dlen = PAGE_SIZE;
+@@ -1448,7 +1448,7 @@ static bool zswap_store_page(struct page *page,
+ 		obj_cgroup_charge_zswap(objcg, entry->length);
+ 	}
+ 	atomic_long_inc(&zswap_stored_pages);
+-	if (entry->length == PAGE_SIZE)
++	if (zswap_is_raw(entry->length))
+ 		atomic_long_inc(&zswap_stored_incompressible_pages);
+ 
+ 	/*
+-- 
+2.43.0
 
 
