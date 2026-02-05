@@ -1,183 +1,393 @@
-Return-Path: <cgroups+bounces-13683-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-13684-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id OJ4DEo5FhGk/2QMAu9opvQ
-	(envelope-from <cgroups+bounces-13683-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Thu, 05 Feb 2026 08:23:58 +0100
+	id 0M5HAGJbhGmn2gMAu9opvQ
+	(envelope-from <cgroups+bounces-13684-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Thu, 05 Feb 2026 09:57:06 +0100
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 60EC2EF626
-	for <lists+cgroups@lfdr.de>; Thu, 05 Feb 2026 08:23:57 +0100 (CET)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
+	by mail.lfdr.de (Postfix) with ESMTPS id 283DAF0245
+	for <lists+cgroups@lfdr.de>; Thu, 05 Feb 2026 09:57:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id A22ED300681D
-	for <lists+cgroups@lfdr.de>; Thu,  5 Feb 2026 07:23:52 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 98F6E300862B
+	for <lists+cgroups@lfdr.de>; Thu,  5 Feb 2026 08:56:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D8D7B35CB62;
-	Thu,  5 Feb 2026 07:23:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A895736F40A;
+	Thu,  5 Feb 2026 08:56:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="agCF42zA"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="QD9LvZzW"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.14])
+Received: from out-183.mta1.migadu.com (out-183.mta1.migadu.com [95.215.58.183])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D2DC0334C04;
-	Thu,  5 Feb 2026 07:23:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.14
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0AD4136EA9F;
+	Thu,  5 Feb 2026 08:56:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.183
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1770276227; cv=none; b=QESX9Gs4wQm0n+jSf9nBu0BfImtexKF7Rh7rc2fVlYJ9pgU6dNQ/Gp7miFIN3lvXH7HDeUudRnP8qY0UaRSPQ1gNjsmiw93HzIjtLr6mLfIX5YfK0mQZDaPDjzPudYr/IHwRkZ16wIwjYjjUVcPh/KkxP6INlTyB0pMVUxTbqSo=
+	t=1770281789; cv=none; b=hN/kuuKH7NF0raE0BD5CGgTsE0bb1K4bDA1fFxXszLcpU5pxzMlYim10QkhgnNeKAP+4Tu6YL99t5LPNcP23KjVv2rlMis5mHd2Uf+NRKECorXk3rAXEUw6W+t8KJrw0cnuL/isd6SjbzVZYaT7uaBnKBRn9cZOqXU2bqy0xGVE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1770276227; c=relaxed/simple;
-	bh=FgmZNaT1AJdOs3lof3+rnMI62Gul05tMmOYxnVyfbkM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=GP424HfNlp/tDTUgBHk19t/qxLuNZWZthNvecfytWPYxaFNTjtR6sbPbLR67K+MRMuzOqfqv64CALZmOz8Ro7yGDEVs9gsphsTrTib0I7yH+yPWBNYS6nt3nOCxl1JVF5a0HbsIFxMs7bfkkJN3tbvtAtKCP84DYxO35jFxCabU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=pass smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=agCF42zA; arc=none smtp.client-ip=198.175.65.14
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1770276227; x=1801812227;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=FgmZNaT1AJdOs3lof3+rnMI62Gul05tMmOYxnVyfbkM=;
-  b=agCF42zAxuBVhVQS8q2VvWYrlrkCT2ODu1cM10v8ui1sFGAjRUkxbNR6
-   rnhFQaTT0mrhYPT59/WMkhR14DuNtxVGgHKLHtP5Eaqr1oZm/XZtyM/J1
-   6NsyzpV6WhKKCPxbEW1Fgx399k2t0kP1ebX+BOPEwpoFTKi3dSWr+xSQ7
-   dlx3QdbplY4XPr8nBhlISDcxVt/BohwMEwIQwYdeD9FuBGUZeqghZgdBs
-   zFnBjM7BjGxUtFHHglP/nr0xGUKM68xtGKao1KBE08j68SxhMnw6UrH3u
-   zS6Frw3kKkKjm73pEQVOTdp/Q4LhAJLLxhz+7ZGcJTRL7nOvUBYyNFm1W
-   g==;
-X-CSE-ConnectionGUID: n81A8imZTBikNvPrxWRJ7Q==
-X-CSE-MsgGUID: ToEhKqrwTDWDAOks9art2Q==
-X-IronPort-AV: E=McAfee;i="6800,10657,11691"; a="75322708"
-X-IronPort-AV: E=Sophos;i="6.21,274,1763452800"; 
-   d="scan'208";a="75322708"
-Received: from fmviesa005.fm.intel.com ([10.60.135.145])
-  by orvoesa106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 04 Feb 2026 23:23:44 -0800
-X-CSE-ConnectionGUID: w4M3nSSLQ/mBj1j0Il6KlQ==
-X-CSE-MsgGUID: NkzCqGaoSdu69QFLY8HZpA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.21,274,1763452800"; 
-   d="scan'208";a="214913923"
-Received: from yilunxu-optiplex-7050.sh.intel.com (HELO localhost) ([10.239.159.165])
-  by fmviesa005.fm.intel.com with ESMTP; 04 Feb 2026 23:23:21 -0800
-Date: Thu, 5 Feb 2026 15:04:48 +0800
-From: Xu Yilun <yilun.xu@linux.intel.com>
-To: Jason Gunthorpe <jgg@ziepe.ca>
-Cc: Sean Christopherson <seanjc@google.com>,
-	Ackerley Tng <ackerleytng@google.com>,
-	Alexey Kardashevskiy <aik@amd.com>, cgroups@vger.kernel.org,
-	kvm@vger.kernel.org, linux-doc@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-kselftest@vger.kernel.org, linux-mm@kvack.org,
-	linux-trace-kernel@vger.kernel.org, x86@kernel.org,
-	akpm@linux-foundation.org, binbin.wu@linux.intel.com, bp@alien8.de,
-	brauner@kernel.org, chao.p.peng@intel.com, chenhuacai@kernel.org,
-	corbet@lwn.net, dave.hansen@intel.com, dave.hansen@linux.intel.com,
-	david@redhat.com, dmatlack@google.com, erdemaktas@google.com,
-	fan.du@intel.com, fvdl@google.com, haibo1.xu@intel.com,
-	hannes@cmpxchg.org, hch@infradead.org, hpa@zytor.com,
-	hughd@google.com, ira.weiny@intel.com, isaku.yamahata@intel.com,
-	jack@suse.cz, james.morse@arm.com, jarkko@kernel.org,
-	jgowans@amazon.com, jhubbard@nvidia.com, jroedel@suse.de,
-	jthoughton@google.com, jun.miao@intel.com, kai.huang@intel.com,
-	keirf@google.com, kent.overstreet@linux.dev,
-	liam.merwick@oracle.com, maciej.wieczor-retman@intel.com,
-	mail@maciej.szmigiero.name, maobibo@loongson.cn,
-	mathieu.desnoyers@efficios.com, maz@kernel.org, mhiramat@kernel.org,
-	mhocko@kernel.org, mic@digikod.net, michael.roth@amd.com,
-	mingo@redhat.com, mlevitsk@redhat.com, mpe@ellerman.id.au,
-	muchun.song@linux.dev, nikunj@amd.com, nsaenz@amazon.es,
-	oliver.upton@linux.dev, palmer@dabbelt.com, pankaj.gupta@amd.com,
-	paul.walmsley@sifive.com, pbonzini@redhat.com, peterx@redhat.com,
-	pgonda@google.com, prsampat@amd.com, pvorel@suse.cz,
-	qperret@google.com, richard.weiyang@gmail.com,
-	rick.p.edgecombe@intel.com, rientjes@google.com,
-	rostedt@goodmis.org, roypat@amazon.co.uk, rppt@kernel.org,
-	shakeel.butt@linux.dev, shuah@kernel.org, steven.price@arm.com,
-	steven.sistare@oracle.com, suzuki.poulose@arm.com, tabba@google.com,
-	tglx@linutronix.de, thomas.lendacky@amd.com, vannapurve@google.com,
-	vbabka@suse.cz, viro@zeniv.linux.org.uk, vkuznets@redhat.com,
-	wei.w.wang@intel.com, will@kernel.org, willy@infradead.org,
-	wyihan@google.com, xiaoyao.li@intel.com, yan.y.zhao@intel.com,
-	yilun.xu@intel.com, yuzenghui@huawei.com, zhiquan1.li@intel.com
-Subject: Re: [RFC PATCH v1 05/37] KVM: guest_memfd: Wire up
- kvm_get_memory_attributes() to per-gmem attributes
-Message-ID: <aYRBEJSan8eoT8xw@yilunxu-OptiPlex-7050>
-References: <cover.1760731772.git.ackerleytng@google.com>
- <071a3c6603809186e914fe5fed939edee4e11988.1760731772.git.ackerleytng@google.com>
- <07836b1d-d0d8-40f2-8f7b-7805beca31d0@amd.com>
- <CAEvNRgEuez=JbArRf2SApLAL0usv5-Q6q=nBPOFMHrHGaKAtMw@mail.gmail.com>
- <20260129003753.GZ1641016@ziepe.ca>
- <aXqx3_eE0rNh6nP0@google.com>
- <aYHGVQTF6RUs7r3g@yilunxu-OptiPlex-7050>
- <20260203181618.GY2328995@ziepe.ca>
- <aYLOZIZU0nwk+0UN@yilunxu-OptiPlex-7050>
- <20260204124715.GA2328995@ziepe.ca>
+	s=arc-20240116; t=1770281789; c=relaxed/simple;
+	bh=bOl6lvhmGvFG43sy3jJ1atILWVftjUXmmizesNV/ojc=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=KD+v4wyIHQGy8GZ5Jv9FyjYmsZWCI3MEqtdQOOvVmxRiPtGX2bhFEtMqNIn28+DwuFThLOcY1RY2URx1ZGtmaaVw0Em5vUT5Upz9d1oO4KPdRLM8Lgj3qjokPn4xvrVXAnaAPgMQksKFL0+aD0CkYWEsZeq9gWxNQgXVfgSswx8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=QD9LvZzW; arc=none smtp.client-ip=95.215.58.183
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1770281785;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=XzTKiZnV6r6pGRAN1Vi+8TF/Bjdg4KcZcIvONSYE8GM=;
+	b=QD9LvZzWlQuxVXIzqUKWUAiV0Ob0NmKPCkZu/Aexlt5DbnpLFtLgVX8smP6J3XDdA0S2T5
+	PecjzAQloMBEMhrmGQmyOjQLCODWtP6/UnyJNRizFY2hu9AVnSbaQV2/qUFURTyrZ4C3P6
+	tgs75uji3qHzuvotgw9fptTeNstR0jI=
+From: Qi Zheng <qi.zheng@linux.dev>
+To: hannes@cmpxchg.org,
+	hughd@google.com,
+	mhocko@suse.com,
+	roman.gushchin@linux.dev,
+	shakeel.butt@linux.dev,
+	muchun.song@linux.dev,
+	david@kernel.org,
+	lorenzo.stoakes@oracle.com,
+	ziy@nvidia.com,
+	harry.yoo@oracle.com,
+	yosry.ahmed@linux.dev,
+	imran.f.khan@oracle.com,
+	kamalesh.babulal@oracle.com,
+	axelrasmussen@google.com,
+	yuanchu@google.com,
+	weixugc@google.com,
+	chenridong@huaweicloud.com,
+	mkoutny@suse.com,
+	akpm@linux-foundation.org,
+	hamzamahfooz@linux.microsoft.com,
+	apais@linux.microsoft.com,
+	lance.yang@linux.dev,
+	bhe@redhat.com
+Cc: linux-mm@kvack.org,
+	linux-kernel@vger.kernel.org,
+	cgroups@vger.kernel.org,
+	Qi Zheng <zhengqi.arch@bytedance.com>
+Subject: [PATCH v4 00/31] Eliminate Dying Memory Cgroup
+Date: Thu,  5 Feb 2026 16:54:29 +0800
+Message-ID: <cover.1770279888.git.zhengqi.arch@bytedance.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20260204124715.GA2328995@ziepe.ca>
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-0.16 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
+X-Spamd-Result: default: False [-1.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_RHS_NOT_FQDN(0.50)[];
-	DMARC_POLICY_ALLOW(-0.50)[intel.com,none];
-	R_DKIM_ALLOW(-0.20)[intel.com:s=Intel];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64:c];
+	R_MISSING_CHARSET(0.50)[];
+	DMARC_POLICY_ALLOW(-0.50)[linux.dev,none];
+	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
+	R_DKIM_ALLOW(-0.20)[linux.dev:s=key1];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FREEMAIL_CC(0.00)[google.com,amd.com,vger.kernel.org,kvack.org,kernel.org,linux-foundation.org,linux.intel.com,alien8.de,intel.com,lwn.net,redhat.com,cmpxchg.org,infradead.org,zytor.com,suse.cz,arm.com,amazon.com,nvidia.com,suse.de,linux.dev,oracle.com,maciej.szmigiero.name,loongson.cn,efficios.com,digikod.net,ellerman.id.au,amazon.es,dabbelt.com,sifive.com,gmail.com,goodmis.org,amazon.co.uk,linutronix.de,zeniv.linux.org.uk,huawei.com];
-	FROM_HAS_DN(0.00)[];
-	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-13683-lists,cgroups=lfdr.de];
 	MIME_TRACE(0.00)[0:+];
+	RCVD_TLS_LAST(0.00)[];
+	RCVD_COUNT_THREE(0.00)[3];
+	TAGGED_FROM(0.00)[bounces-13684-lists,cgroups=lfdr.de];
+	RCPT_COUNT_TWELVE(0.00)[27];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	DKIM_TRACE(0.00)[intel.com:+];
 	MISSING_XM_UA(0.00)[];
-	TO_DN_SOME(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[5];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[yilun.xu@linux.intel.com,cgroups@vger.kernel.org];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCPT_COUNT_GT_50(0.00)[98];
-	TAGGED_RCPT(0.00)[cgroups];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[qi.zheng@linux.dev,cgroups@vger.kernel.org];
+	DKIM_TRACE(0.00)[linux.dev:+];
 	NEURAL_HAM(-0.00)[-0.999];
-	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[intel.com:dkim,sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 60EC2EF626
+	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
+	TAGGED_RCPT(0.00)[cgroups];
+	TO_DN_SOME(0.00)[];
+	FROM_HAS_DN(0.00)[]
+X-Rspamd-Queue-Id: 283DAF0245
 X-Rspamd-Action: no action
 
-On Wed, Feb 04, 2026 at 08:47:15AM -0400, Jason Gunthorpe wrote:
-> On Wed, Feb 04, 2026 at 12:43:16PM +0800, Xu Yilun wrote:
-> > > Which means we need VFIO to know what they are, and hopefully it is
-> > > just static based on the TDISP reports..
-> > 
-> > I don't think VMM need to check TDISP report. The only special thing is
-> > the MSI-X mixed pages which can be figured out by standard PCI
-> > discovery.
-> 
-> Either that or follow along with the guests's choices on
-> shared/private.
-> 
-> We can't let VFIO mmap a private MMIO page, so it has to know which
-> pages are private at any moment, and it can't guess.
+From: Qi Zheng <zhengqi.arch@bytedance.com>
 
-No we could only let VFIO mmap MMIO pages that need emulation (like this
-MSI-X mixed page). MMIOs in such page cannot be assigned to guest so no
-way to convert to private.
+Changes in v4:
+ - fix commit message in [PATCH v3 23/30] (pointed by Baoquan He)
+ - move lruvec_lock_irq() and firends to mm/memcontrol.c to fix the compilation
+   error in [PATCH v4 24/31] (reported by LKP)
+ - include parent_lruvec() within the RCU lock in lru_note_cost_unlock_irq() in
+   [PATCH v4 24/31] (pointed by Harry Yoo)
+ - move the declaration of lru_reparent_memcg() to swap.h
+   (suggested by Muchun Song)
+ - fix lru size update logic in lru_gen_reparent_memcg() in [PATCH v4 26/31]
+   (pointed and suggested by Harry Yoo)
+ - add [PATCH v4 28/31] to use lruvec_lru_size() to get the number of lru pages
+   in count_shadow_nodes() (suggested by Shakeel Butt)
+ - fix reparenting logic of lruvec_stats->state_local in [PATCH v4 29/31]
+   (pointed by Shakeel Butt)
+ - change these non-hierarchical stats to atomic_long_t type to avoid race
+   between mem_cgroup_stat_aggregate() and reparent_state_local() in
+   [PATCH v4 29/31]
+ - make css_killed_work_fn() to be called in rcu work, and use rcu lock +
+   CSS_IS_DYING check to avoid race between
+   mod_memcg_state()/mod_memcg_lruvec_state()
+   (suggested by Shakeel Butt)
+ - collect Acked-bys and Reviewed-bys
+ - rebase onto the next-20260128
 
-We don't allow VFIO mmap all asigned MMIO pages, no matter they will be
-private or shared. They are assigned to guest, so host don't touch them.
-Does that make sense?
+Changes in v3:
+ - modify the commit message in [PATCH v2 04/28], [PATCH v2 06/28],
+   [PATCH v2 13/28], [PATCH v2 24/28] and [PATCH v2 27/28]
+   (suggested by David Hildenbrand, Chen Ridong and Johannes Weiner)
+ - change code style in [PATCH v3 8/30], [PATCH v3 15/30] and [PATCH v3 27/30]
+   (suggested by Johannes Weiner and Shakeel Butt)
+ - use get_mem_cgroup_from_folio() + mem_cgroup_put() to replace holding rcu
+   lock in [PATCH v3 14/30] and [PATCH v3 19/30]
+   (pointed by Johannes Weiner)
+ - add a comment to folio_split_queue_lock() in [PATCH v3 17/30]
+   (suggested by Shakeel Butt)
+ - modify the comment above folio_lruvec() in [PATCH v3 24/30]
+   (suggested by Johannes Weiner)
+ - fix rcu lock issue in lru_note_cost_refault()
+   (pointed by Shakeel Butt)
+ - add [PATCH v3 28/30] to fix non-hierarchical memcg1_stats issues
+   (pointed by Yosry Ahmed)
+ - fix lru_zone_size issue in [PATCH v2 24/28] and [PATCH v2 25/28]
+ - collect Acked-bys and Reviewed-bys
+ - rebase onto the next-20260114
 
-> 
-> Jason
+Changes in v2:
+ - add [PATCH v2 04/28] and remove local_irq_disable() in evict_folios()
+   (pointed by Harry Yoo)
+ - recheck objcg in [PATCH v2 07/28] (pointed by Harry Yoo)
+ - modify the commit message in [PATCH v2 12/28] and [PATCH v2 21/28]
+   (pointed by Harry Yoo)
+ - use rcu lock to protect mm_state in [PATCH v2 14/28] (pointed by Harry Yoo)
+ - fix bad unlock balance warning in [PATCH v2 23/28]
+ - change nr_pages type to long in [PATCH v2 25/28] (pointed by Harry Yoo)
+ - incease mm_state->seq during reparenting to make mm walker work properly in
+   [PATCH v2 25/28] (pointed by Harry Yoo)
+ - add [PATCH v2 18/28] to fix WARNING in folio_memcg() (pointed by Harry Yoo)
+ - collect Reviewed-bys
+ - rebase onto the next-20251216
+
+Changes in v1:
+ - drop [PATCH RFC 02/28]
+ - drop THP split queue related part, which has been merged as a separate
+   patchset[2]
+ - prevent memory cgroup release in folio_split_queue_lock{_irqsave}() in
+   [PATCH v1 16/26]
+ - Separate the reparenting function of traditional LRU folios to [PATCH v1 22/26]
+ - adapted to the MGLRU scenarios in [PATCH v1 23/26]
+ - refactor memcg_reparent_objcgs() in [PATCH v1 24/26]
+ - collect Acked-bys and Reviewed-bys
+ - rebase onto the next-20251028
+
+Hi all,
+
+Introduction
+============
+
+This patchset is intended to transfer the LRU pages to the object cgroup
+without holding a reference to the original memory cgroup in order to
+address the issue of the dying memory cgroup. A consensus has already been
+reached regarding this approach recently [1].
+
+Background
+==========
+
+The issue of a dying memory cgroup refers to a situation where a memory
+cgroup is no longer being used by users, but memory (the metadata
+associated with memory cgroups) remains allocated to it. This situation
+may potentially result in memory leaks or inefficiencies in memory
+reclamation and has persisted as an issue for several years. Any memory
+allocation that endures longer than the lifespan (from the users'
+perspective) of a memory cgroup can lead to the issue of dying memory
+cgroup. We have exerted greater efforts to tackle this problem by
+introducing the infrastructure of object cgroup [2].
+
+Presently, numerous types of objects (slab objects, non-slab kernel
+allocations, per-CPU objects) are charged to the object cgroup without
+holding a reference to the original memory cgroup. The final allocations
+for LRU pages (anonymous pages and file pages) are charged at allocation
+time and continues to hold a reference to the original memory cgroup
+until reclaimed.
+
+File pages are more complex than anonymous pages as they can be shared
+among different memory cgroups and may persist beyond the lifespan of
+the memory cgroup. The long-term pinning of file pages to memory cgroups
+is a widespread issue that causes recurring problems in practical
+scenarios [3]. File pages remain unreclaimed for extended periods.
+Additionally, they are accessed by successive instances (second, third,
+fourth, etc.) of the same job, which is restarted into a new cgroup each
+time. As a result, unreclaimable dying memory cgroups accumulate,
+leading to memory wastage and significantly reducing the efficiency
+of page reclamation.
+
+Fundamentals
+============
+
+A folio will no longer pin its corresponding memory cgroup. It is necessary
+to ensure that the memory cgroup or the lruvec associated with the memory
+cgroup is not released when a user obtains a pointer to the memory cgroup
+or lruvec returned by folio_memcg() or folio_lruvec(). Users are required
+to hold the RCU read lock or acquire a reference to the memory cgroup
+associated with the folio to prevent its release if they are not concerned
+about the binding stability between the folio and its corresponding memory
+cgroup. However, some users of folio_lruvec() (i.e., the lruvec lock)
+desire a stable binding between the folio and its corresponding memory
+cgroup. An approach is needed to ensure the stability of the binding while
+the lruvec lock is held, and to detect the situation of holding the
+incorrect lruvec lock when there is a race condition during memory cgroup
+reparenting. The following four steps are taken to achieve these goals.
+
+1. The first step  to be taken is to identify all users of both functions
+   (folio_memcg() and folio_lruvec()) who are not concerned about binding
+   stability and implement appropriate measures (such as holding a RCU read
+   lock or temporarily obtaining a reference to the memory cgroup for a
+   brief period) to prevent the release of the memory cgroup.
+
+2. Secondly, the following refactoring of folio_lruvec_lock() demonstrates
+   how to ensure the binding stability from the user's perspective of
+   folio_lruvec().
+
+   struct lruvec *folio_lruvec_lock(struct folio *folio)
+   {
+           struct lruvec *lruvec;
+
+           rcu_read_lock();
+   retry:
+           lruvec = folio_lruvec(folio);
+           spin_lock(&lruvec->lru_lock);
+           if (unlikely(lruvec_memcg(lruvec) != folio_memcg(folio))) {
+                   spin_unlock(&lruvec->lru_lock);
+                   goto retry;
+           }
+
+           return lruvec;
+   }
+
+   From the perspective of memory cgroup removal, the entire reparenting
+   process (altering the binding relationship between folio and its memory
+   cgroup and moving the LRU lists to its parental memory cgroup) should be
+   carried out under both the lruvec lock of the memory cgroup being removed
+   and the lruvec lock of its parent.
+
+3. Finally, transfer the LRU pages to the object cgroup without holding a
+   reference to the original memory cgroup.
+
+Effect
+======
+
+Finally, it can be observed that the quantity of dying memory cgroups will
+not experience a significant increase if the following test script is
+executed to reproduce the issue.
+
+```bash
+#!/bin/bash
+
+# Create a temporary file 'temp' filled with zero bytes
+dd if=/dev/zero of=temp bs=4096 count=1
+
+# Display memory-cgroup info from /proc/cgroups
+cat /proc/cgroups | grep memory
+
+for i in {0..2000}
+do
+    mkdir /sys/fs/cgroup/memory/test$i
+    echo $$ > /sys/fs/cgroup/memory/test$i/cgroup.procs
+
+    # Append 'temp' file content to 'log'
+    cat temp >> log
+
+    echo $$ > /sys/fs/cgroup/memory/cgroup.procs
+
+    # Potentially create a dying memory cgroup
+    rmdir /sys/fs/cgroup/memory/test$i
+done
+
+# Display memory-cgroup info after test
+cat /proc/cgroups | grep memory
+
+rm -f temp log
+```
+
+Comments and suggestions are welcome!
+
+Thanks,
+Qi
+
+[1].https://lore.kernel.org/linux-mm/Z6OkXXYDorPrBvEQ@hm-sls2/
+[2].https://lwn.net/Articles/895431/
+[3].https://github.com/systemd/systemd/pull/36827
+
+Muchun Song (22):
+  mm: memcontrol: remove dead code of checking parent memory cgroup
+  mm: workingset: use folio_lruvec() in workingset_refault()
+  mm: rename unlock_page_lruvec_irq and its variants
+  mm: vmscan: refactor move_folios_to_lru()
+  mm: memcontrol: allocate object cgroup for non-kmem case
+  mm: memcontrol: return root object cgroup for root memory cgroup
+  mm: memcontrol: prevent memory cgroup release in
+    get_mem_cgroup_from_folio()
+  buffer: prevent memory cgroup release in folio_alloc_buffers()
+  writeback: prevent memory cgroup release in writeback module
+  mm: memcontrol: prevent memory cgroup release in
+    count_memcg_folio_events()
+  mm: page_io: prevent memory cgroup release in page_io module
+  mm: migrate: prevent memory cgroup release in folio_migrate_mapping()
+  mm: mglru: prevent memory cgroup release in mglru
+  mm: memcontrol: prevent memory cgroup release in
+    mem_cgroup_swap_full()
+  mm: workingset: prevent memory cgroup release in lru_gen_eviction()
+  mm: workingset: prevent lruvec release in workingset_refault()
+  mm: zswap: prevent lruvec release in zswap_folio_swapin()
+  mm: swap: prevent lruvec release in lru_gen_clear_refs()
+  mm: workingset: prevent lruvec release in workingset_activation()
+  mm: memcontrol: prepare for reparenting LRU pages for lruvec lock
+  mm: memcontrol: eliminate the problem of dying memory cgroup for LRU
+    folios
+  mm: lru: add VM_WARN_ON_ONCE_FOLIO to lru maintenance helpers
+
+Qi Zheng (9):
+  mm: vmscan: prepare for the refactoring the move_folios_to_lru()
+  mm: thp: prevent memory cgroup release in
+    folio_split_queue_lock{_irqsave}()
+  mm: zswap: prevent memory cgroup release in zswap_compress()
+  mm: do not open-code lruvec lock
+  mm: vmscan: prepare for reparenting traditional LRU folios
+  mm: vmscan: prepare for reparenting MGLRU folios
+  mm: memcontrol: refactor memcg_reparent_objcgs()
+  mm: workingset: use lruvec_lru_size() to get the number of lru pages
+  mm: memcontrol: prepare for reparenting non-hierarchical stats
+
+ fs/buffer.c                      |   4 +-
+ fs/fs-writeback.c                |  22 +-
+ include/linux/memcontrol.h       | 177 +++++-----
+ include/linux/mm_inline.h        |   6 +
+ include/linux/mmzone.h           |  16 +
+ include/linux/swap.h             |  25 +-
+ include/trace/events/writeback.h |   3 +
+ kernel/cgroup/cgroup.c           |   8 +-
+ mm/compaction.c                  |  43 ++-
+ mm/huge_memory.c                 |  22 +-
+ mm/memcontrol-v1.c               |  31 +-
+ mm/memcontrol-v1.h               |   3 +
+ mm/memcontrol.c                  | 554 +++++++++++++++++++++----------
+ mm/migrate.c                     |   2 +
+ mm/mlock.c                       |   2 +-
+ mm/page_io.c                     |   8 +-
+ mm/percpu.c                      |   2 +-
+ mm/shrinker.c                    |   6 +-
+ mm/swap.c                        |  63 +++-
+ mm/vmscan.c                      | 293 +++++++++++-----
+ mm/workingset.c                  |  30 +-
+ mm/zswap.c                       |   5 +
+ 22 files changed, 909 insertions(+), 416 deletions(-)
+
+-- 
+2.20.1
+
 
