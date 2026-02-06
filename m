@@ -1,37 +1,37 @@
-Return-Path: <cgroups+bounces-13727-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-13728-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id CCJaHGhWhWmnAAQAu9opvQ
-	(envelope-from <cgroups+bounces-13727-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Fri, 06 Feb 2026 03:48:08 +0100
+	id SLSpHcpXhWkhAQQAu9opvQ
+	(envelope-from <cgroups+bounces-13728-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Fri, 06 Feb 2026 03:54:02 +0100
 X-Original-To: lists+cgroups@lfdr.de
 Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id C95ADF96EF
-	for <lists+cgroups@lfdr.de>; Fri, 06 Feb 2026 03:48:07 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id E9DCEF9777
+	for <lists+cgroups@lfdr.de>; Fri, 06 Feb 2026 03:54:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id A0A51301A159
-	for <lists+cgroups@lfdr.de>; Fri,  6 Feb 2026 02:48:06 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id DF0103019FEB
+	for <lists+cgroups@lfdr.de>; Fri,  6 Feb 2026 02:54:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD9A827D782;
-	Fri,  6 Feb 2026 02:48:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 31478293B5F;
+	Fri,  6 Feb 2026 02:53:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="IMPBFxSu"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="YYh+RTqw"
 X-Original-To: cgroups@vger.kernel.org
-Received: from out-188.mta1.migadu.com (out-188.mta1.migadu.com [95.215.58.188])
+Received: from out-185.mta0.migadu.com (out-185.mta0.migadu.com [91.218.175.185])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7905F1339B1
-	for <cgroups@vger.kernel.org>; Fri,  6 Feb 2026 02:48:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.188
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C0A8325228D
+	for <cgroups@vger.kernel.org>; Fri,  6 Feb 2026 02:53:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.185
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1770346083; cv=none; b=ZN3O0dkP1sb4z4Mbd6lzH7H7QdhLhqMi0Ap7pATnUgptODplxHERv+1VBwFgJ0cVpMkdYLiGO3Ag19xOrkXSsBwVY+hOhGbGwha9xxaR4auEk7loaSF4R1EtqKTWvQPJQ0nXCsps8XUCmwSEM57y9ybuXX8b2Pax0af8CT5hY9s=
+	t=1770346437; cv=none; b=kbog7qD33Y2BTJmbgJfLoj/8D20/7qOthCKpas57+OH6qcrf1PqbEuDXhvXOH/1fZSOX4ph8yw4xj1JMy8NfsIrd+H4JGgRpoN96C0co6Tx+VyeeQx/UNi7AB3NG/juf76dqDaNbWGA0xSu6HYl8m04wYizAb4wkL4shKK0l0y4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1770346083; c=relaxed/simple;
-	bh=oSiHb39C3CwNoYn3NEdsu46Nt3Mnkt7EDotjYtviSJ0=;
+	s=arc-20240116; t=1770346437; c=relaxed/simple;
+	bh=ocStP8pUgXMdNZ160TeZWnDu6YtjqwlqIrdbRjnkSL4=;
 	h=MIME-Version:Date:Content-Type:From:Message-ID:Subject:To:Cc:
-	 In-Reply-To:References; b=VBFcIpqW69u3tV6eOEW/STtdMUj7E7MsXAB71OEvtTxgcb0RBGajtKHaT9lCjQw5VgDR4g62Wd4BoTMXyvxwiESKmIEEc5T/5ms4PGvpMSHN7B0cK36gFDU/Ig6hq5kNX/bJk+HXphp0vKOOzgr8v7txj9xg9sPSGSiEU8VCdxE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=IMPBFxSu; arc=none smtp.client-ip=95.215.58.188
+	 In-Reply-To:References; b=O9agz5PeQeQ1XXHISe/lptUBWPgOVpAOMnVb0HQnMvEltrz5mc/yfKK4mACS4kuHVG2KVslJ0GntLr+eRbO7RzCC4a+5kGZDUe9+6YmL90tTFDZtOl8c0ggxsNwIkQ+X6UR2VPfq8R8Xy60bxfkMlGotGz0pgAIlDnfTebDhDe4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=YYh+RTqw; arc=none smtp.client-ip=91.218.175.185
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Precedence: bulk
@@ -41,37 +41,37 @@ List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1770346081;
+	t=1770346434;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=z8cUYDug+KA/z/+qG82tQKkyvE+6vqzDr2LKkma6cU4=;
-	b=IMPBFxSu+8uQOW4JZAmYU378vjSSckXrZngrEjjc1dar8KyBJyMASGc9I43eGOFSz5SJo8
-	4DyVZaP8DtARAOTh71nbxYIhoXIw0i1dceOTE4MvOA5bLdmlgL14cCMN1GBcIwmqd7/p0E
-	drJzC+os8uGwbIuik+nmamkyTkB4c/s=
-Date: Fri, 06 Feb 2026 02:47:58 +0000
+	bh=kl9ABNqAlIP37pttYDfGhjd/d6eepItkd6PhmTOS3dg=;
+	b=YYh+RTqwwONx2rQgKhQpqNIq8/TXI9Xlz9xZCA1xyELrT6+0RpTXYnmCeU/thQSURgvqL4
+	PG7eqo5WflFalJGaR+lY14UjOtXHjOsYqL/B/VveREiAoh+1Dti+m3mdk+gTPCPWLwnoVq
+	UKxX48kFYmh5suHUnGeLsGnAVL5hfo0=
+Date: Fri, 06 Feb 2026 02:53:52 +0000
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: quoted-printable
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 From: "Jiayuan Chen" <jiayuan.chen@linux.dev>
-Message-ID: <e155ad8af874f10baaed91f1d12fde222b82036b@linux.dev>
+Message-ID: <3179fa38027bdacdd38b4ef34b493bdb5ef7a19a@linux.dev>
 TLS-Required: No
 Subject: Re: [PATCH v1] mm: zswap: add per-memcg stat for incompressible
  pages
-To: "SeongJae Park" <sj@kernel.org>
+To: "Yosry Ahmed" <yosry.ahmed@linux.dev>, "SeongJae Park" <sj@kernel.org>
 Cc: "SeongJae Park" <sj@kernel.org>, linux-mm@kvack.org, "Jiayuan Chen"
  <jiayuan.chen@shopee.com>, "Johannes Weiner" <hannes@cmpxchg.org>,
  "Michal Hocko" <mhocko@kernel.org>, "Roman Gushchin"
  <roman.gushchin@linux.dev>, "Shakeel Butt" <shakeel.butt@linux.dev>,
- "Muchun Song" <muchun.song@linux.dev>, "Yosry Ahmed"
- <yosry.ahmed@linux.dev>, "Nhat Pham" <nphamcs@gmail.com>, "Chengming
- Zhou" <chengming.zhou@linux.dev>, "Andrew Morton"
- <akpm@linux-foundation.org>, "Nick Terrell" <terrelln@fb.com>, "David
+ "Muchun Song" <muchun.song@linux.dev>, "Nhat Pham" <nphamcs@gmail.com>,
+ "Chengming Zhou" <chengming.zhou@linux.dev>, "Andrew Morton"
+ <akpm@linux-foundation.org>, "Nick Terrell" <terrelln@fb.com>, "David 
  Sterba" <dsterba@suse.com>, cgroups@vger.kernel.org,
  linux-kernel@vger.kernel.org
-In-Reply-To: <20260206022152.67992-1-sj@kernel.org>
+In-Reply-To: <b0b984be60ffa366929d363ec2b63f5c92187556@linux.dev>
 References: <20260206022152.67992-1-sj@kernel.org>
+ <b0b984be60ffa366929d363ec2b63f5c92187556@linux.dev>
 X-Migadu-Flow: FLOW_OUT
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-2.16 / 15.00];
@@ -82,7 +82,7 @@ X-Spamd-Result: default: False [-2.16 / 15.00];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-13727-lists,cgroups=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-13728-lists,cgroups=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
 	RCVD_COUNT_THREE(0.00)[3];
 	FORGED_SENDER_MAILLIST(0.00)[];
@@ -100,20 +100,21 @@ X-Spamd-Result: default: False [-2.16 / 15.00];
 	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
 	TAGGED_RCPT(0.00)[cgroups];
 	TO_DN_SOME(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[linux.dev:email,linux.dev:dkim,linux.dev:mid,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: C95ADF96EF
+	DBL_BLOCKED_OPENRESOLVER(0.00)[linux.dev:email,linux.dev:dkim,linux.dev:mid,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,shopee.com:email]
+X-Rspamd-Queue-Id: E9DCEF9777
 X-Rspamd-Action: no action
 
-February 6, 2026 at 10:21, "SeongJae Park" <sj@kernel.org mailto:sj@kerne=
-l.org?to=3D%22SeongJae%20Park%22%20%3Csj%40kernel.org%3E > wrote:
+February 6, 2026 at 10:33, "Yosry Ahmed" <yosry.ahmed@linux.dev mailto:yo=
+sry.ahmed@linux.dev?to=3D%22Yosry%20Ahmed%22%20%3Cyosry.ahmed%40linux.dev=
+%3E > wrote:
 
 
->=20
->=20On Thu, 5 Feb 2026 13:30:12 +0800 Jiayuan Chen <jiayuan.chen@linux.de=
-v> wrote:
 >=20
 >=20>=20
->=20> From: Jiayuan Chen <jiayuan.chen@shopee.com>
+>=20> On Thu, 5 Feb 2026 13:30:12 +0800 Jiayuan Chen <> wrote:
+> >=20=20
+>=20>=20=20
+>=20>  From: Jiayuan Chen <jiayuan.chen@shopee.com>
 > >=20=20
 >=20>  The global zswap_stored_incompressible_pages counter was added in =
 commit
@@ -209,13 +210,13 @@ ses it
 > >  mm/memcontrol.c | 6 ++++++
 > >  mm/zswap.c | 6 +++---
 > >  4 files changed, 19 insertions(+), 3 deletions(-)
-> >=20
->=20As others also mentioned, the documentation of the new stat would be =
-needed.
->=20
->=20>=20
->=20> diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.=
-h
+> >=20=20
+>=20>  As others also mentioned, the documentation of the new stat would =
+be needed.
+> >=20=20
+>=20>=20=20
+>=20>  diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol=
+.h
 > >  index b6c82c8f73e1..83d1328f81d1 100644
 > >  --- a/include/linux/memcontrol.h
 > >  +++ b/include/linux/memcontrol.h
@@ -244,130 +245,47 @@ h
 > >  + return size =3D=3D PAGE_SIZE;
 > >  +}
 > >  +
-> >=20
->=20No strong opinion, but I'm not really sure if the helper is needed, b=
-ecause it
-> feels quite simple logic:
->=20
->=20 "If an object is compressed and the size is same to the original one=
-, the
->  object is incompressible."
->=20
->=20I also feel the function name bit odd, given the type of the paramete=
-r. Based
-> on the function name and the comment, I'd expect it to receive a zswap_=
-entry
-> object. I understand it is better to receive a size_t, to be called fro=
-m
-> obj_cgroup_[un]charge_zswap(), though. Even in the case, I think the na=
-me can
-> be better (e.g., zswap_compression_failed() or zswap_was_incompressible=
-() ?),
-> or at least the coment can be more kindly explain the fact that the par=
-ameter
-> is the size of object after the compression attempt.
->=20
->=20>=20
->=20> extern atomic_long_t zswap_stored_pages;
 > >=20=20
->=20>  #ifdef CONFIG_ZSWAP
-> >  diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> >  index 007413a53b45..32fb801530a3 100644
-> >  --- a/mm/memcontrol.c
-> >  +++ b/mm/memcontrol.c
-> >  @@ -341,6 +341,7 @@ static const unsigned int memcg_stat_items[] =3D=
- {
-> >  MEMCG_KMEM,
-> >  MEMCG_ZSWAP_B,
-> >  MEMCG_ZSWAPPED,
-> >  + MEMCG_ZSWAP_RAW,
-> >  };
-> >=20
->=20No strong opinion, but I think Shakeel's suggestion of other names is
-> reasonable.
->=20
->=20>=20
->=20> #define NR_MEMCG_NODE_STAT_ITEMS ARRAY_SIZE(memcg_node_stat_items)
-> >  @@ -1346,6 +1347,7 @@ static const struct memory_stat memory_stats[]=
- =3D {
-> >  #ifdef CONFIG_ZSWAP
-> >  { "zswap", MEMCG_ZSWAP_B },
-> >  { "zswapped", MEMCG_ZSWAPPED },
-> >  + { "zswpraw", MEMCG_ZSWAP_RAW },
-> >=20
->=20Ditto.
->=20
->=20>=20
->=20> #endif
-> >  { "file_mapped", NR_FILE_MAPPED },
-> >  { "file_dirty", NR_FILE_DIRTY },
-> >  @@ -5458,6 +5460,8 @@ void obj_cgroup_charge_zswap(struct obj_cgroup=
- *objcg, size_t size)
-> >  memcg =3D obj_cgroup_memcg(objcg);
-> >  mod_memcg_state(memcg, MEMCG_ZSWAP_B, size);
-> >  mod_memcg_state(memcg, MEMCG_ZSWAPPED, 1);
-> >  + if (zswap_is_raw(size))
-> >  + mod_memcg_state(memcg, MEMCG_ZSWAP_RAW, 1);
-> >=20
->=20I understand the helper function is better to receive size_t rather t=
-han
-> zswap_entry for this.
->=20
->=20>=20
->=20> rcu_read_unlock();
-> >  }
+>=20>  No strong opinion, but I'm not really sure if the helper is needed=
+, because it
+> >  feels quite simple logic:
 > >=20=20
->=20>  @@ -5481,6 +5485,8 @@ void obj_cgroup_uncharge_zswap(struct obj_cg=
-roup *objcg, size_t size)
-> >  memcg =3D obj_cgroup_memcg(objcg);
-> >  mod_memcg_state(memcg, MEMCG_ZSWAP_B, -size);
-> >  mod_memcg_state(memcg, MEMCG_ZSWAPPED, -1);
-> >  + if (zswap_is_raw(size))
-> >  + mod_memcg_state(memcg, MEMCG_ZSWAP_RAW, -1);
-> >  rcu_read_unlock();
-> >  }
+>=20>  "If an object is compressed and the size is same to the original o=
+ne, the
+> >  object is incompressible."
 > >=20=20
->=20>  diff --git a/mm/zswap.c b/mm/zswap.c
-> >  index 3d2d59ac3f9c..54ab4d126f64 100644
-> >  --- a/mm/zswap.c
-> >  +++ b/mm/zswap.c
-> >  @@ -723,7 +723,7 @@ static void zswap_entry_free(struct zswap_entry =
-*entry)
-> >  obj_cgroup_uncharge_zswap(entry->objcg, entry->length);
-> >  obj_cgroup_put(entry->objcg);
-> >  }
-> >  - if (entry->length =3D=3D PAGE_SIZE)
-> >  + if (zswap_is_raw(entry->length))
-> >  atomic_long_dec(&zswap_stored_incompressible_pages);
-> >  zswap_entry_cache_free(entry);
-> >  atomic_long_dec(&zswap_stored_pages);
-> >  @@ -941,7 +941,7 @@ static bool zswap_decompress(struct zswap_entry =
-*entry, struct folio *folio)
-> >  zs_obj_read_sg_begin(pool->zs_pool, entry->handle, input, entry->len=
-gth);
-> >=20=20
->=20>  /* zswap entries of length PAGE_SIZE are not compressed. */
-> >  - if (entry->length =3D=3D PAGE_SIZE) {
-> >  + if (zswap_is_raw(entry->length)) {
-> >  WARN_ON_ONCE(input->length !=3D PAGE_SIZE);
-> >  memcpy_from_sglist(kmap_local_folio(folio, 0), input, 0, PAGE_SIZE);
-> >  dlen =3D PAGE_SIZE;
+>=20>  I also feel the function name bit odd, given the type of the param=
+eter. Based
+> >  on the function name and the comment, I'd expect it to receive a zsw=
+ap_entry
+> >  object. I understand it is better to receive a size_t, to be called =
+from
+> >  obj_cgroup_[un]charge_zswap(), though. Even in the case, I think the=
+ name can
+> >  be better (e.g., zswap_compression_failed() or zswap_was_incompressi=
+ble() ?),
+> >  or at least the coment can be more kindly explain the fact that the =
+parameter
+> >  is the size of object after the compression attempt.
 > >=20
->=20Below this part, I show 'dlen =3D=3D PAGE_SIZE'. Should it also be co=
-nverted to
-> use the helper function?
->=20
+>=20I vote to drop the helper.
+>
 
-The=20dlen variable represents the decompressed (plaintext) size.=0D
-Since we compress individual pages, the decompressed output should
-always be PAGE_SIZE in normal cases.
+The reason I introduced the helper is that the incompressible check now l=
+ives in two places:
 
-This check validates whether decompression produced the expected result, =
-not whether the entry is incompressible.
+In zswap.c - for the global zswap_stored_incompressible_pages counter
+In memcontrol.c - for the per-memcg MEMCG_ZSWAP_INCOMP stat
 
-Using zswap_is_incomp() here would be semantically incorrect - the helper=
- is meant to check if an
-entry was stored without compression (i.e., compression failed to reduce =
-size), while dlen =3D=3D PAGE_SIZE
-verifies the output of decompression is valid.
+By extracting a shared helper, both modules use the same logic, which hel=
+ps with maintainability.
+
+That said, I'm fine with dropping the helper if preferred. I can add a co=
+mment in memcontrol.c
+explaining the logic. My only concern is that if the incompressible detec=
+tion logic in zswap
+ever changes, someone might forget to update the memcg accounting accordi=
+ngly.
+
+But perhaps that's an unlikely scenario.
 
