@@ -1,183 +1,169 @@
-Return-Path: <cgroups+bounces-13748-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-13749-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id yCU0EAg5hmmcLAQAu9opvQ
-	(envelope-from <cgroups+bounces-13748-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Fri, 06 Feb 2026 19:55:04 +0100
+	id UIOeHzFRhmnQLwQAu9opvQ
+	(envelope-from <cgroups+bounces-13749-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Fri, 06 Feb 2026 21:38:09 +0100
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 97E291024D8
-	for <lists+cgroups@lfdr.de>; Fri, 06 Feb 2026 19:55:03 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id DA95110327D
+	for <lists+cgroups@lfdr.de>; Fri, 06 Feb 2026 21:38:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id CB44D307A977
-	for <lists+cgroups@lfdr.de>; Fri,  6 Feb 2026 18:52:17 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 11CEC30401B2
+	for <lists+cgroups@lfdr.de>; Fri,  6 Feb 2026 20:37:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AE0CC4279FD;
-	Fri,  6 Feb 2026 18:52:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5428130EF81;
+	Fri,  6 Feb 2026 20:37:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="sitd4Vye"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="fvLiAQGT"
 X-Original-To: cgroups@vger.kernel.org
-Received: from out-178.mta0.migadu.com (out-178.mta0.migadu.com [91.218.175.178])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 913873D9043
-	for <cgroups@vger.kernel.org>; Fri,  6 Feb 2026 18:52:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D2E3730DEDD
+	for <cgroups@vger.kernel.org>; Fri,  6 Feb 2026 20:37:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1770403936; cv=none; b=Pm2TGP9HBe/eYkZYHIkCRJfN+PGvKy2n5m/u9zunF7z/ZnpFYFpXflXaMOkl1YVHhXxfm3f4bPlOrR4XY7LM1VFejLw0oxhvtgfOhFwQ/P8ZSY1aVGE7LqKCcmxBzyzXb6aERk4S4MlCkmc7fA0U2FUcFdKnIjKOvtQljC5m894=
+	t=1770410268; cv=none; b=hpQKeQthU6vQr3KNcpGL8gmRI7IogxCAA2KTV3bTxG2pkHOJzYpkVWLR1dtHfoVfPblAwzplf9yK1iNFya6lJbbTWitqzQBOzMDcz5GOL/rTrlXAFljjEeY5KdbR5fQetwhN/xy3gtylvde0gsMazf5M6YNM92hlvftM1KA6kR0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1770403936; c=relaxed/simple;
-	bh=f63dsk0wa9kOaQro3oFzPnzpavve7SChOom4RDIoMjs=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=sR7um2xW3EtpCXu7l8ze0HC3xPb12AiR0T+YBfv7RqWMwB+b/rgSKzxqUJFsG9Sbo6x8vfHr7ZaWXdQrRvg60ZqJP1A5KzB+GgyCNHg3arLD07YnNzhx/2LkjCVjMkBDHVgVw7pw/3eGZ32M6MHGjqQSUMM6CctmpmcVuRlB00A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=sitd4Vye; arc=none smtp.client-ip=91.218.175.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Fri, 6 Feb 2026 10:52:07 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1770403933;
+	s=arc-20240116; t=1770410268; c=relaxed/simple;
+	bh=i4Uh+l4kvRN5zATgc6vOIEZ/4peCmiUHtNn9nTVYxI8=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=P/i+HbIf7fgS8kka6AL9Z1/5XG9J4hxNOhi2yVWArtSpT2YeqBBJVNkiFvFwLCtUcJTeO7hY5XuDuTmOgGJZoYD8yJaIlkXQWuDc1lKJ3/o9w4rAwn+nIRiIjuxHnB6YOW7Qlx4mi7xo28mjzWfryOcSlhz5r40Qn0xNs1RrvDA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=fvLiAQGT; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1770410266;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=r7mumZbXKpp+UcC6LYCZ5Q8LNGAoHw/22vUr8wOhvA4=;
-	b=sitd4Vye4V/h7qHTBkS38bDEsI6P/BMUzZU1dGeEAQ7LW0tF0D+Xry1ug3ppPBmOqyXrwC
-	D/QEjYc8d0wumdHpoeTnUJMnl6As6win53CMiNTMMfcYMZmcmkNwIbLcCqTZl7FzJM52eF
-	Bwl6eGOB4b2Q1AbfDVxoZfR38JQX/mQ=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Shakeel Butt <shakeel.butt@linux.dev>
-To: Bing Jiao <bingjiao@google.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>, 
-	David Hildenbrand <david@kernel.org>, Lorenzo Stoakes <lorenzo.stoakes@oracle.com>, 
-	"Liam R. Howlett" <Liam.Howlett@oracle.com>, Vlastimil Babka <vbabka@suse.cz>, 
-	Mike Rapoport <rppt@kernel.org>, Suren Baghdasaryan <surenb@google.com>, 
-	Michal Hocko <mhocko@suse.com>, Axel Rasmussen <axelrasmussen@google.com>, 
-	Yuanchu Xie <yuanchu@google.com>, Wei Xu <weixugc@google.com>, 
-	Johannes Weiner <hannes@cmpxchg.org>, Qi Zheng <zhengqi.arch@bytedance.com>, 
-	Gregory Price <gourry@gourry.net>, Joshua Hahn <joshua.hahnjy@gmail.com>, muchun.song@linux.dev, 
-	roman.gushchin@linux.dev, tj@kernel.org, longman@redhat.com, chenridong@huaweicloud.com, 
-	linux-mm@kvack.org, linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
-Subject: Re: [PATCH v9 2/2] mm/vmscan: select the closest perferred node in
- demote_folio_list()
-Message-ID: <aYY39YGAHmF1Oi5H@linux.dev>
-References: <20260114070053.2446770-1-bingjiao@google.com>
- <20260114205305.2869796-1-bingjiao@google.com>
- <20260114205305.2869796-3-bingjiao@google.com>
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=h4LBYUTBx6JOuIa9T2/oVmdddjNcWzl+HbR8l6hPpQY=;
+	b=fvLiAQGTCm2wnPXWw16UURfnadEUygQ+apz/nk8waVi0h7SoEeog3vUFv695Con49CaxTC
+	jt5L8AoCXbTt6JjVgMgWXo8ZQQ8H7FJ7YHQiuYEgPkr1JlYvK46f73uvnWLOZbilYU444w
+	jthqEzE8RnkRSu22neNqqpKOB8ctf78=
+Received: from mx-prod-mc-01.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-456-i0hvvCDUOfaf6Wiv6Cq27g-1; Fri,
+ 06 Feb 2026 15:37:40 -0500
+X-MC-Unique: i0hvvCDUOfaf6Wiv6Cq27g-1
+X-Mimecast-MFC-AGG-ID: i0hvvCDUOfaf6Wiv6Cq27g_1770410257
+Received: from mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.111])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mx-prod-mc-01.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 2B38D1956068;
+	Fri,  6 Feb 2026 20:37:36 +0000 (UTC)
+Received: from llong-thinkpadp16vgen1.westford.csb (unknown [10.22.90.86])
+	by mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id 5EF5218003F6;
+	Fri,  6 Feb 2026 20:37:31 +0000 (UTC)
+From: Waiman Long <longman@redhat.com>
+To: Chen Ridong <chenridong@huaweicloud.com>,
+	Tejun Heo <tj@kernel.org>,
+	Johannes Weiner <hannes@cmpxchg.org>,
+	=?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>,
+	Ingo Molnar <mingo@redhat.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Juri Lelli <juri.lelli@redhat.com>,
+	Vincent Guittot <vincent.guittot@linaro.org>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Ben Segall <bsegall@google.com>,
+	Mel Gorman <mgorman@suse.de>,
+	Valentin Schneider <vschneid@redhat.com>,
+	Anna-Maria Behnsen <anna-maria@linutronix.de>,
+	Frederic Weisbecker <frederic@kernel.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Shuah Khan <shuah@kernel.org>
+Cc: cgroups@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-kselftest@vger.kernel.org,
+	Waiman Long <longman@redhat.com>
+Subject: [PATCH/for-next v4 0/4] cgroup/cpuset: Fix partition related locking issues
+Date: Fri,  6 Feb 2026 15:37:08 -0500
+Message-ID: <20260206203712.1989610-1-longman@redhat.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20260114205305.2869796-3-bingjiao@google.com>
-X-Migadu-Flow: FLOW_OUT
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.4.1 on 10.30.177.111
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-0.66 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[linux.dev,none];
-	R_DKIM_ALLOW(-0.20)[linux.dev:s=key1];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	MID_CONTAINS_FROM(1.00)[];
+	R_MISSING_CHARSET(0.50)[];
+	DMARC_POLICY_ALLOW(-0.50)[redhat.com,quarantine];
+	R_DKIM_ALLOW(-0.20)[redhat.com:s=mimecast20190719];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-13748-lists,cgroups=lfdr.de];
-	RCVD_COUNT_THREE(0.00)[3];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	FREEMAIL_CC(0.00)[linux-foundation.org,kernel.org,oracle.com,suse.cz,google.com,suse.com,cmpxchg.org,bytedance.com,gourry.net,gmail.com,linux.dev,redhat.com,huaweicloud.com,kvack.org,vger.kernel.org];
-	RCPT_COUNT_TWELVE(0.00)[24];
 	MIME_TRACE(0.00)[0:+];
+	RCPT_COUNT_TWELVE(0.00)[20];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	RCVD_TLS_LAST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-13749-lists,cgroups=lfdr.de];
+	DKIM_TRACE(0.00)[redhat.com:+];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	MISSING_XM_UA(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[longman@redhat.com,cgroups@vger.kernel.org];
 	FROM_HAS_DN(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	TO_DN_SOME(0.00)[];
-	NEURAL_HAM(-0.00)[-0.997];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[shakeel.butt@linux.dev,cgroups@vger.kernel.org];
-	DKIM_TRACE(0.00)[linux.dev:+];
-	MID_RHS_MATCH_FROM(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	RCVD_COUNT_FIVE(0.00)[6];
 	TAGGED_RCPT(0.00)[cgroups];
-	MISSING_XM_UA(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[linux.dev:email,linux.dev:dkim,linux.dev:mid,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 97E291024D8
+	NEURAL_HAM(-0.00)[-0.999];
+	TO_DN_SOME(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,test-cpuset-prs.sh:url]
+X-Rspamd-Queue-Id: DA95110327D
 X-Rspamd-Action: no action
 
-On Wed, Jan 14, 2026 at 08:53:03PM +0000, Bing Jiao wrote:
-> The preferred demotion node (migration_target_control.nid) should be the
-> one closest to the source node to minimize migration latency.  Currently,
-> a discrepancy exists where demote_folio_list() randomly selects an allowed
-> node if the preferred node from next_demotion_node() is not set in
-> mems_effective.
-> 
-> To address it, update next_demotion_node() to select a preferred target
-> against allowed nodes; and to return the closest demotion target if all
-> preferred nodes are not in mems_effective via next_demotion_node().
-> 
-> It ensures that the preferred demotion target is consistently the closest
-> available node to the source node.
-> 
-> Signed-off-by: Bing Jiao <bingjiao@google.com>
+ v4:
+  - Fix various issues as reported by Chen Ridong.
 
-One nit below:
+ v3:
+  - Add a new patch to clarify the locking rules for internal variables
+  - Defer all housekeeping_update() calls with associated
+    rebuild_sched_domains*() calls to either workqueue or task_work.
 
-Acked-by: Shakeel Butt <shakeel.butt@linux.dev>
+ v2:
+  - Change patch 1 to use workqueue instead of task run as it is a
+    per-cpu kthread that performs the cpuset shutdown and bringup work.
+  - Simplify and streamline some of the code.
 
-[...]
+After booting the latest cgroup for-next debug kernel with the latest
+cgroup changes as well as Federic's "cpuset/isolation: Honour kthreads
+preferred affinity" patch series [1] merged on top and running the
+test-cpuset-prs.sh test, a circular locking dependency lockdep splat
+was reported. See patch 2 for details.
 
-> @@ -320,16 +320,17 @@ void node_get_allowed_targets(pg_data_t *pgdat, nodemask_t *targets)
->  /**
->   * next_demotion_node() - Get the next node in the demotion path
->   * @node: The starting node to lookup the next node
-> + * @allowed_mask: The pointer to allowed node mask
->   *
->   * Return: node id for next memory node in the demotion path hierarchy
->   * from @node; NUMA_NO_NODE if @node is terminal.  This does not keep
->   * @node online or guarantee that it *continues* to be the next demotion
->   * target.
->   */
-> -int next_demotion_node(int node)
-> +int next_demotion_node(int node, const nodemask_t *allowed_mask)
->  {
->  	struct demotion_nodes *nd;
-> -	int target;
-> +	nodemask_t mask;
-> 
->  	if (!node_demotion)
->  		return NUMA_NO_NODE;
-> @@ -344,6 +345,10 @@ int next_demotion_node(int node)
->  	 * node_demotion[] reads need to be consistent.
->  	 */
->  	rcu_read_lock();
-> +	/* Filter out nodes that are not in allowed_mask. */
-> +	nodes_and(mask, nd->preferred, *allowed_mask);
-> +	rcu_read_unlock();
-> +
->  	/*
->  	 * If there are multiple target nodes, just select one
->  	 * target node randomly.
-> @@ -356,10 +361,16 @@ int next_demotion_node(int node)
->  	 * caching issue, which seems more complicated. So selecting
->  	 * target node randomly seems better until now.
->  	 */
-> -	target = node_random(&nd->preferred);
-> -	rcu_read_unlock();
-> +	if (!nodes_empty(mask))
-> +		return node_random(&mask);
-> 
-> -	return target;
-> +	/*
-> +	 * Preferred nodes are not in allowed_mask. Filp bits in
+To fix this issue, a new top level cpuset_top_mutex is added and the
+call to housekeeping_update() is deferred to either a task_work or to
+a workqueue.
 
-Filp -> Flip
+With these changes in place, the cpuset test ran to completion with no
+failure and no lockdep splat.
 
-> +	 * allowed_mask as used node mask. Then, use it to get the
-> +	 * closest demotion target.
-> +	 */
-> +	nodes_complement(mask, *allowed_mask);
-> +	return find_next_best_node(node, &mask);
->  }
-> 
+[1] https://lore.kernel.org/lkml/20260125224541.50226-1-frederic@kernel.org/
+
+Waiman Long (4):
+  cgroup/cpuset: Clarify exclusion rules for cpuset internal variables
+  cgroup/cpuset: Defer housekeeping_update() calls from CPU hotplug to
+    workqueue
+  cgroup/cpuset: Call housekeeping_update() without holding
+    cpus_read_lock
+  cgroup/cpuset: Eliminate some duplicated rebuild_sched_domains() calls
+
+ kernel/cgroup/cpuset.c                        | 241 +++++++++++++-----
+ kernel/sched/isolation.c                      |   4 +-
+ kernel/time/timer_migration.c                 |   4 +-
+ .../selftests/cgroup/test_cpuset_prs.sh       |  13 +-
+ 4 files changed, 196 insertions(+), 66 deletions(-)
+
+-- 
+2.52.0
+
 
