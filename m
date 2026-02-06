@@ -1,61 +1,65 @@
-Return-Path: <cgroups+bounces-13745-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-13746-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id OCBxGIAmhmlSKAQAu9opvQ
-	(envelope-from <cgroups+bounces-13745-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Fri, 06 Feb 2026 18:36:00 +0100
+	id GH8tIo8qhmm1KAQAu9opvQ
+	(envelope-from <cgroups+bounces-13746-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Fri, 06 Feb 2026 18:53:19 +0100
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id A8B08101250
-	for <lists+cgroups@lfdr.de>; Fri, 06 Feb 2026 18:35:59 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id 01AB910180F
+	for <lists+cgroups@lfdr.de>; Fri, 06 Feb 2026 18:53:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 2D407301E237
-	for <lists+cgroups@lfdr.de>; Fri,  6 Feb 2026 17:30:43 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 94597300C274
+	for <lists+cgroups@lfdr.de>; Fri,  6 Feb 2026 17:53:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9DADE3A0E8F;
-	Fri,  6 Feb 2026 17:30:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9258742669B;
+	Fri,  6 Feb 2026 17:53:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="YsgO2JBK"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="NNOcaFy2"
 X-Original-To: cgroups@vger.kernel.org
-Received: from out-176.mta1.migadu.com (out-176.mta1.migadu.com [95.215.58.176])
+Received: from out-172.mta0.migadu.com (out-172.mta0.migadu.com [91.218.175.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5FCF629BDB5
-	for <cgroups@vger.kernel.org>; Fri,  6 Feb 2026 17:30:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E1A72FB612
+	for <cgroups@vger.kernel.org>; Fri,  6 Feb 2026 17:53:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1770399041; cv=none; b=YbyElt8gRjxzzlCZShtXrcCRoNkZ1Kb/4VwvJ1lti3jF10dx8SGpJSHFqXahHL3x4jmufe9Uq1jNotJ9cdBRpHz8o4NcefQEBmohVHY5BZhA93IB+pxc9NBbhvDw6XasD2atdcoVphJOOhS62X8PKXoMf1iyxrlhJ4HBL0mQBCo=
+	t=1770400381; cv=none; b=BcrfIN5Nv4GhP+e3ihod6pPJYhzT/CIjJoqVYxLR/N5NSp5nBx7ZF89QyIUX6wBtKvmZBTFrfUAHiUnVfiqpdFgysiZihDE0imnA7H4lVf0YwGXIohY1AX1+QAHh4mZm2LyMJaDNaBZ2WH0jvWz0Uj3G7T+md/v8ES1E7LRbvWM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1770399041; c=relaxed/simple;
-	bh=X3wM3Yv9p6OLlLt/vrVIIoaX1QJ08pqi56ujLswUyhI=;
+	s=arc-20240116; t=1770400381; c=relaxed/simple;
+	bh=pY5ju9pn92zusS9+/KKoBWqSlGsJaJH7q0Nebo59Las=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=qfJCZTIRrPz6j4dG9WJoC8B7wo8QbHH0lrCHDTjxPlojFBJZPTVG6jm1AI3t4tXwFYNYA1oAHoKReHXO537sNzMDqbC+/zlcy+rnxckExBTKv1evAfBxvmKz9JIr98ivO/AZ1mG8QRPL0F0pWiqZg7yGxyWw4Xsi0jFj8QGpT2w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=YsgO2JBK; arc=none smtp.client-ip=95.215.58.176
+	 Content-Type:Content-Disposition:In-Reply-To; b=k9wpeZ46HEaN7yb6mniYKBNVTRvvIkU5HZBk8/HG3UqriXSL9Q0rGiIn2+RbFuVxUR9MONZT3SDhZUnUdOD+EZnohrNOdolOZdSg0ztcXKq9wtOuFlVWPA8FQu9Q25q2ut55mufOx4RbY/+qcoCzejlLaldJja03YY0bE69j+Gg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=NNOcaFy2; arc=none smtp.client-ip=91.218.175.172
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Fri, 6 Feb 2026 09:30:28 -0800
+Date: Fri, 6 Feb 2026 09:52:43 -0800
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1770399038;
+	t=1770400369;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=R2ci6nhI3j7ZOgP8M5vOd80tULh6Zm9vUAl8sjnJkCs=;
-	b=YsgO2JBKLwqx2QHEJ/wWcFksHlSgVaIOLCvMJIa4ge63THx3Mibi8nz9mHSHmHF+XyGYrG
-	wNnQV43jMurMligroEsF4RtCH/3y6c4iWZGEWDjgauk8q+34ffWme57AQ6QX2VJnGpfpfJ
-	nvPhAR+0HRhm/SRnaNaJNrGkjhpwuxA=
+	bh=iglojX4sGUyAtQslTyBLFp6CalS9+S4aj8OW0MG/LxI=;
+	b=NNOcaFy2R2zTQsGUVb+84nFaFJk+vqlHDL7Z3ZTYWxk4WpcnHwDLyQW0yB6ehur4GHdHOU
+	ZfLbAOGmvNb0kDL+ELwCJ3W8PD3zO4+OBRsoqUhpmdyCiiTYsDsGp+P1kFPc23CWTJJgCa
+	sX7Mt5vlWWf+lNfPNbUX+XoboaSYV/M=
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 From: Shakeel Butt <shakeel.butt@linux.dev>
-To: Dmitry Vyukov <dvyukov@google.com>
-Cc: syzbot <syzbot+e12bd9ca48157add237a@syzkaller.appspotmail.com>, 
-	akpm@linux-foundation.org, cgroups@vger.kernel.org, hannes@cmpxchg.org, 
-	linux-kernel@vger.kernel.org, linux-mm@kvack.org, mhocko@kernel.org, muchun.song@linux.dev, 
-	roman.gushchin@linux.dev, syzkaller-bugs@googlegroups.com, kasong@tencent.com
-Subject: Re: [syzbot] [cgroups?] [mm?] KASAN: wild-memory-access Read in
- lookup_swap_cgroup_id (2)
-Message-ID: <aYYkvaqYGLXD3_P-@linux.dev>
-References: <69859728.050a0220.3b3015.0033.GAE@google.com>
- <CACT4Y+bd+PcL=XzkehM-bmsfAB95UA2y9jr5JY2ov8zVOp1DWA@mail.gmail.com>
+To: Jiayuan Chen <jiayuan.chen@linux.dev>
+Cc: linux-mm@kvack.org, Jiayuan Chen <jiayuan.chen@shopee.com>, 
+	Nhat Pham <nphamcs@gmail.com>, Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>, 
+	Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>, Jonathan Corbet <corbet@lwn.net>, 
+	Michal Hocko <mhocko@kernel.org>, Roman Gushchin <roman.gushchin@linux.dev>, 
+	Muchun Song <muchun.song@linux.dev>, Andrew Morton <akpm@linux-foundation.org>, 
+	Yosry Ahmed <yosry.ahmed@linux.dev>, Chengming Zhou <chengming.zhou@linux.dev>, 
+	Shuah Khan <shuah@kernel.org>, cgroups@vger.kernel.org, linux-doc@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH v2 1/2] mm: zswap: add per-memcg stat for incompressible
+ pages
+Message-ID: <aYYqT6Z3R3phADu_@linux.dev>
+References: <20260206072220.144008-1-jiayuan.chen@linux.dev>
+ <20260206072220.144008-2-jiayuan.chen@linux.dev>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -64,136 +68,71 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CACT4Y+bd+PcL=XzkehM-bmsfAB95UA2y9jr5JY2ov8zVOp1DWA@mail.gmail.com>
+In-Reply-To: <20260206072220.144008-2-jiayuan.chen@linux.dev>
 X-Migadu-Flow: FLOW_OUT
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [0.34 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
-	URI_HIDDEN_PATH(1.00)[https://syzkaller.appspot.com/x/.config?x=f1fac0919970b671];
+X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	DMARC_POLICY_ALLOW(-0.50)[linux.dev,none];
 	R_DKIM_ALLOW(-0.20)[linux.dev:s=key1];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-13745-lists,cgroups=lfdr.de];
+	FREEMAIL_CC(0.00)[kvack.org,shopee.com,gmail.com,kernel.org,cmpxchg.org,suse.com,lwn.net,linux.dev,linux-foundation.org,vger.kernel.org];
+	TAGGED_FROM(0.00)[bounces-13746-lists,cgroups=lfdr.de];
+	FROM_HAS_DN(0.00)[];
 	RCVD_COUNT_THREE(0.00)[3];
-	FORGED_SENDER_MAILLIST(0.00)[];
 	RCVD_TLS_LAST(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[12];
 	MIME_TRACE(0.00)[0:+];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[linux.dev:mid,linux.dev:dkim,syzkaller.appspot.com:url,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,appspotmail.com:email,storage.googleapis.com:url];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	DKIM_TRACE(0.00)[linux.dev:+];
 	MISSING_XM_UA(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[19];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[shakeel.butt@linux.dev,cgroups@vger.kernel.org];
-	FROM_HAS_DN(0.00)[];
-	DKIM_TRACE(0.00)[linux.dev:+];
-	NEURAL_HAM(-0.00)[-0.999];
-	TAGGED_RCPT(0.00)[cgroups,e12bd9ca48157add237a];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	NEURAL_HAM(-0.00)[-1.000];
+	TAGGED_RCPT(0.00)[cgroups];
 	MID_RHS_MATCH_FROM(0.00)[];
-	TO_DN_SOME(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	SUBJECT_HAS_QUESTION(0.00)[]
-X-Rspamd-Queue-Id: A8B08101250
+	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
+	TO_DN_SOME(0.00)[]
+X-Rspamd-Queue-Id: 01AB910180F
 X-Rspamd-Action: no action
 
-+Kairui
-
-On Fri, Feb 06, 2026 at 08:31:19AM +0100, Dmitry Vyukov wrote:
-> On Fri, 6 Feb 2026 at 08:24, syzbot
-> <syzbot+e12bd9ca48157add237a@syzkaller.appspotmail.com> wrote:
-> >
-> > Hello,
-> >
-> > syzbot found the following issue on:
-> >
-> > HEAD commit:    18f7fcd5e69a Linux 6.19-rc8
-> > git tree:       upstream
-> > console output: https://syzkaller.appspot.com/x/log.txt?x=1428fc5a580000
-> > kernel config:  https://syzkaller.appspot.com/x/.config?x=f1fac0919970b671
-> > dashboard link: https://syzkaller.appspot.com/bug?extid=e12bd9ca48157add237a
-> > compiler:       gcc (Debian 14.2.0-19) 14.2.0, GNU ld (GNU Binutils for Debian) 2.44
-> >
-> > Unfortunately, I don't have any reproducer for this issue yet.
-> >
-> > Downloadable assets:
-> > disk image: https://storage.googleapis.com/syzbot-assets/2c19d9acc149/disk-18f7fcd5.raw.xz
-> > vmlinux: https://storage.googleapis.com/syzbot-assets/02cf07c94e58/vmlinux-18f7fcd5.xz
-> > kernel image: https://storage.googleapis.com/syzbot-assets/84011cec9819/bzImage-18f7fcd5.xz
-> >
-> > IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> > Reported-by: syzbot+e12bd9ca48157add237a@syzkaller.appspotmail.com
-> >
-> > ==================================================================
-> > BUG: KASAN: wild-memory-access in instrument_atomic_read include/linux/instrumented.h:68 [inline]
-> > BUG: KASAN: wild-memory-access in atomic_read include/linux/atomic/atomic-instrumented.h:32 [inline]
-> > BUG: KASAN: wild-memory-access in __swap_cgroup_id_lookup mm/swap_cgroup.c:28 [inline]
-> > BUG: KASAN: wild-memory-access in lookup_swap_cgroup_id+0xf9/0x1a0 mm/swap_cgroup.c:127
-> > Read of size 4 at addr 0007fffffffffffc by task syz.5.3598/20029
-> >
-> > CPU: 1 UID: 0 PID: 20029 Comm: syz.5.3598 Tainted: G             L      syzkaller #0 PREEMPT(full)
-> > Tainted: [L]=SOFTLOCKUP
-> > Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/24/2026
-> > Call Trace:
-> >  <TASK>
-> >  __dump_stack lib/dump_stack.c:94 [inline]
-> >  dump_stack_lvl+0x100/0x190 lib/dump_stack.c:120
-> >  kasan_report+0xdf/0x1a0 mm/kasan/report.c:595
-> >  check_region_inline mm/kasan/generic.c:186 [inline]
-> >  kasan_check_range+0x10f/0x1e0 mm/kasan/generic.c:200
-> >  instrument_atomic_read include/linux/instrumented.h:68 [inline]
-> >  atomic_read include/linux/atomic/atomic-instrumented.h:32 [inline]
-> >  __swap_cgroup_id_lookup mm/swap_cgroup.c:28 [inline]
-> >  lookup_swap_cgroup_id+0xf9/0x1a0 mm/swap_cgroup.c:127
-> >  swap_pte_batch+0x3c3/0x720 mm/internal.h:390
-> >  zap_nonpresent_ptes mm/memory.c:1749 [inline]
-> >  do_zap_pte_range mm/memory.c:1818 [inline]
-> >  zap_pte_range mm/memory.c:1858 [inline]
-> >  zap_pmd_range mm/memory.c:1950 [inline]
-> >  zap_pud_range mm/memory.c:1978 [inline]
-> >  zap_p4d_range mm/memory.c:1999 [inline]
-> >  unmap_page_range+0x1f6f/0x43e0 mm/memory.c:2020
-> >  unmap_single_vma+0x153/0x240 mm/memory.c:2062
-> >  unmap_vmas+0x218/0x470 mm/memory.c:2104
-> >  exit_mmap+0x181/0xae0 mm/mmap.c:1277
-> >  __mmput+0x12a/0x410 kernel/fork.c:1173
-> >  mmput+0x67/0x80 kernel/fork.c:1196
-> >  exit_mm kernel/exit.c:581 [inline]
-> >  do_exit+0x78a/0x2a30 kernel/exit.c:959
-> >  do_group_exit+0xd5/0x2a0 kernel/exit.c:1112
-> >  get_signal+0x1ec7/0x21e0 kernel/signal.c:3034
-> >  arch_do_signal_or_restart+0x91/0x7a0 arch/x86/kernel/signal.c:337
-> >  __exit_to_user_mode_loop kernel/entry/common.c:41 [inline]
-> >  exit_to_user_mode_loop+0x86/0x4b0 kernel/entry/common.c:75
-> >  __exit_to_user_mode_prepare include/linux/irq-entry-common.h:226 [inline]
-> >  syscall_exit_to_user_mode_prepare include/linux/irq-entry-common.h:256 [inline]
-> >  syscall_exit_to_user_mode_work include/linux/entry-common.h:159 [inline]
-> >  syscall_exit_to_user_mode include/linux/entry-common.h:194 [inline]
-> >  do_syscall_64+0x4fe/0xf80 arch/x86/entry/syscall_64.c:100
-> >  entry_SYSCALL_64_after_hwframe+0x77/0x7f
-> > RIP: 0033:0x7f2f8f19aeb9
-> > Code: Unable to access opcode bytes at 0x7f2f8f19ae8f.
-> > RSP: 002b:00007f2f900350e8 EFLAGS: 00000246 ORIG_RAX: 00000000000000ca
-> > RAX: fffffffffffffe00 RBX: 00007f2f8f416098 RCX: 00007f2f8f19aeb9
-> > RDX: 0000000000000000 RSI: 0000000000000080 RDI: 00007f2f8f416098
-> > RBP: 00007f2f8f416090 R08: 0000000000000000 R09: 0000000000000000
-> > R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-> > R13: 00007f2f8f416128 R14: 00007ffc0c8cc050 R15: 00007ffc0c8cc138
-> >  </TASK>
-> > ==================================================================
+On Fri, Feb 06, 2026 at 03:22:15PM +0800, Jiayuan Chen wrote:
+> From: Jiayuan Chen <jiayuan.chen@shopee.com>
 > 
-> This happened before:
-> https://lore.kernel.org/all/67d04360.050a0220.1939a6.000e.GAE@google.com/T/
-> and now 2 more times.
-> All reports look similar: exit_mm -> zap_p4d_range
-> And all access addresses look the same: top 13 bits are zeros, then
-> some garbage (0007fffffffffffc).
-> I am pretty sure it's telling us something, some kind of tricky race,
-> rather than a previous corruption. Swp entry is somehow invalid?
+> The global zswap_stored_incompressible_pages counter was added in commit
+> dca4437a5861 ("mm/zswap: store <PAGE_SIZE compression failed page as-is")
+> to track how many pages are stored in raw (uncompressed) form in zswap.
+> However, in containerized environments, knowing which cgroup is
+> contributing incompressible pages is essential for effective resource
+> management [1].
+> 
+> Add a new memcg stat 'zswap_incomp' to track incompressible pages per
+> cgroup. This helps administrators and orchestrators to:
+> 
+> 1. Identify workloads that produce incompressible data (e.g., encrypted
+>    data, already-compressed media, random data) and may not benefit from
+>    zswap.
+> 
+> 2. Make informed decisions about workload placement - moving
+>    incompressible workloads to nodes with larger swap backing devices
+>    rather than relying on zswap.
+> 
+> 3. Debug zswap efficiency issues at the cgroup level without needing to
+>    correlate global stats with individual cgroups.
+> 
+> While the compression ratio can be estimated from existing stats
+> (zswap / zswapped * PAGE_SIZE), this doesn't distinguish between
+> "uniformly poor compression" and "a few completely incompressible pages
+> mixed with highly compressible ones". The zswap_incomp stat provides
+> direct visibility into the latter case.
+> 
+> [1]: https://lore.kernel.org/linux-mm/CAF8kJuONDFj4NAksaR4j_WyDbNwNGYLmTe-o76rqU17La=nkOw@mail.gmail.com/
+> Acked-by: Nhat Pham <nphamcs@gmail.com>
+> Signed-off-by: Jiayuan Chen <jiayuan.chen@shopee.com>
 
-Thanks for the report. It would be good to have a reproducer. I will dig
-deeper later but good to have eyes from Kairui who has recent changes
-in the area.
+Acked-by: Shakeel Butt <shakeel.butt@linux.dev>
 
