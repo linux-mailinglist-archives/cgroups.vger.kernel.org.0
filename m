@@ -1,220 +1,130 @@
-Return-Path: <cgroups+bounces-13753-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-13754-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id mJs6BThRhmnQLwQAu9opvQ
-	(envelope-from <cgroups+bounces-13753-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Fri, 06 Feb 2026 21:38:16 +0100
+	id oCPoOodrhmnwMwQAu9opvQ
+	(envelope-from <cgroups+bounces-13754-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Fri, 06 Feb 2026 23:30:31 +0100
 X-Original-To: lists+cgroups@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 97732103295
-	for <lists+cgroups@lfdr.de>; Fri, 06 Feb 2026 21:38:15 +0100 (CET)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4C4DD103CFE
+	for <lists+cgroups@lfdr.de>; Fri, 06 Feb 2026 23:30:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 8DEB2301B17A
-	for <lists+cgroups@lfdr.de>; Fri,  6 Feb 2026 20:38:06 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 215BE3019D0B
+	for <lists+cgroups@lfdr.de>; Fri,  6 Feb 2026 22:29:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D3D8330EF75;
-	Fri,  6 Feb 2026 20:38:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DC2CE30C371;
+	Fri,  6 Feb 2026 22:28:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="UWW1XZEq"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="P+fawaGG"
 X-Original-To: cgroups@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 75BD930E858
-	for <cgroups@vger.kernel.org>; Fri,  6 Feb 2026 20:38:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E6882FE592;
+	Fri,  6 Feb 2026 22:28:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1770410285; cv=none; b=cfyUP0KFLoHJSu7j9aZWPhOFlb/n5EjJrJMFrN2PNtBTdnr3aRRuA6Ssc2EniZlzspjXGRFMN+QbNcZC5zM+AoMcoyGbTdo4ZH4gRVr7bMSus5i5rpZoWuEW6DRt8y9mVG8Dj66fPNdQyZu83Nyaf8iKxoseYuTaBJP37Iyf10o=
+	t=1770416936; cv=none; b=ordO3lJWaWAQ2TG863IgNVHDcLqMik+kWb+4lAaOOR9sWX0bS/sniM2wbZfy8RuPiytUZirbyh71kvMrvfB6lV0Fq/VKEnl2vUIQldOflfM9BfAccharTUAaygEMFLopjxQcIOYmA1DkP57uQtq9wY6tMejNrZWcseE6mhOM8o8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1770410285; c=relaxed/simple;
-	bh=71S3ObAXFhgNJHPY1eqOrJoW7VXUnIJajfUjoJSe1yk=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=GrHG2JHfZFHwZvyftOhsEwD4/UmMMhD/ZP7Ddh/KdPyhhtM/KbuIH2OQN7UPGe8TWe3HrJJA27TSh5KeRq4kIsVbZDlzwm8KQZi90hcz0GRFcQHpfxQPwuBjpVQJAOVcNdfW579x3+vBhYJoAtj4EiF8mca06he/7sNQ1QT3LZM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=UWW1XZEq; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1770410284;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=MUME4hn48Lh+CEIYg2UpLJDShYrbNFkvPeAL4+NsAw8=;
-	b=UWW1XZEqqVqdxPbOOkteARfa/1ePWpDj8TXfv3XDLDq/KztsXKOe1yyBVcbbCqELi0LBPO
-	K+sNqmNL8nkuk0HXnWd2UotoqhUun+d7evVKXw0gCVL0065pcF0Gy9uYfM3AAntms7k/na
-	lL0hMeIXq8aYcJOjbP3bTUZFtot5OUw=
-Received: from mx-prod-mc-03.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-589-RRQ9N5k2ONeO8GLTUDYibA-1; Fri,
- 06 Feb 2026 15:37:55 -0500
-X-MC-Unique: RRQ9N5k2ONeO8GLTUDYibA-1
-X-Mimecast-MFC-AGG-ID: RRQ9N5k2ONeO8GLTUDYibA_1770410273
-Received: from mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.111])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mx-prod-mc-03.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 95AE91955F0E;
-	Fri,  6 Feb 2026 20:37:52 +0000 (UTC)
-Received: from llong-thinkpadp16vgen1.westford.csb (unknown [10.22.90.86])
-	by mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id EED8518003F6;
-	Fri,  6 Feb 2026 20:37:48 +0000 (UTC)
-From: Waiman Long <longman@redhat.com>
-To: Chen Ridong <chenridong@huaweicloud.com>,
-	Tejun Heo <tj@kernel.org>,
+	s=arc-20240116; t=1770416936; c=relaxed/simple;
+	bh=rdLqwh1d0Cjcb0ou2UWhCKOuEt9xEUXrTNcdzePa7ZI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ip719gQQQ0N76yY8nVdUPZGjqMECqgGK3qDjyRFhq+yYMbm0A+QZfz4nibL+dCogpJcCXWgyhhvae8+9+Hv7VPTevGm1nN2cBal0UOzd2BJs9j+GFMtPGxhhiJNbkSru/IRyv2W1W3DYPnlkaVMFtYcC2NkL1fEJScF1oUa3Z2c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=P+fawaGG; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D53B5C116C6;
+	Fri,  6 Feb 2026 22:28:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1770416936;
+	bh=rdLqwh1d0Cjcb0ou2UWhCKOuEt9xEUXrTNcdzePa7ZI=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=P+fawaGGwC+iH4a6HZt60i/wY3XrZ9RQeoNfcJFbsCgyXfJf+Oua+0sj2hVijifxa
+	 vaCCM4MeAKeTIo8fopvJEADSUvjeaUcoA3irW7m/OelMR+idvYkrXYrxoFCZgm79LF
+	 eLXp3fHZZybK88GJsKD7gwTX8H59rPCNIYB2SzlTOlCFJ+e55jfzfTWH5DHWZMifrf
+	 PhaEekHirs6u+whJQwcfanuu65IuqCD1eaqqT24apcwM9cRSFb3L6BRU8v+dhyZ1e+
+	 cPs5g9Db/idnWmrVi6Hq9i7NS1duoJ2JVxOBtOoXffKhCz7OxlB+OvpCE9ssdrQvrA
+	 647266cwyxoQg==
+Date: Fri, 6 Feb 2026 23:28:53 +0100
+From: Frederic Weisbecker <frederic@kernel.org>
+To: Waiman Long <longman@redhat.com>
+Cc: Chen Ridong <chenridong@huaweicloud.com>, Tejun Heo <tj@kernel.org>,
 	Johannes Weiner <hannes@cmpxchg.org>,
-	=?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>,
+	Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
 	Ingo Molnar <mingo@redhat.com>,
 	Peter Zijlstra <peterz@infradead.org>,
 	Juri Lelli <juri.lelli@redhat.com>,
 	Vincent Guittot <vincent.guittot@linaro.org>,
 	Steven Rostedt <rostedt@goodmis.org>,
-	Ben Segall <bsegall@google.com>,
-	Mel Gorman <mgorman@suse.de>,
+	Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
 	Valentin Schneider <vschneid@redhat.com>,
 	Anna-Maria Behnsen <anna-maria@linutronix.de>,
-	Frederic Weisbecker <frederic@kernel.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Shuah Khan <shuah@kernel.org>
-Cc: cgroups@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-kselftest@vger.kernel.org,
-	Waiman Long <longman@redhat.com>
-Subject: [PATCH/for-next v4 4/4] cgroup/cpuset: Eliminate some duplicated rebuild_sched_domains() calls
-Date: Fri,  6 Feb 2026 15:37:12 -0500
-Message-ID: <20260206203712.1989610-5-longman@redhat.com>
-In-Reply-To: <20260206203712.1989610-1-longman@redhat.com>
+	Thomas Gleixner <tglx@linutronix.de>, Shuah Khan <shuah@kernel.org>,
+	cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH/for-next v4 2/4] cgroup/cpuset: Defer
+ housekeeping_update() calls from CPU hotplug to workqueue
+Message-ID: <aYZrJaIIbTX4E-nO@pavilion.home>
 References: <20260206203712.1989610-1-longman@redhat.com>
+ <20260206203712.1989610-3-longman@redhat.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.30.177.111
+In-Reply-To: <20260206203712.1989610-3-longman@redhat.com>
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-0.66 / 15.00];
+X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_CONTAINS_FROM(1.00)[];
-	R_MISSING_CHARSET(0.50)[];
-	DMARC_POLICY_ALLOW(-0.50)[redhat.com,quarantine];
-	R_DKIM_ALLOW(-0.20)[redhat.com:s=mimecast20190719];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
+	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
+	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	MIME_TRACE(0.00)[0:+];
-	RCPT_COUNT_TWELVE(0.00)[20];
-	FORGED_SENDER_MAILLIST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-13754-lists,cgroups=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-13753-lists,cgroups=lfdr.de];
-	DKIM_TRACE(0.00)[redhat.com:+];
-	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
+	SURBL_MULTI_FAIL(0.00)[pavilion.home:query timed out];
+	RCVD_COUNT_THREE(0.00)[4];
+	MIME_TRACE(0.00)[0:+];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[19];
+	DKIM_TRACE(0.00)[kernel.org:+];
+	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
 	MISSING_XM_UA(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[longman@redhat.com,cgroups@vger.kernel.org];
+	FROM_NEQ_ENVFROM(0.00)[frederic@kernel.org,cgroups@vger.kernel.org];
 	FROM_HAS_DN(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[6];
-	TAGGED_RCPT(0.00)[cgroups];
 	NEURAL_HAM(-0.00)[-0.998];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	TAGGED_RCPT(0.00)[cgroups];
 	TO_DN_SOME(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 97732103295
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns,pavilion.home:mid]
+X-Rspamd-Queue-Id: 4C4DD103CFE
 X-Rspamd-Action: no action
 
-Now that we are going to defer any changes to the HK_TYPE_DOMAIN
-housekeeping cpumasks to either task_work or workqueue
-where rebuild_sched_domains() call will be issued. The current
-rebuild_sched_domains_locked() call near the end of the cpuset critical
-section can be removed in such cases.
+Le Fri, Feb 06, 2026 at 03:37:10PM -0500, Waiman Long a écrit :
+> The update_isolation_cpumasks() function can be called either directly
+> from regular cpuset control file write with cpuset_full_lock() called
+> or via the CPU hotplug path with cpus_write_lock and cpuset_mutex held.
+> 
+> As we are going to enable dynamic update to the nozh_full housekeeping
+> cpumask (HK_TYPE_KERNEL_NOISE) soon with the help of CPU hotplug,
+> allowing the CPU hotplug path to call into housekeeping_update() directly
+> from update_isolation_cpumasks() will likely cause deadlock. So we
 
-Currently, a boolean force_sd_rebuild flag is used to decide if
-rebuild_sched_domains_locked() call needs to be invoked. To allow
-deferral that like, we change it to a tri-state sd_rebuild enumaration
-type.
+Why do we need to call housekeeping_update() from hotplug? I would
+expect it to be called only when cpuset control file are written since
+housekeeping cpumask don't deal with online CPUs but with possible
+CPUs.
 
-Signed-off-by: Waiman Long <longman@redhat.com>
----
- kernel/cgroup/cpuset.c | 20 ++++++++++++++------
- 1 file changed, 14 insertions(+), 6 deletions(-)
+Thanks.
 
-diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
-index d26c77a726b2..e224df321e34 100644
---- a/kernel/cgroup/cpuset.c
-+++ b/kernel/cgroup/cpuset.c
-@@ -173,7 +173,11 @@ static bool		isolcpus_twork_queued;	/* T */
-  * Note that update_relax_domain_level() in cpuset-v1.c can still call
-  * rebuild_sched_domains_locked() directly without using this flag.
-  */
--static bool force_sd_rebuild;			/* RWCS */
-+static enum {
-+	SD_NO_REBUILD = 0,
-+	SD_REBUILD,
-+	SD_DEFER_REBUILD,
-+} sd_rebuild;					/* RWCS */
- 
- /*
-  * Partition root states:
-@@ -990,7 +994,7 @@ void rebuild_sched_domains_locked(void)
- 
- 	lockdep_assert_cpus_held();
- 	lockdep_assert_cpuset_lock_held();
--	force_sd_rebuild = false;
-+	sd_rebuild = SD_NO_REBUILD;
- 
- 	/* Generate domain masks and attrs */
- 	ndoms = generate_sched_domains(&doms, &attr);
-@@ -1377,6 +1381,9 @@ static void update_isolation_cpumasks(void)
- 	else
- 		isolated_cpus_updating = false;
- 
-+	/* Defer rebuild_sched_domains() to task_work or wq */
-+	sd_rebuild = SD_DEFER_REBUILD;
-+
- 	/*
- 	 * This function can be reached either directly from regular cpuset
- 	 * control file write or via CPU hotplug. In the latter case, it is
-@@ -3011,7 +3018,7 @@ static int update_prstate(struct cpuset *cs, int new_prs)
- 	update_partition_sd_lb(cs, old_prs);
- 
- 	notify_partition_change(cs, old_prs);
--	if (force_sd_rebuild)
-+	if (sd_rebuild == SD_REBUILD)
- 		rebuild_sched_domains_locked();
- 	free_tmpmasks(&tmpmask);
- 	return 0;
-@@ -3288,7 +3295,7 @@ ssize_t cpuset_write_resmask(struct kernfs_open_file *of,
- 	}
- 
- 	free_cpuset(trialcs);
--	if (force_sd_rebuild)
-+	if (sd_rebuild == SD_REBUILD)
- 		rebuild_sched_domains_locked();
- out_unlock:
- 	cpuset_full_unlock();
-@@ -3771,7 +3778,8 @@ hotplug_update_tasks(struct cpuset *cs,
- 
- void cpuset_force_rebuild(void)
- {
--	force_sd_rebuild = true;
-+	if (!sd_rebuild)
-+		sd_rebuild = SD_REBUILD;
- }
- 
- /**
-@@ -3981,7 +3989,7 @@ static void cpuset_handle_hotplug(void)
- 	}
- 
- 	/* rebuild sched domains if necessary */
--	if (force_sd_rebuild)
-+	if (sd_rebuild == SD_REBUILD)
- 		rebuild_sched_domains_cpuslocked();
- 
- 	free_tmpmasks(ptmp);
 -- 
-2.52.0
-
+Frederic Weisbecker
+SUSE Labs
 
