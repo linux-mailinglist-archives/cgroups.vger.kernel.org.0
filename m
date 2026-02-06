@@ -1,276 +1,203 @@
-Return-Path: <cgroups+bounces-13735-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-13736-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id QFBYK4CXhWk7DwQAu9opvQ
-	(envelope-from <cgroups+bounces-13735-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Fri, 06 Feb 2026 08:25:52 +0100
+	id sFqmDRqYhWmUDwQAu9opvQ
+	(envelope-from <cgroups+bounces-13736-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Fri, 06 Feb 2026 08:28:26 +0100
 X-Original-To: lists+cgroups@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 45C2DFAF24
-	for <lists+cgroups@lfdr.de>; Fri, 06 Feb 2026 08:25:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 7DAF7FAF6D
+	for <lists+cgroups@lfdr.de>; Fri, 06 Feb 2026 08:28:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 7129830420B3
-	for <lists+cgroups@lfdr.de>; Fri,  6 Feb 2026 07:22:49 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 8A975305EC34
+	for <lists+cgroups@lfdr.de>; Fri,  6 Feb 2026 07:24:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E1A230B524;
-	Fri,  6 Feb 2026 07:22:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="K+C4Ejc5"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D85D30BB98;
+	Fri,  6 Feb 2026 07:24:25 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from out-177.mta1.migadu.com (out-177.mta1.migadu.com [95.215.58.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-oo1-f77.google.com (mail-oo1-f77.google.com [209.85.161.77])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E5E9730AD1D;
-	Fri,  6 Feb 2026 07:22:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 09545302773
+	for <cgroups@vger.kernel.org>; Fri,  6 Feb 2026 07:24:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.77
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1770362568; cv=none; b=Kh3kHbQ15qHJXwck4bMvW0w0fRmxZZdEsjxiKzXQH/BRTOhWqpZRRoGe6W+HjXuRL6rWFs/4qrPh27dpRVtgEA9AMAPZ718BZcxOmyAInD/q/dMLyYDhGPeix23f9PTn7FfKAwVoPIKxGNf4E19KH5WrIfYOFJ1Qs7HBunp/3u4=
+	t=1770362665; cv=none; b=C15wRk0d3nvfv8uU81cu4Vd9xrkw9gSShW8ZgUSXMSpW7wTi0uGhC/aVF+o7ecjFHEAB+5yNCjcdlBf4nwEQXVh78VSoHlSuImA45h1vf3qcrfqDmENF0m6Jynw3g6llh5Qn8sSxrUBHe/k89N5g1GuLlHdSVNI27aA87aCuyZg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1770362568; c=relaxed/simple;
-	bh=W7Pj5IOXmHNCfVzPNifKS2LnKgE5X8L1spcNsvgNAyA=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=ZMlB3JILTc7ZWVrFak+8g0pP0q0t1vF/NAqWvhJwfJc3rYE/Lcx4fG/N78DRBomg+dcTl4BOafJrhJ/2ml6wK4r+HYA1o+DoEJXuQB/wPX3G9Q728rGvLnFWVX1L1lhTUzKMi/y+x4j7wFtzUmX1lDryePlgLNj5TK0WGQdDv04=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=K+C4Ejc5; arc=none smtp.client-ip=95.215.58.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1770362566;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=QVhNoOKTqhs5FIM84PwOapldZJ1EjdC0zJo6ufYFyUo=;
-	b=K+C4Ejc5kYVa1AMupNC5l8ot9jFScgXyb+D+zIw9ZBvY3NiXL0rK4kEbWmFA7i7a1LUKEa
-	8/aC154zcQVvLVXsflxO27dIvGWhoyBQ8v3NYygtLhMZecbpziRI9uYqN2sJFcY5KWYXcX
-	97o64Jq7iwPbBEtR111+cZx2n28j/rk=
-From: Jiayuan Chen <jiayuan.chen@linux.dev>
-To: linux-mm@kvack.org
-Cc: Jiayuan Chen <jiayuan.chen@shopee.com>,
-	Tejun Heo <tj@kernel.org>,
-	Johannes Weiner <hannes@cmpxchg.org>,
-	=?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>,
-	Jonathan Corbet <corbet@lwn.net>,
-	Michal Hocko <mhocko@kernel.org>,
-	Roman Gushchin <roman.gushchin@linux.dev>,
-	Shakeel Butt <shakeel.butt@linux.dev>,
-	Muchun Song <muchun.song@linux.dev>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Yosry Ahmed <yosry.ahmed@linux.dev>,
-	Nhat Pham <nphamcs@gmail.com>,
-	Chengming Zhou <chengming.zhou@linux.dev>,
-	Shuah Khan <shuah@kernel.org>,
-	cgroups@vger.kernel.org,
-	linux-doc@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-kselftest@vger.kernel.org
-Subject: [PATCH v2 2/2] selftests/cgroup: add test for zswap incompressible pages
-Date: Fri,  6 Feb 2026 15:22:16 +0800
-Message-ID: <20260206072220.144008-3-jiayuan.chen@linux.dev>
-In-Reply-To: <20260206072220.144008-1-jiayuan.chen@linux.dev>
-References: <20260206072220.144008-1-jiayuan.chen@linux.dev>
+	s=arc-20240116; t=1770362665; c=relaxed/simple;
+	bh=iBARMvGi2nN6CAOktKdGzKVjcEbruvi7SYevqC6gKRg=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=CTEQH4pnYib4DNwFD47nPe7Hn180zIMAJ0bN0PWYT7McJcH4LPBxE7h157gAcYA1DRTu5kFRDt8+m0FT2jjtUBcS6qWhoQgBczMSpye3eLgygYkbZ8p6EZ5yRQD/QqtRGnuTHq4erO9n53dkvE3Kak+aHjA/SZ4442QGZWYyw6g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.161.77
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-oo1-f77.google.com with SMTP id 006d021491bc7-66ad91bd85bso7356224eaf.3
+        for <cgroups@vger.kernel.org>; Thu, 05 Feb 2026 23:24:24 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1770362664; x=1770967464;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=ot6ual0l9jo2XolXnfpiqkyLpmBuznoc4sQK0e9mC6I=;
+        b=DP4lj28uD3vd7w41Q97tsD89vHJELdt8a5fUqU9FhMUsYnHx99QHyT7/SaFMpEK8yS
+         dd5BBhwb+EuY3SCHAKiqtzy7CBySVSFkdJCJpLZRww5RxsfCe15xQMlUBzZe89ypv0um
+         B8cCarnVskXrHKSCd9DlUyzqRQihqcrVV9wLn1di6FJqxVcbEeiQOw+ezuARrXSBdtQa
+         MckSPCkEr+UarWOXkNlWO2GpIg00sUzfWGEMR7PtZkYN2WFPeF/cse7PgdTIW0Vq2LME
+         wvCz1/XZj6h+7zhdDM+B0gihjTtA3J9OjXmsnmU0DSDL444Xd2sx5rrOQxRmoGBxfG1H
+         cLKg==
+X-Forwarded-Encrypted: i=1; AJvYcCVopS3iUNEK6f0DVo8aLil/9htELNws7CUwJPjI07amAhQJR0fi5umXh8vuLVW6NkOw1LuVUF++@vger.kernel.org
+X-Gm-Message-State: AOJu0Yy9EnOdHBLOnZShT1RuWJlwderQeHWIeNkrHo9ZiYqKqRhd2lYN
+	4fGAGKcafEk4nMi5DqwDwcK2cqwZMqIkyLMc73KD/CkjQR14PLamTz/KVBm9l/BQ3qeuXkSX6tH
+	itHr4ChFv6jwUnZwythu1SwPoUMCHJoNIRZWyhIGOxsYdNf810BixkVW2xWk=
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+X-Received: by 2002:a05:6820:2202:b0:663:d06:81e2 with SMTP id
+ 006d021491bc7-66d09cabe40mr920061eaf.1.1770362664044; Thu, 05 Feb 2026
+ 23:24:24 -0800 (PST)
+Date: Thu, 05 Feb 2026 23:24:24 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <69859728.050a0220.3b3015.0033.GAE@google.com>
+Subject: [syzbot] [cgroups?] [mm?] KASAN: wild-memory-access Read in
+ lookup_swap_cgroup_id (2)
+From: syzbot <syzbot+e12bd9ca48157add237a@syzkaller.appspotmail.com>
+To: akpm@linux-foundation.org, cgroups@vger.kernel.org, hannes@cmpxchg.org, 
+	linux-kernel@vger.kernel.org, linux-mm@kvack.org, mhocko@kernel.org, 
+	muchun.song@linux.dev, roman.gushchin@linux.dev, shakeel.butt@linux.dev, 
+	syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-0.66 / 15.00];
-	MID_CONTAINS_FROM(1.00)[];
+X-Spamd-Result: default: False [-0.36 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_MISSING_CHARSET(0.50)[];
-	DMARC_POLICY_ALLOW(-0.50)[linux.dev,none];
+	URI_HIDDEN_PATH(1.00)[https://syzkaller.appspot.com/x/.config?x=f1fac0919970b671];
 	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
-	R_DKIM_ALLOW(-0.20)[linux.dev:s=key1];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
+	DMARC_POLICY_SOFTFAIL(0.10)[appspotmail.com : SPF not aligned (relaxed), No valid DKIM,none];
 	HAS_LIST_UNSUB(-0.01)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	FREEMAIL_CC(0.00)[shopee.com,kernel.org,cmpxchg.org,suse.com,lwn.net,linux.dev,linux-foundation.org,gmail.com,vger.kernel.org];
-	MIME_TRACE(0.00)[0:+];
-	TAGGED_FROM(0.00)[bounces-13735-lists,cgroups=lfdr.de];
-	RCPT_COUNT_TWELVE(0.00)[19];
 	RCVD_TLS_LAST(0.00)[];
-	RCVD_COUNT_THREE(0.00)[3];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	TO_DN_SOME(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[jiayuan.chen@linux.dev,cgroups@vger.kernel.org];
-	FROM_HAS_DN(0.00)[];
-	DKIM_TRACE(0.00)[linux.dev:+];
-	NEURAL_HAM(-0.00)[-1.000];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	TAGGED_RCPT(0.00)[cgroups];
 	MISSING_XM_UA(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[linux.dev:mid,linux.dev:dkim,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,shopee.com:email]
-X-Rspamd-Queue-Id: 45C2DFAF24
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	RCVD_COUNT_THREE(0.00)[4];
+	TAGGED_FROM(0.00)[bounces-13736-lists,cgroups=lfdr.de,e12bd9ca48157add237a];
+	SUBJECT_HAS_QUESTION(0.00)[];
+	REDIRECTOR_URL(0.00)[goo.gl];
+	TAGGED_RCPT(0.00)[cgroups];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[syzbot@syzkaller.appspotmail.com,cgroups@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	TO_DN_NONE(0.00)[];
+	R_DKIM_NA(0.00)[];
+	NEURAL_HAM(-0.00)[-1.000];
+	RCPT_COUNT_SEVEN(0.00)[10];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[appspotmail.com:email,storage.googleapis.com:url,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,goo.gl:url,syzkaller.appspot.com:url,googlegroups.com:email]
+X-Rspamd-Queue-Id: 7DAF7FAF6D
 X-Rspamd-Action: no action
 
-From: Jiayuan Chen <jiayuan.chen@shopee.com>
+Hello,
 
-Add test_zswap_incompressible() to verify that the zswap_incomp memcg
-stat correctly tracks incompressible pages.
+syzbot found the following issue on:
 
-The test allocates memory filled with random data from /dev/urandom,
-which cannot be effectively compressed by zswap. When this data is
-swapped out to zswap, it should be stored as-is and tracked by the
-zswap_incomp counter.
+HEAD commit:    18f7fcd5e69a Linux 6.19-rc8
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=1428fc5a580000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=f1fac0919970b671
+dashboard link: https://syzkaller.appspot.com/bug?extid=e12bd9ca48157add237a
+compiler:       gcc (Debian 14.2.0-19) 14.2.0, GNU ld (GNU Binutils for Debian) 2.44
 
-The test verifies that:
-1. Pages are swapped out to zswap (zswpout increases)
-2. Incompressible pages are tracked (zswap_incomp increases)
+Unfortunately, I don't have any reproducer for this issue yet.
 
-test:
-dd if=/dev/zero of=/swapfile bs=1M count=2048
-chmod 600 /swapfile
-mkswap /swapfile
-swapon /swapfile
-echo Y > /sys/module/zswap/parameters/enabled
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/2c19d9acc149/disk-18f7fcd5.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/02cf07c94e58/vmlinux-18f7fcd5.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/84011cec9819/bzImage-18f7fcd5.xz
 
-./test_zswap
- TAP version 13
- 1..8
- ok 1 test_zswap_usage
- ok 2 test_swapin_nozswap
- ok 3 test_zswapin
- ok 4 test_zswap_writeback_enabled
- ok 5 test_zswap_writeback_disabled
- ok 6 test_no_kmem_bypass
- ok 7 test_no_invasive_cgroup_shrink
- ok 8 test_zswap_incompressible
- Totals: pass:8 fail:0 xfail:0 xpass:0 skip:0 error:0
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+e12bd9ca48157add237a@syzkaller.appspotmail.com
 
-Signed-off-by: Jiayuan Chen <jiayuan.chen@shopee.com>
+==================================================================
+BUG: KASAN: wild-memory-access in instrument_atomic_read include/linux/instrumented.h:68 [inline]
+BUG: KASAN: wild-memory-access in atomic_read include/linux/atomic/atomic-instrumented.h:32 [inline]
+BUG: KASAN: wild-memory-access in __swap_cgroup_id_lookup mm/swap_cgroup.c:28 [inline]
+BUG: KASAN: wild-memory-access in lookup_swap_cgroup_id+0xf9/0x1a0 mm/swap_cgroup.c:127
+Read of size 4 at addr 0007fffffffffffc by task syz.5.3598/20029
+
+CPU: 1 UID: 0 PID: 20029 Comm: syz.5.3598 Tainted: G             L      syzkaller #0 PREEMPT(full) 
+Tainted: [L]=SOFTLOCKUP
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/24/2026
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:94 [inline]
+ dump_stack_lvl+0x100/0x190 lib/dump_stack.c:120
+ kasan_report+0xdf/0x1a0 mm/kasan/report.c:595
+ check_region_inline mm/kasan/generic.c:186 [inline]
+ kasan_check_range+0x10f/0x1e0 mm/kasan/generic.c:200
+ instrument_atomic_read include/linux/instrumented.h:68 [inline]
+ atomic_read include/linux/atomic/atomic-instrumented.h:32 [inline]
+ __swap_cgroup_id_lookup mm/swap_cgroup.c:28 [inline]
+ lookup_swap_cgroup_id+0xf9/0x1a0 mm/swap_cgroup.c:127
+ swap_pte_batch+0x3c3/0x720 mm/internal.h:390
+ zap_nonpresent_ptes mm/memory.c:1749 [inline]
+ do_zap_pte_range mm/memory.c:1818 [inline]
+ zap_pte_range mm/memory.c:1858 [inline]
+ zap_pmd_range mm/memory.c:1950 [inline]
+ zap_pud_range mm/memory.c:1978 [inline]
+ zap_p4d_range mm/memory.c:1999 [inline]
+ unmap_page_range+0x1f6f/0x43e0 mm/memory.c:2020
+ unmap_single_vma+0x153/0x240 mm/memory.c:2062
+ unmap_vmas+0x218/0x470 mm/memory.c:2104
+ exit_mmap+0x181/0xae0 mm/mmap.c:1277
+ __mmput+0x12a/0x410 kernel/fork.c:1173
+ mmput+0x67/0x80 kernel/fork.c:1196
+ exit_mm kernel/exit.c:581 [inline]
+ do_exit+0x78a/0x2a30 kernel/exit.c:959
+ do_group_exit+0xd5/0x2a0 kernel/exit.c:1112
+ get_signal+0x1ec7/0x21e0 kernel/signal.c:3034
+ arch_do_signal_or_restart+0x91/0x7a0 arch/x86/kernel/signal.c:337
+ __exit_to_user_mode_loop kernel/entry/common.c:41 [inline]
+ exit_to_user_mode_loop+0x86/0x4b0 kernel/entry/common.c:75
+ __exit_to_user_mode_prepare include/linux/irq-entry-common.h:226 [inline]
+ syscall_exit_to_user_mode_prepare include/linux/irq-entry-common.h:256 [inline]
+ syscall_exit_to_user_mode_work include/linux/entry-common.h:159 [inline]
+ syscall_exit_to_user_mode include/linux/entry-common.h:194 [inline]
+ do_syscall_64+0x4fe/0xf80 arch/x86/entry/syscall_64.c:100
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
+RIP: 0033:0x7f2f8f19aeb9
+Code: Unable to access opcode bytes at 0x7f2f8f19ae8f.
+RSP: 002b:00007f2f900350e8 EFLAGS: 00000246 ORIG_RAX: 00000000000000ca
+RAX: fffffffffffffe00 RBX: 00007f2f8f416098 RCX: 00007f2f8f19aeb9
+RDX: 0000000000000000 RSI: 0000000000000080 RDI: 00007f2f8f416098
+RBP: 00007f2f8f416090 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 00007f2f8f416128 R14: 00007ffc0c8cc050 R15: 00007ffc0c8cc138
+ </TASK>
+==================================================================
+
+
 ---
- tools/testing/selftests/cgroup/test_zswap.c | 96 +++++++++++++++++++++
- 1 file changed, 96 insertions(+)
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-diff --git a/tools/testing/selftests/cgroup/test_zswap.c b/tools/testing/selftests/cgroup/test_zswap.c
-index 64ebc3f3f203..8cb8a131357d 100644
---- a/tools/testing/selftests/cgroup/test_zswap.c
-+++ b/tools/testing/selftests/cgroup/test_zswap.c
-@@ -5,6 +5,7 @@
- #include <unistd.h>
- #include <stdio.h>
- #include <signal.h>
-+#include <fcntl.h>
- #include <sys/sysinfo.h>
- #include <string.h>
- #include <sys/wait.h>
-@@ -574,6 +575,100 @@ static int test_no_kmem_bypass(const char *root)
- 	return ret;
- }
- 
-+static int allocate_random_and_wait(const char *cgroup, void *arg)
-+{
-+	size_t size = (size_t)arg;
-+	char *mem;
-+	int fd;
-+	ssize_t n;
-+
-+	mem = malloc(size);
-+	if (!mem)
-+		return -1;
-+
-+	/* Fill with random data from /dev/urandom - incompressible */
-+	fd = open("/dev/urandom", O_RDONLY);
-+	if (fd < 0) {
-+		free(mem);
-+		return -1;
-+	}
-+
-+	for (size_t i = 0; i < size; ) {
-+		n = read(fd, mem + i, size - i);
-+		if (n <= 0)
-+			break;
-+		i += n;
-+	}
-+	close(fd);
-+
-+	/* Touch all pages to ensure they're faulted in */
-+	for (size_t i = 0; i < size; i += 4096)
-+		mem[i] = mem[i];
-+
-+	/* Keep memory alive for parent to reclaim and check stats */
-+	pause();
-+	free(mem);
-+	return 0;
-+}
-+
-+static long get_zswap_incomp(const char *cgroup)
-+{
-+	return cg_read_key_long(cgroup, "memory.stat", "zswap_incomp ");
-+}
-+
-+/*
-+ * Test that incompressible pages (random data) are tracked by zswap_incomp.
-+ *
-+ * Since incompressible pages stored in zswap are charged at full PAGE_SIZE
-+ * (no memory savings), we cannot rely on memory.max pressure to push them
-+ * into zswap. Instead, we allocate random data within memory.max, then use
-+ * memory.reclaim to proactively push pages into zswap while checking the stat
-+ * before the child exits (zswap_incomp is a gauge that decreases on free).
-+ */
-+static int test_zswap_incompressible(const char *root)
-+{
-+	int ret = KSFT_FAIL;
-+	char *test_group;
-+	long zswap_incomp;
-+	pid_t child_pid;
-+	int child_status;
-+
-+	test_group = cg_name(root, "zswap_incompressible_test");
-+	if (!test_group)
-+		goto out;
-+	if (cg_create(test_group))
-+		goto out;
-+	if (cg_write(test_group, "memory.max", "32M"))
-+		goto out;
-+
-+	child_pid = cg_run_nowait(test_group, allocate_random_and_wait,
-+				  (void *)MB(4));
-+	if (child_pid < 0)
-+		goto out;
-+
-+	/* Wait for child to finish allocating */
-+	usleep(500000);
-+
-+	/* Proactively reclaim to push random pages into zswap */
-+	cg_write_numeric(test_group, "memory.reclaim", MB(4));
-+
-+	zswap_incomp = get_zswap_incomp(test_group);
-+	if (zswap_incomp <= 0) {
-+		ksft_print_msg("zswap_incomp not increased: %ld\n", zswap_incomp);
-+		goto out_kill;
-+	}
-+
-+	ret = KSFT_PASS;
-+
-+out_kill:
-+	kill(child_pid, SIGTERM);
-+	waitpid(child_pid, &child_status, 0);
-+out:
-+	cg_destroy(test_group);
-+	free(test_group);
-+	return ret;
-+}
-+
- #define T(x) { x, #x }
- struct zswap_test {
- 	int (*fn)(const char *root);
-@@ -586,6 +681,7 @@ struct zswap_test {
- 	T(test_zswap_writeback_disabled),
- 	T(test_no_kmem_bypass),
- 	T(test_no_invasive_cgroup_shrink),
-+	T(test_zswap_incompressible),
- };
- #undef T
- 
--- 
-2.43.0
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
 
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
 
