@@ -1,81 +1,81 @@
-Return-Path: <cgroups+bounces-13776-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-13777-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id sP3gJV0HiWnK1QQAu9opvQ
-	(envelope-from <cgroups+bounces-13776-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Sun, 08 Feb 2026 22:59:57 +0100
+	id yJhrFYYHiWnI1QQAu9opvQ
+	(envelope-from <cgroups+bounces-13777-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Sun, 08 Feb 2026 23:00:38 +0100
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id F36A010A51C
-	for <lists+cgroups@lfdr.de>; Sun, 08 Feb 2026 22:59:56 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id B103710A548
+	for <lists+cgroups@lfdr.de>; Sun, 08 Feb 2026 23:00:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id B879C3034E01
-	for <lists+cgroups@lfdr.de>; Sun,  8 Feb 2026 21:58:55 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 2CEF2303FDF1
+	for <lists+cgroups@lfdr.de>; Sun,  8 Feb 2026 21:58:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 893223587A9;
-	Sun,  8 Feb 2026 21:58:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AE69E34321C;
+	Sun,  8 Feb 2026 21:58:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dG9qI0kY"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="auk1PhKB"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-ot1-f46.google.com (mail-ot1-f46.google.com [209.85.210.46])
+Received: from mail-oa1-f49.google.com (mail-oa1-f49.google.com [209.85.160.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D6F234FF5A
-	for <cgroups@vger.kernel.org>; Sun,  8 Feb 2026 21:58:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 415DE34D929
+	for <cgroups@vger.kernel.org>; Sun,  8 Feb 2026 21:58:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1770587932; cv=none; b=nFOF6pma5qF4GkHgrakPqQhHNOjpMGCO0z3EYZ8LXavupUSOlbCQUiZO9pnhIPAF54euIblO2wtU3QVeTJ322SAo/tC/o44C8rLJ8hQb9DZ4Y0EUnaAdHFPNEHP/RzCRZWaZIJnquOotyuoHlOB8THy6SjV14l+pOtENfC7uhec=
+	t=1770587934; cv=none; b=M15ZyDQs0NDXSx/nzQcVIeGUVRMJan3CxD6pD/MrKUFYr3k7avm06zfrevEe0gFZCwPbUS/+mLdkbTLOQzBhphQ5dFSKC9rZgzMFMFyaFPnPa6EtAse/PbRfIbcdh7zGjX7LsVvw0EGM+2R16Fq+af4Qbcy8cV7E+fw01yLfxjc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1770587932; c=relaxed/simple;
-	bh=ODJpTK6yx8sL3Yjx3SR46wf2FGw+h0vJmlVT0y2AyfQ=;
+	s=arc-20240116; t=1770587934; c=relaxed/simple;
+	bh=0Qlnn/0vz2JKpfqCrEGnXX7iDLpsICWEjt16tSDKWL0=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=m5DoWipOp/bDGa0Yq0G4YGdHqXwBCQ54NHtJ30GsdZptD3tQUQcHzrATtABvL7gDD5QPTTvBqlaKYt4tqgShbW8q4xRHENq2VNWV1KAVT9EIApcZO/BeYhoyeR5M/UFZgpTPityMn9oQN4Xhg88noJ4xVSsi4Gefm5AL661GM4A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=dG9qI0kY; arc=none smtp.client-ip=209.85.210.46
+	 MIME-Version; b=mn3s3xZSRJTkYKh/n0k8MnVe859VR5JtFuSeVm2BIAKqVHBr5uZXLhTKw5O5HYqPWfE4jw8E23OHNG7We4zetlHVP+226i5xyNBgLYdmZGGGbsJkkRsf7aArY/Ra+ug/+bwu0iUR3UG6F36fEkgewSGzKldm8zzH8COAd0knfzo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=auk1PhKB; arc=none smtp.client-ip=209.85.160.49
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ot1-f46.google.com with SMTP id 46e09a7af769-7cfcb46ffc9so2705433a34.0
-        for <cgroups@vger.kernel.org>; Sun, 08 Feb 2026 13:58:52 -0800 (PST)
+Received: by mail-oa1-f49.google.com with SMTP id 586e51a60fabf-4096aab5521so1929331fac.3
+        for <cgroups@vger.kernel.org>; Sun, 08 Feb 2026 13:58:54 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1770587931; x=1771192731; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1770587933; x=1771192733; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=HpwswEDlCandEKSEcjjhsX6vu11jfmhgbFRVqdS0y6A=;
-        b=dG9qI0kYQmhW6JNCk95pxW7PPQil8zbjJFz87Ku7Nkh86EZVGIPPfNKoiPpKUmt7ah
-         Ca/uVBL1FGUlsicpkOLBKVBeF8Tm6yKbgdvfnUokxsG2Jwl0ef/NyQXx2j9P4TrIDzYQ
-         +hAZaq5nvpUYgyR3rDhRKvq/tpfPLSaLXoa3qfqak/nQGQwtpqJUL34fGjOXlW2V5v8E
-         OfF4NhluWoIili8uqIAamc0ElWDSY4pF9uaYeCuv36FG7XyWD1YlHXboNTxwbZ/CfZ0q
-         R8EKETELmcXLN8hUii6EH7dj+Z/os38EJ6fiUWe+uTIzESMFDTcEh+te/nqiVJyE429D
-         7Ajg==
+        bh=YCzAnUs0VtYcvzowlURB7PfVAQtyZ2LBB9m2XBAedLE=;
+        b=auk1PhKBsxYRqxltOAaKXLjVDOEyDZzUzj+JtX9LUrCIFQF6bPF3dQtuyKXu9m81lc
+         HU+U6FZm+FVJ7ReOUrZAre86MqCAZb/GWCrca75duv26SnzT71VUJnKRguKo1lW3OXQt
+         qxO8f76iq2LmBt1xinTij06Pzn15DXRbB5RXImlM+jtUNmH7VfG62r2fwqeqCr2ez6Au
+         UW99SgG2RwT3UbOka+bzbjE+lVI8DwwGce1GtXmergMXXhvOyG+bygae8VqilBkx+lTZ
+         koeL0xYPYb5/+oH3vf1joCTAIPEM2KhGvxfcMDDlsxPNmZUlpsrS9IpF/nBNswO0DEWb
+         eAuA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1770587931; x=1771192731;
+        d=1e100.net; s=20230601; t=1770587933; x=1771192733;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=HpwswEDlCandEKSEcjjhsX6vu11jfmhgbFRVqdS0y6A=;
-        b=e/rH//1poZ+hN20uZ3kE68jeMu8bgrqxIFmSGa9BBtgRCzc+hX1/ChhI6JZkE6D9zG
-         OaMW2zI9oj4LAyJ3wbxeBdZ+TQ4zVkRjrWwc+2Flel+pP0Kkm+3pfP0C/7S3NUcww5do
-         fyQ+u6zDYlIWm5GeMbQYYZSg9S1SyP5tykUBxzKOQJwHWULA5OPSD3VCJCXyr6eu+0ny
-         ULxcYzDLV6ND8bdKW1H8UqObOGj5zi3ouu7Q+h6VN8k0rzz2AdAzlw8KQh90sh4SsC83
-         K72qslTF0QEwDPnTo5XN1XtjlChHNoWtI9Av6N8yw74ig7VaseX+dTYF7luWbhThTWk0
-         X61A==
-X-Forwarded-Encrypted: i=1; AJvYcCWF8tb4tWjT6yzU+/rQq6AevS8lGXvHX3V/uwBakYLxeVhNb0b+IwJ0Hw5q238L6reE/GiKrijD@vger.kernel.org
-X-Gm-Message-State: AOJu0YxKiF94kYAyP0rbUG6o16mv4+R8gA90TQK3T+7hzAzqvrbMOp21
-	bpUCSNm10uQGXV6/dzxZ5D8meIc4TqcExYM72EB/MvD96Am/49HfAIoS
-X-Gm-Gg: AZuq6aInJ0aZL8DnBBsBaPnJ+hktZ5Vjn1ESUa3nt+eGqG2nssoTgQHlfqtoCl8uKJT
-	6oQC7j2UGIP3zeEqDyVQ4eVn6LYFkz88/5m5k4cC9oEJBJ2mBT0OnS4vwl5sOWsRDo2nWN1Ydzl
-	ROQCvIH8RHaautofSSafg2RSc/ynkaxryP773ppkn+hifLYbDh6kNbm9X87xYaWGOp29uUwPgrr
-	sdvJgD3I1cEy7zOeijhDQdVJdGVfooz5P3CbUn50knyJWu8OzQEUtjq4eBMm9vIBn+dK1rslIBV
-	vtesso9/cETIdh5q/uOxaThHytNQopwQGqsBXFU93J31se8ni5ehOx79YUkoczcwyq3wa411nfn
-	tV/r8kTUAq8AVuiD0ItN7QeTGved1Q/FAwH0+pSSImYTRFyoU02ieBulhLX4S73eXI/JxBhUoWe
-	IH+7LWd+yrk4KdWEcLHETShQ9pNkSGGaxdbg==
-X-Received: by 2002:a05:6830:828c:b0:7d1:93ea:5bc0 with SMTP id 46e09a7af769-7d4633df66dmr5296308a34.9.1770587931097;
-        Sun, 08 Feb 2026 13:58:51 -0800 (PST)
-Received: from localhost ([2a03:2880:10ff:70::])
-        by smtp.gmail.com with ESMTPSA id 46e09a7af769-7d4646fb89fsm6346653a34.1.2026.02.08.13.58.50
+        bh=YCzAnUs0VtYcvzowlURB7PfVAQtyZ2LBB9m2XBAedLE=;
+        b=H9pNbBNNu/iCojLr+46b97lE6M3KG/VIgQmeW/5pXfh8nn6rnJhp1Tv6IEEY/iy4tO
+         vZ0S7jCjdN/3g6wI2C3b8/mtNe37VjJ3YFD5CO2uLf7btnm32CeJYhn+3VhOdA/yKDBV
+         84dP2gMOcMpuC1+Fc1MrYFt9t8iagbvdQTzM2fxGkSGkiQF7xod38uhpQW4W2fAiOKOL
+         sMRWKna3lWZkVJgpBy02JcXVrZpTnREoVvjinfI0qqgR02agM5iqnhBVNdosZtGEt6nf
+         KoIU6vGpANEtOBQoUOor/eIcQZmJVTz/KjQ8BBbyJYw63sDuYSS/EizErgR6Djfi5fuK
+         m+kg==
+X-Forwarded-Encrypted: i=1; AJvYcCVOMhR5YxPm5jjzRwy28Go8ikB3M6PuD67R9iVNwjyOt41WUh9WI48kL5Vxg59LjRD/s1hcjHZl@vger.kernel.org
+X-Gm-Message-State: AOJu0YxrQoKuDsqc6YFSZ9IGa/61YmqnDHd+lztE/nBcIFF5bWDH8Jp0
+	HSjvzN/nzbt+mO+Ts1JxnOHBP8YERiV7Gbu56nHZwi8MkpNR/RX78+bo
+X-Gm-Gg: AZuq6aKI3nPIFiMQ2PVzIyrlb0ceyCkqWFHW+/U17X1JRyOOoPeaK+0ZMS1ZFk1mkGM
+	SltPAkU9A74gANXsMKyRRiD8XqbLME70JBjCOWDEqw6EIPWsqK5x5j2aIIsXJY8O42PdF2plEGr
+	K+WD5AUXlDfPYdNoifb+dwgWHynmBFWrJ0skoJ/6ELSqkOrK0I/04YaO13KExJn6htPZf0NPMKJ
+	LJPbOsaGFyclCK3WgIuwoYBzoxiFQckBLvCdDfjPZAEkQFXY/7ZVFfG5DD5d8goXBbZhEbRUJGe
+	zZ+oe2zm9uSKv1OmkP+DVk3nC/lspCdpxHfATQ1jftuchQWBikAt6qYmgVSE2zmBrSDWMNHSH8m
+	kHGNdL2fwEU/F9W25C0fzM4XUaSf1HS4XFFEyL2yhv8tQ0jfxFr8JYE2pHnHdB2jqg0+0KQU7V1
+	49IFXEfduuOFwye4ZpIehMFVRILzxTmKwOSg==
+X-Received: by 2002:a05:6820:1514:b0:662:c369:8af1 with SMTP id 006d021491bc7-66d0d5e38b6mr4727396eaf.78.1770587933119;
+        Sun, 08 Feb 2026 13:58:53 -0800 (PST)
+Received: from localhost ([2a03:2880:10ff:73::])
+        by smtp.gmail.com with ESMTPSA id 006d021491bc7-66d3adcae3csm5051168eaf.9.2026.02.08.13.58.51
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 08 Feb 2026 13:58:50 -0800 (PST)
+        Sun, 08 Feb 2026 13:58:52 -0800 (PST)
 From: Nhat Pham <nphamcs@gmail.com>
 To: linux-mm@kvack.org
 Cc: akpm@linux-foundation.org,
@@ -116,9 +116,9 @@ Cc: akpm@linux-foundation.org,
 	jannh@google.com,
 	pfalcato@suse.de,
 	zhengqi.arch@bytedance.com
-Subject: [PATCH v3 04/20] zswap: add new helpers for zswap entry operations
-Date: Sun,  8 Feb 2026 13:58:17 -0800
-Message-ID: <20260208215839.87595-5-nphamcs@gmail.com>
+Subject: [PATCH v3 05/20] mm/swap: add a new function to check if a swap entry is in swap cached.
+Date: Sun,  8 Feb 2026 13:58:18 -0800
+Message-ID: <20260208215839.87595-6-nphamcs@gmail.com>
 X-Mailer: git-send-email 2.47.3
 In-Reply-To: <20260208215839.87595-1-nphamcs@gmail.com>
 References: <20260208215839.87595-1-nphamcs@gmail.com>
@@ -137,7 +137,7 @@ X-Spamd-Result: default: False [0.84 / 15.00];
 	R_MISSING_CHARSET(0.50)[];
 	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
 	R_DKIM_ALLOW(-0.20)[gmail.com:s=20230601];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
@@ -147,8 +147,8 @@ X-Spamd-Result: default: False [0.84 / 15.00];
 	MIME_TRACE(0.00)[0:+];
 	RCVD_TLS_LAST(0.00)[];
 	RECEIVED_HELO_LOCALHOST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-13776-lists,cgroups=lfdr.de];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	TAGGED_FROM(0.00)[bounces-13777-lists,cgroups=lfdr.de];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
 	RCVD_COUNT_FIVE(0.00)[5];
@@ -161,158 +161,92 @@ X-Spamd-Result: default: False [0.84 / 15.00];
 	FREEMAIL_FROM(0.00)[gmail.com];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: F36A010A51C
+X-Rspamd-Queue-Id: B103710A548
 X-Rspamd-Action: no action
 
-Add new helper functions to abstract away zswap entry operations, in
-order to facilitate re-implementing these functions when swap is
-virtualized.
+Userfaultfd checks whether a swap entry is in swapcache. This is
+currently done by directly looking at the swapfile's swap map - however,
+the swap cached state will soon be managed at the virtual swap layer.
+Abstract away this function.
 
 Signed-off-by: Nhat Pham <nphamcs@gmail.com>
 ---
- mm/zswap.c | 59 ++++++++++++++++++++++++++++++++++++------------------
- 1 file changed, 40 insertions(+), 19 deletions(-)
+ include/linux/swap.h |  6 ++++++
+ mm/swapfile.c        | 15 +++++++++++++++
+ mm/userfaultfd.c     |  3 +--
+ 3 files changed, 22 insertions(+), 2 deletions(-)
 
-diff --git a/mm/zswap.c b/mm/zswap.c
-index 315e4d0d08311..a5a3f068bd1a6 100644
---- a/mm/zswap.c
-+++ b/mm/zswap.c
-@@ -234,6 +234,38 @@ static inline struct xarray *swap_zswap_tree(swp_entry_t swp)
- 		>> ZSWAP_ADDRESS_SPACE_SHIFT];
+diff --git a/include/linux/swap.h b/include/linux/swap.h
+index 3da637b218baf..f91a442ac0e82 100644
+--- a/include/linux/swap.h
++++ b/include/linux/swap.h
+@@ -435,6 +435,7 @@ void free_swap_and_cache_nr(swp_entry_t entry, int nr);
+ int __swap_count(swp_entry_t entry);
+ bool swap_entry_swapped(struct swap_info_struct *si, swp_entry_t entry);
+ int swp_swapcount(swp_entry_t entry);
++bool is_swap_cached(swp_entry_t entry);
+ 
+ /* Swap cache API (mm/swap_state.c) */
+ static inline unsigned long total_swapcache_pages(void)
+@@ -554,6 +555,11 @@ static inline int swp_swapcount(swp_entry_t entry)
+ 	return 0;
  }
  
-+static inline void *zswap_entry_store(swp_entry_t swpentry,
-+		struct zswap_entry *entry)
++static inline bool is_swap_cached(swp_entry_t entry)
 +{
-+	struct xarray *tree = swap_zswap_tree(swpentry);
-+	pgoff_t offset = swp_offset(swpentry);
-+
-+	return xa_store(tree, offset, entry, GFP_KERNEL);
++	return false;
 +}
 +
-+static inline void *zswap_entry_load(swp_entry_t swpentry)
-+{
-+	struct xarray *tree = swap_zswap_tree(swpentry);
-+	pgoff_t offset = swp_offset(swpentry);
-+
-+	return xa_load(tree, offset);
-+}
-+
-+static inline void *zswap_entry_erase(swp_entry_t swpentry)
-+{
-+	struct xarray *tree = swap_zswap_tree(swpentry);
-+	pgoff_t offset = swp_offset(swpentry);
-+
-+	return xa_erase(tree, offset);
-+}
-+
-+static inline bool zswap_empty(swp_entry_t swpentry)
-+{
-+	struct xarray *tree = swap_zswap_tree(swpentry);
-+
-+	return xa_empty(tree);
-+}
-+
- #define zswap_pool_debug(msg, p)			\
- 	pr_debug("%s pool %s\n", msg, (p)->tfm_name)
- 
-@@ -1000,8 +1032,6 @@ static bool zswap_decompress(struct zswap_entry *entry, struct folio *folio)
- static int zswap_writeback_entry(struct zswap_entry *entry,
- 				 swp_entry_t swpentry)
+ static inline int folio_alloc_swap(struct folio *folio)
  {
--	struct xarray *tree;
--	pgoff_t offset = swp_offset(swpentry);
- 	struct folio *folio;
- 	struct mempolicy *mpol;
- 	bool folio_was_allocated;
-@@ -1040,8 +1070,7 @@ static int zswap_writeback_entry(struct zswap_entry *entry,
- 	 * old compressed data. Only when this is successful can the entry
- 	 * be dereferenced.
- 	 */
--	tree = swap_zswap_tree(swpentry);
--	if (entry != xa_load(tree, offset)) {
-+	if (entry != zswap_entry_load(swpentry)) {
- 		ret = -ENOMEM;
- 		goto out;
- 	}
-@@ -1051,7 +1080,7 @@ static int zswap_writeback_entry(struct zswap_entry *entry,
- 		goto out;
- 	}
+ 	return -EINVAL;
+diff --git a/mm/swapfile.c b/mm/swapfile.c
+index cacfafa9a540d..3c89dedbd5718 100644
+--- a/mm/swapfile.c
++++ b/mm/swapfile.c
+@@ -194,6 +194,21 @@ static bool swap_only_has_cache(struct swap_info_struct *si,
+ 	return true;
+ }
  
--	xa_erase(tree, offset);
-+	zswap_entry_erase(swpentry);
- 
- 	count_vm_event(ZSWPWB);
- 	if (entry->objcg)
-@@ -1427,9 +1456,7 @@ static bool zswap_store_page(struct page *page,
- 	if (!zswap_compress(page, entry, pool))
- 		goto compress_failed;
- 
--	old = xa_store(swap_zswap_tree(page_swpentry),
--		       swp_offset(page_swpentry),
--		       entry, GFP_KERNEL);
-+	old = zswap_entry_store(page_swpentry, entry);
- 	if (xa_is_err(old)) {
- 		int err = xa_err(old);
- 
-@@ -1563,11 +1590,9 @@ bool zswap_store(struct folio *folio)
- 		unsigned type = swp_type(swp);
- 		pgoff_t offset = swp_offset(swp);
- 		struct zswap_entry *entry;
--		struct xarray *tree;
- 
- 		for (index = 0; index < nr_pages; ++index) {
--			tree = swap_zswap_tree(swp_entry(type, offset + index));
--			entry = xa_erase(tree, offset + index);
-+			entry = zswap_entry_erase(swp_entry(type, offset + index));
- 			if (entry)
- 				zswap_entry_free(entry);
++/**
++ * is_swap_cached - check if the swap entry is cached
++ * @entry: swap entry to check
++ *
++ * Check swap_map directly to minimize overhead, READ_ONCE is sufficient.
++ *
++ * Returns true if the swap entry is cached, false otherwise.
++ */
++bool is_swap_cached(swp_entry_t entry)
++{
++	struct swap_info_struct *si = __swap_entry_to_info(entry);
++
++	return READ_ONCE(si->swap_map[swp_offset(entry)]) & SWAP_HAS_CACHE;
++}
++
+ static bool swap_is_last_map(struct swap_info_struct *si,
+ 		unsigned long offset, int nr_pages, bool *has_cache)
+ {
+diff --git a/mm/userfaultfd.c b/mm/userfaultfd.c
+index 25f89eba0438c..98be764fb3ecd 100644
+--- a/mm/userfaultfd.c
++++ b/mm/userfaultfd.c
+@@ -1190,7 +1190,6 @@ static int move_swap_pte(struct mm_struct *mm, struct vm_area_struct *dst_vma,
+ 		 * Check if the swap entry is cached after acquiring the src_pte
+ 		 * lock. Otherwise, we might miss a newly loaded swap cache folio.
+ 		 *
+-		 * Check swap_map directly to minimize overhead, READ_ONCE is sufficient.
+ 		 * We are trying to catch newly added swap cache, the only possible case is
+ 		 * when a folio is swapped in and out again staying in swap cache, using the
+ 		 * same entry before the PTE check above. The PTL is acquired and released
+@@ -1200,7 +1199,7 @@ static int move_swap_pte(struct mm_struct *mm, struct vm_area_struct *dst_vma,
+ 		 * cache, or during the tiny synchronization window between swap cache and
+ 		 * swap_map, but it will be gone very quickly, worst result is retry jitters.
+ 		 */
+-		if (READ_ONCE(si->swap_map[swp_offset(entry)]) & SWAP_HAS_CACHE) {
++		if (is_swap_cached(entry)) {
+ 			double_pt_unlock(dst_ptl, src_ptl);
+ 			return -EAGAIN;
  		}
-@@ -1599,9 +1624,7 @@ bool zswap_store(struct folio *folio)
- int zswap_load(struct folio *folio)
- {
- 	swp_entry_t swp = folio->swap;
--	pgoff_t offset = swp_offset(swp);
- 	bool swapcache = folio_test_swapcache(folio);
--	struct xarray *tree = swap_zswap_tree(swp);
- 	struct zswap_entry *entry;
- 
- 	VM_WARN_ON_ONCE(!folio_test_locked(folio));
-@@ -1619,7 +1642,7 @@ int zswap_load(struct folio *folio)
- 		return -EINVAL;
- 	}
- 
--	entry = xa_load(tree, offset);
-+	entry = zswap_entry_load(swp);
- 	if (!entry)
- 		return -ENOENT;
- 
-@@ -1648,7 +1671,7 @@ int zswap_load(struct folio *folio)
- 	 */
- 	if (swapcache) {
- 		folio_mark_dirty(folio);
--		xa_erase(tree, offset);
-+		zswap_entry_erase(swp);
- 		zswap_entry_free(entry);
- 	}
- 
-@@ -1658,14 +1681,12 @@ int zswap_load(struct folio *folio)
- 
- void zswap_invalidate(swp_entry_t swp)
- {
--	pgoff_t offset = swp_offset(swp);
--	struct xarray *tree = swap_zswap_tree(swp);
- 	struct zswap_entry *entry;
- 
--	if (xa_empty(tree))
-+	if (zswap_empty(swp))
- 		return;
- 
--	entry = xa_erase(tree, offset);
-+	entry = zswap_entry_erase(swp);
- 	if (entry)
- 		zswap_entry_free(entry);
- }
 -- 
 2.47.3
 
