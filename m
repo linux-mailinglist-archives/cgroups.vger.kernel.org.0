@@ -1,81 +1,81 @@
-Return-Path: <cgroups+bounces-13787-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-13788-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id UDCXH20HiWnK1QQAu9opvQ
-	(envelope-from <cgroups+bounces-13787-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Sun, 08 Feb 2026 23:00:13 +0100
+	id wHa8G3gHiWnK1QQAu9opvQ
+	(envelope-from <cgroups+bounces-13788-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Sun, 08 Feb 2026 23:00:24 +0100
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
-	by mail.lfdr.de (Postfix) with ESMTPS id 354C110A533
-	for <lists+cgroups@lfdr.de>; Sun, 08 Feb 2026 23:00:13 +0100 (CET)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1443C10A541
+	for <lists+cgroups@lfdr.de>; Sun, 08 Feb 2026 23:00:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 704253009898
-	for <lists+cgroups@lfdr.de>; Sun,  8 Feb 2026 21:59:44 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id 0846E30065D2
+	for <lists+cgroups@lfdr.de>; Sun,  8 Feb 2026 21:59:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 879D934FF67;
-	Sun,  8 Feb 2026 21:59:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C11E036F401;
+	Sun,  8 Feb 2026 21:59:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FfpipKKC"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dc+40F81"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-ot1-f53.google.com (mail-ot1-f53.google.com [209.85.210.53])
+Received: from mail-oi1-f169.google.com (mail-oi1-f169.google.com [209.85.167.169])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0020E286D57
-	for <cgroups@vger.kernel.org>; Sun,  8 Feb 2026 21:59:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A72036EA82
+	for <cgroups@vger.kernel.org>; Sun,  8 Feb 2026 21:59:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1770587955; cv=none; b=J3/EgY0CIpdTce5vGNqzyuUldiECXsuZXGrO81shzSGsoXZs9m5efF71iFD9BnrCr/vuQp13zsTQHV0vwbe6WGeYX/PiKZF806iCbObvVn3Si0MTKZdBj1wGlrEJqjHMZam3hU0GLb2LEUXkLPVOw3cjmWFkQYK2Go589VRvuTs=
+	t=1770587956; cv=none; b=Bm+mPwqiC42Q3W6K5vUCc25IUjqx76dj3+7zvVqQ8ak829MYp+FQalZmUyZa0fy8/GQsCxOF/Fd1qucMgRgIUrikiqI6/x485p1a3/8tAUAtnwLDzR36htklIg3v9ZeyxCQWBnIAvJhzT8d7yIGo+TFubG0nk/wecA5Ke3ZBYXQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1770587955; c=relaxed/simple;
-	bh=XBmrk0o39FAOIaDvlicMy3Eh3cFwDg1bVSNwmZISXsU=;
+	s=arc-20240116; t=1770587956; c=relaxed/simple;
+	bh=ivEurp8BxVVC73UF2YIA0sGKcn4Rvv3bpTlATH+RAvk=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=QDlHrOUug9yemeUESjCB61VO/S8xd32k+WUUPfwySot3QsFfAOPx/1/MnXTG9BlkToD9cgFKMRX7nnH+BtiPBWWV/ZvCvXG/hvH2BMvS0h6VMKnp1txZLN19cvBLsotnhv03SujOzukEQKksTtrQsOq2pAcWLNaG+ScVYhMb9ug=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=FfpipKKC; arc=none smtp.client-ip=209.85.210.53
+	 MIME-Version; b=mQLPf993TaCUR8DmoeO3Fz4xHRVlttsGmPkr/xCxyUVaqAtC9SQMmxJw3ZOvidMT/5SSWrmoyHAfv7xnj9mi5E9s9BWzzSCgUMDla+r0lxKEIr1/Sr+OsKhi3ahDMkk/cuc0YVZEgyLysxDegzcmCUorDeRjBiGK1J3/PgEs6rM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=dc+40F81; arc=none smtp.client-ip=209.85.167.169
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ot1-f53.google.com with SMTP id 46e09a7af769-7cfd0f349c4so2365295a34.1
-        for <cgroups@vger.kernel.org>; Sun, 08 Feb 2026 13:59:14 -0800 (PST)
+Received: by mail-oi1-f169.google.com with SMTP id 5614622812f47-45f171cb842so2677480b6e.1
+        for <cgroups@vger.kernel.org>; Sun, 08 Feb 2026 13:59:16 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1770587954; x=1771192754; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1770587955; x=1771192755; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=7QY06q/ir2j1hW+S2SjYAeivUq/qdnGKxDWe/px5J+A=;
-        b=FfpipKKCVpCqx7HM3BYiH/RMENXLSiIR/koRgxvzc0aEp5P9xmN9glHJwl8q2XaKHZ
-         dcckmxhxAPICg0IQe3X0r4r8iUR4Xuz/gGZ33/nZ7uTyUCFjtF1TO+0JlCTXC6YxGM1/
-         WVqJtenzA4TS0JTlwjdQD+dj48Gerb4OgoMt1Dx6J4arQkRjDZGjwUSPbdHPwYjzXftz
-         Z76+33cpHzq2aWrLh2jFkYDNSA+ocGivVuBHJZc0tdR7ob3swV1fECOPqZ8fFdTUShpZ
-         QuZz+vjdwRZGV2kzem/qq0xI+RfM6dQtbWW2XIp43UGUwWpjiLyTVJlQEMQbrvSknzLT
-         q13Q==
+        bh=Jcq3gcBJps8FZtjddhB+nxOnBeH87BfFsdWVB5x664k=;
+        b=dc+40F81wBkKVyu/C1B8+cc6caEzLYJpuLJ5W1W7TCSfYcL1XO+XOyilRv9LlWonXn
+         35OOuT+QXQwaq/ALiu5BGgNmHiH4aHE1ssRQ/wuGyDbuYl8OjY7NbztQKhaua5sfltdo
+         nmO6h++U9Ff/Bh4Vz4432XeartFzGtpqOWE5AILXz9GTAHyY96PfJHcp/pbPa5W7R3we
+         bepL9sYvx5RYKRzzm3zfgHPmkK2NSfPGLr15A/g4gPdNT+0qMSaxtuLX2Bo57nZWLgLg
+         0kA67K/WKPLEY6Oys0CBHHMbmT3EwDh3UQXzktcSbFe+ZSwRMVDQlHH5sGZw+JYExWfU
+         lpsQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1770587954; x=1771192754;
+        d=1e100.net; s=20230601; t=1770587955; x=1771192755;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=7QY06q/ir2j1hW+S2SjYAeivUq/qdnGKxDWe/px5J+A=;
-        b=oN4bi/0XjXkZkwqD0K2L3s19F4HAuXnMOP+MvIpe66FJeJ3gXfm+qAiOu/aznp164d
-         /J3BaXGWXnj0TVSjU4Y1NCL/bd1wk+cFmUkslA1niBMZEfZu+oTaVrmjE6TLs07BWvQl
-         VF2IinQWEyVEuuhvzR/GXSg+KkU1HT2VS/CMS4yHP2eobH/RJrsHTIhilidmXT24Bl8l
-         EmiXukEr4oj/mxkQySYhu31RJ5BaCWhD/f+45AN+c84Baue26/Aw10hfdjsFovPJxNJO
-         qn/BqJAzvqfIZhT5Bf9NTUBNLVYP/jGjlk9t0Q7AIycjzSOOBQHM8mqoMYrrV84xcWmI
-         r3Tw==
-X-Forwarded-Encrypted: i=1; AJvYcCUgkqbiiDYbfZyK2a2YdN1TFvwY9ulVFDZo6UEIr8Qrd/zpbrpQQ9vBDvBue7xIldlBeOKGHrAl@vger.kernel.org
-X-Gm-Message-State: AOJu0YxvXCn96parmdJtfk2exwYHDkdKMqMRvMlu9wteER+TP1cKcCXh
-	S6v4G1QPr5RkgDlUV5dvn8cImVHEPwfGof0wE6ssnm76ccI0/3VEkahX
-X-Gm-Gg: AZuq6aJu5Eb5j42Gd4xvN3sY5Vo1OnkGCD6q5ri7TqU2XY95xlH3O1iLKinqPg/M0ll
-	uMdcldJmYbX1T+bJXlf7CTZ8KSsbt+bipb3F6y0fUN/GYsT/0oYXsKZD2bG0wB9fDiLTMP27Xv9
-	IQUjQHeSJ0NL04jBcINaHZEvdVGIPrjvjfrCiM5dUke5i+vhHaCTFj7i7U9i+slef0AeZeX65zn
-	qXlUVyuIs/XwIovVawgtYhwbRLxQSMcXP4g2FoyhpEmhvfnOwivcPtYE0QtpIAa1qBjbv/4aqJA
-	AJnJph1FSQIYP1m9klVRUtcsQcbAgaoJzK6C0j0swD8b0d0gzj6qrta03QFqJB1KoJSCQFnW99M
-	YdzTcRQ2LTPDUP5qqs7k7oSS+b/+HbfERDNClMbVEAfUMCJMYqi1r+lyXNmRr9kqdpHpAO4ZeJL
-	7Skk+TGPqqPRco1E/YkPufgJiFg5XQCl9mFsT6aKcpY2o=
-X-Received: by 2002:a05:6820:16a6:b0:659:9a49:8f50 with SMTP id 006d021491bc7-66d32bfa23emr4293572eaf.21.1770587954007;
-        Sun, 08 Feb 2026 13:59:14 -0800 (PST)
-Received: from localhost ([2a03:2880:10ff:8::])
-        by smtp.gmail.com with ESMTPSA id 006d021491bc7-66d391ae639sm4737086eaf.7.2026.02.08.13.59.11
+        bh=Jcq3gcBJps8FZtjddhB+nxOnBeH87BfFsdWVB5x664k=;
+        b=Cat7sqm5jGDI8dssMzsg2ooHYTZygyILFRp98o59sno+GVRKX7jZ/Qe3mzmxeRIAGT
+         lu+wCjhVWTMabqfVwobAmg3pF8Z+kidgsZv/JsrTrqd7BqNNs51/jJsEuy79dJQVeiSN
+         Jmxc++0FyCW6Wgkrbh97pDfnmCXwOh4bsqlkgJFRQxAQIiIMOqqTQ1YtmtAsONks5zT4
+         wADPYQhUWJVHawIM69ap6lr2q7j/KKhEcoEc8j95fSE54gTQV56Rs8cWv52Q3X9m8Iuq
+         VVOqArOGwPmoqSYsFkpEm193FE5dDTE3irhWJCLuKg3Sf6WaW1j215Z0DYJMVJsewneJ
+         6uQQ==
+X-Forwarded-Encrypted: i=1; AJvYcCU8dLCud0evrgG/l1MZv3Llqw9AWVYmYxocJKwhfQtawUdh0nB73GPb/Xzy1YuN22wirnFsoVZg@vger.kernel.org
+X-Gm-Message-State: AOJu0YzWdviYjHLgNEkRFUR9uboO+0BfvD42exekMT5w+bj9ecHeZ5AV
+	p2eS9f/auIU+YjkPt7c2mYmEgHiOZ5TpBrEBsLEoXtlsWXRODW2aoXwm
+X-Gm-Gg: AZuq6aJPaY4G79W2bgkQah5uyBBfLwpeTYnPr357svDNmN1D7ef/TaDnRPRExgxrebm
+	siTN/ccC4v4CEX+sRbE3fZubL+tJQQxQv9UlSVQGckHHLTECv1jYy6FGRsoPQRvBEFobEp2p97h
+	7JDAkDtKAZ7s5O9gR34Ry0fgbHEPPenf3bYOTAJ9Mn3xTAEowSIcMdJsaInYw35bsvwrxmuyh2k
+	75KO+cdP/GGL30HadRTltdIZKowgACBdWl42iNaLCwTNFuN0n1nD90TAlmFy2u9Xbqip878wqBB
+	yazxBSe4rllfgzxYd06l9U27E8lTVtvFHZhFArBN+SK712PWTUhCOyEKNFMBIG/k67Russ9gfwq
+	koEYGLdq+xi/KcBUxU/fl3ztYO7hZqW6Bj7rkaqBLaUTtGUiq+rH7ioLVa7mgLcZNV4uG5Mw6i/
+	DAbyiWfG7tpExX6YzmCqA8VL5zs0uwsXL7
+X-Received: by 2002:a05:6808:2220:b0:45f:103c:2483 with SMTP id 5614622812f47-462fcbe429bmr4183659b6e.23.1770587955253;
+        Sun, 08 Feb 2026 13:59:15 -0800 (PST)
+Received: from localhost ([2a03:2880:10ff:5::])
+        by smtp.gmail.com with ESMTPSA id 5614622812f47-462fe9a12f5sm5510710b6e.5.2026.02.08.13.59.14
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 08 Feb 2026 13:59:12 -0800 (PST)
+        Sun, 08 Feb 2026 13:59:14 -0800 (PST)
 From: Nhat Pham <nphamcs@gmail.com>
 To: linux-mm@kvack.org
 Cc: akpm@linux-foundation.org,
@@ -116,9 +116,9 @@ Cc: akpm@linux-foundation.org,
 	jannh@google.com,
 	pfalcato@suse.de,
 	zhengqi.arch@bytedance.com
-Subject: [PATCH v3 15/20] zswap: do not start zswap shrinker if there is no physical swap slots
-Date: Sun,  8 Feb 2026 13:58:28 -0800
-Message-ID: <20260208215839.87595-16-nphamcs@gmail.com>
+Subject: [PATCH v3 16/20] swap: do not unnecesarily pin readahead swap entries
+Date: Sun,  8 Feb 2026 13:58:29 -0800
+Message-ID: <20260208215839.87595-17-nphamcs@gmail.com>
 X-Mailer: git-send-email 2.47.3
 In-Reply-To: <20260208215839.87595-1-nphamcs@gmail.com>
 References: <20260208215839.87595-1-nphamcs@gmail.com>
@@ -137,7 +137,7 @@ X-Spamd-Result: default: False [0.84 / 15.00];
 	R_MISSING_CHARSET(0.50)[];
 	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
 	R_DKIM_ALLOW(-0.20)[gmail.com:s=20230601];
-	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
@@ -147,8 +147,8 @@ X-Spamd-Result: default: False [0.84 / 15.00];
 	MIME_TRACE(0.00)[0:+];
 	RCVD_TLS_LAST(0.00)[];
 	RECEIVED_HELO_LOCALHOST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-13787-lists,cgroups=lfdr.de];
-	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
+	TAGGED_FROM(0.00)[bounces-13788-lists,cgroups=lfdr.de];
+	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
 	RCVD_COUNT_FIVE(0.00)[5];
@@ -161,37 +161,89 @@ X-Spamd-Result: default: False [0.84 / 15.00];
 	FREEMAIL_FROM(0.00)[gmail.com];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 354C110A533
+X-Rspamd-Queue-Id: 1443C10A541
 X-Rspamd-Action: no action
 
-When swap is virtualized, we no longer pre-allocate a slot on swapfile
-for each zswap entry. Do not start the zswap shrinker if there is no
-physical swap slots available.
+When we perform swap readahead, the target entry is already pinned by
+the caller. No need to pin swap entries in the readahead window that
+belongs in the same virtual swap cluster as the target swap entry.
 
 Signed-off-by: Nhat Pham <nphamcs@gmail.com>
 ---
- mm/zswap.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
+ mm/swap.h       |  1 +
+ mm/swap_state.c | 22 +++++++++-------------
+ mm/vswap.c      | 10 ++++++++++
+ 3 files changed, 20 insertions(+), 13 deletions(-)
 
-diff --git a/mm/zswap.c b/mm/zswap.c
-index c5e1d252cb463..9d1822753d321 100644
---- a/mm/zswap.c
-+++ b/mm/zswap.c
-@@ -1211,6 +1211,14 @@ static unsigned long zswap_shrinker_count(struct shrinker *shrinker,
- 	if (!zswap_shrinker_enabled || !mem_cgroup_zswap_writeback_enabled(memcg))
- 		return 0;
+diff --git a/mm/swap.h b/mm/swap.h
+index d41e6a0e70753..08a6369a6dfad 100644
+--- a/mm/swap.h
++++ b/mm/swap.h
+@@ -213,6 +213,7 @@ void swap_cache_lock(swp_entry_t entry);
+ void swap_cache_unlock(swp_entry_t entry);
+ void vswap_rmap_set(struct swap_cluster_info *ci, swp_slot_t slot,
+ 			   unsigned long vswap, int nr);
++bool vswap_same_cluster(swp_entry_t entry1, swp_entry_t entry2);
  
-+	/*
-+	 * When swap is virtualized, we do not have any swap slots on swapfile
-+	 * preallocated for zswap objects. If there is no slot available, we
-+	 * cannot writeback and should just bail out here.
-+	 */
-+	if (!get_nr_swap_pages())
-+		return 0;
+ static inline struct address_space *swap_address_space(swp_entry_t entry)
+ {
+diff --git a/mm/swap_state.c b/mm/swap_state.c
+index ad80bf098b63f..e8e0905c7723f 100644
+--- a/mm/swap_state.c
++++ b/mm/swap_state.c
+@@ -553,22 +553,18 @@ static struct folio *swap_vma_readahead(swp_entry_t targ_entry, gfp_t gfp_mask,
+ 		pte_unmap(pte);
+ 		pte = NULL;
+ 		/*
+-		 * Readahead entry may come from a device that we are not
+-		 * holding a reference to, try to grab a reference, or skip.
+-		 *
+-		 * XXX: for now, always try to pin the swap entries in the
+-		 * readahead window to avoid the annoying conversion to physical
+-		 * swap slots. Once we move all swap metadata to virtual swap
+-		 * layer, we can simply compare the clusters of the target
+-		 * swap entry and the current swap entry, and pin the latter
+-		 * swap entry's cluster if it differ from the former's.
++		 * The target entry is already pinned - if the readahead entry
++		 * belongs to the same cluster, it's already protected.
+ 		 */
+-		swapoff_locked = tryget_swap_entry(entry, &si);
+-		if (!swapoff_locked)
+-			continue;
++		if (!vswap_same_cluster(entry, targ_entry)) {
++			swapoff_locked = tryget_swap_entry(entry, &si);
++			if (!swapoff_locked)
++				continue;
++		}
+ 		folio = __read_swap_cache_async(entry, gfp_mask, mpol, ilx,
+ 						&page_allocated, false);
+-		put_swap_entry(entry, si);
++		if (swapoff_locked)
++			put_swap_entry(entry, si);
+ 		if (!folio)
+ 			continue;
+ 		if (page_allocated) {
+diff --git a/mm/vswap.c b/mm/vswap.c
+index fb6179ce3ace7..7563107eb8eee 100644
+--- a/mm/vswap.c
++++ b/mm/vswap.c
+@@ -1503,6 +1503,16 @@ void put_swap_entry(swp_entry_t entry, struct swap_info_struct *si)
+ 	rcu_read_unlock();
+ }
+ 
++/*
++ * Check if two virtual swap entries belong to the same vswap cluster.
++ * Useful for optimizing readahead when entries in the same cluster
++ * share protection from a pinned target entry.
++ */
++bool vswap_same_cluster(swp_entry_t entry1, swp_entry_t entry2)
++{
++	return VSWAP_CLUSTER_IDX(entry1) == VSWAP_CLUSTER_IDX(entry2);
++}
 +
- 	/*
- 	 * The shrinker resumes swap writeback, which will enter block
- 	 * and may enter fs. XXX: Harmonize with vmscan.c __GFP_FS
+ static int vswap_cpu_dead(unsigned int cpu)
+ {
+ 	struct percpu_vswap_cluster *percpu_cluster;
 -- 
 2.47.3
 
