@@ -1,104 +1,84 @@
-Return-Path: <cgroups+bounces-13771-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-13772-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id EM50Kljuh2mUfQQAu9opvQ
-	(envelope-from <cgroups+bounces-13771-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Sun, 08 Feb 2026 03:00:56 +0100
+	id aF6KBLPaiGmtxQQAu9opvQ
+	(envelope-from <cgroups+bounces-13772-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Sun, 08 Feb 2026 19:49:23 +0100
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3DDDA107966
-	for <lists+cgroups@lfdr.de>; Sun, 08 Feb 2026 03:00:56 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id B9A07109EF0
+	for <lists+cgroups@lfdr.de>; Sun, 08 Feb 2026 19:49:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 371103006690
-	for <lists+cgroups@lfdr.de>; Sun,  8 Feb 2026 02:00:55 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id A6B33300AEFF
+	for <lists+cgroups@lfdr.de>; Sun,  8 Feb 2026 18:49:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 799063090D5;
-	Sun,  8 Feb 2026 02:00:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D626B301472;
+	Sun,  8 Feb 2026 18:49:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="LVakoOX0";
-	dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b="qxNMvmAN"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FLieK65i"
 X-Original-To: cgroups@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f173.google.com (mail-pf1-f173.google.com [209.85.210.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C577A1A3164
-	for <cgroups@vger.kernel.org>; Sun,  8 Feb 2026 02:00:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 874482D73BD
+	for <cgroups@vger.kernel.org>; Sun,  8 Feb 2026 18:49:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1770516051; cv=none; b=DxGJkDdvqladXA3qKMV+9EVq/TePRuBICVppfN8ZzNUo//vXPytO3PRfuq9RMANJX8ie1JUt0JoKKpYmOIe8hAnLrk/gILHwWOxYEwAwLGx3+XyVABD7uAGvQo6DKd+CdADZbVVCuKt7DUplGqp3J6MJPOMflIC7nCC3HYHym6Q=
+	t=1770576545; cv=none; b=OO4hRoifK0RGC55MzzRA29b7fVmKpk0Q5Wdf7jvcnfHWCy1ETOgdkoSrjDBQ1tECoX5x6vekBecYtaTKyP6bPhBmxM8hwNzSa1wBtcBFSSPrLvEd/BBHeAIoed88aDmbqRyVh49Dkbd4AcET6tAsnRzR2e0XDnOajE2BAcaRaeo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1770516051; c=relaxed/simple;
-	bh=k/52INH8GyEadxGakCCLL4rMhjYRUVyVZopaV2PxmcM=;
-	h=From:Message-ID:Date:MIME-Version:Subject:To:Cc:References:
-	 In-Reply-To:Content-Type; b=Z15RopKb5UY+aYU6MtEfdmqcpHgQvHl9MdCAs5zH1Yh/kBGZRz5gUzYyrrmICym1wH0IYhMavFZ3NYPbdhhbS1WKyVWImftqUwaNJECGlojdOcESD94bccsSBAUH7MQJmp3k2ePIliZ3zfhXU1umOZ1IJoiFl65c5sRrhrJQc7U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=LVakoOX0; dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b=qxNMvmAN; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1770516049;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ehzROgKFMFthllC8CHPpVVo0jz1By/sLiuctOrPjOCs=;
-	b=LVakoOX0TIa8jRc5PtSn810t/OllS6jLk8ag9HOj9KbJZ4RN9JkMostK9obWebpt+u9WeX
-	0ejKpTkK+C+H0r7wmwB35jFIQXK5rjVBNmKKK9TRU3myOYQyFLjjrz9VY+jOnhx1LpdyVD
-	swemRQVWmZEpE6mrYfFdWf8Xj7+s0LU=
-Received: from mail-qt1-f198.google.com (mail-qt1-f198.google.com
- [209.85.160.198]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-141-62Uek9VMMIWfPJo13tQYfQ-1; Sat, 07 Feb 2026 21:00:48 -0500
-X-MC-Unique: 62Uek9VMMIWfPJo13tQYfQ-1
-X-Mimecast-MFC-AGG-ID: 62Uek9VMMIWfPJo13tQYfQ_1770516048
-Received: by mail-qt1-f198.google.com with SMTP id d75a77b69052e-50333a8184aso117382601cf.1
-        for <cgroups@vger.kernel.org>; Sat, 07 Feb 2026 18:00:48 -0800 (PST)
+	s=arc-20240116; t=1770576545; c=relaxed/simple;
+	bh=jbkOKX+7We/ed814ylwi+VmJ5YtwoCud7lki6vAYny8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=c2D+To1sLLJLpwYxm/7rVViYyfae408zUML8X2WhfTqiGKxHPTkbkC9YTRFnnfMi4QYTAmUuaNPlwcJeASTQ4UaNbYTdxhQks3eGPfREonMOd53ErpTDoNI5ajmuD5oZqkWzDbap+dHmhJyhtPw0jVDV3pzKYGDaGeDewHzKlsU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=FLieK65i; arc=none smtp.client-ip=209.85.210.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f173.google.com with SMTP id d2e1a72fcca58-81f39438187so2606232b3a.2
+        for <cgroups@vger.kernel.org>; Sun, 08 Feb 2026 10:49:05 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=redhat.com; s=google; t=1770516048; x=1771120848; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:content-language:references
-         :cc:to:subject:user-agent:mime-version:date:message-id:from:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=ehzROgKFMFthllC8CHPpVVo0jz1By/sLiuctOrPjOCs=;
-        b=qxNMvmANY3glUigpsAx/cb1UY71K4dIFNTA/TQr0iAn81IWhRI+B2xSyRYk6I1pZ0i
-         l/JZwYFDzvjPMD5mgtz2+SEyRnzYJ1levyQsTA73mehdlL+++go5Q2TCtG8urFg4cHv/
-         Jc/w4ALwHishXwXt96owXYOmPXn8X8Ay0V1axYfXR8H2D6D8C0272prTKQhRgCmWbsD7
-         Jyyl/mNbyWyGiQzXUG+w4KBUsfPuipTHYGJAjX35abAJUNCd4VX7sbuIIgE4Dd2fK5G3
-         IdZgDhxWNTNg9zpt5qkcnsS8dxaNaM23pMK9972NZwesYizc8XlWQoEWypxQQdB0kWsg
-         ztKw==
+        d=gmail.com; s=20230601; t=1770576545; x=1771181345; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=ut1sGkenUeI9BD3BBVG16G8F8nlxjScJIq5pNB0m984=;
+        b=FLieK65iSaA/+VgvWYvFCayVU/+JRn820zw0FFXth/biRGJS2kSErdw8/wq3tx12D/
+         Rop91pNnaDBdpldVStOsUu/sP50hpI2LT1v9qJc5xLA6x5tfM+DVe5ksQUi0dIwKVWpn
+         3ZV2jfRbcodYIDLE/FyEzGVWiXRBRIYX2bzkGlBR6vDcG6zl9toKrxHpdVDaZGxevRn1
+         aHF83doVlN+sVLNGs8JzYQJhnYmYyLQQ+x0mCSvMWw1znyZJSCvkGeRTPmuto5M02Dmn
+         xN3wRng7vqwksKnlGGk0idnttjqyGCtrng0BI7xq2im6lX/5RJUMVVjjmy2A7VCRMq6D
+         szew==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1770516048; x=1771120848;
-        h=content-transfer-encoding:in-reply-to:content-language:references
-         :cc:to:subject:user-agent:mime-version:date:message-id:from:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ehzROgKFMFthllC8CHPpVVo0jz1By/sLiuctOrPjOCs=;
-        b=RzMQWApwlzBBxY8aWxLDH0bfGTr5CbnG+ZOrThkH2cNUexPgKyKlvNPAlhZMV7BScR
-         qitWoQckGK1PU4kMO0yZIb35JBbYb4ccQFfuHqtF1WSYzIrge3HHMkCkAWevRS/WiY5C
-         7LsYNYeQEMyC5p61RCj8Ol7h5HB3W35rRSEE3Ea9r4H497Fipqk7pkGkFMIINEUh9fZp
-         CXTSikQ6oAqkxxXjRrrLk0BfWfKszxaOmBtQw6uFgRL717eDHUwtRt82BaIdgo/ehAFu
-         TSNh1wEv74PJrChnjRJ+jhkmkasWyN526mXWQBEmeU0Mllkp87ePpC0h5mhfrddfTxl1
-         IH/Q==
-X-Forwarded-Encrypted: i=1; AJvYcCXEuecBiLzAGGlSm+iI+Fxsyf/Jx9JRhDjfA7ADdeTvCx54Ah+Uceo+Pn2Lz/RW/GnBKEXPjHXM@vger.kernel.org
-X-Gm-Message-State: AOJu0YwY2a8dfX/7xVLqCLDyk8fxmCiukns8ZD40QC5EKQFlg3HREHeg
-	hV/y+kpI8FGCF9Ade15V7ceJ9GxfqCEvZV0WSlr53d90R0IbqDIOtsOcurqtNw/UPSkhB8cvo3S
-	xmT/0n7cJRWcjkm1o0sEJPuyYx7++FhYVpAWG1OCSjHgzvrKbR+/pweWpf3c=
-X-Gm-Gg: AZuq6aLbJH8xuVMXZbrG5D6XfJN38SH4oenfyXqQ5H7LzV7QR+dUEUu6l72Fn4ySEqL
-	3CqunBHiU4qnMLPRByLEt1q9SVmX+kAtdsaUcEKys8s98FQq6fi3tfdwGO/ZoNHcRQE3D2Oss1W
-	IRkFgtEoMJNO2PPchbVfcOSUeOOaOfDHp1jmw+at/7QLvEvsn/NoTZe7aMhZwduBxqR4H8vL92s
-	Ah1bpKoDJ52hyoeu3kVX5nZyX2BHW4F6LX2KQiuR6XqIsPrTaYSjBXwSp2sH7lF2QyIZ0vgP7WX
-	/wzMa3pBF3OkDuGsHSXNH+42AHOCAqlr/5IgR1UtC1eJw18nvG6WLwnQbNUrgSaKfM5wjcm0JKb
-	ur3RSGaqWH3RUKtv+ejKAf8efM2bfHQ+2xwIQKvk3T/P3sm3d6kkKa60n
-X-Received: by 2002:a05:622a:13c8:b0:501:3e5e:b027 with SMTP id d75a77b69052e-506398fe05emr101988851cf.19.1770516048046;
-        Sat, 07 Feb 2026 18:00:48 -0800 (PST)
-X-Received: by 2002:a05:622a:13c8:b0:501:3e5e:b027 with SMTP id d75a77b69052e-506398fe05emr101988501cf.19.1770516047672;
-        Sat, 07 Feb 2026 18:00:47 -0800 (PST)
-Received: from ?IPV6:2601:188:c102:b180:1f8b:71d0:77b1:1f6e? ([2601:188:c102:b180:1f8b:71d0:77b1:1f6e])
-        by smtp.gmail.com with ESMTPSA id af79cd13be357-8cafa3bff8asm493432085a.51.2026.02.07.18.00.45
+        d=1e100.net; s=20230601; t=1770576545; x=1771181345;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ut1sGkenUeI9BD3BBVG16G8F8nlxjScJIq5pNB0m984=;
+        b=hNCvrhtUyUSODuFbNJzWMvzGdoaK3JTUlT03MXS0U4ovQ95pDjYXE/fBUD0BzAdByW
+         U2nRT74D2vcq2ysBGTR8+iQgmhM8xSgVNSd+QM9/YC/TlranVpZSKtGVKqO7FWkIBfYP
+         DivLeRQQYl3Ges6lr+1kN6VfhCXmyg6Cxs9VBD0fLOJG7o+1zFt2gniVO8DR+qPfXfcQ
+         iOA8JK5th8n+vP2ZVKzkoDpTVQGXcYurr7m9cLvfzARdA+wX2GwIjFzoeHhnpLTSwszq
+         qExVcUsxbqErq439saud8jGWGAO1HxIUMIy3R9QIhkr3VVL7sDRpg8sQk8iGcRUZ+Lx3
+         ARgw==
+X-Forwarded-Encrypted: i=1; AJvYcCUkv+bG3afX47EXhv0DKKrE2mnDCi3+mnQQdBbmHU3mPmXeW8TTUzvluWQZdZcTOw9DK98EiEet@vger.kernel.org
+X-Gm-Message-State: AOJu0Yy5E1Ft/xYPkwaYy7oI21fKlnIxaQtw7Rv0+oJVIeH3N3H7G2N1
+	q17ONsdMZ9tDx4q4k/A1lslbE7CWqs+lczOX3s9iXMqKFq+kUFOPpin7
+X-Gm-Gg: AZuq6aKmTLXEMgF+VeEX8RoRbJ9xYcI8DpWbqTaAiPh18a/BsKprxC/mhePpk+v+8qI
+	vU9IXXclHsWcRsmqS6JqmsGab3DufUWwbCAphvbWHNDkX/3aSmtpIlj9AbZDGO5KNL5095rs8FA
+	BpdvOp4TdQo4i33clQCOmxGfMcdEgztDZ02mbou0Tlsh/GprJIOPqRakrni6fiR5fF1R9LZfuvK
+	re3tbdfnHzPBR69hT6VvejemHBTBIOPVyvGEaiLK+rEDYpiSOVq2XNw3f4biQllwYyMqqB+mMae
+	8YlbhYDe1lK0ZndiCOU+HwB7W+796/qNSuDde0CQG9M+VQrcdqe/cHolNOSxpZXlHt0BjBWKinp
+	OqtrbtZJuFqgxalXDnn4yiGn+DCg5x1A+SGLMjs5G9V4PfGaY1b3YthfUpmkdo6riOI6AhehYcP
+	aZfca/THs/3cCR/FdPGvwp
+X-Received: by 2002:a05:6a20:d524:b0:2bf:183c:ac86 with SMTP id adf61e73a8af0-393ad00062amr8537931637.25.1770576544736;
+        Sun, 08 Feb 2026 10:49:04 -0800 (PST)
+Received: from [192.168.4.196] ([73.222.117.172])
+        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-c6dcb3cb742sm7636288a12.0.2026.02.08.10.49.03
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 07 Feb 2026 18:00:46 -0800 (PST)
-From: Waiman Long <llong@redhat.com>
-X-Google-Original-From: Waiman Long <longman@redhat.com>
-Message-ID: <d1e4b070-9438-4152-847e-ef6ff6aa7820@redhat.com>
-Date: Sat, 7 Feb 2026 21:00:45 -0500
+        Sun, 08 Feb 2026 10:49:04 -0800 (PST)
+Message-ID: <3d7e7e82-594c-4387-8dbd-2b78e888ead4@gmail.com>
+Date: Sun, 8 Feb 2026 10:49:02 -0800
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -106,86 +86,161 @@ List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH/for-next v4 2/4] cgroup/cpuset: Defer
- housekeeping_update() calls from CPU hotplug to workqueue
-To: Frederic Weisbecker <frederic@kernel.org>
-Cc: Chen Ridong <chenridong@huaweicloud.com>, Tejun Heo <tj@kernel.org>,
- Johannes Weiner <hannes@cmpxchg.org>, =?UTF-8?Q?Michal_Koutn=C3=BD?=
- <mkoutny@suse.com>, Ingo Molnar <mingo@redhat.com>,
- Peter Zijlstra <peterz@infradead.org>, Juri Lelli <juri.lelli@redhat.com>,
- Vincent Guittot <vincent.guittot@linaro.org>,
- Steven Rostedt <rostedt@goodmis.org>, Ben Segall <bsegall@google.com>,
- Mel Gorman <mgorman@suse.de>, Valentin Schneider <vschneid@redhat.com>,
- Anna-Maria Behnsen <anna-maria@linutronix.de>,
- Thomas Gleixner <tglx@linutronix.de>, Shuah Khan <shuah@kernel.org>,
- cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-kselftest@vger.kernel.org
-References: <20260206203712.1989610-1-longman@redhat.com>
- <20260206203712.1989610-3-longman@redhat.com>
- <aYZrJaIIbTX4E-nO@pavilion.home>
+Subject: Re: [PATCH v2 2/2] selftests/cgroup: add test for zswap
+ incompressible pages
+To: SeongJae Park <sj@kernel.org>, Jiayuan Chen <jiayuan.chen@linux.dev>
+Cc: linux-mm@kvack.org, Jiayuan Chen <jiayuan.chen@shopee.com>,
+ Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>,
+ =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
+ Jonathan Corbet <corbet@lwn.net>, Michal Hocko <mhocko@kernel.org>,
+ Roman Gushchin <roman.gushchin@linux.dev>,
+ Shakeel Butt <shakeel.butt@linux.dev>, Muchun Song <muchun.song@linux.dev>,
+ Andrew Morton <akpm@linux-foundation.org>,
+ Yosry Ahmed <yosry.ahmed@linux.dev>, Nhat Pham <nphamcs@gmail.com>,
+ Chengming Zhou <chengming.zhou@linux.dev>, Shuah Khan <shuah@kernel.org>,
+ cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
+References: <20260207013529.69681-1-sj@kernel.org>
 Content-Language: en-US
-In-Reply-To: <aYZrJaIIbTX4E-nO@pavilion.home>
+From: JP Kobryn <inwardvessel@gmail.com>
+In-Reply-To: <20260207013529.69681-1-sj@kernel.org>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[redhat.com,quarantine];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64:c];
-	R_DKIM_ALLOW(-0.20)[redhat.com:s=mimecast20190719,redhat.com:s=google];
+	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
+	R_DKIM_ALLOW(-0.20)[gmail.com:s=20230601];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	MIME_TRACE(0.00)[0:+];
-	RCPT_COUNT_TWELVE(0.00)[19];
-	TAGGED_FROM(0.00)[bounces-13771-lists,cgroups=lfdr.de];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	RCVD_TLS_LAST(0.00)[];
-	DKIM_TRACE(0.00)[redhat.com:+];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	FREEMAIL_CC(0.00)[kvack.org,shopee.com,kernel.org,cmpxchg.org,suse.com,lwn.net,linux.dev,linux-foundation.org,gmail.com,vger.kernel.org];
+	TAGGED_FROM(0.00)[bounces-13772-lists,cgroups=lfdr.de];
 	FROM_HAS_DN(0.00)[];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	RCVD_TLS_LAST(0.00)[];
+	FREEMAIL_FROM(0.00)[gmail.com];
+	RCPT_COUNT_TWELVE(0.00)[21];
+	DKIM_TRACE(0.00)[gmail.com:+];
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
 	TO_DN_SOME(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[6];
+	RCVD_COUNT_FIVE(0.00)[5];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[llong@redhat.com,cgroups@vger.kernel.org];
-	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
-	NEURAL_HAM(-0.00)[-0.998];
+	FROM_NEQ_ENVFROM(0.00)[inwardvessel@gmail.com,cgroups@vger.kernel.org];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	NEURAL_HAM(-0.00)[-1.000];
 	TAGGED_RCPT(0.00)[cgroups];
 	MID_RHS_MATCH_FROM(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 3DDDA107966
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,shopee.com:email,linux.dev:email]
+X-Rspamd-Queue-Id: B9A07109EF0
 X-Rspamd-Action: no action
 
-On 2/6/26 5:28 PM, Frederic Weisbecker wrote:
-> Le Fri, Feb 06, 2026 at 03:37:10PM -0500, Waiman Long a écrit :
->> The update_isolation_cpumasks() function can be called either directly
->> from regular cpuset control file write with cpuset_full_lock() called
->> or via the CPU hotplug path with cpus_write_lock and cpuset_mutex held.
->>
->> As we are going to enable dynamic update to the nozh_full housekeeping
->> cpumask (HK_TYPE_KERNEL_NOISE) soon with the help of CPU hotplug,
->> allowing the CPU hotplug path to call into housekeeping_update() directly
->> from update_isolation_cpumasks() will likely cause deadlock. So we
-> Why do we need to call housekeeping_update() from hotplug? I would
-> expect it to be called only when cpuset control file are written since
-> housekeeping cpumask don't deal with online CPUs but with possible
-> CPUs.
+On 2/6/26 5:35 PM, SeongJae Park wrote:
+> On Fri,  6 Feb 2026 15:22:16 +0800 Jiayuan Chen <jiayuan.chen@linux.dev> wrote:
+> 
+>> From: Jiayuan Chen <jiayuan.chen@shopee.com>
+[...]
+>> diff --git a/tools/testing/selftests/cgroup/test_zswap.c b/tools/testing/selftests/cgroup/test_zswap.c
+>> index 64ebc3f3f203..8cb8a131357d 100644
+>> --- a/tools/testing/selftests/cgroup/test_zswap.c
+>> +++ b/tools/testing/selftests/cgroup/test_zswap.c
+>> @@ -5,6 +5,7 @@
+>>   #include <unistd.h>
+>>   #include <stdio.h>
+>>   #include <signal.h>
+>> +#include <fcntl.h>
+>>   #include <sys/sysinfo.h>
+>>   #include <string.h>
+>>   #include <sys/wait.h>
+>> @@ -574,6 +575,100 @@ static int test_no_kmem_bypass(const char *root)
+>>   	return ret;
+>>   }
+>>   
+>> +static int allocate_random_and_wait(const char *cgroup, void *arg)
+>> +{
+>> +	size_t size = (size_t)arg;
+>> +	char *mem;
+>> +	int fd;
+>> +	ssize_t n;
+>> +
+>> +	mem = malloc(size);
+>> +	if (!mem)
+>> +		return -1;
+>> +
+>> +	/* Fill with random data from /dev/urandom - incompressible */
+>> +	fd = open("/dev/urandom", O_RDONLY);
+>> +	if (fd < 0) {
+>> +		free(mem);
+>> +		return -1;
+>> +	}
+>> +
+>> +	for (size_t i = 0; i < size; ) {
+>> +		n = read(fd, mem + i, size - i);
+>> +		if (n <= 0)
+>> +			break;
+>> +		i += n;
+>> +	}
+>> +	close(fd);
+>> +
+>> +	/* Touch all pages to ensure they're faulted in */
+>> +	for (size_t i = 0; i < size; i += 4096)
+> 
+> Nit.  I show test_zswapin() is using PAGE_SIZE.  Maybe the above code can also
+> use it?
+> 
+>> +		mem[i] = mem[i];
+>> +
+>> +	/* Keep memory alive for parent to reclaim and check stats */
+>> +	pause();
+>> +	free(mem);
+>> +	return 0;
+>> +}
+>> +
+>> +static long get_zswap_incomp(const char *cgroup)
+>> +{
+>> +	return cg_read_key_long(cgroup, "memory.stat", "zswap_incomp ");
+>> +}
+>> +
+>> +/*
+>> + * Test that incompressible pages (random data) are tracked by zswap_incomp.
+>> + *
+>> + * Since incompressible pages stored in zswap are charged at full PAGE_SIZE
+>> + * (no memory savings), we cannot rely on memory.max pressure to push them
+>> + * into zswap. Instead, we allocate random data within memory.max, then use
+>> + * memory.reclaim to proactively push pages into zswap while checking the stat
+>> + * before the child exits (zswap_incomp is a gauge that decreases on free).
+>> + */
+>> +static int test_zswap_incompressible(const char *root)
+>> +{
+>> +	int ret = KSFT_FAIL;
+>> +	char *test_group;
+>> +	long zswap_incomp;
+>> +	pid_t child_pid;
+>> +	int child_status;
+>> +
+>> +	test_group = cg_name(root, "zswap_incompressible_test");
+>> +	if (!test_group)
+>> +		goto out;
+>> +	if (cg_create(test_group))
+>> +		goto out;
+>> +	if (cg_write(test_group, "memory.max", "32M"))
+>> +		goto out;
+>> +
+>> +	child_pid = cg_run_nowait(test_group, allocate_random_and_wait,
+>> +				  (void *)MB(4));
+>> +	if (child_pid < 0)
+>> +		goto out;
+>> +
+>> +	/* Wait for child to finish allocating */
+>> +	usleep(500000);
+> 
+> We might be better to revisit here in future to avoid racy test results.  But
+> this seems good enough for now.
 
-It needs to call housekeeping_update() only in the special case where 
-there is only one active CPU in an isolated partition and that CPU goes 
-offline. In this case, the partition becomes disabled that causes change 
-in the isolated CPUs. I know this special case shouldn't happen in real 
-world, but I do have test case to test that.
-
-Theoretically, we can add code to handle this special case to keep this 
-offline isolated CPU in a special pool without changing isolated_cpus 
-and hence  HK_TYPE_DOMAIN cpumask. In this way, we shouldn't need to 
-call housekeeping_update() from CPU hotplug. I will probably do that as 
-CPU hotplug will be used when we make HK_TYPE_KERNEL_NOISE cpumask 
-dynamic in the near future.
-
-Cheers,
-Longman
-
+How about using some form of synchronization like an eventfd? The parent
+can wait here for the child to write the event and avoid the race with
+the arbitrary sleep.
 
