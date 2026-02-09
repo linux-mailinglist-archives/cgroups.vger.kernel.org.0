@@ -1,189 +1,244 @@
-Return-Path: <cgroups+bounces-13812-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-13813-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id KKrHJNI0iml5IQAAu9opvQ
-	(envelope-from <cgroups+bounces-13812-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Mon, 09 Feb 2026 20:26:10 +0100
+	id nabYE1Q8immsIgAAu9opvQ
+	(envelope-from <cgroups+bounces-13813-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Mon, 09 Feb 2026 20:58:12 +0100
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
-	by mail.lfdr.de (Postfix) with ESMTPS id 35F29114110
-	for <lists+cgroups@lfdr.de>; Mon, 09 Feb 2026 20:26:10 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id AF9FA11447D
+	for <lists+cgroups@lfdr.de>; Mon, 09 Feb 2026 20:58:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 85B32300AB27
-	for <lists+cgroups@lfdr.de>; Mon,  9 Feb 2026 19:26:09 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 64FDC301FAB0
+	for <lists+cgroups@lfdr.de>; Mon,  9 Feb 2026 19:58:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EC2F54218B6;
-	Mon,  9 Feb 2026 19:26:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6ABC9426D1F;
+	Mon,  9 Feb 2026 19:58:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fMFFhM0l"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="ipt/AXNJ";
+	dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b="BbPsTO1C"
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AFDDF3A1D05;
-	Mon,  9 Feb 2026 19:26:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F408C3A0B1E
+	for <cgroups@vger.kernel.org>; Mon,  9 Feb 2026 19:58:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1770665165; cv=none; b=n+he3tzZAdvmf239epx4OHUGgC7RPujMxARiPAUoXy6/yYpax7QTQlFr15aIwH8UOmp5lLjRKwhcmsWcOZYJFu3NPMO+p31eWwGncEW02bysbhGnZvpplw0tRqYyFRtQOMrZi5CWZxMez3id5DADgcOu3TdMJFgZV1gj3PZcG98=
+	t=1770667089; cv=none; b=eXStwVVf9ol6j31qjs7aDD9/4EWxaMRVYJwJzXMfAZXh6M35nk5yWohPjVFGXQM1ZI4PTE2q845iboUv9jwWtoGhDzJIxoXuGuC1gBkiMaRWffehEug5nvSBEI0Uf0wjGvgho7CdWmwTD3MZQ4HGsGO1munRE1614jKKVDyqu9o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1770665165; c=relaxed/simple;
-	bh=rle6Uex1508iZQBpSPiGj6bcJDIcluSPpGjT7rsa0y0=;
-	h=Date:Message-ID:From:To:Cc:Subject; b=SdmQOACWMvbKrYUIjdQgodFFs8UFom+FsMjQJYbAUMzKwuVblDjkNUkECqRZ2rKIMcDIxfeJIFM4ZzvEp04fW4fDChMiqpzp9JY71pgmukDEPPGnPHBGksmd9FJdrGCg60w8Z7cw6/thK1Isr1Wy894Mx+fb507j/xrwZvpmaps=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fMFFhM0l; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1FCCAC116C6;
-	Mon,  9 Feb 2026 19:26:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1770665165;
-	bh=rle6Uex1508iZQBpSPiGj6bcJDIcluSPpGjT7rsa0y0=;
-	h=Date:From:To:Cc:Subject:From;
-	b=fMFFhM0lWBnsbIs/RXjbMEYbeQdbEruyFw7mIucyBT8uBg3JInFhnTa6UDWQdflV0
-	 N18/oamY6cO/sGZGNNhDImgKyScTcQC3ta7gUR1ZDgjCIu2dfCQEHRLvTtzfl5VVyc
-	 LgMbURMSFDwv3YGT+Vtb+EXOhX+xO8stIZpwpnFzkVw/m+WSvRpVXk7SIGCj/bgP8R
-	 /5HZvSzrq2LqtCltblvt5Htyo8nOqPLAXlXchKiFpm+kjgnQOXaODw1Ln8Bc8g4EhJ
-	 x7eOWPgI9XJqxngFRuOsek3nNP65eNt2oiAdXoDc/vUBQKS4oFnolO/s7yfSdDGKfP
-	 IqGTTGOWiacmw==
-Date: Mon, 09 Feb 2026 09:26:04 -1000
-Message-ID: <b471e5dde7d713cf4ef69b41c3d3d3ae@kernel.org>
-From: Tejun Heo <tj@kernel.org>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Waiman Long <longman@redhat.com>,
- Chen Ridong <chenridong@huaweicloud.com>,
- Johannes Weiner <hannes@cmpxchg.org>,
- Michal Koutny <mkoutny@suse.com>,
- cgroups@vger.kernel.org,
- linux-kernel@vger.kernel.org
-Subject: [GIT PULL] cgroup changes for v6.20
+	s=arc-20240116; t=1770667089; c=relaxed/simple;
+	bh=DKxJZiDz9ccxnuuVZinzFLjD3WNJMiBa84gXZ1x7dQ0=;
+	h=From:Message-ID:Date:MIME-Version:Subject:To:Cc:References:
+	 In-Reply-To:Content-Type; b=ZecmFPUNz4MJJS88/PnG5etMiG+97cA3mHqOTw3fYytMhmqfr0+YfLD2bNzX0wj04/d983iR2itM7KSg6y9iS7v+6kzCtxh1yraZ6OZlQJ6ePSIAROoFn4wfmz4GYSkhS4mWDwDwT/WH0GRfYffF98Dq52zxYcC520bI0EqX3bg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=ipt/AXNJ; dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b=BbPsTO1C; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1770667088;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=bS9CnvduVmoigg+neOslZilNw0RpbTWdyKznu9DDc1I=;
+	b=ipt/AXNJvjlofkMQvm2lkrqzqu0+wsPcrCmPChHSenJg3N7sCrlli1Vble9V3FMXSPLImP
+	te6z3fQoBE1TG+hrZkY6ZrXL7WHLG21nJjxG2NrRWmtqN1j4wyiIAm1YP0WMvKAnlSvHBJ
+	kPGuDfokYr5JVqrDCj/K+pIKvS7LIc4=
+Received: from mail-qk1-f198.google.com (mail-qk1-f198.google.com
+ [209.85.222.198]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-453-hEOWEzBjNMyAPzyifqB4vA-1; Mon, 09 Feb 2026 14:58:06 -0500
+X-MC-Unique: hEOWEzBjNMyAPzyifqB4vA-1
+X-Mimecast-MFC-AGG-ID: hEOWEzBjNMyAPzyifqB4vA_1770667086
+Received: by mail-qk1-f198.google.com with SMTP id af79cd13be357-8c711251ac5so1352727685a.1
+        for <cgroups@vger.kernel.org>; Mon, 09 Feb 2026 11:58:06 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=redhat.com; s=google; t=1770667086; x=1771271886; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:content-language:references
+         :cc:to:subject:user-agent:mime-version:date:message-id:from:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=bS9CnvduVmoigg+neOslZilNw0RpbTWdyKznu9DDc1I=;
+        b=BbPsTO1CyQ2QnaSLUH7/DCozrvgWC2OJcQWArnB9a0+4G4UKC7c4uwgf7vTSdyhU4p
+         tKjMIVLg7xyx76g2thfmPGCtmWmozDw41yOFzPjUa27ztnx6C2FHpUrwkT1nt40sAo2O
+         4MUkhEXMQXmOXEXiP3Jz2p4VEfm54UozOeU7K8pDqm5Oj0bJYLNjUdiQVzcYqydw+3Di
+         lluepgRfZ00EQepjoETNvXDCfo7kDKgGROQm/4FBHVs7J5sTZE2IQ9AMBXgQt3egVofd
+         ny0VHpxCLp46JzfvP8vfg6ZHyAsO7zaiRh7h+Zf7wRv1fXWWXtyQmqCY30Q0hUYthMXn
+         shIw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1770667086; x=1771271886;
+        h=content-transfer-encoding:in-reply-to:content-language:references
+         :cc:to:subject:user-agent:mime-version:date:message-id:from:x-gm-gg
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=bS9CnvduVmoigg+neOslZilNw0RpbTWdyKznu9DDc1I=;
+        b=v7uWZfCGnrDRfFYRo44IGQnEC7r9xHuiKEPwhrX7fsiuTpEODoBCFg9ts355rGqcVF
+         fdzsoPbylxVtJBC2xmXz5W0cm8+JdCO92Rf+FU01HNYwYYrbHJDZek1ZCT49CNZV/YfV
+         Lf3/3AfHNr7M7kiho0qlr/T7S/eC67QCjUToW4IV/jNC6siBLbxEHsGRpS9e3cey5HxO
+         SqJo7tZUkt0m+jX2u6RHCPfo760Wn/Lk/Zsxk4f/NZDGCqXc/+rsxFECfeC67qwfXOjO
+         1CUFY+V1WtYgnMPCY6D7VXFG7jzYvx+KtaZDyieURsq84URjrbTjhKLTKKFJfEFIwTLA
+         upWA==
+X-Gm-Message-State: AOJu0YxXO66kVdCF0ID281w4ZQT8Jlx1BzlenjRBKUF4maQU+ivVb2LD
+	EGXJhK7VsV2Gz2P0bKxQlMYUsvQtBEaHgqar9Pxhm3z+3RwCTuMVrv06AQnSoaqOazER7lAGO5J
+	5Sj7MLbMWxmctcMoYc6enxVdxixzARowfWhiMBIAbkE2eEoEXW0TLlTHUh0o=
+X-Gm-Gg: AZuq6aL9zdfonphXH5qbyStMe+8YntQLf/NZUULaP1DmXit7iscUPiA99XvP2MtnaHY
+	0UPloL979mh8ofnvQ0TLK+q3Z5sMp+sNVZf6bbONeCZZoRdubgM2RYSByWlxNUgZKzlJo1FV5sv
+	U9+23+JYLiey+uSs2YBuuE2+b01lWZOBXvJ4gFwgNRvgnibpkHiC+XreyUci0+sJwU2/660cXte
+	/Rre98uPzo2Do0O683X0tsgPklJvvCle1gE8qTbAPEwdv1xuBStBWlT0BHJzGMciPrtFLpyKOcR
+	eIEPKSwiHjDGWI5hhZoUv8Qro1DoKHWHOBY0+tjkpWiu0+CSal30OO2brAKBA1Yc9xm8zJk8AbI
+	YPXwWFPubgjfXP589YV3jSsHU/qghCWnH4APG7jCIuOZrtS5uA43bR1mT
+X-Received: by 2002:a05:620a:6914:b0:8c5:2f36:660f with SMTP id af79cd13be357-8caf1db6729mr1621396585a.78.1770667086204;
+        Mon, 09 Feb 2026 11:58:06 -0800 (PST)
+X-Received: by 2002:a05:620a:6914:b0:8c5:2f36:660f with SMTP id af79cd13be357-8caf1db6729mr1621391985a.78.1770667085561;
+        Mon, 09 Feb 2026 11:58:05 -0800 (PST)
+Received: from ?IPV6:2601:188:c102:b180:1f8b:71d0:77b1:1f6e? ([2601:188:c102:b180:1f8b:71d0:77b1:1f6e])
+        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-89549659cdbsm64028966d6.13.2026.02.09.11.58.04
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 09 Feb 2026 11:58:05 -0800 (PST)
+From: Waiman Long <llong@redhat.com>
+X-Google-Original-From: Waiman Long <longman@redhat.com>
+Message-ID: <49b9bd3b-6a50-48f5-a06c-3e530819d2c8@redhat.com>
+Date: Mon, 9 Feb 2026 14:58:03 -0500
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH/for-next v4 1/4] cgroup/cpuset: Clarify exclusion rules
+ for cpuset internal variables
+To: Chen Ridong <chenridong@huaweicloud.com>, Tejun Heo <tj@kernel.org>,
+ Johannes Weiner <hannes@cmpxchg.org>, =?UTF-8?Q?Michal_Koutn=C3=BD?=
+ <mkoutny@suse.com>, Ingo Molnar <mingo@redhat.com>,
+ Peter Zijlstra <peterz@infradead.org>, Juri Lelli <juri.lelli@redhat.com>,
+ Vincent Guittot <vincent.guittot@linaro.org>,
+ Steven Rostedt <rostedt@goodmis.org>, Ben Segall <bsegall@google.com>,
+ Mel Gorman <mgorman@suse.de>, Valentin Schneider <vschneid@redhat.com>,
+ Anna-Maria Behnsen <anna-maria@linutronix.de>,
+ Frederic Weisbecker <frederic@kernel.org>,
+ Thomas Gleixner <tglx@linutronix.de>, Shuah Khan <shuah@kernel.org>
+Cc: cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-kselftest@vger.kernel.org
+References: <20260206203712.1989610-1-longman@redhat.com>
+ <20260206203712.1989610-2-longman@redhat.com>
+ <c2d8e4ec-e255-43a3-b864-d82cd1201487@huaweicloud.com>
+Content-Language: en-US
+In-Reply-To: <c2d8e4ec-e255-43a3-b864-d82cd1201487@huaweicloud.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-1.66 / 15.00];
+X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
-	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
+	DMARC_POLICY_ALLOW(-0.50)[redhat.com,quarantine];
+	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
+	R_DKIM_ALLOW(-0.20)[redhat.com:s=mimecast20190719,redhat.com:s=google];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-13812-lists,cgroups=lfdr.de];
-	PRECEDENCE_BULK(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	FROM_HAS_DN(0.00)[];
+	TAGGED_FROM(0.00)[bounces-13813-lists,cgroups=lfdr.de];
+	RCPT_COUNT_TWELVE(0.00)[19];
 	MIME_TRACE(0.00)[0:+];
-	DKIM_TRACE(0.00)[kernel.org:+];
-	MISSING_XM_UA(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[tj@kernel.org,cgroups@vger.kernel.org];
-	RCPT_COUNT_SEVEN(0.00)[7];
-	MID_RHS_MATCH_FROM(0.00)[];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	RCVD_TLS_LAST(0.00)[];
+	DKIM_TRACE(0.00)[redhat.com:+];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	TAGGED_RCPT(0.00)[cgroups];
+	FROM_HAS_DN(0.00)[];
 	TO_DN_SOME(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[llong@redhat.com,cgroups@vger.kernel.org];
+	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
+	RCVD_COUNT_FIVE(0.00)[6];
+	TAGGED_RCPT(0.00)[cgroups];
+	MID_RHS_MATCH_FROM(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 35F29114110
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: AF9FA11447D
 X-Rspamd-Action: no action
 
-Hi Linus,
+On 2/8/26 10:41 PM, Chen Ridong wrote:
+>
+> On 2026/2/7 4:37, Waiman Long wrote:
+>> Clarify the locking rules associated with file level internal variables
+>> inside the cpuset code. There is no functional change.
+>>
+>> Signed-off-by: Waiman Long <longman@redhat.com>
+>> ---
+>>   kernel/cgroup/cpuset.c | 105 ++++++++++++++++++++++++-----------------
+>>   1 file changed, 61 insertions(+), 44 deletions(-)
+>>
+>> diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
+>> index c43efef7df71..a4c6386a594d 100644
+>> --- a/kernel/cgroup/cpuset.c
+>> +++ b/kernel/cgroup/cpuset.c
+>> @@ -61,6 +61,58 @@ static const char * const perr_strings[] = {
+>>   	[PERR_REMOTE]    = "Have remote partition underneath",
+>>   };
+>>   
+>> +/*
+>> + * CPUSET Locking Convention
+>> + * -------------------------
+>> + *
+>> + * Below are the three global locks guarding cpuset structures in lock
+>> + * acquisition order:
+>> + *  - cpu_hotplug_lock (cpus_read_lock/cpus_write_lock)
+>> + *  - cpuset_mutex
+>> + *  - callback_lock (raw spinlock)
+>> + *
+>> + * A task must hold all the three locks to modify externally visible or
+>> + * used fields of cpusets, though some of the internally used cpuset fields
+>> + * and internal variables can be modified without holding callback_lock. If only
+>> + * reliable read access of the externally used fields are needed, a task can
+>> + * hold either cpuset_mutex or callback_lock which are exposed to other
+>> + * external subsystems.
+>> + *
+>> + * If a task holds cpu_hotplug_lock and cpuset_mutex, it blocks others,
+>> + * ensuring that it is the only task able to also acquire callback_lock and
+>> + * be able to modify cpusets.  It can perform various checks on the cpuset
+>> + * structure first, knowing nothing will change. It can also allocate memory
+>> + * without holding callback_lock. While it is performing these checks, various
+>> + * callback routines can briefly acquire callback_lock to query cpusets.  Once
+>> + * it is ready to make the changes, it takes callback_lock, blocking everyone
+>> + * else.
+>> + *
+>> + * Calls to the kernel memory allocator cannot be made while holding
+>> + * callback_lock which is a spinlock, as the memory allocator may sleep or
+>> + * call back into cpuset code and acquire callback_lock.
+>> + *
+>> + * Now, the task_struct fields mems_allowed and mempolicy may be changed
+>> + * by other task, we use alloc_lock in the task_struct fields to protect
+>> + * them.
+>> + *
+>> + * The cpuset_common_seq_show() handlers only hold callback_lock across
+>> + * small pieces of code, such as when reading out possibly multi-word
+>> + * cpumasks and nodemasks.
+>> + */
+>> +
+>> +static DEFINE_MUTEX(cpuset_mutex);
+>> +
+>> +/*
+>> + * File level internal variables below follow one of the following exclusion
+>> + * rules.
+>> + *
+>> + * RWCS: Read/write-able by holding either cpus_write_lock or both
+>> + *       cpus_read_lock and cpuset_mutex.
+>> + *
+> Does this mean that variables can be read or written only by holding
+> cpus_write_lock?
+>
+> I believe that to write cpuset variables, we must hold either (cpus_write_lock
+> and cpuset_mutex) or (cpus_read_lock and cpuset_mutex).
 
-The following changes since commit 3309b63a2281efb72df7621d60cc1246b6286ad3:
+The importance of the locking rule is to emphasize the condition for 
+mutual exclusion. Once cpus_write_lock is held, no other task can hold 
+cpus_read_lock and cpuset_mutex. I will consider holding cpuset_mutex as 
+optional, though almost all the cpuset internal variables are accessed 
+from the CPU hotplug side with both cpus_write_lock and cpuset_mutex 
+held. The only exception is force_sd_rebuild (sd_rebuild) that can be 
+set directly from the scheduling code without holding cpuset_mtuex. I 
+can change it to "holding cpus_write_lock (and optionally cpuset_mutex) 
+or both cpus_read_lock and cpuset_mutex" if that makes it clearer.
 
-  cgroup: rstat: use LOCK CMPXCHG in css_rstat_updated (2025-12-08 08:26:56 -1000)
+Cheers,
+Longman
 
-are available in the Git repository at:
-
-  https://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git tags/cgroup-for-6.20
-
-for you to fetch changes up to 8b1f3c54f930c3aeda0b5bad97bc317fc80267fd:
-
-  cpuset: fix overlap of partition effective CPUs (2026-02-01 06:49:52 -1000)
-
-----------------------------------------------------------------
-cgroup: Changes for v6.20
-
-- cpuset changes:
-
-  - Continue separating v1 and v2 implementations by moving more
-    v1-specific logic into cpuset-v1.c.
-
-  - Improve partition handling. Sibling partitions are no longer
-    invalidated on cpuset.cpus conflict, cpuset.cpus changes no longer
-    fail in v2, and effective_xcpus computation is made consistent.
-
-  - Fix partition effective CPUs overlap that caused a warning on cpuset
-    removal when sibling partitions shared CPUs.
-
-- Increase the maximum cgroup subsystem count from 16 to 32 to
-  accommodate future subsystem additions.
-
-- Misc cleanups and selftest improvements including switching to
-  css_is_online() helper, removing dead code and stale documentation
-  references, using lockdep_assert_cpuset_lock_held() consistently,
-  and adding polling helpers for asynchronously updated cgroup
-  statistics.
-
-----------------------------------------------------------------
-Chen Ridong (11):
-      cgroup: switch to css_is_online() helper
-      cpuset: Remove unnecessary checks in rebuild_sched_domains_locked
-      cpuset: add lockdep_assert_cpuset_lock_held helper
-      cpuset: add cpuset1_online_css helper for v1-specific operations
-      cpuset: add cpuset1_init helper for v1 initialization
-      cpuset: move update_domain_attr_tree to cpuset_v1.c
-      cpuset: separate generate_sched_domains for v1 and v2
-      cpuset: remove v1-specific code from generate_sched_domains
-      cpuset: remove dead code in cpuset-v1.c
-      cgroup: increase maximum subsystem count from 16 to 32
-      cpuset: fix overlap of partition effective CPUs
-
-Guopeng Zhang (3):
-      selftests: cgroup: Add cg_read_key_long_poll() to poll a cgroup key with retries
-      selftests: cgroup: make test_memcg_sock robust against delayed sock stats
-      selftests: cgroup: Replace sleep with cg_read_key_long_poll() for waiting on nr_dying_descendants
-
-Tejun Heo (1):
-      cgroup: Remove stale cpu.rt.max reference from documentation
-
-Waiman Long (5):
-      cgroup/cpuset: Streamline rm_siblings_excl_cpus()
-      cgroup/cpuset: Consistently compute effective_xcpus in update_cpumasks_hier()
-      cgroup/cpuset: Don't fail cpuset.cpus change in v2
-      cgroup/cpuset: Don't invalidate sibling partitions on cpuset.cpus conflict
-      cgroup/cpuset: Move the v1 empty cpus/mems check to cpuset1_validate_change()
-
-Zhao Mengmeng (1):
-      cpuset: replace direct lockdep_assert_held() with lockdep_assert_cpuset_lock_held()
-
- Documentation/admin-guide/cgroup-v2.rst            |  44 +-
- fs/fs-writeback.c                                  |   2 +-
- include/linux/cgroup-defs.h                        |   8 +-
- include/linux/cpuset.h                             |   2 +
- include/linux/memcontrol.h                         |   2 +-
- include/trace/events/cgroup.h                      |   2 +-
- kernel/cgroup/cgroup-internal.h                    |   8 +-
- kernel/cgroup/cgroup-v1.c                          |  12 +-
- kernel/cgroup/cgroup.c                             |  50 +--
- kernel/cgroup/cpuset-internal.h                    |  54 ++-
- kernel/cgroup/cpuset-v1.c                          | 271 ++++++++++-
- kernel/cgroup/cpuset.c                             | 499 +++++----------------
- kernel/cgroup/debug.c                              |   2 +-
- mm/memcontrol.c                                    |   2 +-
- mm/page_owner.c                                    |   2 +-
- tools/testing/selftests/cgroup/lib/cgroup_util.c   |  21 +
- .../selftests/cgroup/lib/include/cgroup_util.h     |   5 +
- tools/testing/selftests/cgroup/test_cpuset_prs.sh  |  29 +-
- tools/testing/selftests/cgroup/test_kmem.c         |  33 +-
- tools/testing/selftests/cgroup/test_memcontrol.c   |  20 +-
- 20 files changed, 593 insertions(+), 475 deletions(-)
-
-Thanks.
-
---
-tejun
 
