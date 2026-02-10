@@ -1,254 +1,492 @@
-Return-Path: <cgroups+bounces-13837-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-13838-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id sq8HMPRri2lhUQAAu9opvQ
-	(envelope-from <cgroups+bounces-13837-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Tue, 10 Feb 2026 18:33:40 +0100
+	id gFrFDzZyi2m7UQAAu9opvQ
+	(envelope-from <cgroups+bounces-13838-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Tue, 10 Feb 2026 19:00:22 +0100
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0A7EF11DF38
-	for <lists+cgroups@lfdr.de>; Tue, 10 Feb 2026 18:33:39 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id D876711E2F9
+	for <lists+cgroups@lfdr.de>; Tue, 10 Feb 2026 19:00:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 7F278303A6F5
-	for <lists+cgroups@lfdr.de>; Tue, 10 Feb 2026 17:33:36 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id D74003041BF3
+	for <lists+cgroups@lfdr.de>; Tue, 10 Feb 2026 18:00:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C13AF31ED80;
-	Tue, 10 Feb 2026 17:33:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C366638B7A5;
+	Tue, 10 Feb 2026 18:00:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QTTQwVEy"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hYZLmwgQ"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-ed1-f47.google.com (mail-ed1-f47.google.com [209.85.208.47])
+Received: from mail-ej1-f41.google.com (mail-ej1-f41.google.com [209.85.218.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 295E513D638
-	for <cgroups@vger.kernel.org>; Tue, 10 Feb 2026 17:33:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.208.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF8D9191F94
+	for <cgroups@vger.kernel.org>; Tue, 10 Feb 2026 18:00:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.218.41
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1770744814; cv=pass; b=r7qlBxdr7FmVvZzFbcHfFqWaxjEbFbH6DV/ujw1sBZQko7T+vsEjypFevfcZuM/sbQiX9EvkDOHp3FuuO9lkBp6DKofuwsOBv5/ZGVsnQcpei8yFpDgoDLv4MO7G4l2M78w2u11+6Vvwm3FNPHAmOBFnT7V6guGhetxEfaN4Dtk=
+	t=1770746415; cv=pass; b=B/ze6SWP9X3r41f/vMiqMrj0/aN+nwM3gIqHo+W8WyI7X22glgAjrZo+EDkpzylM6225rTb43QawdthyVQeze2gn5CnrqeZXX1FwQjN3Oev+1xbHpQrTyLXSPQBS27V0ksPre0xhE5XT6feM6pT2O6tGyYHWlXB213aO/Ofe5VI=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1770744814; c=relaxed/simple;
-	bh=TUe1uPAuUYEV2GU3naRmEmDWHpWosTqqAyJ85bZBbsQ=;
+	s=arc-20240116; t=1770746415; c=relaxed/simple;
+	bh=S87tUlL4GFpfKiosQaW863Ba71AxTPRsXc2HVeG+yI4=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=LCn8thdKcKrK+3nwXnT1VnfV9MvMLGdFxDnZWaoAF5f1Dm69NDhdZ9JukFip5qzNCfuXscFgvarSdgPRZKEHLJNvIWnm2A6QzVvTDTDgbRVTOgWLGDWrGvXW+4Vt33c3tp9W1DS2Jv2EBv5xO0BFu/64DWwkvfzwc/EMBLZfkTg=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QTTQwVEy; arc=pass smtp.client-ip=209.85.208.47
+	 To:Cc:Content-Type; b=EpQE1yn78TMLgdm6RjHXwqeLD2totL9OILrXI0D3ah41KV97pDiir1qFqX7/fQyMfw95O+DLZwDLju71vpvBnIosn4JIX5jfxsUn3N5J4PNW2o68ZC3Kycviv3FHmUx/RGxaawwtqEjlfRhGBg8sNgqkE/g1/Wt9X+aJEmDMnJo=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hYZLmwgQ; arc=pass smtp.client-ip=209.85.218.41
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f47.google.com with SMTP id 4fb4d7f45d1cf-65a2fea1a1eso123905a12.0
-        for <cgroups@vger.kernel.org>; Tue, 10 Feb 2026 09:33:32 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; t=1770744811; cv=none;
+Received: by mail-ej1-f41.google.com with SMTP id a640c23a62f3a-b86ed375d37so128012266b.3
+        for <cgroups@vger.kernel.org>; Tue, 10 Feb 2026 10:00:13 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; t=1770746412; cv=none;
         d=google.com; s=arc-20240605;
-        b=SASKC68OPrdhtvIKAE4RT8qEjMZVEqUECqwmXCFxpU3ldXR/uVJi9TxuBQC2CLfADY
-         Of++s2uH0GMKb04VkAUSp2INPZC6w5HRZAxqcEE7vMTgtXdvEqFrFm/zpIn2MTaQQakp
-         emZ2m8+AfDUvJ2tfhsXEW7aQh9bGKKPM7Vh2Ch3pMT8CYtxQffoj2OgjDeW9qBURZlvp
-         UXwWcrWhT28JbEyhmqNq2tIkfaMlaw4PrDVLTtHqBaxAHvqGSCu2wubflUIfWnHCXoAB
-         g8k7CgnW7q1jesE/V1wXJRxkzHgai+kbr5KyVzpI7/tFIZV+ingsy7yNJPDVwa+Rov8H
-         1r1w==
+        b=g5Kf8s6Rqyy38lSARKi0oxCNGBI1Ew6lFMmZioKIrUxhpEelLk4imLvGOmgmZ8KXls
+         EqFO7DpoCjCAzm2l68yk2KkCSeT+dADbRSjCbu758zRgZUKg0UhOsn2jjfFTLRJjlqWX
+         DR3lzpjKYzB4VBjgyhkjO0f3gnu6iGrNy9d7uIbPkt9AMB1fNqO4bFXzUkktHkg5akdF
+         dScqfQLFFgf8piqkWd8iUBq1eEsvreYmoEMmTu0axCdf53csfLeZcrES8IOsW9yyjcp5
+         LRBjI6p/mSKul4EHh2eJ8ATYvMwMzCX189Xj1Q1EuxkiSzwoJx+MKtheVCzU+wTbB+UE
+         D2Vw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:dkim-signature;
-        bh=+PuSrRE0wxY2JRmOSRERj1e3BqOU7WVbToZiST+Wo+Q=;
-        fh=Dwdn517WZeLe6uL8VakVJHE5gB2O2yz4pMq9HXgN9dU=;
-        b=Qe+unYBypDl0OZRx1Sr3URAsIEwHSlhvH08TKAJacOnCDJU3A4P3Xffaen/HFchIYy
-         L1/FN9QtHcpxEbX1kq3VITCldzJq+Prc8T4m7KcoEiL5I6dMiwCmlE2fTA4hz7QpwegQ
-         IL2fHpT4euzWN9Nj81/08JnaR13iw2rpeK/BQyW2frxSoKemuSLaN7NuqCJ8k5Z/I/+h
-         MI1lxU5PTONwQiNUZooQOPI5HjA8HvJ55OJ9PLK8Xv4bAnmSkbkiDqagAlvtj3D0Nw3u
-         nnFm1w3iMTz6T61KnIs9ONs0MwlT0JOQJ3B6fVdxfvBFCv9hz2w24kSxIX+rc2Ayh1Zt
-         bDzg==;
+        bh=0M5Ou8Dr19t94K73pKgRAsY639KugQQU9W89/USRqN0=;
+        fh=X84g+Z3y2sx/+7YYJbgog9IOpaVzHfX+9mXigaN7Cos=;
+        b=JzhlcZhAnhXCcVPjU+oH6v0odkZRZRtUVG9ZwyBJKRULuoQm8h99VCoy2lUBay3Oqs
+         z2Go+xEh8RH8LyDPd4DvAJIW/OTU4aYhEubNLtC4gAAn3bZRxyM0nYNvPUR9E+zdypIc
+         Qo4/Nbwxns8EfQKyEZo4O0tqTzzwm9EztJnYyu/04aVcYwvcM0nk2RYw1cfDBM6KsG79
+         awDBLetmkpOUXgWZYBH5BtkiXFOZIDLQqrWIIZ9UZ2lO70UAndpQu+FBeiORRI+C4/bS
+         J3IMYp3gCqe98RwSKlUOTpe/I/1Cj02qNcL8xlZP3CnagfdQSJ0gc8G4OyOmLJYBbWOX
+         vG3w==;
         darn=vger.kernel.org
 ARC-Authentication-Results: i=1; mx.google.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1770744811; x=1771349611; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1770746412; x=1771351212; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=+PuSrRE0wxY2JRmOSRERj1e3BqOU7WVbToZiST+Wo+Q=;
-        b=QTTQwVEyF143txkbHRhDCNp6pwqAONl6I/p7cDDEPS0gWm1uUQpOrfgtj8ySNzXPQ2
-         tiAapKniiuMSWGLQotFinTH7OG0EjZjBmPIVEEiUgsZDigoHPQbmc++g8gpmCEzAmte2
-         FWe6qR3PeIqJINrPtnuGUfmLWwg+6vlcZSzYjzzilCZo1e4jU4cUZzXogu5ox6uLNeTi
-         SQQqU2R96QxFrLn9shYF3w8AHDW8OX3qPZSenF0LhQohcIplwj9/BXgV/jVkjbgB8gxE
-         +m9MqjIgOyB31zUCZuLU9IQZd+Qn4KwNvsNsRYfGwITYfPvH1FLwXWAAwWWWo0/2FYlC
-         1mww==
+        bh=0M5Ou8Dr19t94K73pKgRAsY639KugQQU9W89/USRqN0=;
+        b=hYZLmwgQ/ycsuQ+OxXnW2hsjwk889p5tuWO0nWnC31tcFk8Nw7GlKdqUWjBJ/GbPn2
+         i7B8VDtk2yZHa6SIwiEit/+986XcDcX8HWwl04hBsSHR/+XvYve1/ZXji43YJiKx7AFu
+         9gea2snWykd5n0rhuiAcZp18vqKyI3BI09UJMb2Kc9H1QUDdXKhzZgh3/H//nFI9xA58
+         fb2VREcNrTF+K+RGxKYntfGh+/Qf4Kl12oBUoHyxrWBINxqtqTXC8qHLHfWmjIF9SKaw
+         vzE0N/NfU454q+4SPY8qw13DhZ4+Ru3SldA5A0DDzqovma/nTMe6AEJSo+Vxm/7zkQFQ
+         Q26A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1770744811; x=1771349611;
+        d=1e100.net; s=20230601; t=1770746412; x=1771351212;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=+PuSrRE0wxY2JRmOSRERj1e3BqOU7WVbToZiST+Wo+Q=;
-        b=QKr8ighiEmb67F2F7Z+uIsKZ5dI/wx0r2sgY28Q6lrkMHAeNJtrGPqKg/f7nck0SyL
-         3zq4po2q6pXDXFlaBWuItGhs9oj61rcb8qaivY4a4qsoamZaxt2Wlw4MIiwLaiCdz5m7
-         2kWRQmsVN/mnJZi3V07SOWuxfIjO5qRdW/pk/1kr/dLfSZRG4pZa4clr+z4knlzOcOGB
-         izGwfTgakSlFP5wL+s8kEUdajOaXy1BHmZgirZnztT5tHN1oQugHgKfHJEyXaaWRvNB8
-         Ctum6o4Y20182FkBNDETluS2pkrDsgSfvx3frHChFdLFqJq8uKqUB4TrZE3lXKM05NNT
-         shMw==
-X-Forwarded-Encrypted: i=1; AJvYcCWGU0cf1CXUtg0t4DR26k/6cLCao49L//K48MNoet9JC/z8jCYndFdxuNRYKYvSyF29Ru8zl9Ag@vger.kernel.org
-X-Gm-Message-State: AOJu0YxIfevVyOOWv95+AoFHXHkNgewxGHTLQue8m0iJv9CxP7JRN+Ag
-	kzFnhzi0cSLNXdTYYf622Pe7crFITugKVr21OTvBmFWW8Zb9rmR2IEBw3opDihEzdrqb0wuuWKi
-	S5RTB/hAoPPaAeFAgT3EZd6F6PkNt5lI=
-X-Gm-Gg: AZuq6aLEx9unnFO1D1NvJQiTkZeL8OsvHDXmqZdSwzQgvpQRi+cNOF4in4U/zfqynPf
-	RXhmUz5tOJKbDrw83n95f8RdswJbJarQGEEuAU+SJ7qrksy04XY5bJGAHe33btGVyGl1PmVPXc7
-	nkRlJlM60IGcK7mhxGYJwjyjotMlmPLPIm4VwC2lS8MsIok7ZcQNYkrJ+5KARfSWUPJ5Eje0dHV
-	PZm/0HCfUuOfaE3cc9Iy+So8rql2Ta7v04qZj0yFCAckIXnXlCJiRslhVRQfN5tEpAebAgp1h2d
-	IvJEV5aEQJYeO35xmC4aJ+fHuogjo3i8YqmwmMo=
-X-Received: by 2002:a17:907:709:b0:b87:cf6d:8ea with SMTP id
- a640c23a62f3a-b8f50c606d0mr182405966b.27.1770744811157; Tue, 10 Feb 2026
- 09:33:31 -0800 (PST)
+        bh=0M5Ou8Dr19t94K73pKgRAsY639KugQQU9W89/USRqN0=;
+        b=GsavXF6XP6h2KZ9Y18R3ema+vh9RpSMiElO0hbXoE8u+IHKmMIxeHoiE8XMsPF8rpk
+         wLGMJd38GBQypn9FkGF5wBZbgMaHElCuCPq0LgdeFLF42rszlKIJKUl8m8WpwV44z/nA
+         sEduIDXgIDRUW1DlFloC+Hk67Bi76wLuKbr5VIQbavy+kJtDD1QvoVQ3u9fBjTEShNIn
+         HGHZD+O7WtYhJYGrVGES9bTnOuVBrMlcUE+E44IPqw0v0RPydglDYctT67VrQ9YhWP+i
+         zHrFEBQd/+m3ctVGkXSeDo5+FsQF/CbBMysXW0GdGe9yZtR+JZ6z/bkpfIAXBAMrd9jB
+         PmLQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVY7pWKEoJ49NAFjGIY5zeqVi+YU+Kjj1EaEE1ewu2ZZSiE0g4Bmpud3QynxuinEo1nEPvrSoA/@vger.kernel.org
+X-Gm-Message-State: AOJu0Yx2v4gk9Fw3ENqEL3JZUcB/Qi9FnJS6eSiULEa7ZE8WWci9Kju4
+	EF0rIjJ2jqtq3CTiS84yuJebefx1bufv9eU0fHxjlfJKcj3zVuCucxDeOqW5M7sjPjesHslAmsx
+	7ZY2q0MwTu0NlQn1FOexNftk4YcUaPT4=
+X-Gm-Gg: AZuq6aKJVwCjP/Gdszj9R3P/6ljDwTMPx/ia41r4Aa9DFgIYPqokWS59hjQTmw1e/0g
+	/0mVo2CUCnihEeQdMm7xtGI3BxfHgWZJunY3LF1zz7EXuK9ZU0J9zNI/BC7AJSXJjH1lr+PME3s
+	emvSl633L9M+GPjxOx0oA/W53wXzBp/IjCIZ7jkoGyEkUndI1pLGhs4B1w4HN7SVvcYGjzCWAK8
+	W4U8yBFimd2j7aRQpNs4UtgI/00dwFiunwIToiP+g7DxhkUdD9w3MBLd0gdzrVYa1aKItF3Ea/D
+	wSu7shTtl/1/34g5E4w+t++qYunPztXQlxyYzpMGsAYQzvgfbJU=
+X-Received: by 2002:a17:907:97cc:b0:b8e:3877:d1cb with SMTP id
+ a640c23a62f3a-b8edf45cf7fmr962300066b.62.1770746411856; Tue, 10 Feb 2026
+ 10:00:11 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20260122112951.1854124-1-mjguzik@gmail.com> <CAGudoHErB_Dm8kTRDa8cNOe4aRgc6kAV0bnT90Pp_Uda+_DqDQ@mail.gmail.com>
- <uwuworxk3warxfnvr7g3gnrh5g7bnnkq5uhbsnoh42muv7zeax@y7ddpcbhwarw>
- <CAGudoHFaUjm7_Eh6VOOGvfscdekk7v2uNPjfLkZfAkR9aCA1Ew@mail.gmail.com>
- <roisfgpkd7tapp7cfjavmih2e2riwh2nczv4nqk25gik7of4pa@3ohyptw6nvb3>
- <jt6kzvdkp4obq7jszyt4muc5ktjjft2idbz3mzkknlxdch6iit@yeumuxzp6gbn>
- <CAGudoHHuG-SCgv+F23eScZTnkXxyYKV9xgCBbFntkEaK90hsEQ@mail.gmail.com> <eu7erwjzoflxb7wzm7j3iitrwjoukajixasel2s3isfav4i3rv@ko2c2dtmnj2l>
-In-Reply-To: <eu7erwjzoflxb7wzm7j3iitrwjoukajixasel2s3isfav4i3rv@ko2c2dtmnj2l>
-From: Mateusz Guzik <mjguzik@gmail.com>
-Date: Tue, 10 Feb 2026 18:33:19 +0100
-X-Gm-Features: AZwV_QhgeZ9GMmVWqhzdNWRlvFSc3IDlzJZVnlrxRB2sw2LO7dLMP-f3R9_XLrw
-Message-ID: <CAGudoHFBN1seqAb3_=Ja+9jXP3EDjfkGfvGT6eqSBhB5_mrBWg@mail.gmail.com>
-Subject: Re: [PATCH v2] cgroup: avoid css_set_lock in cgroup_css_set_fork()
-To: =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>
-Cc: tj@kernel.org, hannes@cmpxchg.org, brauner@kernel.org, 
-	linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
+References: <20260208215839.87595-2-nphamcs@gmail.com> <20260208222652.328284-1-nphamcs@gmail.com>
+In-Reply-To: <20260208222652.328284-1-nphamcs@gmail.com>
+From: Kairui Song <ryncsn@gmail.com>
+Date: Wed, 11 Feb 2026 01:59:34 +0800
+X-Gm-Features: AZwV_QgjgrVezF-d_BQ-9HaqLNY-NJc1Y-8aDIlBfdscQkLqG0fjwgzeysl6W44
+Message-ID: <CAMgjq7AQNGK-a=AOgvn4-V+zGO21QMbMTVbrYSW_R2oDSLoC+A@mail.gmail.com>
+Subject: Re: [PATCH v3 00/20] Virtual Swap Space
+To: Nhat Pham <nphamcs@gmail.com>
+Cc: linux-mm@kvack.org, akpm@linux-foundation.org, hannes@cmpxchg.org, 
+	hughd@google.com, yosry.ahmed@linux.dev, mhocko@kernel.org, 
+	roman.gushchin@linux.dev, shakeel.butt@linux.dev, muchun.song@linux.dev, 
+	len.brown@intel.com, chengming.zhou@linux.dev, chrisl@kernel.org, 
+	huang.ying.caritas@gmail.com, ryan.roberts@arm.com, shikemeng@huaweicloud.com, 
+	viro@zeniv.linux.org.uk, baohua@kernel.org, bhe@redhat.com, osalvador@suse.de, 
+	christophe.leroy@csgroup.eu, pavel@kernel.org, kernel-team@meta.com, 
+	linux-kernel@vger.kernel.org, cgroups@vger.kernel.org, 
+	linux-pm@vger.kernel.org, peterx@redhat.com, riel@surriel.com, 
+	joshua.hahnjy@gmail.com, npache@redhat.com, gourry@gourry.net, 
+	axelrasmussen@google.com, yuanchu@google.com, weixugc@google.com, 
+	rafael@kernel.org, jannh@google.com, pfalcato@suse.de, 
+	zhengqi.arch@bytedance.com
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-2.16 / 15.00];
+X-Spamd-Result: default: False [-0.66 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=2];
 	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
 	R_DKIM_ALLOW(-0.20)[gmail.com:s=20230601];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_COUNT_THREE(0.00)[4];
-	RCVD_TLS_LAST(0.00)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	TAGGED_FROM(0.00)[bounces-13837-lists,cgroups=lfdr.de];
+	RCPT_COUNT_TWELVE(0.00)[38];
 	FREEMAIL_FROM(0.00)[gmail.com];
-	TO_DN_SOME(0.00)[];
+	RCVD_TLS_LAST(0.00)[];
+	RCVD_COUNT_THREE(0.00)[4];
+	FREEMAIL_TO(0.00)[gmail.com];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-13838-lists,cgroups=lfdr.de];
+	MIME_TRACE(0.00)[0:+];
 	FROM_HAS_DN(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCPT_COUNT_FIVE(0.00)[6];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[mjguzik@gmail.com,cgroups@vger.kernel.org];
 	DKIM_TRACE(0.00)[gmail.com:+];
+	TO_DN_SOME(0.00)[];
 	MID_RHS_MATCH_FROMTLD(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[ryncsn@gmail.com,cgroups@vger.kernel.org];
+	FREEMAIL_CC(0.00)[kvack.org,linux-foundation.org,cmpxchg.org,google.com,linux.dev,kernel.org,intel.com,gmail.com,arm.com,huaweicloud.com,zeniv.linux.org.uk,redhat.com,suse.de,csgroup.eu,meta.com,vger.kernel.org,surriel.com,gourry.net,bytedance.com];
 	TAGGED_RCPT(0.00)[cgroups];
 	MISSING_XM_UA(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,mail.gmail.com:mid,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 0A7EF11DF38
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[mail.gmail.com:mid,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: D876711E2F9
 X-Rspamd-Action: no action
 
-On Tue, Feb 10, 2026 at 5:55=E2=80=AFPM Michal Koutn=C3=BD <mkoutny@suse.co=
-m> wrote:
+On Mon, Feb 9, 2026 at 7:57=E2=80=AFAM Nhat Pham <nphamcs@gmail.com> wrote:
 >
-> On Tue, Feb 10, 2026 at 12:19:27PM +0100, Mateusz Guzik <mjguzik@gmail.co=
-m> wrote:
-> > This is going to depend on the scale you test on. I was testing on
-> > south of 32. But I also got a miniscule win from removing css set lock
-> > as the problem for me, instead everything shifted to tasklist.
->
-> To be on the same page -- that means you have nr_cpus >=3D 32?
->
+> Anyway, resending this (in-reply-to patch 1 of the series):
 
-south means less
+Hi Nhat,
 
-> > Per my other e-mail tasklist lock retains the terrible 3-times locking
-> > and it is doing rather expensive work while holding it. It is
-> > plausible it happens to be at the top at that scale, but that's only
-> > an argument for fixing it. Even if you don't see the css thing at the
-> > top at the moment, it will be there once someone(tm) sorts out the
-> > tasklist problem.
->
-> I did a quick test (with 6.18.8-1.g886f4c4-default), first `perf top`
-> while will-it-scale was running:
+> Changelog:
+> * RFC v2 -> v3:
+>     * Implement a cluster-based allocation algorithm for virtual swap
+>       slots, inspired by Kairui Song and Chris Li's implementation, as
+>       well as Johannes Weiner's suggestions. This eliminates the lock
+>           contention issues on the virtual swap layer.
+>     * Re-use swap table for the reverse mapping.
+>     * Remove CONFIG_VIRTUAL_SWAP.
 
-I don't know what this hash corresponds to.
+I really do think we better make this optional, not a replacement or
+mandatory. There are many hard to evaluate effects as this
+fundamentally changes the swap workflow with a lot of behavior changes
+at once. e.g. it seems the folio will be reactivated instead of
+splitted if the physical swap device is fragmented; slot is allocated
+at IO and not at unmap, and maybe many others. Just like zswap is
+optional. Some common workloads would see an obvious performance or
+memory usage regression following this design, see below.
 
->
->   74.23%  [kernel]                        [k] native_queued_spin_lock_slo=
-wpath
->    6.91%  [kernel]                        [k] intel_idle_irq
->    0.87%  [kernel]                        [k] update_sd_lb_stats.constpro=
-p.0
->    0.68%  [kernel]                        [k] _raw_spin_lock
->    0.63%  [kernel]                        [k] clear_page_erms
->    0.56%  [kernel]                        [k] sched_balance_find_dst_grou=
-p
->    0.40%  [kernel]                        [k] alloc_vmap_area
->
-> and then bpftrace for the waiters:
->   $ bpftrace -e 'kprobe:native_queued_spin_lock_slowpath {@[arg0]=3Dcount=
-();}
->                  END {for($kv : @) {printf("%s\t%d\n", ksym($kv.0), (int6=
-4)$kv.1);} clear(@); }'\
->                  >bpftrace.out
->   $ sort -k2 -r -n bpftrace.out | head | column -t
->   pidmap_lock         10482583
->   nft_pcpu_tun_ctx    3693517
->   css_set_lock        1511164
->   input_pool          976252
->   tasklist_lock       798578
->   nft_pcpu_tun_ctx    481962
->   0xffff8abc3ffd55b0  95371
->   0xffff8a6d3ffd65b0  93686
->   0xffff8a5e218f0840  29501
->   0xffff8a5e451dca40  29421
->
-> or measured by cummulative waiting time:
->   $ bpftrace -e 'kprobe:native_queued_spin_lock_slowpath {@[cpu]=3Darg0; =
-@st[cpu]=3Dnsecs;}
->                  kretprobe:native_queued_spin_lock_slowpath /@[cpu]/ {$la=
-t=3Dnsecs-@st[cpu]; @lats[@[cpu]]=3Dsum($lat);}
->                  END {for($kv : @lats) {printf("%s\t%d\n", ksym($kv.0), (=
-int64)$kv.1);} clear(@lats); clear(@st); clear(@) }'\
->                  >bpftrace2.out
->
->   $ sort -k2 -r -n bpftrace2.out | head -n15 | column -t
->   pidmap_lock         1931209805
->   rcu_state           1823286316
->   rcu_state           1581455156
->   rcu_state           1328804835
->   rcu_state           1299517157
->   rcu_state           1134101627
->   nft_pcpu_tun_ctx    1027837665
->   0xffff8abc3ffd55b0  861441978
->   0xffff8a6d3ffd65b0  850732998
->   css_set_lock        520009479
->   input_pool          316598763
->   tasklist_lock       127161061
->   0xffff8aac40023200  32380418
->   0xffff8a5e002ab600  30194951
->   rcu_state           18334578
->
+>     * Reducing the size of the swap descriptor from 48 bytes to 24
+>       bytes, i.e another 50% reduction in memory overhead from v2.
 
-If the only thing you applied is the patchset over at
-https://lore.kernel.org/linux-mm/20251206131955.780557-1-mjguzik@gmail.com/
-, then this lines up with my own measurements, where I said the pidmap
-lock remains dominant.
+Honestly if you keep reducing that you might just end up
+reimplementing the swap table format :)
 
-That thing gets unclogged with a patch by Christian to move pidmap
-handling out, which can be found here:
-https://lore.kernel.org/all/20260120-work-pidfs-rhashtable-v2-1-d593c4d0f57=
-6@kernel.org/
+> This patch series is based on 6.19. There are a couple more
+> swap-related changes in the mm-stable branch that I would need to
+> coordinate with, but I would like to send this out as an update, to show
+> that the lock contention issues that plagued earlier versions have been
+> resolved and performance on the kernel build benchmark is now on-par with
+> baseline. Furthermore, memory overhead has been substantially reduced
+> compared to the last RFC version.
 
-Afterwards it is css_set_lock at the top of the profile.
+Thanks for the effort!
 
-> Hm, it's interesting that is suggestive of why I saw no big change with
-> css_set_lock in my setup.
->
+> * Operationally, static provisioning the swapfile for zswap pose
+>   significant challenges, because the sysadmin has to prescribe how
+>   much swap is needed a priori, for each combination of
+>   (memory size x disk space x workload usage). It is even more
+>   complicated when we take into account the variance of memory
+>   compression, which changes the reclaim dynamics (and as a result,
+>   swap space size requirement). The problem is further exarcebated for
+>   users who rely on swap utilization (and exhaustion) as an OOM signal.
 
-Regardless, of the above, I noted sorting out this lock does not
-meaningfully improve performance, it merely shifts contention to
-tasklist afterwards.
+So I thought about it again, this one seems not to be an issue. In
+most cases, having a 1:1 virtual swap setup is enough, and very soon
+the static overhead will be really trivial. There won't even be any
+fragmentation issue either, since if the physical memory size is
+identical to swap space, then you can always find a matching part. And
+besides, dynamic growth of swap files is actually very doable and
+useful, that will make physical swap files adjustable at runtime, so
+users won't need to waste a swap type id to extend physical swap
+space.
+
+> * Another motivation is to simplify swapoff, which is both complicated
+>   and expensive in the current design, precisely because we are storing
+>   an encoding of the backend positional information in the page table,
+>   and thus requires a full page table walk to remove these references.
+
+The swapoff here is not really a clean swapoff, minor faults will
+still be triggered afterwards, and metadata is not released. So this
+new swapoff cannot really guarantee the same performance as the old
+swapoff. And on the other hand we can already just read everything
+into the swap cache then ignore the page table walk with the older
+design too, that's just not a clean swapoff.
+
+> struct swp_desc {
+>         union {
+>                 swp_slot_t         slot;                 /*     0     8 *=
+/
+>                 struct zswap_entry * zswap_entry;        /*     0     8 *=
+/
+>         };                                               /*     0     8 *=
+/
+>         union {
+>                 struct folio *     swap_cache;           /*     8     8 *=
+/
+>                 void *             shadow;               /*     8     8 *=
+/
+>         };                                               /*     8     8 *=
+/
+>         unsigned int               swap_count;           /*    16     4 *=
+/
+>         unsigned short             memcgid:16;           /*    20: 0  2 *=
+/
+>         bool                       in_swapcache:1;       /*    22: 0  1 *=
+/
+
+A standalone bit for swapcache looks like the old SWAP_HAS_CACHE that
+causes many issues...
 
 >
-> Michal
+>         /* Bitfield combined with previous fields */
+>
+>         enum swap_type             type:2;               /*    20:17  4 *=
+/
+>
+>         /* size: 24, cachelines: 1, members: 6 */
+>         /* bit_padding: 13 bits */
+>         /* last cacheline: 24 bytes */
+> };
+
+Having a struct larger than 8 bytes means you can't load it
+atomically, that limits your lock design. About a year ago Chris
+shared with me an idea to use CAS on swap entries once they are small
+and unified, that's why swap table is using atomic_long_t and have
+helpers like __swap_table_xchg, we are not making good use of them yet
+though. Meanwhile we have already consolidated the lock scope to folio
+in many places, holding the folio lock then doing the CAS without
+touching cluster lock at all for many swap operations might be
+feasible soon.
+
+E.g. we already have a cluster-lockless version of swap check in swap table=
+ p3:
+https://lore.kernel.org/linux-mm/20260128-swap-table-p3-v2-11-fe0b67ef0215@=
+tencent.com/
+
+That might also greatly simplify the locking on IO and migration
+performance between swap devices.
+
+> Doing the same math for the disk swap, which is the worst case for
+> virtual swap in terms of swap backends:
+
+Actually this worst case is a very common case... see below.
+
+> 0% usage, or 0 entries: 0.00 MB
+> * Old design total overhead: 25.00 MB
+> * Vswap total overhead: 2.00 MB
+>
+> 25% usage, or 2,097,152 entries:
+> * Old design total overhead: 41.00 MB
+> * Vswap total overhead: 66.25 MB
+>
+> 50% usage, or 4,194,304 entries:
+> * Old design total overhead: 57.00 MB
+> * Vswap total overhead: 130.50 MB
+>
+> 75% usage, or 6,291,456 entries:
+> * Old design total overhead: 73.00 MB
+> * Vswap total overhead: 194.75 MB
+>
+> 100% usage, or 8,388,608 entries:
+> * Old design total overhead: 89.00 MB
+> * Vswap total overhead: 259.00 MB
+>
+> The added overhead is 170MB, which is 0.5% of the total swapfile size,
+> again in the worst case when we have a sizing oracle.
+
+Hmm.. With the swap table we will have a stable 8 bytes per slot in
+all cases, in current mm-stable we use 11 bytes (8 bytes dyn and 3
+bytes static), and in the posted p3 we already get 10 bytes (8 bytes
+dyn and 2 bytes static). P4 or follow up was already demonstrated
+last year with working code, and it makes everything dynamic
+(8 bytes fully dyn, I'll rebase and send that once p3 is merged).
+
+So with mm-stable and follow up, for 32G swap device:
+
+0% usage, or 0/8,388,608 entries: 0.00 MB
+* mm-stable total overhead: 25.50 MB (which is swap table p2)
+* swap-table p3 overhead: 17.50 MB
+* swap-table p4 overhead: 0.50 MB
+* Vswap total overhead: 2.00 MB
+
+100% usage, or 8,388,608/8,388,608 entries:
+* mm-stable total overhead: 89.5 MB (which is swap table p2)
+* swap-table p3 overhead: 81.5 MB
+* swap-table p4 overhead: 64.5 MB
+* Vswap total overhead: 259.00 MB
+
+That 3 - 4 times more memory usage, quite a trade off. With a
+128G device, which is not something rare, it would be 1G of memory.
+Swap table p3 / p4 is about 320M / 256M, and we do have a way to cut
+that down close to be <1 byte or 3 byte per page with swap table
+compaction, which was discussed in LSFMM last year, or even 1 bit
+which was once suggested by Baolin, that would make it much smaller
+down to <24MB (This is just an idea for now, but the compaction is
+very doable as we already have "LRU"s for swap clusters in swap
+allocator).
+
+I don't think it looks good as a mandatory overhead. We do have a huge
+user base of swap over many different kinds of devices, it was not
+long ago two new kernel bugzilla issue  or bug reported was sent to
+the maillist about swap over disk, and I'm still trying to investigate
+one of them which seems to be actually a page LRU issue and not swap
+problem..  OK a little off topic, anyway, I'm not saying that we don't
+want more features, as I mentioned above, it would be better if this
+can be optional and minimal. See more test info below.
+
+> We actually see a slight improvement in systime (by 1.5%) :) This is
+> likely because we no longer have to perform swap charging for zswap
+> entries, and virtual swap allocator is simpler than that of physical
+> swap.
+
+Congrats! Yeah, I guess that's because vswap has a smaller lock scope
+than zswap with a reduced callpath?
+
+>
+> Using SSD swap as the backend:
+>
+> Baseline:
+> real: mean: 200.3s, stdev: 2.33s
+> sys: mean: 489.88s, stdev: 9.62s
+>
+> Vswap:
+> real: mean: 201.47s, stdev: 2.98s
+> sys: mean: 487.36s, stdev: 5.53s
+>
+> The performance is neck-to-neck.
+
+Thanks for the bench, but please also test with global pressure too.
+One mistake I made when working on the prototype of swap tables was
+only focusing on cgroup memory pressure, which is really not how
+everyone uses Linux, and that's why I reworked it for a long time to
+tweak the RCU allocation / freeing of swap table pages so there won't
+be any regression even for lowend and global pressure. That's kind of
+critical for devices like Android.
+
+I did an overnight bench on this with global pressure, comparing to
+mainline 6.19 and swap table p3 (I do include such test for each swap
+table serie, p2 / p3 is close so I just rebase and latest p3 on top of
+your base commit just to be fair and that's easier for me too) and it
+doesn't look that good.
+
+Test machine setup for vm-scalability:
+# lscpu | grep "Model name"
+Model name:          AMD EPYC 7K62 48-Core Processor
+
+# free -m
+              total        used        free      shared  buff/cache   avail=
+able
+Mem:          31582         909       26388           8        4284       2=
+9989
+Swap:         40959          41       40918
+
+The swap setup follows the recommendation from Huang
+(https://lore.kernel.org/linux-mm/87ed474kvx.fsf@yhuang6-desk2.ccr.corp.int=
+el.com/).
+
+Test (average of 18 test run):
+vm-scalability/usemem --init-time -O -y -x -n 1 56G
+
+6.19:
+Throughput: 618.49 MB/s (stdev 31.3)
+Free latency: 5754780.50us (stdev 69542.7)
+
+swap-table-p3 (3.8%, 0.5% better):
+Throughput: 642.02 MB/s (stdev 25.1)
+Free latency: 5728544.16us (stdev 48592.51)
+
+vswap (3.2%, 244% worse):
+Throughput: 598.67 MB/s (stdev 25.1)
+Free latency: 13987175.66us (stdev 125148.57)
+
+That's a huge regression with freeing. I have a vm-scatiliby test
+matrix, not every setup has such significant >200% regression, but on
+average the freeing time is about at least 15 - 50% slower (for
+example /data/vm-scalability/usemem --init-time -O -y -x -n 32 1536M
+the regression is about 2583221.62us vs 2153735.59us). Throughput is
+all lower too.
+
+Freeing is important as it was causing many problems before, it's the
+reason why we had a swap slot freeing cache years ago (and later we
+removed that since the freeing cache causes more problems and swap
+allocator already improved it better than having the cache). People
+even tried to optimize that:
+https://lore.kernel.org/linux-mm/20250909065349.574894-1-liulei.rjpt@vivo.c=
+om/
+(This seems a already fixed downstream issue, solved by swap allocator
+or swap table). Some workloads might amplify the free latency greatly
+and cause serious lags as shown above.
+
+Another thing I personally cares about is how swap works on my daily
+laptop :), building the kernel in a 2G test VM using NVME as swap,
+which is a very practical workload I do everyday, the result is also
+not good (average of 8 test run, make -j12):
+#free -m
+               total        used        free      shared  buff/cache   avai=
+lable
+Mem:            1465         216        1026           0         300       =
+ 1248
+Swap:           4095          36        4059
+
+6.19 systime:
+109.6s
+swap-table p3:
+108.9s
+vswap systime:
+118.7s
+
+On a build server, it's also slower (make -j48 with 4G memory VM and
+NVME swap, average of 10 testrun):
+# free -m
+               total        used        free      shared  buff/cache   avai=
+lable
+Mem:            3877        1444        2019         737        1376       =
+ 2432
+Swap:          32767        1886       30881
+
+# lscpu | grep "Model name"
+Model name:                              Intel(R) Xeon(R) Platinum
+8255C CPU @ 2.50GHz
+
+6.19 systime:
+435.601s
+swap-table p3:
+432.793s
+vswap systime:
+455.652s
+
+In conclusion it's about 4.3 - 8.3% slower for common workloads under
+global pressure, and there is a up to 200% regression on freeing. ZRAM
+shows an even larger workload regression but I'll skip that part since
+your series is focusing on zswap now. Redis is also ~20% slower
+compared to mm-stable (327515.00 RPS vs 405827.81 RPS), that's mostly
+due to swap-table-p2 in mm-stable so I didn't do further comparisons.
+
+So if that's not a bug with this series, I think the double free or
+decoupling of swap / underlying slots might be the problem with the
+freeing regression shown above. That's really a serious issue, and the
+global pressure might be a critical issue too as the metadata is much
+larger, and is already causing regressions for very common workloads.
+Low end users could hit the min watermark easily and could have
+serious jitters or allocation failures.
+
+That's part of the issue I've found, so I really do think we need a
+flexible way to implementa that and not have a mandatory layer. After
+swap table P4 we should be able to figure out a way to fit all needs,
+with a clean defined set of swap API, metadata and layers, as was
+discussed at LSFMM last year.
 
