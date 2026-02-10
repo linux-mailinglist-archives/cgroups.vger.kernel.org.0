@@ -1,194 +1,212 @@
-Return-Path: <cgroups+bounces-13827-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-13828-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id OJ8oMpXgimlyOgAAu9opvQ
-	(envelope-from <cgroups+bounces-13827-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Tue, 10 Feb 2026 08:39:01 +0100
+	id 0LgrKNoLi2lXPQAAu9opvQ
+	(envelope-from <cgroups+bounces-13828-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Tue, 10 Feb 2026 11:43:38 +0100
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 24A50117FD5
-	for <lists+cgroups@lfdr.de>; Tue, 10 Feb 2026 08:39:00 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1D28E119BEF
+	for <lists+cgroups@lfdr.de>; Tue, 10 Feb 2026 11:43:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id B78043019068
-	for <lists+cgroups@lfdr.de>; Tue, 10 Feb 2026 07:38:59 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 79BA230160FD
+	for <lists+cgroups@lfdr.de>; Tue, 10 Feb 2026 10:43:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E11723346A9;
-	Tue, 10 Feb 2026 07:38:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B462334216C;
+	Tue, 10 Feb 2026 10:43:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="fdYwWhGZ"
 X-Original-To: cgroups@vger.kernel.org
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 749422C027A;
-	Tue, 10 Feb 2026 07:38:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com [209.85.128.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1CFDF330666
+	for <cgroups@vger.kernel.org>; Tue, 10 Feb 2026 10:43:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1770709138; cv=none; b=eyOR0yz6wmjXhqLBtFm7o4Kdmc7vJ7FrDHx6xR44/mOJIa8PKgFT34Cms8bv/1ZuTQBQXIrhUfGPd/IwFoG2IuWu8maZJvbDrx71SA8VhRN3hFzdZOc5hIMy5QjYZRljEDA+zY8VeQEdOvOB35ka06Up1McLysn/Qmm7J9i3JZw=
+	t=1770720209; cv=none; b=FF4hgao9N1ZdCDJpzbi/M/iUbf3z5QthZPHT+953ByjJDRu+K0D4CA2oLnE1ZkcWjk+trbGCMnbZ09oXRl6VtYDEn/iBeZ+eI6vZmQ/77lrZnqd+IaW4kfrd3YZrnbQ01VVx+cuOtLcOoExfdXvAtG9X4IvHQjOm+9DIdSGtfU0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1770709138; c=relaxed/simple;
-	bh=KAnkHeUW/rhbCgg0wxStZiTN11d44jYJ3LRA79jcEOs=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=j4hRqIOALwcXxsjWkXB22i74JWwQMQuQiysSSO7aIbcq5XHQfytctXOejpV7H6agGaeaNZzeK7rXnfxis48sEBQ3JqIOProE4QhxeumjkDIqUB6xGuB1zwMfPIq/u3V+mGQozru8dIfYaxyBYX49bcnSiPAC073fgethDFsrYz0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3F2F9339;
-	Mon,  9 Feb 2026 23:38:49 -0800 (PST)
-Received: from [10.164.19.61] (unknown [10.164.19.61])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 46E0D3F740;
-	Mon,  9 Feb 2026 23:38:52 -0800 (PST)
-Message-ID: <b77dc11e-fe09-4f0c-a912-d05faa01ff1c@arm.com>
-Date: Tue, 10 Feb 2026 13:08:49 +0530
+	s=arc-20240116; t=1770720209; c=relaxed/simple;
+	bh=runTbpTUp4+7VO5AD1+vvnMLrl5RDPcZS5+sNX7pqJQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=r4O3iexpzdXr9HhJJAtyUHC25hd6jrTDfdicsTUkz6F4PDCnOEG99/bvSvCl1aE96ERt2iaZjJEs5e84zexWv6TmcgQFFA7p6qP+S4N8aqQNIdHhcc5Jo37qKr3RtAzAG9nE6DrO3PMUzvYZJoxTmZTnj6UyemtnEvk5i1CbflI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=fdYwWhGZ; arc=none smtp.client-ip=209.85.128.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-wm1-f51.google.com with SMTP id 5b1f17b1804b1-4806bf39419so39964625e9.1
+        for <cgroups@vger.kernel.org>; Tue, 10 Feb 2026 02:43:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1770720206; x=1771325006; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=ESLy7xskhHqRSLwhEQNcBnuHQ0VOxD4Qd3ZqFxQhArA=;
+        b=fdYwWhGZBuneTIxln8Zn7LgcRlB+E2OBs1tU9bKjLHpc+2nrE1YnAqYpkgPNFj48oD
+         29x5KesUcQdgoypaDFfP8esZ5El+SeZfdih/luCiq0lKKS9ACTrsU6GM5C2lR30v6QdL
+         WPaUXFQxVORucoLC+inxeMANUmpev+FgrV25qqF/en6I0am6UovGnc/8KlRqHYGuz3cO
+         3qCEIgKlUo1fQ/27ca4XDnSqDJYTiF+H09RuITT3sG9psgjCLLnFZ+p+qOBLpZjCYumn
+         lKD8OyS9jhy/qfBnDUnphxcy/pXdU930l6zlDfCEQvacgr+L+Jp7XhIFilhKAbZvhfqY
+         kU3g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1770720206; x=1771325006;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ESLy7xskhHqRSLwhEQNcBnuHQ0VOxD4Qd3ZqFxQhArA=;
+        b=i3VlQo275IqzPkTBjZkmuToC5u+tEH/GC1cgLqvs3qw4xhjGvcVBVzBN76qUT1pYYx
+         zBUGzgsS9CJrKUf1RDZCIQ+hd3PCLMI1tV0WwlJ8Px8OBBu8B837raLg62p9di+4nIJH
+         rB8VTTK4Frdfzpz9Wn2nV6qlQ8mUiHxZYFROCZ4rqCx2H5K5bPlcXWtQpWkcfiV2Kegl
+         3j5ZmMT50/Sxr8lHVvbLChHRrQsyAWd6cGJVThkxyZM14M8vtC9xgk9HN1T+LdFEvSaO
+         NpRMtR+tCPnfG3LIgJ5YzgPD+dWky2QC2L0m5oNei7UiSHyS0goET589umluK7C3sKBN
+         4iFw==
+X-Forwarded-Encrypted: i=1; AJvYcCWycs4zJ7cZk2DbcCSxoTgE2l6zAUFlcRPcho9TydtSLuvkAZA7pdxsYI/QOuMTF7F1VOthm1dw@vger.kernel.org
+X-Gm-Message-State: AOJu0YzP53A8B+XUZmOncQlW6LCthSINPDEqIBnmPhHKwqmQKj9R7X+o
+	ukFlU+auvLqonokkS2AXNPg7wEwJTgTnPfxBaF4EcUSM7LJ6IMLxKUs8rOZa8DDZ/K8=
+X-Gm-Gg: AZuq6aL3Fj9TC8AozZsKryWj4Eobq6i4RZ1/SGdY9lfofM5bSHCh/R0csDomklwhe1I
+	JZ9AY+sCJE/8QqR785xX819U0kwoOIMrPGIZWJMf0JIECkJxnS9DnMdG/lHeZ3UAb8MSYd00YqS
+	vj3VAFR22sUz7irAhB5ty1g3iKhYlW6REiGNplnK1TYkkGZteWgXRGJeCDbgmwjCLjpZu3IVb5L
+	jP4RSSin3RqPpl3fa+wyBzlbSSZ9NS2u8GWs9KCKVzgvv8Uj40LZhskoQzzotlwr8FFFadfLJ2q
+	KfS/hznJQ2HuYXz0iXZkUagzuwHCZ/HlMg5CSrpnImtC2SRY7maoWZquo0ZCyajFFCXQzV/AUDY
+	7Bi6FqpITWjVSZFSI+wf8yVkYBVm6AXpdxcgvW1YRB53dz+5RBE9HhNlYTlIfnChAV8qeYCqenv
+	f1RrwTjGrDW3Jbk35CwbTRUpJLqBpTU6zXeewdGbGmqw4=
+X-Received: by 2002:a05:600c:6c5:b0:47e:e48f:43b5 with SMTP id 5b1f17b1804b1-4834ffb25fdmr15526095e9.18.1770720206384;
+        Tue, 10 Feb 2026 02:43:26 -0800 (PST)
+Received: from blackdock.suse.cz (nat2.prg.suse.com. [195.250.132.146])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4832096f127sm153113885e9.6.2026.02.10.02.43.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 10 Feb 2026 02:43:25 -0800 (PST)
+Date: Tue, 10 Feb 2026 11:43:23 +0100
+From: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
+To: Mateusz Guzik <mjguzik@gmail.com>
+Cc: tj@kernel.org, hannes@cmpxchg.org, brauner@kernel.org, 
+	linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
+Subject: Re: [PATCH v2] cgroup: avoid css_set_lock in cgroup_css_set_fork()
+Message-ID: <jt6kzvdkp4obq7jszyt4muc5ktjjft2idbz3mzkknlxdch6iit@yeumuxzp6gbn>
+References: <20260122112951.1854124-1-mjguzik@gmail.com>
+ <CAGudoHErB_Dm8kTRDa8cNOe4aRgc6kAV0bnT90Pp_Uda+_DqDQ@mail.gmail.com>
+ <uwuworxk3warxfnvr7g3gnrh5g7bnnkq5uhbsnoh42muv7zeax@y7ddpcbhwarw>
+ <CAGudoHFaUjm7_Eh6VOOGvfscdekk7v2uNPjfLkZfAkR9aCA1Ew@mail.gmail.com>
+ <roisfgpkd7tapp7cfjavmih2e2riwh2nczv4nqk25gik7of4pa@3ohyptw6nvb3>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/4] memcg: use mod_node_page_state to update stats
-To: Shakeel Butt <shakeel.butt@linux.dev>, Harry Yoo <harry.yoo@oracle.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>,
- Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>,
- Roman Gushchin <roman.gushchin@linux.dev>,
- Muchun Song <muchun.song@linux.dev>, Qi Zheng <qi.zheng@linux.dev>,
- Vlastimil Babka <vbabka@suse.cz>, linux-mm@kvack.org,
- cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
- Meta kernel team <kernel-team@meta.com>
-References: <20251110232008.1352063-1-shakeel.butt@linux.dev>
- <20251110232008.1352063-2-shakeel.butt@linux.dev>
- <1052a452-9ba3-4da7-be47-7d27d27b3d1d@arm.com> <aYAmGc6lu973jRwu@linux.dev>
- <2638bd96-d8cc-4733-a4ce-efdf8f223183@arm.com>
- <51819ca5a15d8928caac720426cd1ce82e89b429@linux.dev>
- <05aec69b-8e73-49ac-aa89-47b371fb6269@arm.com> <aYOuCmjQ5lGm8Mup@linux.dev>
- <4847c300-c7bb-4259-867c-4bbf4d760576@arm.com> <aYQuj6Ot-JS4tXvY@hyeyoo>
- <7df681ae0f8254f09de0b8e258b909eaacafadf4@linux.dev>
-Content-Language: en-US
-From: Dev Jain <dev.jain@arm.com>
-In-Reply-To: <7df681ae0f8254f09de0b8e258b909eaacafadf4@linux.dev>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="gumy7av24fsy5x4o"
+Content-Disposition: inline
+In-Reply-To: <roisfgpkd7tapp7cfjavmih2e2riwh2nczv4nqk25gik7of4pa@3ohyptw6nvb3>
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-1.36 / 15.00];
+X-Spamd-Result: default: False [-3.76 / 15.00];
+	SIGNED_PGP(-2.00)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10];
+	DMARC_POLICY_ALLOW(-0.50)[suse.com,quarantine];
+	MID_RHS_NOT_FQDN(0.50)[];
+	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
+	R_DKIM_ALLOW(-0.20)[suse.com:s=google];
+	MIME_GOOD(-0.20)[multipart/signed,text/plain];
 	MAILLIST(-0.15)[generic];
-	DMARC_POLICY_SOFTFAIL(0.10)[arm.com : SPF not aligned (relaxed), No valid DKIM,none];
-	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TO_DN_SOME(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[13];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	TAGGED_RCPT(0.00)[cgroups];
-	R_DKIM_NA(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[dev.jain@arm.com,cgroups@vger.kernel.org];
-	FROM_HAS_DN(0.00)[];
-	MID_RHS_MATCH_FROM(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	TAGGED_FROM(0.00)[bounces-13827-lists,cgroups=lfdr.de];
-	RCVD_COUNT_FIVE(0.00)[5];
 	RCVD_TLS_LAST(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,arm.com:url,arm.com:mid]
-X-Rspamd-Queue-Id: 24A50117FD5
+	FREEMAIL_TO(0.00)[gmail.com];
+	TO_DN_SOME(0.00)[];
+	MIME_TRACE(0.00)[0:+,1:+,2:~];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-13828-lists,cgroups=lfdr.de];
+	FROM_HAS_DN(0.00)[];
+	MISSING_XM_UA(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[5];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[mkoutny@suse.com,cgroups@vger.kernel.org];
+	DKIM_TRACE(0.00)[suse.com:+];
+	TAGGED_RCPT(0.00)[cgroups];
+	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	RCPT_COUNT_FIVE(0.00)[6];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,suse.com:email,suse.com:dkim]
+X-Rspamd-Queue-Id: 1D28E119BEF
 X-Rspamd-Action: no action
 
 
-On 05/02/26 11:28 am, Shakeel Butt wrote:
->> On Thu, Feb 05, 2026 at 10:50:06AM +0530, Dev Jain wrote:
->>
->>> On 05/02/26 2:08 am, Shakeel Butt wrote:
->>>  On Mon, Feb 02, 2026 at 02:23:54PM +0530, Dev Jain wrote:
->>>  On 02/02/26 10:24 am, Shakeel Butt wrote:
->>>  Hello Shakeel,
->>>
->>>  We are seeing a regression in micromm/munmap benchmark with this patch, on arm64 -
->>>  the benchmark mmmaps a lot of memory, memsets it, and measures the time taken
->>>  to munmap. Please see below if my understanding of this patch is correct.
->>>
->>>  Thanks for the report. Are you seeing regression in just the benchmark
->>>  or some real workload as well? Also how much regression are you seeing?
->>>  I have a kernel rebot regression report [1] for this patch as well which
->>>  says 2.6% regression and thus it was on the back-burner for now. I will
->>>  take look at this again soon.
->>>
->>>  The munmap regression is ~24%. Haven't observed a regression in any other
->>>  benchmark yet.
->>>  Please share the code/benchmark which shows such regression, also if you can
->>>  share the perf profile, that would be awesome.
->>>  https://gitlab.arm.com/tooling/fastpath/-/blob/main/containers/microbench/micromm.c
->>>  You can run this with
->>>  ./micromm 0 munmap 10
->>>
->>>  Don't have a perf profile, I measured the time taken by above command, with and
->>>  without the patch.
->>>
->>>  Hi Dev, can you please try the following patch?
->>>
->>>  From 40155feca7e7bc846800ab8449735bdb03164d6d Mon Sep 17 00:00:00 2001
->>>  From: Shakeel Butt <shakeel.butt@linux.dev>
->>>  Date: Wed, 4 Feb 2026 08:46:08 -0800
->>>  Subject: [PATCH] vmstat: use preempt disable instead of try_cmpxchg
->>>
->>>  Signed-off-by: Shakeel Butt <shakeel.butt@linux.dev>
->>>  ---
->>>
->> [...snip...]
->>
->>> Thanks for looking into this.
->>>  
->>>  But this doesn't solve it :( preempt_disable() contains a compiler barrier,
->>>  probably that's why.
->>>
->> I think the reason why it doesn't solve the regression is because of how
->> arm64 implements this_cpu_add_8() and this_cpu_try_cmpxchg_8().
->>
->> On arm64, IIUC both this_cpu_try_cmpxchg_8() and this_cpu_add_8() are
->> implemented using LL/SC instructions or LSE atomics (if supported).
->>
->> See:
->> - this_cpu_add_8()
->>  -> __percpu_add_case_64
->>  (which is generated from PERCPU_OP)
->>
->> - this_cpu_try_cmpxchg_8()
->>  -> __cpu_fallback_try_cmpxchg(..., this_cpu_cmpxchg_8)
->>  -> this_cpu_cmpxchg_8()
->>  -> cmpxchg_relaxed()
->>  -> raw_cmpxchg_relaxed()
->>  -> arch_cmpxchg_relaxed()
->>  -> __cmpxchg_wrapper()
->>  -> __cmpxchg_case_64()
->>  -> __lse_ll_sc_body(_cmpxchg_case_64, ...)
->>
-> Oh so it is arm64 specific issue. I tested on x86-64 machine and it solves
-> the little regression it had before. So, on arm64 all this_cpu_ops i.e. without
-> double underscore, uses LL/SC instructions. 
->
-> Need more thought on this. 
->
->>> Also can you confirm whether my analysis of the regression was correct?
->>>  Because if it was, then this diff looks wrong - AFAIU preempt_disable()
->>>  won't stop an irq handler from interrupting the execution, so this
->>>  will introduce a bug for code paths running in irq context.
->>>
->> I was worried about the correctness too, but this_cpu_add() is safe
->> against IRQs and so the stat will be _eventually_ consistent?
->>
->> Ofc it's so confusing! Maybe I'm the one confused.
-> Yeah there is no issue with proposed patch as it is making the function
-> re-entrant safe.
+--gumy7av24fsy5x4o
+Content-Type: text/plain; protected-headers=v1; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH v2] cgroup: avoid css_set_lock in cgroup_css_set_fork()
+MIME-Version: 1.0
 
-Ah yes, this_cpu_add() does the addition in one shot without read-modify-write.
+Hello Mateusz.
 
-I am still puzzled whether the original patch was a bug fix or an optimization.
-The patch description says that node stat updation uses irq unsafe interface.
-Therefore, we had foo() calling __foo() nested with local_irq_save/restore. But
-there were code paths which directly called __foo() - so, your patch fixes a bug right
-(in which case we should have a Fixes tag)? The patch ensures that mod_node_page_state
-is used, and depending on HAVE_CMPXCHG_LOCAL, either uses irq disabling or
-preempt_disable + cmpxchg - making the interface irq safe.
+On Thu, Jan 29, 2026 at 02:22:32PM +0100, Michal Koutn=FD <mkoutny@suse.com=
+> wrote:
+> And I'm wondering whether removal only in cgroup_css_set_fork() improves
+> parallelism because the tasks (before patching) are queued on the first
+> css_set_lock, serialized through the first critical section and when
+> they arrive to the second critical section in cgroup_post_fork() their
+> arrival rate is already reduced because they had to pass through the
+> first critical section. Hence the 2nd pass through the critical section
+> should be less contended (w/out waiting).
 
+I was still curious about this, so I tried own measurement.
+I ran your clone'ing will-it-scale testcase [1].
+Basically it was
+	clone_processes -s 1000 -t 40
+on a 40 CPUs/80 SMTs machine.
+I watched for the `total:` iteration counts reported by wis
+periodically.
+
+6.18.8-0-default (baseline :=3D stable + pidmap patches [2][3])
+  2.9383e+05 =B1 1135.5
+
+6.18.8-1.g886f4c4-default (baseline + rwlock impl (previous message))
+  2.9363e+05 =B1 1219.8
+
+6.18.8-1.gb21e8f8-default (baseline + seqcount impl (your patch))
+  2.9147e+05 =B1 1125.6
+
+So I could not reproduce any non-random change with this css_set_lock
+split (I consider even the apparent difference between implementations
+rather random).
+
+At this point, I should look into profiles whether the bottleneck is
+really css_set_lock in cgroup_post_fork() but I'm sharing what I have,
+glad for your possible insights.
+
+Regards,
+Michal
+
+[1] Only clone_process variant, clone_threads randomly hung.
+    will-it-scale/glibc (2.42-3.1) likely doesn't work well with the
+    cancellation/(no) join (but I got hangs even with pthread cleanup
+    handlers that joined the child thread)
+
+    #0  futex_wait (futex_word=3D0x7ffff7ffd840 <_rtld_local+2112>, expecte=
+d=3D2, private=3D0) at ../sysdeps/nptl/futex-internal.h:146
+    #1  __GI___lll_lock_wait_private (futex=3D0x7ffff7ffd840 <_rtld_local+2=
+112>) at lowlevellock.c:34
+    #2  0x00007ffff7c98d69 in __GI___nptl_deallocate_stack (pd=3D0x7ffff7ab=
+16c0) at nptl-stack.c:113
+    ...
+    #5  0x00000000004029ca in kill_tasks () at main.c:151
+
+[2] https://lore.kernel.org/linux-mm/20251206131955.780557-1-mjguzik@gmail.=
+com/
+[3] Those patched improved the metric about some 10% (but I haven't
+    measured this difference so thoroughly).
+
+--gumy7av24fsy5x4o
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iJEEABYKADkWIQRCE24Fn/AcRjnLivR+PQLnlNv4CAUCaYsLwxsUgAAAAAAEAA5t
+YW51MiwyLjUrMS4xMSwyLDIACgkQfj0C55Tb+AhHMQEAhM8JFYEoqdsJZ4x63Hpf
+5xcL1MOdnxmJxPUan7AT7sQBAL/JAgaggE3EA6NEfx/0C6BdTTBWix1s2O8DkSh3
+O3wO
+=SCK0
+-----END PGP SIGNATURE-----
+
+--gumy7av24fsy5x4o--
 
