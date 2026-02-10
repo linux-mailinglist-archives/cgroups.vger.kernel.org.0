@@ -1,240 +1,400 @@
-Return-Path: <cgroups+bounces-13825-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-13826-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id EMy2JvPQimluOAAAu9opvQ
-	(envelope-from <cgroups+bounces-13825-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Tue, 10 Feb 2026 07:32:19 +0100
+	id eOFdApbVimnrOAAAu9opvQ
+	(envelope-from <cgroups+bounces-13826-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Tue, 10 Feb 2026 07:52:06 +0100
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id F026E117606
-	for <lists+cgroups@lfdr.de>; Tue, 10 Feb 2026 07:32:18 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5DB1C117845
+	for <lists+cgroups@lfdr.de>; Tue, 10 Feb 2026 07:52:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id E94DD3020D59
-	for <lists+cgroups@lfdr.de>; Tue, 10 Feb 2026 06:31:55 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id A30A7304D25A
+	for <lists+cgroups@lfdr.de>; Tue, 10 Feb 2026 06:49:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 98A5A32E14D;
-	Tue, 10 Feb 2026 06:31:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3BE732D6E55;
+	Tue, 10 Feb 2026 06:49:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="U7N2G8Uw"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="SSaMr9CM"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-wm1-f67.google.com (mail-wm1-f67.google.com [209.85.128.67])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-179.mta0.migadu.com (out-179.mta0.migadu.com [91.218.175.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E4312EBBA4
-	for <cgroups@vger.kernel.org>; Tue, 10 Feb 2026 06:31:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.67
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8FA5132ED2A
+	for <cgroups@vger.kernel.org>; Tue, 10 Feb 2026 06:49:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1770705114; cv=none; b=LW6UffImdNbkRq3NS/syZMn5eV+DcCnGflmFRTuE7HQ3W3miHCj0xk2kqQAYt2epNivkT2Zbaj8jWL1RRp873GnS2yAl59lt1oHk/TaXAZ3zT4f8xX+PbO6/TbHisJiLTEsiuXhFNV411wj3Wq1Bxe3fLoFl455ZY7Nd+yIugMI=
+	t=1770706149; cv=none; b=orSeHhUyl9PRRVmRBSYVSsuM+YUp3ndj8sHeQz/S0+yTHEl4EzU3TK9bM34ZCO5e7r1AWIRBKuF3cjil8bq6IoEXl3msXvt0afGX5oeTPq6JqsjVrUrnGOqwsh7Q2aM/kKPzqAAve9zOG5pe2ERIWTGn0x/PHUQjzebeqgvXq20=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1770705114; c=relaxed/simple;
-	bh=+dY5A7nwRVBRBd7BJ1hDL2J+oBIHOmLAIhWPxMtTN4o=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition:In-Reply-To; b=LdoDhA5vCSB1U4sginfE+bOCYEuQf3lcX6u+KbRzmZprCJILVLvUEbs7IjvE2j6FaXsd3OEKs+o2+Ajs8MK1kE/wh7K1Ek7ZTxC98nxhlIpJzjrt3VJCOuJFqvhqER2aBqmcr+VJBzmVfXxDlfQwxTjCg3G+ScOR2zusmcOZXJc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=U7N2G8Uw; arc=none smtp.client-ip=209.85.128.67
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f67.google.com with SMTP id 5b1f17b1804b1-4801d7c72a5so31051285e9.0
-        for <cgroups@vger.kernel.org>; Mon, 09 Feb 2026 22:31:51 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1770705110; x=1771309910; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:message-id:subject:cc
-         :to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=PuIvHjahYrqUwfgodntxdfFSIIlE9ggIgaeNW8+YxZc=;
-        b=U7N2G8UwMwtnwPmbDdvrXVal6o2WZS+jJKtOpyf6nSz7PeirStusIC/NsW3quXzBoc
-         vij7WcD9hovtkXX2KNlfJmPgdHRmpXQR/4nyu3+OuYaLulj1pWdvNLSgQCkqTUdxhUqx
-         yrBDt93abC13ieuEMefe+LGue4Xw94xxdtyG8cCS3lZhMtxg3hOGFG4z+1W2JolhGdT/
-         F5w4aP5VbYQwhDEnXFUwLGYxCjqelQMMqp6+xBfdOaoeZfiu+r7++Q+GQxNoCrx1alzI
-         UI7RYfl1nOWafRxgjidgCFF0FUfb2ng69fvy16uGN1QBEUlCHwL0cz06E9+t3yPGMUfu
-         sM+w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1770705110; x=1771309910;
-        h=in-reply-to:content-disposition:mime-version:message-id:subject:cc
-         :to:from:date:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=PuIvHjahYrqUwfgodntxdfFSIIlE9ggIgaeNW8+YxZc=;
-        b=BpLNw6HwrkFxtbb2Xy6Gjb+ijcbG+86YWA7jG/0pxXwiA1qfv/nqxB8sAulg2MvV4Z
-         BKSH+yqSrNuSbPm4aByzUxZDCGMzoyEnYq7EmghZM/sRahQP/HArzuA92adSJra5SOpf
-         2NTXw0rcCBKRPNa0fqoWwIKgcq7h2GKwsPUy66pAq7QZSav+UJaru3dp8bzv1+x5T+6F
-         /kf77RikWCKSdmBUzKj2MBsABTT7sMK6pLtqcGej0nSVb+2wbbCZs1WpbloL0TNxg6F7
-         My4DHad31KH4jXYGfytguRwc9O+V6Kf5El1m4m5N019sMEoi/lKr5z3gx0djBD1gxJLj
-         G1TQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVXPET2apgwlaeBAVOch0VHgDUZCjnbZDYNy4DPmAShRzG4HAx1kuNUryfO1N6E30HdeCgAco0A@vger.kernel.org
-X-Gm-Message-State: AOJu0YwH6kWLhWR60iwi1mFIhz8e2TkyoMfz2stws4Kt4cf+391QZXBi
-	ch5KY2wwn9RrpEPG6kEn2dSk+qJrT5FzNTMMiumCaHBtOFYpNov0kY0qz1MJAWKBLzA=
-X-Gm-Gg: AZuq6aKR7nJcN2Lta8Srq1BnCUBAiqBQyn8DliGXzZXRaVeOL2ZtMK5vZIdGWILXG6a
-	2wfGA/uJEmiYBG15O1EWPbxhn21xOklOAIoUr27fZMzqljuT4hjhneZNm35vxfPsy0Pzyo3b3xO
-	Rf399RS43d1xknReaIoTrQ+zWalt7J/+pPfW0oNuPmSBHds5eqyOCWG79kzN9yrqM9up12Yr9f2
-	mykH1Y23EUEkOs7yYiEI4mfXEfbyJi7xU5Z4hZ1NVhM/+raP13CKeVNzJol6Vs+NFaiYbwbn1fJ
-	hakjwZYOVCq3HfBZfi3mXQaYUjFhdePZ1kOlTCki1o0o+NQ/z1B98Wkmig6QhdLh4L7w02JtWKA
-	+qqoYf64hy8HcX3MbMXCOOGdwW9X3nW0qIzwMyqzv7LIjyIkRgNMkK0DLxEY3ETfuiOC1K4zSGU
-	EyEbbuYlmQRJDy/4zDv/vmLw7wd4ZO
-X-Received: by 2002:a05:600c:4f8a:b0:47a:8cce:2940 with SMTP id 5b1f17b1804b1-483201e3aaemr189459165e9.14.1770705109669;
-        Mon, 09 Feb 2026 22:31:49 -0800 (PST)
-Received: from localhost ([196.207.164.177])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-48320961505sm215017735e9.4.2026.02.09.22.31.48
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 09 Feb 2026 22:31:49 -0800 (PST)
-Date: Tue, 10 Feb 2026 09:31:46 +0300
-From: Dan Carpenter <dan.carpenter@linaro.org>
-To: oe-kbuild@lists.linux.dev, Nhat Pham <nphamcs@gmail.com>,
-	linux-mm@kvack.org
-Cc: lkp@intel.com, oe-kbuild-all@lists.linux.dev, akpm@linux-foundation.org,
-	hannes@cmpxchg.org, hughd@google.com, yosry.ahmed@linux.dev,
-	mhocko@kernel.org, roman.gushchin@linux.dev, shakeel.butt@linux.dev,
-	muchun.song@linux.dev, len.brown@intel.com,
-	chengming.zhou@linux.dev, kasong@tencent.com, chrisl@kernel.org,
-	huang.ying.caritas@gmail.com, ryan.roberts@arm.com,
-	shikemeng@huaweicloud.com, viro@zeniv.linux.org.uk,
-	baohua@kernel.org, bhe@redhat.com, osalvador@suse.de,
-	lorenzo.stoakes@oracle.com, christophe.leroy@csgroup.eu,
-	pavel@kernel.org, kernel-team@meta.com,
-	linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-	linux-pm@vger.kernel.org, peterx@redhat.com, riel@surriel.com,
-	joshua.hahnjy@gmail.com
-Subject: Re: [PATCH v3 14/20] mm: swap: decouple virtual swap slot from
- backing store
-Message-ID: <202602092300.lZO4Ee4N-lkp@intel.com>
+	s=arc-20240116; t=1770706149; c=relaxed/simple;
+	bh=av8q2nJWKq8RrTg/WR50IKQK3VHKFzKGZobwrbgdZ10=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=lhYwxLV9f3wTnj7SwFazeLYHQ1WpQX/7GoSwRqWXgfRyVEK7gd++rJ0vDgcG64elX0uMn4oFc9FQ/e6IIqnc5DBbivaYgJMC3n7B68tMz8HXbK/OTJ/uxMMuN+1quVvt3gb0+nQoq4mIABFjwv7l3lPtWCvCkZ7xf/Uo13jo/48=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=SSaMr9CM; arc=none smtp.client-ip=91.218.175.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <0673b72c-8d7c-4bfb-a8b2-da5ae5bb5f00@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1770706134;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=gci4PxuqdlVZBIC34roKwVj2Mfy+C8h8ARtkl3i8WIY=;
+	b=SSaMr9CM00eCMtfnra8fKpSRNM1+c0aPKMj1MD0cAoZblfvnkKQXyvcqoR81FqlGV0N4Xx
+	pxfCEDp4XVBfyLkFJD9DX+O9svXp/lTZ2WWei+cAMbVC4zB6+t1YLRR3zPETzg+39VRM8B
+	Kls1/747RlPwiw9yujsPbGNpwi60j48=
+Date: Tue, 10 Feb 2026 14:47:51 +0800
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20260208215839.87595-15-nphamcs@gmail.com>
+Subject: Re: [PATCH v4 29/31] mm: memcontrol: prepare for reparenting
+ non-hierarchical stats
+To: Shakeel Butt <shakeel.butt@linux.dev>
+Cc: hannes@cmpxchg.org, hughd@google.com, mhocko@suse.com,
+ roman.gushchin@linux.dev, muchun.song@linux.dev, david@kernel.org,
+ lorenzo.stoakes@oracle.com, ziy@nvidia.com, harry.yoo@oracle.com,
+ yosry.ahmed@linux.dev, imran.f.khan@oracle.com, kamalesh.babulal@oracle.com,
+ axelrasmussen@google.com, yuanchu@google.com, weixugc@google.com,
+ chenridong@huaweicloud.com, mkoutny@suse.com, akpm@linux-foundation.org,
+ hamzamahfooz@linux.microsoft.com, apais@linux.microsoft.com,
+ lance.yang@linux.dev, bhe@redhat.com, linux-mm@kvack.org,
+ linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+ Qi Zheng <zhengqi.arch@bytedance.com>
+References: <cover.1770279888.git.zhengqi.arch@bytedance.com>
+ <3ca234c643ecb484f17aa88187e0bce8949bdb6b.1770279888.git.zhengqi.arch@bytedance.com>
+ <aYabQii_-9EVdgub@linux.dev>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Qi Zheng <qi.zheng@linux.dev>
+In-Reply-To: <aYabQii_-9EVdgub@linux.dev>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-0.66 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
+X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[linaro.org,none];
-	R_DKIM_ALLOW(-0.20)[linaro.org:s=google];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	DMARC_POLICY_ALLOW(-0.50)[linux.dev,none];
+	R_DKIM_ALLOW(-0.20)[linux.dev:s=key1];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-13825-lists,cgroups=lfdr.de];
-	FROM_HAS_DN(0.00)[];
-	FREEMAIL_TO(0.00)[lists.linux.dev,gmail.com,kvack.org];
-	RCPT_COUNT_TWELVE(0.00)[34];
-	RECEIVED_HELO_LOCALHOST(0.00)[];
-	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	FREEMAIL_CC(0.00)[intel.com,lists.linux.dev,linux-foundation.org,cmpxchg.org,google.com,linux.dev,kernel.org,tencent.com,gmail.com,arm.com,huaweicloud.com,zeniv.linux.org.uk,redhat.com,suse.de,oracle.com,csgroup.eu,meta.com,vger.kernel.org,surriel.com];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	TO_DN_SOME(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[5];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[dan.carpenter@linaro.org,cgroups@vger.kernel.org];
-	DKIM_TRACE(0.00)[linaro.org:+];
-	TAGGED_RCPT(0.00)[cgroups];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
+	TAGGED_FROM(0.00)[bounces-13826-lists,cgroups=lfdr.de];
+	RCVD_COUNT_THREE(0.00)[3];
+	RCPT_COUNT_TWELVE(0.00)[27];
+	MIME_TRACE(0.00)[0:+];
+	FROM_HAS_DN(0.00)[];
 	MISSING_XM_UA(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,intel.com:mid,intel.com:email,linaro.org:email,linaro.org:dkim]
-X-Rspamd-Queue-Id: F026E117606
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[qi.zheng@linux.dev,cgroups@vger.kernel.org];
+	DKIM_TRACE(0.00)[linux.dev:+];
+	MID_RHS_MATCH_FROM(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	TAGGED_RCPT(0.00)[cgroups];
+	TO_DN_SOME(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,linux.dev:mid,linux.dev:dkim,bytedance.com:email]
+X-Rspamd-Queue-Id: 5DB1C117845
 X-Rspamd-Action: no action
 
-Hi Nhat,
 
-kernel test robot noticed the following build warnings:
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Nhat-Pham/mm-swap-decouple-swap-cache-from-physical-swap-infrastructure/20260209-120606
-base:   05f7e89ab9731565d8a62e3b5d1ec206485eeb0b
-patch link:    https://lore.kernel.org/r/20260208215839.87595-15-nphamcs%40gmail.com
-patch subject: [PATCH v3 14/20] mm: swap: decouple virtual swap slot from backing store
-config: powerpc-randconfig-r073-20260209 (https://download.01.org/0day-ci/archive/20260209/202602092300.lZO4Ee4N-lkp@intel.com/config)
-compiler: powerpc-linux-gcc (GCC) 15.2.0
-smatch version: v0.5.0-8994-gd50c5a4c
+On 2/7/26 10:19 AM, Shakeel Butt wrote:
+> On Thu, Feb 05, 2026 at 05:01:48PM +0800, Qi Zheng wrote:
+>> From: Qi Zheng <zhengqi.arch@bytedance.com>
+>>
+>> To resolve the dying memcg issue, we need to reparent LRU folios of child
+>> memcg to its parent memcg. This could cause problems for non-hierarchical
+>> stats.
+>>
+>> As Yosry Ahmed pointed out:
+>>
+>> ```
+>> In short, if memory is charged to a dying cgroup at the time of
+>> reparenting, when the memory gets uncharged the stats updates will occur
+>> at the parent. This will update both hierarchical and non-hierarchical
+>> stats of the parent, which would corrupt the parent's non-hierarchical
+>> stats (because those counters were never incremented when the memory was
+>> charged).
+>> ```
+>>
+>> Now we have the following two types of non-hierarchical stats, and they
+>> are only used in CONFIG_MEMCG_V1:
+>>
+>> a. memcg->vmstats->state_local[i]
+>> b. pn->lruvec_stats->state_local[i]
+>>
+>> To ensure that these non-hierarchical stats work properly, we need to
+>> reparent these non-hierarchical stats after reparenting LRU folios. To
+>> this end, this commit makes the following preparations:
+>>
+>> 1. implement reparent_state_local() to reparent non-hierarchical stats
+>> 2. make css_killed_work_fn() to be called in rcu work, and implement
+>>     get_non_dying_memcg_start() and get_non_dying_memcg_end() to avoid race
+>>     between mod_memcg_state()/mod_memcg_lruvec_state()
+>>     and reparent_state_local()
+>> 3. change these non-hierarchical stats to atomic_long_t type to avoid race
+>>     between mem_cgroup_stat_aggregate() and reparent_state_local()
+>>
+>> Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
+> 
+> Overall looks good just a couple of comments.
+> 
+>> ---
+>>   include/linux/memcontrol.h |   4 ++
+>>   kernel/cgroup/cgroup.c     |   8 +--
+>>   mm/memcontrol-v1.c         |  16 ++++++
+>>   mm/memcontrol-v1.h         |   3 +
+>>   mm/memcontrol.c            | 113 ++++++++++++++++++++++++++++++++++---
+>>   5 files changed, 132 insertions(+), 12 deletions(-)
+>>
+>> diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
+>> index 3970c102fe741..a4f6ab7eb98d6 100644
+>> --- a/include/linux/memcontrol.h
+>> +++ b/include/linux/memcontrol.h
+>> @@ -957,12 +957,16 @@ static inline void mod_memcg_page_state(struct page *page,
+>>   
+>>   unsigned long memcg_events(struct mem_cgroup *memcg, int event);
+>>   unsigned long memcg_page_state(struct mem_cgroup *memcg, int idx);
+>> +void reparent_memcg_state_local(struct mem_cgroup *memcg,
+>> +				struct mem_cgroup *parent, int idx);
+> 
+> Put the above in mm/memcontrol-v1.h file.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
-| Closes: https://lore.kernel.org/r/202602092300.lZO4Ee4N-lkp@intel.com/
+OK.
 
-smatch warnings:
-mm/vswap.c:733 vswap_alloc_swap_slot() warn: variable dereferenced before check 'folio' (see line 701)
+> 
+>>   unsigned long memcg_page_state_output(struct mem_cgroup *memcg, int item);
+>>   bool memcg_stat_item_valid(int idx);
+>>   bool memcg_vm_event_item_valid(enum vm_event_item idx);
+>>   unsigned long lruvec_page_state(struct lruvec *lruvec, enum node_stat_item idx);
+>>   unsigned long lruvec_page_state_local(struct lruvec *lruvec,
+>>   				      enum node_stat_item idx);
+>> +void reparent_memcg_lruvec_state_local(struct mem_cgroup *memcg,
+>> +				       struct mem_cgroup *parent, int idx);
+> 
+> Put the above in mm/memcontrol-v1.h file.
 
-vim +/folio +733 mm/vswap.c
+OK.
 
-19a5fe94e9aae4 Nhat Pham 2026-02-08  694  bool vswap_alloc_swap_slot(struct folio *folio)
-19a5fe94e9aae4 Nhat Pham 2026-02-08  695  {
-19a5fe94e9aae4 Nhat Pham 2026-02-08  696  	int i, nr = folio_nr_pages(folio);
-19a5fe94e9aae4 Nhat Pham 2026-02-08  697  	struct vswap_cluster *cluster = NULL;
-19a5fe94e9aae4 Nhat Pham 2026-02-08  698  	struct swap_info_struct *si;
-19a5fe94e9aae4 Nhat Pham 2026-02-08  699  	struct swap_cluster_info *ci;
-19a5fe94e9aae4 Nhat Pham 2026-02-08  700  	swp_slot_t slot = { .val = 0 };
-19a5fe94e9aae4 Nhat Pham 2026-02-08 @701  	swp_entry_t entry = folio->swap;
+> 
+>>   
+>>   void mem_cgroup_flush_stats(struct mem_cgroup *memcg);
+>>   void mem_cgroup_flush_stats_ratelimited(struct mem_cgroup *memcg);
+>> diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
+>> index 94788bd1fdf0e..dbf94a77018e6 100644
+>> --- a/kernel/cgroup/cgroup.c
+>> +++ b/kernel/cgroup/cgroup.c
+>> @@ -6043,8 +6043,8 @@ int cgroup_mkdir(struct kernfs_node *parent_kn, const char *name, umode_t mode)
+>>    */
+>>   static void css_killed_work_fn(struct work_struct *work)
+>>   {
+>> -	struct cgroup_subsys_state *css =
+>> -		container_of(work, struct cgroup_subsys_state, destroy_work);
+>> +	struct cgroup_subsys_state *css = container_of(to_rcu_work(work),
+>> +				struct cgroup_subsys_state, destroy_rwork);
+>>   
+>>   	cgroup_lock();
+>>   
+>> @@ -6065,8 +6065,8 @@ static void css_killed_ref_fn(struct percpu_ref *ref)
+>>   		container_of(ref, struct cgroup_subsys_state, refcnt);
+>>   
+>>   	if (atomic_dec_and_test(&css->online_cnt)) {
+>> -		INIT_WORK(&css->destroy_work, css_killed_work_fn);
+>> -		queue_work(cgroup_offline_wq, &css->destroy_work);
+>> +		INIT_RCU_WORK(&css->destroy_rwork, css_killed_work_fn);
+>> +		queue_rcu_work(cgroup_offline_wq, &css->destroy_rwork);
+>>   	}
+>>   }
+>>   
+>> diff --git a/mm/memcontrol-v1.c b/mm/memcontrol-v1.c
+>> index c6078cd7f7e53..a427bb205763b 100644
+>> --- a/mm/memcontrol-v1.c
+>> +++ b/mm/memcontrol-v1.c
+>> @@ -1887,6 +1887,22 @@ static const unsigned int memcg1_events[] = {
+>>   	PGMAJFAULT,
+>>   };
+>>   
+>> +void reparent_memcg1_state_local(struct mem_cgroup *memcg, struct mem_cgroup *parent)
+>> +{
+>> +	int i;
+>> +
+>> +	for (i = 0; i < ARRAY_SIZE(memcg1_stats); i++)
+>> +		reparent_memcg_state_local(memcg, parent, memcg1_stats[i]);
+>> +}
+>> +
+>> +void reparent_memcg1_lruvec_state_local(struct mem_cgroup *memcg, struct mem_cgroup *parent)
+>> +{
+>> +	int i;
+>> +
+>> +	for (i = 0; i < NR_LRU_LISTS; i++)
+>> +		reparent_memcg_lruvec_state_local(memcg, parent, i);
+>> +}
+>> +
+>>   void memcg1_stat_format(struct mem_cgroup *memcg, struct seq_buf *s)
+>>   {
+>>   	unsigned long memory, memsw;
+>> diff --git a/mm/memcontrol-v1.h b/mm/memcontrol-v1.h
+>> index eb3c3c1056574..45528195d3578 100644
+>> --- a/mm/memcontrol-v1.h
+>> +++ b/mm/memcontrol-v1.h
+>> @@ -41,6 +41,7 @@ static inline bool do_memsw_account(void)
+>>   
+>>   unsigned long memcg_events_local(struct mem_cgroup *memcg, int event);
+>>   unsigned long memcg_page_state_local(struct mem_cgroup *memcg, int idx);
+>> +void mod_memcg_page_state_local(struct mem_cgroup *memcg, int idx, unsigned long val);
+>>   unsigned long memcg_page_state_local_output(struct mem_cgroup *memcg, int item);
+>>   bool memcg1_alloc_events(struct mem_cgroup *memcg);
+>>   void memcg1_free_events(struct mem_cgroup *memcg);
+>> @@ -73,6 +74,8 @@ void memcg1_uncharge_batch(struct mem_cgroup *memcg, unsigned long pgpgout,
+>>   			   unsigned long nr_memory, int nid);
+>>   
+>>   void memcg1_stat_format(struct mem_cgroup *memcg, struct seq_buf *s);
+>> +void reparent_memcg1_state_local(struct mem_cgroup *memcg, struct mem_cgroup *parent);
+>> +void reparent_memcg1_lruvec_state_local(struct mem_cgroup *memcg, struct mem_cgroup *parent);
+>>   
+>>   void memcg1_account_kmem(struct mem_cgroup *memcg, int nr_pages);
+>>   static inline bool memcg1_tcpmem_active(struct mem_cgroup *memcg)
+>> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+>> index c9b5dfd822d0a..e7d4e4ff411b6 100644
+>> --- a/mm/memcontrol.c
+>> +++ b/mm/memcontrol.c
+>> @@ -225,6 +225,26 @@ static inline struct obj_cgroup *__memcg_reparent_objcgs(struct mem_cgroup *memc
+>>   	return objcg;
+>>   }
+>>   
+>> +#ifdef CONFIG_MEMCG_V1
+>> +static void __mem_cgroup_flush_stats(struct mem_cgroup *memcg, bool force);
+>> +
+>> +static inline void reparent_state_local(struct mem_cgroup *memcg, struct mem_cgroup *parent)
+>> +{
+>> +	if (cgroup_subsys_on_dfl(memory_cgrp_subsys))
+>> +		return;
+>> +
+>> +	__mem_cgroup_flush_stats(memcg, true);
+>> +
+>> +	/* The following counts are all non-hierarchical and need to be reparented. */
+>> +	reparent_memcg1_state_local(memcg, parent);
+>> +	reparent_memcg1_lruvec_state_local(memcg, parent);
+>> +}
+>> +#else
+>> +static inline void reparent_state_local(struct mem_cgroup *memcg, struct mem_cgroup *parent)
+>> +{
+>> +}
+>> +#endif
+>> +
+>>   static inline void reparent_locks(struct mem_cgroup *memcg, struct mem_cgroup *parent)
+>>   {
+>>   	spin_lock_irq(&objcg_lock);
+>> @@ -407,7 +427,7 @@ struct lruvec_stats {
+>>   	long state[NR_MEMCG_NODE_STAT_ITEMS];
+>>   
+>>   	/* Non-hierarchical (CPU aggregated) state */
+>> -	long state_local[NR_MEMCG_NODE_STAT_ITEMS];
+>> +	atomic_long_t state_local[NR_MEMCG_NODE_STAT_ITEMS];
+>>   
+>>   	/* Pending child counts during tree propagation */
+>>   	long state_pending[NR_MEMCG_NODE_STAT_ITEMS];
+>> @@ -450,7 +470,7 @@ unsigned long lruvec_page_state_local(struct lruvec *lruvec,
+>>   		return 0;
+>>   
+>>   	pn = container_of(lruvec, struct mem_cgroup_per_node, lruvec);
+>> -	x = READ_ONCE(pn->lruvec_stats->state_local[i]);
+>> +	x = atomic_long_read(&(pn->lruvec_stats->state_local[i]));
+>>   #ifdef CONFIG_SMP
+>>   	if (x < 0)
+>>   		x = 0;
+>> @@ -458,6 +478,27 @@ unsigned long lruvec_page_state_local(struct lruvec *lruvec,
+>>   	return x;
+>>   }
+>>   
+> 
+> Please put the following function under CONFIG_MEMCG_V1. Just move it in
+> the same block as reparent_state_local().
 
-folio dereference here
+OK, will try to do it.
 
-19a5fe94e9aae4 Nhat Pham 2026-02-08  702  	struct swp_desc *desc;
-19a5fe94e9aae4 Nhat Pham 2026-02-08  703  	bool fallback = false;
-19a5fe94e9aae4 Nhat Pham 2026-02-08  704  
-19a5fe94e9aae4 Nhat Pham 2026-02-08  705  	/*
-19a5fe94e9aae4 Nhat Pham 2026-02-08  706  	 * We might have already allocated a backing physical swap slot in past
-19a5fe94e9aae4 Nhat Pham 2026-02-08  707  	 * attempts (for instance, when we disable zswap). If the entire range is
-19a5fe94e9aae4 Nhat Pham 2026-02-08  708  	 * already swapfile-backed we can skip swapfile case.
-19a5fe94e9aae4 Nhat Pham 2026-02-08  709  	 */
-19a5fe94e9aae4 Nhat Pham 2026-02-08  710  	if (vswap_swapfile_backed(entry, nr))
-19a5fe94e9aae4 Nhat Pham 2026-02-08  711  		return true;
-19a5fe94e9aae4 Nhat Pham 2026-02-08  712  
-19a5fe94e9aae4 Nhat Pham 2026-02-08  713  	if (swap_slot_alloc(&slot, folio_order(folio)))
+> 
+>> +void reparent_memcg_lruvec_state_local(struct mem_cgroup *memcg,
+>> +				       struct mem_cgroup *parent, int idx)
+>> +{
+>> +	int i = memcg_stats_index(idx);
+>> +	int nid;
+>> +
+>> +	if (WARN_ONCE(BAD_STAT_IDX(i), "%s: missing stat item %d\n", __func__, idx))
+>> +		return;
+>> +
+>> +	for_each_node(nid) {
+>> +		struct lruvec *child_lruvec = mem_cgroup_lruvec(memcg, NODE_DATA(nid));
+>> +		struct lruvec *parent_lruvec = mem_cgroup_lruvec(parent, NODE_DATA(nid));
+>> +		struct mem_cgroup_per_node *parent_pn;
+>> +		unsigned long value = lruvec_page_state_local(child_lruvec, idx);
+>> +
+>> +		parent_pn = container_of(parent_lruvec, struct mem_cgroup_per_node, lruvec);
+>> +
+>> +		atomic_long_add(value, &(parent_pn->lruvec_stats->state_local[i]));
+>> +	}
+>> +}
+>> +
+> 
+> [...]
+> 
+>>   
+>> +#ifdef CONFIG_MEMCG_V1
+>> +/*
+>> + * Used in mod_memcg_state() and mod_memcg_lruvec_state() to avoid race with
+>> + * reparenting of non-hierarchical state_locals.
+>> + */
+>> +static inline struct mem_cgroup *get_non_dying_memcg_start(struct mem_cgroup *memcg)
+>> +{
+>> +	if (cgroup_subsys_on_dfl(memory_cgrp_subsys))
+>> +		return memcg;
+>> +
+>> +	rcu_read_lock();
+>> +
+>> +	while (memcg_is_dying(memcg))
+>> +		memcg = parent_mem_cgroup(memcg);
+>> +
+>> +	return memcg;
+>> +}
+>> +
+>> +static inline void get_non_dying_memcg_end(void)
+>> +{
+>> +	if (cgroup_subsys_on_dfl(memory_cgrp_subsys))
+>> +		return;
+>> +
+>> +	rcu_read_unlock();
+>> +}
+>> +#else
+>> +static inline struct mem_cgroup *get_non_dying_memcg_start(struct mem_cgroup *memcg)
+>> +{
+>> +	return memcg;
+>> +}
+>> +
+>> +static inline void get_non_dying_memcg_end(void)
+>> +{
+>> +}
+>> +#endif
+> 
+> Add the usage of these start and end functions in mod_memcg_state() and
+> mod_memcg_lruvec_state() in this patch.
 
-and here
+Using these two function will change the behavior of mod_memcg_state()
+and mod_memcg_lruvec_state(), but LRU folios has not yet been
+reparented.
 
-19a5fe94e9aae4 Nhat Pham 2026-02-08  714  		return false;
-19a5fe94e9aae4 Nhat Pham 2026-02-08  715  
-19a5fe94e9aae4 Nhat Pham 2026-02-08  716  	if (!slot.val)
-19a5fe94e9aae4 Nhat Pham 2026-02-08  717  		return false;
-19a5fe94e9aae4 Nhat Pham 2026-02-08  718  
-7f88e3ea20f231 Nhat Pham 2026-02-08  719  	/* establish the vrtual <-> physical swap slots linkages. */
-7f88e3ea20f231 Nhat Pham 2026-02-08  720  	si = __swap_slot_to_info(slot);
-7f88e3ea20f231 Nhat Pham 2026-02-08  721  	ci = swap_cluster_lock(si, swp_slot_offset(slot));
-7f88e3ea20f231 Nhat Pham 2026-02-08  722  	vswap_rmap_set(ci, slot, entry.val, nr);
-7f88e3ea20f231 Nhat Pham 2026-02-08  723  	swap_cluster_unlock(ci);
-7f88e3ea20f231 Nhat Pham 2026-02-08  724  
-7f88e3ea20f231 Nhat Pham 2026-02-08  725  	rcu_read_lock();
-7f88e3ea20f231 Nhat Pham 2026-02-08  726  	for (i = 0; i < nr; i++) {
-7f88e3ea20f231 Nhat Pham 2026-02-08  727  		desc = vswap_iter(&cluster, entry.val + i);
-7f88e3ea20f231 Nhat Pham 2026-02-08  728  		VM_WARN_ON(!desc);
-7f88e3ea20f231 Nhat Pham 2026-02-08  729  
-19a5fe94e9aae4 Nhat Pham 2026-02-08  730  		if (desc->type == VSWAP_FOLIO) {
-19a5fe94e9aae4 Nhat Pham 2026-02-08  731  			/* case 1: fallback from zswap store failure */
-19a5fe94e9aae4 Nhat Pham 2026-02-08  732  			fallback = true;
-19a5fe94e9aae4 Nhat Pham 2026-02-08 @733  			if (!folio)
+To ensure the patch itself is error-free, I chose to place the usage of
+these two function in patch #30.
 
-So it can't be NULL here.
+Thanks,
+Qi
 
-19a5fe94e9aae4 Nhat Pham 2026-02-08  734  				folio = desc->swap_cache;
-
-So we'll never do this assignment and it will never become NULL.
-
-19a5fe94e9aae4 Nhat Pham 2026-02-08  735  			else
-19a5fe94e9aae4 Nhat Pham 2026-02-08  736  				VM_WARN_ON(folio != desc->swap_cache);
-19a5fe94e9aae4 Nhat Pham 2026-02-08  737  		} else {
-19a5fe94e9aae4 Nhat Pham 2026-02-08  738  			/*
-19a5fe94e9aae4 Nhat Pham 2026-02-08  739  			 * Case 2: zswap writeback.
-19a5fe94e9aae4 Nhat Pham 2026-02-08  740  			 *
-19a5fe94e9aae4 Nhat Pham 2026-02-08  741  			 * No need to free zswap entry here - it will be freed once zswap
-19a5fe94e9aae4 Nhat Pham 2026-02-08  742  			 * writeback suceeds.
-19a5fe94e9aae4 Nhat Pham 2026-02-08  743  			 */
-19a5fe94e9aae4 Nhat Pham 2026-02-08  744  			VM_WARN_ON(desc->type != VSWAP_ZSWAP);
-19a5fe94e9aae4 Nhat Pham 2026-02-08  745  			VM_WARN_ON(fallback);
-19a5fe94e9aae4 Nhat Pham 2026-02-08  746  		}
-19a5fe94e9aae4 Nhat Pham 2026-02-08  747  		desc->type = VSWAP_SWAPFILE;
-7f88e3ea20f231 Nhat Pham 2026-02-08  748  		desc->slot.val = slot.val + i;
-7f88e3ea20f231 Nhat Pham 2026-02-08  749  	}
-7f88e3ea20f231 Nhat Pham 2026-02-08  750  	spin_unlock(&cluster->lock);
-7f88e3ea20f231 Nhat Pham 2026-02-08  751  	rcu_read_unlock();
-19a5fe94e9aae4 Nhat Pham 2026-02-08  752  	return true;
-7f88e3ea20f231 Nhat Pham 2026-02-08  753  }
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+> 
 
 
