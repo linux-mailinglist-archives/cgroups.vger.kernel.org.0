@@ -1,246 +1,193 @@
-Return-Path: <cgroups+bounces-13829-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-13830-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 2BWfGFIUi2n5PQAAu9opvQ
-	(envelope-from <cgroups+bounces-13829-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Tue, 10 Feb 2026 12:19:46 +0100
+	id wFv5HIg6i2neRgAAu9opvQ
+	(envelope-from <cgroups+bounces-13830-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Tue, 10 Feb 2026 15:02:48 +0100
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id A075211A0CF
-	for <lists+cgroups@lfdr.de>; Tue, 10 Feb 2026 12:19:45 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 13F3E11BAC1
+	for <lists+cgroups@lfdr.de>; Tue, 10 Feb 2026 15:02:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 68EDD30432F4
-	for <lists+cgroups@lfdr.de>; Tue, 10 Feb 2026 11:19:43 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 438103063D7D
+	for <lists+cgroups@lfdr.de>; Tue, 10 Feb 2026 14:01:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7EA0C3126C5;
-	Tue, 10 Feb 2026 11:19:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 174E636605C;
+	Tue, 10 Feb 2026 14:01:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jNziTu5b"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="Og1WAsY4"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-ed1-f53.google.com (mail-ed1-f53.google.com [209.85.208.53])
+Received: from mail-wr1-f41.google.com (mail-wr1-f41.google.com [209.85.221.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E3A662E093A
-	for <cgroups@vger.kernel.org>; Tue, 10 Feb 2026 11:19:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.208.53
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1770722382; cv=pass; b=paCrVdpo+LSkZycsG3onLSTYE8dt/bI7To4S4CVaF/ouIdS52/Uy87L3sDN5w31nOncAVd1DTDChtDM8mMT4ddIRs9jdZUpXjEp7OWxi3mfJ+/AIJh35rcvqn/3Q+R3xd5xcsgpakf+yf6gDgDxYAtOqVGq/LzHsSn7vHbrpmVY=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1770722382; c=relaxed/simple;
-	bh=ANohJG7Zl56/LXapQZ7F/3RohNWrnUF9yY0FduJmZc0=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=PxT7w0GfzVpYumZ0L0A2w7mpQF8RFaRDTyK8RjU1KtMyM9NH7y1KoQfNxXuVlJ9JVgoamaLpGypUWQX9RnvcKbIUZ5sn4cqjSY5j8XxlekPmIvvBJdJNC0P0j9TIaNh3bMAxbY/pRo22CXxo2xyN2gHJ+nnZvQJ6yeXfiXtPuJU=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=jNziTu5b; arc=pass smtp.client-ip=209.85.208.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f53.google.com with SMTP id 4fb4d7f45d1cf-658034ce0e3so1050891a12.3
-        for <cgroups@vger.kernel.org>; Tue, 10 Feb 2026 03:19:40 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; t=1770722379; cv=none;
-        d=google.com; s=arc-20240605;
-        b=e0IeX3o0gMP0YU8u4rYeCs0SJmqXTccUALzEeDern/RXZFxflf8KqoEHJdj6+8Mfs0
-         t6NkCPKM+qY3xpI1Zi/W83z19GxxspkemwOJT/TOdthLzfdejYJVaKfecLE8UMuL3uA4
-         YZElszGw2BLfX9EtteNTagJ93HzZf+FHVQpCgjcuwjqUH7zWTX1CriAAlNgLEKFQ6eMm
-         sO+E41MOq4/th1/jLp/LVtby0fNypkZ1DbzUFQZNwBRWrNtlHRQ75saBqZKfWW8GlW5E
-         lIUtTGVNWJEEuZ8eNh4Uw7Z504h/zYJ33pTgSZzupMOYy0ER+/cd/ybyRTXg4XjRNaZ6
-         Uqcw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:dkim-signature;
-        bh=8yrMEKIEnaCuB3VkTkmV3NWEmJbbUoagnPHYQEzo5oU=;
-        fh=lhuLO25HisRDel//hOeNZTmRKxwPuZZijj8m0zSAYfo=;
-        b=VHK5JTgtXjlap6dCo/rFyBWsKdoPAE4CnKXur18i/JDx/8BYzngM4kos7jxm5nyb5U
-         A4d5AMVul1zRHZALNV2u46wQIHPNmX7HP2Ow5jSdfpXkZqTxQ77h0jJmjRGOiOJI7WZQ
-         +H7aH2e5LNg/+rP+kADjGE3gGQiVdqwyNQt8L7HIjjLW5vfRNPbBak4jYX71PZUMQdvn
-         JPNAseMnadpr+gQ98jyjpRb5UPcd4YXupvIJRStJG3X341S1hB4wJ8EDlKEafIEhXNd7
-         zFM8MkcIWoM/454ZzpzZM5/wci39CeT3P33rpOQB6PJkfCerrNVlace19Rj6TrpqriGV
-         /rHw==;
-        darn=vger.kernel.org
-ARC-Authentication-Results: i=1; mx.google.com; arc=none
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 505873590CC
+	for <cgroups@vger.kernel.org>; Tue, 10 Feb 2026 14:01:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.41
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1770732075; cv=none; b=ScYMO4qpLRt50eIbE9DQt4NhJM2n5jA7hRtiiKQlk7f/pG6W/D4wrtC9D/m8u3pox7YBuxb9kEGdZhIAgp5AEnMCuahqRk456tue24b1BNU13V+5ASyknhnsqaDEmcVCGwc81/YfwRRUhpPgchEdsmiXUVoVU2Cp12xs+fWW52E=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1770732075; c=relaxed/simple;
+	bh=+50oF9u4n9eTXHH4cVzoVk6iIl3FH4/Tov0ZyJpcWkA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=XloUW3tKlg8mkeJQ4QSMDWXbDJIMLkEUz8PLa7ZE5+GRH8ScO7qaYNgYCUbjcBMxDk9jJvM8mrCR1kV7waBR0Gq76ZvOfRoMtu/nduFFSMfsVLgezFdx+QA1LF8b2pXQanxvNww1zxXP/fl8D3FtMdHEMmGOsaS7T2fr6YIHhNc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=Og1WAsY4; arc=none smtp.client-ip=209.85.221.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-wr1-f41.google.com with SMTP id ffacd0b85a97d-4362197d174so602208f8f.3
+        for <cgroups@vger.kernel.org>; Tue, 10 Feb 2026 06:01:14 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1770722379; x=1771327179; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=8yrMEKIEnaCuB3VkTkmV3NWEmJbbUoagnPHYQEzo5oU=;
-        b=jNziTu5bfzD99XdC8zGZzXJiwgTLgJs9thhQKpg2SwmBlaVhAz6xAJphduXNtXpF8n
-         x/PqlPk1R6h6BUB9imgMiyrYVYJeLQyjAYZI0r9+0z+C38qsBgFvctgcDh794PU5BSnf
-         aoULglheQ6lXIDuE2i9tzvd4i9mHNe8OvVbFsRIyTCjWcPTUlZzqPV6zRoScy4hEXxiP
-         6xNcVsCYqkNsODnSiHXhVnvCJgLq4GrCbL9Ms+E8fd2S2Bm7qhoCrPS4Fzt3PxAXu8py
-         q/jbb0Om4PWzCzweUJZsV4JQksH8Z7K/KojbE1gY/FQT2BMC7ndB4I/iI6L485PPFLDw
-         piaw==
+        d=suse.com; s=google; t=1770732073; x=1771336873; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=9FnxXnVFI1K0nd8Coyw5JESfQAuts9vipw7Dj/0GRW4=;
+        b=Og1WAsY4cH7OMJmrKX0jMX4fYSyOXKLWMMsHdbjXE3hHAFUyn2uD0K9PCOuAg41qRx
+         aT+WarygDf4jI+NJQr9qfP062ewgMhUlhUZ1/M05SivHOn7hHqvrbsCcewh3hQ9FO14W
+         Ulj57OvNiYQtlQMAdriYczyJwOE3CAYCyCVpbYGcQN09gNdR7JEp3Ncc5LXVZjUvqLNH
+         kChhg+zRR3LeUKD5mpjjsNEBXpDBEck4bPEJapuvrQDXgoS1DjLlipYS8AF3oArlNszO
+         cYdFsv9Do2hLdKfmnPo65E8PRqFKOeRljB7iSLuNPBb2Mw5BvgLkOpF/zYmPIswTIJ4I
+         OgWQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1770722379; x=1771327179;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=8yrMEKIEnaCuB3VkTkmV3NWEmJbbUoagnPHYQEzo5oU=;
-        b=n7LOnOkfjmgkZwCxlGYj2zjC6GiBdOncPLtH0FVBPQEuaHDF+OAPomQlu/zdEHuiDy
-         Qyc6lQQnG8H0Av+hD7059Xbd9QSEj4zW2bMB6XJIYZYzEYCIPTXPC2spGrJ4JQcgvCDj
-         eUmogZQG1Yy+pa/BT/h0xFN05fSnNKIe2MaMe0DmFVC7AMniXkPcvUDfKKn5LdFcQfpQ
-         u12/pAfW1UU2dc9yP29g4m/UCD1q6PAbDIA1Tj9s6dLZgvcyCFIsaFqOZopeuv4hWvF8
-         UkJXgJn3oLOa1d+h2/QQXIK3OnKBkXW+bZb3TWk7mmdsDjjNDoysQ8ew8X6fKKcDO8Ez
-         DmAw==
-X-Forwarded-Encrypted: i=1; AJvYcCUzAZfD8OIRrcHMtMetnnY3f8yYGzFBpucQ9k6yc/o8BSyyTOktfegjTaQy7PJtAX75xOp9cSVP@vger.kernel.org
-X-Gm-Message-State: AOJu0YyW5PMWy+xS59XyGrCL141gHsy+CQVCCB9dbQlQm7qD5QTIJh6h
-	Fd7eDxphGfZhcxuQVBal2krwI3FNWaCl3+I3jiDAM8U0dwXbSQOT1nz/wwzbOp5us0a6Sw4D+PR
-	HxympGzt8mXLr8MGi5V+ElhIkjeHyOVc=
-X-Gm-Gg: AZuq6aIpAEmVQECJstlNIrenlVodhAAnFep21q97xGt1moTZSFjddcOKsZnbvZaUNa7
-	P15LxeqPL/0R1Tv+0ICT9zJoYQx1Jy9lWIocAOsjN8yAoA9PqVPEXCGXmGBIGqg/G6y2//ZVlRx
-	68mJyEjnHsku1B0DzSVtm1S/PD/5ZxL9D6n41lqKYUAg2eXAGyUEpzG5al4lvPCghsUPcI1EEwS
-	2kbMmqeDVsKcVPCELg5vMnZvphECa9EVFxfXLWwuL1HYB23EYSyEQaNNwdK7Zvar1zizNMknpNW
-	dLdLQNUXyR5vCAfltq9OUxzdAoWonJSGjafL69g=
-X-Received: by 2002:a05:6402:1455:b0:658:e811:b983 with SMTP id
- 4fb4d7f45d1cf-65984137097mr7626468a12.12.1770722378950; Tue, 10 Feb 2026
- 03:19:38 -0800 (PST)
+        d=1e100.net; s=20230601; t=1770732073; x=1771336873;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=9FnxXnVFI1K0nd8Coyw5JESfQAuts9vipw7Dj/0GRW4=;
+        b=ga6eb85v6zlKkpU81FVOMrhucqiesSPydq06gkvMTrC074LUsgzJpbDGHStRxLiWhk
+         D+s+b6gAHOTftg+Ci/04qduzftXKsVSiHQ/ak19pkZP1gHF8G2puTJHPV50PHIRflI8R
+         tQKpN8+aFYD7RG6z/32Y1mkrnAW0bP3vXQjQdLwYBSrPraspy/s1HbzGFb29D0ibeOLK
+         n3kA9mZ+F++WF1jitqg148vrC63Yws3GhNLcniZxNiDGsWVlqMgC4gDcqY8zxtb00EGy
+         v1/EUFiT6qiy7BfFQOraMol/nUX3yIltMMnfjpG8eD9P3anNoxAPudMIc+AUaojGxgRT
+         we6w==
+X-Forwarded-Encrypted: i=1; AJvYcCWr7CiKdZpoO07ySlU19Du3frHnbOqQqsMl0PiW9xcd7wJuMWshVhUPA3B2aaZRXDQUex9rRFWs@vger.kernel.org
+X-Gm-Message-State: AOJu0Yx1j+4tca1mjCIwFtd92zY8ZbQN+oxFwaDPdzhTs0o+cawHE3RZ
+	xcuwBvQz5g25QYE38X7Xl7R5yVAGJC4LH6Y1v9+BRoAbF+uUAS8n1H4CwnW89/GSDtA=
+X-Gm-Gg: AZuq6aJAtv9PBnbx77+L6IA3wAg1pCohKPgdryAceruMvsPynwBJrT6gfk5V9M2ScY2
+	UddHcpD38reEqEG3VzuRQFj+ku+0gKar37dqaGtCsjtL9hNqiOXKDgCqS03TquoBUmCjXvEnx2M
+	Oj03GZh1W5PY/OYHwN8I4w0CpqMy0vfyyI5a549E3A6JtnR1cLRi7JO0riRbdSO4bNU41gnsxrb
+	uwWgrAcEz6iCOZySfpElVml5FJ5tb3UuRtZ8fh7+1ZFpVR8zZSvhJbqtDqFW45MbMQyEFWIVTUb
+	3J8nibnt/HO8X/s4OQOT9C+mDtEprAknuYfGioK06UOCgrzwrF6g6DdxIcmqiKVwZoKIfUJmgGg
+	rec5E3MU6Nw4s/+O5tnQ7s7XogB3XptuXcKKfK34Pp8iKHJ8blMafZhIw51uKbOaYt54qnJ34go
+	lgkCNBW5zQmXeJJ0ZjdYdWNXpJpsj5JxGPwvxB
+X-Received: by 2002:a05:6000:2382:b0:437:678a:5921 with SMTP id ffacd0b85a97d-437678a5b00mr12105418f8f.1.1770732072461;
+        Tue, 10 Feb 2026 06:01:12 -0800 (PST)
+Received: from localhost (109-81-26-156.rct.o2.cz. [109.81.26.156])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-436296bd4a1sm34344330f8f.17.2026.02.10.06.01.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 10 Feb 2026 06:01:12 -0800 (PST)
+Date: Tue, 10 Feb 2026 15:01:10 +0100
+From: Michal Hocko <mhocko@suse.com>
+To: Marcelo Tosatti <mtosatti@redhat.com>
+Cc: linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+	linux-mm@kvack.org, Johannes Weiner <hannes@cmpxchg.org>,
+	Roman Gushchin <roman.gushchin@linux.dev>,
+	Shakeel Butt <shakeel.butt@linux.dev>,
+	Muchun Song <muchun.song@linux.dev>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Christoph Lameter <cl@linux.com>, Pekka Enberg <penberg@kernel.org>,
+	David Rientjes <rientjes@google.com>,
+	Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+	Vlastimil Babka <vbabka@suse.cz>,
+	Hyeonggon Yoo <42.hyeyoo@gmail.com>,
+	Leonardo Bras <leobras@redhat.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Waiman Long <longman@redhat.com>, Boqun Feng <boqun.feng@gmail.com>,
+	Frederic Weisbecker <fweisbecker@suse.de>
+Subject: Re: [PATCH 0/4] Introduce QPW for per-cpu operations
+Message-ID: <aYs6Ju2G4bm6_tl2@tiehlicka>
+References: <20260206143430.021026873@redhat.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20260122112951.1854124-1-mjguzik@gmail.com> <CAGudoHErB_Dm8kTRDa8cNOe4aRgc6kAV0bnT90Pp_Uda+_DqDQ@mail.gmail.com>
- <uwuworxk3warxfnvr7g3gnrh5g7bnnkq5uhbsnoh42muv7zeax@y7ddpcbhwarw>
- <CAGudoHFaUjm7_Eh6VOOGvfscdekk7v2uNPjfLkZfAkR9aCA1Ew@mail.gmail.com>
- <roisfgpkd7tapp7cfjavmih2e2riwh2nczv4nqk25gik7of4pa@3ohyptw6nvb3> <jt6kzvdkp4obq7jszyt4muc5ktjjft2idbz3mzkknlxdch6iit@yeumuxzp6gbn>
-In-Reply-To: <jt6kzvdkp4obq7jszyt4muc5ktjjft2idbz3mzkknlxdch6iit@yeumuxzp6gbn>
-From: Mateusz Guzik <mjguzik@gmail.com>
-Date: Tue, 10 Feb 2026 12:19:27 +0100
-X-Gm-Features: AZwV_QgNTUimfm67FZWMQpYIoYtP54F-bX1LI1sfPsCGrFmd55YJCYGgxiMeJgQ
-Message-ID: <CAGudoHHuG-SCgv+F23eScZTnkXxyYKV9xgCBbFntkEaK90hsEQ@mail.gmail.com>
-Subject: Re: [PATCH v2] cgroup: avoid css_set_lock in cgroup_css_set_fork()
-To: =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>
-Cc: tj@kernel.org, hannes@cmpxchg.org, brauner@kernel.org, 
-	linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20260206143430.021026873@redhat.com>
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-2.16 / 15.00];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=2];
-	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
-	R_DKIM_ALLOW(-0.20)[gmail.com:s=20230601];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+X-Spamd-Result: default: False [-0.16 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+	DMARC_POLICY_ALLOW(-0.50)[suse.com,quarantine];
+	MID_RHS_NOT_FQDN(0.50)[];
+	R_DKIM_ALLOW(-0.20)[suse.com:s=google];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_COUNT_THREE(0.00)[4];
+	TAGGED_FROM(0.00)[bounces-13830-lists,cgroups=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[20];
 	MIME_TRACE(0.00)[0:+];
-	TAGGED_FROM(0.00)[bounces-13829-lists,cgroups=lfdr.de];
-	FREEMAIL_FROM(0.00)[gmail.com];
-	TO_DN_SOME(0.00)[];
+	RECEIVED_HELO_LOCALHOST(0.00)[];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	RSPAMD_URIBL_FAIL(0.00)[suse.com:query timed out];
 	FROM_HAS_DN(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCPT_COUNT_FIVE(0.00)[6];
+	DKIM_TRACE(0.00)[suse.com:+];
+	TO_DN_SOME(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[5];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[mjguzik@gmail.com,cgroups@vger.kernel.org];
-	DKIM_TRACE(0.00)[gmail.com:+];
-	MID_RHS_MATCH_FROMTLD(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	FROM_NEQ_ENVFROM(0.00)[mhocko@suse.com,cgroups@vger.kernel.org];
+	FREEMAIL_CC(0.00)[vger.kernel.org,kvack.org,cmpxchg.org,linux.dev,linux-foundation.org,linux.com,kernel.org,google.com,lge.com,suse.cz,gmail.com,redhat.com,linutronix.de,suse.de];
 	TAGGED_RCPT(0.00)[cgroups];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	MISSING_XM_UA(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,mail.gmail.com:mid,suse.com:email]
-X-Rspamd-Queue-Id: A075211A0CF
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,suse.com:dkim]
+X-Rspamd-Queue-Id: 13F3E11BAC1
 X-Rspamd-Action: no action
 
-On Tue, Feb 10, 2026 at 11:43=E2=80=AFAM Michal Koutn=C3=BD <mkoutny@suse.c=
-om> wrote:
->
-> Hello Mateusz.
->
+On Fri 06-02-26 11:34:30, Marcelo Tosatti wrote:
+> The problem:
+> Some places in the kernel implement a parallel programming strategy
+> consisting on local_locks() for most of the work, and some rare remote
+> operations are scheduled on target cpu. This keeps cache bouncing low since
+> cacheline tends to be mostly local, and avoids the cost of locks in non-RT
+> kernels, even though the very few remote operations will be expensive due
+> to scheduling overhead.
+> 
+> On the other hand, for RT workloads this can represent a problem: getting
+> an important workload scheduled out to deal with remote requests is
+> sure to introduce unexpected deadline misses.
+> 
+> The idea:
+> Currently with PREEMPT_RT=y, local_locks() become per-cpu spinlocks.
+> In this case, instead of scheduling work on a remote cpu, it should
+> be safe to grab that remote cpu's per-cpu spinlock and run the required
+> work locally. That major cost, which is un/locking in every local function,
+> already happens in PREEMPT_RT.
+> 
+> Also, there is no need to worry about extra cache bouncing:
+> The cacheline invalidation already happens due to schedule_work_on().
+> 
+> This will avoid schedule_work_on(), and thus avoid scheduling-out an
+> RT workload.
+> 
+> Proposed solution:
+> A new interface called Queue PerCPU Work (QPW), which should replace
+> Work Queue in the above mentioned use case.
+> 
+> If PREEMPT_RT=n this interfaces just wraps the current
+> local_locks + WorkQueue behavior, so no expected change in runtime.
+> 
+> If PREEMPT_RT=y, or CONFIG_QPW=y, queue_percpu_work_on(cpu,...) will
+> lock that cpu's per-cpu structure and perform work on it locally. 
+> This is possible because on functions that can be used for performing
+> remote work on remote per-cpu structures, the local_lock (which is already
+> a this_cpu spinlock()), will be replaced by a qpw_spinlock(), which
+> is able to get the per_cpu spinlock() for the cpu passed as parameter.
 
-ouch, terribly sorry for "hurry up and wait". real life suddenly got
-in the way and I have not looked into this since
+What about !PREEMPT_RT? We have people running isolated workloads and
+these sorts of pcp disruptions are really unwelcome as well. They do not
+have requirements as strong as RT workloads but the underlying
+fundamental problem is the same. Frederic (now CCed) is working on
+moving those pcp book keeping activities to be executed to the return to
+the userspace which should be taking care of both RT and non-RT
+configurations AFAICS.
 
-> On Thu, Jan 29, 2026 at 02:22:32PM +0100, Michal Koutn=C3=BD <mkoutny@sus=
-e.com> wrote:
-> > And I'm wondering whether removal only in cgroup_css_set_fork() improve=
-s
-> > parallelism because the tasks (before patching) are queued on the first
-> > css_set_lock, serialized through the first critical section and when
-> > they arrive to the second critical section in cgroup_post_fork() their
-> > arrival rate is already reduced because they had to pass through the
-> > first critical section. Hence the 2nd pass through the critical section
-> > should be less contended (w/out waiting).
->
-
-it improves parallelism because total hold time goes down.
-
-first, there is a little less work to do with the lock in the first
-place even absent any contention
-
-second, there is less total overhead in terms of bouncing the lock and
-the cachelines used by the code protected by it. note any contention
-means the bouncing already happens
-
-you can see the second effect in my patch which does not reduce the
-amount of work per se, but merely avoids a case where someone is
-halfway through alloc_pid and has to wait
-
-Ignoring some single-threaded overhead from the atomics in rwlock I
-very much expect scalability to be about the same as with the seqlock,
-but only because of the bottlenecks elsewhere.
-
-While I don't understand why would you go for rwlock here, I'm not
-going to protest -- it still moves the css lock out of the picture.
-
-> I was still curious about this, so I tried own measurement.
-> I ran your clone'ing will-it-scale testcase [1].
-> Basically it was
->         clone_processes -s 1000 -t 40
-> on a 40 CPUs/80 SMTs machine.
-> I watched for the `total:` iteration counts reported by wis
-> periodically.
->
-> 6.18.8-0-default (baseline :=3D stable + pidmap patches [2][3])
->   2.9383e+05 =C2=B1 1135.5
->
-> 6.18.8-1.g886f4c4-default (baseline + rwlock impl (previous message))
->   2.9363e+05 =C2=B1 1219.8
->
-> 6.18.8-1.gb21e8f8-default (baseline + seqcount impl (your patch))
->   2.9147e+05 =C2=B1 1125.6
->
-> So I could not reproduce any non-random change with this css_set_lock
-> split (I consider even the apparent difference between implementations
-> rather random).
-
-This is going to depend on the scale you test on. I was testing on
-south of 32. But I also got a miniscule win from removing css set lock
-as the problem for me, instead everything shifted to tasklist.
-
-Per my other e-mail tasklist lock retains the terrible 3-times locking
-and it is doing rather expensive work while holding it. It is
-plausible it happens to be at the top at that scale, but that's only
-an argument for fixing it. Even if you don't see the css thing at the
-top at the moment, it will be there once someone(tm) sorts out the
-tasklist problem.
-
->
-> At this point, I should look into profiles whether the bottleneck is
-> really css_set_lock in cgroup_post_fork() but I'm sharing what I have,
-> glad for your possible insights.
->
-> Regards,
-> Michal
->
-> [1] Only clone_process variant, clone_threads randomly hung.
->     will-it-scale/glibc (2.42-3.1) likely doesn't work well with the
->     cancellation/(no) join (but I got hangs even with pthread cleanup
->     handlers that joined the child thread)
->
->     #0  futex_wait (futex_word=3D0x7ffff7ffd840 <_rtld_local+2112>, expec=
-ted=3D2, private=3D0) at ../sysdeps/nptl/futex-internal.h:146
->     #1  __GI___lll_lock_wait_private (futex=3D0x7ffff7ffd840 <_rtld_local=
-+2112>) at lowlevellock.c:34
->     #2  0x00007ffff7c98d69 in __GI___nptl_deallocate_stack (pd=3D0x7ffff7=
-ab16c0) at nptl-stack.c:113
->     ...
->     #5  0x00000000004029ca in kill_tasks () at main.c:151
->
-> [2] https://lore.kernel.org/linux-mm/20251206131955.780557-1-mjguzik@gmai=
-l.com/
-> [3] Those patched improved the metric about some 10% (but I haven't
->     measured this difference so thoroughly).
+-- 
+Michal Hocko
+SUSE Labs
 
