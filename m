@@ -1,121 +1,82 @@
-Return-Path: <cgroups+bounces-13843-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-13844-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 8NWuF8WFi2neVAAAu9opvQ
-	(envelope-from <cgroups+bounces-13843-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Tue, 10 Feb 2026 20:23:49 +0100
+	id MAVUAwiii2l1XQAAu9opvQ
+	(envelope-from <cgroups+bounces-13844-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Tue, 10 Feb 2026 22:24:24 +0100
 X-Original-To: lists+cgroups@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id EC89611E9E7
-	for <lists+cgroups@lfdr.de>; Tue, 10 Feb 2026 20:23:48 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 9CB1511F631
+	for <lists+cgroups@lfdr.de>; Tue, 10 Feb 2026 22:24:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 947B0301D304
-	for <lists+cgroups@lfdr.de>; Tue, 10 Feb 2026 19:23:43 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 267143024A5C
+	for <lists+cgroups@lfdr.de>; Tue, 10 Feb 2026 21:24:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6F0DB38F245;
-	Tue, 10 Feb 2026 19:23:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EC5EF338925;
+	Tue, 10 Feb 2026 21:24:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="S6lA8u5V"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ql6bLMuZ"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-wm1-f54.google.com (mail-wm1-f54.google.com [209.85.128.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E79D82DECC5
-	for <cgroups@vger.kernel.org>; Tue, 10 Feb 2026 19:23:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.128.54
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1770751422; cv=pass; b=h3Ht4Iv7aiTR4p4s9gMP6SsvwvRvH1j3jC1jtOTdxX7cbVhxY3l25EOnzuuroh40g4/y0eUYz2zkcBN1ElIz61TiBEARWYvtWOzx0QXWlSjBxE80i/AVes3ebeb1prMfBEHrXx/RNZ/vzZ0QpPinXGrB/pOwe/cjFPUhanqJTIs=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1770751422; c=relaxed/simple;
-	bh=pBYVGOJgAAh0wUGtGHCzoyofcM36bp9tfn4+54TVIks=;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ADF273328E1
+	for <cgroups@vger.kernel.org>; Tue, 10 Feb 2026 21:24:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1770758655; cv=none; b=Kti27nN9KX7sEwhSt0mV49ii9QG7hQuHsfzeDuEYHUSguEulJdgvJBdE+1LOKzzRlWFXXtUWtAb+LMHnnXyQJpAZK78yfGHJQyr/ZM5KmHAhi2APc2VjAxWWG/0F2jz8pLHC33VBlmQaWTLWSQMhtUIALVY6IuVZja4xoa/F9ZM=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1770758655; c=relaxed/simple;
+	bh=XFOqVKonzJIvX2M80FEWCluKWLmbrP9Xp5QWqG/BvAo=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=insVxQLhIluJjhOfqNZ5h/2nWleLUFLypMMJJH6Q8GCV9H0RG+9mWssOroRWdWfPdNSA4h1n6/LFrpYW7BsnGwApjepZwIu63zQDxqPpJLj3L/E09qVThESFaMIFfx9SF8TfLT1tUc8rkwkzgRfui0W/cUMjUigsRE7ANZ2ross=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=S6lA8u5V; arc=pass smtp.client-ip=209.85.128.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f54.google.com with SMTP id 5b1f17b1804b1-47ee937ecf2so1711795e9.0
-        for <cgroups@vger.kernel.org>; Tue, 10 Feb 2026 11:23:40 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; t=1770751419; cv=none;
-        d=google.com; s=arc-20240605;
-        b=Anm+E7hgfvfKOF/TWER6OudfYewxkQ9W+mme38jghk/YO93lYx9k5SSEDvXh4+yerV
-         ou3oNgAZ+H9BNdwBwS7MWtaeQFeTSsFsBlIjx8QBmR0BKeZGCulm3Z9q8MfYm3a7ZdGy
-         TvkJgHM9Eu0swqrGqUpKfTmgZF5CbfGCzcmuz5tb8GmrdIeVyflrw1rZ451vtgaCGWAb
-         K1gXQNSNRTbiDcJBFxKiX5PGqPczNV95KkL9SFS8UlEil0p8nWFgHScCD8TjEOPt2bIH
-         f2da1x6NSxo0tlE91i+UlOkyGmpWxExyF0yYpZyYyy/GjkeUQEbk0MYfKtKxOp+i/Jul
-         5/pw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:dkim-signature;
-        bh=pBYVGOJgAAh0wUGtGHCzoyofcM36bp9tfn4+54TVIks=;
-        fh=02A6zIjo2dH2SFaSnZYnsBa3kNholYOk21l46Mop6aI=;
-        b=gdCKFSIpT8jgsDMDSGb+fAfkfohrtqQRdiOQzZNGvJ6QkgjlsqFTZWhl64XJ2Kz62/
-         +/t1fGSaQoeB9Xm155vK7QszS5twPGhwumEweSR0Z/YV8uqlBPAeB4I7It1XNVKBc2wK
-         h73v8lkH0Km7Acvc2DCC/ACS44orP7ZgZNptOPN0JoqmS4cPV6hwU5U4d0rKRC0qhh3U
-         p5XAHOG4ghn8O4wcam1RdShqsFNQraBMo+97SN5iA7ZdGsDC9kn9kzSPnB18z1FSrIU6
-         Qgh7Yi8qvWhx2IbP/vdfC45vP+XDKCz0xqEMVWaNTzrZVf2o4xMxnHcDwm+cSOgvue24
-         axOA==;
-        darn=vger.kernel.org
-ARC-Authentication-Results: i=1; mx.google.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1770751419; x=1771356219; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=pBYVGOJgAAh0wUGtGHCzoyofcM36bp9tfn4+54TVIks=;
-        b=S6lA8u5V+xZ2ut4fSKTSKkBPBf07tiJv+F20Kb3OWHYofk92XZcJ4aJP6mda1lzfL4
-         nVt/O1lL4la3TC9a6N6QM3BcOcvBY6fRvsDl7IUwo6okJvL9gx0S3QVfxzTuKJ3OWTGV
-         JoWj553UZsJ62PxWrejzR2cXZfiv1tjYPhDdiyTrKPaBZDn5h5UHoGeNFy+3wvZ+BAFf
-         2EtNHEyK1YiFbF74zpI97mFdtyPdrjVGqV6l5SGQBce+J7sz873twsyOekm4ssIynAxN
-         YN2Rmxnk4DzR0AgQNFv9WRaFFMHI6mJnez4EP2mAXDC10l6XiJFGjn0mr/hKua1o67bo
-         PVHw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1770751419; x=1771356219;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=pBYVGOJgAAh0wUGtGHCzoyofcM36bp9tfn4+54TVIks=;
-        b=ZWcQfAvUOOn1CavxZuQ2xuxFChPL4NabIqh2Pnx7aR5A8gism1LhPqchF21noyf68d
-         vpYjWSfPcyn1L8qMS08qNoDHYOR+0H5r5GFiFpBXS07kttJibA70dtDTIdzc2x2pECm6
-         NY8/LGxqzys6Uv3EwxtXK4gExq68k4xGbuCb1JHm2gkikvxkRwfg85JnSS4bIyvlBNjG
-         fdkdAMH9bBcPDNVskS3fs3pULpa9+e+aQyiucjLs4sMUiuSj9R2i4leD84lhNdprg8QP
-         UA+D2TPMSWjUVDJo7AeTZ5TZX6PXVEY+w95cUXCjC3KhUxinyGcrjK35aMJlX8fq1iPW
-         mwwA==
-X-Forwarded-Encrypted: i=1; AJvYcCVqGUBH+rFW61QJkaQCX8bXHegij+oXvxdhQCazM5xF97IbmJ+8RZVFdnQQtlxgo+0TdcQ0MzK2@vger.kernel.org
-X-Gm-Message-State: AOJu0YzIOUO4SoTrRxcSXFxNPzNm0tLoafz3BjkmgZm/fTwGDysJuHR3
-	eEJ3oXzp1gwwA2v3JFxjZIDIa/SWsGRAK1NbaX4A5GJHG+edYLviwdPK/8xLkmu4I0P+z4bwTKe
-	vREudFFGHo3q8JJ1+kGBoylsJPOYUzfA=
-X-Gm-Gg: AZuq6aImPQCUIylFaSQcbW7GpQHMcY19rOHoaxPP5ZG2ejA7V7I5GQ7ZK30yWp5HTEJ
-	bvEiqPVnGpZEDYRjh+QfOB4hJMj6ZB18j17r4OSoGwZOXZnqTwE562EPZK11Pd+G3Cxomu6Y4ox
-	D0NJhGPYhVZJ5cmqiFpuSETUkYT5m8Q47hXbNnUkzYszh+Ovr8HcySe9FWARaj3Cu/QWe/BpydM
-	HezaPQnZOlPJ6hCUrej6wZD1Y5vmIigzqxLxj4iouTCN0mCx7byrNKi12ErKhJ8+gdwti5V2gzo
-	QFql984EU3PcJtkmx+MG5Vf0vOimMDZjHytsC58=
-X-Received: by 2002:a05:600c:5288:b0:483:14ec:5925 with SMTP id
- 5b1f17b1804b1-4835022927amr50988035e9.2.1770751419161; Tue, 10 Feb 2026
- 11:23:39 -0800 (PST)
+	 To:Cc:Content-Type; b=Eb1K4sdyxpw9jMoHFP63TqB1eAAf6LaAHWdX4jMmR8N+IwHJ0omjTpxGPDzD7k5sWlYDYwLKfoslLNwkXZJ684o4gPltNs8KUZejFSYUGtPGRCEc6Es3ssIwmPkB8WhV/wvQHqoY4XZBVRv+ggPqxFvDcFSomy+uVzjR/n/p1kQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ql6bLMuZ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 651F4C2BCF6
+	for <cgroups@vger.kernel.org>; Tue, 10 Feb 2026 21:24:15 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1770758655;
+	bh=XFOqVKonzJIvX2M80FEWCluKWLmbrP9Xp5QWqG/BvAo=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=ql6bLMuZPJmRGsTuyEa+77lXrv1YJk9kcYvkFL67RIALVmN8bkWSfCgO7i8V/1G5J
+	 5usIlHhWzUIGF9rEcGiNJ1UM7nqwNnqMZbTYP6+KKK94UGJiermuxHyyWgJnXVOGhe
+	 4VMq7VPXLh+eZAuHBmyK5AZHmVqzsxWGqVoNWdRkWPPXgZlyv7L0v0lbQGzuheLYTe
+	 0J7qyGwueuYZiUtK3Q9bcYnf9vN1Tw2XiZL/0HAQ9CVgMNBhRPPHXaTq6t5NVTB56t
+	 05GlUoVm+xB0/asIaUG7YFjOIG1KIBGr075txHXWPj7IwpH+yVU/v8OOTG4ps0fxVo
+	 gTLYs0nyMrcHg==
+Received: by mail-yw1-f174.google.com with SMTP id 00721157ae682-79642776df7so15376167b3.0
+        for <cgroups@vger.kernel.org>; Tue, 10 Feb 2026 13:24:15 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCUD2oZJupD+IVoAhmWb5CdyUBy3ygmQdZC8BMbRYi8cXVFK860ULlqwsKTlwV7QuZ75FPsJVHYk@vger.kernel.org
+X-Gm-Message-State: AOJu0Yw8U1kUWwn0r4zCRelkBUliXRptp7S2PHbaXu9eJXdL29agDZYL
+	TE3bbdvVLnxRdU3/aKEKL3Uo0Fq5ocxZ+WuA92bpNrmXZ6KhhJJrCTZKrV3weHyeQIswouwI5cD
+	F3PJ7lZM7bbJriI7MFd1zfsS2jrlzQF7J6AWhrDGS8g==
+X-Received: by 2002:a05:690c:55c7:20b0:787:ffc0:40c7 with SMTP id
+ 00721157ae682-7952ab8a9d0mr122001867b3.68.1770758654505; Tue, 10 Feb 2026
+ 13:24:14 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20260208215839.87595-2-nphamcs@gmail.com> <20260208222652.328284-1-nphamcs@gmail.com>
- <CAMgjq7AQNGK-a=AOgvn4-V+zGO21QMbMTVbrYSW_R2oDSLoC+A@mail.gmail.com> <CAKEwX=OUni7PuUqGQUhbMDtErurFN_i=1RgzyQsNXy4LABhXoA@mail.gmail.com>
-In-Reply-To: <CAKEwX=OUni7PuUqGQUhbMDtErurFN_i=1RgzyQsNXy4LABhXoA@mail.gmail.com>
-From: Nhat Pham <nphamcs@gmail.com>
-Date: Tue, 10 Feb 2026 11:23:27 -0800
-X-Gm-Features: AZwV_QhDHop3xuaKmlrjyEY_sdgVS3677YBZxGUueqqiU-9ugNQbef3e4wRWWfo
-Message-ID: <CAKEwX=OYauRgQoj7cxznpROknHt9NsKLOmkvaFtkEh8T1KASag@mail.gmail.com>
+References: <20260208215839.87595-2-nphamcs@gmail.com> <20260208223143.366416-1-nphamcs@gmail.com>
+ <CACePvbXsngZmn0OrJZjvMhhHnL5FazxYX7ShEpbU9RwHSJaUuA@mail.gmail.com> <aYqZppn4yDbTP2_q@cmpxchg.org>
+In-Reply-To: <aYqZppn4yDbTP2_q@cmpxchg.org>
+From: Chris Li <chrisl@kernel.org>
+Date: Tue, 10 Feb 2026 13:24:03 -0800
+X-Gmail-Original-Message-ID: <CACePvbWnJFkMOtX8LbL+0hm5RP6jD5nfZcYUyxrJsPNTq0vbPg@mail.gmail.com>
+X-Gm-Features: AZwV_Qjcbo9saS4Hk5tJX7q1wTM6Ct_T44mYK2YA18JDo-CVVbZphMtbeIM4Ar8
+Message-ID: <CACePvbWnJFkMOtX8LbL+0hm5RP6jD5nfZcYUyxrJsPNTq0vbPg@mail.gmail.com>
 Subject: Re: [PATCH v3 00/20] Virtual Swap Space
-To: Kairui Song <ryncsn@gmail.com>
-Cc: linux-mm@kvack.org, akpm@linux-foundation.org, hannes@cmpxchg.org, 
-	hughd@google.com, yosry.ahmed@linux.dev, mhocko@kernel.org, 
-	roman.gushchin@linux.dev, shakeel.butt@linux.dev, muchun.song@linux.dev, 
-	len.brown@intel.com, chengming.zhou@linux.dev, chrisl@kernel.org, 
-	huang.ying.caritas@gmail.com, ryan.roberts@arm.com, shikemeng@huaweicloud.com, 
-	viro@zeniv.linux.org.uk, baohua@kernel.org, bhe@redhat.com, osalvador@suse.de, 
-	christophe.leroy@csgroup.eu, pavel@kernel.org, kernel-team@meta.com, 
-	linux-kernel@vger.kernel.org, cgroups@vger.kernel.org, 
+To: Johannes Weiner <hannes@cmpxchg.org>
+Cc: Nhat Pham <nphamcs@gmail.com>, akpm@linux-foundation.org, hughd@google.com, 
+	yosry.ahmed@linux.dev, mhocko@kernel.org, roman.gushchin@linux.dev, 
+	shakeel.butt@linux.dev, muchun.song@linux.dev, len.brown@intel.com, 
+	chengming.zhou@linux.dev, kasong@tencent.com, huang.ying.caritas@gmail.com, 
+	ryan.roberts@arm.com, shikemeng@huaweicloud.com, viro@zeniv.linux.org.uk, 
+	baohua@kernel.org, bhe@redhat.com, osalvador@suse.de, 
+	christophe.leroy@csgroup.eu, pavel@kernel.org, linux-mm@kvack.org, 
+	kernel-team@meta.com, linux-kernel@vger.kernel.org, cgroups@vger.kernel.org, 
 	linux-pm@vger.kernel.org, peterx@redhat.com, riel@surriel.com, 
 	joshua.hahnjy@gmail.com, npache@redhat.com, gourry@gourry.net, 
 	axelrasmussen@google.com, yuanchu@google.com, weixugc@google.com, 
@@ -126,53 +87,164 @@ Content-Transfer-Encoding: quoted-printable
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-0.66 / 15.00];
 	SUSPICIOUS_RECIPS(1.50)[];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=2];
-	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
-	R_DKIM_ALLOW(-0.20)[gmail.com:s=20230601];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
 	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
+	TAGGED_FROM(0.00)[bounces-13844-lists,cgroups=lfdr.de];
 	RCPT_COUNT_TWELVE(0.00)[38];
-	FREEMAIL_FROM(0.00)[gmail.com];
-	RCVD_TLS_LAST(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
-	FREEMAIL_TO(0.00)[gmail.com];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-13843-lists,cgroups=lfdr.de];
 	MIME_TRACE(0.00)[0:+];
+	RCVD_TLS_LAST(0.00)[];
+	FREEMAIL_CC(0.00)[gmail.com,linux-foundation.org,google.com,linux.dev,kernel.org,intel.com,tencent.com,arm.com,huaweicloud.com,zeniv.linux.org.uk,redhat.com,suse.de,csgroup.eu,kvack.org,meta.com,vger.kernel.org,surriel.com,gourry.net,bytedance.com];
+	FORGED_SENDER_MAILLIST(0.00)[];
 	FROM_HAS_DN(0.00)[];
-	DKIM_TRACE(0.00)[gmail.com:+];
-	TO_DN_SOME(0.00)[];
-	MID_RHS_MATCH_FROMTLD(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[nphamcs@gmail.com,cgroups@vger.kernel.org];
-	FREEMAIL_CC(0.00)[kvack.org,linux-foundation.org,cmpxchg.org,google.com,linux.dev,kernel.org,intel.com,gmail.com,arm.com,huaweicloud.com,zeniv.linux.org.uk,redhat.com,suse.de,csgroup.eu,meta.com,vger.kernel.org,surriel.com,gourry.net,bytedance.com];
-	TAGGED_RCPT(0.00)[cgroups];
 	MISSING_XM_UA(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[5];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[chrisl@kernel.org,cgroups@vger.kernel.org];
+	DKIM_TRACE(0.00)[kernel.org:+];
+	TAGGED_RCPT(0.00)[cgroups];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	TO_DN_SOME(0.00)[];
 	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,mail.gmail.com:mid]
-X-Rspamd-Queue-Id: EC89611E9E7
+X-Rspamd-Queue-Id: 9CB1511F631
 X-Rspamd-Action: no action
 
-On Tue, Feb 10, 2026 at 11:11=E2=80=AFAM Nhat Pham <nphamcs@gmail.com> wrot=
-e:
->>
-> Hmm this one I don't think I can reproduce without your laptop ;)
+Hi Johannes,
+
+On Mon, Feb 9, 2026 at 6:36=E2=80=AFPM Johannes Weiner <hannes@cmpxchg.org>=
+ wrote:
 >
-> Jokes aside, I did try to run the kernel build with disk swapping, and
-> the performance is on par with baseline. Swap performance with NVME
-> swap tends to be dominated by IO work in my experiments. Do you think
-> I missed something here? Maybe it's the concurrency difference (since
-> I always run with -j$(nproc), i.e the number of workers =3D=3D the number
-> of processors).
+> Hi Chris,
+>
+> On Mon, Feb 09, 2026 at 04:20:21AM -0800, Chris Li wrote:
+> > Is the per swap slot entry overhead 24 bytes in your implementation?
+> > The current swap overhead is 3 static +8 dynamic, your 24 dynamic is a
+> > big jump. You can argue that 8->24 is not a big jump . But it is an
+> > unnecessary price compared to the alternatives, which is 8 dynamic +
+> > 4(optional redirect).
+>
+> No, this is not the net overhead.
 
-Ah I just noticed that your numbers include only systime. Ignore my IO
-comments then.
+I am talking about the total metadata overhead per swap entry. Not net.
 
-(I still think in real production system, with disk swapping enabled,
-then IO wait time is going to be really important. If you're going to
-use disk swap, then this affects real time just as much if not more
-than kernel CPU overhead).
+> The descriptor consolidates and eliminates several other data
+> structures.
+
+Adding members previously not there and making some members bigger
+along the way. For example, the swap_map from 1 byte to a 4 byte
+count.
+
+>
+> Here is the more detailed breakdown:
+
+It seems you did not finish your sentence before sending your reply.
+
+Anyway, I saw the total per swap entry overhead bump to 24 bytes
+dynamic. Let me know what is the correct number for VS if you
+disagree.
+
+Chris
+
+> > > The size of the virtual swap descriptor is 24 bytes. Note that this i=
+s
+> > > not all "new" overhead, as the swap descriptor will replace:
+> > > * the swap_cgroup arrays (one per swap type) in the old design, which
+> > >   is a massive source of static memory overhead. With the new design,
+> > >   it is only allocated for used clusters.
+> > > * the swap tables, which holds the swap cache and workingset shadows.
+> > > * the zeromap bitmap, which is a bitmap of physical swap slots to
+> > >   indicate whether the swapped out page is zero-filled or not.
+> > > * huge chunk of the swap_map. The swap_map is now replaced by 2 bitma=
+ps,
+> > >   one for allocated slots, and one for bad slots, representing 3 poss=
+ible
+> > >   states of a slot on the swapfile: allocated, free, and bad.
+> > > * the zswap tree.
+> > >
+> > > So, in terms of additional memory overhead:
+> > > * For zswap entries, the added memory overhead is rather minimal. The
+> > >   new indirection pointer neatly replaces the existing zswap tree.
+> > >   We really only incur less than one word of overhead for swap count
+> > >   blow up (since we no longer use swap continuation) and the swap typ=
+e.
+> > > * For physical swap entries, the new design will impose fewer than 3 =
+words
+> > >   memory overhead. However, as noted above this overhead is only for
+> > >   actively used swap entries, whereas in the current design the overh=
+ead is
+> > >   static (including the swap cgroup array for example).
+> > >
+> > >   The primary victim of this overhead will be zram users. However, as
+> > >   zswap now no longer takes up disk space, zram users can consider
+> > >   switching to zswap (which, as a bonus, has a lot of useful features
+> > >   out of the box, such as cgroup tracking, dynamic zswap pool sizing,
+> > >   LRU-ordering writeback, etc.).
+> > >
+> > > For a more concrete example, suppose we have a 32 GB swapfile (i.e.
+> > > 8,388,608 swap entries), and we use zswap.
+> > >
+> > > 0% usage, or 0 entries: 0.00 MB
+> > > * Old design total overhead: 25.00 MB
+> > > * Vswap total overhead: 0.00 MB
+> > >
+> > > 25% usage, or 2,097,152 entries:
+> > > * Old design total overhead: 57.00 MB
+> > > * Vswap total overhead: 48.25 MB
+> > >
+> > > 50% usage, or 4,194,304 entries:
+> > > * Old design total overhead: 89.00 MB
+> > > * Vswap total overhead: 96.50 MB
+> > >
+> > > 75% usage, or 6,291,456 entries:
+> > > * Old design total overhead: 121.00 MB
+> > > * Vswap total overhead: 144.75 MB
+> > >
+> > > 100% usage, or 8,388,608 entries:
+> > > * Old design total overhead: 153.00 MB
+> > > * Vswap total overhead: 193.00 MB
+> > >
+> > > So even in the worst case scenario for virtual swap, i.e when we
+> > > somehow have an oracle to correctly size the swapfile for zswap
+> > > pool to 32 GB, the added overhead is only 40 MB, which is a mere
+> > > 0.12% of the total swapfile :)
+> > >
+> > > In practice, the overhead will be closer to the 50-75% usage case, as
+> > > systems tend to leave swap headroom for pathological events or sudden
+> > > spikes in memory requirements. The added overhead in these cases are
+> > > practically neglible. And in deployments where swapfiles for zswap
+> > > are previously sparsely used, switching over to virtual swap will
+> > > actually reduce memory overhead.
+> > >
+> > > Doing the same math for the disk swap, which is the worst case for
+> > > virtual swap in terms of swap backends:
+> > >
+> > > 0% usage, or 0 entries: 0.00 MB
+> > > * Old design total overhead: 25.00 MB
+> > > * Vswap total overhead: 2.00 MB
+> > >
+> > > 25% usage, or 2,097,152 entries:
+> > > * Old design total overhead: 41.00 MB
+> > > * Vswap total overhead: 66.25 MB
+> > >
+> > > 50% usage, or 4,194,304 entries:
+> > > * Old design total overhead: 57.00 MB
+> > > * Vswap total overhead: 130.50 MB
+> > >
+> > > 75% usage, or 6,291,456 entries:
+> > > * Old design total overhead: 73.00 MB
+> > > * Vswap total overhead: 194.75 MB
+> > >
+> > > 100% usage, or 8,388,608 entries:
+> > > * Old design total overhead: 89.00 MB
+> > > * Vswap total overhead: 259.00 MB
+> > >
+> > > The added overhead is 170MB, which is 0.5% of the total swapfile size=
+,
+> > > again in the worst case when we have a sizing oracle.
 
