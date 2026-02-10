@@ -1,149 +1,272 @@
-Return-Path: <cgroups+bounces-13822-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-13823-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 2MS6IFuMimlfLwAAu9opvQ
-	(envelope-from <cgroups+bounces-13822-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Tue, 10 Feb 2026 02:39:39 +0100
+	id uOV6MrKZimk8MQAAu9opvQ
+	(envelope-from <cgroups+bounces-13823-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Tue, 10 Feb 2026 03:36:34 +0100
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2EB83116056
-	for <lists+cgroups@lfdr.de>; Tue, 10 Feb 2026 02:39:39 +0100 (CET)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0D0081165B0
+	for <lists+cgroups@lfdr.de>; Tue, 10 Feb 2026 03:36:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 4C9373024138
-	for <lists+cgroups@lfdr.de>; Tue, 10 Feb 2026 01:39:14 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id BC13730093AF
+	for <lists+cgroups@lfdr.de>; Tue, 10 Feb 2026 02:36:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C1434274669;
-	Tue, 10 Feb 2026 01:39:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B7E912DFF3F;
+	Tue, 10 Feb 2026 02:36:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=cmpxchg.org header.i=@cmpxchg.org header.b="XPEjMes8"
 X-Original-To: cgroups@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qk1-f182.google.com (mail-qk1-f182.google.com [209.85.222.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A85A22727E2;
-	Tue, 10 Feb 2026 01:39:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C2572DC339
+	for <cgroups@vger.kernel.org>; Tue, 10 Feb 2026 02:36:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1770687553; cv=none; b=lucuwpoRzuvjukopxEUDyOOylw9FolKHuKrExeMHjuf6Jhwtqv9xJuoX2qQKuZu7ODBN/AeZDYazcXVbYe9Qyr2ocSeu7FbZWpeYd7fcDSDgjw7miEYAM33pM2Mhg1E0JcM5wo9OAm3vh8kkfAPu+AbyvduZlupKr6rbSBrC5L0=
+	t=1770690987; cv=none; b=cU8aT6yNZ2k8AnfKWGolsymeN578adZcwwi8nPLvlIyRe6DrqyVqLklz6qjP7Bgtd3Bhdj9ZiCDCYp4KQP8J68fFtJXKuPYiBRzufim1u+bkvBbMeSz4FodjctlxdTcEvch2JdadMbpevVQ30WvwVcTt7r/vzoecIDB52bwvdME=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1770687553; c=relaxed/simple;
-	bh=yzaP/aIwDcH0Oar8RqwJtct3plFkQ4nFMzp5dlnk95g=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=tgDZbrWRYWU1ej+gBqcB40zcvV05/ISy2979OgaQ0fTgJKedR4iLuvxLXdszWfjrcTGaFQCRuR78H6nQsGqjZ81JjjYMxoX5Z54fa2owTTjxFbDd5klcmXA/DLoBZRr/UZvLByWAy1q3CiMh8ALVjajJX/uiAMQD0AX7+Hq3v+w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.177])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTPS id 4f942S2C4HzYQtvd;
-	Tue, 10 Feb 2026 09:38:08 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.128])
-	by mail.maildlp.com (Postfix) with ESMTP id B2D424058F;
-	Tue, 10 Feb 2026 09:39:06 +0800 (CST)
-Received: from [10.67.111.176] (unknown [10.67.111.176])
-	by APP4 (Coremail) with SMTP id gCh0CgA34_M6jIppKHyMGw--.2375S2;
-	Tue, 10 Feb 2026 09:39:06 +0800 (CST)
-Message-ID: <08776cf5-054e-4137-9ce4-f193feeb2599@huaweicloud.com>
-Date: Tue, 10 Feb 2026 09:39:05 +0800
+	s=arc-20240116; t=1770690987; c=relaxed/simple;
+	bh=x26zTWRCZztFplfzMY9lFckYK/i5zTHyU1H9HRMmxYE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=B91raP5NE2JMA28E6DzyGC8NFooWo/UkRQV5L6iPkyI/CXdNzWjiKjWebGKSkBBM/OLfpKRqDPMEzYoiLHGefluboxULLUvR2iWqcZWvOc1E6C+NUTvs6rS9vkIZh2OI9VjtAu5GA5yl+wQnuUT+/5pT3X9yox6FmxASouaQvoI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org; spf=pass smtp.mailfrom=cmpxchg.org; dkim=pass (2048-bit key) header.d=cmpxchg.org header.i=@cmpxchg.org header.b=XPEjMes8; arc=none smtp.client-ip=209.85.222.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cmpxchg.org
+Received: by mail-qk1-f182.google.com with SMTP id af79cd13be357-8ca3807494eso28308585a.2
+        for <cgroups@vger.kernel.org>; Mon, 09 Feb 2026 18:36:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cmpxchg.org; s=google; t=1770690984; x=1771295784; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=zjDQ6ZMUprUoxKPSBAzYwFLvE0UYKCpqmBg/Zxxlb4c=;
+        b=XPEjMes8JmLyeg0/7lSTn+nuGzFQ6Esjp83z8vxDH8vRYKFL3+7NPe+KVskk89Tr++
+         L/0PdiId1bsIODT6qYCEft0KOY5BxMPmL9lqUeRjfzoNBzbCeHalEOg6lmZt9ML/YDf8
+         vlfcIzlRCW37hb8JNt6fPrPonFDOw+64RfX1egkCMB69QxDYmRZaB3ZCsqbOzWwpZJES
+         XpxSnHK3WL6y0Sacx6p7IMgJVmYsIPLaYaEEO6FvhK5ogx15xb/7z7IO7xK7jf/M80jj
+         oluLL4RH3KKr4tEPHDGMthYtBzAdWwKpqwZ0uMM8caqmAxB+Hnqz8ZtXiAKSnhQVJxWk
+         b5aw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1770690984; x=1771295784;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:x-gm-gg
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=zjDQ6ZMUprUoxKPSBAzYwFLvE0UYKCpqmBg/Zxxlb4c=;
+        b=f/2EmIyz+EPe/n3JZ14Q/s8+8SKPDZNDf/xsq78GGyCHLoH2bGq7iFsFBuPTdDQlMk
+         E89bjefaDy85pWBx5XhCp3IoYUf5d6CoIqoTJAFFY96aNK8E0HMn4bl/3KAdvieBg5oR
+         LfFjcTtf6Q7AuJrwCZILDaQ3GSH7hvCOpBhYsZlC+GziRIzaPwj9QtTkmlJPiBmrxirB
+         x3GTO9O8qALIjabP1l/LQNQ+NOSefr34Dz7Eq63LlxZKPEqs+8IQe+a7a/1gGv5sGwnn
+         YsBsDia+BH5CvlUAaH5sFDd2ucHaQp6XCrXp7LkNNpJmfp/sP+EnGwmgI1sF1oynoYla
+         MuGQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXwOq7wwsl1Kgj4oODDolaZPIKSFF41XRlJ2ua+dMolwePTmbKrHyNiyB9+fTyTo52kf8kn2dVz@vger.kernel.org
+X-Gm-Message-State: AOJu0YxfxoD1BzmYHkxUHA9M6iKRoeYMFPaXb2wfb9Ji8hYb3jbIGZUU
+	FmsXNPud7zCuFSX7BYp43MzPYQV1jOeUxUt1uOdAgVi0Y+5XwtKTjH8Rb8R16xkTjcw=
+X-Gm-Gg: AZuq6aLLj6Cs2O4ZDQnbaZXxTE4COq0gEeVwRX78oaf2cj0soG3Qli8r+i4DH1ZK4S7
+	6YcBok5CMEtjFopG/3RHKsFBVHyFtBnEBvQ/nPfxM/wa3vNfUGnSagVkzG+yyUnprmxNEOxXtIL
+	8fu3mkMm18S4/SWgNoOTKf4wPEsCvG5/AD42Z1KGsCgiXi5kLHGTwVZ2HJHMsbA+Z110ks5X/+p
+	706ilNXiREnmxD82LkYJQn4M4Z6IxR+CpDDczFOqHMs8Js9bctkwReRG8KZihxUT3c0DhNGwDZk
+	kQhS7IToSVR/uncMuR2h383mlLxSc/48VLOCYbN5cc61+zfEtdFKXBgLEGqda6H4f3SeW5EbDoI
+	MI5IBhzLMNByCzoXIPa7gLspWqGlDVGvCmX56xKfFqt80jKcyFxiZqr7mXKT9lxfI/q2uWJq93K
+	ASd6M3Fm2h/YlGKFw4yfIHdTbrDi0Yaqk=
+X-Received: by 2002:a05:620a:448c:b0:8c6:af59:5e1b with SMTP id af79cd13be357-8caf16ec082mr1704468885a.77.1770690984280;
+        Mon, 09 Feb 2026 18:36:24 -0800 (PST)
+Received: from localhost ([2603:7000:c00:100:365a:60ff:fe62:ff29])
+        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-8953c03fca0sm89843846d6.28.2026.02.09.18.36.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 09 Feb 2026 18:36:23 -0800 (PST)
+Date: Mon, 9 Feb 2026 21:36:22 -0500
+From: Johannes Weiner <hannes@cmpxchg.org>
+To: Chris Li <chrisl@kernel.org>
+Cc: Nhat Pham <nphamcs@gmail.com>, akpm@linux-foundation.org,
+	hughd@google.com, yosry.ahmed@linux.dev, mhocko@kernel.org,
+	roman.gushchin@linux.dev, shakeel.butt@linux.dev,
+	muchun.song@linux.dev, len.brown@intel.com,
+	chengming.zhou@linux.dev, kasong@tencent.com,
+	huang.ying.caritas@gmail.com, ryan.roberts@arm.com,
+	shikemeng@huaweicloud.com, viro@zeniv.linux.org.uk,
+	baohua@kernel.org, bhe@redhat.com, osalvador@suse.de,
+	christophe.leroy@csgroup.eu, pavel@kernel.org, linux-mm@kvack.org,
+	kernel-team@meta.com, linux-kernel@vger.kernel.org,
+	cgroups@vger.kernel.org, linux-pm@vger.kernel.org,
+	peterx@redhat.com, riel@surriel.com, joshua.hahnjy@gmail.com,
+	npache@redhat.com, gourry@gourry.net, axelrasmussen@google.com,
+	yuanchu@google.com, weixugc@google.com, rafael@kernel.org,
+	jannh@google.com, pfalcato@suse.de, zhengqi.arch@bytedance.com
+Subject: Re: [PATCH v3 00/20] Virtual Swap Space
+Message-ID: <aYqZppn4yDbTP2_q@cmpxchg.org>
+References: <20260208215839.87595-2-nphamcs@gmail.com>
+ <20260208223143.366416-1-nphamcs@gmail.com>
+ <CACePvbXsngZmn0OrJZjvMhhHnL5FazxYX7ShEpbU9RwHSJaUuA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH/for-next v4 3/4] cgroup/cpuset: Call housekeeping_update()
- without holding cpus_read_lock
-To: Waiman Long <llong@redhat.com>, Tejun Heo <tj@kernel.org>,
- Johannes Weiner <hannes@cmpxchg.org>, =?UTF-8?Q?Michal_Koutn=C3=BD?=
- <mkoutny@suse.com>, Ingo Molnar <mingo@redhat.com>,
- Peter Zijlstra <peterz@infradead.org>, Juri Lelli <juri.lelli@redhat.com>,
- Vincent Guittot <vincent.guittot@linaro.org>,
- Steven Rostedt <rostedt@goodmis.org>, Ben Segall <bsegall@google.com>,
- Mel Gorman <mgorman@suse.de>, Valentin Schneider <vschneid@redhat.com>,
- Anna-Maria Behnsen <anna-maria@linutronix.de>,
- Frederic Weisbecker <frederic@kernel.org>,
- Thomas Gleixner <tglx@linutronix.de>, Shuah Khan <shuah@kernel.org>
-Cc: cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-kselftest@vger.kernel.org
-References: <20260206203712.1989610-1-longman@redhat.com>
- <20260206203712.1989610-4-longman@redhat.com>
- <119981d3-1cf9-412b-9b4d-bc4bcb188104@huaweicloud.com>
- <67f4b01a-7b23-49c2-a8db-059316300d39@redhat.com>
-Content-Language: en-US
-From: Chen Ridong <chenridong@huaweicloud.com>
-In-Reply-To: <67f4b01a-7b23-49c2-a8db-059316300d39@redhat.com>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:gCh0CgA34_M6jIppKHyMGw--.2375S2
-X-Coremail-Antispam: 1UD129KBjvdXoWrtryxKF4DXF4UXw1UXw1kXwb_yoWDXFc_Wr
-	1SgFy5uw1DuF4jq39xtr47Ar1vgay7J3W7Xa48GrWUJa4rAw45Wrn5WFyDZa1Sgw4xuwnx
-	uasYga93CrnrWjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-	9fnUUIcSsGvfJTRUUUbxxYFVCjjxCrM7AC8VAFwI0_Xr0_Wr1l1xkIjI8I6I8E6xAIw20E
-	Y4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwV
-	A0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVWDJVCq3wA2z4x0Y4vE2Ix0cI8IcVCY1x02
-	67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
-	0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
-	x7xfMcIj6xIIjxv20xvE14v26r106r15McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
-	0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc7CjxVAaw2AF
-	wI0_GFv_Wryl42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4
-	xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a6rW5
-	MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I
-	0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWU
-	JVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUxo
-	7KDUUUU
-X-CM-SenderInfo: hfkh02xlgr0w46kxt4xhlfz01xgou0bp/
+In-Reply-To: <CACePvbXsngZmn0OrJZjvMhhHnL5FazxYX7ShEpbU9RwHSJaUuA@mail.gmail.com>
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-1.46 / 15.00];
+X-Spamd-Result: default: False [-0.66 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	DMARC_POLICY_ALLOW(-0.50)[cmpxchg.org,none];
+	R_DKIM_ALLOW(-0.20)[cmpxchg.org:s=google];
+	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	TAGGED_RCPT(0.00)[cgroups];
-	RCPT_COUNT_TWELVE(0.00)[19];
-	MIME_TRACE(0.00)[0:+];
-	MID_RHS_MATCH_FROM(0.00)[];
-	R_DKIM_NA(0.00)[];
-	DMARC_NA(0.00)[huaweicloud.com];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[chenridong@huaweicloud.com,cgroups@vger.kernel.org];
-	TO_DN_SOME(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[6];
+	TAGGED_FROM(0.00)[bounces-13823-lists,cgroups=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-13822-lists,cgroups=lfdr.de];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[]
-X-Rspamd-Queue-Id: 2EB83116056
+	RECEIVED_HELO_LOCALHOST(0.00)[];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	FREEMAIL_CC(0.00)[gmail.com,linux-foundation.org,google.com,linux.dev,kernel.org,intel.com,tencent.com,arm.com,huaweicloud.com,zeniv.linux.org.uk,redhat.com,suse.de,csgroup.eu,kvack.org,meta.com,vger.kernel.org,surriel.com,gourry.net,bytedance.com];
+	RCPT_COUNT_TWELVE(0.00)[38];
+	MIME_TRACE(0.00)[0:+];
+	FROM_HAS_DN(0.00)[];
+	MISSING_XM_UA(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[5];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[hannes@cmpxchg.org,cgroups@vger.kernel.org];
+	DKIM_TRACE(0.00)[cmpxchg.org:+];
+	MID_RHS_MATCH_FROM(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	TAGGED_RCPT(0.00)[cgroups];
+	TO_DN_SOME(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns,cmpxchg.org:mid,cmpxchg.org:dkim]
+X-Rspamd-Queue-Id: 0D0081165B0
 X-Rspamd-Action: no action
 
+Hi Chris,
 
-
-On 2026/2/10 4:20, Waiman Long wrote:
-> On 2/9/26 2:23 AM, Chen Ridong wrote:
->>
->> On 2026/2/7 4:37, Waiman Long wrote:
->>> +static cpumask_var_t    isolated_hk_cpus;    /* T */
->> Can we get this from isolation.c instead?
->>
->> The name probably shouldn't include 'hk', since it refers to the inverse
->> (housekeeping CPUs) of isolated CPUs, right?
+On Mon, Feb 09, 2026 at 04:20:21AM -0800, Chris Li wrote:
+> On Sun, Feb 8, 2026 at 4:15 PM Nhat Pham <nphamcs@gmail.com> wrote:
+> >
+> > My sincerest apologies - it seems like the cover letter (and just the
+> > cover letter) fails to be sent out, for some reason. I'm trying to figure
+> > out what happened - it works when I send the entire patch series to
+> > myself...
+> >
+> > Anyway, resending this (in-reply-to patch 1 of the series):
 > 
-> The housekeeping_update() will create an inverse of the pass-in isolated
-> cpumasks. As for the name, I add hk to indicate this cpumask is for passing to
-> housekeeping_update() to update housekeeping cpumask. It is not directly related
-> to the cpumasks in sched/isolation.c. Please let me know if you have  a
-> suggestion for the name.
+> For the record I did receive your original V3 cover letter from the
+> linux-mm mailing list.
 > 
+> > Changelog:
+> > * RFC v2 -> v3:
+> >     * Implement a cluster-based allocation algorithm for virtual swap
+> >       slots, inspired by Kairui Song and Chris Li's implementation, as
+> >       well as Johannes Weiner's suggestions. This eliminates the lock
+> >           contention issues on the virtual swap layer.
+> >     * Re-use swap table for the reverse mapping.
+> >     * Remove CONFIG_VIRTUAL_SWAP.
+> >     * Reducing the size of the swap descriptor from 48 bytes to 24
+> 
+> Is the per swap slot entry overhead 24 bytes in your implementation?
+> The current swap overhead is 3 static +8 dynamic, your 24 dynamic is a
+> big jump. You can argue that 8->24 is not a big jump . But it is an
+> unnecessary price compared to the alternatives, which is 8 dynamic +
+> 4(optional redirect).
 
-I understand the intent. However, when reading both cpuset.c and
-sched/isolation.c, it can be confusing whether isolated_hk_cpus is an inverse
-mask, since in sched/isolation.c “hk” consistently refers to the inverse.
+No, this is not the net overhead.
 
-How about isolated_cpus_applied?
+The descriptor consolidates and eliminates several other data
+structures.
 
--- 
-Best regards,
-Ridong
+Here is the more detailed breakdown:
 
+> > The size of the virtual swap descriptor is 24 bytes. Note that this is
+> > not all "new" overhead, as the swap descriptor will replace:
+> > * the swap_cgroup arrays (one per swap type) in the old design, which
+> >   is a massive source of static memory overhead. With the new design,
+> >   it is only allocated for used clusters.
+> > * the swap tables, which holds the swap cache and workingset shadows.
+> > * the zeromap bitmap, which is a bitmap of physical swap slots to
+> >   indicate whether the swapped out page is zero-filled or not.
+> > * huge chunk of the swap_map. The swap_map is now replaced by 2 bitmaps,
+> >   one for allocated slots, and one for bad slots, representing 3 possible
+> >   states of a slot on the swapfile: allocated, free, and bad.
+> > * the zswap tree.
+> >
+> > So, in terms of additional memory overhead:
+> > * For zswap entries, the added memory overhead is rather minimal. The
+> >   new indirection pointer neatly replaces the existing zswap tree.
+> >   We really only incur less than one word of overhead for swap count
+> >   blow up (since we no longer use swap continuation) and the swap type.
+> > * For physical swap entries, the new design will impose fewer than 3 words
+> >   memory overhead. However, as noted above this overhead is only for
+> >   actively used swap entries, whereas in the current design the overhead is
+> >   static (including the swap cgroup array for example).
+> >
+> >   The primary victim of this overhead will be zram users. However, as
+> >   zswap now no longer takes up disk space, zram users can consider
+> >   switching to zswap (which, as a bonus, has a lot of useful features
+> >   out of the box, such as cgroup tracking, dynamic zswap pool sizing,
+> >   LRU-ordering writeback, etc.).
+> >
+> > For a more concrete example, suppose we have a 32 GB swapfile (i.e.
+> > 8,388,608 swap entries), and we use zswap.
+> >
+> > 0% usage, or 0 entries: 0.00 MB
+> > * Old design total overhead: 25.00 MB
+> > * Vswap total overhead: 0.00 MB
+> >
+> > 25% usage, or 2,097,152 entries:
+> > * Old design total overhead: 57.00 MB
+> > * Vswap total overhead: 48.25 MB
+> >
+> > 50% usage, or 4,194,304 entries:
+> > * Old design total overhead: 89.00 MB
+> > * Vswap total overhead: 96.50 MB
+> >
+> > 75% usage, or 6,291,456 entries:
+> > * Old design total overhead: 121.00 MB
+> > * Vswap total overhead: 144.75 MB
+> >
+> > 100% usage, or 8,388,608 entries:
+> > * Old design total overhead: 153.00 MB
+> > * Vswap total overhead: 193.00 MB
+> >
+> > So even in the worst case scenario for virtual swap, i.e when we
+> > somehow have an oracle to correctly size the swapfile for zswap
+> > pool to 32 GB, the added overhead is only 40 MB, which is a mere
+> > 0.12% of the total swapfile :)
+> >
+> > In practice, the overhead will be closer to the 50-75% usage case, as
+> > systems tend to leave swap headroom for pathological events or sudden
+> > spikes in memory requirements. The added overhead in these cases are
+> > practically neglible. And in deployments where swapfiles for zswap
+> > are previously sparsely used, switching over to virtual swap will
+> > actually reduce memory overhead.
+> >
+> > Doing the same math for the disk swap, which is the worst case for
+> > virtual swap in terms of swap backends:
+> >
+> > 0% usage, or 0 entries: 0.00 MB
+> > * Old design total overhead: 25.00 MB
+> > * Vswap total overhead: 2.00 MB
+> >
+> > 25% usage, or 2,097,152 entries:
+> > * Old design total overhead: 41.00 MB
+> > * Vswap total overhead: 66.25 MB
+> >
+> > 50% usage, or 4,194,304 entries:
+> > * Old design total overhead: 57.00 MB
+> > * Vswap total overhead: 130.50 MB
+> >
+> > 75% usage, or 6,291,456 entries:
+> > * Old design total overhead: 73.00 MB
+> > * Vswap total overhead: 194.75 MB
+> >
+> > 100% usage, or 8,388,608 entries:
+> > * Old design total overhead: 89.00 MB
+> > * Vswap total overhead: 259.00 MB
+> >
+> > The added overhead is 170MB, which is 0.5% of the total swapfile size,
+> > again in the worst case when we have a sizing oracle.
 
