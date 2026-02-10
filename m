@@ -1,400 +1,194 @@
-Return-Path: <cgroups+bounces-13826-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-13827-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id eOFdApbVimnrOAAAu9opvQ
-	(envelope-from <cgroups+bounces-13826-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Tue, 10 Feb 2026 07:52:06 +0100
+	id OJ8oMpXgimlyOgAAu9opvQ
+	(envelope-from <cgroups+bounces-13827-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Tue, 10 Feb 2026 08:39:01 +0100
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5DB1C117845
-	for <lists+cgroups@lfdr.de>; Tue, 10 Feb 2026 07:52:05 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 24A50117FD5
+	for <lists+cgroups@lfdr.de>; Tue, 10 Feb 2026 08:39:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id A30A7304D25A
-	for <lists+cgroups@lfdr.de>; Tue, 10 Feb 2026 06:49:09 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id B78043019068
+	for <lists+cgroups@lfdr.de>; Tue, 10 Feb 2026 07:38:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3BE732D6E55;
-	Tue, 10 Feb 2026 06:49:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="SSaMr9CM"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E11723346A9;
+	Tue, 10 Feb 2026 07:38:58 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from out-179.mta0.migadu.com (out-179.mta0.migadu.com [91.218.175.179])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8FA5132ED2A
-	for <cgroups@vger.kernel.org>; Tue, 10 Feb 2026 06:49:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.179
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 749422C027A;
+	Tue, 10 Feb 2026 07:38:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1770706149; cv=none; b=orSeHhUyl9PRRVmRBSYVSsuM+YUp3ndj8sHeQz/S0+yTHEl4EzU3TK9bM34ZCO5e7r1AWIRBKuF3cjil8bq6IoEXl3msXvt0afGX5oeTPq6JqsjVrUrnGOqwsh7Q2aM/kKPzqAAve9zOG5pe2ERIWTGn0x/PHUQjzebeqgvXq20=
+	t=1770709138; cv=none; b=eyOR0yz6wmjXhqLBtFm7o4Kdmc7vJ7FrDHx6xR44/mOJIa8PKgFT34Cms8bv/1ZuTQBQXIrhUfGPd/IwFoG2IuWu8maZJvbDrx71SA8VhRN3hFzdZOc5hIMy5QjYZRljEDA+zY8VeQEdOvOB35ka06Up1McLysn/Qmm7J9i3JZw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1770706149; c=relaxed/simple;
-	bh=av8q2nJWKq8RrTg/WR50IKQK3VHKFzKGZobwrbgdZ10=;
+	s=arc-20240116; t=1770709138; c=relaxed/simple;
+	bh=KAnkHeUW/rhbCgg0wxStZiTN11d44jYJ3LRA79jcEOs=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=lhYwxLV9f3wTnj7SwFazeLYHQ1WpQX/7GoSwRqWXgfRyVEK7gd++rJ0vDgcG64elX0uMn4oFc9FQ/e6IIqnc5DBbivaYgJMC3n7B68tMz8HXbK/OTJ/uxMMuN+1quVvt3gb0+nQoq4mIABFjwv7l3lPtWCvCkZ7xf/Uo13jo/48=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=SSaMr9CM; arc=none smtp.client-ip=91.218.175.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <0673b72c-8d7c-4bfb-a8b2-da5ae5bb5f00@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1770706134;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=gci4PxuqdlVZBIC34roKwVj2Mfy+C8h8ARtkl3i8WIY=;
-	b=SSaMr9CM00eCMtfnra8fKpSRNM1+c0aPKMj1MD0cAoZblfvnkKQXyvcqoR81FqlGV0N4Xx
-	pxfCEDp4XVBfyLkFJD9DX+O9svXp/lTZ2WWei+cAMbVC4zB6+t1YLRR3zPETzg+39VRM8B
-	Kls1/747RlPwiw9yujsPbGNpwi60j48=
-Date: Tue, 10 Feb 2026 14:47:51 +0800
+	 In-Reply-To:Content-Type; b=j4hRqIOALwcXxsjWkXB22i74JWwQMQuQiysSSO7aIbcq5XHQfytctXOejpV7H6agGaeaNZzeK7rXnfxis48sEBQ3JqIOProE4QhxeumjkDIqUB6xGuB1zwMfPIq/u3V+mGQozru8dIfYaxyBYX49bcnSiPAC073fgethDFsrYz0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 3F2F9339;
+	Mon,  9 Feb 2026 23:38:49 -0800 (PST)
+Received: from [10.164.19.61] (unknown [10.164.19.61])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 46E0D3F740;
+	Mon,  9 Feb 2026 23:38:52 -0800 (PST)
+Message-ID: <b77dc11e-fe09-4f0c-a912-d05faa01ff1c@arm.com>
+Date: Tue, 10 Feb 2026 13:08:49 +0530
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH v4 29/31] mm: memcontrol: prepare for reparenting
- non-hierarchical stats
-To: Shakeel Butt <shakeel.butt@linux.dev>
-Cc: hannes@cmpxchg.org, hughd@google.com, mhocko@suse.com,
- roman.gushchin@linux.dev, muchun.song@linux.dev, david@kernel.org,
- lorenzo.stoakes@oracle.com, ziy@nvidia.com, harry.yoo@oracle.com,
- yosry.ahmed@linux.dev, imran.f.khan@oracle.com, kamalesh.babulal@oracle.com,
- axelrasmussen@google.com, yuanchu@google.com, weixugc@google.com,
- chenridong@huaweicloud.com, mkoutny@suse.com, akpm@linux-foundation.org,
- hamzamahfooz@linux.microsoft.com, apais@linux.microsoft.com,
- lance.yang@linux.dev, bhe@redhat.com, linux-mm@kvack.org,
- linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
- Qi Zheng <zhengqi.arch@bytedance.com>
-References: <cover.1770279888.git.zhengqi.arch@bytedance.com>
- <3ca234c643ecb484f17aa88187e0bce8949bdb6b.1770279888.git.zhengqi.arch@bytedance.com>
- <aYabQii_-9EVdgub@linux.dev>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Qi Zheng <qi.zheng@linux.dev>
-In-Reply-To: <aYabQii_-9EVdgub@linux.dev>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/4] memcg: use mod_node_page_state to update stats
+To: Shakeel Butt <shakeel.butt@linux.dev>, Harry Yoo <harry.yoo@oracle.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>,
+ Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>,
+ Roman Gushchin <roman.gushchin@linux.dev>,
+ Muchun Song <muchun.song@linux.dev>, Qi Zheng <qi.zheng@linux.dev>,
+ Vlastimil Babka <vbabka@suse.cz>, linux-mm@kvack.org,
+ cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+ Meta kernel team <kernel-team@meta.com>
+References: <20251110232008.1352063-1-shakeel.butt@linux.dev>
+ <20251110232008.1352063-2-shakeel.butt@linux.dev>
+ <1052a452-9ba3-4da7-be47-7d27d27b3d1d@arm.com> <aYAmGc6lu973jRwu@linux.dev>
+ <2638bd96-d8cc-4733-a4ce-efdf8f223183@arm.com>
+ <51819ca5a15d8928caac720426cd1ce82e89b429@linux.dev>
+ <05aec69b-8e73-49ac-aa89-47b371fb6269@arm.com> <aYOuCmjQ5lGm8Mup@linux.dev>
+ <4847c300-c7bb-4259-867c-4bbf4d760576@arm.com> <aYQuj6Ot-JS4tXvY@hyeyoo>
+ <7df681ae0f8254f09de0b8e258b909eaacafadf4@linux.dev>
+Content-Language: en-US
+From: Dev Jain <dev.jain@arm.com>
+In-Reply-To: <7df681ae0f8254f09de0b8e258b909eaacafadf4@linux.dev>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-2.16 / 15.00];
+X-Spamd-Result: default: False [-1.36 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[linux.dev,none];
-	R_DKIM_ALLOW(-0.20)[linux.dev:s=key1];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10];
 	MAILLIST(-0.15)[generic];
+	DMARC_POLICY_SOFTFAIL(0.10)[arm.com : SPF not aligned (relaxed), No valid DKIM,none];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_TLS_LAST(0.00)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-13826-lists,cgroups=lfdr.de];
-	RCVD_COUNT_THREE(0.00)[3];
-	RCPT_COUNT_TWELVE(0.00)[27];
-	MIME_TRACE(0.00)[0:+];
-	FROM_HAS_DN(0.00)[];
-	MISSING_XM_UA(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[qi.zheng@linux.dev,cgroups@vger.kernel.org];
-	DKIM_TRACE(0.00)[linux.dev:+];
-	MID_RHS_MATCH_FROM(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	TAGGED_RCPT(0.00)[cgroups];
 	TO_DN_SOME(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,linux.dev:mid,linux.dev:dkim,bytedance.com:email]
-X-Rspamd-Queue-Id: 5DB1C117845
+	RCPT_COUNT_TWELVE(0.00)[13];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	TAGGED_RCPT(0.00)[cgroups];
+	R_DKIM_NA(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[dev.jain@arm.com,cgroups@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	MID_RHS_MATCH_FROM(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	TAGGED_FROM(0.00)[bounces-13827-lists,cgroups=lfdr.de];
+	RCVD_COUNT_FIVE(0.00)[5];
+	RCVD_TLS_LAST(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,arm.com:url,arm.com:mid]
+X-Rspamd-Queue-Id: 24A50117FD5
 X-Rspamd-Action: no action
 
 
-
-On 2/7/26 10:19 AM, Shakeel Butt wrote:
-> On Thu, Feb 05, 2026 at 05:01:48PM +0800, Qi Zheng wrote:
->> From: Qi Zheng <zhengqi.arch@bytedance.com>
+On 05/02/26 11:28 am, Shakeel Butt wrote:
+>> On Thu, Feb 05, 2026 at 10:50:06AM +0530, Dev Jain wrote:
 >>
->> To resolve the dying memcg issue, we need to reparent LRU folios of child
->> memcg to its parent memcg. This could cause problems for non-hierarchical
->> stats.
+>>> On 05/02/26 2:08 am, Shakeel Butt wrote:
+>>>  On Mon, Feb 02, 2026 at 02:23:54PM +0530, Dev Jain wrote:
+>>>  On 02/02/26 10:24 am, Shakeel Butt wrote:
+>>>  Hello Shakeel,
+>>>
+>>>  We are seeing a regression in micromm/munmap benchmark with this patch, on arm64 -
+>>>  the benchmark mmmaps a lot of memory, memsets it, and measures the time taken
+>>>  to munmap. Please see below if my understanding of this patch is correct.
+>>>
+>>>  Thanks for the report. Are you seeing regression in just the benchmark
+>>>  or some real workload as well? Also how much regression are you seeing?
+>>>  I have a kernel rebot regression report [1] for this patch as well which
+>>>  says 2.6% regression and thus it was on the back-burner for now. I will
+>>>  take look at this again soon.
+>>>
+>>>  The munmap regression is ~24%. Haven't observed a regression in any other
+>>>  benchmark yet.
+>>>  Please share the code/benchmark which shows such regression, also if you can
+>>>  share the perf profile, that would be awesome.
+>>>  https://gitlab.arm.com/tooling/fastpath/-/blob/main/containers/microbench/micromm.c
+>>>  You can run this with
+>>>  ./micromm 0 munmap 10
+>>>
+>>>  Don't have a perf profile, I measured the time taken by above command, with and
+>>>  without the patch.
+>>>
+>>>  Hi Dev, can you please try the following patch?
+>>>
+>>>  From 40155feca7e7bc846800ab8449735bdb03164d6d Mon Sep 17 00:00:00 2001
+>>>  From: Shakeel Butt <shakeel.butt@linux.dev>
+>>>  Date: Wed, 4 Feb 2026 08:46:08 -0800
+>>>  Subject: [PATCH] vmstat: use preempt disable instead of try_cmpxchg
+>>>
+>>>  Signed-off-by: Shakeel Butt <shakeel.butt@linux.dev>
+>>>  ---
+>>>
+>> [...snip...]
 >>
->> As Yosry Ahmed pointed out:
+>>> Thanks for looking into this.
+>>>  
+>>>  But this doesn't solve it :( preempt_disable() contains a compiler barrier,
+>>>  probably that's why.
+>>>
+>> I think the reason why it doesn't solve the regression is because of how
+>> arm64 implements this_cpu_add_8() and this_cpu_try_cmpxchg_8().
 >>
->> ```
->> In short, if memory is charged to a dying cgroup at the time of
->> reparenting, when the memory gets uncharged the stats updates will occur
->> at the parent. This will update both hierarchical and non-hierarchical
->> stats of the parent, which would corrupt the parent's non-hierarchical
->> stats (because those counters were never incremented when the memory was
->> charged).
->> ```
+>> On arm64, IIUC both this_cpu_try_cmpxchg_8() and this_cpu_add_8() are
+>> implemented using LL/SC instructions or LSE atomics (if supported).
 >>
->> Now we have the following two types of non-hierarchical stats, and they
->> are only used in CONFIG_MEMCG_V1:
+>> See:
+>> - this_cpu_add_8()
+>>  -> __percpu_add_case_64
+>>  (which is generated from PERCPU_OP)
 >>
->> a. memcg->vmstats->state_local[i]
->> b. pn->lruvec_stats->state_local[i]
+>> - this_cpu_try_cmpxchg_8()
+>>  -> __cpu_fallback_try_cmpxchg(..., this_cpu_cmpxchg_8)
+>>  -> this_cpu_cmpxchg_8()
+>>  -> cmpxchg_relaxed()
+>>  -> raw_cmpxchg_relaxed()
+>>  -> arch_cmpxchg_relaxed()
+>>  -> __cmpxchg_wrapper()
+>>  -> __cmpxchg_case_64()
+>>  -> __lse_ll_sc_body(_cmpxchg_case_64, ...)
 >>
->> To ensure that these non-hierarchical stats work properly, we need to
->> reparent these non-hierarchical stats after reparenting LRU folios. To
->> this end, this commit makes the following preparations:
+> Oh so it is arm64 specific issue. I tested on x86-64 machine and it solves
+> the little regression it had before. So, on arm64 all this_cpu_ops i.e. without
+> double underscore, uses LL/SC instructions. 
+>
+> Need more thought on this. 
+>
+>>> Also can you confirm whether my analysis of the regression was correct?
+>>>  Because if it was, then this diff looks wrong - AFAIU preempt_disable()
+>>>  won't stop an irq handler from interrupting the execution, so this
+>>>  will introduce a bug for code paths running in irq context.
+>>>
+>> I was worried about the correctness too, but this_cpu_add() is safe
+>> against IRQs and so the stat will be _eventually_ consistent?
 >>
->> 1. implement reparent_state_local() to reparent non-hierarchical stats
->> 2. make css_killed_work_fn() to be called in rcu work, and implement
->>     get_non_dying_memcg_start() and get_non_dying_memcg_end() to avoid race
->>     between mod_memcg_state()/mod_memcg_lruvec_state()
->>     and reparent_state_local()
->> 3. change these non-hierarchical stats to atomic_long_t type to avoid race
->>     between mem_cgroup_stat_aggregate() and reparent_state_local()
->>
->> Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
-> 
-> Overall looks good just a couple of comments.
-> 
->> ---
->>   include/linux/memcontrol.h |   4 ++
->>   kernel/cgroup/cgroup.c     |   8 +--
->>   mm/memcontrol-v1.c         |  16 ++++++
->>   mm/memcontrol-v1.h         |   3 +
->>   mm/memcontrol.c            | 113 ++++++++++++++++++++++++++++++++++---
->>   5 files changed, 132 insertions(+), 12 deletions(-)
->>
->> diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
->> index 3970c102fe741..a4f6ab7eb98d6 100644
->> --- a/include/linux/memcontrol.h
->> +++ b/include/linux/memcontrol.h
->> @@ -957,12 +957,16 @@ static inline void mod_memcg_page_state(struct page *page,
->>   
->>   unsigned long memcg_events(struct mem_cgroup *memcg, int event);
->>   unsigned long memcg_page_state(struct mem_cgroup *memcg, int idx);
->> +void reparent_memcg_state_local(struct mem_cgroup *memcg,
->> +				struct mem_cgroup *parent, int idx);
-> 
-> Put the above in mm/memcontrol-v1.h file.
+>> Ofc it's so confusing! Maybe I'm the one confused.
+> Yeah there is no issue with proposed patch as it is making the function
+> re-entrant safe.
 
-OK.
+Ah yes, this_cpu_add() does the addition in one shot without read-modify-write.
 
-> 
->>   unsigned long memcg_page_state_output(struct mem_cgroup *memcg, int item);
->>   bool memcg_stat_item_valid(int idx);
->>   bool memcg_vm_event_item_valid(enum vm_event_item idx);
->>   unsigned long lruvec_page_state(struct lruvec *lruvec, enum node_stat_item idx);
->>   unsigned long lruvec_page_state_local(struct lruvec *lruvec,
->>   				      enum node_stat_item idx);
->> +void reparent_memcg_lruvec_state_local(struct mem_cgroup *memcg,
->> +				       struct mem_cgroup *parent, int idx);
-> 
-> Put the above in mm/memcontrol-v1.h file.
-
-OK.
-
-> 
->>   
->>   void mem_cgroup_flush_stats(struct mem_cgroup *memcg);
->>   void mem_cgroup_flush_stats_ratelimited(struct mem_cgroup *memcg);
->> diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
->> index 94788bd1fdf0e..dbf94a77018e6 100644
->> --- a/kernel/cgroup/cgroup.c
->> +++ b/kernel/cgroup/cgroup.c
->> @@ -6043,8 +6043,8 @@ int cgroup_mkdir(struct kernfs_node *parent_kn, const char *name, umode_t mode)
->>    */
->>   static void css_killed_work_fn(struct work_struct *work)
->>   {
->> -	struct cgroup_subsys_state *css =
->> -		container_of(work, struct cgroup_subsys_state, destroy_work);
->> +	struct cgroup_subsys_state *css = container_of(to_rcu_work(work),
->> +				struct cgroup_subsys_state, destroy_rwork);
->>   
->>   	cgroup_lock();
->>   
->> @@ -6065,8 +6065,8 @@ static void css_killed_ref_fn(struct percpu_ref *ref)
->>   		container_of(ref, struct cgroup_subsys_state, refcnt);
->>   
->>   	if (atomic_dec_and_test(&css->online_cnt)) {
->> -		INIT_WORK(&css->destroy_work, css_killed_work_fn);
->> -		queue_work(cgroup_offline_wq, &css->destroy_work);
->> +		INIT_RCU_WORK(&css->destroy_rwork, css_killed_work_fn);
->> +		queue_rcu_work(cgroup_offline_wq, &css->destroy_rwork);
->>   	}
->>   }
->>   
->> diff --git a/mm/memcontrol-v1.c b/mm/memcontrol-v1.c
->> index c6078cd7f7e53..a427bb205763b 100644
->> --- a/mm/memcontrol-v1.c
->> +++ b/mm/memcontrol-v1.c
->> @@ -1887,6 +1887,22 @@ static const unsigned int memcg1_events[] = {
->>   	PGMAJFAULT,
->>   };
->>   
->> +void reparent_memcg1_state_local(struct mem_cgroup *memcg, struct mem_cgroup *parent)
->> +{
->> +	int i;
->> +
->> +	for (i = 0; i < ARRAY_SIZE(memcg1_stats); i++)
->> +		reparent_memcg_state_local(memcg, parent, memcg1_stats[i]);
->> +}
->> +
->> +void reparent_memcg1_lruvec_state_local(struct mem_cgroup *memcg, struct mem_cgroup *parent)
->> +{
->> +	int i;
->> +
->> +	for (i = 0; i < NR_LRU_LISTS; i++)
->> +		reparent_memcg_lruvec_state_local(memcg, parent, i);
->> +}
->> +
->>   void memcg1_stat_format(struct mem_cgroup *memcg, struct seq_buf *s)
->>   {
->>   	unsigned long memory, memsw;
->> diff --git a/mm/memcontrol-v1.h b/mm/memcontrol-v1.h
->> index eb3c3c1056574..45528195d3578 100644
->> --- a/mm/memcontrol-v1.h
->> +++ b/mm/memcontrol-v1.h
->> @@ -41,6 +41,7 @@ static inline bool do_memsw_account(void)
->>   
->>   unsigned long memcg_events_local(struct mem_cgroup *memcg, int event);
->>   unsigned long memcg_page_state_local(struct mem_cgroup *memcg, int idx);
->> +void mod_memcg_page_state_local(struct mem_cgroup *memcg, int idx, unsigned long val);
->>   unsigned long memcg_page_state_local_output(struct mem_cgroup *memcg, int item);
->>   bool memcg1_alloc_events(struct mem_cgroup *memcg);
->>   void memcg1_free_events(struct mem_cgroup *memcg);
->> @@ -73,6 +74,8 @@ void memcg1_uncharge_batch(struct mem_cgroup *memcg, unsigned long pgpgout,
->>   			   unsigned long nr_memory, int nid);
->>   
->>   void memcg1_stat_format(struct mem_cgroup *memcg, struct seq_buf *s);
->> +void reparent_memcg1_state_local(struct mem_cgroup *memcg, struct mem_cgroup *parent);
->> +void reparent_memcg1_lruvec_state_local(struct mem_cgroup *memcg, struct mem_cgroup *parent);
->>   
->>   void memcg1_account_kmem(struct mem_cgroup *memcg, int nr_pages);
->>   static inline bool memcg1_tcpmem_active(struct mem_cgroup *memcg)
->> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
->> index c9b5dfd822d0a..e7d4e4ff411b6 100644
->> --- a/mm/memcontrol.c
->> +++ b/mm/memcontrol.c
->> @@ -225,6 +225,26 @@ static inline struct obj_cgroup *__memcg_reparent_objcgs(struct mem_cgroup *memc
->>   	return objcg;
->>   }
->>   
->> +#ifdef CONFIG_MEMCG_V1
->> +static void __mem_cgroup_flush_stats(struct mem_cgroup *memcg, bool force);
->> +
->> +static inline void reparent_state_local(struct mem_cgroup *memcg, struct mem_cgroup *parent)
->> +{
->> +	if (cgroup_subsys_on_dfl(memory_cgrp_subsys))
->> +		return;
->> +
->> +	__mem_cgroup_flush_stats(memcg, true);
->> +
->> +	/* The following counts are all non-hierarchical and need to be reparented. */
->> +	reparent_memcg1_state_local(memcg, parent);
->> +	reparent_memcg1_lruvec_state_local(memcg, parent);
->> +}
->> +#else
->> +static inline void reparent_state_local(struct mem_cgroup *memcg, struct mem_cgroup *parent)
->> +{
->> +}
->> +#endif
->> +
->>   static inline void reparent_locks(struct mem_cgroup *memcg, struct mem_cgroup *parent)
->>   {
->>   	spin_lock_irq(&objcg_lock);
->> @@ -407,7 +427,7 @@ struct lruvec_stats {
->>   	long state[NR_MEMCG_NODE_STAT_ITEMS];
->>   
->>   	/* Non-hierarchical (CPU aggregated) state */
->> -	long state_local[NR_MEMCG_NODE_STAT_ITEMS];
->> +	atomic_long_t state_local[NR_MEMCG_NODE_STAT_ITEMS];
->>   
->>   	/* Pending child counts during tree propagation */
->>   	long state_pending[NR_MEMCG_NODE_STAT_ITEMS];
->> @@ -450,7 +470,7 @@ unsigned long lruvec_page_state_local(struct lruvec *lruvec,
->>   		return 0;
->>   
->>   	pn = container_of(lruvec, struct mem_cgroup_per_node, lruvec);
->> -	x = READ_ONCE(pn->lruvec_stats->state_local[i]);
->> +	x = atomic_long_read(&(pn->lruvec_stats->state_local[i]));
->>   #ifdef CONFIG_SMP
->>   	if (x < 0)
->>   		x = 0;
->> @@ -458,6 +478,27 @@ unsigned long lruvec_page_state_local(struct lruvec *lruvec,
->>   	return x;
->>   }
->>   
-> 
-> Please put the following function under CONFIG_MEMCG_V1. Just move it in
-> the same block as reparent_state_local().
-
-OK, will try to do it.
-
-> 
->> +void reparent_memcg_lruvec_state_local(struct mem_cgroup *memcg,
->> +				       struct mem_cgroup *parent, int idx)
->> +{
->> +	int i = memcg_stats_index(idx);
->> +	int nid;
->> +
->> +	if (WARN_ONCE(BAD_STAT_IDX(i), "%s: missing stat item %d\n", __func__, idx))
->> +		return;
->> +
->> +	for_each_node(nid) {
->> +		struct lruvec *child_lruvec = mem_cgroup_lruvec(memcg, NODE_DATA(nid));
->> +		struct lruvec *parent_lruvec = mem_cgroup_lruvec(parent, NODE_DATA(nid));
->> +		struct mem_cgroup_per_node *parent_pn;
->> +		unsigned long value = lruvec_page_state_local(child_lruvec, idx);
->> +
->> +		parent_pn = container_of(parent_lruvec, struct mem_cgroup_per_node, lruvec);
->> +
->> +		atomic_long_add(value, &(parent_pn->lruvec_stats->state_local[i]));
->> +	}
->> +}
->> +
-> 
-> [...]
-> 
->>   
->> +#ifdef CONFIG_MEMCG_V1
->> +/*
->> + * Used in mod_memcg_state() and mod_memcg_lruvec_state() to avoid race with
->> + * reparenting of non-hierarchical state_locals.
->> + */
->> +static inline struct mem_cgroup *get_non_dying_memcg_start(struct mem_cgroup *memcg)
->> +{
->> +	if (cgroup_subsys_on_dfl(memory_cgrp_subsys))
->> +		return memcg;
->> +
->> +	rcu_read_lock();
->> +
->> +	while (memcg_is_dying(memcg))
->> +		memcg = parent_mem_cgroup(memcg);
->> +
->> +	return memcg;
->> +}
->> +
->> +static inline void get_non_dying_memcg_end(void)
->> +{
->> +	if (cgroup_subsys_on_dfl(memory_cgrp_subsys))
->> +		return;
->> +
->> +	rcu_read_unlock();
->> +}
->> +#else
->> +static inline struct mem_cgroup *get_non_dying_memcg_start(struct mem_cgroup *memcg)
->> +{
->> +	return memcg;
->> +}
->> +
->> +static inline void get_non_dying_memcg_end(void)
->> +{
->> +}
->> +#endif
-> 
-> Add the usage of these start and end functions in mod_memcg_state() and
-> mod_memcg_lruvec_state() in this patch.
-
-Using these two function will change the behavior of mod_memcg_state()
-and mod_memcg_lruvec_state(), but LRU folios has not yet been
-reparented.
-
-To ensure the patch itself is error-free, I chose to place the usage of
-these two function in patch #30.
-
-Thanks,
-Qi
-
-> 
+I am still puzzled whether the original patch was a bug fix or an optimization.
+The patch description says that node stat updation uses irq unsafe interface.
+Therefore, we had foo() calling __foo() nested with local_irq_save/restore. But
+there were code paths which directly called __foo() - so, your patch fixes a bug right
+(in which case we should have a Fixes tag)? The patch ensures that mod_node_page_state
+is used, and depending on HAVE_CMPXCHG_LOCAL, either uses irq disabling or
+preempt_disable + cmpxchg - making the interface irq safe.
 
 
