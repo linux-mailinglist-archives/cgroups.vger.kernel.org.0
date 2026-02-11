@@ -1,350 +1,176 @@
-Return-Path: <cgroups+bounces-13856-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-13857-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id GHZEFKKHjGmHqgAAu9opvQ
-	(envelope-from <cgroups+bounces-13856-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Wed, 11 Feb 2026 14:44:02 +0100
+	id 4B0bN0OXjGnhrQAAu9opvQ
+	(envelope-from <cgroups+bounces-13857-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Wed, 11 Feb 2026 15:50:43 +0100
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id AFEB7124E1B
-	for <lists+cgroups@lfdr.de>; Wed, 11 Feb 2026 14:44:01 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5FFBE125541
+	for <lists+cgroups@lfdr.de>; Wed, 11 Feb 2026 15:50:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id C105B301ECD2
-	for <lists+cgroups@lfdr.de>; Wed, 11 Feb 2026 13:43:38 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id C286C301E3DA
+	for <lists+cgroups@lfdr.de>; Wed, 11 Feb 2026 14:50:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D836E2DC781;
-	Wed, 11 Feb 2026 13:43:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CBE3D23EAB0;
+	Wed, 11 Feb 2026 14:50:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="JPVjVjWD"
+	dkim=pass (2048-bit key) header.d=shopee.com header.i=@shopee.com header.b="GwZo8z3P"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.18])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-lf1-f41.google.com (mail-lf1-f41.google.com [209.85.167.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0FEB9191F94;
-	Wed, 11 Feb 2026 13:43:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.18
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1770817416; cv=none; b=S+tzmVn0ClHLH33aCucEWqFxTLzdYV+1885Du3z+HVO2jzIb16lh4Ize1jVtOxAjvueY/0f6jHRqGFKD3XdrNivFc+P4i0p77OaiaK3ifqEvEYmKTZRyozpmWrfqagLGupDMyMznFAhVufAGv0A9Cr7ZZHe9VDaa5acJs9W4jf8=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1770817416; c=relaxed/simple;
-	bh=wEJz6UAJ/YDJm9FyFpIp7xlD4O0stl9h6zZkBnYZOxY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=C8pG8ycnKDtg7e6rMlAmx0O+RcW5OMeFz0WyFbRiYZnaRo+B/ZT79RNUWkzMiA/U/4ZCNZl/waXQ/x8rbXNlzuN4vHzQO422AVFW5cyXgf+Os6rnFqK5zPkAnSJOAxmc9jLdFq3mT8MaqNpYA4paTntLv2PRKGWxMO5+t8lRkko=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=JPVjVjWD; arc=none smtp.client-ip=198.175.65.18
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1770817414; x=1802353414;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=wEJz6UAJ/YDJm9FyFpIp7xlD4O0stl9h6zZkBnYZOxY=;
-  b=JPVjVjWD4kyRd1qzcjvV4vKwQ9g65zCyTJ38jnksskggw1+kSlwzD64S
-   gk8wjXLAjydS+YjDPXUz634XK0wGBilYlaYmTNpiZDTSNWqxgT4of9J4+
-   Hv8+v5LdV+DY9g77r00QcBAwTie2ARNM6bjyTHVh+iV0bbIdqgotOTVVl
-   xcOhxlSK+vIBZEw1w6BJk2UKcG8reyFewVs8fhRVvLCyvR0xEg96jm1Mw
-   kVf85ibOWzbNF0BrC+VdT4Cw/9tRrB+6jm9B59PQpAMDJchKjPf3LMSXo
-   rZHPVLQ6JCuDTInj7fdr6ufvpcYaY35FwhhrXGFtqy7zI/zT4+/3CdMxP
-   g==;
-X-CSE-ConnectionGUID: FTS3Gya0TeaMDlKI6fI4lg==
-X-CSE-MsgGUID: TkP0yNLXQ26VGowlbX52lQ==
-X-IronPort-AV: E=McAfee;i="6800,10657,11698"; a="72007570"
-X-IronPort-AV: E=Sophos;i="6.21,283,1763452800"; 
-   d="scan'208";a="72007570"
-Received: from fmviesa005.fm.intel.com ([10.60.135.145])
-  by orvoesa110.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Feb 2026 05:43:33 -0800
-X-CSE-ConnectionGUID: R3H5VLSkRWCLn8vcnT5v2A==
-X-CSE-MsgGUID: n5aq+60TScCI4U8b3U0n8A==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.21,283,1763452800"; 
-   d="scan'208";a="216757612"
-Received: from igk-lkp-server01.igk.intel.com (HELO e5404a91d123) ([10.211.93.152])
-  by fmviesa005.fm.intel.com with ESMTP; 11 Feb 2026 05:43:26 -0800
-Received: from kbuild by e5404a91d123 with local (Exim 4.98.2)
-	(envelope-from <lkp@intel.com>)
-	id 1vqAV2-0000000015Z-01aG;
-	Wed, 11 Feb 2026 13:43:24 +0000
-Date: Wed, 11 Feb 2026 14:42:24 +0100
-From: kernel test robot <lkp@intel.com>
-To: Nhat Pham <nphamcs@gmail.com>, linux-mm@kvack.org
-Cc: oe-kbuild-all@lists.linux.dev, akpm@linux-foundation.org,
-	hannes@cmpxchg.org, hughd@google.com, yosry.ahmed@linux.dev,
-	mhocko@kernel.org, roman.gushchin@linux.dev, shakeel.butt@linux.dev,
-	muchun.song@linux.dev, len.brown@intel.com,
-	chengming.zhou@linux.dev, kasong@tencent.com, chrisl@kernel.org,
-	huang.ying.caritas@gmail.com, ryan.roberts@arm.com,
-	shikemeng@huaweicloud.com, viro@zeniv.linux.org.uk,
-	baohua@kernel.org, bhe@redhat.com, osalvador@suse.de,
-	lorenzo.stoakes@oracle.com, christophe.leroy@csgroup.eu,
-	pavel@kernel.org, kernel-team@meta.com,
-	linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-	linux-pm@vger.kernel.org, peterx@redhat.com, riel@surriel.com,
-	joshua.hahnjy@gmail.com
-Subject: Re: [PATCH v3 09/20] mm: swap: allocate a virtual swap slot for each
- swapped out page
-Message-ID: <202602111445.rP38hmwx-lkp@intel.com>
-References: <20260208215839.87595-10-nphamcs@gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3FBD21FDA92
+	for <cgroups@vger.kernel.org>; Wed, 11 Feb 2026 14:50:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.167.41
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1770821420; cv=pass; b=KfzkllD0anOjHRXOo/wdrEXNLCm5BekjrU09wIcDYpALPp/Z6ZSKxSGepuZMKg3l2C/MQItPWmIUYcTRX2DjJLy5M6ZB343UbGqAde3GhUYF7/ofJQvVjWx7zexk3A9Mkfg0j9f+asx/eis4l17ZZ8ujvgOonPt9MWzkQ4xEr34=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1770821420; c=relaxed/simple;
+	bh=PIZO4zWbF+NUU+GCLHSS8RQAVJrGdA7z/NBa9GU35+U=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=KYnaGCif22VMC6awyJ4KRe4NEXnSEyiALCNktdEOKU4EdWoLehXjTnhcNaApx7J582xI+rp7ykPvZC5M1MS9QCLGYc1csGVdPEAGqZeA8fKuG1/PXr6btkwBQkaq22o6E1hTSqEq7nmQiUyU2OY1ctD9fDO1mAM0hLW6u4Qz408=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=shopee.com; spf=pass smtp.mailfrom=shopee.com; dkim=pass (2048-bit key) header.d=shopee.com header.i=@shopee.com header.b=GwZo8z3P; arc=pass smtp.client-ip=209.85.167.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=shopee.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=shopee.com
+Received: by mail-lf1-f41.google.com with SMTP id 2adb3069b0e04-59e4a04f059so5125107e87.2
+        for <cgroups@vger.kernel.org>; Wed, 11 Feb 2026 06:50:19 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; t=1770821417; cv=none;
+        d=google.com; s=arc-20240605;
+        b=cqSNMoUZFH2qkykzZTN4C7CzHMliI+5AE7lc9GIlz5ZPkqdn86KyoyQ2QC3NcnlvRE
+         GeiHRnrpvtQB5ptdRMIhG0GQfoS/CPkKdNKWjHbRitEXO4NSnAo0VFfuRLKzepDHvoLe
+         mv6FHJsFOd2fFdst8Kz2GmEiIqHf1MfP3C9z9W9UvO32uLmFdTkvhSlO1ZRblcWQBtpD
+         zTLDSvOAvYCp6/Zw/LvOz+ZXkFiNMKvqS4htzKjaJokEkI2R5rinmw5cZNfn6/bGFa4C
+         +wMv7e9vyMTOiOPqjciyJRR1Xh9faeKGAdWi4KPwE6R24mY8q7fFEwJUfONozl9Ms7Z5
+         S5GQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:dkim-signature;
+        bh=RAC+65n1y5536yQ1ZiRJeZwn2G0HSBvLr2Csp67WCk0=;
+        fh=XvYpOJrMurihHh6su9dre5DGTKrBz5hd2gHuWlKyAcg=;
+        b=BTp921Gl7pI15YlHv1Mgf6P/0mQjPEp3GdrduKdINYNigQl5Lk8zNx/96kTuFbqF9A
+         4FXXt14Fzhjb9KVeuWYs4nYkDlW3M6zsnF3OVsltIxYAFkJmxrH8wA1Fg6RyLh16ZjHL
+         r1IPIMSLF8c8jtUq/AtOUYmGrzpM9qnEBDmBRviRKBKCzdhO4nnFCYyDyTrIUXD2mACz
+         V1U9qOqlzO2Zy6qB3ODW0qqshl/CoZkXovasiKAWDqZpo3Kz3mh/eKMGxDozqNDpop1o
+         B9HjLTXLauajLI+yx3BS5V99aVyldhuZ9eGn1qwcTcyDPbRvXzWZEPGSqKgsqMJFtx4K
+         cMfA==;
+        darn=vger.kernel.org
+ARC-Authentication-Results: i=1; mx.google.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=shopee.com; s=shopee.com; t=1770821417; x=1771426217; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=RAC+65n1y5536yQ1ZiRJeZwn2G0HSBvLr2Csp67WCk0=;
+        b=GwZo8z3PM8FeUV92W3i3UxB5osFH5fFcKb5cB19gJN3jB6qMHhK6QHLWc2vqaxvMfB
+         +p5jdgPac6eTAsHv9sgM4WdN07YLCjb5XxYY1NtL0RIMrUPG0mWK0dfHaK30QRAlcp1/
+         iQWDx8SYzbGz4MIgvihYQv4fpnO7m/w87I0jTK0Zxclw+h8pL+En1T6dcSjQwDP5HIpC
+         5zz6pSgXVCiqkq06UEaIJ67+vcu+sabzF7IW12E4kBSwqvXfzQKlpd9Gkv3OBu4BNQgq
+         HcH9QF5C73bEt/oENxedk+KfRaKmNaCcONXjAZ+sE75Hd+sm0YA4Pe7V1OAV0c3r1y4t
+         Xf/Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1770821417; x=1771426217;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=RAC+65n1y5536yQ1ZiRJeZwn2G0HSBvLr2Csp67WCk0=;
+        b=wJcLvkbnIRToShyvNWo2Qa411NlxqDtot3rRwYQGeSQ/SVVs2pj59XxWeG0ZqutPSE
+         g7uHkBIHSXSkd81Rr4ud5tP8bY0l76czpmBbEsxaRaZ2v3JD0yEktqhcyYmIVZ8NiLZu
+         d4NNxt4eU3veeFWj9uETI5tWZA9EaOnb+JXUn5PxYBS//K9Ut54M5lDtd6QjuMGgGjuO
+         KUCiU3DnuzBtcgWdDcCdlQ82pCnzoZA/VdBoQQ4O5qBNlj6PHgXTy8kNMHp9hWUOJ10O
+         wu3QhG0LCsgMAoxCraC85pixfaQCKTafhDL0AcycYtD1i25oRuwGdoQte4GsEuIJX8a+
+         XtbQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXor6IsaMrY8XIhehKf385cdYBPj3En2+OP8uFvc2iv0sv5RhOgghUqmIa4MXLt+taUfLKaGka5@vger.kernel.org
+X-Gm-Message-State: AOJu0Yyh2nb7KUlzhABNWJ1RYBXR1jmSkVKhQ3W7MTAJD4x8/vC5a666
+	BxHSVxaSX4vxMsaNFOkmi2wL2LaXumkdWvqQC0ihLxK6BxqDpznrrM/iVwYRTKVeJhwQy/1bZ6T
+	bvqNWDZXR91zpvxfTF3qNXnOSIb2+8Hn8t9u32Z9+Qw==
+X-Gm-Gg: AZuq6aKdTRcKZ4xWO6h1IhYmnLxYq4ibVx139tPbo6m2xlLMsBRv7cZqs5YDV2m82Z0
+	6kpiB9yVq5/f1cfLntoiEkU8qkiVitjgEk0k8OcK2qZ2IGmmRydv9QhJjllOJX5N9K5wareUGwJ
+	d8jknbX+05GYxvOvlL9c62C/3tDrXH6dVNeR3ScHUD0dlVQniEmk2wOGqRd62OjndgcPORGqi2Q
+	f+04pIWvrGK0DuRAeoMs8zsYDt5YU8o5L6soXUOfy/Cu2Zt9kq3N8Y0CX7TqaZ5S8ztH1VCOxKh
+	5uE8iazKJTzke8M/Pg==
+X-Received: by 2002:a05:6512:1194:b0:59e:708:cf56 with SMTP id
+ 2adb3069b0e04-59e5c3ee06emr1300142e87.26.1770821417457; Wed, 11 Feb 2026
+ 06:50:17 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20260208215839.87595-10-nphamcs@gmail.com>
+References: <20260114110837.84126-1-yizhou.tang@shopee.com> <guqq2cm3mk5qf45rcman3twiu7vax4sgkrhj23jrjb26tt3sk3@bh2h6s7givfq>
+In-Reply-To: <guqq2cm3mk5qf45rcman3twiu7vax4sgkrhj23jrjb26tt3sk3@bh2h6s7givfq>
+From: Tang Yizhou <yizhou.tang@shopee.com>
+Date: Wed, 11 Feb 2026 22:50:06 +0800
+X-Gm-Features: AZwV_QhP2qypkkBWSmBbgy6MSHPCepLJ3_C7202fgqAdyJeO3YQmLs4TKMN5fFU
+Message-ID: <CACuPKxnY0Uo6RU5Cw2_fS=hQcjUBwiA+G3U-LUaviVYyf0Pojw@mail.gmail.com>
+Subject: Re: [PATCH] docs: Fix blk-iolatency peer throttling description
+To: Jonathan Corbet <corbet@lwn.net>
+Cc: tj@kernel.org, axboe@kernel.dk, hch@lst.de, cgroups@vger.kernel.org, 
+	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, mkoutny@suse.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [0.34 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
-	MID_CONTAINS_FROM(1.00)[];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[intel.com,none];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10];
-	R_DKIM_ALLOW(-0.20)[intel.com:s=Intel];
+X-Spamd-Result: default: False [-2.16 / 15.00];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=2];
+	DMARC_POLICY_ALLOW(-0.50)[shopee.com,reject];
+	R_DKIM_ALLOW(-0.20)[shopee.com:s=shopee.com];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-13856-lists,cgroups=lfdr.de];
-	FROM_HAS_DN(0.00)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	FREEMAIL_TO(0.00)[gmail.com,kvack.org];
-	RCPT_COUNT_TWELVE(0.00)[32];
-	MIME_TRACE(0.00)[0:+];
-	FREEMAIL_CC(0.00)[lists.linux.dev,linux-foundation.org,cmpxchg.org,google.com,linux.dev,kernel.org,intel.com,tencent.com,gmail.com,arm.com,huaweicloud.com,zeniv.linux.org.uk,redhat.com,suse.de,oracle.com,csgroup.eu,meta.com,vger.kernel.org,surriel.com];
-	DKIM_TRACE(0.00)[intel.com:+];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[lkp@intel.com,cgroups@vger.kernel.org];
 	TO_DN_SOME(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[6];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	TAGGED_RCPT(0.00)[cgroups];
+	MIME_TRACE(0.00)[0:+];
 	MISSING_XM_UA(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[intel.com:mid,intel.com:dkim,intel.com:email,01.org:url]
-X-Rspamd-Queue-Id: AFEB7124E1B
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	TAGGED_RCPT(0.00)[cgroups];
+	RCVD_COUNT_THREE(0.00)[4];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[yizhou.tang@shopee.com,cgroups@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	RCPT_COUNT_SEVEN(0.00)[8];
+	PRECEDENCE_BULK(0.00)[];
+	TAGGED_FROM(0.00)[bounces-13857-lists,cgroups=lfdr.de];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[mail.gmail.com:mid,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,suse.com:email];
+	RCVD_TLS_LAST(0.00)[];
+	DKIM_TRACE(0.00)[shopee.com:+]
+X-Rspamd-Queue-Id: 5FFBE125541
 X-Rspamd-Action: no action
 
-Hi Nhat,
+On Tue, Jan 20, 2026 at 9:37=E2=80=AFPM Michal Koutn=C3=BD <mkoutny@suse.co=
+m> wrote:
+>
+> On Wed, Jan 14, 2026 at 07:08:37PM +0800, Tang Yizhou <yizhou.tang@shopee=
+.com> wrote:
+> > From: Tang Yizhou <yizhou.tang@shopee.com>
+> >
+> > The current text states that peers with a lower latency target are
+> > throttled, which is the opposite of the actual behavior. In fact,
+> > blk-iolatency throttles peer groups with a higher latency target in ord=
+er
+> > to protect the more latency-sensitive group.
+> >
+> > In addition, peer groups without a configured latency target are also
+> > throttled, as they are treated as lower priority compared to groups wit=
+h
+> > explicit latency requirements.
+> >
+> > Update the documentation to reflect the correct throttling behavior.
+> >
+> > Signed-off-by: Tang Yizhou <yizhou.tang@shopee.com>
+> > ---
+> >  Documentation/admin-guide/cgroup-v2.rst | 10 ++++++----
+> >  1 file changed, 6 insertions(+), 4 deletions(-)
+>
+> Not a big deal but it could've been confusing.
+>
+>
+> Acked-by: Michal Koutn=C3=BD <mkoutny@suse.com>
 
-kernel test robot noticed the following build errors:
+Hi Jon, just checking in, do you think this patch is ready to be merged?
 
-[auto build test ERROR on 05f7e89ab9731565d8a62e3b5d1ec206485eeb0b]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/Nhat-Pham/mm-swap-decouple-swap-cache-from-physical-swap-infrastructure/20260209-120606
-base:   05f7e89ab9731565d8a62e3b5d1ec206485eeb0b
-patch link:    https://lore.kernel.org/r/20260208215839.87595-10-nphamcs%40gmail.com
-patch subject: [PATCH v3 09/20] mm: swap: allocate a virtual swap slot for each swapped out page
-config: x86_64-rhel-9.4 (https://download.01.org/0day-ci/archive/20260211/202602111445.rP38hmwx-lkp@intel.com/config)
-compiler: gcc-14 (Debian 14.2.0-19) 14.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20260211/202602111445.rP38hmwx-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202602111445.rP38hmwx-lkp@intel.com/
-
-All errors (new ones prefixed by >>):
-
-   In file included from include/linux/local_lock.h:5,
-                    from include/linux/mmzone.h:24,
-                    from include/linux/gfp.h:7,
-                    from include/linux/mm.h:7,
-                    from mm/vswap.c:7:
-   mm/vswap.c: In function 'vswap_cpu_dead':
->> include/linux/percpu-defs.h:221:45: error: initialization from pointer to non-enclosed address space
-     221 |         const void __percpu *__vpp_verify = (typeof((ptr) + 0))NULL;    \
-         |                                             ^
-   include/linux/local_lock_internal.h:105:40: note: in definition of macro '__local_lock_acquire'
-     105 |                 __l = (local_lock_t *)(lock);                           \
-         |                                        ^~~~
-   include/linux/local_lock.h:17:41: note: in expansion of macro '__local_lock'
-      17 | #define local_lock(lock)                __local_lock(this_cpu_ptr(lock))
-         |                                         ^~~~~~~~~~~~
-   include/linux/percpu-defs.h:245:9: note: in expansion of macro '__verify_pcpu_ptr'
-     245 |         __verify_pcpu_ptr(ptr);                                         \
-         |         ^~~~~~~~~~~~~~~~~
-   include/linux/percpu-defs.h:256:27: note: in expansion of macro 'raw_cpu_ptr'
-     256 | #define this_cpu_ptr(ptr) raw_cpu_ptr(ptr)
-         |                           ^~~~~~~~~~~
-   include/linux/local_lock.h:17:54: note: in expansion of macro 'this_cpu_ptr'
-      17 | #define local_lock(lock)                __local_lock(this_cpu_ptr(lock))
-         |                                                      ^~~~~~~~~~~~
-   mm/vswap.c:653:9: note: in expansion of macro 'local_lock'
-     653 |         local_lock(&percpu_cluster->lock);
-         |         ^~~~~~~~~~
-   include/linux/percpu-defs.h:221:45: note: expected 'const __seg_gs void *' but pointer is of type 'local_lock_t *'
-     221 |         const void __percpu *__vpp_verify = (typeof((ptr) + 0))NULL;    \
-         |                                             ^
-   include/linux/local_lock_internal.h:105:40: note: in definition of macro '__local_lock_acquire'
-     105 |                 __l = (local_lock_t *)(lock);                           \
-         |                                        ^~~~
-   include/linux/local_lock.h:17:41: note: in expansion of macro '__local_lock'
-      17 | #define local_lock(lock)                __local_lock(this_cpu_ptr(lock))
-         |                                         ^~~~~~~~~~~~
-   include/linux/percpu-defs.h:245:9: note: in expansion of macro '__verify_pcpu_ptr'
-     245 |         __verify_pcpu_ptr(ptr);                                         \
-         |         ^~~~~~~~~~~~~~~~~
-   include/linux/percpu-defs.h:256:27: note: in expansion of macro 'raw_cpu_ptr'
-     256 | #define this_cpu_ptr(ptr) raw_cpu_ptr(ptr)
-         |                           ^~~~~~~~~~~
-   include/linux/local_lock.h:17:54: note: in expansion of macro 'this_cpu_ptr'
-      17 | #define local_lock(lock)                __local_lock(this_cpu_ptr(lock))
-         |                                                      ^~~~~~~~~~~~
-   mm/vswap.c:653:9: note: in expansion of macro 'local_lock'
-     653 |         local_lock(&percpu_cluster->lock);
-         |         ^~~~~~~~~~
->> include/linux/percpu-defs.h:221:45: error: initialization from pointer to non-enclosed address space
-     221 |         const void __percpu *__vpp_verify = (typeof((ptr) + 0))NULL;    \
-         |                                             ^
-   include/linux/local_lock_internal.h:107:27: note: in definition of macro '__local_lock_acquire'
-     107 |                 _Generic((lock),                                        \
-         |                           ^~~~
-   include/linux/local_lock.h:17:41: note: in expansion of macro '__local_lock'
-      17 | #define local_lock(lock)                __local_lock(this_cpu_ptr(lock))
-         |                                         ^~~~~~~~~~~~
-   include/linux/percpu-defs.h:245:9: note: in expansion of macro '__verify_pcpu_ptr'
-     245 |         __verify_pcpu_ptr(ptr);                                         \
-         |         ^~~~~~~~~~~~~~~~~
-   include/linux/percpu-defs.h:256:27: note: in expansion of macro 'raw_cpu_ptr'
-     256 | #define this_cpu_ptr(ptr) raw_cpu_ptr(ptr)
-         |                           ^~~~~~~~~~~
-   include/linux/local_lock.h:17:54: note: in expansion of macro 'this_cpu_ptr'
-      17 | #define local_lock(lock)                __local_lock(this_cpu_ptr(lock))
-         |                                                      ^~~~~~~~~~~~
-   mm/vswap.c:653:9: note: in expansion of macro 'local_lock'
-     653 |         local_lock(&percpu_cluster->lock);
-         |         ^~~~~~~~~~
-   include/linux/percpu-defs.h:221:45: note: expected 'const __seg_gs void *' but pointer is of type 'local_lock_t *'
-     221 |         const void __percpu *__vpp_verify = (typeof((ptr) + 0))NULL;    \
-         |                                             ^
-   include/linux/local_lock_internal.h:107:27: note: in definition of macro '__local_lock_acquire'
-     107 |                 _Generic((lock),                                        \
-         |                           ^~~~
-   include/linux/local_lock.h:17:41: note: in expansion of macro '__local_lock'
-      17 | #define local_lock(lock)                __local_lock(this_cpu_ptr(lock))
-         |                                         ^~~~~~~~~~~~
-   include/linux/percpu-defs.h:245:9: note: in expansion of macro '__verify_pcpu_ptr'
-     245 |         __verify_pcpu_ptr(ptr);                                         \
-         |         ^~~~~~~~~~~~~~~~~
-   include/linux/percpu-defs.h:256:27: note: in expansion of macro 'raw_cpu_ptr'
-     256 | #define this_cpu_ptr(ptr) raw_cpu_ptr(ptr)
-         |                           ^~~~~~~~~~~
-   include/linux/local_lock.h:17:54: note: in expansion of macro 'this_cpu_ptr'
-      17 | #define local_lock(lock)                __local_lock(this_cpu_ptr(lock))
-         |                                                      ^~~~~~~~~~~~
-   mm/vswap.c:653:9: note: in expansion of macro 'local_lock'
-     653 |         local_lock(&percpu_cluster->lock);
-         |         ^~~~~~~~~~
->> include/linux/percpu-defs.h:221:45: error: initialization from pointer to non-enclosed address space
-     221 |         const void __percpu *__vpp_verify = (typeof((ptr) + 0))NULL;    \
-         |                                             ^
-   include/linux/local_lock_internal.h:176:40: note: in definition of macro '__local_lock_release'
-     176 |                 __l = (local_lock_t *)(lock);                           \
-         |                                        ^~~~
-   include/linux/local_lock.h:38:41: note: in expansion of macro '__local_unlock'
-      38 | #define local_unlock(lock)              __local_unlock(this_cpu_ptr(lock))
-         |                                         ^~~~~~~~~~~~~~
-   include/linux/percpu-defs.h:245:9: note: in expansion of macro '__verify_pcpu_ptr'
-     245 |         __verify_pcpu_ptr(ptr);                                         \
-         |         ^~~~~~~~~~~~~~~~~
-   include/linux/percpu-defs.h:256:27: note: in expansion of macro 'raw_cpu_ptr'
-     256 | #define this_cpu_ptr(ptr) raw_cpu_ptr(ptr)
-         |                           ^~~~~~~~~~~
-   include/linux/local_lock.h:38:56: note: in expansion of macro 'this_cpu_ptr'
-      38 | #define local_unlock(lock)              __local_unlock(this_cpu_ptr(lock))
-         |                                                        ^~~~~~~~~~~~
-   mm/vswap.c:665:9: note: in expansion of macro 'local_unlock'
-     665 |         local_unlock(&percpu_cluster->lock);
-         |         ^~~~~~~~~~~~
-   include/linux/percpu-defs.h:221:45: note: expected 'const __seg_gs void *' but pointer is of type 'local_lock_t *'
-     221 |         const void __percpu *__vpp_verify = (typeof((ptr) + 0))NULL;    \
-         |                                             ^
-   include/linux/local_lock_internal.h:176:40: note: in definition of macro '__local_lock_release'
-     176 |                 __l = (local_lock_t *)(lock);                           \
-         |                                        ^~~~
-   include/linux/local_lock.h:38:41: note: in expansion of macro '__local_unlock'
-      38 | #define local_unlock(lock)              __local_unlock(this_cpu_ptr(lock))
-         |                                         ^~~~~~~~~~~~~~
-   include/linux/percpu-defs.h:245:9: note: in expansion of macro '__verify_pcpu_ptr'
-     245 |         __verify_pcpu_ptr(ptr);                                         \
-         |         ^~~~~~~~~~~~~~~~~
-   include/linux/percpu-defs.h:256:27: note: in expansion of macro 'raw_cpu_ptr'
-     256 | #define this_cpu_ptr(ptr) raw_cpu_ptr(ptr)
-         |                           ^~~~~~~~~~~
-   include/linux/local_lock.h:38:56: note: in expansion of macro 'this_cpu_ptr'
-      38 | #define local_unlock(lock)              __local_unlock(this_cpu_ptr(lock))
-         |                                                        ^~~~~~~~~~~~
-   mm/vswap.c:665:9: note: in expansion of macro 'local_unlock'
-     665 |         local_unlock(&percpu_cluster->lock);
-         |         ^~~~~~~~~~~~
->> include/linux/percpu-defs.h:221:45: error: initialization from pointer to non-enclosed address space
-     221 |         const void __percpu *__vpp_verify = (typeof((ptr) + 0))NULL;    \
-         |                                             ^
-   include/linux/local_lock_internal.h:179:27: note: in definition of macro '__local_lock_release'
-     179 |                 _Generic((lock),                                        \
-         |                           ^~~~
-   include/linux/local_lock.h:38:41: note: in expansion of macro '__local_unlock'
-      38 | #define local_unlock(lock)              __local_unlock(this_cpu_ptr(lock))
-         |                                         ^~~~~~~~~~~~~~
-   include/linux/percpu-defs.h:245:9: note: in expansion of macro '__verify_pcpu_ptr'
-     245 |         __verify_pcpu_ptr(ptr);                                         \
-         |         ^~~~~~~~~~~~~~~~~
-   include/linux/percpu-defs.h:256:27: note: in expansion of macro 'raw_cpu_ptr'
-     256 | #define this_cpu_ptr(ptr) raw_cpu_ptr(ptr)
-         |                           ^~~~~~~~~~~
-   include/linux/local_lock.h:38:56: note: in expansion of macro 'this_cpu_ptr'
-      38 | #define local_unlock(lock)              __local_unlock(this_cpu_ptr(lock))
-         |                                                        ^~~~~~~~~~~~
-   mm/vswap.c:665:9: note: in expansion of macro 'local_unlock'
-     665 |         local_unlock(&percpu_cluster->lock);
-         |         ^~~~~~~~~~~~
-   include/linux/percpu-defs.h:221:45: note: expected 'const __seg_gs void *' but pointer is of type 'local_lock_t *'
-     221 |         const void __percpu *__vpp_verify = (typeof((ptr) + 0))NULL;    \
-         |                                             ^
-   include/linux/local_lock_internal.h:179:27: note: in definition of macro '__local_lock_release'
-     179 |                 _Generic((lock),                                        \
-         |                           ^~~~
-   include/linux/local_lock.h:38:41: note: in expansion of macro '__local_unlock'
-      38 | #define local_unlock(lock)              __local_unlock(this_cpu_ptr(lock))
-         |                                         ^~~~~~~~~~~~~~
-   include/linux/percpu-defs.h:245:9: note: in expansion of macro '__verify_pcpu_ptr'
-     245 |         __verify_pcpu_ptr(ptr);                                         \
-         |         ^~~~~~~~~~~~~~~~~
-   include/linux/percpu-defs.h:256:27: note: in expansion of macro 'raw_cpu_ptr'
-     256 | #define this_cpu_ptr(ptr) raw_cpu_ptr(ptr)
-         |                           ^~~~~~~~~~~
-   include/linux/local_lock.h:38:56: note: in expansion of macro 'this_cpu_ptr'
-      38 | #define local_unlock(lock)              __local_unlock(this_cpu_ptr(lock))
-         |                                                        ^~~~~~~~~~~~
-   mm/vswap.c:665:9: note: in expansion of macro 'local_unlock'
-     665 |         local_unlock(&percpu_cluster->lock);
-         |         ^~~~~~~~~~~~
-
-
-vim +221 include/linux/percpu-defs.h
-
-62fde54123fb64 Tejun Heo 2014-06-17  207  
-9c28278a24c01c Tejun Heo 2014-06-17  208  /*
-6fbc07bbe2b5a8 Tejun Heo 2014-06-17  209   * __verify_pcpu_ptr() verifies @ptr is a percpu pointer without evaluating
-6fbc07bbe2b5a8 Tejun Heo 2014-06-17  210   * @ptr and is invoked once before a percpu area is accessed by all
-6fbc07bbe2b5a8 Tejun Heo 2014-06-17  211   * accessors and operations.  This is performed in the generic part of
-6fbc07bbe2b5a8 Tejun Heo 2014-06-17  212   * percpu and arch overrides don't need to worry about it; however, if an
-6fbc07bbe2b5a8 Tejun Heo 2014-06-17  213   * arch wants to implement an arch-specific percpu accessor or operation,
-6fbc07bbe2b5a8 Tejun Heo 2014-06-17  214   * it may use __verify_pcpu_ptr() to verify the parameters.
-9c28278a24c01c Tejun Heo 2014-06-17  215   *
-9c28278a24c01c Tejun Heo 2014-06-17  216   * + 0 is required in order to convert the pointer type from a
-9c28278a24c01c Tejun Heo 2014-06-17  217   * potential array type to a pointer to a single item of the array.
-9c28278a24c01c Tejun Heo 2014-06-17  218   */
-eba117889ac444 Tejun Heo 2014-06-17  219  #define __verify_pcpu_ptr(ptr)						\
-eba117889ac444 Tejun Heo 2014-06-17  220  do {									\
-9c28278a24c01c Tejun Heo 2014-06-17 @221  	const void __percpu *__vpp_verify = (typeof((ptr) + 0))NULL;	\
-9c28278a24c01c Tejun Heo 2014-06-17  222  	(void)__vpp_verify;						\
-9c28278a24c01c Tejun Heo 2014-06-17  223  } while (0)
-9c28278a24c01c Tejun Heo 2014-06-17  224  
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Best regards,
+Yi
 
