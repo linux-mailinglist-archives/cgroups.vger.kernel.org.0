@@ -1,89 +1,90 @@
-Return-Path: <cgroups+bounces-13860-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-13856-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id cBFTHJ6jjGlhrwAAu9opvQ
-	(envelope-from <cgroups+bounces-13860-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Wed, 11 Feb 2026 16:43:26 +0100
+	id GHZEFKKHjGmHqgAAu9opvQ
+	(envelope-from <cgroups+bounces-13856-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Wed, 11 Feb 2026 14:44:02 +0100
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
-	by mail.lfdr.de (Postfix) with ESMTPS id 53842125C9B
-	for <lists+cgroups@lfdr.de>; Wed, 11 Feb 2026 16:43:26 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id AFEB7124E1B
+	for <lists+cgroups@lfdr.de>; Wed, 11 Feb 2026 14:44:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id D2E4B3008C24
-	for <lists+cgroups@lfdr.de>; Wed, 11 Feb 2026 15:43:17 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id C105B301ECD2
+	for <lists+cgroups@lfdr.de>; Wed, 11 Feb 2026 13:43:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 64D9130F7E0;
-	Wed, 11 Feb 2026 15:43:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D836E2DC781;
+	Wed, 11 Feb 2026 13:43:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="UDb9hAux"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="JPVjVjWD"
 X-Original-To: cgroups@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ED385310636
-	for <cgroups@vger.kernel.org>; Wed, 11 Feb 2026 15:43:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0FEB9191F94;
+	Wed, 11 Feb 2026 13:43:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1770824593; cv=none; b=F6ZjO3lWmOFDQECqZoMK0aH4qqqKJNxrt+an2zhkIqwpa6Jws+N/qUHCm0awW7HmtfPPQA27dRukHBf5nnc6k8dYTLd07N8Qt++hl5FYw4R7lkM4znCWRTMVYjtDyV2MQbfirvJh8hPcV8NKvhAYBLbtKeyNhXQXhqosvOcSSco=
+	t=1770817416; cv=none; b=S+tzmVn0ClHLH33aCucEWqFxTLzdYV+1885Du3z+HVO2jzIb16lh4Ize1jVtOxAjvueY/0f6jHRqGFKD3XdrNivFc+P4i0p77OaiaK3ifqEvEYmKTZRyozpmWrfqagLGupDMyMznFAhVufAGv0A9Cr7ZZHe9VDaa5acJs9W4jf8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1770824593; c=relaxed/simple;
-	bh=KASUW0pyryAgersxWpn6QLBWZqNmrD3crrlaDFyAuR0=;
+	s=arc-20240116; t=1770817416; c=relaxed/simple;
+	bh=wEJz6UAJ/YDJm9FyFpIp7xlD4O0stl9h6zZkBnYZOxY=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=C4Ll/ge2wzMtcQW/oqZ9nKo2LYtR2s3pofhhs4x9SqRkuWBoYy2//9u/Z1HPu8Ide9e54afbHybpJMCrI9hubZRELvQb9/4FAUWPhY40wjNUW7NZPbgiSTd7JX/Xps7tlQuexWXGbSTQNUmeyZRRkSWYWGYUeVmD5LKV8lD5Ees=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=UDb9hAux; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1770824591;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=wE7la7K/IKWK0kSdZLLaAcmHE3mv3hvFTPaHbiBOxk8=;
-	b=UDb9hAux+qJH2e75ZO/z/a2h9EOA84fAhccaZ1tiGzSSYLt9La2GZ/mI2gdyrN7Msr/2We
-	KBM1XxMNVsylYQyFxMik0dIV3N2FFWfl4xem+EgbeSd4Om+e1PDfPMNP1r+imRVTYht2CM
-	AojUOG4YviyG8UJA6zPGy62DQLl+ZpE=
-Received: from mx-prod-mc-03.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-61-CvMfWgf9MqKHQQmxAVGhcg-1; Wed,
- 11 Feb 2026 10:43:06 -0500
-X-MC-Unique: CvMfWgf9MqKHQQmxAVGhcg-1
-X-Mimecast-MFC-AGG-ID: CvMfWgf9MqKHQQmxAVGhcg_1770824584
-Received: from mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.93])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mx-prod-mc-03.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 0E0861955F28;
-	Wed, 11 Feb 2026 15:43:04 +0000 (UTC)
-Received: from tpad.localdomain (unknown [10.96.133.3])
-	by mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id 0F7911800668;
-	Wed, 11 Feb 2026 15:43:03 +0000 (UTC)
-Received: by tpad.localdomain (Postfix, from userid 1000)
-	id 7DAC1400DF589; Wed, 11 Feb 2026 09:11:21 -0300 (-03)
-Date: Wed, 11 Feb 2026 09:11:21 -0300
-From: Marcelo Tosatti <mtosatti@redhat.com>
-To: Michal Hocko <mhocko@suse.com>
-Cc: linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-	linux-mm@kvack.org, Johannes Weiner <hannes@cmpxchg.org>,
-	Roman Gushchin <roman.gushchin@linux.dev>,
-	Shakeel Butt <shakeel.butt@linux.dev>,
-	Muchun Song <muchun.song@linux.dev>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Christoph Lameter <cl@linux.com>, Pekka Enberg <penberg@kernel.org>,
-	David Rientjes <rientjes@google.com>,
-	Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-	Vlastimil Babka <vbabka@suse.cz>,
-	Hyeonggon Yoo <42.hyeyoo@gmail.com>,
-	Leonardo Bras <leobras@redhat.com>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Waiman Long <longman@redhat.com>, Boqun Feng <boqun.feng@gmail.com>,
-	Frederic Weisbecker <fweisbecker@suse.de>
-Subject: Re: [PATCH 0/4] Introduce QPW for per-cpu operations
-Message-ID: <aYxx6cq6he6jTIZI@tpad>
-References: <20260206143430.021026873@redhat.com>
- <aYs6Ju2G4bm6_tl2@tiehlicka>
- <aYxviLoWsrLqDU7o@tpad>
+	 Content-Type:Content-Disposition:In-Reply-To; b=C8pG8ycnKDtg7e6rMlAmx0O+RcW5OMeFz0WyFbRiYZnaRo+B/ZT79RNUWkzMiA/U/4ZCNZl/waXQ/x8rbXNlzuN4vHzQO422AVFW5cyXgf+Os6rnFqK5zPkAnSJOAxmc9jLdFq3mT8MaqNpYA4paTntLv2PRKGWxMO5+t8lRkko=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=JPVjVjWD; arc=none smtp.client-ip=198.175.65.18
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1770817414; x=1802353414;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=wEJz6UAJ/YDJm9FyFpIp7xlD4O0stl9h6zZkBnYZOxY=;
+  b=JPVjVjWD4kyRd1qzcjvV4vKwQ9g65zCyTJ38jnksskggw1+kSlwzD64S
+   gk8wjXLAjydS+YjDPXUz634XK0wGBilYlaYmTNpiZDTSNWqxgT4of9J4+
+   Hv8+v5LdV+DY9g77r00QcBAwTie2ARNM6bjyTHVh+iV0bbIdqgotOTVVl
+   xcOhxlSK+vIBZEw1w6BJk2UKcG8reyFewVs8fhRVvLCyvR0xEg96jm1Mw
+   kVf85ibOWzbNF0BrC+VdT4Cw/9tRrB+6jm9B59PQpAMDJchKjPf3LMSXo
+   rZHPVLQ6JCuDTInj7fdr6ufvpcYaY35FwhhrXGFtqy7zI/zT4+/3CdMxP
+   g==;
+X-CSE-ConnectionGUID: FTS3Gya0TeaMDlKI6fI4lg==
+X-CSE-MsgGUID: TkP0yNLXQ26VGowlbX52lQ==
+X-IronPort-AV: E=McAfee;i="6800,10657,11698"; a="72007570"
+X-IronPort-AV: E=Sophos;i="6.21,283,1763452800"; 
+   d="scan'208";a="72007570"
+Received: from fmviesa005.fm.intel.com ([10.60.135.145])
+  by orvoesa110.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Feb 2026 05:43:33 -0800
+X-CSE-ConnectionGUID: R3H5VLSkRWCLn8vcnT5v2A==
+X-CSE-MsgGUID: n5aq+60TScCI4U8b3U0n8A==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.21,283,1763452800"; 
+   d="scan'208";a="216757612"
+Received: from igk-lkp-server01.igk.intel.com (HELO e5404a91d123) ([10.211.93.152])
+  by fmviesa005.fm.intel.com with ESMTP; 11 Feb 2026 05:43:26 -0800
+Received: from kbuild by e5404a91d123 with local (Exim 4.98.2)
+	(envelope-from <lkp@intel.com>)
+	id 1vqAV2-0000000015Z-01aG;
+	Wed, 11 Feb 2026 13:43:24 +0000
+Date: Wed, 11 Feb 2026 14:42:24 +0100
+From: kernel test robot <lkp@intel.com>
+To: Nhat Pham <nphamcs@gmail.com>, linux-mm@kvack.org
+Cc: oe-kbuild-all@lists.linux.dev, akpm@linux-foundation.org,
+	hannes@cmpxchg.org, hughd@google.com, yosry.ahmed@linux.dev,
+	mhocko@kernel.org, roman.gushchin@linux.dev, shakeel.butt@linux.dev,
+	muchun.song@linux.dev, len.brown@intel.com,
+	chengming.zhou@linux.dev, kasong@tencent.com, chrisl@kernel.org,
+	huang.ying.caritas@gmail.com, ryan.roberts@arm.com,
+	shikemeng@huaweicloud.com, viro@zeniv.linux.org.uk,
+	baohua@kernel.org, bhe@redhat.com, osalvador@suse.de,
+	lorenzo.stoakes@oracle.com, christophe.leroy@csgroup.eu,
+	pavel@kernel.org, kernel-team@meta.com,
+	linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+	linux-pm@vger.kernel.org, peterx@redhat.com, riel@surriel.com,
+	joshua.hahnjy@gmail.com
+Subject: Re: [PATCH v3 09/20] mm: swap: allocate a virtual swap slot for each
+ swapped out page
+Message-ID: <202602111445.rP38hmwx-lkp@intel.com>
+References: <20260208215839.87595-10-nphamcs@gmail.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -92,110 +93,258 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <aYxviLoWsrLqDU7o@tpad>
-X-Scanned-By: MIMEDefang 3.4.1 on 10.30.177.93
+In-Reply-To: <20260208215839.87595-10-nphamcs@gmail.com>
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-0.16 / 15.00];
+X-Spamd-Result: default: False [0.34 / 15.00];
 	SUSPICIOUS_RECIPS(1.50)[];
+	MID_CONTAINS_FROM(1.00)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[redhat.com,quarantine];
-	MID_RHS_NOT_FQDN(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
-	R_DKIM_ALLOW(-0.20)[redhat.com:s=mimecast20190719];
+	DMARC_POLICY_ALLOW(-0.50)[intel.com,none];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10];
+	R_DKIM_ALLOW(-0.20)[intel.com:s=Intel];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-13860-lists,cgroups=lfdr.de];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns];
-	MIME_TRACE(0.00)[0:+];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[20];
-	FREEMAIL_CC(0.00)[vger.kernel.org,kvack.org,cmpxchg.org,linux.dev,linux-foundation.org,linux.com,kernel.org,google.com,lge.com,suse.cz,gmail.com,redhat.com,linutronix.de,suse.de];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	TO_DN_SOME(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[mtosatti@redhat.com,cgroups@vger.kernel.org];
+	TAGGED_FROM(0.00)[bounces-13856-lists,cgroups=lfdr.de];
 	FROM_HAS_DN(0.00)[];
-	DKIM_TRACE(0.00)[redhat.com:+];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	FREEMAIL_TO(0.00)[gmail.com,kvack.org];
+	RCPT_COUNT_TWELVE(0.00)[32];
+	MIME_TRACE(0.00)[0:+];
+	FREEMAIL_CC(0.00)[lists.linux.dev,linux-foundation.org,cmpxchg.org,google.com,linux.dev,kernel.org,intel.com,tencent.com,gmail.com,arm.com,huaweicloud.com,zeniv.linux.org.uk,redhat.com,suse.de,oracle.com,csgroup.eu,meta.com,vger.kernel.org,surriel.com];
+	DKIM_TRACE(0.00)[intel.com:+];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
+	FROM_NEQ_ENVFROM(0.00)[lkp@intel.com,cgroups@vger.kernel.org];
+	TO_DN_SOME(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[6];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
 	TAGGED_RCPT(0.00)[cgroups];
 	MISSING_XM_UA(0.00)[];
-	RCVD_COUNT_SEVEN(0.00)[7]
-X-Rspamd-Queue-Id: 53842125C9B
+	DBL_BLOCKED_OPENRESOLVER(0.00)[intel.com:mid,intel.com:dkim,intel.com:email,01.org:url]
+X-Rspamd-Queue-Id: AFEB7124E1B
 X-Rspamd-Action: no action
 
-On Wed, Feb 11, 2026 at 09:01:12AM -0300, Marcelo Tosatti wrote:
-> On Tue, Feb 10, 2026 at 03:01:10PM +0100, Michal Hocko wrote:
-> > On Fri 06-02-26 11:34:30, Marcelo Tosatti wrote:
-> > > The problem:
-> > > Some places in the kernel implement a parallel programming strategy
-> > > consisting on local_locks() for most of the work, and some rare remote
-> > > operations are scheduled on target cpu. This keeps cache bouncing low since
-> > > cacheline tends to be mostly local, and avoids the cost of locks in non-RT
-> > > kernels, even though the very few remote operations will be expensive due
-> > > to scheduling overhead.
-> > > 
-> > > On the other hand, for RT workloads this can represent a problem: getting
-> > > an important workload scheduled out to deal with remote requests is
-> > > sure to introduce unexpected deadline misses.
-> > > 
-> > > The idea:
-> > > Currently with PREEMPT_RT=y, local_locks() become per-cpu spinlocks.
-> > > In this case, instead of scheduling work on a remote cpu, it should
-> > > be safe to grab that remote cpu's per-cpu spinlock and run the required
-> > > work locally. That major cost, which is un/locking in every local function,
-> > > already happens in PREEMPT_RT.
-> > > 
-> > > Also, there is no need to worry about extra cache bouncing:
-> > > The cacheline invalidation already happens due to schedule_work_on().
-> > > 
-> > > This will avoid schedule_work_on(), and thus avoid scheduling-out an
-> > > RT workload.
-> > > 
-> > > Proposed solution:
-> > > A new interface called Queue PerCPU Work (QPW), which should replace
-> > > Work Queue in the above mentioned use case.
-> > > 
-> > > If PREEMPT_RT=n this interfaces just wraps the current
-> > > local_locks + WorkQueue behavior, so no expected change in runtime.
-> > > 
-> > > If PREEMPT_RT=y, or CONFIG_QPW=y, queue_percpu_work_on(cpu,...) will
-> > > lock that cpu's per-cpu structure and perform work on it locally. 
-> > > This is possible because on functions that can be used for performing
-> > > remote work on remote per-cpu structures, the local_lock (which is already
-> > > a this_cpu spinlock()), will be replaced by a qpw_spinlock(), which
-> > > is able to get the per_cpu spinlock() for the cpu passed as parameter.
-> > 
-> > What about !PREEMPT_RT? We have people running isolated workloads and
-> > these sorts of pcp disruptions are really unwelcome as well. They do not
-> > have requirements as strong as RT workloads but the underlying
-> > fundamental problem is the same. Frederic (now CCed) is working on
-> > moving those pcp book keeping activities to be executed to the return to
-> > the userspace which should be taking care of both RT and non-RT
-> > configurations AFAICS.
-> 
-> Michal,
-> 
-> For !PREEMPT_RT, _if_ you select CONFIG_QPW=y, then there is a kernel
-> boot option qpw=y/n, which controls whether the behaviour will be
-> similar (the spinlock is taken on local_lock, similar to PREEMPT_RT).
-> 
-> If CONFIG_QPW=n, or kernel boot option qpw=n, then only local_lock 
-> (and remote work via work_queue) is used.
+Hi Nhat,
 
-OK, this is not true. There is only CONFIG_QPW and the qpw=yes/no kernel 
-boot option for control.
+kernel test robot noticed the following build errors:
 
-CONFIG_PREEMPT_RT should probably select CONFIG_QPW=y and
-CONFIG_QPW_DEFAULT=y.
+[auto build test ERROR on 05f7e89ab9731565d8a62e3b5d1ec206485eeb0b]
 
-> What "pcp book keeping activities" you refer to ? I don't see how
-> moving certain activities that happen under SLUB or LRU spinlocks
-> to happen before return to userspace changes things related 
-> to avoidance of CPU interruption ?
-> 
-> Thanks
-> 
+url:    https://github.com/intel-lab-lkp/linux/commits/Nhat-Pham/mm-swap-decouple-swap-cache-from-physical-swap-infrastructure/20260209-120606
+base:   05f7e89ab9731565d8a62e3b5d1ec206485eeb0b
+patch link:    https://lore.kernel.org/r/20260208215839.87595-10-nphamcs%40gmail.com
+patch subject: [PATCH v3 09/20] mm: swap: allocate a virtual swap slot for each swapped out page
+config: x86_64-rhel-9.4 (https://download.01.org/0day-ci/archive/20260211/202602111445.rP38hmwx-lkp@intel.com/config)
+compiler: gcc-14 (Debian 14.2.0-19) 14.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20260211/202602111445.rP38hmwx-lkp@intel.com/reproduce)
 
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202602111445.rP38hmwx-lkp@intel.com/
+
+All errors (new ones prefixed by >>):
+
+   In file included from include/linux/local_lock.h:5,
+                    from include/linux/mmzone.h:24,
+                    from include/linux/gfp.h:7,
+                    from include/linux/mm.h:7,
+                    from mm/vswap.c:7:
+   mm/vswap.c: In function 'vswap_cpu_dead':
+>> include/linux/percpu-defs.h:221:45: error: initialization from pointer to non-enclosed address space
+     221 |         const void __percpu *__vpp_verify = (typeof((ptr) + 0))NULL;    \
+         |                                             ^
+   include/linux/local_lock_internal.h:105:40: note: in definition of macro '__local_lock_acquire'
+     105 |                 __l = (local_lock_t *)(lock);                           \
+         |                                        ^~~~
+   include/linux/local_lock.h:17:41: note: in expansion of macro '__local_lock'
+      17 | #define local_lock(lock)                __local_lock(this_cpu_ptr(lock))
+         |                                         ^~~~~~~~~~~~
+   include/linux/percpu-defs.h:245:9: note: in expansion of macro '__verify_pcpu_ptr'
+     245 |         __verify_pcpu_ptr(ptr);                                         \
+         |         ^~~~~~~~~~~~~~~~~
+   include/linux/percpu-defs.h:256:27: note: in expansion of macro 'raw_cpu_ptr'
+     256 | #define this_cpu_ptr(ptr) raw_cpu_ptr(ptr)
+         |                           ^~~~~~~~~~~
+   include/linux/local_lock.h:17:54: note: in expansion of macro 'this_cpu_ptr'
+      17 | #define local_lock(lock)                __local_lock(this_cpu_ptr(lock))
+         |                                                      ^~~~~~~~~~~~
+   mm/vswap.c:653:9: note: in expansion of macro 'local_lock'
+     653 |         local_lock(&percpu_cluster->lock);
+         |         ^~~~~~~~~~
+   include/linux/percpu-defs.h:221:45: note: expected 'const __seg_gs void *' but pointer is of type 'local_lock_t *'
+     221 |         const void __percpu *__vpp_verify = (typeof((ptr) + 0))NULL;    \
+         |                                             ^
+   include/linux/local_lock_internal.h:105:40: note: in definition of macro '__local_lock_acquire'
+     105 |                 __l = (local_lock_t *)(lock);                           \
+         |                                        ^~~~
+   include/linux/local_lock.h:17:41: note: in expansion of macro '__local_lock'
+      17 | #define local_lock(lock)                __local_lock(this_cpu_ptr(lock))
+         |                                         ^~~~~~~~~~~~
+   include/linux/percpu-defs.h:245:9: note: in expansion of macro '__verify_pcpu_ptr'
+     245 |         __verify_pcpu_ptr(ptr);                                         \
+         |         ^~~~~~~~~~~~~~~~~
+   include/linux/percpu-defs.h:256:27: note: in expansion of macro 'raw_cpu_ptr'
+     256 | #define this_cpu_ptr(ptr) raw_cpu_ptr(ptr)
+         |                           ^~~~~~~~~~~
+   include/linux/local_lock.h:17:54: note: in expansion of macro 'this_cpu_ptr'
+      17 | #define local_lock(lock)                __local_lock(this_cpu_ptr(lock))
+         |                                                      ^~~~~~~~~~~~
+   mm/vswap.c:653:9: note: in expansion of macro 'local_lock'
+     653 |         local_lock(&percpu_cluster->lock);
+         |         ^~~~~~~~~~
+>> include/linux/percpu-defs.h:221:45: error: initialization from pointer to non-enclosed address space
+     221 |         const void __percpu *__vpp_verify = (typeof((ptr) + 0))NULL;    \
+         |                                             ^
+   include/linux/local_lock_internal.h:107:27: note: in definition of macro '__local_lock_acquire'
+     107 |                 _Generic((lock),                                        \
+         |                           ^~~~
+   include/linux/local_lock.h:17:41: note: in expansion of macro '__local_lock'
+      17 | #define local_lock(lock)                __local_lock(this_cpu_ptr(lock))
+         |                                         ^~~~~~~~~~~~
+   include/linux/percpu-defs.h:245:9: note: in expansion of macro '__verify_pcpu_ptr'
+     245 |         __verify_pcpu_ptr(ptr);                                         \
+         |         ^~~~~~~~~~~~~~~~~
+   include/linux/percpu-defs.h:256:27: note: in expansion of macro 'raw_cpu_ptr'
+     256 | #define this_cpu_ptr(ptr) raw_cpu_ptr(ptr)
+         |                           ^~~~~~~~~~~
+   include/linux/local_lock.h:17:54: note: in expansion of macro 'this_cpu_ptr'
+      17 | #define local_lock(lock)                __local_lock(this_cpu_ptr(lock))
+         |                                                      ^~~~~~~~~~~~
+   mm/vswap.c:653:9: note: in expansion of macro 'local_lock'
+     653 |         local_lock(&percpu_cluster->lock);
+         |         ^~~~~~~~~~
+   include/linux/percpu-defs.h:221:45: note: expected 'const __seg_gs void *' but pointer is of type 'local_lock_t *'
+     221 |         const void __percpu *__vpp_verify = (typeof((ptr) + 0))NULL;    \
+         |                                             ^
+   include/linux/local_lock_internal.h:107:27: note: in definition of macro '__local_lock_acquire'
+     107 |                 _Generic((lock),                                        \
+         |                           ^~~~
+   include/linux/local_lock.h:17:41: note: in expansion of macro '__local_lock'
+      17 | #define local_lock(lock)                __local_lock(this_cpu_ptr(lock))
+         |                                         ^~~~~~~~~~~~
+   include/linux/percpu-defs.h:245:9: note: in expansion of macro '__verify_pcpu_ptr'
+     245 |         __verify_pcpu_ptr(ptr);                                         \
+         |         ^~~~~~~~~~~~~~~~~
+   include/linux/percpu-defs.h:256:27: note: in expansion of macro 'raw_cpu_ptr'
+     256 | #define this_cpu_ptr(ptr) raw_cpu_ptr(ptr)
+         |                           ^~~~~~~~~~~
+   include/linux/local_lock.h:17:54: note: in expansion of macro 'this_cpu_ptr'
+      17 | #define local_lock(lock)                __local_lock(this_cpu_ptr(lock))
+         |                                                      ^~~~~~~~~~~~
+   mm/vswap.c:653:9: note: in expansion of macro 'local_lock'
+     653 |         local_lock(&percpu_cluster->lock);
+         |         ^~~~~~~~~~
+>> include/linux/percpu-defs.h:221:45: error: initialization from pointer to non-enclosed address space
+     221 |         const void __percpu *__vpp_verify = (typeof((ptr) + 0))NULL;    \
+         |                                             ^
+   include/linux/local_lock_internal.h:176:40: note: in definition of macro '__local_lock_release'
+     176 |                 __l = (local_lock_t *)(lock);                           \
+         |                                        ^~~~
+   include/linux/local_lock.h:38:41: note: in expansion of macro '__local_unlock'
+      38 | #define local_unlock(lock)              __local_unlock(this_cpu_ptr(lock))
+         |                                         ^~~~~~~~~~~~~~
+   include/linux/percpu-defs.h:245:9: note: in expansion of macro '__verify_pcpu_ptr'
+     245 |         __verify_pcpu_ptr(ptr);                                         \
+         |         ^~~~~~~~~~~~~~~~~
+   include/linux/percpu-defs.h:256:27: note: in expansion of macro 'raw_cpu_ptr'
+     256 | #define this_cpu_ptr(ptr) raw_cpu_ptr(ptr)
+         |                           ^~~~~~~~~~~
+   include/linux/local_lock.h:38:56: note: in expansion of macro 'this_cpu_ptr'
+      38 | #define local_unlock(lock)              __local_unlock(this_cpu_ptr(lock))
+         |                                                        ^~~~~~~~~~~~
+   mm/vswap.c:665:9: note: in expansion of macro 'local_unlock'
+     665 |         local_unlock(&percpu_cluster->lock);
+         |         ^~~~~~~~~~~~
+   include/linux/percpu-defs.h:221:45: note: expected 'const __seg_gs void *' but pointer is of type 'local_lock_t *'
+     221 |         const void __percpu *__vpp_verify = (typeof((ptr) + 0))NULL;    \
+         |                                             ^
+   include/linux/local_lock_internal.h:176:40: note: in definition of macro '__local_lock_release'
+     176 |                 __l = (local_lock_t *)(lock);                           \
+         |                                        ^~~~
+   include/linux/local_lock.h:38:41: note: in expansion of macro '__local_unlock'
+      38 | #define local_unlock(lock)              __local_unlock(this_cpu_ptr(lock))
+         |                                         ^~~~~~~~~~~~~~
+   include/linux/percpu-defs.h:245:9: note: in expansion of macro '__verify_pcpu_ptr'
+     245 |         __verify_pcpu_ptr(ptr);                                         \
+         |         ^~~~~~~~~~~~~~~~~
+   include/linux/percpu-defs.h:256:27: note: in expansion of macro 'raw_cpu_ptr'
+     256 | #define this_cpu_ptr(ptr) raw_cpu_ptr(ptr)
+         |                           ^~~~~~~~~~~
+   include/linux/local_lock.h:38:56: note: in expansion of macro 'this_cpu_ptr'
+      38 | #define local_unlock(lock)              __local_unlock(this_cpu_ptr(lock))
+         |                                                        ^~~~~~~~~~~~
+   mm/vswap.c:665:9: note: in expansion of macro 'local_unlock'
+     665 |         local_unlock(&percpu_cluster->lock);
+         |         ^~~~~~~~~~~~
+>> include/linux/percpu-defs.h:221:45: error: initialization from pointer to non-enclosed address space
+     221 |         const void __percpu *__vpp_verify = (typeof((ptr) + 0))NULL;    \
+         |                                             ^
+   include/linux/local_lock_internal.h:179:27: note: in definition of macro '__local_lock_release'
+     179 |                 _Generic((lock),                                        \
+         |                           ^~~~
+   include/linux/local_lock.h:38:41: note: in expansion of macro '__local_unlock'
+      38 | #define local_unlock(lock)              __local_unlock(this_cpu_ptr(lock))
+         |                                         ^~~~~~~~~~~~~~
+   include/linux/percpu-defs.h:245:9: note: in expansion of macro '__verify_pcpu_ptr'
+     245 |         __verify_pcpu_ptr(ptr);                                         \
+         |         ^~~~~~~~~~~~~~~~~
+   include/linux/percpu-defs.h:256:27: note: in expansion of macro 'raw_cpu_ptr'
+     256 | #define this_cpu_ptr(ptr) raw_cpu_ptr(ptr)
+         |                           ^~~~~~~~~~~
+   include/linux/local_lock.h:38:56: note: in expansion of macro 'this_cpu_ptr'
+      38 | #define local_unlock(lock)              __local_unlock(this_cpu_ptr(lock))
+         |                                                        ^~~~~~~~~~~~
+   mm/vswap.c:665:9: note: in expansion of macro 'local_unlock'
+     665 |         local_unlock(&percpu_cluster->lock);
+         |         ^~~~~~~~~~~~
+   include/linux/percpu-defs.h:221:45: note: expected 'const __seg_gs void *' but pointer is of type 'local_lock_t *'
+     221 |         const void __percpu *__vpp_verify = (typeof((ptr) + 0))NULL;    \
+         |                                             ^
+   include/linux/local_lock_internal.h:179:27: note: in definition of macro '__local_lock_release'
+     179 |                 _Generic((lock),                                        \
+         |                           ^~~~
+   include/linux/local_lock.h:38:41: note: in expansion of macro '__local_unlock'
+      38 | #define local_unlock(lock)              __local_unlock(this_cpu_ptr(lock))
+         |                                         ^~~~~~~~~~~~~~
+   include/linux/percpu-defs.h:245:9: note: in expansion of macro '__verify_pcpu_ptr'
+     245 |         __verify_pcpu_ptr(ptr);                                         \
+         |         ^~~~~~~~~~~~~~~~~
+   include/linux/percpu-defs.h:256:27: note: in expansion of macro 'raw_cpu_ptr'
+     256 | #define this_cpu_ptr(ptr) raw_cpu_ptr(ptr)
+         |                           ^~~~~~~~~~~
+   include/linux/local_lock.h:38:56: note: in expansion of macro 'this_cpu_ptr'
+      38 | #define local_unlock(lock)              __local_unlock(this_cpu_ptr(lock))
+         |                                                        ^~~~~~~~~~~~
+   mm/vswap.c:665:9: note: in expansion of macro 'local_unlock'
+     665 |         local_unlock(&percpu_cluster->lock);
+         |         ^~~~~~~~~~~~
+
+
+vim +221 include/linux/percpu-defs.h
+
+62fde54123fb64 Tejun Heo 2014-06-17  207  
+9c28278a24c01c Tejun Heo 2014-06-17  208  /*
+6fbc07bbe2b5a8 Tejun Heo 2014-06-17  209   * __verify_pcpu_ptr() verifies @ptr is a percpu pointer without evaluating
+6fbc07bbe2b5a8 Tejun Heo 2014-06-17  210   * @ptr and is invoked once before a percpu area is accessed by all
+6fbc07bbe2b5a8 Tejun Heo 2014-06-17  211   * accessors and operations.  This is performed in the generic part of
+6fbc07bbe2b5a8 Tejun Heo 2014-06-17  212   * percpu and arch overrides don't need to worry about it; however, if an
+6fbc07bbe2b5a8 Tejun Heo 2014-06-17  213   * arch wants to implement an arch-specific percpu accessor or operation,
+6fbc07bbe2b5a8 Tejun Heo 2014-06-17  214   * it may use __verify_pcpu_ptr() to verify the parameters.
+9c28278a24c01c Tejun Heo 2014-06-17  215   *
+9c28278a24c01c Tejun Heo 2014-06-17  216   * + 0 is required in order to convert the pointer type from a
+9c28278a24c01c Tejun Heo 2014-06-17  217   * potential array type to a pointer to a single item of the array.
+9c28278a24c01c Tejun Heo 2014-06-17  218   */
+eba117889ac444 Tejun Heo 2014-06-17  219  #define __verify_pcpu_ptr(ptr)						\
+eba117889ac444 Tejun Heo 2014-06-17  220  do {									\
+9c28278a24c01c Tejun Heo 2014-06-17 @221  	const void __percpu *__vpp_verify = (typeof((ptr) + 0))NULL;	\
+9c28278a24c01c Tejun Heo 2014-06-17  222  	(void)__vpp_verify;						\
+9c28278a24c01c Tejun Heo 2014-06-17  223  } while (0)
+9c28278a24c01c Tejun Heo 2014-06-17  224  
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
