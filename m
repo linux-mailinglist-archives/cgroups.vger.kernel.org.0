@@ -1,244 +1,172 @@
-Return-Path: <cgroups+bounces-13864-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-13865-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id UCDVI2q1jGm5sQAAu9opvQ
-	(envelope-from <cgroups+bounces-13864-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Wed, 11 Feb 2026 17:59:22 +0100
+	id GPTyMmi3jGnlsQAAu9opvQ
+	(envelope-from <cgroups+bounces-13865-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Wed, 11 Feb 2026 18:07:52 +0100
 X-Original-To: lists+cgroups@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 019971265EF
-	for <lists+cgroups@lfdr.de>; Wed, 11 Feb 2026 17:59:21 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id DA8D01266CA
+	for <lists+cgroups@lfdr.de>; Wed, 11 Feb 2026 18:07:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 232163013734
-	for <lists+cgroups@lfdr.de>; Wed, 11 Feb 2026 16:59:20 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 102AD3013A42
+	for <lists+cgroups@lfdr.de>; Wed, 11 Feb 2026 17:07:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F3FA1345725;
-	Wed, 11 Feb 2026 16:59:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7EADD3451AA;
+	Wed, 11 Feb 2026 17:07:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="RG+3rD2J";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="JMbHUV5H";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="RG+3rD2J";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="JMbHUV5H"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="bTr9enjM"
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+Received: from mail-wm1-f53.google.com (mail-wm1-f53.google.com [209.85.128.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 65D9628690
-	for <cgroups@vger.kernel.org>; Wed, 11 Feb 2026 16:59:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0A29F2C11D0
+	for <cgroups@vger.kernel.org>; Wed, 11 Feb 2026 17:07:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1770829156; cv=none; b=IQ/aJPHtlrhJCsvlYWFKFGVr5XqrAGOrCOo+ArUPpEdGSCdQUn2Tp/xjPP6n04whJyhY8urWkpOVznqt1MUph006wbSo5cGYkCV5iJoUMdnPvJ+PofYxeY2mI4ndZrTQuQzjjbNaR1pdDZEhoNjrriDXS4mFQGa18F5Ah4cNels=
+	t=1770829642; cv=none; b=F9Mg+moJ1O3U9VZPYOArXzWTecoQXtfHu3gX9ENMxhXLzOwHM2ihP8wV+3ajUP30VzshgGlDyK5Ds/5KfjQ8WegJL/j38SB+0HeZZxQFv7NgEbOsuuBJS3fuQd7UP/aDOVE59bqIRYPjuF65/g5PpCS4jziHuko7NT/2XAtjrJE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1770829156; c=relaxed/simple;
-	bh=aQSg/2H1Jx9Naefx0WovVVHBT+Wi9U53YGUjQ2gaoWg=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=II6ieQPKmUEa4NuDqqt74H1VkZhDD6RJIRGP4Yt6jzhftsVa4XxXI8AWb6k1tZtSPDr+lz776BJBBVFaP9np6dawEnq3WkhTpmTF24bXkOZZB0ufsKWXVyHM20Ytl12BxqHQ6Uvy0nHE9ax0/xs/rYE/d43o2Lkg+K4mHoSO69Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=RG+3rD2J; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=JMbHUV5H; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=RG+3rD2J; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=JMbHUV5H; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id B07725BDDC;
-	Wed, 11 Feb 2026 16:59:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1770829153; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=K9A/zWvO7Ca3A+6Rp4L1LgDmPtAV9ih5Be5b7ZXx81Q=;
-	b=RG+3rD2JmZFOblxH4HoEQuZTshdKV7Gi2Fys5An09Yo3nblQsDLIaZAv5NLWouyKu349sw
-	vt5WuRm+1oQX8j6rc07XAuY2ALp/E5TKlgvTg57YsZVLMA6gBhzAydYTtuk/5ZRFNSXkUm
-	/HF9raT7k5fdkOiB+uIYNMzNduKiBKY=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1770829153;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=K9A/zWvO7Ca3A+6Rp4L1LgDmPtAV9ih5Be5b7ZXx81Q=;
-	b=JMbHUV5HdetaNeOO6HVO4Rn19fzKF77FDs+WLeKYUx63usUw4P1+Wh7vrvxB5EqsRo/pd4
-	NvENfBizJ/0gn0Dg==
-Authentication-Results: smtp-out2.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1770829153; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=K9A/zWvO7Ca3A+6Rp4L1LgDmPtAV9ih5Be5b7ZXx81Q=;
-	b=RG+3rD2JmZFOblxH4HoEQuZTshdKV7Gi2Fys5An09Yo3nblQsDLIaZAv5NLWouyKu349sw
-	vt5WuRm+1oQX8j6rc07XAuY2ALp/E5TKlgvTg57YsZVLMA6gBhzAydYTtuk/5ZRFNSXkUm
-	/HF9raT7k5fdkOiB+uIYNMzNduKiBKY=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1770829153;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=K9A/zWvO7Ca3A+6Rp4L1LgDmPtAV9ih5Be5b7ZXx81Q=;
-	b=JMbHUV5HdetaNeOO6HVO4Rn19fzKF77FDs+WLeKYUx63usUw4P1+Wh7vrvxB5EqsRo/pd4
-	NvENfBizJ/0gn0Dg==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 826B43EA62;
-	Wed, 11 Feb 2026 16:59:13 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id NYLxHmG1jGnoUgAAD6G6ig
-	(envelope-from <vbabka@suse.cz>); Wed, 11 Feb 2026 16:59:13 +0000
-Message-ID: <40b42d83-3667-4489-818f-a01e1114d6b0@suse.cz>
-Date: Wed, 11 Feb 2026 17:59:13 +0100
+	s=arc-20240116; t=1770829642; c=relaxed/simple;
+	bh=ySVPfXbmJnp2WBkqN8BJ9diFQawVwKchKNh2lAXXJm0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=fnaw4xKUC31w5cwNt2ei9v9YrSmUe65qxIGE3QOUkWE/dyIQvwhKUT4U1kau02H/KrDBGPE+whzJXJBKj2BXdDlc8LKhA2tKQwAOZcctO/BI1xbqNj0h6njX1GKLLr2Yj+PJfYmxW+iJ9G53nFTxfGVyMjs5UkoWA1Qmq/X1yVU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=bTr9enjM; arc=none smtp.client-ip=209.85.128.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-wm1-f53.google.com with SMTP id 5b1f17b1804b1-47ff94b46afso11408305e9.1
+        for <cgroups@vger.kernel.org>; Wed, 11 Feb 2026 09:07:20 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1770829639; x=1771434439; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=mPSBc0UQSAHkKnCaf7ezAsL21Xf876MMmDqC8iH+97k=;
+        b=bTr9enjML4h4on8PV9vEiZNZbYCH29avG+maXFoQqWjtGuq4xmkkKvXllnumhLvwOh
+         hM+vdPNxhQf+koO20no9e92MVfkh9vpi9ZI4etPV1/3KtkvuOiUkygTB56qCm6pPpBD4
+         0gtHkJtvBr2OHIdlkV3e/9ZKz+QIpo51g5sBCjYgxjWjh2f42506s8byTKioUHv5GgyD
+         dGUKPRH93bJy4HEjHOieuJEjdJc8akVWNEMiR6Z8bNvtpyiigNljEmenQU5LDvsytbSp
+         eADA/Wcte7wXjfEEfw4djbKL3nPSBihkN+Y0hjeWCA0voQwmC5qcZ+GgIOI0FeTdQuRf
+         uigw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1770829639; x=1771434439;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=mPSBc0UQSAHkKnCaf7ezAsL21Xf876MMmDqC8iH+97k=;
+        b=LHyfB4DezAp3ihnUm6mG4G9WJqZohZeWIj4JaYH/MwXjL69OoZy/qPPniktoZ88xXv
+         z0aIgASvgvPGnZfcGIE72fuSy92VyvZbEDBBZOCH+kFL44XSXHp0GqwbreF4Tmkg6fSw
+         s1YMqEyERFBjiPQQP08HBZGHZ0+Lru2q6vOH7Vhl8/OrPJ4LahMmY7AOEX0UCSgF4JHp
+         W4bnP3HxnfM5HyKl/bNBQJQMcuRmuw36cuLoOV3Gxf63rUP8iOXpElQrU8c7Ipa4MsQ0
+         zmqF+z6AJJDL/RuOpXaB+Bu8osgRJZlMUea5aN3BCabtfFlVoRdNmbX3jhe8dhs3o3KW
+         z8Lg==
+X-Forwarded-Encrypted: i=1; AJvYcCXnM8Qg4SfEa1LTZ8zHt4NRyy19ZZiNG6N3k3zzgiauQVEObXKxB6c+pSMdATEnpRpUfB1ujm4Q@vger.kernel.org
+X-Gm-Message-State: AOJu0YyWT4yBZjniBeD7CiZNODznKeXi0KmCHmWJNtmOxLIjS3IUxt9K
+	P0322lu7pjFuRgEBysq/Wq262oNsytQlY2/Pyo8PjbHwNNG8P6cRer5ikV0ItiO1Njc=
+X-Gm-Gg: AZuq6aL0mGIdB4UiAgenzA99b8EZPkn91PcAd5bXv+GK2RK0FKcN7wDg1VWpXTk95AQ
+	CqFmAJQjkw2/XvQk3NZaLi+t7w2SNDblWdX5WW7Kc+VKI5Hrii+MFQoc6TOEfVn9HoytiMbN1py
+	ka4aHmb1EZnO6OvVR+gt+pRtqkTVMq5HnBshl/om6OI5a2GybY1HfnuyubY04evGQ/X13mku59Y
+	AFV4Ge4mNHgftsV+q/Is+f2sLy+9avXc7DuiL0K02xcJE32LSOKhojkMgSAA9IpPAB608nLIH7I
+	KjZfBnrByIsIjRJyUPBfAjIxQpn4O13Sjg5rZWb9nlk58nJX2IKVHge/bqkcWHOZTi6pIZLXDr2
+	3d0wf1rdruWK8+yk7FGIddikxJLzHGFBj5kz9+dqz31r3lFmkerT7WJjL4Ak7OewKIXJ7TWdHg/
+	LycxLc14rnMg6dGH3XpoybsfNn/x8cKnlMg2st
+X-Received: by 2002:a05:600c:524e:b0:46f:a2ba:581f with SMTP id 5b1f17b1804b1-48365057efamr1621985e9.16.1770829639376;
+        Wed, 11 Feb 2026 09:07:19 -0800 (PST)
+Received: from localhost (109-81-83-241.rct.o2.cz. [109.81.83.241])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4834d5e0ed5sm130603715e9.5.2026.02.11.09.07.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 11 Feb 2026 09:07:18 -0800 (PST)
+Date: Wed, 11 Feb 2026 18:07:17 +0100
+From: Michal Hocko <mhocko@suse.com>
+To: Marcelo Tosatti <mtosatti@redhat.com>
+Cc: Vlastimil Babka <vbabka@suse.cz>, linux-kernel@vger.kernel.org,
+	cgroups@vger.kernel.org, linux-mm@kvack.org,
+	Johannes Weiner <hannes@cmpxchg.org>,
+	Roman Gushchin <roman.gushchin@linux.dev>,
+	Shakeel Butt <shakeel.butt@linux.dev>,
+	Muchun Song <muchun.song@linux.dev>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Christoph Lameter <cl@linux.com>, Pekka Enberg <penberg@kernel.org>,
+	David Rientjes <rientjes@google.com>,
+	Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+	Hyeonggon Yoo <42.hyeyoo@gmail.com>,
+	Leonardo Bras <leobras@redhat.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Waiman Long <longman@redhat.com>, Boqun Feng <boqun.feng@gmail.com>,
+	Frederic Weisbecker <fweisbecker@suse.de>
+Subject: Re: [PATCH 0/4] Introduce QPW for per-cpu operations
+Message-ID: <aYy3RdKQF_aTErzB@tiehlicka>
+References: <20260206143430.021026873@redhat.com>
+ <aYs6Ju2G4bm6_tl2@tiehlicka>
+ <aYxviLoWsrLqDU7o@tpad>
+ <aYywl1hdBQP2_slo@tiehlicka>
+ <aYyzZbh/YRMDcviS@tpad>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 0/4] Introduce QPW for per-cpu operations
-Content-Language: en-US
-To: Marcelo Tosatti <mtosatti@redhat.com>, Michal Hocko <mhocko@suse.com>
-Cc: linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
- linux-mm@kvack.org, Johannes Weiner <hannes@cmpxchg.org>,
- Roman Gushchin <roman.gushchin@linux.dev>,
- Shakeel Butt <shakeel.butt@linux.dev>, Muchun Song <muchun.song@linux.dev>,
- Andrew Morton <akpm@linux-foundation.org>, Christoph Lameter <cl@linux.com>,
- Pekka Enberg <penberg@kernel.org>, David Rientjes <rientjes@google.com>,
- Joonsoo Kim <iamjoonsoo.kim@lge.com>, Hyeonggon Yoo <42.hyeyoo@gmail.com>,
- Leonardo Bras <leobras@redhat.com>, Thomas Gleixner <tglx@linutronix.de>,
- Waiman Long <longman@redhat.com>, Boqun Feng <boqun.feng@gmail.com>,
- Frederic Weisbecker <fweisbecker@suse.de>
-References: <20260206143430.021026873@redhat.com> <aYs6Ju2G4bm6_tl2@tiehlicka>
- <aYxviLoWsrLqDU7o@tpad> <aYywl1hdBQP2_slo@tiehlicka> <aYyzZbh/YRMDcviS@tpad>
-From: Vlastimil Babka <vbabka@suse.cz>
-Autocrypt: addr=vbabka@suse.cz; keydata=
- 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
- m6M14QORSWTLRg==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 In-Reply-To: <aYyzZbh/YRMDcviS@tpad>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Score: -6.80
-X-Spam-Level: 
-X-Spam-Flag: NO
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-0.16 / 15.00];
 	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64];
+	MID_RHS_NOT_FQDN(0.50)[];
+	DMARC_POLICY_ALLOW(-0.50)[suse.com,quarantine];
+	R_DKIM_ALLOW(-0.20)[suse.com:s=google];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-13864-lists,cgroups=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-13865-lists,cgroups=lfdr.de];
 	FROM_HAS_DN(0.00)[];
-	DMARC_NA(0.00)[suse.cz];
-	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
+	RECEIVED_HELO_LOCALHOST(0.00)[];
 	RCPT_COUNT_TWELVE(0.00)[20];
-	FREEMAIL_CC(0.00)[vger.kernel.org,kvack.org,cmpxchg.org,linux.dev,linux-foundation.org,linux.com,kernel.org,google.com,lge.com,gmail.com,redhat.com,linutronix.de,suse.de];
-	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
+	MIME_TRACE(0.00)[0:+];
+	FREEMAIL_CC(0.00)[suse.cz,vger.kernel.org,kvack.org,cmpxchg.org,linux.dev,linux-foundation.org,linux.com,kernel.org,google.com,lge.com,gmail.com,redhat.com,linutronix.de,suse.de];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[6];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[vbabka@suse.cz,cgroups@vger.kernel.org];
-	DKIM_TRACE(0.00)[suse.cz:+];
-	MID_RHS_MATCH_FROM(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	TAGGED_RCPT(0.00)[cgroups];
 	TO_DN_SOME(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,suse.cz:mid,suse.cz:dkim]
-X-Rspamd-Queue-Id: 019971265EF
+	RCVD_COUNT_FIVE(0.00)[5];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[mhocko@suse.com,cgroups@vger.kernel.org];
+	DKIM_TRACE(0.00)[suse.com:+];
+	TAGGED_RCPT(0.00)[cgroups];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	MISSING_XM_UA(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,suse.com:dkim]
+X-Rspamd-Queue-Id: DA8D01266CA
 X-Rspamd-Action: no action
 
-On 2/11/26 17:50, Marcelo Tosatti wrote:
+On Wed 11-02-26 13:50:45, Marcelo Tosatti wrote:
 > On Wed, Feb 11, 2026 at 05:38:47PM +0100, Michal Hocko wrote:
->> On Wed 11-02-26 09:01:12, Marcelo Tosatti wrote:
->> > On Tue, Feb 10, 2026 at 03:01:10PM +0100, Michal Hocko wrote:
->> [...]
->> > > What about !PREEMPT_RT? We have people running isolated workloads and
->> > > these sorts of pcp disruptions are really unwelcome as well. They do not
->> > > have requirements as strong as RT workloads but the underlying
->> > > fundamental problem is the same. Frederic (now CCed) is working on
->> > > moving those pcp book keeping activities to be executed to the return to
->> > > the userspace which should be taking care of both RT and non-RT
->> > > configurations AFAICS.
->> > 
->> > Michal,
->> > 
->> > For !PREEMPT_RT, _if_ you select CONFIG_QPW=y, then there is a kernel
->> > boot option qpw=y/n, which controls whether the behaviour will be
->> > similar (the spinlock is taken on local_lock, similar to PREEMPT_RT).
->> 
->> My bad. I've misread the config space of this.
+> > On Wed 11-02-26 09:01:12, Marcelo Tosatti wrote:
+> > > On Tue, Feb 10, 2026 at 03:01:10PM +0100, Michal Hocko wrote:
+> > [...]
+> > > > What about !PREEMPT_RT? We have people running isolated workloads and
+> > > > these sorts of pcp disruptions are really unwelcome as well. They do not
+> > > > have requirements as strong as RT workloads but the underlying
+> > > > fundamental problem is the same. Frederic (now CCed) is working on
+> > > > moving those pcp book keeping activities to be executed to the return to
+> > > > the userspace which should be taking care of both RT and non-RT
+> > > > configurations AFAICS.
+> > > 
+> > > Michal,
+> > > 
+> > > For !PREEMPT_RT, _if_ you select CONFIG_QPW=y, then there is a kernel
+> > > boot option qpw=y/n, which controls whether the behaviour will be
+> > > similar (the spinlock is taken on local_lock, similar to PREEMPT_RT).
+> > 
+> > My bad. I've misread the config space of this.
 > 
 > My bad, actually. Its only CONFIG_QPW on the current patchset.
-> 
->> > If CONFIG_QPW=n, or kernel boot option qpw=n, then only local_lock 
->> > (and remote work via work_queue) is used.
->> > 
->> > What "pcp book keeping activities" you refer to ? I don't see how
->> > moving certain activities that happen under SLUB or LRU spinlocks
->> > to happen before return to userspace changes things related 
->> > to avoidance of CPU interruption ?
->> 
->> Essentially delayed operations like pcp state flushing happens on return
->> to the userspace on isolated CPUs. No locking changes are required as
->> the work is still per-cpu.
->> 
->> In other words the approach Frederic is working on is to not change the
->> locking of pcp delayed work but instead move that work into well defined
->> place - i.e. return to the userspace.
->> 
->> Btw. have you measure the impact of preempt_disbale -> spinlock on hot
->> paths like SLUB sheeves?
-> 
-> Nope, i have not. What is/are the standard benchmarks for SLUB/SLAB
-> allocation ?
 
-Those mentioned here, and I would say also netperf.
-https://lore.kernel.org/all/20250913000935.1021068-1-sudarsanm@google.com/
-
-
+Yeah. PREEMPT_RT -> CONFIG_QPW=y and cmd line makes no difference
+-- 
+Michal Hocko
+SUSE Labs
 
