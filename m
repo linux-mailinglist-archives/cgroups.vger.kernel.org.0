@@ -1,124 +1,171 @@
-Return-Path: <cgroups+bounces-13850-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-13851-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id aD+dGoXPi2kbbgAAu9opvQ
-	(envelope-from <cgroups+bounces-13850-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Wed, 11 Feb 2026 01:38:29 +0100
+	id WGKEKv0xjGkAjAAAu9opvQ
+	(envelope-from <cgroups+bounces-13851-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Wed, 11 Feb 2026 08:38:37 +0100
 X-Original-To: lists+cgroups@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id DE582120572
-	for <lists+cgroups@lfdr.de>; Wed, 11 Feb 2026 01:38:28 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 05CA8121E95
+	for <lists+cgroups@lfdr.de>; Wed, 11 Feb 2026 08:38:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id B86433047BD6
-	for <lists+cgroups@lfdr.de>; Wed, 11 Feb 2026 00:38:27 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 6182C301F498
+	for <lists+cgroups@lfdr.de>; Wed, 11 Feb 2026 07:38:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A3E7A1F1518;
-	Wed, 11 Feb 2026 00:38:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="nGjpWQG2"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9215F2E62C6;
+	Wed, 11 Feb 2026 07:38:34 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from out-186.mta0.migadu.com (out-186.mta0.migadu.com [91.218.175.186])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B1AB1FE451
-	for <cgroups@vger.kernel.org>; Wed, 11 Feb 2026 00:38:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.186
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 31D8D4AEE2;
+	Wed, 11 Feb 2026 07:38:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1770770306; cv=none; b=ExD0BgjMOiqc+0MO/B1eLUClflcIe44Fa6UlfKxD5jmRrkGp3VDO7GfDexHrawwKvzv8hUF0Vp6n7eYpPM4AK3dLJoyMqY7yl1y9CeEmIkax6n0NFZKRQR7z40LjivV7md4P0GOI+4lTMj6CPr9Kfb1w0EDv4BVjcI0GIykULbI=
+	t=1770795514; cv=none; b=I3K83tPONl4PP344KnkojYoNqivL1lAireWhnqPJuZ9F9za+/0JqV3Lw7cLw0cNULXXOqdGYoCUbp0TUTGEDBN6d0MYBQXUSAAM+iwgqKxBwpxywso658nVDU/EGlMy1ZMF2MJCWS7xzjdGwvfHcYSNXW0QbVbowcNmW4th610E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1770770306; c=relaxed/simple;
-	bh=4K1bsS9FsrnaV4lN25Pd6F9YjUSRT5r+WMaVyQGDrh0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=P1SVJ+YhWdPCZA2JPt8CumLY+OFW809gUgHmyTS/mNgmnyT2BItrKlss4Fi4BEPUV6wp9p9u0iyIRImvco1cUQsFcz4mvGE5WaRDYZIhEFDLE3E65SCPj2h1z9fZsspPRLes7ilozxbYoh1/fUdksmTUFEIl+PPsAN/guD5wLS8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=nGjpWQG2; arc=none smtp.client-ip=91.218.175.186
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Tue, 10 Feb 2026 16:38:06 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1770770293;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=FbwdsItdNCVn/rOvfiUbXy89AP6MsD7J95YTJtH5IKY=;
-	b=nGjpWQG2/c7L7wdCTrpV+AhW2KBz3M5rW7e7GCv58fHxE6WzUsIwwHKk5JLqeXsX5+05qN
-	qoXZPTC9S2q3xvSGv8Bu+GVQFwoe8amFtgpZN4LDKfkYllOahsE7ivJOZ96n/wSlA5U+M1
-	9wn+kGto9IbAxLcmGeUN3kZ2zd/EH/g=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Shakeel Butt <shakeel.butt@linux.dev>
-To: Qi Zheng <qi.zheng@linux.dev>
-Cc: hannes@cmpxchg.org, hughd@google.com, mhocko@suse.com, 
-	roman.gushchin@linux.dev, muchun.song@linux.dev, david@kernel.org, 
-	lorenzo.stoakes@oracle.com, ziy@nvidia.com, harry.yoo@oracle.com, yosry.ahmed@linux.dev, 
-	imran.f.khan@oracle.com, kamalesh.babulal@oracle.com, axelrasmussen@google.com, 
-	yuanchu@google.com, weixugc@google.com, chenridong@huaweicloud.com, mkoutny@suse.com, 
-	akpm@linux-foundation.org, hamzamahfooz@linux.microsoft.com, apais@linux.microsoft.com, 
-	lance.yang@linux.dev, bhe@redhat.com, linux-mm@kvack.org, linux-kernel@vger.kernel.org, 
-	cgroups@vger.kernel.org, Qi Zheng <zhengqi.arch@bytedance.com>
-Subject: Re: [PATCH v4 29/31] mm: memcontrol: prepare for reparenting
- non-hierarchical stats
-Message-ID: <aYvO2IaYnyWYDHTX@linux.dev>
-References: <cover.1770279888.git.zhengqi.arch@bytedance.com>
- <3ca234c643ecb484f17aa88187e0bce8949bdb6b.1770279888.git.zhengqi.arch@bytedance.com>
- <aYabQii_-9EVdgub@linux.dev>
- <0673b72c-8d7c-4bfb-a8b2-da5ae5bb5f00@linux.dev>
+	s=arc-20240116; t=1770795514; c=relaxed/simple;
+	bh=Gj/UzUnUuStFo1Q583qlTXzNm58Bp9L6Nbf/JCA2h1Y=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=E7wOR8m2ZMScQs/+dHx5/eg/uae8b9YIq6YAYUFDYUV+Wuy8epRVjdynJ67npVQfIns5XV9NlSTeUkx33ivlS6UKNLBkYuW9aOZjoFAic3Q0CXAK2E1kxvvwNYVbzxbhxu/7nrSvU4pNKxlCwu0dqSLJEibN7/W4pE+o11Tokas=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id DEF4E339;
+	Tue, 10 Feb 2026 23:38:24 -0800 (PST)
+Received: from [10.164.148.41] (MacBook-Pro.blr.arm.com [10.164.148.41])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 40B2E3F740;
+	Tue, 10 Feb 2026 23:38:26 -0800 (PST)
+Message-ID: <5a6782f3-d758-4d9c-975b-5ae4b5d80d4e@arm.com>
+Date: Wed, 11 Feb 2026 13:07:40 +0530
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <0673b72c-8d7c-4bfb-a8b2-da5ae5bb5f00@linux.dev>
-X-Migadu-Flow: FLOW_OUT
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/4] memcg: use mod_node_page_state to update stats
+To: Shakeel Butt <shakeel.butt@linux.dev>
+Cc: Harry Yoo <harry.yoo@oracle.com>,
+ Andrew Morton <akpm@linux-foundation.org>,
+ Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>,
+ Roman Gushchin <roman.gushchin@linux.dev>,
+ Muchun Song <muchun.song@linux.dev>, Qi Zheng <qi.zheng@linux.dev>,
+ Vlastimil Babka <vbabka@suse.cz>, linux-mm@kvack.org,
+ cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+ Meta kernel team <kernel-team@meta.com>
+References: <1052a452-9ba3-4da7-be47-7d27d27b3d1d@arm.com>
+ <aYAmGc6lu973jRwu@linux.dev> <2638bd96-d8cc-4733-a4ce-efdf8f223183@arm.com>
+ <51819ca5a15d8928caac720426cd1ce82e89b429@linux.dev>
+ <05aec69b-8e73-49ac-aa89-47b371fb6269@arm.com> <aYOuCmjQ5lGm8Mup@linux.dev>
+ <4847c300-c7bb-4259-867c-4bbf4d760576@arm.com> <aYQuj6Ot-JS4tXvY@hyeyoo>
+ <7df681ae0f8254f09de0b8e258b909eaacafadf4@linux.dev>
+ <b77dc11e-fe09-4f0c-a912-d05faa01ff1c@arm.com> <aYtbevHEwx_3fn0Q@linux.dev>
+Content-Language: en-US
+From: Dev Jain <dev.jain@arm.com>
+In-Reply-To: <aYtbevHEwx_3fn0Q@linux.dev>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-2.16 / 15.00];
+X-Spamd-Result: default: False [-1.36 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[linux.dev,none];
-	R_DKIM_ALLOW(-0.20)[linux.dev:s=key1];
-	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
+	DMARC_POLICY_SOFTFAIL(0.10)[arm.com : SPF not aligned (relaxed), No valid DKIM,none];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_TLS_LAST(0.00)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-13850-lists,cgroups=lfdr.de];
-	RCVD_COUNT_THREE(0.00)[3];
-	RCPT_COUNT_TWELVE(0.00)[27];
-	MIME_TRACE(0.00)[0:+];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
 	FROM_HAS_DN(0.00)[];
-	MISSING_XM_UA(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	TO_DN_SOME(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[13];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	MID_RHS_MATCH_FROM(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[shakeel.butt@linux.dev,cgroups@vger.kernel.org];
-	DKIM_TRACE(0.00)[linux.dev:+];
-	MID_RHS_MATCH_FROM(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
+	FROM_NEQ_ENVFROM(0.00)[dev.jain@arm.com,cgroups@vger.kernel.org];
 	TAGGED_RCPT(0.00)[cgroups];
-	TO_DN_SOME(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[linux.dev:mid,linux.dev:dkim,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: DE582120572
+	RCVD_COUNT_FIVE(0.00)[5];
+	RCVD_TLS_LAST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-13851-lists,cgroups=lfdr.de];
+	R_DKIM_NA(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,arm.com:mid]
+X-Rspamd-Queue-Id: 05CA8121E95
 X-Rspamd-Action: no action
 
-On Tue, Feb 10, 2026 at 02:47:51PM +0800, Qi Zheng wrote:
-> 
-> 
-> > 
-> > Add the usage of these start and end functions in mod_memcg_state() and
-> > mod_memcg_lruvec_state() in this patch.
-> 
-> Using these two function will change the behavior of mod_memcg_state()
-> and mod_memcg_lruvec_state(), but LRU folios has not yet been
-> reparented.
-> 
-> To ensure the patch itself is error-free, I chose to place the usage of
-> these two function in patch #30.
 
-Makes sense.
+On 10/02/26 9:59 pm, Shakeel Butt wrote:
+> On Tue, Feb 10, 2026 at 01:08:49PM +0530, Dev Jain wrote:
+> [...]
+>>> Oh so it is arm64 specific issue. I tested on x86-64 machine and it solves
+>>> the little regression it had before. So, on arm64 all this_cpu_ops i.e. without
+>>> double underscore, uses LL/SC instructions. 
+>>>
+>>> Need more thought on this. 
+>>>
+>>>>> Also can you confirm whether my analysis of the regression was correct?
+>>>>>  Because if it was, then this diff looks wrong - AFAIU preempt_disable()
+>>>>>  won't stop an irq handler from interrupting the execution, so this
+>>>>>  will introduce a bug for code paths running in irq context.
+>>>>>
+>>>> I was worried about the correctness too, but this_cpu_add() is safe
+>>>> against IRQs and so the stat will be _eventually_ consistent?
+>>>>
+>>>> Ofc it's so confusing! Maybe I'm the one confused.
+>>> Yeah there is no issue with proposed patch as it is making the function
+>>> re-entrant safe.
+>> Ah yes, this_cpu_add() does the addition in one shot without read-modify-write.
+>>
+>> I am still puzzled whether the original patch was a bug fix or an optimization.
+> The original patch was a cleanup patch. The memcg stats update functions
+> were already irq/nmi safe without disabling irqs and that patch did the
+> same for the numa stats. Though it seems like that is causing regression
+> for arm64 as this_cpu* ops are expensive on arm64. 
+>
+>> The patch description says that node stat updation uses irq unsafe interface.
+>> Therefore, we had foo() calling __foo() nested with local_irq_save/restore. But
+>> there were code paths which directly called __foo() - so, your patch fixes a bug right
+> No, those places were already disabling irqs and should be fine.
 
-I think we are good with respect to this patch series (next version), it
-will miss 7.0 but I think that is fine, 7.1 is not too far.
+Please correct me if I am missing something here. Simply putting an
+if (!irqs_disabled()) -> dump_stack() in __lruvec_stat_mod_folio, before
+calling __mod_node_page_state, reveals:
 
-Thanks for pushing this through.
+[ 6.486375] Call trace:
+[ 6.486376] show_stack+0x20/0x38 (C)
+[ 6.486379] dump_stack_lvl+0x74/0x90
+[ 6.486382] dump_stack+0x18/0x28
+[ 6.486383] __lruvec_stat_mod_folio+0x160/0x180
+[ 6.486385] folio_add_file_rmap_ptes+0x128/0x480
+[ 6.486388] set_pte_range+0xe8/0x320
+[ 6.486389] finish_fault+0x260/0x508
+[ 6.486390] do_fault+0x2d0/0x598
+[ 6.486391] __handle_mm_fault+0x398/0xb60
+[ 6.486393] handle_mm_fault+0x15c/0x298
+[ 6.486394] __get_user_pages+0x204/0xb88
+[ 6.486395] populate_vma_page_range+0xbc/0x1b8
+[ 6.486396] __mm_populate+0xcc/0x1e0
+[ 6.486397] __arm64_sys_mlockall+0x1d4/0x1f8
+[ 6.486398] invoke_syscall+0x50/0x120
+[ 6.486399] el0_svc_common.constprop.0+0x48/0xf0
+[ 6.486400] do_el0_svc+0x24/0x38
+[ 6.486400] el0_svc+0x34/0xf0
+[ 6.486402] el0t_64_sync_handler+0xa0/0xe8
+[ 6.486404] el0t_64_sync+0x198/0x1a0
+
+Indeed finish_fault() takes a PTL spin lock without irq disablement.
+
+>
+> I am working on adding batched stats update functionality in the hope
+> that will fix the regression.
+
+Thanks! FYI, I have zeroed in the issue on to preempt_disable(). Dropping this
+from _pcpu_protect_return solves the regression. Unlike x86, arm64 does a preempt_disable
+when doing this_cpu_*. On a cursory look it seems like this is unnecessary - since we
+are doing preempt_enable() immediately after reading the pointer, CPU migration is
+possible anyways, so there is nothing to be gained by reading pcpu pointer with
+preemption disabled. I am investigating whether we can simply drop this in general.
+
 
