@@ -1,194 +1,441 @@
-Return-Path: <cgroups+bounces-13881-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-13883-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id ckKeET9ijWl/1wAAu9opvQ
-	(envelope-from <cgroups+bounces-13881-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Thu, 12 Feb 2026 06:16:47 +0100
+	id EENTInd8jWng3AAAu9opvQ
+	(envelope-from <cgroups+bounces-13883-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Thu, 12 Feb 2026 08:08:39 +0100
 X-Original-To: lists+cgroups@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id A92D012A608
-	for <lists+cgroups@lfdr.de>; Thu, 12 Feb 2026 06:16:46 +0100 (CET)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id A4A8512ADDD
+	for <lists+cgroups@lfdr.de>; Thu, 12 Feb 2026 08:08:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 5DF1F302E858
-	for <lists+cgroups@lfdr.de>; Thu, 12 Feb 2026 05:16:45 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 733CA3020F03
+	for <lists+cgroups@lfdr.de>; Thu, 12 Feb 2026 07:08:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 78DF1233704;
-	Thu, 12 Feb 2026 05:16:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2AAD62BDC35;
+	Thu, 12 Feb 2026 07:08:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="M9QG+m1R";
+	dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b="dbAgvvnR"
 X-Original-To: cgroups@vger.kernel.org
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B4FF761668;
-	Thu, 12 Feb 2026 05:16:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 77D10221D9E
+	for <cgroups@vger.kernel.org>; Thu, 12 Feb 2026 07:08:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1770873404; cv=none; b=kLxD1GOTV6+LmPAb3LWTXNAWlggT0IA1JNc2p8g6Z4XO6wUe/Uj1eMDgNNE6tcm1a/xAa139upAkWDwFSJG2+3ho8RW+XwDEGhWhUnq6yyE4yfakM2iPJUdqDC16VYMSNTTjUgqTo0VlMw7//FRShB81uMTIa2gv0KSJCruScyk=
+	t=1770880114; cv=none; b=LXhJj1OCTx7iO+ZuHFRWyJlRph+JUjtEbjjPn02zmlkakRf7yV9LKBQMpHqH2iU0TjmbjB3Ex03YlBMyxONTch8dD4qbYC389kGGZJm2fLqs5V/ja97v6iOhADx114SPPQ//HJGrz5L/RiuBGdVES53+yGeFebgD3Xn0Dj8QU80=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1770873404; c=relaxed/simple;
-	bh=bwUxVrY3k4wBqkypzd7fUBQxUMd/I+5Y1Cm0/ss2eYM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=JOoPvtA5EBEIbVef/SqO0fYUxWHLyF/cEassHrP6XEuMKX+0pePVH+HSsfYmESkib6IkqXmZS2m7X5fx33vK5ESA54aK8iYPRXu0q1kHn3bTLQWtEwb0PMXHqQ4NsZXcU6adsur4uZAdn0hFn0/xMAWt87xAbI87/z009flkFU0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id DA3F0339;
-	Wed, 11 Feb 2026 21:16:35 -0800 (PST)
-Received: from [10.164.148.47] (MacBook-Pro.blr.arm.com [10.164.148.47])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 118973F73F;
-	Wed, 11 Feb 2026 21:16:37 -0800 (PST)
-Message-ID: <331b6f7b-3b3e-49dc-9f20-b1e4df424fde@arm.com>
-Date: Thu, 12 Feb 2026 10:46:34 +0530
+	s=arc-20240116; t=1770880114; c=relaxed/simple;
+	bh=CjcgXdxP+xjqkyXNcKDlN8l9OSb+idOpSc3Nc4bhWQU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=rlBOvE+lvUElYQPQUv105YUHMwMR7R9sAPK3n3OJ6DU8cqLL3h+3yFPdwAfo/rmSbBvtwXZMtNZumtRFcnO1Iq3SIYig7GeyzISPKNhfW0gMdkz918M+tvUPHQsvUYKfSm3t9RBsbo9y39aXRu+hIuzW4ARvwSOimxHpkpGvzgk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=M9QG+m1R; dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b=dbAgvvnR; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1770880112;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=6szOd8jTk+em3arREJHLemha25ur2Z/Igpvrny3vPyo=;
+	b=M9QG+m1RUd2FMapJGH3+6MNeT1u6NVz9aXEiymG1PCNht2//fmyh25EVvaQJSOaZckYuFG
+	8N5g7AJQly50LdZChbDJEwycx77GMfNmw0dPCf7TQ0oAWmlaEe2Ko6ZyqVP7ZqeXfCpPYM
+	yYn3UWPdKSKhAyzyEcM97Z4+8KQIs1s=
+Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
+ [209.85.128.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-92-cZVXBIDWPwuSv-LLqqGObw-1; Thu, 12 Feb 2026 02:08:31 -0500
+X-MC-Unique: cZVXBIDWPwuSv-LLqqGObw-1
+X-Mimecast-MFC-AGG-ID: cZVXBIDWPwuSv-LLqqGObw_1770880110
+Received: by mail-wm1-f70.google.com with SMTP id 5b1f17b1804b1-480717a8ef9so14937115e9.1
+        for <cgroups@vger.kernel.org>; Wed, 11 Feb 2026 23:08:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=redhat.com; s=google; t=1770880110; x=1771484910; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=6szOd8jTk+em3arREJHLemha25ur2Z/Igpvrny3vPyo=;
+        b=dbAgvvnRpBLfX4QC0+82RvIDuIAxkQcLrrSf04QV89uKR6IQ6w5iaKYFimuHfSyTqZ
+         XjU/ouc/1kMAjsJWHfC4FseMybwODZRYMNiSrWSChdBBs6IBUBKy8Irqoeud18Xf+4HH
+         lnc/+aCFO42HCJ5BYWyda8rF2ZgHm+RgF5xRh+1d4V62H6jXyLFplWZwZfGtGl4u1umk
+         gTqR+AKGJzQ8/XLegMS/GY0m8Hl+Uu6GEe+EJmvTReRdlhyhU8oN7TwPPNBTHtEcjJTW
+         Ht8yaaiWGPxqydv4YZIPmiobjgaQKfF8fnbq+T7lcU/p5GZtl6pIX3L3HnBhiWRGpDjv
+         KhAg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1770880110; x=1771484910;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=6szOd8jTk+em3arREJHLemha25ur2Z/Igpvrny3vPyo=;
+        b=DbbmjuqfXi2jTX3BpWgGeIbTLFpPQSoVdFGxDOUz1uqK9+ufxmyrv1AupvR4VK4Lvg
+         NiK3/RBBztuWV4hIZS2AWT5JvknCgeopkri9JqsGe60/ys103Gxq72GAAQETJur4bs4+
+         17rSXa7QSGyK3njG0jWwAGu3Q/ucg99p7g2v6SH+C463XSZ425/CXTzN6+qLYtoN7p6j
+         tuEJXeLmCfsRvRAZgo3hFzqRodzIueJSX01NKyNaao0xPckp4g61pjt43bNne+uc2O7K
+         sRe6ZBNYWO8lMdHFSVddrkLzY6reikhH8Wv9Hk6WMYcrfHOO/vewUY+LjB7+DzjH68aX
+         FqgA==
+X-Forwarded-Encrypted: i=1; AJvYcCUs88xo96Hv0zupBScVzvF5vRUIrMzFHG2DWmes0Piy9giFHO/ug2XZfQw86pOTLBKYGqlO1ZhP@vger.kernel.org
+X-Gm-Message-State: AOJu0Yz9nacp9gAsEsb120zZkkU2II4fBmAzDuSPVeuhxwOEjEluUYfH
+	nOVFuw53hH3MAAMc0fHUtmHT5gCySLTWuZfyvhoFD78KLu0/Vewmrfp4AjuahWirOhygxoxYz2j
+	dWbDW/u6mLJafv501fs7HCmgl0dTosQZpqyCtHofGEOLDkIUdixBGwkrqOqs=
+X-Gm-Gg: AZuq6aL9AkBnx14+Hx3hIN2Q2vpxGqWnh1+D04owkvTxcYQl/Uw1G6cB60a0bYL4DVz
+	sFMSsEffRsrE3n5W60GjlQZRNvn2WE9GHzxP8X3FhgNXwdF2Eeyqxp9x+VezO51s/x1I1SqThWh
+	WZBb+UJ5pFAcA6LTnAIzWZVODTuBNl3c+0ppbhKEi6MCfWspvA/bAxUuzSUSc9wIDdTfA6MRIua
+	268AfCY6SvWq6wyZVIonNMyV9cFW0oNsowwJkHP490K0s5WN/g7ecL+4ADqVvTvjvSOvLq5cgYa
+	U5+Ymt8J3JS9uOY5uA9np83h/9Pa64MV9lO0+wVXaHAvytoFCneeRkhBTK7YAD5BhdPoEG8OwG7
+	RuUkJyEf2FbNnd6BdIJRWLp28WaQsr1AGZQqPnbiO0KIe4A==
+X-Received: by 2002:a05:600c:4e4f:b0:47d:333d:99c with SMTP id 5b1f17b1804b1-483660425a9mr18452045e9.18.1770880109525;
+        Wed, 11 Feb 2026 23:08:29 -0800 (PST)
+X-Received: by 2002:a05:600c:4e4f:b0:47d:333d:99c with SMTP id 5b1f17b1804b1-483660425a9mr18451585e9.18.1770880109005;
+        Wed, 11 Feb 2026 23:08:29 -0800 (PST)
+Received: from redhat.com (IGLD-80-230-34-155.inter.net.il. [80.230.34.155])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4835d989165sm119619155e9.2.2026.02.11.23.08.25
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 11 Feb 2026 23:08:28 -0800 (PST)
+Date: Thu, 12 Feb 2026 02:08:24 -0500
+From: "Michael S. Tsirkin" <mst@redhat.com>
+To: JP Kobryn <inwardvessel@gmail.com>
+Cc: linux-mm@kvack.org, apopple@nvidia.com, akpm@linux-foundation.org,
+	axelrasmussen@google.com, byungchul@sk.com, cgroups@vger.kernel.org,
+	david@kernel.org, eperezma@redhat.com, gourry@gourry.net,
+	jasowang@redhat.com, hannes@cmpxchg.org, joshua.hahnjy@gmail.com,
+	Liam.Howlett@oracle.com, linux-kernel@vger.kernel.org,
+	lorenzo.stoakes@oracle.com, matthew.brost@intel.com,
+	mhocko@suse.com, rppt@kernel.org, muchun.song@linux.dev,
+	zhengqi.arch@bytedance.com, rakie.kim@sk.com,
+	roman.gushchin@linux.dev, shakeel.butt@linux.dev, surenb@google.com,
+	virtualization@lists.linux.dev, vbabka@suse.cz, weixugc@google.com,
+	xuanzhuo@linux.alibaba.com, ying.huang@linux.alibaba.com,
+	yuanchu@google.com, ziy@nvidia.com, kernel-team@meta.com
+Subject: Re: [PATCH 2/2] mm: move pgscan and pgsteal to node stats
+Message-ID: <20260212020724-mutt-send-email-mst@kernel.org>
+References: <20260212045109.255391-1-inwardvessel@gmail.com>
+ <20260212045109.255391-3-inwardvessel@gmail.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/4] memcg: use mod_node_page_state to update stats
-To: Shakeel Butt <shakeel.butt@linux.dev>, Harry Yoo <harry.yoo@oracle.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>,
- Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>,
- Roman Gushchin <roman.gushchin@linux.dev>,
- Muchun Song <muchun.song@linux.dev>, Qi Zheng <qi.zheng@linux.dev>,
- Vlastimil Babka <vbabka@suse.cz>, linux-mm@kvack.org,
- cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
- Meta kernel team <kernel-team@meta.com>
-References: <51819ca5a15d8928caac720426cd1ce82e89b429@linux.dev>
- <05aec69b-8e73-49ac-aa89-47b371fb6269@arm.com> <aYOuCmjQ5lGm8Mup@linux.dev>
- <4847c300-c7bb-4259-867c-4bbf4d760576@arm.com> <aYQuj6Ot-JS4tXvY@hyeyoo>
- <7df681ae0f8254f09de0b8e258b909eaacafadf4@linux.dev>
- <b77dc11e-fe09-4f0c-a912-d05faa01ff1c@arm.com> <aYtbevHEwx_3fn0Q@linux.dev>
- <5a6782f3-d758-4d9c-975b-5ae4b5d80d4e@arm.com> <aYxDkkDI4mk3r011@hyeyoo>
- <aYxIr5neJP8wBdZg@linux.dev>
-Content-Language: en-US
-From: Dev Jain <dev.jain@arm.com>
-In-Reply-To: <aYxIr5neJP8wBdZg@linux.dev>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20260212045109.255391-3-inwardvessel@gmail.com>
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-1.36 / 15.00];
+X-Spamd-Result: default: False [-0.66 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114];
+	DMARC_POLICY_ALLOW(-0.50)[redhat.com,quarantine];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64:c];
+	R_DKIM_ALLOW(-0.20)[redhat.com:s=mimecast20190719,redhat.com:s=google];
 	MAILLIST(-0.15)[generic];
-	DMARC_POLICY_SOFTFAIL(0.10)[arm.com : SPF not aligned (relaxed), No valid DKIM,none];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TO_DN_SOME(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[13];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
-	TAGGED_RCPT(0.00)[cgroups];
-	R_DKIM_NA(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[dev.jain@arm.com,cgroups@vger.kernel.org];
-	FROM_HAS_DN(0.00)[];
-	MID_RHS_MATCH_FROM(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	TAGGED_FROM(0.00)[bounces-13881-lists,cgroups=lfdr.de];
-	RCVD_COUNT_FIVE(0.00)[5];
 	RCVD_TLS_LAST(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[arm.com:mid]
-X-Rspamd-Queue-Id: A92D012A608
+	TAGGED_FROM(0.00)[bounces-13883-lists,cgroups=lfdr.de];
+	FREEMAIL_TO(0.00)[gmail.com];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	FREEMAIL_CC(0.00)[kvack.org,nvidia.com,linux-foundation.org,google.com,sk.com,vger.kernel.org,kernel.org,redhat.com,gourry.net,cmpxchg.org,gmail.com,oracle.com,intel.com,suse.com,linux.dev,bytedance.com,lists.linux.dev,suse.cz,linux.alibaba.com,meta.com];
+	RCPT_COUNT_TWELVE(0.00)[33];
+	MIME_TRACE(0.00)[0:+];
+	FROM_HAS_DN(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	TO_DN_SOME(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[6];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[mst@redhat.com,cgroups@vger.kernel.org];
+	DKIM_TRACE(0.00)[redhat.com:+];
+	TAGGED_RCPT(0.00)[cgroups];
+	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	MISSING_XM_UA(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns,cmpxchg.org:email]
+X-Rspamd-Queue-Id: A4A8512ADDD
 X-Rspamd-Action: no action
 
+On Wed, Feb 11, 2026 at 08:51:09PM -0800, JP Kobryn wrote:
+> It would be useful to narrow down reclaim to specific nodes.
+> 
+> Provide per-node reclaim visibility by changing the pgscan and pgsteal
+> stats from global vm_event_item's to node_stat_item's. Note this change has
+> the side effect of now tracking these stats on a per-memcg basis.
+> 
+> Signed-off-by: JP Kobryn <inwardvessel@gmail.com>
+> Suggested-by: Johannes Weiner <hannes@cmpxchg.org>
 
-On 11/02/26 2:54 pm, Shakeel Butt wrote:
-> On Wed, Feb 11, 2026 at 05:53:38PM +0900, Harry Yoo wrote:
->> On Wed, Feb 11, 2026 at 01:07:40PM +0530, Dev Jain wrote:
->>> On 10/02/26 9:59 pm, Shakeel Butt wrote:
->>>> On Tue, Feb 10, 2026 at 01:08:49PM +0530, Dev Jain wrote:
->>>> [...]
->>>>>> Oh so it is arm64 specific issue. I tested on x86-64 machine and it solves
->>>>>> the little regression it had before. So, on arm64 all this_cpu_ops i.e. without
->>>>>> double underscore, uses LL/SC instructions. 
->>>>>>
->>>>>> Need more thought on this. 
->>>>>>
->>>>>>>> Also can you confirm whether my analysis of the regression was correct?
->>>>>>>>  Because if it was, then this diff looks wrong - AFAIU preempt_disable()
->>>>>>>>  won't stop an irq handler from interrupting the execution, so this
->>>>>>>>  will introduce a bug for code paths running in irq context.
->>>>>>>>
->>>>>>> I was worried about the correctness too, but this_cpu_add() is safe
->>>>>>> against IRQs and so the stat will be _eventually_ consistent?
->>>>>>>
->>>>>>> Ofc it's so confusing! Maybe I'm the one confused.
->>>>>> Yeah there is no issue with proposed patch as it is making the function
->>>>>> re-entrant safe.
->>>>> Ah yes, this_cpu_add() does the addition in one shot without read-modify-write.
->>>>>
->>>>> I am still puzzled whether the original patch was a bug fix or an optimization.
->>>> The original patch was a cleanup patch. The memcg stats update functions
->>>> were already irq/nmi safe without disabling irqs and that patch did the
->>>> same for the numa stats. Though it seems like that is causing regression
->>>> for arm64 as this_cpu* ops are expensive on arm64. 
->>>>
->>>>> The patch description says that node stat updation uses irq unsafe interface.
->>>>> Therefore, we had foo() calling __foo() nested with local_irq_save/restore. But
->>>>> there were code paths which directly called __foo() - so, your patch fixes a bug right
->>>> No, those places were already disabling irqs and should be fine.
->>> Please correct me if I am missing something here. Simply putting an
->>> if (!irqs_disabled()) -> dump_stack() in __lruvec_stat_mod_folio, before
->>> calling __mod_node_page_state, reveals:
->>>
->>> [ 6.486375] Call trace:
->>> [ 6.486376] show_stack+0x20/0x38 (C)
->>> [ 6.486379] dump_stack_lvl+0x74/0x90
->>> [ 6.486382] dump_stack+0x18/0x28
->>> [ 6.486383] __lruvec_stat_mod_folio+0x160/0x180
->>> [ 6.486385] folio_add_file_rmap_ptes+0x128/0x480
->>> [ 6.486388] set_pte_range+0xe8/0x320
->>> [ 6.486389] finish_fault+0x260/0x508
->>> [ 6.486390] do_fault+0x2d0/0x598
->>> [ 6.486391] __handle_mm_fault+0x398/0xb60
->>> [ 6.486393] handle_mm_fault+0x15c/0x298
->>> [ 6.486394] __get_user_pages+0x204/0xb88
->>> [ 6.486395] populate_vma_page_range+0xbc/0x1b8
->>> [ 6.486396] __mm_populate+0xcc/0x1e0
->>> [ 6.486397] __arm64_sys_mlockall+0x1d4/0x1f8
->>> [ 6.486398] invoke_syscall+0x50/0x120
->>> [ 6.486399] el0_svc_common.constprop.0+0x48/0xf0
->>> [ 6.486400] do_el0_svc+0x24/0x38
->>> [ 6.486400] el0_svc+0x34/0xf0
->>> [ 6.486402] el0t_64_sync_handler+0xa0/0xe8
->>> [ 6.486404] el0t_64_sync+0x198/0x1a0
->>>
->>> Indeed finish_fault() takes a PTL spin lock without irq disablement.
->> That indeed looks incorrect to me.
->> I was assuming __foo() is always called with IRQs disabled!
-> Not necessarily. For stats which never get updated in IRQ context, can
-> be updated using __foo() with just premption disabled.
->
->>>> I am working on adding batched stats update functionality in the hope
->>>> that will fix the regression.
->>> Thanks! FYI, I have zeroed in the issue on to preempt_disable(). Dropping this
->>> from _pcpu_protect_return solves the regression.
->> That's interesting, why is the cost of preempt disable/enable so high?
->>
-> What made you (Dev) so convinced that preempt_disable is that expensive.
+virtio_balloon changes
 
-As I wrote above, dropping the preempt disable from _pcp_protect_return solved
-the regression. So, it hints at the cost of this - although it seems surprising
-that this may be expensive, so need to investigate : )
+> ---
+>  drivers/virtio/virtio_balloon.c |  8 ++++----
+>  include/linux/mmzone.h          | 12 +++++++++++
+>  include/linux/vm_event_item.h   | 12 -----------
+>  mm/memcontrol.c                 | 36 ++++++++++++++++++---------------
+>  mm/vmscan.c                     | 32 +++++++++++------------------
+>  mm/vmstat.c                     | 24 +++++++++++-----------
+>  6 files changed, 60 insertions(+), 64 deletions(-)
+> 
+> diff --git a/drivers/virtio/virtio_balloon.c b/drivers/virtio/virtio_balloon.c
+> index 74fe59f5a78c..1341d9d1a2a1 100644
+> --- a/drivers/virtio/virtio_balloon.c
+> +++ b/drivers/virtio/virtio_balloon.c
+> @@ -374,13 +374,13 @@ static inline unsigned int update_balloon_vm_stats(struct virtio_balloon *vb)
+>  	update_stat(vb, idx++, VIRTIO_BALLOON_S_ALLOC_STALL, stall);
+>  
+>  	update_stat(vb, idx++, VIRTIO_BALLOON_S_ASYNC_SCAN,
+> -		    pages_to_bytes(events[PGSCAN_KSWAPD]));
+> +		    pages_to_bytes(global_node_page_state(PGSCAN_KSWAPD)));
+>  	update_stat(vb, idx++, VIRTIO_BALLOON_S_DIRECT_SCAN,
+> -		    pages_to_bytes(events[PGSCAN_DIRECT]));
+> +		    pages_to_bytes(global_node_page_state(PGSCAN_DIRECT)));
+>  	update_stat(vb, idx++, VIRTIO_BALLOON_S_ASYNC_RECLAIM,
+> -		    pages_to_bytes(events[PGSTEAL_KSWAPD]));
+> +		    pages_to_bytes(global_node_page_state(PGSTEAL_KSWAPD)));
+>  	update_stat(vb, idx++, VIRTIO_BALLOON_S_DIRECT_RECLAIM,
+> -		    pages_to_bytes(events[PGSTEAL_DIRECT]));
+> +		    pages_to_bytes(global_node_page_state(PGSTEAL_DIRECT)));
+>  
+>  #ifdef CONFIG_HUGETLB_PAGE
+>  	update_stat(vb, idx++, VIRTIO_BALLOON_S_HTLB_PGALLOC,
+> diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
+> index 762609d5f0af..fc39c107a4b5 100644
+> --- a/include/linux/mmzone.h
+> +++ b/include/linux/mmzone.h
+> @@ -255,6 +255,18 @@ enum node_stat_item {
+>  	PGDEMOTE_DIRECT,
+>  	PGDEMOTE_KHUGEPAGED,
+>  	PGDEMOTE_PROACTIVE,
+> +	PGSTEAL_KSWAPD,
+> +	PGSTEAL_DIRECT,
+> +	PGSTEAL_KHUGEPAGED,
+> +	PGSTEAL_PROACTIVE,
+> +	PGSTEAL_ANON,
+> +	PGSTEAL_FILE,
+> +	PGSCAN_KSWAPD,
+> +	PGSCAN_DIRECT,
+> +	PGSCAN_KHUGEPAGED,
+> +	PGSCAN_PROACTIVE,
+> +	PGSCAN_ANON,
+> +	PGSCAN_FILE,
+>  #ifdef CONFIG_NUMA
+>  	PGALLOC_MPOL_DEFAULT,
+>  	PGALLOC_MPOL_PREFERRED,
+> diff --git a/include/linux/vm_event_item.h b/include/linux/vm_event_item.h
+> index 92f80b4d69a6..6f1787680658 100644
+> --- a/include/linux/vm_event_item.h
+> +++ b/include/linux/vm_event_item.h
+> @@ -40,19 +40,7 @@ enum vm_event_item { PGPGIN, PGPGOUT, PSWPIN, PSWPOUT,
+>  		PGLAZYFREED,
+>  		PGREFILL,
+>  		PGREUSE,
+> -		PGSTEAL_KSWAPD,
+> -		PGSTEAL_DIRECT,
+> -		PGSTEAL_KHUGEPAGED,
+> -		PGSTEAL_PROACTIVE,
+> -		PGSCAN_KSWAPD,
+> -		PGSCAN_DIRECT,
+> -		PGSCAN_KHUGEPAGED,
+> -		PGSCAN_PROACTIVE,
+>  		PGSCAN_DIRECT_THROTTLE,
+> -		PGSCAN_ANON,
+> -		PGSCAN_FILE,
+> -		PGSTEAL_ANON,
+> -		PGSTEAL_FILE,
+>  #ifdef CONFIG_NUMA
+>  		PGSCAN_ZONE_RECLAIM_SUCCESS,
+>  		PGSCAN_ZONE_RECLAIM_FAILED,
+> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> index 86f43b7e5f71..bde0b6536be6 100644
+> --- a/mm/memcontrol.c
+> +++ b/mm/memcontrol.c
+> @@ -328,6 +328,18 @@ static const unsigned int memcg_node_stat_items[] = {
+>  	PGDEMOTE_DIRECT,
+>  	PGDEMOTE_KHUGEPAGED,
+>  	PGDEMOTE_PROACTIVE,
+> +	PGSTEAL_KSWAPD,
+> +	PGSTEAL_DIRECT,
+> +	PGSTEAL_KHUGEPAGED,
+> +	PGSTEAL_PROACTIVE,
+> +	PGSTEAL_ANON,
+> +	PGSTEAL_FILE,
+> +	PGSCAN_KSWAPD,
+> +	PGSCAN_DIRECT,
+> +	PGSCAN_KHUGEPAGED,
+> +	PGSCAN_PROACTIVE,
+> +	PGSCAN_ANON,
+> +	PGSCAN_FILE,
+>  #ifdef CONFIG_HUGETLB_PAGE
+>  	NR_HUGETLB,
+>  #endif
+> @@ -441,14 +453,6 @@ static const unsigned int memcg_vm_event_stat[] = {
+>  #endif
+>  	PSWPIN,
+>  	PSWPOUT,
+> -	PGSCAN_KSWAPD,
+> -	PGSCAN_DIRECT,
+> -	PGSCAN_KHUGEPAGED,
+> -	PGSCAN_PROACTIVE,
+> -	PGSTEAL_KSWAPD,
+> -	PGSTEAL_DIRECT,
+> -	PGSTEAL_KHUGEPAGED,
+> -	PGSTEAL_PROACTIVE,
+>  	PGFAULT,
+>  	PGMAJFAULT,
+>  	PGREFILL,
+> @@ -1496,15 +1500,15 @@ static void memcg_stat_format(struct mem_cgroup *memcg, struct seq_buf *s)
+>  
+>  	/* Accumulated memory events */
+>  	seq_buf_printf(s, "pgscan %lu\n",
+> -		       memcg_events(memcg, PGSCAN_KSWAPD) +
+> -		       memcg_events(memcg, PGSCAN_DIRECT) +
+> -		       memcg_events(memcg, PGSCAN_PROACTIVE) +
+> -		       memcg_events(memcg, PGSCAN_KHUGEPAGED));
+> +		       memcg_page_state(memcg, PGSCAN_KSWAPD) +
+> +		       memcg_page_state(memcg, PGSCAN_DIRECT) +
+> +		       memcg_page_state(memcg, PGSCAN_PROACTIVE) +
+> +		       memcg_page_state(memcg, PGSCAN_KHUGEPAGED));
+>  	seq_buf_printf(s, "pgsteal %lu\n",
+> -		       memcg_events(memcg, PGSTEAL_KSWAPD) +
+> -		       memcg_events(memcg, PGSTEAL_DIRECT) +
+> -		       memcg_events(memcg, PGSTEAL_PROACTIVE) +
+> -		       memcg_events(memcg, PGSTEAL_KHUGEPAGED));
+> +		       memcg_page_state(memcg, PGSTEAL_KSWAPD) +
+> +		       memcg_page_state(memcg, PGSTEAL_DIRECT) +
+> +		       memcg_page_state(memcg, PGSTEAL_PROACTIVE) +
+> +		       memcg_page_state(memcg, PGSTEAL_KHUGEPAGED));
+>  
+>  	for (i = 0; i < ARRAY_SIZE(memcg_vm_event_stat); i++) {
+>  #ifdef CONFIG_MEMCG_V1
+> diff --git a/mm/vmscan.c b/mm/vmscan.c
+> index 614ccf39fe3f..16a0f21e3ea1 100644
+> --- a/mm/vmscan.c
+> +++ b/mm/vmscan.c
+> @@ -1977,7 +1977,7 @@ static unsigned long shrink_inactive_list(unsigned long nr_to_scan,
+>  	unsigned long nr_taken;
+>  	struct reclaim_stat stat;
+>  	bool file = is_file_lru(lru);
+> -	enum vm_event_item item;
+> +	enum node_stat_item item;
+>  	struct pglist_data *pgdat = lruvec_pgdat(lruvec);
+>  	bool stalled = false;
+>  
+> @@ -2003,10 +2003,8 @@ static unsigned long shrink_inactive_list(unsigned long nr_to_scan,
+>  
+>  	__mod_node_page_state(pgdat, NR_ISOLATED_ANON + file, nr_taken);
+>  	item = PGSCAN_KSWAPD + reclaimer_offset(sc);
+> -	if (!cgroup_reclaim(sc))
+> -		__count_vm_events(item, nr_scanned);
+> -	count_memcg_events(lruvec_memcg(lruvec), item, nr_scanned);
+> -	__count_vm_events(PGSCAN_ANON + file, nr_scanned);
+> +	mod_lruvec_state(lruvec, item, nr_scanned);
+> +	mod_lruvec_state(lruvec, PGSCAN_ANON + file, nr_scanned);
+>  
+>  	spin_unlock_irq(&lruvec->lru_lock);
+>  
+> @@ -2023,10 +2021,8 @@ static unsigned long shrink_inactive_list(unsigned long nr_to_scan,
+>  					stat.nr_demoted);
+>  	__mod_node_page_state(pgdat, NR_ISOLATED_ANON + file, -nr_taken);
+>  	item = PGSTEAL_KSWAPD + reclaimer_offset(sc);
+> -	if (!cgroup_reclaim(sc))
+> -		__count_vm_events(item, nr_reclaimed);
+> -	count_memcg_events(lruvec_memcg(lruvec), item, nr_reclaimed);
+> -	__count_vm_events(PGSTEAL_ANON + file, nr_reclaimed);
+> +	mod_lruvec_state(lruvec, item, nr_reclaimed);
+> +	mod_lruvec_state(lruvec, PGSTEAL_ANON + file, nr_reclaimed);
+>  
+>  	lru_note_cost_unlock_irq(lruvec, file, stat.nr_pageout,
+>  					nr_scanned - nr_reclaimed);
+> @@ -4536,7 +4532,7 @@ static int scan_folios(unsigned long nr_to_scan, struct lruvec *lruvec,
+>  {
+>  	int i;
+>  	int gen;
+> -	enum vm_event_item item;
+> +	enum node_stat_item item;
+>  	int sorted = 0;
+>  	int scanned = 0;
+>  	int isolated = 0;
+> @@ -4595,13 +4591,11 @@ static int scan_folios(unsigned long nr_to_scan, struct lruvec *lruvec,
+>  	}
+>  
+>  	item = PGSCAN_KSWAPD + reclaimer_offset(sc);
+> -	if (!cgroup_reclaim(sc)) {
+> -		__count_vm_events(item, isolated);
+> +	if (!cgroup_reclaim(sc))
+>  		__count_vm_events(PGREFILL, sorted);
+> -	}
+> -	count_memcg_events(memcg, item, isolated);
+> +	mod_lruvec_state(lruvec, item, isolated);
+>  	count_memcg_events(memcg, PGREFILL, sorted);
+> -	__count_vm_events(PGSCAN_ANON + type, isolated);
+> +	mod_lruvec_state(lruvec, PGSCAN_ANON + type, isolated);
+>  	trace_mm_vmscan_lru_isolate(sc->reclaim_idx, sc->order, scan_batch,
+>  				scanned, skipped, isolated,
+>  				type ? LRU_INACTIVE_FILE : LRU_INACTIVE_ANON);
+> @@ -4686,7 +4680,7 @@ static int evict_folios(unsigned long nr_to_scan, struct lruvec *lruvec,
+>  	LIST_HEAD(clean);
+>  	struct folio *folio;
+>  	struct folio *next;
+> -	enum vm_event_item item;
+> +	enum node_stat_item item;
+>  	struct reclaim_stat stat;
+>  	struct lru_gen_mm_walk *walk;
+>  	bool skip_retry = false;
+> @@ -4750,10 +4744,8 @@ static int evict_folios(unsigned long nr_to_scan, struct lruvec *lruvec,
+>  					stat.nr_demoted);
+>  
+>  	item = PGSTEAL_KSWAPD + reclaimer_offset(sc);
+> -	if (!cgroup_reclaim(sc))
+> -		__count_vm_events(item, reclaimed);
+> -	count_memcg_events(memcg, item, reclaimed);
+> -	__count_vm_events(PGSTEAL_ANON + type, reclaimed);
+> +	mod_lruvec_state(lruvec, item, reclaimed);
+> +	mod_lruvec_state(lruvec, PGSTEAL_ANON + type, reclaimed);
+>  
+>  	spin_unlock_irq(&lruvec->lru_lock);
+>  
+> diff --git a/mm/vmstat.c b/mm/vmstat.c
+> index 74e0ddde1e93..e4b259989d58 100644
+> --- a/mm/vmstat.c
+> +++ b/mm/vmstat.c
+> @@ -1291,6 +1291,18 @@ const char * const vmstat_text[] = {
+>  	[I(PGDEMOTE_DIRECT)]			= "pgdemote_direct",
+>  	[I(PGDEMOTE_KHUGEPAGED)]		= "pgdemote_khugepaged",
+>  	[I(PGDEMOTE_PROACTIVE)]			= "pgdemote_proactive",
+> +	[I(PGSTEAL_KSWAPD)]			= "pgsteal_kswapd",
+> +	[I(PGSTEAL_DIRECT)]			= "pgsteal_direct",
+> +	[I(PGSTEAL_KHUGEPAGED)]			= "pgsteal_khugepaged",
+> +	[I(PGSTEAL_PROACTIVE)]			= "pgsteal_proactive",
+> +	[I(PGSTEAL_ANON)]			= "pgsteal_anon",
+> +	[I(PGSTEAL_FILE)]			= "pgsteal_file",
+> +	[I(PGSCAN_KSWAPD)]			= "pgscan_kswapd",
+> +	[I(PGSCAN_DIRECT)]			= "pgscan_direct",
+> +	[I(PGSCAN_KHUGEPAGED)]			= "pgscan_khugepaged",
+> +	[I(PGSCAN_PROACTIVE)]			= "pgscan_proactive",
+> +	[I(PGSCAN_ANON)]			= "pgscan_anon",
+> +	[I(PGSCAN_FILE)]			= "pgscan_file",
+>  #ifdef CONFIG_NUMA
+>  	[I(PGALLOC_MPOL_DEFAULT)]		= "pgalloc_mpol_default",
+>  	[I(PGALLOC_MPOL_PREFERRED)]		= "pgalloc_mpol_preferred",
+> @@ -1344,19 +1356,7 @@ const char * const vmstat_text[] = {
+>  
+>  	[I(PGREFILL)]				= "pgrefill",
+>  	[I(PGREUSE)]				= "pgreuse",
+> -	[I(PGSTEAL_KSWAPD)]			= "pgsteal_kswapd",
+> -	[I(PGSTEAL_DIRECT)]			= "pgsteal_direct",
+> -	[I(PGSTEAL_KHUGEPAGED)]			= "pgsteal_khugepaged",
+> -	[I(PGSTEAL_PROACTIVE)]			= "pgsteal_proactive",
+> -	[I(PGSCAN_KSWAPD)]			= "pgscan_kswapd",
+> -	[I(PGSCAN_DIRECT)]			= "pgscan_direct",
+> -	[I(PGSCAN_KHUGEPAGED)]			= "pgscan_khugepaged",
+> -	[I(PGSCAN_PROACTIVE)]			= "pgscan_proactive",
+>  	[I(PGSCAN_DIRECT_THROTTLE)]		= "pgscan_direct_throttle",
+> -	[I(PGSCAN_ANON)]			= "pgscan_anon",
+> -	[I(PGSCAN_FILE)]			= "pgscan_file",
+> -	[I(PGSTEAL_ANON)]			= "pgsteal_anon",
+> -	[I(PGSTEAL_FILE)]			= "pgsteal_file",
+>  
+>  #ifdef CONFIG_NUMA
+>  	[I(PGSCAN_ZONE_RECLAIM_SUCCESS)]	= "zone_reclaim_success",
+> -- 
+> 2.47.3
 
->
->>> Unlike x86, arm64 does a preempt_disable
->>> when doing this_cpu_*. On a cursory look it seems like this is unnecessary - since we
->>> are doing preempt_enable() immediately after reading the pointer, CPU migration is
->>> possible anyways, so there is nothing to be gained by reading pcpu pointer with
->>> preemption disabled. I am investigating whether we can simply drop this in general.
-> [...]
->> ... so, removing preempt disable _in general_ is probably not a good idea.
->>
-> Yup, I agree here.
->
->> [1] https://lore.kernel.org/all/20190311164837.GD24275@lakrids.cambridge.arm.com
->>
->> -- 
->> Cheers,
->> Harry / Hyeonggon
->>
 
