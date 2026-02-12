@@ -1,81 +1,83 @@
-Return-Path: <cgroups+bounces-13919-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-13920-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id eADSFAtNjmkaBgEAu9opvQ
-	(envelope-from <cgroups+bounces-13919-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Thu, 12 Feb 2026 22:58:35 +0100
+	id MLn6DBBNjmkaBgEAu9opvQ
+	(envelope-from <cgroups+bounces-13920-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Thu, 12 Feb 2026 22:58:40 +0100
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6C389131673
-	for <lists+cgroups@lfdr.de>; Thu, 12 Feb 2026 22:58:34 +0100 (CET)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id B9D1613168D
+	for <lists+cgroups@lfdr.de>; Thu, 12 Feb 2026 22:58:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id BC7FB300E46C
-	for <lists+cgroups@lfdr.de>; Thu, 12 Feb 2026 21:58:31 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id B2041301F682
+	for <lists+cgroups@lfdr.de>; Thu, 12 Feb 2026 21:58:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 90BCF35CBD3;
-	Thu, 12 Feb 2026 21:58:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C2FB02DB7A1;
+	Thu, 12 Feb 2026 21:58:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Qd4lARPX"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="OgOaRaf3"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-pl1-f202.google.com (mail-pl1-f202.google.com [209.85.214.202])
+Received: from mail-pj1-f73.google.com (mail-pj1-f73.google.com [209.85.216.73])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 594AA32C941
-	for <cgroups@vger.kernel.org>; Thu, 12 Feb 2026 21:58:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E0FE35DD11
+	for <cgroups@vger.kernel.org>; Thu, 12 Feb 2026 21:58:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.73
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1770933508; cv=none; b=PVlKsYWh6nxadXW6/hI6VZu8MDlcYMXCzgc2SqpeJy8tkqAKm+PqgApOkFeeZnT4eroDymRiJhVvmmuJftxITKtG/EYXoIuDDysDO+qbzxZkKJYQvEHqXsZ8qa4TK+dUkW/0+JEvtfXScMFzHYwO2ZCpfUXIzq3cFk6m/2FuOP8=
+	t=1770933512; cv=none; b=OaJcHIgJo9GIEAJYig6sWwHppVukoHbBUG8OhZHZVYXWszBuY0CQYvn23MyVsSa5Oag9rbGC+0JxD74xeSkiUYl00PrMviOobSYa8h7WxROZqDyMFoLTXSF22YDkrA7klmIiXUcZnOD6bVtCJqB/70lsezea6coCDgMX+KlY8Rk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1770933508; c=relaxed/simple;
-	bh=rvm09WjgPTpfJFIcHNYOPR/b9d2nODdgLBbyUw3INaM=;
-	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=cjKeUNGBcla5ze5qFVSaG8yD0uBp0cqOiPTFOsu1g2ktTZIDwRi2vo7zkGaC6FEKhV1pJ3m53nlaGJol7tovdEAL/wum4TvKT7xQTzt5R8roC8ZlwH2SNJT7/LRQGUvBi5DEr6kzqzi4d3kA1h6frGx9qAB2Xn/HpAuY6La1YNQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--tjmercier.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Qd4lARPX; arc=none smtp.client-ip=209.85.214.202
+	s=arc-20240116; t=1770933512; c=relaxed/simple;
+	bh=cddz7yiNNtZcRMbECFzY2RrBpOd+pdNNI+Dx9a521G0=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=tv12PA6dcOcinSe1D6MUe6B70wa/jBqELr0thpuPYIkG7ZsLG2+XJCSG+sCafSsveF51V73AV8GeuLtrOo23suNun3abWY9X/Xfk3XMJQH0S/ZrDLI1lP8pL+xAPK7doQgjecncNtZDe6z6bwKLKjpxriQbE4BSNq8VYT0vkL0A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--tjmercier.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=OgOaRaf3; arc=none smtp.client-ip=209.85.216.73
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--tjmercier.bounces.google.com
-Received: by mail-pl1-f202.google.com with SMTP id d9443c01a7336-2a7a98ba326so2819675ad.1
-        for <cgroups@vger.kernel.org>; Thu, 12 Feb 2026 13:58:27 -0800 (PST)
+Received: by mail-pj1-f73.google.com with SMTP id 98e67ed59e1d1-35626b11c51so227381a91.1
+        for <cgroups@vger.kernel.org>; Thu, 12 Feb 2026 13:58:31 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1770933507; x=1771538307; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=IGPiVsRR2IN2A+m6Bv8PgAftkVsRzQaURBceo4FlM+o=;
-        b=Qd4lARPXXYTjmgUxKfAK+erBQzcm9KfCzmheAg4Qmu7YB88cLBiZ672Ep7ecI3vCAp
-         u+UrRA+vkUKQ9baBOEDUNFaTyjRxlc5WZf4yGjXjynjnDEZjplUbpQimWu2gNLKn8uTF
-         6GvmjEVO8HhFzGxdX5NiPDvfNpz6H393ucan9SQgjN4/eJcwFKvRUytpOVDfkCum1JgR
-         JIHeVTa43hMqx5MIvIkaaHX5NAfSiBWB1lbLzB5m8eu51Ia/WxXJS4oDTE09AwB8PUqD
-         P2fx4YQiYnCHVHPZIXRF6zO8dzVL7kfz1e9qSIBZctbqNntvd3vANUZRhgv52Cve9tIP
-         Z4vg==
+        d=google.com; s=20230601; t=1770933511; x=1771538311; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=F9QIJ7/JNUJlnhiwP3aDc1NcdR+8wgC780wGHRVk+o8=;
+        b=OgOaRaf37vhBtHyCrP3d6E4o6GDVE174CiT1tFdoq35UW+RZumKLiGLZhVNorLvyLH
+         VK009YlDwcnMrFrOVNfprc01roOhwIUuFiVRy1gq9etX/MnTIOVu9xfxgOzhXpc288gu
+         MvwJDLqHydjFUmUuSBL6OvVf0c25o/7Bfqgv130ieL4UZPRAHTV1GbGmAbM8f8f26muW
+         oGhHN6yNqqC5iNATmJG32MmJegxnETit56bLO/QTq0zIlFXKdNmtFaAQuSjeAlb2kzT7
+         wDBxPc1y6Hso9hIkc8PDGMx+ChE1/MJ1kXvSa34JIgWra1TXhMQr/yneGpuWUZNvoe7/
+         WgEg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1770933507; x=1771538307;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=IGPiVsRR2IN2A+m6Bv8PgAftkVsRzQaURBceo4FlM+o=;
-        b=R1nTgcA9CIuGK0KNlsynyw/WzsHvOE3giXqTA6vJmdqus6ia5B+kjkNZ3+5HfUTSVu
-         yPy3aMXE0ArEruCIkMSk4oJbjK105aZ0f3KCCEUUEGFaiSKaPfrEt2VRhxKwEapWG4++
-         D8MO82dCcnbyAR8HohafnQPSn440IL9d6Gl/+7M3X8l5awtcgPiNbV0dc+lNUPf70SPn
-         k9DY5yzhO1XbT0pQkIhaaajTw8q3urJVQ2HfhXtYE6sgJTrlj8goypohDIGwJjvVk52t
-         eX2Uu+K/bINSH9LbQ/OlhVYXERWHRN00V24CKGYHcBir7wjT6/d/B0EkKfwKYeGhOPyI
-         YOEA==
-X-Forwarded-Encrypted: i=1; AJvYcCW9LePJbedD2zP3csKc4nB1lh2a43fqLxccpSFh7wwrRUxBnVG+8NywA6bFO6FtI7smTpqBjRIU@vger.kernel.org
-X-Gm-Message-State: AOJu0YxbwzxUh0kkgOCwzfNGoueO3DQqjBvXjBVhLEUPCvpX6xpYz4c4
-	gFXscIHJ9MNmkbwVlWXKxWpV92Qh3Ji6n9qY7iPBQ0qx5KjH2unC6C7DvxeIFiUwed91HNZxbxq
-	PPX1P+/T6JGwtoZ+90w==
-X-Received: from plbkn7.prod.google.com ([2002:a17:903:787:b0:2a7:73f7:74d6])
+        d=1e100.net; s=20230601; t=1770933511; x=1771538311;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=F9QIJ7/JNUJlnhiwP3aDc1NcdR+8wgC780wGHRVk+o8=;
+        b=gBO8tSTD9jrB/i3pGDyf9yUGhRzd/1eJ7Y2V2Fjw4O/NTzZl3ppdVam1HwGTxIyo/c
+         JZs6iM4Z0rU8q34VsH/NmDbtL84Hfu/bGfM4+yGVdJJSyQtpkMGzejbXoR1Tg49+Tb/Y
+         Gc4EI8FWWhSiMHLYkI0LyAL9PfdapqUztow9BlXTGHh52uq02TywYSoHvD/oOluFzDg3
+         HgFswGCFlxBQW0M87w1v69p1lMJLU/CK9KJaKo1fypZKYSG6zQbVxGsF9zKom62/cLmF
+         vv9H3WIg67S9TU4awmFws3yZn5iZDo23F81bGI3DoJhEHJ1jbPB1olN6aHQMq760+IaO
+         6zYg==
+X-Forwarded-Encrypted: i=1; AJvYcCVII11sML5EUt0msWwqBMaPfCJGD0qZ8bkwrzLp1zUHrqD3k8P7kKNgCmwQvx0QMrfT7nOGENHI@vger.kernel.org
+X-Gm-Message-State: AOJu0YxYZ8LkC40IBrNZLrLuvf5EcWlX69yXW0VN9/wjGF//FO1X8gc4
+	EIHke+vlfY1D7KMY1k1033b8LJ9hQAbnltGXtrz2QiAjcPT1gD9joYR5b2clQCQk92yri2L2p5u
+	8mlEySewlwPMPvow/lQ==
+X-Received: from pjob16.prod.google.com ([2002:a17:90a:8c90:b0:34b:e29d:f74c])
  (user=tjmercier job=prod-delivery.src-stubby-dispatcher) by
- 2002:a17:903:b47:b0:2a9:327f:ac57 with SMTP id d9443c01a7336-2ab3ac3ea7dmr43993265ad.28.1770933506507;
- Thu, 12 Feb 2026 13:58:26 -0800 (PST)
-Date: Thu, 12 Feb 2026 13:58:11 -0800
+ 2002:a17:90b:2d90:b0:356:22ef:57b9 with SMTP id 98e67ed59e1d1-356a7641a8emr399373a91.3.1770933510727;
+ Thu, 12 Feb 2026 13:58:30 -0800 (PST)
+Date: Thu, 12 Feb 2026 13:58:12 -0800
+In-Reply-To: <20260212215814.629709-1-tjmercier@google.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
+References: <20260212215814.629709-1-tjmercier@google.com>
 X-Mailer: git-send-email 2.53.0.273.g2a3d683680-goog
-Message-ID: <20260212215814.629709-1-tjmercier@google.com>
-Subject: [PATCH v2 0/3] kernfs: Add inotify IN_DELETE_SELF, IN_IGNORED support
- for files
+Message-ID: <20260212215814.629709-2-tjmercier@google.com>
+Subject: [PATCH v2 1/3] kernfs: allow passing fsnotify event types
 From: "T.J. Mercier" <tjmercier@google.com>
 To: gregkh@linuxfoundation.org, tj@kernel.org, driver-core@lists.linux.dev, 
 	linux-kernel@vger.kernel.org, cgroups@vger.kernel.org, shuah@kernel.org, 
@@ -89,17 +91,17 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	MV_CASE(0.50)[];
 	DMARC_POLICY_ALLOW(-0.50)[google.com,reject];
 	R_DKIM_ALLOW(-0.20)[google.com:s=20230601];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-13919-lists,cgroups=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-13920-lists,cgroups=lfdr.de];
 	RCVD_COUNT_THREE(0.00)[4];
 	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	FROM_HAS_DN(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
+	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[tjmercier@google.com,cgroups@vger.kernel.org];
@@ -107,52 +109,83 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	RCPT_COUNT_SEVEN(0.00)[8];
 	TO_DN_SOME(0.00)[];
 	TAGGED_RCPT(0.00)[cgroups];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns,memory.events:url]
-X-Rspamd-Queue-Id: 6C389131673
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: B9D1613168D
 X-Rspamd-Action: no action
 
-This series adds support for IN_DELETE_SELF and IN_IGNORED inotify
-events to kernfs files.
+The kernfs_notify function is hardcoded to only issue FS_MODIFY events
+since that is the only current use case. Allow for supporting other
+events by adding a notify_event field to kernfs_elem_attr. The
+limitation of only one queued event per kernfs_node continues to exist
+as a consequence of the design of the kernfs_notify_list. The new
+notify_event field is protected by the same kernfs_notify_lock as the
+existing notify_next field.
 
-Currently, kernfs (used by cgroup and others) supports IN_MODIFY events
-but fails to notify watchers when the file is removed (e.g. during
-cgroup destruction). This forces userspace monitors to maintain resource
-intensive side-channels like pidfds, procfs polling, or redundant
-directory watches to detect when a cgroup dies and a watched file is
-removed.
-
-By generating IN_DELETE_SELF events on destruction, we allow watchers to
-rely on a single watch descriptor for the entire lifecycle of the
-monitored file, reducing resource usage (file descriptors, CPU cycles)
-and complexity in userspace.
-
-The series is structured as follows:
-Patch 1 refactors kernfs_elem_attr to support arbitrary event types.
-Patch 2 implements the logic to generate DELETE_SELF and IGNORED events
-        on file removal.
-Patch 3 adds selftests to verify the new behavior.
-
+Signed-off-by: T.J. Mercier <tjmercier@google.com>
 ---
-Changes in v2:
-Remove unused variables from new selftests per kernel test robot
-Fix kernfs_type argument per Tejun
-Inline checks for FS_MODIFY, FS_DELETE in kernfs_notify_workfn per Tejun
+ fs/kernfs/file.c       | 8 ++++++--
+ include/linux/kernfs.h | 1 +
+ 2 files changed, 7 insertions(+), 2 deletions(-)
 
-T.J. Mercier (3):
-  kernfs: allow passing fsnotify event types
-  kernfs: send IN_DELETE_SELF and IN_IGNORED on file deletion
-  selftests: memcg: Add tests IN_DELETE_SELF and IN_IGNORED on
-    memory.events
-
- fs/kernfs/dir.c                               |  21 +++
- fs/kernfs/file.c                              |  20 ++-
- fs/kernfs/kernfs-internal.h                   |   3 +
- include/linux/kernfs.h                        |   1 +
- .../selftests/cgroup/test_memcontrol.c        | 122 ++++++++++++++++++
- 5 files changed, 161 insertions(+), 6 deletions(-)
-
-
-base-commit: ba268514ea14b44570030e8ed2aef92a38679e85
+diff --git a/fs/kernfs/file.c b/fs/kernfs/file.c
+index 9adf36e6364b..e978284ff983 100644
+--- a/fs/kernfs/file.c
++++ b/fs/kernfs/file.c
+@@ -914,6 +914,7 @@ static void kernfs_notify_workfn(struct work_struct *work)
+ 	struct kernfs_node *kn;
+ 	struct kernfs_super_info *info;
+ 	struct kernfs_root *root;
++	u32 notify_event;
+ repeat:
+ 	/* pop one off the notify_list */
+ 	spin_lock_irq(&kernfs_notify_lock);
+@@ -924,6 +925,8 @@ static void kernfs_notify_workfn(struct work_struct *work)
+ 	}
+ 	kernfs_notify_list = kn->attr.notify_next;
+ 	kn->attr.notify_next = NULL;
++	notify_event = kn->attr.notify_event;
++	kn->attr.notify_event = 0;
+ 	spin_unlock_irq(&kernfs_notify_lock);
+ 
+ 	root = kernfs_root(kn);
+@@ -954,7 +957,7 @@ static void kernfs_notify_workfn(struct work_struct *work)
+ 		if (parent) {
+ 			p_inode = ilookup(info->sb, kernfs_ino(parent));
+ 			if (p_inode) {
+-				fsnotify(FS_MODIFY | FS_EVENT_ON_CHILD,
++				fsnotify(notify_event | FS_EVENT_ON_CHILD,
+ 					 inode, FSNOTIFY_EVENT_INODE,
+ 					 p_inode, &name, inode, 0);
+ 				iput(p_inode);
+@@ -964,7 +967,7 @@ static void kernfs_notify_workfn(struct work_struct *work)
+ 		}
+ 
+ 		if (!p_inode)
+-			fsnotify_inode(inode, FS_MODIFY);
++			fsnotify_inode(inode, notify_event);
+ 
+ 		iput(inode);
+ 	}
+@@ -1005,6 +1008,7 @@ void kernfs_notify(struct kernfs_node *kn)
+ 	if (!kn->attr.notify_next) {
+ 		kernfs_get(kn);
+ 		kn->attr.notify_next = kernfs_notify_list;
++		kn->attr.notify_event = FS_MODIFY;
+ 		kernfs_notify_list = kn;
+ 		schedule_work(&kernfs_notify_work);
+ 	}
+diff --git a/include/linux/kernfs.h b/include/linux/kernfs.h
+index b5a5f32fdfd1..1762b32c1a8e 100644
+--- a/include/linux/kernfs.h
++++ b/include/linux/kernfs.h
+@@ -181,6 +181,7 @@ struct kernfs_elem_attr {
+ 	struct kernfs_open_node __rcu	*open;
+ 	loff_t			size;
+ 	struct kernfs_node	*notify_next;	/* for kernfs_notify() */
++	u32			notify_event;   /* for kernfs_notify() */
+ };
+ 
+ /*
 -- 
 2.53.0.273.g2a3d683680-goog
 
