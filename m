@@ -1,72 +1,72 @@
-Return-Path: <cgroups+bounces-13868-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-13869-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id +PBtEtggjWmJzQAAu9opvQ
-	(envelope-from <cgroups+bounces-13868-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Thu, 12 Feb 2026 01:37:44 +0100
+	id eAKWF+UgjWmJzQAAu9opvQ
+	(envelope-from <cgroups+bounces-13869-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Thu, 12 Feb 2026 01:37:57 +0100
 X-Original-To: lists+cgroups@lfdr.de
 Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id F37A8128ACA
-	for <lists+cgroups@lfdr.de>; Thu, 12 Feb 2026 01:37:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id D329F128ADA
+	for <lists+cgroups@lfdr.de>; Thu, 12 Feb 2026 01:37:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id CDA07302961B
-	for <lists+cgroups@lfdr.de>; Thu, 12 Feb 2026 00:37:34 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id D68CE303324E
+	for <lists+cgroups@lfdr.de>; Thu, 12 Feb 2026 00:37:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E41A91D6DA9;
-	Thu, 12 Feb 2026 00:37:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7DD501E0DE8;
+	Thu, 12 Feb 2026 00:37:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="lWwt34gR"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="QwALuDq4"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-pj1-f73.google.com (mail-pj1-f73.google.com [209.85.216.73])
+Received: from mail-pj1-f74.google.com (mail-pj1-f74.google.com [209.85.216.74])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A72F51AC44D
-	for <cgroups@vger.kernel.org>; Thu, 12 Feb 2026 00:37:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.73
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E44D1DD889
+	for <cgroups@vger.kernel.org>; Thu, 12 Feb 2026 00:37:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.74
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1770856649; cv=none; b=RyISkU/HMB9LOF0anamUpZBOF4PDx7W4qymrU5hFQrrkjP/P7RDEVsqkna8qWJWBB3mMOz2O28xNLM0pMClnQI/68cljrRu3UTLYm0NWpAu/y9ozlvDF0EU95jnQ/8ZKbSfknVJHcv51gAiFosQuYXCC6UZjbfuVuyNSn5d6CQY=
+	t=1770856651; cv=none; b=XBb3LaOoawW6k0xxOz+g4FpyFgq5ZRT1QcPr0ma24PAL53GWkZX7N0GvUs9850uJ+/yJqjlVJyg3zJiUeAudRtVQKOMgZ+U3D2dn0b9+LEY1jGdE5unJTDNZ1Xdu9uJoLJB+eSH+QrFge1PLj3ZmViIcfNrBP43Q6qk+pZsQkEI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1770856649; c=relaxed/simple;
-	bh=LM4IDRwtUxJyRCp0kUE1qgZT5L1HEBFTk6wT4AL7YaM=;
+	s=arc-20240116; t=1770856651; c=relaxed/simple;
+	bh=WbOu/6e8uR8HBFqHpqlKdK3+FnhdgP20V84LWErdyq0=;
 	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=lFDQrRzorlm+yLkOidFlAOgO37wAS0SnQUjzIb4mTbdoe14FOl8WLkQYHT1/JJLnCvO/x35/SQBbkDxHoXxyMdOOy7iURPo4Ejaqxu3bJKGvxf4HT53+J8RSYxJ/uCZ3UA2hXtqJY0zErAFPsZbdzR9nRQaZrC8M2fIzW6aTrsU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--ackerleytng.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=lWwt34gR; arc=none smtp.client-ip=209.85.216.73
+	 To:Cc:Content-Type; b=FRDGVjymPvTLb+hvM7oJgNlrNORFhNc5004psETx2oMGqkk3ZVZJFxueCXU9RhLGgGQM5LBUJX0xgMxrY6hggdbIy384s3TR0y1ySCJNqg6NqyAvpEM70jFSQix1qGCs/sPJQsYVbbhuiQ2xhFJKapZ0X354P3LyQ38Xcb+JJTc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--ackerleytng.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=QwALuDq4; arc=none smtp.client-ip=209.85.216.74
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--ackerleytng.bounces.google.com
-Received: by mail-pj1-f73.google.com with SMTP id 98e67ed59e1d1-35678f99c6eso1272648a91.1
-        for <cgroups@vger.kernel.org>; Wed, 11 Feb 2026 16:37:28 -0800 (PST)
+Received: by mail-pj1-f74.google.com with SMTP id 98e67ed59e1d1-352e6fcd72dso11041789a91.3
+        for <cgroups@vger.kernel.org>; Wed, 11 Feb 2026 16:37:30 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1770856648; x=1771461448; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1770856650; x=1771461450; darn=vger.kernel.org;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=2JnA227LuyuHWxtahECJXUZ4BvkZ1hdR9r/VpPR8oGw=;
-        b=lWwt34gRcEoQKHR52f7m0mprMvta85z7Kl+YRjoeQuFli12rq3Z6JuvgWq1WcZGldL
-         JL4p6Q+ltNTwhEqpJW8S0ate+1RH4GQNSXXoaMOl3ixfSEtkrTiRK9L6K9yTFtJGDFwz
-         CNXEeb0lK6PQvmS7IExlAh3IwMhezAszqM6Qbu1PSB3JmB/deMckSKigsD1pzif3P8/G
-         Sqe2ylvlkh3Yv0erQBk1OU5rPBSHK4YewDlD5D00SMc917VLPu0OQRbuuYqU1+yeJnC6
-         UFcY0BbQYqxZfoEJjlzSgen5wIw57Lm3oAV6idIoMWdvkYR86WTZXAtM23mI1fc5/yNk
-         V6yA==
+        bh=7+fyXiA+m57FzuXOpgMoIQnVFz3nHsjbKsXBY1bNSP0=;
+        b=QwALuDq4hDTWF4z2/mARw6VlkqVwFmhExhusQcQrJbZgXlo8xEVZh5M/OZ+CloAal9
+         w2ZNbDjQRyWTAYizFTFfEpzgWYLxWsRxIfdWcIkY1T5TTKEJPXgxZcgOOmy0lkG7iTDF
+         VwmFQwDYgAVwioT/5waJIpN+TTFtt4xmyhVq2Uu75UHfNhnLsVTg8svOzY+S8m9Z7cdg
+         w2UmaVDNmmMNTFRz2PEoQv5i7U9JOydqRj5FYHotYfnzkU92eaDMIm/ggFj/BMWy23rz
+         EWaIDJsCHQOe0oFcK9j/sOduMBqzqanXdUS2cVCMDqv1WlOZo1HriFC71cRYa3ON3nbE
+         BuSw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1770856648; x=1771461448;
+        d=1e100.net; s=20230601; t=1770856650; x=1771461450;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=2JnA227LuyuHWxtahECJXUZ4BvkZ1hdR9r/VpPR8oGw=;
-        b=ta5jN91FM84vQOpmX5pPU8+GU4mTPUrmvEXQORB31Co2XayOtzAn+zMRU9rY87Bbpo
-         VxRTvOoSn5tJwrRrE35Tqf3VHpqX5IZywYGCGM7cTZ/MiHT+rPWP5LmGWuT0Pe3Eo49o
-         TA5Y5eSxgxz7uc/zD/Zb05LWh413KfRX3dfAmfqrMKn1Q3LhS0/SUwned4bd+7fweHdZ
-         +9wk2yert7alcWrXXH726q22ZnXPlIeDK3SwAljwWZ+EKZErEOPI7Tlc5aTgXm/qXBGL
-         7Ur7y/7gF7/bx1dQtyaaoTXwNUfiZwGpnPtcJmoF+lWKzZ8jjU5kTgkr2BzcwHXfihww
-         ZyQQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWBBpS9wiTIC7NES85fcVKGN9gJ1lj4A+bbXiLiYPAXCedcTXg1Z5BainB9fbmIl+JjbmHehhzr@vger.kernel.org
-X-Gm-Message-State: AOJu0YzCEWVRUzeOSi6BX7z9VFbO/5h1G3ZDUdWjM3RXAU4/Zik71HP5
-	6xRJmcDu4bqVwl2z/qpaWZbTKCiWWu1O7WoGG49xSe6IASrStFQhCbDSmlTT1gIlMW3HiAGSGl4
-	LqKhRcveiVCBOxULAk8legWwPVA==
-X-Received: from pgbdo14.prod.google.com ([2002:a05:6a02:e8e:b0:c6c:9940:fac3])
+        bh=7+fyXiA+m57FzuXOpgMoIQnVFz3nHsjbKsXBY1bNSP0=;
+        b=mIZ63cbLTkCheWPkKe3f54iYGqeslF93ikQdKhmnZZNTkwuCol3cp7G2QfTvQ83Swo
+         khtBhllsYEZn8pfgLM2GJJPEivhZwh0AoNt1MjEuFxkehv3zbYZSz2f+ciS50twD9Y8V
+         XZrlrHrY4yf5NHYlrsxakXgT9809p0UGPCUycHKOXcZZ/jsGPeeXiCkL6SU1552AB1kF
+         xV/UZzb89vOkVkKJUBEfXRRo/naHosqVR2MiLkVd73rwFpdv6PMYFpIYOaiowuDrc+u2
+         055xvEY+kF/cIeBhmyhnAag2B/53fCNRXaWwakkDPHHQhqT1h+bFhKrlYCv4O/bDdBIx
+         kzFQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVCsV6sQ4m4h5W5Xk/JrmHQLrWqDdz86wSxbH/UnDnnPIIWVm+ga3BDPHNF53a08+XYsS5dFw4S@vger.kernel.org
+X-Gm-Message-State: AOJu0Yyg51QoXZApFRfyVMvk0OoYjRUZgwtUytjs6BcWrISBNzXTdqP0
+	aO/rybJbhkVQZsg7Dm7t2QzqLFgN5t6fvxCPnpFzCD7cFg41LZiInmRd6TmfktLJrsm4q0FElUP
+	k/Q7ACC4xzsAvh1qIA190bXU32Q==
+X-Received: from pjzr13.prod.google.com ([2002:a17:90b:50d:b0:33b:51fe:1a73])
  (user=ackerleytng job=prod-delivery.src-stubby-dispatcher) by
- 2002:a05:6a21:495:b0:38d:ebdc:3546 with SMTP id adf61e73a8af0-39448477cb9mr923997637.6.1770856647927;
- Wed, 11 Feb 2026 16:37:27 -0800 (PST)
-Date: Wed, 11 Feb 2026 16:37:12 -0800
+ 2002:a17:90b:2e45:b0:32e:7bbc:bf13 with SMTP id 98e67ed59e1d1-3568f52e24amr904712a91.34.1770856649529;
+ Wed, 11 Feb 2026 16:37:29 -0800 (PST)
+Date: Wed, 11 Feb 2026 16:37:13 -0800
 In-Reply-To: <cover.1770854662.git.ackerleytng@google.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
@@ -76,9 +76,8 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
 References: <cover.1770854662.git.ackerleytng@google.com>
 X-Mailer: git-send-email 2.53.0.310.g728cabbaf7-goog
-Message-ID: <fa4172f57caf8fd3013d13d96211de6bb8cf6d38.1770854662.git.ackerleytng@google.com>
-Subject: [RFC PATCH v1 1/7] mm: hugetlb: Consolidate interpretation of gbl_chg
- within alloc_hugetlb_folio()
+Message-ID: <18dbaf2ff9579b285d92f26b9a69e1e302f3bbcc.1770854662.git.ackerleytng@google.com>
+Subject: [RFC PATCH v1 2/7] mm: hugetlb: Move mpol interpretation out of alloc_buddy_hugetlb_folio_with_mpol()
 From: Ackerley Tng <ackerleytng@google.com>
 To: akpm@linux-foundation.org, dan.j.williams@intel.com, david@kernel.org, 
 	fvdl@google.com, hannes@cmpxchg.org, jgg@nvidia.com, jiaqiyan@google.com, 
@@ -103,7 +102,7 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_COUNT_THREE(0.00)[4];
-	TAGGED_FROM(0.00)[bounces-13868-lists,cgroups=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-13869-lists,cgroups=lfdr.de];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	RCVD_TLS_LAST(0.00)[];
 	MIME_TRACE(0.00)[0:+];
@@ -117,84 +116,91 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	RCPT_COUNT_TWELVE(0.00)[29];
 	TAGGED_RCPT(0.00)[cgroups];
 	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: F37A8128ACA
+X-Rspamd-Queue-Id: D329F128ADA
 X-Rspamd-Action: no action
 
-Previously, gbl_chg was passed from alloc_hugetlb_folio() into
-dequeue_hugetlb_folio_vma(), leaking the concept of gbl_chg into
-dequeue_hugetlb_folio_vma().
+Move memory policy interpretation out of
+alloc_buddy_hugetlb_folio_with_mpol() and into alloc_hugetlb_folio() to
+separate reading and interpretation of memory policy from actual
+allocation.
 
-This patch consolidates the interpretation of gbl_chg into
-alloc_hugetlb_folio(), also renaming dequeue_hugetlb_folio_vma() to
-dequeue_hugetlb_folio() so dequeue_hugetlb_folio() can just focus on
-dequeuing a folio.
+This will later allow memory policy to be interpreted outside of the
+process of allocating a hugetlb folio entirely. This opens doors for other
+callers of the HugeTLB folio allocation function, such as guest_memfd,
+where memory may not always be mapped and hence may not have an associated
+vma.
 
 No functional change intended.
 
 Signed-off-by: Ackerley Tng <ackerleytng@google.com>
-Reviewed-by: James Houghton <jthoughton@google.com>
 ---
- mm/hugetlb.c | 24 +++++++++---------------
- 1 file changed, 9 insertions(+), 15 deletions(-)
+ mm/hugetlb.c | 20 +++++++++++---------
+ 1 file changed, 11 insertions(+), 9 deletions(-)
 
 diff --git a/mm/hugetlb.c b/mm/hugetlb.c
-index a1832da0f6236..fd067bd394ee0 100644
+index fd067bd394ee0..aaa23d995b65c 100644
 --- a/mm/hugetlb.c
 +++ b/mm/hugetlb.c
-@@ -1380,7 +1380,7 @@ static unsigned long available_huge_pages(struct hstate *h)
- 
- static struct folio *dequeue_hugetlb_folio_vma(struct hstate *h,
- 				struct vm_area_struct *vma,
--				unsigned long address, long gbl_chg)
-+				unsigned long address)
+@@ -2223,15 +2223,11 @@ static struct folio *alloc_migrate_hugetlb_folio(struct hstate *h, gfp_t gfp_mas
+  */
+ static
+ struct folio *alloc_buddy_hugetlb_folio_with_mpol(struct hstate *h,
+-		struct vm_area_struct *vma, unsigned long addr)
++		struct mempolicy *mpol, int nid, nodemask_t *nodemask)
  {
  	struct folio *folio = NULL;
- 	struct mempolicy *mpol;
-@@ -1388,13 +1388,6 @@ static struct folio *dequeue_hugetlb_folio_vma(struct hstate *h,
- 	nodemask_t *nodemask;
- 	int nid;
+-	struct mempolicy *mpol;
+ 	gfp_t gfp_mask = htlb_alloc_mask(h);
+-	int nid;
+-	nodemask_t *nodemask;
  
--	/*
--	 * gbl_chg==1 means the allocation requires a new page that was not
--	 * reserved before.  Making sure there's at least one free page.
--	 */
--	if (gbl_chg && !available_huge_pages(h))
--		goto err;
--
- 	gfp_mask = htlb_alloc_mask(h);
- 	nid = huge_node(vma, address, gfp_mask, &mpol, &nodemask);
+-	nid = huge_node(vma, addr, gfp_mask, &mpol, &nodemask);
+ 	if (mpol_is_preferred_many(mpol)) {
+ 		gfp_t gfp = gfp_mask & ~(__GFP_DIRECT_RECLAIM | __GFP_NOFAIL);
  
-@@ -1412,9 +1405,6 @@ static struct folio *dequeue_hugetlb_folio_vma(struct hstate *h,
+@@ -2243,7 +2239,7 @@ struct folio *alloc_buddy_hugetlb_folio_with_mpol(struct hstate *h,
  
- 	mpol_cond_put(mpol);
+ 	if (!folio)
+ 		folio = alloc_surplus_hugetlb_folio(h, gfp_mask, nid, nodemask);
+-	mpol_cond_put(mpol);
++
  	return folio;
--
--err:
--	return NULL;
  }
  
- #ifdef CONFIG_ARCH_HAS_GIGANTIC_PAGE
-@@ -2962,12 +2952,16 @@ struct folio *alloc_hugetlb_folio(struct vm_area_struct *vma,
- 		goto out_uncharge_cgroup_reservation;
+@@ -2892,7 +2888,7 @@ struct folio *alloc_hugetlb_folio(struct vm_area_struct *vma,
+ 	map_chg_state map_chg;
+ 	int ret, idx;
+ 	struct hugetlb_cgroup *h_cg = NULL;
+-	gfp_t gfp = htlb_alloc_mask(h) | __GFP_RETRY_MAYFAIL;
++	gfp_t gfp = htlb_alloc_mask(h);
  
- 	spin_lock_irq(&hugetlb_lock);
-+
- 	/*
--	 * glb_chg is passed to indicate whether or not a page must be taken
--	 * from the global free pool (global change).  gbl_chg == 0 indicates
--	 * a reservation exists for the allocation.
-+	 * gbl_chg == 0 indicates a reservation exists for the allocation - so
-+	 * try dequeuing a page. If there are available_huge_pages(), try using
-+	 * them!
- 	 */
--	folio = dequeue_hugetlb_folio_vma(h, vma, addr, gbl_chg);
-+	folio = NULL;
-+	if (!gbl_chg || available_huge_pages(h))
-+		folio = dequeue_hugetlb_folio_vma(h, vma, addr);
-+
+ 	idx = hstate_index(h);
+ 
+@@ -2963,8 +2959,14 @@ struct folio *alloc_hugetlb_folio(struct vm_area_struct *vma,
+ 		folio = dequeue_hugetlb_folio_vma(h, vma, addr);
+ 
  	if (!folio) {
++		struct mempolicy *mpol;
++		nodemask_t *nodemask;
++		int nid;
++
  		spin_unlock_irq(&hugetlb_lock);
- 		folio = alloc_buddy_hugetlb_folio_with_mpol(h, vma, addr);
+-		folio = alloc_buddy_hugetlb_folio_with_mpol(h, vma, addr);
++		nid = huge_node(vma, addr, gfp, &mpol, &nodemask);
++		folio = alloc_buddy_hugetlb_folio_with_mpol(h, mpol, nid, nodemask);
++		mpol_cond_put(mpol);
+ 		if (!folio)
+ 			goto out_uncharge_cgroup;
+ 		spin_lock_irq(&hugetlb_lock);
+@@ -3023,7 +3025,7 @@ struct folio *alloc_hugetlb_folio(struct vm_area_struct *vma,
+ 		}
+ 	}
+ 
+-	ret = mem_cgroup_charge_hugetlb(folio, gfp);
++	ret = mem_cgroup_charge_hugetlb(folio, gfp | __GFP_RETRY_MAYFAIL);
+ 	/*
+ 	 * Unconditionally increment NR_HUGETLB here. If it turns out that
+ 	 * mem_cgroup_charge_hugetlb failed, then immediately free the page and
 -- 
 2.53.0.310.g728cabbaf7-goog
 
