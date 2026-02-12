@@ -1,113 +1,166 @@
-Return-Path: <cgroups+bounces-13878-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-13879-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id EDN1AdhdjWky1gAAu9opvQ
-	(envelope-from <cgroups+bounces-13878-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Thu, 12 Feb 2026 05:58:00 +0100
+	id oN56GhtgjWnN1gAAu9opvQ
+	(envelope-from <cgroups+bounces-13879-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Thu, 12 Feb 2026 06:07:39 +0100
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 50E8712A563
-	for <lists+cgroups@lfdr.de>; Thu, 12 Feb 2026 05:57:59 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id C1D1C12A5AB
+	for <lists+cgroups@lfdr.de>; Thu, 12 Feb 2026 06:07:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id DB7D3310E787
-	for <lists+cgroups@lfdr.de>; Thu, 12 Feb 2026 04:57:52 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id E30EA310E101
+	for <lists+cgroups@lfdr.de>; Thu, 12 Feb 2026 05:07:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F6591F131A;
-	Thu, 12 Feb 2026 04:57:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E92302749E6;
+	Thu, 12 Feb 2026 05:07:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="YLXtIAKW"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VThiPv5S"
 X-Original-To: cgroups@vger.kernel.org
-Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A168A224D6;
-	Thu, 12 Feb 2026 04:57:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AAA15264614
+	for <cgroups@vger.kernel.org>; Thu, 12 Feb 2026 05:07:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1770872270; cv=none; b=HqegzqZQJQeyKQcRbcaboWTPNV4zc5i6Z7mhySRp23+317GReQwmrv2Odr8zH9z+s52v0mr4dZeFvi1ubEFWHrTzcj//5+6RWW61CYwvXi5Pt9f44iosiV0zuaQN3lfVWOun1iDtVbBRCW1yKzQ+nwWMGannT8DrZSSSVmBpJmI=
+	t=1770872853; cv=none; b=Z4DvCxY1gAAetlR3TfkCYk9a/zKNpN3KYuRv2p65j/Eku/ZvoCoCs4B7KCjheXMx5+uKpZub0CxDQ+3q8eFlVxm+bJGkWOABpeWC2OiZEjMyw4SkIdEmmMcFFIcV7T5DGhJXXXFFp5PoyycybwsiryvaksWnwQhVBige4OetLSU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1770872270; c=relaxed/simple;
-	bh=/u5XtC6HVaz0kHJSujZGxxaGI57uD44HWEXhbr0qePg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=nSKJWgPiEoRi1nJIhM8AYYFZoIruzQ0Z2MR20bwf9sa+b9HcTqNON1fqJZFoiIrG+GlcBpZv24sUYeJJBDLz/2P/QQ3JhrQC7ao0LxnWOb/3zm44eTpyu2nAz0RCF7hQQ6gcE5wsrjtZClDxCBP9tAbVHogkeM2NwUuL1KRXNOs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=YLXtIAKW; arc=none smtp.client-ip=90.155.50.34
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=73x8A3e+nUA8dP4EIU9NuG3xJ/7SYBmWQb6yKbWLCLs=; b=YLXtIAKWoipQ8ssG4Buz8qOtpe
-	p1dBoPyU31nZEE1Z3V3xU1qyy4F9OzrXqrm1OC0/5c6EB8wOCiKxl1fryLwUcI0aWlYEtwVZvgHui
-	+g1wcvC36Np4CsS6BYtv6AhhIGdczGV1KIlOIrL6fU0aDCEkvhI/YYdMJZuJvepAvyStxrZEd4Ia0
-	td7SEcZf3TKehB0Mye+RYZEFfNPegFBF6jfFL1fOVjnEN/3b7MyRNNpDGZaAbQI5QKmpVRQrU8tzi
-	OjlB55YOejkYgSJXxIKViv0Fc+jp7E0dgsOgKGRZW/aSwPtaf6Qpnrvt2hae62wnRxAsCDAqGWEpX
-	wKWNub0g==;
-Received: from willy by casper.infradead.org with local (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1vqOle-0000000Dgb7-1KSD;
-	Thu, 12 Feb 2026 04:57:30 +0000
-Date: Thu, 12 Feb 2026 04:57:30 +0000
-From: Matthew Wilcox <willy@infradead.org>
-To: JP Kobryn <inwardvessel@gmail.com>
-Cc: linux-mm@kvack.org, apopple@nvidia.com, akpm@linux-foundation.org,
-	axelrasmussen@google.com, byungchul@sk.com, cgroups@vger.kernel.org,
-	david@kernel.org, eperezma@redhat.com, gourry@gourry.net,
-	jasowang@redhat.com, hannes@cmpxchg.org, joshua.hahnjy@gmail.com,
-	Liam.Howlett@oracle.com, linux-kernel@vger.kernel.org,
-	lorenzo.stoakes@oracle.com, matthew.brost@intel.com, mst@redhat.com,
-	mhocko@suse.com, rppt@kernel.org, muchun.song@linux.dev,
-	zhengqi.arch@bytedance.com, rakie.kim@sk.com,
-	roman.gushchin@linux.dev, shakeel.butt@linux.dev, surenb@google.com,
-	virtualization@lists.linux.dev, vbabka@suse.cz, weixugc@google.com,
-	xuanzhuo@linux.alibaba.com, ying.huang@linux.alibaba.com,
-	yuanchu@google.com, ziy@nvidia.com, kernel-team@meta.com
-Subject: Re: [PATCH 0/2] improve per-node allocation and reclaim visibility
-Message-ID: <aY1dusLPzP2AHP6f@casper.infradead.org>
-References: <20260212045109.255391-1-inwardvessel@gmail.com>
+	s=arc-20240116; t=1770872853; c=relaxed/simple;
+	bh=EosASMTX2s9CcIWPWVdD9Epc98EOoJxCZ11MXv+yVnM=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=tzr4rpTJUCbkDplUAMo6WeOWS4EKISutt9HS35j+/YuFZz/ZbGmZwcfLdLS2bMdripgfzHEkXJ8BMtTmziu6YFuiXhQe4xRcz8HN1NLFYOyrsz7VT9X8aeey6Cfn38z/AXOdWojJhtMc1uVzJJP9yqvrEVYlL4znJCqrP/+vxKk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VThiPv5S; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 79B7CC2BC86
+	for <cgroups@vger.kernel.org>; Thu, 12 Feb 2026 05:07:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1770872853;
+	bh=EosASMTX2s9CcIWPWVdD9Epc98EOoJxCZ11MXv+yVnM=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=VThiPv5SMbZEL/DadPMgq+mMtrYpHmln/TSs8AhEw97M7Faeeuws9vFsH/bCmqQpu
+	 33dlouVWkrWPCw1pE80IHQqSFazOJOEkWlHdV/UHniqoY/VJFSL4g6I0b2QF62SFjn
+	 JphkosFI2fy9ggHqegdKfnsPbznEG7wdwxQwqeECOpU3r7Kl8FMDuqBIEBDBuoAA5g
+	 BmhZF9+nJ/SxHVLT/fKJu1TJnGVT8I8kHATrFpK74MvOrTccFT6DqBAkxGiOvT7NHQ
+	 EyH11HrBCNf+QHgfdcYfHSP2AnBin6I02bH3NyfJgOrOk+tAGLHCfD/oR1EwtD0rdS
+	 5d/P67ie+zDRw==
+Received: by mail-yw1-f169.google.com with SMTP id 00721157ae682-79456d5ebf9so63190857b3.2
+        for <cgroups@vger.kernel.org>; Wed, 11 Feb 2026 21:07:33 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCWCaCRvPhhvGHwzxf3GWP15iQhBASmifcK2BTrdgJS0+C+bsSnkNT2dNRP5/OjRy16eD0sKWGkk@vger.kernel.org
+X-Gm-Message-State: AOJu0YyUukxzgSIki3PL7lOBafiNHiBFFjAAzjVuJz4fbnFEpN8z8M+i
+	+hzRdmQNK6LoI0T0g7JbUfu06XWz4FDebG8TYuRZlsmbWP2018Q3K1mq3tBHPrv9qraexDLDNd+
+	EiNs/ZLw+9EHRLXJpiWQAgPYRpxkQOIhRHVTe/STEEg==
+X-Received: by 2002:a05:690c:fc8:b0:794:dac2:89de with SMTP id
+ 00721157ae682-7972f113502mr19419047b3.17.1770872852305; Wed, 11 Feb 2026
+ 21:07:32 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20260212045109.255391-1-inwardvessel@gmail.com>
+References: <20260208215839.87595-2-nphamcs@gmail.com> <20260208222652.328284-1-nphamcs@gmail.com>
+ <CAMgjq7AQNGK-a=AOgvn4-V+zGO21QMbMTVbrYSW_R2oDSLoC+A@mail.gmail.com> <CAKEwX=OUni7PuUqGQUhbMDtErurFN_i=1RgzyQsNXy4LABhXoA@mail.gmail.com>
+In-Reply-To: <CAKEwX=OUni7PuUqGQUhbMDtErurFN_i=1RgzyQsNXy4LABhXoA@mail.gmail.com>
+From: Chris Li <chrisl@kernel.org>
+Date: Wed, 11 Feb 2026 21:07:20 -0800
+X-Gmail-Original-Message-ID: <CACePvbWCZhdF6vyP6BEhyCGXurST7EewNk=HGcE_qVGAwJpFPg@mail.gmail.com>
+X-Gm-Features: AZwV_Qi4jBzTgP6vyYE2l1ny_j4kHipqIQCjBTH1peMA4w-c1bJcYp0Pl-VIEPg
+Message-ID: <CACePvbWCZhdF6vyP6BEhyCGXurST7EewNk=HGcE_qVGAwJpFPg@mail.gmail.com>
+Subject: Re: [PATCH v3 00/20] Virtual Swap Space
+To: Nhat Pham <nphamcs@gmail.com>
+Cc: Kairui Song <ryncsn@gmail.com>, linux-mm@kvack.org, akpm@linux-foundation.org, 
+	hannes@cmpxchg.org, hughd@google.com, yosry.ahmed@linux.dev, 
+	mhocko@kernel.org, roman.gushchin@linux.dev, shakeel.butt@linux.dev, 
+	muchun.song@linux.dev, len.brown@intel.com, chengming.zhou@linux.dev, 
+	huang.ying.caritas@gmail.com, ryan.roberts@arm.com, shikemeng@huaweicloud.com, 
+	viro@zeniv.linux.org.uk, baohua@kernel.org, bhe@redhat.com, osalvador@suse.de, 
+	christophe.leroy@csgroup.eu, pavel@kernel.org, kernel-team@meta.com, 
+	linux-kernel@vger.kernel.org, cgroups@vger.kernel.org, 
+	linux-pm@vger.kernel.org, peterx@redhat.com, riel@surriel.com, 
+	joshua.hahnjy@gmail.com, npache@redhat.com, gourry@gourry.net, 
+	axelrasmussen@google.com, yuanchu@google.com, weixugc@google.com, 
+	rafael@kernel.org, jannh@google.com, pfalcato@suse.de, 
+	zhengqi.arch@bytedance.com, minchan@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-0.66 / 15.00];
 	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[infradead.org,none];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
-	R_DKIM_ALLOW(-0.20)[infradead.org:s=casper.20170209];
+	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-13878-lists,cgroups=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
+	TAGGED_FROM(0.00)[bounces-13879-lists,cgroups=lfdr.de];
 	FREEMAIL_TO(0.00)[gmail.com];
-	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[34];
+	FREEMAIL_CC(0.00)[gmail.com,kvack.org,linux-foundation.org,cmpxchg.org,google.com,linux.dev,kernel.org,intel.com,arm.com,huaweicloud.com,zeniv.linux.org.uk,redhat.com,suse.de,csgroup.eu,meta.com,vger.kernel.org,surriel.com,gourry.net,bytedance.com];
+	RCPT_COUNT_TWELVE(0.00)[39];
+	MIME_TRACE(0.00)[0:+];
 	FROM_HAS_DN(0.00)[];
-	DKIM_TRACE(0.00)[infradead.org:+];
-	TO_DN_SOME(0.00)[];
-	MID_RHS_MATCH_FROMTLD(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[willy@infradead.org,cgroups@vger.kernel.org];
-	FREEMAIL_CC(0.00)[kvack.org,nvidia.com,linux-foundation.org,google.com,sk.com,vger.kernel.org,kernel.org,redhat.com,gourry.net,cmpxchg.org,gmail.com,oracle.com,intel.com,suse.com,linux.dev,bytedance.com,lists.linux.dev,suse.cz,linux.alibaba.com,meta.com];
-	TAGGED_RCPT(0.00)[cgroups];
-	MISSING_XM_UA(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,casper.infradead.org:mid]
-X-Rspamd-Queue-Id: 50E8712A563
+	TO_DN_SOME(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[5];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[chrisl@kernel.org,cgroups@vger.kernel.org];
+	DKIM_TRACE(0.00)[kernel.org:+];
+	TAGGED_RCPT(0.00)[cgroups];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	MISSING_XM_UA(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[mail.gmail.com:mid,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: C1D1C12A5AB
 X-Rspamd-Action: no action
 
-On Wed, Feb 11, 2026 at 08:51:07PM -0800, JP Kobryn wrote:
-> We sometimes find ourselves in situations where reclaim kicks in, yet there
+On Tue, Feb 10, 2026 at 11:11=E2=80=AFAM Nhat Pham <nphamcs@gmail.com> wrot=
+e:
+>
+> On Tue, Feb 10, 2026 at 10:00=E2=80=AFAM Kairui Song <ryncsn@gmail.com> w=
+rote:
+> >
+> > On Mon, Feb 9, 2026 at 7:57=E2=80=AFAM Nhat Pham <nphamcs@gmail.com> wr=
+ote:
+> > >
+> > > Anyway, resending this (in-reply-to patch 1 of the series):
+> >
+> > Hi Nhat,
+> >
+> > > Changelog:
+> > > * RFC v2 -> v3:
+> > >     * Implement a cluster-based allocation algorithm for virtual swap
+> > >       slots, inspired by Kairui Song and Chris Li's implementation, a=
+s
+> > >       well as Johannes Weiner's suggestions. This eliminates the lock
+> > >           contention issues on the virtual swap layer.
+> > >     * Re-use swap table for the reverse mapping.
+> > >     * Remove CONFIG_VIRTUAL_SWAP.
+> >
+> > I really do think we better make this optional, not a replacement or
+> > mandatory. There are many hard to evaluate effects as this
+> > fundamentally changes the swap workflow with a lot of behavior changes
+> > at once. e.g. it seems the folio will be reactivated instead of
+> > splitted if the physical swap device is fragmented; slot is allocated
+> > at IO and not at unmap, and maybe many others. Just like zswap is
+> > optional. Some common workloads would see an obvious performance or
+> > memory usage regression following this design, see below.
+>
+> Ideally, if we can close the performance gap and have only one
+> version, then that would be the best :)
+>
+> Problem with making it optional, or maintaining effectively two swap
+> implementations, is that it will make the patch series unreadable and
+> unreviewable, and the code base unmaintanable :) You'll have x2 the
+> amount of code to reason about and test, much more merge conflicts at
+> rebase and cherry-pick time. And any improvement to one version takes
+> extra work to graft onto the other version.
 
-who is we?  you haven't indicated any affiliation in your tags.
+I second that this should be run time optional for other types of
+swap. It should not be mandatory for other swap that does not benefit
+from it. e.g. zram.
+
+Chris
 
