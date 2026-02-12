@@ -1,191 +1,185 @@
-Return-Path: <cgroups+bounces-13875-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-13876-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id IO/sK6MtjWkEzwAAu9opvQ
-	(envelope-from <cgroups+bounces-13875-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Thu, 12 Feb 2026 02:32:19 +0100
+	id oKkKAX5cjWns1QAAu9opvQ
+	(envelope-from <cgroups+bounces-13876-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Thu, 12 Feb 2026 05:52:14 +0100
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 15844128FD2
-	for <lists+cgroups@lfdr.de>; Thu, 12 Feb 2026 02:32:18 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 76A2212A541
+	for <lists+cgroups@lfdr.de>; Thu, 12 Feb 2026 05:52:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id EA9933031339
-	for <lists+cgroups@lfdr.de>; Thu, 12 Feb 2026 01:31:44 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 9E46F30789E4
+	for <lists+cgroups@lfdr.de>; Thu, 12 Feb 2026 04:51:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4AAA4153598;
-	Thu, 12 Feb 2026 01:31:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5F4EF23D7CF;
+	Thu, 12 Feb 2026 04:51:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="FY+TTj8H"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UIDwZgpG"
 X-Original-To: cgroups@vger.kernel.org
-Received: from out-189.mta0.migadu.com (out-189.mta0.migadu.com [91.218.175.189])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-dy1-f182.google.com (mail-dy1-f182.google.com [74.125.82.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 350471EBA19
-	for <cgroups@vger.kernel.org>; Thu, 12 Feb 2026 01:31:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.189
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 54C3C190462
+	for <cgroups@vger.kernel.org>; Thu, 12 Feb 2026 04:51:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.82.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1770859904; cv=none; b=nrJVUYVh+zyNdrYUT+CoRKpMtCQ1zpOp2PrPawjaO/3oP3YGzjZA5b8YRlohJuNyXJLBYk9pKAsOZSONIjwR78yzgZ0uCqrATNbTLX7ch/wKS9l7zwUVnlgkk6/E/hFolFe8Q0YPeZoQROmjIfaoIVc4XKjJ7i/4JhpSmcZAUXU=
+	t=1770871892; cv=none; b=dZeTU1D66x+fazcXa9H8hkoc3Rg7p+X8GGE6VBn1PgWGyVhJ7DrD+09RG80H8+drdS4oQOL4bmPCqRQ0EX8kcSe+YK1MEVthxGXlbRXyZQa9g+QfcghLmBIgZ+qXTzChZCDGM8Q6plqgTjluXJHskcKqDFAJwRczJFpFs+WF+eY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1770859904; c=relaxed/simple;
-	bh=pZiYxf+c5ZITNbFUO+shyOEPQgky0pXj2sicj4sT0nw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=p0N2+QNTbVRrMk8oXD5Jm6lYxqc2sH4w2L2xH44auclrb347uIKpuDO1rxdGYjVt2hU57E614tVws3J48OvpvQ+Vqpg7Fk2fAPn0vpyhtoCYRAhB5UHlayhrUI7MpMUIWcSiH58t5GHRWhwjeV1nnLxCTuxaiSNgRi7QrqCjVy8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=FY+TTj8H; arc=none smtp.client-ip=91.218.175.189
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Wed, 11 Feb 2026 17:31:25 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1770859890;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=XXoRO4v4rHvgrYKgkmZGAeu/KgPPkLUT0T4HFcXiuVc=;
-	b=FY+TTj8H8AHJJcKbeySIehPXIDj8Ixtxz/MVGG8esxlLyrRndxYaSxY1uPNJoYv7dejEGd
-	te9wGLgCNVZT1THR2FtJyl6scAwHIxhuGzezgZOLZXdWMD+4l4RWlFz8Gj0wSg3a5FSyFK
-	wW7/BZhcvm7bHdcwvESThaiDvJ1ArFM=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Shakeel Butt <shakeel.butt@linux.dev>
-To: Harry Yoo <harry.yoo@oracle.com>, Dev Jain <dev.jain@arm.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>, 
-	Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>, 
-	Roman Gushchin <roman.gushchin@linux.dev>, Muchun Song <muchun.song@linux.dev>, 
-	Qi Zheng <qi.zheng@linux.dev>, Vlastimil Babka <vbabka@suse.cz>, linux-mm@kvack.org, 
-	cgroups@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Meta kernel team <kernel-team@meta.com>, shy828301@gmail.com, cl@gentwo.org
-Subject: Re: [PATCH 1/4] memcg: use mod_node_page_state to update stats
-Message-ID: <aY0szfVYWR_eWdpn@linux.dev>
-References: <20251110232008.1352063-2-shakeel.butt@linux.dev>
- <1052a452-9ba3-4da7-be47-7d27d27b3d1d@arm.com>
- <aYAmGc6lu973jRwu@linux.dev>
- <2638bd96-d8cc-4733-a4ce-efdf8f223183@arm.com>
- <51819ca5a15d8928caac720426cd1ce82e89b429@linux.dev>
- <05aec69b-8e73-49ac-aa89-47b371fb6269@arm.com>
- <aYOuCmjQ5lGm8Mup@linux.dev>
- <4847c300-c7bb-4259-867c-4bbf4d760576@arm.com>
- <aYQuj6Ot-JS4tXvY@hyeyoo>
- <7df681ae0f8254f09de0b8e258b909eaacafadf4@linux.dev>
+	s=arc-20240116; t=1770871892; c=relaxed/simple;
+	bh=8D94FTU3J7WbTPERy95OWvMbWad1oKdsojUUHZ3Rmak=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Q3cvsPaqhoPU9J2qTinPwunUixJu1VSDN+wHPHO29b69lhq8LjJD4ejDbhhlkQLMOOXHjvMMzmX9PzthgeBjHQwxEZU/B3Qo07ni1MN7d/4zMC6tjFJp+U2wB0ON8S6IX3xNqtmy9JFXGSCm8J6j82I3Fmj7MpS2e2fDBKbRk9I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=UIDwZgpG; arc=none smtp.client-ip=74.125.82.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-dy1-f182.google.com with SMTP id 5a478bee46e88-2ba94dbf739so2640689eec.1
+        for <cgroups@vger.kernel.org>; Wed, 11 Feb 2026 20:51:30 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1770871889; x=1771476689; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=qoLkvcAtx2WTrKtSPpoAsMeiJqeenZRH0jOzHw3uF5Y=;
+        b=UIDwZgpGC/4+mkYdO+GsY7hYvx5TmvPNjcQSJG6zDQYE2T1LZs3hGCuD0VSeUKKxv/
+         x5jnUATjEV71mGb+Whvmmdi0rQj29T/KVkzj5bHfXeH3Bv/ETQ+pSSq7jckzmtMTnHRt
+         UvEkxYL6lWYdHQPdoo+2fx+XZjMGnxnUeNz78WaHWogvhLi/8hZbDG3o0BKe2leuu/xY
+         peVkXyxiCJQ3ufNQn2H+Sh0R6Fw3H1D7tndoH+hgk7tU4Mp1QM8X4yEHaLRr8nWI4lnb
+         vCChWX4iMtcJw83KQhkgz3qtcoHLfN5cAN53gixRtHl3y8SeYDp70/xwnoWHx9qx5TDG
+         MHWA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1770871889; x=1771476689;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=qoLkvcAtx2WTrKtSPpoAsMeiJqeenZRH0jOzHw3uF5Y=;
+        b=nio4fLP8miNVCkAUU7hu0KdhDXXiMTFVv5k4Ss9qBnplQ/YcOaWyLd0l7sSsEO72qL
+         VzuSR12wYDF0bB9ciUPdf1sXNYk8WX+7mMnURTMrHIeVDgeaSq5vw1NnOjYK0R41nIPP
+         NSljTQAZSZJup9ET3NuQXhDvzQHV2X3/gWlqlXLllQz8RczR2evvuJh/ajhgJXNV+992
+         6ZKz0i1hvO8C+HDWyjRN3krXRYBEbikVBvDKUHDh//CgJ1SieIMa/mEZo6Wp16neT2we
+         BDBc5llG9Rjo+1l1prbLwHuSo84WLupmD47e1ej0OYA5a4Hf5Ex10InWRju4vJvSmb5m
+         d0XA==
+X-Forwarded-Encrypted: i=1; AJvYcCX0ORzF1qw2JtrnjAFv/NKK9xPjtsFr99Ru7wV6wvLCM9qdJ3XbHJeese0gD1yPuOtSoUN8s9I9@vger.kernel.org
+X-Gm-Message-State: AOJu0YxfhbWY/gzmL3yKa6c+vam7/VXliXqORo91HZAtdTboktTwBN+N
+	4a9bJ+d1TKblTnCr6qneTevCY8o+jeZGKSKD6SKKzZul7uEHh7FD3OkK
+X-Gm-Gg: AZuq6aLAr1dVLVGd+oLMt/YQkrdoQy+A5HndGo3W2UYyYaq3sLwokXkqkkdms9pXhfV
+	OGESxAsRfpvdmlnPkXeUyzeKJHPoyvuFP6ClFK5KcS4rsjYQ6yFtMz7TP5D3yuwwFfdihpVofPv
+	Z4o8sdyvrraKTgHFPSZzFMquM0gz22Ao34BKsJ7XlfohLF6FRjl7Yf4fN9PAMx7HCatnXxmHCbG
+	IJnySOuZMaiqCw1YpyfOpwGUzd0bR0r6+swdO9JZ30PUpefqbMiAIak9lXGkainoH8GrdBO95s6
+	78Mv4u9W9jCBRbmDb+HGHn3ujzMEjHcDSEYEOIVMvsAmu9qDAFFrqriyWooqjvU1M1vBR14pZnq
+	//rVgA3q+mWIo8WwTcpIx4Y4TKm/52+lEOnZ99T1WV/uqgfeo61F59R50nJzqMk4LQnJQ+pBMtG
+	/baxgHOj516UY3GPyTwFw7IXDJmoTlc327HK7sQ7I7JBDGo6ZCgA==
+X-Received: by 2002:a05:7300:1907:b0:2ba:a3f2:958c with SMTP id 5a478bee46e88-2baac4769bfmr331153eec.0.1770871889305;
+        Wed, 11 Feb 2026 20:51:29 -0800 (PST)
+Received: from jpkobryn-fedora-PF5CFKNC.lan ([73.222.117.172])
+        by smtp.gmail.com with ESMTPSA id 5a478bee46e88-2ba9daa6151sm2878699eec.0.2026.02.11.20.51.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 11 Feb 2026 20:51:29 -0800 (PST)
+From: JP Kobryn <inwardvessel@gmail.com>
+To: linux-mm@kvack.org
+Cc: apopple@nvidia.com,
+	akpm@linux-foundation.org,
+	axelrasmussen@google.com,
+	byungchul@sk.com,
+	cgroups@vger.kernel.org,
+	david@kernel.org,
+	eperezma@redhat.com,
+	gourry@gourry.net,
+	jasowang@redhat.com,
+	hannes@cmpxchg.org,
+	joshua.hahnjy@gmail.com,
+	Liam.Howlett@oracle.com,
+	linux-kernel@vger.kernel.org,
+	lorenzo.stoakes@oracle.com,
+	matthew.brost@intel.com,
+	mst@redhat.com,
+	mhocko@suse.com,
+	rppt@kernel.org,
+	muchun.song@linux.dev,
+	zhengqi.arch@bytedance.com,
+	rakie.kim@sk.com,
+	roman.gushchin@linux.dev,
+	shakeel.butt@linux.dev,
+	surenb@google.com,
+	virtualization@lists.linux.dev,
+	vbabka@suse.cz,
+	weixugc@google.com,
+	xuanzhuo@linux.alibaba.com,
+	ying.huang@linux.alibaba.com,
+	yuanchu@google.com,
+	ziy@nvidia.com,
+	kernel-team@meta.com
+Subject: [PATCH 0/2] improve per-node allocation and reclaim visibility
+Date: Wed, 11 Feb 2026 20:51:07 -0800
+Message-ID: <20260212045109.255391-1-inwardvessel@gmail.com>
+X-Mailer: git-send-email 2.53.0
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <7df681ae0f8254f09de0b8e258b909eaacafadf4@linux.dev>
-X-Migadu-Flow: FLOW_OUT
+Content-Transfer-Encoding: 8bit
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-2.16 / 15.00];
+X-Spamd-Result: default: False [0.84 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
+	MID_CONTAINS_FROM(1.00)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[linux.dev,none];
-	R_DKIM_ALLOW(-0.20)[linux.dev:s=key1];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_MISSING_CHARSET(0.50)[];
+	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_DKIM_ALLOW(-0.20)[gmail.com:s=20230601];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-13875-lists,cgroups=lfdr.de];
-	RCVD_TLS_LAST(0.00)[];
-	RCVD_COUNT_THREE(0.00)[3];
+	FREEMAIL_CC(0.00)[nvidia.com,linux-foundation.org,google.com,sk.com,vger.kernel.org,kernel.org,redhat.com,gourry.net,cmpxchg.org,gmail.com,oracle.com,intel.com,suse.com,linux.dev,bytedance.com,lists.linux.dev,suse.cz,linux.alibaba.com,meta.com];
+	TAGGED_FROM(0.00)[bounces-13876-lists,cgroups=lfdr.de];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	FREEMAIL_CC(0.00)[linux-foundation.org,cmpxchg.org,kernel.org,linux.dev,suse.cz,kvack.org,vger.kernel.org,meta.com,gmail.com,gentwo.org];
-	RCPT_COUNT_TWELVE(0.00)[15];
+	RCPT_COUNT_TWELVE(0.00)[33];
 	MIME_TRACE(0.00)[0:+];
-	FROM_HAS_DN(0.00)[];
+	RCVD_TLS_LAST(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	TO_DN_SOME(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[shakeel.butt@linux.dev,cgroups@vger.kernel.org];
-	DKIM_TRACE(0.00)[linux.dev:+];
-	MID_RHS_MATCH_FROM(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	FROM_NEQ_ENVFROM(0.00)[inwardvessel@gmail.com,cgroups@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	DKIM_TRACE(0.00)[gmail.com:+];
+	RCVD_COUNT_FIVE(0.00)[5];
 	TAGGED_RCPT(0.00)[cgroups];
-	MISSING_XM_UA(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[arm.com:url,linux.dev:mid,linux.dev:dkim,linux.dev:email,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 15844128FD2
+	TO_DN_NONE(0.00)[];
+	FREEMAIL_FROM(0.00)[gmail.com];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: 76A2212A541
 X-Rspamd-Action: no action
 
-+Yang Shi and Christoph Lameter
+We sometimes find ourselves in situations where reclaim kicks in, yet there
+is free memory available on the system. One possible explanation is that a
+NUMA node under pressure has triggered the reclaim. This NUMA imbalance
+scenario could be made easier to diagnose if we had better visibility.
 
-On Thu, Feb 05, 2026 at 05:58:44AM +0000, Shakeel Butt wrote:
-> > 
-> > On Thu, Feb 05, 2026 at 10:50:06AM +0530, Dev Jain wrote:
-> > 
-> > > 
-> > > On 05/02/26 2:08 am, Shakeel Butt wrote:
-> > >  On Mon, Feb 02, 2026 at 02:23:54PM +0530, Dev Jain wrote:
-> > >  On 02/02/26 10:24 am, Shakeel Butt wrote:
-> > >  Hello Shakeel,
-> > > 
-> > >  We are seeing a regression in micromm/munmap benchmark with this patch, on arm64 -
-> > >  the benchmark mmmaps a lot of memory, memsets it, and measures the time taken
-> > >  to munmap. Please see below if my understanding of this patch is correct.
-> > > 
-> > >  Thanks for the report. Are you seeing regression in just the benchmark
-> > >  or some real workload as well? Also how much regression are you seeing?
-> > >  I have a kernel rebot regression report [1] for this patch as well which
-> > >  says 2.6% regression and thus it was on the back-burner for now. I will
-> > >  take look at this again soon.
-> > > 
-> > >  The munmap regression is ~24%. Haven't observed a regression in any other
-> > >  benchmark yet.
-> > >  Please share the code/benchmark which shows such regression, also if you can
-> > >  share the perf profile, that would be awesome.
-> > >  https://gitlab.arm.com/tooling/fastpath/-/blob/main/containers/microbench/micromm.c
-> > >  You can run this with
-> > >  ./micromm 0 munmap 10
-> > > 
-> > >  Don't have a perf profile, I measured the time taken by above command, with and
-> > >  without the patch.
-> > > 
-> > >  Hi Dev, can you please try the following patch?
-> > > 
-> > >  From 40155feca7e7bc846800ab8449735bdb03164d6d Mon Sep 17 00:00:00 2001
-> > >  From: Shakeel Butt <shakeel.butt@linux.dev>
-> > >  Date: Wed, 4 Feb 2026 08:46:08 -0800
-> > >  Subject: [PATCH] vmstat: use preempt disable instead of try_cmpxchg
-> > > 
-> > >  Signed-off-by: Shakeel Butt <shakeel.butt@linux.dev>
-> > >  ---
-> > > 
-> > [...snip...]
-> > 
-> > > 
-> > > Thanks for looking into this.
-> > >  
-> > >  But this doesn't solve it :( preempt_disable() contains a compiler barrier,
-> > >  probably that's why.
-> > > 
-> > I think the reason why it doesn't solve the regression is because of how
-> > arm64 implements this_cpu_add_8() and this_cpu_try_cmpxchg_8().
-> > 
-> > On arm64, IIUC both this_cpu_try_cmpxchg_8() and this_cpu_add_8() are
-> > implemented using LL/SC instructions or LSE atomics (if supported).
-> > 
-> > See:
-> > - this_cpu_add_8()
-> >  -> __percpu_add_case_64
-> >  (which is generated from PERCPU_OP)
-> > 
-> > - this_cpu_try_cmpxchg_8()
-> >  -> __cpu_fallback_try_cmpxchg(..., this_cpu_cmpxchg_8)
-> >  -> this_cpu_cmpxchg_8()
-> >  -> cmpxchg_relaxed()
-> >  -> raw_cmpxchg_relaxed()
-> >  -> arch_cmpxchg_relaxed()
-> >  -> __cmpxchg_wrapper()
-> >  -> __cmpxchg_case_64()
-> >  -> __lse_ll_sc_body(_cmpxchg_case_64, ...)
-> > 
-> 
-> Oh so it is arm64 specific issue. I tested on x86-64 machine and it solves
-> the little regression it had before. So, on arm64 all this_cpu_ops i.e. without
-> double underscore, uses LL/SC instructions. 
-> 
-> Need more thought on this. 
->
+This series aims to provide that visibility by accounting for the cause and
+effect of the imbalance. First, the addition of new node stats allows for
+tracking of allocations done on a per-policy basis. If a node is under
+pressure, these stats can help reveal the cause of how it got there.
+Second, the stats associated with reclaim are changed from vm_event_item to
+node_stat_item. Having the pgsteal and pgscan counters tracked on a
+per-node basis reveals the effect of any pressure, and allows us to quickly
+narrow down the affected node(s).
 
-It seems like Yang Shi is looking into improving this_cpu_ops for arm64.
+JP Kobryn (2):
+  mm/mempolicy: track page allocations per mempolicy
+  mm: move pgscan and pgsteal to node stats
 
-https://lore.kernel.org/CAHbLzkpcN-T8MH6=W3jCxcFj1gVZp8fRqe231yzZT-rV_E_org@mail.gmail.com/
+ drivers/virtio/virtio_balloon.c |  8 ++++----
+ include/linux/mmzone.h          | 21 +++++++++++++++++++
+ include/linux/vm_event_item.h   | 12 -----------
+ mm/memcontrol.c                 | 36 ++++++++++++++++++---------------
+ mm/mempolicy.c                  | 30 +++++++++++++++++++++++++--
+ mm/vmscan.c                     | 32 +++++++++++------------------
+ mm/vmstat.c                     | 33 +++++++++++++++++++-----------
+ 7 files changed, 106 insertions(+), 66 deletions(-)
+
+-- 
+2.47.3
+
 
