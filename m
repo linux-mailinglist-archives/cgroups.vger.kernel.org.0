@@ -1,325 +1,171 @@
-Return-Path: <cgroups+bounces-13897-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-13898-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id EB6xAgfxjWlw8wAAu9opvQ
-	(envelope-from <cgroups+bounces-13897-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Thu, 12 Feb 2026 16:25:59 +0100
+	id YCzGB7IEjmlf+gAAu9opvQ
+	(envelope-from <cgroups+bounces-13898-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Thu, 12 Feb 2026 17:49:54 +0100
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5F72412EE61
-	for <lists+cgroups@lfdr.de>; Thu, 12 Feb 2026 16:25:58 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6ADD012F9FD
+	for <lists+cgroups@lfdr.de>; Thu, 12 Feb 2026 17:49:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id EEC7B308AFC7
-	for <lists+cgroups@lfdr.de>; Thu, 12 Feb 2026 15:24:13 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 6174B301D6B1
+	for <lists+cgroups@lfdr.de>; Thu, 12 Feb 2026 16:48:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5CB2B21B9E2;
-	Thu, 12 Feb 2026 15:24:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 69707337111;
+	Thu, 12 Feb 2026 16:48:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="Lytg6Qp9";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="4C9R0cYy";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="Lytg6Qp9";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="4C9R0cYy"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="UdSSXF9H"
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D8D961C3F0C
-	for <cgroups@vger.kernel.org>; Thu, 12 Feb 2026 15:24:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EEFE22E645
+	for <cgroups@vger.kernel.org>; Thu, 12 Feb 2026 16:48:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1770909852; cv=none; b=eZkABls5BfnwlfUxG2kyyZN8p7nDMdw6ZB5n0QJ9csJO2qUYK4ClERhOihtCT/+VhZ/TO+O6AlW+NOS/zaUAiZfGOLzKKfd8TK3zjTkxsjyIZol7HezALAEdJ/fImVnFXdUoOs1D13bKVCIq/gZCPYESC0YSwaSfpjSD9i+fEL4=
+	t=1770914887; cv=none; b=jlI4osxBTEf7vCX1JRE6wDsH41LwZ1eQcBOyyAKYqu0tsVgLhIuFiiBUCYOV2Ou4FgTztEidEUMgE2HCAhO1DtLYVVA5WRDYM+VbWpqm/FyH0lUUa/uzh5mMepivXeN3wp6xUar3EIFYfvNmokQOC3ClEG9Sd4yt8lTAHeLcJlk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1770909852; c=relaxed/simple;
-	bh=Zfbdjm3hLdSMHssQVniemRNbLholv/Lc92T/ow8RZKU=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Eb25c9yGc4L4jVYWken01JTQ2UobCooT2eQifYXdqN8OhiJpPTx8Avi6/dsBWx1RG4rCfxCnZjV51w/D5z3+MRs5d+hrOAbbcVaZ/cTmtVKO998psATLCmmUolwaxFbbiSgKOVdhCGbk34pkc/uVEULN5WxRi8SDY6e/+eVTzsI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=Lytg6Qp9; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=4C9R0cYy; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=Lytg6Qp9; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=4C9R0cYy; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	s=arc-20240116; t=1770914887; c=relaxed/simple;
+	bh=uwuysDv4Egm6HWkJcFBTn/BxyyKBdYqBBBP9D+4JqtU=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=gg680h+9SFH5m3MJgyzSrqYganxwPMdyq8AfRTD0Z3qG9U61qNv0++DfoJTgB/F9N5BzQXy74tt2zTrR5qi8b3d3sVz7b/bWesw4XrBfwEl6dS6w0K9JZWuAAs7z+G/X+pHLzLrz/VAUIKWoMqV7M6kq5m86YT62gQo2QmaX66c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=UdSSXF9H; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1770914885;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=Fv0QQ/LzpI3se0WIY5xcYuoXMkPUfDvoExJnqJMuXLA=;
+	b=UdSSXF9HvaaytDlrDYyy7n9hwtToNS6qlBjcW1rEc/aUkAksknl+Bmra9KG23dePT1unIH
+	zlaJl4z2pWnjUwqqS7Mq//uReIegiqnesp9RMV4rbYuj/CEkyRwkorONDol+EAdSyw3lxT
+	jDMC3SWpFS9NnfoyoL5i2wHleqVbwbk=
+Received: from mx-prod-mc-05.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-13-NtwfyrDXMBa8kZ1dcxoubA-1; Thu,
+ 12 Feb 2026 11:48:01 -0500
+X-MC-Unique: NtwfyrDXMBa8kZ1dcxoubA-1
+X-Mimecast-MFC-AGG-ID: NtwfyrDXMBa8kZ1dcxoubA_1770914879
+Received: from mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.111])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 20D905BDB6;
-	Thu, 12 Feb 2026 15:24:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1770909849; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=F4SLcQ4z8GXHuyKxamRQrFsRBxtsMZ9MpcvRbYRiuiA=;
-	b=Lytg6Qp9fMZWWfA68K6rS0nZ9tB6WIjlKhzihmPwAsKyRLUNufE6+vXl258+/L/nuGNOZH
-	78aldcGJAIFPKUG+7Uzj0Ta7yUYceS0fiVjxX08JE3G+X3v5v4TYJyB9HGfq1t0BZzeM7Z
-	k029c8F0mBtir5mOsrgONpZSDT7CRx0=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1770909849;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=F4SLcQ4z8GXHuyKxamRQrFsRBxtsMZ9MpcvRbYRiuiA=;
-	b=4C9R0cYywZzIR65rDSkiadbU1IYj33vAQw5u6/iQ6GolOz2eyv2lEEopqBUzsY14vfU//u
-	6xMMLyDPayt0OMDA==
-Authentication-Results: smtp-out2.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1770909849; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=F4SLcQ4z8GXHuyKxamRQrFsRBxtsMZ9MpcvRbYRiuiA=;
-	b=Lytg6Qp9fMZWWfA68K6rS0nZ9tB6WIjlKhzihmPwAsKyRLUNufE6+vXl258+/L/nuGNOZH
-	78aldcGJAIFPKUG+7Uzj0Ta7yUYceS0fiVjxX08JE3G+X3v5v4TYJyB9HGfq1t0BZzeM7Z
-	k029c8F0mBtir5mOsrgONpZSDT7CRx0=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1770909849;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=F4SLcQ4z8GXHuyKxamRQrFsRBxtsMZ9MpcvRbYRiuiA=;
-	b=4C9R0cYywZzIR65rDSkiadbU1IYj33vAQw5u6/iQ6GolOz2eyv2lEEopqBUzsY14vfU//u
-	6xMMLyDPayt0OMDA==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id B9C533EA62;
-	Thu, 12 Feb 2026 15:24:08 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id fhAMLZjwjWkeMQAAD6G6ig
-	(envelope-from <vbabka@suse.cz>); Thu, 12 Feb 2026 15:24:08 +0000
-Message-ID: <96b63efb-551f-4dd5-b4a2-ac67da577431@suse.cz>
-Date: Thu, 12 Feb 2026 16:24:08 +0100
+	by mx-prod-mc-05.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 1A69D19560AA;
+	Thu, 12 Feb 2026 16:47:59 +0000 (UTC)
+Received: from llong-thinkpadp16vgen1.westford.csb (unknown [10.22.80.194])
+	by mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id 2962918003F5;
+	Thu, 12 Feb 2026 16:47:55 +0000 (UTC)
+From: Waiman Long <longman@redhat.com>
+To: Chen Ridong <chenridong@huaweicloud.com>,
+	Tejun Heo <tj@kernel.org>,
+	Johannes Weiner <hannes@cmpxchg.org>,
+	=?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>,
+	Ingo Molnar <mingo@redhat.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Juri Lelli <juri.lelli@redhat.com>,
+	Vincent Guittot <vincent.guittot@linaro.org>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Ben Segall <bsegall@google.com>,
+	Mel Gorman <mgorman@suse.de>,
+	Valentin Schneider <vschneid@redhat.com>,
+	Anna-Maria Behnsen <anna-maria@linutronix.de>,
+	Frederic Weisbecker <frederic@kernel.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Shuah Khan <shuah@kernel.org>
+Cc: cgroups@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-kselftest@vger.kernel.org,
+	Waiman Long <longman@redhat.com>
+Subject: [PATCH v5 0/6] cgroup/cpuset: Fix partition related locking issues
+Date: Thu, 12 Feb 2026 11:46:34 -0500
+Message-ID: <20260212164640.2408295-1-longman@redhat.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/2] mm/mempolicy: track page allocations per mempolicy
-Content-Language: en-US
-To: JP Kobryn <inwardvessel@gmail.com>, linux-mm@kvack.org
-Cc: apopple@nvidia.com, akpm@linux-foundation.org, axelrasmussen@google.com,
- byungchul@sk.com, cgroups@vger.kernel.org, david@kernel.org,
- eperezma@redhat.com, gourry@gourry.net, jasowang@redhat.com,
- hannes@cmpxchg.org, joshua.hahnjy@gmail.com, Liam.Howlett@oracle.com,
- linux-kernel@vger.kernel.org, lorenzo.stoakes@oracle.com,
- matthew.brost@intel.com, mst@redhat.com, mhocko@suse.com, rppt@kernel.org,
- muchun.song@linux.dev, zhengqi.arch@bytedance.com, rakie.kim@sk.com,
- roman.gushchin@linux.dev, shakeel.butt@linux.dev, surenb@google.com,
- virtualization@lists.linux.dev, weixugc@google.com,
- xuanzhuo@linux.alibaba.com, ying.huang@linux.alibaba.com,
- yuanchu@google.com, ziy@nvidia.com, kernel-team@meta.com
-References: <20260212045109.255391-1-inwardvessel@gmail.com>
- <20260212045109.255391-2-inwardvessel@gmail.com>
-From: Vlastimil Babka <vbabka@suse.cz>
-Autocrypt: addr=vbabka@suse.cz; keydata=
- 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
- m6M14QORSWTLRg==
-In-Reply-To: <20260212045109.255391-2-inwardvessel@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Score: -2.80
-X-Spam-Level: 
-X-Spam-Flag: NO
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.4.1 on 10.30.177.111
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-0.16 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
+X-Spamd-Result: default: False [-0.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	MID_CONTAINS_FROM(1.00)[];
+	R_MISSING_CHARSET(0.50)[];
+	DMARC_POLICY_ALLOW(-0.50)[redhat.com,quarantine];
+	R_DKIM_ALLOW(-0.20)[redhat.com:s=mimecast20190719];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-13897-lists,cgroups=lfdr.de];
-	RCVD_TLS_LAST(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	FREEMAIL_TO(0.00)[gmail.com,kvack.org];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	DMARC_NA(0.00)[suse.cz];
-	RCPT_COUNT_TWELVE(0.00)[33];
+	TAGGED_FROM(0.00)[bounces-13898-lists,cgroups=lfdr.de];
+	RCPT_COUNT_TWELVE(0.00)[20];
 	MIME_TRACE(0.00)[0:+];
-	FREEMAIL_CC(0.00)[nvidia.com,linux-foundation.org,google.com,sk.com,vger.kernel.org,kernel.org,redhat.com,gourry.net,cmpxchg.org,gmail.com,oracle.com,intel.com,suse.com,linux.dev,bytedance.com,lists.linux.dev,linux.alibaba.com,meta.com];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	RCVD_TLS_LAST(0.00)[];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	DKIM_TRACE(0.00)[redhat.com:+];
+	MISSING_XM_UA(0.00)[];
 	TO_DN_SOME(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[6];
+	FROM_NEQ_ENVFROM(0.00)[longman@redhat.com,cgroups@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[vbabka@suse.cz,cgroups@vger.kernel.org];
-	DKIM_TRACE(0.00)[suse.cz:+];
-	MID_RHS_MATCH_FROM(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[cgroups];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:mid,suse.cz:dkim,cmpxchg.org:email]
-X-Rspamd-Queue-Id: 5F72412EE61
+	RCVD_COUNT_FIVE(0.00)[6];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,test-cpuset-prs.sh:url]
+X-Rspamd-Queue-Id: 6ADD012F9FD
 X-Rspamd-Action: no action
 
-On 2/12/26 05:51, JP Kobryn wrote:
-> It would be useful to see a breakdown of allocations to understand which
-> NUMA policies are driving them. For example, when investigating memory
-> pressure, having policy-specific counts could show that allocations were
-> bound to the affected node (via MPOL_BIND).
-> 
-> Add per-policy page allocation counters as new node stat items. These
-> counters can provide correlation between a mempolicy and pressure on a
-> given node.
-> 
-> Signed-off-by: JP Kobryn <inwardvessel@gmail.com>
-> Suggested-by: Johannes Weiner <hannes@cmpxchg.org>
+ v5:
+  - Reapply on top of the latest upstream linux tree.
+  - Add a new fix patch for a cpuset bug found during testing.
+  - Add a patch to not update isolated_cpus when calling from CPU
+    hotplug. As a result, CPU hotplug won't need to call
+    housekeeping_update() at all and the corresponding wq deferral
+    patch is dropped.
 
-Are the numa_{hit,miss,etc.} counters insufficient? Could they be extended
-in a way that would capture any missing important details? A counter per
-policy type seems exhaustive, but then on one hand it might be not important
-to distinguish beetween some of them, and on the other hand it doesn't track
-the nodemask anyway.
+ v4:
+  - https://lore.kernel.org/lkml/20260206203712.1989610-1-longman@redhat.com/
 
-> ---
->  include/linux/mmzone.h |  9 +++++++++
->  mm/mempolicy.c         | 30 ++++++++++++++++++++++++++++--
->  mm/vmstat.c            |  9 +++++++++
->  3 files changed, 46 insertions(+), 2 deletions(-)
-> 
-> diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
-> index fc5d6c88d2f0..762609d5f0af 100644
-> --- a/include/linux/mmzone.h
-> +++ b/include/linux/mmzone.h
-> @@ -255,6 +255,15 @@ enum node_stat_item {
->  	PGDEMOTE_DIRECT,
->  	PGDEMOTE_KHUGEPAGED,
->  	PGDEMOTE_PROACTIVE,
-> +#ifdef CONFIG_NUMA
-> +	PGALLOC_MPOL_DEFAULT,
-> +	PGALLOC_MPOL_PREFERRED,
-> +	PGALLOC_MPOL_BIND,
-> +	PGALLOC_MPOL_INTERLEAVE,
-> +	PGALLOC_MPOL_LOCAL,
-> +	PGALLOC_MPOL_PREFERRED_MANY,
-> +	PGALLOC_MPOL_WEIGHTED_INTERLEAVE,
-> +#endif
->  #ifdef CONFIG_HUGETLB_PAGE
->  	NR_HUGETLB,
->  #endif
-> diff --git a/mm/mempolicy.c b/mm/mempolicy.c
-> index 68a98ba57882..3c64784af761 100644
-> --- a/mm/mempolicy.c
-> +++ b/mm/mempolicy.c
-> @@ -217,6 +217,21 @@ static void reduce_interleave_weights(unsigned int *bw, u8 *new_iw)
->  		new_iw[nid] /= iw_gcd;
->  }
->  
-> +#define CHECK_MPOL_NODE_STAT_OFFSET(mpol) \
-> +	BUILD_BUG_ON(PGALLOC_##mpol - mpol != PGALLOC_MPOL_DEFAULT)
-> +
-> +static enum node_stat_item mpol_node_stat(unsigned short mode)
-> +{
-> +	CHECK_MPOL_NODE_STAT_OFFSET(MPOL_PREFERRED);
-> +	CHECK_MPOL_NODE_STAT_OFFSET(MPOL_BIND);
-> +	CHECK_MPOL_NODE_STAT_OFFSET(MPOL_INTERLEAVE);
-> +	CHECK_MPOL_NODE_STAT_OFFSET(MPOL_LOCAL);
-> +	CHECK_MPOL_NODE_STAT_OFFSET(MPOL_PREFERRED_MANY);
-> +	CHECK_MPOL_NODE_STAT_OFFSET(MPOL_WEIGHTED_INTERLEAVE);
-> +
-> +	return PGALLOC_MPOL_DEFAULT + mode;
-> +}
-> +
->  int mempolicy_set_node_perf(unsigned int node, struct access_coordinate *coords)
->  {
->  	struct weighted_interleave_state *new_wi_state, *old_wi_state = NULL;
-> @@ -2446,8 +2461,14 @@ static struct page *alloc_pages_mpol(gfp_t gfp, unsigned int order,
->  
->  	nodemask = policy_nodemask(gfp, pol, ilx, &nid);
->  
-> -	if (pol->mode == MPOL_PREFERRED_MANY)
-> -		return alloc_pages_preferred_many(gfp, order, nid, nodemask);
-> +	if (pol->mode == MPOL_PREFERRED_MANY) {
-> +		page = alloc_pages_preferred_many(gfp, order, nid, nodemask);
-> +		if (page)
-> +			__mod_node_page_state(page_pgdat(page),
-> +					mpol_node_stat(MPOL_PREFERRED_MANY), 1 << order);
-> +
-> +		return page;
-> +	}
->  
->  	if (IS_ENABLED(CONFIG_TRANSPARENT_HUGEPAGE) &&
->  	    /* filter "hugepage" allocation, unless from alloc_pages() */
-> @@ -2472,6 +2493,9 @@ static struct page *alloc_pages_mpol(gfp_t gfp, unsigned int order,
->  			page = __alloc_frozen_pages_noprof(
->  				gfp | __GFP_THISNODE | __GFP_NORETRY, order,
->  				nid, NULL);
-> +			if (page)
-> +				__mod_node_page_state(page_pgdat(page),
-> +						mpol_node_stat(pol->mode), 1 << order);
->  			if (page || !(gfp & __GFP_DIRECT_RECLAIM))
->  				return page;
->  			/*
-> @@ -2484,6 +2508,8 @@ static struct page *alloc_pages_mpol(gfp_t gfp, unsigned int order,
->  	}
->  
->  	page = __alloc_frozen_pages_noprof(gfp, order, nid, nodemask);
-> +	if (page)
-> +		__mod_node_page_state(page_pgdat(page), mpol_node_stat(pol->mode), 1 << order);
->  
->  	if (unlikely(pol->mode == MPOL_INTERLEAVE ||
->  		     pol->mode == MPOL_WEIGHTED_INTERLEAVE) && page) {
-> diff --git a/mm/vmstat.c b/mm/vmstat.c
-> index 65de88cdf40e..74e0ddde1e93 100644
-> --- a/mm/vmstat.c
-> +++ b/mm/vmstat.c
-> @@ -1291,6 +1291,15 @@ const char * const vmstat_text[] = {
->  	[I(PGDEMOTE_DIRECT)]			= "pgdemote_direct",
->  	[I(PGDEMOTE_KHUGEPAGED)]		= "pgdemote_khugepaged",
->  	[I(PGDEMOTE_PROACTIVE)]			= "pgdemote_proactive",
-> +#ifdef CONFIG_NUMA
-> +	[I(PGALLOC_MPOL_DEFAULT)]		= "pgalloc_mpol_default",
-> +	[I(PGALLOC_MPOL_PREFERRED)]		= "pgalloc_mpol_preferred",
-> +	[I(PGALLOC_MPOL_BIND)]			= "pgalloc_mpol_bind",
-> +	[I(PGALLOC_MPOL_INTERLEAVE)]		= "pgalloc_mpol_interleave",
-> +	[I(PGALLOC_MPOL_LOCAL)]			= "pgalloc_mpol_local",
-> +	[I(PGALLOC_MPOL_PREFERRED_MANY)]	= "pgalloc_mpol_preferred_many",
-> +	[I(PGALLOC_MPOL_WEIGHTED_INTERLEAVE)]	= "pgalloc_mpol_weighted_interleave",
-> +#endif
->  #ifdef CONFIG_HUGETLB_PAGE
->  	[I(NR_HUGETLB)]				= "nr_hugetlb",
->  #endif
+After booting the latest cgroup for-next debug kernel with the latest
+cgroup changes as well as Federic's "cpuset/isolation: Honour kthreads
+preferred affinity" patch series [1] merged on top and running the
+test-cpuset-prs.sh test, a circular locking dependency lockdep splat
+was reported. See patch 5 for details.
+
+To fix this issue, the cpuset code is modified to not doing any
+update to isolated_cpus when calling from CPU hotplug. In addition,
+the housekeeping_update() call, when needed, is deferred to task_work
+so that it can be called without holding a cpus_read_lock. A new top
+level cpuset_top_mutex is also added to have more exclusion control.
+
+With these changes in place, the cpuset test ran to completion with no
+failure and no lockdep splat.
+
+[1] https://lore.kernel.org/lkml/20260125224541.50226-1-frederic@kernel.org/
+
+Waiman Long (6):
+  cgroup/cpuset: Fix incorrect change to effective_xcpus in
+    partition_xcpus_del()
+  cgroup/cpuset: Clarify exclusion rules for cpuset internal variables
+  cgroup/cpuset: Set isolated_cpus_updating only if isolated_cpus is
+    changed
+  cgroup/cpuset: Don't update isolated_cpus from CPU hotplug
+  cgroup/cpuset: Call housekeeping_update() without holding
+    cpus_read_lock
+  cgroup/cpuset: Eliminate some duplicated rebuild_sched_domains() calls
+
+ kernel/cgroup/cpuset.c                        | 313 ++++++++++++++----
+ kernel/sched/isolation.c                      |   4 +-
+ kernel/time/timer_migration.c                 |   4 +-
+ .../selftests/cgroup/test_cpuset_prs.sh       |  21 +-
+ 4 files changed, 259 insertions(+), 83 deletions(-)
+
+-- 
+2.52.0
 
 
