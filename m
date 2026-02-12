@@ -1,181 +1,164 @@
-Return-Path: <cgroups+bounces-13893-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-13894-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id GNkBEuGqjWkK5wAAu9opvQ
-	(envelope-from <cgroups+bounces-13893-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Thu, 12 Feb 2026 11:26:41 +0100
+	id CNgZBp6wjWmz5wAAu9opvQ
+	(envelope-from <cgroups+bounces-13894-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Thu, 12 Feb 2026 11:51:10 +0100
 X-Original-To: lists+cgroups@lfdr.de
 Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6887812C773
-	for <lists+cgroups@lfdr.de>; Thu, 12 Feb 2026 11:26:40 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 3AA6F12CB4B
+	for <lists+cgroups@lfdr.de>; Thu, 12 Feb 2026 11:51:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id CFFF5300B458
-	for <lists+cgroups@lfdr.de>; Thu, 12 Feb 2026 10:26:37 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id B38DC300FEDF
+	for <lists+cgroups@lfdr.de>; Thu, 12 Feb 2026 10:51:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4E41F2DEA87;
-	Thu, 12 Feb 2026 10:26:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E937730BF6B;
+	Thu, 12 Feb 2026 10:50:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="XeviEHRC"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="YfI9AFzt"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com [209.85.128.51])
+Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com [209.85.128.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C43312DB797
-	for <cgroups@vger.kernel.org>; Thu, 12 Feb 2026 10:26:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 68D4B3016E9
+	for <cgroups@vger.kernel.org>; Thu, 12 Feb 2026 10:50:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1770891995; cv=none; b=TE3Y+oOgl8/kbU5f1xTebi3KOP/sJcNQdPIflJVxjRPWo1Fm9zfVqiSAGNNXJJNRKYacz0b6BuDOFFpEWbY8SpSdo6/DVsOFPfQaDOrVkOkIWBm7yJm4CiO1s50/Nltuk+dUVproZkDhJQzmesHI4WjDyhX04CzBUMcKIMEyS4c=
+	t=1770893456; cv=none; b=JuRE7BMrZT0Vwv18bKb4fqd5+s/dNemdcjdXMWSTLW1gWCPpbdFR47gHQxZH2K7vUlMQodfY3h3/pMZYhq+yQPUlPH1eokzf3XETsiH6fGMLZ0u54EjPAhjWfDbA76xtyBmx1cQOO/XZFRSwp01JjJjDCwL+NMuNAYJmFsF5qTI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1770891995; c=relaxed/simple;
-	bh=7lrT8ca/WW4Fm/idiqIKhyx8k+KZaFJexiXo1fc8v4A=;
+	s=arc-20240116; t=1770893456; c=relaxed/simple;
+	bh=RLuc4X4jAHTUGvP3HxaP9tCohxJ0RQD4k5ssP2M8cfw=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=nx7UKXeruOtN3BSFbae7kpUfoV74Hh5fs5/LBxRGb/CnTaf3yu/tUEwH+VTdeCiX8sxEmmHHccJqslvFgPNEfFmNSyHAV4O3fp0l5G18aLmy1VzIF7M+zOFn+CesvdrCqUgYCtXLZ3NC0R4WzwD8PFFFJvPbm24dvGlsCE5pAwA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=XeviEHRC; arc=none smtp.client-ip=209.85.128.51
+	 Content-Type:Content-Disposition:In-Reply-To; b=CWbCrHj208uw8mRxw/+nKowPZ0eIZopJxGrIy7VgSMv3Rafrd1HPFsA+5TbMRdcofOu/ogyD7MylDbjNPHCMAuAOMcXi9FkmQBhC9sW6ms1qDDFIVGGE5pcgiabRz9lPdoQbbAP6PAWJt75tbrw0bhqz52ZahSMAfvTK8EZmX4o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=YfI9AFzt; arc=none smtp.client-ip=209.85.128.46
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-wm1-f51.google.com with SMTP id 5b1f17b1804b1-47ee0291921so60532135e9.3
-        for <cgroups@vger.kernel.org>; Thu, 12 Feb 2026 02:26:33 -0800 (PST)
+Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-47edd9024b1so80391805e9.3
+        for <cgroups@vger.kernel.org>; Thu, 12 Feb 2026 02:50:53 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1770891992; x=1771496792; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=7lrT8ca/WW4Fm/idiqIKhyx8k+KZaFJexiXo1fc8v4A=;
-        b=XeviEHRC0jHKRw4rabMzgU0YH/t55Fsgv7e6WAZ/Dp723wmXcbRzIHabp2iXNCSwPE
-         VPLGQ/AWk7uwYdoCwomsRU3IYLaCjW4q1vMFhOA4ifIDBJvka6pN9Q62PKJr2EaQdN3S
-         xSHTi42hSU6XsLCvBcVzv2cesb2euWd+ymyMPPtkAFg02cQmDVVVj7YfyYGZlmHJILNt
-         +4TskdTs3Bj+qIgydhOw1oehc5Qdr3ZT657E0FbvtrQA4Dok9DLt/0AtSuQKmJpYnAnf
-         A36p5zlLYuX6CP154HSRmWrUXw+TU6hwk2hjaNIUKUlitla7nmmSDj/nFCNpyAYEiabU
-         xToA==
+        d=suse.com; s=google; t=1770893452; x=1771498252; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=RLuc4X4jAHTUGvP3HxaP9tCohxJ0RQD4k5ssP2M8cfw=;
+        b=YfI9AFztX66k9mhOtc1XbRZzh7C9LBUqhzazs+ok/HWpxdXeMUffvO7T8O6cjm6JmM
+         bJhQWVw8J0qk/lZnCWh7fuucfvan2W3Z9kHFt5czWxnNmt+0sZX8gFu5Sk+sn5i0lEvP
+         Vbx/OGdd187H1sTKiNFDxXMMhMC8AIktEuQPlUNaZr0za1V2ITX9AkODbco0y09dJZ3i
+         6ycPDCX1bLlwBnZnayVtemvOsxWKZJYcjRSSBeI7Ia1Q0dYRiRBH1CIPwSCQgGwD1Y6+
+         lmLXQdS1VQssDxWGitsV5qedrrqauNV6hVN+szzdEzKKvF415LMhdh7krmhmZliaADaY
+         8QUg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1770891992; x=1771496792;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=7lrT8ca/WW4Fm/idiqIKhyx8k+KZaFJexiXo1fc8v4A=;
-        b=T5q2CxbL0rI+H35IEr6VxyPFGSH+72qJ8o0/9MA+RmkPQfG8FmSJO7KmOYu0g7hlpg
-         WsICLWbGgk/CJPw5BIvyqfxKkszOBOjojMCwiBFDk7L7F1DbSbvuAC/OHSSd5RuTrnVz
-         V3gwaq8BAczPMNQOC39Kj8UAHLdrNC6sDPJqhW4LwxYFqtE3r7zQmbLpCwgVwNcxRXKi
-         9uR0vhkLPxrpivZLhbgNA4+xrr9smZhtBSu9f8mVocfs/wr6LoLhkqjSLGLp8rwGtG13
-         QAotktezCMrv7q3CRNAeYYQPnMNsHpSoBMO4VeZaZZ0uzGCUZ1W33ehbHJNk1Zf8ggdV
-         wsNQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWbRUOLWm6/G7APnwVliN/rQ5XcrDch8KZ8TH4hKooqwJhLB80TX1pG2IHFEL23xDdHvS+UAXfU@vger.kernel.org
-X-Gm-Message-State: AOJu0YyZw5J8fQVDbn0IHqmnkdzdln6zivBf8ZegXXieD7mV6ccrosvm
-	i/XcK2Y91Hoh7jDXy4s5+Fivg548sN3C9vPRySPyEv6bRZk/NAKmDUcqagN91tqqvUQ=
-X-Gm-Gg: AZuq6aKaSjKsgieHoHJhK7tIclTFVBH0Jbqu4e1tI9+PCigXbBbQL+ct7Sl2ZWP6Uzi
-	5MgUWXAX3CzrdRClR0xuH8QR6OF3lFkIUp+m0cToIvG+24SeMu3D4cIijK/z9QBcicUn8hj3VqQ
-	UoHKXvHeAUD8iEqb2Mw6vksCO/GR1OEQdB7ctqAAefG2+hU2HTOLF6PQLucYkrNPVWdvzZLkcAy
-	Bm9k1W8TSA079McruXhvysZyTDoXgx4zdVWfyJxBd0iuY0ualiPw9AXSVnhdIVRB5dQxo8gNutg
-	a43MhJT1JLzfxlq0WgPccUcVp+0P1+CfYhqHhYH3LZYL9w7CXzMSa3AelA9Nj5moQMgSMfM/YY2
-	9aqjD7dHBHMJQsqbi1m5xg+VsbsrtN01t7QNzBfE6NAfhhU6mFCzZUegeiLgqrT41Jfm7+D+/Zm
-	AL5Z8V288V4rPeoEKbLRS1RRVe1+ExuGZu4TD1Aj0gxno=
-X-Received: by 2002:a05:600c:c494:b0:475:de14:db1e with SMTP id 5b1f17b1804b1-4836570e54cmr32039815e9.24.1770891992143;
-        Thu, 12 Feb 2026 02:26:32 -0800 (PST)
+        d=1e100.net; s=20230601; t=1770893452; x=1771498252;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:x-gm-gg
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=RLuc4X4jAHTUGvP3HxaP9tCohxJ0RQD4k5ssP2M8cfw=;
+        b=a1OblZX4KZWNwosx9KGKgjrHq/2chxSL317eTfSLNzW4posSYRUF4jqPulT0pRDuHE
+         pyDdHLMSAHQQsCQNifc9Be3yujQd7gRFTBJm9k9ilKcLS/p9+2x0NsnBMFgR6WtrYM5n
+         1jPYAW/rUExxBdgR/EYIm83exYPQdawcn4wbGiQigrI/LC0VMVT+lbiGwQuRQo2PARul
+         AHod1QbZ4Ed7o9ZqS14rd2K8DRIiSL9+ZQuXyZr/tB/Y5eVqMGfVU7BYb5badME4jEGe
+         yUNgAxvDTIVe0SdliZTtOWdFrzp0ryFjG324vMh5gtEbdrMnvUzKJQhira2InmCo3X/G
+         ETeA==
+X-Forwarded-Encrypted: i=1; AJvYcCW6F5Ov4P0M7/5s/kfvrvl74rHhZju4/zdgCgoi+3GvNDF8UJdpPHaGC046T/Q+f5GSdoB5OY9C@vger.kernel.org
+X-Gm-Message-State: AOJu0YyvSwxGs9z6ipkK5/+Rhpy+LtzLsZTuTAS/zJwmf/0dtY/nFYH3
+	gNV7b6UGjP8J0HAmunT+SVpHwI6CM9qxLWNigRqc3tzhUa3vIUKQO3P+twzd5fRWWAk=
+X-Gm-Gg: AZuq6aIE/vYUaQIlk0FAbKO21LfOQl7Gdr4E0GjZ3gzdgIMJNYDV3MwBzTDO2UpVMpN
+	S5+dN79z8I1QOqqVtk87g2wh4NwB/eX9YKLhAYcWBiPoyiSlpyWPWWD0tFLRbQc9xK+l2ubCOw5
+	5HnWJTGin676rILKainSd+sIkCMs8X7nEr+9/gBiM1o1+EJz6BgkqGbMNvkRvV+W5gMyCNP7+m1
+	UGjG0/vDB+6cGZrk7tQ3eQYdxjm+42M1zBYrWnSsAmhYTZMuXOH9Ue9ewyGiHF68AyQcC+A8mXp
+	aEUQNpxySdiZvS7tr7ywNi9eggbxzctTVyqXFuCuqCWb1hmMUja8scIPcL28J6bNloCv8HhmE0X
+	x6YpjJhbk9JOzaYHOTITPGKGv761kPSoG7NWaPyXug4UPtZTVhmL7ulvKmy7YI7ZZ6NzQ55Wvwb
+	IcPDHB63bpIAN/JSxLqvnsH8yUmUV7sI6GVIsCoge27F4=
+X-Received: by 2002:a05:600c:4f86:b0:483:4807:20fb with SMTP id 5b1f17b1804b1-483657166c8mr35745415e9.25.1770893451705;
+        Thu, 12 Feb 2026 02:50:51 -0800 (PST)
 Received: from blackdock.suse.cz (nat2.prg.suse.com. [195.250.132.146])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-4378e72c203sm4467424f8f.2.2026.02.12.02.26.30
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4835a62baa9sm42074575e9.4.2026.02.12.02.50.50
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Feb 2026 02:26:31 -0800 (PST)
-Date: Thu, 12 Feb 2026 11:26:29 +0100
+        Thu, 12 Feb 2026 02:50:51 -0800 (PST)
+Date: Thu, 12 Feb 2026 11:50:49 +0100
 From: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
-To: Breno Leitao <leitao@debian.org>
-Cc: Jens Axboe <axboe@kernel.dk>, Tejun Heo <tj@kernel.org>, 
-	Josef Bacik <josef@toxicpanda.com>, linux-block@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	cgroups@vger.kernel.org, thevlad@meta.com, kernel-team@meta.com
-Subject: Re: [PATCH] blk-cgroup: add CONFIG_BLK_CGROUP_DEBUG_STATS option
-Message-ID: <jf2bkbvk3h5j3mqfldu66egbvbeq62mzdenuimpgn7d4tfkrpx@b2s6zzdgmgyh>
-References: <20260204-blk_cgroup_debug_stats-v1-1-09c0754b4242@debian.org>
+To: zhaoqingye <zhaoqingye@honor.com>
+Cc: Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>, 
+	"cgroups@vger.kernel.org" <cgroups@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] cgroup: fix race between task migration and iteration
+Message-ID: <odm7lzxcekzrfqcb6lzh7uof4nnyc23qzd5ltkbo56ajrw53pr@2k7boeaofuqh>
+References: <8092ea7ae48d4a988fdcb7390e1be0b1@honor.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="ndpqitjmtn3vcpwo"
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20260204-blk_cgroup_debug_stats-v1-1-09c0754b4242@debian.org>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <8092ea7ae48d4a988fdcb7390e1be0b1@honor.com>
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-3.76 / 15.00];
-	SIGNED_PGP(-2.00)[];
+X-Spamd-Result: default: False [-1.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	MID_RHS_NOT_FQDN(0.50)[];
 	DMARC_POLICY_ALLOW(-0.50)[suse.com,quarantine];
 	R_DKIM_ALLOW(-0.20)[suse.com:s=google];
 	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
-	MIME_GOOD(-0.20)[multipart/signed,text/plain];
 	MAILLIST(-0.15)[generic];
+	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	MIME_TRACE(0.00)[0:+,1:+,2:~];
-	DKIM_TRACE(0.00)[suse.com:+];
-	TAGGED_FROM(0.00)[bounces-13893-lists,cgroups=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
+	TO_DN_EQ_ADDR_SOME(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	TAGGED_FROM(0.00)[bounces-13894-lists,cgroups=lfdr.de];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	TO_DN_SOME(0.00)[];
 	FROM_HAS_DN(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
+	MISSING_XM_UA(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	RCVD_COUNT_FIVE(0.00)[5];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[mkoutny@suse.com,cgroups@vger.kernel.org];
-	MISSING_XM_UA(0.00)[];
-	RCPT_COUNT_SEVEN(0.00)[9];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DKIM_TRACE(0.00)[suse.com:+];
 	TAGGED_RCPT(0.00)[cgroups];
-	TO_DN_SOME(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns,suse.com:dkim]
-X-Rspamd-Queue-Id: 6887812C773
+	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	RCPT_COUNT_FIVE(0.00)[5];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,suse.com:dkim,sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: 3AA6F12CB4B
 X-Rspamd-Action: no action
 
+Hi Qingye.
 
---ndpqitjmtn3vcpwo
-Content-Type: text/plain; protected-headers=v1; charset=us-ascii
-Content-Disposition: inline
-Subject: Re: [PATCH] blk-cgroup: add CONFIG_BLK_CGROUP_DEBUG_STATS option
-MIME-Version: 1.0
+On Wed, Feb 11, 2026 at 09:24:04AM +0000, zhaoqingye <zhaoqingye@honor.com> wrote:
+...
+> Under this setup, cgroup.procs can intermittently show only PID 101
+> while skipping PID 103. Once the migration completes, reading the
+> file again shows all tasks as expected.
 
-Hello Breno.
+Yup, such a skip is buggy -- at places when task is removed from
+task->cg_list's list, the iterators should be skipped.
 
-On Wed, Feb 04, 2026 at 08:15:12AM -0800, Breno Leitao <leitao@debian.org> wrote:
-> Add a Kconfig option to enable blkcg_debug_stats by default at compile
-> time. When CONFIG_BLK_CGROUP_DEBUG_STATS is enabled, additional debugging
-> information is shown in the cgroup io.stat file, including cost.wait,
-> cost.indebt, and cost.indelay for iocost, as well as latency statistics
-> for iolatency.
 
-This seems to be toggleable quite easily anytime at runtime (not sysctl
-but modprobe config), not a boot cmdline where CONFIG_ default could
-step in.
+> Note that this change does not allow removing the existing
+> css_set_skip_task_iters() call in css_set_move_task().
 
-This only guards printing of already collected stats (sometimes even
-without kernel consumers), not sure if it's that useful.
+Sure, css_set_move_task() isn't called together with
+cgroup_migrate_add_task() under one css_set_lock.
 
-blk-cgroup isn't modularized since 32e380aedc3de ("blkcg: make
-CONFIG_BLK_CGROUP bool") v3.5-rc1~42^2~92 exposing it like a module
-parameter is historical artifact.
 
-So I'd dare to propose removing it altogether and print those stats
-everytime. Readers of the nested-keys format should survive that.
-(I don't even see the param documented.)
+> The race window between migration and iteration is very small, and
+> css_task_iter is not on a hot path. In the worst case, when an
+> iterator is positioned on the first thread of the migrating process,
+> cgroup_migrate_add_task() may have to skip multiple tasks via
+> css_set_skip_task_iters().
 
-And if there were eager readers that'd be affected performance-wise,
-more conventional would be to make this only boot cmdline parameter that
-could static-branch also the stat collection spots (for some more
-benefit). And then would also a CONFIG_urable default make sense.
+Only when it->task_pos == &task->cg_list (in css_task_iter_skip()).
 
-WDYT?
+> However, this only happens when migration and iteration actually race,
+> so the performance impact is negligible compared to the correctness
+> fix provided here.
 
-Michal
+Of course, correctness > performance in these discrete cases.
 
---ndpqitjmtn3vcpwo
-Content-Type: application/pgp-signature; name="signature.asc"
+This is a good catch, well described and correction is OK.
 
------BEGIN PGP SIGNATURE-----
-
-iJEEABYKADkWIQRCE24Fn/AcRjnLivR+PQLnlNv4CAUCaY2q0BsUgAAAAAAEAA5t
-YW51MiwyLjUrMS4xMSwyLDIACgkQfj0C55Tb+Ag0eAEA11t6G6sXuJd5qgGckJt+
-kYrhlMR5UyfYWqtl83O1icQBAIls9699cgxyP41vPeyz0q1GPr+XgPvxnly87RCO
-ticG
-=bajm
------END PGP SIGNATURE-----
-
---ndpqitjmtn3vcpwo--
+Reviewed-by: Michal Koutný <mkoutny@suse.com>
 
