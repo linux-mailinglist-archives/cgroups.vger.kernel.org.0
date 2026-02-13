@@ -1,275 +1,161 @@
-Return-Path: <cgroups+bounces-13922-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-13923-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id kD5tI0dNjmkaBgEAu9opvQ
-	(envelope-from <cgroups+bounces-13922-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Thu, 12 Feb 2026 22:59:35 +0100
+	id cDW3NAJtjmnuCAEAu9opvQ
+	(envelope-from <cgroups+bounces-13923-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Fri, 13 Feb 2026 01:14:58 +0100
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
-	by mail.lfdr.de (Postfix) with ESMTPS id C0BAA1316BA
-	for <lists+cgroups@lfdr.de>; Thu, 12 Feb 2026 22:59:34 +0100 (CET)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7AD38131F1F
+	for <lists+cgroups@lfdr.de>; Fri, 13 Feb 2026 01:14:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id 1A3BB303BDA6
-	for <lists+cgroups@lfdr.de>; Thu, 12 Feb 2026 21:58:52 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id E4F003018C29
+	for <lists+cgroups@lfdr.de>; Fri, 13 Feb 2026 00:14:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 78FF535EDDC;
-	Thu, 12 Feb 2026 21:58:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E10D481B1;
+	Fri, 13 Feb 2026 00:14:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="cwnua99f"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZjI057fn"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-pj1-f74.google.com (mail-pj1-f74.google.com [209.85.216.74])
+Received: from mail-dl1-f43.google.com (mail-dl1-f43.google.com [74.125.82.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C1F5A35DD1B
-	for <cgroups@vger.kernel.org>; Thu, 12 Feb 2026 21:58:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.74
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8342646B5
+	for <cgroups@vger.kernel.org>; Fri, 13 Feb 2026 00:14:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.82.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1770933521; cv=none; b=sJIFJiCTZrvzJ35jw1CTewjMoon8s8ctI5UwCsTho6dLi4GI8/IovVrj6B9fNPvmey+++wYpvrt4Uf8vN1GWQE0FBNLZ5muRi5yRkSGQO5m6ZrRPsy/GzGPU0s7Tf1hst4ukWx2K4bCe8gY+0XUdn5LEj1UbnYc/0CpsOF6alUE=
+	t=1770941693; cv=none; b=ShiQBeElAjE2Cu4++MfpCRvbvrbwYSL2oYCR3bkQ/voFgaw/aDN+LWkqeLc1d53AwqK5JwN5xmbphO532Ijh4lXQ48WygcpXdvgfmG5vMMVuwhSBqJ2Yl6exqQ9Vsi4FJel4UXOi5g4NGNCjLh0WABF5T6rMOHt34I+sbhNfWPA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1770933521; c=relaxed/simple;
-	bh=ezbBm/Tq1NbOZNYchfM5BrbiYJXHM46rp75jJpESgIM=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=YoHnVMy+i2g1ujpH2MXu+KqRDwOFyUMWxf2KUK3+Y8jed2yn2uLvpZqXg7lPWtT6C1PU4h3HLGB+7M0MVxCuuqQNRH6UgjqVVDN6AQB0w7W8pFSkbAb4AYpctkhW15315Gp2CH+LdnDph95yixPL7GjGSkE8h9B3Y5ZXaQOXy8s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--tjmercier.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=cwnua99f; arc=none smtp.client-ip=209.85.216.74
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--tjmercier.bounces.google.com
-Received: by mail-pj1-f74.google.com with SMTP id 98e67ed59e1d1-354c0234c1fso260514a91.2
-        for <cgroups@vger.kernel.org>; Thu, 12 Feb 2026 13:58:38 -0800 (PST)
+	s=arc-20240116; t=1770941693; c=relaxed/simple;
+	bh=m2a6CuMCos/13elBxE7xrPOeupdB2O8QuOfKeNHD2Rk=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=nnf0EWfUy0hghEV+kV0O/otbYdkykYxPT/xs6jNVs196Ei3Kbl0jtmnRXyj5THtheJvZFzlKfPi4FKabARi7tLOP+nK+DUzSOTwyBy5BxYjxuTpaC4jO6BLy+YUC8S9HkS1FnhGerPLdOYekV8+m3rNXUFAHBHQpwFDFA7zd+nc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ZjI057fn; arc=none smtp.client-ip=74.125.82.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-dl1-f43.google.com with SMTP id a92af1059eb24-12732e6a123so1298967c88.1
+        for <cgroups@vger.kernel.org>; Thu, 12 Feb 2026 16:14:51 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1770933518; x=1771538318; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=/49beE9xrDbjk2PTkq3bWwQqpKtfvuvBtaf8t9tZ8yg=;
-        b=cwnua99fB0+vvZARrjQFt2miVg+prGDbN9oZs8jB2HxK+GLIItGcsZ8RhBu0tPl5Ks
-         FwIjMBKXn6hfVVGCPeSN4XD4fBLobGDf+RXFLP9RyiD6hH+eQWCAZXWWPJYge0aCUHN0
-         mVwaUY/03pV5wEs7VH7a4him0RbU2HiSifwQOszre/RrgNqXXsI0Hvu0b8wLkQRvON9a
-         jE1v3Ar8l2WQdbFahdVVRJwuiSR3quYjEz/GgfxXoB0vcpz6tA1M/3B6Oq4bp1BMK4I9
-         4yjZZxZc1tsLwWEZLNtv4o553Wa6kjv3pXWWXb8uzmKPKoGQpN+MBaT5/9vdrofO4EpN
-         yrIg==
+        d=gmail.com; s=20230601; t=1770941691; x=1771546491; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:to:subject:user-agent:mime-version:date:message-id:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=IZOOjMHRTBJzKVIedfGL7gf236fJildms0DgDpjegcI=;
+        b=ZjI057fn6h9yR2vnjUPjY/WBMFRNYjcB0lvj0WYarA4n5O8S0CUIPG3pMALzhbnmYh
+         Sqzut951tUjbWUZk9dc02lmbBJx0XNiwLMiMoAZB51aCOnSN+1XmmZlEXCbvBZs8POZJ
+         EYtlvQvTOuy5A8kFDIf5L68JoRhlejB/UL4hj7s7BLIvvIddePoDe68yomwbwuq5Z+ji
+         Mqc9q7U7VWFYjELWCOv4RBPlWtUOuSkvds2xHY1mSu3JyFv6yaI6kQgxTkG2AqoWSfUZ
+         MPp34XsQrBIy1v49tNXMl4AnnRBlT0cJKE5zy0AFTQIWfIfdmcHVO9qfHrPrScZ9svLv
+         gDqA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1770933518; x=1771538318;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=/49beE9xrDbjk2PTkq3bWwQqpKtfvuvBtaf8t9tZ8yg=;
-        b=ucIzgEId7Nndesu7dqTfZ/q+6TKFUra0zytQdySxJ53sh0SngAMkIltEJ/SBgmE0fi
-         xeATEaeeb+HxxAw2G7Uy1/dwGW4rf4kyDsBOw5+1Ac0E1k8QlBqucoECRqtjiR6bFEbN
-         Z9ipG0xN7l9axUiaUhdxMZBkUckaaXjCNke4Yj6N//SFnaH/sVif6Sh9MEiApPq0w59D
-         kMwZP+XKdwmQyScA0B2zfEysFGCw+d4xPMO/gSxX8twx8jLnPp9AhTKKVYKB6lo0NwqN
-         ZhvwnNYY8Fo89W4Kpsz+E0djWSgY300cbPMjxenjfuQR2xM5kuk5wj4IWRMTvUge2gLi
-         bfTA==
-X-Forwarded-Encrypted: i=1; AJvYcCV60icKPNcqJ+MEwE2GCCBi+MZ4DRNt6t66I0AG5uigadPIucdsALsgX7x8vOITIV+xm0dbAA1C@vger.kernel.org
-X-Gm-Message-State: AOJu0YwWjN7ds3TJHuuiwtMmDg/pq9yzhIgnQp/2EMhtVxzwTUP5Xm+T
-	5hf0JgX4z+I83iNWCAWSxQn1/zhVkZVexEdD4xdIj518gBdsKdc3SmDvtu9awtZQBjLO/gFJxGn
-	+6WniYYp+M2yK6n8Ujw==
-X-Received: from pjbqx6.prod.google.com ([2002:a17:90b:3e46:b0:354:c41d:dd42])
- (user=tjmercier job=prod-delivery.src-stubby-dispatcher) by
- 2002:a17:90b:544e:b0:356:268e:ff97 with SMTP id 98e67ed59e1d1-356a792ab7fmr512870a91.20.1770933517978;
- Thu, 12 Feb 2026 13:58:37 -0800 (PST)
-Date: Thu, 12 Feb 2026 13:58:14 -0800
-In-Reply-To: <20260212215814.629709-1-tjmercier@google.com>
+        d=1e100.net; s=20230601; t=1770941691; x=1771546491;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=IZOOjMHRTBJzKVIedfGL7gf236fJildms0DgDpjegcI=;
+        b=eRiH811zWS4LRtONHRNwVBAZRkMUaPiIsk0FUrvoXbq3Nc0J53TqGM5Z9tjSwkEdQu
+         ja9VUNnzuumyg8Y6KaaZ+HHv9V+CGr6CwcUeF3Hn1piWNaV1g3v0cFq9wOGJE0GnD2UC
+         /k//Ggiu10R7kjlGmfOUtM/85N7Dh2rbf6f4QvpysQdqJNI0JnoodUEsVTPEZYCeFb6V
+         TC4A3iZP+J+EfKYBd3OW3gxdD6iyira37MOnfpav0J+ZFi7UhSAWveKGx7haSamRxUXd
+         cRiNQn9L8c+p3JxyvsO8eQGDrIdozseUi5YFHCaeHVKINwqM4zs+0H2cHLpWznP91OyW
+         sOEA==
+X-Forwarded-Encrypted: i=1; AJvYcCUm1L5nldcADUBBHf22iuT61CFQ/2qO5NE+Z5O6Q/g0iY2oRqy9RW933ledLuqOVN6uGaiMLMkx@vger.kernel.org
+X-Gm-Message-State: AOJu0YxBwLWYPjcoC2cvQCuBuDu+DE6euUNWIvgH+rYqzI3Bxe4KdkIL
+	IruNvlyXxz00QNzw3N5HgbMsYYvOQ3ucfs7xcVYHIPjCo4lcsyeTbw6x
+X-Gm-Gg: AZuq6aLc55Zfcs01xjZcgTkRBRXsxhgBVh7+DFvWx06549M4jlzt31HAv7hYnjPFN5S
+	MOfAHIrYGOca15/5nxkRcjSpo0avS/YbaqxdpGQDonfaugdHfZtiFHF0GZUo9CilWzzP1a0igW/
+	KHcKy3wDnkeRLzyznxDXCxoj+AWJBMqZJl8ZW5fXGHkoKDyrk37rS6sdg8YpXxu6/OdYXgujjQp
+	AtYEwa9o1KhfRAUpf1Nx8C0n9d2NN+fNVGmjZrLiXO4k4QCO6cDW04HtNnBvgLyNkNEMyEnMDQ0
+	M9Chjp0v62qgO67OSjEky82YFp+xm3M6dHDFPJMYtu5tKHthiLHN8OrO8MOjQs3XTYU82Zo9+Eu
+	Uu0EM6LTWX5UEsrc+qjaxm8DafFNF4QU43mifqF9YoLO2TuCSRe4AO6rpdP+URxotKFkjiVW0zu
+	OaPynnWfQhgwPD7/FvckUSDkNJsb7oK4lF
+X-Received: by 2002:a05:7022:690:b0:11b:7824:5c97 with SMTP id a92af1059eb24-12739846637mr323128c88.40.1770941690599;
+        Thu, 12 Feb 2026 16:14:50 -0800 (PST)
+Received: from [192.168.4.196] ([73.222.117.172])
+        by smtp.gmail.com with ESMTPSA id a92af1059eb24-1272a636095sm6909624c88.0.2026.02.12.16.14.49
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Thu, 12 Feb 2026 16:14:50 -0800 (PST)
+Message-ID: <e49fc187-0ef8-4557-abac-0082653fa645@gmail.com>
+Date: Thu, 12 Feb 2026 16:14:48 -0800
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20260212215814.629709-1-tjmercier@google.com>
-X-Mailer: git-send-email 2.53.0.273.g2a3d683680-goog
-Message-ID: <20260212215814.629709-4-tjmercier@google.com>
-Subject: [PATCH v2 3/3] selftests: memcg: Add tests IN_DELETE_SELF and
- IN_IGNORED on memory.events
-From: "T.J. Mercier" <tjmercier@google.com>
-To: gregkh@linuxfoundation.org, tj@kernel.org, driver-core@lists.linux.dev, 
-	linux-kernel@vger.kernel.org, cgroups@vger.kernel.org, shuah@kernel.org, 
-	linux-kselftest@vger.kernel.org
-Cc: "T.J. Mercier" <tjmercier@google.com>
-Content-Type: text/plain; charset="UTF-8"
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH bpf-next 1/3] selftests/bpf: Check
+ bpf_mem_cgroup_page_state return value
+To: Hui Zhu <hui.zhu@linux.dev>, Johannes Weiner <hannes@cmpxchg.org>,
+ Michal Hocko <mhocko@kernel.org>, Roman Gushchin <roman.gushchin@linux.dev>,
+ Shakeel Butt <shakeel.butt@linux.dev>, Muchun Song <muchun.song@linux.dev>,
+ Andrew Morton <akpm@linux-foundation.org>,
+ Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
+ Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau
+ <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>,
+ Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>,
+ John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
+ Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
+ Jiri Olsa <jolsa@kernel.org>, Shuah Khan <shuah@kernel.org>,
+ Hui Zhu <zhuhui@kylinos.cn>, cgroups@vger.kernel.org, linux-mm@kvack.org,
+ linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
+ linux-kselftest@vger.kernel.org
+References: <cover.1770883926.git.zhuhui@kylinos.cn>
+ <042df9438d9e78bcd66f1fa0e7043b9ea8cda96c.1770883926.git.zhuhui@kylinos.cn>
+Content-Language: en-US
+From: JP Kobryn <inwardvessel@gmail.com>
+In-Reply-To: <042df9438d9e78bcd66f1fa0e7043b9ea8cda96c.1770883926.git.zhuhui@kylinos.cn>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-0.66 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_CONTAINS_FROM(1.00)[];
-	MV_CASE(0.50)[];
-	DMARC_POLICY_ALLOW(-0.50)[google.com,reject];
-	R_DKIM_ALLOW(-0.20)[google.com:s=20230601];
-	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
+	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
+	R_DKIM_ALLOW(-0.20)[gmail.com:s=20230601];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-13922-lists,cgroups=lfdr.de];
-	RCVD_COUNT_THREE(0.00)[4];
-	MIME_TRACE(0.00)[0:+];
+	TAGGED_FROM(0.00)[bounces-13923-lists,cgroups=lfdr.de];
 	FORGED_SENDER_MAILLIST(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	FREEMAIL_TO(0.00)[linux.dev,cmpxchg.org,kernel.org,linux-foundation.org,iogearbox.net,gmail.com,fomichev.me,google.com,kylinos.cn,vger.kernel.org,kvack.org];
+	FREEMAIL_FROM(0.00)[gmail.com];
+	RCPT_COUNT_TWELVE(0.00)[26];
 	FROM_HAS_DN(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[tjmercier@google.com,cgroups@vger.kernel.org];
-	DKIM_TRACE(0.00)[google.com:+];
-	RCPT_COUNT_SEVEN(0.00)[8];
 	TO_DN_SOME(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[5];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[inwardvessel@gmail.com,cgroups@vger.kernel.org];
+	DKIM_TRACE(0.00)[gmail.com:+];
+	MID_RHS_MATCH_FROM(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[cgroups];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: C0BAA1316BA
+	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: 7AD38131F1F
 X-Rspamd-Action: no action
 
-Add two new tests that verify inotify events are sent when memcg files
-are removed.
+On 2/12/26 12:23 AM, Hui Zhu wrote:
+> From: Hui Zhu <zhuhui@kylinos.cn>
+> 
+> When back-porting test_progs to different kernel versions, I encountered
+> an issue where the test_cgroup_iter_memcg test would falsely pass even
+> when bpf_mem_cgroup_page_state() failed.
+> 
+> The problem occurs when test_progs compiled on one kernel version is
+> executed on another kernel with different enum values for memory
+> statistics (e.g., NR_ANON_MAPPED, NR_FILE_PAGES). [...]
 
-Signed-off-by: T.J. Mercier <tjmercier@google.com>
----
- .../selftests/cgroup/test_memcontrol.c        | 122 ++++++++++++++++++
- 1 file changed, 122 insertions(+)
-
-diff --git a/tools/testing/selftests/cgroup/test_memcontrol.c b/tools/testing/selftests/cgroup/test_memcontrol.c
-index 4e1647568c5b..be0e78809494 100644
---- a/tools/testing/selftests/cgroup/test_memcontrol.c
-+++ b/tools/testing/selftests/cgroup/test_memcontrol.c
-@@ -10,6 +10,7 @@
- #include <sys/stat.h>
- #include <sys/types.h>
- #include <unistd.h>
-+#include <sys/inotify.h>
- #include <sys/socket.h>
- #include <sys/wait.h>
- #include <arpa/inet.h>
-@@ -1625,6 +1626,125 @@ static int test_memcg_oom_group_score_events(const char *root)
- 	return ret;
- }
- 
-+static int read_event(int inotify_fd, int expected_event, int expected_wd)
-+{
-+	struct inotify_event event;
-+	ssize_t len = 0;
-+
-+	len = read(inotify_fd, &event, sizeof(event));
-+	if (len < (ssize_t)sizeof(event))
-+		return -1;
-+
-+	if (event.mask != expected_event || event.wd != expected_wd) {
-+		fprintf(stderr,
-+			"event does not match expected values: mask %d (expected %d) wd %d (expected %d)\n",
-+			event.mask, expected_event, event.wd, expected_wd);
-+		return -1;
-+	}
-+
-+	return 0;
-+}
-+
-+static int test_memcg_inotify_delete_file(const char *root)
-+{
-+	int ret = KSFT_FAIL;
-+	char *memcg, *child_memcg;
-+	int fd, wd;
-+
-+	memcg = cg_name(root, "memcg_test_0");
-+
-+	if (!memcg)
-+		goto cleanup;
-+
-+	if (cg_create(memcg))
-+		goto cleanup;
-+
-+	if (cg_write(memcg, "cgroup.subtree_control", "+memory"))
-+		goto cleanup;
-+
-+	child_memcg = cg_name(memcg, "child");
-+	if (!child_memcg)
-+		goto cleanup;
-+
-+	if (cg_create(child_memcg))
-+		goto cleanup;
-+
-+	fd = inotify_init1(0);
-+	if (fd == -1)
-+		goto cleanup;
-+
-+	wd = inotify_add_watch(fd, cg_control(child_memcg, "memory.events"), IN_DELETE_SELF);
-+	if (wd == -1)
-+		goto cleanup;
-+
-+	cg_write(memcg, "cgroup.subtree_control", "-memory");
-+
-+	if (read_event(fd, IN_DELETE_SELF, wd))
-+		goto cleanup;
-+
-+	if (read_event(fd, IN_IGNORED, wd))
-+		goto cleanup;
-+
-+	ret = KSFT_PASS;
-+
-+cleanup:
-+	if (fd >= 0)
-+		close(fd);
-+	if (child_memcg)
-+		cg_destroy(child_memcg);
-+	free(child_memcg);
-+	if (memcg)
-+		cg_destroy(memcg);
-+	free(memcg);
-+
-+	return ret;
-+}
-+
-+static int test_memcg_inotify_delete_rmdir(const char *root)
-+{
-+	int ret = KSFT_FAIL;
-+	char *memcg;
-+	int fd, wd;
-+
-+	memcg = cg_name(root, "memcg_test_0");
-+
-+	if (!memcg)
-+		goto cleanup;
-+
-+	if (cg_create(memcg))
-+		goto cleanup;
-+
-+	fd = inotify_init1(0);
-+	if (fd == -1)
-+		goto cleanup;
-+
-+	wd = inotify_add_watch(fd, cg_control(memcg, "memory.events"), IN_DELETE_SELF);
-+	if (wd == -1)
-+		goto cleanup;
-+
-+	if (cg_destroy(memcg))
-+		goto cleanup;
-+	free(memcg);
-+	memcg = NULL;
-+
-+	if (read_event(fd, IN_DELETE_SELF, wd))
-+		goto cleanup;
-+
-+	if (read_event(fd, IN_IGNORED, wd))
-+		goto cleanup;
-+
-+	ret = KSFT_PASS;
-+
-+cleanup:
-+	if (fd >= 0)
-+		close(fd);
-+	if (memcg)
-+		cg_destroy(memcg);
-+	free(memcg);
-+
-+	return ret;
-+}
-+
- #define T(x) { x, #x }
- struct memcg_test {
- 	int (*fn)(const char *root);
-@@ -1644,6 +1764,8 @@ struct memcg_test {
- 	T(test_memcg_oom_group_leaf_events),
- 	T(test_memcg_oom_group_parent_events),
- 	T(test_memcg_oom_group_score_events),
-+	T(test_memcg_inotify_delete_file),
-+	T(test_memcg_inotify_delete_rmdir),
- };
- #undef T
- 
--- 
-2.53.0.273.g2a3d683680-goog
-
+This patch looks good but I think to fully solve this cross-kernel issue
+we should use co-re in the bpf program. In your second revision, can you
+add an additional patch to make use of bpf_core_enum_value()? This way
+instead of relying on enum values in vmlinux.h at compile-time, we use
+the btf info at load-time instead to get the proper value for the given
+kernel.
 
