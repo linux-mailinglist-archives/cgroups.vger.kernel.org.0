@@ -1,327 +1,272 @@
-Return-Path: <cgroups+bounces-13949-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-13950-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id uOnJAi4Yj2mJIgEAu9opvQ
-	(envelope-from <cgroups+bounces-13949-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Fri, 13 Feb 2026 13:25:18 +0100
+	id wBccIMFDj2k5OgEAu9opvQ
+	(envelope-from <cgroups+bounces-13950-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Fri, 13 Feb 2026 16:31:13 +0100
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 61DFC136014
-	for <lists+cgroups@lfdr.de>; Fri, 13 Feb 2026 13:25:17 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id D5CB4137935
+	for <lists+cgroups@lfdr.de>; Fri, 13 Feb 2026 16:31:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id B008730417BB
-	for <lists+cgroups@lfdr.de>; Fri, 13 Feb 2026 12:25:13 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 90E02304AD9E
+	for <lists+cgroups@lfdr.de>; Fri, 13 Feb 2026 15:28:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 21A7F35EDD4;
-	Fri, 13 Feb 2026 12:25:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 686D5363C43;
+	Fri, 13 Feb 2026 15:28:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="epNLT0zQ"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="dN+nguIF";
+	dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b="VJT21oC8"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-ej1-f67.google.com (mail-ej1-f67.google.com [209.85.218.67])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 68C4E35EDAF
-	for <cgroups@vger.kernel.org>; Fri, 13 Feb 2026 12:25:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.218.67
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1770985510; cv=pass; b=XXOdKkL/uzAWQLphH86ASeRmU2R8s5TPq7OLZSugo8zkWqPEO/AqEA78Q6/jOT0ZZsBVzOz8IUruREya/KOu+NacIWtM5Q00Ud6mPv0ePvZGVAN4MfSO6P5GqHDOQCqC0LamcZlfoZbuvZF2UutgnNlDFRnb+DK82AIej5JuCRU=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1770985510; c=relaxed/simple;
-	bh=h/iqHExUT2GB2jR3341fJVC2UQlEXZpsnLLjjyXYUQI=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Y6gKkS18qj3O31rSRGomdYFGVEdeFJAH/BniQlyPS6RrxnbKBh8CNOky+DrBjcX1nc6MzhVdAFooUzM/Xuw+EsTHH3rnJslLi8FVGh0wr74jm92oMtZSfcx2mItbCMytaKYlrU/5DpMLdLVLHWFgxDaGvFxQGhS3xEyNz3MzsAw=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=epNLT0zQ; arc=pass smtp.client-ip=209.85.218.67
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f67.google.com with SMTP id a640c23a62f3a-b886fc047d5so127263066b.3
-        for <cgroups@vger.kernel.org>; Fri, 13 Feb 2026 04:25:09 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; t=1770985508; cv=none;
-        d=google.com; s=arc-20240605;
-        b=UuggabLCFvRRCydA/Y/+C6mOKlYG1zfGFjgTlr/yT1O+bw1w5Gr6kpoTmCmHjnMJep
-         ht7GvNEa6oN3xcD4eBERhU1PYLII6di/3wLiTZWs++E7H20nk9CkhOJ4yLZUvLoRGbbT
-         8MNku1NkEG4If9L57T5oDhUjDeB64M1MSZ8llBL4ZmI1bXBkIW4yo2ytqJkyMjzjANO0
-         egAhQ8c6/AIU+4zj7UnA2IQ1MTvS9lF3FbKnNaz4gYjvm9kHac6r4HANPBV11wOOGHso
-         BUdcNsnzZXLhOx81atILWNb1xLrhNqSw8Dk2Kqn8jeo/zWbTSYfCxUSpricNmw88/j2a
-         MAsA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:dkim-signature;
-        bh=4IpcRNYho/r9fRckd/Z5o01Z82cEBweePuEbrYmrG4w=;
-        fh=gRA5ItdPj6AcJVn63vlsFIBc1W/UEPRBgA/isJ0ab7A=;
-        b=TeGy/+lKCkCrkfbr7KUitlOwtY026EPzXHqzvs1ghjeTFirpwbMzMfJIIurO7KhSFD
-         bEryj+vYyHEKZ6x/xyNJvWNArWr8PTa3pqpgrJz6znzgXwFx5FAsogVN4e7j2YHwW+jB
-         2BQI9y9VeeY+uaFrE+cXi+DA2+nH/ZJVVNZQttLzLFOBP25tcgndmoxWxd0wEM0iwlbJ
-         hL85wuASSRvqmQGXVxYrHXENPnpPwIBaQ6hnc8DBa40iiz1dPxez8cc3PvSLVxqOYNWt
-         6nWfSoE7ldopOJ1CfxA8IpYWfdm+LMD2uKY+oQkVsJdImYfL2f5plW1rzaHbTNjGuMam
-         RNcA==;
-        darn=vger.kernel.org
-ARC-Authentication-Results: i=1; mx.google.com; arc=none
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E5B1E363C78
+	for <cgroups@vger.kernel.org>; Fri, 13 Feb 2026 15:28:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1770996499; cv=none; b=NWBO2FQhg09SUS6eGZ493YzsyoRc2FZyW+cQKD6d/83pA/O9YFJyWlXAAOyIonac6LVXU1eTIMscTJAqzh3Fa3h8pgTeRsn28K0upx1alRs83a5TBwD34uMea8nuaUA6ege8YaNFFcff8obxztswtVuxUZd+QDN33cQzx/RIzPE=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1770996499; c=relaxed/simple;
+	bh=3M3E4Pv8nQu84Lj5f737cCeSV/g3fnZSngPVN4h20sE=;
+	h=From:Message-ID:Date:MIME-Version:Subject:To:Cc:References:
+	 In-Reply-To:Content-Type; b=nYRlljWLH1QX2OLHQdwJ4pwziTVt8gL0VHcDOKspRMI+mJ+28gSnIHNxi/8dlUHK4mHLJkNTKnQeG2m8EP/UAu9tuyovbjbXkYPey+sJXH7MJqtXkT61t5bM3JhkEV6BWxqmmoDCRYrJjIA7eXwM9QKXF6Wd72fEcZ86a8/vRgQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=dN+nguIF; dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b=VJT21oC8; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1770996497;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Rfr51n5j+28dMTjZs7Bnjba1XL/y2WrPwNbz10SYRpM=;
+	b=dN+nguIFDUC3uYypBvNY/0nh4S8pWswL5pUPhELwWLmJ/6hNFqceRPnqx2AKQ+SN+dFXhp
+	7yur91RG6el713M8AmpAOZlGKEtO9ttjStw08XQAOidzFy4GpvJeuHjaHqq8Duw1nEaQ6w
+	VB5qUacjvCRn3z+gsnMc5uZ8SGIXbuk=
+Received: from mail-qk1-f198.google.com (mail-qk1-f198.google.com
+ [209.85.222.198]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-182-DPRWEQINNjuidrvMLNRsow-1; Fri, 13 Feb 2026 10:28:13 -0500
+X-MC-Unique: DPRWEQINNjuidrvMLNRsow-1
+X-Mimecast-MFC-AGG-ID: DPRWEQINNjuidrvMLNRsow_1770996493
+Received: by mail-qk1-f198.google.com with SMTP id af79cd13be357-8c70cff1da5so356376885a.2
+        for <cgroups@vger.kernel.org>; Fri, 13 Feb 2026 07:28:13 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1770985508; x=1771590308; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=4IpcRNYho/r9fRckd/Z5o01Z82cEBweePuEbrYmrG4w=;
-        b=epNLT0zQbSvp8K5WY8WR/1BnBFqpHImZ3HL2xC2jBSdDLMsUZlVln29yxWmED/nBPU
-         7tiwmK6rN0Axs24iXVnZn5vJsbtTntnLQ+/HXyGGmFCnQNXR5gJvaplPDnBpUvta2Js/
-         N11pZ+raFg7cOfp3YMZfQwQCAkf/5BUoe4z0Jyzs/hJU8S2/bh7ui2lYpCkWcqY1XWx0
-         M+O8QOIc5zo1r8mInwyYwPIGJNRGYmvbS9d6xQ6eyG6He5WHv9n4ONfS50apNp+n6ZGL
-         Y1OF1e4/5FC4x1FiVvachxmX0hP0IbUwXotHEi5fvl51PMfcWYA+2jYmhWA+HUoYveXz
-         2eAQ==
+        d=redhat.com; s=google; t=1770996493; x=1771601293; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:content-language:references
+         :cc:to:subject:user-agent:mime-version:date:message-id:from:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=Rfr51n5j+28dMTjZs7Bnjba1XL/y2WrPwNbz10SYRpM=;
+        b=VJT21oC8AdSRHXy1xZFuGjA8NT/3WrfHniTDYj8neMoPAV6340aGwdxgpnfJzB+U/T
+         RWQGARw3vKlvAdgMh0dBOt8pJqhKntLnkJ/HQFowBitM1RgJKqvi1aAzsnVo+Yqpmqpj
+         qz7cd4jZWDO7k301hStlpw5+l2bUIZlQAzIWa4HAQkMVP/Tf4LWsqIkOipBDfr/jylGz
+         y1jhz24Mc2lnNSrCC0+MMAQdxk5Sy16jiUB0uWX9GafMVPwsctrngqvhsWXi1eekaP1u
+         mctFd00jJp05/ILghcg9ozBVXOd7MnBNan3LQO/BOFhnTkMugitZeS/2EnILhOagEijR
+         wxaA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1770985508; x=1771590308;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=4IpcRNYho/r9fRckd/Z5o01Z82cEBweePuEbrYmrG4w=;
-        b=LbRA7QQCjqWseujagHNopCljNM7GwXYYp4lGGcwUOZ76h/RikisvcB8UITSEsDbmtD
-         h90ruRrn2juAuHv0hAkByn2DZrKYafa4WL5QT3fusl+OWX7BXSDJFdjQCW9X3RPT0+bb
-         /SISn3ujt/8UDSc4aXoI4XEdonj0FG7LOUc2m7sMS/eFKsXV8URgY37KZhNY90tsVSJx
-         d+NObvyE4qkDkTLsTEoiNa6CjE3NNv2r+87JX1i/k33MKBQrOn36+abP4YZHnTVFm4c+
-         DDcdPJQi9hHJXsHFay0iUm4mv7nDkwNFW9g67YW6C4M7fcIAYELGY2cbGxOVLsl1CdfA
-         TjJQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWcwlY5Ak+ZaZTpVg4Huwhf6AKagSvgoJMAhEojyX3aUcot3HdMff26fQE6eVoTs/A13BUb9cO/@vger.kernel.org
-X-Gm-Message-State: AOJu0YydRSM8gP9u21xnipjsFb3l56LF/njNSO1sECgypMTfM2lTJVr+
-	gDNNKMjlDBvPEFWor7Qji7YYj0RZFLS45hvfZWisAgNNkR2VLEWN+XBDCGQGHsBOpyI/oCIU10h
-	DihJsNaWl35fRqZhiZ+5OrsXordk6Fks=
-X-Gm-Gg: AZuq6aId7kf1/gmE6Y+H6sRFLLkY9+VMa72XoZRWi6T22md/FFzHPCdI6K0ZG8+JSMW
-	Qz+C59DLJ54ePlgUfIzU3ELZQzUjKiclbGuEzugA5fliIk9tdi4xusJ3S3tnelXRzkhYnbDzpEW
-	9taeYouN+AIqRWq/Qe7DHMRu2SaGqhvx/5Q/VkbbgJkrMm6gSZMGXT1lsnNQIsYpVmSupfmz67D
-	akEu5KYAK8AY1+Fa9fQwNd3KPWf1Lm+enehdw+8Xs8NxGv/YekKm33RlijCDNt9lQE1+5tDU6BA
-	BOyvtsML
-X-Received: by 2002:a17:907:7255:b0:b87:173f:61b with SMTP id
- a640c23a62f3a-b8fb4167f99mr82011866b.9.1770985507288; Fri, 13 Feb 2026
- 04:25:07 -0800 (PST)
+        d=1e100.net; s=20230601; t=1770996493; x=1771601293;
+        h=content-transfer-encoding:in-reply-to:content-language:references
+         :cc:to:subject:user-agent:mime-version:date:message-id:from:x-gm-gg
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Rfr51n5j+28dMTjZs7Bnjba1XL/y2WrPwNbz10SYRpM=;
+        b=fFgUvHaJzJXGtnfEOsx8aIjID5FvzbA0HADlCmawYRMNdEqnHtwKCjm0xP1Y5KvklV
+         4fM/NYpCf1WuDGHppshQppJ3zHb1CWsxo11UQj4Yy8Ix/0tcxuf3wn/mcXQdg4HFrP4r
+         YRGp8Ji7r5fmy/hmgX2cZvgGpV58mARY/sxcsrLfDQVf1+4aKFuahzcgcJG2vvd6iww6
+         xLEgbqI8+XNj9etw1BtRYneqE0CqwkND2jP5yUCsMkyQyPH38WYVAv3kFcX2wkmD0MKU
+         Bn0R3LWCibmOYmYb7PjGEcyIsZR0IZiXb47TldwDzkrQybj7Ttho/+AjxF8F2HXh1onZ
+         21Og==
+X-Gm-Message-State: AOJu0YwlvDbXgdxcpvL3XXhyG6hsINCInGvOpcQP56gyzybet4IpXLWr
+	5qCJ6aJQePizOCtwonPHnMuA0B3fZZc/u27x0Y0JLnHWrgCL5PsZ+X+pfJx7Na8JD+sW75/m0Kg
+	QVWb/4pPc+3t2TIF4df+eCQGMTiMITs6WqtpX3dbI0t3k6s3D03KKWXiyzgM=
+X-Gm-Gg: AZuq6aL7e/2G68VZNue/67kKGvOSRqAAZ0MmDjQ+9Th3qlwBIZ36djfkeLisBbqWv6X
+	O761+EaZrDy1osHh4vBMVpelAgjcTUz5W8+MmswBl3tQON6Zpf0P4InZ+9XpKQycK8JnEcpr6aE
+	Wv+I+dXrJX2vhMYM6CQAAt7tiL9O58mkHdjnCxAS8Cc1HsBAB2Z59D0s9DsDPQB3PJWwwdo90wZ
+	lTf+yjwqUI2hi1GFF5/AGa4RaTdRmqbKGGLgkV/YTi11d69E5FHkcu8NN+IFQcmCp+rORIDwwis
+	SJNAvOsA5yB5qETfddTz5SlmvIZ8HagCdBeEOGUABCJVZcslKX2cg3lP3nFbJuQPgGi2TGzAwgX
+	OPk8gEiJhc6DHaIwTk5Ol3HHKDLs3hHA1SlHT6mNBZceKnkN7O85ZLKo6QPSv7uGZI3rF
+X-Received: by 2002:a05:620a:3947:b0:8bb:a960:a6fd with SMTP id af79cd13be357-8cb4081fab2mr354349185a.10.1770996493195;
+        Fri, 13 Feb 2026 07:28:13 -0800 (PST)
+X-Received: by 2002:a05:620a:3947:b0:8bb:a960:a6fd with SMTP id af79cd13be357-8cb4081fab2mr354345985a.10.1770996492739;
+        Fri, 13 Feb 2026 07:28:12 -0800 (PST)
+Received: from ?IPV6:2601:188:c102:b180:1f8b:71d0:77b1:1f6e? ([2601:188:c102:b180:1f8b:71d0:77b1:1f6e])
+        by smtp.gmail.com with ESMTPSA id af79cd13be357-8cb2b0be6besm617767885a.5.2026.02.13.07.28.10
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 13 Feb 2026 07:28:11 -0800 (PST)
+From: Waiman Long <llong@redhat.com>
+X-Google-Original-From: Waiman Long <longman@redhat.com>
+Message-ID: <dcb4debf-e166-491e-8f7b-5500e5e8a39c@redhat.com>
+Date: Fri, 13 Feb 2026 10:28:09 -0500
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20260213073829.182168-1-wjl.linux@gmail.com> <890f2571-fb46-4ff2-b7ea-7cfa10bc8797@fnnas.com>
-In-Reply-To: <890f2571-fb46-4ff2-b7ea-7cfa10bc8797@fnnas.com>
-From: Jialin Wang <wjl.linux@gmail.com>
-Date: Fri, 13 Feb 2026 20:24:41 +0800
-X-Gm-Features: AZwV_Qhv4kDPYOaKtg_fIpi53hu2WdEStY0qq8lL2eMmGnu1Y9LX5_oA7bdlld0
-Message-ID: <CAG18Jnyvs9Ob2WKQV0LQYGrq3F+czrRukhxW5JCza0iZQvbh-g@mail.gmail.com>
-Subject: Re: [RFC PATCH] blk-iocost: introduce 'linear-max' cost model for
- cloud disk
-To: yukuai@fnnas.com
-Cc: tj@kernel.org, josef@toxicpanda.com, axboe@kernel.dk, lianux.mm@gmail.com, 
-	cgroups@vger.kernel.org, linux-block@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v5 4/6] cgroup/cpuset: Don't update isolated_cpus from CPU
+ hotplug
+To: Chen Ridong <chenridong@huaweicloud.com>, Tejun Heo <tj@kernel.org>,
+ Johannes Weiner <hannes@cmpxchg.org>, =?UTF-8?Q?Michal_Koutn=C3=BD?=
+ <mkoutny@suse.com>, Ingo Molnar <mingo@redhat.com>,
+ Peter Zijlstra <peterz@infradead.org>, Juri Lelli <juri.lelli@redhat.com>,
+ Vincent Guittot <vincent.guittot@linaro.org>,
+ Steven Rostedt <rostedt@goodmis.org>, Ben Segall <bsegall@google.com>,
+ Mel Gorman <mgorman@suse.de>, Valentin Schneider <vschneid@redhat.com>,
+ Anna-Maria Behnsen <anna-maria@linutronix.de>,
+ Frederic Weisbecker <frederic@kernel.org>,
+ Thomas Gleixner <tglx@linutronix.de>, Shuah Khan <shuah@kernel.org>
+Cc: cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-kselftest@vger.kernel.org
+References: <20260212164640.2408295-1-longman@redhat.com>
+ <20260212164640.2408295-5-longman@redhat.com>
+ <de1cf3d0-8922-4740-9e4f-501cc38c70b0@huaweicloud.com>
+Content-Language: en-US
+In-Reply-To: <de1cf3d0-8922-4740-9e4f-501cc38c70b0@huaweicloud.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-0.66 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=2];
-	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
-	R_DKIM_ALLOW(-0.20)[gmail.com:s=20230601];
+X-Spamd-Result: default: False [-2.16 / 15.00];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+	DMARC_POLICY_ALLOW(-0.50)[redhat.com,quarantine];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_DKIM_ALLOW(-0.20)[redhat.com:s=mimecast20190719,redhat.com:s=google];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FREEMAIL_CC(0.00)[kernel.org,toxicpanda.com,kernel.dk,gmail.com,vger.kernel.org];
-	TAGGED_FROM(0.00)[bounces-13949-lists,cgroups=lfdr.de];
-	FROM_HAS_DN(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
-	RCVD_TLS_LAST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-13950-lists,cgroups=lfdr.de];
+	RCPT_COUNT_TWELVE(0.00)[19];
 	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	DKIM_TRACE(0.00)[gmail.com:+];
-	MISSING_XM_UA(0.00)[];
-	FREEMAIL_FROM(0.00)[gmail.com];
-	TO_DN_NONE(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[wjllinux@gmail.com,cgroups@vger.kernel.org];
+	RCVD_TLS_LAST(0.00)[];
+	DKIM_TRACE(0.00)[redhat.com:+];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	MID_RHS_MATCH_FROMTLD(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	TO_DN_SOME(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[llong@redhat.com,cgroups@vger.kernel.org];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	RCVD_COUNT_FIVE(0.00)[6];
 	TAGGED_RCPT(0.00)[cgroups];
-	RCPT_COUNT_SEVEN(0.00)[8];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,fnnas.com:email,mail.gmail.com:mid]
-X-Rspamd-Queue-Id: 61DFC136014
+	MID_RHS_MATCH_FROM(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: D5CB4137935
 X-Rspamd-Action: no action
 
-On Fri, Feb 13, 2026 at 8:14=E2=80=AFPM Yu Kuai <yukuai@fnnas.com> wrote:
+On 2/12/26 10:28 PM, Chen Ridong wrote:
 >
-> Hi,
+> On 2026/2/13 0:46, Waiman Long wrote:
+>> As any change to isolated_cpus is going to be propagated to the
+>> HK_TYPE_DOMAIN housekeeping cpumask, it can be problematic if
+>> housekeeping cpumasks are directly being modified from the CPU hotplug
+>> code path. This is especially the case if we are going to enable dynamic
+>> update to the nohz_full housekeeping cpumask (HK_TYPE_KERNEL_NOISE)
+>> in the near future with the help of CPU hotplug.
+>>
+>> Avoid these potential problems by changing the cpuset code to not
+>> updating isolated_cpus when calling from CPU hotplug. A new special
+>> PRS_INVALID_ISOLCPUS is added to indicate the current cpuset is an
+>> invalid partition but its effective_xcpus are still in isolated_cpus.
+>> This special state will be set if an isolated partition becomes invalid
+>> due to the shutdown of the last active CPU in that partition. We also
+>> need to keep the effective_xcpus even if exclusive_cpus isn't set.
+>>
+>> When changes are made to "cpuset.cpus", "cpuset.cpus.exclusive" or
+>> "cpuset.cpus.partition" of a PRS_INVALID_ISOLCPUS cpuset, its state
+>> will be reset back to PRS_INVALID_ISOLATED and its effective_xcpus will
+>> be removed from isolated_cpus before proceeding.
+>>
+>> As CPU hotplug will no longer update isolated_cpus, some of the test
+>> cases in test_cpuset_prs.h will have to be updated to match the new
+>> expected results. Some new test cases are also added to confirm that
+>> "cpuset.cpus.isolated" and HK_TYPE_DOMAIN housekeeping cpumask will
+>> both be updated.
+>>
+>> Signed-off-by: Waiman Long <longman@redhat.com>
+>> ---
+>>   kernel/cgroup/cpuset.c                        | 85 ++++++++++++++++---
+>>   .../selftests/cgroup/test_cpuset_prs.sh       | 21 +++--
+>>   2 files changed, 87 insertions(+), 19 deletions(-)
+>>
+>> diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
+>> index c792380f9b60..48b7f275085b 100644
+>> --- a/kernel/cgroup/cpuset.c
+>> +++ b/kernel/cgroup/cpuset.c
+>> @@ -159,6 +159,8 @@ static bool force_sd_rebuild;			/* RWCS */
+>>    *   2 - partition root without load balancing (isolated)
+>>    *  -1 - invalid partition root
+>>    *  -2 - invalid isolated partition root
+>> + *  -3 - invalid isolated partition root but with effective xcpus still
+>> + *	 in isolated_cpus (set from CPU hotplug side)
+>>    *
+>>    *  There are 2 types of partitions - local or remote. Local partitions are
+>>    *  those whose parents are partition root themselves. Setting of
+>> @@ -187,6 +189,7 @@ static bool force_sd_rebuild;			/* RWCS */
+>>   #define PRS_ISOLATED		2
+>>   #define PRS_INVALID_ROOT	-1
+>>   #define PRS_INVALID_ISOLATED	-2
+>> +#define PRS_INVALID_ISOLCPUS	-3 /* Effective xcpus still in isolated_cpus */
+>>   
+>>   /*
+>>    * Temporary cpumasks for working with partitions that are passed among
+>> @@ -382,6 +385,30 @@ static inline bool is_in_v2_mode(void)
+>>   	      (cpuset_cgrp_subsys.root->flags & CGRP_ROOT_CPUSET_V2_MODE);
+>>   }
+>>   
+>> +/*
+>> + * If the given cpuset has a partition state of PRS_INVALID_ISOLCPUS,
+>> + * remove its effective_xcpus from isolated_cpus and reset its state to
+>> + * PRS_INVALID_ISOLATED. Also clear effective_xcpus if exclusive_cpus is
+>> + * empty.
+>> + */
+>> +static void fix_invalid_isolcpus(struct cpuset *cs, struct cpuset *trialcs)
+>> +{
+>> +	if (likely(cs->partition_root_state != PRS_INVALID_ISOLCPUS))
+>> +		return;
+>> +	WARN_ON_ONCE(cpumask_empty(cs->effective_xcpus));
+>> +	spin_lock_irq(&callback_lock);
+>> +	cpumask_andnot(isolated_cpus, isolated_cpus, cs->effective_xcpus);
+>> +	if (cpumask_empty(cs->exclusive_cpus))
+>> +		cpumask_clear(cs->effective_xcpus);
+>> +	cs->partition_root_state = PRS_INVALID_ISOLATED;
+>> +	spin_unlock_irq(&callback_lock);
+>> +	isolated_cpus_updating = true;
+>> +	if (trialcs) {
+>> +		trialcs->partition_root_state = PRS_INVALID_ISOLATED;
+>> +		cpumask_copy(trialcs->effective_xcpus, cs->effective_xcpus);
+>> +	}
+>> +}
+> When fix_invalid_isolcpus is called from changing cpus/exclusive cpus, should we
+> copy cs->effective_xcpus to trialcs->effective_xcpus?
 >
-> =E5=9C=A8 2026/2/13 15:38, Jialin Wang =E5=86=99=E9=81=93:
-> > In public cloud environments, block devices usually enforce performance
-> > limits based on two independent token buckets: IOPS and BPS. The device
-> > is throttled when either the IOPS limit or the BPS limit is reached.
-> >
-> > To effectively manage "noisy neighbor" problems, we configure iocost
-> > model parameters (or vrate max) to approximately 95% of the cloud
-> > provider's provisioned limits. The goal is to strictly avoid hitting
-> > the storage backend's hard BPS/IOPS limits. By saturating the virtual
-> > budget before the physical limit, iocost engages throttling first.
-> > Unlike the indiscriminate throttling applied by cloud storage backends,
-> > iocost selectively penalizes low-weight cgroups or heavy-traffic
-> > perpetrators. Consequently, IO-latency-sensitive critical workloads
-> > remain entirely unaffected by the congestion. Extensive testing has
-> > verified that this approach yields excellent isolation results.
-> >
-> > However, the existing 'linear' cost model leads to significant
-> > performance loss in this specific configuration due to its additive
-> > nature.
-> >
-> > Using tools/cgroup/iocost_coef_gen.py, we measured the following
-> > performance data on a typical cloud disk:
-> >
-> > 8:16 rbps=3D173471131 rseqiops=3D3566 rrandiops=3D3566 wbps=3D173333269=
- wseqiops=3D3566 wrandiops=3D3559
+> I tested as follow steps(using the whole series):
 >
-> Feels like a model similar to blk-throttle will work fine with your IO wo=
-rkload,
-> what you really want is blk-throttle absolute threshold and blk-iocost re=
-lative
-> throttling, correct?
+>   # cd /sys/fs/cgroup/
+>   # mkdir test
+>   # echo 1 > cpuset.cpus.
+>   # cd test/
+>   # echo 1 > cpuset.cpus.exclusive
+>   # echo $$ > cgroup.procs
+>   # echo isolated > cpuset.cpus.partition
+>   # cat cpuset.cpus.partition
+> isolated
+>   # echo 0 > /sys/devices/system/cpu/cpu1/online
+>   # cat cpuset.cpus.partition
+> isolated invalid
+>   # echo 2 > cpuset.cpus.exclusive
+>   # cat cpuset.cpus.partition
+> isolated invalid (Parent unable to distribute cpu downstream)
+>
+> After changing cpuset.cpus.exclusive to 2, the test cpuset should
+> become valid again, but it remains invalid.
 
-Yes, that is exactly what I am trying to achieve. In cloud environments, we
-need the absolute limits to avoid hitting the cloud provider's throttling w=
-all,
-while still benefiting from iocost's proportional sharing and weight donati=
-on.
+Right, changes to trialcs->effective_xcpus is unnecessary() as 
+compute_trialcs_excpus() will be called before fix_invalid_isolcpus() is 
+invoked. Will fix that in the next version.
 
-Do you have any specific thoughts or suggestions on the best way to combine
-these two mechanisms? I would really value your advice on the implementatio=
-n
-direction.
+Thanks,
+Longman
 
-> >
-> > Dividing BPS by IOPS (173471131 / 3566) yields approximately 48607
-> > bytes. When running fio with bs=3D48607, we observed a 50% drop in
-> > throughput compared to running without iocost enabled.
-> >
-> > The reason is that the current 'linear' model calculates cost as:
-> >
-> >    Cost =3D BaseCost + (Pages * PerPageCost)
-> >
-> > Expanding the internal variables relative to IOPS and BPS, this is
-> > effectively:
-> >
-> >    Cost =3D VTIME_PER_SEC * ((1 / IOPS - 4096 / BPS) + size / BPS)
-> >
-> > When the I/O size is such that the IOPS cost component roughly equals
-> > the BPS cost component (as in the bs=3D48607 case above), the linear
-> > model sums them up. Since cloud disks throttle based on *either* IOPS
-> > *or* BPS (whichever is exhausted first), summing them effectively
-> > doubles the calculated cost. This causes iocost to drain virtual time
-> > twice as fast as necessary, throttling the device to 50% utilization.
-> >
-> > To solve this, this patch introduces a new 'linear-max' cost model.
-> > Instead of adding the components, it takes the maximum:
-> >
-> >    Cost =3D VTIME_PER_SEC * max(1 / IOPS, size / BPS)
-> >
-> > Which translates to:
-> >
-> >    Cost =3D max(BaseCost + PerPageCost, Pages * PerPageCost)
-> >
-> > This formula correctly models the dual-bucket behavior of cloud disks.
-> > It ensures that for any block size, the calculated cost aligns with the
-> > actual bottleneck (IOPS or BPS). This allows the system to reach close
-> > to the provisioned BPS/IOPS limits without premature throttling, while
-> > still maintaining the latency protection benefits of iocost.
-> >
-> > Signed-off-by: Jialin Wang <wjl.linux@gmail.com>
-> > ---
-> >   block/blk-iocost.c | 21 ++++++++++++++++++---
-> >   1 file changed, 18 insertions(+), 3 deletions(-)
-> >
-> > diff --git a/block/blk-iocost.c b/block/blk-iocost.c
-> > index ef543d163d46..ead478d8e5bc 100644
-> > --- a/block/blk-iocost.c
-> > +++ b/block/blk-iocost.c
-> > @@ -445,6 +445,7 @@ struct ioc {
-> >       int                             autop_idx;
-> >       bool                            user_qos_params:1;
-> >       bool                            user_cost_model:1;
-> > +     bool                            cost_model_linear_max:1;
-> >   };
-> >
-> >   struct iocg_pcpu_stat {
-> > @@ -2565,7 +2566,12 @@ static void calc_vtime_cost_builtin(struct bio *=
-bio, struct ioc_gq *iocg,
-> >                       cost +=3D coef_seqio;
-> >               }
-> >       }
-> > -     cost +=3D pages * coef_page;
-> > +
-> > +     if (ioc->cost_model_linear_max)
-> > +             cost =3D max(cost + coef_page, pages * coef_page);
-> > +     else
-> > +             cost +=3D pages * coef_page;
-> > +
-> >   out:
-> >       *costp =3D cost;
-> >   }
-> > @@ -3368,10 +3374,11 @@ static u64 ioc_cost_model_prfill(struct seq_fil=
-e *sf,
-> >               return 0;
-> >
-> >       spin_lock(&ioc->lock);
-> > -     seq_printf(sf, "%s ctrl=3D%s model=3Dlinear "
-> > +     seq_printf(sf, "%s ctrl=3D%s model=3D%s "
-> >                  "rbps=3D%llu rseqiops=3D%llu rrandiops=3D%llu "
-> >                  "wbps=3D%llu wseqiops=3D%llu wrandiops=3D%llu\n",
-> >                  dname, ioc->user_cost_model ? "user" : "auto",
-> > +                ioc->cost_model_linear_max ? "linear-max" : "linear",
-> >                  u[I_LCOEF_RBPS], u[I_LCOEF_RSEQIOPS], u[I_LCOEF_RRANDI=
-OPS],
-> >                  u[I_LCOEF_WBPS], u[I_LCOEF_WSEQIOPS], u[I_LCOEF_WRANDI=
-OPS]);
-> >       spin_unlock(&ioc->lock);
-> > @@ -3412,6 +3419,7 @@ static ssize_t ioc_cost_model_write(struct kernfs=
-_open_file *of, char *input,
-> >       struct ioc *ioc;
-> >       u64 u[NR_I_LCOEFS];
-> >       bool user;
-> > +     bool linear_max;
-> >       char *body, *p;
-> >       int ret;
-> >
-> > @@ -3442,6 +3450,7 @@ static ssize_t ioc_cost_model_write(struct kernfs=
-_open_file *of, char *input,
-> >       spin_lock_irq(&ioc->lock);
-> >       memcpy(u, ioc->params.i_lcoefs, sizeof(u));
-> >       user =3D ioc->user_cost_model;
-> > +     linear_max =3D ioc->cost_model_linear_max;
-> >
-> >       while ((p =3D strsep(&body, " \t\n"))) {
-> >               substring_t args[MAX_OPT_ARGS];
-> > @@ -3464,7 +3473,11 @@ static ssize_t ioc_cost_model_write(struct kernf=
-s_open_file *of, char *input,
-> >                       continue;
-> >               case COST_MODEL:
-> >                       match_strlcpy(buf, &args[0], sizeof(buf));
-> > -                     if (strcmp(buf, "linear"))
-> > +                     if (!strcmp(buf, "linear"))
-> > +                             linear_max =3D false;
-> > +                     else if (!strcmp(buf, "linear-max"))
-> > +                             linear_max =3D true;
-> > +                     else
-> >                               goto einval;
-> >                       continue;
-> >               }
-> > @@ -3481,8 +3494,10 @@ static ssize_t ioc_cost_model_write(struct kernf=
-s_open_file *of, char *input,
-> >       if (user) {
-> >               memcpy(ioc->params.i_lcoefs, u, sizeof(u));
-> >               ioc->user_cost_model =3D true;
-> > +             ioc->cost_model_linear_max =3D linear_max;
-> >       } else {
-> >               ioc->user_cost_model =3D false;
-> > +             ioc->cost_model_linear_max =3D false;
-> >       }
-> >       ioc_refresh_params(ioc, true);
-> >       spin_unlock_irq(&ioc->lock);
->
-> --
-> Thansk,
-> Kuai
 
