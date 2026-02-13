@@ -1,48 +1,48 @@
-Return-Path: <cgroups+bounces-13929-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-13930-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id CPUzLnqajmkKDQEAu9opvQ
-	(envelope-from <cgroups+bounces-13929-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Fri, 13 Feb 2026 04:28:58 +0100
+	id 8EecF0jLjmm/EwEAu9opvQ
+	(envelope-from <cgroups+bounces-13930-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Fri, 13 Feb 2026 07:57:12 +0100
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
-	by mail.lfdr.de (Postfix) with ESMTPS id E5CA8132A83
-	for <lists+cgroups@lfdr.de>; Fri, 13 Feb 2026 04:28:57 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id B2A43133570
+	for <lists+cgroups@lfdr.de>; Fri, 13 Feb 2026 07:57:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id 7B7C1300BC85
-	for <lists+cgroups@lfdr.de>; Fri, 13 Feb 2026 03:28:55 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 2BA48303DF69
+	for <lists+cgroups@lfdr.de>; Fri, 13 Feb 2026 06:57:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DBC26218AC4;
-	Fri, 13 Feb 2026 03:28:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A89B127B32B;
+	Fri, 13 Feb 2026 06:57:06 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
 Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 893B326299;
-	Fri, 13 Feb 2026 03:28:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1554317A303;
+	Fri, 13 Feb 2026 06:57:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1770953331; cv=none; b=M36Bv5VHrxXqcxplc6GbCjMZtGgfboBMJLfaCpFoYF3wTHccx2EO212KJAdsA9Q/wfr8Td7qEVwnzLdWTkjWJzqKMV4gmLjFMkRdDyG4lHr4x8f9+8NCwQim+ZQdHYIs7Jb1yvEy1X8fCWe8yFOd40GQYP88c4Ch+iD5iNTsQeM=
+	t=1770965826; cv=none; b=MDcq3Odxv3i7RRCvWrBEHVudWDFnutbNMBeZjffPkgd00kNt3DIFlCGnbMYLiV4/NmS3WMrklzk5dnSE4oq81I2IaKnk4gxtsX9untEhl96AIVNhOsaM28vrk6R6NnMqqthwI0J8aUUhaSBU4sdwCDB935Dg1HJCe3oA4AJS+0A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1770953331; c=relaxed/simple;
-	bh=rfy7PjBQo/Ta9UEAQ42EDtHCuBiXRtu8hKXLdU453Rk=;
+	s=arc-20240116; t=1770965826; c=relaxed/simple;
+	bh=PS/5ecFcYH9Wk8oKFlaXED2tQT7cDbKy2TzSC22kuu0=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=tloyYf9SpIamt6KHaWnkF6h0R5LIO9EHADqYfkco+v3toYFstbeWVNxy7p2BSpd1q+Mm+dZR4l2/tBI545dQS4FaFu5SojrOt2uceWAqjqROgXG5uVB0zc+3A621rCL1ScFFlXJHjtdTbXVCAi3o+ql0wIZ0+BcSYZF3lTUKt8E=
+	 In-Reply-To:Content-Type; b=KQgGCz8VOY989KE0ktYPasHCsIQZ45qr/iLwqTItwfPm3f5EI3I7yeZmSrvUmMl8n4kCE3f1wA86T/xnU4UWmHwzvNAyOQzNOuj4ssjnMqQ8PMnYZvXEuKhP7MJTc3Ppk61iefJhCMWFw4deRNedgBQoOPqkQwBAqPsOrZhrSXY=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.177])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTPS id 4fByLf0CvHzYQv6X;
-	Fri, 13 Feb 2026 11:28:42 +0800 (CST)
+Received: from mail.maildlp.com (unknown [172.19.163.198])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTPS id 4fC2yx2V14zYQtLX;
+	Fri, 13 Feb 2026 14:56:57 +0800 (CST)
 Received: from mail02.huawei.com (unknown [10.116.40.128])
-	by mail.maildlp.com (Postfix) with ESMTP id CC5A24058D;
-	Fri, 13 Feb 2026 11:28:44 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTP id 5D7AC40573;
+	Fri, 13 Feb 2026 14:57:00 +0800 (CST)
 Received: from [10.67.111.176] (unknown [10.67.111.176])
-	by APP4 (Coremail) with SMTP id gCh0CgAniPhrmo5pqTz_HA--.43909S2;
-	Fri, 13 Feb 2026 11:28:44 +0800 (CST)
-Message-ID: <de1cf3d0-8922-4740-9e4f-501cc38c70b0@huaweicloud.com>
-Date: Fri, 13 Feb 2026 11:28:42 +0800
+	by APP4 (Coremail) with SMTP id gCh0CgCnCPk6y45p1NcQHQ--.58696S2;
+	Fri, 13 Feb 2026 14:57:00 +0800 (CST)
+Message-ID: <d77ef443-d816-4565-a9bc-e7e46c0a92c4@huaweicloud.com>
+Date: Fri, 13 Feb 2026 14:56:58 +0800
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -71,10 +71,10 @@ From: Chen Ridong <chenridong@huaweicloud.com>
 In-Reply-To: <20260212164640.2408295-5-longman@redhat.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-CM-TRANSID:gCh0CgAniPhrmo5pqTz_HA--.43909S2
-X-Coremail-Antispam: 1UD129KBjvAXoW3Cr13ZF4rtw1kGF1fKFyUWrg_yoW8XrW8uo
-	W7JF4rAw1fXw15ZFs8W342kFykW3yqy3ZIyw45Zr1DuFy3Ar9Fyasxt3Zavr1fWFWrtrW5
-	JFyIv3yFkrZ7A3Zxn29KB7ZKAUJUUUU8529EdanIXcx71UUUUU7v73VFW2AGmfu7bjvjm3
+X-CM-TRANSID:gCh0CgCnCPk6y45p1NcQHQ--.58696S2
+X-Coremail-Antispam: 1UD129KBjvAXoW3Cr13ZF4rtw1kGF1fKFyUWrg_yoW8Xry3Xo
+	W7JF4rAw1fJw15ZFs8G342yFykW3yqy3ZIyw45Zr1DuFy3Ar9Fyasxt3Zavr1fWFWrtrW5
+	JFyIv3yFkrZ3A3Zxn29KB7ZKAUJUUUU8529EdanIXcx71UUUUU7v73VFW2AGmfu7bjvjm3
 	AaLaJ3UjIYCTnIWjp_UUUY27kC6x804xWl14x267AKxVW5JVWrJwAFc2x0x2IEx4CE42xK
 	8VAvwI8IcIk0rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4
 	AK67xGY2AK021l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF
@@ -92,27 +92,28 @@ X-CM-SenderInfo: hfkh02xlgr0w46kxt4xhlfz01xgou0bp/
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-1.46 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	FROM_HAS_DN(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
-	TAGGED_RCPT(0.00)[cgroups];
-	RCPT_COUNT_TWELVE(0.00)[19];
 	MIME_TRACE(0.00)[0:+];
-	MID_RHS_MATCH_FROM(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
+	TO_DN_SOME(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[19];
+	TAGGED_RCPT(0.00)[cgroups];
 	R_DKIM_NA(0.00)[];
-	DMARC_NA(0.00)[huaweicloud.com];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[chenridong@huaweicloud.com,cgroups@vger.kernel.org];
-	TO_DN_SOME(0.00)[];
+	MID_RHS_MATCH_FROM(0.00)[];
 	RCVD_COUNT_FIVE(0.00)[6];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-13929-lists,cgroups=lfdr.de];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[]
-X-Rspamd-Queue-Id: E5CA8132A83
+	TAGGED_FROM(0.00)[bounces-13930-lists,cgroups=lfdr.de];
+	DMARC_NA(0.00)[huaweicloud.com];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: B2A43133570
 X-Rspamd-Action: no action
 
 
@@ -169,6 +170,15 @@ On 2026/2/13 0:46, Waiman Long wrote:
 >  #define PRS_INVALID_ISOLATED	-2
 > +#define PRS_INVALID_ISOLCPUS	-3 /* Effective xcpus still in isolated_cpus */
 >  
+
+How about adding a helper?
+
+bool hotplug_invalidate_isolate(struct cpuset *cs)
+{
+	if (current->flags & PF_KTHREAD) &&
+    		(cs->partition_root_state == PRS_INVALID_ISOLATED);
+}
+
 >  /*
 >   * Temporary cpumasks for working with partitions that are passed among
 > @@ -382,6 +385,30 @@ static inline bool is_in_v2_mode(void)
@@ -185,6 +195,11 @@ On 2026/2/13 0:46, Waiman Long wrote:
 > +{
 > +	if (likely(cs->partition_root_state != PRS_INVALID_ISOLCPUS))
 > +		return;
+
+	if (likely(cs->partition_root_state != PRS_INVALID_ISOLATED ||
+		   cpumask_empty(cs->effective_xcpus)))
+		return;
+
 > +	WARN_ON_ONCE(cpumask_empty(cs->effective_xcpus));
 > +	spin_lock_irq(&callback_lock);
 > +	cpumask_andnot(isolated_cpus, isolated_cpus, cs->effective_xcpus);
@@ -198,31 +213,7 @@ On 2026/2/13 0:46, Waiman Long wrote:
 > +		cpumask_copy(trialcs->effective_xcpus, cs->effective_xcpus);
 > +	}
 > +}
-
-When fix_invalid_isolcpus is called from changing cpus/exclusive cpus, should we
-copy cs->effective_xcpus to trialcs->effective_xcpus?
-
-I tested as follow steps(using the whole series):
-
- # cd /sys/fs/cgroup/
- # mkdir test
- # echo 1 > cpuset.cpus.
- # cd test/
- # echo 1 > cpuset.cpus.exclusive
- # echo $$ > cgroup.procs
- # echo isolated > cpuset.cpus.partition
- # cat cpuset.cpus.partition
-isolated
- # echo 0 > /sys/devices/system/cpu/cpu1/online
- # cat cpuset.cpus.partition
-isolated invalid
- # echo 2 > cpuset.cpus.exclusive
- # cat cpuset.cpus.partition
-isolated invalid (Parent unable to distribute cpu downstream)
-
-After changing cpuset.cpus.exclusive to 2, the test cpuset should
-become valid again, but it remains invalid.
-
+> +
 >  /**
 >   * partition_is_populated - check if partition has tasks
 >   * @cs: partition root to be checked
@@ -233,6 +224,10 @@ become valid again, but it remains invalid.
 > -	if (cpumask_empty(cs->exclusive_cpus)) {
 > +	if (cpumask_empty(cs->exclusive_cpus) &&
 > +	    (cs->partition_root_state != PRS_INVALID_ISOLCPUS)) {
+
+	if (cpumask_empty(cs->exclusive_cpus) &&
+	    !hotplug_invalidate_isolate(cs))
+
 >  		cpumask_clear(cs->effective_xcpus);
 >  		if (is_cpu_exclusive(cs))
 >  			clear_bit(CS_CPU_EXCLUSIVE, &cs->flags);
@@ -266,6 +261,9 @@ become valid again, but it remains invalid.
 >  static void partition_xcpus_del(int old_prs, struct cpuset *parent,
 > -				struct cpumask *xcpus)
 > +				struct cpumask *xcpus, bool no_isolcpus)
+
+remove.
+
 >  {
 >  	WARN_ON_ONCE(old_prs < 0);
 >  	lockdep_assert_held(&callback_lock);
@@ -275,6 +273,10 @@ become valid again, but it remains invalid.
 >  
 > -	if (old_prs != parent->partition_root_state)
 > +	if ((old_prs != parent->partition_root_state) && !no_isolcpus)
+
+	if ((old_prs != parent->partition_root_state) &&
+	    !hotplug_invalidate_isolate(cs))
+
 >  		isolated_cpus_update(old_prs, parent->partition_root_state,
 >  				     xcpus);
 >  
@@ -303,6 +305,9 @@ become valid again, but it remains invalid.
 > +	    (cs->partition_root_state == PRS_INVALID_ISOLATED))
 > +		cs->partition_root_state = PRS_INVALID_ISOLCPUS;
 >  
+
+remove.
+
 > -	/* effective_xcpus may need to be changed */
 > -	compute_excpus(cs, cs->effective_xcpus);
 > +	partition_xcpus_del(old_prs, NULL, cs->effective_xcpus,
@@ -332,6 +337,9 @@ become valid again, but it remains invalid.
 > +			if (!part_error)
 > +				new_prs = PRS_ISOLATED;
 > +			break;
+
+remove
+
 >  		}
 >  	}
 >  
@@ -345,6 +353,9 @@ become valid again, but it remains invalid.
 > +	if ((current->flags & PF_KTHREAD) &&
 > +	    (cs->partition_root_state == PRS_INVALID_ISOLATED))
 > +		cs->partition_root_state = PRS_INVALID_ISOLCPUS;
+
+remove
+
 >  	/*
 >  	 * Adding to parent's effective_cpus means deletion CPUs from cs
 >  	 * and vice versa.
@@ -353,6 +364,9 @@ become valid again, but it remains invalid.
 > -		partition_xcpus_del(old_prs, parent, tmp->addmask);
 > +		partition_xcpus_del(old_prs, parent, tmp->addmask,
 > +				    cs->partition_root_state == PRS_INVALID_ISOLCPUS);
+
+remove
+
 >  	if (deleting)
 >  		partition_xcpus_add(new_prs, parent, tmp->delmask);
 >  
@@ -400,9 +414,15 @@ become valid again, but it remains invalid.
 > -	if (is_partition_valid(cs))
 > +	if (is_partition_valid(cs) ||
 > +	    (cs->partition_root_state == PRS_INVALID_ISOLCPUS))
+	if (is_partition_valid(cs) ||
+	    (cs->partition_root_state == PRS_INVALID_ISOLATED &&
+	     !cpumask_empty(cs->effective_xcpus)))
 >  		update_prstate(cs, PRS_MEMBER);
 >  	cpuset_full_unlock();
 >  }
+
+Can this be simpler?
+
 > diff --git a/tools/testing/selftests/cgroup/test_cpuset_prs.sh b/tools/testing/selftests/cgroup/test_cpuset_prs.sh
 > index 5dff3ad53867..380506157f70 100755
 > --- a/tools/testing/selftests/cgroup/test_cpuset_prs.sh
