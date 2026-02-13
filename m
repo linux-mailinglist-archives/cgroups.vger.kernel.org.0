@@ -1,84 +1,84 @@
-Return-Path: <cgroups+bounces-13924-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-13925-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id kH56JqhyjmnXCQEAu9opvQ
-	(envelope-from <cgroups+bounces-13924-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Fri, 13 Feb 2026 01:39:04 +0100
+	id KOKOJUpzjmnnCQEAu9opvQ
+	(envelope-from <cgroups+bounces-13925-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Fri, 13 Feb 2026 01:41:46 +0100
 X-Original-To: lists+cgroups@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 45C351321B4
-	for <lists+cgroups@lfdr.de>; Fri, 13 Feb 2026 01:39:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 1F6CC1321E4
+	for <lists+cgroups@lfdr.de>; Fri, 13 Feb 2026 01:41:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id D26303018D5D
-	for <lists+cgroups@lfdr.de>; Fri, 13 Feb 2026 00:38:59 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 5DBCF301E6D8
+	for <lists+cgroups@lfdr.de>; Fri, 13 Feb 2026 00:41:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C4A781F30AD;
-	Fri, 13 Feb 2026 00:38:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2DCDF20E31C;
+	Fri, 13 Feb 2026 00:41:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="O4dbM5iM"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="SqMmRtrL"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-dy1-f178.google.com (mail-dy1-f178.google.com [74.125.82.178])
+Received: from mail-dy1-f177.google.com (mail-dy1-f177.google.com [74.125.82.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 87E17EADC
-	for <cgroups@vger.kernel.org>; Fri, 13 Feb 2026 00:38:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.82.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DBA9617555
+	for <cgroups@vger.kernel.org>; Fri, 13 Feb 2026 00:41:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.82.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1770943138; cv=none; b=GE6M53Amy4ZqQYbp0SL5emTNcxswbTUFzgLOzaEHaTQD9EhdS+n+DHoM9U8PFTvGibPu3sOL+DqMc74JymUV5E6IvJF6aBnFSQXYaDfURtGwdCdin7bci4N49m+1yg2JmoEDv1QpCwsf/rwW4xA9z9zStt2VFfiC4ZvT43RWMxM=
+	t=1770943301; cv=none; b=e1jKoTLgqC+qeWuSKVqF03WXN3x3cMCz41MPzgWguBYltz+K7YN4nTt5QGKqiAIvFUZNu58Ihrfsc65q/f1DMsAOZ4T+u/ndHNsG1XIgYPbe/2r3p4XeE64/ZOh60+uGBUiwVS6TnTFKo1K1+ujb9gwi6AM8+Gw19yfD0EMdhos=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1770943138; c=relaxed/simple;
-	bh=t/+3wyweMkhjwVY2qvSMuKbG8mkGC5i0DHQ0TzmGcNY=;
+	s=arc-20240116; t=1770943301; c=relaxed/simple;
+	bh=6D8tgjI9PBm1BFXqhi50JPEsbcI0pqJf1KyyVtXlYsA=;
 	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=FU3FiVaqQQYm8AG/nlbnFq/pTl6sL0UpZjTiImtib+OmtmloryLgzQZ0I6UGooxRxUWq0bbWzyIjey7eSqU/9yRNP1vCac0Q9lUg7fXLj7xWZvJR5Z28VzDQJwKn0an9cs0BVvEWLzYld/Rv8fOgQU1PYNa0cw8iqQ1vTAXIw1Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=O4dbM5iM; arc=none smtp.client-ip=74.125.82.178
+	 In-Reply-To:Content-Type; b=bx8+OkFeUld3k9tfuDG8Zt+LOWcVUIxfrsCWF5Tkl+xauNm9SPs/LbSXe7ubfZmHNN5DVx25Dwx0Mrozmy8fLBOoSjaK3u3r9EIuDZ2n0/cyz04yFkgx0f/U7x8EE1LCd62J3nqodPvQInsKgq/uaAeushLANnVvXdgsf1yXDcY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=SqMmRtrL; arc=none smtp.client-ip=74.125.82.177
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-dy1-f178.google.com with SMTP id 5a478bee46e88-2ba6aa57d5fso413869eec.1
-        for <cgroups@vger.kernel.org>; Thu, 12 Feb 2026 16:38:57 -0800 (PST)
+Received: by mail-dy1-f177.google.com with SMTP id 5a478bee46e88-2ba9c484e5eso445767eec.1
+        for <cgroups@vger.kernel.org>; Thu, 12 Feb 2026 16:41:39 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1770943137; x=1771547937; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1770943299; x=1771548099; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:from:content-language
          :references:to:subject:user-agent:mime-version:date:message-id:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=Lp9040amXhpFPWQBTbbqsO5bbDZPitD7bxgNCwcTcG0=;
-        b=O4dbM5iMYx+hC473R22ijUI0lZpm6cdrFrNmHh8qiVVi6mMita1w4d2PR6Akbcz9c+
-         1OKTt8BL7xNdmSHjXiWu72amsRryuBbbxDX5MMGjI6Ru7ROn6oemG5LT4pcykRlwTBud
-         pWAwKCv745EF6QABauIPfqbGXz/5fYqyIqWHRabXORb+0VsiAEwnn/pwYGhI3KDwMIFu
-         A9ruoh8X7Cpl9Q8t5G5eXF3PlutUn1oGmOjzadHzAyw2PJ9692Kgi/KlhiSuC8aWuE7X
-         9qFSWNCmr9wymbrJDXFWuzk/aTz9F3agQ1KNu0wZIxEJsnDk0I9kJHbACBfrcO7FU+VC
-         XZmw==
+        bh=DwqSI1RFCMIyBtnekhVRj3/LtP3LLhrY9w2W+ftU2B8=;
+        b=SqMmRtrLf2GRx7c0nMR9aamB/ORqM+JwkEn5N0Gq0gj50anx15gDCgRsACcacevOwP
+         A8XcZuQFq9vdldl5KasK3szj4GJM1PWw5jr+UwVnHcIPniP46syn5WaKbKS9nqeD/u8a
+         amL5UK1zMnv8/rLiuS6B+VPVlK5rOPvvt8Qy3SDF9YgfMkhbEJnXcO5W4Iy1PsL8zBRL
+         ERlXAeGv472zt9Uwepr7y87W9eP5sMzPEjLFvo1Cy3f/OpdFQILX2VxJ7PqfHkWMyAtt
+         hsgi31GcqGToy8ZPsbM1LQjpSwQ9w0Fmq2nEhx4kv3vFB5MhvxU8Ll591mFlsmSqzfBU
+         VLFQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1770943137; x=1771547937;
+        d=1e100.net; s=20230601; t=1770943299; x=1771548099;
         h=content-transfer-encoding:in-reply-to:from:content-language
          :references:to:subject:user-agent:mime-version:date:message-id
          :x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=Lp9040amXhpFPWQBTbbqsO5bbDZPitD7bxgNCwcTcG0=;
-        b=CIqZUpkrK//tlhZyN+5/5Dg5yL+RxDtlNKNFrelAyVSzobSNR3BsON3iGV+Krq64Hn
-         GtrPKWGGHThIiGEJ8xwRFytTwoa/HZ8fki1xeUtWWM/Dw59T+0f4r+Gqw6sUq+vuzQpO
-         YK5zT0Cv0E+Mx2wpN3KSdCuI3oMR5DayQhAVBPbuKCswXt3iqgZjY7941hLpezRb11Tj
-         9HnJ4/bIubjKgQ/yullRiFOgTA/Lz6iHS4MH6x5CXtHkvNTWLgDpt2UUkP52W20v1bL9
-         UkZDdhEV82DiZ/soVsns6+zz+M7f/QDryIOrnf1fh4gJwZ/Bsu74gtQrneQ8KSLpnCPq
-         LOAQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWgcAYf6jRyAr3hkoZc353EAlbS5uSuboPcZdtLrv+8ukCMqB6ReRjPuhVN1IgCSRGkE56Y8VOq@vger.kernel.org
-X-Gm-Message-State: AOJu0YwH9wY/5zQmovf643Vxc3g0VY2X44wCcnYUuT0q04LNcPpxelGD
-	hQypdPpeuRv//wULqbCvFp1YjMfWFj4UWTuJnBcciW4chsYnzhw4m5/K
-X-Gm-Gg: AZuq6aKKJdCSXSWkJhOzgOAFxUkBIAv3t5F7QIeaGOVBXWLG9QhH148TtfXA098aD1B
-	KK3nHjtFKfgpoltgjs3jBDXAeXcPPKw+wcHMhoObfqHxredj3yDFkWEWVBCyNPJmmUdQGgvOHh+
-	ZxdJmjLsDGscMD+vs9mSQNFCW60TyqC9rdUYTURtI9/RZ3hDQNQ1UuhWdAolccPxqz6tGsoTp+F
-	rIbWwO59ekFZ6jgTYfpt2Peq9cwx1rOZVW1V9Hd3jF5Yg1V/MmJTI2ZYClNxEshxvJx8/YqrjHB
-	dcabxONuA5lLtdiTYT8Wt4ikXlcjtCZQqHqkd2mG57KMGR/y3lOFWgYs8XcqXG50W29csx11EEo
-	11eYlCMccwU7B09GEPHRcPyoLybJAwUNmrk5+zzZcUzVHePbWgIasrpNKG2FQOBXqo6QSCld9Ae
-	G8t7luPuhW8swFFbaYr+VpbinWFfcgm+mOAeIzrzHLa5I=
-X-Received: by 2002:a05:693c:2b06:b0:2ba:75f5:72a2 with SMTP id 5a478bee46e88-2babc3a4e2emr44150eec.2.1770943136554;
-        Thu, 12 Feb 2026 16:38:56 -0800 (PST)
+        bh=DwqSI1RFCMIyBtnekhVRj3/LtP3LLhrY9w2W+ftU2B8=;
+        b=NAE51cJzzlCe5Vb+pbFQF6B5EEWP1VkVqVpzerBAX8O2sSPm3x4VlVq9oONH/SL8lG
+         rWPPRyx1umCv4XStdJZk88owKUNnAQuamHCdQwZzgCuCoVMzk/+mjSXX6uO7TTP3xJKZ
+         +e4lz1vf2iol7iiI+3mFPSUJn9b9vpgiSgz/I4/U2GRYguxD56ScK6tddVVNym2h1HaW
+         wno8eOqr4kkhL2fe+QeBvR4hivlTHhPJiS0cLVT3KwLINSAZc3g0PYMJacnkzjrRyrOz
+         sWMV5vJ6zW4oLDVCbh9Xpl4tKwzzYmDuBCtmWFcJZjcvUsqU5OUeYXQJ/qJXOK3tgSsv
+         e/1w==
+X-Forwarded-Encrypted: i=1; AJvYcCWRE4btbB8KiayXUcZj9Fj9lkR74yas9Bcn3kGMAEnSSxQy3JVlgAKmUSgCkrtUHkmJu7/9RxDk@vger.kernel.org
+X-Gm-Message-State: AOJu0Yyvs1K3T1GUTHp34JaoqWBWhvbDwJcqJSg/FbCQHi2Xt638ymSu
+	CPSNnwrSKdTt0X634IF9gZMx0YqsKl2DCrXVMluy3naW4QaswH1ym+h7
+X-Gm-Gg: AZuq6aKgHCingaZEqgLTXlqMxXwruApet6q1qhDrPBGjj0/oIlNqKDRYndkdxVQ3D1/
+	6mUNEQJkh13TtwP/rvf5c6kJehCb6N09AQx9gmcPLWeZGxk+mpoKb+fAVyChAsuaiYYJ60rnaZ1
+	WhHvFl/EkPQLQqUbk251kDNkUPYb3A5VWiNch3ySujnvLtEagPBAoXhz9xRvgnLcjNva5DvCTvr
+	E35QVmyzT35xP/Z5Sj8zLcNaocIUZlfqMX4U+Almc3EG180WmsLyqwrJGo4BsbYjUuIo6QR55SI
+	B69U5pgZs6ZqjdVLSmIKWwZyW2aGG0Kf1mdczODiffknSnT2rKHzKNBecptndeQURSuD9nq6M4H
+	9LfLhNxGRceDc6X6jy9F/GybljbFQP768BVdw0P28z3ys6Ey2jmOhC/Udyvja04veP0fncfQ2sV
+	isAZoe0C+HGLo5qV5pxUJur1gvI5app0Lq
+X-Received: by 2002:a05:7300:ca4:b0:2b7:857:db6a with SMTP id 5a478bee46e88-2babc47cb8amr28835eec.21.1770943298947;
+        Thu, 12 Feb 2026 16:41:38 -0800 (PST)
 Received: from [192.168.4.196] ([73.222.117.172])
-        by smtp.gmail.com with ESMTPSA id 5a478bee46e88-2ba9dcd00d2sm5059384eec.20.2026.02.12.16.38.55
+        by smtp.gmail.com with ESMTPSA id 5a478bee46e88-2ba9dcd0609sm5409175eec.16.2026.02.12.16.41.37
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 12 Feb 2026 16:38:56 -0800 (PST)
-Message-ID: <51bbd728-c712-4601-8a4a-7c602c67fe75@gmail.com>
-Date: Thu, 12 Feb 2026 16:38:54 -0800
+        Thu, 12 Feb 2026 16:41:38 -0800 (PST)
+Message-ID: <f587b319-fc6c-44f5-94b0-350c1aadaa3c@gmail.com>
+Date: Thu, 12 Feb 2026 16:41:37 -0800
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -86,8 +86,8 @@ List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH bpf-next 2/3] mm/memcontrol: Return error when accessing
- kmem with nokmem
+Subject: Re: [PATCH bpf-next 3/3] selftests/bpf: Skip test_kmem when
+ cgroup.memory=nokmem
 To: Hui Zhu <hui.zhu@linux.dev>, Johannes Weiner <hannes@cmpxchg.org>,
  Michal Hocko <mhocko@kernel.org>, Roman Gushchin <roman.gushchin@linux.dev>,
  Shakeel Butt <shakeel.butt@linux.dev>, Muchun Song <muchun.song@linux.dev>,
@@ -103,10 +103,10 @@ To: Hui Zhu <hui.zhu@linux.dev>, Johannes Weiner <hannes@cmpxchg.org>,
  linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
  linux-kselftest@vger.kernel.org
 References: <cover.1770883926.git.zhuhui@kylinos.cn>
- <733422f72ccbac94126ae67b9e49f4a3d460b76a.1770883926.git.zhuhui@kylinos.cn>
+ <2f6ee1db173b67a636b2caa85744cb4ce8114e64.1770883926.git.zhuhui@kylinos.cn>
 Content-Language: en-US
 From: "JP Kobryn (Meta)" <inwardvessel@gmail.com>
-In-Reply-To: <733422f72ccbac94126ae67b9e49f4a3d460b76a.1770883926.git.zhuhui@kylinos.cn>
+In-Reply-To: <2f6ee1db173b67a636b2caa85744cb4ce8114e64.1770883926.git.zhuhui@kylinos.cn>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 X-Rspamd-Server: lfdr
@@ -120,7 +120,7 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-13924-lists,cgroups=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-13925-lists,cgroups=lfdr.de];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	MIME_TRACE(0.00)[0:+];
 	FREEMAIL_TO(0.00)[linux.dev,cmpxchg.org,kernel.org,linux-foundation.org,iogearbox.net,gmail.com,fomichev.me,google.com,kylinos.cn,vger.kernel.org,kvack.org];
@@ -138,43 +138,63 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	TAGGED_RCPT(0.00)[cgroups];
 	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
 	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,kylinos.cn:email]
-X-Rspamd-Queue-Id: 45C351321B4
+X-Rspamd-Queue-Id: 1F6CC1321E4
 X-Rspamd-Action: no action
 
 On 2/12/26 12:23 AM, Hui Zhu wrote:
 > From: Hui Zhu <zhuhui@kylinos.cn>
 > 
-> When running tests on hosts with cgroup.memory=nokmem enabled for
-> performance reasons, test_kmem always gets a value of 0 for kmem
-> statistics.
+> When cgroup.memory=nokmem is set in kernel command line, kmem
+> accounting is disabled and the test_kmem subtest will fail.
 > 
-> Since BPF programs cannot easily determine whether kmem is enabled,
-> add a check in memcg_stat_item_valid() to return an error when
-> attempting to access MEMCG_KMEM statistics while kmem accounting
-> is disabled via cgroup_memory_nokmem.
-> 
-> This prevents BPF programs from silently receiving zero values and
-> allows them to properly handle the case where kmem accounting is
-> unavailable.
+> Add a check to skip this test when the parameter is present.
 > 
 > Signed-off-by: Hui Zhu <zhuhui@kylinos.cn>
 > ---
->   mm/memcontrol.c | 3 ++-
->   1 file changed, 2 insertions(+), 1 deletion(-)
+>   .../bpf/prog_tests/cgroup_iter_memcg.c        | 28 +++++++++++++++++++
+>   1 file changed, 28 insertions(+)
 > 
-> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> index 129eed3ff5bb..4d8419623d1c 100644
-> --- a/mm/memcontrol.c
-> +++ b/mm/memcontrol.c
-> @@ -667,7 +667,8 @@ unsigned long memcg_page_state(struct mem_cgroup *memcg, int idx)
+> diff --git a/tools/testing/selftests/bpf/prog_tests/cgroup_iter_memcg.c b/tools/testing/selftests/bpf/prog_tests/cgroup_iter_memcg.c
+> index 13b299512429..203e6b091a21 100644
+> --- a/tools/testing/selftests/bpf/prog_tests/cgroup_iter_memcg.c
+> +++ b/tools/testing/selftests/bpf/prog_tests/cgroup_iter_memcg.c
+> @@ -134,11 +134,39 @@ static void test_shmem(struct bpf_link *link, struct memcg_query *memcg_query)
+>   	shm_unlink("/tmp_shmem");
+>   }
 >   
->   bool memcg_stat_item_valid(int idx)
+> +static bool cmdline_has(const char *arg)
+> +{
+> +	char cmdline[4096];
+> +	int fd;
+> +	ssize_t len;
+> +	bool ret = false;
+> +
+> +	fd = open("/proc/cmdline", O_RDONLY);
+> +	if (fd < 0)
+> +		return false;
+> +
+> +	len = read(fd, cmdline, sizeof(cmdline) - 1);
+> +	close(fd);
+> +	if (len < 0)
+> +		return false;
+> +
+> +	cmdline[len] = '\0';
+> +	if (strstr(cmdline, arg))
+> +		ret = true;
+> +
+> +	return ret;
+> +}
+> +
+>   #define NR_PIPES 64
+>   static void test_kmem(struct bpf_link *link, struct memcg_query *memcg_query)
 >   {
-> -	if ((u32)idx >= MEMCG_NR_STAT)
-> +	if ((u32)idx >= MEMCG_NR_STAT ||
-> +	    (cgroup_memory_nokmem && (u32)idx == MEMCG_KMEM))
->   		return false;
+>   	int fds[NR_PIPES][2], i;
+>   
+> +	if (cmdline_has("cgroup.memory=nokmem")) {
+> +		test__skip();
+> +		return;
+> +	}
 
-It's still a valid stat though, right? When it's disabled the value will
-just remain zero. I don't think this is necessary.
+Instead of just skipping what if we proceed and then confirm we get a
+zero value after the allocations?
 
