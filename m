@@ -1,502 +1,152 @@
-Return-Path: <cgroups+bounces-13930-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-13931-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 8EecF0jLjmm/EwEAu9opvQ
-	(envelope-from <cgroups+bounces-13930-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Fri, 13 Feb 2026 07:57:12 +0100
+	id 8I5AE2LQjmnKFAEAu9opvQ
+	(envelope-from <cgroups+bounces-13931-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Fri, 13 Feb 2026 08:18:58 +0100
 X-Original-To: lists+cgroups@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id B2A43133570
-	for <lists+cgroups@lfdr.de>; Fri, 13 Feb 2026 07:57:11 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id D8DF51336FF
+	for <lists+cgroups@lfdr.de>; Fri, 13 Feb 2026 08:18:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 2BA48303DF69
-	for <lists+cgroups@lfdr.de>; Fri, 13 Feb 2026 06:57:10 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id CF5F6305ED03
+	for <lists+cgroups@lfdr.de>; Fri, 13 Feb 2026 07:18:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A89B127B32B;
-	Fri, 13 Feb 2026 06:57:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2E106280037;
+	Fri, 13 Feb 2026 07:18:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="ofPx+WCp"
 X-Original-To: cgroups@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+Received: from out-172.mta0.migadu.com (out-172.mta0.migadu.com [91.218.175.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1554317A303;
-	Fri, 13 Feb 2026 06:57:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F18C5211A28;
+	Fri, 13 Feb 2026 07:18:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1770965826; cv=none; b=MDcq3Odxv3i7RRCvWrBEHVudWDFnutbNMBeZjffPkgd00kNt3DIFlCGnbMYLiV4/NmS3WMrklzk5dnSE4oq81I2IaKnk4gxtsX9untEhl96AIVNhOsaM28vrk6R6NnMqqthwI0J8aUUhaSBU4sdwCDB935Dg1HJCe3oA4AJS+0A=
+	t=1770967130; cv=none; b=j5Oy9OAGcSLQVpeNZbQY9q1n1vObnRiH+JvDNhlVQgzZpbt5BNjkGBQjeXSjQ4vwUTTR2UaBayZ0m2C1ru8jiMFWauG2hHmc9787WR1jtIOVlXkCqkx/Fyiz8Dqk1VqW64WqA9h9tuOb5vBG+B0tNn313aM8H0tT1Ai6C2ddqbI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1770965826; c=relaxed/simple;
-	bh=PS/5ecFcYH9Wk8oKFlaXED2tQT7cDbKy2TzSC22kuu0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=KQgGCz8VOY989KE0ktYPasHCsIQZ45qr/iLwqTItwfPm3f5EI3I7yeZmSrvUmMl8n4kCE3f1wA86T/xnU4UWmHwzvNAyOQzNOuj4ssjnMqQ8PMnYZvXEuKhP7MJTc3Ppk61iefJhCMWFw4deRNedgBQoOPqkQwBAqPsOrZhrSXY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.198])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTPS id 4fC2yx2V14zYQtLX;
-	Fri, 13 Feb 2026 14:56:57 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.128])
-	by mail.maildlp.com (Postfix) with ESMTP id 5D7AC40573;
-	Fri, 13 Feb 2026 14:57:00 +0800 (CST)
-Received: from [10.67.111.176] (unknown [10.67.111.176])
-	by APP4 (Coremail) with SMTP id gCh0CgCnCPk6y45p1NcQHQ--.58696S2;
-	Fri, 13 Feb 2026 14:57:00 +0800 (CST)
-Message-ID: <d77ef443-d816-4565-a9bc-e7e46c0a92c4@huaweicloud.com>
-Date: Fri, 13 Feb 2026 14:56:58 +0800
+	s=arc-20240116; t=1770967130; c=relaxed/simple;
+	bh=nrZ+DfNphSQEEqYBHdHC1V4TEyPSwExeOiovDkxhc9A=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=rUoT7Vu149Qoz/1fy2tqPijbuqN1SPrHRiGviocB/yLnWWN/1xPzs5IuUjpLPLgHFA2tZA6MQFEf8fpUUEEqdL1ovOIFEQHqgP6rWQsRnWxhAe925JzwdZGddnue44BZVVV7V6qXe8Pf39xat+K0Idg5MzyOGN4+kHD9YIudy1Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=ofPx+WCp; arc=none smtp.client-ip=91.218.175.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1770967125;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=wrYq2pAJJuqrmBI86q10Z6dZRJSTibQvGpw+Z8u3inA=;
+	b=ofPx+WCpUD8w8iUlCR3WoE5H+/NFqYmwHjeEhP/opwMxn+UHtNg5RK8MyxzEojkK5uUO+E
+	aPX71PF+yk9CRysc4uGf+RVU3yUiOuMpzYiv90NB9CJ8dpbr6dV/HhnDmvfxGtYEOAD6v8
+	Msq0w6OwAqDpSg2Yb3psPeErNC4hGcc=
+From: Jiayuan Chen <jiayuan.chen@linux.dev>
+To: linux-mm@kvack.org
+Cc: jiayuan.chen@linux.dev,
+	Tejun Heo <tj@kernel.org>,
+	Johannes Weiner <hannes@cmpxchg.org>,
+	=?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Michal Hocko <mhocko@kernel.org>,
+	Roman Gushchin <roman.gushchin@linux.dev>,
+	Shakeel Butt <shakeel.butt@linux.dev>,
+	Muchun Song <muchun.song@linux.dev>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Yosry Ahmed <yosry.ahmed@linux.dev>,
+	Nhat Pham <nphamcs@gmail.com>,
+	Chengming Zhou <chengming.zhou@linux.dev>,
+	Shuah Khan <shuah@kernel.org>,
+	cgroups@vger.kernel.org,
+	linux-doc@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-kselftest@vger.kernel.org
+Subject: [PATCH mm-new v3 0/2] mm: zswap: add per-memcg stat for incompressible pages
+Date: Fri, 13 Feb 2026 15:18:21 +0800
+Message-ID: <20260213071827.5688-1-jiayuan.chen@linux.dev>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 4/6] cgroup/cpuset: Don't update isolated_cpus from CPU
- hotplug
-To: Waiman Long <longman@redhat.com>, Tejun Heo <tj@kernel.org>,
- Johannes Weiner <hannes@cmpxchg.org>, =?UTF-8?Q?Michal_Koutn=C3=BD?=
- <mkoutny@suse.com>, Ingo Molnar <mingo@redhat.com>,
- Peter Zijlstra <peterz@infradead.org>, Juri Lelli <juri.lelli@redhat.com>,
- Vincent Guittot <vincent.guittot@linaro.org>,
- Steven Rostedt <rostedt@goodmis.org>, Ben Segall <bsegall@google.com>,
- Mel Gorman <mgorman@suse.de>, Valentin Schneider <vschneid@redhat.com>,
- Anna-Maria Behnsen <anna-maria@linutronix.de>,
- Frederic Weisbecker <frederic@kernel.org>,
- Thomas Gleixner <tglx@linutronix.de>, Shuah Khan <shuah@kernel.org>
-Cc: cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-kselftest@vger.kernel.org
-References: <20260212164640.2408295-1-longman@redhat.com>
- <20260212164640.2408295-5-longman@redhat.com>
-Content-Language: en-US
-From: Chen Ridong <chenridong@huaweicloud.com>
-In-Reply-To: <20260212164640.2408295-5-longman@redhat.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID:gCh0CgCnCPk6y45p1NcQHQ--.58696S2
-X-Coremail-Antispam: 1UD129KBjvAXoW3Cr13ZF4rtw1kGF1fKFyUWrg_yoW8Xry3Xo
-	W7JF4rAw1fJw15ZFs8G342yFykW3yqy3ZIyw45Zr1DuFy3Ar9Fyasxt3Zavr1fWFWrtrW5
-	JFyIv3yFkrZ3A3Zxn29KB7ZKAUJUUUU8529EdanIXcx71UUUUU7v73VFW2AGmfu7bjvjm3
-	AaLaJ3UjIYCTnIWjp_UUUY27kC6x804xWl14x267AKxVW5JVWrJwAFc2x0x2IEx4CE42xK
-	8VAvwI8IcIk0rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4
-	AK67xGY2AK021l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF
-	7I0E14v26r4UJVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7
-	CjxVAFwI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8C
-	rVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4
-	IE7xkEbVWUJVW8JwACjcxG0xvEwIxGrwACI402YVCY1x02628vn2kIc2xKxwCY1x0262kK
-	e7AKxVW8ZVWrXwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c
-	02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_GFv_
-	WrylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7
-	CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v2
-	6r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07
-	jIksgUUUUU=
-X-CM-SenderInfo: hfkh02xlgr0w46kxt4xhlfz01xgou0bp/
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-1.46 / 15.00];
+X-Spamd-Result: default: False [-0.66 / 15.00];
+	MID_CONTAINS_FROM(1.00)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
+	DMARC_POLICY_ALLOW(-0.50)[linux.dev,none];
+	R_MISSING_CHARSET(0.50)[];
+	R_DKIM_ALLOW(-0.20)[linux.dev:s=key1];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
-	TO_DN_SOME(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[19];
-	TAGGED_RCPT(0.00)[cgroups];
-	R_DKIM_NA(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[chenridong@huaweicloud.com,cgroups@vger.kernel.org];
-	MID_RHS_MATCH_FROM(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[6];
+	TAGGED_FROM(0.00)[bounces-13931-lists,cgroups=lfdr.de];
+	FREEMAIL_CC(0.00)[linux.dev,kernel.org,cmpxchg.org,suse.com,lwn.net,linux-foundation.org,gmail.com,vger.kernel.org];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-13930-lists,cgroups=lfdr.de];
-	DMARC_NA(0.00)[huaweicloud.com];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: B2A43133570
+	RCPT_COUNT_TWELVE(0.00)[19];
+	MIME_TRACE(0.00)[0:+];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	RCVD_COUNT_THREE(0.00)[3];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	TO_DN_SOME(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[jiayuan.chen@linux.dev,cgroups@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	DKIM_TRACE(0.00)[linux.dev:+];
+	PRECEDENCE_BULK(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	TAGGED_RCPT(0.00)[cgroups];
+	MISSING_XM_UA(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[linux.dev:mid,linux.dev:dkim,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: D8DF51336FF
 X-Rspamd-Action: no action
 
+In containerized environments, knowing which cgroup is contributing
+incompressible pages to zswap is essential for effective resource
+management. This series adds a new per-memcg stat 'zswap_incomp' to
+track incompressible pages, along with a selftest.
 
+Patch 1: Add the per-memcg zswap_incomp stat and documentation
+Patch 2: Add selftest for the new stat
 
-On 2026/2/13 0:46, Waiman Long wrote:
-> As any change to isolated_cpus is going to be propagated to the
-> HK_TYPE_DOMAIN housekeeping cpumask, it can be problematic if
-> housekeeping cpumasks are directly being modified from the CPU hotplug
-> code path. This is especially the case if we are going to enable dynamic
-> update to the nohz_full housekeeping cpumask (HK_TYPE_KERNEL_NOISE)
-> in the near future with the help of CPU hotplug.
-> 
-> Avoid these potential problems by changing the cpuset code to not
-> updating isolated_cpus when calling from CPU hotplug. A new special
-> PRS_INVALID_ISOLCPUS is added to indicate the current cpuset is an
-> invalid partition but its effective_xcpus are still in isolated_cpus.
-> This special state will be set if an isolated partition becomes invalid
-> due to the shutdown of the last active CPU in that partition. We also
-> need to keep the effective_xcpus even if exclusive_cpus isn't set.
-> 
-> When changes are made to "cpuset.cpus", "cpuset.cpus.exclusive" or
-> "cpuset.cpus.partition" of a PRS_INVALID_ISOLCPUS cpuset, its state
-> will be reset back to PRS_INVALID_ISOLATED and its effective_xcpus will
-> be removed from isolated_cpus before proceeding.
-> 
-> As CPU hotplug will no longer update isolated_cpus, some of the test
-> cases in test_cpuset_prs.h will have to be updated to match the new
-> expected results. Some new test cases are also added to confirm that
-> "cpuset.cpus.isolated" and HK_TYPE_DOMAIN housekeeping cpumask will
-> both be updated.
-> 
-> Signed-off-by: Waiman Long <longman@redhat.com>
-> ---
->  kernel/cgroup/cpuset.c                        | 85 ++++++++++++++++---
->  .../selftests/cgroup/test_cpuset_prs.sh       | 21 +++--
->  2 files changed, 87 insertions(+), 19 deletions(-)
-> 
-> diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
-> index c792380f9b60..48b7f275085b 100644
-> --- a/kernel/cgroup/cpuset.c
-> +++ b/kernel/cgroup/cpuset.c
-> @@ -159,6 +159,8 @@ static bool force_sd_rebuild;			/* RWCS */
->   *   2 - partition root without load balancing (isolated)
->   *  -1 - invalid partition root
->   *  -2 - invalid isolated partition root
-> + *  -3 - invalid isolated partition root but with effective xcpus still
-> + *	 in isolated_cpus (set from CPU hotplug side)
->   *
->   *  There are 2 types of partitions - local or remote. Local partitions are
->   *  those whose parents are partition root themselves. Setting of
-> @@ -187,6 +189,7 @@ static bool force_sd_rebuild;			/* RWCS */
->  #define PRS_ISOLATED		2
->  #define PRS_INVALID_ROOT	-1
->  #define PRS_INVALID_ISOLATED	-2
-> +#define PRS_INVALID_ISOLCPUS	-3 /* Effective xcpus still in isolated_cpus */
->  
+Changes v2 -> v3:
+https://lore.kernel.org/linux-mm/20260206072220.144008-1-jiayuan.chen@linux.dev/
 
-How about adding a helper?
+- Remove inline comments for incompressibility check (Yosry Ahmed)
+- Use PAGE_SIZE instead of hardcoded 4096 in selftest (SeongJae Park)
+- Use pipe for parent-child synchronization instead of usleep
+  (JP Kobryn, SeongJae Park)
+- Use MADV_PAGEOUT instead of memory.reclaim to push pages into zswap,
+  and use mmap instead of malloc accordingly (Nhat Pham)
+- Collect Reviewed-by and Acked-by tags
 
-bool hotplug_invalidate_isolate(struct cpuset *cs)
-{
-	if (current->flags & PF_KTHREAD) &&
-    		(cs->partition_root_state == PRS_INVALID_ISOLATED);
-}
+Changes v1 -> v2:
+https://lore.kernel.org/linux-mm/20260205053013.25134-1-jiayuan.chen@linux.dev/
 
->  /*
->   * Temporary cpumasks for working with partitions that are passed among
-> @@ -382,6 +385,30 @@ static inline bool is_in_v2_mode(void)
->  	      (cpuset_cgrp_subsys.root->flags & CGRP_ROOT_CPUSET_V2_MODE);
->  }
->  
-> +/*
-> + * If the given cpuset has a partition state of PRS_INVALID_ISOLCPUS,
-> + * remove its effective_xcpus from isolated_cpus and reset its state to
-> + * PRS_INVALID_ISOLATED. Also clear effective_xcpus if exclusive_cpus is
-> + * empty.
-> + */
-> +static void fix_invalid_isolcpus(struct cpuset *cs, struct cpuset *trialcs)
-> +{
-> +	if (likely(cs->partition_root_state != PRS_INVALID_ISOLCPUS))
-> +		return;
+- Rename zswpraw/MEMCG_ZSWAP_RAW to zswap_incomp/MEMCG_ZSWAP_INCOMP
+  (Shakeel Butt, Yosry Ahmed)
+- Drop zswap_is_incomp() helper, keep opencode (size == PAGE_SIZE) with
+  comments explaining the incompressibility check (Yosry Ahmed)
+- Add documentation in cgroup-v2.rst (Nhat Pham, SeongJae Park)
+- Add selftest as a separate patch (Nhat Pham)
+- Add reference link to Chris Li's discussion on the need for per-memcg
+  incompressible page tracking (Nhat Pham)
 
-	if (likely(cs->partition_root_state != PRS_INVALID_ISOLATED ||
-		   cpumask_empty(cs->effective_xcpus)))
-		return;
+Jiayuan Chen (2):
+  mm: zswap: add per-memcg stat for incompressible pages
+  selftests/cgroup: add test for zswap incompressible pages
 
-> +	WARN_ON_ONCE(cpumask_empty(cs->effective_xcpus));
-> +	spin_lock_irq(&callback_lock);
-> +	cpumask_andnot(isolated_cpus, isolated_cpus, cs->effective_xcpus);
-> +	if (cpumask_empty(cs->exclusive_cpus))
-> +		cpumask_clear(cs->effective_xcpus);
-> +	cs->partition_root_state = PRS_INVALID_ISOLATED;
-> +	spin_unlock_irq(&callback_lock);
-> +	isolated_cpus_updating = true;
-> +	if (trialcs) {
-> +		trialcs->partition_root_state = PRS_INVALID_ISOLATED;
-> +		cpumask_copy(trialcs->effective_xcpus, cs->effective_xcpus);
-> +	}
-> +}
-> +
->  /**
->   * partition_is_populated - check if partition has tasks
->   * @cs: partition root to be checked
-> @@ -1160,7 +1187,8 @@ static void reset_partition_data(struct cpuset *cs)
->  
->  	lockdep_assert_held(&callback_lock);
->  
-> -	if (cpumask_empty(cs->exclusive_cpus)) {
-> +	if (cpumask_empty(cs->exclusive_cpus) &&
-> +	    (cs->partition_root_state != PRS_INVALID_ISOLCPUS)) {
-
-	if (cpumask_empty(cs->exclusive_cpus) &&
-	    !hotplug_invalidate_isolate(cs))
-
->  		cpumask_clear(cs->effective_xcpus);
->  		if (is_cpu_exclusive(cs))
->  			clear_bit(CS_CPU_EXCLUSIVE, &cs->flags);
-> @@ -1189,6 +1217,10 @@ static void isolated_cpus_update(int old_prs, int new_prs, struct cpumask *xcpus
->  			return;
->  		cpumask_andnot(isolated_cpus, isolated_cpus, xcpus);
->  	}
-> +	/*
-> +	 * Shouldn't update isolated_cpus from CPU hotplug
-> +	 */
-> +	WARN_ON_ONCE(current->flags & PF_KTHREAD);
->  	isolated_cpus_updating = true;
->  }
->  
-> @@ -1208,7 +1240,6 @@ static void partition_xcpus_add(int new_prs, struct cpuset *parent,
->  	if (!parent)
->  		parent = &top_cpuset;
->  
-> -
->  	if (parent == &top_cpuset)
->  		cpumask_or(subpartitions_cpus, subpartitions_cpus, xcpus);
->  
-> @@ -1224,11 +1255,12 @@ static void partition_xcpus_add(int new_prs, struct cpuset *parent,
->   * @old_prs: old partition_root_state
->   * @parent: parent cpuset
->   * @xcpus: exclusive CPUs to be removed
-> + * @no_isolcpus: don't update isolated_cpus
->   *
->   * Remote partition if parent == NULL
->   */
->  static void partition_xcpus_del(int old_prs, struct cpuset *parent,
-> -				struct cpumask *xcpus)
-> +				struct cpumask *xcpus, bool no_isolcpus)
-
-remove.
-
->  {
->  	WARN_ON_ONCE(old_prs < 0);
->  	lockdep_assert_held(&callback_lock);
-> @@ -1238,7 +1270,7 @@ static void partition_xcpus_del(int old_prs, struct cpuset *parent,
->  	if (parent == &top_cpuset)
->  		cpumask_andnot(subpartitions_cpus, subpartitions_cpus, xcpus);
->  
-> -	if (old_prs != parent->partition_root_state)
-> +	if ((old_prs != parent->partition_root_state) && !no_isolcpus)
-
-	if ((old_prs != parent->partition_root_state) &&
-	    !hotplug_invalidate_isolate(cs))
-
->  		isolated_cpus_update(old_prs, parent->partition_root_state,
->  				     xcpus);
->  
-> @@ -1496,6 +1528,8 @@ static int remote_partition_enable(struct cpuset *cs, int new_prs,
->   */
->  static void remote_partition_disable(struct cpuset *cs, struct tmpmasks *tmp)
->  {
-> +	int old_prs = cs->partition_root_state;
-> +
->  	WARN_ON_ONCE(!is_remote_partition(cs));
->  	/*
->  	 * When a CPU is offlined, top_cpuset may end up with no available CPUs,
-> @@ -1508,14 +1542,24 @@ static void remote_partition_disable(struct cpuset *cs, struct tmpmasks *tmp)
->  
->  	spin_lock_irq(&callback_lock);
->  	cs->remote_partition = false;
-> -	partition_xcpus_del(cs->partition_root_state, NULL, cs->effective_xcpus);
->  	if (cs->prs_err)
->  		cs->partition_root_state = -cs->partition_root_state;
->  	else
->  		cs->partition_root_state = PRS_MEMBER;
-> +	/*
-> +	 * Don't update isolated_cpus if calling from CPU hotplug kthread
-> +	 */
-> +	if ((current->flags & PF_KTHREAD) &&
-> +	    (cs->partition_root_state == PRS_INVALID_ISOLATED))
-> +		cs->partition_root_state = PRS_INVALID_ISOLCPUS;
->  
-
-remove.
-
-> -	/* effective_xcpus may need to be changed */
-> -	compute_excpus(cs, cs->effective_xcpus);
-> +	partition_xcpus_del(old_prs, NULL, cs->effective_xcpus,
-> +			    cs->partition_root_state == PRS_INVALID_ISOLCPUS);
-> +	/*
-> +	 * effective_xcpus may need to be changed
-> +	 */
-> +	if (cs->partition_root_state != PRS_INVALID_ISOLCPUS)
-> +		compute_excpus(cs, cs->effective_xcpus);
->  	reset_partition_data(cs);
->  	spin_unlock_irq(&callback_lock);
->  	update_isolation_cpumasks();
-> @@ -1580,7 +1624,7 @@ static void remote_cpus_update(struct cpuset *cs, struct cpumask *xcpus,
->  	if (adding)
->  		partition_xcpus_add(prs, NULL, tmp->addmask);
->  	if (deleting)
-> -		partition_xcpus_del(prs, NULL, tmp->delmask);
-> +		partition_xcpus_del(prs, NULL, tmp->delmask, false);
->  	/*
->  	 * Need to update effective_xcpus and exclusive_cpus now as
->  	 * update_sibling_cpumasks() below may iterate back to the same cs.
-> @@ -1893,6 +1937,10 @@ static int update_parent_effective_cpumask(struct cpuset *cs, int cmd,
->  			if (!part_error)
->  				new_prs = -old_prs;
->  			break;
-> +		case PRS_INVALID_ISOLCPUS:
-> +			if (!part_error)
-> +				new_prs = PRS_ISOLATED;
-> +			break;
-
-remove
-
->  		}
->  	}
->  
-> @@ -1923,12 +1971,19 @@ static int update_parent_effective_cpumask(struct cpuset *cs, int cmd,
->  	if (old_prs != new_prs)
->  		cs->partition_root_state = new_prs;
->  
-> +	/*
-> +	 * Don't update isolated_cpus if calling from CPU hotplug kthread
-> +	 */
-> +	if ((current->flags & PF_KTHREAD) &&
-> +	    (cs->partition_root_state == PRS_INVALID_ISOLATED))
-> +		cs->partition_root_state = PRS_INVALID_ISOLCPUS;
-
-remove
-
->  	/*
->  	 * Adding to parent's effective_cpus means deletion CPUs from cs
->  	 * and vice versa.
->  	 */
->  	if (adding)
-> -		partition_xcpus_del(old_prs, parent, tmp->addmask);
-> +		partition_xcpus_del(old_prs, parent, tmp->addmask,
-> +				    cs->partition_root_state == PRS_INVALID_ISOLCPUS);
-
-remove
-
->  	if (deleting)
->  		partition_xcpus_add(new_prs, parent, tmp->delmask);
->  
-> @@ -2317,6 +2372,7 @@ static void partition_cpus_change(struct cpuset *cs, struct cpuset *trialcs,
->  	if (cs_is_member(cs))
->  		return;
->  
-> +	fix_invalid_isolcpus(cs, trialcs);
->  	prs_err = validate_partition(cs, trialcs);
->  	if (prs_err)
->  		trialcs->prs_err = cs->prs_err = prs_err;
-> @@ -2818,6 +2874,7 @@ static int update_prstate(struct cpuset *cs, int new_prs)
->  	if (alloc_tmpmasks(&tmpmask))
->  		return -ENOMEM;
->  
-> +	fix_invalid_isolcpus(cs, NULL);
->  	err = update_partition_exclusive_flag(cs, new_prs);
->  	if (err)
->  		goto out;
-> @@ -3268,6 +3325,7 @@ static int cpuset_partition_show(struct seq_file *seq, void *v)
->  		type = "root";
->  		fallthrough;
->  	case PRS_INVALID_ISOLATED:
-> +	case PRS_INVALID_ISOLCPUS:
->  		if (!type)
->  			type = "isolated";
->  		err = perr_strings[READ_ONCE(cs->prs_err)];
-> @@ -3463,9 +3521,9 @@ static void cpuset_css_offline(struct cgroup_subsys_state *css)
->  }
->  
->  /*
-> - * If a dying cpuset has the 'cpus.partition' enabled, turn it off by
-> - * changing it back to member to free its exclusive CPUs back to the pool to
-> - * be used by other online cpusets.
-> + * If a dying cpuset has the 'cpus.partition' enabled or is in the
-> + * PRS_INVALID_ISOLCPUS state, turn it off by changing it back to member to
-> + * free its exclusive CPUs back to the pool to be used by other online cpusets.
->   */
->  static void cpuset_css_killed(struct cgroup_subsys_state *css)
->  {
-> @@ -3473,7 +3531,8 @@ static void cpuset_css_killed(struct cgroup_subsys_state *css)
->  
->  	cpuset_full_lock();
->  	/* Reset valid partition back to member */
-> -	if (is_partition_valid(cs))
-> +	if (is_partition_valid(cs) ||
-> +	    (cs->partition_root_state == PRS_INVALID_ISOLCPUS))
-	if (is_partition_valid(cs) ||
-	    (cs->partition_root_state == PRS_INVALID_ISOLATED &&
-	     !cpumask_empty(cs->effective_xcpus)))
->  		update_prstate(cs, PRS_MEMBER);
->  	cpuset_full_unlock();
->  }
-
-Can this be simpler?
-
-> diff --git a/tools/testing/selftests/cgroup/test_cpuset_prs.sh b/tools/testing/selftests/cgroup/test_cpuset_prs.sh
-> index 5dff3ad53867..380506157f70 100755
-> --- a/tools/testing/selftests/cgroup/test_cpuset_prs.sh
-> +++ b/tools/testing/selftests/cgroup/test_cpuset_prs.sh
-> @@ -234,6 +234,7 @@ TEST_MATRIX=(
->  	"$SETUP_A123_PARTITIONS    .     C2-3    .      .      .     0 A1:|A2:2|A3:3 A1:P1|A2:P1|A3:P1"
->  
->  	# CPU offlining cases:
-> +	# cpuset.cpus.isolated should no longer be updated.
->  	"   C0-1     .      .    C2-3    S+    C4-5     .     O2=0   0 A1:0-1|B1:3"
->  	"C0-3:P1:S+ C2-3:P1 .      .     O2=0    .      .      .     0 A1:0-1|A2:3"
->  	"C0-3:P1:S+ C2-3:P1 .      .     O2=0   O2=1    .      .     0 A1:0-1|A2:2-3"
-> @@ -245,8 +246,9 @@ TEST_MATRIX=(
->  	"C2-3:P1:S+  C3:P2  .      .     O2=0   O2=1    .      .     0 A1:2|A2:3 A1:P1|A2:P2"
->  	"C2-3:P1:S+  C3:P1  .      .     O2=0    .      .      .     0 A1:|A2:3 A1:P1|A2:P1"
->  	"C2-3:P1:S+  C3:P1  .      .     O3=0    .      .      .     0 A1:2|A2: A1:P1|A2:P1"
-> -	"C2-3:P1:S+  C3:P1  .      .    T:O2=0   .      .      .     0 A1:3|A2:3 A1:P1|A2:P-1"
-> -	"C2-3:P1:S+  C3:P1  .      .      .    T:O3=0   .      .     0 A1:2|A2:2 A1:P1|A2:P-1"
-> +	"C2-3:P1:S+  C3:P2  .      .    T:O2=0   .      .      .     0 A1:3|A2:3 A1:P1|A2:P-2"
-> +	"C1-3:P1:S+  C3:P2  .      .      .    T:O3=0   .      .     0 A1:1-2|A2:1-2|XA2:3 A1:P1|A2:P-2 3"
-> +	"C1-3:P1:S+  C3:P2  .      .      .    T:O3=0  O3=1    .     0 A1:1-2|A2:3|XA2:3 A1:P1|A2:P2  3"
->  	"$SETUP_A123_PARTITIONS    .     O1=0    .      .      .     0 A1:|A2:2|A3:3 A1:P1|A2:P1|A3:P1"
->  	"$SETUP_A123_PARTITIONS    .     O2=0    .      .      .     0 A1:1|A2:|A3:3 A1:P1|A2:P1|A3:P1"
->  	"$SETUP_A123_PARTITIONS    .     O3=0    .      .      .     0 A1:1|A2:2|A3: A1:P1|A2:P1|A3:P1"
-> @@ -299,13 +301,14 @@ TEST_MATRIX=(
->  								       A1:P0|A2:P2|A3:P-1 2-4"
->  
->  	# Remote partition offline tests
-> +	# CPU offline shouldn't change cpuset.cpus.{isolated,exclusive.effective}
->  	" C0-3:S+ C1-3:S+ C2-3     .    X2-3   X2-3 X2-3:P2:O2=0 .   0 A1:0-1|A2:1|A3:3 A1:P0|A3:P2 2-3"
->  	" C0-3:S+ C1-3:S+ C2-3     .    X2-3   X2-3 X2-3:P2:O2=0 O2=1 0 A1:0-1|A2:1|A3:2-3 A1:P0|A3:P2 2-3"
-> -	" C0-3:S+ C1-3:S+  C3      .    X2-3   X2-3    P2:O3=0   .   0 A1:0-2|A2:1-2|A3: A1:P0|A3:P2 3"
-> -	" C0-3:S+ C1-3:S+  C3      .    X2-3   X2-3   T:P2:O3=0  .   0 A1:0-2|A2:1-2|A3:1-2 A1:P0|A3:P-2 3|"
-> +	" C0-3:S+ C1-3:S+  C3      .    X2-3   X2-3    P2:O3=0   .   0 A1:0-2|A2:1-2|A3:|XA3:3 A1:P0|A3:P2 3"
-> +	" C0-3:S+ C1-3:S+  C3      .    X2-3   X2-3   T:P2:O3=0  .   0 A1:0-2|A2:1-2|A3:1-2|XA3:3 A1:P0|A3:P-2 3"
->  
->  	# An invalidated remote partition cannot self-recover from hotplug
-> -	" C0-3:S+ C1-3:S+  C2      .    X2-3   X2-3   T:P2:O2=0 O2=1 0 A1:0-3|A2:1-3|A3:2 A1:P0|A3:P-2 ."
-> +	" C0-3:S+ C1-3:S+  C2      .    X2-3   X2-3   T:P2:O2=0 O2=1 0 A1:0-3|A2:1-3|A3:2|XA3:2 A1:P0|A3:P-2 2"
->  
->  	# cpus.exclusive.effective clearing test
->  	" C0-3:S+ C1-3:S+  C2      .   X2-3:X    .      .      .     0 A1:0-3|A2:1-3|A3:2|XA1:"
-> @@ -764,7 +767,7 @@ check_cgroup_states()
->  # only CPUs in isolated partitions as well as those that are isolated at
->  # boot time.
->  #
-> -# $1 - expected isolated cpu list(s) <isolcpus1>{,<isolcpus2>}
-> +# $1 - expected isolated cpu list(s) <isolcpus1>{|<isolcpus2>}
->  # <isolcpus1> - expected sched/domains value
->  # <isolcpus2> - cpuset.cpus.isolated value = <isolcpus1> if not defined
->  #
-> @@ -773,6 +776,7 @@ check_isolcpus()
->  	EXPECTED_ISOLCPUS=$1
->  	ISCPUS=${CGROUP2}/cpuset.cpus.isolated
->  	ISOLCPUS=$(cat $ISCPUS)
-> +	HKICPUS=$(cat /sys/devices/system/cpu/isolated)
->  	LASTISOLCPU=
->  	SCHED_DOMAINS=/sys/kernel/debug/sched/domains
->  	if [[ $EXPECTED_ISOLCPUS = . ]]
-> @@ -810,6 +814,11 @@ check_isolcpus()
->  	ISOLCPUS=
->  	EXPECTED_ISOLCPUS=$EXPECTED_SDOMAIN
->  
-> +	#
-> +	# The inverse of HK_TYPE_DOMAIN cpumask in $HKICPUS should match $ISOLCPUS
-> +	#
-> +	[[ "$ISOLCPUS" != "$HKICPUS" ]] && return 1
-> +
->  	#
->  	# Use the sched domain in debugfs to check isolated CPUs, if available
->  	#
+ Documentation/admin-guide/cgroup-v2.rst     |   5 +
+ include/linux/memcontrol.h                  |   1 +
+ mm/memcontrol.c                             |   6 +
+ tools/testing/selftests/cgroup/test_zswap.c | 136 ++++++++++++++++++++
+ 4 files changed, 148 insertions(+)
 
 -- 
-Best regards,
-Ridong
+2.43.0
 
 
