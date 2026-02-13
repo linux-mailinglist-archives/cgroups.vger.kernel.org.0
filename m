@@ -1,276 +1,487 @@
-Return-Path: <cgroups+bounces-13939-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-13940-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 0IxtOiDVjmlFFQEAu9opvQ
-	(envelope-from <cgroups+bounces-13939-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Fri, 13 Feb 2026 08:39:12 +0100
+	id YIj9HhDXjmmhFQEAu9opvQ
+	(envelope-from <cgroups+bounces-13940-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Fri, 13 Feb 2026 08:47:28 +0100
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 23780133A5D
-	for <lists+cgroups@lfdr.de>; Fri, 13 Feb 2026 08:39:12 +0100 (CET)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
+	by mail.lfdr.de (Postfix) with ESMTPS id 219DF133B1E
+	for <lists+cgroups@lfdr.de>; Fri, 13 Feb 2026 08:47:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id A0E75301B40F
-	for <lists+cgroups@lfdr.de>; Fri, 13 Feb 2026 07:38:42 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id 87C48301DC8E
+	for <lists+cgroups@lfdr.de>; Fri, 13 Feb 2026 07:47:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EEC862FF176;
-	Fri, 13 Feb 2026 07:38:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fDr4/+Ey"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8FE1D3128CC;
+	Fri, 13 Feb 2026 07:47:26 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-pf1-f196.google.com (mail-pf1-f196.google.com [209.85.210.196])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E1B72FF144
-	for <cgroups@vger.kernel.org>; Fri, 13 Feb 2026 07:38:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.196
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D2305214813;
+	Fri, 13 Feb 2026 07:47:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1770968317; cv=none; b=Cn4Anc9CUxCylJV3/rvMiI+5ExwrtQ6DHs5TL9dGLXRXlf3Y43eIprvZy2u3WmN8b4uxdlDEQXm6EYGxICfwfqOKh8l5Qn7Uq5DamcmcKBasxFFtZJ8KRlb8f4a3YLqrP4GVApGRxvyLrF6grKMG3jy9ccDsOa64zqOobPPKmXc=
+	t=1770968846; cv=none; b=gyc2vHx+UJ+nQXGZH5RS3XY+oxr2QLPgp4QcLDCeoTPW8cHJtQlzx18m4npS3OYPq9YkN5g4jFd9uAbm0NV9lgkTiq+8wd0W+DsHZZGGByBKhImlDTPgRl4RnkyQTUp+0uW6XETAp7ByypX2Gwr8/dHQq6nH2xc6x68XTJeEBXU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1770968317; c=relaxed/simple;
-	bh=HNCSRMt+uVOtWUpx9BoHkeZenvzhAbsE081cSwO+Qw0=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=U/lvR1sCnG/xnd3lBgKWwj29lHs9WyfjISVdzBRO7bzr0h2Nl2odGJ1s6GCH7snD0GOmaVSzYhvaOE6wItTZxAK8620cILxzHqhY8zq7tSvc1oyRvvk/qvd1xB/0CP696tIgkjPiUX8LKIW+vrYkUwwI8I+pWz+/Bf6f5DXGHeQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=fDr4/+Ey; arc=none smtp.client-ip=209.85.210.196
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f196.google.com with SMTP id d2e1a72fcca58-824a6f2d816so327582b3a.3
-        for <cgroups@vger.kernel.org>; Thu, 12 Feb 2026 23:38:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1770968315; x=1771573115; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=TUNbAPwCyhGMoDBC5WsOOsA+LVhyxhs3/AZuxGFmVLQ=;
-        b=fDr4/+Ey4gxFhAoGsNGFV0vOB2RPktLXpGndCXHa6/RCOAdOXdzdU8onGUqxf9hr2G
-         U0YNmganwdBfBPSxfAMZ27VU7ZmGkTSfdmc7B1l3Iv8Jgi8FjTtnR5KRTzuJhL6ys1Vw
-         WreOEzDnFjFUetpD7qf7mqtEwF+n9w8TsI/Z2xQWHwIVivOI6O2e7L2+nTQUSxv7EZSR
-         SmolaOo52hE+XMXrca0YeBT/SFdrMd9JuSNjvfHgcNxoPOAJU/ufIglT8+Z/J6M5HxE8
-         CHgoibOXZ/tBog6MGU8yEobXzydNbfqMpbWJt8dQueezjW5yp/Wq4uGs9YbiMBc/m0Qx
-         +n0g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1770968315; x=1771573115;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=TUNbAPwCyhGMoDBC5WsOOsA+LVhyxhs3/AZuxGFmVLQ=;
-        b=Zy0wLYwY/tKXupbhBhORJI5vRMcxtmJ+0hRJT2w2Ugt+3gwLUoRvNddtq5zAIgwhY5
-         pyC/+1066WSDyzkyvdRvK+o7Jj+37AGHa7te9BhOwOPh6uqn38OhuDNaxoPC0kLa3qu8
-         0jMmp/ZQXWtpDiY2IGOTQnr9pBH8VChFeNugrsAUVxTomtXt9p1MiVIPpL1MUxwtM2bv
-         9ZLU+Zg9QU/SUzDjM0y+TJXQbdh7LPpEBhf1iINLKvoBYfwV0A73NvKecE+ouF4Y+NbI
-         ozbIrIPIYbUeoCFvdO9TKWJqPUMcw7ltfz81udwOqQQLT1lmsV+ddVjrb00nPTjLQCmZ
-         7C+w==
-X-Forwarded-Encrypted: i=1; AJvYcCWS+E/DvJYl/JTERZLEaUmpg+ebH4Do9uu0v9xpmXStyucUtxawmTK++wc51P9RVwgj1A74cV8M@vger.kernel.org
-X-Gm-Message-State: AOJu0YxFDzC7wpD5FbgokodBSQ1clPfXeBKg+rB64ugkxUElqQ6SXy6N
-	o57TSfB/jPdIThlqMpbSNk2GR+k1HwX0Kfv9EAzcI17zdWnKP363CvZT1SU4pASgxmtyTPmt
-X-Gm-Gg: AZuq6aL32hka+ZBwbiOJsN55cCKpRT8HwzXNEFWWUneXjafnA6247Xdh4StfE1ddMmH
-	G2TAzlBCwuq38QamUiRY1J7NucCdfoga+3iTUXN2TFM0KBLG7NExckEYPgQePv8kDY1i1OOzTZ1
-	HBdeIxpoVQCw7nbi9pfk6OK3kCk5L5bkhMWmQJ5PlTQgLeSi2rW+Yhvl6TMutcpbEQmoxgt3hJ3
-	z4BN3DOLwzMtxY+zAR5ZPQlX56JndyElezthZ5zQKP6pVcpw+D6jUO4kJW4cY+pJBn4g+aHAnUB
-	dmXlcboI9WAZkm09b0594bl3mVqqiOTRZsUZinaupyqruCRh38cTv2d+C86sibMe2yiYWSMniVp
-	uWhHlQKecRMOcORx723En+nMup5zs1Xllc0YeB4w3I0sUnDjPU31V0Ac46B1YSrXsxqFE/gN7va
-	RBK6170/QSw8lSCW6Jc1ATp4BrudqePzc8nw==
-X-Received: by 2002:a05:6a00:2e85:b0:824:ae74:5725 with SMTP id d2e1a72fcca58-824c95c3afemr1122224b3a.35.1770968314668;
-        Thu, 12 Feb 2026 23:38:34 -0800 (PST)
-Received: from archwsl.localdomain ([117.184.79.158])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-824c6a2e936sm1498959b3a.6.2026.02.12.23.38.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Feb 2026 23:38:34 -0800 (PST)
-From: Jialin Wang <wjl.linux@gmail.com>
-To: tj@kernel.org,
-	josef@toxicpanda.com,
-	axboe@kernel.dk
-Cc: lianux.mm@gmail.com,
-	cgroups@vger.kernel.org,
-	linux-block@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Jialin Wang <wjl.linux@gmail.com>
-Subject: [RFC PATCH] blk-iocost: introduce 'linear-max' cost model for cloud disk
-Date: Fri, 13 Feb 2026 15:38:29 +0800
-Message-ID: <20260213073829.182168-1-wjl.linux@gmail.com>
-X-Mailer: git-send-email 2.52.0
+	s=arc-20240116; t=1770968846; c=relaxed/simple;
+	bh=wMS2E7l64XzN0LEw5lKXDC8iOm4gPIbB7ds69FWHIWg=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=GImhqpdVvvvXp8OpcRfAJ/Qnr5DqS36L6nLglnmemlogMBHkkIYWbXP0S8MUK6eq4MidgysJwJwrqZwQTxHgsuTq4MRykhwdzqzwS+RPwOY6JRns79CPT+dc/kWEcuJ5yMI42B0jVsmQZw4ouENELceXdZbwcgOBDQ8l1z9Sm04=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.170])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTPS id 4fC4510FQZzYQty1;
+	Fri, 13 Feb 2026 15:47:17 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.128])
+	by mail.maildlp.com (Postfix) with ESMTP id 1E4E94056D;
+	Fri, 13 Feb 2026 15:47:20 +0800 (CST)
+Received: from [10.67.111.176] (unknown [10.67.111.176])
+	by APP4 (Coremail) with SMTP id gCh0CgAHs_MG145pgAwVHQ--.64735S2;
+	Fri, 13 Feb 2026 15:47:19 +0800 (CST)
+Message-ID: <a98d730d-7a18-4e37-8aab-0376e813e649@huaweicloud.com>
+Date: Fri, 13 Feb 2026 15:47:17 +0800
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v5 5/6] cgroup/cpuset: Call housekeeping_update() without
+ holding cpus_read_lock
+To: Waiman Long <longman@redhat.com>, Tejun Heo <tj@kernel.org>,
+ Johannes Weiner <hannes@cmpxchg.org>, =?UTF-8?Q?Michal_Koutn=C3=BD?=
+ <mkoutny@suse.com>, Ingo Molnar <mingo@redhat.com>,
+ Peter Zijlstra <peterz@infradead.org>, Juri Lelli <juri.lelli@redhat.com>,
+ Vincent Guittot <vincent.guittot@linaro.org>,
+ Steven Rostedt <rostedt@goodmis.org>, Ben Segall <bsegall@google.com>,
+ Mel Gorman <mgorman@suse.de>, Valentin Schneider <vschneid@redhat.com>,
+ Anna-Maria Behnsen <anna-maria@linutronix.de>,
+ Frederic Weisbecker <frederic@kernel.org>,
+ Thomas Gleixner <tglx@linutronix.de>, Shuah Khan <shuah@kernel.org>
+Cc: cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-kselftest@vger.kernel.org
+References: <20260212164640.2408295-1-longman@redhat.com>
+ <20260212164640.2408295-6-longman@redhat.com>
+Content-Language: en-US
+From: Chen Ridong <chenridong@huaweicloud.com>
+In-Reply-To: <20260212164640.2408295-6-longman@redhat.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID:gCh0CgAHs_MG145pgAwVHQ--.64735S2
+X-Coremail-Antispam: 1UD129KBjvAXoW3ur1fXFW8JFWDZFW3Ary8Grg_yoW8GrWUCo
+	WSq3yrCr1rJw1UCa98Zr1vkr1UWws5Kr4xAw4q9r4DWF1avFy7Ka43J3y2vry3WFWYkF48
+	Ja4SqrWv9rZrtF1Un29KB7ZKAUJUUUU8529EdanIXcx71UUUUU7v73VFW2AGmfu7bjvjm3
+	AaLaJ3UjIYCTnIWjp_UUUY27kC6x804xWl14x267AKxVW5JVWrJwAFc2x0x2IEx4CE42xK
+	8VAvwI8IcIk0rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4
+	AK67xGY2AK021l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF
+	7I0E14v26F4j6r4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxkF7I0En4kS
+	14v26r4a6rW5MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I
+	8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVW8ZVWr
+	XwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x
+	0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_
+	Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8Jr0_Cr1UYxBIdaVFxhVjvjDU0xZFpf9x07
+	jIksgUUUUU=
+X-CM-SenderInfo: hfkh02xlgr0w46kxt4xhlfz01xgou0bp/
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-0.16 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
+X-Spamd-Result: default: False [-1.46 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
-	R_MISSING_CHARSET(0.50)[];
-	R_DKIM_ALLOW(-0.20)[gmail.com:s=20230601];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_TLS_LAST(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	TAGGED_FROM(0.00)[bounces-13939-lists,cgroups=lfdr.de];
-	RCVD_COUNT_FIVE(0.00)[5];
 	FORGED_SENDER_MAILLIST(0.00)[];
+	FROM_HAS_DN(0.00)[];
 	MIME_TRACE(0.00)[0:+];
-	FREEMAIL_CC(0.00)[gmail.com,vger.kernel.org];
+	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
 	TO_DN_SOME(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[wjllinux@gmail.com,cgroups@vger.kernel.org];
+	RCPT_COUNT_TWELVE(0.00)[19];
+	TAGGED_RCPT(0.00)[cgroups];
+	R_DKIM_NA(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
-	RCPT_COUNT_SEVEN(0.00)[8];
+	FROM_NEQ_ENVFROM(0.00)[chenridong@huaweicloud.com,cgroups@vger.kernel.org];
 	MID_RHS_MATCH_FROM(0.00)[];
-	DKIM_TRACE(0.00)[gmail.com:+];
-	TAGGED_RCPT(0.00)[cgroups];
-	FREEMAIL_FROM(0.00)[gmail.com];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 23780133A5D
+	RCVD_COUNT_FIVE(0.00)[6];
+	RCVD_TLS_LAST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-13940-lists,cgroups=lfdr.de];
+	DMARC_NA(0.00)[huaweicloud.com];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns,huaweicloud.com:mid]
+X-Rspamd-Queue-Id: 219DF133B1E
 X-Rspamd-Action: no action
 
-In public cloud environments, block devices usually enforce performance
-limits based on two independent token buckets: IOPS and BPS. The device
-is throttled when either the IOPS limit or the BPS limit is reached.
 
-To effectively manage "noisy neighbor" problems, we configure iocost
-model parameters (or vrate max) to approximately 95% of the cloud
-provider's provisioned limits. The goal is to strictly avoid hitting
-the storage backend's hard BPS/IOPS limits. By saturating the virtual
-budget before the physical limit, iocost engages throttling first.
-Unlike the indiscriminate throttling applied by cloud storage backends,
-iocost selectively penalizes low-weight cgroups or heavy-traffic
-perpetrators. Consequently, IO-latency-sensitive critical workloads
-remain entirely unaffected by the congestion. Extensive testing has
-verified that this approach yields excellent isolation results.
+Hi Longman:
 
-However, the existing 'linear' cost model leads to significant
-performance loss in this specific configuration due to its additive
-nature.
+On 2026/2/13 0:46, Waiman Long wrote:
+> The current cpuset partition code is able to dynamically update
+> the sched domains of a running system and the corresponding
+> HK_TYPE_DOMAIN housekeeping cpumask to perform what is essentally the
+> "isolcpus=domain,..." boot command line feature at run time.
+> 
+> The housekeeping cpumask update requires flushing a number of different
+> workqueues which may not be safe with cpus_read_lock() held as the
+> workqueue flushing code may acquire cpus_read_lock() or acquiring locks
+> which have locking dependency with cpus_read_lock() down the chain. Below
+> is an example of such circular locking problem.
+> 
+>   ======================================================
+>   WARNING: possible circular locking dependency detected
+>   6.18.0-test+ #2 Tainted: G S
+>   ------------------------------------------------------
+>   test_cpuset_prs/10971 is trying to acquire lock:
+>   ffff888112ba4958 ((wq_completion)sync_wq){+.+.}-{0:0}, at: touch_wq_lockdep_map+0x7a/0x180
+> 
+>   but task is already holding lock:
+>   ffffffffae47f450 (cpuset_mutex){+.+.}-{4:4}, at: cpuset_partition_write+0x85/0x130
+> 
+>   which lock already depends on the new lock.
+> 
+>   the existing dependency chain (in reverse order) is:
+>   -> #4 (cpuset_mutex){+.+.}-{4:4}:
+>   -> #3 (cpu_hotplug_lock){++++}-{0:0}:
+>   -> #2 (rtnl_mutex){+.+.}-{4:4}:
+>   -> #1 ((work_completion)(&arg.work)){+.+.}-{0:0}:
+>   -> #0 ((wq_completion)sync_wq){+.+.}-{0:0}:
+> 
+>   Chain exists of:
+>     (wq_completion)sync_wq --> cpu_hotplug_lock --> cpuset_mutex
+> 
+>   5 locks held by test_cpuset_prs/10971:
+>    #0: ffff88816810e440 (sb_writers#7){.+.+}-{0:0}, at: ksys_write+0xf9/0x1d0
+>    #1: ffff8891ab620890 (&of->mutex#2){+.+.}-{4:4}, at: kernfs_fop_write_iter+0x260/0x5f0
+>    #2: ffff8890a78b83e8 (kn->active#187){.+.+}-{0:0}, at: kernfs_fop_write_iter+0x2b6/0x5f0
+>    #3: ffffffffadf32900 (cpu_hotplug_lock){++++}-{0:0}, at: cpuset_partition_write+0x77/0x130
+>    #4: ffffffffae47f450 (cpuset_mutex){+.+.}-{4:4}, at: cpuset_partition_write+0x85/0x130
+> 
+>   Call Trace:
+>    <TASK>
+>      :
+>    touch_wq_lockdep_map+0x93/0x180
+>    __flush_workqueue+0x111/0x10b0
+>    housekeeping_update+0x12d/0x2d0
+>    update_parent_effective_cpumask+0x595/0x2440
+>    update_prstate+0x89d/0xce0
+>    cpuset_partition_write+0xc5/0x130
+>    cgroup_file_write+0x1a5/0x680
+>    kernfs_fop_write_iter+0x3df/0x5f0
+>    vfs_write+0x525/0xfd0
+>    ksys_write+0xf9/0x1d0
+>    do_syscall_64+0x95/0x520
+>    entry_SYSCALL_64_after_hwframe+0x76/0x7e
+> 
+> To avoid such a circular locking dependency problem, we have to
+> call housekeeping_update() without holding the cpus_read_lock() and
+> cpuset_mutex. The current set of wq's flushed by housekeeping_update()
+> may not have work functions that call cpus_read_lock() directly,
+> but we are likely to extend the list of wq's that are flushed in the
+> future. Moreover, the current set of work functions may hold locks that
+> may have cpu_hotplug_lock down the dependency chain.
+> 
+> One way to do that is to defer the housekeeping_update() call after
+> the current cpuset critical section has finished without holding
+> cpus_read_lock. For cpuset control file write, this can be done by
+> deferring it using task_work right before returning to userspace.
+> 
+> To enable mutual exclusion between the housekeeping_update() call and
+> other cpuset control file write actions, a new top level cpuset_top_mutex
+> is introduced. This new mutex will be acquired first to allow sharing
+> variables used by both code paths. However, cpuset update from CPU
+> hotplug can still happen in parallel with the housekeeping_update()
+> call, though that should be rare in production environment.
+> 
+> As cpus_read_lock() is now no longer held when
+> tmigr_isolated_exclude_cpumask() is called, it needs to acquire it
+> directly.
+> 
+> The lockdep_is_cpuset_held() is also updated to return true if either
+> cpuset_top_mutex or cpuset_mutex is held.
+> 
+> Signed-off-by: Waiman Long <longman@redhat.com>
+> ---
+>  kernel/cgroup/cpuset.c        | 99 ++++++++++++++++++++++++++++++++---
+>  kernel/sched/isolation.c      |  4 +-
+>  kernel/time/timer_migration.c |  4 +-
+>  3 files changed, 93 insertions(+), 14 deletions(-)
+> 
+> diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
+> index 48b7f275085b..c6a97956a991 100644
+> --- a/kernel/cgroup/cpuset.c
+> +++ b/kernel/cgroup/cpuset.c
+> @@ -65,14 +65,28 @@ static const char * const perr_strings[] = {
+>   * CPUSET Locking Convention
+>   * -------------------------
+>   *
+> - * Below are the three global locks guarding cpuset structures in lock
+> + * Below are the four global/local locks guarding cpuset structures in lock
+>   * acquisition order:
+> + *  - cpuset_top_mutex
+>   *  - cpu_hotplug_lock (cpus_read_lock/cpus_write_lock)
+>   *  - cpuset_mutex
+>   *  - callback_lock (raw spinlock)
+>   *
+> - * A task must hold all the three locks to modify externally visible or
+> - * used fields of cpusets, though some of the internally used cpuset fields
+> + * As cpuset will now indirectly flush a number of different workqueues in
+> + * housekeeping_update() to update housekeeping cpumasks when the set of
+> + * isolated CPUs is going to be changed, it may be vulnerable to deadlock
+> + * if we hold cpus_read_lock while calling into housekeeping_update().
+> + *
+> + * The first cpuset_top_mutex will be held except when calling into
+> + * cpuset_handle_hotplug() from the CPU hotplug code where cpus_write_lock
+> + * and cpuset_mutex will be held instead. The main purpose of this mutex
+> + * is to prevent regular cpuset control file write actions from interfering
+> + * with the call to housekeeping_update(), though CPU hotplug operation can
+> + * still happen in parallel. This mutex also provides protection for some
+> + * internal variables.
+> + *
+> + * A task must hold all the remaining three locks to modify externally visible
+> + * or used fields of cpusets, though some of the internally used cpuset fields
+>   * and internal variables can be modified without holding callback_lock. If only
+>   * reliable read access of the externally used fields are needed, a task can
+>   * hold either cpuset_mutex or callback_lock which are exposed to other
+> @@ -100,6 +114,7 @@ static const char * const perr_strings[] = {
+>   * cpumasks and nodemasks.
+>   */
+>  
+> +static DEFINE_MUTEX(cpuset_top_mutex);
+>  static DEFINE_MUTEX(cpuset_mutex);
+>  
+>  /*
+> @@ -111,6 +126,8 @@ static DEFINE_MUTEX(cpuset_mutex);
+>   *
+>   * CSCB: Readable by holding either cpuset_mutex or callback_lock. Writable
+>   *	 by holding both cpuset_mutex and callback_lock.
+> + *
+> + * T:	 Read/write-able by holding the cpuset_top_mutex.
+>   */
+>  
+>  /*
+> @@ -135,6 +152,18 @@ static cpumask_var_t	isolated_cpus;		/* CSCB */
+>   */
+>  static bool		isolated_cpus_updating;	/* RWCS */
+>  
+> +/*
+> + * Copy of isolated_cpus to be passed to housekeeping_update()
+> + */
+> +static cpumask_var_t	isolated_hk_cpus;	/* T */
+> +
+> +/*
+> + * Flag to prevent queuing more than one task_work to the same cpuset_top_mutex
+> + * critical section.
+> + */
+> +static bool		isolcpus_twork_queued;	/* T */
+> +
+> +
+>  /*
+>   * A flag to force sched domain rebuild at the end of an operation.
+>   * It can be set in
+> @@ -301,20 +330,24 @@ void lockdep_assert_cpuset_lock_held(void)
+>   */
+>  void cpuset_full_lock(void)
+>  {
+> +	mutex_lock(&cpuset_top_mutex);
+>  	cpus_read_lock();
+>  	mutex_lock(&cpuset_mutex);
+>  }
+>  
+>  void cpuset_full_unlock(void)
+>  {
+> +	isolcpus_twork_queued = false;
 
-Using tools/cgroup/iocost_coef_gen.py, we measured the following
-performance data on a typical cloud disk:
+This is odd.
 
-8:16 rbps=173471131 rseqiops=3566 rrandiops=3566 wbps=173333269 wseqiops=3566 wrandiops=3559
+>  	mutex_unlock(&cpuset_mutex);
+>  	cpus_read_unlock();
+> +	mutex_unlock(&cpuset_top_mutex);
+>  }
+>  
+>  #ifdef CONFIG_LOCKDEP
+>  bool lockdep_is_cpuset_held(void)
+>  {
+> -	return lockdep_is_held(&cpuset_mutex);
+> +	return lockdep_is_held(&cpuset_mutex) ||
+> +	       lockdep_is_held(&cpuset_top_mutex);
+>  }
+>  #endif
+>  
+> @@ -1338,6 +1371,28 @@ static bool prstate_housekeeping_conflict(int prstate, struct cpumask *new_cpus)
+>  	return false;
+>  }
+>  
+> +/*
+> + * housekeeping_update() will only be called if isolated_cpus differs
+> + * from isolated_hk_cpus. To be safe, rebuild_sched_domains() will always
+> + * be called just in case there are still pending sched domains changes.
+> + */
+> +static void isolcpus_tworkfn(struct callback_head *cb)
+> +{
+> +	bool update_hk = true;
+> +
+> +	guard(mutex)(&cpuset_top_mutex);
+> +	scoped_guard(spinlock_irq, &callback_lock) {
+> +		if (cpumask_equal(isolated_hk_cpus, isolated_cpus))
+> +			update_hk = false;
+> +		else
+> +			cpumask_copy(isolated_hk_cpus, isolated_cpus);
+> +	}
+> +	if (update_hk)
+> +		WARN_ON_ONCE(housekeeping_update(isolated_hk_cpus) < 0);
+> +	rebuild_sched_domains();
+> +	kfree(cb);
+> +}
+> +
+>  /*
+>   * update_isolation_cpumasks - Update external isolation related CPU masks
+>   *
+> @@ -1346,15 +1401,42 @@ static bool prstate_housekeeping_conflict(int prstate, struct cpumask *new_cpus)
+>   */
+>  static void update_isolation_cpumasks(void)
+>  {
+> -	int ret;
+> +	struct callback_head *twork_cb;
+>  
+>  	if (!isolated_cpus_updating)
+>  		return;
+> +	else
+> +		isolated_cpus_updating = false;
+> +
+> +	/*
+> +	 * CPU hotplug shouldn't set isolated_cpus_updating.
+> +	 *
+> +	 * To have better flexibility and prevent the possibility of deadlock,
+> +	 * we defer the housekeeping_update() call to after the current cpuset
+> +	 * critical section has finished. This is done via the synchronous
+> +	 * task_work which will be executed right before returning to userspace.
+> +	 *
+> +	 * update_isolation_cpumasks() may be called more than once in the
+> +	 * same cpuset_mutex critical section.
+> +	 */
+> +	lockdep_assert_held(&cpuset_top_mutex);
+> +	if (isolcpus_twork_queued)
+> +		return;
+>  
+> -	ret = housekeeping_update(isolated_cpus);
+> -	WARN_ON_ONCE(ret < 0);
+> +	twork_cb = kzalloc(sizeof(struct callback_head), GFP_KERNEL);
+> +	if (!twork_cb)
+> +		return;
+>  
+> -	isolated_cpus_updating = false;
+> +	/*
+> +	 * isolcpus_tworkfn() will be invoked before returning to userspace
+> +	 */
+> +	init_task_work(twork_cb, isolcpus_tworkfn);
+> +	if (task_work_add(current, twork_cb, TWA_RESUME)) {
+> +		kfree(twork_cb);
+> +		WARN_ON_ONCE(1);	/* Current task shouldn't be exiting */
+> +	} else {
+> +		isolcpus_twork_queued = true;
+> +	}
+>  }
+>  
 
-Dividing BPS by IOPS (173471131 / 3566) yields approximately 48607
-bytes. When running fio with bs=48607, we observed a 50% drop in
-throughput compared to running without iocost enabled.
+Actually, I find this function quite complex, with numerous global
+variables to maintain.
 
-The reason is that the current 'linear' model calculates cost as:
+I'm considering whether we can simplify it. Could we just call
+update_isolation_cpumasks() at the end of update_prstate(),
+update_cpumask(), and update_exclusive_cpumask()?
 
-  Cost = BaseCost + (Pages * PerPageCost)
+i.e.
 
-Expanding the internal variables relative to IOPS and BPS, this is
-effectively:
+static void update_isolation_cpumasks(void)
+{
+	struct callback_head twork_cb
 
-  Cost = VTIME_PER_SEC * ((1 / IOPS - 4096 / BPS) + size / BPS)
+	if (!isolated_cpus_updating)
+		return;
+	task_work_add(...)
+	isolated_cpus_updating = false;
+}
 
-When the I/O size is such that the IOPS cost component roughly equals
-the BPS cost component (as in the bs=48607 case above), the linear
-model sums them up. Since cloud disks throttle based on *either* IOPS
-*or* BPS (whichever is exhausted first), summing them effectively
-doubles the calculated cost. This causes iocost to drain virtual time
-twice as fast as necessary, throttling the device to 50% utilization.
+static int update_prstate(struct cpuset *cs, int new_prs)
+{
+	...
+	free_tmpmasks(&tmpmask);
+	update_isolation_cpumasks();
+	return 0;
+}
 
-To solve this, this patch introduces a new 'linear-max' cost model.
-Instead of adding the components, it takes the maximum:
+For rebuilding scheduling domains, we could rebuild them during the
+set operation only when force_sd_rebuild = true and
+!isolated_cpus_updating. Otherwise, the rebuild would be deferred
+and performed only once in isolcpus_tworkfn().
 
-  Cost = VTIME_PER_SEC * max(1 / IOPS, size / BPS)
+>  /**
+> @@ -3689,6 +3771,7 @@ int __init cpuset_init(void)
+>  	BUG_ON(!alloc_cpumask_var(&top_cpuset.exclusive_cpus, GFP_KERNEL));
+>  	BUG_ON(!zalloc_cpumask_var(&subpartitions_cpus, GFP_KERNEL));
+>  	BUG_ON(!zalloc_cpumask_var(&isolated_cpus, GFP_KERNEL));
+> +	BUG_ON(!zalloc_cpumask_var(&isolated_hk_cpus, GFP_KERNEL));
+>  
+>  	cpumask_setall(top_cpuset.cpus_allowed);
+>  	nodes_setall(top_cpuset.mems_allowed);
+> diff --git a/kernel/sched/isolation.c b/kernel/sched/isolation.c
+> index 3b725d39c06e..ef152d401fe2 100644
+> --- a/kernel/sched/isolation.c
+> +++ b/kernel/sched/isolation.c
+> @@ -123,8 +123,6 @@ int housekeeping_update(struct cpumask *isol_mask)
+>  	struct cpumask *trial, *old = NULL;
+>  	int err;
+>  
+> -	lockdep_assert_cpus_held();
+> -
+>  	trial = kmalloc(cpumask_size(), GFP_KERNEL);
+>  	if (!trial)
+>  		return -ENOMEM;
+> @@ -136,7 +134,7 @@ int housekeeping_update(struct cpumask *isol_mask)
+>  	}
+>  
+>  	if (!housekeeping.flags)
+> -		static_branch_enable_cpuslocked(&housekeeping_overridden);
+> +		static_branch_enable(&housekeeping_overridden);
+>  
+>  	if (housekeeping.flags & HK_FLAG_DOMAIN)
+>  		old = housekeeping_cpumask_dereference(HK_TYPE_DOMAIN);
+> diff --git a/kernel/time/timer_migration.c b/kernel/time/timer_migration.c
+> index 6da9cd562b20..83428aa03aef 100644
+> --- a/kernel/time/timer_migration.c
+> +++ b/kernel/time/timer_migration.c
+> @@ -1559,8 +1559,6 @@ int tmigr_isolated_exclude_cpumask(struct cpumask *exclude_cpumask)
+>  	cpumask_var_t cpumask __free(free_cpumask_var) = CPUMASK_VAR_NULL;
+>  	int cpu;
+>  
+> -	lockdep_assert_cpus_held();
+> -
+>  	if (!works)
+>  		return -ENOMEM;
+>  	if (!alloc_cpumask_var(&cpumask, GFP_KERNEL))
+> @@ -1570,6 +1568,7 @@ int tmigr_isolated_exclude_cpumask(struct cpumask *exclude_cpumask)
+>  	 * First set previously isolated CPUs as available (unisolate).
+>  	 * This cpumask contains only CPUs that switched to available now.
+>  	 */
+> +	guard(cpus_read_lock)();
+>  	cpumask_andnot(cpumask, cpu_online_mask, exclude_cpumask);
+>  	cpumask_andnot(cpumask, cpumask, tmigr_available_cpumask);
+>  
+> @@ -1626,7 +1625,6 @@ static int __init tmigr_init_isolation(void)
+>  	cpumask_andnot(cpumask, cpu_possible_mask, housekeeping_cpumask(HK_TYPE_DOMAIN));
+>  
+>  	/* Protect against RCU torture hotplug testing */
+> -	guard(cpus_read_lock)();
+>  	return tmigr_isolated_exclude_cpumask(cpumask);
+>  }
+>  late_initcall(tmigr_init_isolation);
 
-Which translates to:
-
-  Cost = max(BaseCost + PerPageCost, Pages * PerPageCost)
-
-This formula correctly models the dual-bucket behavior of cloud disks.
-It ensures that for any block size, the calculated cost aligns with the
-actual bottleneck (IOPS or BPS). This allows the system to reach close
-to the provisioned BPS/IOPS limits without premature throttling, while
-still maintaining the latency protection benefits of iocost.
-
-Signed-off-by: Jialin Wang <wjl.linux@gmail.com>
----
- block/blk-iocost.c | 21 ++++++++++++++++++---
- 1 file changed, 18 insertions(+), 3 deletions(-)
-
-diff --git a/block/blk-iocost.c b/block/blk-iocost.c
-index ef543d163d46..ead478d8e5bc 100644
---- a/block/blk-iocost.c
-+++ b/block/blk-iocost.c
-@@ -445,6 +445,7 @@ struct ioc {
- 	int				autop_idx;
- 	bool				user_qos_params:1;
- 	bool				user_cost_model:1;
-+	bool				cost_model_linear_max:1;
- };
- 
- struct iocg_pcpu_stat {
-@@ -2565,7 +2566,12 @@ static void calc_vtime_cost_builtin(struct bio *bio, struct ioc_gq *iocg,
- 			cost += coef_seqio;
- 		}
- 	}
--	cost += pages * coef_page;
-+
-+	if (ioc->cost_model_linear_max)
-+		cost = max(cost + coef_page, pages * coef_page);
-+	else
-+		cost += pages * coef_page;
-+
- out:
- 	*costp = cost;
- }
-@@ -3368,10 +3374,11 @@ static u64 ioc_cost_model_prfill(struct seq_file *sf,
- 		return 0;
- 
- 	spin_lock(&ioc->lock);
--	seq_printf(sf, "%s ctrl=%s model=linear "
-+	seq_printf(sf, "%s ctrl=%s model=%s "
- 		   "rbps=%llu rseqiops=%llu rrandiops=%llu "
- 		   "wbps=%llu wseqiops=%llu wrandiops=%llu\n",
- 		   dname, ioc->user_cost_model ? "user" : "auto",
-+		   ioc->cost_model_linear_max ? "linear-max" : "linear",
- 		   u[I_LCOEF_RBPS], u[I_LCOEF_RSEQIOPS], u[I_LCOEF_RRANDIOPS],
- 		   u[I_LCOEF_WBPS], u[I_LCOEF_WSEQIOPS], u[I_LCOEF_WRANDIOPS]);
- 	spin_unlock(&ioc->lock);
-@@ -3412,6 +3419,7 @@ static ssize_t ioc_cost_model_write(struct kernfs_open_file *of, char *input,
- 	struct ioc *ioc;
- 	u64 u[NR_I_LCOEFS];
- 	bool user;
-+	bool linear_max;
- 	char *body, *p;
- 	int ret;
- 
-@@ -3442,6 +3450,7 @@ static ssize_t ioc_cost_model_write(struct kernfs_open_file *of, char *input,
- 	spin_lock_irq(&ioc->lock);
- 	memcpy(u, ioc->params.i_lcoefs, sizeof(u));
- 	user = ioc->user_cost_model;
-+	linear_max = ioc->cost_model_linear_max;
- 
- 	while ((p = strsep(&body, " \t\n"))) {
- 		substring_t args[MAX_OPT_ARGS];
-@@ -3464,7 +3473,11 @@ static ssize_t ioc_cost_model_write(struct kernfs_open_file *of, char *input,
- 			continue;
- 		case COST_MODEL:
- 			match_strlcpy(buf, &args[0], sizeof(buf));
--			if (strcmp(buf, "linear"))
-+			if (!strcmp(buf, "linear"))
-+				linear_max = false;
-+			else if (!strcmp(buf, "linear-max"))
-+				linear_max = true;
-+			else
- 				goto einval;
- 			continue;
- 		}
-@@ -3481,8 +3494,10 @@ static ssize_t ioc_cost_model_write(struct kernfs_open_file *of, char *input,
- 	if (user) {
- 		memcpy(ioc->params.i_lcoefs, u, sizeof(u));
- 		ioc->user_cost_model = true;
-+		ioc->cost_model_linear_max = linear_max;
- 	} else {
- 		ioc->user_cost_model = false;
-+		ioc->cost_model_linear_max = false;
- 	}
- 	ioc_refresh_params(ioc, true);
- 	spin_unlock_irq(&ioc->lock);
 -- 
-2.52.0
+Best regards,
+Ridong
 
 
