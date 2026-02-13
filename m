@@ -1,206 +1,152 @@
-Return-Path: <cgroups+bounces-13954-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-13953-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id +G4cMaSZj2lQRwEAu9opvQ
-	(envelope-from <cgroups+bounces-13954-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Fri, 13 Feb 2026 22:37:40 +0100
+	id sKZwBu+Ej2mRRQEAu9opvQ
+	(envelope-from <cgroups+bounces-13953-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Fri, 13 Feb 2026 21:09:19 +0100
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
-	by mail.lfdr.de (Postfix) with ESMTPS id F2806139A2B
-	for <lists+cgroups@lfdr.de>; Fri, 13 Feb 2026 22:37:39 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id ACD3D13952F
+	for <lists+cgroups@lfdr.de>; Fri, 13 Feb 2026 21:09:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id 7C00C30074E1
-	for <lists+cgroups@lfdr.de>; Fri, 13 Feb 2026 21:37:37 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 7698C3032769
+	for <lists+cgroups@lfdr.de>; Fri, 13 Feb 2026 20:09:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A0CC1E1C11;
-	Fri, 13 Feb 2026 21:37:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D5D5279DC2;
+	Fri, 13 Feb 2026 20:09:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dbIFYCQE"
+	dkim=pass (2048-bit key) header.d=cmpxchg.org header.i=@cmpxchg.org header.b="ISJN1gNM"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-qk1-f196.google.com (mail-qk1-f196.google.com [209.85.222.196])
+Received: from mail-qk1-f180.google.com (mail-qk1-f180.google.com [209.85.222.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D2AC82C237F
-	for <cgroups@vger.kernel.org>; Fri, 13 Feb 2026 21:37:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.196
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E8FD250BEC
+	for <cgroups@vger.kernel.org>; Fri, 13 Feb 2026 20:09:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1771018653; cv=none; b=X6+rGGM8BYSLPs5RZbh4VImaOd3TRnglXnmaVNMiW56eGFUX9TJRgR73vgEXK36jji4bEWhC48zNM18962uRqQ7FVrqPtWUnAp9XVthVjf+EyCG8rxQexLY5YqLqGM1CU7fi0dXnyTUhoYdAHZ9T14jeW2e5o7XweEInCLLoLSE=
+	t=1771013350; cv=none; b=myz4rBtyB97UmyYuC9LbXTkCoKpb/x5b88LBDwguXYNFigwc95+5g7aAiBHD5seoJOZOmEUagK8DW5DGHyH/QTDTzE/J04uFdWKf2NLhWbCgZLTKkSJYoKqjSMPz8GGONWtSw8Q2gHKVKyGFM8+XIHxxWGYMRcF9wOcmLZUM/wo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1771018653; c=relaxed/simple;
-	bh=mH50sMrriyGDz+Qbrz5Taix8L1V/wsCNQUq+G3Lfn6k=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=f83nabcOYEfRP16OFHID9+DkiujzmMz6sKgtvielrP9iixf9ZQ793MRF0FdFGCIN+CKASwA1ie0fWR1AQoHb8uQ1D5XRBybj/Bc8M63o5ocXvtr4YAMAVTzqp5nRUxvx7g1ksn7iZmH9FBDlg608lweZEjSWeiC7DGH2Qh2x9RM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=dbIFYCQE; arc=none smtp.client-ip=209.85.222.196
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qk1-f196.google.com with SMTP id af79cd13be357-8cb38e86cf2so153834885a.1
-        for <cgroups@vger.kernel.org>; Fri, 13 Feb 2026 13:37:31 -0800 (PST)
+	s=arc-20240116; t=1771013350; c=relaxed/simple;
+	bh=grx87uhUn214R0/16Oz25CTUsC7j9HEq906lrr+h3BU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=fv/53yK0Gi4YUlwQL4lErXziujVoJ17g60o0MxmTQJZowrxcvFlDG7w6VhapIsS3BhviSwKmx79tdYdU6snXs8ZwXLh6IWOm9TPLyJJr/Vz5/700VTTWV0Y694b2VE46B7D3QyH1sLEfWjsBXalnM0SlXieWtFqSsw+AWql0AQU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org; spf=pass smtp.mailfrom=cmpxchg.org; dkim=pass (2048-bit key) header.d=cmpxchg.org header.i=@cmpxchg.org header.b=ISJN1gNM; arc=none smtp.client-ip=209.85.222.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cmpxchg.org
+Received: by mail-qk1-f180.google.com with SMTP id af79cd13be357-8cb3fb47559so128864485a.1
+        for <cgroups@vger.kernel.org>; Fri, 13 Feb 2026 12:09:07 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1771018651; x=1771623451; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=yr4En5251tETgtYzeFZ5nnuFAQ7w2oyqC71nR7DQ8Wk=;
-        b=dbIFYCQEAE6zC7ve1vlS9DJNfP7xlls4Aralt8YA5iSQaOHkFxhsgxolL57kg1aOEb
-         JWa/Usc3e5TwUjZqOzaCSi5wwv+rVM7eGNDlmeq8m+J7C4FMRergH1dOwZk/5pgm2CjK
-         mqaHAVKtuwZ9OsYpiLlEGai9Nwf60s258EZzNiIFUuogedSSylTEQMDad0NOg0ugVfDx
-         sxWkYaNv88wAjdD0vJyj+G9eAiKU/ECrfLvxrQdXO1r8MRe8QAPog1sHteQuhTWKkFdf
-         MTtbXy4EQWUWp6D3azMWMe35y9MRu147DeGRM1ZtnwVw47AbryDMLDT4eE+5SAkMhcar
-         gThw==
+        d=cmpxchg.org; s=google; t=1771013346; x=1771618146; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=7qPVnjkUUN7g5ZDl/2W4jZj/HTnTNtx2ZZEtCyQsavo=;
+        b=ISJN1gNMABWfEcEWMcyhsdgo47V34/ALFe2OAjLgxd/QJYVOTlYx21N0K4YvOGsqGR
+         IMNoqTAU3j+qVs3ypYQozP+fIIiluWv5w8z3ItT32q4wLYJe3FOrp888OS9i2y/mcQru
+         2DuTAyahPq6QW2lrZBTHL0tJZ+hKa/9SpZ2hT3dxo3//u2qGrRn6h7/+54kQCmD8PDzG
+         0Z5/gdoUt/Kl9cFEJWy/15pvyIKMxIuodSRhjJob82yLXFdaUU4xtJyp9MBNt8K9vhF/
+         dgEvRKvIhxRVyPFKiHHsHAB0p0ul3khzh/0edKI8myov36ARug9WOo98onbK2FuICTnC
+         qaPg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1771018651; x=1771623451;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=yr4En5251tETgtYzeFZ5nnuFAQ7w2oyqC71nR7DQ8Wk=;
-        b=uKuTDyiHywDObAKeNsP8p85soBKXoJp5RZz8CtS1tX0V0I50uBikXP7Ca20E/JIzzC
-         hb1RZdJHndqazeHKYJ5yV6HltMssLvMZ9198x991Q8tVMMzxD5O+SQv+Ja96ocSFPqTL
-         58Fu3PRX9UNOSHfsLe3GLYETpiJ3D8w7qfxAQsNky/yMBQr8oS+ZrAM88X70CUQt7AY/
-         7wpYv3TQbzsOIYFZPYceGVV2OsW7OE6wLWrTIOV9UfAuCVc+Xjx2jCeCqCWgN2USxDQ+
-         4VNVMUWh8g6lmtgCKdBq3bDqgNAb4vNOd6xQzy7LZtcZF/huzMEg4bsf8vMXE6qpAOFw
-         NHPA==
-X-Forwarded-Encrypted: i=1; AJvYcCWjV925tBhfdzML3rTbtEk36hbX8c2z6hIS77otDEXwpPX8didYgsQTPQm0FbKS0l6xekFQpnBj@vger.kernel.org
-X-Gm-Message-State: AOJu0Yx6DWLgiptIri4YsNNZB4PpNS6uf3KEMns/ff8YhtZGdcFzFeUn
-	IB8LLAEFPFjpJo9876SOPH4s939IuaIgIukxMKMVyRTQMi6hACQrfcI20EQY8J7D
-X-Gm-Gg: AZuq6aIrsxXZTUQ/A57FfuKAezO4Y6DoZKS6hpETO0xPFbtt8QImJ1+5cINiX9kVcdg
-	HbIcoWtx37DnPUguoh6jnUKfWW5TKgGfVvPPXCcsfl3eblKCYFZ6NV/QXrkH7AQuHeEDH7VgQ00
-	MncXystiQwFxR6MKG4xIMS4nMgKhMzjT8tJGiNNyRW90JQRujvWttAjzvwbgxcWcQbB75bdT7sc
-	+Hk8hUDEXO25jLfa3gRrO6CtIqfja0aMglrU6XAcTTk1daCKq82O2owWz5gFF4r0Cbmj8mZltsq
-	eOfEYKhR5dzRh9LcmZqw0LUuS9ZpDF/0MdPacT3MoY5OCA4Man6AcyPcEz9INApvCGY6RB4UzgP
-	2GRM7ZOuXEg10dHhsDc+MpWFR7MUM5XnEEKwZv4SWYKHeac+llBmGsNu289RReaPopcX8tGoh6l
-	Qf3aLN/e37RLQlL6XTm3bP4jsmXM4SFad/
-X-Received: by 2002:a05:7022:618e:b0:11a:f5e0:dc8 with SMTP id a92af1059eb24-1273ae30dbemr1295141c88.28.1771012577689;
-        Fri, 13 Feb 2026 11:56:17 -0800 (PST)
-Received: from [192.168.4.196] ([73.222.117.172])
-        by smtp.gmail.com with ESMTPSA id a92af1059eb24-1272a69cc93sm8742855c88.6.2026.02.13.11.56.15
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 13 Feb 2026 11:56:17 -0800 (PST)
-Message-ID: <fd56ae2c-64ac-46bd-bcb2-503df995a6a1@gmail.com>
-Date: Fri, 13 Feb 2026 11:56:15 -0800
+        d=1e100.net; s=20230601; t=1771013346; x=1771618146;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=7qPVnjkUUN7g5ZDl/2W4jZj/HTnTNtx2ZZEtCyQsavo=;
+        b=uGBLOk/ngQR1uHvCy6Tv6zeNPiJthEZmg5A9p43YMsUVyD/jrB2wUlUCiQz07W4bT+
+         0G+Wpe8YpYHIfF7r3BJ2UGFScce1UCT8bExd60r7YLsx/C6us0aS91hdBLJ637vemlqe
+         OCQEo3tGPRKhavs8Zho2GmYQFkrNjzTNvnsM5vLvy0ZpSIumpSLvUU+U6eq5xLfJrRI0
+         +aZGOoR2GnmtuWmGU+rx58GEIVsh5IC34BLz9cIXa2u39zTidHOqXFxvG+AYMZ4B7rWl
+         DWfmrWYgZtcACO8IZboVJWxzKjhbmC3dbVWULpWzOrSsB4Ku+0x36/ZKcBZ8ZiLc/Qm9
+         T1Bw==
+X-Gm-Message-State: AOJu0YxFtI0jAz3JrHhxKwP8eT1YncE+WvgKizMpynOG23lAYGcygf0P
+	M9wnnCE53ys8VQ1DaHfEB80GQ9//BS+g3ByzKHiJoHxumn24rBfau8J3IlcasM88Eqw=
+X-Gm-Gg: AZuq6aI1MNLpNVzIEYzPeMHjt2kiygyrhcXulWCW94du3m/YZnsLIqzaJGrKAicYtsx
+	8f+FyeetDijlwF2tlXuhUtFRhViyZVHt+I7Mpx8l7K19SAZ5jhb/3qYlYmg7Bb49qh1Y4gGuPQL
+	VEmnptthd0Wm35eaTC0H9CziCQpaVfrIDPA47YZgw8OrQGlDwSoFtOVbtIFsg3uwVFAa9oB2Ru/
+	k/47wwLQ6+qq2WT0tmdPMji+8AzdEEKqmFk55FmqnyqhM32/HKNi8lXodaZet/zhugmhqPWk3LT
+	YMHYl8aOYZUsTdjTyfXVnEfNAA0zuJd/rZ8nuvp3yT0UpDDo1AgJqlLSPRrC/EmDenGvgwLSMyv
+	Un/bV/Zv7WthaFM6ddVDxOjfH8hB5byU723KCLIZgcpGgmsJ0ILHZzCgGE54tbr84v7VIuy/pwm
+	49Z9iA5fw9pOBxf/wJvkUKgg==
+X-Received: by 2002:a05:620a:1a13:b0:8cb:3bca:bb3a with SMTP id af79cd13be357-8cb4249f104mr378592785a.67.1771013346200;
+        Fri, 13 Feb 2026 12:09:06 -0800 (PST)
+Received: from localhost ([2603:7000:c00:3a00:365a:60ff:fe62:ff29])
+        by smtp.gmail.com with ESMTPSA id af79cd13be357-8cb2b1c7ef7sm723625085a.28.2026.02.13.12.09.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 13 Feb 2026 12:09:05 -0800 (PST)
+Date: Fri, 13 Feb 2026 15:08:57 -0500
+From: Johannes Weiner <hannes@cmpxchg.org>
+To: Kairui Song <ryncsn@gmail.com>
+Cc: cgroups@vger.kernel.org, linux-mm@kvack.org,
+	Michal Hocko <mhocko@kernel.org>,
+	Roman Gushchin <roman.gushchin@linux.dev>,
+	Shakeel Butt <shakeel.butt@linux.dev>,
+	Muchun Song <muchun.song@linux.dev>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	linux-kernel@vger.kernel.org, Kairui Song <kasong@tencent.com>
+Subject: Re: [PATCH] memcg: consolidate private id refcount get/put helpers
+Message-ID: <aY-E2Rj2gBrBHJsT@cmpxchg.org>
+References: <20260213-memcg-privid-v1-1-d8cb7afcf831@tencent.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/2] mm/mempolicy: track page allocations per mempolicy
-To: Vlastimil Babka <vbabka@suse.cz>, linux-mm@kvack.org
-Cc: apopple@nvidia.com, akpm@linux-foundation.org, axelrasmussen@google.com,
- byungchul@sk.com, cgroups@vger.kernel.org, david@kernel.org,
- eperezma@redhat.com, gourry@gourry.net, jasowang@redhat.com,
- hannes@cmpxchg.org, joshua.hahnjy@gmail.com, Liam.Howlett@oracle.com,
- linux-kernel@vger.kernel.org, lorenzo.stoakes@oracle.com,
- matthew.brost@intel.com, mst@redhat.com, mhocko@suse.com, rppt@kernel.org,
- muchun.song@linux.dev, zhengqi.arch@bytedance.com, rakie.kim@sk.com,
- roman.gushchin@linux.dev, shakeel.butt@linux.dev, surenb@google.com,
- virtualization@lists.linux.dev, weixugc@google.com,
- xuanzhuo@linux.alibaba.com, ying.huang@linux.alibaba.com,
- yuanchu@google.com, ziy@nvidia.com, kernel-team@meta.com
-References: <20260212045109.255391-1-inwardvessel@gmail.com>
- <20260212045109.255391-2-inwardvessel@gmail.com>
- <96b63efb-551f-4dd5-b4a2-ac67da577431@suse.cz>
- <b5927ae8-3108-4d65-bee9-be306fb697b4@gmail.com>
- <d52066f1-c83e-4406-adca-5a403adb4f44@suse.cz>
-Content-Language: en-US
-From: "JP Kobryn (Meta)" <inwardvessel@gmail.com>
-In-Reply-To: <d52066f1-c83e-4406-adca-5a403adb4f44@suse.cz>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20260213-memcg-privid-v1-1-d8cb7afcf831@tencent.com>
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-0.66 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
+X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
-	R_DKIM_ALLOW(-0.20)[gmail.com:s=20230601];
-	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4];
+	DMARC_POLICY_ALLOW(-0.50)[cmpxchg.org,none];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_DKIM_ALLOW(-0.20)[cmpxchg.org:s=google];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-13954-lists,cgroups=lfdr.de];
-	RCVD_TLS_LAST(0.00)[];
+	DKIM_TRACE(0.00)[cmpxchg.org:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	FREEMAIL_CC(0.00)[nvidia.com,linux-foundation.org,google.com,sk.com,vger.kernel.org,kernel.org,redhat.com,gourry.net,cmpxchg.org,gmail.com,oracle.com,intel.com,suse.com,linux.dev,bytedance.com,lists.linux.dev,linux.alibaba.com,meta.com];
-	FREEMAIL_FROM(0.00)[gmail.com];
-	RCPT_COUNT_TWELVE(0.00)[33];
-	FROM_HAS_DN(0.00)[];
+	FREEMAIL_TO(0.00)[gmail.com];
+	TAGGED_FROM(0.00)[bounces-13953-lists,cgroups=lfdr.de];
+	RCVD_TLS_LAST(0.00)[];
+	RECEIVED_HELO_LOCALHOST(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	TO_DN_SOME(0.00)[];
+	MISSING_XM_UA(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	MIME_TRACE(0.00)[0:+];
 	RCVD_COUNT_FIVE(0.00)[5];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[inwardvessel@gmail.com,cgroups@vger.kernel.org];
-	DKIM_TRACE(0.00)[gmail.com:+];
+	FROM_NEQ_ENVFROM(0.00)[hannes@cmpxchg.org,cgroups@vger.kernel.org];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
 	MID_RHS_MATCH_FROM(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[cgroups];
-	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[cmpxchg.org:email]
-X-Rspamd-Queue-Id: F2806139A2B
+	RCPT_COUNT_SEVEN(0.00)[10];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	TO_DN_SOME(0.00)[]
+X-Rspamd-Queue-Id: ACD3D13952F
 X-Rspamd-Action: no action
 
-On 2/13/26 12:54 AM, Vlastimil Babka wrote:
-> On 2/12/26 22:25, JP Kobryn wrote:
->> On 2/12/26 7:24 AM, Vlastimil Babka wrote:
->>> On 2/12/26 05:51, JP Kobryn wrote:
->>>> It would be useful to see a breakdown of allocations to understand which
->>>> NUMA policies are driving them. For example, when investigating memory
->>>> pressure, having policy-specific counts could show that allocations were
->>>> bound to the affected node (via MPOL_BIND).
->>>>
->>>> Add per-policy page allocation counters as new node stat items. These
->>>> counters can provide correlation between a mempolicy and pressure on a
->>>> given node.
->>>>
->>>> Signed-off-by: JP Kobryn <inwardvessel@gmail.com>
->>>> Suggested-by: Johannes Weiner <hannes@cmpxchg.org>
->>>
->>> Are the numa_{hit,miss,etc.} counters insufficient? Could they be extended
->>> in a way that would capture any missing important details? A counter per
->>> policy type seems exhaustive, but then on one hand it might be not important
->>> to distinguish beetween some of them, and on the other hand it doesn't track
->>> the nodemask anyway.
->>
->> The two patches of the series should complement each other. When
->> investigating memory pressure, we could identify the affected nodes
->> (patch 2). Then we can cross-reference the policy-specific stats to find
->> any correlation (this patch).
->>
->> I think extending numa_* counters would call for more permutations to
->> account for the numa stat per policy. I think distinguishing between
->> MPOL_DEFAULT and MPOL_BIND is meaningful, for example. Am I
+On Fri, Feb 13, 2026 at 06:03:32PM +0800, Kairui Song wrote:
+> From: Kairui Song <kasong@tencent.com>
 > 
-> Are there other useful examples or would it be enough to add e.g. a
-> numa_bind counter to the numa_hit/miss/etc?
+> We currently have two different sets of helpers for getting or putting
+> the private IDs' refcount for order 0 and large folios. This is
+> redundant. Just use one and always acquire the refcount of the swapout
+> folio size unless it's zero, and put the refcount using the folio size
+> if the charge failed, since the folio size can't change. Then there is
+> no need to update the refcount for tail pages.
+> 
+> Same for freeing, then only one pair of get/put helper is needed now.
+> 
+> The performance might be slightly better, too: both "inc unless zero"
+> and "add unless zero" use the same cmpxchg implementation. For large
+> folios, we saved an atomic operation. And for both order 0 and large
+> folios, we saved a branch.
+> 
+> Signed-off-by: Kairui Song <kasong@tencent.com>
 
-Aside from bind, it's worth emphasizing that with default policy
-tracking we could see if the local node is the source of pressure. In
-the interleave case, we would be able to see if the loads are being
-balanced or, in the weighted case, being distributed properly.
+Nice improvement!
 
-On extending the numa stats instead, I looked into this some more. I'm
-not sure if they're a good fit. They seem more about whether the
-allocator succeeded at placement rather than which policy drove the
-allocation. Thoughts?
-
-> What I'm trying to say the level of detail you are trying to add to the
-> always-on counters seems like more suitable for tracepoints. The counters
-> should be limited to what's known to be useful and not "everything we are
-> able to track and possibly could need one day".
-In a triage scenario, having the stats collected up to the time of the
-reported issue would be better. We make use of the tool called below[0].
-It periodically samples the system and allows us to view the
-historical state prior to the issue. If we started at the time of the
-incident and attached tracepoints it would be too late.
-
-The triage workflow would look like this:
-1) Pressure/OOMs reported while system-wide memory is free.
-2) Check per-node pgscan/pgsteal stats (provided by patch 2) to narrow
-down node(s) under pressure.
-3) Check per-policy allocation counters (this patch) on that node to
-find what policy was driving it.
-
-[0] https://github.com/facebookincubator/below
+Acked-by: Johannes Weiner <hannes@cmpxchg.org>
 
