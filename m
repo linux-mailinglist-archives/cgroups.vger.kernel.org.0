@@ -1,89 +1,89 @@
-Return-Path: <cgroups+bounces-13958-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-13959-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id INAUADHqkGkfdwEAu9opvQ
-	(envelope-from <cgroups+bounces-13958-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Sat, 14 Feb 2026 22:33:37 +0100
+	id KKtxGu3qkGkfdwEAu9opvQ
+	(envelope-from <cgroups+bounces-13959-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Sat, 14 Feb 2026 22:36:45 +0100
 X-Original-To: lists+cgroups@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id AEB0713D9FF
-	for <lists+cgroups@lfdr.de>; Sat, 14 Feb 2026 22:33:36 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id C643413DA75
+	for <lists+cgroups@lfdr.de>; Sat, 14 Feb 2026 22:36:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 28425300FB6D
-	for <lists+cgroups@lfdr.de>; Sat, 14 Feb 2026 21:32:51 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 30F7E300C022
+	for <lists+cgroups@lfdr.de>; Sat, 14 Feb 2026 21:36:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 003533126DA;
-	Sat, 14 Feb 2026 21:32:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 47E8729D268;
+	Sat, 14 Feb 2026 21:36:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LvpNyn2v"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="C1JRfD4R"
 X-Original-To: cgroups@vger.kernel.org
 Received: from mail-wm1-f42.google.com (mail-wm1-f42.google.com [209.85.128.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7C967311C05
-	for <cgroups@vger.kernel.org>; Sat, 14 Feb 2026 21:32:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C9F2127510B
+	for <cgroups@vger.kernel.org>; Sat, 14 Feb 2026 21:36:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1771104768; cv=none; b=ioI5MqBDi6yUNSKIdDnrdY1ehMv9fzfC92Ym1QcJpZtG/VRrTma1aOk1t+rUPEKftP1hbGkawNna48t3jIlTzuGwfxCu1VjYXUYx0gOY89dujKA2keQNcfzyq9FARZSavlQkUCk5QIrbfQoQ3uT0RbqKNXZVkCmsBOO5bQ8qs/I=
+	t=1771104963; cv=none; b=MJyMXOD8lzosC7slDK+Ab5rqumG54+Yrlcoy9nfzqNbQAH9pvGXRz2ZqScO1BIdO6o0DxLiJ938hBFHdES/dNasVz47STwQAmjHBf7T4OGcRkjDu4bhHCcvLDxMOH5GJOdmyDCUOehEJJbXxFyg35+KeifNbr0if5arQYRkkFz4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1771104768; c=relaxed/simple;
-	bh=Z5eV5vcZqxda2QUz/eYFD+gmiRF8BSY0g2dspxMBWMc=;
+	s=arc-20240116; t=1771104963; c=relaxed/simple;
+	bh=bi1UicSJT58WD6qJpXaLohdtYTns9OgaLip4oakEuek=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type:Content-Disposition; b=VtIYwSKcQDxBDcJJjj0XL2EUAfJXxBG6z66wIL5dDhGaEGwbRzw024y9YEPjGSf8fkMbNYP+1tX0TP7rEM8mieuelW6mzbViGafgBU0JTiRwPH1GDMMODrHjvqfe0k3GxvIyPw24e24FBaeTpwCSMpai+fHkgm4r26tqC9GaMbM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=LvpNyn2v; arc=none smtp.client-ip=209.85.128.42
+	 MIME-Version:Content-Type:Content-Disposition; b=gZBJmKrTV4sZIyDgxQh6AwI6JjKYpD7CKsyRNr+xXvmBNNPQv22nVREHYGYVAQW7SQPNtwhV/SskIKktfXNBAl3lBWMcGCHZAuF6HEXQFjFPSW3sx2/KkUpNkn60e8xFCrl712fxPS6bFBN70aIOjnMbdJ6jb+f72j6P9Yzul/I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=C1JRfD4R; arc=none smtp.client-ip=209.85.128.42
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f42.google.com with SMTP id 5b1f17b1804b1-480706554beso19283065e9.1
-        for <cgroups@vger.kernel.org>; Sat, 14 Feb 2026 13:32:47 -0800 (PST)
+Received: by mail-wm1-f42.google.com with SMTP id 5b1f17b1804b1-4806bf39419so29070215e9.1
+        for <cgroups@vger.kernel.org>; Sat, 14 Feb 2026 13:36:01 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1771104766; x=1771709566; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1771104960; x=1771709760; darn=vger.kernel.org;
         h=content-transfer-encoding:content-disposition:mime-version
          :references:in-reply-to:message-id:date:subject:cc:to:from:from:to
          :cc:subject:date:message-id:reply-to;
-        bh=rz00tC8xFfhwICo16BoBKz05b7In7aurUZExr5lcT2s=;
-        b=LvpNyn2vLEVgNlmf36dWwusvFXkX9iZScsbzJah2nQDe8Mz2N3HxaLonJGpKAvHMA/
-         w5kAzVnUFVTmfTxTey/wMsyq+oXkXzmD+yfi9b/OvxzjzNAQ+52K5594e9nD0WS2/1h9
-         AUFt/xorVA8lBPH2MpQrHmlviXenwSL1cR0uOEAD3Gp8orVw2uH1a5k7FjAsBn4karlY
-         rlK+HmMh2TyLNgVWB5o0vYPLnP4cpbnTHne6KWGGCAO1eoqDfSwvS7xQAjbw0qYSGWWr
-         BCc6T8+QQsAjssLqWIzxnp72Lo/4lSjsGz3ZWV5aqTxzCxgBqTe+rAvntK+sX+xhheo9
-         9N4A==
+        bh=Ro0ZhP/FlNj+GMkv9hkfY7zWnxPHN/VgorELWyYQ2EU=;
+        b=C1JRfD4RBwf1EvKvCBoDJrNQIQ5Ccd+Dgt8un8j+6Yp7oYxgvTb5lS4y1xAYrET9Cv
+         5OxVLJ+kCJqtawTI6V2zgeUZSzFGGqCjWGfaUH2GS0FoIQ9ra4YRAmljvIXOPQnDM5wg
+         56Zq+uzmNSr4De5irsih2xxfZemfthGX5fy12aR0oQXoEgdOvsKUrcy3wX9euPP6ty6v
+         CGeMuIpbZK0yf5fszsiAiBW5QFffjKuB0x1ITZcaW8gymlB+nGylek8t5mp+58pfRN72
+         lMYZKTtcvnhsnhK9I5/itgo7/mXlK03H1ecgM/zMAp6feiZxVsc442Prwks9eRjeyrGN
+         j9iA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1771104766; x=1771709566;
+        d=1e100.net; s=20230601; t=1771104960; x=1771709760;
         h=content-transfer-encoding:content-disposition:mime-version
          :references:in-reply-to:message-id:date:subject:cc:to:from:x-gm-gg
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=rz00tC8xFfhwICo16BoBKz05b7In7aurUZExr5lcT2s=;
-        b=o4arOil4Yr2JY6b5WeigpMZr8sod414WjoKkiWZe7VbD4Esx/wnHJRh39Gm5iyXWPy
-         0LgjPz7rHkdclWsjENELqBhaazHIcOdERiYemSgBmc+7jUruAWL2ur/8GrESG0GgWr9B
-         RCluBuGheQZXa0ZBVWCGq6/1AFsaNCshhR1geBdXzz+yZFre0/rMGJ0cDzvzkMzYiqDA
-         yTz01Y2m5mSfKeO/XYOLMCZEofTYXOC/Ltkf6a/AZ7wULf1W2MfdOGTOIa8AARaZpzuw
-         iJexKFBdi8LKxaqz00gDIhxBN04/LMGnJiN08kyC8Lng3xjNalkonPifhpnOiV7KXjYD
-         Ykzg==
-X-Forwarded-Encrypted: i=1; AJvYcCXAkWIpxElLCqoUMsvVN6rLEndchxIoZY15EtjSKhHSZUqsmlzPoJ2HzwWIkg5MuwVQ+fl/+LVA@vger.kernel.org
-X-Gm-Message-State: AOJu0Yz+/j7CCo47lWDvMj64XZqpezYxMlPKIXKkiFYnaj2Lif/VRYHm
-	yXJ0xKr7I3PAm93e+Dp1gZRuITCRS9fjoMbSVIl2r/qAclIs1KkUiaN4
-X-Gm-Gg: AZuq6aKP3F5d31bZzxKn6CeLuW6Wg+xRUxiCPlGBwLllbtREBxJiWJCoE+8ZcF5M5f8
-	MKmUYHKUKI2k8dUgS8KMgSFF1FOb3j3kvVDV4Lwt/8qwpNU4z/M5zv236m/7DCiHDWT6L615QwR
-	7uybMgg48OL5+9MRrAbgWvZD4gm/ctdKAx6Nxd2ycPHWTsAKFNXluT7r/dvLVIDGEJT4ZDRLAh6
-	+hI1Ldc8lzjFRdT+FLwshLVA2A+kdJ6RpXe6WETKL15phvAaYFiOACMwC+TT2hoWA+NM7v/qDTv
-	8tZxh42+R2CKpTg8Jp/0rM0J27QDVsb8OM9mcWFJTIqpI0bNTC7Gr4ZPsm7q27qe10BlLzex+Wa
-	oVYo6Nwr36tgVvA3h6wIuesQEAmw2hgYDSoW84BZEmpORza6MF643WxBu/66IolyKdcgB5k7HbL
-	9qYiZyuPPvgcKGV2P1xH9Cbq7Z/e88f5ab1H7kQ6PeszuR6Q==
-X-Received: by 2002:a05:600c:1d0b:b0:475:dde5:d91b with SMTP id 5b1f17b1804b1-48379be820fmr59932915e9.17.1771104765392;
-        Sat, 14 Feb 2026 13:32:45 -0800 (PST)
+        bh=Ro0ZhP/FlNj+GMkv9hkfY7zWnxPHN/VgorELWyYQ2EU=;
+        b=oQQt90/YBFsrXVX3knwioAyDGNIPELi9sCH5wtQ4+Z2/FXVKmuUIt66sxWh407lOWC
+         qeyFDq79UF1uVj5n2Z7vHyWnj0T9bvw6fU9BOpxxmCYAFRJbFjlRVBmCXQQZko3hk2HR
+         wXejOgBv8L3hcfxEJCIoi7vPdcXa2MpLHylPYNC9Kr92mAscgvJXyFju6SfBFSjFqoKG
+         P0GW11DSdzz4ruXpxqZ6z/2lYma7Mksn97juUrqYWi/z/KQeS87kS+XNxCdKtngd2Mdf
+         B5kcu1M6X4Z/bu2KbM0e8We4Z5ouiiXP43/ND4xvd4bM4/BwduGK2bPjfTEQ9MxrJKV+
+         e62g==
+X-Forwarded-Encrypted: i=1; AJvYcCX3zEEU/gB8Pn2QQ2eDBSkBDAKNfC+qwedBUGVqYS0xfWhuVX+bvGXIn9YWgSI6soCXTrOJ0L4i@vger.kernel.org
+X-Gm-Message-State: AOJu0Yxzop0dWJOP2dWcqOmF6uw7wBXERXHxJ0Aiw6BMWsmKrQDdFgVi
+	Ylwt4VQ+YRiVVDaTJO6k+rKuoz2V78nNAcQfdSyFgsEunZvwerbW8MVL
+X-Gm-Gg: AZuq6aLvOwraWgT52T4HrTzL8M4nvOvjKCYm65YbZpiJzAEWlmkxuklp2RjmkKiLARl
+	2CJ0s7a76iliETk09dME9rNv/zQ8fT26LE6uaVzcDLveaIyAVdMdFfbeL4t5DHYrYYVO7Dw577x
+	R2Zt6AIcJkBv4WYxpcY8adeE23P8jneytXASujEX9Wzoyk0bHyZ0SrYTF1KYDWue8i1MwkxoSzl
+	T7AIrQnVqG11iCc0EZvxGyBnqnXLY9RRVqCn8hGz1XAS5sJ9eEZVVKg6FZEUK++IzbGXX7XsY+O
+	BqdAM9p5ZKRT5UcPpUwoT7h0cWDtExhrNqumuCAlD6HIkmvid2lXoesBGk3Gtqh2ya7DBkx5B+B
+	8X8RPLGd5KKRbhqajm7U4F1WAFSdyCgukwt9udlgYcch9hCa/0Ie3siijVL+PgHtFli/4o6zqWa
+	LITALih1gybumrb9KuvwhaBiKkO2Oe122IrxI=
+X-Received: by 2002:a05:600c:4446:b0:47e:e38b:a83 with SMTP id 5b1f17b1804b1-48378d62a9emr67568155e9.7.1771104960057;
+        Sat, 14 Feb 2026 13:36:00 -0800 (PST)
 Received: from WindFlash.powerhub ([2a0a:ef40:1b2a:fa01:9944:6a8c:dc37:eba5])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4835d994670sm238736745e9.4.2026.02.14.13.32.44
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-48370a4ffafsm49226635e9.5.2026.02.14.13.35.59
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 14 Feb 2026 13:32:44 -0800 (PST)
+        Sat, 14 Feb 2026 13:35:59 -0800 (PST)
 From: Leonardo Bras <leobras.c@gmail.com>
 To: Marcelo Tosatti <mtosatti@redhat.com>
 Cc: Leonardo Bras <leobras.c@gmail.com>,
+	Michal Hocko <mhocko@suse.com>,
 	linux-kernel@vger.kernel.org,
 	cgroups@vger.kernel.org,
 	linux-mm@kvack.org,
 	Johannes Weiner <hannes@cmpxchg.org>,
-	Michal Hocko <mhocko@kernel.org>,
 	Roman Gushchin <roman.gushchin@linux.dev>,
 	Shakeel Butt <shakeel.butt@linux.dev>,
 	Muchun Song <muchun.song@linux.dev>,
@@ -97,13 +97,14 @@ Cc: Leonardo Bras <leobras.c@gmail.com>,
 	Leonardo Bras <leobras@redhat.com>,
 	Thomas Gleixner <tglx@linutronix.de>,
 	Waiman Long <longman@redhat.com>,
-	Boqun Feng <boqun.feng@gmail.com>
-Subject: Re: [PATCH 1/4] Introducing qpw_lock() and per-cpu queue & flush work
-Date: Sat, 14 Feb 2026 18:32:30 -0300
-Message-ID: <aZDp7thqWGHfs116@WindFlash>
+	Boqun Feng <boqun.feng@gmail.com>,
+	Frederic Weisbecker <fweisbecker@suse.de>
+Subject: Re: [PATCH 0/4] Introduce QPW for per-cpu operations
+Date: Sat, 14 Feb 2026 18:35:58 -0300
+Message-ID: <aZDqvsUt16ZjB2YM@WindFlash>
 X-Mailer: git-send-email 2.53.0
-In-Reply-To: <aYxxXrG1UVvHUGHP@tpad>
-References: <20260206143430.021026873@redhat.com> <20260206143741.525190180@redhat.com> <aYaEZGImn7qayP12@WindFlash> <aYxxXrG1UVvHUGHP@tpad>
+In-Reply-To: <aYxx6cq6he6jTIZI@tpad>
+References: <20260206143430.021026873@redhat.com> <aYs6Ju2G4bm6_tl2@tiehlicka> <aYxviLoWsrLqDU7o@tpad> <aYxx6cq6he6jTIZI@tpad>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -120,14 +121,14 @@ X-Spamd-Result: default: False [-0.16 / 15.00];
 	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
 	MID_RHS_NOT_FQDN(0.50)[];
 	R_DKIM_ALLOW(-0.20)[gmail.com:s=20230601];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-13958-lists,cgroups=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-13959-lists,cgroups=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[21];
+	RCPT_COUNT_TWELVE(0.00)[22];
 	MIME_TRACE(0.00)[0:+];
 	FREEMAIL_FROM(0.00)[gmail.com];
 	FROM_HAS_DN(0.00)[];
@@ -136,73 +137,90 @@ X-Spamd-Result: default: False [-0.16 / 15.00];
 	RCVD_COUNT_FIVE(0.00)[5];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[leobrasc@gmail.com,cgroups@vger.kernel.org];
-	FREEMAIL_CC(0.00)[gmail.com,vger.kernel.org,kvack.org,cmpxchg.org,kernel.org,linux.dev,linux-foundation.org,linux.com,google.com,lge.com,suse.cz,redhat.com,linutronix.de];
+	FREEMAIL_CC(0.00)[gmail.com,suse.com,vger.kernel.org,kvack.org,cmpxchg.org,linux.dev,linux-foundation.org,linux.com,kernel.org,google.com,lge.com,suse.cz,redhat.com,linutronix.de,suse.de];
 	TAGGED_RCPT(0.00)[cgroups];
-	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: AEB0713D9FF
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: C643413DA75
 X-Rspamd-Action: no action
 
-On Wed, Feb 11, 2026 at 09:09:02AM -0300, Marcelo Tosatti wrote:
-> Hi Leonardo,
+On Wed, Feb 11, 2026 at 09:11:21AM -0300, Marcelo Tosatti wrote:
+> On Wed, Feb 11, 2026 at 09:01:12AM -0300, Marcelo Tosatti wrote:
+> > On Tue, Feb 10, 2026 at 03:01:10PM +0100, Michal Hocko wrote:
+> > > On Fri 06-02-26 11:34:30, Marcelo Tosatti wrote:
+> > > > The problem:
+> > > > Some places in the kernel implement a parallel programming strategy
+> > > > consisting on local_locks() for most of the work, and some rare remote
+> > > > operations are scheduled on target cpu. This keeps cache bouncing low since
+> > > > cacheline tends to be mostly local, and avoids the cost of locks in non-RT
+> > > > kernels, even though the very few remote operations will be expensive due
+> > > > to scheduling overhead.
+> > > > 
+> > > > On the other hand, for RT workloads this can represent a problem: getting
+> > > > an important workload scheduled out to deal with remote requests is
+> > > > sure to introduce unexpected deadline misses.
+> > > > 
+> > > > The idea:
+> > > > Currently with PREEMPT_RT=y, local_locks() become per-cpu spinlocks.
+> > > > In this case, instead of scheduling work on a remote cpu, it should
+> > > > be safe to grab that remote cpu's per-cpu spinlock and run the required
+> > > > work locally. That major cost, which is un/locking in every local function,
+> > > > already happens in PREEMPT_RT.
+> > > > 
+> > > > Also, there is no need to worry about extra cache bouncing:
+> > > > The cacheline invalidation already happens due to schedule_work_on().
+> > > > 
+> > > > This will avoid schedule_work_on(), and thus avoid scheduling-out an
+> > > > RT workload.
+> > > > 
+> > > > Proposed solution:
+> > > > A new interface called Queue PerCPU Work (QPW), which should replace
+> > > > Work Queue in the above mentioned use case.
+> > > > 
+> > > > If PREEMPT_RT=n this interfaces just wraps the current
+> > > > local_locks + WorkQueue behavior, so no expected change in runtime.
+> > > > 
+> > > > If PREEMPT_RT=y, or CONFIG_QPW=y, queue_percpu_work_on(cpu,...) will
+> > > > lock that cpu's per-cpu structure and perform work on it locally. 
+> > > > This is possible because on functions that can be used for performing
+> > > > remote work on remote per-cpu structures, the local_lock (which is already
+> > > > a this_cpu spinlock()), will be replaced by a qpw_spinlock(), which
+> > > > is able to get the per_cpu spinlock() for the cpu passed as parameter.
+> > > 
+> > > What about !PREEMPT_RT? We have people running isolated workloads and
+> > > these sorts of pcp disruptions are really unwelcome as well. They do not
+> > > have requirements as strong as RT workloads but the underlying
+> > > fundamental problem is the same. Frederic (now CCed) is working on
+> > > moving those pcp book keeping activities to be executed to the return to
+> > > the userspace which should be taking care of both RT and non-RT
+> > > configurations AFAICS.
+> > 
+> > Michal,
+> > 
+> > For !PREEMPT_RT, _if_ you select CONFIG_QPW=y, then there is a kernel
+> > boot option qpw=y/n, which controls whether the behaviour will be
+> > similar (the spinlock is taken on local_lock, similar to PREEMPT_RT).
+> > 
+> > If CONFIG_QPW=n, or kernel boot option qpw=n, then only local_lock 
+> > (and remote work via work_queue) is used.
 > 
-> On Fri, Feb 06, 2026 at 09:16:36PM -0300, Leonardo Bras wrote:
-> > > ===================================================================
-> > > --- slab.orig/MAINTAINERS
-> > > +++ slab/MAINTAINERS
-> > > @@ -21291,6 +21291,12 @@ F:	Documentation/networking/device_drive
-> > >  F:	drivers/bus/fsl-mc/
-> > >  F:	include/uapi/linux/fsl_mc.h
-> > >  
-> > > +QPW
-> > > +M:	Leonardo Bras <leobras@redhat.com>
-> > 
-> > Thanks for keeping that up :)
-> > Could you please change this line to 
-> > 
-> > +M:	Leonardo Bras <leobras.c@gmail.com>
-> > 
-> > As I don't have access to Red Hat's mail anymore.
-> > The signoffs on each commit should be fine to keep :)
+> OK, this is not true. There is only CONFIG_QPW and the qpw=yes/no kernel 
+> boot option for control.
 > 
-> Done.
-> 
-> > 
-> > > +S:	Supported
-> > > +F:	include/linux/qpw.h
-> > > +F:	kernel/qpw.c
-> > > +
-> > 
-> > Should we also add the Documentation file as well?
-> > 
-> > +F:	Documentation/locking/qpwlocks.rst
-> 
-> Done.
-> 
-> > > +The queue work related functions (analogous to queue_work_on and flush_work) are:
-> > > +queue_percpu_work_on and flush_percpu_work.
-> > > +
-> > > +The behaviour of the QPW functions is as follows:
-> > > +
-> > > +* !CONFIG_PREEMPT_RT and !CONFIG_QPW (or CONFIG_QPW and qpw=off kernel
-> > 
-> > I don't think PREEMPT_RT is needed here (maybe it was copied from the 
-> > previous QPW version which was dependent on PREEMPT_RT?)
-> 
-> Ah, OK, my bad. Well, shouldnt CONFIG_PREEMPT_RT select CONFIG_QPW and
-> CONFIG_QPW_DEFAULT=y ?
+> CONFIG_PREEMPT_RT should probably select CONFIG_QPW=y and
+> CONFIG_QPW_DEFAULT=y.
 
-Oh, I sure think it should, even if not doing so at the current patchset.
+Fully agree :)
 
-But my point in above comment is that even if it did, there was no need to 
-mention !RT and !QPW, as RT would select QPW, so you only need to mention 
-QPW :)
-
-Before QPW having it's own CONFIG_ I was using RT to compile this in, so 
-maybe that's why the previous version of the cover letter mentioned it. :\
-
-Thanks!
-Leo
+> 
+> > What "pcp book keeping activities" you refer to ? I don't see how
+> > moving certain activities that happen under SLUB or LRU spinlocks
+> > to happen before return to userspace changes things related 
+> > to avoidance of CPU interruption ?
+> > 
+> > Thanks
+> > 
+> 
 
