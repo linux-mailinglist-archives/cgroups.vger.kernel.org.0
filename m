@@ -1,223 +1,210 @@
-Return-Path: <cgroups+bounces-13960-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-13961-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id a4VdN/3wkGnGdwEAu9opvQ
-	(envelope-from <cgroups+bounces-13960-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Sat, 14 Feb 2026 23:02:37 +0100
+	id dSQSGc51kWnBiwEAu9opvQ
+	(envelope-from <cgroups+bounces-13961-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Sun, 15 Feb 2026 08:29:18 +0100
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2942513DAD9
-	for <lists+cgroups@lfdr.de>; Sat, 14 Feb 2026 23:02:37 +0100 (CET)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id BEFEF13E397
+	for <lists+cgroups@lfdr.de>; Sun, 15 Feb 2026 08:29:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id C3742300DE3D
-	for <lists+cgroups@lfdr.de>; Sat, 14 Feb 2026 22:02:35 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id 6868D300490A
+	for <lists+cgroups@lfdr.de>; Sun, 15 Feb 2026 07:29:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D7A3429E110;
-	Sat, 14 Feb 2026 22:02:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A787299923;
+	Sun, 15 Feb 2026 07:29:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NJZ2N0D1"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="ZmYS8zv1"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com [209.85.128.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-178.mta0.migadu.com (out-178.mta0.migadu.com [91.218.175.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 73676142E83
-	for <cgroups@vger.kernel.org>; Sat, 14 Feb 2026 22:02:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C72DB1862
+	for <cgroups@vger.kernel.org>; Sun, 15 Feb 2026 07:29:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1771106554; cv=none; b=sNcqA5Trs0Ta0e3xQAMYN50/QblYgXNUFQsXhpqkG47XyJ25o+lCqPc9RRYh0OAkWXN1FFrVb8RzGU1xHNygQNQD/wzpk8MYDohk2XniiMNmEyV5mVK+ShRoTfgWxEfdbPq5QwySv4U0lW1rRn2fdbh8QZzUVpaaFk+Ty5S3ZyQ=
+	t=1771140553; cv=none; b=hHjKqklMrNgBCf34QoHtszop6GDtBex3R9zDJeykFEhuuHm9WV8RwMJtjzbl4xxUKP54Y+s1fVZBAZr9q7LB5q36eYvT3qYDGY84aVyn2kAXdenF5qap29MqwKJOABs34l/uRDmMOVtGQVr1aC0HcS1JjQILQCen1NZRqhloHOk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1771106554; c=relaxed/simple;
-	bh=Gj+I22Tr3tVH7ZqlO8rebfanQFip8QzVyhWkU7kKwM4=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type:Content-Disposition; b=KsmOnIllI3m9/LvpO8/b4DeqazYQA3zywCvwBw5jlNcAzXEikfOJ4i8VfvoLe81GNRcNrX42AAUil9FH3eC0XID4cislhPsJOvbgDP3oM/71LC5dl9UWe+oRwr4iiCEyNO/brcBJtCzSL3sN8Pr5EUiCfICIDTd4wdo3pvfpzck=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=NJZ2N0D1; arc=none smtp.client-ip=209.85.128.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f51.google.com with SMTP id 5b1f17b1804b1-4833115090dso18334635e9.3
-        for <cgroups@vger.kernel.org>; Sat, 14 Feb 2026 14:02:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1771106552; x=1771711352; darn=vger.kernel.org;
-        h=content-transfer-encoding:content-disposition:mime-version
-         :references:in-reply-to:message-id:date:subject:cc:to:from:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=paxX9wG390aNg5udrEFUWei2TAJHGt4ATBMIYJAPwO8=;
-        b=NJZ2N0D12r9f2EkyyrIgz/kFT1K48PuvC/rYNaYHGP5gw0wp7/EZsMWdmFQlHlRkQA
-         eE0tHaWY0Vv6iTToEfhUk+dAOHJKIVdYZ41k1zWZYEkVnAguHjwScEn6JbghirEyuvQJ
-         D86L+qfrlev//Kz/10cQBMzcFBODOu6Va/NLVCmXxE57AUU3egN2SOxdZqf4yT1/b+tx
-         +DP3dyGITEKuA7iY7vgp2NcBMRPdj6RI1deVqDA+tCzA7d9KIT5tORZUeVZU7gVcTbev
-         TNeIrztfZiJashB62Mq1VdO+l87hSeTgHzKvnv+eSRaslw7WyghflnEzoTx5+6XkMXVd
-         my1A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1771106552; x=1771711352;
-        h=content-transfer-encoding:content-disposition:mime-version
-         :references:in-reply-to:message-id:date:subject:cc:to:from:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=paxX9wG390aNg5udrEFUWei2TAJHGt4ATBMIYJAPwO8=;
-        b=pfSYp7vzMiAX800lruNrF2x9ZXRHd07qRQOgwKaAiZauNe3luk10YFDM2uvyylM3FV
-         /sEpwMNWvwm8A27oerJU2UE/ostLJWxCp8uE91PbSgz3NJhXSx5cTOOeo42HGXY3x2zu
-         THs9iY/j9376FMkDZZULKBOdZPk2FbnLAujFpyGZeR/p9PB7CQkFOTapuLM7Y7qEK4MW
-         6yuZAnK1UNjQdfyWpKQoXLXM9780aBnKtJG2DUOVGqc7oVCqg6HclR+iEBDcvmFobsUx
-         T59gEyFQ/frp+EVVCR/s/Svrds1owAi3gJsUAkoihNuE3DusuZ5vPu8N7vCvzWf1Ii9q
-         Ek+g==
-X-Forwarded-Encrypted: i=1; AJvYcCVT1NKvB2iz5Hoe8xhwcPfAzZmbAcEw7HwpjQ3Pkp/VJqpEMuySZ8wV9iixzBMoa3LuBxWRsxwp@vger.kernel.org
-X-Gm-Message-State: AOJu0Yx7G0sx9MCZ2xxK8nFmhUHHwMfZaR+KHlQp962JKjSOTCYvIbdO
-	fLcKny7aQN2Z6KwOuIPder1z6OmfAt6EktzFl9JlXq0afFHkEjW7Q0Si
-X-Gm-Gg: AZuq6aJZG2Xvd+RZTmZxj7KzYKxSqyooSCPLuODFUmjZCiW9CXwAOT9y/hn1+s4CqK3
-	TB4gQRurnA4ExasMgvBeAMR9zB4RKOUlSO2zTp1Ms9jbAG3oMgcckkHBVXZ8/BOudtlw1bcX1BU
-	Vg92I1YRu9RkD9rGdV2WWP0+WZflqvpAmz2W8jqo0ohU3TtyR7KU2xQ7gmz8g0AEMzo/xyC3BTI
-	YMkwa4D537Lkg7G+23YMGG5Gev9zurv/h1IhQB4ZNiu95311LACC15z6PmErAqLXOW6A11jC1In
-	KwFFADGBWngv3uSVgBOM7T+NuQEH70MEZOhUUTSQRazrsBq5+waouiolmlrVFL5hApV4SwozL4U
-	5+2O+3pJpilMRbNyKm6xiL5rekOo+WcnDxmN4ffWhr9PWgC2ZXUhdZ6WjwZKLshFBFy/CGjGusf
-	NnvEG2H1IZz4YvLgzXRnqgzUd9oQb84kxQWvU=
-X-Received: by 2002:a05:600c:1381:b0:483:54cc:cd89 with SMTP id 5b1f17b1804b1-48373a1bbc4mr101089835e9.9.1771106551731;
-        Sat, 14 Feb 2026 14:02:31 -0800 (PST)
-Received: from WindFlash.powerhub ([2a0a:ef40:1b2a:fa01:9944:6a8c:dc37:eba5])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-48371a34d66sm57123695e9.20.2026.02.14.14.02.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 14 Feb 2026 14:02:31 -0800 (PST)
-From: Leonardo Bras <leobras.c@gmail.com>
-To: Michal Hocko <mhocko@suse.com>
-Cc: Leonardo Bras <leobras.c@gmail.com>,
-	Marcelo Tosatti <mtosatti@redhat.com>,
-	linux-kernel@vger.kernel.org,
-	cgroups@vger.kernel.org,
-	linux-mm@kvack.org,
-	Johannes Weiner <hannes@cmpxchg.org>,
-	Roman Gushchin <roman.gushchin@linux.dev>,
-	Shakeel Butt <shakeel.butt@linux.dev>,
-	Muchun Song <muchun.song@linux.dev>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Christoph Lameter <cl@linux.com>,
-	Pekka Enberg <penberg@kernel.org>,
-	David Rientjes <rientjes@google.com>,
-	Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-	Vlastimil Babka <vbabka@suse.cz>,
-	Hyeonggon Yoo <42.hyeyoo@gmail.com>,
-	Leonardo Bras <leobras@redhat.com>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Waiman Long <longman@redhat.com>,
-	Boqun Feng <boqun.feng@gmail.com>,
-	Frederic Weisbecker <fweisbecker@suse.de>
-Subject: Re: [PATCH 0/4] Introduce QPW for per-cpu operations
-Date: Sat, 14 Feb 2026 19:02:19 -0300
-Message-ID: <aZDw6xI2izFDfuuu@WindFlash>
-X-Mailer: git-send-email 2.53.0
-In-Reply-To: <aYywl1hdBQP2_slo@tiehlicka>
-References: <20260206143430.021026873@redhat.com> <aYs6Ju2G4bm6_tl2@tiehlicka> <aYxviLoWsrLqDU7o@tpad> <aYywl1hdBQP2_slo@tiehlicka>
+	s=arc-20240116; t=1771140553; c=relaxed/simple;
+	bh=ThZ1j9PUQSBL9DjcFKSrkjuGJ1dYOfl0vsw/9gU+gjs=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=EqvXHBHrF34iwi8TOAelwus3BAFFSj5AnKkhsFSGoIU3EgZYkkOUQNqgygt+XbWN5aT9VwyQ9foi+ctNDhDFTK0/FkvKJFq/VXwdp3HDlMCRfLchcO+CIvN94Xdf7m4AHVqurC2WRnib23+uHVKPt+DRNUGVu3jyU70cw7Wfo44=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=ZmYS8zv1; arc=none smtp.client-ip=91.218.175.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <5e178b4e-a9e0-44dc-a18d-8c014365ee2f@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1771140548;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=GaUSkkuQJofxBHkox8rsl9hWWFEkHV2aAas3PKJ8HkM=;
+	b=ZmYS8zv1jl3id/SALH3E1caXqMgXG64D/zHcfOV9yALlFnQAAOgXoaMYN8G6BVHTUFM0Wo
+	eCCHQTErQDaCeHlva3gg/Q2YRDwD8gj1ezn8i0MKmmJIqIOHiO0bB+9VWqySaMbghh0EDo
+	e98G07fXbtM3Un95sSEEVJ4DSdmCX/4=
+Date: Sun, 15 Feb 2026 15:28:39 +0800
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH v4 26/31] mm: vmscan: prepare for reparenting MGLRU folios
+To: Harry Yoo <harry.yoo@oracle.com>
+Cc: hannes@cmpxchg.org, hughd@google.com, mhocko@suse.com,
+ roman.gushchin@linux.dev, shakeel.butt@linux.dev, muchun.song@linux.dev,
+ david@kernel.org, lorenzo.stoakes@oracle.com, ziy@nvidia.com,
+ yosry.ahmed@linux.dev, imran.f.khan@oracle.com, kamalesh.babulal@oracle.com,
+ axelrasmussen@google.com, yuanchu@google.com, weixugc@google.com,
+ chenridong@huaweicloud.com, mkoutny@suse.com, akpm@linux-foundation.org,
+ hamzamahfooz@linux.microsoft.com, apais@linux.microsoft.com,
+ lance.yang@linux.dev, bhe@redhat.com, linux-mm@kvack.org,
+ linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+ Qi Zheng <zhengqi.arch@bytedance.com>
+References: <cover.1770279888.git.zhengqi.arch@bytedance.com>
+ <2cea0e0cf208e46dc55f2baef8162bedba2db47e.1770279888.git.zhengqi.arch@bytedance.com>
+ <aY2Tem0Fn6dIknXP@hyeyoo>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Qi Zheng <qi.zheng@linux.dev>
+In-Reply-To: <aY2Tem0Fn6dIknXP@hyeyoo>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-0.16 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
+X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
-	MID_RHS_NOT_FQDN(0.50)[];
-	R_DKIM_ALLOW(-0.20)[gmail.com:s=20230601];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	DMARC_POLICY_ALLOW(-0.50)[linux.dev,none];
+	R_DKIM_ALLOW(-0.20)[linux.dev:s=key1];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-13960-lists,cgroups=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[22];
+	TAGGED_FROM(0.00)[bounces-13961-lists,cgroups=lfdr.de];
+	RCVD_COUNT_THREE(0.00)[3];
+	RCPT_COUNT_TWELVE(0.00)[27];
 	MIME_TRACE(0.00)[0:+];
-	FREEMAIL_FROM(0.00)[gmail.com];
 	FROM_HAS_DN(0.00)[];
-	DKIM_TRACE(0.00)[gmail.com:+];
-	TO_DN_SOME(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[5];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[leobrasc@gmail.com,cgroups@vger.kernel.org];
-	FREEMAIL_CC(0.00)[gmail.com,redhat.com,vger.kernel.org,kvack.org,cmpxchg.org,linux.dev,linux-foundation.org,linux.com,kernel.org,google.com,lge.com,suse.cz,linutronix.de,suse.de];
-	TAGGED_RCPT(0.00)[cgroups];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
+	MISSING_XM_UA(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 2942513DAD9
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[qi.zheng@linux.dev,cgroups@vger.kernel.org];
+	DKIM_TRACE(0.00)[linux.dev:+];
+	MID_RHS_MATCH_FROM(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
+	TAGGED_RCPT(0.00)[cgroups];
+	TO_DN_SOME(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns,bytedance.com:email,linux.dev:mid,linux.dev:dkim]
+X-Rspamd-Queue-Id: BEFEF13E397
 X-Rspamd-Action: no action
 
-On Wed, Feb 11, 2026 at 05:38:47PM +0100, Michal Hocko wrote:
-> On Wed 11-02-26 09:01:12, Marcelo Tosatti wrote:
-> > On Tue, Feb 10, 2026 at 03:01:10PM +0100, Michal Hocko wrote:
-> [...]
-> > > What about !PREEMPT_RT? We have people running isolated workloads and
-> > > these sorts of pcp disruptions are really unwelcome as well. They do not
-> > > have requirements as strong as RT workloads but the underlying
-> > > fundamental problem is the same. Frederic (now CCed) is working on
-> > > moving those pcp book keeping activities to be executed to the return to
-> > > the userspace which should be taking care of both RT and non-RT
-> > > configurations AFAICS.
-> > 
-> > Michal,
-> > 
-> > For !PREEMPT_RT, _if_ you select CONFIG_QPW=y, then there is a kernel
-> > boot option qpw=y/n, which controls whether the behaviour will be
-> > similar (the spinlock is taken on local_lock, similar to PREEMPT_RT).
+
+
+On 2/12/26 4:46 PM, Harry Yoo wrote:
+> On Thu, Feb 05, 2026 at 05:01:45PM +0800, Qi Zheng wrote:
+>> From: Qi Zheng <zhengqi.arch@bytedance.com>
+>>
+>> Similar to traditional LRU folios, in order to solve the dying memcg
+>> problem, we also need to reparenting MGLRU folios to the parent memcg when
+>> memcg offline.
+>>
+>> However, there are the following challenges:
+>>
+>> 1. Each lruvec has between MIN_NR_GENS and MAX_NR_GENS generations, the
+>>     number of generations of the parent and child memcg may be different,
+>>     so we cannot simply transfer MGLRU folios in the child memcg to the
+>>     parent memcg as we did for traditional LRU folios.
+>> 2. The generation information is stored in folio->flags, but we cannot
+>>     traverse these folios while holding the lru lock, otherwise it may
+>>     cause softlockup.
+>> 3. In walk_update_folio(), the gen of folio and corresponding lru size
+>>     may be updated, but the folio is not immediately moved to the
+>>     corresponding lru list. Therefore, there may be folios of different
+>>     generations on an LRU list.
+>> 4. In lru_gen_del_folio(), the generation to which the folio belongs is
+>>     found based on the generation information in folio->flags, and the
+>>     corresponding LRU size will be updated. Therefore, we need to update
+>>     the lru size correctly during reparenting, otherwise the lru size may
+>>     be updated incorrectly in lru_gen_del_folio().
+>>
+>> Finally, this patch chose a compromise method, which is to splice the lru
+>> list in the child memcg to the lru list of the same generation in the
+>> parent memcg during reparenting. And in order to ensure that the parent
+>> memcg has the same generation, we need to increase the generations in the
+>> parent memcg to the MAX_NR_GENS before reparenting.
+>>
+>> Of course, the same generation has different meanings in the parent and
+>> child memcg, this will cause confusion in the hot and cold information of
+>> folios. But other than that, this method is simple enough, the lru size
+>> is correct, and there is no need to consider some concurrency issues (such
+>> as lru_gen_del_folio()).
+>>
+>> To prepare for the above work, this commit implements the specific
+>> functions, which will be used during reparenting.
+>>
+>> Suggested-by: Harry Yoo <harry.yoo@oracle.com>
+>> Suggested-by: Imran Khan <imran.f.khan@oracle.com>
+>> Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
+>> ---
+>>   include/linux/mmzone.h |  16 +++++
+>>   mm/vmscan.c            | 154 +++++++++++++++++++++++++++++++++++++++++
+>>   2 files changed, 170 insertions(+)
+>>
+>> diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
+>> index 3e51190a55e4c..0c18b17f0fe2e 100644
+>> --- a/include/linux/mmzone.h
+>> +++ b/include/linux/mmzone.h
+>> diff --git a/mm/vmscan.c b/mm/vmscan.c
+>> index e2d9ef9a5dedc..8c6f8f0df24b1 100644
+>> --- a/mm/vmscan.c
+>> +++ b/mm/vmscan.c
+>> +void lru_gen_reparent_memcg(struct mem_cgroup *memcg, struct mem_cgroup *parent)
+>> +{
+>> +	int nid;
+>> +
+>> +	for_each_node(nid) {
+>> +		struct lruvec *child_lruvec, *parent_lruvec;
+>> +		int type, zid;
+>> +		struct zone *zone;
+>> +		enum lru_list lru;
+>> +
+>> +		child_lruvec = get_lruvec(memcg, nid);
+>> +		parent_lruvec = get_lruvec(parent, nid);
+>> +
+>> +		for_each_managed_zone_pgdat(zone, NODE_DATA(nid), zid, MAX_NR_ZONES - 1)
+>> +			for (type = 0; type < ANON_AND_FILE; type++)
+>> +				__lru_gen_reparent_memcg(child_lruvec, parent_lruvec, zid, type);
+>> +
+>> +		for_each_lru(lru) {
+>> +			for_each_managed_zone_pgdat(zone, NODE_DATA(nid), zid, MAX_NR_ZONES - 1) {
+>> +				unsigned long size = mem_cgroup_get_zone_lru_size(child_lruvec, lru, zid);
+>> +
+>> +				mem_cgroup_update_lru_size(parent_lruvec, lru, zid, size);
 > 
-> My bad. I've misread the config space of this.
+> This part looks fine, but I think the nr_pages parameter
+> in mem_cgroup_update_lru_size() should be long instead of int.
+> Could you please update the type as well?
+
+Make sense, and I think it would be better to do this by sending
+a separate patch, will do that and add your Suggested-by.
+
 > 
-> > If CONFIG_QPW=n, or kernel boot option qpw=n, then only local_lock 
-> > (and remote work via work_queue) is used.
-> > 
-> > What "pcp book keeping activities" you refer to ? I don't see how
-> > moving certain activities that happen under SLUB or LRU spinlocks
-> > to happen before return to userspace changes things related 
-> > to avoidance of CPU interruption ?
-> 
-> Essentially delayed operations like pcp state flushing happens on return
-> to the userspace on isolated CPUs. No locking changes are required as
-> the work is still per-cpu.
-> 
-> In other words the approach Frederic is working on is to not change the
-> locking of pcp delayed work but instead move that work into well defined
-> place - i.e. return to the userspace.
-> 
-> Btw. have you measure the impact of preempt_disbale -> spinlock on hot
-> paths like SLUB sheeves?
-
-Hi Michal,
-
-I have done some study on this (which I presented on Plumbers 2023):
-https://lpc.events/event/17/contributions/1484/ 
-
-Since they are per-cpu spinlocks, and the remote operations are not that 
-frequent, as per design of the current approach, we are not supposed to see 
-contention (I was not able to detect contention even after stress testing 
-for weeks), nor relevant cacheline bouncing.
-
-That being said, for RT local_locks already get per-cpu spinlocks, so there 
-is only difference for !RT, which as you mention, does preemtp_disable():
-
-The performance impact noticed was mostly about jumping around in 
-executable code, as inlining spinlocks (test #2 on presentation) took care 
-of most of the added extra cycles, adding about 4-14 extra cycles per 
-lock/unlock cycle. (tested on memcg with kmalloc test)
-
-Yeah, as expected there is some extra cycles, as we are doing extra atomic 
-operations (even if in a local cacheline) in !RT case, but this could be 
-enabled only if the user thinks this is an ok cost for reducing 
-interruptions.
-
-What do you think?
+> Otherwise looks good to me,
+> Acked-by: Harry Yoo <harry.yoo@oracle.com>
 
 Thanks!
-Leo 
 
-
-
-
-
-
-
+> 
+>> +			}
+>> +		}
+>> +	}
+>> +}
+>> +
+>>   #endif /* CONFIG_MEMCG */
+> 
 
 
