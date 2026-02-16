@@ -1,228 +1,189 @@
-Return-Path: <cgroups+bounces-13969-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-13970-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 2As8DVFik2n74AEAu9opvQ
-	(envelope-from <cgroups+bounces-13969-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Mon, 16 Feb 2026 19:30:41 +0100
+	id ELsWFCuHk2mr6AEAu9opvQ
+	(envelope-from <cgroups+bounces-13970-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Mon, 16 Feb 2026 22:07:55 +0100
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id CE2D2146FCF
-	for <lists+cgroups@lfdr.de>; Mon, 16 Feb 2026 19:30:40 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id A68FC147A36
+	for <lists+cgroups@lfdr.de>; Mon, 16 Feb 2026 22:07:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 9142A3039C9C
-	for <lists+cgroups@lfdr.de>; Mon, 16 Feb 2026 18:30:24 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 2AF33301ECE9
+	for <lists+cgroups@lfdr.de>; Mon, 16 Feb 2026 21:07:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D7EAB2E3387;
-	Mon, 16 Feb 2026 18:30:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5FD1E2EE607;
+	Mon, 16 Feb 2026 21:07:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dMLJktL2"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="fyUVW/k3"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-dl1-f44.google.com (mail-dl1-f44.google.com [74.125.82.44])
+Received: from mail-wm1-f68.google.com (mail-wm1-f68.google.com [209.85.128.68])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 51B482BEFE7
-	for <cgroups@vger.kernel.org>; Mon, 16 Feb 2026 18:30:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.82.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD181279DCD
+	for <cgroups@vger.kernel.org>; Mon, 16 Feb 2026 21:07:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.68
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1771266622; cv=none; b=NUhOWZ4Q7/yGEkcCBmBxXRf/CVaJeUVHFUqHGzCj9LzGI7vM3uZBI50DS2XYw8t0t+i/+lUyWRLWy0SgMAtwFecALgRFAD7ChVVbr5m45B55areWg5PghVEPttO10lcybsHNFjutwULDNYyk78JUSf4SFv41FRbQlW5bi7vh1Fo=
+	t=1771276070; cv=none; b=oUnQuDWGLbnZVbJsjZECAcnM/L+q9ieklQNi78pSK9Knni5Q2dFxqPMURwGfQ2d84VI0WkerKLPhDcusAFY62ZjRLyWWWM1a3CUQpyxq57PvR85mJINSOCATxegYqA4Zgu5i7gDHFFX03Gy/5rWUryx+/0cggrKHkCd/z3uv0YY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1771266622; c=relaxed/simple;
-	bh=MAEs3Jddu85q70yGwvGJmRXFIyW3shtR1hg+pghMVm4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=MIe9DIDfgDdbYsmp/YZFFSEUAyo70qLUEXDz1GyjQ7HISeO8pHfVJp88P98ctjgkxrVJX9NH7ojN3Pa21dublzfLY9KUuw9/eSBy6mjjJT7Dly8dtlbnIl7BYFvQDe1SdWWGmkCsI0fZqTLs0kvuv8bG7eD3N5GPwgJGlyq7pbw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=dMLJktL2; arc=none smtp.client-ip=74.125.82.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-dl1-f44.google.com with SMTP id a92af1059eb24-1271257ae53so3501843c88.1
-        for <cgroups@vger.kernel.org>; Mon, 16 Feb 2026 10:30:20 -0800 (PST)
+	s=arc-20240116; t=1771276070; c=relaxed/simple;
+	bh=ahY9nzIrmb3VN2PNtTKd4XYo5vjVSwt3GAvd5/xCOrA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=LXo4k8hGdySiTafCtVPUmOqK8OsalR86jd0StTAVqBT7js6jmpGBNNz4ivSlkb2yrsmiWAd3wWBsx5jfYgPGvCi41iZcFdVaosa4A7aWTeCWq9O8Vu9+Z6vcXDxIalky4GRp7zQcn4MTrZQdPa/IthMzxI3DjNLFAcON6Udmfyg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=fyUVW/k3; arc=none smtp.client-ip=209.85.128.68
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-wm1-f68.google.com with SMTP id 5b1f17b1804b1-48371119eacso32985115e9.2
+        for <cgroups@vger.kernel.org>; Mon, 16 Feb 2026 13:07:48 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1771266619; x=1771871419; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:to:subject:user-agent:mime-version:date:message-id:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=EkJWUx4iz20mHMlM7dqbfruMTcGOgRj83PoFq0CJCIQ=;
-        b=dMLJktL2qRHJHkLBftVGBt/ill/K2ExeWTvtZA/hZ1YMOwn9BPr0tXAhoCOoJDX+2E
-         6FaWkjwiege15sgemLCZKR4DkHPqeGqOjbxeGjC+tOtZMWY1hJx38Zw6i9Ak1+C6c4hL
-         DKqnQtuSrUE87hEQC6F/P9X2EUZZNeXkayRwR0QgQijMKjwvKF+sjsfEbNm+bZC6CZCV
-         Y9KPtK60qsyAOGgmDG+SJobr7u//1MTnYeRTUiVa7/hW8uy95zbT+r9CObAMa1AgGTOt
-         HPEkquwTmfsIIM4zz2V7B4GG+chjM7KRV+mYwAiND/qKsQ9lJe03DBT1m62bEtZofAcb
-         ChZQ==
+        d=suse.com; s=google; t=1771276067; x=1771880867; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=HpRBCfCaKwzFeCSlkRPtiCqwRuCq3qQsbgDvpARfGfQ=;
+        b=fyUVW/k3wD+KSJdN1setl/p2qnyMMQ7xCe2vceXlSSP52n4SJttsq3jq6lQ8alW40D
+         UvmjdePyb0tiCljckqV2BCJLu6nAQddgeBdhLAHrI2G4nbPLAl+AJbFjvX4F4ntydn8t
+         PgwycV8vqP+vjZHB9O2S23w4bgpV8n/K0TsA3doCVKbqOPdHjOjmLPRL8DAEMVZaUlpV
+         +lfOw169MsN4x7T0LFLRuWU27B4jpCFz+njbcX5jH89AAbB7MW4Jj2QABA2r2nr4cmBH
+         NyasSNJ/3fqHk5qA6zzrUjmGLtOCLt0xIHwugP74QzyokNrdIySO5xxcISO5vm6g4z2f
+         bLVg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1771266619; x=1771871419;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=EkJWUx4iz20mHMlM7dqbfruMTcGOgRj83PoFq0CJCIQ=;
-        b=JR6/52YhW03ICKNIDqVJQKAZv7ojZta2Kzmb7ohqJ3DDt3ih2zg+vtaSCjnVvR5Xwi
-         hF5EsiYIV6L+qxdmwa8WHjJzrkUMkNgTgIs8qV0O5FGOzI+bQfpzcMHY8ebRl/EPjbIN
-         ys+x3Qsd254clyjH7q0jCBtJaHWm5HtWAQaGAH3emgS2dHwUKt9WhhX0pVEaBhiluOiQ
-         shg7aefaCJu0CfkzMx4KsoZbqYN17IdFhbQggAUfCimByNntgBWEFbhXEbzDxeMF6ClL
-         B8+qmoq75qDpRoz1SsZOWdFsYWAHDmg0rKYZR8FHjtGwq0kSWZ6AAbnljLAtOZFyg0af
-         PFzQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUbXXYkPSD/9aegkOZ2Opf4x2myQYi6rC2GiQKWXLsh3bWx4yFsuyilq1vwWtbwi/HChkEEprs/@vger.kernel.org
-X-Gm-Message-State: AOJu0YznEyWcmzYU50nQyPiUy0oT4uHbEzck7VacfSr7FP02qLxCvSfu
-	U2tvvU4kZOpj5iOipZ9SILAfMQ927RKNq++uFlLE1yWnXjQtqYk4YOSE
-X-Gm-Gg: AZuq6aKHd1Y5aFAb7lA7DGZ7aoRygK7ldqTXU1StRyN4xbT62cc+drAzya0V4pv2rSV
-	YYHtsAnfIQvUmZ1ZLAcPKbbHs7bX99+nHGOOS95NgJlsTJnchSQgAcfiIH99ZX+OVJcLTd3KDZe
-	9BkWyn5xEuxdtlJ4wM8zlVv1Y1ioTZZZbsOYcdl66d4Ok0hI1mQed1yj3DSboib6nit27irCZW/
-	cuBDluJ/35UWnpOX5EPOD3AqkVBquKaGcHWGYArfLWAJ4qEx7qN9OHnFqrtrRU0u24oDyocTHkj
-	WSX9tvRQzCxcxPbJGp41VCOHPDHpMvSgRy+XeU3b6iDx+9sXCmpcpFYXo/BrsdoL7i7+9dpTxli
-	kduB9gmw5pBguOBGsHdnfDZc5z6tvbPb/ZEkGR8SiQScLww3GciF+T2xLNLXkUrB+T54F24i8UO
-	9KXW1ml4h/Ppp7d21rpPN49wcfPJDR/ptf
-X-Received: by 2002:a05:7022:692:b0:11b:a36d:a7f7 with SMTP id a92af1059eb24-1273add4230mr3788461c88.16.1771266619112;
-        Mon, 16 Feb 2026 10:30:19 -0800 (PST)
-Received: from [192.168.4.196] ([73.222.117.172])
-        by smtp.gmail.com with ESMTPSA id a92af1059eb24-12742cc83e6sm11517513c88.15.2026.02.16.10.30.17
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 16 Feb 2026 10:30:18 -0800 (PST)
-Message-ID: <ac9ccc1c-acb1-4439-8db2-eafe757c4f9e@gmail.com>
-Date: Mon, 16 Feb 2026 10:30:17 -0800
+        d=1e100.net; s=20230601; t=1771276067; x=1771880867;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=HpRBCfCaKwzFeCSlkRPtiCqwRuCq3qQsbgDvpARfGfQ=;
+        b=I++AR1g4EZPUE0qY9YxkOfSisC18+WOsyK66+cNNBtKU/DgxGNd6iXKbqpJItWnphn
+         djP9RSxxdrueb2TvroENPDD4TtstWQ5lPW9ONbft/BU8kbHeynb06S0uerX1kF+KW4GW
+         MLd1wcoH3Y8Z6LyaAAZmsvhAWbEL6aijIdU9c6QVwN/ngZ6i8PWxSiHTY3yIheFDEZEE
+         F6w4AYbgYAF2lb74LIZwQ/bkLWCOY9TVmMA8zyONiwP1bLGV7amKA9DdAbj9gguVET6p
+         bbVGn+kMCJ2oA3/LUGGFOz7E2IWsr8RHE33b1O0cP+nJOf4kuaRw0MtSniwFjmm8NL67
+         3uHA==
+X-Forwarded-Encrypted: i=1; AJvYcCWDauMULo/Rzmmqj9rve2hZ7aoh1/nNoFeM+EXwI5OoaVNttX90ECm8nSOCm/tZR2bMAs9tqpIc@vger.kernel.org
+X-Gm-Message-State: AOJu0Yz4+CJ7Ndjey0xxECaselG+JzX92ehg8HWM3eg8o2/+ly+rdBLm
+	rFII9v9TKQxv/ZuaQdYKO3ssAXCzn/AyWLgpUlPRoUhaYbmobJZnigEETlGR+uulab8=
+X-Gm-Gg: AZuq6aJ9V0Q6aMkBnrRkG4MlO1GmBdwXzX80nocIAXJe76juHLVz+kG63AwOqDuvXzU
+	ZFB1GURrhMpSDxdN+1Df/VdEuCyVFTGu31WMBaA8ddjAfBg2WngdrmcurvrVq1zanuqO8doLimI
+	AXoN1ksw/DpeRXHrbFjS3q0B+MD342iRhxLcb3QdwNw7549zXh1WK0+e1SZrnDq+ZUiQYhffdhz
+	iZaSjitPveUQJnA/6jJHBRyuOFmsnxH9a7Ez1crGZB+FROPYHdE3z+oNXcjmk6O2m8PyEAiDtEZ
+	Gky6ZXymhxuFb3Me4bmOxounvIkier1MUpGBs/cldVKof1A79qPmth/RxX9qHXQR98KMd23O3pL
+	9CRX1rQuhTo6zwNVN/Z9MMDyV08P6bC9Mh37mmqW3EGh6mdOycZmMlMeoKDnEfEeoCAdiIi06cn
+	yBI2ZltATm51XPw7d5dZFBPmazPowprx5JFlB+
+X-Received: by 2002:a05:600c:19cc:b0:47e:e2ec:995b with SMTP id 5b1f17b1804b1-48373a1271emr193576735e9.9.1771276067044;
+        Mon, 16 Feb 2026 13:07:47 -0800 (PST)
+Received: from localhost (109-81-87-131.rct.o2.cz. [109.81.87.131])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4834d5d77b3sm519573895e9.2.2026.02.16.13.07.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 16 Feb 2026 13:07:46 -0800 (PST)
+Date: Mon, 16 Feb 2026 22:07:45 +0100
+From: Michal Hocko <mhocko@suse.com>
+To: "JP Kobryn (Meta)" <inwardvessel@gmail.com>
+Cc: linux-mm@kvack.org, apopple@nvidia.com, akpm@linux-foundation.org,
+	axelrasmussen@google.com, byungchul@sk.com, cgroups@vger.kernel.org,
+	david@kernel.org, eperezma@redhat.com, gourry@gourry.net,
+	jasowang@redhat.com, hannes@cmpxchg.org, joshua.hahnjy@gmail.com,
+	Liam.Howlett@oracle.com, linux-kernel@vger.kernel.org,
+	lorenzo.stoakes@oracle.com, matthew.brost@intel.com, mst@redhat.com,
+	rppt@kernel.org, muchun.song@linux.dev, zhengqi.arch@bytedance.com,
+	rakie.kim@sk.com, roman.gushchin@linux.dev, shakeel.butt@linux.dev,
+	surenb@google.com, virtualization@lists.linux.dev, vbabka@suse.cz,
+	weixugc@google.com, xuanzhuo@linux.alibaba.com,
+	ying.huang@linux.alibaba.com, yuanchu@google.com, ziy@nvidia.com,
+	kernel-team@meta.com
+Subject: Re: [PATCH 1/2] mm/mempolicy: track page allocations per mempolicy
+Message-ID: <aZOHIQj3pJ-9dW_0@tiehlicka>
+References: <20260212045109.255391-1-inwardvessel@gmail.com>
+ <20260212045109.255391-2-inwardvessel@gmail.com>
+ <aY2BcIHIARSwwQpo@tiehlicka>
+ <eca7a8f9-173d-4cb0-93b3-df082b8d0c08@gmail.com>
+ <aZLUm95Y-dKkdBWI@tiehlicka>
+ <3fe7c5dd-b184-4421-a21c-bafce6aa7b09@gmail.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH bpf-next v2 1/3] bpf: Use bpf_core_enum_value for stats in
- cgroup_iter_memcg
-To: Hui Zhu <hui.zhu@linux.dev>, Johannes Weiner <hannes@cmpxchg.org>,
- Michal Hocko <mhocko@kernel.org>, Roman Gushchin <roman.gushchin@linux.dev>,
- Shakeel Butt <shakeel.butt@linux.dev>, Muchun Song <muchun.song@linux.dev>,
- Andrew Morton <akpm@linux-foundation.org>,
- Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>,
- Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau
- <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>,
- Song Liu <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>,
- John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
- Stanislav Fomichev <sdf@fomichev.me>, Hao Luo <haoluo@google.com>,
- Jiri Olsa <jolsa@kernel.org>, Shuah Khan <shuah@kernel.org>,
- Hui Zhu <zhuhui@kylinos.cn>, cgroups@vger.kernel.org, linux-mm@kvack.org,
- linux-kernel@vger.kernel.org, bpf@vger.kernel.org,
- linux-kselftest@vger.kernel.org
-References: <cover.1770965805.git.zhuhui@kylinos.cn>
- <24ac7bab25d8d2a24a35ab87a5283263eb6a4575.1770965805.git.zhuhui@kylinos.cn>
-Content-Language: en-US
-From: "JP Kobryn (Meta)" <inwardvessel@gmail.com>
-In-Reply-To: <24ac7bab25d8d2a24a35ab87a5283263eb6a4575.1770965805.git.zhuhui@kylinos.cn>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <3fe7c5dd-b184-4421-a21c-bafce6aa7b09@gmail.com>
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-0.66 / 15.00];
+X-Spamd-Result: default: False [-0.16 / 15.00];
 	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
-	R_DKIM_ALLOW(-0.20)[gmail.com:s=20230601];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	DMARC_POLICY_ALLOW(-0.50)[suse.com,quarantine];
+	MID_RHS_NOT_FQDN(0.50)[];
+	R_DKIM_ALLOW(-0.20)[suse.com:s=google];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
+	TAGGED_FROM(0.00)[bounces-13970-lists,cgroups=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-13969-lists,cgroups=lfdr.de];
-	FORGED_SENDER_MAILLIST(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[33];
 	MIME_TRACE(0.00)[0:+];
-	FREEMAIL_TO(0.00)[linux.dev,cmpxchg.org,kernel.org,linux-foundation.org,iogearbox.net,gmail.com,fomichev.me,google.com,kylinos.cn,vger.kernel.org,kvack.org];
-	FREEMAIL_FROM(0.00)[gmail.com];
-	RCPT_COUNT_TWELVE(0.00)[26];
+	RECEIVED_HELO_LOCALHOST(0.00)[];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	FREEMAIL_TO(0.00)[gmail.com];
 	FROM_HAS_DN(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	DKIM_TRACE(0.00)[suse.com:+];
 	TO_DN_SOME(0.00)[];
 	RCVD_COUNT_FIVE(0.00)[5];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[inwardvessel@gmail.com,cgroups@vger.kernel.org];
-	DKIM_TRACE(0.00)[gmail.com:+];
-	MID_RHS_MATCH_FROM(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[mhocko@suse.com,cgroups@vger.kernel.org];
+	FREEMAIL_CC(0.00)[kvack.org,nvidia.com,linux-foundation.org,google.com,sk.com,vger.kernel.org,kernel.org,redhat.com,gourry.net,cmpxchg.org,gmail.com,oracle.com,intel.com,linux.dev,bytedance.com,lists.linux.dev,suse.cz,linux.alibaba.com,meta.com];
 	TAGGED_RCPT(0.00)[cgroups];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[kylinos.cn:email,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: CE2D2146FCF
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	MISSING_XM_UA(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,suse.com:dkim]
+X-Rspamd-Queue-Id: A68FC147A36
 X-Rspamd-Action: no action
 
-On 2/12/26 11:23 PM, Hui Zhu wrote:
-> From: Hui Zhu <zhuhui@kylinos.cn>
+On Mon 16-02-26 09:50:26, JP Kobryn (Meta) wrote:
+> On 2/16/26 12:26 AM, Michal Hocko wrote:
+> > On Thu 12-02-26 13:22:56, JP Kobryn wrote:
+> > > On 2/11/26 11:29 PM, Michal Hocko wrote:
+> > > > On Wed 11-02-26 20:51:08, JP Kobryn wrote:
+> > > > > It would be useful to see a breakdown of allocations to understand which
+> > > > > NUMA policies are driving them. For example, when investigating memory
+> > > > > pressure, having policy-specific counts could show that allocations were
+> > > > > bound to the affected node (via MPOL_BIND).
+> > > > > 
+> > > > > Add per-policy page allocation counters as new node stat items. These
+> > > > > counters can provide correlation between a mempolicy and pressure on a
+> > > > > given node.
+> > > > 
+> > > > Could you be more specific how exactly do you plan to use those
+> > > > counters?
+> > > 
+> > > Yes. Patch 2 allows us to find which nodes are undergoing reclaim. Once
+> > > we identify the affected node(s), the new mpol counters (this patch)
+> > > allow us correlate the pressure to the mempolicy driving it.
+> > 
+> > I would appreciate somehow more specificity. You are adding counters
+> > that are not really easy to drop once they are in. Sure we have
+> > precedence of dropping some counters in the past so this is not as hard
+> > as usual userspace APIs but still...
+> > 
+> > How exactly do you tolerate mempolicy allocations to specific nodes?
+> > While MPOL_MBIND is quite straightforward others are less so.
 > 
-> Replace hardcoded enum values with bpf_core_enum_value() calls in
-> cgroup_iter_memcg test to improve portability across different
-> kernel versions.
-> 
-> The change adds runtime enum value resolution for:
-> - node_stat_item: NR_ANON_MAPPED, NR_SHMEM, NR_FILE_PAGES,
->    NR_FILE_MAPPED
-> - memcg_stat_item: MEMCG_KMEM
-> - vm_event_item: PGFAULT
-> 
-> This ensures the BPF program can adapt to enum value changes
-> between kernel versions, returning early if any enum value is
-> unavailable (returns 0).
-> 
-> Signed-off-by: Hui Zhu <zhuhui@kylinos.cn>
-> ---
->   .../selftests/bpf/progs/cgroup_iter_memcg.c   | 41 +++++++++++++++----
->   1 file changed, 34 insertions(+), 7 deletions(-)
-> 
-> diff --git a/tools/testing/selftests/bpf/progs/cgroup_iter_memcg.c b/tools/testing/selftests/bpf/progs/cgroup_iter_memcg.c
-> index 59fb70a3cc50..b020951dd7e6 100644
-> --- a/tools/testing/selftests/bpf/progs/cgroup_iter_memcg.c
-> +++ b/tools/testing/selftests/bpf/progs/cgroup_iter_memcg.c
-> @@ -15,6 +15,8 @@ int cgroup_memcg_query(struct bpf_iter__cgroup *ctx)
->   	struct cgroup *cgrp = ctx->cgroup;
->   	struct cgroup_subsys_state *css;
->   	struct mem_cgroup *memcg;
-> +	int ret = 1;
-> +	int idx;
->   
->   	if (!cgrp)
->   		return 1;
-> @@ -26,14 +28,39 @@ int cgroup_memcg_query(struct bpf_iter__cgroup *ctx)
->   
->   	bpf_mem_cgroup_flush_stats(memcg);
->   
-> -	memcg_query.nr_anon_mapped = bpf_mem_cgroup_page_state(memcg, NR_ANON_MAPPED);
-> -	memcg_query.nr_shmem = bpf_mem_cgroup_page_state(memcg, NR_SHMEM);
-> -	memcg_query.nr_file_pages = bpf_mem_cgroup_page_state(memcg, NR_FILE_PAGES);
-> -	memcg_query.nr_file_mapped = bpf_mem_cgroup_page_state(memcg, NR_FILE_MAPPED);
-> -	memcg_query.memcg_kmem = bpf_mem_cgroup_page_state(memcg, MEMCG_KMEM);
-> -	memcg_query.pgfault = bpf_mem_cgroup_vm_events(memcg, PGFAULT);
-> +	idx = bpf_core_enum_value(enum node_stat_item, NR_ANON_MAPPED);
-> +	if (idx == 0)
-> +		goto out;
-> +	memcg_query.nr_anon_mapped = bpf_mem_cgroup_page_state(memcg, idx);
->   
-> +	idx = bpf_core_enum_value(enum node_stat_item, NR_SHMEM);
-> +	if (idx == 0)
-> +		goto out;
-> +	memcg_query.nr_shmem = bpf_mem_cgroup_page_state(memcg, idx);
-> +
-> +	idx = bpf_core_enum_value(enum node_stat_item, NR_FILE_PAGES);
-> +	if (idx == 0)
-> +		goto out;
-> +	memcg_query.nr_file_pages = bpf_mem_cgroup_page_state(memcg, idx);
-> +
-> +	idx = bpf_core_enum_value(enum node_stat_item, NR_FILE_MAPPED);
-> +	if (idx == 0)
-> +		goto out;
-> +	memcg_query.nr_file_mapped = bpf_mem_cgroup_page_state(memcg, idx);
-> +
-> +	idx = bpf_core_enum_value(enum memcg_stat_item, MEMCG_KMEM);
-> +	if (idx == 0)
-> +		goto out;
-> +	memcg_query.memcg_kmem = bpf_mem_cgroup_page_state(memcg, idx);
-> +
-> +	idx = bpf_core_enum_value(enum vm_event_item, PGFAULT);
-> +	if (idx == 0)
-> +		goto out;
+> The design does account for this regardless of the policy. In the call
+> to __mod_node_page_state(), I'm using page_pgdat(page) so the stat is
+> attributed to the node where the page actually landed.
 
-This is getting messy. Most of these values should be on any system
-regardless of boot-params. I was expecting you would make the call
-inline.
+That much is clear[*]. The consumer side of things is not really clear to
+me. How do you know which policy or part of the nodemask of that policy
+is the source of the memory pressure on a particular node? In other
+words how much is the data actually useful except for a single node
+mempolicy (i.e. MBIND).
 
-Let's simplify this whole series. This selftest only needs to exercise
-bpf_mem_cgroup_page_state() and bpf_mem_cgroup_vm_events(). I think we
-can remove the kmem subtest altogether and still have the coverage we
-need. You could then call bpf_core_enum_value() inline as an argument to
-the kfuncs above and not need to check if they exist (just let them give
-you the host-specific co-re value).
+[*] btw. I believe you misaccount MPOL_LOCAL because you attribute the
+target node even when the allocation is from a remote node from the
+"local" POV.
+-- 
+Michal Hocko
+SUSE Labs
 
