@@ -1,106 +1,91 @@
-Return-Path: <cgroups+bounces-13965-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-13966-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id wN38Ch35kmlx0gEAu9opvQ
-	(envelope-from <cgroups+bounces-13965-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Mon, 16 Feb 2026 12:01:49 +0100
+	id kObIJA5Fk2kP3AEAu9opvQ
+	(envelope-from <cgroups+bounces-13966-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Mon, 16 Feb 2026 17:25:50 +0100
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id B61E41429B7
-	for <lists+cgroups@lfdr.de>; Mon, 16 Feb 2026 12:01:47 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id E06DD1461FD
+	for <lists+cgroups@lfdr.de>; Mon, 16 Feb 2026 17:25:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id B171A3020A60
-	for <lists+cgroups@lfdr.de>; Mon, 16 Feb 2026 11:01:01 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 2FA1A3036ED4
+	for <lists+cgroups@lfdr.de>; Mon, 16 Feb 2026 16:21:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E22D12652B7;
-	Mon, 16 Feb 2026 11:01:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6682B332902;
+	Mon, 16 Feb 2026 16:21:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="JV77inzM"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KiyBTLVz"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-wr1-f67.google.com (mail-wr1-f67.google.com [209.85.221.67])
+Received: from mail-wr1-f47.google.com (mail-wr1-f47.google.com [209.85.221.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 55D181A3029
-	for <cgroups@vger.kernel.org>; Mon, 16 Feb 2026 11:00:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.67
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0C923330B23
+	for <cgroups@vger.kernel.org>; Mon, 16 Feb 2026 16:21:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1771239660; cv=none; b=NjO6zMo6TuTLNWYRrFt6p64hG8xOgu0xpnYdOFrkdTu4AFdc5VILDgD1CcQQPWiHNEN2GUSlTLB4QPVjFh06S4mSrpqofi98fPAOoSAgKu3JMuXmybdqs77+GuF6zMX8pVSuh2kjpgiWYRJbHKBrQBFpgJgBEGG3UEpsZQsHI7A=
+	t=1771258876; cv=none; b=utgTHxVCTqJDIGOBuhx4OslWxmbTAR787sSjd04zOR/QXkvNy3Wzck04UrKcIsu8/uyhMYoiyAH4yQyDfBTMl7E7x+99To4PqvUnslnEJCsIHbJL7dVUB+PvOiGMiNHatGOU22IfkxDYb9CDVESY9MDI4BovV20iRakCuBUVMdw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1771239660; c=relaxed/simple;
-	bh=5Bs2zOGo2Vwhwu/Eo9m6Z5+r8bQ43/BQ6C/GLcaCW1s=;
+	s=arc-20240116; t=1771258876; c=relaxed/simple;
+	bh=vXPwT/SWHN0vRTO+ghXErJHF9bFSJOc15B0GoDaOvpI=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=qyJ0/aRpIegKhTyGDFzqx02t6zt2PNC1M6dsuuJqGdsGHa+sL305mtdHfYD4Qalx9332jgL7yIy2XS3OpNc0R2LfT5uSV0WfoN7eOoe14cMeQ8Gu2azDVnl8xa81D/+vP2H8UTSSOydC3ILncEjpCgwodL0GPn2HmB7RwRGO/WA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=JV77inzM; arc=none smtp.client-ip=209.85.221.67
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-wr1-f67.google.com with SMTP id ffacd0b85a97d-4377174e1ebso2227044f8f.3
-        for <cgroups@vger.kernel.org>; Mon, 16 Feb 2026 03:00:59 -0800 (PST)
+	 Content-Type:Content-Disposition:In-Reply-To; b=J6hMbqXQJOjsb1IzV6x0BVSUL0Dyw654OvtRlZjUCeOYvygckRm5bd9aJsIfeHb2Flp21+5Am6yvozvD32pLB9BJEVZd/CNDwqW5AX9PVZxpmL5Akunz6fOFZImDo2AjCO7SfSthFgXA9kNPyzI4J6DWYbi51sJT/CM6lTjSWHc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=KiyBTLVz; arc=none smtp.client-ip=209.85.221.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f47.google.com with SMTP id ffacd0b85a97d-4377174e1ebso2513616f8f.3
+        for <cgroups@vger.kernel.org>; Mon, 16 Feb 2026 08:21:14 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1771239658; x=1771844458; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1771258873; x=1771863673; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=jzgolleu2SIxliK/vEtotu12nLOXFd4HqJviqi0SJ1s=;
-        b=JV77inzMfmp8iSeJBoZIGRfsVA5QBobwKz+ofecyLBKdz2nuE1RlRs3WDFfcV/fMMA
-         05w2kRaV/Ii+EDWiFDZeURwU2KZTY24emo8ggMte2eIvjD4H7BTOhWkHZSIYQ0TlV2ql
-         MZh3ydZzdFfYMffyPHnfSa0CTh6Xhepze+0ZWhHV2kHN3LKtYcEugZpoGhDxOV2ECMxR
-         5BKbzq2MtsOM8snELGOCDaGGIExCz53vXf5or5NynIQVj/zCJmlUbnV1xkKkv39ALNK0
-         6MBLrEYNI84Sq8StUT9XfD1vf6mxweZdjKgAEb2B4N5aWgq18ADXuyUf5bJCRVsmYRKn
-         KM8Q==
+        bh=ScvhChnO4StcvknG4EO4W1y203NmQMeHjxbNv7iKKOc=;
+        b=KiyBTLVzInkMAi/CTTsBXzdtQM5xQ8uoQ1/gZGO7ei8wx1zqB9/N8cXp9hJOhprJ1v
+         bjP6qMPFcbP7ISs8U64ErDBG6PjP7jIxOKxsedNWU/yx9vtnibr+Jd7om+PAle3595rx
+         jx/DrLDtRajQ5a9Has6ZIpY1KBT2goL0XUaFAT8cSRiLfxyIgwzD2GxHMO7a/BzATUj9
+         spTx73ENgAkWjR8dUD/FjPIeQCv0E3lLdqAFPZXo8FV3n1r68I9QxTWSMzAMBIvjgvWp
+         GbMilKWU98AWOTl4uJYn8lQZTMT+mqNTCXxFKE33UmsrM++k1iY/S9gLp/+wtQzn55iZ
+         2+kA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1771239658; x=1771844458;
+        d=1e100.net; s=20230601; t=1771258873; x=1771863673;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=jzgolleu2SIxliK/vEtotu12nLOXFd4HqJviqi0SJ1s=;
-        b=ME2+OpyAKvV5vG5h3DFDYasuU/vFOaHhYphk6PPi9KdI54goqA7SeH1O82exBFiZWi
-         CAXzwq53Z+36OVCDQQoTOxOdkKxyzn2UHyZhrhLHfJ/nVxhSjlNB6Yr/3GI1e176XASj
-         s3hjgmzJu/5qJM4yRsEAzqBmjF9tNuDUX3NPlLOcejCoDruKYam+b5eb1oEscMgiv/RB
-         qdviGA3bIgyMGNCy95jkp4fksvzNpO6aD/LTuHkC3YxIusvx40ath1G0FShDQeqsjsEt
-         nCX2JtBjCU+fZLo2gq3zznjCGXYixlewG+/nMh4kTpu+BRwueQrKUffn9vaEuH7biVFp
-         s0Pg==
-X-Forwarded-Encrypted: i=1; AJvYcCVeFys9su15LT4f26uleLlgZnLj2L14hLZ0Wl22BfcRgu70+ML+N/ZGuTMiIKRDixW3blYAa3sg@vger.kernel.org
-X-Gm-Message-State: AOJu0Yy4sDZmAEIngIq4+K1ZP4FhLJAEqnPPTYXRg/vyku217+rkQldj
-	E/kaArliDOHBbXNSxH/n78asrZqlWIimhS2ZQB8/KlNAOWPqaqyqL2lEqGR9pStzOMQ=
-X-Gm-Gg: AZuq6aKGOLxxZg79+MLhR/9/M691nBLRak8HtFqoC/wRbj+bAz8+MkVoRRk0e3EEY23
-	Ugpr3bGvSdP2UfPva7fq2r1gjHZxyAnSu0kTZLOwzStnqJArr8BTQ/XQNOpZ8wSxp0b09/WZ05l
-	wYmcJG3FdTAa8BwJ2Ja3aWHgm1bIc7i7W3tZ8tYV5QIs5ZruKjAykXc2wxM41PzUezFkcFvfl6S
-	xHfylwU2+Xedsb4wHe89VGPBkD613xxoUvGKRiUOsBECXCpk+KAfHnfwRuobyICRbd1/mR7cK0m
-	y11NLDVyDkgAj9wdmwlVLigxcMxpvWyG2iqCHTxGY8/CgvWfbgnO4d/T29zX90kBEInhazYD3/g
-	EbWE/Wg1b8rq27DFoWel66lhlILgdmkOkbq9EbAU/4m7MiAB4Hf4X3xSnlLJDuB+pl/4Yajip4R
-	MEtdtae3R3CX9ehix0QSLXOu81NxIMz6++BA55
-X-Received: by 2002:a05:6000:3102:b0:430:fdc8:8be3 with SMTP id ffacd0b85a97d-4379790ef6cmr18730047f8f.29.1771239657494;
-        Mon, 16 Feb 2026 03:00:57 -0800 (PST)
-Received: from localhost (109-81-87-131.rct.o2.cz. [109.81.87.131])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-43796a6a5f0sm25813158f8f.11.2026.02.16.03.00.56
+        bh=ScvhChnO4StcvknG4EO4W1y203NmQMeHjxbNv7iKKOc=;
+        b=tq0LRepKx9TRGkJ96pLV7XFnIOjS7mRDEor9Hq3EgXVSKJtH7FxCU2XITsEFLOmtqR
+         CH0KGXQx3WNRPLHso3c0EGBo6R0UUpJe5xbcmd2jQqf9bq8S+Bhp7KTyKIjYWM3yt/TU
+         y3atpIbjPl3s3n42fyeulux7Z+KEjOtFcoyZ2FWz810Z1cHPvk8DfhdhrKsNneJKWwOG
+         bxNh3c4+e7FsMtPSxb+YGyhagKspdulVW4wtkgwT6gEz6SpwDPhyEYII2y6mbq8nZUCH
+         axFMX+IEUQ0eFbNfdRmrErlYLz7FHFLzoGquy1rURmDOyasqY4xdQFbHSqstQ0PHMb99
+         Xo8g==
+X-Forwarded-Encrypted: i=1; AJvYcCXzTnE68uK6F/QA+zScf2y1fvPzUCSGTRKwH6eUuoIZazMoKW57nWeLnMRtBYwp6A1e0+t7o3pH@vger.kernel.org
+X-Gm-Message-State: AOJu0YxvI89RoCul+8Qs4plULnZjqT1IT7AMyJKsKrbsUjClJUN5dJ84
+	6VE0L16dVoLa6Mo5qs1qdnX09dt6o9rkNxv2bGzwBezsUu/UQWzKYvzu
+X-Gm-Gg: AZuq6aKgUIkR2o1PdyyoBui0tS2dvwDezCtQp/qh1BdMXtSN/Zs+poGkUjds288kP22
+	2chpXTlPzy7846LL5G8MCn03L7zz/6f1CS7Mbd2DhZylLLBfcpDqZcR7bkDv9ESVpwaoNCRXQCr
+	9xoXS9A5WKby3Qyk0aTU+d+tT2YjddSPedNX+hu1LifBss0fgy6vOgQQWhshZnXO22OqGpGMEFy
+	tM2kcVzMOIKIDbf8y1qG/Q14FBUD4bw2lM90okQzlOMx9Q4JfcYSE28FWWkBoNG/ARTvgPjeHu6
+	AUiLZ0dwxEWCu1Ek4PWqihQ/qZl7tJDeVkGTuB1B8Kod09yCFNUKrhjXHMA9ExlHKX/hpYl/Y1f
+	V8YdZdV1zRjUhJ2T6sh1ZN76SxCJmGgdrLTY0RisgTjjWVw2S688jxXSkbpCDy2NSWPEDcR1egP
+	OWQvh0MFUZB8Lnb+TTnyxWmWF6CWpp+UXGkNPc2xxE2yqiyQSzmPW83tTo
+X-Received: by 2002:a05:600c:8b32:b0:46e:32dd:1b1a with SMTP id 5b1f17b1804b1-483739fc64fmr193175955e9.7.1771258873226;
+        Mon, 16 Feb 2026 08:21:13 -0800 (PST)
+Received: from localhost (bzq-166-168-31-253.red.bezeqint.net. [31.168.166.253])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4836cd7af87sm321885895e9.1.2026.02.16.08.21.12
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 16 Feb 2026 03:00:57 -0800 (PST)
-Date: Mon, 16 Feb 2026 12:00:55 +0100
-From: Michal Hocko <mhocko@suse.com>
-To: Leonardo Bras <leobras.c@gmail.com>
-Cc: Marcelo Tosatti <mtosatti@redhat.com>, linux-kernel@vger.kernel.org,
-	cgroups@vger.kernel.org, linux-mm@kvack.org,
-	Johannes Weiner <hannes@cmpxchg.org>,
-	Roman Gushchin <roman.gushchin@linux.dev>,
-	Shakeel Butt <shakeel.butt@linux.dev>,
-	Muchun Song <muchun.song@linux.dev>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Christoph Lameter <cl@linux.com>, Pekka Enberg <penberg@kernel.org>,
-	David Rientjes <rientjes@google.com>,
-	Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-	Vlastimil Babka <vbabka@suse.cz>,
-	Hyeonggon Yoo <42.hyeyoo@gmail.com>,
-	Leonardo Bras <leobras@redhat.com>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Waiman Long <longman@redhat.com>, Boqun Feng <boqun.feng@gmail.com>,
-	Frederic Weisbecker <fweisbecker@suse.de>
-Subject: Re: [PATCH 0/4] Introduce QPW for per-cpu operations
-Message-ID: <aZL45yORfkNvS9Rs@tiehlicka>
-References: <20260206143430.021026873@redhat.com>
- <aYs6Ju2G4bm6_tl2@tiehlicka>
- <aYxviLoWsrLqDU7o@tpad>
- <aYywl1hdBQP2_slo@tiehlicka>
- <aZDw6xI2izFDfuuu@WindFlash>
+        Mon, 16 Feb 2026 08:21:12 -0800 (PST)
+Date: Mon, 16 Feb 2026 18:21:11 +0200
+From: Amir Goldstein <amir73il@gmail.com>
+To: "T.J. Mercier" <tjmercier@google.com>
+Cc: gregkh@linuxfoundation.org, tj@kernel.org, driver-core@lists.linux.dev,
+	linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org, Jan Kara <jack@suse.cz>,
+	shuah@kernel.org, linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH v2 0/3] kernfs: Add inotify IN_DELETE_SELF, IN_IGNORED
+ support for files
+Message-ID: <aZNDSl3GPrNBGwmL@amir-ThinkPad-T480>
+References: <20260212215814.629709-1-tjmercier@google.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -109,113 +94,88 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <aZDw6xI2izFDfuuu@WindFlash>
+In-Reply-To: <20260212215814.629709-1-tjmercier@google.com>
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-0.16 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
+X-Spamd-Result: default: False [-1.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[suse.com,quarantine];
 	MID_RHS_NOT_FQDN(0.50)[];
-	R_DKIM_ALLOW(-0.20)[suse.com:s=google];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
+	R_DKIM_ALLOW(-0.20)[gmail.com:s=20230601];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-13965-lists,cgroups=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[21];
-	MIME_TRACE(0.00)[0:+];
-	RECEIVED_HELO_LOCALHOST(0.00)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	FREEMAIL_TO(0.00)[gmail.com];
+	TAGGED_FROM(0.00)[bounces-13966-lists,cgroups=lfdr.de];
 	FROM_HAS_DN(0.00)[];
-	DKIM_TRACE(0.00)[suse.com:+];
+	RECEIVED_HELO_LOCALHOST(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	FORGED_SENDER_MAILLIST(0.00)[];
 	TO_DN_SOME(0.00)[];
+	DKIM_TRACE(0.00)[gmail.com:+];
+	MISSING_XM_UA(0.00)[];
+	FREEMAIL_FROM(0.00)[gmail.com];
 	RCVD_COUNT_FIVE(0.00)[5];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[mhocko@suse.com,cgroups@vger.kernel.org];
-	FREEMAIL_CC(0.00)[redhat.com,vger.kernel.org,kvack.org,cmpxchg.org,linux.dev,linux-foundation.org,linux.com,kernel.org,google.com,lge.com,suse.cz,gmail.com,linutronix.de,suse.de];
-	TAGGED_RCPT(0.00)[cgroups];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[amir73il@gmail.com,cgroups@vger.kernel.org];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	MISSING_XM_UA(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,suse.com:dkim]
-X-Rspamd-Queue-Id: B61E41429B7
+	RCPT_COUNT_SEVEN(0.00)[10];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	TAGGED_RCPT(0.00)[cgroups];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,memory.events:url]
+X-Rspamd-Queue-Id: E06DD1461FD
 X-Rspamd-Action: no action
 
-On Sat 14-02-26 19:02:19, Leonardo Bras wrote:
-> On Wed, Feb 11, 2026 at 05:38:47PM +0100, Michal Hocko wrote:
-> > On Wed 11-02-26 09:01:12, Marcelo Tosatti wrote:
-> > > On Tue, Feb 10, 2026 at 03:01:10PM +0100, Michal Hocko wrote:
-> > [...]
-> > > > What about !PREEMPT_RT? We have people running isolated workloads and
-> > > > these sorts of pcp disruptions are really unwelcome as well. They do not
-> > > > have requirements as strong as RT workloads but the underlying
-> > > > fundamental problem is the same. Frederic (now CCed) is working on
-> > > > moving those pcp book keeping activities to be executed to the return to
-> > > > the userspace which should be taking care of both RT and non-RT
-> > > > configurations AFAICS.
-> > > 
-> > > Michal,
-> > > 
-> > > For !PREEMPT_RT, _if_ you select CONFIG_QPW=y, then there is a kernel
-> > > boot option qpw=y/n, which controls whether the behaviour will be
-> > > similar (the spinlock is taken on local_lock, similar to PREEMPT_RT).
-> > 
-> > My bad. I've misread the config space of this.
-> > 
-> > > If CONFIG_QPW=n, or kernel boot option qpw=n, then only local_lock 
-> > > (and remote work via work_queue) is used.
-> > > 
-> > > What "pcp book keeping activities" you refer to ? I don't see how
-> > > moving certain activities that happen under SLUB or LRU spinlocks
-> > > to happen before return to userspace changes things related 
-> > > to avoidance of CPU interruption ?
-> > 
-> > Essentially delayed operations like pcp state flushing happens on return
-> > to the userspace on isolated CPUs. No locking changes are required as
-> > the work is still per-cpu.
-> > 
-> > In other words the approach Frederic is working on is to not change the
-> > locking of pcp delayed work but instead move that work into well defined
-> > place - i.e. return to the userspace.
-> > 
-> > Btw. have you measure the impact of preempt_disbale -> spinlock on hot
-> > paths like SLUB sheeves?
+On Thu, Feb 12, 2026 at 01:58:11PM -0800, T.J. Mercier wrote:
+> This series adds support for IN_DELETE_SELF and IN_IGNORED inotify
+> events to kernfs files.
 > 
-> Hi Michal,
+> Currently, kernfs (used by cgroup and others) supports IN_MODIFY events
+> but fails to notify watchers when the file is removed (e.g. during
+> cgroup destruction). This forces userspace monitors to maintain resource
+> intensive side-channels like pidfds, procfs polling, or redundant
+> directory watches to detect when a cgroup dies and a watched file is
+> removed.
 > 
-> I have done some study on this (which I presented on Plumbers 2023):
-> https://lpc.events/event/17/contributions/1484/ 
+> By generating IN_DELETE_SELF events on destruction, we allow watchers to
+> rely on a single watch descriptor for the entire lifecycle of the
+> monitored file, reducing resource usage (file descriptors, CPU cycles)
+> and complexity in userspace.
 > 
-> Since they are per-cpu spinlocks, and the remote operations are not that 
-> frequent, as per design of the current approach, we are not supposed to see 
-> contention (I was not able to detect contention even after stress testing 
-> for weeks), nor relevant cacheline bouncing.
+> The series is structured as follows:
+> Patch 1 refactors kernfs_elem_attr to support arbitrary event types.
+> Patch 2 implements the logic to generate DELETE_SELF and IGNORED events
+>         on file removal.
+> Patch 3 adds selftests to verify the new behavior.
 > 
-> That being said, for RT local_locks already get per-cpu spinlocks, so there 
-> is only difference for !RT, which as you mention, does preemtp_disable():
+> ---
+> Changes in v2:
+> Remove unused variables from new selftests per kernel test robot
+> Fix kernfs_type argument per Tejun
+> Inline checks for FS_MODIFY, FS_DELETE in kernfs_notify_workfn per Tejun
 > 
-> The performance impact noticed was mostly about jumping around in 
-> executable code, as inlining spinlocks (test #2 on presentation) took care 
-> of most of the added extra cycles, adding about 4-14 extra cycles per 
-> lock/unlock cycle. (tested on memcg with kmalloc test)
+> T.J. Mercier (3):
+>   kernfs: allow passing fsnotify event types
+>   kernfs: send IN_DELETE_SELF and IN_IGNORED on file deletion
+>   selftests: memcg: Add tests IN_DELETE_SELF and IN_IGNORED on
+>     memory.events
 > 
-> Yeah, as expected there is some extra cycles, as we are doing extra atomic 
-> operations (even if in a local cacheline) in !RT case, but this could be 
-> enabled only if the user thinks this is an ok cost for reducing 
-> interruptions.
+>  fs/kernfs/dir.c                               |  21 +++
+>  fs/kernfs/file.c                              |  20 ++-
+>  fs/kernfs/kernfs-internal.h                   |   3 +
+>  include/linux/kernfs.h                        |   1 +
+>  .../selftests/cgroup/test_memcontrol.c        | 122 ++++++++++++++++++
+>  5 files changed, 161 insertions(+), 6 deletions(-)
 > 
-> What do you think?
+> 
+> base-commit: ba268514ea14b44570030e8ed2aef92a38679e85
+> -- 
+> 2.53.0.273.g2a3d683680-goog
+> 
 
-The fact that the behavior is opt-in for !RT is certainly a plus. I also
-do not expect the overhead to be really be really big. To me, a much
-more important question is which of the two approaches is easier to
-maintain long term. The pcp work needs to be done one way or the other.
-Whether we want to tweak locking or do it at a very well defined time is
-the bigger question.
--- 
-Michal Hocko
-SUSE Labs
+In future posts, please CC inotify patches to fsdevel and inotify maintainers.
+
+Thanks,
+Amir.
 
