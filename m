@@ -1,125 +1,215 @@
-Return-Path: <cgroups+bounces-13971-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-13972-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id aIp2FDAOlGn4/QEAu9opvQ
-	(envelope-from <cgroups+bounces-13971-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Tue, 17 Feb 2026 07:44:00 +0100
+	id t8zRHWIdlGkpAAIAu9opvQ
+	(envelope-from <cgroups+bounces-13972-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Tue, 17 Feb 2026 08:48:50 +0100
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
-	by mail.lfdr.de (Postfix) with ESMTPS id ED14D1490E4
-	for <lists+cgroups@lfdr.de>; Tue, 17 Feb 2026 07:43:59 +0100 (CET)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 155FC1494FA
+	for <lists+cgroups@lfdr.de>; Tue, 17 Feb 2026 08:48:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 2F08F30071FC
-	for <lists+cgroups@lfdr.de>; Tue, 17 Feb 2026 06:43:59 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id F19033008C3C
+	for <lists+cgroups@lfdr.de>; Tue, 17 Feb 2026 07:48:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B79F62C11C2;
-	Tue, 17 Feb 2026 06:43:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 948C92D838C;
+	Tue, 17 Feb 2026 07:48:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JZRQrc7j"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mPqJgddj"
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-dl1-f67.google.com (mail-dl1-f67.google.com [74.125.82.67])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 75C5A298CC4;
-	Tue, 17 Feb 2026 06:43:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 377162D7392
+	for <cgroups@vger.kernel.org>; Tue, 17 Feb 2026 07:48:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.82.67
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1771310636; cv=none; b=Ovd0gvnnaU6fezg/AVHXYD9AT3v3n3IWpLcDQNYnNoZT6na6VyxdasZel5ElUxpxyIHde4Vt/nKyehALPwLcyBOjml4O/ugiINvbN/Xpe4kxdQfq/epzb3hFhH/Myk9XajYTX+Xi8onnlKqXC4AJJXGFs1ukoieQKfO7L7ecbdY=
+	t=1771314527; cv=none; b=cXX0oHLvfhi5PTMVqr3e4M+PQIPVAJZtVyobYpcda0QbepaWUJlvXoBEKJDXLtKGo9vp6KH/BXJ58iKBWLOlJsPiMveNizezOFNARRHIYt9q4qqcD/k/NvShEM0lrvJCYYRifX3Ts0VFNlNRjMqoRO9mXXkmlzMIEAQ3va1TKok=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1771310636; c=relaxed/simple;
-	bh=RL8wZb/KGujFWK7DHIooqWJaLqn+f83yP0M7AoFklkQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=QLwj8GjVQN2k+K8yzlAoN/CR5ScSaFrVjlh/aDZNUzWIo4fRGKxfUU8pzi4eAKqIWUqt70m3BYO8k9kHZz2UMDfvxCxpxBkwMo2BmiqdPzYaBrl2EPKrMhHyDb9/gBGWXGZM59GqRdSpuRtZ6MRy951T9+pwbjYtroL4qt7dT3I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=JZRQrc7j; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2B997C4CEF7;
-	Tue, 17 Feb 2026 06:43:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1771310636;
-	bh=RL8wZb/KGujFWK7DHIooqWJaLqn+f83yP0M7AoFklkQ=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=JZRQrc7jHpGvHElmGqMAABrS7epNMxGntrnhbm8r/UN3f5kO9iPy8j1LnBdVCISq3
-	 JS8SXUcF9tLztjvp8mg4OHvvwDYn+nSGI1ZLUsTVInmTAC01MYBOwnppnwD8ipXa+r
-	 1a5M12OU7d5yZy+WTTf9aLr30cqx3ssVdvEhyG3SUz18+0rcrUCHn10RMuEo2nE1Qi
-	 kAoWbZ8I7PLJeN6BuzmrvJVignuSnklJ4XXPjDGPtZFpA5I+hy4rOP5T+gUEUhQrDa
-	 dBu6nYyDUeDPWiXO8EkYNTOETe4OFw0HlQXRG5eUVbuf1BnuVYPsf4cio5MJFN0R3e
-	 JDZfSDhjEi/CA==
-Date: Mon, 16 Feb 2026 20:43:55 -1000
-From: Tejun Heo <tj@kernel.org>
-To: "T.J. Mercier" <tjmercier@google.com>
-Cc: gregkh@linuxfoundation.org, driver-core@lists.linux.dev,
-	linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-	shuah@kernel.org, linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH v2 0/3] kernfs: Add inotify IN_DELETE_SELF, IN_IGNORED
- support for files
-Message-ID: <aZQOK_xnxQn09qmP@slm.duckdns.org>
-References: <20260212215814.629709-1-tjmercier@google.com>
+	s=arc-20240116; t=1771314527; c=relaxed/simple;
+	bh=NPI6mWl+poWFT5q7oQSSbSjNljd6hZWCNDu3vvNn0uo=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=u61s9GA0zxVpl9eOneATQ2UouBDAKUsXZCny5L3a3IJboD8mDh94DkrSgocmv6iLPT4xaha/jjdUvMzAtKQzHhEJ9HOxgYan+qT8k9zrabJnz4lXlp2hHn3RKX37LQBGcclXbETFtkdqOhrIBpXfh15yH4rVOstCqbFQDjYF+KA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=mPqJgddj; arc=none smtp.client-ip=74.125.82.67
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-dl1-f67.google.com with SMTP id a92af1059eb24-1248d27f293so8827068c88.0
+        for <cgroups@vger.kernel.org>; Mon, 16 Feb 2026 23:48:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1771314525; x=1771919325; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=FnMNqYmQNZzpA0ckivNAm3K36XWptoI0fu8qkH7ny3w=;
+        b=mPqJgddjznqd7TFWHyGJITady3D2Z+L3TV7o+Qn31vBPtJXapmxhTs50IeaKciS62X
+         /uolMUufavaRZwuxASWDLxPyv54c9xc0neWnFezJxxN6mEFPpYyfW3o6zVXOe2lgO+X1
+         7WkZfpGq8TuDAn22gVM7IVrNIeidrVNiCGD1Ov3zbyPlcXGEtVoyr8Xk+Jy9bZ67apKa
+         wDaEaU4yKcnMrc4a6SSo79KzuVIqTqWCM8WDxdDidBa+jtD8Kf2+FQ2T+7jcGESI6D+E
+         kVx4rRXY4BysHHY5mrDT7tpuhwnXR2/X0RuIFIEkwFf+C3CZtSZ3AZgo73cAlL8DZHU0
+         48cg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1771314525; x=1771919325;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=FnMNqYmQNZzpA0ckivNAm3K36XWptoI0fu8qkH7ny3w=;
+        b=SVsqvnfMireisfj0906gbwSvI1Csce995G1O8V9dpeNT+yGtaDoutaqQoKMxkDyZnz
+         In75FYgBmYq9JwLWwBrInyJDWSMVUyVOviVYvNL/fMt7JzvcyvK3vk/4WkwdAjeRMz+O
+         3qz95KwgYpy8mAzjzOd+vMMuo2UQ5icNXpg9ihEVx6INfJZfyHibSAU7uTosRY0FrIbk
+         CaaRKPA+s5LiKKVSIXf9m76aXmMY0EHptF30SYvCElFWlb/pfoCCXffvGu8VYRrfmppS
+         yITNlsJNhRoJVxcBfvn7ANlk//0XaxRdEs+UhqDl/GJbSpdFWDu9O8L7492dO8LFtzvg
+         4EYA==
+X-Forwarded-Encrypted: i=1; AJvYcCVlzRZOSFemp35y6Qm3nrPPxpJz6Flgns8/99JZpeSo67KVK+sMSRcV+nj20lVjdwUhj+U/7Zzv@vger.kernel.org
+X-Gm-Message-State: AOJu0Yx1Ar7m8wPvfs4NsekgpK2TIfDOwIvD9dcFkKth0wArpH41ps9V
+	MdRn/y85RCidzMQr22IIxughiRh0yUOqFdr9+c23QCS9aii3kFElbvvX
+X-Gm-Gg: AZuq6aIe0qaq8GHVRNzix3UoqMqxp9/71rFAq2/nXgGB10C5uYKLy1E2N651glybTFl
+	CzJFurl8WFjOHZMLv/1TiXiD5eTpWKWshDl6s7qjqAwbytHnQ86Fl59l5IeiJS6MdacWE2VO3n0
+	KeX7Ed/Dwk5pNJq1qKcD3UPiiOVYWu57numZXnTUPYM/fpiEU0euWfhurYyl1PSPVGASEga4VxS
+	/kdTrSemAVHIY+4qMAsjkto1mjuS38crQkmnbiSF0DBMfb6R3Ec87DMOGQlN7JL2GJL3F9zoE2D
+	R0aPAOG6efnHsZ2wmWlwmWN3T6VVdB75NvopIIbboBkjy+BRsUzqqXUu/GALfhql7lTOGfG/9ZW
+	XE1LneUuqNTAD6LBdcsvDgHzGC4qG4cKoNFexlNwnm346nnEINg7EJIu6LU9cRNew0AVE/SSDon
+	AKXnX/acMjCJrdy7Tk9dRrCIrlG2NnrNdN
+X-Received: by 2002:a05:7022:f102:b0:11d:e25a:d9ca with SMTP id a92af1059eb24-1273ae69c9bmr5761013c88.26.1771314525054;
+        Mon, 16 Feb 2026 23:48:45 -0800 (PST)
+Received: from [192.168.4.196] ([73.222.117.172])
+        by smtp.gmail.com with ESMTPSA id a92af1059eb24-12742cada1csm13124794c88.9.2026.02.16.23.48.43
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 16 Feb 2026 23:48:44 -0800 (PST)
+Message-ID: <9ae80317-f005-474c-9da1-95462138f3c6@gmail.com>
+Date: Mon, 16 Feb 2026 23:48:42 -0800
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20260212215814.629709-1-tjmercier@google.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/2] mm/mempolicy: track page allocations per mempolicy
+To: Michal Hocko <mhocko@suse.com>
+Cc: linux-mm@kvack.org, apopple@nvidia.com, akpm@linux-foundation.org,
+ axelrasmussen@google.com, byungchul@sk.com, cgroups@vger.kernel.org,
+ david@kernel.org, eperezma@redhat.com, gourry@gourry.net,
+ jasowang@redhat.com, hannes@cmpxchg.org, joshua.hahnjy@gmail.com,
+ Liam.Howlett@oracle.com, linux-kernel@vger.kernel.org,
+ lorenzo.stoakes@oracle.com, matthew.brost@intel.com, mst@redhat.com,
+ rppt@kernel.org, muchun.song@linux.dev, zhengqi.arch@bytedance.com,
+ rakie.kim@sk.com, roman.gushchin@linux.dev, shakeel.butt@linux.dev,
+ surenb@google.com, virtualization@lists.linux.dev, vbabka@suse.cz,
+ weixugc@google.com, xuanzhuo@linux.alibaba.com,
+ ying.huang@linux.alibaba.com, yuanchu@google.com, ziy@nvidia.com,
+ kernel-team@meta.com
+References: <20260212045109.255391-1-inwardvessel@gmail.com>
+ <20260212045109.255391-2-inwardvessel@gmail.com> <aY2BcIHIARSwwQpo@tiehlicka>
+ <eca7a8f9-173d-4cb0-93b3-df082b8d0c08@gmail.com> <aZLUm95Y-dKkdBWI@tiehlicka>
+ <3fe7c5dd-b184-4421-a21c-bafce6aa7b09@gmail.com> <aZOHIQj3pJ-9dW_0@tiehlicka>
+Content-Language: en-US
+From: "JP Kobryn (Meta)" <inwardvessel@gmail.com>
+In-Reply-To: <aZOHIQj3pJ-9dW_0@tiehlicka>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-2.16 / 15.00];
+X-Spamd-Result: default: False [-0.66 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
-	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
+	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64:c];
+	R_DKIM_ALLOW(-0.20)[gmail.com:s=20230601];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FROM_HAS_DN(0.00)[];
-	TAGGED_FROM(0.00)[bounces-13971-lists,cgroups=lfdr.de];
-	RCVD_TLS_LAST(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
 	MIME_TRACE(0.00)[0:+];
+	RCPT_COUNT_TWELVE(0.00)[33];
+	TAGGED_FROM(0.00)[bounces-13972-lists,cgroups=lfdr.de];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	DKIM_TRACE(0.00)[kernel.org:+];
-	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
-	MISSING_XM_UA(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[tj@kernel.org,cgroups@vger.kernel.org];
+	FREEMAIL_CC(0.00)[kvack.org,nvidia.com,linux-foundation.org,google.com,sk.com,vger.kernel.org,kernel.org,redhat.com,gourry.net,cmpxchg.org,gmail.com,oracle.com,intel.com,linux.dev,bytedance.com,lists.linux.dev,suse.cz,linux.alibaba.com,meta.com];
+	RCVD_TLS_LAST(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCPT_COUNT_SEVEN(0.00)[7];
+	RCVD_COUNT_FIVE(0.00)[5];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[inwardvessel@gmail.com,cgroups@vger.kernel.org];
+	DKIM_TRACE(0.00)[gmail.com:+];
+	MID_RHS_MATCH_FROM(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[cgroups];
-	TO_DN_SOME(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[slm.duckdns.org:mid]
-X-Rspamd-Queue-Id: ED14D1490E4
+	FREEMAIL_FROM(0.00)[gmail.com];
+	TO_DN_SOME(0.00)[]
+X-Rspamd-Queue-Id: 155FC1494FA
 X-Rspamd-Action: no action
 
-On Thu, Feb 12, 2026 at 01:58:11PM -0800, T.J. Mercier wrote:
-> This series adds support for IN_DELETE_SELF and IN_IGNORED inotify
-> events to kernfs files.
+On 2/16/26 1:07 PM, Michal Hocko wrote:
+> On Mon 16-02-26 09:50:26, JP Kobryn (Meta) wrote:
+>> On 2/16/26 12:26 AM, Michal Hocko wrote:
+>>> On Thu 12-02-26 13:22:56, JP Kobryn wrote:
+>>>> On 2/11/26 11:29 PM, Michal Hocko wrote:
+>>>>> On Wed 11-02-26 20:51:08, JP Kobryn wrote:
+>>>>>> It would be useful to see a breakdown of allocations to understand which
+>>>>>> NUMA policies are driving them. For example, when investigating memory
+>>>>>> pressure, having policy-specific counts could show that allocations were
+>>>>>> bound to the affected node (via MPOL_BIND).
+>>>>>>
+>>>>>> Add per-policy page allocation counters as new node stat items. These
+>>>>>> counters can provide correlation between a mempolicy and pressure on a
+>>>>>> given node.
+>>>>>
+>>>>> Could you be more specific how exactly do you plan to use those
+>>>>> counters?
+>>>>
+>>>> Yes. Patch 2 allows us to find which nodes are undergoing reclaim. Once
+>>>> we identify the affected node(s), the new mpol counters (this patch)
+>>>> allow us correlate the pressure to the mempolicy driving it.
+>>>
+>>> I would appreciate somehow more specificity. You are adding counters
+>>> that are not really easy to drop once they are in. Sure we have
+>>> precedence of dropping some counters in the past so this is not as hard
+>>> as usual userspace APIs but still...
+>>>
+>>> How exactly do you tolerate mempolicy allocations to specific nodes?
+>>> While MPOL_MBIND is quite straightforward others are less so.
+>>
+>> The design does account for this regardless of the policy. In the call
+>> to __mod_node_page_state(), I'm using page_pgdat(page) so the stat is
+>> attributed to the node where the page actually landed.
 > 
-> Currently, kernfs (used by cgroup and others) supports IN_MODIFY events
-> but fails to notify watchers when the file is removed (e.g. during
-> cgroup destruction). This forces userspace monitors to maintain resource
-> intensive side-channels like pidfds, procfs polling, or redundant
-> directory watches to detect when a cgroup dies and a watched file is
-> removed.
+> That much is clear[*]. The consumer side of things is not really clear to
+> me. How do you know which policy or part of the nodemask of that policy
+> is the source of the memory pressure on a particular node? In other
+> words how much is the data actually useful except for a single node
+> mempolicy (i.e. MBIND).
+
+Other than the bind policy, having the interleave (and weighted) stats
+would allow us to see the effective distribution of the policy. Pressure
+could be linked to a user configured weight scheme. I would think it
+could also help with confirming expected distributions.
+
+You brought up the node mask so with the preferred policy, I think this
+is a good one for using the counters as well. Once we're at the point
+where we know the node(s) under pressure and then see significant
+preferred allocs accounted for, we could search the numa_maps that have
+"prefer:<node>" to find the tasks targeting the affected nodes.
+
+I mentioned this on another thread in this series but I'll include here
+as well and expand some more. For any given policy, the workflow would
+be:
+1) Pressure/OOMs reported while system-wide memory is free.
+2) Check per-node pgscan/pgsteal stats (provided by patch 2) to narrow
+down node(s) under pressure. They become available in
+/sys/devices/system/node/nodeN/vmstat.
+3) Check per-policy allocation counters (this patch) on that node to
+find what policy was driving it. Same readout at nodeN/vmstat.
+4) Now use /proc/*/numa_maps to identify tasks using the policy.
+
 > 
-> By generating IN_DELETE_SELF events on destruction, we allow watchers to
-> rely on a single watch descriptor for the entire lifecycle of the
-> monitored file, reducing resource usage (file descriptors, CPU cycles)
-> and complexity in userspace.
-> 
-> The series is structured as follows:
-> Patch 1 refactors kernfs_elem_attr to support arbitrary event types.
-> Patch 2 implements the logic to generate DELETE_SELF and IGNORED events
->         on file removal.
-> Patch 3 adds selftests to verify the new behavior.
+> [*] btw. I believe you misaccount MPOL_LOCAL because you attribute the
+> target node even when the allocation is from a remote node from the
+> "local" POV.
 
-The patchset looks good to me.
-
-Acked-by: Tejun Heo <tj@kernel.org>
-
-Thanks.
-
--- 
-tejun
+It's a good point. The accounting as a result of fallback cases
+shouldn't detract from an investigation though. We're interested in the
+node(s) under pressure so the relatively few fallback allocations would
+land on nodes that are not under pressure and could be viewed as
+acceptable noise.
 
