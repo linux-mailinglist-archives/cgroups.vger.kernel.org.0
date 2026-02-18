@@ -1,330 +1,444 @@
-Return-Path: <cgroups+bounces-13995-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-13996-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 8F7vDEt5lWl8RwIAu9opvQ
-	(envelope-from <cgroups+bounces-13995-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Wed, 18 Feb 2026 09:33:15 +0100
+	id GMN8DEB+lWl8RwIAu9opvQ
+	(envelope-from <cgroups+bounces-13996-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Wed, 18 Feb 2026 09:54:24 +0100
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
-	by mail.lfdr.de (Postfix) with ESMTPS id 682461541A1
-	for <lists+cgroups@lfdr.de>; Wed, 18 Feb 2026 09:33:14 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 99F22154562
+	for <lists+cgroups@lfdr.de>; Wed, 18 Feb 2026 09:54:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id 2EFDB3007AEF
-	for <lists+cgroups@lfdr.de>; Wed, 18 Feb 2026 08:31:58 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 5E32F3030996
+	for <lists+cgroups@lfdr.de>; Wed, 18 Feb 2026 08:54:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 701DF31A81A;
-	Wed, 18 Feb 2026 08:31:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CC22431BCB7;
+	Wed, 18 Feb 2026 08:54:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="cV0DEnxP"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="LBYr8ziz"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-ed1-f53.google.com (mail-ed1-f53.google.com [209.85.208.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D206A2EA169
-	for <cgroups@vger.kernel.org>; Wed, 18 Feb 2026 08:31:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.208.53
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1771403514; cv=pass; b=rPYox3aFjwskOGvjFyrg/7IZAdtUciphOLbZh2bvFHr7buG8mSGfRWedaCNY3w22Pyn67GXsytR1sFsPbVEJI22tgzy+13QklT4ufoHUADq7uuMZ5V3HalNnwCvgr0xlU6ZImyo4rBMfjXVEKBZ894meU9NLPj/im/axERbkWLo=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1771403514; c=relaxed/simple;
-	bh=g34/cXMgvqM8CAz3Jm7hMSLsp37KovcyCljYWpgZMh8=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=MEVP6P6cHlkJESW75vEYmmQpJcyXpH7tCeCFrAfIAkjXeWl0mX5Mwf3TK45buOE4cSzjt6FfnQYOnIYeRPtVStbpFkrXFki2N+TjoapQrcEqd6aH9NLaWY6TTC2f+rTp6FoRZ9a+/yVhwPF/m0p+LB2p10Hy6yS9QKA/NxILLjM=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=cV0DEnxP; arc=pass smtp.client-ip=209.85.208.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f53.google.com with SMTP id 4fb4d7f45d1cf-65a36583ef9so1096834a12.0
-        for <cgroups@vger.kernel.org>; Wed, 18 Feb 2026 00:31:52 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; t=1771403511; cv=none;
-        d=google.com; s=arc-20240605;
-        b=bELZPmsgU9dOxU+3aXe+/7LUC7H4uKvB40PNiAHzhLrgX175OiFE/OuT76Hn8aPUfU
-         61nxiw54LxKykd4E+HlSQs9AcOcfPSMwjO88sJixoS/kbrjTgLzAT/VBn8xFe4ji9E/J
-         a/p6X87+OD4CJZ6sVTuE8Htf42fRt+mudwMv+2noXX4SLNNvjc6Ao5uOTms1H9bsy/lh
-         u1s1d7Eb+VIC7Y610U7eDbmY2H+qRKRMqglP9Xnf794TYQGkf6seg8GoyCFsn2UuAA6Z
-         8u7ffb2e+DwkF8aO9N5yAxoov7eEQJnq8hUjmoX0nIIE7tghbQw72SkmYQ9qpULNoJ/Q
-         F+KQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:dkim-signature;
-        bh=T3U76qnvucsTLQ+BdD/Esd8/yZzq4QLRxWdPKbrqOpc=;
-        fh=bkuJsyGGNaMI2iEBgxMN1ZmCIePgCwIY+e6PdHxtFPk=;
-        b=Mq0vVaNS6YoVUlMTRb0eovYeT9eCjrOazJOu20VEBQHi70xmN4i8HsXoPPfs8XYZhq
-         Q9gOaMxR91MCCJyMihKEDT5mWgtHSY+UGIZcVOoOkd/XeCT4v3gXMBNKRNWCUQPPRcSr
-         Bg5A+rwWG27HSGQwnUTlU7uR5kV/7v+VYCWosWnYoVmBpIGLvy6xQJTBNqA3wwKXfu/F
-         Y2O85RlHAJZZLgWHmLTgTBLgCQWojwYpWqHgSY3Ma8e9JmC5vpWCGoa7A1Nq/bZo3/oh
-         eQAyl9Ntp+NtRLu+x0xpZQMuiIbeaYRMQuKw9W/K0XZw6kOkGJSu/g4OlPrrJNORYg7P
-         NrZw==;
-        darn=vger.kernel.org
-ARC-Authentication-Results: i=1; mx.google.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1771403511; x=1772008311; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=T3U76qnvucsTLQ+BdD/Esd8/yZzq4QLRxWdPKbrqOpc=;
-        b=cV0DEnxPnsQlkkqBoKaJBnR9i1cJOj5Ru4XBw6d/4t6WYqZol6c/Rbg8DXX1lSuzMt
-         NIQhNbv+VUpFyMhdhKtwNP3b2U0XLEzOBaw1HWYP8hYbBtKZjLTYgOAn1jTebwrv0oYt
-         D3KOnJZzFbY/lbxTkUlkuF2Tym2dUh1C+/yPV+o183OvaoTKivCEx6dupgrq4JyJNpAm
-         ITiNuqapI/kBnRVks42K/JqKr5BbX6fY9dVENXb0XoStRY0/xJtwLIWEgrhRYhJR/Izb
-         t/JqDZaAVKQOXy/nIXzHstKYshLIGZ660aXxQy5QwSgrfGJCd0PB8YfuAs+lUvGxPApY
-         Izeg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1771403511; x=1772008311;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=T3U76qnvucsTLQ+BdD/Esd8/yZzq4QLRxWdPKbrqOpc=;
-        b=BzENb+nKw85WWcESYuabEeoVw4tg3WPNajLqN/Eu/EzPLMyFLf1OIdKaDgxvNuYmID
-         T6aTMv5v47f0PBg7Ze3AjTNtVmoIBObbFHEIxdIL+spA2QQW6ZE6qOX7Sw7IFtp4jn3s
-         dlLShQikzECUQQovvsU/yA23D7dzXb+Wt0C/jW9d/4rbfIpLr57KqhnTukxGa2N8kqwO
-         Ai+73ntXbvI/Gef76mto2dBvQbPXV8iGjI/iuVXUCcBSOJVOsvCbTTdVEkJy5QGXOVm0
-         QzclHaSf+qy3H0t3FqMErN8RhPicuQorH0IU51o+LiAGfyBq6hp3lE/fm7UquJWqGpk1
-         X+XA==
-X-Forwarded-Encrypted: i=1; AJvYcCU/fSiKTUGs/oZrYz+2z92Mh2yNGQTSeMxeiAxjz7j76+Z9iwxtiPkljyFc9o7W+nr7KlzvWFo6@vger.kernel.org
-X-Gm-Message-State: AOJu0YxMB09uVgvkG4Abh36/V3K/JbaGmn9N9aRXqAJqfr6072ehUhtZ
-	yWAp7d0LZhvxz8Cl1NB7U1aZ10zWBjCx2OfzzJoOSjgELReW0Gw998auFp+9V8Y/lTP6/e70M44
-	4VK4VmEHibUHQLQqozS/XfXo3gCheQ/o=
-X-Gm-Gg: AZuq6aKh+3AbleFmTx5lgldxbQ5Ry7Sg/gVduJ89JDxmBjbrG9lWplHSsKwlmF3u5iY
-	KxA1EkZzRI92RHKI0kyTBNhW4SsgLB0IpgmKhKsLbX9er2zF5HTTmKhV5agYkWV8kbJSvJn1Ija
-	rEcr6+qteVQjKVu/k+QLesBVaDX9YBFElsuRMiQcS5LVxRhU4lvmg/wka03MUcrqdpLHAA8qXAU
-	ipWiMslCA8epNppAv+GA1/1bKhPXKtGKqOtXNJxFPUxnxyQpIK1VZR/rqA58h0CX2NcCyjOsyxp
-	jQR9pTws
-X-Received: by 2002:a05:6402:1141:b0:65a:4207:fbf0 with SMTP id
- 4fb4d7f45d1cf-65c7720cc7bmr375715a12.15.1771403510892; Wed, 18 Feb 2026
- 00:31:50 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8AAA82EDD7E;
+	Wed, 18 Feb 2026 08:54:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1771404855; cv=none; b=afpTDbtyi7fsMr3yvzg+jdtySbZweIauMHwDfKId9fH3OfMnEn8JD3xrLgjlMxe5Zh4TTJyhdMX+TJ2psGi5LZtIcEMi4YcZ8hl3ZmqwDzeeAcaH6bzGEsc1CkNo/Lx+N7aju/9KBmk3n9FbN7Ghfhwux323fKLgbrfENBonfa0=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1771404855; c=relaxed/simple;
+	bh=NzP0MR2kPO9mU0PSMbTdrpE4tzr54+64hxffDSJbW08=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=TE/ZUcPtva6xA4c0EOeUqKZe49Fq6U7sD/OhSWMr1NNwSwnfnlkQP+GZft9PJsdMUvC9iLGpiPUEtiE62CL8lKlPuDGCC27Y5zckSuXVReczDfz85lcl5jL1VtDGCveFMTtvokJ7GqgkkRtMyxNZKFfwQDT3R4SPZvtCZE/eJ3w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=LBYr8ziz; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9E87FC19421;
+	Wed, 18 Feb 2026 08:54:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1771404855;
+	bh=NzP0MR2kPO9mU0PSMbTdrpE4tzr54+64hxffDSJbW08=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=LBYr8zizRKDU1LDOo3wX+e3577+cQP0F0uNTuat2mD0CCjT4GiiZrd35s3JqR0Hbq
+	 WDBTufxDYWf9rCqCXmRdHyiBW7EbyOeZNj0g5C+cjhUHEzCUE39+ub5Q03HuL4VWlp
+	 0Bxd51qM5zXQE0D8sHuP4TObd0tccIuGMNiBCSxiH0BV8IGCrmklGMXP7IJKIN5r9L
+	 jLEd2zwCvBXLlVGRuj7iW5Ir1SH/A8xSVNpSqrkpsN1T4y/7I5MeDXMU26JRbtaVlf
+	 vGvAt6Z9Ovn+dColQThBTr37hOAJXqrIZA3bP6q3qnCXGG5AAbBRHnIHQNeWr8iyDC
+	 PlolPFoO4v6bA==
+Message-ID: <10434f89-fe2a-4cfc-9b29-1cd2ed2bbb7e@kernel.org>
+Date: Wed, 18 Feb 2026 09:54:06 +0100
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20260218032232.4049467-1-tjmercier@google.com> <20260218032232.4049467-4-tjmercier@google.com>
-In-Reply-To: <20260218032232.4049467-4-tjmercier@google.com>
-From: Amir Goldstein <amir73il@gmail.com>
-Date: Wed, 18 Feb 2026 09:31:39 +0100
-X-Gm-Features: AaiRm53vob00Ykj2SozMaQzwl7X3rV4VFQLdOBL-uAsZ0fNoE8t3B9B1XVNGy1c
-Message-ID: <CAOQ4uxh4js=3yk_RxjY5AZmC4kCMVJzbq+4Wnn3mky-_i75QMw@mail.gmail.com>
-Subject: Re: [PATCH v3 3/3] selftests: memcg: Add tests IN_DELETE_SELF and
- IN_IGNORED on memory.events
-To: "T.J. Mercier" <tjmercier@google.com>
-Cc: gregkh@linuxfoundation.org, tj@kernel.org, driver-core@lists.linux.dev, 
-	linux-kernel@vger.kernel.org, cgroups@vger.kernel.org, 
-	linux-fsdevel@vger.kernel.org, jack@suse.cz, shuah@kernel.org, 
-	linux-kselftest@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] mm: move pgscan and pgsteal to node stats
+Content-Language: en-US
+To: "JP Kobryn (Meta)" <jp.kobryn@linux.dev>, linux-mm@kvack.org,
+ mst@redhat.com, mhocko@suse.com, vbabka@suse.cz
+Cc: apopple@nvidia.com, akpm@linux-foundation.org, axelrasmussen@google.com,
+ byungchul@sk.com, cgroups@vger.kernel.org, david@kernel.org,
+ eperezma@redhat.com, gourry@gourry.net, jasowang@redhat.com,
+ hannes@cmpxchg.org, joshua.hahnjy@gmail.com, Liam.Howlett@oracle.com,
+ linux-kernel@vger.kernel.org, lorenzo.stoakes@oracle.com,
+ matthew.brost@intel.com, rppt@kernel.org, muchun.song@linux.dev,
+ zhengqi.arch@bytedance.com, rakie.kim@sk.com, roman.gushchin@linux.dev,
+ shakeel.butt@linux.dev, surenb@google.com, virtualization@lists.linux.dev,
+ weixugc@google.com, xuanzhuo@linux.alibaba.com,
+ ying.huang@linux.alibaba.com, yuanchu@google.com, ziy@nvidia.com,
+ kernel-team@meta.com
+References: <20260218032941.225439-1-jp.kobryn@linux.dev>
+From: "Vlastimil Babka (SUSE)" <vbabka@kernel.org>
+In-Reply-To: <20260218032941.225439-1-jp.kobryn@linux.dev>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-2.16 / 15.00];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=2];
-	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
-	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
-	R_DKIM_ALLOW(-0.20)[gmail.com:s=20230601];
+X-Spamd-Result: default: False [-0.66 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
+	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-13995-lists,cgroups=lfdr.de];
-	FROM_HAS_DN(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
+	TAGGED_FROM(0.00)[bounces-13996-lists,cgroups=lfdr.de];
+	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	RCVD_TLS_LAST(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	DKIM_TRACE(0.00)[gmail.com:+];
-	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
-	MISSING_XM_UA(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[amir73il@gmail.com,cgroups@vger.kernel.org];
+	RCVD_COUNT_THREE(0.00)[4];
+	FREEMAIL_CC(0.00)[nvidia.com,linux-foundation.org,google.com,sk.com,vger.kernel.org,kernel.org,redhat.com,gourry.net,cmpxchg.org,gmail.com,oracle.com,intel.com,linux.dev,bytedance.com,lists.linux.dev,linux.alibaba.com,meta.com];
+	FROM_HAS_DN(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	MID_RHS_MATCH_FROMTLD(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[34];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[vbabka@kernel.org,cgroups@vger.kernel.org];
+	DKIM_TRACE(0.00)[kernel.org:+];
+	MID_RHS_MATCH_FROM(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[cgroups];
-	RCPT_COUNT_SEVEN(0.00)[10];
-	TO_DN_SOME(0.00)[];
-	FREEMAIL_FROM(0.00)[gmail.com]
-X-Rspamd-Queue-Id: 682461541A1
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
+	TO_DN_SOME(0.00)[]
+X-Rspamd-Queue-Id: 99F22154562
 X-Rspamd-Action: no action
 
-On Wed, Feb 18, 2026 at 5:22=E2=80=AFAM T.J. Mercier <tjmercier@google.com>=
- wrote:
->
-> Add two new tests that verify inotify events are sent when memcg files
-> are removed.
->
-> Signed-off-by: T.J. Mercier <tjmercier@google.com>
-> Acked-by: Tejun Heo <tj@kernel.org>
+On 2/18/26 04:29, JP Kobryn (Meta) wrote:
+> From: JP Kobryn <jp.kobryn@linux.dev>
+> 
+> There are situations where reclaim kicks in on a system with free memory.
+> One possible cause is a NUMA imbalance scenario where one or more nodes are
+> under pressure. It would help if we could easily identify such nodes.
+> 
+> Move the pgscan and pgsteal counters from vm_event_item to node_stat_item
+> to provide per-node reclaim visibility. With these counters as node stats,
+> the values are now displayed in the per-node section of /proc/zoneinfo,
+> which allows for quick identification of the affected nodes.
+> 
+> /proc/vmstat continues to report the same counters, aggregated across all
+> nodes. But the ordering of these items within the readout changes as they
+> move from the vm events section to the node stats section.
+> 
+> Memcg accounting of these counters is preserved. The relocated counters
+> remain visible in memory.stat alongside the existing aggregate pgscan and
+> pgsteal counters.
+> 
+> However, this change affects how the global counters are accumulated.
+> Previously, the global event count update was gated on !cgroup_reclaim(),
+> excluding memcg-based reclaim from /proc/vmstat. Now that
+> mod_lruvec_state() is being used to update the counters, the global
+> counters will include all reclaim. This is consistent with how pgdemote
+> counters are already tracked.
 
-Feel free to add:
-Acked-by: Amir Goldstein <amir73il@gmail.com>
+Hm so that leaves PGREFILL (scanned in the active list) the odd one out,
+right? Not being per-node and gated on !cgroup_reclaim() for global stats.
+Should we change it too for full consistency?
 
-Although...
-
+> Finally, the virtio_balloon driver is updated to use
+> global_node_page_state() to fetch the counters, as they are no longer
+> accessible through the vm_events array.
+> 
+> Signed-off-by: JP Kobryn <jp.kobryn@linux.dev>
+> Suggested-by: Johannes Weiner <hannes@cmpxchg.org>
 > ---
->  .../selftests/cgroup/test_memcontrol.c        | 122 ++++++++++++++++++
->  1 file changed, 122 insertions(+)
->
-> diff --git a/tools/testing/selftests/cgroup/test_memcontrol.c b/tools/tes=
-ting/selftests/cgroup/test_memcontrol.c
-> index 4e1647568c5b..2b065d03b730 100644
-> --- a/tools/testing/selftests/cgroup/test_memcontrol.c
-> +++ b/tools/testing/selftests/cgroup/test_memcontrol.c
-> @@ -10,6 +10,7 @@
->  #include <sys/stat.h>
->  #include <sys/types.h>
->  #include <unistd.h>
-> +#include <sys/inotify.h>
->  #include <sys/socket.h>
->  #include <sys/wait.h>
->  #include <arpa/inet.h>
-> @@ -1625,6 +1626,125 @@ static int test_memcg_oom_group_score_events(cons=
-t char *root)
->         return ret;
->  }
->
-> +static int read_event(int inotify_fd, int expected_event, int expected_w=
-d)
-> +{
-> +       struct inotify_event event;
-> +       ssize_t len =3D 0;
-> +
-> +       len =3D read(inotify_fd, &event, sizeof(event));
-> +       if (len < (ssize_t)sizeof(event))
-> +               return -1;
-> +
-> +       if (event.mask !=3D expected_event || event.wd !=3D expected_wd) =
-{
-> +               fprintf(stderr,
-> +                       "event does not match expected values: mask %d (e=
-xpected %d) wd %d (expected %d)\n",
-> +                       event.mask, expected_event, event.wd, expected_wd=
-);
-> +               return -1;
-> +       }
-> +
-> +       return 0;
-> +}
-> +
-> +static int test_memcg_inotify_delete_file(const char *root)
-> +{
-> +       int ret =3D KSFT_FAIL;
-> +       char *memcg =3D NULL, *child_memcg =3D NULL;
-> +       int fd, wd;
-> +
-> +       memcg =3D cg_name(root, "memcg_test_0");
-> +
-> +       if (!memcg)
-> +               goto cleanup;
-> +
-> +       if (cg_create(memcg))
-> +               goto cleanup;
-> +
-> +       if (cg_write(memcg, "cgroup.subtree_control", "+memory"))
-> +               goto cleanup;
-> +
-> +       child_memcg =3D cg_name(memcg, "child");
-> +       if (!child_memcg)
-> +               goto cleanup;
-> +
-> +       if (cg_create(child_memcg))
-> +               goto cleanup;
-> +
-> +       fd =3D inotify_init1(0);
-> +       if (fd =3D=3D -1)
-> +               goto cleanup;
-> +
-> +       wd =3D inotify_add_watch(fd, cg_control(child_memcg, "memory.even=
-ts"), IN_DELETE_SELF);
-> +       if (wd =3D=3D -1)
-> +               goto cleanup;
-> +
-> +       cg_write(memcg, "cgroup.subtree_control", "-memory");
-> +
-> +       if (read_event(fd, IN_DELETE_SELF, wd))
-> +               goto cleanup;
-> +
-> +       if (read_event(fd, IN_IGNORED, wd))
-> +               goto cleanup;
-> +
-> +       ret =3D KSFT_PASS;
-> +
-> +cleanup:
-> +       if (fd >=3D 0)
-> +               close(fd);
-> +       if (child_memcg)
-> +               cg_destroy(child_memcg);
-> +       free(child_memcg);
-> +       if (memcg)
-> +               cg_destroy(memcg);
-> +       free(memcg);
-> +
-> +       return ret;
-> +}
-> +
-> +static int test_memcg_inotify_delete_rmdir(const char *root)
-> +{
-> +       int ret =3D KSFT_FAIL;
-> +       char *memcg =3D NULL;
-> +       int fd, wd;
-> +
-> +       memcg =3D cg_name(root, "memcg_test_0");
-> +
-> +       if (!memcg)
-> +               goto cleanup;
-> +
-> +       if (cg_create(memcg))
-> +               goto cleanup;
-> +
-> +       fd =3D inotify_init1(0);
-> +       if (fd =3D=3D -1)
-> +               goto cleanup;
-> +
-> +       wd =3D inotify_add_watch(fd, cg_control(memcg, "memory.events"), =
-IN_DELETE_SELF);
-> +       if (wd =3D=3D -1)
-> +               goto cleanup;
-> +
-> +       if (cg_destroy(memcg))
-> +               goto cleanup;
-> +       free(memcg);
-> +       memcg =3D NULL;
-> +
-> +       if (read_event(fd, IN_DELETE_SELF, wd))
-> +               goto cleanup;
-> +
-> +       if (read_event(fd, IN_IGNORED, wd))
-> +               goto cleanup;
-> +
-> +       ret =3D KSFT_PASS;
-> +
-> +cleanup:
-> +       if (fd >=3D 0)
-> +               close(fd);
-> +       if (memcg)
-> +               cg_destroy(memcg);
-> +       free(memcg);
-> +
-> +       return ret;
-> +}
-> +
->  #define T(x) { x, #x }
->  struct memcg_test {
->         int (*fn)(const char *root);
-> @@ -1644,6 +1764,8 @@ struct memcg_test {
->         T(test_memcg_oom_group_leaf_events),
->         T(test_memcg_oom_group_parent_events),
->         T(test_memcg_oom_group_score_events),
-> +       T(test_memcg_inotify_delete_file),
-> +       T(test_memcg_inotify_delete_rmdir),
+>  drivers/virtio/virtio_balloon.c |  8 ++---
+>  include/linux/mmzone.h          | 12 ++++++++
+>  include/linux/vm_event_item.h   | 12 --------
+>  mm/memcontrol.c                 | 52 +++++++++++++++++++++++----------
+>  mm/vmscan.c                     | 32 ++++++++------------
+>  mm/vmstat.c                     | 24 +++++++--------
+>  6 files changed, 76 insertions(+), 64 deletions(-)
+> 
+> diff --git a/drivers/virtio/virtio_balloon.c b/drivers/virtio/virtio_balloon.c
+> index 4e549abe59ff..ab945532ceef 100644
+> --- a/drivers/virtio/virtio_balloon.c
+> +++ b/drivers/virtio/virtio_balloon.c
+> @@ -369,13 +369,13 @@ static inline unsigned int update_balloon_vm_stats(struct virtio_balloon *vb)
+>  	update_stat(vb, idx++, VIRTIO_BALLOON_S_ALLOC_STALL, stall);
+>  
+>  	update_stat(vb, idx++, VIRTIO_BALLOON_S_ASYNC_SCAN,
+> -		    pages_to_bytes(events[PGSCAN_KSWAPD]));
+> +		    pages_to_bytes(global_node_page_state(PGSCAN_KSWAPD)));
+>  	update_stat(vb, idx++, VIRTIO_BALLOON_S_DIRECT_SCAN,
+> -		    pages_to_bytes(events[PGSCAN_DIRECT]));
+> +		    pages_to_bytes(global_node_page_state(PGSCAN_DIRECT)));
+>  	update_stat(vb, idx++, VIRTIO_BALLOON_S_ASYNC_RECLAIM,
+> -		    pages_to_bytes(events[PGSTEAL_KSWAPD]));
+> +		    pages_to_bytes(global_node_page_state(PGSTEAL_KSWAPD)));
+>  	update_stat(vb, idx++, VIRTIO_BALLOON_S_DIRECT_RECLAIM,
+> -		    pages_to_bytes(events[PGSTEAL_DIRECT]));
+> +		    pages_to_bytes(global_node_page_state(PGSTEAL_DIRECT)));
+>  
+>  #ifdef CONFIG_HUGETLB_PAGE
+>  	update_stat(vb, idx++, VIRTIO_BALLOON_S_HTLB_PGALLOC,
+> diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
+> index 3e51190a55e4..1aa9c7aec889 100644
+> --- a/include/linux/mmzone.h
+> +++ b/include/linux/mmzone.h
+> @@ -255,6 +255,18 @@ enum node_stat_item {
+>  	PGDEMOTE_DIRECT,
+>  	PGDEMOTE_KHUGEPAGED,
+>  	PGDEMOTE_PROACTIVE,
+> +	PGSTEAL_KSWAPD,
+> +	PGSTEAL_DIRECT,
+> +	PGSTEAL_KHUGEPAGED,
+> +	PGSTEAL_PROACTIVE,
+> +	PGSTEAL_ANON,
+> +	PGSTEAL_FILE,
+> +	PGSCAN_KSWAPD,
+> +	PGSCAN_DIRECT,
+> +	PGSCAN_KHUGEPAGED,
+> +	PGSCAN_PROACTIVE,
+> +	PGSCAN_ANON,
+> +	PGSCAN_FILE,
+>  #ifdef CONFIG_HUGETLB_PAGE
+>  	NR_HUGETLB,
+>  #endif
+> diff --git a/include/linux/vm_event_item.h b/include/linux/vm_event_item.h
+> index 22a139f82d75..1fa3b3ad0ff9 100644
+> --- a/include/linux/vm_event_item.h
+> +++ b/include/linux/vm_event_item.h
+> @@ -40,19 +40,7 @@ enum vm_event_item { PGPGIN, PGPGOUT, PSWPIN, PSWPOUT,
+>  		PGLAZYFREED,
+>  		PGREFILL,
+>  		PGREUSE,
+> -		PGSTEAL_KSWAPD,
+> -		PGSTEAL_DIRECT,
+> -		PGSTEAL_KHUGEPAGED,
+> -		PGSTEAL_PROACTIVE,
+> -		PGSCAN_KSWAPD,
+> -		PGSCAN_DIRECT,
+> -		PGSCAN_KHUGEPAGED,
+> -		PGSCAN_PROACTIVE,
+>  		PGSCAN_DIRECT_THROTTLE,
+> -		PGSCAN_ANON,
+> -		PGSCAN_FILE,
+> -		PGSTEAL_ANON,
+> -		PGSTEAL_FILE,
+>  #ifdef CONFIG_NUMA
+>  		PGSCAN_ZONE_RECLAIM_SUCCESS,
+>  		PGSCAN_ZONE_RECLAIM_FAILED,
+> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> index 007413a53b45..e89e77457701 100644
+> --- a/mm/memcontrol.c
+> +++ b/mm/memcontrol.c
+> @@ -328,6 +328,18 @@ static const unsigned int memcg_node_stat_items[] = {
+>  	PGDEMOTE_DIRECT,
+>  	PGDEMOTE_KHUGEPAGED,
+>  	PGDEMOTE_PROACTIVE,
+> +	PGSTEAL_KSWAPD,
+> +	PGSTEAL_DIRECT,
+> +	PGSTEAL_KHUGEPAGED,
+> +	PGSTEAL_PROACTIVE,
+> +	PGSTEAL_ANON,
+> +	PGSTEAL_FILE,
+> +	PGSCAN_KSWAPD,
+> +	PGSCAN_DIRECT,
+> +	PGSCAN_KHUGEPAGED,
+> +	PGSCAN_PROACTIVE,
+> +	PGSCAN_ANON,
+> +	PGSCAN_FILE,
+>  #ifdef CONFIG_HUGETLB_PAGE
+>  	NR_HUGETLB,
+>  #endif
+> @@ -441,14 +453,6 @@ static const unsigned int memcg_vm_event_stat[] = {
+>  #endif
+>  	PSWPIN,
+>  	PSWPOUT,
+> -	PGSCAN_KSWAPD,
+> -	PGSCAN_DIRECT,
+> -	PGSCAN_KHUGEPAGED,
+> -	PGSCAN_PROACTIVE,
+> -	PGSTEAL_KSWAPD,
+> -	PGSTEAL_DIRECT,
+> -	PGSTEAL_KHUGEPAGED,
+> -	PGSTEAL_PROACTIVE,
+>  	PGFAULT,
+>  	PGMAJFAULT,
+>  	PGREFILL,
+> @@ -1382,6 +1386,14 @@ static const struct memory_stat memory_stats[] = {
+>  	{ "pgdemote_direct",		PGDEMOTE_DIRECT		},
+>  	{ "pgdemote_khugepaged",	PGDEMOTE_KHUGEPAGED	},
+>  	{ "pgdemote_proactive",		PGDEMOTE_PROACTIVE	},
+> +	{ "pgsteal_kswapd",		PGSTEAL_KSWAPD		},
+> +	{ "pgsteal_direct",		PGSTEAL_DIRECT		},
+> +	{ "pgsteal_khugepaged",		PGSTEAL_KHUGEPAGED	},
+> +	{ "pgsteal_proactive",		PGSTEAL_PROACTIVE	},
+> +	{ "pgscan_kswapd",		PGSCAN_KSWAPD		},
+> +	{ "pgscan_direct",		PGSCAN_DIRECT		},
+> +	{ "pgscan_khugepaged",		PGSCAN_KHUGEPAGED	},
+> +	{ "pgscan_proactive",		PGSCAN_PROACTIVE	},
+>  #ifdef CONFIG_NUMA_BALANCING
+>  	{ "pgpromote_success",		PGPROMOTE_SUCCESS	},
+>  #endif
+> @@ -1425,6 +1437,14 @@ static int memcg_page_state_output_unit(int item)
+>  	case PGDEMOTE_DIRECT:
+>  	case PGDEMOTE_KHUGEPAGED:
+>  	case PGDEMOTE_PROACTIVE:
+> +	case PGSTEAL_KSWAPD:
+> +	case PGSTEAL_DIRECT:
+> +	case PGSTEAL_KHUGEPAGED:
+> +	case PGSTEAL_PROACTIVE:
+> +	case PGSCAN_KSWAPD:
+> +	case PGSCAN_DIRECT:
+> +	case PGSCAN_KHUGEPAGED:
+> +	case PGSCAN_PROACTIVE:
+>  #ifdef CONFIG_NUMA_BALANCING
+>  	case PGPROMOTE_SUCCESS:
+>  #endif
+> @@ -1496,15 +1516,15 @@ static void memcg_stat_format(struct mem_cgroup *memcg, struct seq_buf *s)
+>  
+>  	/* Accumulated memory events */
+>  	seq_buf_printf(s, "pgscan %lu\n",
+> -		       memcg_events(memcg, PGSCAN_KSWAPD) +
+> -		       memcg_events(memcg, PGSCAN_DIRECT) +
+> -		       memcg_events(memcg, PGSCAN_PROACTIVE) +
+> -		       memcg_events(memcg, PGSCAN_KHUGEPAGED));
+> +		       memcg_page_state(memcg, PGSCAN_KSWAPD) +
+> +		       memcg_page_state(memcg, PGSCAN_DIRECT) +
+> +		       memcg_page_state(memcg, PGSCAN_PROACTIVE) +
+> +		       memcg_page_state(memcg, PGSCAN_KHUGEPAGED));
+>  	seq_buf_printf(s, "pgsteal %lu\n",
+> -		       memcg_events(memcg, PGSTEAL_KSWAPD) +
+> -		       memcg_events(memcg, PGSTEAL_DIRECT) +
+> -		       memcg_events(memcg, PGSTEAL_PROACTIVE) +
+> -		       memcg_events(memcg, PGSTEAL_KHUGEPAGED));
+> +		       memcg_page_state(memcg, PGSTEAL_KSWAPD) +
+> +		       memcg_page_state(memcg, PGSTEAL_DIRECT) +
+> +		       memcg_page_state(memcg, PGSTEAL_PROACTIVE) +
+> +		       memcg_page_state(memcg, PGSTEAL_KHUGEPAGED));
+>  
+>  	for (i = 0; i < ARRAY_SIZE(memcg_vm_event_stat); i++) {
+>  #ifdef CONFIG_MEMCG_V1
+> diff --git a/mm/vmscan.c b/mm/vmscan.c
+> index 44e4fcd6463c..dd6d87340941 100644
+> --- a/mm/vmscan.c
+> +++ b/mm/vmscan.c
+> @@ -1984,7 +1984,7 @@ static unsigned long shrink_inactive_list(unsigned long nr_to_scan,
+>  	unsigned long nr_taken;
+>  	struct reclaim_stat stat;
+>  	bool file = is_file_lru(lru);
+> -	enum vm_event_item item;
+> +	enum node_stat_item item;
+>  	struct pglist_data *pgdat = lruvec_pgdat(lruvec);
+>  	bool stalled = false;
+>  
+> @@ -2010,10 +2010,8 @@ static unsigned long shrink_inactive_list(unsigned long nr_to_scan,
+>  
+>  	__mod_node_page_state(pgdat, NR_ISOLATED_ANON + file, nr_taken);
+>  	item = PGSCAN_KSWAPD + reclaimer_offset(sc);
+> -	if (!cgroup_reclaim(sc))
+> -		__count_vm_events(item, nr_scanned);
+> -	count_memcg_events(lruvec_memcg(lruvec), item, nr_scanned);
+> -	__count_vm_events(PGSCAN_ANON + file, nr_scanned);
+> +	mod_lruvec_state(lruvec, item, nr_scanned);
+> +	mod_lruvec_state(lruvec, PGSCAN_ANON + file, nr_scanned);
+>  
+>  	spin_unlock_irq(&lruvec->lru_lock);
+>  
+> @@ -2030,10 +2028,8 @@ static unsigned long shrink_inactive_list(unsigned long nr_to_scan,
+>  					stat.nr_demoted);
+>  	__mod_node_page_state(pgdat, NR_ISOLATED_ANON + file, -nr_taken);
+>  	item = PGSTEAL_KSWAPD + reclaimer_offset(sc);
+> -	if (!cgroup_reclaim(sc))
+> -		__count_vm_events(item, nr_reclaimed);
+> -	count_memcg_events(lruvec_memcg(lruvec), item, nr_reclaimed);
+> -	__count_vm_events(PGSTEAL_ANON + file, nr_reclaimed);
+> +	mod_lruvec_state(lruvec, item, nr_reclaimed);
+> +	mod_lruvec_state(lruvec, PGSTEAL_ANON + file, nr_reclaimed);
+>  
+>  	lru_note_cost_unlock_irq(lruvec, file, stat.nr_pageout,
+>  					nr_scanned - nr_reclaimed);
+> @@ -4542,7 +4538,7 @@ static int scan_folios(unsigned long nr_to_scan, struct lruvec *lruvec,
+>  {
+>  	int i;
+>  	int gen;
+> -	enum vm_event_item item;
+> +	enum node_stat_item item;
+>  	int sorted = 0;
+>  	int scanned = 0;
+>  	int isolated = 0;
+> @@ -4601,13 +4597,11 @@ static int scan_folios(unsigned long nr_to_scan, struct lruvec *lruvec,
+>  	}
+>  
+>  	item = PGSCAN_KSWAPD + reclaimer_offset(sc);
+> -	if (!cgroup_reclaim(sc)) {
+> -		__count_vm_events(item, isolated);
+> +	if (!cgroup_reclaim(sc))
+>  		__count_vm_events(PGREFILL, sorted);
+> -	}
+> -	count_memcg_events(memcg, item, isolated);
+> +	mod_lruvec_state(lruvec, item, isolated);
+>  	count_memcg_events(memcg, PGREFILL, sorted);
+> -	__count_vm_events(PGSCAN_ANON + type, isolated);
+> +	mod_lruvec_state(lruvec, PGSCAN_ANON + type, isolated);
+>  	trace_mm_vmscan_lru_isolate(sc->reclaim_idx, sc->order, scan_batch,
+>  				scanned, skipped, isolated,
+>  				type ? LRU_INACTIVE_FILE : LRU_INACTIVE_ANON);
+> @@ -4692,7 +4686,7 @@ static int evict_folios(unsigned long nr_to_scan, struct lruvec *lruvec,
+>  	LIST_HEAD(clean);
+>  	struct folio *folio;
+>  	struct folio *next;
+> -	enum vm_event_item item;
+> +	enum node_stat_item item;
+>  	struct reclaim_stat stat;
+>  	struct lru_gen_mm_walk *walk;
+>  	bool skip_retry = false;
+> @@ -4756,10 +4750,8 @@ static int evict_folios(unsigned long nr_to_scan, struct lruvec *lruvec,
+>  					stat.nr_demoted);
+>  
+>  	item = PGSTEAL_KSWAPD + reclaimer_offset(sc);
+> -	if (!cgroup_reclaim(sc))
+> -		__count_vm_events(item, reclaimed);
+> -	count_memcg_events(memcg, item, reclaimed);
+> -	__count_vm_events(PGSTEAL_ANON + type, reclaimed);
+> +	mod_lruvec_state(lruvec, item, reclaimed);
+> +	mod_lruvec_state(lruvec, PGSTEAL_ANON + type, reclaimed);
+>  
+>  	spin_unlock_irq(&lruvec->lru_lock);
+>  
+> diff --git a/mm/vmstat.c b/mm/vmstat.c
+> index 99270713e0c1..d952c1e763e6 100644
+> --- a/mm/vmstat.c
+> +++ b/mm/vmstat.c
+> @@ -1276,6 +1276,18 @@ const char * const vmstat_text[] = {
+>  	[I(PGDEMOTE_DIRECT)]			= "pgdemote_direct",
+>  	[I(PGDEMOTE_KHUGEPAGED)]		= "pgdemote_khugepaged",
+>  	[I(PGDEMOTE_PROACTIVE)]			= "pgdemote_proactive",
+> +	[I(PGSTEAL_KSWAPD)]			= "pgsteal_kswapd",
+> +	[I(PGSTEAL_DIRECT)]			= "pgsteal_direct",
+> +	[I(PGSTEAL_KHUGEPAGED)]			= "pgsteal_khugepaged",
+> +	[I(PGSTEAL_PROACTIVE)]			= "pgsteal_proactive",
+> +	[I(PGSTEAL_ANON)]			= "pgsteal_anon",
+> +	[I(PGSTEAL_FILE)]			= "pgsteal_file",
+> +	[I(PGSCAN_KSWAPD)]			= "pgscan_kswapd",
+> +	[I(PGSCAN_DIRECT)]			= "pgscan_direct",
+> +	[I(PGSCAN_KHUGEPAGED)]			= "pgscan_khugepaged",
+> +	[I(PGSCAN_PROACTIVE)]			= "pgscan_proactive",
+> +	[I(PGSCAN_ANON)]			= "pgscan_anon",
+> +	[I(PGSCAN_FILE)]			= "pgscan_file",
+>  #ifdef CONFIG_HUGETLB_PAGE
+>  	[I(NR_HUGETLB)]				= "nr_hugetlb",
+>  #endif
+> @@ -1320,19 +1332,7 @@ const char * const vmstat_text[] = {
+>  
+>  	[I(PGREFILL)]				= "pgrefill",
+>  	[I(PGREUSE)]				= "pgreuse",
+> -	[I(PGSTEAL_KSWAPD)]			= "pgsteal_kswapd",
+> -	[I(PGSTEAL_DIRECT)]			= "pgsteal_direct",
+> -	[I(PGSTEAL_KHUGEPAGED)]			= "pgsteal_khugepaged",
+> -	[I(PGSTEAL_PROACTIVE)]			= "pgsteal_proactive",
+> -	[I(PGSCAN_KSWAPD)]			= "pgscan_kswapd",
+> -	[I(PGSCAN_DIRECT)]			= "pgscan_direct",
+> -	[I(PGSCAN_KHUGEPAGED)]			= "pgscan_khugepaged",
+> -	[I(PGSCAN_PROACTIVE)]			= "pgscan_proactive",
+>  	[I(PGSCAN_DIRECT_THROTTLE)]		= "pgscan_direct_throttle",
+> -	[I(PGSCAN_ANON)]			= "pgscan_anon",
+> -	[I(PGSCAN_FILE)]			= "pgscan_file",
+> -	[I(PGSTEAL_ANON)]			= "pgsteal_anon",
+> -	[I(PGSTEAL_FILE)]			= "pgsteal_file",
+>  
+>  #ifdef CONFIG_NUMA
+>  	[I(PGSCAN_ZONE_RECLAIM_SUCCESS)]	= "zone_reclaim_success",
 
-How about another test case:
-- Watch the cgroup directory (not the child file)
-- Destroy cgroup
-- Expect IN_DELETE_SELF | IN_ISDIR
-
-I realize that this test won't pass with your implementation (right?)
-but that is not ok IMO.
-
-If we wish to make IN_DELETE_SELF available for kernfs,
-it should not be confined to regular files IMO.
-
-Thanks,
-Amir.
 
