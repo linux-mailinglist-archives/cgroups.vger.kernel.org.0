@@ -1,158 +1,200 @@
-Return-Path: <cgroups+bounces-14007-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-14008-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id oGKVEugYlmkSaAIAu9opvQ
-	(envelope-from <cgroups+bounces-14007-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Wed, 18 Feb 2026 20:54:16 +0100
+	id UAh6HhAalmkSaAIAu9opvQ
+	(envelope-from <cgroups+bounces-14008-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Wed, 18 Feb 2026 20:59:12 +0100
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9FA1B1593E4
-	for <lists+cgroups@lfdr.de>; Wed, 18 Feb 2026 20:54:15 +0100 (CET)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
+	by mail.lfdr.de (Postfix) with ESMTPS id 651F01594AB
+	for <lists+cgroups@lfdr.de>; Wed, 18 Feb 2026 20:59:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id B24293025933
-	for <lists+cgroups@lfdr.de>; Wed, 18 Feb 2026 19:53:24 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id D4E35300BB9D
+	for <lists+cgroups@lfdr.de>; Wed, 18 Feb 2026 19:59:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E3B7D347BC6;
-	Wed, 18 Feb 2026 19:53:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 56670349AF2;
+	Wed, 18 Feb 2026 19:59:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="V/H6/jAe"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="AgeRmV1R"
 X-Original-To: cgroups@vger.kernel.org
-Received: from out-172.mta0.migadu.com (out-172.mta0.migadu.com [91.218.175.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f49.google.com (mail-wm1-f49.google.com [209.85.128.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5F1A629E114
-	for <cgroups@vger.kernel.org>; Wed, 18 Feb 2026 19:53:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.172
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1771444403; cv=none; b=ePdOM/Q/CgNBSwqBpqAYjxFsRGIQGVVeIWxZV3Jl40FkHTJ4txqvgsFJEX4Hams0QiYuTMCvI2XFioL6J6U24AgCv3DBTi5zHkt8nPsNFptQffuufs4V6A03pthA73RDcq6mf1Iys4bhsLnCD6MPg/KPBGVkuFGrJlEpcakvsc0=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1771444403; c=relaxed/simple;
-	bh=G60IxpbYhanmXgFlCPIUDQdnvr93vQ+OEcTO0tgAS/o=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
-	 In-Reply-To:Content-Type; b=MlHDExkYIpwvvBZIeMmiVLqnGibcu21/N50V3gThS7DhF4DyN5OoEGoIt6drJZpKFa5oQ0HoVaz+Gx2rOMYs7Oa5kAtftXl0Bw1ID1HQ7vKyNE06lZ+T0XZwoMaYtl/jbMM/W63Jr9q2byiSb2XJ2BZwHInYFDFMbCHxYhGWbfA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=V/H6/jAe; arc=none smtp.client-ip=91.218.175.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <2397f4cd-367b-421c-b4f0-9c023f6cd546@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1771444398;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=SdnOU1vGQA1zKpk8kTMZsw9c7ygfqJl1OhsRupZBpf4=;
-	b=V/H6/jAeNBwT5tg4U5BLn/eRMm0dPifz25S3hPq141ITU5c0PWXjdPTF9DGOYil3JLG5j+
-	Zg9OGti2fviCFqs+oDIJ0JIwa/ctAUUTxVZyVwbNDChuLvtnfkczZH1sVIHbZIdXvkl8y9
-	O45YbBEP+0PZLGANix+9dkY2yESN61w=
-Date: Wed, 18 Feb 2026 11:53:09 -0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B7F2B347BD1
+	for <cgroups@vger.kernel.org>; Wed, 18 Feb 2026 19:59:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.128.49
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1771444742; cv=pass; b=Zcn2IaZb4fnqRDcKA3+pi5Dn8wSSVxgL26OIiYF6Qt54r3yjshOi3aB43vox8xJO7zlSnE1yOKm5x9yj9SHHQQBpqPrK2wD+QwFf4QIZOl2STfFpOi579hPx/gfff6vHuJ+GDw0W6d/qXiz6mmhb1hjCZSm9tMJ4IJPwRTpxAEY=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1771444742; c=relaxed/simple;
+	bh=fAj9Q1ygswz4E6SrtEFpUTAbwt8zju3u9r/LEpTkE3E=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=lpkywlX99ZSjzTQC+d5ZeHW6rx0TDuAgknJ/l045CthlRwPEEjzRX77K2/ka88Li+sjDxYOf8Le/vOgYha9WVuOH50QgGBjFWof0DJQLZlp+Jb7wP6w1OHQWlNigGl3adfvG3yod4XtEyO/LETFtp1fCZnXV4pKV4C8w8MljHTw=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=AgeRmV1R; arc=pass smtp.client-ip=209.85.128.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-wm1-f49.google.com with SMTP id 5b1f17b1804b1-48318d08ec2so11605e9.1
+        for <cgroups@vger.kernel.org>; Wed, 18 Feb 2026 11:59:00 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; t=1771444739; cv=none;
+        d=google.com; s=arc-20240605;
+        b=HUTecYiHiHItiFdbUPgLCVrIo5C9OhPfJG2dxp4FtSYZ8bgidrTun/ltIv2Wiolji0
+         R/lOSWsIN19ihvb5Iz7bmq9rYAm1nlUljsYfqrup9k6H1uybqhrc7+TY1a2nh3AL3mM/
+         DVKuU2IAuokCx8DK6YKuPK/tn8hHouL+R9y1CT93nAnColJEfCObYg3KG5q23d0+TFev
+         xdUY9HbOk1vIUpT6CVfA0g0BLNokX0XXbEMMYwNy/ejaYpEmu1xXBV8SBrHeuPtwyhEg
+         zkddB1nP5+AHgJVlUAKS7cAvS7HtsZQn/lGEOIjlKQ5FOJaOmAv+VF+ckOcOPULcUyCZ
+         if4g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:dkim-signature;
+        bh=OylA8EM9epDUNp/ar6ETdvAJBvo4gpIzvj6gp7Iy9D0=;
+        fh=TkFQ4PWRzHDx2y0syg0jff2kQ5N8PSbg5SO6Fk2HSUE=;
+        b=CkvCMjKj0zwnU61IVUtmnUEY7xedyTbOJNOZx69QE6meKNq+QqqsNf/GS2br3ZUqol
+         EJF35lJOIcf7i1sRKvEiDceQCiYiZ/RBZNSAed+H+ex5kCBa3deyH2ZidYRrGyhxf7Av
+         mtvBZ9X3e27OxFlcVpBNOxOUeUVFbbVJE9KBJC366UaIbQHbQfajPyzOtT1B5ayiErfI
+         Z8SeHUe6zjgb/zL+qMzPEp0BbbhSH3tQZ+WH7+O5XS6+UH2fgHdVSBfzn2R1qrBOao0+
+         zbMiFSr+NO17X4jEnbuYSSGgv2gv5ctN4sMjxGDhmrhYgvBvfbSJMlRofPNkP6EveUJE
+         xGWA==;
+        darn=vger.kernel.org
+ARC-Authentication-Results: i=1; mx.google.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1771444739; x=1772049539; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=OylA8EM9epDUNp/ar6ETdvAJBvo4gpIzvj6gp7Iy9D0=;
+        b=AgeRmV1RhQBAlmnoA3RTul5w2nJ57KLE9ZZS9d2bLICsnWFYZTcAJGpdEciopvVxZd
+         Z7wQVRxI3QX5CmuHlZqv4sE+nONEMSVZnoijJp8+xCi/OZxFk1yQBjZti4TiIVG8P5hn
+         Ol9h//F+Zq/sWL8QbxfxuRIadPeuDnu4Zthz/UpA67xqevmyEUqmbwYfoX3z6aylsdha
+         J09LIjJoQvf6TVKT3u3ayg0QvnOffSJM2dKGVPi1DzbDbGNw2am3ehv99BldvySO4qcG
+         ARyY127U4WHG9UacPBZJ6VpsRlW0VHY1o1ahaA+oHnWlFwiM/enOn6MSLl7fcJEVRntj
+         s/2Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1771444739; x=1772049539;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=OylA8EM9epDUNp/ar6ETdvAJBvo4gpIzvj6gp7Iy9D0=;
+        b=tGp5reAkrOT1kAEbbUxSITlXa9if1VTkebaKEku2ITOHOkyvmO4Dq10PCVUfdvFsEE
+         lZEenPmsZHdD2l4zcl4erpLNbiK5jmtO1a37NVYrb5KQq4Vrc77Fjbso0CibnVjwSTtE
+         3XmRF/pEC/QtShnCyWSGfZXPw7Nff60CcHJJGOSdcuGuixdL1j+XGzty4TYgkYylU20U
+         NvsEqdhKosK4rTyU5ondOfFnpX989RobIu4G3YZ3z5xTKCargJ6U1gMkOLHtEb57sjPo
+         BexAnp26Gf+FrI/UstMbsyKpBgxFuzBbrWaYvDcTw46yxCg+dL2u+p578Pixg826Wf36
+         xl8A==
+X-Forwarded-Encrypted: i=1; AJvYcCUTw5Lx5PkUXCCQf1tNN/65MgIPZwDLpn6PjjYyzRmgiLc+Arp13NT8RqkqotNCwtE2pucRrC0T@vger.kernel.org
+X-Gm-Message-State: AOJu0YxKCnpTj+Ysp0jb1LKaHclyTitbgB3cDcTkmtjg+qhj3VBoIrXZ
+	yWU1okqDPCiUpZ5GX+r4OGVyC/9dLzKVB7s9mPzePv4zzOyXIsHTOG9x/b3gyxmxBMIxWnb2DaJ
+	c3fB0YOR+s/YmUMKC22eSj217WBdBDFfNWUOo/eru
+X-Gm-Gg: AZuq6aIXZHNrD5tMxrlwpXRGLFtmOvC13Cc1SAK1IwSKZgbBxsOdEXatJ8BTfBdpkyg
+	YLoFgPvREOdXPlseHL0KiVc85/5KmUX10+S26i0zZs+EZTH+B85VErdIq8tiu6ntafvcfDUbEan
+	T4g1F68IIOu0odk+f2OlOPrvAmclbzMPJu3IFX9re4MfUuc5VCTHxPElNzEBUD27tOFv/pbs87b
+	mxDJGqq6o0TbRWhRSAr4vk1Tf1da9/Dy/GNKPFkFEVuD5crdzY/a1JmXllmNWWYy1YfyZvfROnX
+	VqZHhWAdZQQikLdOlVfmtOr5BKJVjuZLRY4Mutf+YGQBolQVm8VJbZr+vBR5xvx9iSJKYw==
+X-Received: by 2002:a05:600c:8b76:b0:475:da0c:38a8 with SMTP id
+ 5b1f17b1804b1-4839e5d9a1dmr138535e9.4.1771444738775; Wed, 18 Feb 2026
+ 11:58:58 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH v2] mm: move pgscan and pgsteal to node stats
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: "JP Kobryn (Meta)" <jp.kobryn@linux.dev>
-To: "Vlastimil Babka (SUSE)" <vbabka@kernel.org>, linux-mm@kvack.org,
- mst@redhat.com, mhocko@suse.com, vbabka@suse.cz
-Cc: apopple@nvidia.com, akpm@linux-foundation.org, axelrasmussen@google.com,
- byungchul@sk.com, cgroups@vger.kernel.org, david@kernel.org,
- eperezma@redhat.com, gourry@gourry.net, jasowang@redhat.com,
- hannes@cmpxchg.org, joshua.hahnjy@gmail.com, Liam.Howlett@oracle.com,
- linux-kernel@vger.kernel.org, lorenzo.stoakes@oracle.com,
- matthew.brost@intel.com, rppt@kernel.org, muchun.song@linux.dev,
- zhengqi.arch@bytedance.com, rakie.kim@sk.com, roman.gushchin@linux.dev,
- shakeel.butt@linux.dev, surenb@google.com, virtualization@lists.linux.dev,
- weixugc@google.com, xuanzhuo@linux.alibaba.com,
- ying.huang@linux.alibaba.com, yuanchu@google.com, ziy@nvidia.com,
- kernel-team@meta.com
-References: <20260218032941.225439-1-jp.kobryn@linux.dev>
- <10434f89-fe2a-4cfc-9b29-1cd2ed2bbb7e@kernel.org>
- <fbcd6770-f555-443c-b5f2-fe5e73722118@linux.dev>
-Content-Language: en-US
-In-Reply-To: <fbcd6770-f555-443c-b5f2-fe5e73722118@linux.dev>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+References: <20260218032232.4049467-1-tjmercier@google.com>
+ <20260218032232.4049467-3-tjmercier@google.com> <e7b4xiqvh76jvqukvcocblq5lrc5hldoiiexjlo5fmagbv3mgn@zhpzm4jwx3kg>
+ <CABdmKX1S4wWFdsUOFOQ=_uVbmQVcQk0+VUVQjgAx_yqUcEd60A@mail.gmail.com>
+ <s4vb5vshejyasdw2tkydhhk4m6p3ybexoi254qjiqexzgcxb5c@ctazolc3nh6f> <CABdmKX2cQCneFyZhTWmWYz-RTmAOQcEKh5ZQewz25E6Xfok1tQ@mail.gmail.com>
+In-Reply-To: <CABdmKX2cQCneFyZhTWmWYz-RTmAOQcEKh5ZQewz25E6Xfok1tQ@mail.gmail.com>
+From: "T.J. Mercier" <tjmercier@google.com>
+Date: Wed, 18 Feb 2026 11:58:46 -0800
+X-Gm-Features: AaiRm52n0lIK2grreFCNiF6qE3JVFwkwj9cGx62TA9xdekMRJsGok-FwMltR-JM
+Message-ID: <CABdmKX0BJcsv0TaPSsGN2a4nkQaKF=cX8rnnoL5kPTHNfuKL7Q@mail.gmail.com>
+Subject: Re: [PATCH v3 2/3] kernfs: send IN_DELETE_SELF and IN_IGNORED on file deletion
+To: Jan Kara <jack@suse.cz>
+Cc: gregkh@linuxfoundation.org, tj@kernel.org, driver-core@lists.linux.dev, 
+	linux-kernel@vger.kernel.org, cgroups@vger.kernel.org, 
+	linux-fsdevel@vger.kernel.org, amir73il@gmail.com, shuah@kernel.org, 
+	linux-kselftest@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-0.66 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[linux.dev,none];
-	R_DKIM_ALLOW(-0.20)[linux.dev:s=key1];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+X-Spamd-Result: default: False [-2.16 / 15.00];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=2];
+	DMARC_POLICY_ALLOW(-0.50)[google.com,reject];
+	R_DKIM_ALLOW(-0.20)[google.com:s=20230601];
+	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-14007-lists,cgroups=lfdr.de];
-	RCVD_COUNT_THREE(0.00)[3];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	FREEMAIL_CC(0.00)[nvidia.com,linux-foundation.org,google.com,sk.com,vger.kernel.org,kernel.org,redhat.com,gourry.net,cmpxchg.org,gmail.com,oracle.com,intel.com,linux.dev,bytedance.com,lists.linux.dev,linux.alibaba.com,meta.com];
-	RCPT_COUNT_TWELVE(0.00)[34];
-	MIME_TRACE(0.00)[0:+];
+	FREEMAIL_CC(0.00)[linuxfoundation.org,kernel.org,lists.linux.dev,vger.kernel.org,gmail.com];
+	TAGGED_FROM(0.00)[bounces-14008-lists,cgroups=lfdr.de];
 	FROM_HAS_DN(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	TO_DN_SOME(0.00)[];
-	NEURAL_HAM(-0.00)[-0.999];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[jp.kobryn@linux.dev,cgroups@vger.kernel.org];
-	DKIM_TRACE(0.00)[linux.dev:+];
-	MID_RHS_MATCH_FROM(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	TAGGED_RCPT(0.00)[cgroups];
+	RCVD_COUNT_THREE(0.00)[4];
+	RCVD_TLS_LAST(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	DKIM_TRACE(0.00)[google.com:+];
 	MISSING_XM_UA(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,linux.dev:mid,linux.dev:dkim,linux.dev:email]
-X-Rspamd-Queue-Id: 9FA1B1593E4
+	TO_DN_SOME(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[tjmercier@google.com,cgroups@vger.kernel.org];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	NEURAL_HAM(-0.00)[-1.000];
+	TAGGED_RCPT(0.00)[cgroups];
+	RCPT_COUNT_SEVEN(0.00)[10];
+	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns,mail.gmail.com:mid]
+X-Rspamd-Queue-Id: 651F01594AB
 X-Rspamd-Action: no action
 
-On 2/18/26 10:02 AM, JP Kobryn (Meta) wrote:
-> On 2/18/26 12:54 AM, Vlastimil Babka (SUSE) wrote:
->> On 2/18/26 04:29, JP Kobryn (Meta) wrote:
->>> From: JP Kobryn <jp.kobryn@linux.dev>
->>>
->>> There are situations where reclaim kicks in on a system with free 
->>> memory.
->>> One possible cause is a NUMA imbalance scenario where one or more 
->>> nodes are
->>> under pressure. It would help if we could easily identify such nodes.
->>>
->>> Move the pgscan and pgsteal counters from vm_event_item to 
->>> node_stat_item
->>> to provide per-node reclaim visibility. With these counters as node 
->>> stats,
->>> the values are now displayed in the per-node section of /proc/zoneinfo,
->>> which allows for quick identification of the affected nodes.
->>>
->>> /proc/vmstat continues to report the same counters, aggregated across 
->>> all
->>> nodes. But the ordering of these items within the readout changes as 
->>> they
->>> move from the vm events section to the node stats section.
->>>
->>> Memcg accounting of these counters is preserved. The relocated counters
->>> remain visible in memory.stat alongside the existing aggregate pgscan 
->>> and
->>> pgsteal counters.
->>>
->>> However, this change affects how the global counters are accumulated.
->>> Previously, the global event count update was gated on ! 
->>> cgroup_reclaim(),
->>> excluding memcg-based reclaim from /proc/vmstat. Now that
->>> mod_lruvec_state() is being used to update the counters, the global
->>> counters will include all reclaim. This is consistent with how pgdemote
->>> counters are already tracked.
->>
->> Hm so that leaves PGREFILL (scanned in the active list) the odd one out,
->> right? Not being per-node and gated on !cgroup_reclaim() for global 
->> stats.
->> Should we change it too for full consistency?
-> 
-> I'm fine with adding coverage for the active list side as well. For
-> completeness, I could also include PGDEACTIVATE.
+On Wed, Feb 18, 2026 at 11:15=E2=80=AFAM T.J. Mercier <tjmercier@google.com=
+> wrote:
+>
+> On Wed, Feb 18, 2026 at 10:37=E2=80=AFAM Jan Kara <jack@suse.cz> wrote:
+> >
+> > On Wed 18-02-26 10:06:35, T.J. Mercier wrote:
+> > > On Wed, Feb 18, 2026 at 10:01=E2=80=AFAM Jan Kara <jack@suse.cz> wrot=
+e:
+> > > >
+> > > > On Tue 17-02-26 19:22:31, T.J. Mercier wrote:
+> > > > > Currently some kernfs files (e.g. cgroup.events, memory.events) s=
+upport
+> > > > > inotify watches for IN_MODIFY, but unlike with regular filesystem=
+s, they
+> > > > > do not receive IN_DELETE_SELF or IN_IGNORED events when they are
+> > > > > removed.
+> > > >
+> > > > Please see my email:
+> > > > https://lore.kernel.org/all/lc2jgt3yrvuvtdj2kk7q3rloie2c5mzyhfdy4zv=
+xylx732voet@ol3kl4ackrpb
+> > > >
+> > > > I think this is actually a bug in kernfs...
+> > > >
+> > > >                                                                 Hon=
+za
+> > >
+> > > Thanks, I'm looking at this now. I've tried calling clear_nlink in
+> > > kernfs_iop_rmdir, but I've found that when we get back to vfs_rmdir
+> > > and shrink_dcache_parent is called, d_walk doesn't find any entries,
+> > > so shrink_kill->__dentry_kill is not called. I'm investigating why
+> > > that is...
+> >
+> > Strange because when I was experimenting with this in my VM I have seen
+> > __dentry_kill being called (if the dentries were created by someone loo=
+king
+> > up the names).
+>
+> Ahh yes, that's the difference. I was just doing mkdir
+> /sys/fs/cgroup/foo immediately followed by rmdir /sys/fs/cgroup/foo.
+> kernfs creates the dentries in kernfs_iop_lookup, so there were none
+> when I did the rmdir because I didn't cause any lookups.
+>
+> If I actually have a program watching
+> /sys/fs/cgroup/foo/memory.events, then I do see the __dentry_kill kill
+> calls, but despite the prior clear_nlink call i_nlink is 1 so
+> fsnotify_inoderemove is skipped. Something must be incrementing it.
 
-Actually, I see PGDEACTIVATE is not gated so I'll leave that one out.
-I'll send v3 and include PGREFILL.
+The issue was that kernfs_remove unlinks the kernfs nodes, but doesn't
+clear_nlink when it does so. Adding that seems to work to generate
+IN_DELETE_SELF and IN_IGNORED. I'll do some more testing and get a
+patch ready.
 
