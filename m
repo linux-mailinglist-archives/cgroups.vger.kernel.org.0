@@ -1,481 +1,335 @@
-Return-Path: <cgroups+bounces-13993-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-13994-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 4EzjA+9wlWmgRAIAu9opvQ
-	(envelope-from <cgroups+bounces-13993-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Wed, 18 Feb 2026 08:57:35 +0100
+	id IIJIOCZ5lWl8RwIAu9opvQ
+	(envelope-from <cgroups+bounces-13994-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Wed, 18 Feb 2026 09:32:38 +0100
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
-	by mail.lfdr.de (Postfix) with ESMTPS id 31846153CED
-	for <lists+cgroups@lfdr.de>; Wed, 18 Feb 2026 08:57:34 +0100 (CET)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 17019154198
+	for <lists+cgroups@lfdr.de>; Wed, 18 Feb 2026 09:32:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id 7D0E430055EB
-	for <lists+cgroups@lfdr.de>; Wed, 18 Feb 2026 07:57:31 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id E11E83011127
+	for <lists+cgroups@lfdr.de>; Wed, 18 Feb 2026 08:31:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 99F3331281D;
-	Wed, 18 Feb 2026 07:57:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 32440318B85;
+	Wed, 18 Feb 2026 08:31:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="fy2VPL4W"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="W8+nrWs0"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-wm1-f68.google.com (mail-wm1-f68.google.com [209.85.128.68])
+Received: from mail-ej1-f50.google.com (mail-ej1-f50.google.com [209.85.218.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9499530EF6A
-	for <cgroups@vger.kernel.org>; Wed, 18 Feb 2026 07:57:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.68
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1771401450; cv=none; b=SLwZRy4fQvLCcH4nmP0oN1NBmjGy22P0uHimhL+maMyQ4z/HCeMEzV8DRD4U+A5TjafoYGJLr7Su3IxlXGaSJM3/JPbTVrMqPPrQWmO5wbECJvxN/RDmrnkMYJ/yOi5P1jF6FFbVlqKJ6+1tdPMFBhunU0RP0cGZW1+VwIM9Rgg=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1771401450; c=relaxed/simple;
-	bh=xRwv3Pynanc0OBLrGgLwhdalOmAbzXRJptJPxfJSc2E=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Nf1a3swCLExAatVQfV1GVNkcEq9lEYsqOkYwMZXalIeDnj7P/xj7wRqrRULcjHwpTtc5XIt6lJhP09NK2rg9Nsy7IemBdvEWFdKrY423hUwqxR/M5we1rm/B1o3F5A7lKJK/d8ARNm9jDfM5btyLV534xlne4mqAJHdKziVE8kI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=fy2VPL4W; arc=none smtp.client-ip=209.85.128.68
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-wm1-f68.google.com with SMTP id 5b1f17b1804b1-48374014a77so44909665e9.3
-        for <cgroups@vger.kernel.org>; Tue, 17 Feb 2026 23:57:27 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7AD6730BF70
+	for <cgroups@vger.kernel.org>; Wed, 18 Feb 2026 08:31:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.218.50
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1771403468; cv=pass; b=auMs9SEKxfyNyLOyvL+GQWXNQyK4GNt2GrDbVlBLaoGIlAPC4Op9csoRhrOeZ6AB/ly6BPESC/h3OV7g8lbwRElGleK2JtLFxPwG92lvRgbCZExE3GbkI3xzuY6lGV/6PXMBqCfGPCPrXU8gayJMDZGuCYUGowVgwMQtdff+pWw=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1771403468; c=relaxed/simple;
+	bh=pOcrR9g/30b877GWLIQEiogDavQ6piFbc5NysJoGEjE=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=i1aNYDbHmGv7X+nsKC8P7LI4JBxcPoXhUVGDcHoedXYQxEZIlQBHWt3bbfcNx+oXenfT91TRFbgucFB+ExpVdDkx9nz4N0au9G2Ee0S699mltVjAJy3iikSJD0i280+p1FNACZpVuXt2JMdorLwF21tcZWvzhfaCvMNB9vDYg3g=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=W8+nrWs0; arc=pass smtp.client-ip=209.85.218.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f50.google.com with SMTP id a640c23a62f3a-b8fa7e3672eso679949866b.2
+        for <cgroups@vger.kernel.org>; Wed, 18 Feb 2026 00:31:06 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; t=1771403465; cv=none;
+        d=google.com; s=arc-20240605;
+        b=DYV2vJY/i1SxSAHAA0oP01KHOKJrByZMlGJHa8YsUHEbO7U/EbLG+CCgaHMHpgvpaF
+         GNh3np81V9t1+WPtvTN7O2ArJUIpr9kPjcH/MAzOEGi+nYLNyt8ITUDLbsyy9YSkRVIS
+         G1DTRWe5Lo55RZQpdJNfi8283jEqP26Nhj12lfV+CXOkkH1kvyay7+Yy2ClijAbs/PgD
+         7JV1W1wn9s4jHbS9j9zkaA9ZaK8uvPZvxw5s3ySGgqXM5k4vNccghxHB9AEaSfQc1Ywv
+         0GepXFANBitrxVk/BMyCbtEh26jLarpWjf8nNWSJ5K01aIB4SmTkqkhnOBv59+gVO2Jc
+         4dLQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:dkim-signature;
+        bh=Cd+FmpSKeZY657ydPhpXWP28mI30FM0F7sFttu1MBmg=;
+        fh=kJPLuP/R3rR4nw2i9i7vrsvAq3StuXx0slCLDhCYWhI=;
+        b=GQeRw9Wl5qhKNcG/zDid1MSYH5VkoUGXflyk68eFjgqMHkS+bJkX3/fEWZtWYiCLxh
+         eQwohlL7+SWeOYDVCvar+Wuzbt/ThIeDP7InlvFvrF7yrmssdCYAW77wkY41cpwnQklc
+         pooieQrmnmqsOesAbsFNSVTasXP9INLEGTVeaJ5w0i4LR+QiRPNw4w2pcveeVZCLOytd
+         Ed23YO7Ov1Fjqg88uSKxpZzIbuwVCG+XeXNje+/4+QVo/PkuNJX28zzCaa0wkr5l0Bxw
+         u91bvcqC9PW9ixxJfZ1w4tcIo2rJQm/GG856PYgYqd1TAAXJvz7WLxUY2GUxYN3EOmxu
+         nrBA==;
+        darn=vger.kernel.org
+ARC-Authentication-Results: i=1; mx.google.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1771401446; x=1772006246; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=fpno25uXms+t+fmEpT7TLhoJyOfpWVBIuL5TX2/ER8Y=;
-        b=fy2VPL4WBoVpHCKsIWKIZ6JST0R/QHsT6O7WzWPvT5wUy+A3KUQewHnClqlbyzJWsv
-         9v8i4poCw1TF+t1Uw7nBRDyeCkRGU9Pgl5wMGn1i7GeVFRG16mL8lT4iYAXtmGUL+vgH
-         1ZHjgGZ1O52giSTrvtIl7fneqT1nGT3EtOVMStYwCs6mMwl3zJB8+kEYLNvvKzy0Z0Hp
-         lTBwdB+TvYGcldGAQVsllqSUhlV8ytE7/DTK3TWSCuOUZTqZc5PZhwrZcHtoWQhgzDBZ
-         DFh1VN+PZBw/uvYqeqSvlA0uuJaC8DTHYd3otIyuvxJpia+4ZLIIcVUHHTdnA2vftA7W
-         RK1g==
+        d=gmail.com; s=20230601; t=1771403465; x=1772008265; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Cd+FmpSKeZY657ydPhpXWP28mI30FM0F7sFttu1MBmg=;
+        b=W8+nrWs0t3nYly9aQdYDojfd/ojwSO6NGcTkZun3NnlNXxO080HxchVbR6K06rovo5
+         9RJqIvUzAh4QbIKjNo3vm3ktm4ielFDx1LY0HJCimG09ox3gqIyTMo808CbL3YXfNcAA
+         drmAR19cUxBWdTr/SCrddODp2BY2cSsys4KQIKSLedZkKD+JDHWCzxIqZlr4UcbgIbUS
+         0dO6IIHOlPjD/lMhbmkJz3+oj9aUJ2Tboj8V4BMnfb0QdhZcHfp7RUwkPKE8aFrNHchX
+         9ylLt0AtavYtMsY2db7Fc8qYdv4vhs7S6Wrn90WUZ+K8DxbtCPR/Zv7QLoMEAY1h+l5G
+         CEzg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1771401446; x=1772006246;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=fpno25uXms+t+fmEpT7TLhoJyOfpWVBIuL5TX2/ER8Y=;
-        b=IJwlx8mToot9TWb2qMWIP7/++QNijEHIQp5tra4B8tnAigdKeeHvdze7iuWuOp8ocp
-         SmXkGF+UIreFFSakfvfucLNuJj65JRyVGOlcrYcnjsjLlIhnkT8T3k0SBk9tsEPJ1gKq
-         n+cm3Ar1opQrOX7IMBgYT1OLAqfiF+aeB8pkNE96VQ2JUlrBbhe+duhS+gYh0jJc2Qx+
-         iQ5b8x91rl5mKAYPNjvlT6ach8t9UaqWr6LoePqy1JQY/OXr9T1k/8ICfF6RRMlPnp7/
-         jzIyTh/ierRrECouJxchpDC48sQavyrrHcGV715IIyVdJ5yMM0jhpb23Lzy35PgqygzN
-         KySg==
-X-Forwarded-Encrypted: i=1; AJvYcCVA6aXS0+GDLHxVfJtwZjBvUqi/EaoZOcZp2EQx4ryfIMNFEC4RJoyh921wkdL0fcTmtp29S7xS@vger.kernel.org
-X-Gm-Message-State: AOJu0Yw6o15rTiQfxA5SCt7oDJ2dU79HJA9Lh9OLkj8PjwHZh7ifN4tY
-	oeRGPcUiTjdDuHGOfwkYZd2/bB2YVNrhukYhlD43ZztbulQVVLD9z/HSATNNeL7MVOg=
-X-Gm-Gg: AZuq6aLk1WaZpOBMofeFXYXx0cZwOAW9geAobHlksEYsV2Hwzuv6VxOFIqTZeHMBmUz
-	mtSa0UL147gX37BzJCtBJp91XCAvW4R5fMi4/5gXWPtIwDeSksEI9QvhbVAmb5j+AP8PTHsS0kk
-	TG/QjNMr37Axh4KUDOkVus/rZ+YkmtS0UjoeZ2r6rvkCVnmzeRttFYF6q7+rc1xw8gmF6Vn3wNn
-	4bQ0egB5swTzl4H7kB6AysBZSdxlK4Cd1WePKNDjYVndKXmGD+B5Zu7Y/V9W7qWx2FEqvlTurGo
-	knZY+HQ7QU3NAVNV76CfQ6vurRksVR+WW70M3GVj7/cTVJ7yDRYOjh+NAIiZrjU9O8qTQPLcBue
-	bEvpbhhDOnvWEq6OpfgzPZ4nzPt8WDRPlNrzilEH+FKs3OA9AQFMn0TnhXfgZ/M+RPBkk4vLXBQ
-	j/ZWqCixYvdzF73H3+KCuu0TIkZeq+4BRm+MZG
-X-Received: by 2002:a05:600c:4f44:b0:480:4b59:932e with SMTP id 5b1f17b1804b1-48373a0a0c2mr261425485e9.11.1771401445651;
-        Tue, 17 Feb 2026 23:57:25 -0800 (PST)
-Received: from localhost (109-81-87-131.rct.o2.cz. [109.81.87.131])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4836aa0847asm639059985e9.3.2026.02.17.23.57.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 17 Feb 2026 23:57:25 -0800 (PST)
-Date: Wed, 18 Feb 2026 08:57:24 +0100
-From: Michal Hocko <mhocko@suse.com>
-To: "JP Kobryn (Meta)" <jp.kobryn@linux.dev>
-Cc: linux-mm@kvack.org, mst@redhat.com, vbabka@suse.cz, apopple@nvidia.com,
-	akpm@linux-foundation.org, axelrasmussen@google.com,
-	byungchul@sk.com, cgroups@vger.kernel.org, david@kernel.org,
-	eperezma@redhat.com, gourry@gourry.net, jasowang@redhat.com,
-	hannes@cmpxchg.org, joshua.hahnjy@gmail.com,
-	Liam.Howlett@oracle.com, linux-kernel@vger.kernel.org,
-	lorenzo.stoakes@oracle.com, matthew.brost@intel.com,
-	rppt@kernel.org, muchun.song@linux.dev, zhengqi.arch@bytedance.com,
-	rakie.kim@sk.com, roman.gushchin@linux.dev, shakeel.butt@linux.dev,
-	surenb@google.com, virtualization@lists.linux.dev,
-	weixugc@google.com, xuanzhuo@linux.alibaba.com,
-	ying.huang@linux.alibaba.com, yuanchu@google.com, ziy@nvidia.com,
-	kernel-team@meta.com
-Subject: Re: [PATCH v2] mm: move pgscan and pgsteal to node stats
-Message-ID: <aZVw5AN85m_bO1ed@tiehlicka>
-References: <20260218032941.225439-1-jp.kobryn@linux.dev>
+        d=1e100.net; s=20230601; t=1771403465; x=1772008265;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=Cd+FmpSKeZY657ydPhpXWP28mI30FM0F7sFttu1MBmg=;
+        b=dIZPluOf9bX+ZLfnAqlHwSZfrkRrSxHPZN0TGut0nTuKSYP13Zwb4ek9nBX0aPBShW
+         Z3u0PBFHIHnuqekRIRey0kbyAXVdYZK0OIn8uhprYm/bmesKUNglE9LJCpOAULQnJt9f
+         GL+vCee0Ga778up65w4AHUS99h3GopSXvqGPUbNAODL/aqNqfBUlLcdnjhdyuX0ThIi2
+         HXkodvoXKw3SaSsJ4NJ2tJZVJvlGgI7hXoKy2d6U/jbp4Bu35L186MfR+uV3RjBs8GJU
+         XCzmw/prWybl33aFAXAJTz6hnHZPofK8CZ8Rg11qQGQVhQzBNXQb4h0KLZou7/TuvL5A
+         1y1w==
+X-Forwarded-Encrypted: i=1; AJvYcCWXNU58N/qyYW8NgysKlUlIsHXoD8j4C71hGjF99sFsbTIzPHYI1pPuJzCy0KbGePSiEsWr7o8z@vger.kernel.org
+X-Gm-Message-State: AOJu0YxVmBt+m40qdkgPDJnbb6jXdFmP2dP7+mfXKWMkahDhnDCgznsq
+	McAZRH4ehFMNd05WWW3uzAVmzlBa05Fr1E/YgPSqlTCJiu5DWzuFk42NcWafm5QM554ADGapUFv
+	rQxrFqiW5hRo4TShJDbRB/tlTk+K3CTE=
+X-Gm-Gg: AZuq6aKRU+Q2anNpZy4iI4mk4nvk3c3qZWjr6kosbZrbq7j+uMMIWDIHky5mTDmvkgF
+	+e7KuqfOuNcx9MfjPF9Wwf16DTxUpPunx0YcKMbzmoSJQo274a4159LbcxPDCnH2OZOORLDupaY
+	5nAYkIHtr898GK8M/t9fv5QTMdWcbWz0C7i6jN4v2Jp5duDfARR8kyYxgbL7uW/CvIjX7yU2j8s
+	y0TAW4VnKK3J1guO1KVlpnt1a+RgaRMruBjvpNd8inFG4JmcRH8H/CQWPt17vgFZKFsxOEtAx26
+	lFEFtslh
+X-Received: by 2002:a17:907:c23:b0:b87:3beb:194a with SMTP id
+ a640c23a62f3a-b8fc3cb90cfmr783252566b.44.1771403464353; Wed, 18 Feb 2026
+ 00:31:04 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20260218032941.225439-1-jp.kobryn@linux.dev>
+References: <20260218032232.4049467-1-tjmercier@google.com> <20260218032232.4049467-3-tjmercier@google.com>
+In-Reply-To: <20260218032232.4049467-3-tjmercier@google.com>
+From: Amir Goldstein <amir73il@gmail.com>
+Date: Wed, 18 Feb 2026 09:30:52 +0100
+X-Gm-Features: AaiRm52rcAO1uVM86zLcvkOqxQIDflGCfwWsZ-SPyqDCOtD9nqwyY5fQY1S-rmY
+Message-ID: <CAOQ4uxjwO6JVy5GKJ6k+Rm4Ey1=TD9=gXMiuB=JvwQSA13iXjA@mail.gmail.com>
+Subject: Re: [PATCH v3 2/3] kernfs: send IN_DELETE_SELF and IN_IGNORED on file deletion
+To: "T.J. Mercier" <tjmercier@google.com>
+Cc: gregkh@linuxfoundation.org, tj@kernel.org, driver-core@lists.linux.dev, 
+	linux-kernel@vger.kernel.org, cgroups@vger.kernel.org, 
+	linux-fsdevel@vger.kernel.org, jack@suse.cz, shuah@kernel.org, 
+	linux-kselftest@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-0.16 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_RHS_NOT_FQDN(0.50)[];
-	DMARC_POLICY_ALLOW(-0.50)[suse.com,quarantine];
-	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4];
-	R_DKIM_ALLOW(-0.20)[suse.com:s=google];
+X-Spamd-Result: default: False [-2.16 / 15.00];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=2];
+	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64:c];
+	R_DKIM_ALLOW(-0.20)[gmail.com:s=20230601];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-13993-lists,cgroups=lfdr.de];
-	MIME_TRACE(0.00)[0:+];
-	RCVD_TLS_LAST(0.00)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	FREEMAIL_CC(0.00)[kvack.org,redhat.com,suse.cz,nvidia.com,linux-foundation.org,google.com,sk.com,vger.kernel.org,kernel.org,gourry.net,cmpxchg.org,gmail.com,oracle.com,intel.com,linux.dev,bytedance.com,lists.linux.dev,linux.alibaba.com,meta.com];
-	RECEIVED_HELO_LOCALHOST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-13994-lists,cgroups=lfdr.de];
 	FROM_HAS_DN(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[33];
-	RCVD_COUNT_FIVE(0.00)[5];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[mhocko@suse.com,cgroups@vger.kernel.org];
-	DKIM_TRACE(0.00)[suse.com:+];
-	TAGGED_RCPT(0.00)[cgroups];
-	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
+	RCVD_COUNT_THREE(0.00)[4];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	RCVD_TLS_LAST(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	DKIM_TRACE(0.00)[gmail.com:+];
+	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
 	MISSING_XM_UA(0.00)[];
-	TO_DN_SOME(0.00)[]
-X-Rspamd-Queue-Id: 31846153CED
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[amir73il@gmail.com,cgroups@vger.kernel.org];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	MID_RHS_MATCH_FROMTLD(0.00)[];
+	TAGGED_RCPT(0.00)[cgroups];
+	RCPT_COUNT_SEVEN(0.00)[10];
+	TO_DN_SOME(0.00)[];
+	FREEMAIL_FROM(0.00)[gmail.com]
+X-Rspamd-Queue-Id: 17019154198
 X-Rspamd-Action: no action
 
-On Tue 17-02-26 19:29:41, JP Kobryn (Meta) wrote:
-> From: JP Kobryn <jp.kobryn@linux.dev>
-> 
-> There are situations where reclaim kicks in on a system with free memory.
-> One possible cause is a NUMA imbalance scenario where one or more nodes are
-> under pressure. It would help if we could easily identify such nodes.
-> 
-> Move the pgscan and pgsteal counters from vm_event_item to node_stat_item
-> to provide per-node reclaim visibility. With these counters as node stats,
-> the values are now displayed in the per-node section of /proc/zoneinfo,
-> which allows for quick identification of the affected nodes.
-> 
-> /proc/vmstat continues to report the same counters, aggregated across all
-> nodes. But the ordering of these items within the readout changes as they
-> move from the vm events section to the node stats section.
-> 
-> Memcg accounting of these counters is preserved. The relocated counters
-> remain visible in memory.stat alongside the existing aggregate pgscan and
-> pgsteal counters.
-> 
-> However, this change affects how the global counters are accumulated.
-> Previously, the global event count update was gated on !cgroup_reclaim(),
-> excluding memcg-based reclaim from /proc/vmstat. Now that
-> mod_lruvec_state() is being used to update the counters, the global
-> counters will include all reclaim. This is consistent with how pgdemote
-> counters are already tracked.
-> 
-> Finally, the virtio_balloon driver is updated to use
-> global_node_page_state() to fetch the counters, as they are no longer
-> accessible through the vm_events array.
-> 
-> Signed-off-by: JP Kobryn <jp.kobryn@linux.dev>
-> Suggested-by: Johannes Weiner <hannes@cmpxchg.org>
+On Wed, Feb 18, 2026 at 5:22=E2=80=AFAM T.J. Mercier <tjmercier@google.com>=
+ wrote:
+>
+> Currently some kernfs files (e.g. cgroup.events, memory.events) support
+> inotify watches for IN_MODIFY, but unlike with regular filesystems, they
+> do not receive IN_DELETE_SELF or IN_IGNORED events when they are
+> removed.
+>
+> This creates a problem for processes monitoring cgroups. For example, a
+> service monitoring memory.events for memory.high breaches needs to know
+> when a cgroup is removed to clean up its state. Where it's known that a
+> cgroup is removed when all processes die, without IN_DELETE_SELF the
+> service must resort to inefficient workarounds such as:
+> 1.  Periodically scanning procfs to detect process death (wastes CPU and
+>     is susceptible to PID reuse).
+> 2.  Placing an additional IN_DELETE watch on the parent directory
+>     (wastes resources managing double the watches).
 
-Acked-by: Michal Hocko <mhocko@suse.com>
-Thanks!
+This sentence is a red flag for me.
+"wastes resources"? What resources are you talking about?
+A single inotify watch? That's nothing.
+This is not a valid argument IMO.
+I fail to see how managing N watches is different than managing 2N watches.
+I have no objection to your patch, but we need to keep our arguments honest=
+.
 
+> 3.  Holding a pidfd for every monitored cgroup (can exhaust file
+>     descriptors).
+>
+> This patch enables kernfs to send IN_DELETE_SELF and IN_IGNORED events.
+> This allows applications to rely on a single existing watch on the file
+> of interest (e.g. memory.events) to receive notifications for both
+> modifications and the eventual removal of the file, as well as automatic
+> watch descriptor cleanup, simplifying userspace logic and improving
+> resource efficiency.
+>
+> Implementation details:
+> The kernfs notification worker is updated to handle file deletion.
+> The optimized single call for MODIFY events to both the parent and the
+> file is retained, however because CREATE (parent) events remain
+> unsupported for kernfs files, support for DELETE (parent) events is not
+
+Either drop this story about DELETE or expand it.
+inotify does not generate a DELETE event when watching a file,
+because DELETE is an event notifying a change of a directory.
+If you would have kept your DELETE implementation that would have
+broken this rule.
+
+> added here to retain symmetry. Only support for DELETE_SELF events is
+> added.
+>
+> Signed-off-by: T.J. Mercier <tjmercier@google.com>
+> Acked-by: Tejun Heo <tj@kernel.org>
 > ---
->  drivers/virtio/virtio_balloon.c |  8 ++---
->  include/linux/mmzone.h          | 12 ++++++++
->  include/linux/vm_event_item.h   | 12 --------
->  mm/memcontrol.c                 | 52 +++++++++++++++++++++++----------
->  mm/vmscan.c                     | 32 ++++++++------------
->  mm/vmstat.c                     | 24 +++++++--------
->  6 files changed, 76 insertions(+), 64 deletions(-)
-> 
-> diff --git a/drivers/virtio/virtio_balloon.c b/drivers/virtio/virtio_balloon.c
-> index 4e549abe59ff..ab945532ceef 100644
-> --- a/drivers/virtio/virtio_balloon.c
-> +++ b/drivers/virtio/virtio_balloon.c
-> @@ -369,13 +369,13 @@ static inline unsigned int update_balloon_vm_stats(struct virtio_balloon *vb)
->  	update_stat(vb, idx++, VIRTIO_BALLOON_S_ALLOC_STALL, stall);
->  
->  	update_stat(vb, idx++, VIRTIO_BALLOON_S_ASYNC_SCAN,
-> -		    pages_to_bytes(events[PGSCAN_KSWAPD]));
-> +		    pages_to_bytes(global_node_page_state(PGSCAN_KSWAPD)));
->  	update_stat(vb, idx++, VIRTIO_BALLOON_S_DIRECT_SCAN,
-> -		    pages_to_bytes(events[PGSCAN_DIRECT]));
-> +		    pages_to_bytes(global_node_page_state(PGSCAN_DIRECT)));
->  	update_stat(vb, idx++, VIRTIO_BALLOON_S_ASYNC_RECLAIM,
-> -		    pages_to_bytes(events[PGSTEAL_KSWAPD]));
-> +		    pages_to_bytes(global_node_page_state(PGSTEAL_KSWAPD)));
->  	update_stat(vb, idx++, VIRTIO_BALLOON_S_DIRECT_RECLAIM,
-> -		    pages_to_bytes(events[PGSTEAL_DIRECT]));
-> +		    pages_to_bytes(global_node_page_state(PGSTEAL_DIRECT)));
->  
->  #ifdef CONFIG_HUGETLB_PAGE
->  	update_stat(vb, idx++, VIRTIO_BALLOON_S_HTLB_PGALLOC,
-> diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
-> index 3e51190a55e4..1aa9c7aec889 100644
-> --- a/include/linux/mmzone.h
-> +++ b/include/linux/mmzone.h
-> @@ -255,6 +255,18 @@ enum node_stat_item {
->  	PGDEMOTE_DIRECT,
->  	PGDEMOTE_KHUGEPAGED,
->  	PGDEMOTE_PROACTIVE,
-> +	PGSTEAL_KSWAPD,
-> +	PGSTEAL_DIRECT,
-> +	PGSTEAL_KHUGEPAGED,
-> +	PGSTEAL_PROACTIVE,
-> +	PGSTEAL_ANON,
-> +	PGSTEAL_FILE,
-> +	PGSCAN_KSWAPD,
-> +	PGSCAN_DIRECT,
-> +	PGSCAN_KHUGEPAGED,
-> +	PGSCAN_PROACTIVE,
-> +	PGSCAN_ANON,
-> +	PGSCAN_FILE,
->  #ifdef CONFIG_HUGETLB_PAGE
->  	NR_HUGETLB,
->  #endif
-> diff --git a/include/linux/vm_event_item.h b/include/linux/vm_event_item.h
-> index 22a139f82d75..1fa3b3ad0ff9 100644
-> --- a/include/linux/vm_event_item.h
-> +++ b/include/linux/vm_event_item.h
-> @@ -40,19 +40,7 @@ enum vm_event_item { PGPGIN, PGPGOUT, PSWPIN, PSWPOUT,
->  		PGLAZYFREED,
->  		PGREFILL,
->  		PGREUSE,
-> -		PGSTEAL_KSWAPD,
-> -		PGSTEAL_DIRECT,
-> -		PGSTEAL_KHUGEPAGED,
-> -		PGSTEAL_PROACTIVE,
-> -		PGSCAN_KSWAPD,
-> -		PGSCAN_DIRECT,
-> -		PGSCAN_KHUGEPAGED,
-> -		PGSCAN_PROACTIVE,
->  		PGSCAN_DIRECT_THROTTLE,
-> -		PGSCAN_ANON,
-> -		PGSCAN_FILE,
-> -		PGSTEAL_ANON,
-> -		PGSTEAL_FILE,
->  #ifdef CONFIG_NUMA
->  		PGSCAN_ZONE_RECLAIM_SUCCESS,
->  		PGSCAN_ZONE_RECLAIM_FAILED,
-> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> index 007413a53b45..e89e77457701 100644
-> --- a/mm/memcontrol.c
-> +++ b/mm/memcontrol.c
-> @@ -328,6 +328,18 @@ static const unsigned int memcg_node_stat_items[] = {
->  	PGDEMOTE_DIRECT,
->  	PGDEMOTE_KHUGEPAGED,
->  	PGDEMOTE_PROACTIVE,
-> +	PGSTEAL_KSWAPD,
-> +	PGSTEAL_DIRECT,
-> +	PGSTEAL_KHUGEPAGED,
-> +	PGSTEAL_PROACTIVE,
-> +	PGSTEAL_ANON,
-> +	PGSTEAL_FILE,
-> +	PGSCAN_KSWAPD,
-> +	PGSCAN_DIRECT,
-> +	PGSCAN_KHUGEPAGED,
-> +	PGSCAN_PROACTIVE,
-> +	PGSCAN_ANON,
-> +	PGSCAN_FILE,
->  #ifdef CONFIG_HUGETLB_PAGE
->  	NR_HUGETLB,
->  #endif
-> @@ -441,14 +453,6 @@ static const unsigned int memcg_vm_event_stat[] = {
->  #endif
->  	PSWPIN,
->  	PSWPOUT,
-> -	PGSCAN_KSWAPD,
-> -	PGSCAN_DIRECT,
-> -	PGSCAN_KHUGEPAGED,
-> -	PGSCAN_PROACTIVE,
-> -	PGSTEAL_KSWAPD,
-> -	PGSTEAL_DIRECT,
-> -	PGSTEAL_KHUGEPAGED,
-> -	PGSTEAL_PROACTIVE,
->  	PGFAULT,
->  	PGMAJFAULT,
->  	PGREFILL,
-> @@ -1382,6 +1386,14 @@ static const struct memory_stat memory_stats[] = {
->  	{ "pgdemote_direct",		PGDEMOTE_DIRECT		},
->  	{ "pgdemote_khugepaged",	PGDEMOTE_KHUGEPAGED	},
->  	{ "pgdemote_proactive",		PGDEMOTE_PROACTIVE	},
-> +	{ "pgsteal_kswapd",		PGSTEAL_KSWAPD		},
-> +	{ "pgsteal_direct",		PGSTEAL_DIRECT		},
-> +	{ "pgsteal_khugepaged",		PGSTEAL_KHUGEPAGED	},
-> +	{ "pgsteal_proactive",		PGSTEAL_PROACTIVE	},
-> +	{ "pgscan_kswapd",		PGSCAN_KSWAPD		},
-> +	{ "pgscan_direct",		PGSCAN_DIRECT		},
-> +	{ "pgscan_khugepaged",		PGSCAN_KHUGEPAGED	},
-> +	{ "pgscan_proactive",		PGSCAN_PROACTIVE	},
->  #ifdef CONFIG_NUMA_BALANCING
->  	{ "pgpromote_success",		PGPROMOTE_SUCCESS	},
->  #endif
-> @@ -1425,6 +1437,14 @@ static int memcg_page_state_output_unit(int item)
->  	case PGDEMOTE_DIRECT:
->  	case PGDEMOTE_KHUGEPAGED:
->  	case PGDEMOTE_PROACTIVE:
-> +	case PGSTEAL_KSWAPD:
-> +	case PGSTEAL_DIRECT:
-> +	case PGSTEAL_KHUGEPAGED:
-> +	case PGSTEAL_PROACTIVE:
-> +	case PGSCAN_KSWAPD:
-> +	case PGSCAN_DIRECT:
-> +	case PGSCAN_KHUGEPAGED:
-> +	case PGSCAN_PROACTIVE:
->  #ifdef CONFIG_NUMA_BALANCING
->  	case PGPROMOTE_SUCCESS:
->  #endif
-> @@ -1496,15 +1516,15 @@ static void memcg_stat_format(struct mem_cgroup *memcg, struct seq_buf *s)
->  
->  	/* Accumulated memory events */
->  	seq_buf_printf(s, "pgscan %lu\n",
-> -		       memcg_events(memcg, PGSCAN_KSWAPD) +
-> -		       memcg_events(memcg, PGSCAN_DIRECT) +
-> -		       memcg_events(memcg, PGSCAN_PROACTIVE) +
-> -		       memcg_events(memcg, PGSCAN_KHUGEPAGED));
-> +		       memcg_page_state(memcg, PGSCAN_KSWAPD) +
-> +		       memcg_page_state(memcg, PGSCAN_DIRECT) +
-> +		       memcg_page_state(memcg, PGSCAN_PROACTIVE) +
-> +		       memcg_page_state(memcg, PGSCAN_KHUGEPAGED));
->  	seq_buf_printf(s, "pgsteal %lu\n",
-> -		       memcg_events(memcg, PGSTEAL_KSWAPD) +
-> -		       memcg_events(memcg, PGSTEAL_DIRECT) +
-> -		       memcg_events(memcg, PGSTEAL_PROACTIVE) +
-> -		       memcg_events(memcg, PGSTEAL_KHUGEPAGED));
-> +		       memcg_page_state(memcg, PGSTEAL_KSWAPD) +
-> +		       memcg_page_state(memcg, PGSTEAL_DIRECT) +
-> +		       memcg_page_state(memcg, PGSTEAL_PROACTIVE) +
-> +		       memcg_page_state(memcg, PGSTEAL_KHUGEPAGED));
->  
->  	for (i = 0; i < ARRAY_SIZE(memcg_vm_event_stat); i++) {
->  #ifdef CONFIG_MEMCG_V1
-> diff --git a/mm/vmscan.c b/mm/vmscan.c
-> index 44e4fcd6463c..dd6d87340941 100644
-> --- a/mm/vmscan.c
-> +++ b/mm/vmscan.c
-> @@ -1984,7 +1984,7 @@ static unsigned long shrink_inactive_list(unsigned long nr_to_scan,
->  	unsigned long nr_taken;
->  	struct reclaim_stat stat;
->  	bool file = is_file_lru(lru);
-> -	enum vm_event_item item;
-> +	enum node_stat_item item;
->  	struct pglist_data *pgdat = lruvec_pgdat(lruvec);
->  	bool stalled = false;
->  
-> @@ -2010,10 +2010,8 @@ static unsigned long shrink_inactive_list(unsigned long nr_to_scan,
->  
->  	__mod_node_page_state(pgdat, NR_ISOLATED_ANON + file, nr_taken);
->  	item = PGSCAN_KSWAPD + reclaimer_offset(sc);
-> -	if (!cgroup_reclaim(sc))
-> -		__count_vm_events(item, nr_scanned);
-> -	count_memcg_events(lruvec_memcg(lruvec), item, nr_scanned);
-> -	__count_vm_events(PGSCAN_ANON + file, nr_scanned);
-> +	mod_lruvec_state(lruvec, item, nr_scanned);
-> +	mod_lruvec_state(lruvec, PGSCAN_ANON + file, nr_scanned);
->  
->  	spin_unlock_irq(&lruvec->lru_lock);
->  
-> @@ -2030,10 +2028,8 @@ static unsigned long shrink_inactive_list(unsigned long nr_to_scan,
->  					stat.nr_demoted);
->  	__mod_node_page_state(pgdat, NR_ISOLATED_ANON + file, -nr_taken);
->  	item = PGSTEAL_KSWAPD + reclaimer_offset(sc);
-> -	if (!cgroup_reclaim(sc))
-> -		__count_vm_events(item, nr_reclaimed);
-> -	count_memcg_events(lruvec_memcg(lruvec), item, nr_reclaimed);
-> -	__count_vm_events(PGSTEAL_ANON + file, nr_reclaimed);
-> +	mod_lruvec_state(lruvec, item, nr_reclaimed);
-> +	mod_lruvec_state(lruvec, PGSTEAL_ANON + file, nr_reclaimed);
->  
->  	lru_note_cost_unlock_irq(lruvec, file, stat.nr_pageout,
->  					nr_scanned - nr_reclaimed);
-> @@ -4542,7 +4538,7 @@ static int scan_folios(unsigned long nr_to_scan, struct lruvec *lruvec,
->  {
->  	int i;
->  	int gen;
-> -	enum vm_event_item item;
-> +	enum node_stat_item item;
->  	int sorted = 0;
->  	int scanned = 0;
->  	int isolated = 0;
-> @@ -4601,13 +4597,11 @@ static int scan_folios(unsigned long nr_to_scan, struct lruvec *lruvec,
->  	}
->  
->  	item = PGSCAN_KSWAPD + reclaimer_offset(sc);
-> -	if (!cgroup_reclaim(sc)) {
-> -		__count_vm_events(item, isolated);
-> +	if (!cgroup_reclaim(sc))
->  		__count_vm_events(PGREFILL, sorted);
-> -	}
-> -	count_memcg_events(memcg, item, isolated);
-> +	mod_lruvec_state(lruvec, item, isolated);
->  	count_memcg_events(memcg, PGREFILL, sorted);
-> -	__count_vm_events(PGSCAN_ANON + type, isolated);
-> +	mod_lruvec_state(lruvec, PGSCAN_ANON + type, isolated);
->  	trace_mm_vmscan_lru_isolate(sc->reclaim_idx, sc->order, scan_batch,
->  				scanned, skipped, isolated,
->  				type ? LRU_INACTIVE_FILE : LRU_INACTIVE_ANON);
-> @@ -4692,7 +4686,7 @@ static int evict_folios(unsigned long nr_to_scan, struct lruvec *lruvec,
->  	LIST_HEAD(clean);
->  	struct folio *folio;
->  	struct folio *next;
-> -	enum vm_event_item item;
-> +	enum node_stat_item item;
->  	struct reclaim_stat stat;
->  	struct lru_gen_mm_walk *walk;
->  	bool skip_retry = false;
-> @@ -4756,10 +4750,8 @@ static int evict_folios(unsigned long nr_to_scan, struct lruvec *lruvec,
->  					stat.nr_demoted);
->  
->  	item = PGSTEAL_KSWAPD + reclaimer_offset(sc);
-> -	if (!cgroup_reclaim(sc))
-> -		__count_vm_events(item, reclaimed);
-> -	count_memcg_events(memcg, item, reclaimed);
-> -	__count_vm_events(PGSTEAL_ANON + type, reclaimed);
-> +	mod_lruvec_state(lruvec, item, reclaimed);
-> +	mod_lruvec_state(lruvec, PGSTEAL_ANON + type, reclaimed);
->  
->  	spin_unlock_irq(&lruvec->lru_lock);
->  
-> diff --git a/mm/vmstat.c b/mm/vmstat.c
-> index 99270713e0c1..d952c1e763e6 100644
-> --- a/mm/vmstat.c
-> +++ b/mm/vmstat.c
-> @@ -1276,6 +1276,18 @@ const char * const vmstat_text[] = {
->  	[I(PGDEMOTE_DIRECT)]			= "pgdemote_direct",
->  	[I(PGDEMOTE_KHUGEPAGED)]		= "pgdemote_khugepaged",
->  	[I(PGDEMOTE_PROACTIVE)]			= "pgdemote_proactive",
-> +	[I(PGSTEAL_KSWAPD)]			= "pgsteal_kswapd",
-> +	[I(PGSTEAL_DIRECT)]			= "pgsteal_direct",
-> +	[I(PGSTEAL_KHUGEPAGED)]			= "pgsteal_khugepaged",
-> +	[I(PGSTEAL_PROACTIVE)]			= "pgsteal_proactive",
-> +	[I(PGSTEAL_ANON)]			= "pgsteal_anon",
-> +	[I(PGSTEAL_FILE)]			= "pgsteal_file",
-> +	[I(PGSCAN_KSWAPD)]			= "pgscan_kswapd",
-> +	[I(PGSCAN_DIRECT)]			= "pgscan_direct",
-> +	[I(PGSCAN_KHUGEPAGED)]			= "pgscan_khugepaged",
-> +	[I(PGSCAN_PROACTIVE)]			= "pgscan_proactive",
-> +	[I(PGSCAN_ANON)]			= "pgscan_anon",
-> +	[I(PGSCAN_FILE)]			= "pgscan_file",
->  #ifdef CONFIG_HUGETLB_PAGE
->  	[I(NR_HUGETLB)]				= "nr_hugetlb",
->  #endif
-> @@ -1320,19 +1332,7 @@ const char * const vmstat_text[] = {
->  
->  	[I(PGREFILL)]				= "pgrefill",
->  	[I(PGREUSE)]				= "pgreuse",
-> -	[I(PGSTEAL_KSWAPD)]			= "pgsteal_kswapd",
-> -	[I(PGSTEAL_DIRECT)]			= "pgsteal_direct",
-> -	[I(PGSTEAL_KHUGEPAGED)]			= "pgsteal_khugepaged",
-> -	[I(PGSTEAL_PROACTIVE)]			= "pgsteal_proactive",
-> -	[I(PGSCAN_KSWAPD)]			= "pgscan_kswapd",
-> -	[I(PGSCAN_DIRECT)]			= "pgscan_direct",
-> -	[I(PGSCAN_KHUGEPAGED)]			= "pgscan_khugepaged",
-> -	[I(PGSCAN_PROACTIVE)]			= "pgscan_proactive",
->  	[I(PGSCAN_DIRECT_THROTTLE)]		= "pgscan_direct_throttle",
-> -	[I(PGSCAN_ANON)]			= "pgscan_anon",
-> -	[I(PGSCAN_FILE)]			= "pgscan_file",
-> -	[I(PGSTEAL_ANON)]			= "pgsteal_anon",
-> -	[I(PGSTEAL_FILE)]			= "pgsteal_file",
->  
->  #ifdef CONFIG_NUMA
->  	[I(PGSCAN_ZONE_RECLAIM_SUCCESS)]	= "zone_reclaim_success",
-> -- 
-> 2.47.3
+>  fs/kernfs/dir.c             | 21 +++++++++++++++++
+>  fs/kernfs/file.c            | 45 ++++++++++++++++++++-----------------
+>  fs/kernfs/kernfs-internal.h |  3 +++
+>  3 files changed, 48 insertions(+), 21 deletions(-)
+>
+> diff --git a/fs/kernfs/dir.c b/fs/kernfs/dir.c
+> index 29baeeb97871..e5bda829fcb8 100644
+> --- a/fs/kernfs/dir.c
+> +++ b/fs/kernfs/dir.c
+> @@ -9,6 +9,7 @@
+>
+>  #include <linux/sched.h>
+>  #include <linux/fs.h>
+> +#include <linux/fsnotify_backend.h>
+>  #include <linux/namei.h>
+>  #include <linux/idr.h>
+>  #include <linux/slab.h>
+> @@ -1471,6 +1472,23 @@ void kernfs_show(struct kernfs_node *kn, bool show=
+)
+>         up_write(&root->kernfs_rwsem);
+>  }
+>
+> +static void kernfs_notify_file_deleted(struct kernfs_node *kn)
+> +{
+> +       static DECLARE_WORK(kernfs_notify_deleted_work,
+> +                           kernfs_notify_workfn);
+> +
+> +       guard(spinlock_irqsave)(&kernfs_notify_lock);
+> +       /* may overwite already pending FS_MODIFY events */
 
--- 
-Michal Hocko
-SUSE Labs
+Typo: overwite
+
+> +       kn->attr.notify_event =3D FS_DELETE;
+
+FS_DELETE_SELF
+
+> +
+> +       if (!kn->attr.notify_next) {
+> +               kernfs_get(kn);
+> +               kn->attr.notify_next =3D kernfs_notify_list;
+> +               kernfs_notify_list =3D kn;
+> +               schedule_work(&kernfs_notify_deleted_work);
+> +       }
+> +}
+> +
+>  static void __kernfs_remove(struct kernfs_node *kn)
+>  {
+>         struct kernfs_node *pos, *parent;
+> @@ -1520,6 +1538,9 @@ static void __kernfs_remove(struct kernfs_node *kn)
+>                         struct kernfs_iattrs *ps_iattr =3D
+>                                 parent ? parent->iattr : NULL;
+>
+> +                       if (kernfs_type(pos) =3D=3D KERNFS_FILE)
+> +                               kernfs_notify_file_deleted(pos);
+> +
+
+Why are we not notifying a deleted directory?
+If users expect DELETE_SELF on a watched cgroup file
+they would definitely expect DELETE_SELF on a watched cgroup dir
+when the cgroup is destroyed.
+
+I claim that *this* should be the standard way to monitor
+destroyed cgroups.
+
+>                         /* update timestamps on the parent */
+>                         down_write(&kernfs_root(kn)->kernfs_iattr_rwsem);
+>
+> diff --git a/fs/kernfs/file.c b/fs/kernfs/file.c
+> index e978284ff983..4be9bbe29378 100644
+> --- a/fs/kernfs/file.c
+> +++ b/fs/kernfs/file.c
+> @@ -37,8 +37,8 @@ struct kernfs_open_node {
+>   */
+>  #define KERNFS_NOTIFY_EOL                      ((void *)&kernfs_notify_l=
+ist)
+>
+> -static DEFINE_SPINLOCK(kernfs_notify_lock);
+> -static struct kernfs_node *kernfs_notify_list =3D KERNFS_NOTIFY_EOL;
+> +DEFINE_SPINLOCK(kernfs_notify_lock);
+> +struct kernfs_node *kernfs_notify_list =3D KERNFS_NOTIFY_EOL;
+>
+>  static inline struct mutex *kernfs_open_file_mutex_ptr(struct kernfs_nod=
+e *kn)
+>  {
+> @@ -909,7 +909,7 @@ static loff_t kernfs_fop_llseek(struct file *file, lo=
+ff_t offset, int whence)
+>         return ret;
+>  }
+>
+> -static void kernfs_notify_workfn(struct work_struct *work)
+> +void kernfs_notify_workfn(struct work_struct *work)
+>  {
+>         struct kernfs_node *kn;
+>         struct kernfs_super_info *info;
+> @@ -935,11 +935,7 @@ static void kernfs_notify_workfn(struct work_struct =
+*work)
+>         down_read(&root->kernfs_supers_rwsem);
+>         down_read(&root->kernfs_rwsem);
+>         list_for_each_entry(info, &kernfs_root(kn)->supers, node) {
+> -               struct kernfs_node *parent;
+> -               struct inode *p_inode =3D NULL;
+> -               const char *kn_name;
+>                 struct inode *inode;
+> -               struct qstr name;
+>
+>                 /*
+>                  * We want fsnotify_modify() on @kn but as the
+> @@ -951,24 +947,31 @@ static void kernfs_notify_workfn(struct work_struct=
+ *work)
+>                 if (!inode)
+>                         continue;
+>
+> -               kn_name =3D kernfs_rcu_name(kn);
+> -               name =3D QSTR(kn_name);
+> -               parent =3D kernfs_get_parent(kn);
+> -               if (parent) {
+> -                       p_inode =3D ilookup(info->sb, kernfs_ino(parent))=
+;
+> -                       if (p_inode) {
+> -                               fsnotify(notify_event | FS_EVENT_ON_CHILD=
+,
+> -                                        inode, FSNOTIFY_EVENT_INODE,
+> -                                        p_inode, &name, inode, 0);
+> -                               iput(p_inode);
+> +               if (notify_event =3D=3D FS_DELETE) {
+FS_DELETE_SELF
+
+> +                       fsnotify_inoderemove(inode);
+                            iput(inode);
+                            continue;
+                    }
+
+Avoids all the churn and unneeded extra indentation that follows.
+
+Thanks,
+Amir.
 
