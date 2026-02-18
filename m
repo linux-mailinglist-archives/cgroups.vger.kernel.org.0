@@ -1,444 +1,217 @@
-Return-Path: <cgroups+bounces-13996-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-13997-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id GMN8DEB+lWl8RwIAu9opvQ
-	(envelope-from <cgroups+bounces-13996-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Wed, 18 Feb 2026 09:54:24 +0100
+	id MIWXFz+hlWlcSwIAu9opvQ
+	(envelope-from <cgroups+bounces-13997-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Wed, 18 Feb 2026 12:23:43 +0100
 X-Original-To: lists+cgroups@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 99F22154562
-	for <lists+cgroups@lfdr.de>; Wed, 18 Feb 2026 09:54:23 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id CC92B155DC7
+	for <lists+cgroups@lfdr.de>; Wed, 18 Feb 2026 12:23:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 5E32F3030996
-	for <lists+cgroups@lfdr.de>; Wed, 18 Feb 2026 08:54:19 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 116E63021580
+	for <lists+cgroups@lfdr.de>; Wed, 18 Feb 2026 11:23:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CC22431BCB7;
-	Wed, 18 Feb 2026 08:54:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AEFB62F3C37;
+	Wed, 18 Feb 2026 11:23:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="LBYr8ziz"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="TEf8au3N";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="IEKUNOlE";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="YjVaDXeO";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="GkEcKhNC"
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8AAA82EDD7E;
-	Wed, 18 Feb 2026 08:54:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 284742FFDD5
+	for <cgroups@vger.kernel.org>; Wed, 18 Feb 2026 11:23:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1771404855; cv=none; b=afpTDbtyi7fsMr3yvzg+jdtySbZweIauMHwDfKId9fH3OfMnEn8JD3xrLgjlMxe5Zh4TTJyhdMX+TJ2psGi5LZtIcEMi4YcZ8hl3ZmqwDzeeAcaH6bzGEsc1CkNo/Lx+N7aju/9KBmk3n9FbN7Ghfhwux323fKLgbrfENBonfa0=
+	t=1771413817; cv=none; b=LkoR+qDPn/wDyf4cCwzWObBemC4qlYWLTM2g/35O4Xd2UQC5C3/tirE90G3j6c9b6003zLAi7lcB6jBv4yX1J+T4RzWzNeyAlxuGxHSocQ+bFVU021PCBF34fDPSTA3IVNvjEtjrL4fa0xCrq55uHKzMZKlgPhoiYoHcepmrBA4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1771404855; c=relaxed/simple;
-	bh=NzP0MR2kPO9mU0PSMbTdrpE4tzr54+64hxffDSJbW08=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=TE/ZUcPtva6xA4c0EOeUqKZe49Fq6U7sD/OhSWMr1NNwSwnfnlkQP+GZft9PJsdMUvC9iLGpiPUEtiE62CL8lKlPuDGCC27Y5zckSuXVReczDfz85lcl5jL1VtDGCveFMTtvokJ7GqgkkRtMyxNZKFfwQDT3R4SPZvtCZE/eJ3w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=LBYr8ziz; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9E87FC19421;
-	Wed, 18 Feb 2026 08:54:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1771404855;
-	bh=NzP0MR2kPO9mU0PSMbTdrpE4tzr54+64hxffDSJbW08=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=LBYr8zizRKDU1LDOo3wX+e3577+cQP0F0uNTuat2mD0CCjT4GiiZrd35s3JqR0Hbq
-	 WDBTufxDYWf9rCqCXmRdHyiBW7EbyOeZNj0g5C+cjhUHEzCUE39+ub5Q03HuL4VWlp
-	 0Bxd51qM5zXQE0D8sHuP4TObd0tccIuGMNiBCSxiH0BV8IGCrmklGMXP7IJKIN5r9L
-	 jLEd2zwCvBXLlVGRuj7iW5Ir1SH/A8xSVNpSqrkpsN1T4y/7I5MeDXMU26JRbtaVlf
-	 vGvAt6Z9Ovn+dColQThBTr37hOAJXqrIZA3bP6q3qnCXGG5AAbBRHnIHQNeWr8iyDC
-	 PlolPFoO4v6bA==
-Message-ID: <10434f89-fe2a-4cfc-9b29-1cd2ed2bbb7e@kernel.org>
-Date: Wed, 18 Feb 2026 09:54:06 +0100
+	s=arc-20240116; t=1771413817; c=relaxed/simple;
+	bh=yFzmeKNc7jZe/g1nyERcuQ8+IviWJtyHr9DjwQGUEAk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=PRU8MrneQqH2zN7cyTWTU2aMV/7/TExqDpbqhROTMkcqg+UKcHqOLoBiSIGV9ie3pANPGr2qi631oCFeWw97Ek3lUV63M2Hut6wQz37nyz1CA8Lm2ETOY3LMAQCvxQ5xueaVSX8oMKJ2EyJpxxyxo0C4LHIRRlgrZLldLA8NA7E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=TEf8au3N; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=IEKUNOlE; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=YjVaDXeO; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=GkEcKhNC; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 14C715BCC2;
+	Wed, 18 Feb 2026 11:23:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1771413814; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=3ZiElcFxYYD1oatQKw1wrqUrp5IBMjHeUNq0WywWxgo=;
+	b=TEf8au3NMnRwYsR5VLtTfIB1DZ+18/4Rt/F1tKfE7C4/yNBLd5Vm5xZCUQkkaTWioKLmvA
+	V0Qpq8BEB0Q9Kb3nJLXnSfdHdT9Hd6uu4PMhNx8owN2P/TSVOKOMEqzO2IfSFWEn0BFvEF
+	LXLfZslfLXmf43hE+T5S10h9gZ4QsvY=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1771413814;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=3ZiElcFxYYD1oatQKw1wrqUrp5IBMjHeUNq0WywWxgo=;
+	b=IEKUNOlER5U2c3PQj2qeSVKFZBC+6dXuXR33rQI1WFI0VB5BDA2D2mQhrfJ1vBeP334LDz
+	XfhzcvhCDx2FK9AA==
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=YjVaDXeO;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=GkEcKhNC
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1771413813; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=3ZiElcFxYYD1oatQKw1wrqUrp5IBMjHeUNq0WywWxgo=;
+	b=YjVaDXeO/Lsd9R+YvmCO66ynrx6X05ZBkYJ6nplpf64mkS0CSUw3D9vR/w3CVrza61iNp7
+	/NKfg9fS+YUfofVDV66vtA1hNZxL/rBegeM3a7Rtj8MbSEcgRkGxjSFDIyIKXtm925Wi7X
+	KeTps1vjPVpLWrTQv+CBzQQN24MDkCk=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1771413813;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=3ZiElcFxYYD1oatQKw1wrqUrp5IBMjHeUNq0WywWxgo=;
+	b=GkEcKhNCHlUvv2oHbiYdczS5bXSsoxmza9fBW2vL9mK0WTurj5f/GKF41y9L26cFnQu1j0
+	TCDXmqdPUO+zHLCw==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id ED05F3EA65;
+	Wed, 18 Feb 2026 11:23:32 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id aDjGOTShlWlCWQAAD6G6ig
+	(envelope-from <jack@suse.cz>); Wed, 18 Feb 2026 11:23:32 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id 92B8AA08CF; Wed, 18 Feb 2026 12:23:32 +0100 (CET)
+Date: Wed, 18 Feb 2026 12:23:32 +0100
+From: Jan Kara <jack@suse.cz>
+To: "T.J. Mercier" <tjmercier@google.com>
+Cc: Amir Goldstein <amir73il@gmail.com>, gregkh@linuxfoundation.org, 
+	tj@kernel.org, driver-core@lists.linux.dev, linux-kernel@vger.kernel.org, 
+	cgroups@vger.kernel.org, linux-fsdevel@vger.kernel.org, jack@suse.cz, shuah@kernel.org, 
+	linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH v2 2/3] kernfs: send IN_DELETE_SELF and IN_IGNORED on
+ file deletion
+Message-ID: <lc2jgt3yrvuvtdj2kk7q3rloie2c5mzyhfdy4zvxylx732voet@ol3kl4ackrpb>
+References: <20260212215814.629709-1-tjmercier@google.com>
+ <20260212215814.629709-3-tjmercier@google.com>
+ <aZRAkalnJCxSp7ne@amir-ThinkPad-T480>
+ <CABdmKX3wsWphRTDanKwGGiUWoO0xTaC8L_QxjHzhpxfZn256MQ@mail.gmail.com>
+ <CAOQ4uxgrP=VdTKZXKcRE8BeWv6wZy7aFkUF-VoEpRSxVnHZi2w@mail.gmail.com>
+ <CABdmKX1ztzJ6B13uzdDtN-uVWbdWuYJ6PMvjGoAfu40MMHCpaA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] mm: move pgscan and pgsteal to node stats
-Content-Language: en-US
-To: "JP Kobryn (Meta)" <jp.kobryn@linux.dev>, linux-mm@kvack.org,
- mst@redhat.com, mhocko@suse.com, vbabka@suse.cz
-Cc: apopple@nvidia.com, akpm@linux-foundation.org, axelrasmussen@google.com,
- byungchul@sk.com, cgroups@vger.kernel.org, david@kernel.org,
- eperezma@redhat.com, gourry@gourry.net, jasowang@redhat.com,
- hannes@cmpxchg.org, joshua.hahnjy@gmail.com, Liam.Howlett@oracle.com,
- linux-kernel@vger.kernel.org, lorenzo.stoakes@oracle.com,
- matthew.brost@intel.com, rppt@kernel.org, muchun.song@linux.dev,
- zhengqi.arch@bytedance.com, rakie.kim@sk.com, roman.gushchin@linux.dev,
- shakeel.butt@linux.dev, surenb@google.com, virtualization@lists.linux.dev,
- weixugc@google.com, xuanzhuo@linux.alibaba.com,
- ying.huang@linux.alibaba.com, yuanchu@google.com, ziy@nvidia.com,
- kernel-team@meta.com
-References: <20260218032941.225439-1-jp.kobryn@linux.dev>
-From: "Vlastimil Babka (SUSE)" <vbabka@kernel.org>
-In-Reply-To: <20260218032941.225439-1-jp.kobryn@linux.dev>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CABdmKX1ztzJ6B13uzdDtN-uVWbdWuYJ6PMvjGoAfu40MMHCpaA@mail.gmail.com>
+X-Spam-Flag: NO
+X-Spam-Score: -4.01
+X-Spam-Level: 
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-0.66 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
+X-Spamd-Result: default: False [-1.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
-	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
+	MID_RHS_NOT_FQDN(0.50)[];
+	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
+	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-13996-lists,cgroups=lfdr.de];
+	RCVD_TLS_LAST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-13997-lists,cgroups=lfdr.de];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,suse.com:email];
+	DMARC_NA(0.00)[suse.cz];
+	FREEMAIL_CC(0.00)[gmail.com,linuxfoundation.org,kernel.org,lists.linux.dev,vger.kernel.org,suse.cz];
 	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	RCVD_TLS_LAST(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
-	FREEMAIL_CC(0.00)[nvidia.com,linux-foundation.org,google.com,sk.com,vger.kernel.org,kernel.org,redhat.com,gourry.net,cmpxchg.org,gmail.com,oracle.com,intel.com,linux.dev,bytedance.com,lists.linux.dev,linux.alibaba.com,meta.com];
+	DKIM_TRACE(0.00)[suse.cz:+];
+	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
+	MISSING_XM_UA(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[jack@suse.cz,cgroups@vger.kernel.org];
 	FROM_HAS_DN(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[34];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[vbabka@kernel.org,cgroups@vger.kernel.org];
-	DKIM_TRACE(0.00)[kernel.org:+];
-	MID_RHS_MATCH_FROM(0.00)[];
+	RCPT_COUNT_SEVEN(0.00)[11];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[cgroups];
-	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
-	TO_DN_SOME(0.00)[]
-X-Rspamd-Queue-Id: 99F22154562
+	TO_DN_SOME(0.00)[];
+	RCVD_COUNT_SEVEN(0.00)[7]
+X-Rspamd-Queue-Id: CC92B155DC7
 X-Rspamd-Action: no action
 
-On 2/18/26 04:29, JP Kobryn (Meta) wrote:
-> From: JP Kobryn <jp.kobryn@linux.dev>
+On Tue 17-02-26 14:32:25, T.J. Mercier wrote:
+> On Tue, Feb 17, 2026 at 1:25 PM Amir Goldstein <amir73il@gmail.com> wrote:
+> > > > Are you expecting to get IN_IGNORED|IN_DELETE_SELF on an entry
+> > > > while watching the parent? Because this is not how the API works.
+> > >
+> > > No, only on the file being watched. The parent should only get
+> > > IN_DELETE, but I read your feedback below and I'm fine with removing
+> > > that part and just sending the DELETE_SELF and IN_IGNORED events.
+> > >
+> >
+> > So if the file was being watched, some application needed to call
+> > inotify_add_watch() with the user path to the cgroupfs inode
+> > and inotify watch keeps a live reference to this vfs inode.
+> >
+> > When the cgroup is being destroyed something needs to drop
+> > this vfs inode and call __destroy_inode() -> fsnotify_inode_delete()
+> > which should remove the inotify watch and result in IN_IGNORED.
 > 
-> There are situations where reclaim kicks in on a system with free memory.
-> One possible cause is a NUMA imbalance scenario where one or more nodes are
-> under pressure. It would help if we could easily identify such nodes.
+> Nothing like this exists before this patch.
 > 
-> Move the pgscan and pgsteal counters from vm_event_item to node_stat_item
-> to provide per-node reclaim visibility. With these counters as node stats,
-> the values are now displayed in the per-node section of /proc/zoneinfo,
-> which allows for quick identification of the affected nodes.
+> > IN_DELETE_SELF is a different story, because the inode does not
+> > have zero i_nlink.
+> >
+> > I did not try to follow the code path of cgroupfs destroy when an
+> > inotify watch on a cgroup file exists, but this is what I expect.
+> > Please explain - what am I missing?
 > 
-> /proc/vmstat continues to report the same counters, aggregated across all
-> nodes. But the ordering of these items within the readout changes as they
-> move from the vm events section to the node stats section.
+> Yes that's the problem here. The inode isn't dropped unless the watch
+> is removed, and the watch isn't removed because kernfs doesn't go
+> through vfs to notify about file removal. There is nothing to trigger
+> dropping the watch and the associated inode reference except this
+> patch calling into fsnotify_inoderemove which both sends
+> IN_DELETE_SELF and calls __fsnotify_inode_delete for the IN_IGNORED
+> and inode cleanup.
 > 
-> Memcg accounting of these counters is preserved. The relocated counters
-> remain visible in memory.stat alongside the existing aggregate pgscan and
-> pgsteal counters.
-> 
-> However, this change affects how the global counters are accumulated.
-> Previously, the global event count update was gated on !cgroup_reclaim(),
-> excluding memcg-based reclaim from /proc/vmstat. Now that
-> mod_lruvec_state() is being used to update the counters, the global
-> counters will include all reclaim. This is consistent with how pgdemote
-> counters are already tracked.
+> Without this, the watch and inode persist after file deletion until
+> the process exits and file descriptors are cleaned up, or until
+> inotify_rm_watch gets called manually.
 
-Hm so that leaves PGREFILL (scanned in the active list) the odd one out,
-right? Not being per-node and gated on !cgroup_reclaim() for global stats.
-Should we change it too for full consistency?
+Hrm. I was scratching my head how it is possible VFS isn't involved for a
+while. So let me share what I found:
 
-> Finally, the virtio_balloon driver is updated to use
-> global_node_page_state() to fetch the counters, as they are no longer
-> accessible through the vm_events array.
-> 
-> Signed-off-by: JP Kobryn <jp.kobryn@linux.dev>
-> Suggested-by: Johannes Weiner <hannes@cmpxchg.org>
-> ---
->  drivers/virtio/virtio_balloon.c |  8 ++---
->  include/linux/mmzone.h          | 12 ++++++++
->  include/linux/vm_event_item.h   | 12 --------
->  mm/memcontrol.c                 | 52 +++++++++++++++++++++++----------
->  mm/vmscan.c                     | 32 ++++++++------------
->  mm/vmstat.c                     | 24 +++++++--------
->  6 files changed, 76 insertions(+), 64 deletions(-)
-> 
-> diff --git a/drivers/virtio/virtio_balloon.c b/drivers/virtio/virtio_balloon.c
-> index 4e549abe59ff..ab945532ceef 100644
-> --- a/drivers/virtio/virtio_balloon.c
-> +++ b/drivers/virtio/virtio_balloon.c
-> @@ -369,13 +369,13 @@ static inline unsigned int update_balloon_vm_stats(struct virtio_balloon *vb)
->  	update_stat(vb, idx++, VIRTIO_BALLOON_S_ALLOC_STALL, stall);
->  
->  	update_stat(vb, idx++, VIRTIO_BALLOON_S_ASYNC_SCAN,
-> -		    pages_to_bytes(events[PGSCAN_KSWAPD]));
-> +		    pages_to_bytes(global_node_page_state(PGSCAN_KSWAPD)));
->  	update_stat(vb, idx++, VIRTIO_BALLOON_S_DIRECT_SCAN,
-> -		    pages_to_bytes(events[PGSCAN_DIRECT]));
-> +		    pages_to_bytes(global_node_page_state(PGSCAN_DIRECT)));
->  	update_stat(vb, idx++, VIRTIO_BALLOON_S_ASYNC_RECLAIM,
-> -		    pages_to_bytes(events[PGSTEAL_KSWAPD]));
-> +		    pages_to_bytes(global_node_page_state(PGSTEAL_KSWAPD)));
->  	update_stat(vb, idx++, VIRTIO_BALLOON_S_DIRECT_RECLAIM,
-> -		    pages_to_bytes(events[PGSTEAL_DIRECT]));
-> +		    pages_to_bytes(global_node_page_state(PGSTEAL_DIRECT)));
->  
->  #ifdef CONFIG_HUGETLB_PAGE
->  	update_stat(vb, idx++, VIRTIO_BALLOON_S_HTLB_PGALLOC,
-> diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
-> index 3e51190a55e4..1aa9c7aec889 100644
-> --- a/include/linux/mmzone.h
-> +++ b/include/linux/mmzone.h
-> @@ -255,6 +255,18 @@ enum node_stat_item {
->  	PGDEMOTE_DIRECT,
->  	PGDEMOTE_KHUGEPAGED,
->  	PGDEMOTE_PROACTIVE,
-> +	PGSTEAL_KSWAPD,
-> +	PGSTEAL_DIRECT,
-> +	PGSTEAL_KHUGEPAGED,
-> +	PGSTEAL_PROACTIVE,
-> +	PGSTEAL_ANON,
-> +	PGSTEAL_FILE,
-> +	PGSCAN_KSWAPD,
-> +	PGSCAN_DIRECT,
-> +	PGSCAN_KHUGEPAGED,
-> +	PGSCAN_PROACTIVE,
-> +	PGSCAN_ANON,
-> +	PGSCAN_FILE,
->  #ifdef CONFIG_HUGETLB_PAGE
->  	NR_HUGETLB,
->  #endif
-> diff --git a/include/linux/vm_event_item.h b/include/linux/vm_event_item.h
-> index 22a139f82d75..1fa3b3ad0ff9 100644
-> --- a/include/linux/vm_event_item.h
-> +++ b/include/linux/vm_event_item.h
-> @@ -40,19 +40,7 @@ enum vm_event_item { PGPGIN, PGPGOUT, PSWPIN, PSWPOUT,
->  		PGLAZYFREED,
->  		PGREFILL,
->  		PGREUSE,
-> -		PGSTEAL_KSWAPD,
-> -		PGSTEAL_DIRECT,
-> -		PGSTEAL_KHUGEPAGED,
-> -		PGSTEAL_PROACTIVE,
-> -		PGSCAN_KSWAPD,
-> -		PGSCAN_DIRECT,
-> -		PGSCAN_KHUGEPAGED,
-> -		PGSCAN_PROACTIVE,
->  		PGSCAN_DIRECT_THROTTLE,
-> -		PGSCAN_ANON,
-> -		PGSCAN_FILE,
-> -		PGSTEAL_ANON,
-> -		PGSTEAL_FILE,
->  #ifdef CONFIG_NUMA
->  		PGSCAN_ZONE_RECLAIM_SUCCESS,
->  		PGSCAN_ZONE_RECLAIM_FAILED,
-> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> index 007413a53b45..e89e77457701 100644
-> --- a/mm/memcontrol.c
-> +++ b/mm/memcontrol.c
-> @@ -328,6 +328,18 @@ static const unsigned int memcg_node_stat_items[] = {
->  	PGDEMOTE_DIRECT,
->  	PGDEMOTE_KHUGEPAGED,
->  	PGDEMOTE_PROACTIVE,
-> +	PGSTEAL_KSWAPD,
-> +	PGSTEAL_DIRECT,
-> +	PGSTEAL_KHUGEPAGED,
-> +	PGSTEAL_PROACTIVE,
-> +	PGSTEAL_ANON,
-> +	PGSTEAL_FILE,
-> +	PGSCAN_KSWAPD,
-> +	PGSCAN_DIRECT,
-> +	PGSCAN_KHUGEPAGED,
-> +	PGSCAN_PROACTIVE,
-> +	PGSCAN_ANON,
-> +	PGSCAN_FILE,
->  #ifdef CONFIG_HUGETLB_PAGE
->  	NR_HUGETLB,
->  #endif
-> @@ -441,14 +453,6 @@ static const unsigned int memcg_vm_event_stat[] = {
->  #endif
->  	PSWPIN,
->  	PSWPOUT,
-> -	PGSCAN_KSWAPD,
-> -	PGSCAN_DIRECT,
-> -	PGSCAN_KHUGEPAGED,
-> -	PGSCAN_PROACTIVE,
-> -	PGSTEAL_KSWAPD,
-> -	PGSTEAL_DIRECT,
-> -	PGSTEAL_KHUGEPAGED,
-> -	PGSTEAL_PROACTIVE,
->  	PGFAULT,
->  	PGMAJFAULT,
->  	PGREFILL,
-> @@ -1382,6 +1386,14 @@ static const struct memory_stat memory_stats[] = {
->  	{ "pgdemote_direct",		PGDEMOTE_DIRECT		},
->  	{ "pgdemote_khugepaged",	PGDEMOTE_KHUGEPAGED	},
->  	{ "pgdemote_proactive",		PGDEMOTE_PROACTIVE	},
-> +	{ "pgsteal_kswapd",		PGSTEAL_KSWAPD		},
-> +	{ "pgsteal_direct",		PGSTEAL_DIRECT		},
-> +	{ "pgsteal_khugepaged",		PGSTEAL_KHUGEPAGED	},
-> +	{ "pgsteal_proactive",		PGSTEAL_PROACTIVE	},
-> +	{ "pgscan_kswapd",		PGSCAN_KSWAPD		},
-> +	{ "pgscan_direct",		PGSCAN_DIRECT		},
-> +	{ "pgscan_khugepaged",		PGSCAN_KHUGEPAGED	},
-> +	{ "pgscan_proactive",		PGSCAN_PROACTIVE	},
->  #ifdef CONFIG_NUMA_BALANCING
->  	{ "pgpromote_success",		PGPROMOTE_SUCCESS	},
->  #endif
-> @@ -1425,6 +1437,14 @@ static int memcg_page_state_output_unit(int item)
->  	case PGDEMOTE_DIRECT:
->  	case PGDEMOTE_KHUGEPAGED:
->  	case PGDEMOTE_PROACTIVE:
-> +	case PGSTEAL_KSWAPD:
-> +	case PGSTEAL_DIRECT:
-> +	case PGSTEAL_KHUGEPAGED:
-> +	case PGSTEAL_PROACTIVE:
-> +	case PGSCAN_KSWAPD:
-> +	case PGSCAN_DIRECT:
-> +	case PGSCAN_KHUGEPAGED:
-> +	case PGSCAN_PROACTIVE:
->  #ifdef CONFIG_NUMA_BALANCING
->  	case PGPROMOTE_SUCCESS:
->  #endif
-> @@ -1496,15 +1516,15 @@ static void memcg_stat_format(struct mem_cgroup *memcg, struct seq_buf *s)
->  
->  	/* Accumulated memory events */
->  	seq_buf_printf(s, "pgscan %lu\n",
-> -		       memcg_events(memcg, PGSCAN_KSWAPD) +
-> -		       memcg_events(memcg, PGSCAN_DIRECT) +
-> -		       memcg_events(memcg, PGSCAN_PROACTIVE) +
-> -		       memcg_events(memcg, PGSCAN_KHUGEPAGED));
-> +		       memcg_page_state(memcg, PGSCAN_KSWAPD) +
-> +		       memcg_page_state(memcg, PGSCAN_DIRECT) +
-> +		       memcg_page_state(memcg, PGSCAN_PROACTIVE) +
-> +		       memcg_page_state(memcg, PGSCAN_KHUGEPAGED));
->  	seq_buf_printf(s, "pgsteal %lu\n",
-> -		       memcg_events(memcg, PGSTEAL_KSWAPD) +
-> -		       memcg_events(memcg, PGSTEAL_DIRECT) +
-> -		       memcg_events(memcg, PGSTEAL_PROACTIVE) +
-> -		       memcg_events(memcg, PGSTEAL_KHUGEPAGED));
-> +		       memcg_page_state(memcg, PGSTEAL_KSWAPD) +
-> +		       memcg_page_state(memcg, PGSTEAL_DIRECT) +
-> +		       memcg_page_state(memcg, PGSTEAL_PROACTIVE) +
-> +		       memcg_page_state(memcg, PGSTEAL_KHUGEPAGED));
->  
->  	for (i = 0; i < ARRAY_SIZE(memcg_vm_event_stat); i++) {
->  #ifdef CONFIG_MEMCG_V1
-> diff --git a/mm/vmscan.c b/mm/vmscan.c
-> index 44e4fcd6463c..dd6d87340941 100644
-> --- a/mm/vmscan.c
-> +++ b/mm/vmscan.c
-> @@ -1984,7 +1984,7 @@ static unsigned long shrink_inactive_list(unsigned long nr_to_scan,
->  	unsigned long nr_taken;
->  	struct reclaim_stat stat;
->  	bool file = is_file_lru(lru);
-> -	enum vm_event_item item;
-> +	enum node_stat_item item;
->  	struct pglist_data *pgdat = lruvec_pgdat(lruvec);
->  	bool stalled = false;
->  
-> @@ -2010,10 +2010,8 @@ static unsigned long shrink_inactive_list(unsigned long nr_to_scan,
->  
->  	__mod_node_page_state(pgdat, NR_ISOLATED_ANON + file, nr_taken);
->  	item = PGSCAN_KSWAPD + reclaimer_offset(sc);
-> -	if (!cgroup_reclaim(sc))
-> -		__count_vm_events(item, nr_scanned);
-> -	count_memcg_events(lruvec_memcg(lruvec), item, nr_scanned);
-> -	__count_vm_events(PGSCAN_ANON + file, nr_scanned);
-> +	mod_lruvec_state(lruvec, item, nr_scanned);
-> +	mod_lruvec_state(lruvec, PGSCAN_ANON + file, nr_scanned);
->  
->  	spin_unlock_irq(&lruvec->lru_lock);
->  
-> @@ -2030,10 +2028,8 @@ static unsigned long shrink_inactive_list(unsigned long nr_to_scan,
->  					stat.nr_demoted);
->  	__mod_node_page_state(pgdat, NR_ISOLATED_ANON + file, -nr_taken);
->  	item = PGSTEAL_KSWAPD + reclaimer_offset(sc);
-> -	if (!cgroup_reclaim(sc))
-> -		__count_vm_events(item, nr_reclaimed);
-> -	count_memcg_events(lruvec_memcg(lruvec), item, nr_reclaimed);
-> -	__count_vm_events(PGSTEAL_ANON + file, nr_reclaimed);
-> +	mod_lruvec_state(lruvec, item, nr_reclaimed);
-> +	mod_lruvec_state(lruvec, PGSTEAL_ANON + file, nr_reclaimed);
->  
->  	lru_note_cost_unlock_irq(lruvec, file, stat.nr_pageout,
->  					nr_scanned - nr_reclaimed);
-> @@ -4542,7 +4538,7 @@ static int scan_folios(unsigned long nr_to_scan, struct lruvec *lruvec,
->  {
->  	int i;
->  	int gen;
-> -	enum vm_event_item item;
-> +	enum node_stat_item item;
->  	int sorted = 0;
->  	int scanned = 0;
->  	int isolated = 0;
-> @@ -4601,13 +4597,11 @@ static int scan_folios(unsigned long nr_to_scan, struct lruvec *lruvec,
->  	}
->  
->  	item = PGSCAN_KSWAPD + reclaimer_offset(sc);
-> -	if (!cgroup_reclaim(sc)) {
-> -		__count_vm_events(item, isolated);
-> +	if (!cgroup_reclaim(sc))
->  		__count_vm_events(PGREFILL, sorted);
-> -	}
-> -	count_memcg_events(memcg, item, isolated);
-> +	mod_lruvec_state(lruvec, item, isolated);
->  	count_memcg_events(memcg, PGREFILL, sorted);
-> -	__count_vm_events(PGSCAN_ANON + type, isolated);
-> +	mod_lruvec_state(lruvec, PGSCAN_ANON + type, isolated);
->  	trace_mm_vmscan_lru_isolate(sc->reclaim_idx, sc->order, scan_batch,
->  				scanned, skipped, isolated,
->  				type ? LRU_INACTIVE_FILE : LRU_INACTIVE_ANON);
-> @@ -4692,7 +4686,7 @@ static int evict_folios(unsigned long nr_to_scan, struct lruvec *lruvec,
->  	LIST_HEAD(clean);
->  	struct folio *folio;
->  	struct folio *next;
-> -	enum vm_event_item item;
-> +	enum node_stat_item item;
->  	struct reclaim_stat stat;
->  	struct lru_gen_mm_walk *walk;
->  	bool skip_retry = false;
-> @@ -4756,10 +4750,8 @@ static int evict_folios(unsigned long nr_to_scan, struct lruvec *lruvec,
->  					stat.nr_demoted);
->  
->  	item = PGSTEAL_KSWAPD + reclaimer_offset(sc);
-> -	if (!cgroup_reclaim(sc))
-> -		__count_vm_events(item, reclaimed);
-> -	count_memcg_events(memcg, item, reclaimed);
-> -	__count_vm_events(PGSTEAL_ANON + type, reclaimed);
-> +	mod_lruvec_state(lruvec, item, reclaimed);
-> +	mod_lruvec_state(lruvec, PGSTEAL_ANON + type, reclaimed);
->  
->  	spin_unlock_irq(&lruvec->lru_lock);
->  
-> diff --git a/mm/vmstat.c b/mm/vmstat.c
-> index 99270713e0c1..d952c1e763e6 100644
-> --- a/mm/vmstat.c
-> +++ b/mm/vmstat.c
-> @@ -1276,6 +1276,18 @@ const char * const vmstat_text[] = {
->  	[I(PGDEMOTE_DIRECT)]			= "pgdemote_direct",
->  	[I(PGDEMOTE_KHUGEPAGED)]		= "pgdemote_khugepaged",
->  	[I(PGDEMOTE_PROACTIVE)]			= "pgdemote_proactive",
-> +	[I(PGSTEAL_KSWAPD)]			= "pgsteal_kswapd",
-> +	[I(PGSTEAL_DIRECT)]			= "pgsteal_direct",
-> +	[I(PGSTEAL_KHUGEPAGED)]			= "pgsteal_khugepaged",
-> +	[I(PGSTEAL_PROACTIVE)]			= "pgsteal_proactive",
-> +	[I(PGSTEAL_ANON)]			= "pgsteal_anon",
-> +	[I(PGSTEAL_FILE)]			= "pgsteal_file",
-> +	[I(PGSCAN_KSWAPD)]			= "pgscan_kswapd",
-> +	[I(PGSCAN_DIRECT)]			= "pgscan_direct",
-> +	[I(PGSCAN_KHUGEPAGED)]			= "pgscan_khugepaged",
-> +	[I(PGSCAN_PROACTIVE)]			= "pgscan_proactive",
-> +	[I(PGSCAN_ANON)]			= "pgscan_anon",
-> +	[I(PGSCAN_FILE)]			= "pgscan_file",
->  #ifdef CONFIG_HUGETLB_PAGE
->  	[I(NR_HUGETLB)]				= "nr_hugetlb",
->  #endif
-> @@ -1320,19 +1332,7 @@ const char * const vmstat_text[] = {
->  
->  	[I(PGREFILL)]				= "pgrefill",
->  	[I(PGREUSE)]				= "pgreuse",
-> -	[I(PGSTEAL_KSWAPD)]			= "pgsteal_kswapd",
-> -	[I(PGSTEAL_DIRECT)]			= "pgsteal_direct",
-> -	[I(PGSTEAL_KHUGEPAGED)]			= "pgsteal_khugepaged",
-> -	[I(PGSTEAL_PROACTIVE)]			= "pgsteal_proactive",
-> -	[I(PGSCAN_KSWAPD)]			= "pgscan_kswapd",
-> -	[I(PGSCAN_DIRECT)]			= "pgscan_direct",
-> -	[I(PGSCAN_KHUGEPAGED)]			= "pgscan_khugepaged",
-> -	[I(PGSCAN_PROACTIVE)]			= "pgscan_proactive",
->  	[I(PGSCAN_DIRECT_THROTTLE)]		= "pgscan_direct_throttle",
-> -	[I(PGSCAN_ANON)]			= "pgscan_anon",
-> -	[I(PGSCAN_FILE)]			= "pgscan_file",
-> -	[I(PGSTEAL_ANON)]			= "pgsteal_anon",
-> -	[I(PGSTEAL_FILE)]			= "pgsteal_file",
->  
->  #ifdef CONFIG_NUMA
->  	[I(PGSCAN_ZONE_RECLAIM_SUCCESS)]	= "zone_reclaim_success",
+Normally fsnotify_inoderemove() is called from dentry_unlink_inode() which
+is called from d_delete() (name unlinked) and __dentry_kill() (last dput()).
+Now it is true that kernfs doesn't bother with pruning child dentries from
+its rmdir implementation. It just marks all corresponding kernfs_nodes
+(inodes) as dead and that's it so d_delete() isn't called. But vfs_rmdir()
+makes up for this by calling shrink_dcache_parent() on the removed
+directory so the child dentries end up going through __dentry_kill(). *But*
+kernfs also doesn't bother to set i_nlink for these child dentries to 0
+when marking them as dead and so __dentry_kill() doesn't call
+fsnotify_inoderemove(). So at this point it seems more like a kernfs bug
+that children inodes aren't properly cleaned up by setting i_nlink to 0 and
+I don't think we should paper over this by calling fsnotify_inoderemove()
+explicitely.
 
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
