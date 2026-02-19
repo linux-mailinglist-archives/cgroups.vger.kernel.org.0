@@ -1,147 +1,240 @@
-Return-Path: <cgroups+bounces-14014-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-14015-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 2KXCI3PQlmkZoQIAu9opvQ
-	(envelope-from <cgroups+bounces-14014-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Thu, 19 Feb 2026 09:57:23 +0100
+	id dCE+OsHflmkUqQIAu9opvQ
+	(envelope-from <cgroups+bounces-14015-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Thu, 19 Feb 2026 11:02:41 +0100
 X-Original-To: lists+cgroups@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id E057A15D25D
-	for <lists+cgroups@lfdr.de>; Thu, 19 Feb 2026 09:57:22 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7D8FA15D9A2
+	for <lists+cgroups@lfdr.de>; Thu, 19 Feb 2026 11:02:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id A86BA3022F45
-	for <lists+cgroups@lfdr.de>; Thu, 19 Feb 2026 08:57:20 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 03C95301AF6A
+	for <lists+cgroups@lfdr.de>; Thu, 19 Feb 2026 10:02:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9DE013382E2;
-	Thu, 19 Feb 2026 08:57:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 11E452E8B64;
+	Thu, 19 Feb 2026 10:02:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uoGU5tz3"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="jm1ivfsG"
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5F5083346AD;
-	Thu, 19 Feb 2026 08:57:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D37A1E8342;
+	Thu, 19 Feb 2026 10:02:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1771491436; cv=none; b=FIFuBcQSN5DxOYhLLtLZFIZK5/Q2zZQtFNnEE66iGz8bAzaJNe7FC1U2PGRnFm/OTEvQMshUtjOGiTs1tdDhP0zsd/4lkKKQ49eKJUhSodDgTNlhdy58zlTsmBPvQfVd0M/uyi7Qr4j+f4m/61c8Q48tV7rugLeuyf/Jn96jHH4=
+	t=1771495356; cv=none; b=dRwH46VqaHXDyUHxu9RmW1jFmlBTxPdGNs+y20LN0Xc5n5b+O/jamWr7gljRlpGoqnVTPBq14OQB/4Ikxyv8YOtno0Ldf3LB3SX9fyDsUud9hXW/cuSP3c/ue1WIp+gSed0Hq6qHwLd2X4xVDfKEH6Dnp06dVixSyjQGLAKFC8w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1771491436; c=relaxed/simple;
-	bh=JnTVAYhQ/P4N0pSZd4qr1+jbOHBcQ58Dr2VlbwxwgQU=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Cc3j8kjuB8V5gemnOoSU0xmjy/ODXzn6puXbMuvNQWtYABQHdPvX0SI/SZoTKZBS8wKzLJbcIx7Oplv7VhwHmSIuGPHV6iX5y+gC2IL/k0OXlCgnQ/qfT88+M9C41OFG6fa6lRjFU6u0tj5ZC52mYaM5bV6q/YgmN5bLwWaaTyo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=uoGU5tz3; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EA993C4CEF7;
-	Thu, 19 Feb 2026 08:57:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1771491436;
-	bh=JnTVAYhQ/P4N0pSZd4qr1+jbOHBcQ58Dr2VlbwxwgQU=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=uoGU5tz3M9il+NVBLUl1f8VpETmSHceacznaIvb6Co35cHpP+qVovru3BS4N4tt4Z
-	 60Eik2Tsmm1P1zsWHUuNeObk6FPcN/SLdbc3MHNF02e028MNZV2hZE1UnPjUVkW6Fy
-	 vlyHmi3UD3ViLam90YEjAeI03XMR7T9YK60zMYVCBmQfbyBGGeEkF5WhdO6rdqnAyc
-	 O5a1lHVYRj8HcTu193k6TIOfRrifReZPXtaEI/WZUtPBdn/V17e4z0uFzyvRwhD/B2
-	 UjlsfydHdoC/g5cnDlwBHVQ0ITUF2u/irftL369I7mvmxjFmFFizHYeHA4PnotRRiz
-	 sAEK5Dx+XY7Dw==
-Message-ID: <c038af7f-bea1-4270-b423-41fa5939246a@kernel.org>
-Date: Thu, 19 Feb 2026 09:57:07 +0100
+	s=arc-20240116; t=1771495356; c=relaxed/simple;
+	bh=ZIySGTOKZjo5uD6GuM1RfNj9BJy2RdMmuIZWaUktJ4o=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=QR6uFT4i+ULt4Ge2Vjl8OvsBE2ISoEZ+iZ40g/nDolXFYK4d8naMTyN2nVeI0egqXHTs3NqXziiF9H3kYWnhtbQgtXfvwPYGkfZVhcDw76m45JfvopGHJWb2vpPihnXdcvxMRRSH86/7Tc0BDnc95gXxfE95JP5+TyQcHzR39QY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=jm1ivfsG; arc=none smtp.client-ip=198.175.65.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1771495355; x=1803031355;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=ZIySGTOKZjo5uD6GuM1RfNj9BJy2RdMmuIZWaUktJ4o=;
+  b=jm1ivfsGgwGyRwBP0Gv1Zu9z+SgJ/DNs/61hQlJ+SSHswBuljQFW8Xxi
+   TIUTxchPMVES9wIkzVH/Nh/2m5hn7TwgrFvguIUNh9T3H/ur1iraPCJW1
+   K92sn77/XwHo7nDPO2H/lEhoY2HOITNe4zS3jbZIscMalGKkI3DtyL2HA
+   ty4B8p/dv2WAIMSH2vSDdTAZDU6Rgm6tD0+Qw+vsE0qDazyVCWdRIzEN3
+   pgsuiYNstIcQEi5Z9tBY57tQcY3PIm13xJ5tuAsq3VKjHfZkADnIL/ABj
+   IXNakEGNWavoxW9VZA/xLqhU+fdJ5ILHMQeE6v40V2qM0iRR9dXuZXbJk
+   w==;
+X-CSE-ConnectionGUID: cvEIdgCZSWi1bWz/cq2YmQ==
+X-CSE-MsgGUID: F1TcrW2ZS6uQNipvGhJDVg==
+X-IronPort-AV: E=McAfee;i="6800,10657,11705"; a="82902062"
+X-IronPort-AV: E=Sophos;i="6.21,299,1763452800"; 
+   d="scan'208";a="82902062"
+Received: from fmviesa003.fm.intel.com ([10.60.135.143])
+  by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Feb 2026 02:02:34 -0800
+X-CSE-ConnectionGUID: yVQKBcOHQKa5qE7QL6FLVA==
+X-CSE-MsgGUID: /33pId8jSpWDFgIe5csG+Q==
+X-ExtLoop1: 1
+Received: from lkp-server01.sh.intel.com (HELO 765f4a05e27f) ([10.239.97.150])
+  by fmviesa003.fm.intel.com with ESMTP; 19 Feb 2026 02:02:28 -0800
+Received: from kbuild by 765f4a05e27f with local (Exim 4.98.2)
+	(envelope-from <lkp@intel.com>)
+	id 1vt0rZ-0000000136e-37xd;
+	Thu, 19 Feb 2026 10:02:25 +0000
+Date: Thu, 19 Feb 2026 18:02:17 +0800
+From: kernel test robot <lkp@intel.com>
+To: "JP Kobryn (Meta)" <jp.kobryn@linux.dev>, linux-mm@kvack.org,
+	mst@redhat.com, mhocko@suse.com, vbabka@suse.cz
+Cc: oe-kbuild-all@lists.linux.dev, apopple@nvidia.com,
+	akpm@linux-foundation.org, axelrasmussen@google.com,
+	byungchul@sk.com, cgroups@vger.kernel.org, david@kernel.org,
+	eperezma@redhat.com, gourry@gourry.net, jasowang@redhat.com,
+	hannes@cmpxchg.org, joshua.hahnjy@gmail.com,
+	Liam.Howlett@oracle.com, linux-kernel@vger.kernel.org,
+	lorenzo.stoakes@oracle.com, matthew.brost@intel.com,
+	rppt@kernel.org, muchun.song@linux.dev, zhengqi.arch@bytedance.com,
+	rakie.kim@sk.com, roman.gushchin@linux.dev, shakeel.butt@linux.dev,
+	surenb@google.com, virtualization@lists.linux.dev,
+	weixugc@google.com, xuanzhuo@linux.alibaba.com,
+	ying.huang@linux.alibaba.com
+Subject: Re: [PATCH v3] mm: move pgscan, pgsteal, pgrefill to node stats
+Message-ID: <202602191719.7nkLTJOP-lkp@intel.com>
+References: <20260218222652.108411-1-jp.kobryn@linux.dev>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3] mm: move pgscan, pgsteal, pgrefill to node stats
-To: "JP Kobryn (Meta)" <jp.kobryn@linux.dev>, linux-mm@kvack.org,
- mst@redhat.com, mhocko@suse.com, vbabka@suse.cz
-Cc: apopple@nvidia.com, akpm@linux-foundation.org, axelrasmussen@google.com,
- byungchul@sk.com, cgroups@vger.kernel.org, david@kernel.org,
- eperezma@redhat.com, gourry@gourry.net, jasowang@redhat.com,
- hannes@cmpxchg.org, joshua.hahnjy@gmail.com, Liam.Howlett@oracle.com,
- linux-kernel@vger.kernel.org, lorenzo.stoakes@oracle.com,
- matthew.brost@intel.com, rppt@kernel.org, muchun.song@linux.dev,
- zhengqi.arch@bytedance.com, rakie.kim@sk.com, roman.gushchin@linux.dev,
- shakeel.butt@linux.dev, surenb@google.com, virtualization@lists.linux.dev,
- weixugc@google.com, xuanzhuo@linux.alibaba.com,
- ying.huang@linux.alibaba.com, yuanchu@google.com, ziy@nvidia.com,
- kernel-team@meta.com
-References: <20260218222652.108411-1-jp.kobryn@linux.dev>
-From: "Vlastimil Babka (SUSE)" <vbabka@kernel.org>
-Content-Language: en-US
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 In-Reply-To: <20260218222652.108411-1-jp.kobryn@linux.dev>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-0.66 / 15.00];
+X-Spamd-Result: default: False [0.34 / 15.00];
 	SUSPICIOUS_RECIPS(1.50)[];
+	MID_CONTAINS_FROM(1.00)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
+	DMARC_POLICY_ALLOW(-0.50)[intel.com,none];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64];
+	R_DKIM_ALLOW(-0.20)[intel.com:s=Intel];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-14014-lists,cgroups=lfdr.de];
-	RCVD_TLS_LAST(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	FREEMAIL_CC(0.00)[nvidia.com,linux-foundation.org,google.com,sk.com,vger.kernel.org,kernel.org,redhat.com,gourry.net,cmpxchg.org,gmail.com,oracle.com,intel.com,linux.dev,bytedance.com,lists.linux.dev,linux.alibaba.com,meta.com];
-	RCPT_COUNT_TWELVE(0.00)[34];
+	RCPT_COUNT_TWELVE(0.00)[32];
+	FREEMAIL_CC(0.00)[lists.linux.dev,nvidia.com,linux-foundation.org,google.com,sk.com,vger.kernel.org,kernel.org,redhat.com,gourry.net,cmpxchg.org,gmail.com,oracle.com,intel.com,linux.dev,bytedance.com,linux.alibaba.com];
+	TAGGED_FROM(0.00)[bounces-14015-lists,cgroups=lfdr.de];
 	MIME_TRACE(0.00)[0:+];
+	RCVD_TLS_LAST(0.00)[];
+	FORGED_SENDER_MAILLIST(0.00)[];
 	FROM_HAS_DN(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	TO_DN_SOME(0.00)[];
-	NEURAL_HAM(-0.00)[-1.000];
+	RCVD_COUNT_FIVE(0.00)[6];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[vbabka@kernel.org,cgroups@vger.kernel.org];
-	DKIM_TRACE(0.00)[kernel.org:+];
-	MID_RHS_MATCH_FROM(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[lkp@intel.com,cgroups@vger.kernel.org];
+	DKIM_TRACE(0.00)[intel.com:+];
+	NEURAL_HAM(-0.00)[-1.000];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
 	TAGGED_RCPT(0.00)[cgroups];
-	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,cmpxchg.org:email,linux.dev:email]
-X-Rspamd-Queue-Id: E057A15D25D
+	MISSING_XM_UA(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[intel.com:mid,intel.com:dkim,intel.com:email,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: 7D8FA15D9A2
 X-Rspamd-Action: no action
 
-On 2/18/26 23:26, JP Kobryn (Meta) wrote:
-> From: JP Kobryn <jp.kobryn@linux.dev>
-> 
-> There are situations where reclaim kicks in on a system with free memory.
-> One possible cause is a NUMA imbalance scenario where one or more nodes are
-> under pressure. It would help if we could easily identify such nodes.
-> 
-> Move the pgscan, pgsteal, and pgrefill counters from vm_event_item to
-> node_stat_item to provide per-node reclaim visibility. With these counters
-> as node stats, the values are now displayed in the per-node section of
-> /proc/zoneinfo, which allows for quick identification of the affected
-> nodes.
-> 
-> /proc/vmstat continues to report the same counters, aggregated across all
-> nodes. But the ordering of these items within the readout changes as they
-> move from the vm events section to the node stats section.
-> 
-> Memcg accounting of these counters is preserved. The relocated counters
-> remain visible in memory.stat alongside the existing aggregate pgscan and
-> pgsteal counters.
-> 
-> However, this change affects how the global counters are accumulated.
-> Previously, the global event count update was gated on !cgroup_reclaim(),
-> excluding memcg-based reclaim from /proc/vmstat. Now that
-> mod_lruvec_state() is being used to update the counters, the global
-> counters will include all reclaim. This is consistent with how pgdemote
-> counters are already tracked.
-> 
-> Finally, the virtio_balloon driver is updated to use
-> global_node_page_state() to fetch the counters, as they are no longer
-> accessible through the vm_events array.
-> 
-> Signed-off-by: JP Kobryn <jp.kobryn@linux.dev>
-> Suggested-by: Johannes Weiner <hannes@cmpxchg.org>
-> Acked-by: Michael S. Tsirkin <mst@redhat.com>
+Hi JP,
 
-Reviewed-by: Vlastimil Babka (SUSE) <vbabka@kernel.org>
+kernel test robot noticed the following build warnings:
+
+[auto build test WARNING on akpm-mm/mm-everything]
+
+url:    https://github.com/intel-lab-lkp/linux/commits/JP-Kobryn-Meta/mm-move-pgscan-pgsteal-pgrefill-to-node-stats/20260219-063016
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/akpm/mm.git mm-everything
+patch link:    https://lore.kernel.org/r/20260218222652.108411-1-jp.kobryn%40linux.dev
+patch subject: [PATCH v3] mm: move pgscan, pgsteal, pgrefill to node stats
+config: m68k-allmodconfig (https://download.01.org/0day-ci/archive/20260219/202602191719.7nkLTJOP-lkp@intel.com/config)
+compiler: m68k-linux-gcc (GCC) 15.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20260219/202602191719.7nkLTJOP-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202602191719.7nkLTJOP-lkp@intel.com/
+
+All warnings (new ones prefixed by >>):
+
+   mm/vmscan.c: In function 'scan_folios':
+>> mm/vmscan.c:4542:28: warning: unused variable 'memcg' [-Wunused-variable]
+    4542 |         struct mem_cgroup *memcg = lruvec_memcg(lruvec);
+         |                            ^~~~~
 
 
+vim +/memcg +4542 mm/vmscan.c
+
+ac35a490237446 Yu Zhao        2022-09-18  4527  
+af827e0904899f Koichiro Den   2025-05-31  4528  static int scan_folios(unsigned long nr_to_scan, struct lruvec *lruvec,
+af827e0904899f Koichiro Den   2025-05-31  4529  		       struct scan_control *sc, int type, int tier,
+af827e0904899f Koichiro Den   2025-05-31  4530  		       struct list_head *list)
+ac35a490237446 Yu Zhao        2022-09-18  4531  {
+669281ee7ef731 Kalesh Singh   2023-08-01  4532  	int i;
+669281ee7ef731 Kalesh Singh   2023-08-01  4533  	int gen;
+b0e9e710c6bb5a JP Kobryn      2026-02-18  4534  	enum node_stat_item item;
+ac35a490237446 Yu Zhao        2022-09-18  4535  	int sorted = 0;
+ac35a490237446 Yu Zhao        2022-09-18  4536  	int scanned = 0;
+ac35a490237446 Yu Zhao        2022-09-18  4537  	int isolated = 0;
+8c2214fc9a470a Jaewon Kim     2023-10-03  4538  	int skipped = 0;
+49d921b471c513 Chen Ridong    2025-12-04  4539  	int scan_batch = min(nr_to_scan, MAX_LRU_BATCH);
+49d921b471c513 Chen Ridong    2025-12-04  4540  	int remaining = scan_batch;
+391655fe08d1f9 Yu Zhao        2022-12-21  4541  	struct lru_gen_folio *lrugen = &lruvec->lrugen;
+ac35a490237446 Yu Zhao        2022-09-18 @4542  	struct mem_cgroup *memcg = lruvec_memcg(lruvec);
+ac35a490237446 Yu Zhao        2022-09-18  4543  
+ac35a490237446 Yu Zhao        2022-09-18  4544  	VM_WARN_ON_ONCE(!list_empty(list));
+ac35a490237446 Yu Zhao        2022-09-18  4545  
+ac35a490237446 Yu Zhao        2022-09-18  4546  	if (get_nr_gens(lruvec, type) == MIN_NR_GENS)
+ac35a490237446 Yu Zhao        2022-09-18  4547  		return 0;
+ac35a490237446 Yu Zhao        2022-09-18  4548  
+ac35a490237446 Yu Zhao        2022-09-18  4549  	gen = lru_gen_from_seq(lrugen->min_seq[type]);
+ac35a490237446 Yu Zhao        2022-09-18  4550  
+669281ee7ef731 Kalesh Singh   2023-08-01  4551  	for (i = MAX_NR_ZONES; i > 0; i--) {
+ac35a490237446 Yu Zhao        2022-09-18  4552  		LIST_HEAD(moved);
+8c2214fc9a470a Jaewon Kim     2023-10-03  4553  		int skipped_zone = 0;
+669281ee7ef731 Kalesh Singh   2023-08-01  4554  		int zone = (sc->reclaim_idx + i) % MAX_NR_ZONES;
+6df1b2212950aa Yu Zhao        2022-12-21  4555  		struct list_head *head = &lrugen->folios[gen][type][zone];
+ac35a490237446 Yu Zhao        2022-09-18  4556  
+ac35a490237446 Yu Zhao        2022-09-18  4557  		while (!list_empty(head)) {
+ac35a490237446 Yu Zhao        2022-09-18  4558  			struct folio *folio = lru_to_folio(head);
+ac35a490237446 Yu Zhao        2022-09-18  4559  			int delta = folio_nr_pages(folio);
+ac35a490237446 Yu Zhao        2022-09-18  4560  
+ac35a490237446 Yu Zhao        2022-09-18  4561  			VM_WARN_ON_ONCE_FOLIO(folio_test_unevictable(folio), folio);
+ac35a490237446 Yu Zhao        2022-09-18  4562  			VM_WARN_ON_ONCE_FOLIO(folio_test_active(folio), folio);
+ac35a490237446 Yu Zhao        2022-09-18  4563  			VM_WARN_ON_ONCE_FOLIO(folio_is_file_lru(folio) != type, folio);
+ac35a490237446 Yu Zhao        2022-09-18  4564  			VM_WARN_ON_ONCE_FOLIO(folio_zonenum(folio) != zone, folio);
+ac35a490237446 Yu Zhao        2022-09-18  4565  
+ac35a490237446 Yu Zhao        2022-09-18  4566  			scanned += delta;
+ac35a490237446 Yu Zhao        2022-09-18  4567  
+669281ee7ef731 Kalesh Singh   2023-08-01  4568  			if (sort_folio(lruvec, folio, sc, tier))
+ac35a490237446 Yu Zhao        2022-09-18  4569  				sorted += delta;
+ac35a490237446 Yu Zhao        2022-09-18  4570  			else if (isolate_folio(lruvec, folio, sc)) {
+ac35a490237446 Yu Zhao        2022-09-18  4571  				list_add(&folio->lru, list);
+ac35a490237446 Yu Zhao        2022-09-18  4572  				isolated += delta;
+ac35a490237446 Yu Zhao        2022-09-18  4573  			} else {
+ac35a490237446 Yu Zhao        2022-09-18  4574  				list_move(&folio->lru, &moved);
+8c2214fc9a470a Jaewon Kim     2023-10-03  4575  				skipped_zone += delta;
+ac35a490237446 Yu Zhao        2022-09-18  4576  			}
+ac35a490237446 Yu Zhao        2022-09-18  4577  
+8c2214fc9a470a Jaewon Kim     2023-10-03  4578  			if (!--remaining || max(isolated, skipped_zone) >= MIN_LRU_BATCH)
+ac35a490237446 Yu Zhao        2022-09-18  4579  				break;
+ac35a490237446 Yu Zhao        2022-09-18  4580  		}
+ac35a490237446 Yu Zhao        2022-09-18  4581  
+8c2214fc9a470a Jaewon Kim     2023-10-03  4582  		if (skipped_zone) {
+ac35a490237446 Yu Zhao        2022-09-18  4583  			list_splice(&moved, head);
+8c2214fc9a470a Jaewon Kim     2023-10-03  4584  			__count_zid_vm_events(PGSCAN_SKIP, zone, skipped_zone);
+8c2214fc9a470a Jaewon Kim     2023-10-03  4585  			skipped += skipped_zone;
+ac35a490237446 Yu Zhao        2022-09-18  4586  		}
+ac35a490237446 Yu Zhao        2022-09-18  4587  
+ac35a490237446 Yu Zhao        2022-09-18  4588  		if (!remaining || isolated >= MIN_LRU_BATCH)
+ac35a490237446 Yu Zhao        2022-09-18  4589  			break;
+ac35a490237446 Yu Zhao        2022-09-18  4590  	}
+ac35a490237446 Yu Zhao        2022-09-18  4591  
+e452872b40e3f1 Hao Jia        2025-03-18  4592  	item = PGSCAN_KSWAPD + reclaimer_offset(sc);
+b0e9e710c6bb5a JP Kobryn      2026-02-18  4593  	mod_lruvec_state(lruvec, item, isolated);
+b0e9e710c6bb5a JP Kobryn      2026-02-18  4594  	mod_lruvec_state(lruvec, PGREFILL, sorted);
+b0e9e710c6bb5a JP Kobryn      2026-02-18  4595  	mod_lruvec_state(lruvec, PGSCAN_ANON + type, isolated);
+49d921b471c513 Chen Ridong    2025-12-04  4596  	trace_mm_vmscan_lru_isolate(sc->reclaim_idx, sc->order, scan_batch,
+8c2214fc9a470a Jaewon Kim     2023-10-03  4597  				scanned, skipped, isolated,
+8c2214fc9a470a Jaewon Kim     2023-10-03  4598  				type ? LRU_INACTIVE_FILE : LRU_INACTIVE_ANON);
+1bc542c6a0d144 Zeng Jingxiang 2024-10-26  4599  	if (type == LRU_GEN_FILE)
+1bc542c6a0d144 Zeng Jingxiang 2024-10-26  4600  		sc->nr.file_taken += isolated;
+ac35a490237446 Yu Zhao        2022-09-18  4601  	/*
+e9d4e1ee788097 Yu Zhao        2022-12-21  4602  	 * There might not be eligible folios due to reclaim_idx. Check the
+e9d4e1ee788097 Yu Zhao        2022-12-21  4603  	 * remaining to prevent livelock if it's not making progress.
+ac35a490237446 Yu Zhao        2022-09-18  4604  	 */
+ac35a490237446 Yu Zhao        2022-09-18  4605  	return isolated || !remaining ? scanned : 0;
+ac35a490237446 Yu Zhao        2022-09-18  4606  }
+ac35a490237446 Yu Zhao        2022-09-18  4607  
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
