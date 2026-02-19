@@ -1,251 +1,203 @@
-Return-Path: <cgroups+bounces-14021-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-14022-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id GLNrMmRdl2mIxQIAu9opvQ
-	(envelope-from <cgroups+bounces-14021-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Thu, 19 Feb 2026 19:58:44 +0100
+	id AHT+Cuhkl2n/xgIAu9opvQ
+	(envelope-from <cgroups+bounces-14022-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Thu, 19 Feb 2026 20:30:48 +0100
 X-Original-To: lists+cgroups@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 589F9161D3C
-	for <lists+cgroups@lfdr.de>; Thu, 19 Feb 2026 19:58:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 6963C162093
+	for <lists+cgroups@lfdr.de>; Thu, 19 Feb 2026 20:30:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 9810530297B3
-	for <lists+cgroups@lfdr.de>; Thu, 19 Feb 2026 18:57:55 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 6E41C3020017
+	for <lists+cgroups@lfdr.de>; Thu, 19 Feb 2026 19:30:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C47E62EBBA4;
-	Thu, 19 Feb 2026 18:57:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 73977308F33;
+	Thu, 19 Feb 2026 19:30:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="YXAOwycu"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="d3yuVqKb"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-wm1-f48.google.com (mail-wm1-f48.google.com [209.85.128.48])
+Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com [209.85.128.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 17E352E6116
-	for <cgroups@vger.kernel.org>; Thu, 19 Feb 2026 18:57:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.128.48
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1771527474; cv=pass; b=RsTSon8T91/sTs4LWjJGqCQnpf1y4SGUN9c0qW8I/6AelQSQ3NADFkIch3+4wmovB4Oo1PBlM9dJI8xL7xMgRNeVK5zG0V9bXK5nOwgWNXEb3mRp3fg+89nJOoy7ZS1i0CRhXrfKXkvbByVRxAtE8zMIXNyTjv2L+aYgdBAtgWg=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1771527474; c=relaxed/simple;
-	bh=fj+YaSKDsualB1VdmxHvXU4DOPR+wgzu3vnMbjBDHwk=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=LA/3rk2pvzcTlsn9ald2t/5TDYI+UfZYhDOHpEdFRtvULdnf5KwhgYXdTw4oRUssDAWNFG33J4EAXvsZ+Par0GFttGqIy/tVBIN/fP+uZNStoSz+bwjzOAogxMGa90m5lsSdODRVd3zhs8LmlMgRG9t25SrdAsJoc0G9OcWa20g=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=YXAOwycu; arc=pass smtp.client-ip=209.85.128.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-wm1-f48.google.com with SMTP id 5b1f17b1804b1-48373ad38d2so9915e9.0
-        for <cgroups@vger.kernel.org>; Thu, 19 Feb 2026 10:57:52 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; t=1771527471; cv=none;
-        d=google.com; s=arc-20240605;
-        b=KE9OZ8Zy8xJKXkCmmsqQ8yMJ7Pl5EHUPIolHol4PFHnPsL3GpC6e/9IGGliLP00hE1
-         su/px28ThXjW8pJtkjg1181q8VlnIayWBCJhiyrG4xKbIR+STP2qp0g1bdEsBC5vaJRu
-         jcFLroYe/7w/5yhObUjLc/X3jU6K8ncWd2fZVXO89H0P1wIsRlr3NsVW0i+IGiQVrJ6E
-         3NzN13oQpuxRZL3WUtuAAsRuLdbGL9c5RAp/SADdDggriaWNqfzozkZWX5Drd71aZFwG
-         sJgFGvkP0bPXRUuM8OUBnOGHPw9nnHgVwS0a7X9TZeEHNF1QkRE8UqdjbhMF56Cl54YT
-         slgQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:dkim-signature;
-        bh=NFBMInVvk2+20qEW3rAuH6OydbWEXhtEVk/J1ukU7mw=;
-        fh=HiRyfQxtzCho6Icexmjse7t5k/nRAeFD/VlMQO+NA78=;
-        b=EW3CqqXCyjHmWgPPkEXPwS/5sCQ5owIT0uCigxWUT3pNxbnt7d4NCy2YpWDQ1gX4By
-         pbJOa4dKRcDRUQ4QLlrQzneuKjbL6fYrjqXkFe7fy7TEnW8Z9ytyw9KECWFhafvgH1ES
-         txzMwnN2e4fq3+djHo65NVxy4S5g15JkGRzbtUsNILWEmGtCKRWtVh7X0kt0BPg+Kg3g
-         h9MAUOWhw9p8uThnIfHFTwEMsvhtY6gxOtKIfkRq+FV/ayS3sQkWohWA7x/MC6b0/QU0
-         1yRGaHVhL5QkUaskGVtj2YaDXAo+RjGS2uIv4ZNYUiaOzBOsdQIsjCm6RQH+jXJnJlPq
-         c2Gw==;
-        darn=vger.kernel.org
-ARC-Authentication-Results: i=1; mx.google.com; arc=none
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF29E2E0B71
+	for <cgroups@vger.kernel.org>; Thu, 19 Feb 2026 19:30:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.46
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1771529436; cv=none; b=EFUG/QkZ+YXyrS1fJFXF5kKVONqPyxg6HwObTTZR2KfgbxpCuXAYdwsCJvlVPdBzKD6GruLmk8BBJ/EeajwNDB03pDTpnGxBohYnvbxGTc/pbIsb22E3QyowbFp1e7c6hc2rgooipidsN4GIjw23qmNhIW+2kMtTr03/e1kI14U=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1771529436; c=relaxed/simple;
+	bh=gN9ZUsqQrSAI3cyJyrV/V0WAlQclpKMv03oAD7EgttM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=R2Bu5JgZZVpIOGZ/AsrtoP7qQShQTiF4f+CT3bcvpIp1mlDrtm8AQUtX78TKrmy+81k2eb8kajwQgsH7oGyJ8aqYf+H+xJX9S/2UwMefuDfoLmKvWccpIl/g8Kd8I4SP2ue46YhAmWvQT6xwhXdQESStxGn01xWZrkBOtGXtLkI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=d3yuVqKb; arc=none smtp.client-ip=209.85.128.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-483703e4b08so10318995e9.1
+        for <cgroups@vger.kernel.org>; Thu, 19 Feb 2026 11:30:34 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1771527471; x=1772132271; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=NFBMInVvk2+20qEW3rAuH6OydbWEXhtEVk/J1ukU7mw=;
-        b=YXAOwycurFI0xWE2M34UN36yD4VC+Z+fraYCSSU4T1TlxsedLkJ3PsexrOxFTmBefu
-         dPPUr+zCIrd6Kbb/kyc+ADYJxYyq9ofULbamjZGE2eqxEl/AJmufZwxnHSvu9vNkPk3O
-         Pd4ayS6FO5aNHR8rWTDktvsHtO5qKHwUvKpXCAhBYOPlPaUp95jhbYGDYFzzo3D72i87
-         AC+v3IK2HFITa0UfoZC3+YQZfAFHZJLH0/LaeKup+/yiU2SbQkHIEj+G/f3n3ralobsx
-         4uUz+lg7KKfJpSqqMT3mCAwsFQJ7SdR4GBv0JXAWy0JlQ8oSgjX5uelyDaF5DYYKH1hH
-         sHZA==
+        d=suse.com; s=google; t=1771529433; x=1772134233; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=bkc+W3z7LdbV7qOK0XaTDRftTDho1sOCxk9yc12rgDA=;
+        b=d3yuVqKb+SJxvzuxkBreHupWw50rqKNwZ81xxaGToPOVvc9VxoNqk+DG6zeW9eDFVJ
+         mdFLTCTD5nx6PaoZZkSf8PIuaNBtKuyA7jk9ydEpWBK7Id8py7JOjamU/rqM6stZBbH/
+         DXFsMPrRA7H6HaytAymmQPGFnrcI/OcpL7ND5NZSrgDdPBBxQA4yC7unNmVKv2B9nbeE
+         27cgyj+iQhWxX5weRmdxjGaAtHXuIuhLbSAIcRwQWsAeamrSZsdRMCSpyHrdMo/mN0l9
+         iSvb8GgbmT1n4cpZUKU/PCn9QI6/At2NpIys5j+6cbE7VGCvEfCEps0azxR4A0P+ddQL
+         qEag==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1771527471; x=1772132271;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=NFBMInVvk2+20qEW3rAuH6OydbWEXhtEVk/J1ukU7mw=;
-        b=OKiLq49bi8PtslDCPq3+hdBxLHT1CQTjyGIe+/2G+BVdW24vciB947Su/z7ey+nNHk
-         4klUW0yBxMFftYpNRhCcABcK9MHMkjN5TH4jZq0b1ZP/VSE+HkWwpkLFI9sjhTFdTMSc
-         dYY4qq8jUTSsYFvaRFgunjQ2ztFnHiJd7A5CAKtqVMb1anVf4KZ1oYuhKL39wYljRZBI
-         glH5Nrq/BjNwL4snpt5Iwib4cGMNjkcvg/c8Xa9sO8sCYQuu7csVrnETaWcYs5y0KPbg
-         +RxzfITiaCQhd9RBdVz3viBRhC/Ml9Wd03rf3RSMQS3HmVWH5XC4Y1iZnVT7dztbKTkj
-         Tp1Q==
-X-Forwarded-Encrypted: i=1; AJvYcCV8dQhV7LrJPEsSELm4PzCl3X1OntWNPO20RvRCZeKGo1CQPagI4n417XXP3pzgt+NzBHQBk71+@vger.kernel.org
-X-Gm-Message-State: AOJu0YyOCjpZtHJCugmiMPoFRK9OR8kFeulOGmik01e1ID6FYEBcn71G
-	eUeEmcurvnNYTgRb9rRC27SEtoOlizNlJflbzg5e22Z0Q2HUvcoFLs8Nm0IiMIE8VLFhOQiqcp2
-	U9bD5P+W86uHYxCIEjbVI19+jenDPqFJYl7bHBPdAZRIjPMTcLGzPHaH6
-X-Gm-Gg: AZuq6aIh4XyOMhY0WNq9TgX/O8V/9EGUvzA+upU7FQY8MAWMFuLBvcCnMSyzYG+n6Dh
-	1gDczPX01zyXBkbD5Yl5zBx2E1djCUikB43h7Kmrphx8jnIr4MBPzDYy3nkic1Z27g+Sm3HJ+jM
-	4aCsp47//EsGFKo6nKf/OlC7K8G4jBnrLUctPLDLs/W2e601i/ncu1Z8H7XUTitdijRTpcTEG0X
-	D6V/zo8063Bvz4KDuufHhP1iVXuyEculR2hFqAEPL4mgp5J+UHwvBC3LQNU5xq1rtmMuYyKtTWK
-	Y8/LVpsjY2Yc49xwLkAFvXZaUs0tk4svzoLBCCntcxY2mQ5Eok7Glka3ZSlNQLvOCkbVSw==
-X-Received: by 2002:a05:600c:4e0d:b0:47a:80ec:b2f7 with SMTP id
- 5b1f17b1804b1-483a3ea10b2mr41835e9.14.1771527471028; Thu, 19 Feb 2026
- 10:57:51 -0800 (PST)
+        d=1e100.net; s=20230601; t=1771529433; x=1772134233;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=bkc+W3z7LdbV7qOK0XaTDRftTDho1sOCxk9yc12rgDA=;
+        b=n9sC7WfPpby2AyR/XU0xBuD90MvYu2u5Xrz+ON+AK+SEOQw2TUUH4lzXnoRg0eefCz
+         ChImMfiy9gxsRvXn6/B8xDWG9swEI0ou4XwYrtG8/86IxpnVhjgQ80ObEUmMDtmz+pef
+         zt51QGVSDAu7MVzz+wmxtmK979/qh6/yPsMniiIxrqtPdgs+6dxARs8B7IiMrX/7Urje
+         tYph/ykeuDaBgcYjGKRuLpOiTgemSQ1vvbTwlNRGxLjzYW2d8MFgfjflBB0R9KG7DuRV
+         4PHRtoGda9Cw2AIxFKi7rUyjnTNViq5jQoyn/RxximoqFEQZgfQCm2DB08hznepIfdVn
+         4OCw==
+X-Forwarded-Encrypted: i=1; AJvYcCXi8od8Kn+FYfWV1XobquV89NBLBobXsrAKHt7oqjErRkSVLQAAB48MXlsNCNJYknEOzTkOXkvS@vger.kernel.org
+X-Gm-Message-State: AOJu0YwzDSTVzNEo12IR6ODm5D2BBPehSef3CA3ldKmU4yWlGUcvXA4J
+	gDXbXMBx0VzMBwKITE+951iJdpg5x+M/Ml4V3Bv6Xe29znAl5pBnFIfudS3oFvGyBUMog7gIr0A
+	Cc2li
+X-Gm-Gg: AZuq6aIErtGSRYEJOsDZjSLiABt5IMves6+cQjJZRilX5Qbh93VNU0VnURy3GFGL2Ns
+	13a7Zkc0mBFstc6c65ZWDX55yvau+De5CFWMOjap3Pf8MOGZpCQE1cJLF/QjO/AHJmVN6OlHVA5
+	XdGok7TZsHALJCxzdxDntYlhrjmX9SQ4KwBuef1SBwyghxI0FRaPUzpfTQPlLwlFo3MWkxmnbCX
+	wOPvcpmHX7nP65OUVbqHuIy4D/NSvb17Gpowjh8X/F1gxdZFx6VhoCPLZt9auxr8LVcjsTeRIZS
+	7SPRCpq/M2Df/FC0CfHtNgw/4Rxw5sXKVjl51RdRI+vlfZJlVYpA4etkUySojsrJNV14snH13yT
+	qeLNNzDfkd1E0ZFIugyG94TawPnnQcBfqmQpOc8GyxU/cjxYO/U9n77ckOCcnRLafeS3MaS0gu2
+	tugUnRZdFt93EkpU5OAH+6Og1lqX/JlJc=
+X-Received: by 2002:a05:600c:8a0a:10b0:483:a2b0:d210 with SMTP id 5b1f17b1804b1-483a2b0d22fmr25084335e9.7.1771529433119;
+        Thu, 19 Feb 2026 11:30:33 -0800 (PST)
+Received: from localhost (109-81-84-7.rct.o2.cz. [109.81.84.7])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-483a31c56d8sm36582425e9.8.2026.02.19.11.30.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 19 Feb 2026 11:30:32 -0800 (PST)
+Date: Thu, 19 Feb 2026 20:30:31 +0100
+From: Michal Hocko <mhocko@suse.com>
+To: Marcelo Tosatti <mtosatti@redhat.com>
+Cc: Leonardo Bras <leobras.c@gmail.com>, linux-kernel@vger.kernel.org,
+	cgroups@vger.kernel.org, linux-mm@kvack.org,
+	Johannes Weiner <hannes@cmpxchg.org>,
+	Roman Gushchin <roman.gushchin@linux.dev>,
+	Shakeel Butt <shakeel.butt@linux.dev>,
+	Muchun Song <muchun.song@linux.dev>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Christoph Lameter <cl@linux.com>, Pekka Enberg <penberg@kernel.org>,
+	David Rientjes <rientjes@google.com>,
+	Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+	Vlastimil Babka <vbabka@suse.cz>,
+	Hyeonggon Yoo <42.hyeyoo@gmail.com>,
+	Leonardo Bras <leobras@redhat.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Waiman Long <longman@redhat.com>, Boqun Feng <boqun.feng@gmail.com>,
+	Frederic Weisbecker <fweisbecker@suse.de>
+Subject: Re: [PATCH 0/4] Introduce QPW for per-cpu operations
+Message-ID: <aZdk19MqYhWK90Do@tiehlicka>
+References: <20260206143430.021026873@redhat.com>
+ <aYs6Ju2G4bm6_tl2@tiehlicka>
+ <aYxviLoWsrLqDU7o@tpad>
+ <aYywl1hdBQP2_slo@tiehlicka>
+ <aZDw6xI2izFDfuuu@WindFlash>
+ <aZL45yORfkNvS9Rs@tiehlicka>
+ <aZcr255pGT3B/eaL@tpad>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20260218032232.4049467-1-tjmercier@google.com>
- <20260218032232.4049467-3-tjmercier@google.com> <e7b4xiqvh76jvqukvcocblq5lrc5hldoiiexjlo5fmagbv3mgn@zhpzm4jwx3kg>
- <CABdmKX1S4wWFdsUOFOQ=_uVbmQVcQk0+VUVQjgAx_yqUcEd60A@mail.gmail.com>
- <s4vb5vshejyasdw2tkydhhk4m6p3ybexoi254qjiqexzgcxb5c@ctazolc3nh6f>
- <CABdmKX2cQCneFyZhTWmWYz-RTmAOQcEKh5ZQewz25E6Xfok1tQ@mail.gmail.com>
- <CABdmKX0BJcsv0TaPSsGN2a4nkQaKF=cX8rnnoL5kPTHNfuKL7Q@mail.gmail.com>
- <CABdmKX0DGP9=OOPwU8WjqHnmRDfPnxoAjm8Rvy-D2GYQX0GE0A@mail.gmail.com> <anwsdq5gxzeyfavxqvujbevozknyix6xo7leccqrbznfdgi4nz@hfuqqgtv7m4p>
-In-Reply-To: <anwsdq5gxzeyfavxqvujbevozknyix6xo7leccqrbznfdgi4nz@hfuqqgtv7m4p>
-From: "T.J. Mercier" <tjmercier@google.com>
-Date: Thu, 19 Feb 2026 10:57:34 -0800
-X-Gm-Features: AaiRm521HjvGNhdUSunhILK8eWMKqrsMi6CHX_6mrk_tnUftoq73nxUbEb5C0LY
-Message-ID: <CABdmKX2JXndogbfvTM0WVia9CtXucth+X3UqXBimN7vZ4X0yow@mail.gmail.com>
-Subject: Re: [PATCH v3 2/3] kernfs: send IN_DELETE_SELF and IN_IGNORED on file deletion
-To: Jan Kara <jack@suse.cz>
-Cc: gregkh@linuxfoundation.org, tj@kernel.org, driver-core@lists.linux.dev, 
-	linux-kernel@vger.kernel.org, cgroups@vger.kernel.org, 
-	linux-fsdevel@vger.kernel.org, amir73il@gmail.com, shuah@kernel.org, 
-	linux-kselftest@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <aZcr255pGT3B/eaL@tpad>
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-2.16 / 15.00];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=2];
-	DMARC_POLICY_ALLOW(-0.50)[google.com,reject];
-	R_DKIM_ALLOW(-0.20)[google.com:s=20230601];
+X-Spamd-Result: default: False [-0.16 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+	MID_RHS_NOT_FQDN(0.50)[];
+	DMARC_POLICY_ALLOW(-0.50)[suse.com,quarantine];
 	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_DKIM_ALLOW(-0.20)[suse.com:s=google];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FREEMAIL_CC(0.00)[linuxfoundation.org,kernel.org,lists.linux.dev,vger.kernel.org,gmail.com];
-	TAGGED_FROM(0.00)[bounces-14021-lists,cgroups=lfdr.de];
-	FROM_HAS_DN(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
+	RCPT_COUNT_TWELVE(0.00)[21];
 	RCVD_TLS_LAST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-14022-lists,cgroups=lfdr.de];
 	MIME_TRACE(0.00)[0:+];
+	FREEMAIL_CC(0.00)[gmail.com,vger.kernel.org,kvack.org,cmpxchg.org,linux.dev,linux-foundation.org,linux.com,kernel.org,google.com,lge.com,suse.cz,redhat.com,linutronix.de,suse.de];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	DKIM_TRACE(0.00)[google.com:+];
-	MISSING_XM_UA(0.00)[];
-	TO_DN_SOME(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[tjmercier@google.com,cgroups@vger.kernel.org];
+	RECEIVED_HELO_LOCALHOST(0.00)[];
+	FROM_HAS_DN(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	NEURAL_HAM(-0.00)[-1.000];
+	TO_DN_SOME(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[5];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[mhocko@suse.com,cgroups@vger.kernel.org];
+	DKIM_TRACE(0.00)[suse.com:+];
+	NEURAL_HAM(-0.00)[-0.999];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[cgroups];
-	RCPT_COUNT_SEVEN(0.00)[10];
+	MISSING_XM_UA(0.00)[];
 	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[mail.gmail.com:mid,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,suse.com:email,memory.events:url]
-X-Rspamd-Queue-Id: 589F9161D3C
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,suse.com:dkim]
+X-Rspamd-Queue-Id: 6963C162093
 X-Rspamd-Action: no action
 
-On Thu, Feb 19, 2026 at 3:05=E2=80=AFAM Jan Kara <jack@suse.cz> wrote:
->
-> On Wed 18-02-26 14:10:42, T.J. Mercier wrote:
-> > On Wed, Feb 18, 2026 at 11:58=E2=80=AFAM T.J. Mercier <tjmercier@google=
-.com> wrote:
-> > > On Wed, Feb 18, 2026 at 11:15=E2=80=AFAM T.J. Mercier <tjmercier@goog=
-le.com> wrote:
-> > > > On Wed, Feb 18, 2026 at 10:37=E2=80=AFAM Jan Kara <jack@suse.cz> wr=
-ote:
-> > > > > On Wed 18-02-26 10:06:35, T.J. Mercier wrote:
-> > > > > > On Wed, Feb 18, 2026 at 10:01=E2=80=AFAM Jan Kara <jack@suse.cz=
-> wrote:
-> > > > > > > On Tue 17-02-26 19:22:31, T.J. Mercier wrote:
-> > > > > > > > Currently some kernfs files (e.g. cgroup.events, memory.eve=
-nts) support
-> > > > > > > > inotify watches for IN_MODIFY, but unlike with regular file=
-systems, they
-> > > > > > > > do not receive IN_DELETE_SELF or IN_IGNORED events when the=
-y are
-> > > > > > > > removed.
-> > > > > > >
-> > > > > > > Please see my email:
-> > > > > > > https://lore.kernel.org/all/lc2jgt3yrvuvtdj2kk7q3rloie2c5mzyh=
-fdy4zvxylx732voet@ol3kl4ackrpb
-> > > > > > >
-> > > > > > > I think this is actually a bug in kernfs...
-> > > > > > >
-> > > > > > >                                                              =
-   Honza
-> > > > > >
-> > > > > > Thanks, I'm looking at this now. I've tried calling clear_nlink=
- in
-> > > > > > kernfs_iop_rmdir, but I've found that when we get back to vfs_r=
-mdir
-> > > > > > and shrink_dcache_parent is called, d_walk doesn't find any ent=
-ries,
-> > > > > > so shrink_kill->__dentry_kill is not called. I'm investigating =
-why
-> > > > > > that is...
-> > > > >
-> > > > > Strange because when I was experimenting with this in my VM I hav=
-e seen
-> > > > > __dentry_kill being called (if the dentries were created by someo=
-ne looking
-> > > > > up the names).
-> > > >
-> > > > Ahh yes, that's the difference. I was just doing mkdir
-> > > > /sys/fs/cgroup/foo immediately followed by rmdir /sys/fs/cgroup/foo=
-.
-> > > > kernfs creates the dentries in kernfs_iop_lookup, so there were non=
-e
-> > > > when I did the rmdir because I didn't cause any lookups.
-> > > >
-> > > > If I actually have a program watching
-> > > > /sys/fs/cgroup/foo/memory.events, then I do see the __dentry_kill k=
-ill
-> > > > calls, but despite the prior clear_nlink call i_nlink is 1 so
-> > > > fsnotify_inoderemove is skipped. Something must be incrementing it.
-> > >
-> > > The issue was that kernfs_remove unlinks the kernfs nodes, but doesn'=
-t
-> > > clear_nlink when it does so. Adding that seems to work to generate
-> > > IN_DELETE_SELF and IN_IGNORED. I'll do some more testing and get a
-> > > patch ready.
-> >
-> > This works for the rmdir case, because
-> > vfs_rmdir->shrink_dcache_parent->shrink_kill->__dentry_kill is invoked
-> > when the user runs rmdir.
-> >
-> > However the case where a kernfs file is removed because a cgroup
-> > subsys is deactivated does not work, because it occurs when the user
-> > writes to cgroup.subtree_control. That is a vfs_write which calls
-> > fsnotify_modify for cgroup.subtree_control, but (very reasonably)
-> > there is no attempt made to clean up the dcache in VFS on writes.
->
-> OK, and is this mostly a theoretical concern or do you practically expect
-> someone to monitor subsystem files in a cgroup with inotify to learn that
-> the subsystem has been disabled? It doesn't look very probable to me...
+On Thu 19-02-26 12:27:23, Marcelo Tosatti wrote:
+> Michal,
+> 
+> Again, i don't see how moving operations to happen at return to 
+> kernel would help (assuming you are talking about 
+> "context_tracking,x86: Defer some IPIs until a user->kernel transition").
 
-The rmdir case is the main one I'd like to fix. In production we don't
-currently disable cgroup controllers after they have been enabled. I
-agree the monitor-for-subsystem-disable case seems improbable.
+Nope, I am not talking about IPIs, although those are an example of pcp
+state as well. I am sorry I do not have a link handy, I am pretty sure
+Frederic will have that. Another example, though, was vmstat flushes
+that need to be pcp. There are many other examples. 
 
-> > So I think kernfs still needs to generate fsnotify events manually for
-> > the cgroup_subtree_control_write->cgroup_apply_control_disable case.
-> > Those removals happen via kernfs_remove_by_name->__kernfs_remove, so
-> > that would look a lot like what I sent in this v3 patch, even if we
-> > also add clear_nlink calls for the rmdir case.
->
-> If there's a sensible usecase for monitoring of subsystem files being
-> deleted, we could also d_delete() the dentry from cgroup_rm_file(). But
-> maybe the performance overhead would be visible for some larger scale
-> removals so maybe just using fsnotify_inoderemove() to paper over the
-> problem would be easier if this case is really needed.
->
->                                                                 Honza
-> --
-> Jan Kara <jack@suse.com>
-> SUSE Labs, CR
+[...]
+
+> You can't delay either kmalloc (removal of object from per-CPU freelist), 
+> or kfree (return of object from per-CPU freelist), or kmem_cache_shrink 
+> or kmem_cache_shrink to return to userspace.
+
+Why?
+
+> What i missing something here? (or do you have something on your mind
+> which i can't see).
+
+I am really sorry for being really vague here. Let me try to draw
+a more abstract problem definition and let's see whether we are trying
+to solve the same problem here. Maybe not...
+
+I believe the main usecase of the interest here is uninterrupted
+userspace execution and delayed pcp work that migh disturb such workload
+after it has returned to the userspace. Right?
+That is usually hauskeeping work that for, performance reasons, doesn't
+happen in hot paths while the workload was executing in the kernel
+space.
+
+There are more ways to deal with that. You can either change the hot
+path to not require deferred operation (tricky withtout introducing
+regressions for most workloads) or you can define a more suitable place
+to perform the housekeeping while still running in the kernel. 
+
+Your QWP work relies on local_lock -> spin_lock transition and
+performing the pcp work remotely so you do not need to disturb that
+remote cpu. Correct?
+
+Alternative approach is to define a moment when the housekeeping
+operation is performed on that local cpu while still running in the
+kernel space - e.g. when returning to the userspace. Delayed work is
+then not necessary and userspace is not disrupted after returning to the
+userspace.
+
+Do I make more sense or does the above sound like a complete gibberish?
+-- 
+Michal Hocko
+SUSE Labs
 
