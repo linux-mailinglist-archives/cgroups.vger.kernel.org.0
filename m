@@ -1,63 +1,60 @@
-Return-Path: <cgroups+bounces-14054-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-14055-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id IM6tLMp6mGnlJAMAu9opvQ
-	(envelope-from <cgroups+bounces-14054-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Fri, 20 Feb 2026 16:16:26 +0100
+	id SLx4Hqp+mGlMJQMAu9opvQ
+	(envelope-from <cgroups+bounces-14055-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Fri, 20 Feb 2026 16:32:58 +0100
 X-Original-To: lists+cgroups@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 10AB0168D0E
-	for <lists+cgroups@lfdr.de>; Fri, 20 Feb 2026 16:16:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id D6937168E90
+	for <lists+cgroups@lfdr.de>; Fri, 20 Feb 2026 16:32:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 2F5533036612
-	for <lists+cgroups@lfdr.de>; Fri, 20 Feb 2026 15:16:16 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id C423F304D946
+	for <lists+cgroups@lfdr.de>; Fri, 20 Feb 2026 15:32:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 34D682475F7;
-	Fri, 20 Feb 2026 15:16:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E0A60322A1C;
+	Fri, 20 Feb 2026 15:32:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Ngyze6Dx"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NXNhPjGQ"
 X-Original-To: cgroups@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB3521F8AC5;
-	Fri, 20 Feb 2026 15:16:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A242A20D4FC;
+	Fri, 20 Feb 2026 15:32:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1771600575; cv=none; b=bNfA3lnGpkZ1MaFdgY5JWkbM5OZI9TuZfCH9gZOdkreytpYb73C1tKCvYTZS+7tn7cnEu4DvAOkQcCE9ly+Is3y4kw+PW2Ny70J9qBWziD4ALkn8PRdg578rkW14kvogCr4Un90l99/WYRBAW4OkNxOEegeA3+egbSPi4HhqP5o=
+	t=1771601571; cv=none; b=oXMinaPxJoREmTS2+L2Sv7nfo94deKzMf/jgdMb3jp6FfQFTJbVC7BK0AGLSrdElYXRjrt04kl7CD4YXsjVir32/TEdF9hbCj1lo8xSMBHdtmc37i4g5PXIMFtTRSQOb2sS9f5l3GoUQ+lNsxnY/JrkbOQlZDtQXWeAHsTBx7oc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1771600575; c=relaxed/simple;
-	bh=oJZ5mIZ3ij+o3W18OBkwZ5UnpiFkSZVFTsT01xsl0to=;
+	s=arc-20240116; t=1771601571; c=relaxed/simple;
+	bh=fDGKx15Hxqu+IAN7+rfHjM/yq650i7Sc39dis0PLF/g=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=dYkGS2xdlCfKKUO6KKLn4YKvoTsMSixQ3OV54s809H3QI3hHgzpimkOiwMKKm9T0V8VyBtW4wJvIKo/FkoZe/uSpjfVjfTi/H6zdBXygR6vMOiHvDfSdkDb8bnPOjstlgsgwfrr9OM9DoNQ8ZZSOgdfHzBBDoCeem+M8cXmtoZI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Ngyze6Dx; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 73915C116C6;
-	Fri, 20 Feb 2026 15:16:14 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=ovF74aNiiPSaa4IHMjhQqwyBf0RaxJM9QYADPxmEW1Zr/iJKApB/NfJDBp23a6hxAyvaCWyvl2m7zbZkylVx71bZr0+Oyk3vi9gn7YJqwXx8mUPZ+eSlSzMxLtl6vX5m55/4YaXPO7AJdM0Vl9zBbIkZ7pBRX1cNYhnOE4GheWg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NXNhPjGQ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1AB33C116D0;
+	Fri, 20 Feb 2026 15:32:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1771600574;
-	bh=oJZ5mIZ3ij+o3W18OBkwZ5UnpiFkSZVFTsT01xsl0to=;
+	s=k20201202; t=1771601571;
+	bh=fDGKx15Hxqu+IAN7+rfHjM/yq650i7Sc39dis0PLF/g=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Ngyze6Dxy3vg+Zm+5uszt9yY4cI2qmN5WCKD9pctPfF3+S4X9NW/CtMsr64KtJZvC
-	 zyuiWJeFZ8mz94+2BYnvUFNEklpAp1hmoM/4HVo2Q/LqwJCqQZBzTkrr1JvgEeH7M/
-	 GqjFk0pGtIJNy0yXPFpwWXRSePQG12JwLIB3SktQFnui0cGxVc9eRkjKaEvTvI24SW
-	 nIcvmGS/X8d8295PxHBgzArP30Nry01Y/krJMKjDF3MDaBVByRw9mqdCUrpj4xUqtk
-	 XY8zBLfF1pHNZFJJTP1hEviYPhNB/RgMkPUIZmhr6zKIAxDJiS/sL2YLmzZ3H0M0G7
-	 g9+SHAl6MDf5w==
-Date: Fri, 20 Feb 2026 05:16:13 -1000
+	b=NXNhPjGQ5QYdl2bepA45yrtfCNKVLOylDAjxOF/AapIKqvwIuSWKCdEnAq/ROa/vL
+	 /vAOR/A2XkzziqUbY0+z5TKG5+JuI6+1iEzQj7RPwwmkYsx3ZkExH2hLM1/tD/Opyj
+	 uc9hwq131dSEDzwcPWTODZ9ToJuWyq2eVltFZ2zczZh5yB3+5zYb+iYTBWilhChA/I
+	 cI78u1BZB8rKMcUhhawofYf8MYo0c0b72ZPffmYlGaXjZC4OcXNKiMfQ/3yQDkcSkh
+	 eALixBppGk8Z5U+FBqU7mq5zsnvO/j40psyEG2XLkL4+ejYhXzDpWfXoJ02gSxvsry
+	 Dmd1AA7UlewNA==
+Date: Fri, 20 Feb 2026 05:32:50 -1000
 From: Tejun Heo <tj@kernel.org>
-To: Christian Brauner <brauner@kernel.org>
-Cc: Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	KP Singh <kpsingh@kernel.org>, bpf@vger.kernel.org,
+To: "T.J. Mercier" <tjmercier@google.com>
+Cc: gregkh@linuxfoundation.org, driver-core@lists.linux.dev,
 	linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-	Lennart Poettering <lennart@poettering.net>
-Subject: Re: [PATCH 2/4] cgroup: add bpf hook for attach
-Message-ID: <aZh6vebjDcrccqNP@slm.duckdns.org>
-References: <20260220-work-bpf-namespace-v1-0-866207db7b83@kernel.org>
- <20260220-work-bpf-namespace-v1-2-866207db7b83@kernel.org>
+	linux-fsdevel@vger.kernel.org, jack@suse.cz, amir73il@gmail.com,
+	shuah@kernel.org, linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH v4 2/3] kernfs: Send IN_DELETE_SELF and IN_IGNORED
+Message-ID: <aZh-orwoaeAh52Bf@slm.duckdns.org>
+References: <20260220055449.3073-1-tjmercier@google.com>
+ <20260220055449.3073-3-tjmercier@google.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -66,7 +63,7 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20260220-work-bpf-namespace-v1-2-866207db7b83@kernel.org>
+In-Reply-To: <20260220055449.3073-3-tjmercier@google.com>
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
@@ -76,42 +73,77 @@ X-Spamd-Result: default: False [-2.16 / 15.00];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-14054-lists,cgroups=lfdr.de];
-	RCVD_TLS_LAST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-14055-lists,cgroups=lfdr.de];
+	FREEMAIL_CC(0.00)[linuxfoundation.org,lists.linux.dev,vger.kernel.org,suse.cz,gmail.com,kernel.org];
 	FROM_HAS_DN(0.00)[];
 	RCVD_COUNT_THREE(0.00)[4];
-	DKIM_TRACE(0.00)[kernel.org:+];
+	RCVD_TLS_LAST(0.00)[];
 	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	DKIM_TRACE(0.00)[kernel.org:+];
 	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	TO_DN_SOME(0.00)[];
+	MISSING_XM_UA(0.00)[];
+	NEURAL_HAM(-0.00)[-1.000];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[tj@kernel.org,cgroups@vger.kernel.org];
-	MISSING_XM_UA(0.00)[];
-	NEURAL_HAM(-0.00)[-0.999];
-	TAGGED_RCPT(0.00)[cgroups];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	RCPT_COUNT_SEVEN(0.00)[10];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 10AB0168D0E
+	TAGGED_RCPT(0.00)[cgroups];
+	TO_DN_SOME(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email,slm.duckdns.org:mid]
+X-Rspamd-Queue-Id: D6937168E90
 X-Rspamd-Action: no action
 
 Hello,
 
-On Fri, Feb 20, 2026 at 01:38:30AM +0100, Christian Brauner wrote:
-> Add a hook to manage attaching tasks to cgroup. I'm in the process of
-> adding various "universal truth" bpf programs to systemd that will make
-> use of this.
+On Thu, Feb 19, 2026 at 09:54:47PM -0800, T.J. Mercier wrote:
+> Currently some kernfs files (e.g. cgroup.events, memory.events) support
+> inotify watches for IN_MODIFY, but unlike with regular filesystems, they
+> do not receive IN_DELETE_SELF or IN_IGNORED events when they are
+> removed. This means inotify watches persist after file deletion until
+> the process exits and the inotify file descriptor is cleaned up, or
+> until inotify_rm_watch is called manually.
 > 
-> This has been a long-standing request (cf. [1] and [2]). It will allow us to
-> enforce cgroup migrations and ensure that services can never escape their
-> cgroups. This is just one of many use-cases.
+> This creates a problem for processes monitoring cgroups. For example, a
+> service monitoring memory.events for memory.high breaches needs to know
+> when a cgroup is removed to clean up its state. Where it's known that a
+> cgroup is removed when all processes die, without IN_DELETE_SELF the
+> service must resort to inefficient workarounds such as:
+>   1) Periodically scanning procfs to detect process death (wastes CPU
+>      and is susceptible to PID reuse).
+>   2) Holding a pidfd for every monitored cgroup (can exhaust file
+>      descriptors).
+> 
+> This patch enables IN_DELETE_SELF and IN_IGNORED events for kernfs files
+> and directories by clearing inode i_nlink values during removal. This
+> allows VFS to make the necessary fsnotify calls so that userspace
+> receives the inotify events.
+> 
+> As a result, applications can rely on a single existing watch on a file
+> of interest (e.g. memory.events) to receive notifications for both
+> modifications and the eventual removal of the file, as well as automatic
+> watch descriptor cleanup, simplifying userspace logic and improving
+> efficiency.
+> 
+> There is gap in this implementation for certain file removals due their
+> unique nature in kernfs. Directory removals that trigger file removals
+> occur through vfs_rmdir, which shrinks the dcache and emits fsnotify
+> events after the rmdir operation; there is no issue here. However kernfs
+> writes to particular files (e.g. cgroup.subtree_control) can also cause
+> file removal, but vfs_write does not attempt to emit fsnotify events
+> after the write operation, even if i_nlink counts are 0. As a usecase
+> for monitoring this category of file removals is not known, they are
+> left without having IN_DELETE or IN_DELETE_SELF events generated.
 
-From cgroup POV, this looks fine to me but I'm curious whether something
-dumber would also work. With CLONE_INTO_CGROUP, cgroup migration isn't
-necessary at all. Would something dumber like a mount option disabling
-cgroup migrations completely work too or would that be too restrictive?
+Adding a comment with the above content would probably be useful. It also
+might be worthwhile to note that fanotify recursive monitoring wouldn't work
+reliably as cgroups can go away while inodes are not attached.
+
+> Suggested-by: Jan Kara <jack@suse.cz>
+> Signed-off-by: T.J. Mercier <tjmercier@google.com>
+
+Acked-by: Tejun Heo <tj@kernel.org>
 
 Thanks.
 
