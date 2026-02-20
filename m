@@ -1,473 +1,252 @@
-Return-Path: <cgroups+bounces-14066-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-14067-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 8HSLI+KqmGn5KgMAu9opvQ
-	(envelope-from <cgroups+bounces-14066-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Fri, 20 Feb 2026 19:41:38 +0100
+	id kLnkK9WvmGm3KwMAu9opvQ
+	(envelope-from <cgroups+bounces-14067-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Fri, 20 Feb 2026 20:02:45 +0100
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id A45F916A25E
-	for <lists+cgroups@lfdr.de>; Fri, 20 Feb 2026 19:41:37 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6278116A3B1
+	for <lists+cgroups@lfdr.de>; Fri, 20 Feb 2026 20:02:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id 12538301BF86
-	for <lists+cgroups@lfdr.de>; Fri, 20 Feb 2026 18:41:35 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 54F3C3040314
+	for <lists+cgroups@lfdr.de>; Fri, 20 Feb 2026 19:02:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D39C366814;
-	Fri, 20 Feb 2026 18:41:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 53ABE366558;
+	Fri, 20 Feb 2026 19:02:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Ee4LIvT7"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="I8TgpaKX"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-wm1-f42.google.com (mail-wm1-f42.google.com [209.85.128.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 69598366816
-	for <cgroups@vger.kernel.org>; Fri, 20 Feb 2026 18:41:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.128.42
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1771612893; cv=pass; b=flhTfBNxecE/P3jVorYfJAOr2zQdWaUvbo5Xd92UXEuRtIY3aMqVLx6Lxl/ObtPL6FXFtz9AeCYKld/12KXv6jK9U17ZGWlfZoDKNckM0V9tOkGY648KdRe1b1RODf6zL3S1HtOLc999H19HCr+sSjYADKj/s3t/XXrZevwnl0c=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1771612893; c=relaxed/simple;
-	bh=jGWN+2KRz9O+H0665WvpQ52Kq/1J8TPaBwHG/SF4ULQ=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=eQaWAcf4e56ueRf0FAwKMoTFi2hocESn0H/DEZsWtRgw4y6oTFH84qqLOLnpNZWL4+X4rQ5UaprKAKuyVm6bC0FA0lYpXzwyJziwFiyjIVQdHqR8SLbwbQXet6IlNk8QwOJMrgAKljg0FL1Rg4uEE9u2rdRG4MCCciq2KbiFpbY=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Ee4LIvT7; arc=pass smtp.client-ip=209.85.128.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-wm1-f42.google.com with SMTP id 5b1f17b1804b1-48373ad38d2so7675e9.0
-        for <cgroups@vger.kernel.org>; Fri, 20 Feb 2026 10:41:29 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; t=1771612888; cv=none;
-        d=google.com; s=arc-20240605;
-        b=fUdeo384FQniO3FwyuN6AKTbXeaji+GgqX5Z6UBuX9V1J9QOI1XcWAp5ilVm0kxaez
-         aRlUh/lO3mVE9DHHSS40FB8CoQbbzKQ0Gwe4nFxSMeq9r02IPmAkSeSNVNraPfUAyZDL
-         WRLzSLwumpPsqlu+Ef46YUvypjb6lT0Oz91we8CD+YqphnJtSFyRZGmJh11emg/ZuKmE
-         18KIou3gRBTQ9V6qa7hpX4RxJmBEFgBoLi8IpdIDleYwFJ+97Oi0CMM9jMXNdi6aPyT9
-         Rx3jlyhFaOsqc5piCULFjICs1hyg6ac2DyeTNcOxegU1M+9E02BWq1Q3GZ8c6jtM6hbz
-         jlYQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:dkim-signature;
-        bh=9zD91sZr4vtMf1I/t0ZYhRV7PHrn122EkGjmR8qVtO4=;
-        fh=p3EYSn5HskhckEVooGsDeA1Ku01X/WPSeEpx1SiTPaA=;
-        b=Z8EVPCdMMRlUZIeKf2Ky8alRnkL8E+Nf4ZdvU6OyykyUAkSweRf5IN+8KO2mYrwB7Y
-         wdUaIWeGqR3yegCEbJYTDj4fjKtxWk4Dk5RPF+zG5p/mxSnMIdHqSsNPrwRzpsmTPjy7
-         FU7q8VkCobePXfGWWrOO1zA5ACvt5QXHsaJlerqbn8fokU5EvIggEQg3CGtlBWqHXpd+
-         jHjpzvyGGZAAqGm9LV7CL5MMBeI3SDXxkURwGVZLglf1EgQt68G61BhPfQpUwEeUhWW/
-         C5h4hN2jB0BiJVpg4fuvyY0lnRm2smDpUYHZ+6R5km0QNTAKjhItl+qrqX5uCiB+G3Dt
-         Aqwg==;
-        darn=vger.kernel.org
-ARC-Authentication-Results: i=1; mx.google.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1771612888; x=1772217688; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=9zD91sZr4vtMf1I/t0ZYhRV7PHrn122EkGjmR8qVtO4=;
-        b=Ee4LIvT70RK3IL0VC7Xg/fpcY+vO7dwu3hNsTLwBiEV8lzX00OGSFKJsMLrgdSC4iJ
-         jkiJ9wCErBPg3oXaA6vpyGAR9oMOadMC0/jXwFU0+arVhn0deqlmNKLodfTfbvwRTChM
-         Oc/SzrShLyj20LxdX3UShdCUw3A+pdr2K2l8kOX3eqd3COZa8gnqrlhDDh5d9359DKYg
-         BsqL4TdK57e1ImHvKeSlY+82nXmBV1CGyKrrc0ppHeb6kwhY6SISP2OkMITl2Iabl4C9
-         BkrCyoXiuBkO3DZp+cf9/1WmbAEFqsg7IM85QbjKjr5kFVfhzlSxBRXyjOeOMdiQyB70
-         LQlQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1771612888; x=1772217688;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=9zD91sZr4vtMf1I/t0ZYhRV7PHrn122EkGjmR8qVtO4=;
-        b=cXCPtTPdOjiTZ/6Y+h5tlm5ghEGSIWKdjMHY8vymsnON9SpJHXNNPtCkNJg8HKsB3M
-         d48C6zTwspdP1nitczSYp2GF7115M8Mo2nu3MB4O04LPHDSuHcN+zNb/xl8x+lYXW0bm
-         bTw1Owdxf68qgfXbu2VhcUljWkIEJJ1B+kD48icVEKojcAmuyQsFBILfhEDysAp8K7qy
-         vVbsd8IibqL49kRp/2v3NfS6ef+F/Qh7u2Y7Qeie+0YsDoLTaJ1ryPlwxhfh50jUrknL
-         fHqkPp8hXYSSAdk1oVoM4Qxu+2cJF4cS0y17kzRaYlDKmTlzMTM4AVjchR+iQgQG67Vt
-         Ms6g==
-X-Forwarded-Encrypted: i=1; AJvYcCVGOfTAc7JA6/dekk18YyNtFsReaZEDFSaQ7Rtg98pfyOhK4id16xvARNVxBbDxu+vNYVx/usLe@vger.kernel.org
-X-Gm-Message-State: AOJu0Yw8XQgIz0Kcxo9/BmAa8F9ILNxaQuHoNUPx/is0seBROQS7W5Fh
-	gx1hUpgWnvMtbuouM4l/47RIfl99W5hXlumtCQIHXoDnWmr1hUhpMefCTWPkdTvXZGx/8f5PWF3
-	xM9EFHCxHkexuZSURAzkth7aifw+Ojsk1oodbCuNMDiOdQCXec+UynrwUdyE=
-X-Gm-Gg: AZuq6aL2ch/McdGy/+Qk7wTnlikAjpoJ+G5HJGulSkKo5BH1u39FrtI1q6FiYCTyoNW
-	59dp9WYSjHwM5y/f/M/zfkFz/fHbrBznamFZGnqlICsw4f2LbuD2hng363lGFJEhiNDZoaMA3bq
-	mA8z8an0c3GE0vfnS6GaD8GCaH568nQF20ZCWU79TC6yntha/B6O+HQ9rbrGmqP1laYMbiKgEz7
-	A7KvMUaOycJlElIghjYPOP+QdYFNjuoqgO+bdxx/KzQZ4I5xGFzmrH0EGniggwk9fLzJ1fTXKNh
-	WBpuJgln/0G1Qm6Ms+/X/0TUeRMteyE9GDymVA==
-X-Received: by 2002:a7b:ce83:0:b0:47b:e29f:c63f with SMTP id
- 5b1f17b1804b1-483a9c94b7amr15895e9.11.1771612887389; Fri, 20 Feb 2026
- 10:41:27 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E8E32C21C3
+	for <cgroups@vger.kernel.org>; Fri, 20 Feb 2026 19:02:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1771614155; cv=none; b=i0LI88WkILZurcc6N2xkK9+1GSFBwnCv5KjZDC4u65Z34Ogbw/gOth+vBf9FrmjCgQtdhFJNDG8lrAp+tRNZEaP5Tasj4UdO0qIFNmlEWtX3b7+boQqhnZ24l81zaTCrk31MVr7s0nj/rDtnUa+h2Fx/P91cyxWDc6+z0E9sIs4=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1771614155; c=relaxed/simple;
+	bh=N5qhaqWcXh/d96ddmtTrpBw3a0zINgR2nrqZREAJm+o=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=MicHKxdSZov2iqVWw4vcGvh6dsj5GQJDfKtMHWxT/+cqNxS1wF1Bc1Dqq+NMaKdojw1OkEdeYoCatRFTtRBy3AfMuTw00XV0NYV+gHbYOmu0jvaZQd6mqVZLBGvHvCKCcJyUXECtKLWuuSMOHkWb41FAtWA0bgQTOVaMID4BhWY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=I8TgpaKX; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1771614151;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=9iHzvmcbPtFzdUbEREveeE+6fxU/Z+piAYr2pO9/Skk=;
+	b=I8TgpaKX9UZroJADYLIZwNdyVcqgl7SRgvmdw/KeolTb/ACHNElu/ijIoarD6vYvq2oDxt
+	MxFU9Owlyu1vntWtPk+IdaEpyTln39K6TGwKz1OlbB8P+Tl87D2k0NQjWU/U+Jyfyr8LNy
+	Nr7lUkGDS5GLi2wMrSaTNB/KgyAB3Z8=
+Received: from mx-prod-mc-06.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-35-165-154-97.us-west-2.compute.amazonaws.com [35.165.154.97]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-515-I5SMJDneMTSjyoCXVPcCRg-1; Fri,
+ 20 Feb 2026 14:02:27 -0500
+X-MC-Unique: I5SMJDneMTSjyoCXVPcCRg-1
+X-Mimecast-MFC-AGG-ID: I5SMJDneMTSjyoCXVPcCRg_1771614145
+Received: from mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.12])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mx-prod-mc-06.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 38767180057E;
+	Fri, 20 Feb 2026 19:02:24 +0000 (UTC)
+Received: from tpad.localdomain (unknown [10.96.133.4])
+	by mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 63DF619560A7;
+	Fri, 20 Feb 2026 19:02:22 +0000 (UTC)
+Received: by tpad.localdomain (Postfix, from userid 1000)
+	id E17AA402E7782; Fri, 20 Feb 2026 16:01:59 -0300 (-03)
+Date: Fri, 20 Feb 2026 16:01:59 -0300
+From: Marcelo Tosatti <mtosatti@redhat.com>
+To: Vlastimil Babka <vbabka@suse.com>
+Cc: Michal Hocko <mhocko@suse.com>, Leonardo Bras <leobras.c@gmail.com>,
+	linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+	linux-mm@kvack.org, Johannes Weiner <hannes@cmpxchg.org>,
+	Roman Gushchin <roman.gushchin@linux.dev>,
+	Shakeel Butt <shakeel.butt@linux.dev>,
+	Muchun Song <muchun.song@linux.dev>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Christoph Lameter <cl@linux.com>, Pekka Enberg <penberg@kernel.org>,
+	David Rientjes <rientjes@google.com>,
+	Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+	Vlastimil Babka <vbabka@suse.cz>,
+	Hyeonggon Yoo <42.hyeyoo@gmail.com>,
+	Leonardo Bras <leobras@redhat.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Waiman Long <longman@redhat.com>, Boqun Feng <boqun.feng@gmail.com>,
+	Frederic Weisbecker <fweisbecker@suse.de>
+Subject: Re: [PATCH 0/4] Introduce QPW for per-cpu operations
+Message-ID: <aZivpwJnIGKdAMYE@tpad>
+References: <20260206143430.021026873@redhat.com>
+ <aYs6Ju2G4bm6_tl2@tiehlicka>
+ <aYxviLoWsrLqDU7o@tpad>
+ <aYywl1hdBQP2_slo@tiehlicka>
+ <aZDw6xI2izFDfuuu@WindFlash>
+ <aZL45yORfkNvS9Rs@tiehlicka>
+ <aZcr255pGT3B/eaL@tpad>
+ <3f2b985a-2fb0-4d63-9dce-8a9cad8ce464@suse.com>
+ <aZibbYH7yrDZlnJh@tpad>
+ <a1c11a09-da88-4edd-9571-0f792b59e9c3@suse.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20260220055449.3073-1-tjmercier@google.com> <699833fc.050a0220.b01bb.0039.GAE@google.com>
-In-Reply-To: <699833fc.050a0220.b01bb.0039.GAE@google.com>
-From: "T.J. Mercier" <tjmercier@google.com>
-Date: Fri, 20 Feb 2026 10:41:15 -0800
-X-Gm-Features: AaiRm52d4kAFkoYx2iC9CeE49X0_4sKfZ3IqpWEI6kL-ps7PY6q2ag5O0FgCNOg
-Message-ID: <CABdmKX3jMS5ha2s5FMpnAMW0c9+Wmpmyc+8=D-24KyhVjBJvYg@mail.gmail.com>
-Subject: Re: [syzbot ci] Re: kernfs: Add inotify IN_DELETE_SELF, IN_IGNORED support
-To: syzbot ci <syzbot+cif2121bcf05a8d84e@syzkaller.appspotmail.com>
-Cc: amir73il@gmail.com, cgroups@vger.kernel.org, driver-core@lists.linux.dev, 
-	gregkh@linuxfoundation.org, jack@suse.cz, linux-fsdevel@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org, 
-	shuah@kernel.org, tj@kernel.org, syzbot@lists.linux.dev, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <a1c11a09-da88-4edd-9571-0f792b59e9c3@suse.com>
+X-Scanned-By: MIMEDefang 3.0 on 10.30.177.12
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-0.66 / 15.00];
+X-Spamd-Result: default: False [-0.16 / 15.00];
 	SUSPICIOUS_RECIPS(1.50)[];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=2];
-	DMARC_POLICY_ALLOW(-0.50)[google.com,reject];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64:c];
-	R_DKIM_ALLOW(-0.20)[google.com:s=20230601];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+	DMARC_POLICY_ALLOW(-0.50)[redhat.com,quarantine];
+	MID_RHS_NOT_FQDN(0.50)[];
+	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
+	R_DKIM_ALLOW(-0.20)[redhat.com:s=mimecast20190719];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
+	TAGGED_FROM(0.00)[bounces-14067-lists,cgroups=lfdr.de];
+	RCPT_COUNT_TWELVE(0.00)[22];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-14066-lists,cgroups=lfdr.de];
-	FROM_HAS_DN(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
 	MIME_TRACE(0.00)[0:+];
+	FREEMAIL_CC(0.00)[suse.com,gmail.com,vger.kernel.org,kvack.org,cmpxchg.org,linux.dev,linux-foundation.org,linux.com,kernel.org,google.com,lge.com,suse.cz,redhat.com,linutronix.de,suse.de];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[13];
-	FREEMAIL_CC(0.00)[gmail.com,vger.kernel.org,lists.linux.dev,linuxfoundation.org,suse.cz,kernel.org,googlegroups.com];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,quantvps.com:url,system_load.py:url];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	TO_DN_SOME(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[tjmercier@google.com,cgroups@vger.kernel.org];
-	DKIM_TRACE(0.00)[google.com:+];
+	FROM_NEQ_ENVFROM(0.00)[mtosatti@redhat.com,cgroups@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	DKIM_TRACE(0.00)[redhat.com:+];
 	NEURAL_HAM(-0.00)[-0.999];
-	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
-	TAGGED_RCPT(0.00)[cgroups,cif2121bcf05a8d84e];
+	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
+	TAGGED_RCPT(0.00)[cgroups];
 	MISSING_XM_UA(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[mail.gmail.com:mid,sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns,googlesource.com:url,appspotmail.com:email]
-X-Rspamd-Queue-Id: A45F916A25E
+	RCVD_COUNT_SEVEN(0.00)[7]
+X-Rspamd-Queue-Id: 6278116A3B1
 X-Rspamd-Action: no action
 
-On Fri, Feb 20, 2026 at 2:14=E2=80=AFAM syzbot ci
-<syzbot+cif2121bcf05a8d84e@syzkaller.appspotmail.com> wrote:
->
-> syzbot ci has tested the following series
->
-> [v4] kernfs: Add inotify IN_DELETE_SELF, IN_IGNORED support
-> https://lore.kernel.org/all/20260220055449.3073-1-tjmercier@google.com
-> * [PATCH v4 1/3] kernfs: Don't set_nlink for directories being removed
-> * [PATCH v4 2/3] kernfs: Send IN_DELETE_SELF and IN_IGNORED
-> * [PATCH v4 3/3] selftests: memcg: Add tests for IN_DELETE_SELF and IN_IG=
-NORED
->
-> and found the following issue:
-> possible deadlock in __kernfs_remove
->
-> Full report is available here:
-> https://ci.syzbot.org/series/4b44d5c2-c2eb-4425-a19a-f9963b64f74f
->
-> ***
->
-> possible deadlock in __kernfs_remove
->
-> tree:      bpf-next
-> URL:       https://kernel.googlesource.com/pub/scm/linux/kernel/git/bpf/b=
-pf-next.git
-> base:      ba268514ea14b44570030e8ed2aef92a38679e85
-> arch:      amd64
-> compiler:  Debian clang version 21.1.8 (++20251221033036+2078da43e25a-1~e=
-xp1~20251221153213.50), Debian LLD 21.1.8
-> config:    https://ci.syzbot.org/builds/45ab774f-e8d7-4def-8279-888a5cb2d=
-01e/config
-> syz repro: https://ci.syzbot.org/findings/b74cbc6a-1cef-4ae9-be46-dd9e8b2=
-9b648/syz_repro
->
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D
-> WARNING: possible circular locking dependency detected
-> syzkaller #0 Not tainted
-> ------------------------------------------------------
-> kworker/u8:1/13 is trying to acquire lock:
-> ffff88816ef2b878 (kn->active#5){++++}-{0:0}, at: __kernfs_remove+0x47e/0x=
-8c0 fs/kernfs/dir.c:1533
->
-> but task is already holding lock:
-> ffff8881012e8ab8 (&root->kernfs_supers_rwsem){++++}-{4:4}, at: kernfs_rem=
-ove_by_name_ns+0x3f/0x140 fs/kernfs/dir.c:1745
->
-> which lock already depends on the new lock.
->
->
-> the existing dependency chain (in reverse order) is:
->
-> -> #2 (&root->kernfs_supers_rwsem){++++}-{4:4}:
->        down_read+0x47/0x2e0 kernel/locking/rwsem.c:1537
->        kernfs_remove_by_name_ns+0x3f/0x140 fs/kernfs/dir.c:1745
->        acpi_unbind_one+0x2d8/0x3b0 drivers/acpi/glue.c:337
->        device_platform_notify_remove drivers/base/core.c:2386 [inline]
->        device_del+0x547/0x8f0 drivers/base/core.c:3881
->        serdev_controller_add+0x46f/0x640 drivers/tty/serdev/core.c:785
->        serdev_tty_port_register+0x159/0x260 drivers/tty/serdev/serdev-tty=
-port.c:291
->        tty_port_register_device_attr_serdev+0xe7/0x170 drivers/tty/tty_po=
-rt.c:187
->        serial_core_add_one_port drivers/tty/serial/serial_core.c:3107 [in=
-line]
->        serial_core_register_port+0x103a/0x28b0 drivers/tty/serial/serial_=
-core.c:3305
->        serial8250_register_8250_port+0x1658/0x1fd0 drivers/tty/serial/825=
-0/8250_core.c:822
->        serial_pnp_probe+0x568/0x7f0 drivers/tty/serial/8250/8250_pnp.c:48=
-0
->        pnp_device_probe+0x30b/0x4c0 drivers/pnp/driver.c:111
->        call_driver_probe drivers/base/dd.c:-1 [inline]
->        really_probe+0x267/0xaf0 drivers/base/dd.c:661
->        __driver_probe_device+0x18c/0x320 drivers/base/dd.c:803
->        driver_probe_device+0x4f/0x240 drivers/base/dd.c:833
->        __driver_attach+0x3e7/0x710 drivers/base/dd.c:1227
->        bus_for_each_dev+0x23b/0x2c0 drivers/base/bus.c:383
->        bus_add_driver+0x345/0x670 drivers/base/bus.c:715
->        driver_register+0x23a/0x320 drivers/base/driver.c:249
->        serial8250_init+0x8f/0x160 drivers/tty/serial/8250/8250_platform.c=
-:317
->        do_one_initcall+0x250/0x840 init/main.c:1378
->        do_initcall_level+0x104/0x190 init/main.c:1440
->        do_initcalls+0x59/0xa0 init/main.c:1456
->        kernel_init_freeable+0x2a6/0x3d0 init/main.c:1688
->        kernel_init+0x1d/0x1d0 init/main.c:1578
->        ret_from_fork+0x51b/0xa40 arch/x86/kernel/process.c:158
->        ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:246
->
-> -> #1 (&device->physical_node_lock){+.+.}-{4:4}:
->        __mutex_lock_common kernel/locking/mutex.c:614 [inline]
->        __mutex_lock+0x19f/0x1300 kernel/locking/mutex.c:776
->        acpi_get_first_physical_node drivers/acpi/bus.c:691 [inline]
->        acpi_primary_dev_companion drivers/acpi/bus.c:710 [inline]
->        acpi_companion_match+0x8a/0x120 drivers/acpi/bus.c:764
->        acpi_device_uevent_modalias+0x1a/0x30 drivers/acpi/device_sysfs.c:=
-280
->        platform_uevent+0x3c/0xb0 drivers/base/platform.c:1411
->        dev_uevent+0x446/0x8a0 drivers/base/core.c:2692
->        kobject_uevent_env+0x477/0x9e0 lib/kobject_uevent.c:573
->        kobject_synth_uevent+0x585/0xbd0 lib/kobject_uevent.c:207
->        uevent_store+0x26/0x70 drivers/base/core.c:2773
->        kernfs_fop_write_iter+0x3af/0x540 fs/kernfs/file.c:352
->        new_sync_write fs/read_write.c:593 [inline]
->        vfs_write+0x61d/0xb90 fs/read_write.c:686
->        ksys_write+0x150/0x270 fs/read_write.c:738
->        do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
->        do_syscall_64+0xe2/0xf80 arch/x86/entry/syscall_64.c:94
->        entry_SYSCALL_64_after_hwframe+0x77/0x7f
->
-> -> #0 (kn->active#5){++++}-{0:0}:
->        check_prev_add kernel/locking/lockdep.c:3165 [inline]
->        check_prevs_add kernel/locking/lockdep.c:3284 [inline]
->        validate_chain kernel/locking/lockdep.c:3908 [inline]
->        __lock_acquire+0x15a5/0x2cf0 kernel/locking/lockdep.c:5237
->        lock_acquire+0x106/0x330 kernel/locking/lockdep.c:5868
->        kernfs_drain+0x27c/0x5f0 fs/kernfs/dir.c:511
->        __kernfs_remove+0x47e/0x8c0 fs/kernfs/dir.c:1533
->        kernfs_remove_by_name_ns+0xc0/0x140 fs/kernfs/dir.c:1751
->        sysfs_remove_file include/linux/sysfs.h:780 [inline]
->        device_remove_file drivers/base/core.c:3071 [inline]
->        device_del+0x506/0x8f0 drivers/base/core.c:3876
->        device_unregister+0x21/0xf0 drivers/base/core.c:3919
->        mac80211_hwsim_del_radio+0x2dc/0x490 drivers/net/wireless/virtual/=
-mac80211_hwsim.c:5918
->        hwsim_exit_net+0xede/0xfa0 drivers/net/wireless/virtual/mac80211_h=
-wsim.c:6807
->        ops_exit_list net/core/net_namespace.c:199 [inline]
->        ops_undo_list+0x49f/0x940 net/core/net_namespace.c:252
->        cleanup_net+0x4df/0x7b0 net/core/net_namespace.c:696
->        process_one_work kernel/workqueue.c:3257 [inline]
->        process_scheduled_works+0xaec/0x17a0 kernel/workqueue.c:3340
->        worker_thread+0xda6/0x1360 kernel/workqueue.c:3421
->        kthread+0x726/0x8b0 kernel/kthread.c:463
->        ret_from_fork+0x51b/0xa40 arch/x86/kernel/process.c:158
->        ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:246
->
-> other info that might help us debug this:
->
-> Chain exists of:
->   kn->active#5 --> &device->physical_node_lock --> &root->kernfs_supers_r=
-wsem
->
->  Possible unsafe locking scenario:
->
->        CPU0                    CPU1
->        ----                    ----
->   rlock(&root->kernfs_supers_rwsem);
->                                lock(&device->physical_node_lock);
->                                lock(&root->kernfs_supers_rwsem);
->   lock(kn->active#5);
->
->  *** DEADLOCK ***
->
-> 4 locks held by kworker/u8:1/13:
->  #0: ffff888100ef7948 ((wq_completion)netns){+.+.}-{0:0}, at: process_one=
-_work kernel/workqueue.c:3232 [inline]
->  #0: ffff888100ef7948 ((wq_completion)netns){+.+.}-{0:0}, at: process_sch=
-eduled_works+0x9d4/0x17a0 kernel/workqueue.c:3340
->  #1: ffffc90000127bc0 (net_cleanup_work){+.+.}-{0:0}, at: process_one_wor=
-k kernel/workqueue.c:3233 [inline]
->  #1: ffffc90000127bc0 (net_cleanup_work){+.+.}-{0:0}, at: process_schedul=
-ed_works+0xa0f/0x17a0 kernel/workqueue.c:3340
->  #2: ffffffff8f99d2d0 (pernet_ops_rwsem){++++}-{4:4}, at: cleanup_net+0xf=
-e/0x7b0 net/core/net_namespace.c:670
->  #3: ffff8881012e8ab8 (&root->kernfs_supers_rwsem){++++}-{4:4}, at: kernf=
-s_remove_by_name_ns+0x3f/0x140 fs/kernfs/dir.c:1745
->
-> stack backtrace:
-> CPU: 0 UID: 0 PID: 13 Comm: kworker/u8:1 Not tainted syzkaller #0 PREEMPT=
-(full)
-> Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.2-debian-1.=
-16.2-1 04/01/2014
-> Workqueue: netns cleanup_net
-> Call Trace:
->  <TASK>
->  dump_stack_lvl+0xe8/0x150 lib/dump_stack.c:120
->  print_circular_bug+0x2e1/0x300 kernel/locking/lockdep.c:2043
->  check_noncircular+0x12e/0x150 kernel/locking/lockdep.c:2175
->  check_prev_add kernel/locking/lockdep.c:3165 [inline]
->  check_prevs_add kernel/locking/lockdep.c:3284 [inline]
->  validate_chain kernel/locking/lockdep.c:3908 [inline]
->  __lock_acquire+0x15a5/0x2cf0 kernel/locking/lockdep.c:5237
->  lock_acquire+0x106/0x330 kernel/locking/lockdep.c:5868
->  kernfs_drain+0x27c/0x5f0 fs/kernfs/dir.c:511
->  __kernfs_remove+0x47e/0x8c0 fs/kernfs/dir.c:1533
->  kernfs_remove_by_name_ns+0xc0/0x140 fs/kernfs/dir.c:1751
->  sysfs_remove_file include/linux/sysfs.h:780 [inline]
->  device_remove_file drivers/base/core.c:3071 [inline]
->  device_del+0x506/0x8f0 drivers/base/core.c:3876
->  device_unregister+0x21/0xf0 drivers/base/core.c:3919
->  mac80211_hwsim_del_radio+0x2dc/0x490 drivers/net/wireless/virtual/mac802=
-11_hwsim.c:5918
->  hwsim_exit_net+0xede/0xfa0 drivers/net/wireless/virtual/mac80211_hwsim.c=
-:6807
->  ops_exit_list net/core/net_namespace.c:199 [inline]
->  ops_undo_list+0x49f/0x940 net/core/net_namespace.c:252
->  cleanup_net+0x4df/0x7b0 net/core/net_namespace.c:696
->  process_one_work kernel/workqueue.c:3257 [inline]
->  process_scheduled_works+0xaec/0x17a0 kernel/workqueue.c:3340
->  worker_thread+0xda6/0x1360 kernel/workqueue.c:3421
->  kthread+0x726/0x8b0 kernel/kthread.c:463
->  ret_from_fork+0x51b/0xa40 arch/x86/kernel/process.c:158
->  ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:246
->  </TASK>
-> hsr_slave_0: left promiscuous mode
-> hsr_slave_1: left promiscuous mode
-> batman_adv: batadv0: Interface deactivated: batadv_slave_0
-> batman_adv: batadv0: Removing interface: batadv_slave_0
-> batman_adv: batadv0: Interface deactivated: batadv_slave_1
-> batman_adv: batadv0: Removing interface: batadv_slave_1
-> veth1_macvtap: left promiscuous mode
-> veth0_macvtap: left promiscuous mode
-> veth1_vlan: left promiscuous mode
-> veth0_vlan: left promiscuous mode
-> team0 (unregistering): Port device team_slave_1 removed
-> team0 (unregistering): Port device team_slave_0 removed
-> netdevsim netdevsim2 netdevsim0: set [1, 0] type 2 family 0 port 6081 - 0
-> netdevsim netdevsim2 netdevsim1: set [1, 0] type 2 family 0 port 6081 - 0
-> netdevsim netdevsim2 netdevsim2: set [1, 0] type 2 family 0 port 6081 - 0
-> netdevsim netdevsim2 netdevsim3: set [1, 0] type 2 family 0 port 6081 - 0
->
->
-> ***
->
-> If these findings have caused you to resend the series or submit a
-> separate fix, please add the following tag to your commit message:
->   Tested-by: syzbot@syzkaller.appspotmail.com
->
-> ---
-> This report is generated by a bot. It may contain errors.
-> syzbot ci engineers can be reached at syzkaller@googlegroups.com.
+On Fri, Feb 20, 2026 at 06:58:10PM +0100, Vlastimil Babka wrote:
+> On 2/20/26 18:35, Marcelo Tosatti wrote:
+> > 
+> > Only call rcu_free_sheaf_nobarn if pcs->rcu_free is not NULL.
+> > 
+> > So it seems safe?
+> 
+> I guess it is.
+> 
+> >> How would this work with houskeeping on return to userspace approach?
+> >> 
+> >> - Would we just walk the list of all caches to flush them? could be
+> >> expensive. Would we somehow note only those that need it? That would make
+> >> the fast paths do something extra?
+> >> 
+> >> - If some other CPU executed kmem_cache_destroy(), it would have to wait for
+> >> the isolated cpu returning to userspace. Do we have the means for
+> >> synchronizing on that? Would that risk a deadlock? We used to have a
+> >> deferred finishing of the destroy for other reasons but were glad to get rid
+> >> of it when it was possible, now it might be necessary to revive it?
+> > 
+> > I don't think you can expect system calls to return to userspace in 
+> > a given amount of time. Could be in kernel mode for long periods of
+> > time.
+> > 
+> >> How would this work with QPW?
+> >> 
+> >> - probably fast paths more expensive due to spin lock vs local_trylock_t
+> >> 
+> >> - flush_rcu_sheaves_on_cache() needs to be solved safely (see above)
+> >> 
+> >> What if we avoid percpu sheaves completely on isolated cpus and instead
+> >> allocate/free using the slowpaths?
+> >> 
+> >> - It could probably be achieved without affecting fastpaths, as we already
+> >> handle bootstrap without sheaves, so it's implemented in a way to not affect
+> >> fastpaths.
+> >> 
+> >> - Would it slow the isolcpu workloads down too much when they do a syscall?
+> >>   - compared to "houskeeping on return to userspace" flushing, maybe not?
+> >> Because in that case the syscall starts with sheaves flushed from previous
+> >> return, it has to do something expensive to get the initial sheaf, then
+> >> maybe will use only on or few objects, then on return has to flush
+> >> everything. Likely the slowpath might be faster, unless it allocates/frees
+> >> many objects from the same cache.
+> >>   - compared to QPW - it would be slower as QPW would mostly retain sheaves
+> >> populated, the need for flushes should be very rare
+> >> 
+> >> So if we can assume that workloads on isolated cpus make syscalls only
+> >> rarely, and when they do they can tolerate them being slower, I think the
+> >> "avoid sheaves on isolated cpus" would be the best way here.
+> > 
+> > I am not sure its safe to assume that. Ask Gemini about isolcpus use
+> > cases and:
+> 
+> I don't think it's answering the question about syscalls. But didn't read
+> too closely given the nature of it.
 
-Hm, I can see two ways to fix this.
+People use isolcpus with all kinds of programs. 
 
-The first is to drop the acpi_dev->physical_node_lock mutex in
-acpi_unbind_one before calling sysfs_remove_link. This keeps the node
-ID reserved while the sysfs files are still being removed, so that we
-don't get any sysfs filename collisions (which are based on the node
-ID). This seems like a good optimization to do anyway:
+> > For example, AF_XDP bypass uses system calls (and wants isolcpus):
+> > 
+> > https://www.quantvps.com/blog/kernel-bypass-in-hft?srsltid=AfmBOoryeSxuuZjzTJIC9O-Ag8x4gSwjs-V4Xukm2wQpGmwDJ6t4szuE
+> 
+> Didn't spot system calls mentioned TBH.
 
-+++ b/drivers/acpi/glue.c
-@@ -329,18 +329,22 @@ int acpi_unbind_one(struct device *dev)
-        list_for_each_entry(entry, &acpi_dev->physical_node_list, node)
-                if (entry->dev =3D=3D dev) {
-                        char physnode_name[PHYSICAL_NODE_NAME_SIZE];
+I don't see why you want to reduce performance of applications that 
+execute on isolcpus=, if you can avoid that.
 
--                       list_del(&entry->node);
--                       acpi_dev->physical_node_count--;
-+                       entry->dev =3D NULL;
-+                       mutex_unlock(&acpi_dev->physical_node_lock);
+Also, won't bypassing the per-CPU caches increase contention on the 
+global locks, say kmem_cache_node->list_lock.
 
-                        acpi_physnode_link_name(physnode_name, entry->node_=
-id);
-                        sysfs_remove_link(&acpi_dev->dev.kobj, physnode_nam=
-e);
-                        sysfs_remove_link(&dev->kobj, "firmware_node");
-                        ACPI_COMPANION_SET(dev, NULL);
-                        /* Drop references taken by acpi_bind_one(). */
-                        put_device(dev);
-                        acpi_dev_put(acpi_dev);
-+
-+                       mutex_lock(&acpi_dev->physical_node_lock);
-+                       list_del(&entry->node);
-+                       acpi_dev->physical_node_count--;
-                        kfree(entry);
-                        break;
-                }
+But if you prefer disabling the per-CPU caches for isolcpus
+(or a separate option other than isolcpus), then see if 
+people complain about that... works for me.
 
+Two examples:
 
-The second is to drop the kernfs_supers_rwsem for the kernfs_drain,
-similar to how the kernfs_rwsem is dropped there. I don't think
-kernfs_supers_rwsem is usually heavily contended, but it's probably a
-good idea to avoid holding it while potentially sleeping in
-kernfs_drain. Since the kernfs_supers_rwsem is only held for
-kernfs_drain in __kernfs_remove (but not kernfs_show) that means:
+1)
 
-+++ b/fs/kernfs/dir.c
-@@ -486,7 +486,7 @@ void kernfs_put_active(struct kernfs_node *kn)
-  * removers may invoke this function concurrently on @kn and all will
-  * return after draining is complete.
-  */
--static void kernfs_drain(struct kernfs_node *kn)
-+static void kernfs_drain(struct kernfs_node *kn, bool drop_supers)
-        __releases(&kernfs_root(kn)->kernfs_rwsem)
-        __acquires(&kernfs_root(kn)->kernfs_rwsem)
- {
-@@ -506,6 +506,8 @@ static void kernfs_drain(struct kernfs_node *kn)
-                return;
+https://github.com/xdp-project/bpf-examples/blob/main/AF_XDP-example/README.org
 
-        up_write(&root->kernfs_rwsem);
-+       if (drop_supers)
-+               up_read(&root->kernfs_supers_rwsem);
+Busy-Poll mode
+Busy-poll mode. In this mode both the application and the driver can be run efficiently on the same core. The kernel driver is explicitly invoked by the application by calling either recvmsg() or sendto(). Invoke this by setting the -B option. The -b option can be used to set the batch size that the driver will use. For example:
 
-        if (kernfs_lockdep(kn)) {
-                rwsem_acquire(&kn->dep_map, 0, 0, _RET_IP_);
-@@ -524,6 +526,8 @@ static void kernfs_drain(struct kernfs_node *kn)
-        if (kernfs_should_drain_open_files(kn))
-                kernfs_drain_open_files(kn);
+sudo taskset -c 2 ./xdpsock -i <interface> -q 2 -l -N -B -b 256
 
-+       if (drop_supers)
-+               down_read(&root->kernfs_supers_rwsem);
-        down_write(&root->kernfs_rwsem);
- }
+2)
 
-@@ -1465,7 +1469,7 @@ void kernfs_show(struct kernfs_node *kn, bool show)
-                kn->flags |=3D KERNFS_HIDDEN;
-                if (kernfs_active(kn))
-                        atomic_add(KN_DEACTIVATED_BIAS, &kn->active);
--               kernfs_drain(kn);
-+               kernfs_drain(kn, false);
-        }
+https://vstinner.github.io/journey-to-stable-benchmark-system.html
 
-        up_write(&root->kernfs_rwsem);
-@@ -1530,7 +1534,7 @@ static void __kernfs_remove(struct kernfs_node *kn)
-                 */
-                kernfs_get(pos);
+Example of effect of CPU isolation on a microbenchmark
+Example with Linux parameters:
 
--               kernfs_drain(pos);
-+               kernfs_drain(pos, true);
-                parent =3D kernfs_parent(pos);
-                /*
-                 * kernfs_unlink_sibling() succeeds once per node.  Use it
+isolcpus=2,3,6,7 nohz_full=2,3,6,7
+Microbenchmark on an idle system (without CPU isolation):
+
+$ python3 -m timeit 'sum(range(10**7))'
+10 loops, best of 3: 229 msec per loop
+Result on a busy system using system_load.py 10 and find / commands running in other terminals:
+
+$ python3 -m timeit 'sum(range(10**7))'
+10 loops, best of 3: 372 msec per loop
+The microbenchmark is 56% slower because of the high system load!
+
+Result on the same busy system but using isolated CPUs. The taskset command allows to pin an application to specific CPUs:
+
+$ taskset -c 1,3 python3 -m timeit 'sum(range(10**7))'
+10 loops, best of 3: 230 msec per loop
+Just to check, new run without CPU isolation:
+
+$ python3 -m timeit 'sum(range(10**7))'
+10 loops, best of 3: 357 msec per loop
+The result with CPU isolation on a busy system is the same than the result an idle system! CPU isolation removes most of the noise of the system.
+
 
