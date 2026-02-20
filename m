@@ -1,79 +1,81 @@
-Return-Path: <cgroups+bounces-14070-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-14069-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id uGhYDsWxmGnsKwMAu9opvQ
-	(envelope-from <cgroups+bounces-14070-lists+cgroups=lfdr.de@vger.kernel.org>)
+	id iNo1A8WxmGnsKwMAu9opvQ
+	(envelope-from <cgroups+bounces-14069-lists+cgroups=lfdr.de@vger.kernel.org>)
 	for <lists+cgroups@lfdr.de>; Fri, 20 Feb 2026 20:11:01 +0100
 X-Original-To: lists+cgroups@lfdr.de
 Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id EC5A716A4A1
+	by mail.lfdr.de (Postfix) with ESMTPS id 7C6BF16A4A0
 	for <lists+cgroups@lfdr.de>; Fri, 20 Feb 2026 20:11:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 58D25303E484
+	by tor.lore.kernel.org (Postfix) with ESMTP id 26C51303D64E
 	for <lists+cgroups@lfdr.de>; Fri, 20 Feb 2026 19:10:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE5B1366DC6;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DF026366DC4;
 	Fri, 20 Feb 2026 19:10:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cmpxchg.org header.i=@cmpxchg.org header.b="enLx39iW"
+	dkim=pass (2048-bit key) header.d=cmpxchg.org header.i=@cmpxchg.org header.b="TmnfVjnI"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-qk1-f177.google.com (mail-qk1-f177.google.com [209.85.222.177])
+Received: from mail-qv1-f46.google.com (mail-qv1-f46.google.com [209.85.219.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D7F4036604A
-	for <cgroups@vger.kernel.org>; Fri, 20 Feb 2026 19:10:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1717331A7E1
+	for <cgroups@vger.kernel.org>; Fri, 20 Feb 2026 19:10:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1771614640; cv=none; b=d4WicjqvmJqC5SeOqMMq4Q4CtNx6V4HfK37aWP0CIfJ0e2cNQnGytM0UTeCkTAYH35wZ6bkhxOkWrCdW1AoJtUPcoQ5o/lUldSaIYVFhrywXNmjuuwCdLVmg1ZQBq8RPRIHDaRDU+T2zSRRPHIkriRn0EWIEDJvTD+DAWLunhuw=
+	t=1771614640; cv=none; b=Noyi4gkPHUxgoRTRqXVZC5nF4iZ0vrNXpbqq3sK4A4MqpITU3SI2TB1qihQ4tQYaBMKPk+4LUHDQpurZB4fiznuUx88mrHPTzDJ/tpqw29vPXCvII+mtMEq+C1YNdInLiuzRge8Z4v3EfsmKqkirTKKjMqk+Qh/1kT7t3R/17xw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1771614640; c=relaxed/simple;
-	bh=sjzHicn/XuRN/ik3PoytqdDZ7F4UK/PXCnsncIr2GLA=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=b60ETOtEohc+cG8EWOTqvOVmitIX7+2qIFH813Y8wuzTevaM92pOo8+IswylT5E1fKOGw9VWJ/pFDKfaAz3cvtTrkpibJ0nVn7VeubhYKV2AFWTS78AqXKJpezx/Yt48xVVlms96WglylG1UEtBy1QVIua0MRPMph3NxjdG6qmg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org; spf=pass smtp.mailfrom=cmpxchg.org; dkim=pass (2048-bit key) header.d=cmpxchg.org header.i=@cmpxchg.org header.b=enLx39iW; arc=none smtp.client-ip=209.85.222.177
+	bh=utJESbMjuYKt520hS9qyPp85rEhDO7vmzpqGJ8Lrwno=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=ZnT48jSFA5lpbEHGer4yS0XcNh3GZbsESU7kBfqsRh1jmrgOxHxytWzNltxzhZmYOBwcISniR3NFUoBOv6QjWZdKQ7Q3cOpAhyeHBwwypqjyLLzoYE7WgtFuQRBL774dbjK0nGuE/IYsfoQIUpA8EZX0PSm26HAAzEJH2sb6tD8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org; spf=pass smtp.mailfrom=cmpxchg.org; dkim=pass (2048-bit key) header.d=cmpxchg.org header.i=@cmpxchg.org header.b=TmnfVjnI; arc=none smtp.client-ip=209.85.219.46
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cmpxchg.org
-Received: by mail-qk1-f177.google.com with SMTP id af79cd13be357-8cb4136d865so282558385a.1
-        for <cgroups@vger.kernel.org>; Fri, 20 Feb 2026 11:10:37 -0800 (PST)
+Received: by mail-qv1-f46.google.com with SMTP id 6a1803df08f44-896fcfc591eso22555556d6.2
+        for <cgroups@vger.kernel.org>; Fri, 20 Feb 2026 11:10:38 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg.org; s=google; t=1771614637; x=1772219437; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=OWO7RKWgQr+7ICFBB9SCVBLs7NDhlsurdO9niRwwF2Q=;
-        b=enLx39iW0sohtWkqbOpmLyaTh02votxP6EQDyMg8gPBWp+oowZb4q0cSxDrUEQkOD1
-         dok7vIWs5DKRobWbspv+h38Y71K3ApX9GKFI/NdrKGbyU9DBqM3OtYi370k1xKz/v5SV
-         nIAD0HKZVtsLjE+8iatoNkvG87so5OCFdRdR5WI1PNFK4X3OewiBxGeolaO3mXcAaWep
-         qV6BztasJaDP+HYn8nqGWViNaUKCjB4RZHVNUKmthurfAXGcer/UxqCZJ2tPxZGDA1df
-         zlSdHbtB5mwLvfJxcf7aqFJ6OH270UXy7Lw45+VDP0WV/10N6uRAFLZ9Ra3KZvYV4fK6
-         xM8A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1771614637; x=1772219437;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+        d=cmpxchg.org; s=google; t=1771614638; x=1772219438; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=OWO7RKWgQr+7ICFBB9SCVBLs7NDhlsurdO9niRwwF2Q=;
-        b=oMIFRVZQwb3hKabqunAB5aCy6gw4ChMxuHRIb6bbMT3vPfLkx6D4XCk5kJr/dYvEfZ
-         lnu8nyEGAN9GVwgNmHhiDfnxsMwKBphDBT31ybTW/pf7CjyqM/hT0E3GAYK6oDnu+yU+
-         /AFpBjYMjEYrzgGRor1HLyMJeR/umMvclgwkHfcA0x6FNSUqVoAI5s0EjfDkDBd0rIM/
-         AOxdFhDuCwLhj4ZaaLhXw8dFIVf6S7E27KC5m8PdBdvydIjQfYYQpFLFg/1zpTJRuckj
-         iu+N/ETj7lx8+y28j9MNoXR6Yzr2f25YT2Mf2r6eVipkWSCiqcKBvmthVSlOmEMH5U3C
-         V7kg==
-X-Forwarded-Encrypted: i=1; AJvYcCWCth73BHwKoO964WQfevk05KbbEfIgmzKKLKSMnluuLt77Ak8VjO85JMPVJCIpxhtMK3edLuAn@vger.kernel.org
-X-Gm-Message-State: AOJu0YzmA6qXifVC3o6+deSipthkX/gmFe4NR7DcMKgPIlP+nmJr2lR7
-	7Z6PhcwnkZkbQgghDc/s1Je43jm1JqbY60aHy0Z7iXVK0PpUH+khSpLzLevmGsJwBr0=
-X-Gm-Gg: AZuq6aJ1W53aK40+CI9FJnTroqTKDfzzaqG/oHJUjX1owIZho8xeFHoZ8ZMv5RNR/iC
-	2QQ8DQ18qR6zUY8IBzo0W99/nzaYjjXMmzJQveEtEYZB2UHke2EkB5HKNm1zwKgXczPC+uCsA4g
-	sJ8FNkL9saRTRyctOT3tXvBSvX6/8FcnFsEKrrc1vAXC9Mz41mZNqkMhrw7DZ66W6KuRatyHGwe
-	O921vDIZiPhmEpAZoCKZ99ETAdPqmHq39Ma7H0xLkDltD5R2/7IJpnmmIU/IQM4oor8Vi/PZe1M
-	jWITWBUOZdtDcH2FcwuyYGYifqosJLO1Gw1lNx3KF/6A4SD0XFKWt5l73Bsqp45ho4RTq2OLheb
-	FMRMRR+hU7nSMwSYN9o7uxbjW5Z+qO8MTm2YzGO5LhlKTB2RwygrgQTj+bvC70UvjM68GqIomS3
-	ReDjC4ydcfE1Y0y7XV5ZLrHfcgJCNXyPC5
-X-Received: by 2002:a05:620a:d8d:b0:8c6:a5bc:8a90 with SMTP id af79cd13be357-8cb8c9e0086mr82079585a.14.1771614636634;
-        Fri, 20 Feb 2026 11:10:36 -0800 (PST)
+        bh=zRgCQhFlEEQQz8iVKpR/+XrwMVRXcKNbXIMlR69ixQE=;
+        b=TmnfVjnIZhLDXV3cs5Pg0CEBeFf10iPC7u5atUalRV09oU+/sJrJfsNeKocLjoxI15
+         YKH95ixb796wOFaiHY8E0dasqQvYXrCej1R1SnQ9s5tM97OiEiH/nO29si5ZOtO6Efy0
+         1vW+ORiXD1KUYGHtc/tJqvK2Tvwuxsdkgo2w0tHjTDgGmGw8vvwQYOkOtuOwDWE2rXmt
+         k2a5xyZfJJBtZtwODU0emXcQjVxGwX+WBOcKDaNth/aKA5LJ19fQ+crHGiqsk03VTOpE
+         wAVXPfLDZsp/g2uFW73cjP+F9GO/GR6gH3n5AazPFe1issJiOjwOOvBj66CWQEEnNMCO
+         ZseQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1771614638; x=1772219438;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=zRgCQhFlEEQQz8iVKpR/+XrwMVRXcKNbXIMlR69ixQE=;
+        b=rgLXWyZy4Q3/eu5WZLBJEw/t0+cW8g3CJX/YvO3AZFsssXCqX8rWpDr6N0ZULwCvSL
+         vuClzIDujkfTn1FxnZJX2PXAxLvtckdXmm7NH3C4rLFchelNRe4dSA4CIYHWzRIWnUUN
+         Nn0IKpVK2gdxTDT5Lhrg3GCEnMeu10gr9U/87C5BbmINa3NKBFBQHe48x+L3XQPl6kad
+         0S0Yglb3CCMcBXEEdmMjhiCz68IXp1Ttoutyo6p2lGwL/yHAqZMu7KHrdcP8/hVQOkJq
+         7gjdWFMTopee7YDvVj95/duqaTGXLYrKcsGgA4NsfJo68Ev+GYSSQHnX1rhIg4DcPjxj
+         qu1g==
+X-Forwarded-Encrypted: i=1; AJvYcCVP+JQzmZg0Tv1FZy1a74HTBTuakQR89pYCeU1l6Wev4CTJKmZfHmXRO0pzjgIKSJ1eeaT3T4Gw@vger.kernel.org
+X-Gm-Message-State: AOJu0YyqpsJwRJmtpZD0h2MMyy/NP32JwTFNC7vtr8mkor/Z9K0CSWWr
+	6XpMz5de1oUyncBgyjaNdqhEG6A8sx4sZCXjd2ysyzyk+Kpi3vGnlFxNtYHhX4O8g3U=
+X-Gm-Gg: AZuq6aK5A5MMhvs/Qhk0Prrfzi2RlEhKZyVQW7mCGyhXH0+Alz7Hg2jPSkNsiJ5xX6B
+	4bUB8BdjEijWGJ9ibLm2FFVDjo/WroLadCXiGsCSQmrw6Isp1C5zRXJbA+kiEUPIN8OGp/Egomi
+	TNH2HUNfPyfN4vCsHQui8qNO7RlOeh896D9x90DEk6/1IWGfjnewrO4GlNj/dydt0LWyz+BBkPA
+	900jWL7JimItlpZ6ZbkqUuRTMhzuLwsODTYW/E2OQkIt17+0ptqZG9X6DdAWV4VgV1JJUqkRDX2
+	GoemodF/vb8vG8ICEFk9wbZ1rQXm0BCAVhs2HRBbueQXmDKcpBroaWNChFvBvNVEyoxCZJJa/sQ
+	upgxTkKSrTdXI8p5Bs0CmJyVpSD0fEuFp5/fI9YPRk9/7hO3d6wHAQ4nKrdQmpEkd3LC0nAPVKv
+	jiOEDRrQCwOISYtU2TNTpFNA==
+X-Received: by 2002:ad4:5c6e:0:b0:894:562d:c0b9 with SMTP id 6a1803df08f44-89979d45c79mr15844316d6.0.1771614638028;
+        Fri, 20 Feb 2026 11:10:38 -0800 (PST)
 Received: from localhost ([2603:7000:c00:3a00:365a:60ff:fe62:ff29])
-        by smtp.gmail.com with ESMTPSA id af79cd13be357-8cb8d0ebcd0sm22196885a.28.2026.02.20.11.10.35
+        by smtp.gmail.com with ESMTPSA id af79cd13be357-8cb8d1013fesm18977785a.36.2026.02.20.11.10.37
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 20 Feb 2026 11:10:36 -0800 (PST)
+        Fri, 20 Feb 2026 11:10:37 -0800 (PST)
 From: Johannes Weiner <hannes@cmpxchg.org>
 To: Andrew Morton <akpm@linux-foundation.org>
 Cc: Uladzislau Rezki <urezki@gmail.com>,
@@ -85,10 +87,12 @@ Cc: Uladzislau Rezki <urezki@gmail.com>,
 	linux-mm@kvack.org,
 	cgroups@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH 1/2] mm: vmalloc: streamline vmalloc memory accounting
-Date: Fri, 20 Feb 2026 14:10:34 -0500
-Message-ID: <20260220191035.3703800-1-hannes@cmpxchg.org>
+Subject: [PATCH 2/2] mm: memcontrol: switch to native NR_VMALLOC vmstat counter
+Date: Fri, 20 Feb 2026 14:10:35 -0500
+Message-ID: <20260220191035.3703800-2-hannes@cmpxchg.org>
 X-Mailer: git-send-email 2.53.0
+In-Reply-To: <20260220191035.3703800-1-hannes@cmpxchg.org>
+References: <20260220191035.3703800-1-hannes@cmpxchg.org>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -111,7 +115,7 @@ X-Spamd-Result: default: False [0.84 / 15.00];
 	FREEMAIL_CC(0.00)[gmail.com,suse.com,linux.dev,kvack.org,vger.kernel.org];
 	RCVD_TLS_LAST(0.00)[];
 	RECEIVED_HELO_LOCALHOST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-14070-lists,cgroups=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-14069-lists,cgroups=lfdr.de];
 	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	DKIM_TRACE(0.00)[cmpxchg.org:+];
@@ -127,158 +131,122 @@ X-Spamd-Result: default: False [0.84 / 15.00];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[cgroups];
 	DBL_BLOCKED_OPENRESOLVER(0.00)[cmpxchg.org:mid,cmpxchg.org:dkim,cmpxchg.org:email,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: EC5A716A4A1
+X-Rspamd-Queue-Id: 7C6BF16A4A0
 X-Rspamd-Action: no action
 
-Use a vmstat counter instead of a custom, open-coded atomic. This has
-the added benefit of making the data available per-node, and prepares
-for cleaning up the memcg accounting as well.
+Eliminates the custom memcg counter and results in a single,
+consolidated accounting call in vmalloc code.
 
 Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
 ---
- fs/proc/meminfo.c       |  3 ++-
- include/linux/mmzone.h  |  1 +
- include/linux/vmalloc.h |  3 ---
- mm/vmalloc.c            | 19 ++++++++++---------
- mm/vmstat.c             |  1 +
- 5 files changed, 14 insertions(+), 13 deletions(-)
+ include/linux/memcontrol.h |  1 -
+ mm/memcontrol.c            |  4 ++--
+ mm/vmalloc.c               | 16 ++++------------
+ 3 files changed, 6 insertions(+), 15 deletions(-)
 
-diff --git a/fs/proc/meminfo.c b/fs/proc/meminfo.c
-index a458f1e112fd..549793f44726 100644
---- a/fs/proc/meminfo.c
-+++ b/fs/proc/meminfo.c
-@@ -126,7 +126,8 @@ static int meminfo_proc_show(struct seq_file *m, void *v)
- 	show_val_kb(m, "Committed_AS:   ", committed);
- 	seq_printf(m, "VmallocTotal:   %8lu kB\n",
- 		   (unsigned long)VMALLOC_TOTAL >> 10);
--	show_val_kb(m, "VmallocUsed:    ", vmalloc_nr_pages());
-+	show_val_kb(m, "VmallocUsed:    ",
-+		    global_node_page_state(NR_VMALLOC));
- 	show_val_kb(m, "VmallocChunk:   ", 0ul);
- 	show_val_kb(m, "Percpu:         ", pcpu_nr_pages());
- 
-diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
-index fc5d6c88d2f0..64df797d45c6 100644
---- a/include/linux/mmzone.h
-+++ b/include/linux/mmzone.h
-@@ -220,6 +220,7 @@ enum node_stat_item {
- 	NR_KERNEL_MISC_RECLAIMABLE,	/* reclaimable non-slab kernel pages */
- 	NR_FOLL_PIN_ACQUIRED,	/* via: pin_user_page(), gup flag: FOLL_PIN */
- 	NR_FOLL_PIN_RELEASED,	/* pages returned via unpin_user_page() */
+diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
+index 67f154de10bc..c7cc4e50e59a 100644
+--- a/include/linux/memcontrol.h
++++ b/include/linux/memcontrol.h
+@@ -35,7 +35,6 @@ enum memcg_stat_item {
+ 	MEMCG_SWAP = NR_VM_NODE_STAT_ITEMS,
+ 	MEMCG_SOCK,
+ 	MEMCG_PERCPU_B,
+-	MEMCG_VMALLOC,
+ 	MEMCG_KMEM,
+ 	MEMCG_ZSWAP_B,
+ 	MEMCG_ZSWAPPED,
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index 129eed3ff5bb..fef5bdd887e0 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -317,6 +317,7 @@ static const unsigned int memcg_node_stat_items[] = {
+ 	NR_SHMEM_THPS,
+ 	NR_FILE_THPS,
+ 	NR_ANON_THPS,
 +	NR_VMALLOC,
- 	NR_KERNEL_STACK_KB,	/* measured in KiB */
- #if IS_ENABLED(CONFIG_SHADOW_CALL_STACK)
- 	NR_KERNEL_SCS_KB,	/* measured in KiB */
-diff --git a/include/linux/vmalloc.h b/include/linux/vmalloc.h
-index e8e94f90d686..3b02c0c6b371 100644
---- a/include/linux/vmalloc.h
-+++ b/include/linux/vmalloc.h
-@@ -286,8 +286,6 @@ int unregister_vmap_purge_notifier(struct notifier_block *nb);
- #ifdef CONFIG_MMU
- #define VMALLOC_TOTAL (VMALLOC_END - VMALLOC_START)
- 
--unsigned long vmalloc_nr_pages(void);
--
- int vm_area_map_pages(struct vm_struct *area, unsigned long start,
- 		      unsigned long end, struct page **pages);
- void vm_area_unmap_pages(struct vm_struct *area, unsigned long start,
-@@ -304,7 +302,6 @@ static inline void set_vm_flush_reset_perms(void *addr)
- #else  /* !CONFIG_MMU */
- #define VMALLOC_TOTAL 0UL
- 
--static inline unsigned long vmalloc_nr_pages(void) { return 0; }
- static inline void set_vm_flush_reset_perms(void *addr) {}
- #endif /* CONFIG_MMU */
- 
+ 	NR_KERNEL_STACK_KB,
+ 	NR_PAGETABLE,
+ 	NR_SECONDARY_PAGETABLE,
+@@ -339,7 +340,6 @@ static const unsigned int memcg_stat_items[] = {
+ 	MEMCG_SWAP,
+ 	MEMCG_SOCK,
+ 	MEMCG_PERCPU_B,
+-	MEMCG_VMALLOC,
+ 	MEMCG_KMEM,
+ 	MEMCG_ZSWAP_B,
+ 	MEMCG_ZSWAPPED,
+@@ -1359,7 +1359,7 @@ static const struct memory_stat memory_stats[] = {
+ 	{ "sec_pagetables",		NR_SECONDARY_PAGETABLE		},
+ 	{ "percpu",			MEMCG_PERCPU_B			},
+ 	{ "sock",			MEMCG_SOCK			},
+-	{ "vmalloc",			MEMCG_VMALLOC			},
++	{ "vmalloc",			NR_VMALLOC			},
+ 	{ "shmem",			NR_SHMEM			},
+ #ifdef CONFIG_ZSWAP
+ 	{ "zswap",			MEMCG_ZSWAP_B			},
 diff --git a/mm/vmalloc.c b/mm/vmalloc.c
-index e286c2d2068c..a49a46de9c4f 100644
+index a49a46de9c4f..8773bc0c4734 100644
 --- a/mm/vmalloc.c
 +++ b/mm/vmalloc.c
-@@ -1063,14 +1063,8 @@ static BLOCKING_NOTIFIER_HEAD(vmap_notify_list);
- static void drain_vmap_area_work(struct work_struct *work);
- static DECLARE_WORK(drain_vmap_work, drain_vmap_area_work);
+@@ -3446,9 +3446,6 @@ void vfree(const void *addr)
  
--static __cacheline_aligned_in_smp atomic_long_t nr_vmalloc_pages;
- static __cacheline_aligned_in_smp atomic_long_t vmap_lazy_nr;
+ 	if (unlikely(vm->flags & VM_FLUSH_RESET_PERMS))
+ 		vm_reset_perms(vm);
+-	/* All pages of vm should be charged to same memcg, so use first one. */
+-	if (vm->nr_pages && !(vm->flags & VM_MAP_PUT_PAGES))
+-		mod_memcg_page_state(vm->pages[0], MEMCG_VMALLOC, -vm->nr_pages);
+ 	for (i = 0; i < vm->nr_pages; i++) {
+ 		struct page *page = vm->pages[i];
  
--unsigned long vmalloc_nr_pages(void)
--{
--	return atomic_long_read(&nr_vmalloc_pages);
--}
--
- static struct vmap_area *__find_vmap_area(unsigned long addr, struct rb_root *root)
- {
- 	struct rb_node *n = root->rb_node;
-@@ -3463,11 +3457,11 @@ void vfree(const void *addr)
- 		 * High-order allocs for huge vmallocs are split, so
+@@ -3458,7 +3455,7 @@ void vfree(const void *addr)
  		 * can be freed as an array of order-0 allocations
  		 */
-+		if (!(vm->flags & VM_MAP_PUT_PAGES))
-+			dec_node_page_state(page, NR_VMALLOC);
+ 		if (!(vm->flags & VM_MAP_PUT_PAGES))
+-			dec_node_page_state(page, NR_VMALLOC);
++			mod_lruvec_page_state(page, NR_VMALLOC, -1);
  		__free_page(page);
  		cond_resched();
  	}
--	if (!(vm->flags & VM_MAP_PUT_PAGES))
--		atomic_long_sub(vm->nr_pages, &nr_vmalloc_pages);
- 	kvfree(vm->pages);
- 	kfree(vm);
- }
-@@ -3655,6 +3649,8 @@ vm_area_alloc_pages(gfp_t gfp, int nid,
+@@ -3649,7 +3646,7 @@ vm_area_alloc_pages(gfp_t gfp, int nid,
  			continue;
  		}
  
-+		mod_node_page_state(page, NR_VMALLOC, 1 << large_order);
-+
+-		mod_node_page_state(page, NR_VMALLOC, 1 << large_order);
++		mod_lruvec_page_state(page, NR_VMALLOC, 1 << large_order);
+ 
  		split_page(page, large_order);
  		for (i = 0; i < (1U << large_order); i++)
- 			pages[nr_allocated + i] = page + i;
-@@ -3675,6 +3671,7 @@ vm_area_alloc_pages(gfp_t gfp, int nid,
- 	if (!order) {
- 		while (nr_allocated < nr_pages) {
- 			unsigned int nr, nr_pages_request;
-+			int i;
- 
- 			/*
- 			 * A maximum allowed request is hard-coded and is 100
-@@ -3698,6 +3695,9 @@ vm_area_alloc_pages(gfp_t gfp, int nid,
- 							nr_pages_request,
+@@ -3696,7 +3693,7 @@ vm_area_alloc_pages(gfp_t gfp, int nid,
  							pages + nr_allocated);
  
-+			for (i = nr_allocated; i < nr_allocated + nr; i++)
-+				inc_node_page_state(pages[i], NR_VMALLOC);
-+
+ 			for (i = nr_allocated; i < nr_allocated + nr; i++)
+-				inc_node_page_state(pages[i], NR_VMALLOC);
++				mod_lruvec_page_state(pages[i], NR_VMALLOC, 1);
+ 
  			nr_allocated += nr;
  
- 			/*
-@@ -3722,6 +3722,8 @@ vm_area_alloc_pages(gfp_t gfp, int nid,
+@@ -3722,7 +3719,7 @@ vm_area_alloc_pages(gfp_t gfp, int nid,
  		if (unlikely(!page))
  			break;
  
-+		mod_node_page_state(page, NR_VMALLOC, 1 << order);
-+
+-		mod_node_page_state(page, NR_VMALLOC, 1 << order);
++		mod_lruvec_page_state(page, NR_VMALLOC, 1 << order);
+ 
  		/*
  		 * High-order allocations must be able to be treated as
- 		 * independent small pages by callers (as they can with
-@@ -3864,7 +3866,6 @@ static void *__vmalloc_area_node(struct vm_struct *area, gfp_t gfp_mask,
+@@ -3866,11 +3863,6 @@ static void *__vmalloc_area_node(struct vm_struct *area, gfp_t gfp_mask,
  			vmalloc_gfp_adjust(gfp_mask, page_order), node,
  			page_order, nr_small_pages, area->pages);
  
--	atomic_long_add(area->nr_pages, &nr_vmalloc_pages);
- 	/* All pages of vm should be charged to same memcg, so use first one. */
- 	if (gfp_mask & __GFP_ACCOUNT && area->nr_pages)
- 		mod_memcg_page_state(area->pages[0], MEMCG_VMALLOC,
-diff --git a/mm/vmstat.c b/mm/vmstat.c
-index d6e814c82952..bc199c7cd07b 100644
---- a/mm/vmstat.c
-+++ b/mm/vmstat.c
-@@ -1270,6 +1270,7 @@ const char * const vmstat_text[] = {
- 	[I(NR_KERNEL_MISC_RECLAIMABLE)]		= "nr_kernel_misc_reclaimable",
- 	[I(NR_FOLL_PIN_ACQUIRED)]		= "nr_foll_pin_acquired",
- 	[I(NR_FOLL_PIN_RELEASED)]		= "nr_foll_pin_released",
-+	[I(NR_VMALLOC)]				= "nr_vmalloc",
- 	[I(NR_KERNEL_STACK_KB)]			= "nr_kernel_stack",
- #if IS_ENABLED(CONFIG_SHADOW_CALL_STACK)
- 	[I(NR_KERNEL_SCS_KB)]			= "nr_shadow_call_stack",
+-	/* All pages of vm should be charged to same memcg, so use first one. */
+-	if (gfp_mask & __GFP_ACCOUNT && area->nr_pages)
+-		mod_memcg_page_state(area->pages[0], MEMCG_VMALLOC,
+-				     area->nr_pages);
+-
+ 	/*
+ 	 * If not enough pages were obtained to accomplish an
+ 	 * allocation request, free them via vfree() if any.
 -- 
 2.53.0
 
