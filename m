@@ -1,576 +1,282 @@
-Return-Path: <cgroups+bounces-14045-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-14046-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id mBseKZatl2nO5QIAu9opvQ
-	(envelope-from <cgroups+bounces-14045-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Fri, 20 Feb 2026 01:40:54 +0100
+	id GFzuKcmvl2nO5QIAu9opvQ
+	(envelope-from <cgroups+bounces-14046-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Fri, 20 Feb 2026 01:50:17 +0100
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 348CC163E64
-	for <lists+cgroups@lfdr.de>; Fri, 20 Feb 2026 01:40:54 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id EF42F16402D
+	for <lists+cgroups@lfdr.de>; Fri, 20 Feb 2026 01:50:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 77A39307672A
-	for <lists+cgroups@lfdr.de>; Fri, 20 Feb 2026 00:38:56 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 6CF6C30053C7
+	for <lists+cgroups@lfdr.de>; Fri, 20 Feb 2026 00:46:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D439E20D4FF;
-	Fri, 20 Feb 2026 00:38:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 73D982236EE;
+	Fri, 20 Feb 2026 00:46:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gL+2sGWj"
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="UnPzSo9w"
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from CH4PR04CU002.outbound.protection.outlook.com (mail-northcentralusazon11013067.outbound.protection.outlook.com [40.107.201.67])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9418B1F4180;
-	Fri, 20 Feb 2026 00:38:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1771547934; cv=none; b=gta2CEIjNkrzxDNcP0C30ZV31oU9xFSlUZ1awoifL4DhzO6Yhn/DOfmiJ8fAGC2QS18MZROxzNeAg9OqOgAtfLs8aG1ZuohA8H5A50BHJFwOpYr3YMBQe7bwQImBd1paTBZb9d27ZYT822H9Ww+2FWy6pksZ2f4sT9wcj5XvIQQ=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1771547934; c=relaxed/simple;
-	bh=mQc8EiFwm60GFoFhfzxR1JRaHCQHgCBHuPjqBgX857M=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=qp4e7wM0dKsVUipypVL/THmxI40T48V3vKCBH8SKgpTbamNTjQBu+e9bXirSwD3pD0SgVj6z8lXgbFnwj2PeZ78e7dZbC7sei5R8PGRyZ+bY990tJCEvi4+xF4IhmsunkxACKXLizOLQVyYDFlhV2H9VDbvMyEyOmTGAveWNm/k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gL+2sGWj; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 064D9C4CEF7;
-	Fri, 20 Feb 2026 00:38:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1771547934;
-	bh=mQc8EiFwm60GFoFhfzxR1JRaHCQHgCBHuPjqBgX857M=;
-	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-	b=gL+2sGWjZCvJ7vGGBvagZx90u2ZhzAePGvsfep9cOMK7bMd9vSHYwn7OonqenSeKC
-	 67zhpe+gnmZKBfV92Sc4IxCLHJVl4+/ZzAIsQ7+y1R/NxmeoID1btlrHQyFhguou23
-	 AifF4yXZHf/sD9CvjfI0YrM/AkMWPb4Eb9z7h7G6MwNohJxrR5KmMpL4hgwJQmX1jK
-	 5pne5Oz/Z3WXfstYJJtiTW3FhwCms22kk4q/aU5peIw97Gxuz4ysiLMLn09ULj6ojz
-	 m8cRXszic3//7ay9h8Pcn/UyP0+edzED/Hu35mYs6lmiS+sfkaxvzI/s0PgVzlCbdR
-	 dW5aVtZ9pWvLQ==
-From: Christian Brauner <brauner@kernel.org>
-Date: Fri, 20 Feb 2026 01:38:32 +0100
-Subject: [PATCH 4/4] selftests/bpf: add cgroup attach selftests
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD9AB18A93F;
+	Fri, 20 Feb 2026 00:46:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.201.67
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1771548393; cv=fail; b=elR1dltWFpO+OBGT7YnvPRzn+ETbfNf6/mx8lF/P1WorK3i1SUivCQ9D/0b2Sfkr2BEvMCf1FetqyP2JwL5T8mjAk5/VUTza0HzdTK87ZapQOYMFLQ6/B0natyZQEbGDZ1cgxeLkKA/81QLq4DHk3mVEeycEYLhN23/GwCkICdk=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1771548393; c=relaxed/simple;
+	bh=r3lIg35qaDS46bvIDHfiWfJ6KvJDTgtTco4eGxvCLRU=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=XRzbvh17dT5P5VuQBKiAv1TQPEcU07pq5/2U91X8enusPxcQ+xsmtgD0vCfT3Il+WEUybTzm8ryTxcBU+DqOasOSNZkQE2nJ7cve/ei+1aTr1MGyd4FaIOVKeOusyBMskts5BixBMKEzQC2/cffmK9uIy3t7VRJTKf4UpSh2sBU=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=UnPzSo9w; arc=fail smtp.client-ip=40.107.201.67
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=F4rsDvUiahlJUOPVSy7ST6G2TqmCtWgaYqaYJpZ0RrfJn3WdbKVcxbhw4f1KN34+84n2oHzkCz+8bnA7B5F5ntNtNNg6+wPcxCAZ3fmsMkWaFHIKtLmBI8k/NPxSwuIkeFgudBPpUxT22IYzI5mlCcMLBwWGFlPXvC56b5uOjhutOTIezsv+O3qaaodosqugz2Q/ZT94teZz8uoSadJWpD0C45aQh5FRYCIKez/yHp13Sjdk207nxPSCrfXjrUXrLATyrVgoffDkgc+Muy7hgowv65mZGmPDKpzU1zw+n3dH4uPhnV+oiy57rPfvhW8YSKLN4b/ftatdzHq/ouq8cg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=uNGla3EPjchP1bGq3rV4aRSqGWhqTv4q4Prc7DIIGcU=;
+ b=e+lr8dESb0SWjhwoqjvfAyBb0dD4x6emSRVZ2v4UEhZJhE5qfeyxSmHto3LBdYGYzls4k+wD7AYvg8h2k/8FJsPvbTCnrU9JqmRZ4PTxL56ySVe/bOY5NI1jadtvFTSGvPUF7t6itMqtIF6matr0LvXDINRnDCJLQFXJh51ZurThmtFX41a/5+k785Uz8uBeP43D1EwyiGZb4EqbjyZrQTrxXA+K4IcgemPMooilrHyoN2fMRXf7hlXAcNlv+FWGG/7LMd0X5xb5wDIzdPgpwr+t0pgk/3nIW7mvc5uniU9mtSEDicmPc/jEyDoVfQfjrf74g9F6L62fdTnGKo2cxg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=uNGla3EPjchP1bGq3rV4aRSqGWhqTv4q4Prc7DIIGcU=;
+ b=UnPzSo9wtK+vN0BQPMew2w3BV6MtMKaIfTUte+Pv1Ru1ouFQToY89pK+MlNQbW/CK1EOEsu3p47DNooaJQjUpPzE8dcjdUZHg8ZXb0uoqDQ8oVQBtx9OacZxxmsOk5oHerjxnlhJsGkAnr02dfHni9CZFjF19J6046XAX2rWvQ6aiS2liPmD7qq71mqFF1jYKKb7nOzUX0zPYlXoBzJtaZOEa4dR90Ex+qj7w/bMDJ5eqUJ8iVC1rjsLoDWpR01vXraHJ7gT/INAcX7TUV+LZEgzCEuq+R6h5j/29GB5QJ/kf8Bb2ax8DEvlr5ykdhWQ/d28185uGs4plXmLKj8bag==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from DS7PR12MB9473.namprd12.prod.outlook.com (2603:10b6:8:252::5) by
+ CH3PR12MB9282.namprd12.prod.outlook.com (2603:10b6:610:1cb::8) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.9632.15; Fri, 20 Feb 2026 00:46:24 +0000
+Received: from DS7PR12MB9473.namprd12.prod.outlook.com
+ ([fe80::f01d:73d2:2dda:c7b2]) by DS7PR12MB9473.namprd12.prod.outlook.com
+ ([fe80::f01d:73d2:2dda:c7b2%4]) with mapi id 15.20.9632.015; Fri, 20 Feb 2026
+ 00:46:24 +0000
+From: Zi Yan <ziy@nvidia.com>
+To: "JP Kobryn (Meta)" <jp.kobryn@linux.dev>
+Cc: linux-mm@kvack.org, mst@redhat.com, mhocko@suse.com, vbabka@suse.cz,
+ apopple@nvidia.com, akpm@linux-foundation.org, axelrasmussen@google.com,
+ byungchul@sk.com, cgroups@vger.kernel.org, david@kernel.org,
+ eperezma@redhat.com, gourry@gourry.net, jasowang@redhat.com,
+ hannes@cmpxchg.org, joshua.hahnjy@gmail.com, Liam.Howlett@oracle.com,
+ linux-kernel@vger.kernel.org, lorenzo.stoakes@oracle.com,
+ matthew.brost@intel.com, rppt@kernel.org, muchun.song@linux.dev,
+ zhengqi.arch@bytedance.com, rakie.kim@sk.com, roman.gushchin@linux.dev,
+ shakeel.butt@linux.dev, surenb@google.com, virtualization@lists.linux.dev,
+ weixugc@google.com, xuanzhuo@linux.alibaba.com, ying.huang@linux.alibaba.com,
+ yuanchu@google.com, kernel-team@meta.com
+Subject: Re: [PATCH v5] mm: move pgscan, pgsteal, pgrefill to node stats
+Date: Thu, 19 Feb 2026 19:46:17 -0500
+X-Mailer: MailMate (2.0r6290)
+Message-ID: <FEEA24E1-D62A-4378-9D80-04E8BFE6D6CD@nvidia.com>
+In-Reply-To: <20260219235846.161910-1-jp.kobryn@linux.dev>
+References: <20260219235846.161910-1-jp.kobryn@linux.dev>
+Content-Type: text/plain
+Content-Transfer-Encoding: quoted-printable
+X-ClientProxiedBy: SJ0PR03CA0056.namprd03.prod.outlook.com
+ (2603:10b6:a03:33e::31) To DS7PR12MB9473.namprd12.prod.outlook.com
+ (2603:10b6:8:252::5)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Message-Id: <20260220-work-bpf-namespace-v1-4-866207db7b83@kernel.org>
-References: <20260220-work-bpf-namespace-v1-0-866207db7b83@kernel.org>
-In-Reply-To: <20260220-work-bpf-namespace-v1-0-866207db7b83@kernel.org>
-To: Alexei Starovoitov <ast@kernel.org>, 
- Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
- Martin KaFai Lau <martin.lau@linux.dev>, Tejun Heo <tj@kernel.org>
-Cc: KP Singh <kpsingh@kernel.org>, bpf@vger.kernel.org, 
- linux-kernel@vger.kernel.org, cgroups@vger.kernel.org, 
- Lennart Poettering <lennart@poettering.net>, 
- Christian Brauner <brauner@kernel.org>
-X-Mailer: b4 0.15-dev-47773
-X-Developer-Signature: v=1; a=openpgp-sha256; l=13245; i=brauner@kernel.org;
- h=from:subject:message-id; bh=mQc8EiFwm60GFoFhfzxR1JRaHCQHgCBHuPjqBgX857M=;
- b=owGbwMvMwCU28Zj0gdSKO4sYT6slMWROXyvAt7/kxAmdY6zyehaLr1VKcP/TvHm2y36nqxbbG
- veO60eFO0pZGMS4GGTFFFkc2k3C5ZbzVGw2ytSAmcPKBDKEgYtTACZSzc/IcOjdr5B0H9FZSy4z
- z633Cl6sxxO5Ru3lxJsfVwvPrHnpH8HIMD9X7/T+xcW3OpIObzLhuKORwNcp9s5wM1NHiFI1x/F
- bjAA=
-X-Developer-Key: i=brauner@kernel.org; a=openpgp;
- fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DS7PR12MB9473:EE_|CH3PR12MB9282:EE_
+X-MS-Office365-Filtering-Correlation-Id: 3a8097c2-16d5-45e8-3cf1-08de70197911
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam:
+	BCL:0;ARA:13230040|366016|376014|7416014|1800799024|7053199007;
+X-Microsoft-Antispam-Message-Info:
+	=?us-ascii?Q?xAl92eCCihAuBrBITaqjTyxlA0/ibos7oLXSPbRPlmFNMiip9fN0sGlAzZiX?=
+ =?us-ascii?Q?FcoLM+SQd0+zr3/4RvLEMHfKDQBPgz4Q2nKUqpcQL/HnOZhdOJYMxzy+g1jr?=
+ =?us-ascii?Q?oW4WfOd135CmZMl4GCWCDjP7bT8+4/f4w71BKkMLo4Ncj7bwhKntjc6/nRK9?=
+ =?us-ascii?Q?birux1VN2rPHQfh2pjVtva5KQP3NUZZxCnDkh5goT/n7Hme/5BxIMPPtUHpf?=
+ =?us-ascii?Q?VIQ1B+6QLX8EiCmi4RXjEU1cWmyzQiUUeMeaJfzz+UNyCc8C9iH4HXJaP65M?=
+ =?us-ascii?Q?TdU70Yv9Dg05XdRWrvjbL68l80DY5TKbgcDiaz4qjKZOVWpcC8WiJ+r4HE5J?=
+ =?us-ascii?Q?YFsPsYIO7+a1yabcJjmVGMAfQ7uXaGwBOn6jTSmnAl1KWuBHYPHMjXJgDPTg?=
+ =?us-ascii?Q?DpnkWGZsrxGQE46a2thNXXLR0gLIbhPqgx8QgZGk64HFq8BChtDsSTVV7J0v?=
+ =?us-ascii?Q?xd9DpGpb0CcU8y8H9BidTEDfjPUVOGtQGs3/CBsVkl8ECblO60mfNToOjBJW?=
+ =?us-ascii?Q?z0MiiC2xmyTMz8FWDSeem+AXiOPKXPRTsMZz6AFKlqJbf/qqJiFaNTgzMSXV?=
+ =?us-ascii?Q?l88yTzEE5cS/0W33NT646tFVQ7VEAQekB4/MQJZWyKd5x1LZmfuknglHmyck?=
+ =?us-ascii?Q?Q3rDGzbiy72I67X3wH/mkdT2IHrElMzjc51FUCEUlomibo8GBVlLAyvR75ln?=
+ =?us-ascii?Q?5qPubkbhiJXa4hmXOUogVKN1W1yRVVe9ll1dAUDvsw71HOo7VlBQA4W6qHIO?=
+ =?us-ascii?Q?f4LEKc7R82MAVKmBgLaqb986LykqhgFu4HqdXl7E0DHKMrL9bP1kJl87DciV?=
+ =?us-ascii?Q?3xxEXIFt1JykubSeUwrPKBaAGTDPdJvmzbOHwIUYw4YOOpq3c6n3uiycnGO1?=
+ =?us-ascii?Q?OXSBSJNGAJRdzeQ5KeBs4dlLqEYInu3iig84kFiBvfagO/bcJDrKbhmCJ2of?=
+ =?us-ascii?Q?8l9o0BB99gbpFeOMRIJFKCj6nchutc3JTDs2zvik27uEdcPhCi1mdTBsSeuG?=
+ =?us-ascii?Q?0iq3aKEaI+qMx2Truwizm/J4UKd/vAeyplIO/P+Qt0WgQmLbIQ2z6apmBdNi?=
+ =?us-ascii?Q?wnzwvY3TkIIdNgvbaWwFOVN8pPejaMxV6QW8us+vb7Mu3uqKn+dY87E/PmoG?=
+ =?us-ascii?Q?4cajRzvcEapO/3tCTLZAqgPGbnoiBgkAmwWvlCfPRQnpALq7tlcMAX6SmLDN?=
+ =?us-ascii?Q?7IocrCch9NDrvP5WpBqlKOsIGsX2e36YUOsMeJA2s0O37UIvJwyKHWP8J3Pw?=
+ =?us-ascii?Q?9vt7DYTAEheUYR4r13GRSF0/vy/xJa1+i/kHbp7+HieglAP1vF7RmjcZnJwb?=
+ =?us-ascii?Q?5QmSo9ZDaOoT2pTJDuWbuHxp435zKU3b2729ogwPOsmWZJe4Q30e5/+J4eJS?=
+ =?us-ascii?Q?Fk97+VK99INXtOHSKkaDrTkq2s2ut0QcPG+AbVJ0dMvoTCCCTuyS3nIfHRhQ?=
+ =?us-ascii?Q?B/oOpvFzN8hX9l6IlmEdkW5xUf0zIicKxD8/GSsBG7Ad5Kgl3bvoZnB2OLmU?=
+ =?us-ascii?Q?B7Sbn3eXr43/prSjcK8u6aQ0DasFI4iak8xW5Cpb19am+ywiEIIEf7Si7lNw?=
+ =?us-ascii?Q?i1bfNWwdr8viBkDjJjc=3D?=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS7PR12MB9473.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(376014)(7416014)(1800799024)(7053199007);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?0GcUWp7SZVhCZed5VJR5HKcqEf0fZu3JdyqLn/7LEBEM+Y+vV2uhqUSF1ANc?=
+ =?us-ascii?Q?q4a03UKhWboQKcMJDMFObBrrKbMrTE/5fcvAQjeUwQKnlgbZTkXReh2Z6MeW?=
+ =?us-ascii?Q?lJjL2tzCrANf7UNrBQEDCpSaMMKyrtA0s0F+EG0lp/tX0CLQNU9JvLCthoBf?=
+ =?us-ascii?Q?ux5xXroO042r+2RvJKXoiVtDd6XUeyS/fpSj9y4Oy5uP9MUvSmmxItLaESLC?=
+ =?us-ascii?Q?c0BDUjiPutq7JDsAJnBPb4x+QiJcw7E99+3wAj+3L9LvU33bvArZl4I5HmdZ?=
+ =?us-ascii?Q?L7vPPEKhEXxNsjxG0c93vljV5A2p3IaT1dgTQ/yn7ciRxhynJcakbS8g/j8T?=
+ =?us-ascii?Q?93Fu72hc7JgAqHK+fPjsaM8B4BQIjGahB+Nv5pSFUC5YXNrIIZL3LIu7nMqs?=
+ =?us-ascii?Q?wwErqLdf+5YW/N8wW5+raLRGThz3yEx4A2iF/pB+RrdZT+V4ic8HjEBg9wnr?=
+ =?us-ascii?Q?d64u3SfyRbJ6qeJ14+TeJxpcuihkP7dMgHHU+sZ9CPmFPUcVjVs+cfFKMabs?=
+ =?us-ascii?Q?3ud4Nq3CG8CY0LlvpY0I6CshHx/sr9uICER5UAHfhQ/gR8NBDoLxlN1unfjI?=
+ =?us-ascii?Q?0FFCpxqCMPxOstb3YJ/gzxe9AJPyzOXjQ2QWfbhapl6Z1YsIZZQ31IEMUYe0?=
+ =?us-ascii?Q?f/ygaAItHnJZPgtEXDANweAqMCk2qGNp3mo5+DassQr1M+IQlzJm4/3rq+94?=
+ =?us-ascii?Q?KXuwQwkXQdBPoj6mzWONVLdUP/92EZyhw0q8NzzAGjmhDSkYFyJca6uMYSF4?=
+ =?us-ascii?Q?S72ShO3baDCe22qZXcBtL3t5+JxVKO3RrdzD+7EstvBv66tYxQGCCQs0aUp0?=
+ =?us-ascii?Q?8EPhxn8CXMxZgzCEbBHQ7+jPnMPpbOlUywRzr5i2dqkORVvGM+7cXVUtHwdO?=
+ =?us-ascii?Q?1p8ELKhRkxi6EJ4BkJEMau4oHJm8CjVzVDCB464riZhqfLquOU6rcaeOEKBW?=
+ =?us-ascii?Q?8dUYjvzmLMaVpXOeAsBjNvw6PkgByWSzTipBVtFpnjHSheXhA6aYIKK9AvD2?=
+ =?us-ascii?Q?3EuTu9Ajzber2qR0jzalUrNg83mFOG1mCR+8mn3RyjrKytl1HzVIQSzvRk8f?=
+ =?us-ascii?Q?TTxVC7cyEeSEgVAdFkUIs2pZptfUMEkyBv6y7Lrtb6Vu40xLAwZkGkAWt4Q7?=
+ =?us-ascii?Q?uUReWSjD1pwAzp/OhIS7wGFKDzjej3aFl1lqQKYljRV21/SNLjwrs2YNjTc/?=
+ =?us-ascii?Q?vyz0oiu/dLMIpkLIlZXqlB+Gw6dqiEI/jXNhHWczt/T82d9n4MCUILccwqIA?=
+ =?us-ascii?Q?9V6gxCEWYG6w/HpgofopW45mqo6dynxW6QTrBemP5OOxN2eOcH8uWGP7gGbC?=
+ =?us-ascii?Q?XQh/aKO4osmCbGuPRggTgzORMF/RIwtTKuoMJLyFKJ7qxxOI8BXvSxqHcXru?=
+ =?us-ascii?Q?QsQJQJwQI96vHz/bPElP0p1LTfKB+nH93q7TprNrao7+IFG3UjMjDuMpwwB1?=
+ =?us-ascii?Q?W/0WtglKTE6H7gbe5FVA/cgq8NR7FrAfhpgwoE01HZUonLjuZu9YifOKPsFu?=
+ =?us-ascii?Q?Pwd/L/FlhUXcWK6CH6+P2jhe87tOqmZhyiwoj9PVS5hDU0jQpykTxrfjP+1I?=
+ =?us-ascii?Q?OvWSMqMT9dPmpRlO6melVQDeWtiZ7UlW7EGpwxRoIq3yCszUYyDKIVdf9Jst?=
+ =?us-ascii?Q?2nLRa8epK1cWHwliPSOl7r2mJi1i978yszu/a7UPjDOHeOAtUBYgn3prVNad?=
+ =?us-ascii?Q?6EWyG0ek/zPsMeoqqTyqoh+DikLgu4IvP/Ac9eZp1+KYlHra?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 3a8097c2-16d5-45e8-3cf1-08de70197911
+X-MS-Exchange-CrossTenant-AuthSource: DS7PR12MB9473.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Feb 2026 00:46:24.2294
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: z+1XysDdh5IcszGtnUj4vbfy5dkhAgAj9exCrIj3+VcKlU8zOZI3oNNodoy2iF5C
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH3PR12MB9282
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-2.16 / 15.00];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
-	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
+X-Spamd-Result: default: False [1.84 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
+	ARC_REJECT(1.00)[cv is fail on i=2];
+	R_MISSING_CHARSET(0.50)[];
+	DMARC_POLICY_ALLOW(-0.50)[nvidia.com,reject];
+	R_DKIM_ALLOW(-0.20)[Nvidia.com:s=selector2];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-14045-lists,cgroups=lfdr.de];
-	RCVD_TLS_LAST(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	DKIM_TRACE(0.00)[kernel.org:+];
+	RCPT_COUNT_TWELVE(0.00)[33];
+	FREEMAIL_CC(0.00)[kvack.org,redhat.com,suse.com,suse.cz,nvidia.com,linux-foundation.org,google.com,sk.com,vger.kernel.org,kernel.org,gourry.net,cmpxchg.org,gmail.com,oracle.com,intel.com,linux.dev,bytedance.com,lists.linux.dev,linux.alibaba.com,meta.com];
 	MIME_TRACE(0.00)[0:+];
+	RCVD_TLS_LAST(0.00)[];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-14046-lists,cgroups=lfdr.de];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	FROM_HAS_DN(0.00)[];
 	TO_DN_SOME(0.00)[];
-	NEURAL_HAM(-0.00)[-0.999];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[brauner@kernel.org,cgroups@vger.kernel.org];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	FROM_NEQ_ENVFROM(0.00)[ziy@nvidia.com,cgroups@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	DKIM_TRACE(0.00)[Nvidia.com:+];
+	RCVD_COUNT_FIVE(0.00)[5];
 	MID_RHS_MATCH_FROM(0.00)[];
+	NEURAL_HAM(-0.00)[-1.000];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
 	TAGGED_RCPT(0.00)[cgroups];
-	RCPT_COUNT_SEVEN(0.00)[11];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 348CC163E64
+	DBL_BLOCKED_OPENRESOLVER(0.00)[linux.dev:email,nvidia.com:mid,nvidia.com:email,Nvidia.com:dkim,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,cmpxchg.org:email]
+X-Rspamd-Queue-Id: EF42F16402D
 X-Rspamd-Action: no action
 
-Signed-off-by: Christian Brauner <brauner@kernel.org>
----
- .../selftests/bpf/prog_tests/cgroup_attach.c       | 362 +++++++++++++++++++++
- .../selftests/bpf/progs/test_cgroup_attach.c       |  85 +++++
- 2 files changed, 447 insertions(+)
+On 19 Feb 2026, at 18:58, JP Kobryn (Meta) wrote:
 
-diff --git a/tools/testing/selftests/bpf/prog_tests/cgroup_attach.c b/tools/testing/selftests/bpf/prog_tests/cgroup_attach.c
-new file mode 100644
-index 000000000000..05addf93af46
---- /dev/null
-+++ b/tools/testing/selftests/bpf/prog_tests/cgroup_attach.c
-@@ -0,0 +1,362 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2026 Christian Brauner <brauner@kernel.org> */
-+
-+/*
-+ * Test the bpf_lsm_cgroup_attach hook.
-+ *
-+ * Verifies that a BPF LSM program can supervise cgroup migration
-+ * through both the cgroup.procs write path and the clone3 +
-+ * CLONE_INTO_CGROUP path.
-+ */
-+
-+#define _GNU_SOURCE
-+#include <errno.h>
-+#include <fcntl.h>
-+#include <linux/sched.h>
-+#include <linux/types.h>
-+#include <sched.h>
-+#include <signal.h>
-+#include <stdio.h>
-+#include <stdlib.h>
-+#include <string.h>
-+#include <syscall.h>
-+#include <sys/wait.h>
-+#include <unistd.h>
-+
-+#include <test_progs.h>
-+#include "cgroup_helpers.h"
-+#include "test_cgroup_attach.skel.h"
-+
-+/* Must match the definition in progs/test_cgroup_attach.c */
-+struct attach_event {
-+	__u32 task_pid;
-+	__u64 src_cgrp_id;
-+	__u64 dst_cgrp_id;
-+	__u8  threadgroup;
-+	__u32 hook_count;
-+};
-+
-+#ifndef CLONE_INTO_CGROUP
-+#define CLONE_INTO_CGROUP 0x200000000ULL
-+#endif
-+
-+#ifndef __NR_clone3
-+#define __NR_clone3 435
-+#endif
-+
-+struct __clone_args {
-+	__aligned_u64 flags;
-+	__aligned_u64 pidfd;
-+	__aligned_u64 child_tid;
-+	__aligned_u64 parent_tid;
-+	__aligned_u64 exit_signal;
-+	__aligned_u64 stack;
-+	__aligned_u64 stack_size;
-+	__aligned_u64 tls;
-+	__aligned_u64 set_tid;
-+	__aligned_u64 set_tid_size;
-+	__aligned_u64 cgroup;
-+};
-+
-+static pid_t do_clone3(int cgroup_fd)
-+{
-+	struct __clone_args args = {
-+		.flags = CLONE_INTO_CGROUP,
-+		.exit_signal = SIGCHLD,
-+		.cgroup = cgroup_fd,
-+	};
-+
-+	return syscall(__NR_clone3, &args, sizeof(args));
-+}
-+
-+/*
-+ * Subtest: deny_migration
-+ *
-+ * Verify that the BPF hook can deny cgroup migration through cgroup.procs
-+ * and that detaching the BPF program removes enforcement.
-+ */
-+static void test_deny_migration(void)
-+{
-+	struct test_cgroup_attach *skel = NULL;
-+	int allowed_fd = -1, denied_fd = -1;
-+	unsigned long long denied_cgid;
-+	int err, status;
-+	__u64 key;
-+	__u8 val = 1;
-+	pid_t child;
-+
-+	if (!ASSERT_OK(setup_cgroup_environment(), "setup_cgroup_env"))
-+		return;
-+
-+	allowed_fd = create_and_get_cgroup("/allowed");
-+	if (!ASSERT_GE(allowed_fd, 0, "create /allowed"))
-+		goto cleanup;
-+
-+	denied_fd = create_and_get_cgroup("/denied");
-+	if (!ASSERT_GE(denied_fd, 0, "create /denied"))
-+		goto cleanup;
-+
-+	skel = test_cgroup_attach__open_and_load();
-+	if (!ASSERT_OK_PTR(skel, "skel open_and_load"))
-+		goto cleanup;
-+
-+	err = test_cgroup_attach__attach(skel);
-+	if (!ASSERT_OK(err, "skel attach"))
-+		goto cleanup;
-+
-+	skel->bss->monitored_pid = getpid();
-+
-+	denied_cgid = get_cgroup_id("/denied");
-+	if (!ASSERT_NEQ(denied_cgid, 0ULL, "get denied cgroup id"))
-+		goto cleanup;
-+
-+	key = denied_cgid;
-+	err = bpf_map__update_elem(skel->maps.denied_cgroups,
-+				   &key, sizeof(key), &val, sizeof(val), 0);
-+	if (!ASSERT_OK(err, "add denied cgroup"))
-+		goto cleanup;
-+
-+	/*
-+	 * Forked children must use join_parent_cgroup() because the
-+	 * cgroup workdir was created under the parent's PID and
-+	 * join_cgroup() constructs paths using getpid().
-+	 */
-+
-+	/* Child migrating to /allowed should succeed */
-+	child = fork();
-+	if (!ASSERT_GE(child, 0, "fork child allowed"))
-+		goto cleanup;
-+	if (child == 0) {
-+		if (join_parent_cgroup("/allowed"))
-+			_exit(1);
-+		_exit(0);
-+	}
-+	err = waitpid(child, &status, 0);
-+	ASSERT_GT(err, 0, "waitpid allowed");
-+	ASSERT_TRUE(WIFEXITED(status), "allowed child exited");
-+	ASSERT_EQ(WEXITSTATUS(status), 0, "allowed migration succeeds");
-+
-+	/* Child migrating to /denied should fail */
-+	child = fork();
-+	if (!ASSERT_GE(child, 0, "fork child denied"))
-+		goto cleanup;
-+	if (child == 0) {
-+		if (join_parent_cgroup("/denied") == 0)
-+			_exit(1); /* Should have failed */
-+		if (errno != EPERM)
-+			_exit(2); /* Wrong errno */
-+		_exit(0);
-+	}
-+	err = waitpid(child, &status, 0);
-+	ASSERT_GT(err, 0, "waitpid denied");
-+	ASSERT_TRUE(WIFEXITED(status), "denied child exited");
-+	ASSERT_EQ(WEXITSTATUS(status), 0, "denied migration blocked");
-+
-+	/* Detach BPF — /denied should now be accessible */
-+	test_cgroup_attach__detach(skel);
-+
-+	child = fork();
-+	if (!ASSERT_GE(child, 0, "fork child post-detach"))
-+		goto cleanup;
-+	if (child == 0) {
-+		if (join_parent_cgroup("/denied"))
-+			_exit(1);
-+		_exit(0);
-+	}
-+	err = waitpid(child, &status, 0);
-+	ASSERT_GT(err, 0, "waitpid post-detach");
-+	ASSERT_TRUE(WIFEXITED(status), "post-detach child exited");
-+	ASSERT_EQ(WEXITSTATUS(status), 0, "post-detach migration free");
-+
-+cleanup:
-+	if (skel)
-+		test_cgroup_attach__destroy(skel);
-+	if (allowed_fd >= 0)
-+		close(allowed_fd);
-+	if (denied_fd >= 0)
-+		close(denied_fd);
-+	cleanup_cgroup_environment();
-+}
-+
-+/*
-+ * Subtest: verify_hook_args
-+ *
-+ * Verify that the hook receives correct src_cgrp, dst_cgrp, task pid,
-+ * and threadgroup values.
-+ */
-+static void test_verify_hook_args(void)
-+{
-+	struct test_cgroup_attach *skel = NULL;
-+	struct attach_event evt = {};
-+	unsigned long long src_cgid, dst_cgid;
-+	int src_fd = -1, dst_fd = -1;
-+	__u32 map_key = 0;
-+	char pid_str[32];
-+	int err;
-+
-+	if (!ASSERT_OK(setup_cgroup_environment(), "setup_cgroup_env"))
-+		return;
-+
-+	src_fd = create_and_get_cgroup("/src");
-+	if (!ASSERT_GE(src_fd, 0, "create /src"))
-+		goto cleanup;
-+
-+	dst_fd = create_and_get_cgroup("/dst");
-+	if (!ASSERT_GE(dst_fd, 0, "create /dst"))
-+		goto cleanup;
-+
-+	/* Move ourselves to /src first */
-+	if (!ASSERT_OK(join_cgroup("/src"), "join /src"))
-+		goto cleanup;
-+
-+	skel = test_cgroup_attach__open_and_load();
-+	if (!ASSERT_OK_PTR(skel, "skel open_and_load"))
-+		goto cleanup;
-+
-+	err = test_cgroup_attach__attach(skel);
-+	if (!ASSERT_OK(err, "skel attach"))
-+		goto cleanup;
-+
-+	skel->bss->monitored_pid = getpid();
-+
-+	src_cgid = get_cgroup_id("/src");
-+	dst_cgid = get_cgroup_id("/dst");
-+	if (!ASSERT_NEQ(src_cgid, 0ULL, "get src cgroup id"))
-+		goto cleanup;
-+	if (!ASSERT_NEQ(dst_cgid, 0ULL, "get dst cgroup id"))
-+		goto cleanup;
-+
-+	/* Migrate self to /dst via cgroup.procs (threadgroup=true) */
-+	snprintf(pid_str, sizeof(pid_str), "%d", getpid());
-+	if (!ASSERT_OK(write_cgroup_file("/dst", "cgroup.procs", pid_str),
-+		       "migrate to /dst"))
-+		goto cleanup;
-+
-+	/* Read the recorded event */
-+	err = bpf_map__lookup_elem(skel->maps.last_event,
-+				   &map_key, sizeof(map_key),
-+				   &evt, sizeof(evt), 0);
-+	if (!ASSERT_OK(err, "read last_event"))
-+		goto cleanup;
-+
-+	ASSERT_EQ(evt.src_cgrp_id, src_cgid, "src_cgrp_id matches");
-+	ASSERT_EQ(evt.dst_cgrp_id, dst_cgid, "dst_cgrp_id matches");
-+	ASSERT_EQ(evt.task_pid, (__u32)getpid(), "task_pid matches");
-+	ASSERT_EQ(evt.threadgroup, 1, "threadgroup is true for cgroup.procs");
-+	ASSERT_GE(evt.hook_count, (__u32)1, "hook fired at least once");
-+
-+cleanup:
-+	if (skel)
-+		test_cgroup_attach__destroy(skel);
-+	if (src_fd >= 0)
-+		close(src_fd);
-+	if (dst_fd >= 0)
-+		close(dst_fd);
-+	cleanup_cgroup_environment();
-+}
-+
-+/*
-+ * Subtest: clone_into_cgroup
-+ *
-+ * Verify the hook fires on the clone3(CLONE_INTO_CGROUP) path and can
-+ * deny spawning a child directly into a cgroup.
-+ */
-+static void test_clone_into_cgroup(void)
-+{
-+	struct test_cgroup_attach *skel = NULL;
-+	int allowed_fd = -1, denied_fd = -1;
-+	unsigned long long denied_cgid, allowed_cgid;
-+	struct attach_event evt = {};
-+	__u32 map_key = 0;
-+	__u64 key;
-+	__u8 val = 1;
-+	int err, status;
-+	pid_t child;
-+
-+	if (!ASSERT_OK(setup_cgroup_environment(), "setup_cgroup_env"))
-+		return;
-+
-+	allowed_fd = create_and_get_cgroup("/clone_allowed");
-+	if (!ASSERT_GE(allowed_fd, 0, "create /clone_allowed"))
-+		goto cleanup;
-+
-+	denied_fd = create_and_get_cgroup("/clone_denied");
-+	if (!ASSERT_GE(denied_fd, 0, "create /clone_denied"))
-+		goto cleanup;
-+
-+	skel = test_cgroup_attach__open_and_load();
-+	if (!ASSERT_OK_PTR(skel, "skel open_and_load"))
-+		goto cleanup;
-+
-+	err = test_cgroup_attach__attach(skel);
-+	if (!ASSERT_OK(err, "skel attach"))
-+		goto cleanup;
-+
-+	skel->bss->monitored_pid = getpid();
-+
-+	denied_cgid = get_cgroup_id("/clone_denied");
-+	allowed_cgid = get_cgroup_id("/clone_allowed");
-+	if (!ASSERT_NEQ(denied_cgid, 0ULL, "get denied cgroup id"))
-+		goto cleanup;
-+	if (!ASSERT_NEQ(allowed_cgid, 0ULL, "get allowed cgroup id"))
-+		goto cleanup;
-+
-+	key = denied_cgid;
-+	err = bpf_map__update_elem(skel->maps.denied_cgroups,
-+				   &key, sizeof(key), &val, sizeof(val), 0);
-+	if (!ASSERT_OK(err, "add denied cgroup"))
-+		goto cleanup;
-+
-+	/* clone3 into denied cgroup should fail */
-+	child = do_clone3(denied_fd);
-+	if (child >= 0) {
-+		waitpid(child, NULL, 0);
-+		ASSERT_LT(child, 0, "clone3 into denied should fail");
-+		goto cleanup;
-+	}
-+	if (errno == ENOSYS || errno == E2BIG) {
-+		test__skip();
-+		goto cleanup;
-+	}
-+	ASSERT_EQ(errno, EPERM, "clone3 denied errno");
-+
-+	/* clone3 into allowed cgroup should succeed */
-+	child = do_clone3(allowed_fd);
-+	if (!ASSERT_GE(child, 0, "clone3 into allowed"))
-+		goto cleanup;
-+	if (child == 0)
-+		_exit(0);
-+
-+	err = waitpid(child, &status, 0);
-+	ASSERT_GT(err, 0, "waitpid clone3 allowed");
-+	ASSERT_TRUE(WIFEXITED(status), "clone3 child exited");
-+	ASSERT_EQ(WEXITSTATUS(status), 0, "clone3 child ok");
-+
-+	/* Verify the hook recorded the allowed clone */
-+	err = bpf_map__lookup_elem(skel->maps.last_event,
-+				   &map_key, sizeof(map_key),
-+				   &evt, sizeof(evt), 0);
-+	if (!ASSERT_OK(err, "read last_event"))
-+		goto cleanup;
-+
-+	ASSERT_EQ(evt.dst_cgrp_id, allowed_cgid, "clone3 dst_cgrp_id");
-+
-+cleanup:
-+	if (skel)
-+		test_cgroup_attach__destroy(skel);
-+	if (allowed_fd >= 0)
-+		close(allowed_fd);
-+	if (denied_fd >= 0)
-+		close(denied_fd);
-+	cleanup_cgroup_environment();
-+}
-+
-+void test_cgroup_attach(void)
-+{
-+	if (test__start_subtest("deny_migration"))
-+		test_deny_migration();
-+	if (test__start_subtest("verify_hook_args"))
-+		test_verify_hook_args();
-+	if (test__start_subtest("clone_into_cgroup"))
-+		test_clone_into_cgroup();
-+}
-diff --git a/tools/testing/selftests/bpf/progs/test_cgroup_attach.c b/tools/testing/selftests/bpf/progs/test_cgroup_attach.c
-new file mode 100644
-index 000000000000..90915d1d7d64
---- /dev/null
-+++ b/tools/testing/selftests/bpf/progs/test_cgroup_attach.c
-@@ -0,0 +1,85 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/* Copyright (c) 2026 Christian Brauner <brauner@kernel.org> */
-+
-+/*
-+ * BPF LSM cgroup attach policy: supervise cgroup migration.
-+ *
-+ * A designated process populates a denied_cgroups map with cgroup IDs
-+ * that should reject migration.  The cgroup_attach hook checks every
-+ * migration and returns -EPERM when the destination cgroup is denied.
-+ * It also records the last hook invocation into last_event for the
-+ * userspace test to verify arguments.
-+ */
-+
-+#include "vmlinux.h"
-+#include <errno.h>
-+#include <bpf/bpf_helpers.h>
-+#include <bpf/bpf_tracing.h>
-+#include <bpf/bpf_core_read.h>
-+
-+struct attach_event {
-+	__u32 task_pid;
-+	__u64 src_cgrp_id;
-+	__u64 dst_cgrp_id;
-+	__u8  threadgroup;
-+	__u32 hook_count;
-+};
-+
-+/*
-+ * Cgroups that should reject migration.
-+ * Key:   cgroup kn->id (u64).
-+ * Value: unused marker.
-+ */
-+struct {
-+	__uint(type, BPF_MAP_TYPE_HASH);
-+	__uint(max_entries, 16);
-+	__type(key, __u64);
-+	__type(value, __u8);
-+} denied_cgroups SEC(".maps");
-+
-+/*
-+ * Record the last hook invocation for argument verification.
-+ * Key:   0.
-+ * Value: struct attach_event.
-+ */
-+struct {
-+	__uint(type, BPF_MAP_TYPE_ARRAY);
-+	__uint(max_entries, 1);
-+	__type(key, __u32);
-+	__type(value, struct attach_event);
-+} last_event SEC(".maps");
-+
-+__u32 monitored_pid;
-+
-+char _license[] SEC("license") = "GPL";
-+
-+SEC("lsm.s/cgroup_attach")
-+int BPF_PROG(cgroup_attach, struct task_struct *task,
-+	     struct cgroup *src_cgrp, struct cgroup *dst_cgrp,
-+	     struct super_block *sb, bool threadgroup,
-+	     struct cgroup_namespace *ns)
-+{
-+	struct task_struct *current = bpf_get_current_task_btf();
-+	struct attach_event *evt;
-+	__u64 dst_id;
-+	__u32 key = 0;
-+
-+	dst_id = BPF_CORE_READ(dst_cgrp, kn, id);
-+
-+	if (bpf_map_lookup_elem(&denied_cgroups, &dst_id))
-+		return -EPERM;
-+
-+	if (!monitored_pid || current->tgid != monitored_pid)
-+		return 0;
-+
-+	evt = bpf_map_lookup_elem(&last_event, &key);
-+	if (evt) {
-+		evt->task_pid = task->pid;
-+		evt->src_cgrp_id = BPF_CORE_READ(src_cgrp, kn, id);
-+		evt->dst_cgrp_id = dst_id;
-+		evt->threadgroup = threadgroup ? 1 : 0;
-+		evt->hook_count++;
-+	}
-+
-+	return 0;
-+}
+> There are situations where reclaim kicks in on a system with free memor=
+y.
+> One possible cause is a NUMA imbalance scenario where one or more nodes=
+ are
+> under pressure. It would help if we could easily identify such nodes.
+>
+> Move the pgscan, pgsteal, and pgrefill counters from vm_event_item to
+> node_stat_item to provide per-node reclaim visibility. With these count=
+ers
+> as node stats, the values are now displayed in the per-node section of
+> /proc/zoneinfo, which allows for quick identification of the affected
+> nodes.
+>
+> /proc/vmstat continues to report the same counters, aggregated across a=
+ll
+> nodes. But the ordering of these items within the readout changes as th=
+ey
+> move from the vm events section to the node stats section.
+>
+> Memcg accounting of these counters is preserved. The relocated counters=
 
--- 
-2.47.3
+> remain visible in memory.stat alongside the existing aggregate pgscan a=
+nd
+> pgsteal counters.
+>
+> However, this change affects how the global counters are accumulated.
+> Previously, the global event count update was gated on !cgroup_reclaim(=
+),
+> excluding memcg-based reclaim from /proc/vmstat. Now that
+> mod_lruvec_state() is being used to update the counters, the global
+> counters will include all reclaim. This is consistent with how pgdemote=
 
+> counters are already tracked.
+>
+> Finally, the virtio_balloon driver is updated to use
+> global_node_page_state() to fetch the counters, as they are no longer
+> accessible through the vm_events array.
+>
+> Signed-off-by: JP Kobryn <jp.kobryn@linux.dev>
+> Suggested-by: Johannes Weiner <hannes@cmpxchg.org>
+> Acked-by: Michael S. Tsirkin <mst@redhat.com>
+> Reviewed-by: Vlastimil Babka (SUSE) <vbabka@kernel.org>
+> ---
+> v5:
+> 	- rebase onto mm/mm-new
+>
+> v4: https://lore.kernel.org/linux-mm/20260219171124.19053-1-jp.kobryn@l=
+inux.dev/
+> 	- remove unused memcg var from scan_folios()
+>
+> v3: https://lore.kernel.org/linux-mm/20260218222652.108411-1-jp.kobryn@=
+linux.dev/
+> 	- additionally move PGREFILL to node stats
+>
+> v2: https://lore.kernel.org/linux-mm/20260218032941.225439-1-jp.kobryn@=
+linux.dev/
+> 	- update commit message
+> 	- add entries to memory_stats array
+> 	- add switch cases in memcg_page_state_output_unit()
+>
+> v1: https://lore.kernel.org/linux-mm/20260212045109.255391-3-inwardvess=
+el@gmail.com/
+>
+>  drivers/virtio/virtio_balloon.c |  8 ++---
+>  include/linux/mmzone.h          | 13 ++++++++
+>  include/linux/vm_event_item.h   | 13 --------
+>  mm/memcontrol.c                 | 56 +++++++++++++++++++++++----------=
+
+>  mm/vmscan.c                     | 39 ++++++++---------------
+>  mm/vmstat.c                     | 26 +++++++--------
+>  6 files changed, 82 insertions(+), 73 deletions(-)
+>
+
+Acked-by: Zi Yan <ziy@nvidia.com>
+
+Best Regards,
+Yan, Zi
 
