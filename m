@@ -1,304 +1,255 @@
-Return-Path: <cgroups+bounces-14051-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-14052-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id KKkwFwY0mGn/CgMAu9opvQ
-	(envelope-from <cgroups+bounces-14051-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Fri, 20 Feb 2026 11:14:30 +0100
+	id kIB7CnI8mGkQDgMAu9opvQ
+	(envelope-from <cgroups+bounces-14052-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Fri, 20 Feb 2026 11:50:26 +0100
 X-Original-To: lists+cgroups@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id D0927166B66
-	for <lists+cgroups@lfdr.de>; Fri, 20 Feb 2026 11:14:29 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9596A167068
+	for <lists+cgroups@lfdr.de>; Fri, 20 Feb 2026 11:50:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 10DDA30158A1
-	for <lists+cgroups@lfdr.de>; Fri, 20 Feb 2026 10:14:28 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id A1DED300F5F3
+	for <lists+cgroups@lfdr.de>; Fri, 20 Feb 2026 10:48:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 87A5C2857EE;
-	Fri, 20 Feb 2026 10:14:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 72B8F33F36B;
+	Fri, 20 Feb 2026 10:48:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="Z0ZaLZ/Z"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-oo1-f69.google.com (mail-oo1-f69.google.com [209.85.161.69])
+Received: from mail-wm1-f48.google.com (mail-wm1-f48.google.com [209.85.128.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DCFC523373D
-	for <cgroups@vger.kernel.org>; Fri, 20 Feb 2026 10:14:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.69
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC65F33D512
+	for <cgroups@vger.kernel.org>; Fri, 20 Feb 2026 10:48:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1771582463; cv=none; b=QVQ2sDQAgBPg8mso0NADobwm/w4YvJ3GRaQ3rTuDOx9u6GTzNcIwZQMJXfvoQfJP8KEKV06vCOgvuCAj9Q+t6OnN1YFZf75IPbXneczoe1mZuSukUBx4GrEiJLjYsUTJmAMnX633+Yar2RI9EwrovJ1GrnXMlKQKUw8Eg9I2aQ0=
+	t=1771584485; cv=none; b=gQH8duwZhabJ7uLhCndw0WA8wWoWDAe29fmI/BzUK3kKV0stn6oDCZXVA2S3Yy9fsGVMaePyOwHabhqplTOs1n+6jfkYtDJNYkUtTiFCWoVmTJ/VqTvx2Kc+lqj9OBSghXYsmFqessS0q6ylZS7c+VdiVKA8Yelr5p7xrYxFjW8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1771582463; c=relaxed/simple;
-	bh=gcsXTMo7iqO4Pg3sVMoOLMSk7eLVL7Ljh8aJq2IakFM=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:Cc:
-	 Content-Type; b=LNRvEY8x9Y6QOAzc3QByPel4GpL+a1h+e2B7Yeq4Nuqoz8578YZoV9fgIXFx4ptwYB5kGxNV2QN0BAIxlgUErDYPdEfXrXfOX9biV7u5Wapn4yc9T3pcohSEjL2wkDPWATJeVSZxUFhc5J9r/MO5CPd1Xk91WFUWxkDAsHHCsKA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.161.69
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-oo1-f69.google.com with SMTP id 006d021491bc7-6787fa20d41so29628952eaf.0
-        for <cgroups@vger.kernel.org>; Fri, 20 Feb 2026 02:14:21 -0800 (PST)
+	s=arc-20240116; t=1771584485; c=relaxed/simple;
+	bh=5iZKfGScVG4WQFH1WEOmNQOcU9lX9vGTUc/XSwmCHS4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=TkJ1MHlUYKIGtBWNlLH613ppbVXbJp8IhcB3YRero1mMIJkeHiuvKIAtsnWp5GQdIx5CK5foFYoISrK41g7WqI0axt9rv9hOqPTezo7OMUvfEApVYdg3WleWk9X58kaslNQkgB2svOTkfTHNawz6Ttu1YfWknf93ZD0i2asi6Dk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=Z0ZaLZ/Z; arc=none smtp.client-ip=209.85.128.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-wm1-f48.google.com with SMTP id 5b1f17b1804b1-4836d9d54f6so2962505e9.1
+        for <cgroups@vger.kernel.org>; Fri, 20 Feb 2026 02:48:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1771584482; x=1772189282; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:content-language:from
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=aIuh/mqVOC+QEYbxZAPJ2XnAxftipx1GQkPpqjSSnEY=;
+        b=Z0ZaLZ/Z15jxRhhlU/T1TsdFD8yl19KrJ2nhHLLrbZI0ZjOC3Dy1rR58QntXxGklf1
+         JApbpfJi9dA2Hj1kQ1GOBSpBLx7PgtPKvAbQXpQxh1v12fJMyELQrGWlPcAM6i+xbT6T
+         vjcVPoTiDA0vkc3VtU0q6wZM9eg9l58JB38SeL+ZHLq/dA1Nsow8GxtLj3HbS6mZiuKE
+         fPTkLZt6y+PES1j/2//57bbjSkFbuUtPTVT6o2OZT2KWOrB0x+elWhRC+X1xBJDiapzi
+         VOmVcdb94iFNS8NBw+pU8eFMRI37K3xU4mq2ecItq3xIdNFG0r20CRXAg8EYhHtkYZln
+         eLnA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1771582461; x=1772187261;
-        h=cc:to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=JMNiebd2whpNinmgx82cwNyRYJ5UqFJmTJ6XQA4gK7o=;
-        b=bzQ7xDLvh7LUk2I7UlKRUL5frTgKqEDxGm0aYo0BDU6Iq+dn2/yD3I/7qxYGbDic0z
-         JxtcuPQDKNchlHVzePB3/xYceojIJpLo2ExJ/gaAIp53PODdPMbmFjdjdxuJiyfbd95r
-         qIhSYQVZqgmfkbt7sL3BvEr6tinkMLhFnSV+RYT5luDuQMf9NMBF7uMBW/jIop4ZGW7r
-         98OPZtyGhEWjP0Edui1cyWOSowRcVfi7q1C9/c/PP+NE+/yH+LXo6UV2WFIeEMSUGWHX
-         EiiuJ0n5i5YjmA0APWOy/1qMODMsEIRwC1mSGAkvVPJELDfzmQWzfHDDNqA+hpJ9VUPY
-         ee+Q==
-X-Forwarded-Encrypted: i=1; AJvYcCWNU7C2gcY+e/vg3nrQ9UqWDbeG1X+WDaLPgfyaCgix7D5lg2gkkLd4Z+5qab4WWnILc8ujYrpa@vger.kernel.org
-X-Gm-Message-State: AOJu0YzQdzLEuieJnBUXN9JHEx1Bpv3IxdEBf55PDcrPnn8aaljDaMih
-	/wI+gv3NrhcSq4Sxo1SaTtL/g8v9FPHjHRGbrKDfEng2wRtGnUuH/Be6xRDexdyEfSDyIesOJFp
-	55O7ZKbGjCPnzBvQDzTqamuwJd5+HCwzvzYxpUKy6lNy4SDY0X23m/V8TkBw=
+        d=1e100.net; s=20230601; t=1771584482; x=1772189282;
+        h=content-transfer-encoding:in-reply-to:content-language:from
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=aIuh/mqVOC+QEYbxZAPJ2XnAxftipx1GQkPpqjSSnEY=;
+        b=s92rZd6HydJ1hYUuKqK5E3YS/c6oqB4lEwqlSmq26wO5KTgzDDxu3baT49sj898KCg
+         0smOHeJee0AdF/47akodmBMg+fbTerA18aCiw6BrLwWmT5oEuQ9umKW2ae3mATBH7SrS
+         fYsjhQ4/ZlOSpiDPDH9AOsFgG2tpqMn9kr1QcrmCd6X0r1qmQqBz6WpsFWTvBj5cM8wk
+         hS0jAL/5naaoJB6qjcjGArfX7SxSDoU7mJWZgKutQgjv+6p6TsnbTnsB46f4+9HkX+6/
+         vEa0f9eruFBwp9e2czNP0Sveqix5a55g8AKxEpplBsV+SeCDuITf8xcyLa+1YU+Oj1P+
+         VqPw==
+X-Forwarded-Encrypted: i=1; AJvYcCWdJmGjBjtVEKF6Rp0WJV2SYL+4U+CPLfaB4t51RTeoiWLcK+/YexQ9+cigm20T1HaFyzdQHnD7@vger.kernel.org
+X-Gm-Message-State: AOJu0YznHLRWDfLz6qY70zbJyRCXu1/MI7oUxGkQi5CCGlBXSPp1JXDr
+	G6gUOsvohbn5v8zNDI0DNDEMe4GsAQ0PihiTCYw9b8vKFYSB2ZeleHggkH1W8GSbsaZ4jn+ovaj
+	d6R+p
+X-Gm-Gg: AZuq6aL8LGO4iQWQAOxAZr9htVo8bKqSaA7/AfnCjb+BQu1B/V67EIO20trz3ebTr4I
+	6oC+R9JjwWc+jmdIFss4Zqj8GQ7ErP0T7cZLXgD1gBV87lbWRLGuRkhnWd65/HDNEg+o3OOAwBN
+	s9ogE94V2xKbuRpRQJQQoe9rGt11KBl4OCOb7VW7syjetPb8khd7BDZ+XAi5DZftOcgYh0+tB1H
+	p6eCp6sK4QGn3McrZ48jLjwsVg8YY+AaeDCzWG0X1MYr8hTWFiL+bOKpHoqKKQg+8dXEIo34RQa
+	3GyPIt2a7SYVYCG7eSuwTUe9vaatCWY9+OZ+yGWSRhiOiGlzf4LuX5B2JmQbDkysdx3jA77gKVB
+	fefwc0n2kUKIlnoyEyPvFkrwTa5YDhaypKVxmsjVcg9afCYWpjTzVeENkDZ4yru4/h3TqicPaWz
+	hxVlwuB2WSBOUwUrD93IRzoPgtokv8
+X-Received: by 2002:a05:600c:4448:b0:47b:d992:601e with SMTP id 5b1f17b1804b1-48370e2b6bemr278598485e9.2.1771584481843;
+        Fri, 20 Feb 2026 02:48:01 -0800 (PST)
+Received: from ?IPV6:2001:1a48:8:903::e14? ([2001:1a48:8:903::e14])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-43796abe3b3sm62652000f8f.18.2026.02.20.02.48.00
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 20 Feb 2026 02:48:01 -0800 (PST)
+Message-ID: <3f2b985a-2fb0-4d63-9dce-8a9cad8ce464@suse.com>
+Date: Fri, 20 Feb 2026 11:48:00 +0100
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6820:2108:b0:66e:66b1:963f with SMTP id
- 006d021491bc7-679aeec7538mr3091201eaf.18.1771582461010; Fri, 20 Feb 2026
- 02:14:21 -0800 (PST)
-Date: Fri, 20 Feb 2026 02:14:20 -0800
-In-Reply-To: <20260220055449.3073-1-tjmercier@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <699833fc.050a0220.b01bb.0039.GAE@google.com>
-Subject: [syzbot ci] Re: kernfs: Add inotify IN_DELETE_SELF, IN_IGNORED support
-From: syzbot ci <syzbot+cif2121bcf05a8d84e@syzkaller.appspotmail.com>
-To: amir73il@gmail.com, cgroups@vger.kernel.org, driver-core@lists.linux.dev, 
-	gregkh@linuxfoundation.org, jack@suse.cz, linux-fsdevel@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org, 
-	shuah@kernel.org, tj@kernel.org, tjmercier@google.com
-Cc: syzbot@lists.linux.dev, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 0/4] Introduce QPW for per-cpu operations
+To: Marcelo Tosatti <mtosatti@redhat.com>, Michal Hocko <mhocko@suse.com>
+Cc: Leonardo Bras <leobras.c@gmail.com>, linux-kernel@vger.kernel.org,
+ cgroups@vger.kernel.org, linux-mm@kvack.org,
+ Johannes Weiner <hannes@cmpxchg.org>,
+ Roman Gushchin <roman.gushchin@linux.dev>,
+ Shakeel Butt <shakeel.butt@linux.dev>, Muchun Song <muchun.song@linux.dev>,
+ Andrew Morton <akpm@linux-foundation.org>, Christoph Lameter <cl@linux.com>,
+ Pekka Enberg <penberg@kernel.org>, David Rientjes <rientjes@google.com>,
+ Joonsoo Kim <iamjoonsoo.kim@lge.com>, Vlastimil Babka <vbabka@suse.cz>,
+ Hyeonggon Yoo <42.hyeyoo@gmail.com>, Leonardo Bras <leobras@redhat.com>,
+ Thomas Gleixner <tglx@linutronix.de>, Waiman Long <longman@redhat.com>,
+ Boqun Feng <boqun.feng@gmail.com>, Frederic Weisbecker <fweisbecker@suse.de>
+References: <20260206143430.021026873@redhat.com> <aYs6Ju2G4bm6_tl2@tiehlicka>
+ <aYxviLoWsrLqDU7o@tpad> <aYywl1hdBQP2_slo@tiehlicka>
+ <aZDw6xI2izFDfuuu@WindFlash> <aZL45yORfkNvS9Rs@tiehlicka>
+ <aZcr255pGT3B/eaL@tpad>
+From: Vlastimil Babka <vbabka@suse.com>
+Content-Language: en-US
+In-Reply-To: <aZcr255pGT3B/eaL@tpad>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-1.36 / 15.00];
+X-Spamd-Result: default: False [-0.66 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
+	DMARC_POLICY_ALLOW(-0.50)[suse.com,quarantine];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_DKIM_ALLOW(-0.20)[suse.com:s=google];
 	MAILLIST(-0.15)[generic];
-	DMARC_POLICY_SOFTFAIL(0.10)[appspotmail.com : SPF not aligned (relaxed), No valid DKIM,none];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	MIME_TRACE(0.00)[0:+];
-	TAGGED_FROM(0.00)[bounces-14051-lists,cgroups=lfdr.de,cif2121bcf05a8d84e];
-	RCVD_TLS_LAST(0.00)[];
-	FREEMAIL_TO(0.00)[gmail.com,vger.kernel.org,lists.linux.dev,linuxfoundation.org,suse.cz,kernel.org,google.com];
-	RCVD_COUNT_THREE(0.00)[4];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	MISSING_XM_UA(0.00)[];
+	FREEMAIL_CC(0.00)[gmail.com,vger.kernel.org,kvack.org,cmpxchg.org,linux.dev,linux-foundation.org,linux.com,kernel.org,google.com,lge.com,suse.cz,redhat.com,linutronix.de,suse.de];
+	TAGGED_FROM(0.00)[bounces-14052-lists,cgroups=lfdr.de];
 	FROM_HAS_DN(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[13];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	RCVD_TLS_LAST(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[22];
+	MIME_TRACE(0.00)[0:+];
+	DKIM_TRACE(0.00)[suse.com:+];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	TO_DN_SOME(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[5];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[syzbot@syzkaller.appspotmail.com,cgroups@vger.kernel.org];
-	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
-	TO_DN_NONE(0.00)[];
-	R_DKIM_NA(0.00)[];
-	NEURAL_HAM(-0.00)[-0.923];
+	FROM_NEQ_ENVFROM(0.00)[vbabka@suse.com,cgroups@vger.kernel.org];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	NEURAL_HAM(-0.00)[-1.000];
 	TAGGED_RCPT(0.00)[cgroups];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,googlesource.com:url,appspotmail.com:email]
-X-Rspamd-Queue-Id: D0927166B66
+	MID_RHS_MATCH_FROM(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,suse.com:mid,suse.com:dkim]
+X-Rspamd-Queue-Id: 9596A167068
 X-Rspamd-Action: no action
 
-syzbot ci has tested the following series
+On 2/19/26 16:27, Marcelo Tosatti wrote:
+> On Mon, Feb 16, 2026 at 12:00:55PM +0100, Michal Hocko wrote:
+> 
+> Michal,
+> 
+> Again, i don't see how moving operations to happen at return to 
+> kernel would help (assuming you are talking about 
+> "context_tracking,x86: Defer some IPIs until a user->kernel transition").
+> 
+> The IPIs in the patchset above can be deferred until user->kernel
+> transition because they are TLB flushes, for addresses which do not
+> exist on the address space mapping in userspace.
+> 
+> What are the per-CPU objects in SLUB ?
+> 
+> struct slab_sheaf {
+>         union {
+>                 struct rcu_head rcu_head;
+>                 struct list_head barn_list;
+>                 /* only used for prefilled sheafs */
+>                 struct {
+>                         unsigned int capacity;
+>                         bool pfmemalloc;
+>                 };
+>         };
+>         struct kmem_cache *cache;
+>         unsigned int size;
+>         int node; /* only used for rcu_sheaf */
+>         void *objects[];
+> };
+> 
+> struct slub_percpu_sheaves {
+>         local_trylock_t lock;
+>         struct slab_sheaf *main; /* never NULL when unlocked */
+>         struct slab_sheaf *spare; /* empty or full, may be NULL */
+>         struct slab_sheaf *rcu_free; /* for batching kfree_rcu() */
+> };
+> 
+> Examples of local CPU operation that manipulates the data structures:
+> 1) kmalloc, allocates an object from local per CPU list.
+> 2) kfree, returns an object to local per CPU list.
+> 
+> Examples of an operation that would perform changes on the per-CPU lists 
+> remotely:
+> kmem_cache_shrink (cache shutdown), kmem_cache_shrink.
+> 
+> You can't delay either kmalloc (removal of object from per-CPU freelist), 
+> or kfree (return of object from per-CPU freelist), or kmem_cache_shrink 
+> or kmem_cache_shrink to return to userspace.
+> 
+> What i missing something here? (or do you have something on your mind
+> which i can't see).
 
-[v4] kernfs: Add inotify IN_DELETE_SELF, IN_IGNORED support
-https://lore.kernel.org/all/20260220055449.3073-1-tjmercier@google.com
-* [PATCH v4 1/3] kernfs: Don't set_nlink for directories being removed
-* [PATCH v4 2/3] kernfs: Send IN_DELETE_SELF and IN_IGNORED
-* [PATCH v4 3/3] selftests: memcg: Add tests for IN_DELETE_SELF and IN_IGNORED
+Let's try and analyze when we need to do the flushing in SLUB
 
-and found the following issue:
-possible deadlock in __kernfs_remove
+- memory offline - would anyone do that with isolcpus? if yes, they probably
+deserve the disruption
 
-Full report is available here:
-https://ci.syzbot.org/series/4b44d5c2-c2eb-4425-a19a-f9963b64f74f
+- cache shrinking (mainly from sysfs handler) - not necessary for
+correctness, can probably skip cpu if needed, also kinda shooting your own
+foot on isolcpu systems
 
-***
+- kmem_cache is being destroyed (__kmem_cache_shutdown()) - this is
+important for correctness. destroying caches should be rare, but can't rule
+it out
 
-possible deadlock in __kernfs_remove
+- kvfree_rcu_barrier() - a very tricky one; currently has only a debugging
+caller, but that can change
 
-tree:      bpf-next
-URL:       https://kernel.googlesource.com/pub/scm/linux/kernel/git/bpf/bpf-next.git
-base:      ba268514ea14b44570030e8ed2aef92a38679e85
-arch:      amd64
-compiler:  Debian clang version 21.1.8 (++20251221033036+2078da43e25a-1~exp1~20251221153213.50), Debian LLD 21.1.8
-config:    https://ci.syzbot.org/builds/45ab774f-e8d7-4def-8279-888a5cb2d01e/config
-syz repro: https://ci.syzbot.org/findings/b74cbc6a-1cef-4ae9-be46-dd9e8b29b648/syz_repro
+(BTW, see the note in flush_rcu_sheaves_on_cache() and how it relies on the
+flush actually happening on the cpu. Won't QPW violate that?)
 
-======================================================
-WARNING: possible circular locking dependency detected
-syzkaller #0 Not tainted
-------------------------------------------------------
-kworker/u8:1/13 is trying to acquire lock:
-ffff88816ef2b878 (kn->active#5){++++}-{0:0}, at: __kernfs_remove+0x47e/0x8c0 fs/kernfs/dir.c:1533
+How would this work with houskeeping on return to userspace approach?
 
-but task is already holding lock:
-ffff8881012e8ab8 (&root->kernfs_supers_rwsem){++++}-{4:4}, at: kernfs_remove_by_name_ns+0x3f/0x140 fs/kernfs/dir.c:1745
+- Would we just walk the list of all caches to flush them? could be
+expensive. Would we somehow note only those that need it? That would make
+the fast paths do something extra?
 
-which lock already depends on the new lock.
+- If some other CPU executed kmem_cache_destroy(), it would have to wait for
+the isolated cpu returning to userspace. Do we have the means for
+synchronizing on that? Would that risk a deadlock? We used to have a
+deferred finishing of the destroy for other reasons but were glad to get rid
+of it when it was possible, now it might be necessary to revive it?
 
+How would this work with QPW?
 
-the existing dependency chain (in reverse order) is:
+- probably fast paths more expensive due to spin lock vs local_trylock_t
 
--> #2 (&root->kernfs_supers_rwsem){++++}-{4:4}:
-       down_read+0x47/0x2e0 kernel/locking/rwsem.c:1537
-       kernfs_remove_by_name_ns+0x3f/0x140 fs/kernfs/dir.c:1745
-       acpi_unbind_one+0x2d8/0x3b0 drivers/acpi/glue.c:337
-       device_platform_notify_remove drivers/base/core.c:2386 [inline]
-       device_del+0x547/0x8f0 drivers/base/core.c:3881
-       serdev_controller_add+0x46f/0x640 drivers/tty/serdev/core.c:785
-       serdev_tty_port_register+0x159/0x260 drivers/tty/serdev/serdev-ttyport.c:291
-       tty_port_register_device_attr_serdev+0xe7/0x170 drivers/tty/tty_port.c:187
-       serial_core_add_one_port drivers/tty/serial/serial_core.c:3107 [inline]
-       serial_core_register_port+0x103a/0x28b0 drivers/tty/serial/serial_core.c:3305
-       serial8250_register_8250_port+0x1658/0x1fd0 drivers/tty/serial/8250/8250_core.c:822
-       serial_pnp_probe+0x568/0x7f0 drivers/tty/serial/8250/8250_pnp.c:480
-       pnp_device_probe+0x30b/0x4c0 drivers/pnp/driver.c:111
-       call_driver_probe drivers/base/dd.c:-1 [inline]
-       really_probe+0x267/0xaf0 drivers/base/dd.c:661
-       __driver_probe_device+0x18c/0x320 drivers/base/dd.c:803
-       driver_probe_device+0x4f/0x240 drivers/base/dd.c:833
-       __driver_attach+0x3e7/0x710 drivers/base/dd.c:1227
-       bus_for_each_dev+0x23b/0x2c0 drivers/base/bus.c:383
-       bus_add_driver+0x345/0x670 drivers/base/bus.c:715
-       driver_register+0x23a/0x320 drivers/base/driver.c:249
-       serial8250_init+0x8f/0x160 drivers/tty/serial/8250/8250_platform.c:317
-       do_one_initcall+0x250/0x840 init/main.c:1378
-       do_initcall_level+0x104/0x190 init/main.c:1440
-       do_initcalls+0x59/0xa0 init/main.c:1456
-       kernel_init_freeable+0x2a6/0x3d0 init/main.c:1688
-       kernel_init+0x1d/0x1d0 init/main.c:1578
-       ret_from_fork+0x51b/0xa40 arch/x86/kernel/process.c:158
-       ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:246
+- flush_rcu_sheaves_on_cache() needs to be solved safely (see above)
 
--> #1 (&device->physical_node_lock){+.+.}-{4:4}:
-       __mutex_lock_common kernel/locking/mutex.c:614 [inline]
-       __mutex_lock+0x19f/0x1300 kernel/locking/mutex.c:776
-       acpi_get_first_physical_node drivers/acpi/bus.c:691 [inline]
-       acpi_primary_dev_companion drivers/acpi/bus.c:710 [inline]
-       acpi_companion_match+0x8a/0x120 drivers/acpi/bus.c:764
-       acpi_device_uevent_modalias+0x1a/0x30 drivers/acpi/device_sysfs.c:280
-       platform_uevent+0x3c/0xb0 drivers/base/platform.c:1411
-       dev_uevent+0x446/0x8a0 drivers/base/core.c:2692
-       kobject_uevent_env+0x477/0x9e0 lib/kobject_uevent.c:573
-       kobject_synth_uevent+0x585/0xbd0 lib/kobject_uevent.c:207
-       uevent_store+0x26/0x70 drivers/base/core.c:2773
-       kernfs_fop_write_iter+0x3af/0x540 fs/kernfs/file.c:352
-       new_sync_write fs/read_write.c:593 [inline]
-       vfs_write+0x61d/0xb90 fs/read_write.c:686
-       ksys_write+0x150/0x270 fs/read_write.c:738
-       do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
-       do_syscall_64+0xe2/0xf80 arch/x86/entry/syscall_64.c:94
-       entry_SYSCALL_64_after_hwframe+0x77/0x7f
+What if we avoid percpu sheaves completely on isolated cpus and instead
+allocate/free using the slowpaths?
 
--> #0 (kn->active#5){++++}-{0:0}:
-       check_prev_add kernel/locking/lockdep.c:3165 [inline]
-       check_prevs_add kernel/locking/lockdep.c:3284 [inline]
-       validate_chain kernel/locking/lockdep.c:3908 [inline]
-       __lock_acquire+0x15a5/0x2cf0 kernel/locking/lockdep.c:5237
-       lock_acquire+0x106/0x330 kernel/locking/lockdep.c:5868
-       kernfs_drain+0x27c/0x5f0 fs/kernfs/dir.c:511
-       __kernfs_remove+0x47e/0x8c0 fs/kernfs/dir.c:1533
-       kernfs_remove_by_name_ns+0xc0/0x140 fs/kernfs/dir.c:1751
-       sysfs_remove_file include/linux/sysfs.h:780 [inline]
-       device_remove_file drivers/base/core.c:3071 [inline]
-       device_del+0x506/0x8f0 drivers/base/core.c:3876
-       device_unregister+0x21/0xf0 drivers/base/core.c:3919
-       mac80211_hwsim_del_radio+0x2dc/0x490 drivers/net/wireless/virtual/mac80211_hwsim.c:5918
-       hwsim_exit_net+0xede/0xfa0 drivers/net/wireless/virtual/mac80211_hwsim.c:6807
-       ops_exit_list net/core/net_namespace.c:199 [inline]
-       ops_undo_list+0x49f/0x940 net/core/net_namespace.c:252
-       cleanup_net+0x4df/0x7b0 net/core/net_namespace.c:696
-       process_one_work kernel/workqueue.c:3257 [inline]
-       process_scheduled_works+0xaec/0x17a0 kernel/workqueue.c:3340
-       worker_thread+0xda6/0x1360 kernel/workqueue.c:3421
-       kthread+0x726/0x8b0 kernel/kthread.c:463
-       ret_from_fork+0x51b/0xa40 arch/x86/kernel/process.c:158
-       ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:246
+- It could probably be achieved without affecting fastpaths, as we already
+handle bootstrap without sheaves, so it's implemented in a way to not affect
+fastpaths.
 
-other info that might help us debug this:
+- Would it slow the isolcpu workloads down too much when they do a syscall?
+  - compared to "houskeeping on return to userspace" flushing, maybe not?
+Because in that case the syscall starts with sheaves flushed from previous
+return, it has to do something expensive to get the initial sheaf, then
+maybe will use only on or few objects, then on return has to flush
+everything. Likely the slowpath might be faster, unless it allocates/frees
+many objects from the same cache.
+  - compared to QPW - it would be slower as QPW would mostly retain sheaves
+populated, the need for flushes should be very rare
 
-Chain exists of:
-  kn->active#5 --> &device->physical_node_lock --> &root->kernfs_supers_rwsem
+So if we can assume that workloads on isolated cpus make syscalls only
+rarely, and when they do they can tolerate them being slower, I think the
+"avoid sheaves on isolated cpus" would be the best way here.
 
- Possible unsafe locking scenario:
-
-       CPU0                    CPU1
-       ----                    ----
-  rlock(&root->kernfs_supers_rwsem);
-                               lock(&device->physical_node_lock);
-                               lock(&root->kernfs_supers_rwsem);
-  lock(kn->active#5);
-
- *** DEADLOCK ***
-
-4 locks held by kworker/u8:1/13:
- #0: ffff888100ef7948 ((wq_completion)netns){+.+.}-{0:0}, at: process_one_work kernel/workqueue.c:3232 [inline]
- #0: ffff888100ef7948 ((wq_completion)netns){+.+.}-{0:0}, at: process_scheduled_works+0x9d4/0x17a0 kernel/workqueue.c:3340
- #1: ffffc90000127bc0 (net_cleanup_work){+.+.}-{0:0}, at: process_one_work kernel/workqueue.c:3233 [inline]
- #1: ffffc90000127bc0 (net_cleanup_work){+.+.}-{0:0}, at: process_scheduled_works+0xa0f/0x17a0 kernel/workqueue.c:3340
- #2: ffffffff8f99d2d0 (pernet_ops_rwsem){++++}-{4:4}, at: cleanup_net+0xfe/0x7b0 net/core/net_namespace.c:670
- #3: ffff8881012e8ab8 (&root->kernfs_supers_rwsem){++++}-{4:4}, at: kernfs_remove_by_name_ns+0x3f/0x140 fs/kernfs/dir.c:1745
-
-stack backtrace:
-CPU: 0 UID: 0 PID: 13 Comm: kworker/u8:1 Not tainted syzkaller #0 PREEMPT(full) 
-Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
-Workqueue: netns cleanup_net
-Call Trace:
- <TASK>
- dump_stack_lvl+0xe8/0x150 lib/dump_stack.c:120
- print_circular_bug+0x2e1/0x300 kernel/locking/lockdep.c:2043
- check_noncircular+0x12e/0x150 kernel/locking/lockdep.c:2175
- check_prev_add kernel/locking/lockdep.c:3165 [inline]
- check_prevs_add kernel/locking/lockdep.c:3284 [inline]
- validate_chain kernel/locking/lockdep.c:3908 [inline]
- __lock_acquire+0x15a5/0x2cf0 kernel/locking/lockdep.c:5237
- lock_acquire+0x106/0x330 kernel/locking/lockdep.c:5868
- kernfs_drain+0x27c/0x5f0 fs/kernfs/dir.c:511
- __kernfs_remove+0x47e/0x8c0 fs/kernfs/dir.c:1533
- kernfs_remove_by_name_ns+0xc0/0x140 fs/kernfs/dir.c:1751
- sysfs_remove_file include/linux/sysfs.h:780 [inline]
- device_remove_file drivers/base/core.c:3071 [inline]
- device_del+0x506/0x8f0 drivers/base/core.c:3876
- device_unregister+0x21/0xf0 drivers/base/core.c:3919
- mac80211_hwsim_del_radio+0x2dc/0x490 drivers/net/wireless/virtual/mac80211_hwsim.c:5918
- hwsim_exit_net+0xede/0xfa0 drivers/net/wireless/virtual/mac80211_hwsim.c:6807
- ops_exit_list net/core/net_namespace.c:199 [inline]
- ops_undo_list+0x49f/0x940 net/core/net_namespace.c:252
- cleanup_net+0x4df/0x7b0 net/core/net_namespace.c:696
- process_one_work kernel/workqueue.c:3257 [inline]
- process_scheduled_works+0xaec/0x17a0 kernel/workqueue.c:3340
- worker_thread+0xda6/0x1360 kernel/workqueue.c:3421
- kthread+0x726/0x8b0 kernel/kthread.c:463
- ret_from_fork+0x51b/0xa40 arch/x86/kernel/process.c:158
- ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:246
- </TASK>
-hsr_slave_0: left promiscuous mode
-hsr_slave_1: left promiscuous mode
-batman_adv: batadv0: Interface deactivated: batadv_slave_0
-batman_adv: batadv0: Removing interface: batadv_slave_0
-batman_adv: batadv0: Interface deactivated: batadv_slave_1
-batman_adv: batadv0: Removing interface: batadv_slave_1
-veth1_macvtap: left promiscuous mode
-veth0_macvtap: left promiscuous mode
-veth1_vlan: left promiscuous mode
-veth0_vlan: left promiscuous mode
-team0 (unregistering): Port device team_slave_1 removed
-team0 (unregistering): Port device team_slave_0 removed
-netdevsim netdevsim2 netdevsim0: set [1, 0] type 2 family 0 port 6081 - 0
-netdevsim netdevsim2 netdevsim1: set [1, 0] type 2 family 0 port 6081 - 0
-netdevsim netdevsim2 netdevsim2: set [1, 0] type 2 family 0 port 6081 - 0
-netdevsim netdevsim2 netdevsim3: set [1, 0] type 2 family 0 port 6081 - 0
-
-
-***
-
-If these findings have caused you to resend the series or submit a
-separate fix, please add the following tag to your commit message:
-  Tested-by: syzbot@syzkaller.appspotmail.com
-
----
-This report is generated by a bot. It may contain errors.
-syzbot ci engineers can be reached at syzkaller@googlegroups.com.
 
