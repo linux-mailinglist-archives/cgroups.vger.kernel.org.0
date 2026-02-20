@@ -1,213 +1,361 @@
-Return-Path: <cgroups+bounces-14059-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-14060-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id KN8KB/aWmGlaJwMAu9opvQ
-	(envelope-from <cgroups+bounces-14059-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Fri, 20 Feb 2026 18:16:38 +0100
+	id EMCJGZWbmGkTKAMAu9opvQ
+	(envelope-from <cgroups+bounces-14060-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Fri, 20 Feb 2026 18:36:21 +0100
 X-Original-To: lists+cgroups@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id AF5DC169A78
-	for <lists+cgroups@lfdr.de>; Fri, 20 Feb 2026 18:16:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id B3E9C169C0F
+	for <lists+cgroups@lfdr.de>; Fri, 20 Feb 2026 18:36:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 11C93306BD29
-	for <lists+cgroups@lfdr.de>; Fri, 20 Feb 2026 17:16:13 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 20576304A30B
+	for <lists+cgroups@lfdr.de>; Fri, 20 Feb 2026 17:36:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2351932AABD;
-	Fri, 20 Feb 2026 17:16:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 62501365A12;
+	Fri, 20 Feb 2026 17:36:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="T7lquW24"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Wk4/g+sk"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-ed1-f43.google.com (mail-ed1-f43.google.com [209.85.208.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 57E3632A3FF
-	for <cgroups@vger.kernel.org>; Fri, 20 Feb 2026 17:16:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.208.43
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1771607771; cv=pass; b=eUOXInyA9qymLj8OxHot1oeEQF/rrJesorNWYQBpltUTl7zOjspHAt2gY9lv6qd9Rq/If1rROuXUgStWCPK6H/wktwFK/aK620yRpFqZo1ayXfJPZXmHCy3zfXQ6ryh3TEw7UnFtAOexH/7iEyODhmH3SII9CB0Ncknme6zzy3Q=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1771607771; c=relaxed/simple;
-	bh=qUpADLv3fW4c6VKkfzK/U52QH49WpAV8Od6WUnTJ06g=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=fF6Wob3DHtggsmnB1WruKAgF7cUiUPS/Ohrl5EMrozGSx/6BRbbX7fYvT5t7aBI2tS//k/uy7FfQrqjR5WLNJhShzPZWjhNK9XntKUUvLQ3tzvCEj6/948bTIkXR26cmQMMionp6T11fs6q/POg6nf+xWz6vbP8QujzkZ46mGVI=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=T7lquW24; arc=pass smtp.client-ip=209.85.208.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f43.google.com with SMTP id 4fb4d7f45d1cf-6597a7bd7d6so3064802a12.3
-        for <cgroups@vger.kernel.org>; Fri, 20 Feb 2026 09:16:10 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; t=1771607769; cv=none;
-        d=google.com; s=arc-20240605;
-        b=EVFEnUTkv8Sq6mLNpHpuWbIhgnsswELiKCCsgE5gkRhFBy9aX5gI4DlrpTUHnYokrc
-         AWMNhFmCsAiDM1ryM1UatXLrFqMXmK+iBZLDKXEcgw8ygrFD8bxgO9DTSHlZprsWgocq
-         fEJKr7E4SEzhaPPDqioOwWMnnFZ48T1QgAxhWZTI+neMAeA4jypcTb12N7hoSscZh7Lw
-         TS36lE6qZ8/KQoh7g13fzyPuoy7ROSvt5WtdEBRCn5juAJdX/HPLrsLyilQsFQH/j18O
-         GwhYyy1VQzJirdsj2kgANNnI4ZcQDIXrcIR24zixinhxj6p7+Yw6jHjMb/G6o8RwUEfB
-         VIZQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:dkim-signature;
-        bh=+FIG9q/M+yTBjTrAHAw7SaWHpsPSmQOUIDS7bx4BpBE=;
-        fh=eh6MzEl93B7jjFW+YYvc3IEMZnEjU7r5OsAQLOwnadU=;
-        b=PYdOMDvzdkrtYyxMviEDXnIZsCM/nO2e9BWpgdsTvkXVb4ogehz9Js7qoOHyaY5kSb
-         ORo5enByhG445enc1zDmZ6RLZrA9vo01brmR1yOP2esLm9aGFtnHaWwQFAyiXWXRtDzB
-         uOkk2yrKYmXSyWgli/OjLFCcu4sIMLMKlyg0uerbQR4arHn61wXeRkSWuyhdXqrWDAv3
-         D6wvA/vrTZhDTSUyKaw6SPqVfAeFqiZwffjCyoBHItKT8nuvlpt3aKQL90pxpYJhuB7D
-         xfDHIzrrnAOXBGMmw7PE3lcNhIXIqTJer9HrdPL+SHK7Q7Qje2oK0BeXlIUnNLXHT6VB
-         4raw==;
-        darn=vger.kernel.org
-ARC-Authentication-Results: i=1; mx.google.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1771607769; x=1772212569; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=+FIG9q/M+yTBjTrAHAw7SaWHpsPSmQOUIDS7bx4BpBE=;
-        b=T7lquW24vMSRjgoEygIGRyE08/+q4o+RUfMXAZBhrE/0bR2snow2U7+jW02AKYKsl3
-         0YinK1VhhMdJbjruFy0rRj7VFT1eAKRxExNJgq+w/96MK3FpoSSbHoiwo568oGgUFcV/
-         BadXZPqH8QETK/iUAk+5JN3M8UF9i2vEDzFR1Lh/p/SNlEEaxzxLlhOKAd5iMABhg67Y
-         g/Ad2mlze4BV1iucz8EwJBH6ee0Zlnk+ZY8V/3L7z0QnrI3Se4T5q+ukxFzE+g1cD60d
-         vQVR09MX8uP3WurKjZkhRDQEA3klgP4YGhWfAa8WAIkHgux/rUjyFrQD1qx6bzq5Ytka
-         qlyg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1771607769; x=1772212569;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=+FIG9q/M+yTBjTrAHAw7SaWHpsPSmQOUIDS7bx4BpBE=;
-        b=TNzKs1+QZ1QUydpph4yBMkkDdK1J5YlAjV2A9OfpkYIlfgYMB8kb38RkbcXy4P/NC+
-         amudayHb1i1qHKYX2SjBsptps4UUmxy+rDJNVdV0gl7yFyImhOZtHnv1p/Y6num9JrlD
-         KcXbpkbQ+OOxZWlr3i9qmQxV4Zag87EAw0uc/eMgeRl5amS3ifk1e/IxQJPP0m5T6xO3
-         9fkPqV2eLibi0B5t/NZ4k2oWnyWas8JWjjOLXP1Ai1tftqVWFj88tB8/Dm4jYrtpL3qP
-         fU50Eh4AAcaVlrxQzB9lGwb4P0ZpDO5wARMExvupxDmhHF6S9iunOuRIuUofEY94pyWN
-         SNRw==
-X-Forwarded-Encrypted: i=1; AJvYcCXQ8jMtl7sABdIw5acB98PH18KJr005ypGFFUfVFQiGrgbiSbtzd9S2onHnmbzKnHWJ6tMiYoWT@vger.kernel.org
-X-Gm-Message-State: AOJu0YwmMesXf0gZND7W17M5uVQbhEBUbjjyjlZUfyKIU7UlAlCVAg4j
-	paXUqbqHjH15bHJJGZEb8k+kUVhViT9wTZnsT82TZO6N0CKE3pC/YCKsuX1yrnjrJLFTFMkz9MG
-	J58sr7f4ZEVuU2E//unb0V5gyYtWEiV4=
-X-Gm-Gg: AZuq6aIeq5uFYSo2nHKVA8OnXyWSFu3PcUQ7spzM8NvyIN0smJ6Mtj6vm/nh1SyKVKk
-	U9ebIkpd5W33sBA1W2hDsRWT8oPX58FNo/ozolrfZVIMhNGyRIeHJEetysvqbTun2Bc9p9sYRJO
-	Na4ZCtBk43av7DgLnVxgbGOPvJkBt5IIEWNcZSm2iJ0E+4ON/KmdGEtR2CcD+2r5+ez7Ai7voTH
-	VYBW0NsLMB1PHNwgsyGQjMTQYe1CTESWNOVCUNOo8oxzjw2aFI3ETEaZOHp+Xni59UAd1f8C8U6
-	t1pwvBc+WZfZeKY/MyrFCI0gQF3uBgUZnGZPdZO2tA==
-X-Received: by 2002:a05:6402:50d2:b0:64b:58c0:a393 with SMTP id
- 4fb4d7f45d1cf-65ea4f07f63mr241574a12.30.1771607768401; Fri, 20 Feb 2026
- 09:16:08 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6AC41365A10
+	for <cgroups@vger.kernel.org>; Fri, 20 Feb 2026 17:36:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1771608978; cv=none; b=JvWfCfg4DKVImK2QMJ5PfzrhM7ubgbUe8/qd8pXsiKm4lCz++Fg9sHiw8C9/lqj4hKnfJZeuClSUVT73376YX1VVBXRN1fXxqF2rZmTMMwIa6QWTgyy58rJvSNMGTBwTmWO1w6FDpIzl/l2cD5yfeuFtQaPURgqwIWyc6f4tlms=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1771608978; c=relaxed/simple;
+	bh=NugPw72MOwfm33ElpPfIIe5OdoblLhaj8Ii5u02un4U=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=CylhHve4gOuRwOf1BgSHSb3MCsUbvjdYDet16h/t1NtL5PRFBPW1CtYpL2bf8bhtGgUNsA50dhnedAvEG3TsfHbiM5Z9ri9rkQ7nQcZkVHeMXoYNjJ2gMNvbholvb4TElCpma5c75gVnOPLA0iG7cWRCC0929ryuxCSGj7GklUM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Wk4/g+sk; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1771608975;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=3IqjOdiofWjjCWCfPy8j7WH4t5XK2/Efigokxu3dvlE=;
+	b=Wk4/g+skn6TAc44DSwAhpbGG5L9WR9ycM/lS5m+NhCm9Kh8ntJDNzXnM9jNYYWnwdem0ri
+	w7x+ycKiBhR4sdlx4+AM1mGCnEpsL/TWv9bfurDwxBKSiKCGEUovJFTW6/t+B+xNDA28UU
+	qyafBOkEgWPNtVCjFf78se4vGNUFkxg=
+Received: from mx-prod-mc-01.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-553-GCy-qzgoOVO6a-GZTQQOwQ-1; Fri,
+ 20 Feb 2026 12:36:11 -0500
+X-MC-Unique: GCy-qzgoOVO6a-GZTQQOwQ-1
+X-Mimecast-MFC-AGG-ID: GCy-qzgoOVO6a-GZTQQOwQ_1771608969
+Received: from mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.93])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mx-prod-mc-01.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 8F65719560A3;
+	Fri, 20 Feb 2026 17:36:08 +0000 (UTC)
+Received: from tpad.localdomain (unknown [10.96.133.4])
+	by mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id BF4231800348;
+	Fri, 20 Feb 2026 17:36:06 +0000 (UTC)
+Received: by tpad.localdomain (Postfix, from userid 1000)
+	id BD690400DC5A8; Fri, 20 Feb 2026 14:35:41 -0300 (-03)
+Date: Fri, 20 Feb 2026 14:35:41 -0300
+From: Marcelo Tosatti <mtosatti@redhat.com>
+To: Vlastimil Babka <vbabka@suse.com>
+Cc: Michal Hocko <mhocko@suse.com>, Leonardo Bras <leobras.c@gmail.com>,
+	linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+	linux-mm@kvack.org, Johannes Weiner <hannes@cmpxchg.org>,
+	Roman Gushchin <roman.gushchin@linux.dev>,
+	Shakeel Butt <shakeel.butt@linux.dev>,
+	Muchun Song <muchun.song@linux.dev>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Christoph Lameter <cl@linux.com>, Pekka Enberg <penberg@kernel.org>,
+	David Rientjes <rientjes@google.com>,
+	Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+	Vlastimil Babka <vbabka@suse.cz>,
+	Hyeonggon Yoo <42.hyeyoo@gmail.com>,
+	Leonardo Bras <leobras@redhat.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Waiman Long <longman@redhat.com>, Boqun Feng <boqun.feng@gmail.com>,
+	Frederic Weisbecker <fweisbecker@suse.de>
+Subject: Re: [PATCH 0/4] Introduce QPW for per-cpu operations
+Message-ID: <aZibbYH7yrDZlnJh@tpad>
+References: <20260206143430.021026873@redhat.com>
+ <aYs6Ju2G4bm6_tl2@tiehlicka>
+ <aYxviLoWsrLqDU7o@tpad>
+ <aYywl1hdBQP2_slo@tiehlicka>
+ <aZDw6xI2izFDfuuu@WindFlash>
+ <aZL45yORfkNvS9Rs@tiehlicka>
+ <aZcr255pGT3B/eaL@tpad>
+ <3f2b985a-2fb0-4d63-9dce-8a9cad8ce464@suse.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20260220055449.3073-1-tjmercier@google.com> <20260220055449.3073-3-tjmercier@google.com>
- <aZh-orwoaeAh52Bf@slm.duckdns.org>
-In-Reply-To: <aZh-orwoaeAh52Bf@slm.duckdns.org>
-From: Amir Goldstein <amir73il@gmail.com>
-Date: Fri, 20 Feb 2026 19:15:56 +0200
-X-Gm-Features: AaiRm51-NxZivWP9n79oFDzWvBAa9d7rBDJz7DAiXkp5nty2l6CfzMRpgIoYHak
-Message-ID: <CAOQ4uxjgXa1q-8-ajSBwza-Tkv91tFP-_wWzCQPW+PwJMehEWA@mail.gmail.com>
-Subject: Re: [PATCH v4 2/3] kernfs: Send IN_DELETE_SELF and IN_IGNORED
-To: Tejun Heo <tj@kernel.org>
-Cc: "T.J. Mercier" <tjmercier@google.com>, gregkh@linuxfoundation.org, 
-	driver-core@lists.linux.dev, linux-kernel@vger.kernel.org, 
-	cgroups@vger.kernel.org, linux-fsdevel@vger.kernel.org, jack@suse.cz, 
-	shuah@kernel.org, linux-kselftest@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <3f2b985a-2fb0-4d63-9dce-8a9cad8ce464@suse.com>
+X-Scanned-By: MIMEDefang 3.4.1 on 10.30.177.93
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-2.16 / 15.00];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=2];
-	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
+X-Spamd-Result: default: False [-0.16 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+	DMARC_POLICY_ALLOW(-0.50)[redhat.com,quarantine];
+	MID_RHS_NOT_FQDN(0.50)[];
 	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
-	R_DKIM_ALLOW(-0.20)[gmail.com:s=20230601];
+	R_DKIM_ALLOW(-0.20)[redhat.com:s=mimecast20190719];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FROM_HAS_DN(0.00)[];
-	TAGGED_FROM(0.00)[bounces-14059-lists,cgroups=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-14060-lists,cgroups=lfdr.de];
+	RCPT_COUNT_TWELVE(0.00)[22];
 	RCVD_TLS_LAST(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
 	MIME_TRACE(0.00)[0:+];
+	FREEMAIL_CC(0.00)[suse.com,gmail.com,vger.kernel.org,kvack.org,cmpxchg.org,linux.dev,linux-foundation.org,linux.com,kernel.org,google.com,lge.com,suse.cz,redhat.com,linutronix.de,suse.de];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	TO_DN_SOME(0.00)[];
-	DKIM_TRACE(0.00)[gmail.com:+];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	MISSING_XM_UA(0.00)[];
-	NEURAL_HAM(-0.00)[-1.000];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[amir73il@gmail.com,cgroups@vger.kernel.org];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,quantvps.com:url];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	MID_RHS_MATCH_FROMTLD(0.00)[];
+	TO_DN_SOME(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[mtosatti@redhat.com,cgroups@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	DKIM_TRACE(0.00)[redhat.com:+];
+	NEURAL_HAM(-0.00)[-1.000];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
 	TAGGED_RCPT(0.00)[cgroups];
-	RCPT_COUNT_SEVEN(0.00)[10];
-	FREEMAIL_FROM(0.00)[gmail.com];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,mail.gmail.com:mid,memory.events:url]
-X-Rspamd-Queue-Id: AF5DC169A78
+	MISSING_XM_UA(0.00)[];
+	RCVD_COUNT_SEVEN(0.00)[7]
+X-Rspamd-Queue-Id: B3E9C169C0F
 X-Rspamd-Action: no action
 
-On Fri, Feb 20, 2026 at 4:32=E2=80=AFPM Tejun Heo <tj@kernel.org> wrote:
->
-> Hello,
->
-> On Thu, Feb 19, 2026 at 09:54:47PM -0800, T.J. Mercier wrote:
-> > Currently some kernfs files (e.g. cgroup.events, memory.events) support
-> > inotify watches for IN_MODIFY, but unlike with regular filesystems, the=
-y
-> > do not receive IN_DELETE_SELF or IN_IGNORED events when they are
-> > removed. This means inotify watches persist after file deletion until
-> > the process exits and the inotify file descriptor is cleaned up, or
-> > until inotify_rm_watch is called manually.
-> >
-> > This creates a problem for processes monitoring cgroups. For example, a
-> > service monitoring memory.events for memory.high breaches needs to know
-> > when a cgroup is removed to clean up its state. Where it's known that a
-> > cgroup is removed when all processes die, without IN_DELETE_SELF the
-> > service must resort to inefficient workarounds such as:
-> >   1) Periodically scanning procfs to detect process death (wastes CPU
-> >      and is susceptible to PID reuse).
-> >   2) Holding a pidfd for every monitored cgroup (can exhaust file
-> >      descriptors).
-> >
-> > This patch enables IN_DELETE_SELF and IN_IGNORED events for kernfs file=
-s
-> > and directories by clearing inode i_nlink values during removal. This
-> > allows VFS to make the necessary fsnotify calls so that userspace
-> > receives the inotify events.
-> >
-> > As a result, applications can rely on a single existing watch on a file
-> > of interest (e.g. memory.events) to receive notifications for both
-> > modifications and the eventual removal of the file, as well as automati=
-c
-> > watch descriptor cleanup, simplifying userspace logic and improving
-> > efficiency.
-> >
-> > There is gap in this implementation for certain file removals due their
-> > unique nature in kernfs. Directory removals that trigger file removals
-> > occur through vfs_rmdir, which shrinks the dcache and emits fsnotify
-> > events after the rmdir operation; there is no issue here. However kernf=
-s
-> > writes to particular files (e.g. cgroup.subtree_control) can also cause
-> > file removal, but vfs_write does not attempt to emit fsnotify events
-> > after the write operation, even if i_nlink counts are 0. As a usecase
-> > for monitoring this category of file removals is not known, they are
-> > left without having IN_DELETE or IN_DELETE_SELF events generated.
->
-> Adding a comment with the above content would probably be useful. It also
-> might be worthwhile to note that fanotify recursive monitoring wouldn't w=
-ork
-> reliably as cgroups can go away while inodes are not attached.
+Hi Vlastimil,
 
-Sigh.. it's a shame to grow more weird semantics.
+On Fri, Feb 20, 2026 at 11:48:00AM +0100, Vlastimil Babka wrote:
+> On 2/19/26 16:27, Marcelo Tosatti wrote:
+> > On Mon, Feb 16, 2026 at 12:00:55PM +0100, Michal Hocko wrote:
+> > 
+> > Michal,
+> > 
+> > Again, i don't see how moving operations to happen at return to 
+> > kernel would help (assuming you are talking about 
+> > "context_tracking,x86: Defer some IPIs until a user->kernel transition").
+> > 
+> > The IPIs in the patchset above can be deferred until user->kernel
+> > transition because they are TLB flushes, for addresses which do not
+> > exist on the address space mapping in userspace.
+> > 
+> > What are the per-CPU objects in SLUB ?
+> > 
+> > struct slab_sheaf {
+> >         union {
+> >                 struct rcu_head rcu_head;
+> >                 struct list_head barn_list;
+> >                 /* only used for prefilled sheafs */
+> >                 struct {
+> >                         unsigned int capacity;
+> >                         bool pfmemalloc;
+> >                 };
+> >         };
+> >         struct kmem_cache *cache;
+> >         unsigned int size;
+> >         int node; /* only used for rcu_sheaf */
+> >         void *objects[];
+> > };
+> > 
+> > struct slub_percpu_sheaves {
+> >         local_trylock_t lock;
+> >         struct slab_sheaf *main; /* never NULL when unlocked */
+> >         struct slab_sheaf *spare; /* empty or full, may be NULL */
+> >         struct slab_sheaf *rcu_free; /* for batching kfree_rcu() */
+> > };
+> > 
+> > Examples of local CPU operation that manipulates the data structures:
+> > 1) kmalloc, allocates an object from local per CPU list.
+> > 2) kfree, returns an object to local per CPU list.
+> > 
+> > Examples of an operation that would perform changes on the per-CPU lists 
+> > remotely:
+> > kmem_cache_shrink (cache shutdown), kmem_cache_shrink.
+> > 
+> > You can't delay either kmalloc (removal of object from per-CPU freelist), 
+> > or kfree (return of object from per-CPU freelist), or kmem_cache_shrink 
+> > or kmem_cache_shrink to return to userspace.
+> > 
+> > What i missing something here? (or do you have something on your mind
+> > which i can't see).
+> 
+> Let's try and analyze when we need to do the flushing in SLUB
+> 
+> - memory offline - would anyone do that with isolcpus? if yes, they probably
+> deserve the disruption
 
-But I take this back to the POV of "remote" vs. "local" vfs notifications.
-the IN_DELETE_SELF events added by this change are actually
-"local" vfs notifications.
+I think its OK to avoid memory offline on such systems.
 
-If we would want to support monitoring cgroups fs super block
-for all added/removed cgroups with fanotify, we would be able
-to implement this as "remote" notifications and in this case, adding
-explicit fsnotify() calls could make sense.
+> - cache shrinking (mainly from sysfs handler) - not necessary for
+> correctness, can probably skip cpu if needed, also kinda shooting your own
+> foot on isolcpu systems
+> 
+> - kmem_cache is being destroyed (__kmem_cache_shutdown()) - this is
+> important for correctness. destroying caches should be rare, but can't rule
+> it out
+> 
+> - kvfree_rcu_barrier() - a very tricky one; currently has only a debugging
+> caller, but that can change
+> 
+> (BTW, see the note in flush_rcu_sheaves_on_cache() and how it relies on the
+> flush actually happening on the cpu. Won't QPW violate that?)
 
-Thanks,
-Amir.
+(struct kmem_cache *s)->cpu_sheaves (percpu)->rcu_free with the
+s->cpu_sheaves->lock lock held:
+
+do_free:
+
+        rcu_sheaf = pcs->rcu_free;
+
+        /*
+         * Since we flush immediately when size reaches capacity, we never reach
+         * this with size already at capacity, so no OOB write is possible.
+         */
+        rcu_sheaf->objects[rcu_sheaf->size++] = obj;
+
+        if (likely(rcu_sheaf->size < s->sheaf_capacity)) {
+                rcu_sheaf = NULL;
+        } else {
+                pcs->rcu_free = NULL;
+                rcu_sheaf->node = numa_mem_id();
+        }
+
+        /*
+         * we flush before local_unlock to make sure a racing
+         * flush_all_rcu_sheaves() doesn't miss this sheaf
+         */
+        if (rcu_sheaf)
+                call_rcu(&rcu_sheaf->rcu_head, rcu_free_sheaf);
+
+        qpw_unlock(&s->cpu_sheaves->lock, cpu);
+
+So if it invokes call_rcu, it sets pcs->rcu_free = NULL. In that case,
+for flush_rcu_sheaf executing remotely from flush_rcu_sheaves_on_cache
+will:
+
+static void flush_rcu_sheaf(struct work_struct *w)
+{
+        struct slub_percpu_sheaves *pcs;
+        struct slab_sheaf *rcu_free;
+        struct slub_flush_work *sfw;
+        struct kmem_cache *s;
+        int cpu = qpw_get_cpu(w);
+
+        sfw = &per_cpu(slub_flush, cpu);
+        s = sfw->s;
+
+        qpw_lock(&s->cpu_sheaves->lock, cpu);
+        pcs = per_cpu_ptr(s->cpu_sheaves, cpu);
+
+        rcu_free = pcs->rcu_free;
+        pcs->rcu_free = NULL;
+
+        qpw_unlock(&s->cpu_sheaves->lock, cpu);
+
+        if (rcu_free)
+                call_rcu(&rcu_free->rcu_head, rcu_free_sheaf_nobarn);
+}
+
+Only call rcu_free_sheaf_nobarn if pcs->rcu_free is not NULL.
+
+So it seems safe?
+
+> How would this work with houskeeping on return to userspace approach?
+> 
+> - Would we just walk the list of all caches to flush them? could be
+> expensive. Would we somehow note only those that need it? That would make
+> the fast paths do something extra?
+> 
+> - If some other CPU executed kmem_cache_destroy(), it would have to wait for
+> the isolated cpu returning to userspace. Do we have the means for
+> synchronizing on that? Would that risk a deadlock? We used to have a
+> deferred finishing of the destroy for other reasons but were glad to get rid
+> of it when it was possible, now it might be necessary to revive it?
+
+I don't think you can expect system calls to return to userspace in 
+a given amount of time. Could be in kernel mode for long periods of
+time.
+
+> How would this work with QPW?
+> 
+> - probably fast paths more expensive due to spin lock vs local_trylock_t
+> 
+> - flush_rcu_sheaves_on_cache() needs to be solved safely (see above)
+> 
+> What if we avoid percpu sheaves completely on isolated cpus and instead
+> allocate/free using the slowpaths?
+> 
+> - It could probably be achieved without affecting fastpaths, as we already
+> handle bootstrap without sheaves, so it's implemented in a way to not affect
+> fastpaths.
+> 
+> - Would it slow the isolcpu workloads down too much when they do a syscall?
+>   - compared to "houskeeping on return to userspace" flushing, maybe not?
+> Because in that case the syscall starts with sheaves flushed from previous
+> return, it has to do something expensive to get the initial sheaf, then
+> maybe will use only on or few objects, then on return has to flush
+> everything. Likely the slowpath might be faster, unless it allocates/frees
+> many objects from the same cache.
+>   - compared to QPW - it would be slower as QPW would mostly retain sheaves
+> populated, the need for flushes should be very rare
+> 
+> So if we can assume that workloads on isolated cpus make syscalls only
+> rarely, and when they do they can tolerate them being slower, I think the
+> "avoid sheaves on isolated cpus" would be the best way here.
+
+I am not sure its safe to assume that. Ask Gemini about isolcpus use
+cases and:
+
+1. High-Frequency Trading (HFT)
+In the world of HFT, microseconds are the difference between profit and loss. 
+Traders use isolcpus to pin their execution engines to specific cores.
+
+The Goal: Eliminate "jitter" caused by the OS moving other processes onto the same core.
+
+The Benefit: Guaranteed execution time and ultra-low latency.
+
+2. Real-Time Audio & Video Processing
+If you are running a Digital Audio Workstation (DAW) or a live video encoding rig, a tiny "hiccup" in CPU availability results in an audible pop or a dropped frame.
+
+The Goal: Reserve cores specifically for the Digital Signal Processor (DSP) or the encoder.
+
+The Benefit: Smooth, glitch-free media streams even when the rest of the system is busy.
+
+3. Network Function Virtualization (NFV) & DPDK
+For high-speed networking (like 10Gbps+ traffic), the Data Plane Development Kit (DPDK) uses "poll mode" drivers. These drivers constantly loop to check for new packets rather than waiting for interrupts.
+
+The Goal: Isolate cores so they can run at 100% utilization just checking for network packets.
+
+The Benefit: Maximum throughput and zero packet loss in high-traffic environments.
+
+4. Gaming & Simulation
+Competitive gamers or flight simulator enthusiasts sometimes isolate a few cores to handle the game's main thread, while leaving the rest of the OS (Discord, Chrome, etc.) to the remaining cores.
+
+The Goal: Prevent background Windows/Linux tasks from stealing cycles from the game engine.
+
+The Benefit: More consistent 1% low FPS and reduced input lag.
+
+5. Deterministic Scientific Computing
+If you're running a simulation that needs to take exactly the same amount of time every time it runs (for benchmarking or safety-critical testing), you can't have the OS interference messing with your metrics.
+
+The Goal: Remove the variability of the Linux scheduler.
+
+The Benefit: Highly repeatable, deterministic results.
+
+===
+
+For example, AF_XDP bypass uses system calls (and wants isolcpus):
+
+https://www.quantvps.com/blog/kernel-bypass-in-hft?srsltid=AfmBOoryeSxuuZjzTJIC9O-Ag8x4gSwjs-V4Xukm2wQpGmwDJ6t4szuE
+
+
 
