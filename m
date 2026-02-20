@@ -1,49 +1,49 @@
-Return-Path: <cgroups+bounces-14074-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-14075-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id OOKwFr3bmGmTNgMAu9opvQ
-	(envelope-from <cgroups+bounces-14074-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Fri, 20 Feb 2026 23:10:05 +0100
+	id aGNPJlHdmGnYNgMAu9opvQ
+	(envelope-from <cgroups+bounces-14075-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Fri, 20 Feb 2026 23:16:49 +0100
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id BD89816B1DC
-	for <lists+cgroups@lfdr.de>; Fri, 20 Feb 2026 23:10:04 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 004FC16B262
+	for <lists+cgroups@lfdr.de>; Fri, 20 Feb 2026 23:16:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id DD802303131B
-	for <lists+cgroups@lfdr.de>; Fri, 20 Feb 2026 22:09:47 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id D073E303EAB8
+	for <lists+cgroups@lfdr.de>; Fri, 20 Feb 2026 22:16:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1538E30F931;
-	Fri, 20 Feb 2026 22:09:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9EB702FD1DA;
+	Fri, 20 Feb 2026 22:16:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="GTyA4VOW"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="vViFFMUV"
 X-Original-To: cgroups@vger.kernel.org
-Received: from out-186.mta0.migadu.com (out-186.mta0.migadu.com [91.218.175.186])
+Received: from out-186.mta1.migadu.com (out-186.mta1.migadu.com [95.215.58.186])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 570392FF153
-	for <cgroups@vger.kernel.org>; Fri, 20 Feb 2026 22:09:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.186
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C5C5F15687D
+	for <cgroups@vger.kernel.org>; Fri, 20 Feb 2026 22:16:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.186
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1771625386; cv=none; b=chhdmg7n2EfnU/c2XcJ77n6ZF0KS2xZgGjR1yngdTvzRiYsarvYrHCPS+bTF2n+X6CVdpKRcfuKkmA2USKV2Hjo0suzESPAmPewfZav0OXanUMwS2w3fA4yABBBrvV+UMa4KzjNsTJ2R/0oy1PBYAu8I9PdtJWS1x1jNoOmjVR4=
+	t=1771625775; cv=none; b=p5jftExQM6uU4tdZu1Zq8+TxhgrFsuIHi6jhAvsj1LcYI7KEN8y0ldwtXQLIk8j0u7BZ5NlNaFTqyHEu9tsgPa65rMvBOiNBmOtoypPhgPDFdMKw+S5KgObYtUf9uIbOzBl8T1f1EH/t1K+Hx/SBMqBz7c4/dy8ymLzBiNQblZ0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1771625386; c=relaxed/simple;
-	bh=S+0Y6DfpwFix6vlxsNRVx7ARwV3j9KnXOSbZXeyKeBU=;
+	s=arc-20240116; t=1771625775; c=relaxed/simple;
+	bh=PfOeiV9WOK8c5/by9GAg1W6HNo7ZArvYyx/QgFJrCbE=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=b4ozZTznX22bmQ+guGILRGRFrjMaqlHSjP7aLYkEpGAjhYbt9VYABIUrYoIR5qK8x4EA+ch2uONH/7JmSa9TeZEweTbstJQd18d/rdB5oJ/hBPVBeJbZZk1GCbnX+RJvIdr3v8FdNtuMwRWznBmUxwOy1ATNyfw64kMmwr0jKn0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=GTyA4VOW; arc=none smtp.client-ip=91.218.175.186
+	 Content-Type:Content-Disposition:In-Reply-To; b=L60GbtwIn3fC5tbkdYrKOykKQWJF6vDtXzuLqNVQzrXR4UqwlCtB4WXXXoDU6YvpQ6ylNTXWwTjKh3+hV7ghgl5xJN84EHDYdnfuUZdzM7vwv+OrNHcchrH53A79AbAbLZJpi5VqY+zLAlSYKfN1HO/4BFY2WvotyqFMzu8ZLTI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=vViFFMUV; arc=none smtp.client-ip=95.215.58.186
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Fri, 20 Feb 2026 14:09:28 -0800
+Date: Fri, 20 Feb 2026 14:15:57 -0800
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1771625373;
+	t=1771625761;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=bMcpQEUmQPBfSHE/XsFFGAO79A7tRmTzeXgyD6t0vqU=;
-	b=GTyA4VOWkcp/D3+UgQRVXcg0nUbDJZuVwMWrhkq8xt2zoFpEYEYArzx40OrtD3f+yFGrSu
-	q/skB1MhRSv5lfsszeTX172W2sdttYgXZoh6DGEM6hqJMHhzotH2TexkLuio74cY71uc32
-	ctHmYlWTLWgvZsdzpTgRLwORojKBBLo=
+	bh=oN9Hwb2fDdGaeGEROxnaLAHfHNiKuB50PSAzDDIdOn4=;
+	b=vViFFMUVuOkaJ4qMiikS9Cp26Jq4iqN+qAgwNc1HT4UH05JIwJ6izCa70vjKe5e9a8B5Zf
+	mmIWVE3entV0vscEA6V2Z8FpPLkKK5BwW1t9eDq5zpMU1kmAlva21vEMYXZ0E8VjjCE87c
+	5qbt1YjED4y4hF5dW/yET5fssFrUge0=
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 From: Shakeel Butt <shakeel.butt@linux.dev>
 To: Johannes Weiner <hannes@cmpxchg.org>
@@ -52,9 +52,11 @@ Cc: Andrew Morton <akpm@linux-foundation.org>,
 	Michal Hocko <mhocko@suse.com>, Roman Gushchin <roman.gushchin@linux.dev>, 
 	Muchun Song <muchun.song@linux.dev>, linux-mm@kvack.org, cgroups@vger.kernel.org, 
 	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] mm: vmalloc: streamline vmalloc memory accounting
-Message-ID: <aZjaxAi-AzyOYzNT@linux.dev>
+Subject: Re: [PATCH 2/2] mm: memcontrol: switch to native NR_VMALLOC vmstat
+ counter
+Message-ID: <aZjdCfE1tww_WKwh@linux.dev>
 References: <20260220191035.3703800-1-hannes@cmpxchg.org>
+ <20260220191035.3703800-2-hannes@cmpxchg.org>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -63,7 +65,7 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20260220191035.3703800-1-hannes@cmpxchg.org>
+In-Reply-To: <20260220191035.3703800-2-hannes@cmpxchg.org>
 X-Migadu-Flow: FLOW_OUT
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-0.66 / 15.00];
@@ -71,12 +73,12 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	DMARC_POLICY_ALLOW(-0.50)[linux.dev,none];
 	R_DKIM_ALLOW(-0.20)[linux.dev:s=key1];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	FREEMAIL_CC(0.00)[linux-foundation.org,gmail.com,suse.com,linux.dev,kvack.org,vger.kernel.org];
-	TAGGED_FROM(0.00)[bounces-14074-lists,cgroups=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-14075-lists,cgroups=lfdr.de];
 	FROM_HAS_DN(0.00)[];
 	RCVD_COUNT_THREE(0.00)[3];
 	RCVD_TLS_LAST(0.00)[];
@@ -92,70 +94,16 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	MID_RHS_MATCH_FROM(0.00)[];
 	TAGGED_RCPT(0.00)[cgroups];
 	RCPT_COUNT_SEVEN(0.00)[10];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: BD89816B1DC
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[linux.dev:mid,linux.dev:dkim,linux.dev:email,cmpxchg.org:email,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: 004FC16B262
 X-Rspamd-Action: no action
 
-On Fri, Feb 20, 2026 at 02:10:34PM -0500, Johannes Weiner wrote:
-[...]
->  static struct vmap_area *__find_vmap_area(unsigned long addr, struct rb_root *root)
->  {
->  	struct rb_node *n = root->rb_node;
-> @@ -3463,11 +3457,11 @@ void vfree(const void *addr)
->  		 * High-order allocs for huge vmallocs are split, so
->  		 * can be freed as an array of order-0 allocations
->  		 */
-> +		if (!(vm->flags & VM_MAP_PUT_PAGES))
-> +			dec_node_page_state(page, NR_VMALLOC);
->  		__free_page(page);
->  		cond_resched();
->  	}
-> -	if (!(vm->flags & VM_MAP_PUT_PAGES))
-> -		atomic_long_sub(vm->nr_pages, &nr_vmalloc_pages);
->  	kvfree(vm->pages);
->  	kfree(vm);
->  }
-> @@ -3655,6 +3649,8 @@ vm_area_alloc_pages(gfp_t gfp, int nid,
->  			continue;
->  		}
->  
-> +		mod_node_page_state(page, NR_VMALLOC, 1 << large_order);
-
-mod_node_page_state() takes 'struct pglist_data *pgdat', you need to use
-page_pgdat(page) as first param.
-
-> +
->  		split_page(page, large_order);
->  		for (i = 0; i < (1U << large_order); i++)
->  			pages[nr_allocated + i] = page + i;
-> @@ -3675,6 +3671,7 @@ vm_area_alloc_pages(gfp_t gfp, int nid,
->  	if (!order) {
->  		while (nr_allocated < nr_pages) {
->  			unsigned int nr, nr_pages_request;
-> +			int i;
->  
->  			/*
->  			 * A maximum allowed request is hard-coded and is 100
-> @@ -3698,6 +3695,9 @@ vm_area_alloc_pages(gfp_t gfp, int nid,
->  							nr_pages_request,
->  							pages + nr_allocated);
->  
-> +			for (i = nr_allocated; i < nr_allocated + nr; i++)
-> +				inc_node_page_state(pages[i], NR_VMALLOC);
-> +
->  			nr_allocated += nr;
->  
->  			/*
-> @@ -3722,6 +3722,8 @@ vm_area_alloc_pages(gfp_t gfp, int nid,
->  		if (unlikely(!page))
->  			break;
->  
-> +		mod_node_page_state(page, NR_VMALLOC, 1 << order);
-
-Same here.
-
-With above fixes, you can add:
+On Fri, Feb 20, 2026 at 02:10:35PM -0500, Johannes Weiner wrote:
+> Eliminates the custom memcg counter and results in a single,
+> consolidated accounting call in vmalloc code.
+> 
+> Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
 
 Acked-by: Shakeel Butt <shakeel.butt@linux.dev>
 
