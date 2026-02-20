@@ -1,52 +1,52 @@
-Return-Path: <cgroups+bounces-14043-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-14044-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id cPIHGCitl2nO5QIAu9opvQ
-	(envelope-from <cgroups+bounces-14043-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Fri, 20 Feb 2026 01:39:04 +0100
+	id aIiNLDCtl2nO5QIAu9opvQ
+	(envelope-from <cgroups+bounces-14044-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Fri, 20 Feb 2026 01:39:12 +0100
 X-Original-To: lists+cgroups@lfdr.de
 Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 90029163E17
-	for <lists+cgroups@lfdr.de>; Fri, 20 Feb 2026 01:39:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id D9B87163E1E
+	for <lists+cgroups@lfdr.de>; Fri, 20 Feb 2026 01:39:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id 2AB7E300E4B0
-	for <lists+cgroups@lfdr.de>; Fri, 20 Feb 2026 00:38:51 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 0013D3010834
+	for <lists+cgroups@lfdr.de>; Fri, 20 Feb 2026 00:38:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0BA2F1F1932;
-	Fri, 20 Feb 2026 00:38:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 45DBF1E7660;
+	Fri, 20 Feb 2026 00:38:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FL0K6bXF"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="H1moi2wX"
 X-Original-To: cgroups@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF8951F4180;
-	Fri, 20 Feb 2026 00:38:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 06C481F418F;
+	Fri, 20 Feb 2026 00:38:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1771547928; cv=none; b=GPmmKUXpAanuiJMfxY0D7WXPeT6LDFRaG3HywmQIrrjEx+zRiX3a0NjW/DjmtihjLmPx8pNQqAe5jXaMZAuWdoqaIIzrxwrOT15S2YEzgxy2y5i2fkb1k/nwWgJEmff2FuuE15WI210Ffasd2Z9tR/x+iKdxCUwQrRPvSypvQBo=
+	t=1771547932; cv=none; b=CsZz6uijMNyy2k1+VAEgElcGZt9ULLTxgBsra9LRIYR2NKJUF75zRoKkDbDgpu3JcFf1qvYX3GiABvnNyTJARD6rcrNzOv5TUbhxALg6A34h3ofqJmaVKXyNSddZMlMZqtd5ApT2gVJr0IPnnlCpVnoyLNhxGOtkzgPSB6PEvjs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1771547928; c=relaxed/simple;
-	bh=rQtRX5ohX7vGBGBjzVHcp0rW36b98A2mn7TXYUJHP4Y=;
+	s=arc-20240116; t=1771547932; c=relaxed/simple;
+	bh=2Y18MqPJiqmQVhKG7YQFspLjTM48CG/DtkSLoIi4Iow=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=A6kVk6caTrR7504iMSGmA0GOYHpsNdTxLkCGwTYcRSquggvGU597cQLUZfVP7/qgCIqyBHv66Y0Z39CPN1GuF8kfmZ8R5vaKhxFn28D3GsV3k56cciX1ZuKRHK38wZ/N2nQQTAl+GOPwGlV4uLQtimWcTgI5HdJZjGxaBOlXYV4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FL0K6bXF; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 330C1C4CEF7;
-	Fri, 20 Feb 2026 00:38:46 +0000 (UTC)
+	 In-Reply-To:To:Cc; b=j8dlW3Z9Qk7Bp9oGacKobMS0kWe+L/gb+VQmB2qydt6bgTxzfU6rc3wYbMiU+47xOehi1WxpxVpSXowFPuXV01IevokyV9k4Ypnrq7/16vPwKHhu9L52BLuTYbkjtc13H87wYJzHI/4+M5Pq0+RIe0qfk6TJHGDrFytyryAFqqI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=H1moi2wX; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2E02EC19423;
+	Fri, 20 Feb 2026 00:38:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1771547928;
-	bh=rQtRX5ohX7vGBGBjzVHcp0rW36b98A2mn7TXYUJHP4Y=;
+	s=k20201202; t=1771547931;
+	bh=2Y18MqPJiqmQVhKG7YQFspLjTM48CG/DtkSLoIi4Iow=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-	b=FL0K6bXFqg4jIllEBmUHk3Xk8hYcNar9d4pesEyDEPuGTWtQCR9e9Rk2vZunQTvht
-	 PygePh15IsSKliaXnNJBDC9ZDPJTmMK6kRjPAvDLvfj9FohXS9MFAqhxukiwekfsNn
-	 HN0D51SiDyp0FAtm9cmNqS5q3h+XPkD4pKq+eSS9DWcClbUz0DxE2Xbyt/Bh9ilSgh
-	 fzCcSpHDHdUT6yGBU6ucfC6tQD9f4Hg40zk7TN4Mu1TdJ0mbBWSsS2auIa8c3Jexfp
-	 Hy1uhqcPrKMzoUTvRtDh6qI7jroOZr/K+BJ8/aKnKDX5LjsVGw06O4G9f/USMyc06T
-	 lUribCddDssow==
+	b=H1moi2wXruReO4MD5w/4SbDwD21QYAFcHx6YNZTKWco5i242sHeKzYbbrzcTd09in
+	 ZP3cmgMfraUiXlNW4V7z7Hzt+EYXEQ0dW2OLD220Jwe3r7TBlVjvFOYAuQhOkjweP8
+	 un7FZgRTFDEWGBy6FJ9G/LoYH1a7wl0B23LStgEg5pOaS0BWQkPzrjtLpzT3z0Km9c
+	 HWLMR6QZgf3utEhs0h4Tb8kByqwsZKMDQDQUmt0RBrJvFDq3BN29psa82UAsxaaMC4
+	 QdQolFOK2DP2g8EdnBQ29jxyHzPor0/UNT4k5WLo52JTAIr16eSHJh3CZSMFDzbXra
+	 6O6L7WEX1wPXw==
 From: Christian Brauner <brauner@kernel.org>
-Date: Fri, 20 Feb 2026 01:38:30 +0100
-Subject: [PATCH 2/4] cgroup: add bpf hook for attach
+Date: Fri, 20 Feb 2026 01:38:31 +0100
+Subject: [PATCH 3/4] selftests/bpf: add ns hook selftest
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -54,8 +54,8 @@ List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20260220-work-bpf-namespace-v1-2-866207db7b83@kernel.org>
+Content-Transfer-Encoding: 8bit
+Message-Id: <20260220-work-bpf-namespace-v1-3-866207db7b83@kernel.org>
 References: <20260220-work-bpf-namespace-v1-0-866207db7b83@kernel.org>
 In-Reply-To: <20260220-work-bpf-namespace-v1-0-866207db7b83@kernel.org>
 To: Alexei Starovoitov <ast@kernel.org>, 
@@ -66,12 +66,12 @@ Cc: KP Singh <kpsingh@kernel.org>, bpf@vger.kernel.org,
  Lennart Poettering <lennart@poettering.net>, 
  Christian Brauner <brauner@kernel.org>
 X-Mailer: b4 0.15-dev-47773
-X-Developer-Signature: v=1; a=openpgp-sha256; l=6350; i=brauner@kernel.org;
- h=from:subject:message-id; bh=rQtRX5ohX7vGBGBjzVHcp0rW36b98A2mn7TXYUJHP4Y=;
- b=owGbwMvMwCU28Zj0gdSKO4sYT6slMWROXyvAv7x/5U7GLz9cpMJnX7ruWG/l+r143/L3Gfndy
- Xd9Gi3dO0pZGMS4GGTFFFkc2k3C5ZbzVGw2ytSAmcPKBDKEgYtTACYiMIORYcMl3gj3l10hazzL
- m+N2csfxNfksmj1t7aOrAfvd2hJS3zL8lfPc8OjB+lNfd+s8rDzzRtVVQEbiJZd8klX5r7y0vhu
- b2QE=
+X-Developer-Signature: v=1; a=openpgp-sha256; l=6123; i=brauner@kernel.org;
+ h=from:subject:message-id; bh=2Y18MqPJiqmQVhKG7YQFspLjTM48CG/DtkSLoIi4Iow=;
+ b=owGbwMvMwCU28Zj0gdSKO4sYT6slMWROXyuwp1nHZ8kM0/AVap3XHvUH+22dcb9kYcaXSXuub
+ b0ikxP9sKOUhUGMi0FWTJHFod0kXG45T8Vmo0wNmDmsTCBDGLg4BWAiR3Yw/GZNWLDqcLy1hmlT
+ Rvjb95pbl4csXipzWClEiivg0Zs0j15Ghq933/u+3bgqa0sbv6vL1YvZtoEz7nf+8g/SF/eLz8g
+ 6ygoA
 X-Developer-Key: i=brauner@kernel.org; a=openpgp;
  fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
 X-Rspamd-Server: lfdr
@@ -83,7 +83,7 @@ X-Spamd-Result: default: False [-2.16 / 15.00];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-14043-lists,cgroups=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-14044-lists,cgroups=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
 	RCVD_COUNT_THREE(0.00)[4];
 	FORGED_SENDER_MAILLIST(0.00)[];
@@ -101,184 +101,220 @@ X-Spamd-Result: default: False [-2.16 / 15.00];
 	RCPT_COUNT_SEVEN(0.00)[11];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 90029163E17
+X-Rspamd-Queue-Id: D9B87163E1E
 X-Rspamd-Action: no action
 
-Add a hook to manage attaching tasks to cgroup. I'm in the process of
-adding various "universal truth" bpf programs to systemd that will make
-use of this.
+Add a BPF LSM selftest that implements a "lock on entry" namespace
+sandbox policy.
 
-This has been a long-standing request (cf. [1] and [2]). It will allow us to
-enforce cgroup migrations and ensure that services can never escape their
-cgroups. This is just one of many use-cases.
-
-Link: https://github.com/systemd/systemd/issues/6356 [1]
-Link: https://github.com/systemd/systemd/issues/22874 [2]
 Signed-off-by: Christian Brauner <brauner@kernel.org>
 ---
- include/linux/bpf_lsm.h | 15 +++++++++++++++
- kernel/bpf/bpf_lsm.c    | 12 ++++++++++++
- kernel/cgroup/cgroup.c  | 18 +++++++++++-------
- 3 files changed, 38 insertions(+), 7 deletions(-)
+ .../testing/selftests/bpf/prog_tests/ns_sandbox.c  | 99 ++++++++++++++++++++++
+ .../testing/selftests/bpf/progs/test_ns_sandbox.c  | 91 ++++++++++++++++++++
+ 2 files changed, 190 insertions(+)
 
-diff --git a/include/linux/bpf_lsm.h b/include/linux/bpf_lsm.h
-index 5ae438fdf567..bc1d35b271f5 100644
---- a/include/linux/bpf_lsm.h
-+++ b/include/linux/bpf_lsm.h
-@@ -12,8 +12,11 @@
- #include <linux/bpf_verifier.h>
- #include <linux/lsm_hooks.h>
- 
-+struct cgroup;
-+struct cgroup_namespace;
- struct ns_common;
- struct nsset;
-+struct super_block;
- 
- #ifdef CONFIG_BPF_LSM
- 
-@@ -55,6 +58,9 @@ int bpf_lsm_get_retval_range(const struct bpf_prog *prog,
- int bpf_lsm_namespace_alloc(struct ns_common *ns);
- void bpf_lsm_namespace_free(struct ns_common *ns);
- int bpf_lsm_namespace_install(struct nsset *nsset, struct ns_common *ns);
-+int bpf_lsm_cgroup_attach(struct task_struct *task, struct cgroup *src_cgrp,
-+			   struct cgroup *dst_cgrp, struct super_block *sb,
-+			   bool threadgroup, struct cgroup_namespace *ns);
- 
- int bpf_set_dentry_xattr_locked(struct dentry *dentry, const char *name__str,
- 				const struct bpf_dynptr *value_p, int flags);
-@@ -125,6 +131,15 @@ static inline int bpf_lsm_namespace_install(struct nsset *nsset,
- {
- 	return 0;
- }
-+static inline int bpf_lsm_cgroup_attach(struct task_struct *task,
-+					 struct cgroup *src_cgrp,
-+					 struct cgroup *dst_cgrp,
-+					 struct super_block *sb,
-+					 bool threadgroup,
-+					 struct cgroup_namespace *ns)
+diff --git a/tools/testing/selftests/bpf/prog_tests/ns_sandbox.c b/tools/testing/selftests/bpf/prog_tests/ns_sandbox.c
+new file mode 100644
+index 000000000000..0ac2acfb6365
+--- /dev/null
++++ b/tools/testing/selftests/bpf/prog_tests/ns_sandbox.c
+@@ -0,0 +1,99 @@
++// SPDX-License-Identifier: GPL-2.0
++/* Copyright (c) 2026 Christian Brauner <brauner@kernel.org> */
++
++/*
++ * Test BPF LSM namespace sandbox: once you enter, you stay.
++ *
++ * The parent creates a tracked namespace, then forks a child.
++ * The child enters the tracked namespace (allowed) and is then locked
++ * out of any further setns().
++ */
++
++#define _GNU_SOURCE
++#include <test_progs.h>
++#include <sched.h>
++#include <fcntl.h>
++#include <unistd.h>
++#include <sys/wait.h>
++#include "test_ns_sandbox.skel.h"
++
++void test_ns_sandbox(void)
 +{
-+	return 0;
++	int orig_utsns = -1, new_utsns = -1;
++	struct test_ns_sandbox *skel = NULL;
++	int err, status;
++	pid_t child;
++
++	/* Save FD to current (host) namespace */
++	orig_utsns = open("/proc/self/ns/uts", O_RDONLY);
++	if (!ASSERT_OK_FD(orig_utsns, "open orig utsns"))
++		goto close_fds;
++
++	skel = test_ns_sandbox__open_and_load();
++	if (!ASSERT_OK_PTR(skel, "skel open_and_load"))
++		goto close_fds;
++
++	err = test_ns_sandbox__attach(skel);
++	if (!ASSERT_OK(err, "skel attach"))
++		goto destroy;
++
++	skel->bss->monitor_pid = getpid();
++
++	/*
++	 * Create a sandbox namespace.  The alloc hook records its
++	 * inum because this task's pid matches monitor_pid.
++	 */
++	err = unshare(CLONE_NEWUTS);
++	if (!ASSERT_OK(err, "unshare sandbox"))
++		goto destroy;
++
++	new_utsns = open("/proc/self/ns/uts", O_RDONLY);
++	if (!ASSERT_OK_FD(new_utsns, "open sandbox utsns"))
++		goto restore;
++
++	/*
++	 * Return parent to host namespace.  The host namespace is not
++	 * in the map so the install hook lets us through.
++	 */
++	err = setns(orig_utsns, CLONE_NEWUTS);
++	if (!ASSERT_OK(err, "parent setns host utsns"))
++		goto restore;
++
++	/*
++	 * Fork a child that:
++	 *  1. Enters the sandbox UTS namespace — succeeds and locks it.
++	 *  2. Tries to switch to host UTS — denied (locked).
++	 */
++	child = fork();
++	if (child == 0) {
++		/* Enter tracked namespace — allowed, we get locked */
++		if (setns(new_utsns, CLONE_NEWUTS) != 0)
++			_exit(1);
++
++		/* Locked: switching to host must fail */
++		if (setns(orig_utsns, CLONE_NEWUTS) != -1 ||
++		    errno != EPERM)
++			_exit(2);
++
++		_exit(0);
++	}
++	if (!ASSERT_GE(child, 0, "fork child"))
++		goto restore;
++
++	err = waitpid(child, &status, 0);
++	ASSERT_GT(err, 0, "waitpid child");
++	ASSERT_TRUE(WIFEXITED(status), "child exited");
++	ASSERT_EQ(WEXITSTATUS(status), 0, "child locked in");
++
++	goto destroy;
++
++restore:
++	setns(orig_utsns, CLONE_NEWUTS);
++destroy:
++	test_ns_sandbox__destroy(skel);
++close_fds:
++	if (new_utsns >= 0)
++		close(new_utsns);
++	if (orig_utsns >= 0)
++		close(orig_utsns);
 +}
- #endif /* CONFIG_BPF_LSM */
- 
- #endif /* _LINUX_BPF_LSM_H */
-diff --git a/kernel/bpf/bpf_lsm.c b/kernel/bpf/bpf_lsm.c
-index f6378db46220..1da5585082fa 100644
---- a/kernel/bpf/bpf_lsm.c
-+++ b/kernel/bpf/bpf_lsm.c
-@@ -47,6 +47,16 @@ __weak noinline int bpf_lsm_namespace_install(struct nsset *nsset,
- 	return 0;
- }
- 
-+__weak noinline int bpf_lsm_cgroup_attach(struct task_struct *task,
-+					   struct cgroup *src_cgrp,
-+					   struct cgroup *dst_cgrp,
-+					   struct super_block *sb,
-+					   bool threadgroup,
-+					   struct cgroup_namespace *ns)
+diff --git a/tools/testing/selftests/bpf/progs/test_ns_sandbox.c b/tools/testing/selftests/bpf/progs/test_ns_sandbox.c
+new file mode 100644
+index 000000000000..75c3493932a1
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/test_ns_sandbox.c
+@@ -0,0 +1,91 @@
++// SPDX-License-Identifier: GPL-2.0
++/* Copyright (c) 2026 Christian Brauner <brauner@kernel.org> */
++
++/*
++ * BPF LSM namespace sandbox: once you enter, you stay.
++ *
++ * A designated process creates namespaces (tracked via alloc).  When
++ * any other process joins one of those namespaces it gets recorded in
++ * locked_tasks.  From that point on that process cannot setns() into
++ * any other namespace — it is locked in.  Task local storage is
++ * automatically freed when the task exits.
++ */
++
++#include "vmlinux.h"
++#include <errno.h>
++#include <bpf/bpf_helpers.h>
++#include <bpf/bpf_tracing.h>
++
++/*
++ * Namespaces created by the monitored process.
++ * Key:   namespace inode number.
++ * Value: namespace type (CLONE_NEW* flag).
++ */
++struct {
++	__uint(type, BPF_MAP_TYPE_HASH);
++	__uint(max_entries, 64);
++	__type(key, __u32);
++	__type(value, __u32);
++} known_namespaces SEC(".maps");
++
++/* PID of the process whose namespace creations are tracked. */
++int monitor_pid;
++
++/*
++ * Task local storage: marks tasks that have entered a tracked namespace
++ * and are now locked.
++ */
++struct {
++	__uint(type, BPF_MAP_TYPE_TASK_STORAGE);
++	__uint(map_flags, BPF_F_NO_PREALLOC);
++	__type(key, int);
++	__type(value, __u8);
++} locked_tasks SEC(".maps");
++
++char _license[] SEC("license") = "GPL";
++
++/* Only the monitored process's namespace creations are tracked. */
++SEC("lsm.s/namespace_alloc")
++int BPF_PROG(ns_alloc, struct ns_common *ns)
 +{
++	__u32 inum, ns_type;
++
++	if ((bpf_get_current_pid_tgid() >> 32) != monitor_pid)
++		return 0;
++
++	inum = ns->inum;
++	ns_type = ns->ns_type;
++	bpf_map_update_elem(&known_namespaces, &inum, &ns_type, BPF_ANY);
++
 +	return 0;
 +}
 +
- __bpf_hook_end();
- 
- #define LSM_HOOK(RET, DEFAULT, NAME, ...) BTF_ID(func, bpf_lsm_##NAME)
-@@ -56,6 +66,7 @@ BTF_SET_START(bpf_lsm_hooks)
- BTF_ID(func, bpf_lsm_namespace_alloc)
- BTF_ID(func, bpf_lsm_namespace_free)
- BTF_ID(func, bpf_lsm_namespace_install)
-+BTF_ID(func, bpf_lsm_cgroup_attach)
- BTF_SET_END(bpf_lsm_hooks)
- 
- BTF_SET_START(bpf_lsm_disabled_hooks)
-@@ -407,6 +418,7 @@ BTF_ID(func, bpf_lsm_task_to_inode)
- BTF_ID(func, bpf_lsm_userns_create)
- BTF_ID(func, bpf_lsm_namespace_alloc)
- BTF_ID(func, bpf_lsm_namespace_install)
-+BTF_ID(func, bpf_lsm_cgroup_attach)
- BTF_SET_END(sleepable_lsm_hooks)
- 
- BTF_SET_START(untrusted_lsm_hooks)
-diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
-index 8af4351536cf..16535349b22f 100644
---- a/kernel/cgroup/cgroup.c
-+++ b/kernel/cgroup/cgroup.c
-@@ -28,6 +28,7 @@
- #include "cgroup-internal.h"
- 
- #include <linux/bpf-cgroup.h>
-+#include <linux/bpf_lsm.h>
- #include <linux/cred.h>
- #include <linux/errno.h>
- #include <linux/init_task.h>
-@@ -5334,7 +5335,8 @@ static int cgroup_procs_write_permission(struct cgroup *src_cgrp,
- 	return 0;
- }
- 
--static int cgroup_attach_permissions(struct cgroup *src_cgrp,
-+static int cgroup_attach_permissions(struct task_struct *task,
-+				     struct cgroup *src_cgrp,
- 				     struct cgroup *dst_cgrp,
- 				     struct super_block *sb, bool threadgroup,
- 				     struct cgroup_namespace *ns)
-@@ -5350,9 +5352,9 @@ static int cgroup_attach_permissions(struct cgroup *src_cgrp,
- 		return ret;
- 
- 	if (!threadgroup && (src_cgrp->dom_cgrp != dst_cgrp->dom_cgrp))
--		ret = -EOPNOTSUPP;
-+		return -EOPNOTSUPP;
- 
--	return ret;
-+	return bpf_lsm_cgroup_attach(task, src_cgrp, dst_cgrp, sb, threadgroup, ns);
- }
- 
- static ssize_t __cgroup_procs_write(struct kernfs_open_file *of, char *buf,
-@@ -5384,7 +5386,7 @@ static ssize_t __cgroup_procs_write(struct kernfs_open_file *of, char *buf,
- 	 * inherited fd attacks.
- 	 */
- 	scoped_with_creds(of->file->f_cred)
--		ret = cgroup_attach_permissions(src_cgrp, dst_cgrp,
-+		ret = cgroup_attach_permissions(task, src_cgrp, dst_cgrp,
- 						of->file->f_path.dentry->d_sb,
- 						threadgroup, ctx->ns);
- 	if (ret)
-@@ -6669,6 +6671,7 @@ static struct cgroup *cgroup_get_from_file(struct file *f)
- 
- /**
-  * cgroup_css_set_fork - find or create a css_set for a child process
-+ * @task: the task to be attached
-  * @kargs: the arguments passed to create the child process
-  *
-  * This functions finds or creates a new css_set which the child
-@@ -6683,7 +6686,8 @@ static struct cgroup *cgroup_get_from_file(struct file *f)
-  * before grabbing cgroup_threadgroup_rwsem and will hold a reference
-  * to the target cgroup.
-  */
--static int cgroup_css_set_fork(struct kernel_clone_args *kargs)
-+static int cgroup_css_set_fork(struct task_struct *task,
-+			       struct kernel_clone_args *kargs)
- 	__acquires(&cgroup_mutex) __acquires(&cgroup_threadgroup_rwsem)
- {
- 	int ret;
-@@ -6752,7 +6756,7 @@ static int cgroup_css_set_fork(struct kernel_clone_args *kargs)
- 	 * cgroup.procs of the cgroup indicated by @dfd_cgroup. This allows us
- 	 * to always use the caller's credentials.
- 	 */
--	ret = cgroup_attach_permissions(cset->dfl_cgrp, dst_cgrp, sb,
-+	ret = cgroup_attach_permissions(task, cset->dfl_cgrp, dst_cgrp, sb,
- 					!(kargs->flags & CLONE_THREAD),
- 					current->nsproxy->cgroup_ns);
- 	if (ret)
-@@ -6824,7 +6828,7 @@ int cgroup_can_fork(struct task_struct *child, struct kernel_clone_args *kargs)
- 	struct cgroup_subsys *ss;
- 	int i, j, ret;
- 
--	ret = cgroup_css_set_fork(kargs);
-+	ret = cgroup_css_set_fork(child, kargs);
- 	if (ret)
- 		return ret;
- 
++/*
++ * Enforce the lock-in policy for all tasks:
++ * - Already locked?  Deny any setns.
++ * - Entering a tracked namespace?  Lock the task and allow.
++ * - Everything else passes through.
++ */
++SEC("lsm.s/namespace_install")
++int BPF_PROG(ns_install, struct nsset *nsset, struct ns_common *ns)
++{
++	struct task_struct *task = bpf_get_current_task_btf();
++	__u32 inum = ns->inum;
++
++	if (bpf_task_storage_get(&locked_tasks, task, 0, 0))
++		return -EPERM;
++
++	if (bpf_map_lookup_elem(&known_namespaces, &inum))
++		bpf_task_storage_get(&locked_tasks, task, 0,
++				     BPF_LOCAL_STORAGE_GET_F_CREATE);
++
++	return 0;
++}
++
++SEC("lsm/namespace_free")
++void BPF_PROG(ns_free, struct ns_common *ns)
++{
++	__u32 inum = ns->inum;
++
++	bpf_map_delete_elem(&known_namespaces, &inum);
++}
 
 -- 
 2.47.3
