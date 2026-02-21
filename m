@@ -1,217 +1,136 @@
-Return-Path: <cgroups+bounces-14088-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-14089-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id yAEbKlDZmWkkXAMAu9opvQ
-	(envelope-from <cgroups+bounces-14088-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Sat, 21 Feb 2026 17:12:00 +0100
+	id 6OXkLhDymWn9XQMAu9opvQ
+	(envelope-from <cgroups+bounces-14089-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Sat, 21 Feb 2026 18:57:36 +0100
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
-	by mail.lfdr.de (Postfix) with ESMTPS id DA63916D3E9
-	for <lists+cgroups@lfdr.de>; Sat, 21 Feb 2026 17:11:59 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1278216D6ED
+	for <lists+cgroups@lfdr.de>; Sat, 21 Feb 2026 18:57:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id 57BA4300C541
-	for <lists+cgroups@lfdr.de>; Sat, 21 Feb 2026 16:11:49 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id E47DC3045215
+	for <lists+cgroups@lfdr.de>; Sat, 21 Feb 2026 17:57:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 53A002E22AB;
-	Sat, 21 Feb 2026 16:11:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B40D33123C;
+	Sat, 21 Feb 2026 17:57:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mUq9u3+l"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dzZocsBx"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-ej1-f47.google.com (mail-ej1-f47.google.com [209.85.218.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6CC5E2DFA32
-	for <cgroups@vger.kernel.org>; Sat, 21 Feb 2026 16:11:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.218.47
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1771690305; cv=pass; b=dJfg1CEC32Vy/r4g6+6toRHizin4IHINGbKi6ifPikvYu4r2r7R4rF9WZJjJuln7NKK8V1dQBekzl+9oSEaidDFxSe0k4II7JKaz56TLMeKX9GfMpXr/SWfyu2pt28E+jNVC9G1b6j9xX0Iq+Y65zVqr/EXB1OAeTgHJ4triO6I=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1771690305; c=relaxed/simple;
-	bh=WFk2dMGDXodWdBOsas5Wh8VEIYFRodTYZpiky7YPwy4=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=K5PySLYujkPzSYAHKcPpMbFOss3Z/Tt6dGSI6t22wMedmalQJcAJiDF21+YjAbaQUUn5bs8QRhoNe0r+OMUXlVWBWqmaPhOtjAGEEnXbFlZ4Oy4b2mNd9c/T7uJq6mhNZn32yuBoet6xpdChmZMkdtctbNeOmmgs//cd2FFP1Ug=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=mUq9u3+l; arc=pass smtp.client-ip=209.85.218.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f47.google.com with SMTP id a640c23a62f3a-b9080841899so104044166b.3
-        for <cgroups@vger.kernel.org>; Sat, 21 Feb 2026 08:11:42 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; t=1771690301; cv=none;
-        d=google.com; s=arc-20240605;
-        b=N0jtbBwobL9VjiMG9wXWbkxeMxLqxfS05LZbSIFTQcyiGbtCfL3VFLKxXk46khVd5d
-         gZEHA5hAqXpYphpNtVmABxsc8oor0SNwLRYXSVKuKDEsBQhTShiE1aHRj1FqYgOy8bBA
-         V0zCk/Ze0y/M3kNn6RCa/z7yk9HAps4r1XJhRzT+tiuQDVKDY0h4+/08shPoku/Ia02o
-         EsEAt+vwLXagdjaYatXg4Oqa2YG8q/jSX5Bnx5LqIxYYO8+kUXyf0M16Ng8spsHYhnIi
-         bm2684a8dzsS7iH7szke3xKaKa8JtOrzBpn1ZFXURMRiSpIIBBYiV3Q7RJdSdP0/wiBQ
-         BD8g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:dkim-signature;
-        bh=WFk2dMGDXodWdBOsas5Wh8VEIYFRodTYZpiky7YPwy4=;
-        fh=OnUbzGFKM6EcwQKF1ggNjMAHP9XW8uxBWOln5uNsgO0=;
-        b=HkjLePG3RysnT1p1t87zljH9saPcnj2RepmGOWBpEN/MZGox27dwMryDJSkY3SVSYq
-         JEcgZO9nOWdM/fsvAenqoHBKQ+dh3c1NlSr3u5SsWWSIlr5OtfqVCRlp5pJzbP4iZ/gN
-         6rYdGtZtZH7o+YAMjQearyuIeyp40OMX0q50iRlUiUEy+BxDLkrpCx12xzjbdklyfV4h
-         zqMpUkG7XA3zBCI7u4GZ+0RnMmP2JG05i/L5suvGb39yZmjbUjlUSokeOiHcGTq/0NFF
-         ZxDfS2QFr3i9Tyh/268XijB6pfTC+rUIzrTzQOVW43htGszcoukc1vPDMf/AQws/XkFj
-         aokw==;
-        darn=vger.kernel.org
-ARC-Authentication-Results: i=1; mx.google.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1771690301; x=1772295101; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=WFk2dMGDXodWdBOsas5Wh8VEIYFRodTYZpiky7YPwy4=;
-        b=mUq9u3+llNJriYI2iwd1k/lQn3+8PEXC+MxxmLdX0Vc+O7L2bRz6K6Vg2tqRQK0zTP
-         xSIO3mrf4GBmMe+1tX76JdAyziIp1yvfGsfTbbnP11I6HREYNrbrtWeF6ZmurwzUFMla
-         RKnzD6D8LboyPVC5h6EJE+QZOI/yOpXWZDJQKCPyO1YFzqJ7Uu10iwSSQgKdtS1UmA/9
-         wj5g4w7bzma9fUx1ocFMwjUouGaUi4gN4uskGBC0e9Wt0uA1bSYORgn8Y6iJuOJJ7vAL
-         unam2Y5dvjZUsDfOIbju6Br2uv4rOQvBrTBqQ5nCLsuIUoS8zK9fKuv6N7zJYah6ag6/
-         7+Kw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1771690301; x=1772295101;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=WFk2dMGDXodWdBOsas5Wh8VEIYFRodTYZpiky7YPwy4=;
-        b=ZY2p/hhcUYxfHzIsx9Rsn/pvVh6YEUfX7sHD23OnSiek+u1QTjr93PHXN5tHvxIzO7
-         VRkmNHqyirI64BoJ77YiXGz6l0zw8FTn9qHUrZAsigHbmTOSnvlYr38RDA4agpQBAEM6
-         OBaEFRxv5+i1nncePD50PP/AkoYphcK0qN4gYPsjxguzJjKxhVBd1HxyEClZoYqsCEo6
-         GJ9hP5VU2Mqa1vu/zrnGefC2UsceQH8g/znRDjvDi2QRspHSnsDInaqnjGO1v6gBNGYq
-         WN8dwMiAe7PtTDx6vO8YOHZ21KOz68cL8rVDWPrTZfvEi9rNeCegwwASXwYU7n2zpNgJ
-         wFhw==
-X-Forwarded-Encrypted: i=1; AJvYcCXWRWMWvIpRtERMliKYEG+Q05RaDzTXX7eceBZy7TwkTsoVVTrMzp8GUQi3SJnTfOPwPkk6jtie@vger.kernel.org
-X-Gm-Message-State: AOJu0YwL8amEMCkPt8deKy+ptQGlR4bwfgSNFTzd0HjT1S0CvTLPDazV
-	wQXMEgtXcU5cekxM7rTpGU1UaxxPp627SAncvCuOGPZeRqh84rE9zZwAL+CcSX/TQ6lqvkJrksq
-	xoCPQFD92Y5XPn+IBB6a9VVR2nnZpPUw=
-X-Gm-Gg: AZuq6aJ0NJB8ySiPyIo7TWL2HiDN6TPc6yfyH2xlBWu85vRegDu/WKXjgWEUP4aoEUD
-	rkcXTtKQh6QV8teckyi1jPy+wNhaDwxPkj6v6/AvHUQALdJBVuXqFqr//WB/2y1hpG5Zwqr7xmR
-	6PgBGsOm1lb+rmm+6b4qzQ9igAJyU4ECLYn3n+Hzwn3N65wcs9d1Om+9mWHEW7pTyfAGRP8DGKy
-	PCvPB+Edaq121J18wOulbg/wgRir7G6PLsv4Eaz/aVIy7SzsO1eFqE54qvsxZkHeL7FoWmOW9Jb
-	YauW3bD8096Kz9OQufQyBYLcmtN0Zj25t2dw9ciZ
-X-Received: by 2002:a17:906:474a:b0:b87:7938:7b77 with SMTP id
- a640c23a62f3a-b9081b4adbfmr135784766b.30.1771690300450; Sat, 21 Feb 2026
- 08:11:40 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E9791DEFE7;
+	Sat, 21 Feb 2026 17:57:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1771696649; cv=none; b=kEp39czo4+Ryg3M5lt9cMvlAggU6QyPtFygCnhC1STtcIW7V0xa0GCpzdbubtWXRWLK21IAv84c5C7pfR4yfdx68Jo3OZ0ohf5rgor/MLJZM0QKu5mvWSG+jCPfw1hWAX9dy8eF2exWyXNi7K3mliNxwwaZN+Vu3CWP5erlu4NA=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1771696649; c=relaxed/simple;
+	bh=O+AE15WvIgEMw98m/o+ma1tw18+b69pKGmAY39S8DK4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=RaJ1z5PIIpWX2+AgKYL/JQtrfj20Z72Wxml7YPFLaPFE6XgUeQkABPjEXljLkRU0LzRgDSakpk73l6JDcvyzu6QSdZpBDiJpJY8C7eTPPcF2Fomp33fsQ2FtWeTMeej74NNHa/+ECun3GU32dWI0HFhtJLWOLC0Px7f6tqEiEgA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dzZocsBx; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DB7F3C19421;
+	Sat, 21 Feb 2026 17:57:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1771696649;
+	bh=O+AE15WvIgEMw98m/o+ma1tw18+b69pKGmAY39S8DK4=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=dzZocsBxfbp4aXPxn5bjx04RTNIbrWbHf+Rx8ogoZPljjhzaS2j+XrXePA2YehGLo
+	 x24kGk6WfBoEhfHgYrtIvrcFMIDUyPijpZIdftnE2psUqpTJJwlRSTah0xfQRkrM8P
+	 nwy3UeSzJgTFlK6fI2Gsk75D/Nby3o+7GhiMQa87o0vAdiNEnpfC0BP525XKuEPaag
+	 dhov6yIGE+vG5ikPcl5yyfEsMIaI9k+UqLai423HZ5I99mHwSzTCiSKiAQWALzlHW3
+	 qPItYd2tsC+BHlkQ2qZLGK4cYVtGcoMdtVxKdGB+Mcek7riXAX7lzs4axCbWb80Bih
+	 NlGKgiOBo+qmQ==
+Date: Sat, 21 Feb 2026 18:57:24 +0100
+From: Christian Brauner <brauner@kernel.org>
+To: Tejun Heo <tj@kernel.org>
+Cc: Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, KP Singh <kpsingh@kernel.org>, bpf@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, cgroups@vger.kernel.org, 
+	Lennart Poettering <lennart@poettering.net>
+Subject: Re: [PATCH 2/4] cgroup: add bpf hook for attach
+Message-ID: <20260221-salat-meiden-1283869d1038@brauner>
+References: <20260220-work-bpf-namespace-v1-0-866207db7b83@kernel.org>
+ <20260220-work-bpf-namespace-v1-2-866207db7b83@kernel.org>
+ <aZh6vebjDcrccqNP@slm.duckdns.org>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20260220055449.3073-1-tjmercier@google.com> <20260220055449.3073-3-tjmercier@google.com>
- <aZh-orwoaeAh52Bf@slm.duckdns.org> <CAOQ4uxjgXa1q-8-ajSBwza-Tkv91tFP-_wWzCQPW+PwJMehEWA@mail.gmail.com>
- <aZi6_K-pSRwAe7F5@slm.duckdns.org> <CAOQ4uxjZZSRBwZ2ZL31juAUu0-sAUnPrJWvQuJ2NDaWZMeq0Fg@mail.gmail.com>
- <aZju-GFHf8Eez-07@slm.duckdns.org>
-In-Reply-To: <aZju-GFHf8Eez-07@slm.duckdns.org>
-From: Amir Goldstein <amir73il@gmail.com>
-Date: Sat, 21 Feb 2026 18:11:28 +0200
-X-Gm-Features: AaiRm50siD9H0RcvpiyV5fyHjGmjcm9TLE2lBYwftlepNHL-uvxe1pX7UaXUvqc
-Message-ID: <CAOQ4uxgzuxaLt2xs5a5snu9CBA_4esQ_+t0Wb6CX4M5OqM5AOA@mail.gmail.com>
-Subject: Re: [PATCH v4 2/3] kernfs: Send IN_DELETE_SELF and IN_IGNORED
-To: Tejun Heo <tj@kernel.org>
-Cc: "T.J. Mercier" <tjmercier@google.com>, gregkh@linuxfoundation.org, 
-	driver-core@lists.linux.dev, linux-kernel@vger.kernel.org, 
-	cgroups@vger.kernel.org, linux-fsdevel@vger.kernel.org, jack@suse.cz, 
-	shuah@kernel.org, linux-kselftest@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <aZh6vebjDcrccqNP@slm.duckdns.org>
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-2.16 / 15.00];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=2];
-	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
-	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
-	R_DKIM_ALLOW(-0.20)[gmail.com:s=20230601];
+X-Spamd-Result: default: False [2.34 / 15.00];
+	MID_END_EQ_FROM_USER_PART(4.00)[];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+	MID_RHS_NOT_FQDN(0.50)[];
+	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FROM_HAS_DN(0.00)[];
-	TAGGED_FROM(0.00)[bounces-14088-lists,cgroups=lfdr.de];
-	RCVD_TLS_LAST(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
-	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	TO_DN_SOME(0.00)[];
-	DKIM_TRACE(0.00)[gmail.com:+];
-	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
-	MISSING_XM_UA(0.00)[];
+	TAGGED_FROM(0.00)[bounces-14089-lists,cgroups=lfdr.de];
+	RCVD_COUNT_THREE(0.00)[4];
+	DKIM_TRACE(0.00)[kernel.org:+];
+	RCVD_TLS_LAST(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
 	NEURAL_HAM(-0.00)[-1.000];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[amir73il@gmail.com,cgroups@vger.kernel.org];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	MID_RHS_MATCH_FROMTLD(0.00)[];
-	TAGGED_RCPT(0.00)[cgroups];
+	FROM_NEQ_ENVFROM(0.00)[brauner@kernel.org,cgroups@vger.kernel.org];
+	MISSING_XM_UA(0.00)[];
 	RCPT_COUNT_SEVEN(0.00)[10];
-	FREEMAIL_FROM(0.00)[gmail.com];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns,mail.gmail.com:mid]
-X-Rspamd-Queue-Id: DA63916D3E9
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	TAGGED_RCPT(0.00)[cgroups];
+	MIME_TRACE(0.00)[0:+];
+	TO_DN_SOME(0.00)[]
+X-Rspamd-Queue-Id: 1278216D6ED
 X-Rspamd-Action: no action
 
-On Sat, Feb 21, 2026 at 12:32=E2=80=AFAM Tejun Heo <tj@kernel.org> wrote:
->
-> Hello, Amir.
->
-> On Fri, Feb 20, 2026 at 10:11:15PM +0200, Amir Goldstein wrote:
-> > > Yeah, that can be useful. For cgroupfs, there would probably need to =
-be a
-> > > way to scope it so that it can be used on delegation boundaries too (=
-which
-> > > we can require to coincide with cgroup NS boundaries).
-> >
-> > I have no idea what the above means.
-> > I could ask Gemini or you and I prefer the latter ;)
->
-> Ah, you chose wrong. :)
->
-> > What are delegation boundaries and NFS boundaries in this context?
->
-> cgroup delegation is giving control of a subtree to someone else:
->
-> https://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git/tree/Docume=
-ntation/admin-guide/cgroup-v2.rst#n537
->
-> There's an old way of doing it by changing perms on some files and new wa=
-y
-> using cgroup namespace.
->
-> > > Would it be possible to make FAN_MNT_ATTACH work for that?
-> >
-> > FAN_MNT_ATTACH is an event generated on a mntns object.
-> > If "cgroup NS boundaries" is referring to a mntns object and if
-> > this object is available in the context of cgroup create/destroy
-> > then it should be possible.
->
-> Great, yes, cgroup namespace way should work then.
->
-> > But FAN_MNT_ATTACH reports a mountid. Is there a mountid
-> > to report on cgroup create? Probably not?
->
-> Sorry, I thought that was per-mount recursive file event monitoring.
-> FAN_MARK_MOUNT looks like the right thing if we want to allow monitoring
-> cgroup creations / destructions in a subtree without recursively watching
-> each cgroup.
+On Fri, Feb 20, 2026 at 05:16:13AM -1000, Tejun Heo wrote:
+> Hello,
+> 
+> On Fri, Feb 20, 2026 at 01:38:30AM +0100, Christian Brauner wrote:
+> > Add a hook to manage attaching tasks to cgroup. I'm in the process of
+> > adding various "universal truth" bpf programs to systemd that will make
+> > use of this.
+> > 
+> > This has been a long-standing request (cf. [1] and [2]). It will allow us to
+> > enforce cgroup migrations and ensure that services can never escape their
+> > cgroups. This is just one of many use-cases.
+> 
+> >From cgroup POV, this looks fine to me but I'm curious whether something
+> dumber would also work. With CLONE_INTO_CGROUP, cgroup migration isn't
+> necessary at all. Would something dumber like a mount option disabling
+> cgroup migrations completely work too or would that be too restrictive?
 
-The problem sounds very similar to subtree monitoring for mkdir/rmdir on
-a filesystem, which is a problem that we have not yet solved.
+It would be too restrictive. I've played with various policies. For
+example, a small set of tasks (like PID 1 or the session manager) are
+allowed to move processes between cgroups (detectable via e.g., xattrs).
+No other task is allowd. But that's already too restrictive because it
+fscks over delegated subcgroups were tasks need to be moved around
+(container managers etc.). IOW, any policy must be quite modular and
+dynamic so a simple mount option wouldn't cover it.
 
-The problem with FAN_MARK_MOUNT is that it does not support the
-events CREATE/DELETE, because those events are currently
-monitored in context where the mount is not available and anyway
-what users want to get notified on a deleted file/dir in a subtree
-regardless of the mount through which the create/delete was done.
+As a sidenote, there would be other mount options that would be useful
+but that currently aren't that easy to support/implement because of the
+way cgroupfs (for historical reasons ofc) is architected where it shares
+a single superblock.
 
-Since commit 58f5fbeb367ff ("fanotify: support watching filesystems
-and mounts inside userns") and fnaotify groups can be associated
-with a userns.
-
-I was thinking that we can have a model where events are delivered
-to a listener based on whether or not the uid/gid of the object are
-mappable to the userns of the group.
-
-In a filesystem, this criteria cannot guarantee the subtree isolation.
-I imagine that for delegated cgroups this criteria could match what
-you need, but I am basing this on pure speculation.
-
-Thanks,
-Amir.
+I have a series (from quite some time ago) that makes cgroupfs truly
+multi-instance. It would effectively behave just like tmpfs does. A new
+mount gets you a new superblock. But once you have that you can e.g.,
+simplify cgroup namespaces as well. I've done that work originally to
+support idmapped mounts with cgroupfs but I can't find that branch
+anymore.
 
