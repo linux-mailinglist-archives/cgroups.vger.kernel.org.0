@@ -1,65 +1,65 @@
-Return-Path: <cgroups+bounces-14092-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-14093-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id qGo9AJf/mWliXwMAu9opvQ
-	(envelope-from <cgroups+bounces-14092-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Sat, 21 Feb 2026 19:55:19 +0100
+	id WO3iE43/mWliXwMAu9opvQ
+	(envelope-from <cgroups+bounces-14093-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Sat, 21 Feb 2026 19:55:09 +0100
 X-Original-To: lists+cgroups@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6A80E16D91A
-	for <lists+cgroups@lfdr.de>; Sat, 21 Feb 2026 19:55:18 +0100 (CET)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2E76816D913
+	for <lists+cgroups@lfdr.de>; Sat, 21 Feb 2026 19:55:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id BAF753023062
-	for <lists+cgroups@lfdr.de>; Sat, 21 Feb 2026 18:55:00 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id 8D0A9302C71F
+	for <lists+cgroups@lfdr.de>; Sat, 21 Feb 2026 18:55:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DC43630BB91;
-	Sat, 21 Feb 2026 18:54:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AFB8730F540;
+	Sat, 21 Feb 2026 18:55:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="U8e2edLq"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="M1Ewqc6o"
 X-Original-To: cgroups@vger.kernel.org
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 896EE3090C4
-	for <cgroups@vger.kernel.org>; Sat, 21 Feb 2026 18:54:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 279E32EBB86
+	for <cgroups@vger.kernel.org>; Sat, 21 Feb 2026 18:55:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1771700098; cv=none; b=HysVzlnVgR/Q8vLlr29XpmMPPsXJAsSppYvueVuazO05nTppg3nLmpuwZp20mZ4Ol4mTJOxZOdjbp97rfGk7CmKgZ3dG4YWm40dRIiTJ1l5h4DBs6Cfar0OI7Uv2KVDe0plSHydM+96NbVPRg32LrTsGgsUfw+bZoQpAuI3+CXI=
+	t=1771700104; cv=none; b=KNOezKIfGbyM9MWaqANZndqwrpHXldmsNCzKXV08j4xoFLfb68spqtyvKEUJJbxWa8htKzmqcVSLjii2bfeCpZRfGr7WksVcKSRqgiJvzGLASpglNqRbZx+TO0U3udt+7dxDP87Tc2JFAXPP3QoUtPDSCU250gFDmRByuC4Ou3M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1771700098; c=relaxed/simple;
-	bh=hnwKm3cHN0wYSPdYO1TG3wE2ivHbM3YkTcrGxlm0l88=;
+	s=arc-20240116; t=1771700104; c=relaxed/simple;
+	bh=ARjNEQWL4cBHJYa2kYM7egcPbdm+7idkr8alfNJR2J0=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=eBPLwBk5J8xCXECtLgsqs3wGF4MVmE5mpZneGWVIqmOLsKt71RmdLzmBvwDSsXdDYX5uCijhZ978GkoqiAEZEafzs1R0hanyM41mgSccJNjou3Don9PakpQpwP6O7sh+lgyQRc4++RQd6wTnw24b6aKI5MTFvVQuAWPsuTeC5sU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=U8e2edLq; arc=none smtp.client-ip=170.10.133.124
+	 MIME-Version; b=BxUaTfQAjrC+ErG42iHzO0aS8gBv/aXAsrDQLqiZanFTqC102SvilBAtMS+ZFNVNbJIUVBbJynOlxoEQkSRQUDjsih9d9LHtFWkOjpzgnVIfdXhFWplc9ZMTkQUKeTK4A5cflv4Krgis+U4WPsEt8TwW5pLNJEGmiD6/KyhiBcg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=M1Ewqc6o; arc=none smtp.client-ip=170.10.133.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1771700096;
+	s=mimecast20190719; t=1771700102;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=mq2cciCs0tqvPp9QLtFzwUl4nr4xQ0n8TapNOd99Qkg=;
-	b=U8e2edLqyfSP5Q5DyxQEh0sDD6zYxduBp2yuPH0KffMT0Dd0j04B2IcLZ90kBM2Ty9GiXg
-	Y9gOgmFkv1pPxXcVGdkyCbBotyXulUxQeUHQGPmXDJiWsUwi5KyfMrzv6p+NrUlQ40ld1i
-	gQpyIiR9rLrhDuBh++6TVvPonr5LoWQ=
+	bh=nuUC4MU0ZvRekCFMgEoa8ReLcK5LYqI5EV5cazsBOc4=;
+	b=M1Ewqc6oUmRJxhxM+baNoPvbU3t5tWvC18IgiP14kASV1wzy1L6Ft2a7694JXfVJLMH/tP
+	sSGoeFGXTzDcozlJpZXIFPKNQOETzOrJd3AOpd12s9XZA8cKO3VjU+c9t+is0GlWA5J3x8
+	1CYyDjP5NZWq6XVdfkESLV0qlXeFCMk=
 Received: from mx-prod-mc-01.mail-002.prod.us-west-2.aws.redhat.com
  (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
  relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-658-GsCa34eJNzGUaNe9FQ14Kw-1; Sat,
- 21 Feb 2026 13:54:53 -0500
-X-MC-Unique: GsCa34eJNzGUaNe9FQ14Kw-1
-X-Mimecast-MFC-AGG-ID: GsCa34eJNzGUaNe9FQ14Kw_1771700091
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-558-xX-DmYqJO8aG_yCXfZt64g-1; Sat,
+ 21 Feb 2026 13:54:58 -0500
+X-MC-Unique: xX-DmYqJO8aG_yCXfZt64g-1
+X-Mimecast-MFC-AGG-ID: xX-DmYqJO8aG_yCXfZt64g_1771700096
 Received: from mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.17])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mx-prod-mc-01.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 2CE4E1956095;
-	Sat, 21 Feb 2026 18:54:51 +0000 (UTC)
+	by mx-prod-mc-01.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 62E45195609F;
+	Sat, 21 Feb 2026 18:54:56 +0000 (UTC)
 Received: from llong-thinkpadp16vgen1.westford.csb (unknown [10.2.16.15])
-	by mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id 09CA81955F22;
-	Sat, 21 Feb 2026 18:54:45 +0000 (UTC)
+	by mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id A55321955F22;
+	Sat, 21 Feb 2026 18:54:51 +0000 (UTC)
 From: Waiman Long <longman@redhat.com>
 To: Chen Ridong <chenridong@huaweicloud.com>,
 	Tejun Heo <tj@kernel.org>,
@@ -80,9 +80,9 @@ Cc: cgroups@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	linux-kselftest@vger.kernel.org,
 	Waiman Long <longman@redhat.com>
-Subject: [PATCH v6 2/8] cgroup/cpuset: Fix incorrect use of cpuset_update_tasks_cpumask() in update_cpumasks_hier()
-Date: Sat, 21 Feb 2026 13:54:12 -0500
-Message-ID: <20260221185418.29319-3-longman@redhat.com>
+Subject: [PATCH v6 3/8] cgroup/cpuset: Clarify exclusion rules for cpuset internal variables
+Date: Sat, 21 Feb 2026 13:54:13 -0500
+Message-ID: <20260221185418.29319-4-longman@redhat.com>
 In-Reply-To: <20260221185418.29319-1-longman@redhat.com>
 References: <20260221185418.29319-1-longman@redhat.com>
 Precedence: bulk
@@ -99,64 +99,189 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	MID_CONTAINS_FROM(1.00)[];
 	R_MISSING_CHARSET(0.50)[];
 	DMARC_POLICY_ALLOW(-0.50)[redhat.com,quarantine];
+	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
 	R_DKIM_ALLOW(-0.20)[redhat.com:s=mimecast20190719];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	MIME_TRACE(0.00)[0:+];
+	TAGGED_FROM(0.00)[bounces-14093-lists,cgroups=lfdr.de];
 	RCPT_COUNT_TWELVE(0.00)[19];
-	FORGED_SENDER_MAILLIST(0.00)[];
+	MIME_TRACE(0.00)[0:+];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-14092-lists,cgroups=lfdr.de];
+	FORGED_SENDER_MAILLIST(0.00)[];
 	DKIM_TRACE(0.00)[redhat.com:+];
-	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
 	MISSING_XM_UA(0.00)[];
+	TO_DN_SOME(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[longman@redhat.com,cgroups@vger.kernel.org];
-	FROM_HAS_DN(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	RCVD_COUNT_FIVE(0.00)[6];
 	TAGGED_RCPT(0.00)[cgroups];
 	NEURAL_HAM(-0.00)[-0.999];
-	TO_DN_SOME(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 6A80E16D91A
+	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
+	FROM_HAS_DN(0.00)[]
+X-Rspamd-Queue-Id: 2E76816D913
 X-Rspamd-Action: no action
 
-Commit e2ffe502ba45 ("cgroup/cpuset: Add cpuset.cpus.exclusive for v2")
-incorrectly changed the 2nd parameter of cpuset_update_tasks_cpumask()
-from tmp->new_cpus to cp->effective_cpus. This second parameter is just
-a temporary cpumask for internal use. The cpuset_update_tasks_cpumask()
-function was originally called update_tasks_cpumask() before commit
-381b53c3b549 ("cgroup/cpuset: rename functions shared between v1
-and v2").
+Clarify the locking rules associated with file level internal variables
+inside the cpuset code. There is no functional change.
 
-This mistake can incorrectly change the effective_cpus of the
-cpuset when it is the top_cpuset or in arm64 architecture where
-task_cpu_possible_mask() may differ from cpu_possible_mask.  So far
-top_cpuset hasn't been passed to update_cpumasks_hier() yet, but arm64
-arch can still be impacted. Fix it by reverting the incorrect change.
-
-Fixes: e2ffe502ba45 ("cgroup/cpuset: Add cpuset.cpus.exclusive for v2")
+Reviewed-by: Chen Ridong <chenridong@huaweicloud.com>
 Signed-off-by: Waiman Long <longman@redhat.com>
 ---
- kernel/cgroup/cpuset.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ kernel/cgroup/cpuset.c | 105 ++++++++++++++++++++++++-----------------
+ 1 file changed, 61 insertions(+), 44 deletions(-)
 
 diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
-index 4d10e320b144..58660e06d322 100644
+index 58660e06d322..e8c0b3cfd1f9 100644
 --- a/kernel/cgroup/cpuset.c
 +++ b/kernel/cgroup/cpuset.c
-@@ -2156,7 +2156,7 @@ static void update_cpumasks_hier(struct cpuset *cs, struct tmpmasks *tmp,
- 		WARN_ON(!is_in_v2_mode() &&
- 			!cpumask_equal(cp->cpus_allowed, cp->effective_cpus));
+@@ -61,6 +61,58 @@ static const char * const perr_strings[] = {
+ 	[PERR_REMOTE]    = "Have remote partition underneath",
+ };
  
--		cpuset_update_tasks_cpumask(cp, cp->effective_cpus);
-+		cpuset_update_tasks_cpumask(cp, tmp->new_cpus);
++/*
++ * CPUSET Locking Convention
++ * -------------------------
++ *
++ * Below are the three global locks guarding cpuset structures in lock
++ * acquisition order:
++ *  - cpu_hotplug_lock (cpus_read_lock/cpus_write_lock)
++ *  - cpuset_mutex
++ *  - callback_lock (raw spinlock)
++ *
++ * A task must hold all the three locks to modify externally visible or
++ * used fields of cpusets, though some of the internally used cpuset fields
++ * and internal variables can be modified without holding callback_lock. If only
++ * reliable read access of the externally used fields are needed, a task can
++ * hold either cpuset_mutex or callback_lock which are exposed to other
++ * external subsystems.
++ *
++ * If a task holds cpu_hotplug_lock and cpuset_mutex, it blocks others,
++ * ensuring that it is the only task able to also acquire callback_lock and
++ * be able to modify cpusets.  It can perform various checks on the cpuset
++ * structure first, knowing nothing will change. It can also allocate memory
++ * without holding callback_lock. While it is performing these checks, various
++ * callback routines can briefly acquire callback_lock to query cpusets.  Once
++ * it is ready to make the changes, it takes callback_lock, blocking everyone
++ * else.
++ *
++ * Calls to the kernel memory allocator cannot be made while holding
++ * callback_lock which is a spinlock, as the memory allocator may sleep or
++ * call back into cpuset code and acquire callback_lock.
++ *
++ * Now, the task_struct fields mems_allowed and mempolicy may be changed
++ * by other task, we use alloc_lock in the task_struct fields to protect
++ * them.
++ *
++ * The cpuset_common_seq_show() handlers only hold callback_lock across
++ * small pieces of code, such as when reading out possibly multi-word
++ * cpumasks and nodemasks.
++ */
++
++static DEFINE_MUTEX(cpuset_mutex);
++
++/*
++ * File level internal variables below follow one of the following exclusion
++ * rules.
++ *
++ * RWCS: Read/write-able by holding either cpus_write_lock (and optionally
++ *	 cpuset_mutex) or both cpus_read_lock and cpuset_mutex.
++ *
++ * CSCB: Readable by holding either cpuset_mutex or callback_lock. Writable
++ *	 by holding both cpuset_mutex and callback_lock.
++ */
++
+ /*
+  * For local partitions, update to subpartitions_cpus & isolated_cpus is done
+  * in update_parent_effective_cpumask(). For remote partitions, it is done in
+@@ -70,19 +122,18 @@ static const char * const perr_strings[] = {
+  * Exclusive CPUs distributed out to local or remote sub-partitions of
+  * top_cpuset
+  */
+-static cpumask_var_t	subpartitions_cpus;
++static cpumask_var_t	subpartitions_cpus;	/* RWCS */
  
- 		/*
- 		 * On default hierarchy, inherit the CS_SCHED_LOAD_BALANCE
+ /*
+- * Exclusive CPUs in isolated partitions
++ * Exclusive CPUs in isolated partitions (shown in cpuset.cpus.isolated)
+  */
+-static cpumask_var_t	isolated_cpus;
++static cpumask_var_t	isolated_cpus;		/* CSCB */
+ 
+ /*
+- * isolated_cpus updating flag (protected by cpuset_mutex)
+- * Set if isolated_cpus is going to be updated in the current
+- * cpuset_mutex crtical section.
++ * Set if isolated_cpus is being updated in the current cpuset_mutex
++ * critical section.
+  */
+-static bool isolated_cpus_updating;
++static bool		isolated_cpus_updating;	/* RWCS */
+ 
+ /*
+  * A flag to force sched domain rebuild at the end of an operation.
+@@ -98,7 +149,7 @@ static bool isolated_cpus_updating;
+  * Note that update_relax_domain_level() in cpuset-v1.c can still call
+  * rebuild_sched_domains_locked() directly without using this flag.
+  */
+-static bool force_sd_rebuild;
++static bool force_sd_rebuild;			/* RWCS */
+ 
+ /*
+  * Partition root states:
+@@ -218,42 +269,6 @@ struct cpuset top_cpuset = {
+ 	.partition_root_state = PRS_ROOT,
+ };
+ 
+-/*
+- * There are two global locks guarding cpuset structures - cpuset_mutex and
+- * callback_lock. The cpuset code uses only cpuset_mutex. Other kernel
+- * subsystems can use cpuset_lock()/cpuset_unlock() to prevent change to cpuset
+- * structures. Note that cpuset_mutex needs to be a mutex as it is used in
+- * paths that rely on priority inheritance (e.g. scheduler - on RT) for
+- * correctness.
+- *
+- * A task must hold both locks to modify cpusets.  If a task holds
+- * cpuset_mutex, it blocks others, ensuring that it is the only task able to
+- * also acquire callback_lock and be able to modify cpusets.  It can perform
+- * various checks on the cpuset structure first, knowing nothing will change.
+- * It can also allocate memory while just holding cpuset_mutex.  While it is
+- * performing these checks, various callback routines can briefly acquire
+- * callback_lock to query cpusets.  Once it is ready to make the changes, it
+- * takes callback_lock, blocking everyone else.
+- *
+- * Calls to the kernel memory allocator can not be made while holding
+- * callback_lock, as that would risk double tripping on callback_lock
+- * from one of the callbacks into the cpuset code from within
+- * __alloc_pages().
+- *
+- * If a task is only holding callback_lock, then it has read-only
+- * access to cpusets.
+- *
+- * Now, the task_struct fields mems_allowed and mempolicy may be changed
+- * by other task, we use alloc_lock in the task_struct fields to protect
+- * them.
+- *
+- * The cpuset_common_seq_show() handlers only hold callback_lock across
+- * small pieces of code, such as when reading out possibly multi-word
+- * cpumasks and nodemasks.
+- */
+-
+-static DEFINE_MUTEX(cpuset_mutex);
+-
+ /**
+  * cpuset_lock - Acquire the global cpuset mutex
+  *
+@@ -1162,6 +1177,8 @@ static void reset_partition_data(struct cpuset *cs)
+ static void isolated_cpus_update(int old_prs, int new_prs, struct cpumask *xcpus)
+ {
+ 	WARN_ON_ONCE(old_prs == new_prs);
++	lockdep_assert_held(&callback_lock);
++	lockdep_assert_held(&cpuset_mutex);
+ 	if (new_prs == PRS_ISOLATED)
+ 		cpumask_or(isolated_cpus, isolated_cpus, xcpus);
+ 	else
 -- 
 2.53.0
 
