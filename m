@@ -1,82 +1,82 @@
-Return-Path: <cgroups+bounces-14123-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-14124-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id gEBLK/PDmmlHiQMAu9opvQ
-	(envelope-from <cgroups+bounces-14123-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Sun, 22 Feb 2026 09:53:07 +0100
+	id wDusBwLEmmlHiQMAu9opvQ
+	(envelope-from <cgroups+bounces-14124-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Sun, 22 Feb 2026 09:53:22 +0100
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7009416EB0B
-	for <lists+cgroups@lfdr.de>; Sun, 22 Feb 2026 09:53:07 +0100 (CET)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
+	by mail.lfdr.de (Postfix) with ESMTPS id B350516EB12
+	for <lists+cgroups@lfdr.de>; Sun, 22 Feb 2026 09:53:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 4CD163010B62
-	for <lists+cgroups@lfdr.de>; Sun, 22 Feb 2026 08:51:37 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id 3F0493012E5B
+	for <lists+cgroups@lfdr.de>; Sun, 22 Feb 2026 08:51:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D884126982C;
-	Sun, 22 Feb 2026 08:50:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4BC012417C3;
+	Sun, 22 Feb 2026 08:50:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gourry.net header.i=@gourry.net header.b="eadRN4yp"
+	dkim=pass (2048-bit key) header.d=gourry.net header.i=@gourry.net header.b="cuYnE2WN"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-qv1-f52.google.com (mail-qv1-f52.google.com [209.85.219.52])
+Received: from mail-qt1-f182.google.com (mail-qt1-f182.google.com [209.85.160.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 097A826562D
-	for <cgroups@vger.kernel.org>; Sun, 22 Feb 2026 08:50:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 18E352405E7
+	for <cgroups@vger.kernel.org>; Sun, 22 Feb 2026 08:50:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1771750220; cv=none; b=WNVpsAm5fSgnpMBOr1DYes/sMu1Yl5WEB8i94MaqM4OIzoVAqTEczKaLNAottLD+w6bOuIsMwBiBzf9LUiQJmTbTiju/kweZucbHpKHaDK/bUB75zp7lpfDRPla1oZIhRqUfkZe2dS0049qOshjyUa7DddQi+PKPM2iTvP87akg=
+	t=1771750225; cv=none; b=f3PczGLrNczMgo6Hl+7ugDldORHLRdU3ZQGmPMXelXElQzVJOByBYoZjGFfi4YXVbeLnc0RWLMYR3MeI+k224j1mxQBh59VPVhtoAce+EiStwZwK2D6/cBHkotzLZJY+QDhv6XZ2NS08/Nh7uEkWJ+E4Dv3ABAs/LAcEm+uykEc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1771750220; c=relaxed/simple;
-	bh=/a+f//T1z+yn2dz1PV28izkUs5nWkvuoG5mEzGFWCgQ=;
+	s=arc-20240116; t=1771750225; c=relaxed/simple;
+	bh=zs0qPPz1cXLwzykOWwAs3OVPMWhIFtepSRt4f1NIIrw=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=u6CjFDZ0yUxCdFcm0dYMgmIqskWhVH+ATMGhKjDTJ2TTmWEnQ1gbkK3Q3GST42RGWRKIWWM9WV78AJQDc9OYchWRltVtO0CWAx6U4cEkqZrDQWZIYZETsxfjMWNuUHe5z0uz97P7Jghg2OFO+oJb4VCU0bSQj2hn03BFlhBd1gg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gourry.net; spf=pass smtp.mailfrom=gourry.net; dkim=pass (2048-bit key) header.d=gourry.net header.i=@gourry.net header.b=eadRN4yp; arc=none smtp.client-ip=209.85.219.52
+	 MIME-Version; b=Z4EJ89KZ+aEvaSmF0GOVJG9g06vBG7t6FsYs/r2PM+3o/B2C1ecW6z3fDSzj4zLYV//ptnAKZZKA6bQdoqEmtHm7x7BfId8H8s0SWXJZYxmiSsDjjuPTMCe4KrGmKvL/+K/Xmj0opE+5XQIRVJLZDxTl5M4dRsulgXkXIJearn0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gourry.net; spf=pass smtp.mailfrom=gourry.net; dkim=pass (2048-bit key) header.d=gourry.net header.i=@gourry.net header.b=cuYnE2WN; arc=none smtp.client-ip=209.85.160.182
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gourry.net
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gourry.net
-Received: by mail-qv1-f52.google.com with SMTP id 6a1803df08f44-896f9397ecdso36875636d6.3
-        for <cgroups@vger.kernel.org>; Sun, 22 Feb 2026 00:50:18 -0800 (PST)
+Received: by mail-qt1-f182.google.com with SMTP id d75a77b69052e-506cb1b63d0so36185091cf.2
+        for <cgroups@vger.kernel.org>; Sun, 22 Feb 2026 00:50:22 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gourry.net; s=google; t=1771750218; x=1772355018; darn=vger.kernel.org;
+        d=gourry.net; s=google; t=1771750222; x=1772355022; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=qurhf8VxnZAam+8t9KEHmJsyHZdR8IkiLqv08LH4QHY=;
-        b=eadRN4ypt/CEuvS/8OwKEXuhmZ3A+KGPqHa9wGuJu/wiGV9FfptzLlaAjtnZiq2z0r
-         NCn2Yv9uN5LPTORkv8szYLSmdYudT5gG8amxclbEFbyIifCGnSxtDXB0SFAClxOe/coO
-         m9jbZYFiIpnHb9fqy7HpKY0yJdqb3M+POt+1M2Xn5OBLrPdRMCjrS6GuYmNe7o8JrLri
-         cqWZEpNtDg2P9QjK7JdSiX4RpUW2SZMgOtS8OkEcGlnk9vIZqFiFquvUzxgA4YDggdp+
-         S5mZ1qgFa6MTd5aKw/JD5e4Tbj5EL9YRske17OC5AG+vZh0V4/R+bJWDZOxPYUmOwTi9
-         2mNw==
+        bh=VTSr2egiGZrzh+7+ZlbqD5qhC+A1cnXWqtUesRojnlw=;
+        b=cuYnE2WNllRK1BaGXcrjBaqbBcUpbnDsQh4X+kqsCNCrQDhCg2GLXBOZhc2sScLELh
+         /QyqlcrpK7nf3/LcZVlIMfphkGEcKuP7eY5DrjExPo3CaYyONBU97OUwm6IQt3iGb+Ky
+         27LKBkJiIx4Uyb+yRvDenjVQFZsZnsZuA1fQ7/gFfMAljpqucMNvPDGYVyP7He+x3jZh
+         yVchzDyQ+SPfyBSR1pdflXipR6Q/nlyO0uUpgV515aOjsC/X1Sz4PfwYH2OkR0ST46iD
+         mSt4Gdu9S7sFpKXjavmQXDAsc+HBsDN1j30QbiS0nH1niArBmwXy6J6LP4Jkfp6aQ7ir
+         wuAw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1771750218; x=1772355018;
+        d=1e100.net; s=20230601; t=1771750222; x=1772355022;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=qurhf8VxnZAam+8t9KEHmJsyHZdR8IkiLqv08LH4QHY=;
-        b=BoyBh9G1ZQ0dS+twPrpM/Hf7YgU8bG7O/J82pNETDaBc4y4aJlkT+2pb6bDAn5jM5O
-         ZpvWKDe1eEd/adaDW71Yzgfhg7EgXPjCiGKtZde0uxIrGKzIytATr2WpUvSdm52xiFpx
-         kYBOjphHOuGiXLg+ltUseYxGADIH74zLxK30tD6Ygt9+HgCjq7NS3pDU+Zz1B6qKT/im
-         8GbxaMCFWzP2vuQJOhw99yjlhPMdp2/KG9FdLIa30uH7N8Eer5RKWVPVSQ4srCTSWXhe
-         rNv4aCVQLUFFQA+6WguNv0m7/fK31UlpiGaxFUNnWMgGsYq55OLtekrOOqlAv8RFXV59
-         IhZA==
-X-Forwarded-Encrypted: i=1; AJvYcCXKDM6DOr50njfHAuabmyG1sexa+m1arqdA8pyBSLXC3T1F3pzs+Gt2R2g5jQmRTppqTI6IWV41@vger.kernel.org
-X-Gm-Message-State: AOJu0Yy0Yk6Y1MKl9aIVEn5RpZL/YqesY0p5iz0iIVkedcjE/j3xutPZ
-	1QZTBimSialsYlSER/yJ1Zu8xLIO/W2nyj4msJe5izF40eHQg4TJWaXVa0PEodHL1/M=
-X-Gm-Gg: AZuq6aL448IFqFqqu+UMZNe8WKalbMgpAJXzg7Cny2rIhFT61J8mFjShUqk9aW63VP0
-	BoCvM8jovFZYBVauxXhHiHX2s1g7LD1rZftpOsUt+wMnC7It+7s8Lx0Hnp2KSrqars2Qj3l0VYY
-	u7FrkFacjqko4/ubOzk/XC9q+4CuG5/34ezrm2xO7G4SwwEFdzCyFITXTiBwoLSTXwW1etN7Ksj
-	aT7l/esJw3c7iei02+ZMhbWKeSUBnw47nlxeVQZmYASExBt0LIZKeZzkGrrlf1rvUtOJwqRHtHR
-	Ick6GEc14jNohp29FbXybAUFa+mYTMOlfk+f8Jm6l+rpjPzhssYbtO8RQ8Yhw7XMrAEK28ZN/BG
-	sInCV78b6WYXT2TBz9zgATUCHHL1QbpGEsBLuQVCw7uT0BLefX10PG94rc589L4OjbnmEYkW78R
-	E94ePAfn39HkiygbY98pwHdWWOUbxMC9u8z07HfcyCqnZo7zVqGKjsnf/xLNrdOjcBlKQE6x+Qj
-	4LG0SAyj3tLtmI=
-X-Received: by 2002:a05:622a:15c9:b0:501:4e87:70b2 with SMTP id d75a77b69052e-5070bd20e4amr73625991cf.69.1771750217875;
-        Sun, 22 Feb 2026 00:50:17 -0800 (PST)
+        bh=VTSr2egiGZrzh+7+ZlbqD5qhC+A1cnXWqtUesRojnlw=;
+        b=VasWUdRjGqcktCc/VxXvAntoDb4v960vb4QXUM57AZpT6LTlpHXOV05BY5fgOyrdR+
+         g/cZ9V2Rpwd5iRjoJaKUcL1sKtxudnX9kAcBxYpXJOETXKd2JjGCDX9RnPjT0P5nbnpc
+         CFLf9EzgPkFaQZRMZC69ZMjUfHnOIIspTkAFsFihe3mljWUDFMl0b+Lzu5IG9pvMcUxV
+         lzBs0j7joAzjjKJeybWMEZPj6qQbTN7GnHOETWcg97/rorQSaWVx+W+YVFd18tKDzJmz
+         o2N0oO2cykbq/uzA+++pqV3GuoBY1mpILyLT3/d9/siq5Ii15Yi+5as6C2rSTHCJwtmg
+         hvDQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVSZPSXHYOxEIRZ9aubqjVUsRH4OhFpFztE5A4l9K0gM2lIzemrbxJiNsuFNgKG3SBgy//Gt3ci@vger.kernel.org
+X-Gm-Message-State: AOJu0YyeU3San0xEtsQID0Fy4b7jvAstdusY7XlWfPFjOOGSooHWGltr
+	cxH+1eSTsXSDPC0chA85NzyuH6SengHaOv6LSxIV3w7PjiDY+jufJs0KKoMUikmisL0=
+X-Gm-Gg: AZuq6aJCTpkiB69chgHmOZA/hiaTZjYWYZcDzufFHw7Aa3cnCfGx3W9WlGGHpGpZhb0
+	4iqixsPqbfuZUA0ngzTjYel8rC0cnfaLKTHFTSrEBB0nU6nH0ZjvkECFiVorY8D+ZUo22t7Vskh
+	lhVAbhDU8oZkzoKApaA8X6b3hSZRkpX8M4eKixAjn2Wb7ZK/L/scws1A2f/n5SaaKRewjv4DRpo
+	yITeCYXpjWjpJx9Fch9FopCDQ+/NA4VW2R6/5hYkyL/Lbbl8q5hfTXhXAkV4xIaJ0cEXH4WlS5p
+	iLXKK8V7AxIUysyMW7xQW6VLbkpXjmrBzOMqeZ1bjCUH5tJi/cf2XZiPYDhAYL+nrnjIAqqVXRB
+	LeA0g5S9Y08mq2Sp/B9j509LKoOOJ2UrYJ+j2OtEbkBEl5yKRI2yuAoNWMhmljy/aQaR+zcSu4O
+	Oxbz0B6VpJrFUGfCkeYD1gt/EWnAumxynSiaRkIkI9Bf8gSPvkh8gKHrdA44qT8Y0XyVgUWGdGT
+	Ab7ISWF4ZgipAM=
+X-Received: by 2002:a05:622a:96:b0:506:bc9c:e140 with SMTP id d75a77b69052e-5070bcfa5d8mr76045201cf.71.1771750221945;
+        Sun, 22 Feb 2026 00:50:21 -0800 (PST)
 Received: from gourry-fedora-PF4VCD3F.lan (pool-96-255-20-138.washdc.ftas.verizon.net. [96.255.20.138])
-        by smtp.gmail.com with ESMTPSA id d75a77b69052e-5070d53f0fcsm38640631cf.9.2026.02.22.00.50.16
+        by smtp.gmail.com with ESMTPSA id d75a77b69052e-5070d53f0fcsm38640631cf.9.2026.02.22.00.50.19
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 22 Feb 2026 00:50:17 -0800 (PST)
+        Sun, 22 Feb 2026 00:50:21 -0800 (PST)
 From: Gregory Price <gourry@gourry.net>
 To: lsf-pc@lists.linux-foundation.org
 Cc: linux-kernel@vger.kernel.org,
@@ -152,9 +152,9 @@ Cc: linux-kernel@vger.kernel.org,
 	bhe@redhat.com,
 	zhengqi.arch@bytedance.com,
 	terry.bowman@amd.com
-Subject: [RFC PATCH v4 22/27] mm/memory_hotplug: add add_private_memory_driver_managed()
-Date: Sun, 22 Feb 2026 03:48:37 -0500
-Message-ID: <20260222084842.1824063-23-gourry@gourry.net>
+Subject: [RFC PATCH v4 23/27] mm/cram: add compressed ram memory management subsystem
+Date: Sun, 22 Feb 2026 03:48:38 -0500
+Message-ID: <20260222084842.1824063-24-gourry@gourry.net>
 X-Mailer: git-send-email 2.53.0
 In-Reply-To: <20260222084842.1824063-1-gourry@gourry.net>
 References: <20260222084842.1824063-1-gourry@gourry.net>
@@ -171,14 +171,14 @@ X-Spamd-Result: default: False [1.34 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	MID_CONTAINS_FROM(1.00)[];
 	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
 	R_DKIM_ALLOW(-0.20)[gourry.net:s=google];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	DKIM_TRACE(0.00)[gourry.net:+];
-	TAGGED_FROM(0.00)[bounces-14123-lists,cgroups=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-14124-lists,cgroups=lfdr.de];
 	DMARC_NA(0.00)[gourry.net];
 	RCVD_TLS_LAST(0.00)[];
 	FREEMAIL_CC(0.00)[vger.kernel.org,kvack.org,lists.linux.dev,meta.com,linuxfoundation.org,kernel.org,stgolabs.net,huawei.com,intel.com,redhat.com,linux-foundation.org,oracle.com,suse.cz,google.com,suse.com,suse.de,nvidia.com,gmail.com,sk.com,gourry.net,linux.alibaba.com,rasmusvillemoes.dk,efficios.com,cmpxchg.org,arm.com,linux.dev,zte.com.cn,surriel.com,gentwo.org,tencent.com,huaweicloud.com,bytedance.com,amd.com];
@@ -188,283 +188,677 @@ X-Spamd-Result: default: False [1.34 / 15.00];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[gourry@gourry.net,cgroups@vger.kernel.org];
 	FROM_HAS_DN(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
+	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
 	RCVD_COUNT_FIVE(0.00)[5];
 	NEURAL_HAM(-0.00)[-1.000];
 	RCPT_COUNT_GT_50(0.00)[74];
 	TAGGED_RCPT(0.00)[cgroups];
 	TO_DN_NONE(0.00)[];
 	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns,gourry.net:mid,gourry.net:dkim,gourry.net:email]
-X-Rspamd-Queue-Id: 7009416EB0B
+X-Rspamd-Queue-Id: B350516EB12
 X-Rspamd-Action: no action
 
-Add a new function for drivers to hotplug memory as N_MEMORY_PRIVATE.
+Add the CRAM (Compressed RAM) subsystem that manages folios demoted
+to N_MEMORY_PRIVATE nodes via the standard kernel LRU.
 
-This function combines node_private_region_register() with
-__add_memory_driver_managed() to ensure proper ordering:
+We limit entry into CRAM by demotion in to provide devices a way for
+drivers to close access - which allows the system to stabiliz under
+memory pressure (the device can run out of real memory when compression
+ratios drop too far).
 
-1. Register the private region first (sets private node context)
-2. Then hotplug the memory (sets N_MEMORY_PRIVATE)
-3. On failure, unregister the private region to avoid leaving the
-   node in an inconsistent state.
+We utilize write-protect to prevent unbounded writes to compressed
+memory pages, which may cause run-away compression ratio loss without
+a reliable way to prevent the degenerate case (cascading poisons).
 
-When the last of memory is removed, hotplug also removes the private
-node context. If migration is not supported and the node is still
-online, fire a warning (likely bug in the driver).
+CRAM provides the bridge between the mm/ private node infrastructure
+and compressed memory hardware.  Folios are aged by kswapd on the
+private node and reclaimed to swap when the device signals pressure.
+
+Write faults trigger promotion back to regular DRAM via the
+ops->handle_fault callback.
+
+Device pressure is communicated via watermark_boost on the private
+node's zone.
+
+CRAM registers node_private_ops with:
+  - handle_fault:   promotes folio back to DRAM on write
+  - migrate_to:     custom demotion to the CRAM node
+  - folio_migrate:  (no-op)
+  - free_folio:     zeroes pages on free to scrub stale data
+  - reclaim_policy: provides mayswap/writeback/boost overrides
+  - flags: NP_OPS_MIGRATION | NP_OPS_DEMOTION |
+	   NP_OPS_NUMA_BALANCING | NP_OPS_PROTECT_WRITE
+           NP_OPS_RECLAIM
 
 Signed-off-by: Gregory Price <gourry@gourry.net>
 ---
- include/linux/memory_hotplug.h |  11 +++
- include/linux/mmzone.h         |  12 ++++
- mm/memory_hotplug.c            | 122 ++++++++++++++++++++++++++++++---
- 3 files changed, 135 insertions(+), 10 deletions(-)
+ include/linux/cram.h |  66 ++++++
+ mm/Kconfig           |  10 +
+ mm/Makefile          |   1 +
+ mm/cram.c            | 508 +++++++++++++++++++++++++++++++++++++++++++
+ 4 files changed, 585 insertions(+)
+ create mode 100644 include/linux/cram.h
+ create mode 100644 mm/cram.c
 
-diff --git a/include/linux/memory_hotplug.h b/include/linux/memory_hotplug.h
-index 1f19f08552ea..e5abade9450a 100644
---- a/include/linux/memory_hotplug.h
-+++ b/include/linux/memory_hotplug.h
-@@ -293,6 +293,7 @@ extern int offline_pages(unsigned long start_pfn, unsigned long nr_pages,
- extern int remove_memory(u64 start, u64 size);
- extern void __remove_memory(u64 start, u64 size);
- extern int offline_and_remove_memory(u64 start, u64 size);
-+extern int offline_and_remove_private_memory(int nid, u64 start, u64 size);
- 
- #else
- static inline void try_offline_node(int nid) {}
-@@ -309,6 +310,12 @@ static inline int remove_memory(u64 start, u64 size)
- }
- 
- static inline void __remove_memory(u64 start, u64 size) {}
+diff --git a/include/linux/cram.h b/include/linux/cram.h
+new file mode 100644
+index 000000000000..a3c10362fd4f
+--- /dev/null
++++ b/include/linux/cram.h
+@@ -0,0 +1,66 @@
++/* SPDX-License-Identifier: GPL-2.0 */
++#ifndef _LINUX_CRAM_H
++#define _LINUX_CRAM_H
 +
-+static inline int offline_and_remove_private_memory(int nid, u64 start,
-+						    u64 size)
++#include <linux/mm_types.h>
++
++struct folio;
++struct list_head;
++struct vm_fault;
++
++#define CRAM_PRESSURE_MAX	1000
++
++/**
++ * cram_flush_cb_t - Driver callback invoked when a folio on a private node
++ *                   is freed (refcount reaches zero).
++ * @folio: the folio being freed
++ * @private: opaque driver data passed at registration
++ *
++ * Return:
++ *   0: Flush resolved -- page should return to buddy allocator (e.g., flush
++ *      record bit was set, meaning this free is from our own flush resolution)
++ *   1: Page deferred -- driver took a reference, page will be flushed later.
++ *      Do NOT return to buddy allocator.
++ *   2: Buffer full -- caller should zero the page and return to buddy.
++ */
++typedef int (*cram_flush_cb_t)(struct folio *folio, void *private);
++
++#ifdef CONFIG_CRAM
++
++int cram_register_private_node(int nid, void *owner,
++			       cram_flush_cb_t flush_cb, void *flush_data);
++int cram_unregister_private_node(int nid);
++int cram_unpurge(int nid);
++void cram_set_pressure(int nid, unsigned int pressure);
++void cram_clear_pressure(int nid);
++
++#else /* !CONFIG_CRAM */
++
++static inline int cram_register_private_node(int nid, void *owner,
++					     cram_flush_cb_t flush_cb,
++					     void *flush_data)
 +{
-+	return -EOPNOTSUPP;
++	return -ENODEV;
 +}
- #endif /* CONFIG_MEMORY_HOTREMOVE */
- 
- #ifdef CONFIG_MEMORY_HOTPLUG
-@@ -326,6 +333,10 @@ int __add_memory_driver_managed(int nid, u64 start, u64 size,
- extern int add_memory_driver_managed(int nid, u64 start, u64 size,
- 				     const char *resource_name,
- 				     mhp_t mhp_flags);
-+int add_private_memory_driver_managed(int nid, u64 start, u64 size,
-+				      const char *resource_name,
-+				      mhp_t mhp_flags, enum mmop online_type,
-+				      struct node_private *np);
- extern void move_pfn_range_to_zone(struct zone *zone, unsigned long start_pfn,
- 				   unsigned long nr_pages,
- 				   struct vmem_altmap *altmap, int migratetype,
-diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
-index 992eb1c5a2c6..cc532b67ad3f 100644
---- a/include/linux/mmzone.h
-+++ b/include/linux/mmzone.h
-@@ -1524,6 +1524,18 @@ typedef struct pglist_data {
- #endif
- } pg_data_t;
- 
-+#ifdef CONFIG_NUMA
-+static inline bool pgdat_is_private(pg_data_t *pgdat)
++
++static inline int cram_unregister_private_node(int nid)
 +{
-+	return pgdat->private;
++	return -ENODEV;
 +}
-+#else
-+static inline bool pgdat_is_private(pg_data_t *pgdat)
++
++static inline int cram_unpurge(int nid)
 +{
++	return -ENODEV;
++}
++
++static inline void cram_set_pressure(int nid, unsigned int pressure)
++{
++}
++
++static inline void cram_clear_pressure(int nid)
++{
++}
++
++#endif /* CONFIG_CRAM */
++
++#endif /* _LINUX_CRAM_H */
+diff --git a/mm/Kconfig b/mm/Kconfig
+index bd0ea5454af8..054462b954d8 100644
+--- a/mm/Kconfig
++++ b/mm/Kconfig
+@@ -662,6 +662,16 @@ config MIGRATION
+ config DEVICE_MIGRATION
+ 	def_bool MIGRATION && ZONE_DEVICE
+ 
++config CRAM
++	bool "Compressed RAM - private node memory management"
++	depends on NUMA
++	depends on MIGRATION
++	depends on MEMORY_HOTPLUG
++	help
++	  Enables management of N_MEMORY_PRIVATE nodes for compressed RAM
++	  and similar use cases. Provides demotion, promotion, and lifecycle
++	  management for private memory nodes.
++
+ config ARCH_ENABLE_HUGEPAGE_MIGRATION
+ 	bool
+ 
+diff --git a/mm/Makefile b/mm/Makefile
+index 2d0570a16e5b..0e1421512643 100644
+--- a/mm/Makefile
++++ b/mm/Makefile
+@@ -98,6 +98,7 @@ obj-$(CONFIG_MEMTEST)		+= memtest.o
+ obj-$(CONFIG_MIGRATION) += migrate.o
+ obj-$(CONFIG_NUMA) += memory-tiers.o
+ obj-$(CONFIG_DEVICE_MIGRATION) += migrate_device.o
++obj-$(CONFIG_CRAM) += cram.o
+ obj-$(CONFIG_TRANSPARENT_HUGEPAGE) += huge_memory.o khugepaged.o
+ obj-$(CONFIG_PAGE_COUNTER) += page_counter.o
+ obj-$(CONFIG_LIVEUPDATE) += memfd_luo.o
+diff --git a/mm/cram.c b/mm/cram.c
+new file mode 100644
+index 000000000000..6709e61f5b9d
+--- /dev/null
++++ b/mm/cram.c
+@@ -0,0 +1,508 @@
++// SPDX-License-Identifier: GPL-2.0
++/*
++ * mm/cram.c - Compressed RAM / private node memory management
++ *
++ * Copyright 2026 Meta Technologies Inc.
++ *   Author: Gregory Price <gourry@gourry.net>
++ *
++ * Manages folios demoted to N_MEMORY_PRIVATE nodes via the standard kernel
++ * LRU.  Folios are aged by kswapd on the private node and reclaimed to swap
++ * (demotion is suppressed for private nodes).  Write faults trigger promotion
++ * back to regular DRAM via the ops->handle_fault callback.
++ *
++ * All reclaim/demotion uses the standard vmscan infrastructure. Device pressure
++ * is communicated via watermark_boost on the private node's zone.
++ */
++
++#include <linux/atomic.h>
++#include <linux/cpuset.h>
++#include <linux/cram.h>
++#include <linux/errno.h>
++#include <linux/gfp.h>
++#include <linux/jiffies.h>
++#include <linux/highmem.h>
++#include <linux/memory-tiers.h>
++#include <linux/list.h>
++#include <linux/migrate.h>
++#include <linux/mm.h>
++#include <linux/huge_mm.h>
++#include <linux/mmzone.h>
++#include <linux/mutex.h>
++#include <linux/nodemask.h>
++#include <linux/node_private.h>
++#include <linux/pagemap.h>
++#include <linux/rcupdate.h>
++#include <linux/refcount.h>
++#include <linux/swap.h>
++
++#include "internal.h"
++
++struct cram_node {
++	void		*owner;
++	bool		purged;		/* node is being torn down */
++	unsigned int	pressure;
++	refcount_t	refcount;
++	cram_flush_cb_t	flush_cb;	/* optional driver flush callback */
++	void		*flush_data;	/* opaque data for flush_cb */
++};
++
++static struct cram_node *cram_nodes[MAX_NUMNODES];
++static DEFINE_MUTEX(cram_mutex);
++
++static inline bool cram_valid_nid(int nid)
++{
++	return nid >= 0 && nid < MAX_NUMNODES;
++}
++
++static inline struct cram_node *get_cram_node(int nid)
++{
++	struct cram_node *cn;
++
++	if (!cram_valid_nid(nid))
++		return NULL;
++
++	rcu_read_lock();
++	cn = rcu_dereference(cram_nodes[nid]);
++	if (cn && !refcount_inc_not_zero(&cn->refcount))
++		cn = NULL;
++	rcu_read_unlock();
++
++	return cn;
++}
++
++static inline void put_cram_node(struct cram_node *cn)
++{
++	if (cn)
++		refcount_dec(&cn->refcount);
++}
++
++static void cram_zero_folio(struct folio *folio)
++{
++	unsigned int i, nr = folio_nr_pages(folio);
++
++	if (want_init_on_free())
++		return;
++
++	for (i = 0; i < nr; i++)
++		clear_highpage(folio_page(folio, i));
++}
++
++static bool cram_free_folio_cb(struct folio *folio)
++{
++	int nid = folio_nid(folio);
++	struct cram_node *cn;
++	int ret;
++
++	cn = get_cram_node(nid);
++	if (!cn)
++		goto zero_and_free;
++
++	if (!cn->flush_cb)
++		goto zero_and_free_put;
++
++	ret = cn->flush_cb(folio, cn->flush_data);
++	put_cram_node(cn);
++
++	switch (ret) {
++	case 0:
++		/* Flush resolved: return to buddy (already zeroed by device) */
++		return false;
++	case 1:
++		/* Deferred: driver holds a ref, do not free to buddy */
++		return true;
++	case 2:
++	default:
++		/* Buffer full or unknown: zero locally, return to buddy */
++		goto zero_and_free;
++	}
++
++zero_and_free_put:
++	put_cram_node(cn);
++zero_and_free:
++	cram_zero_folio(folio);
 +	return false;
 +}
-+#endif
 +
- #define node_present_pages(nid)	(NODE_DATA(nid)->node_present_pages)
- #define node_spanned_pages(nid)	(NODE_DATA(nid)->node_spanned_pages)
- 
-diff --git a/mm/memory_hotplug.c b/mm/memory_hotplug.c
-index d2dc527bd5b0..9d72f44a30dc 100644
---- a/mm/memory_hotplug.c
-+++ b/mm/memory_hotplug.c
-@@ -36,6 +36,7 @@
- #include <linux/rmap.h>
- #include <linux/module.h>
- #include <linux/node.h>
-+#include <linux/node_private.h>
- 
- #include <asm/tlbflush.h>
- 
-@@ -1173,8 +1174,7 @@ int online_pages(unsigned long pfn, unsigned long nr_pages,
- 	move_pfn_range_to_zone(zone, pfn, nr_pages, NULL, MIGRATE_MOVABLE,
- 			       true);
- 
--	if (!node_state(nid, N_MEMORY)) {
--		/* Adding memory to the node for the first time */
-+	if (!node_state(nid, N_MEMORY) && !node_state(nid, N_MEMORY_PRIVATE)) {
- 		node_arg.nid = nid;
- 		ret = node_notify(NODE_ADDING_FIRST_MEMORY, &node_arg);
- 		ret = notifier_to_errno(ret);
-@@ -1208,8 +1208,12 @@ int online_pages(unsigned long pfn, unsigned long nr_pages,
- 	online_pages_range(pfn, nr_pages);
- 	adjust_present_page_count(pfn_to_page(pfn), group, nr_pages);
- 
--	if (node_arg.nid >= 0)
--		node_set_state(nid, N_MEMORY);
-+	if (node_arg.nid >= 0) {
-+		if (pgdat_is_private(NODE_DATA(nid)))
-+			node_set_state(nid, N_MEMORY_PRIVATE);
-+		else
-+			node_set_state(nid, N_MEMORY);
-+	}
- 	if (need_zonelists_rebuild)
- 		build_all_zonelists(NULL);
- 
-@@ -1227,8 +1231,14 @@ int online_pages(unsigned long pfn, unsigned long nr_pages,
- 	/* reinitialise watermarks and update pcp limits */
- 	init_per_zone_wmark_min();
- 
--	kswapd_run(nid);
--	kcompactd_run(nid);
-+	/*
-+	 * Don't start reclaim/compaction daemons for private nodes.
-+	 * Private node services will decide whether to start these services.
-+	 */
-+	if (!pgdat_is_private(NODE_DATA(nid))) {
-+		kswapd_run(nid);
-+		kcompactd_run(nid);
-+	}
- 
- 	if (node_arg.nid >= 0)
- 		/* First memory added successfully. Notify consumers. */
-@@ -1722,6 +1732,54 @@ int add_memory_driver_managed(int nid, u64 start, u64 size,
- }
- EXPORT_SYMBOL_GPL(add_memory_driver_managed);
- 
-+/**
-+ * add_private_memory_driver_managed - add driver-managed N_MEMORY_PRIVATE memory
-+ * @nid: NUMA node ID (or memory group ID when MHP_NID_IS_MGID is set)
-+ * @start: Start physical address
-+ * @size: Size in bytes
-+ * @resource_name: "System RAM ($DRIVER)" format
-+ * @mhp_flags: Memory hotplug flags
-+ * @online_type: MMOP_* online type
-+ * @np: Driver-owned node_private structure (owner, refcount)
-+ *
-+ * Registers node_private first, then hotplugs the memory.
-+ *
-+ * On failure, unregisters the node_private.
-+ */
-+int add_private_memory_driver_managed(int nid, u64 start, u64 size,
-+				      const char *resource_name,
-+				      mhp_t mhp_flags, enum mmop online_type,
-+				      struct node_private *np)
++static struct folio *alloc_cram_folio(struct folio *src, unsigned long private)
 +{
-+	struct memory_group *group;
-+	int real_nid = nid;
-+	int rc;
++	int nid = (int)private;
++	unsigned int order = folio_order(src);
++	gfp_t gfp = GFP_PRIVATE | __GFP_KSWAPD_RECLAIM |
++		     __GFP_HIGHMEM | __GFP_MOVABLE |
++		     __GFP_NOWARN | __GFP_NORETRY;
 +
-+	if (!np)
-+		return -EINVAL;
++	/* Stop allocating if backpressure fired mid-batch */
++	if (node_private_migration_blocked(nid))
++		return NULL;
 +
-+	if (mhp_flags & MHP_NID_IS_MGID) {
-+		group = memory_group_find_by_id(nid);
-+		if (!group)
-+			return -EINVAL;
-+		real_nid = group->nid;
++	if (order)
++		gfp |= __GFP_COMP;
++
++	return __folio_alloc_node(gfp, order, nid);
++}
++
++static void cram_put_new_folio(struct folio *folio, unsigned long private)
++{
++	cram_zero_folio(folio);
++	folio_put(folio);
++}
++
++/*
++ * Allocate a DRAM folio for promotion out of a private node.
++ *
++ * Unlike alloc_migration_target(), this does NOT strip __GFP_RECLAIM for
++ * large folios, the generic helper does that because THP allocations are
++ * opportunistic, but promotion from a private node is mandatory: the page
++ * MUST move to DRAM or the process cannot make forward progress.
++ *
++ * __GFP_RETRY_MAYFAIL tells the allocator to try hard (multiple reclaim
++ * rounds, wait for writeback) before giving up.
++ */
++static struct folio *alloc_cram_promote_folio(struct folio *src,
++					      unsigned long private)
++{
++	int nid = (int)private;
++	unsigned int order = folio_order(src);
++	gfp_t gfp = GFP_HIGHUSER_MOVABLE | __GFP_RETRY_MAYFAIL;
++
++	if (order)
++		gfp |= __GFP_COMP;
++
++	return __folio_alloc(gfp, order, nid, NULL);
++}
++
++static int cram_migrate_to(struct list_head *demote_folios, int to_nid,
++			   enum migrate_mode mode,
++			   enum migrate_reason reason,
++			   unsigned int *nr_succeeded)
++{
++	struct cram_node *cn;
++	unsigned int nr_success = 0;
++	int ret = 0;
++
++	cn = get_cram_node(to_nid);
++	if (!cn)
++		return -ENODEV;
++
++	if (cn->purged) {
++		ret = -ENODEV;
++		goto out;
 +	}
 +
-+	rc = node_private_register(real_nid, np);
-+	if (rc)
-+		return rc;
-+
-+	rc = __add_memory_driver_managed(nid, start, size, resource_name,
-+					 mhp_flags, online_type);
-+	if (rc) {
-+		node_private_unregister(real_nid);
-+		return rc;
++	/* Block new demotions at maximum pressure */
++	if (READ_ONCE(cn->pressure) >= CRAM_PRESSURE_MAX) {
++		ret = -ENOSPC;
++		goto out;
 +	}
 +
++	ret = migrate_pages(demote_folios, alloc_cram_folio, cram_put_new_folio,
++			    (unsigned long)to_nid, mode, reason,
++			    &nr_success);
++
++	/*
++	 * migrate_folio_move() calls folio_add_lru() for each migrated
++	 * folio, but that only adds the folio to a per-CPU batch, 
++	 * PG_lru is not set until the batch is drained.  Drain now so
++	 * that cram_fault() can isolate these folios immediately.
++	 *
++	 * Use lru_add_drain_all() because migrate_pages() may process
++	 * folios across CPUs, and the local drain might miss batches
++	 * filled on other CPUs.
++	 */
++	if (nr_success)
++		lru_add_drain_all();
++out:
++	put_cram_node(cn);
++	if (nr_succeeded)
++		*nr_succeeded = nr_success;
++	return ret;
++}
++
++static void cram_release_ptl(struct vm_fault *vmf, enum pgtable_level level)
++{
++	if (level == PGTABLE_LEVEL_PTE)
++		pte_unmap_unlock(vmf->pte, vmf->ptl);
++	else
++		spin_unlock(vmf->ptl);
++}
++
++static vm_fault_t cram_fault(struct folio *folio, struct vm_fault *vmf,
++			     enum pgtable_level level)
++{
++	struct folio *f, *f2;
++	struct cram_node *cn;
++	unsigned int nr_succeeded = 0;
++	int nid;
++	LIST_HEAD(folios);
++
++	nid = folio_nid(folio);
++
++	cn = get_cram_node(nid);
++	if (!cn) {
++		cram_release_ptl(vmf, level);
++		return 0;
++	}
++
++	/*
++	 * Isolate from LRU while holding PTL.  This serializes against
++	 * other CPUs faulting on the same folio: only one CPU can clear
++	 * PG_lru under the PTL, and it proceeds to migration.  Other
++	 * CPUs find the folio already isolated and bail out, preventing
++	 * the refcount pile-up that causes migrate_pages() to fail with
++	 * -EAGAIN.
++	 *
++	 * No explicit folio_get() is needed: the page table entry holds
++	 * a reference (we still hold PTL), and folio_isolate_lru() takes
++	 * its own reference.  This matches do_numa_page()'s pattern.
++	 *
++	 * PG_lru should already be set: cram_migrate_to() drains per-CPU
++	 * LRU batches after migration, and the failure path below
++	 * drains after putback.
++	 */
++	if (!folio_isolate_lru(folio)) {
++		put_cram_node(cn);
++		cram_release_ptl(vmf, level);
++		cond_resched();
++		return 0;
++	}
++
++	/* Folio isolated, release PTL, proceed to migration */
++	cram_release_ptl(vmf, level);
++
++	node_stat_mod_folio(folio,
++			    NR_ISOLATED_ANON + folio_is_file_lru(folio),
++			    folio_nr_pages(folio));
++	list_add(&folio->lru, &folios);
++
++	migrate_pages(&folios, alloc_cram_promote_folio, NULL,
++		      (unsigned long)numa_node_id(),
++		      MIGRATE_SYNC, MR_NUMA_MISPLACED, &nr_succeeded);
++
++	/* Put failed folios back on LRU; retry on next fault */
++	list_for_each_entry_safe(f, f2, &folios, lru) {
++		list_del(&f->lru);
++		node_stat_mod_folio(f,
++				    NR_ISOLATED_ANON + folio_is_file_lru(f),
++				    -folio_nr_pages(f));
++		folio_putback_lru(f);
++	}
++
++	/*
++	 * If migration failed, folio_putback_lru() batched the folio
++	 * into this CPU's per-CPU LRU cache (PG_lru not yet set).
++	 * Drain now so the folio is immediately visible on the LRU,
++	 * the next fault can then isolate it without an IPI storm
++	 * via lru_add_drain_all().
++	 *
++	 * Return VM_FAULT_RETRY after releasing the fault lock so the
++	 * arch handler retries from scratch.  Without this, returning 0
++	 * causes a tight livelock: the process immediately re-faults on
++	 * the same write-protected entry, alloc fails again, and
++	 * VM_FAULT_OOM eventually leaks out through a stale path.
++	 * VM_FAULT_RETRY gives the system breathing room to reclaim.
++	 */
++	if (!nr_succeeded) {
++		lru_add_drain();
++		cond_resched();
++		put_cram_node(cn);
++		release_fault_lock(vmf);
++		return VM_FAULT_RETRY;
++	}
++
++	cond_resched();
++	put_cram_node(cn);
 +	return 0;
 +}
-+EXPORT_SYMBOL_GPL(add_private_memory_driver_managed);
 +
- /*
-  * Platforms should define arch_get_mappable_range() that provides
-  * maximum possible addressable physical memory range for which the
-@@ -1872,6 +1930,15 @@ static void do_migrate_range(unsigned long start_pfn, unsigned long end_pfn)
- 			goto put_folio;
- 		}
- 
-+		/* Private nodes w/o migration must ensure folios are offline */
-+		if (folio_is_private_node(folio) &&
-+		    !folio_private_flags(folio, NP_OPS_MIGRATION)) {
-+			WARN_ONCE(1, "hot-unplug on non-migratable node %d pfn %lx\n",
-+				  folio_nid(folio), pfn);
-+			pfn = folio_pfn(folio) + folio_nr_pages(folio) - 1;
-+			goto put_folio;
-+		}
-+
- 		if (!isolate_folio_to_list(folio, &source)) {
- 			if (__ratelimit(&migrate_rs)) {
- 				pr_warn("failed to isolate pfn %lx\n",
-@@ -2014,8 +2081,8 @@ int offline_pages(unsigned long start_pfn, unsigned long nr_pages,
- 
- 	/*
- 	 * Check whether the node will have no present pages after we offline
--	 * 'nr_pages' more. If so, we know that the node will become empty, and
--	 * so we will clear N_MEMORY for it.
-+	 * 'nr_pages' more. If so, send pre-notification for last memory removal.
-+	 * We will clear N_MEMORY(_PRIVATE) if this is the case.
- 	 */
- 	if (nr_pages >= pgdat->node_present_pages) {
- 		node_arg.nid = node;
-@@ -2108,8 +2175,12 @@ int offline_pages(unsigned long start_pfn, unsigned long nr_pages,
- 	 * Make sure to mark the node as memory-less before rebuilding the zone
- 	 * list. Otherwise this node would still appear in the fallback lists.
- 	 */
--	if (node_arg.nid >= 0)
--		node_clear_state(node, N_MEMORY);
-+	if (node_arg.nid >= 0) {
-+		if (node_state(node, N_MEMORY))
-+			node_clear_state(node, N_MEMORY);
-+		else if (node_state(node, N_MEMORY_PRIVATE))
-+			node_clear_state(node, N_MEMORY_PRIVATE);
-+	}
- 	if (!populated_zone(zone)) {
- 		zone_pcp_reset(zone);
- 		build_all_zonelists(NULL);
-@@ -2461,4 +2532,35 @@ int offline_and_remove_memory(u64 start, u64 size)
- 	return rc;
- }
- EXPORT_SYMBOL_GPL(offline_and_remove_memory);
-+
-+/**
-+ * offline_and_remove_private_memory - offline, remove, and unregister private memory
-+ * @nid: NUMA node ID of the private memory
-+ * @start: Start physical address
-+ * @size: Size in bytes
-+ *
-+ * Counterpart to add_private_memory_driver_managed().  Offlines and removes
-+ * the memory range, then attempts to unregister the node_private.
-+ *
-+ * offline_and_remove_memory() clears N_MEMORY_PRIVATE when the last block
-+ * is offlined, which allows node_private_unregister() to clear the
-+ * pgdat->node_private pointer.  If other private memory ranges remain on
-+ * the node, node_private_unregister() returns -EBUSY (N_MEMORY_PRIVATE
-+ * is still set) and the node_private remains registered.
-+ *
-+ * Return: 0 on full success (memory removed and node_private unregistered),
-+ *         -EBUSY if memory was removed but node still has other private memory,
-+ *         other negative error code if offline/remove failed.
-+ */
-+int offline_and_remove_private_memory(int nid, u64 start, u64 size)
++static void cram_folio_migrate(struct folio *src, struct folio *dst)
 +{
-+	int rc;
-+
-+	rc = offline_and_remove_memory(start, size);
-+	if (rc)
-+		return rc;
-+
-+	return node_private_unregister(nid);
 +}
-+EXPORT_SYMBOL_GPL(offline_and_remove_private_memory);
- #endif /* CONFIG_MEMORY_HOTREMOVE */
++
++static void cram_reclaim_policy(int nid, struct node_reclaim_policy *policy)
++{
++	policy->may_swap = true;
++	policy->may_writepage = true;
++	policy->managed_watermarks = true;
++}
++
++static vm_fault_t cram_handle_fault(struct folio *folio, struct vm_fault *vmf,
++				    enum pgtable_level level)
++{
++	return cram_fault(folio, vmf, level);
++}
++
++static const struct node_private_ops cram_ops = {
++	.handle_fault		= cram_handle_fault,
++	.migrate_to		= cram_migrate_to,
++	.folio_migrate		= cram_folio_migrate,
++	.free_folio		= cram_free_folio_cb,
++	.reclaim_policy		= cram_reclaim_policy,
++	.flags			= NP_OPS_MIGRATION | NP_OPS_DEMOTION |
++				  NP_OPS_NUMA_BALANCING | NP_OPS_PROTECT_WRITE |
++				  NP_OPS_RECLAIM,
++};
++
++int cram_register_private_node(int nid, void *owner,
++			       cram_flush_cb_t flush_cb, void *flush_data)
++{
++	struct cram_node *cn;
++	int ret;
++
++	if (!node_state(nid, N_MEMORY_PRIVATE))
++		return -EINVAL;
++
++	mutex_lock(&cram_mutex);
++
++	cn = cram_nodes[nid];
++	if (cn) {
++		if (cn->owner != owner) {
++			mutex_unlock(&cram_mutex);
++			return -EBUSY;
++		}
++		mutex_unlock(&cram_mutex);
++		return 0;
++	}
++
++	cn = kzalloc(sizeof(*cn), GFP_KERNEL);
++	if (!cn) {
++		mutex_unlock(&cram_mutex);
++		return -ENOMEM;
++	}
++
++	cn->owner = owner;
++	cn->pressure = 0;
++	cn->flush_cb = flush_cb;
++	cn->flush_data = flush_data;
++	refcount_set(&cn->refcount, 1);
++
++	ret = node_private_set_ops(nid, &cram_ops);
++	if (ret) {
++		mutex_unlock(&cram_mutex);
++		kfree(cn);
++		return ret;
++	}
++
++	rcu_assign_pointer(cram_nodes[nid], cn);
++
++	/* Start kswapd on the private node for LRU aging and reclaim */
++	kswapd_run(nid);
++
++	mutex_unlock(&cram_mutex);
++
++	/* Now that ops->migrate_to is set, refresh demotion targets */
++	memory_tier_refresh_demotion();
++	return 0;
++}
++EXPORT_SYMBOL_GPL(cram_register_private_node);
++
++int cram_unregister_private_node(int nid)
++{
++	struct cram_node *cn;
++
++	if (!cram_valid_nid(nid))
++		return -EINVAL;
++
++	mutex_lock(&cram_mutex);
++
++	cn = cram_nodes[nid];
++	if (!cn) {
++		mutex_unlock(&cram_mutex);
++		return -ENODEV;
++	}
++
++	kswapd_stop(nid);
++
++	WARN_ON(node_private_clear_ops(nid, &cram_ops));
++	rcu_assign_pointer(cram_nodes[nid], NULL);
++	mutex_unlock(&cram_mutex);
++
++	/* ops->migrate_to cleared, refresh demotion targets */
++	memory_tier_refresh_demotion();
++
++	synchronize_rcu();
++	while (!refcount_dec_if_one(&cn->refcount))
++		cond_resched();
++	kfree(cn);
++	return 0;
++}
++EXPORT_SYMBOL_GPL(cram_unregister_private_node);
++
++int cram_unpurge(int nid)
++{
++	struct cram_node *cn;
++
++	if (!cram_valid_nid(nid))
++		return -EINVAL;
++
++	mutex_lock(&cram_mutex);
++
++	cn = cram_nodes[nid];
++	if (!cn) {
++		mutex_unlock(&cram_mutex);
++		return -ENODEV;
++	}
++
++	cn->purged = false;
++
++	mutex_unlock(&cram_mutex);
++	return 0;
++}
++EXPORT_SYMBOL_GPL(cram_unpurge);
++
++void cram_set_pressure(int nid, unsigned int pressure)
++{
++	struct cram_node *cn;
++	struct node_private *np;
++	struct zone *zone;
++	unsigned long managed, boost;
++
++	cn = get_cram_node(nid);
++	if (!cn)
++		return;
++
++	if (pressure > CRAM_PRESSURE_MAX)
++		pressure = CRAM_PRESSURE_MAX;
++
++	WRITE_ONCE(cn->pressure, pressure);
++
++	rcu_read_lock();
++	np = rcu_dereference(NODE_DATA(nid)->node_private);
++	/* Block demotions only at maximum pressure */
++	if (np)
++		WRITE_ONCE(np->migration_blocked,
++			   pressure >= CRAM_PRESSURE_MAX);
++	rcu_read_unlock();
++
++	zone = NULL;
++	for (int i = 0; i < MAX_NR_ZONES; i++) {
++		struct zone *z = &NODE_DATA(nid)->node_zones[i];
++
++		if (zone_managed_pages(z) > 0) {
++			zone = z;
++			break;
++		}
++	}
++	if (!zone) {
++		put_cram_node(cn);
++		return;
++	}
++	managed = zone_managed_pages(zone);
++
++	/* Boost proportional to pressure. 0:no boost, 1000:full managed */
++	boost = (managed * (unsigned long)pressure) / CRAM_PRESSURE_MAX;
++	WRITE_ONCE(zone->watermark_boost, boost);
++
++	if (boost) {
++		set_bit(ZONE_BOOSTED_WATERMARK, &zone->flags);
++		wakeup_kswapd(zone, GFP_KERNEL, 0, ZONE_MOVABLE);
++	}
++
++	put_cram_node(cn);
++}
++EXPORT_SYMBOL_GPL(cram_set_pressure);
++
++void cram_clear_pressure(int nid)
++{
++	cram_set_pressure(nid, 0);
++}
++EXPORT_SYMBOL_GPL(cram_clear_pressure);
 -- 
 2.53.0
 
