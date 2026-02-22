@@ -1,82 +1,82 @@
-Return-Path: <cgroups+bounces-14119-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-14120-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id WErcHHDEmmlHiQMAu9opvQ
-	(envelope-from <cgroups+bounces-14119-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Sun, 22 Feb 2026 09:55:12 +0100
+	id uFAaGcTDmmlHiQMAu9opvQ
+	(envelope-from <cgroups+bounces-14120-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Sun, 22 Feb 2026 09:52:20 +0100
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 91E7A16EB82
-	for <lists+cgroups@lfdr.de>; Sun, 22 Feb 2026 09:55:11 +0100 (CET)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2A5F516EAD8
+	for <lists+cgroups@lfdr.de>; Sun, 22 Feb 2026 09:52:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id 095763061D8A
-	for <lists+cgroups@lfdr.de>; Sun, 22 Feb 2026 08:51:01 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id 0D4CD302FB0C
+	for <lists+cgroups@lfdr.de>; Sun, 22 Feb 2026 08:51:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 628EB23B612;
-	Sun, 22 Feb 2026 08:50:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C9F6257423;
+	Sun, 22 Feb 2026 08:50:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gourry.net header.i=@gourry.net header.b="lsiDxAm1"
+	dkim=pass (2048-bit key) header.d=gourry.net header.i=@gourry.net header.b="On3dGfWn"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-qt1-f175.google.com (mail-qt1-f175.google.com [209.85.160.175])
+Received: from mail-qt1-f174.google.com (mail-qt1-f174.google.com [209.85.160.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 061A4256C61
-	for <cgroups@vger.kernel.org>; Sun, 22 Feb 2026 08:50:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2165C257827
+	for <cgroups@vger.kernel.org>; Sun, 22 Feb 2026 08:50:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1771750206; cv=none; b=UTRWMHqiloQj7aVHoU9OO5gxxdzAg06qGFHahTHAGapp939f60/Rg/i+yGrDRR3WXByPjhxls3UBJxbojzhQo0EvqwHFe6Mps+/710o7YwLJL4cvq88E4cE36ZeEpzVKBC1WQxWHFmxPbaNP/afw8d0hOla+MmWuVLaGSsmOEEg=
+	t=1771750209; cv=none; b=hyjJpIebhjWMgVPjqYw8OG3bUgizeOTJfcj7ICN9aAaIzqoPDdR0wj7j6Vk7QxMAiDnh9fvTRjmqIrgF5EXgJ4M6oWSFRNz+0B1OoFI1j3fOpKr5XPLHoRLLJY5o4ySX1tAOMZiTb1/RsKsyfU5jGi1q9ID+Dvi14iEaU1PuNds=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1771750206; c=relaxed/simple;
-	bh=4PBnYmCqvqclF+wOA5GwV12GKX5dBQimyZrSCkCYzv0=;
+	s=arc-20240116; t=1771750209; c=relaxed/simple;
+	bh=ugHHZgdJqiJXcDB88oSYbue+JadFi16VcX0GKhbfi44=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=grXCwDmjL6EjooT7r5porSFd+jPnbSHbfKP8pY3wUiKes+rJ3fhPMymh8G0pnMEyhmRFpgRBFcBrS2r+dTJWOsUlaU5gpQ6e2PHfN8pw+BnsfuYGpi016SZAuUSuds0jaGeMz9xsHr36JQQ+dlaHZZIvp27Aobebbqq6m+1lBHs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gourry.net; spf=pass smtp.mailfrom=gourry.net; dkim=pass (2048-bit key) header.d=gourry.net header.i=@gourry.net header.b=lsiDxAm1; arc=none smtp.client-ip=209.85.160.175
+	 MIME-Version; b=tj4ls3GasOmk7kKZfxQxBzPgT8Jl/K48+Ycrpo2fpMInoiuJH4jgcO7VHN0balYaNXX7DaXlkmhyZIIRmLSvMf/8npo1esXdoON0QQBsoE+yYCRVjfS0eGZ96SikHA7H2+mv1gHyRiT+znznoc72hF7Mskt2qm2NbnMSYqUPQcE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gourry.net; spf=pass smtp.mailfrom=gourry.net; dkim=pass (2048-bit key) header.d=gourry.net header.i=@gourry.net header.b=On3dGfWn; arc=none smtp.client-ip=209.85.160.174
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gourry.net
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gourry.net
-Received: by mail-qt1-f175.google.com with SMTP id d75a77b69052e-506bcb23a78so29928441cf.3
-        for <cgroups@vger.kernel.org>; Sun, 22 Feb 2026 00:50:03 -0800 (PST)
+Received: by mail-qt1-f174.google.com with SMTP id d75a77b69052e-503347e8715so43174131cf.2
+        for <cgroups@vger.kernel.org>; Sun, 22 Feb 2026 00:50:08 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gourry.net; s=google; t=1771750203; x=1772355003; darn=vger.kernel.org;
+        d=gourry.net; s=google; t=1771750207; x=1772355007; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=1vF7vDru1wu4C4IPdmOP0dgYFxJxyuUKkceiB3IYEd0=;
-        b=lsiDxAm1WZk67Swptw9t09vi3jOkKauYvoRYrHJWIQdwp2cxD93s4+hnHI4tSGL2Er
-         h0B7HHhwXu5IGLYhEoCflt5tZzDeveKy36yZ2AyUadvzZr7Ih1AfOlg4nIherONyq0Bh
-         DESKsA3QWLF0RtC3cUhyD5fw11T1ayw/itGkTjTAwtcTh5NpgJl0a6vqlSz6qVoMp7Tj
-         BFMNrydITPvhG9DIS4rl0pIlijjl8pwixkCR+SBwfF/KYz/Bak1JM2UiBcHqFqf6wmX5
-         n1VWkCQXYrrOyAo5PgHeIC1Ohg/87wzCQV1zFj/bHxyHF+fGT1qBhabKfWsDZiC9/7LF
-         MxHA==
+        bh=6FZckDxptwGx8klYMDL0XD8dz9+dfEviXYn1CKFqg9s=;
+        b=On3dGfWnTNN//RWAohKdA4pL2lZMV7MeYMGS62VGhOuMecRzlrq6gWIUBvvjT5HHaT
+         ix0alOvAxYuQ/UF+iHgKCZE1NJ79jby/hFklKqI20yPQKV0JhOMMvBMaZOx6y5VFqasu
+         PpoEFeOQ4c5xjZymZwU32/WzBKtFDimqsUNPxVd+Hzs3PhECgFQfjxBc4ZJ7nJ0j4Tav
+         GAApuP8InCI4mdI9yqeN6yb7hyMt1wufFWCiqqn5Rp/vjRlXJIeLQSU0ZCV50UEqj30o
+         H714Ynl0lEEugwsUlVjrRsqiFuJ8lgwu88JAZR6TsNox+hwHL9BvbHO6/efoXdrXQeu+
+         Huew==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1771750203; x=1772355003;
+        d=1e100.net; s=20230601; t=1771750207; x=1772355007;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=1vF7vDru1wu4C4IPdmOP0dgYFxJxyuUKkceiB3IYEd0=;
-        b=Jkzz/AenReOFoq8CO/HSVko709uL7j0RPgNSdzeunX2g9LumymD1SEr7hDX+LJNX/9
-         D+MoHIj3RvFLPdB3DpYHGN1gqsYvMw8YsqrWiV4H/zpHRpB1ZbCRDwJEmdvEC0MahARR
-         6cVo6FAGH28jHellNNYgrK2bNZ5LngpSo8FPkJUyywtRhA6jxsl1FK0isqpVgfECklml
-         kETMDJuwznsr5454G6KSkTeSh7icqliMt7YbVSLe7Msy3h/PtMFxV6WSVgSMoEimIBMg
-         5R7qdQgaASsxnSSbJHmPLVuW4T6zL1dkfN5ND4Bb52izDBLKUGDlCgE+Iio3HRgSf0ro
-         U2+w==
-X-Forwarded-Encrypted: i=1; AJvYcCVdiQJAL5xjamGYKKxODO9OcbGghonUb+ZQeJ4GN1IrMQ7no/byCJ7MZLMrNN/2m9uhOYFTC10J@vger.kernel.org
-X-Gm-Message-State: AOJu0YyooprkbhYdpKKTJJ8P/mJmlw8PAJXL0H2dFAD1OVwFNV7bAOyt
-	H5gWmRANP65x/ySy5xtqVDis4+MREdsrbFWRM0b4JBX3fDuWzUC54i89giqTV7X+z5s=
-X-Gm-Gg: AZuq6aI0CtAJxzZc3YwS/4aHuVG2aAq0sROD1LWJXEY6Nr054xBqZ/2FYhhAa1kQiOW
-	ThlbOlbuni8rW2vTKv6zMDR2bFwyvFVyixZxzyfKvJVbESvtRe0Pfhm4Dj7oSPykC8d4GTPKlmU
-	gYbgO9x9esemNQPijIN3xz5XYt/MPwas9glDDZEpHy1fe2lq7phIV3siKwo1VD+g3bC3hqPLkWZ
-	Z/iluOy/lSkb96rBRTd6Ab5w3Me5Ss6+IE6v1XFZUapScJS5YuJL2BMvstP92aOvqQSHDJOOakU
-	BAnq4HsM5cpvFOi1sSoq18kvMbpE0bhyvqmGt0pL0jKzy4EfjerHg7hXPL3Bk6e9gWUQHfUgKi7
-	onhSQ2rpigQX/V9R7qC7D/fsqLDrQDLomcdJraxWIj9SGGzX0qm8p8wKNzcdl/DhX3/MLP49i/T
-	SjVKlXwKhItk2chm/QaUawGZFERlNKGqBmXzkHvOnzVdOBNKI8fGKgoWVRoiAxowLSJ2uOeMCfe
-	UJ3ZMwOQoLKZ2A=
-X-Received: by 2002:a05:622a:14c9:b0:4ee:1fbe:80de with SMTP id d75a77b69052e-5070bca9b78mr73724161cf.63.1771750202674;
-        Sun, 22 Feb 2026 00:50:02 -0800 (PST)
+        bh=6FZckDxptwGx8klYMDL0XD8dz9+dfEviXYn1CKFqg9s=;
+        b=GX0AIbUdUcOMvuVzqMzgTukAr6b6xO7wOF7f0ox5VwU5TBKFtrKHV12nqSjHwtf3bq
+         p9QwIGiDHpRBzfzxUXffbzS9Dh6Jbz72KNsFTCUjUHsVrv32n/XrXKJmU72TvPQOAmiz
+         RpoDYEVxq8F/kXxolYzrXIrGl7c9PUK2XED+kOwZ2DucaXQvDVVMjYrSMEiYj9tTQ/ML
+         FYyuTIYmMYlSFniUnZlEJvpLDaXJJaQW9ETGVtwf6G1v/hd3qivMByi7lJqOnQuunStB
+         Uh833JHjf0Ef61UkgMcKi4EefEd8TxbgR6QSTgYM/j2otlY1F/8/p3n0NLesHT3MtaXm
+         ZOpg==
+X-Forwarded-Encrypted: i=1; AJvYcCXvvvTSwZUQjapeos4/Cg18ywxLdqPrDFk8MKbV05Vot0OGeGJr4RrHVGYuYmsNikMDKVirlpQG@vger.kernel.org
+X-Gm-Message-State: AOJu0Yziycd+Xhye6K3ggMd8jwIr7zSEj62BwydMEtOdg7B5v+VySYtW
+	ZQTIzJDZXtJknkJgEueBy4Hun9/u+rx60hwooM0J1BKBTPkW/yNOEqoAZxCcraodcLs=
+X-Gm-Gg: AZuq6aIZ23s7QJPIm6Sw7UkuhUniegMjILl5xYYD7zwkZiLmed+NfHTbN282sdGFjjF
+	KiLvmSpTrucU1jqwU9ltut3yrjqd0STJvllYp4TEO1hVSleV5j4vlapRy+kDZHiyZAGHUqPPxZs
+	SDdlOrEhT+YA3rslFRBZH07F7LJXQqxfBh0niHAiWF6JOtZdZMzwIDw3NO6PLMbWO3z1tmD6X9X
+	TMoTDU/kJtahAEXFWDhGrZ/eucBUCzOc7UqvGCfjjQmhr605UkZqBCTSQIyG+w4ve5evDnwlZBZ
+	6o8AGFbGwQlSF0OuLdN8CN5cUEBZu7AtDIgpxynlnDFKdYdc9VL18aDUOP6sRMiuxVLQjhEFTfH
+	7Yrgayd83xqcXv8MhKpe6C8tZ/cl1brDVqU9EoTjSslZ8GbX/skmvf6+jBaGpTErgjMkenBJjiL
+	dFzHDbmqlMPO8CciUZvHIUFAwyJf70tQYLGorY6RUhi3Nsz9SfhuuiJmRSlIQ8A4eaM3qU3h/OO
+	PasIGPf67zyH6Q=
+X-Received: by 2002:a05:622a:209:b0:4ff:4a7c:da11 with SMTP id d75a77b69052e-5070bba08b0mr86322821cf.11.1771750207039;
+        Sun, 22 Feb 2026 00:50:07 -0800 (PST)
 Received: from gourry-fedora-PF4VCD3F.lan (pool-96-255-20-138.washdc.ftas.verizon.net. [96.255.20.138])
-        by smtp.gmail.com with ESMTPSA id d75a77b69052e-5070d53f0fcsm38640631cf.9.2026.02.22.00.50.00
+        by smtp.gmail.com with ESMTPSA id d75a77b69052e-5070d53f0fcsm38640631cf.9.2026.02.22.00.50.04
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 22 Feb 2026 00:50:02 -0800 (PST)
+        Sun, 22 Feb 2026 00:50:06 -0800 (PST)
 From: Gregory Price <gourry@gourry.net>
 To: lsf-pc@lists.linux-foundation.org
 Cc: linux-kernel@vger.kernel.org,
@@ -152,9 +152,9 @@ Cc: linux-kernel@vger.kernel.org,
 	bhe@redhat.com,
 	zhengqi.arch@bytedance.com,
 	terry.bowman@amd.com
-Subject: [RFC PATCH v4 18/27] mm/memory: NP_OPS_NUMA_BALANCING - private node NUMA balancing
-Date: Sun, 22 Feb 2026 03:48:33 -0500
-Message-ID: <20260222084842.1824063-19-gourry@gourry.net>
+Subject: [RFC PATCH v4 19/27] mm/compaction: NP_OPS_COMPACTION - private node compaction support
+Date: Sun, 22 Feb 2026 03:48:34 -0500
+Message-ID: <20260222084842.1824063-20-gourry@gourry.net>
 X-Mailer: git-send-email 2.53.0
 In-Reply-To: <20260222084842.1824063-1-gourry@gourry.net>
 References: <20260222084842.1824063-1-gourry@gourry.net>
@@ -171,14 +171,14 @@ X-Spamd-Result: default: False [1.34 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	MID_CONTAINS_FROM(1.00)[];
 	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64:c];
 	R_DKIM_ALLOW(-0.20)[gourry.net:s=google];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	DKIM_TRACE(0.00)[gourry.net:+];
-	TAGGED_FROM(0.00)[bounces-14119-lists,cgroups=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-14120-lists,cgroups=lfdr.de];
 	DMARC_NA(0.00)[gourry.net];
 	RCVD_TLS_LAST(0.00)[];
 	FREEMAIL_CC(0.00)[vger.kernel.org,kvack.org,lists.linux.dev,meta.com,linuxfoundation.org,kernel.org,stgolabs.net,huawei.com,intel.com,redhat.com,linux-foundation.org,oracle.com,suse.cz,google.com,suse.com,suse.de,nvidia.com,gmail.com,sk.com,gourry.net,linux.alibaba.com,rasmusvillemoes.dk,efficios.com,cmpxchg.org,arm.com,linux.dev,zte.com.cn,surriel.com,gentwo.org,tencent.com,huaweicloud.com,bytedance.com,amd.com];
@@ -188,45 +188,52 @@ X-Spamd-Result: default: False [1.34 / 15.00];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[gourry@gourry.net,cgroups@vger.kernel.org];
 	FROM_HAS_DN(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
+	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
 	RCVD_COUNT_FIVE(0.00)[5];
 	NEURAL_HAM(-0.00)[-1.000];
 	RCPT_COUNT_GT_50(0.00)[74];
 	TAGGED_RCPT(0.00)[cgroups];
 	TO_DN_NONE(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns,gourry.net:mid,gourry.net:dkim,gourry.net:email]
-X-Rspamd-Queue-Id: 91E7A16EB82
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns,gourry.net:mid,gourry.net:dkim,gourry.net:email]
+X-Rspamd-Queue-Id: 2A5F516EAD8
 X-Rspamd-Action: no action
 
-Not all private nodes may wish to engage in NUMA balancing faults.
+Private node zones should not be compacted unless the service explicitly
+opts in - as compaction requires migration and services may have
+PFN-based metadata that needs updating.
 
-Add the NP_OPS_NUMA_BALANCING flag (BIT(5)) as an opt-in method.
+Add a folio_migrate callback which fires from migrate_folio_move() for
+each relocated folio before faults are unblocked.
 
-Introduce folio_managed_allows_numa() helper:
-   ZONE_DEVICE folios always return false (never NUMA-scanned)
-   NP_OPS_NUMA_BALANCING filters for private nodes
+Add zone_supports_compaction() which returns true for normal zones and
+checks NP_OPS_COMPACTION for N_MEMORY_PRIVATE zones.
 
-In do_numa_page(), if a private-node folio with NP_OPS_PROTECT_WRITE
-is still on its node after a failed/skipped migration, enforce
-write-protection so the next write triggers handle_fault.
+Filter three direct compaction zone loops:
+  - compaction_zonelist_suitable() (reclaimer eligibility)
+  - try_to_compact_pages()         (direct compaction)
+  - compact_node()                 (proactive/manual compaction)
+
+kcompactd paths are intentionally unfiltered -- the service is
+responsible for starting kcompactd on its node.
+
+NP_OPS_COMPACTION requires NP_OPS_MIGRATION.
 
 Signed-off-by: Gregory Price <gourry@gourry.net>
 ---
  drivers/base/node.c          |  4 ++++
- include/linux/node_private.h | 16 ++++++++++++++++
- mm/memory.c                  | 11 +++++++++++
- mm/mempolicy.c               |  5 ++++-
- 4 files changed, 35 insertions(+), 1 deletion(-)
+ include/linux/node_private.h |  2 ++
+ mm/compaction.c              | 26 ++++++++++++++++++++++++++
+ 3 files changed, 32 insertions(+)
 
 diff --git a/drivers/base/node.c b/drivers/base/node.c
-index a4955b9b5b93..88aaac45e814 100644
+index 88aaac45e814..da523aca18fa 100644
 --- a/drivers/base/node.c
 +++ b/drivers/base/node.c
-@@ -961,6 +961,10 @@ int node_private_set_ops(int nid, const struct node_private_ops *ops)
- 	    (ops->flags & NP_OPS_PROTECT_WRITE))
+@@ -965,6 +965,10 @@ int node_private_set_ops(int nid, const struct node_private_ops *ops)
+ 	    !(ops->flags & NP_OPS_MIGRATION))
  		return -EINVAL;
  
-+	if ((ops->flags & NP_OPS_NUMA_BALANCING) &&
++	if ((ops->flags & NP_OPS_COMPACTION) &&
 +	    !(ops->flags & NP_OPS_MIGRATION))
 +		return -EINVAL;
 +
@@ -234,98 +241,79 @@ index a4955b9b5b93..88aaac45e814 100644
  	np = rcu_dereference_protected(NODE_DATA(nid)->node_private,
  				       lockdep_is_held(&node_private_lock));
 diff --git a/include/linux/node_private.h b/include/linux/node_private.h
-index 34d862f09e24..5ac60db1f044 100644
+index 5ac60db1f044..fe0336773ddb 100644
 --- a/include/linux/node_private.h
 +++ b/include/linux/node_private.h
-@@ -140,6 +140,8 @@ struct node_private_ops {
- #define NP_OPS_PROTECT_WRITE		BIT(3)
- /* Kernel reclaim (kswapd, direct reclaim, OOM) operates on this node */
+@@ -142,6 +142,8 @@ struct node_private_ops {
  #define NP_OPS_RECLAIM			BIT(4)
-+/* Allow NUMA balancing to scan and migrate folios on this node */
-+#define NP_OPS_NUMA_BALANCING		BIT(5)
+ /* Allow NUMA balancing to scan and migrate folios on this node */
+ #define NP_OPS_NUMA_BALANCING		BIT(5)
++/* Allow compaction to run on the node.  Service must start kcompactd. */
++#define NP_OPS_COMPACTION		BIT(6)
  
  /* Private node is OOM-eligible: reclaim can run and pages can be demoted here */
  #define NP_OPS_OOM_ELIGIBLE		(NP_OPS_RECLAIM | NP_OPS_DEMOTION)
-@@ -263,6 +265,15 @@ static inline void folio_managed_split_cb(struct folio *original_folio,
- }
- 
- #ifdef CONFIG_MEMORY_HOTPLUG
-+static inline bool folio_managed_allows_numa(struct folio *folio)
-+{
-+	if (!folio_is_private_managed(folio))
-+		return true;
-+	if (folio_is_zone_device(folio))
-+		return false;
-+	return folio_private_flags(folio, NP_OPS_NUMA_BALANCING);
-+}
-+
- static inline int folio_managed_allows_user_migrate(struct folio *folio)
- {
- 	if (folio_is_zone_device(folio))
-@@ -443,6 +454,11 @@ int node_private_clear_ops(int nid, const struct node_private_ops *ops);
- 
- #else /* !CONFIG_NUMA || !CONFIG_MEMORY_HOTPLUG */
- 
-+static inline bool folio_managed_allows_numa(struct folio *folio)
-+{
-+	return !folio_is_zone_device(folio);
-+}
-+
- static inline int folio_managed_allows_user_migrate(struct folio *folio)
- {
- 	return -ENOENT;
-diff --git a/mm/memory.c b/mm/memory.c
-index 0f78988befef..88a581baae40 100644
---- a/mm/memory.c
-+++ b/mm/memory.c
-@@ -78,6 +78,7 @@
- #include <linux/sched/sysctl.h>
- #include <linux/pgalloc.h>
- #include <linux/uaccess.h>
+diff --git a/mm/compaction.c b/mm/compaction.c
+index 6a65145b03d8..d8532b957ec6 100644
+--- a/mm/compaction.c
++++ b/mm/compaction.c
+@@ -24,9 +24,26 @@
+ #include <linux/page_owner.h>
+ #include <linux/psi.h>
+ #include <linux/cpuset.h>
 +#include <linux/node_private.h>
+ #include "internal.h"
  
- #include <trace/events/kmem.h>
- 
-@@ -6041,6 +6042,12 @@ static vm_fault_t do_numa_page(struct vm_fault *vmf)
- 	if (!folio || folio_is_zone_device(folio))
- 		goto out_map;
- 
-+	/*
-+	 * We do not need to check private-node folios here because the private
-+	 * memory service either never opted in to NUMA balancing, or it did
-+	 * and we need to restore private PTE controls on the failure path.
-+	 */
+ #ifdef CONFIG_COMPACTION
 +
- 	nid = folio_nid(folio);
- 	nr_pages = folio_nr_pages(folio);
- 
-@@ -6078,6 +6085,10 @@ static vm_fault_t do_numa_page(struct vm_fault *vmf)
- 	/*
- 	 * Make it present again, depending on how arch implements
- 	 * non-accessible ptes, some can allow access by kernel mode.
-+	 *
-+	 * If the folio is still on a private node with NP_OPS_PROTECT_WRITE,
-+	 * enforce write-protection so the next write triggers handle_fault.
-+	 * This covers migration-failed and migration-skipped paths.
- 	 */
- 	if (unlikely(folio && folio_managed_wrprotect(folio))) {
- 		writable = false;
-diff --git a/mm/mempolicy.c b/mm/mempolicy.c
-index 8ac014950e88..8a3a9916ab59 100644
---- a/mm/mempolicy.c
-+++ b/mm/mempolicy.c
-@@ -861,7 +861,10 @@ bool folio_can_map_prot_numa(struct folio *folio, struct vm_area_struct *vma,
- {
- 	int nid;
- 
--	if (!folio || folio_is_zone_device(folio) || folio_test_ksm(folio))
-+	if (!folio || folio_test_ksm(folio))
-+		return false;
++/*
++ * Private node zones require NP_OPS_COMPACTION to opt in.  Normal zones
++ * always support compaction.
++ */
++static inline bool zone_supports_compaction(struct zone *zone)
++{
++#ifdef CONFIG_NUMA
++	if (!node_state(zone_to_nid(zone), N_MEMORY_PRIVATE))
++		return true;
++	return zone_private_flags(zone, NP_OPS_COMPACTION);
++#else
++	return true;
++#endif
++}
 +
-+	if (unlikely(!folio_managed_allows_numa(folio)))
- 		return false;
+ /*
+  * Fragmentation score check interval for proactive compaction purposes.
+  */
+@@ -2443,6 +2460,9 @@ bool compaction_zonelist_suitable(struct alloc_context *ac, int order,
+ 				ac->highest_zoneidx, ac->nodemask) {
+ 		unsigned long available;
  
- 	/* Also skip shared copy-on-write folios */
++		if (!zone_supports_compaction(zone))
++			continue;
++
+ 		/*
+ 		 * Do not consider all the reclaimable memory because we do not
+ 		 * want to trash just for a single high order allocation which
+@@ -2832,6 +2852,9 @@ enum compact_result try_to_compact_pages(gfp_t gfp_mask, unsigned int order,
+ 		if (!numa_zone_alloc_allowed(alloc_flags, zone, gfp_mask))
+ 			continue;
+ 
++		if (!zone_supports_compaction(zone))
++			continue;
++
+ 		if (prio > MIN_COMPACT_PRIORITY
+ 					&& compaction_deferred(zone, order)) {
+ 			rc = max_t(enum compact_result, COMPACT_DEFERRED, rc);
+@@ -2906,6 +2929,9 @@ static int compact_node(pg_data_t *pgdat, bool proactive)
+ 		if (!populated_zone(zone))
+ 			continue;
+ 
++		if (!zone_supports_compaction(zone))
++			continue;
++
+ 		if (fatal_signal_pending(current))
+ 			return -EINTR;
+ 
 -- 
 2.53.0
 
