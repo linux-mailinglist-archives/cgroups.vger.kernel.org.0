@@ -1,82 +1,82 @@
-Return-Path: <cgroups+bounces-14114-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-14115-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id cMpoAknEmmlHiQMAu9opvQ
-	(envelope-from <cgroups+bounces-14114-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Sun, 22 Feb 2026 09:54:33 +0100
+	id UMeOBGjEmmlHiQMAu9opvQ
+	(envelope-from <cgroups+bounces-14115-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Sun, 22 Feb 2026 09:55:04 +0100
 X-Original-To: lists+cgroups@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 983CB16EB6C
-	for <lists+cgroups@lfdr.de>; Sun, 22 Feb 2026 09:54:32 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7F8BF16EB7A
+	for <lists+cgroups@lfdr.de>; Sun, 22 Feb 2026 09:55:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id C9F5B30886DE
-	for <lists+cgroups@lfdr.de>; Sun, 22 Feb 2026 08:50:14 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 7524A3095F4E
+	for <lists+cgroups@lfdr.de>; Sun, 22 Feb 2026 08:50:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AE74123E320;
-	Sun, 22 Feb 2026 08:49:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 96F632405EB;
+	Sun, 22 Feb 2026 08:49:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gourry.net header.i=@gourry.net header.b="blk5jjB9"
+	dkim=pass (2048-bit key) header.d=gourry.net header.i=@gourry.net header.b="Y7PC0kP6"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-qt1-f171.google.com (mail-qt1-f171.google.com [209.85.160.171])
+Received: from mail-qt1-f170.google.com (mail-qt1-f170.google.com [209.85.160.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E288723BD17
-	for <cgroups@vger.kernel.org>; Sun, 22 Feb 2026 08:49:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A5C8323D7C7
+	for <cgroups@vger.kernel.org>; Sun, 22 Feb 2026 08:49:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1771750186; cv=none; b=U9kEn2WQR3QnQB/WeLyBQdmLa+J/vpdvoWrlByGfWEGSlgrVf2+e17I07vbMnqNKgpBbuPcXXRI1dCflXocdM0iSpOGqKeNuo6590V7xJyXOoJBnUWgQQgDCPeI041px0o79SdNxlv2oduopZ0iuabfAf1zAw1uw5yMxj8aL9/Y=
+	t=1771750190; cv=none; b=gXGtESOPqgYZtLOvaO6FHdJA8+9nDSn5R5HFCiLR1TbWrGykbn1IC6j+4S9zEYUuy6eRh3QLUjvVXG4vzuRjLO2ytEh1dfSYLZNTWTpKM0XLMmmdZ+hSpoU8XL+qhWezAPEoPRJNyrIphiKIGBYUUdsPkuccrX/yHzJWZdwznTY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1771750186; c=relaxed/simple;
-	bh=teac0LnbJnCynydeYVd7GsbjaKn6DnZeMEIoB7iv0us=;
+	s=arc-20240116; t=1771750190; c=relaxed/simple;
+	bh=/y1pXR/Qusp3ewwrpz/oUGt/NfC5qFdnwSmdDbLTy8A=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=uv2Sx/ZrhG+kreFpCTxICcY8h78r1fLSKUGsu6rVy6BgonDua2TEAF/0mNjlLZsaFLth/y+5LfaWmdrQApDGoAYr5vEyznFquGTlmNaVozfQX/ftEsElY841uZHj4ZATla0Bjo+eTOHa6phkI1kY/jIHBzXvWL3u+JOpRwFhKeA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gourry.net; spf=pass smtp.mailfrom=gourry.net; dkim=pass (2048-bit key) header.d=gourry.net header.i=@gourry.net header.b=blk5jjB9; arc=none smtp.client-ip=209.85.160.171
+	 MIME-Version; b=h5Z8zCVNfcbzFI2qD3mKs/J4vIo0UpAtvZpP2ZLZ0jEj6dtXveeIQGTV7eOFqEU06Q4fnC6hxwhzV+98ucotD3dRjmc0fkvUBPuurmgAO4PHEAKCKnCFzPKptTMQsqwY0Jih6SIaveEHTAsQjl84b0KHzg7XMb3a52H5JtWS+eU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gourry.net; spf=pass smtp.mailfrom=gourry.net; dkim=pass (2048-bit key) header.d=gourry.net header.i=@gourry.net header.b=Y7PC0kP6; arc=none smtp.client-ip=209.85.160.170
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gourry.net
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gourry.net
-Received: by mail-qt1-f171.google.com with SMTP id d75a77b69052e-506a6cf8242so28980321cf.1
-        for <cgroups@vger.kernel.org>; Sun, 22 Feb 2026 00:49:44 -0800 (PST)
+Received: by mail-qt1-f170.google.com with SMTP id d75a77b69052e-506a7bbe9d0so29134961cf.0
+        for <cgroups@vger.kernel.org>; Sun, 22 Feb 2026 00:49:48 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gourry.net; s=google; t=1771750184; x=1772354984; darn=vger.kernel.org;
+        d=gourry.net; s=google; t=1771750188; x=1772354988; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Uf1ZWp0V25jDsi9L3Unk8bUddTMI7A2gwbgNKk4lUpk=;
-        b=blk5jjB9UhXo2nMm2kFrjnA20fdDdgcjzOI9FfIllMYMJWVG1TUWfJDS2SjDXF2rEN
-         bA+S8TelN3UNdO8oWSNbA2DvRWlNPmYim+wdURcnhB/6m5FjRAJEQy8K8XWMbo8MDm8Z
-         qTLD6lNYAwR741tFfO6j3a6YnAFX6omdGxwPlr5t3SWDyactxRR4yPHULdXAa2L/gZ6A
-         UYUXx3GjXdq8F/+1QwqyQBqlKLyGCcVqmTTgLRDqZzwFaTpJkjXBYtBgHZRC7kHc4Ot5
-         3pOydvF7VWeT+F9hOU/Y8Q9xmZ1/5tDChksIriABaI0Wgtmfx4mJGvMui12XlaQlzQs+
-         j0Ew==
+        bh=Zm28kvmD9iuWWLwvtJBamWBricaC3Bz050FlGsgvxtM=;
+        b=Y7PC0kP6SAKKh0UkPXB69xmbfbcVtmAOvC67tuKDhFrkkgNQSotHgyFI7VPWDDdXlm
+         nniZ/HIdbZl5MXo0VVkWS6YYO4gjsVYa/Xjh0gKumfnUqKkA0wSjTcNdWVsF4I6tl4Az
+         0l+PHbo/DwZkpGiZLiUfNVgb1kTTslgr8h7xSSE2KHz46bUUQ70RWw12MJjm2as+ubOF
+         0MWuQZ7n6Ix7k++H1roofzOJGnIXbMJIIC7XRvxp3jLNsdsmV0Nkc6GsTz1CZySBuIDM
+         Bm8Km23rYiuTvuEdFUA892nTMc/ZMDvQA2mQyfuVjJyd4Cn0/1PlRhh60vudYkFK9Mwc
+         RoFQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1771750184; x=1772354984;
+        d=1e100.net; s=20230601; t=1771750188; x=1772354988;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=Uf1ZWp0V25jDsi9L3Unk8bUddTMI7A2gwbgNKk4lUpk=;
-        b=bInHlVTnDQu4AYGkWHBxzM3JHXZ9o7wUn+O55xHJygioXfwzyA+q4ZW9o9nf/jYxHH
-         QVQrHIxjqv3oBEjl0OUJH/2BI3RxWsceTCOkFIarHfj3GB/hMBHxWr/vk/Wbvro4c9C9
-         vzDdMOI0Cj+Gc9CdEuZxqlwdUe66HQxKy8v7C1bks9JSoChWMHyfkMJ3f6NOL+ISwkeK
-         87Ln1pfcBOIw9gvlDfK9jup9asuRI1OYXi32HiUjUSZxWiY8ig8MAb1Kf+Tg0aBIBbjh
-         C0r2tmwFCK20ZkEhhYFGYztt8Yz2qCM2LmxR5R6YVmaCggW2Yynug+459rmdMX7A8n3Z
-         sMNQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXeAR3NjHGlyNXTSbwkBPN4ba3wfQahleK7YnuzdJsuNefJFccBwst/iPtvPMuRsJ4UjHFpKg14@vger.kernel.org
-X-Gm-Message-State: AOJu0Ywu4gplMfzRyDQ6crc1erdMkoKFMNfFvF4jaFhqLY+lY+4+D2Rz
-	2TbhKZr5FDDvy+zipoDkVtTlER8t5/MVhPTUZedFxO6Vyjghx1fDFH7k6k6cAMIrEEQ=
-X-Gm-Gg: AZuq6aLb6brrfHx+sKsKraMICzAROA/zqL+7E8/MF85jduPitgQUpgQcKoWmWHaes0x
-	sPXJtYH9HhyY84y0jqKhmmz+4T51UtPpn0noZ/ceBOMazi4aGNfTBLyM5ClN1lIz5Vb+FVTQCj8
-	Eqj3F5G31IDA/gaNkQqo6p+j8/7xBCJCDBJnMXQA5yqH1OvZ+bZhYbskmeyArhxCsG2A6z5pFx8
-	byc0NXisn4iN3JGvcJcqyzO9H0xNgJqzbcLb/aBvGniXbGk0U4bfzPlPjVVjCSlTtspm/vpKs4F
-	dGjxh3CoOoggcxnvEX9TXZ3DvNgJxFL5cDz7fvzavyDe5q2iYw5AtzvOl6Dqpv5MVHYMG/yqdUu
-	eyJj5B4KxA45aP2ATEmhK2+WBe173Oopervcp6QQU9ShRcq2kC80UuhYoToADP5vmeRm8ImYcJy
-	os8oUoDX+JbVHJxZhvtlR7CK5RRY7M6FcAZxeRg5Nn7Undhp+H7adoqmDl0d5dzmNwgx1gSD4Mb
-	ZkvqJ2KJ5WvOYU=
-X-Received: by 2002:a05:622a:14d1:b0:506:6e65:2325 with SMTP id d75a77b69052e-5070bba2239mr73493701cf.8.1771750183726;
-        Sun, 22 Feb 2026 00:49:43 -0800 (PST)
+        bh=Zm28kvmD9iuWWLwvtJBamWBricaC3Bz050FlGsgvxtM=;
+        b=NpxeqA54aMIfb3rsiDQfqIacJ70nzK7VfdZiGy1H6QLfw0L3o6k80WepvbeP5hmiq6
+         aZrraRTJlAJ59YfiEg2NLKeoCYfqWPnObh+TPSXcr83wxFBh9SZoRUJjG8wVWO0du2z3
+         c6cid2vVjba5vwxU5gjTgKW4cd78dBQlQN7OpRI/3wpOKNC6UAy86mQ+HFh2cTvlLGuh
+         Rr9NJXWDpbM1+yG4aI74iujsSFPBX1GMbmaef6Cpykcd2QDsEwH1rDQ1FXfCuuo1Jr55
+         mRdkGluv5IChYWoyYljT488MKZhkvmBLPn6MhaLdK8O5uJW/nco5+8nn7b64hnoZ3jhm
+         12Aw==
+X-Forwarded-Encrypted: i=1; AJvYcCUM9FnqvmsxANCZ85rwTnmW/p0OoYl2XEiSM6c1LTGEkX6zza1wFkIFlQN5ww8iuA85pDTDy+OV@vger.kernel.org
+X-Gm-Message-State: AOJu0Yw76yJo/ifQc6UQZhM37qknR5vu1XBJy0G0YnXASae48UvIqYR6
+	XVmBrjNjmAhu/S8Sl5iseRpV6OPRKYLTZKyavmEnBt8Gs7/CjA0KaClhHwfqUtorv0w=
+X-Gm-Gg: AZuq6aLujwOWh60pdpYVIXvn6D665xdDkAQRLCSrylasUKtz13oldtVYHOKTyL3jSxy
+	FKmkztpZbxpIA5uSvK8uk0GiJUIySwvmBBXWYAxsMb7PBoiM3GvqrKhtrVgqfeHOT6IfYp2qmLW
+	6zdv028MJSa0Tk/LVla/6eStQImQEb8+8IUe+2N0w2u4jFqBxvATT44JH+AIAZnXwOzdKJp5Ka0
+	NtLssRfjqAsf7FYYKtB61wL30a2Vchv8P2JAcBjpoqQ9bMDzP723mwloXVc8KIBe6Iy1ZygdAfk
+	iZFLSw/Cwcshqir0T9wroCqQgY9fxeJAePO0EvVrJ5jD3Qn3poJTo2sLvJ1JOOsktvZ1ZghN/y0
+	tgy1vOFzy2A+7vD/xeX+W2halRjL/dDroJr7LfARyL3W8zCH3LKdrD+zxbOzCiSvPWRD/9ZlRtO
+	BbmN0o2sJfs6DcnplZJv2+QZ8WYdXPb1F+y75SMqE0jzX6dv2gV1glHW2BTE9mWtPZT6UZv1am5
+	4DqBlljdi6KQPzvIyBVRtMZHw==
+X-Received: by 2002:ac8:5d43:0:b0:4ee:24e8:c9a1 with SMTP id d75a77b69052e-5070bc4bb77mr73824241cf.44.1771750187486;
+        Sun, 22 Feb 2026 00:49:47 -0800 (PST)
 Received: from gourry-fedora-PF4VCD3F.lan (pool-96-255-20-138.washdc.ftas.verizon.net. [96.255.20.138])
-        by smtp.gmail.com with ESMTPSA id d75a77b69052e-5070d53f0fcsm38640631cf.9.2026.02.22.00.49.41
+        by smtp.gmail.com with ESMTPSA id d75a77b69052e-5070d53f0fcsm38640631cf.9.2026.02.22.00.49.45
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 22 Feb 2026 00:49:43 -0800 (PST)
+        Sun, 22 Feb 2026 00:49:46 -0800 (PST)
 From: Gregory Price <gourry@gourry.net>
 To: lsf-pc@lists.linux-foundation.org
 Cc: linux-kernel@vger.kernel.org,
@@ -152,9 +152,9 @@ Cc: linux-kernel@vger.kernel.org,
 	bhe@redhat.com,
 	zhengqi.arch@bytedance.com,
 	terry.bowman@amd.com
-Subject: [RFC PATCH v4 13/27] mm/mempolicy: NP_OPS_MEMPOLICY - support private node mempolicy
-Date: Sun, 22 Feb 2026 03:48:28 -0500
-Message-ID: <20260222084842.1824063-14-gourry@gourry.net>
+Subject: [RFC PATCH v4 14/27] mm/memory-tiers: NP_OPS_DEMOTION - support private node demotion
+Date: Sun, 22 Feb 2026 03:48:29 -0500
+Message-ID: <20260222084842.1824063-15-gourry@gourry.net>
 X-Mailer: git-send-email 2.53.0
 In-Reply-To: <20260222084842.1824063-1-gourry@gourry.net>
 References: <20260222084842.1824063-1-gourry@gourry.net>
@@ -171,14 +171,14 @@ X-Spamd-Result: default: False [1.34 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	MID_CONTAINS_FROM(1.00)[];
 	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
 	R_DKIM_ALLOW(-0.20)[gourry.net:s=google];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	DKIM_TRACE(0.00)[gourry.net:+];
-	TAGGED_FROM(0.00)[bounces-14114-lists,cgroups=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-14115-lists,cgroups=lfdr.de];
 	DMARC_NA(0.00)[gourry.net];
 	RCVD_TLS_LAST(0.00)[];
 	FREEMAIL_CC(0.00)[vger.kernel.org,kvack.org,lists.linux.dev,meta.com,linuxfoundation.org,kernel.org,stgolabs.net,huawei.com,intel.com,redhat.com,linux-foundation.org,oracle.com,suse.cz,google.com,suse.com,suse.de,nvidia.com,gmail.com,sk.com,gourry.net,linux.alibaba.com,rasmusvillemoes.dk,efficios.com,cmpxchg.org,arm.com,linux.dev,zte.com.cn,surriel.com,gentwo.org,tencent.com,huaweicloud.com,bytedance.com,amd.com];
@@ -188,146 +188,136 @@ X-Spamd-Result: default: False [1.34 / 15.00];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[gourry@gourry.net,cgroups@vger.kernel.org];
 	FROM_HAS_DN(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
 	RCVD_COUNT_FIVE(0.00)[5];
 	NEURAL_HAM(-0.00)[-1.000];
 	RCPT_COUNT_GT_50(0.00)[74];
 	TAGGED_RCPT(0.00)[cgroups];
 	TO_DN_NONE(0.00)[];
 	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,gourry.net:mid,gourry.net:dkim,gourry.net:email]
-X-Rspamd-Queue-Id: 983CB16EB6C
+X-Rspamd-Queue-Id: 7F8BF16EB7A
 X-Rspamd-Action: no action
 
-Some private nodes want userland to directly allocate from the node
-via set_mempolicy() and mbind() - but don't want that node as normal
-allocable system memory in the fallback lists.
+The memory-tier subsystem needs to know which private nodes should
+appear as demotion targets.
 
-Add NP_OPS_MEMPOLICY flag requiring NP_OPS_MIGRATION (since mbind can
-drive migrations).  Only allow private nodes in policy nodemasks if
-all private nodes in the mask support NP_OPS_MEMPOLICY. This prevents
-__GFP_PRIVATE from unlocking nodes without NP_OPS_MEMPOLICY support.
+Add NP_OPS_DEMOTION (BIT(2)):
+   Node can be added as a demotion target by memory-tiers.
 
-Add __GFP_PRIVATE to mempolicy migration sites so moves to opted-in
-private nodes succeed.
+Add demotion backpressure support so private nodes can reject
+new demotions cleanly, allowing vmscan to fall back to swap.
 
-Update the sysfs "has_memory" attribute to include N_MEMORY_PRIVATE
-nodes with NP_OPS_MEMPOLICY set, allowing existing numactl userland
-tools to work without modification.
+In the demotion path, try demotion to private nodes invididually,
+then clear private nodes from the demotion target mask until a
+non-private node is found, then fall back to the remaining mask.
+This prevents LRU inversion while still allowing forward progress.
+
+This is the closest match to the current behavior without making
+private nodes inaccessible or preventing forward progress. We
+should probably completely re-do the demotion logic to allow less
+fallback and kick kswapd instead - right now we induce LRU
+inversions by simply falling back to any node in the demotion list.
+
+Add memory_tier_refresh_demotion() export for services to trigger
+re-evaluation of demotion targets after changing their flags.
 
 Signed-off-by: Gregory Price <gourry@gourry.net>
 ---
- drivers/base/node.c            | 22 +++++++++++++-
- include/linux/node_private.h   | 40 +++++++++++++++++++++++++
- include/uapi/linux/mempolicy.h |  1 +
- mm/mempolicy.c                 | 54 ++++++++++++++++++++++++++++++----
- mm/page_alloc.c                |  5 ++++
- 5 files changed, 116 insertions(+), 6 deletions(-)
+ include/linux/memory-tiers.h |  9 +++++++
+ include/linux/node_private.h | 22 +++++++++++++++++
+ mm/internal.h                |  7 ++++++
+ mm/memory-tiers.c            | 46 ++++++++++++++++++++++++++++++++----
+ mm/page_alloc.c              | 12 +++++++---
+ mm/vmscan.c                  | 30 ++++++++++++++++++++++-
+ 6 files changed, 117 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/base/node.c b/drivers/base/node.c
-index e587f5781135..c08b5a948779 100644
---- a/drivers/base/node.c
-+++ b/drivers/base/node.c
-@@ -953,6 +953,10 @@ int node_private_set_ops(int nid, const struct node_private_ops *ops)
- 	    (!ops->migrate_to || !ops->folio_migrate))
- 		return -EINVAL;
- 
-+	if ((ops->flags & NP_OPS_MEMPOLICY) &&
-+	    !(ops->flags & NP_OPS_MIGRATION))
-+		return -EINVAL;
+diff --git a/include/linux/memory-tiers.h b/include/linux/memory-tiers.h
+index 3e1159f6762c..e1476432e359 100644
+--- a/include/linux/memory-tiers.h
++++ b/include/linux/memory-tiers.h
+@@ -58,6 +58,7 @@ struct memory_dev_type *mt_get_memory_type(int adist);
+ int next_demotion_node(int node);
+ void node_get_allowed_targets(pg_data_t *pgdat, nodemask_t *targets);
+ bool node_is_toptier(int node);
++void memory_tier_refresh_demotion(void);
+ #else
+ static inline int next_demotion_node(int node)
+ {
+@@ -73,6 +74,10 @@ static inline bool node_is_toptier(int node)
+ {
+ 	return true;
+ }
 +
- 	mutex_lock(&node_private_lock);
- 	np = rcu_dereference_protected(NODE_DATA(nid)->node_private,
- 				       lockdep_is_held(&node_private_lock));
-@@ -1145,6 +1149,21 @@ static ssize_t show_node_state(struct device *dev,
- 			  nodemask_pr_args(&node_states[na->state]));
++static inline void memory_tier_refresh_demotion(void)
++{
++}
+ #endif
+ 
+ #else
+@@ -106,6 +111,10 @@ static inline bool node_is_toptier(int node)
+ 	return true;
  }
  
-+/* has_memory includes N_MEMORY + N_MEMORY_PRIVATE that support mempolicy. */
-+static ssize_t show_has_memory(struct device *dev,
-+			       struct device_attribute *attr, char *buf)
++static inline void memory_tier_refresh_demotion(void)
 +{
-+	nodemask_t mask = node_states[N_MEMORY];
-+	int nid;
-+
-+	for_each_node_state(nid, N_MEMORY_PRIVATE) {
-+		if (node_private_has_flag(nid, NP_OPS_MEMPOLICY))
-+			node_set(nid, mask);
-+	}
-+
-+	return sysfs_emit(buf, "%*pbl\n", nodemask_pr_args(&mask));
 +}
 +
- #define _NODE_ATTR(name, state) \
- 	{ __ATTR(name, 0444, show_node_state, NULL), state }
- 
-@@ -1155,7 +1174,8 @@ static struct node_attr node_state_attr[] = {
- #ifdef CONFIG_HIGHMEM
- 	[N_HIGH_MEMORY] = _NODE_ATTR(has_high_memory, N_HIGH_MEMORY),
- #endif
--	[N_MEMORY] = _NODE_ATTR(has_memory, N_MEMORY),
-+	[N_MEMORY] = { __ATTR(has_memory, 0444, show_has_memory, NULL),
-+		       N_MEMORY },
- 	[N_MEMORY_PRIVATE] = _NODE_ATTR(has_private_memory, N_MEMORY_PRIVATE),
- 	[N_CPU] = _NODE_ATTR(has_cpu, N_CPU),
- 	[N_GENERIC_INITIATOR] = _NODE_ATTR(has_generic_initiator,
+ static inline int register_mt_adistance_algorithm(struct notifier_block *nb)
+ {
+ 	return 0;
 diff --git a/include/linux/node_private.h b/include/linux/node_private.h
-index 0c5be1ee6e60..e9b58afa366b 100644
+index e9b58afa366b..e254e36056cd 100644
 --- a/include/linux/node_private.h
 +++ b/include/linux/node_private.h
-@@ -86,6 +86,8 @@ struct node_private_ops {
- 
- /* Allow user/kernel migration; requires migrate_to and folio_migrate */
+@@ -88,6 +88,8 @@ struct node_private_ops {
  #define NP_OPS_MIGRATION		BIT(0)
-+/* Allow mempolicy-directed allocation and mbind migration to this node */
-+#define NP_OPS_MEMPOLICY		BIT(1)
+ /* Allow mempolicy-directed allocation and mbind migration to this node */
+ #define NP_OPS_MEMPOLICY		BIT(1)
++/* Node participates as a demotion target in memory-tiers */
++#define NP_OPS_DEMOTION			BIT(2)
  
  /**
   * struct node_private - Per-node container for N_MEMORY_PRIVATE nodes
-@@ -276,6 +278,34 @@ static inline int node_private_migrate_to(struct list_head *folios, int nid,
+@@ -101,12 +103,14 @@ struct node_private_ops {
+  *		callbacks that may sleep; 0 = fully released)
+  * @released: Signaled when refcount drops to 0; unregister waits on this
+  * @ops: Service callbacks and exclusion flags (NULL until service registers)
++ * @migration_blocked: Service signals migrations should pause
+  */
+ struct node_private {
+ 	void *owner;
+ 	refcount_t refcount;
+ 	struct completion released;
+ 	const struct node_private_ops *ops;
++	bool migration_blocked;
+ };
  
- 	return ret;
+ #ifdef CONFIG_NUMA
+@@ -306,6 +310,19 @@ static inline bool nodes_private_mpol_allowed(const nodemask_t *nodes)
+ 	}
+ 	return eligible;
  }
 +
-+static inline bool node_mpol_eligible(int nid)
++static inline bool node_private_migration_blocked(int nid)
 +{
-+	bool ret;
-+
-+	if (!node_state(nid, N_MEMORY_PRIVATE))
-+		return node_state(nid, N_MEMORY);
++	struct node_private *np;
++	bool blocked;
 +
 +	rcu_read_lock();
-+	ret = node_private_has_flag(nid, NP_OPS_MEMPOLICY);
++	np = rcu_dereference(NODE_DATA(nid)->node_private);
++	blocked = np && READ_ONCE(np->migration_blocked);
 +	rcu_read_unlock();
-+	return ret;
-+}
 +
-+static inline bool nodes_private_mpol_allowed(const nodemask_t *nodes)
-+{
-+	int nid;
-+	bool eligible = false;
-+
-+	for_each_node_mask(nid, *nodes) {
-+		if (!node_state(nid, N_MEMORY_PRIVATE))
-+			continue;
-+		if (!node_mpol_eligible(nid))
-+			return false;
-+		eligible = true;
-+	}
-+	return eligible;
++	return blocked;
 +}
  #endif /* CONFIG_MEMORY_HOTPLUG */
  
  #else /* !CONFIG_NUMA */
-@@ -364,6 +394,16 @@ static inline int node_private_migrate_to(struct list_head *folios, int nid,
- 	return -ENODEV;
+@@ -404,6 +421,11 @@ static inline bool nodes_private_mpol_allowed(const nodemask_t *nodes)
+ 	return false;
  }
  
-+static inline bool node_mpol_eligible(int nid)
-+{
-+	return false;
-+}
-+
-+static inline bool nodes_private_mpol_allowed(const nodemask_t *nodes)
++static inline bool node_private_migration_blocked(int nid)
 +{
 +	return false;
 +}
@@ -335,166 +325,252 @@ index 0c5be1ee6e60..e9b58afa366b 100644
  static inline int node_private_register(int nid, struct node_private *np)
  {
  	return -ENODEV;
-diff --git a/include/uapi/linux/mempolicy.h b/include/uapi/linux/mempolicy.h
-index 8fbbe613611a..b606eae983c8 100644
---- a/include/uapi/linux/mempolicy.h
-+++ b/include/uapi/linux/mempolicy.h
-@@ -64,6 +64,7 @@ enum {
- #define MPOL_F_SHARED  (1 << 0)	/* identify shared policies */
- #define MPOL_F_MOF	(1 << 3) /* this policy wants migrate on fault */
- #define MPOL_F_MORON	(1 << 4) /* Migrate On protnone Reference On Node */
-+#define MPOL_F_PRIVATE	(1 << 5) /* policy targets private node; use __GFP_PRIVATE */
+diff --git a/mm/internal.h b/mm/internal.h
+index 6ab4679fe943..5950e20d4023 100644
+--- a/mm/internal.h
++++ b/mm/internal.h
+@@ -1206,6 +1206,8 @@ extern int node_reclaim_mode;
  
- /*
-  * Enabling zone reclaim means the page allocator will attempt to fulfill
-diff --git a/mm/mempolicy.c b/mm/mempolicy.c
-index 2b0f9762d171..8ac014950e88 100644
---- a/mm/mempolicy.c
-+++ b/mm/mempolicy.c
-@@ -406,8 +406,6 @@ static int mpol_new_preferred(struct mempolicy *pol, const nodemask_t *nodes)
- static int mpol_set_nodemask(struct mempolicy *pol,
- 		     const nodemask_t *nodes, struct nodemask_scratch *nsc)
- {
--	int ret;
--
- 	/*
- 	 * Default (pol==NULL) resp. local memory policies are not a
- 	 * subject of any remapping. They also do not need any special
-@@ -416,9 +414,12 @@ static int mpol_set_nodemask(struct mempolicy *pol,
- 	if (!pol || pol->mode == MPOL_LOCAL)
- 		return 0;
- 
--	/* Check N_MEMORY */
-+	/* Check N_MEMORY and N_MEMORY_PRIVATE*/
- 	nodes_and(nsc->mask1,
- 		  cpuset_current_mems_allowed, node_states[N_MEMORY]);
-+	nodes_and(nsc->mask2, cpuset_current_mems_allowed,
-+		  node_states[N_MEMORY_PRIVATE]);
-+	nodes_or(nsc->mask1, nsc->mask1, nsc->mask2);
- 
- 	VM_BUG_ON(!nodes);
- 
-@@ -432,8 +433,13 @@ static int mpol_set_nodemask(struct mempolicy *pol,
- 	else
- 		pol->w.cpuset_mems_allowed = cpuset_current_mems_allowed;
- 
--	ret = mpol_ops[pol->mode].create(pol, &nsc->mask2);
--	return ret;
-+	/* All private nodes in the mask must have NP_OPS_MEMPOLICY. */
-+	if (nodes_private_mpol_allowed(&nsc->mask2))
-+		pol->flags |= MPOL_F_PRIVATE;
-+	else if (nodes_intersects(nsc->mask2, node_states[N_MEMORY_PRIVATE]))
-+		return -EINVAL;
-+
-+	return mpol_ops[pol->mode].create(pol, &nsc->mask2);
- }
- 
- /*
-@@ -500,6 +506,7 @@ static void mpol_rebind_default(struct mempolicy *pol, const nodemask_t *nodes)
- static void mpol_rebind_nodemask(struct mempolicy *pol, const nodemask_t *nodes)
- {
- 	nodemask_t tmp;
-+	int nid;
- 
- 	if (pol->flags & MPOL_F_STATIC_NODES)
- 		nodes_and(tmp, pol->w.user_nodemask, *nodes);
-@@ -514,6 +521,21 @@ static void mpol_rebind_nodemask(struct mempolicy *pol, const nodemask_t *nodes)
- 	if (nodes_empty(tmp))
- 		tmp = *nodes;
- 
-+	/*
-+	 * Drop private nodes that don't have mempolicy support.
-+	 * cpusets guarantees at least one N_MEMORY node in effective_mems
-+	 * and mems_allowed, so dropping private nodes here is safe.
-+	 */
-+	for_each_node_mask(nid, tmp) {
-+		if (node_state(nid, N_MEMORY_PRIVATE) &&
-+		    !node_private_has_flag(nid, NP_OPS_MEMPOLICY))
-+			node_clear(nid, tmp);
-+	}
-+	if (nodes_intersects(tmp, node_states[N_MEMORY_PRIVATE]))
-+		pol->flags |= MPOL_F_PRIVATE;
-+	else
-+		pol->flags &= ~MPOL_F_PRIVATE;
-+
- 	pol->nodes = tmp;
- }
- 
-@@ -661,6 +683,9 @@ static void queue_folios_pmd(pmd_t *pmd, struct mm_walk *walk)
- 	}
- 	if (!queue_folio_required(folio, qp))
- 		return;
-+	if (folio_is_private_node(folio) &&
-+	    !folio_private_flags(folio, NP_OPS_MIGRATION))
-+		return;
- 	if (!(qp->flags & (MPOL_MF_MOVE | MPOL_MF_MOVE_ALL)) ||
- 	    !vma_migratable(walk->vma) ||
- 	    !migrate_folio_add(folio, qp->pagelist, qp->flags))
-@@ -717,6 +742,9 @@ static int queue_folios_pte_range(pmd_t *pmd, unsigned long addr,
- 		folio = vm_normal_folio(vma, addr, ptent);
- 		if (!folio || folio_is_zone_device(folio))
- 			continue;
-+		if (folio_is_private_node(folio) &&
-+		    !folio_private_flags(folio, NP_OPS_MIGRATION))
-+			continue;
- 		if (folio_test_large(folio) && max_nr != 1)
- 			nr = folio_pte_batch(folio, pte, ptent, max_nr);
- 		/*
-@@ -1451,6 +1479,9 @@ static struct folio *alloc_migration_target_by_mpol(struct folio *src,
- 	else
- 		gfp = GFP_HIGHUSER_MOVABLE | __GFP_RETRY_MAYFAIL | __GFP_COMP;
- 
-+	if (pol->flags & MPOL_F_PRIVATE)
-+		gfp |= __GFP_PRIVATE;
-+
- 	return folio_alloc_mpol(gfp, order, pol, ilx, nid);
- }
+ extern int node_reclaim(struct pglist_data *, gfp_t, unsigned int);
+ extern int find_next_best_node(int node, nodemask_t *used_node_mask);
++extern int find_next_best_node_in(int node, nodemask_t *used_node_mask,
++				  const nodemask_t *candidates);
+ extern bool numa_zone_alloc_allowed(int alloc_flags, struct zone *zone,
+ 			      gfp_t gfp_mask);
  #else
-@@ -2280,6 +2311,15 @@ static nodemask_t *policy_nodemask(gfp_t gfp, struct mempolicy *pol,
- 			nodemask = &pol->nodes;
- 		if (pol->home_node != NUMA_NO_NODE)
- 			*nid = pol->home_node;
-+		else if ((pol->flags & MPOL_F_PRIVATE) &&
-+			 !node_isset(*nid, pol->nodes)) {
-+			/*
-+			 * Private nodes are not in N_MEMORY nodes' zonelists.
-+			 * When the preferred nid (usually numa_node_id()) can't
-+			 * reach the policy nodes, start from a policy node.
-+			 */
-+			*nid = first_node(pol->nodes);
-+		}
- 		/*
- 		 * __GFP_THISNODE shouldn't even be used with the bind policy
- 		 * because we might easily break the expectation to stay on the
-@@ -2533,6 +2573,10 @@ struct folio *vma_alloc_folio_noprof(gfp_t gfp, int order, struct vm_area_struct
- 		gfp |= __GFP_NOWARN;
+@@ -1220,6 +1222,11 @@ static inline int find_next_best_node(int node, nodemask_t *used_node_mask)
+ {
+ 	return NUMA_NO_NODE;
+ }
++static inline int find_next_best_node_in(int node, nodemask_t *used_node_mask,
++					 const nodemask_t *candidates)
++{
++	return NUMA_NO_NODE;
++}
+ static inline bool numa_zone_alloc_allowed(int alloc_flags, struct zone *zone,
+ 				     gfp_t gfp_mask)
+ {
+diff --git a/mm/memory-tiers.c b/mm/memory-tiers.c
+index 9c742e18e48f..434190fdc078 100644
+--- a/mm/memory-tiers.c
++++ b/mm/memory-tiers.c
+@@ -3,6 +3,7 @@
+ #include <linux/lockdep.h>
+ #include <linux/sysfs.h>
+ #include <linux/kobject.h>
++#include <linux/node_private.h>
+ #include <linux/memory.h>
+ #include <linux/memory-tiers.h>
+ #include <linux/notifier.h>
+@@ -380,6 +381,8 @@ static void disable_all_demotion_targets(void)
+ 		if (memtier)
+ 			memtier->lower_tier_mask = NODE_MASK_NONE;
+ 	}
++	for_each_node_state(node, N_MEMORY_PRIVATE)
++		node_demotion[node].preferred = NODE_MASK_NONE;
+ 	/*
+ 	 * Ensure that the "disable" is visible across the system.
+ 	 * Readers will see either a combination of before+disable
+@@ -421,6 +424,7 @@ static void establish_demotion_targets(void)
+ 	int target = NUMA_NO_NODE, node;
+ 	int distance, best_distance;
+ 	nodemask_t tier_nodes, lower_tier;
++	nodemask_t all_memory;
  
- 	pol = get_vma_policy(vma, addr, order, &ilx);
+ 	lockdep_assert_held_once(&memory_tier_lock);
+ 
+@@ -429,6 +433,13 @@ static void establish_demotion_targets(void)
+ 
+ 	disable_all_demotion_targets();
+ 
++	/* Include private nodes that have opted in to demotion. */
++	all_memory = node_states[N_MEMORY];
++	for_each_node_state(node, N_MEMORY_PRIVATE) {
++		if (node_private_has_flag(node, NP_OPS_DEMOTION))
++			node_set(node, all_memory);
++	}
 +
-+	if (pol->flags & MPOL_F_PRIVATE)
-+		gfp |= __GFP_PRIVATE;
+ 	for_each_node_state(node, N_MEMORY) {
+ 		best_distance = -1;
+ 		nd = &node_demotion[node];
+@@ -442,12 +453,12 @@ static void establish_demotion_targets(void)
+ 		memtier = list_next_entry(memtier, list);
+ 		tier_nodes = get_memtier_nodemask(memtier);
+ 		/*
+-		 * find_next_best_node, use 'used' nodemask as a skip list.
++		 * find_next_best_node_in, use 'used' nodemask as a skip list.
+ 		 * Add all memory nodes except the selected memory tier
+ 		 * nodelist to skip list so that we find the best node from the
+ 		 * memtier nodelist.
+ 		 */
+-		nodes_andnot(tier_nodes, node_states[N_MEMORY], tier_nodes);
++		nodes_andnot(tier_nodes, all_memory, tier_nodes);
+ 
+ 		/*
+ 		 * Find all the nodes in the memory tier node list of same best distance.
+@@ -455,7 +466,8 @@ static void establish_demotion_targets(void)
+ 		 * in the preferred mask when allocating pages during demotion.
+ 		 */
+ 		do {
+-			target = find_next_best_node(node, &tier_nodes);
++			target = find_next_best_node_in(node, &tier_nodes,
++							&all_memory);
+ 			if (target == NUMA_NO_NODE)
+ 				break;
+ 
+@@ -495,7 +507,7 @@ static void establish_demotion_targets(void)
+ 	 * allocation to a set of nodes that is closer the above selected
+ 	 * preferred node.
+ 	 */
+-	lower_tier = node_states[N_MEMORY];
++	lower_tier = all_memory;
+ 	list_for_each_entry(memtier, &memory_tiers, list) {
+ 		/*
+ 		 * Keep removing current tier from lower_tier nodes,
+@@ -542,7 +554,7 @@ static struct memory_tier *set_node_memory_tier(int node)
+ 
+ 	lockdep_assert_held_once(&memory_tier_lock);
+ 
+-	if (!node_state(node, N_MEMORY))
++	if (!node_state(node, N_MEMORY) && !node_state(node, N_MEMORY_PRIVATE))
+ 		return ERR_PTR(-EINVAL);
+ 
+ 	mt_calc_adistance(node, &adist);
+@@ -865,6 +877,30 @@ int mt_calc_adistance(int node, int *adist)
+ }
+ EXPORT_SYMBOL_GPL(mt_calc_adistance);
+ 
++/**
++ * memory_tier_refresh_demotion() - Re-establish demotion targets
++ *
++ * Called by services after registering or unregistering ops->migrate_to on
++ * a private node, so that establish_demotion_targets() picks up the change.
++ */
++void memory_tier_refresh_demotion(void)
++{
++	int nid;
 +
- 	folio = folio_alloc_mpol_noprof(gfp, order, pol, ilx, numa_node_id());
- 	mpol_cond_put(pol);
- 	return folio;
++	mutex_lock(&memory_tier_lock);
++	/*
++	 * Ensure private nodes are registered with a tier, otherwise
++	 * they won't show up in any node's demotion targets nodemask.
++	 */
++	for_each_node_state(nid, N_MEMORY_PRIVATE) {
++		if (!__node_get_memory_tier(nid))
++			set_node_memory_tier(nid);
++	}
++	establish_demotion_targets();
++	mutex_unlock(&memory_tier_lock);
++}
++EXPORT_SYMBOL_GPL(memory_tier_refresh_demotion);
++
+ static int __meminit memtier_hotplug_callback(struct notifier_block *self,
+ 					      unsigned long action, void *_arg)
+ {
 diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index 5a1b35421d78..ec6c1f8e85d8 100644
+index ec6c1f8e85d8..e272dfdc6b00 100644
 --- a/mm/page_alloc.c
 +++ b/mm/page_alloc.c
-@@ -3849,8 +3849,13 @@ get_page_from_freelist(gfp_t gfp_mask, unsigned int order, int alloc_flags,
- 		 * if another process has NUMA bindings and is causing
- 		 * kswapd wakeups on only some nodes. Avoid accidental
- 		 * "node_reclaim_mode"-like behavior in this case.
-+		 *
-+		 * Nodes without kswapd (some private nodes) are never
-+		 * skipped - this causes some mempolicies to silently
-+		 * fall back to DRAM even if the node is eligible.
- 		 */
- 		if (skip_kswapd_nodes &&
-+		    zone->zone_pgdat->kswapd &&
- 		    !waitqueue_active(&zone->zone_pgdat->kswapd_wait)) {
- 			skipped_kswapd_nodes = true;
- 			continue;
+@@ -5589,7 +5589,8 @@ static int node_load[MAX_NUMNODES];
+  *
+  * Return: node id of the found node or %NUMA_NO_NODE if no node is found.
+  */
+-int find_next_best_node(int node, nodemask_t *used_node_mask)
++int find_next_best_node_in(int node, nodemask_t *used_node_mask,
++			   const nodemask_t *candidates)
+ {
+ 	int n, val;
+ 	int min_val = INT_MAX;
+@@ -5599,12 +5600,12 @@ int find_next_best_node(int node, nodemask_t *used_node_mask)
+ 	 * Use the local node if we haven't already, but for memoryless local
+ 	 * node, we should skip it and fall back to other nodes.
+ 	 */
+-	if (!node_isset(node, *used_node_mask) && node_state(node, N_MEMORY)) {
++	if (!node_isset(node, *used_node_mask) && node_isset(node, *candidates)) {
+ 		node_set(node, *used_node_mask);
+ 		return node;
+ 	}
+ 
+-	for_each_node_state(n, N_MEMORY) {
++	for_each_node_mask(n, *candidates) {
+ 
+ 		/* Don't want a node to appear more than once */
+ 		if (node_isset(n, *used_node_mask))
+@@ -5636,6 +5637,11 @@ int find_next_best_node(int node, nodemask_t *used_node_mask)
+ 	return best_node;
+ }
+ 
++int find_next_best_node(int node, nodemask_t *used_node_mask)
++{
++	return find_next_best_node_in(node, used_node_mask,
++				      &node_states[N_MEMORY]);
++}
+ 
+ /*
+  * Build zonelists ordered by node and zones within node.
+diff --git a/mm/vmscan.c b/mm/vmscan.c
+index 6113be4d3519..0f534428ea88 100644
+--- a/mm/vmscan.c
++++ b/mm/vmscan.c
+@@ -58,6 +58,7 @@
+ #include <linux/random.h>
+ #include <linux/mmu_notifier.h>
+ #include <linux/parser.h>
++#include <linux/node_private.h>
+ 
+ #include <asm/tlbflush.h>
+ #include <asm/div64.h>
+@@ -355,6 +356,10 @@ static bool can_demote(int nid, struct scan_control *sc,
+ 	if (demotion_nid == NUMA_NO_NODE)
+ 		return false;
+ 
++	/* Don't demote when the target's service signals backpressure */
++	if (node_private_migration_blocked(demotion_nid))
++		return false;
++
+ 	/* If demotion node isn't in the cgroup's mems_allowed, fall back */
+ 	return mem_cgroup_node_allowed(memcg, demotion_nid);
+ }
+@@ -1022,8 +1027,10 @@ static unsigned int demote_folio_list(struct list_head *demote_folios,
+ 				     struct pglist_data *pgdat)
+ {
+ 	int target_nid = next_demotion_node(pgdat->node_id);
+-	unsigned int nr_succeeded;
++	int first_nid = target_nid;
++	unsigned int nr_succeeded = 0;
+ 	nodemask_t allowed_mask;
++	int ret;
+ 
+ 	struct migration_target_control mtc = {
+ 		/*
+@@ -1046,6 +1053,27 @@ static unsigned int demote_folio_list(struct list_head *demote_folios,
+ 
+ 	node_get_allowed_targets(pgdat, &allowed_mask);
+ 
++	/* Try private node targets until we find non-private node */
++	while (node_state(target_nid, N_MEMORY_PRIVATE)) {
++		unsigned int nr = 0;
++
++		ret = node_private_migrate_to(demote_folios, target_nid,
++					      MIGRATE_ASYNC, MR_DEMOTION,
++					      &nr);
++		nr_succeeded += nr;
++		if (ret == 0 || list_empty(demote_folios))
++			return nr_succeeded;
++
++		target_nid = next_node_in(target_nid, allowed_mask);
++		if (target_nid == first_nid)
++			return nr_succeeded;
++		if (!node_state(target_nid, N_MEMORY_PRIVATE))
++			break;
++	}
++
++	/* target_nid is a non-private node; use standard migration */
++	mtc.nid = target_nid;
++
+ 	/* Demotion ignores all cpuset and mempolicy settings */
+ 	migrate_pages(demote_folios, alloc_demote_folio, NULL,
+ 		      (unsigned long)&mtc, MIGRATE_ASYNC, MR_DEMOTION,
 -- 
 2.53.0
 
