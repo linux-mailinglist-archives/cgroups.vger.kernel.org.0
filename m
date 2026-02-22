@@ -1,1343 +1,436 @@
-Return-Path: <cgroups+bounces-14128-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-14129-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 2OPiFSfFmmlHiQMAu9opvQ
-	(envelope-from <cgroups+bounces-14128-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Sun, 22 Feb 2026 09:58:15 +0100
+	id qHj5A+/Vmmm8kgMAu9opvQ
+	(envelope-from <cgroups+bounces-14129-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Sun, 22 Feb 2026 11:09:51 +0100
 X-Original-To: lists+cgroups@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id C4DD516EBE6
-	for <lists+cgroups@lfdr.de>; Sun, 22 Feb 2026 09:58:14 +0100 (CET)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 248CB16ED17
+	for <lists+cgroups@lfdr.de>; Sun, 22 Feb 2026 11:09:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id D461C3063AC9
-	for <lists+cgroups@lfdr.de>; Sun, 22 Feb 2026 08:52:23 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 64050300B9C2
+	for <lists+cgroups@lfdr.de>; Sun, 22 Feb 2026 10:09:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 85BE824A069;
-	Sun, 22 Feb 2026 08:50:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 45469224B05;
+	Sun, 22 Feb 2026 10:09:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gourry.net header.i=@gourry.net header.b="i6aT9/J5"
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="lX43CNHd"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-qt1-f175.google.com (mail-qt1-f175.google.com [209.85.160.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 995122773FF
-	for <cgroups@vger.kernel.org>; Sun, 22 Feb 2026 08:50:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 810881E5714;
+	Sun, 22 Feb 2026 10:09:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1771750241; cv=none; b=CXXhyfeC0D1F1zmHLPJBUjnx3kjEKj6FNU/XefzGP7zPgjL3/AQ+2ddDhDnCIQ0RShN1BFnvveBm8SSVhy5kAkpUFAV60MVmyBInB9nR8PaQvfFImF8FUZYB7RXBQfdEN6JATW2RGqTZizNemfaB6BxUjgZOnFEtqvvdvJwT/QM=
+	t=1771754985; cv=none; b=ltYzd0Uo99Q6f1vk9aGCinX6rIwtj403fxAXto/6UBHsv+JrLwtKdEineGQZB9z7ecMaJE1IsIbe+ikoVvxF1o0Yj2IXDrg6ayXYkRNS/Lym5EJQWUYHzGcPyg7G4dI41jYEQlv1eRngTYC7j7xzAtZW36ZpvsJ74+i4LtJ5s7c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1771750241; c=relaxed/simple;
-	bh=L39OSoun5mIdNUdUOii/YFUFnjn5985tCIlOqzIkR14=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=BgOe8RaOUjjh7GJAZhlRrFLHBA1LYhf9Lwz+rVbRst5cp5gs26NMpzlcte/7oXNqfgIRX3ZfkxbaOPSGxBsAurUWzZLQYAbPfYrrImqI9HPiNxJx4V36UfTw78PDBlfA5JGwdpQx3qa0+j48qMooYS6DVX+7yqJoUWcVOHRW+Xw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gourry.net; spf=pass smtp.mailfrom=gourry.net; dkim=pass (2048-bit key) header.d=gourry.net header.i=@gourry.net header.b=i6aT9/J5; arc=none smtp.client-ip=209.85.160.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gourry.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gourry.net
-Received: by mail-qt1-f175.google.com with SMTP id d75a77b69052e-5069ad750b7so30025561cf.2
-        for <cgroups@vger.kernel.org>; Sun, 22 Feb 2026 00:50:38 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gourry.net; s=google; t=1771750237; x=1772355037; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=SA1eNtOuG/uqMtPYaXXL4O8NEWGMm6Tbd8ozL7DNrg8=;
-        b=i6aT9/J5xws4obu8ruADP65rYh3zKyws88wQhtr64fcuAwOcDGH70ytcX4NP+j68/A
-         Td7eaKjqdFujPyEkqU+AbQzYJGglgtWw9pyIhjT2yzeV7NeH7dgK9as3TrvF7xORp6Vs
-         N7cTBu8kyzkwGtTU4XO6P3r3fLscvzxdjVx5rEibAAU12duXIZcEKXGdwMEvUaVbEgDw
-         YN7gRJhAnYIlMLHawt1q2DAw1mSt5k4LFd2fxObCo2LBzfR2zHX52SrRH6rDjNekU6Mw
-         w/pUVj7dGDC4ezRQmED0ezcxB0jPrNhbkWv1NHjyxBULozfZVnwg0jhuLpqsxh5Dxpmn
-         I0jw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1771750237; x=1772355037;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=SA1eNtOuG/uqMtPYaXXL4O8NEWGMm6Tbd8ozL7DNrg8=;
-        b=sET+p7gyOD5zYwDoY2yVliEe+NqWdgxaMrndS1etourlJuDUl22w+fDgHbQO2KdtMl
-         Yqvec3Hq+cBfB+vOqJGRx8f2hRARZO98OayjlE6A+4SVJBrGWPqAcauhHCSp1R+co90n
-         OKwAsuIVAWsYP88trpEF2bEHS7h4DOQ0hbFdtXB4MxampEply4Euerujm3icUjEuXG+8
-         WoT92kRKP4/Poje2opxEteXhVWSwzq9ogeqnTM+ZBaMkdUc7BQYN1pAvhbqS4EJvRDBW
-         7QA4FSj0VBrJZabZO02TPEnTqe7p/3NO6kbrvbOAmRLFsmnl4LTmkpWtFma3yhydx30e
-         XwWQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWP7MyO/AZqvcUQyMYX0yeee6pvw8zS8ocUk+b1g0TRKlKKnt3oOAj0czwUEeuBqHGafiZeqMo9@vger.kernel.org
-X-Gm-Message-State: AOJu0YyIcgFocNPLkRxtw+OoRyB/ZLfAtrGV6mT/tIxT+0OOefPGJjHN
-	MmOq9bA72i/pXaABgfv7n+J00MpelgKQ0mS4oxrDmbViOqmXwRtwsdULeBSSxFbLYoM=
-X-Gm-Gg: AZuq6aIkbxwcgP5pRrpJxbsW7gPXbTp1WuCU7tn/hpAKGR1yh42aFFxTWJSv54lgBEM
-	bw+5vuNNDdlgZhH37Nnp1Kh7rxvUbCsAlg3O5pGkatFN4v8tP1lNw7kO6XllSagNn/ltx69brTC
-	tGPRwlT5TLDxZe9d3vuzqePwCWeLsUQc8pk+yT6UmPBpLQXqJ4e/EZ68VvgC8bOB2wt7gk9iyMk
-	HHDpjpZEjTqpFm5h1cLmoyPZK76AcWjcWOuHRRQ7h+313rD9mdeKiJexjOZtP7XEOMqf4k2A5Xf
-	S8+QuU3rJ5rXFhL++NAVSZjnzxxjoZgR1758Hj7zFaBpfgnsxutKBtkysuV7cFxaD/G/SJFUzGy
-	1UHDT89/ql2dAVjXzvVzhflJI5n4HS1C37ezJiwinTO7xp4jRy7/a23UvMnn3B4Lf4PkAYElJnG
-	2HkWUVWTBRb40sPQ77rcQtyiJ/qjyG9TOC78VPnRLSqDIqqMdRpU8nlVQbdb/uXePjGLFzysTyd
-	XpKOhMrvELrLKY=
-X-Received: by 2002:ac8:7c55:0:b0:501:3b8c:7d72 with SMTP id d75a77b69052e-5070bbdb9e4mr72387751cf.27.1771750237141;
-        Sun, 22 Feb 2026 00:50:37 -0800 (PST)
-Received: from gourry-fedora-PF4VCD3F.lan (pool-96-255-20-138.washdc.ftas.verizon.net. [96.255.20.138])
-        by smtp.gmail.com with ESMTPSA id d75a77b69052e-5070d53f0fcsm38640631cf.9.2026.02.22.00.50.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 22 Feb 2026 00:50:36 -0800 (PST)
-From: Gregory Price <gourry@gourry.net>
-To: lsf-pc@lists.linux-foundation.org
-Cc: linux-kernel@vger.kernel.org,
-	linux-cxl@vger.kernel.org,
-	cgroups@vger.kernel.org,
-	linux-mm@kvack.org,
-	linux-trace-kernel@vger.kernel.org,
-	damon@lists.linux.dev,
-	kernel-team@meta.com,
-	gregkh@linuxfoundation.org,
-	rafael@kernel.org,
-	dakr@kernel.org,
-	dave@stgolabs.net,
-	jonathan.cameron@huawei.com,
-	dave.jiang@intel.com,
-	alison.schofield@intel.com,
-	vishal.l.verma@intel.com,
-	ira.weiny@intel.com,
-	dan.j.williams@intel.com,
-	longman@redhat.com,
-	akpm@linux-foundation.org,
-	david@kernel.org,
-	lorenzo.stoakes@oracle.com,
-	Liam.Howlett@oracle.com,
-	vbabka@suse.cz,
-	rppt@kernel.org,
-	surenb@google.com,
-	mhocko@suse.com,
-	osalvador@suse.de,
-	ziy@nvidia.com,
-	matthew.brost@intel.com,
-	joshua.hahnjy@gmail.com,
-	rakie.kim@sk.com,
-	byungchul@sk.com,
-	gourry@gourry.net,
-	ying.huang@linux.alibaba.com,
-	apopple@nvidia.com,
-	axelrasmussen@google.com,
-	yuanchu@google.com,
-	weixugc@google.com,
-	yury.norov@gmail.com,
-	linux@rasmusvillemoes.dk,
-	mhiramat@kernel.org,
-	mathieu.desnoyers@efficios.com,
-	tj@kernel.org,
-	hannes@cmpxchg.org,
-	mkoutny@suse.com,
-	jackmanb@google.com,
-	sj@kernel.org,
-	baolin.wang@linux.alibaba.com,
-	npache@redhat.com,
-	ryan.roberts@arm.com,
-	dev.jain@arm.com,
-	baohua@kernel.org,
-	lance.yang@linux.dev,
-	muchun.song@linux.dev,
-	xu.xin16@zte.com.cn,
-	chengming.zhou@linux.dev,
-	jannh@google.com,
-	linmiaohe@huawei.com,
-	nao.horiguchi@gmail.com,
-	pfalcato@suse.de,
-	rientjes@google.com,
-	shakeel.butt@linux.dev,
-	riel@surriel.com,
-	harry.yoo@oracle.com,
-	cl@gentwo.org,
-	roman.gushchin@linux.dev,
-	chrisl@kernel.org,
-	kasong@tencent.com,
-	shikemeng@huaweicloud.com,
-	nphamcs@gmail.com,
-	bhe@redhat.com,
-	zhengqi.arch@bytedance.com,
-	terry.bowman@amd.com
-Subject: [RFC PATCH v4 27/27] cxl: add cxl_compression PCI driver
-Date: Sun, 22 Feb 2026 03:48:42 -0500
-Message-ID: <20260222084842.1824063-28-gourry@gourry.net>
-X-Mailer: git-send-email 2.53.0
-In-Reply-To: <20260222084842.1824063-1-gourry@gourry.net>
-References: <20260222084842.1824063-1-gourry@gourry.net>
+	s=arc-20240116; t=1771754985; c=relaxed/simple;
+	bh=n82bi+/D/5o5ECKAx9AEf1f29u44JWXcS2tCPyvIu9Q=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=LebLmgJ/fADUtnSveepqJyP1KLUq46c3Gg1jV8cbLdit4juX0vtHxogsJg6f6ZS2efb5f+y2pR4TZNX4lE2/+m/bKZyFdZtYNtIWT5lzma6IfGS4TPDIiSSYvcPyUxcOBUhYwmhGoPSyEMpWGulIznPCkwyf3ahXx5k0wa6gkow=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=lX43CNHd; arc=none smtp.client-ip=148.163.156.1
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0353729.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 61M7vVL31029142;
+	Sun, 22 Feb 2026 10:09:08 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
+	:content-transfer-encoding:content-type:date:from:in-reply-to
+	:message-id:mime-version:references:subject:to; s=pp1; bh=jvyFh3
+	fcdvjGgk18UyQ1MU000vE1uKuZS4r6U0uNv1I=; b=lX43CNHddrW/VfSJNQ8J5g
+	1z2zA7Zy3X5gJGlmBiorHsPibhR0Cg620+Qzi46SLW+DAhNcEhV/tBn0nvOJx4ni
+	/PgFDPhS/DxiTRqsiLNDLVR49dVO/xAGECbmjaZK1be9ISJ8DEIWOWasBV2wmT7N
+	h69BFzw0a8ZWwjeVpYIo4KWcZJGK9a0WQXKKD76Yo0Do1dS9QALw88C4xYU8R5GK
+	J0JkNhaXi1JRqO2doRvRZ9GmqZNJ1SnEUarhQi5ap3QkhrgXDUtEvX7PuBXq3vRZ
+	y6bOid0TdNETPhuFGNNZXbqCWgCQ3zehanqC/XvHS76ZbXjiruMyATfP5E2RogWA
+	==
+Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4cf4cqkn94-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Sun, 22 Feb 2026 10:09:08 +0000 (GMT)
+Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma23.wdc07v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 61M9FSqu030298;
+	Sun, 22 Feb 2026 10:09:07 GMT
+Received: from smtprelay07.wdc07v.mail.ibm.com ([172.16.1.74])
+	by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 4cfrhk0ysn-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Sun, 22 Feb 2026 10:09:07 +0000
+Received: from smtpav04.dal12v.mail.ibm.com (smtpav04.dal12v.mail.ibm.com [10.241.53.103])
+	by smtprelay07.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 61MA95ZH23855866
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Sun, 22 Feb 2026 10:09:05 GMT
+Received: from smtpav04.dal12v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 6E50058056;
+	Sun, 22 Feb 2026 10:09:05 +0000 (GMT)
+Received: from smtpav04.dal12v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 93E4258052;
+	Sun, 22 Feb 2026 10:08:59 +0000 (GMT)
+Received: from [9.61.255.192] (unknown [9.61.255.192])
+	by smtpav04.dal12v.mail.ibm.com (Postfix) with ESMTP;
+	Sun, 22 Feb 2026 10:08:59 +0000 (GMT)
+Message-ID: <ccdcd672-b5e1-45bc-86f3-791af553f0d8@linux.ibm.com>
+Date: Sun, 22 Feb 2026 15:38:57 +0530
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [next-20260216]NULL pointer dereference in drain_obj_stock() (RCU
+ free path)
+Content-Language: en-GB
+To: Vlastimil Babka <vbabka@suse.cz>, Carlos Maiolino <cem@kernel.org>,
+        Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Shakeel Butt <shakeel.butt@linux.dev>
+Cc: linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        LKML <linux-kernel@vger.kernel.org>,
+        Madhavan Srinivasan <maddy@linux.ibm.com>,
+        Ritesh Harjani <riteshh@linux.ibm.com>, ojaswin@linux.ibm.com,
+        Muchun Song <muchun.song@linux.dev>, Cgroups <cgroups@vger.kernel.org>,
+        "linux-mm@kvack.org" <linux-mm@kvack.org>,
+        Harry Yoo <harry.yoo@oracle.com>, Hao Li <hao.li@linux.dev>
+References: <ca241daa-e7e7-4604-a48d-de91ec9184a5@linux.ibm.com>
+ <aZReMzl-S9KM_snh@nidhogg.toxiclabs.cc>
+ <b4288fae-f805-42ff-a823-f6b66748ecfe@suse.cz>
+From: Venkat Rao Bagalkote <venkat88@linux.ibm.com>
+In-Reply-To: <b4288fae-f805-42ff-a823-f6b66748ecfe@suse.cz>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: PJfnONGGYvz7ihDX65H0diVu2P0Qq-Wo
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwMjIyMDA5NiBTYWx0ZWRfX/qj/c89S+wb0
+ KN5T/f/7pwQAS4il00wsxtCDHDEPVcrNOi64mPFIdQhPUURuh76RJuv/5zU/8+B/Cpp6KXojNAh
+ uPjIys8g2ky1EkEwerDXTMedHfXkDSIUrv88bzJnWaMMJbhy22/qDXwX1U74uI1Mo4B3AY72xGy
+ E1xFwwq89tqa8jnnBWWryB6tKhda3uax0f1uS4LsmEIQNLSsOQFRfRC3qA5msiSpFQUOiuEk0vK
+ 2gKZcb4Drg3rQ0DpQ7xpRUbXbYk3DdfXs5xdmNdE9sLKli01iy4I5DkzH+3ZBoPH/CDE+dQ8t05
+ jya4/T/E5ZHjQzJXddR50IVL2MVUmfhHK1U3aG0jhEcU911FXp9ftsTRoagLzABihTMOQ7B6T+O
+ zdhWNaxVfx9SdxaCAFhotrLb977XnloYdVWphVQxZCIko8DkUcPWa+lFiPVVBqLCwk5YfAsVOFR
+ AEqP1mEdNbRSH+0kKJw==
+X-Proofpoint-GUID: PJfnONGGYvz7ihDX65H0diVu2P0Qq-Wo
+X-Authority-Analysis: v=2.4 cv=bbBmkePB c=1 sm=1 tr=0 ts=699ad5c4 cx=c_pps
+ a=3Bg1Hr4SwmMryq2xdFQyZA==:117 a=3Bg1Hr4SwmMryq2xdFQyZA==:17
+ a=IkcTkHD0fZMA:10 a=HzLeVaNsDn8A:10 a=VkNPw1HP01LnGYTKEx00:22
+ a=Mpw57Om8IfrbqaoTuvik:22 a=GgsMoib0sEa3-_RKJdDe:22 a=--xM2mIrrnG3GcqvwuwA:9
+ a=3ZKOabzyN94A:10 a=QEXdDO2ut3YA:10
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1121,Hydra:6.1.51,FMLib:17.12.100.49
+ definitions=2026-02-22_01,2026-02-20_04,2025-10-01_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ malwarescore=0 bulkscore=0 adultscore=0 impostorscore=0 lowpriorityscore=0
+ priorityscore=1501 suspectscore=0 clxscore=1011 phishscore=0 spamscore=0
+ classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
+ reason=mlx scancount=1 engine=8.22.0-2601150000 definitions=main-2602220096
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [1.34 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
+X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_CONTAINS_FROM(1.00)[];
-	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
-	R_DKIM_ALLOW(-0.20)[gourry.net:s=google];
+	DMARC_POLICY_ALLOW(-0.50)[ibm.com,none];
+	R_DKIM_ALLOW(-0.20)[ibm.com:s=pp1];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	DKIM_TRACE(0.00)[gourry.net:+];
-	TAGGED_FROM(0.00)[bounces-14128-lists,cgroups=lfdr.de];
-	DMARC_NA(0.00)[gourry.net];
-	RCVD_TLS_LAST(0.00)[];
-	FREEMAIL_CC(0.00)[vger.kernel.org,kvack.org,lists.linux.dev,meta.com,linuxfoundation.org,kernel.org,stgolabs.net,huawei.com,intel.com,redhat.com,linux-foundation.org,oracle.com,suse.cz,google.com,suse.com,suse.de,nvidia.com,gmail.com,sk.com,gourry.net,linux.alibaba.com,rasmusvillemoes.dk,efficios.com,cmpxchg.org,arm.com,linux.dev,zte.com.cn,surriel.com,gentwo.org,tencent.com,huaweicloud.com,bytedance.com,amd.com];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
 	MIME_TRACE(0.00)[0:+];
+	RCPT_COUNT_TWELVE(0.00)[17];
+	DKIM_TRACE(0.00)[ibm.com:+];
+	TAGGED_FROM(0.00)[bounces-14129-lists,cgroups=lfdr.de];
+	TO_DN_EQ_ADDR_SOME(0.00)[];
+	RCVD_TLS_LAST(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[linux.ibm.com:mid,sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns];
+	TO_DN_SOME(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[gourry@gourry.net,cgroups@vger.kernel.org];
+	FROM_NEQ_ENVFROM(0.00)[venkat88@linux.ibm.com,cgroups@vger.kernel.org];
 	FROM_HAS_DN(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
-	RCVD_COUNT_FIVE(0.00)[5];
+	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	MID_RHS_MATCH_FROM(0.00)[];
 	NEURAL_HAM(-0.00)[-1.000];
-	RCPT_COUNT_GT_50(0.00)[74];
 	TAGGED_RCPT(0.00)[cgroups];
-	TO_DN_NONE(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,gourry.net:mid,gourry.net:dkim,gourry.net:email]
-X-Rspamd-Queue-Id: C4DD516EBE6
+	RCVD_COUNT_SEVEN(0.00)[11]
+X-Rspamd-Queue-Id: 248CB16ED17
 X-Rspamd-Action: no action
 
-Add a generic CXL type-3 driver for compressed memory controllers.
 
-The driver provides an alternative PCI binding that converts CXL
-RAM regions to private-node sysram and registers them with the
-CRAM subsystem for transparent demotion/promotion.
+On 18/02/26 5:06 pm, Vlastimil Babka wrote:
+> On 2/17/26 13:40, Carlos Maiolino wrote:
+>> On Tue, Feb 17, 2026 at 04:59:12PM +0530, Venkat Rao Bagalkote wrote:
+>>> Greetings!!!
+>>>
+>>> I am observing below OOPs, while running xfstests generic/428 test case. But
+>>> I am not able to reproduce this consistently.
+>>>
+>>>
+>>> Platform: IBM Power11 (pSeries LPAR), Radix MMU, LE, 64K pages
+>>> Kernel: 6.19.0-next-20260216
+>>> Tests: generic/428
+>>>
+>>> local.config >>>
+>>> [xfs_4k]
+>>> export RECREATE_TEST_DEV=true
+>>> export TEST_DEV=/dev/loop0
+>>> export TEST_DIR=/mnt/test
+>>> export SCRATCH_DEV=/dev/loop1
+>>> export SCRATCH_MNT=/mnt/scratch
+>>> export MKFS_OPTIONS="-b size=4096"
+>>> export FSTYP=xfs
+>>> export MOUNT_OPTIONS=""-
+>>>
+>>>
+>>>
+>>> Attached is .config file used.
+>>>
+>>>
+>>> Traces:
+>>>
+>> /me fixing trace's indentation
+> CCing memcg and slab folks.
+> Would be nice to figure out where in drain_obj_stock things got wrong. Any
+> change for e.g. ./scripts/faddr2line ?
+>
+> I wonder if we have either some bogus objext pointer, or maybe the
+> rcu_free_sheaf() context is new (or previously rare) for memcg and we have
+> some locking issues being exposed in refill/drain.
 
-Probe flow:
-  1. cxl_pci_type3_probe_init() for standard CXL device setup
-  2. Discover/convert auto-RAM regions or create a RAM region
-  3. Convert to private-node sysram via devm_cxl_add_sysram()
-  4. Register with CRAM via cram_register_private_node()
 
-Page flush pipeline:
-  When a CRAM folio is freed, the CRAM free_folio   callback buffers
-  it into a per-CPU RCU-protected flush buffer to offload the operation.
+This issue also got reproduced on mainline repo.
 
-  A periodic kthread swaps the per-CPU buffers under RCU, then sends
-  batched Sanitize-Zero commands so the device can zero pages.
 
-  A flush_record bitmap tracks in-flight pages to avoid re-buffering on
-  the second free_folio entry after folio_put().
+Traces:
 
-  Overflow from full buffers is handled by a per-CPU workqueue fallback.
 
-Watermark interrupts:
-  MSI-X vector 12 - delivers "Low" watermark interrupts
-  MSI-X vector 13 - delivers "High" watermark interrupts
-  This adjusts CRAM pressure:
-	Low  - increases pressure.
-  	High - reduces pressure.
+[ 8058.036083] Kernel attempted to read user page (0) - exploit attempt? 
+(uid: 0)
+[ 8058.036116] BUG: Kernel NULL pointer dereference on read at 0x00000000
+[ 8058.036127] Faulting instruction address: 0xc0000000008b018c
+[ 8058.036137] Oops: Kernel access of bad area, sig: 11 [#1]
+[ 8058.036147] LE PAGE_SIZE=64K MMU=Radix  SMP NR_CPUS=8192 NUMA pSeries
+[ 8058.036159] Modules linked in: overlay dm_zero dm_thin_pool 
+dm_persistent_data dm_bio_prison dm_snapshot dm_bufio dm_flakey xfs loop 
+dm_mod nft_fib_inet nft_fib_ipv4 nft_fib_ipv6 nft_fib nft_reject_inet 
+nf_reject_ipv4 nf_reject_ipv6 nft_reject nft_ct nft_chain_nat nf_nat 
+nf_conntrack nf_defrag_ipv6 nf_defrag_ipv4 ip_set bonding nf_tables tls 
+rfkill sunrpc nfnetlink pseries_rng vmx_crypto dax_pmem fuse ext4 crc16 
+mbcache jbd2 nd_pmem papr_scm sd_mod libnvdimm sg ibmvscsi ibmveth 
+scsi_transport_srp pseries_wdt [last unloaded: scsi_debug]
+[ 8058.036339] CPU: 19 UID: 0 PID: 115 Comm: ksoftirqd/19 Kdump: loaded 
+Not tainted 6.19.0+ #1 PREEMPTLAZY
+[ 8058.036361] Hardware name: IBM,9080-HEX Power11 (architected) 
+0x820200 0xf000007 of:IBM,FW1110.01 (NH1110_069) hv:phyp pSeries
+[ 8058.036379] NIP:  c0000000008b018c LR: c0000000008b0180 CTR: 
+c00000000036d680
+[ 8058.036395] REGS: c00000000b5976c0 TRAP: 0300   Not tainted (6.19.0+)
+[ 8058.036411] MSR:  800000000280b033 <SF,VEC,VSX,EE,FP,ME,IR,DR,RI,LE>  
+CR: 84042002  XER: 20040000
+[ 8058.036482] CFAR: c000000000862cf4 DAR: 0000000000000000 DSISR: 
+40000000 IRQMASK: 0
+[ 8058.036482] GPR00: c0000000008b0180 c00000000b597960 c00000000243a500 
+0000000000000001
+[ 8058.036482] GPR04: 0000000000000008 0000000000000001 c0000000008b0180 
+0000000000000001
+[ 8058.036482] GPR08: a80e000000000000 0000000000000001 0000000000000007 
+a80e000000000000
+[ 8058.036482] GPR12: c00e00000120f8d5 c000000d0ddf0b00 c000000073567780 
+0000000000000006
+[ 8058.036482] GPR16: c000000007012fa0 c000000007012fa4 c000000005160980 
+c000000007012f88
+[ 8058.036482] GPR20: c00c000001c3daac c000000d0d10f008 0000000000000001 
+ffffffffffffff78
+[ 8058.036482] GPR24: 0000000000000005 c000000d0d58f180 c00000000cd6f580 
+c000000d0d10f01c
+[ 8058.036482] GPR28: c000000d0d10f008 c000000d0d10f010 c00000000cd6f588 
+0000000000000000
+[ 8058.036628] NIP [c0000000008b018c] drain_obj_stock+0x620/0xa48
+[ 8058.036646] LR [c0000000008b0180] drain_obj_stock+0x614/0xa48
+[ 8058.036659] Call Trace:
+[ 8058.036665] [c00000000b597960] [c0000000008b0180] 
+drain_obj_stock+0x614/0xa48 (unreliable)
+[ 8058.036688] [c00000000b597a10] [c0000000008b2a64] 
+refill_obj_stock+0x104/0x680
+[ 8058.036715] [c00000000b597a90] [c0000000008b94b8] 
+__memcg_slab_free_hook+0x238/0x3ec
+[ 8058.036738] [c00000000b597b60] [c0000000007f3c10] 
+__rcu_free_sheaf_prepare+0x314/0x3e8
+[ 8058.036763] [c00000000b597c10] [c0000000007fbf70] 
+rcu_free_sheaf_nobarn+0x38/0x78
+[ 8058.036788] [c00000000b597c40] [c000000000334550] 
+rcu_do_batch+0x2ec/0xfa8
+[ 8058.036812] [c00000000b597d40] [c0000000003399e8] rcu_core+0x22c/0x48c
+[ 8058.036835] [c00000000b597db0] [c0000000001cfe6c] 
+handle_softirqs+0x1f4/0x74c
+[ 8058.036862] [c00000000b597ed0] [c0000000001d0458] run_ksoftirqd+0x94/0xb8
+[ 8058.036885] [c00000000b597f00] [c00000000022a130] 
+smpboot_thread_fn+0x450/0x648
+[ 8058.036912] [c00000000b597f80] [c000000000218408] kthread+0x244/0x28c
+[ 8058.036927] [c00000000b597fe0] [c00000000000ded8] 
+start_kernel_thread+0x14/0x18
+[ 8058.036943] Code: 60000000 3bda0008 7fc3f378 4bfb148d 60000000 
+ebfa0008 38800008 7fe3fb78 4bfb2b51 60000000 7c0004ac 39200001 
+<7d40f8a8> 7d495050 7d40f9ad 40c2fff4
+[ 8058.037000] ---[ end trace 0000000000000000 ]---
 
-  A dynamic watermark mode cycles through four phases with
-  progressively tighter thresholds.
 
-  Static watermark mode sets pressure 0 or MAX respectively.
+And below is the corresponding o/p from faddr2line.
 
-Teardown ordering:
-  pre_teardown  - cram_unregister + retry-loop memory offline
-  post_teardown - kthread stop, drain all flush buffers via CCI
 
-Usage:
-   echo $PCI_DEV > /sys/bus/pci/drivers/cxl_pci/unbind
-   echo $PCI_DEV > /sys/bus/pci/drivers/cxl_compression/bind
+drain_obj_stock+0x620/0xa48:
+arch_atomic64_sub_return_relaxed at arch/powerpc/include/asm/atomic.h:272
+(inlined by) raw_atomic64_sub_return at 
+include/linux/atomic/atomic-arch-fallback.h:2917
+(inlined by) raw_atomic64_sub_and_test at 
+include/linux/atomic/atomic-arch-fallback.h:4386
+(inlined by) raw_atomic_long_sub_and_test at 
+include/linux/atomic/atomic-long.h:1551
+(inlined by) atomic_long_sub_and_test at 
+include/linux/atomic/atomic-instrumented.h:4522
+(inlined by) percpu_ref_put_many at include/linux/percpu-refcount.h:334
+(inlined by) percpu_ref_put at include/linux/percpu-refcount.h:351
+(inlined by) obj_cgroup_put at include/linux/memcontrol.h:794
+(inlined by) drain_obj_stock at mm/memcontrol.c:3059
+drain_obj_stock+0x614/0xa48:
+instrument_atomic_read_write at include/linux/instrumented.h:112
+(inlined by) atomic_long_sub_and_test at 
+include/linux/atomic/atomic-instrumented.h:4521
+(inlined by) percpu_ref_put_many at include/linux/percpu-refcount.h:334
+(inlined by) percpu_ref_put at include/linux/percpu-refcount.h:351
+(inlined by) obj_cgroup_put at include/linux/memcontrol.h:794
+(inlined by) drain_obj_stock at mm/memcontrol.c:3059
+refill_obj_stock+0x104/0x680:
+__preempt_count_add at include/asm-generic/preempt.h:54
+(inlined by) __rcu_read_lock at include/linux/rcupdate.h:103
+(inlined by) rcu_read_lock at include/linux/rcupdate.h:848
+(inlined by) percpu_ref_get_many at include/linux/percpu-refcount.h:202
+(inlined by) percpu_ref_get at include/linux/percpu-refcount.h:222
+(inlined by) obj_cgroup_get at include/linux/memcontrol.h:782
+(inlined by) refill_obj_stock at mm/memcontrol.c:3099
+__memcg_slab_free_hook+0x238/0x3ec:
+__preempt_count_add at include/asm-generic/preempt.h:54
+(inlined by) __rcu_read_lock at include/linux/rcupdate.h:103
+(inlined by) rcu_read_lock at include/linux/rcupdate.h:848
+(inlined by) percpu_ref_put_many at include/linux/percpu-refcount.h:330
+(inlined by) percpu_ref_put at include/linux/percpu-refcount.h:351
+(inlined by) obj_cgroup_put at include/linux/memcontrol.h:794
+(inlined by) __memcg_slab_free_hook at mm/memcontrol.c:3284
+__rcu_free_sheaf_prepare+0x314/0x3e8:
+memcg_slab_free_hook at mm/slub.c:2486
+(inlined by) __rcu_free_sheaf_prepare at mm/slub.c:2914
+rcu_free_sheaf_nobarn+0x38/0x78:
+sheaf_flush_unused at mm/slub.c:2893
+(inlined by) rcu_free_sheaf_nobarn at mm/slub.c:2941
+rcu_do_batch+0x2ec/0xfa8:
+rcu_do_batch at kernel/rcu/tree.c:2617
+rcu_core+0x22c/0x48c:
+rcu_core at kernel/rcu/tree.c:2871
+handle_softirqs+0x1f4/0x74c:
+handle_softirqs at kernel/softirq.c:622
+run_ksoftirqd+0x94/0xb8:
+arch_local_irq_enable at arch/powerpc/include/asm/hw_irq.h:201
+(inlined by) ksoftirqd_run_end at kernel/softirq.c:479
+(inlined by) run_ksoftirqd at kernel/softirq.c:1064
+(inlined by) run_ksoftirqd at kernel/softirq.c:1055
+smpboot_thread_fn+0x450/0x648:
+smpboot_thread_fn at kernel/smpboot.c:160 (discriminator 3)
+kthread+0x244/0x28c:
+kthread at kernel/kthread.c:467
+start_kernel_thread+0x14/0x18:
+start_kernel_thread at arch/powerpc/kernel/interrupt_64.S:771
 
-Signed-off-by: Gregory Price <gourry@gourry.net>
----
- drivers/cxl/type3_drivers/Kconfig             |    1 +
- drivers/cxl/type3_drivers/Makefile            |    1 +
- .../cxl/type3_drivers/cxl_compression/Kconfig |   20 +
- .../type3_drivers/cxl_compression/Makefile    |    4 +
- .../cxl_compression/compression.c             | 1025 +++++++++++++++++
- 5 files changed, 1051 insertions(+)
- create mode 100644 drivers/cxl/type3_drivers/cxl_compression/Kconfig
- create mode 100644 drivers/cxl/type3_drivers/cxl_compression/Makefile
- create mode 100644 drivers/cxl/type3_drivers/cxl_compression/compression.c
 
-diff --git a/drivers/cxl/type3_drivers/Kconfig b/drivers/cxl/type3_drivers/Kconfig
-index 369b21763856..98f73e46730e 100644
---- a/drivers/cxl/type3_drivers/Kconfig
-+++ b/drivers/cxl/type3_drivers/Kconfig
-@@ -1,2 +1,3 @@
- # SPDX-License-Identifier: GPL-2.0
- source "drivers/cxl/type3_drivers/cxl_mempolicy/Kconfig"
-+source "drivers/cxl/type3_drivers/cxl_compression/Kconfig"
-diff --git a/drivers/cxl/type3_drivers/Makefile b/drivers/cxl/type3_drivers/Makefile
-index 2b82265ff118..f5b0766d92af 100644
---- a/drivers/cxl/type3_drivers/Makefile
-+++ b/drivers/cxl/type3_drivers/Makefile
-@@ -1,2 +1,3 @@
- # SPDX-License-Identifier: GPL-2.0
- obj-$(CONFIG_CXL_MEMPOLICY) += cxl_mempolicy/
-+obj-$(CONFIG_CXL_COMPRESSION) += cxl_compression/
-diff --git a/drivers/cxl/type3_drivers/cxl_compression/Kconfig b/drivers/cxl/type3_drivers/cxl_compression/Kconfig
-new file mode 100644
-index 000000000000..8c891a48b000
---- /dev/null
-+++ b/drivers/cxl/type3_drivers/cxl_compression/Kconfig
-@@ -0,0 +1,20 @@
-+config CXL_COMPRESSION
-+	tristate "CXL Compression Memory Driver"
-+	depends on CXL_PCI
-+	depends on CXL_REGION
-+	depends on CRAM
-+	help
-+	  This driver provides an alternative PCI binding for CXL memory
-+	  devices with compressed memory support. It converts CXL RAM
-+	  regions to sysram for direct memory hotplug and registers with
-+	  the CRAM subsystem for transparent compression.
-+
-+	  Page reclamation uses the standard CXL Media Operations Zero
-+	  command (opcode 0x4402). If the device does not support it,
-+	  the driver falls back to inline CPU zeroing.
-+
-+	  Usage: First unbind the device from cxl_pci, then bind to
-+	  cxl_compression. The driver will initialize the CXL device and
-+	  convert any RAM regions to use direct memory hotplug via sysram.
-+
-+	  If unsure say 'n'.
-diff --git a/drivers/cxl/type3_drivers/cxl_compression/Makefile b/drivers/cxl/type3_drivers/cxl_compression/Makefile
-new file mode 100644
-index 000000000000..46f34809bf74
---- /dev/null
-+++ b/drivers/cxl/type3_drivers/cxl_compression/Makefile
-@@ -0,0 +1,4 @@
-+# SPDX-License-Identifier: GPL-2.0
-+obj-$(CONFIG_CXL_COMPRESSION) += cxl_compression.o
-+cxl_compression-y := compression.o
-+ccflags-y += -I$(srctree)/drivers/cxl
-diff --git a/drivers/cxl/type3_drivers/cxl_compression/compression.c b/drivers/cxl/type3_drivers/cxl_compression/compression.c
-new file mode 100644
-index 000000000000..e4c8b62227e2
---- /dev/null
-+++ b/drivers/cxl/type3_drivers/cxl_compression/compression.c
-@@ -0,0 +1,1025 @@
-+// SPDX-License-Identifier: GPL-2.0-only
-+/* Copyright(c) 2026 Meta Platforms, Inc. All rights reserved. */
-+/*
-+ * CXL Compression Driver
-+ *
-+ * This driver provides an alternative binding for CXL memory devices that
-+ * converts all associated RAM regions to sysram_regions for direct memory
-+ * hotplug, bypassing the standard dax region path.
-+ *
-+ * Page reclamation uses the standard CXL Media Operations Zero command
-+ * (opcode 0x4402, class 0x01, subclass 0x01).  Watermark interrupts
-+ * are delivered via separate MSI-X vectors (12 for lthresh, 13 for
-+ * hthresh), injected externally via QMP.
-+ *
-+ * Usage:
-+ *   1. Device initially binds to cxl_pci at boot
-+ *   2. Unbind from cxl_pci:
-+ *        echo $PCI_DEV > /sys/bus/pci/drivers/cxl_pci/unbind
-+ *   3. Bind to cxl_compression:
-+ *        echo $PCI_DEV > /sys/bus/pci/drivers/cxl_compression/bind
-+ */
-+
-+#include <linux/unaligned.h>
-+#include <linux/io-64-nonatomic-lo-hi.h>
-+#include <linux/module.h>
-+#include <linux/delay.h>
-+#include <linux/sizes.h>
-+#include <linux/mutex.h>
-+#include <linux/list.h>
-+#include <linux/pci.h>
-+#include <linux/io.h>
-+#include <linux/interrupt.h>
-+#include <linux/bitmap.h>
-+#include <linux/highmem.h>
-+#include <linux/workqueue.h>
-+#include <linux/kthread.h>
-+#include <linux/rcupdate.h>
-+#include <linux/percpu.h>
-+#include <linux/sched.h>
-+#include <linux/cram.h>
-+#include <linux/memory_hotplug.h>
-+#include <linux/xarray.h>
-+#include <cxl/mailbox.h>
-+#include "cxlmem.h"
-+#include "cxl.h"
-+
-+/*
-+ * Per-device compression context lookup.
-+ *
-+ * pci_set_drvdata() MUST store cxlds because mbox_to_cxlds() uses
-+ * dev_get_drvdata() to recover the cxl_dev_state from the mailbox host
-+ * device.  Storing anything else in pci drvdata breaks every CXL mailbox
-+ * command.  Use an xarray keyed by pci_dev pointer so that multiple
-+ * devices can bind concurrently without colliding.
-+ */
-+static DEFINE_XARRAY(comp_ctx_xa);
-+
-+static struct cxl_compression_ctx *pdev_to_comp_ctx(struct pci_dev *pdev)
-+{
-+	return xa_load(&comp_ctx_xa, (unsigned long)pdev);
-+}
-+
-+#define CXL_MEDIA_OP_OPCODE		0x4402
-+#define CXL_MEDIA_OP_CLASS_SANITIZE	0x01
-+#define CXL_MEDIA_OP_SUBC_ZERO		0x01
-+
-+struct cxl_dpa_range {
-+	__le64 starting_dpa;
-+	__le64 length;
-+} __packed;
-+
-+struct cxl_media_op_input {
-+	u8 media_operation_class;
-+	u8 media_operation_subclass;
-+	__le16 reserved;
-+	__le32 dpa_range_count;
-+	struct cxl_dpa_range ranges[];
-+} __packed;
-+
-+#define CXL_CT3_MSIX_LTHRESH		12
-+#define CXL_CT3_MSIX_HTHRESH		13
-+#define CXL_CT3_MSIX_VECTOR_NR		14
-+#define CXL_FLUSH_INTERVAL_DEFAULT_MS	1000
-+
-+static unsigned int flush_buf_size;
-+module_param(flush_buf_size, uint, 0444);
-+MODULE_PARM_DESC(flush_buf_size,
-+		 "Max DPA ranges per media ops CCI command (0 = use hw max)");
-+
-+static unsigned int flush_interval_ms = CXL_FLUSH_INTERVAL_DEFAULT_MS;
-+module_param(flush_interval_ms, uint, 0644);
-+MODULE_PARM_DESC(flush_interval_ms,
-+		 "Flush worker interval in ms (default 1000)");
-+
-+struct cxl_flush_buf {
-+	unsigned int count;
-+	unsigned int max;			/* max ranges per command */
-+	struct cxl_media_op_input *cmd;		/* pre-allocated CCI payload */
-+	struct folio **folios;			/* parallel folio tracking */
-+};
-+
-+struct cxl_flush_ctx;
-+
-+struct cxl_pcpu_flush {
-+	struct cxl_flush_buf __rcu *active;	/* callback writes here */
-+	struct cxl_flush_buf *overflow_spare;	/* spare for overflow work */
-+	struct work_struct overflow_work;	/* per-CPU overflow flush */
-+	struct cxl_flush_ctx *ctx;		/* backpointer */
-+};
-+
-+/**
-+ * struct cxl_flush_ctx - Per-region flush context
-+ * @flush_record: two-level bitmap, 1 bit per 4KB page, tracks in-flight ops
-+ * @flush_record_pages: number of pages in the flush_record array
-+ * @nr_pages: total number of 4KB pages in the region
-+ * @base_pfn: starting PFN of the region (for DPA offset calculation)
-+ * @buf_max: max DPA ranges per CCI command
-+ * @media_ops_supported: true if device supports media operations zero
-+ * @pcpu: per-CPU flush state
-+ * @kthread_spares: array[nr_cpu_ids] of spare buffers for the kthread
-+ * @flush_thread: round-robin kthread
-+ * @mbox: pointer to CXL mailbox for sending CCI commands
-+ * @dev: device for logging
-+ * @nid: NUMA node of the private region
-+ */
-+struct cxl_flush_ctx {
-+	unsigned long	**flush_record;
-+	unsigned int	 flush_record_pages;
-+	unsigned long	 nr_pages;
-+	unsigned long	 base_pfn;
-+	unsigned int	 buf_max;
-+	bool		 media_ops_supported;
-+	struct cxl_pcpu_flush __percpu *pcpu;
-+	struct cxl_flush_buf **kthread_spares;
-+	struct task_struct *flush_thread;
-+	struct cxl_mailbox *mbox;
-+	struct device	*dev;
-+	int		 nid;
-+};
-+
-+/* Bits per page-sized bitmap chunk */
-+#define FLUSH_RECORD_BITS_PER_PAGE	(PAGE_SIZE * BITS_PER_BYTE)
-+#define FLUSH_RECORD_SHIFT		(PAGE_SHIFT + 3)
-+
-+static unsigned long **flush_record_alloc(unsigned long nr_bits,
-+					  unsigned int *nr_pages_out)
-+{
-+	unsigned int nr_pages = DIV_ROUND_UP(nr_bits, FLUSH_RECORD_BITS_PER_PAGE);
-+	unsigned long **pages;
-+	unsigned int i;
-+
-+	pages = kcalloc(nr_pages, sizeof(*pages), GFP_KERNEL);
-+	if (!pages)
-+		return NULL;
-+
-+	for (i = 0; i < nr_pages; i++) {
-+		pages[i] = (unsigned long *)get_zeroed_page(GFP_KERNEL);
-+		if (!pages[i])
-+			goto err;
-+	}
-+
-+	*nr_pages_out = nr_pages;
-+	return pages;
-+
-+err:
-+	while (i--)
-+		free_page((unsigned long)pages[i]);
-+	kfree(pages);
-+	return NULL;
-+}
-+
-+static void flush_record_free(unsigned long **pages, unsigned int nr_pages)
-+{
-+	unsigned int i;
-+
-+	if (!pages)
-+		return;
-+
-+	for (i = 0; i < nr_pages; i++)
-+		free_page((unsigned long)pages[i]);
-+	kfree(pages);
-+}
-+
-+static inline bool flush_record_test_and_clear(unsigned long **pages,
-+					       unsigned long idx)
-+{
-+	return test_and_clear_bit(idx & (FLUSH_RECORD_BITS_PER_PAGE - 1),
-+				  pages[idx >> FLUSH_RECORD_SHIFT]);
-+}
-+
-+static inline void flush_record_set(unsigned long **pages, unsigned long idx)
-+{
-+	set_bit(idx & (FLUSH_RECORD_BITS_PER_PAGE - 1),
-+		pages[idx >> FLUSH_RECORD_SHIFT]);
-+}
-+
-+static struct cxl_flush_buf *cxl_flush_buf_alloc(unsigned int max, int nid)
-+{
-+	struct cxl_flush_buf *buf;
-+
-+	buf = kzalloc_node(sizeof(*buf), GFP_KERNEL, nid);
-+	if (!buf)
-+		return NULL;
-+
-+	buf->max = max;
-+	buf->cmd = kvzalloc_node(struct_size(buf->cmd, ranges, max),
-+				 GFP_KERNEL, nid);
-+	if (!buf->cmd)
-+		goto err_cmd;
-+
-+	buf->folios = kcalloc_node(max, sizeof(struct folio *),
-+				   GFP_KERNEL, nid);
-+	if (!buf->folios)
-+		goto err_folios;
-+
-+	return buf;
-+
-+err_folios:
-+	kvfree(buf->cmd);
-+err_cmd:
-+	kfree(buf);
-+	return NULL;
-+}
-+
-+static void cxl_flush_buf_free(struct cxl_flush_buf *buf)
-+{
-+	if (!buf)
-+		return;
-+	kvfree(buf->cmd);
-+	kfree(buf->folios);
-+	kfree(buf);
-+}
-+
-+static inline void cxl_flush_buf_reset(struct cxl_flush_buf *buf)
-+{
-+	buf->count = 0;
-+}
-+
-+static void cxl_flush_buf_send(struct cxl_flush_ctx *ctx,
-+			       struct cxl_flush_buf *buf)
-+{
-+	struct cxl_mbox_cmd mbox_cmd;
-+	unsigned int count = buf->count;
-+	unsigned int i;
-+	int rc;
-+
-+	if (count == 0)
-+		return;
-+
-+	if (!ctx->media_ops_supported) {
-+		/* No device support, zero all folios inline */
-+		for (i = 0; i < count; i++)
-+			folio_zero_range(buf->folios[i], 0,
-+					 folio_size(buf->folios[i]));
-+		goto release;
-+	}
-+
-+	buf->cmd->media_operation_class = CXL_MEDIA_OP_CLASS_SANITIZE;
-+	buf->cmd->media_operation_subclass = CXL_MEDIA_OP_SUBC_ZERO;
-+	buf->cmd->reserved = 0;
-+	buf->cmd->dpa_range_count = cpu_to_le32(count);
-+
-+	mbox_cmd = (struct cxl_mbox_cmd) {
-+		.opcode = CXL_MEDIA_OP_OPCODE,
-+		.payload_in = buf->cmd,
-+		.size_in = struct_size(buf->cmd, ranges, count),
-+		.poll_interval_ms = 1000,
-+		.poll_count = 30,
-+	};
-+
-+	rc = cxl_internal_send_cmd(ctx->mbox, &mbox_cmd);
-+	if (rc) {
-+		dev_warn(ctx->dev,
-+			 "media ops zero CCI command failed: %d\n", rc);
-+
-+		/* Zero all folios inline on failure */
-+		for (i = 0; i < count; i++)
-+			folio_zero_range(buf->folios[i], 0,
-+					 folio_size(buf->folios[i]));
-+	}
-+
-+release:
-+	for (i = 0; i < count; i++)
-+		folio_put(buf->folios[i]);
-+
-+	cxl_flush_buf_reset(buf);
-+}
-+
-+static int cxl_compression_flush_cb(struct folio *folio, void *private)
-+{
-+	struct cxl_flush_ctx *ctx = private;
-+	unsigned long pfn = folio_pfn(folio);
-+	unsigned long idx = pfn - ctx->base_pfn;
-+	unsigned long nr = folio_nr_pages(folio);
-+	struct cxl_pcpu_flush *pcpu;
-+	struct cxl_flush_buf *buf;
-+	unsigned long flags;
-+	unsigned int pos;
-+
-+	/* Case (a): flush record bit set, resolution from our media op */
-+	if (flush_record_test_and_clear(ctx->flush_record, idx))
-+		return 0;
-+
-+	dev_dbg_ratelimited(ctx->dev,
-+			     "flush_cb: folio pfn=%lx order=%u idx=%lu cpu=%d\n",
-+			     pfn, folio_order(folio), idx,
-+			     raw_smp_processor_id());
-+
-+	local_irq_save(flags);
-+	rcu_read_lock();
-+
-+	pcpu = this_cpu_ptr(ctx->pcpu);
-+	buf = rcu_dereference(pcpu->active);
-+
-+	if (unlikely(!buf || buf->count >= buf->max)) {
-+		rcu_read_unlock();
-+		local_irq_restore(flags);
-+		if (buf)
-+			schedule_work_on(raw_smp_processor_id(),
-+					 &pcpu->overflow_work);
-+		return 2;
-+	}
-+
-+	/* Case (b): write DPA range directly into pre-formatted CCI buffer */
-+	folio_get(folio);
-+	flush_record_set(ctx->flush_record, idx);
-+
-+	pos = buf->count;
-+	buf->folios[pos] = folio;
-+	buf->cmd->ranges[pos].starting_dpa = cpu_to_le64((u64)idx * PAGE_SIZE);
-+	buf->cmd->ranges[pos].length = cpu_to_le64((u64)nr * PAGE_SIZE);
-+	buf->count = pos + 1;
-+
-+	rcu_read_unlock();
-+	local_irq_restore(flags);
-+
-+	return 1;
-+}
-+
-+static int cxl_flush_kthread_fn(void *data)
-+{
-+	struct cxl_flush_ctx *ctx = data;
-+	struct cxl_flush_buf *dirty;
-+	struct cxl_pcpu_flush *pcpu;
-+	int cpu;
-+	bool any_dirty;
-+
-+	while (!kthread_should_stop()) {
-+		any_dirty = false;
-+
-+		/* Phase 1: Swap all per-CPU buffers */
-+		for_each_possible_cpu(cpu) {
-+			struct cxl_flush_buf *spare = ctx->kthread_spares[cpu];
-+
-+			if (!spare)
-+				continue;
-+
-+			pcpu = per_cpu_ptr(ctx->pcpu, cpu);
-+			cxl_flush_buf_reset(spare);
-+			dirty = rcu_replace_pointer(pcpu->active, spare, true);
-+			ctx->kthread_spares[cpu] = dirty;
-+
-+			if (dirty && dirty->count > 0) {
-+				dev_dbg(ctx->dev,
-+					 "flush_kthread: cpu=%d has %u dirty ranges\n",
-+					 cpu, dirty->count);
-+				any_dirty = true;
-+			}
-+		}
-+
-+		if (!any_dirty)
-+			goto sleep;
-+
-+		/* Phase 2: Single synchronize_rcu for all swaps */
-+		synchronize_rcu();
-+
-+		/* Phase 3: Send CCI commands for dirty buffers */
-+		for_each_possible_cpu(cpu) {
-+			dirty = ctx->kthread_spares[cpu];
-+			if (dirty && dirty->count > 0)
-+				cxl_flush_buf_send(ctx, dirty);
-+			/* dirty is now clean, stays as kthread_spares[cpu] */
-+		}
-+
-+sleep:
-+		schedule_timeout_interruptible(
-+			msecs_to_jiffies(flush_interval_ms));
-+	}
-+
-+	return 0;
-+}
-+
-+static void cxl_flush_overflow_work(struct work_struct *work)
-+{
-+	struct cxl_pcpu_flush *pcpu =
-+		container_of(work, struct cxl_pcpu_flush, overflow_work);
-+	struct cxl_flush_ctx *ctx = pcpu->ctx;
-+	struct cxl_flush_buf *dirty, *spare;
-+	unsigned long flags;
-+
-+	dev_dbg(ctx->dev, "flush_overflow: cpu=%d buffer full, flushing\n",
-+		 raw_smp_processor_id());
-+
-+	spare = pcpu->overflow_spare;
-+	if (!spare)
-+		return;
-+
-+	cxl_flush_buf_reset(spare);
-+
-+	local_irq_save(flags);
-+	dirty = rcu_replace_pointer(pcpu->active, spare, true);
-+	local_irq_restore(flags);
-+
-+	pcpu->overflow_spare = dirty;
-+
-+	synchronize_rcu();
-+	cxl_flush_buf_send(ctx, dirty);
-+}
-+
-+struct cxl_teardown_ctx {
-+	struct cxl_flush_ctx *flush_ctx;
-+	struct cxl_sysram *sysram;
-+	int nid;
-+};
-+
-+static void cxl_compression_pre_teardown(void *data)
-+{
-+	struct cxl_teardown_ctx *tctx = data;
-+
-+	if (!tctx->flush_ctx)
-+		return;
-+
-+	/*
-+	 * Unregister the CRAM node before memory goes offline.
-+	 * node_private_clear_ops requires the node_private to still
-+	 * exist, which is destroyed during memory removal.
-+	 */
-+	cram_unregister_private_node(tctx->nid);
-+
-+	/*
-+	 * Offline and remove CXL memory with retry.  CXL compressed
-+	 * memory may have pages pinned by in-flight flush operations;
-+	 * keep retrying until they complete.  Once done, sysram->res
-+	 * is NULL so the devm sysram_unregister action that follows
-+	 * will skip the hotplug removal.
-+	 */
-+	if (tctx->sysram) {
-+		int rc, retries = 0;
-+
-+		while (true) {
-+			rc = cxl_sysram_offline_and_remove(tctx->sysram);
-+			if (!rc)
-+				break;
-+			if (++retries > 60) {
-+				pr_err("cxl_compression: memory offline failed after %d retries, giving up\n",
-+				       retries);
-+				break;
-+			}
-+			pr_info("cxl_compression: memory offline failed (%d), retrying...\n",
-+				rc);
-+			msleep(1000);
-+		}
-+	}
-+}
-+
-+static void cxl_compression_post_teardown(void *data)
-+{
-+	struct cxl_teardown_ctx *tctx = data;
-+	struct cxl_flush_ctx *ctx = tctx->flush_ctx;
-+	struct cxl_pcpu_flush *pcpu;
-+	struct cxl_flush_buf *buf;
-+	int cpu;
-+
-+	if (!ctx)
-+		return;
-+
-+	/* cram_unregister_private_node already called in pre_teardown */
-+
-+	if (ctx->flush_thread) {
-+		kthread_stop(ctx->flush_thread);
-+		ctx->flush_thread = NULL;
-+	}
-+
-+	for_each_possible_cpu(cpu) {
-+		pcpu = per_cpu_ptr(ctx->pcpu, cpu);
-+		cancel_work_sync(&pcpu->overflow_work);
-+	}
-+
-+	for_each_possible_cpu(cpu) {
-+		pcpu = per_cpu_ptr(ctx->pcpu, cpu);
-+
-+		buf = rcu_dereference_raw(pcpu->active);
-+		if (buf && buf->count > 0)
-+			cxl_flush_buf_send(ctx, buf);
-+
-+		if (pcpu->overflow_spare && pcpu->overflow_spare->count > 0)
-+			cxl_flush_buf_send(ctx, pcpu->overflow_spare);
-+
-+		if (ctx->kthread_spares && ctx->kthread_spares[cpu]) {
-+			buf = ctx->kthread_spares[cpu];
-+			if (buf->count > 0)
-+				cxl_flush_buf_send(ctx, buf);
-+		}
-+	}
-+
-+	for_each_possible_cpu(cpu) {
-+		pcpu = per_cpu_ptr(ctx->pcpu, cpu);
-+
-+		buf = rcu_dereference_raw(pcpu->active);
-+		cxl_flush_buf_free(buf);
-+
-+		cxl_flush_buf_free(pcpu->overflow_spare);
-+
-+		if (ctx->kthread_spares)
-+			cxl_flush_buf_free(ctx->kthread_spares[cpu]);
-+	}
-+
-+	kfree(ctx->kthread_spares);
-+	free_percpu(ctx->pcpu);
-+	flush_record_free(ctx->flush_record, ctx->flush_record_pages);
-+}
-+
-+/**
-+ * struct cxl_compression_ctx - Per-device context for compression driver
-+ * @mbox: CXL mailbox for issuing CCI commands
-+ * @pdev: PCI device
-+ * @flush_ctx: Flush context for deferred page reclamation
-+ * @tctx: Teardown context for devm actions
-+ * @sysram: Sysram device for offline+remove in remove path
-+ * @nid: NUMA node ID, NUMA_NO_NODE if unset
-+ * @cxlmd: The memdev associated with this context
-+ * @cxlr: Region created by this driver (NULL if pre-existing)
-+ * @cxled: Endpoint decoder with DPA allocated by this driver
-+ * @regions_converted: Number of regions successfully converted
-+ * @media_ops_supported: Device supports media operations zero (0x4402)
-+ */
-+struct cxl_compression_ctx {
-+	struct cxl_mailbox *mbox;
-+	struct pci_dev *pdev;
-+	struct cxl_flush_ctx *flush_ctx;
-+	struct cxl_teardown_ctx *tctx;
-+	struct cxl_sysram *sysram;
-+	int nid;
-+	struct cxl_memdev *cxlmd;
-+	struct cxl_region *cxlr;
-+	struct cxl_endpoint_decoder *cxled;
-+	int regions_converted;
-+	bool media_ops_supported;
-+};
-+
-+/*
-+ * Probe whether the device supports Media Operations Zero (0x4402).
-+ * Send a zero-count command, a conforming device returns SUCCESS,
-+ * a device that doesn't support it returns UNSUPPORTED (-ENXIO).
-+ */
-+static bool cxl_probe_media_ops_zero(struct cxl_mailbox *mbox,
-+				     struct device *dev)
-+{
-+	struct cxl_media_op_input probe = {
-+		.media_operation_class = CXL_MEDIA_OP_CLASS_SANITIZE,
-+		.media_operation_subclass = CXL_MEDIA_OP_SUBC_ZERO,
-+		.dpa_range_count = 0,
-+	};
-+	struct cxl_mbox_cmd cmd = {
-+		.opcode = CXL_MEDIA_OP_OPCODE,
-+		.payload_in = &probe,
-+		.size_in = sizeof(probe),
-+	};
-+	int rc;
-+
-+	rc = cxl_internal_send_cmd(mbox, &cmd);
-+	if (rc) {
-+		dev_info(dev,
-+			 "media operations zero not supported (rc=%d), using inline zeroing\n",
-+			 rc);
-+		return false;
-+	}
-+
-+	dev_info(dev, "media operations zero (0x4402) supported\n");
-+	return true;
-+}
-+
-+struct cxl_compression_wm_ctx {
-+	struct device *dev;
-+	int nid;
-+};
-+
-+static irqreturn_t cxl_compression_lthresh_irq(int irq, void *data)
-+{
-+	struct cxl_compression_wm_ctx *wm = data;
-+
-+	dev_info(wm->dev, "lthresh watermark: pressuring node %d\n", wm->nid);
-+	cram_set_pressure(wm->nid, CRAM_PRESSURE_MAX);
-+	return IRQ_HANDLED;
-+}
-+
-+static irqreturn_t cxl_compression_hthresh_irq(int irq, void *data)
-+{
-+	struct cxl_compression_wm_ctx *wm = data;
-+
-+	dev_info(wm->dev, "hthresh watermark: resuming node %d\n", wm->nid);
-+	cram_set_pressure(wm->nid, 0);
-+	return IRQ_HANDLED;
-+}
-+
-+static int convert_region_to_sysram(struct cxl_region *cxlr,
-+				    struct pci_dev *pdev)
-+{
-+	struct cxl_compression_ctx *comp_ctx = pdev_to_comp_ctx(pdev);
-+	struct device *dev = cxl_region_dev(cxlr);
-+	struct cxl_compression_wm_ctx *wm_ctx;
-+	struct cxl_teardown_ctx *tctx;
-+	struct cxl_flush_ctx *flush_ctx;
-+	struct cxl_pcpu_flush *pcpu;
-+	resource_size_t region_start, region_size;
-+	struct range hpa_range;
-+	int nid;
-+	int irq;
-+	int cpu;
-+	int rc;
-+
-+	if (cxl_region_mode(cxlr) != CXL_PARTMODE_RAM) {
-+		dev_dbg(dev, "skipping non-RAM region (mode=%d)\n",
-+			cxl_region_mode(cxlr));
-+		return 0;
-+	}
-+
-+	dev_info(dev, "converting region to sysram\n");
-+
-+	rc = devm_cxl_add_sysram(cxlr, true, MMOP_ONLINE_MOVABLE);
-+	if (rc) {
-+		dev_err(dev, "failed to add sysram region: %d\n", rc);
-+		return rc;
-+	}
-+
-+	tctx = devm_kzalloc(dev, sizeof(*tctx), GFP_KERNEL);
-+	if (!tctx)
-+		return -ENOMEM;
-+
-+	rc = devm_add_action_or_reset(dev, cxl_compression_post_teardown, tctx);
-+	if (rc)
-+		return rc;
-+
-+	/* Find the sysram child device for pre_teardown */
-+	comp_ctx->sysram = cxl_region_find_sysram(cxlr);
-+	if (comp_ctx->sysram)
-+		tctx->sysram = comp_ctx->sysram;
-+
-+	rc = cxl_get_region_range(cxlr, &hpa_range);
-+	if (rc) {
-+		dev_err(dev, "failed to get region range: %d\n", rc);
-+		return rc;
-+	}
-+
-+	nid = phys_to_target_node(hpa_range.start);
-+	if (nid == NUMA_NO_NODE)
-+		nid = memory_add_physaddr_to_nid(hpa_range.start);
-+
-+	region_start = hpa_range.start;
-+	region_size = range_len(&hpa_range);
-+
-+	flush_ctx = devm_kzalloc(dev, sizeof(*flush_ctx), GFP_KERNEL);
-+	if (!flush_ctx)
-+		return -ENOMEM;
-+
-+	flush_ctx->base_pfn = PHYS_PFN(region_start);
-+	flush_ctx->nr_pages = region_size >> PAGE_SHIFT;
-+	flush_ctx->flush_record = flush_record_alloc(flush_ctx->nr_pages,
-+						     &flush_ctx->flush_record_pages);
-+	if (!flush_ctx->flush_record)
-+		return -ENOMEM;
-+
-+	flush_ctx->mbox = comp_ctx->mbox;
-+	flush_ctx->dev = dev;
-+	flush_ctx->nid = nid;
-+	flush_ctx->media_ops_supported = comp_ctx->media_ops_supported;
-+
-+	/*
-+	 * Cap buffer at max DPA ranges that fit in one CCI payload.
-+	 * Header is 8 bytes (struct cxl_media_op_input), each range
-+	 * is 16 bytes (struct cxl_dpa_range).  The module parameter
-+	 * flush_buf_size can further limit this (0 = use hw max).
-+	 */
-+	flush_ctx->buf_max = (flush_ctx->mbox->payload_size -
-+			      sizeof(struct cxl_media_op_input)) /
-+			     sizeof(struct cxl_dpa_range);
-+	if (flush_buf_size && flush_buf_size < flush_ctx->buf_max)
-+		flush_ctx->buf_max = flush_buf_size;
-+	if (flush_ctx->buf_max == 0)
-+		flush_ctx->buf_max = 1;
-+
-+	dev_info(dev,
-+		 "flush buffer: %u DPA ranges per command (payload %zu bytes, media_ops %s)\n",
-+		 flush_ctx->buf_max, flush_ctx->mbox->payload_size,
-+		 flush_ctx->media_ops_supported ? "yes" : "no");
-+
-+	flush_ctx->pcpu = alloc_percpu(struct cxl_pcpu_flush);
-+	if (!flush_ctx->pcpu)
-+		return -ENOMEM;
-+
-+	flush_ctx->kthread_spares = kcalloc(nr_cpu_ids,
-+					    sizeof(struct cxl_flush_buf *),
-+					    GFP_KERNEL);
-+	if (!flush_ctx->kthread_spares)
-+		goto err_pcpu_init;
-+
-+	for_each_possible_cpu(cpu) {
-+		struct cxl_flush_buf *active_buf, *overflow_buf, *spare_buf;
-+
-+		active_buf = cxl_flush_buf_alloc(flush_ctx->buf_max, nid);
-+		if (!active_buf)
-+			goto err_pcpu_init;
-+
-+		overflow_buf = cxl_flush_buf_alloc(flush_ctx->buf_max, nid);
-+		if (!overflow_buf) {
-+			cxl_flush_buf_free(active_buf);
-+			goto err_pcpu_init;
-+		}
-+
-+		spare_buf = cxl_flush_buf_alloc(flush_ctx->buf_max, nid);
-+		if (!spare_buf) {
-+			cxl_flush_buf_free(active_buf);
-+			cxl_flush_buf_free(overflow_buf);
-+			goto err_pcpu_init;
-+		}
-+
-+		pcpu = per_cpu_ptr(flush_ctx->pcpu, cpu);
-+		pcpu->ctx = flush_ctx;
-+		rcu_assign_pointer(pcpu->active, active_buf);
-+		pcpu->overflow_spare = overflow_buf;
-+		INIT_WORK(&pcpu->overflow_work, cxl_flush_overflow_work);
-+
-+		flush_ctx->kthread_spares[cpu] = spare_buf;
-+	}
-+
-+	flush_ctx->flush_thread = kthread_create_on_node(
-+		cxl_flush_kthread_fn, flush_ctx, nid, "cxl-flush/%d", nid);
-+	if (IS_ERR(flush_ctx->flush_thread)) {
-+		rc = PTR_ERR(flush_ctx->flush_thread);
-+		flush_ctx->flush_thread = NULL;
-+		goto err_pcpu_init;
-+	}
-+	wake_up_process(flush_ctx->flush_thread);
-+
-+	rc = cram_register_private_node(nid, cxlr,
-+					cxl_compression_flush_cb, flush_ctx);
-+	if (rc) {
-+		dev_err(dev, "failed to register cram node %d: %d\n", nid, rc);
-+		goto err_pcpu_init;
-+	}
-+
-+	tctx->flush_ctx = flush_ctx;
-+	tctx->nid = nid;
-+
-+	rc = devm_add_action_or_reset(dev, cxl_compression_pre_teardown, tctx);
-+	if (rc)
-+		return rc;
-+
-+	comp_ctx->flush_ctx = flush_ctx;
-+	comp_ctx->tctx = tctx;
-+	comp_ctx->nid = nid;
-+
-+	/*
-+	 * Register watermark IRQ handlers on &pdev->dev for
-+	 * MSI-X vector 12 (lthresh) and vector 13 (hthresh).
-+	 */
-+	wm_ctx = devm_kzalloc(&pdev->dev, sizeof(*wm_ctx), GFP_KERNEL);
-+	if (!wm_ctx)
-+		return -ENOMEM;
-+
-+	wm_ctx->dev = &pdev->dev;
-+	wm_ctx->nid = nid;
-+
-+	irq = pci_irq_vector(pdev, CXL_CT3_MSIX_LTHRESH);
-+	if (irq >= 0) {
-+		rc = devm_request_threaded_irq(&pdev->dev, irq, NULL,
-+					       cxl_compression_lthresh_irq,
-+					       IRQF_ONESHOT,
-+					       "cxl-lthresh", wm_ctx);
-+		if (rc)
-+			dev_warn(&pdev->dev,
-+				 "failed to register lthresh IRQ: %d\n", rc);
-+	}
-+
-+	irq = pci_irq_vector(pdev, CXL_CT3_MSIX_HTHRESH);
-+	if (irq >= 0) {
-+		rc = devm_request_threaded_irq(&pdev->dev, irq, NULL,
-+					       cxl_compression_hthresh_irq,
-+					       IRQF_ONESHOT,
-+					       "cxl-hthresh", wm_ctx);
-+		if (rc)
-+			dev_warn(&pdev->dev,
-+				 "failed to register hthresh IRQ: %d\n", rc);
-+	}
-+
-+	return 0;
-+
-+err_pcpu_init:
-+	if (flush_ctx->flush_thread)
-+		kthread_stop(flush_ctx->flush_thread);
-+	for_each_possible_cpu(cpu) {
-+		struct cxl_flush_buf *buf;
-+
-+		pcpu = per_cpu_ptr(flush_ctx->pcpu, cpu);
-+
-+		buf = rcu_dereference_raw(pcpu->active);
-+		cxl_flush_buf_free(buf);
-+
-+		cxl_flush_buf_free(pcpu->overflow_spare);
-+
-+		if (flush_ctx->kthread_spares)
-+			cxl_flush_buf_free(flush_ctx->kthread_spares[cpu]);
-+	}
-+	kfree(flush_ctx->kthread_spares);
-+	free_percpu(flush_ctx->pcpu);
-+	flush_record_free(flush_ctx->flush_record, flush_ctx->flush_record_pages);
-+	return rc ? rc : -ENOMEM;
-+}
-+
-+static struct cxl_region *create_ram_region(struct cxl_memdev *cxlmd)
-+{
-+	struct cxl_root_decoder *cxlrd;
-+	struct cxl_endpoint_decoder *cxled;
-+	struct cxl_region *cxlr;
-+	resource_size_t ram_size, avail;
-+
-+	ram_size = cxl_ram_size(cxlmd->cxlds);
-+	if (ram_size == 0) {
-+		dev_info(&cxlmd->dev, "no RAM capacity available\n");
-+		return ERR_PTR(-ENODEV);
-+	}
-+
-+	ram_size = ALIGN_DOWN(ram_size, SZ_256M);
-+	if (ram_size == 0) {
-+		dev_info(&cxlmd->dev, "RAM capacity too small (< 256M)\n");
-+		return ERR_PTR(-ENOSPC);
-+	}
-+
-+	dev_info(&cxlmd->dev, "creating RAM region for %lld MB\n",
-+		 ram_size >> 20);
-+
-+	cxlrd = cxl_get_hpa_freespace(cxlmd, ram_size, &avail);
-+	if (IS_ERR(cxlrd)) {
-+		dev_err(&cxlmd->dev, "no HPA freespace: %ld\n",
-+			PTR_ERR(cxlrd));
-+		return ERR_CAST(cxlrd);
-+	}
-+
-+	cxled = cxl_request_dpa(cxlmd, CXL_PARTMODE_RAM, ram_size);
-+	if (IS_ERR(cxled)) {
-+		dev_err(&cxlmd->dev, "failed to request DPA: %ld\n",
-+			PTR_ERR(cxled));
-+		cxl_put_root_decoder(cxlrd);
-+		return ERR_CAST(cxled);
-+	}
-+
-+	cxlr = cxl_create_region(cxlrd, &cxled, 1);
-+	cxl_put_root_decoder(cxlrd);
-+	if (IS_ERR(cxlr)) {
-+		dev_err(&cxlmd->dev, "failed to create region: %ld\n",
-+			PTR_ERR(cxlr));
-+		cxl_dpa_free(cxled);
-+		return cxlr;
-+	}
-+
-+	dev_info(&cxlmd->dev, "created region %s\n",
-+		 dev_name(cxl_region_dev(cxlr)));
-+	pdev_to_comp_ctx(to_pci_dev(cxlmd->dev.parent))->cxled = cxled;
-+	return cxlr;
-+}
-+
-+static int cxl_compression_attach_probe(struct cxl_memdev *cxlmd)
-+{
-+	struct pci_dev *pdev = to_pci_dev(cxlmd->dev.parent);
-+	struct cxl_compression_ctx *comp_ctx = pdev_to_comp_ctx(pdev);
-+	struct cxl_region *regions[8];
-+	struct cxl_region *cxlr;
-+	int nr, i, converted = 0, errors = 0;
-+	int rc;
-+
-+	comp_ctx->cxlmd = cxlmd;
-+	comp_ctx->mbox = &cxlmd->cxlds->cxl_mbox;
-+
-+	/* Probe device for media operations zero support */
-+	comp_ctx->media_ops_supported =
-+		cxl_probe_media_ops_zero(comp_ctx->mbox,
-+					 &cxlmd->dev);
-+
-+	dev_info(&cxlmd->dev, "compression attach: looking for regions\n");
-+
-+	nr = cxl_get_committed_regions(cxlmd, regions, ARRAY_SIZE(regions));
-+	for (i = 0; i < nr; i++) {
-+		if (cxl_region_mode(regions[i]) == CXL_PARTMODE_RAM) {
-+			rc = convert_region_to_sysram(regions[i], pdev);
-+			if (rc)
-+				errors++;
-+			else
-+				converted++;
-+		}
-+		put_device(cxl_region_dev(regions[i]));
-+	}
-+
-+	if (converted > 0) {
-+		dev_info(&cxlmd->dev,
-+			 "converted %d regions to sysram (%d errors)\n",
-+			 converted, errors);
-+		return errors ? -EIO : 0;
-+	}
-+
-+	dev_info(&cxlmd->dev, "no existing regions, creating RAM region\n");
-+
-+	cxlr = create_ram_region(cxlmd);
-+	if (IS_ERR(cxlr)) {
-+		rc = PTR_ERR(cxlr);
-+		if (rc == -ENODEV) {
-+			dev_info(&cxlmd->dev,
-+				 "could not create RAM region: %d\n", rc);
-+			return 0;
-+		}
-+		return rc;
-+	}
-+
-+	rc = convert_region_to_sysram(cxlr, pdev);
-+	if (rc) {
-+		dev_err(&cxlmd->dev,
-+			"failed to convert region to sysram: %d\n", rc);
-+		return rc;
-+	}
-+
-+	comp_ctx->cxlr = cxlr;
-+
-+	dev_info(&cxlmd->dev, "created and converted region %s to sysram\n",
-+		 dev_name(cxl_region_dev(cxlr)));
-+
-+	return 0;
-+}
-+
-+static const struct cxl_memdev_attach cxl_compression_attach = {
-+	.probe = cxl_compression_attach_probe,
-+};
-+
-+static int cxl_compression_probe(struct pci_dev *pdev,
-+				 const struct pci_device_id *id)
-+{
-+	struct cxl_compression_ctx *comp_ctx;
-+	struct cxl_memdev *cxlmd;
-+	int rc;
-+
-+	dev_info(&pdev->dev, "cxl_compression: probing device\n");
-+
-+	comp_ctx = devm_kzalloc(&pdev->dev, sizeof(*comp_ctx), GFP_KERNEL);
-+	if (!comp_ctx)
-+		return -ENOMEM;
-+	comp_ctx->nid = NUMA_NO_NODE;
-+	comp_ctx->pdev = pdev;
-+
-+	rc = xa_insert(&comp_ctx_xa, (unsigned long)pdev, comp_ctx, GFP_KERNEL);
-+	if (rc)
-+		return rc;
-+
-+	cxlmd = cxl_pci_type3_probe_init(pdev, &cxl_compression_attach);
-+	if (IS_ERR(cxlmd)) {
-+		xa_erase(&comp_ctx_xa, (unsigned long)pdev);
-+		return PTR_ERR(cxlmd);
-+	}
-+
-+	comp_ctx->cxlmd = cxlmd;
-+	comp_ctx->mbox = &cxlmd->cxlds->cxl_mbox;
-+
-+	dev_info(&pdev->dev, "cxl_compression: probe complete\n");
-+	return 0;
-+}
-+
-+static void cxl_compression_remove(struct pci_dev *pdev)
-+{
-+	struct cxl_compression_ctx *comp_ctx = xa_erase(&comp_ctx_xa,
-+							(unsigned long)pdev);
-+
-+	dev_info(&pdev->dev, "cxl_compression: removing device\n");
-+
-+	if (!comp_ctx || comp_ctx->nid == NUMA_NO_NODE)
-+		return;
-+
-+	/*
-+	 * Destroy the region, devm actions on the region device handle teardown
-+	 * in registration-reverse order:
-+	 *   1. pre_teardown:  cram_unregister + retry-forever memory offline
-+	 *   2. sysram_unregister: device_unregister (sysram->res is NULL
-+	 *      after pre_teardown, so cxl_sysram_release skips hotplug)
-+	 *   3. post_teardown: kthread stop, flush cleanup
-+	 *
-+	 * PCI MMIO is still live so CCI commands in post_teardown work.
-+	 */
-+	if (comp_ctx->cxlr) {
-+		cxl_destroy_region(comp_ctx->cxlr);
-+		comp_ctx->cxlr = NULL;
-+	}
-+
-+	if (comp_ctx->cxled) {
-+		cxl_dpa_free(comp_ctx->cxled);
-+		comp_ctx->cxled = NULL;
-+	}
-+}
-+
-+static const struct pci_device_id cxl_compression_pci_tbl[] = {
-+	{ PCI_DEVICE(PCI_VENDOR_ID_INTEL, 0x0d93) },
-+	{ /* terminate list */ },
-+};
-+MODULE_DEVICE_TABLE(pci, cxl_compression_pci_tbl);
-+
-+static struct pci_driver cxl_compression_driver = {
-+	.name		= KBUILD_MODNAME,
-+	.id_table	= cxl_compression_pci_tbl,
-+	.probe		= cxl_compression_probe,
-+	.remove		= cxl_compression_remove,
-+	.driver	= {
-+		.probe_type	= PROBE_PREFER_ASYNCHRONOUS,
-+	},
-+};
-+
-+module_pci_driver(cxl_compression_driver);
-+
-+MODULE_DESCRIPTION("CXL: Compression Memory Driver with SysRAM regions");
-+MODULE_LICENSE("GPL v2");
-+MODULE_IMPORT_NS("CXL");
--- 
-2.53.0
+Regards,
 
+Venkat.
+
+>
+>>> [ 6054.957411] run fstests generic/428 at 2026-02-16 22:25:57
+>>> [ 6055.136443] Kernel attempted to read user page (0) - exploit attempt?
+>>> (uid: 0)
+>>> [ 6055.136474] BUG: Kernel NULL pointer dereference on read at 0x00000000
+>>> [ 6055.136485] Faulting instruction address: 0xc0000000008aff0c
+>>> [ 6055.136495] Oops: Kernel access of bad area, sig: 11 [#1]
+>>> [ 6055.136505] LE PAGE_SIZE=64K MMU=Radix  SMP NR_CPUS=8192 NUMA pSeries
+>>> [ 6055.136517] Modules linked in: dm_thin_pool dm_persistent_data
+>>> dm_bio_prison dm_snapshot dm_bufio dm_flakey xfs loop dm_mod nft_fib_inet
+>>> nft_fib_ipv4 nft_fib_ipv6 nft_fib nft_reject_inet nf_reject_ipv4
+>>> nf_reject_ipv6 nft_reject nft_ct nft_chain_nat nf_nat nf_conntrack
+>>> nf_defrag_ipv6 nf_defrag_ipv4 bonding ip_set tls nf_tables rfkill sunrpc
+>>> nfnetlink pseries_rng vmx_crypto dax_pmem fuse ext4 crc16 mbcache jbd2
+>>> nd_pmem papr_scm sd_mod libnvdimm sg ibmvscsi ibmveth scsi_transport_srp
+>>> pseries_wdt [last unloaded: scsi_debug]
+>>> [ 6055.136684] CPU: 19 UID: 0 PID: 0 Comm: swapper/19 Kdump: loaded Tainted:
+>>> G        W           6.19.0-next-20260216 #1 PREEMPTLAZY
+>>> [ 6055.136701] Tainted: [W]=WARN
+>>> [ 6055.136708] Hardware name: IBM,9080-HEX Power11 (architected) 0x820200
+>>> 0xf000007 of:IBM,FW1110.01 (NH1110_069) hv:phyp pSeries
+>>> [ 6055.136719] NIP:  c0000000008aff0c LR: c0000000008aff00 CTR:
+>>> c00000000036d5e0
+>>> [ 6055.136730] REGS: c000000d0dc877c0 TRAP: 0300   Tainted: G   W
+>>> (6.19.0-next-20260216)
+>>> [ 6055.136742] MSR:  8000000000009033 <SF,EE,ME,IR,DR,RI,LE>  CR: 84042802 XER: 20040037
+>>> [ 6055.136777] CFAR: c000000000862a74 DAR: 0000000000000000 DSISR: 40000000 IRQMASK: 0
+>>> [ 6055.136777] GPR00: c0000000008aff00 c000000d0dc87a60 c00000000243a500 0000000000000001
+>>> [ 6055.136777] GPR04: 0000000000000008 0000000000000001 c0000000008aff00 0000000000000001
+>>> [ 6055.136777] GPR08: a80e000000000000 0000000000000001 0000000000000007
+>>> a80e000000000000
+>>> [ 6055.136777] GPR12: c00e00000c46e6d5 c000000d0ddf0b00 c000000019069a00
+>>> 0000000000000006
+>>> [ 6055.136777] GPR16: c000000007012fa0 c000000007012fa4 c000000005160980
+>>> c000000007012f88
+>>> [ 6055.136777] GPR20: c00c0000004d7cec c000000d0d10f008 0000000000000001
+>>> ffffffffffffff78
+>>> [ 6055.136777] GPR24: 0000000000000005 c000000d0d58f180 c0000001d0795e00
+>>> c000000d0d10f01c
+>>> [ 6055.136777] GPR28: c000000d0d10f008 c000000d0d10f010 c0000001d0795e08
+>>> 0000000000000000
+>>> [ 6055.136891] NIP [c0000000008aff0c] drain_obj_stock+0x620/0xa48
+>>> [ 6055.136905] LR [c0000000008aff00] drain_obj_stock+0x614/0xa48
+>>> [ 6055.136915] Call Trace:
+>>> [ 6055.136919] [c000000d0dc87a60] [c0000000008aff00] drain_obj_stock+0x614/0xa48 (unreliable)
+>>> [ 6055.136933] [c000000d0dc87b10] [c0000000008b27e4] refill_obj_stock+0x104/0x680
+>>> [ 6055.136945] [c000000d0dc87b90] [c0000000008b9238] __memcg_slab_free_hook+0x238/0x3ec
+>>> [ 6055.136956] [c000000d0dc87c60] [c0000000007f39a0] __rcu_free_sheaf_prepare+0x314/0x3e8
+>>> [ 6055.136968] [c000000d0dc87d10] [c0000000007fbf0c] rcu_free_sheaf+0x38/0x170
+>>> [ 6055.136980] [c000000d0dc87d50] [c0000000003344b0] rcu_do_batch+0x2ec/0xfa8
+>>> [ 6055.136992] [c000000d0dc87e50] [c000000000339948] rcu_core+0x22c/0x48c
+>>> [ 6055.137002] [c000000d0dc87ec0] [c0000000001cfe6c] handle_softirqs+0x1f4/0x74c
+>>> [ 6055.137013] [c000000d0dc87fe0] [c00000000001b0cc] do_softirq_own_stack+0x60/0x7c
+>>> [ 6055.137025] [c000000009717930] [c00000000001b0b8] do_softirq_own_stack+0x4c/0x7c
+>>> [ 6055.137036] [c000000009717960] [c0000000001cf128] __irq_exit_rcu+0x268/0x308
+>>> [ 6055.137046] [c0000000097179a0] [c0000000001d0ba4] irq_exit+0x20/0x38
+>>> [ 6055.137056] [c0000000097179c0] [c0000000000315f4] interrupt_async_exit_prepare.constprop.0+0x18/0x2c
+>>> [ 6055.137069] [c0000000097179e0] [c000000000009ffc] decrementer_common_virt+0x28c/0x290
+>>> [ 6055.137080] ---- interrupt: 900 at plpar_hcall_norets_notrace+0x18/0x2c
+>>> [ 6055.137090] NIP:  c00000000012d8f0 LR: c00000000135c3fc CTR: 0000000000000000
+>>> [ 6055.137097] REGS: c000000009717a10 TRAP: 0900   Tainted: G   W            (6.19.0-next-20260216)
+>>> [ 6055.137105] MSR:  800000000280b033 <SF,VEC,VSX,EE,FP,ME,IR,DR,RI,LE>  CR: 24000804  XER: 00000037
+>>> [ 6055.137134] CFAR: 0000000000000000 IRQMASK: 0
+>>> [ 6055.137134] GPR00: 0000000000000000 c000000009717cb0 c00000000243a500 0000000000000000
+>>> [ 6055.137134] GPR04: 0000000000000000 800400002fe6fc10 0000000000000000 0000000000000001
+>>> [ 6055.137134] GPR08: 0000000000000033 0000000000000000 0000000000000090 0000000000000001
+>>> [ 6055.137134] GPR12: 800400002fe6fc00 c000000d0ddf0b00 0000000000000000 000000002ef01a60
+>>> [ 6055.137134] GPR16: 0000000000000000 0000000000000000 0000000000000000 0000000000000000
+>>> [ 6055.137134] GPR20: 0000000000000000 0000000000000000 0000000000000000 0000000000000001
+>>> [ 6055.137134] GPR24: 0000000000000000 c000000004d7a778 00000581d1a507b8 0000000000000000
+>>> [ 6055.137134] GPR28: 0000000000000000 0000000000000001 c0000000032b18d8 c0000000032b18e0
+>>> [ 6055.137229] NIP [c00000000012d8f0] plpar_hcall_norets_notrace+0x18/0x2c
+>>> [ 6055.137238] LR [c00000000135c3fc] cede_processor.isra.0+0x1c/0x30
+>>> [ 6055.137248] ---- interrupt: 900
+>>> [ 6055.137253] [c000000009717cb0] [c000000009717cf0] 0xc000000009717cf0 (unreliable)
+>>> [ 6055.137265] [c000000009717d10] [c0000000019af160] dedicated_cede_loop+0x90/0x170
+>>> [ 6055.137277] [c000000009717d60] [c0000000019aeb10] cpuidle_enter_state+0x394/0x480
+>>> [ 6055.137288] [c000000009717e00] [c0000000013589ec] cpuidle_enter+0x64/0x9c
+>>> [ 6055.137298] [c000000009717e50] [c000000000284a8c] call_cpuidle+0x7c/0xf8
+>>> [ 6055.137310] [c000000009717e90] [c000000000290398] cpuidle_idle_call+0x1c4/0x2b4
+>>> [ 6055.137321] [c000000009717f00] [c0000000002905bc] do_idle+0x134/0x208
+>>> [ 6055.137330] [c000000009717f50] [c000000000290a0c] cpu_startup_entry+0x60/0x64
+>>> [ 6055.137341] [c000000009717f80] [c0000000000744b8] start_secondary+0x3fc/0x400
+>>> [ 6055.137352] [c000000009717fe0] [c00000000000e258] start_secondary_prolog+0x10/0x14
+>>> [ 6055.137363] Code: 60000000 3bda0008 7fc3f378 4bfb148d 60000000 ebfa0008 38800008 7fe3fb78 4bfb2b51 60000000 7c0004ac 39200001 <7d40f8a8> 7d495050 7d40f9ad 40c2fff4
+>>> [ 6055.137400] ---[ end trace 0000000000000000 ]---
+>> Again, nothing here seems to point to a xfs problem.
+>>
+>
 
