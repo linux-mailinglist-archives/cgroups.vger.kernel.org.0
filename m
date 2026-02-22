@@ -1,82 +1,82 @@
-Return-Path: <cgroups+bounces-14115-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-14116-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id UMeOBGjEmmlHiQMAu9opvQ
-	(envelope-from <cgroups+bounces-14115-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Sun, 22 Feb 2026 09:55:04 +0100
+	id MHW4C4TDmmlHiQMAu9opvQ
+	(envelope-from <cgroups+bounces-14116-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Sun, 22 Feb 2026 09:51:16 +0100
 X-Original-To: lists+cgroups@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7F8BF16EB7A
-	for <lists+cgroups@lfdr.de>; Sun, 22 Feb 2026 09:55:03 +0100 (CET)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id C0C0216EA95
+	for <lists+cgroups@lfdr.de>; Sun, 22 Feb 2026 09:51:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 7524A3095F4E
-	for <lists+cgroups@lfdr.de>; Sun, 22 Feb 2026 08:50:22 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id BD9FF3024ED6
+	for <lists+cgroups@lfdr.de>; Sun, 22 Feb 2026 08:50:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 96F632405EB;
-	Sun, 22 Feb 2026 08:49:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F395F2253EC;
+	Sun, 22 Feb 2026 08:49:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gourry.net header.i=@gourry.net header.b="Y7PC0kP6"
+	dkim=pass (2048-bit key) header.d=gourry.net header.i=@gourry.net header.b="Kbmng73r"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-qt1-f170.google.com (mail-qt1-f170.google.com [209.85.160.170])
+Received: from mail-qt1-f180.google.com (mail-qt1-f180.google.com [209.85.160.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A5C8323D7C7
-	for <cgroups@vger.kernel.org>; Sun, 22 Feb 2026 08:49:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C446824466C
+	for <cgroups@vger.kernel.org>; Sun, 22 Feb 2026 08:49:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1771750190; cv=none; b=gXGtESOPqgYZtLOvaO6FHdJA8+9nDSn5R5HFCiLR1TbWrGykbn1IC6j+4S9zEYUuy6eRh3QLUjvVXG4vzuRjLO2ytEh1dfSYLZNTWTpKM0XLMmmdZ+hSpoU8XL+qhWezAPEoPRJNyrIphiKIGBYUUdsPkuccrX/yHzJWZdwznTY=
+	t=1771750194; cv=none; b=RZw2WvvTilFqCuYrYa1opoaSvraGwz5G904b0VfuYxjROgRfaGd8maauFd447FwTVZPK8lhOAvWlb9KuR+yo7V7MhZ3v+jupmntYKWNsp0JprhW/bjG8+UOyPDchCQ6p6/4jXr/ls3GCMdJsRmtpZydBJueS6BbsrLbDT3b73Y8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1771750190; c=relaxed/simple;
-	bh=/y1pXR/Qusp3ewwrpz/oUGt/NfC5qFdnwSmdDbLTy8A=;
+	s=arc-20240116; t=1771750194; c=relaxed/simple;
+	bh=WQREA0eRzyGSJaLiXYZZmNn1uvwWrj7DPFe0mrMY5SE=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=h5Z8zCVNfcbzFI2qD3mKs/J4vIo0UpAtvZpP2ZLZ0jEj6dtXveeIQGTV7eOFqEU06Q4fnC6hxwhzV+98ucotD3dRjmc0fkvUBPuurmgAO4PHEAKCKnCFzPKptTMQsqwY0Jih6SIaveEHTAsQjl84b0KHzg7XMb3a52H5JtWS+eU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gourry.net; spf=pass smtp.mailfrom=gourry.net; dkim=pass (2048-bit key) header.d=gourry.net header.i=@gourry.net header.b=Y7PC0kP6; arc=none smtp.client-ip=209.85.160.170
+	 MIME-Version; b=azez8dvTNSvx0+GF2kG/t0gIvsZgVGAHT8EW5qd1iEa5c1oX+JqL7jDymWFVbUiGdfPAbFidVw44HInojfkCQX53fLBPlNwX2BvuDABnIrdF8kXjC1T/eg1X+HyuWY9eROChzySEVbO9nLPNMN61Kvm5SbCzqnM8CNNvWwvnXm0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gourry.net; spf=pass smtp.mailfrom=gourry.net; dkim=pass (2048-bit key) header.d=gourry.net header.i=@gourry.net header.b=Kbmng73r; arc=none smtp.client-ip=209.85.160.180
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gourry.net
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gourry.net
-Received: by mail-qt1-f170.google.com with SMTP id d75a77b69052e-506a7bbe9d0so29134961cf.0
-        for <cgroups@vger.kernel.org>; Sun, 22 Feb 2026 00:49:48 -0800 (PST)
+Received: by mail-qt1-f180.google.com with SMTP id d75a77b69052e-506bcb23a78so29927331cf.3
+        for <cgroups@vger.kernel.org>; Sun, 22 Feb 2026 00:49:52 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gourry.net; s=google; t=1771750188; x=1772354988; darn=vger.kernel.org;
+        d=gourry.net; s=google; t=1771750192; x=1772354992; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Zm28kvmD9iuWWLwvtJBamWBricaC3Bz050FlGsgvxtM=;
-        b=Y7PC0kP6SAKKh0UkPXB69xmbfbcVtmAOvC67tuKDhFrkkgNQSotHgyFI7VPWDDdXlm
-         nniZ/HIdbZl5MXo0VVkWS6YYO4gjsVYa/Xjh0gKumfnUqKkA0wSjTcNdWVsF4I6tl4Az
-         0l+PHbo/DwZkpGiZLiUfNVgb1kTTslgr8h7xSSE2KHz46bUUQ70RWw12MJjm2as+ubOF
-         0MWuQZ7n6Ix7k++H1roofzOJGnIXbMJIIC7XRvxp3jLNsdsmV0Nkc6GsTz1CZySBuIDM
-         Bm8Km23rYiuTvuEdFUA892nTMc/ZMDvQA2mQyfuVjJyd4Cn0/1PlRhh60vudYkFK9Mwc
-         RoFQ==
+        bh=0FaS5B9cAZ3FLbrF/E2Ph8lRS4c3BU4jWIQ83JN7l+U=;
+        b=Kbmng73rUtRFb7XHU8CYAyeEqInpftmkWqSS9fFZ8GJVpH12yPjwSWp4mDakNbUSuz
+         6+SzEtTi2l90tjqNoFgYo3Gs7DfRfZ9y+FKytSbpYFGFonSRxli4mHmBYOe9gGEyG3HR
+         sDq+CbCApJOVNVoFcqkPkmh4TEASIZiwG1Y1ORmzbw70AZ6kJx4bWJQjkRTuczdIys8B
+         odFdG9xLwygKbxLzR9UCYF01pBgW4P37cHtJaikHOciEBIu/4I7YRYWfMAisq7US22v/
+         Pkyh2/Fu3DfSOWIA7HWoA0EKC66RAR6zQkrXaRRbF0fMy45XTBretkfBTjMq2lssSvXv
+         rjTQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1771750188; x=1772354988;
+        d=1e100.net; s=20230601; t=1771750192; x=1772354992;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=Zm28kvmD9iuWWLwvtJBamWBricaC3Bz050FlGsgvxtM=;
-        b=NpxeqA54aMIfb3rsiDQfqIacJ70nzK7VfdZiGy1H6QLfw0L3o6k80WepvbeP5hmiq6
-         aZrraRTJlAJ59YfiEg2NLKeoCYfqWPnObh+TPSXcr83wxFBh9SZoRUJjG8wVWO0du2z3
-         c6cid2vVjba5vwxU5gjTgKW4cd78dBQlQN7OpRI/3wpOKNC6UAy86mQ+HFh2cTvlLGuh
-         Rr9NJXWDpbM1+yG4aI74iujsSFPBX1GMbmaef6Cpykcd2QDsEwH1rDQ1FXfCuuo1Jr55
-         mRdkGluv5IChYWoyYljT488MKZhkvmBLPn6MhaLdK8O5uJW/nco5+8nn7b64hnoZ3jhm
-         12Aw==
-X-Forwarded-Encrypted: i=1; AJvYcCUM9FnqvmsxANCZ85rwTnmW/p0OoYl2XEiSM6c1LTGEkX6zza1wFkIFlQN5ww8iuA85pDTDy+OV@vger.kernel.org
-X-Gm-Message-State: AOJu0Yw76yJo/ifQc6UQZhM37qknR5vu1XBJy0G0YnXASae48UvIqYR6
-	XVmBrjNjmAhu/S8Sl5iseRpV6OPRKYLTZKyavmEnBt8Gs7/CjA0KaClhHwfqUtorv0w=
-X-Gm-Gg: AZuq6aLujwOWh60pdpYVIXvn6D665xdDkAQRLCSrylasUKtz13oldtVYHOKTyL3jSxy
-	FKmkztpZbxpIA5uSvK8uk0GiJUIySwvmBBXWYAxsMb7PBoiM3GvqrKhtrVgqfeHOT6IfYp2qmLW
-	6zdv028MJSa0Tk/LVla/6eStQImQEb8+8IUe+2N0w2u4jFqBxvATT44JH+AIAZnXwOzdKJp5Ka0
-	NtLssRfjqAsf7FYYKtB61wL30a2Vchv8P2JAcBjpoqQ9bMDzP723mwloXVc8KIBe6Iy1ZygdAfk
-	iZFLSw/Cwcshqir0T9wroCqQgY9fxeJAePO0EvVrJ5jD3Qn3poJTo2sLvJ1JOOsktvZ1ZghN/y0
-	tgy1vOFzy2A+7vD/xeX+W2halRjL/dDroJr7LfARyL3W8zCH3LKdrD+zxbOzCiSvPWRD/9ZlRtO
-	BbmN0o2sJfs6DcnplZJv2+QZ8WYdXPb1F+y75SMqE0jzX6dv2gV1glHW2BTE9mWtPZT6UZv1am5
-	4DqBlljdi6KQPzvIyBVRtMZHw==
-X-Received: by 2002:ac8:5d43:0:b0:4ee:24e8:c9a1 with SMTP id d75a77b69052e-5070bc4bb77mr73824241cf.44.1771750187486;
-        Sun, 22 Feb 2026 00:49:47 -0800 (PST)
+        bh=0FaS5B9cAZ3FLbrF/E2Ph8lRS4c3BU4jWIQ83JN7l+U=;
+        b=aQWdsqqbsf1z3dzUi7q8E1DG+BNjeH0AmvfkxAVUzHEI7BxNN6Rg1UhaHPmw5JCRbe
+         W3bsznE9shjU8gSziVqjd6itKb4xLNoV6TlSmgO5sJ5+tIeL3E+A/b+8fiZkfTAg1pGd
+         XiApPrRcsmx4aS20D6yyj+xUb73ndTMW7bSe1lL9wEOqp8ZsumVa5/X5/gtwOrGzskkc
+         usADQqgjClqwn/nxW7cOmAQOeq/pSFAektwhwrnUA9mgx8fHwQrhUi6tOrWk33IbKpS/
+         2kYWVKCPGPjeSE62AoSdJ4sH3XpL+2CAxqMBI6cqycJke9tQWLGMDTiW2hzh5koTAndn
+         eDsA==
+X-Forwarded-Encrypted: i=1; AJvYcCXPu7I3dk+o+C7TibRSdpKKkYleBl/6HEb9Jq5nQvlOjUjWjcvclybinpAlO6hFl7l23ndtMB3N@vger.kernel.org
+X-Gm-Message-State: AOJu0Yz5EWFa015hMasKdSgKlwYYDpG0KNHmeTPp0rOy/Gz2UDVTxs6P
+	uNDPoQAxCIgef4oQEIv1N9yn1eRARZ4OC4clx6eLUFoAHKs6+gqd6Xw8LjQZapGu/Ek=
+X-Gm-Gg: AZuq6aKoryci8g/YD2OVQtjE8sCT2gtsUq8TcRK8IJOyVomdqaxIZdnVpUiEzLo1XGp
+	VrhJicv06f4UsUjjBWG4FIFw3YsIY9b5J2wWria8jE60VHD+nBARGf5kPmXibbT8imAJtq1VCdH
+	3v8ATQe2/WSipc/ztyZTSmQRs8IiJc8AbX0reQHHFt8R4V811t8yGLY4vRQM3kAGDLH85m5/JaF
+	zu2leBf//W8GQ6Ksg0b8eCfyxuHM7R5cjIF04klhf3hNAwc5kwFQyNYbgtVZNcmIjyIR6XjhdmH
+	4DUi/2eGo7FZK9Hn1uP6L3ZTP8nqQTKdJPhVhXX0BxIDBZzAXcVkow6y7iFt0X+hx9wj5rLLQYo
+	yRVcH1D2t0ovvsqYCgYuA9ydFtemWDthACA4kDuzeiKB7ZxbUY/qmO0tc5B64S7g6967sgn94L3
+	BQfRDEQvINWwY0lIUMzMBNwJ8Kx4lLB+4w+kx7u/VcOB4vN9p+rXuON96K3KI1aNp+zn/Da48tx
+	5kSsjBcube2Pm8=
+X-Received: by 2002:a05:622a:19a1:b0:4ff:c04c:3d75 with SMTP id d75a77b69052e-5070bc4b9ddmr74426531cf.43.1771750191585;
+        Sun, 22 Feb 2026 00:49:51 -0800 (PST)
 Received: from gourry-fedora-PF4VCD3F.lan (pool-96-255-20-138.washdc.ftas.verizon.net. [96.255.20.138])
-        by smtp.gmail.com with ESMTPSA id d75a77b69052e-5070d53f0fcsm38640631cf.9.2026.02.22.00.49.45
+        by smtp.gmail.com with ESMTPSA id d75a77b69052e-5070d53f0fcsm38640631cf.9.2026.02.22.00.49.49
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 22 Feb 2026 00:49:46 -0800 (PST)
+        Sun, 22 Feb 2026 00:49:51 -0800 (PST)
 From: Gregory Price <gourry@gourry.net>
 To: lsf-pc@lists.linux-foundation.org
 Cc: linux-kernel@vger.kernel.org,
@@ -152,9 +152,9 @@ Cc: linux-kernel@vger.kernel.org,
 	bhe@redhat.com,
 	zhengqi.arch@bytedance.com,
 	terry.bowman@amd.com
-Subject: [RFC PATCH v4 14/27] mm/memory-tiers: NP_OPS_DEMOTION - support private node demotion
-Date: Sun, 22 Feb 2026 03:48:29 -0500
-Message-ID: <20260222084842.1824063-15-gourry@gourry.net>
+Subject: [RFC PATCH v4 15/27] mm/mprotect: NP_OPS_PROTECT_WRITE - gate PTE/PMD write-upgrades
+Date: Sun, 22 Feb 2026 03:48:30 -0500
+Message-ID: <20260222084842.1824063-16-gourry@gourry.net>
 X-Mailer: git-send-email 2.53.0
 In-Reply-To: <20260222084842.1824063-1-gourry@gourry.net>
 References: <20260222084842.1824063-1-gourry@gourry.net>
@@ -171,14 +171,14 @@ X-Spamd-Result: default: False [1.34 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	MID_CONTAINS_FROM(1.00)[];
 	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64:c];
 	R_DKIM_ALLOW(-0.20)[gourry.net:s=google];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	DKIM_TRACE(0.00)[gourry.net:+];
-	TAGGED_FROM(0.00)[bounces-14115-lists,cgroups=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-14116-lists,cgroups=lfdr.de];
 	DMARC_NA(0.00)[gourry.net];
 	RCVD_TLS_LAST(0.00)[];
 	FREEMAIL_CC(0.00)[vger.kernel.org,kvack.org,lists.linux.dev,meta.com,linuxfoundation.org,kernel.org,stgolabs.net,huawei.com,intel.com,redhat.com,linux-foundation.org,oracle.com,suse.cz,google.com,suse.com,suse.de,nvidia.com,gmail.com,sk.com,gourry.net,linux.alibaba.com,rasmusvillemoes.dk,efficios.com,cmpxchg.org,arm.com,linux.dev,zte.com.cn,surriel.com,gentwo.org,tencent.com,huaweicloud.com,bytedance.com,amd.com];
@@ -188,389 +188,371 @@ X-Spamd-Result: default: False [1.34 / 15.00];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[gourry@gourry.net,cgroups@vger.kernel.org];
 	FROM_HAS_DN(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
+	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
 	RCVD_COUNT_FIVE(0.00)[5];
 	NEURAL_HAM(-0.00)[-1.000];
 	RCPT_COUNT_GT_50(0.00)[74];
 	TAGGED_RCPT(0.00)[cgroups];
 	TO_DN_NONE(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,gourry.net:mid,gourry.net:dkim,gourry.net:email]
-X-Rspamd-Queue-Id: 7F8BF16EB7A
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns,gourry.net:mid,gourry.net:dkim,gourry.net:email]
+X-Rspamd-Queue-Id: C0C0216EA95
 X-Rspamd-Action: no action
 
-The memory-tier subsystem needs to know which private nodes should
-appear as demotion targets.
+Services that intercept write faults (e.g., for promotion tracking)
+need PTEs to stay read-only. This requires preventing mprotect
+from silently upgrade the PTE, bypassing the service's handle_fault
+callback.
 
-Add NP_OPS_DEMOTION (BIT(2)):
-   Node can be added as a demotion target by memory-tiers.
+Add NP_OPS_PROTECT_WRITE and folio_managed_wrprotect().
 
-Add demotion backpressure support so private nodes can reject
-new demotions cleanly, allowing vmscan to fall back to swap.
+In change_pte_range() and change_huge_pmd(), suppress PTE write-upgrade
+when MM_CP_TRY_CHANGE_WRITABLE is sees the folio is write-protected.
 
-In the demotion path, try demotion to private nodes invididually,
-then clear private nodes from the demotion target mask until a
-non-private node is found, then fall back to the remaining mask.
-This prevents LRU inversion while still allowing forward progress.
+In handle_pte_fault() and do_huge_pmd_wp_page(), dispatch to the node's
+ops->handle_fault callback when set, allowing the service to handle write
+faults with promotion or other custom logic.
 
-This is the closest match to the current behavior without making
-private nodes inaccessible or preventing forward progress. We
-should probably completely re-do the demotion logic to allow less
-fallback and kick kswapd instead - right now we induce LRU
-inversions by simply falling back to any node in the demotion list.
-
-Add memory_tier_refresh_demotion() export for services to trigger
-re-evaluation of demotion targets after changing their flags.
+NP_OPS_MEMPOLICY is incompatible with NP_OPS_PROTECT_WRITE to avoid the
+footgun of binding a writable VMA to a write-protected node.
 
 Signed-off-by: Gregory Price <gourry@gourry.net>
 ---
- include/linux/memory-tiers.h |  9 +++++++
- include/linux/node_private.h | 22 +++++++++++++++++
- mm/internal.h                |  7 ++++++
- mm/memory-tiers.c            | 46 ++++++++++++++++++++++++++++++++----
- mm/page_alloc.c              | 12 +++++++---
- mm/vmscan.c                  | 30 ++++++++++++++++++++++-
- 6 files changed, 117 insertions(+), 9 deletions(-)
+ drivers/base/node.c          |  4 ++
+ include/linux/node_private.h | 22 ++++++++
+ mm/huge_memory.c             | 17 ++++++-
+ mm/internal.h                | 99 ++++++++++++++++++++++++++++++++++++
+ mm/memory.c                  | 15 ++++++
+ mm/migrate.c                 | 14 +----
+ mm/mprotect.c                |  4 +-
+ 7 files changed, 159 insertions(+), 16 deletions(-)
 
-diff --git a/include/linux/memory-tiers.h b/include/linux/memory-tiers.h
-index 3e1159f6762c..e1476432e359 100644
---- a/include/linux/memory-tiers.h
-+++ b/include/linux/memory-tiers.h
-@@ -58,6 +58,7 @@ struct memory_dev_type *mt_get_memory_type(int adist);
- int next_demotion_node(int node);
- void node_get_allowed_targets(pg_data_t *pgdat, nodemask_t *targets);
- bool node_is_toptier(int node);
-+void memory_tier_refresh_demotion(void);
- #else
- static inline int next_demotion_node(int node)
- {
-@@ -73,6 +74,10 @@ static inline bool node_is_toptier(int node)
- {
- 	return true;
- }
-+
-+static inline void memory_tier_refresh_demotion(void)
-+{
-+}
- #endif
+diff --git a/drivers/base/node.c b/drivers/base/node.c
+index c08b5a948779..a4955b9b5b93 100644
+--- a/drivers/base/node.c
++++ b/drivers/base/node.c
+@@ -957,6 +957,10 @@ int node_private_set_ops(int nid, const struct node_private_ops *ops)
+ 	    !(ops->flags & NP_OPS_MIGRATION))
+ 		return -EINVAL;
  
- #else
-@@ -106,6 +111,10 @@ static inline bool node_is_toptier(int node)
- 	return true;
- }
- 
-+static inline void memory_tier_refresh_demotion(void)
-+{
-+}
++	if ((ops->flags & NP_OPS_MEMPOLICY) &&
++	    (ops->flags & NP_OPS_PROTECT_WRITE))
++		return -EINVAL;
 +
- static inline int register_mt_adistance_algorithm(struct notifier_block *nb)
- {
- 	return 0;
+ 	mutex_lock(&node_private_lock);
+ 	np = rcu_dereference_protected(NODE_DATA(nid)->node_private,
+ 				       lockdep_is_held(&node_private_lock));
 diff --git a/include/linux/node_private.h b/include/linux/node_private.h
-index e9b58afa366b..e254e36056cd 100644
+index e254e36056cd..27d6e5d84e61 100644
 --- a/include/linux/node_private.h
 +++ b/include/linux/node_private.h
-@@ -88,6 +88,8 @@ struct node_private_ops {
- #define NP_OPS_MIGRATION		BIT(0)
- /* Allow mempolicy-directed allocation and mbind migration to this node */
+@@ -70,6 +70,24 @@ struct vm_fault;
+  *     PFN-based metadata (compression tables, device page tables, DMA
+  *     mappings, etc.) before any access through the page tables.
+  *
++ * @handle_fault: Handle fault on folio on this private node.
++ *   [folio-referenced callback, PTL held on entry]
++ *
++ *   Called from handle_pte_fault() (PTE level) or do_huge_pmd_wp_page()
++ *   (PMD level) after lock acquisition and entry verification.
++ *   @folio is the faulting folio, @level indicates the page table level.
++ *
++ *   For PGTABLE_LEVEL_PTE: vmf->pte is mapped and vmf->ptl is the
++ *   PTE lock.  Release via pte_unmap_unlock(vmf->pte, vmf->ptl).
++ *
++ *   For PGTABLE_LEVEL_PMD: vmf->pte is NULL and vmf->ptl is the
++ *   PMD lock.  Release via spin_unlock(vmf->ptl).
++ *
++ *   The callback MUST release PTL on ALL paths.
++ *   The caller will NOT touch the page table entry after this returns.
++ *
++ *   Returns: vm_fault_t result (0, VM_FAULT_RETRY, etc.)
++ *
+  * @flags: Operation exclusion flags (NP_OPS_* constants).
+  *
+  */
+@@ -81,6 +99,8 @@ struct node_private_ops {
+ 				  enum migrate_reason reason,
+ 				  unsigned int *nr_succeeded);
+ 	void (*folio_migrate)(struct folio *src, struct folio *dst);
++	vm_fault_t (*handle_fault)(struct folio *folio, struct vm_fault *vmf,
++				   enum pgtable_level level);
+ 	unsigned long flags;
+ };
+ 
+@@ -90,6 +110,8 @@ struct node_private_ops {
  #define NP_OPS_MEMPOLICY		BIT(1)
-+/* Node participates as a demotion target in memory-tiers */
-+#define NP_OPS_DEMOTION			BIT(2)
+ /* Node participates as a demotion target in memory-tiers */
+ #define NP_OPS_DEMOTION			BIT(2)
++/* Prevent mprotect/NUMA from upgrading PTEs to writable on this node */
++#define NP_OPS_PROTECT_WRITE		BIT(3)
  
  /**
   * struct node_private - Per-node container for N_MEMORY_PRIVATE nodes
-@@ -101,12 +103,14 @@ struct node_private_ops {
-  *		callbacks that may sleep; 0 = fully released)
-  * @released: Signaled when refcount drops to 0; unregister waits on this
-  * @ops: Service callbacks and exclusion flags (NULL until service registers)
-+ * @migration_blocked: Service signals migrations should pause
-  */
- struct node_private {
- 	void *owner;
- 	refcount_t refcount;
- 	struct completion released;
- 	const struct node_private_ops *ops;
-+	bool migration_blocked;
- };
+diff --git a/mm/huge_memory.c b/mm/huge_memory.c
+index 2ecae494291a..d9ba6593244d 100644
+--- a/mm/huge_memory.c
++++ b/mm/huge_memory.c
+@@ -2063,12 +2063,14 @@ vm_fault_t do_huge_pmd_wp_page(struct vm_fault *vmf)
+ 	struct page *page;
+ 	unsigned long haddr = vmf->address & HPAGE_PMD_MASK;
+ 	pmd_t orig_pmd = vmf->orig_pmd;
++	vm_fault_t ret;
++
  
- #ifdef CONFIG_NUMA
-@@ -306,6 +310,19 @@ static inline bool nodes_private_mpol_allowed(const nodemask_t *nodes)
- 	}
- 	return eligible;
- }
-+
-+static inline bool node_private_migration_blocked(int nid)
-+{
-+	struct node_private *np;
-+	bool blocked;
-+
-+	rcu_read_lock();
-+	np = rcu_dereference(NODE_DATA(nid)->node_private);
-+	blocked = np && READ_ONCE(np->migration_blocked);
-+	rcu_read_unlock();
-+
-+	return blocked;
-+}
- #endif /* CONFIG_MEMORY_HOTPLUG */
+ 	vmf->ptl = pmd_lockptr(vma->vm_mm, vmf->pmd);
+ 	VM_BUG_ON_VMA(!vma->anon_vma, vma);
  
- #else /* !CONFIG_NUMA */
-@@ -404,6 +421,11 @@ static inline bool nodes_private_mpol_allowed(const nodemask_t *nodes)
+ 	if (is_huge_zero_pmd(orig_pmd)) {
+-		vm_fault_t ret = do_huge_zero_wp_pmd(vmf);
++		ret = do_huge_zero_wp_pmd(vmf);
+ 
+ 		if (!(ret & VM_FAULT_FALLBACK))
+ 			return ret;
+@@ -2088,6 +2090,13 @@ vm_fault_t do_huge_pmd_wp_page(struct vm_fault *vmf)
+ 	folio = page_folio(page);
+ 	VM_BUG_ON_PAGE(!PageHead(page), page);
+ 
++	/* Private-managed write-protect: let the service handle the fault */
++	if (unlikely(folio_is_private_managed(folio))) {
++		if (folio_managed_handle_fault(folio, vmf,
++					      PGTABLE_LEVEL_PMD, &ret))
++			return ret;
++	}
++
+ 	/* Early check when only holding the PT lock. */
+ 	if (PageAnonExclusive(page))
+ 		goto reuse;
+@@ -2633,7 +2642,8 @@ int change_huge_pmd(struct mmu_gather *tlb, struct vm_area_struct *vma,
+ 
+ 	/* See change_pte_range(). */
+ 	if ((cp_flags & MM_CP_TRY_CHANGE_WRITABLE) && !pmd_write(entry) &&
+-	    can_change_pmd_writable(vma, addr, entry))
++	    can_change_pmd_writable(vma, addr, entry) &&
++	    !folio_managed_wrprotect(pmd_folio(entry)))
+ 		entry = pmd_mkwrite(entry, vma);
+ 
+ 	ret = HPAGE_PMD_NR;
+@@ -4943,6 +4953,9 @@ void remove_migration_pmd(struct page_vma_mapped_walk *pvmw, struct page *new)
+ 	if (folio_test_dirty(folio) && softleaf_is_migration_dirty(entry))
+ 		pmde = pmd_mkdirty(pmde);
+ 
++	if (folio_managed_wrprotect(folio))
++		pmde = pmd_wrprotect(pmde);
++
+ 	if (folio_is_device_private(folio)) {
+ 		swp_entry_t entry;
+ 
+diff --git a/mm/internal.h b/mm/internal.h
+index 5950e20d4023..ae4ff86e8dc6 100644
+--- a/mm/internal.h
++++ b/mm/internal.h
+@@ -11,6 +11,7 @@
+ #include <linux/khugepaged.h>
+ #include <linux/mm.h>
+ #include <linux/mm_inline.h>
++#include <linux/node_private.h>
+ #include <linux/pagemap.h>
+ #include <linux/pagewalk.h>
+ #include <linux/rmap.h>
+@@ -18,6 +19,7 @@
+ #include <linux/leafops.h>
+ #include <linux/swap_cgroup.h>
+ #include <linux/tracepoint-defs.h>
++#include <linux/node_private.h>
+ 
+ /* Internal core VMA manipulation functions. */
+ #include "vma.h"
+@@ -1449,6 +1451,103 @@ static inline bool folio_managed_on_free(struct folio *folio)
  	return false;
  }
  
-+static inline bool node_private_migration_blocked(int nid)
++/*
++ * folio_managed_handle_fault - Dispatch fault on managed-memory folio
++ * @folio: the faulting folio (must not be NULL)
++ * @vmf: the vm_fault descriptor (PTL held: vmf->ptl locked)
++ * @level: page table level (PGTABLE_LEVEL_PTE or PGTABLE_LEVEL_PMD)
++ * @ret: output fault result if handled
++ *
++ * Called with PTL held.  If a handle_fault callback exists, it is invoked
++ * with PTL still held.  The callback is responsible for releasing PTL on
++ * all paths.
++ *
++ * Returns true if the service handled the fault (PTL released by callback,
++ * caller returns *ret).  Returns false if no handler exists (PTL still held,
++ * caller continues with normal fault handling).
++ */
++static inline bool folio_managed_handle_fault(struct folio *folio,
++					      struct vm_fault *vmf,
++					      enum pgtable_level level,
++					      vm_fault_t *ret)
 +{
++	/* Zone device pages use swap entries; handled in do_swap_page */
++	if (folio_is_zone_device(folio))
++		return false;
++
++	if (folio_is_private_node(folio)) {
++		const struct node_private_ops *ops =
++			folio_node_private_ops(folio);
++
++		if (ops && ops->handle_fault) {
++			*ret = ops->handle_fault(folio, vmf, level);
++			return true;
++		}
++	}
 +	return false;
 +}
 +
- static inline int node_private_register(int nid, struct node_private *np)
- {
- 	return -ENODEV;
-diff --git a/mm/internal.h b/mm/internal.h
-index 6ab4679fe943..5950e20d4023 100644
---- a/mm/internal.h
-+++ b/mm/internal.h
-@@ -1206,6 +1206,8 @@ extern int node_reclaim_mode;
- 
- extern int node_reclaim(struct pglist_data *, gfp_t, unsigned int);
- extern int find_next_best_node(int node, nodemask_t *used_node_mask);
-+extern int find_next_best_node_in(int node, nodemask_t *used_node_mask,
-+				  const nodemask_t *candidates);
- extern bool numa_zone_alloc_allowed(int alloc_flags, struct zone *zone,
- 			      gfp_t gfp_mask);
- #else
-@@ -1220,6 +1222,11 @@ static inline int find_next_best_node(int node, nodemask_t *used_node_mask)
- {
- 	return NUMA_NO_NODE;
- }
-+static inline int find_next_best_node_in(int node, nodemask_t *used_node_mask,
-+					 const nodemask_t *candidates)
-+{
-+	return NUMA_NO_NODE;
-+}
- static inline bool numa_zone_alloc_allowed(int alloc_flags, struct zone *zone,
- 				     gfp_t gfp_mask)
- {
-diff --git a/mm/memory-tiers.c b/mm/memory-tiers.c
-index 9c742e18e48f..434190fdc078 100644
---- a/mm/memory-tiers.c
-+++ b/mm/memory-tiers.c
-@@ -3,6 +3,7 @@
- #include <linux/lockdep.h>
- #include <linux/sysfs.h>
- #include <linux/kobject.h>
-+#include <linux/node_private.h>
- #include <linux/memory.h>
- #include <linux/memory-tiers.h>
- #include <linux/notifier.h>
-@@ -380,6 +381,8 @@ static void disable_all_demotion_targets(void)
- 		if (memtier)
- 			memtier->lower_tier_mask = NODE_MASK_NONE;
- 	}
-+	for_each_node_state(node, N_MEMORY_PRIVATE)
-+		node_demotion[node].preferred = NODE_MASK_NONE;
- 	/*
- 	 * Ensure that the "disable" is visible across the system.
- 	 * Readers will see either a combination of before+disable
-@@ -421,6 +424,7 @@ static void establish_demotion_targets(void)
- 	int target = NUMA_NO_NODE, node;
- 	int distance, best_distance;
- 	nodemask_t tier_nodes, lower_tier;
-+	nodemask_t all_memory;
- 
- 	lockdep_assert_held_once(&memory_tier_lock);
- 
-@@ -429,6 +433,13 @@ static void establish_demotion_targets(void)
- 
- 	disable_all_demotion_targets();
- 
-+	/* Include private nodes that have opted in to demotion. */
-+	all_memory = node_states[N_MEMORY];
-+	for_each_node_state(node, N_MEMORY_PRIVATE) {
-+		if (node_private_has_flag(node, NP_OPS_DEMOTION))
-+			node_set(node, all_memory);
-+	}
-+
- 	for_each_node_state(node, N_MEMORY) {
- 		best_distance = -1;
- 		nd = &node_demotion[node];
-@@ -442,12 +453,12 @@ static void establish_demotion_targets(void)
- 		memtier = list_next_entry(memtier, list);
- 		tier_nodes = get_memtier_nodemask(memtier);
- 		/*
--		 * find_next_best_node, use 'used' nodemask as a skip list.
-+		 * find_next_best_node_in, use 'used' nodemask as a skip list.
- 		 * Add all memory nodes except the selected memory tier
- 		 * nodelist to skip list so that we find the best node from the
- 		 * memtier nodelist.
- 		 */
--		nodes_andnot(tier_nodes, node_states[N_MEMORY], tier_nodes);
-+		nodes_andnot(tier_nodes, all_memory, tier_nodes);
- 
- 		/*
- 		 * Find all the nodes in the memory tier node list of same best distance.
-@@ -455,7 +466,8 @@ static void establish_demotion_targets(void)
- 		 * in the preferred mask when allocating pages during demotion.
- 		 */
- 		do {
--			target = find_next_best_node(node, &tier_nodes);
-+			target = find_next_best_node_in(node, &tier_nodes,
-+							&all_memory);
- 			if (target == NUMA_NO_NODE)
- 				break;
- 
-@@ -495,7 +507,7 @@ static void establish_demotion_targets(void)
- 	 * allocation to a set of nodes that is closer the above selected
- 	 * preferred node.
- 	 */
--	lower_tier = node_states[N_MEMORY];
-+	lower_tier = all_memory;
- 	list_for_each_entry(memtier, &memory_tiers, list) {
- 		/*
- 		 * Keep removing current tier from lower_tier nodes,
-@@ -542,7 +554,7 @@ static struct memory_tier *set_node_memory_tier(int node)
- 
- 	lockdep_assert_held_once(&memory_tier_lock);
- 
--	if (!node_state(node, N_MEMORY))
-+	if (!node_state(node, N_MEMORY) && !node_state(node, N_MEMORY_PRIVATE))
- 		return ERR_PTR(-EINVAL);
- 
- 	mt_calc_adistance(node, &adist);
-@@ -865,6 +877,30 @@ int mt_calc_adistance(int node, int *adist)
- }
- EXPORT_SYMBOL_GPL(mt_calc_adistance);
- 
 +/**
-+ * memory_tier_refresh_demotion() - Re-establish demotion targets
++ * folio_managed_wrprotect - Should this folio's mappings stay write-protected?
++ * @folio: the folio to check
 + *
-+ * Called by services after registering or unregistering ops->migrate_to on
-+ * a private node, so that establish_demotion_targets() picks up the change.
++ * Returns true if the folio is on a private node with NP_OPS_PROTECT_WRITE,
++ * meaning page table entries (PTE or PMD) should not be made writable.
++ * Write faults are intercepted by the service's handle_fault callback
++ * to promote the folio to DRAM.
++ *
++ * Used by:
++ *   - change_pte_range() / change_huge_pmd(): prevent mprotect write-upgrade
++ *   - remove_migration_pte() / remove_migration_pmd(): strip write after migration
++ *   - do_huge_pmd_wp_page(): dispatch to fault handler instead of reuse
 + */
-+void memory_tier_refresh_demotion(void)
++static inline bool folio_managed_wrprotect(struct folio *folio)
 +{
-+	int nid;
-+
-+	mutex_lock(&memory_tier_lock);
-+	/*
-+	 * Ensure private nodes are registered with a tier, otherwise
-+	 * they won't show up in any node's demotion targets nodemask.
-+	 */
-+	for_each_node_state(nid, N_MEMORY_PRIVATE) {
-+		if (!__node_get_memory_tier(nid))
-+			set_node_memory_tier(nid);
-+	}
-+	establish_demotion_targets();
-+	mutex_unlock(&memory_tier_lock);
++	return unlikely(folio_is_private_node(folio) &&
++			folio_private_flags(folio, NP_OPS_PROTECT_WRITE));
 +}
-+EXPORT_SYMBOL_GPL(memory_tier_refresh_demotion);
 +
- static int __meminit memtier_hotplug_callback(struct notifier_block *self,
- 					      unsigned long action, void *_arg)
- {
-diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index ec6c1f8e85d8..e272dfdc6b00 100644
---- a/mm/page_alloc.c
-+++ b/mm/page_alloc.c
-@@ -5589,7 +5589,8 @@ static int node_load[MAX_NUMNODES];
-  *
-  * Return: node id of the found node or %NUMA_NO_NODE if no node is found.
-  */
--int find_next_best_node(int node, nodemask_t *used_node_mask)
-+int find_next_best_node_in(int node, nodemask_t *used_node_mask,
-+			   const nodemask_t *candidates)
- {
- 	int n, val;
- 	int min_val = INT_MAX;
-@@ -5599,12 +5600,12 @@ int find_next_best_node(int node, nodemask_t *used_node_mask)
- 	 * Use the local node if we haven't already, but for memoryless local
- 	 * node, we should skip it and fall back to other nodes.
++/**
++ * folio_managed_fixup_migration_pte - Fixup PTE after migration for
++ *                                     managed memory pages.
++ * @new: the destination page
++ * @pte: the PTE being installed (normal PTE built by caller)
++ * @old_pte: the original PTE (before migration, for swap entry flags)
++ * @vma: the VMA
++ *
++ * For MEMORY_DEVICE_PRIVATE pages: replaces the PTE with a device-private
++ * swap entry, preserving soft_dirty and uffd_wp from old_pte.
++ *
++ * For N_MEMORY_PRIVATE pages with NP_OPS_PROTECT_WRITE: strips the write
++ * bit so the next write triggers the fault handler for promotion.
++ *
++ * For normal pages: returns pte unmodified.
++ */
++static inline pte_t folio_managed_fixup_migration_pte(struct page *new,
++						      pte_t pte,
++						      pte_t old_pte,
++						      struct vm_area_struct *vma)
++{
++	if (unlikely(is_device_private_page(new))) {
++		softleaf_t entry;
++
++		if (pte_write(pte))
++			entry = make_writable_device_private_entry(
++						page_to_pfn(new));
++		else
++			entry = make_readable_device_private_entry(
++						page_to_pfn(new));
++		pte = softleaf_to_pte(entry);
++		if (pte_swp_soft_dirty(old_pte))
++			pte = pte_swp_mksoft_dirty(pte);
++		if (pte_swp_uffd_wp(old_pte))
++			pte = pte_swp_mkuffd_wp(pte);
++	} else if (folio_managed_wrprotect(page_folio(new))) {
++		pte = pte_wrprotect(pte);
++	}
++	return pte;
++}
++
+ /**
+  * folio_managed_migrate_notify - Notify service that a folio changed location
+  * @src: the old folio (about to be freed)
+diff --git a/mm/memory.c b/mm/memory.c
+index 2a55edc48a65..0f78988befef 100644
+--- a/mm/memory.c
++++ b/mm/memory.c
+@@ -6079,6 +6079,10 @@ static vm_fault_t do_numa_page(struct vm_fault *vmf)
+ 	 * Make it present again, depending on how arch implements
+ 	 * non-accessible ptes, some can allow access by kernel mode.
  	 */
--	if (!node_isset(node, *used_node_mask) && node_state(node, N_MEMORY)) {
-+	if (!node_isset(node, *used_node_mask) && node_isset(node, *candidates)) {
- 		node_set(node, *used_node_mask);
- 		return node;
- 	}
- 
--	for_each_node_state(n, N_MEMORY) {
-+	for_each_node_mask(n, *candidates) {
- 
- 		/* Don't want a node to appear more than once */
- 		if (node_isset(n, *used_node_mask))
-@@ -5636,6 +5637,11 @@ int find_next_best_node(int node, nodemask_t *used_node_mask)
- 	return best_node;
- }
- 
-+int find_next_best_node(int node, nodemask_t *used_node_mask)
-+{
-+	return find_next_best_node_in(node, used_node_mask,
-+				      &node_states[N_MEMORY]);
-+}
- 
- /*
-  * Build zonelists ordered by node and zones within node.
-diff --git a/mm/vmscan.c b/mm/vmscan.c
-index 6113be4d3519..0f534428ea88 100644
---- a/mm/vmscan.c
-+++ b/mm/vmscan.c
-@@ -58,6 +58,7 @@
- #include <linux/random.h>
- #include <linux/mmu_notifier.h>
- #include <linux/parser.h>
-+#include <linux/node_private.h>
- 
- #include <asm/tlbflush.h>
- #include <asm/div64.h>
-@@ -355,6 +356,10 @@ static bool can_demote(int nid, struct scan_control *sc,
- 	if (demotion_nid == NUMA_NO_NODE)
- 		return false;
- 
-+	/* Don't demote when the target's service signals backpressure */
-+	if (node_private_migration_blocked(demotion_nid))
-+		return false;
-+
- 	/* If demotion node isn't in the cgroup's mems_allowed, fall back */
- 	return mem_cgroup_node_allowed(memcg, demotion_nid);
- }
-@@ -1022,8 +1027,10 @@ static unsigned int demote_folio_list(struct list_head *demote_folios,
- 				     struct pglist_data *pgdat)
++	if (unlikely(folio && folio_managed_wrprotect(folio))) {
++		writable = false;
++		ignore_writable = true;
++	}
+ 	if (folio && folio_test_large(folio))
+ 		numa_rebuild_large_mapping(vmf, vma, folio, pte, ignore_writable,
+ 					   pte_write_upgrade);
+@@ -6228,6 +6232,7 @@ static void fix_spurious_fault(struct vm_fault *vmf,
+  */
+ static vm_fault_t handle_pte_fault(struct vm_fault *vmf)
  {
- 	int target_nid = next_demotion_node(pgdat->node_id);
--	unsigned int nr_succeeded;
-+	int first_nid = target_nid;
-+	unsigned int nr_succeeded = 0;
- 	nodemask_t allowed_mask;
-+	int ret;
++	struct folio *folio;
+ 	pte_t entry;
  
- 	struct migration_target_control mtc = {
- 		/*
-@@ -1046,6 +1053,27 @@ static unsigned int demote_folio_list(struct list_head *demote_folios,
- 
- 	node_get_allowed_targets(pgdat, &allowed_mask);
- 
-+	/* Try private node targets until we find non-private node */
-+	while (node_state(target_nid, N_MEMORY_PRIVATE)) {
-+		unsigned int nr = 0;
+ 	if (unlikely(pmd_none(*vmf->pmd))) {
+@@ -6284,6 +6289,16 @@ static vm_fault_t handle_pte_fault(struct vm_fault *vmf)
+ 		update_mmu_tlb(vmf->vma, vmf->address, vmf->pte);
+ 		goto unlock;
+ 	}
 +
-+		ret = node_private_migrate_to(demote_folios, target_nid,
-+					      MIGRATE_ASYNC, MR_DEMOTION,
-+					      &nr);
-+		nr_succeeded += nr;
-+		if (ret == 0 || list_empty(demote_folios))
-+			return nr_succeeded;
++	folio = vm_normal_folio(vmf->vma, vmf->address, entry);
++	if (unlikely(folio && folio_is_private_managed(folio))) {
++		vm_fault_t fault_ret;
 +
-+		target_nid = next_node_in(target_nid, allowed_mask);
-+		if (target_nid == first_nid)
-+			return nr_succeeded;
-+		if (!node_state(target_nid, N_MEMORY_PRIVATE))
-+			break;
++		if (folio_managed_handle_fault(folio, vmf, PGTABLE_LEVEL_PTE,
++					       &fault_ret))
++			return fault_ret;
 +	}
 +
-+	/* target_nid is a non-private node; use standard migration */
-+	mtc.nid = target_nid;
-+
- 	/* Demotion ignores all cpuset and mempolicy settings */
- 	migrate_pages(demote_folios, alloc_demote_folio, NULL,
- 		      (unsigned long)&mtc, MIGRATE_ASYNC, MR_DEMOTION,
+ 	if (vmf->flags & (FAULT_FLAG_WRITE|FAULT_FLAG_UNSHARE)) {
+ 		if (!pte_write(entry))
+ 			return do_wp_page(vmf);
+diff --git a/mm/migrate.c b/mm/migrate.c
+index a54d4af04df3..f632e8b03504 100644
+--- a/mm/migrate.c
++++ b/mm/migrate.c
+@@ -398,19 +398,7 @@ static bool remove_migration_pte(struct folio *folio,
+ 		if (folio_test_anon(folio) && !softleaf_is_migration_read(entry))
+ 			rmap_flags |= RMAP_EXCLUSIVE;
+ 
+-		if (unlikely(is_device_private_page(new))) {
+-			if (pte_write(pte))
+-				entry = make_writable_device_private_entry(
+-							page_to_pfn(new));
+-			else
+-				entry = make_readable_device_private_entry(
+-							page_to_pfn(new));
+-			pte = softleaf_to_pte(entry);
+-			if (pte_swp_soft_dirty(old_pte))
+-				pte = pte_swp_mksoft_dirty(pte);
+-			if (pte_swp_uffd_wp(old_pte))
+-				pte = pte_swp_mkuffd_wp(pte);
+-		}
++		pte = folio_managed_fixup_migration_pte(new, pte, old_pte, vma);
+ 
+ #ifdef CONFIG_HUGETLB_PAGE
+ 		if (folio_test_hugetlb(folio)) {
+diff --git a/mm/mprotect.c b/mm/mprotect.c
+index 283889e4f1ce..830be609bc24 100644
+--- a/mm/mprotect.c
++++ b/mm/mprotect.c
+@@ -30,6 +30,7 @@
+ #include <linux/mm_inline.h>
+ #include <linux/pgtable.h>
+ #include <linux/userfaultfd_k.h>
++#include <linux/node_private.h>
+ #include <uapi/linux/mman.h>
+ #include <asm/cacheflush.h>
+ #include <asm/mmu_context.h>
+@@ -290,7 +291,8 @@ static long change_pte_range(struct mmu_gather *tlb,
+ 			 * COW or special handling is required.
+ 			 */
+ 			if ((cp_flags & MM_CP_TRY_CHANGE_WRITABLE) &&
+-			     !pte_write(ptent))
++			     !pte_write(ptent) &&
++			     !(folio && folio_managed_wrprotect(folio)))
+ 				set_write_prot_commit_flush_ptes(vma, folio, page,
+ 				addr, pte, oldpte, ptent, nr_ptes, tlb);
+ 			else
 -- 
 2.53.0
 
