@@ -1,111 +1,105 @@
-Return-Path: <cgroups+bounces-14178-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-14172-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id uCEUA+TwnGkaMQQAu9opvQ
-	(envelope-from <cgroups+bounces-14178-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Tue, 24 Feb 2026 01:29:24 +0100
+	id iF72CfLWnGkJLAQAu9opvQ
+	(envelope-from <cgroups+bounces-14172-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Mon, 23 Feb 2026 23:38:42 +0100
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 836881803B7
-	for <lists+cgroups@lfdr.de>; Tue, 24 Feb 2026 01:29:23 +0100 (CET)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
+	by mail.lfdr.de (Postfix) with ESMTPS id BCC8917E709
+	for <lists+cgroups@lfdr.de>; Mon, 23 Feb 2026 23:38:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id B171330FED72
-	for <lists+cgroups@lfdr.de>; Tue, 24 Feb 2026 00:27:40 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id 47B5D301BDCE
+	for <lists+cgroups@lfdr.de>; Mon, 23 Feb 2026 22:38:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6642C21A447;
-	Tue, 24 Feb 2026 00:27:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 506B737BE64;
+	Mon, 23 Feb 2026 22:38:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GZF9p1GW"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mPjEDf68"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-vs1-f53.google.com (mail-vs1-f53.google.com [209.85.217.53])
+Received: from mail-ot1-f54.google.com (mail-ot1-f54.google.com [209.85.210.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E128478F59
-	for <cgroups@vger.kernel.org>; Tue, 24 Feb 2026 00:27:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.217.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B7ED237A49D
+	for <cgroups@vger.kernel.org>; Mon, 23 Feb 2026 22:38:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1771892859; cv=none; b=p28ihEeYZ8kpgwmmKSnA4HjXZWloF/Rz1MNZm/OEOA7oIEH/ibpW1ZVPS8hZPk6RULRRogPCmo3lg+XNcDc/i12N0GIwYsB2xzGvYn4Pr2EM2BelcXgxrqeS3PO7lPsArYQNBcAqTNvnObE1X1dbQpFr4VTMkQLJl2E5vpYIaf8=
+	t=1771886319; cv=none; b=u2mhPA564CVrKhiEPsaAexCyI1/YgJBQrf7QU7ANVASPlyq8FHbE9EEp9xTvbnGxdbnL8HO+PdFJoPRVerxxmjJoL4MhMO5TU75/CtdR2Smaz2u9tfLI0PpNYGptP0b+eWAKMgmagrABhTVR/tkc5YXAIVA24WSERHNoiF0evU8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1771892859; c=relaxed/simple;
-	bh=E8aK7KidsxhYI9fT3xeIpRXL2fMl/FJi1hO1vuu1bMY=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=VDSuLkXbvzrLhWgDinM+THyoEDHs0YbvLvbyzVJxn9e2MPQGECep6W5vxMFyVvXYnGNOnNfoF3MTV5NquTOYTiDOO1dz34zc3hTpu0XdgXSVr3Cc7cT+t3gRwi+TPLM6oD3ON2zkRhIU044dw4R+ankIljEYgxLMZe0f4VVZv/I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=GZF9p1GW; arc=none smtp.client-ip=209.85.217.53
+	s=arc-20240116; t=1771886319; c=relaxed/simple;
+	bh=CaHKfHzTnSEHysdxeu/IeDFU49MuR1XQ3fwEJyAveAQ=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=Ebxwh8PDW2GiVozbFazoKeUTq3JRf7aWWXSRaQnE3Qv+/o1998oBGrRqNDXlUN/5xB9zUQsQBv57sz6e6QWwbHllWeUyVCvZbCuynpHPQFa6sHDrixYpVYSJgcBOzZ+UFLRIWV67x6WARlnfyM4QQrmXro0TJPFcFqxv0N+/aKo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=mPjEDf68; arc=none smtp.client-ip=209.85.210.54
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-vs1-f53.google.com with SMTP id ada2fe7eead31-5fadd5d4319so3650473137.1
-        for <cgroups@vger.kernel.org>; Mon, 23 Feb 2026 16:27:37 -0800 (PST)
+Received: by mail-ot1-f54.google.com with SMTP id 46e09a7af769-7d19d3c7208so3437235a34.0
+        for <cgroups@vger.kernel.org>; Mon, 23 Feb 2026 14:38:37 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1771892857; x=1772497657; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=r71zDlsdwqZwuXP6L6SMlSArsf0mkKQK+1/SxbuvMeM=;
-        b=GZF9p1GWHeEHdA2aVWbd7ggVKuz0Iy02BBgBLKB0wJ4mZJ8mdsNgJEyC3imOktrPk/
-         w5NO3m9HbmIpgAeWBHP3rKnVViYhB9H2l8vJunE8kSKuZWDmyzrxRCmk4BU1jjL3MX4Y
-         CEaeeh8sw0nbff4NpqexV3/fRANQCumbOpMqNbxVvHLaDjRk/0nJP09thtdiNd91xJfG
-         z+lyBJ7nSrYsoGd+d+awSLemLDidk2TydTjlTGKhPsxJWUMRlFAse/XZkdDCyxWyRz1A
-         SgNCz8AfSLwbA1GNt2MBkhzYK7sdE4Z2D0h6824sG7Qonzicg4feLUKE2Vmt6gOCK2KC
-         KpoA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1771892857; x=1772497657;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1771886316; x=1772491116; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=r71zDlsdwqZwuXP6L6SMlSArsf0mkKQK+1/SxbuvMeM=;
-        b=vgm5ItRQOqKIUjq4aJKBKNNTq3Iej68byDPAuO/2aKqpbvqsDVK+Ia0gJ9dgSBV/ht
-         usnu5GhjTy2wXnVhxnzvkue6lUZgcdZKOC06c94TtPd15A2H19prtZs6X6WOO5Oax/30
-         NgE3ywymDyVBLZv9wHqOrzw2/4lTqs/M78+aUpHHmuZkek+hrgzwp6sY6phYw9Jw8T85
-         NRSXzgF5bnP32zlTbkEU+EtdgVzD5jZgmUn1S9wH1tYMAOlfME4fvKu2dXoGCVNrphfO
-         ck87sGQvNHf8SZLVMNS2W0OG3hZfn2IpMPjIHZqEuAPFLA+8M2j50XwmedenXWNCp9qp
-         Mczg==
-X-Forwarded-Encrypted: i=1; AJvYcCVEXCsyguukWtbUn1rMMA0Rz900xEpiJx+jh4CHotuJfJ5K+NNvz8FPfEgqttELbUvyoVHJZDlr@vger.kernel.org
-X-Gm-Message-State: AOJu0YxmV1kZarsKlPwLJ7wCDoFqUygaUY6fHa0BGHlZYfEo4ViE4eSq
-	2p1GsM3E9T1uC+2DVXcLigN1Z6i9wi8j4F/P8UMEjEORTGy3RRJ3FbiZ
-X-Gm-Gg: ATEYQzzT2yZNiDX2pRgqvLvw9nyfmHs940/qivWt9JZI4JA3amVjlWYhtrC5rZfWYdG
-	V/Pe8nRdrWvmPGS7DccQCiHFX577qx2YhQWDQ+xnTvMPVEyuQTC/umQ6HUgykzfWKI9r+/LoF65
-	qS+38ngp5p3ryUA+EwbHoYXyXZUy0G6xtx/nRuaNrtHmb922lY2UXkEjB5JPYQYn0fT5oapE7i4
-	+E5D1ICj4GI+Rgw2IFbA+p9373zJsoLGAmWG0F6+NquNxaHH80e8P2giSlGCvaFpj3WzjBw3L4b
-	5yGex5VVmmoSuyCWKdJm8HBtFvnX43cJ1U0jx4BSUuB8HLfc228n7mSPw/m8hkc+9HrNVBQZBfR
-	AfRQbV3LhYvZTComjiaQhDaggVk+Lj5GptQmEJm0U4ZTWLrCcfVerL2pCP3s1z7U9qbdm60cWuq
-	TWtDPeSI78vUCA/1OFnf1deIeDhl02uI6o
-X-Received: by 2002:a05:6820:2d0b:b0:679:92c7:2c07 with SMTP id 006d021491bc7-679c42784famr5858006eaf.29.1771886313849;
-        Mon, 23 Feb 2026 14:38:33 -0800 (PST)
-Received: from localhost ([2a03:2880:10ff:53::])
-        by smtp.gmail.com with ESMTPSA id 006d021491bc7-679c5630a4bsm7167922eaf.2.2026.02.23.14.38.31
+        bh=yQzkmrIS51etVi0n5gq17TgjaIpr+hzH+jF14jX4sdo=;
+        b=mPjEDf68l6hiid2EqfuyhHlTz9lrGl+PBYPGHQ1en0dIe5lvtm0LOs62bAOS4YOfeu
+         HML0WyfVtO/UqJ8XW2UNq9YciWUpNdaSxVmau5iQV9uA8EHcMsbXzUq+B3JOD0Q6Af+e
+         3slCfmkOeW6AB9u3nOmytd4n9703GagipNDPaFCZes1Xz8X1Ge3yuz3IMjP6ctjpYIM5
+         6LnhFWfQDQija+JRiIqG7PH1iDpwF4DqNN7VJhYWZXosAk5fYffmSuQKVwriPOBlwWdn
+         TXcffbl2FkfBuN2kDoJMJ1Cp7qmxV+8Dxjmk37CF2mUFP4udyb79LNBAPJrYG3J2d5Wm
+         6bpA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1771886316; x=1772491116;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=yQzkmrIS51etVi0n5gq17TgjaIpr+hzH+jF14jX4sdo=;
+        b=WfAXfS/+AlqP8kWjXtUmFfRRjjfAiGuNX8/zSopVmLYxZoQpxKzAZ5QszfuGQQ6sMi
+         v60+YUiXBRIrpI/2b4tYCJFuFyQgn0eN1bHs7tfyZ/HLNQ9kE1FjS3ikCkDngUP80E3B
+         ZGmRI8A4TkMwrPphe/pWUlmG0WxuegdLKPL45kijeuTIWLDQLgAPrHRrnX8sUMYkTXVl
+         ylIIKACEPbKsmozhZXJHsklpMlRBS7JmV1eC0oCfipkmuNfqYvf3FR2ekiUG/1nlcTnR
+         WdpTw196T7D8l/Q9Dor/GCeA+Cg4tfzu3WsiWvtZGCKSTBtDKGfFiFzZz/wVXbFVyMHI
+         BR/Q==
+X-Forwarded-Encrypted: i=1; AJvYcCX5QHVL7vOvi36k7gkr7Fi9Vz3gXKZZK0q4PtK/sQPFv4Gm5OnfqsqwOAOJcdefPMHEYHtWO3En@vger.kernel.org
+X-Gm-Message-State: AOJu0YxwAZf45ySnfYjkX6XadiEmNrNsMK+wFTZmJCjdZD0IaK1kb6g5
+	X2PmlIIyCVYXFnkDRMLxcVVmFTvdz2dF9rv6yWPoYWsa+3qy4sS+ISxO
+X-Gm-Gg: AZuq6aINYxYxn9/kp5hcakX5Kn5FQsCT92VQgoO6dAMizZFXQGganPkTiLOEXCSLyAj
+	EBC3L0R//qQU02u7fWYWK2zTSXTXWzdziRDIfYuHx3EQ/1eWRXWH/qXGh5V2NdOnrteGRAYM5iZ
+	uNN5Ea4bR0LAT8eDB8+0YS6UzO7HYX5jZMA+b1uR5Ed2t/vaek9tCFo83eXYJxKTTculKEXnm/H
+	HZiQyuL4/JIAQ+bHNj2nPhBWmIPKqJATOGd8quaKApipqcS1Z05mReTY00knJhgjm/7urz2mtle
+	xMwfFk3pm461c210TwvYg+yc0dkoYM/zW/G9F8XIf4vcf0MztdhbJAiO+c7Govd80SXJPtYvE91
+	3h4JkB+ZK8JfWXwo4rEtfLe2Zm0BUfnvBPvzs5cnHRoDE67LEyqIRFInQAm2Ewecq15CCSREv9G
+	r3YFecNgmb+zGzewKx4P7g
+X-Received: by 2002:a05:6830:369b:b0:7c5:2dbf:4a7d with SMTP id 46e09a7af769-7d52c1c04c4mr6267036a34.31.1771886316479;
+        Mon, 23 Feb 2026 14:38:36 -0800 (PST)
+Received: from localhost ([2a03:2880:10ff:9::])
+        by smtp.gmail.com with ESMTPSA id 46e09a7af769-7d52cfa03bcsm8389594a34.10.2026.02.23.14.38.35
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 23 Feb 2026 14:38:31 -0800 (PST)
+        Mon, 23 Feb 2026 14:38:36 -0800 (PST)
 From: Joshua Hahn <joshua.hahnjy@gmail.com>
-To: 
-Cc: Gregory Price <gourry@gourry.net>,
-	Johannes Weiner <hannes@cmpxchg.org>,
-	Kaiyang Zhao <kaiyang2@cs.cmu.edu>,
-	Andrew Morton <akpm@linux-foundation.org>,
+To: Joshua Hahn <joshua.hahnjy@gmail.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>,
 	David Hildenbrand <david@kernel.org>,
 	Lorenzo Stoakes <lorenzo.stoakes@oracle.com>,
 	"Liam R . Howlett" <Liam.Howlett@oracle.com>,
 	Vlastimil Babka <vbabka@kernel.org>,
 	Mike Rapoport <rppt@kernel.org>,
 	Suren Baghdasaryan <surenb@google.com>,
+	Johannes Weiner <hannes@cmpxchg.org>,
 	Michal Hocko <mhocko@suse.com>,
 	Roman Gushchin <roman.gushchin@linux.dev>,
 	Shakeel Butt <shakeel.butt@linux.dev>,
 	Muchun Song <muchun.song@linux.dev>,
-	Waiman Long <longman@redhat.com>,
-	Chen Ridong <chenridong@huaweicloud.com>,
-	Tejun Heo <tj@kernel.org>,
-	Michal Koutny <mkoutny@suse.com>,
-	Axel Rasmussen <axelrasmussen@google.com>,
-	Yuanchu Xie <yuanchu@google.com>,
-	Wei Xu <weixugc@google.com>,
-	Qi Zheng <zhengqi.arch@bytedance.com>,
 	linux-mm@kvack.org,
 	cgroups@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	kernel-team@meta.com
-Subject: [RFC PATCH 0/6] mm/memcontrol: Make memcg limits tier-aware
-Date: Mon, 23 Feb 2026 14:38:23 -0800
-Message-ID: <20260223223830.586018-1-joshua.hahnjy@gmail.com>
+Subject: [RFC PATCH 2/6] mm/page_counter: Introduce tiered memory awareness to page_counter
+Date: Mon, 23 Feb 2026 14:38:25 -0800
+Message-ID: <20260223223830.586018-3-joshua.hahnjy@gmail.com>
 X-Mailer: git-send-email 2.47.3
+In-Reply-To: <20260223223830.586018-1-joshua.hahnjy@gmail.com>
+References: <20260223223830.586018-1-joshua.hahnjy@gmail.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -114,128 +108,160 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-1.66 / 15.00];
+X-Spamd-Result: default: False [-0.16 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
 	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10];
+	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
 	R_DKIM_ALLOW(-0.20)[gmail.com:s=20230601];
+	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RECEIVED_HELO_LOCALHOST(0.00)[];
 	RCVD_TLS_LAST(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	TAGGED_FROM(0.00)[bounces-14178-lists,cgroups=lfdr.de];
-	FORGED_SENDER_MAILLIST(0.00)[];
 	FREEMAIL_FROM(0.00)[gmail.com];
-	RCPT_COUNT_TWELVE(0.00)[26];
-	FROM_HAS_DN(0.00)[];
+	TAGGED_FROM(0.00)[bounces-14172-lists,cgroups=lfdr.de];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	RECEIVED_HELO_LOCALHOST(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	RCPT_COUNT_TWELVE(0.00)[17];
+	FREEMAIL_TO(0.00)[gmail.com];
+	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[joshuahahnjy@gmail.com,cgroups@vger.kernel.org];
-	MID_RHS_MATCH_FROM(0.00)[];
-	NEURAL_HAM(-0.00)[-1.000];
+	PRECEDENCE_BULK(0.00)[];
 	RCVD_COUNT_FIVE(0.00)[5];
+	FROM_NEQ_ENVFROM(0.00)[joshuahahnjy@gmail.com,cgroups@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
 	DKIM_TRACE(0.00)[gmail.com:+];
+	NEURAL_HAM(-0.00)[-0.999];
 	TAGGED_RCPT(0.00)[cgroups];
+	MID_RHS_MATCH_FROM(0.00)[];
 	TO_DN_SOME(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 836881803B7
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: BCC8917E709
 X-Rspamd-Action: no action
 
-Memory cgroups provide an interface that allow multiple workloads on a
-host to co-exist, and establish both weak and strong memory isolation
-guarantees. For large servers and small embedded systems alike, memcgs
-provide an effective way to provide a baseline quality of service for
-protected workloads.
+On systems with tiered memory, there is currently no tracking of memory
+at the tier-memcg granularity. While per-memcg-lruvec serves at a finer
+granularity that can be accumulated to give us the desired
+per-tier-memcg accounting, relying on these lruvec stats for limit
+checking can prove touch too many hot paths too frequently and can
+introduce increased latency for other memcg users.
 
-This works, because for the most part, all memory is equal (except for
-zram / zswap). Restricting a cgroup's memory footprint restricts how
-much it can hurt other workloads competing for memory. Likewise, setting
-memory.low or memory.min limits can provide weak and strong guarantees
-to the performance of a cgroup.
+Instead, add a new cacheline in struct page_counter to track toptier
+memcg limits and usage, as well as cached capacity values. This
+cacheline is only used by the mem_cgroup->memory page_counter.
 
-However, on systems with tiered memory (e.g. CXL / compressed memory),
-the quality of service guarantees that memcg limits enforced become less
-effective, as memcg has no awareness of the physical location of its
-charged memory. In other words, a workload that is well-behaved within
-its memcg limits may still be hurting the performance of other
-well-behaving workloads on the system by hogging more than its
-"fair share" of toptier memory.
+Also, introduce helpers that use these new fields to calculate
+proportional toptier high and low values, based on the system's
+toptier:total capacity ratio.
 
-Introduce tier-aware memcg limits, which scale memory.low/high to
-reflect the ratio of toptier:total memory the cgroup has access.
-
-Take the following scenario as an example:
-On a host with 3:1 toptier:lowtier, say 150G toptier, and 50Glowtier,
-setting a cgroup's limits to:
-	memory.min:  15G
-	memory.low:  20G
-	memory.high: 40G
-	memory.max:  50G
-
-Will be enforced at the toptier as:
-	memory.min:          15G
-	memory.toptier_low:  15G (20 * 150/200)
-	memory.toptier_high: 30G (40 * 150/200)
-	memory.max:          50G
-
-Let's say that there are 4 such cgroups on the host. Previously, it would
-be possible for 3 hosts to completely take over all of DRAM, while one
-cgroup could only access the lowtier memory. In the perspective of a
-tier-agnostic memcg limit enforcement, the three cgroups are all
-well-behaved, consuming within their memory limits.
-
-This is not to say that the scenario above is incorrect. In fact, for
-letting the hottest cgroups run in DRAM while pushing out colder cgroups
-to lowtier memory lets the system perform the most aggregate work total.
-
-But for other scenarios, the target might not be maximizing aggregate
-work, but maximizing the minimum performance guarantee for each
-individual workload (think hosts shared across different users, such as
-VM hosting services).
-
-To reflect these two scenarios, introduce a sysctl tier_aware_memcg,
-which allows the host to toggle between enforcing and overlooking
-toptier memcg limit breaches.
-
-This work is inspired & based off of Kaiyang Zhao's work from 2024 [1],
-where he referred to this concept as "memory tiering fairness".
-The biggest difference in the implementations lie in how toptier memory
-is tracked; in his implementation, an lruvec stat aggregation is done on
-each usage check, while in this implementation, a new cacheline is
-introduced in page_coutner to keep track of toptier usage (Kaiyang also
-introduces a new cachline in page_counter, but only uses it to cache
-capacity and thresholds). This implementation also extends the memory
-limit enforcement to memory.high as well.
-
-[1] https://lore.kernel.org/linux-mm/20240920221202.1734227-1-kaiyang2@cs.cmu.edu/
-
+Signed-off-by: Joshua Hahn <joshua.hahnjy@gmail.com>
 ---
-Joshua Hahn (6):
-  mm/memory-tiers: Introduce tier-aware memcg limit sysfs
-  mm/page_counter: Introduce tiered memory awareness to page_counter
-  mm/memory-tiers, memcontrol: Introduce toptier capacity updates
-  mm/memcontrol: Charge and uncharge from toptier
-  mm/memcontrol, page_counter: Make memory.low tier-aware
-  mm/memcontrol: Make memory.high tier-aware
+ include/linux/page_counter.h | 22 +++++++++++++++++++++-
+ mm/page_counter.c            | 34 ++++++++++++++++++++++++++++++++++
+ 2 files changed, 55 insertions(+), 1 deletion(-)
 
- include/linux/memcontrol.h   |  21 ++++-
- include/linux/memory-tiers.h |  30 +++++++
- include/linux/page_counter.h |  31 ++++++-
- include/linux/swap.h         |   3 +-
- kernel/cgroup/cpuset.c       |   2 +-
- kernel/cgroup/dmem.c         |   2 +-
- mm/memcontrol-v1.c           |   6 +-
- mm/memcontrol.c              | 155 +++++++++++++++++++++++++++++++----
- mm/memory-tiers.c            |  63 ++++++++++++++
- mm/page_counter.c            |  77 ++++++++++++++++-
- mm/vmscan.c                  |  24 ++++--
- 11 files changed, 376 insertions(+), 38 deletions(-)
-
+diff --git a/include/linux/page_counter.h b/include/linux/page_counter.h
+index d649b6bbbc87..128c1272c88c 100644
+--- a/include/linux/page_counter.h
++++ b/include/linux/page_counter.h
+@@ -5,6 +5,7 @@
+ #include <linux/atomic.h>
+ #include <linux/cache.h>
+ #include <linux/limits.h>
++#include <linux/nodemask.h>
+ #include <asm/page.h>
+ 
+ struct page_counter {
+@@ -31,9 +32,23 @@ struct page_counter {
+ 	/* Latest cg2 reset watermark */
+ 	unsigned long local_watermark;
+ 
+-	/* Keep all the read most fields in a separete cacheline. */
++	/* Keep all the tiered memory fields in a separate cacheline. */
+ 	CACHELINE_PADDING(_pad2_);
+ 
++	atomic_long_t toptier_usage;
++
++	/* effective toptier-proportional low protection */
++	unsigned long etoptier_low;
++	atomic_long_t toptier_low_usage;
++	atomic_long_t children_toptier_low_usage;
++
++	/* Cached toptier capacity for proportional limit calculations */
++	unsigned long toptier_capacity;
++	unsigned long total_capacity;
++
++	/* Keep all the read most fields in a separate cacheline. */
++	CACHELINE_PADDING(_pad3_);
++
+ 	bool protection_support;
+ 	bool track_failcnt;
+ 	unsigned long min;
+@@ -61,6 +76,9 @@ static inline void page_counter_init(struct page_counter *counter,
+ 	counter->parent = parent;
+ 	counter->protection_support = protection_support;
+ 	counter->track_failcnt = false;
++	counter->toptier_usage = (atomic_long_t)ATOMIC_LONG_INIT(0);
++	counter->toptier_capacity = 0;
++	counter->total_capacity = 0;
+ }
+ 
+ static inline unsigned long page_counter_read(struct page_counter *counter)
+@@ -103,6 +121,8 @@ static inline void page_counter_reset_watermark(struct page_counter *counter)
+ void page_counter_calculate_protection(struct page_counter *root,
+ 				       struct page_counter *counter,
+ 				       bool recursive_protection);
++unsigned long page_counter_toptier_high(struct page_counter *counter);
++unsigned long page_counter_toptier_low(struct page_counter *counter);
+ #else
+ static inline void page_counter_calculate_protection(struct page_counter *root,
+ 						     struct page_counter *counter,
+diff --git a/mm/page_counter.c b/mm/page_counter.c
+index 661e0f2a5127..5ec97811c418 100644
+--- a/mm/page_counter.c
++++ b/mm/page_counter.c
+@@ -462,4 +462,38 @@ void page_counter_calculate_protection(struct page_counter *root,
+ 			atomic_long_read(&parent->children_low_usage),
+ 			recursive_protection));
+ }
++
++unsigned long page_counter_toptier_high(struct page_counter *counter)
++{
++	unsigned long high = READ_ONCE(counter->high);
++	unsigned long toptier_cap, total_cap;
++
++	if (high == PAGE_COUNTER_MAX)
++		return PAGE_COUNTER_MAX;
++
++	toptier_cap = counter->toptier_capacity;
++	total_cap = counter->total_capacity;
++
++	if (!total_cap)
++		return PAGE_COUNTER_MAX;
++
++	return mult_frac(high, toptier_cap, total_cap);
++}
++
++unsigned long page_counter_toptier_low(struct page_counter *counter)
++{
++	unsigned long low = READ_ONCE(counter->low);
++	unsigned long toptier_cap, total_cap;
++
++	if (!low)
++		return 0;
++
++	toptier_cap = counter->toptier_capacity;
++	total_cap = counter->total_capacity;
++
++	if (!total_cap)
++		return 0;
++
++	return mult_frac(low, toptier_cap, total_cap);
++}
+ #endif /* CONFIG_MEMCG || CONFIG_CGROUP_DMEM */
 -- 
 2.47.3
 
