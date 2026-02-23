@@ -1,195 +1,216 @@
-Return-Path: <cgroups+bounces-14158-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-14159-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id MNAbNOeFnGm7IwQAu9opvQ
-	(envelope-from <cgroups+bounces-14158-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Mon, 23 Feb 2026 17:52:55 +0100
+	id 0HuXMG6JnGlWJQQAu9opvQ
+	(envelope-from <cgroups+bounces-14159-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Mon, 23 Feb 2026 18:07:58 +0100
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id E571F17A2BC
-	for <lists+cgroups@lfdr.de>; Mon, 23 Feb 2026 17:52:54 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2C85E17A5A0
+	for <lists+cgroups@lfdr.de>; Mon, 23 Feb 2026 18:07:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id B48283014F4B
-	for <lists+cgroups@lfdr.de>; Mon, 23 Feb 2026 16:52:29 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id AA3573021E53
+	for <lists+cgroups@lfdr.de>; Mon, 23 Feb 2026 17:04:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD996315785;
-	Mon, 23 Feb 2026 16:52:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 98875328B63;
+	Mon, 23 Feb 2026 17:04:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cmpxchg.org header.i=@cmpxchg.org header.b="MwyrwpKj"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="J5oqhCaU"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-qt1-f176.google.com (mail-qt1-f176.google.com [209.85.160.176])
+Received: from mail-wm1-f65.google.com (mail-wm1-f65.google.com [209.85.128.65])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1667F31578E
-	for <cgroups@vger.kernel.org>; Mon, 23 Feb 2026 16:52:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF1A5328B53
+	for <cgroups@vger.kernel.org>; Mon, 23 Feb 2026 17:04:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.65
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1771865548; cv=none; b=Lxmq7JVOZZ3jcGPQlTpTIaTcOTqxF9dGD7sD7hFrYSaKuqMIaC8cmfKeZOH3M9e7LMM8AA4cskUZ9+SRPiP6jMl8nmxjeJfzAJpX7IL07hbcHCIvi9r11/7UokyQhoWDI5WcPhCXXgXOJIYTJt9E8Qb5LEZsmoR0P7vOfBHwF08=
+	t=1771866260; cv=none; b=KzMk9oTSqU9xl6u2ENd0m7xaCbhn0lcUXhvAbJVunz+1J9dE4f8dIyzX12IrQDZcX1XvLKph7zAWkfHJ9/KsDjxADXxmljndnmsbTDeGDwK9h8HvX67KjrJrbnAxWgjCYq16TppOZjA5WbsQdzQEOahxYZOQZUdmQHz4dc5JT1E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1771865548; c=relaxed/simple;
-	bh=bx3iOV2ugLkpdJZcrJoQAabRqUf12TYssE63qknpYWs=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=HwTIyhqGNLaykEwzbaLFz76yvmZw2Czs8n8BFNFNMo7t+Oa9AJq6xIk0L1DKUVu3Pu11zDFBQBlnorGNld4Fx2VvjEocHnGBboN78XrS83UdkfiGHDzRYGw3JPw3HdB3sgIXr29w8SMQapiKhyJ0yYnSPJwYy7exRUEUlDRnzsk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org; spf=pass smtp.mailfrom=cmpxchg.org; dkim=pass (2048-bit key) header.d=cmpxchg.org header.i=@cmpxchg.org header.b=MwyrwpKj; arc=none smtp.client-ip=209.85.160.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cmpxchg.org
-Received: by mail-qt1-f176.google.com with SMTP id d75a77b69052e-5062fc5d86aso43845311cf.1
-        for <cgroups@vger.kernel.org>; Mon, 23 Feb 2026 08:52:25 -0800 (PST)
+	s=arc-20240116; t=1771866260; c=relaxed/simple;
+	bh=zRsKOJNOtZ32gDL5xBo/zPbKCRNyopfMz3fDVOLI8XU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=ViYZ/Ad5To9TBXzdYo2QIHQXiLtcsdCAGoOURKTzomGP1jtNf/uwQW59sRPGUqy72QMTrSPynwyfU2ict7vbwpg4Rpb2EG3nBe4VhkLhkB1vrb+UQUem1H3cHJMDUZ2ATJEdvZeNenxBreZIFK38lsOGbUhbdb667eYvmHgH8Jk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=J5oqhCaU; arc=none smtp.client-ip=209.85.128.65
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-wm1-f65.google.com with SMTP id 5b1f17b1804b1-48371104ffdso6559385e9.1
+        for <cgroups@vger.kernel.org>; Mon, 23 Feb 2026 09:04:18 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg.org; s=google; t=1771865545; x=1772470345; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=9p76BczVPf+ipMBZjWxZMf67W68G0E63s5eoAZ2wq80=;
-        b=MwyrwpKjTdGFMtlIkDgFe4CxRoHf4akYRISDvmQPogMk4uSdA6gfs/AQiUF8pgkpCG
-         1vUsb/ojyoQl5N6b2t9ngti5es99Zaq+MavSe/sBmLZDMj6DNWMkZ0Wt7BfGnpHwRRhA
-         woI/RHrqNMMlgTrTkLssXA58M0IYm566Db2/8yU9tzS4ZFCmNI2A3/jQZFeXcYfKzAcV
-         4IncVJqUihnnNyWiiWOY5YxGaqzUqYtxWh/cpTpbuJz2DoAsMYEhfjAQfLoMUg6InhX9
-         seczxcxkbeEaH8Y1Hy2Ab6DTrrEm0FM14cH3n7fZcwFFcXIVjD85V8EFCKe0GKfz2MwW
-         f55A==
+        d=suse.com; s=google; t=1771866257; x=1772471057; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=G3hVv3QCLGsJuEhotPXR1ko5+3s1oxPI+IoPnj0WO/I=;
+        b=J5oqhCaUNDmHzqngZWnWV7SLsZmeg4E5RFZRZ7gIflMjncsH8YYXvj1UCgHEaJ2AOm
+         NUfs2uVf5/PXk7b9BeoL0CRWiWOp5lQxR249VSXvk2Q6zfHNnvDT13tjY19jA8V+F6CB
+         IqcHOZKiEyMvVd9ytJDRyMpt9d6NiFdIjAlSsapRoYX+5lyF8a/bYmwRAeRIMZV8L7SO
+         Gdq48c/nOYqg8MLQjKEliEyzET4u9C4K7lHOmXK/7PEB/R6af/sBERCsgNjYqI1D5rIG
+         ItuWC6eMwhTBrHER3OPqNIkEI5LzeOjmUFcTLyodtqfAjWl3CpWKTxctosUHfYaC2lcM
+         yvDg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1771865545; x=1772470345;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=9p76BczVPf+ipMBZjWxZMf67W68G0E63s5eoAZ2wq80=;
-        b=paII1qTxjVNy/MpQArxwSKVmyC2WC0YQcBTYSY9bmkodysJgjUmYEqr5rSBAWnQbLe
-         MotLzwu6OuBrpPaUPv12k8JKIkmunOsaulhoz0ML1aRd8T4b/IlQE366vrw6u/iXYP2l
-         iBytlRfa6i/IWOpf0loRR0sOEeLgglJ6UksWYsnQ6MAzA2OE0ItOTAqWXPL2V6v4taBX
-         eim89J6mcAUiy19BC34Z4QvhlaGNWJ7sH/sBvC9AjUr8+kJI5r9oNrsq0pLfgeeOzGIu
-         7aruKZdA7qZoG8AdXOpq5gdaoThnZw3P5oWeOesNI1eqf5kSxA2HnNsTUnsFl9w+qhqj
-         IdIA==
-X-Forwarded-Encrypted: i=1; AJvYcCWxCUwtja611l2qoUJT+Vbdqx0jt2Iwgdz42n+DXXn/jo0ucVQlF4T90l0oQJNXCG3BvmWNRMxi@vger.kernel.org
-X-Gm-Message-State: AOJu0YwdDjkSArGzmY7u4rVOUiXf+D8efG87WZim/65nj0/9COei65EQ
-	cj8LfDXD3LZAgQz0yksHsf42nEimWDxR11nO/SE59fKa3luaiqlISBYQuqfw0HheAbo=
-X-Gm-Gg: AZuq6aJXeVUBm4NyGfm5BYFsVrmcr4s5/LBZN0jafFQI2BPjwoglpBMxlBY+lvNT8Ln
-	JBzSB+0zkzIrW8uJjtViGsUIIzi0r/T1VekqlvYExBjFmDYCHVPCILaMFnIZDq7BpE5g/6YyNWE
-	I4yZm9MdrEoI+8s35JdIMMPWx+7+UkqKfQVOdWOveztlX1yOXl8lnvirV0GReGFdAm0Kv+Dcvmg
-	pLOA0ECUHzezqm+yyxMvJLaefW9fPz0Z+80uAGimbl0iq0NdnH32nMyt2FaaF2dl3EipepM1lvI
-	InyGc01XJaeDxNESjpOlBg1txdti8soqhtp4HrF+FSLFrOxuk5xRvDn5xIeODkh8Y0fkTevjpmi
-	b/oTzYCa6gr29sVlyC50bAGgA+rfRjdGvrYMS/Oxa3WMrXOkPEm64N2PLDrN3n1YmQOmESqK9FD
-	SzLgopYTSqdrqq1Y4zD+xrMQ==
-X-Received: by 2002:a05:622a:11ce:b0:501:4859:c7aa with SMTP id d75a77b69052e-5070bbab6a2mr133092191cf.20.1771865544833;
-        Mon, 23 Feb 2026 08:52:24 -0800 (PST)
-Received: from localhost ([2603:7000:c00:3a00:365a:60ff:fe62:ff29])
-        by smtp.gmail.com with ESMTPSA id d75a77b69052e-5072afdef0bsm4637311cf.16.2026.02.23.08.52.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 23 Feb 2026 08:52:24 -0800 (PST)
-Date: Mon, 23 Feb 2026 11:52:20 -0500
-From: Johannes Weiner <hannes@cmpxchg.org>
-To: Kairui Song via B4 Relay <devnull+kasong.tencent.com@kernel.org>
-Cc: linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
-	David Hildenbrand <david@kernel.org>,
-	Lorenzo Stoakes <lorenzo.stoakes@oracle.com>,
-	Zi Yan <ziy@nvidia.com>,
-	Baolin Wang <baolin.wang@linux.alibaba.com>,
-	Barry Song <baohua@kernel.org>, Hugh Dickins <hughd@google.com>,
-	Chris Li <chrisl@kernel.org>,
-	Kemeng Shi <shikemeng@huaweicloud.com>,
-	Nhat Pham <nphamcs@gmail.com>, Baoquan He <bhe@redhat.com>,
-	Yosry Ahmed <yosry.ahmed@linux.dev>,
-	Youngjun Park <youngjun.park@lge.com>,
-	Chengming Zhou <chengming.zhou@linux.dev>,
-	Roman Gushchin <roman.gushchin@linux.dev>,
-	Shakeel Butt <shakeel.butt@linux.dev>,
-	Muchun Song <muchun.song@linux.dev>,
-	Qi Zheng <zhengqi.arch@bytedance.com>, linux-kernel@vger.kernel.org,
-	cgroups@vger.kernel.org, Kairui Song <kasong@tencent.com>
-Subject: Re: [PATCH RFC 00/15] mm, swap: swap table phase IV with dynamic
- ghost swapfile
-Message-ID: <aZyFxKGXc8J6PIij@cmpxchg.org>
-References: <20260220-swap-table-p4-v1-0-104795d19815@tencent.com>
+        d=1e100.net; s=20230601; t=1771866257; x=1772471057;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=G3hVv3QCLGsJuEhotPXR1ko5+3s1oxPI+IoPnj0WO/I=;
+        b=REbGVfWX0MK9yg5HUFrvg/Fsgczr/Rdx6a6nxZieZ7I1lothDzdnQOuK8s8HbcFBfd
+         PsSh8OnOKLQ3ekLpTPFiEHYyFtB88vCP3jmcsYKgEaM18JETLbCqSyvCllQu2qilo7Ef
+         9EtsM7dlBjd0aZb1VkvEl5u9qm4HDza7tGAfxAdEl7jo/Nn2JrkVapggzcO29aTdCl4N
+         hdix3rA4JBxfiegYG1cmr922q3HEPT2Roc2wbE6MYyrXDKkIvxG6ljo+rH2GXSk8ylMe
+         YGwYTcO9KrtmnZUQTGKjwVeSBxXc7OK6rzAs6I9psKp/Ok+yc7r4UNWh2YEZ8TO7iady
+         ilBw==
+X-Forwarded-Encrypted: i=1; AJvYcCUdhr3BTbRiuwwUy3m1Ok00wKHK31nXOEa6GCk4m3gyE7IsGaAFHZfxxfpEm/z53zE7cLsl8YJW@vger.kernel.org
+X-Gm-Message-State: AOJu0YxwfRpQWbUpCPFOoKqtiHoOu4/Qic+YBif0wXmmBoMQeSKpOEV3
+	FFaiPbshyT3j1sGhAA6SXYJF131qtidMIHyG97wKERZDASMA0Ox0BZfkoLmrkFY5w6g=
+X-Gm-Gg: AZuq6aK/ty0+KOddXJvh+PlEmH/voUrUchdF1EfxeQ5T5HTa7t5jV9hklu+Kubki1cQ
+	OCtCUv+bcU/tSPOw0QWyy6o0NexGeuMGUU1hEImlMCm5ZhZ1Hq1/inMC24Jh3Pws54KlbMgaUeS
+	y6/5CxiB+oE4UGsbVWhOef8+iCM9PgK0F1VkKRyIyBRGK/hNs+bX+3WrfEvaspjq5EtqRuy4c64
+	FFZqGOZZcPSOv2uF026GLR+qXuGtELn4hRM1F9G33QHGzI/eXxNJi3E0Ac80nuz+DQEa86ITjU8
+	SCw5nA8SlzyV2RcL19L2cHycd/HW/MqdixRaVrU9s0l6/mL/Pg3fcTTrbCSTygOjnpT+q3wImIQ
+	Xs0Kwe9ekRa+bDjFCAtRvBH5RF3Nab65G9gXQRfbSfOeuWGBZICkouMseMRjwGOMFOtTrJ7DdjO
+	7l8mj/XKxtYRZbtogoIw==
+X-Received: by 2002:a05:600c:8b12:b0:483:8f10:4bc5 with SMTP id 5b1f17b1804b1-483a962e47bmr82220545e9.4.1771866257122;
+        Mon, 23 Feb 2026 09:04:17 -0800 (PST)
+Received: from ?IPV6:2001:1a48:8:903::e14? ([2001:1a48:8:903::e14])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-483a31c0779sm440631645e9.6.2026.02.23.09.04.16
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 23 Feb 2026 09:04:16 -0800 (PST)
+Message-ID: <a0c9449a-26be-4afa-bef8-4b78315fc6d1@suse.com>
+Date: Mon, 23 Feb 2026 18:04:15 +0100
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20260220-swap-table-p4-v1-0-104795d19815@tencent.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] mm/slab: initialize slab->stride early to avoid memory
+ ordering issues
+Content-Language: en-US
+To: Harry Yoo <harry.yoo@oracle.com>, Vlastimil Babka <vbabka@suse.cz>,
+ Andrew Morton <akpm@linux-foundation.org>
+Cc: Christoph Lameter <cl@gentwo.org>, David Rientjes <rientjes@google.com>,
+ Roman Gushchin <roman.gushchin@linux.dev>, Hao Li <hao.li@linux.dev>,
+ Suren Baghdasaryan <surenb@google.com>, Shakeel Butt
+ <shakeel.butt@linux.dev>, Muchun Song <muchun.song@linux.dev>,
+ Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>,
+ cgroups@vger.kernel.org, linux-mm@kvack.org,
+ Venkat Rao Bagalkote <venkat88@linux.ibm.com>
+References: <20260223075809.19265-1-harry.yoo@oracle.com>
+ <aZw9sIb5yyhwZKek@hyeyoo>
+From: Vlastimil Babka <vbabka@suse.com>
+In-Reply-To: <aZw9sIb5yyhwZKek@hyeyoo>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-0.66 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
+X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[cmpxchg.org,none];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64:c];
-	R_DKIM_ALLOW(-0.20)[cmpxchg.org:s=google];
+	DMARC_POLICY_ALLOW(-0.50)[suse.com,quarantine];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_DKIM_ALLOW(-0.20)[suse.com:s=google];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-14158-lists,cgroups=lfdr.de];
-	FREEMAIL_CC(0.00)[kvack.org,linux-foundation.org,kernel.org,oracle.com,nvidia.com,linux.alibaba.com,google.com,huaweicloud.com,gmail.com,redhat.com,linux.dev,lge.com,bytedance.com,vger.kernel.org,tencent.com];
-	FROM_HAS_DN(0.00)[];
-	RECEIVED_HELO_LOCALHOST(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	RCPT_COUNT_TWELVE(0.00)[15];
+	TAGGED_FROM(0.00)[bounces-14159-lists,cgroups=lfdr.de];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	RCVD_TLS_LAST(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[23];
-	MIME_TRACE(0.00)[0:+];
-	DKIM_TRACE(0.00)[cmpxchg.org:+];
-	MISSING_XM_UA(0.00)[];
+	DKIM_TRACE(0.00)[suse.com:+];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	FROM_HAS_DN(0.00)[];
 	TO_DN_SOME(0.00)[];
 	RCVD_COUNT_FIVE(0.00)[5];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[hannes@cmpxchg.org,cgroups@vger.kernel.org];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[vbabka@suse.com,cgroups@vger.kernel.org];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
 	NEURAL_HAM(-0.00)[-0.999];
-	TAGGED_RCPT(0.00)[cgroups,kasong.tencent.com];
+	TAGGED_RCPT(0.00)[cgroups];
 	MID_RHS_MATCH_FROM(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns,cmpxchg.org:mid,cmpxchg.org:dkim]
-X-Rspamd-Queue-Id: E571F17A2BC
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,oracle.com:email]
+X-Rspamd-Queue-Id: 2C85E17A5A0
 X-Rspamd-Action: no action
 
-On Fri, Feb 20, 2026 at 07:42:01AM +0800, Kairui Song via B4 Relay wrote:
-> - 8 bytes per slot memory usage, when using only plain swap.
->   - And the memory usage can be reduced to 3 or only 1 byte.
-> - 16 bytes per slot memory usage, when using ghost / virtual zswap.
->   - Zswap can just use ci_dyn->virtual_table to free up it's content
->     completely.
->   - And the memory usage can be reduced to 11 or 8 bytes using the same
->     code above.
->   - 24 bytes only if including reverse mapping is in use.
-
-That seems to tie us pretty permanently to duplicate metadata.
-
-For every page that was written to disk through zswap, we have an
-entry in the ghost swapfile, and an entry in the backend swapfile, no?
-
-> - Minimal code review or maintenance burden. All layers are using the exact
->   same infrastructure for metadata / allocation / synchronization, making
->   all API and conventions consistent and easy to maintain.
-> - Writeback, migration and compaction are easily supportable since both
->   reverse mapping and reallocation are prepared. We just need a
->   folio_realloc_swap to allocate new entries for the existing entry, and
->   fill the swap table with a reserve map entry.
-> - Fast swapoff: Just read into ghost / virtual swap cache.
-
-Can we get this for disk swap as well? ;)
-
-Zswap swapoff is already fairly fast, albeit CPU intense. It's the
-scattered IO that makes swapoff on disks so terrible.
-
-> The size of the swapfile (si->max) is now just a number, which could be
-> changeable at runtime if we have a proper idea how to expose that and
-> might need some audit of a few remaining users. But right now, we can
-> already easily have a huge swap device with no overhead, for example:
+On 2/23/26 12:44, Harry Yoo wrote:
+> On Mon, Feb 23, 2026 at 04:58:09PM +0900, Harry Yoo wrote:
+>> When alloc_slab_obj_exts() is called later in time (instead of at slab
+>> allocation & initialization step), slab->stride and slab->obj_exts are
+>> set when the slab is already accessible by multiple CPUs.
+>> 
+>> The current implementation does not enforce memory ordering between
+>> slab->stride and slab->obj_exts. However, for correctness, slab->stride
+>> must be visible before slab->obj_exts, otherwise concurrent readers
+>> may observe slab->obj_exts as non-zero while stride is still stale,
+>> leading to incorrect reference counting of object cgroups.
+>> 
+>> There has been a bug report [1] that showed symptoms of incorrect
+>> reference counting of object cgroups, which could be triggered by
+>> this memory ordering issue.
+>> 
+>> Fix this by unconditionally initializing slab->stride in
+>> alloc_slab_obj_exts_early(), before the need_slab_obj_exts() check.
+>> In case of SLAB_OBJ_EXT_IN_OBJ, it is overridden in the same function.
+>> 
+>> This ensures stride is set before the slab becomes visible to
+>> other CPUs via the per-node partial slab list (protected by spinlock
+>> with acquire/release semantics), preventing them from observing
+>> inconsistent stride value.
+>> 
+>> Thanks to Shakeel Butt for pointing out this issue [2].
+>> 
+>> Fixes: 7a8e71bc619d ("mm/slab: use stride to access slabobj_ext")
+>> Reported-by: Venkat Rao Bagalkote <venkat88@linux.ibm.com>
+>> Closes: https://lore.kernel.org/lkml/ca241daa-e7e7-4604-a48d-de91ec9184a5@linux.ibm.com [1]
+>> Link: https://lore.kernel.org/linux-mm/aZu9G9mVIVzSm6Ft@hyeyoo [2]
+>> Signed-off-by: Harry Yoo <harry.yoo@oracle.com>
+>> ---
 > 
-> free -m
->                total        used        free      shared  buff/cache   available
-> Mem:            1465         250         927           1         356        1215
-> Swap:       15269887           0    15269887
+> Vlastimil, could you please update the changelog when applying this
+> to the tree? I think this also explains [3] (thanks for raising it
+> off-list, Vlastimil!):
 
-I'm not a fan of this. This makes free(1) output kind of useless, and
-very misleading. The swap space presented here has nothing to do with
-actual swap capacity, and the actual disk swap capacity is obscured.
+Done, thanks! Added to slab/for-next-fixes
 
-And how would a user choose this size? How would a distribution?
+> When alloc_slab_obj_exts() is called later (instead of during slab
+> allocation and initialization), slab->stride and slab->obj_exts are
+> updated after the slab is already accessible by multiple CPUs.
+> 
+> The current implementation does not enforce memory ordering between
+> slab->stride and slab->obj_exts. For correctness, slab->stride must be
+> visible before slab->obj_exts. Otherwise, concurrent readers may observe
+> slab->obj_exts as non-zero while stride is still stale.
+> 
+> With stale slab->stride, slab_obj_ext() could return the wrong obj_ext.
+> This could cause two problems:
+> 
+>   - obj_cgroup_put() is called on the wrong objcg, leading to
+>     a use-after-free due to incorrect reference counting [1] by
+>     decrementing the reference count more than it was incremented.
+> 
+>   - refill_obj_stock() is called on the wrong objcg, leading to
+>     a page_counter overflow [2] by uncharging more memory than charged.
+> 
+> Fix this by unconditionally initializing slab->stride in
+> alloc_slab_obj_exts_early(), before the need_slab_obj_exts() check.
+> In the case of SLAB_OBJ_EXT_IN_OBJ, it is overridden in the function.
+> 
+> This ensures updates to slab->stride become visible before the slab
+> can be accessed by other CPUs via the per-node partial slab list
+> (protected by spinlock with acquire/release semantics).
+> 
+> Thanks to Shakeel Butt for pointing out this issue [3].
+> 
+> Fixes: 7a8e71bc619d ("mm/slab: use stride to access slabobj_ext")
+> Reported-by: Venkat Rao Bagalkote <venkat88@linux.ibm.com>
+> Closes: https://lore.kernel.org/lkml/ca241daa-e7e7-4604-a48d-de91ec9184a5@linux.ibm.com [1]
+> Closes: https://lore.kernel.org/all/ddff7c7d-c0c3-4780-808f-9a83268bbf0c@linux.ibm.com [2]
+> Link: https://lore.kernel.org/linux-mm/aZu9G9mVIVzSm6Ft@hyeyoo [3]
+> Signed-off-by: Harry Yoo <harry.yoo@oracle.com>
 
-The only limit is compression ratio, and you don't know this in
-advance. This restriction seems pretty arbitrary and avoidable.
 
-There is no good technical reason to present this in any sort of
-static fashion.
+
+
 
