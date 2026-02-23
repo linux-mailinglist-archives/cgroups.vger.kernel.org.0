@@ -1,116 +1,97 @@
-Return-Path: <cgroups+bounces-14145-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-14146-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id gH22FMpqnGmcGAQAu9opvQ
-	(envelope-from <cgroups+bounces-14145-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Mon, 23 Feb 2026 15:57:14 +0100
+	id wGccAo9vnGmcGAQAu9opvQ
+	(envelope-from <cgroups+bounces-14146-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Mon, 23 Feb 2026 16:17:35 +0100
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id AAD5C178500
-	for <lists+cgroups@lfdr.de>; Mon, 23 Feb 2026 15:57:13 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6C1DC1789EF
+	for <lists+cgroups@lfdr.de>; Mon, 23 Feb 2026 16:17:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 9FAB33076B40
-	for <lists+cgroups@lfdr.de>; Mon, 23 Feb 2026 14:55:10 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 818C4300CC27
+	for <lists+cgroups@lfdr.de>; Mon, 23 Feb 2026 15:12:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B65102566E9;
-	Mon, 23 Feb 2026 14:55:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 03B5D36607A;
+	Mon, 23 Feb 2026 15:12:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gourry.net header.i=@gourry.net header.b="UK48vArf"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Kqj2g8lG"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-qk1-f180.google.com (mail-qk1-f180.google.com [209.85.222.180])
+Received: from mail-lf1-f44.google.com (mail-lf1-f44.google.com [209.85.167.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2BEB024A069
-	for <cgroups@vger.kernel.org>; Mon, 23 Feb 2026 14:55:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5679E35CB9B
+	for <cgroups@vger.kernel.org>; Mon, 23 Feb 2026 15:12:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1771858509; cv=none; b=sghDgefJbY7UBZnVuYIuL3yVi+GwSHh3TGBic03ScFirOeyoL6l9yiY2KjZ+PG7q/O80wCj5gPxlUu06hql3TuW1VgBsmC7t+SuMP/URZMub4gDvHBu/L5HiTLp6gEVie+rgKr4VD4mAwYolhd7KDsMRhVXVWBGvrTmAlBgkICY=
+	t=1771859574; cv=none; b=jz0Vdp79WA/MY3CFfHj4YkmR0QAmp8KSLZ6jGOLJODF7+njd9mqS+UCYp4dZKgP53sxPB/cahOsYlDeB/4Aw345Ppkjb4dvt0/EsclXUUJ+r0qZSCgGpGVAQsY6kgfD6xg8vIUZLLCZERbwNoI+VIzAIGR2QHnabEC/5soyuSa0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1771858509; c=relaxed/simple;
-	bh=EwLgLwdt857/iVMGq6pQA6+6jmF6tAKLgAXdu3hsyrE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=K8W62AazpGR9fwum0AeYy/aUgfvn4SK7cMV9uf08+kLSzDFuWy/Q6dYQQcxMkiMuadOze9apcUiPTZMtX1MNT8DTwX3qpQVPuzyqOj+m4G033xMBNH9R6Pk/tfqpWgDPUSmEq2anfN03/W8pdNgTW98NdfvUpHyfePFOjCU6pxg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gourry.net; spf=pass smtp.mailfrom=gourry.net; dkim=pass (2048-bit key) header.d=gourry.net header.i=@gourry.net header.b=UK48vArf; arc=none smtp.client-ip=209.85.222.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gourry.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gourry.net
-Received: by mail-qk1-f180.google.com with SMTP id af79cd13be357-8cb3a8494c5so416117485a.2
-        for <cgroups@vger.kernel.org>; Mon, 23 Feb 2026 06:55:07 -0800 (PST)
+	s=arc-20240116; t=1771859574; c=relaxed/simple;
+	bh=CYkBXoTf/dSuKGzEl9Jo4E5MEUaThQGWXjgL1xUJ8PI=;
+	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=q0EG3XHL40Zwzz0LKJSdI86O5u5WETD6fcqOD/lScv4srz83IQ73u/nMXFWtc1eEBLnxT+4dH+1dH6k66+ep3/sM2drM3v1ZO+R0U/9D6I3yrTDy4Y+2lu/x8pm/SfTK7xxCWAwpbfcuyxAKjxxtP5huo0cDhIOndJq+iGKuGis=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Kqj2g8lG; arc=none smtp.client-ip=209.85.167.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lf1-f44.google.com with SMTP id 2adb3069b0e04-59e4a04f059so5708570e87.2
+        for <cgroups@vger.kernel.org>; Mon, 23 Feb 2026 07:12:53 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gourry.net; s=google; t=1771858507; x=1772463307; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1771859572; x=1772464372; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=qpjmdBXuQUotNZnT57UveTMGt/2pk8eLf+dmkyC2/50=;
-        b=UK48vArf08KA5aTQnFg4R6N9JPDKtMRG8jDFipLeXsMcerBwfaMYS7qWhRwaxPFo23
-         MptoD2XxdIVcLFDydvEjFYGs7Iv6O9a8T78ZhMUW90dnuqVOhdQjKF7TQ66radXtAjEz
-         KPjB9YNTD4g2R0HMRhvTAr7uKXETR7/aOQ7fo5pW6rAVsdmhiD/tOhN1sEm0SiWz+Pph
-         ZAfoaey1NWX2d3Ck0cEsmUaNI0aFl0bDWLw8/354ICn2iN7FTcnKjosR+vYRvAiWXjNq
-         eWlDGe+kHfadsPDy3AA3XpawqBVQKcywy/YSO7VHniejTsPmvXArVJ930Jbfl6OMT2iD
-         ofmA==
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=ztMTHoPevsynxwNBJLriX2EMDeNpsudFj4ZJFPjQr+o=;
+        b=Kqj2g8lGmeJGcfAmXbZ75DDhL1rY/3pcx2Cd5RhMiblttUJUAvFzIxJirtfX9/w14h
+         BPlMY6ylStBX/bKkLwgPczx0928yEtOWJ4MoJf5SDjTK+4eLMfOX7XiH+B80imFXYhjY
+         Y84ul8bO72o/Rj4PSBa4Axbk+8FQnS3/vTaoKvBKfTtSDAaUIzZP9cogy9bqzA/Vlrbc
+         eNWWsXqXCA4G1t7sWVL6fb2siNA/XGfbjOAEan1aiO+QFNcXyOXyppD3+XMP1Cu8iVlZ
+         /vp5PTn2C8bEvTduT1XSrXtmMQK/GtRTYvlkT1q5W1ifxawRW/kMVmCZRLVCuZtISFms
+         U7cg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1771858507; x=1772463307;
+        d=1e100.net; s=20230601; t=1771859572; x=1772464372;
         h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
+         :subject:cc:to:date:from:x-gm-gg:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=qpjmdBXuQUotNZnT57UveTMGt/2pk8eLf+dmkyC2/50=;
-        b=AdPZcs0LgBg2nYQOSWeXZi1KgPk6TZobOyiVW8cFst7t73+FirCsDjhhYVR06FW5Nj
-         dAOG37o7veXN9WrLToCehj5eeRX1SQ/V8aR5vnqFCHXr8T49mkR0xsuuPuuF5jMSr0+c
-         k8HsSNmFMUyTZ7amtlzj4QYT1Ce1kC1p+7prKCZGN0MVJe98iO88GL2u05KKFazuR2e/
-         dhx4LY49oyzp97/KhabuskGtYKv9tOpg7jO0XE9LhayuGF/FbyzEElAJB54adEMrhW48
-         UJfW/f1v7Fa8Y0LVU+V1uT9yDtarRc+k26+ZEC8GTAijw+jFW62Wsc//el4KBm1aG7X4
-         rnAA==
-X-Forwarded-Encrypted: i=1; AJvYcCXzaOMUe4pAqRDu1tc8TH1LezPtp2MQgjsk/2ggQkwCQ+FAsANLZbNQdVXWBzYaZcNycZ2v9L+w@vger.kernel.org
-X-Gm-Message-State: AOJu0YxKPql65WKeXeSvAmj3vayUcq4imuh762YwrS6vQw3MbQxHpIZl
-	cnpwnXmVpz38fRB0zDrWQfRHq49TWQiT+j7dmYa2dZkMq7rHTH5SCmq7qd7YhbclUQs=
-X-Gm-Gg: AZuq6aIK/IXUNbGsSQCgPrKPNH6iTwkOoD8buHLHIatMEZPyVOr0SNXKxFpC7MJsMoM
-	OdmxMqwFHBzeQNzlh42Fk7Oe0jZCJqC/gyFtOxkySUUXTfor3hRW8bIAPyd1V9tA/FUovC2ma+L
-	xXY6PFz12horMUPLQvnvDxac1vFbWrevgRneXlhOumtopcXb3LPLnlWiYGA9RlBzJ6XDyy2uNBD
-	FkMebseLAVIwx4iZz1x20BlfZvbxvDQ74+FIChfgiqw/7gQ9N1yBYmQEkxjrrvOa3mcLNiYBwJF
-	f9yL6vkqq4PDhr5uY1MpHNSHPng34BfiF+tdCod/um8uZoyv+zgyF917jBhZePilFiBkUa8enFJ
-	LxXkkSyyte3cwzH6gzuFTDt8jBf8Jdz1eblE7+JKp8+6fB9mZ+db9sYkFQA96tPFxdYv0HqQmDX
-	W9vWAt9ZDWmR19lUnuJDpw8XCKQY4w601PENMsIGuMk1X/fAfpJe+6dJmCbQOgq1tFTlpodBc9q
-	Y2zBHQE5A==
-X-Received: by 2002:a05:620a:1a18:b0:8cb:3288:6777 with SMTP id af79cd13be357-8cb8ca0e16fmr993255985a.28.1771858506861;
-        Mon, 23 Feb 2026 06:55:06 -0800 (PST)
-Received: from gourry-fedora-PF4VCD3F (pool-96-255-20-138.washdc.ftas.verizon.net. [96.255.20.138])
-        by smtp.gmail.com with ESMTPSA id af79cd13be357-8cb8d0ebcd0sm845419885a.28.2026.02.23.06.54.57
+        bh=ztMTHoPevsynxwNBJLriX2EMDeNpsudFj4ZJFPjQr+o=;
+        b=dAh+g6SzUj+pcgnRdQyazgUJuYO2W7fpfEh2H5FJEUGj47PyUdU1iC1V+LOJs5/cxa
+         05zPZGr0U8aKkaI/5mQUH1Ln7l6U77vYhcKmZZ/PSBnuurBMr/q19tThmEug5pCQmxIH
+         F8Ye+BEyZZR5bBbAQT3n3SIehyXWb0vnVyQ6QlErTYb/jeVHW59TzpSe1I3UNAFtplEq
+         GBlffMYSnEd/wIpHyGDZVomR0lxqI03PzGzLmUSoLkJR8/L1xbzgG5ATl5dIpl8dVCya
+         SJKWkGykkd4K4FxeIqfA/y5yq51QPKtrGvutqgcyXKe4G8id/VjNnqwpT1CIZj7rRqmA
+         6Icg==
+X-Forwarded-Encrypted: i=1; AJvYcCVJLBRLTQrKMle/5eEPhrYfkDh6Tf3YZnyNmfpn767LdnbNx5CV5V3AklFE3dCov78ThI1hRUcu@vger.kernel.org
+X-Gm-Message-State: AOJu0YxAsMNpG6ifFUpEUyJBvrmemwFZaL+3fvhKrthLm7ZA1nXKeB8x
+	efxYBK2REtxccgvl7nj4Ki3CT1oe4xAgSD/acC8/rW+ZTg/i9L6sFG0z
+X-Gm-Gg: AZuq6aJhhUyeyDMX+0sXQeee7BGT9oXTz6kOZpJ8W11GM3U5h9r+2wWsey9coEQlt/V
+	XSw7baKZAHYiq4R1ClM+ybUsVjTMl0psU2aPS6ymxq+hj5Y2+2gI6hISD4F+FAKYLh7vitZZQdc
+	xqDi03RDXe20ZMqxx/7EBHIQZ819FxHnIx6zwQ77Y4FR+czdMLWPwFozjIq52JI2dnYD9+FpHj+
+	PUFe+L3hnAJwBYbHkiH03e0g7+X2ZdUhlZVf5/fcPOO+2ZMupLOXU0fVfttmC8VyVSLVeZudHDQ
+	+/mtcRU64dHfN8RmVCW/PGDPvRLV5TD0zX3y4RGzIyxsQ2E7ylvNOG+thkDVCCObimjcLSXjaWG
+	CIP7hanoYrlfCYBV0BmVNvfAdEIRrT+KCq3CoHgire1n6YJRvXqckKb96SpXPO8Xm6B8VzGbW1K
+	KBNWzMLwzxM8C2l1j+CL7nFEFj1FAfbrRpUqt7VmRwLgrryzgb0N2c
+X-Received: by 2002:a05:6512:3a96:b0:59d:e589:c973 with SMTP id 2adb3069b0e04-5a0ed9b038fmr2771294e87.48.1771859571444;
+        Mon, 23 Feb 2026 07:12:51 -0800 (PST)
+Received: from pc636 (host-90-233-215-147.mobileonline.telia.com. [90.233.215.147])
+        by smtp.gmail.com with ESMTPSA id 2adb3069b0e04-5a0eeb458bcsm1610898e87.62.2026.02.23.07.12.50
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 23 Feb 2026 06:55:06 -0800 (PST)
-Date: Mon, 23 Feb 2026 09:54:55 -0500
-From: Gregory Price <gourry@gourry.net>
-To: "David Hildenbrand (Arm)" <david@kernel.org>
-Cc: lsf-pc@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
-	linux-cxl@vger.kernel.org, cgroups@vger.kernel.org,
-	linux-mm@kvack.org, linux-trace-kernel@vger.kernel.org,
-	damon@lists.linux.dev, kernel-team@meta.com,
-	gregkh@linuxfoundation.org, rafael@kernel.org, dakr@kernel.org,
-	dave@stgolabs.net, jonathan.cameron@huawei.com,
-	dave.jiang@intel.com, alison.schofield@intel.com,
-	vishal.l.verma@intel.com, ira.weiny@intel.com,
-	dan.j.williams@intel.com, longman@redhat.com,
-	akpm@linux-foundation.org, lorenzo.stoakes@oracle.com,
-	Liam.Howlett@oracle.com, vbabka@suse.cz, rppt@kernel.org,
-	surenb@google.com, mhocko@suse.com, osalvador@suse.de,
-	ziy@nvidia.com, matthew.brost@intel.com, joshua.hahnjy@gmail.com,
-	rakie.kim@sk.com, byungchul@sk.com, ying.huang@linux.alibaba.com,
-	apopple@nvidia.com, axelrasmussen@google.com, yuanchu@google.com,
-	weixugc@google.com, yury.norov@gmail.com, linux@rasmusvillemoes.dk,
-	mhiramat@kernel.org, mathieu.desnoyers@efficios.com, tj@kernel.org,
-	hannes@cmpxchg.org, mkoutny@suse.com, jackmanb@google.com,
-	sj@kernel.org, baolin.wang@linux.alibaba.com, npache@redhat.com,
-	ryan.roberts@arm.com, dev.jain@arm.com, baohua@kernel.org,
-	lance.yang@linux.dev, muchun.song@linux.dev, xu.xin16@zte.com.cn,
-	chengming.zhou@linux.dev, jannh@google.com, linmiaohe@huawei.com,
-	nao.horiguchi@gmail.com, pfalcato@suse.de, rientjes@google.com,
-	shakeel.butt@linux.dev, riel@surriel.com, harry.yoo@oracle.com,
-	cl@gentwo.org, roman.gushchin@linux.dev, chrisl@kernel.org,
-	kasong@tencent.com, shikemeng@huaweicloud.com, nphamcs@gmail.com,
-	bhe@redhat.com, zhengqi.arch@bytedance.com, terry.bowman@amd.com
-Subject: Re: [LSF/MM/BPF TOPIC][RFC PATCH v4 00/27] Private Memory Nodes (w/
- Compressed RAM)
-Message-ID: <aZxqP7J1kOClQUPQ@gourry-fedora-PF4VCD3F>
-References: <20260222084842.1824063-1-gourry@gourry.net>
- <c10400db-2259-4465-a07e-19d0691101a4@kernel.org>
+        Mon, 23 Feb 2026 07:12:51 -0800 (PST)
+From: Uladzislau Rezki <urezki@gmail.com>
+X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
+Date: Mon, 23 Feb 2026 16:12:48 +0100
+To: Johannes Weiner <hannes@cmpxchg.org>
+Cc: Andrew Morton <akpm@linux-foundation.org>,
+	Uladzislau Rezki <urezki@gmail.com>,
+	Joshua Hahn <joshua.hahnjy@gmail.com>,
+	Michal Hocko <mhocko@suse.com>,
+	Roman Gushchin <roman.gushchin@linux.dev>,
+	Shakeel Butt <shakeel.butt@linux.dev>,
+	Muchun Song <muchun.song@linux.dev>, linux-mm@kvack.org,
+	cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 2/2] mm: memcontrol: switch to native NR_VMALLOC vmstat
+ counter
+Message-ID: <aZxucOEcpJDzSBgg@pc636>
+References: <20260220191035.3703800-1-hannes@cmpxchg.org>
+ <20260220191035.3703800-2-hannes@cmpxchg.org>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -119,110 +100,160 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <c10400db-2259-4465-a07e-19d0691101a4@kernel.org>
+In-Reply-To: <20260220191035.3703800-2-hannes@cmpxchg.org>
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [0.34 / 15.00];
+X-Spamd-Result: default: False [-0.16 / 15.00];
 	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	MID_RHS_NOT_FQDN(0.50)[];
-	R_DKIM_ALLOW(-0.20)[gourry.net:s=google];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
+	R_DKIM_ALLOW(-0.20)[gmail.com:s=20230601];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-14145-lists,cgroups=lfdr.de];
-	RCVD_TLS_LAST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-14146-lists,cgroups=lfdr.de];
+	FREEMAIL_CC(0.00)[linux-foundation.org,gmail.com,suse.com,linux.dev,kvack.org,vger.kernel.org];
 	FROM_HAS_DN(0.00)[];
-	DMARC_NA(0.00)[gourry.net];
-	FREEMAIL_CC(0.00)[lists.linux-foundation.org,vger.kernel.org,kvack.org,lists.linux.dev,meta.com,linuxfoundation.org,kernel.org,stgolabs.net,huawei.com,intel.com,redhat.com,linux-foundation.org,oracle.com,suse.cz,google.com,suse.com,suse.de,nvidia.com,gmail.com,sk.com,linux.alibaba.com,rasmusvillemoes.dk,efficios.com,cmpxchg.org,arm.com,linux.dev,zte.com.cn,surriel.com,gentwo.org,tencent.com,huaweicloud.com,bytedance.com,amd.com];
-	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	DKIM_TRACE(0.00)[gourry.net:+];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	RCVD_TLS_LAST(0.00)[];
+	TO_DN_SOME(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	DKIM_TRACE(0.00)[gmail.com:+];
 	MISSING_XM_UA(0.00)[];
+	FREEMAIL_FROM(0.00)[gmail.com];
 	RCVD_COUNT_FIVE(0.00)[5];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[gourry@gourry.net,cgroups@vger.kernel.org];
+	FROM_NEQ_ENVFROM(0.00)[urezki@gmail.com,cgroups@vger.kernel.org];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCPT_COUNT_GT_50(0.00)[73];
-	TAGGED_RCPT(0.00)[cgroups];
 	NEURAL_HAM(-0.00)[-1.000];
-	TO_DN_SOME(0.00)[];
+	TAGGED_RCPT(0.00)[cgroups];
+	RCPT_COUNT_SEVEN(0.00)[11];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,gourry.net:dkim]
-X-Rspamd-Queue-Id: AAD5C178500
+	DBL_BLOCKED_OPENRESOLVER(0.00)[cmpxchg.org:email,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: 6C1DC1789EF
 X-Rspamd-Action: no action
 
-On Mon, Feb 23, 2026 at 02:07:15PM +0100, David Hildenbrand (Arm) wrote:
-> > 
-> > Gregory Price (27):
-> >    numa: introduce N_MEMORY_PRIVATE node state
-> >    mm,cpuset: gate allocations from N_MEMORY_PRIVATE behind __GFP_PRIVATE
-> >    mm/page_alloc: add numa_zone_allowed() and wire it up
-> >    mm/page_alloc: Add private node handling to build_zonelists
-> >    mm: introduce folio_is_private_managed() unified predicate
-> >    mm/mlock: skip mlock for managed-memory folios
-> >    mm/madvise: skip madvise for managed-memory folios
-> >    mm/ksm: skip KSM for managed-memory folios
-> >    mm/khugepaged: skip private node folios when trying to collapse.
-> >    mm/swap: add free_folio callback for folio release cleanup
-> >    mm/huge_memory.c: add private node folio split notification callback
-> >    mm/migrate: NP_OPS_MIGRATION - support private node user migration
-> >    mm/mempolicy: NP_OPS_MEMPOLICY - support private node mempolicy
-> >    mm/memory-tiers: NP_OPS_DEMOTION - support private node demotion
-> >    mm/mprotect: NP_OPS_PROTECT_WRITE - gate PTE/PMD write-upgrades
+On Fri, Feb 20, 2026 at 02:10:35PM -0500, Johannes Weiner wrote:
+> Eliminates the custom memcg counter and results in a single,
+> consolidated accounting call in vmalloc code.
 > 
-> I'm concerned about adding more special-casing (similar to what we already
-> added for ZONE_DEVICE) all over the place.
+> Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
+> ---
+>  include/linux/memcontrol.h |  1 -
+>  mm/memcontrol.c            |  4 ++--
+>  mm/vmalloc.c               | 16 ++++------------
+>  3 files changed, 6 insertions(+), 15 deletions(-)
 > 
-> Like the whole folio_managed_() stuff in mprotect.c
+> diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
+> index 67f154de10bc..c7cc4e50e59a 100644
+> --- a/include/linux/memcontrol.h
+> +++ b/include/linux/memcontrol.h
+> @@ -35,7 +35,6 @@ enum memcg_stat_item {
+>  	MEMCG_SWAP = NR_VM_NODE_STAT_ITEMS,
+>  	MEMCG_SOCK,
+>  	MEMCG_PERCPU_B,
+> -	MEMCG_VMALLOC,
+>  	MEMCG_KMEM,
+>  	MEMCG_ZSWAP_B,
+>  	MEMCG_ZSWAPPED,
+> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> index 129eed3ff5bb..fef5bdd887e0 100644
+> --- a/mm/memcontrol.c
+> +++ b/mm/memcontrol.c
+> @@ -317,6 +317,7 @@ static const unsigned int memcg_node_stat_items[] = {
+>  	NR_SHMEM_THPS,
+>  	NR_FILE_THPS,
+>  	NR_ANON_THPS,
+> +	NR_VMALLOC,
+>  	NR_KERNEL_STACK_KB,
+>  	NR_PAGETABLE,
+>  	NR_SECONDARY_PAGETABLE,
+> @@ -339,7 +340,6 @@ static const unsigned int memcg_stat_items[] = {
+>  	MEMCG_SWAP,
+>  	MEMCG_SOCK,
+>  	MEMCG_PERCPU_B,
+> -	MEMCG_VMALLOC,
+>  	MEMCG_KMEM,
+>  	MEMCG_ZSWAP_B,
+>  	MEMCG_ZSWAPPED,
+> @@ -1359,7 +1359,7 @@ static const struct memory_stat memory_stats[] = {
+>  	{ "sec_pagetables",		NR_SECONDARY_PAGETABLE		},
+>  	{ "percpu",			MEMCG_PERCPU_B			},
+>  	{ "sock",			MEMCG_SOCK			},
+> -	{ "vmalloc",			MEMCG_VMALLOC			},
+> +	{ "vmalloc",			NR_VMALLOC			},
+>  	{ "shmem",			NR_SHMEM			},
+>  #ifdef CONFIG_ZSWAP
+>  	{ "zswap",			MEMCG_ZSWAP_B			},
+> diff --git a/mm/vmalloc.c b/mm/vmalloc.c
+> index a49a46de9c4f..8773bc0c4734 100644
+> --- a/mm/vmalloc.c
+> +++ b/mm/vmalloc.c
+> @@ -3446,9 +3446,6 @@ void vfree(const void *addr)
+>  
+>  	if (unlikely(vm->flags & VM_FLUSH_RESET_PERMS))
+>  		vm_reset_perms(vm);
+> -	/* All pages of vm should be charged to same memcg, so use first one. */
+> -	if (vm->nr_pages && !(vm->flags & VM_MAP_PUT_PAGES))
+> -		mod_memcg_page_state(vm->pages[0], MEMCG_VMALLOC, -vm->nr_pages);
+>  	for (i = 0; i < vm->nr_pages; i++) {
+>  		struct page *page = vm->pages[i];
+>  
+> @@ -3458,7 +3455,7 @@ void vfree(const void *addr)
+>  		 * can be freed as an array of order-0 allocations
+>  		 */
+>  		if (!(vm->flags & VM_MAP_PUT_PAGES))
+> -			dec_node_page_state(page, NR_VMALLOC);
+> +			mod_lruvec_page_state(page, NR_VMALLOC, -1);
+>  		__free_page(page);
+>  		cond_resched();
+>  	}
+> @@ -3649,7 +3646,7 @@ vm_area_alloc_pages(gfp_t gfp, int nid,
+>  			continue;
+>  		}
+>  
+> -		mod_node_page_state(page, NR_VMALLOC, 1 << large_order);
+> +		mod_lruvec_page_state(page, NR_VMALLOC, 1 << large_order);
+>  
+>  		split_page(page, large_order);
+>  		for (i = 0; i < (1U << large_order); i++)
+> @@ -3696,7 +3693,7 @@ vm_area_alloc_pages(gfp_t gfp, int nid,
+>  							pages + nr_allocated);
+>  
+>  			for (i = nr_allocated; i < nr_allocated + nr; i++)
+> -				inc_node_page_state(pages[i], NR_VMALLOC);
+> +				mod_lruvec_page_state(pages[i], NR_VMALLOC, 1);
+>  
+>  			nr_allocated += nr;
+>  
+> @@ -3722,7 +3719,7 @@ vm_area_alloc_pages(gfp_t gfp, int nid,
+>  		if (unlikely(!page))
+>  			break;
+>  
+> -		mod_node_page_state(page, NR_VMALLOC, 1 << order);
+> +		mod_lruvec_page_state(page, NR_VMALLOC, 1 << order);
+>  
+>  		/*
+>  		 * High-order allocations must be able to be treated as
+> @@ -3866,11 +3863,6 @@ static void *__vmalloc_area_node(struct vm_struct *area, gfp_t gfp_mask,
+>  			vmalloc_gfp_adjust(gfp_mask, page_order), node,
+>  			page_order, nr_small_pages, area->pages);
+>  
+> -	/* All pages of vm should be charged to same memcg, so use first one. */
+> -	if (gfp_mask & __GFP_ACCOUNT && area->nr_pages)
+> -		mod_memcg_page_state(area->pages[0], MEMCG_VMALLOC,
+> -				     area->nr_pages);
+> -
+>  	/*
+>  	 * If not enough pages were obtained to accomplish an
+>  	 * allocation request, free them via vfree() if any.
+> -- 
+> 2.53.0
 > 
-> Having that said, sounds like a reasonable topic to discuss.
-> 
+LGTM:
 
-It's a valid concern - and is why I tried to re-use as many of the
-zone_device hooks as possible.  It does not seem zone_device has quite
-the same semantics for a case like this, so I had to make something new.
+Reviewed-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
 
-DEVICE_COHERENT injects a temporary swap entry to allow the device to do
-a large atomic operation - then the page table is restored and the CPU
-is free to change entries as it pleases.
-
-Another option would be to add the hook to vma_wants_writenotify()
-instead of the page table code - and mask MM_CP_TRY_CHANGE_WRITABLE.
-
-This would require adding a vma flag - or maybe a count of protected /
-device pages.
-
-int mprotect_fixup() {
-    ...
-    if (vma_wants_manual_pte_write_upgrade(vma))
-        mm_cp_flags |= MM_CP_TRY_CHANGE_WRITABLE;
-}
-
-bool vma_wants_writenotify(struct vm_area_struct *vma, pgprot_t vm_page_prot)
-{
-    if (vma->managed_wrprotect)
-        return true;
-}
-
-That would localize the change in folio_managed_fixup_migration_pte() :
-
-static inline pte_t folio_managed_fixup_migration_pte(struct page *new,
-                                                      pte_t pte,
-                                                      pte_t old_pte,
-                                                      struct vm_area_struct *vma)
-{
-    ...
-    } else if (folio_managed_wrprotect(page_folio(new))) {
-        pte = pte_wrprotect(pte);
-+       atomic_inc(&vma->managed_wrprotect);
-    }
-    return pte;
-}
-
-This would cover both the huge_memory.c and mprotect, and maybe that's
-just generally cleaner? I can try that to see if it actually works.
-
-~Gregory
 
