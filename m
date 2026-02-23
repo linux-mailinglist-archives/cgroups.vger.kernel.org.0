@@ -1,49 +1,49 @@
-Return-Path: <cgroups+bounces-14162-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-14163-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id kEUpAf2pnGklJwQAu9opvQ
-	(envelope-from <cgroups+bounces-14162-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Mon, 23 Feb 2026 20:26:53 +0100
+	id wFBcMyCqnGklJwQAu9opvQ
+	(envelope-from <cgroups+bounces-14163-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Mon, 23 Feb 2026 20:27:28 +0100
 X-Original-To: lists+cgroups@lfdr.de
 Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 71DB517C5A4
-	for <lists+cgroups@lfdr.de>; Mon, 23 Feb 2026 20:26:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 5FE9417C5C1
+	for <lists+cgroups@lfdr.de>; Mon, 23 Feb 2026 20:27:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id DABFF3014C60
-	for <lists+cgroups@lfdr.de>; Mon, 23 Feb 2026 19:22:22 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id CC605306ABC0
+	for <lists+cgroups@lfdr.de>; Mon, 23 Feb 2026 19:24:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE8DA36AB7A;
-	Mon, 23 Feb 2026 19:22:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E03BD36B059;
+	Mon, 23 Feb 2026 19:24:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="eROIpp1q"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="eiTbXIzA"
 X-Original-To: cgroups@vger.kernel.org
-Received: from out-178.mta1.migadu.com (out-178.mta1.migadu.com [95.215.58.178])
+Received: from out-181.mta1.migadu.com (out-181.mta1.migadu.com [95.215.58.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 14A971E834B
-	for <cgroups@vger.kernel.org>; Mon, 23 Feb 2026 19:22:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D4D6340286
+	for <cgroups@vger.kernel.org>; Mon, 23 Feb 2026 19:24:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1771874539; cv=none; b=R+LQepWuOZeb+ajs8ejqqfygQwVOahHDbJylOnhVYkfELykf5EkL51c1MH3RXeOPwq8exaj+g3L+qZeGV9vtUqUmDcwrA+9oxsPK9KglwSIu8N3TISdzjhsf7buY23LnpioniChDS4qaShSlIJkyLc/OCRHzYKwV7PhpfdQ+cXE=
+	t=1771874660; cv=none; b=eGkAhthX/aXnvk067fKGjs9akcLRt3gvjanFbhWtHAdzD7mmiCrv0zUWuEvg1gz2PXnER5yOuorUGD8okGeNEsux6f8fNqn/4p2UO1WiFCMVSxZub8xh0Vkq9Iu7+vv1j/BLVKqham4cF1aevhJLeyqqEo7iWG1RR5Egm09cWWE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1771874539; c=relaxed/simple;
-	bh=6fs+jbOjp9m95hvh0abogRCjxKuGRNz+d/0oMVhxq6Y=;
+	s=arc-20240116; t=1771874660; c=relaxed/simple;
+	bh=6TZd4+pJn+8hGb0V7noqVqCLrSSpO83Rz3N2TUwk/QI=;
 	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=jK7RUjsSs/D6cKoV0jQSNMvhkFlbdlm7UDLdpnm5cdWeBOthxzHAdIJin3q+0Ki+easdP76ZLML9gNYM4nDIXUz1oKElB5TZOH0h1GsZDNJbg4feEV+kBO3CcTRbn4YcsIUcPGgWr8BiEQBl188/WK3EaQWTdYcvgIwtWQDCaUo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=eROIpp1q; arc=none smtp.client-ip=95.215.58.178
+	 MIME-Version:Content-Type; b=ht4L67QDgQpqojvmdnCEg8VDAJzxcM/8e/JrPRZ4eEehXy0ZicToCukZmF+xJ4guNH4w5G8S3SSOFuI4iYKT/csHoP+YiQs/6JnLwySKASLmIyeRNsvmKD1O/LDyGXX81QQdvzdoj/H7ZR2IVwLqHyVBWni7r9uAZ5NVs6E30Vw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=eiTbXIzA; arc=none smtp.client-ip=95.215.58.181
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1771874536;
+	t=1771874657;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=6fs+jbOjp9m95hvh0abogRCjxKuGRNz+d/0oMVhxq6Y=;
-	b=eROIpp1qpu/ongCjVJt/Z7mi5OTUFZeytb1N6rgy/KilNgwptKOiSSrU/uiBcoR2Mjf5Ks
-	yiZvwpN/ejN28iTK/SrPZO+EQ6qeJNmeaum1gqkqmppG75WF5zNIcx8DwIdabNZnLym9Az
-	KJ6va8lZGDzVIGSDJTIkF2Pvdm2ysiY=
+	bh=6TZd4+pJn+8hGb0V7noqVqCLrSSpO83Rz3N2TUwk/QI=;
+	b=eiTbXIzAMiOrRPGqqLUCeGzU1qIn/7nfvwRHMTsf+6ADaVvbUQuCmG8QkQ0s/YhYUcPgMh
+	k3KR5O76ASPjnsZDPRm+owgHRxHesiy+ruAUz41AjdsabQSazBODovejgRiqE8HdYQ5L2n
+	xHfjKDc4WIg4ekbfBc81O48PrPNnRAc=
 From: Roman Gushchin <roman.gushchin@linux.dev>
 To: Johannes Weiner <hannes@cmpxchg.org>
 Cc: Andrew Morton <akpm@linux-foundation.org>,  Uladzislau Rezki
@@ -51,12 +51,14 @@ Cc: Andrew Morton <akpm@linux-foundation.org>,  Uladzislau Rezki
  <mhocko@suse.com>,  Shakeel Butt <shakeel.butt@linux.dev>,  Muchun Song
  <muchun.song@linux.dev>,  linux-mm@kvack.org,  cgroups@vger.kernel.org,
   linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/2] mm: vmalloc: streamline vmalloc memory accounting
-In-Reply-To: <20260223160147.3792777-1-hannes@cmpxchg.org> (Johannes Weiner's
-	message of "Mon, 23 Feb 2026 11:01:06 -0500")
+Subject: Re: [PATCH v2 2/2] mm: memcontrol: switch to native NR_VMALLOC
+ vmstat counter
+In-Reply-To: <20260223160147.3792777-2-hannes@cmpxchg.org> (Johannes Weiner's
+	message of "Mon, 23 Feb 2026 11:01:07 -0500")
 References: <20260223160147.3792777-1-hannes@cmpxchg.org>
-Date: Mon, 23 Feb 2026 11:22:06 -0800
-Message-ID: <87pl5v8dup.fsf@linux.dev>
+	<20260223160147.3792777-2-hannes@cmpxchg.org>
+Date: Mon, 23 Feb 2026 11:24:03 -0800
+Message-ID: <87h5r78drg.fsf@linux.dev>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -81,7 +83,7 @@ X-Spamd-Result: default: False [-0.16 / 15.00];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	RCVD_COUNT_THREE(0.00)[3];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-14162-lists,cgroups=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-14163-lists,cgroups=lfdr.de];
 	DKIM_TRACE(0.00)[linux.dev:+];
 	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
 	MISSING_XM_UA(0.00)[];
@@ -94,20 +96,22 @@ X-Spamd-Result: default: False [-0.16 / 15.00];
 	MID_RHS_MATCH_FROM(0.00)[];
 	TO_DN_SOME(0.00)[];
 	TAGGED_RCPT(0.00)[cgroups];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[linux.dev:mid,linux.dev:dkim,linux.dev:email,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,cmpxchg.org:email]
-X-Rspamd-Queue-Id: 71DB517C5A4
+	DBL_BLOCKED_OPENRESOLVER(0.00)[linux.dev:mid,linux.dev:dkim,linux.dev:email,cmpxchg.org:email,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: 5FE9417C5C1
 X-Rspamd-Action: no action
 
 Johannes Weiner <hannes@cmpxchg.org> writes:
 
-> Use a vmstat counter instead of a custom, open-coded atomic. This has
-> the added benefit of making the data available per-node, and prepares
-> for cleaning up the memcg accounting as well.
+> Eliminates the custom memcg counter and results in a single,
+> consolidated accounting call in vmalloc code.
 >
 > Acked-by: Shakeel Butt <shakeel.butt@linux.dev>
+> Reviewed-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
 > Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
 
 Reviewed-by: Roman Gushchin <roman.gushchin@linux.dev>
 
-Thanks!
+Nice series!
+
+Thanks
 
