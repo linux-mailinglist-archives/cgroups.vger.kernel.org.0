@@ -1,106 +1,96 @@
-Return-Path: <cgroups+bounces-14173-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-14174-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id SMbFAxfXnGkJLAQAu9opvQ
-	(envelope-from <cgroups+bounces-14173-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Mon, 23 Feb 2026 23:39:19 +0100
+	id kH2EEyDXnGkJLAQAu9opvQ
+	(envelope-from <cgroups+bounces-14174-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Mon, 23 Feb 2026 23:39:28 +0100
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7A38717E734
-	for <lists+cgroups@lfdr.de>; Mon, 23 Feb 2026 23:39:18 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9C2EF17E758
+	for <lists+cgroups@lfdr.de>; Mon, 23 Feb 2026 23:39:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id C41CF30AD481
-	for <lists+cgroups@lfdr.de>; Mon, 23 Feb 2026 22:38:42 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id EBB5830CA82F
+	for <lists+cgroups@lfdr.de>; Mon, 23 Feb 2026 22:38:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 162A737B40E;
-	Mon, 23 Feb 2026 22:38:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2E58A37BE60;
+	Mon, 23 Feb 2026 22:38:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iD6o+4Yg"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZLsqMBTk"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-oi1-f172.google.com (mail-oi1-f172.google.com [209.85.167.172])
+Received: from mail-oi1-f181.google.com (mail-oi1-f181.google.com [209.85.167.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 39FE237B41A
-	for <cgroups@vger.kernel.org>; Mon, 23 Feb 2026 22:38:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E77E37B40C
+	for <cgroups@vger.kernel.org>; Mon, 23 Feb 2026 22:38:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1771886321; cv=none; b=OV2mJVrs+8LdZhS4EN73O5t17VpmGtABP5dHSQ54mcuLN2nEqTYK9lQK7aiE2J91dmnSvzeh2GXJZuvy650xwA2+EHTTA7QKG6/tZDKQcrxE+IqlQ553S2VgiLJ4fRatgzqNZT0C2wAlyoheCU2A17hfBVJ02MOHH9RaETRbs3U=
+	t=1771886323; cv=none; b=A52RnKM9CwS93dCz3sDOYsvugiIvllmkVGEDPrabJfxCUhi8MUckG+qgLAfmnGWXKuN4SldcQee4xxKgw4aMbxr+IMZggQAR1fO1v5FWsQuYfShXbwyq2mCgatifRkWvYmYnnTQ9WUSQtvZ9T95yEKWenz4tkoq/vDr1cxiEWLI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1771886321; c=relaxed/simple;
-	bh=T4vB2DOedOT6i9IF/jBh4raYemILf9XeHoYu3yDDtnE=;
+	s=arc-20240116; t=1771886323; c=relaxed/simple;
+	bh=J+BT9JHVO5MqWgVBXYMCvRaAsNpI/lKiHSmM/7rTRko=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Z81DV7xWfA3kWb94eEzjSB5JdiVzgRCaV9i3tl509YP7PZGeSrhzye6R4C2nP0G1/jLTMyUZf74iMFaFDDj9AU53aP3V8a9p2nKFmlR/KS5d6VPVcIlheXtTLvdB4IMcO75Ap/PzHqBCPM+05F+gWO2zpDmvN7fVtajDtTHqoM0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=iD6o+4Yg; arc=none smtp.client-ip=209.85.167.172
+	 MIME-Version; b=mUHevSitvnEFLa7V9+WH9UNFpISifQQRUyh3ECQS7bAy+bLDFivXkZASnx11ey8Y4Hs++MYao82WFERQ7ELiM76HhsP1BOb5PQFhTLfQatgDoDJ9B5DXrxYutIGXxlpKcVdATOSYKP1m63BrtmY7d/3H2+QSD+VETGpSKZ1H9EU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ZLsqMBTk; arc=none smtp.client-ip=209.85.167.181
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oi1-f172.google.com with SMTP id 5614622812f47-4639279c7a6so1822136b6e.1
-        for <cgroups@vger.kernel.org>; Mon, 23 Feb 2026 14:38:40 -0800 (PST)
+Received: by mail-oi1-f181.google.com with SMTP id 5614622812f47-463a94f8475so3076401b6e.0
+        for <cgroups@vger.kernel.org>; Mon, 23 Feb 2026 14:38:41 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1771886319; x=1772491119; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1771886320; x=1772491120; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=wYuk97hSinOTQ/m7mlOvoqja3g8YulhySTVwuiXXVKY=;
-        b=iD6o+4YgNTdGualUDzzIUgocUSIG8bLvnOFIzheZuNSghQngRcyGS9aG2WskobwNvw
-         8D9I3dHCC4uBpMFfu3wL7XJYGtdXtA3lXfDuz+9QOWlRHL+pbXku//vgzCTG0hgGHclW
-         Mscd1XV+BKeBPHHG2Ojvztglu7aC7ARsGYISt5UjOOXWT/lN5iJmvDNLH24+DCSNImv+
-         OFndZz9mDLEc2oQtHWfG8sLrijCEHOJ61BSdZLJFTZvd2C/kPpDK467O487G44QyNuHC
-         QgT+MZIjcdrTDg0Zuhfpz6yHdnFIpllGMS3ak8diPGDo1uJrPr+CAMOC2QJFeO0wkSPs
-         heeA==
+        bh=FgNKK4IJNslBJZZOngZoyEbar9yDv1r70Pc6CR+o2yQ=;
+        b=ZLsqMBTkUrxPmUXniY20pVQ3VuNzlsDGv/KaLU50Bv2rJG8/0Jh/04kbFDxHYegmdR
+         4u1hwYOP5Oc3Rvw1j2GjMGquFZP7BA3MPlaViY99SkbC7IYYPjus46+pzr3NSDFF3t7f
+         TvFGRz451M5xbBgjviQnb+/5TYarK/4dP6qqEGPf/b9uTrye8+FPbkxf33U1JK+thch9
+         F0yMafUZcYBA3uHoMfwzbEBqDmCMd0hLbbhkqp4VuU20/xtZGyeALnsXDOyxBz6BIbWY
+         r1RvXO/WkWbnwcEDrfHWOOsvDwg/UDCz2lFijwafkK0xsr65RMIQh71cLi58yR45y3UL
+         0hIA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1771886319; x=1772491119;
+        d=1e100.net; s=20230601; t=1771886320; x=1772491120;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=wYuk97hSinOTQ/m7mlOvoqja3g8YulhySTVwuiXXVKY=;
-        b=BCtBpE3gnMXkUCBpV/wfhKIUpMecGIiBFTXqErobiLWRekjoMdx4ORQWS1VZ7STaBc
-         kwvEfmM0LoSQtPmtODdFRxuTQF0wM6GxdWlaTavZO/7WDZg60SRZvhG2rFCloJNewMsj
-         aaQz3AgKz6oWBYo3wAzXtvR8ZDKoVihCWzXeKvNZkEflSOsdAEx6I5lMUKOBcdGBoWPK
-         tL0CcXcWIUOXzQTc8IfiXbmqeDF8P5kSSsD+AnhrwNPCuM7s8HLYvXsnwEn5YdVQ2nh2
-         nsOzWL3fiNTym3VPp/dZacS1xD22trHUBBshezvduSFH6I+Tv1Rwt5URHohM18YQche0
-         fRPg==
-X-Forwarded-Encrypted: i=1; AJvYcCVCWSiqIL8wBFzs6aB7Afk0usstYaQQd1FuRANzfkrQmY6vPOSM8YBrD7z1LJqPsNrhycaGfehk@vger.kernel.org
-X-Gm-Message-State: AOJu0YwX5y70CQtf9DIq53R7k5CyulnKZAeSanXg4EWfH9K3nhDD4p3z
-	L1uDKgiSPZtCpBf9YLoQVyHqaN+rzatpaiVToy4rM4Zj79rb48UvP4tY
-X-Gm-Gg: AZuq6aL9RiJC3ZthF9VLPRFkv/WLePKrw98oB8EmH3v98pwLLOwED2VI7GRPP4wf5hS
-	E0a+2w5sqZO7UO3qrEJWkUG79Kz6JVBCeybOJUXm8kXG1sGuY6sFU4xdEteprjwdJc45s56DHn7
-	QqVf59RLHNAIKt9ucYNHPMTlmh97fp7ABsF1MMczxcVzNVwSygvid0IEna9O/ryExk3OMrHFQ+i
-	p9r7qme5H3tKgCQQyidUs336isuq4gkQ8QALUrATc8Q46L1wihGlHI+09XnqYDRXyDZbgv4zyCW
-	gDu/aRsTwoz6iVcbptzARyf5c0GLoQ6zpQO4vHSf7q7yJFSNti5GuARZkEIIO1TltCWSIPLF7Kr
-	trWmQTmIJJZlHZLSJ2dKtmpJ7CiHNg7qKLctmp4dDXDU8kHCTKCbDzJvcUIBWcv38+RdJOIZqB0
-	alvDmf+tqz/362U7barULhbA==
-X-Received: by 2002:a05:6808:1481:b0:45f:727:8fd7 with SMTP id 5614622812f47-4644638ee8bmr5488352b6e.46.1771886318987;
-        Mon, 23 Feb 2026 14:38:38 -0800 (PST)
-Received: from localhost ([2a03:2880:10ff:45::])
-        by smtp.gmail.com with ESMTPSA id 586e51a60fabf-4157d2d7826sm8635887fac.10.2026.02.23.14.38.37
+        bh=FgNKK4IJNslBJZZOngZoyEbar9yDv1r70Pc6CR+o2yQ=;
+        b=GAlsAIoA3Oe1SEsVtiOXg9Qd4Y+hWf4oOGujMRcbBvPvH6/N7iJAXTB1HggCAqAtT1
+         lsk/xR1NL7cxyYndfTZEZyBd11gJKuaFQS6JIb66G0UiO41UFsAWbUMiQJ1+i9JxdrtO
+         PdUxKMsxPq7HHA4/pf3XNRhQ/tfwcWrfwxxUJZBQ1Mxjudr3sUobOvI3ISheJL/yWnbB
+         Wyw5Gu42qL4kYkWEICFpvDMpFlsLQQ2Ct7tt5g7sA2QJ+n5kK2bSHiPglCUzTgA2NaHV
+         +eUROfuC1yVpaqawOblvyJNg+xJRyQu1O3VsxaCYiZ3XG0Zf1e7DA06hWhf9/oc8ECs/
+         8cFA==
+X-Forwarded-Encrypted: i=1; AJvYcCUrpnfm/JFsMDlhHhosFQ8OrBOeiqmqYYqwQBx55LjvgQq46y0VG2Ung/JX7vTJrNy2AAtvom4a@vger.kernel.org
+X-Gm-Message-State: AOJu0Yxy5oPJRbAM2f3314v9bo1j/p9YIunCKbGMULJPvdpACzUHgaWb
+	EP6DeANngHcw+8VsgUaqzpL4fBC3CG14kHDQ280MAJdYoUz2elhMh7yf
+X-Gm-Gg: AZuq6aKBi/eFprKTkGIBbGvwCexXWEOl52Ddy1+so9nwg5nQaz3s/094FA9NKB7/uCB
+	9QnPK6/MxbKBX0WlAia2tO7JLy7DmGlzyBzLRI1q2xm74lmy+LqGVtJAfQlogcXBnBI58IhNXlz
+	L+L7IZyZDBRPo3EZhMDAbx/TES1sFBy/0RbXBOueajkIXVDlQGbtaKVAqt9jXXOkqsV3T8NsDTL
+	MfpFswdB9rzsgd0HMCTgNKDR38+EbZLhSmRUPV51pXCjLaybD1iwknUgmodNKRjAo40IaMLVDW3
+	QEUMPg/npZ5WtTjvWFK9EubwKF4WcDSmhvPSGL8sVbnxbWbfsXF5J+KmQI1m4MA/uz2+srSbZjM
+	RgpqCuGOSLdDGglw5VD4DTO/VfLgtCO8GSMlNQzOPAEu4d4k19x4WlS9Z5etssImgvNO020kQNu
+	xGP7qoUMlKihQIkH3y76z3bA+dn8dUz+c=
+X-Received: by 2002:a05:6808:3442:b0:453:7cad:63be with SMTP id 5614622812f47-464276813fbmr8219044b6e.31.1771886320460;
+        Mon, 23 Feb 2026 14:38:40 -0800 (PST)
+Received: from localhost ([2a03:2880:10ff:2::])
+        by smtp.gmail.com with ESMTPSA id 5614622812f47-4644a1afa44sm5819928b6e.16.2026.02.23.14.38.39
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 23 Feb 2026 14:38:38 -0800 (PST)
+        Mon, 23 Feb 2026 14:38:39 -0800 (PST)
 From: Joshua Hahn <joshua.hahnjy@gmail.com>
 To: Joshua Hahn <joshua.hahnjy@gmail.com>
 Cc: Andrew Morton <akpm@linux-foundation.org>,
-	David Hildenbrand <david@kernel.org>,
-	Lorenzo Stoakes <lorenzo.stoakes@oracle.com>,
-	"Liam R . Howlett" <Liam.Howlett@oracle.com>,
-	Vlastimil Babka <vbabka@kernel.org>,
-	Mike Rapoport <rppt@kernel.org>,
-	Suren Baghdasaryan <surenb@google.com>,
 	Johannes Weiner <hannes@cmpxchg.org>,
 	Michal Hocko <mhocko@suse.com>,
 	Roman Gushchin <roman.gushchin@linux.dev>,
 	Shakeel Butt <shakeel.butt@linux.dev>,
 	Muchun Song <muchun.song@linux.dev>,
-	Waiman Long <longman@redhat.com>,
-	Chen Ridong <chenridong@huaweicloud.com>,
-	Tejun Heo <tj@kernel.org>,
-	Michal Koutny <mkoutny@suse.com>,
 	linux-mm@kvack.org,
 	cgroups@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	kernel-team@meta.com
-Subject: [RFC PATCH 3/6] mm/memory-tiers, memcontrol: Introduce toptier capacity updates
-Date: Mon, 23 Feb 2026 14:38:26 -0800
-Message-ID: <20260223223830.586018-4-joshua.hahnjy@gmail.com>
+Subject: [RFC PATCH 4/6] mm/memcontrol: Charge and uncharge from toptier
+Date: Mon, 23 Feb 2026 14:38:27 -0800
+Message-ID: <20260223223830.586018-5-joshua.hahnjy@gmail.com>
 X-Mailer: git-send-email 2.47.3
 In-Reply-To: <20260223223830.586018-1-joshua.hahnjy@gmail.com>
 References: <20260223223830.586018-1-joshua.hahnjy@gmail.com>
@@ -115,303 +105,149 @@ X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-0.16 / 15.00];
 	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_MISSING_CHARSET(0.50)[];
 	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
+	R_MISSING_CHARSET(0.50)[];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	R_DKIM_ALLOW(-0.20)[gmail.com:s=20230601];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
-	FREEMAIL_FROM(0.00)[gmail.com];
-	TAGGED_FROM(0.00)[bounces-14173-lists,cgroups=lfdr.de];
-	FORGED_SENDER_MAILLIST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-14174-lists,cgroups=lfdr.de];
 	RECEIVED_HELO_LOCALHOST(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	RCPT_COUNT_TWELVE(0.00)[21];
+	RCVD_COUNT_FIVE(0.00)[5];
 	FREEMAIL_TO(0.00)[gmail.com];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	TO_DN_SOME(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	FROM_NEQ_ENVFROM(0.00)[joshuahahnjy@gmail.com,cgroups@vger.kernel.org];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[5];
-	FROM_NEQ_ENVFROM(0.00)[joshuahahnjy@gmail.com,cgroups@vger.kernel.org];
-	FROM_HAS_DN(0.00)[];
-	DKIM_TRACE(0.00)[gmail.com:+];
-	NEURAL_HAM(-0.00)[-0.999];
-	TAGGED_RCPT(0.00)[cgroups];
+	RCPT_COUNT_SEVEN(0.00)[11];
 	MID_RHS_MATCH_FROM(0.00)[];
-	TO_DN_SOME(0.00)[];
+	NEURAL_HAM(-0.00)[-0.999];
+	DKIM_TRACE(0.00)[gmail.com:+];
+	TAGGED_RCPT(0.00)[cgroups];
+	FREEMAIL_FROM(0.00)[gmail.com];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
 	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 7A38717E734
+X-Rspamd-Queue-Id: 9C2EF17E758
 X-Rspamd-Action: no action
 
-What a memcg considers to be a valid toptier node is defined by three
-criteria: (1) The node has CPUs, (2) The node has online memory,
-and (3) The node is within the cgroup's cpuset.mems.
+Modify memcg charging and uncharging sites to also update toptier
+statistics.
 
-Of the three, the second and third criteria are the only ones that can
-change dynamically during runtime, via memory hotplug events and
-cpuset.mems changes, respectively.
-
-Introduce functions to calculate and update toptier capacity, and call
-them during cpuset.mems changes and memory hotplug events.
+Unfortunately, try_charge_memcg is unaware of the physical folio being
+charged; it only deals with nr_pages. Instead of modifying
+try_charge_memcg, instead adjust the toptier fields once
+try_charge_memcg succeeds, inside charge_memcg.
 
 Signed-off-by: Joshua Hahn <joshua.hahnjy@gmail.com>
 ---
- include/linux/memcontrol.h   |  6 ++++++
- include/linux/memory-tiers.h | 29 +++++++++++++++++++++++++
- include/linux/page_counter.h |  2 ++
- kernel/cgroup/cpuset.c       |  2 +-
- mm/memcontrol.c              | 17 +++++++++++++++
- mm/memory-tiers.c            | 41 ++++++++++++++++++++++++++++++++++++
- mm/page_counter.c            |  8 +++++++
- 7 files changed, 104 insertions(+), 1 deletion(-)
+ mm/memcontrol.c | 39 +++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 39 insertions(+)
 
-diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-index 5173a9f16721..900a36112b62 100644
---- a/include/linux/memcontrol.h
-+++ b/include/linux/memcontrol.h
-@@ -608,6 +608,8 @@ static inline void mem_cgroup_protection(struct mem_cgroup *root,
- void mem_cgroup_calculate_protection(struct mem_cgroup *root,
- 				     struct mem_cgroup *memcg);
- 
-+void update_memcg_toptier_capacity(void);
-+
- static inline bool mem_cgroup_unprotected(struct mem_cgroup *target,
- 					  struct mem_cgroup *memcg)
- {
-@@ -1116,6 +1118,10 @@ static inline void mem_cgroup_calculate_protection(struct mem_cgroup *root,
- {
- }
- 
-+static inline void update_memcg_toptier_capacity(void)
-+{
-+}
-+
- static inline bool mem_cgroup_unprotected(struct mem_cgroup *target,
- 					  struct mem_cgroup *memcg)
- {
-diff --git a/include/linux/memory-tiers.h b/include/linux/memory-tiers.h
-index 85440473effb..cf616885e0db 100644
---- a/include/linux/memory-tiers.h
-+++ b/include/linux/memory-tiers.h
-@@ -53,6 +53,9 @@ int mt_perf_to_adistance(struct access_coordinate *perf, int *adist);
- struct memory_dev_type *mt_find_alloc_memory_type(int adist,
- 						  struct list_head *memory_types);
- void mt_put_memory_types(struct list_head *memory_types);
-+void mt_get_toptier_nodemask(nodemask_t *mask, const nodemask_t *allowed);
-+unsigned long mt_get_toptier_capacity(const nodemask_t *allowed);
-+unsigned long mt_get_total_capacity(const nodemask_t *allowed);
- #ifdef CONFIG_MIGRATION
- int next_demotion_node(int node, const nodemask_t *allowed_mask);
- void node_get_allowed_targets(pg_data_t *pgdat, nodemask_t *targets);
-@@ -152,5 +155,31 @@ static inline struct memory_dev_type *mt_find_alloc_memory_type(int adist,
- static inline void mt_put_memory_types(struct list_head *memory_types)
- {
- }
-+
-+static inline void mt_get_toptier_nodemask(nodemask_t *mask,
-+					   const nodemask_t *allowed)
-+{
-+	*mask = node_states[N_MEMORY];
-+	if (allowed)
-+		nodes_and(*mask, *mask, *allowed);
-+}
-+
-+static inline unsigned long mt_get_toptier_capacity(const nodemask_t *allowed)
-+{
-+	int nid;
-+	unsigned long capacity = 0;
-+
-+	for_each_node_state(nid, N_MEMORY) {
-+		if (allowed && !node_isset(nid, *allowed))
-+			continue;
-+		capacity += NODE_DATA(nid)->node_present_pages;
-+	}
-+	return capacity;
-+}
-+
-+static inline unsigned long mt_get_total_capacity(const nodemask_t *allowed)
-+{
-+	return mt_get_toptier_capacity(allowed);
-+}
- #endif	/* CONFIG_NUMA */
- #endif  /* _LINUX_MEMORY_TIERS_H */
-diff --git a/include/linux/page_counter.h b/include/linux/page_counter.h
-index 128c1272c88c..ada5f1dd75d4 100644
---- a/include/linux/page_counter.h
-+++ b/include/linux/page_counter.h
-@@ -121,6 +121,8 @@ static inline void page_counter_reset_watermark(struct page_counter *counter)
- void page_counter_calculate_protection(struct page_counter *root,
- 				       struct page_counter *counter,
- 				       bool recursive_protection);
-+void page_counter_update_toptier_capacity(struct page_counter *counter,
-+					  const nodemask_t *allowed);
- unsigned long page_counter_toptier_high(struct page_counter *counter);
- unsigned long page_counter_toptier_low(struct page_counter *counter);
- #else
-diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
-index 7607dfe516e6..e5641dc1af88 100644
---- a/kernel/cgroup/cpuset.c
-+++ b/kernel/cgroup/cpuset.c
-@@ -2620,7 +2620,6 @@ static void update_nodemasks_hier(struct cpuset *cs, nodemask_t *new_mems)
- 	rcu_read_lock();
- 	cpuset_for_each_descendant_pre(cp, pos_css, cs) {
- 		struct cpuset *parent = parent_cs(cp);
--
- 		bool has_mems = nodes_and(*new_mems, cp->mems_allowed, parent->effective_mems);
- 
- 		/*
-@@ -2701,6 +2700,7 @@ static int update_nodemask(struct cpuset *cs, struct cpuset *trialcs,
- 
- 	/* use trialcs->mems_allowed as a temp variable */
- 	update_nodemasks_hier(cs, &trialcs->mems_allowed);
-+	update_memcg_toptier_capacity();
- 	return 0;
- }
- 
 diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index 0be1e823d813..f3e4a6ce7181 100644
+index f3e4a6ce7181..07464f02c529 100644
 --- a/mm/memcontrol.c
 +++ b/mm/memcontrol.c
-@@ -54,6 +54,7 @@
- #include <linux/seq_file.h>
- #include <linux/vmpressure.h>
- #include <linux/memremap.h>
-+#include <linux/memory-tiers.h>
- #include <linux/mm_inline.h>
- #include <linux/swap_cgroup.h>
- #include <linux/cpu.h>
-@@ -3906,6 +3907,7 @@ mem_cgroup_css_alloc(struct cgroup_subsys_state *parent_css)
- 
- 		page_counter_init(&memcg->memory, &parent->memory, memcg_on_dfl);
- 		page_counter_init(&memcg->swap, &parent->swap, false);
-+		page_counter_update_toptier_capacity(&memcg->memory, NULL);
- #ifdef CONFIG_MEMCG_V1
- 		memcg->memory.track_failcnt = !memcg_on_dfl;
- 		WRITE_ONCE(memcg->oom_kill_disable, READ_ONCE(parent->oom_kill_disable));
-@@ -3917,6 +3919,7 @@ mem_cgroup_css_alloc(struct cgroup_subsys_state *parent_css)
- 		init_memcg_events();
- 		page_counter_init(&memcg->memory, NULL, true);
- 		page_counter_init(&memcg->swap, NULL, false);
-+		page_counter_update_toptier_capacity(&memcg->memory, NULL);
- #ifdef CONFIG_MEMCG_V1
- 		page_counter_init(&memcg->kmem, NULL, false);
- 		page_counter_init(&memcg->tcpmem, NULL, false);
-@@ -4804,6 +4807,20 @@ void mem_cgroup_calculate_protection(struct mem_cgroup *root,
- 	page_counter_calculate_protection(&root->memory, &memcg->memory, recursive_protection);
+@@ -1948,6 +1948,24 @@ static void memcg_uncharge(struct mem_cgroup *memcg, unsigned int nr_pages)
+ 		page_counter_uncharge(&memcg->memsw, nr_pages);
  }
  
-+void update_memcg_toptier_capacity(void)
++static void memcg_charge_toptier(struct mem_cgroup *memcg,
++				 unsigned long nr_pages)
 +{
-+	struct mem_cgroup *memcg;
-+	nodemask_t allowed;
++	struct page_counter *c;
 +
-+	for_each_mem_cgroup(memcg) {
-+		if (memcg == root_mem_cgroup)
-+			continue;
-+
-+		cpuset_nodes_allowed(memcg->css.cgroup, &allowed);
-+		page_counter_update_toptier_capacity(&memcg->memory, &allowed);
-+	}
++	for (c = &memcg->memory; c; c = c->parent)
++		atomic_long_add(nr_pages, &c->toptier_usage);
 +}
 +
- static int charge_memcg(struct folio *folio, struct mem_cgroup *memcg,
- 			gfp_t gfp)
- {
-diff --git a/mm/memory-tiers.c b/mm/memory-tiers.c
-index a88256381519..259caaf4be8f 100644
---- a/mm/memory-tiers.c
-+++ b/mm/memory-tiers.c
-@@ -889,6 +889,7 @@ static int __meminit memtier_hotplug_callback(struct notifier_block *self,
- 		mutex_lock(&memory_tier_lock);
- 		if (clear_node_memory_tier(nn->nid))
- 			establish_demotion_targets();
-+		update_memcg_toptier_capacity();
- 		mutex_unlock(&memory_tier_lock);
- 		break;
- 	case NODE_ADDED_FIRST_MEMORY:
-@@ -896,6 +897,7 @@ static int __meminit memtier_hotplug_callback(struct notifier_block *self,
- 		memtier = set_node_memory_tier(nn->nid);
- 		if (!IS_ERR(memtier))
- 			establish_demotion_targets();
-+		update_memcg_toptier_capacity();
- 		mutex_unlock(&memory_tier_lock);
- 		break;
++static void memcg_uncharge_toptier(struct mem_cgroup *memcg,
++				   unsigned long nr_pages)
++{
++	struct page_counter *c;
++
++	for (c = &memcg->memory; c; c = c->parent)
++		atomic_long_sub(nr_pages, &c->toptier_usage);
++}
++
+ /*
+  * Returns stocks cached in percpu and reset cached information.
+  */
+@@ -4830,6 +4848,9 @@ static int charge_memcg(struct folio *folio, struct mem_cgroup *memcg,
+ 	if (ret)
+ 		goto out;
+ 
++	if (node_is_toptier(folio_nid(folio)))
++		memcg_charge_toptier(memcg, folio_nr_pages(folio));
++
+ 	css_get(&memcg->css);
+ 	commit_charge(folio, memcg);
+ 	memcg1_commit_charge(folio, memcg);
+@@ -4921,6 +4942,7 @@ int mem_cgroup_swapin_charge_folio(struct folio *folio, struct mm_struct *mm,
+ struct uncharge_gather {
+ 	struct mem_cgroup *memcg;
+ 	unsigned long nr_memory;
++	unsigned long nr_toptier;
+ 	unsigned long pgpgout;
+ 	unsigned long nr_kmem;
+ 	int nid;
+@@ -4941,6 +4963,8 @@ static void uncharge_batch(const struct uncharge_gather *ug)
+ 		}
+ 		memcg1_oom_recover(ug->memcg);
  	}
-@@ -941,6 +943,45 @@ bool numa_demotion_enabled = false;
++	if (ug->nr_toptier)
++		memcg_uncharge_toptier(ug->memcg, ug->nr_toptier);
  
- bool tier_aware_memcg_limits;
+ 	memcg1_uncharge_batch(ug->memcg, ug->pgpgout, ug->nr_memory, ug->nid);
  
-+void mt_get_toptier_nodemask(nodemask_t *mask, const nodemask_t *allowed)
-+{
-+	int nid;
-+
-+	*mask = NODE_MASK_NONE;
-+	for_each_node_state(nid, N_MEMORY) {
-+		if (node_is_toptier(nid))
-+			node_set(nid, *mask);
-+	}
-+	if (allowed)
-+		nodes_and(*mask, *mask, *allowed);
-+}
-+
-+unsigned long mt_get_toptier_capacity(const nodemask_t *allowed)
-+{
-+	int nid;
-+	unsigned long capacity = 0;
-+	nodemask_t mask;
-+
-+	mt_get_toptier_nodemask(&mask, allowed);
-+	for_each_node_mask(nid, mask)
-+		capacity += NODE_DATA(nid)->node_present_pages;
-+
-+	return capacity;
-+}
-+
-+unsigned long mt_get_total_capacity(const nodemask_t *allowed)
-+{
-+	int nid;
-+	unsigned long capacity = 0;
-+
-+	for_each_node_state(nid, N_MEMORY) {
-+		if (allowed && !node_isset(nid, *allowed))
-+			continue;
-+		capacity += NODE_DATA(nid)->node_present_pages;
-+	}
-+	return capacity;
-+}
-+
- #ifdef CONFIG_MIGRATION
- #ifdef CONFIG_SYSFS
- static ssize_t demotion_enabled_show(struct kobject *kobj,
-diff --git a/mm/page_counter.c b/mm/page_counter.c
-index 5ec97811c418..cf21c72bfd4e 100644
---- a/mm/page_counter.c
-+++ b/mm/page_counter.c
-@@ -11,6 +11,7 @@
- #include <linux/string.h>
- #include <linux/sched.h>
- #include <linux/bug.h>
-+#include <linux/memory-tiers.h>
- #include <asm/page.h>
+@@ -4989,6 +5013,9 @@ static void uncharge_folio(struct folio *folio, struct uncharge_gather *ug)
  
- static bool track_protection(struct page_counter *c)
-@@ -463,6 +464,13 @@ void page_counter_calculate_protection(struct page_counter *root,
- 			recursive_protection));
- }
+ 	nr_pages = folio_nr_pages(folio);
  
-+void page_counter_update_toptier_capacity(struct page_counter *counter,
-+					  const nodemask_t *allowed)
-+{
-+	counter->toptier_capacity = mt_get_toptier_capacity(allowed);
-+	counter->total_capacity = mt_get_total_capacity(allowed);
-+}
++	if (node_is_toptier(folio_nid(folio)))
++		ug->nr_toptier += nr_pages;
 +
- unsigned long page_counter_toptier_high(struct page_counter *counter)
+ 	if (folio_memcg_kmem(folio)) {
+ 		ug->nr_memory += nr_pages;
+ 		ug->nr_kmem += nr_pages;
+@@ -5072,6 +5099,10 @@ void mem_cgroup_replace_folio(struct folio *old, struct folio *new)
+ 			page_counter_charge(&memcg->memsw, nr_pages);
+ 	}
+ 
++	/* The old folio's toptier_usage will be decremented when it is freed */
++	if (node_is_toptier(folio_nid(new)))
++		memcg_charge_toptier(memcg, nr_pages);
++
+ 	css_get(&memcg->css);
+ 	commit_charge(new, memcg);
+ 	memcg1_commit_charge(new, memcg);
+@@ -5091,6 +5122,7 @@ void mem_cgroup_replace_folio(struct folio *old, struct folio *new)
+ void mem_cgroup_migrate(struct folio *old, struct folio *new)
  {
- 	unsigned long high = READ_ONCE(counter->high);
+ 	struct mem_cgroup *memcg;
++	int old_toptier, new_toptier;
+ 
+ 	VM_BUG_ON_FOLIO(!folio_test_locked(old), old);
+ 	VM_BUG_ON_FOLIO(!folio_test_locked(new), new);
+@@ -5111,6 +5143,13 @@ void mem_cgroup_migrate(struct folio *old, struct folio *new)
+ 	if (!memcg)
+ 		return;
+ 
++	old_toptier = node_is_toptier(folio_nid(old));
++	new_toptier = node_is_toptier(folio_nid(new));
++	if (old_toptier && !new_toptier)
++		memcg_uncharge_toptier(memcg, folio_nr_pages(old));
++	else if (!old_toptier && new_toptier)
++		memcg_charge_toptier(memcg, folio_nr_pages(old));
++
+ 	/* Transfer the charge and the css ref */
+ 	commit_charge(new, memcg);
+ 
 -- 
 2.47.3
 
