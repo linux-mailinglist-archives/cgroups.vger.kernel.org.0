@@ -1,200 +1,289 @@
-Return-Path: <cgroups+bounces-14150-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-14151-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 6M9sEsJ7nGm6IQQAu9opvQ
-	(envelope-from <cgroups+bounces-14150-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Mon, 23 Feb 2026 17:09:38 +0100
+	id cILkGfh6nGlfIAQAu9opvQ
+	(envelope-from <cgroups+bounces-14151-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Mon, 23 Feb 2026 17:06:16 +0100
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
-	by mail.lfdr.de (Postfix) with ESMTPS id 69592179665
-	for <lists+cgroups@lfdr.de>; Mon, 23 Feb 2026 17:09:37 +0100 (CET)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 516D817955B
+	for <lists+cgroups@lfdr.de>; Mon, 23 Feb 2026 17:06:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id 9B3B4307B96D
-	for <lists+cgroups@lfdr.de>; Mon, 23 Feb 2026 16:02:00 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id EF34230054D1
+	for <lists+cgroups@lfdr.de>; Mon, 23 Feb 2026 16:02:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 16BE030BB91;
-	Mon, 23 Feb 2026 16:01:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B461B307AF0;
+	Mon, 23 Feb 2026 16:01:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="PqHtQ0ke"
+	dkim=pass (2048-bit key) header.d=cmpxchg.org header.i=@cmpxchg.org header.b="aHOQ72DW"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-ot1-f46.google.com (mail-ot1-f46.google.com [209.85.210.46])
+Received: from mail-qt1-f196.google.com (mail-qt1-f196.google.com [209.85.160.196])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CBC6B303A26
-	for <cgroups@vger.kernel.org>; Mon, 23 Feb 2026 16:01:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2AEAA309F00
+	for <cgroups@vger.kernel.org>; Mon, 23 Feb 2026 16:01:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.196
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1771862469; cv=none; b=XdFnlzHlAS+8+OkBpRgOoMxjm2tycHGkKrN5BaJhSpszHHqKJNBM3j8uYfwMYfEzlscqnS+ivZ3No7PYfRZ6h8cET88ncqlLhSS9HGuriJL3kX2Ui/TJt0Z9GPoI8gYqBHF8tmO9oe99t4B9gJbJ954zhj/dENX5wg61kSWBoTA=
+	t=1771862511; cv=none; b=p1Dpx5TqjExgVYyZCdF3tsLt/8s81whArsyydUYRNUmRO95mztdyI9/MHWHk7a4ZwcpLFMJYwNUDWEJBzKKljt2ppg5vuqr81Sthjy+/JNV0noMTgYm6Jkl5zKJ+7rn1XRIPAFb8h/LgGyvyoz7iESadSfrhGCEwA1Ny5v+rWk4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1771862469; c=relaxed/simple;
-	bh=RBDa0jIO4VbsfMCQSIREc9cffsT7gvfxFla9G/UD7gs=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=TJB259nsy79sCeC4Kpe1Q8yT8PdtBjQ2SRFe0A9xfOZtW8K4+99p75YMxonJQLbSEplR4B91cBYXvMnQUfQfs8BzkUZ9Doudf6jhJPm6NLfgefyfISysOZaoKJtbVE8YjXbSSG29PbnXoDkfhPcvepxyt6bMahiOIVcf5S/R+g0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b=PqHtQ0ke; arc=none smtp.client-ip=209.85.210.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
-Received: by mail-ot1-f46.google.com with SMTP id 46e09a7af769-7d18d02af68so3079372a34.2
-        for <cgroups@vger.kernel.org>; Mon, 23 Feb 2026 08:01:06 -0800 (PST)
+	s=arc-20240116; t=1771862511; c=relaxed/simple;
+	bh=ihwCY+885/DJ41iFQibyxx318RHDEpAXKJdoYYRfTsk=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=CsVCgVxBATWZnxtgNfxDv/zmvxgdPaOXliJyr34/kcaWKQX/Fty8njWURhw7kDe7LWUJiN+9jM79C2gTGasnOAu9AlhP1j9Hsfnwzy9zSYhLJ54eLeLyshqGvNArmpMzV08qcZhgNqLvqBaLEjTBxKzZKf39/6aq7cYLw/+PHz8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org; spf=pass smtp.mailfrom=cmpxchg.org; dkim=pass (2048-bit key) header.d=cmpxchg.org header.i=@cmpxchg.org header.b=aHOQ72DW; arc=none smtp.client-ip=209.85.160.196
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cmpxchg.org
+Received: by mail-qt1-f196.google.com with SMTP id d75a77b69052e-506989e8516so37365561cf.0
+        for <cgroups@vger.kernel.org>; Mon, 23 Feb 2026 08:01:49 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1771862466; x=1772467266; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=HX29uEwlmShEjfFqkdwl8Eb5l/ZDj+DL2kVuvz05S4k=;
-        b=PqHtQ0kegO9Jus8W4cxNJI34/48vONyAjPHsLA84w3xhcTH+ehRGLWMutcJXZ2RAc/
-         sIIW38BVXjib20Hzzie5/NskGtknX8AWizrrYqFC+cHd9PikB2egS7JaNbi54oMe6P/4
-         ddf9EB7qZxkwqk3fcPIUygOni6aWtkYOvu4jDSCBwwynMsMsONTgNsrQ6SoIaPGchix5
-         apan0c7Jll92fM9SkRm6Fx8tqeLhj2uls5bV+0bT0tWyuhs39yMoF4q2AatkXEkfO9jQ
-         WZmQcIv6TmU8UxJu44cTa6JGtGGdPs47Tmw+CdciuwJYkd046huqr3OenbIXyacOEqFB
-         SY4A==
+        d=cmpxchg.org; s=google; t=1771862509; x=1772467309; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=OE3e/mRY2hQ14eIolnufoTqQ/7nanRq+a9D/btXLD44=;
+        b=aHOQ72DWjcM2YFIKKYWhCehqngbunTG6xlRrRTYhAW1Mohfo7bqeE9gbPQFqTZnq8Y
+         ZKjkITmdmnUmpz7sKTyV6vjE+BGWC67sAvZadMNC0EjjyeHka5yBl/V5Xs75EiKFWFeW
+         1omH8iFcCbkxvZlcE6e1DIN3fpIQXAmtLK4Yfi6Ci+CS5YXWLKVW4rv5NFBqnD272F9z
+         dMetsTgkKoFWlyDntfaobxTdmFRjCkp+0Xby9Km02LWv0fYuFmZlzy8FKxB4ijtrfOzU
+         yYCwY/Z+lQJvO0v+fCEHWSkv08EBTtTqg/7qlpJiLIVW2ppW5ZpHHrm6HDthp7rbfLMk
+         187Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1771862466; x=1772467266;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=HX29uEwlmShEjfFqkdwl8Eb5l/ZDj+DL2kVuvz05S4k=;
-        b=q8mNIqpOjrAzpcuHohcf3idNcYFxI6ZbnoQkFFwg7wF25/+LGxVkP9zijXmC95qTYx
-         1Zn0swjdq9bSRoqoAxQO/eP+YNQ4NAdxT045mp7HpvZSln14+MWKrturMI3evTFG1yfR
-         8HvEij9nD/vZ0hOMTGakQxMCpl8sziEm6UNSG0l+Nf65L1lkcKJy6LwsBpJaqnHHfXdy
-         mOzenqytsOf6XXpim1cgHvmbsCqIAV8I5H/IYWXCB9MkeVTMN/yC4OwF52w4Yt+7LnCy
-         3SZHeEGMylUef8Y6bo7VzOmCaojgZa8iCdgdVQxOW6V1kaKc+iFk2WGjIcyKf/AgCiwP
-         VQMQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWOygfGfkFzH9rPBE0E2fdHIlfJoKHhJgOgNyLPyg6YrcQfwUXsH0t0N0WZmcNnyv6CPKL8eH+K@vger.kernel.org
-X-Gm-Message-State: AOJu0Yz5i1IeM/M4xskFYBRX50UArOg4FJekb5xpW/RwugPh+/cD7xFU
-	JsH7teFF10kjsaJ90ltnb4y9h0adW3aRqeqR0f/VKEuLPyy69OQbEJs6UIR6oDUH/aw=
-X-Gm-Gg: AZuq6aJxnBAxEEBQGHI5/2EduK/u8is1hIhumqGZUZ9SvosJ2ZQVMUK+KS3nnw1ElUx
-	7Yi2UZ0m27SePvd6CB2WLo7/oidpd7vVqwwNAG94y6Wk1Q/NaskMj4xNGkevAS2bc1Rjghsu4fq
-	WPyBFWDnr2ELDqnr5lpGViS6uicFjQVy9ESksVWFKFpOlp92aTCWzT650zRNYWPewekEWxTbj35
-	vXDFPVb6N5kuntKDrsVDApuEl6r5Yvkb4smzvWxnqt3Nj0DOhdjQiz+sfC6JhM0eCiGf9m8m5zq
-	mJLWbqgEPSjHErk7zy6CHBiSW+gexvzvHnIWfWdSv5V8S1kd8+/s7ki/SwXlttfeTq7r4xxdIHE
-	yu9JPmwwMgw7b4nM3/qBe9K0BsEHNCHXC+Mqk71CUEymQfY+onKNPMXPnmnEcQY40ZNSt0nJwBU
-	6tf3wH57tsERihhcldWQ1UuH8q/+xDpItiVYGKLuz/TDcbnCS96HTrWvzjzOriYiMiAyRMfaufA
-	zTwZq3bLA==
-X-Received: by 2002:a05:6830:3153:b0:7d1:853c:83e3 with SMTP id 46e09a7af769-7d52bdf416bmr6177467a34.2.1771862465520;
-        Mon, 23 Feb 2026 08:01:05 -0800 (PST)
-Received: from ?IPV6:2600:8803:e7e4:500:e37:2309:3937:4469? ([2600:8803:e7e4:500:e37:2309:3937:4469])
-        by smtp.gmail.com with ESMTPSA id 46e09a7af769-7d55b9a8498sm1062950a34.28.2026.02.23.08.01.04
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 23 Feb 2026 08:01:05 -0800 (PST)
-Message-ID: <47be2ff3-c25a-4aab-89fc-53921af8b0a9@baylibre.com>
-Date: Mon, 23 Feb 2026 10:01:03 -0600
+        d=1e100.net; s=20230601; t=1771862509; x=1772467309;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=OE3e/mRY2hQ14eIolnufoTqQ/7nanRq+a9D/btXLD44=;
+        b=LQG206Svpj4AMdux6wfRxM8NKd3lp+nqjzVI2dPTYl1GpNPRng7+7SQpAoyKRpSKF+
+         45csjqLZKmEqlU+aZ1HKkJaripeWwHCSzG4RIhkUJVWJjXpLgFsULVzuYDuPN0dh3To1
+         OIQ1yzKfQKc/TpPBJQSE/VxxqfXM0ok+gT9ONeN22N/68rXVG+utCZXnp8mNiAF3wZxf
+         VGXtW+myvVq5NS/bvT8iw/0b9d8UJ4xh4cQpcDOMgqU5qYF0CmcWEcuRMdfx7vL8qyYT
+         qaLiYCuPacJwo0gdd3TqV0deCDT3+EBVhh+cpmLFxgOHjNPb8Q7rKQUI2jvaMdLSLRzP
+         Ahdg==
+X-Forwarded-Encrypted: i=1; AJvYcCXLXHfVZqsGNAj8UtPfp9+EyTBFa87Qvof9kIvWeFUjx0SV/nj8QbZYBdvkCe1ZSxoWPCALVI2t@vger.kernel.org
+X-Gm-Message-State: AOJu0Yxw7GriVLWmfl7XMOOKZwYZnQObgjCEWyiZlDQAo7/wpBVwonZw
+	VfPCmtUkM8rhgrjyRQp8FsMM4NiUv/0KMU98HGu6xV/pl3NURLs6ESeCdLvSYuc3Hzx2pBAsAQU
+	jjui25Hk=
+X-Gm-Gg: AZuq6aIz0mf/u9N+cwqoz6MsAjiWn3viNy/07s1IrAxJooCPiUIrRX6kPOkRAB8O43r
+	6XVsb+zgXjw7lW8J9T140qQRvwjuXM077KEdIGHUTgJS2MNB8mc62vjSWUQpXlVwDqm2NKrUyN1
+	RVFwUb7krJCl8bVWZ95oNpEbNJyiOFfYOWSngkh46QZgqwo7oBi4VMGFo/Q5xGDUxOekBxxJZHA
+	br68seaIG+9UAKQhIz5IvMyrGKjBjPQX4z8OG7DbnTS/u0lgzZAiUj4h2ql7XRt87c/1mj9DZf4
+	iA65liWIGm8RZUH8Q8vEtfz69OhkHWuz7z8Hildv+lVZoK+Qj2WCsZIcAO9Eg2oSb8UHgEM4eZA
+	7Hpux/RQpGsNVchKRxZPp5e3/f2CmwBGaGyzhLyJpeQqGjHgJC9njb7PFiSiU2HdJ2yfCGAnEKH
+	q0LlLbOYC2xS6lbbdF8OcePw==
+X-Received: by 2002:a05:622a:14:b0:502:9a98:34b6 with SMTP id d75a77b69052e-5070bbde388mr116096171cf.19.1771862508740;
+        Mon, 23 Feb 2026 08:01:48 -0800 (PST)
+Received: from localhost ([2603:7000:c00:3a00:365a:60ff:fe62:ff29])
+        by smtp.gmail.com with ESMTPSA id d75a77b69052e-5070d6c9de8sm70140001cf.26.2026.02.23.08.01.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 23 Feb 2026 08:01:47 -0800 (PST)
+From: Johannes Weiner <hannes@cmpxchg.org>
+To: Andrew Morton <akpm@linux-foundation.org>
+Cc: Uladzislau Rezki <urezki@gmail.com>,
+	Joshua Hahn <joshua.hahnjy@gmail.com>,
+	Michal Hocko <mhocko@suse.com>,
+	Roman Gushchin <roman.gushchin@linux.dev>,
+	Shakeel Butt <shakeel.butt@linux.dev>,
+	Muchun Song <muchun.song@linux.dev>,
+	linux-mm@kvack.org,
+	cgroups@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH v2 1/2] mm: vmalloc: streamline vmalloc memory accounting
+Date: Mon, 23 Feb 2026 11:01:06 -0500
+Message-ID: <20260223160147.3792777-1-hannes@cmpxchg.org>
+X-Mailer: git-send-email 2.53.0
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 04/33] mm: vmstat: Prepare to protect against concurrent
- isolated cpuset change
-To: Frederic Weisbecker <frederic@kernel.org>,
- LKML <linux-kernel@vger.kernel.org>
-Cc: =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
- Andrew Morton <akpm@linux-foundation.org>,
- Bjorn Helgaas <bhelgaas@google.com>,
- Catalin Marinas <catalin.marinas@arm.com>,
- Chen Ridong <chenridong@huawei.com>, Danilo Krummrich <dakr@kernel.org>,
- "David S . Miller" <davem@davemloft.net>, Eric Dumazet
- <edumazet@google.com>, Gabriele Monaco <gmonaco@redhat.com>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Ingo Molnar <mingo@redhat.com>, Jakub Kicinski <kuba@kernel.org>,
- Jens Axboe <axboe@kernel.dk>, Johannes Weiner <hannes@cmpxchg.org>,
- Lai Jiangshan <jiangshanlai@gmail.com>,
- Marco Crivellari <marco.crivellari@suse.com>, Michal Hocko
- <mhocko@suse.com>, Muchun Song <muchun.song@linux.dev>,
- Paolo Abeni <pabeni@redhat.com>, Peter Zijlstra <peterz@infradead.org>,
- Phil Auld <pauld@redhat.com>, "Rafael J . Wysocki" <rafael@kernel.org>,
- Roman Gushchin <roman.gushchin@linux.dev>,
- Shakeel Butt <shakeel.butt@linux.dev>, Simon Horman <horms@kernel.org>,
- Tejun Heo <tj@kernel.org>, Thomas Gleixner <tglx@linutronix.de>,
- Vlastimil Babka <vbabka@suse.cz>, Waiman Long <longman@redhat.com>,
- Will Deacon <will@kernel.org>, cgroups@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-block@vger.kernel.org,
- linux-mm@kvack.org, linux-pci@vger.kernel.org, netdev@vger.kernel.org
-References: <20260101221359.22298-1-frederic@kernel.org>
- <20260101221359.22298-5-frederic@kernel.org>
-Content-Language: en-US
-From: David Lechner <dlechner@baylibre.com>
-In-Reply-To: <20260101221359.22298-5-frederic@kernel.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-1.66 / 15.00];
+X-Spamd-Result: default: False [0.84 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
+	MID_CONTAINS_FROM(1.00)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
-	R_DKIM_ALLOW(-0.20)[baylibre-com.20230601.gappssmtp.com:s=20230601];
+	R_MISSING_CHARSET(0.50)[];
+	DMARC_POLICY_ALLOW(-0.50)[cmpxchg.org,none];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64:c];
+	R_DKIM_ALLOW(-0.20)[cmpxchg.org:s=google];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	MIME_TRACE(0.00)[0:+];
-	FREEMAIL_CC(0.00)[suse.com,linux-foundation.org,google.com,arm.com,huawei.com,kernel.org,davemloft.net,redhat.com,linuxfoundation.org,kernel.dk,cmpxchg.org,gmail.com,linux.dev,infradead.org,linutronix.de,suse.cz,vger.kernel.org,lists.infradead.org,kvack.org];
-	TAGGED_FROM(0.00)[bounces-14150-lists,cgroups=lfdr.de];
+	FREEMAIL_CC(0.00)[gmail.com,suse.com,linux.dev,kvack.org,vger.kernel.org];
+	TAGGED_FROM(0.00)[bounces-14151-lists,cgroups=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
+	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	DMARC_NA(0.00)[baylibre.com];
-	DKIM_TRACE(0.00)[baylibre-com.20230601.gappssmtp.com:+];
+	RECEIVED_HELO_LOCALHOST(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[38];
 	RCVD_COUNT_FIVE(0.00)[5];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[dlechner@baylibre.com,cgroups@vger.kernel.org];
-	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
-	NEURAL_HAM(-0.00)[-1.000];
+	FROM_NEQ_ENVFROM(0.00)[hannes@cmpxchg.org,cgroups@vger.kernel.org];
+	DKIM_TRACE(0.00)[cmpxchg.org:+];
+	NEURAL_HAM(-0.00)[-0.999];
 	TAGGED_RCPT(0.00)[cgroups];
-	MID_RHS_MATCH_FROM(0.00)[];
+	RCPT_COUNT_SEVEN(0.00)[10];
+	TO_DN_SOME(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	TO_DN_SOME(0.00)[]
-X-Rspamd-Queue-Id: 69592179665
+	FROM_HAS_DN(0.00)[]
+X-Rspamd-Queue-Id: 516D817955B
 X-Rspamd-Action: no action
 
-On 1/1/26 4:13 PM, Frederic Weisbecker wrote:
-> The HK_TYPE_DOMAIN housekeeping cpumask will soon be made modifiable at
-> runtime. In order to synchronize against vmstat workqueue to make sure
-> that no asynchronous vmstat work is pending or executing on a newly made
-> isolated CPU, target and queue a vmstat work under the same RCU read
-> side critical section.
-> 
-> Whenever housekeeping will update the HK_TYPE_DOMAIN cpumask, a vmstat
-> workqueue flush will also be issued in a further change to make sure
-> that no work remains pending after a CPU has been made isolated.
-> 
-> Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
-> ---
->  mm/vmstat.c | 10 ++++++----
->  1 file changed, 6 insertions(+), 4 deletions(-)
-> 
-> diff --git a/mm/vmstat.c b/mm/vmstat.c
-> index 65de88cdf40e..ed19c0d42de6 100644
-> --- a/mm/vmstat.c
-> +++ b/mm/vmstat.c
-> @@ -2144,11 +2144,13 @@ static void vmstat_shepherd(struct work_struct *w)
->  		 * infrastructure ever noticing. Skip regular flushing from vmstat_shepherd
->  		 * for all isolated CPUs to avoid interference with the isolated workload.
->  		 */
-> -		if (cpu_is_isolated(cpu))
-> -			continue;
-> +		scoped_guard(rcu) {
-> +			if (cpu_is_isolated(cpu))
-> +				continue;
+Use a vmstat counter instead of a custom, open-coded atomic. This has
+the added benefit of making the data available per-node, and prepares
+for cleaning up the memcg accounting as well.
 
-I think this might have introduced a bug - or at least an unintentional change
-in the program flow.
+Acked-by: Shakeel Butt <shakeel.butt@linux.dev>
+Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
+---
+ fs/proc/meminfo.c       |  3 ++-
+ include/linux/mmzone.h  |  1 +
+ include/linux/vmalloc.h |  3 ---
+ mm/vmalloc.c            | 19 ++++++++++---------
+ mm/vmstat.c             |  1 +
+ 5 files changed, 14 insertions(+), 13 deletions(-)
 
-scoped_guard() is implemented using a for loop. Now this continue statement will
-only exit the scoped_guard() scope rather than continuing the outer for loop. This
-means that cond_resched() will be called when it previously was not.
+V2:
+- Fix mod_node_page_state() pgdat argument (Shakeel)
 
->  
-> -		if (!delayed_work_pending(dw) && need_update(cpu))
-> -			queue_delayed_work_on(cpu, mm_percpu_wq, dw, 0);
-> +			if (!delayed_work_pending(dw) && need_update(cpu))
-> +				queue_delayed_work_on(cpu, mm_percpu_wq, dw, 0);
-> +		}
->  
->  		cond_resched();
->  	}
+diff --git a/fs/proc/meminfo.c b/fs/proc/meminfo.c
+index a458f1e112fd..549793f44726 100644
+--- a/fs/proc/meminfo.c
++++ b/fs/proc/meminfo.c
+@@ -126,7 +126,8 @@ static int meminfo_proc_show(struct seq_file *m, void *v)
+ 	show_val_kb(m, "Committed_AS:   ", committed);
+ 	seq_printf(m, "VmallocTotal:   %8lu kB\n",
+ 		   (unsigned long)VMALLOC_TOTAL >> 10);
+-	show_val_kb(m, "VmallocUsed:    ", vmalloc_nr_pages());
++	show_val_kb(m, "VmallocUsed:    ",
++		    global_node_page_state(NR_VMALLOC));
+ 	show_val_kb(m, "VmallocChunk:   ", 0ul);
+ 	show_val_kb(m, "Percpu:         ", pcpu_nr_pages());
+ 
+diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
+index fc5d6c88d2f0..64df797d45c6 100644
+--- a/include/linux/mmzone.h
++++ b/include/linux/mmzone.h
+@@ -220,6 +220,7 @@ enum node_stat_item {
+ 	NR_KERNEL_MISC_RECLAIMABLE,	/* reclaimable non-slab kernel pages */
+ 	NR_FOLL_PIN_ACQUIRED,	/* via: pin_user_page(), gup flag: FOLL_PIN */
+ 	NR_FOLL_PIN_RELEASED,	/* pages returned via unpin_user_page() */
++	NR_VMALLOC,
+ 	NR_KERNEL_STACK_KB,	/* measured in KiB */
+ #if IS_ENABLED(CONFIG_SHADOW_CALL_STACK)
+ 	NR_KERNEL_SCS_KB,	/* measured in KiB */
+diff --git a/include/linux/vmalloc.h b/include/linux/vmalloc.h
+index e8e94f90d686..3b02c0c6b371 100644
+--- a/include/linux/vmalloc.h
++++ b/include/linux/vmalloc.h
+@@ -286,8 +286,6 @@ int unregister_vmap_purge_notifier(struct notifier_block *nb);
+ #ifdef CONFIG_MMU
+ #define VMALLOC_TOTAL (VMALLOC_END - VMALLOC_START)
+ 
+-unsigned long vmalloc_nr_pages(void);
+-
+ int vm_area_map_pages(struct vm_struct *area, unsigned long start,
+ 		      unsigned long end, struct page **pages);
+ void vm_area_unmap_pages(struct vm_struct *area, unsigned long start,
+@@ -304,7 +302,6 @@ static inline void set_vm_flush_reset_perms(void *addr)
+ #else  /* !CONFIG_MMU */
+ #define VMALLOC_TOTAL 0UL
+ 
+-static inline unsigned long vmalloc_nr_pages(void) { return 0; }
+ static inline void set_vm_flush_reset_perms(void *addr) {}
+ #endif /* CONFIG_MMU */
+ 
+diff --git a/mm/vmalloc.c b/mm/vmalloc.c
+index e286c2d2068c..a5fc7795aafd 100644
+--- a/mm/vmalloc.c
++++ b/mm/vmalloc.c
+@@ -1063,14 +1063,8 @@ static BLOCKING_NOTIFIER_HEAD(vmap_notify_list);
+ static void drain_vmap_area_work(struct work_struct *work);
+ static DECLARE_WORK(drain_vmap_work, drain_vmap_area_work);
+ 
+-static __cacheline_aligned_in_smp atomic_long_t nr_vmalloc_pages;
+ static __cacheline_aligned_in_smp atomic_long_t vmap_lazy_nr;
+ 
+-unsigned long vmalloc_nr_pages(void)
+-{
+-	return atomic_long_read(&nr_vmalloc_pages);
+-}
+-
+ static struct vmap_area *__find_vmap_area(unsigned long addr, struct rb_root *root)
+ {
+ 	struct rb_node *n = root->rb_node;
+@@ -3463,11 +3457,11 @@ void vfree(const void *addr)
+ 		 * High-order allocs for huge vmallocs are split, so
+ 		 * can be freed as an array of order-0 allocations
+ 		 */
++		if (!(vm->flags & VM_MAP_PUT_PAGES))
++			dec_node_page_state(page, NR_VMALLOC);
+ 		__free_page(page);
+ 		cond_resched();
+ 	}
+-	if (!(vm->flags & VM_MAP_PUT_PAGES))
+-		atomic_long_sub(vm->nr_pages, &nr_vmalloc_pages);
+ 	kvfree(vm->pages);
+ 	kfree(vm);
+ }
+@@ -3655,6 +3649,8 @@ vm_area_alloc_pages(gfp_t gfp, int nid,
+ 			continue;
+ 		}
+ 
++		mod_node_page_state(page_pgdat(page), NR_VMALLOC, 1 << large_order);
++
+ 		split_page(page, large_order);
+ 		for (i = 0; i < (1U << large_order); i++)
+ 			pages[nr_allocated + i] = page + i;
+@@ -3675,6 +3671,7 @@ vm_area_alloc_pages(gfp_t gfp, int nid,
+ 	if (!order) {
+ 		while (nr_allocated < nr_pages) {
+ 			unsigned int nr, nr_pages_request;
++			int i;
+ 
+ 			/*
+ 			 * A maximum allowed request is hard-coded and is 100
+@@ -3698,6 +3695,9 @@ vm_area_alloc_pages(gfp_t gfp, int nid,
+ 							nr_pages_request,
+ 							pages + nr_allocated);
+ 
++			for (i = nr_allocated; i < nr_allocated + nr; i++)
++				inc_node_page_state(pages[i], NR_VMALLOC);
++
+ 			nr_allocated += nr;
+ 
+ 			/*
+@@ -3722,6 +3722,8 @@ vm_area_alloc_pages(gfp_t gfp, int nid,
+ 		if (unlikely(!page))
+ 			break;
+ 
++		mod_node_page_state(page_pgdat(page), NR_VMALLOC, 1 << order);
++
+ 		/*
+ 		 * High-order allocations must be able to be treated as
+ 		 * independent small pages by callers (as they can with
+@@ -3864,7 +3866,6 @@ static void *__vmalloc_area_node(struct vm_struct *area, gfp_t gfp_mask,
+ 			vmalloc_gfp_adjust(gfp_mask, page_order), node,
+ 			page_order, nr_small_pages, area->pages);
+ 
+-	atomic_long_add(area->nr_pages, &nr_vmalloc_pages);
+ 	/* All pages of vm should be charged to same memcg, so use first one. */
+ 	if (gfp_mask & __GFP_ACCOUNT && area->nr_pages)
+ 		mod_memcg_page_state(area->pages[0], MEMCG_VMALLOC,
+diff --git a/mm/vmstat.c b/mm/vmstat.c
+index d6e814c82952..bc199c7cd07b 100644
+--- a/mm/vmstat.c
++++ b/mm/vmstat.c
+@@ -1270,6 +1270,7 @@ const char * const vmstat_text[] = {
+ 	[I(NR_KERNEL_MISC_RECLAIMABLE)]		= "nr_kernel_misc_reclaimable",
+ 	[I(NR_FOLL_PIN_ACQUIRED)]		= "nr_foll_pin_acquired",
+ 	[I(NR_FOLL_PIN_RELEASED)]		= "nr_foll_pin_released",
++	[I(NR_VMALLOC)]				= "nr_vmalloc",
+ 	[I(NR_KERNEL_STACK_KB)]			= "nr_kernel_stack",
+ #if IS_ENABLED(CONFIG_SHADOW_CALL_STACK)
+ 	[I(NR_KERNEL_SCS_KB)]			= "nr_shadow_call_stack",
+-- 
+2.53.0
 
 
