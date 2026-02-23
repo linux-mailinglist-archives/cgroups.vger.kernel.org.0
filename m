@@ -1,82 +1,81 @@
-Return-Path: <cgroups+bounces-14157-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-14158-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id iEysAVKEnGm7IwQAu9opvQ
-	(envelope-from <cgroups+bounces-14157-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Mon, 23 Feb 2026 17:46:10 +0100
+	id MNAbNOeFnGm7IwQAu9opvQ
+	(envelope-from <cgroups+bounces-14158-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Mon, 23 Feb 2026 17:52:55 +0100
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5DBDD17A155
-	for <lists+cgroups@lfdr.de>; Mon, 23 Feb 2026 17:46:09 +0100 (CET)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id E571F17A2BC
+	for <lists+cgroups@lfdr.de>; Mon, 23 Feb 2026 17:52:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 832223191BA5
-	for <lists+cgroups@lfdr.de>; Mon, 23 Feb 2026 16:37:48 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id B48283014F4B
+	for <lists+cgroups@lfdr.de>; Mon, 23 Feb 2026 16:52:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 75BA2314A7A;
-	Mon, 23 Feb 2026 16:37:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD996315785;
+	Mon, 23 Feb 2026 16:52:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cmpxchg.org header.i=@cmpxchg.org header.b="TzuB9CCO"
+	dkim=pass (2048-bit key) header.d=cmpxchg.org header.i=@cmpxchg.org header.b="MwyrwpKj"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-qk1-f171.google.com (mail-qk1-f171.google.com [209.85.222.171])
+Received: from mail-qt1-f176.google.com (mail-qt1-f176.google.com [209.85.160.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1DA9B30BBA9
-	for <cgroups@vger.kernel.org>; Mon, 23 Feb 2026 16:37:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1667F31578E
+	for <cgroups@vger.kernel.org>; Mon, 23 Feb 2026 16:52:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1771864623; cv=none; b=bH5EAIStpdlTxVLJkCGdgR4qJ2y32noUbeaB4NY/KjFZZACDlQ2/6eyHsKBmdE88Uocpp+7RPs2V7++TfU80x5/NV9WbHA6M9LdbZkScgtDx6Wh5iS2g4ONg0pHTsQtdgYzwDs/0GAjgEguBMjmD1j5Hnls7UTOHzK1ipDLBuDI=
+	t=1771865548; cv=none; b=Lxmq7JVOZZ3jcGPQlTpTIaTcOTqxF9dGD7sD7hFrYSaKuqMIaC8cmfKeZOH3M9e7LMM8AA4cskUZ9+SRPiP6jMl8nmxjeJfzAJpX7IL07hbcHCIvi9r11/7UokyQhoWDI5WcPhCXXgXOJIYTJt9E8Qb5LEZsmoR0P7vOfBHwF08=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1771864623; c=relaxed/simple;
-	bh=4nR3ks6vdAF8p/4j30tU975pQLc2amH+V3QrAEHXWDY=;
+	s=arc-20240116; t=1771865548; c=relaxed/simple;
+	bh=bx3iOV2ugLkpdJZcrJoQAabRqUf12TYssE63qknpYWs=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=pHB0kMgRMpwXUK70nvaqMMxcrbdR1HLFcihrejPpSuVc1QfiWI44+ayWZoYcZsbZIHUptWpPL+4BHp5Lka6/WtFzbn8wOobfKiaSnZX2d0wTuL23OGyc8angjQjcVcrpHl8/hz9fT1iMhdvSRdbZKg61m5wP9AU6s7jyU493SVY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org; spf=pass smtp.mailfrom=cmpxchg.org; dkim=pass (2048-bit key) header.d=cmpxchg.org header.i=@cmpxchg.org header.b=TzuB9CCO; arc=none smtp.client-ip=209.85.222.171
+	 Content-Type:Content-Disposition:In-Reply-To; b=HwTIyhqGNLaykEwzbaLFz76yvmZw2Czs8n8BFNFNMo7t+Oa9AJq6xIk0L1DKUVu3Pu11zDFBQBlnorGNld4Fx2VvjEocHnGBboN78XrS83UdkfiGHDzRYGw3JPw3HdB3sgIXr29w8SMQapiKhyJ0yYnSPJwYy7exRUEUlDRnzsk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org; spf=pass smtp.mailfrom=cmpxchg.org; dkim=pass (2048-bit key) header.d=cmpxchg.org header.i=@cmpxchg.org header.b=MwyrwpKj; arc=none smtp.client-ip=209.85.160.176
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cmpxchg.org
-Received: by mail-qk1-f171.google.com with SMTP id af79cd13be357-8cb3e22435fso451167285a.1
-        for <cgroups@vger.kernel.org>; Mon, 23 Feb 2026 08:37:00 -0800 (PST)
+Received: by mail-qt1-f176.google.com with SMTP id d75a77b69052e-5062fc5d86aso43845311cf.1
+        for <cgroups@vger.kernel.org>; Mon, 23 Feb 2026 08:52:25 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg.org; s=google; t=1771864620; x=1772469420; darn=vger.kernel.org;
+        d=cmpxchg.org; s=google; t=1771865545; x=1772470345; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=WzArJKlU+ASYCguYb43+yRgFO3yBr9sECL/9qGjk+Qc=;
-        b=TzuB9CCO2aZNrA1+dnFaRa2TN3EqurZ3L88IMU8V0kG2nehcdm0DJn40aS7O7XU3TO
-         lXN8BR73D4HncNJecB5lEwKqfY6s3R0FEZv/NIYP7yMpeyZFGVUrezAYzmpcMGjNG43p
-         9JcVhMBw60ufTTaQd6CvIL/XCCUHOPfwO1U3qZbS9YZLdhijPYJjPAy5FxMjo+N6jlGv
-         IZkkRHo5ROKKGX+egkNjPS7zVAPCoSv2L1I+C+R+KnNTvHgVe077+ouGPYtxqV4BmZTu
-         Z06xUrAfYyv4B0kUezaAiNUcq/geKK+iz7+u7O96dKpaD1g9rXQR7M1MMONlfM6O17Gd
-         2SzA==
+        bh=9p76BczVPf+ipMBZjWxZMf67W68G0E63s5eoAZ2wq80=;
+        b=MwyrwpKjTdGFMtlIkDgFe4CxRoHf4akYRISDvmQPogMk4uSdA6gfs/AQiUF8pgkpCG
+         1vUsb/ojyoQl5N6b2t9ngti5es99Zaq+MavSe/sBmLZDMj6DNWMkZ0Wt7BfGnpHwRRhA
+         woI/RHrqNMMlgTrTkLssXA58M0IYm566Db2/8yU9tzS4ZFCmNI2A3/jQZFeXcYfKzAcV
+         4IncVJqUihnnNyWiiWOY5YxGaqzUqYtxWh/cpTpbuJz2DoAsMYEhfjAQfLoMUg6InhX9
+         seczxcxkbeEaH8Y1Hy2Ab6DTrrEm0FM14cH3n7fZcwFFcXIVjD85V8EFCKe0GKfz2MwW
+         f55A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1771864620; x=1772469420;
+        d=1e100.net; s=20230601; t=1771865545; x=1772470345;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=WzArJKlU+ASYCguYb43+yRgFO3yBr9sECL/9qGjk+Qc=;
-        b=Mqmoa8Mq+VcHdsTThBPURBWfedjo5PjqrL5Snq4smXsDVqg6c2gZD9LMd6nJs46c1w
-         MZTX13AVJaPK1pPk8mLf+Do67A3jMwaJmJEgn25HiUyAUqP++Y8IuXc2NxM71+y075Oh
-         Am9aQzoOi2nRwBfRHs0wfrGgPOdjC775K5SHlTXwzn+P3gxP2r0LTQHc5/Gj+wkC5QGn
-         ddIXE42VegxTzhc0nPfUN1Rsm5fiREIPDNGEI0ZyuitQUnZ/acXSp9eg3upqBc/ZMlPp
-         +4dqNrrripk0fuFLBMs8l8sDkSiKbjGLLh9rp5uK0SSyFQ38wLilbnOQWIgYOjlBchMt
-         lpJg==
-X-Forwarded-Encrypted: i=1; AJvYcCV5bEqszSQDvJvyaX9noV9A3Uzj1/c1k9X5TbaZGq3cMYcn+RowyCdONjyxbcV6e6bUvrhJAAdb@vger.kernel.org
-X-Gm-Message-State: AOJu0Ywy6BvKyMihp8mLgsBbzTfJSqdtK7AFgOIEsYyE5JTf+KAn3+qk
-	HYqSwgWr74x7s6bEduFTQ5+7NSDm1fu8/6ym+YXRGB//z7HvzLrsYcwADIlSXJO9Y0FLZCzFXW6
-	bUGPM
-X-Gm-Gg: AZuq6aIpZCPgfnyGH2FCuFpKgsPbNE7pYfaApjU8XJu9hfdsR+Twi/DK9vfoSY3qMpy
-	r/wrjB0LDRCULxo0nIINXmZFdWXq9q5zbb0r+k6HgZWPi7HKQnRkXrpNR0Hg4CE7scw9jGfw/z1
-	Rj3sEPbEZVPuCYOfEM+WJaX1phrITh0/Osm2Q9VGJ/EZAkbnpb5r8C6eBEOcrjqQqsyIaBo/h0I
-	wWqb0kikTFyhD2bbbtLbpDLT3FCa8KvxZ+kdP9G8m4+oB/eZijmlFB9bgc9NIRpb8s8AQG0xigq
-	6gplbtPdbfGa4zTF4wzBnrVwpuyZ5NwReVrXKiIhojX8NBDwGIvqEJRXRoa0BKa5B4e5dcj8CwT
-	NPh0fT84XJS/W3ImlB1oWmiAYn85TV+ml7QODiE1fJU+XBSznKHl67uiSdTGcNKEDId0l41RTvE
-	LNRHZW3WtOcrafatKg8gjoLA==
-X-Received: by 2002:a05:620a:472b:b0:8b2:e17a:17e3 with SMTP id af79cd13be357-8cb7be3b84fmr1746011685a.1.1771864619752;
-        Mon, 23 Feb 2026 08:36:59 -0800 (PST)
+        bh=9p76BczVPf+ipMBZjWxZMf67W68G0E63s5eoAZ2wq80=;
+        b=paII1qTxjVNy/MpQArxwSKVmyC2WC0YQcBTYSY9bmkodysJgjUmYEqr5rSBAWnQbLe
+         MotLzwu6OuBrpPaUPv12k8JKIkmunOsaulhoz0ML1aRd8T4b/IlQE366vrw6u/iXYP2l
+         iBytlRfa6i/IWOpf0loRR0sOEeLgglJ6UksWYsnQ6MAzA2OE0ItOTAqWXPL2V6v4taBX
+         eim89J6mcAUiy19BC34Z4QvhlaGNWJ7sH/sBvC9AjUr8+kJI5r9oNrsq0pLfgeeOzGIu
+         7aruKZdA7qZoG8AdXOpq5gdaoThnZw3P5oWeOesNI1eqf5kSxA2HnNsTUnsFl9w+qhqj
+         IdIA==
+X-Forwarded-Encrypted: i=1; AJvYcCWxCUwtja611l2qoUJT+Vbdqx0jt2Iwgdz42n+DXXn/jo0ucVQlF4T90l0oQJNXCG3BvmWNRMxi@vger.kernel.org
+X-Gm-Message-State: AOJu0YwdDjkSArGzmY7u4rVOUiXf+D8efG87WZim/65nj0/9COei65EQ
+	cj8LfDXD3LZAgQz0yksHsf42nEimWDxR11nO/SE59fKa3luaiqlISBYQuqfw0HheAbo=
+X-Gm-Gg: AZuq6aJXeVUBm4NyGfm5BYFsVrmcr4s5/LBZN0jafFQI2BPjwoglpBMxlBY+lvNT8Ln
+	JBzSB+0zkzIrW8uJjtViGsUIIzi0r/T1VekqlvYExBjFmDYCHVPCILaMFnIZDq7BpE5g/6YyNWE
+	I4yZm9MdrEoI+8s35JdIMMPWx+7+UkqKfQVOdWOveztlX1yOXl8lnvirV0GReGFdAm0Kv+Dcvmg
+	pLOA0ECUHzezqm+yyxMvJLaefW9fPz0Z+80uAGimbl0iq0NdnH32nMyt2FaaF2dl3EipepM1lvI
+	InyGc01XJaeDxNESjpOlBg1txdti8soqhtp4HrF+FSLFrOxuk5xRvDn5xIeODkh8Y0fkTevjpmi
+	b/oTzYCa6gr29sVlyC50bAGgA+rfRjdGvrYMS/Oxa3WMrXOkPEm64N2PLDrN3n1YmQOmESqK9FD
+	SzLgopYTSqdrqq1Y4zD+xrMQ==
+X-Received: by 2002:a05:622a:11ce:b0:501:4859:c7aa with SMTP id d75a77b69052e-5070bbab6a2mr133092191cf.20.1771865544833;
+        Mon, 23 Feb 2026 08:52:24 -0800 (PST)
 Received: from localhost ([2603:7000:c00:3a00:365a:60ff:fe62:ff29])
-        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-8997e7747f0sm72340136d6.51.2026.02.23.08.36.58
+        by smtp.gmail.com with ESMTPSA id d75a77b69052e-5072afdef0bsm4637311cf.16.2026.02.23.08.52.24
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 23 Feb 2026 08:36:58 -0800 (PST)
-Date: Mon, 23 Feb 2026 11:36:55 -0500
+        Mon, 23 Feb 2026 08:52:24 -0800 (PST)
+Date: Mon, 23 Feb 2026 11:52:20 -0500
 From: Johannes Weiner <hannes@cmpxchg.org>
 To: Kairui Song via B4 Relay <devnull+kasong.tencent.com@kernel.org>
 Cc: linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
@@ -96,11 +95,10 @@ Cc: linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
 	Muchun Song <muchun.song@linux.dev>,
 	Qi Zheng <zhengqi.arch@bytedance.com>, linux-kernel@vger.kernel.org,
 	cgroups@vger.kernel.org, Kairui Song <kasong@tencent.com>
-Subject: Re: [PATCH RFC 08/15] mm, swap: store and check memcg info in the
- swap table
-Message-ID: <aZyCJ6pH4hey-ZoU@cmpxchg.org>
+Subject: Re: [PATCH RFC 00/15] mm, swap: swap table phase IV with dynamic
+ ghost swapfile
+Message-ID: <aZyFxKGXc8J6PIij@cmpxchg.org>
 References: <20260220-swap-table-p4-v1-0-104795d19815@tencent.com>
- <20260220-swap-table-p4-v1-8-104795d19815@tencent.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -109,18 +107,18 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20260220-swap-table-p4-v1-8-104795d19815@tencent.com>
+In-Reply-To: <20260220-swap-table-p4-v1-0-104795d19815@tencent.com>
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-0.66 / 15.00];
 	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	DMARC_POLICY_ALLOW(-0.50)[cmpxchg.org,none];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64:c];
 	R_DKIM_ALLOW(-0.20)[cmpxchg.org:s=google];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-14157-lists,cgroups=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-14158-lists,cgroups=lfdr.de];
 	FREEMAIL_CC(0.00)[kvack.org,linux-foundation.org,kernel.org,oracle.com,nvidia.com,linux.alibaba.com,google.com,huaweicloud.com,gmail.com,redhat.com,linux.dev,lge.com,bytedance.com,vger.kernel.org,tencent.com];
 	FROM_HAS_DN(0.00)[];
 	RECEIVED_HELO_LOCALHOST(0.00)[];
@@ -138,45 +136,60 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	NEURAL_HAM(-0.00)[-0.999];
 	TAGGED_RCPT(0.00)[cgroups,kasong.tencent.com];
 	MID_RHS_MATCH_FROM(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tencent.com:email,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 5DBDD17A155
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns,cmpxchg.org:mid,cmpxchg.org:dkim]
+X-Rspamd-Queue-Id: E571F17A2BC
 X-Rspamd-Action: no action
 
-On Fri, Feb 20, 2026 at 07:42:09AM +0800, Kairui Song via B4 Relay wrote:
-> From: Kairui Song <kasong@tencent.com>
+On Fri, Feb 20, 2026 at 07:42:01AM +0800, Kairui Song via B4 Relay wrote:
+> - 8 bytes per slot memory usage, when using only plain swap.
+>   - And the memory usage can be reduced to 3 or only 1 byte.
+> - 16 bytes per slot memory usage, when using ghost / virtual zswap.
+>   - Zswap can just use ci_dyn->virtual_table to free up it's content
+>     completely.
+>   - And the memory usage can be reduced to 11 or 8 bytes using the same
+>     code above.
+>   - 24 bytes only if including reverse mapping is in use.
+
+That seems to tie us pretty permanently to duplicate metadata.
+
+For every page that was written to disk through zswap, we have an
+entry in the ghost swapfile, and an entry in the backend swapfile, no?
+
+> - Minimal code review or maintenance burden. All layers are using the exact
+>   same infrastructure for metadata / allocation / synchronization, making
+>   all API and conventions consistent and easy to maintain.
+> - Writeback, migration and compaction are easily supportable since both
+>   reverse mapping and reallocation are prepared. We just need a
+>   folio_realloc_swap to allocate new entries for the existing entry, and
+>   fill the swap table with a reserve map entry.
+> - Fast swapoff: Just read into ghost / virtual swap cache.
+
+Can we get this for disk swap as well? ;)
+
+Zswap swapoff is already fairly fast, albeit CPU intense. It's the
+scattered IO that makes swapoff on disks so terrible.
+
+> The size of the swapfile (si->max) is now just a number, which could be
+> changeable at runtime if we have a proper idea how to expose that and
+> might need some audit of a few remaining users. But right now, we can
+> already easily have a huge swap device with no overhead, for example:
 > 
-> To prepare for merging the swap_cgroup_ctrl into the swap table, store
-> the memcg info in the swap table on swapout.
-> 
-> This is done by using the existing shadow format.
-> 
-> Note this also changes the refault counting at the nearest online memcg
-> level:
-> 
-> Unlike file folios, anon folios are mostly exclusive to one mem cgroup,
-> and each cgroup is likely to have different characteristics.
+> free -m
+>                total        used        free      shared  buff/cache   available
+> Mem:            1465         250         927           1         356        1215
+> Swap:       15269887           0    15269887
 
-This is not correct.
+I'm not a fan of this. This makes free(1) output kind of useless, and
+very misleading. The swap space presented here has nothing to do with
+actual swap capacity, and the actual disk swap capacity is obscured.
 
-As much as I like the idea of storing the swap_cgroup association
-inside the shadow entry, the refault evaluation needs to happen at the
-level that drove eviction.
+And how would a user choose this size? How would a distribution?
 
-Consider a workload that is split into cgroups purely for accounting,
-not for setting different limits:
+The only limit is compression ratio, and you don't know this in
+advance. This restriction seems pretty arbitrary and avoidable.
 
-workload (limit domain)
-`- component A
-`- component B
-
-This means the two components must compete freely, and it must behave
-as if there is only one LRU. When pages get reclaimed in a round-robin
-fashion, both A and B get aged at the same pace. Likewise, when pages
-in A refault, they must challenge the *combined* workingset of both A
-and B, not just the local pages.
-
-Otherwise, you risk retaining stale workingset in one subgroup while
-the other one is thrashing. This breaks userspace expectations.
+There is no good technical reason to present this in any sort of
+static fashion.
 
