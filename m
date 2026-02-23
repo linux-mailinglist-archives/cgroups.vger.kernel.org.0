@@ -1,187 +1,182 @@
-Return-Path: <cgroups+bounces-14156-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-14157-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id qM0nNXiAnGmLIgQAu9opvQ
-	(envelope-from <cgroups+bounces-14156-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Mon, 23 Feb 2026 17:29:44 +0100
+	id iEysAVKEnGm7IwQAu9opvQ
+	(envelope-from <cgroups+bounces-14157-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Mon, 23 Feb 2026 17:46:10 +0100
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
-	by mail.lfdr.de (Postfix) with ESMTPS id C33F5179CAD
-	for <lists+cgroups@lfdr.de>; Mon, 23 Feb 2026 17:29:44 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5DBDD17A155
+	for <lists+cgroups@lfdr.de>; Mon, 23 Feb 2026 17:46:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 4C0823078166
-	for <lists+cgroups@lfdr.de>; Mon, 23 Feb 2026 16:27:47 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 832223191BA5
+	for <lists+cgroups@lfdr.de>; Mon, 23 Feb 2026 16:37:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD511311952;
-	Mon, 23 Feb 2026 16:27:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 75BA2314A7A;
+	Mon, 23 Feb 2026 16:37:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZTtXnrul"
+	dkim=pass (2048-bit key) header.d=cmpxchg.org header.i=@cmpxchg.org header.b="TzuB9CCO"
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qk1-f171.google.com (mail-qk1-f171.google.com [209.85.222.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D93C30FC2E;
-	Mon, 23 Feb 2026 16:27:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1DA9B30BBA9
+	for <cgroups@vger.kernel.org>; Mon, 23 Feb 2026 16:37:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1771864052; cv=none; b=JqOgCqmYyjX8/w7Sjg0Z+6iMQgnZa/1Fb5RSHDDh4cZFxovGSodxonTrFxaQY83HjYHKG1ty6mBGdlI5jbV3zvzyTzWnswfx5FLCIgdvtAIhwwFJGSeMuWJWNo1ZCk/+2b2V6EJuz2Sgd3AhBDUil2qyToszR6MfAZgUO1wztmg=
+	t=1771864623; cv=none; b=bH5EAIStpdlTxVLJkCGdgR4qJ2y32noUbeaB4NY/KjFZZACDlQ2/6eyHsKBmdE88Uocpp+7RPs2V7++TfU80x5/NV9WbHA6M9LdbZkScgtDx6Wh5iS2g4ONg0pHTsQtdgYzwDs/0GAjgEguBMjmD1j5Hnls7UTOHzK1ipDLBuDI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1771864052; c=relaxed/simple;
-	bh=lE9B6+H9HeJSppu/EN5YwZOLzN80IR/3aJG1alsniHY=;
+	s=arc-20240116; t=1771864623; c=relaxed/simple;
+	bh=4nR3ks6vdAF8p/4j30tU975pQLc2amH+V3QrAEHXWDY=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=eyn3OoiwG54VbnSI601CZaGT7LNghRs5la9bBaD62f9GZaNMX2G1QHj1rceViIKgDJwwl+2tlRVch/O3eVYJJl8Iw4Y19EbXV2WFGxPrbwsEucHi8B9Hy9EDKby42RKiuSeJPwkK+Ic7QuunZZ3RM7iJKRvqG6zVu8PoLJL/R+M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ZTtXnrul; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 15EBAC116C6;
-	Mon, 23 Feb 2026 16:27:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1771864052;
-	bh=lE9B6+H9HeJSppu/EN5YwZOLzN80IR/3aJG1alsniHY=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=ZTtXnrulLOI8zAjoZ46Ozt1xST1Zn9e5Pu0lemviHRUGhPwJBJBDsdLaZG0Drf9ry
-	 oaNXof1lbmtSzHF/0UdVFKILUr4xtPeJnAh0VmRfPaJrFPQDJIuFIUmLC/xrJdzAZ5
-	 TDkN77sp8+8kdnF6qAjh/1hLiT0pTn3s5QamaK0uX/XZi+ClkhpPjEbMZtgxAGSh3Z
-	 3oZQl1xN0vI0mxUbxevg/g6lqzMKtSC8zGUtpi2JM+tm0VuHspdH8vi/dFXL75HBny
-	 vqCmbhCYblIPptQdi4ZsEJ8x/GyVPXFRZz/IuXNOFdHtc0s5VC0Kqafn9XiU62q7W2
-	 XEQaCNDir2iIA==
-Date: Mon, 23 Feb 2026 06:27:31 -1000
-From: Tejun Heo <tj@kernel.org>
-To: Amir Goldstein <amir73il@gmail.com>
-Cc: "T.J. Mercier" <tjmercier@google.com>, gregkh@linuxfoundation.org,
-	driver-core@lists.linux.dev, linux-kernel@vger.kernel.org,
-	cgroups@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-	jack@suse.cz, shuah@kernel.org, linux-kselftest@vger.kernel.org,
-	Christian Brauner <brauner@kernel.org>
-Subject: Re: [PATCH v4 2/3] kernfs: Send IN_DELETE_SELF and IN_IGNORED
-Message-ID: <aZx_8_rJNPF2EYgn@slm.duckdns.org>
-References: <20260220055449.3073-1-tjmercier@google.com>
- <20260220055449.3073-3-tjmercier@google.com>
- <aZh-orwoaeAh52Bf@slm.duckdns.org>
- <CAOQ4uxjgXa1q-8-ajSBwza-Tkv91tFP-_wWzCQPW+PwJMehEWA@mail.gmail.com>
- <aZi6_K-pSRwAe7F5@slm.duckdns.org>
- <CAOQ4uxjZZSRBwZ2ZL31juAUu0-sAUnPrJWvQuJ2NDaWZMeq0Fg@mail.gmail.com>
- <aZju-GFHf8Eez-07@slm.duckdns.org>
- <CAOQ4uxgzuxaLt2xs5a5snu9CBA_4esQ_+t0Wb6CX4M5OqM5AOA@mail.gmail.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=pHB0kMgRMpwXUK70nvaqMMxcrbdR1HLFcihrejPpSuVc1QfiWI44+ayWZoYcZsbZIHUptWpPL+4BHp5Lka6/WtFzbn8wOobfKiaSnZX2d0wTuL23OGyc8angjQjcVcrpHl8/hz9fT1iMhdvSRdbZKg61m5wP9AU6s7jyU493SVY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org; spf=pass smtp.mailfrom=cmpxchg.org; dkim=pass (2048-bit key) header.d=cmpxchg.org header.i=@cmpxchg.org header.b=TzuB9CCO; arc=none smtp.client-ip=209.85.222.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cmpxchg.org
+Received: by mail-qk1-f171.google.com with SMTP id af79cd13be357-8cb3e22435fso451167285a.1
+        for <cgroups@vger.kernel.org>; Mon, 23 Feb 2026 08:37:00 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cmpxchg.org; s=google; t=1771864620; x=1772469420; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=WzArJKlU+ASYCguYb43+yRgFO3yBr9sECL/9qGjk+Qc=;
+        b=TzuB9CCO2aZNrA1+dnFaRa2TN3EqurZ3L88IMU8V0kG2nehcdm0DJn40aS7O7XU3TO
+         lXN8BR73D4HncNJecB5lEwKqfY6s3R0FEZv/NIYP7yMpeyZFGVUrezAYzmpcMGjNG43p
+         9JcVhMBw60ufTTaQd6CvIL/XCCUHOPfwO1U3qZbS9YZLdhijPYJjPAy5FxMjo+N6jlGv
+         IZkkRHo5ROKKGX+egkNjPS7zVAPCoSv2L1I+C+R+KnNTvHgVe077+ouGPYtxqV4BmZTu
+         Z06xUrAfYyv4B0kUezaAiNUcq/geKK+iz7+u7O96dKpaD1g9rXQR7M1MMONlfM6O17Gd
+         2SzA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1771864620; x=1772469420;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=WzArJKlU+ASYCguYb43+yRgFO3yBr9sECL/9qGjk+Qc=;
+        b=Mqmoa8Mq+VcHdsTThBPURBWfedjo5PjqrL5Snq4smXsDVqg6c2gZD9LMd6nJs46c1w
+         MZTX13AVJaPK1pPk8mLf+Do67A3jMwaJmJEgn25HiUyAUqP++Y8IuXc2NxM71+y075Oh
+         Am9aQzoOi2nRwBfRHs0wfrGgPOdjC775K5SHlTXwzn+P3gxP2r0LTQHc5/Gj+wkC5QGn
+         ddIXE42VegxTzhc0nPfUN1Rsm5fiREIPDNGEI0ZyuitQUnZ/acXSp9eg3upqBc/ZMlPp
+         +4dqNrrripk0fuFLBMs8l8sDkSiKbjGLLh9rp5uK0SSyFQ38wLilbnOQWIgYOjlBchMt
+         lpJg==
+X-Forwarded-Encrypted: i=1; AJvYcCV5bEqszSQDvJvyaX9noV9A3Uzj1/c1k9X5TbaZGq3cMYcn+RowyCdONjyxbcV6e6bUvrhJAAdb@vger.kernel.org
+X-Gm-Message-State: AOJu0Ywy6BvKyMihp8mLgsBbzTfJSqdtK7AFgOIEsYyE5JTf+KAn3+qk
+	HYqSwgWr74x7s6bEduFTQ5+7NSDm1fu8/6ym+YXRGB//z7HvzLrsYcwADIlSXJO9Y0FLZCzFXW6
+	bUGPM
+X-Gm-Gg: AZuq6aIpZCPgfnyGH2FCuFpKgsPbNE7pYfaApjU8XJu9hfdsR+Twi/DK9vfoSY3qMpy
+	r/wrjB0LDRCULxo0nIINXmZFdWXq9q5zbb0r+k6HgZWPi7HKQnRkXrpNR0Hg4CE7scw9jGfw/z1
+	Rj3sEPbEZVPuCYOfEM+WJaX1phrITh0/Osm2Q9VGJ/EZAkbnpb5r8C6eBEOcrjqQqsyIaBo/h0I
+	wWqb0kikTFyhD2bbbtLbpDLT3FCa8KvxZ+kdP9G8m4+oB/eZijmlFB9bgc9NIRpb8s8AQG0xigq
+	6gplbtPdbfGa4zTF4wzBnrVwpuyZ5NwReVrXKiIhojX8NBDwGIvqEJRXRoa0BKa5B4e5dcj8CwT
+	NPh0fT84XJS/W3ImlB1oWmiAYn85TV+ml7QODiE1fJU+XBSznKHl67uiSdTGcNKEDId0l41RTvE
+	LNRHZW3WtOcrafatKg8gjoLA==
+X-Received: by 2002:a05:620a:472b:b0:8b2:e17a:17e3 with SMTP id af79cd13be357-8cb7be3b84fmr1746011685a.1.1771864619752;
+        Mon, 23 Feb 2026 08:36:59 -0800 (PST)
+Received: from localhost ([2603:7000:c00:3a00:365a:60ff:fe62:ff29])
+        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-8997e7747f0sm72340136d6.51.2026.02.23.08.36.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 23 Feb 2026 08:36:58 -0800 (PST)
+Date: Mon, 23 Feb 2026 11:36:55 -0500
+From: Johannes Weiner <hannes@cmpxchg.org>
+To: Kairui Song via B4 Relay <devnull+kasong.tencent.com@kernel.org>
+Cc: linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
+	David Hildenbrand <david@kernel.org>,
+	Lorenzo Stoakes <lorenzo.stoakes@oracle.com>,
+	Zi Yan <ziy@nvidia.com>,
+	Baolin Wang <baolin.wang@linux.alibaba.com>,
+	Barry Song <baohua@kernel.org>, Hugh Dickins <hughd@google.com>,
+	Chris Li <chrisl@kernel.org>,
+	Kemeng Shi <shikemeng@huaweicloud.com>,
+	Nhat Pham <nphamcs@gmail.com>, Baoquan He <bhe@redhat.com>,
+	Yosry Ahmed <yosry.ahmed@linux.dev>,
+	Youngjun Park <youngjun.park@lge.com>,
+	Chengming Zhou <chengming.zhou@linux.dev>,
+	Roman Gushchin <roman.gushchin@linux.dev>,
+	Shakeel Butt <shakeel.butt@linux.dev>,
+	Muchun Song <muchun.song@linux.dev>,
+	Qi Zheng <zhengqi.arch@bytedance.com>, linux-kernel@vger.kernel.org,
+	cgroups@vger.kernel.org, Kairui Song <kasong@tencent.com>
+Subject: Re: [PATCH RFC 08/15] mm, swap: store and check memcg info in the
+ swap table
+Message-ID: <aZyCJ6pH4hey-ZoU@cmpxchg.org>
+References: <20260220-swap-table-p4-v1-0-104795d19815@tencent.com>
+ <20260220-swap-table-p4-v1-8-104795d19815@tencent.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAOQ4uxgzuxaLt2xs5a5snu9CBA_4esQ_+t0Wb6CX4M5OqM5AOA@mail.gmail.com>
+In-Reply-To: <20260220-swap-table-p4-v1-8-104795d19815@tencent.com>
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-2.16 / 15.00];
+X-Spamd-Result: default: False [-0.66 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
-	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
+	DMARC_POLICY_ALLOW(-0.50)[cmpxchg.org,none];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_DKIM_ALLOW(-0.20)[cmpxchg.org:s=google];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-14156-lists,cgroups=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-14157-lists,cgroups=lfdr.de];
+	FREEMAIL_CC(0.00)[kvack.org,linux-foundation.org,kernel.org,oracle.com,nvidia.com,linux.alibaba.com,google.com,huaweicloud.com,gmail.com,redhat.com,linux.dev,lge.com,bytedance.com,vger.kernel.org,tencent.com];
 	FROM_HAS_DN(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
+	RECEIVED_HELO_LOCALHOST(0.00)[];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	FREEMAIL_TO(0.00)[gmail.com];
+	RCVD_TLS_LAST(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[23];
 	MIME_TRACE(0.00)[0:+];
-	DKIM_TRACE(0.00)[kernel.org:+];
-	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
+	DKIM_TRACE(0.00)[cmpxchg.org:+];
 	MISSING_XM_UA(0.00)[];
-	NEURAL_HAM(-0.00)[-0.999];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[tj@kernel.org,cgroups@vger.kernel.org];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCPT_COUNT_SEVEN(0.00)[11];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	TAGGED_RCPT(0.00)[cgroups];
 	TO_DN_SOME(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: C33F5179CAD
+	RCVD_COUNT_FIVE(0.00)[5];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[hannes@cmpxchg.org,cgroups@vger.kernel.org];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	NEURAL_HAM(-0.00)[-0.999];
+	TAGGED_RCPT(0.00)[cgroups,kasong.tencent.com];
+	MID_RHS_MATCH_FROM(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tencent.com:email,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: 5DBDD17A155
 X-Rspamd-Action: no action
 
-(cc'ing Christian Brauner)
-
-On Sat, Feb 21, 2026 at 06:11:28PM +0200, Amir Goldstein wrote:
-> On Sat, Feb 21, 2026 at 12:32 AM Tejun Heo <tj@kernel.org> wrote:
-> >
-> > Hello, Amir.
-> >
-> > On Fri, Feb 20, 2026 at 10:11:15PM +0200, Amir Goldstein wrote:
-> > > > Yeah, that can be useful. For cgroupfs, there would probably need to be a
-> > > > way to scope it so that it can be used on delegation boundaries too (which
-> > > > we can require to coincide with cgroup NS boundaries).
-> > >
-> > > I have no idea what the above means.
-> > > I could ask Gemini or you and I prefer the latter ;)
-> >
-> > Ah, you chose wrong. :)
-> >
-> > > What are delegation boundaries and NFS boundaries in this context?
-> >
-> > cgroup delegation is giving control of a subtree to someone else:
-> >
-> > https://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git/tree/Documentation/admin-guide/cgroup-v2.rst#n537
-> >
-> > There's an old way of doing it by changing perms on some files and new way
-> > using cgroup namespace.
-> >
-> > > > Would it be possible to make FAN_MNT_ATTACH work for that?
-> > >
-> > > FAN_MNT_ATTACH is an event generated on a mntns object.
-> > > If "cgroup NS boundaries" is referring to a mntns object and if
-> > > this object is available in the context of cgroup create/destroy
-> > > then it should be possible.
-> >
-> > Great, yes, cgroup namespace way should work then.
-> >
-> > > But FAN_MNT_ATTACH reports a mountid. Is there a mountid
-> > > to report on cgroup create? Probably not?
-> >
-> > Sorry, I thought that was per-mount recursive file event monitoring.
-> > FAN_MARK_MOUNT looks like the right thing if we want to allow monitoring
-> > cgroup creations / destructions in a subtree without recursively watching
-> > each cgroup.
+On Fri, Feb 20, 2026 at 07:42:09AM +0800, Kairui Song via B4 Relay wrote:
+> From: Kairui Song <kasong@tencent.com>
 > 
-> The problem sounds very similar to subtree monitoring for mkdir/rmdir on
-> a filesystem, which is a problem that we have not yet solved.
+> To prepare for merging the swap_cgroup_ctrl into the swap table, store
+> the memcg info in the swap table on swapout.
 > 
-> The problem with FAN_MARK_MOUNT is that it does not support the
-> events CREATE/DELETE, because those events are currently
-
-Ah, bummer.
-
-> monitored in context where the mount is not available and anyway
-> what users want to get notified on a deleted file/dir in a subtree
-> regardless of the mount through which the create/delete was done.
+> This is done by using the existing shadow format.
 > 
-> Since commit 58f5fbeb367ff ("fanotify: support watching filesystems
-> and mounts inside userns") and fnaotify groups can be associated
-> with a userns.
+> Note this also changes the refault counting at the nearest online memcg
+> level:
 > 
-> I was thinking that we can have a model where events are delivered
-> to a listener based on whether or not the uid/gid of the object are
-> mappable to the userns of the group.
+> Unlike file folios, anon folios are mostly exclusive to one mem cgroup,
+> and each cgroup is likely to have different characteristics.
 
-Given how different NSes can be used independently of each other, it'd
-probably be cleaner if it doesn't have to depend on another NS.
+This is not correct.
 
-> In a filesystem, this criteria cannot guarantee the subtree isolation.
-> I imagine that for delegated cgroups this criteria could match what
-> you need, but I am basing this on pure speculation.
+As much as I like the idea of storing the swap_cgroup association
+inside the shadow entry, the refault evaluation needs to happen at the
+level that drove eviction.
 
-There's a lot of flexibility in the mechanism, so it's difficult to tell.
-e.g. There's nothing preventing somebody from creating two separate subtrees
-delegated to the same user.
+Consider a workload that is split into cgroups purely for accounting,
+not for setting different limits:
 
-Christian was mentioning allowing separate super for different cgroup mounts
-in another thread. cc'ing him for context.
+workload (limit domain)
+`- component A
+`- component B
 
-Thanks.
+This means the two components must compete freely, and it must behave
+as if there is only one LRU. When pages get reclaimed in a round-robin
+fashion, both A and B get aged at the same pace. Likewise, when pages
+in A refault, they must challenge the *combined* workingset of both A
+and B, not just the local pages.
 
--- 
-tejun
+Otherwise, you risk retaining stale workingset in one subgroup while
+the other one is thrashing. This breaks userspace expectations.
 
