@@ -1,99 +1,108 @@
-Return-Path: <cgroups+bounces-14135-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-14136-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id yJXZIrUUnGkq/gMAu9opvQ
-	(envelope-from <cgroups+bounces-14135-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Mon, 23 Feb 2026 09:49:57 +0100
+	id MDDGFWganGkZ/wMAu9opvQ
+	(envelope-from <cgroups+bounces-14136-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Mon, 23 Feb 2026 10:14:16 +0100
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id D33591734C2
-	for <lists+cgroups@lfdr.de>; Mon, 23 Feb 2026 09:49:56 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id C865E173A4F
+	for <lists+cgroups@lfdr.de>; Mon, 23 Feb 2026 10:14:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 55AF53021EAA
-	for <lists+cgroups@lfdr.de>; Mon, 23 Feb 2026 08:49:27 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 5F69130BB73C
+	for <lists+cgroups@lfdr.de>; Mon, 23 Feb 2026 09:07:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B94434D4F3;
-	Mon, 23 Feb 2026 08:49:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A696A34EEF8;
+	Mon, 23 Feb 2026 09:06:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="UlXomJbk"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="bSBkdh9m"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-wm1-f65.google.com (mail-wm1-f65.google.com [209.85.128.65])
+Received: from mail-wm1-f67.google.com (mail-wm1-f67.google.com [209.85.128.67])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 544C13446B7
-	for <cgroups@vger.kernel.org>; Mon, 23 Feb 2026 08:49:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.65
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D0034357A3E
+	for <cgroups@vger.kernel.org>; Mon, 23 Feb 2026 09:06:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.67
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1771836566; cv=none; b=HOKTdABWiyuIQkGXH8zExt3GIv1FveDlYkOfWvxNg8qFfsGg1rzhAZTyrRHI2W2sCHd55e0X2SLbd0hFMvGBdhiimVvdfyKnTYlNLQOa3HvwsPXwFEcjH+TKWjv947FJIlRkVi/CDqTpU7uSWqp1i2NmO1mI4diY7AS3+r9e2y0=
+	t=1771837600; cv=none; b=Z/Ep8OmZzx8p6i+lJifly6J3p/r9e4LhskvNcVLLwhwzG/RRe8AAqtcHtikkJsaijMiC2tWJNW96hB9aRgQFhlfQG3B5QCFU7O/oJ/2QNvxHHfj0k5yNsFG59LtRtH+AKH2rI0Sj0A2jIsNAVsALz5XTjYU+hnQprQituXZnJeo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1771836566; c=relaxed/simple;
-	bh=CPcTqIwKdGrgjQkZKiyMYwMRFUUoGRejaC+F57KM46g=;
+	s=arc-20240116; t=1771837600; c=relaxed/simple;
+	bh=jqB3gE1qn7rXR9HRuSIc3L+7Qq9RTUV9iPWCv3Jp82g=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=A5vjK5Z8Hcei9dwPzGVpPJSYs9BJEETzn3T7VNUcbQkKDCi3CRNANNWWebPMC0gsfYCa1VwqWILGZlGmOo+aUcjqZeILNQEZjXBVMeHBYl6MM2roGqG2cBmsFmcuniJslJBZlz7UtoNDJSBz7n2Kjet9kE1lYEgujfqWNHC0siI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=UlXomJbk; arc=none smtp.client-ip=209.85.128.65
+	 Content-Type:Content-Disposition:In-Reply-To; b=V7l8arJeKiR83pJoYiccxm7Tz8zivviHt+b5lVITMI6oku37sRtC8QD2uz3pT6q95cm5p8zhvfRs9ADXySUrKbK8g+raynjKXmol8Atfzg8IjcTkDSk/Xac0AMes71Jkd9XAa5fGx6TkFDyGQsYnzgjeoURk4+IUSzkXoJsM6YQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=bSBkdh9m; arc=none smtp.client-ip=209.85.128.67
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-wm1-f65.google.com with SMTP id 5b1f17b1804b1-480706554beso49181535e9.1
-        for <cgroups@vger.kernel.org>; Mon, 23 Feb 2026 00:49:24 -0800 (PST)
+Received: by mail-wm1-f67.google.com with SMTP id 5b1f17b1804b1-482f454be5bso45222555e9.0
+        for <cgroups@vger.kernel.org>; Mon, 23 Feb 2026 01:06:35 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1771836563; x=1772441363; darn=vger.kernel.org;
+        d=suse.com; s=google; t=1771837594; x=1772442394; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=Ez7ZL/ZZTKjaKro/no8ifIkmvDs+hXx0YgHRHReG5g8=;
-        b=UlXomJbk7WHXxPl8gaiKcWBzj4sKfXIBdnVbvqcuNUDdswVBgNJ3du0pIvj2tn3qoY
-         1wwn2n0F1lIWMjAMdki5FDgNROLsDm3t0aRrmF980sy5bbT/82etp5Ydj5bqRxDNveyT
-         Gg+SpEETjqLROYcA8AttBFFi9EKTG6nPGqsOLIWJbyrpSrxMb5D8XjsKRbMpfA8+8xv3
-         mxcVfTMflJL1vE/y4itHr6GltAQvP1kfzzdH5haj5dlgmSBjsgAlh311mmBw7yCdpyjv
-         bGgfA+nJrDTm9ocCI1tiohiWGVTpyXZhMLGFSIGdwa93xHBBOxzPnlxquXxzbigcbXjN
-         qn2w==
+        bh=FRKHr4XfNyvs/GPqZkcXmlWLUOkA8rjTfDtgUabPVdo=;
+        b=bSBkdh9mRESWOH3yY010VWNKwvJbOqtsracoBwKkCJtpL5JS8W0BFNYCHIstl3BGAF
+         T/r5llRQibtyBymbN5vdEB4l4kejnp8Iu924y2iw20FHOOUQZof9I+PY2LNoc6tdZ9TP
+         4zz4SuV0BW225vuAdshjDLfpDsbsnbdkTRvgQkDWRs2frBI2S+PaZE5lp4YyWz5InvmA
+         ZDYvVM7ajQADa9rU71roaEVlHcTrbkisJ6UaZYYgDnfFJzLScQ2P3p6akXqrZf6bHZQ5
+         iOnWjTq52KMI8rmIkFsqR2PFVkCLAB2VDGdRF3jocZkOQJfmIqC95W2XWbW0bk5edNEr
+         kwew==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1771836563; x=1772441363;
+        d=1e100.net; s=20230601; t=1771837594; x=1772442394;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Ez7ZL/ZZTKjaKro/no8ifIkmvDs+hXx0YgHRHReG5g8=;
-        b=ioPPgp43gPHGg13k2joEU9kLwrlVNJp0yOgGGSPhzuHpvq5ifqvVVPBOWJo3A/UNP4
-         I4IoOKLwU2eUDkS5IpbQ+1W1d+r6aejhOyi4kPWkiUfm8OAPY3QGQlKk9EjudEek8Yey
-         k9goCmFawhfyhim1/dht9TB/cOgsxXHj9aC5b+qR/3Rm0VMOJrlXZTWr+5HZQtndzQSX
-         D2cProtzzbociu++NMOgaSJsnlzTyRZe1PV0TRmnKos2KSPjgvLJWD+8BjL/Qx1cOnRQ
-         LR4P4LbXkTvT8SFqt8hwAHKjvNgq7/U7c/Tggw5SO7qRkz5GoVP1eS1EBAFbHNO4K8n9
-         DYKQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWG2ZSmi2TrYuJSQBTsMrZq7AsdnJvmrPsHJPwBPVDUxZYLcf6h7VwQF6Mk7u6S0GS8OnY4wheE@vger.kernel.org
-X-Gm-Message-State: AOJu0YxUo28u4hFvn0F7CROn/iDCEEZR/pTRcqUjTKebamS0dAuiYEPx
-	8IneY0/jVwa8+XiE7TBDeHhq5jszbq5S/u33S/ESL49v3SoTrIq9TpmiQ6uz9mVkuvw=
-X-Gm-Gg: AZuq6aLlVJIS/6h5W7oZE0rlcZuUAGkzR66+s/Alp0BfhiKzeoMLH2WAhcVp8ssxaxa
-	rlMqTVYouVjv5fbBRSTblJHssCYSH0D1U8YVl+m/pnp9s8UpVb2arCTsYjCuWEBPlvZvkr4ifBn
-	IztkxAGGbTosziezy+8yxRx3eOL8Mo4Se21tSnFwTK6tgXDdt2TSTxdN1W4pMwFGWvJ6mC0CYvT
-	CArJIRKA1ktHkc166fUmvg5jmVEdN+ohVR/eXqcY8WmroSAbazda2WBVUIJpV57kEb2i0aivTsr
-	9RXDj0qe7EjAnmXPVrsOE/xnkbUxIQV8X9Hs+wZBXRjZpGBgV/5GOqqh1OWnIbMgu8K8aiNtUtP
-	YknNTYAL7BgExBKlQz8w+Tlz2GSaNDv/0fa3C/WrAA1t+yZRqU1tBsfDbxFPSSsiGp1PFJmHdvS
-	PoP8B5sgPURszVeH0lfpy2E7WB+T2VFKw=
-X-Received: by 2002:a05:600c:3b10:b0:483:43da:6c87 with SMTP id 5b1f17b1804b1-483a963d603mr110784615e9.33.1771836562560;
-        Mon, 23 Feb 2026 00:49:22 -0800 (PST)
+        bh=FRKHr4XfNyvs/GPqZkcXmlWLUOkA8rjTfDtgUabPVdo=;
+        b=Rzc8btPJCGkawwW7pGRxNt45+Iskexnuxeurr1g8uztwmYH3Rmeg2sNzGqbOFkduNw
+         zMouInRxypIItkoURKV6niIFuoP/VFEf7IKEUxu7SmlDy7+LFu3HSsBlp3NXQspHCGgP
+         nS0Xf9/Nt6x5GF0t7tNHPnD6X9/xHpMiuh74oWMdwwdklD5flcofqX3/NYWu2wpz7YyH
+         sUce7wR73MQH4og4WK+uL6hbd+M8vop+ZW1XIFj4zazjsDUEw/q6j5JH/Q0wYzmiB7N/
+         asiDH9KyPNyoirEOgR9C2caZs+zQvZWi5B/FqRoNBIa/j3HO6wGHmCwsVCF9EIW/zK9v
+         xHyw==
+X-Forwarded-Encrypted: i=1; AJvYcCUanlgo/l6PIK02XMTGNzNdpBMCZvzdiCd5Vt+SHmcXFRSVuOHfJwBP2+5QqZRYSbTg/fx4bxoB@vger.kernel.org
+X-Gm-Message-State: AOJu0YzleOdl3t3m79tvA/Q72OwXLwPKRDU5By/eWYwAc3eCUR9mWdKQ
+	EaHOpg0dQTkPRvJEMv1nkA5xxg7TwUUjcBjxyOSkxJSQypMLrjPYrVe0erYnN0YLQzs=
+X-Gm-Gg: AZuq6aIs1zfx2PyXQ8Mhmfb9/3UH1ZO0x2oZctaSlgLiBZdNkzK/wmSFOKIq/ID9H/m
+	VuEXyzXTPW2u6q/0dl4Ba5uVFLFWjcq4W/yVmRfc3rjd2/v+PraotW6HjIIxNAu79VNeVX3d+Ly
+	SUrEffp9NpDuxP4WU/GF6kcgDIQPev0LHqb0QtvORxRHkDNsml77GmRwj4O0qcMlSeF9NgUG3Ag
+	QKdnnFr6zPyHqanKoShYkNaBqrXavOCISENXzCjSAa6pX1DVUNiPSo0jEcSL0jpjOwqDO+ytZbC
+	Hq0hBFIwTekWslqVDLXgzTsYi6UdnHgBbX256yNJA7uaST07cqpInWm78VYmy5Dh3MmdNbBmrTP
+	xBz3mcgrd6CJrsOxqGxma0Q9YfuGxG/Hm6kCTP5CrqGPygow7qltUQTOCDwy3Q3GSgxpXhRE3GD
+	iD1Kwqlzr0t+hG2hbuB46Pn5GD5FZRscA=
+X-Received: by 2002:a05:600c:1c29:b0:483:6d9e:e4f5 with SMTP id 5b1f17b1804b1-483a949e5edmr131156385e9.5.1771837593880;
+        Mon, 23 Feb 2026 01:06:33 -0800 (PST)
 Received: from localhost (109-81-84-7.rct.o2.cz. [109.81.84.7])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-483a31b3e0dsm392926575e9.1.2026.02.23.00.49.21
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-483a9b75b4dsm281117665e9.4.2026.02.23.01.06.33
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 23 Feb 2026 00:49:22 -0800 (PST)
-Date: Mon, 23 Feb 2026 09:49:21 +0100
+        Mon, 23 Feb 2026 01:06:33 -0800 (PST)
+Date: Mon, 23 Feb 2026 10:06:32 +0100
 From: Michal Hocko <mhocko@suse.com>
-To: "JP Kobryn (Meta)" <jp.kobryn@linux.dev>
-Cc: linux-mm@kvack.org, mst@redhat.com, vbabka@suse.cz, apopple@nvidia.com,
-	akpm@linux-foundation.org, axelrasmussen@google.com,
-	byungchul@sk.com, cgroups@vger.kernel.org, david@kernel.org,
-	eperezma@redhat.com, gourry@gourry.net, jasowang@redhat.com,
-	hannes@cmpxchg.org, joshua.hahnjy@gmail.com,
-	Liam.Howlett@oracle.com, linux-kernel@vger.kernel.org,
-	lorenzo.stoakes@oracle.com, matthew.brost@intel.com,
-	rppt@kernel.org, muchun.song@linux.dev, zhengqi.arch@bytedance.com,
-	rakie.kim@sk.com, roman.gushchin@linux.dev, shakeel.butt@linux.dev,
-	surenb@google.com, virtualization@lists.linux.dev,
-	weixugc@google.com, xuanzhuo@linux.alibaba.com,
-	ying.huang@linux.alibaba.com, yuanchu@google.com, ziy@nvidia.com,
-	kernel-team@meta.com
-Subject: Re: [PATCH v5] mm: move pgscan, pgsteal, pgrefill to node stats
-Message-ID: <aZwUkarMpyG9gyNQ@tiehlicka>
-References: <20260219235846.161910-1-jp.kobryn@linux.dev>
+To: Leonardo Bras <leobras.c@gmail.com>
+Cc: Marcelo Tosatti <mtosatti@redhat.com>, linux-kernel@vger.kernel.org,
+	cgroups@vger.kernel.org, linux-mm@kvack.org,
+	Johannes Weiner <hannes@cmpxchg.org>,
+	Roman Gushchin <roman.gushchin@linux.dev>,
+	Shakeel Butt <shakeel.butt@linux.dev>,
+	Muchun Song <muchun.song@linux.dev>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Christoph Lameter <cl@linux.com>, Pekka Enberg <penberg@kernel.org>,
+	David Rientjes <rientjes@google.com>,
+	Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+	Vlastimil Babka <vbabka@suse.cz>,
+	Hyeonggon Yoo <42.hyeyoo@gmail.com>,
+	Leonardo Bras <leobras@redhat.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Waiman Long <longman@redhat.com>, Boqun Feng <boqun.feng@gmail.com>,
+	Frederic Weisbecker <fweisbecker@suse.de>
+Subject: Re: [PATCH 0/4] Introduce QPW for per-cpu operations
+Message-ID: <aZwYmNuucBspCYhk@tiehlicka>
+References: <20260206143430.021026873@redhat.com>
+ <aYs6Ju2G4bm6_tl2@tiehlicka>
+ <aYxviLoWsrLqDU7o@tpad>
+ <aYywl1hdBQP2_slo@tiehlicka>
+ <aZDw6xI2izFDfuuu@WindFlash>
+ <aZL45yORfkNvS9Rs@tiehlicka>
+ <aZjY9h3XXMNY-Ytd@WindFlash>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -102,429 +111,127 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20260219235846.161910-1-jp.kobryn@linux.dev>
+In-Reply-To: <aZjY9h3XXMNY-Ytd@WindFlash>
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-0.16 / 15.00];
 	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	MID_RHS_NOT_FQDN(0.50)[];
 	DMARC_POLICY_ALLOW(-0.50)[suse.com,quarantine];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
 	R_DKIM_ALLOW(-0.20)[suse.com:s=google];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCPT_COUNT_TWELVE(0.00)[33];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-14135-lists,cgroups=lfdr.de];
-	MIME_TRACE(0.00)[0:+];
-	FREEMAIL_CC(0.00)[kvack.org,redhat.com,suse.cz,nvidia.com,linux-foundation.org,google.com,sk.com,vger.kernel.org,kernel.org,gourry.net,cmpxchg.org,gmail.com,oracle.com,intel.com,linux.dev,bytedance.com,lists.linux.dev,linux.alibaba.com,meta.com];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	RECEIVED_HELO_LOCALHOST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-14136-lists,cgroups=lfdr.de];
 	FROM_HAS_DN(0.00)[];
+	RECEIVED_HELO_LOCALHOST(0.00)[];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	FREEMAIL_TO(0.00)[gmail.com];
+	RCPT_COUNT_TWELVE(0.00)[21];
+	MIME_TRACE(0.00)[0:+];
+	FREEMAIL_CC(0.00)[redhat.com,vger.kernel.org,kvack.org,cmpxchg.org,linux.dev,linux-foundation.org,linux.com,kernel.org,google.com,lge.com,suse.cz,gmail.com,linutronix.de,suse.de];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	TO_DN_SOME(0.00)[];
 	RCVD_COUNT_FIVE(0.00)[5];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[mhocko@suse.com,cgroups@vger.kernel.org];
 	DKIM_TRACE(0.00)[suse.com:+];
-	NEURAL_HAM(-0.00)[-0.999];
+	NEURAL_HAM(-0.00)[-0.998];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[cgroups];
 	MISSING_XM_UA(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,suse.com:email,suse.com:dkim,linux.dev:email,cmpxchg.org:email]
-X-Rspamd-Queue-Id: D33591734C2
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,suse.com:dkim,lpc.events:url]
+X-Rspamd-Queue-Id: C865E173A4F
 X-Rspamd-Action: no action
 
-On Thu 19-02-26 15:58:46, JP Kobryn (Meta) wrote:
-> There are situations where reclaim kicks in on a system with free memory.
-> One possible cause is a NUMA imbalance scenario where one or more nodes are
-> under pressure. It would help if we could easily identify such nodes.
+On Fri 20-02-26 18:58:14, Leonardo Bras wrote:
+> On Mon, Feb 16, 2026 at 12:00:55PM +0100, Michal Hocko wrote:
+> > On Sat 14-02-26 19:02:19, Leonardo Bras wrote:
+> > > On Wed, Feb 11, 2026 at 05:38:47PM +0100, Michal Hocko wrote:
+> > > > On Wed 11-02-26 09:01:12, Marcelo Tosatti wrote:
+> > > > > On Tue, Feb 10, 2026 at 03:01:10PM +0100, Michal Hocko wrote:
+> > > > [...]
+> > > > > > What about !PREEMPT_RT? We have people running isolated workloads and
+> > > > > > these sorts of pcp disruptions are really unwelcome as well. They do not
+> > > > > > have requirements as strong as RT workloads but the underlying
+> > > > > > fundamental problem is the same. Frederic (now CCed) is working on
+> > > > > > moving those pcp book keeping activities to be executed to the return to
+> > > > > > the userspace which should be taking care of both RT and non-RT
+> > > > > > configurations AFAICS.
+> > > > > 
+> > > > > Michal,
+> > > > > 
+> > > > > For !PREEMPT_RT, _if_ you select CONFIG_QPW=y, then there is a kernel
+> > > > > boot option qpw=y/n, which controls whether the behaviour will be
+> > > > > similar (the spinlock is taken on local_lock, similar to PREEMPT_RT).
+> > > > 
+> > > > My bad. I've misread the config space of this.
+> > > > 
+> > > > > If CONFIG_QPW=n, or kernel boot option qpw=n, then only local_lock 
+> > > > > (and remote work via work_queue) is used.
+> > > > > 
+> > > > > What "pcp book keeping activities" you refer to ? I don't see how
+> > > > > moving certain activities that happen under SLUB or LRU spinlocks
+> > > > > to happen before return to userspace changes things related 
+> > > > > to avoidance of CPU interruption ?
+> > > > 
+> > > > Essentially delayed operations like pcp state flushing happens on return
+> > > > to the userspace on isolated CPUs. No locking changes are required as
+> > > > the work is still per-cpu.
+> > > > 
+> > > > In other words the approach Frederic is working on is to not change the
+> > > > locking of pcp delayed work but instead move that work into well defined
+> > > > place - i.e. return to the userspace.
+> > > > 
+> > > > Btw. have you measure the impact of preempt_disbale -> spinlock on hot
+> > > > paths like SLUB sheeves?
+> > > 
+> > > Hi Michal,
+> > > 
+> > > I have done some study on this (which I presented on Plumbers 2023):
+> > > https://lpc.events/event/17/contributions/1484/ 
+> > > 
+> > > Since they are per-cpu spinlocks, and the remote operations are not that 
+> > > frequent, as per design of the current approach, we are not supposed to see 
+> > > contention (I was not able to detect contention even after stress testing 
+> > > for weeks), nor relevant cacheline bouncing.
+> > > 
+> > > That being said, for RT local_locks already get per-cpu spinlocks, so there 
+> > > is only difference for !RT, which as you mention, does preemtp_disable():
+> > > 
+> > > The performance impact noticed was mostly about jumping around in 
+> > > executable code, as inlining spinlocks (test #2 on presentation) took care 
+> > > of most of the added extra cycles, adding about 4-14 extra cycles per 
+> > > lock/unlock cycle. (tested on memcg with kmalloc test)
+> > > 
+> > > Yeah, as expected there is some extra cycles, as we are doing extra atomic 
+> > > operations (even if in a local cacheline) in !RT case, but this could be 
+> > > enabled only if the user thinks this is an ok cost for reducing 
+> > > interruptions.
+> > > 
+> > > What do you think?
+> > 
+> > The fact that the behavior is opt-in for !RT is certainly a plus. I also
+> > do not expect the overhead to be really be really big. 
 > 
-> Move the pgscan, pgsteal, and pgrefill counters from vm_event_item to
-> node_stat_item to provide per-node reclaim visibility. With these counters
-> as node stats, the values are now displayed in the per-node section of
-> /proc/zoneinfo, which allows for quick identification of the affected
-> nodes.
+> Awesome! Thanks for reviewing!
 > 
-> /proc/vmstat continues to report the same counters, aggregated across all
-> nodes. But the ordering of these items within the readout changes as they
-> move from the vm events section to the node stats section.
+> > To me, a much
+> > more important question is which of the two approaches is easier to
+> > maintain long term. The pcp work needs to be done one way or the other.
+> > Whether we want to tweak locking or do it at a very well defined time is
+> > the bigger question.
 > 
-> Memcg accounting of these counters is preserved. The relocated counters
-> remain visible in memory.stat alongside the existing aggregate pgscan and
-> pgsteal counters.
-> 
-> However, this change affects how the global counters are accumulated.
-> Previously, the global event count update was gated on !cgroup_reclaim(),
-> excluding memcg-based reclaim from /proc/vmstat. Now that
-> mod_lruvec_state() is being used to update the counters, the global
-> counters will include all reclaim. This is consistent with how pgdemote
-> counters are already tracked.
-> 
-> Finally, the virtio_balloon driver is updated to use
-> global_node_page_state() to fetch the counters, as they are no longer
-> accessible through the vm_events array.
-> 
-> Signed-off-by: JP Kobryn <jp.kobryn@linux.dev>
-> Suggested-by: Johannes Weiner <hannes@cmpxchg.org>
-> Acked-by: Michael S. Tsirkin <mst@redhat.com>
-> Reviewed-by: Vlastimil Babka (SUSE) <vbabka@kernel.org>
+> That crossed my mind as well, and I went with the idea of changing locking 
+> because I was working on workloads in which deferring work to a kernel 
+> re-entry would cause deadline misses as well. Or more critically, the 
+> drains could take forever, as some of those tasks would avoid returning to 
+> kernel as much as possible. 
 
-Acked-by: Michal Hocko <mhocko@suse.com>
-Thanks
-
-> ---
-> v5:
-> 	- rebase onto mm/mm-new
-> 
-> v4: https://lore.kernel.org/linux-mm/20260219171124.19053-1-jp.kobryn@linux.dev/
-> 	- remove unused memcg var from scan_folios()
-> 
-> v3: https://lore.kernel.org/linux-mm/20260218222652.108411-1-jp.kobryn@linux.dev/
-> 	- additionally move PGREFILL to node stats
-> 
-> v2: https://lore.kernel.org/linux-mm/20260218032941.225439-1-jp.kobryn@linux.dev/
-> 	- update commit message
-> 	- add entries to memory_stats array
-> 	- add switch cases in memcg_page_state_output_unit()
-> 
-> v1: https://lore.kernel.org/linux-mm/20260212045109.255391-3-inwardvessel@gmail.com/
-> 
->  drivers/virtio/virtio_balloon.c |  8 ++---
->  include/linux/mmzone.h          | 13 ++++++++
->  include/linux/vm_event_item.h   | 13 --------
->  mm/memcontrol.c                 | 56 +++++++++++++++++++++++----------
->  mm/vmscan.c                     | 39 ++++++++---------------
->  mm/vmstat.c                     | 26 +++++++--------
->  6 files changed, 82 insertions(+), 73 deletions(-)
-> 
-> diff --git a/drivers/virtio/virtio_balloon.c b/drivers/virtio/virtio_balloon.c
-> index 4e549abe59ff..ab945532ceef 100644
-> --- a/drivers/virtio/virtio_balloon.c
-> +++ b/drivers/virtio/virtio_balloon.c
-> @@ -369,13 +369,13 @@ static inline unsigned int update_balloon_vm_stats(struct virtio_balloon *vb)
->  	update_stat(vb, idx++, VIRTIO_BALLOON_S_ALLOC_STALL, stall);
->  
->  	update_stat(vb, idx++, VIRTIO_BALLOON_S_ASYNC_SCAN,
-> -		    pages_to_bytes(events[PGSCAN_KSWAPD]));
-> +		    pages_to_bytes(global_node_page_state(PGSCAN_KSWAPD)));
->  	update_stat(vb, idx++, VIRTIO_BALLOON_S_DIRECT_SCAN,
-> -		    pages_to_bytes(events[PGSCAN_DIRECT]));
-> +		    pages_to_bytes(global_node_page_state(PGSCAN_DIRECT)));
->  	update_stat(vb, idx++, VIRTIO_BALLOON_S_ASYNC_RECLAIM,
-> -		    pages_to_bytes(events[PGSTEAL_KSWAPD]));
-> +		    pages_to_bytes(global_node_page_state(PGSTEAL_KSWAPD)));
->  	update_stat(vb, idx++, VIRTIO_BALLOON_S_DIRECT_RECLAIM,
-> -		    pages_to_bytes(events[PGSTEAL_DIRECT]));
-> +		    pages_to_bytes(global_node_page_state(PGSTEAL_DIRECT)));
->  
->  #ifdef CONFIG_HUGETLB_PAGE
->  	update_stat(vb, idx++, VIRTIO_BALLOON_S_HTLB_PGALLOC,
-> diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
-> index 3e51190a55e4..546bca95ca40 100644
-> --- a/include/linux/mmzone.h
-> +++ b/include/linux/mmzone.h
-> @@ -255,6 +255,19 @@ enum node_stat_item {
->  	PGDEMOTE_DIRECT,
->  	PGDEMOTE_KHUGEPAGED,
->  	PGDEMOTE_PROACTIVE,
-> +	PGSTEAL_KSWAPD,
-> +	PGSTEAL_DIRECT,
-> +	PGSTEAL_KHUGEPAGED,
-> +	PGSTEAL_PROACTIVE,
-> +	PGSTEAL_ANON,
-> +	PGSTEAL_FILE,
-> +	PGSCAN_KSWAPD,
-> +	PGSCAN_DIRECT,
-> +	PGSCAN_KHUGEPAGED,
-> +	PGSCAN_PROACTIVE,
-> +	PGSCAN_ANON,
-> +	PGSCAN_FILE,
-> +	PGREFILL,
->  #ifdef CONFIG_HUGETLB_PAGE
->  	NR_HUGETLB,
->  #endif
-> diff --git a/include/linux/vm_event_item.h b/include/linux/vm_event_item.h
-> index 22a139f82d75..03fe95f5a020 100644
-> --- a/include/linux/vm_event_item.h
-> +++ b/include/linux/vm_event_item.h
-> @@ -38,21 +38,8 @@ enum vm_event_item { PGPGIN, PGPGOUT, PSWPIN, PSWPOUT,
->  		PGFREE, PGACTIVATE, PGDEACTIVATE, PGLAZYFREE,
->  		PGFAULT, PGMAJFAULT,
->  		PGLAZYFREED,
-> -		PGREFILL,
->  		PGREUSE,
-> -		PGSTEAL_KSWAPD,
-> -		PGSTEAL_DIRECT,
-> -		PGSTEAL_KHUGEPAGED,
-> -		PGSTEAL_PROACTIVE,
-> -		PGSCAN_KSWAPD,
-> -		PGSCAN_DIRECT,
-> -		PGSCAN_KHUGEPAGED,
-> -		PGSCAN_PROACTIVE,
->  		PGSCAN_DIRECT_THROTTLE,
-> -		PGSCAN_ANON,
-> -		PGSCAN_FILE,
-> -		PGSTEAL_ANON,
-> -		PGSTEAL_FILE,
->  #ifdef CONFIG_NUMA
->  		PGSCAN_ZONE_RECLAIM_SUCCESS,
->  		PGSCAN_ZONE_RECLAIM_FAILED,
-> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> index 6fb9c999347b..0d834c47706f 100644
-> --- a/mm/memcontrol.c
-> +++ b/mm/memcontrol.c
-> @@ -331,6 +331,19 @@ static const unsigned int memcg_node_stat_items[] = {
->  	PGDEMOTE_DIRECT,
->  	PGDEMOTE_KHUGEPAGED,
->  	PGDEMOTE_PROACTIVE,
-> +	PGSTEAL_KSWAPD,
-> +	PGSTEAL_DIRECT,
-> +	PGSTEAL_KHUGEPAGED,
-> +	PGSTEAL_PROACTIVE,
-> +	PGSTEAL_ANON,
-> +	PGSTEAL_FILE,
-> +	PGSCAN_KSWAPD,
-> +	PGSCAN_DIRECT,
-> +	PGSCAN_KHUGEPAGED,
-> +	PGSCAN_PROACTIVE,
-> +	PGSCAN_ANON,
-> +	PGSCAN_FILE,
-> +	PGREFILL,
->  #ifdef CONFIG_HUGETLB_PAGE
->  	NR_HUGETLB,
->  #endif
-> @@ -444,17 +457,8 @@ static const unsigned int memcg_vm_event_stat[] = {
->  #endif
->  	PSWPIN,
->  	PSWPOUT,
-> -	PGSCAN_KSWAPD,
-> -	PGSCAN_DIRECT,
-> -	PGSCAN_KHUGEPAGED,
-> -	PGSCAN_PROACTIVE,
-> -	PGSTEAL_KSWAPD,
-> -	PGSTEAL_DIRECT,
-> -	PGSTEAL_KHUGEPAGED,
-> -	PGSTEAL_PROACTIVE,
->  	PGFAULT,
->  	PGMAJFAULT,
-> -	PGREFILL,
->  	PGACTIVATE,
->  	PGDEACTIVATE,
->  	PGLAZYFREE,
-> @@ -1401,6 +1405,15 @@ static const struct memory_stat memory_stats[] = {
->  	{ "pgdemote_direct",		PGDEMOTE_DIRECT		},
->  	{ "pgdemote_khugepaged",	PGDEMOTE_KHUGEPAGED	},
->  	{ "pgdemote_proactive",		PGDEMOTE_PROACTIVE	},
-> +	{ "pgsteal_kswapd",		PGSTEAL_KSWAPD		},
-> +	{ "pgsteal_direct",		PGSTEAL_DIRECT		},
-> +	{ "pgsteal_khugepaged",		PGSTEAL_KHUGEPAGED	},
-> +	{ "pgsteal_proactive",		PGSTEAL_PROACTIVE	},
-> +	{ "pgscan_kswapd",		PGSCAN_KSWAPD		},
-> +	{ "pgscan_direct",		PGSCAN_DIRECT		},
-> +	{ "pgscan_khugepaged",		PGSCAN_KHUGEPAGED	},
-> +	{ "pgscan_proactive",		PGSCAN_PROACTIVE	},
-> +	{ "pgrefill",			PGREFILL		},
->  #ifdef CONFIG_NUMA_BALANCING
->  	{ "pgpromote_success",		PGPROMOTE_SUCCESS	},
->  #endif
-> @@ -1444,6 +1457,15 @@ static int memcg_page_state_output_unit(int item)
->  	case PGDEMOTE_DIRECT:
->  	case PGDEMOTE_KHUGEPAGED:
->  	case PGDEMOTE_PROACTIVE:
-> +	case PGSTEAL_KSWAPD:
-> +	case PGSTEAL_DIRECT:
-> +	case PGSTEAL_KHUGEPAGED:
-> +	case PGSTEAL_PROACTIVE:
-> +	case PGSCAN_KSWAPD:
-> +	case PGSCAN_DIRECT:
-> +	case PGSCAN_KHUGEPAGED:
-> +	case PGSCAN_PROACTIVE:
-> +	case PGREFILL:
->  #ifdef CONFIG_NUMA_BALANCING
->  	case PGPROMOTE_SUCCESS:
->  #endif
-> @@ -1562,15 +1584,15 @@ static void memcg_stat_format(struct mem_cgroup *memcg, struct seq_buf *s)
->  
->  	/* Accumulated memory events */
->  	memcg_seq_buf_print_stat(s, NULL, "pgscan", ' ',
-> -				 memcg_events(memcg, PGSCAN_KSWAPD) +
-> -				 memcg_events(memcg, PGSCAN_DIRECT) +
-> -				 memcg_events(memcg, PGSCAN_PROACTIVE) +
-> -				 memcg_events(memcg, PGSCAN_KHUGEPAGED));
-> +				 memcg_page_state(memcg, PGSCAN_KSWAPD) +
-> +				 memcg_page_state(memcg, PGSCAN_DIRECT) +
-> +				 memcg_page_state(memcg, PGSCAN_PROACTIVE) +
-> +				 memcg_page_state(memcg, PGSCAN_KHUGEPAGED));
->  	memcg_seq_buf_print_stat(s, NULL, "pgsteal", ' ',
-> -				 memcg_events(memcg, PGSTEAL_KSWAPD) +
-> -				 memcg_events(memcg, PGSTEAL_DIRECT) +
-> -				 memcg_events(memcg, PGSTEAL_PROACTIVE) +
-> -				 memcg_events(memcg, PGSTEAL_KHUGEPAGED));
-> +				 memcg_page_state(memcg, PGSTEAL_KSWAPD) +
-> +				 memcg_page_state(memcg, PGSTEAL_DIRECT) +
-> +				 memcg_page_state(memcg, PGSTEAL_PROACTIVE) +
-> +				 memcg_page_state(memcg, PGSTEAL_KHUGEPAGED));
->  
->  	for (i = 0; i < ARRAY_SIZE(memcg_vm_event_stat); i++) {
->  #ifdef CONFIG_MEMCG_V1
-> diff --git a/mm/vmscan.c b/mm/vmscan.c
-> index 5fa6e6bd6540..c3dc7c7befac 100644
-> --- a/mm/vmscan.c
-> +++ b/mm/vmscan.c
-> @@ -1984,7 +1984,7 @@ static unsigned long shrink_inactive_list(unsigned long nr_to_scan,
->  	unsigned long nr_taken;
->  	struct reclaim_stat stat;
->  	bool file = is_file_lru(lru);
-> -	enum vm_event_item item;
-> +	enum node_stat_item item;
->  	struct pglist_data *pgdat = lruvec_pgdat(lruvec);
->  	bool stalled = false;
->  
-> @@ -2010,10 +2010,8 @@ static unsigned long shrink_inactive_list(unsigned long nr_to_scan,
->  
->  	__mod_node_page_state(pgdat, NR_ISOLATED_ANON + file, nr_taken);
->  	item = PGSCAN_KSWAPD + reclaimer_offset(sc);
-> -	if (!cgroup_reclaim(sc))
-> -		__count_vm_events(item, nr_scanned);
-> -	count_memcg_events(lruvec_memcg(lruvec), item, nr_scanned);
-> -	__count_vm_events(PGSCAN_ANON + file, nr_scanned);
-> +	mod_lruvec_state(lruvec, item, nr_scanned);
-> +	mod_lruvec_state(lruvec, PGSCAN_ANON + file, nr_scanned);
->  
->  	spin_unlock_irq(&lruvec->lru_lock);
->  
-> @@ -2030,10 +2028,8 @@ static unsigned long shrink_inactive_list(unsigned long nr_to_scan,
->  					stat.nr_demoted);
->  	__mod_node_page_state(pgdat, NR_ISOLATED_ANON + file, -nr_taken);
->  	item = PGSTEAL_KSWAPD + reclaimer_offset(sc);
-> -	if (!cgroup_reclaim(sc))
-> -		__count_vm_events(item, nr_reclaimed);
-> -	count_memcg_events(lruvec_memcg(lruvec), item, nr_reclaimed);
-> -	__count_vm_events(PGSTEAL_ANON + file, nr_reclaimed);
-> +	mod_lruvec_state(lruvec, item, nr_reclaimed);
-> +	mod_lruvec_state(lruvec, PGSTEAL_ANON + file, nr_reclaimed);
->  
->  	lru_note_cost_unlock_irq(lruvec, file, stat.nr_pageout,
->  					nr_scanned - nr_reclaimed);
-> @@ -2120,9 +2116,7 @@ static void shrink_active_list(unsigned long nr_to_scan,
->  
->  	__mod_node_page_state(pgdat, NR_ISOLATED_ANON + file, nr_taken);
->  
-> -	if (!cgroup_reclaim(sc))
-> -		__count_vm_events(PGREFILL, nr_scanned);
-> -	count_memcg_events(lruvec_memcg(lruvec), PGREFILL, nr_scanned);
-> +	mod_lruvec_state(lruvec, PGREFILL, nr_scanned);
->  
->  	spin_unlock_irq(&lruvec->lru_lock);
->  
-> @@ -4537,7 +4531,7 @@ static int scan_folios(unsigned long nr_to_scan, struct lruvec *lruvec,
->  {
->  	int i;
->  	int gen;
-> -	enum vm_event_item item;
-> +	enum node_stat_item item;
->  	int sorted = 0;
->  	int scanned = 0;
->  	int isolated = 0;
-> @@ -4545,7 +4539,6 @@ static int scan_folios(unsigned long nr_to_scan, struct lruvec *lruvec,
->  	int scan_batch = min(nr_to_scan, MAX_LRU_BATCH);
->  	int remaining = scan_batch;
->  	struct lru_gen_folio *lrugen = &lruvec->lrugen;
-> -	struct mem_cgroup *memcg = lruvec_memcg(lruvec);
->  
->  	VM_WARN_ON_ONCE(!list_empty(list));
->  
-> @@ -4596,13 +4589,9 @@ static int scan_folios(unsigned long nr_to_scan, struct lruvec *lruvec,
->  	}
->  
->  	item = PGSCAN_KSWAPD + reclaimer_offset(sc);
-> -	if (!cgroup_reclaim(sc)) {
-> -		__count_vm_events(item, isolated);
-> -		__count_vm_events(PGREFILL, sorted);
-> -	}
-> -	count_memcg_events(memcg, item, isolated);
-> -	count_memcg_events(memcg, PGREFILL, sorted);
-> -	__count_vm_events(PGSCAN_ANON + type, isolated);
-> +	mod_lruvec_state(lruvec, item, isolated);
-> +	mod_lruvec_state(lruvec, PGREFILL, sorted);
-> +	mod_lruvec_state(lruvec, PGSCAN_ANON + type, isolated);
->  	trace_mm_vmscan_lru_isolate(sc->reclaim_idx, sc->order, scan_batch,
->  				scanned, skipped, isolated,
->  				type ? LRU_INACTIVE_FILE : LRU_INACTIVE_ANON);
-> @@ -4705,7 +4694,7 @@ static int evict_folios(unsigned long nr_to_scan, struct lruvec *lruvec,
->  	LIST_HEAD(clean);
->  	struct folio *folio;
->  	struct folio *next;
-> -	enum vm_event_item item;
-> +	enum node_stat_item item;
->  	struct reclaim_stat stat;
->  	struct lru_gen_mm_walk *walk;
->  	bool skip_retry = false;
-> @@ -4769,10 +4758,8 @@ static int evict_folios(unsigned long nr_to_scan, struct lruvec *lruvec,
->  					stat.nr_demoted);
->  
->  	item = PGSTEAL_KSWAPD + reclaimer_offset(sc);
-> -	if (!cgroup_reclaim(sc))
-> -		__count_vm_events(item, reclaimed);
-> -	count_memcg_events(memcg, item, reclaimed);
-> -	__count_vm_events(PGSTEAL_ANON + type, reclaimed);
-> +	mod_lruvec_state(lruvec, item, reclaimed);
-> +	mod_lruvec_state(lruvec, PGSTEAL_ANON + type, reclaimed);
->  
->  	spin_unlock_irq(&lruvec->lru_lock);
->  
-> diff --git a/mm/vmstat.c b/mm/vmstat.c
-> index 86b14b0f77b5..44bbb7752f11 100644
-> --- a/mm/vmstat.c
-> +++ b/mm/vmstat.c
-> @@ -1276,6 +1276,19 @@ const char * const vmstat_text[] = {
->  	[I(PGDEMOTE_DIRECT)]			= "pgdemote_direct",
->  	[I(PGDEMOTE_KHUGEPAGED)]		= "pgdemote_khugepaged",
->  	[I(PGDEMOTE_PROACTIVE)]			= "pgdemote_proactive",
-> +	[I(PGSTEAL_KSWAPD)]			= "pgsteal_kswapd",
-> +	[I(PGSTEAL_DIRECT)]			= "pgsteal_direct",
-> +	[I(PGSTEAL_KHUGEPAGED)]			= "pgsteal_khugepaged",
-> +	[I(PGSTEAL_PROACTIVE)]			= "pgsteal_proactive",
-> +	[I(PGSTEAL_ANON)]			= "pgsteal_anon",
-> +	[I(PGSTEAL_FILE)]			= "pgsteal_file",
-> +	[I(PGSCAN_KSWAPD)]			= "pgscan_kswapd",
-> +	[I(PGSCAN_DIRECT)]			= "pgscan_direct",
-> +	[I(PGSCAN_KHUGEPAGED)]			= "pgscan_khugepaged",
-> +	[I(PGSCAN_PROACTIVE)]			= "pgscan_proactive",
-> +	[I(PGSCAN_ANON)]			= "pgscan_anon",
-> +	[I(PGSCAN_FILE)]			= "pgscan_file",
-> +	[I(PGREFILL)]				= "pgrefill",
->  #ifdef CONFIG_HUGETLB_PAGE
->  	[I(NR_HUGETLB)]				= "nr_hugetlb",
->  #endif
-> @@ -1318,21 +1331,8 @@ const char * const vmstat_text[] = {
->  	[I(PGMAJFAULT)]				= "pgmajfault",
->  	[I(PGLAZYFREED)]			= "pglazyfreed",
->  
-> -	[I(PGREFILL)]				= "pgrefill",
->  	[I(PGREUSE)]				= "pgreuse",
-> -	[I(PGSTEAL_KSWAPD)]			= "pgsteal_kswapd",
-> -	[I(PGSTEAL_DIRECT)]			= "pgsteal_direct",
-> -	[I(PGSTEAL_KHUGEPAGED)]			= "pgsteal_khugepaged",
-> -	[I(PGSTEAL_PROACTIVE)]			= "pgsteal_proactive",
-> -	[I(PGSCAN_KSWAPD)]			= "pgscan_kswapd",
-> -	[I(PGSCAN_DIRECT)]			= "pgscan_direct",
-> -	[I(PGSCAN_KHUGEPAGED)]			= "pgscan_khugepaged",
-> -	[I(PGSCAN_PROACTIVE)]			= "pgscan_proactive",
->  	[I(PGSCAN_DIRECT_THROTTLE)]		= "pgscan_direct_throttle",
-> -	[I(PGSCAN_ANON)]			= "pgscan_anon",
-> -	[I(PGSCAN_FILE)]			= "pgscan_file",
-> -	[I(PGSTEAL_ANON)]			= "pgsteal_anon",
-> -	[I(PGSTEAL_FILE)]			= "pgsteal_file",
->  
->  #ifdef CONFIG_NUMA
->  	[I(PGSCAN_ZONE_RECLAIM_SUCCESS)]	= "zone_reclaim_success",
-> -- 
-> 2.47.3
-
+Could you be more specific please?
 -- 
 Michal Hocko
 SUSE Labs
