@@ -1,174 +1,200 @@
-Return-Path: <cgroups+bounces-14149-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-14150-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id oE5tNeF5nGlfIAQAu9opvQ
-	(envelope-from <cgroups+bounces-14149-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Mon, 23 Feb 2026 17:01:37 +0100
+	id 6M9sEsJ7nGm6IQQAu9opvQ
+	(envelope-from <cgroups+bounces-14150-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Mon, 23 Feb 2026 17:09:38 +0100
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3D111179423
-	for <lists+cgroups@lfdr.de>; Mon, 23 Feb 2026 17:01:32 +0100 (CET)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
+	by mail.lfdr.de (Postfix) with ESMTPS id 69592179665
+	for <lists+cgroups@lfdr.de>; Mon, 23 Feb 2026 17:09:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id 2F96130225B9
-	for <lists+cgroups@lfdr.de>; Mon, 23 Feb 2026 15:58:55 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 9B3B4307B96D
+	for <lists+cgroups@lfdr.de>; Mon, 23 Feb 2026 16:02:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 00FCB2264B0;
-	Mon, 23 Feb 2026 15:58:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 16BE030BB91;
+	Mon, 23 Feb 2026 16:01:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cmpxchg.org header.i=@cmpxchg.org header.b="cpy5aLQg"
+	dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="PqHtQ0ke"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-qt1-f196.google.com (mail-qt1-f196.google.com [209.85.160.196])
+Received: from mail-ot1-f46.google.com (mail-ot1-f46.google.com [209.85.210.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A3D42F6565
-	for <cgroups@vger.kernel.org>; Mon, 23 Feb 2026 15:58:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.196
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CBC6B303A26
+	for <cgroups@vger.kernel.org>; Mon, 23 Feb 2026 16:01:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1771862331; cv=none; b=FExLAyn1VK4vlcghkR9thaaLGNSqH/sf3Oh3Xh01V8C0QGcCLTNUdAyRVdbTZyMpYZl6znCTPLY6fDQMpV01kbJHAtVc/6tZX/4vmDGb5gdQ6Kqy4AO482Q4HZoseph5XQJBku7IkxwIYnydvaaXRsGLogCIgwi8CSTr6Nt9vJ8=
+	t=1771862469; cv=none; b=XdFnlzHlAS+8+OkBpRgOoMxjm2tycHGkKrN5BaJhSpszHHqKJNBM3j8uYfwMYfEzlscqnS+ivZ3No7PYfRZ6h8cET88ncqlLhSS9HGuriJL3kX2Ui/TJt0Z9GPoI8gYqBHF8tmO9oe99t4B9gJbJ954zhj/dENX5wg61kSWBoTA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1771862331; c=relaxed/simple;
-	bh=+6jS37I+1wbJ1iqlKg2dmc5dYnQE3LyFGZ64dOrbW/w=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=PcI6NKoVW6o+23iVuo9uNKtPeZQDISBFlyzQjZ1s0eaX9hyfa5v7EDQYIgh2SUXRKnsK9yVfwOq0beGZPsr6toNUzH1nt91FY6a78s59iW7BDy4L9JoW+GcyRwXfe19mn/48sVfTNkoMuP5hszQo97FgfQbPeh9nkzVhT3jzw4g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org; spf=pass smtp.mailfrom=cmpxchg.org; dkim=pass (2048-bit key) header.d=cmpxchg.org header.i=@cmpxchg.org header.b=cpy5aLQg; arc=none smtp.client-ip=209.85.160.196
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cmpxchg.org
-Received: by mail-qt1-f196.google.com with SMTP id d75a77b69052e-505a1789a27so27409221cf.3
-        for <cgroups@vger.kernel.org>; Mon, 23 Feb 2026 07:58:49 -0800 (PST)
+	s=arc-20240116; t=1771862469; c=relaxed/simple;
+	bh=RBDa0jIO4VbsfMCQSIREc9cffsT7gvfxFla9G/UD7gs=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=TJB259nsy79sCeC4Kpe1Q8yT8PdtBjQ2SRFe0A9xfOZtW8K4+99p75YMxonJQLbSEplR4B91cBYXvMnQUfQfs8BzkUZ9Doudf6jhJPm6NLfgefyfISysOZaoKJtbVE8YjXbSSG29PbnXoDkfhPcvepxyt6bMahiOIVcf5S/R+g0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b=PqHtQ0ke; arc=none smtp.client-ip=209.85.210.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
+Received: by mail-ot1-f46.google.com with SMTP id 46e09a7af769-7d18d02af68so3079372a34.2
+        for <cgroups@vger.kernel.org>; Mon, 23 Feb 2026 08:01:06 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg.org; s=google; t=1771862328; x=1772467128; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=gJlVVB4cdcMuEQ3h5OcyXP3aNJfq5CueqYlheuqsqJs=;
-        b=cpy5aLQg4pfEGyz5TaDuHhTN64LtG66GHLYcvhqrcV4xUC1pLJ70uSjOo5vTkuOHn1
-         nnNv/f3j/TKT1xJ7hBp06n9YTbKWBAT3w0Q0y8rhBwr6Nth9dxRNg81SkGwccoWq+HPw
-         Wqdc6fTGHjuVqPUZD47vpaMjaEr9Qtro7pxfucvjNaiVq8VTlqPOWxNWGYbDWmH7Imsr
-         HzHeT61m9lnKYOC/HP1ean/ePZ6AsT8s5jmVGnsqWP8mi8ynWqGJ4SAlL6GxmQeyb0iA
-         Dq8dDmYdkYSEcGjsoWw0DAiAVjALzAHgaTpls70b8m8ImVJf31GoVORK+gp6P6X7RoWi
-         FFcQ==
+        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1771862466; x=1772467266; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=HX29uEwlmShEjfFqkdwl8Eb5l/ZDj+DL2kVuvz05S4k=;
+        b=PqHtQ0kegO9Jus8W4cxNJI34/48vONyAjPHsLA84w3xhcTH+ehRGLWMutcJXZ2RAc/
+         sIIW38BVXjib20Hzzie5/NskGtknX8AWizrrYqFC+cHd9PikB2egS7JaNbi54oMe6P/4
+         ddf9EB7qZxkwqk3fcPIUygOni6aWtkYOvu4jDSCBwwynMsMsONTgNsrQ6SoIaPGchix5
+         apan0c7Jll92fM9SkRm6Fx8tqeLhj2uls5bV+0bT0tWyuhs39yMoF4q2AatkXEkfO9jQ
+         WZmQcIv6TmU8UxJu44cTa6JGtGGdPs47Tmw+CdciuwJYkd046huqr3OenbIXyacOEqFB
+         SY4A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1771862328; x=1772467128;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=gJlVVB4cdcMuEQ3h5OcyXP3aNJfq5CueqYlheuqsqJs=;
-        b=SvDgJf05MXdmW5yvWRbbwmjwtZk8Qfx1YEe+xexSSlZd5M3Hv6WXME4HeR5EbFl5nM
-         X60jzJWzjk3odLvJWBV6C+PkwndZ7yUQu6/dOQJlCzm/zKq2tGi9Gq8WqOZZX6t+4wPJ
-         cAHd9cppH8cBSPrjk9YGiFg0aDC7XLqEfrSEjS2vaYrzOJClbogdYwDP3ZZesICZaAec
-         mhwkTInOXrzACXjxfNwVy+XfzrAB1fELilhe6Re8lJ3vgxM37W3L1hnKXUmldOOF+pCX
-         3yMghW/HR3YuDcBXM6byWxaatcfpwugCrSFt1gLVt23089svlPGFoEPTzP6d9CT//E4l
-         2T/g==
-X-Forwarded-Encrypted: i=1; AJvYcCVmM8DoTudzPEWfJXSwpaw03EaOfLsxWJiS8QndUQM1rhWdt+wyzFEjwR9XJLuyMwKusQDItVmv@vger.kernel.org
-X-Gm-Message-State: AOJu0YxoKE9j2a4qWORcbH9mzcD2jnBiYs/+ZyfQqLI5srfkCEHHY5d0
-	AvlT0THAeF7pn2KiAUJhk4jWL3YyMc4RAqDJX22slznKldNuVZmWgptIDbSlUI2LBM8=
-X-Gm-Gg: AZuq6aLIDDr5TDh+EqCMJmUWQUD1mUOL8QcgX/fKT1NZJUl78H4YGvOqVovlL+e+zf2
-	FGo/UPDACMT93GI2O1oRflrPwGmast9aRY3TN3CVXw/mDXgBKFp93MEMqmh1u05zNwPIQ+04Q1x
-	fUP3cyWQJ2vmi4BUcP/DzjFm6gp5ZBUlKSLFvxzSd7ihAhyM0LUwsgkP6dG/bDVFwa0AdAJu0hx
-	+t0l8Uw+Nd5St2TdxApuFWhHE85Xfu13G8o7jfkVDB4hD0z6v20fczpFOnsrTQoPGvnblP1VnEb
-	MVnHJ53AmHBEwE2DBKDLPqkSNWXmMSac+3JYjuwOJWHt3NpgeIU5wzrNVXHYvWm7K9ZQ7j6QRdN
-	lJNU6J2eHEobpeBWGQTTq6K9rs3zolBvDfY944hr79roc6+5G6tO6fztOLlPUcBw0pgCIZ1QMA2
-	r6B2VBZ+BC10xiRp+L4kNJBA==
-X-Received: by 2002:a05:622a:181b:b0:503:2d06:8e1f with SMTP id d75a77b69052e-5070bbcd9b4mr109231921cf.19.1771862328143;
-        Mon, 23 Feb 2026 07:58:48 -0800 (PST)
-Received: from localhost ([2603:7000:c00:3a00:365a:60ff:fe62:ff29])
-        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-8997e24627csm71706556d6.29.2026.02.23.07.58.47
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 23 Feb 2026 07:58:47 -0800 (PST)
-Date: Mon, 23 Feb 2026 10:58:43 -0500
-From: Johannes Weiner <hannes@cmpxchg.org>
-To: Shakeel Butt <shakeel.butt@linux.dev>
-Cc: Andrew Morton <akpm@linux-foundation.org>,
-	Uladzislau Rezki <urezki@gmail.com>,
-	Joshua Hahn <joshua.hahnjy@gmail.com>,
-	Michal Hocko <mhocko@suse.com>,
-	Roman Gushchin <roman.gushchin@linux.dev>,
-	Muchun Song <muchun.song@linux.dev>, linux-mm@kvack.org,
-	cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] mm: vmalloc: streamline vmalloc memory accounting
-Message-ID: <aZx5M2WYMK7pKhC1@cmpxchg.org>
-References: <20260220191035.3703800-1-hannes@cmpxchg.org>
- <aZjaxAi-AzyOYzNT@linux.dev>
+        d=1e100.net; s=20230601; t=1771862466; x=1772467266;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=HX29uEwlmShEjfFqkdwl8Eb5l/ZDj+DL2kVuvz05S4k=;
+        b=q8mNIqpOjrAzpcuHohcf3idNcYFxI6ZbnoQkFFwg7wF25/+LGxVkP9zijXmC95qTYx
+         1Zn0swjdq9bSRoqoAxQO/eP+YNQ4NAdxT045mp7HpvZSln14+MWKrturMI3evTFG1yfR
+         8HvEij9nD/vZ0hOMTGakQxMCpl8sziEm6UNSG0l+Nf65L1lkcKJy6LwsBpJaqnHHfXdy
+         mOzenqytsOf6XXpim1cgHvmbsCqIAV8I5H/IYWXCB9MkeVTMN/yC4OwF52w4Yt+7LnCy
+         3SZHeEGMylUef8Y6bo7VzOmCaojgZa8iCdgdVQxOW6V1kaKc+iFk2WGjIcyKf/AgCiwP
+         VQMQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWOygfGfkFzH9rPBE0E2fdHIlfJoKHhJgOgNyLPyg6YrcQfwUXsH0t0N0WZmcNnyv6CPKL8eH+K@vger.kernel.org
+X-Gm-Message-State: AOJu0Yz5i1IeM/M4xskFYBRX50UArOg4FJekb5xpW/RwugPh+/cD7xFU
+	JsH7teFF10kjsaJ90ltnb4y9h0adW3aRqeqR0f/VKEuLPyy69OQbEJs6UIR6oDUH/aw=
+X-Gm-Gg: AZuq6aJxnBAxEEBQGHI5/2EduK/u8is1hIhumqGZUZ9SvosJ2ZQVMUK+KS3nnw1ElUx
+	7Yi2UZ0m27SePvd6CB2WLo7/oidpd7vVqwwNAG94y6Wk1Q/NaskMj4xNGkevAS2bc1Rjghsu4fq
+	WPyBFWDnr2ELDqnr5lpGViS6uicFjQVy9ESksVWFKFpOlp92aTCWzT650zRNYWPewekEWxTbj35
+	vXDFPVb6N5kuntKDrsVDApuEl6r5Yvkb4smzvWxnqt3Nj0DOhdjQiz+sfC6JhM0eCiGf9m8m5zq
+	mJLWbqgEPSjHErk7zy6CHBiSW+gexvzvHnIWfWdSv5V8S1kd8+/s7ki/SwXlttfeTq7r4xxdIHE
+	yu9JPmwwMgw7b4nM3/qBe9K0BsEHNCHXC+Mqk71CUEymQfY+onKNPMXPnmnEcQY40ZNSt0nJwBU
+	6tf3wH57tsERihhcldWQ1UuH8q/+xDpItiVYGKLuz/TDcbnCS96HTrWvzjzOriYiMiAyRMfaufA
+	zTwZq3bLA==
+X-Received: by 2002:a05:6830:3153:b0:7d1:853c:83e3 with SMTP id 46e09a7af769-7d52bdf416bmr6177467a34.2.1771862465520;
+        Mon, 23 Feb 2026 08:01:05 -0800 (PST)
+Received: from ?IPV6:2600:8803:e7e4:500:e37:2309:3937:4469? ([2600:8803:e7e4:500:e37:2309:3937:4469])
+        by smtp.gmail.com with ESMTPSA id 46e09a7af769-7d55b9a8498sm1062950a34.28.2026.02.23.08.01.04
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 23 Feb 2026 08:01:05 -0800 (PST)
+Message-ID: <47be2ff3-c25a-4aab-89fc-53921af8b0a9@baylibre.com>
+Date: Mon, 23 Feb 2026 10:01:03 -0600
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <aZjaxAi-AzyOYzNT@linux.dev>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 04/33] mm: vmstat: Prepare to protect against concurrent
+ isolated cpuset change
+To: Frederic Weisbecker <frederic@kernel.org>,
+ LKML <linux-kernel@vger.kernel.org>
+Cc: =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
+ Andrew Morton <akpm@linux-foundation.org>,
+ Bjorn Helgaas <bhelgaas@google.com>,
+ Catalin Marinas <catalin.marinas@arm.com>,
+ Chen Ridong <chenridong@huawei.com>, Danilo Krummrich <dakr@kernel.org>,
+ "David S . Miller" <davem@davemloft.net>, Eric Dumazet
+ <edumazet@google.com>, Gabriele Monaco <gmonaco@redhat.com>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Ingo Molnar <mingo@redhat.com>, Jakub Kicinski <kuba@kernel.org>,
+ Jens Axboe <axboe@kernel.dk>, Johannes Weiner <hannes@cmpxchg.org>,
+ Lai Jiangshan <jiangshanlai@gmail.com>,
+ Marco Crivellari <marco.crivellari@suse.com>, Michal Hocko
+ <mhocko@suse.com>, Muchun Song <muchun.song@linux.dev>,
+ Paolo Abeni <pabeni@redhat.com>, Peter Zijlstra <peterz@infradead.org>,
+ Phil Auld <pauld@redhat.com>, "Rafael J . Wysocki" <rafael@kernel.org>,
+ Roman Gushchin <roman.gushchin@linux.dev>,
+ Shakeel Butt <shakeel.butt@linux.dev>, Simon Horman <horms@kernel.org>,
+ Tejun Heo <tj@kernel.org>, Thomas Gleixner <tglx@linutronix.de>,
+ Vlastimil Babka <vbabka@suse.cz>, Waiman Long <longman@redhat.com>,
+ Will Deacon <will@kernel.org>, cgroups@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-block@vger.kernel.org,
+ linux-mm@kvack.org, linux-pci@vger.kernel.org, netdev@vger.kernel.org
+References: <20260101221359.22298-1-frederic@kernel.org>
+ <20260101221359.22298-5-frederic@kernel.org>
+Content-Language: en-US
+From: David Lechner <dlechner@baylibre.com>
+In-Reply-To: <20260101221359.22298-5-frederic@kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-0.66 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
+X-Spamd-Result: default: False [-1.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[cmpxchg.org,none];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64:c];
-	R_DKIM_ALLOW(-0.20)[cmpxchg.org:s=google];
+	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
+	R_DKIM_ALLOW(-0.20)[baylibre-com.20230601.gappssmtp.com:s=20230601];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FROM_HAS_DN(0.00)[];
-	FREEMAIL_CC(0.00)[linux-foundation.org,gmail.com,suse.com,linux.dev,kvack.org,vger.kernel.org];
-	TAGGED_FROM(0.00)[bounces-14149-lists,cgroups=lfdr.de];
-	RECEIVED_HELO_LOCALHOST(0.00)[];
-	DKIM_TRACE(0.00)[cmpxchg.org:+];
 	MIME_TRACE(0.00)[0:+];
+	FREEMAIL_CC(0.00)[suse.com,linux-foundation.org,google.com,arm.com,huawei.com,kernel.org,davemloft.net,redhat.com,linuxfoundation.org,kernel.dk,cmpxchg.org,gmail.com,linux.dev,infradead.org,linutronix.de,suse.cz,vger.kernel.org,lists.infradead.org,kvack.org];
+	TAGGED_FROM(0.00)[bounces-14150-lists,cgroups=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	RSPAMD_URIBL_FAIL(0.00)[cmpxchg.org:query timed out];
+	DMARC_NA(0.00)[baylibre.com];
+	DKIM_TRACE(0.00)[baylibre-com.20230601.gappssmtp.com:+];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	MISSING_XM_UA(0.00)[];
-	TO_DN_SOME(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[38];
 	RCVD_COUNT_FIVE(0.00)[5];
-	NEURAL_HAM(-0.00)[-0.999];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[hannes@cmpxchg.org,cgroups@vger.kernel.org];
-	RSPAMD_EMAILBL_FAIL(0.00)[shakeel.butt.linux.dev:query timed out];
-	MID_RHS_MATCH_FROM(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[dlechner@baylibre.com,cgroups@vger.kernel.org];
+	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
+	NEURAL_HAM(-0.00)[-1.000];
 	TAGGED_RCPT(0.00)[cgroups];
-	RCPT_COUNT_SEVEN(0.00)[10];
-	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
+	MID_RHS_MATCH_FROM(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns,linux.dev:email,cmpxchg.org:mid,cmpxchg.org:dkim]
-X-Rspamd-Queue-Id: 3D111179423
+	TO_DN_SOME(0.00)[]
+X-Rspamd-Queue-Id: 69592179665
 X-Rspamd-Action: no action
 
-On Fri, Feb 20, 2026 at 02:09:28PM -0800, Shakeel Butt wrote:
-> On Fri, Feb 20, 2026 at 02:10:34PM -0500, Johannes Weiner wrote:
-> [...]
-> >  static struct vmap_area *__find_vmap_area(unsigned long addr, struct rb_root *root)
-> >  {
-> >  	struct rb_node *n = root->rb_node;
-> > @@ -3463,11 +3457,11 @@ void vfree(const void *addr)
-> >  		 * High-order allocs for huge vmallocs are split, so
-> >  		 * can be freed as an array of order-0 allocations
-> >  		 */
-> > +		if (!(vm->flags & VM_MAP_PUT_PAGES))
-> > +			dec_node_page_state(page, NR_VMALLOC);
-> >  		__free_page(page);
-> >  		cond_resched();
-> >  	}
-> > -	if (!(vm->flags & VM_MAP_PUT_PAGES))
-> > -		atomic_long_sub(vm->nr_pages, &nr_vmalloc_pages);
-> >  	kvfree(vm->pages);
-> >  	kfree(vm);
-> >  }
-> > @@ -3655,6 +3649,8 @@ vm_area_alloc_pages(gfp_t gfp, int nid,
-> >  			continue;
-> >  		}
-> >  
-> > +		mod_node_page_state(page, NR_VMALLOC, 1 << large_order);
+On 1/1/26 4:13 PM, Frederic Weisbecker wrote:
+> The HK_TYPE_DOMAIN housekeeping cpumask will soon be made modifiable at
+> runtime. In order to synchronize against vmstat workqueue to make sure
+> that no asynchronous vmstat work is pending or executing on a newly made
+> isolated CPU, target and queue a vmstat work under the same RCU read
+> side critical section.
 > 
-> mod_node_page_state() takes 'struct pglist_data *pgdat', you need to use
-> page_pgdat(page) as first param.
-
-Good catch, my apologies. Serves me right for not compiling
-incrementally.
-
-> With above fixes, you can add:
+> Whenever housekeeping will update the HK_TYPE_DOMAIN cpumask, a vmstat
+> workqueue flush will also be issued in a further change to make sure
+> that no work remains pending after a CPU has been made isolated.
 > 
-> Acked-by: Shakeel Butt <shakeel.butt@linux.dev>
+> Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
+> ---
+>  mm/vmstat.c | 10 ++++++----
+>  1 file changed, 6 insertions(+), 4 deletions(-)
+> 
+> diff --git a/mm/vmstat.c b/mm/vmstat.c
+> index 65de88cdf40e..ed19c0d42de6 100644
+> --- a/mm/vmstat.c
+> +++ b/mm/vmstat.c
+> @@ -2144,11 +2144,13 @@ static void vmstat_shepherd(struct work_struct *w)
+>  		 * infrastructure ever noticing. Skip regular flushing from vmstat_shepherd
+>  		 * for all isolated CPUs to avoid interference with the isolated workload.
+>  		 */
+> -		if (cpu_is_isolated(cpu))
+> -			continue;
+> +		scoped_guard(rcu) {
+> +			if (cpu_is_isolated(cpu))
+> +				continue;
 
-Thanks! I'll send out v2.
+I think this might have introduced a bug - or at least an unintentional change
+in the program flow.
+
+scoped_guard() is implemented using a for loop. Now this continue statement will
+only exit the scoped_guard() scope rather than continuing the outer for loop. This
+means that cond_resched() will be called when it previously was not.
+
+>  
+> -		if (!delayed_work_pending(dw) && need_update(cpu))
+> -			queue_delayed_work_on(cpu, mm_percpu_wq, dw, 0);
+> +			if (!delayed_work_pending(dw) && need_update(cpu))
+> +				queue_delayed_work_on(cpu, mm_percpu_wq, dw, 0);
+> +		}
+>  
+>  		cond_resched();
+>  	}
+
 
