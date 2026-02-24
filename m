@@ -1,218 +1,270 @@
-Return-Path: <cgroups+bounces-14225-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-14227-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id APXOBH7qnWm3SgQAu9opvQ
-	(envelope-from <cgroups+bounces-14225-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Tue, 24 Feb 2026 19:14:22 +0100
+	id +J9rH+PtnWncSgQAu9opvQ
+	(envelope-from <cgroups+bounces-14227-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Tue, 24 Feb 2026 19:28:51 +0100
 X-Original-To: lists+cgroups@lfdr.de
 Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id E454218B1AB
-	for <lists+cgroups@lfdr.de>; Tue, 24 Feb 2026 19:14:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 247CB18B610
+	for <lists+cgroups@lfdr.de>; Tue, 24 Feb 2026 19:28:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 57D39312D740
-	for <lists+cgroups@lfdr.de>; Tue, 24 Feb 2026 18:07:08 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id 121483089B8A
+	for <lists+cgroups@lfdr.de>; Tue, 24 Feb 2026 18:27:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 36AA83A9DA5;
-	Tue, 24 Feb 2026 18:03:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA7D33AA1B0;
+	Tue, 24 Feb 2026 18:26:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bDRze4GL"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="E5+4dnoh"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-lf1-f46.google.com (mail-lf1-f46.google.com [209.85.167.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F8904C81
-	for <cgroups@vger.kernel.org>; Tue, 24 Feb 2026 18:03:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8C7EE3A9DB9
+	for <cgroups@vger.kernel.org>; Tue, 24 Feb 2026 18:26:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1771956220; cv=none; b=lAHLrkgvua7b8/vnHLA1ydOA/X69rDy5x9sHyCV9aPDtJAVX+pP2PN8CpYXWBi2A4QRd4VYQHcVRAvydoJdQHLS1DfdHH8DyUZ45XuWh5lxVtUYeqiueBJNwH2n4Rs85Zs56Fp/2nIZuvCtCTFPRPaQ7AwRyYugipmudlBOlCD0=
+	t=1771957594; cv=none; b=DwmA3PP0CUxEOMmxMxqL1Cd6rNmc9+fzLTZIy/3WRED0p1ijtQtcikVzWEMZ431yBOaLXOIXwutTqUbcabHeGpNOxd6haOq0wvYFM9FCimvFFCT4ltm94uoTOtngHC1rDLqcqhzheEWIarPWrpWH7VEqyv19e+qJzZpiLthzAtY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1771956220; c=relaxed/simple;
-	bh=jf5IZQq3cAlA1i+ZX03AhkGPmE/XhSdStfkzshA61pY=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=bRsUQm0G+wrUx1dsJH9X49cMCy92xNaZ4fcihdc6CaAZ1fJo1bRncvulo1jsoUeD0l8zCtkjoxIVK/K/5bqb98VqyfjEkeNNA2PWQ0GM9BZMUqClRraxXWkqfOVG76rLUGzrNXegA7weyVSJ9ymIEYZ97YAcHVB4+OpnjIEtRr8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=bDRze4GL; arc=none smtp.client-ip=209.85.167.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f46.google.com with SMTP id 2adb3069b0e04-59e62a3ee29so6210314e87.3
-        for <cgroups@vger.kernel.org>; Tue, 24 Feb 2026 10:03:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1771956215; x=1772561015; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=O4oIsYGmK/xdzzCq4Y4y/7a2RiK61m8snUa5jjavVTo=;
-        b=bDRze4GLD4jgA4AOyNX5b9kR+HYueAf2E6e3dEwPU/NpOfZfAsm1YhUxtVT3BvYLXl
-         1GbuBt9W4fYXwlwF4TviF5NWERQMry1Xt75IsIHcXNvWv6XmOiDb1TFrn3sUWcISobTu
-         6ARpULk+TRxytgL04rLR052Ct3q42ufTnJjINgr1L2Vgs/YhaaRbxqSEYZta/pJaBlOp
-         xFuoWzQJXf6U2W/9+5evpde4Ypz6M8djX5c6iJXS+n5JGoj+RWz8Bs07kPTDnBRMCy1D
-         WHicFqpUXfUvfKBkGueWmuJB4/83D/iKAaZ7/HdEM2kVq16VbRFyWNHt7hFAFoIzyFMs
-         V/jg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1771956215; x=1772561015;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-gg:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=O4oIsYGmK/xdzzCq4Y4y/7a2RiK61m8snUa5jjavVTo=;
-        b=Mrn9j++k7lCi0isWHsIPGy3Lu1DAGd6dWwOd7+9eAmr4e9xeJXlkNSDuqbBzu7SH1F
-         RiYS+tqUgJgKEycaFUGDJhkStPcg/9TXFUNsi6WB6ntkxzvTLmmiQ210SEPy4KrEE/2r
-         uzO3jc3Ew/N9VNRxMIYSJaRJNM05R+gPjpQg0uUiOEHYwxVzkVjdG5qVwRjBjA53sZT/
-         abhLlsEr959j77/gyPrGwmFNcKQQrYnIpr/GtYQZescs02R46kCmN+kgfgGS2SdvG/FF
-         0QXI7ZtioHUthuxnHDa2anWNQY6JS12FpElYQEpUXZuLyb5l3n5xxWLbrVG7yz/wjv7J
-         RYaw==
-X-Forwarded-Encrypted: i=1; AJvYcCXwDPPgyiiCLCZsj0cwDW8k781oWQ2fvNrL36GvvBSBe9S1OBjpRLG6umrm3woNHiaBUk9s+zkn@vger.kernel.org
-X-Gm-Message-State: AOJu0Yyxv1RZh2Rm4Cqwpzf+Vq5czlJ0yd7bbYGLyj1UKT3ytV32Dd8b
-	+hShMbPd4XJZC/iFGHk8zH+mbJoqRIz86Rij+GbEMC2GU2khVKen6v1/
-X-Gm-Gg: ATEYQzwnimr+FO7coLS1op9M68aWA9HxA7rESFtO0EGebaZ2rWaEIBxzLJHi8evOXbj
-	bnbTVpbNTgt/mGZ8nYu0jD+rFxfrPrPqfBf9rMzXPm3COaXQ/2gRMS8wW8eoscSRnYfcQQ1q7Rz
-	OLphpbzoZns0i9X1v9XZczfKqkEcO4dFbbT3awd3Qdptmnh4iJjSpb9PpJxdhPtzbOA9K6hmSLs
-	s4dnECUaP13UKrMBovu/PAuSbHtdW1zkYogWmTSaN9ima4/9/vnPiw1v7uq5b6jk/WeBD4zrAO1
-	S3xzzS8hp1M5wHJpr8uyeTkwzLSCgGG+BFRYWI4xLt7U3nHxtMP+J6QiavQ3iNhn6K2G2E83W9U
-	0lLalEjAwNeAHs8hAHLR8mR0QBrYU2hFHoBFSDNnQQbGTH4fhXJEAGrzr9cbLvQaWpCYGRQZchc
-	1+9FTyswkc9OCrF8qSFhwIZ6a4d+usVlWNUTy2guarN/inG8JtI507
-X-Received: by 2002:a05:6512:4016:b0:59d:f71b:3608 with SMTP id 2adb3069b0e04-5a0ed99bdc8mr3767938e87.31.1771956215059;
-        Tue, 24 Feb 2026 10:03:35 -0800 (PST)
-Received: from pc636 (host-90-233-215-147.mobileonline.telia.com. [90.233.215.147])
-        by smtp.gmail.com with ESMTPSA id 2adb3069b0e04-5a0eeb0b8b0sm2329602e87.15.2026.02.24.10.03.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 24 Feb 2026 10:03:34 -0800 (PST)
-From: Uladzislau Rezki <urezki@gmail.com>
-X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
-Date: Tue, 24 Feb 2026 19:03:32 +0100
-To: Johannes Weiner <hannes@cmpxchg.org>
-Cc: Uladzislau Rezki <urezki@gmail.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Joshua Hahn <joshua.hahnjy@gmail.com>,
-	Michal Hocko <mhocko@suse.com>,
+	s=arc-20240116; t=1771957594; c=relaxed/simple;
+	bh=tZ6lBQWuYTfqUbN2qwwVjecInGeYkTto8OO+tVC6hLM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=sDb6QH0lMqTWLeiVZ+rdlQuz/0NNRAIaVajUBfJdfHlRi9PK6tNIUoRhqQKzSoQrmn+B6qV1SJnFcXreSR6GN1vN9edV0hc6H1eVJIMy75pGyQxcZNYM4jB5qgenDQFkJHL9cUTwtekq8cx9xl+I/V+LJBGh5v2qB8uAOMKT990=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=E5+4dnoh; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1771957590;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Kj/fGA5yp0dGoSw6F29+YuThvBFpON14H3YrN8gK7+w=;
+	b=E5+4dnohZPnezFlTJF/iX90se25eI1lTsOc2NLaIkrMUWO0xsZGr+TdKzUunW2/EIKXcLq
+	mO79cV8XUwZBtdheHXn8na/FNx+QuN/9qDX+TlPsaN1VuxTbg+Qug5rbzgW+e+FTdB1an3
+	zoyv/+WeDhnzi7NfJot9Qklvi8p+D6g=
+Received: from mx-prod-mc-08.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-35-165-154-97.us-west-2.compute.amazonaws.com [35.165.154.97]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-150-7KYmAGGrNIq1EsaTJSiqCQ-1; Tue,
+ 24 Feb 2026 13:26:26 -0500
+X-MC-Unique: 7KYmAGGrNIq1EsaTJSiqCQ-1
+X-Mimecast-MFC-AGG-ID: 7KYmAGGrNIq1EsaTJSiqCQ_1771957582
+Received: from mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.17])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mx-prod-mc-08.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 161F918002C2;
+	Tue, 24 Feb 2026 18:26:22 +0000 (UTC)
+Received: from tpad.localdomain (unknown [10.96.133.3])
+	by mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 149F61955F43;
+	Tue, 24 Feb 2026 18:26:19 +0000 (UTC)
+Received: by tpad.localdomain (Postfix, from userid 1000)
+	id E09A4402DED09; Tue, 24 Feb 2026 15:12:32 -0300 (-03)
+Date: Tue, 24 Feb 2026 15:12:32 -0300
+From: Marcelo Tosatti <mtosatti@redhat.com>
+To: Frederic Weisbecker <frederic@kernel.org>
+Cc: Vlastimil Babka <vbabka@suse.com>, Michal Hocko <mhocko@suse.com>,
+	Leonardo Bras <leobras.c@gmail.com>, linux-kernel@vger.kernel.org,
+	cgroups@vger.kernel.org, linux-mm@kvack.org,
+	Johannes Weiner <hannes@cmpxchg.org>,
 	Roman Gushchin <roman.gushchin@linux.dev>,
 	Shakeel Butt <shakeel.butt@linux.dev>,
-	Muchun Song <muchun.song@linux.dev>, linux-mm@kvack.org,
-	cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/2] mm: vmalloc: streamline vmalloc memory accounting
-Message-ID: <aZ3n9IL7P7jyxtLd@pc636>
-References: <20260220191035.3703800-1-hannes@cmpxchg.org>
- <aZxymBwx67pMn1ZP@pc636>
- <aZy2SHbXi6qdGS0a@cmpxchg.org>
+	Muchun Song <muchun.song@linux.dev>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Christoph Lameter <cl@linux.com>, Pekka Enberg <penberg@kernel.org>,
+	David Rientjes <rientjes@google.com>,
+	Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+	Vlastimil Babka <vbabka@suse.cz>,
+	Hyeonggon Yoo <42.hyeyoo@gmail.com>,
+	Leonardo Bras <leobras@redhat.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Waiman Long <longman@redhat.com>, Boqun Feng <boqun.feng@gmail.com>,
+	Frederic Weisbecker <fweisbecker@suse.de>,
+	Waiman Long <llong@redhat.com>
+Subject: Re: [PATCH 0/4] Introduce QPW for per-cpu operations
+Message-ID: <aZ3qEHzgI8Zuv7IU@tpad>
+References: <20260206143430.021026873@redhat.com>
+ <aYs6Ju2G4bm6_tl2@tiehlicka>
+ <aYxviLoWsrLqDU7o@tpad>
+ <aYywl1hdBQP2_slo@tiehlicka>
+ <aZDw6xI2izFDfuuu@WindFlash>
+ <aZL45yORfkNvS9Rs@tiehlicka>
+ <aZcr255pGT3B/eaL@tpad>
+ <3f2b985a-2fb0-4d63-9dce-8a9cad8ce464@suse.com>
+ <aZibbYH7yrDZlnJh@tpad>
+ <aZ24eAiQpo64-0Kz@pavilion.home>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <aZy2SHbXi6qdGS0a@cmpxchg.org>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <aZ24eAiQpo64-0Kz@pavilion.home>
+X-Scanned-By: MIMEDefang 3.0 on 10.30.177.17
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-0.16 / 15.00];
 	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+	DMARC_POLICY_ALLOW(-0.50)[redhat.com,quarantine];
 	MID_RHS_NOT_FQDN(0.50)[];
-	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
-	R_DKIM_ALLOW(-0.20)[gmail.com:s=20230601];
 	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64:c];
+	R_DKIM_ALLOW(-0.20)[redhat.com:s=mimecast20190719];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-14225-lists,cgroups=lfdr.de];
-	FREEMAIL_CC(0.00)[gmail.com,linux-foundation.org,suse.com,linux.dev,kvack.org,vger.kernel.org];
-	FROM_HAS_DN(0.00)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-14227-lists,cgroups=lfdr.de];
+	RCPT_COUNT_TWELVE(0.00)[24];
 	RCVD_TLS_LAST(0.00)[];
-	TO_DN_SOME(0.00)[];
 	MIME_TRACE(0.00)[0:+];
-	DKIM_TRACE(0.00)[gmail.com:+];
-	MISSING_XM_UA(0.00)[];
-	FREEMAIL_FROM(0.00)[gmail.com];
-	RCVD_COUNT_FIVE(0.00)[5];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[urezki@gmail.com,cgroups@vger.kernel.org];
+	FREEMAIL_CC(0.00)[suse.com,gmail.com,vger.kernel.org,kvack.org,cmpxchg.org,linux.dev,linux-foundation.org,linux.com,kernel.org,google.com,lge.com,suse.cz,redhat.com,linutronix.de,suse.de];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	NEURAL_HAM(-0.00)[-0.999];
-	TAGGED_RCPT(0.00)[cgroups];
-	RCPT_COUNT_SEVEN(0.00)[11];
+	TO_DN_SOME(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[mtosatti@redhat.com,cgroups@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	DKIM_TRACE(0.00)[redhat.com:+];
+	NEURAL_HAM(-0.00)[-0.992];
 	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: E454218B1AB
+	TAGGED_RCPT(0.00)[cgroups];
+	MISSING_XM_UA(0.00)[];
+	RCVD_COUNT_SEVEN(0.00)[7]
+X-Rspamd-Queue-Id: 247CB18B610
 X-Rspamd-Action: no action
 
-On Mon, Feb 23, 2026 at 03:19:20PM -0500, Johannes Weiner wrote:
-> On Mon, Feb 23, 2026 at 04:30:32PM +0100, Uladzislau Rezki wrote:
-> > On Fri, Feb 20, 2026 at 02:10:34PM -0500, Johannes Weiner wrote:
-> > > @@ -3655,6 +3649,8 @@ vm_area_alloc_pages(gfp_t gfp, int nid,
-> > >  			continue;
-> > >  		}
-> > >  
-> > > +		mod_node_page_state(page, NR_VMALLOC, 1 << large_order);
-> > > +
-> > >  		split_page(page, large_order);
-> > >  		for (i = 0; i < (1U << large_order); i++)
-> > >  			pages[nr_allocated + i] = page + i;
-> > > @@ -3675,6 +3671,7 @@ vm_area_alloc_pages(gfp_t gfp, int nid,
-> > >  	if (!order) {
-> > >  		while (nr_allocated < nr_pages) {
-> > >  			unsigned int nr, nr_pages_request;
-> > > +			int i;
-> > >  
-> > >  			/*
-> > >  			 * A maximum allowed request is hard-coded and is 100
-> > > @@ -3698,6 +3695,9 @@ vm_area_alloc_pages(gfp_t gfp, int nid,
-> > >  							nr_pages_request,
-> > >  							pages + nr_allocated);
-> > >  
-> > > +			for (i = nr_allocated; i < nr_allocated + nr; i++)
-> > > +				inc_node_page_state(pages[i], NR_VMALLOC);
-> > > +
-> > >  			nr_allocated += nr;
-> > >  
-> > >  			/*
-> > > @@ -3722,6 +3722,8 @@ vm_area_alloc_pages(gfp_t gfp, int nid,
-> > >  		if (unlikely(!page))
-> > >  			break;
-> > >  
-> > > +		mod_node_page_state(page, NR_VMALLOC, 1 << order);
-> > > +
-> > >  		/*
-> > Can we move *_node_page_stat() to the end of the vm_area_alloc_pages()?
+On Tue, Feb 24, 2026 at 03:40:56PM +0100, Frederic Weisbecker wrote:
+> Le Fri, Feb 20, 2026 at 02:35:41PM -0300, Marcelo Tosatti a écrit :
 > > 
-> > Or mod_node_page_state in first place should be invoked on high-order
-> > page before split(to avoid of looping over small pages afterword)?
+> > I am not sure its safe to assume that. Ask Gemini about isolcpus use
+> 
+> Erm... ok fine let's see that :-)
+> 
+> > cases and:
 > > 
-> > I mean it would be good to place to the one solid place. If it is possible
-> > of course.
+> > 1. High-Frequency Trading (HFT)
+> > In the world of HFT, microseconds are the difference between profit and loss. 
+> > Traders use isolcpus to pin their execution engines to specific cores.
+> > 
+> > The Goal: Eliminate "jitter" caused by the OS moving other processes onto the same core.
+> > 
+> > The Benefit: Guaranteed execution time and ultra-low latency.
 > 
-> Note that the top one in the fast path IS called before the
-> split. We're accounting in the same step size as the page allocator
-> can give us.
+> That would be full isolation (aka nohz_full) because the goal here is to beat
+> the competitors. As such the software latency must tend toward hardware latency.
 > 
-> In the fallback paths (bulk allocator, and one-by-one loop), the issue
-> is that the individual pages could be coming from different nodes, so
-> they need to bump different counters. One possible solution would be
-> to remember the last node and accumulate until it differs, then flush:
+> I wouldn't expect any syscall here but a full userspace stack with DPDK for
+> example.
 > 
-> fallback_loop() {
-> 	page = alloc_pages();
-> 	nid = page_to_nid(page);
-> 	if (nid != last_nid) {
-> 		if (node_count) {
-> 			mod_node_page_state(...);
-> 			node_count = 0;
-> 		}
-> 		last_nid = nid;
-> 	}
-> }
+> I put that in the 5g uRLLC (or similar low latency networking) usecase family.
 > 
-> if (node_count)
-> 	mod_node_page_state(...);
+> > 
+> > 2. Real-Time Audio & Video Processing
+> > If you are running a Digital Audio Workstation (DAW) or a live video encoding rig, a tiny "hiccup" in CPU availability results in an audible pop or a dropped frame.
+> > 
+> > The Goal: Reserve cores specifically for the Digital Signal Processor (DSP) or the encoder.
+> > 
+> > The Benefit: Smooth, glitch-free media streams even when the rest of the
+> > system is busy.
 > 
-> But it IS the slow path, and these are fairly cheap per-cpu
-> counters. Especially compared to the cost of calling into the
-> allocator. So I'm not sure it's worth it... What do you think?
->
-I see. I agree it is easier to keep original solution. I see that
-Andrew took it, but just in case:
+> Here I expect weaker isolation requirements with syscalls involved. Scheduler
+> domain isolation alone (aka isolcpus=[domain]) would fit.
+> 
+> > 
+> > 3. Network Function Virtualization (NFV) & DPDK
+> > For high-speed networking (like 10Gbps+ traffic), the Data Plane Development Kit (DPDK) uses "poll mode" drivers. These drivers constantly loop to check for new packets rather than waiting for interrupts.
+> > 
+> > The Goal: Isolate cores so they can run at 100% utilization just checking for network packets.
+> > 
+> > The Benefit: Maximum throughput and zero packet loss in high-traffic
+> > environments.
+> 
+> I put that in the 5g uRLLC usecase family as well (again or similar low latency networking).
+> 
+> > 4. Gaming & Simulation
+> > Competitive gamers or flight simulator enthusiasts sometimes isolate a few cores to handle the game's main thread, while leaving the rest of the OS (Discord, Chrome, etc.) to the remaining cores.
+> > 
+> > The Goal: Prevent background Windows/Linux tasks from stealing cycles from the game engine.
+> > 
+> > The Benefit: More consistent 1% low FPS and reduced input lag.
+> 
+> That's domain isolation because frequent syscalls are unavoidable.
+> 
+> > 
+> > 5. Deterministic Scientific Computing
+> > If you're running a simulation that needs to take exactly the same amount of time every time it runs (for benchmarking or safety-critical testing), you can't have the OS interference messing with your metrics.
+> > 
+> > The Goal: Remove the variability of the Linux scheduler.
+> > 
+> > The Benefit: Highly repeatable, deterministic results.
+> 
+> I guess here there are plenty of flavours. The only one I know of is this
+> power simulator that relies of nohz_full. Not sure about the implementation
+> relying on syscalls or not:
+> 
+> https://dpsim.fein-aachen.org/docs/getting-started/real-time/
+> 
+> > For example, AF_XDP bypass uses system calls (and wants isolcpus):
+> > 
+> > https://www.quantvps.com/blog/kernel-bypass-in-hft?srsltid=AfmBOoryeSxuuZjzTJIC9O-Ag8x4gSwjs-V4Xukm2wQpGmwDJ6t4szuE
+> 
+> That's HFT again and they state that they rely on polling userspace drivers so
+> I don't expect syscalls.
+> 
+> But anyway here is a summary I would propose:
+> 
+> * Domain isolation alone is a good fit when some glitches must be avoided but
+>   kernel work is still necessary: non critical high volume networking or data
+>   capture, video games, etc...
+> 
+> * Full isolation is a better fit for ultra low latency requirement, in this case
+>   the kernel is only good for preparatory work and interface layout between
+>   userspace and the hardware (VFIO).
+> 
+>   I've observed 3 patterns so far:
+> 
+>     - Low latency networking with DPDK, eg: 5g uRLLC (should be syscalls free)
+>     - Scientific simulation (not sure about syscalls)
+>     - HPC computation such as LLM (not sure about syscalls).
+> 
+> Is flushing work only relevant for full isolation? If so I can't say which is
+> the best solution between flushing pending work on syscall exit and doing that
+> remotely. But if it's relevant also for domain isolation, then the remote
+> work is better because it doesn't add unecessary work on syscalls which still
+> happen in this mode.
 
-Reviewed-by: Uladzislau Rezki (Sony) <urezki@gmail.com>
+Yes, see my last email about HPC.
 
---
-Uladzislau Rezki
+> At least doing things remotely should be free of any surprising side-effects.
+> But we must determine how to properly activate the isolated mode (switch to
+> spinlocks) depending on the isolation mode which can be not only defined
+> on boot but also on runtime (at least for domain isolation through cpusets
+> but it will be the case as well with nohz_full in the future).
+> 
+> Thanks.
+
+If you boot with remote spinlocks (qpw=1) today, then you can't change
+that.
+
+You could, because its a static key:
+
+#define qpw_lock(lock, cpu)                                                             \
+        do {                                                                            \
+                if (static_branch_maybe(CONFIG_QPW_DEFAULT, &qpw_sl))                   \
+                        spin_lock(per_cpu_ptr(lock.sl, cpu));                           \
+                else                                                                    \
+                        local_lock(lock.ll);                                            \
+        } while (0)
+
+But haven't thought about switching on runtime (and don't see why it
+would be necessary to switch on runtime). It is independent of 
+switching CPUs to/from being isolated (or nohz_full).
+
+OK will address the remaining comments and repost.
+
 
