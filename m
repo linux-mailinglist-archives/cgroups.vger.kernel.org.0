@@ -1,270 +1,186 @@
-Return-Path: <cgroups+bounces-14227-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-14230-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id +J9rH+PtnWncSgQAu9opvQ
-	(envelope-from <cgroups+bounces-14227-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Tue, 24 Feb 2026 19:28:51 +0100
+	id wGQkIMrynWk2SwQAu9opvQ
+	(envelope-from <cgroups+bounces-14230-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Tue, 24 Feb 2026 19:49:46 +0100
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 247CB18B610
-	for <lists+cgroups@lfdr.de>; Tue, 24 Feb 2026 19:28:51 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id E92D618B8FC
+	for <lists+cgroups@lfdr.de>; Tue, 24 Feb 2026 19:49:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 121483089B8A
-	for <lists+cgroups@lfdr.de>; Tue, 24 Feb 2026 18:27:22 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id D141D304E72F
+	for <lists+cgroups@lfdr.de>; Tue, 24 Feb 2026 18:49:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA7D33AA1B0;
-	Tue, 24 Feb 2026 18:26:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E37312D8DB0;
+	Tue, 24 Feb 2026 18:49:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="E5+4dnoh"
+	dkim=pass (2048-bit key) header.d=gourry.net header.i=@gourry.net header.b="icVbHHVB"
 X-Original-To: cgroups@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qk1-f169.google.com (mail-qk1-f169.google.com [209.85.222.169])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8C7EE3A9DB9
-	for <cgroups@vger.kernel.org>; Tue, 24 Feb 2026 18:26:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F31723D7E3
+	for <cgroups@vger.kernel.org>; Tue, 24 Feb 2026 18:49:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1771957594; cv=none; b=DwmA3PP0CUxEOMmxMxqL1Cd6rNmc9+fzLTZIy/3WRED0p1ijtQtcikVzWEMZ431yBOaLXOIXwutTqUbcabHeGpNOxd6haOq0wvYFM9FCimvFFCT4ltm94uoTOtngHC1rDLqcqhzheEWIarPWrpWH7VEqyv19e+qJzZpiLthzAtY=
+	t=1771958966; cv=none; b=TcPqU4+a5bBhSmMXS8AD4vbxT3dME77Xao6UfO1qHdqCORlz5T8eTL6D1hjWzCZfKIi1FgeKYj3itS2Q7mCgpKYt1v5ungVS7geQBhF8Be3AeCuFXN8fxTQmSqj1eZRSNCkH9sfJ2bK6hyC7/ygr8c7DWAmmv4fzpmZNByBHKqY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1771957594; c=relaxed/simple;
-	bh=tZ6lBQWuYTfqUbN2qwwVjecInGeYkTto8OO+tVC6hLM=;
+	s=arc-20240116; t=1771958966; c=relaxed/simple;
+	bh=k+k/ky5K4U9YDjJn6omM+gNVT1kvEpYyJXBxCe7iuvY=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=sDb6QH0lMqTWLeiVZ+rdlQuz/0NNRAIaVajUBfJdfHlRi9PK6tNIUoRhqQKzSoQrmn+B6qV1SJnFcXreSR6GN1vN9edV0hc6H1eVJIMy75pGyQxcZNYM4jB5qgenDQFkJHL9cUTwtekq8cx9xl+I/V+LJBGh5v2qB8uAOMKT990=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=E5+4dnoh; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1771957590;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Kj/fGA5yp0dGoSw6F29+YuThvBFpON14H3YrN8gK7+w=;
-	b=E5+4dnohZPnezFlTJF/iX90se25eI1lTsOc2NLaIkrMUWO0xsZGr+TdKzUunW2/EIKXcLq
-	mO79cV8XUwZBtdheHXn8na/FNx+QuN/9qDX+TlPsaN1VuxTbg+Qug5rbzgW+e+FTdB1an3
-	zoyv/+WeDhnzi7NfJot9Qklvi8p+D6g=
-Received: from mx-prod-mc-08.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-35-165-154-97.us-west-2.compute.amazonaws.com [35.165.154.97]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-150-7KYmAGGrNIq1EsaTJSiqCQ-1; Tue,
- 24 Feb 2026 13:26:26 -0500
-X-MC-Unique: 7KYmAGGrNIq1EsaTJSiqCQ-1
-X-Mimecast-MFC-AGG-ID: 7KYmAGGrNIq1EsaTJSiqCQ_1771957582
-Received: from mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.17])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mx-prod-mc-08.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 161F918002C2;
-	Tue, 24 Feb 2026 18:26:22 +0000 (UTC)
-Received: from tpad.localdomain (unknown [10.96.133.3])
-	by mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 149F61955F43;
-	Tue, 24 Feb 2026 18:26:19 +0000 (UTC)
-Received: by tpad.localdomain (Postfix, from userid 1000)
-	id E09A4402DED09; Tue, 24 Feb 2026 15:12:32 -0300 (-03)
-Date: Tue, 24 Feb 2026 15:12:32 -0300
-From: Marcelo Tosatti <mtosatti@redhat.com>
-To: Frederic Weisbecker <frederic@kernel.org>
-Cc: Vlastimil Babka <vbabka@suse.com>, Michal Hocko <mhocko@suse.com>,
-	Leonardo Bras <leobras.c@gmail.com>, linux-kernel@vger.kernel.org,
-	cgroups@vger.kernel.org, linux-mm@kvack.org,
-	Johannes Weiner <hannes@cmpxchg.org>,
+	 Content-Type:Content-Disposition:In-Reply-To; b=OPSzMx9rPRP9JNeWkmVWYbIRF6oPs2XYYafuFQZ70olBkTbnMxILVG7h25WffwWcCEglMNKroufhBh2fGqADHizWRpNuhCEzciir/h7FSnEd8JUu9bCkhWerhkWKFl8UUSiILxMbg/mOmBGsm79mUp24X5LBLi93JWjBoTypMLc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gourry.net; spf=pass smtp.mailfrom=gourry.net; dkim=pass (2048-bit key) header.d=gourry.net header.i=@gourry.net header.b=icVbHHVB; arc=none smtp.client-ip=209.85.222.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gourry.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gourry.net
+Received: by mail-qk1-f169.google.com with SMTP id af79cd13be357-8cb5c9ba82bso936890385a.2
+        for <cgroups@vger.kernel.org>; Tue, 24 Feb 2026 10:49:25 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gourry.net; s=google; t=1771958964; x=1772563764; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=jVC2sVLMOxnBh5X5m0M42esgcaqLVi1+yt0xbhnz3dk=;
+        b=icVbHHVBEEJhfl/ty9MkmsXGatTK5dKtkU3CSyFAlyN7zwofX0D1+9E4XkbPiYNTaQ
+         ABo9gLMM1jZHBosM+kZsNsqIF3pw+rGMmgIrr6uWAHUSbr5vU3HZoBAkiazVWW8YOJMk
+         2rPCl5Qt6dsSS0BP6+/Rnt04+2MZweqXaS8HBX1o3aL18J9Dr8IjnwT3d2SUMXmQ4c7Y
+         1QrbRPy6EzyiKcelVwAP5JYc20lagSMPQQQA01Vxnql9X9ZN/dVCPVzO667NtWiilgcP
+         afu0Sn1Z05Z4Re3X/sitNrXClncyBASH2584Ij5NJQev4Vu8/BM/tlZtK+JTYjC2nXlF
+         q8Zg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1771958964; x=1772563764;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=jVC2sVLMOxnBh5X5m0M42esgcaqLVi1+yt0xbhnz3dk=;
+        b=u08YPwS7AjEAE7WWtYGJc31v1+0+ElKRqqYRw4mfwd1XeJIUoAUo7SpeW9QASJXL5l
+         9wy1/WtyUb6cFiUlPMN2t3jtHZU3zEz0cUkMh3Z1/Xp+FzzTjP0N0Ls80TRXnmMEYo26
+         j1nW6A5IxnF30/JSOGRce+mBxqf5x6P/gl+MlJ7Nj1t9GeAPnC3vCwdxX5HPrzJJx2ht
+         WXkKwoFy/AB33WtpIGBsFZdAAG5wpQaCYUMzvK8wFcyjw4LHjNco/3iVtkqIWzESqF9Q
+         C/OQBzAB4oQp1InROhqEKusiUb61VII3UmpvUBsYkKpYw8lszNKWj40SuDBo6i54Nql0
+         zcRg==
+X-Forwarded-Encrypted: i=1; AJvYcCULYjDXC2c1djiFeMBRlr64n2bA7RF/8y2gpup2RGLQC+6QIh+KSa+1aRaU5JNEcYDLJlMWqdbO@vger.kernel.org
+X-Gm-Message-State: AOJu0YyHUOQZRLEGB3JLos4JoF+YfG/N0k3cuhTkPM72O//lUl4ALk3f
+	ETz/BUGrIL1bIqk6AxFygfY98srPI7nEDhzjsTfubyAoTx9Xo3h0j5sc9yrKOclsnnA=
+X-Gm-Gg: AZuq6aK1g7VYlWLLEpnwqAGAFwXzqqMVgpeNmbhd/rXSUZVYXBOMzBHCPkj/BVY8g9L
+	YqPfrf7h/YoD1wpTu06c1BpyJi8YGY+jk+ym9+68RtNAQiTFbHZG6ei9aZzHiooFiH4sRmWKriw
+	1gMQi0yIu2cxlXcLnnCOY0M/lvy7pjNhWrbV6ZAoETgtsEAFlmp0q6XFfr6ENGDyO71d8p7/xQR
+	MY2bR/vKX7mVSVnJqlGckCJ8kq1wzSVaCoCZHSefsrm03t+lYF8zZ1INfi03AKMD5DP2anjbH9s
+	Em02dG53KTHcG2EW4sImvN1AtD6/BKXGBWZ8W8364t13AvPPQ6oQnh2EgqWj541ey20mJKtmCm1
+	Ui3GrlrnkTOfxEd7mKMsBLVyyuw1QvFhjTsYfrrui47BcMfERlFzAe5TxcbJMFYjlvEK6RWHxxd
+	P77uC9zBFvr3FYk0lOZHSx75+st/vraWkHv4gbxZMHYk03cT5hjxUVOAousMA/Fpc18FAPRxpHz
+	VUVoWEw5A==
+X-Received: by 2002:a05:620a:280c:b0:8cb:5442:d537 with SMTP id af79cd13be357-8cb8c9e005dmr1650957585a.12.1771958964121;
+        Tue, 24 Feb 2026 10:49:24 -0800 (PST)
+Received: from gourry-fedora-PF4VCD3F (pool-96-255-20-138.washdc.ftas.verizon.net. [96.255.20.138])
+        by smtp.gmail.com with ESMTPSA id af79cd13be357-8cb8d122906sm1023135085a.51.2026.02.24.10.49.23
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 24 Feb 2026 10:49:23 -0800 (PST)
+Date: Tue, 24 Feb 2026 13:49:21 -0500
+From: Gregory Price <gourry@gourry.net>
+To: Joshua Hahn <joshua.hahnjy@gmail.com>
+Cc: Michal Hocko <mhocko@suse.com>, Johannes Weiner <hannes@cmpxchg.org>,
+	Kaiyang Zhao <kaiyang2@cs.cmu.edu>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	David Hildenbrand <david@kernel.org>,
+	Lorenzo Stoakes <lorenzo.stoakes@oracle.com>,
+	"Liam R . Howlett" <Liam.Howlett@oracle.com>,
+	Vlastimil Babka <vbabka@kernel.org>,
+	Mike Rapoport <rppt@kernel.org>,
+	Suren Baghdasaryan <surenb@google.com>,
 	Roman Gushchin <roman.gushchin@linux.dev>,
 	Shakeel Butt <shakeel.butt@linux.dev>,
 	Muchun Song <muchun.song@linux.dev>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Christoph Lameter <cl@linux.com>, Pekka Enberg <penberg@kernel.org>,
-	David Rientjes <rientjes@google.com>,
-	Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-	Vlastimil Babka <vbabka@suse.cz>,
-	Hyeonggon Yoo <42.hyeyoo@gmail.com>,
-	Leonardo Bras <leobras@redhat.com>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Waiman Long <longman@redhat.com>, Boqun Feng <boqun.feng@gmail.com>,
-	Frederic Weisbecker <fweisbecker@suse.de>,
-	Waiman Long <llong@redhat.com>
-Subject: Re: [PATCH 0/4] Introduce QPW for per-cpu operations
-Message-ID: <aZ3qEHzgI8Zuv7IU@tpad>
-References: <20260206143430.021026873@redhat.com>
- <aYs6Ju2G4bm6_tl2@tiehlicka>
- <aYxviLoWsrLqDU7o@tpad>
- <aYywl1hdBQP2_slo@tiehlicka>
- <aZDw6xI2izFDfuuu@WindFlash>
- <aZL45yORfkNvS9Rs@tiehlicka>
- <aZcr255pGT3B/eaL@tpad>
- <3f2b985a-2fb0-4d63-9dce-8a9cad8ce464@suse.com>
- <aZibbYH7yrDZlnJh@tpad>
- <aZ24eAiQpo64-0Kz@pavilion.home>
+	Waiman Long <longman@redhat.com>,
+	Chen Ridong <chenridong@huaweicloud.com>, Tejun Heo <tj@kernel.org>,
+	Michal Koutny <mkoutny@suse.com>,
+	Axel Rasmussen <axelrasmussen@google.com>,
+	Yuanchu Xie <yuanchu@google.com>, Wei Xu <weixugc@google.com>,
+	Qi Zheng <zhengqi.arch@bytedance.com>, linux-mm@kvack.org,
+	cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+	kernel-team@meta.com
+Subject: Re: [RFC PATCH 0/6] mm/memcontrol: Make memcg limits tier-aware
+Message-ID: <aZ3ysV-k1UisnPRG@gourry-fedora-PF4VCD3F>
+References: <aZ2LC0KPF0xsAwAL@tiehlicka>
+ <20260224161357.2622501-1-joshua.hahnjy@gmail.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <aZ24eAiQpo64-0Kz@pavilion.home>
-X-Scanned-By: MIMEDefang 3.0 on 10.30.177.17
+In-Reply-To: <20260224161357.2622501-1-joshua.hahnjy@gmail.com>
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-0.16 / 15.00];
+X-Spamd-Result: default: False [0.34 / 15.00];
 	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[redhat.com,quarantine];
 	MID_RHS_NOT_FQDN(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64:c];
-	R_DKIM_ALLOW(-0.20)[redhat.com:s=mimecast20190719];
+	R_DKIM_ALLOW(-0.20)[gourry.net:s=google];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-14227-lists,cgroups=lfdr.de];
-	RCPT_COUNT_TWELVE(0.00)[24];
 	RCVD_TLS_LAST(0.00)[];
+	FREEMAIL_TO(0.00)[gmail.com];
+	TAGGED_FROM(0.00)[bounces-14230-lists,cgroups=lfdr.de];
+	RCPT_COUNT_TWELVE(0.00)[26];
+	DMARC_NA(0.00)[gourry.net];
 	MIME_TRACE(0.00)[0:+];
-	FREEMAIL_CC(0.00)[suse.com,gmail.com,vger.kernel.org,kvack.org,cmpxchg.org,linux.dev,linux-foundation.org,linux.com,kernel.org,google.com,lge.com,suse.cz,redhat.com,linutronix.de,suse.de];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	TO_DN_SOME(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[mtosatti@redhat.com,cgroups@vger.kernel.org];
 	FROM_HAS_DN(0.00)[];
-	DKIM_TRACE(0.00)[redhat.com:+];
-	NEURAL_HAM(-0.00)[-0.992];
-	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
-	TAGGED_RCPT(0.00)[cgroups];
 	MISSING_XM_UA(0.00)[];
-	RCVD_COUNT_SEVEN(0.00)[7]
-X-Rspamd-Queue-Id: 247CB18B610
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[5];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[gourry@gourry.net,cgroups@vger.kernel.org];
+	DKIM_TRACE(0.00)[gourry.net:+];
+	NEURAL_HAM(-0.00)[-1.000];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	TAGGED_RCPT(0.00)[cgroups];
+	TO_DN_SOME(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,gourry.net:dkim]
+X-Rspamd-Queue-Id: E92D618B8FC
 X-Rspamd-Action: no action
 
-On Tue, Feb 24, 2026 at 03:40:56PM +0100, Frederic Weisbecker wrote:
-> Le Fri, Feb 20, 2026 at 02:35:41PM -0300, Marcelo Tosatti a écrit :
-> > 
-> > I am not sure its safe to assume that. Ask Gemini about isolcpus use
-> 
-> Erm... ok fine let's see that :-)
-> 
-> > cases and:
-> > 
-> > 1. High-Frequency Trading (HFT)
-> > In the world of HFT, microseconds are the difference between profit and loss. 
-> > Traders use isolcpus to pin their execution engines to specific cores.
-> > 
-> > The Goal: Eliminate "jitter" caused by the OS moving other processes onto the same core.
-> > 
-> > The Benefit: Guaranteed execution time and ultra-low latency.
-> 
-> That would be full isolation (aka nohz_full) because the goal here is to beat
-> the competitors. As such the software latency must tend toward hardware latency.
-> 
-> I wouldn't expect any syscall here but a full userspace stack with DPDK for
-> example.
-> 
-> I put that in the 5g uRLLC (or similar low latency networking) usecase family.
-> 
-> > 
-> > 2. Real-Time Audio & Video Processing
-> > If you are running a Digital Audio Workstation (DAW) or a live video encoding rig, a tiny "hiccup" in CPU availability results in an audible pop or a dropped frame.
-> > 
-> > The Goal: Reserve cores specifically for the Digital Signal Processor (DSP) or the encoder.
-> > 
-> > The Benefit: Smooth, glitch-free media streams even when the rest of the
-> > system is busy.
-> 
-> Here I expect weaker isolation requirements with syscalls involved. Scheduler
-> domain isolation alone (aka isolcpus=[domain]) would fit.
-> 
-> > 
-> > 3. Network Function Virtualization (NFV) & DPDK
-> > For high-speed networking (like 10Gbps+ traffic), the Data Plane Development Kit (DPDK) uses "poll mode" drivers. These drivers constantly loop to check for new packets rather than waiting for interrupts.
-> > 
-> > The Goal: Isolate cores so they can run at 100% utilization just checking for network packets.
-> > 
-> > The Benefit: Maximum throughput and zero packet loss in high-traffic
-> > environments.
-> 
-> I put that in the 5g uRLLC usecase family as well (again or similar low latency networking).
-> 
-> > 4. Gaming & Simulation
-> > Competitive gamers or flight simulator enthusiasts sometimes isolate a few cores to handle the game's main thread, while leaving the rest of the OS (Discord, Chrome, etc.) to the remaining cores.
-> > 
-> > The Goal: Prevent background Windows/Linux tasks from stealing cycles from the game engine.
-> > 
-> > The Benefit: More consistent 1% low FPS and reduced input lag.
-> 
-> That's domain isolation because frequent syscalls are unavoidable.
-> 
-> > 
-> > 5. Deterministic Scientific Computing
-> > If you're running a simulation that needs to take exactly the same amount of time every time it runs (for benchmarking or safety-critical testing), you can't have the OS interference messing with your metrics.
-> > 
-> > The Goal: Remove the variability of the Linux scheduler.
-> > 
-> > The Benefit: Highly repeatable, deterministic results.
-> 
-> I guess here there are plenty of flavours. The only one I know of is this
-> power simulator that relies of nohz_full. Not sure about the implementation
-> relying on syscalls or not:
-> 
-> https://dpsim.fein-aachen.org/docs/getting-started/real-time/
-> 
-> > For example, AF_XDP bypass uses system calls (and wants isolcpus):
-> > 
-> > https://www.quantvps.com/blog/kernel-bypass-in-hft?srsltid=AfmBOoryeSxuuZjzTJIC9O-Ag8x4gSwjs-V4Xukm2wQpGmwDJ6t4szuE
-> 
-> That's HFT again and they state that they rely on polling userspace drivers so
-> I don't expect syscalls.
-> 
-> But anyway here is a summary I would propose:
-> 
-> * Domain isolation alone is a good fit when some glitches must be avoided but
->   kernel work is still necessary: non critical high volume networking or data
->   capture, video games, etc...
-> 
-> * Full isolation is a better fit for ultra low latency requirement, in this case
->   the kernel is only good for preparatory work and interface layout between
->   userspace and the hardware (VFIO).
-> 
->   I've observed 3 patterns so far:
-> 
->     - Low latency networking with DPDK, eg: 5g uRLLC (should be syscalls free)
->     - Scientific simulation (not sure about syscalls)
->     - HPC computation such as LLM (not sure about syscalls).
-> 
-> Is flushing work only relevant for full isolation? If so I can't say which is
-> the best solution between flushing pending work on syscall exit and doing that
-> remotely. But if it's relevant also for domain isolation, then the remote
-> work is better because it doesn't add unecessary work on syscalls which still
-> happen in this mode.
+On Tue, Feb 24, 2026 at 08:13:56AM -0800, Joshua Hahn wrote:
+> ... snip ...
 
-Yes, see my last email about HPC.
+Just injecting a few points here
+(disclosure: I have been in the development loop for this feature)
 
-> At least doing things remotely should be free of any surprising side-effects.
-> But we must determine how to properly activate the isolated mode (switch to
-> spinlocks) depending on the isolation mode which can be not only defined
-> on boot but also on runtime (at least for domain isolation through cpusets
-> but it will be the case as well with nohz_full in the future).
 > 
-> Thanks.
+> > Otherwise promotions would make sure to that we have the most active
+> > memory in the top tier.
+> 
 
-If you boot with remote spinlocks (qpw=1) today, then you can't change
-that.
+Yes / No.  This makes the assumption that you always want this.
 
-You could, because its a static key:
+Barring a minimum Quality of Service mechanism (as Joshua explains)
+this reduces the usefulness of a secondary tier of memory.
 
-#define qpw_lock(lock, cpu)                                                             \
-        do {                                                                            \
-                if (static_branch_maybe(CONFIG_QPW_DEFAULT, &qpw_sl))                   \
-                        spin_lock(per_cpu_ptr(lock.sl, cpu));                           \
-                else                                                                    \
-                        local_lock(lock.ll);                                            \
-        } while (0)
+Services will just prefer not to be deployed to these kinds of
+machines because the performance variance is too high.
 
-But haven't thought about switching on runtime (and don't see why it
-would be necessary to switch on runtime). It is independent of 
-switching CPUs to/from being isolated (or nohz_full).
+> 
+> > Is this typical in real life configurations?
+> 
+> I would say so. I think that the two examples above are realistic
+> scenarios that cloud providers and hyperscalers might face on tiered systems.
+> 
 
-OK will address the remaining comments and repost.
+The answer is unequivocally yes.
 
+Lacking tier-awareness is actually a huge blocker for deploying mixed
+workloads on large, dense memory systems with multiple tiers (2+).
+
+Technically we're already at 4-ish tiers: DDR, CXL, ZSWAP, SWAP.
+
+We have zswap/swap controls in cgroups already, we just lack that same
+control for coherent memory tiers.  This tries to use the existing nobs
+(max/high/low/min) to do what they already do - just proportionally.
+
+~Gregory
 
