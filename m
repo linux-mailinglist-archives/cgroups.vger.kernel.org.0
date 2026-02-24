@@ -1,120 +1,119 @@
-Return-Path: <cgroups+bounces-14198-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-14199-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id +MYfNcwInWk7MgQAu9opvQ
-	(envelope-from <cgroups+bounces-14198-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Tue, 24 Feb 2026 03:11:24 +0100
+	id uMerAXAcnWmPMwQAu9opvQ
+	(envelope-from <cgroups+bounces-14199-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Tue, 24 Feb 2026 04:35:12 +0100
 X-Original-To: lists+cgroups@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5CD52180EDE
-	for <lists+cgroups@lfdr.de>; Tue, 24 Feb 2026 03:11:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 53AC418169D
+	for <lists+cgroups@lfdr.de>; Tue, 24 Feb 2026 04:35:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 148A2304925B
-	for <lists+cgroups@lfdr.de>; Tue, 24 Feb 2026 02:11:23 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 8A1B7303AB5D
+	for <lists+cgroups@lfdr.de>; Tue, 24 Feb 2026 03:35:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 589BD25785D;
-	Tue, 24 Feb 2026 02:11:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D69F2571DD;
+	Tue, 24 Feb 2026 03:35:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="g7zs6DzT"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="AUrR+gqT"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-ej1-f45.google.com (mail-ej1-f45.google.com [209.85.218.45])
+Received: from mail-ej1-f53.google.com (mail-ej1-f53.google.com [209.85.218.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CDB6424A07C
-	for <cgroups@vger.kernel.org>; Tue, 24 Feb 2026 02:11:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.218.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B6EC31E8823
+	for <cgroups@vger.kernel.org>; Tue, 24 Feb 2026 03:35:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.218.53
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1771899082; cv=pass; b=upH9kox4o+6Ru/aC8N54Y/UD6xjteIqumXO/D3Z6i9OBMLVs2W7AO7p+4E90b2N/DGl2ZR42iYCqOdXzjbphzuLzMFcF5onGqdUXOM6f8X7b8AlHLJrr6e6jp3QIh3PaeTRR1zNlu7uhKPYmT2xaqWXqrxktoCMtvOL/AzJJZh4=
+	t=1771904107; cv=pass; b=OOl/KG38XumryTayaSG4aGzsdS4pmEb+MUYJcS34AR5zssAUuQIFac3UMcMwH5tT3KNRWOihE/Ehz+tpH+ldyB6P6E/vhX4082jRDTU6MUJlY0snxdWz6h1EQ1m3tu6CaRakhzlcEeE6DN4kdGaBOL8J3TC2M+W1gjwqZ4LQduE=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1771899082; c=relaxed/simple;
-	bh=G/sOxQ2/3tQquWg2P4Ie/65TyReHtVOMzMTfaa1ea8E=;
+	s=arc-20240116; t=1771904107; c=relaxed/simple;
+	bh=B8ofdhItcgvN4Iz40blzcPKIP5RRme/D6mzPbzVWtPc=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=d1iIekg0yO46NMEWJ3ZQfvpW49XBQfoRqh8M4WnrcGvHM9kuoQOpyDXQSHbN2KcxrVTCexNxCm/acaTTCgAeh5zXLEmKjyUPJtAp4NrYGo6axUjBTYpJG1r0RXq/d2xEDQmzIvFmjaJnfE3/roXUe8VxFfpAaQ3aDJy0A1RbRyY=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=g7zs6DzT; arc=pass smtp.client-ip=209.85.218.45
+	 To:Cc:Content-Type; b=cLXRwaaWvg7/NiPVfk507gkPBAsZ+brcPtcT2GxmUIAfxoc+AxBr6b98cxiQg3kWgiWYwP1yhuaJ3f9NBFhZmVny73VB41ydAvWRM/AXhjIGmxL/IQSUsrFrStyhtaM7MddrrTnycMpplwPhJbTHZhnixR3tsw0xExK+d3NJ9pg=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=AUrR+gqT; arc=pass smtp.client-ip=209.85.218.53
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-b8845cb5862so820149166b.3
-        for <cgroups@vger.kernel.org>; Mon, 23 Feb 2026 18:11:20 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; t=1771899079; cv=none;
+Received: by mail-ej1-f53.google.com with SMTP id a640c23a62f3a-b8871718b00so812102466b.3
+        for <cgroups@vger.kernel.org>; Mon, 23 Feb 2026 19:35:05 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; t=1771904104; cv=none;
         d=google.com; s=arc-20240605;
-        b=XUKN1DmHLn8sgvTdh+InG9F+MiUDx8fL1YN1ZDyISOb7XCqLt4CbucQIcltyjjQeVc
-         E3CKp2KdCabX4ks5ETJscv830vXrxV8kSzPnHY4dQcNAX1AgGlAT53Emw83AJb8WEeT/
-         FlpVU9Jh0YTJu5BY1/lEbFNDlvMJGlV+ow9IgFKeINzEipXMqL4idR5TkdVIo9hMnDbe
-         HaXm1HYcYsX8+1ol3u+v3Htsb51cOQIaF+crPT8rlB8KFvQGjoMNoJ6VGVk49ZmomnO7
-         Ug+49O2wtX5jTUAD4vlI2a4jvNPVTRxbZQCFWYE5RvS8uGaJHuAbiBEyPoVV5Vcl4WfY
-         gP+A==
+        b=eIO5+Q+6atv/eeAQb2oco2acAJ4SLvbC0qqjNft1jlsr9KKYGsC3Fxz0F4DRPRFx7/
+         wcPdFXvIyimoZDSDqDS05UgfH+mQCnvHEtVIHPVinOpLsxLavbeGuubbp4gk5MDLv2/c
+         w5ugbZM/DZM4yDPwJcEzzeLEJ9KBYQ1RFaMWFfL0ej6bZgxvqZkj9/kRcHkVqJ0M7QTI
+         6VhKPaeJL+cqO2nYGQjoBsE8e59DIX2LsGW2bpo699CUdxUn13sAZXNUlxcwn4rBCvQr
+         5mbV+Zs3PZkyBvmkmz9R/1M/l6eD4pFfJLSxytv/4WKYzqqp16jh9CUp2zN+yjk8JQDl
+         Rimg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:dkim-signature;
-        bh=eFA8Gu4szBvFtRfGkwR0vdAO1QkTVvSnODLMLCE2WIA=;
-        fh=fsc8L0XFLU8i4xwgYX0qQMpgAwc8MqP9OS4uNI1h3iw=;
-        b=gOCL1YJljFxBEkGwzRdZciCIUJiUR8Rzcbhgyoq34I02uVQw279xVnFeLz3nCXt1uQ
-         botEYcMcTrzENywKccLOPQfK8KA3ujABnpQl1tA2i384zh5P+y7VqPoLXCC+/qUg2NFI
-         3nGwPdiuiOx1SynVrEXnU5JmUZigh/lzDkXnDyJzh5K39FwnRJzy7kFECYzFqOjb3tKG
-         5CoN/4vuCS7tPEqtMqNFpgOzLQhWbNklJo9FSQseR/WFUkWSH6KZUPbB1X5Pc+MXeW0M
-         m1XwSeIM6402FQxN+nK1Y5yNdG8wk6HB3bqjppnFbvAx76dgv7a5c3YHJ4cLkKjAwTd/
-         HCQA==;
+        bh=pzOdDteQ7ZLurHZwTqbft5SWZRf804LGh7Y3eqQaNZU=;
+        fh=6tpJou8RSx5tzDY2V5yxaI+ENG2SslwG8i039nwhAsY=;
+        b=Dbg6M85nLwxE4uLKLCjD4mRrinOecrkx5DkVAqz6luD0TL/CfS2SDtXFIcY2hUgycU
+         x9kqq0umHNSD11S8XG4n6VydfpR2V1V1HaijZhjoVnzbPFjgjQ88v6TplSaf1pga8+OT
+         knc9QpGYn3IzNv7uzDYm9aM8EFv4U3ws2uVHl79dWYQy0oiEtTMSTek0qrKRBVAtsyze
+         FhILrmJTajci4m/fPhItSoYOa0AVYRY2TB1uTw2nCFAro6RszJW8bBXUdiv4nq/xqH1d
+         ofjAQYZ1Ke5G06FVCAWpULBxrTT0jkag7U11LOMBN41vS164aT5HfOu2lCwoUiMvsjQa
+         Q6Kg==;
         darn=vger.kernel.org
 ARC-Authentication-Results: i=1; mx.google.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1771899079; x=1772503879; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1771904104; x=1772508904; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=eFA8Gu4szBvFtRfGkwR0vdAO1QkTVvSnODLMLCE2WIA=;
-        b=g7zs6DzTsUJtwh0il7F/4WBHo9E565Rpl+uGVI2jlxJ4uNZ+HvoaT7aJXPmjOir6f3
-         YXNdAwDd46ZNo8nBTx1sp5QX81JHktcPsTx4u2kha+Do11jLKH8F5zFHt1xV5AHICBdj
-         gW2B9a+kPyGQxNTFqOnQKtOCHdiBNJetdAtm+aZiIn1klUgw1AA92VsaSDybJwKQBGpK
-         xOd/XmLBDjChZfSwLRfJbVKImVZ/nCnOAbh5W2hZuVpzxRw2Y31ON1bsed6pzS65lYAG
-         uUrZdF9jakI6pSRvlfyGqrZxenJvVOxnRN3ePaAoZHTfNXtUF2vxogqUbtpTVBjvZzVP
-         WARg==
+        bh=pzOdDteQ7ZLurHZwTqbft5SWZRf804LGh7Y3eqQaNZU=;
+        b=AUrR+gqTz1RqyYK9O1czcdDoxFGJ4Cy1XFHnkxsCOhYzECsDJFqxV3aSwTsW0Qfnv7
+         jwlWGaRIf4caKu9yzJWnnY+wqmLuMbGxOKyEpf29N86tO+9Y4lu/9O13Ee048m/nXv0m
+         OzgvjtasL9ymHs/04Mcz5gJkyr0KBYiIXEmuT2FApyjfKOA74O05xqlLK1ypr1PWYiRs
+         Y+RsW9wPRypVaNCTCYvFolRZiGToUhFJuE6UOJaXZuv2mayBR49F9/bFNqRUE6c8TraM
+         gwtxY2zBu8FUVlyj5qwxkQmCRwy93eDUjfWPz97B/QbZOcI/xMB5EQQTZQUBYi5fus6z
+         nKjg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1771899079; x=1772503879;
+        d=1e100.net; s=20230601; t=1771904104; x=1772508904;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=eFA8Gu4szBvFtRfGkwR0vdAO1QkTVvSnODLMLCE2WIA=;
-        b=GBhBMz+obMoAfYQhLboHJyZwHghOKy1hmpVktMuMpD6HUjxOjmL96U5F8alRckd5og
-         iWomTt3SBYhe0e1tM/DEjzO9f8y44hafMFaMdbvZEeGUWTzMqPQmRuJt2rp56GJ89Zkf
-         M+brbDxcBBDjTICgOhyAkVOJHhY2YNKcWuLRhSDNPoGJjIaxmfqlv9aE1FNbqn4gR66x
-         Kev/WeiMm15FBG7xWtPRca3whe9v2I62HjHNi6q4Tm6yWH/CO1YbOYru9doO6vaG44Du
-         NR4n6bh+UrQIrocpVQJbmqhgvDqpP4fLvtm6Zs2MJtDYCTq3yqhNaJN32rHty9wJdWf3
-         fY2A==
-X-Forwarded-Encrypted: i=1; AJvYcCWRap/m3G9f3FWsg+AdEBTjYLKBz9WG73xXYgXCKnucxp05dUMj1VFwt83TnKY4XD56q008iK0m@vger.kernel.org
-X-Gm-Message-State: AOJu0YwwyqCuslaCmL2kdV+swuRxoGqDNUn/x0EarXKwvoKkFaPDzGWf
-	88QIs90Aupa+yWQa2b8unhxZ6VaS3eRH0/rWeW9YpQigzr0fmd0jUrPa6Z1WJeLwNO7BPwxauUj
-	d6H4/WtZq1AODr7W1YtYmJmCVMFViiCM=
-X-Gm-Gg: AZuq6aLvcysns9zpf4MnT/NxwnUupxc5Bi0RV1PGqD+QzJFZalitZ5KeB1HOkSX7DLP
-	0zehTJlXCj2fhvdNWc8jo7Ez1oxXgXeMnS+1qk31tcWak9ctSlNFHPCXbLdL06XRvGovE68fEFI
-	S4XbGJsFYQwgIDpTu1M64AL3sFGdi1qvvJ2LNeF0NdwhcGIZvONvhCiCgPjVn/VXknyX6889eUc
-	1QaGUcN+1oNtJCZWGXsEnlUDMYUyVWLP7NYRyLIIZz/YU2y4KTs9IAjsC3LS54I4iojz1/nxW0O
-	/2bdljVy4CNdxYl1MkIJCRpkgBIB4B22b5hyJzM7
-X-Received: by 2002:a17:906:6b96:b0:b8d:bf4d:7463 with SMTP id
- a640c23a62f3a-b9081b4e964mr504856266b.31.1771899078951; Mon, 23 Feb 2026
- 18:11:18 -0800 (PST)
+        bh=pzOdDteQ7ZLurHZwTqbft5SWZRf804LGh7Y3eqQaNZU=;
+        b=mRNlxzafduBIK6BMQQlhTmRSRcTCNeoU71cx7lxkxPj/rJSBMiQA+vrnjBmPSCAy3n
+         LQPA4evO7ddnPm7ED4ITfdKzOadEJTLi0ALWPE4iK2uf/Sqnz52acWzRPM5kDJg5dwtC
+         gK8uPklZnpEdbDWBT18sjneoV2uwAtbftYLAiCTjy51g+CSsouVcLohMVslBcWiG5wMj
+         libhiW/H7aOXkH/VzoalFyp7C9URrFeYaxwWtMn8D/lusmiyB/ZBIn18u8If6fbscovR
+         UzD8XS+sytBewI8d6ZtacFfmtNzBsMws2Vzb0IuvhpEAwQgNKc/e9+nF7TSfDsRZRK6n
+         F53Q==
+X-Forwarded-Encrypted: i=1; AJvYcCV9S34jZeKr+Qgsc0Ri1b/W7qPnktSWW77O47YaUQLK5dhgyxgpDpeOzchUXNN3XmWkwlNssQ12@vger.kernel.org
+X-Gm-Message-State: AOJu0YyYuySOL1OoQVI7G/a5kvUCo2Be9UiEC6Ib8Aj4It41Im5ohYmn
+	FPGfjgnFzMNkE8fY9UX9IV9yyG94+cdkDZx8jXxPtYrQE5VD4j+SFhY2jd5GJ/OrENvqgkFQq2i
+	14SvluVs2JC1qXCwBA9w6PKFfJ7tlOd4=
+X-Gm-Gg: AZuq6aJRT1grxIOQTxNRROhLwvpI1NW2Sy54yXCI9VlaqHO6YIFqXSO753g79reje9o
+	PeiW3YuPRRxYo5IiCg6/5P1PEyfTljua4RE8agfrH3f/hcrji8bijUBRmu8Nrbezr8XSm06T54+
+	x0jRXDsN6K4wq/ockue/MTCjGA1bBDOoqKxWv6GAJ2zVnpI2zdIAnHV6efG/pZkoPPFLcQyFKEi
+	nre9xOz8JL/iQl3s7+EeAbf/ea2H5d+6WK+dBw29XLRTwYmz3U9CekKOkdZUV+aGHqfeP0c8d5M
+	EQ+RQbEj+VpIoLdmS00hnSzzL1KLm7tChIoiy10F
+X-Received: by 2002:a17:906:7311:b0:b88:7093:3ca3 with SMTP id
+ a640c23a62f3a-b9081a48372mr712577366b.23.1771904103707; Mon, 23 Feb 2026
+ 19:35:03 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20260220-swap-table-p4-v1-0-104795d19815@tencent.com> <aZyFxKGXc8J6PIij@cmpxchg.org>
-In-Reply-To: <aZyFxKGXc8J6PIij@cmpxchg.org>
+References: <20260220-swap-table-p4-v1-0-104795d19815@tencent.com> <CAKEwX=OaDKQwanaYm=Mt+mWAKjaqXPdiScF6NB=TZYx1B-Xo8w@mail.gmail.com>
+In-Reply-To: <CAKEwX=OaDKQwanaYm=Mt+mWAKjaqXPdiScF6NB=TZYx1B-Xo8w@mail.gmail.com>
 From: Kairui Song <ryncsn@gmail.com>
-Date: Tue, 24 Feb 2026 10:10:42 +0800
-X-Gm-Features: AaiRm503gqQwqplXGOPWtkC6hEz-XK9q1g7AWXt5tyf9jgc_DTnRm0pF7psYupY
-Message-ID: <CAMgjq7AyL4=cN1mQ=i56j-kOvEaZXyT-3Wu063vM5JijXcFDLg@mail.gmail.com>
+Date: Tue, 24 Feb 2026 11:34:27 +0800
+X-Gm-Features: AaiRm52VHlOYalauge877tmnh-TeDdpT4IyzWYAbnMeFhaf0i8dbmK7dBzdlJ7Q
+Message-ID: <CAMgjq7D6n0H2=di0SrMQbJ48cVeKhGeQMH_mY0y-au4OJbE2GQ@mail.gmail.com>
 Subject: Re: [PATCH RFC 00/15] mm, swap: swap table phase IV with dynamic
  ghost swapfile
-To: Johannes Weiner <hannes@cmpxchg.org>
-Cc: Kairui Song via B4 Relay <devnull+kasong.tencent.com@kernel.org>, linux-mm@kvack.org, 
-	Andrew Morton <akpm@linux-foundation.org>, David Hildenbrand <david@kernel.org>, 
-	Lorenzo Stoakes <lorenzo.stoakes@oracle.com>, Zi Yan <ziy@nvidia.com>, 
+To: Nhat Pham <nphamcs@gmail.com>
+Cc: linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>, 
+	David Hildenbrand <david@kernel.org>, Lorenzo Stoakes <lorenzo.stoakes@oracle.com>, Zi Yan <ziy@nvidia.com>, 
 	Baolin Wang <baolin.wang@linux.alibaba.com>, Barry Song <baohua@kernel.org>, 
 	Hugh Dickins <hughd@google.com>, Chris Li <chrisl@kernel.org>, 
-	Kemeng Shi <shikemeng@huaweicloud.com>, Nhat Pham <nphamcs@gmail.com>, 
-	Baoquan He <bhe@redhat.com>, Yosry Ahmed <yosry.ahmed@linux.dev>, 
+	Kemeng Shi <shikemeng@huaweicloud.com>, Baoquan He <bhe@redhat.com>, 
+	Johannes Weiner <hannes@cmpxchg.org>, Yosry Ahmed <yosry.ahmed@linux.dev>, 
 	Youngjun Park <youngjun.park@lge.com>, Chengming Zhou <chengming.zhou@linux.dev>, 
 	Roman Gushchin <roman.gushchin@linux.dev>, Shakeel Butt <shakeel.butt@linux.dev>, 
 	Muchun Song <muchun.song@linux.dev>, Qi Zheng <zhengqi.arch@bytedance.com>, 
@@ -122,8 +121,7 @@ Cc: Kairui Song via B4 Relay <devnull+kasong.tencent.com@kernel.org>, linux-mm@k
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-0.66 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
+X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=2];
 	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
 	R_DKIM_ALLOW(-0.20)[gmail.com:s=20230601];
@@ -131,15 +129,15 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-14198-lists,cgroups=lfdr.de];
-	FROM_HAS_DN(0.00)[];
 	RCVD_COUNT_THREE(0.00)[4];
-	MIME_TRACE(0.00)[0:+];
+	RCVD_TLS_LAST(0.00)[];
 	FORGED_SENDER_MAILLIST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-14199-lists,cgroups=lfdr.de];
 	FREEMAIL_FROM(0.00)[gmail.com];
-	RCPT_COUNT_TWELVE(0.00)[23];
-	FREEMAIL_CC(0.00)[kernel.org,kvack.org,linux-foundation.org,oracle.com,nvidia.com,linux.alibaba.com,google.com,huaweicloud.com,gmail.com,redhat.com,linux.dev,lge.com,bytedance.com,vger.kernel.org];
+	FREEMAIL_TO(0.00)[gmail.com];
+	RCPT_COUNT_TWELVE(0.00)[22];
+	MIME_TRACE(0.00)[0:+];
+	FROM_HAS_DN(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	TO_DN_SOME(0.00)[];
 	NEURAL_HAM(-0.00)[-1.000];
@@ -148,88 +146,205 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	DKIM_TRACE(0.00)[gmail.com:+];
 	MID_RHS_MATCH_FROMTLD(0.00)[];
 	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	TAGGED_RCPT(0.00)[cgroups,kasong.tencent.com];
+	TAGGED_RCPT(0.00)[cgroups];
 	MISSING_XM_UA(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,cmpxchg.org:email]
-X-Rspamd-Queue-Id: 5CD52180EDE
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,mail.gmail.com:mid]
+X-Rspamd-Queue-Id: 53AC418169D
 X-Rspamd-Action: no action
 
-On Tue, Feb 24, 2026 at 1:00=E2=80=AFAM Johannes Weiner <hannes@cmpxchg.org=
-> wrote:
+On Tue, Feb 24, 2026 at 2:22=E2=80=AFAM Nhat Pham <nphamcs@gmail.com> wrote=
+:
 >
-> On Fri, Feb 20, 2026 at 07:42:01AM +0800, Kairui Song via B4 Relay wrote:
-> > - 8 bytes per slot memory usage, when using only plain swap.
-> >   - And the memory usage can be reduced to 3 or only 1 byte.
-> > - 16 bytes per slot memory usage, when using ghost / virtual zswap.
-> >   - Zswap can just use ci_dyn->virtual_table to free up it's content
-> >     completely.
-> >   - And the memory usage can be reduced to 11 or 8 bytes using the same
-> >     code above.
-> >   - 24 bytes only if including reverse mapping is in use.
+> On Thu, Feb 19, 2026 at 3:42=E2=80=AFPM Kairui Song via B4 Relay
+> <devnull+kasong.tencent.com@kernel.org> wrote:
+> > Huge thanks to Chris Li for the layered swap table and ghost swapfile
+> > idea, without whom the work here can't be archived. Also, thanks to Nha=
+t
+> > for pushing and suggesting using an Xarray for the swapfile [11] for
+> > dynamic size. I was originally planning to use a dynamic cluster
+> > array, which requires a bit more adaptation, cleanup, and convention
+> > changes. But during the discussion there, I got the inspiration that
+> > Xarray can be used as the intermediate step, making this approach
+> > doable with minimal changes. Just keep using it in the future, it
+> > might not hurt too, as Xarray is only limited to ghost / virtual
+> > files, so plain swaps won't have any extra overhead for lookup or high
+> > risk of swapout allocation failure.
 >
-> That seems to tie us pretty permanently to duplicate metadata.
->
-> For every page that was written to disk through zswap, we have an
-> entry in the ghost swapfile, and an entry in the backend swapfile, no?
+> Thanks for your effort. Dynamic swap space is a very important
+> consideration anyone deploying compressed swapping backend on large
+> memory systems in general. And yeah, I think using a radix tree/xarray
+> is easiest out-of-the-box solution for this - thanks for citing me :P
 
-No, only one entry in the ghost swapfile (xswap or virtual swap file,
-anyway it's just a name). The one in the physical swap is a reverse
-mapping entry, it tells which slot in the ghost swapfile is pointing
-to the physical slot, so swapoff / migration of the physical slot can
-be done in O(1) time.
-
-So, zero duplicate of any data.
+Thanks for the discussion :)
 
 >
-> > - Minimal code review or maintenance burden. All layers are using the e=
-xact
-> >   same infrastructure for metadata / allocation / synchronization, maki=
+> I still have some confusion and concerns though. Johannes already made
+> some good points - I'll just add some thoughts from my point of view,
+> having gone back and forth with virtual swap designs:
+>
+> 1. At which layer should the metadata (swap count, swap cgroup, etc.) liv=
+e?
+>
+> I remember that in your LSFMMBPF presentation (time flies), your
+> proposal was to store a redirection entry in the top layer, and keep
+> all the metadata at the bottom (i.e backend) layer? This has problems
+> - for once, you might not know suitable backend at swap allocation
+> time, but only at writeout time. For e.g, in certain zswap setups, we
+> reject the incompressible page and cycle it back to the active LRU, so
+> we have no space in zswap layer to store swap entry metadata (note
+> that at this point the swap entry cannot be freed, because we have
+> already unmapped the page from the PTEs (and would require a page
+> table walk to undo this a la swapoff). Similarly, when we
+> exclusive-load a page from zswap, we invalidate the zswap metadata
+> struct, so we will no longer have a space for the swap entry metadata.
+>
+> The zero-filled (or same-filled) swap entry case is an even more
+> egregious example :) It really shouldn't be a state in any backend -
+> it should be a completely independent backend.
+>
+> The only design that makes sense is to store metadata in the top layer
+> as well. It's what I'm doing for my virtual swap patch series, but if
+> we're pursuing this opt-in swapfile direction we are going to
+> duplicate metadata :)
+
+It's already doing that, storing metadata at the top layer, only a
+reverse mapping in the lower layer.
+
+So none of these issues are still there. Don't worry, I do remember
+that conversation and kept that in mind :)
+
+> > And if you consider these ops are too complex to set up and maintain, w=
+e
+> > can then only allow one ghost / virtual file, make it infinitely large,
+> > and be the default one and top tier, then it achieves the identical thi=
 ng
-> >   all API and conventions consistent and easy to maintain.
-> > - Writeback, migration and compaction are easily supportable since both
-> >   reverse mapping and reallocation are prepared. We just need a
-> >   folio_realloc_swap to allocate new entries for the existing entry, an=
-d
-> >   fill the swap table with a reserve map entry.
-> > - Fast swapoff: Just read into ghost / virtual swap cache.
+> > to virtual swap space, but with much fewer LOC changed and being runtim=
+e
+> > optional.
 >
-> Can we get this for disk swap as well? ;)
+> 2. I think the "fewer LOC changed" claim here is misleading ;)
 >
-> Zswap swapoff is already fairly fast, albeit CPU intense. It's the
-> scattered IO that makes swapoff on disks so terrible.
+> A lot of the behaviors that is required in a virtual swap setup is
+> missing from this patch series. You are essentially just implementing
+> a swapfile with a dynamic allocator. You still need a bunch more logic
+> to support a proper multi-tier virtual swap setup - just on top of my
+> mind:
 
-I am talking about disk swap here, not zswap. Swapoff of a physical
-entry just loads the swap data in the virtual slot according to the
-reverse mapping entry.
+I left that part undone kind of on purpose, since it's only RFC, and
+in hope that there could be collaboration.
 
+And the dynamic allocator is only ~200 LOC now. Other parts of this
+series are not only for virtual swap. For example the unified folio
+alloc for swapin, which gives us 15% performance gain in real
+workloads, can still get merged and benifit all of us without
+involving the virtual swap or memcg part.
+
+And meanwhile, with the later patches, we don't have to re-implement
+the whole infrastructure to have a virtual table. And future plans
+like data compaction should benifit every layer naturally (same
+infra).
+
+> a. Charging: virtual swap usage not be charged the same as the
+> physical swap usage, especially when you have a zswap + disk swap
+> setup, powered by virtual swap. For once, I don't believe in sizing
+> virtual swap, but also a latency-sensitive cgroup allowe to use only
+> zswap (backed by virtual swap) is using and competing for resources
+> very differently from a cgroup whose memory is incompressible and only
+> allowed to use disk swap.
+
+Ah, now as you mention it, I see in the beginning of this series I
+added: "Swap table P4 is stable and good to merge if we are OK with a
+few memcg reparent behavior (there is also a solution if we don't)".
+The "other solution" also fits your different charge idea here. Just
+have a ci->memcg_table, then each layer can have their own charge
+design, and the shadow is still only used for refault check. That
+gives us 10 bytes per slot overhead though, but still lower than
+before and stays completely dynamic.
+
+Also, no duplicated memcg, since the upper layer and lower layer
+should be charged differently. If they don't, then just let
+ci->memcg_table stay NULL.
+
+>
+> b. Backend decision making and efficient backend transfer - as you
+> said, "folio_realloc_swap" is yet to be implemented :) And as I
+> mention earlier, we CANNOT determine swap backend before PTE unmap
+
+And we are not doing that at all. folio_alloc_swap happens before
+unmap, but realloc happens after that. VSS does the same thing.
+
+> time, because backend suitability is content-dependent. You will have
+> to add extra logic to handle this nuanced swap allocation behavior.
+>
+> c. Virtual swap freeing - it requires more work, as you have to free
+> both the virtual swap entry itself, as well as digging into the
+> physical backend layer.
+>
+> d. Swapoff - now you have to both page tables and virtual swap table.
+
+Swapoff is actually easy here... If it sees a reverse map slot, read
+into the upper layer. Else goto the old logic. Then it's done. If
+ghost swap is the layer with highest priority, then every slot is a
+reverse map slot.
+
+>
+> By the time you implement all of this, I think it will be MORE
+> complex, especially since you want to maintain BOTH the new setup and
+> the old non-virtual swap setup. You'll have to litter the codes with a
+> bunch of ifs (or ifdefs) to check - hey do we have a virtual swapfile?
+> Hey is this a virtual swap slot? Etc. Etc. everywhere, from the PTE
+> infra (zapping, page fault, etc.), to cgroup infra, to physical swap
+> architecture.
+
+It is using the same infrastructure, which means a lot of things are
+reused and unified. Isn't that a good sign? And again we don't need to
+re-implement the whole infra.
+
+And if you need multiple layers then there will be more "if"s and
+overhead however you implement it. But with unified infra, each layer
+can stay optional. And checking "si->flags & GHOST / VIRTUAL" really
+shouldn't be costly or trouble some at all, compared to a mandatory
+layer with layers of Xarray walk.
+
+And we can move, maintain the virt part in a separate place.
+
+> Comparing this line of work by itself with the vswap series, which
+> already comes with all of these included, is a bit apples-to-oranges
+> (and especially with the fact that vswap simplifies logic and removes
+> LoCs in a lot of places too, such as in swapoff. The delta LoC is only
+> 300-400 IIRC?).
+
+One thing I want to highlight here is that the old swapoff really
+shouldn't just die. That gives us no chance to clear up the swap cache
+at all (vss holding swap data in RAM is also just swap cache). Pages
+still in swap cache means minor page faults will still trigger. If the
+workload is opaque but we knows a high load of traffic is coming and
+wants to get rid of any performance bottleneck by reading all folios
+into the right place, swapoff gives the guarantee that no anon fault
+will be ever triggered, that happens a lot in multiple tenant cloud
+environments, and these workload are opaque so madvise doesn't apply.
+
+> > The size of the swapfile (si->max) is now just a number, which could be
+> > changeable at runtime if we have a proper idea how to expose that and
+> > might need some audit of a few remaining users. But right now, we can
+> > already easily have a huge swap device with no overhead, for example:
+> >
 > > free -m
 > >                total        used        free      shared  buff/cache   =
 available
 > > Mem:            1465         250         927           1         356   =
      1215
 > > Swap:       15269887           0    15269887
+> >
 >
-> I'm not a fan of this. This makes free(1) output kind of useless, and
-> very misleading. The swap space presented here has nothing to do with
-> actual swap capacity, and the actual disk swap capacity is obscured.
->
-> And how would a user choose this size? How would a distribution?
+> 3. I don't think we should expose virtual swap state to users (in this
+> case, in the swapfile summary view i.e in free). It is just confusing,
+> as it poorly reflects the physical state (be it compressed memory
+> footprint, or actual disk usage). We obviously should expose a bunch
+> of sysfs debug counters for troubleshootings, but for average users,
+> it should be all transparent.
 
-It can be dynamic (just si->max +=3D 2M on every cluster allocation
-since it's really just a number now). Can be hidden, and can have an
-infinite size. That's just an interface design that can be flexibly
-changed.
-
-For example if we just set this to a super large value and hide it, it
-will look identical to vss from userspace perspect, but stay optional
-and zero overhead for existing ZRAM or plain swap users.
-
-> The only limit is compression ratio, and you don't know this in
-> advance. This restriction seems pretty arbitrary and avoidable.
-
-Just as a reference: In practice we limit our ZRAM setup to 1/4 or 1:1
-of the total RAM to avoid the machine goto endless reclaim and never
-go OOM.
-
-But we can also have an infinite size ZSWAP now, with this series.
+Using sysfs can also be a choice, that's really just a demonstration
+interface. But I do think it's worse if the user has no idea what is
+actually going on.
 
