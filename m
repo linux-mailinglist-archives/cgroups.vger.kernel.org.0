@@ -1,382 +1,316 @@
-Return-Path: <cgroups+bounces-14222-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-14226-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id uDg1Kq/NnWnfSAQAu9opvQ
-	(envelope-from <cgroups+bounces-14222-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Tue, 24 Feb 2026 17:11:27 +0100
+	id CEC0IRfqnWlDSgQAu9opvQ
+	(envelope-from <cgroups+bounces-14226-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Tue, 24 Feb 2026 19:12:39 +0100
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 273FF189990
-	for <lists+cgroups@lfdr.de>; Tue, 24 Feb 2026 17:11:27 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id 029FC18B122
+	for <lists+cgroups@lfdr.de>; Tue, 24 Feb 2026 19:12:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id CF1133030120
-	for <lists+cgroups@lfdr.de>; Tue, 24 Feb 2026 16:09:12 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id DD10231025A8
+	for <lists+cgroups@lfdr.de>; Tue, 24 Feb 2026 18:07:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 424E539B4AD;
-	Tue, 24 Feb 2026 16:09:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C4273ACA41;
+	Tue, 24 Feb 2026 18:04:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ursulin.net header.i=@ursulin.net header.b="MGNRQgzY"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="SAAY49QM"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-wm1-f47.google.com (mail-wm1-f47.google.com [209.85.128.47])
+Received: from mail-oo1-f41.google.com (mail-oo1-f41.google.com [209.85.161.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 60ECD3783A0
-	for <cgroups@vger.kernel.org>; Tue, 24 Feb 2026 16:09:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B7B592C235E
+	for <cgroups@vger.kernel.org>; Tue, 24 Feb 2026 18:04:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1771949352; cv=none; b=VYh9ZdVzGmUihfBF9QJsSpWD3hSSkvFlOOHmBncmVOGWcUIInCm/sL6BWL+hgS3NicZJMCS5kWPsdTuXyEDJJfBtY9bf3NLDAZ+qoGHOiGl0e6BF0vDYjhIrxy1XI5oetlZyiidJJNnH9fHPrYqr5tXeaPMiFoXMIXWa6Bi8+aw=
+	t=1771956270; cv=none; b=qS/hDkUpufxHL+FI98xxLGYM+nCWWU6r7nK2PexTD1jXkYj/SZDSyVjexn+x3jmYjeuOUQPuvEXD8xIg01DrDZQMoiLwvnJHAO9yqaqgKaPvMAlvsr4QXPWuUYw7AZqnUmVuhiJgoM4iAUp3/tXgBczKqTIhJMIoPXX/XsYjmbE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1771949352; c=relaxed/simple;
-	bh=gcOVIWxso//u5STCAsSUyqcj9HENSM+7z2h4r2LOA9E=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=LqqrdJ2wqUsM8WnNiScPBcoTmpCEqBDy4jljoFC97PrXXxUf1qLmBUzMN8CT4Cg6NcxPFYY0YvvmNwMdKLvrAtAlPKL7pHEvAwAkWlUHD+mZa+rsby6rcYayIH5Wai3BD67WOevWXYBFyS97vaKvN8D+Ebhcfoq5l3lTDbQtgkc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ursulin.net; spf=pass smtp.mailfrom=ursulin.net; dkim=pass (2048-bit key) header.d=ursulin.net header.i=@ursulin.net header.b=MGNRQgzY; arc=none smtp.client-ip=209.85.128.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ursulin.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ursulin.net
-Received: by mail-wm1-f47.google.com with SMTP id 5b1f17b1804b1-4836f4cbe0bso43401835e9.3
-        for <cgroups@vger.kernel.org>; Tue, 24 Feb 2026 08:09:10 -0800 (PST)
+	s=arc-20240116; t=1771956270; c=relaxed/simple;
+	bh=5Qa3kNt4SoFeG9CBDN9YkibO4vtDu6bOOp+PptbvkWk=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=PzcTzw7NFlHhbSzyU12Ekw8S1ImUOQgE2tsFdi4ZbTGa3sSfPT79N9V7noqCTW8Bt8nar4jrrfCHkgji68irGMokNAuTSqx5w1990YPu9n0S0RtV05F8jEHsJzZSQ1G7DUWqkuKDZb2xtdkVRcnUNcmt9q2O1s5fB7k0bOvfDFw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=SAAY49QM; arc=none smtp.client-ip=209.85.161.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oo1-f41.google.com with SMTP id 006d021491bc7-66f747175d8so3564366eaf.0
+        for <cgroups@vger.kernel.org>; Tue, 24 Feb 2026 10:04:28 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ursulin.net; s=google; t=1771949349; x=1772554149; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=xEMwUsFe80O7FQT2pky6cbdem5vVaUv5gBoDleT5nkE=;
-        b=MGNRQgzYtkzjDr8D+7g8YRa0PeV/wIQ7ERCL9kKDNlzQ0xCNDBXttHrWpx1FGNbTj+
-         WVLrUFexv9Ng4cOpb1/Oq4+6eWx0AG8Kc3PfsTuE9rPR8o7cnfal9LpehmwwQJL0W5UY
-         lHDt4DaKOsxKviZwSaXp7Y8cGL1jeXuRwG42mo1oQ+qlKCp0XEUKmzNw7EQ+gne7yaSK
-         X8iFuGrckHrxnSMh8YsX+23blVnZcDgWcwrpdVjCGUbWVQ9oTS3T6m2U0aC7OhYjiY62
-         N8t+Hp1rHg03iXLdlAdZ7zFjxfaegaym6GCh88beJDmDeYgFhSpdG+Ejb+JL3eOToXzt
-         zGTw==
+        d=gmail.com; s=20230601; t=1771956268; x=1772561068; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=CS+j2puaAGsOcTjJlK5nBHRn9fQdF++IjhODBwlsIys=;
+        b=SAAY49QMmU1aCBXHPNm5AfBkelNr8K/O0Atdr8tIvit9ti6Q7kreu1tp0ri6bSZfoN
+         SawZbdXwU+H6igvoH85dVvOYCY8Trdo0I5ETRn/e9pZP8PCAgBWjoPmeyrkwCLGRarNG
+         w6fQN+vk9OLjOdLOFu6T7+VQbz4evEYOVAhC2ea2gxGWo7ZHag8b9cZkuXjXq9btHoN8
+         6qGbcOQlReIpvjfu1j4Lk4R2ZmIBRU4x+ezok8FZp31NsctpV9lAFvwKGuczizfix8hF
+         PlISUKk9m4vqRT2kNEY9DrhL7rJygt/POwFzx+XPuz0CMyubDlIQIMs0FtIjiNi3jjsR
+         /ArQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1771949349; x=1772554149;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=xEMwUsFe80O7FQT2pky6cbdem5vVaUv5gBoDleT5nkE=;
-        b=unlWyUW6XjemKcgTYnBjy7l9yp90pwvbaEIUYUlalgo+osXc3ZgCd+THVNjFB3eLfJ
-         1fnZy5gB7dmnwuyR1+LrXR1UkOAlbXcVr/3DRaGhq9T96QxheXk0W6BfW3/GApMa4QS0
-         mkELOui0r93HJRIsgq345UipU0Ktjcp0GqL9gd5eRmyU2158kabqf2g+oCnqUlhty7fV
-         10XqGBYd7ZN1xjmSYMiim98ZCEI40RHFgAIH1mnaN8Ew6eXh89zf6TlVCW7nmG1GB1LF
-         BUGfJV6b6+fGoxXiuSKVLCPkE6SYgCHvCBnoRIfOiIKQMFnto9hWYG42HBCyZGH+WFJF
-         Q4Gg==
-X-Gm-Message-State: AOJu0Yx4fVu/zcoNWEcgyG9+ME+FBwQpxHRB7IlidBLoNnMG/ehao42E
-	3f344kwepPMgjEfrP/DrzMBHDrSpOY7YB2bkV14i7/NYzSnxKoqRd14FvHylIunLeQ0=
-X-Gm-Gg: AZuq6aLOYUxzY59OEtMCGr2u5kKHVs5yF0rOEodL+JRLrlOIsR+/oRW0khgIAaU38Uv
-	VV1qmAC9ORoxDB3qK7w1yqY57Eq9S2l/wiURqfMx0N14zNpPBb2MpGekRaQEpyQPQ3PKLHAGseU
-	tahM6aB1mkQtNX4I/AoaVPKTN3rREGQZxQLPgk0NF3P0NqPTfPEAi68kwzwtn6GsJtiAC/gqBQ3
-	uOi1cQdT5RBbeF6museuJmZgl/W5aRNGfEhDxnd+em0xITJIcFWzuvrRMkJXqKyvrDJM/92RD21
-	gtxH4TxK2VG84Tu+Cx0XM1Q6nUx2Xi46/JQULTXMaWU02BROgysekSYm3Yts+nuPWj7xW31/AZI
-	iGFJ0l0130YM3/cDxObyAlDzifkM2s0kezjNtiHsciOuSYFJTEPc9liue7KVs5zavs53/lyC44h
-	EgmeZKs5zRS9qJy7XWgkgWn44Qe4KNqtHQk2EUr+yKGFyB
-X-Received: by 2002:a05:600c:c4a5:b0:483:7783:5382 with SMTP id 5b1f17b1804b1-483a95e6b64mr191933505e9.27.1771949348294;
-        Tue, 24 Feb 2026 08:09:08 -0800 (PST)
-Received: from [192.168.0.101] ([90.240.106.137])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-483bd75df90sm7650265e9.14.2026.02.24.08.09.07
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 24 Feb 2026 08:09:07 -0800 (PST)
-Message-ID: <3e820754-681c-4def-8e70-e1b88ed092e5@ursulin.net>
-Date: Tue, 24 Feb 2026 16:09:07 +0000
+        d=1e100.net; s=20230601; t=1771956268; x=1772561068;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=CS+j2puaAGsOcTjJlK5nBHRn9fQdF++IjhODBwlsIys=;
+        b=Y4zUZ3nTpprBh2+UKroT+lQ2OF5G3dhOWt49OQ8inCPqNxwQZap4Ju4+zvSrhv2NZk
+         6lhiXrWFrvkzGLYTq23E4w5JpV9ZhTt72NqEoY/Uh2RQHN5zCyg2t3LBFQQFn4W9xpc/
+         rihz1pzU4lVXuUq11mGGxAUSbtuDhDlaoehsSA4vQQLK7UKOTpPHbr9jl/vF7HhqQ51A
+         txz31x2Ps+R88L+Je6+IArXGoKhgo8MU0NPOnXHh4W/cDBH5aMF3prSW32+AAf/iSAya
+         NPzzrSjMBz5zto4BAqUoA23cQMXYfpdAbTMbFzGRwtcR7enAnveelG/wBUVV7OIxWQCa
+         ipQQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVnD+g2XazHLf9UX/BFiDrA3fNFLhbBN7lgG82aKvYGEIU2P89YBnHzVrV49kLEN+s7UBLbmduV@vger.kernel.org
+X-Gm-Message-State: AOJu0YwHUcPLNigweqIJKwsvdxt7n8fUR+8dN15v6zoL23uKBeR0kMRX
+	3hQ0nN+CtFpU70MGGlO80ysFicR7R4MNv42q7FVS3+eVdRLIQ6jdB//LXK8Csw==
+X-Gm-Gg: AZuq6aJS2butzrRtmx18qJD6zqkemLGAdBGgycOGYLiQm3/BFJ2ZwtmfFUequwd8z48
+	+WNpHlGUhMUrLwWRtW8xMcR7b1Zepeh5SYetAb0P8FhpNHQPQFWbP3awNHIWHflm4Haf8u2VwRd
+	ZnwoMQM8+vaUrbZBrLsDY6+J26xJd2vfYlGGl30G/oqi75LK5VCTIUFqtQgJSCzDIburAv7wEqp
+	m/XdpHmWaC19LmL2IG5IqyWuHNfBpRyJQaxsYKZghkQP+ZdaYhqZfNftaMGXjAkMryOosWvZxnk
+	QDhFRcMgoRA+KQdPROxFfbMK9PTQTkhR0beDkwNaZiFxaNEg+QP5m/Z7pKZw456bQ/3f6dV3mlr
+	O6dhRV3bFQFFnIiQeQsdFXpUji5T1agggESWsdxUbC+4Jjowx7Otc1ATfev+gSItMgFBF60kSFs
+	hmweePNGcoW8dO+/Xmfsj7gyWW7mKYwdpf
+X-Received: by 2002:a05:6808:1b21:b0:45c:9936:10be with SMTP id 5614622812f47-46446387894mr6818660b6e.42.1771949639421;
+        Tue, 24 Feb 2026 08:13:59 -0800 (PST)
+Received: from localhost ([2a03:2880:10ff:70::])
+        by smtp.gmail.com with ESMTPSA id 586e51a60fabf-4157d2d320fsm10358387fac.11.2026.02.24.08.13.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 24 Feb 2026 08:13:58 -0800 (PST)
+From: Joshua Hahn <joshua.hahnjy@gmail.com>
+To: Michal Hocko <mhocko@suse.com>
+Cc: Gregory Price <gourry@gourry.net>,
+	Johannes Weiner <hannes@cmpxchg.org>,
+	Kaiyang Zhao <kaiyang2@cs.cmu.edu>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	David Hildenbrand <david@kernel.org>,
+	Lorenzo Stoakes <lorenzo.stoakes@oracle.com>,
+	"Liam R . Howlett" <Liam.Howlett@oracle.com>,
+	Vlastimil Babka <vbabka@kernel.org>,
+	Mike Rapoport <rppt@kernel.org>,
+	Suren Baghdasaryan <surenb@google.com>,
+	Roman Gushchin <roman.gushchin@linux.dev>,
+	Shakeel Butt <shakeel.butt@linux.dev>,
+	Muchun Song <muchun.song@linux.dev>,
+	Waiman Long <longman@redhat.com>,
+	Chen Ridong <chenridong@huaweicloud.com>,
+	Tejun Heo <tj@kernel.org>,
+	Michal Koutny <mkoutny@suse.com>,
+	Axel Rasmussen <axelrasmussen@google.com>,
+	Yuanchu Xie <yuanchu@google.com>,
+	Wei Xu <weixugc@google.com>,
+	Qi Zheng <zhengqi.arch@bytedance.com>,
+	linux-mm@kvack.org,
+	cgroups@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	kernel-team@meta.com
+Subject: Re: [RFC PATCH 0/6] mm/memcontrol: Make memcg limits tier-aware
+Date: Tue, 24 Feb 2026 08:13:56 -0800
+Message-ID: <20260224161357.2622501-1-joshua.hahnjy@gmail.com>
+X-Mailer: git-send-email 2.47.3
+In-Reply-To: <aZ2LC0KPF0xsAwAL@tiehlicka>
+References: 
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 3/5] drm/ttm: Make a helper for attempting allocation
- in a place
-To: Natalie Vock <natalie.vock@gmx.de>, Maarten Lankhorst <dev@lankhorst.se>,
- Maxime Ripard <mripard@kernel.org>, Tejun Heo <tj@kernel.org>,
- Johannes Weiner <hannes@cmpxchg.org>, =?UTF-8?Q?Michal_Koutn=C3=BD?=
- <mkoutny@suse.com>, Christian Koenig <christian.koenig@amd.com>,
- Huang Rui <ray.huang@amd.com>, Matthew Auld <matthew.auld@intel.com>,
- Matthew Brost <matthew.brost@intel.com>,
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
- Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>,
- Simona Vetter <simona@ffwll.ch>
-Cc: cgroups@vger.kernel.org, dri-devel@lists.freedesktop.org
-References: <20251110-dmemcg-aggressive-protect-v3-0-219ffcfc54e9@gmx.de>
- <20251110-dmemcg-aggressive-protect-v3-3-219ffcfc54e9@gmx.de>
-Content-Language: en-GB
-From: Tvrtko Ursulin <tursulin@ursulin.net>
-In-Reply-To: <20251110-dmemcg-aggressive-protect-v3-3-219ffcfc54e9@gmx.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-1.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64];
-	R_DKIM_ALLOW(-0.20)[ursulin.net:s=google];
+	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
+	R_MISSING_CHARSET(0.50)[];
+	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
+	R_DKIM_ALLOW(-0.20)[gmail.com:s=20230601];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-14222-lists,cgroups=lfdr.de];
+	RECEIVED_HELO_LOCALHOST(0.00)[];
 	RCVD_TLS_LAST(0.00)[];
-	DMARC_NA(0.00)[ursulin.net];
-	FREEMAIL_TO(0.00)[gmx.de,lankhorst.se,kernel.org,cmpxchg.org,suse.com,amd.com,intel.com,linux.intel.com,suse.de,gmail.com,ffwll.ch];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	DKIM_TRACE(0.00)[ursulin.net:+];
-	RCPT_COUNT_TWELVE(0.00)[16];
-	MIME_TRACE(0.00)[0:+];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	TO_DN_SOME(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[5];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[tursulin@ursulin.net,cgroups@vger.kernel.org];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	NEURAL_HAM(-0.00)[-1.000];
-	TAGGED_RCPT(0.00)[cgroups];
+	MIME_TRACE(0.00)[0:+];
+	TAGGED_FROM(0.00)[bounces-14226-lists,cgroups=lfdr.de];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	FREEMAIL_FROM(0.00)[gmail.com];
+	RCPT_COUNT_TWELVE(0.00)[26];
+	FROM_HAS_DN(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[joshuahahnjy@gmail.com,cgroups@vger.kernel.org];
 	MID_RHS_MATCH_FROM(0.00)[];
+	NEURAL_HAM(-0.00)[-1.000];
+	RCVD_COUNT_FIVE(0.00)[5];
+	DKIM_TRACE(0.00)[gmail.com:+];
+	TAGGED_RCPT(0.00)[cgroups];
+	TO_DN_SOME(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[ursulin.net:mid,ursulin.net:dkim,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,gmx.de:email]
-X-Rspamd-Queue-Id: 273FF189990
+	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: 029FC18B122
 X-Rspamd-Action: no action
 
+Hello Michal,
 
-On 10/11/2025 12:37, Natalie Vock wrote:
-> ttm_bo_alloc_place is a new helper function to make an attempt at
-> allocating a bo's resource in a specific place. It also makes decisions
-> on whether eviction should be attempted: If -ENOSPC is returned,
-> allocation should not be retried.
+I hope that you are doing well! Thank you for taking the time to review my
+work and leaving your thoughts.
 
-At first I thought the new helper will get used from more than one call 
-site but it seems that is not the case? No objections to extract some 
-code to be clear, just that when I see a patch title of "making a 
-helper" I expect something different.
+I wanted to note that I hope to bring this discussion to LSFMMBPF as well,
+to discuss what the scope of the project should be, what usecases there
+are (as I will note below), how to make this scalable and sustainable
+for the future, etc. I'll send out a topic proposal later today. I had
+separated the series from the proposal because I imagined that this
+series would go through many versions, so it would be helpful to have
+the topic as a unified place for pre-conference discussions.
 
-Is there any functional difference here or it is just prep to enable 
-easier extending in the following patch? If no functional difference it 
-is good to state that in the commit message. If functional difference 
-please explain what and why.
+> > Memory cgroups provide an interface that allow multiple workloads on a
+> > host to co-exist, and establish both weak and strong memory isolation
+> > guarantees. For large servers and small embedded systems alike, memcgs
+> > provide an effective way to provide a baseline quality of service for
+> > protected workloads.
+> > 
+> > This works, because for the most part, all memory is equal (except for
+> > zram / zswap). Restricting a cgroup's memory footprint restricts how
+> > much it can hurt other workloads competing for memory. Likewise, setting
+> > memory.low or memory.min limits can provide weak and strong guarantees
+> > to the performance of a cgroup.
+> > 
+> > However, on systems with tiered memory (e.g. CXL / compressed memory),
+> > the quality of service guarantees that memcg limits enforced become less
+> > effective, as memcg has no awareness of the physical location of its
+> > charged memory. In other words, a workload that is well-behaved within
+> > its memcg limits may still be hurting the performance of other
+> > well-behaving workloads on the system by hogging more than its
+> > "fair share" of toptier memory.
 
-Also please explain that the patch is only adding a new struct parameter 
-as a preparation for it being extended.
+I will split up your questions to answer them individually:
 
-> 
-> Signed-off-by: Natalie Vock <natalie.vock@gmx.de>
-> ---
->   drivers/gpu/drm/ttm/ttm_bo.c | 98 +++++++++++++++++++++++++++++++++-----------
->   1 file changed, 73 insertions(+), 25 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/ttm/ttm_bo.c b/drivers/gpu/drm/ttm/ttm_bo.c
-> index f4d9e68b21e70..829d994798835 100644
-> --- a/drivers/gpu/drm/ttm/ttm_bo.c
-> +++ b/drivers/gpu/drm/ttm/ttm_bo.c
-> @@ -489,6 +489,11 @@ int ttm_bo_evict_first(struct ttm_device *bdev, struct ttm_resource_manager *man
->   	return ret;
->   }
->   
-> +struct ttm_bo_alloc_state {
-> +	/** @limit_pool: Which pool limit we should test against */
-> +	struct dmem_cgroup_pool_state *limit_pool;
-> +};
-> +
->   /**
->    * struct ttm_bo_evict_walk - Parameters for the evict walk.
->    */
-> @@ -504,12 +509,13 @@ struct ttm_bo_evict_walk {
->   	/** @evicted: Number of successful evictions. */
->   	unsigned long evicted;
->   
-> -	/** @limit_pool: Which pool limit we should test against */
-> -	struct dmem_cgroup_pool_state *limit_pool;
->   	/** @try_low: Whether we should attempt to evict BO's with low watermark threshold */
->   	bool try_low;
->   	/** @hit_low: If we cannot evict a bo when @try_low is false (first pass) */
->   	bool hit_low;
-> +
-> +	/** @alloc_state: */
-> +	struct ttm_bo_alloc_state *alloc_state;
->   };
->   
->   static s64 ttm_bo_evict_cb(struct ttm_lru_walk *walk, struct ttm_buffer_object *bo)
-> @@ -518,8 +524,9 @@ static s64 ttm_bo_evict_cb(struct ttm_lru_walk *walk, struct ttm_buffer_object *
->   		container_of(walk, typeof(*evict_walk), walk);
->   	s64 lret;
->   
-> -	if (!dmem_cgroup_state_evict_valuable(evict_walk->limit_pool, bo->resource->css,
-> -					      evict_walk->try_low, &evict_walk->hit_low))
-> +	if (!dmem_cgroup_state_evict_valuable(evict_walk->alloc_state->limit_pool,
-> +					      bo->resource->css, evict_walk->try_low,
-> +					      &evict_walk->hit_low))
->   		return 0;
->   
->   	if (bo->pin_count || !bo->bdev->funcs->eviction_valuable(bo, evict_walk->place))
-> @@ -561,7 +568,7 @@ static int ttm_bo_evict_alloc(struct ttm_device *bdev,
->   			      struct ttm_operation_ctx *ctx,
->   			      struct ww_acquire_ctx *ticket,
->   			      struct ttm_resource **res,
-> -			      struct dmem_cgroup_pool_state *limit_pool)
-> +			      struct ttm_bo_alloc_state *state)
->   {
->   	struct ttm_bo_evict_walk evict_walk = {
->   		.walk = {
-> @@ -574,7 +581,7 @@ static int ttm_bo_evict_alloc(struct ttm_device *bdev,
->   		.place = place,
->   		.evictor = evictor,
->   		.res = res,
-> -		.limit_pool = limit_pool,
-> +		.alloc_state = state,
->   	};
->   	s64 lret;
->   
-> @@ -688,6 +695,47 @@ static int ttm_bo_add_move_fence(struct ttm_buffer_object *bo,
->   	return ret;
->   }
->   
-> +
-> +/**
-> + * ttm_bo_alloc_at_place - Attempt allocating a BO's backing store in a place
-> + *
-> + * @bo: The buffer to allocate the backing store of
-> + * @place: The place to attempt allocation in
-> + * @ctx: ttm_operation_ctx associated with this allocation
-> + * @force_space: If we should evict buffers to force space
-> + * @res: On allocation success, the resulting struct ttm_resource.
-> + * @alloc_state: Object holding allocation state such as charged cgroups.
-> + *
-> + * Returns:
-> + * -EBUSY: No space available, but allocation should be retried with eviction.
+> This assumes that the active workingset size of all workloads doesn't
+> fit into the top tier right?
 
-With or after eviction?
+Yes, for the scenario above, a workload that is violating its fair share
+of toptier memory mostly hurts other workloads if the aggregate working
+set size of all workloads exceeds the size of toptier memory.
 
-> + * -ENOSPC: No space available, allocation should not be retried.
-> + * -ERESTARTSYS: An interruptible sleep was interrupted by a signal.
+> Otherwise promotions would make sure to that we have the most active
+> memory in the top tier.
 
--EAGAIN cannot get out from ttm_resource_alloc()? In the current 
-codebase or only with this patch?
+This is true. And for a lot of usecases, this is 100% the right thing to do.
+However, with this patch I want to encourage a different perspective,
+which is to think about things in a per-workload perspective, and not a
+per-system perspective.
 
-> + *
-> + */
-> +static int ttm_bo_alloc_at_place(struct ttm_buffer_object *bo,
-> +				 const struct ttm_place *place,
-> +				 struct ttm_operation_ctx *ctx,
-> +				 bool force_space,
-> +				 struct ttm_resource **res,
-> +				 struct ttm_bo_alloc_state *alloc_state)
+Having hot memory in high tiers and cold memory in low tiers is only
+logical, since we increase the system's throughput and make the most
+optimal choices for latency. However, what about systems that care about
+objectives other than simply maximizing throughput?
 
-Maybe you did not write this but I am curious and thinking out loud 
-here. The documentation for struct ttm_operation_ctx among other things 
-says:
+In the original cover letter I offered an example of VM hosting services
+that care less about maximizing host-wide throughput, but more on ensuring
+a bottomline performance guarantee for all workloads running on the system.
+For the users on these services, they don't care that the host their VM is
+running on is maximizing throughput; rather, they care that their VM meets
+the performance guarantees that their provider promised. If there is no
+way to know or enforce which tier of memory their workload lands on, either
+the bottomline guarantee becomes very underestimated, or users must deal
+with a high variance in performance.
 
-"""
-  * Context for TTM operations like changing buffer placement or general 
-memory
-  * allocation.
-"""
+Here's another example: Let's say there is a host with multiple workloads,
+each serving queries for a database. The host would like to guarantee the
+lowest maximum latency possible, while maximizing the total throughput
+of the system. Once again in this situation, without tier-aware memcg
+limits the host can maximize throughput, but can only make severely
+underestimated promises on the bottom line.
 
-Hence I am wondering if the new alloc_state couldn't simply go in there? 
-Which would make the function prototype identical to the existing 
-ttm_bo_alloc_resource and is also already passed through the relevant 
-call chains. Which raises another question - why did 
-ttm_bo_evict_alloc() need to have struct dmem_cgroup_pool_state as a 
-separate argument and why it couldn't be passed in the context?
+> Is this typical in real life configurations?
 
-> +{
-> +	bool may_evict;
-> +	int ret;
-> +
-> +	may_evict = (force_space && place->mem_type != TTM_PL_SYSTEM);
-> +
-> +	ret = ttm_resource_alloc(bo, place, res,
-> +				 force_space ? &alloc_state->limit_pool : NULL);
-> +
-> +	if (ret) {
-> +		if ((ret == -ENOSPC || ret == -EAGAIN) && may_evict)
-> +			ret = -EBUSY;
-> +		return ret;
-> +	}
-> +
-> +	return 0;
-> +}
-> +
->   /**
->    * ttm_bo_alloc_resource - Allocate backing store for a BO
->    *
-> @@ -713,7 +761,9 @@ static int ttm_bo_alloc_resource(struct ttm_buffer_object *bo,
->   				 bool force_space,
->   				 struct ttm_resource **res)
->   {
-> +	struct ttm_bo_alloc_state alloc_state = {0};
+I would say so. I think that the two examples above are realistic
+scenarios that cloud providers and hyperscalers might face on tiered systems.
 
-= {}; is usually enough.
+> Or do you intend to limit memory consumption on particular tier even
+> without an external pressure?
 
-Any particular reason to move this and the manager outside of the loop?
+This is a great question, and one that I hope to discuss at LSFMMBPF
+to see how people expect an interface like this to work.
 
->   	struct ttm_device *bdev = bo->bdev;
-> +	struct ttm_resource_manager *man;
->   	struct ww_acquire_ctx *ticket;
->   	int i, ret;
->   
-> @@ -724,9 +774,6 @@ static int ttm_bo_alloc_resource(struct ttm_buffer_object *bo,
->   
->   	for (i = 0; i < placement->num_placement; ++i) {
->   		const struct ttm_place *place = &placement->placement[i];
-> -		struct dmem_cgroup_pool_state *limit_pool = NULL;
-> -		struct ttm_resource_manager *man;
-> -		bool may_evict;
->   
->   		man = ttm_manager_type(bdev, place->mem_type);
->   		if (!man || !ttm_resource_manager_used(man))
-> @@ -736,25 +783,26 @@ static int ttm_bo_alloc_resource(struct ttm_buffer_object *bo,
->   				    TTM_PL_FLAG_FALLBACK))
->   			continue;
->   
-> -		may_evict = (force_space && place->mem_type != TTM_PL_SYSTEM);
-> -		ret = ttm_resource_alloc(bo, place, res, force_space ? &limit_pool : NULL);
-> -		if (ret) {
-> -			if (ret != -ENOSPC && ret != -EAGAIN) {
-> -				dmem_cgroup_pool_state_put(limit_pool);
-> -				return ret;
-> -			}
-> -			if (!may_evict) {
-> -				dmem_cgroup_pool_state_put(limit_pool);
-> -				continue;
-> -			}
-> +		ret = ttm_bo_alloc_at_place(bo, place, ctx, force_space,
-> +				res, &alloc_state);
->   
-> +		if (ret == -ENOSPC) {
-> +			dmem_cgroup_pool_state_put(alloc_state.limit_pool);
-> +			continue;
+Over the past few weeks, I have been discussing this idea during the
+Linux Memory Hotness and Promotion biweekly calls with Gregory Price [1].
+One of the proposals that we made there (but did not include in this
+series) is the idea of "fixed" vs. "opportunistic" reclaim.
 
-I always disliked the TTM eviction logic and now I remember why. It 
-requires a brain size of a small planet to figure out the flow.. :) I'd 
-say this change makes it more readable.
+Fixed mode is what we have here -- start limiting toptier usage whenever
+a workload goes above its fair slice of toptier.
+Opportunistic mode would allow workloads to use more toptier memory than
+its fair share, but only be restricted when toptier is pressured.
 
-> +		} else if (ret == -EBUSY) {
->   			ret = ttm_bo_evict_alloc(bdev, man, place, bo, ctx,
-> -						 ticket, res, limit_pool);
-> -			dmem_cgroup_pool_state_put(limit_pool);
-> -			if (ret == -EBUSY)
-> +						 ticket, res, &alloc_state);
-> +
-> +			dmem_cgroup_pool_state_put(alloc_state.limit_pool);
-> +
-> +			if (ret) {
-> +				if (ret != -ENOSPC && ret != -EBUSY)
-> +					return ret;
->   				continue;
+What do you think about these two options? For the stated goal of this
+series, which is to help maximize the bottom line for workloads, fair
+share seemed to make sense. Implementing opportunistic mode changes
+on top of this work would most likely just be another sysctl.
 
-Is this a functional change and why? Before only EBUSY went to the next 
-placement. Now ENOSPC does as well.
+> > Introduce tier-aware memcg limits, which scale memory.low/high to
+> > reflect the ratio of toptier:total memory the cgroup has access.
+> > 
+> > Take the following scenario as an example:
+> > On a host with 3:1 toptier:lowtier, say 150G toptier, and 50Glowtier,
+> > setting a cgroup's limits to:
+> > 	memory.min:  15G
+> > 	memory.low:  20G
+> > 	memory.high: 40G
+> > 	memory.max:  50G
+> > 
+> > Will be enforced at the toptier as:
+> > 	memory.min:          15G
+> > 	memory.toptier_low:  15G (20 * 150/200)
+> > 	memory.toptier_high: 30G (40 * 150/200)
+> > 	memory.max:          50G
 
-Regards,
+I will split up the following points to answer them individually as well:
 
-Tvrtko
+> Let's spend some more time with the interface first.
 
-> -			if (ret)
-> -				return ret;
-> +			}
-> +		} else if (ret) {
-> +			dmem_cgroup_pool_state_put(alloc_state.limit_pool);
-> +			return ret;
->   		}
->   
->   		ret = ttm_bo_add_move_fence(bo, man, ctx->no_wait_gpu);
-> 
+That sounds good with me, my goal was to bring this out as an RFC patchset
+so folks could look at the code and understand the motivation, and then send
+out the LSFMMBPF topic proposal. In retrospect I think I should have done
+it in the opposite order. I'm sorry if this caused any confusion.
 
+> You seem to be focusing only on the top tier with this interface, right?
+> Is this really the right way to go long term? What makes you believe that
+> we do not really hit the same issue with other tiers as well?
+
+Yes, that's right. I'm not sure if this is the right way to go long-term
+(say, past the next 5 years). My thinking was that I can stick with doing
+this for toptier vs. non-toptier memory for now, and deal with having
+3+ tiers in the future, when we start to have systems with that many tiers.
+AFAICT two-tiered systems are still ~relatively new, and I don't think
+there are a lot of genuine usecases for enforcing mid-tier memory limits
+as of now. Of course, I would be excited to learn about these usecases
+and work this patchset to support them as well if anybody has them.
+
+> Also do we want/need to duplicate all the limits for each/top tier?
+
+Sorry, I'm not sure that I completely understood this question. Are you
+referring to the case where we have multiple nodes in the toptier?
+If so, then all of those nodes are treated the same, and don't have
+unique limits. Or are you referring to the case where we have multiple
+tiers in the toptier? If so, I hope the answer above can answer this too.
+
+> What is the reasoning for the switch to be runtime sysctl rather than
+> boot-time or cgroup mount option?
+
+Good point : -) I don't think cgroup mount options are a good idea,
+since this would mean that we can have a set of cgroups self-policing
+their toptier usage, while another cgroup allocates memory unrestricted.
+This would punish the self-policing cgroup and we would lose the benefit
+of having a bottomline performance guarantee.
+
+> I will likely have more questions but these are immediate ones after
+> reading the cover. Please note I haven't really looked at the
+> implementation yet. I really want to understand usecases and interface
+> first.
+
+That sounds good to me, thank you again for reviewing this work!
+I hope you have a great day : -)
+Joshua
+
+[1] https://lore.kernel.org/linux-mm/c8bc2dce-d4ec-c16e-8df4-2624c48cfc06@google.com/
 
