@@ -1,53 +1,53 @@
-Return-Path: <cgroups+bounces-14192-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-14193-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id kKp+MqoInWk7MgQAu9opvQ
-	(envelope-from <cgroups+bounces-14192-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Tue, 24 Feb 2026 03:10:50 +0100
+	id COH1KrAInWk7MgQAu9opvQ
+	(envelope-from <cgroups+bounces-14193-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Tue, 24 Feb 2026 03:10:56 +0100
 X-Original-To: lists+cgroups@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 676E4180E8E
-	for <lists+cgroups@lfdr.de>; Tue, 24 Feb 2026 03:10:50 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3087F180EA3
+	for <lists+cgroups@lfdr.de>; Tue, 24 Feb 2026 03:10:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 4F2FE3016480
-	for <lists+cgroups@lfdr.de>; Tue, 24 Feb 2026 02:10:49 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id DE5BB3037E67
+	for <lists+cgroups@lfdr.de>; Tue, 24 Feb 2026 02:10:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4E9B92566F7;
-	Tue, 24 Feb 2026 02:10:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 38D972566D3;
+	Tue, 24 Feb 2026 02:10:54 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
 Received: from us-smtp-delivery-44.mimecast.com (us-smtp-delivery-44.mimecast.com [207.211.30.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 841BC5695
-	for <cgroups@vger.kernel.org>; Tue, 24 Feb 2026 02:10:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D6059246BCD
+	for <cgroups@vger.kernel.org>; Tue, 24 Feb 2026 02:10:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=207.211.30.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1771899048; cv=none; b=BMiKvTEnIwn8xfdKMbREFCThBzgn/tAtz21s/bMSLtZLT6+qcE2h2kNqqFlnYylSPCKyS7iey4Si2GdWeFKrAp79eluwS7vFEZJb3QYqXrtsyVEy1gcPpO/5maIfx5PaU3m4TFdtbj4Uw+uKFTr94dmj+XfLDYRxgP07+aUGeqk=
+	t=1771899054; cv=none; b=iUErhfX6JU83FFNwahxCZsG5iSBzjXm9U1ORGEXbXs7kZKpT+fZ7HSbjr5Abs40PUw2QaoSbav+NbJKC3QjhB3GEQrf3ffovpWgpvip+HhK5E4pCxDsVPf6zuxMAgJJxjtqllPWZyl/QYCuF1nR1mWEdjCGX2MGPMGquq9uBp0o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1771899048; c=relaxed/simple;
-	bh=x+WsSQ7Vw/3XaTkZqDT+NBo9bIBBnkkUGsblz8L7AOo=;
+	s=arc-20240116; t=1771899054; c=relaxed/simple;
+	bh=RTwohFh0UDgaIEQi07FMM3QAkD4M0JP97YJTd8SDxMw=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=CmVyZlOcX43fitgxS9YcGfR01gPV0GeI9O9A0hNudBGrzD50J+MKgoHG8EqUcvuilIHH3TEXcMfkIVbQwLPoZBQgkUVgJPGDxwcs0g+MFbFePuu240GXaTBbCeziJX6yjQjtW/StaeV+bIsT4FuYNEw0mMh/EF548ddKfLXoWUU=
+	 MIME-Version:content-type; b=pPYqm4pC9q02MDnWXsAMHqMeKmoswWYanbyNQ3A0NcJfBFA2Jsj9upqbWsT8ZPkKYWE5IZsTpwAfffpv1tsALtuG6wUHDqxycK1IpqyCkz9D5BnuB4V1vb+jgRcjDJejS2/rcwXKvNOH5mmoqmX7vHVjHxbpwLol3H8wF12E/xY=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com; spf=fail smtp.mailfrom=gmail.com; arc=none smtp.client-ip=207.211.30.44
 Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=gmail.com
-Received: from mx-prod-mc-05.mail-002.prod.us-west-2.aws.redhat.com
+Received: from mx-prod-mc-03.mail-002.prod.us-west-2.aws.redhat.com
  (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
  relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-167-j4u0-zVDOpefCQakxPSWxg-1; Mon,
- 23 Feb 2026 21:09:30 -0500
-X-MC-Unique: j4u0-zVDOpefCQakxPSWxg-1
-X-Mimecast-MFC-AGG-ID: j4u0-zVDOpefCQakxPSWxg_1771898969
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-537-Sp8pyhrQP7iOSukqY0aa_w-1; Mon,
+ 23 Feb 2026 21:09:38 -0500
+X-MC-Unique: Sp8pyhrQP7iOSukqY0aa_w-1
+X-Mimecast-MFC-AGG-ID: Sp8pyhrQP7iOSukqY0aa_w_1771898976
 Received: from mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.4])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mx-prod-mc-05.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id ECB5B19560AD;
-	Tue, 24 Feb 2026 02:09:28 +0000 (UTC)
+	by mx-prod-mc-03.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 3F4EA1956075;
+	Tue, 24 Feb 2026 02:09:36 +0000 (UTC)
 Received: from dreadlord.taild9177d.ts.net (unknown [10.67.32.38])
-	by mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id 75F6130001BB;
-	Tue, 24 Feb 2026 02:09:22 +0000 (UTC)
+	by mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id CB87230001BB;
+	Tue, 24 Feb 2026 02:09:29 +0000 (UTC)
 From: Dave Airlie <airlied@gmail.com>
 To: dri-devel@lists.freedesktop.org,
 	tj@kernel.org,
@@ -61,9 +61,9 @@ Cc: cgroups@vger.kernel.org,
 	Dave Chinner <david@fromorbit.com>,
 	Waiman Long <longman@redhat.com>,
 	simona@ffwll.ch
-Subject: [PATCH 03/16] ttm/pool: port to list_lru. (v2)
-Date: Tue, 24 Feb 2026 12:06:20 +1000
-Message-ID: <20260224020854.791201-4-airlied@gmail.com>
+Subject: [PATCH 04/16] ttm/pool: drop numa specific pools
+Date: Tue, 24 Feb 2026 12:06:21 +1000
+Message-ID: <20260224020854.791201-5-airlied@gmail.com>
 In-Reply-To: <20260224020854.791201-1-airlied@gmail.com>
 References: <20260224020854.791201-1-airlied@gmail.com>
 Precedence: bulk
@@ -74,28 +74,28 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-Scanned-By: MIMEDefang 3.4.1 on 10.30.177.4
 X-Mimecast-Spam-Score: 0
-X-Mimecast-MFC-PROC-ID: 5WsyKVnTIEOWftKZXWrTzyI59ZsDDhmZ-fERb0G7ATQ_1771898969
+X-Mimecast-MFC-PROC-ID: UJlmBfoGfIu64cbnFft9ocqVS8vLq-NwFlmoCo_GTYs_1771898976
 X-Mimecast-Originator: gmail.com
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
+content-type: text/plain; charset=WINDOWS-1252; x-default=true
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-0.36 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	MID_CONTAINS_FROM(1.00)[];
-	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	MAILLIST(-0.15)[generic];
 	DMARC_POLICY_SOFTFAIL(0.10)[gmail.com : SPF not aligned (relaxed), No valid DKIM,none];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	FROM_HAS_DN(0.00)[];
-	TAGGED_FROM(0.00)[bounces-14192-lists,cgroups=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-14193-lists,cgroups=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	RCPT_COUNT_TWELVE(0.00)[12];
 	MIME_TRACE(0.00)[0:+];
 	FREEMAIL_FROM(0.00)[gmail.com];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
 	TO_DN_SOME(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[airlied@gmail.com,cgroups@vger.kernel.org];
@@ -104,385 +104,72 @@ X-Spamd-Result: default: False [-0.36 / 15.00];
 	R_DKIM_NA(0.00)[];
 	NEURAL_HAM(-0.00)[-0.993];
 	TAGGED_RCPT(0.00)[cgroups];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[amd.com:email,fromorbit.com:email,cmpxchg.org:email,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 676E4180E8E
+	DBL_BLOCKED_OPENRESOLVER(0.00)[cmpxchg.org:email,amd.com:email,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: 3087F180EA3
 X-Rspamd-Action: no action
 
 From: Dave Airlie <airlied@redhat.com>
 
-This is an initial port of the TTM pools for
-write combined and uncached pages to use the list_lru.
+The list_lru will now handle numa for us, so no need to keep
+separate pool types for it. Just consolidate into the global ones.
 
-This makes the pool's more NUMA aware and avoids
-needing separate NUMA pools (later commit enables this).
+This adds a debugfs change to avoid dumping non-existant orders due
+to this change.
 
 Cc: Christian Koenig <christian.koenig@amd.com>
 Cc: Johannes Weiner <hannes@cmpxchg.org>
-Cc: Dave Chinner <david@fromorbit.com>
-Reviewed-by: Christian K=C3=B6nig <christian.koenig@amd.com>
 Signed-off-by: Dave Airlie <airlied@redhat.com>
-
 ---
-v2: drop the pt->lock, lru list has it's own lock which is sufficent.
-rearrange list isolates to fix bad locking orders.
----
- drivers/gpu/drm/ttm/tests/ttm_device_test.c |  2 +-
- drivers/gpu/drm/ttm/tests/ttm_pool_test.c   | 32 ++++----
- drivers/gpu/drm/ttm/ttm_pool.c              | 90 ++++++++++++++-------
- include/drm/ttm/ttm_pool.h                  |  7 +-
- mm/list_lru.c                               |  1 +
- 5 files changed, 83 insertions(+), 49 deletions(-)
+ drivers/gpu/drm/ttm/ttm_pool.c | 13 ++-----------
+ 1 file changed, 2 insertions(+), 11 deletions(-)
 
-diff --git a/drivers/gpu/drm/ttm/tests/ttm_device_test.c b/drivers/gpu/drm/=
-ttm/tests/ttm_device_test.c
-index 2d55ad34fe48..db4b4a09a73f 100644
---- a/drivers/gpu/drm/ttm/tests/ttm_device_test.c
-+++ b/drivers/gpu/drm/ttm/tests/ttm_device_test.c
-@@ -176,7 +176,7 @@ static void ttm_device_init_pools(struct kunit *test)
-=20
- =09=09=09=09if (ttm_pool_uses_dma_alloc(pool))
- =09=09=09=09=09KUNIT_ASSERT_FALSE(test,
--=09=09=09=09=09=09=09   list_empty(&pt.pages));
-+=09=09=09=09=09=09=09   !list_lru_count(&pt.pages));
- =09=09=09}
- =09=09}
- =09}
-diff --git a/drivers/gpu/drm/ttm/tests/ttm_pool_test.c b/drivers/gpu/drm/tt=
-m/tests/ttm_pool_test.c
-index 11c92bd75779..01197014b83f 100644
---- a/drivers/gpu/drm/ttm/tests/ttm_pool_test.c
-+++ b/drivers/gpu/drm/ttm/tests/ttm_pool_test.c
-@@ -248,7 +248,7 @@ static void ttm_pool_alloc_order_caching_match(struct k=
-unit *test)
- =09pool =3D ttm_pool_pre_populated(test, size, caching);
-=20
- =09pt =3D &pool->caching[caching].orders[order];
--=09KUNIT_ASSERT_FALSE(test, list_empty(&pt->pages));
-+=09KUNIT_ASSERT_FALSE(test, !list_lru_count(&pt->pages));
-=20
- =09tt =3D ttm_tt_kunit_init(test, 0, caching, size);
- =09KUNIT_ASSERT_NOT_NULL(test, tt);
-@@ -256,7 +256,7 @@ static void ttm_pool_alloc_order_caching_match(struct k=
-unit *test)
- =09err =3D ttm_pool_alloc(pool, tt, &simple_ctx);
- =09KUNIT_ASSERT_EQ(test, err, 0);
-=20
--=09KUNIT_ASSERT_TRUE(test, list_empty(&pt->pages));
-+=09KUNIT_ASSERT_TRUE(test, !list_lru_count(&pt->pages));
-=20
- =09ttm_pool_free(pool, tt);
- =09ttm_tt_fini(tt);
-@@ -282,8 +282,8 @@ static void ttm_pool_alloc_caching_mismatch(struct kuni=
-t *test)
- =09tt =3D ttm_tt_kunit_init(test, 0, tt_caching, size);
- =09KUNIT_ASSERT_NOT_NULL(test, tt);
-=20
--=09KUNIT_ASSERT_FALSE(test, list_empty(&pt_pool->pages));
--=09KUNIT_ASSERT_TRUE(test, list_empty(&pt_tt->pages));
-+=09KUNIT_ASSERT_FALSE(test, !list_lru_count(&pt_pool->pages));
-+=09KUNIT_ASSERT_TRUE(test, !list_lru_count(&pt_tt->pages));
-=20
- =09err =3D ttm_pool_alloc(pool, tt, &simple_ctx);
- =09KUNIT_ASSERT_EQ(test, err, 0);
-@@ -291,8 +291,8 @@ static void ttm_pool_alloc_caching_mismatch(struct kuni=
-t *test)
- =09ttm_pool_free(pool, tt);
- =09ttm_tt_fini(tt);
-=20
--=09KUNIT_ASSERT_FALSE(test, list_empty(&pt_pool->pages));
--=09KUNIT_ASSERT_FALSE(test, list_empty(&pt_tt->pages));
-+=09KUNIT_ASSERT_FALSE(test, !list_lru_count(&pt_pool->pages));
-+=09KUNIT_ASSERT_FALSE(test, !list_lru_count(&pt_tt->pages));
-=20
- =09ttm_pool_fini(pool);
- }
-@@ -316,8 +316,8 @@ static void ttm_pool_alloc_order_mismatch(struct kunit =
-*test)
- =09tt =3D ttm_tt_kunit_init(test, 0, caching, snd_size);
- =09KUNIT_ASSERT_NOT_NULL(test, tt);
-=20
--=09KUNIT_ASSERT_FALSE(test, list_empty(&pt_pool->pages));
--=09KUNIT_ASSERT_TRUE(test, list_empty(&pt_tt->pages));
-+=09KUNIT_ASSERT_FALSE(test, !list_lru_count(&pt_pool->pages));
-+=09KUNIT_ASSERT_TRUE(test, !list_lru_count(&pt_tt->pages));
-=20
- =09err =3D ttm_pool_alloc(pool, tt, &simple_ctx);
- =09KUNIT_ASSERT_EQ(test, err, 0);
-@@ -325,8 +325,8 @@ static void ttm_pool_alloc_order_mismatch(struct kunit =
-*test)
- =09ttm_pool_free(pool, tt);
- =09ttm_tt_fini(tt);
-=20
--=09KUNIT_ASSERT_FALSE(test, list_empty(&pt_pool->pages));
--=09KUNIT_ASSERT_FALSE(test, list_empty(&pt_tt->pages));
-+=09KUNIT_ASSERT_FALSE(test, !list_lru_count(&pt_pool->pages));
-+=09KUNIT_ASSERT_FALSE(test, !list_lru_count(&pt_tt->pages));
-=20
- =09ttm_pool_fini(pool);
- }
-@@ -352,12 +352,12 @@ static void ttm_pool_free_dma_alloc(struct kunit *tes=
-t)
- =09ttm_pool_alloc(pool, tt, &simple_ctx);
-=20
- =09pt =3D &pool->caching[caching].orders[order];
--=09KUNIT_ASSERT_TRUE(test, list_empty(&pt->pages));
-+=09KUNIT_ASSERT_TRUE(test, !list_lru_count(&pt->pages));
-=20
- =09ttm_pool_free(pool, tt);
- =09ttm_tt_fini(tt);
-=20
--=09KUNIT_ASSERT_FALSE(test, list_empty(&pt->pages));
-+=09KUNIT_ASSERT_FALSE(test, !list_lru_count(&pt->pages));
-=20
- =09ttm_pool_fini(pool);
- }
-@@ -383,12 +383,12 @@ static void ttm_pool_free_no_dma_alloc(struct kunit *=
-test)
- =09ttm_pool_alloc(pool, tt, &simple_ctx);
-=20
- =09pt =3D &pool->caching[caching].orders[order];
--=09KUNIT_ASSERT_TRUE(test, list_is_singular(&pt->pages));
-+=09KUNIT_ASSERT_TRUE(test, list_lru_count(&pt->pages) =3D=3D 1);
-=20
- =09ttm_pool_free(pool, tt);
- =09ttm_tt_fini(tt);
-=20
--=09KUNIT_ASSERT_TRUE(test, list_is_singular(&pt->pages));
-+=09KUNIT_ASSERT_TRUE(test, list_lru_count(&pt->pages) =3D=3D 1);
-=20
- =09ttm_pool_fini(pool);
- }
-@@ -404,11 +404,11 @@ static void ttm_pool_fini_basic(struct kunit *test)
- =09pool =3D ttm_pool_pre_populated(test, size, caching);
- =09pt =3D &pool->caching[caching].orders[order];
-=20
--=09KUNIT_ASSERT_FALSE(test, list_empty(&pt->pages));
-+=09KUNIT_ASSERT_FALSE(test, !list_lru_count(&pt->pages));
-=20
- =09ttm_pool_fini(pool);
-=20
--=09KUNIT_ASSERT_TRUE(test, list_empty(&pt->pages));
-+=09KUNIT_ASSERT_TRUE(test, !list_lru_count(&pt->pages));
- }
-=20
- static struct kunit_case ttm_pool_test_cases[] =3D {
 diff --git a/drivers/gpu/drm/ttm/ttm_pool.c b/drivers/gpu/drm/ttm/ttm_pool.=
 c
-index 6891776cad75..2947ffc51351 100644
+index 2947ffc51351..3989e15ab5b0 100644
 --- a/drivers/gpu/drm/ttm/ttm_pool.c
 +++ b/drivers/gpu/drm/ttm/ttm_pool.c
-@@ -132,6 +132,16 @@ static struct list_head shrinker_list;
- static struct shrinker *mm_shrinker;
- static DECLARE_RWSEM(pool_shrink_rwsem);
+@@ -406,17 +406,11 @@ static struct ttm_pool_type *ttm_pool_select_type(str=
+uct ttm_pool *pool,
+ #ifdef CONFIG_X86
+ =09switch (caching) {
+ =09case ttm_write_combined:
+-=09=09if (pool->nid !=3D NUMA_NO_NODE)
+-=09=09=09return &pool->caching[caching].orders[order];
+-
+ =09=09if (ttm_pool_uses_dma32(pool))
+ =09=09=09return &global_dma32_write_combined[order];
 =20
-+static int ttm_pool_nid(struct ttm_pool *pool)
-+{
-+=09int nid =3D NUMA_NO_NODE;
-+=09if (pool)
-+=09=09nid =3D pool->nid;
-+=09if (nid =3D=3D NUMA_NO_NODE)
-+=09=09nid =3D numa_node_id();
-+=09return nid;
-+}
-+
- /* Allocate pages of size 1 << order with the given gfp_flags */
- static struct page *ttm_pool_alloc_page(struct ttm_pool *pool, gfp_t gfp_f=
-lags,
- =09=09=09=09=09unsigned int order)
-@@ -297,30 +307,41 @@ static void ttm_pool_type_give(struct ttm_pool_type *=
-pt, struct page *p)
- =09=09=09clear_page(page_address(p + i));
+ =09=09return &global_write_combined[order];
+ =09case ttm_uncached:
+-=09=09if (pool->nid !=3D NUMA_NO_NODE)
+-=09=09=09return &pool->caching[caching].orders[order];
+-
+ =09=09if (ttm_pool_uses_dma32(pool))
+ =09=09=09return &global_dma32_uncached[order];
+=20
+@@ -1291,7 +1285,7 @@ int ttm_pool_debugfs(struct ttm_pool *pool, struct se=
+q_file *m)
+ {
+ =09unsigned int i;
+=20
+-=09if (!ttm_pool_uses_dma_alloc(pool) && pool->nid =3D=3D NUMA_NO_NODE) {
++=09if (!ttm_pool_uses_dma_alloc(pool)) {
+ =09=09seq_puts(m, "unused\n");
+ =09=09return 0;
  =09}
-=20
--=09spin_lock(&pt->lock);
--=09list_add(&p->lru, &pt->pages);
--=09spin_unlock(&pt->lock);
-+=09INIT_LIST_HEAD(&p->lru);
-+=09rcu_read_lock();
-+=09list_lru_add(&pt->pages, &p->lru, page_to_nid(p), NULL);
-+=09rcu_read_unlock();
- =09atomic_long_add(1 << pt->order, &allocated_pages);
-=20
- =09mod_lruvec_page_state(p, NR_GPU_ACTIVE, -num_pages);
- =09mod_lruvec_page_state(p, NR_GPU_RECLAIM, num_pages);
- }
-=20
-+static enum lru_status take_one_from_lru(struct list_head *item,
-+=09=09=09=09=09 struct list_lru_one *list,
-+=09=09=09=09=09 void *cb_arg)
-+{
-+=09struct page **out_page =3D cb_arg;
-+=09struct page *p =3D container_of(item, struct page, lru);
-+=09list_lru_isolate(list, item);
-+
-+=09*out_page =3D p;
-+=09return LRU_REMOVED;
-+}
-+
- /* Take pages from a specific pool_type, return NULL when nothing availabl=
-e */
--static struct page *ttm_pool_type_take(struct ttm_pool_type *pt)
-+static struct page *ttm_pool_type_take(struct ttm_pool_type *pt, int nid)
- {
--=09struct page *p;
-+=09int ret;
-+=09struct page *p =3D NULL;
-+=09unsigned long nr_to_walk =3D 1;
-=20
--=09spin_lock(&pt->lock);
--=09p =3D list_first_entry_or_null(&pt->pages, typeof(*p), lru);
--=09if (p) {
-+=09ret =3D list_lru_walk_node(&pt->pages, nid, take_one_from_lru, (void *)=
-&p, &nr_to_walk);
-+=09if (ret =3D=3D 1 && p) {
- =09=09atomic_long_sub(1 << pt->order, &allocated_pages);
- =09=09mod_lruvec_page_state(p, NR_GPU_ACTIVE, (1 << pt->order));
- =09=09mod_lruvec_page_state(p, NR_GPU_RECLAIM, -(1 << pt->order));
--=09=09list_del(&p->lru);
- =09}
--=09spin_unlock(&pt->lock);
--
- =09return p;
- }
-=20
-@@ -331,25 +352,47 @@ static void ttm_pool_type_init(struct ttm_pool_type *=
-pt, struct ttm_pool *pool,
- =09pt->pool =3D pool;
- =09pt->caching =3D caching;
- =09pt->order =3D order;
--=09spin_lock_init(&pt->lock);
--=09INIT_LIST_HEAD(&pt->pages);
-+=09list_lru_init(&pt->pages);
-=20
- =09spin_lock(&shrinker_lock);
- =09list_add_tail(&pt->shrinker_list, &shrinker_list);
- =09spin_unlock(&shrinker_lock);
- }
-=20
-+static enum lru_status pool_move_to_dispose_list(struct list_head *item,
-+=09=09=09=09=09=09 struct list_lru_one *list,
-+=09=09=09=09=09=09 void *cb_arg)
-+{
-+=09struct list_head *dispose =3D cb_arg;
-+
-+=09list_lru_isolate_move(list, item, dispose);
-+
-+=09return LRU_REMOVED;
-+}
-+
-+static void ttm_pool_dispose_list(struct ttm_pool_type *pt,
-+=09=09=09=09  struct list_head *dispose)
-+{
-+=09while (!list_empty(dispose)) {
-+=09=09struct page *p;
-+=09=09p =3D list_first_entry(dispose, struct page, lru);
-+=09=09list_del_init(&p->lru);
-+=09=09atomic_long_sub(1 << pt->order, &allocated_pages);
-+=09=09ttm_pool_free_page(pt->pool, pt->caching, pt->order, p, true);
-+=09}
-+}
-+
- /* Remove a pool_type from the global shrinker list and free all pages */
- static void ttm_pool_type_fini(struct ttm_pool_type *pt)
- {
--=09struct page *p;
-+=09LIST_HEAD(dispose);
-=20
- =09spin_lock(&shrinker_lock);
- =09list_del(&pt->shrinker_list);
- =09spin_unlock(&shrinker_lock);
-=20
--=09while ((p =3D ttm_pool_type_take(pt)))
--=09=09ttm_pool_free_page(pt->pool, pt->caching, pt->order, p, true);
-+=09list_lru_walk(&pt->pages, pool_move_to_dispose_list, &dispose, LONG_MAX=
-);
-+=09ttm_pool_dispose_list(pt, &dispose);
- }
-=20
- /* Return the pool_type to use for the given caching and order */
-@@ -399,7 +442,7 @@ static unsigned int ttm_pool_shrink(void)
- =09list_move_tail(&pt->shrinker_list, &shrinker_list);
- =09spin_unlock(&shrinker_lock);
-=20
--=09p =3D ttm_pool_type_take(pt);
-+=09p =3D ttm_pool_type_take(pt, ttm_pool_nid(pt->pool));
- =09if (p) {
- =09=09ttm_pool_free_page(pt->pool, pt->caching, pt->order, p, true);
- =09=09num_pages =3D 1 << pt->order;
-@@ -753,7 +796,7 @@ static int __ttm_pool_alloc(struct ttm_pool *pool, stru=
-ct ttm_tt *tt,
- =09=09p =3D NULL;
- =09=09pt =3D ttm_pool_select_type(pool, page_caching, order);
- =09=09if (pt && allow_pools)
--=09=09=09p =3D ttm_pool_type_take(pt);
-+=09=09=09p =3D ttm_pool_type_take(pt, ttm_pool_nid(pool));
- =09=09/*
- =09=09 * If that fails or previously failed, allocate from system.
- =09=09 * Note that this also disallows additional pool allocations using
-@@ -1182,16 +1225,7 @@ static unsigned long ttm_pool_shrinker_count(struct =
-shrinker *shrink,
- /* Count the number of pages available in a pool_type */
- static unsigned int ttm_pool_type_count(struct ttm_pool_type *pt)
- {
--=09unsigned int count =3D 0;
--=09struct page *p;
--
--=09spin_lock(&pt->lock);
--=09/* Only used for debugfs, the overhead doesn't matter */
--=09list_for_each_entry(p, &pt->pages, lru)
--=09=09++count;
--=09spin_unlock(&pt->lock);
--
--=09return count;
-+=09return list_lru_count(&pt->pages);
- }
-=20
- /* Print a nice header for the order */
-diff --git a/include/drm/ttm/ttm_pool.h b/include/drm/ttm/ttm_pool.h
-index 233581670e78..26ee592e1994 100644
---- a/include/drm/ttm/ttm_pool.h
-+++ b/include/drm/ttm/ttm_pool.h
-@@ -29,6 +29,7 @@
- #include <linux/mmzone.h>
- #include <linux/llist.h>
- #include <linux/spinlock.h>
-+#include <linux/list_lru.h>
- #include <drm/ttm/ttm_caching.h>
-=20
- struct device;
-@@ -45,8 +46,7 @@ struct ttm_tt;
-  * @order: the allocation order our pages have
-  * @caching: the caching type our pages have
-  * @shrinker_list: our place on the global shrinker list
-- * @lock: protection of the page list
-- * @pages: the list of pages in the pool
-+ * @pages: the lru_list of pages in the pool
-  */
- struct ttm_pool_type {
- =09struct ttm_pool *pool;
-@@ -55,8 +55,7 @@ struct ttm_pool_type {
-=20
- =09struct list_head shrinker_list;
-=20
--=09spinlock_t lock;
--=09struct list_head pages;
-+=09struct list_lru pages;
- };
-=20
- /**
-diff --git a/mm/list_lru.c b/mm/list_lru.c
-index 26463ae29c64..dd29bcf8eb5f 100644
---- a/mm/list_lru.c
-+++ b/mm/list_lru.c
-@@ -179,6 +179,7 @@ bool list_lru_add(struct list_lru *lru, struct list_hea=
-d *item, int nid,
- =09unlock_list_lru(l, false);
- =09return false;
- }
-+EXPORT_SYMBOL_GPL(list_lru_add);
-=20
- bool list_lru_add_obj(struct list_lru *lru, struct list_head *item)
- {
+@@ -1302,10 +1296,7 @@ int ttm_pool_debugfs(struct ttm_pool *pool, struct s=
+eq_file *m)
+ =09for (i =3D 0; i < TTM_NUM_CACHING_TYPES; ++i) {
+ =09=09if (!ttm_pool_select_type(pool, i, 0))
+ =09=09=09continue;
+-=09=09if (ttm_pool_uses_dma_alloc(pool))
+-=09=09=09seq_puts(m, "DMA ");
+-=09=09else
+-=09=09=09seq_printf(m, "N%d ", pool->nid);
++=09=09seq_puts(m, "DMA ");
+ =09=09switch (i) {
+ =09=09case ttm_cached:
+ =09=09=09seq_puts(m, "\t:");
 --=20
 2.52.0
 
