@@ -1,437 +1,352 @@
-Return-Path: <cgroups+bounces-14176-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-14177-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id OkjDEGrXnGn+LgQAu9opvQ
-	(envelope-from <cgroups+bounces-14176-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Mon, 23 Feb 2026 23:40:42 +0100
+	id 6v1GMZvtnGkKMQQAu9opvQ
+	(envelope-from <cgroups+bounces-14177-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Tue, 24 Feb 2026 01:15:23 +0100
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 90C1D17E789
-	for <lists+cgroups@lfdr.de>; Mon, 23 Feb 2026 23:40:41 +0100 (CET)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id DD8B91802AA
+	for <lists+cgroups@lfdr.de>; Tue, 24 Feb 2026 01:15:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 738FD3144561
-	for <lists+cgroups@lfdr.de>; Mon, 23 Feb 2026 22:38:51 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 8A0133011D4B
+	for <lists+cgroups@lfdr.de>; Tue, 24 Feb 2026 00:15:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 963D337BE67;
-	Mon, 23 Feb 2026 22:38:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 47BC52135D7;
+	Tue, 24 Feb 2026 00:15:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MJwHVpTS"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="0166C+uV"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-ot1-f42.google.com (mail-ot1-f42.google.com [209.85.210.42])
+Received: from mail-ej1-f47.google.com (mail-ej1-f47.google.com [209.85.218.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B74B637BE6E
-	for <cgroups@vger.kernel.org>; Mon, 23 Feb 2026 22:38:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D6B7199E94
+	for <cgroups@vger.kernel.org>; Tue, 24 Feb 2026 00:15:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1771886330; cv=none; b=Z/eWkecofeInKktniByxB9q2HqUVr1lIf8A3zjJ0JT5hWqkb+/fHEL75zRkk4LuApZ+lu/nHw+poirYqBBjYtUCKa4q8Ufv6Ppdwbzhp/gwYoHOjyx1gamH1SBeF21QraYhRUCdBDp6gwEoZHQwEvofwInCXjUbt7qXB7FFCuqo=
+	t=1771892119; cv=none; b=gn95JYRnDO3dcd9A6BniN26MUvA1BKfeHzuAi4oiWp2GXxlviVGOrOxXAXdvimgz6C0fyNKYjFsjxgwjBjcUxF3rsZe8eY/wLsZvgEXTI2119SKyQbHYyNtFyn+ehmt5rNP/TMDxZLHsy+bw/Cw1FnGJr3+thWOKED1RydeM0Xk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1771886330; c=relaxed/simple;
-	bh=sBvHCRLOSKHT83gdccnLmheOXBIOB5m3ZeZY9+qfNQA=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=psDzlWK5tg1W7V46yRGxvuZqvZzx9IqTN9KIBmHVtEES8edtWYaFjobL8MAj7PF/3R9231BdPVnxjGqdHmd6Q7TwN17tbfEYbsuDXGxsNXu/H3Clvcy2aybaNbWhZc2q75wPAWQ2pLmueEyvieC4PUF6sKD7k9JEIH9X4HhKdeE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=MJwHVpTS; arc=none smtp.client-ip=209.85.210.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ot1-f42.google.com with SMTP id 46e09a7af769-7d4c4b494fcso2784965a34.3
-        for <cgroups@vger.kernel.org>; Mon, 23 Feb 2026 14:38:44 -0800 (PST)
+	s=arc-20240116; t=1771892119; c=relaxed/simple;
+	bh=IHU4YKQY5PYWHmXFzacaJDDgnkLmppJAryXMXDRIZlI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Juogami1JmN+f/QtPH6IPpMZa5PJyaXCU3Viv6796IDLs3lH3lImubEAcG4v6p1HYgwhS/2VbG9foy3XnGUwu1gzn+hq3uLRLHt5V97SjtIEqQ7kysMh4SUihk4lPtIObXSAFYuQXz3UPaNJDj5E0hz1Q54ZDLCZnPzF/XTLFu0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=0166C+uV; arc=none smtp.client-ip=209.85.218.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ej1-f47.google.com with SMTP id a640c23a62f3a-b8f97c626aaso689068566b.2
+        for <cgroups@vger.kernel.org>; Mon, 23 Feb 2026 16:15:16 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1771886323; x=1772491123; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=1/pi4GMyqfUzxedG8y+xzMj5Pky+ci5h56Uzs52BODo=;
-        b=MJwHVpTSrjWbYibbWrJ0R73PEr0g9TRcUEdz7li+J4GMN5D6xVnlFthNRBVtg7SuQ0
-         mwP5xmsaVwTlAJozaLGVhPo+uC+nlB3tlRrMi0YFTQkP0ErFhKwAQj59WYxJz03QsS2V
-         bPU300jPsoJdEhMBklIEPs6xcK7YA4fr4seeRv45Bm5jtK4KA2TnamjTg440ItepjBPI
-         j1/usqUOeMorV8qDDDTZ0HuvkZAj2rlHUQEkcHkCh+0BUfEoSSHvOFITQPaILHSoAREn
-         PYAnIl2yViMCvKmDVPJuXN3DJM9DcC3Cdt0GLCxyYsvzvxz+xBNpDW73poU/oergbY+e
-         RyuA==
+        d=google.com; s=20230601; t=1771892115; x=1772496915; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=0GMn/JpPA8zh6a0TMK+ntturbLwCrYg/Xc9jl0GDdTI=;
+        b=0166C+uVmueaBxWX5gd2/2oYJu9cgqHbEdb4yr/Oll3oT7/4Pp5z7qsQoxNSHElrk0
+         9/bQAVUjqmDkzoZ7/vuPd1NRmUwAAUUzdMtozRyc9wVB0ZjRs2OCIBE5yRNhrlufdc6H
+         ck3WRdBgfo3hg6VNk1C/vLBRDDHzhhmXWRy0W9VIEFj8HPlTEBPPtIdZKCHPvSQ2BJQL
+         LJxOivwfojIOSRldHyeCelhvAY7TKDCC5zN7Sjo6tZNDX5RnGTm1nmbWSSI4djoDLp6H
+         DxnlVjhD1p5G4BdpfdaDB7YOnPFOIlDOvg2idH/6a8vXpDDs0WlIu1IVanGVidrBu+iV
+         f3kg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1771886323; x=1772491123;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=1/pi4GMyqfUzxedG8y+xzMj5Pky+ci5h56Uzs52BODo=;
-        b=brripid9+yFFLupVG8nxCQSJlmCYAivQeV6ngyMkackSAXQJadYUxaxdKkbOxTnjL9
-         EchuBV0Z1ZQyezGow+0D2MADrKwjhkoTCuvdzcXBRncIrrLUeb+lwYVQHC4QJlyEEz33
-         OLI2d1xzbrwO9pvLLt10vsRpOjtVTzBMkX9tg+8KJnRn1cVslySpvZejaDvYIcnI7v6u
-         1oKFdrSQ8WEdFz/e2SRQN0UoSS37l9LHPhGZEqCp6wtPv8tVhH6uG1RTk4vwnG+qpp8O
-         CAUYBzJ2miAa3kqdqawBSYrF9KFFz7yTC/TT66FUUAtABaE7yS2e26/FGNiSIf5VGCu4
-         J4CQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVCX1xeqrXfOZhzGQoGGfWgyL8NqqVOItXhAr9LhRIbdalpkZ39FHP6giJS85s1YI5kNgoYQnHw@vger.kernel.org
-X-Gm-Message-State: AOJu0YyKY8QEtQbGr5E4uI1wL+Rg3UclH483LFaeSGgvyugRFiMxPlTc
-	Wth4+DTzT/ZYwEhKkJA2XRvZGw2oTZjmpFjUsyBVgEVitT0lAPOvELBV
-X-Gm-Gg: AZuq6aImHZ1I+gc+SutbheqZwHFDKlE+9mBWId4SPnJ+fE17zC9k1qq89zuiRhadKQ7
-	XSwE76l8UNVJ9KR1p6CwvZourhjVXYpVP9B3Tw1mrqY/JkBdMhqXGRk0xaolsab6Icz6idc1nTQ
-	bfTubbqLjLrQJOtcrT1iwhssO6k+oFlt4G46iHrkG+pWKxDUhUL8+LtV5r1Ynuu15+4iaqDgBzu
-	i0Bnh1m1U3zH1F6K34icul9YBc+NPI7e5IT2bLCb+M/B5B8yk8HmOtzuPT9vIADoEUVtBKT5F3E
-	55bfqU4c+sWAgSPlNalJJDgsYTx3vyV9eMrdbMg3STv+Drbr66lBNiopya0KADxHos2ptF2wsQv
-	8B6qeEuSx8O/vyyVHA9E2xn8/PJk6ZUzWpIiCS/GDqnauK8n0CM+OR38YX939JNykKsKv1/ErdV
-	A+soaNurhf/fTfZmTmibOOJpsuvNz8LgEl
-X-Received: by 2002:a05:6830:6610:b0:7d1:9da9:c6e with SMTP id 46e09a7af769-7d52bf6bb20mr5168975a34.25.1771886323539;
-        Mon, 23 Feb 2026 14:38:43 -0800 (PST)
-Received: from localhost ([2a03:2880:10ff:71::])
-        by smtp.gmail.com with ESMTPSA id 46e09a7af769-7d52ce63069sm8952812a34.0.2026.02.23.14.38.42
+        d=1e100.net; s=20230601; t=1771892115; x=1772496915;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=0GMn/JpPA8zh6a0TMK+ntturbLwCrYg/Xc9jl0GDdTI=;
+        b=GhMBS1o8awuWIx6lsh4VGI+iDqo88ebSDVu9zbXFKUrGt9tgBdPn6+jqqaCzrZxsf9
+         AkG4wToUbKi8VTW+X9oo8HtzZVK2m3cgLescS9B29B7XWffoRDZUZFS7pp8GdQWKsice
+         sXMou0bVphrZJY4W652HBpODflU90WWX5rwmhxAjlswvQ5Rosa4HTN625sfbKti3oImN
+         7kzdAJr/zIMjrnah2Rq2Ud/OyQDTEByCzf0Hxe6nM6dy2lV1pdNWwKLlZFgNjYC+sNdA
+         Slm0TvU3DXfSA7OcpaCEwQDvIVh6zD0FXFYVjJfl179l+JF9xTh5sf7lA9Pn4mHNluoF
+         gcWg==
+X-Forwarded-Encrypted: i=1; AJvYcCWWkKd9oSYA/4D0ECL6J+LtSmWjCRjLzmxK6DtJoY8ke9gblPcnUi8lpj09tDU86cFlyjZFuM3u@vger.kernel.org
+X-Gm-Message-State: AOJu0YxMYXGjPGB8NMKJA5TvqplrABGEVn2+nJnQxyDcJ5vFoQ4Xg3LQ
+	/YASdKvQncuPXcIHa3i+ClP6+cPBeK2Ls2x7fhui8pSowEh53pmsqiWwjIprE1Mo7A==
+X-Gm-Gg: AZuq6aIkaagNp2s0xPHwSkedVShNwmVYiPSoGnuvhZsNOvarSr8jEtVPlo+qmOCukjP
+	ixk82+6b/ueDHq7av4+bhoLNSk4UdBqfVVXEihdzJWiCgE61ndWuNq+wULEBtVybExQ+RC7bVhI
+	+4Fd7EbDckfjUOoQS48c8FwT3Eq4nEX5r+I8xSsOlEOkfdZLSu1YZ+C18IsgO0QMgImfJ9m8Vk9
+	R/tzNMAWXJ+Y5PalX6hCkSArNbZC1gy0pJz8UQo8VKBMV+x7QjXrIJXcY4RYTt+aupv19dho7D9
+	oZEkHJ746q3fCutjGZOc7nZpu0U1PY9stfnpYZIF9ikML7RofpooL0fDGEUefX02aE2TZyAXJqx
+	7iqcD3IxwmPqqQBtuUIGIoM8Ty8ieudk7bIbJP496Z6ckAWV1HqA905xbIbuWygcVvtVqlEGzKJ
+	+E8xzMsMGlkTI6+PgYYVYkkbOCUaHaCqAuE6rGOqwXBjeJYJ098EH0+XeR//JMFc4=
+X-Received: by 2002:a17:906:66d4:b0:b8e:fb1d:9eba with SMTP id a640c23a62f3a-b9081c1c4c5mr467058766b.54.1771892114268;
+        Mon, 23 Feb 2026 16:15:14 -0800 (PST)
+Received: from google.com (93.50.90.34.bc.googleusercontent.com. [34.90.50.93])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-b9084e4be53sm382403166b.31.2026.02.23.16.15.13
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 23 Feb 2026 14:38:42 -0800 (PST)
-From: Joshua Hahn <joshua.hahnjy@gmail.com>
-To: Joshua Hahn <joshua.hahnjy@gmail.com>
-Cc: Andrew Morton <akpm@linux-foundation.org>,
-	David Hildenbrand <david@kernel.org>,
-	Lorenzo Stoakes <lorenzo.stoakes@oracle.com>,
-	Johannes Weiner <hannes@cmpxchg.org>,
-	Michal Hocko <mhocko@suse.com>,
-	Roman Gushchin <roman.gushchin@linux.dev>,
-	Shakeel Butt <shakeel.butt@linux.dev>,
-	Muchun Song <muchun.song@linux.dev>,
-	Qi Zheng <zhengqi.arch@bytedance.com>,
-	Axel Rasmussen <axelrasmussen@google.com>,
-	Yuanchu Xie <yuanchu@google.com>,
-	Wei Xu <weixugc@google.com>,
-	linux-mm@kvack.org,
-	cgroups@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	kernel-team@meta.com
-Subject: [RFC PATCH 6/6] mm/memcontrol: Make memory.high tier-aware
-Date: Mon, 23 Feb 2026 14:38:29 -0800
-Message-ID: <20260223223830.586018-7-joshua.hahnjy@gmail.com>
-X-Mailer: git-send-email 2.47.3
-In-Reply-To: <20260223223830.586018-1-joshua.hahnjy@gmail.com>
-References: <20260223223830.586018-1-joshua.hahnjy@gmail.com>
+        Mon, 23 Feb 2026 16:15:13 -0800 (PST)
+Date: Tue, 24 Feb 2026 00:15:10 +0000
+From: Matt Bobrowski <mattbobrowski@google.com>
+To: Christian Brauner <brauner@kernel.org>
+Cc: Alexei Starovoitov <ast@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Andrii Nakryiko <andrii@kernel.org>,
+	Martin KaFai Lau <martin.lau@linux.dev>, Tejun Heo <tj@kernel.org>,
+	KP Singh <kpsingh@kernel.org>, bpf@vger.kernel.org,
+	linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+	Lennart Poettering <lennart@poettering.net>
+Subject: Re: [PATCH 1/4] ns: add bpf hooks
+Message-ID: <aZztjkqe-6U3d9DF@google.com>
+References: <20260220-work-bpf-namespace-v1-0-866207db7b83@kernel.org>
+ <20260220-work-bpf-namespace-v1-1-866207db7b83@kernel.org>
+ <aZwto86A08K91w0c@google.com>
+ <20260223-ewigkeit-zwieback-4350eb90a616@brauner>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20260223-ewigkeit-zwieback-4350eb90a616@brauner>
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-0.16 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
+X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_MISSING_CHARSET(0.50)[];
-	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
-	R_DKIM_ALLOW(-0.20)[gmail.com:s=20230601];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	DMARC_POLICY_ALLOW(-0.50)[google.com,reject];
+	R_DKIM_ALLOW(-0.20)[google.com:s=20230601];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_TLS_LAST(0.00)[];
-	FREEMAIL_FROM(0.00)[gmail.com];
-	TAGGED_FROM(0.00)[bounces-14176-lists,cgroups=lfdr.de];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	RECEIVED_HELO_LOCALHOST(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	RCPT_COUNT_TWELVE(0.00)[17];
-	FREEMAIL_TO(0.00)[gmail.com];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[5];
-	FROM_NEQ_ENVFROM(0.00)[joshuahahnjy@gmail.com,cgroups@vger.kernel.org];
+	DKIM_TRACE(0.00)[google.com:+];
 	FROM_HAS_DN(0.00)[];
-	DKIM_TRACE(0.00)[gmail.com:+];
-	NEURAL_HAM(-0.00)[-0.999];
-	TAGGED_RCPT(0.00)[cgroups];
-	MID_RHS_MATCH_FROM(0.00)[];
-	TO_DN_SOME(0.00)[];
+	RCVD_TLS_LAST(0.00)[];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-14177-lists,cgroups=lfdr.de];
+	MIME_TRACE(0.00)[0:+];
+	MISSING_XM_UA(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 90C1D17E789
+	TO_DN_SOME(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[5];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[mattbobrowski@google.com,cgroups@vger.kernel.org];
+	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
+	NEURAL_HAM(-0.00)[-0.999];
+	RCPT_COUNT_SEVEN(0.00)[11];
+	MID_RHS_MATCH_FROM(0.00)[];
+	TAGGED_RCPT(0.00)[cgroups];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: DD8B91802AA
 X-Rspamd-Action: no action
 
-On machines serving multiple workloads whose memory is isolated via the
-memory cgroup controller, it is currently impossible to enforce a fair
-distribution of toptier memory among the workloads, as the only
-enforcable limits have to do with total memory footprint, but not where
-that memory resides.
+On Mon, Feb 23, 2026 at 12:12:28PM +0100, Christian Brauner wrote:
+> On Mon, Feb 23, 2026 at 10:36:19AM +0000, Matt Bobrowski wrote:
+> > On Fri, Feb 20, 2026 at 01:38:29AM +0100, Christian Brauner wrote:
+> > > Add the three namespace lifecycle hooks and make them available to bpf
+> > > lsm program types. This allows bpf to supervise namespace creation. I'm
+> > > in the process of adding various "universal truth" bpf programs to
+> > > systemd that will make use of this. This e.g., allows to lock in a
+> > > program into a given set of namespaces.
+> > > 
+> > > Signed-off-by: Christian Brauner <brauner@kernel.org>
+> > > ---
+> > >  include/linux/bpf_lsm.h | 21 +++++++++++++++++++++
+> > >  kernel/bpf/bpf_lsm.c    | 25 +++++++++++++++++++++++++
+> > >  kernel/nscommon.c       |  9 ++++++++-
+> > >  kernel/nsproxy.c        |  7 +++++++
+> > >  4 files changed, 61 insertions(+), 1 deletion(-)
+> > > 
+> > > diff --git a/include/linux/bpf_lsm.h b/include/linux/bpf_lsm.h
+> > > index 643809cc78c3..5ae438fdf567 100644
+> > > --- a/include/linux/bpf_lsm.h
+> > > +++ b/include/linux/bpf_lsm.h
+> > > @@ -12,6 +12,9 @@
+> > >  #include <linux/bpf_verifier.h>
+> > >  #include <linux/lsm_hooks.h>
+> > >  
+> > > +struct ns_common;
+> > > +struct nsset;
+> > > +
+> > >  #ifdef CONFIG_BPF_LSM
+> > >  
+> > >  #define LSM_HOOK(RET, DEFAULT, NAME, ...) \
+> > > @@ -48,6 +51,11 @@ void bpf_lsm_find_cgroup_shim(const struct bpf_prog *prog, bpf_func_t *bpf_func)
+> > >  
+> > >  int bpf_lsm_get_retval_range(const struct bpf_prog *prog,
+> > >  			     struct bpf_retval_range *range);
+> > > +
+> > > +int bpf_lsm_namespace_alloc(struct ns_common *ns);
+> > > +void bpf_lsm_namespace_free(struct ns_common *ns);
+> > > +int bpf_lsm_namespace_install(struct nsset *nsset, struct ns_common *ns);
+> > > +
+> > >  int bpf_set_dentry_xattr_locked(struct dentry *dentry, const char *name__str,
+> > >  				const struct bpf_dynptr *value_p, int flags);
+> > >  int bpf_remove_dentry_xattr_locked(struct dentry *dentry, const char *name__str);
+> > > @@ -104,6 +112,19 @@ static inline bool bpf_lsm_has_d_inode_locked(const struct bpf_prog *prog)
+> > >  {
+> > >  	return false;
+> > >  }
+> > > +
+> > > +static inline int bpf_lsm_namespace_alloc(struct ns_common *ns)
+> > > +{
+> > > +	return 0;
+> > > +}
+> > > +static inline void bpf_lsm_namespace_free(struct ns_common *ns)
+> > > +{
+> > > +}
+> > > +static inline int bpf_lsm_namespace_install(struct nsset *nsset,
+> > > +					    struct ns_common *ns)
+> > > +{
+> > > +	return 0;
+> > > +}
+> > >  #endif /* CONFIG_BPF_LSM */
+> > >  
+> > >  #endif /* _LINUX_BPF_LSM_H */
+> > > diff --git a/kernel/bpf/bpf_lsm.c b/kernel/bpf/bpf_lsm.c
+> > > index 0c4a0c8e6f70..f6378db46220 100644
+> > > --- a/kernel/bpf/bpf_lsm.c
+> > > +++ b/kernel/bpf/bpf_lsm.c
+> > > @@ -30,10 +30,32 @@ __weak noinline RET bpf_lsm_##NAME(__VA_ARGS__)	\
+> > >  #include <linux/lsm_hook_defs.h>
+> > >  #undef LSM_HOOK
+> > >  
+> > > +__bpf_hook_start();
+> > > +
+> > > +__weak noinline int bpf_lsm_namespace_alloc(struct ns_common *ns)
+> > > +{
+> > > +	return 0;
+> > > +}
+> > > +
+> > > +__weak noinline void bpf_lsm_namespace_free(struct ns_common *ns)
+> > > +{
+> > > +}
+> > > +
+> > > +__weak noinline int bpf_lsm_namespace_install(struct nsset *nsset,
+> > > +					  struct ns_common *ns)
+> > > +{
+> > > +	return 0;
+> > > +}
+> > > +
+> > > +__bpf_hook_end();
+> > > +
+> > >  #define LSM_HOOK(RET, DEFAULT, NAME, ...) BTF_ID(func, bpf_lsm_##NAME)
+> > >  BTF_SET_START(bpf_lsm_hooks)
+> > >  #include <linux/lsm_hook_defs.h>
+> > >  #undef LSM_HOOK
+> > > +BTF_ID(func, bpf_lsm_namespace_alloc)
+> > > +BTF_ID(func, bpf_lsm_namespace_free)
+> > > +BTF_ID(func, bpf_lsm_namespace_install)
+> > >  BTF_SET_END(bpf_lsm_hooks)
+> > >  
+> > >  BTF_SET_START(bpf_lsm_disabled_hooks)
+> > > @@ -383,6 +405,8 @@ BTF_ID(func, bpf_lsm_task_prctl)
+> > >  BTF_ID(func, bpf_lsm_task_setscheduler)
+> > >  BTF_ID(func, bpf_lsm_task_to_inode)
+> > >  BTF_ID(func, bpf_lsm_userns_create)
+> > > +BTF_ID(func, bpf_lsm_namespace_alloc)
+> > > +BTF_ID(func, bpf_lsm_namespace_install)
+> > >  BTF_SET_END(sleepable_lsm_hooks)
+> > >  
+> > >  BTF_SET_START(untrusted_lsm_hooks)
+> > > @@ -395,6 +419,7 @@ BTF_ID(func, bpf_lsm_sk_alloc_security)
+> > >  BTF_ID(func, bpf_lsm_sk_free_security)
+> > >  #endif /* CONFIG_SECURITY_NETWORK */
+> > >  BTF_ID(func, bpf_lsm_task_free)
+> > > +BTF_ID(func, bpf_lsm_namespace_free)
+> > >  BTF_SET_END(untrusted_lsm_hooks)
+> > >  
+> > >  bool bpf_lsm_is_sleepable_hook(u32 btf_id)
+> > > diff --git a/kernel/nscommon.c b/kernel/nscommon.c
+> > > index bdc3c86231d3..c3613cab3d41 100644
+> > > --- a/kernel/nscommon.c
+> > > +++ b/kernel/nscommon.c
+> > > @@ -1,6 +1,7 @@
+> > >  // SPDX-License-Identifier: GPL-2.0-only
+> > >  /* Copyright (c) 2025 Christian Brauner <brauner@kernel.org> */
+> > >  
+> > > +#include <linux/bpf_lsm.h>
+> > >  #include <linux/ns_common.h>
+> > >  #include <linux/nstree.h>
+> > >  #include <linux/proc_ns.h>
+> > > @@ -77,6 +78,7 @@ int __ns_common_init(struct ns_common *ns, u32 ns_type, const struct proc_ns_ope
+> > >  		ret = proc_alloc_inum(&ns->inum);
+> > >  	if (ret)
+> > >  		return ret;
+> > > +
+> > >  	/*
+> > >  	 * Tree ref starts at 0. It's incremented when namespace enters
+> > >  	 * active use (installed in nsproxy) and decremented when all
+> > > @@ -86,11 +88,16 @@ int __ns_common_init(struct ns_common *ns, u32 ns_type, const struct proc_ns_ope
+> > >  		atomic_set(&ns->__ns_ref_active, 1);
+> > >  	else
+> > >  		atomic_set(&ns->__ns_ref_active, 0);
+> > > -	return 0;
+> > > +
+> > > +	ret = bpf_lsm_namespace_alloc(ns);
+> > > +	if (ret && !inum)
+> > > +		proc_free_inum(ns->inum);
+> > > +	return ret;
+> > >  }
+> > >  
+> > >  void __ns_common_free(struct ns_common *ns)
+> > >  {
+> > > +	bpf_lsm_namespace_free(ns);
+> > >  	proc_free_inum(ns->inum);
+> > >  }
+> > >  
+> > > diff --git a/kernel/nsproxy.c b/kernel/nsproxy.c
+> > > index 259c4b4f1eeb..5742f9664dbb 100644
+> > > --- a/kernel/nsproxy.c
+> > > +++ b/kernel/nsproxy.c
+> > > @@ -9,6 +9,7 @@
+> > >   *             Pavel Emelianov <xemul@openvz.org>
+> > >   */
+> > >  
+> > > +#include <linux/bpf_lsm.h>
+> > >  #include <linux/slab.h>
+> > >  #include <linux/export.h>
+> > >  #include <linux/nsproxy.h>
+> > > @@ -379,6 +380,12 @@ static int prepare_nsset(unsigned flags, struct nsset *nsset)
+> > >  
+> > >  static inline int validate_ns(struct nsset *nsset, struct ns_common *ns)
+> > >  {
+> > > +	int ret;
+> > > +
+> > > +	ret = bpf_lsm_namespace_install(nsset, ns);
+> > > +	if (ret)
+> > > +		return ret;
+> > > +
+> > >  	return ns->ops->install(nsset, ns);
+> > >  }
+> > 
+> > What's the reason for not adding these new hook points to the generic
+> > set of hooks that are currently being exposed directly by the LSM
+> > framework? Honestly, it seems a little odd to be providing
+> > declarations/definitions for a set of new hook points which are to be
+> > exclusively siloed to BPF LSM implementations only. I'd argue that
+> > some other LSM implementations could very well find namespace
+> > lifecycle events possibly interesting.
+> 
+> The LSM layer is of the opinion that adding new security hooks is only
+> acceptable if an implementation for an in-tree LSM is provided alongside
+> it (cf. [1]). IOW, your bpf lsm needs are not sufficient justification
+> for adding new security hooks. So if you want to add security hooks that
+> a bpf lsm makes use of then you need to come up with an implementation
+> for another in-tree LSM.
 
-This makes ensuring a consistent and baseline performance difficult, as
-each workload's performance is heavily impacted by workload-external
-factors wuch as which other workloads are co-located in the same host,
-and the order at which different workloads are started.
+I apologize. I didn't realize that adding these as new generic LSM
+hooks points had already been proposed and discussed with the LSM
+maintainers. I just wanted to make sure that we weren't
+unintentionally side-stepping.
 
-Extend the existing memory.high protection to be tier-aware in the
-charging and enforcement to limit toptier-hogging for workloads.
+> However, a subsystem is free to add as much bpf support as it wants:
+> none, some, flamethrower mode. Cgroupfs has traditionally been very bpf
+> friendly. I maintain namespaces and rewrote the infra allowing me to
+> manage them uniformly now. bpf literally just needs an attach point. I
+> could also just add fmodret tracepoints and achieve the same result.
+> 
+> The same way you add bpf kfuncs to support access to functionality that
+> put you way past what an in-tree use would be able do. The question is
+> whether you want such capabilities to be bounded by in-tree users as
+> well.
+>
+> Either a bpf lsm is an inextensible fixture bound to the scope of
+> security_* or you allow subsystems open to it to add functionality just
+> like adding a kfuncs is.
 
-Also, add a new nodemask parameter to try_to_free_mem_cgroup_pages,
-which can be used to selectively reclaim from memory at the
-memcg-tier interection of a cgroup.
-
-Signed-off-by: Joshua Hahn <joshua.hahnjy@gmail.com>
----
- include/linux/swap.h |  3 +-
- mm/memcontrol-v1.c   |  6 ++--
- mm/memcontrol.c      | 85 +++++++++++++++++++++++++++++++++++++-------
- mm/vmscan.c          | 11 +++---
- 4 files changed, 84 insertions(+), 21 deletions(-)
-
-diff --git a/include/linux/swap.h b/include/linux/swap.h
-index 0effe3cc50f5..c6037ac7bf6e 100644
---- a/include/linux/swap.h
-+++ b/include/linux/swap.h
-@@ -368,7 +368,8 @@ extern unsigned long try_to_free_mem_cgroup_pages(struct mem_cgroup *memcg,
- 						  unsigned long nr_pages,
- 						  gfp_t gfp_mask,
- 						  unsigned int reclaim_options,
--						  int *swappiness);
-+						  int *swappiness,
-+						  nodemask_t *allowed);
- extern unsigned long mem_cgroup_shrink_node(struct mem_cgroup *mem,
- 						gfp_t gfp_mask, bool noswap,
- 						pg_data_t *pgdat,
-diff --git a/mm/memcontrol-v1.c b/mm/memcontrol-v1.c
-index 0b39ba608109..29630c7f3567 100644
---- a/mm/memcontrol-v1.c
-+++ b/mm/memcontrol-v1.c
-@@ -1497,7 +1497,8 @@ static int mem_cgroup_resize_max(struct mem_cgroup *memcg,
- 		}
- 
- 		if (!try_to_free_mem_cgroup_pages(memcg, 1, GFP_KERNEL,
--				memsw ? 0 : MEMCG_RECLAIM_MAY_SWAP, NULL)) {
-+				memsw ? 0 : MEMCG_RECLAIM_MAY_SWAP,
-+				NULL, NULL)) {
- 			ret = -EBUSY;
- 			break;
- 		}
-@@ -1529,7 +1530,8 @@ static int mem_cgroup_force_empty(struct mem_cgroup *memcg)
- 			return -EINTR;
- 
- 		if (!try_to_free_mem_cgroup_pages(memcg, 1, GFP_KERNEL,
--						  MEMCG_RECLAIM_MAY_SWAP, NULL))
-+						  MEMCG_RECLAIM_MAY_SWAP,
-+						  NULL, NULL))
- 			nr_retries--;
- 	}
- 
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index 8aa7ae361a73..ebd4a1b73c51 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -2184,18 +2184,30 @@ static unsigned long reclaim_high(struct mem_cgroup *memcg,
- 
- 	do {
- 		unsigned long pflags;
--
--		if (page_counter_read(&memcg->memory) <=
--		    READ_ONCE(memcg->memory.high))
-+		nodemask_t toptier_nodes, *reclaim_nodes;
-+		bool mem_high_ok, toptier_high_ok;
-+
-+		mt_get_toptier_nodemask(&toptier_nodes, NULL);
-+		mem_high_ok = page_counter_read(&memcg->memory) <=
-+			      READ_ONCE(memcg->memory.high);
-+		toptier_high_ok = !(tier_aware_memcg_limits &&
-+				    mem_cgroup_toptier_usage(memcg) >
-+				    page_counter_toptier_high(&memcg->memory));
-+		if (mem_high_ok && toptier_high_ok)
- 			continue;
- 
-+		if (mem_high_ok && !toptier_high_ok)
-+			reclaim_nodes = &toptier_nodes;
-+		else
-+			reclaim_nodes = NULL;
-+
- 		memcg_memory_event(memcg, MEMCG_HIGH);
- 
- 		psi_memstall_enter(&pflags);
- 		nr_reclaimed += try_to_free_mem_cgroup_pages(memcg, nr_pages,
- 							gfp_mask,
- 							MEMCG_RECLAIM_MAY_SWAP,
--							NULL);
-+							NULL, reclaim_nodes);
- 		psi_memstall_leave(&pflags);
- 	} while ((memcg = parent_mem_cgroup(memcg)) &&
- 		 !mem_cgroup_is_root(memcg));
-@@ -2296,6 +2308,24 @@ static u64 mem_find_max_overage(struct mem_cgroup *memcg)
- 	return max_overage;
- }
- 
-+static u64 toptier_find_max_overage(struct mem_cgroup *memcg)
-+{
-+	u64 overage, max_overage = 0;
-+
-+	if (!tier_aware_memcg_limits)
-+		return 0;
-+
-+	do {
-+		unsigned long usage = mem_cgroup_toptier_usage(memcg);
-+		unsigned long high = page_counter_toptier_high(&memcg->memory);
-+
-+		overage = calculate_overage(usage, high);
-+		max_overage = max(overage, max_overage);
-+	} while ((memcg = parent_mem_cgroup(memcg)) &&
-+		  !mem_cgroup_is_root(memcg));
-+
-+	return max_overage;
-+}
- static u64 swap_find_max_overage(struct mem_cgroup *memcg)
- {
- 	u64 overage, max_overage = 0;
-@@ -2401,6 +2431,14 @@ void __mem_cgroup_handle_over_high(gfp_t gfp_mask)
- 	penalty_jiffies += calculate_high_delay(memcg, nr_pages,
- 						swap_find_max_overage(memcg));
- 
-+	/*
-+	 * Don't double-penalize for toptier high overage if system-wide
-+	 * memory.high has already been breached.
-+	 */
-+	if (!penalty_jiffies)
-+		penalty_jiffies += calculate_high_delay(memcg, nr_pages,
-+					toptier_find_max_overage(memcg));
-+
- 	/*
- 	 * Clamp the max delay per usermode return so as to still keep the
- 	 * application moving forwards and also permit diagnostics, albeit
-@@ -2503,7 +2541,8 @@ static int try_charge_memcg(struct mem_cgroup *memcg, gfp_t gfp_mask,
- 
- 	psi_memstall_enter(&pflags);
- 	nr_reclaimed = try_to_free_mem_cgroup_pages(mem_over_limit, nr_pages,
--						    gfp_mask, reclaim_options, NULL);
-+						    gfp_mask, reclaim_options,
-+						    NULL, NULL);
- 	psi_memstall_leave(&pflags);
- 
- 	if (mem_cgroup_margin(mem_over_limit) >= nr_pages)
-@@ -2592,23 +2631,26 @@ static int try_charge_memcg(struct mem_cgroup *memcg, gfp_t gfp_mask,
- 	 * reclaim, the cost of mismatch is negligible.
- 	 */
- 	do {
--		bool mem_high, swap_high;
-+		bool mem_high, swap_high, toptier_high = false;
- 
- 		mem_high = page_counter_read(&memcg->memory) >
- 			READ_ONCE(memcg->memory.high);
- 		swap_high = page_counter_read(&memcg->swap) >
- 			READ_ONCE(memcg->swap.high);
-+		toptier_high = tier_aware_memcg_limits &&
-+			       (mem_cgroup_toptier_usage(memcg) >
-+				page_counter_toptier_high(&memcg->memory));
- 
- 		/* Don't bother a random interrupted task */
- 		if (!in_task()) {
--			if (mem_high) {
-+			if (mem_high || toptier_high) {
- 				schedule_work(&memcg->high_work);
- 				break;
- 			}
- 			continue;
- 		}
- 
--		if (mem_high || swap_high) {
-+		if (mem_high || swap_high || toptier_high) {
- 			/*
- 			 * The allocating tasks in this cgroup will need to do
- 			 * reclaim or be throttled to prevent further growth
-@@ -4476,7 +4518,7 @@ static ssize_t memory_high_write(struct kernfs_open_file *of,
- 	struct mem_cgroup *memcg = mem_cgroup_from_css(of_css(of));
- 	unsigned int nr_retries = MAX_RECLAIM_RETRIES;
- 	bool drained = false;
--	unsigned long high;
-+	unsigned long high, toptier_high;
- 	int err;
- 
- 	buf = strstrip(buf);
-@@ -4485,15 +4527,22 @@ static ssize_t memory_high_write(struct kernfs_open_file *of,
- 		return err;
- 
- 	page_counter_set_high(&memcg->memory, high);
-+	toptier_high = page_counter_toptier_high(&memcg->memory);
- 
- 	if (of->file->f_flags & O_NONBLOCK)
- 		goto out;
- 
- 	for (;;) {
- 		unsigned long nr_pages = page_counter_read(&memcg->memory);
-+		unsigned long toptier_pages = mem_cgroup_toptier_usage(memcg);
- 		unsigned long reclaimed;
-+		unsigned long to_free;
-+		nodemask_t toptier_nodes, *reclaim_nodes;
-+		bool mem_high_ok = nr_pages <= high;
-+		bool toptier_high_ok = !(tier_aware_memcg_limits &&
-+					 toptier_pages > toptier_high);
- 
--		if (nr_pages <= high)
-+		if (mem_high_ok && toptier_high_ok)
- 			break;
- 
- 		if (signal_pending(current))
-@@ -4505,8 +4554,17 @@ static ssize_t memory_high_write(struct kernfs_open_file *of,
- 			continue;
- 		}
- 
--		reclaimed = try_to_free_mem_cgroup_pages(memcg, nr_pages - high,
--					GFP_KERNEL, MEMCG_RECLAIM_MAY_SWAP, NULL);
-+		mt_get_toptier_nodemask(&toptier_nodes, NULL);
-+		if (mem_high_ok && !toptier_high_ok) {
-+			reclaim_nodes = &toptier_nodes;
-+			to_free = toptier_pages - toptier_high;
-+		} else {
-+			reclaim_nodes = NULL;
-+			to_free = nr_pages - high;
-+		}
-+		reclaimed = try_to_free_mem_cgroup_pages(memcg, to_free,
-+					GFP_KERNEL, MEMCG_RECLAIM_MAY_SWAP,
-+					NULL, reclaim_nodes);
- 
- 		if (!reclaimed && !nr_retries--)
- 			break;
-@@ -4558,7 +4616,8 @@ static ssize_t memory_max_write(struct kernfs_open_file *of,
- 
- 		if (nr_reclaims) {
- 			if (!try_to_free_mem_cgroup_pages(memcg, nr_pages - max,
--					GFP_KERNEL, MEMCG_RECLAIM_MAY_SWAP, NULL))
-+					GFP_KERNEL, MEMCG_RECLAIM_MAY_SWAP,
-+					NULL, NULL))
- 				nr_reclaims--;
- 			continue;
- 		}
-diff --git a/mm/vmscan.c b/mm/vmscan.c
-index 5b4cb030a477..94498734b4f5 100644
---- a/mm/vmscan.c
-+++ b/mm/vmscan.c
-@@ -6652,7 +6652,7 @@ unsigned long try_to_free_mem_cgroup_pages(struct mem_cgroup *memcg,
- 					   unsigned long nr_pages,
- 					   gfp_t gfp_mask,
- 					   unsigned int reclaim_options,
--					   int *swappiness)
-+					   int *swappiness, nodemask_t *allowed)
- {
- 	unsigned long nr_reclaimed;
- 	unsigned int noreclaim_flag;
-@@ -6668,6 +6668,7 @@ unsigned long try_to_free_mem_cgroup_pages(struct mem_cgroup *memcg,
- 		.may_unmap = 1,
- 		.may_swap = !!(reclaim_options & MEMCG_RECLAIM_MAY_SWAP),
- 		.proactive = !!(reclaim_options & MEMCG_RECLAIM_PROACTIVE),
-+		.nodemask = allowed,
- 	};
- 	/*
- 	 * Traverse the ZONELIST_FALLBACK zonelist of the current node to put
-@@ -6693,7 +6694,7 @@ unsigned long try_to_free_mem_cgroup_pages(struct mem_cgroup *memcg,
- 					   unsigned long nr_pages,
- 					   gfp_t gfp_mask,
- 					   unsigned int reclaim_options,
--					   int *swappiness)
-+					   int *swappiness, nodemask_t *allowed)
- {
- 	return 0;
- }
-@@ -7806,9 +7807,9 @@ int user_proactive_reclaim(char *buf,
- 			reclaim_options = MEMCG_RECLAIM_MAY_SWAP |
- 					  MEMCG_RECLAIM_PROACTIVE;
- 			reclaimed = try_to_free_mem_cgroup_pages(memcg,
--						 batch_size, gfp_mask,
--						 reclaim_options,
--						 swappiness == -1 ? NULL : &swappiness);
-+					batch_size, gfp_mask, reclaim_options,
-+					swappiness == -1 ? NULL : &swappiness,
-+					NULL);
- 		} else {
- 			struct scan_control sc = {
- 				.gfp_mask = current_gfp_context(gfp_mask),
--- 
-2.47.3
-
+Adding these dedicated BPF LSM hooks is OK with me, especially knowing
+that I have agreement from you that you'll also be maintaining their
+call sites.
 
