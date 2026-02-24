@@ -1,236 +1,382 @@
-Return-Path: <cgroups+bounces-14221-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-14222-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 2Ii9NrvKnWmxSAQAu9opvQ
-	(envelope-from <cgroups+bounces-14221-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Tue, 24 Feb 2026 16:58:51 +0100
+	id uDg1Kq/NnWnfSAQAu9opvQ
+	(envelope-from <cgroups+bounces-14222-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Tue, 24 Feb 2026 17:11:27 +0100
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6BDF9189746
-	for <lists+cgroups@lfdr.de>; Tue, 24 Feb 2026 16:58:51 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 273FF189990
+	for <lists+cgroups@lfdr.de>; Tue, 24 Feb 2026 17:11:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id D1CBE3004636
-	for <lists+cgroups@lfdr.de>; Tue, 24 Feb 2026 15:58:50 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id CF1133030120
+	for <lists+cgroups@lfdr.de>; Tue, 24 Feb 2026 16:09:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D07331519B4;
-	Tue, 24 Feb 2026 15:58:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 424E539B4AD;
+	Tue, 24 Feb 2026 16:09:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cmpxchg.org header.i=@cmpxchg.org header.b="Bi2bxutr"
+	dkim=pass (2048-bit key) header.d=ursulin.net header.i=@ursulin.net header.b="MGNRQgzY"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-qv1-f42.google.com (mail-qv1-f42.google.com [209.85.219.42])
+Received: from mail-wm1-f47.google.com (mail-wm1-f47.google.com [209.85.128.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D8DAF3A0B21
-	for <cgroups@vger.kernel.org>; Tue, 24 Feb 2026 15:58:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 60ECD3783A0
+	for <cgroups@vger.kernel.org>; Tue, 24 Feb 2026 16:09:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1771948726; cv=none; b=H3xcE0N10YEs6xDF41Qhn5sxp8JwOXaF9+kR+fiN2VAkXA3bOg0QdF5xVQf/MHAo2aGj0AGY7nNoaRus5359L/QAUFTTI8lygjvavoY1cRMev5Y21rU7C5ttdb27ac043lMhePShmtiB9wK5992jA29YnFL5NFZfSvSdQ5BMAvk=
+	t=1771949352; cv=none; b=VYh9ZdVzGmUihfBF9QJsSpWD3hSSkvFlOOHmBncmVOGWcUIInCm/sL6BWL+hgS3NicZJMCS5kWPsdTuXyEDJJfBtY9bf3NLDAZ+qoGHOiGl0e6BF0vDYjhIrxy1XI5oetlZyiidJJNnH9fHPrYqr5tXeaPMiFoXMIXWa6Bi8+aw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1771948726; c=relaxed/simple;
-	bh=t1S/lyFT3Tly1pHl3bf4eCsWNS2vHQC8ZOIOI5m87rI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=kjOR/4ojMvc7dGuvwngVwXbmaYb0FUcaJiOzHqJEzBOc4Du6MJwKFK6k/+dm6Rc4kuvQdOvjzRE0T5hU+A+KZbKpEZE9v8jGowGNOBv3zgzdFgcHWYxq8RCb/EYdmJ/fb3uplJfI9nvJ6/HhTQzfs1e1JaRPIkZ564zlhlJi1cY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org; spf=pass smtp.mailfrom=cmpxchg.org; dkim=pass (2048-bit key) header.d=cmpxchg.org header.i=@cmpxchg.org header.b=Bi2bxutr; arc=none smtp.client-ip=209.85.219.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cmpxchg.org
-Received: by mail-qv1-f42.google.com with SMTP id 6a1803df08f44-89577f866d6so72083256d6.0
-        for <cgroups@vger.kernel.org>; Tue, 24 Feb 2026 07:58:43 -0800 (PST)
+	s=arc-20240116; t=1771949352; c=relaxed/simple;
+	bh=gcOVIWxso//u5STCAsSUyqcj9HENSM+7z2h4r2LOA9E=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=LqqrdJ2wqUsM8WnNiScPBcoTmpCEqBDy4jljoFC97PrXXxUf1qLmBUzMN8CT4Cg6NcxPFYY0YvvmNwMdKLvrAtAlPKL7pHEvAwAkWlUHD+mZa+rsby6rcYayIH5Wai3BD67WOevWXYBFyS97vaKvN8D+Ebhcfoq5l3lTDbQtgkc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ursulin.net; spf=pass smtp.mailfrom=ursulin.net; dkim=pass (2048-bit key) header.d=ursulin.net header.i=@ursulin.net header.b=MGNRQgzY; arc=none smtp.client-ip=209.85.128.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ursulin.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ursulin.net
+Received: by mail-wm1-f47.google.com with SMTP id 5b1f17b1804b1-4836f4cbe0bso43401835e9.3
+        for <cgroups@vger.kernel.org>; Tue, 24 Feb 2026 08:09:10 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg.org; s=google; t=1771948723; x=1772553523; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=K0Cl8twM23eFbKY4o+AiEr3XIzEfi52x6hS0RyhMeTs=;
-        b=Bi2bxutrWtX3OrlH0ZSrapi1UxzL5zcma6ciw1lBLniaA2bsXaC2Vpa3cpDJ/Ccnzq
-         iT/7+yDLtL2JbnQgGGacj4jWmPzN3fY7V4sqSxnE4XENaIoAyWgazhhgyv4si1P9jSUS
-         nnA+QOzL5Wj+NTzzb4djC9r20EogVfI6JLnCDc2hzBkH98LjnBORayKAtg10QmTgR3Zu
-         kDvA6TWyDNNhEkdu6K8C8zV2YFjhhlArUAyqFTwZcer3TwhE6yvvFha1sPqny0CyjIMg
-         nYg+8kBc9Vs7+3pyjBnqKByZ1WVmdSWQgE6TxftnYvhXwn8QJBk5zWdzrOIHE71zIsPf
-         5kNA==
+        d=ursulin.net; s=google; t=1771949349; x=1772554149; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=xEMwUsFe80O7FQT2pky6cbdem5vVaUv5gBoDleT5nkE=;
+        b=MGNRQgzYtkzjDr8D+7g8YRa0PeV/wIQ7ERCL9kKDNlzQ0xCNDBXttHrWpx1FGNbTj+
+         WVLrUFexv9Ng4cOpb1/Oq4+6eWx0AG8Kc3PfsTuE9rPR8o7cnfal9LpehmwwQJL0W5UY
+         lHDt4DaKOsxKviZwSaXp7Y8cGL1jeXuRwG42mo1oQ+qlKCp0XEUKmzNw7EQ+gne7yaSK
+         X8iFuGrckHrxnSMh8YsX+23blVnZcDgWcwrpdVjCGUbWVQ9oTS3T6m2U0aC7OhYjiY62
+         N8t+Hp1rHg03iXLdlAdZ7zFjxfaegaym6GCh88beJDmDeYgFhSpdG+Ejb+JL3eOToXzt
+         zGTw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1771948723; x=1772553523;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=K0Cl8twM23eFbKY4o+AiEr3XIzEfi52x6hS0RyhMeTs=;
-        b=QovjrR7XqYVQ2ZA7OtY9DNNlmOiNGHOtV5Q7dxbMdeB4ngWlpOn0uwON8Siitfj/lX
-         qeIeamY+/CoeDnT/x9iWO/trjHJ0GLMKu8kU3nzxTfh0aU/r2SVr29kYI4jNU5w5oAaR
-         /RV0WRtrfM9OQ1nx17gQA3jVtB8VSbfSvNsmbZOlt5GKPND2LoA6HlFWoGw5Z4Y5tKcq
-         ONIPofUcEXT/K2Wl8HO9RMotkMxzbfBlJmSIg8eo8KQvy8LE7Y0WYA5DICG+tH2Hg+ek
-         z4nfuQhWLuKhrhXoYW3QP0Bq2XKUGGkbmRywu/J4BSR1tljsh8QoVFrH0SxC1UQv6VFF
-         XQcQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWTZtl6xkbQTh631OBGtlLv+e5A3bXe7Jyxw4DFg2UEjE3cNRXlynQW1DY/cccLgo5PMgfDdoZs@vger.kernel.org
-X-Gm-Message-State: AOJu0YyGk3/hfh5M3+fFIpuyC1W7xUGs4nnsK512ThwQKXOCvXhsk4Pu
-	akSmYuyYYDOCKjI/fCslCCA+oB7Ou6esID6FAdya9/a9cbOs1JlWhozjc+6+ve9NfG0=
-X-Gm-Gg: ATEYQzx28Yo6xRfQWL1sT++1H0x7TDszEd9syPOz8WjPXktN7phgd/esi4bRZbDI+OA
-	VbP7Pc8qp5pBUpN6AOTVIv5stv4Q8yIS+7iXP4+u4R3RktCxMgphDpo1NUCOFrdyCs+W4kmItei
-	fUIeLp+aWPju2gH5UGYXyzc4vSeyeluJNR+nNBgakWaYI8f9n1Jeja86FWIFg+tArJe+lekBSgY
-	XtI8JMSynkS+jD/+mh7PvK7LJg1Et7JlB/vrnsHPHmpmoCcbuOhKS/yu8kgEugL5CWbMFkKx5Ya
-	QV8f3Mp+7MskC5u7OU02/3tv08sLrhO7kcRG8UxCIMQhkVBLw5WvdAptiq6CotANtT7tiX/LGU4
-	T7mHRwmnhQPVmm7wEKeQJZ68EnKGn5KQJlagefos71ffGanN3aVp20SjYzZxJfYRU/F6p++pQGF
-	J3/nJgxxaiTwUEH9E8nyGPEQ==
-X-Received: by 2002:a05:6214:e4d:b0:880:88cf:59ff with SMTP id 6a1803df08f44-899b34f0ec0mr7442706d6.22.1771948722556;
-        Tue, 24 Feb 2026 07:58:42 -0800 (PST)
-Received: from localhost ([2603:7000:c00:3a00:365a:60ff:fe62:ff29])
-        by smtp.gmail.com with ESMTPSA id af79cd13be357-8cb8d0ebcd0sm1219652585a.28.2026.02.24.07.58.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 24 Feb 2026 07:58:41 -0800 (PST)
-Date: Tue, 24 Feb 2026 10:58:37 -0500
-From: Johannes Weiner <hannes@cmpxchg.org>
-To: Kairui Song <ryncsn@gmail.com>
-Cc: Kairui Song via B4 Relay <devnull+kasong.tencent.com@kernel.org>,
-	linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
-	David Hildenbrand <david@kernel.org>,
-	Lorenzo Stoakes <lorenzo.stoakes@oracle.com>,
-	Zi Yan <ziy@nvidia.com>,
-	Baolin Wang <baolin.wang@linux.alibaba.com>,
-	Barry Song <baohua@kernel.org>, Hugh Dickins <hughd@google.com>,
-	Chris Li <chrisl@kernel.org>,
-	Kemeng Shi <shikemeng@huaweicloud.com>,
-	Nhat Pham <nphamcs@gmail.com>, Baoquan He <bhe@redhat.com>,
-	Yosry Ahmed <yosry.ahmed@linux.dev>,
-	Youngjun Park <youngjun.park@lge.com>,
-	Chengming Zhou <chengming.zhou@linux.dev>,
-	Roman Gushchin <roman.gushchin@linux.dev>,
-	Shakeel Butt <shakeel.butt@linux.dev>,
-	Muchun Song <muchun.song@linux.dev>,
-	Qi Zheng <zhengqi.arch@bytedance.com>, linux-kernel@vger.kernel.org,
-	cgroups@vger.kernel.org
-Subject: Re: [PATCH RFC 08/15] mm, swap: store and check memcg info in the
- swap table
-Message-ID: <aZ3KrfD_6vfxjRcs@cmpxchg.org>
-References: <20260220-swap-table-p4-v1-0-104795d19815@tencent.com>
- <20260220-swap-table-p4-v1-8-104795d19815@tencent.com>
- <aZyCJ6pH4hey-ZoU@cmpxchg.org>
- <CAMgjq7Aq5ckraKtNtet8+1ANuqnitFsXxefbDJQZpBxNmaW7Cg@mail.gmail.com>
+        d=1e100.net; s=20230601; t=1771949349; x=1772554149;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=xEMwUsFe80O7FQT2pky6cbdem5vVaUv5gBoDleT5nkE=;
+        b=unlWyUW6XjemKcgTYnBjy7l9yp90pwvbaEIUYUlalgo+osXc3ZgCd+THVNjFB3eLfJ
+         1fnZy5gB7dmnwuyR1+LrXR1UkOAlbXcVr/3DRaGhq9T96QxheXk0W6BfW3/GApMa4QS0
+         mkELOui0r93HJRIsgq345UipU0Ktjcp0GqL9gd5eRmyU2158kabqf2g+oCnqUlhty7fV
+         10XqGBYd7ZN1xjmSYMiim98ZCEI40RHFgAIH1mnaN8Ew6eXh89zf6TlVCW7nmG1GB1LF
+         BUGfJV6b6+fGoxXiuSKVLCPkE6SYgCHvCBnoRIfOiIKQMFnto9hWYG42HBCyZGH+WFJF
+         Q4Gg==
+X-Gm-Message-State: AOJu0Yx4fVu/zcoNWEcgyG9+ME+FBwQpxHRB7IlidBLoNnMG/ehao42E
+	3f344kwepPMgjEfrP/DrzMBHDrSpOY7YB2bkV14i7/NYzSnxKoqRd14FvHylIunLeQ0=
+X-Gm-Gg: AZuq6aLOYUxzY59OEtMCGr2u5kKHVs5yF0rOEodL+JRLrlOIsR+/oRW0khgIAaU38Uv
+	VV1qmAC9ORoxDB3qK7w1yqY57Eq9S2l/wiURqfMx0N14zNpPBb2MpGekRaQEpyQPQ3PKLHAGseU
+	tahM6aB1mkQtNX4I/AoaVPKTN3rREGQZxQLPgk0NF3P0NqPTfPEAi68kwzwtn6GsJtiAC/gqBQ3
+	uOi1cQdT5RBbeF6museuJmZgl/W5aRNGfEhDxnd+em0xITJIcFWzuvrRMkJXqKyvrDJM/92RD21
+	gtxH4TxK2VG84Tu+Cx0XM1Q6nUx2Xi46/JQULTXMaWU02BROgysekSYm3Yts+nuPWj7xW31/AZI
+	iGFJ0l0130YM3/cDxObyAlDzifkM2s0kezjNtiHsciOuSYFJTEPc9liue7KVs5zavs53/lyC44h
+	EgmeZKs5zRS9qJy7XWgkgWn44Qe4KNqtHQk2EUr+yKGFyB
+X-Received: by 2002:a05:600c:c4a5:b0:483:7783:5382 with SMTP id 5b1f17b1804b1-483a95e6b64mr191933505e9.27.1771949348294;
+        Tue, 24 Feb 2026 08:09:08 -0800 (PST)
+Received: from [192.168.0.101] ([90.240.106.137])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-483bd75df90sm7650265e9.14.2026.02.24.08.09.07
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 24 Feb 2026 08:09:07 -0800 (PST)
+Message-ID: <3e820754-681c-4def-8e70-e1b88ed092e5@ursulin.net>
+Date: Tue, 24 Feb 2026 16:09:07 +0000
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAMgjq7Aq5ckraKtNtet8+1ANuqnitFsXxefbDJQZpBxNmaW7Cg@mail.gmail.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 3/5] drm/ttm: Make a helper for attempting allocation
+ in a place
+To: Natalie Vock <natalie.vock@gmx.de>, Maarten Lankhorst <dev@lankhorst.se>,
+ Maxime Ripard <mripard@kernel.org>, Tejun Heo <tj@kernel.org>,
+ Johannes Weiner <hannes@cmpxchg.org>, =?UTF-8?Q?Michal_Koutn=C3=BD?=
+ <mkoutny@suse.com>, Christian Koenig <christian.koenig@amd.com>,
+ Huang Rui <ray.huang@amd.com>, Matthew Auld <matthew.auld@intel.com>,
+ Matthew Brost <matthew.brost@intel.com>,
+ Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+ Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>,
+ Simona Vetter <simona@ffwll.ch>
+Cc: cgroups@vger.kernel.org, dri-devel@lists.freedesktop.org
+References: <20251110-dmemcg-aggressive-protect-v3-0-219ffcfc54e9@gmx.de>
+ <20251110-dmemcg-aggressive-protect-v3-3-219ffcfc54e9@gmx.de>
+Content-Language: en-GB
+From: Tvrtko Ursulin <tursulin@ursulin.net>
+In-Reply-To: <20251110-dmemcg-aggressive-protect-v3-3-219ffcfc54e9@gmx.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-0.66 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
+X-Spamd-Result: default: False [-1.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[cmpxchg.org,none];
-	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
-	R_DKIM_ALLOW(-0.20)[cmpxchg.org:s=google];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64];
+	R_DKIM_ALLOW(-0.20)[ursulin.net:s=google];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	MIME_TRACE(0.00)[0:+];
-	TAGGED_FROM(0.00)[bounces-14221-lists,cgroups=lfdr.de];
-	RCPT_COUNT_TWELVE(0.00)[23];
+	TAGGED_FROM(0.00)[bounces-14222-lists,cgroups=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
+	DMARC_NA(0.00)[ursulin.net];
+	FREEMAIL_TO(0.00)[gmx.de,lankhorst.se,kernel.org,cmpxchg.org,suse.com,amd.com,intel.com,linux.intel.com,suse.de,gmail.com,ffwll.ch];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	FREEMAIL_CC(0.00)[kernel.org,kvack.org,linux-foundation.org,oracle.com,nvidia.com,linux.alibaba.com,google.com,huaweicloud.com,gmail.com,redhat.com,linux.dev,lge.com,bytedance.com,vger.kernel.org];
-	RECEIVED_HELO_LOCALHOST(0.00)[];
-	FREEMAIL_TO(0.00)[gmail.com];
-	FROM_HAS_DN(0.00)[];
-	MISSING_XM_UA(0.00)[];
+	DKIM_TRACE(0.00)[ursulin.net:+];
+	RCPT_COUNT_TWELVE(0.00)[16];
+	MIME_TRACE(0.00)[0:+];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	TO_DN_SOME(0.00)[];
 	RCVD_COUNT_FIVE(0.00)[5];
-	NEURAL_HAM(-0.00)[-0.998];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[hannes@cmpxchg.org,cgroups@vger.kernel.org];
-	DKIM_TRACE(0.00)[cmpxchg.org:+];
+	FROM_NEQ_ENVFROM(0.00)[tursulin@ursulin.net,cgroups@vger.kernel.org];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	NEURAL_HAM(-0.00)[-1.000];
+	TAGGED_RCPT(0.00)[cgroups];
 	MID_RHS_MATCH_FROM(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	TAGGED_RCPT(0.00)[cgroups,kasong.tencent.com];
-	TO_DN_SOME(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[cmpxchg.org:mid,cmpxchg.org:dkim,cmpxchg.org:email,sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 6BDF9189746
+	DBL_BLOCKED_OPENRESOLVER(0.00)[ursulin.net:mid,ursulin.net:dkim,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,gmx.de:email]
+X-Rspamd-Queue-Id: 273FF189990
 X-Rspamd-Action: no action
 
-On Tue, Feb 24, 2026 at 04:34:00PM +0800, Kairui Song wrote:
-> On Tue, Feb 24, 2026 at 12:46 AM Johannes Weiner <hannes@cmpxchg.org> wrote:
-> >
-> > On Fri, Feb 20, 2026 at 07:42:09AM +0800, Kairui Song via B4 Relay wrote:
-> > > From: Kairui Song <kasong@tencent.com>
-> > >
-> > > To prepare for merging the swap_cgroup_ctrl into the swap table, store
-> > > the memcg info in the swap table on swapout.
-> > >
-> > > This is done by using the existing shadow format.
-> > >
-> > > Note this also changes the refault counting at the nearest online memcg
-> > > level:
-> > >
-> > > Unlike file folios, anon folios are mostly exclusive to one mem cgroup,
-> > > and each cgroup is likely to have different characteristics.
-> >
-> > This is not correct.
-> >
-> > As much as I like the idea of storing the swap_cgroup association
-> > inside the shadow entry, the refault evaluation needs to happen at the
-> > level that drove eviction.
-> >
-> > Consider a workload that is split into cgroups purely for accounting,
-> > not for setting different limits:
-> >
-> > workload (limit domain)
-> > `- component A
-> > `- component B
-> >
-> > This means the two components must compete freely, and it must behave
-> > as if there is only one LRU. When pages get reclaimed in a round-robin
-> > fashion, both A and B get aged at the same pace. Likewise, when pages
-> > in A refault, they must challenge the *combined* workingset of both A
-> > and B, not just the local pages.
-> >
-> > Otherwise, you risk retaining stale workingset in one subgroup while
-> > the other one is thrashing. This breaks userspace expectations.
-> >
+
+On 10/11/2025 12:37, Natalie Vock wrote:
+> ttm_bo_alloc_place is a new helper function to make an attempt at
+> allocating a bo's resource in a specific place. It also makes decisions
+> on whether eviction should be attempted: If -ENOSPC is returned,
+> allocation should not be retried.
+
+At first I thought the new helper will get used from more than one call 
+site but it seems that is not the case? No objections to extract some 
+code to be clear, just that when I see a patch title of "making a 
+helper" I expect something different.
+
+Is there any functional difference here or it is just prep to enable 
+easier extending in the following patch? If no functional difference it 
+is good to state that in the commit message. If functional difference 
+please explain what and why.
+
+Also please explain that the patch is only adding a new struct parameter 
+as a preparation for it being extended.
+
 > 
-> Hi Johannes, thanks for pointing this out.
+> Signed-off-by: Natalie Vock <natalie.vock@gmx.de>
+> ---
+>   drivers/gpu/drm/ttm/ttm_bo.c | 98 +++++++++++++++++++++++++++++++++-----------
+>   1 file changed, 73 insertions(+), 25 deletions(-)
 > 
-> I'm just not sure how much of a real problem this is. The refault
-> challenge change was made in commit b910718a948a which was before anon
-> shadow was introduced. And shadows could get reclaimed, especially
-> when under pressure (and we could be doing that again by reclaiming
-> full_clusters with swap tables). And MGLRU simply ignores the
-> target_memcg here yet it performs surprisingly well with multiple
-> memcg setups. And I did find a comment in workingset.c saying the
-> kernel used to activate all pages, which is also fine. And that commit
-> also mentioned the active list shrinking, but anon active list gets
-> shrinked just fine without refault feedback in shrink_lruvec under
-> can_age_anon_pages.
+> diff --git a/drivers/gpu/drm/ttm/ttm_bo.c b/drivers/gpu/drm/ttm/ttm_bo.c
+> index f4d9e68b21e70..829d994798835 100644
+> --- a/drivers/gpu/drm/ttm/ttm_bo.c
+> +++ b/drivers/gpu/drm/ttm/ttm_bo.c
+> @@ -489,6 +489,11 @@ int ttm_bo_evict_first(struct ttm_device *bdev, struct ttm_resource_manager *man
+>   	return ret;
+>   }
+>   
+> +struct ttm_bo_alloc_state {
+> +	/** @limit_pool: Which pool limit we should test against */
+> +	struct dmem_cgroup_pool_state *limit_pool;
+> +};
+> +
+>   /**
+>    * struct ttm_bo_evict_walk - Parameters for the evict walk.
+>    */
+> @@ -504,12 +509,13 @@ struct ttm_bo_evict_walk {
+>   	/** @evicted: Number of successful evictions. */
+>   	unsigned long evicted;
+>   
+> -	/** @limit_pool: Which pool limit we should test against */
+> -	struct dmem_cgroup_pool_state *limit_pool;
+>   	/** @try_low: Whether we should attempt to evict BO's with low watermark threshold */
+>   	bool try_low;
+>   	/** @hit_low: If we cannot evict a bo when @try_low is false (first pass) */
+>   	bool hit_low;
+> +
+> +	/** @alloc_state: */
+> +	struct ttm_bo_alloc_state *alloc_state;
+>   };
+>   
+>   static s64 ttm_bo_evict_cb(struct ttm_lru_walk *walk, struct ttm_buffer_object *bo)
+> @@ -518,8 +524,9 @@ static s64 ttm_bo_evict_cb(struct ttm_lru_walk *walk, struct ttm_buffer_object *
+>   		container_of(walk, typeof(*evict_walk), walk);
+>   	s64 lret;
+>   
+> -	if (!dmem_cgroup_state_evict_valuable(evict_walk->limit_pool, bo->resource->css,
+> -					      evict_walk->try_low, &evict_walk->hit_low))
+> +	if (!dmem_cgroup_state_evict_valuable(evict_walk->alloc_state->limit_pool,
+> +					      bo->resource->css, evict_walk->try_low,
+> +					      &evict_walk->hit_low))
+>   		return 0;
+>   
+>   	if (bo->pin_count || !bo->bdev->funcs->eviction_valuable(bo, evict_walk->place))
+> @@ -561,7 +568,7 @@ static int ttm_bo_evict_alloc(struct ttm_device *bdev,
+>   			      struct ttm_operation_ctx *ctx,
+>   			      struct ww_acquire_ctx *ticket,
+>   			      struct ttm_resource **res,
+> -			      struct dmem_cgroup_pool_state *limit_pool)
+> +			      struct ttm_bo_alloc_state *state)
+>   {
+>   	struct ttm_bo_evict_walk evict_walk = {
+>   		.walk = {
+> @@ -574,7 +581,7 @@ static int ttm_bo_evict_alloc(struct ttm_device *bdev,
+>   		.place = place,
+>   		.evictor = evictor,
+>   		.res = res,
+> -		.limit_pool = limit_pool,
+> +		.alloc_state = state,
+>   	};
+>   	s64 lret;
+>   
+> @@ -688,6 +695,47 @@ static int ttm_bo_add_move_fence(struct ttm_buffer_object *bo,
+>   	return ret;
+>   }
+>   
+> +
+> +/**
+> + * ttm_bo_alloc_at_place - Attempt allocating a BO's backing store in a place
+> + *
+> + * @bo: The buffer to allocate the backing store of
+> + * @place: The place to attempt allocation in
+> + * @ctx: ttm_operation_ctx associated with this allocation
+> + * @force_space: If we should evict buffers to force space
+> + * @res: On allocation success, the resulting struct ttm_resource.
+> + * @alloc_state: Object holding allocation state such as charged cgroups.
+> + *
+> + * Returns:
+> + * -EBUSY: No space available, but allocation should be retried with eviction.
 
-                    *if inactive anon is empty, as part of the second
-                     chance logic
+With or after eviction?
 
-Please try to understand *why* this code is the way it is before
-throwing it all out. It was driven by real production problems. The
-fact that some workloads don't care is not prove that many don't hurt
-if you break this.
+> + * -ENOSPC: No space available, allocation should not be retried.
+> + * -ERESTARTSYS: An interruptible sleep was interrupted by a signal.
 
-Anon refault detection was added for that reason: Once you have swap,
-you facilitate anon workingsets that exceed memory capacity. At that
-point, cache replacement strategies apply. Scan resistance matters.
+-EAGAIN cannot get out from ttm_resource_alloc()? In the current 
+codebase or only with this patch?
 
-With fast modern compression and flash swap, the anon set alone can be
-larger than memory capacity. Everything that
-6a3ed2123a78de22a9e2b2855068a8d89f8e14f4 says about file cache starts
-applying to anonymous pages: you don't want to throw out the hot anon
-workingset just because somebody is doing a one-off burst scan through
-a larger set of cold, swapped out pages.
+> + *
+> + */
+> +static int ttm_bo_alloc_at_place(struct ttm_buffer_object *bo,
+> +				 const struct ttm_place *place,
+> +				 struct ttm_operation_ctx *ctx,
+> +				 bool force_space,
+> +				 struct ttm_resource **res,
+> +				 struct ttm_bo_alloc_state *alloc_state)
 
-Like I said in the LSFMM thread, there is no difference between anon
-and file. There didn't use to be historically. The LRU lists were
-split mechanically because noswap systems became common (lots of RAM +
-rotational drives = sad swap) and there was no point in scanning/aging
-anonymous memory if there is no swap space.
+Maybe you did not write this but I am curious and thinking out loud 
+here. The documentation for struct ttm_operation_ctx among other things 
+says:
 
-But no reasonable argument has been put forth why anon should be aged
-completely differently than file when you DO have swap.
+"""
+  * Context for TTM operations like changing buffer placement or general 
+memory
+  * allocation.
+"""
 
-There is more explanation of Why for the cgroup behavior in the cover
-letter portion of 53138cea7f398d2cdd0fa22adeec7e16093e1ebd.
+Hence I am wondering if the new alloc_state couldn't simply go in there? 
+Which would make the function prototype identical to the existing 
+ttm_bo_alloc_resource and is also already passed through the relevant 
+call chains. Which raises another question - why did 
+ttm_bo_evict_alloc() need to have struct dmem_cgroup_pool_state as a 
+separate argument and why it couldn't be passed in the context?
+
+> +{
+> +	bool may_evict;
+> +	int ret;
+> +
+> +	may_evict = (force_space && place->mem_type != TTM_PL_SYSTEM);
+> +
+> +	ret = ttm_resource_alloc(bo, place, res,
+> +				 force_space ? &alloc_state->limit_pool : NULL);
+> +
+> +	if (ret) {
+> +		if ((ret == -ENOSPC || ret == -EAGAIN) && may_evict)
+> +			ret = -EBUSY;
+> +		return ret;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+>   /**
+>    * ttm_bo_alloc_resource - Allocate backing store for a BO
+>    *
+> @@ -713,7 +761,9 @@ static int ttm_bo_alloc_resource(struct ttm_buffer_object *bo,
+>   				 bool force_space,
+>   				 struct ttm_resource **res)
+>   {
+> +	struct ttm_bo_alloc_state alloc_state = {0};
+
+= {}; is usually enough.
+
+Any particular reason to move this and the manager outside of the loop?
+
+>   	struct ttm_device *bdev = bo->bdev;
+> +	struct ttm_resource_manager *man;
+>   	struct ww_acquire_ctx *ticket;
+>   	int i, ret;
+>   
+> @@ -724,9 +774,6 @@ static int ttm_bo_alloc_resource(struct ttm_buffer_object *bo,
+>   
+>   	for (i = 0; i < placement->num_placement; ++i) {
+>   		const struct ttm_place *place = &placement->placement[i];
+> -		struct dmem_cgroup_pool_state *limit_pool = NULL;
+> -		struct ttm_resource_manager *man;
+> -		bool may_evict;
+>   
+>   		man = ttm_manager_type(bdev, place->mem_type);
+>   		if (!man || !ttm_resource_manager_used(man))
+> @@ -736,25 +783,26 @@ static int ttm_bo_alloc_resource(struct ttm_buffer_object *bo,
+>   				    TTM_PL_FLAG_FALLBACK))
+>   			continue;
+>   
+> -		may_evict = (force_space && place->mem_type != TTM_PL_SYSTEM);
+> -		ret = ttm_resource_alloc(bo, place, res, force_space ? &limit_pool : NULL);
+> -		if (ret) {
+> -			if (ret != -ENOSPC && ret != -EAGAIN) {
+> -				dmem_cgroup_pool_state_put(limit_pool);
+> -				return ret;
+> -			}
+> -			if (!may_evict) {
+> -				dmem_cgroup_pool_state_put(limit_pool);
+> -				continue;
+> -			}
+> +		ret = ttm_bo_alloc_at_place(bo, place, ctx, force_space,
+> +				res, &alloc_state);
+>   
+> +		if (ret == -ENOSPC) {
+> +			dmem_cgroup_pool_state_put(alloc_state.limit_pool);
+> +			continue;
+
+I always disliked the TTM eviction logic and now I remember why. It 
+requires a brain size of a small planet to figure out the flow.. :) I'd 
+say this change makes it more readable.
+
+> +		} else if (ret == -EBUSY) {
+>   			ret = ttm_bo_evict_alloc(bdev, man, place, bo, ctx,
+> -						 ticket, res, limit_pool);
+> -			dmem_cgroup_pool_state_put(limit_pool);
+> -			if (ret == -EBUSY)
+> +						 ticket, res, &alloc_state);
+> +
+> +			dmem_cgroup_pool_state_put(alloc_state.limit_pool);
+> +
+> +			if (ret) {
+> +				if (ret != -ENOSPC && ret != -EBUSY)
+> +					return ret;
+>   				continue;
+
+Is this a functional change and why? Before only EBUSY went to the next 
+placement. Now ENOSPC does as well.
+
+Regards,
+
+Tvrtko
+
+> -			if (ret)
+> -				return ret;
+> +			}
+> +		} else if (ret) {
+> +			dmem_cgroup_pool_state_put(alloc_state.limit_pool);
+> +			return ret;
+>   		}
+>   
+>   		ret = ttm_bo_add_move_fence(bo, man, ctx->no_wait_gpu);
+> 
+
 
