@@ -1,410 +1,176 @@
-Return-Path: <cgroups+bounces-14223-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-14224-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id YNT9DhbWnWk0SQQAu9opvQ
-	(envelope-from <cgroups+bounces-14223-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Tue, 24 Feb 2026 17:47:18 +0100
+	id uExPM4DZnWk0SQQAu9opvQ
+	(envelope-from <cgroups+bounces-14224-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Tue, 24 Feb 2026 18:01:52 +0100
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id ED68218A045
-	for <lists+cgroups@lfdr.de>; Tue, 24 Feb 2026 17:47:17 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7135718A3CD
+	for <lists+cgroups@lfdr.de>; Tue, 24 Feb 2026 18:01:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id A596E30BB9F6
-	for <lists+cgroups@lfdr.de>; Tue, 24 Feb 2026 16:41:22 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 9B9A031DC7F6
+	for <lists+cgroups@lfdr.de>; Tue, 24 Feb 2026 16:55:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE3813A8FEE;
-	Tue, 24 Feb 2026 16:41:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1488E3A962B;
+	Tue, 24 Feb 2026 16:54:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ursulin.net header.i=@ursulin.net header.b="WP8BZDg/"
+	dkim=pass (2048-bit key) header.d=gourry.net header.i=@gourry.net header.b="Z2zmejZV"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-qk1-f176.google.com (mail-qk1-f176.google.com [209.85.222.176])
+Received: from mail-qv1-f47.google.com (mail-qv1-f47.google.com [209.85.219.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0683D3A7F71
-	for <cgroups@vger.kernel.org>; Tue, 24 Feb 2026 16:40:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 966AA3A9015
+	for <cgroups@vger.kernel.org>; Tue, 24 Feb 2026 16:54:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1771951261; cv=none; b=EFygI0BapamKOcRUBEZL5+4oEyhncV7gksIVKOS6sBlkpM4iikJpwYoGESL9vTw2/HGHTivaLiQT8/lHNJHUjdFWCCCQjPV16ytSlRa+AuPoTB/OyEMoRmF/F779ujBzdeaOqDR2XN+hWJmEPYZMXxcC/8GKYS8iC8vUeGy7H/U=
+	t=1771952098; cv=none; b=SiBZ9ZcDBmbRaBi3ocrDwhcUuEymFmRku8uXIrPXhUkLXGHW1L5f8YZZglmHqKffD/M1a7r0H3uhorpImnUxqqYb5/LLb6fuqeYt2hCp7tey1ZtXK73ijswLtAAV6iN7KgIQWlByJK4ih/Us3appAHlsn2axhKlrBgxWVaGkMYg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1771951261; c=relaxed/simple;
-	bh=6tN46Xm4mRCtsXcuU76Ja3fFPNwgbAGUHf2/1sYMEws=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=gGAhougzJ9oqGcfjICBwyWYo6svdD4otaLq3Pe6W3c3qZKZkuk1JYoBPSg7I+9VymWvS7XEr8hZovMEIS9prQspx0N5T6Y3kjWwz85KXVxxFQMj/9uQ8tqzT9YL8bf4j6W1QZOROTXbEyXJ5Ryrp7uvguwfccztx2w9HZEvXCvk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ursulin.net; spf=pass smtp.mailfrom=ursulin.net; dkim=pass (2048-bit key) header.d=ursulin.net header.i=@ursulin.net header.b=WP8BZDg/; arc=none smtp.client-ip=209.85.222.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ursulin.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ursulin.net
-Received: by mail-qk1-f176.google.com with SMTP id af79cd13be357-8cb3825b0fbso557855785a.0
-        for <cgroups@vger.kernel.org>; Tue, 24 Feb 2026 08:40:59 -0800 (PST)
+	s=arc-20240116; t=1771952098; c=relaxed/simple;
+	bh=jdCxOTtyEPr/iR2B4h4Aq7P1P0AhdAHaD1MtdqqOD6s=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=dI6b0sEKqegYcRfHmpItLe0h5P95tXFzJMwoNBkyyat2IUV2k69/QBp0WEzAhqvg0zUXSyTElALLDn/uGFfiNsJ3EZpxebk+VYETfA0ew53tQvQ+w13QBvQyIIs1SC6cP6L3SKtFPQrtOBNlm/xOWmet8/rd5SbjJlS6c88n26s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gourry.net; spf=pass smtp.mailfrom=gourry.net; dkim=pass (2048-bit key) header.d=gourry.net header.i=@gourry.net header.b=Z2zmejZV; arc=none smtp.client-ip=209.85.219.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gourry.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gourry.net
+Received: by mail-qv1-f47.google.com with SMTP id 6a1803df08f44-896fcfc591eso53986376d6.2
+        for <cgroups@vger.kernel.org>; Tue, 24 Feb 2026 08:54:57 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ursulin.net; s=google; t=1771951259; x=1772556059; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=r+EJH7jh13bei8cB8TSdZaGztFOiCPjhWGdzC+WxWgY=;
-        b=WP8BZDg/sw9QDYQ1WCe5eygSXYv0iXmQVNqORyf8+PVlGpoVFywROx7RCbgPNUDjgb
-         KBW8Db/X1a6o4h0gbHjDMa6xJD701JmvkVJkk8wA1I4SykDxmhesoAvj5TQl1iOLC70A
-         GjLBcLrlAblQ0s+rhPaUM9dpL5IBQmugeY2R3Fb5cqaeK7UrKVNbbOjyvuVTjXqPmDZQ
-         1iLIzw/k/O3QeXPNL76b+nxq8KtP5J8aoWDjjqNW523nn1MseknBNf0GVR2HBeh39Qhr
-         djqz/qdrVYq8egLZMjhwTE5A7nKeckOHxmd5c1KmN7LoeQB7YfyAEyTAT4Pwg5A3ifSu
-         uLWQ==
+        d=gourry.net; s=google; t=1771952096; x=1772556896; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=/u4GoWFznFuQrqLlGOUj7jRuDM2CBLv4iVo/JzLKZig=;
+        b=Z2zmejZVquI1y0nNwLqNgdh++8hSr+zpDa2yV7e0wOzQgDnLWmrhwFjX3Nz0nCaNJr
+         8eBG5VQI7nts0IIFMCVb/AGg7lhckLxHal2BBu41sPjWLsUn9PQo2mHQluPTkW87sgOA
+         NAkghOy7LRthIUbPKhMKbI+0rttrlsTGnTevisRUYEmI+E7Ue+pcyw1U8RnvQF+f1eQa
+         5GgaXeUYhX25bEpZxL3JYLOmmIvDbHNr0v+qNJuZqXKevCPK1LFvWAihoPf68qZfXDxN
+         js+YwTbh/Jir44XqV7VH2Ue8EGBN8Gqx3O/80yRMxO9BZNvkIrS2XbY6gMdDe+Kus5t3
+         d8ug==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1771951259; x=1772556059;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=r+EJH7jh13bei8cB8TSdZaGztFOiCPjhWGdzC+WxWgY=;
-        b=IlTHjDmtOcbAyjoaaB6myneKOKNAMxk8yOM7Aw6r1NKsbLtxNaUCt6t5HN41+kzx0x
-         tNvGqte/e6ZKfrSAiSUn92pv2TIEQBENoKY/GPfOi6EiX33MQ5dJzhOIaa8VKRHgeneT
-         +reXj2EkBGoROAYAiryRluZoMay/gPlD+xphok1s4BPZwc9g4yeWxkgnLxfoOypjHcdh
-         V3p2arrZyR+vdC/p6pmZNb1X82nW2oVlwnffOV7ify5G4v0Dqv/fZMw+EyubBuAxou7/
-         zA8rW10kqA4IgGaBgoZIgR1RlSJbFLnCrwwMqA7eOstr5Kl3kt3lLU0rYr8QIdBco0UR
-         Hl0Q==
-X-Gm-Message-State: AOJu0YxQhJKunPd5bGOefYusqJWBIZoFFqFLF+Tcsbj+soAbjz8/NLcI
-	J47wbqPH1miharAnVyxyH7QHr53CqrAI4OZOdmTMapXdHFnm9RfTwFZ9dQTfm7nWd68=
-X-Gm-Gg: AZuq6aI1GSYqdbqEa0E4gMZt3vr0wgladE39WkTS/SATgRTUjrZg+r1gpwH+LnMAjVq
-	519/EEc758pJbtSL+Y1iLLZeVEsmNZZz7U8Bck3l9H7682XkqdEhtjZWDI1bBUU0i5GLsi6F1mS
-	pbfdkpoSd9TfgeLuEp+a6u4WXvzhwtLh1bFeriuUhIVHO+OHfPzvxf6qPTpSJYrIM8hi3uMa6GC
-	zAx+L6QTeJA6Askx0j3o6YRSHLSdMsKRn8+9LbkAPKZV4ubvq+hoTGxFdJWttAbWCu+DEon9CpJ
-	98CHC/tqN8pT/+ejaNBdMa7C94GIGk0d6omUteBxpq0NXiQLL7UkQP8ir9052nYEY6p3cfdXT5O
-	1OqDvutGPztUC13RzjgwT8HlhMB/fFNpg9I6MTpsXrVIqJw5TE9duC+QEwTjlLwr/f6UkrEP8So
-	c6EvURmN8rMqH9oerDl3wOpu0XJopuk/0h1sgP5Jkx468D
-X-Received: by 2002:a05:620a:1904:b0:8ca:110b:38cc with SMTP id af79cd13be357-8cb8ca0df13mr1574911285a.27.1771951258511;
-        Tue, 24 Feb 2026 08:40:58 -0800 (PST)
-Received: from [192.168.0.101] ([90.240.106.137])
-        by smtp.gmail.com with ESMTPSA id af79cd13be357-8cb8d120e11sm1019605585a.49.2026.02.24.08.40.56
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 24 Feb 2026 08:40:58 -0800 (PST)
-Message-ID: <4d9e2fb9-1cea-476e-b7f8-d2caaef4a579@ursulin.net>
-Date: Tue, 24 Feb 2026 16:40:55 +0000
+        d=1e100.net; s=20230601; t=1771952096; x=1772556896;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=/u4GoWFznFuQrqLlGOUj7jRuDM2CBLv4iVo/JzLKZig=;
+        b=P7MoL+XWMFy8QVVlmOsljvayycepxGqK9QifC/BNQ5WeNIc7a5W3DuGW+JzuXB6k6G
+         5fasZ3HNVA5JshqtBUwyfzsNZfHbM/Sm2Uw45q1lbWp6x0ZPthPDTnBaedOF2+GrpEFI
+         WmZXwOrqQuXPNDt59z+UxQ5l96zmqYFSq8BNrOx61PLblF7BxXl9ejlq9X01Od8xRCtU
+         993w4sSysvG9iQw8axKPfRt5YeXF/GBuTRkS0HwAfBkmXOR2dxQMoc2foFI74qd6plp/
+         lDN9fznTeOG3em8kloP+OiMoAvvgL0kzx4iivOf7NoErQtE61CQD7gwzpTDoWQYVp1sm
+         2jeQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXe0+w+VsV5xaq80Ywr7R5aiXEso3Ivcw9eZwZtVy8kJikz6s90+3gnMpUrrsYwz6M4UiOC3KA+@vger.kernel.org
+X-Gm-Message-State: AOJu0YyQKOPEzyrUd6Zq0QZrm8t7b+tCXZXCOLpJVPR4Gn6RVlg3NFJd
+	xqxX6RcCZSPb3UFrr9Vz538nJ4gVoZJ9xtAT+ALn2zqFrgM9TFRBf+tDupW3WaJUEXE=
+X-Gm-Gg: ATEYQzwZcx0lE3YxjwT9bV+lAGGlEB2qHnrK869CIwkMgmsn12gjcFU/FruR2xzrFaV
+	bMlnik5xqkQ7ctQE/7Py9k+4INfAy0Pcm96dRqAbni7DTHiO1fn26PtbzEsAUfHifXux9NRXd6G
+	/5IxJmbsUuiKe0+YTFI/IH6HJh3CyJuea7HGvb8lJin06kGTmLvll9KsEpcQzo0JtVjNKFAoDJt
+	xvJiGHnRBw1IV+Gx0+lFY3fF6q5p5Tgryu62HI4SOAVuAAgjyBT0pkqeFfe9FSh9evJLZEZ4cmX
+	UOQb0uvXf4qsPtgDpIyyECW5UBRwiqbu31/scB2pQF/4M9F159sgQReJsIgUBgZDrzz1Dpw/gV6
+	iaKx93W8Cqj+wnB3tQQBKDI6pSfB+YuTHRQiMRaJ+vixrvaj7FXlGVvtlpUkg7OqZ+fT/oxG9h7
+	abYaehIMWZVboaNqNJPsiC1LdvXrXYmw/bjifFz42waaTcdBfgpFRVll6jdkRsH5fqrzL4idS77
+	ZZWmYzjpg==
+X-Received: by 2002:a05:6214:1bcc:b0:893:4efa:e8aa with SMTP id 6a1803df08f44-89979e317cbmr188639836d6.9.1771952096264;
+        Tue, 24 Feb 2026 08:54:56 -0800 (PST)
+Received: from gourry-fedora-PF4VCD3F (pool-96-255-20-138.washdc.ftas.verizon.net. [96.255.20.138])
+        by smtp.gmail.com with ESMTPSA id af79cd13be357-8cb8d0ec694sm1029766685a.29.2026.02.24.08.54.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 24 Feb 2026 08:54:55 -0800 (PST)
+Date: Tue, 24 Feb 2026 11:54:52 -0500
+From: Gregory Price <gourry@gourry.net>
+To: Alistair Popple <apopple@nvidia.com>
+Cc: lsf-pc@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
+	linux-cxl@vger.kernel.org, cgroups@vger.kernel.org,
+	linux-mm@kvack.org, linux-trace-kernel@vger.kernel.org,
+	damon@lists.linux.dev, kernel-team@meta.com,
+	gregkh@linuxfoundation.org, rafael@kernel.org, dakr@kernel.org,
+	dave@stgolabs.net, jonathan.cameron@huawei.com,
+	dave.jiang@intel.com, alison.schofield@intel.com,
+	vishal.l.verma@intel.com, ira.weiny@intel.com,
+	dan.j.williams@intel.com, longman@redhat.com,
+	akpm@linux-foundation.org, david@kernel.org,
+	lorenzo.stoakes@oracle.com, Liam.Howlett@oracle.com, vbabka@suse.cz,
+	rppt@kernel.org, surenb@google.com, mhocko@suse.com,
+	osalvador@suse.de, ziy@nvidia.com, matthew.brost@intel.com,
+	joshua.hahnjy@gmail.com, rakie.kim@sk.com, byungchul@sk.com,
+	ying.huang@linux.alibaba.com, axelrasmussen@google.com,
+	yuanchu@google.com, weixugc@google.com, yury.norov@gmail.com,
+	linux@rasmusvillemoes.dk, mhiramat@kernel.org,
+	mathieu.desnoyers@efficios.com, tj@kernel.org, hannes@cmpxchg.org,
+	mkoutny@suse.com, jackmanb@google.com, sj@kernel.org,
+	baolin.wang@linux.alibaba.com, npache@redhat.com,
+	ryan.roberts@arm.com, dev.jain@arm.com, baohua@kernel.org,
+	lance.yang@linux.dev, muchun.song@linux.dev, xu.xin16@zte.com.cn,
+	chengming.zhou@linux.dev, jannh@google.com, linmiaohe@huawei.com,
+	nao.horiguchi@gmail.com, pfalcato@suse.de, rientjes@google.com,
+	shakeel.butt@linux.dev, riel@surriel.com, harry.yoo@oracle.com,
+	cl@gentwo.org, roman.gushchin@linux.dev, chrisl@kernel.org,
+	kasong@tencent.com, shikemeng@huaweicloud.com, nphamcs@gmail.com,
+	bhe@redhat.com, zhengqi.arch@bytedance.com, terry.bowman@amd.com
+Subject: Re: [LSF/MM/BPF TOPIC][RFC PATCH v4 00/27] Private Memory Nodes (w/
+ Compressed RAM)
+Message-ID: <aZ3X3Jni0HZXZMVl@gourry-fedora-PF4VCD3F>
+References: <20260222084842.1824063-1-gourry@gourry.net>
+ <fzy6f6dpv3oq3ksr2mkst7pz3daeb3buhuvdvcw4633pcl7h6u@mxjgiwpg5acv>
+ <aZ3BEn_73Rk8Fn7L@gourry-fedora-PF4VCD3F>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 4/5] drm/ttm: Be more aggressive when allocating below
- protection limit
-To: Natalie Vock <natalie.vock@gmx.de>, Maarten Lankhorst <dev@lankhorst.se>,
- Maxime Ripard <mripard@kernel.org>, Tejun Heo <tj@kernel.org>,
- Johannes Weiner <hannes@cmpxchg.org>, =?UTF-8?Q?Michal_Koutn=C3=BD?=
- <mkoutny@suse.com>, Christian Koenig <christian.koenig@amd.com>,
- Huang Rui <ray.huang@amd.com>, Matthew Auld <matthew.auld@intel.com>,
- Matthew Brost <matthew.brost@intel.com>,
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
- Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>,
- Simona Vetter <simona@ffwll.ch>
-Cc: cgroups@vger.kernel.org, dri-devel@lists.freedesktop.org
-References: <20251110-dmemcg-aggressive-protect-v3-0-219ffcfc54e9@gmx.de>
- <20251110-dmemcg-aggressive-protect-v3-4-219ffcfc54e9@gmx.de>
-Content-Language: en-GB
-From: Tvrtko Ursulin <tursulin@ursulin.net>
-In-Reply-To: <20251110-dmemcg-aggressive-protect-v3-4-219ffcfc54e9@gmx.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <aZ3BEn_73Rk8Fn7L@gourry-fedora-PF4VCD3F>
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-1.66 / 15.00];
+X-Spamd-Result: default: False [0.34 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64:c];
-	R_DKIM_ALLOW(-0.20)[ursulin.net:s=google];
+	MID_RHS_NOT_FQDN(0.50)[];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_DKIM_ALLOW(-0.20)[gourry.net:s=google];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-14223-lists,cgroups=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-14224-lists,cgroups=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	DMARC_NA(0.00)[ursulin.net];
-	FREEMAIL_TO(0.00)[gmx.de,lankhorst.se,kernel.org,cmpxchg.org,suse.com,amd.com,intel.com,linux.intel.com,suse.de,gmail.com,ffwll.ch];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	DKIM_TRACE(0.00)[ursulin.net:+];
-	RCPT_COUNT_TWELVE(0.00)[16];
-	MIME_TRACE(0.00)[0:+];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	FROM_HAS_DN(0.00)[];
+	DMARC_NA(0.00)[gourry.net];
+	MIME_TRACE(0.00)[0:+];
+	FREEMAIL_CC(0.00)[lists.linux-foundation.org,vger.kernel.org,kvack.org,lists.linux.dev,meta.com,linuxfoundation.org,kernel.org,stgolabs.net,huawei.com,intel.com,redhat.com,linux-foundation.org,oracle.com,suse.cz,google.com,suse.com,suse.de,nvidia.com,gmail.com,sk.com,linux.alibaba.com,rasmusvillemoes.dk,efficios.com,cmpxchg.org,arm.com,linux.dev,zte.com.cn,surriel.com,gentwo.org,tencent.com,huaweicloud.com,bytedance.com,amd.com];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	RSPAMD_URIBL_FAIL(0.00)[gourry.net:query timed out];
+	DKIM_TRACE(0.00)[gourry.net:+];
+	MISSING_XM_UA(0.00)[];
 	TO_DN_SOME(0.00)[];
 	RCVD_COUNT_FIVE(0.00)[5];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[tursulin@ursulin.net,cgroups@vger.kernel.org];
-	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
-	NEURAL_HAM(-0.00)[-1.000];
+	FROM_NEQ_ENVFROM(0.00)[gourry@gourry.net,cgroups@vger.kernel.org];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	RCPT_COUNT_GT_50(0.00)[73];
 	TAGGED_RCPT(0.00)[cgroups];
-	MID_RHS_MATCH_FROM(0.00)[];
+	NEURAL_HAM(-0.00)[-0.998];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[ursulin.net:mid,ursulin.net:dkim,sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns,gmx.de:email]
-X-Rspamd-Queue-Id: ED68218A045
+	DBL_BLOCKED_OPENRESOLVER(0.00)[gourry.net:dkim,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: 7135718A3CD
 X-Rspamd-Action: no action
 
-
-On 10/11/2025 12:37, Natalie Vock wrote:
-> When the cgroup's memory usage is below the low/min limit and allocation
-> fails, try evicting some unprotected buffers to make space. Otherwise,
-> application buffers may be forced to go into GTT even though usage is
-> below the corresponding low/min limit, if other applications filled VRAM
-> with their allocations first.
-> 
-> Signed-off-by: Natalie Vock <natalie.vock@gmx.de>
-> ---
->   drivers/gpu/drm/ttm/ttm_bo.c       | 75 ++++++++++++++++++++++++++++++++++----
->   drivers/gpu/drm/ttm/ttm_resource.c | 48 +++++++++++++++++-------
->   include/drm/ttm/ttm_resource.h     |  6 ++-
->   3 files changed, 108 insertions(+), 21 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/ttm/ttm_bo.c b/drivers/gpu/drm/ttm/ttm_bo.c
-> index 829d994798835..bd467c965e1bc 100644
-> --- a/drivers/gpu/drm/ttm/ttm_bo.c
-> +++ b/drivers/gpu/drm/ttm/ttm_bo.c
-> @@ -490,8 +490,12 @@ int ttm_bo_evict_first(struct ttm_device *bdev, struct ttm_resource_manager *man
->   }
->   
->   struct ttm_bo_alloc_state {
-> +	/** @charge_pool: The memory pool the resource is charged to */
-> +	struct dmem_cgroup_pool_state *charge_pool;
->   	/** @limit_pool: Which pool limit we should test against */
->   	struct dmem_cgroup_pool_state *limit_pool;
-> +	/** @only_evict_unprotected: If eviction should be restricted to unprotected BOs */
-> +	bool only_evict_unprotected;
->   };
->   
->   /**
-> @@ -546,7 +550,7 @@ static s64 ttm_bo_evict_cb(struct ttm_lru_walk *walk, struct ttm_buffer_object *
->   	evict_walk->evicted++;
->   	if (evict_walk->res)
->   		lret = ttm_resource_alloc(evict_walk->evictor, evict_walk->place,
-> -					  evict_walk->res, NULL);
-> +					  evict_walk->res, evict_walk->alloc_state->charge_pool);
->   	if (lret == 0)
->   		return 1;
->   out:
-> @@ -589,7 +593,7 @@ static int ttm_bo_evict_alloc(struct ttm_device *bdev,
->   	lret = ttm_lru_walk_for_evict(&evict_walk.walk, bdev, man, 1);
->   
->   	/* One more attempt if we hit low limit? */
-> -	if (!lret && evict_walk.hit_low) {
-> +	if (!lret && evict_walk.hit_low && !state->only_evict_unprotected) {
-
-What is unprotected synonymous with? No low watermark set? Should 
-dmem_cgroup_state_evict_valuable() even set *hit_low = true for if low 
-is not set to begin with?
-
->   		evict_walk.try_low = true;
->   		lret = ttm_lru_walk_for_evict(&evict_walk.walk, bdev, man, 1);
->   	}
-> @@ -610,7 +614,8 @@ static int ttm_bo_evict_alloc(struct ttm_device *bdev,
->   	} while (!lret && evict_walk.evicted);
->   
->   	/* We hit the low limit? Try once more */
-> -	if (!lret && evict_walk.hit_low && !evict_walk.try_low) {
-> +	if (!lret && evict_walk.hit_low && !evict_walk.try_low &&
-> +			!state->only_evict_unprotected) {
->   		evict_walk.try_low = true;
->   		goto retry;
->   	}
-> @@ -719,20 +724,72 @@ static int ttm_bo_alloc_at_place(struct ttm_buffer_object *bo,
->   				 struct ttm_resource **res,
->   				 struct ttm_bo_alloc_state *alloc_state)
->   {
-> -	bool may_evict;
-> +	bool may_evict, below_low = false;
->   	int ret;
->   
->   	may_evict = (force_space && place->mem_type != TTM_PL_SYSTEM);
-> +	ret = ttm_resource_try_charge(bo, place, &alloc_state->charge_pool,
-> +				      force_space ? &alloc_state->limit_pool : NULL);
-> +	if (ret) {
-> +		/*
-> +		 * -EAGAIN means the charge failed, which we treat like an
-> +		 * allocation failure. Therefore, return an error code indicating
-> +		 * the allocation failed - either -EBUSY if the allocation should
-> +		 * be retried with eviction, or -ENOSPC if there should be no second
-> +		 * attempt.
-> +		 */
-> +		if (ret == -EAGAIN)
-> +			ret = may_evict ? -EBUSY : -ENOSPC;
-> +		return ret;
-> +	}
->   
-> -	ret = ttm_resource_alloc(bo, place, res,
-> -				 force_space ? &alloc_state->limit_pool : NULL);
-> +	/*
-> +	 * cgroup protection plays a special role in eviction.
-> +	 * Conceptually, protection of memory via the dmem cgroup controller
-> +	 * entitles the protected cgroup to use a certain amount of memory.
-> +	 * There are two types of protection - the 'low' limit is a
-> +	 * "best-effort" protection, whereas the 'min' limit provides a hard
-> +	 * guarantee that memory within the cgroup's allowance will not be
-> +	 * evicted under any circumstance.
-> +	 *
-> +	 * To faithfully model this concept in TTM, we also need to take cgroup
-> +	 * protection into account when allocating. When allocation in one
-> +	 * place fails, TTM will default to trying other places first before
-> +	 * evicting.
-> +	 * If the allocation is covered by dmem cgroup protection, however,
-> +	 * this prevents the allocation from using the memory it is "entitled"
-> +	 * to. To make sure unprotected allocations cannot push new protected
-> +	 * allocations out of places they are "entitled" to use, we should
-> +	 * evict buffers not covered by any cgroup protection, if this
-> +	 * allocation is covered by cgroup protection.
-> +	 *
-> +	 * Buffers covered by 'min' protection are a special case - the 'min'
-> +	 * limit is a stronger guarantee than 'low', and thus buffers protected
-> +	 * by 'low' but not 'min' should also be considered for eviction.
-> +	 * Buffers protected by 'min' will never be considered for eviction
-> +	 * anyway, so the regular eviction path should be triggered here.
-> +	 * Buffers protected by 'low' but not 'min' will take a special
-> +	 * eviction path that only evicts buffers covered by neither 'low' or
-> +	 * 'min' protections.
-> +	 */
-> +	may_evict |= dmem_cgroup_below_min(NULL, alloc_state->charge_pool);
-> +	below_low = dmem_cgroup_below_low(NULL, alloc_state->charge_pool);
-> +	alloc_state->only_evict_unprotected = !may_evict && below_low;
-> +
-> +	ret = ttm_resource_alloc(bo, place, res, alloc_state->charge_pool);
->   
->   	if (ret) {
-> -		if ((ret == -ENOSPC || ret == -EAGAIN) && may_evict)
-> +		if ((ret == -ENOSPC || ret == -EAGAIN) &&
-> +				(may_evict || below_low))
->   			ret = -EBUSY;
->   		return ret;
->   	}
->   
-> +	/*
-> +	 * Ownership of charge_pool has been transferred to the TTM resource,
-> +	 * don't make the caller think we still hold a reference to it.
-> +	 */
-> +	alloc_state->charge_pool = NULL;
->   	return 0;
->   }
->   
-> @@ -787,6 +844,7 @@ static int ttm_bo_alloc_resource(struct ttm_buffer_object *bo,
->   				res, &alloc_state);
->   
->   		if (ret == -ENOSPC) {
-> +			dmem_cgroup_pool_state_put(alloc_state.charge_pool);
->   			dmem_cgroup_pool_state_put(alloc_state.limit_pool);
->   			continue;
->   		} else if (ret == -EBUSY) {
-> @@ -796,11 +854,14 @@ static int ttm_bo_alloc_resource(struct ttm_buffer_object *bo,
->   			dmem_cgroup_pool_state_put(alloc_state.limit_pool);
->   
->   			if (ret) {
-> +				dmem_cgroup_pool_state_put(
-> +						alloc_state.charge_pool);
-
-Funky line break.
-
->   				if (ret != -ENOSPC && ret != -EBUSY)
->   					return ret;
->   				continue;
->   			}
->   		} else if (ret) {
-> +			dmem_cgroup_pool_state_put(alloc_state.charge_pool);
->   			dmem_cgroup_pool_state_put(alloc_state.limit_pool);
->   			return ret;
->   		}
-> diff --git a/drivers/gpu/drm/ttm/ttm_resource.c b/drivers/gpu/drm/ttm/ttm_resource.c
-> index e2c82ad07eb44..fcfa8b51b0337 100644
-> --- a/drivers/gpu/drm/ttm/ttm_resource.c
-> +++ b/drivers/gpu/drm/ttm/ttm_resource.c
-> @@ -372,30 +372,52 @@ void ttm_resource_fini(struct ttm_resource_manager *man,
->   }
->   EXPORT_SYMBOL(ttm_resource_fini);
->   
-> +/**
-> + * ttm_resource_try_charge - charge a resource manager's cgroup pool
-> + * @bo: buffer for which an allocation should be charged
-> + * @place: where the allocation is attempted to be placed
-> + * @ret_pool: on charge success, the pool that was charged
-> + * @ret_limit_pool: on charge failure, the pool responsible for the failure
-> + *
-> + * Should be used to charge cgroups before attempting resource allocation.
-> + * When charging succeeds, the value of ret_pool should be passed to
-> + * ttm_resource_alloc.
-> + *
-> + * Returns: 0 on charge success, negative errno on failure.
-> + */
-> +int ttm_resource_try_charge(struct ttm_buffer_object *bo,
-> +			    const struct ttm_place *place,
-> +			    struct dmem_cgroup_pool_state **ret_pool,
-> +			    struct dmem_cgroup_pool_state **ret_limit_pool)
-> +{
-> +	struct ttm_resource_manager *man =
-> +		ttm_manager_type(bo->bdev, place->mem_type);
-> +
-> +	if (!man->cg) {
-> +		*ret_pool = NULL;
-> +		if (ret_limit_pool)
-> +			*ret_limit_pool = NULL;
-> +		return 0;
-> +	}
-> +
-> +	return dmem_cgroup_try_charge(man->cg, bo->base.size, ret_pool,
-> +				      ret_limit_pool);
-> +}
-> +
->   int ttm_resource_alloc(struct ttm_buffer_object *bo,
->   		       const struct ttm_place *place,
->   		       struct ttm_resource **res_ptr,
-> -		       struct dmem_cgroup_pool_state **ret_limit_pool)
-> +		       struct dmem_cgroup_pool_state *charge_pool)
->   {
->   	struct ttm_resource_manager *man =
->   		ttm_manager_type(bo->bdev, place->mem_type);
-> -	struct dmem_cgroup_pool_state *pool = NULL;
->   	int ret;
->   
-> -	if (man->cg) {
-> -		ret = dmem_cgroup_try_charge(man->cg, bo->base.size, &pool, ret_limit_pool);
-> -		if (ret)
-> -			return ret;
-> -	}
-> -
->   	ret = man->func->alloc(man, bo, place, res_ptr);
-> -	if (ret) {
-> -		if (pool)
-> -			dmem_cgroup_uncharge(pool, bo->base.size);
-> +	if (ret)
->   		return ret;
-> -	}
->   
-> -	(*res_ptr)->css = pool;
-> +	(*res_ptr)->css = charge_pool;
-
-Is it possible to somehow split this patch into two? I mean first a 
-patch which changes the prototype of ttm_resource_alloc(), adjusting the 
-callers, set out new rules for owning the charge pool, etc, then the 
-patch which only adds the cgroup smarts to ttm_bo_alloc_at_place(). If 
-that could be made without creating any functional difference to the 
-eviction alone I think it could make it easier to review.
-
-Regards,
-
-Tvrtko
-
->   
->   	spin_lock(&bo->bdev->lru_lock);
->   	ttm_resource_add_bulk_move(*res_ptr, bo);
-> diff --git a/include/drm/ttm/ttm_resource.h b/include/drm/ttm/ttm_resource.h
-> index e52bba15012f7..3aef7efdd7cfb 100644
-> --- a/include/drm/ttm/ttm_resource.h
-> +++ b/include/drm/ttm/ttm_resource.h
-> @@ -442,10 +442,14 @@ void ttm_resource_init(struct ttm_buffer_object *bo,
->   void ttm_resource_fini(struct ttm_resource_manager *man,
->   		       struct ttm_resource *res);
->   
-> +int ttm_resource_try_charge(struct ttm_buffer_object *bo,
-> +			    const struct ttm_place *place,
-> +			    struct dmem_cgroup_pool_state **ret_pool,
-> +			    struct dmem_cgroup_pool_state **ret_limit_pool);
->   int ttm_resource_alloc(struct ttm_buffer_object *bo,
->   		       const struct ttm_place *place,
->   		       struct ttm_resource **res,
-> -		       struct dmem_cgroup_pool_state **ret_limit_pool);
-> +		       struct dmem_cgroup_pool_state *charge_pool);
->   void ttm_resource_free(struct ttm_buffer_object *bo, struct ttm_resource **res);
->   bool ttm_resource_intersects(struct ttm_device *bdev,
->   			     struct ttm_resource *res,
+On Tue, Feb 24, 2026 at 10:17:38AM -0500, Gregory Price wrote:
+>    - Changing validations on node states
+>      - mempolicy checks N_MEMORY membership, so you have to hack
+>        N_MEMORY onto ZONE_DEVICE
+>        (or teach it about a new node state... N_MEMORY_PRIVATE)
 > 
 
+This gave me something to chew on
+
+I think this can be done without introducing N_MEMORY_PRIVATE and just
+checking:   NODE_DATA(target_nid)->private
+
+meaning these nodes can just be N_MEMORY with the same isolations.
+
+I'll look at this a bit more.
+
+~Gregory
 
