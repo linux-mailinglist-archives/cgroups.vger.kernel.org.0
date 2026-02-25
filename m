@@ -1,283 +1,736 @@
-Return-Path: <cgroups+bounces-14351-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-14352-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 4JuJNgXMnmm0XQQAu9opvQ
-	(envelope-from <cgroups+bounces-14351-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Wed, 25 Feb 2026 11:16:37 +0100
+	id gNTNLW3Nnmm0XQQAu9opvQ
+	(envelope-from <cgroups+bounces-14352-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Wed, 25 Feb 2026 11:22:37 +0100
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
-	by mail.lfdr.de (Postfix) with ESMTPS id 19EC4195A08
-	for <lists+cgroups@lfdr.de>; Wed, 25 Feb 2026 11:16:36 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 20C21195AE8
+	for <lists+cgroups@lfdr.de>; Wed, 25 Feb 2026 11:22:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id 880D030046A4
-	for <lists+cgroups@lfdr.de>; Wed, 25 Feb 2026 10:16:34 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 754B7300F536
+	for <lists+cgroups@lfdr.de>; Wed, 25 Feb 2026 10:19:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 13193392834;
-	Wed, 25 Feb 2026 10:16:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D59AF32695F;
+	Wed, 25 Feb 2026 10:19:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="jPte+dRV";
-	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="mqQ1iStj"
+	dkim=pass (2048-bit key) header.d=gmx.de header.i=natalie.vock@gmx.de header.b="Zf0LfoYr"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CBD061E376C
-	for <cgroups@vger.kernel.org>; Wed, 25 Feb 2026 10:16:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.165.32
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772014590; cv=fail; b=gr66ywbxT/suX1xMRPInHlFqFLmBWsMNnEJJk06VrUQ3QrDgH7baJhukhEdSgAAuqUsXMn94v1TX0Qyfpc+Y17L7hqQoPXCUH0KgV3kPwxrwoBJm3gCQiV7YaJ6nCjOS9LMecDbKEIRKIwCbWwhFfMV6/2WBLDzanzz4c1VKtDs=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772014590; c=relaxed/simple;
-	bh=o5mB6QkU76oCN5IPNdhiuUNGjfSR/HiBbRpSOikATxA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=s9hlNmI0B3hlRP4b/7MipFmPh6DTXQuyIz7ybDDPzuOjYtmDIpFokbClv5tZctDmxfgIh+THF8ikfBjjwr5k9FM06YAcBOegTV0LYt+LoQrbLrqZz4Oh8NQYeD8yoeD7w/wI8iA7hGNkmrcO+ZQOxFun7UliapT80Rgnvk8ryRM=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=jPte+dRV; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=mqQ1iStj; arc=fail smtp.client-ip=205.220.165.32
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
-Received: from pps.filterd (m0246617.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 61PA3jbG3928862;
-	Wed, 25 Feb 2026 10:15:33 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=cc
-	:content-type:date:from:in-reply-to:message-id:mime-version
-	:references:subject:to; s=corp-2025-04-25; bh=JE2ZrMmFImNpu1AUa2
-	FsMgZ2da5rAmxz2FWbcVlH0jY=; b=jPte+dRVPEsaYvDe2YBWIrbLj8GQ5I7KjV
-	rU6Kqz2YVKMjilPLNG+oNkGb73+JtBYu1aFSt0cKEu3xVgto6+njIDx6rNEiiONF
-	uqAHogNxTfFTmXeDzgU8JNhrC1WfWzKfY86c3Y7tLkcHx6ivLY4leuLw4IQdV74T
-	qrxJNWMPkcCnWEkhZuFZx7a8KQyeorZ4odfGY9APAAqk+nI3dLHSjt7lsoSuMGaY
-	k9ZH6sv7uIEdBPZQ076PHOEo2UDygEm4kM4QnITpm4mQEUCAE9l/uvTdMdBoyYk6
-	Pb+xQLB65PnouHAFgiMCX43QV2Up7DUnVdFJiFEuLp1sAbnIAfvA==
-Received: from iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta01.appoci.oracle.com [130.35.100.223])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 4cf58qdtf7-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Wed, 25 Feb 2026 10:15:32 +0000 (GMT)
-Received: from pps.filterd (iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-	by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (8.18.1.2/8.18.1.2) with ESMTP id 61P9BP3C038677;
-	Wed, 25 Feb 2026 10:15:31 GMT
-Received: from sn4pr0501cu005.outbound.protection.outlook.com (mail-southcentralusazon11011044.outbound.protection.outlook.com [40.93.194.44])
-	by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 4cf35n5hax-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Wed, 25 Feb 2026 10:15:31 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=WVLZG6ytN0bTSjrVkLl+WbwSB/klgL5/VMSvH7V7x4KtiTv8eOHkO9k7wd4rc2MHxikoS8/tn2Y5lzbVfyFpNtsoIlOswDiYo6yWwFaFaYTxA7GBxNFdaKTwek3nUDBLvRhXK0sngws234ldxzNGQl4npnV1n6f0pJEWWQEZt+Smf8WLOLghs4Mc4u1mmr0taOKQRAsgOq+25KyQsO9ZeMgsMtqbSaMRTiZokqHdILYfI+4+QnqD4irnjtqHxgI6cmDqBGpHWEd4bl2rJj4fg6r3dOBx8v0ioLK6z7WsywzVB825RNArhULFQenANmU3jut3N7JPoPpysrKmgjyd7A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=JE2ZrMmFImNpu1AUa2FsMgZ2da5rAmxz2FWbcVlH0jY=;
- b=ycWmRqjx0zwBzC5ffgUJiUwSnHNI0w7XCPdWCItuoUMUQv2QRFKIbmRwRMRnk8CSSQ91c/ehkk7altKs5wp75fVo7qlPLtGF6M8HSUMGOmjO9Aw9i0C/fJMpuWb20HlJNQdcZI9vHnbqPP8CJtUpI7z/ikfWWEwX08ytDsZ5LjQn9y1pkWDRnlRlhL0fDfbKvRGvd4FuaNjneYuZjti8rW6XxWeOZ1pEBdQUzrIY8cqgi0/2Bg9lxOxR1WkOaueUFdV5+ir5rEFX5jtFrtK5VeXdKofzMtmG+k8O2VDiW7o7+IKcytXCHRICxQiSrzUC2WMkgVf/MnAkRkjYU6Dh6Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=JE2ZrMmFImNpu1AUa2FsMgZ2da5rAmxz2FWbcVlH0jY=;
- b=mqQ1iStjQUygN4FmRM0T9JHJsI6igWkwfbgEAL0DFBDxrTJ9Wl8a/qNiVYKC6WjYE8wueF3PlOuKvocMlzFbdLbj9pE31vCl9c6RQrjItM8U8DNmZu/HdbAjCXvwZcp+yKwPl9TD2kr6hMdP29dSjkr5N+Zq4YopY7gaAfaPlWA=
-Received: from CH3PR10MB7329.namprd10.prod.outlook.com (2603:10b6:610:12c::16)
- by MW6PR10MB7659.namprd10.prod.outlook.com (2603:10b6:303:246::6) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9632.22; Wed, 25 Feb
- 2026 10:15:28 +0000
-Received: from CH3PR10MB7329.namprd10.prod.outlook.com
- ([fe80::c2a4:fdda:f0c2:6f71]) by CH3PR10MB7329.namprd10.prod.outlook.com
- ([fe80::c2a4:fdda:f0c2:6f71%7]) with mapi id 15.20.9632.017; Wed, 25 Feb 2026
- 10:15:28 +0000
-Date: Wed, 25 Feb 2026 19:15:19 +0900
-From: Harry Yoo <harry.yoo@oracle.com>
-To: Venkat Rao Bagalkote <venkat88@linux.ibm.com>
-Cc: Vlastimil Babka <vbabka@suse.cz>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        Christoph Lameter <cl@gentwo.org>,
-        David Rientjes <rientjes@google.com>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Alexei Starovoitov <ast@kernel.org>, Hao Li <hao.li@linux.dev>,
-        Suren Baghdasaryan <surenb@google.com>,
-        Shakeel Butt <shakeel.butt@linux.dev>,
-        Muchun Song <muchun.song@linux.dev>,
-        Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>,
-        cgroups@vger.kernel.org, linux-mm@kvack.org
-Subject: Re: [PATCH] mm/slab: initialize slab->stride early to avoid memory
- ordering issues
-Message-ID: <aZ7LtxAlPbSffF02@hyeyoo>
-References: <20260223075809.19265-1-harry.yoo@oracle.com>
- <2d106583-4ec6-4da0-87ea-4ecad893b24f@linux.ibm.com>
- <aZ2Gwie5dpXotxWc@hyeyoo>
- <84492f08-04c2-485c-9a18-cdafd5a9c3e5@linux.ibm.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <84492f08-04c2-485c-9a18-cdafd5a9c3e5@linux.ibm.com>
-X-ClientProxiedBy: SE2P216CA0023.KORP216.PROD.OUTLOOK.COM
- (2603:1096:101:114::12) To CH3PR10MB7329.namprd10.prod.outlook.com
- (2603:10b6:610:12c::16)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D7F2715A86D
+	for <cgroups@vger.kernel.org>; Wed, 25 Feb 2026 10:19:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.21
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1772014790; cv=none; b=g85fHTBlIu0hBm2MVjvrX3GZ8aF/CJEQD85zdYHAkMVxGEIT7rI4aTlj4j7qzYZdNEmAhgCRb1PE0iSErI2YVaO0qcjkqq0zZy+Raxk4kexp9ID3uIFqn0MnMZH5VbB/gGfJquCrj9BtD+sUhSOxahkboCwfngZIcEhRSwA5Dvs=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1772014790; c=relaxed/simple;
+	bh=Y9f1JgGQp6SedW7ZMpOrUMStAxSF7b8S8JEsse8Vhwc=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=eiZMWB1FtLGERv0HT3oqCdz8v7I3Powh8UdrF6lcaGRiw7+kBh7B44kzIAKHor3DuT2vF7CStL1YAgtq7OLeAKDBJwoFWBI1wWouQkZWkjXsFCfNYhXuTwq67zWAQLtl0R0s0zSzby1jAXfuz/Co21QodZWUyL79xmZOGfZ5VB8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de; spf=pass smtp.mailfrom=gmx.de; dkim=pass (2048-bit key) header.d=gmx.de header.i=natalie.vock@gmx.de header.b=Zf0LfoYr; arc=none smtp.client-ip=212.227.17.21
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.de;
+	s=s31663417; t=1772014780; x=1772619580; i=natalie.vock@gmx.de;
+	bh=Fq57glOxDG+tgCTkdE0QWk6h9eYjnLLQVHP0MDo5KhI=;
+	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
+	 References:From:In-Reply-To:Content-Type:
+	 Content-Transfer-Encoding:cc:content-transfer-encoding:
+	 content-type:date:from:message-id:mime-version:reply-to:subject:
+	 to;
+	b=Zf0LfoYrXk78Qtuc4shYU4kD4NfGWVJUAV07lVKryGKRkHg8+zkWoXoeCTDnoV+/
+	 g8I/ZXNQ94wB4n8AqKKzQboB8kGiCElCHasTUt20HqHkaNplWUd0EkyHlQMH0Bu+j
+	 u5lb3qBr2P2e0iD+h1kX0+ixJ6PVHgUbqR2OwHdndHh8+MhxPItKjdKecH8EujVB2
+	 ByFl9B1JRIDqdIPL5zDlDev02+xm3/1pYb24eV36rfeQ3H63GgeMQwC07P2fuDCtM
+	 zuikqTM10JqJ1PAXThwDlNwB008CY9VQK/VQ/+UneCRO/NXAsHw4TB4C1G8MdqEI+
+	 pbujedPIebTVip+bqg==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from client.hidden.invalid by mail.gmx.net (mrgmx104
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1Md6R1-1vLaKF12tn-00oU9r; Wed, 25
+ Feb 2026 11:19:40 +0100
+Message-ID: <cd9a2b39-3e68-42be-a538-9653227fbf4e@gmx.de>
+Date: Wed, 25 Feb 2026 11:19:38 +0100
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CH3PR10MB7329:EE_|MW6PR10MB7659:EE_
-X-MS-Office365-Filtering-Correlation-Id: f00d9e33-6704-4e20-6f4f-08de7456cc8d
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|376014|7416014|366016|1800799024;
-X-Microsoft-Antispam-Message-Info:
-	aLqzfhdIzNsKJTpyjd40uXVGCTQHTikLZsA9Ik+3wGxxip4m39jhxDb++bZGsH2KJS17k2DswN72ve5x5+a7ZBs9vN0cAgi/gQynO9+a1tNM+neEKA5Wcx6SvHGVQNMVqP8WzJvajYqWHybmg1LMnfPqaOPxS4Nsi0kMIEcAMbXFcoxSXysJgZypdVnpNGuF4HcO3kWx2yS68IAp64oYkyLYOvwifxvTxdQncctszjiVAvaqwpIzEmGe3x9KH2y6DsEE4uBrWKFYdjFN+wq7YyuUkBvO+MYNcSc1cMd+sVyO9g8naTDbhSZPLamPgmIlw99WiO7cCwb/s1gQQru2WKpFxs5VcNmxVyexCoIbDvcU2YgrZb1Jf7kh9g8hDaji4zqOgVa7wPxqcvycENt3y2j974/B77Ko6ZkPPQwFVoDnsrRsvxh4h2Fu3Q95msqgtQdhVTNI+Fi2pKiqU/zrkmWIw1e19U+tEXqeEcKnnU8QgjzufAyJZGLx9i6WZoVymn9/H9q+/vaSFSxPHyp+/1BOnfUBdKmEoxsnj1KMpXeX7YwZGGTJgS1sRvB4YdzI1yjq/J92vf6PIhtbuOb7lQoksXPyhY3RTNZuRcvPAImohob07yxdd0SkZTsyv9Yg4Wie82RhpzOOxuRTtv9X52h2zVvkVQBonDcKj8aoMjjAivFA6YKIbooYaK5twq8EMJp56ZJM96Bn7EVhkj4sPA0K7OYaJswqhTA0jd0eABM=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH3PR10MB7329.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(376014)(7416014)(366016)(1800799024);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?7vWoqKSrNqWycaDBBq4xWaTVFkQkUwKJLQiRrnwt/wY9dGTuHvTmQtXfQQG8?=
- =?us-ascii?Q?TLNxfI9v7mQh2xDHqnZUcJsrwzSKzQhnX9kIwLIoqczpRsDiHzo8HuJY4P4E?=
- =?us-ascii?Q?3FyPFlbMTTjBXVMWFum4xjT58310tZpSR7+MXFWUJFayeicZWPIr0Qcdl+D9?=
- =?us-ascii?Q?xpgIkQtN+gyBLpZaot9jSxgSYIdzSrCDyQWu3RMtDyVO6wYAAoQIPiJ5LJXp?=
- =?us-ascii?Q?48etJOLajLnt9/6zaf8T/X1p4mZ5rf2PlXctEofNt1XAAExdJj98P7fLGVQV?=
- =?us-ascii?Q?PPv3cPmFv0GopCaIj157IYiUFN6F1Vl+1O2BbJafqcjmnfcbVh++Htf1j0Oo?=
- =?us-ascii?Q?xEJ0ebCS2tYJtFnupl1eIYYMPu6KZd0SkqWZ7hDIIC0qhnF4e0Y65Lpummid?=
- =?us-ascii?Q?tNOR8GvcVKGHSAZBHnaRWaWdRa3QxOJGq5gOCPNPMluaj1DKmYqnO2GbyMu0?=
- =?us-ascii?Q?z4BcKDLB+lPnJViKR1hVZ0EeTiwWUAnPB4OzpbNbl4tzmBfhH8yIrDO64X0E?=
- =?us-ascii?Q?mZCZTwtsJL/jMe20emF3RQNUJMuYflrVtGYArodvT9UIk32S3CepMJUO6zdH?=
- =?us-ascii?Q?EvJf1wXIrJIn9ASpqja62wiicZVxqFKB9415SXCrft2k/rduMJdKzP59oh9R?=
- =?us-ascii?Q?yzG3dloqwlSGONn7hOJgoRimlCxvJgWv3srldXOQ1e4xr+FJV6Ex4vc4eDS3?=
- =?us-ascii?Q?NRadUUsv6bK/Llvl7czCeJWJSGSqoMxv/mKly+z4wEZj+g5IxNfderfm2eNX?=
- =?us-ascii?Q?aJAmZUeG34L0vwkIrp4Mp3N+Jw8EVARj81HMCmN0u521th5rQCArk5skDn75?=
- =?us-ascii?Q?PwrK4eLRcyAQPE4AfUUmgcPI57iZSn1pEs7ueIJ/bnu3jbB4/Wnl9hgV5Qxq?=
- =?us-ascii?Q?q/tDpNfT4GCZsliddxZx6THUoWVmFmjeOHgu65G43liXuC2jkPBdXVmmIv5Y?=
- =?us-ascii?Q?Rq4HQ7qWbmtYieC4GQPFNfqHiposZ9wEPq9ABFw45iQGcvOy++g0MpotWliH?=
- =?us-ascii?Q?i5ZAV+YlRY1aMbNDiima7TA5+R77szkBkhz/4GOzHoFN9yio7ovTmYCXtRGT?=
- =?us-ascii?Q?oFE/+M1FudoRMGmheDvwMrIbf2U9JsrI17k3zuZ6ZViA/9V79KitsDtowCyc?=
- =?us-ascii?Q?z7JtPa7NEZPG3pof7rPteqQLPhX2AO088uOsQLZ+B2bGBAJeVMo1HKLS25X3?=
- =?us-ascii?Q?+7KlW2ztC+ubfqaya7xGXLB3r8r4tiIZEUgj1MKLy1O4hlB6qi8VBOy2p/xU?=
- =?us-ascii?Q?fEyluhHMZ89ul3lgXbKznkKgMxFEdcQ4eopkmLaJVvvjqm5I1zphrUsyiufv?=
- =?us-ascii?Q?oYEiaGjfmsoW/g5BISeLx7S7Gx5iFGPD4V2LJAENZh5knrjQzdY+kOQkoaOA?=
- =?us-ascii?Q?wYJRNi5x9QtJnbhCGNR5xzwfFooo7VZq+qNk5bgps2GmKFPYUMRi40jVVJ3v?=
- =?us-ascii?Q?Lcw0kU/cSWgwVR7l2h25BngcrzqrmXz2daQfWjFGxYXwLM8zliJDxISuZH0s?=
- =?us-ascii?Q?vPZRbBHn4+DhoSZga2Kys/r5GbJufYiqYjM7JUE+oEPSwkqaEN5TEP7CZmnB?=
- =?us-ascii?Q?fBwzVI5ZobhjfeNq8T9ctWVPg+p9buCD3humZwYxEZA4ZTxYxK5C5jqBSj5q?=
- =?us-ascii?Q?9L/PgQg3ztB21R0gl9aRg+eR+vJyU/oDZ/HD5u747OtdcEWNpNE9VOPTcvy5?=
- =?us-ascii?Q?SI8spFFWEQBb5XU2G7+nF9XHkYdkrC930VtsokNuNmt3KVE/YbdP7tikwxd/?=
- =?us-ascii?Q?XDZb+lO65w=3D=3D?=
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0:
-	inWBp5gk54pwBePWypPITZIej6FAloAtzeiat9XP3LJ8YfkJOaB4vXtsHLdCN/8gbwY5gOqAxwPF/RQSY3tzL0DOMNgZxtQ0Ek8v8yf8EPwKuK9GNUBvP8R0xa2eNo4PlvA5m6TdjoCfGsUjeNtDM64BuwTFM5brAhg0G+RGCFUB5Ka2G9Ya7PfTrRhX2ng/Sm+RvE8/Ol7fwpaew5Ioz+IXy54CLPiL0Xb2yCdFFMVNIIIrlEf4ReSSRwBtmWeCw+HrGK8MtiaD5tA3Fui6FhbDtApGNFIbOciTnaGtWMyPWV0i0c/Nj0JT9iAq9Hm4EOeqHOnWjM+dsP9ufLTZkaIMqBSIeddsMi0EAM1I0KcinsldicGePNKnTIxbkqFY8T0H5pE/mDfoNQN/G1lHBv6DPcA/yrf6JJP/uQGlDLv3GxQEKy/rTuGOiPKYByt8QeDLjOBdnoJxRFsoZEaE7fWik//4KC8rD1vRo5tv9U9pE9tys+jHeolw3ZQMIErBWIIoscsNoEBNmhxoAHH2oIeU4E7pLMLjfpeBoAcqX4KdRutbFjK4fPlham6rpZ1oOR6t1g6I1lJV9UT6jQyAN6LknlVhvLZRb/mPpjYmpDM=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: f00d9e33-6704-4e20-6f4f-08de7456cc8d
-X-MS-Exchange-CrossTenant-AuthSource: CH3PR10MB7329.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Feb 2026 10:15:28.4096
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: AVcWwYPqOFWXx8V61SuusSopAGbl5lgABKBK7N/Y/STIxkM1KuD3te5TTKJXqyWwPVr+hqcQut0u6XmTLhtqCw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW6PR10MB7659
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1121,Hydra:6.1.51,FMLib:17.12.100.49
- definitions=2026-02-24_03,2026-02-23_03,2025-10-01_01
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 mlxscore=0 suspectscore=0
- spamscore=0 bulkscore=0 adultscore=0 malwarescore=0 mlxlogscore=999
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2602130000
- definitions=main-2602250100
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwMjI1MDEwMCBTYWx0ZWRfX6z4FVa4VxmJx
- mf/lsA+++ItvroBo4uMsvzu+AJXwDAHLe77UXnOQnLt4XYL4NxOXxieaoU8ty8rxe9/MYJNqvnj
- FFptJaxQfB8X4VfaUMXMGfFQKu95DLaAfq/G+hb2XgzAxVA5jJOmDcSNQEqyM2Q4pyFmFCepJYO
- qeB9B1IZhkUAMGGIc9MTdyVpTyk8cyznjWNG5uY5iG8VEHBB1ZQ++cm2rQi/EXMaS8pbNgeh9G2
- BQYgJNuxL5kEJs4r2MNE4+jq/zW81lh+4aXhhtAEPa/DjCtKbUEoX3jA3dOVIBwrn9ky5v5eIAH
- Y32Dw/kgn6ZRpJxDMHz/tfFD8y8ME/fCQIaNMtPmNwqJ9DFqFFGUFaR3VVPCnrFmzBIVEwEcqQT
- skoVcqahDNiD32PzdBmxLvNs0Uc3fwwMy5+Z9h9r9GAAbHtUpKwilJPQ9B1mamKwVLMZ6YqTn08
- Ak2urj5ZkWMEAj7ZELI0NN4jzOftD6tuTSl1Y/Kg=
-X-Authority-Analysis: v=2.4 cv=XNc9iAhE c=1 sm=1 tr=0 ts=699ecbc4 b=1 cx=c_pps
- a=zPCbziy225d3KhSqZt3L1A==:117 a=zPCbziy225d3KhSqZt3L1A==:17
- a=6eWqkTHjU83fiwn7nKZWdM+Sl24=:19 a=z/mQ4Ysz8XfWz/Q5cLBRGdckG28=:19
- a=lCpzRmAYbLLaTzLvsPZ7Mbvzbb8=:19 a=xqWC_Br6kY4A:10 a=kj9zAlcOel0A:10
- a=HzLeVaNsDn8A:10 a=GoEa3M9JfhUA:10 a=VkNPw1HP01LnGYTKEx00:22
- a=Mpw57Om8IfrbqaoTuvik:22 a=GgsMoib0sEa3-_RKJdDe:22 a=yPCof4ZbAAAA:8
- a=wNQek9p9X8fHaaAc_nAA:9 a=CjuIK1q_8ugA:10 cc=ntf awl=host:12261
-X-Proofpoint-ORIG-GUID: Nnw3X8xHz4ICKnfgTFJIWqFFXZ9NrH05
-X-Proofpoint-GUID: Nnw3X8xHz4ICKnfgTFJIWqFFXZ9NrH05
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 4/5] drm/ttm: Be more aggressive when allocating below
+ protection limit
+To: Tvrtko Ursulin <tursulin@ursulin.net>,
+ Maarten Lankhorst <dev@lankhorst.se>, Maxime Ripard <mripard@kernel.org>,
+ Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>,
+ =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
+ Christian Koenig <christian.koenig@amd.com>, Huang Rui <ray.huang@amd.com>,
+ Matthew Auld <matthew.auld@intel.com>,
+ Matthew Brost <matthew.brost@intel.com>,
+ Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+ Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>,
+ Simona Vetter <simona@ffwll.ch>
+Cc: cgroups@vger.kernel.org, dri-devel@lists.freedesktop.org
+References: <20251110-dmemcg-aggressive-protect-v3-0-219ffcfc54e9@gmx.de>
+ <20251110-dmemcg-aggressive-protect-v3-4-219ffcfc54e9@gmx.de>
+ <4d9e2fb9-1cea-476e-b7f8-d2caaef4a579@ursulin.net>
+ <fdf710df-8991-4ee1-9eca-78b21ecdc828@gmx.de>
+ <e097bf9b-0078-4de4-929c-0b9e0b26af8e@ursulin.net>
+Content-Language: en-US
+From: Natalie Vock <natalie.vock@gmx.de>
+In-Reply-To: <e097bf9b-0078-4de4-929c-0b9e0b26af8e@ursulin.net>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:t+ENGGqnkRdSq25YPDQzQBBWcF+22NJFU4XiBL66GgPIhf8peXH
+ 9TOf2yWgmzSkU0PWsMFZutABE8CZwSm61zgcrfSUUONvAYLVFvZHlh8MUS6Q5ow6eBHx4sX
+ d9fMNtD6uF3YTXv2UXB6bmQdqj+ug70yhWLfSU7/7li3LfgpGiYI8bjyGiSiqKvJc2mj1BF
+ GEclIjOib+ScMFCaJllIw==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:Kth/4wBRov4=;dcIXMEqWj6mF4tcoeLCdRLN0p94
+ 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
+ ncbJpq+o7SbI3P59wfpk
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [0.34 / 15.00];
-	ARC_REJECT(1.00)[cv is fail on i=2];
-	MID_RHS_NOT_FQDN(0.50)[];
-	DMARC_POLICY_ALLOW(-0.50)[oracle.com,reject];
-	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
-	R_DKIM_ALLOW(-0.20)[oracle.com:s=corp-2025-04-25,oracle.onmicrosoft.com:s=selector2-oracle-onmicrosoft-com];
+X-Spamd-Result: default: False [-2.16 / 15.00];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+	DMARC_POLICY_ALLOW(-0.50)[gmx.de,quarantine];
+	R_DKIM_ALLOW(-0.20)[gmx.de:s=s31663417];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-14351-lists,cgroups=lfdr.de];
-	RCPT_COUNT_TWELVE(0.00)[15];
+	RCVD_COUNT_THREE(0.00)[4];
 	FORGED_SENDER_MAILLIST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-14352-lists,cgroups=lfdr.de];
+	FREEMAIL_FROM(0.00)[gmx.de];
+	FREEMAIL_TO(0.00)[ursulin.net,lankhorst.se,kernel.org,cmpxchg.org,suse.com,amd.com,intel.com,linux.intel.com,suse.de,gmail.com,ffwll.ch];
+	RCPT_COUNT_TWELVE(0.00)[16];
 	MIME_TRACE(0.00)[0:+];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[oracle.onmicrosoft.com:dkim,oracle.com:email,oracle.com:dkim,sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns];
+	FROM_HAS_DN(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	TO_DN_SOME(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[harry.yoo@oracle.com,cgroups@vger.kernel.org];
-	FROM_HAS_DN(0.00)[];
-	DKIM_TRACE(0.00)[oracle.com:+,oracle.onmicrosoft.com:+];
 	NEURAL_HAM(-0.00)[-1.000];
-	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[natalie.vock@gmx.de,cgroups@vger.kernel.org];
+	DKIM_TRACE(0.00)[gmx.de:+];
+	MID_RHS_MATCH_FROM(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[cgroups];
-	MISSING_XM_UA(0.00)[];
-	RCVD_COUNT_SEVEN(0.00)[9]
-X-Rspamd-Queue-Id: 19EC4195A08
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,gmx.de:mid,gmx.de:dkim,gmx.de:email]
+X-Rspamd-Queue-Id: 20C21195AE8
 X-Rspamd-Action: no action
 
-On Wed, Feb 25, 2026 at 02:44:24PM +0530, Venkat Rao Bagalkote wrote:
-> > > Thanks for the patch. I did ran the complete test suite, and unfortunately
-> > > issue is reproducing.
->
-> > Oops, thanks for confirming that it's still reproduced!
-> > That's really helpful.
-> > 
-> > Perhaps I should start considering cases where it's not a memory
-> > ordering issue, but let's check one more thing before moving on.
-> > could you please test if it still reproduces with the following patch?
-> > 
-> > If it's still reproducible, it should not be due to the memory ordering
-> > issue between obj_exts and stride.
-> > 
-> > ---8<---
-> > From: Harry Yoo <harry.yoo@oracle.com>
-> > Date: Mon, 23 Feb 2026 16:58:09 +0900
-> > Subject: mm/slab: enforce slab->stride -> slab->obj_exts ordering
-> > 
-> > I tried to avoid unnecessary memory barriers for efficiency,
-> > but the original bug is still reproducible.
-> > 
-> > Probably I missed a case where an object is allocated on a CPU
-> > and then freed on a different CPU without involving spinlock.
-> > 
-> > I'm not sure if I did not cover edge cases or if it's caused by
-> > something other than memory ordering issue.
-> > 
-> > Anyway, let's find out by introducing heavy memory barriers!
-> > 
-> > Always ensure that updates to stride is visible before obj_exts.
-> > 
-> > ---
+On 2/25/26 11:12, Tvrtko Ursulin wrote:
+>=20
+> On 25/02/2026 09:49, Natalie Vock wrote:
+>> On 2/24/26 17:40, Tvrtko Ursulin wrote:
+>>>
+>>> On 10/11/2025 12:37, Natalie Vock wrote:
+>>>> When the cgroup's memory usage is below the low/min limit and=20
+>>>> allocation
+>>>> fails, try evicting some unprotected buffers to make space. Otherwise=
+,
+>>>> application buffers may be forced to go into GTT even though usage is
+>>>> below the corresponding low/min limit, if other applications filled=
+=20
+>>>> VRAM
+>>>> with their allocations first.
+>>>>
+>>>> Signed-off-by: Natalie Vock <natalie.vock@gmx.de>
+>>>> ---
+>>>> =C2=A0 drivers/gpu/drm/ttm/ttm_bo.c=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0 | 75 ++++++++++++++++++++++++++=20
+>>>> + + ++++++----
+>>>> =C2=A0 drivers/gpu/drm/ttm/ttm_resource.c | 48 +++++++++++++++++-----=
+=2D-
+>>>> =C2=A0 include/drm/ttm/ttm_resource.h=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0=
+ 6 ++-
+>>>> =C2=A0 3 files changed, 108 insertions(+), 21 deletions(-)
+>>>>
+>>>> diff --git a/drivers/gpu/drm/ttm/ttm_bo.c b/drivers/gpu/drm/ttm/=20
+>>>> ttm_bo.c
+>>>> index 829d994798835..bd467c965e1bc 100644
+>>>> --- a/drivers/gpu/drm/ttm/ttm_bo.c
+>>>> +++ b/drivers/gpu/drm/ttm/ttm_bo.c
+>>>> @@ -490,8 +490,12 @@ int ttm_bo_evict_first(struct ttm_device *bdev,=
+=20
+>>>> struct ttm_resource_manager *man
+>>>> =C2=A0 }
+>>>> =C2=A0 struct ttm_bo_alloc_state {
+>>>> +=C2=A0=C2=A0=C2=A0 /** @charge_pool: The memory pool the resource is=
+ charged to */
+>>>> +=C2=A0=C2=A0=C2=A0 struct dmem_cgroup_pool_state *charge_pool;
+>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 /** @limit_pool: Which pool limit we s=
+hould test against */
+>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct dmem_cgroup_pool_state *limit_p=
+ool;
+>>>> +=C2=A0=C2=A0=C2=A0 /** @only_evict_unprotected: If eviction should b=
+e restricted=20
+>>>> to unprotected BOs */
+>>>> +=C2=A0=C2=A0=C2=A0 bool only_evict_unprotected;
+>>>> =C2=A0 };
+>>>> =C2=A0 /**
+>>>> @@ -546,7 +550,7 @@ static s64 ttm_bo_evict_cb(struct ttm_lru_walk=20
+>>>> *walk, struct ttm_buffer_object *
+>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 evict_walk->evicted++;
+>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (evict_walk->res)
+>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 lret =3D ttm_r=
+esource_alloc(evict_walk->evictor, evict_walk-=20
+>>>> >place,
+>>>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 evict_walk->r=
+es, NULL);
+>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 evict_walk->r=
+es, evict_walk->alloc_state-=20
+>>>> >charge_pool);
+>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (lret =3D=3D 0)
+>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return 1;
+>>>> =C2=A0 out:
+>>>> @@ -589,7 +593,7 @@ static int ttm_bo_evict_alloc(struct ttm_device=
+=20
+>>>> *bdev,
+>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 lret =3D ttm_lru_walk_for_evict(&evict=
+_walk.walk, bdev, man, 1);
+>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 /* One more attempt if we hit low limi=
+t? */
+>>>> -=C2=A0=C2=A0=C2=A0 if (!lret && evict_walk.hit_low) {
+>>>> +=C2=A0=C2=A0=C2=A0 if (!lret && evict_walk.hit_low && !state-=20
+>>>> >only_evict_unprotected) {
+>>>
+>>> What is unprotected synonymous with? No low watermark set? Should=20
+>>> dmem_cgroup_state_evict_valuable() even set *hit_low =3D true for if=
+=20
+>>> low is not set to begin with?
+>>
+>> In terms of cgroup usage, a cgroup (and by extension, its BOs) is=20
+>> protected as long as its usage stays under the low watermark (if not=20
+>> set, that watermark is zero and any BO is trivially unprotected). If=20
+>> the usage exceeds the low watermark, the cgroup/its BOs become=20
+>> unprotected and can be evicted (more easily), until the usage goes=20
+>> below the watermark again.
+>=20
+> Got it thanks, so either no low set, or usage above low. Makes sense.
+>=20
+>> With only_evict_unprotected, what we're trying to do is evict buffers=
+=20
+>> from any cgroup that currently exceeds its low (or min) watermark, but=
+=20
+>> leave alone cgroups that are within their limits. I've elaborated on=20
+>> the rationale more in the cover letter, but essentially, this is=20
+>> supposed to make TTM honor the low/min protection better for cgroups=20
+>> that are allocating and currently within their low/min watermark, by=20
+>> allowing them to push out BOs from cgroups that exceed their=20
+>> respective watermarks.
+>=20
+> Yep, I got that part. Just that I will need a second pass to fully grasp=
+=20
+> the extended logic. Problem being more booleans and passes make things=
+=20
+> more complex. That is why I made this side question on whether it even=
+=20
+> makes sense for dmem_cgroup_state_evict_valuable() to set hit_low if the=
+=20
+> low is not even set. Assuming I got it right it can happen:
+>=20
+>  =C2=A0=C2=A0=C2=A0=C2=A0if (!ignore_low) {
+>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 low =3D READ_ONCE(ctest->elo=
+w);
+>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (used > low)
+>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 retu=
+rn true;
+>=20
+>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 *ret_hit_low =3D true;
+>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return false;
+>  =C2=A0=C2=A0=C2=A0=C2=A0}
+>=20
+> So I was wondering what would be the effect of making that like this:
+>=20
+>  =C2=A0=C2=A0=C2=A0=C2=A0if (!ignore_low) {
+>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 low =3D READ_ONCE(ctest->elo=
+w);
+>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (used > low)
+>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 retu=
+rn true;
+>=20
+> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (low)
+> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 *ret=
+_hit_low =3D true;
+>=20
+>  =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return false;
+>  =C2=A0=C2=A0=C2=A0=C2=A0}
+>=20
+>=20
+> Could that somehow simplify the logic, maybe allow for not having to add=
+=20
+> the additional condition above. Possibly not, it seems more complex than=
+=20
+> that. But I am just thinking out loud at this point. Again, I need to=20
+> make a second reading pass.
 
-[...]
+FWIW, hit_low can never become true if low is not set. If we even call=20
+dmem_cgroup_eviction_valuable in the first place, that means there has=20
+to be a buffer object associated with the cgroup. Unless something went=20
+super duper wrong, that also means the memory usage of that buffer is=20
+charged to that cgroup, and therefore usage has to be > 0.
 
-> With this patch, issue is not reproduced. So looks good.
+If low is unset, i.e. 0, we therefore always exit out of the
+"if (used > low)" statement, and never set *ret_hit_low to true.
 
-Thanks a lot, Venkat! That's really helpful.
+*ret_hit_low can only be set to true if there is a buffer that has a=20
+(set) low limit associated with its cgroup, and that cgroup's usage does=
+=20
+not exceed the low limit.
 
-I think that's enough signal to assume that memory ordering is playing
-a role here, unless it happens to be masking another issue.
-Even so, it's important to enforce the ordering anyway.
+Thanks,
+Natalie
 
-But having smp_load_acquire() on every alloc/free fastpath doesn't
-sound great to me. Let me think a bit about it and come up with
-a reasonable solution (this time, hopefully no hole in the ordering).
+>=20
+>> I'll add some comments to the only_evict_unprotected docs to explain=20
+>> what "unprotected" means here.
+>>
+>>>
+>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 evict_walk.try=
+_low =3D true;
+>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 lret =3D ttm_l=
+ru_walk_for_evict(&evict_walk.walk, bdev, man,=20
+>>>> 1);
+>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
+>>>> @@ -610,7 +614,8 @@ static int ttm_bo_evict_alloc(struct ttm_device=
+=20
+>>>> *bdev,
+>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 } while (!lret && evict_walk.evicted);
+>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 /* We hit the low limit? Try once more=
+ */
+>>>> -=C2=A0=C2=A0=C2=A0 if (!lret && evict_walk.hit_low && !evict_walk.tr=
+y_low) {
+>>>> +=C2=A0=C2=A0=C2=A0 if (!lret && evict_walk.hit_low && !evict_walk.tr=
+y_low &&
+>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 !=
+state->only_evict_unprotected) {
+>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 evict_walk.try=
+_low =3D true;
+>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 goto retry;
+>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
+>>>> @@ -719,20 +724,72 @@ static int ttm_bo_alloc_at_place(struct=20
+>>>> ttm_buffer_object *bo,
+>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct ttm_resource **res,
+>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct ttm_bo_alloc_state *alloc_s=
+tate)
+>>>> =C2=A0 {
+>>>> -=C2=A0=C2=A0=C2=A0 bool may_evict;
+>>>> +=C2=A0=C2=A0=C2=A0 bool may_evict, below_low =3D false;
+>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 int ret;
+>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 may_evict =3D (force_space && place->m=
+em_type !=3D TTM_PL_SYSTEM);
+>>>> +=C2=A0=C2=A0=C2=A0 ret =3D ttm_resource_try_charge(bo, place, &alloc=
+_state-=20
+>>>> >charge_pool,
+>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 force_space ?=
+ &alloc_state->limit_pool : NULL);
+>>>> +=C2=A0=C2=A0=C2=A0 if (ret) {
+>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 /*
+>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * -EAGAIN means the=
+ charge failed, which we treat like an
+>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * allocation failur=
+e. Therefore, return an error code=20
+>>>> indicating
+>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * the allocation fa=
+iled - either -EBUSY if the allocation=20
+>>>> should
+>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * be retried with e=
+viction, or -ENOSPC if there should be=20
+>>>> no second
+>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 * attempt.
+>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 */
+>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (ret =3D=3D -EAGAIN)
+>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 r=
+et =3D may_evict ? -EBUSY : -ENOSPC;
+>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return ret;
+>>>> +=C2=A0=C2=A0=C2=A0 }
+>>>> -=C2=A0=C2=A0=C2=A0 ret =3D ttm_resource_alloc(bo, place, res,
+>>>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 force_space ? &alloc_state->limit_pool : NU=
+LL);
+>>>> +=C2=A0=C2=A0=C2=A0 /*
+>>>> +=C2=A0=C2=A0=C2=A0=C2=A0 * cgroup protection plays a special role in=
+ eviction.
+>>>> +=C2=A0=C2=A0=C2=A0=C2=A0 * Conceptually, protection of memory via th=
+e dmem cgroup=20
+>>>> controller
+>>>> +=C2=A0=C2=A0=C2=A0=C2=A0 * entitles the protected cgroup to use a ce=
+rtain amount of=20
+>>>> memory.
+>>>> +=C2=A0=C2=A0=C2=A0=C2=A0 * There are two types of protection - the '=
+low' limit is a
+>>>> +=C2=A0=C2=A0=C2=A0=C2=A0 * "best-effort" protection, whereas the 'mi=
+n' limit provides a=20
+>>>> hard
+>>>> +=C2=A0=C2=A0=C2=A0=C2=A0 * guarantee that memory within the cgroup's=
+ allowance will not be
+>>>> +=C2=A0=C2=A0=C2=A0=C2=A0 * evicted under any circumstance.
+>>>> +=C2=A0=C2=A0=C2=A0=C2=A0 *
+>>>> +=C2=A0=C2=A0=C2=A0=C2=A0 * To faithfully model this concept in TTM, =
+we also need to=20
+>>>> take cgroup
+>>>> +=C2=A0=C2=A0=C2=A0=C2=A0 * protection into account when allocating. =
+When allocation in one
+>>>> +=C2=A0=C2=A0=C2=A0=C2=A0 * place fails, TTM will default to trying o=
+ther places first=20
+>>>> before
+>>>> +=C2=A0=C2=A0=C2=A0=C2=A0 * evicting.
+>>>> +=C2=A0=C2=A0=C2=A0=C2=A0 * If the allocation is covered by dmem cgro=
+up protection,=20
+>>>> however,
+>>>> +=C2=A0=C2=A0=C2=A0=C2=A0 * this prevents the allocation from using t=
+he memory it is=20
+>>>> "entitled"
+>>>> +=C2=A0=C2=A0=C2=A0=C2=A0 * to. To make sure unprotected allocations =
+cannot push new=20
+>>>> protected
+>>>> +=C2=A0=C2=A0=C2=A0=C2=A0 * allocations out of places they are "entit=
+led" to use, we should
+>>>> +=C2=A0=C2=A0=C2=A0=C2=A0 * evict buffers not covered by any cgroup p=
+rotection, if this
+>>>> +=C2=A0=C2=A0=C2=A0=C2=A0 * allocation is covered by cgroup protectio=
+n.
+>>>> +=C2=A0=C2=A0=C2=A0=C2=A0 *
+>>>> +=C2=A0=C2=A0=C2=A0=C2=A0 * Buffers covered by 'min' protection are a=
+ special case - the=20
+>>>> 'min'
+>>>> +=C2=A0=C2=A0=C2=A0=C2=A0 * limit is a stronger guarantee than 'low',=
+ and thus buffers=20
+>>>> protected
+>>>> +=C2=A0=C2=A0=C2=A0=C2=A0 * by 'low' but not 'min' should also be con=
+sidered for eviction.
+>>>> +=C2=A0=C2=A0=C2=A0=C2=A0 * Buffers protected by 'min' will never be =
+considered for=20
+>>>> eviction
+>>>> +=C2=A0=C2=A0=C2=A0=C2=A0 * anyway, so the regular eviction path shou=
+ld be triggered here.
+>>>> +=C2=A0=C2=A0=C2=A0=C2=A0 * Buffers protected by 'low' but not 'min' =
+will take a special
+>>>> +=C2=A0=C2=A0=C2=A0=C2=A0 * eviction path that only evicts buffers co=
+vered by neither=20
+>>>> 'low' or
+>>>> +=C2=A0=C2=A0=C2=A0=C2=A0 * 'min' protections.
+>>>> +=C2=A0=C2=A0=C2=A0=C2=A0 */
+>>>> +=C2=A0=C2=A0=C2=A0 may_evict |=3D dmem_cgroup_below_min(NULL, alloc_=
+state-=20
+>>>> >charge_pool);
+>>>> +=C2=A0=C2=A0=C2=A0 below_low =3D dmem_cgroup_below_low(NULL, alloc_s=
+tate->charge_pool);
+>>>> +=C2=A0=C2=A0=C2=A0 alloc_state->only_evict_unprotected =3D !may_evic=
+t && below_low;
+>>>> +
+>>>> +=C2=A0=C2=A0=C2=A0 ret =3D ttm_resource_alloc(bo, place, res, alloc_=
+state-=20
+>>>> >charge_pool);
+>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (ret) {
+>>>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if ((ret =3D=3D -ENOSPC |=
+| ret =3D=3D -EAGAIN) && may_evict)
+>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if ((ret =3D=3D -ENOSPC |=
+| ret =3D=3D -EAGAIN) &&
+>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0 (may_evict || below_low))
+>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0 ret =3D -EBUSY;
+>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return ret;
+>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
+>>>> +=C2=A0=C2=A0=C2=A0 /*
+>>>> +=C2=A0=C2=A0=C2=A0=C2=A0 * Ownership of charge_pool has been transfe=
+rred to the TTM=20
+>>>> resource,
+>>>> +=C2=A0=C2=A0=C2=A0=C2=A0 * don't make the caller think we still hold=
+ a reference to it.
+>>>> +=C2=A0=C2=A0=C2=A0=C2=A0 */
+>>>> +=C2=A0=C2=A0=C2=A0 alloc_state->charge_pool =3D NULL;
+>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return 0;
+>>>> =C2=A0 }
+>>>> @@ -787,6 +844,7 @@ static int ttm_bo_alloc_resource(struct=20
+>>>> ttm_buffer_object *bo,
+>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 res, &alloc_state);
+>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (ret =3D=3D=
+ -ENOSPC) {
+>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 d=
+mem_cgroup_pool_state_put(alloc_state.charge_pool);
+>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0 dmem_cgroup_pool_state_put(alloc_state.limit_pool);
+>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0 continue;
+>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 } else if (ret=
+ =3D=3D -EBUSY) {
+>>>> @@ -796,11 +854,14 @@ static int ttm_bo_alloc_resource(struct=20
+>>>> ttm_buffer_object *bo,
+>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0 dmem_cgroup_pool_state_put(alloc_state.limit_pool);
+>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0 if (ret) {
+>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0 dmem_cgroup_pool_state_put(
+>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 a=
+lloc_state.charge_pool);
+>>>
+>>> Funky line break.
+>>
+>> Will fix.
+>>
+>>>
+>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (ret !=3D -ENOSPC && ret !=3D -EBUSY)
+>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return ret;
+>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 continue;
+>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0 }
+>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 } else if (ret=
+) {
+>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 d=
+mem_cgroup_pool_state_put(alloc_state.charge_pool);
+>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0 dmem_cgroup_pool_state_put(alloc_state.limit_pool);
+>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0 return ret;
+>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 }
+>>>> diff --git a/drivers/gpu/drm/ttm/ttm_resource.c b/drivers/gpu/drm/=20
+>>>> ttm/ ttm_resource.c
+>>>> index e2c82ad07eb44..fcfa8b51b0337 100644
+>>>> --- a/drivers/gpu/drm/ttm/ttm_resource.c
+>>>> +++ b/drivers/gpu/drm/ttm/ttm_resource.c
+>>>> @@ -372,30 +372,52 @@ void ttm_resource_fini(struct=20
+>>>> ttm_resource_manager *man,
+>>>> =C2=A0 }
+>>>> =C2=A0 EXPORT_SYMBOL(ttm_resource_fini);
+>>>> +/**
+>>>> + * ttm_resource_try_charge - charge a resource manager's cgroup pool
+>>>> + * @bo: buffer for which an allocation should be charged
+>>>> + * @place: where the allocation is attempted to be placed
+>>>> + * @ret_pool: on charge success, the pool that was charged
+>>>> + * @ret_limit_pool: on charge failure, the pool responsible for the=
+=20
+>>>> failure
+>>>> + *
+>>>> + * Should be used to charge cgroups before attempting resource=20
+>>>> allocation.
+>>>> + * When charging succeeds, the value of ret_pool should be passed to
+>>>> + * ttm_resource_alloc.
+>>>> + *
+>>>> + * Returns: 0 on charge success, negative errno on failure.
+>>>> + */
+>>>> +int ttm_resource_try_charge(struct ttm_buffer_object *bo,
+>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0 const struct ttm_place *place,
+>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0 struct dmem_cgroup_pool_state **ret_pool,
+>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0 struct dmem_cgroup_pool_state **ret_limit_pool)
+>>>> +{
+>>>> +=C2=A0=C2=A0=C2=A0 struct ttm_resource_manager *man =3D
+>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ttm_manager_type(bo->bdev=
+, place->mem_type);
+>>>> +
+>>>> +=C2=A0=C2=A0=C2=A0 if (!man->cg) {
+>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 *ret_pool =3D NULL;
+>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (ret_limit_pool)
+>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 *=
+ret_limit_pool =3D NULL;
+>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return 0;
+>>>> +=C2=A0=C2=A0=C2=A0 }
+>>>> +
+>>>> +=C2=A0=C2=A0=C2=A0 return dmem_cgroup_try_charge(man->cg, bo->base.s=
+ize, ret_pool,
+>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ret_limit_poo=
+l);
+>>>> +}
+>>>> +
+>>>> =C2=A0 int ttm_resource_alloc(struct ttm_buffer_object *bo,
+>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0 const struct ttm_place *place,
+>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct ttm_resource **res_ptr,
+>>>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0 struct dmem_cgroup_pool_state **ret_limit_pool)
+>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0 struct dmem_cgroup_pool_state *charge_pool)
+>>>> =C2=A0 {
+>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct ttm_resource_manager *man =3D
+>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ttm_manager_ty=
+pe(bo->bdev, place->mem_type);
+>>>> -=C2=A0=C2=A0=C2=A0 struct dmem_cgroup_pool_state *pool =3D NULL;
+>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 int ret;
+>>>> -=C2=A0=C2=A0=C2=A0 if (man->cg) {
+>>>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ret =3D dmem_cgroup_try_c=
+harge(man->cg, bo->base.size, &pool,=20
+>>>> ret_limit_pool);
+>>>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (ret)
+>>>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 r=
+eturn ret;
+>>>> -=C2=A0=C2=A0=C2=A0 }
+>>>> -
+>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ret =3D man->func->alloc(man, bo, plac=
+e, res_ptr);
+>>>> -=C2=A0=C2=A0=C2=A0 if (ret) {
+>>>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (pool)
+>>>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 d=
+mem_cgroup_uncharge(pool, bo->base.size);
+>>>> +=C2=A0=C2=A0=C2=A0 if (ret)
+>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 return ret;
+>>>> -=C2=A0=C2=A0=C2=A0 }
+>>>> -=C2=A0=C2=A0=C2=A0 (*res_ptr)->css =3D pool;
+>>>> +=C2=A0=C2=A0=C2=A0 (*res_ptr)->css =3D charge_pool;
+>>>
+>>> Is it possible to somehow split this patch into two? I mean first a=20
+>>> patch which changes the prototype of ttm_resource_alloc(), adjusting=
+=20
+>>> the callers, set out new rules for owning the charge pool, etc, then=
+=20
+>>> the patch which only adds the cgroup smarts to=20
+>>> ttm_bo_alloc_at_place(). If that could be made without creating any=20
+>>> functional difference to the eviction alone I think it could make it=
+=20
+>>> easier to review.
+>>
+>> Will try.
+>=20
+> Only if it sounds plausible that it can be sensibly done. Otherwise=20
+> don't spend too much time if you think it makes no sense. I'll wait for=
+=20
+> the verdict, or for v4 to appear and then have another go of making=20
+> sense of the existing vs new eviction logic.
+>=20
+> Regards,
+>=20
+> Tvrtko
+>=20
+>=20
+>> Thanks,
+>> Natalie
+>>
+>>>
+>>> Regards,
+>>>
+>>> Tvrtko
+>>>
+>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 spin_lock(&bo->bdev->lru_lock);
+>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ttm_resource_add_bulk_move(*res_ptr, b=
+o);
+>>>> diff --git a/include/drm/ttm/ttm_resource.h b/include/drm/ttm/=20
+>>>> ttm_resource.h
+>>>> index e52bba15012f7..3aef7efdd7cfb 100644
+>>>> --- a/include/drm/ttm/ttm_resource.h
+>>>> +++ b/include/drm/ttm/ttm_resource.h
+>>>> @@ -442,10 +442,14 @@ void ttm_resource_init(struct=20
+>>>> ttm_buffer_object *bo,
+>>>> =C2=A0 void ttm_resource_fini(struct ttm_resource_manager *man,
+>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct ttm_resource *res);
+>>>> +int ttm_resource_try_charge(struct ttm_buffer_object *bo,
+>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0 const struct ttm_place *place,
+>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0 struct dmem_cgroup_pool_state **ret_pool,
+>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0 struct dmem_cgroup_pool_state **ret_limit_pool);
+>>>> =C2=A0 int ttm_resource_alloc(struct ttm_buffer_object *bo,
+>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0 const struct ttm_place *place,
+>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct ttm_resource **res,
+>>>> -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0 struct dmem_cgroup_pool_state **ret_limit_pool);
+>>>> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0 struct dmem_cgroup_pool_state *charge_pool);
+>>>> =C2=A0 void ttm_resource_free(struct ttm_buffer_object *bo, struct=20
+>>>> ttm_resource **res);
+>>>> =C2=A0 bool ttm_resource_intersects(struct ttm_device *bdev,
+>>>> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 struct ttm_resource *res,
+>>>>
+>>>
+>>
+>=20
 
-Since it's a bug I'm working on it with high priority.
-
-Again, thanks a lot for testing!
-
--- 
-Cheers,
-Harry / Hyeonggon
 
