@@ -1,49 +1,49 @@
-Return-Path: <cgroups+bounces-14287-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-14288-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id cGj5MlyGnmnRVwQAu9opvQ
-	(envelope-from <cgroups+bounces-14287-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Wed, 25 Feb 2026 06:19:24 +0100
+	id qJm0GBmFnmnRVwQAu9opvQ
+	(envelope-from <cgroups+bounces-14288-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Wed, 25 Feb 2026 06:14:01 +0100
 X-Original-To: lists+cgroups@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6AD79191F3A
-	for <lists+cgroups@lfdr.de>; Wed, 25 Feb 2026 06:19:24 +0100 (CET)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id F1958191DB8
+	for <lists+cgroups@lfdr.de>; Wed, 25 Feb 2026 06:14:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 9243D315CA56
-	for <lists+cgroups@lfdr.de>; Wed, 25 Feb 2026 05:07:12 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id 650D73081F5D
+	for <lists+cgroups@lfdr.de>; Wed, 25 Feb 2026 05:07:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EFD6936A014;
-	Wed, 25 Feb 2026 05:02:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B08836CDE7;
+	Wed, 25 Feb 2026 05:02:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="IHaGqvhq"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VLcKv4Tw"
 X-Original-To: cgroups@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A91CA369982;
-	Wed, 25 Feb 2026 05:02:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C05BB36C598;
+	Wed, 25 Feb 2026 05:02:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1771995726; cv=none; b=mjQSloGt1NOJliUZCjW2oArPMMvS4upL0Lr/4gvOrE1aV2orndOKZ/iG6v78bpL6GftnvlEBVN+rVhWspmjcvtozXiKD2IEFn4A8EgNfqkPWmZZ1eOxrJ96Zqhq0hrFDxWFSFVUe7kdOHEEAK82gCkUVGE3/n1mTTVOzJ8UlOTY=
+	t=1771995729; cv=none; b=q6Fo5IG2VuFre4VYS84/2BVc8IPCXsB++gwhmCLU9WMxUheEDYbsNVDzz1nOP33/XAGoVsboe9jieroGZmNzGfFCW0FXpc+KU5o3w7MXprPSNEc4KpZTHlJjVuGCTwciJB+PILjt6USUrFKAtk4P/yZYtCG39kJguhYJlq/9oyQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1771995726; c=relaxed/simple;
-	bh=VvdZl4py1BpzLNrbfV+QRBdjpcwUcA71fqTaUdDAGwU=;
+	s=arc-20240116; t=1771995729; c=relaxed/simple;
+	bh=78W9E5VoKOH0MhqlfJeeYcbnJzFOFRCC2/kU4D5M7bA=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Mu8hHqQrFiNIAVorPYx22y0vopl20QSqOtzfCEe7PhcB3++WAOnLCHz0ZuYpszyyRAGYpWBTy2OHJngLVdY5bfZKblxT29qGVvLCP0Flmja3MNGCe+ykLqNnF8IIJ2rSJywVpwcZ537DcW/I543yW3YRZ9u2wjnUH50k793aGbQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=IHaGqvhq; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6EA1DC116D0;
-	Wed, 25 Feb 2026 05:02:06 +0000 (UTC)
+	 MIME-Version; b=DH/UOOsXwov1yPs6tbN7ZMEGjKLBu+OwQgacrWRcBLJKx/5brqy8/r5HAs7UXYajF9M75sH8EcVN/DgOzNb/FgPKXtgfIh1AbbZ7xy68QrW0dbIGf3XnvZQLnIDUxAP6I5Q/h32APTgoIdTKQGZXVSVrxEnzOEOldR9X2dAJfaM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VLcKv4Tw; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 89405C116D0;
+	Wed, 25 Feb 2026 05:02:09 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1771995726;
-	bh=VvdZl4py1BpzLNrbfV+QRBdjpcwUcA71fqTaUdDAGwU=;
+	s=k20201202; t=1771995729;
+	bh=78W9E5VoKOH0MhqlfJeeYcbnJzFOFRCC2/kU4D5M7bA=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=IHaGqvhqfOzN66NMmvRzY+0cV4kIa+8vf2w/Vu357dDUSUi714Izyk40Vc3R7g+aw
-	 P5OrzZHmqgGcuinKEt/8XBO9onew+5kR6CNqsr03e3rsjZ8hCqmpmLCVUjRaA9s2bv
-	 5PdzjIFmVezGQvxsnRuSZczR0lbdvWGpvq6cQLy7r0HV8fixE2rW/WfsPDWPwR0TYB
-	 UOjiBvTDaJO62NyC4+EdbeInWUR/9O1Q/TjgYkzhS4SjLa+61g5KMpqsotn5v5E4Th
-	 4w6Dt0JDBhgbLuTtD+wYY64paSrOyoZSrEapPcpmDAMzU/fCyEz71XvVkSTYixCjoS
-	 d7mqC09K8XVJQ==
+	b=VLcKv4Twa+OuVxnMoeJqCrjMX+8ldUpwIamk4fNia9uCS6WG+rTUbK5ZjuFPh5zKc
+	 r5NfDxODocEpxO3O2+0o9lKniPsW0GoUcRI1dmGNP47/4TzycQf5ql2kyDVq71TPft
+	 8/HQu/iW1TeUhzNLtJQCUPQP/q2ndvpDUrecxZ7GNtSqYTL+8w25vm93NcH9SPSWoy
+	 pCGq5wM42TTb4ZctfBW9bygfK89sJlj/MKhiKqG73iylec09IacU57OtYZf0w4oe1P
+	 WXxeqc84m48ltkDv0SEqbD+cwP9lopqFh0SPKm9YujM9NwBJFMCxhErvbrvLcSF9mS
+	 l/VUjL7Q6c/Ig==
 From: Tejun Heo <tj@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	sched-ext@lists.linux.dev
@@ -55,9 +55,9 @@ Cc: void@manifault.com,
 	mkoutny@suse.com,
 	cgroups@vger.kernel.org,
 	Tejun Heo <tj@kernel.org>
-Subject: [PATCH 13/34] sched_ext: Refactor task init/exit helpers
-Date: Tue, 24 Feb 2026 19:01:31 -1000
-Message-ID: <20260225050152.1070601-14-tj@kernel.org>
+Subject: [PATCH 14/34] sched_ext: Make scx_prio_less() handle multiple schedulers
+Date: Tue, 24 Feb 2026 19:01:32 -1000
+Message-ID: <20260225050152.1070601-15-tj@kernel.org>
 X-Mailer: git-send-email 2.53.0
 In-Reply-To: <20260225050152.1070601-1-tj@kernel.org>
 References: <20260225050152.1070601-1-tj@kernel.org>
@@ -74,13 +74,13 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	MID_CONTAINS_FROM(1.00)[];
 	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
 	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64:c];
 	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-14287-lists,cgroups=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-14288-lists,cgroups=lfdr.de];
 	RCVD_COUNT_THREE(0.00)[4];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	FROM_HAS_DN(0.00)[];
@@ -94,229 +94,44 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	TAGGED_RCPT(0.00)[cgroups];
 	TO_DN_SOME(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 6AD79191F3A
+	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: F1958191DB8
 X-Rspamd-Action: no action
 
-- Add the @sch parameter to scx_init_task() and drop @tg as it can be
-  obtained from @p. Separate out __scx_init_task() which does everything
-  except for the task state transition.
-
-- Add the @sch parameter to scx_enable_task(). Separate out
-  __scx_enable_task() which does everything except for the task state
-  transition.
-
-- Add the @sch parameter to scx_disable_task().
-
-- Rename scx_exit_task() to scx_disable_and_exit_task() and separate out
-  __scx_disable_and_exit_task() which does everything except for the task
-  state transition.
-
-While some task state transitions are relocated, no meaningful behavior
-changes are expected.
+Call ops.core_sched_before() iff both tasks belong to the same scx_sched.
+Otherwise, use timestamp based ordering.
 
 Signed-off-by: Tejun Heo <tj@kernel.org>
 ---
- kernel/sched/ext.c | 67 +++++++++++++++++++++++++++++++---------------
- 1 file changed, 45 insertions(+), 22 deletions(-)
+ kernel/sched/ext.c | 7 ++++---
+ 1 file changed, 4 insertions(+), 3 deletions(-)
 
 diff --git a/kernel/sched/ext.c b/kernel/sched/ext.c
-index 33e9129a8073..5d13b9b93249 100644
+index 5d13b9b93249..3d46e6e125c7 100644
 --- a/kernel/sched/ext.c
 +++ b/kernel/sched/ext.c
-@@ -3107,9 +3107,9 @@ static void scx_set_task_state(struct task_struct *p, enum scx_task_state state)
- 	p->scx.flags |= state << SCX_TASK_STATE_SHIFT;
- }
- 
--static int scx_init_task(struct task_struct *p, struct task_group *tg, bool fork)
-+static int __scx_init_task(struct scx_sched *sch, struct task_struct *p, bool fork)
+@@ -2805,16 +2805,17 @@ void ext_server_init(struct rq *rq)
+ bool scx_prio_less(const struct task_struct *a, const struct task_struct *b,
+ 		   bool in_fi)
  {
 -	struct scx_sched *sch = scx_root;
-+	struct task_group *tg = task_group(p);
- 	int ret;
- 
- 	p->scx.disallow = false;
-@@ -3128,8 +3128,6 @@ static int scx_init_task(struct task_struct *p, struct task_group *tg, bool fork
- 		}
- 	}
- 
--	scx_set_task_state(p, SCX_TASK_INIT);
--
- 	if (p->scx.disallow) {
- 		if (unlikely(scx_parent(sch))) {
- 			scx_error(sch, "non-root ops.init_task() set task->scx.disallow for %s[%d]",
-@@ -3159,13 +3157,27 @@ static int scx_init_task(struct task_struct *p, struct task_group *tg, bool fork
- 		}
- 	}
- 
--	p->scx.flags |= SCX_TASK_RESET_RUNNABLE_AT;
- 	return 0;
- }
- 
--static void scx_enable_task(struct task_struct *p)
-+static int scx_init_task(struct scx_sched *sch, struct task_struct *p, bool fork)
-+{
-+	int ret;
-+
-+	ret = __scx_init_task(sch, p, fork);
-+	if (!ret) {
-+		/*
-+		 * While @p's rq is not locked. @p is not visible to the rest of
-+		 * SCX yet and it's safe to update the flags and state.
-+		 */
-+		p->scx.flags |= SCX_TASK_RESET_RUNNABLE_AT;
-+		scx_set_task_state(p, SCX_TASK_INIT);
-+	}
-+	return ret;
-+}
-+
-+static void __scx_enable_task(struct scx_sched *sch, struct task_struct *p)
- {
--	struct scx_sched *sch = scx_root;
- 	struct rq *rq = task_rq(p);
- 	u32 weight;
- 
-@@ -3191,16 +3203,20 @@ static void scx_enable_task(struct task_struct *p)
- 
- 	if (SCX_HAS_OP(sch, enable))
- 		SCX_CALL_OP_TASK(sch, SCX_KF_REST, enable, rq, p);
--	scx_set_task_state(p, SCX_TASK_ENABLED);
- 
- 	if (SCX_HAS_OP(sch, set_weight))
- 		SCX_CALL_OP_TASK(sch, SCX_KF_REST, set_weight, rq,
- 				 p, p->scx.weight);
- }
- 
--static void scx_disable_task(struct task_struct *p)
-+static void scx_enable_task(struct scx_sched *sch, struct task_struct *p)
-+{
-+	__scx_enable_task(sch, p);
-+	scx_set_task_state(p, SCX_TASK_ENABLED);
-+}
-+
-+static void scx_disable_task(struct scx_sched *sch, struct task_struct *p)
- {
--	struct scx_sched *sch = scx_root;
- 	struct rq *rq = task_rq(p);
- 
- 	lockdep_assert_rq_held(rq);
-@@ -3218,9 +3234,9 @@ static void scx_disable_task(struct task_struct *p)
- 	WARN_ON_ONCE(p->scx.flags & SCX_TASK_IN_CUSTODY);
- }
- 
--static void scx_exit_task(struct task_struct *p)
-+static void __scx_disable_and_exit_task(struct scx_sched *sch,
-+					struct task_struct *p)
- {
--	struct scx_sched *sch = scx_task_sched(p);
- 	struct scx_exit_task_args args = {
- 		.cancelled = false,
- 	};
-@@ -3237,7 +3253,7 @@ static void scx_exit_task(struct task_struct *p)
- 	case SCX_TASK_READY:
- 		break;
- 	case SCX_TASK_ENABLED:
--		scx_disable_task(p);
-+		scx_disable_task(sch, p);
- 		break;
- 	default:
- 		WARN_ON_ONCE(true);
-@@ -3247,6 +3263,13 @@ static void scx_exit_task(struct task_struct *p)
- 	if (SCX_HAS_OP(sch, exit_task))
- 		SCX_CALL_OP_TASK(sch, SCX_KF_REST, exit_task, task_rq(p),
- 				 p, &args);
-+}
-+
-+static void scx_disable_and_exit_task(struct scx_sched *sch,
-+				      struct task_struct *p)
-+{
-+	__scx_disable_and_exit_task(sch, p);
-+
- 	scx_set_task_sched(p, NULL);
- 	scx_set_task_state(p, SCX_TASK_NONE);
- }
-@@ -3282,7 +3305,7 @@ int scx_fork(struct task_struct *p, struct kernel_clone_args *kargs)
- 	percpu_rwsem_assert_held(&scx_fork_rwsem);
- 
- 	if (scx_init_task_enabled) {
--		ret = scx_init_task(p, task_group(p), true);
-+		ret = scx_init_task(scx_root, p, true);
- 		if (!ret)
- 			scx_set_task_sched(p, scx_root);
- 		return ret;
-@@ -3306,7 +3329,7 @@ void scx_post_fork(struct task_struct *p)
- 			struct rq *rq;
- 
- 			rq = task_rq_lock(p, &rf);
--			scx_enable_task(p);
-+			scx_enable_task(scx_task_sched(p), p);
- 			task_rq_unlock(rq, p, &rf);
- 		}
- 	}
-@@ -3326,7 +3349,7 @@ void scx_cancel_fork(struct task_struct *p)
- 
- 		rq = task_rq_lock(p, &rf);
- 		WARN_ON_ONCE(scx_get_task_state(p) >= SCX_TASK_READY);
--		scx_exit_task(p);
-+		scx_disable_and_exit_task(scx_task_sched(p), p);
- 		task_rq_unlock(rq, p, &rf);
- 	}
- 
-@@ -3385,7 +3408,7 @@ void sched_ext_dead(struct task_struct *p)
- 		struct rq *rq;
- 
- 		rq = task_rq_lock(p, &rf);
--		scx_exit_task(p);
-+		scx_disable_and_exit_task(scx_task_sched(p), p);
- 		task_rq_unlock(rq, p, &rf);
- 	}
- }
-@@ -3417,7 +3440,7 @@ static void switching_to_scx(struct rq *rq, struct task_struct *p)
- 	if (task_dead_and_done(p))
- 		return;
- 
--	scx_enable_task(p);
-+	scx_enable_task(sch, p);
++	struct scx_sched *sch_a = scx_task_sched(a);
++	struct scx_sched *sch_b = scx_task_sched(b);
  
  	/*
- 	 * set_cpus_allowed_scx() is not called while @p is associated with a
-@@ -3433,7 +3456,7 @@ static void switched_from_scx(struct rq *rq, struct task_struct *p)
- 	if (task_dead_and_done(p))
- 		return;
- 
--	scx_disable_task(p);
-+	scx_disable_task(scx_task_sched(p), p);
- }
- 
- static void wakeup_preempt_scx(struct rq *rq, struct task_struct *p, int wake_flags) {}
-@@ -4662,7 +4685,7 @@ static void scx_root_disable(struct scx_sched *sch)
- 
- 	/*
- 	 * Shut down cgroup support before tasks so that the cgroup attach path
--	 * doesn't race against scx_exit_task().
-+	 * doesn't race against scx_disable_and_exit_task().
+ 	 * The const qualifiers are dropped from task_struct pointers when
+ 	 * calling ops.core_sched_before(). Accesses are controlled by the
+ 	 * verifier.
  	 */
- 	scx_cgroup_lock();
- 	scx_cgroup_exit(sch);
-@@ -4691,7 +4714,7 @@ static void scx_root_disable(struct scx_sched *sch)
- 			p->sched_class = new_class;
- 		}
- 
--		scx_exit_task(p);
-+		scx_disable_and_exit_task(scx_task_sched(p), p);
- 	}
- 	scx_task_iter_stop(&sti);
- 
-@@ -5567,7 +5590,7 @@ static s32 scx_root_enable(struct sched_ext_ops *ops, struct bpf_link *link)
- 
- 		scx_task_iter_unlock(&sti);
- 
--		ret = scx_init_task(p, task_group(p), false);
-+		ret = scx_init_task(sch, p, false);
- 		if (ret) {
- 			put_task_struct(p);
- 			scx_task_iter_stop(&sti);
+-	if (SCX_HAS_OP(sch, core_sched_before) &&
++	if (sch_a == sch_b && SCX_HAS_OP(sch_a, core_sched_before) &&
+ 	    !scx_rq_bypassing(task_rq(a)))
+-		return SCX_CALL_OP_2TASKS_RET(sch, SCX_KF_REST, core_sched_before,
++		return SCX_CALL_OP_2TASKS_RET(sch_a, SCX_KF_REST, core_sched_before,
+ 					      NULL,
+ 					      (struct task_struct *)a,
+ 					      (struct task_struct *)b);
 -- 
 2.53.0
 
