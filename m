@@ -1,49 +1,49 @@
-Return-Path: <cgroups+bounces-14240-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-14241-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 8LKIBjaCnmmGVwQAu9opvQ
-	(envelope-from <cgroups+bounces-14240-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Wed, 25 Feb 2026 06:01:42 +0100
+	id 4MZtNkaCnmmTVwQAu9opvQ
+	(envelope-from <cgroups+bounces-14241-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Wed, 25 Feb 2026 06:01:58 +0100
 X-Original-To: lists+cgroups@lfdr.de
 Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id C1A8C191B14
-	for <lists+cgroups@lfdr.de>; Wed, 25 Feb 2026 06:01:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 9E448191B31
+	for <lists+cgroups@lfdr.de>; Wed, 25 Feb 2026 06:01:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 581E0309B9B0
-	for <lists+cgroups@lfdr.de>; Wed, 25 Feb 2026 05:01:18 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id A7FA130747B5
+	for <lists+cgroups@lfdr.de>; Wed, 25 Feb 2026 05:01:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 76DFD2D63F6;
-	Wed, 25 Feb 2026 05:01:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6BEF82D7DD9;
+	Wed, 25 Feb 2026 05:01:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RojRiqSN"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="abDuhjD4"
 X-Original-To: cgroups@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 38B692D592E;
-	Wed, 25 Feb 2026 05:01:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2EFF02D77FA;
+	Wed, 25 Feb 2026 05:01:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1771995672; cv=none; b=Vv2Ty3q/W2ArGcnf/Lpn3J3tbLWgIOJ4prvGs1G0S0wkaKQKSTy9C2R2OoTD9HYlweJD/cVb2QidihKuA0QW83jXHMGmIWGxbM4PvelErPU1pdfSHMwIFFSfU/R/zzbfrIru9LxF/c1NoF+bE78XEdxDYUQIMqquTExcY3h2vVI=
+	t=1771995673; cv=none; b=MdHuMS8gnPFz0cXSEALzUX70MYenyu2e1LIKRZT2zzUrpaosKtkVw8eRM/WkBzMBaRTxkugjTR2bKNlIT+aKzIo4x8WL5FxNoIpr+445zYwr1Fwpz6UW+PmD5GoF2XKKzCgMTjzcS0ahMaf3f5pNQ9OT6eztnltkyiHvf8a/nzA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1771995672; c=relaxed/simple;
-	bh=gIQavw7nnSQBPtvR64x4CT554azmfJV2O88vL03iXX4=;
+	s=arc-20240116; t=1771995673; c=relaxed/simple;
+	bh=nC/y+Q1GXw/2eyYYfy80AaGlsw6Nuh7Pb1KJE/rv2U8=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=BB6ilBUE3KwvinU39mSVFCYaBR2vPNylna4CX0Et1CU1woOIKjxG+4GibkDwq57ibt3wykR8nwxw9qFvMvO+yUi/L0KdVK6/n2knT30ZMy6BhWScVTwql20o7bMXre3KtTs/vPCMae4M3JEZjalBUSFJ7okQwSVjHukb30REWOA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RojRiqSN; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AD70AC2BC86;
-	Wed, 25 Feb 2026 05:01:11 +0000 (UTC)
+	 MIME-Version; b=LQ13cnlO3TwnM4urkdAeM+Zs+Lxjt7g0cDYHIe96Vk2zWDwJ/1ZxlQA04fePIO8Zg6NBPjV5jC4gpf5IQWtl3Y0lVWkKn8sNSDxuXPXdatLlbfRw9xhlfoVCVeItyjEd9WoZJiUkU8NayVL6D6cMMLf91nIr0E3LUYpUGAJhSm8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=abDuhjD4; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BB2FCC19422;
+	Wed, 25 Feb 2026 05:01:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1771995671;
-	bh=gIQavw7nnSQBPtvR64x4CT554azmfJV2O88vL03iXX4=;
+	s=k20201202; t=1771995672;
+	bh=nC/y+Q1GXw/2eyYYfy80AaGlsw6Nuh7Pb1KJE/rv2U8=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=RojRiqSNKjmloNVSwtyji/jEz/XjJGI0KqXFqyDZf6TRJb4KYw1rRXxTQM/V50vX7
-	 MGjYUaFEUQ9CA4wtXuy0uZDGU7fVUDdWttjY8JjPs/lg0UC1E+ofhs97hnnWZbTU5W
-	 VZ/cVGXoduAJC/UAh1Aw/JyugqGLCAvv8NYXwGlmEvZN1uphBE/2q3AMJvIj1vnoR5
-	 NhWRirmtG7hhPAXbzRgHRzzQcPrE6dmYDR8jAnFlCbXhtdoN8cAO3DrqIVYNWC+V5H
-	 hKWsrd6MXsKGmg9M/xTMSt60O/K80QY1vc184XXyrV6gE/7gViZRHs1sM6JlwyB1Dz
-	 DYvbesEvrJtBA==
+	b=abDuhjD4ZYLJR6VOWISRW61bxiQQnY+ZyDcklm1xqbbX20zDGDhyPIT+GtHJ4opdD
+	 3jv2ZNk9C6Nirabaz4aPipL6CaLvuyJInJryfrPcbVZNi8Lp3Zi0fXZgKjclUU0GwE
+	 /nCXzg8y6E+n4OwxEgWcJ0MN6UjOeVr4jWebrUdz54/Aq+RI34ylJQm9R7GdFtL1aN
+	 FQEO5gN8/9za/iz6bC2aZFJtbWlrPDEOckjEF+V2Df9PBXrS2pc1yabBOojMFmP2YG
+	 dSAcTkbfuih5pncr9ynAO254eMgwWLEMh13/aH/1IpQ5Ytx5FjXPF0QLmjt7KL1XnW
+	 EO0CgXugXaHmA==
 From: Tejun Heo <tj@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	sched-ext@lists.linux.dev
@@ -54,10 +54,11 @@ Cc: void@manifault.com,
 	hannes@cmpxchg.org,
 	mkoutny@suse.com,
 	cgroups@vger.kernel.org,
-	Tejun Heo <tj@kernel.org>
-Subject: [PATCH 01/34] sched_ext: Implement cgroup subtree iteration for scx_task_iter
-Date: Tue, 24 Feb 2026 19:00:36 -1000
-Message-ID: <20260225050109.1070059-2-tj@kernel.org>
+	Tejun Heo <tj@kernel.org>,
+	Peter Zijlstra <peterz@infradead.org>
+Subject: [PATCH 02/34] sched_ext: Add @kargs to scx_fork()
+Date: Tue, 24 Feb 2026 19:00:37 -1000
+Message-ID: <20260225050109.1070059-3-tj@kernel.org>
 X-Mailer: git-send-email 2.53.0
 In-Reply-To: <20260225050109.1070059-1-tj@kernel.org>
 References: <20260225050109.1070059-1-tj@kernel.org>
@@ -80,7 +81,7 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-14240-lists,cgroups=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-14241-lists,cgroups=lfdr.de];
 	RCVD_COUNT_THREE(0.00)[4];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	FROM_HAS_DN(0.00)[];
@@ -88,167 +89,76 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	FROM_NEQ_ENVFROM(0.00)[tj@kernel.org,cgroups@vger.kernel.org];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
-	RCPT_COUNT_SEVEN(0.00)[10];
+	RCPT_COUNT_SEVEN(0.00)[11];
 	NEURAL_HAM(-0.00)[-1.000];
 	DKIM_TRACE(0.00)[kernel.org:+];
 	TAGGED_RCPT(0.00)[cgroups];
 	TO_DN_SOME(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: C1A8C191B14
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,infradead.org:email]
+X-Rspamd-Queue-Id: 9E448191B31
 X-Rspamd-Action: no action
 
-For the planned cgroup sub-scheduler support, enable/disable operations are
-going to be subtree specific and iterating all tasks in the system for those
-operations can be unnecessarily expensive and disruptive.
-
-cgroup already has mechanisms to perform subtree task iterations. Implement
-cgroup subtree iteration for scx_task_iter:
-
-- Add optional @cgrp to scx_task_iter_start() which enables cgroup subtree
-  iteration.
-
-- Make scx_task_iter use css_next_descendant_pre() and css_task_iter to
-  iterate all tasks in the cgroup subtree.
-
-- Update all existing callers to pass NULL to maintain current behavior.
-
-The two iteration mechanisms are independent and duplicate. It's likely that
-scx_tasks can be removed in favor of always using cgroup iteration if
-CONFIG_SCHED_CLASS_EXT depends on CONFIG_CGROUPS.
+Make sched_cgroup_fork() pass @kargs to scx_fork(). This will be used to
+determine @p's cgroup for cgroup sub-sched support.
 
 Signed-off-by: Tejun Heo <tj@kernel.org>
+Cc: Peter Zijlstra <peterz@infradead.org>
 ---
- kernel/sched/ext.c | 64 +++++++++++++++++++++++++++++++++++++++++-----
- 1 file changed, 58 insertions(+), 6 deletions(-)
+ kernel/sched/core.c | 2 +-
+ kernel/sched/ext.c  | 2 +-
+ kernel/sched/ext.h  | 4 ++--
+ 3 files changed, 4 insertions(+), 4 deletions(-)
 
+diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+index 759777694c78..7ba80220a276 100644
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -4721,7 +4721,7 @@ int sched_cgroup_fork(struct task_struct *p, struct kernel_clone_args *kargs)
+ 		p->sched_class->task_fork(p);
+ 	raw_spin_unlock_irqrestore(&p->pi_lock, flags);
+ 
+-	return scx_fork(p);
++	return scx_fork(p, kargs);
+ }
+ 
+ void sched_cancel_fork(struct task_struct *p)
 diff --git a/kernel/sched/ext.c b/kernel/sched/ext.c
-index d191dbc9e981..25b9b488ed1f 100644
+index 25b9b488ed1f..edc88c1f744d 100644
 --- a/kernel/sched/ext.c
 +++ b/kernel/sched/ext.c
-@@ -514,14 +514,31 @@ struct scx_task_iter {
- 	struct rq_flags			rf;
- 	u32				cnt;
- 	bool				list_locked;
-+#ifdef CONFIG_CGROUPS
-+	struct cgroup			*cgrp;
-+	struct cgroup_subsys_state	*css_pos;
-+	struct css_task_iter		css_iter;
-+#endif
- };
+@@ -3167,7 +3167,7 @@ void scx_pre_fork(struct task_struct *p)
+ 	percpu_down_read(&scx_fork_rwsem);
+ }
  
- /**
-  * scx_task_iter_start - Lock scx_tasks_lock and start a task iteration
-  * @iter: iterator to init
-+ * @cgrp: Optional root of cgroup subhierarchy to iterate
-+ *
-+ * Initialize @iter. Once initialized, @iter must eventually be stopped with
-+ * scx_task_iter_stop().
-+ *
-+ * If @cgrp is %NULL, scx_tasks is used for iteration and this function returns
-+ * with scx_tasks_lock held and @iter->cursor inserted into scx_tasks.
-+ *
-+ * If @cgrp is not %NULL, @cgrp and its descendants' tasks are walked using
-+ * @iter->css_iter. The caller must be holding cgroup_lock() to prevent cgroup
-+ * task migrations.
-  *
-- * Initialize @iter and return with scx_tasks_lock held. Once initialized, @iter
-- * must eventually be stopped with scx_task_iter_stop().
-+ * The two modes of iterations are largely independent and it's likely that
-+ * scx_tasks can be removed in favor of always using cgroup iteration if
-+ * CONFIG_SCHED_CLASS_EXT depends on CONFIG_CGROUPS.
-  *
-  * scx_tasks_lock and the rq lock may be released using scx_task_iter_unlock()
-  * between this and the first next() call or between any two next() calls. If
-@@ -532,10 +549,19 @@ struct scx_task_iter {
-  * All tasks which existed when the iteration started are guaranteed to be
-  * visited as long as they are not dead.
-  */
--static void scx_task_iter_start(struct scx_task_iter *iter)
-+static void scx_task_iter_start(struct scx_task_iter *iter, struct cgroup *cgrp)
+-int scx_fork(struct task_struct *p)
++int scx_fork(struct task_struct *p, struct kernel_clone_args *kargs)
  {
- 	memset(iter, 0, sizeof(*iter));
+ 	percpu_rwsem_assert_held(&scx_fork_rwsem);
  
-+#ifdef CONFIG_CGROUPS
-+	if (cgrp) {
-+		lockdep_assert_held(&cgroup_mutex);
-+		iter->cgrp = cgrp;
-+		iter->css_pos = css_next_descendant_pre(NULL, &iter->cgrp->self);
-+		css_task_iter_start(iter->css_pos, 0, &iter->css_iter);
-+		return;
-+	}
-+#endif
- 	raw_spin_lock_irq(&scx_tasks_lock);
+diff --git a/kernel/sched/ext.h b/kernel/sched/ext.h
+index 43429b33e52c..0b7fc46aee08 100644
+--- a/kernel/sched/ext.h
++++ b/kernel/sched/ext.h
+@@ -11,7 +11,7 @@
+ void scx_tick(struct rq *rq);
+ void init_scx_entity(struct sched_ext_entity *scx);
+ void scx_pre_fork(struct task_struct *p);
+-int scx_fork(struct task_struct *p);
++int scx_fork(struct task_struct *p, struct kernel_clone_args *kargs);
+ void scx_post_fork(struct task_struct *p);
+ void scx_cancel_fork(struct task_struct *p);
+ bool scx_can_stop_tick(struct rq *rq);
+@@ -44,7 +44,7 @@ bool scx_prio_less(const struct task_struct *a, const struct task_struct *b,
  
- 	iter->cursor = (struct sched_ext_entity){ .flags = SCX_TASK_CURSOR };
-@@ -588,6 +614,14 @@ static void __scx_task_iter_maybe_relock(struct scx_task_iter *iter)
-  */
- static void scx_task_iter_stop(struct scx_task_iter *iter)
- {
-+#ifdef CONFIG_CGROUPS
-+	if (iter->cgrp) {
-+		if (iter->css_pos)
-+			css_task_iter_end(&iter->css_iter);
-+		__scx_task_iter_rq_unlock(iter);
-+		return;
-+	}
-+#endif
- 	__scx_task_iter_maybe_relock(iter);
- 	list_del_init(&iter->cursor.tasks_node);
- 	scx_task_iter_unlock(iter);
-@@ -611,6 +645,24 @@ static struct task_struct *scx_task_iter_next(struct scx_task_iter *iter)
- 		cond_resched();
- 	}
- 
-+#ifdef CONFIG_CGROUPS
-+	if (iter->cgrp) {
-+		while (iter->css_pos) {
-+			struct task_struct *p;
-+
-+			p = css_task_iter_next(&iter->css_iter);
-+			if (p)
-+				return p;
-+
-+			css_task_iter_end(&iter->css_iter);
-+			iter->css_pos = css_next_descendant_pre(iter->css_pos,
-+								&iter->cgrp->self);
-+			if (iter->css_pos)
-+				css_task_iter_start(iter->css_pos, 0, &iter->css_iter);
-+		}
-+		return NULL;
-+	}
-+#endif
- 	__scx_task_iter_maybe_relock(iter);
- 
- 	list_for_each_entry(pos, cursor, tasks_node) {
-@@ -4433,7 +4485,7 @@ static void scx_disable_workfn(struct kthread_work *work)
- 
- 	scx_init_task_enabled = false;
- 
--	scx_task_iter_start(&sti);
-+	scx_task_iter_start(&sti, NULL);
- 	while ((p = scx_task_iter_next_locked(&sti))) {
- 		unsigned int queue_flags = DEQUEUE_SAVE | DEQUEUE_MOVE | DEQUEUE_NOCLOCK;
- 		const struct sched_class *old_class = p->sched_class;
-@@ -5213,7 +5265,7 @@ static int scx_enable(struct sched_ext_ops *ops, struct bpf_link *link)
- 	if (ret)
- 		goto err_disable_unlock_all;
- 
--	scx_task_iter_start(&sti);
-+	scx_task_iter_start(&sti, NULL);
- 	while ((p = scx_task_iter_next_locked(&sti))) {
- 		/*
- 		 * @p may already be dead, have lost all its usages counts and
-@@ -5255,7 +5307,7 @@ static int scx_enable(struct sched_ext_ops *ops, struct bpf_link *link)
- 	 * scx_tasks_lock.
- 	 */
- 	percpu_down_write(&scx_fork_rwsem);
--	scx_task_iter_start(&sti);
-+	scx_task_iter_start(&sti, NULL);
- 	while ((p = scx_task_iter_next_locked(&sti))) {
- 		unsigned int queue_flags = DEQUEUE_SAVE | DEQUEUE_MOVE;
- 		const struct sched_class *old_class = p->sched_class;
+ static inline void scx_tick(struct rq *rq) {}
+ static inline void scx_pre_fork(struct task_struct *p) {}
+-static inline int scx_fork(struct task_struct *p) { return 0; }
++static inline int scx_fork(struct task_struct *p, struct kernel_clone_args *kargs) { return 0; }
+ static inline void scx_post_fork(struct task_struct *p) {}
+ static inline void scx_cancel_fork(struct task_struct *p) {}
+ static inline u32 scx_cpuperf_target(s32 cpu) { return 0; }
 -- 
 2.53.0
 
