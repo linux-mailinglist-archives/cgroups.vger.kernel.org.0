@@ -1,49 +1,49 @@
-Return-Path: <cgroups+bounces-14279-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-14280-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id WGdYC1KEnmmGVwQAu9opvQ
-	(envelope-from <cgroups+bounces-14279-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Wed, 25 Feb 2026 06:10:42 +0100
+	id oAA5K2SEnmmGVwQAu9opvQ
+	(envelope-from <cgroups+bounces-14280-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Wed, 25 Feb 2026 06:11:00 +0100
 X-Original-To: lists+cgroups@lfdr.de
 Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id C3B9A191CE6
-	for <lists+cgroups@lfdr.de>; Wed, 25 Feb 2026 06:10:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 66D4C191CED
+	for <lists+cgroups@lfdr.de>; Wed, 25 Feb 2026 06:11:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id E23AC3075CD6
-	for <lists+cgroups@lfdr.de>; Wed, 25 Feb 2026 05:05:59 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id 9711230DED03
+	for <lists+cgroups@lfdr.de>; Wed, 25 Feb 2026 05:06:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A038361675;
-	Wed, 25 Feb 2026 05:01:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7C7FE363C5C;
+	Wed, 25 Feb 2026 05:01:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="aA01c65N"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Bl8pFwCA"
 X-Original-To: cgroups@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3BB58352C4F;
-	Wed, 25 Feb 2026 05:01:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3BBF8361671;
+	Wed, 25 Feb 2026 05:01:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1771995718; cv=none; b=EwrwlP3RdGSWDBsGQs1DLmE3wBftDU0FGBAqmTIw61zIGhSM0EQ9/F8/CD9LmcPNdvcJ65NcHw8IaAjfW+SxVWv1tsLByY1KkG50B27/TJW4euVYpAne6OBGGpE6Ty5Xk+E3H4DK5zWl5UCECmGPzogCO0jnLY7ZBjmdO94SVf4=
+	t=1771995719; cv=none; b=gAZzDIoScC5lcs0nU2Hi0b5rS6CZVjUZINPgpNBx+6gUH2fo73DK6PqyO9czYv1C1BL/XJgmd3PrMHoLsME7UBIFViiUDHy4QYse0BGqA7MZrfBA9XqsiPMeYcWsOXcsLDcnIlJgqsfqDsBOxDq0jvLKO8lQdq9nXCJCXb9sbMs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1771995718; c=relaxed/simple;
-	bh=7C+2eeW18G+snzuLuyCK8MnITqHMQlxg0nUjU7/nskM=;
+	s=arc-20240116; t=1771995719; c=relaxed/simple;
+	bh=ixLkCDNjZdvYVjmlQWnMYuMVE5pGYNYKGBL8rTh+X0I=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=fOtpSuncwQlMoR15UUZgksmVqAyrt9GssNfaU6EotLdMwIjL89brN/TFSC4tHNz8SPz0XRzfsGzoP2BFriwJAWbusAXz3RA6ijkLSrglw91QOr0yYX0hHfgihtUgUMsVR7UHgRwt0X+GsIQezAkbMrW5w/I1PvTSUg1HDyzk6F4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=aA01c65N; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 04B5DC19425;
-	Wed, 25 Feb 2026 05:01:57 +0000 (UTC)
+	 MIME-Version; b=Fi/gTJUGsniOANup3mXJnLUvz46bFe7fr/5spGcNFZZ4bsnTx7PJWUQ/43lgP0VJFeSFiE93vr2P9GkaxkpTELJj0+8Uk8+QWWDXEdS4eFAzUC+udfM9gA305XYOG4U6db9v0LYyyPiUDIfBkSQTEr6ubSa3OWRkZRwgWisSJz0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Bl8pFwCA; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 051DDC116D0;
+	Wed, 25 Feb 2026 05:01:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1771995718;
-	bh=7C+2eeW18G+snzuLuyCK8MnITqHMQlxg0nUjU7/nskM=;
+	s=k20201202; t=1771995719;
+	bh=ixLkCDNjZdvYVjmlQWnMYuMVE5pGYNYKGBL8rTh+X0I=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=aA01c65N1QR2gQRYP5f/c4Pi7IGn/Pbg0Z7AC0Gf6Y8pm/qAsWKG9MDlYoc0NNvcT
-	 /+6MF1eHQODPQU3Sr6XtBMUFhWSv13BbiChwfU3zLOis496qFcYqhvNTzNjWraVRQ1
-	 n9mkGFSoAUeUimtAzKmqcl8Q81H/zCB/8c8BCR9mwUK60Yl/LPAjTWslza7tam4H9R
-	 FB48GoHDhxN3NpxFBcVvh8s7IMkUlxX1XoQ+jtqnMOh8VsRsqnzxv6E69CfcSwJllP
-	 SbdmGz9KLkH331qAv4FF29jTeBCVAEfU6pjU0VekGa6XsA2dvG9TUYg1M/O4veWPCP
-	 Bq+THBvpBEJsA==
+	b=Bl8pFwCAXlO9FoKMuRxKMb8WS4gnEeXKXU1qYn6Z4bBEtm2w5XX/A6ebQ1mPK9bCU
+	 rYf7h4bgO1Ecc9pJ7rDlDw+ycAgHqXg8xwesg6mYryj7GHEiNB9UzUGaMyLhiZqXGL
+	 8w/Nmj8E0o3w/arZuzFycOvTsogs9fKklfXFJPosKpDe5CXBXk6IQDYyjvFaF4sHgT
+	 FzZFuy1O/j4QtewVjaR1c90wiZg08280j4LUMzC/Qlyo8qSCLFI+U95ikmyqIgkUA1
+	 QIXszzZuhiiql1gIlHQyz7EaZWQEjHN4n8FyzZ+ZduVOyjYe0vJHHYhocPzUjtGbh7
+	 iddDlNxO2Hkkg==
 From: Tejun Heo <tj@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	sched-ext@lists.linux.dev
@@ -55,9 +55,9 @@ Cc: void@manifault.com,
 	mkoutny@suse.com,
 	cgroups@vger.kernel.org,
 	Tejun Heo <tj@kernel.org>
-Subject: [PATCH 05/34] sched_ext: Update p->scx.disallow warning in scx_init_task()
-Date: Tue, 24 Feb 2026 19:01:23 -1000
-Message-ID: <20260225050152.1070601-6-tj@kernel.org>
+Subject: [PATCH 06/34] sched_ext: Reorganize enable/disable path for multi-scheduler support
+Date: Tue, 24 Feb 2026 19:01:24 -1000
+Message-ID: <20260225050152.1070601-7-tj@kernel.org>
 X-Mailer: git-send-email 2.53.0
 In-Reply-To: <20260225050152.1070601-1-tj@kernel.org>
 References: <20260225050152.1070601-1-tj@kernel.org>
@@ -80,7 +80,7 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-14279-lists,cgroups=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-14280-lists,cgroups=lfdr.de];
 	RCVD_COUNT_THREE(0.00)[4];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	FROM_HAS_DN(0.00)[];
@@ -96,45 +96,179 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
 	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: C3B9A191CE6
+X-Rspamd-Queue-Id: 66D4C191CED
 X-Rspamd-Action: no action
 
-- Always trigger the warning if p->scx.disallow is set for fork inits. There
-  is no reason to set it during forks.
+In preparation for multiple scheduler support, reorganize the enable and
+disable paths to make scheduler instances explicit. Extract
+scx_root_disable() from scx_disable_workfn(). Rename scx_enable() to
+scx_root_enable(). Change scx_disable() to take @sch parameter and only
+queue disable_work if scx_claim_exit() succeeds for consistency. Move
+exit_kind validation into scx_claim_exit(). The sysrq handler now prints a
+message when no scheduler is loaded.
 
-- Flip the positions of if/else arms to ease adding error conditions.
+These changes don't materially affect user-visible behavior.
 
 Signed-off-by: Tejun Heo <tj@kernel.org>
 ---
- kernel/sched/ext.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+ kernel/sched/ext.c | 75 ++++++++++++++++++++++++++--------------------
+ 1 file changed, 42 insertions(+), 33 deletions(-)
 
 diff --git a/kernel/sched/ext.c b/kernel/sched/ext.c
-index edc88c1f744d..a136773461ea 100644
+index a136773461ea..499b4fce8704 100644
 --- a/kernel/sched/ext.c
 +++ b/kernel/sched/ext.c
-@@ -3028,7 +3028,10 @@ static int scx_init_task(struct task_struct *p, struct task_group *tg, bool fork
- 	scx_set_task_state(p, SCX_TASK_INIT);
+@@ -3263,8 +3263,8 @@ void sched_ext_dead(struct task_struct *p)
+ 	raw_spin_unlock_irqrestore(&scx_tasks_lock, flags);
  
- 	if (p->scx.disallow) {
--		if (!fork) {
-+		if (unlikely(fork)) {
-+			scx_error(sch, "ops.init_task() set task->scx.disallow for %s[%d] during fork",
-+				  p->comm, p->pid);
-+		} else {
- 			struct rq *rq;
- 			struct rq_flags rf;
- 
-@@ -3047,9 +3050,6 @@ static int scx_init_task(struct task_struct *p, struct task_group *tg, bool fork
- 			}
- 
- 			task_rq_unlock(rq, p, &rf);
--		} else if (p->policy == SCHED_EXT) {
--			scx_error(sch, "ops.init_task() set task->scx.disallow for %s[%d] during fork",
--				  p->comm, p->pid);
- 		}
+ 	/*
+-	 * @p is off scx_tasks and wholly ours. scx_enable()'s READY -> ENABLED
+-	 * transitions can't race us. Disable ops for @p.
++	 * @p is off scx_tasks and wholly ours. scx_root_enable()'s READY ->
++	 * ENABLED transitions can't race us. Disable ops for @p.
+ 	 */
+ 	if (scx_get_task_state(p) != SCX_TASK_NONE) {
+ 		struct rq_flags rf;
+@@ -4423,24 +4423,12 @@ static void free_kick_syncs(void)
  	}
+ }
  
+-static void scx_disable_workfn(struct kthread_work *work)
++static void scx_root_disable(struct scx_sched *sch)
+ {
+-	struct scx_sched *sch = container_of(work, struct scx_sched, disable_work);
+ 	struct scx_exit_info *ei = sch->exit_info;
+ 	struct scx_task_iter sti;
+ 	struct task_struct *p;
+-	int kind, cpu;
+-
+-	kind = atomic_read(&sch->exit_kind);
+-	while (true) {
+-		if (kind == SCX_EXIT_DONE)	/* already disabled? */
+-			return;
+-		WARN_ON_ONCE(kind == SCX_EXIT_NONE);
+-		if (atomic_try_cmpxchg(&sch->exit_kind, &kind, SCX_EXIT_DONE))
+-			break;
+-	}
+-	ei->kind = kind;
+-	ei->reason = scx_exit_reason(ei->kind);
++	int cpu;
+ 
+ 	/* guarantee forward progress by bypassing scx_ops */
+ 	scx_bypass(true);
+@@ -4584,6 +4572,9 @@ static bool scx_claim_exit(struct scx_sched *sch, enum scx_exit_kind kind)
+ 
+ 	lockdep_assert_preemption_disabled();
+ 
++	if (WARN_ON_ONCE(kind == SCX_EXIT_NONE || kind == SCX_EXIT_DONE))
++		kind = SCX_EXIT_ERROR;
++
+ 	if (!atomic_try_cmpxchg(&sch->exit_kind, &none, kind))
+ 		return false;
+ 
+@@ -4596,21 +4587,31 @@ static bool scx_claim_exit(struct scx_sched *sch, enum scx_exit_kind kind)
+ 	return true;
+ }
+ 
+-static void scx_disable(enum scx_exit_kind kind)
++static void scx_disable_workfn(struct kthread_work *work)
+ {
+-	struct scx_sched *sch;
++	struct scx_sched *sch = container_of(work, struct scx_sched, disable_work);
++	struct scx_exit_info *ei = sch->exit_info;
++	int kind;
+ 
+-	if (WARN_ON_ONCE(kind == SCX_EXIT_NONE || kind == SCX_EXIT_DONE))
+-		kind = SCX_EXIT_ERROR;
++	kind = atomic_read(&sch->exit_kind);
++	while (true) {
++		if (kind == SCX_EXIT_DONE)	/* already disabled? */
++			return;
++		WARN_ON_ONCE(kind == SCX_EXIT_NONE);
++		if (atomic_try_cmpxchg(&sch->exit_kind, &kind, SCX_EXIT_DONE))
++			break;
++	}
++	ei->kind = kind;
++	ei->reason = scx_exit_reason(ei->kind);
+ 
+-	rcu_read_lock();
+-	sch = rcu_dereference(scx_root);
+-	if (sch) {
+-		guard(preempt)();
+-		scx_claim_exit(sch, kind);
++	scx_root_disable(sch);
++}
++
++static void scx_disable(struct scx_sched *sch, enum scx_exit_kind kind)
++{
++	guard(preempt)();
++	if (scx_claim_exit(sch, kind))
+ 		kthread_queue_work(sch->helper, &sch->disable_work);
+-	}
+-	rcu_read_unlock();
+ }
+ 
+ static void dump_newline(struct seq_buf *s)
+@@ -5115,13 +5116,13 @@ static int validate_ops(struct scx_sched *sch, const struct sched_ext_ops *ops)
+ 	return 0;
+ }
+ 
+-static int scx_enable(struct sched_ext_ops *ops, struct bpf_link *link)
++static s32 scx_root_enable(struct sched_ext_ops *ops, struct bpf_link *link)
+ {
+ 	struct scx_sched *sch;
+ 	struct scx_task_iter sti;
+ 	struct task_struct *p;
+ 	unsigned long timeout;
+-	int i, cpu, ret;
++	s32 i, cpu, ret;
+ 
+ 	if (!cpumask_equal(housekeeping_cpumask(HK_TYPE_DOMAIN),
+ 			   cpu_possible_mask)) {
+@@ -5368,7 +5369,7 @@ static int scx_enable(struct sched_ext_ops *ops, struct bpf_link *link)
+ 	 * Flush scx_disable_work to ensure that error is reported before init
+ 	 * completion. sch's base reference will be put by bpf_scx_unreg().
+ 	 */
+-	scx_error(sch, "scx_enable() failed (%d)", ret);
++	scx_error(sch, "scx_root_enable() failed (%d)", ret);
+ 	kthread_flush_work(&sch->disable_work);
+ 	return 0;
+ }
+@@ -5500,7 +5501,7 @@ static int bpf_scx_check_member(const struct btf_type *t,
+ 
+ static int bpf_scx_reg(void *kdata, struct bpf_link *link)
+ {
+-	return scx_enable(kdata, link);
++	return scx_root_enable(kdata, link);
+ }
+ 
+ static void bpf_scx_unreg(void *kdata, struct bpf_link *link)
+@@ -5508,7 +5509,7 @@ static void bpf_scx_unreg(void *kdata, struct bpf_link *link)
+ 	struct sched_ext_ops *ops = kdata;
+ 	struct scx_sched *sch = ops->priv;
+ 
+-	scx_disable(SCX_EXIT_UNREG);
++	scx_disable(sch, SCX_EXIT_UNREG);
+ 	kthread_flush_work(&sch->disable_work);
+ 	kobject_put(&sch->kobj);
+ }
+@@ -5636,7 +5637,15 @@ static struct bpf_struct_ops bpf_sched_ext_ops = {
+ 
+ static void sysrq_handle_sched_ext_reset(u8 key)
+ {
+-	scx_disable(SCX_EXIT_SYSRQ);
++	struct scx_sched *sch;
++
++	rcu_read_lock();
++	sch = rcu_dereference(scx_root);
++	if (likely(sch))
++		scx_disable(sch, SCX_EXIT_SYSRQ);
++	else
++		pr_info("sched_ext: BPF schedulers not loaded\n");
++	rcu_read_unlock();
+ }
+ 
+ static const struct sysrq_key_op sysrq_sched_ext_reset_op = {
 -- 
 2.53.0
 
