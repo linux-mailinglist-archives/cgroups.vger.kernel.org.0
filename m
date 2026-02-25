@@ -1,48 +1,50 @@
-Return-Path: <cgroups+bounces-14312-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-14313-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 8NSfHeepnmntWgQAu9opvQ
-	(envelope-from <cgroups+bounces-14312-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Wed, 25 Feb 2026 08:51:03 +0100
+	id KJyHNuypnmntWgQAu9opvQ
+	(envelope-from <cgroups+bounces-14313-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Wed, 25 Feb 2026 08:51:08 +0100
 X-Original-To: lists+cgroups@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id D0911193B7B
-	for <lists+cgroups@lfdr.de>; Wed, 25 Feb 2026 08:51:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 888C2193B8A
+	for <lists+cgroups@lfdr.de>; Wed, 25 Feb 2026 08:51:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id D8B843037EC4
-	for <lists+cgroups@lfdr.de>; Wed, 25 Feb 2026 07:49:43 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 75F16305DB87
+	for <lists+cgroups@lfdr.de>; Wed, 25 Feb 2026 07:49:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3406F23AB87;
-	Wed, 25 Feb 2026 07:49:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 90A682D73B8;
+	Wed, 25 Feb 2026 07:49:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="gthI7paU"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="n/za7M6f"
 X-Original-To: cgroups@vger.kernel.org
-Received: from out-174.mta0.migadu.com (out-174.mta0.migadu.com [91.218.175.174])
+Received: from out-180.mta0.migadu.com (out-180.mta0.migadu.com [91.218.175.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 22C7E75801
-	for <cgroups@vger.kernel.org>; Wed, 25 Feb 2026 07:49:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC1F41E5B7B
+	for <cgroups@vger.kernel.org>; Wed, 25 Feb 2026 07:49:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772005782; cv=none; b=UTXTSLV/DqQ1ZLT7c7ZeDbqrtSS3rxxSJxJCOKfpBpfW1ZsVKEzGKAv7acMYuZm4gWE+8n2fYsq3WQt0BAxMKl93Xhxj6V7n83pguy7upuPid4GXD+7aDWtIJO99TzdzG0Sj0q9vQQiTznUdQTzH6uWbB47fUdhrNwdpexXN83E=
+	t=1772005791; cv=none; b=BQP0GqJ4Lbl7g8zn0uZ3ghqZ/bmPdBAOcHQBgzPAVDFO/dK1QxeljWm+tu5ed6xjUKq/9atRvikTxa0zsUHTyVl/FB/C4R73IBL0RyNo786hxSk2KXDd/lZ8KQZzT5R7LxREVJibeXHbDKbUr7jttNUie1Lo/NzuLnBA6zjy+G0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772005782; c=relaxed/simple;
-	bh=mJitiljOJ/jYQu/Z19Wouag+1aa1OUwV+QSeRup8qHw=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=ZeJ/sqrpII9QSoll58970mV53PbRRrPZ7q7SN4qiMZang7oCT1J5gu/L7sa/1qXyyLgVUIlHgzBXyJlhT8SmznFORyGeObm3ZskEttXnex+PlBSDGSclRb7zhIpwmzn/DEf3qhfCmH+bv6Vv1Y/LVwo5f7/Kx91dIpZy4a1mcL8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=gthI7paU; arc=none smtp.client-ip=91.218.175.174
+	s=arc-20240116; t=1772005791; c=relaxed/simple;
+	bh=2iGkLzvp86WupNKMwu/KzCPVtK14qSmibY5QB4tIreU=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=rQtmXF+yQdoEu4VN1Rz+9ASvWZUN1QMp8PectHDQQNwptc6VNVHnUEM38J1P2ziTJZWnt9AsdVCMh6lsGmHeIG/2ABMwZ5YsZoNEEHprImmhgcchqBcXrtQB16AyxMdWA4ppnKdaoDW1YaP332VdteUHhHxPdihSvgmlnkqp12E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=n/za7M6f; arc=none smtp.client-ip=91.218.175.180
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1772005777;
+	t=1772005787;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=VCxg7NgM2LDq4e9k0AtZ4iU6ry0kPMJ5QI3Tfg+syuk=;
-	b=gthI7paU9xez6XU/jDo30rhRLR9Oge7fTJ7c4xSlxweS6wjbEjTVQWXkxEUPU5TQnR3FtK
-	LV8jU2wrEQ24TbTw+ZGqztmlsBbDKL1UqVHF9/nM3syqEMAt9CsDkmOpYRX7cDARocdG4X
-	1vJhvE2kzreucNYVYOEVb9cEb0tLlwI=
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=slvzxnQOZnGyEx6uyl7ed+CIq1Y9lBOT7LEWCAJSIOk=;
+	b=n/za7M6fo6nAu4gWx7thBhD988RRJ+hxPdZ8vV4kFz0EnhpV4KBccby0iZimCxWy9Fs2oX
+	ZK5scZWB3gpITU0egFxM6O50nOnKNbEwwGljhP0QCXEPE8tfSZrgPg+YZdPyhJZgiEiWEE
+	wc0pyCUup3cBHzoFwWpNFLS4iG1HQn4=
 From: Qi Zheng <qi.zheng@linux.dev>
 To: hannes@cmpxchg.org,
 	hughd@google.com,
@@ -71,10 +73,14 @@ To: hannes@cmpxchg.org,
 Cc: linux-mm@kvack.org,
 	linux-kernel@vger.kernel.org,
 	cgroups@vger.kernel.org,
-	Qi Zheng <zhengqi.arch@bytedance.com>
-Subject: [PATCH v5 00/32] Eliminate Dying Memory Cgroup
-Date: Wed, 25 Feb 2026 15:48:33 +0800
-Message-ID: <cover.1772005110.git.zhengqi.arch@bytedance.com>
+	Muchun Song <songmuchun@bytedance.com>,
+	Qi Zheng <zhengqi.arch@bytedance.com>,
+	Chen Ridong <chenridong@huawei.com>
+Subject: [PATCH v5 01/32] mm: memcontrol: remove dead code of checking parent memory cgroup
+Date: Wed, 25 Feb 2026 15:48:34 +0800
+Message-ID: <f4481291bf8c6561dd8949045b5a1ed4008a6b63.1772005110.git.zhengqi.arch@bytedance.com>
+In-Reply-To: <cover.1772005110.git.zhengqi.arch@bytedance.com>
+References: <cover.1772005110.git.zhengqi.arch@bytedance.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -95,9 +101,9 @@ X-Spamd-Result: default: False [-1.66 / 15.00];
 	HAS_LIST_UNSUB(-0.01)[];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	RCVD_TLS_LAST(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[28];
+	RCPT_COUNT_TWELVE(0.00)[30];
 	RCVD_COUNT_THREE(0.00)[3];
-	TAGGED_FROM(0.00)[bounces-14312-lists,cgroups=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-14313-lists,cgroups=lfdr.de];
 	MIME_TRACE(0.00)[0:+];
 	FREEMAIL_TO(0.00)[cmpxchg.org,google.com,suse.com,linux.dev,kernel.org,oracle.com,nvidia.com,huaweicloud.com,linux-foundation.org,linux.microsoft.com,redhat.com,gmail.com];
 	MISSING_XM_UA(0.00)[];
@@ -110,303 +116,76 @@ X-Spamd-Result: default: False [-1.66 / 15.00];
 	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
 	TAGGED_RCPT(0.00)[cgroups];
 	TO_DN_SOME(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,linux.dev:dkim,bytedance.com:mid,bytedance.com:email]
-X-Rspamd-Queue-Id: D0911193B7B
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,huawei.com:email,cmpxchg.org:email,oracle.com:email,linux.dev:email,linux.dev:dkim,bytedance.com:mid,bytedance.com:email]
+X-Rspamd-Queue-Id: 888C2193B8A
 X-Rspamd-Action: no action
 
-From: Qi Zheng <zhengqi.arch@bytedance.com>
+From: Muchun Song <songmuchun@bytedance.com>
 
-Changes in v5:
- - fix build error in [PATCH v4 24/31] (reported by kernel test robot)
- - move the declaration of reparent_memcg_state_local() and
-   reparent_memcg_lruvec_state_local() into mm/memcontrol-v1.h file.
-   (suggested by Shakeel Butt, and due to some function dependencies, I keep
-    reparent_memcg_lruvec_state_local() in place)
- - convert objcg to be per-memcg per-node type
- - hold the per-node lru locks to reparent per-node objcg and lru folios, which
-   fix the potential lockdep warning
-   (pointed by Usama Arif and suggested by Shakeel Butt)
- - use try_charge_memcg() directly in charge_memcg()
-   (suggested by Shakeel Butt)
- - collect Acked-bys
- - rebase onto the next-20260224
+Since the no-hierarchy mode has been deprecated after the commit:
 
-Changes in v4:
- - fix commit message in [PATCH v3 23/30] (pointed by Baoquan He)
- - move lruvec_lock_irq() and firends to mm/memcontrol.c to fix the compilation
-   error in [PATCH v4 24/31] (reported by LKP)
- - include parent_lruvec() within the RCU lock in lru_note_cost_unlock_irq() in
-   [PATCH v4 24/31] (pointed by Harry Yoo)
- - move the declaration of lru_reparent_memcg() to swap.h
-   (suggested by Muchun Song)
- - fix lru size update logic in lru_gen_reparent_memcg() in [PATCH v4 26/31]
-   (pointed and suggested by Harry Yoo)
- - add [PATCH v4 28/31] to use lruvec_lru_size() to get the number of lru pages
-   in count_shadow_nodes() (suggested by Shakeel Butt)
- - fix reparenting logic of lruvec_stats->state_local in [PATCH v4 29/31]
-   (pointed by Shakeel Butt)
- - change these non-hierarchical stats to atomic_long_t type to avoid race
-   between mem_cgroup_stat_aggregate() and reparent_state_local() in
-   [PATCH v4 29/31]
- - make css_killed_work_fn() to be called in rcu work, and use rcu lock +
-   CSS_IS_DYING check to avoid race between
-   mod_memcg_state()/mod_memcg_lruvec_state()
-   (suggested by Shakeel Butt)
- - collect Acked-bys and Reviewed-bys
- - rebase onto the next-20260128
+  commit bef8620cd8e0 ("mm: memcg: deprecate the non-hierarchical mode").
 
-Changes in v3:
- - modify the commit message in [PATCH v2 04/28], [PATCH v2 06/28],
-   [PATCH v2 13/28], [PATCH v2 24/28] and [PATCH v2 27/28]
-   (suggested by David Hildenbrand, Chen Ridong and Johannes Weiner)
- - change code style in [PATCH v3 8/30], [PATCH v3 15/30] and [PATCH v3 27/30]
-   (suggested by Johannes Weiner and Shakeel Butt)
- - use get_mem_cgroup_from_folio() + mem_cgroup_put() to replace holding rcu
-   lock in [PATCH v3 14/30] and [PATCH v3 19/30]
-   (pointed by Johannes Weiner)
- - add a comment to folio_split_queue_lock() in [PATCH v3 17/30]
-   (suggested by Shakeel Butt)
- - modify the comment above folio_lruvec() in [PATCH v3 24/30]
-   (suggested by Johannes Weiner)
- - fix rcu lock issue in lru_note_cost_refault()
-   (pointed by Shakeel Butt)
- - add [PATCH v3 28/30] to fix non-hierarchical memcg1_stats issues
-   (pointed by Yosry Ahmed)
- - fix lru_zone_size issue in [PATCH v2 24/28] and [PATCH v2 25/28]
- - collect Acked-bys and Reviewed-bys
- - rebase onto the next-20260114
+As a result, parent_mem_cgroup() will not return NULL except when passing
+the root memcg, and the root memcg cannot be offline. Hence, it's safe to
+remove the check on the returned value of parent_mem_cgroup(). Remove the
+corresponding dead code.
 
-Changes in v2:
- - add [PATCH v2 04/28] and remove local_irq_disable() in evict_folios()
-   (pointed by Harry Yoo)
- - recheck objcg in [PATCH v2 07/28] (pointed by Harry Yoo)
- - modify the commit message in [PATCH v2 12/28] and [PATCH v2 21/28]
-   (pointed by Harry Yoo)
- - use rcu lock to protect mm_state in [PATCH v2 14/28] (pointed by Harry Yoo)
- - fix bad unlock balance warning in [PATCH v2 23/28]
- - change nr_pages type to long in [PATCH v2 25/28] (pointed by Harry Yoo)
- - incease mm_state->seq during reparenting to make mm walker work properly in
-   [PATCH v2 25/28] (pointed by Harry Yoo)
- - add [PATCH v2 18/28] to fix WARNING in folio_memcg() (pointed by Harry Yoo)
- - collect Reviewed-bys
- - rebase onto the next-20251216
+Signed-off-by: Muchun Song <songmuchun@bytedance.com>
+Acked-by: Roman Gushchin <roman.gushchin@linux.dev>
+Acked-by: Johannes Weiner <hannes@cmpxchg.org>
+Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
+Reviewed-by: Harry Yoo <harry.yoo@oracle.com>
+Reviewed-by: Chen Ridong <chenridong@huawei.com>
+Acked-by: Shakeel Butt <shakeel.butt@linux.dev>
+---
+ mm/memcontrol.c | 5 -----
+ mm/shrinker.c   | 6 +-----
+ 2 files changed, 1 insertion(+), 10 deletions(-)
 
-Changes in v1:
- - drop [PATCH RFC 02/28]
- - drop THP split queue related part, which has been merged as a separate
-   patchset[2]
- - prevent memory cgroup release in folio_split_queue_lock{_irqsave}() in
-   [PATCH v1 16/26]
- - Separate the reparenting function of traditional LRU folios to [PATCH v1 22/26]
- - adapted to the MGLRU scenarios in [PATCH v1 23/26]
- - refactor memcg_reparent_objcgs() in [PATCH v1 24/26]
- - collect Acked-bys and Reviewed-bys
- - rebase onto the next-20251028
-
-Hi all,
-
-Introduction
-============
-
-This patchset is intended to transfer the LRU pages to the object cgroup
-without holding a reference to the original memory cgroup in order to
-address the issue of the dying memory cgroup. A consensus has already been
-reached regarding this approach recently [1].
-
-Background
-==========
-
-The issue of a dying memory cgroup refers to a situation where a memory
-cgroup is no longer being used by users, but memory (the metadata
-associated with memory cgroups) remains allocated to it. This situation
-may potentially result in memory leaks or inefficiencies in memory
-reclamation and has persisted as an issue for several years. Any memory
-allocation that endures longer than the lifespan (from the users'
-perspective) of a memory cgroup can lead to the issue of dying memory
-cgroup. We have exerted greater efforts to tackle this problem by
-introducing the infrastructure of object cgroup [2].
-
-Presently, numerous types of objects (slab objects, non-slab kernel
-allocations, per-CPU objects) are charged to the object cgroup without
-holding a reference to the original memory cgroup. The final allocations
-for LRU pages (anonymous pages and file pages) are charged at allocation
-time and continues to hold a reference to the original memory cgroup
-until reclaimed.
-
-File pages are more complex than anonymous pages as they can be shared
-among different memory cgroups and may persist beyond the lifespan of
-the memory cgroup. The long-term pinning of file pages to memory cgroups
-is a widespread issue that causes recurring problems in practical
-scenarios [3]. File pages remain unreclaimed for extended periods.
-Additionally, they are accessed by successive instances (second, third,
-fourth, etc.) of the same job, which is restarted into a new cgroup each
-time. As a result, unreclaimable dying memory cgroups accumulate,
-leading to memory wastage and significantly reducing the efficiency
-of page reclamation.
-
-Fundamentals
-============
-
-A folio will no longer pin its corresponding memory cgroup. It is necessary
-to ensure that the memory cgroup or the lruvec associated with the memory
-cgroup is not released when a user obtains a pointer to the memory cgroup
-or lruvec returned by folio_memcg() or folio_lruvec(). Users are required
-to hold the RCU read lock or acquire a reference to the memory cgroup
-associated with the folio to prevent its release if they are not concerned
-about the binding stability between the folio and its corresponding memory
-cgroup. However, some users of folio_lruvec() (i.e., the lruvec lock)
-desire a stable binding between the folio and its corresponding memory
-cgroup. An approach is needed to ensure the stability of the binding while
-the lruvec lock is held, and to detect the situation of holding the
-incorrect lruvec lock when there is a race condition during memory cgroup
-reparenting. The following four steps are taken to achieve these goals.
-
-1. The first step  to be taken is to identify all users of both functions
-   (folio_memcg() and folio_lruvec()) who are not concerned about binding
-   stability and implement appropriate measures (such as holding a RCU read
-   lock or temporarily obtaining a reference to the memory cgroup for a
-   brief period) to prevent the release of the memory cgroup.
-
-2. Secondly, the following refactoring of folio_lruvec_lock() demonstrates
-   how to ensure the binding stability from the user's perspective of
-   folio_lruvec().
-
-   struct lruvec *folio_lruvec_lock(struct folio *folio)
-   {
-           struct lruvec *lruvec;
-
-           rcu_read_lock();
-   retry:
-           lruvec = folio_lruvec(folio);
-           spin_lock(&lruvec->lru_lock);
-           if (unlikely(lruvec_memcg(lruvec) != folio_memcg(folio))) {
-                   spin_unlock(&lruvec->lru_lock);
-                   goto retry;
-           }
-
-           return lruvec;
-   }
-
-   From the perspective of memory cgroup removal, the entire reparenting
-   process (altering the binding relationship between folio and its memory
-   cgroup and moving the LRU lists to its parental memory cgroup) should be
-   carried out under both the lruvec lock of the memory cgroup being removed
-   and the lruvec lock of its parent.
-
-3. Finally, transfer the LRU pages to the object cgroup without holding a
-   reference to the original memory cgroup.
-
-Effect
-======
-
-Finally, it can be observed that the quantity of dying memory cgroups will
-not experience a significant increase if the following test script is
-executed to reproduce the issue.
-
-```bash
-#!/bin/bash
-
-# Create a temporary file 'temp' filled with zero bytes
-dd if=/dev/zero of=temp bs=4096 count=1
-
-# Display memory-cgroup info from /proc/cgroups
-cat /proc/cgroups | grep memory
-
-for i in {0..2000}
-do
-    mkdir /sys/fs/cgroup/memory/test$i
-    echo $$ > /sys/fs/cgroup/memory/test$i/cgroup.procs
-
-    # Append 'temp' file content to 'log'
-    cat temp >> log
-
-    echo $$ > /sys/fs/cgroup/memory/cgroup.procs
-
-    # Potentially create a dying memory cgroup
-    rmdir /sys/fs/cgroup/memory/test$i
-done
-
-# Display memory-cgroup info after test
-cat /proc/cgroups | grep memory
-
-rm -f temp log
-```
-
-Comments and suggestions are welcome!
-
-Thanks,
-Qi
-
-[1].https://lore.kernel.org/linux-mm/Z6OkXXYDorPrBvEQ@hm-sls2/
-[2].https://lwn.net/Articles/895431/
-[3].https://github.com/systemd/systemd/pull/36827
-
-Muchun Song (22):
-  mm: memcontrol: remove dead code of checking parent memory cgroup
-  mm: workingset: use folio_lruvec() in workingset_refault()
-  mm: rename unlock_page_lruvec_irq and its variants
-  mm: vmscan: refactor move_folios_to_lru()
-  mm: memcontrol: allocate object cgroup for non-kmem case
-  mm: memcontrol: return root object cgroup for root memory cgroup
-  mm: memcontrol: prevent memory cgroup release in
-    get_mem_cgroup_from_folio()
-  buffer: prevent memory cgroup release in folio_alloc_buffers()
-  writeback: prevent memory cgroup release in writeback module
-  mm: memcontrol: prevent memory cgroup release in
-    count_memcg_folio_events()
-  mm: page_io: prevent memory cgroup release in page_io module
-  mm: migrate: prevent memory cgroup release in folio_migrate_mapping()
-  mm: mglru: prevent memory cgroup release in mglru
-  mm: memcontrol: prevent memory cgroup release in
-    mem_cgroup_swap_full()
-  mm: workingset: prevent memory cgroup release in lru_gen_eviction()
-  mm: workingset: prevent lruvec release in workingset_refault()
-  mm: zswap: prevent lruvec release in zswap_folio_swapin()
-  mm: swap: prevent lruvec release in lru_gen_clear_refs()
-  mm: workingset: prevent lruvec release in workingset_activation()
-  mm: memcontrol: prepare for reparenting LRU pages for lruvec lock
-  mm: memcontrol: eliminate the problem of dying memory cgroup for LRU
-    folios
-  mm: lru: add VM_WARN_ON_ONCE_FOLIO to lru maintenance helpers
-
-Qi Zheng (10):
-  mm: vmscan: prepare for the refactoring the move_folios_to_lru()
-  mm: thp: prevent memory cgroup release in
-    folio_split_queue_lock{_irqsave}()
-  mm: zswap: prevent memory cgroup release in zswap_compress()
-  mm: do not open-code lruvec lock
-  mm: vmscan: prepare for reparenting traditional LRU folios
-  mm: vmscan: prepare for reparenting MGLRU folios
-  mm: memcontrol: refactor memcg_reparent_objcgs()
-  mm: workingset: use lruvec_lru_size() to get the number of lru pages
-  mm: memcontrol: prepare for reparenting non-hierarchical stats
-  mm: memcontrol: convert objcg to be per-memcg per-node type
-
- fs/buffer.c                      |   4 +-
- fs/fs-writeback.c                |  22 +-
- include/linux/memcontrol.h       | 191 ++++++-----
- include/linux/mm_inline.h        |   6 +
- include/linux/mmzone.h           |  17 +
- include/linux/sched.h            |   2 +-
- include/linux/swap.h             |  25 +-
- include/trace/events/writeback.h |   3 +
- kernel/cgroup/cgroup.c           |   8 +-
- mm/compaction.c                  |  43 ++-
- mm/huge_memory.c                 |  22 +-
- mm/memcontrol-v1.c               |  31 +-
- mm/memcontrol-v1.h               |   8 +
- mm/memcontrol.c                  | 562 ++++++++++++++++++++-----------
- mm/migrate.c                     |   2 +
- mm/mlock.c                       |   2 +-
- mm/page_io.c                     |   8 +-
- mm/percpu.c                      |   2 +-
- mm/shrinker.c                    |   6 +-
- mm/swap.c                        |  59 +++-
- mm/vmscan.c                      | 273 +++++++++++----
- mm/workingset.c                  |  30 +-
- mm/zswap.c                       |   5 +
- 23 files changed, 904 insertions(+), 427 deletions(-)
-
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index db59fad3503f2..aab863e1822d4 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -3424,9 +3424,6 @@ static void memcg_offline_kmem(struct mem_cgroup *memcg)
+ 		return;
+ 
+ 	parent = parent_mem_cgroup(memcg);
+-	if (!parent)
+-		parent = root_mem_cgroup;
+-
+ 	memcg_reparent_list_lrus(memcg, parent);
+ 
+ 	/*
+@@ -3706,8 +3703,6 @@ struct mem_cgroup *mem_cgroup_private_id_get_online(struct mem_cgroup *memcg, un
+ 			break;
+ 		}
+ 		memcg = parent_mem_cgroup(memcg);
+-		if (!memcg)
+-			memcg = root_mem_cgroup;
+ 	}
+ 	return memcg;
+ }
+diff --git a/mm/shrinker.c b/mm/shrinker.c
+index 94646ee0af63b..4cd33222256ef 100644
+--- a/mm/shrinker.c
++++ b/mm/shrinker.c
+@@ -286,14 +286,10 @@ void reparent_shrinker_deferred(struct mem_cgroup *memcg)
+ {
+ 	int nid, index, offset;
+ 	long nr;
+-	struct mem_cgroup *parent;
++	struct mem_cgroup *parent = parent_mem_cgroup(memcg);
+ 	struct shrinker_info *child_info, *parent_info;
+ 	struct shrinker_info_unit *child_unit, *parent_unit;
+ 
+-	parent = parent_mem_cgroup(memcg);
+-	if (!parent)
+-		parent = root_mem_cgroup;
+-
+ 	/* Prevent from concurrent shrinker_info expand */
+ 	mutex_lock(&shrinker_mutex);
+ 	for_each_node(nid) {
 -- 
 2.20.1
 
