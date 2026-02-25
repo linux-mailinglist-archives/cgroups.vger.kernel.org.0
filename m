@@ -1,83 +1,83 @@
-Return-Path: <cgroups+bounces-14368-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-14369-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id kJbnKNMVn2nWYwQAu9opvQ
-	(envelope-from <cgroups+bounces-14368-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Wed, 25 Feb 2026 16:31:31 +0100
+	id wJkeI3UWn2nWYwQAu9opvQ
+	(envelope-from <cgroups+bounces-14369-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Wed, 25 Feb 2026 16:34:13 +0100
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 06B891999FE
-	for <lists+cgroups@lfdr.de>; Wed, 25 Feb 2026 16:31:30 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id E5CA9199AF9
+	for <lists+cgroups@lfdr.de>; Wed, 25 Feb 2026 16:34:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 11C0B3101099
-	for <lists+cgroups@lfdr.de>; Wed, 25 Feb 2026 15:18:56 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 9DA64317814E
+	for <lists+cgroups@lfdr.de>; Wed, 25 Feb 2026 15:28:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8AA4F36C0C6;
-	Wed, 25 Feb 2026 15:18:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 134D43D4101;
+	Wed, 25 Feb 2026 15:28:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ursulin.net header.i=@ursulin.net header.b="QCF76hYS"
+	dkim=pass (2048-bit key) header.d=ursulin.net header.i=@ursulin.net header.b="FSzIXBb1"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-wm1-f45.google.com (mail-wm1-f45.google.com [209.85.128.45])
+Received: from mail-ej1-f46.google.com (mail-ej1-f46.google.com [209.85.218.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 502E23161BF
-	for <cgroups@vger.kernel.org>; Wed, 25 Feb 2026 15:18:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 179C23D6463
+	for <cgroups@vger.kernel.org>; Wed, 25 Feb 2026 15:27:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772032735; cv=none; b=OW2/EghXssk3f7qmlmmzc9Gjili2Aeaq9Lk5umNyMfQm+P4WpGOETFgP46v3oXXSGLD69vaoLfcLGEb3Q+MVHR5hqJc6QWsxzyGrgabSKM3aUZSFgrPNkzJbOkkw4a3v9iGduLlgrwmr/Kcsp7U3YWy75hG/XMESNpqbgnkGmDs=
+	t=1772033281; cv=none; b=ak6CQ5NOrvdlicC7D40eLTfDm81dBDRfVPM2/V0NGl6GavWFpozFWkPhtNrZeZUg268sVH4dxtb/+nV8ljywrF51hiL9oUnAtSC+JSpxp42IKMgeV4UeiOfUP4rZMWDbeKDOxKl+BSnM8jvej8MGHhxabrmpCmhhG5KdrVAWz0Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772032735; c=relaxed/simple;
-	bh=qsttKbpdMEUkjX5I8ZL7nD75w7r30zc4LM9jUzVcT40=;
+	s=arc-20240116; t=1772033281; c=relaxed/simple;
+	bh=noIhUDzUtGqNMqc7KvuzyqnqwFFEGMkbHe9fkJ8l4EA=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Qp6IQENO8aS+OJVpvYpUiKumfDX4Z6MDsE6aKtuQaElcth11Clny7n3F0SrNwpWuGmzdH8K7FHRTJ+E7qGZDVsRTHaF8nxBblWYGY1dziVvRUDw1NZTcKfiU+EU0GJVvH6cdjsPTs3wRdTQQAHKfExBpI76y4U/28oqotW4WUkM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ursulin.net; spf=pass smtp.mailfrom=ursulin.net; dkim=pass (2048-bit key) header.d=ursulin.net header.i=@ursulin.net header.b=QCF76hYS; arc=none smtp.client-ip=209.85.128.45
+	 In-Reply-To:Content-Type; b=jtVUoGe8ZRTdExI/2tQuM41BDmL59yPjdb/MBUvtB+QqvN3OAZQNzqQW2kbNT5eYwMcsqVC2hUj54M82bKTgq/QO5ylDuCP6J2bN0xpjAvHQHk5WDB4Oz2mbH5alTCWRO7Zan7QoGI1lM4DK+IYChln7Xv187sJlww2wlpjTmTY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ursulin.net; spf=pass smtp.mailfrom=ursulin.net; dkim=pass (2048-bit key) header.d=ursulin.net header.i=@ursulin.net header.b=FSzIXBb1; arc=none smtp.client-ip=209.85.218.46
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ursulin.net
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ursulin.net
-Received: by mail-wm1-f45.google.com with SMTP id 5b1f17b1804b1-483bd7354efso15345265e9.2
-        for <cgroups@vger.kernel.org>; Wed, 25 Feb 2026 07:18:53 -0800 (PST)
+Received: by mail-ej1-f46.google.com with SMTP id a640c23a62f3a-b8fa449e618so1079735066b.0
+        for <cgroups@vger.kernel.org>; Wed, 25 Feb 2026 07:27:59 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ursulin.net; s=google; t=1772032732; x=1772637532; darn=vger.kernel.org;
+        d=ursulin.net; s=google; t=1772033278; x=1772638078; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:from:content-language
          :references:cc:to:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=0duHEWtI6kL/XWFNZl4sr8GMAyb2xz6UvQc7MNO8wek=;
-        b=QCF76hYSRcmZj3RqkdRz+X5ALNp1FWXb+yqtogmSKlQnOA6f/XFZYc6NMEqoHM3mVo
-         rCQ5lz0vZMenjB9ko/jobKeYTeJpArIi6tFMN9FgGC0BtLVam1TKyYxEbXyMLm0MIQwA
-         wd6K9yTpS34WhlLyd+pB9mow+35Yl6hzcFVvPOs5Lhr3iQ+vCLZltEOu+Yyjc0ys+IS9
-         ySqYkrmDtd8XiBFmuq7AOu20pLpENpa/V2B+3KJSHm+QsoHe0/gMu2eYpRS1ncFiPLZ1
-         ppPR/eOyVR4v0IMQO4Cyh1TAJcx6olkoC985OjvgWUwl9oDevWoTTOYZYyFLbSuaQcES
-         ViPQ==
+        bh=RJUI2l1gvzX0foq78r8Y5gZ1lmPO7MQfX9H11F3qkF8=;
+        b=FSzIXBb18Rf97YppBUHsuwlYysS1f9xEtySGBG6pIiTyl4hiuvjsGBWKwx1pv2TVHr
+         bHXauctGJ2RlDLzE6NF747cjR1TAK+mjCmDRKS3RdUpYwKeFeccZREMqAC66yFLBcQRW
+         23oXEQfGEsmWiEtI5HSLvtD3GyDHKv9b/Y8wD2jWGchEFO3pZOClVQOGxGqXFeXLNsI/
+         Uxy7vc3M9eHoX8BEpKh4mEviQRmIOGXqWzKdzACt9hIXHWB1y/5HnTajuAo+MaNRih1+
+         cac5sH+wPmxx8fLWjEYQWL220kW4WF8d33Fg9I0pPwINZW5b1ZqxyTMju8bCcrkXghYQ
+         Fnjg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1772032732; x=1772637532;
+        d=1e100.net; s=20230601; t=1772033278; x=1772638078;
         h=content-transfer-encoding:in-reply-to:from:content-language
          :references:cc:to:subject:user-agent:mime-version:date:message-id
          :x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=0duHEWtI6kL/XWFNZl4sr8GMAyb2xz6UvQc7MNO8wek=;
-        b=Q0sjq6zWvDmpWxCHgnEZUqrsmPcliGo3V850JCcd9L+THYPa+8PR4Np1RQZR56ktJN
-         A5WY+qvZvtSFzX5NRs12iZef6wQ2Pya39b3q4ysxKS6Oz5Wycz94rASV4AIOWQvKsIaQ
-         JONU7GidGDkETGzSy0BBnRFewM9cVlr5jRWXaL4d8M0TeLa9E2LHtqv9+qs+u1at+yjl
-         ech17VN0JIe7j6mMxrOcLwS8DJDvfuXbAUpp0TRiyJa7Z+rof1EKOOuXcxYxz3ZFFq8Z
-         8NZ5pVIBgLV8zSCzTJ+fs9DpaWcr7mgeFpkt9uQUqPny4zPT+QZVCcYqWsKWh7S7W9mY
-         lTjA==
-X-Gm-Message-State: AOJu0YyuZPHB+VxilzvQU5nxrCAytMtUvY+ScucCUOdO84xGXRr/VcFX
-	Nz3zeEycUj1PGKKN5jLMKPcYyywsM6ydB17VyVM3JGREie8RwMJBFZcMmPs3QmOVqdI=
-X-Gm-Gg: ATEYQzwZ5PJ1yNpN78hvFMY1U1FWf9OigD+jeg3S5IvuHR8EJEcaY2QoCiDatDfJJT+
-	PnWeyPYNJN7Ae8qeCDJPspIiIEtWF5X3+jrM/GHuRxff9rOYL9GB7gDezXA7GobNNACdoVBFphe
-	e0kb5qEoRqAmaugdUum8jX9X5mqEyuPfYoqdgIvuSs3pMxjNZxQqOAvyIgcrHLwP81QP/0cUUyH
-	k6MJuRRfWx5rzFehSr8nIgWOjlucurOTM7LQ+H88+HwoMU3etZSvoDYuxuy6nljz+OtknoeWWdP
-	YhvQKSN3HKQa1wDV6yKoQLl+xUS+MtiO70Mw3k0IzhzCfc/cJKNOf8brcjABpI3wo+xAk39Zv8n
-	GYVHLfccuhDjg5EFFHX23U89BxYVynyDBihULT3q6qDEIot9+ILeKuEEFwKif6QAsKnrJLNddt0
-	W3m+xkFHckKlLVvJRaJyhGUyMQc4phSm+ebeO49H7a7d6y
-X-Received: by 2002:a05:600c:6815:b0:47e:e946:3a72 with SMTP id 5b1f17b1804b1-483c21a10c5mr13759935e9.27.1772032731307;
-        Wed, 25 Feb 2026 07:18:51 -0800 (PST)
+        bh=RJUI2l1gvzX0foq78r8Y5gZ1lmPO7MQfX9H11F3qkF8=;
+        b=L0aovTJ1NaKT3oSekenkrWZAMzaXL6B0fiqUxLO2GFWXtvCTrPwQi0Eai8bymRG69X
+         2uTmB/OXWPCRPdc/5fyDzu9K2KBNkCRTx2K3LLId2l/3igmh1E+WFEbNUiluXDAXh/9d
+         CG1w15jfKcava0O87FWxDIMkF7FhQW9wIez/ymnvV0pgBrkwOSnL/rvf5SvFSkYiFxjn
+         3pkGaHXI41Sodvq41WOow0MPWMw4nbANHtVm1qn9NY2pCmBxZlzHOGECMw+7jCbl7PR0
+         O7167GIqQjy/bdtEvW3KD+l+rZ1Qz/ZD2Hnx6d+T2YLKXkE1w/8WDJLxGgZuc1osxzFW
+         VJcw==
+X-Gm-Message-State: AOJu0YzKSYblh2BpqHupkmq6DYnjkZQ7ngEmA70TTxK6QDSbu6FyhVSE
+	blmkgppQCVp//8ed9JdGYQTnoC9cBxii9p7fJku9iemlqEJn1+CturgjdG0gr+xfnLA=
+X-Gm-Gg: ATEYQzwua6paITSmZhtj62NLbuL5NxBir4LpxO54UMk2G2cOzSFs5yM/eUXtmf4+gHF
+	S9XcUNOOCh0HvQIZH9ZTZd0bKZTTqE+FMOfMdfOeEGZYtuYHC9nwRTF80HxhfhKmtno+2FurDeM
+	cL+quKfZxVxVI3Udoj53zdYXtkyLstKijdod+rfMxYnQanpGd5VaL87/xrygcRubDStxKvo40kT
+	tybY04sfWnwhaYk2kQtiLkFCtyXUtZG6cwOOrMzh33MhtMBX8gZC5DrO/jJn9oilKgwXhWz8JiZ
+	xeEN/M3hZDy8Qp3R7SYm3DZZc3JiStks/S9pbQLND0SLhLfa396P88PpH4p6ZjbZuKHcfZ0h36g
+	+gHyTeRP0xLmTBDIKaSUOvsNiHC3DTct2qwtjSf1eNNkyc+/pcLXIONb+GG7XWA89nG7A24RdZ5
+	e8Y2effIch1+TAwBpDfnpn2KXimMK0+/cQRePm2vCgXxBz
+X-Received: by 2002:a17:907:3f12:b0:b8f:99c2:1a93 with SMTP id a640c23a62f3a-b9081984f2emr939025566b.3.1772033277969;
+        Wed, 25 Feb 2026 07:27:57 -0800 (PST)
 Received: from [192.168.0.101] ([90.240.106.137])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-483bd739087sm74940165e9.14.2026.02.25.07.18.48
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-b9084c84c37sm525677566b.23.2026.02.25.07.27.56
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 25 Feb 2026 07:18:48 -0800 (PST)
-Message-ID: <8c3db886-72d1-49c1-ac6c-7640af735e51@ursulin.net>
-Date: Wed, 25 Feb 2026 15:18:47 +0000
+        Wed, 25 Feb 2026 07:27:57 -0800 (PST)
+Message-ID: <235fd4f7-dbb7-44c8-9bbc-f1d8297fb8b9@ursulin.net>
+Date: Wed, 25 Feb 2026 15:27:56 +0000
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -107,12 +107,12 @@ Content-Transfer-Encoding: 7bit
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-1.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	R_DKIM_ALLOW(-0.20)[ursulin.net:s=google];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-14368-lists,cgroups=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-14369-lists,cgroups=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
 	DMARC_NA(0.00)[ursulin.net];
 	FREEMAIL_TO(0.00)[gmx.de,lankhorst.se,kernel.org,cmpxchg.org,suse.com,amd.com,intel.com,linux.intel.com,suse.de,gmail.com,ffwll.ch];
@@ -126,13 +126,13 @@ X-Spamd-Result: default: False [-1.66 / 15.00];
 	RCVD_COUNT_FIVE(0.00)[5];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[tursulin@ursulin.net,cgroups@vger.kernel.org];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
 	NEURAL_HAM(-0.00)[-1.000];
 	TAGGED_RCPT(0.00)[cgroups];
 	MID_RHS_MATCH_FROM(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,gmx.de:email,igalia.com:email]
-X-Rspamd-Queue-Id: 06B891999FE
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,gmx.de:email]
+X-Rspamd-Queue-Id: E5CA9199AF9
 X-Rspamd-Action: no action
 
 
@@ -264,6 +264,14 @@ On 25/02/2026 12:10, Natalie Vock wrote:
 > +		 * be retried with eviction, or -ENOSPC if there should be no second
 > +		 * attempt.
 > +		 */
+
+Ah having started reading 4/6 I see this comment actually is one patch 
+premature. So please fix that and keep my r-b.
+
+Regards,
+
+Tvrtko
+
 > +		if (ret == -EAGAIN)
 > +			return may_evict ? -EBUSY : -ENOSPC;
 > +
@@ -284,17 +292,8 @@ On 25/02/2026 12:10, Natalie Vock wrote:
 >   				 struct ttm_resource **res)
 >   {
 > +	struct ttm_bo_alloc_state alloc_state = {0};
-
-= {};
-
 >   	struct ttm_device *bdev = bo->bdev;
 > +	struct ttm_resource_manager *man;
-
-I don't mind if you pull the above two out of the loop too much, but I 
-have to re-point it out since I am sure you know the principle of not 
-making changes which are not strictly needed, especially if they are not 
-a clear win on readability or something.
-
 >   	struct ww_acquire_ctx *ticket;
 >   	int i, ret;
 >   
@@ -345,32 +344,6 @@ a clear win on readability or something.
 > -			if (ret)
 > -				return ret;
 > +			}
-
-Would keeping the ret checks at one level of indentation look better? Eg 
-like the current version:
-
-if (ret == -EBUSY)
-	continue;
-else if (ret)
-	return ret;
-
-Up to you.
-
-Btw, it is an interesting design that there are eviction errors which 
-prevent trying the next placement. A bit surprising to me but it is out 
-of scope here.
-
-Anyway, I went back and forth a few times over the logic and it indeed 
-looks to me that there are no functional changes. Thanks for improving 
-the commit message as well, now it is completely clear what the patch is 
-about. With or without the nitpicks:
-
-Reviewed-by: Tvrtko Ursulin <tvrtko.ursulin@igalia.com>
-
-Regards,
-
-Tvrtko
-
 > +		} else if (ret) {
 > +			dmem_cgroup_pool_state_put(alloc_state.limit_pool);
 > +			return ret;
