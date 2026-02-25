@@ -1,49 +1,49 @@
-Return-Path: <cgroups+bounces-14255-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-14256-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id sCZ3OaODnmmGVwQAu9opvQ
-	(envelope-from <cgroups+bounces-14255-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Wed, 25 Feb 2026 06:07:47 +0100
+	id +FJYDFSDnmmGVwQAu9opvQ
+	(envelope-from <cgroups+bounces-14256-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Wed, 25 Feb 2026 06:06:28 +0100
 X-Original-To: lists+cgroups@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 81B52191C36
-	for <lists+cgroups@lfdr.de>; Wed, 25 Feb 2026 06:07:47 +0100 (CET)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 692B1191C01
+	for <lists+cgroups@lfdr.de>; Wed, 25 Feb 2026 06:06:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 1D9AC3168F9E
-	for <lists+cgroups@lfdr.de>; Wed, 25 Feb 2026 05:02:42 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 634C3305F48F
+	for <lists+cgroups@lfdr.de>; Wed, 25 Feb 2026 05:02:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 25E0A30B508;
-	Wed, 25 Feb 2026 05:01:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3245E30E827;
+	Wed, 25 Feb 2026 05:01:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FqHjVOtY"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XT4HTS6E"
 X-Original-To: cgroups@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D98632D8DA3;
-	Wed, 25 Feb 2026 05:01:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E199630E0D6;
+	Wed, 25 Feb 2026 05:01:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1771995687; cv=none; b=TXl/lx++U+TIjn+VhpT1Lxl2DSDQ7jKR5pPqKTIhY597C27ZLp6CjbZ4M9eXqwjTTJxCJTt9iisxYFcwynYqtyDYFZlbUwbJ5LqV+9ppg2UWQZhkiFgTCG3jPN1c91jJgUmXw9pW4Z5PMkZOeBWXvNmV2HqAEeN8f/qZ3iEu+cA=
+	t=1771995689; cv=none; b=jFwuZifOzdkitH5+uoImDIr9zrQKzYpzleFIbzGMYtQRJg7+V4+VJOUTtxl3umWSjZmZkxABURb4vnZpNRc9CEbBiD+FfDk8+ADxd+S9JIl8faeMDNhWp9KZNb48IdwcFgwZ2Lsf3e/+BHbFO4iXSwjvZkCnlc/ohRiPlBRc5V4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1771995687; c=relaxed/simple;
-	bh=I8IHNpau1zUarOYe9fmf4pYeesGlJlnX3Ozna07J6U0=;
+	s=arc-20240116; t=1771995689; c=relaxed/simple;
+	bh=BPYEQh6tFPKhvYRZrfn7N/dHHUB82pNZyGgYiuihD3M=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=KQ8BWFVY0Jtr7nnqnFf44Td/Gc12rj/MvoFm7pKEIfM/2tcwasMuViV6Tm4QnVmlMxRZy0cUXA03hJWcg9FgdJ7f2VFq0odTWMFUVTtmF/JSU/pGoVyEjSM3jNAZAtdmqIpeJXrB4tT2Vadpe8QTzv4vOBjd0qZ+RneXehfzj3g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FqHjVOtY; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6797DC19422;
-	Wed, 25 Feb 2026 05:01:27 +0000 (UTC)
+	 MIME-Version; b=geSFNXi2bS+ItfA2LN0l82Msg6VXmnVl4d7WT3e/lkUtkzswV44KD62LR2FtYx+RMHnJHTLg5grIF3NsryB6mn5Onnr0dag7cYL/FtyGBleHB9/7J4yP2ZafePdC/i4+ADvYdf5OpdRJAZpnw3tukKQ9IMuu/O8SMVS+YF3VErU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=XT4HTS6E; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7B099C116D0;
+	Wed, 25 Feb 2026 05:01:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1771995687;
-	bh=I8IHNpau1zUarOYe9fmf4pYeesGlJlnX3Ozna07J6U0=;
+	s=k20201202; t=1771995688;
+	bh=BPYEQh6tFPKhvYRZrfn7N/dHHUB82pNZyGgYiuihD3M=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=FqHjVOtY7Dmj+do5McbEn+s3tGorAjdqjoBcaeghNt7vw13Zu1613zLBF3EiUBgJD
-	 g4jdSq1qaM14BYlaw5irQFAPXQMeVCO9NckGBAbjBf/d4QaHhI3qKMQQ2MEEqAE4Ck
-	 9tL2GgMp5IiKKJghMYoPbu0NApceCbHeBhv3J8lVamFEE4FU66WXRcw6mEWy8Qb/d3
-	 tLkHUE2q13KI76oDl/ZPeBReIvmxT4Sj18q0ffNI7Q89ICV9tysQkWuT8k07g662JH
-	 IhyWUFIbnlO1Nzxe/CAiZDKhdfHuU7YyM1SuOZTBXFvGIclSYmz/wfvwZvipXSbner
-	 g1v2z64+GheXg==
+	b=XT4HTS6EyJWW8NJ7M8CSTwPL7Iahl3+aur+BhVC5iVsQjvOVhkJqRrYhH8qNkZR5G
+	 +dbEvEnfeiSNc2dNkAaSrucSL8Ida6tpY44nmxK/3c2G1tLRdozXTqjQkh2prtb0wl
+	 CXBPy99du0TzH4CN4lT1xLS3mnmI03Zf31DEmsXPW/1vhWMwXiJCV4Cu9lt6hH75Sx
+	 RGX5Z5+mNebA0CEr+ZTHbRcd3VyhAU6Ts4/R6UvflI+IdQ5qtXPRxFFACA5kSs0qjD
+	 Ls5AiaNCSYHzixHJLAx/QOLI8MVlx3l0UtG4DeKTBhqa7bVxRWoWQWf0W7VEUyuCS0
+	 RkqvmPhKXFm2g==
 From: Tejun Heo <tj@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	sched-ext@lists.linux.dev
@@ -55,9 +55,9 @@ Cc: void@manifault.com,
 	mkoutny@suse.com,
 	cgroups@vger.kernel.org,
 	Tejun Heo <tj@kernel.org>
-Subject: [PATCH 16/34] sched_ext: Move aborting flag to per-scheduler field
-Date: Tue, 24 Feb 2026 19:00:51 -1000
-Message-ID: <20260225050109.1070059-17-tj@kernel.org>
+Subject: [PATCH 17/34] sched_ext: Move bypass_dsq into scx_sched_pcpu
+Date: Tue, 24 Feb 2026 19:00:52 -1000
+Message-ID: <20260225050109.1070059-18-tj@kernel.org>
 X-Mailer: git-send-email 2.53.0
 In-Reply-To: <20260225050109.1070059-1-tj@kernel.org>
 References: <20260225050109.1070059-1-tj@kernel.org>
@@ -74,13 +74,13 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	MID_CONTAINS_FROM(1.00)[];
 	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
 	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64:c];
 	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-14255-lists,cgroups=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-14256-lists,cgroups=lfdr.de];
 	RCVD_COUNT_THREE(0.00)[4];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	FROM_HAS_DN(0.00)[];
@@ -94,96 +94,246 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	TAGGED_RCPT(0.00)[cgroups];
 	TO_DN_SOME(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 81B52191C36
+	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: 692B1191C01
 X-Rspamd-Action: no action
 
-The abort state was tracked in the global scx_aborting flag which was used to
-break out of potential live-lock scenarios when an error occurs. With
-hierarchical scheduling, each scheduler instance must track its own abort
-state independently so that an aborting scheduler doesn't interfere with
-others.
-
-Move the aborting flag into struct scx_sched and update all access sites. The
-early initialization check in scx_root_enable() that warned about residual
-aborting state is no longer needed as each scheduler instance now starts with
-a clean state.
+To support bypass mode for sub-schedulers, move bypass_dsq from struct scx_rq
+to struct scx_sched_pcpu. Add bypass_dsq() helper. Move bypass_dsq
+initialization from init_sched_ext_class() to scx_alloc_and_attach_sched().
+bypass_lb_cpu() now takes a CPU number instead of rq pointer. All callers
+updated. No behavior change as all tasks use the root scheduler.
 
 Signed-off-by: Tejun Heo <tj@kernel.org>
 ---
- kernel/sched/ext.c          | 10 +++-------
- kernel/sched/ext_internal.h |  1 +
- 2 files changed, 4 insertions(+), 7 deletions(-)
+ kernel/sched/ext.c          | 52 +++++++++++++++++++------------------
+ kernel/sched/ext_internal.h |  2 ++
+ kernel/sched/sched.h        |  1 -
+ 3 files changed, 29 insertions(+), 26 deletions(-)
 
 diff --git a/kernel/sched/ext.c b/kernel/sched/ext.c
-index eee0d1c05b68..ef11a537acc5 100644
+index ef11a537acc5..a68f97befcf1 100644
 --- a/kernel/sched/ext.c
 +++ b/kernel/sched/ext.c
-@@ -44,7 +44,6 @@ static atomic_t scx_enable_state_var = ATOMIC_INIT(SCX_DISABLED);
- static int scx_bypass_depth;
- static cpumask_var_t scx_bypass_lb_donee_cpumask;
- static cpumask_var_t scx_bypass_lb_resched_cpumask;
--static bool scx_aborting;
- static bool scx_init_task_enabled;
- static bool scx_switching_all;
- DEFINE_STATIC_KEY_FALSE(__scx_switched_all);
-@@ -2147,7 +2146,7 @@ static bool consume_dispatch_q(struct scx_sched *sch, struct rq *rq,
- 		 * the system into the bypass mode. This can easily live-lock the
- 		 * machine. If aborting, exit from all non-bypass DSQs.
+@@ -359,6 +359,11 @@ static const struct sched_class *scx_setscheduler_class(struct task_struct *p)
+ 	return __setscheduler_class(p->policy, p->prio);
+ }
+ 
++static struct scx_dispatch_q *bypass_dsq(struct scx_sched *sch, s32 cpu)
++{
++	return &per_cpu_ptr(sch->pcpu, cpu)->bypass_dsq;
++}
++
+ /*
+  * scx_kf_mask enforcement. Some kfuncs can only be called from specific SCX
+  * ops. When invoking SCX ops, SCX_CALL_OP[_RET]() should be used to indicate
+@@ -1628,7 +1633,7 @@ static void do_enqueue_task(struct rq *rq, struct task_struct *p, u64 enq_flags,
+ 	dsq = find_global_dsq(sch, p);
+ 	goto enqueue;
+ bypass:
+-	dsq = &task_rq(p)->scx.bypass_dsq;
++	dsq = bypass_dsq(sch, task_cpu(p));
+ 	goto enqueue;
+ 
+ enqueue:
+@@ -2439,7 +2444,7 @@ static int balance_one(struct rq *rq, struct task_struct *prev)
+ 		goto has_tasks;
+ 
+ 	if (scx_rq_bypassing(rq)) {
+-		if (consume_dispatch_q(sch, rq, &rq->scx.bypass_dsq))
++		if (consume_dispatch_q(sch, rq, bypass_dsq(sch, cpu_of(rq))))
+ 			goto has_tasks;
+ 		else
+ 			goto no_tasks;
+@@ -4192,11 +4197,12 @@ bool scx_hardlockup(int cpu)
+ 	return true;
+ }
+ 
+-static u32 bypass_lb_cpu(struct scx_sched *sch, struct rq *rq,
++static u32 bypass_lb_cpu(struct scx_sched *sch, s32 donor,
+ 			 struct cpumask *donee_mask, struct cpumask *resched_mask,
+ 			 u32 nr_donor_target, u32 nr_donee_target)
+ {
+-	struct scx_dispatch_q *donor_dsq = &rq->scx.bypass_dsq;
++	struct rq *donor_rq = cpu_rq(donor);
++	struct scx_dispatch_q *donor_dsq = bypass_dsq(sch, donor);
+ 	struct task_struct *p, *n;
+ 	struct scx_dsq_list_node cursor = INIT_DSQ_LIST_CURSOR(cursor, 0, 0);
+ 	s32 delta = READ_ONCE(donor_dsq->nr) - nr_donor_target;
+@@ -4212,7 +4218,7 @@ static u32 bypass_lb_cpu(struct scx_sched *sch, struct rq *rq,
+ 	if (delta < DIV_ROUND_UP(min_delta_us, scx_slice_bypass_us))
+ 		return 0;
+ 
+-	raw_spin_rq_lock_irq(rq);
++	raw_spin_rq_lock_irq(donor_rq);
+ 	raw_spin_lock(&donor_dsq->lock);
+ 	list_add(&cursor.node, &donor_dsq->list);
+ resume:
+@@ -4220,7 +4226,6 @@ static u32 bypass_lb_cpu(struct scx_sched *sch, struct rq *rq,
+ 	n = nldsq_next_task(donor_dsq, n, false);
+ 
+ 	while ((p = n)) {
+-		struct rq *donee_rq;
+ 		struct scx_dispatch_q *donee_dsq;
+ 		int donee;
+ 
+@@ -4236,14 +4241,13 @@ static u32 bypass_lb_cpu(struct scx_sched *sch, struct rq *rq,
+ 		if (donee >= nr_cpu_ids)
+ 			continue;
+ 
+-		donee_rq = cpu_rq(donee);
+-		donee_dsq = &donee_rq->scx.bypass_dsq;
++		donee_dsq = bypass_dsq(sch, donee);
+ 
+ 		/*
+ 		 * $p's rq is not locked but $p's DSQ lock protects its
+ 		 * scheduling properties making this test safe.
  		 */
--		if (unlikely(READ_ONCE(scx_aborting)) && dsq->id != SCX_DSQ_BYPASS)
-+		if (unlikely(READ_ONCE(sch->aborting)) && dsq->id != SCX_DSQ_BYPASS)
+-		if (!task_can_run_on_remote_rq(sch, p, donee_rq, false))
++		if (!task_can_run_on_remote_rq(sch, p, cpu_rq(donee), false))
+ 			continue;
+ 
+ 		/*
+@@ -4258,7 +4262,7 @@ static u32 bypass_lb_cpu(struct scx_sched *sch, struct rq *rq,
+ 		 * between bypass DSQs.
+ 		 */
+ 		dispatch_dequeue_locked(p, donor_dsq);
+-		dispatch_enqueue(sch, donee_rq, donee_dsq, p, SCX_ENQ_NESTED);
++		dispatch_enqueue(sch, cpu_rq(donee), donee_dsq, p, SCX_ENQ_NESTED);
+ 
+ 		/*
+ 		 * $donee might have been idle and need to be woken up. No need
+@@ -4273,9 +4277,9 @@ static u32 bypass_lb_cpu(struct scx_sched *sch, struct rq *rq,
+ 		if (!(nr_balanced % SCX_BYPASS_LB_BATCH) && n) {
+ 			list_move_tail(&cursor.node, &n->scx.dsq_list.node);
+ 			raw_spin_unlock(&donor_dsq->lock);
+-			raw_spin_rq_unlock_irq(rq);
++			raw_spin_rq_unlock_irq(donor_rq);
+ 			cpu_relax();
+-			raw_spin_rq_lock_irq(rq);
++			raw_spin_rq_lock_irq(donor_rq);
+ 			raw_spin_lock(&donor_dsq->lock);
+ 			goto resume;
+ 		}
+@@ -4283,7 +4287,7 @@ static u32 bypass_lb_cpu(struct scx_sched *sch, struct rq *rq,
+ 
+ 	list_del_init(&cursor.node);
+ 	raw_spin_unlock(&donor_dsq->lock);
+-	raw_spin_rq_unlock_irq(rq);
++	raw_spin_rq_unlock_irq(donor_rq);
+ 
+ 	return nr_balanced;
+ }
+@@ -4301,7 +4305,7 @@ static void bypass_lb_node(struct scx_sched *sch, int node)
+ 
+ 	/* count the target tasks and CPUs */
+ 	for_each_cpu_and(cpu, cpu_online_mask, node_mask) {
+-		u32 nr = READ_ONCE(cpu_rq(cpu)->scx.bypass_dsq.nr);
++		u32 nr = READ_ONCE(bypass_dsq(sch, cpu)->nr);
+ 
+ 		nr_tasks += nr;
+ 		nr_cpus++;
+@@ -4323,24 +4327,21 @@ static void bypass_lb_node(struct scx_sched *sch, int node)
+ 
+ 	cpumask_clear(donee_mask);
+ 	for_each_cpu_and(cpu, cpu_online_mask, node_mask) {
+-		if (READ_ONCE(cpu_rq(cpu)->scx.bypass_dsq.nr) < nr_target)
++		if (READ_ONCE(bypass_dsq(sch, cpu)->nr) < nr_target)
+ 			cpumask_set_cpu(cpu, donee_mask);
+ 	}
+ 
+ 	/* iterate !donee CPUs and see if they should be offloaded */
+ 	cpumask_clear(resched_mask);
+ 	for_each_cpu_and(cpu, cpu_online_mask, node_mask) {
+-		struct rq *rq = cpu_rq(cpu);
+-		struct scx_dispatch_q *donor_dsq = &rq->scx.bypass_dsq;
+-
+ 		if (cpumask_empty(donee_mask))
  			break;
+ 		if (cpumask_test_cpu(cpu, donee_mask))
+ 			continue;
+-		if (READ_ONCE(donor_dsq->nr) <= nr_donor_target)
++		if (READ_ONCE(bypass_dsq(sch, cpu)->nr) <= nr_donor_target)
+ 			continue;
  
- 		if (rq == task_rq) {
-@@ -4659,7 +4658,6 @@ static void scx_root_disable(struct scx_sched *sch)
+-		nr_balanced += bypass_lb_cpu(sch, rq, donee_mask, resched_mask,
++		nr_balanced += bypass_lb_cpu(sch, cpu, donee_mask, resched_mask,
+ 					     nr_donor_target, nr_target);
+ 	}
  
- 	/* guarantee forward progress and wait for descendants to be disabled */
- 	scx_bypass(true);
--	WRITE_ONCE(scx_aborting, false);
- 	drain_descendants(sch);
+@@ -4348,7 +4349,7 @@ static void bypass_lb_node(struct scx_sched *sch, int node)
+ 		resched_cpu(cpu);
  
- 	switch (scx_set_enable_state(SCX_DISABLING)) {
-@@ -4820,7 +4818,7 @@ static bool scx_claim_exit(struct scx_sched *sch, enum scx_exit_kind kind)
- 	 * flag to break potential live-lock scenarios, ensuring we can
- 	 * successfully reach scx_bypass().
- 	 */
--	WRITE_ONCE(scx_aborting, true);
-+	WRITE_ONCE(sch->aborting, true);
+ 	for_each_cpu_and(cpu, cpu_online_mask, node_mask) {
+-		u32 nr = READ_ONCE(cpu_rq(cpu)->scx.bypass_dsq.nr);
++		u32 nr = READ_ONCE(bypass_dsq(sch, cpu)->nr);
  
- 	/*
- 	 * Propagate exits to descendants immediately. Each has a dedicated
-@@ -5458,8 +5456,6 @@ static s32 scx_root_enable(struct sched_ext_ops *ops, struct bpf_link *link)
- 	 */
- 	WARN_ON_ONCE(scx_set_enable_state(SCX_ENABLING) != SCX_DISABLED);
- 	WARN_ON_ONCE(scx_root);
--	if (WARN_ON_ONCE(READ_ONCE(scx_aborting)))
--		WRITE_ONCE(scx_aborting, false);
+ 		after_min = min(nr, after_min);
+ 		after_max = max(nr, after_max);
+@@ -5243,7 +5244,7 @@ static struct scx_sched *scx_alloc_and_add_sched(struct sched_ext_ops *ops,
+ {
+ 	struct scx_sched *sch;
+ 	s32 level = parent ? parent->level + 1 : 0;
+-	int node, ret;
++	s32 node, cpu, ret;
  
- 	atomic_long_set(&scx_nr_rejected, 0);
+ 	sch = kzalloc_flex(*sch, ancestors, level);
+ 	if (!sch)
+@@ -5284,6 +5285,9 @@ static struct scx_sched *scx_alloc_and_add_sched(struct sched_ext_ops *ops,
+ 		goto err_free_gdsqs;
+ 	}
  
-@@ -6692,7 +6688,7 @@ static bool scx_dsq_move(struct bpf_iter_scx_dsq_kern *kit,
- 	 * If the BPF scheduler keeps calling this function repeatedly, it can
- 	 * cause similar live-lock conditions as consume_dispatch_q().
- 	 */
--	if (unlikely(READ_ONCE(scx_aborting)))
-+	if (unlikely(READ_ONCE(sch->aborting)))
- 		return false;
++	for_each_possible_cpu(cpu)
++		init_dsq(bypass_dsq(sch, cpu), SCX_DSQ_BYPASS, sch);
++
+ 	sch->helper = kthread_run_worker(0, "sched_ext_helper");
+ 	if (IS_ERR(sch->helper)) {
+ 		ret = PTR_ERR(sch->helper);
+@@ -5463,7 +5467,6 @@ static s32 scx_root_enable(struct sched_ext_ops *ops, struct bpf_link *link)
+ 		struct rq *rq = cpu_rq(cpu);
  
- 	if (unlikely(!scx_task_on_sched(sch, p))) {
+ 		rq->scx.local_dsq.sched = sch;
+-		rq->scx.bypass_dsq.sched = sch;
+ 		rq->scx.cpuperf_target = SCX_CPUPERF_ONE;
+ 	}
+ 
+@@ -6399,9 +6402,8 @@ void __init init_sched_ext_class(void)
+ 		struct rq *rq = cpu_rq(cpu);
+ 		int  n = cpu_to_node(cpu);
+ 
+-		/* local/bypass dsq's sch will be set during scx_root_enable() */
++		/* local_dsq's sch will be set during scx_root_enable() */
+ 		init_dsq(&rq->scx.local_dsq, SCX_DSQ_LOCAL, NULL);
+-		init_dsq(&rq->scx.bypass_dsq, SCX_DSQ_BYPASS, NULL);
+ 
+ 		INIT_LIST_HEAD(&rq->scx.runnable_list);
+ 		INIT_LIST_HEAD(&rq->scx.ddsp_deferred_locals);
 diff --git a/kernel/sched/ext_internal.h b/kernel/sched/ext_internal.h
-index bd8619905ed1..96c8e75f2930 100644
+index 96c8e75f2930..2fccd65067b8 100644
 --- a/kernel/sched/ext_internal.h
 +++ b/kernel/sched/ext_internal.h
-@@ -951,6 +951,7 @@ struct scx_sched {
- 	struct scx_sched_pcpu __percpu *pcpu;
+@@ -932,6 +932,8 @@ struct scx_sched_pcpu {
+ 	 * constructed when requested by scx_bpf_events().
+ 	 */
+ 	struct scx_event_stats	event_stats;
++
++	struct scx_dispatch_q	bypass_dsq;
+ };
  
- 	u64			slice_dfl;
-+	bool			aborting;
- 	s32			level;
+ struct scx_sched {
+diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
+index b82fb70a9d54..d9921d743467 100644
+--- a/kernel/sched/sched.h
++++ b/kernel/sched/sched.h
+@@ -810,7 +810,6 @@ struct scx_rq {
+ 	struct balance_callback	deferred_bal_cb;
+ 	struct irq_work		deferred_irq_work;
+ 	struct irq_work		kick_cpus_irq_work;
+-	struct scx_dispatch_q	bypass_dsq;
+ };
+ #endif /* CONFIG_SCHED_CLASS_EXT */
  
- 	/*
 -- 
 2.53.0
 
