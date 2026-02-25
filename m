@@ -1,49 +1,49 @@
-Return-Path: <cgroups+bounces-14257-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-14258-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 4O6qCM6DnmmGVwQAu9opvQ
-	(envelope-from <cgroups+bounces-14257-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Wed, 25 Feb 2026 06:08:30 +0100
+	id MBn3CoeDnmmGVwQAu9opvQ
+	(envelope-from <cgroups+bounces-14258-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Wed, 25 Feb 2026 06:07:19 +0100
 X-Original-To: lists+cgroups@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id A0CC4191C52
-	for <lists+cgroups@lfdr.de>; Wed, 25 Feb 2026 06:08:29 +0100 (CET)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
+	by mail.lfdr.de (Postfix) with ESMTPS id 56E37191C17
+	for <lists+cgroups@lfdr.de>; Wed, 25 Feb 2026 06:07:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 8B510304D14D
-	for <lists+cgroups@lfdr.de>; Wed, 25 Feb 2026 05:02:55 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 73176308D7AF
+	for <lists+cgroups@lfdr.de>; Wed, 25 Feb 2026 05:03:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 29FE030EF88;
-	Wed, 25 Feb 2026 05:01:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D2F82DB78C;
+	Wed, 25 Feb 2026 05:01:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Y/QNVxaV"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="segZauxQ"
 X-Original-To: cgroups@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D806B30E0F8;
-	Wed, 25 Feb 2026 05:01:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F1A022D8DA3;
+	Wed, 25 Feb 2026 05:01:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1771995689; cv=none; b=qWvN8EDqPk4iQgQXGZHPUzOj1YSA86mFMteJ2sBlC9SODgZP+2o0x5WLSBcPdecvmrdi+E2f/tZqeGy3v7LDfoDHf6N+IIG4jpOGTIX/yHK/8MjhiB9+a5Ip6KDkvJDdSpR2GefHOl5PPNETEaykoDmlg7yXPv9xYGHr70lZfn0=
+	t=1771995691; cv=none; b=uVfnJINGMGVbk5QE651XgLRNnsXm/YN1LjI88WQHNktEuwpPS7qR5zG/0InAGxHVG/LJTL8xQ8/Z7+GQgdrjB2+WWibh+/lD6rFlIA0Ee0Y+m+cFIZjvRagRBhYEqnuAEmDzU8fC/xhx6T4WzAxO0me9IhCCmCt1FzrTlf4r8W8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1771995689; c=relaxed/simple;
-	bh=FF85b2MYurstSL6GPJTCg+YbUNFxTdzwSLnYY/r4EFs=;
+	s=arc-20240116; t=1771995691; c=relaxed/simple;
+	bh=3JVW7zy8fyR8QNtI7sRR+l1WaJYlfYyB0ELJrJ/Y5ho=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=KJ+Dk8Yenjatw9Fz3EFxrb+XJ7FPjmYZutTpf2fNZ5mdE86ziCZkNDWfc17pDPBUkCIVq0fp8xaA6b24QVe1fq+SMTmUClBDkWZdEcEhrEFPvyOeWmY94+4OgA9nVVCtT26s3z0cVnXIfpFgygc8Ae9+mbTyyVH2TW+wmb/OaTU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Y/QNVxaV; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7F43FC116D0;
-	Wed, 25 Feb 2026 05:01:29 +0000 (UTC)
+	 MIME-Version; b=s0CvcIfG5ojulTZV7elF7zlX/BdHcYQ3bx5SsWL+0TfApSYWKJWYQRiKRoYamfaqkss7XtGiaLxw3+bm681740kmi9iK4M+9fkjBidFdwfTw/ajrTBOYt2HbiS4VOkPFNBNzh1mhhjd0oRIOXumX572Lj5rD8px7gl60Hsbcnc4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=segZauxQ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7FE02C116D0;
+	Wed, 25 Feb 2026 05:01:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1771995689;
-	bh=FF85b2MYurstSL6GPJTCg+YbUNFxTdzwSLnYY/r4EFs=;
+	s=k20201202; t=1771995690;
+	bh=3JVW7zy8fyR8QNtI7sRR+l1WaJYlfYyB0ELJrJ/Y5ho=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=Y/QNVxaV1HAxSSXUzPIChigWW4kTzjU0cLxG+xcb+zyxLV2h83oZ2BWcjtTitw63c
-	 LXTD44hMnvjdWx8wvhPiH1A/9unDmCzinSJE7d7JkJZA1sC/mE1K+bTycsGK8/R1VA
-	 gzVdWMDA4MlrtHT55ZVHLitbI9a16sNSrRGdq6hzS0vCHJVQnLGuIPwaDaECm9vLZs
-	 KjxTa5FaxtblGZtzyCeqf9sxsNVo/yx48VP7BQm0d5QwbuqoWR5zkJvvhIBDkH8pt5
-	 kDYltJl8wV7E+PUbGxUM6LPlHOzIgUPOKvUoIdQUJCZZhNcImo0JaVAS6dd+Ld9DYC
-	 +SKNN36qzz3mQ==
+	b=segZauxQmWKWKg8wcSRKdlyEfGdlMwrKYOpEcUyHfeJ0oaeWarq88xvNizBAP4kaW
+	 2ssYcDSNoT1E7jASIbTfCj0XH3/U3ghqE4SEQd5FGYlOZ9mmOfk4WOv9Y8IjBpo1BA
+	 F640BsKB7yL4hHB2e9b8OdZakuQIANbftiAyOFGi3PubVrDoXrgVpfzX10H3I4NGSF
+	 jaNVRVmY+A2xSHdgZJffAW/zUhQya9St/jeKoEVZtpWzu7eS2l3A6PvImgKIM/+D7T
+	 /DrKzJl52grxuJ2qDwGrp6TGCAC3qlalmtgmTjYQjqD4tRx7EU2apXpP02SJS8pPF3
+	 yY39BIgqhROhw==
 From: Tejun Heo <tj@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	sched-ext@lists.linux.dev
@@ -55,9 +55,9 @@ Cc: void@manifault.com,
 	mkoutny@suse.com,
 	cgroups@vger.kernel.org,
 	Tejun Heo <tj@kernel.org>
-Subject: [PATCH 18/34] sched_ext: Move bypass state into scx_sched
-Date: Tue, 24 Feb 2026 19:00:53 -1000
-Message-ID: <20260225050109.1070059-19-tj@kernel.org>
+Subject: [PATCH 19/34] sched_ext: Prepare bypass mode for hierarchical operation
+Date: Tue, 24 Feb 2026 19:00:54 -1000
+Message-ID: <20260225050109.1070059-20-tj@kernel.org>
 X-Mailer: git-send-email 2.53.0
 In-Reply-To: <20260225050109.1070059-1-tj@kernel.org>
 References: <20260225050109.1070059-1-tj@kernel.org>
@@ -74,13 +74,13 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	MID_CONTAINS_FROM(1.00)[];
 	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
 	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
 	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-14257-lists,cgroups=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-14258-lists,cgroups=lfdr.de];
 	RCVD_COUNT_THREE(0.00)[4];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	FROM_HAS_DN(0.00)[];
@@ -94,537 +94,183 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	TAGGED_RCPT(0.00)[cgroups];
 	TO_DN_SOME(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: A0CC4191C52
+	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: 56E37191C17
 X-Rspamd-Action: no action
 
-In preparation of multiple scheduler support, make bypass state
-per-scx_sched. Move scx_bypass_depth, bypass_timestamp and bypass_lb_timer
-from globals into scx_sched. Move SCX_RQ_BYPASSING from rq to scx_sched_pcpu
-as SCX_SCHED_PCPU_BYPASSING.
+Bypass mode is used to simplify enable and disable paths and guarantee
+forward progress when something goes wrong. When enabled, all tasks skip BPF
+scheduling and fall back to simple in-kernel FIFO scheduling. While this
+global behavior can be used as-is when dealing with sub-scheds, that would
+allow any sub-sched instance to affect the whole system in a significantly
+disruptive manner.
 
-scx_bypass() now takes @sch and scx_rq_bypassing(rq) is replaced with
-scx_bypassing(sch, cpu). All callers updated.
-
-scx_bypassed_for_enable existed to balance the global scx_bypass_depth when
-enable failed. Now that bypass_depth is per-scheduler, the counter is
-destroyed along with the scheduler on enable failure. Remove
-scx_bypassed_for_enable.
-
-As all tasks currently use the root scheduler, there's no observable behavior
-change.
+Make bypass state hierarchical by propagating it to descendants and updating
+per-cpu flags accordingly. This allows an scx_sched to bypass if itself or
+any of its ancestors are in bypass mode. However, this doesn't make the
+actual bypass enqueue and dispatch paths hierarchical yet. That will be done
+in later patches.
 
 Signed-off-by: Tejun Heo <tj@kernel.org>
 ---
- kernel/sched/ext.c          | 143 +++++++++++++++++-------------------
- kernel/sched/ext_idle.c     |   3 +-
- kernel/sched/ext_internal.h |  14 +++-
- kernel/sched/sched.h        |   1 -
- 4 files changed, 80 insertions(+), 81 deletions(-)
+ kernel/sched/ext.c | 85 ++++++++++++++++++++++++++++++++++------------
+ 1 file changed, 63 insertions(+), 22 deletions(-)
 
 diff --git a/kernel/sched/ext.c b/kernel/sched/ext.c
-index a68f97befcf1..0fd5c90951dd 100644
+index 0fd5c90951dd..2aab3ccbd3e3 100644
 --- a/kernel/sched/ext.c
 +++ b/kernel/sched/ext.c
-@@ -41,20 +41,12 @@ static DEFINE_MUTEX(scx_enable_mutex);
+@@ -41,6 +41,7 @@ static DEFINE_MUTEX(scx_enable_mutex);
  DEFINE_STATIC_KEY_FALSE(__scx_enabled);
  DEFINE_STATIC_PERCPU_RWSEM(scx_fork_rwsem);
  static atomic_t scx_enable_state_var = ATOMIC_INIT(SCX_DISABLED);
--static int scx_bypass_depth;
++static DEFINE_RAW_SPINLOCK(scx_bypass_lock);
  static cpumask_var_t scx_bypass_lb_donee_cpumask;
  static cpumask_var_t scx_bypass_lb_resched_cpumask;
  static bool scx_init_task_enabled;
- static bool scx_switching_all;
- DEFINE_STATIC_KEY_FALSE(__scx_switched_all);
- 
--/*
-- * Tracks whether scx_enable() called scx_bypass(true). Used to balance bypass
-- * depth on enable failure. Will be removed when bypass depth is moved into the
-- * sched instance.
-- */
--static bool scx_bypassed_for_enable;
--
- static atomic_long_t scx_nr_rejected = ATOMIC_LONG_INIT(0);
- static atomic_long_t scx_hotplug_seq = ATOMIC_LONG_INIT(0);
- 
-@@ -1566,7 +1558,7 @@ static void do_enqueue_task(struct rq *rq, struct task_struct *p, u64 enq_flags,
- 	if (!scx_rq_online(rq))
- 		goto local;
- 
--	if (scx_rq_bypassing(rq)) {
-+	if (scx_bypassing(sch, cpu_of(rq))) {
- 		__scx_add_event(sch, SCX_EV_BYPASS_DISPATCH, 1);
- 		goto bypass;
- 	}
-@@ -1947,7 +1939,7 @@ static bool task_can_run_on_remote_rq(struct scx_sched *sch,
- 				      struct task_struct *p, struct rq *rq,
- 				      bool enforce)
- {
--	int cpu = cpu_of(rq);
-+	s32 cpu = cpu_of(rq);
- 
- 	WARN_ON_ONCE(task_cpu(p) == cpu);
- 
-@@ -2398,6 +2390,7 @@ static int balance_one(struct rq *rq, struct task_struct *prev)
- 	bool prev_on_scx = prev->sched_class == &ext_sched_class;
- 	bool prev_on_rq = prev->scx.flags & SCX_TASK_QUEUED;
- 	int nr_loops = SCX_DSP_MAX_LOOPS;
-+	s32 cpu = cpu_of(rq);
- 
- 	lockdep_assert_rq_held(rq);
- 	rq->scx.flags |= SCX_RQ_IN_BALANCE;
-@@ -2412,8 +2405,7 @@ static int balance_one(struct rq *rq, struct task_struct *prev)
- 		 * emitted in switch_class().
- 		 */
- 		if (SCX_HAS_OP(sch, cpu_acquire))
--			SCX_CALL_OP(sch, SCX_KF_REST, cpu_acquire, rq,
--				    cpu_of(rq), NULL);
-+			SCX_CALL_OP(sch, SCX_KF_REST, cpu_acquire, rq, cpu, NULL);
- 		rq->scx.cpu_released = false;
- 	}
- 
-@@ -2430,7 +2422,7 @@ static int balance_one(struct rq *rq, struct task_struct *prev)
- 		 * See scx_disable_workfn() for the explanation on the bypassing
- 		 * test.
- 		 */
--		if (prev_on_rq && prev->scx.slice && !scx_rq_bypassing(rq)) {
-+		if (prev_on_rq && prev->scx.slice && !scx_bypassing(sch, cpu)) {
- 			rq->scx.flags |= SCX_RQ_BAL_KEEP;
- 			goto has_tasks;
- 		}
-@@ -2443,8 +2435,8 @@ static int balance_one(struct rq *rq, struct task_struct *prev)
- 	if (consume_global_dsq(sch, rq))
- 		goto has_tasks;
- 
--	if (scx_rq_bypassing(rq)) {
--		if (consume_dispatch_q(sch, rq, bypass_dsq(sch, cpu_of(rq))))
-+	if (scx_bypassing(sch, cpu)) {
-+		if (consume_dispatch_q(sch, rq, bypass_dsq(sch, cpu)))
- 			goto has_tasks;
- 		else
- 			goto no_tasks;
-@@ -2465,8 +2457,8 @@ static int balance_one(struct rq *rq, struct task_struct *prev)
- 	do {
- 		dspc->nr_tasks = 0;
- 
--		SCX_CALL_OP(sch, SCX_KF_DISPATCH, dispatch, rq,
--			    cpu_of(rq), prev_on_scx ? prev : NULL);
-+		SCX_CALL_OP(sch, SCX_KF_DISPATCH, dispatch, rq, cpu,
-+			    prev_on_scx ? prev : NULL);
- 
- 		flush_dispatch_buf(sch, rq);
- 
-@@ -2489,7 +2481,7 @@ static int balance_one(struct rq *rq, struct task_struct *prev)
- 		 * scx_kick_cpu() for deferred kicking.
- 		 */
- 		if (unlikely(!--nr_loops)) {
--			scx_kick_cpu(sch, cpu_of(rq), 0);
-+			scx_kick_cpu(sch, cpu, 0);
- 			break;
- 		}
- 	} while (dspc->nr_tasks);
-@@ -2500,7 +2492,7 @@ static int balance_one(struct rq *rq, struct task_struct *prev)
- 	 * %SCX_OPS_ENQ_LAST is in effect.
- 	 */
- 	if (prev_on_rq &&
--	    (!(sch->ops.flags & SCX_OPS_ENQ_LAST) || scx_rq_bypassing(rq))) {
-+	    (!(sch->ops.flags & SCX_OPS_ENQ_LAST) || scx_bypassing(sch, cpu))) {
- 		rq->scx.flags |= SCX_RQ_BAL_KEEP;
- 		__scx_add_event(sch, SCX_EV_DISPATCH_KEEP_LAST, 1);
- 		goto has_tasks;
-@@ -2659,7 +2651,7 @@ static void put_prev_task_scx(struct rq *rq, struct task_struct *p,
- 		 * forcing a different task. Leave it at the head of the local
- 		 * DSQ.
- 		 */
--		if (p->scx.slice && !scx_rq_bypassing(rq)) {
-+		if (p->scx.slice && !scx_bypassing(sch, cpu_of(rq))) {
- 			dispatch_enqueue(sch, rq, &rq->scx.local_dsq, p,
- 					 SCX_ENQ_HEAD);
- 			goto switch_class;
-@@ -2742,7 +2734,8 @@ do_pick_task_scx(struct rq *rq, struct rq_flags *rf, bool force_scx)
- 		if (unlikely(!p->scx.slice)) {
- 			struct scx_sched *sch = scx_task_sched(p);
- 
--			if (!scx_rq_bypassing(rq) && !sch->warned_zero_slice) {
-+			if (!scx_bypassing(sch, cpu_of(rq)) &&
-+			    !sch->warned_zero_slice) {
- 				printk_deferred(KERN_WARNING "sched_ext: %s[%d] has zero slice in %s()\n",
- 						p->comm, p->pid, __func__);
- 				sch->warned_zero_slice = true;
-@@ -2817,7 +2810,7 @@ bool scx_prio_less(const struct task_struct *a, const struct task_struct *b,
- 	 * verifier.
- 	 */
- 	if (sch_a == sch_b && SCX_HAS_OP(sch_a, core_sched_before) &&
--	    !scx_rq_bypassing(task_rq(a)))
-+	    !scx_bypassing(sch_a, task_cpu(a)))
- 		return SCX_CALL_OP_2TASKS_RET(sch_a, SCX_KF_REST, core_sched_before,
- 					      NULL,
- 					      (struct task_struct *)a,
-@@ -2830,7 +2823,7 @@ bool scx_prio_less(const struct task_struct *a, const struct task_struct *b,
- static int select_task_rq_scx(struct task_struct *p, int prev_cpu, int wake_flags)
- {
- 	struct scx_sched *sch = scx_task_sched(p);
--	bool rq_bypass;
-+	bool bypassing;
- 
- 	/*
- 	 * sched_exec() calls with %WF_EXEC when @p is about to exec(2) as it
-@@ -2845,8 +2838,8 @@ static int select_task_rq_scx(struct task_struct *p, int prev_cpu, int wake_flag
- 	if (unlikely(wake_flags & WF_EXEC))
- 		return prev_cpu;
- 
--	rq_bypass = scx_rq_bypassing(task_rq(p));
--	if (likely(SCX_HAS_OP(sch, select_cpu)) && !rq_bypass) {
-+	bypassing = scx_bypassing(sch, task_cpu(p));
-+	if (likely(SCX_HAS_OP(sch, select_cpu)) && !bypassing) {
- 		s32 cpu;
- 		struct task_struct **ddsp_taskp;
- 
-@@ -2876,7 +2869,7 @@ static int select_task_rq_scx(struct task_struct *p, int prev_cpu, int wake_flag
- 		}
- 		p->scx.selected_cpu = cpu;
- 
--		if (rq_bypass)
-+		if (bypassing)
- 			__scx_add_event(sch, SCX_EV_BYPASS_DISPATCH, 1);
- 		return cpu;
- 	}
-@@ -2913,7 +2906,7 @@ static void set_cpus_allowed_scx(struct task_struct *p,
- static void handle_hotplug(struct rq *rq, bool online)
- {
- 	struct scx_sched *sch = scx_root;
--	int cpu = cpu_of(rq);
-+	s32 cpu = cpu_of(rq);
- 
- 	atomic_long_inc(&scx_hotplug_seq);
- 
-@@ -3042,7 +3035,7 @@ static void task_tick_scx(struct rq *rq, struct task_struct *curr, int queued)
- 	 * While disabling, always resched and refresh core-sched timestamp as
- 	 * we can't trust the slice management or ops.core_sched_before().
- 	 */
--	if (scx_rq_bypassing(rq)) {
-+	if (scx_bypassing(sch, cpu_of(rq))) {
- 		curr->scx.slice = 0;
- 		touch_core_sched(rq, curr);
- 	} else if (SCX_HAS_OP(sch, tick)) {
-@@ -3483,13 +3476,14 @@ int scx_check_setscheduler(struct task_struct *p, int policy)
- bool scx_can_stop_tick(struct rq *rq)
- {
- 	struct task_struct *p = rq->curr;
--
--	if (scx_rq_bypassing(rq))
--		return false;
-+	struct scx_sched *sch = scx_task_sched(p);
- 
- 	if (p->sched_class != &ext_sched_class)
- 		return true;
- 
-+	if (scx_bypassing(sch, cpu_of(rq)))
-+		return false;
-+
- 	/*
- 	 * @rq can dispatch from different DSQs, so we can't tell whether it
- 	 * needs the tick or not by looking at nr_running. Allow stopping ticks
-@@ -3979,6 +3973,7 @@ static void scx_sched_free_rcu_work(struct work_struct *work)
- 
- 	irq_work_sync(&sch->error_irq_work);
- 	kthread_destroy_worker(sch->helper);
-+	timer_shutdown_sync(&sch->bypass_lb_timer);
- 
- #ifdef CONFIG_EXT_SUB_SCHED
- 	kfree(sch->cgrp_path);
-@@ -4371,12 +4366,11 @@ static void bypass_lb_node(struct scx_sched *sch, int node)
-  */
- static void scx_bypass_lb_timerfn(struct timer_list *timer)
- {
--	struct scx_sched *sch;
-+	struct scx_sched *sch = container_of(timer, struct scx_sched, bypass_lb_timer);
- 	int node;
- 	u32 intv_us;
- 
--	sch = rcu_dereference_all(scx_root);
--	if (unlikely(!sch) || !READ_ONCE(scx_bypass_depth))
-+	if (!READ_ONCE(sch->bypass_depth))
- 		return;
- 
- 	for_each_node_with_cpus(node)
-@@ -4387,10 +4381,9 @@ static void scx_bypass_lb_timerfn(struct timer_list *timer)
+@@ -4381,6 +4382,36 @@ static void scx_bypass_lb_timerfn(struct timer_list *timer)
  		mod_timer(timer, jiffies + usecs_to_jiffies(intv_us));
  }
  
--static DEFINE_TIMER(scx_bypass_lb_timer, scx_bypass_lb_timerfn);
--
++static bool inc_bypass_depth(struct scx_sched *sch)
++{
++	lockdep_assert_held(&scx_bypass_lock);
++
++	WARN_ON_ONCE(sch->bypass_depth < 0);
++	WRITE_ONCE(sch->bypass_depth, sch->bypass_depth + 1);
++	if (sch->bypass_depth != 1)
++		return false;
++
++	WRITE_ONCE(sch->slice_dfl, scx_slice_bypass_us * NSEC_PER_USEC);
++	sch->bypass_timestamp = ktime_get_ns();
++	scx_add_event(sch, SCX_EV_BYPASS_ACTIVATE, 1);
++	return true;
++}
++
++static bool dec_bypass_depth(struct scx_sched *sch)
++{
++	lockdep_assert_held(&scx_bypass_lock);
++
++	WARN_ON_ONCE(sch->bypass_depth < 1);
++	WRITE_ONCE(sch->bypass_depth, sch->bypass_depth - 1);
++	if (sch->bypass_depth != 0)
++		return false;
++
++	WRITE_ONCE(sch->slice_dfl, SCX_SLICE_DFL);
++	scx_add_event(sch, SCX_EV_BYPASS_DURATION,
++		      ktime_get_ns() - sch->bypass_timestamp);
++	return true;
++}
++
  /**
   * scx_bypass - [Un]bypass scx_ops and guarantee forward progress
-+ * @sch: sched to bypass
-  * @bypass: true for bypass, false for unbypass
-  *
-  * Bypassing guarantees that all runnable tasks make forward progress without
-@@ -4420,51 +4413,44 @@ static DEFINE_TIMER(scx_bypass_lb_timer, scx_bypass_lb_timerfn);
-  *
-  * - scx_prio_less() reverts to the default core_sched_at order.
+  * @sch: sched to bypass
+@@ -4415,22 +4446,17 @@ static void scx_bypass_lb_timerfn(struct timer_list *timer)
   */
--static void scx_bypass(bool bypass)
-+static void scx_bypass(struct scx_sched *sch, bool bypass)
+ static void scx_bypass(struct scx_sched *sch, bool bypass)
  {
- 	static DEFINE_RAW_SPINLOCK(bypass_lock);
--	static unsigned long bypass_timestamp;
--	struct scx_sched *sch;
+-	static DEFINE_RAW_SPINLOCK(bypass_lock);
++	struct scx_sched *pos;
  	unsigned long flags;
  	int cpu;
  
- 	raw_spin_lock_irqsave(&bypass_lock, flags);
--	sch = rcu_dereference_bh(scx_root);
--	if (!sch)
--		goto unlock;
+-	raw_spin_lock_irqsave(&bypass_lock, flags);
++	raw_spin_lock_irqsave(&scx_bypass_lock, flags);
  
  	if (bypass) {
  		u32 intv_us;
  
--		WRITE_ONCE(scx_bypass_depth, scx_bypass_depth + 1);
--		WARN_ON_ONCE(scx_bypass_depth <= 0);
--		if (scx_bypass_depth != 1)
-+		WRITE_ONCE(sch->bypass_depth, sch->bypass_depth + 1);
-+		WARN_ON_ONCE(sch->bypass_depth <= 0);
-+		if (sch->bypass_depth != 1)
+-		WRITE_ONCE(sch->bypass_depth, sch->bypass_depth + 1);
+-		WARN_ON_ONCE(sch->bypass_depth <= 0);
+-		if (sch->bypass_depth != 1)
++		if (!inc_bypass_depth(sch))
  			goto unlock;
- 		WRITE_ONCE(sch->slice_dfl, scx_slice_bypass_us * NSEC_PER_USEC);
--		bypass_timestamp = ktime_get_ns();
--		if (sch)
--			scx_add_event(sch, SCX_EV_BYPASS_ACTIVATE, 1);
-+		sch->bypass_timestamp = ktime_get_ns();
-+		scx_add_event(sch, SCX_EV_BYPASS_ACTIVATE, 1);
+-		WRITE_ONCE(sch->slice_dfl, scx_slice_bypass_us * NSEC_PER_USEC);
+-		sch->bypass_timestamp = ktime_get_ns();
+-		scx_add_event(sch, SCX_EV_BYPASS_ACTIVATE, 1);
  
  		intv_us = READ_ONCE(scx_bypass_lb_intv_us);
--		if (intv_us && !timer_pending(&scx_bypass_lb_timer)) {
--			scx_bypass_lb_timer.expires =
-+		if (intv_us && !timer_pending(&sch->bypass_lb_timer)) {
-+			sch->bypass_lb_timer.expires =
- 				jiffies + usecs_to_jiffies(intv_us);
--			add_timer_global(&scx_bypass_lb_timer);
-+			add_timer_global(&sch->bypass_lb_timer);
+ 		if (intv_us && !timer_pending(&sch->bypass_lb_timer)) {
+@@ -4439,15 +4465,25 @@ static void scx_bypass(struct scx_sched *sch, bool bypass)
+ 			add_timer_global(&sch->bypass_lb_timer);
  		}
  	} else {
--		WRITE_ONCE(scx_bypass_depth, scx_bypass_depth - 1);
--		WARN_ON_ONCE(scx_bypass_depth < 0);
--		if (scx_bypass_depth != 0)
-+		WRITE_ONCE(sch->bypass_depth, sch->bypass_depth - 1);
-+		WARN_ON_ONCE(sch->bypass_depth < 0);
-+		if (sch->bypass_depth != 0)
+-		WRITE_ONCE(sch->bypass_depth, sch->bypass_depth - 1);
+-		WARN_ON_ONCE(sch->bypass_depth < 0);
+-		if (sch->bypass_depth != 0)
++		if (!dec_bypass_depth(sch))
  			goto unlock;
- 		WRITE_ONCE(sch->slice_dfl, SCX_SLICE_DFL);
--		if (sch)
--			scx_add_event(sch, SCX_EV_BYPASS_DURATION,
--				      ktime_get_ns() - bypass_timestamp);
-+		scx_add_event(sch, SCX_EV_BYPASS_DURATION,
-+			      ktime_get_ns() - sch->bypass_timestamp);
+-		WRITE_ONCE(sch->slice_dfl, SCX_SLICE_DFL);
+-		scx_add_event(sch, SCX_EV_BYPASS_DURATION,
+-			      ktime_get_ns() - sch->bypass_timestamp);
  	}
  
++	/*
++	 * Bypass state is propagated to all descendants - an scx_sched bypasses
++	 * if itself or any of its ancestors are in bypass mode.
++	 */
++	raw_spin_lock(&scx_sched_lock);
++	scx_for_each_descendant_pre(pos, sch) {
++		if (pos == sch)
++			continue;
++		if (bypass)
++			inc_bypass_depth(pos);
++		else
++			dec_bypass_depth(pos);
++	}
++	raw_spin_unlock(&scx_sched_lock);
++
  	/*
  	 * No task property is changing. We just need to make sure all currently
--	 * queued tasks are re-queued according to the new scx_rq_bypassing()
-+	 * queued tasks are re-queued according to the new scx_bypassing()
- 	 * state. As an optimization, walk each rq's runnable_list instead of
- 	 * the scx_tasks list.
- 	 *
-@@ -4473,22 +4459,23 @@ static void scx_bypass(bool bypass)
+ 	 * queued tasks are re-queued according to the new scx_bypassing()
+@@ -4459,18 +4495,20 @@ static void scx_bypass(struct scx_sched *sch, bool bypass)
  	 */
  	for_each_possible_cpu(cpu) {
  		struct rq *rq = cpu_rq(cpu);
-+		struct scx_sched_pcpu *pcpu = per_cpu_ptr(sch->pcpu, cpu);
+-		struct scx_sched_pcpu *pcpu = per_cpu_ptr(sch->pcpu, cpu);
  		struct task_struct *p, *n;
  
  		raw_spin_rq_lock(rq);
  
- 		if (bypass) {
--			WARN_ON_ONCE(rq->scx.flags & SCX_RQ_BYPASSING);
--			rq->scx.flags |= SCX_RQ_BYPASSING;
-+			WARN_ON_ONCE(pcpu->flags & SCX_SCHED_PCPU_BYPASSING);
-+			pcpu->flags |= SCX_SCHED_PCPU_BYPASSING;
- 		} else {
--			WARN_ON_ONCE(!(rq->scx.flags & SCX_RQ_BYPASSING));
--			rq->scx.flags &= ~SCX_RQ_BYPASSING;
-+			WARN_ON_ONCE(!(pcpu->flags & SCX_SCHED_PCPU_BYPASSING));
-+			pcpu->flags &= ~SCX_SCHED_PCPU_BYPASSING;
+-		if (bypass) {
+-			WARN_ON_ONCE(pcpu->flags & SCX_SCHED_PCPU_BYPASSING);
+-			pcpu->flags |= SCX_SCHED_PCPU_BYPASSING;
+-		} else {
+-			WARN_ON_ONCE(!(pcpu->flags & SCX_SCHED_PCPU_BYPASSING));
+-			pcpu->flags &= ~SCX_SCHED_PCPU_BYPASSING;
++		raw_spin_lock(&scx_sched_lock);
++		scx_for_each_descendant_pre(pos, sch) {
++			struct scx_sched_pcpu *pcpu = per_cpu_ptr(pos->pcpu, cpu);
++
++			if (pos->bypass_depth)
++				pcpu->flags |= SCX_SCHED_PCPU_BYPASSING;
++			else
++				pcpu->flags &= ~SCX_SCHED_PCPU_BYPASSING;
  		}
++		raw_spin_unlock(&scx_sched_lock);
  
  		/*
  		 * We need to guarantee that no tasks are on the BPF scheduler
- 		 * while bypassing. Either we see enabled or the enable path
--		 * sees scx_rq_bypassing() before moving tasks to SCX.
-+		 * sees scx_bypassing() before moving tasks to SCX.
+@@ -4491,6 +4529,9 @@ static void scx_bypass(struct scx_sched *sch, bool bypass)
  		 */
- 		if (!scx_enabled()) {
- 			raw_spin_rq_unlock(rq);
-@@ -4658,7 +4645,7 @@ static void scx_root_disable(struct scx_sched *sch)
- 	int cpu;
- 
- 	/* guarantee forward progress and wait for descendants to be disabled */
--	scx_bypass(true);
-+	scx_bypass(sch, true);
- 	drain_descendants(sch);
- 
- 	switch (scx_set_enable_state(SCX_DISABLING)) {
-@@ -4783,16 +4770,11 @@ static void scx_root_disable(struct scx_sched *sch)
- 	scx_dsp_max_batch = 0;
- 	free_kick_syncs();
- 
--	if (scx_bypassed_for_enable) {
--		scx_bypassed_for_enable = false;
--		scx_bypass(false);
--	}
--
- 	mutex_unlock(&scx_enable_mutex);
- 
- 	WARN_ON_ONCE(scx_set_enable_state(SCX_DISABLED) != SCX_DISABLING);
- done:
--	scx_bypass(false);
-+	scx_bypass(sch, false);
- }
- 
- /*
-@@ -5306,6 +5288,7 @@ static struct scx_sched *scx_alloc_and_add_sched(struct sched_ext_ops *ops,
- 	atomic_set(&sch->exit_kind, SCX_EXIT_NONE);
- 	init_irq_work(&sch->error_irq_work, scx_error_irq_workfn);
- 	kthread_init_work(&sch->disable_work, scx_disable_workfn);
-+	timer_setup(&sch->bypass_lb_timer, scx_bypass_lb_timerfn, 0);
- 	sch->ops = *ops;
- 	rcu_assign_pointer(ops->priv, sch);
- 
-@@ -5542,8 +5525,7 @@ static s32 scx_root_enable(struct sched_ext_ops *ops, struct bpf_link *link)
- 	 * scheduling) may not function correctly before all tasks are switched.
- 	 * Init in bypass mode to guarantee forward progress.
- 	 */
--	scx_bypass(true);
--	scx_bypassed_for_enable = true;
-+	scx_bypass(sch, true);
- 
- 	for (i = SCX_OPI_NORMAL_BEGIN; i < SCX_OPI_NORMAL_END; i++)
- 		if (((void (**)(void))ops)[i])
-@@ -5643,8 +5625,7 @@ static s32 scx_root_enable(struct sched_ext_ops *ops, struct bpf_link *link)
- 	scx_task_iter_stop(&sti);
- 	percpu_up_write(&scx_fork_rwsem);
- 
--	scx_bypassed_for_enable = false;
--	scx_bypass(false);
-+	scx_bypass(sch, false);
- 
- 	if (!scx_tryset_enable_state(SCX_ENABLED, SCX_ENABLING)) {
- 		WARN_ON_ONCE(atomic_read(&sch->exit_kind) == SCX_EXIT_NONE);
-@@ -6358,6 +6339,14 @@ void print_scx_info(const char *log_lvl, struct task_struct *p)
- 
- static int scx_pm_handler(struct notifier_block *nb, unsigned long event, void *ptr)
- {
-+	struct scx_sched *sch;
+ 		list_for_each_entry_safe_reverse(p, n, &rq->scx.runnable_list,
+ 						 scx.runnable_node) {
++			if (!scx_is_descendant(scx_task_sched(p), sch))
++				continue;
 +
-+	guard(rcu)();
-+
-+	sch = rcu_dereference(scx_root);
-+	if (!sch)
-+		return NOTIFY_OK;
-+
- 	/*
- 	 * SCX schedulers often have userspace components which are sometimes
- 	 * involved in critial scheduling paths. PM operations involve freezing
-@@ -6368,12 +6357,12 @@ static int scx_pm_handler(struct notifier_block *nb, unsigned long event, void *
- 	case PM_HIBERNATION_PREPARE:
- 	case PM_SUSPEND_PREPARE:
- 	case PM_RESTORE_PREPARE:
--		scx_bypass(true);
-+		scx_bypass(sch, true);
- 		break;
- 	case PM_POST_HIBERNATION:
- 	case PM_POST_SUSPEND:
- 	case PM_POST_RESTORE:
--		scx_bypass(false);
-+		scx_bypass(sch, false);
- 		break;
+ 			/* cycling deq/enq is enough, see the function comment */
+ 			scoped_guard (sched_change, p, DEQUEUE_SAVE | DEQUEUE_MOVE) {
+ 				/* nothing */ ;
+@@ -4505,7 +4546,7 @@ static void scx_bypass(struct scx_sched *sch, bool bypass)
  	}
  
-@@ -7189,7 +7178,7 @@ static void scx_kick_cpu(struct scx_sched *sch, s32 cpu, u64 flags)
- 	 * lead to irq_work_queue() malfunction such as infinite busy wait for
- 	 * IRQ status update. Suppress kicking.
- 	 */
--	if (scx_rq_bypassing(this_rq))
-+	if (scx_bypassing(sch, cpu_of(this_rq)))
- 		goto out;
- 
- 	/*
-diff --git a/kernel/sched/ext_idle.c b/kernel/sched/ext_idle.c
-index 321efd7b14fb..fe9c5af1cd42 100644
---- a/kernel/sched/ext_idle.c
-+++ b/kernel/sched/ext_idle.c
-@@ -768,7 +768,8 @@ void __scx_update_idle(struct rq *rq, bool idle, bool do_notify)
- 	 * either enqueue() sees the idle bit or update_idle() sees the task
- 	 * that enqueue() queued.
- 	 */
--	if (SCX_HAS_OP(sch, update_idle) && do_notify && !scx_rq_bypassing(rq))
-+	if (SCX_HAS_OP(sch, update_idle) && do_notify &&
-+	    !scx_bypassing(sch, cpu_of(rq)))
- 		SCX_CALL_OP(sch, SCX_KF_REST, update_idle, rq, cpu_of(rq), idle);
+ unlock:
+-	raw_spin_unlock_irqrestore(&bypass_lock, flags);
++	raw_spin_unlock_irqrestore(&scx_bypass_lock, flags);
  }
  
-diff --git a/kernel/sched/ext_internal.h b/kernel/sched/ext_internal.h
-index 2fccd65067b8..85a4a1ab4342 100644
---- a/kernel/sched/ext_internal.h
-+++ b/kernel/sched/ext_internal.h
-@@ -925,7 +925,13 @@ struct scx_event_stats {
- 	s64		SCX_EV_INSERT_NOT_OWNED;
- };
- 
-+enum scx_sched_pcpu_flags {
-+	SCX_SCHED_PCPU_BYPASSING	= 1LLU << 0,
-+};
-+
- struct scx_sched_pcpu {
-+	u64			flags;	/* protected by rq lock */
-+
- 	/*
- 	 * The event counters are in a per-CPU variable to minimize the
- 	 * accounting overhead. A system-wide view on the event counter is
-@@ -953,6 +959,8 @@ struct scx_sched {
- 	struct scx_sched_pcpu __percpu *pcpu;
- 
- 	u64			slice_dfl;
-+	u64			bypass_timestamp;
-+	s32			bypass_depth;
- 	bool			aborting;
- 	s32			level;
- 
-@@ -984,6 +992,7 @@ struct scx_sched {
- 	struct kthread_worker	*helper;
- 	struct irq_work		error_irq_work;
- 	struct kthread_work	disable_work;
-+	struct timer_list	bypass_lb_timer;
- 	struct rcu_work		rcu_work;
- 
- 	/* all ancestors including self */
-@@ -1175,9 +1184,10 @@ static inline bool scx_kf_allowed_if_unlocked(void)
- 	return !current->scx.kf_mask;
- }
- 
--static inline bool scx_rq_bypassing(struct rq *rq)
-+static inline bool scx_bypassing(struct scx_sched *sch, s32 cpu)
- {
--	return unlikely(rq->scx.flags & SCX_RQ_BYPASSING);
-+	return unlikely(per_cpu_ptr(sch->pcpu, cpu)->flags &
-+			SCX_SCHED_PCPU_BYPASSING);
- }
- 
- #ifdef CONFIG_EXT_SUB_SCHED
-diff --git a/kernel/sched/sched.h b/kernel/sched/sched.h
-index d9921d743467..715c921698c7 100644
---- a/kernel/sched/sched.h
-+++ b/kernel/sched/sched.h
-@@ -782,7 +782,6 @@ enum scx_rq_flags {
- 	SCX_RQ_ONLINE		= 1 << 0,
- 	SCX_RQ_CAN_STOP_TICK	= 1 << 1,
- 	SCX_RQ_BAL_KEEP		= 1 << 3, /* balance decided to keep current */
--	SCX_RQ_BYPASSING	= 1 << 4,
- 	SCX_RQ_CLK_VALID	= 1 << 5, /* RQ clock is fresh and valid */
- 	SCX_RQ_BAL_CB_PENDING	= 1 << 6, /* must queue a cb after dispatching */
- 
+ static void free_exit_info(struct scx_exit_info *ei)
 -- 
 2.53.0
 
