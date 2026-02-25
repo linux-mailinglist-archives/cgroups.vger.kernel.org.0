@@ -1,49 +1,49 @@
-Return-Path: <cgroups+bounces-14301-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-14302-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id WM6aEmuHnmnwVwQAu9opvQ
-	(envelope-from <cgroups+bounces-14301-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Wed, 25 Feb 2026 06:23:55 +0100
+	id 4BZJM7+HnmnwVwQAu9opvQ
+	(envelope-from <cgroups+bounces-14302-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Wed, 25 Feb 2026 06:25:19 +0100
 X-Original-To: lists+cgroups@lfdr.de
 Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 713E5191FE9
-	for <lists+cgroups@lfdr.de>; Wed, 25 Feb 2026 06:23:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 00CE7192016
+	for <lists+cgroups@lfdr.de>; Wed, 25 Feb 2026 06:25:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id EA67630A2941
-	for <lists+cgroups@lfdr.de>; Wed, 25 Feb 2026 05:09:57 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 3C560312E001
+	for <lists+cgroups@lfdr.de>; Wed, 25 Feb 2026 05:10:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C489537FF6B;
-	Wed, 25 Feb 2026 05:02:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D44A43803E1;
+	Wed, 25 Feb 2026 05:02:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YmaH3AV9"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="aX5Rs8dd"
 X-Original-To: cgroups@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 81E9737D103;
-	Wed, 25 Feb 2026 05:02:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9289F3803CF;
+	Wed, 25 Feb 2026 05:02:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1771995743; cv=none; b=YU7xlGRXDJH1dZQXn+9oE0EGzOchvK4ezldGNW/aD+kpiT9IkPvatqHItsIib7mtr+En2SdgufzXNhTU7erN3ByxGGDTxPGWloR2lnRgSlGSCZqyy5NjbeEsGnaJAHV2stqcmr9tAKmxX6WrQVvJWZ3mRmS34FQXNQo6oXC+MLI=
+	t=1771995744; cv=none; b=RTNJHkWhuJ+ChFXGtMAt6ZZScQM6KUFy1gCvMuxRo+9ZOGFAb5sxEc+gZ9Vb1kVw/ooWj9fCEG8UI494ydqGPVLvBb+A6hwmCtuIprdfkixqNWKvLHz33c+gJyGBNrFD7RYnjP/0SsxD7QKeP1DtSOC1+zQh8LM9rXpLltCKyvY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1771995743; c=relaxed/simple;
-	bh=hthDZ9ReGeQ2kRKYJdyU+XM1DwCu0LqDFbreT7Za8ck=;
+	s=arc-20240116; t=1771995744; c=relaxed/simple;
+	bh=6ybH007v82MGV8MZyuPwTZoO3XpV9c7hdoSBx/ckPJQ=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Gd2bs8EmhVbku5wHWlxSSAXTbdzORUv6vd284fg74m4bN1U3fvBBXNKeKAuwZjuSJYEbf3GTjkiJXpCvWpVKQNwiSj1hKJ2tJEXTdtskJnZ58MjAJ7hgNrBAXPVcL+Ffm7YIEQ1wk5b9exQbztBRaOdBz3MgFzRL2cNUZ57j1uM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YmaH3AV9; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 498FBC116D0;
-	Wed, 25 Feb 2026 05:02:23 +0000 (UTC)
+	 MIME-Version; b=ncL5TFtBjcv5oU+9dWE4h2gjIdLVHO+5D7jPJO8WuSHMuTu+Je9pEYV3nd64jkU4NwjOHCvOeHu4Nr1LD/DwTelRx8ZWwGKFygk+IkMFnofCuOd9sOH+qTmHh+Ohkbqv8EoL6Ur53x8uhobNwmPDe5heW7wb4DXLMoRyRPr4wz0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=aX5Rs8dd; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 596EAC116D0;
+	Wed, 25 Feb 2026 05:02:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1771995743;
-	bh=hthDZ9ReGeQ2kRKYJdyU+XM1DwCu0LqDFbreT7Za8ck=;
+	s=k20201202; t=1771995744;
+	bh=6ybH007v82MGV8MZyuPwTZoO3XpV9c7hdoSBx/ckPJQ=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=YmaH3AV9LaRdirPrrNfsyG3doh5046i1Ky0gsdfDsTWgazOq36y3+IBhmXHE6+HHw
-	 A89BQkef0MOGZ49YDjUr8wC8mkvMIoNOsnckO1QzIGZnlmpZaTD73rcuYtDoI/rNM3
-	 q55WrjxznKaqU6/gAk2udCl/hL5bDQO5hbmg5LHNJJ/ogA+SJ+kZdjvWGblzEDvNYN
-	 79LoWbS+LsMUYoxn4sFj/8rHSYAKpfQc3U4TOsAaTx8SEDGgfcSp6wsoLxPiqbv4L8
-	 fTCIbAQSd2/5DRQcY+xfSzXT4HBuQBO/ZVuhsFZXG+lLkhycxkILcRe0zWHsEDGF2/
-	 ioKe9MtZEiA7g==
+	b=aX5Rs8dd1IsoHwke0oO3oPebKIjvl4BF8PNrW/E5fGDcM6aZakXDnDvcxmrCHGV8H
+	 UlGyuVdMHR6pQXS2yAlEpK2VqTIRI/Zgu1unhC9cu1nXZ2VUm7CfUS6Qiyi8oFx4I6
+	 e1NJqJqMBQpfJUFEjDKry7Us2zjrX6hRGpEl2/U7yjes3WFtKSpnQ+a5VvhEWMQ+il
+	 pjmSWEYBctgCnpLSaeAhKLfAZuL1AAEbOhqsa+ITQk95rkilNNraUoD9154tPUNOBX
+	 ql7vTtrAoaz9VMDDtX7HuU9bDAKBUiilZP+Lh2GF9QykNjk3/IHFasuqVDDkTeXhIe
+	 bRGyYEUVWqSBg==
 From: Tejun Heo <tj@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	sched-ext@lists.linux.dev
@@ -55,9 +55,9 @@ Cc: void@manifault.com,
 	mkoutny@suse.com,
 	cgroups@vger.kernel.org,
 	Tejun Heo <tj@kernel.org>
-Subject: [PATCH 27/34] sched_ext: Convert scx_dump_state() spinlock to raw spinlock
-Date: Tue, 24 Feb 2026 19:01:45 -1000
-Message-ID: <20260225050152.1070601-28-tj@kernel.org>
+Subject: [PATCH 28/34] sched_ext: Support dumping multiple schedulers and add scheduler identification
+Date: Tue, 24 Feb 2026 19:01:46 -1000
+Message-ID: <20260225050152.1070601-29-tj@kernel.org>
 X-Mailer: git-send-email 2.53.0
 In-Reply-To: <20260225050152.1070601-1-tj@kernel.org>
 References: <20260225050152.1070601-1-tj@kernel.org>
@@ -74,13 +74,13 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	MID_CONTAINS_FROM(1.00)[];
 	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
 	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64:c];
 	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-14301-lists,cgroups=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-14302-lists,cgroups=lfdr.de];
 	RCVD_COUNT_THREE(0.00)[4];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	FROM_HAS_DN(0.00)[];
@@ -96,57 +96,147 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
 	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 713E5191FE9
+X-Rspamd-Queue-Id: 00CE7192016
 X-Rspamd-Action: no action
 
-The scx_dump_state() function uses a regular spinlock to serialize
-access. In a subsequent patch, this function will be called while
-holding scx_sched_lock, which is a raw spinlock, creating a lock
-nesting violation.
+Extend scx_dump_state() to support multiple schedulers and improve task
+identification in dumps. The function now takes a specific scheduler to
+dump and can optionally filter tasks by scheduler.
 
-Convert the dump_lock to a raw spinlock and use the guard macro for
-cleaner lock management.
+scx_dump_task() now displays which scheduler each task belongs to, using
+"*" to mark tasks owned by the scheduler being dumped. Sub-schedulers
+are identified with their level and cgroup ID.
+
+The SysRq-D handler now iterates through all active schedulers under
+scx_sched_lock and dumps each one separately. For SysRq-D dumps, only
+tasks owned by each scheduler are dumped to avoid redundancy since all
+schedulers are being dumped. Error-triggered dumps continue to dump all
+tasks since only that specific scheduler is being dumped.
 
 Signed-off-by: Tejun Heo <tj@kernel.org>
 ---
- kernel/sched/ext.c | 7 ++-----
- 1 file changed, 2 insertions(+), 5 deletions(-)
+ kernel/sched/ext.c | 54 ++++++++++++++++++++++++++++++++++++----------
+ 1 file changed, 43 insertions(+), 11 deletions(-)
 
 diff --git a/kernel/sched/ext.c b/kernel/sched/ext.c
-index be800ed5d9f3..2a1db509bcbc 100644
+index 2a1db509bcbc..ea29e77abb46 100644
 --- a/kernel/sched/ext.c
 +++ b/kernel/sched/ext.c
-@@ -5201,7 +5201,7 @@ static void scx_dump_task(struct seq_buf *s, struct scx_dump_ctx *dctx,
+@@ -5156,22 +5156,34 @@ static void ops_dump_exit(void)
+ 	scx_dump_data.cpu = -1;
+ }
  
- static void scx_dump_state(struct scx_exit_info *ei, size_t dump_len)
+-static void scx_dump_task(struct seq_buf *s, struct scx_dump_ctx *dctx,
++static void scx_dump_task(struct scx_sched *sch,
++			  struct seq_buf *s, struct scx_dump_ctx *dctx,
+ 			  struct task_struct *p, char marker)
  {
--	static DEFINE_SPINLOCK(dump_lock);
-+	static DEFINE_RAW_SPINLOCK(dump_lock);
- 	static const char trunc_marker[] = "\n\n~~~~ TRUNCATED ~~~~\n";
- 	struct scx_sched *sch = scx_root;
- 	struct scx_dump_ctx dctx = {
-@@ -5213,11 +5213,10 @@ static void scx_dump_state(struct scx_exit_info *ei, size_t dump_len)
- 	};
- 	struct seq_buf s;
- 	struct scx_event_stats events;
--	unsigned long flags;
- 	char *buf;
- 	int cpu;
+ 	static unsigned long bt[SCX_EXIT_BT_LEN];
+-	struct scx_sched *sch = scx_root;
++	struct scx_sched *task_sch = scx_task_sched(p);
++	const char *own_marker;
++	char sch_id_buf[32];
+ 	char dsq_id_buf[19] = "(n/a)";
+ 	unsigned long ops_state = atomic_long_read(&p->scx.ops_state);
+ 	unsigned int bt_len = 0;
  
--	spin_lock_irqsave(&dump_lock, flags);
-+	guard(raw_spinlock_irqsave)(&dump_lock);
++	own_marker = task_sch == sch ? "*" : "";
++
++	if (task_sch->level == 0)
++		scnprintf(sch_id_buf, sizeof(sch_id_buf), "root");
++	else
++		scnprintf(sch_id_buf, sizeof(sch_id_buf), "sub%d-%llu",
++			  task_sch->level, task_sch->ops.sub_cgroup_id);
++
+ 	if (p->scx.dsq)
+ 		scnprintf(dsq_id_buf, sizeof(dsq_id_buf), "0x%llx",
+ 			  (unsigned long long)p->scx.dsq->id);
+ 
+ 	dump_newline(s);
+-	dump_line(s, " %c%c %s[%d] %+ldms",
++	dump_line(s, " %c%c %s[%d] %s%s %+ldms",
+ 		  marker, task_state_to_char(p), p->comm, p->pid,
++		  own_marker, sch_id_buf,
+ 		  jiffies_delta_msecs(p->scx.runnable_at, dctx->at_jiffies));
+ 	dump_line(s, "      scx_state/flags=%u/0x%x dsq_flags=0x%x ops_state/qseq=%lu/%lu",
+ 		  scx_get_task_state(p), p->scx.flags & ~SCX_TASK_STATE_MASK,
+@@ -5199,11 +5211,18 @@ static void scx_dump_task(struct seq_buf *s, struct scx_dump_ctx *dctx,
+ 	}
+ }
+ 
+-static void scx_dump_state(struct scx_exit_info *ei, size_t dump_len)
++/*
++ * Dump scheduler state. If @dump_all_tasks is true, dump all tasks regardless
++ * of which scheduler they belong to. If false, only dump tasks owned by @sch.
++ * For SysRq-D dumps, @dump_all_tasks=false since all schedulers are dumped
++ * separately. For error dumps, @dump_all_tasks=true since only the failing
++ * scheduler is dumped.
++ */
++static void scx_dump_state(struct scx_sched *sch, struct scx_exit_info *ei,
++			   size_t dump_len, bool dump_all_tasks)
+ {
+ 	static DEFINE_RAW_SPINLOCK(dump_lock);
+ 	static const char trunc_marker[] = "\n\n~~~~ TRUNCATED ~~~~\n";
+-	struct scx_sched *sch = scx_root;
+ 	struct scx_dump_ctx dctx = {
+ 		.kind = ei->kind,
+ 		.exit_code = ei->exit_code,
+@@ -5220,6 +5239,14 @@ static void scx_dump_state(struct scx_exit_info *ei, size_t dump_len)
  
  	seq_buf_init(&s, ei->dump, dump_len);
  
-@@ -5342,8 +5341,6 @@ static void scx_dump_state(struct scx_exit_info *ei, size_t dump_len)
- 	if (seq_buf_has_overflowed(&s) && dump_len >= sizeof(trunc_marker))
- 		memcpy(ei->dump + dump_len - sizeof(trunc_marker),
- 		       trunc_marker, sizeof(trunc_marker));
--
--	spin_unlock_irqrestore(&dump_lock, flags);
++#ifdef CONFIG_EXT_SUB_SCHED
++	if (sch->level == 0)
++		dump_line(&s, "%s: root", sch->ops.name);
++	else
++		dump_line(&s, "%s: sub%d-%llu %s",
++			  sch->ops.name, sch->level, sch->ops.sub_cgroup_id,
++			  sch->cgrp_path);
++#endif
+ 	if (ei->kind == SCX_EXIT_NONE) {
+ 		dump_line(&s, "Debug dump triggered by %s", ei->reason);
+ 	} else {
+@@ -5312,11 +5339,13 @@ static void scx_dump_state(struct scx_exit_info *ei, size_t dump_len)
+ 				seq_buf_set_overflow(&s);
+ 		}
+ 
+-		if (rq->curr->sched_class == &ext_sched_class)
+-			scx_dump_task(&s, &dctx, rq->curr, '*');
++		if (rq->curr->sched_class == &ext_sched_class &&
++		    (dump_all_tasks || scx_task_on_sched(sch, rq->curr)))
++			scx_dump_task(sch, &s, &dctx, rq->curr, '*');
+ 
+ 		list_for_each_entry(p, &rq->scx.runnable_list, scx.runnable_node)
+-			scx_dump_task(&s, &dctx, p, ' ');
++			if (dump_all_tasks || scx_task_on_sched(sch, p))
++				scx_dump_task(sch, &s, &dctx, p, ' ');
+ 	next:
+ 		rq_unlock_irqrestore(rq, &rf);
+ 	}
+@@ -5349,7 +5378,7 @@ static void scx_error_irq_workfn(struct irq_work *irq_work)
+ 	struct scx_exit_info *ei = sch->exit_info;
+ 
+ 	if (ei->kind >= SCX_EXIT_ERROR)
+-		scx_dump_state(ei, sch->ops.exit_dump_len);
++		scx_dump_state(sch, ei, sch->ops.exit_dump_len, true);
+ 
+ 	kthread_queue_work(sch->helper, &sch->disable_work);
+ }
+@@ -6333,9 +6362,12 @@ static const struct sysrq_key_op sysrq_sched_ext_reset_op = {
+ static void sysrq_handle_sched_ext_dump(u8 key)
+ {
+ 	struct scx_exit_info ei = { .kind = SCX_EXIT_NONE, .reason = "SysRq-D" };
++	struct scx_sched *sch;
+ 
+-	if (scx_enabled())
+-		scx_dump_state(&ei, 0);
++	guard(raw_spinlock_irqsave)(&scx_sched_lock);
++
++	list_for_each_entry_rcu(sch, &scx_sched_all, all)
++		scx_dump_state(sch, &ei, 0, false);
  }
  
- static void scx_error_irq_workfn(struct irq_work *irq_work)
+ static const struct sysrq_key_op sysrq_sched_ext_dump_op = {
 -- 
 2.53.0
 
