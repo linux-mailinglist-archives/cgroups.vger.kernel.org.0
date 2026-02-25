@@ -1,49 +1,49 @@
-Return-Path: <cgroups+bounces-14254-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-14255-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id QH+hISKDnmmGVwQAu9opvQ
-	(envelope-from <cgroups+bounces-14254-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Wed, 25 Feb 2026 06:05:38 +0100
+	id sCZ3OaODnmmGVwQAu9opvQ
+	(envelope-from <cgroups+bounces-14255-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Wed, 25 Feb 2026 06:07:47 +0100
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id ABB2F191BD4
-	for <lists+cgroups@lfdr.de>; Wed, 25 Feb 2026 06:05:37 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id 81B52191C36
+	for <lists+cgroups@lfdr.de>; Wed, 25 Feb 2026 06:07:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id 5859A3081081
-	for <lists+cgroups@lfdr.de>; Wed, 25 Feb 2026 05:02:34 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 1D9AC3168F9E
+	for <lists+cgroups@lfdr.de>; Wed, 25 Feb 2026 05:02:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E6A3A3033EA;
-	Wed, 25 Feb 2026 05:01:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 25E0A30B508;
+	Wed, 25 Feb 2026 05:01:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bZmUKOfp"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FqHjVOtY"
 X-Original-To: cgroups@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A3C132FF669;
-	Wed, 25 Feb 2026 05:01:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D98632D8DA3;
+	Wed, 25 Feb 2026 05:01:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1771995686; cv=none; b=fxWaVE4lVh/mrld4Ha8/2m+I9XzbfmTikyCL96agw1o0RXKUakfR1oJ2VAM0vjXM5ltz1K3gF5McaoYMMw2uOousrIpM4w+Q06NmhpLeBtI1uH1iX3Z02fPTiM7vHTw3SvuFbMch+XnfVPQMPk37F/s+1VZJY4i6+R/VMvdbzAs=
+	t=1771995687; cv=none; b=TXl/lx++U+TIjn+VhpT1Lxl2DSDQ7jKR5pPqKTIhY597C27ZLp6CjbZ4M9eXqwjTTJxCJTt9iisxYFcwynYqtyDYFZlbUwbJ5LqV+9ppg2UWQZhkiFgTCG3jPN1c91jJgUmXw9pW4Z5PMkZOeBWXvNmV2HqAEeN8f/qZ3iEu+cA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1771995686; c=relaxed/simple;
-	bh=zOmDxvzcoAE1E/AXoBZ38i4o1Meh6GxormTXb/kGASw=;
+	s=arc-20240116; t=1771995687; c=relaxed/simple;
+	bh=I8IHNpau1zUarOYe9fmf4pYeesGlJlnX3Ozna07J6U0=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=SmT48+0a8lo/xF9L4PlPJaBszA5fmVeq7D08vDKEKxmLgUEHYuKYNXlJGBWaYoWK3V0Ad80yj/UOjGMxU2YBvxAzAcOsms4xLZhrMBZbsoBznK8sKf4DEoYYR0yB1DPPSPGuBGhEbfwDkrpHzUGs8l1JCOtBE5Lz4csAnITbqmw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bZmUKOfp; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6035FC116D0;
-	Wed, 25 Feb 2026 05:01:26 +0000 (UTC)
+	 MIME-Version; b=KQ8BWFVY0Jtr7nnqnFf44Td/Gc12rj/MvoFm7pKEIfM/2tcwasMuViV6Tm4QnVmlMxRZy0cUXA03hJWcg9FgdJ7f2VFq0odTWMFUVTtmF/JSU/pGoVyEjSM3jNAZAtdmqIpeJXrB4tT2Vadpe8QTzv4vOBjd0qZ+RneXehfzj3g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FqHjVOtY; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6797DC19422;
+	Wed, 25 Feb 2026 05:01:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1771995686;
-	bh=zOmDxvzcoAE1E/AXoBZ38i4o1Meh6GxormTXb/kGASw=;
+	s=k20201202; t=1771995687;
+	bh=I8IHNpau1zUarOYe9fmf4pYeesGlJlnX3Ozna07J6U0=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=bZmUKOfp+JDUWVhp0JB0rIO/8Mjm70HNgi1C+szFpsuRsRPtF1lxIfp2Zo38kLqJK
-	 zxNxCMsprctRGTto2a6xkpa0BTDh4TIlyvBLXd9qtUN03dN2Couh+AfSqjurMTuZyA
-	 Mjit+CD4NzNFGTMMJY09sGlLQMNEzesXYwXWy1pTTSHo9UVU/yjosKh+HNV4Y1Q8zM
-	 nJ5efkSM6hG+vIwqmXcbR/UPv38d2rTW4Dw0j+P+ljYChhGJ8KfgvqC7EDxxJVSrES
-	 49WPa6t94jIYaE0pv0AnQdUc7Md3U+jtzGmmNK4kJUAZEhBAy4wem/o5j9eA/gpNjI
-	 moZ5PCUHHw1xw==
+	b=FqHjVOtY7Dmj+do5McbEn+s3tGorAjdqjoBcaeghNt7vw13Zu1613zLBF3EiUBgJD
+	 g4jdSq1qaM14BYlaw5irQFAPXQMeVCO9NckGBAbjBf/d4QaHhI3qKMQQ2MEEqAE4Ck
+	 9tL2GgMp5IiKKJghMYoPbu0NApceCbHeBhv3J8lVamFEE4FU66WXRcw6mEWy8Qb/d3
+	 tLkHUE2q13KI76oDl/ZPeBReIvmxT4Sj18q0ffNI7Q89ICV9tysQkWuT8k07g662JH
+	 IhyWUFIbnlO1Nzxe/CAiZDKhdfHuU7YyM1SuOZTBXFvGIclSYmz/wfvwZvipXSbner
+	 g1v2z64+GheXg==
 From: Tejun Heo <tj@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	sched-ext@lists.linux.dev
@@ -55,9 +55,9 @@ Cc: void@manifault.com,
 	mkoutny@suse.com,
 	cgroups@vger.kernel.org,
 	Tejun Heo <tj@kernel.org>
-Subject: [PATCH 15/34] sched_ext: Move default slice to per-scheduler field
-Date: Tue, 24 Feb 2026 19:00:50 -1000
-Message-ID: <20260225050109.1070059-16-tj@kernel.org>
+Subject: [PATCH 16/34] sched_ext: Move aborting flag to per-scheduler field
+Date: Tue, 24 Feb 2026 19:00:51 -1000
+Message-ID: <20260225050109.1070059-17-tj@kernel.org>
 X-Mailer: git-send-email 2.53.0
 In-Reply-To: <20260225050109.1070059-1-tj@kernel.org>
 References: <20260225050109.1070059-1-tj@kernel.org>
@@ -74,13 +74,13 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	MID_CONTAINS_FROM(1.00)[];
 	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
 	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
 	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-14254-lists,cgroups=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-14255-lists,cgroups=lfdr.de];
 	RCVD_COUNT_THREE(0.00)[4];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	FROM_HAS_DN(0.00)[];
@@ -94,110 +94,93 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	TAGGED_RCPT(0.00)[cgroups];
 	TO_DN_SOME(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: ABB2F191BD4
+	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: 81B52191C36
 X-Rspamd-Action: no action
 
-The default time slice was stored in the global scx_slice_dfl variable which
-was dynamically modified when entering and exiting bypass mode. With
-hierarchical scheduling, each scheduler instance needs its own default slice
-configuration so that bypass operations on one scheduler don't affect others.
+The abort state was tracked in the global scx_aborting flag which was used to
+break out of potential live-lock scenarios when an error occurs. With
+hierarchical scheduling, each scheduler instance must track its own abort
+state independently so that an aborting scheduler doesn't interfere with
+others.
 
-Move slice_dfl into struct scx_sched and update all access sites. The bypass
-logic now modifies the root scheduler's slice_dfl. At task initialization in
-init_scx_entity(), use the SCX_SLICE_DFL constant directly since the task may
-not yet be associated with a specific scheduler.
+Move the aborting flag into struct scx_sched and update all access sites. The
+early initialization check in scx_root_enable() that warned about residual
+aborting state is no longer needed as each scheduler instance now starts with
+a clean state.
 
 Signed-off-by: Tejun Heo <tj@kernel.org>
 ---
- kernel/sched/ext.c          | 14 ++++++++------
+ kernel/sched/ext.c          | 10 +++-------
  kernel/sched/ext_internal.h |  1 +
- 2 files changed, 9 insertions(+), 6 deletions(-)
+ 2 files changed, 4 insertions(+), 7 deletions(-)
 
 diff --git a/kernel/sched/ext.c b/kernel/sched/ext.c
-index 3d46e6e125c7..eee0d1c05b68 100644
+index eee0d1c05b68..ef11a537acc5 100644
 --- a/kernel/sched/ext.c
 +++ b/kernel/sched/ext.c
-@@ -164,7 +164,6 @@ static struct kset *scx_kset;
-  * There usually is no reason to modify these as normal scheduler operation
-  * shouldn't be affected by them. The knobs are primarily for debugging.
-  */
--static u64 scx_slice_dfl = SCX_SLICE_DFL;
- static unsigned int scx_slice_bypass_us = SCX_SLICE_BYPASS / NSEC_PER_USEC;
- static unsigned int scx_bypass_lb_intv_us = SCX_BYPASS_LB_DFL_INTV_US;
+@@ -44,7 +44,6 @@ static atomic_t scx_enable_state_var = ATOMIC_INIT(SCX_DISABLED);
+ static int scx_bypass_depth;
+ static cpumask_var_t scx_bypass_lb_donee_cpumask;
+ static cpumask_var_t scx_bypass_lb_resched_cpumask;
+-static bool scx_aborting;
+ static bool scx_init_task_enabled;
+ static bool scx_switching_all;
+ DEFINE_STATIC_KEY_FALSE(__scx_switched_all);
+@@ -2147,7 +2146,7 @@ static bool consume_dispatch_q(struct scx_sched *sch, struct rq *rq,
+ 		 * the system into the bypass mode. This can easily live-lock the
+ 		 * machine. If aborting, exit from all non-bypass DSQs.
+ 		 */
+-		if (unlikely(READ_ONCE(scx_aborting)) && dsq->id != SCX_DSQ_BYPASS)
++		if (unlikely(READ_ONCE(sch->aborting)) && dsq->id != SCX_DSQ_BYPASS)
+ 			break;
  
-@@ -1131,7 +1130,7 @@ static void dsq_mod_nr(struct scx_dispatch_q *dsq, s32 delta)
+ 		if (rq == task_rq) {
+@@ -4659,7 +4658,6 @@ static void scx_root_disable(struct scx_sched *sch)
  
- static void refill_task_slice_dfl(struct scx_sched *sch, struct task_struct *p)
- {
--	p->scx.slice = READ_ONCE(scx_slice_dfl);
-+	p->scx.slice = READ_ONCE(sch->slice_dfl);
- 	__scx_add_event(sch, SCX_EV_REFILL_SLICE_DFL, 1);
- }
+ 	/* guarantee forward progress and wait for descendants to be disabled */
+ 	scx_bypass(true);
+-	WRITE_ONCE(scx_aborting, false);
+ 	drain_descendants(sch);
  
-@@ -3285,7 +3284,7 @@ void init_scx_entity(struct sched_ext_entity *scx)
- 	INIT_LIST_HEAD(&scx->runnable_node);
- 	scx->runnable_at = jiffies;
- 	scx->ddsp_dsq_id = SCX_DSQ_INVALID;
--	scx->slice = READ_ONCE(scx_slice_dfl);
-+	scx->slice = SCX_SLICE_DFL;
- }
+ 	switch (scx_set_enable_state(SCX_DISABLING)) {
+@@ -4820,7 +4818,7 @@ static bool scx_claim_exit(struct scx_sched *sch, enum scx_exit_kind kind)
+ 	 * flag to break potential live-lock scenarios, ensuring we can
+ 	 * successfully reach scx_bypass().
+ 	 */
+-	WRITE_ONCE(scx_aborting, true);
++	WRITE_ONCE(sch->aborting, true);
  
- void scx_pre_fork(struct task_struct *p)
-@@ -4431,6 +4430,8 @@ static void scx_bypass(bool bypass)
+ 	/*
+ 	 * Propagate exits to descendants immediately. Each has a dedicated
+@@ -5458,8 +5456,6 @@ static s32 scx_root_enable(struct sched_ext_ops *ops, struct bpf_link *link)
+ 	 */
+ 	WARN_ON_ONCE(scx_set_enable_state(SCX_ENABLING) != SCX_DISABLED);
+ 	WARN_ON_ONCE(scx_root);
+-	if (WARN_ON_ONCE(READ_ONCE(scx_aborting)))
+-		WRITE_ONCE(scx_aborting, false);
  
- 	raw_spin_lock_irqsave(&bypass_lock, flags);
- 	sch = rcu_dereference_bh(scx_root);
-+	if (!sch)
-+		goto unlock;
+ 	atomic_long_set(&scx_nr_rejected, 0);
  
- 	if (bypass) {
- 		u32 intv_us;
-@@ -4439,7 +4440,7 @@ static void scx_bypass(bool bypass)
- 		WARN_ON_ONCE(scx_bypass_depth <= 0);
- 		if (scx_bypass_depth != 1)
- 			goto unlock;
--		WRITE_ONCE(scx_slice_dfl, scx_slice_bypass_us * NSEC_PER_USEC);
-+		WRITE_ONCE(sch->slice_dfl, scx_slice_bypass_us * NSEC_PER_USEC);
- 		bypass_timestamp = ktime_get_ns();
- 		if (sch)
- 			scx_add_event(sch, SCX_EV_BYPASS_ACTIVATE, 1);
-@@ -4455,7 +4456,7 @@ static void scx_bypass(bool bypass)
- 		WARN_ON_ONCE(scx_bypass_depth < 0);
- 		if (scx_bypass_depth != 0)
- 			goto unlock;
--		WRITE_ONCE(scx_slice_dfl, SCX_SLICE_DFL);
-+		WRITE_ONCE(sch->slice_dfl, SCX_SLICE_DFL);
- 		if (sch)
- 			scx_add_event(sch, SCX_EV_BYPASS_DURATION,
- 				      ktime_get_ns() - bypass_timestamp);
-@@ -5299,6 +5300,7 @@ static struct scx_sched *scx_alloc_and_add_sched(struct sched_ext_ops *ops,
- 	sch->ancestors[level] = sch;
- 	sch->level = level;
+@@ -6692,7 +6688,7 @@ static bool scx_dsq_move(struct bpf_iter_scx_dsq_kern *kit,
+ 	 * If the BPF scheduler keeps calling this function repeatedly, it can
+ 	 * cause similar live-lock conditions as consume_dispatch_q().
+ 	 */
+-	if (unlikely(READ_ONCE(scx_aborting)))
++	if (unlikely(READ_ONCE(sch->aborting)))
+ 		return false;
  
-+	sch->slice_dfl = SCX_SLICE_DFL;
- 	atomic_set(&sch->exit_kind, SCX_EXIT_NONE);
- 	init_irq_work(&sch->error_irq_work, scx_error_irq_workfn);
- 	kthread_init_work(&sch->disable_work, scx_disable_workfn);
-@@ -5635,7 +5637,7 @@ static s32 scx_root_enable(struct sched_ext_ops *ops, struct bpf_link *link)
- 			queue_flags |= DEQUEUE_CLASS;
- 
- 		scoped_guard (sched_change, p, queue_flags) {
--			p->scx.slice = READ_ONCE(scx_slice_dfl);
-+			p->scx.slice = READ_ONCE(sch->slice_dfl);
- 			p->sched_class = new_class;
- 		}
- 	}
+ 	if (unlikely(!scx_task_on_sched(sch, p))) {
 diff --git a/kernel/sched/ext_internal.h b/kernel/sched/ext_internal.h
-index 3b17180ba3dd..bd8619905ed1 100644
+index bd8619905ed1..96c8e75f2930 100644
 --- a/kernel/sched/ext_internal.h
 +++ b/kernel/sched/ext_internal.h
-@@ -950,6 +950,7 @@ struct scx_sched {
- 	struct scx_dispatch_q	**global_dsqs;
+@@ -951,6 +951,7 @@ struct scx_sched {
  	struct scx_sched_pcpu __percpu *pcpu;
  
-+	u64			slice_dfl;
+ 	u64			slice_dfl;
++	bool			aborting;
  	s32			level;
  
  	/*
