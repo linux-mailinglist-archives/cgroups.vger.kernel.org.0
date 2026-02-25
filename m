@@ -1,275 +1,303 @@
-Return-Path: <cgroups+bounces-14345-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-14346-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id qIEWM0q+nmnYXAQAu9opvQ
-	(envelope-from <cgroups+bounces-14345-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Wed, 25 Feb 2026 10:18:02 +0100
+	id oIScAq+9nmnYXAQAu9opvQ
+	(envelope-from <cgroups+bounces-14346-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Wed, 25 Feb 2026 10:15:27 +0100
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
-	by mail.lfdr.de (Postfix) with ESMTPS id 03049194C51
-	for <lists+cgroups@lfdr.de>; Wed, 25 Feb 2026 10:18:01 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5EE0D194BDD
+	for <lists+cgroups@lfdr.de>; Wed, 25 Feb 2026 10:15:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id F34743090C6E
-	for <lists+cgroups@lfdr.de>; Wed, 25 Feb 2026 09:10:48 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 289DB302C5D7
+	for <lists+cgroups@lfdr.de>; Wed, 25 Feb 2026 09:15:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 122C13815CF;
-	Wed, 25 Feb 2026 09:10:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D3F7327BF3;
+	Wed, 25 Feb 2026 09:14:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="acsWNqIj"
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="DMeXPNVJ"
 X-Original-To: cgroups@vger.kernel.org
-Received: from PH8PR06CU001.outbound.protection.outlook.com (mail-westus3azon11012031.outbound.protection.outlook.com [40.107.209.31])
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0CE6F3803C6
-	for <cgroups@vger.kernel.org>; Wed, 25 Feb 2026 09:10:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.209.31
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772010614; cv=fail; b=k694UMnqCzq96/tQZuInsWO+EHtZZSAh4nGuQlTOWB9N7Wj3Vhh9s20syy3EktdknBidBZt6MSUjCC8eNAmp/TnU+vMh8NtkOfKGzLqghPF0pvy1nD7oI1qxjqN6FKhUlTgOf8s4TXOnI1iaMF5WkOQYuVq4bVklhyj/1yxqoiw=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772010614; c=relaxed/simple;
-	bh=b6upx/3hDu2Q+RViaCnlAyWQMkOC3Xx+aUsUMQvzgPk=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=ISDNtvZbqHV6Qng602nFr/EbhhvJnMn72J7iSCxcRvpfhUO/O3Gqk18r7WXmDXtIA5FmP5s203AMX5DS8RL9QD8F19rUpe4TsmLlcJ9sSnZRZEtM3nczxkZ66xO/ZK2vAPEh37MzjFumY64gRBwycJNqtHHC0XSMCbodiDJj6XU=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=acsWNqIj; arc=fail smtp.client-ip=40.107.209.31
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=jOEs/h5qV3LPKSnmzks4QombzCjbEYdnMErIRDHoYftb0koqJAiz9PGpD0wBWCGQCsMJ1ZEVSL6bAftBpAqMZ300e2VE94pzaeMzEanN3b0iDf+GiL3Z7mzhQ5uExr1Ky0Lqu3xeZpKnB5qSk5TN1RW6G6ykiO84UeYRluEfPKIcUhYjPj84VIfuXAq2AkWWb3xEkF0NTHY7xx6AWqNT0e/1moxa2r0B/d830tGIM3PSF5ayqfhywfmMdmS3qU9Y84o3DoMwyZmPyUnhEWX/838eQ7Y6SMGIaBVHu9Ddprx6iu2hF+VoDQQppsPgTsR79w0L9fzVgdYzYs6N/2zwhQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=FFAgKgCVRGPWfPGGJFG4naw0YNDlXmZVdBWO0IEPDj8=;
- b=k4YmOoiPTQqfYSD/YP4YJOgUJttggPNby3Ghrs7afNm9n2MNZ4Ibl8KEPjM/gitUWqbAkgCBoMaIwnYnKIBwA7Gn8rXthWVxL96LrRDx5vOF0TppYYxC6KjfVRYSkLYaVQ8LGF+durnmHmuADaIDH0Je6J22O31TYeNmkmd3Pn3TXYAlbBDCmO/h8LCYuC6L38pHs3xYKxELzvNFTO6Q0nV5Kackk8CzgFNuhFGc8C3ysY3Fz6rWCv+Sq8PQh5vlLHxkT8zDOhgNWzwbyvyNlSgnl859hHmzEvMkyCj1luMUfHChcFYz1IIrEE5arxFcLTJWCp8dIVb/xtSL9y5clA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=FFAgKgCVRGPWfPGGJFG4naw0YNDlXmZVdBWO0IEPDj8=;
- b=acsWNqIjNbdZzd8KiaZQPCxQnaHRkL0OSMTE1qjb/Qns347OsNp9wjLaEp/figZNXgfEWQiFD4OOhRaaog7pBd8AQsAWuoW4ykXytNXceIvqs3vcu+8i4BwgL2T4ykMClwVbH0QSpjKEylD8yDo2LwnMlaGtMxreZf3C9lhtfXg=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amd.com;
-Received: from PH7PR12MB5685.namprd12.prod.outlook.com (2603:10b6:510:13c::22)
- by SA3PR12MB8000.namprd12.prod.outlook.com (2603:10b6:806:31f::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9632.23; Wed, 25 Feb
- 2026 09:10:04 +0000
-Received: from PH7PR12MB5685.namprd12.prod.outlook.com
- ([fe80::ce69:cfae:774d:a65c]) by PH7PR12MB5685.namprd12.prod.outlook.com
- ([fe80::ce69:cfae:774d:a65c%5]) with mapi id 15.20.9632.017; Wed, 25 Feb 2026
- 09:10:04 +0000
-Message-ID: <4fddf319-50c4-40ab-9e36-04d629a8855e@amd.com>
-Date: Wed, 25 Feb 2026 10:09:55 +0100
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 07/16] memcg: add support for GPU page counters. (v4)
-To: Dave Airlie <airlied@gmail.com>
-Cc: dri-devel@lists.freedesktop.org, tj@kernel.org,
- Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>,
- Roman Gushchin <roman.gushchin@linux.dev>,
- Shakeel Butt <shakeel.butt@linux.dev>, Muchun Song <muchun.song@linux.dev>,
- cgroups@vger.kernel.org, Dave Chinner <david@fromorbit.com>,
- Waiman Long <longman@redhat.com>, simona@ffwll.ch
-References: <20260224020854.791201-1-airlied@gmail.com>
- <20260224020854.791201-8-airlied@gmail.com>
- <ee914ffb-5c3d-4d41-abdb-5ed02db326c6@amd.com>
- <CAPM=9txUuS-qzA+gX2DvTuYR2OZ79RG86FuDA6czkpuJ_SR6KQ@mail.gmail.com>
-Content-Language: en-US
-From: =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>
-In-Reply-To: <CAPM=9txUuS-qzA+gX2DvTuYR2OZ79RG86FuDA6czkpuJ_SR6KQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: FR4P281CA0409.DEUP281.PROD.OUTLOOK.COM
- (2603:10a6:d10:d0::9) To PH7PR12MB5685.namprd12.prod.outlook.com
- (2603:10b6:510:13c::22)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8312E36EAB6
+	for <cgroups@vger.kernel.org>; Wed, 25 Feb 2026 09:14:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1772010895; cv=none; b=d7KlC+/mUx+Kw18sGaLTtNn6VPwxVzVp9Cb2SR8iVymZ2Mo+cG8BqS3ScLGxmBlV7/p9dVCosHelVejNPQ0UjnP+msLJexqnwOhwaILUVneZPdMISSXdCSNvQ1l4p4wsIQFTie5OQYqCgZCoFYoZDkB3Fb2txsMjQheptMRQxhc=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1772010895; c=relaxed/simple;
+	bh=QCb9hjarkQn/R+TQsmqSt5WyFIxWWjxuM8EWZMjZ9C0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=S9yACdHU/fEkln2V4pq1N7mhqO+2d1ZjGTtnmEZQBjLTADJkPzOX1mHV23SD5308YMrySp8lRVWOpwyJU5/f56XUgxjpT9wvV9UOQOMpb7qiwPi2rwkKamft6Gvyc0mMs99AsVC+1l7kAAw98zQap+M6URaokxRlSA5JEMwSDFk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=DMeXPNVJ; arc=none smtp.client-ip=148.163.158.5
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0353725.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 61OJTZCS1879767;
+	Wed, 25 Feb 2026 09:14:34 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
+	:content-transfer-encoding:content-type:date:from:in-reply-to
+	:message-id:mime-version:references:subject:to; s=pp1; bh=Qm3zRW
+	f7FXHZ3PWwM1vuxpueRYbxSMDKvASENPHBNrg=; b=DMeXPNVJbQt85WBJhThrMc
+	xXR4BlN1U8BQQQFS19xvPOwukG8hSAlM1KPp0lYomMzSK+9LVccxXL04rSRdBeXO
+	n9aN+0faZGtjK1tFeGO4VDMChA5QlD8Lz1Dp9wC8JNiUs1IYUxRWN5pbnryUkBEz
+	MT7fDOB7dSdJYK+sdh7goW1rQBFvRfESoexd+ktUBM6OPqVflqODpk5czGMMl2Up
+	qymznejnCNSHWFBp7qvNCtzMGXTUq+4N0Zjn6N9N9+hZId8RYhEIzXZKPqr8Upj2
+	FtR9q9lhqF2K437644E4yGNSxE7nOFeIu87HARlhE4kwgGHF0FLFnBtAMEmuyILw
+	==
+Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4cf34c6tgt-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 25 Feb 2026 09:14:33 +0000 (GMT)
+Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma21.wdc07v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 61P7hCxY001653;
+	Wed, 25 Feb 2026 09:14:32 GMT
+Received: from smtprelay05.dal12v.mail.ibm.com ([172.16.1.7])
+	by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 4cfr1n4nhc-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 25 Feb 2026 09:14:32 +0000
+Received: from smtpav04.dal12v.mail.ibm.com (smtpav04.dal12v.mail.ibm.com [10.241.53.103])
+	by smtprelay05.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 61P9EVRS17433272
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Wed, 25 Feb 2026 09:14:32 GMT
+Received: from smtpav04.dal12v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id DFA9558052;
+	Wed, 25 Feb 2026 09:14:31 +0000 (GMT)
+Received: from smtpav04.dal12v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 8B60758056;
+	Wed, 25 Feb 2026 09:14:27 +0000 (GMT)
+Received: from [9.109.248.127] (unknown [9.109.248.127])
+	by smtpav04.dal12v.mail.ibm.com (Postfix) with ESMTP;
+	Wed, 25 Feb 2026 09:14:27 +0000 (GMT)
+Message-ID: <84492f08-04c2-485c-9a18-cdafd5a9c3e5@linux.ibm.com>
+Date: Wed, 25 Feb 2026 14:44:24 +0530
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH7PR12MB5685:EE_|SA3PR12MB8000:EE_
-X-MS-Office365-Filtering-Correlation-Id: 2487fabe-609c-4840-df4d-08de744da96c
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|1800799024|366016|7416014|376014;
-X-Microsoft-Antispam-Message-Info:
-	Gid40Iehu5XtG4tO3pbR7S0egl1uRPNrFO0yYWFjyidvEgJgJsda0/tin20a4kghYtBZSSXPgNlSTq38GDVf5gM0gZ3VBkjM2ULXZAo7a6iBKT+7UB4Ggpp7nRKIrEK57od78FKgbgTF6F5e6iyrCzC8WCo2AoLMx5+SMJ0vhcbW1QaQ2VdKMSnQx6F9t2fGyTbiQTcB8hk8CBzz5uvlQhw9iSfejfcVCgSHQeDe6Fl5023so4VlKGjwTS//6CFxC/LGXUExjlGvtetofVad7i1gDygk5E5K1UHQNcRvg9hUZLYHWl/sR2mKV0ktObB8Zt3vPnN8EsEvIInVBMRERvv9uCY10lMKJ8d88HKCatXdo6Cz3Y2TLjx6L6oDQLyiu2omnKZbWxRMPWOPOKoQEqtb0ClZIbgUHxawV64vjyI+mF1Cv0DoEmQbhMp32XoSH/zJlT3L9OtYbVfJdDv5VX3mflVL+JI8+uEUE4QsK03Sm4TP7IjO+OV2zqH1HMe/lcStpYb3YDUJc9sKWT0nZvYsWiiYrJLu5exI/zrHNhOXZQ75ZsriPuZtIvK8mL7L9ugiOrg9w8cov6Imdsvo3BFIZ9NJMPpSm3yl+z3SwW8nON1H7vi3OrUSbc18CJLe7eq9dBBBH8ulaNweLYiaymH2sDZUSypKHDZouaotCt3V1eomP5n3G1Z+S2fibIgKN+y/Mw4TJiV8wsPVNZHTQsar0mmAAHIvyTXoi4E8jW4=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH7PR12MB5685.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(366016)(7416014)(376014);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?UW9MVTJvenJqWGgyTmFJZHdVZzRkWCtNbVRIVDdPNnNyL1k2cnlIWTJqc2dj?=
- =?utf-8?B?NkhSZE9WUUFjcG4rYTE0dUNSSy9LbU5hRjRXdGVkU0tTS1FkZ3pYKzhxcVNS?=
- =?utf-8?B?dlNRQVVWM0xZakc5QndOWWZxb0N5RkdXN2pPZVp0RkdJWUtFWkRyaUdxYjVY?=
- =?utf-8?B?b3YzNmdhNURuZDRhZm5OaDl5R0trSkF2bHgvNTAxNzR6eTN4VDRhK3NsVFFv?=
- =?utf-8?B?ZjlTUy9YV01Lc3BmeVhmUXBwQXgwRElKeWhsR2w1aEMwOHFiR2ZPNHdWR05q?=
- =?utf-8?B?eFF4Y2hxVWlzUWp3LzVUUlF1NUc0eXY2YVQ1UWQwTEhsQ05Ca25JTHU0Smlq?=
- =?utf-8?B?RytJOW1oa1RBUENzS2w2bUdGR1ZhbGdlcVFkOTUyS2ZCOVZuYWZWeVFLVHAx?=
- =?utf-8?B?R1RrTzRib1VHYmhqaDNLekRDaWloWkpNNit0Rk1Db2JsL2ZXK01BaDc2VDJn?=
- =?utf-8?B?Q0ZzOWtwbXU5Q0UwVTVkZjVud05WRG9kWXN4THBvWEZ4Q1BkV0NtTmNRdDhR?=
- =?utf-8?B?SFJYTG1Wd1lpNGl1R2dMb282MDlkVWxjcWxWY2tuSmdaMVRlMis1VFh5ZFhU?=
- =?utf-8?B?K2Nlbzd4OWMzMW0zSzV2RUw3QlJ2dTVaZ1AvUEx6aEdML2ZBTlhPSHNyTFhB?=
- =?utf-8?B?Y1BrS2ViNldoRHMvaHlxeFBUR3Awdzd4bE9CWlI3bHJHWjB4YWp2cFRGa0VX?=
- =?utf-8?B?cUpQdDI3TzBkYXdzSDErSnoycmllNGZxQzlwem9CcW5Ga254WldJNnlGS0d5?=
- =?utf-8?B?bGM2V1NNU1VDQjUvOG9tKy80MTM5dDl6OWV4YUNTNmhRUmpNV0FtVG1nRE9H?=
- =?utf-8?B?SGZXNlNkV0c2L1huMUI3Rk5WbkJwS04rTG9tV29wU1RSYTJjMkxpenhsQ0pN?=
- =?utf-8?B?TmNETjNodk1nb1ZBbVRQWkZHMGZIckZJZndXV2lMeVVJRXBPU0NGYVYzQWZi?=
- =?utf-8?B?YWl2aVhMV0pmSkdaUVNEOWQ2RlVnV1JsWVJteHhPM2RkdjladHI2cTFkTFE1?=
- =?utf-8?B?Z3YxTzdodndwb3J5VStYdGRveUdsY0lTbHZ2Q3hCOXZJRVpTazNhbUxiQWtM?=
- =?utf-8?B?R01QTUtvaklzRjRzYzMwNUtzWTlJcUIxWGYyWENGUzk4M3ZlOGJWWUo4Yzk5?=
- =?utf-8?B?b0tRWHN4UWd4cmc2UUNrN2pVNW1lMWVOQTJubXM3Tk1tRnAyMmtaZkZWck1G?=
- =?utf-8?B?V1lWMktsS21qK05kTGRvU1hnUFRvUGxKQXF4UGRLKzc4MTZWYUI1d2NYbFoy?=
- =?utf-8?B?NXNPbjFTbEVrcGR3UmtFQTNRKzQyNlZPZlJDc25CU0lwWUdpUXV1amdST3JV?=
- =?utf-8?B?Q3VaYlY5ZmRoL0hESDhDaTJmUlIvT0QycjBucWN4d25LMW8vdTNjZTdXeXRu?=
- =?utf-8?B?YVFJWmZqNFMyRVhyRmdTRFRjV2ZOVmxpTGdNQVVRQi9BaW5DSmJoUXNEdnlv?=
- =?utf-8?B?U1Q5eGdkNUoxY2tBbGtTdU9OQmFyV3lSN0RYMm8yQTFFL3hDMmNuNXFZNC96?=
- =?utf-8?B?NERKY0c3a2piSzNKSks5bEQ2OFYwOFJLaTMrZG1Ba0FVQWd2T0M4Ym5kYUwy?=
- =?utf-8?B?WXg4d3hXRFN5NVlZdkFERzB3QmkrNzRhWk9RM25pVDd2QU1lbEU1SE9YU2Fw?=
- =?utf-8?B?dVBlZXQ3N1RnekJnUXgxNmo0UHdGOUxnSTErdmVuUDVjaS9wYndnL3NYdXRl?=
- =?utf-8?B?dlRtcFdPL2p1SGIwZjhPRHB0Q0FkNlRxN0tPR3FIT1pxN085WjRZVUFhd0ty?=
- =?utf-8?B?L2F5Qm9hdi94bzhZZHBza3luL3lEVVNpR2haZzZRQVBQQ2VjakY3TW9FOHdV?=
- =?utf-8?B?Ylp6TnJUTnUreDlxeEh6Q28yVE5BT1lsUVkyeWZGVEpsRjBEdzdnNkQ5cjB1?=
- =?utf-8?B?Z2JmN1NYZzJOaVYvcEt3OE1zdVBwbGhkbzdxS28ybFcrVm15ODBEZjUzVkdm?=
- =?utf-8?B?MmZCM0tSK0RGZjNEbkpqb0dJREdXSEJtbzFhcXFTVDd2ZGNoV1BmcGk4OU1V?=
- =?utf-8?B?TjcwWjZJc1RjMUtSa2h3cEo2Z2hmUzNLM3cvcTlZcjZCY1ZIZW1pSDdIMVRm?=
- =?utf-8?B?ampDMFFDTUZWNnVDeHI2OTM4bE1yRnBIK2ZoaU1PMUdnajBjSDhqSkRTUGNs?=
- =?utf-8?B?SURFakkza093d2R6RU5XTDh3WFpKVVlkK1MxZWR6L2R4QjRVOEFQSTFrSThS?=
- =?utf-8?B?cDd2QlJIVWJoc01vNXRLSlluVjFEWTBLK0ZvaW1IbkxIRXBLd3lLMzRpSHg3?=
- =?utf-8?B?RU11STI0UFBNVWw0cndiMTZqUVJVMjZiRG5DcDFVWVZBSVJVVElsZUl0UWx2?=
- =?utf-8?Q?+sdIIBYeh8VE9EeACj?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2487fabe-609c-4840-df4d-08de744da96c
-X-MS-Exchange-CrossTenant-AuthSource: PH7PR12MB5685.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 25 Feb 2026 09:10:04.0702
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 6gFSLeLgGB5Xm6eMxm9Qa2cBv+t9XZGWzLwRWozMYVpuq23Wc31rJaaczusE211b
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA3PR12MB8000
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] mm/slab: initialize slab->stride early to avoid memory
+ ordering issues
+To: Harry Yoo <harry.yoo@oracle.com>
+Cc: Vlastimil Babka <vbabka@suse.cz>,
+        Andrew Morton <akpm@linux-foundation.org>,
+        Christoph Lameter
+ <cl@gentwo.org>,
+        David Rientjes <rientjes@google.com>,
+        Roman Gushchin <roman.gushchin@linux.dev>,
+        Alexei Starovoitov <ast@kernel.org>, Hao Li <hao.li@linux.dev>,
+        Suren Baghdasaryan <surenb@google.com>,
+        Shakeel Butt
+ <shakeel.butt@linux.dev>,
+        Muchun Song <muchun.song@linux.dev>,
+        Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>,
+        cgroups@vger.kernel.org, linux-mm@kvack.org
+References: <20260223075809.19265-1-harry.yoo@oracle.com>
+ <2d106583-4ec6-4da0-87ea-4ecad893b24f@linux.ibm.com>
+ <aZ2Gwie5dpXotxWc@hyeyoo>
+Content-Language: en-GB
+From: Venkat Rao Bagalkote <venkat88@linux.ibm.com>
+In-Reply-To: <aZ2Gwie5dpXotxWc@hyeyoo>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-Reinject: loops=2 maxloops=12
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwMjI1MDA4OSBTYWx0ZWRfX+krDo4RDgKdb
+ SB/fcBcdwgVQA90A2mfw8YUJ0UzXpYyZRP0U+UxiKpHy7yMftBmDU5HErkwadv/SgH7ESdwKN1G
+ rTwVSgTGAzS+kW645Y4zv8hfwCMySVIRAuFbjO50YBjg3x8ixxkylm85cWfaJu5RibXQ5j0DFIE
+ 3VARzEk7tb5ocVPEMPLP/HcP5nhxK8O+WeL+O9EP1ZEXFHKZFKYhi1JMl8wUrHUep7JD9mjqVj3
+ jJdHCSzqu6yKYrHUq31YFdj53ZM3ARhYjr0Anl58myJSCtcThIBk9kav/GONxJ04Ew3f71w3h6T
+ AtE1ieiQyQAdV8G6ya+Z5rxGU9ba6eLZ0JKBcNok/cdsVIClCyzk5WHGBXv0X7D/GYdDvaMHcCA
+ q5KYNFKqKKhgBPB4uRIge++9cKbXB422ijyWNN8CPS+RbnLCTJ1Al3YwJ1lfs2qNt0cIiZ4Urmi
+ 4fusAsELnfV4Amg4mhg==
+X-Proofpoint-ORIG-GUID: S5laykw_LH9AfdhDpzLDtY82s3ZNgtqJ
+X-Authority-Analysis: v=2.4 cv=F9lat6hN c=1 sm=1 tr=0 ts=699ebd79 cx=c_pps
+ a=GFwsV6G8L6GxiO2Y/PsHdQ==:117 a=GFwsV6G8L6GxiO2Y/PsHdQ==:17
+ a=IkcTkHD0fZMA:10 a=HzLeVaNsDn8A:10 a=VkNPw1HP01LnGYTKEx00:22
+ a=Mpw57Om8IfrbqaoTuvik:22 a=GgsMoib0sEa3-_RKJdDe:22 a=VwQbUJbxAAAA:8
+ a=VnNF1IyMAAAA:8 a=yPCof4ZbAAAA:8 a=Uv5aZE12QK5TszxNbi4A:9 a=QEXdDO2ut3YA:10
+X-Proofpoint-GUID: tqe1vJgN43gb2ZvQrZbTIl8i_YUBt-Oz
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1121,Hydra:6.1.51,FMLib:17.12.100.49
+ definitions=2026-02-24_03,2026-02-23_03,2025-10-01_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ impostorscore=0 phishscore=0 bulkscore=0 adultscore=0 spamscore=0
+ clxscore=1015 suspectscore=0 malwarescore=0 lowpriorityscore=0
+ priorityscore=1501 classifier=typeunknown authscore=0 authtc= authcc=
+ route=outbound adjust=0 reason=mlx scancount=1 engine=8.22.0-2601150000
+ definitions=main-2602250089
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-0.16 / 15.00];
-	ARC_REJECT(1.00)[cv is fail on i=2];
-	DMARC_POLICY_ALLOW(-0.50)[amd.com,quarantine];
-	R_DKIM_ALLOW(-0.20)[amd.com:s=selector1];
-	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
+X-Spamd-Result: default: False [-2.16 / 15.00];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+	DMARC_POLICY_ALLOW(-0.50)[ibm.com,none];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_DKIM_ALLOW(-0.20)[ibm.com:s=pp1];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCPT_COUNT_TWELVE(0.00)[12];
-	TAGGED_FROM(0.00)[bounces-14345-lists,cgroups=lfdr.de];
-	RCVD_TLS_LAST(0.00)[];
-	FREEMAIL_TO(0.00)[gmail.com];
 	MIME_TRACE(0.00)[0:+];
+	RCPT_COUNT_TWELVE(0.00)[15];
+	TAGGED_FROM(0.00)[bounces-14346-lists,cgroups=lfdr.de];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	FROM_HAS_DN(0.00)[];
+	RCVD_TLS_LAST(0.00)[];
+	DKIM_TRACE(0.00)[ibm.com:+];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,oracle.com:email,linux.ibm.com:mid];
 	TO_DN_SOME(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[5];
+	FROM_NEQ_ENVFROM(0.00)[venkat88@linux.ibm.com,cgroups@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[christian.koenig@amd.com,cgroups@vger.kernel.org];
-	DKIM_TRACE(0.00)[amd.com:+];
+	MID_RHS_MATCH_FROM(0.00)[];
 	NEURAL_HAM(-0.00)[-1.000];
 	TAGGED_RCPT(0.00)[cgroups];
-	MID_RHS_MATCH_FROM(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns,amd.com:mid,amd.com:dkim,amd.com:email]
-X-Rspamd-Queue-Id: 03049194C51
+	RCVD_COUNT_SEVEN(0.00)[11]
+X-Rspamd-Queue-Id: 5EE0D194BDD
 X-Rspamd-Action: no action
 
-On 2/24/26 20:28, Dave Airlie wrote:
-> On Tue, 24 Feb 2026 at 17:50, Christian König <christian.koenig@amd.com> wrote:
->>
->> On 2/24/26 03:06, Dave Airlie wrote:
->>> From: Dave Airlie <airlied@redhat.com>
+
+On 24/02/26 4:40 pm, Harry Yoo wrote:
+> On Tue, Feb 24, 2026 at 02:34:41PM +0530, Venkat Rao Bagalkote wrote:
+>> On 23/02/26 1:28 pm, Harry Yoo wrote:
+>>> When alloc_slab_obj_exts() is called later in time (instead of at slab
+>>> allocation & initialization step), slab->stride and slab->obj_exts are
+>>> set when the slab is already accessible by multiple CPUs.
 >>>
->>> This introduces 2 new statistics and 3 new memcontrol APIs for dealing
->>> with GPU system memory allocations.
+>>> The current implementation does not enforce memory ordering between
+>>> slab->stride and slab->obj_exts. However, for correctness, slab->stride
+>>> must be visible before slab->obj_exts, otherwise concurrent readers
+>>> may observe slab->obj_exts as non-zero while stride is still stale,
+>>> leading to incorrect reference counting of object cgroups.
 >>>
->>> The stats corresponds to the same stats in the global vmstat,
->>> for number of active GPU pages, and number of pages in pools that
->>> can be reclaimed.
+>>> There has been a bug report [1] that showed symptoms of incorrect
+>>> reference counting of object cgroups, which could be triggered by
+>>> this memory ordering issue.
 >>>
->>> The first API charges a order of pages to a objcg, and sets
->>> the objcg on the pages like kmem does, and updates the active/reclaim
->>> statistic.
+>>> Fix this by unconditionally initializing slab->stride in
+>>> alloc_slab_obj_exts_early(), before the need_slab_obj_exts() check.
+>>> In case of SLAB_OBJ_EXT_IN_OBJ, it is overridden in the same function.
 >>>
->>> The second API uncharges a page from the obj cgroup it is currently charged
->>> to.
+>>> This ensures stride is set before the slab becomes visible to
+>>> other CPUs via the per-node partial slab list (protected by spinlock
+>>> with acquire/release semantics), preventing them from observing
+>>> inconsistent stride value.
 >>>
->>> The third API allows moving a page to/from reclaim and between obj cgroups.
->>> When pages are added to the pool lru, this just updates accounting.
->>> When pages are being removed from a pool lru, they can be taken from
->>> the parent objcg so this allows them to be uncharged from there and transferred
->>> to a new child objcg.
+>>> Thanks to Shakeel Butt for pointing out this issue [2].
 >>>
->>> Acked-by: Christian König <christian.koenig@amd.com>
+>>> Fixes: 7a8e71bc619d ("mm/slab: use stride to access slabobj_ext")
+>>> Reported-by: Venkat Rao Bagalkote <venkat88@linux.ibm.com>
+>>> Closes: https://lore.kernel.org/lkml/ca241daa-e7e7-4604-a48d-de91ec9184a5@linux.ibm.com
+>>> Link: https://lore.kernel.org/linux-mm/aZu9G9mVIVzSm6Ft@hyeyoo
+>>> Signed-off-by: Harry Yoo <harry.yoo@oracle.com>
+>>> ---
+>>>
+>>> I tested this patch, but I could not confirm that this actually fixes
+>>> the issue reported by [1]. It would be nice if Venkat could help
+>>> confirm; but perhaps it's challenging to reliably reproduce...
 >>
->> I have to take that back.
->>
->> After going over the different use cases I'm now pretty convinced that charging any GPU/TTM allocation to memcg is the wrong approach to the problem.
-> 
-> You'll need to sell me a bit more on this idea, I don't hate it, but
-> it seems to be honest kinda half baked and smells a bit of reachitect
-> without form, so please start up you writing skills and give me
-> something concrete here.
-> 
->>
->> Instead TTM should have a dmem_cgroup_pool which can limit the amount of system memory each cgroup can use from GTT.
-> 
-> This sounds like a static limit though, how would we configure that in
-> a sane way?
+>> Thanks for the patch. I did ran the complete test suite, and unfortunately
+>> issue is reproducing.
+> Oops, thanks for confirming that it's still reproduced!
+> That's really helpful.
+>
+> Perhaps I should start considering cases where it's not a memory
+> ordering issue, but let's check one more thing before moving on.
+> could you please test if it still reproduces with the following patch?
+>
+> If it's still reproducible, it should not be due to the memory ordering
+> issue between obj_exts and stride.
+>
+> ---8<---
+> From: Harry Yoo <harry.yoo@oracle.com>
+> Date: Mon, 23 Feb 2026 16:58:09 +0900
+> Subject: mm/slab: enforce slab->stride -> slab->obj_exts ordering
+>
+> I tried to avoid unnecessary memory barriers for efficiency,
+> but the original bug is still reproducible.
+>
+> Probably I missed a case where an object is allocated on a CPU
+> and then freed on a different CPU without involving spinlock.
+>
+> I'm not sure if I did not cover edge cases or if it's caused by
+> something other than memory ordering issue.
+>
+> Anyway, let's find out by introducing heavy memory barriers!
+>
+> Always ensure that updates to stride is visible before obj_exts.
+>
+> ---
+>   mm/slab.h |  1 +
+>   mm/slub.c | 10 +++++++---
+>   2 files changed, 8 insertions(+), 3 deletions(-)
+>
+> diff --git a/mm/slab.h b/mm/slab.h
+> index 71c7261bf822..aacdd9f4e509 100644
+> --- a/mm/slab.h
+> +++ b/mm/slab.h
+> @@ -565,6 +565,7 @@ static inline void slab_set_stride(struct slab *slab, unsigned short stride)
+>   }
+>   static inline unsigned short slab_get_stride(struct slab *slab)
+>   {
+> +	smp_rmb();
+>   	return slab->stride;
+>   }
+>   #else
+> diff --git a/mm/slub.c b/mm/slub.c
+> index 862642c165ed..c7c8b660a994 100644
+> --- a/mm/slub.c
+> +++ b/mm/slub.c
+> @@ -2196,7 +2196,6 @@ int alloc_slab_obj_exts(struct slab *slab, struct kmem_cache *s,
+>   retry:
+>   	old_exts = READ_ONCE(slab->obj_exts);
+>   	handle_failed_objexts_alloc(old_exts, vec, objects);
+> -	slab_set_stride(slab, sizeof(struct slabobj_ext));
+>
+>   	if (new_slab) {
+>   		/*
+> @@ -2272,6 +2271,10 @@ static void alloc_slab_obj_exts_early(struct kmem_cache *s, struct slab *slab)
+>   	void *addr;
+>   	unsigned long obj_exts;
+>
+> +	slab_set_stride(slab, sizeof(struct slabobj_ext));
+> +	/* pairs with smp_rmb() in slab_get_stride() */
+> +	smp_wmb();
+> +
+>   	if (!need_slab_obj_exts(s))
+>   		return;
+>
+> @@ -2288,7 +2291,6 @@ static void alloc_slab_obj_exts_early(struct kmem_cache *s, struct slab *slab)
+>   		obj_exts |= MEMCG_DATA_OBJEXTS;
+>   #endif
+>   		slab->obj_exts = obj_exts;
+> -		slab_set_stride(slab, sizeof(struct slabobj_ext));
+>   	} else if (s->flags & SLAB_OBJ_EXT_IN_OBJ) {
+>   		unsigned int offset = obj_exts_offset_in_object(s);
+>
+> @@ -2305,8 +2307,10 @@ static void alloc_slab_obj_exts_early(struct kmem_cache *s, struct slab *slab)
+>   #ifdef CONFIG_MEMCG
+>   		obj_exts |= MEMCG_DATA_OBJEXTS;
+>   #endif
+> -		slab->obj_exts = obj_exts;
+>   		slab_set_stride(slab, s->size);
+> +		/* pairs with smp_rmb() in slab_get_stride() */
+> +		smp_wmb();
+> +		slab->obj_exts = obj_exts;
+>   	}
+>   }
+>
+> --
+> 2.43.0
+>
 
-See the discussion about dmem controller for CMA with Mathew, T.J., me and a couple of others. It's on dri-devel and I've CCed you on my latest reply.
+With this patch, issue is not reproduced. So looks good.
 
->>
->> The use case that GTT memory should account to memcg is actually only valid for an extremely small number of HPC customers and for those use cases we have different approaches to solve this issue (udmabuf, system DMA-buf heap, etc...).
-> 
-> Stop, I have a major use case for this that isn't any of those.
-> Integrated GPUs on Intel and AMD accounting the RAM usage to somewhere
-> useful, so cgroup mgmt of desktop clients actually work, so when
-> firefox uses GPU memory it gets accounted to firefox and when the OOM
-> killer comes along it can choose the correct user.
 
-Oh, yes! I have tried multiple times to fix this as well in the last decade or so.
+Regards,
 
-> This has been a pain in the ass for desktop for years, and I'd like to
-> fix it, the HPC use case if purely a driver for me doing the work.
-
-Wait a second. How does accounting to cgroups help with that in any way?
-
-The last time I looked into this problem the OOM killer worked based on the per task_struct stats which couldn't be influenced this way.
-
-Both me and others have tried that approach multiple times and so far it never worked.
-
-> Can you give a detailed explanation of how your idea will work in an
-> unconfigured cgroup environment to help this case?
-
-It wouldn't, but I also don't see how this patch set here would.
-
-The accounting limits the amount of memory you can allocate per process for each cgroup, but it does not affect the OOM killer score in any way.
-
-If we want to fix the OOM killer score we would need to start using the proportional set size in the OOM instead of the resident set size. And that in turn means the changes to the OOM killer and FS layer I already proposed over a decade ago.
-
-Otherwise you can always come up with deny of service attacks against centralized services like X or Wayland.
-
->>
->> What we can do is to say that this dmem_cgroup_pool then also accounts to memcg for selected cgroups. This would not only make it superflous to have different flags in drivers and TTM to turn this feature on/off, but also allow charging VRAM or other local memory to memcg because they use system memory as fallback for device memory.
->>
->> In other more high level words memcg is actually the swapping space for dmem.
-> 
-> This is descriptive, but still feels very static, and nothing I've
-> seen indicated I want this to be a 50% type limit.
-
-The initial idea was to have more like a 90% limit by default, so that at least enough memory is left to SSH into the box and kill a run away process.
-
-Christian.
-
-> 
-> Dave.
->>
+Venkat.
 
 
