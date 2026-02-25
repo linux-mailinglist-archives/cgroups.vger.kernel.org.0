@@ -1,49 +1,49 @@
-Return-Path: <cgroups+bounces-14303-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-14304-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 2Ly8EiSGnmnRVwQAu9opvQ
-	(envelope-from <cgroups+bounces-14303-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Wed, 25 Feb 2026 06:18:28 +0100
+	id 2OBJOdeHnmnwVwQAu9opvQ
+	(envelope-from <cgroups+bounces-14304-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Wed, 25 Feb 2026 06:25:43 +0100
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
-	by mail.lfdr.de (Postfix) with ESMTPS id E9640191EE3
-	for <lists+cgroups@lfdr.de>; Wed, 25 Feb 2026 06:18:27 +0100 (CET)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
+	by mail.lfdr.de (Postfix) with ESMTPS id 12328192025
+	for <lists+cgroups@lfdr.de>; Wed, 25 Feb 2026 06:25:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 9772830783C7
-	for <lists+cgroups@lfdr.de>; Wed, 25 Feb 2026 05:10:24 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id F122131314CF
+	for <lists+cgroups@lfdr.de>; Wed, 25 Feb 2026 05:10:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E7AF83806B6;
-	Wed, 25 Feb 2026 05:02:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F1CF33806D1;
+	Wed, 25 Feb 2026 05:02:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="n2zFZr8R"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BqplErbf"
 X-Original-To: cgroups@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A798D3002B6;
-	Wed, 25 Feb 2026 05:02:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B30382FFDEA;
+	Wed, 25 Feb 2026 05:02:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1771995745; cv=none; b=QrqywV364XkPPDiUIihMNG5oKFBhYrUlf47IItOHIIZK0bLUIbuzhKJT07gX3fj+Zpx8vJTOvbcbOskRAhm8bYgy/imOabsZTqrueL9N/RDmsfjFPrNZO6FyrtgUcZsn9uhZLd6AiW8lZh2AJQP/SFM1Gc6SrFtRPjyr4ewPALc=
+	t=1771995746; cv=none; b=VIgsruBvHzO9QsudMZgcSmLv+KPQ62JxEAL/Sdveuyu5+pXqwewrTS3HP8gwBFvUvIsaqhkK3wgWeTbZQJTuNThn/UUUMjeO3mTFkwi4MNZYcVX6bm3EHyOgHeRf0T+YZpUSMSDp6NzgQVNtu/HY34MV1PyGDDtjVnGQSVoztTA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1771995745; c=relaxed/simple;
-	bh=CIBhlqcfVN+UmZBrWeMOEdg3oSz3t86ULyxM6fCqat4=;
+	s=arc-20240116; t=1771995746; c=relaxed/simple;
+	bh=WH/LnE0l3TISc+xilD8xl57abk/Sgt7bfhuHwUelS9w=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=gwqF1BtkBiXI0VtNTqnqNnB7BelKkywtMsLYN0DWwmHUS0aF5t0ksNy4gZypzBR+LZ9yviJuSD9noltqpMlEG7LRKjeHgJH9iCPWTbEHum9tqPkDYvBpPoXCmk4dJs+lIjMooQyCMcHJMsAQI68EHH7YcLc/PM/dHy9ploaygCc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=n2zFZr8R; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6DDCDC19422;
-	Wed, 25 Feb 2026 05:02:25 +0000 (UTC)
+	 MIME-Version; b=FULctYAQAlOe6IGtFhxCsCO7g9C2aDqLcMCDDtio4BAzlK1bYH6KKNjWcUYSKdUQd3/QQc3s8S+StPJHzRwlbjpzWBBoaELdnthXPAG/qktghpaWxUW1O7w0F0OtfYpbankXNToBmhcigitvW7rx0AgjOcpdR3dufEr93retE3A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BqplErbf; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 75A50C116D0;
+	Wed, 25 Feb 2026 05:02:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1771995745;
-	bh=CIBhlqcfVN+UmZBrWeMOEdg3oSz3t86ULyxM6fCqat4=;
+	s=k20201202; t=1771995746;
+	bh=WH/LnE0l3TISc+xilD8xl57abk/Sgt7bfhuHwUelS9w=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=n2zFZr8RQOfJ5eKXx5VtajXUgSqVqSuKeJP86m9s5kqewS2UGKqRkcQ+8MsmB7YHW
-	 oTNFw5rToHhIXakK3xZY1gQBoNINp99BtcMl0/f/qhSV3vS6rK1ymxipGXwgeRa60V
-	 t/lX3dDqoOZPCvAP0+qW4b58nfYjHlRN4VDZIBtNCYQhjgndQ8JgHO7juYLPIk5OYB
-	 EarvgL113Hp87BcZjzwVOajKFzDyjFs5aixxAjyqgDj14+cpYu+592ZFB2eUiYuZI7
-	 K333n73W2w1BPrMAcBpHePX1O0/t7QdK3lWk6qs1Ace0+knY89e9kigBpz+S1RD6l7
-	 JmvHsvi163cvw==
+	b=BqplErbf87kcaWUhPtIFp1jU51ow9LgQaZycJpXOFixUtMp9DrGCVMY0bLKVunDzG
+	 +0i6kHhOA/1WEP+Y76esiiHmDvc7Xt69YwZY7XB//t7nloVXKalDxvlMMuIuJjud2+
+	 lXcTi3AkpLeSm1Xek+udhbuZdz7YbWg38TcKXjB9+xIWHpNzKJjfRiUPExJ7ahJ+oY
+	 V2j1meGAwxjHFh4ZKN4Nf5yVkUBdcOa6ZRsWYnQDU8M//3jRaDZIzQp2jHzdB9Pc2M
+	 cH1N+Hr+ikBGPLQeLi1xD2zQFdefFcZkRUfJWq588aFGD3Pc8tJqAYcDZmXbne7j2h
+	 EeuYZKeYE+seQ==
 From: Tejun Heo <tj@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	sched-ext@lists.linux.dev
@@ -55,9 +55,9 @@ Cc: void@manifault.com,
 	mkoutny@suse.com,
 	cgroups@vger.kernel.org,
 	Tejun Heo <tj@kernel.org>
-Subject: [PATCH 29/34] sched_ext: Implement cgroup sub-sched enabling and disabling
-Date: Tue, 24 Feb 2026 19:01:47 -1000
-Message-ID: <20260225050152.1070601-30-tj@kernel.org>
+Subject: [PATCH 30/34] sched_ext: Add scx_sched back pointer to scx_sched_pcpu
+Date: Tue, 24 Feb 2026 19:01:48 -1000
+Message-ID: <20260225050152.1070601-31-tj@kernel.org>
 X-Mailer: git-send-email 2.53.0
 In-Reply-To: <20260225050152.1070601-1-tj@kernel.org>
 References: <20260225050152.1070601-1-tj@kernel.org>
@@ -74,13 +74,13 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	MID_CONTAINS_FROM(1.00)[];
 	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
 	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
+	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
 	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-14303-lists,cgroups=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-14304-lists,cgroups=lfdr.de];
 	RCVD_COUNT_THREE(0.00)[4];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	FROM_HAS_DN(0.00)[];
@@ -94,440 +94,55 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	TAGGED_RCPT(0.00)[cgroups];
 	TO_DN_SOME(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: E9640191EE3
+	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: 12328192025
 X-Rspamd-Action: no action
 
-The preceding changes implemented the framework to support cgroup
-sub-scheds and updated scheduling paths and kfuncs so that they have
-minimal but working support for sub-scheds. However, actual sub-sched
-enabling/disabling hasn't been implemented yet and all tasks stayed on
-scx_root.
-
-Implement cgroup sub-sched enabling and disabling to actually activate
-sub-scheds:
-
-- Both enable and disable operations bypass only the tasks in the subtree
-  of the child being enabled or disabled to limit disruptions.
-
-- When enabling, all candidate tasks are first initialized for the child
-  sched. Once that succeeds, the tasks are exited for the parent and then
-  switched over to the child. This adds a bit of complication but
-  guarantees that child scheduler failures are always contained.
-
-- Disabling works the same way in the other direction. However, when the
-  parent may fail to initialize a task, disabling is propagated up to the
-  parent. While this means that a parent sched fail due to a child sched
-  event, the failure can only originate from the parent itself (its
-  ops.init_task()). The only effect a malfunctioning child can have on the
-  parent is attempting to move the tasks back to the parent.
-
-After this change, although not all the necessary mechanisms are in place
-yet, sub-scheds can take control of their tasks and schedule them.
+Add a back pointer from scx_sched_pcpu to scx_sched. This will be used by
+the next patch to make scx_bpf_reenqueue_local() sub-sched aware.
 
 Signed-off-by: Tejun Heo <tj@kernel.org>
 ---
- include/linux/sched/ext.h |   1 +
- kernel/sched/ext.c        | 278 +++++++++++++++++++++++++++++++++++++-
- 2 files changed, 273 insertions(+), 6 deletions(-)
+ kernel/sched/ext.c          | 3 +++
+ kernel/sched/ext_internal.h | 3 +++
+ 2 files changed, 6 insertions(+)
 
-diff --git a/include/linux/sched/ext.h b/include/linux/sched/ext.h
-index 3213e31c7979..f354d7d34306 100644
---- a/include/linux/sched/ext.h
-+++ b/include/linux/sched/ext.h
-@@ -88,6 +88,7 @@ enum scx_ent_flags {
- 	SCX_TASK_IN_CUSTODY	= 1 << 1, /* in custody, needs ops.dequeue() when leaving */
- 	SCX_TASK_RESET_RUNNABLE_AT = 1 << 2, /* runnable_at should be reset */
- 	SCX_TASK_DEQD_FOR_SLEEP	= 1 << 3, /* last dequeue was for SLEEP */
-+	SCX_TASK_SUB_INIT	= 1 << 4, /* task being initialized for a sub sched */
- 
- 	SCX_TASK_STATE_SHIFT	= 8,	  /* bit 8 and 9 are used to carry scx_task_state */
- 	SCX_TASK_STATE_BITS	= 2,
 diff --git a/kernel/sched/ext.c b/kernel/sched/ext.c
-index ea29e77abb46..d26a92bc6be9 100644
+index d26a92bc6be9..131fc275f10a 100644
 --- a/kernel/sched/ext.c
 +++ b/kernel/sched/ext.c
-@@ -51,6 +51,15 @@ DEFINE_STATIC_KEY_FALSE(__scx_switched_all);
- static atomic_long_t scx_nr_rejected = ATOMIC_LONG_INIT(0);
- static atomic_long_t scx_hotplug_seq = ATOMIC_LONG_INIT(0);
+@@ -5631,6 +5631,9 @@ static struct scx_sched *scx_alloc_and_add_sched(struct sched_ext_ops *ops,
+ 	for_each_possible_cpu(cpu)
+ 		init_dsq(bypass_dsq(sch, cpu), SCX_DSQ_BYPASS, sch);
  
-+#ifdef CONFIG_EXT_SUB_SCHED
-+/*
-+ * The sub sched being enabled. Used by scx_disable_and_exit_task() to exit
-+ * tasks for the sub-sched being enabled. Use a global variable instead of a
-+ * per-task field as all enables are serialized.
-+ */
-+static struct scx_sched *scx_enabling_sub_sched;
-+#endif	/* CONFIG_EXT_SUB_SCHED */
++	for_each_possible_cpu(cpu)
++		per_cpu_ptr(sch->pcpu, cpu)->sch = sch;
 +
- /*
-  * A monotically increasing sequence number that is incremented every time a
-  * scheduler is enabled. This can be used by to check if any custom sched_ext
-@@ -3337,6 +3346,17 @@ static void scx_disable_and_exit_task(struct scx_sched *sch,
- {
- 	__scx_disable_and_exit_task(sch, p);
+ 	sch->helper = kthread_run_worker(0, "sched_ext_helper");
+ 	if (IS_ERR(sch->helper)) {
+ 		ret = PTR_ERR(sch->helper);
+diff --git a/kernel/sched/ext_internal.h b/kernel/sched/ext_internal.h
+index 0a19af6ad3ff..cd5bd70fe30c 100644
+--- a/kernel/sched/ext_internal.h
++++ b/kernel/sched/ext_internal.h
+@@ -933,6 +933,8 @@ struct scx_event_stats {
+ 	s64		SCX_EV_SUB_BYPASS_DISPATCH;
+ };
  
-+	/*
-+	 * If set, @p exited between __scx_init_task() and scx_enable_task() in
-+	 * scx_sub_enable() and is initialized for both the associated sched and
-+	 * its parent. Disable and exit for the child too.
-+	 */
-+	if ((p->scx.flags & SCX_TASK_SUB_INIT) &&
-+	    !WARN_ON_ONCE(!scx_enabling_sub_sched)) {
-+		__scx_disable_and_exit_task(scx_enabling_sub_sched, p);
-+		p->scx.flags &= ~SCX_TASK_SUB_INIT;
-+	}
++struct scx_sched;
 +
- 	scx_set_task_sched(p, NULL);
- 	scx_set_task_state(p, SCX_TASK_NONE);
- }
-@@ -3372,9 +3392,11 @@ int scx_fork(struct task_struct *p, struct kernel_clone_args *kargs)
- 	percpu_rwsem_assert_held(&scx_fork_rwsem);
+ enum scx_sched_pcpu_flags {
+ 	SCX_SCHED_PCPU_BYPASSING	= 1LLU << 0,
+ };
+@@ -953,6 +955,7 @@ struct scx_dsp_ctx {
+ };
  
- 	if (scx_init_task_enabled) {
--		ret = scx_init_task(scx_root, p, true);
-+		struct scx_sched *sch = kargs->cset->dfl_cgrp->scx_sched;
-+
-+		ret = scx_init_task(sch, p, true);
- 		if (!ret)
--			scx_set_task_sched(p, scx_root);
-+			scx_set_task_sched(p, sch);
- 		return ret;
- 	}
+ struct scx_sched_pcpu {
++	struct scx_sched	*sch;
+ 	u64			flags;	/* protected by rq lock */
  
-@@ -4624,9 +4646,9 @@ static void scx_bypass(struct scx_sched *sch, bool bypass)
- 		struct rq *rq = cpu_rq(cpu);
- 		struct task_struct *p, *n;
- 
-+		raw_spin_lock(&scx_sched_lock);
- 		raw_spin_rq_lock(rq);
- 
--		raw_spin_lock(&scx_sched_lock);
- 		scx_for_each_descendant_pre(pos, sch) {
- 			struct scx_sched_pcpu *pcpu = per_cpu_ptr(pos->pcpu, cpu);
- 
-@@ -4635,6 +4657,7 @@ static void scx_bypass(struct scx_sched *sch, bool bypass)
- 			else
- 				pcpu->flags &= ~SCX_SCHED_PCPU_BYPASSING;
- 		}
-+
- 		raw_spin_unlock(&scx_sched_lock);
- 
- 		/*
-@@ -4779,23 +4802,139 @@ static void drain_descendants(struct scx_sched *sch)
- 	wait_event(scx_unlink_waitq, list_empty(&sch->children));
- }
- 
-+static void scx_fail_parent(struct scx_sched *sch,
-+			    struct task_struct *failed, s32 fail_code)
-+{
-+	struct scx_sched *parent = scx_parent(sch);
-+	struct scx_task_iter sti;
-+	struct task_struct *p;
-+
-+	scx_error(parent, "ops.init_task() failed (%d) for %s[%d] while disabling a sub-scheduler",
-+		  fail_code, failed->comm, failed->pid);
-+
-+	/*
-+	 * Once $parent is bypassed, it's safe to put SCX_TASK_NONE tasks into
-+	 * it. This may cause downstream failures on the BPF side but $parent is
-+	 * dying anyway.
-+	 */
-+	scx_bypass(parent, true);
-+
-+	scx_task_iter_start(&sti, sch->cgrp);
-+	while ((p = scx_task_iter_next_locked(&sti))) {
-+		if (scx_task_on_sched(parent, p))
-+			continue;
-+
-+		scoped_guard (sched_change, p, DEQUEUE_SAVE | DEQUEUE_MOVE) {
-+			scx_disable_and_exit_task(sch, p);
-+			rcu_assign_pointer(p->scx.sched, parent);
-+		}
-+	}
-+	scx_task_iter_stop(&sti);
-+}
-+
- static void scx_sub_disable(struct scx_sched *sch)
- {
- 	struct scx_sched *parent = scx_parent(sch);
-+	struct scx_task_iter sti;
-+	struct task_struct *p;
-+	int ret;
- 
-+	/*
-+	 * Guarantee forward progress and wait for descendants to be disabled.
-+	 * To limit
-+	 * disruptions, $parent is not bypassed. Tasks are fully prepped and
-+	 * then inserted back into $parent.
-+	 */
-+	scx_bypass(sch, true);
- 	drain_descendants(sch);
- 
-+	/*
-+	 * Here, every runnable task is guaranteed to make forward progress and
-+	 * we can safely use blocking synchronization constructs. Actually
-+	 * disable ops.
-+	 */
- 	mutex_lock(&scx_enable_mutex);
- 	percpu_down_write(&scx_fork_rwsem);
- 	scx_cgroup_lock();
- 
- 	set_cgroup_sched(sch->cgrp, parent);
- 
--	/* TODO - perform actual disabling here */
-+	scx_task_iter_start(&sti, sch->cgrp);
-+	while ((p = scx_task_iter_next_locked(&sti))) {
-+		struct rq *rq;
-+		struct rq_flags rf;
-+
-+		/* filter out duplicate visits */
-+		if (scx_task_on_sched(parent, p))
-+			continue;
-+
-+		/*
-+		 * By the time control reaches here, all descendant schedulers
-+		 * should already have been disabled.
-+		 */
-+		WARN_ON_ONCE(!scx_task_on_sched(sch, p));
-+
-+		/*
-+		 * If $p is about to be freed, nothing prevents $sch from
-+		 * unloading before $p reaches sched_ext_free(). Disable and
-+		 * exit $p right away.
-+		 */
-+		if (!tryget_task_struct(p)) {
-+			scx_disable_and_exit_task(sch, p);
-+			continue;
-+		}
-+
-+		scx_task_iter_unlock(&sti);
-+
-+		/*
-+		 * $p is READY or ENABLED on @sch. Initialize for $parent,
-+		 * disable and exit from @sch, and then switch over to $parent.
-+		 *
-+		 * If a task fails to initialize for $parent, the only available
-+		 * action is disabling $parent too. While this allows disabling
-+		 * of a child sched to cause the parent scheduler to fail, the
-+		 * failure can only originate from ops.init_task() of the
-+		 * parent. A child can't directly affect the parent through its
-+		 * own failures.
-+		 */
-+		ret = __scx_init_task(parent, p, false);
-+		if (ret) {
-+			scx_fail_parent(sch, p, ret);
-+			put_task_struct(p);
-+			break;
-+		}
-+
-+		rq = task_rq_lock(p, &rf);
-+		scoped_guard (sched_change, p, DEQUEUE_SAVE | DEQUEUE_MOVE) {
-+			/*
-+			 * $p is initialized for $parent and still attached to
-+			 * @sch. Disable and exit for @sch, switch over to
-+			 * $parent, override the state to READY to account for
-+			 * $p having already been initialized, and then enable.
-+			 */
-+			scx_disable_and_exit_task(sch, p);
-+			scx_set_task_state(p, SCX_TASK_INIT);
-+			rcu_assign_pointer(p->scx.sched, parent);
-+			scx_set_task_state(p, SCX_TASK_READY);
-+			scx_enable_task(parent, p);
-+		}
-+		task_rq_unlock(rq, p, &rf);
-+
-+		put_task_struct(p);
-+	}
-+	scx_task_iter_stop(&sti);
- 
- 	scx_cgroup_unlock();
- 	percpu_up_write(&scx_fork_rwsem);
- 
-+	/*
-+	 * All tasks are moved off of @sch but there may still be on-going
-+	 * operations (e.g. ops.select_cpu()). Drain them by flushing RCU. Use
-+	 * the expedited version as ancestors may be waiting in bypass mode.
-+	 * Also, tell the parent that there is no need to keep running bypass
-+	 * DSQs for us.
-+	 */
-+	synchronize_rcu_expedited();
- 	disable_bypass_dsp(sch);
- 
- 	raw_spin_lock_irq(&scx_sched_lock);
-@@ -5903,11 +6042,28 @@ static struct scx_sched *find_parent_sched(struct cgroup *cgrp)
- 	return parent;
- }
- 
-+static bool assert_task_ready_or_enabled(struct task_struct *p)
-+{
-+	enum scx_task_state state = scx_get_task_state(p);
-+
-+	switch (state) {
-+	case SCX_TASK_READY:
-+	case SCX_TASK_ENABLED:
-+		return true;
-+	default:
-+		WARN_ONCE(true, "sched_ext: Invalid task state %d for %s[%d] during enabling sub sched",
-+			  state, p->comm, p->pid);
-+		return false;
-+	}
-+}
-+
- static s32 scx_sub_enable(struct sched_ext_ops *ops, struct bpf_link *link)
- {
- 	struct cgroup *cgrp;
- 	struct scx_sched *parent, *sch;
--	s32 ret;
-+	struct scx_task_iter sti;
-+	struct task_struct *p;
-+	s32 i, ret;
- 
- 	mutex_lock(&scx_enable_mutex);
- 
-@@ -5979,6 +6135,12 @@ static s32 scx_sub_enable(struct sched_ext_ops *ops, struct bpf_link *link)
- 	}
- 	sch->sub_attached = true;
- 
-+	scx_bypass(sch, true);
-+
-+	for (i = SCX_OPI_BEGIN; i < SCX_OPI_END; i++)
-+		if (((void (**)(void))ops)[i])
-+			set_bit(i, sch->has_op);
-+
- 	percpu_down_write(&scx_fork_rwsem);
- 	scx_cgroup_lock();
- 
-@@ -5992,16 +6154,119 @@ static s32 scx_sub_enable(struct sched_ext_ops *ops, struct bpf_link *link)
- 		goto err_unlock_and_disable;
- 	}
- 
--	/* TODO - perform actual enabling here */
-+	/*
-+	 * Initialize tasks for the new child $sch without exiting them for
-+	 * $parent so that the tasks can always be reverted back to $parent
-+	 * sched on child init failure.
-+	 */
-+	WARN_ON_ONCE(scx_enabling_sub_sched);
-+	scx_enabling_sub_sched = sch;
-+
-+	scx_task_iter_start(&sti, sch->cgrp);
-+	while ((p = scx_task_iter_next_locked(&sti))) {
-+		struct rq *rq;
-+		struct rq_flags rf;
-+
-+		/*
-+		 * Task iteration may visit the same task twice when racing
-+		 * against exiting. Use %SCX_TASK_SUB_INIT to mark tasks which
-+		 * finished __scx_init_task() and skip if set.
-+		 *
-+		 * A task may exit and get freed between __scx_init_task()
-+		 * completion and scx_enable_task(). In such cases,
-+		 * scx_disable_and_exit_task() must exit the task for both the
-+		 * parent and child scheds.
-+		 */
-+		if (p->scx.flags & SCX_TASK_SUB_INIT)
-+			continue;
-+
-+		/* see scx_root_enable() */
-+		if (!tryget_task_struct(p))
-+			continue;
-+
-+		if (!assert_task_ready_or_enabled(p)) {
-+			ret = -EINVAL;
-+			goto abort;
-+		}
-+
-+		scx_task_iter_unlock(&sti);
-+
-+		/*
-+		 * As $p is still on $parent, it can't be transitioned to INIT.
-+		 * Let's worry about task state later. Use __scx_init_task().
-+		 */
-+		ret = __scx_init_task(sch, p, false);
-+		if (ret)
-+			goto abort;
-+
-+		rq = task_rq_lock(p, &rf);
-+		p->scx.flags |= SCX_TASK_SUB_INIT;
-+		task_rq_unlock(rq, p, &rf);
-+
-+		put_task_struct(p);
-+	}
-+	scx_task_iter_stop(&sti);
-+
-+	/*
-+	 * All tasks are prepped. Disable/exit tasks for $parent and enable for
-+	 * the new @sch.
-+	 */
-+	scx_task_iter_start(&sti, sch->cgrp);
-+	while ((p = scx_task_iter_next_locked(&sti))) {
-+		/*
-+		 * Use clearing of %SCX_TASK_SUB_INIT to detect and skip
-+		 * duplicate iterations.
-+		 */
-+		if (!(p->scx.flags & SCX_TASK_SUB_INIT))
-+			continue;
-+
-+		scoped_guard (sched_change, p, DEQUEUE_SAVE | DEQUEUE_MOVE) {
-+			/*
-+			 * $p must be either READY or ENABLED. If ENABLED,
-+			 * __scx_disabled_and_exit_task() first disables and
-+			 * makes it READY. However, after exiting $p, it will
-+			 * leave $p as READY.
-+			 */
-+			assert_task_ready_or_enabled(p);
-+			__scx_disable_and_exit_task(parent, p);
-+
-+			/*
-+			 * $p is now only initialized for @sch and READY, which
-+			 * is what we want. Assign it to @sch and enable.
-+			 */
-+			rcu_assign_pointer(p->scx.sched, sch);
-+			scx_enable_task(sch, p);
-+
-+			p->scx.flags &= ~SCX_TASK_SUB_INIT;
-+		}
-+	}
-+	scx_task_iter_stop(&sti);
-+
-+	scx_enabling_sub_sched = NULL;
- 
- 	scx_cgroup_unlock();
- 	percpu_up_write(&scx_fork_rwsem);
- 
-+	scx_bypass(sch, false);
-+
- 	pr_info("sched_ext: BPF sub-scheduler \"%s\" enabled\n", sch->ops.name);
- 	kobject_uevent(&sch->kobj, KOBJ_ADD);
- 	ret = 0;
- 	goto out_unlock;
- 
-+abort:
-+	put_task_struct(p);
-+	scx_task_iter_stop(&sti);
-+	scx_enabling_sub_sched = NULL;
-+
-+	scx_task_iter_start(&sti, sch->cgrp);
-+	while ((p = scx_task_iter_next_locked(&sti))) {
-+		if (p->scx.flags & SCX_TASK_SUB_INIT) {
-+			__scx_disable_and_exit_task(sch, p);
-+			p->scx.flags &= ~SCX_TASK_SUB_INIT;
-+		}
-+	}
-+	scx_task_iter_stop(&sti);
- out_put_cgrp:
- 	cgroup_put(cgrp);
- out_unlock:
-@@ -6009,6 +6274,7 @@ static s32 scx_sub_enable(struct sched_ext_ops *ops, struct bpf_link *link)
- 	return ret;
- 
- err_unlock_and_disable:
-+	/* we'll soon enter disable path, keep bypass on */
- 	scx_cgroup_unlock();
- 	percpu_up_write(&scx_fork_rwsem);
- err_disable:
+ 	/*
 -- 
 2.53.0
 
