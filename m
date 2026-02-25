@@ -1,49 +1,49 @@
-Return-Path: <cgroups+bounces-14248-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-14249-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 6M3qBHCCnmmGVwQAu9opvQ
-	(envelope-from <cgroups+bounces-14248-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Wed, 25 Feb 2026 06:02:40 +0100
+	id kMqwDXSCnmmGVwQAu9opvQ
+	(envelope-from <cgroups+bounces-14249-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Wed, 25 Feb 2026 06:02:44 +0100
 X-Original-To: lists+cgroups@lfdr.de
 Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
-	by mail.lfdr.de (Postfix) with ESMTPS id DCAB5191B5F
-	for <lists+cgroups@lfdr.de>; Wed, 25 Feb 2026 06:02:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 0B0F6191B66
+	for <lists+cgroups@lfdr.de>; Wed, 25 Feb 2026 06:02:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 2B50E307ACFF
-	for <lists+cgroups@lfdr.de>; Wed, 25 Feb 2026 05:02:00 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id 1870A307C897
+	for <lists+cgroups@lfdr.de>; Wed, 25 Feb 2026 05:02:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB8AD2EC54A;
-	Wed, 25 Feb 2026 05:01:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B407C2D77F5;
+	Wed, 25 Feb 2026 05:01:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AIniArH5"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XNdhozCy"
 X-Original-To: cgroups@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ABCB12D73AD;
-	Wed, 25 Feb 2026 05:01:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7578D2D77E6;
+	Wed, 25 Feb 2026 05:01:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1771995680; cv=none; b=mZSj+yPQumTZ8bE77qediW+UY7SRFB0NmkJtc7rZveQAdmpn86yd7uj2BBshX6MX3ywGfsvtNm9ocvwnjAS+c4/268P0BA7TB6qwU5G3Xp5BuZwjfjF6ccmcNf1glErpPZw8N/ggx2F9/9lWLoV7tYZeEDSv9TjvxYaTbVIrXjI=
+	t=1771995681; cv=none; b=neMpP/ACiZzxTh3qOW8MzyUL228xZi9BpyYwfjrjL2GXb7v6aedpstnhKUcJf+e5CEWa4Wec4Rm092TfS81aHyDb3EjterOQl5JprGPNgslDKJoeGuDxlf7Xis/3ILIJfZ7h0angWPAge68GaRB6LSn2BjCbDYSB9rRHSdwBZjU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1771995680; c=relaxed/simple;
-	bh=vg0u6ssDyzQd+fsh0pYhGHMfazPESquQLcJzS2fVQYk=;
+	s=arc-20240116; t=1771995681; c=relaxed/simple;
+	bh=Z077ddcPGOiCKNd/K3en5ZhE5g3u53bizh1Rzm4B5Sg=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=M2lp1wA+RMF9dUnwM8G6wCAMUkFNTWXIm4NFUNi/S0mRrXYAd3Nnw7c0jqtVwaHHK+InJstjgmlIPoMf2W4HinuQxrgl5g8qVHbCZUqouLDIYoWkAefMvnkFJ3gEz0lpbKFyWuHuWFha4Y94bKi1o0q2UaDbYeNgIZfPaHC8bTM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=AIniArH5; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 25B26C116D0;
-	Wed, 25 Feb 2026 05:01:20 +0000 (UTC)
+	 MIME-Version; b=Sg39vEmCZqTasUrJ0bzZSMlbJGC4aD+tJzDd5A2cMNuWIkYFuMCU7WYRV+C9z0oyeyBb7B8CUGbeQo6vbgBcfMnasRBe3TJFlxgR2P9lm4xMjcHSbEdXuBO1QFvUgom/oVri4fsMr16GrixGv5HYFgKIExQZhSj0e5qa2ysvG+Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=XNdhozCy; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3C609C116D0;
+	Wed, 25 Feb 2026 05:01:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1771995680;
-	bh=vg0u6ssDyzQd+fsh0pYhGHMfazPESquQLcJzS2fVQYk=;
+	s=k20201202; t=1771995681;
+	bh=Z077ddcPGOiCKNd/K3en5ZhE5g3u53bizh1Rzm4B5Sg=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=AIniArH594Y0AXXe1s6AAW82NT5cYcBnwAHTyS2doVjr3NAXNyweoWhxzSCTQnZlu
-	 dEPIWhY1FARISvVCJe4ASOCo/xgCVqo/xHJDj17/e8LHrtELJuXmkpH+2TeAG715h/
-	 EVOu4UjHoxRGtMGAsf5Fl6i/80aKEGkJrUdCt8q17FBSPauxCOqkmdQd/ux8G4oNeV
-	 aDDa2RjrV1Eq8kdZgC1XtXFM/ordO2QzDPvMXM/kBTNcSP4WQ2zhF7BhIlM+RoxwUF
-	 KeWmnuvdKyRfmOMylRyQz9XvpMHSbw4uxkvJE+9o7CfuGj8Tfb7cVxqY/BR8M2BFZf
-	 /rhmivqx2Qdlg==
+	b=XNdhozCyLJmGYipzZNt0Le2EEMgL4DPI6TjI21ftQLsKAHek7p0twG0rysGnyFURs
+	 yycwZ/zgFIDgT757SI7AnOU9Dw2iLzraHxI/NZQFp2iqq5hdBa8yUnEn1duw+a1bf8
+	 DgcRtvqjyMv2J7awDIfzycAciHkhqnbA5EjZGkk15bxSVROTIilvmnaqmR3mvO+5Us
+	 ddgGVgfcUgZnfDtlebfTFNo/fdWSSWKULaiDYDELJQ9rjNDEaB+1Bh1EGYCiFsz1QT
+	 fjWSVuL6mE9K4jDDWfM6yneI82qgTQtmcJTke3KTdZEcUxv6FWiCeAdwuXkhZt1hNW
+	 A8jmbSC6jChxw==
 From: Tejun Heo <tj@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	sched-ext@lists.linux.dev
@@ -55,9 +55,9 @@ Cc: void@manifault.com,
 	mkoutny@suse.com,
 	cgroups@vger.kernel.org,
 	Tejun Heo <tj@kernel.org>
-Subject: [PATCH 09/34] sched_ext: Introduce scx_prog_sched()
-Date: Tue, 24 Feb 2026 19:00:44 -1000
-Message-ID: <20260225050109.1070059-10-tj@kernel.org>
+Subject: [PATCH 10/34] sched_ext: Enforce scheduling authority in dispatch and select_cpu operations
+Date: Tue, 24 Feb 2026 19:00:45 -1000
+Message-ID: <20260225050109.1070059-11-tj@kernel.org>
 X-Mailer: git-send-email 2.53.0
 In-Reply-To: <20260225050109.1070059-1-tj@kernel.org>
 References: <20260225050109.1070059-1-tj@kernel.org>
@@ -80,7 +80,7 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-14248-lists,cgroups=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-14249-lists,cgroups=lfdr.de];
 	RCVD_COUNT_THREE(0.00)[4];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	FROM_HAS_DN(0.00)[];
@@ -96,1038 +96,154 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
 	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: DCAB5191B5F
+X-Rspamd-Queue-Id: 0B0F6191B66
 X-Rspamd-Action: no action
 
-In preparation for multiple scheduler support, introduce scx_prog_sched()
-accessor which returns the scx_sched instance associated with a BPF program.
-The association is determined via the special KF_IMPLICIT_ARGS kfunc
-parameter, which provides access to bpf_prog_aux. This aux can be used to
-retrieve the struct_ops (sched_ext_ops) that the program is associated with,
-and from there, the corresponding scx_sched instance.
+Add checks to enforce scheduling authority boundaries when multiple
+schedulers are present:
 
-For compatibility, when ops.sub_attach is not implemented (older schedulers
-without sub-scheduler support), unassociated programs fall back to scx_root.
-A warning is logged once per scheduler for such programs.
+1. In scx_dsq_insert_preamble() and the dispatch retry path, ignore attempts
+   to insert tasks that the scheduler doesn't own, counting them via
+   SCX_EV_INSERT_NOT_OWNED. As BPF schedulers are allowed to ignore
+   dequeues, such attempts can occur legitimately during sub-scheduler
+   enabling when tasks move between schedulers. The counter helps distinguish
+   normal cases from scheduler bugs.
 
-As scx_root is still the only scheduler, this shouldn't introduce
-user-visible behavior changes.
+2. For scx_bpf_dsq_insert_vtime() and scx_bpf_select_cpu_and(), error out
+   when sub-schedulers are attached. These functions lack the aux__prog
+   parameter needed to identify the calling scheduler, so they cannot be used
+   safely with multiple schedulers. BPF programs should use the arg-wrapped
+   versions (__scx_bpf_dsq_insert_vtime() and __scx_bpf_select_cpu_and())
+   instead.
+
+These checks ensure that with multiple concurrent schedulers, scheduler
+identity can be properly determined and unauthorized task operations are
+prevented or tracked.
 
 Signed-off-by: Tejun Heo <tj@kernel.org>
 ---
- kernel/sched/ext.c                   | 157 ++++++++++++++++-----------
- kernel/sched/ext_idle.c              |  90 +++++++++------
- kernel/sched/ext_internal.h          |  44 +++++++-
- tools/sched_ext/include/scx/compat.h |  10 ++
- 4 files changed, 199 insertions(+), 102 deletions(-)
+ kernel/sched/ext.c          | 26 ++++++++++++++++++++++++++
+ kernel/sched/ext_idle.c     | 11 +++++++++++
+ kernel/sched/ext_internal.h | 12 ++++++++++++
+ 3 files changed, 49 insertions(+)
 
 diff --git a/kernel/sched/ext.c b/kernel/sched/ext.c
-index 0afbc21f5f76..30dd65b33802 100644
+index 30dd65b33802..56ac2d5655a2 100644
 --- a/kernel/sched/ext.c
 +++ b/kernel/sched/ext.c
-@@ -5271,7 +5271,7 @@ static struct scx_sched *scx_alloc_and_add_sched(struct sched_ext_ops *ops,
- 	init_irq_work(&sch->error_irq_work, scx_error_irq_workfn);
- 	kthread_init_work(&sch->disable_work, scx_disable_workfn);
- 	sch->ops = *ops;
--	ops->priv = sch;
-+	rcu_assign_pointer(ops->priv, sch);
- 
- 	sch->kobj.kset = scx_kset;
- 
-@@ -5977,10 +5977,11 @@ static int bpf_scx_reg(void *kdata, struct bpf_link *link)
- static void bpf_scx_unreg(void *kdata, struct bpf_link *link)
- {
- 	struct sched_ext_ops *ops = kdata;
--	struct scx_sched *sch = ops->priv;
-+	struct scx_sched *sch = rcu_dereference_protected(ops->priv, true);
- 
- 	scx_disable(sch, SCX_EXIT_UNREG);
- 	kthread_flush_work(&sch->disable_work);
-+	RCU_INIT_POINTER(ops->priv, NULL);
- 	kobject_put(&sch->kobj);
- }
- 
-@@ -6444,6 +6445,7 @@ __bpf_kfunc_start_defs();
-  * @dsq_id: DSQ to insert into
-  * @slice: duration @p can run for in nsecs, 0 to keep the current value
-  * @enq_flags: SCX_ENQ_*
-+ * @aux: implicit BPF argument to access bpf_prog_aux hidden from BPF progs
-  *
-  * Insert @p into the FIFO queue of the DSQ identified by @dsq_id. It is safe to
-  * call this function spuriously. Can be called from ops.enqueue(),
-@@ -6478,12 +6480,13 @@ __bpf_kfunc_start_defs();
-  * to check the return value.
-  */
- __bpf_kfunc bool scx_bpf_dsq_insert___v2(struct task_struct *p, u64 dsq_id,
--					 u64 slice, u64 enq_flags)
-+					 u64 slice, u64 enq_flags,
-+					 const struct bpf_prog_aux *aux)
- {
- 	struct scx_sched *sch;
- 
- 	guard(rcu)();
--	sch = rcu_dereference(scx_root);
-+	sch = scx_prog_sched(aux);
- 	if (unlikely(!sch))
- 		return false;
- 
-@@ -6504,9 +6507,10 @@ __bpf_kfunc bool scx_bpf_dsq_insert___v2(struct task_struct *p, u64 dsq_id,
-  * COMPAT: Will be removed in v6.23 along with the ___v2 suffix.
-  */
- __bpf_kfunc void scx_bpf_dsq_insert(struct task_struct *p, u64 dsq_id,
--					     u64 slice, u64 enq_flags)
-+				    u64 slice, u64 enq_flags,
-+				    const struct bpf_prog_aux *aux)
- {
--	scx_bpf_dsq_insert___v2(p, dsq_id, slice, enq_flags);
-+	scx_bpf_dsq_insert___v2(p, dsq_id, slice, enq_flags, aux);
- }
- 
- static bool scx_dsq_insert_vtime(struct scx_sched *sch, struct task_struct *p,
-@@ -6543,6 +6547,7 @@ struct scx_bpf_dsq_insert_vtime_args {
-  *       @args->slice: duration @p can run for in nsecs, 0 to keep the current value
-  *       @args->vtime: @p's ordering inside the vtime-sorted queue of the target DSQ
-  *       @args->enq_flags: SCX_ENQ_*
-+ * @aux: implicit BPF argument to access bpf_prog_aux hidden from BPF progs
-  *
-  * Wrapper kfunc that takes arguments via struct to work around BPF's 5 argument
-  * limit. BPF programs should use scx_bpf_dsq_insert_vtime() which is provided
-@@ -6567,13 +6572,14 @@ struct scx_bpf_dsq_insert_vtime_args {
-  */
- __bpf_kfunc bool
- __scx_bpf_dsq_insert_vtime(struct task_struct *p,
--			   struct scx_bpf_dsq_insert_vtime_args *args)
-+			   struct scx_bpf_dsq_insert_vtime_args *args,
-+			   const struct bpf_prog_aux *aux)
- {
- 	struct scx_sched *sch;
- 
- 	guard(rcu)();
- 
--	sch = rcu_dereference(scx_root);
-+	sch = scx_prog_sched(aux);
- 	if (unlikely(!sch))
- 		return false;
- 
-@@ -6601,9 +6607,9 @@ __bpf_kfunc void scx_bpf_dsq_insert_vtime(struct task_struct *p, u64 dsq_id,
- __bpf_kfunc_end_defs();
- 
- BTF_KFUNCS_START(scx_kfunc_ids_enqueue_dispatch)
--BTF_ID_FLAGS(func, scx_bpf_dsq_insert, KF_RCU)
--BTF_ID_FLAGS(func, scx_bpf_dsq_insert___v2, KF_RCU)
--BTF_ID_FLAGS(func, __scx_bpf_dsq_insert_vtime, KF_RCU)
-+BTF_ID_FLAGS(func, scx_bpf_dsq_insert, KF_IMPLICIT_ARGS | KF_RCU)
-+BTF_ID_FLAGS(func, scx_bpf_dsq_insert___v2, KF_IMPLICIT_ARGS | KF_RCU)
-+BTF_ID_FLAGS(func, __scx_bpf_dsq_insert_vtime, KF_IMPLICIT_ARGS | KF_RCU)
- BTF_ID_FLAGS(func, scx_bpf_dsq_insert_vtime, KF_RCU)
- BTF_KFUNCS_END(scx_kfunc_ids_enqueue_dispatch)
- 
-@@ -6703,16 +6709,17 @@ __bpf_kfunc_start_defs();
- 
- /**
-  * scx_bpf_dispatch_nr_slots - Return the number of remaining dispatch slots
-+ * @aux: implicit BPF argument to access bpf_prog_aux hidden from BPF progs
-  *
-  * Can only be called from ops.dispatch().
-  */
--__bpf_kfunc u32 scx_bpf_dispatch_nr_slots(void)
-+__bpf_kfunc u32 scx_bpf_dispatch_nr_slots(const struct bpf_prog_aux *aux)
- {
- 	struct scx_sched *sch;
- 
- 	guard(rcu)();
- 
--	sch = rcu_dereference(scx_root);
-+	sch = scx_prog_sched(aux);
- 	if (unlikely(!sch))
- 		return 0;
- 
-@@ -6724,18 +6731,19 @@ __bpf_kfunc u32 scx_bpf_dispatch_nr_slots(void)
- 
- /**
-  * scx_bpf_dispatch_cancel - Cancel the latest dispatch
-+ * @aux: implicit BPF argument to access bpf_prog_aux hidden from BPF progs
-  *
-  * Cancel the latest dispatch. Can be called multiple times to cancel further
-  * dispatches. Can only be called from ops.dispatch().
-  */
--__bpf_kfunc void scx_bpf_dispatch_cancel(void)
-+__bpf_kfunc void scx_bpf_dispatch_cancel(const struct bpf_prog_aux *aux)
- {
- 	struct scx_dsp_ctx *dspc = this_cpu_ptr(scx_dsp_ctx);
- 	struct scx_sched *sch;
- 
- 	guard(rcu)();
- 
--	sch = rcu_dereference(scx_root);
-+	sch = scx_prog_sched(aux);
- 	if (unlikely(!sch))
- 		return;
- 
-@@ -6751,6 +6759,7 @@ __bpf_kfunc void scx_bpf_dispatch_cancel(void)
- /**
-  * scx_bpf_dsq_move_to_local - move a task from a DSQ to the current CPU's local DSQ
-  * @dsq_id: DSQ to move task from
-+ * @aux: implicit BPF argument to access bpf_prog_aux hidden from BPF progs
-  *
-  * Move a task from the non-local DSQ identified by @dsq_id to the current CPU's
-  * local DSQ for execution. Can only be called from ops.dispatch().
-@@ -6762,7 +6771,7 @@ __bpf_kfunc void scx_bpf_dispatch_cancel(void)
-  * Returns %true if a task has been moved, %false if there isn't any task to
-  * move.
-  */
--__bpf_kfunc bool scx_bpf_dsq_move_to_local(u64 dsq_id)
-+__bpf_kfunc bool scx_bpf_dsq_move_to_local(u64 dsq_id, const struct bpf_prog_aux *aux)
- {
- 	struct scx_dsp_ctx *dspc = this_cpu_ptr(scx_dsp_ctx);
- 	struct scx_dispatch_q *dsq;
-@@ -6770,7 +6779,7 @@ __bpf_kfunc bool scx_bpf_dsq_move_to_local(u64 dsq_id)
- 
- 	guard(rcu)();
- 
--	sch = rcu_dereference(scx_root);
-+	sch = scx_prog_sched(aux);
- 	if (unlikely(!sch))
- 		return false;
- 
-@@ -6897,9 +6906,9 @@ __bpf_kfunc bool scx_bpf_dsq_move_vtime(struct bpf_iter_scx_dsq *it__iter,
- __bpf_kfunc_end_defs();
- 
- BTF_KFUNCS_START(scx_kfunc_ids_dispatch)
--BTF_ID_FLAGS(func, scx_bpf_dispatch_nr_slots)
--BTF_ID_FLAGS(func, scx_bpf_dispatch_cancel)
--BTF_ID_FLAGS(func, scx_bpf_dsq_move_to_local)
-+BTF_ID_FLAGS(func, scx_bpf_dispatch_nr_slots, KF_IMPLICIT_ARGS)
-+BTF_ID_FLAGS(func, scx_bpf_dispatch_cancel, KF_IMPLICIT_ARGS)
-+BTF_ID_FLAGS(func, scx_bpf_dsq_move_to_local, KF_IMPLICIT_ARGS)
- BTF_ID_FLAGS(func, scx_bpf_dsq_move_set_slice, KF_RCU)
- BTF_ID_FLAGS(func, scx_bpf_dsq_move_set_vtime, KF_RCU)
- BTF_ID_FLAGS(func, scx_bpf_dsq_move, KF_RCU)
-@@ -6957,6 +6966,7 @@ __bpf_kfunc_start_defs();
- 
- /**
-  * scx_bpf_reenqueue_local - Re-enqueue tasks on a local DSQ
-+ * @aux: implicit BPF argument to access bpf_prog_aux hidden from BPF progs
-  *
-  * Iterate over all of the tasks currently enqueued on the local DSQ of the
-  * caller's CPU, and re-enqueue them in the BPF scheduler. Returns the number of
-@@ -6965,13 +6975,13 @@ __bpf_kfunc_start_defs();
-  * COMPAT: Will be removed in v6.23 along with the ___v2 suffix on the void
-  * returning variant that can be called from anywhere.
-  */
--__bpf_kfunc u32 scx_bpf_reenqueue_local(void)
-+__bpf_kfunc u32 scx_bpf_reenqueue_local(const struct bpf_prog_aux *aux)
- {
- 	struct scx_sched *sch;
- 	struct rq *rq;
- 
- 	guard(rcu)();
--	sch = rcu_dereference(scx_root);
-+	sch = scx_prog_sched(aux);
- 	if (unlikely(!sch))
- 		return 0;
- 
-@@ -6987,7 +6997,7 @@ __bpf_kfunc u32 scx_bpf_reenqueue_local(void)
- __bpf_kfunc_end_defs();
- 
- BTF_KFUNCS_START(scx_kfunc_ids_cpu_release)
--BTF_ID_FLAGS(func, scx_bpf_reenqueue_local)
-+BTF_ID_FLAGS(func, scx_bpf_reenqueue_local, KF_IMPLICIT_ARGS)
- BTF_KFUNCS_END(scx_kfunc_ids_cpu_release)
- 
- static const struct btf_kfunc_id_set scx_kfunc_set_cpu_release = {
-@@ -7001,11 +7011,12 @@ __bpf_kfunc_start_defs();
-  * scx_bpf_create_dsq - Create a custom DSQ
-  * @dsq_id: DSQ to create
-  * @node: NUMA node to allocate from
-+ * @aux: implicit BPF argument to access bpf_prog_aux hidden from BPF progs
-  *
-  * Create a custom DSQ identified by @dsq_id. Can be called from any sleepable
-  * scx callback, and any BPF_PROG_TYPE_SYSCALL prog.
-  */
--__bpf_kfunc s32 scx_bpf_create_dsq(u64 dsq_id, s32 node)
-+__bpf_kfunc s32 scx_bpf_create_dsq(u64 dsq_id, s32 node, const struct bpf_prog_aux *aux)
- {
- 	struct scx_dispatch_q *dsq;
- 	struct scx_sched *sch;
-@@ -7024,7 +7035,7 @@ __bpf_kfunc s32 scx_bpf_create_dsq(u64 dsq_id, s32 node)
- 
- 	rcu_read_lock();
- 
--	sch = rcu_dereference(scx_root);
-+	sch = scx_prog_sched(aux);
- 	if (sch) {
- 		init_dsq(dsq, dsq_id, sch);
- 		ret = rhashtable_lookup_insert_fast(&sch->dsq_hash, &dsq->hash_node,
-@@ -7042,7 +7053,7 @@ __bpf_kfunc s32 scx_bpf_create_dsq(u64 dsq_id, s32 node)
- __bpf_kfunc_end_defs();
- 
- BTF_KFUNCS_START(scx_kfunc_ids_unlocked)
--BTF_ID_FLAGS(func, scx_bpf_create_dsq, KF_SLEEPABLE)
-+BTF_ID_FLAGS(func, scx_bpf_create_dsq, KF_IMPLICIT_ARGS | KF_SLEEPABLE)
- BTF_ID_FLAGS(func, scx_bpf_dsq_move_set_slice, KF_RCU)
- BTF_ID_FLAGS(func, scx_bpf_dsq_move_set_vtime, KF_RCU)
- BTF_ID_FLAGS(func, scx_bpf_dsq_move, KF_RCU)
-@@ -7141,18 +7152,19 @@ static void scx_kick_cpu(struct scx_sched *sch, s32 cpu, u64 flags)
-  * scx_bpf_kick_cpu - Trigger reschedule on a CPU
-  * @cpu: cpu to kick
-  * @flags: %SCX_KICK_* flags
-+ * @aux: implicit BPF argument to access bpf_prog_aux hidden from BPF progs
-  *
-  * Kick @cpu into rescheduling. This can be used to wake up an idle CPU or
-  * trigger rescheduling on a busy CPU. This can be called from any online
-  * scx_ops operation and the actual kicking is performed asynchronously through
-  * an irq work.
-  */
--__bpf_kfunc void scx_bpf_kick_cpu(s32 cpu, u64 flags)
-+__bpf_kfunc void scx_bpf_kick_cpu(s32 cpu, u64 flags, const struct bpf_prog_aux *aux)
- {
- 	struct scx_sched *sch;
- 
- 	guard(rcu)();
--	sch = rcu_dereference(scx_root);
-+	sch = scx_prog_sched(aux);
- 	if (likely(sch))
- 		scx_kick_cpu(sch, cpu, flags);
- }
-@@ -7226,13 +7238,14 @@ __bpf_kfunc void scx_bpf_destroy_dsq(u64 dsq_id)
-  * @it: iterator to initialize
-  * @dsq_id: DSQ to iterate
-  * @flags: %SCX_DSQ_ITER_*
-+ * @aux: implicit BPF argument to access bpf_prog_aux hidden from BPF progs
-  *
-  * Initialize BPF iterator @it which can be used with bpf_for_each() to walk
-  * tasks in the DSQ specified by @dsq_id. Iteration using @it only includes
-  * tasks which are already queued when this function is invoked.
-  */
- __bpf_kfunc int bpf_iter_scx_dsq_new(struct bpf_iter_scx_dsq *it, u64 dsq_id,
--				     u64 flags)
-+				     u64 flags, const struct bpf_prog_aux *aux)
- {
- 	struct bpf_iter_scx_dsq_kern *kit = (void *)it;
- 	struct scx_sched *sch;
-@@ -7250,7 +7263,7 @@ __bpf_kfunc int bpf_iter_scx_dsq_new(struct bpf_iter_scx_dsq *it, u64 dsq_id,
- 	 */
- 	kit->dsq = NULL;
- 
--	sch = rcu_dereference_check(scx_root, rcu_read_lock_bh_held());
-+	sch = scx_prog_sched(aux);
- 	if (unlikely(!sch))
- 		return -ENODEV;
- 
-@@ -7339,6 +7352,7 @@ __bpf_kfunc void bpf_iter_scx_dsq_destroy(struct bpf_iter_scx_dsq *it)
- /**
-  * scx_bpf_dsq_peek - Lockless peek at the first element.
-  * @dsq_id: DSQ to examine.
-+ * @aux: implicit BPF argument to access bpf_prog_aux hidden from BPF progs
-  *
-  * Read the first element in the DSQ. This is semantically equivalent to using
-  * the DSQ iterator, but is lockfree. Of course, like any lockless operation,
-@@ -7347,12 +7361,13 @@ __bpf_kfunc void bpf_iter_scx_dsq_destroy(struct bpf_iter_scx_dsq *it)
-  *
-  * Returns the pointer, or NULL indicates an empty queue OR internal error.
-  */
--__bpf_kfunc struct task_struct *scx_bpf_dsq_peek(u64 dsq_id)
-+__bpf_kfunc struct task_struct *scx_bpf_dsq_peek(u64 dsq_id,
-+						 const struct bpf_prog_aux *aux)
- {
- 	struct scx_sched *sch;
- 	struct scx_dispatch_q *dsq;
- 
--	sch = rcu_dereference(scx_root);
-+	sch = scx_prog_sched(aux);
- 	if (unlikely(!sch))
- 		return NULL;
- 
-@@ -7424,18 +7439,20 @@ __bpf_kfunc_start_defs();
-  * @fmt: error message format string
-  * @data: format string parameters packaged using ___bpf_fill() macro
-  * @data__sz: @data len, must end in '__sz' for the verifier
-+ * @aux: implicit BPF argument to access bpf_prog_aux hidden from BPF progs
-  *
-  * Indicate that the BPF scheduler wants to exit gracefully, and initiate ops
-  * disabling.
-  */
- __bpf_kfunc void scx_bpf_exit_bstr(s64 exit_code, char *fmt,
--				   unsigned long long *data, u32 data__sz)
-+				   unsigned long long *data, u32 data__sz,
-+				   const struct bpf_prog_aux *aux)
- {
- 	struct scx_sched *sch;
- 	unsigned long flags;
- 
- 	raw_spin_lock_irqsave(&scx_exit_bstr_buf_lock, flags);
--	sch = rcu_dereference_bh(scx_root);
-+	sch = scx_prog_sched(aux);
- 	if (likely(sch) &&
- 	    bstr_format(sch, &scx_exit_bstr_buf, fmt, data, data__sz) >= 0)
- 		scx_exit(sch, SCX_EXIT_UNREG_BPF, exit_code, "%s", scx_exit_bstr_buf.line);
-@@ -7447,18 +7464,19 @@ __bpf_kfunc void scx_bpf_exit_bstr(s64 exit_code, char *fmt,
-  * @fmt: error message format string
-  * @data: format string parameters packaged using ___bpf_fill() macro
-  * @data__sz: @data len, must end in '__sz' for the verifier
-+ * @aux: implicit BPF argument to access bpf_prog_aux hidden from BPF progs
-  *
-  * Indicate that the BPF scheduler encountered a fatal error and initiate ops
-  * disabling.
-  */
- __bpf_kfunc void scx_bpf_error_bstr(char *fmt, unsigned long long *data,
--				    u32 data__sz)
-+				    u32 data__sz, const struct bpf_prog_aux *aux)
- {
- 	struct scx_sched *sch;
- 	unsigned long flags;
- 
- 	raw_spin_lock_irqsave(&scx_exit_bstr_buf_lock, flags);
--	sch = rcu_dereference_bh(scx_root);
-+	sch = scx_prog_sched(aux);
- 	if (likely(sch) &&
- 	    bstr_format(sch, &scx_exit_bstr_buf, fmt, data, data__sz) >= 0)
- 		scx_exit(sch, SCX_EXIT_ERROR_BPF, 0, "%s", scx_exit_bstr_buf.line);
-@@ -7470,6 +7488,7 @@ __bpf_kfunc void scx_bpf_error_bstr(char *fmt, unsigned long long *data,
-  * @fmt: format string
-  * @data: format string parameters packaged using ___bpf_fill() macro
-  * @data__sz: @data len, must end in '__sz' for the verifier
-+ * @aux: implicit BPF argument to access bpf_prog_aux hidden from BPF progs
-  *
-  * To be called through scx_bpf_dump() helper from ops.dump(), dump_cpu() and
-  * dump_task() to generate extra debug dump specific to the BPF scheduler.
-@@ -7478,7 +7497,7 @@ __bpf_kfunc void scx_bpf_error_bstr(char *fmt, unsigned long long *data,
-  * multiple calls. The last line is automatically terminated.
-  */
- __bpf_kfunc void scx_bpf_dump_bstr(char *fmt, unsigned long long *data,
--				   u32 data__sz)
-+				   u32 data__sz, const struct bpf_prog_aux *aux)
- {
- 	struct scx_sched *sch;
- 	struct scx_dump_data *dd = &scx_dump_data;
-@@ -7487,7 +7506,7 @@ __bpf_kfunc void scx_bpf_dump_bstr(char *fmt, unsigned long long *data,
- 
- 	guard(rcu)();
- 
--	sch = rcu_dereference(scx_root);
-+	sch = scx_prog_sched(aux);
- 	if (unlikely(!sch))
- 		return;
- 
-@@ -7544,18 +7563,19 @@ __bpf_kfunc void scx_bpf_reenqueue_local___v2(void)
- /**
-  * scx_bpf_cpuperf_cap - Query the maximum relative capacity of a CPU
-  * @cpu: CPU of interest
-+ * @aux: implicit BPF argument to access bpf_prog_aux hidden from BPF progs
-  *
-  * Return the maximum relative capacity of @cpu in relation to the most
-  * performant CPU in the system. The return value is in the range [1,
-  * %SCX_CPUPERF_ONE]. See scx_bpf_cpuperf_cur().
-  */
--__bpf_kfunc u32 scx_bpf_cpuperf_cap(s32 cpu)
-+__bpf_kfunc u32 scx_bpf_cpuperf_cap(s32 cpu, const struct bpf_prog_aux *aux)
- {
- 	struct scx_sched *sch;
- 
- 	guard(rcu)();
- 
--	sch = rcu_dereference(scx_root);
-+	sch = scx_prog_sched(aux);
- 	if (likely(sch) && ops_cpu_valid(sch, cpu, NULL))
- 		return arch_scale_cpu_capacity(cpu);
- 	else
-@@ -7565,6 +7585,7 @@ __bpf_kfunc u32 scx_bpf_cpuperf_cap(s32 cpu)
- /**
-  * scx_bpf_cpuperf_cur - Query the current relative performance of a CPU
-  * @cpu: CPU of interest
-+ * @aux: implicit BPF argument to access bpf_prog_aux hidden from BPF progs
-  *
-  * Return the current relative performance of @cpu in relation to its maximum.
-  * The return value is in the range [1, %SCX_CPUPERF_ONE].
-@@ -7576,13 +7597,13 @@ __bpf_kfunc u32 scx_bpf_cpuperf_cap(s32 cpu)
-  *
-  * The result is in the range [1, %SCX_CPUPERF_ONE].
-  */
--__bpf_kfunc u32 scx_bpf_cpuperf_cur(s32 cpu)
-+__bpf_kfunc u32 scx_bpf_cpuperf_cur(s32 cpu, const struct bpf_prog_aux *aux)
- {
- 	struct scx_sched *sch;
- 
- 	guard(rcu)();
- 
--	sch = rcu_dereference(scx_root);
-+	sch = scx_prog_sched(aux);
- 	if (likely(sch) && ops_cpu_valid(sch, cpu, NULL))
- 		return arch_scale_freq_capacity(cpu);
- 	else
-@@ -7593,6 +7614,7 @@ __bpf_kfunc u32 scx_bpf_cpuperf_cur(s32 cpu)
-  * scx_bpf_cpuperf_set - Set the relative performance target of a CPU
-  * @cpu: CPU of interest
-  * @perf: target performance level [0, %SCX_CPUPERF_ONE]
-+ * @aux: implicit BPF argument to access bpf_prog_aux hidden from BPF progs
-  *
-  * Set the target performance level of @cpu to @perf. @perf is in linear
-  * relative scale between 0 and %SCX_CPUPERF_ONE. This determines how the
-@@ -7603,13 +7625,13 @@ __bpf_kfunc u32 scx_bpf_cpuperf_cur(s32 cpu)
-  * use. Consult hardware and cpufreq documentation for more information. The
-  * current performance level can be monitored using scx_bpf_cpuperf_cur().
-  */
--__bpf_kfunc void scx_bpf_cpuperf_set(s32 cpu, u32 perf)
-+__bpf_kfunc void scx_bpf_cpuperf_set(s32 cpu, u32 perf, const struct bpf_prog_aux *aux)
- {
- 	struct scx_sched *sch;
- 
- 	guard(rcu)();
- 
--	sch = rcu_dereference(scx_root);
-+	sch = scx_prog_sched(aux);
- 	if (unlikely(!sch))
- 		return;
- 
-@@ -7719,14 +7741,15 @@ __bpf_kfunc s32 scx_bpf_task_cpu(const struct task_struct *p)
- /**
-  * scx_bpf_cpu_rq - Fetch the rq of a CPU
-  * @cpu: CPU of the rq
-+ * @aux: implicit BPF argument to access bpf_prog_aux hidden from BPF progs
-  */
--__bpf_kfunc struct rq *scx_bpf_cpu_rq(s32 cpu)
-+__bpf_kfunc struct rq *scx_bpf_cpu_rq(s32 cpu, const struct bpf_prog_aux *aux)
- {
- 	struct scx_sched *sch;
- 
- 	guard(rcu)();
- 
--	sch = rcu_dereference(scx_root);
-+	sch = scx_prog_sched(aux);
- 	if (unlikely(!sch))
- 		return NULL;
- 
-@@ -7745,18 +7768,19 @@ __bpf_kfunc struct rq *scx_bpf_cpu_rq(s32 cpu)
- 
- /**
-  * scx_bpf_locked_rq - Return the rq currently locked by SCX
-+ * @aux: implicit BPF argument to access bpf_prog_aux hidden from BPF progs
-  *
-  * Returns the rq if a rq lock is currently held by SCX.
-  * Otherwise emits an error and returns NULL.
-  */
--__bpf_kfunc struct rq *scx_bpf_locked_rq(void)
-+__bpf_kfunc struct rq *scx_bpf_locked_rq(const struct bpf_prog_aux *aux)
- {
- 	struct scx_sched *sch;
- 	struct rq *rq;
- 
- 	guard(preempt)();
- 
--	sch = rcu_dereference_sched(scx_root);
-+	sch = scx_prog_sched(aux);
- 	if (unlikely(!sch))
- 		return NULL;
- 
-@@ -7772,16 +7796,17 @@ __bpf_kfunc struct rq *scx_bpf_locked_rq(void)
- /**
-  * scx_bpf_cpu_curr - Return remote CPU's curr task
-  * @cpu: CPU of interest
-+ * @aux: implicit BPF argument to access bpf_prog_aux hidden from BPF progs
-  *
-  * Callers must hold RCU read lock (KF_RCU).
-  */
--__bpf_kfunc struct task_struct *scx_bpf_cpu_curr(s32 cpu)
-+__bpf_kfunc struct task_struct *scx_bpf_cpu_curr(s32 cpu, const struct bpf_prog_aux *aux)
- {
- 	struct scx_sched *sch;
- 
- 	guard(rcu)();
- 
--	sch = rcu_dereference(scx_root);
-+	sch = scx_prog_sched(aux);
- 	if (unlikely(!sch))
- 		return NULL;
- 
-@@ -7794,6 +7819,7 @@ __bpf_kfunc struct task_struct *scx_bpf_cpu_curr(s32 cpu)
- /**
-  * scx_bpf_task_cgroup - Return the sched cgroup of a task
-  * @p: task of interest
-+ * @aux: implicit BPF argument to access bpf_prog_aux hidden from BPF progs
-  *
-  * @p->sched_task_group->css.cgroup represents the cgroup @p is associated with
-  * from the scheduler's POV. SCX operations should use this function to
-@@ -7803,7 +7829,8 @@ __bpf_kfunc struct task_struct *scx_bpf_cpu_curr(s32 cpu)
-  * operations. The restriction guarantees that @p's rq is locked by the caller.
-  */
- #ifdef CONFIG_CGROUP_SCHED
--__bpf_kfunc struct cgroup *scx_bpf_task_cgroup(struct task_struct *p)
-+__bpf_kfunc struct cgroup *scx_bpf_task_cgroup(struct task_struct *p,
-+					       const struct bpf_prog_aux *aux)
- {
- 	struct task_group *tg = p->sched_task_group;
- 	struct cgroup *cgrp = &cgrp_dfl_root.cgrp;
-@@ -7811,7 +7838,7 @@ __bpf_kfunc struct cgroup *scx_bpf_task_cgroup(struct task_struct *p)
- 
- 	guard(rcu)();
- 
--	sch = rcu_dereference(scx_root);
-+	sch = scx_prog_sched(aux);
- 	if (unlikely(!sch))
- 		goto out;
- 
-@@ -7944,20 +7971,20 @@ __bpf_kfunc_end_defs();
- BTF_KFUNCS_START(scx_kfunc_ids_any)
- BTF_ID_FLAGS(func, scx_bpf_task_set_slice, KF_RCU);
- BTF_ID_FLAGS(func, scx_bpf_task_set_dsq_vtime, KF_RCU);
--BTF_ID_FLAGS(func, scx_bpf_kick_cpu)
-+BTF_ID_FLAGS(func, scx_bpf_kick_cpu, KF_IMPLICIT_ARGS)
- BTF_ID_FLAGS(func, scx_bpf_dsq_nr_queued)
- BTF_ID_FLAGS(func, scx_bpf_destroy_dsq)
--BTF_ID_FLAGS(func, scx_bpf_dsq_peek, KF_RCU_PROTECTED | KF_RET_NULL)
--BTF_ID_FLAGS(func, bpf_iter_scx_dsq_new, KF_ITER_NEW | KF_RCU_PROTECTED)
-+BTF_ID_FLAGS(func, scx_bpf_dsq_peek, KF_IMPLICIT_ARGS | KF_RCU_PROTECTED | KF_RET_NULL)
-+BTF_ID_FLAGS(func, bpf_iter_scx_dsq_new, KF_IMPLICIT_ARGS | KF_ITER_NEW | KF_RCU_PROTECTED)
- BTF_ID_FLAGS(func, bpf_iter_scx_dsq_next, KF_ITER_NEXT | KF_RET_NULL)
- BTF_ID_FLAGS(func, bpf_iter_scx_dsq_destroy, KF_ITER_DESTROY)
--BTF_ID_FLAGS(func, scx_bpf_exit_bstr)
--BTF_ID_FLAGS(func, scx_bpf_error_bstr)
--BTF_ID_FLAGS(func, scx_bpf_dump_bstr)
-+BTF_ID_FLAGS(func, scx_bpf_exit_bstr, KF_IMPLICIT_ARGS)
-+BTF_ID_FLAGS(func, scx_bpf_error_bstr, KF_IMPLICIT_ARGS)
-+BTF_ID_FLAGS(func, scx_bpf_dump_bstr, KF_IMPLICIT_ARGS)
- BTF_ID_FLAGS(func, scx_bpf_reenqueue_local___v2)
--BTF_ID_FLAGS(func, scx_bpf_cpuperf_cap)
--BTF_ID_FLAGS(func, scx_bpf_cpuperf_cur)
--BTF_ID_FLAGS(func, scx_bpf_cpuperf_set)
-+BTF_ID_FLAGS(func, scx_bpf_cpuperf_cap, KF_IMPLICIT_ARGS)
-+BTF_ID_FLAGS(func, scx_bpf_cpuperf_cur, KF_IMPLICIT_ARGS)
-+BTF_ID_FLAGS(func, scx_bpf_cpuperf_set, KF_IMPLICIT_ARGS)
- BTF_ID_FLAGS(func, scx_bpf_nr_node_ids)
- BTF_ID_FLAGS(func, scx_bpf_nr_cpu_ids)
- BTF_ID_FLAGS(func, scx_bpf_get_possible_cpumask, KF_ACQUIRE)
-@@ -7965,11 +7992,11 @@ BTF_ID_FLAGS(func, scx_bpf_get_online_cpumask, KF_ACQUIRE)
- BTF_ID_FLAGS(func, scx_bpf_put_cpumask, KF_RELEASE)
- BTF_ID_FLAGS(func, scx_bpf_task_running, KF_RCU)
- BTF_ID_FLAGS(func, scx_bpf_task_cpu, KF_RCU)
--BTF_ID_FLAGS(func, scx_bpf_cpu_rq)
--BTF_ID_FLAGS(func, scx_bpf_locked_rq, KF_RET_NULL)
--BTF_ID_FLAGS(func, scx_bpf_cpu_curr, KF_RET_NULL | KF_RCU_PROTECTED)
-+BTF_ID_FLAGS(func, scx_bpf_cpu_rq, KF_IMPLICIT_ARGS)
-+BTF_ID_FLAGS(func, scx_bpf_locked_rq, KF_IMPLICIT_ARGS | KF_RET_NULL)
-+BTF_ID_FLAGS(func, scx_bpf_cpu_curr, KF_IMPLICIT_ARGS | KF_RET_NULL | KF_RCU_PROTECTED)
- #ifdef CONFIG_CGROUP_SCHED
--BTF_ID_FLAGS(func, scx_bpf_task_cgroup, KF_RCU | KF_ACQUIRE)
-+BTF_ID_FLAGS(func, scx_bpf_task_cgroup, KF_IMPLICIT_ARGS | KF_RCU | KF_ACQUIRE)
- #endif
- BTF_ID_FLAGS(func, scx_bpf_now)
- BTF_ID_FLAGS(func, scx_bpf_events)
-diff --git a/kernel/sched/ext_idle.c b/kernel/sched/ext_idle.c
-index c5a3b0bac7c3..34487a83d3f7 100644
---- a/kernel/sched/ext_idle.c
-+++ b/kernel/sched/ext_idle.c
-@@ -946,14 +946,15 @@ static s32 select_cpu_from_kfunc(struct scx_sched *sch, struct task_struct *p,
-  * scx_bpf_cpu_node - Return the NUMA node the given @cpu belongs to, or
-  *		      trigger an error if @cpu is invalid
-  * @cpu: target CPU
-+ * @aux: implicit BPF argument to access bpf_prog_aux hidden from BPF progs
-  */
--__bpf_kfunc int scx_bpf_cpu_node(s32 cpu)
-+__bpf_kfunc s32 scx_bpf_cpu_node(s32 cpu, const struct bpf_prog_aux *aux)
- {
- 	struct scx_sched *sch;
- 
- 	guard(rcu)();
- 
--	sch = rcu_dereference(scx_root);
-+	sch = scx_prog_sched(aux);
- 	if (unlikely(!sch) || !ops_cpu_valid(sch, cpu, NULL))
- 		return NUMA_NO_NODE;
- 	return cpu_to_node(cpu);
-@@ -965,6 +966,7 @@ __bpf_kfunc int scx_bpf_cpu_node(s32 cpu)
-  * @prev_cpu: CPU @p was on previously
-  * @wake_flags: %SCX_WAKE_* flags
-  * @is_idle: out parameter indicating whether the returned CPU is idle
-+ * @aux: implicit BPF argument to access bpf_prog_aux hidden from BPF progs
-  *
-  * Can be called from ops.select_cpu(), ops.enqueue(), or from an unlocked
-  * context such as a BPF test_run() call, as long as built-in CPU selection
-@@ -975,14 +977,15 @@ __bpf_kfunc int scx_bpf_cpu_node(s32 cpu)
-  * currently idle and thus a good candidate for direct dispatching.
-  */
- __bpf_kfunc s32 scx_bpf_select_cpu_dfl(struct task_struct *p, s32 prev_cpu,
--				       u64 wake_flags, bool *is_idle)
-+				       u64 wake_flags, bool *is_idle,
-+				       const struct bpf_prog_aux *aux)
- {
- 	struct scx_sched *sch;
- 	s32 cpu;
- 
- 	guard(rcu)();
- 
--	sch = rcu_dereference(scx_root);
-+	sch = scx_prog_sched(aux);
- 	if (unlikely(!sch))
- 		return -ENODEV;
- 
-@@ -1010,6 +1013,7 @@ struct scx_bpf_select_cpu_and_args {
-  *       @args->prev_cpu: CPU @p was on previously
-  *       @args->wake_flags: %SCX_WAKE_* flags
-  *       @args->flags: %SCX_PICK_IDLE* flags
-+ * @aux: implicit BPF argument to access bpf_prog_aux hidden from BPF progs
-  *
-  * Wrapper kfunc that takes arguments via struct to work around BPF's 5 argument
-  * limit. BPF programs should use scx_bpf_select_cpu_and() which is provided
-@@ -1028,13 +1032,14 @@ struct scx_bpf_select_cpu_and_args {
-  */
- __bpf_kfunc s32
- __scx_bpf_select_cpu_and(struct task_struct *p, const struct cpumask *cpus_allowed,
--			 struct scx_bpf_select_cpu_and_args *args)
-+			 struct scx_bpf_select_cpu_and_args *args,
-+			 const struct bpf_prog_aux *aux)
- {
- 	struct scx_sched *sch;
- 
- 	guard(rcu)();
- 
--	sch = rcu_dereference(scx_root);
-+	sch = scx_prog_sched(aux);
- 	if (unlikely(!sch))
- 		return -ENODEV;
- 
-@@ -1064,18 +1069,20 @@ __bpf_kfunc s32 scx_bpf_select_cpu_and(struct task_struct *p, s32 prev_cpu, u64
-  * scx_bpf_get_idle_cpumask_node - Get a referenced kptr to the
-  * idle-tracking per-CPU cpumask of a target NUMA node.
-  * @node: target NUMA node
-+ * @aux: implicit BPF argument to access bpf_prog_aux hidden from BPF progs
-  *
-  * Returns an empty cpumask if idle tracking is not enabled, if @node is
-  * not valid, or running on a UP kernel. In this case the actual error will
-  * be reported to the BPF scheduler via scx_error().
-  */
--__bpf_kfunc const struct cpumask *scx_bpf_get_idle_cpumask_node(int node)
-+__bpf_kfunc const struct cpumask *
-+scx_bpf_get_idle_cpumask_node(s32 node, const struct bpf_prog_aux *aux)
- {
- 	struct scx_sched *sch;
- 
- 	guard(rcu)();
- 
--	sch = rcu_dereference(scx_root);
-+	sch = scx_prog_sched(aux);
- 	if (unlikely(!sch))
- 		return cpu_none_mask;
- 
-@@ -1089,17 +1096,18 @@ __bpf_kfunc const struct cpumask *scx_bpf_get_idle_cpumask_node(int node)
- /**
-  * scx_bpf_get_idle_cpumask - Get a referenced kptr to the idle-tracking
-  * per-CPU cpumask.
-+ * @aux: implicit BPF argument to access bpf_prog_aux hidden from BPF progs
-  *
-  * Returns an empty mask if idle tracking is not enabled, or running on a
-  * UP kernel.
-  */
--__bpf_kfunc const struct cpumask *scx_bpf_get_idle_cpumask(void)
-+__bpf_kfunc const struct cpumask *scx_bpf_get_idle_cpumask(const struct bpf_prog_aux *aux)
- {
- 	struct scx_sched *sch;
- 
- 	guard(rcu)();
- 
--	sch = rcu_dereference(scx_root);
-+	sch = scx_prog_sched(aux);
- 	if (unlikely(!sch))
- 		return cpu_none_mask;
- 
-@@ -1119,18 +1127,20 @@ __bpf_kfunc const struct cpumask *scx_bpf_get_idle_cpumask(void)
-  * idle-tracking, per-physical-core cpumask of a target NUMA node. Can be
-  * used to determine if an entire physical core is free.
-  * @node: target NUMA node
-+ * @aux: implicit BPF argument to access bpf_prog_aux hidden from BPF progs
-  *
-  * Returns an empty cpumask if idle tracking is not enabled, if @node is
-  * not valid, or running on a UP kernel. In this case the actual error will
-  * be reported to the BPF scheduler via scx_error().
-  */
--__bpf_kfunc const struct cpumask *scx_bpf_get_idle_smtmask_node(int node)
-+__bpf_kfunc const struct cpumask *
-+scx_bpf_get_idle_smtmask_node(s32 node, const struct bpf_prog_aux *aux)
- {
- 	struct scx_sched *sch;
- 
- 	guard(rcu)();
- 
--	sch = rcu_dereference(scx_root);
-+	sch = scx_prog_sched(aux);
- 	if (unlikely(!sch))
- 		return cpu_none_mask;
- 
-@@ -1148,17 +1158,18 @@ __bpf_kfunc const struct cpumask *scx_bpf_get_idle_smtmask_node(int node)
-  * scx_bpf_get_idle_smtmask - Get a referenced kptr to the idle-tracking,
-  * per-physical-core cpumask. Can be used to determine if an entire physical
-  * core is free.
-+ * @aux: implicit BPF argument to access bpf_prog_aux hidden from BPF progs
-  *
-  * Returns an empty mask if idle tracking is not enabled, or running on a
-  * UP kernel.
-  */
--__bpf_kfunc const struct cpumask *scx_bpf_get_idle_smtmask(void)
-+__bpf_kfunc const struct cpumask *scx_bpf_get_idle_smtmask(const struct bpf_prog_aux *aux)
- {
- 	struct scx_sched *sch;
- 
- 	guard(rcu)();
- 
--	sch = rcu_dereference(scx_root);
-+	sch = scx_prog_sched(aux);
- 	if (unlikely(!sch))
- 		return cpu_none_mask;
- 
-@@ -1194,6 +1205,7 @@ __bpf_kfunc void scx_bpf_put_idle_cpumask(const struct cpumask *idle_mask)
- /**
-  * scx_bpf_test_and_clear_cpu_idle - Test and clear @cpu's idle state
-  * @cpu: cpu to test and clear idle for
-+ * @aux: implicit BPF argument to access bpf_prog_aux hidden from BPF progs
-  *
-  * Returns %true if @cpu was idle and its idle state was successfully cleared.
-  * %false otherwise.
-@@ -1201,13 +1213,13 @@ __bpf_kfunc void scx_bpf_put_idle_cpumask(const struct cpumask *idle_mask)
-  * Unavailable if ops.update_idle() is implemented and
-  * %SCX_OPS_KEEP_BUILTIN_IDLE is not set.
-  */
--__bpf_kfunc bool scx_bpf_test_and_clear_cpu_idle(s32 cpu)
-+__bpf_kfunc bool scx_bpf_test_and_clear_cpu_idle(s32 cpu, const struct bpf_prog_aux *aux)
- {
- 	struct scx_sched *sch;
- 
- 	guard(rcu)();
- 
--	sch = rcu_dereference(scx_root);
-+	sch = scx_prog_sched(aux);
- 	if (unlikely(!sch))
- 		return false;
- 
-@@ -1225,6 +1237,7 @@ __bpf_kfunc bool scx_bpf_test_and_clear_cpu_idle(s32 cpu)
-  * @cpus_allowed: Allowed cpumask
-  * @node: target NUMA node
-  * @flags: %SCX_PICK_IDLE_* flags
-+ * @aux: implicit BPF argument to access bpf_prog_aux hidden from BPF progs
-  *
-  * Pick and claim an idle cpu in @cpus_allowed from the NUMA node @node.
-  *
-@@ -1240,13 +1253,14 @@ __bpf_kfunc bool scx_bpf_test_and_clear_cpu_idle(s32 cpu)
-  * %SCX_OPS_BUILTIN_IDLE_PER_NODE is not set.
-  */
- __bpf_kfunc s32 scx_bpf_pick_idle_cpu_node(const struct cpumask *cpus_allowed,
--					   int node, u64 flags)
-+					   s32 node, u64 flags,
-+					   const struct bpf_prog_aux *aux)
- {
- 	struct scx_sched *sch;
- 
- 	guard(rcu)();
- 
--	sch = rcu_dereference(scx_root);
-+	sch = scx_prog_sched(aux);
- 	if (unlikely(!sch))
- 		return -ENODEV;
- 
-@@ -1261,6 +1275,7 @@ __bpf_kfunc s32 scx_bpf_pick_idle_cpu_node(const struct cpumask *cpus_allowed,
-  * scx_bpf_pick_idle_cpu - Pick and claim an idle cpu
-  * @cpus_allowed: Allowed cpumask
-  * @flags: %SCX_PICK_IDLE_CPU_* flags
-+ * @aux: implicit BPF argument to access bpf_prog_aux hidden from BPF progs
-  *
-  * Pick and claim an idle cpu in @cpus_allowed. Returns the picked idle cpu
-  * number on success. -%EBUSY if no matching cpu was found.
-@@ -1280,13 +1295,13 @@ __bpf_kfunc s32 scx_bpf_pick_idle_cpu_node(const struct cpumask *cpus_allowed,
-  * scx_bpf_pick_idle_cpu_node() instead.
-  */
- __bpf_kfunc s32 scx_bpf_pick_idle_cpu(const struct cpumask *cpus_allowed,
--				      u64 flags)
-+				      u64 flags, const struct bpf_prog_aux *aux)
- {
- 	struct scx_sched *sch;
- 
- 	guard(rcu)();
- 
--	sch = rcu_dereference(scx_root);
-+	sch = scx_prog_sched(aux);
- 	if (unlikely(!sch))
- 		return -ENODEV;
- 
-@@ -1307,6 +1322,7 @@ __bpf_kfunc s32 scx_bpf_pick_idle_cpu(const struct cpumask *cpus_allowed,
-  * @cpus_allowed: Allowed cpumask
-  * @node: target NUMA node
-  * @flags: %SCX_PICK_IDLE_CPU_* flags
-+ * @aux: implicit BPF argument to access bpf_prog_aux hidden from BPF progs
-  *
-  * Pick and claim an idle cpu in @cpus_allowed. If none is available, pick any
-  * CPU in @cpus_allowed. Guaranteed to succeed and returns the picked idle cpu
-@@ -1323,14 +1339,15 @@ __bpf_kfunc s32 scx_bpf_pick_idle_cpu(const struct cpumask *cpus_allowed,
-  * CPU.
-  */
- __bpf_kfunc s32 scx_bpf_pick_any_cpu_node(const struct cpumask *cpus_allowed,
--					  int node, u64 flags)
-+					  s32 node, u64 flags,
-+					  const struct bpf_prog_aux *aux)
- {
- 	struct scx_sched *sch;
- 	s32 cpu;
- 
- 	guard(rcu)();
- 
--	sch = rcu_dereference(scx_root);
-+	sch = scx_prog_sched(aux);
- 	if (unlikely(!sch))
- 		return -ENODEV;
- 
-@@ -1356,6 +1373,7 @@ __bpf_kfunc s32 scx_bpf_pick_any_cpu_node(const struct cpumask *cpus_allowed,
-  * scx_bpf_pick_any_cpu - Pick and claim an idle cpu if available or pick any CPU
-  * @cpus_allowed: Allowed cpumask
-  * @flags: %SCX_PICK_IDLE_CPU_* flags
-+ * @aux: implicit BPF argument to access bpf_prog_aux hidden from BPF progs
-  *
-  * Pick and claim an idle cpu in @cpus_allowed. If none is available, pick any
-  * CPU in @cpus_allowed. Guaranteed to succeed and returns the picked idle cpu
-@@ -1370,14 +1388,14 @@ __bpf_kfunc s32 scx_bpf_pick_any_cpu_node(const struct cpumask *cpus_allowed,
-  * scx_bpf_pick_any_cpu_node() instead.
-  */
- __bpf_kfunc s32 scx_bpf_pick_any_cpu(const struct cpumask *cpus_allowed,
--				     u64 flags)
-+				     u64 flags, const struct bpf_prog_aux *aux)
- {
- 	struct scx_sched *sch;
- 	s32 cpu;
- 
- 	guard(rcu)();
- 
--	sch = rcu_dereference(scx_root);
-+	sch = scx_prog_sched(aux);
- 	if (unlikely(!sch))
- 		return -ENODEV;
- 
-@@ -1402,20 +1420,20 @@ __bpf_kfunc s32 scx_bpf_pick_any_cpu(const struct cpumask *cpus_allowed,
- __bpf_kfunc_end_defs();
- 
- BTF_KFUNCS_START(scx_kfunc_ids_idle)
--BTF_ID_FLAGS(func, scx_bpf_cpu_node)
--BTF_ID_FLAGS(func, scx_bpf_get_idle_cpumask_node, KF_ACQUIRE)
--BTF_ID_FLAGS(func, scx_bpf_get_idle_cpumask, KF_ACQUIRE)
--BTF_ID_FLAGS(func, scx_bpf_get_idle_smtmask_node, KF_ACQUIRE)
--BTF_ID_FLAGS(func, scx_bpf_get_idle_smtmask, KF_ACQUIRE)
-+BTF_ID_FLAGS(func, scx_bpf_cpu_node, KF_IMPLICIT_ARGS)
-+BTF_ID_FLAGS(func, scx_bpf_get_idle_cpumask_node, KF_IMPLICIT_ARGS | KF_ACQUIRE)
-+BTF_ID_FLAGS(func, scx_bpf_get_idle_cpumask, KF_IMPLICIT_ARGS | KF_ACQUIRE)
-+BTF_ID_FLAGS(func, scx_bpf_get_idle_smtmask_node, KF_IMPLICIT_ARGS | KF_ACQUIRE)
-+BTF_ID_FLAGS(func, scx_bpf_get_idle_smtmask, KF_IMPLICIT_ARGS | KF_ACQUIRE)
- BTF_ID_FLAGS(func, scx_bpf_put_idle_cpumask, KF_RELEASE)
--BTF_ID_FLAGS(func, scx_bpf_test_and_clear_cpu_idle)
--BTF_ID_FLAGS(func, scx_bpf_pick_idle_cpu_node, KF_RCU)
--BTF_ID_FLAGS(func, scx_bpf_pick_idle_cpu, KF_RCU)
--BTF_ID_FLAGS(func, scx_bpf_pick_any_cpu_node, KF_RCU)
--BTF_ID_FLAGS(func, scx_bpf_pick_any_cpu, KF_RCU)
--BTF_ID_FLAGS(func, __scx_bpf_select_cpu_and, KF_RCU)
-+BTF_ID_FLAGS(func, scx_bpf_test_and_clear_cpu_idle, KF_IMPLICIT_ARGS)
-+BTF_ID_FLAGS(func, scx_bpf_pick_idle_cpu_node, KF_IMPLICIT_ARGS | KF_RCU)
-+BTF_ID_FLAGS(func, scx_bpf_pick_idle_cpu, KF_IMPLICIT_ARGS | KF_RCU)
-+BTF_ID_FLAGS(func, scx_bpf_pick_any_cpu_node, KF_IMPLICIT_ARGS | KF_RCU)
-+BTF_ID_FLAGS(func, scx_bpf_pick_any_cpu, KF_IMPLICIT_ARGS | KF_RCU)
-+BTF_ID_FLAGS(func, __scx_bpf_select_cpu_and, KF_IMPLICIT_ARGS | KF_RCU)
- BTF_ID_FLAGS(func, scx_bpf_select_cpu_and, KF_RCU)
--BTF_ID_FLAGS(func, scx_bpf_select_cpu_dfl, KF_RCU)
-+BTF_ID_FLAGS(func, scx_bpf_select_cpu_dfl, KF_IMPLICIT_ARGS | KF_RCU)
- BTF_KFUNCS_END(scx_kfunc_ids_idle)
- 
- static const struct btf_kfunc_id_set scx_kfunc_set_idle = {
-diff --git a/kernel/sched/ext_internal.h b/kernel/sched/ext_internal.h
-index f7bc352eed64..679325e8c19b 100644
---- a/kernel/sched/ext_internal.h
-+++ b/kernel/sched/ext_internal.h
-@@ -844,7 +844,7 @@ struct sched_ext_ops {
- 	char name[SCX_OPS_NAME_LEN];
- 
- 	/* internal use only, must be NULL */
--	void *priv;
-+	void __rcu *priv;
- };
- 
- enum scx_opi {
-@@ -946,6 +946,7 @@ struct scx_sched {
- 	 */
- 	bool			warned_zero_slice:1;
- 	bool			warned_deprecated_rq:1;
-+	bool			warned_unassoc_progs:1;
- 
- 	struct list_head	all;
- 
-@@ -1201,6 +1202,42 @@ static inline bool scx_task_on_sched(struct scx_sched *sch,
- {
- 	return rcu_access_pointer(p->scx.sched) == sch;
- }
-+
-+/**
-+ * scx_prog_sched - Find scx_sched associated with a BPF prog
-+ * @aux: aux passed in from BPF to a kfunc
-+ *
-+ * To be called from kfuncs. Return the scheduler instance associated with the
-+ * BPF program given the implicit kfunc argument aux. The returned scx_sched is
-+ * RCU protected.
-+ */
-+static inline struct scx_sched *scx_prog_sched(const struct bpf_prog_aux *aux)
-+{
-+	struct sched_ext_ops *ops;
-+	struct scx_sched *root;
-+
-+	ops = bpf_prog_get_assoc_struct_ops(aux);
-+	if (likely(ops))
-+		return rcu_dereference_all(ops->priv);
-+
-+	root = rcu_dereference_all(scx_root);
-+	if (root) {
-+		/*
-+		 * COMPAT-v6.19: Schedulers built before sub-sched support was
-+		 * introduced may have unassociated non-struct_ops programs.
-+		 */
-+		if (!root->ops.sub_attach)
-+			return root;
-+
-+		if (!root->warned_unassoc_progs) {
-+			printk_deferred(KERN_WARNING "sched_ext: Unassociated program %s (id %d)\n",
-+					aux->name, aux->id);
-+			root->warned_unassoc_progs = true;
+@@ -2321,6 +2321,12 @@ static void finish_dispatch(struct scx_sched *sch, struct rq *rq,
+ 		if ((opss & SCX_OPSS_QSEQ_MASK) != qseq_at_dispatch)
+ 			return;
+ 
++		/* see SCX_EV_INSERT_NOT_OWNED definition */
++		if (unlikely(!scx_task_on_sched(sch, p))) {
++			__scx_add_event(sch, SCX_EV_INSERT_NOT_OWNED, 1);
++			return;
 +		}
++
+ 		/*
+ 		 * While we know @p is accessible, we don't yet have a claim on
+ 		 * it - the BPF scheduler is allowed to dispatch tasks
+@@ -4011,6 +4017,7 @@ static ssize_t scx_attr_events_show(struct kobject *kobj,
+ 	at += scx_attr_event_show(buf, at, &events, SCX_EV_BYPASS_DURATION);
+ 	at += scx_attr_event_show(buf, at, &events, SCX_EV_BYPASS_DISPATCH);
+ 	at += scx_attr_event_show(buf, at, &events, SCX_EV_BYPASS_ACTIVATE);
++	at += scx_attr_event_show(buf, at, &events, SCX_EV_INSERT_NOT_OWNED);
+ 	return at;
+ }
+ SCX_ATTR(events);
+@@ -5131,6 +5138,7 @@ static void scx_dump_state(struct scx_exit_info *ei, size_t dump_len)
+ 	scx_dump_event(s, &events, SCX_EV_BYPASS_DURATION);
+ 	scx_dump_event(s, &events, SCX_EV_BYPASS_DISPATCH);
+ 	scx_dump_event(s, &events, SCX_EV_BYPASS_ACTIVATE);
++	scx_dump_event(s, &events, SCX_EV_INSERT_NOT_OWNED);
+ 
+ 	if (seq_buf_has_overflowed(&s) && dump_len >= sizeof(trunc_marker))
+ 		memcpy(ei->dump + dump_len - sizeof(trunc_marker),
+@@ -6409,6 +6417,12 @@ static bool scx_dsq_insert_preamble(struct scx_sched *sch, struct task_struct *p
+ 		return false;
+ 	}
+ 
++	/* see SCX_EV_INSERT_NOT_OWNED definition */
++	if (unlikely(!scx_task_on_sched(sch, p))) {
++		__scx_add_event(sch, SCX_EV_INSERT_NOT_OWNED, 1);
++		return false;
 +	}
 +
-+	return NULL;
-+}
- #else	/* CONFIG_EXT_SUB_SCHED */
- static inline struct scx_sched *scx_task_sched(const struct task_struct *p)
- {
-@@ -1219,4 +1256,9 @@ static inline bool scx_task_on_sched(struct scx_sched *sch,
- {
  	return true;
  }
+ 
+@@ -6601,6 +6615,17 @@ __bpf_kfunc void scx_bpf_dsq_insert_vtime(struct task_struct *p, u64 dsq_id,
+ 	if (unlikely(!sch))
+ 		return;
+ 
++#ifdef CONFIG_EXT_SUB_SCHED
++	/*
++	 * Disallow if any sub-scheds are attached. There is no way to tell
++	 * which scheduler called us, just error out @p's scheduler.
++	 */
++	if (unlikely(!list_empty(&sch->children))) {
++		scx_error(scx_task_sched(p), "__scx_bpf_dsq_insert_vtime() must be used");
++		return;
++	}
++#endif
 +
-+static struct scx_sched *scx_prog_sched(const struct bpf_prog_aux *aux)
-+{
-+	return rcu_dereference_all(scx_root);
-+}
- #endif	/* CONFIG_EXT_SUB_SCHED */
-diff --git a/tools/sched_ext/include/scx/compat.h b/tools/sched_ext/include/scx/compat.h
-index 8b4897fc8b99..9cf5b7ab54b1 100644
---- a/tools/sched_ext/include/scx/compat.h
-+++ b/tools/sched_ext/include/scx/compat.h
-@@ -180,8 +180,18 @@ static inline long scx_hotplug_seq(void)
- })
+ 	scx_dsq_insert_vtime(sch, p, dsq_id, slice, vtime, enq_flags);
+ }
  
- #define SCX_OPS_LOAD(__skel, __ops_name, __scx_name, __uei_name) ({		\
-+	struct bpf_program *__prog;						\
- 	UEI_SET_SIZE(__skel, __ops_name, __uei_name);				\
- 	SCX_BUG_ON(__scx_name##__load((__skel)), "Failed to load skel");	\
-+	bpf_object__for_each_program(__prog, (__skel)->obj) {			\
-+		if (bpf_program__type(__prog) == BPF_PROG_TYPE_STRUCT_OPS)	\
-+			continue;						\
-+		s32 err = bpf_program__assoc_struct_ops(__prog,			\
-+					(__skel)->maps.__ops_name, NULL);	\
-+		if (err)							\
-+			fprintf(stderr, "ERROR: Failed to associate %s with %s: %d\n", \
-+				bpf_program__name(__prog), #__ops_name, err);	\
-+	}									\
- })
+@@ -7933,6 +7958,7 @@ static void scx_read_events(struct scx_sched *sch, struct scx_event_stats *event
+ 		scx_agg_event(events, e_cpu, SCX_EV_BYPASS_DURATION);
+ 		scx_agg_event(events, e_cpu, SCX_EV_BYPASS_DISPATCH);
+ 		scx_agg_event(events, e_cpu, SCX_EV_BYPASS_ACTIVATE);
++		scx_agg_event(events, e_cpu, SCX_EV_INSERT_NOT_OWNED);
+ 	}
+ }
  
- /*
+diff --git a/kernel/sched/ext_idle.c b/kernel/sched/ext_idle.c
+index 34487a83d3f7..321efd7b14fb 100644
+--- a/kernel/sched/ext_idle.c
++++ b/kernel/sched/ext_idle.c
+@@ -1061,6 +1061,17 @@ __bpf_kfunc s32 scx_bpf_select_cpu_and(struct task_struct *p, s32 prev_cpu, u64
+ 	if (unlikely(!sch))
+ 		return -ENODEV;
+ 
++#ifdef CONFIG_EXT_SUB_SCHED
++	/*
++	 * Disallow if any sub-scheds are attached. There is no way to tell
++	 * which scheduler called us, just error out @p's scheduler.
++	 */
++	if (unlikely(!list_empty(&sch->children))) {
++		scx_error(scx_task_sched(p), "__scx_bpf_select_cpu_and() must be used");
++		return -EINVAL;
++	}
++#endif
++
+ 	return select_cpu_from_kfunc(sch, p, prev_cpu, wake_flags,
+ 				     cpus_allowed, flags);
+ }
+diff --git a/kernel/sched/ext_internal.h b/kernel/sched/ext_internal.h
+index 679325e8c19b..3b17180ba3dd 100644
+--- a/kernel/sched/ext_internal.h
++++ b/kernel/sched/ext_internal.h
+@@ -911,6 +911,18 @@ struct scx_event_stats {
+ 	 * The number of times the bypassing mode has been activated.
+ 	 */
+ 	s64		SCX_EV_BYPASS_ACTIVATE;
++
++	/*
++	 * The number of times the scheduler attempted to insert a task that it
++	 * doesn't own into a DSQ. Such attempts are ignored.
++	 *
++	 * As BPF schedulers are allowed to ignore dequeues, it's difficult to
++	 * tell whether such an attempt is from a scheduler malfunction or an
++	 * ignored dequeue around sub-sched enabling. If this count keeps going
++	 * up regardless of sub-sched enabling, it likely indicates a bug in the
++	 * scheduler.
++	 */
++	s64		SCX_EV_INSERT_NOT_OWNED;
+ };
+ 
+ struct scx_sched_pcpu {
 -- 
 2.53.0
 
