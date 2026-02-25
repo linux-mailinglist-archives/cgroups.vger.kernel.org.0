@@ -1,404 +1,236 @@
-Return-Path: <cgroups+bounces-14400-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-14401-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 6BCPDp+Kn2nYcgQAu9opvQ
-	(envelope-from <cgroups+bounces-14400-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Thu, 26 Feb 2026 00:49:51 +0100
+	id ePjLMeuMn2nYcgQAu9opvQ
+	(envelope-from <cgroups+bounces-14401-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Thu, 26 Feb 2026 00:59:39 +0100
 X-Original-To: lists+cgroups@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id EBF8019F1AA
-	for <lists+cgroups@lfdr.de>; Thu, 26 Feb 2026 00:49:50 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2BE5F19F398
+	for <lists+cgroups@lfdr.de>; Thu, 26 Feb 2026 00:59:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id C64EA3115F05
-	for <lists+cgroups@lfdr.de>; Wed, 25 Feb 2026 23:45:45 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 194C930238EA
+	for <lists+cgroups@lfdr.de>; Wed, 25 Feb 2026 23:58:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 30255387584;
-	Wed, 25 Feb 2026 23:44:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D5F59387360;
+	Wed, 25 Feb 2026 23:58:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=columbia.edu header.i=@columbia.edu header.b="b/yB3FO8"
+	dkim=pass (2048-bit key) header.d=gourry.net header.i=@gourry.net header.b="nAahtgay"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mx0a-00364e01.pphosted.com (mx0a-00364e01.pphosted.com [148.163.135.74])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qt1-f177.google.com (mail-qt1-f177.google.com [209.85.160.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 08B3F3876AA
-	for <cgroups@vger.kernel.org>; Wed, 25 Feb 2026 23:44:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.135.74
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B82F385535
+	for <cgroups@vger.kernel.org>; Wed, 25 Feb 2026 23:58:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772063095; cv=none; b=OuSUk2kBRxGaOZNcUS5Smr8HuNdqdnjPEqx+9o2NB+62USCvYlgdHd+lzciH1sqass59cd0b1cYiUK3rb4w6XJJzA3oM12sW7iyPqjPQwHtc4qtBtgs67K1DXCgHC0Z9HxM6iz00vIOWfaomxXfKIhrHkBMLWqefzK7Nie37AK0=
+	t=1772063908; cv=none; b=cgAX8IaBiuNbKFbUY4Bn+vkCR2d9ViQcfqroryLc0BRBTNANUL6W8wsSIS7mnSKQDi66kDsS53gkhZOJuIQFrDDH1EcNbmLNpliysMquP6/L4mJVM29x94LjULLpSqxDiK+3lzzFzi/bTdPKn2F0xl8660SYQXGWV0iR5CAAGmI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772063095; c=relaxed/simple;
-	bh=zO7GBjiuOn5Q+h+zA8UgP1+Klsw8MQQTt1O0svxg4WA=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=pGGlSwZcaGMULI91d6VKi5Hq7lubx6lHGsl7gcRahan2p8aUfryoyMJ3jcRISh0OVdzMaNf14qrRHe/xm85H0AliGN+8acmP++fPlfAjAUG57J1FPJAcFa9OMpWIwO/I/AVK8DDZfO+tQ3dhVpaf7dsTK7EFM2iY02hmxxF5G2E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=columbia.edu; spf=pass smtp.mailfrom=columbia.edu; dkim=pass (2048-bit key) header.d=columbia.edu header.i=@columbia.edu header.b=b/yB3FO8; arc=none smtp.client-ip=148.163.135.74
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=columbia.edu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=columbia.edu
-Received: from pps.filterd (m0167069.ppops.net [127.0.0.1])
-	by mx0a-00364e01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 61PNN8Sc1399591
-	for <cgroups@vger.kernel.org>; Wed, 25 Feb 2026 18:44:51 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=columbia.edu; h=
-	cc:content-transfer-encoding:content-type:date:from:in-reply-to
-	:message-id:mime-version:references:subject:to; s=pps01; bh=TE8Z
-	hYBQf9fiNswnOLiD0snqyySTRxN7Ufk+GD8fw6E=; b=b/yB3FO8kwgXmET281Jv
-	XP+tAXlRZIOQ6OAFR2YSS+792EIr83nP+nakYz8tKWh86IL9kbOyLkg2yn8b3g/q
-	S5VPNh8sAcmAlprkg2Cw/wyQbawj3NLSALIkGLq2K8V4kIRt4aYXHS/DHlGsM8fs
-	H8cCC3+JhbwQsrjnzdcgeRxONcJg4TG6TN/qWF72MSX7O8ZGhKSU3I2BfZEDoisK
-	t1LvqQr0puhEkmBwjqopiEjNDjB9vH7tXsjnfmo+oQfclWfz01qggxeWH6r8fgsq
-	rZ0/3X3DzNuyvGFcD+vq2Q7XNExoHO+FQm1lfYBwrgA16DwNSuwMZae97gH/dVl+
-	jg==
-Received: from mail-qt1-f197.google.com (mail-qt1-f197.google.com [209.85.160.197])
-	by mx0a-00364e01.pphosted.com (PPS) with ESMTPS id 4chx6v6bc5-1
-	(version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NOT)
-	for <cgroups@vger.kernel.org>; Wed, 25 Feb 2026 18:44:51 -0500 (EST)
-Received: by mail-qt1-f197.google.com with SMTP id d75a77b69052e-506c0231e63so29612211cf.1
-        for <cgroups@vger.kernel.org>; Wed, 25 Feb 2026 15:44:50 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1772063090; x=1772667890;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:x-gm-gg:x-gm-message-state:from:to
+	s=arc-20240116; t=1772063908; c=relaxed/simple;
+	bh=vMJ146Y/EPWV062fRB1P7stJ5n4Sr6xxBlqgn9/6cfE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=TJmbad2PNkehlTLaz3e9a3NpTgluzL1wYHJdvC2fJEvwEW5iT3GzjivdJdlvlemZY2epB5xwGrKTwFKgeGnLSNL4KrG6FPm1rFghnczn+vYg5VuzMKtI4QIhuw9z5h2ipMC4NjrYhJjxYPRDVfJvBsYyPqlROUmQ4hrwfExkZ/A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gourry.net; spf=pass smtp.mailfrom=gourry.net; dkim=pass (2048-bit key) header.d=gourry.net header.i=@gourry.net header.b=nAahtgay; arc=none smtp.client-ip=209.85.160.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gourry.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gourry.net
+Received: by mail-qt1-f177.google.com with SMTP id d75a77b69052e-505e2e4c35fso2804751cf.3
+        for <cgroups@vger.kernel.org>; Wed, 25 Feb 2026 15:58:27 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gourry.net; s=google; t=1772063906; x=1772668706; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
          :cc:subject:date:message-id:reply-to;
-        bh=TE8ZhYBQf9fiNswnOLiD0snqyySTRxN7Ufk+GD8fw6E=;
-        b=OEARsBWhMUyEET4hlUWSey8WF0OG+x9IXZgLq/fqqW5H194AYA7xdavkIuAMRvCtMk
-         0EAmJQBiQ+rG5YGzFjb6iNpJMFcByxWAf7SzJuTi6jM6pE+tBkgLY5tmAH6RF1R8uayC
-         xkkbRrHKywb7gC4fFK7TzQAajtYjCsdE+mqMWLCDjbX861tUCxblbVzWmAmpqY01OD/5
-         wZwnXWg0QrHaoKfHLzotamdJpIkNztSi3p749lBsJhCaGUCiAHTXKiiGCZ3HJFvEjqJb
-         jJ1QyIjvCdMZ/gTktwtiBZUownpewxK7DiwPZk4x+sgAKrdqUZp/nFLANnhJCdmIH1cq
-         /tgw==
-X-Forwarded-Encrypted: i=1; AJvYcCVIQjDd1fupmNXammAWQ+Xo9gKzg+CzZMwuYS2JmuFHWCZ8DUz9HTUWksKmHQqf1BlcAKCd26KD@vger.kernel.org
-X-Gm-Message-State: AOJu0YxhIdIKri50NBb2nHU36/YWTJ9eRfAbHGZeO3txtxjtV5YfbePf
-	2qSEwX+IpiX8T+ExY2B58mn0FO3Ow+ReVrO5pGkVGrZGke+zHxgDgVOf7l8E/J2s4FNMvrIj+x/
-	IgtUE2iOfCrro8t/N8PefEUHrGUV3sIPuL/VXgpnWTegLe1aMNXjErOU=
-X-Gm-Gg: ATEYQzyXa4wfMX/Nzfmm+T7j3s1xWsnCklYE1C4hg0+AZVyFN9YEUwcsx1fNkMxvwzp
-	aJzgYMssKTfYnhBB22txIeJ5a0gVINXZCIqiOR9u0XGvqz0J/MLydGWdQ9OAagzFNHhxJpZoIIx
-	6huw/59BpqsfakM3nhuk4yqhCfSdA3dqx6/E0x/ZicI2J3Ep85p+sSRLzjDOw9pXhmbjrlSKxIf
-	62bHLVgrmMbj3tqmZohkeUULR1GL8O+rVvVwxa/f+WpB1umu09BZwktYQMv1sC9WeW8pI0fpxzi
-	dJiSGV22AFnoykUG4MffdshlHuELFPIJ0nHfUMSbxDuAbmdh7W9na+5HZoHXmR4wmpaWk1coeby
-	w0XwNfutYNx6V+G8hoHq0u7rwm6mPIvgk
-X-Received: by 2002:ac8:5ac5:0:b0:503:2fe5:f380 with SMTP id d75a77b69052e-507441df64fmr13263091cf.0.1772063090009;
-        Wed, 25 Feb 2026 15:44:50 -0800 (PST)
-X-Received: by 2002:ac8:5ac5:0:b0:503:2fe5:f380 with SMTP id d75a77b69052e-507441df64fmr13262341cf.0.1772063089401;
-        Wed, 25 Feb 2026 15:44:49 -0800 (PST)
-Received: from [127.0.1.1] ([216.158.158.246])
-        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-899c738d80bsm3357606d6.41.2026.02.25.15.44.47
+        bh=QQWBXTWhdLgoq7OluVHAAR5bDFt9biBm7m+9/q6MXhA=;
+        b=nAahtgayF3j+4rUcxkyd6fIXikcye73VtCWiZeC0ncuwR4D/vEldTS5w3azS7Z3oTb
+         9c/jU3SWQUQ1cwHYuB+Pf+/0Qd+m4BhCYOfHTALlbeGNny6FUPINIjDZ1D8h+V1sEEWS
+         RgzFvxo81bKYPB53bWH3LcPPF5Gso/9YhcWu6/JWdPL/WtTv0aFJzxJfTIWaCQcuzwwX
+         SdspqyEryoBLok6sg8n8peZpCXZ9SwWM38pV9rljQojlr0AqkTYSisqwne93XNQHG+8r
+         c+02wstHvUENYLBRDE1bGnV8YWsNSMuOu4/ctDNpAwz3d9YCmNN84eNtgnilFB/WNcO0
+         deLA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1772063906; x=1772668706;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:x-gm-gg
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=QQWBXTWhdLgoq7OluVHAAR5bDFt9biBm7m+9/q6MXhA=;
+        b=jAUe287bGz5hTQySYGvzeF9Y8JGAMEwuz5qwD53pTX/c71bqxGdFxmW0ytcRdM31aZ
+         sNx6Hm4rykZ4uKL6TUeZR4Gh3E21C/8jOWFafq18z9O24MZhGD/bYaslwyU2esDgIpvp
+         +fNgxdZL6FpwDFm37f/3ADf41myQa8VTxu/aCB+Jl4uJoNuaBxzou7Vb6J3xT9uZis7d
+         WLveGqn79amdmOIBtL9N3zbJY/gMHzhpF0dMFKaKnhpA7BOPLvxCpIUyhdPaSnxM6LXk
+         +Roid6Ad7cWPYuGGMgiLGfoPRdjVi1P8b4I9CQtGXlTFNK3rApulyNmWVKi53LmpQGIJ
+         bB3Q==
+X-Forwarded-Encrypted: i=1; AJvYcCU+SBuCeX0Ls3utxXW5naJ51OPjXPNz1cTHPhdUChg8ZeCpsy/w2Ngl7m9x4z3L7zkp4q0WcYq+@vger.kernel.org
+X-Gm-Message-State: AOJu0Yzh0H1jKwTEKY52lDlgNK1D99UiI6v6S3UynBjCpSbgDyNet9Zq
+	kYwv2f2jqDLdiNXu3ioKgknVymXxfRYjHOibuXBZnjhPtNNNgzevSyocFg+tLRD+JKA=
+X-Gm-Gg: ATEYQzy+nypXGHShnpQ8kILJkxzEm4yHSijm9kqb3Ifx32/NkyIAmRZ9+eZ/cViAU4y
+	g4oUr/RNjcCG4riGOI2XMw8WFtGGt5t/AZCsIckifXKPAIdHTdG0NMIWlZKPVLsgK316rrlshwl
+	2u/4II07Vm9+Wuz/H5qCr+CS7mMC/StcaMStSAuozh7sFfKjISTDb9CrmP3jX8mVbAS1cINcohB
+	8orphaR93Rq72YH+5iOOz5KBDWrS2WvYiiO8mZN0Km6217QWk/TaKpgtIvfQ4XnBwgZGAyUb6Y3
+	NIVe84s+dpG8biz/EqWlrIhHvuCTpuYMp52OYs3Pv9kS1k8vTB4auauehbvl1h7Fj3qPiap5363
+	LRCYEoaKYnA1wrgmJgmIKMyLa2pHV7ytMp3wtPKMahikfb+U0gQ0wy0YsKip8YyJMpxWOhlEYYw
+	oaBtaz8cTwdFOqouCIXzwPoA/PfHIvsbElGZMKa9Q3iyIWn1aHwEGOJnedzWPxwrQVNFpqhrcTJ
+	rnaSrnx8g==
+X-Received: by 2002:a05:622a:314:b0:4ff:8da6:2289 with SMTP id d75a77b69052e-50745f165famr3302881cf.27.1772063905968;
+        Wed, 25 Feb 2026 15:58:25 -0800 (PST)
+Received: from gourry-fedora-PF4VCD3F (pool-96-255-20-138.washdc.ftas.verizon.net. [96.255.20.138])
+        by smtp.gmail.com with ESMTPSA id d75a77b69052e-50744ab3f52sm5660571cf.22.2026.02.25.15.58.23
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 25 Feb 2026 15:44:49 -0800 (PST)
-From: Tal Zussman <tz2294@columbia.edu>
-Date: Wed, 25 Feb 2026 18:44:28 -0500
-Subject: [PATCH v2 4/4] folio_batch: Rename PAGEVEC_SIZE to
- FOLIO_BATCH_SIZE
+        Wed, 25 Feb 2026 15:58:25 -0800 (PST)
+Date: Wed, 25 Feb 2026 18:58:21 -0500
+From: Gregory Price <gourry@gourry.net>
+To: Matthew Brost <matthew.brost@intel.com>
+Cc: Alistair Popple <apopple@nvidia.com>, lsf-pc@lists.linux-foundation.org,
+	linux-kernel@vger.kernel.org, linux-cxl@vger.kernel.org,
+	cgroups@vger.kernel.org, linux-mm@kvack.org,
+	linux-trace-kernel@vger.kernel.org, damon@lists.linux.dev,
+	kernel-team@meta.com, gregkh@linuxfoundation.org, rafael@kernel.org,
+	dakr@kernel.org, dave@stgolabs.net, jonathan.cameron@huawei.com,
+	dave.jiang@intel.com, alison.schofield@intel.com,
+	vishal.l.verma@intel.com, ira.weiny@intel.com,
+	dan.j.williams@intel.com, longman@redhat.com,
+	akpm@linux-foundation.org, david@kernel.org,
+	lorenzo.stoakes@oracle.com, Liam.Howlett@oracle.com, vbabka@suse.cz,
+	rppt@kernel.org, surenb@google.com, mhocko@suse.com,
+	osalvador@suse.de, ziy@nvidia.com, joshua.hahnjy@gmail.com,
+	rakie.kim@sk.com, byungchul@sk.com, ying.huang@linux.alibaba.com,
+	axelrasmussen@google.com, yuanchu@google.com, weixugc@google.com,
+	yury.norov@gmail.com, linux@rasmusvillemoes.dk, mhiramat@kernel.org,
+	mathieu.desnoyers@efficios.com, tj@kernel.org, hannes@cmpxchg.org,
+	mkoutny@suse.com, jackmanb@google.com, sj@kernel.org,
+	baolin.wang@linux.alibaba.com, npache@redhat.com,
+	ryan.roberts@arm.com, dev.jain@arm.com, baohua@kernel.org,
+	lance.yang@linux.dev, muchun.song@linux.dev, xu.xin16@zte.com.cn,
+	chengming.zhou@linux.dev, jannh@google.com, linmiaohe@huawei.com,
+	nao.horiguchi@gmail.com, pfalcato@suse.de, rientjes@google.com,
+	shakeel.butt@linux.dev, riel@surriel.com, harry.yoo@oracle.com,
+	cl@gentwo.org, roman.gushchin@linux.dev, chrisl@kernel.org,
+	kasong@tencent.com, shikemeng@huaweicloud.com, nphamcs@gmail.com,
+	bhe@redhat.com, zhengqi.arch@bytedance.com, terry.bowman@amd.com
+Subject: Re: [LSF/MM/BPF TOPIC][RFC PATCH v4 00/27] Private Memory Nodes (w/
+ Compressed RAM)
+Message-ID: <aZ-MnVVNGG_cOvxE@gourry-fedora-PF4VCD3F>
+References: <20260222084842.1824063-1-gourry@gourry.net>
+ <fzy6f6dpv3oq3ksr2mkst7pz3daeb3buhuvdvcw4633pcl7h6u@mxjgiwpg5acv>
+ <aZ3BEn_73Rk8Fn7L@gourry-fedora-PF4VCD3F>
+ <aZ92AvAg5boiSVw1@lstrano-desk.jf.intel.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20260225-pagevec_cleanup-v2-4-716868cc2d11@columbia.edu>
-References: <20260225-pagevec_cleanup-v2-0-716868cc2d11@columbia.edu>
-In-Reply-To: <20260225-pagevec_cleanup-v2-0-716868cc2d11@columbia.edu>
-To: David Howells <dhowells@redhat.com>,
-        Marc Dionne <marc.dionne@auristor.com>,
-        Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>,
-        Andrew Morton <akpm@linux-foundation.org>,
-        David Hildenbrand <david@kernel.org>,
-        Lorenzo Stoakes <lorenzo.stoakes@oracle.com>,
-        "Liam R. Howlett" <Liam.Howlett@oracle.com>,
-        Vlastimil Babka <vbabka@kernel.org>, Mike Rapoport <rppt@kernel.org>,
-        Suren Baghdasaryan <surenb@google.com>, Michal Hocko <mhocko@suse.com>,
-        Chris Li <chrisl@kernel.org>, Kairui Song <kasong@tencent.com>,
-        Kemeng Shi <shikemeng@huaweicloud.com>, Nhat Pham <nphamcs@gmail.com>,
-        Baoquan He <bhe@redhat.com>, Barry Song <baohua@kernel.org>,
-        Matthew Wilcox <willy@infradead.org>,
-        Dan Williams <dan.j.williams@intel.com>, Jan Kara <jack@suse.cz>,
-        Alexander Viro <viro@zeniv.linux.org.uk>,
-        Christian Brauner <brauner@kernel.org>, Theodore Ts'o <tytso@mit.edu>
-Cc: Andreas Dilger <adilger.kernel@dilger.ca>,
-        Paulo Alcantara <pc@manguebit.org>,
-        Trond Myklebust <trondmy@kernel.org>, Anna Schumaker <anna@kernel.org>,
-        Mark Fasheh <mark@fasheh.com>, Joel Becker <jlbec@evilplan.org>,
-        Joseph Qi <joseph.qi@linux.alibaba.com>,
-        Steve French <sfrench@samba.org>,
-        Ronnie Sahlberg <ronniesahlberg@gmail.com>,
-        Shyam Prasad N <sprasad@microsoft.com>, Tom Talpey <tom@talpey.com>,
-        Bharath SM <bharathsm@microsoft.com>,
-        Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-        Maxime Ripard <mripard@kernel.org>,
-        Thomas Zimmermann <tzimmermann@suse.de>,
-        David Airlie <airlied@gmail.com>, Simona Vetter <simona@ffwll.ch>,
-        Jani Nikula <jani.nikula@linux.intel.com>,
-        Joonas Lahtinen <joonas.lahtinen@linux.intel.com>,
-        Rodrigo Vivi <rodrigo.vivi@intel.com>,
-        Tvrtko Ursulin <tursulin@ursulin.net>, Chris Mason <clm@fb.com>,
-        David Sterba <dsterba@suse.com>, Ilya Dryomov <idryomov@gmail.com>,
-        Alex Markuze <amarkuze@redhat.com>,
-        Viacheslav Dubeyko <slava@dubeyko.com>,
-        Andreas Gruenbacher <agruenba@redhat.com>,
-        Muchun Song <muchun.song@linux.dev>,
-        Oscar Salvador <osalvador@suse.de>,
-        Ryusuke Konishi <konishi.ryusuke@gmail.com>,
-        "Darrick J. Wong" <djwong@kernel.org>,
-        Chuck Lever <chuck.lever@oracle.com>, Jeff Layton <jlayton@kernel.org>,
-        NeilBrown <neil@brown.name>, Olga Kornievskaia <okorniev@redhat.com>,
-        Dai Ngo <Dai.Ngo@oracle.com>, Jason Gunthorpe <jgg@ziepe.ca>,
-        John Hubbard <jhubbard@nvidia.com>, Peter Xu <peterx@redhat.com>,
-        Johannes Weiner <hannes@cmpxchg.org>,
-        Roman Gushchin <roman.gushchin@linux.dev>,
-        Shakeel Butt <shakeel.butt@linux.dev>, Jann Horn <jannh@google.com>,
-        Pedro Falcato <pfalcato@suse.de>,
-        Brendan Jackman <jackmanb@google.com>, Zi Yan <ziy@nvidia.com>,
-        Hugh Dickins <hughd@google.com>,
-        Baolin Wang <baolin.wang@linux.alibaba.com>,
-        Axel Rasmussen <axelrasmussen@google.com>,
-        Yuanchu Xie <yuanchu@google.com>, Wei Xu <weixugc@google.com>,
-        Qi Zheng <zhengqi.arch@bytedance.com>, linux-afs@lists.infradead.org,
-        linux-kernel@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
-        linux-mm@kvack.org, linux-fsdevel@vger.kernel.org,
-        nvdimm@lists.linux.dev, linux-ext4@vger.kernel.org,
-        netfs@lists.linux.dev, linux-nfs@vger.kernel.org,
-        ocfs2-devel@lists.linux.dev, linux-cifs@vger.kernel.org,
-        samba-technical@lists.samba.org, dri-devel@lists.freedesktop.org,
-        intel-gfx@lists.freedesktop.org, linux-btrfs@vger.kernel.org,
-        ceph-devel@vger.kernel.org, gfs2@lists.linux.dev,
-        linux-nilfs@vger.kernel.org, linux-xfs@vger.kernel.org,
-        cgroups@vger.kernel.org, Tal Zussman <tz2294@columbia.edu>
-X-Mailer: b4 0.14.3-dev-d7477
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1772063077; l=5814;
- i=tz2294@columbia.edu; s=20250528; h=from:subject:message-id;
- bh=zO7GBjiuOn5Q+h+zA8UgP1+Klsw8MQQTt1O0svxg4WA=;
- b=KCL19WgRUDAqH63IGvAc3KncLR0mQnluCE5DMTx+wx8s1EMvm5gWiID7it4982lNgTaHXaECH
- ClIpdW+IjPxAETpUADJ+80YGkvu3AQ4uNneZg/M0Lj8/3I89nOh73yK
-X-Developer-Key: i=tz2294@columbia.edu; a=ed25519;
- pk=BIj5KdACscEOyAC0oIkeZqLB3L94fzBnDccEooxeM5Y=
-X-Proofpoint-GUID: Ttr664ro3KMak5pj_C2j-qMMoPLgcczC
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwMjI1MDIyNyBTYWx0ZWRfX+3eeCGt+3QOa
- CqX8m3LN+KAeYJvPqDIFaqWiQHXWzU77Vx84hkR6jps9kPUXH1qyHqtzBmXRl9aabtGBiEZg+I3
- /0yf5oJNNu9rI568kB9VHTWrx4j3x90wQs1PaL+F5INGlB5LV/ETj2ECrV1BYWqSy1c5Rvy6GSe
- dzyeePBMH5JGpgmjrIzPpknJEC8hnq5Jd+H7zRN6iL+HDUezChdA6knIq37UygUyIvFleuSCJGV
- Izw1cZHRb6bF2CjMxFh4XUAzZk0BqiesXiMSCKVCidrzWpltURDbeoNoCu0yJUFLCftCRAMelfc
- iqcXfO7VqvYW1cIsY3dXuz728eYmfsfs6pI9rgTlEovixP7Om8+gqo4hmbm3QHifMmOxd5wLH2I
- CiyZoyumJ8T4y6S30xkoNZDxpFtysRAgVTDdKN4g82wgofQJFw/Docq6cIDNeqBXYceJmsQn/cF
- QZOVQzl6Dlvt0qp6NHA==
-X-Authority-Analysis: v=2.4 cv=FqMIPmrq c=1 sm=1 tr=0 ts=699f8973 cx=c_pps
- a=EVbN6Ke/fEF3bsl7X48z0g==:117 a=mD05b5UW6KhLIDvowZ5dSQ==:17
- a=IkcTkHD0fZMA:10 a=HzLeVaNsDn8A:10 a=x7bEGLp0ZPQA:10
- a=VkNPw1HP01LnGYTKEx00:22 a=Da8U98TiO7q1upZEImrf:22 a=JR4YdQiviy7OQf72WyZ1:22
- a=960X5KZuJcz03JLduyoA:9 a=QEXdDO2ut3YA:10 a=a_PwQJl-kcHnX1M80qC6:22
-X-Proofpoint-ORIG-GUID: Ttr664ro3KMak5pj_C2j-qMMoPLgcczC
-X-Proofpoint-Virus-Version: vendor=nai engine=6800 definitions=11712
- signatures=596818
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- phishscore=0 priorityscore=1501 malwarescore=0 adultscore=0 impostorscore=10
- spamscore=0 bulkscore=10 lowpriorityscore=10 clxscore=1015 suspectscore=0
- classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
- reason=mlx scancount=1 engine=8.22.0-2602130000 definitions=main-2602250227
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <aZ92AvAg5boiSVw1@lstrano-desk.jf.intel.com>
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-0.66 / 15.00];
+X-Spamd-Result: default: False [0.34 / 15.00];
 	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[columbia.edu,none];
-	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
-	R_DKIM_ALLOW(-0.20)[columbia.edu:s=pps01];
+	MID_RHS_NOT_FQDN(0.50)[];
+	R_DKIM_ALLOW(-0.20)[gourry.net:s=google];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	FREEMAIL_CC(0.00)[dilger.ca,manguebit.org,kernel.org,fasheh.com,evilplan.org,linux.alibaba.com,samba.org,gmail.com,microsoft.com,talpey.com,linux.intel.com,suse.de,ffwll.ch,intel.com,ursulin.net,fb.com,suse.com,redhat.com,dubeyko.com,linux.dev,oracle.com,brown.name,ziepe.ca,nvidia.com,cmpxchg.org,google.com,bytedance.com,lists.infradead.org,vger.kernel.org,lists.sourceforge.net,kvack.org,lists.linux.dev,lists.samba.org,lists.freedesktop.org,columbia.edu];
-	FREEMAIL_TO(0.00)[redhat.com,auristor.com,kernel.org,linux-foundation.org,oracle.com,google.com,suse.com,tencent.com,huaweicloud.com,gmail.com,infradead.org,intel.com,suse.cz,zeniv.linux.org.uk,mit.edu];
-	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-14400-lists,cgroups=lfdr.de];
-	DKIM_TRACE(0.00)[columbia.edu:+];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,columbia.edu:mid,columbia.edu:dkim,columbia.edu:email];
-	TO_DN_SOME(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[tz2294@columbia.edu,cgroups@vger.kernel.org];
+	FREEMAIL_CC(0.00)[nvidia.com,lists.linux-foundation.org,vger.kernel.org,kvack.org,lists.linux.dev,meta.com,linuxfoundation.org,kernel.org,stgolabs.net,huawei.com,intel.com,redhat.com,linux-foundation.org,oracle.com,suse.cz,google.com,suse.com,suse.de,gmail.com,sk.com,linux.alibaba.com,rasmusvillemoes.dk,efficios.com,cmpxchg.org,arm.com,linux.dev,zte.com.cn,surriel.com,gentwo.org,tencent.com,huaweicloud.com,bytedance.com,amd.com];
+	TAGGED_FROM(0.00)[bounces-14401-lists,cgroups=lfdr.de];
 	FROM_HAS_DN(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
-	RCPT_COUNT_GT_50(0.00)[97];
-	MID_RHS_MATCH_FROM(0.00)[];
-	NEURAL_HAM(-0.00)[-0.998];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DKIM_TRACE(0.00)[gourry.net:+];
+	RCVD_TLS_LAST(0.00)[];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	DMARC_NA(0.00)[gourry.net];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	MIME_TRACE(0.00)[0:+];
+	RCVD_COUNT_FIVE(0.00)[5];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[gourry@gourry.net,cgroups@vger.kernel.org];
+	MISSING_XM_UA(0.00)[];
+	RCPT_COUNT_GT_50(0.00)[73];
 	TAGGED_RCPT(0.00)[cgroups];
-	RCVD_COUNT_SEVEN(0.00)[7]
-X-Rspamd-Queue-Id: EBF8019F1AA
+	NEURAL_HAM(-0.00)[-0.997];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	TO_DN_SOME(0.00)[]
+X-Rspamd-Queue-Id: 2BE5F19F398
 X-Rspamd-Action: no action
 
-struct pagevec no longer exists. Rename the macro appropriately.
+On Wed, Feb 25, 2026 at 02:21:54PM -0800, Matthew Brost wrote:
+> On Tue, Feb 24, 2026 at 10:17:38AM -0500, Gregory Price wrote:
+> > 
+> > The idea that drm/ is going to switch to private nodes is outside the
+> > realm of reality, but part of that is because of years of infrastructure
+> > built on the assumption that re-using mm/ is infeasible.
+> 
+> I was about to chime in with essentially the same comment about DRM.
+> Switching over to core-managed MM is a massive shift and is likely
+> infeasible, or so extreme that we’d end up throwing away any the
+> existing driver and starting from scratch. At least for Xe, our MM code
+> is baked into all meaningful components of the driver. It’s also a
+> unified driver that has to work on iGPU, dGPU over PCIe, dGPU over a
+> coherent bus once we get there, devices with GPU pagefaults, and devices
+> without GPU pagefaults. It also has to support both 3D and compute
+> user-space stacks, etc. So requirements of what it needs to support is
+> quite large.
+>
+> IIRC, Christian once mentioned that AMD was exploring using NUMA and
+> udma-buf rather than DRM GEMs for MM on coherent-bus devices. I would
+> think AMDGPU has nearly all the same requirements as Xe, aside from
+> supporting both 3D and compute stacks, since AMDKFD currently handles
+> compute. It might be worth getting Christian’s input on this RFC as he
+> likely has better insight then myself on DRM's future here.
+> 
 
-Signed-off-by: Tal Zussman <tz2294@columbia.edu>
+I also think the usage patterns don't quite match (today).
+
+GPUs seem to care very much about specific size allocations, contiguity,
+how users get swapped in/out, how reclaim occurs, specific shutdown
+procedures - etc.
+
+A private node service just wants to be the arbiter of who can access
+the memory, but it may not really care to have extremely deep control
+over the actual management of said memory.
+
+Maybe there is a world where GPUs trend in that direction, but it's
+certainly not where they are today.
+
+But trying to generalize DRM's infrastructure seems bad.  At best we
+end up with two mm/ implementations - not good at all.
+
+
+I do think this fundamentally changes how NUMA gets used by userspace,
+but I think userspace should stop reasoning about nodes for memory
+placement beyond simple cpu-socket-dram mappings </opinion>.
+
+(using mm/mempolicy.c just makes your code less portable by design)
+
 ---
- fs/btrfs/extent_io.c        | 4 ++--
- include/linux/folio_batch.h | 6 +++---
- include/linux/folio_queue.h | 6 +++---
- mm/shmem.c                  | 4 ++--
- mm/swap.c                   | 2 +-
- mm/swap_state.c             | 2 +-
- mm/truncate.c               | 6 +++---
- 7 files changed, 15 insertions(+), 15 deletions(-)
 
-diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-index c373d113f1e7..d82ca509503f 100644
---- a/fs/btrfs/extent_io.c
-+++ b/fs/btrfs/extent_io.c
-@@ -2095,13 +2095,13 @@ static void buffer_tree_tag_for_writeback(struct btrfs_fs_info *fs_info,
- struct eb_batch {
- 	unsigned int nr;
- 	unsigned int cur;
--	struct extent_buffer *ebs[PAGEVEC_SIZE];
-+	struct extent_buffer *ebs[FOLIO_BATCH_SIZE];
- };
- 
- static inline bool eb_batch_add(struct eb_batch *batch, struct extent_buffer *eb)
- {
- 	batch->ebs[batch->nr++] = eb;
--	return (batch->nr < PAGEVEC_SIZE);
-+	return (batch->nr < FOLIO_BATCH_SIZE);
- }
- 
- static inline void eb_batch_init(struct eb_batch *batch)
-diff --git a/include/linux/folio_batch.h b/include/linux/folio_batch.h
-index a2f3d3043f7e..b45946adc50b 100644
---- a/include/linux/folio_batch.h
-+++ b/include/linux/folio_batch.h
-@@ -12,7 +12,7 @@
- #include <linux/types.h>
- 
- /* 31 pointers + header align the folio_batch structure to a power of two */
--#define PAGEVEC_SIZE	31
-+#define FOLIO_BATCH_SIZE	31
- 
- struct folio;
- 
-@@ -29,7 +29,7 @@ struct folio_batch {
- 	unsigned char nr;
- 	unsigned char i;
- 	bool percpu_pvec_drained;
--	struct folio *folios[PAGEVEC_SIZE];
-+	struct folio *folios[FOLIO_BATCH_SIZE];
- };
- 
- /**
-@@ -58,7 +58,7 @@ static inline unsigned int folio_batch_count(const struct folio_batch *fbatch)
- 
- static inline unsigned int folio_batch_space(const struct folio_batch *fbatch)
- {
--	return PAGEVEC_SIZE - fbatch->nr;
-+	return FOLIO_BATCH_SIZE - fbatch->nr;
- }
- 
- /**
-diff --git a/include/linux/folio_queue.h b/include/linux/folio_queue.h
-index 0d3765fa9d1d..f6d5f1f127c9 100644
---- a/include/linux/folio_queue.h
-+++ b/include/linux/folio_queue.h
-@@ -29,12 +29,12 @@
-  */
- struct folio_queue {
- 	struct folio_batch	vec;		/* Folios in the queue segment */
--	u8			orders[PAGEVEC_SIZE]; /* Order of each folio */
-+	u8			orders[FOLIO_BATCH_SIZE]; /* Order of each folio */
- 	struct folio_queue	*next;		/* Next queue segment or NULL */
- 	struct folio_queue	*prev;		/* Previous queue segment of NULL */
- 	unsigned long		marks;		/* 1-bit mark per folio */
- 	unsigned long		marks2;		/* Second 1-bit mark per folio */
--#if PAGEVEC_SIZE > BITS_PER_LONG
-+#if FOLIO_BATCH_SIZE > BITS_PER_LONG
- #error marks is not big enough
- #endif
- 	unsigned int		rreq_id;
-@@ -70,7 +70,7 @@ static inline void folioq_init(struct folio_queue *folioq, unsigned int rreq_id)
-  */
- static inline unsigned int folioq_nr_slots(const struct folio_queue *folioq)
- {
--	return PAGEVEC_SIZE;
-+	return FOLIO_BATCH_SIZE;
- }
- 
- /**
-diff --git a/mm/shmem.c b/mm/shmem.c
-index 149fdb051170..5e7dcf5bc5d3 100644
---- a/mm/shmem.c
-+++ b/mm/shmem.c
-@@ -1113,7 +1113,7 @@ static void shmem_undo_range(struct inode *inode, loff_t lstart, uoff_t lend,
- 	pgoff_t start = (lstart + PAGE_SIZE - 1) >> PAGE_SHIFT;
- 	pgoff_t end = (lend + 1) >> PAGE_SHIFT;
- 	struct folio_batch fbatch;
--	pgoff_t indices[PAGEVEC_SIZE];
-+	pgoff_t indices[FOLIO_BATCH_SIZE];
- 	struct folio *folio;
- 	bool same_folio;
- 	long nr_swaps_freed = 0;
-@@ -1510,7 +1510,7 @@ static int shmem_unuse_inode(struct inode *inode, unsigned int type)
- 	struct address_space *mapping = inode->i_mapping;
- 	pgoff_t start = 0;
- 	struct folio_batch fbatch;
--	pgoff_t indices[PAGEVEC_SIZE];
-+	pgoff_t indices[FOLIO_BATCH_SIZE];
- 	int ret = 0;
- 
- 	do {
-diff --git a/mm/swap.c b/mm/swap.c
-index 2e517ede6561..78b4aa811fc6 100644
---- a/mm/swap.c
-+++ b/mm/swap.c
-@@ -1018,7 +1018,7 @@ EXPORT_SYMBOL(folios_put_refs);
- void release_pages(release_pages_arg arg, int nr)
- {
- 	struct folio_batch fbatch;
--	int refs[PAGEVEC_SIZE];
-+	int refs[FOLIO_BATCH_SIZE];
- 	struct encoded_page **encoded = arg.encoded_pages;
- 	int i;
- 
-diff --git a/mm/swap_state.c b/mm/swap_state.c
-index a0c64db2b275..6313b59d7eab 100644
---- a/mm/swap_state.c
-+++ b/mm/swap_state.c
-@@ -385,7 +385,7 @@ void free_folio_and_swap_cache(struct folio *folio)
- void free_pages_and_swap_cache(struct encoded_page **pages, int nr)
- {
- 	struct folio_batch folios;
--	unsigned int refs[PAGEVEC_SIZE];
-+	unsigned int refs[FOLIO_BATCH_SIZE];
- 
- 	folio_batch_init(&folios);
- 	for (int i = 0; i < nr; i++) {
-diff --git a/mm/truncate.c b/mm/truncate.c
-index df0b7a7e6aff..2931d66c16d0 100644
---- a/mm/truncate.c
-+++ b/mm/truncate.c
-@@ -369,7 +369,7 @@ void truncate_inode_pages_range(struct address_space *mapping,
- 	pgoff_t		start;		/* inclusive */
- 	pgoff_t		end;		/* exclusive */
- 	struct folio_batch fbatch;
--	pgoff_t		indices[PAGEVEC_SIZE];
-+	pgoff_t		indices[FOLIO_BATCH_SIZE];
- 	pgoff_t		index;
- 	int		i;
- 	struct folio	*folio;
-@@ -534,7 +534,7 @@ EXPORT_SYMBOL(truncate_inode_pages_final);
- unsigned long mapping_try_invalidate(struct address_space *mapping,
- 		pgoff_t start, pgoff_t end, unsigned long *nr_failed)
- {
--	pgoff_t indices[PAGEVEC_SIZE];
-+	pgoff_t indices[FOLIO_BATCH_SIZE];
- 	struct folio_batch fbatch;
- 	pgoff_t index = start;
- 	unsigned long ret;
-@@ -672,7 +672,7 @@ int folio_unmap_invalidate(struct address_space *mapping, struct folio *folio,
- int invalidate_inode_pages2_range(struct address_space *mapping,
- 				  pgoff_t start, pgoff_t end)
- {
--	pgoff_t indices[PAGEVEC_SIZE];
-+	pgoff_t indices[FOLIO_BATCH_SIZE];
- 	struct folio_batch fbatch;
- 	pgoff_t index;
- 	int i;
+As a side note, This infrastructure is not just limited to devices,
+and I probably should have pointed this out in the cover.
 
--- 
-2.39.5
+We could create service-dedicated memory pools directly from DRAM.
+
+Something I was exploring this week:  Private-CMA
+
+Hack off a chunk of DRAM at boot, hand it to a driver to hotplug as a
+private node in ZONE_NORMAL with MIGRATE_CMA, and add that node as a
+valid demotion target.
+
+You get:
+
+1) A node of general purpose memory full of (reasonably) cold data
+2) Tracked by CMA
+3) The CMA is dedicated to a single service
+4) And the memory can be pinned for DMA
+
+Right now CMA is somewhat of a free-for-all and if you have multiple CMA
+users you can end up in situations where even CMA fragments.
+
+Splitting up users might be nice - but you need some kind of delimiting
+mechanism for that.  A node seems just about right.
+
+~Gregory
 
 
