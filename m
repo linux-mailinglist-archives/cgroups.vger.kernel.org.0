@@ -1,175 +1,229 @@
-Return-Path: <cgroups+bounces-14382-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-14391-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id QC1cE3VUn2nXaAQAu9opvQ
-	(envelope-from <cgroups+bounces-14382-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Wed, 25 Feb 2026 20:58:45 +0100
+	id YLXyKaJ3n2nScAQAu9opvQ
+	(envelope-from <cgroups+bounces-14391-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Wed, 25 Feb 2026 23:28:50 +0100
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7026519CFDF
-	for <lists+cgroups@lfdr.de>; Wed, 25 Feb 2026 20:58:44 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4796F19E466
+	for <lists+cgroups@lfdr.de>; Wed, 25 Feb 2026 23:28:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id D4DAF3013C74
-	for <lists+cgroups@lfdr.de>; Wed, 25 Feb 2026 19:58:41 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 5B58330C4F45
+	for <lists+cgroups@lfdr.de>; Wed, 25 Feb 2026 22:27:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7C0FB3EDADB;
-	Wed, 25 Feb 2026 19:58:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA6D6330D5E;
+	Wed, 25 Feb 2026 22:27:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="bFL6eTNt"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="eZJ4SOhZ"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-ed1-f42.google.com (mail-ed1-f42.google.com [209.85.208.42])
+Received: from mail-dy1-f179.google.com (mail-dy1-f179.google.com [74.125.82.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D61DB3ED11F
-	for <cgroups@vger.kernel.org>; Wed, 25 Feb 2026 19:58:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.208.42
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772049518; cv=pass; b=JyegpqFPkbs+4UHk7TKghiulTP9fnI4A/PZRsTHt2Z25fMho3BifLhxc6yjyb19eRJ5gf+Ogf4fGKqCO6ON43em9KrqI6YeKVU3Yn2IuUn9YjTThyzI3HWo/VuNyZ8JdT8r1R0QEjbGgyWxnHHLrS1CvruphjocVoqy2naxeOvA=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772049518; c=relaxed/simple;
-	bh=GyourlDdj2Tljzk6rLtG6gEQuh1sMzPbchn9jIwrybE=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=GrqfecdojQo3pF/UkE5CvE+34rttJJGwkhVxnF4lyUigTeBF3MZimjWoy4Lp+naTGkM1HmcOweaiti/GcS0yqstLQhHX1GQRhEKFWlRxKdTnSU/r+ur8EFt2U1Ma1SoNpIXMykZEO3iWW3QMguP5U3hQ4AKTD0JnwVhSe1Ugg9Q=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=bFL6eTNt; arc=pass smtp.client-ip=209.85.208.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ed1-f42.google.com with SMTP id 4fb4d7f45d1cf-65c01595082so204113a12.3
-        for <cgroups@vger.kernel.org>; Wed, 25 Feb 2026 11:58:36 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; t=1772049515; cv=none;
-        d=google.com; s=arc-20240605;
-        b=LSEqoyFMukDPrQTWtv5CuuJgzr479d2RHMlGmtlRZ3YxUkdsjMVXXbIn4/FLv9BT41
-         GJ/DvHmc78fr7Y74d9vjOoVNO9API1aUwqc7k7S7yZzU4Tzb0XWs1lMm+8mV3Go5ZxKl
-         +8XAQBbjRtjcliP8nSAcILTFH1ePpnoJLYxj0pF4qEhl4BxNa28pqtarjpikU5+l6bJ9
-         rBGPot3n1DelVm2sSDN/pMlN2XnGSZa52rUlVHQSBtTLfnuMFj3KcJfwCYSym7/DYHU8
-         ksL+qjY99KNiumcCjpQuo25D9xXn6sBvsd9HOFmGA3sYw6XQ7ERFZpdsYuq53qmb3eHB
-         db7A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:dkim-signature;
-        bh=GyourlDdj2Tljzk6rLtG6gEQuh1sMzPbchn9jIwrybE=;
-        fh=UTrliKBwtJ6qLUeEGybzPan0+3vN34jwImGVsvoH9k8=;
-        b=kDzFKtyECv1CYtAH5jgGAeBtukVM7d2WF+DB29rCjYh3Wi/PYWoiIAW/QWqxOhGyOq
-         fLBDHTBbKmgB+wkoHKUYuETLJPiWbeKKDv0y3YKp9U4gMaO4VM43GU5pPSo1k7AKMoKO
-         1sAIDxkvhFoZkFSpqwCwhPb7Tn9zW0mKmYCkjVTkBsQfoZy8jmxNNkkmG+Jw23iJUV/h
-         /pNgey/iaE8G8Wgl7DxzO1/zmhNjNMXYFAP+pLRObBLbqpJhyKnXE0xOL+QI+nVcKGcJ
-         xvtxhMWBMJa3dUVvQ5g+VRjUYSD7t1U+DqxK0tMguVZa3wOvNh9G9KwfyhzF35P/Bixo
-         fcbQ==;
-        darn=vger.kernel.org
-ARC-Authentication-Results: i=1; mx.google.com; arc=none
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 466F22D3A86
+	for <cgroups@vger.kernel.org>; Wed, 25 Feb 2026 22:27:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.82.179
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1772058445; cv=none; b=ML2Z1J7nDWkmUlSM3wQ3WVqYDj893+gK9rzW+/A9vrO6OcemTX43yM1H+DpdyDIgfFD654UVcZeeAUjlrVZBBkghY9+RdE0JuCLjuBGMC1brHDst9nOVWexJ9dNVkVL1/jNOknyJzHDw79M9Gm7fJHuvvM4t2BxQKFqd+6HJgzM=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1772058445; c=relaxed/simple;
+	bh=5NxL+lsmNkAmuod7M/UL2N/jLtE5LxxmzTX+fk4im1s=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=TVzWjFBAF//NwUqLwTFNNwH1n9HWtwQEzu7SWwY2Q9+5OaPcdinhTiSk9d6WaijvXBVC+q8tFByNtYKe7+HTiOYIeXaLcc3XtefwagDWFjZkF7qSaR2F4JN+QPnm0xxidDMql7DfFapvreFwiqhBJiHNDG1NZGmd+J81CXgWrCc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=eZJ4SOhZ; arc=none smtp.client-ip=74.125.82.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-dy1-f179.google.com with SMTP id 5a478bee46e88-2bdcb30fe8aso334809eec.0
+        for <cgroups@vger.kernel.org>; Wed, 25 Feb 2026 14:27:24 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1772049515; x=1772654315; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1772058443; x=1772663243; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=GyourlDdj2Tljzk6rLtG6gEQuh1sMzPbchn9jIwrybE=;
-        b=bFL6eTNt0ihHjvtATq7bScLjK6enVQGNaoem2xoRRLK8Ew4nYSJazV6bWkZMPxAQsV
-         UhC3mWJsZfeF/A+u0J9AQnY+7p187R8GY2Prhip4N7tba3TFsVbslyQrXbEYPDw7rH9+
-         aY4p0XwM6xLTAjaRC/dSltMfEDlKjahJVjAjjwlLCKECBOxIaoyoTQ9rcm+FG/PZwqxb
-         1tckypd6k6VNo9ETKnLnu77yPdZuWOB1Q715+HhSbCH4w2Sjmm1Safjpuv3SEtiqghCw
-         kgI44223VIKCrX99yUGJ8RFA+XPX6GEwl3t304vtzkgePB7xkzHfF2oBjUYo+7cuugim
-         gDUg==
+        bh=hHyAmbqk7HhQ2rW+koNARPwcM5Pex8BM81YALg0B5qs=;
+        b=eZJ4SOhZM9ZcpjR4pxAXLrsQTLJratRCLz9YmTt6on2uKSnUOCI7FzvmO9S/33iwLF
+         J4Zk0myZOBZ+SYRwXzVhDdOEiiTheaZrQo/AYjIkLSrAGIqo3ZgR5gLneR6AXb4IgNgy
+         PYnmDX/W2FiaBSbUBK0uQJnrLYqEBbWPhEpynZMUopKDg2bNnjAFy8EjDriq8U6qSVbZ
+         teoQaLm5elFT9aY0BdOFkn9+F317XFlo93EUuvn90cKzPEqoSmtbmJlHCGQdrXn4VO7Y
+         GLNPoMSWudqIz0FFJHuphr9rcBy62Cn3zOj4apbz+nsZF3OUUL4SlEIlWwdUe7liePp6
+         bPNA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1772049515; x=1772654315;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
+        d=1e100.net; s=20230601; t=1772058443; x=1772663243;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=GyourlDdj2Tljzk6rLtG6gEQuh1sMzPbchn9jIwrybE=;
-        b=ikXvXqKrqsulSRWZL6MAWj8JNVYcmnw8tL8x01Vf/TJ2ln/iJs4h3o5UXIvYKP9DoE
-         rbNb77rJLQmG6yImMuMU9eb2eFtSU6bVXBLhZPsm1iSMiK2sS0ZRPfeLbMv6xiW3vRKP
-         FSpmJju5zdwl616XjJpfRgwRjtTueEtKKLtKufHydEtCDFlMaiPLXzV6LEh5iqfuwKXq
-         NOjfeo31ch1HQjppW2/a6Rjw6aoNHuLe0SaOZmorVG1VXKBVMxLrhBBmt2G1WL859kKR
-         7U3VdmiUVx6vFTyFKlhhvDXISbQhu2WsF1628ttPUCXomN0i7zcy7ay2NMd/5fhDNODx
-         LOUQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUeYU8EoWUgVzC8vAau/RQBTaA4+Ql2C8xiwEpru2YC9xkLjxleZuldlO+e5sFcxI2UnQxVgRgj@vger.kernel.org
-X-Gm-Message-State: AOJu0Ywqsy+yycxasQ/GwFTALC/PQn4whPsxXgeFOAQ+v09LooGbV425
-	k7QY7xgMZfnDfUupUQM38cMsE9zIatj8F0NHDIcu49YJepbOVAy28iMNQtflc7accC/A00hT/mM
-	I+0qttTcwV+AJWPgbzJeAL/GLwiNyGDzQ3z/elblp
-X-Gm-Gg: ATEYQzwXFAmpdgaSau7sED15dIVSQkt52+xC4jgBSc1RlZTxnIJeWIaifawnfaFtuZQ
-	oPvhMB5bwsoHY1pzZliKeTdJWYd8NGyOWB2jba2fY7MrbEmu725cD7ZAawnFMtFD7XrzWZ4c3AY
-	rIlCDyQRh0p6xxSNyB6jalUclQHidNjir+vq3h/F7LtGQyX10fSau8Kc+eJKXSprLdLfeaa+/fJ
-	p4I9jcEIoqk56is2bGYSSquj+u/fSRE9I/U+NtTZMUB51rstg7027lWh2po/A2vzdA79tB35UWV
-	vXdJfiYPQKhsIWWTVZgmihT/0fhM60byun3Y8BHJ938KBdHMWVpm1M064HPnIOfdROhQCw==
-X-Received: by 2002:a17:906:209c:b0:b87:1590:d528 with SMTP id
- a640c23a62f3a-b9081b6d72cmr674923766b.40.1772049514649; Wed, 25 Feb 2026
- 11:58:34 -0800 (PST)
+        bh=hHyAmbqk7HhQ2rW+koNARPwcM5Pex8BM81YALg0B5qs=;
+        b=ERtEIoiTLey5e5sVyiMkQ5N6p2LDzw677RE0S6qGv0ElOZzAK1d2jFlWnflii5+YMY
+         tlmgn6imxOizXhSRTJA1Tl5qEweK8LtF4HOj4VjNSZIcMZimyXh+4CMwQfyNG7qPUnp1
+         FIF/J4dZuUTTnqjKnayGyXJ24V3VK2Ap68I3ckqpXRT7NY2zSV7JHxKcJSrRE2YA+k64
+         jTsSbvw9FwnQhXDHwYVVuqZ0CE+qZkWAIULWr3mEv+sbHiVD0D1ygBXlPkcEgYGY9u6Z
+         fjjALBBsNLmycRJkeTbT5BxP+111PhLFiBn/VHHudoLVC9+gIPhFBLucVXBWcBGujZ1y
+         OPTQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWcYntrzcN97InL/5g7X31ZFxMn4VV4LpjwFQCXtLTHfr8OqmN6x5+ZzRvRZ4LBfnYaM1IptX4i@vger.kernel.org
+X-Gm-Message-State: AOJu0YzCrbUWyuP8BU7ii3K7RAZcIr2eYexL/UwGSnmm7cZVQ6JQB9qL
+	nlznC1lDfg7e3Lqx4GdrzgUMMUCxXhpyWjBWquhgVeS1+iJHltTpjiL48CXi2g==
+X-Gm-Gg: ATEYQzyILtR8H6KGRXp7MRVCqhXT3cXF/6NyokoGhObpclWB3LLjuxIfoad3ZlBBVmy
+	wj4DjIsBck0+kltQAiql+MwOBdnfzGx2sOlxV5kRJaVUK/hABSRXQr424b9zh7yUdO5wgejjgf4
+	Q/q3j2hifEFOvcWA/4EVDEJDyE1rLx04KjdTad3qYHSMtt2aPIQgvgF/5bCn1jMvTdZDf6eG0LX
+	DF5bgXRTFWJovMkpoXFvlCV0wKAaPMe58b1Lu90cQwsie3IRFn6dGXx+SMr9IdPeufTIDAVm4hO
+	+NwSl+jp50zaAheMIEArAYnm3SuycWLDiVByhLMP6orK9jcaK9PlejZvEmr8zHqE+uZWjos5fu5
+	HZFnc76Y7hsc0wjH7kEbQHL2dozLZuMMP5XFKAyH/wPEpxk1e/cSiqNcQFd/Y8KJ9xM71wpuGQb
+	hPSjfs5+R+x2l4KKxt+QRH
+X-Received: by 2002:a05:6808:168b:b0:463:cf6b:982a with SMTP id 5614622812f47-4644622ce34mr8146359b6e.22.1772051111331;
+        Wed, 25 Feb 2026 12:25:11 -0800 (PST)
+Received: from localhost ([2a03:2880:10ff:3::])
+        by smtp.gmail.com with ESMTPSA id 586e51a60fabf-4157cfa6624sm16078679fac.8.2026.02.25.12.25.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 25 Feb 2026 12:25:10 -0800 (PST)
+From: Joshua Hahn <joshua.hahnjy@gmail.com>
+To: Ackerley Tng <ackerleytng@google.com>
+Cc: akpm@linux-foundation.org,
+	dan.j.williams@intel.com,
+	david@kernel.org,
+	fvdl@google.com,
+	hannes@cmpxchg.org,
+	jgg@nvidia.com,
+	jiaqiyan@google.com,
+	jthoughton@google.com,
+	kalyazin@amazon.com,
+	mhocko@kernel.org,
+	michael.roth@amd.com,
+	muchun.song@linux.dev,
+	osalvador@suse.de,
+	pasha.tatashin@soleen.com,
+	pbonzini@redhat.com,
+	peterx@redhat.com,
+	pratyush@kernel.org,
+	rick.p.edgecombe@intel.com,
+	rientjes@google.com,
+	roman.gushchin@linux.dev,
+	seanjc@google.com,
+	shakeel.butt@linux.dev,
+	shivankg@amd.com,
+	vannapurve@google.com,
+	yan.y.zhao@intel.com,
+	cgroups@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-mm@kvack.org
+Subject: Re: [RFC PATCH v1 0/7] Open HugeTLB allocation routine for more generic use
+Date: Wed, 25 Feb 2026 12:24:37 -0800
+Message-ID: <20260225202437.4077364-1-joshua.hahnjy@gmail.com>
+X-Mailer: git-send-email 2.47.3
+In-Reply-To: <cover.1770854662.git.ackerleytng@google.com>
+References: 
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <cover.1770854662.git.ackerleytng@google.com> <67a62716952c806c2a512e98bcac1f5224ada324.1770854662.git.ackerleytng@google.com>
-In-Reply-To: <67a62716952c806c2a512e98bcac1f5224ada324.1770854662.git.ackerleytng@google.com>
-From: James Houghton <jthoughton@google.com>
-Date: Wed, 25 Feb 2026 11:57:58 -0800
-X-Gm-Features: AaiRm52wU6KkL251Z2G8sJq02VAiPYyNCCNpcDmsxM2CKPU8i6iZmZDmernmq44
-Message-ID: <CADrL8HVSqhdUAQ=OPicZSPnaCXQMTweZ0rqvXp_86p_xnZ1Bbw@mail.gmail.com>
-Subject: Re: [RFC PATCH v1 3/7] mm: hugetlb: Move mpol interpretation out of dequeue_hugetlb_folio_vma()
-To: Ackerley Tng <ackerleytng@google.com>
-Cc: akpm@linux-foundation.org, dan.j.williams@intel.com, david@kernel.org, 
-	fvdl@google.com, hannes@cmpxchg.org, jgg@nvidia.com, jiaqiyan@google.com, 
-	kalyazin@amazon.com, mhocko@kernel.org, michael.roth@amd.com, 
-	muchun.song@linux.dev, osalvador@suse.de, pasha.tatashin@soleen.com, 
-	pbonzini@redhat.com, peterx@redhat.com, pratyush@kernel.org, 
-	rick.p.edgecombe@intel.com, rientjes@google.com, roman.gushchin@linux.dev, 
-	seanjc@google.com, shakeel.butt@linux.dev, shivankg@amd.com, 
-	vannapurve@google.com, yan.y.zhao@intel.com, cgroups@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-mm@kvack.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-2.16 / 15.00];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=2];
-	DMARC_POLICY_ALLOW(-0.50)[google.com,reject];
-	R_DKIM_ALLOW(-0.20)[google.com:s=20230601];
-	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
+X-Spamd-Result: default: False [-1.66 / 15.00];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
+	R_MISSING_CHARSET(0.50)[];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_DKIM_ALLOW(-0.20)[gmail.com:s=20230601];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
+	RECEIVED_HELO_LOCALHOST(0.00)[];
 	RCVD_TLS_LAST(0.00)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-14382-lists,cgroups=lfdr.de];
-	RCVD_COUNT_THREE(0.00)[4];
-	RCPT_COUNT_TWELVE(0.00)[28];
-	MIME_TRACE(0.00)[0:+];
-	FROM_HAS_DN(0.00)[];
-	MISSING_XM_UA(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[jthoughton@google.com,cgroups@vger.kernel.org];
-	DKIM_TRACE(0.00)[google.com:+];
+	MIME_TRACE(0.00)[0:+];
+	TAGGED_FROM(0.00)[bounces-14391-lists,cgroups=lfdr.de];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	FREEMAIL_FROM(0.00)[gmail.com];
+	RCPT_COUNT_TWELVE(0.00)[29];
+	FROM_HAS_DN(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[joshuahahnjy@gmail.com,cgroups@vger.kernel.org];
+	MID_RHS_MATCH_FROM(0.00)[];
 	NEURAL_HAM(-0.00)[-1.000];
-	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
+	RCVD_COUNT_FIVE(0.00)[5];
+	DKIM_TRACE(0.00)[gmail.com:+];
 	TAGGED_RCPT(0.00)[cgroups];
 	TO_DN_SOME(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns,mail.gmail.com:mid]
-X-Rspamd-Queue-Id: 7026519CFDF
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: 4796F19E466
 X-Rspamd-Action: no action
 
-On Wed, Feb 11, 2026 at 4:37=E2=80=AFPM Ackerley Tng <ackerleytng@google.co=
-m> wrote:
->
-> Move memory policy interpretation out of dequeue_hugetlb_folio_vma() and
-> into alloc_hugetlb_folio() to separate reading and interpretation of memo=
-ry
-> policy from actual allocation.
->
-> Also rename dequeue_hugetlb_folio_vma() to
-> dequeue_hugetlb_folio_with_mpol() to remove association with vma and to
-> align with alloc_buddy_hugetlb_folio_with_mpol().
->
-> This will later allow memory policy to be interpreted outside of the
-> process of allocating a hugetlb folio entirely. This opens doors for othe=
-r
-> callers of the HugeTLB folio allocation function, such as guest_memfd,
-> where memory may not always be mapped and hence may not have an associate=
-d
-> vma.
->
-> No functional change intended.
->
-> Signed-off-by: Ackerley Tng <ackerleytng@google.com>
+On Wed, 11 Feb 2026 16:37:11 -0800 Ackerley Tng <ackerleytng@google.com> wrote:
 
-Reviewed-by: James Houghton <jthoughton@google.com>
+Hi Ackerly, I hope you're donig well!
+
+[...snip...]
+
+> I would like to get feedback on:
+> 
+> 1. Opening up HugeTLB's allocation for more generic use
+
+I'm not entirely familiar with guest_memfd, so pleae excuse my ignorance
+if I'm missing anything obvious. But I'm wondering what hugeTLB offers
+that other hugepage solutions cannot offer for guest_memfd, if the
+goal of this series is to decouple it from hugeTLBfs.
+
+> 2. Reverting and re-adopting the try-commit-cancel protocol for memory
+>    charging
+
+On the second point, I am wondering if reintroducing the try-commit-cancel
+protocol is tied to factoring out hugetlb_alloc_folio. When I removed
+the protocol a while back, the justification was that for the most part,
+grabbing a hugetlb folio was a relatively cheap & fast operation, since
+hugetlb mostly operates out of a preallocated pool.
+
+So the cost of being wrong, going above the limit, and having to return
+the hugetlb folio was also relatively low.
+
+It seems like this patch series introduces some new paths for hugetlb
+pages to be consumed (specifically, without a reservation or vma).
+I imagine that these new paths make the slowpath for hugetlb more frequent,
+which makes the cost of assuming that the memcg limit is OK higher?
+I think explicitly spelling this out in the justification for reintroducing
+the charging protocol could be helpful. 
+
+Thank you for the series, again. I hope you have a great day!
+Joshua
+
+> To see how hugetlb_alloc_folio() is used by guest_memfd, the most
+> recent patch series that uses this more generic HugeTLB allocation
+> routine is at [1], and a newer revision of that patch series is at
+> [2].
+> 
+> Independently of guest_memfd, I believe this change is useful in
+> simplifying alloc_hugetlb_folio(). alloc_hugetlb_folio() was so
+> coupled to a VMA that even HugeTLBfs allocates HugeTLB folios using a
+> pseudo-VMA.
+> 
+> [1] https://lore.kernel.org/all/cover.1747264138.git.ackerleytng@google.com/T/
+> [2] https://github.com/googleprodkernel/linux-cc/tree/wip-gmem-conversions-hugetlb-restructuring-12-08-25
+> 
+> Ackerley Tng (7):
+>   mm: hugetlb: Consolidate interpretation of gbl_chg within
+>     alloc_hugetlb_folio()
+>   mm: hugetlb: Move mpol interpretation out of
+>     alloc_buddy_hugetlb_folio_with_mpol()
+>   mm: hugetlb: Move mpol interpretation out of
+>     dequeue_hugetlb_folio_vma()
+>   Revert "memcg/hugetlb: remove memcg hugetlb try-commit-cancel
+>     protocol"
+>   mm: hugetlb: Adopt memcg try-commit-cancel protocol
+>   mm: memcontrol: Remove now-unused function mem_cgroup_charge_hugetlb
+>   mm: hugetlb: Refactor out hugetlb_alloc_folio()
+> 
+>  include/linux/hugetlb.h    |  11 ++
+>  include/linux/memcontrol.h |  21 +++-
+>  mm/hugetlb.c               | 228 +++++++++++++++++++++----------------
+>  mm/memcontrol.c            |  77 ++++++++-----
+>  4 files changed, 212 insertions(+), 125 deletions(-)
+> 
+> 
+> base-commit: db9571a66156bfbc0273e66e5c77923869bda547
+> --
+> 2.53.0.310.g728cabbaf7-goog
+> 
 
