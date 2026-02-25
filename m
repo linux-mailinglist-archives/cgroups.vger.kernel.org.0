@@ -1,128 +1,58 @@
-Return-Path: <cgroups+bounces-14236-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-14237-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id Bl4/FgBLnmkOUgQAu9opvQ
-	(envelope-from <cgroups+bounces-14236-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Wed, 25 Feb 2026 02:06:08 +0100
+	id eKzfFE1RnmmbUgQAu9opvQ
+	(envelope-from <cgroups+bounces-14237-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Wed, 25 Feb 2026 02:33:01 +0100
 X-Original-To: lists+cgroups@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8BC5318E848
-	for <lists+cgroups@lfdr.de>; Wed, 25 Feb 2026 02:06:03 +0100 (CET)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6503F18EF8C
+	for <lists+cgroups@lfdr.de>; Wed, 25 Feb 2026 02:33:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 75B8730B7826
-	for <lists+cgroups@lfdr.de>; Wed, 25 Feb 2026 01:04:39 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 1D7B6305C922
+	for <lists+cgroups@lfdr.de>; Wed, 25 Feb 2026 01:29:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF01923D7CF;
-	Wed, 25 Feb 2026 01:04:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LQSKXLy4"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5F32E25228D;
+	Wed, 25 Feb 2026 01:29:54 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-wm1-f48.google.com (mail-wm1-f48.google.com [209.85.128.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 400351DDC2B
-	for <cgroups@vger.kernel.org>; Wed, 25 Feb 2026 01:04:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 85F0E2522A7;
+	Wed, 25 Feb 2026 01:29:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1771981475; cv=none; b=CwPevgN+sTqk4ul8YtwE1oOMtdCd1ibUYhdU75kFrBd0zkB9wIj9XBQ6aYSMJ3LrcfrykaFq9zS3t/ednA1irnv3fi1XYJZMk0kDkF5ZRW9yuJ53d+3dG3JqcwIEmX1cmK14cyVlszSHIE9iw/E482yOwq5MrOoqZ8XdFfj8FGM=
+	t=1771982994; cv=none; b=tyK2ffj4mMaZWeFhomeSEFhijd1kVJasHF4+sF/bVQw+SmA9ecnWuzUKqCSdHduQgEs+OE1Uut+77xwvavDFopC5pBuv6NWQWfBA0+hp3xF1twnJ550drJU22sxjAkGrkhm7oiMuogXemQUG3l82SVVJIvzeF0ty5nsP2K9daMA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1771981475; c=relaxed/simple;
-	bh=em6SncChhsNCmZBW0/ZxL0iTGmVt5uomb8OIqPmIz1A=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Z6OqvroG5c2N0DGx4gJTUZBvXWLaUNMy/GrArAdvAjXUArZJpnX2ZY0cNPrwXFYiHU02+ENEiFc1RvKHF/u6wLir3HtmkEPdTC1um4Y70UA0DhLo+GH53aYFz2U2lshb2tXM8+XqwA2FkWu6nmgMLE4xP96vbGvXO2JFtzh9ML8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=LQSKXLy4; arc=none smtp.client-ip=209.85.128.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f48.google.com with SMTP id 5b1f17b1804b1-48371bb515eso76056185e9.1
-        for <cgroups@vger.kernel.org>; Tue, 24 Feb 2026 17:04:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1771981472; x=1772586272; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=91/bJkQNN7qyadQSoaiseSGTAeJs7mqrmAw5bCkfU7E=;
-        b=LQSKXLy4N81+LQ9dnficvxoDfXFWoYgbdMKMOUciAGJlx4yrli3/hpBfkC+CPEaDkK
-         wP+pulM8SllstFNXhYbKIh8TcPoxH7AjkDwA8eQZ5MOztrxYp3t1Ph/1JgEhVDLyoSy/
-         coeqX8HEdUmdbm/ioojExxv5r+VHVcwOJUha9NoZ3dHnVn6tPxIqBMifRci7hujfZZiT
-         gJuVniiUH2iZJNBWMQtFomg5tnTNDCA9ScCvXoH4EwIAyUunQyVwjLF3nUSlbamo8/Zi
-         r+jfdOMpHI9dB17y7Ow1MdZebAGhDrhIxfUFX5egd5oFnf2PTheUw9hvGM8n1LgkGjpZ
-         zIvw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1771981472; x=1772586272;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=91/bJkQNN7qyadQSoaiseSGTAeJs7mqrmAw5bCkfU7E=;
-        b=b5gJNVNqwt0omQA/sO1cNCR6XGeRM9IOeonPRQyvQ/ENG6VLcwRSN3SQoB/Weiguuo
-         2edw+Dn52tulIowNwguI5q+X1WoeJJ2tSGFrYZgDewP8DsEBQj4sUe4FkQhxNKv0a5eh
-         Y3+m0iqStzIRzkyRkAFHqAsi2EemcGR3SHFvi2b1NaK8+ukEJhhNy7QpzPzEkAif+Skx
-         Bm3XogF4mBXBpgbnmkMWRT4aEht4HvpUI/7n8q9TxgbPm+qt90zk7zRDuWtMqwhaJHPn
-         TX95SguWEYgQcc6qdpd34UU9Hx4kijD/K6tpBPT98h0AUT+Ul+TmVN1TIYwR2/I4Pmzf
-         t6hg==
-X-Forwarded-Encrypted: i=1; AJvYcCXgncguShSspC7l3GnCJ5JWTeUICpgDSm8pocpz6/VxaPhggaEC7aa9zj84poN0l74eEPKZScWe@vger.kernel.org
-X-Gm-Message-State: AOJu0YyL3hEeIbwWAcjKQmZR0p3XnXTbpWg2d1DE3TMPBf9A1H5csmtI
-	Fa0b6j6rQIOl8L+EfFr6iWR9tVGM2UXyJTbwTSqr8A5stH9Bh6+lVolT
-X-Gm-Gg: ATEYQzz+dgslOd3GyqylcC9tjM+yCWLXp5RkfAAOdBbcxrDpB9OcYYpLu8wG3BuRfd8
-	jPcDrFB97OZU433fSM9DIDdtmiLJX7jADL3nwAWkInLHKrX98boo8obSWXRXezxo382UHCjhFBh
-	aQABKzjrWKd/w3+C+ngkEIxnUu0zi3kEts2VYTetfm/+eEwAaB0UVSfEysF6wEtvRluihmZy0Sr
-	4q7ohKzKM6RvXJ4xaCGW7OnnGY0wtN14LrYJ0oiX5c3WLqsYIP2vzYq6fN3Er7HG7syRGfioN6X
-	fzH32wZU5N2z7vcrOyGdVE0sy0XFFXq0MWU20PZqIkVYuuHDfGB9MCcdcrjwpcCb+PTa3QehSTt
-	I0w6mYt/Clk7NiUyaZmSmJp8tgqJYwU4Ptr1zumVFKXVnNEERmpjGLbRkqYu++5PeSPiN517I5J
-	GXtOLbfZMKQy1mFLQbbc2azwgIz0ZEfA==
-X-Received: by 2002:a05:600d:640f:20b0:483:9139:4c1d with SMTP id 5b1f17b1804b1-483a9607e3cmr199650505e9.14.1771981472242;
-        Tue, 24 Feb 2026 17:04:32 -0800 (PST)
-Received: from localhost ([212.73.77.104])
-        by smtp.gmail.com with UTF8SMTPSA id 5b1f17b1804b1-483bedda2d3sm4976455e9.21.2026.02.24.17.04.28
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 24 Feb 2026 17:04:31 -0800 (PST)
-From: Askar Safin <safinaskar@gmail.com>
-To: nphamcs@gmail.com
-Cc: akpm@linux-foundation.org,
-	axelrasmussen@google.com,
-	baohua@kernel.org,
-	bhe@redhat.com,
-	cgroups@vger.kernel.org,
-	chengming.zhou@linux.dev,
-	chrisl@kernel.org,
-	christophe.leroy@csgroup.eu,
-	gourry@gourry.net,
+	s=arc-20240116; t=1771982994; c=relaxed/simple;
+	bh=OuZodcWZBPPn09Jv7V1ezRzKFZ4o2WvGDzqsFjEmv9k=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=Zv3JILtp95dqSdES/LZAZoMOEsJGGVcH7JaeTv6mLiOG/9XeF6MmYC8meTz/CHd3xcGK2Wya1/F/+pmAjBWI678XUsWhUXC4FmUSSdBMvwF9YBrovFB9mnjQrNatoCHrZAeTpC1WqpvRiKrQdgU7k3YpPNqjEVNOAkS0Gkf7t+Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.177])
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTPS id 4fLH6s67VSzKHMKG;
+	Wed, 25 Feb 2026 09:28:53 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.128])
+	by mail.maildlp.com (Postfix) with ESMTP id DF2F54058C;
+	Wed, 25 Feb 2026 09:29:48 +0800 (CST)
+Received: from hulk-vt.huawei.com (unknown [10.67.174.121])
+	by APP4 (Coremail) with SMTP id gCh0CgC3Y_SHUJ5pTLChIg--.61220S2;
+	Wed, 25 Feb 2026 09:29:48 +0800 (CST)
+From: Chen Ridong <chenridong@huaweicloud.com>
+To: longman@redhat.com,
+	chenridong@huaweicloud.com,
+	tj@kernel.org,
 	hannes@cmpxchg.org,
-	huang.ying.caritas@gmail.com,
-	hughd@google.com,
-	jannh@google.com,
-	joshua.hahnjy@gmail.com,
-	kasong@tencent.com,
-	kernel-team@meta.com,
-	len.brown@intel.com,
+	mkoutny@suse.com
+Cc: cgroups@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
-	linux-mm@kvack.org,
-	linux-pm@vger.kernel.org,
-	lorenzo.stoakes@oracle.com,
-	mhocko@kernel.org,
-	muchun.song@linux.dev,
-	npache@redhat.com,
-	osalvador@suse.de,
-	pavel@kernel.org,
-	peterx@redhat.com,
-	pfalcato@suse.de,
-	rafael@kernel.org,
-	riel@surriel.com,
-	roman.gushchin@linux.dev,
-	ryan.roberts@arm.com,
-	shakeel.butt@linux.dev,
-	shikemeng@huaweicloud.com,
-	viro@zeniv.linux.org.uk,
-	weixugc@google.com,
-	yosry.ahmed@linux.dev,
-	yuanchu@google.com,
-	zhengqi.arch@bytedance.com
-Subject: Re: [PATCH v3 00/20] Virtual Swap Space
-Date: Wed, 25 Feb 2026 04:04:24 +0300
-Message-ID: <20260225010425.2876986-1-safinaskar@gmail.com>
-X-Mailer: git-send-email 2.47.3
-In-Reply-To: <20260208215839.87595-1-nphamcs@gmail.com>
-References: <20260208215839.87595-1-nphamcs@gmail.com>
+	lujialin4@huawei.com
+Subject: [PATCH -next] cgroup/cpuset: fix null-ptr-deref in rebuild_sched_domains_cpuslocked
+Date: Wed, 25 Feb 2026 01:15:23 +0000
+Message-Id: <20260225011523.51365-1-chenridong@huaweicloud.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -130,57 +60,110 @@ List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:gCh0CgC3Y_SHUJ5pTLChIg--.61220S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxAr18Gr4fJFWrJry5Cr15Arb_yoW5Xry8pF
+	WjgrWUGrWFgr1UAr4q9a45Zr1F9anrAF17JwnrGr1kJF1UW3WUGr1kXa17WryDXr17C347
+	JF1DZw4xtr1UtaDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUkG14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+	1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
+	JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
+	CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
+	2Ix0cI8IcVAFwI0_Jrv_JF1lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
+	W8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lc7CjxVAaw2AFwI0_
+	JF0_Jw1l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67
+	AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIY
+	rxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14
+	v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8
+	JwCI42IY6I8E87Iv6xkF7I0E14v26r1j6r4UYxBIdaVFxhVjvjDU0xZFpf9x0JUQo7NUUU
+	UU=
+X-CM-SenderInfo: hfkh02xlgr0w46kxt4xhlfz01xgou0bp/
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [0.84 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+X-Spamd-Result: default: False [0.04 / 15.00];
 	MID_CONTAINS_FROM(1.00)[];
-	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
-	R_DKIM_ALLOW(-0.20)[gmail.com:s=20230601];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[40];
-	FREEMAIL_CC(0.00)[linux-foundation.org,google.com,kernel.org,redhat.com,vger.kernel.org,linux.dev,csgroup.eu,gourry.net,cmpxchg.org,gmail.com,tencent.com,meta.com,intel.com,kvack.org,oracle.com,suse.de,surriel.com,arm.com,huaweicloud.com,zeniv.linux.org.uk,bytedance.com];
-	TAGGED_FROM(0.00)[bounces-14236-lists,cgroups=lfdr.de];
-	MIME_TRACE(0.00)[0:+];
-	RCVD_TLS_LAST(0.00)[];
-	FREEMAIL_TO(0.00)[gmail.com];
-	RECEIVED_HELO_LOCALHOST(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	FREEMAIL_FROM(0.00)[gmail.com];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[safinaskar@gmail.com,cgroups@vger.kernel.org];
-	FROM_HAS_DN(0.00)[];
-	DKIM_TRACE(0.00)[gmail.com:+];
-	RCVD_COUNT_FIVE(0.00)[5];
-	NEURAL_HAM(-0.00)[-0.997];
-	TO_DN_NONE(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
+	NEURAL_HAM(-0.00)[-1.000];
+	FROM_NEQ_ENVFROM(0.00)[chenridong@huaweicloud.com,cgroups@vger.kernel.org];
 	TAGGED_RCPT(0.00)[cgroups];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 8BC5318E848
+	RCVD_COUNT_FIVE(0.00)[6];
+	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
+	FROM_HAS_DN(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	RCPT_COUNT_SEVEN(0.00)[8];
+	R_DKIM_NA(0.00)[];
+	DMARC_NA(0.00)[huaweicloud.com];
+	TAGGED_FROM(0.00)[bounces-14237-lists,cgroups=lfdr.de];
+	PRECEDENCE_BULK(0.00)[];
+	RCVD_TLS_LAST(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	TO_DN_NONE(0.00)[];
+	FORGED_SENDER_MAILLIST(0.00)[]
+X-Rspamd-Queue-Id: 6503F18EF8C
 X-Rspamd-Action: no action
 
-Nhat Pham <nphamcs@gmail.com>:
-> * Simplify and optimize swapoff: we only have to fault the page in and
->   have the virtual swap slot points to the page instead of the on-disk
->   physical swap slot. No need to perform any page table walking.
+From: Chen Ridong <chenridong@huawei.com>
 
-Some time ago on Linux 6.1.124 I typed "swapoff -a". OOM killer started
-and killed all my apps. And "swapoff" itself eventially failed.
+A null-pointer-dereference bug was reported by syzbot:
 
-So, it seems swapoff is very destructive operation.
+Oops: general protection fault, probably for address 0xdffffc0000000000:
+KASAN: null-ptr-deref in range [0x0000000000000000-0x0000000000000007]
+RIP: 0010:bitmap_subset include/linux/bitmap.h:433 [inline]
+RIP: 0010:cpumask_subset include/linux/cpumask.h:836 [inline]
+RIP: 0010:rebuild_sched_domains_locked kernel/cgroup/cpuset.c:967
+RSP: 0018:ffffc90003ecfbc0 EFLAGS: 00010246
+RAX: 0000000000000000 RBX: 0000000000000001 RCX: 0000000000000020
+RDX: ffff888028de0000 RSI: ffffffff8200f003 RDI: ffffffff8df14f28
+RBP: 0000000000000000 R08: 0000000000000cc0 R09: 00000000ffffffff
+R10: ffffffff8e7d95b3 R11: 0000000000000001 R12: 0000000000000000
+R13: 00000000000f4240 R14: dffffc0000000000 R15: 0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 0000001b2f463fff CR3: 000000003704c000 CR4: 00000000003526f0
+Call Trace:
+ <TASK>
+ rebuild_sched_domains_cpuslocked kernel/cgroup/cpuset.c:983 [inline]
+ rebuild_sched_domains+0x21/0x40 kernel/cgroup/cpuset.c:990
+ sched_rt_handler+0xb5/0xe0 kernel/sched/rt.c:2911
+ proc_sys_call_handler+0x47f/0x5a0 fs/proc/proc_sysctl.c:600
+ new_sync_write fs/read_write.c:595 [inline]
+ vfs_write+0x6ac/0x1070 fs/read_write.c:688
+ ksys_write+0x12a/0x250 fs/read_write.c:740
+ do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
+ do_syscall_64+0x106/0xf80 arch/x86/entry/syscall_64.c:94
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
 
-Please, make swapoff non-destructive. Or create some alternative
-non-destructive swapoff. Such swapoff should try to swapoff without
-killing anything. If this is not possible, it simply should return error.
+The issue occurs when generate_sched_domains() returns ndoms = 1 and
+doms = NULL due to a kmalloc failure. This leads to a null-pointer
+dereference when accessing doms in rebuild_sched_domains_locked().
 
-I don't think optimizing current dangerous swapoff is right thing to do.
+Fix this by adding a NULL check for doms before accessing it.
 
+Fixes: 6ee43047e8ad ("cpuset: Remove unnecessary checks in rebuild_sched_domains_locked")
+Reported-by: syzbot+460792609a79c085f79f@syzkaller.appspotmail.com
+Signed-off-by: Chen Ridong <chenridong@huawei.com>
+---
+ kernel/cgroup/cpuset.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
+index 9faf34377a88..8ebf2ab8f0df 100644
+--- a/kernel/cgroup/cpuset.c
++++ b/kernel/cgroup/cpuset.c
+@@ -962,7 +962,8 @@ void rebuild_sched_domains_locked(void)
+ 	* prevent the panic.
+ 	*/
+ 	for (i = 0; i < ndoms; ++i) {
+-		if (WARN_ON_ONCE(!cpumask_subset(doms[i], cpu_active_mask)))
++		if (doms && WARN_ON_ONCE(!cpumask_subset(doms[i],
++					 cpu_active_mask)))
+ 			return;
+ 	}
+ 
 -- 
-Askar Safin
+2.34.1
+
 
