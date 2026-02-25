@@ -1,213 +1,413 @@
-Return-Path: <cgroups+bounces-14311-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-14312-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id aClmCFWYnmnXWQQAu9opvQ
-	(envelope-from <cgroups+bounces-14311-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Wed, 25 Feb 2026 07:36:05 +0100
+	id 8NSfHeepnmntWgQAu9opvQ
+	(envelope-from <cgroups+bounces-14312-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Wed, 25 Feb 2026 08:51:03 +0100
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7FDEB192690
-	for <lists+cgroups@lfdr.de>; Wed, 25 Feb 2026 07:36:04 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id D0911193B7B
+	for <lists+cgroups@lfdr.de>; Wed, 25 Feb 2026 08:51:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id A49053051CAB
-	for <lists+cgroups@lfdr.de>; Wed, 25 Feb 2026 06:34:55 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id D8B843037EC4
+	for <lists+cgroups@lfdr.de>; Wed, 25 Feb 2026 07:49:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 174582D77FA;
-	Wed, 25 Feb 2026 06:34:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3406F23AB87;
+	Wed, 25 Feb 2026 07:49:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="CHahVUkK";
-	dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b="rOa8MY8f"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="gthI7paU"
 X-Original-To: cgroups@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+Received: from out-174.mta0.migadu.com (out-174.mta0.migadu.com [91.218.175.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9BD8F2D0C82
-	for <cgroups@vger.kernel.org>; Wed, 25 Feb 2026 06:34:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 22C7E75801
+	for <cgroups@vger.kernel.org>; Wed, 25 Feb 2026 07:49:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772001294; cv=none; b=Wdl7rEqfRmQ0Nu2OEmE/tWspdhL0LHJnKiLvz0/X5T8GJfKVkkhLmBH3WMY2K+0GdDEv6hCzE0Vae+9kD/GBzibuOPxk8LkSX2hFf70UznyroaAeF5bThGqr0hV3/zwvGvgl/vGrPFoUk6fHrLkjieHuT8/X3bXpOpRESISkl88=
+	t=1772005782; cv=none; b=UTXTSLV/DqQ1ZLT7c7ZeDbqrtSS3rxxSJxJCOKfpBpfW1ZsVKEzGKAv7acMYuZm4gWE+8n2fYsq3WQt0BAxMKl93Xhxj6V7n83pguy7upuPid4GXD+7aDWtIJO99TzdzG0Sj0q9vQQiTznUdQTzH6uWbB47fUdhrNwdpexXN83E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772001294; c=relaxed/simple;
-	bh=KLxBg42SI5qqJn6x0Aw56CWo8tZSqLljrMc3PY2v1i8=;
-	h=From:Message-ID:Date:MIME-Version:Subject:To:Cc:References:
-	 In-Reply-To:Content-Type; b=lwCXKYrIPr+Cxgr+04r3uY0plnhTcE8RQKE1vqPmebFu68AwLi79W/43A3Izj2HYcjd6wwY+KHzdldlVz8OJVJo28qLGXBAj8l74DTrthq4WLmH5Y/LUWhln1vD+0OPZRSN9ePtApksDTX+qFpypWcdxe4bakBnlWi95Mgs3EgA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=CHahVUkK; dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b=rOa8MY8f; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1772001292;
+	s=arc-20240116; t=1772005782; c=relaxed/simple;
+	bh=mJitiljOJ/jYQu/Z19Wouag+1aa1OUwV+QSeRup8qHw=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=ZeJ/sqrpII9QSoll58970mV53PbRRrPZ7q7SN4qiMZang7oCT1J5gu/L7sa/1qXyyLgVUIlHgzBXyJlhT8SmznFORyGeObm3ZskEttXnex+PlBSDGSclRb7zhIpwmzn/DEf3qhfCmH+bv6Vv1Y/LVwo5f7/Kx91dIpZy4a1mcL8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=gthI7paU; arc=none smtp.client-ip=91.218.175.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1772005777;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=pLd2XQBnJ1Hr7SICN8JmqPACHbkEFAOR+6MAVERvw6M=;
-	b=CHahVUkK5BK9G8O4sSaFMX+yu/qTD2W3JBfmPHJ0x00zdSO8yURpeyHPkudW4HgfdHd7Fl
-	5JOwAIn4f9+Alc5e2LsNIDceklujoq65dDu+PcI/J0lMMX/wlFPgfQR/HrpaL3NIyGXblT
-	UuZG/0t3xnhus4dCvc9yUMrc5gBoJVk=
-Received: from mail-qt1-f197.google.com (mail-qt1-f197.google.com
- [209.85.160.197]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-573-UNjBSk8CO2WKW4VJBfZzAw-1; Wed, 25 Feb 2026 01:34:44 -0500
-X-MC-Unique: UNjBSk8CO2WKW4VJBfZzAw-1
-X-Mimecast-MFC-AGG-ID: UNjBSk8CO2WKW4VJBfZzAw_1772001284
-Received: by mail-qt1-f197.google.com with SMTP id d75a77b69052e-506bac14430so447474691cf.2
-        for <cgroups@vger.kernel.org>; Tue, 24 Feb 2026 22:34:44 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=redhat.com; s=google; t=1772001284; x=1772606084; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:content-language:references
-         :cc:to:subject:user-agent:mime-version:date:message-id:from:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=pLd2XQBnJ1Hr7SICN8JmqPACHbkEFAOR+6MAVERvw6M=;
-        b=rOa8MY8fAkv5VWjz+wzkHMgD6HUbrzcHEw2SpIlZVnktzNn35WajCeFsoQ5F8z6XXo
-         RUnvXeo8X4XozF8JoTWOXm2Tb7jgyTUe6V4kEZ8SLf4ZMGQe63/9wmMFXdHGD1V0tYsi
-         G6oShNrJ1IjEjE7QfssVh/MGYiXjb9ESFRKuXfpk2macG2eJ6L3MIcP9/xBIzxzDHWn8
-         LHMsu2yovG/uK+AFb0oW2kYeCkjLYtD0+4kZdePq4k97DYffAojaaBVGhVmC0fWePj8i
-         x1E8MIxebtrQL/2JBLJur+BJCJiJB3RfAoHfoOhvVMO0cOVRBIEg/VexOfxbv1Aujqy2
-         hbYg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1772001284; x=1772606084;
-        h=content-transfer-encoding:in-reply-to:content-language:references
-         :cc:to:subject:user-agent:mime-version:date:message-id:from:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=pLd2XQBnJ1Hr7SICN8JmqPACHbkEFAOR+6MAVERvw6M=;
-        b=q131kwa2IfoPuUh74G+ShMWhAuOoSOFwrOAOno4HI7PwDaaOtecShgB2M9gcvViGVg
-         wsOMIiB9OKt6KSgZ7+8SjtzL5Y+KbRFt3y4ro/bcP6It202AGqxXIYxD5t/At8k3U1AD
-         qHqSMSclSIqnJINZ9Zb/hdb6qHYmARRglnCHW9eBjGxScbmeCQ7Y6tlIQU+ClvClP/X1
-         Y/qPvGsNS9Jhraqt2acqjRmQ8BHvCGSVxFH4FeBOou9T10w7ph5rFN8L7B1JTzA93YXF
-         HsuyWgatpssA50IrTFeC/8y4ZGFBKAxdqRrHQjL/bp6in5H66mGdzKFNjjOQn51q+SPf
-         7/Yw==
-X-Gm-Message-State: AOJu0Yzpzdx5c6HKukl2YLanTHNz36PMiwP+8FMwo/etLIDPPTDXK+VW
-	se0/SsXKvg+c6Vhuc+HFvccUg8sNG9mtqWrY62H4J/fPihb6RCswcI/rFZNk5bIlUoaQOQf2z4g
-	95PQPwvBINTcOfsYEWZVCwgPnBaSuclYFj/6k9CxGleKEU5qAbC4V6yTzXT3Pf8Ed2x4=
-X-Gm-Gg: ATEYQzzSphl5RzIwlbO3ZG/+3u8Lx11mzuHL5ebf/WeFdyQPLJ3dYL3PkcJ6GAipaet
-	Q1e7n48VORG5odOQUIMHDFb6SR+kN0PQWQkW6klElvnnUC75hVFSFwCYC9J6eZqKW5wwqDLjGXv
-	rJoRPB0C10LGOqm+Qs27QQ6r//Dw73EHztdNAJWSq6saYucxBr2s6a1VlaRzWG25/4H0b9fEr0x
-	BSc7oxbsU6U6YbuKl7jZeh67SkTsGJT+XA33ibqbNbmN+mIYCBKED+2zKsdLbYQAccp73l7pi0A
-	4c67Lj4sF4kER925i7jlAuWrTq38UdhkfQqG17bXqXtWufdVlzk0aWhwnxGh8jJeCCYmcBoaNjB
-	HX0KEvsNW9Fr5k0/VqP3hQpoZn4s+Vg2bajvKY3vXX0N5ERbDQPVeBw5bG0euMPFVMlOO
-X-Received: by 2002:ac8:5854:0:b0:503:2f49:6f81 with SMTP id d75a77b69052e-5073a35947amr15070891cf.74.1772001283990;
-        Tue, 24 Feb 2026 22:34:43 -0800 (PST)
-X-Received: by 2002:ac8:5854:0:b0:503:2f49:6f81 with SMTP id d75a77b69052e-5073a35947amr15070721cf.74.1772001283586;
-        Tue, 24 Feb 2026 22:34:43 -0800 (PST)
-Received: from ?IPV6:2601:600:947f:f020:85dc:d2b2:c5ee:e3c4? ([2601:600:947f:f020:85dc:d2b2:c5ee:e3c4])
-        by smtp.gmail.com with ESMTPSA id d75a77b69052e-5070d550785sm143966001cf.11.2026.02.24.22.34.42
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 24 Feb 2026 22:34:43 -0800 (PST)
-From: Waiman Long <llong@redhat.com>
-X-Google-Original-From: Waiman Long <longman@redhat.com>
-Message-ID: <35c806f0-39ba-42c2-87f2-f3f3a6772ed2@redhat.com>
-Date: Wed, 25 Feb 2026 01:34:41 -0500
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=VCxg7NgM2LDq4e9k0AtZ4iU6ry0kPMJ5QI3Tfg+syuk=;
+	b=gthI7paU9xez6XU/jDo30rhRLR9Oge7fTJ7c4xSlxweS6wjbEjTVQWXkxEUPU5TQnR3FtK
+	LV8jU2wrEQ24TbTw+ZGqztmlsBbDKL1UqVHF9/nM3syqEMAt9CsDkmOpYRX7cDARocdG4X
+	1vJhvE2kzreucNYVYOEVb9cEb0tLlwI=
+From: Qi Zheng <qi.zheng@linux.dev>
+To: hannes@cmpxchg.org,
+	hughd@google.com,
+	mhocko@suse.com,
+	roman.gushchin@linux.dev,
+	shakeel.butt@linux.dev,
+	muchun.song@linux.dev,
+	david@kernel.org,
+	lorenzo.stoakes@oracle.com,
+	ziy@nvidia.com,
+	harry.yoo@oracle.com,
+	yosry.ahmed@linux.dev,
+	imran.f.khan@oracle.com,
+	kamalesh.babulal@oracle.com,
+	axelrasmussen@google.com,
+	yuanchu@google.com,
+	weixugc@google.com,
+	chenridong@huaweicloud.com,
+	mkoutny@suse.com,
+	akpm@linux-foundation.org,
+	hamzamahfooz@linux.microsoft.com,
+	apais@linux.microsoft.com,
+	lance.yang@linux.dev,
+	bhe@redhat.com,
+	usamaarif642@gmail.com
+Cc: linux-mm@kvack.org,
+	linux-kernel@vger.kernel.org,
+	cgroups@vger.kernel.org,
+	Qi Zheng <zhengqi.arch@bytedance.com>
+Subject: [PATCH v5 00/32] Eliminate Dying Memory Cgroup
+Date: Wed, 25 Feb 2026 15:48:33 +0800
+Message-ID: <cover.1772005110.git.zhengqi.arch@bytedance.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH -next] cgroup/cpuset: fix null-ptr-deref in
- rebuild_sched_domains_cpuslocked
-To: Chen Ridong <chenridong@huaweicloud.com>, tj@kernel.org,
- hannes@cmpxchg.org, mkoutny@suse.com
-Cc: cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
- lujialin4@huawei.com
-References: <20260225011523.51365-1-chenridong@huaweicloud.com>
-Content-Language: en-US
-In-Reply-To: <20260225011523.51365-1-chenridong@huaweicloud.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-2.16 / 15.00];
+X-Spamd-Result: default: False [-1.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[redhat.com,quarantine];
-	R_DKIM_ALLOW(-0.20)[redhat.com:s=mimecast20190719,redhat.com:s=google];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_MISSING_CHARSET(0.50)[];
+	DMARC_POLICY_ALLOW(-0.50)[linux.dev,none];
+	R_DKIM_ALLOW(-0.20)[linux.dev:s=key1];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	DKIM_TRACE(0.00)[redhat.com:+];
-	FROM_HAS_DN(0.00)[];
-	RCVD_TLS_LAST(0.00)[];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-14311-lists,cgroups=lfdr.de];
+	RCVD_TLS_LAST(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[28];
+	RCVD_COUNT_THREE(0.00)[3];
+	TAGGED_FROM(0.00)[bounces-14312-lists,cgroups=lfdr.de];
 	MIME_TRACE(0.00)[0:+];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	TAGGED_RCPT(0.00)[cgroups];
+	FREEMAIL_TO(0.00)[cmpxchg.org,google.com,suse.com,linux.dev,kernel.org,oracle.com,nvidia.com,huaweicloud.com,linux-foundation.org,linux.microsoft.com,redhat.com,gmail.com];
+	MISSING_XM_UA(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[llong@redhat.com,cgroups@vger.kernel.org];
-	TO_DN_SOME(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[6];
-	MID_RHS_MATCH_FROM(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[qi.zheng@linux.dev,cgroups@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	DKIM_TRACE(0.00)[linux.dev:+];
 	NEURAL_HAM(-0.00)[-1.000];
-	RCPT_COUNT_SEVEN(0.00)[7];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,huawei.com:email]
-X-Rspamd-Queue-Id: 7FDEB192690
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	TAGGED_RCPT(0.00)[cgroups];
+	TO_DN_SOME(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,linux.dev:dkim,bytedance.com:mid,bytedance.com:email]
+X-Rspamd-Queue-Id: D0911193B7B
 X-Rspamd-Action: no action
 
-On 2/24/26 8:15 PM, Chen Ridong wrote:
-> From: Chen Ridong <chenridong@huawei.com>
->
-> A null-pointer-dereference bug was reported by syzbot:
->
-> Oops: general protection fault, probably for address 0xdffffc0000000000:
-> KASAN: null-ptr-deref in range [0x0000000000000000-0x0000000000000007]
-> RIP: 0010:bitmap_subset include/linux/bitmap.h:433 [inline]
-> RIP: 0010:cpumask_subset include/linux/cpumask.h:836 [inline]
-> RIP: 0010:rebuild_sched_domains_locked kernel/cgroup/cpuset.c:967
-> RSP: 0018:ffffc90003ecfbc0 EFLAGS: 00010246
-> RAX: 0000000000000000 RBX: 0000000000000001 RCX: 0000000000000020
-> RDX: ffff888028de0000 RSI: ffffffff8200f003 RDI: ffffffff8df14f28
-> RBP: 0000000000000000 R08: 0000000000000cc0 R09: 00000000ffffffff
-> R10: ffffffff8e7d95b3 R11: 0000000000000001 R12: 0000000000000000
-> R13: 00000000000f4240 R14: dffffc0000000000 R15: 0000000000000000
-> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> CR2: 0000001b2f463fff CR3: 000000003704c000 CR4: 00000000003526f0
-> Call Trace:
->   <TASK>
->   rebuild_sched_domains_cpuslocked kernel/cgroup/cpuset.c:983 [inline]
->   rebuild_sched_domains+0x21/0x40 kernel/cgroup/cpuset.c:990
->   sched_rt_handler+0xb5/0xe0 kernel/sched/rt.c:2911
->   proc_sys_call_handler+0x47f/0x5a0 fs/proc/proc_sysctl.c:600
->   new_sync_write fs/read_write.c:595 [inline]
->   vfs_write+0x6ac/0x1070 fs/read_write.c:688
->   ksys_write+0x12a/0x250 fs/read_write.c:740
->   do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
->   do_syscall_64+0x106/0xf80 arch/x86/entry/syscall_64.c:94
->   entry_SYSCALL_64_after_hwframe+0x77/0x7f
->
-> The issue occurs when generate_sched_domains() returns ndoms = 1 and
-> doms = NULL due to a kmalloc failure. This leads to a null-pointer
-> dereference when accessing doms in rebuild_sched_domains_locked().
->
-> Fix this by adding a NULL check for doms before accessing it.
->
-> Fixes: 6ee43047e8ad ("cpuset: Remove unnecessary checks in rebuild_sched_domains_locked")
-> Reported-by: syzbot+460792609a79c085f79f@syzkaller.appspotmail.com
-> Signed-off-by: Chen Ridong <chenridong@huawei.com>
-> ---
->   kernel/cgroup/cpuset.c | 3 ++-
->   1 file changed, 2 insertions(+), 1 deletion(-)
->
-> diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
-> index 9faf34377a88..8ebf2ab8f0df 100644
-> --- a/kernel/cgroup/cpuset.c
-> +++ b/kernel/cgroup/cpuset.c
-> @@ -962,7 +962,8 @@ void rebuild_sched_domains_locked(void)
->   	* prevent the panic.
->   	*/
->   	for (i = 0; i < ndoms; ++i) {
-> -		if (WARN_ON_ONCE(!cpumask_subset(doms[i], cpu_active_mask)))
-> +		if (doms && WARN_ON_ONCE(!cpumask_subset(doms[i],
-> +					 cpu_active_mask)))
->   			return;
->   	}
->   
+From: Qi Zheng <zhengqi.arch@bytedance.com>
 
-I would prefer putting the doms check in the for loop without the line 
-wrap, but that will work too.
+Changes in v5:
+ - fix build error in [PATCH v4 24/31] (reported by kernel test robot)
+ - move the declaration of reparent_memcg_state_local() and
+   reparent_memcg_lruvec_state_local() into mm/memcontrol-v1.h file.
+   (suggested by Shakeel Butt, and due to some function dependencies, I keep
+    reparent_memcg_lruvec_state_local() in place)
+ - convert objcg to be per-memcg per-node type
+ - hold the per-node lru locks to reparent per-node objcg and lru folios, which
+   fix the potential lockdep warning
+   (pointed by Usama Arif and suggested by Shakeel Butt)
+ - use try_charge_memcg() directly in charge_memcg()
+   (suggested by Shakeel Butt)
+ - collect Acked-bys
+ - rebase onto the next-20260224
 
-Acked-by: Waiman Long <longman@redhat.com>
+Changes in v4:
+ - fix commit message in [PATCH v3 23/30] (pointed by Baoquan He)
+ - move lruvec_lock_irq() and firends to mm/memcontrol.c to fix the compilation
+   error in [PATCH v4 24/31] (reported by LKP)
+ - include parent_lruvec() within the RCU lock in lru_note_cost_unlock_irq() in
+   [PATCH v4 24/31] (pointed by Harry Yoo)
+ - move the declaration of lru_reparent_memcg() to swap.h
+   (suggested by Muchun Song)
+ - fix lru size update logic in lru_gen_reparent_memcg() in [PATCH v4 26/31]
+   (pointed and suggested by Harry Yoo)
+ - add [PATCH v4 28/31] to use lruvec_lru_size() to get the number of lru pages
+   in count_shadow_nodes() (suggested by Shakeel Butt)
+ - fix reparenting logic of lruvec_stats->state_local in [PATCH v4 29/31]
+   (pointed by Shakeel Butt)
+ - change these non-hierarchical stats to atomic_long_t type to avoid race
+   between mem_cgroup_stat_aggregate() and reparent_state_local() in
+   [PATCH v4 29/31]
+ - make css_killed_work_fn() to be called in rcu work, and use rcu lock +
+   CSS_IS_DYING check to avoid race between
+   mod_memcg_state()/mod_memcg_lruvec_state()
+   (suggested by Shakeel Butt)
+ - collect Acked-bys and Reviewed-bys
+ - rebase onto the next-20260128
+
+Changes in v3:
+ - modify the commit message in [PATCH v2 04/28], [PATCH v2 06/28],
+   [PATCH v2 13/28], [PATCH v2 24/28] and [PATCH v2 27/28]
+   (suggested by David Hildenbrand, Chen Ridong and Johannes Weiner)
+ - change code style in [PATCH v3 8/30], [PATCH v3 15/30] and [PATCH v3 27/30]
+   (suggested by Johannes Weiner and Shakeel Butt)
+ - use get_mem_cgroup_from_folio() + mem_cgroup_put() to replace holding rcu
+   lock in [PATCH v3 14/30] and [PATCH v3 19/30]
+   (pointed by Johannes Weiner)
+ - add a comment to folio_split_queue_lock() in [PATCH v3 17/30]
+   (suggested by Shakeel Butt)
+ - modify the comment above folio_lruvec() in [PATCH v3 24/30]
+   (suggested by Johannes Weiner)
+ - fix rcu lock issue in lru_note_cost_refault()
+   (pointed by Shakeel Butt)
+ - add [PATCH v3 28/30] to fix non-hierarchical memcg1_stats issues
+   (pointed by Yosry Ahmed)
+ - fix lru_zone_size issue in [PATCH v2 24/28] and [PATCH v2 25/28]
+ - collect Acked-bys and Reviewed-bys
+ - rebase onto the next-20260114
+
+Changes in v2:
+ - add [PATCH v2 04/28] and remove local_irq_disable() in evict_folios()
+   (pointed by Harry Yoo)
+ - recheck objcg in [PATCH v2 07/28] (pointed by Harry Yoo)
+ - modify the commit message in [PATCH v2 12/28] and [PATCH v2 21/28]
+   (pointed by Harry Yoo)
+ - use rcu lock to protect mm_state in [PATCH v2 14/28] (pointed by Harry Yoo)
+ - fix bad unlock balance warning in [PATCH v2 23/28]
+ - change nr_pages type to long in [PATCH v2 25/28] (pointed by Harry Yoo)
+ - incease mm_state->seq during reparenting to make mm walker work properly in
+   [PATCH v2 25/28] (pointed by Harry Yoo)
+ - add [PATCH v2 18/28] to fix WARNING in folio_memcg() (pointed by Harry Yoo)
+ - collect Reviewed-bys
+ - rebase onto the next-20251216
+
+Changes in v1:
+ - drop [PATCH RFC 02/28]
+ - drop THP split queue related part, which has been merged as a separate
+   patchset[2]
+ - prevent memory cgroup release in folio_split_queue_lock{_irqsave}() in
+   [PATCH v1 16/26]
+ - Separate the reparenting function of traditional LRU folios to [PATCH v1 22/26]
+ - adapted to the MGLRU scenarios in [PATCH v1 23/26]
+ - refactor memcg_reparent_objcgs() in [PATCH v1 24/26]
+ - collect Acked-bys and Reviewed-bys
+ - rebase onto the next-20251028
+
+Hi all,
+
+Introduction
+============
+
+This patchset is intended to transfer the LRU pages to the object cgroup
+without holding a reference to the original memory cgroup in order to
+address the issue of the dying memory cgroup. A consensus has already been
+reached regarding this approach recently [1].
+
+Background
+==========
+
+The issue of a dying memory cgroup refers to a situation where a memory
+cgroup is no longer being used by users, but memory (the metadata
+associated with memory cgroups) remains allocated to it. This situation
+may potentially result in memory leaks or inefficiencies in memory
+reclamation and has persisted as an issue for several years. Any memory
+allocation that endures longer than the lifespan (from the users'
+perspective) of a memory cgroup can lead to the issue of dying memory
+cgroup. We have exerted greater efforts to tackle this problem by
+introducing the infrastructure of object cgroup [2].
+
+Presently, numerous types of objects (slab objects, non-slab kernel
+allocations, per-CPU objects) are charged to the object cgroup without
+holding a reference to the original memory cgroup. The final allocations
+for LRU pages (anonymous pages and file pages) are charged at allocation
+time and continues to hold a reference to the original memory cgroup
+until reclaimed.
+
+File pages are more complex than anonymous pages as they can be shared
+among different memory cgroups and may persist beyond the lifespan of
+the memory cgroup. The long-term pinning of file pages to memory cgroups
+is a widespread issue that causes recurring problems in practical
+scenarios [3]. File pages remain unreclaimed for extended periods.
+Additionally, they are accessed by successive instances (second, third,
+fourth, etc.) of the same job, which is restarted into a new cgroup each
+time. As a result, unreclaimable dying memory cgroups accumulate,
+leading to memory wastage and significantly reducing the efficiency
+of page reclamation.
+
+Fundamentals
+============
+
+A folio will no longer pin its corresponding memory cgroup. It is necessary
+to ensure that the memory cgroup or the lruvec associated with the memory
+cgroup is not released when a user obtains a pointer to the memory cgroup
+or lruvec returned by folio_memcg() or folio_lruvec(). Users are required
+to hold the RCU read lock or acquire a reference to the memory cgroup
+associated with the folio to prevent its release if they are not concerned
+about the binding stability between the folio and its corresponding memory
+cgroup. However, some users of folio_lruvec() (i.e., the lruvec lock)
+desire a stable binding between the folio and its corresponding memory
+cgroup. An approach is needed to ensure the stability of the binding while
+the lruvec lock is held, and to detect the situation of holding the
+incorrect lruvec lock when there is a race condition during memory cgroup
+reparenting. The following four steps are taken to achieve these goals.
+
+1. The first step  to be taken is to identify all users of both functions
+   (folio_memcg() and folio_lruvec()) who are not concerned about binding
+   stability and implement appropriate measures (such as holding a RCU read
+   lock or temporarily obtaining a reference to the memory cgroup for a
+   brief period) to prevent the release of the memory cgroup.
+
+2. Secondly, the following refactoring of folio_lruvec_lock() demonstrates
+   how to ensure the binding stability from the user's perspective of
+   folio_lruvec().
+
+   struct lruvec *folio_lruvec_lock(struct folio *folio)
+   {
+           struct lruvec *lruvec;
+
+           rcu_read_lock();
+   retry:
+           lruvec = folio_lruvec(folio);
+           spin_lock(&lruvec->lru_lock);
+           if (unlikely(lruvec_memcg(lruvec) != folio_memcg(folio))) {
+                   spin_unlock(&lruvec->lru_lock);
+                   goto retry;
+           }
+
+           return lruvec;
+   }
+
+   From the perspective of memory cgroup removal, the entire reparenting
+   process (altering the binding relationship between folio and its memory
+   cgroup and moving the LRU lists to its parental memory cgroup) should be
+   carried out under both the lruvec lock of the memory cgroup being removed
+   and the lruvec lock of its parent.
+
+3. Finally, transfer the LRU pages to the object cgroup without holding a
+   reference to the original memory cgroup.
+
+Effect
+======
+
+Finally, it can be observed that the quantity of dying memory cgroups will
+not experience a significant increase if the following test script is
+executed to reproduce the issue.
+
+```bash
+#!/bin/bash
+
+# Create a temporary file 'temp' filled with zero bytes
+dd if=/dev/zero of=temp bs=4096 count=1
+
+# Display memory-cgroup info from /proc/cgroups
+cat /proc/cgroups | grep memory
+
+for i in {0..2000}
+do
+    mkdir /sys/fs/cgroup/memory/test$i
+    echo $$ > /sys/fs/cgroup/memory/test$i/cgroup.procs
+
+    # Append 'temp' file content to 'log'
+    cat temp >> log
+
+    echo $$ > /sys/fs/cgroup/memory/cgroup.procs
+
+    # Potentially create a dying memory cgroup
+    rmdir /sys/fs/cgroup/memory/test$i
+done
+
+# Display memory-cgroup info after test
+cat /proc/cgroups | grep memory
+
+rm -f temp log
+```
+
+Comments and suggestions are welcome!
+
+Thanks,
+Qi
+
+[1].https://lore.kernel.org/linux-mm/Z6OkXXYDorPrBvEQ@hm-sls2/
+[2].https://lwn.net/Articles/895431/
+[3].https://github.com/systemd/systemd/pull/36827
+
+Muchun Song (22):
+  mm: memcontrol: remove dead code of checking parent memory cgroup
+  mm: workingset: use folio_lruvec() in workingset_refault()
+  mm: rename unlock_page_lruvec_irq and its variants
+  mm: vmscan: refactor move_folios_to_lru()
+  mm: memcontrol: allocate object cgroup for non-kmem case
+  mm: memcontrol: return root object cgroup for root memory cgroup
+  mm: memcontrol: prevent memory cgroup release in
+    get_mem_cgroup_from_folio()
+  buffer: prevent memory cgroup release in folio_alloc_buffers()
+  writeback: prevent memory cgroup release in writeback module
+  mm: memcontrol: prevent memory cgroup release in
+    count_memcg_folio_events()
+  mm: page_io: prevent memory cgroup release in page_io module
+  mm: migrate: prevent memory cgroup release in folio_migrate_mapping()
+  mm: mglru: prevent memory cgroup release in mglru
+  mm: memcontrol: prevent memory cgroup release in
+    mem_cgroup_swap_full()
+  mm: workingset: prevent memory cgroup release in lru_gen_eviction()
+  mm: workingset: prevent lruvec release in workingset_refault()
+  mm: zswap: prevent lruvec release in zswap_folio_swapin()
+  mm: swap: prevent lruvec release in lru_gen_clear_refs()
+  mm: workingset: prevent lruvec release in workingset_activation()
+  mm: memcontrol: prepare for reparenting LRU pages for lruvec lock
+  mm: memcontrol: eliminate the problem of dying memory cgroup for LRU
+    folios
+  mm: lru: add VM_WARN_ON_ONCE_FOLIO to lru maintenance helpers
+
+Qi Zheng (10):
+  mm: vmscan: prepare for the refactoring the move_folios_to_lru()
+  mm: thp: prevent memory cgroup release in
+    folio_split_queue_lock{_irqsave}()
+  mm: zswap: prevent memory cgroup release in zswap_compress()
+  mm: do not open-code lruvec lock
+  mm: vmscan: prepare for reparenting traditional LRU folios
+  mm: vmscan: prepare for reparenting MGLRU folios
+  mm: memcontrol: refactor memcg_reparent_objcgs()
+  mm: workingset: use lruvec_lru_size() to get the number of lru pages
+  mm: memcontrol: prepare for reparenting non-hierarchical stats
+  mm: memcontrol: convert objcg to be per-memcg per-node type
+
+ fs/buffer.c                      |   4 +-
+ fs/fs-writeback.c                |  22 +-
+ include/linux/memcontrol.h       | 191 ++++++-----
+ include/linux/mm_inline.h        |   6 +
+ include/linux/mmzone.h           |  17 +
+ include/linux/sched.h            |   2 +-
+ include/linux/swap.h             |  25 +-
+ include/trace/events/writeback.h |   3 +
+ kernel/cgroup/cgroup.c           |   8 +-
+ mm/compaction.c                  |  43 ++-
+ mm/huge_memory.c                 |  22 +-
+ mm/memcontrol-v1.c               |  31 +-
+ mm/memcontrol-v1.h               |   8 +
+ mm/memcontrol.c                  | 562 ++++++++++++++++++++-----------
+ mm/migrate.c                     |   2 +
+ mm/mlock.c                       |   2 +-
+ mm/page_io.c                     |   8 +-
+ mm/percpu.c                      |   2 +-
+ mm/shrinker.c                    |   6 +-
+ mm/swap.c                        |  59 +++-
+ mm/vmscan.c                      | 273 +++++++++++----
+ mm/workingset.c                  |  30 +-
+ mm/zswap.c                       |   5 +
+ 23 files changed, 904 insertions(+), 427 deletions(-)
+
+-- 
+2.20.1
 
 
