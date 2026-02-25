@@ -1,287 +1,171 @@
-Return-Path: <cgroups+bounces-14357-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-14361-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id KLJ6AGLnnmkCXwQAu9opvQ
-	(envelope-from <cgroups+bounces-14357-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Wed, 25 Feb 2026 13:13:22 +0100
+	id EFMbHdPonmk/XwQAu9opvQ
+	(envelope-from <cgroups+bounces-14361-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Wed, 25 Feb 2026 13:19:31 +0100
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5EC6F197176
-	for <lists+cgroups@lfdr.de>; Wed, 25 Feb 2026 13:13:21 +0100 (CET)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 76246197275
+	for <lists+cgroups@lfdr.de>; Wed, 25 Feb 2026 13:19:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 709FE306F3B1
-	for <lists+cgroups@lfdr.de>; Wed, 25 Feb 2026 12:11:19 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 2BC033003714
+	for <lists+cgroups@lfdr.de>; Wed, 25 Feb 2026 12:19:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 891EA3ACF09;
-	Wed, 25 Feb 2026 12:11:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BCD8F3AE6E7;
+	Wed, 25 Feb 2026 12:19:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.de header.i=natalie.vock@gmx.de header.b="CFFQjS+T"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="K04LkvhF"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qt1-f182.google.com (mail-qt1-f182.google.com [209.85.160.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E8E63ACF12
-	for <cgroups@vger.kernel.org>; Wed, 25 Feb 2026 12:11:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.21
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772021478; cv=none; b=UhNYJV/hUJR1j3naWxMyiPpmf8D8inRJhGjF4xh+9H5nn8eXS2/nsw3sB1jFQqauhImm1/SGKJHlKHv/jx0idSETYT3M1S7IzGPuvl4TL16pxir0K13G4SLjlB0RrwzrQI+gyXKmbY+O/2Hcci8cIAihGwbhdBkp8Bs52mI6f+k=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772021478; c=relaxed/simple;
-	bh=SYu2JFcNk1DUThZ6KQicRkoGJXHiYKFcmFuogyU9LHA=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=kp4hNohtQixcF1w6oMRby+tn8kUze1rQPwBUJ6FIEcJt1p9eIWvquoCa2jquwkkWB7xExOh330X1NpzH8pMngtb1iyntuhsYttKA1qhDZ1iiNieC+WpWQyVng8+g8WFkbwAWX1pu14TFphs1N7wZQ93B1c7/sL0EE4reLSNcgLo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de; spf=pass smtp.mailfrom=gmx.de; dkim=pass (2048-bit key) header.d=gmx.de header.i=natalie.vock@gmx.de header.b=CFFQjS+T; arc=none smtp.client-ip=212.227.17.21
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.de;
-	s=s31663417; t=1772021462; x=1772626262; i=natalie.vock@gmx.de;
-	bh=GdD2TPmei07PYZ4nSrdugsl0wHU70n0KXlrs+lnc9J8=;
-	h=X-UI-Sender-Class:From:Date:Subject:MIME-Version:Content-Type:
-	 Content-Transfer-Encoding:Message-Id:References:In-Reply-To:To:Cc:
-	 cc:content-transfer-encoding:content-type:date:from:message-id:
-	 mime-version:reply-to:subject:to;
-	b=CFFQjS+TpGW27l7sbAdgDuhqrMoqBsB6koQVZ9vsGhxQoYCR98Nye4m8Xht0D2po
-	 Drdq6SZFZHmxZ2IfpRrw1guRpu0t8HMCohAcwUbdKoxp6QWjO5eN0p5VWMkglWiMn
-	 yVweM36J0hYk1mENCQ6ITfqC9prwWjy9PVOpHR3iO0B305O3GrgW7q7obRd36rs7I
-	 WZG/th61VGc2+V7DOgBhRxwA9JjBceI8Ud3CeK0VR1O4cV7xO6OL84HXtWfYS50s0
-	 yuRm3mv7FQdiWpWBjHwmXpU1QXf1uE2Tm7t1b8ZdByFzQFoQZLvz5wvGwjKRA67fs
-	 FyTO+9rBnvVkXgDDbA==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from client.hidden.invalid by mail.gmx.net (mrgmx104
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1MpUUm-1vMyJW2FIq-00ba3C; Wed, 25
- Feb 2026 13:11:02 +0100
-From: Natalie Vock <natalie.vock@gmx.de>
-Date: Wed, 25 Feb 2026 13:10:50 +0100
-Subject: [PATCH v4 6/6] drm/ttm: Use common ancestor of evictor and evictee
- as limit pool
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 706FB2DEA8F
+	for <cgroups@vger.kernel.org>; Wed, 25 Feb 2026 12:19:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.160.182
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1772021966; cv=pass; b=O7nAN3tR6jXEDl9lh1mWFqzaPdXLCuWtUYdtzgWMPvv7rJzooxdM3v3eM3+AnxOeKuIcMPwA0aE+hR8cAZfwOU3bk7TAsYNEhHtpEfD1U5MwmBacEw1f+6L6mpn9RudRTNXzL2sYSDCp2VAAYUlK5C/a0MlV4PsuhMfXpuc8Jfc=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1772021966; c=relaxed/simple;
+	bh=5GivVNyIA8JAZFbbK477torhwiVkLccEddGHhqwOeMg=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=oIfnfldEQVQNUN2koG9/A5tx8eV7CpmZvNwpVT6meKQvL+vnCO7zIf8P+/jh+PjCHBIKbeaa7MzLHKszOPYcvHLdda/n7QQggJbjmLyTub3RZ17N9rFqpUY0lGwDhRpK5u8L0dPH72s5hgyHR4zvj1zuoX2lCr3hb0dGDkKML5c=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=K04LkvhF; arc=pass smtp.client-ip=209.85.160.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-qt1-f182.google.com with SMTP id d75a77b69052e-506a019a7f3so83923441cf.3
+        for <cgroups@vger.kernel.org>; Wed, 25 Feb 2026 04:19:25 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; t=1772021964; cv=none;
+        d=google.com; s=arc-20240605;
+        b=V9yG3JTLOeXBBYa7iF0hDnYEc7W02vaHiWEDmYQIImAz3qkNr62yOGzMEfsSPxKQq8
+         GJ7xQHmZF8ENhNtTjoGDo5L4XkMbekCMI/ag/JvFcpGSOKRhsRbMsPsnhzaBp+j3vI5z
+         GnX53UJYewNBDWz4DCZaGp/dcFiezuxp1X091XoXh9i79hdv+4sLKnCJLMCwaGSr7T2B
+         yCQ0qCIC1vxZcCsrDpFjyieTjC9egHoZ68+WzxanFn0TOQHI3AfCAjGbM02ejAsY4Xsn
+         Xvk3ByyfKa+0UhIl2S5Aw/k7T009fFINL7qbXQgIC6+SxPxmC7VnHUJXwmknoeRZD5zu
+         qb1w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:dkim-signature;
+        bh=5GivVNyIA8JAZFbbK477torhwiVkLccEddGHhqwOeMg=;
+        fh=fLwoKLa+Y/TI2t8gbLu9+BoV7Z5ynOdn6i1IjZ2UqqY=;
+        b=XGbUA+plpcsruYAhetNw0UeuMLFR+5EsB7LUBfBbglKXo+9ibjijgT5liuM3/QYr2d
+         lyS6y9vq4ZlQAC4uTSw2Nf7N9/TNzkb0dgBEKsE+V1gB3JSfra1cxq5eqpuxnn9vuwJU
+         u2HRdVD48mboKOFb1cV3di8jl1yxde1KHOzi5ZpFVNZnGnwTz8MsUam3xZQ08EZGKylF
+         Dix6OUmy7s1nGtz8ID5pwXQwoHggqo4Qw5bGJxQ0bPzvvZ0t+BKRIKCzWyGTsGsyCs04
+         ZC6J7qY2EbhZWSw/ECKcNIZLI9m8V5bK04gNexOaF2TmF0lMS+tcJ/w+PiudMOLg7CHZ
+         UTcA==;
+        darn=vger.kernel.org
+ARC-Authentication-Results: i=1; mx.google.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1772021964; x=1772626764; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=5GivVNyIA8JAZFbbK477torhwiVkLccEddGHhqwOeMg=;
+        b=K04LkvhFjIHd/a4A0la6HG2BdNnEqA/3bikRoBSQjWAE+yNFRkXtALhqtv04A3MK4Z
+         d5jUmWMkSPcpUG995Ujp4xTdK/fCi1C2PchXw4DdBnf5eljyAerIXAfsYVyKmmNeh1P5
+         HKc1QGL2xIXW4fjAr39JGnvny0kGODZEuD5ADEilt25Cj7Uuf8xFUKsz8KrxKqz/zzgL
+         B5eKabZVojKhkA94h2SsljGbuntuwKXMzt6+mPxV7zGxZpbJz4dFdQ3tCxoaJ1+Jcpy3
+         +cWdyjluuRpb34ryDA3ayFNkV3qaf4ixILXGn8GjqQY1vluJLUHH9uy2eqZ64a3vwkPT
+         lUOw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1772021964; x=1772626764;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=5GivVNyIA8JAZFbbK477torhwiVkLccEddGHhqwOeMg=;
+        b=LYyR5B9Vqsn0u0CJaOIN0gSuG4nIMq9ffBzZ96e2xsL7vL94fcmoC8PxusrdsPgOuS
+         GISJnElmDsw+px0R0INzao7sKvpPxkHcWbGOXjDeH32Zo7GVyKhoCh5j0EfT32UrQfUC
+         8CYDfD3AiU1B39pmprZ6mJhwOqyOgH8AjQ7ob+KXJOAn8nevK8BbsW5gm/2UzK5beci/
+         laxaWHzi1xL9LCWmch9BUrPQ+g1/IjHmyvSXg23tHDKaFxSi6Ldrfr/dglX4BWjplz4c
+         eFF2L0A8MfsUhYG/U8oGVk/74HxerfO7cq3asz/9c3+FfvBpgVtIEDT+An+CPKJCj7As
+         dRqQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXOCw2YiZKAg+n8QYzmukUFLogmpwZeVcq2QJOsr5Z7H1eRI38tbYNmdghIIVp5uSvgMV2SIiEu@vger.kernel.org
+X-Gm-Message-State: AOJu0YxuNhUh5dCP41vEfpz4KNWGpDROF7eI5U/CdJ1lrkuJxGe7gcVA
+	duWfwgqusqeRH8zjPdzq/JFOcFAgpCfbmGT4GB/BkUemlqcJSnTm0SovI7pzuKUIXlgEOfU5cZ1
+	73hOI4if/oMr4LHyA+X4gzZS8Z3HmADk=
+X-Gm-Gg: ATEYQzypc3oP8RYraUEHzRBs0UNSyogP64PXpzcgPIEKnIF1lkuUMRXPSS010VNccad
+	2XfH/IWdCnQdfg3f+er2iBRZOs0nmLvOR+RROieBNX4B7iWC4BTG2SFJ0Tlwi2+mFDTHsnNAp1l
+	AVfDZd82t5fq7agtAeHgVhFShcXjmX2x/IyFJO9iYYo+DZq73HFbtxqxQIowbuFREyW+M0DVTbZ
+	rU8oGdRhNcg9quIoIcEbKrPWxBeizzPYTkOLopcfVuFwuqzO8JOYtQ5immREnvHb2oYYFc23/Yf
+	o/pjCQ==
+X-Received: by 2002:ac8:7f91:0:b0:506:9ad2:8d4a with SMTP id
+ d75a77b69052e-50741fcfdd3mr1385691cf.75.1772021964065; Wed, 25 Feb 2026
+ 04:19:24 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+References: <20260220-swap-table-p4-v1-0-104795d19815@tencent.com> <20260220-swap-table-p4-v1-12-104795d19815@tencent.com>
+In-Reply-To: <20260220-swap-table-p4-v1-12-104795d19815@tencent.com>
+From: Barry Song <21cnbao@gmail.com>
+Date: Wed, 25 Feb 2026 20:19:14 +0800
+X-Gm-Features: AaiRm511TxBGRVuIyMzvT0fAaZozlquA48wNCycgFlMQWIgQStFaENf0SwcgBCQ
+Message-ID: <CAGsJ_4yv31utMTsZcRf5adeUzC7NnE0DfMKRFi3v1iCxfdXbdw@mail.gmail.com>
+Subject: Re: [PATCH RFC 12/15] mm, swap: merge zeromap into swap table
+To: kasong@tencent.com
+Cc: linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>, 
+	David Hildenbrand <david@kernel.org>, Lorenzo Stoakes <lorenzo.stoakes@oracle.com>, Zi Yan <ziy@nvidia.com>, 
+	Baolin Wang <baolin.wang@linux.alibaba.com>, Hugh Dickins <hughd@google.com>, 
+	Chris Li <chrisl@kernel.org>, Kemeng Shi <shikemeng@huaweicloud.com>, 
+	Nhat Pham <nphamcs@gmail.com>, Baoquan He <bhe@redhat.com>, Johannes Weiner <hannes@cmpxchg.org>, 
+	Yosry Ahmed <yosry.ahmed@linux.dev>, Youngjun Park <youngjun.park@lge.com>, 
+	Chengming Zhou <chengming.zhou@linux.dev>, Roman Gushchin <roman.gushchin@linux.dev>, 
+	Shakeel Butt <shakeel.butt@linux.dev>, Muchun Song <muchun.song@linux.dev>, 
+	Qi Zheng <zhengqi.arch@bytedance.com>, linux-kernel@vger.kernel.org, 
+	cgroups@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-Message-Id: <20260225-dmemcg-aggressive-protect-v4-6-de847ab35184@gmx.de>
-References: <20260225-dmemcg-aggressive-protect-v4-0-de847ab35184@gmx.de>
-In-Reply-To: <20260225-dmemcg-aggressive-protect-v4-0-de847ab35184@gmx.de>
-To: Maarten Lankhorst <dev@lankhorst.se>, 
- Maxime Ripard <mripard@kernel.org>, Tejun Heo <tj@kernel.org>, 
- Johannes Weiner <hannes@cmpxchg.org>, 
- =?utf-8?q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>, 
- Christian Koenig <christian.koenig@amd.com>, Huang Rui <ray.huang@amd.com>, 
- Matthew Auld <matthew.auld@intel.com>, 
- Matthew Brost <matthew.brost@intel.com>, 
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, 
- Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>, 
- Simona Vetter <simona@ffwll.ch>, Tvrtko Ursulin <tursulin@ursulin.net>
-Cc: cgroups@vger.kernel.org, dri-devel@lists.freedesktop.org, 
- Natalie Vock <natalie.vock@gmx.de>
-X-Mailer: b4 0.14.3
-X-Provags-ID: V03:K1:NyKgsjqAJHx5JYuze/5yIIoLKYehoV/2tkOPORuPOjm+EEcLAOa
- azE7iKdp7cHbLtpg7yFpPeB6guOTITGlyYUgYkHtG/ikx5QiMd4Sj2e8N31+EjcMukHpkts
- 29XRKzMtguj5G3JRaypGqOUa/25kvb8JNG37C9BJpLzW7jCVh6REtewI6HipNaHJmvCNr7I
- YM3wthmfrTImVlUln7QvA==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:UfVKB9Ravzs=;SFByoyTPl/4YDsfumIMulgq/HTz
- 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
- mWarEicBNcbNtSJYzRufFP+ATy76lNFQEWIcZX
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-2.16 / 15.00];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[gmx.de,quarantine];
-	R_DKIM_ALLOW(-0.20)[gmx.de:s=s31663417];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=2];
+	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64:c];
+	R_DKIM_ALLOW(-0.20)[gmail.com:s=20230601];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-14357-lists,cgroups=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-14361-lists,cgroups=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	FREEMAIL_TO(0.00)[lankhorst.se,kernel.org,cmpxchg.org,suse.com,amd.com,intel.com,linux.intel.com,suse.de,gmail.com,ffwll.ch,ursulin.net];
-	FREEMAIL_CC(0.00)[vger.kernel.org,lists.freedesktop.org,gmx.de];
-	RCPT_COUNT_TWELVE(0.00)[17];
 	RCVD_COUNT_THREE(0.00)[4];
-	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
+	FREEMAIL_CC(0.00)[kvack.org,linux-foundation.org,kernel.org,oracle.com,nvidia.com,linux.alibaba.com,google.com,huaweicloud.com,gmail.com,redhat.com,cmpxchg.org,linux.dev,lge.com,bytedance.com,vger.kernel.org];
+	RCPT_COUNT_TWELVE(0.00)[22];
+	MIME_TRACE(0.00)[0:+];
 	FROM_HAS_DN(0.00)[];
+	MISSING_XM_UA(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	FREEMAIL_FROM(0.00)[gmx.de];
 	NEURAL_HAM(-0.00)[-1.000];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[natalie.vock@gmx.de,cgroups@vger.kernel.org];
-	DKIM_TRACE(0.00)[gmx.de:+];
-	MID_RHS_MATCH_FROM(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[21cnbao@gmail.com,cgroups@vger.kernel.org];
+	DKIM_TRACE(0.00)[gmail.com:+];
+	MID_RHS_MATCH_FROMTLD(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
 	TAGGED_RCPT(0.00)[cgroups];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	FREEMAIL_FROM(0.00)[gmail.com];
 	TO_DN_SOME(0.00)[]
-X-Rspamd-Queue-Id: 5EC6F197176
+X-Rspamd-Queue-Id: 76246197275
 X-Rspamd-Action: no action
 
-When checking whether to skip certain buffers because they're protected
-by dmem.low, we're checking the effective protection of the evictee's
-cgroup, but depending on how the evictor's cgroup relates to the
-evictee's, the semantics of effective protection values change.
+On Fri, Feb 20, 2026 at 7:42=E2=80=AFAM Kairui Song via B4 Relay
+<devnull+kasong.tencent.com@kernel.org> wrote:
+>
+> From: Kairui Song <kasong@tencent.com>
+>
+> By reserving one bit for the counting part, we can easily merge the
+> zeromap into the swap table.
 
-When testing against cgroups from different subtrees, page_counter's
-recursive protection propagates memory protection afforded to a parent
-down to the child cgroups, even if the children were not explicitly
-protected. This prevents cgroups whose parents were afforded no
-protection from stealing memory from cgroups whose parents were afforded
-more protection, without users having to explicitly propagate this
-protection.
 
-However, if we always calculate protection from the root cgroup, this
-breaks prioritization of sibling cgroups: If one cgroup was explicitly
-protected and its siblings were not, the protected cgroup should get
-higher priority, i.e. the protected cgroup should be able to steal from
-unprotected siblings. This only works if we restrict the protection
-calculation to the subtree shared by evictor and evictee.
+Hi Kairui,
 
-Signed-off-by: Natalie Vock <natalie.vock@gmx.de>
-=2D--
- drivers/gpu/drm/ttm/ttm_bo.c | 35 ++++++++++++++++++++++++++++++++---
- 1 file changed, 32 insertions(+), 3 deletions(-)
+I know you're saving space by removing the zeromap memory,
+but do you think a bitmap can sometimes be faster
+than iterating over multiple data points to set or get bits?
+Or is the performance difference too small to notice?
 
-diff --git a/drivers/gpu/drm/ttm/ttm_bo.c b/drivers/gpu/drm/ttm/ttm_bo.c
-index 401a6846b470f..12c3241704895 100644
-=2D-- a/drivers/gpu/drm/ttm/ttm_bo.c
-+++ b/drivers/gpu/drm/ttm/ttm_bo.c
-@@ -526,13 +526,42 @@ struct ttm_bo_evict_walk {
-=20
- static s64 ttm_bo_evict_cb(struct ttm_lru_walk *walk, struct ttm_buffer_o=
-bject *bo)
- {
-+	struct dmem_cgroup_pool_state *limit_pool;
- 	struct ttm_bo_evict_walk *evict_walk =3D
- 		container_of(walk, typeof(*evict_walk), walk);
- 	s64 lret;
-=20
--	if (!dmem_cgroup_state_evict_valuable(evict_walk->alloc_state->limit_poo=
-l,
--					      bo->resource->css, evict_walk->try_low,
--					      &evict_walk->hit_low))
-+	/*
-+	 * If only_evict_unprotected is set, then we're trying to evict unprotec=
-ted
-+	 * buffers in favor of a protected allocation for charge_pool. Explicitl=
-y skip
-+	 * buffers belonging to the same cgroup here - that cgroup is definitely=
- protected,
-+	 * even though dmem_cgroup_state_evict_valuable would allow the eviction=
- because a
-+	 * cgroup is always allowed to evict from itself even if it is protected=
-.
-+	 */
-+	if (evict_walk->alloc_state->only_evict_unprotected &&
-+			bo->resource->css =3D=3D evict_walk->alloc_state->charge_pool)
-+		return 0;
-+
-+	limit_pool =3D evict_walk->alloc_state->limit_pool;
-+	/*
-+	 * If there is no explicit limit pool, find the root of the shared subtr=
-ee between
-+	 * evictor and evictee. This is important so that recursive protection r=
-ules can
-+	 * apply properly: Recursive protection distributes cgroup protection af=
-forded
-+	 * to a parent cgroup but not used explicitly by a child cgroup between =
-all child
-+	 * cgroups (see docs of effective_protection in mm/page_counter.c). Howe=
-ver, when
-+	 * direct siblings compete for memory, siblings that were explicitly pro=
-tected
-+	 * should get prioritized over siblings that weren't. This only happens =
-correctly
-+	 * when the root of the shared subtree is passed to
-+	 * dmem_cgroup_state_evict_valuable. Otherwise, the effective-protection
-+	 * calculation cannot distinguish direct siblings from unrelated subtree=
-s and the
-+	 * calculated protection ends up wrong.
-+	 */
-+	if (!limit_pool)
-+		limit_pool =3D dmem_cgroup_common_ancestor(bo->resource->css,
-+							 evict_walk->alloc_state->charge_pool);
-+
-+	if (!dmem_cgroup_state_evict_valuable(limit_pool, bo->resource->css,
-+					      evict_walk->try_low, &evict_walk->hit_low))
- 		return 0;
-=20
- 	if (bo->pin_count || !bo->bdev->funcs->eviction_valuable(bo, evict_walk-=
->place))
-
-=2D-=20
-2.53.0
-
+Thanks
+Barry
 
