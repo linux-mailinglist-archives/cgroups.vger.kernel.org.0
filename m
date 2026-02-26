@@ -1,152 +1,136 @@
-Return-Path: <cgroups+bounces-14403-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-14404-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id aMpfHUCTn2k9cwQAu9opvQ
-	(envelope-from <cgroups+bounces-14403-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Thu, 26 Feb 2026 01:26:40 +0100
+	id EJpxJYmWn2k9cwQAu9opvQ
+	(envelope-from <cgroups+bounces-14404-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Thu, 26 Feb 2026 01:40:41 +0100
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id DC4A819F656
-	for <lists+cgroups@lfdr.de>; Thu, 26 Feb 2026 01:26:39 +0100 (CET)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0C72E19F7FB
+	for <lists+cgroups@lfdr.de>; Thu, 26 Feb 2026 01:40:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id AB54F3037D40
-	for <lists+cgroups@lfdr.de>; Thu, 26 Feb 2026 00:25:42 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id 664CD3030D98
+	for <lists+cgroups@lfdr.de>; Thu, 26 Feb 2026 00:40:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2D49B21D585;
-	Thu, 26 Feb 2026 00:25:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="ey+g63E7"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 46E4C31A7F2;
+	Thu, 26 Feb 2026 00:40:36 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from out-178.mta1.migadu.com (out-178.mta1.migadu.com [95.215.58.178])
+Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE30F5FDA7
-	for <cgroups@vger.kernel.org>; Thu, 26 Feb 2026 00:25:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE5902BCF45;
+	Thu, 26 Feb 2026 00:40:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772065541; cv=none; b=cRsFlnaPL9w7BAo/ZbNeWWbPcnaez9NvEbYfiJjcOJDBsD7f1uUnQ2KADU2p/EE2Tq0ttPHV0J7XqdZcm7OilPYbTu38fEpsHMRs1kBbeM6zhA/1jtCyk1BmPQyzKOsDcHizkR0Q8oHzMv8CLVRdq1aLU3W94CZpdHRXUmvV+MI=
+	t=1772066436; cv=none; b=drUMOd6ONVEgEGcvMTEPR7jtjOU1/fY0NuRLLKtZRzjvpRQ6JX8Q2OY1W9feXhi45T9oOw2HcK8WQ5g454f/WHZkG91KhIilNCH8zcc9ng/dQERhAgSzmKhKqAzcntKqC3VCGiHPXk0KVudbgqa1G1iDFE1aGtL4xqXVY3+FNc4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772065541; c=relaxed/simple;
-	bh=K5LKe6svs8tWQQgxlXMn1Wqs6u8cT7mRfbIARL7w+WI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=JWsEzK/vH4JI4hERNet9M2SiHfbKRzCLp8As85+9lm0maTvZ+Oc4jfhIB+iaDIMRrDZjKHIHosEVXiaulwiiSQuKUmFQ3kqXi5Hdjtt+/ik0GksV1QEOvdDpip8KvSuhScnJRP6WIQLKNm+m7t3V9PoC8aUADb6hpMtRWsYirmk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=ey+g63E7; arc=none smtp.client-ip=95.215.58.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Wed, 25 Feb 2026 16:25:27 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1772065537;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=yxPqJ6E7xvNtCuOu5zbMYJVgjaGYkAlt6qTcXlH4PpM=;
-	b=ey+g63E7MYcvKk29/8ZzUc3pXSq1elfr4bhlsqngJRjogeai6DH6S2T7UWhCrTJSC1+Bdt
-	nyff4LdW470iaVY2rFfXfbEfQtnqRAZ/jH/mY6iGY/XJn1ZQO7iPw3GVDrGvpWDUTW+q5y
-	4uMIS9FVfmAwC2lXFCseF48lDsZ7Cy4=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Shakeel Butt <shakeel.butt@linux.dev>
-To: Yosry Ahmed <yosry@kernel.org>
-Cc: Qi Zheng <qi.zheng@linux.dev>, hannes@cmpxchg.org, hughd@google.com, 
-	mhocko@suse.com, roman.gushchin@linux.dev, muchun.song@linux.dev, 
-	david@kernel.org, lorenzo.stoakes@oracle.com, ziy@nvidia.com, harry.yoo@oracle.com, 
-	yosry.ahmed@linux.dev, imran.f.khan@oracle.com, kamalesh.babulal@oracle.com, 
-	axelrasmussen@google.com, yuanchu@google.com, weixugc@google.com, 
-	chenridong@huaweicloud.com, mkoutny@suse.com, akpm@linux-foundation.org, 
-	hamzamahfooz@linux.microsoft.com, apais@linux.microsoft.com, lance.yang@linux.dev, bhe@redhat.com, 
-	usamaarif642@gmail.com, linux-mm@kvack.org, linux-kernel@vger.kernel.org, 
-	cgroups@vger.kernel.org, Qi Zheng <zhengqi.arch@bytedance.com>
-Subject: Re: [PATCH v5 29/32] mm: memcontrol: prepare for reparenting
- non-hierarchical stats
-Message-ID: <aZ-R87JfacQ2gGq1@linux.dev>
-References: <cover.1772005110.git.zhengqi.arch@bytedance.com>
- <ef13e5974343b37ae2a0e28aff03ea2d033cb888.1772005110.git.zhengqi.arch@bytedance.com>
- <CAO9r8zOhZgrym6oSrtg7b+HmNHEfWuAzZ0i8eYhm5-OEnfFLdw@mail.gmail.com>
+	s=arc-20240116; t=1772066436; c=relaxed/simple;
+	bh=54iNLQvXUxjPSrATUINfZZQp10w9adQ7PjxGiw2RuIc=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Y7BHwgqeStnnCJzzzNhO1RM6b3PwUjuVxacIrK/yqbX2yDqzHa7w8JPurCDgwSR7UzJDQTJwV/ZXwXqXtQMM3pTZ7tK2UDztE8ExwffM7ijnoT0GwzOstsMI/HEhTEX03GdXvsaY7F/UNCJoTBmrgriootp80EcNvpro50Ok+24=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.177])
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTPS id 4fLszT6YjXzKHLtv;
+	Thu, 26 Feb 2026 08:39:33 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.128])
+	by mail.maildlp.com (Postfix) with ESMTP id 74CAB40590;
+	Thu, 26 Feb 2026 08:40:30 +0800 (CST)
+Received: from [10.67.111.176] (unknown [10.67.111.176])
+	by APP4 (Coremail) with SMTP id gCh0CgDnR_h9lp9pk0wXIw--.619S2;
+	Thu, 26 Feb 2026 08:40:30 +0800 (CST)
+Message-ID: <beb9f122-5726-4767-8816-8f30b90674bd@huaweicloud.com>
+Date: Thu, 26 Feb 2026 08:40:29 +0800
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAO9r8zOhZgrym6oSrtg7b+HmNHEfWuAzZ0i8eYhm5-OEnfFLdw@mail.gmail.com>
-X-Migadu-Flow: FLOW_OUT
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH -next] cgroup/cpuset: fix null-ptr-deref in
+ rebuild_sched_domains_cpuslocked
+To: Tejun Heo <tj@kernel.org>
+Cc: longman@redhat.com, hannes@cmpxchg.org, mkoutny@suse.com,
+ cgroups@vger.kernel.org, linux-kernel@vger.kernel.org, lujialin4@huawei.com
+References: <20260225011523.51365-1-chenridong@huaweicloud.com>
+ <89dca74185416ed487717aa8ef82a222@kernel.org>
+Content-Language: en-US
+From: Chen Ridong <chenridong@huaweicloud.com>
+In-Reply-To: <89dca74185416ed487717aa8ef82a222@kernel.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID:gCh0CgDnR_h9lp9pk0wXIw--.619S2
+X-Coremail-Antispam: 1UD129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73
+	VFW2AGmfu7bjvjm3AaLaJ3UjIYCTnIWjp_UUUYj7kC6x804xWl14x267AKxVW8JVW5JwAF
+	c2x0x2IEx4CE42xK8VAvwI8IcIk0rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII
+	0Yj41l84x0c7CEw4AK67xGY2AK021l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xv
+	wVC0I7IYx2IY6xkF7I0E14v26r4UJVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4
+	x0Y4vEx4A2jsIEc7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG
+	64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r
+	1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvEwIxGrwCF04k20xvY0x0EwIxGrwCF
+	54CYxVCY1x0262kKe7AKxVWUAVWUtwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F4
+	0E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1l
+	IxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxV
+	AFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j
+	6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7IU1zuWJ
+	UUUUU==
+X-CM-SenderInfo: hfkh02xlgr0w46kxt4xhlfz01xgou0bp/
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-2.16 / 15.00];
+X-Spamd-Result: default: False [-1.46 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[linux.dev,none];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
-	R_DKIM_ALLOW(-0.20)[linux.dev:s=key1];
+	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-14403-lists,cgroups=lfdr.de];
-	RCVD_TLS_LAST(0.00)[];
-	RCVD_COUNT_THREE(0.00)[3];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	FREEMAIL_CC(0.00)[linux.dev,cmpxchg.org,google.com,suse.com,kernel.org,oracle.com,nvidia.com,huaweicloud.com,linux-foundation.org,linux.microsoft.com,redhat.com,gmail.com,kvack.org,vger.kernel.org,bytedance.com];
-	RCPT_COUNT_TWELVE(0.00)[29];
-	MIME_TRACE(0.00)[0:+];
-	FROM_HAS_DN(0.00)[];
-	MISSING_XM_UA(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	NEURAL_HAM(-0.00)[-1.000];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[shakeel.butt@linux.dev,cgroups@vger.kernel.org];
-	DKIM_TRACE(0.00)[linux.dev:+];
-	MID_RHS_MATCH_FROM(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
 	TAGGED_RCPT(0.00)[cgroups];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns,huaweicloud.com:mid];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	NEURAL_HAM(-0.00)[-1.000];
+	MID_RHS_MATCH_FROM(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
+	RCPT_COUNT_SEVEN(0.00)[7];
+	R_DKIM_NA(0.00)[];
+	DMARC_NA(0.00)[huaweicloud.com];
+	FROM_NEQ_ENVFROM(0.00)[chenridong@huaweicloud.com,cgroups@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
 	TO_DN_SOME(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[linux.dev:mid,linux.dev:dkim,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: DC4A819F656
+	PRECEDENCE_BULK(0.00)[];
+	TAGGED_FROM(0.00)[bounces-14404-lists,cgroups=lfdr.de];
+	RCVD_COUNT_FIVE(0.00)[6];
+	RCVD_TLS_LAST(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[]
+X-Rspamd-Queue-Id: 0C72E19F7FB
 X-Rspamd-Action: no action
 
-On Wed, Feb 25, 2026 at 06:58:59AM -0800, Yosry Ahmed wrote:
-> > @@ -473,6 +493,29 @@ unsigned long lruvec_page_state_local(struct lruvec *lruvec,
-> >         return x;
-> >  }
-> >
-> > +#ifdef CONFIG_MEMCG_V1
-> > +void reparent_memcg_lruvec_state_local(struct mem_cgroup *memcg,
-> > +                                      struct mem_cgroup *parent, int idx)
-> > +{
-> > +       int i = memcg_stats_index(idx);
-> > +       int nid;
-> > +
-> > +       if (WARN_ONCE(BAD_STAT_IDX(i), "%s: missing stat item %d\n", __func__, idx))
-> > +               return;
-> > +
-> > +       for_each_node(nid) {
-> > +               struct lruvec *child_lruvec = mem_cgroup_lruvec(memcg, NODE_DATA(nid));
-> > +               struct lruvec *parent_lruvec = mem_cgroup_lruvec(parent, NODE_DATA(nid));
-> > +               struct mem_cgroup_per_node *parent_pn;
-> > +               unsigned long value = lruvec_page_state_local(child_lruvec, idx);
-> > +
-> > +               parent_pn = container_of(parent_lruvec, struct mem_cgroup_per_node, lruvec);
-> > +
-> > +               atomic_long_add(value, &(parent_pn->lruvec_stats->state_local[i]));
-> > +       }
-> > +}
-> 
-> Did you measure the impact of making state_local atomic on the flush
-> path? It's a slow path but we've seen pain from it being too slow
-> before, because it extends the critical section of the rstat flush
-> lock.
 
-Qi, please measure the impact on flushing and if no impact then no need to do
-anything as I don't want anymore churn in this series.
 
+On 2026/2/26 1:40, Tejun Heo wrote:
+> Hello,
 > 
-> Can we keep this non-atomic and use mod_memcg_lruvec_state() here? It
-> will update the stat on the local counter and it will be added to
-> state_local in the flush path when needed. We can even force another
-> flush in reparent_state_local () after reparenting is completed, if we
-> want to avoid leaving a potentially large stat update pending, as it
-> can be missed by mem_cgroup_flush_stats_ratelimited().
+> Applied to cgroup/for-7.0-fixes with the following modification:
 > 
-> Same for reparent_memcg_state_local(), we can probably use mod_memcg_state()?
+> - Moved the NULL check into the for-loop condition per Waiman's
+>   suggestion.
+> 
+> -	for (i = 0; i < ndoms; ++i) {
+> -		if (doms && WARN_ON_ONCE(!cpumask_subset(doms[i],
+> -					 cpu_active_mask)))
+> +	for (i = 0; doms && i < ndoms; i++) {
+> +		if (WARN_ON_ONCE(!cpumask_subset(doms[i], cpu_active_mask)))
+> 
+> Thanks.
+> 
+> --
+> tejun
 
-Yosry, do you mind sending the patch you are thinking about over this series?
+Thank you.
+
+-- 
+Best regards,
+Ridong
+
 
