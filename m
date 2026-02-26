@@ -1,49 +1,49 @@
-Return-Path: <cgroups+bounces-14406-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-14407-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id SZbaN4Cln2mHdAQAu9opvQ
-	(envelope-from <cgroups+bounces-14406-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Thu, 26 Feb 2026 02:44:32 +0100
+	id GGtZN+6vn2kAdQQAu9opvQ
+	(envelope-from <cgroups+bounces-14407-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Thu, 26 Feb 2026 03:29:02 +0100
 X-Original-To: lists+cgroups@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 861D719FE87
-	for <lists+cgroups@lfdr.de>; Thu, 26 Feb 2026 02:44:32 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 41EEF1A01C1
+	for <lists+cgroups@lfdr.de>; Thu, 26 Feb 2026 03:29:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 2D8D5305DA44
-	for <lists+cgroups@lfdr.de>; Thu, 26 Feb 2026 01:42:11 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id E1298303FFFA
+	for <lists+cgroups@lfdr.de>; Thu, 26 Feb 2026 02:28:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E49E372B21;
-	Thu, 26 Feb 2026 01:42:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 49D65377556;
+	Thu, 26 Feb 2026 02:28:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="DBpR2vEH"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="inLRTyPS"
 X-Original-To: cgroups@vger.kernel.org
-Received: from out-176.mta1.migadu.com (out-176.mta1.migadu.com [95.215.58.176])
+Received: from out-180.mta0.migadu.com (out-180.mta0.migadu.com [91.218.175.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 61E7C1E505
-	for <cgroups@vger.kernel.org>; Thu, 26 Feb 2026 01:42:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B727637648D
+	for <cgroups@vger.kernel.org>; Thu, 26 Feb 2026 02:28:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772070130; cv=none; b=Ddea44KkMwlG57Vy0bOlMV6PoXADE6EnZqehmk2J54xDxA/WOO2h01qN7BueZ/dOA/LHipf1lo9WTnDnECAx/qhLEkA6EXdvVdYZ5Dt8RWvVP8q8h1zFWniM7hwicBBRHXJvWdTT2m5xoWX80uCSSiTW0KE+U+D630z3uEn4OtM=
+	t=1772072905; cv=none; b=GTXjXx1smeIKC/RelUs7raDpj5pvZuhRcb5qmgrr3ImQmvaZab7txbnC97UO5+c5YypIqrIBJBbf9yHCFRfXcg5JpB6nkMC2ew/zBBwbv8zhpfTp0cWi4p92An/DLQZZIq6u2GDMjHhe9er9Q7g180VYeqtBUyrkFmhOnFaW6b8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772070130; c=relaxed/simple;
-	bh=/LKqdjFoiQ04/XIA87m3i7gEF0FyoRJDwONhXGMRjXM=;
+	s=arc-20240116; t=1772072905; c=relaxed/simple;
+	bh=m3Y5OU4vPC5Kug79bnRfmWT3RINZid7mrn+RWwWruF4=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=CwuymNv3nLanjVQrj3ZHA9/S+I6Sc6/1GZUv/Nmcctr0KeCXPfjj7qjKADUAuYMdSze6c7UgmB9xHw8GB8utn42y1xvZfwKEg3FnvVwSs8A3fxygBbwoHpb3AaJnE4++p0uyVFwxKSH0uMUPxMg394jRfpofJcq+rZpE+/qA0dg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=DBpR2vEH; arc=none smtp.client-ip=95.215.58.176
+	 Content-Type:Content-Disposition:In-Reply-To; b=IuzK6PnJFLHFfehjGgaoAOSwvtvwmvQOfI0MbsrunsxLXBZge/l8oOwAlbpPP8dC4uvVclyE7+1gxPBIOP5d/C1n8r7rCrqPAxccXH+vUsUu7+abRDw++kvB8Wmph3gSkLtuEjj8JVTXufVPR1k7BnLP/HYZf0e8CAqpbXp+9Hg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=inLRTyPS; arc=none smtp.client-ip=91.218.175.180
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Wed, 25 Feb 2026 17:41:46 -0800
+Date: Wed, 25 Feb 2026 18:27:59 -0800
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1772070116;
+	t=1772072890;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=FCvGmCmilt3Iav7ktXIbGgvFCADiAsVJLuTgICHbbvU=;
-	b=DBpR2vEHIC7mO2TzWh+tPoXu1M0seTK3lc9QNrkr4WCCR0KRQGf/X0U8dUG6eoOfO/W5Eo
-	QoZ6Lz1NfN4dRNNpPK000BXyGzhaRdY9c2l3lawHKeoxcAk42kCxcc5L15Bmf2X39OjXIS
-	Ufk8H2HzfJmRbO1VmozjxmiaJ7e4so4=
+	bh=J8G7n0G5IvJbjAWS80AASD+GlHfDZ2XYW2oW2fVo6QM=;
+	b=inLRTyPSomd7cx4tU1l+xytkHbPVoB+tKgvlzV/f7mXEW2S2TI31JThNxm3yX9SBJdI5p1
+	i0VoBYNMyPj1gMmS3Ptyr4w2cftRfMimJ/kcnc7uxjbuoeeEjCNe2dKfi5gncND2OYLgLN
+	KjtZfn55mBY7Dw+8pMmY+l0Ybo4QO+Q=
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 From: Shakeel Butt <shakeel.butt@linux.dev>
 To: Qi Zheng <qi.zheng@linux.dev>
@@ -55,11 +55,11 @@ Cc: hannes@cmpxchg.org, hughd@google.com, mhocko@suse.com,
 	akpm@linux-foundation.org, hamzamahfooz@linux.microsoft.com, apais@linux.microsoft.com, 
 	lance.yang@linux.dev, bhe@redhat.com, usamaarif642@gmail.com, linux-mm@kvack.org, 
 	linux-kernel@vger.kernel.org, cgroups@vger.kernel.org, Qi Zheng <zhengqi.arch@bytedance.com>
-Subject: Re: [PATCH v5 29/32] mm: memcontrol: prepare for reparenting
- non-hierarchical stats
-Message-ID: <aZ-kefGBeT-RzGcG@linux.dev>
-References: <cover.1772005110.git.zhengqi.arch@bytedance.com>
- <ef13e5974343b37ae2a0e28aff03ea2d033cb888.1772005110.git.zhengqi.arch@bytedance.com>
+Subject: Re: [PATCH v5 update 30/32] mm: memcontrol: convert objcg to be
+ per-memcg per-node type
+Message-ID: <aZ-uNV1biPYLhJ48@linux.dev>
+References: <0f915487ffc653cf6ea19335c21c01aa06004641.1772005110.git.zhengqi.arch@bytedance.com>
+ <20260225094456.74145-1-qi.zheng@linux.dev>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -68,7 +68,7 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ef13e5974343b37ae2a0e28aff03ea2d033cb888.1772005110.git.zhengqi.arch@bytedance.com>
+In-Reply-To: <20260225094456.74145-1-qi.zheng@linux.dev>
 X-Migadu-Flow: FLOW_OUT
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-2.16 / 15.00];
@@ -79,7 +79,7 @@ X-Spamd-Result: default: False [-2.16 / 15.00];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-14406-lists,cgroups=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-14407-lists,cgroups=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
 	RCVD_COUNT_THREE(0.00)[3];
 	FORGED_SENDER_MAILLIST(0.00)[];
@@ -97,62 +97,49 @@ X-Spamd-Result: default: False [-2.16 / 15.00];
 	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
 	TAGGED_RCPT(0.00)[cgroups];
 	TO_DN_SOME(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,bytedance.com:email,linux.dev:mid,linux.dev:dkim,linux.dev:email]
-X-Rspamd-Queue-Id: 861D719FE87
+	DBL_BLOCKED_OPENRESOLVER(0.00)[bytedance.com:email,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,linux.dev:mid,linux.dev:dkim,linux.dev:email]
+X-Rspamd-Queue-Id: 41EEF1A01C1
 X-Rspamd-Action: no action
 
-On Wed, Feb 25, 2026 at 03:53:12PM +0800, Qi Zheng wrote:
+On Wed, Feb 25, 2026 at 05:44:56PM +0800, Qi Zheng wrote:
 > From: Qi Zheng <zhengqi.arch@bytedance.com>
 > 
-> To resolve the dying memcg issue, we need to reparent LRU folios of child
-> memcg to its parent memcg. This could cause problems for non-hierarchical
-> stats.
-> 
-> As Yosry Ahmed pointed out:
-> 
-> ```
-> In short, if memory is charged to a dying cgroup at the time of
-> reparenting, when the memory gets uncharged the stats updates will occur
-> at the parent. This will update both hierarchical and non-hierarchical
-> stats of the parent, which would corrupt the parent's non-hierarchical
-> stats (because those counters were never incremented when the memory was
-> charged).
-> ```
-> 
-> Now we have the following two types of non-hierarchical stats, and they
-> are only used in CONFIG_MEMCG_V1:
-> 
-> a. memcg->vmstats->state_local[i]
-> b. pn->lruvec_stats->state_local[i]
-> 
-> To ensure that these non-hierarchical stats work properly, we need to
-> reparent these non-hierarchical stats after reparenting LRU folios. To
-> this end, this commit makes the following preparations:
-> 
-> 1. implement reparent_state_local() to reparent non-hierarchical stats
-> 2. make css_killed_work_fn() to be called in rcu work, and implement
->    get_non_dying_memcg_start() and get_non_dying_memcg_end() to avoid race
->    between mod_memcg_state()/mod_memcg_lruvec_state()
->    and reparent_state_local()
-> 3. change these non-hierarchical stats to atomic_long_t type to avoid race
->    between mem_cgroup_stat_aggregate() and reparent_state_local()
+> Convert objcg to be per-memcg per-node type, so that when reparent LRU
+> folios later, we can hold the lru lock at the node level, thus avoiding
+> holding too many lru locks at once.
 > 
 > Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
-
-[...]
-
-> --- a/mm/memcontrol-v1.h
-> +++ b/mm/memcontrol-v1.h
-> @@ -45,6 +45,7 @@ static inline bool do_memsw_account(void)
+> ---
+> changlog:
+>  - fix a missing root_obj_cgroup conversion and completely delete
+>    root_obj_cgroup.
+> 
+>  include/linux/memcontrol.h | 23 +++++------
+>  include/linux/sched.h      |  2 +-
+>  mm/memcontrol.c            | 79 +++++++++++++++++++++++---------------
+>  3 files changed, 62 insertions(+), 42 deletions(-)
+> 
+> diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
+> index 45d911dd903e7..6e11552a90618 100644
+> --- a/include/linux/memcontrol.h
+> +++ b/include/linux/memcontrol.h
+> @@ -116,6 +116,16 @@ struct mem_cgroup_per_node {
+>  	unsigned long		lru_zone_size[MAX_NR_ZONES][NR_LRU_LISTS];
+>  	struct mem_cgroup_reclaim_iter	iter;
 >  
->  unsigned long memcg_events_local(struct mem_cgroup *memcg, int event);
->  unsigned long memcg_page_state_local(struct mem_cgroup *memcg, int idx);
-> +void mod_memcg_page_state_local(struct mem_cgroup *memcg, int idx, unsigned long val);
+> +	/*
+> +	 * objcg is wiped out as a part of the objcg repaprenting process.
+> +	 * orig_objcg preserves a pointer (and a reference) to the original
+> +	 * objcg until the end of live of memcg.
+> +	 */
+> +	struct obj_cgroup __rcu	*objcg;
+> +	struct obj_cgroup	*orig_objcg;
 
-The above seems like addition by mistake.
+The layout of struct mem_cgroup_per_node is very performance sensitive. Please
+couple of performance benchmarks after rearranging the fields particularly the
+above two pointers together at the start of the struct.
 
-After fixing this, you can add:
+Otherwise:
 
 Acked-by: Shakeel Butt <shakeel.butt@linux.dev>
-
 
