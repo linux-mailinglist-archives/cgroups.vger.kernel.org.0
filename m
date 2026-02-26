@@ -1,303 +1,181 @@
-Return-Path: <cgroups+bounces-14436-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-14437-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id CGzMALWFoGk6kgQAu9opvQ
-	(envelope-from <cgroups+bounces-14436-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Thu, 26 Feb 2026 18:41:09 +0100
+	id 8MC1DE2QoGkokwQAu9opvQ
+	(envelope-from <cgroups+bounces-14437-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Thu, 26 Feb 2026 19:26:21 +0100
 X-Original-To: lists+cgroups@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6E0781ACAA1
-	for <lists+cgroups@lfdr.de>; Thu, 26 Feb 2026 18:41:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 853AE1AD943
+	for <lists+cgroups@lfdr.de>; Thu, 26 Feb 2026 19:26:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 00B2334465D9
-	for <lists+cgroups@lfdr.de>; Thu, 26 Feb 2026 17:09:05 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id AE17B341E671
+	for <lists+cgroups@lfdr.de>; Thu, 26 Feb 2026 17:13:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2587440F8E6;
-	Thu, 26 Feb 2026 17:03:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3BA74368977;
+	Thu, 26 Feb 2026 17:13:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="poAd9zN3"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="K7k4gjcp"
 X-Original-To: cgroups@vger.kernel.org
-Received: from out-189.mta0.migadu.com (out-189.mta0.migadu.com [91.218.175.189])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 33225395DBB
-	for <cgroups@vger.kernel.org>; Thu, 26 Feb 2026 17:03:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.189
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F3787368953
+	for <cgroups@vger.kernel.org>; Thu, 26 Feb 2026 17:13:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772125391; cv=none; b=GW5B85tJgBagMzgP3e5bA5E+zTabYgNUFRLijrO5QfJlAcEvk/FV8KLYqiQzNExzPkwKO5VpatxKcwitHgK71qXCC0IaFyeunTCWXVl26jZrxVA3bbOABhGsj+Q8731DSmizW7pW7dFpxzPXRMoZ++9xMWpLE0HkJc1ss5zbb44=
+	t=1772126029; cv=none; b=fOsj3ns82MReAM0yi2qY4ksOLVC59IMNEAvQ3gDJB8E7ojJYOekn566lofx7KRq21jSRz1HbDFdBAKcKpIW9TYKpStReuFq3CmGXDLk/SVpjVYgV3ALhTxTa18Bc8eXhW6aDTjbK2cdgaLarmYrWq5cDeMpynIcRFuX548tWC5k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772125391; c=relaxed/simple;
-	bh=9wVolcoGS545wRc7j2Rt8si7VRw/U/N2Kfv8ElkDVjA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=krbDrcVroy6XL21WSuSQuocs38B7T4pFCcgWbinNW62TfZaSaISnQHG+kyONGrMVrWqgE/Yyem+7BT3qkEagw2ip1lJ3ED/UtHr8YOsA9y05kI4srWpmgnfLP5l9rmdwhdcpJPxbU1o1KA8WvRudgVkJK+GJ7jXN9jPm3S03uCM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=poAd9zN3; arc=none smtp.client-ip=91.218.175.189
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Thu, 26 Feb 2026 09:02:40 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1772125387;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=QmqwR2VfW9/BK6pSRwRf4VC4vuaKHxCtIx0Jze1RC2g=;
-	b=poAd9zN3ZW2O8aPHHsQ5vQ+4Ej/d3mGYgOXpxfrGT5y6HP6geAK0fhG+e8SL8FJZ3DUit9
-	ITN3g3TPnlkQmKxepNYwUa4AfJxGQgRjK/9ZBTFJftBO05MgqBZxKg291eypBRs5bnG7xl
-	30ZVg+WcpoqKTmS8uxU2OoWyVerD/7o=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Shakeel Butt <shakeel.butt@linux.dev>
-To: Yosry Ahmed <yosry@kernel.org>
-Cc: Qi Zheng <qi.zheng@linux.dev>, hannes@cmpxchg.org, hughd@google.com, 
-	mhocko@suse.com, roman.gushchin@linux.dev, muchun.song@linux.dev, 
-	david@kernel.org, lorenzo.stoakes@oracle.com, ziy@nvidia.com, harry.yoo@oracle.com, 
-	yosry.ahmed@linux.dev, imran.f.khan@oracle.com, kamalesh.babulal@oracle.com, 
-	axelrasmussen@google.com, yuanchu@google.com, weixugc@google.com, 
-	chenridong@huaweicloud.com, mkoutny@suse.com, akpm@linux-foundation.org, 
-	hamzamahfooz@linux.microsoft.com, apais@linux.microsoft.com, lance.yang@linux.dev, bhe@redhat.com, 
-	usamaarif642@gmail.com, linux-mm@kvack.org, linux-kernel@vger.kernel.org, 
-	cgroups@vger.kernel.org, Qi Zheng <zhengqi.arch@bytedance.com>
-Subject: Re: [PATCH v5 29/32] mm: memcontrol: prepare for reparenting
- non-hierarchical stats
-Message-ID: <aaB7yYSpAaC5uInq@linux.dev>
-References: <cover.1772005110.git.zhengqi.arch@bytedance.com>
- <ef13e5974343b37ae2a0e28aff03ea2d033cb888.1772005110.git.zhengqi.arch@bytedance.com>
- <CAO9r8zOhZgrym6oSrtg7b+HmNHEfWuAzZ0i8eYhm5-OEnfFLdw@mail.gmail.com>
- <aZ-R87JfacQ2gGq1@linux.dev>
- <CAO9r8zPmgytmGHAbueFKXcZWY5SJaEwD3Pqk99ws4XeO2_hnKw@mail.gmail.com>
+	s=arc-20240116; t=1772126029; c=relaxed/simple;
+	bh=euWQYI6VTPnWxe/R+ZB/rm5QUfnQgxdguDrbNCz0+DI=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=ehLU2VjXdf6FOTHxLyF7Xkk691fxpM2wMP38tDoGv05r0TGEqVlKDDvcMJTsQfgZshHUAd5itEKUZPRC6VcTX228aD1RbRbMBILKkPDrfy8r6JjQcDN7PzoEQYO63LrJAEyZz7JLdDfdAHhk5PComRLWuH6H9+xiewHfCeseP5E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=K7k4gjcp; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 92D1CC2BCB1
+	for <cgroups@vger.kernel.org>; Thu, 26 Feb 2026 17:13:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1772126028;
+	bh=euWQYI6VTPnWxe/R+ZB/rm5QUfnQgxdguDrbNCz0+DI=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=K7k4gjcpwjNwnZ2fgQsF8UVFuRsxg+wJOyVRtwctubPWHIeBA7MXw840pLoqjLJhp
+	 fhHn+v2aMxmRZUnGCuxC5gvLvXyBIwK/0KoKFe6x3ncGF+Y4JFB/i56JIL7Kcd/v1d
+	 D+FHEatHll/2g8R9O4jOwa3BLd6MFVCMCfjqAqHaxmHjv8wrhOIphpyWvpxKKz4+5B
+	 heUAe5gkd7FiKsgGzg2WrpLAbrD+tmi9h518wBWlePniR7uDZINzZRKqa32ciL9C97
+	 ZoGlVSgd3fAVz5EDaye23HFGUWRYwCOwsG1J+iGppF0FAWu9m6Y2XCTQGvfw4yidBV
+	 gwLqBNZIlBnSQ==
+Received: by mail-qv1-f49.google.com with SMTP id 6a1803df08f44-899a98c2421so19661176d6.3
+        for <cgroups@vger.kernel.org>; Thu, 26 Feb 2026 09:13:48 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCXCG/2v07afwPJOo3ach5Qly7nHQeqWyzF9ymRc+dR78EwRJNGyPukr1Fx9GoSoIWbX2iqTNVra@vger.kernel.org
+X-Gm-Message-State: AOJu0YyrOLhxwgoZ7zNg5YwmDE7+/mmF3rOhy0T3AqPoipblvHk+k5c6
+	FiQkW/HX0ROYlGMFa3baUhWaReFA7Oz3qX3OJ+S9CJLmiIGIGmlOY96ArvEwmOX+qaLkTPH/eTM
+	ZC+0DWM86Lwz747epXaEpOW1a/u15J3c=
+X-Received: by 2002:a05:6214:627:b0:894:6f12:af5c with SMTP id
+ 6a1803df08f44-899c13dd9d0mr72291106d6.24.1772126027803; Thu, 26 Feb 2026
+ 09:13:47 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAO9r8zPmgytmGHAbueFKXcZWY5SJaEwD3Pqk99ws4XeO2_hnKw@mail.gmail.com>
-X-Migadu-Flow: FLOW_OUT
+References: <cover.1772005110.git.zhengqi.arch@bytedance.com>
+ <ef13e5974343b37ae2a0e28aff03ea2d033cb888.1772005110.git.zhengqi.arch@bytedance.com>
+ <CAO9r8zOhZgrym6oSrtg7b+HmNHEfWuAzZ0i8eYhm5-OEnfFLdw@mail.gmail.com>
+ <aZ-R87JfacQ2gGq1@linux.dev> <CAO9r8zPmgytmGHAbueFKXcZWY5SJaEwD3Pqk99ws4XeO2_hnKw@mail.gmail.com>
+ <aaB7yYSpAaC5uInq@linux.dev>
+In-Reply-To: <aaB7yYSpAaC5uInq@linux.dev>
+From: Yosry Ahmed <yosry@kernel.org>
+Date: Thu, 26 Feb 2026 09:13:35 -0800
+X-Gmail-Original-Message-ID: <CAO9r8zOP-kB=8ADGAUZYnpY-rxG1TCGbQg3FxqyC7WrOu3NASg@mail.gmail.com>
+X-Gm-Features: AaiRm52kMdcu5UAJBT1YFqYWZjlPJf22WLU_UA6yC-0U8iG5lX8r98zBJgwmLKM
+Message-ID: <CAO9r8zOP-kB=8ADGAUZYnpY-rxG1TCGbQg3FxqyC7WrOu3NASg@mail.gmail.com>
+Subject: Re: [PATCH v5 29/32] mm: memcontrol: prepare for reparenting
+ non-hierarchical stats
+To: Shakeel Butt <shakeel.butt@linux.dev>
+Cc: Qi Zheng <qi.zheng@linux.dev>, hannes@cmpxchg.org, hughd@google.com, 
+	mhocko@suse.com, roman.gushchin@linux.dev, muchun.song@linux.dev, 
+	david@kernel.org, lorenzo.stoakes@oracle.com, ziy@nvidia.com, 
+	harry.yoo@oracle.com, yosry.ahmed@linux.dev, imran.f.khan@oracle.com, 
+	kamalesh.babulal@oracle.com, axelrasmussen@google.com, yuanchu@google.com, 
+	weixugc@google.com, chenridong@huaweicloud.com, mkoutny@suse.com, 
+	akpm@linux-foundation.org, hamzamahfooz@linux.microsoft.com, 
+	apais@linux.microsoft.com, lance.yang@linux.dev, bhe@redhat.com, 
+	usamaarif642@gmail.com, linux-mm@kvack.org, linux-kernel@vger.kernel.org, 
+	cgroups@vger.kernel.org, Qi Zheng <zhengqi.arch@bytedance.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[linux.dev,none];
+	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
+	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
 	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
-	R_DKIM_ALLOW(-0.20)[linux.dev:s=key1];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-14436-lists,cgroups=lfdr.de];
-	RCVD_TLS_LAST(0.00)[];
-	RCVD_COUNT_THREE(0.00)[3];
-	FORGED_SENDER_MAILLIST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-14437-lists,cgroups=lfdr.de];
 	FREEMAIL_CC(0.00)[linux.dev,cmpxchg.org,google.com,suse.com,kernel.org,oracle.com,nvidia.com,huaweicloud.com,linux-foundation.org,linux.microsoft.com,redhat.com,gmail.com,kvack.org,vger.kernel.org,bytedance.com];
+	FROM_HAS_DN(0.00)[];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	RCVD_TLS_LAST(0.00)[];
 	RCPT_COUNT_TWELVE(0.00)[29];
 	MIME_TRACE(0.00)[0:+];
-	FROM_HAS_DN(0.00)[];
+	DKIM_TRACE(0.00)[kernel.org:+];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
 	MISSING_XM_UA(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[5];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[yosry@kernel.org,cgroups@vger.kernel.org];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	NEURAL_HAM(-0.00)[-1.000];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[shakeel.butt@linux.dev,cgroups@vger.kernel.org];
-	DKIM_TRACE(0.00)[linux.dev:+];
-	MID_RHS_MATCH_FROM(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[cgroups];
 	TO_DN_SOME(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[linux.dev:mid,linux.dev:dkim,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 6E0781ACAA1
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,mail.gmail.com:mid,linux.dev:email]
+X-Rspamd-Queue-Id: 853AE1AD943
 X-Rspamd-Action: no action
 
-On Thu, Feb 26, 2026 at 07:16:50AM -0800, Yosry Ahmed wrote:
-> > > Did you measure the impact of making state_local atomic on the flush
-> > > path? It's a slow path but we've seen pain from it being too slow
-> > > before, because it extends the critical section of the rstat flush
-> > > lock.
-> >
-> > Qi, please measure the impact on flushing and if no impact then no need to do
-> > anything as I don't want anymore churn in this series.
-> >
+On Thu, Feb 26, 2026 at 9:03=E2=80=AFAM Shakeel Butt <shakeel.butt@linux.de=
+v> wrote:
+>
+> On Thu, Feb 26, 2026 at 07:16:50AM -0800, Yosry Ahmed wrote:
+> > > > Did you measure the impact of making state_local atomic on the flus=
+h
+> > > > path? It's a slow path but we've seen pain from it being too slow
+> > > > before, because it extends the critical section of the rstat flush
+> > > > lock.
 > > >
-> > > Can we keep this non-atomic and use mod_memcg_lruvec_state() here? It
-> > > will update the stat on the local counter and it will be added to
-> > > state_local in the flush path when needed. We can even force another
-> > > flush in reparent_state_local () after reparenting is completed, if we
-> > > want to avoid leaving a potentially large stat update pending, as it
-> > > can be missed by mem_cgroup_flush_stats_ratelimited().
+> > > Qi, please measure the impact on flushing and if no impact then no ne=
+ed to do
+> > > anything as I don't want anymore churn in this series.
 > > >
-> > > Same for reparent_memcg_state_local(), we can probably use mod_memcg_state()?
+> > > >
+> > > > Can we keep this non-atomic and use mod_memcg_lruvec_state() here? =
+It
+> > > > will update the stat on the local counter and it will be added to
+> > > > state_local in the flush path when needed. We can even force anothe=
+r
+> > > > flush in reparent_state_local () after reparenting is completed, if=
+ we
+> > > > want to avoid leaving a potentially large stat update pending, as i=
+t
+> > > > can be missed by mem_cgroup_flush_stats_ratelimited().
+> > > >
+> > > > Same for reparent_memcg_state_local(), we can probably use mod_memc=
+g_state()?
+> > >
+> > > Yosry, do you mind sending the patch you are thinking about over this=
+ series?
 > >
-> > Yosry, do you mind sending the patch you are thinking about over this series?
-> 
-> Honestly, I'd rather squash it into this patch if possible. It avoids
-> churn in the history (switch to atomics and back), and is arguably
-> simpler than checking for regressions in the flush path.
+> > Honestly, I'd rather squash it into this patch if possible. It avoids
+> > churn in the history (switch to atomics and back), and is arguably
+> > simpler than checking for regressions in the flush path.
+>
+> Yup, let's squash it into the original patch. Please add your sign-off ta=
+g.
 
-Yup, let's squash it into the original patch. Please add your sign-off tag.
+Sure. Qi/Andrew, feel free to add these tags if you squash the diff below:
 
-> 
-> What I have in mind is the diff below (build tested only). Qi, would
-> you be able to test this? It applies directly on this patch in mm-new:
+Co-developed-by: Yosry Ahmed <yosry@kernel.org>
+Signed-off-by: Yosry Ahmed <yosry@kernel.org>
 
-Qi, please squash this diff into the patch and test. You might need to change
-the subsequent patches. Once you are done with testing, you can post the diffs
-for those in reply to those patches and we will ask Andrew to squash into
-orinigal ones.
+>
+> >
+> > What I have in mind is the diff below (build tested only). Qi, would
+> > you be able to test this? It applies directly on this patch in mm-new:
+>
+> Qi, please squash this diff into the patch and test. You might need to ch=
+ange
+> the subsequent patches. Once you are done with testing, you can post the =
+diffs
+> for those in reply to those patches and we will ask Andrew to squash into
+> orinigal ones.
 
-The diff looks good to me though.
-> 
-> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> index d82dbfcc28057..404565e80cbf3 100644
-> --- a/mm/memcontrol.c
-> +++ b/mm/memcontrol.c
-> @@ -234,11 +234,18 @@ static inline void reparent_state_local(struct
-> mem_cgroup *memcg, struct mem_cgr
->         if (cgroup_subsys_on_dfl(memory_cgrp_subsys))
->                 return;
-> 
-> +       /*
-> +        * Reparent stats exposed non-hierarchically. Flush @memcg's
-> stats first to
-> +        * read its stats accurately , and conservatively flush @parent's stats
-> +        * after reparenting to avoid hiding a potentially large stat update
-> +        * (e.g. from callers of mem_cgroup_flush_stats_ratelimited()).
-> +        */
->         __mem_cgroup_flush_stats(memcg, true);
-> 
-> -       /* The following counts are all non-hierarchical and need to
-> be reparented. */
->         reparent_memcg1_state_local(memcg, parent);
->         reparent_memcg1_lruvec_state_local(memcg, parent);
-> +
-> +       __mem_cgroup_flush_stats(parent, true);
->  }
->  #else
->  static inline void reparent_state_local(struct mem_cgroup *memcg,
-> struct mem_cgroup *parent)
-> @@ -442,7 +449,7 @@ struct lruvec_stats {
->         long state[NR_MEMCG_NODE_STAT_ITEMS];
-> 
->         /* Non-hierarchical (CPU aggregated) state */
-> -       atomic_long_t state_local[NR_MEMCG_NODE_STAT_ITEMS];
-> +       long state_local[NR_MEMCG_NODE_STAT_ITEMS];
-> 
->         /* Pending child counts during tree propagation */
->         long state_pending[NR_MEMCG_NODE_STAT_ITEMS];
-> @@ -485,7 +492,7 @@ unsigned long lruvec_page_state_local(struct lruvec *lruvec,
->                 return 0;
-> 
->         pn = container_of(lruvec, struct mem_cgroup_per_node, lruvec);
-> -       x = atomic_long_read(&(pn->lruvec_stats->state_local[i]));
-> +       x = READ_ONCE(pn->lruvec_stats->state_local[i]);
->  #ifdef CONFIG_SMP
->         if (x < 0)
->                 x = 0;
-> @@ -493,6 +500,10 @@ unsigned long lruvec_page_state_local(struct
-> lruvec *lruvec,
->         return x;
->  }
-> 
-> +static void mod_memcg_lruvec_state(struct lruvec *lruvec,
-> +                                  enum node_stat_item idx,
-> +                                  int val);
-> +
->  #ifdef CONFIG_MEMCG_V1
->  void reparent_memcg_lruvec_state_local(struct mem_cgroup *memcg,
->                                        struct mem_cgroup *parent, int idx)
-> @@ -506,12 +517,10 @@ void reparent_memcg_lruvec_state_local(struct
-> mem_cgroup *memcg,
->         for_each_node(nid) {
->                 struct lruvec *child_lruvec = mem_cgroup_lruvec(memcg,
-> NODE_DATA(nid));
->                 struct lruvec *parent_lruvec =
-> mem_cgroup_lruvec(parent, NODE_DATA(nid));
-> -               struct mem_cgroup_per_node *parent_pn;
->                 unsigned long value =
-> lruvec_page_state_local(child_lruvec, idx);
-> 
-> -               parent_pn = container_of(parent_lruvec, struct
-> mem_cgroup_per_node, lruvec);
-> -
-> -               atomic_long_add(value,
-> &(parent_pn->lruvec_stats->state_local[i]));
-> +               mod_memcg_lruvec_state(child_lruvec, idx, -value);
-> +               mod_memcg_lruvec_state(parent_lruvec, idx, value);
->         }
->  }
->  #endif
-> @@ -598,7 +607,7 @@ struct memcg_vmstats {
->         unsigned long           events[NR_MEMCG_EVENTS];
-> 
->         /* Non-hierarchical (CPU aggregated) page state & events */
-> -       atomic_long_t           state_local[MEMCG_VMSTAT_SIZE];
-> +       long                    state_local[MEMCG_VMSTAT_SIZE];
->         unsigned long           events_local[NR_MEMCG_EVENTS];
-> 
->         /* Pending child counts during tree propagation */
-> @@ -835,7 +844,7 @@ unsigned long memcg_page_state_local(struct
-> mem_cgroup *memcg, int idx)
->         if (WARN_ONCE(BAD_STAT_IDX(i), "%s: missing stat item %d\n",
-> __func__, idx))
->                 return 0;
-> 
-> -       x = atomic_long_read(&(memcg->vmstats->state_local[i]));
-> +       x = READ_ONCE(memcg->vmstats->state_local[i]);
->  #ifdef CONFIG_SMP
->         if (x < 0)
->                 x = 0;
-> @@ -852,7 +861,8 @@ void reparent_memcg_state_local(struct mem_cgroup *memcg,
->         if (WARN_ONCE(BAD_STAT_IDX(i), "%s: missing stat item %d\n",
-> __func__, idx))
->                 return;
-> 
-> -       atomic_long_add(value, &(parent->vmstats->state_local[i]));
-> +       mod_memcg_state(memcg, idx, -value);
-> +       mod_memcg_state(parent, idx, value);
->  }
->  #endif
-> 
-> @@ -4174,8 +4184,6 @@ struct aggregate_control {
->         long *aggregate;
->         /* pointer to the non-hierarchichal (CPU aggregated) counters */
->         long *local;
-> -       /* pointer to the atomic non-hierarchichal (CPU aggregated) counters */
-> -       atomic_long_t *alocal;
->         /* pointer to the pending child counters during tree propagation */
->         long *pending;
->         /* pointer to the parent's pending counters, could be NULL */
-> @@ -4213,12 +4221,8 @@ static void mem_cgroup_stat_aggregate(struct
-> aggregate_control *ac)
->                 }
-> 
->                 /* Aggregate counts on this level and propagate upwards */
-> -               if (delta_cpu) {
-> -                       if (ac->local)
-> -                               ac->local[i] += delta_cpu;
-> -                       else if (ac->alocal)
-> -                               atomic_long_add(delta_cpu, &(ac->alocal[i]));
-> -               }
-> +               if (delta_cpu)
-> +                       ac->local[i] += delta_cpu;
-> 
->                 if (delta) {
->                         ac->aggregate[i] += delta;
-> @@ -4289,8 +4293,7 @@ static void mem_cgroup_css_rstat_flush(struct
-> cgroup_subsys_state *css, int cpu)
-> 
->         ac = (struct aggregate_control) {
->                 .aggregate = memcg->vmstats->state,
-> -               .local = NULL,
-> -               .alocal = memcg->vmstats->state_local,
-> +               .local = memcg->vmstats->state_local,
->                 .pending = memcg->vmstats->state_pending,
->                 .ppending = parent ? parent->vmstats->state_pending : NULL,
->                 .cstat = statc->state,
-> @@ -4323,8 +4326,7 @@ static void mem_cgroup_css_rstat_flush(struct
-> cgroup_subsys_state *css, int cpu)
-> 
->                 ac = (struct aggregate_control) {
->                         .aggregate = lstats->state,
-> -                       .local = NULL,
-> -                       .alocal = lstats->state_local,
-> +                       .local = lstats->state_local,
->                         .pending = lstats->state_pending,
->                         .ppending = plstats ? plstats->state_pending : NULL,
->                         .cstat = lstatc->state,
+FWIW, after applying this diff, the rest of the series applies
+cleanly. So I think we won't need diffs for other patches.
+
+> The diff looks good to me though.
+
+Thanks for taking a look!
 
