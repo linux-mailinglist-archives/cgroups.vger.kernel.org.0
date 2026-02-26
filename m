@@ -1,61 +1,67 @@
-Return-Path: <cgroups+bounces-14402-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-14403-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id wBJhJguNn2nYcgQAu9opvQ
-	(envelope-from <cgroups+bounces-14402-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Thu, 26 Feb 2026 01:00:11 +0100
+	id aMpfHUCTn2k9cwQAu9opvQ
+	(envelope-from <cgroups+bounces-14403-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Thu, 26 Feb 2026 01:26:40 +0100
 X-Original-To: lists+cgroups@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 186C319F3A8
-	for <lists+cgroups@lfdr.de>; Thu, 26 Feb 2026 01:00:10 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id DC4A819F656
+	for <lists+cgroups@lfdr.de>; Thu, 26 Feb 2026 01:26:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id C633E3022F76
-	for <lists+cgroups@lfdr.de>; Thu, 26 Feb 2026 00:00:09 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id AB54F3037D40
+	for <lists+cgroups@lfdr.de>; Thu, 26 Feb 2026 00:25:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C334133C199;
-	Thu, 26 Feb 2026 00:00:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2D49B21D585;
+	Thu, 26 Feb 2026 00:25:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="AGlwvQuQ"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="ey+g63E7"
 X-Original-To: cgroups@vger.kernel.org
-Received: from out-171.mta0.migadu.com (out-171.mta0.migadu.com [91.218.175.171])
+Received: from out-178.mta1.migadu.com (out-178.mta1.migadu.com [95.215.58.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5CF35224B15
-	for <cgroups@vger.kernel.org>; Thu, 26 Feb 2026 00:00:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE30F5FDA7
+	for <cgroups@vger.kernel.org>; Thu, 26 Feb 2026 00:25:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772064008; cv=none; b=LOQLTxpzTI+5En0Ihvuiqs7kr9ojR3Hj11uoRtIoDhywPdgDUBAPDkBxLpc19qqVu6tNrNUMLox7318xnEK3RJvZ96UE0doYsC1A/c/LSdVCgIJddstdud2oO/8v2IGk/XIfbzIYDvJVFckkfN4SSNqKBnhUVaNs7HFpEEO4cgs=
+	t=1772065541; cv=none; b=cRsFlnaPL9w7BAo/ZbNeWWbPcnaez9NvEbYfiJjcOJDBsD7f1uUnQ2KADU2p/EE2Tq0ttPHV0J7XqdZcm7OilPYbTu38fEpsHMRs1kBbeM6zhA/1jtCyk1BmPQyzKOsDcHizkR0Q8oHzMv8CLVRdq1aLU3W94CZpdHRXUmvV+MI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772064008; c=relaxed/simple;
-	bh=ZwXkuLbNtBiV0ALMwk6j+6/MlReleR0M0iHtCFbRX9g=;
+	s=arc-20240116; t=1772065541; c=relaxed/simple;
+	bh=K5LKe6svs8tWQQgxlXMn1Wqs6u8cT7mRfbIARL7w+WI=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Xwjofnk14B4fI8J+MC+cpSZ95xDe4360ji6sSuhI6tp+KHPkVZd5LULVPz0B4ghZzECx8fUySpY9sfsDRRSD61nZBwVkMUfLUOYlQi4LclM4W8kKOQK7cfGXhixaalAnqO2PtUafJaTieyLi0PTkk++MaqYMqvCVESCphMKkwfw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=AGlwvQuQ; arc=none smtp.client-ip=91.218.175.171
+	 Content-Type:Content-Disposition:In-Reply-To; b=JWsEzK/vH4JI4hERNet9M2SiHfbKRzCLp8As85+9lm0maTvZ+Oc4jfhIB+iaDIMRrDZjKHIHosEVXiaulwiiSQuKUmFQ3kqXi5Hdjtt+/ik0GksV1QEOvdDpip8KvSuhScnJRP6WIQLKNm+m7t3V9PoC8aUADb6hpMtRWsYirmk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=ey+g63E7; arc=none smtp.client-ip=95.215.58.178
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Wed, 25 Feb 2026 16:00:00 -0800
+Date: Wed, 25 Feb 2026 16:25:27 -0800
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1772064004;
+	t=1772065537;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=wawHLyOTJp2IXUoV4PemjW87N7htBQucAPkl0+HuDtA=;
-	b=AGlwvQuQN+0uaJ8qH6Ehe4SZQoqfoPvzfxZUrv6EIeE/o3WNCyvlzFuer5C/vTA6AgaKZ0
-	PuynYss88Gi3ryI5Pyf/F0CDNjP1kRYJXCa498rcUE3Akd9vRJF7u3uSJLc2hAyQkRsCeY
-	IVNZnkFwZxooMU9CqbvAUuui1X6shK0=
+	bh=yxPqJ6E7xvNtCuOu5zbMYJVgjaGYkAlt6qTcXlH4PpM=;
+	b=ey+g63E7MYcvKk29/8ZzUc3pXSq1elfr4bhlsqngJRjogeai6DH6S2T7UWhCrTJSC1+Bdt
+	nyff4LdW470iaVY2rFfXfbEfQtnqRAZ/jH/mY6iGY/XJn1ZQO7iPw3GVDrGvpWDUTW+q5y
+	4uMIS9FVfmAwC2lXFCseF48lDsZ7Cy4=
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 From: Shakeel Butt <shakeel.butt@linux.dev>
-To: Matthew Wilcox <willy@infradead.org>
-Cc: Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>, 
-	Roman Gushchin <roman.gushchin@linux.dev>, cgroups@vger.kernel.org, linux-mm@kvack.org, 
-	Axel Rasmussen <axelrasmussen@google.com>
-Subject: Re: [PATCH 3/3] ptdesc: Account page tables to memcgs again
-Message-ID: <aZ-Innu9a3ND6Pdq@linux.dev>
-References: <20260225162319.315281-1-willy@infradead.org>
- <20260225162319.315281-4-willy@infradead.org>
- <aZ8oT-n4a8VDY2AH@linux.dev>
- <aZ9jHvd-kpnQzMgC@casper.infradead.org>
+To: Yosry Ahmed <yosry@kernel.org>
+Cc: Qi Zheng <qi.zheng@linux.dev>, hannes@cmpxchg.org, hughd@google.com, 
+	mhocko@suse.com, roman.gushchin@linux.dev, muchun.song@linux.dev, 
+	david@kernel.org, lorenzo.stoakes@oracle.com, ziy@nvidia.com, harry.yoo@oracle.com, 
+	yosry.ahmed@linux.dev, imran.f.khan@oracle.com, kamalesh.babulal@oracle.com, 
+	axelrasmussen@google.com, yuanchu@google.com, weixugc@google.com, 
+	chenridong@huaweicloud.com, mkoutny@suse.com, akpm@linux-foundation.org, 
+	hamzamahfooz@linux.microsoft.com, apais@linux.microsoft.com, lance.yang@linux.dev, bhe@redhat.com, 
+	usamaarif642@gmail.com, linux-mm@kvack.org, linux-kernel@vger.kernel.org, 
+	cgroups@vger.kernel.org, Qi Zheng <zhengqi.arch@bytedance.com>
+Subject: Re: [PATCH v5 29/32] mm: memcontrol: prepare for reparenting
+ non-hierarchical stats
+Message-ID: <aZ-R87JfacQ2gGq1@linux.dev>
+References: <cover.1772005110.git.zhengqi.arch@bytedance.com>
+ <ef13e5974343b37ae2a0e28aff03ea2d033cb888.1772005110.git.zhengqi.arch@bytedance.com>
+ <CAO9r8zOhZgrym6oSrtg7b+HmNHEfWuAzZ0i8eYhm5-OEnfFLdw@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -64,83 +70,83 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <aZ9jHvd-kpnQzMgC@casper.infradead.org>
+In-Reply-To: <CAO9r8zOhZgrym6oSrtg7b+HmNHEfWuAzZ0i8eYhm5-OEnfFLdw@mail.gmail.com>
 X-Migadu-Flow: FLOW_OUT
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	DMARC_POLICY_ALLOW(-0.50)[linux.dev,none];
-	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	R_DKIM_ALLOW(-0.20)[linux.dev:s=key1];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-14402-lists,cgroups=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-14403-lists,cgroups=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	FROM_HAS_DN(0.00)[];
 	RCVD_COUNT_THREE(0.00)[3];
-	DKIM_TRACE(0.00)[linux.dev:+];
-	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
+	FREEMAIL_CC(0.00)[linux.dev,cmpxchg.org,google.com,suse.com,kernel.org,oracle.com,nvidia.com,huaweicloud.com,linux-foundation.org,linux.microsoft.com,redhat.com,gmail.com,kvack.org,vger.kernel.org,bytedance.com];
+	RCPT_COUNT_TWELVE(0.00)[29];
+	MIME_TRACE(0.00)[0:+];
+	FROM_HAS_DN(0.00)[];
+	MISSING_XM_UA(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
-	TO_DN_SOME(0.00)[];
+	NEURAL_HAM(-0.00)[-1.000];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[shakeel.butt@linux.dev,cgroups@vger.kernel.org];
-	MISSING_XM_UA(0.00)[];
-	NEURAL_HAM(-0.00)[-1.000];
-	RCPT_COUNT_SEVEN(0.00)[7];
+	DKIM_TRACE(0.00)[linux.dev:+];
 	MID_RHS_MATCH_FROM(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
 	TAGGED_RCPT(0.00)[cgroups];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,linux.dev:mid,linux.dev:dkim]
-X-Rspamd-Queue-Id: 186C319F3A8
+	TO_DN_SOME(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[linux.dev:mid,linux.dev:dkim,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: DC4A819F656
 X-Rspamd-Action: no action
 
-On Wed, Feb 25, 2026 at 09:01:18PM +0000, Matthew Wilcox wrote:
-> On Wed, Feb 25, 2026 at 08:55:54AM -0800, Shakeel Butt wrote:
-> > >  #ifdef CONFIG_MEMCG
-> > > -	unsigned long pt_memcg_data;
-> > > +	struct mem_cgroup *pt_memcg;
-> > 
-> > This is kernel memory, so this would be struct obj_cgroup * instead of struct
-> > mem_cgroup pointer. We will need something similar to __folio_objcg(), maybe
-> > __ptdesc_objcg() and then call obj_cgroup_memcg() on it. Basically how
-> > folio_memcg() handles the kernel memory.
+On Wed, Feb 25, 2026 at 06:58:59AM -0800, Yosry Ahmed wrote:
+> > @@ -473,6 +493,29 @@ unsigned long lruvec_page_state_local(struct lruvec *lruvec,
+> >         return x;
+> >  }
+> >
+> > +#ifdef CONFIG_MEMCG_V1
+> > +void reparent_memcg_lruvec_state_local(struct mem_cgroup *memcg,
+> > +                                      struct mem_cgroup *parent, int idx)
+> > +{
+> > +       int i = memcg_stats_index(idx);
+> > +       int nid;
+> > +
+> > +       if (WARN_ONCE(BAD_STAT_IDX(i), "%s: missing stat item %d\n", __func__, idx))
+> > +               return;
+> > +
+> > +       for_each_node(nid) {
+> > +               struct lruvec *child_lruvec = mem_cgroup_lruvec(memcg, NODE_DATA(nid));
+> > +               struct lruvec *parent_lruvec = mem_cgroup_lruvec(parent, NODE_DATA(nid));
+> > +               struct mem_cgroup_per_node *parent_pn;
+> > +               unsigned long value = lruvec_page_state_local(child_lruvec, idx);
+> > +
+> > +               parent_pn = container_of(parent_lruvec, struct mem_cgroup_per_node, lruvec);
+> > +
+> > +               atomic_long_add(value, &(parent_pn->lruvec_stats->state_local[i]));
+> > +       }
+> > +}
 > 
-> Why would we want to do that instead of just stashing a pointer to the
-> memcg in the ptdesc?
+> Did you measure the impact of making state_local atomic on the flush
+> path? It's a slow path but we've seen pain from it being too slow
+> before, because it extends the critical section of the rstat flush
+> lock.
 
-Not the memcg pointer but the objcg pointer, a bit background first though.
+Qi, please measure the impact on flushing and if no impact then no need to do
+anything as I don't want anymore churn in this series.
 
-Underlying we are using alloc_pages_noprof(__GFP_ACCOUNT) and __free_pages() for
-ptdesc, so allocation path looks like the following:
+> 
+> Can we keep this non-atomic and use mod_memcg_lruvec_state() here? It
+> will update the stat on the local counter and it will be added to
+> state_local in the flush path when needed. We can even force another
+> flush in reparent_state_local () after reparenting is completed, if we
+> want to avoid leaving a potentially large stat update pending, as it
+> can be missed by mem_cgroup_flush_stats_ratelimited().
+> 
+> Same for reparent_memcg_state_local(), we can probably use mod_memcg_state()?
 
-	alloc_pages_noprof(__GFP_ACCOUNT)
-	...
-		-> __alloc_frozen_pages_noprof(__GFP_ACCOUNT)
-			-> __memcg_kmem_charge_page()
-				-> page_set_objcg(page, objcg)
-
-and page_set_objcg() is defined as 
-
-static void page_set_objcg(struct page *page, const struct obj_cgroup *objcg)
-{
-	page->memcg_data = (unsigned long)objcg | MEMCG_DATA_KMEM;
-}
-
-page->memcg_data overlaps with ptdesc->pt_memcg_data, so we need remove
-MEMCG_DATA_KMEM to get the objcg pointer.
-
-If we want to store a pointer in struct ptdesc then we can't use the raw page
-allocator/free functions. We have to allocate without __GFP_ACCOUNT and then do
-the charging in __pagetable_ctor and uncharging in pagetable_dtor explicitly.
-
-BTW we are trying to migrate from memcg pointers to objcg pointers in most of
-the places due to zombie issue.
-
-> I feel very stupid about the differences between
-> all of these things and would dearly love to read some documentation to
-> learn.
-
-Unfortunetely we don't have a good documentation, just code.
+Yosry, do you mind sending the patch you are thinking about over this series?
 
