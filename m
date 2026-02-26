@@ -1,298 +1,300 @@
-Return-Path: <cgroups+bounces-14430-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-14431-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 4I5TLqpnoGkejQQAu9opvQ
-	(envelope-from <cgroups+bounces-14430-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Thu, 26 Feb 2026 16:32:58 +0100
+	id YHaKCHVqoGk3jgQAu9opvQ
+	(envelope-from <cgroups+bounces-14431-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Thu, 26 Feb 2026 16:44:53 +0100
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 22DC01A8C47
-	for <lists+cgroups@lfdr.de>; Thu, 26 Feb 2026 16:32:57 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id AD0551A9062
+	for <lists+cgroups@lfdr.de>; Thu, 26 Feb 2026 16:44:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 42C2E31B83E2
-	for <lists+cgroups@lfdr.de>; Thu, 26 Feb 2026 15:20:34 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 25F583282EC1
+	for <lists+cgroups@lfdr.de>; Thu, 26 Feb 2026 15:21:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F209A3ED130;
-	Thu, 26 Feb 2026 15:13:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A372D407569;
+	Thu, 26 Feb 2026 15:17:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="myWhZTpA"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="guLzeONK"
 X-Original-To: cgroups@vger.kernel.org
-Received: from CO1PR03CU002.outbound.protection.outlook.com (mail-westus2azon11010024.outbound.protection.outlook.com [52.101.46.24])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 73CF3A937;
-	Thu, 26 Feb 2026 15:13:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.46.24
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772118838; cv=fail; b=f8leRo0ZnJaBdmsfRP44JMxf8XWo70xvWIGaCX8/0ZJvUz0+k9ha6JherCwUOhoIyb+Km4CJocuyzRS52E7sZESn2F5oxMArAt6XD23ef9cO2UhZjJEx5fxFE+6lth4dqdB/mwM2d4flhIirJsq8EtSdNLq0OgLwcrSAFBdIbjc=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772118838; c=relaxed/simple;
-	bh=5RfSEZL9pb5DIZ7qITgWIhIvDdDX/a7yyLsa2c7TaKE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=k9wFHVmpMoSWPY587k/rjAN02qPJKKHIBYxxIvmYI5AQmTN7cTJnJLfGu3kBOEkv6hxZlzTPzoQ9+RQiD3GUp3mMNHCNNbcj82BoJKS9h6pQSY7631VVOrpz3sXbFaeKINRQx5zTJSJssV9w/KUp/5s0RkBO8kO6X/B1M1AgXV4=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=myWhZTpA; arc=fail smtp.client-ip=52.101.46.24
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=WyGQoKu6+HorY0G6cd8Db3SzUE67IEGjwgULEYsi9PS55U6avSjbmeDT4JHeq1D73eLPItD4wdQ27pEr/SbinZeC7lAnwpjq8bW+4G4lyDS7/rgY/LsQFclNkSPdnET4VTYnjf9mlFYNbiY79CWsuITtS1Gr5bRbZi4mvKkZoGGXw6uyF6NzNpBYebeJxoc5d5AWlbx91QJrJBN5pPGuOOvcRHVaOyKdI79WC6o/HF7mnG99SVdundHvd7fTh19SMFiGUI5sm65JNkKGReHf/tmcOhED7+y9+PifLRw9AW3T+6ceu24f70x261zyzh9HBjm8EcAoWZdR7tfB6O4EJg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=835n0P0VvXSxETSbV7nf0pdbeNya+1ViI4YepcVI6Ng=;
- b=fNMQD8h4l4/eKXVhwhAShw0b5edlWpcxJmqOispfH+fNJD6W7hIY7hbU2IyLFxjYpV/Gb2xSi69i8QtmUaOwxdh7zd7dSmAfyMGI2QBqTA3XxCft9xPhge/Yjipd96bkOsGn0UUUgVeH9B3BWMvgXIaMZEd3id96UpJAEVfLJKA9GN8NycuEmvWPE3/6KuLVIwDZMPTnwbEJMRc7cCKDMog+dT2Ki5SKvhzoOD8pvh9UO//fmTOoQkOo605ZKSGl1hI8uH9pe97scSlbdReEjsRoBis8VT00TqJaCniWEdJ/3U2V7FNW8WkKdTPPLewyYVfpTkikspg4+dRsbrEMuA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=835n0P0VvXSxETSbV7nf0pdbeNya+1ViI4YepcVI6Ng=;
- b=myWhZTpATpZaYc8oBCTuT6qSqJggAp/hUMWHJ+GkyruR+n3NHYslz4MfdDlq+j5BKpcA+DlNNuGYftGBq1Bzh2/9zS930SlpLBqmTk/bW6aLWzVi203JdULCjt1IaGWl9F/my9MolYfV4d1XqPU31oGgtVBg53tAzOc6tKI2QOjr7/iSfvZr88ir1mrZn2XMQ8N5ZyZ6PWD8vXMctMAC1cbWo/F5JRvftN5SUM2afHw6eBr+ELfKX2tbPAn6iYXdIOAhkVM8NTYtRiHFYg2hvLkYOQpDD8F3qczBvFnFuipWLdCbEpGX+iiylLq/2Izwj/aSM4WdUE/cyvTvew/60A==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from LV8PR12MB9620.namprd12.prod.outlook.com (2603:10b6:408:2a1::19)
- by SJ2PR12MB7917.namprd12.prod.outlook.com (2603:10b6:a03:4c7::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9654.14; Thu, 26 Feb
- 2026 15:13:52 +0000
-Received: from LV8PR12MB9620.namprd12.prod.outlook.com
- ([fe80::299d:f5e0:3550:1528]) by LV8PR12MB9620.namprd12.prod.outlook.com
- ([fe80::299d:f5e0:3550:1528%5]) with mapi id 15.20.9654.014; Thu, 26 Feb 2026
- 15:13:52 +0000
-Date: Thu, 26 Feb 2026 16:13:33 +0100
-From: Andrea Righi <arighi@nvidia.com>
-To: Tejun Heo <tj@kernel.org>
-Cc: linux-kernel@vger.kernel.org, sched-ext@lists.linux.dev,
-	void@manifault.com, changwoo@igalia.com, emil@etsalapatis.com,
-	hannes@cmpxchg.org, mkoutny@suse.com, cgroups@vger.kernel.org
-Subject: Re: [PATCH 11/34] sched_ext: Enforce scheduler ownership when
- updating slice and dsq_vtime
-Message-ID: <aaBjHUr29afGuKVh@gpd4>
-References: <20260225050109.1070059-1-tj@kernel.org>
- <20260225050109.1070059-12-tj@kernel.org>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20260225050109.1070059-12-tj@kernel.org>
-X-ClientProxiedBy: ZR2P278CA0023.CHEP278.PROD.OUTLOOK.COM
- (2603:10a6:910:46::18) To LV8PR12MB9620.namprd12.prod.outlook.com
- (2603:10b6:408:2a1::19)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 64DB83F23D7
+	for <cgroups@vger.kernel.org>; Thu, 26 Feb 2026 15:17:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1772119023; cv=none; b=E3SuEACppeAxe4CEoYHf7jj+8i/D3SM/MR8jZ9bN3oK/f80h8fmioWgg+F+1yH+HiQ+MsE1Ly56B0zYemZTw5rtOoKZOJBFx4n+Xlj+Oi9s3DEZDMYCVl1S2ePbsit3BTvLrdpzB8pc3DLCpcjZP+xsNtJGSSCNd3qSTJyaOuio=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1772119023; c=relaxed/simple;
+	bh=ZfKOiFMxI1AUZBKl1/6wIBin5AjCjKFiRaNVEE4xNNM=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=trcEltnmsBZOL/9vMo4tIc4ayLyLfJsMwXjZ4BpErXW5i0DCG9zqDLDTnSi5tcGWNBorzAfybro7VUj6U2BHX5RCrguSSPgf3j60MO+nXwW3BU0TaWHHAeL1YcEYH1SLMSkCH3DlS9iZFOwB4DoMY8Q1eIs0XQ6/jifYTtNliQ8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=guLzeONK; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0AC2EC2BCB5
+	for <cgroups@vger.kernel.org>; Thu, 26 Feb 2026 15:17:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1772119023;
+	bh=ZfKOiFMxI1AUZBKl1/6wIBin5AjCjKFiRaNVEE4xNNM=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=guLzeONK+GX1ZARHuAjqp3AuE2ZdTLF6dUwHjGWqr0CGTuA/8UGt4lZwgoEMPHyuD
+	 qePC21AEXifEckAy2ol1AVRj3G2VlF+9tr2bK4F9IsCZVU4eMM70LE/EEnJdBDigJw
+	 2k3S/v7rthqdjmxXuXo2ZwBdlHTtUPjyvqbiCHRA9csnhkxroBeTXFvJfokEoIIxhr
+	 +XdLsTeiH2xR1YqixOBrMJTM+uJvD4xFJsU82aNOaYHjDrV0ecMhIYpKF4ZQo9T9he
+	 TE6+v7GMY9tQP0qI+CferBOZAYkmRwD62hEq5Yxp2XowQgcxpm3wqBL+BmimHplm/x
+	 dw8YCccMFiW6w==
+Received: by mail-ed1-f45.google.com with SMTP id 4fb4d7f45d1cf-65c0e2cbde1so2071375a12.0
+        for <cgroups@vger.kernel.org>; Thu, 26 Feb 2026 07:17:02 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCWAA2khA45Dhw+8On2BOfr4Jw0LvmufuvbeWxAiHsMQxDn5TiNzFrbqi20Tv5ZJDy4By9GaDRmd@vger.kernel.org
+X-Gm-Message-State: AOJu0YxT21zkH5+KinLkVOz4c/rs+lb2kOyV0oPIr5IN8ycIubMImIzz
+	JKoGgzqTLr7uUaKjHj1Tlp5OEwzCwXKegH1MSyS06Z3X1I5pG/cMRaftJKX/3LutlaOq8Py8Iz9
+	vwrTrqMeDSSssr3fPy41KbMtmjQ21lSU=
+X-Received: by 2002:a17:907:6d1a:b0:b8f:ccab:a344 with SMTP id
+ a640c23a62f3a-b908199ef63mr1373906866b.14.1772119021523; Thu, 26 Feb 2026
+ 07:17:01 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: LV8PR12MB9620:EE_|SJ2PR12MB7917:EE_
-X-MS-Office365-Filtering-Correlation-Id: c56dd4be-9d4b-4bb8-a2f8-08de7549a6ab
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|376014|366016|1800799024|7053199007;
-X-Microsoft-Antispam-Message-Info:
-	x0w+FSDdRbIbk2I7CLbRFInPwhwV2fEKdlduzGEgZneH0EDfEIibgCcdo8BmRQN47PusyeDBzKLL5uui2BoQVxcIUciHYdax8ty8haCphD1i3+VYNi+ZWqFzERZ18UDo2r9Qr0gDaRB0MHiRvOirZ2wTcW4ljQoTX9ntUNqkNjUyOBcqDFwzTkdCmb8BbLuvPt+/uzYPWX9XQ4/4AnRp2TIZ1hoQ09TyU4r0V5+11CYzSm2jjk/JnLp7XbT+/nalvw+1f3SoEEzMqF194Sj64Q/NQt9AwbutJGgCCPecYnljKDteT+OiMCFdSltDT6+9A0nj98qH/djByk3IldkNIuD6FRYCtm6LddZP7lG6cGPg3sx+Xdbc1NpWef5WHq9ah0Tp/JBxJ7qdp021l3wVq4lvzspouZ9bMp6+UUrjHj1J0C6I3PRFkfmhKAUlqnN6ZxoZsmOEeJR1gl6MncjBOU8tYZpBAhuAUL5ZSRocgfg11CNhlevF2CHV8j/+x5agegW1LZDNCrlpSSGGY1G2W7spF6gCk2jgRhpFcrGiaznJPm+Walz2KQTNhjdNyyFPBY5k/pBJkYc9NO5eoQwATt9Ee5yaP8hzrNVhAWqiCJ0DM0o/W1gCpmOKGTWss12cjBeiksCcOcUwggMvjCwJWa6f3Z+curAdZO1l6jXOYLPKYYi+9szJ8JrL5o4LLebAbeWBgrfpIzggbP1G9bg0Bsrg15PgB74e32CVF7naygo=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV8PR12MB9620.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(376014)(366016)(1800799024)(7053199007);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?mz5ykBEKFmoIMVkJnfjUndJrZ3yKGjx8ImsmK7RHWDTR+Lg53Yi7UGPq281C?=
- =?us-ascii?Q?ID4dWt4idUKv6XgZTLAINpZkXgGEHIv/mYrFj24PVBg6ANTKG6enkfPe7XTw?=
- =?us-ascii?Q?yk3kv0qGTkQj2priVmNXLUoxXi0PLWrB/fSg6A6ByVVyavurkf0/oiIttC7Q?=
- =?us-ascii?Q?isyfEfAuZ+lKWENQCRcxWkn9EsTZ5w+ADXfzdKek5LrJHJSgGhSMVzZ4qd8K?=
- =?us-ascii?Q?dk6ZV2s9ns1ta5aCIJOo9FB698N+GObKS4mg1FWrzKSnZryAgQJalhTU8APf?=
- =?us-ascii?Q?asSXzO6bKxeRNHEWRBn5peoUpcclKYI3T6ZeqsBrlxdkS63d4dxKqxwFR7YX?=
- =?us-ascii?Q?SZQJZqn7Uz6AtX6MD0RbIQ3JwsgmgZOQpYiqatg3lBHqFO+pbAeEvjaf5daf?=
- =?us-ascii?Q?ghYnHIWELcxA1Nq9BXcEk8MOyq9xYHiyNdCSfQ0IshQ8ylWC0pgrPNR7DMUo?=
- =?us-ascii?Q?QmDTMmEqa653Ig3zwddbDby9XWy1UiqQR5zp/JVSU97CTwBzzYKnNpu+AARD?=
- =?us-ascii?Q?Tbu5kOmKvnKk+QlkC8SMgDDYAYNK9Oab5khuApv4pVl88PLK1jUF8enHKrHh?=
- =?us-ascii?Q?RmX1hrEfmySscjS5dQntCVi1eQdlRimSbGJh8BIX55/mVhN+X0MVukCXVPiC?=
- =?us-ascii?Q?I8UOiF0+NYDTR4Lh5dirTyxnVk8MBCULIaUQm508eu63Q1LorQGjY9VO4cTp?=
- =?us-ascii?Q?hnxzaKu+rChTnWPi6gkwux0Y+BH5vWLkrNjKjZ8L4nQ64aFuYzFctp36KgFE?=
- =?us-ascii?Q?Aq2g1lfuK8B8rfPSR0Mu2BFJx2/Txhi4Zg+aFmYVTBQjEgmkbFnYEHF9Iu0R?=
- =?us-ascii?Q?9F2QHSIb6LJxGmfmu+PyEOzWy+eDKV4I9178lWOm6qcLTqEwWHv025Y6wS8k?=
- =?us-ascii?Q?X62gGDfDQ35FuIS+Rg7Q6c1Pqxz1+yQIbFOi1SHvUEZOX4Ynzob475nf+bRD?=
- =?us-ascii?Q?xWLr0K+1A/6vjvxh+I0QhLNMkL5cg7hz4MKwpNdTvMn/dT+mW73mc7CHNmON?=
- =?us-ascii?Q?9UG3IsuaMDLqJW9ZuTQ8ySO3MoKoAyA8LVzEKqrOgAx29NOvYse+MS+xThQ8?=
- =?us-ascii?Q?CqxXXu6/01WbSECBhVp1daJ/4bvWiCUHg7OhSKzz2c6SJ8QBNE9g4ZTJYJgU?=
- =?us-ascii?Q?imYPlKKza1RgfcPak0xWBLzONzGr+aEE/zQ9u834Wc46xN9InfXPWtIjJIUv?=
- =?us-ascii?Q?rGhz34GM5H+S8+BM0x0ujSx9mIH1XP07sCO6+V2b0nHVYav4bC78dUvie92x?=
- =?us-ascii?Q?dAlCICTH/gfFvROq9171DnHf9Xgxu+/H1VVq9XNjGGrgpGbqyO792GyocQAE?=
- =?us-ascii?Q?9nizCKlnm08MIRYa5WeQxXZ7WiDbNoRsRSFCXA8ff9ja+zCsOGxYbuBUZH5G?=
- =?us-ascii?Q?BfUeKfObq6mAn4b6VD21GsOzLlKnONFqILC1AeejQe6C3gtO611YZ5vBhGLO?=
- =?us-ascii?Q?GVmV4iSR1zGJHsSTyGeZ5Ch66YOAN+TX8ymJc7iVITSdj7PSavGdcrUuA1Y2?=
- =?us-ascii?Q?oAPwIzq01vBmpDdEHWuLUsYQzf4vsMFdsYZZJJTKoOi+xOyoRyWeOWVbC70t?=
- =?us-ascii?Q?XRbABT3116C57ulUIS+pmRX+k8AYEO9ZsrIQ88bCXK0J9jDeIYSfF54bzQOv?=
- =?us-ascii?Q?cFoybsBA35Gsa4i6rMFY+mXPhOx4pFREwummQ4NjjvYoTaFGzCj9xxS7mpvt?=
- =?us-ascii?Q?VF3Bqeg944QMpQOGzajhWlXymhlRrfdG01JqoSDrGchABwX6s9vjw4vcijCx?=
- =?us-ascii?Q?cEWltm86mw=3D=3D?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: c56dd4be-9d4b-4bb8-a2f8-08de7549a6ab
-X-MS-Exchange-CrossTenant-AuthSource: LV8PR12MB9620.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 26 Feb 2026 15:13:52.4747
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 3jBqar9p77NQEc9VFxQNTDRst5f/jKMMSvMEx4RSgdwWxbB4xQAFqiBlm4tRO/pltkrOlrQVGSZcJldqceh+9A==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ2PR12MB7917
+References: <cover.1772005110.git.zhengqi.arch@bytedance.com>
+ <ef13e5974343b37ae2a0e28aff03ea2d033cb888.1772005110.git.zhengqi.arch@bytedance.com>
+ <CAO9r8zOhZgrym6oSrtg7b+HmNHEfWuAzZ0i8eYhm5-OEnfFLdw@mail.gmail.com> <aZ-R87JfacQ2gGq1@linux.dev>
+In-Reply-To: <aZ-R87JfacQ2gGq1@linux.dev>
+From: Yosry Ahmed <yosry@kernel.org>
+Date: Thu, 26 Feb 2026 07:16:50 -0800
+X-Gmail-Original-Message-ID: <CAO9r8zPmgytmGHAbueFKXcZWY5SJaEwD3Pqk99ws4XeO2_hnKw@mail.gmail.com>
+X-Gm-Features: AaiRm51ckbGxYZpsUeJsgBHqqSKUBYiDeW5PPTyqteMx0y9DdmIndToJpPaCT48
+Message-ID: <CAO9r8zPmgytmGHAbueFKXcZWY5SJaEwD3Pqk99ws4XeO2_hnKw@mail.gmail.com>
+Subject: Re: [PATCH v5 29/32] mm: memcontrol: prepare for reparenting
+ non-hierarchical stats
+To: Shakeel Butt <shakeel.butt@linux.dev>
+Cc: Qi Zheng <qi.zheng@linux.dev>, hannes@cmpxchg.org, hughd@google.com, 
+	mhocko@suse.com, roman.gushchin@linux.dev, muchun.song@linux.dev, 
+	david@kernel.org, lorenzo.stoakes@oracle.com, ziy@nvidia.com, 
+	harry.yoo@oracle.com, yosry.ahmed@linux.dev, imran.f.khan@oracle.com, 
+	kamalesh.babulal@oracle.com, axelrasmussen@google.com, yuanchu@google.com, 
+	weixugc@google.com, chenridong@huaweicloud.com, mkoutny@suse.com, 
+	akpm@linux-foundation.org, hamzamahfooz@linux.microsoft.com, 
+	apais@linux.microsoft.com, lance.yang@linux.dev, bhe@redhat.com, 
+	usamaarif642@gmail.com, linux-mm@kvack.org, linux-kernel@vger.kernel.org, 
+	cgroups@vger.kernel.org, Qi Zheng <zhengqi.arch@bytedance.com>
+Content-Type: text/plain; charset="UTF-8"
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [0.34 / 15.00];
-	ARC_REJECT(1.00)[cv is fail on i=2];
-	DMARC_POLICY_ALLOW(-0.50)[nvidia.com,reject];
-	MID_RHS_NOT_FQDN(0.50)[];
-	R_DKIM_ALLOW(-0.20)[Nvidia.com:s=selector2];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+X-Spamd-Result: default: False [-2.16 / 15.00];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
+	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-14430-lists,cgroups=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-14431-lists,cgroups=lfdr.de];
+	FREEMAIL_CC(0.00)[linux.dev,cmpxchg.org,google.com,suse.com,kernel.org,oracle.com,nvidia.com,huaweicloud.com,linux-foundation.org,linux.microsoft.com,redhat.com,gmail.com,kvack.org,vger.kernel.org,bytedance.com];
 	FROM_HAS_DN(0.00)[];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	RCVD_TLS_LAST(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[29];
 	MIME_TRACE(0.00)[0:+];
-	DKIM_TRACE(0.00)[Nvidia.com:+];
+	DKIM_TRACE(0.00)[kernel.org:+];
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
 	MISSING_XM_UA(0.00)[];
-	TO_DN_SOME(0.00)[];
 	RCVD_COUNT_FIVE(0.00)[5];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[arighi@nvidia.com,cgroups@vger.kernel.org];
+	FROM_NEQ_ENVFROM(0.00)[yosry@kernel.org,cgroups@vger.kernel.org];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	NEURAL_HAM(-0.00)[-1.000];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[cgroups];
-	RCPT_COUNT_SEVEN(0.00)[9];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[Nvidia.com:dkim,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 22DC01A8C47
+	TO_DN_SOME(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,mail.gmail.com:mid]
+X-Rspamd-Queue-Id: AD0551A9062
 X-Rspamd-Action: no action
 
-Hi Tejun,
+> > Did you measure the impact of making state_local atomic on the flush
+> > path? It's a slow path but we've seen pain from it being too slow
+> > before, because it extends the critical section of the rstat flush
+> > lock.
+>
+> Qi, please measure the impact on flushing and if no impact then no need to do
+> anything as I don't want anymore churn in this series.
+>
+> >
+> > Can we keep this non-atomic and use mod_memcg_lruvec_state() here? It
+> > will update the stat on the local counter and it will be added to
+> > state_local in the flush path when needed. We can even force another
+> > flush in reparent_state_local () after reparenting is completed, if we
+> > want to avoid leaving a potentially large stat update pending, as it
+> > can be missed by mem_cgroup_flush_stats_ratelimited().
+> >
+> > Same for reparent_memcg_state_local(), we can probably use mod_memcg_state()?
+>
+> Yosry, do you mind sending the patch you are thinking about over this series?
 
-On Tue, Feb 24, 2026 at 07:00:46PM -1000, Tejun Heo wrote:
-> scx_bpf_task_set_slice() and scx_bpf_task_set_dsq_vtime() now verify that
-> the calling scheduler has authority over the task before allowing updates.
-> This prevents schedulers from modifying tasks that don't belong to them in
-> hierarchical scheduling configurations.
-> 
-> Direct writes to p->scx.slice and p->scx.dsq_vtime are deprecated and now
-> trigger warnings. They will be disallowed in a future release.
-> 
-> Signed-off-by: Tejun Heo <tj@kernel.org>
+Honestly, I'd rather squash it into this patch if possible. It avoids
+churn in the history (switch to atomics and back), and is arguably
+simpler than checking for regressions in the flush path.
 
-My concern with this is that we may introduce some overhead for those
-schedulers that require frequent adjustment of slice / dsq_vtime directly.
-While the scx_task_on_sched() check itself has likely zero impact, the
-kfunc invocations can potentially introduce measurable overhead.
+What I have in mind is the diff below (build tested only). Qi, would
+you be able to test this? It applies directly on this patch in mm-new:
 
-I'm wondering if we could instead delegate the authority check at
-verification time, introducing something similar to PTR_TRUSTED
-(PTR_SCX_AUTH?) to struct task_struct * to represent that the scheduler has
-authority to access the task and allow direct writes to p->scx.slice /
-p->scx.dsq_vtime only when the register has that flag.
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index d82dbfcc28057..404565e80cbf3 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -234,11 +234,18 @@ static inline void reparent_state_local(struct
+mem_cgroup *memcg, struct mem_cgr
+        if (cgroup_subsys_on_dfl(memory_cgrp_subsys))
+                return;
 
-Then:
- - for tasks passed from the core opts (enqueue, dispatch, etc.) we
-   automatically tag them with PTR_SCX_AUTH,
- - tasks obtained externally (e.g., via bpf_task_from_pid()): they don't
-   have the flag (so no modification allowed) and in this case maybe we
-   provide a scx_bpf_auth_task() kfunc to perform the scx_task_on_sched()
-   check that returns p (or NULL) setting the auth flag if the scheduler
-   has full access to the task.
++       /*
++        * Reparent stats exposed non-hierarchically. Flush @memcg's
+stats first to
++        * read its stats accurately , and conservatively flush @parent's stats
++        * after reparenting to avoid hiding a potentially large stat update
++        * (e.g. from callers of mem_cgroup_flush_stats_ratelimited()).
++        */
+        __mem_cgroup_flush_stats(memcg, true);
 
-What do you think?
+-       /* The following counts are all non-hierarchical and need to
+be reparented. */
+        reparent_memcg1_state_local(memcg, parent);
+        reparent_memcg1_lruvec_state_local(memcg, parent);
++
++       __mem_cgroup_flush_stats(parent, true);
+ }
+ #else
+ static inline void reparent_state_local(struct mem_cgroup *memcg,
+struct mem_cgroup *parent)
+@@ -442,7 +449,7 @@ struct lruvec_stats {
+        long state[NR_MEMCG_NODE_STAT_ITEMS];
 
-Thanks,
--Andrea
+        /* Non-hierarchical (CPU aggregated) state */
+-       atomic_long_t state_local[NR_MEMCG_NODE_STAT_ITEMS];
++       long state_local[NR_MEMCG_NODE_STAT_ITEMS];
 
-> ---
->  kernel/sched/ext.c | 41 ++++++++++++++++++++++++++++++++---------
->  1 file changed, 32 insertions(+), 9 deletions(-)
-> 
-> diff --git a/kernel/sched/ext.c b/kernel/sched/ext.c
-> index 56ac2d5655a2..f16ce4deed88 100644
-> --- a/kernel/sched/ext.c
-> +++ b/kernel/sched/ext.c
-> @@ -5872,12 +5872,17 @@ static int bpf_scx_btf_struct_access(struct bpf_verifier_log *log,
->  
->  	t = btf_type_by_id(reg->btf, reg->btf_id);
->  	if (t == task_struct_type) {
-> -		if (off >= offsetof(struct task_struct, scx.slice) &&
-> -		    off + size <= offsetofend(struct task_struct, scx.slice))
-> -			return SCALAR_VALUE;
-> -		if (off >= offsetof(struct task_struct, scx.dsq_vtime) &&
-> -		    off + size <= offsetofend(struct task_struct, scx.dsq_vtime))
-> +		/*
-> +		 * COMPAT: Will be removed in v6.23.
-> +		 */
-> +		if ((off >= offsetof(struct task_struct, scx.slice) &&
-> +		     off + size <= offsetofend(struct task_struct, scx.slice)) ||
-> +		    (off >= offsetof(struct task_struct, scx.dsq_vtime) &&
-> +		     off + size <= offsetofend(struct task_struct, scx.dsq_vtime))) {
-> +			pr_warn("sched_ext: Writing directly to p->scx.slice/dsq_vtime is deprecated, use scx_bpf_task_set_slice/dsq_vtime()");
->  			return SCALAR_VALUE;
-> +		}
-> +
->  		if (off >= offsetof(struct task_struct, scx.disallow) &&
->  		    off + size <= offsetofend(struct task_struct, scx.disallow))
->  			return SCALAR_VALUE;
-> @@ -7096,12 +7101,21 @@ __bpf_kfunc_start_defs();
->   * scx_bpf_task_set_slice - Set task's time slice
->   * @p: task of interest
->   * @slice: time slice to set in nsecs
-> + * @aux: implicit BPF argument to access bpf_prog_aux hidden from BPF progs
->   *
->   * Set @p's time slice to @slice. Returns %true on success, %false if the
->   * calling scheduler doesn't have authority over @p.
->   */
-> -__bpf_kfunc bool scx_bpf_task_set_slice(struct task_struct *p, u64 slice)
-> +__bpf_kfunc bool scx_bpf_task_set_slice(struct task_struct *p, u64 slice,
-> +					const struct bpf_prog_aux *aux)
->  {
-> +	struct scx_sched *sch;
-> +
-> +	guard(rcu)();
-> +	sch = scx_prog_sched(aux);
-> +	if (unlikely(!scx_task_on_sched(sch, p)))
-> +		return false;
-> +
->  	p->scx.slice = slice;
->  	return true;
->  }
-> @@ -7110,12 +7124,21 @@ __bpf_kfunc bool scx_bpf_task_set_slice(struct task_struct *p, u64 slice)
->   * scx_bpf_task_set_dsq_vtime - Set task's virtual time for DSQ ordering
->   * @p: task of interest
->   * @vtime: virtual time to set
-> + * @aux: implicit BPF argument to access bpf_prog_aux hidden from BPF progs
->   *
->   * Set @p's virtual time to @vtime. Returns %true on success, %false if the
->   * calling scheduler doesn't have authority over @p.
->   */
-> -__bpf_kfunc bool scx_bpf_task_set_dsq_vtime(struct task_struct *p, u64 vtime)
-> +__bpf_kfunc bool scx_bpf_task_set_dsq_vtime(struct task_struct *p, u64 vtime,
-> +					    const struct bpf_prog_aux *aux)
->  {
-> +	struct scx_sched *sch;
-> +
-> +	guard(rcu)();
-> +	sch = scx_prog_sched(aux);
-> +	if (unlikely(!scx_task_on_sched(sch, p)))
-> +		return false;
-> +
->  	p->scx.dsq_vtime = vtime;
->  	return true;
->  }
-> @@ -7995,8 +8018,8 @@ __bpf_kfunc void scx_bpf_events(struct scx_event_stats *events,
->  __bpf_kfunc_end_defs();
->  
->  BTF_KFUNCS_START(scx_kfunc_ids_any)
-> -BTF_ID_FLAGS(func, scx_bpf_task_set_slice, KF_RCU);
-> -BTF_ID_FLAGS(func, scx_bpf_task_set_dsq_vtime, KF_RCU);
-> +BTF_ID_FLAGS(func, scx_bpf_task_set_slice, KF_IMPLICIT_ARGS | KF_RCU);
-> +BTF_ID_FLAGS(func, scx_bpf_task_set_dsq_vtime, KF_IMPLICIT_ARGS | KF_RCU);
->  BTF_ID_FLAGS(func, scx_bpf_kick_cpu, KF_IMPLICIT_ARGS)
->  BTF_ID_FLAGS(func, scx_bpf_dsq_nr_queued)
->  BTF_ID_FLAGS(func, scx_bpf_destroy_dsq)
-> -- 
-> 2.53.0
-> 
+        /* Pending child counts during tree propagation */
+        long state_pending[NR_MEMCG_NODE_STAT_ITEMS];
+@@ -485,7 +492,7 @@ unsigned long lruvec_page_state_local(struct lruvec *lruvec,
+                return 0;
+
+        pn = container_of(lruvec, struct mem_cgroup_per_node, lruvec);
+-       x = atomic_long_read(&(pn->lruvec_stats->state_local[i]));
++       x = READ_ONCE(pn->lruvec_stats->state_local[i]);
+ #ifdef CONFIG_SMP
+        if (x < 0)
+                x = 0;
+@@ -493,6 +500,10 @@ unsigned long lruvec_page_state_local(struct
+lruvec *lruvec,
+        return x;
+ }
+
++static void mod_memcg_lruvec_state(struct lruvec *lruvec,
++                                  enum node_stat_item idx,
++                                  int val);
++
+ #ifdef CONFIG_MEMCG_V1
+ void reparent_memcg_lruvec_state_local(struct mem_cgroup *memcg,
+                                       struct mem_cgroup *parent, int idx)
+@@ -506,12 +517,10 @@ void reparent_memcg_lruvec_state_local(struct
+mem_cgroup *memcg,
+        for_each_node(nid) {
+                struct lruvec *child_lruvec = mem_cgroup_lruvec(memcg,
+NODE_DATA(nid));
+                struct lruvec *parent_lruvec =
+mem_cgroup_lruvec(parent, NODE_DATA(nid));
+-               struct mem_cgroup_per_node *parent_pn;
+                unsigned long value =
+lruvec_page_state_local(child_lruvec, idx);
+
+-               parent_pn = container_of(parent_lruvec, struct
+mem_cgroup_per_node, lruvec);
+-
+-               atomic_long_add(value,
+&(parent_pn->lruvec_stats->state_local[i]));
++               mod_memcg_lruvec_state(child_lruvec, idx, -value);
++               mod_memcg_lruvec_state(parent_lruvec, idx, value);
+        }
+ }
+ #endif
+@@ -598,7 +607,7 @@ struct memcg_vmstats {
+        unsigned long           events[NR_MEMCG_EVENTS];
+
+        /* Non-hierarchical (CPU aggregated) page state & events */
+-       atomic_long_t           state_local[MEMCG_VMSTAT_SIZE];
++       long                    state_local[MEMCG_VMSTAT_SIZE];
+        unsigned long           events_local[NR_MEMCG_EVENTS];
+
+        /* Pending child counts during tree propagation */
+@@ -835,7 +844,7 @@ unsigned long memcg_page_state_local(struct
+mem_cgroup *memcg, int idx)
+        if (WARN_ONCE(BAD_STAT_IDX(i), "%s: missing stat item %d\n",
+__func__, idx))
+                return 0;
+
+-       x = atomic_long_read(&(memcg->vmstats->state_local[i]));
++       x = READ_ONCE(memcg->vmstats->state_local[i]);
+ #ifdef CONFIG_SMP
+        if (x < 0)
+                x = 0;
+@@ -852,7 +861,8 @@ void reparent_memcg_state_local(struct mem_cgroup *memcg,
+        if (WARN_ONCE(BAD_STAT_IDX(i), "%s: missing stat item %d\n",
+__func__, idx))
+                return;
+
+-       atomic_long_add(value, &(parent->vmstats->state_local[i]));
++       mod_memcg_state(memcg, idx, -value);
++       mod_memcg_state(parent, idx, value);
+ }
+ #endif
+
+@@ -4174,8 +4184,6 @@ struct aggregate_control {
+        long *aggregate;
+        /* pointer to the non-hierarchichal (CPU aggregated) counters */
+        long *local;
+-       /* pointer to the atomic non-hierarchichal (CPU aggregated) counters */
+-       atomic_long_t *alocal;
+        /* pointer to the pending child counters during tree propagation */
+        long *pending;
+        /* pointer to the parent's pending counters, could be NULL */
+@@ -4213,12 +4221,8 @@ static void mem_cgroup_stat_aggregate(struct
+aggregate_control *ac)
+                }
+
+                /* Aggregate counts on this level and propagate upwards */
+-               if (delta_cpu) {
+-                       if (ac->local)
+-                               ac->local[i] += delta_cpu;
+-                       else if (ac->alocal)
+-                               atomic_long_add(delta_cpu, &(ac->alocal[i]));
+-               }
++               if (delta_cpu)
++                       ac->local[i] += delta_cpu;
+
+                if (delta) {
+                        ac->aggregate[i] += delta;
+@@ -4289,8 +4293,7 @@ static void mem_cgroup_css_rstat_flush(struct
+cgroup_subsys_state *css, int cpu)
+
+        ac = (struct aggregate_control) {
+                .aggregate = memcg->vmstats->state,
+-               .local = NULL,
+-               .alocal = memcg->vmstats->state_local,
++               .local = memcg->vmstats->state_local,
+                .pending = memcg->vmstats->state_pending,
+                .ppending = parent ? parent->vmstats->state_pending : NULL,
+                .cstat = statc->state,
+@@ -4323,8 +4326,7 @@ static void mem_cgroup_css_rstat_flush(struct
+cgroup_subsys_state *css, int cpu)
+
+                ac = (struct aggregate_control) {
+                        .aggregate = lstats->state,
+-                       .local = NULL,
+-                       .alocal = lstats->state_local,
++                       .local = lstats->state_local,
+                        .pending = lstats->state_pending,
+                        .ppending = plstats ? plstats->state_pending : NULL,
+                        .cstat = lstatc->state,
 
