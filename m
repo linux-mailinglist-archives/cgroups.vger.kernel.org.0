@@ -1,181 +1,284 @@
-Return-Path: <cgroups+bounces-14437-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-14439-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 8MC1DE2QoGkokwQAu9opvQ
-	(envelope-from <cgroups+bounces-14437-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Thu, 26 Feb 2026 19:26:21 +0100
+	id CA8gAMONoGkokwQAu9opvQ
+	(envelope-from <cgroups+bounces-14439-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Thu, 26 Feb 2026 19:15:31 +0100
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 853AE1AD943
-	for <lists+cgroups@lfdr.de>; Thu, 26 Feb 2026 19:26:20 +0100 (CET)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9BCC71AD6E4
+	for <lists+cgroups@lfdr.de>; Thu, 26 Feb 2026 19:15:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id AE17B341E671
-	for <lists+cgroups@lfdr.de>; Thu, 26 Feb 2026 17:13:51 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id 37C87300089F
+	for <lists+cgroups@lfdr.de>; Thu, 26 Feb 2026 18:08:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3BA74368977;
-	Thu, 26 Feb 2026 17:13:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A977361674;
+	Thu, 26 Feb 2026 18:08:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="K7k4gjcp"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="J/dllCtX"
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ot1-f51.google.com (mail-ot1-f51.google.com [209.85.210.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F3787368953
-	for <cgroups@vger.kernel.org>; Thu, 26 Feb 2026 17:13:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A9ED935A3A1
+	for <cgroups@vger.kernel.org>; Thu, 26 Feb 2026 18:08:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772126029; cv=none; b=fOsj3ns82MReAM0yi2qY4ksOLVC59IMNEAvQ3gDJB8E7ojJYOekn566lofx7KRq21jSRz1HbDFdBAKcKpIW9TYKpStReuFq3CmGXDLk/SVpjVYgV3ALhTxTa18Bc8eXhW6aDTjbK2cdgaLarmYrWq5cDeMpynIcRFuX548tWC5k=
+	t=1772129306; cv=none; b=eT0sMp2Jp9VrNBMh/5arTZIarFtJc1A/iRShfK88LiP2w1nYl2+7BZn032J9awmczdw37hTMKIceGymgVocdhy0JfU2g+Zdh29VAV8nJeCcZr/GKrFOxyjYMc0htki2J/aBw9wb8gSVpZWbazxwo51e4wwzTVSHvs2UxVtvs24o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772126029; c=relaxed/simple;
-	bh=euWQYI6VTPnWxe/R+ZB/rm5QUfnQgxdguDrbNCz0+DI=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=ehLU2VjXdf6FOTHxLyF7Xkk691fxpM2wMP38tDoGv05r0TGEqVlKDDvcMJTsQfgZshHUAd5itEKUZPRC6VcTX228aD1RbRbMBILKkPDrfy8r6JjQcDN7PzoEQYO63LrJAEyZz7JLdDfdAHhk5PComRLWuH6H9+xiewHfCeseP5E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=K7k4gjcp; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 92D1CC2BCB1
-	for <cgroups@vger.kernel.org>; Thu, 26 Feb 2026 17:13:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1772126028;
-	bh=euWQYI6VTPnWxe/R+ZB/rm5QUfnQgxdguDrbNCz0+DI=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=K7k4gjcpwjNwnZ2fgQsF8UVFuRsxg+wJOyVRtwctubPWHIeBA7MXw840pLoqjLJhp
-	 fhHn+v2aMxmRZUnGCuxC5gvLvXyBIwK/0KoKFe6x3ncGF+Y4JFB/i56JIL7Kcd/v1d
-	 D+FHEatHll/2g8R9O4jOwa3BLd6MFVCMCfjqAqHaxmHjv8wrhOIphpyWvpxKKz4+5B
-	 heUAe5gkd7FiKsgGzg2WrpLAbrD+tmi9h518wBWlePniR7uDZINzZRKqa32ciL9C97
-	 ZoGlVSgd3fAVz5EDaye23HFGUWRYwCOwsG1J+iGppF0FAWu9m6Y2XCTQGvfw4yidBV
-	 gwLqBNZIlBnSQ==
-Received: by mail-qv1-f49.google.com with SMTP id 6a1803df08f44-899a98c2421so19661176d6.3
-        for <cgroups@vger.kernel.org>; Thu, 26 Feb 2026 09:13:48 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCXCG/2v07afwPJOo3ach5Qly7nHQeqWyzF9ymRc+dR78EwRJNGyPukr1Fx9GoSoIWbX2iqTNVra@vger.kernel.org
-X-Gm-Message-State: AOJu0YyrOLhxwgoZ7zNg5YwmDE7+/mmF3rOhy0T3AqPoipblvHk+k5c6
-	FiQkW/HX0ROYlGMFa3baUhWaReFA7Oz3qX3OJ+S9CJLmiIGIGmlOY96ArvEwmOX+qaLkTPH/eTM
-	ZC+0DWM86Lwz747epXaEpOW1a/u15J3c=
-X-Received: by 2002:a05:6214:627:b0:894:6f12:af5c with SMTP id
- 6a1803df08f44-899c13dd9d0mr72291106d6.24.1772126027803; Thu, 26 Feb 2026
- 09:13:47 -0800 (PST)
+	s=arc-20240116; t=1772129306; c=relaxed/simple;
+	bh=XrT6+F4L/RdfSwyg3Ac65ntxz3H2SsHPU5uO2O7bnKU=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=K7lyiaAuhkiG08ZTIpZ06xYu1H3E0UBTLCIvogJ4XL8Mt0eB28MkwfyHokIdZAYOGxtEx5ReErCCvkVi5sSoMdk3icnwOZlKTCU6c3zJvJk7EwBa3oqbyVAKqInCEM+wZ9mXedSQIRcXD9ubv4o66QpkuFu1/xQcO/OTrOSwErE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=J/dllCtX; arc=none smtp.client-ip=209.85.210.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ot1-f51.google.com with SMTP id 46e09a7af769-7d18a9d2b1aso1259548a34.2
+        for <cgroups@vger.kernel.org>; Thu, 26 Feb 2026 10:08:24 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1772129303; x=1772734103; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=wcq9MDR3n757j4ORZwFr28h6INReHt+LZDRBVW4SzF0=;
+        b=J/dllCtXpL1DPs0TPWfxlx9LUW6VL0zoQx54nbCMchOg3/T83WmHxF9u/v2X+NOYFQ
+         n5pn50xOxhOPAtLIdLwHPqBUPsfnrEMTj7MJLteJgmEE2Rn0uTiGuIf/vjRHxB+deW2S
+         qK8IuOxznSsB+ZSffjU03JuEAuibwsr6NTPKp4FDVjtTlrdBAKcmDhGYD7et25m6FWZR
+         Ne91mt8D415tHsqsa5Bv9Jl9P38G0z/z0jA16SoevmSp3tyuHT2iAsCB1/SBCW4WDLki
+         Kzdq0rl7F1lEtHAJw9H0Buqxw432wpvRAs0PcnhBS4hKtpXLouLRF9x55W2ItRiNYu4+
+         oUSA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1772129303; x=1772734103;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=wcq9MDR3n757j4ORZwFr28h6INReHt+LZDRBVW4SzF0=;
+        b=qxmfxkQKsTJOxOL+PlwTDQN2qhFMXL683LobCMD2i+wMfoQW4l6eOah91z4iwlhK3a
+         2DaSOBt+5zBtrUPK2vHW57s8Ga+jeM9/vaRpGv3rmehLmsT1vH0cHZSs5dI951sxm1k5
+         Sxr9shbXEiuuo5nWM+OrAgZrhLvbxaOtNQlyxJ0Um8gbVg8yt0t6oyLurOrygGlMRfoz
+         o4wddhDUBJ6n5jUo9ZAWFK3IHcsk1BkQKweRqlvvGC+GDWJszdyOuX4M+D7TMfLAgH4Q
+         BXFCdOmGTq4x3KKmTwNnEWaWbWKsQoDNDPW8PFK3azM9u4t2+SNijmzQaAHojvvSC7Ji
+         ReUA==
+X-Forwarded-Encrypted: i=1; AJvYcCXOoNOthbzbsmbXo9z2dfEV+tmuzDy18gS0U4UYJdCbe1h7LY9EXXW6ikSQ/fpJGzHoGXYC+SR2@vger.kernel.org
+X-Gm-Message-State: AOJu0YwDEaGxhHGe+N+XgZKMXjrURsCBLRBuj70MXgoUvK6dDH4EpcH7
+	6EVxrwniCVPZaqRlLh20Nq/AtBlvXlsWzKzyLFU0J2kz9UVcw7WCCunE
+X-Gm-Gg: ATEYQzyC3i2syrOmuTcit+SA9mpDoxgvdv7rmr3c8jm7GpxyD1SpHWPkt4im09vgzIx
+	0nx5kBIw/fw6dVeCrtiJH2/7RbX0fiqpLYM8knEP35qDdRx3/a/cpAJNqaw7mln7quX2AUCsy6/
+	gDLa+Tr9m6y7guHFkVRVj4bxJu8V/PCI441j5mnQ2UUC1Gl9ZlPL27XODG4xOw/Jlh9lEXLSiWG
+	O0X4pTLEg9lh8e4gI9L8nWyVxVPAiT+1XBoEJO0dta8kGx5d+h/k9U4PupPUnJX5uKikiyk15/C
+	fslH1sS9qb4wpaQLGM14rJVaa6XDlS8SOFf96fWCQ1Vdnk6zcTG/1A1bG1CMYJoqQgVFDc8LLgM
+	7bVZLa/3IPxwmtwEO6cEo3+BLox+22j3LRdQOJDFQdArOKb4X23DX25F9gIFweV/oNP50hfsGSy
+	2bq5OZKImrPNT4rVIXhgAA1+fGD7jtBnyg
+X-Received: by 2002:a05:6830:6201:b0:7d4:96c3:3f97 with SMTP id 46e09a7af769-7d591b0f5acmr73197a34.2.1772129303538;
+        Thu, 26 Feb 2026 10:08:23 -0800 (PST)
+Received: from localhost ([2a03:2880:10ff:70::])
+        by smtp.gmail.com with ESMTPSA id 46e09a7af769-7d58666ed17sm2433431a34.27.2026.02.26.10.08.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 26 Feb 2026 10:08:23 -0800 (PST)
+From: Joshua Hahn <joshua.hahnjy@gmail.com>
+To: Ackerley Tng <ackerleytng@google.com>
+Cc: akpm@linux-foundation.org,
+	dan.j.williams@intel.com,
+	david@kernel.org,
+	fvdl@google.com,
+	hannes@cmpxchg.org,
+	jgg@nvidia.com,
+	jiaqiyan@google.com,
+	jthoughton@google.com,
+	kalyazin@amazon.com,
+	mhocko@kernel.org,
+	michael.roth@amd.com,
+	muchun.song@linux.dev,
+	osalvador@suse.de,
+	pasha.tatashin@soleen.com,
+	pbonzini@redhat.com,
+	peterx@redhat.com,
+	pratyush@kernel.org,
+	rick.p.edgecombe@intel.com,
+	rientjes@google.com,
+	roman.gushchin@linux.dev,
+	seanjc@google.com,
+	shakeel.butt@linux.dev,
+	shivankg@amd.com,
+	vannapurve@google.com,
+	yan.y.zhao@intel.com,
+	cgroups@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-mm@kvack.org
+Subject: Re: [RFC PATCH v1 0/7] Open HugeTLB allocation routine for more generic use
+Date: Thu, 26 Feb 2026 10:08:21 -0800
+Message-ID: <20260226180821.2218448-1-joshua.hahnjy@gmail.com>
+X-Mailer: git-send-email 2.47.3
+In-Reply-To: <CAEvNRgGaJXbOGPQSgvo3rVDfis22DC4hYy=2Rczas0Vm3o66kQ@mail.gmail.com>
+References: 
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <cover.1772005110.git.zhengqi.arch@bytedance.com>
- <ef13e5974343b37ae2a0e28aff03ea2d033cb888.1772005110.git.zhengqi.arch@bytedance.com>
- <CAO9r8zOhZgrym6oSrtg7b+HmNHEfWuAzZ0i8eYhm5-OEnfFLdw@mail.gmail.com>
- <aZ-R87JfacQ2gGq1@linux.dev> <CAO9r8zPmgytmGHAbueFKXcZWY5SJaEwD3Pqk99ws4XeO2_hnKw@mail.gmail.com>
- <aaB7yYSpAaC5uInq@linux.dev>
-In-Reply-To: <aaB7yYSpAaC5uInq@linux.dev>
-From: Yosry Ahmed <yosry@kernel.org>
-Date: Thu, 26 Feb 2026 09:13:35 -0800
-X-Gmail-Original-Message-ID: <CAO9r8zOP-kB=8ADGAUZYnpY-rxG1TCGbQg3FxqyC7WrOu3NASg@mail.gmail.com>
-X-Gm-Features: AaiRm52kMdcu5UAJBT1YFqYWZjlPJf22WLU_UA6yC-0U8iG5lX8r98zBJgwmLKM
-Message-ID: <CAO9r8zOP-kB=8ADGAUZYnpY-rxG1TCGbQg3FxqyC7WrOu3NASg@mail.gmail.com>
-Subject: Re: [PATCH v5 29/32] mm: memcontrol: prepare for reparenting
- non-hierarchical stats
-To: Shakeel Butt <shakeel.butt@linux.dev>
-Cc: Qi Zheng <qi.zheng@linux.dev>, hannes@cmpxchg.org, hughd@google.com, 
-	mhocko@suse.com, roman.gushchin@linux.dev, muchun.song@linux.dev, 
-	david@kernel.org, lorenzo.stoakes@oracle.com, ziy@nvidia.com, 
-	harry.yoo@oracle.com, yosry.ahmed@linux.dev, imran.f.khan@oracle.com, 
-	kamalesh.babulal@oracle.com, axelrasmussen@google.com, yuanchu@google.com, 
-	weixugc@google.com, chenridong@huaweicloud.com, mkoutny@suse.com, 
-	akpm@linux-foundation.org, hamzamahfooz@linux.microsoft.com, 
-	apais@linux.microsoft.com, lance.yang@linux.dev, bhe@redhat.com, 
-	usamaarif642@gmail.com, linux-mm@kvack.org, linux-kernel@vger.kernel.org, 
-	cgroups@vger.kernel.org, Qi Zheng <zhengqi.arch@bytedance.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-2.16 / 15.00];
+X-Spamd-Result: default: False [-1.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
+	R_MISSING_CHARSET(0.50)[];
+	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
+	R_DKIM_ALLOW(-0.20)[gmail.com:s=20230601];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-14437-lists,cgroups=lfdr.de];
-	FREEMAIL_CC(0.00)[linux.dev,cmpxchg.org,google.com,suse.com,kernel.org,oracle.com,nvidia.com,huaweicloud.com,linux-foundation.org,linux.microsoft.com,redhat.com,gmail.com,kvack.org,vger.kernel.org,bytedance.com];
-	FROM_HAS_DN(0.00)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
+	RECEIVED_HELO_LOCALHOST(0.00)[];
 	RCVD_TLS_LAST(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[29];
-	MIME_TRACE(0.00)[0:+];
-	DKIM_TRACE(0.00)[kernel.org:+];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	MISSING_XM_UA(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[5];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[yosry@kernel.org,cgroups@vger.kernel.org];
+	MIME_TRACE(0.00)[0:+];
+	TAGGED_FROM(0.00)[bounces-14439-lists,cgroups=lfdr.de];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	FREEMAIL_FROM(0.00)[gmail.com];
+	RCPT_COUNT_TWELVE(0.00)[29];
+	FROM_HAS_DN(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[joshuahahnjy@gmail.com,cgroups@vger.kernel.org];
+	MID_RHS_MATCH_FROM(0.00)[];
 	NEURAL_HAM(-0.00)[-1.000];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[5];
+	DKIM_TRACE(0.00)[gmail.com:+];
 	TAGGED_RCPT(0.00)[cgroups];
 	TO_DN_SOME(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,mail.gmail.com:mid,linux.dev:email]
-X-Rspamd-Queue-Id: 853AE1AD943
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: 9BCC71AD6E4
 X-Rspamd-Action: no action
 
-On Thu, Feb 26, 2026 at 9:03=E2=80=AFAM Shakeel Butt <shakeel.butt@linux.de=
-v> wrote:
->
-> On Thu, Feb 26, 2026 at 07:16:50AM -0800, Yosry Ahmed wrote:
-> > > > Did you measure the impact of making state_local atomic on the flus=
-h
-> > > > path? It's a slow path but we've seen pain from it being too slow
-> > > > before, because it extends the critical section of the rstat flush
-> > > > lock.
-> > >
-> > > Qi, please measure the impact on flushing and if no impact then no ne=
-ed to do
-> > > anything as I don't want anymore churn in this series.
-> > >
-> > > >
-> > > > Can we keep this non-atomic and use mod_memcg_lruvec_state() here? =
-It
-> > > > will update the stat on the local counter and it will be added to
-> > > > state_local in the flush path when needed. We can even force anothe=
-r
-> > > > flush in reparent_state_local () after reparenting is completed, if=
- we
-> > > > want to avoid leaving a potentially large stat update pending, as i=
-t
-> > > > can be missed by mem_cgroup_flush_stats_ratelimited().
-> > > >
-> > > > Same for reparent_memcg_state_local(), we can probably use mod_memc=
-g_state()?
-> > >
-> > > Yosry, do you mind sending the patch you are thinking about over this=
- series?
+On Wed, 25 Feb 2026 19:37:04 -0800 Ackerley Tng <ackerleytng@google.com> wrote:
+
+> Joshua Hahn <joshua.hahnjy@gmail.com> writes:
+> 
+> > On Wed, 11 Feb 2026 16:37:11 -0800 Ackerley Tng <ackerleytng@google.com> wrote:
 > >
-> > Honestly, I'd rather squash it into this patch if possible. It avoids
-> > churn in the history (switch to atomics and back), and is arguably
-> > simpler than checking for regressions in the flush path.
->
-> Yup, let's squash it into the original patch. Please add your sign-off ta=
-g.
-
-Sure. Qi/Andrew, feel free to add these tags if you squash the diff below:
-
-Co-developed-by: Yosry Ahmed <yosry@kernel.org>
-Signed-off-by: Yosry Ahmed <yosry@kernel.org>
-
->
+> > Hi Ackerly, I hope you're donig well!
 > >
-> > What I have in mind is the diff below (build tested only). Qi, would
-> > you be able to test this? It applies directly on this patch in mm-new:
->
-> Qi, please squash this diff into the patch and test. You might need to ch=
-ange
-> the subsequent patches. Once you are done with testing, you can post the =
-diffs
-> for those in reply to those patches and we will ask Andrew to squash into
-> orinigal ones.
+> > [...snip...]
+> >
+> >> I would like to get feedback on:
+> >>
+> >> 1. Opening up HugeTLB's allocation for more generic use
+> >
+> > I'm not entirely familiar with guest_memfd, so pleae excuse my ignorance
+> > if I'm missing anything obvious.
+> 
+> Happy to take questions! Thank you for your thoughts and reviews!
 
-FWIW, after applying this diff, the rest of the series applies
-cleanly. So I think we won't need diffs for other patches.
+Of course, thank you for your work, Ackerley!
 
-> The diff looks good to me though.
+> > But I'm wondering what hugeTLB offers
+> > that other hugepage solutions cannot offer for guest_memfd, if the
+> > goal of this series is to decouple it from hugeTLBfs.
+> >
+> 
+> The one other huge page source that we've explored is THP pages from the
+> buddy allocator. Compared to HugeTLB, huge pages from the buddy
+> allocator
+> 
+> + Has a maximum size of 2M
+> + Does not guarantee huge pages the way HugeTLB does - HugeTLB pages are
+>   allocated at boot, and guest_memfd can reserve pages at guest_memfd
+>   creation time.
+> + Allocation of HugeTLB pages is also really fast, it's just dequeuing
+>   from a preallocated pool
 
-Thanks for taking a look!
+All of these make sense. Just wanted to know if guest_memfd had any
+unique usecases for hugeTLB that normal hugetlbfs didn't have.
+
+> The last reason to use HugeTLB is not because of any inherent advantage
+> of using HugeTLB over other sources of huge pages, but for
+> administrative/scheduling purposes:
+> 
+>   Given that existing non-guest_memfd workloads are already using
+>   HugeTLB, for optimal scheduling, machine memory is already carved up
+>   in HugeTLB pages for these workloads. Workloads that require using
+>   guest_memfd (like Confidential VMs) must also use HugeTLB to
+>   participate in optimial workload scheduling across machines.
+> 
+> >> 2. Reverting and re-adopting the try-commit-cancel protocol for memory
+> >>    charging
+> >
+> > On the second point, I am wondering if reintroducing the try-commit-cancel
+> > protocol is tied to factoring out hugetlb_alloc_folio. When I removed
+> > the protocol a while back, the justification was that for the most part,
+> > grabbing a hugetlb folio was a relatively cheap & fast operation, since
+> > hugetlb mostly operates out of a preallocated pool.
+> >
+> > So the cost of being wrong, going above the limit, and having to return
+> > the hugetlb folio was also relatively low.
+> >
+> 
+> Thanks for this! I saw your patch to just optimistically grab a HugeTLB
+> page :) For that patch, the primary reason was to simplify the logic,
+> and the simplification was justifiable because grabbing a folio is
+> cheap, right? (And so grabbing a folio being cheap wasn't a reason in
+> itself?)
+
+Yes, exactly!
+
+> > It seems like this patch series introduces some new paths for hugetlb
+> > pages to be consumed (specifically, without a reservation or vma).
+> > I imagine that these new paths make the slowpath for hugetlb more frequent,
+> > which makes the cost of assuming that the memcg limit is OK higher?
+> > I think explicitly spelling this out in the justification for reintroducing
+> > the charging protocol could be helpful.
+> >
+> 
+> Yes, I should have done that. Will copy the following to the next
+> revision.
+
+Thank you for considering!
+
+> The main reason is that reintroducing the charging protocol is the
+> clearest way (for me) to cleanly refactor out hugetlb_alloc_folio()
+> without worrying about the edge cases around HugeTLB reservations and
+> charging.
+> 
+> If I didn't reintroduce the charging protocol, I would have to depend on
+> freeing the new hugetlb folio on memcg charging failure, and the freeing
+> in turn depends on the subpool correctly being set in the folio, and the
+> presence of the subpool influences (in free_huge_folio()) whether the
+> reservation was returned to the global hstate. Aaannnd... there's also a
+> hugetlb_restore_reserve flag that controls whether to return the folio
+> to the subpool (and the hstate). I find folio_clear_hugetlb_restore_reserve()
+> on certain code paths kind of magical/unexplained too.
+
+I see, if it makes the code simpler to introduce the protocol again, I see
+no reason why we shouldn't revert the patch : -)
+
+> I would rather iron out those charging and reservation details
+> separately from this series (with more testing support).
+> 
+> On the other hand, reintroducing the charging protocol has the benefit
+> of avoiding allocations (not just dequeuing, if surplus HugeTLB pages
+> are required) if the memcg limit is hit. Also, if the original reason
+> for removing the protocol was to simplify the code, refactoring out
+> hugetlb_alloc_folio() also simplifies the code, and I think it's
+> actually nice that memcg charging is done the same way as the other two
+> (h_cg and h_cg_rsvd charging). After hugetlb_alloc_folio() is refactored
+> out, the gotos make all three charging systems consistent and symmetric,
+> which I think is nice to have :)
+> 
+> I hope the consistent/symmetric charging among all 3 systems is welcome,
+> what do you think?
+
+For the hugetlbfs case, the path to allocate a hugeTLB page on demand
+makes sense, so I definitely see the argument for avoiding allocations.
+Does guest_memfd also have a path to allocate a hugeTLB page outside of
+the boottime reservations? In that case I think it would be nice to
+clarify that the allocation failure case optimization is also for
+guest_memfd, not only for hugetlbfs.
+
+Symmetric charging is definitely welcome : -) All of your reasons make
+sense to me, I just wanted to ask and make sure.
+
+Thanks for your thoughts! I hope you have a great day!!
+Joshua
 
