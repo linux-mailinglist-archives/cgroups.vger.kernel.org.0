@@ -1,123 +1,116 @@
-Return-Path: <cgroups+bounces-14417-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-14418-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id MAFsDXbxn2kyfAQAu9opvQ
-	(envelope-from <cgroups+bounces-14417-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Thu, 26 Feb 2026 08:08:38 +0100
+	id UKKFCrP/n2n3fAQAu9opvQ
+	(envelope-from <cgroups+bounces-14418-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Thu, 26 Feb 2026 09:09:23 +0100
 X-Original-To: lists+cgroups@lfdr.de
 Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id C358A1A1A57
-	for <lists+cgroups@lfdr.de>; Thu, 26 Feb 2026 08:08:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 925281A24DF
+	for <lists+cgroups@lfdr.de>; Thu, 26 Feb 2026 09:09:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 758E030C98A4
-	for <lists+cgroups@lfdr.de>; Thu, 26 Feb 2026 07:06:30 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id AFBC730166C3
+	for <lists+cgroups@lfdr.de>; Thu, 26 Feb 2026 08:04:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 36ABA38F23D;
-	Thu, 26 Feb 2026 07:06:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C14A392C58;
+	Thu, 26 Feb 2026 08:04:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="MM9fkwvl"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="WYmbTObg"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-wr1-f67.google.com (mail-wr1-f67.google.com [209.85.221.67])
+Received: from mail-wm1-f68.google.com (mail-wm1-f68.google.com [209.85.128.68])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8C2A138E5DF
-	for <cgroups@vger.kernel.org>; Thu, 26 Feb 2026 07:06:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.67
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 64B1325771
+	for <cgroups@vger.kernel.org>; Thu, 26 Feb 2026 08:04:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.68
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772089580; cv=none; b=e1XFpkfYsSRKL+NEkoMZLeFooGeON8s3aCPhbXcANMUA4fJ27xgkiQN0oYnUW4no8/eKE06Nw1OkcVa/AGJmFl1D42PrrvIwoj76zArn+VtHr1PQFvKSc8lDA46pjZSvvh6Onm6Nt2tOs+DkR/1UzK7+yI+1DqwmI1ZstLCLmTU=
+	t=1772093088; cv=none; b=YUH0Q+zbE9N3QIql6dOdUBbNIKFlagWzFhW+sstTGb6bctbfBqm4f33byX5NbpYvTjd8wdbEp7mWGStNpBVcQJQU8Gj9PSexUJPZNfCgGh/gm7Ielv6baKX5mvYqjfgFyM+pW0H/igMJke9Z8uIhLl7KiSFAVjkXDAR15T7HyMI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772089580; c=relaxed/simple;
-	bh=FazkpHjrkb8zZWOMtCUGeCY8AxmBQAe8akNPIgRMSz4=;
+	s=arc-20240116; t=1772093088; c=relaxed/simple;
+	bh=N6P5jevl7PAhzYT+lpNqGSa5JS1dX+sqJHz4RsvzDzc=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=GyqDxFkhBZkZvfbfmwuzb5JJ/wqM9PqeA6zIYnaeDcVkA1SENLBqMT/mv4WJfuvOHeXxPJxXc7oEZ+Wzs3nNC6WSIq2MfoeLn7Np2dOBTeNPZXuEakse/sopmbAHmqPjXrXjei521VTIMZ6BARBgGolB89eDwbWVfz2ksjwdunA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=MM9fkwvl; arc=none smtp.client-ip=209.85.221.67
+	 Content-Type:Content-Disposition:In-Reply-To; b=WCFz/z4JCnS+Rj+7osDjzQ6O/dqrKBldtv7uu4sQ7RpkeAaXNYnBfBW1NPqKOJK89VAmzjjMDzU47z4H/KFRpFM7xtVgDJJRZ3nVkSGZ2alIlamBfwycBPG6XTnXuppvRaqtXUiYlyWbb6aE7i+vOtKEXf7Fv9CYpHwGlwL25iA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=WYmbTObg; arc=none smtp.client-ip=209.85.128.68
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-wr1-f67.google.com with SMTP id ffacd0b85a97d-43767807da6so305867f8f.2
-        for <cgroups@vger.kernel.org>; Wed, 25 Feb 2026 23:06:18 -0800 (PST)
+Received: by mail-wm1-f68.google.com with SMTP id 5b1f17b1804b1-48379a42f76so4517895e9.0
+        for <cgroups@vger.kernel.org>; Thu, 26 Feb 2026 00:04:46 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1772089577; x=1772694377; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=wRNHYTQlLX9EerVe+YBMUcaaqn9OJCKpaOuanb3o058=;
-        b=MM9fkwvl6HuRz3VnxAR21CupoCPRAmv/tV7IRSuZQpy3oqPU7nra1jkW/mw4R7MeTP
-         tOeUfnePIo8vFQI4U7sq7t5w1ZZunpEd8DTgtBcygSHSTBCLXrAGm+dMiumRZmAoPz8s
-         0BsKkWgutbfp/wvTNm3a5Ip8guGsQt22Te1lIWtDfz7Hqe/3r2tuADKgAhdmZKmrfx+G
-         6aYKOV1gCYSNx9NwJVfECvDSQAZV6bVzskZXvaMoP+tN6KfZDRnNaDxEunVrdVm9AL4M
-         J49XZwTVm4gQYX/41mp/n1QmK93mH+IjAs4p1M2dvTk36k2Q85fiWrFVQIHGupDqPVL8
-         RnzQ==
+        d=suse.com; s=google; t=1772093085; x=1772697885; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=uS1xoFC20rI9dVkbD9ZqhHqbX9OMzBeyOLocK+DjeUM=;
+        b=WYmbTObgzVl/2PR1KbxrlGzsm+duMrb54Zqb0RlAIknqi64nKeCQpE+iXzJB9lKDOw
+         6sVSOpTvGXIzlCI+KfMhkHgQTOyYR+nQin8HbQ9c9c5tcMgcAjEsIUW/NgCQhhwbW5mu
+         LhtFef0f/Z8kVyv9TLx0oP7IuOQIBztYKo+SJRrQSNaNrIknI52IEyyW3zCr/RJhk19r
+         LN5qSU9h1YbH+GwviAOhvsNpYQnighcApfVC+Ap2dU+q00tAE4UtgALrRc172ELtUaEo
+         wzq/AFQv/udTMuL0oQAkIBBvotabuwC7ygflbsvnFYAaUVxPNU7uR5PBbPgrVcqgRPsf
+         oJQg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1772089577; x=1772694377;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=wRNHYTQlLX9EerVe+YBMUcaaqn9OJCKpaOuanb3o058=;
-        b=YOMhzNmY1h4kQPaTLxOcMk1yPqp8xlMnHZSKRdTuGWff6sjBNQ6UhfGchlK+NBjZ6G
-         p3DNLAY4OhybKp+JMvYGAsOO8AgpDTCwziQOrzF4i7CcmXDN9NxyKE2/P3rbJP8hUnzU
-         skm8oJZwao8aHgVPzychSdE98LwGpN8c4yckh8a2azfk43KptQneSyqD0Uzd0VM7CPrV
-         fVqVKwiq+njw5AwrxnGhZZxsk6bClQp16CzVIRZ0JuJF/vpFNTMU+RVyKkXdGofLxL5n
-         cqZcTgJnZhOM9Cpvlzn9vC9aAbOXfemoC0wBm0SrLtYq5ZQ+tfutGzdpusQ3YuxgZ+Ku
-         cAGQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVu5BrEQVAs+fc/ktnML0fMS6VR2GB+rA4DIq+XvayplQMLiCa7PMzTEe2k5V0HS4eqDPdkFR+z@vger.kernel.org
-X-Gm-Message-State: AOJu0YwqncHoLGZn8fSMJYXMNlUQkKQoUxnUNZtlNVorCUbcetstPNIW
-	6Xg3Jsiz9YD7lFriihSXsdru98kRx8R99VbmYyGtIiHzHtt+grrG/C5KvqIn/16Q8vw=
-X-Gm-Gg: ATEYQzyPmHl6AkkyxE3qcwu6mDomX/M6J7eu68XXO1m/TljK8j1d40LFhZEbntuwXRn
-	0l5Xwfn7lruiXLYpagOi/9udMEsiXNQSPx4WWBJhdfYBWfREKTf1ECnie6DRtj7/X/K0d3WCE6W
-	WASDPnss6cf/oSWlje2mW7hFq60j7FipsgXm/NiEdICJjQUc2xYVHyB2Hr4tdM9BJ9Y+DMi5G2z
-	P9jrpr4WS+lKC5qDWMpiKIcRaWxEipfrX6quM8rxld93Mh4n0RfPWlRQZX1bQwhGACnYzaNu5N+
-	EpICHueCK+Eicd5a7/+1oO43c4jSQdKTq/D4dgs7kpUWBiH0CsIHNxTFkliqiJQd9uIA8vih4B8
-	6WvQ6sH3Yj+SZLuLLjA5HgqG1NeC8QII5OZjuge4tHXqWHtqCDMtYSEj/wcniykz5LV/SRFuxX8
-	mdODni6W0J2QZCtm4gGUjA2KaWl/s9S+f0Wg==
-X-Received: by 2002:a05:6000:250d:b0:436:30b0:759f with SMTP id ffacd0b85a97d-43997f341b1mr1907374f8f.27.1772089576879;
-        Wed, 25 Feb 2026 23:06:16 -0800 (PST)
+        d=1e100.net; s=20230601; t=1772093085; x=1772697885;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=uS1xoFC20rI9dVkbD9ZqhHqbX9OMzBeyOLocK+DjeUM=;
+        b=QjvFfCc3fon3ubGC+BTmABtea8Ikg8Rwi5QHOA/KpEV70SdpP7cV7GJiyBZK6sUj4E
+         RMTA6oXVtE0s7M7Jz+RqPetjYhAftgX4oX8tyDT6dvmI0GJVWRtl1zCF3NI99VeAxkfa
+         xRaIPZoPafTAkIBT0cB8JQImRKzsItWxMbhuUGB7XsGh4AdCuAR6W506tQwRghQMKFCO
+         7CM6HCUMUYn09CNPivD5EgcF/WbHSAeRJwA05A5a8pWx2bJA2U+2P5P5BEgx//ZltIyG
+         sNrY88Wdy7NiXhqWp6+1DP0CiAT6OXXlw+9vwFh4mUVbVCLb8t/uDPnq+sbg/zB6iY3d
+         y0qA==
+X-Forwarded-Encrypted: i=1; AJvYcCXbmnHqO2jgD716qqXfyfxHOrqd6gcPoEO11s4ZmQowTU++4uLfJnwgEjR49jxxB5pEMttv3Ytv@vger.kernel.org
+X-Gm-Message-State: AOJu0YyaQvX8jyKZkzN6vVS4AYWfDqOIHbMU+8MfC8hkLKpPPxiZDLNK
+	s/lAU0Gp0CdMBBcnbvgwQh/IUmB65wj4+BlzghpXcDcMNFtYA7ELGmG0EEKfH82WZgc=
+X-Gm-Gg: ATEYQzy+kOuUpGBuWP3ckYN5nUh0pGIia+25oGeG10TJhpZQqbSKcTgnI5KA+bZPW9U
+	MUMqOvertAK+TPB/rgrVk4ExfNXRObdtxhVAXtAm7OBtUcbzjM9QBM0gxgC8G9i/lVsgBeBVcsU
+	QqvTTviFhT9+rJF8es1Qy3SFwNw6A/eG8sj3512yckqEFed5NozIyN24lpp6S1+yyw6YZlnG6LS
+	PXvlNIl3Ue3sK8QqGacynSAg87GCasSVefDB2eRqgMBE8MdTY7vPNed7RBGNo9JSZ4stuYpqh3l
+	UEkHQpjiM3wKCr3B1sRGlJK2/GvMwC/jCTv/ScSrcEUG6bxbEFRACjoUlSp8Rzp/o94KV6BaueC
+	PkmmkoWRz4VGfe86ELgRWz9TzxjCnjSqS3DJhZ/R5bQTq/GMnzhzZfF+19KU3D0pWswIwZ3MraO
+	yVO4expmPrJ43vCL/bm5qWmRPX7IjOcM1Lig==
+X-Received: by 2002:a05:600c:c165:b0:47e:e952:86c9 with SMTP id 5b1f17b1804b1-483c2128cc2mr56475735e9.0.1772093084653;
+        Thu, 26 Feb 2026 00:04:44 -0800 (PST)
 Received: from localhost (109-81-17-39.rct.o2.cz. [109.81.17.39])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-43986aa2f84sm17021783f8f.7.2026.02.25.23.06.16
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-483bfccd7b6sm29626545e9.24.2026.02.26.00.04.43
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 25 Feb 2026 23:06:16 -0800 (PST)
-Date: Thu, 26 Feb 2026 08:06:15 +0100
+        Thu, 26 Feb 2026 00:04:44 -0800 (PST)
+Date: Thu, 26 Feb 2026 09:04:43 +0100
 From: Michal Hocko <mhocko@suse.com>
-To: Frederic Weisbecker <frederic@kernel.org>
-Cc: Marcelo Tosatti <mtosatti@redhat.com>,
-	Leonardo Bras <leobras.c@gmail.com>, linux-kernel@vger.kernel.org,
-	cgroups@vger.kernel.org, linux-mm@kvack.org,
-	Johannes Weiner <hannes@cmpxchg.org>,
+To: Joshua Hahn <joshua.hahnjy@gmail.com>
+Cc: Gregory Price <gourry@gourry.net>, Johannes Weiner <hannes@cmpxchg.org>,
+	Kaiyang Zhao <kaiyang2@cs.cmu.edu>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	David Hildenbrand <david@kernel.org>,
+	Lorenzo Stoakes <lorenzo.stoakes@oracle.com>,
+	"Liam R . Howlett" <Liam.Howlett@oracle.com>,
+	Vlastimil Babka <vbabka@kernel.org>,
+	Mike Rapoport <rppt@kernel.org>,
+	Suren Baghdasaryan <surenb@google.com>,
 	Roman Gushchin <roman.gushchin@linux.dev>,
 	Shakeel Butt <shakeel.butt@linux.dev>,
 	Muchun Song <muchun.song@linux.dev>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Christoph Lameter <cl@linux.com>, Pekka Enberg <penberg@kernel.org>,
-	David Rientjes <rientjes@google.com>,
-	Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-	Vlastimil Babka <vbabka@suse.cz>,
-	Hyeonggon Yoo <42.hyeyoo@gmail.com>,
-	Leonardo Bras <leobras@redhat.com>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Waiman Long <longman@redhat.com>, Boqun Feng <boqun.feng@gmail.com>,
-	Frederic Weisbecker <fweisbecker@suse.de>
-Subject: Re: [PATCH 0/4] Introduce QPW for per-cpu operations
-Message-ID: <aZ_w51dnP27nFZxL@tiehlicka>
-References: <aYs6Ju2G4bm6_tl2@tiehlicka>
- <aYxviLoWsrLqDU7o@tpad>
- <aYywl1hdBQP2_slo@tiehlicka>
- <aZDw6xI2izFDfuuu@WindFlash>
- <aZL45yORfkNvS9Rs@tiehlicka>
- <aZcr255pGT3B/eaL@tpad>
- <aZdk19MqYhWK90Do@tiehlicka>
- <aZzM_44L1vKzcOCy@pavilion.home>
- <aZ3ejedS7nE5mnva@tpad>
- <aZ9ugjKvb4U7_R93@pavilion.home>
+	Waiman Long <longman@redhat.com>,
+	Chen Ridong <chenridong@huaweicloud.com>, Tejun Heo <tj@kernel.org>,
+	Michal Koutny <mkoutny@suse.com>,
+	Axel Rasmussen <axelrasmussen@google.com>,
+	Yuanchu Xie <yuanchu@google.com>, Wei Xu <weixugc@google.com>,
+	Qi Zheng <zhengqi.arch@bytedance.com>, linux-mm@kvack.org,
+	cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+	kernel-team@meta.com
+Subject: Re: [RFC PATCH 0/6] mm/memcontrol: Make memcg limits tier-aware
+Message-ID: <aZ_-m7vSUPrzDj4n@tiehlicka>
+References: <aZ2LC0KPF0xsAwAL@tiehlicka>
+ <20260224161357.2622501-1-joshua.hahnjy@gmail.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <aZ9ugjKvb4U7_R93@pavilion.home>
+In-Reply-To: <20260224161357.2622501-1-joshua.hahnjy@gmail.com>
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-0.16 / 15.00];
 	SUSPICIOUS_RECIPS(1.50)[];
@@ -129,13 +122,13 @@ X-Spamd-Result: default: False [-0.16 / 15.00];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCPT_COUNT_TWELVE(0.00)[22];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-14417-lists,cgroups=lfdr.de];
-	MIME_TRACE(0.00)[0:+];
-	FREEMAIL_CC(0.00)[redhat.com,gmail.com,vger.kernel.org,kvack.org,cmpxchg.org,linux.dev,linux-foundation.org,linux.com,kernel.org,google.com,lge.com,suse.cz,linutronix.de,suse.de];
-	FORGED_SENDER_MAILLIST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-14418-lists,cgroups=lfdr.de];
 	RECEIVED_HELO_LOCALHOST(0.00)[];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	FREEMAIL_TO(0.00)[gmail.com];
+	RCPT_COUNT_TWELVE(0.00)[26];
+	MIME_TRACE(0.00)[0:+];
 	FROM_HAS_DN(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	TO_DN_SOME(0.00)[];
@@ -143,49 +136,183 @@ X-Spamd-Result: default: False [-0.16 / 15.00];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[mhocko@suse.com,cgroups@vger.kernel.org];
 	DKIM_TRACE(0.00)[suse.com:+];
-	NEURAL_HAM(-0.00)[-0.983];
+	NEURAL_HAM(-0.00)[-0.998];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[cgroups];
 	MISSING_XM_UA(0.00)[];
 	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
 	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,suse.com:dkim]
-X-Rspamd-Queue-Id: C358A1A1A57
+X-Rspamd-Queue-Id: 925281A24DF
 X-Rspamd-Action: no action
 
-On Wed 25-02-26 22:49:54, Frederic Weisbecker wrote:
-> Le Tue, Feb 24, 2026 at 02:23:25PM -0300, Marcelo Tosatti a écrit :
-> > On Mon, Feb 23, 2026 at 10:56:15PM +0100, Frederic Weisbecker wrote:
-> > > Le Thu, Feb 19, 2026 at 08:30:31PM +0100, Michal Hocko a écrit :
-> > > > On Thu 19-02-26 12:27:23, Marcelo Tosatti wrote:
-> > > > > Michal,
-> > > > > 
-> > > > > Again, i don't see how moving operations to happen at return to 
-> > > > > kernel would help (assuming you are talking about 
-> > > > > "context_tracking,x86: Defer some IPIs until a user->kernel transition").
-> > > > 
-> > > > Nope, I am not talking about IPIs, although those are an example of pcp
-> > > > state as well. I am sorry I do not have a link handy, I am pretty sure
-> > > > Frederic will have that. Another example, though, was vmstat flushes
-> > > > that need to be pcp. There are many other examples.
-> > > 
-> > > Here it is:
-> > > 
-> > > https://lore.kernel.org/all/20250410152327.24504-1-frederic@kernel.org/
-> > > 
-> > > Thanks.
-> > 
-> > Frederic,
-> > 
-> > I think this is a valid solution, however on systems with many CPUs, in
-> > nohz_full, performing system calls, can't there be significant increase
-> > of lru_lock contention ? Consider 100+ CPUs performing many system calls
-> > which add 1 or 2 folios to per-CPU LRU lists.
+On Tue 24-02-26 08:13:56, Joshua Hahn wrote:
+> Hello Michal,
 > 
-> That's more a question for Michal or Vlastimil.
+> I hope that you are doing well! Thank you for taking the time to review my
+> work and leaving your thoughts.
+> 
+> I wanted to note that I hope to bring this discussion to LSFMMBPF as well,
+> to discuss what the scope of the project should be, what usecases there
+> are (as I will note below), how to make this scalable and sustainable
+> for the future, etc. I'll send out a topic proposal later today. I had
+> separated the series from the proposal because I imagined that this
+> series would go through many versions, so it would be helpful to have
+> the topic as a unified place for pre-conference discussions.
 
-And practically speaking we would need to measure that on real workloads
-to be sure. Keep in mind there is still batching going on. We just flush
-the remaining of it on the way back to the userspace.
+yes, this is a really good topic to bring to LSFMMBPF. I will not be
+attending this year unfortunately but I will keep watching progress on
+the this. I am really sure there will be people in the room that can
+help with the discussion.
+
+> > > Memory cgroups provide an interface that allow multiple workloads on a
+> > > host to co-exist, and establish both weak and strong memory isolation
+> > > guarantees. For large servers and small embedded systems alike, memcgs
+> > > provide an effective way to provide a baseline quality of service for
+> > > protected workloads.
+> > > 
+> > > This works, because for the most part, all memory is equal (except for
+> > > zram / zswap). Restricting a cgroup's memory footprint restricts how
+> > > much it can hurt other workloads competing for memory. Likewise, setting
+> > > memory.low or memory.min limits can provide weak and strong guarantees
+> > > to the performance of a cgroup.
+> > > 
+> > > However, on systems with tiered memory (e.g. CXL / compressed memory),
+> > > the quality of service guarantees that memcg limits enforced become less
+> > > effective, as memcg has no awareness of the physical location of its
+> > > charged memory. In other words, a workload that is well-behaved within
+> > > its memcg limits may still be hurting the performance of other
+> > > well-behaving workloads on the system by hogging more than its
+> > > "fair share" of toptier memory.
+> 
+> I will split up your questions to answer them individually:
+> 
+> > This assumes that the active workingset size of all workloads doesn't
+> > fit into the top tier right?
+> 
+> Yes, for the scenario above, a workload that is violating its fair share
+> of toptier memory mostly hurts other workloads if the aggregate working
+> set size of all workloads exceeds the size of toptier memory.
+
+I think it would be good to provide some more insight into how this is
+supposed to work exactly. If the real working set size doesn't fit into
+the top tier then I suspect we can expect quite a lot of disruption by
+constant promotions and demotions, right. I guess what you would like to
+achieve is to stop those from happening right? If that is the case then
+how exactly do you envision to configure the workload. Do you cap the
+each workload with max/high limits? Or do you want to rely on the
+low/min limits to protect workloads you care about. Or both? How does
+that play with promotion side of things.
+
+> > Otherwise promotions would make sure to that we have the most active
+> > memory in the top tier.
+> 
+> This is true. And for a lot of usecases, this is 100% the right thing to do.
+> However, with this patch I want to encourage a different perspective,
+> which is to think about things in a per-workload perspective, and not a
+> per-system perspective.
+> 
+> Having hot memory in high tiers and cold memory in low tiers is only
+> logical, since we increase the system's throughput and make the most
+> optimal choices for latency. However, what about systems that care about
+> objectives other than simply maximizing throughput?
+> 
+> In the original cover letter I offered an example of VM hosting services
+> that care less about maximizing host-wide throughput, but more on ensuring
+> a bottomline performance guarantee for all workloads running on the system.
+> For the users on these services, they don't care that the host their VM is
+> running on is maximizing throughput; rather, they care that their VM meets
+> the performance guarantees that their provider promised. If there is no
+> way to know or enforce which tier of memory their workload lands on, either
+> the bottomline guarantee becomes very underestimated, or users must deal
+> with a high variance in performance.
+> 
+> Here's another example: Let's say there is a host with multiple workloads,
+> each serving queries for a database. The host would like to guarantee the
+> lowest maximum latency possible, while maximizing the total throughput
+> of the system. Once again in this situation, without tier-aware memcg
+> limits the host can maximize throughput, but can only make severely
+> underestimated promises on the bottom line.
+
+Thanks useful examples. And it would be really great to provide an
+example of intended configuration (no specific numbers but something to
+demonstrate the intention). Because this will not be just about limits,
+right. It would require more tweaks to the system - at least numa
+balancing (promotions) to be controlled in some way AFAICS.
+
+> > Is this typical in real life configurations?
+> 
+> I would say so. I think that the two examples above are realistic
+> scenarios that cloud providers and hyperscalers might face on tiered systems.
+> 
+> > Or do you intend to limit memory consumption on particular tier even
+> > without an external pressure?
+> 
+> This is a great question, and one that I hope to discuss at LSFMMBPF
+> to see how people expect an interface like this to work.
+> 
+> Over the past few weeks, I have been discussing this idea during the
+> Linux Memory Hotness and Promotion biweekly calls with Gregory Price [1].
+> One of the proposals that we made there (but did not include in this
+> series) is the idea of "fixed" vs. "opportunistic" reclaim.
+> 
+> Fixed mode is what we have here -- start limiting toptier usage whenever
+> a workload goes above its fair slice of toptier.
+> Opportunistic mode would allow workloads to use more toptier memory than
+> its fair share, but only be restricted when toptier is pressured.
+> 
+> What do you think about these two options? For the stated goal of this
+> series, which is to help maximize the bottom line for workloads, fair
+> share seemed to make sense. Implementing opportunistic mode changes
+> on top of this work would most likely just be another sysctl.
+
+To me it would sounds like the distinction between max/high vs. low/min
+reclaim.
+
+[...]
+> > You seem to be focusing only on the top tier with this interface, right?
+> > Is this really the right way to go long term? What makes you believe that
+> > we do not really hit the same issue with other tiers as well?
+> 
+> Yes, that's right. I'm not sure if this is the right way to go long-term
+> (say, past the next 5 years). My thinking was that I can stick with doing
+> this for toptier vs. non-toptier memory for now, and deal with having
+> 3+ tiers in the future, when we start to have systems with that many tiers.
+> AFAICT two-tiered systems are still ~relatively new, and I don't think
+> there are a lot of genuine usecases for enforcing mid-tier memory limits
+> as of now. Of course, I would be excited to learn about these usecases
+> and work this patchset to support them as well if anybody has them.
+
+I guess a more fundamental question is whether this need to replicate
+all limits for tiers or whether we can get an extension that would
+control tier behavior for existing ones. In other words can we define
+which proportion of the max/high resp. low/min limits are reserved for
+each tier? Is that feasible? I do not have answer to that myself at this
+stage TBH.
+
+[...]
+> > What is the reasoning for the switch to be runtime sysctl rather than
+> > boot-time or cgroup mount option?
+> 
+> Good point : -) I don't think cgroup mount options are a good idea,
+> since this would mean that we can have a set of cgroups self-policing
+> their toptier usage, while another cgroup allocates memory unrestricted.
+> This would punish the self-policing cgroup and we would lose the benefit
+> of having a bottomline performance guarantee.
+
+I do not follow. cgroup mount option would apply to all cgroups. In
+sense whatever is achievable by sysctl should apply to kernel cmdline or
+mount option. The question is what is the best fit AFAICS.
+ 
+> > I will likely have more questions but these are immediate ones after
+> > reading the cover. Please note I haven't really looked at the
+> > implementation yet. I really want to understand usecases and interface
+> > first.
+> 
+> That sounds good to me, thank you again for reviewing this work!
+> I hope you have a great day : -)
+> Joshua
+> 
+> [1] https://lore.kernel.org/linux-mm/c8bc2dce-d4ec-c16e-8df4-2624c48cfc06@google.com/
 
 -- 
 Michal Hocko
