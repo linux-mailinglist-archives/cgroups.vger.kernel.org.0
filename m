@@ -1,213 +1,128 @@
-Return-Path: <cgroups+bounces-14517-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-14433-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id AEtlNkO3pWkiFQAAu9opvQ
-	(envelope-from <cgroups+bounces-14517-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Mon, 02 Mar 2026 17:13:55 +0100
+	id mGGhLTlsoGk3jgQAu9opvQ
+	(envelope-from <cgroups+bounces-14433-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Thu, 26 Feb 2026 16:52:25 +0100
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 892851DC7E9
-	for <lists+cgroups@lfdr.de>; Mon, 02 Mar 2026 17:13:55 +0100 (CET)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5416B1A9212
+	for <lists+cgroups@lfdr.de>; Thu, 26 Feb 2026 16:52:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 8C8583128F43
-	for <lists+cgroups@lfdr.de>; Mon,  2 Mar 2026 15:55:27 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id C9A2D3035E09
+	for <lists+cgroups@lfdr.de>; Thu, 26 Feb 2026 15:51:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A152423A90;
-	Mon,  2 Mar 2026 15:53:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B7A6426693;
+	Thu, 26 Feb 2026 15:51:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="XZeLSDdS"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="i8e2LxfZ"
 X-Original-To: cgroups@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF86441C0DE
-	for <cgroups@vger.kernel.org>; Mon,  2 Mar 2026 15:53:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9A019425CE7;
+	Thu, 26 Feb 2026 15:51:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772466818; cv=none; b=e7k/zdTTUr608fH/BcFqRib6h7JHBVpMgORLzO6MnP5IaJ/lAbhHvU/ta8HomMOHwfRPGdwG4xAWawOEqB5EK82DiCVVi8IQGbaoqmgFbxrv2RKd+/31ZH1MWSb4x48ifEjlHPUYyLsoW4GxVTJKPYGZcUWNrZcHM7y0XrJbTfM=
+	t=1772121104; cv=none; b=QiI6r8tYFHgFpyyErCIkOwoflqzMN2RgL55qG5LdOcW1W0NccDQtCzqqKklTU0oxNJ19PlFIRLuy1c5DymcIJhiXi2jqUpidqHEIl7pMSBXN/e/WldrJi4i9ekEBdyD3iRW6tcsNlTwgLZXAyrIFLGks8sa8n14qOrpDyVFvMi4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772466818; c=relaxed/simple;
-	bh=3hTs6TdlYIZr2CVpEVhU2U0naEH31kgEN2TXKH8ea2I=;
+	s=arc-20240116; t=1772121104; c=relaxed/simple;
+	bh=VqaSR0JBQ1eUP4jJc2XA5zRz1WrMzIPDLeU/NMhZ2eU=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Ya2HKo09EecQLreNMAL1tLW4EPHJsvzBNigA3Qa7/bz5FbDB7z/tKhwYeSZy2kSXT0XIO0m3TEAf4oHZMuMCo24xM4aL1ntzHbCMnBIsi78aDgct69ViULuuuq1KzCjgD/b74cKeVJp8ypILcmnwObeYsY77CHugfI4MJmOfhAo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=XZeLSDdS; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1772466811;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=dLbuFPWOWGHaHFWL2ILwbNpXfhNKBfkyvba0iiQAlY0=;
-	b=XZeLSDdSWtRQSpIuotJ/0D9qV4f1mY6f2QdXqDbns0rZj/rg8VVOBWGCMsHHjvieowNgm9
-	t6TmCf7CeYo6+Y4LQM/W16lSzxR3jPlLRgwWQokMHaYRCtzioj5+uhGJZauqG5dvtWoIPQ
-	L32pYMSvmA2+4j5uaOayfHNnGc9gz34=
-Received: from mx-prod-mc-05.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-650-h8wrkvvyNiGreQWPAh48UQ-1; Mon,
- 02 Mar 2026 10:53:25 -0500
-X-MC-Unique: h8wrkvvyNiGreQWPAh48UQ-1
-X-Mimecast-MFC-AGG-ID: h8wrkvvyNiGreQWPAh48UQ_1772466802
-Received: from mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.111])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mx-prod-mc-05.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 7682819560A2;
-	Mon,  2 Mar 2026 15:53:22 +0000 (UTC)
-Received: from tpad.localdomain (unknown [10.96.133.6])
-	by mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id F3D2A1800592;
-	Mon,  2 Mar 2026 15:53:20 +0000 (UTC)
-Received: by tpad.localdomain (Postfix, from userid 1000)
-	id C42E64014FBC7; Thu, 26 Feb 2026 12:49:18 -0300 (-03)
-Date: Thu, 26 Feb 2026 12:49:18 -0300
-From: Marcelo Tosatti <mtosatti@redhat.com>
-To: Leonardo Bras <leobras.c@gmail.com>
-Cc: linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-	linux-mm@kvack.org, Johannes Weiner <hannes@cmpxchg.org>,
-	Michal Hocko <mhocko@kernel.org>,
-	Roman Gushchin <roman.gushchin@linux.dev>,
-	Shakeel Butt <shakeel.butt@linux.dev>,
-	Muchun Song <muchun.song@linux.dev>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Christoph Lameter <cl@linux.com>, Pekka Enberg <penberg@kernel.org>,
-	David Rientjes <rientjes@google.com>,
-	Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-	Vlastimil Babka <vbabka@suse.cz>,
-	Hyeonggon Yoo <42.hyeyoo@gmail.com>,
-	Leonardo Bras <leobras@redhat.com>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Waiman Long <longman@redhat.com>, Boqun Feng <boqun.feng@gmail.com>
-Subject: Re: [PATCH 3/4] swap: apply new queue_percpu_work_on() interface
-Message-ID: <aaBrfg0ozWK4moxC@tpad>
-References: <20260206143430.021026873@redhat.com>
- <20260206143741.589656953@redhat.com>
- <aYaQFM9sBbauUn5c@WindFlash>
+	 Content-Type:Content-Disposition:In-Reply-To; b=decOFqYhFQunw9CUnHGW9o98qfOBs1969iDVFhvN8tW7kb1IAe+lHrZHO617l4Jj6pf7EQHjd5RJxzhfLtSL03GIwghulEByYXB3okwKI9ZuPWmf9wRgE23aUpRYqnXlwNlzUNPa2333FjR2FCyc/cEEGWJ6Hg4RRuonDGzZ1zg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=i8e2LxfZ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B73AFC116C6;
+	Thu, 26 Feb 2026 15:51:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1772121104;
+	bh=VqaSR0JBQ1eUP4jJc2XA5zRz1WrMzIPDLeU/NMhZ2eU=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=i8e2LxfZG+RYxPneRrwuDaahHvk0uGRF3lGx0jZW9232qQpW6t6to4Kj+g+IJ/MaA
+	 1i+JMQRK3oae0y6XjtNxVVnXyhBiKeN5KwG/3QvqUSnZmqLb5cWrQ3lUUsErfinaJU
+	 hXd/A0MDE93U88qnvFQLfpggPkcz6tVpSKy29EkhxP/0575z3omULcXX41qyarh5Mc
+	 j2UgO/saAtUMYqPvSAeod3jBD+BvMYVQ2jgOL+H3n+5z8X8lRfKtMPSXiH+vz8L4lj
+	 qJdctuiffQRH5xhQOKbM4Ac7uk/W+BKf8rN3g9CG/OLGIA/PK/84HnNdv+3k0qwT92
+	 G/V6CcNFtkT6A==
+Date: Thu, 26 Feb 2026 16:51:41 +0100
+From: Frederic Weisbecker <frederic@kernel.org>
+To: Waiman Long <longman@redhat.com>
+Cc: Chen Ridong <chenridong@huaweicloud.com>, Tejun Heo <tj@kernel.org>,
+	Johannes Weiner <hannes@cmpxchg.org>,
+	Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
+	Ingo Molnar <mingo@redhat.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Juri Lelli <juri.lelli@redhat.com>,
+	Vincent Guittot <vincent.guittot@linaro.org>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+	Valentin Schneider <vschneid@redhat.com>,
+	Thomas Gleixner <tglx@linutronix.de>, Shuah Khan <shuah@kernel.org>,
+	cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH v6 6/8] cgroup/cpuset: Move
+ housekeeping_update()/rebuild_sched_domains() together
+Message-ID: <aaBsDV7X0q4sNTTJ@localhost.localdomain>
+References: <20260221185418.29319-1-longman@redhat.com>
+ <20260221185418.29319-7-longman@redhat.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <aYaQFM9sBbauUn5c@WindFlash>
-X-Scanned-By: MIMEDefang 3.4.1 on 10.30.177.111
-X-Rspamd-Queue-Id: 892851DC7E9
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20260221185418.29319-7-longman@redhat.com>
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [0.84 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
-	DATE_IN_PAST(1.00)[96];
+X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_RHS_NOT_FQDN(0.50)[];
-	DMARC_POLICY_ALLOW(-0.50)[redhat.com,quarantine];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
-	R_DKIM_ALLOW(-0.20)[redhat.com:s=mimecast20190719];
+	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
+	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
+	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCPT_COUNT_TWELVE(0.00)[20];
-	FREEMAIL_TO(0.00)[gmail.com];
-	TAGGED_FROM(0.00)[bounces-14517-lists,cgroups=lfdr.de];
+	RCVD_TLS_LAST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-14433-lists,cgroups=lfdr.de];
+	FROM_HAS_DN(0.00)[];
+	RCVD_COUNT_THREE(0.00)[4];
 	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	RCVD_TLS_LAST(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo];
-	DKIM_TRACE(0.00)[redhat.com:+];
+	RCPT_COUNT_TWELVE(0.00)[18];
+	DKIM_TRACE(0.00)[kernel.org:+];
+	MISSING_XM_UA(0.00)[];
 	TO_DN_SOME(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[mtosatti@redhat.com,cgroups@vger.kernel.org];
-	FROM_HAS_DN(0.00)[];
-	FREEMAIL_CC(0.00)[vger.kernel.org,kvack.org,cmpxchg.org,kernel.org,linux.dev,linux-foundation.org,linux.com,google.com,lge.com,suse.cz,gmail.com,redhat.com,linutronix.de];
-	NEURAL_HAM(-0.00)[-0.990];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	TAGGED_RCPT(0.00)[cgroups];
+	FROM_NEQ_ENVFROM(0.00)[frederic@kernel.org,cgroups@vger.kernel.org];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	MISSING_XM_UA(0.00)[];
-	RCVD_COUNT_SEVEN(0.00)[7]
+	NEURAL_HAM(-0.00)[-1.000];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	TAGGED_RCPT(0.00)[cgroups];
+	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns,localhost.localdomain:mid]
+X-Rspamd-Queue-Id: 5416B1A9212
 X-Rspamd-Action: no action
 
-On Fri, Feb 06, 2026 at 10:06:28PM -0300, Leonardo Bras wrote:
-> > +	cpu = smp_processor_id();
+Le Sat, Feb 21, 2026 at 01:54:16PM -0500, Waiman Long a écrit :
+> With the latest changes in sched/isolation.c, rebuild_sched_domains*()
+> requires the HK_TYPE_DOMAIN housekeeping cpumask to be properly
+> updated first, if needed, before the sched domains can be
+> rebuilt. So the two naturally fit together. Do that by creating a new
+> update_hk_sched_domains() helper to house both actions.
 > 
-> Wondering if for these cases it would make sense to have something like:
+> The name of the isolated_cpus_updating flag to control the
+> call to housekeeping_update() is now outdated. So change it to
+> update_housekeeping to better reflect its purpose. Also move the call
+> to update_hk_sched_domains() to the end of cpuset and hotplug operations
+> before releasing the cpuset_mutex.
 > 
-> qpw_get_local_cpu() and 
-> qpw_put_local_cpu() 
-> 
-> so we could encapsulate these migrate_{en,dis}able()
-> and the smp_processor_id().
-> 
-> Or even,
-> 
-> int qpw_local_lock() {
-> 	migrate_disable();
-> 	cpu = smp_processor_id();
-> 	qpw_lock(..., cpu);
-> 
-> 	return cpu;
-> }
-> 
-> and
-> 
-> qpw_local_unlock(cpu){
-> 	qpw_unlock(...,cpu);
-> 	migrate_enable();
-> } 
-> 
-> so it's more direct to convert the local-only cases.
-> 
-> What do you think?
+> Signed-off-by: Waiman Long <longman@redhat.com>
 
-Switched to local_qpw_lock variants.
+Acked-by: Frederic Weisbecker <frederic@kernel.org>
 
-> >  {
-> > -	local_lock(&cpu_fbatches.lock);
-> > -	lru_add_drain_cpu(smp_processor_id());
-> 
-> and here ?
-
-Fixed lack of migrate_disable/migrate_enable, thanks!
-
-> > @@ -950,7 +954,7 @@ void lru_cache_disable(void)
-> >  #ifdef CONFIG_SMP
-> >  	__lru_add_drain_all(true);
-> >  #else
-> > -	lru_add_mm_drain();
-> 
-> and here, I wonder
-
-This is !CONFIG_SMP, so smp_processor_id is always 0.
-
-> >  	drain_pages(cpu);
-> >  
-> >  	/*
-> > 
-> > 
-> 
-> TBH, I am still trying to understand if we need the migrate_{en,dis}able():
-> - There is a data dependency beween cpu being filled and being used.
-> - If we get the cpu, and then migrate to a different cpu, the operation 
->   will still be executed with the data from that starting cpu 
-
-Yes, but on a remote CPU. What prevents the original CPU from accessing 
-its per-CPU local data, therefore racing with the code executing on the
-remote CPU.
-
-> - But maybe the compiler tries to optize this because the processor number 
->   can be on a register and of easy access, which would break this.
-> 
-> Maybe a READ_ONCE() on smp_processor_id() should suffice?
-> 
-> Other than that, all the conversions done look correct.
-> 
-> That being said, I understand very little about mm code, so let's hope we 
-> get proper feedback from those who do :) 
-> 
-> Thanks!
-> Leo
-> 
-> 
-
+-- 
+Frederic Weisbecker
+SUSE Labs
 
