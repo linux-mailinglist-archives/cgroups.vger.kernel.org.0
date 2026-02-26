@@ -1,97 +1,120 @@
-Return-Path: <cgroups+bounces-14450-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-14451-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 0IYbMxfMoGmlmgQAu9opvQ
-	(envelope-from <cgroups+bounces-14450-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Thu, 26 Feb 2026 23:41:27 +0100
+	id gNz3CvjNoGkomwQAu9opvQ
+	(envelope-from <cgroups+bounces-14451-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Thu, 26 Feb 2026 23:49:28 +0100
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id EBCCE1B07AE
-	for <lists+cgroups@lfdr.de>; Thu, 26 Feb 2026 23:41:26 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7FB321B08E2
+	for <lists+cgroups@lfdr.de>; Thu, 26 Feb 2026 23:49:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id E0F0F302BBB7
-	for <lists+cgroups@lfdr.de>; Thu, 26 Feb 2026 22:41:11 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 9536C305AC85
+	for <lists+cgroups@lfdr.de>; Thu, 26 Feb 2026 22:49:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4937C3D6693;
-	Thu, 26 Feb 2026 22:41:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6F81D3A7849;
+	Thu, 26 Feb 2026 22:49:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="c/lx2YUJ"
+	dkim=pass (2048-bit key) header.d=gourry.net header.i=@gourry.net header.b="D2J2ejrd"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qt1-f173.google.com (mail-qt1-f173.google.com [209.85.160.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 688DB3939B3;
-	Thu, 26 Feb 2026 22:41:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.12
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DEC4F3A1CED
+	for <cgroups@vger.kernel.org>; Thu, 26 Feb 2026 22:49:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772145669; cv=none; b=D35l7Gc8YkASVaWW7BJ2R8OFNwJMkjZy9bd3LyCRr5kywpOC/m25IAO4z/t334IaU9E8/Y1Q01qgzZhw3UfVdwmWp9pysVVjK8OpjhF9XdAe7hhQ4M3cRL44ji4KrOgVDoiUhxdv0IMs43VTOBts4oc9ZywBOTsV7kOZqmkzteg=
+	t=1772146160; cv=none; b=YXr9gi29TSVedZb+Pmxv0i0wlNWG6uvp+wRI3KiKOGQ3q+2fnU06DeIVzexBIn0jsdt217obwI3VhmFzGK0diKEqL0G2Q+dZi2YoTMpzcTBdW6xaCul0MvwOxA2UMwIPjW7RUQUJ2wyDvE2/oeqssMbDG1B4M+Zev0DzjQMUjjs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772145669; c=relaxed/simple;
-	bh=d/6m10PYexKC1cVhq0Hde/ttL8fwWTtpBRAU/d9YlHc=;
+	s=arc-20240116; t=1772146160; c=relaxed/simple;
+	bh=9XJprUJHH+fYbJ7JRjThngQYjlckG3iYgJf41aqrPaU=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=eo99DOd+UyOAb+sJgumYusFhWRNRhjxZuPK6bb8K8LN49zaWQnQwPnviOqBD5DxT9IUO4OQbuPRJ2zzHUoSbIUZ+spBarJsdfRbcS0JOpmnEGV8HUYsqmZ2JsalAAfq5cW2I8adD8lUkiEe4CdbVI7BduMOlrkuGSRw9im1GnnI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=c/lx2YUJ; arc=none smtp.client-ip=198.175.65.12
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1772145666; x=1803681666;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=d/6m10PYexKC1cVhq0Hde/ttL8fwWTtpBRAU/d9YlHc=;
-  b=c/lx2YUJTNbl2OlR/CS+OZSDMcCfgmq6QgdiQ9XXI2TEIGiYzAeeQhQf
-   mzX7h4ttGRFq/WWP8ohbftf1DPuiGJ3wWT+PdmJfglzs4D5/yHT7g8yNo
-   L8A29UXo1xuYKsfmMJXLfZ8OmNYd5GOoX6oaTKOug3HOy3LI/6RjzaN8g
-   gSHxilh8KZymv1/zOpHNthcUyWHwP4FMeVBPUbhfD8tQE069bdi0cySxM
-   EpgtFqBGm03Fj6CIaVbGYkNNmo6Io44OcOahb/T534R0KGnkrjs33QnQf
-   1RVkug3voVrwEvQINTebaPdnCRRxBVWybCGIMqmivydkoSi36j/f52KGW
-   A==;
-X-CSE-ConnectionGUID: VKFihECGS1S8pa9cE4VbGA==
-X-CSE-MsgGUID: cJ9uKbGFSDmj4vD6lfmVhQ==
-X-IronPort-AV: E=McAfee;i="6800,10657,11713"; a="84684597"
-X-IronPort-AV: E=Sophos;i="6.21,313,1763452800"; 
-   d="scan'208";a="84684597"
-Received: from orviesa007.jf.intel.com ([10.64.159.147])
-  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Feb 2026 14:41:06 -0800
-X-CSE-ConnectionGUID: 0Ew5H71QQsm/kaO3gZMK8w==
-X-CSE-MsgGUID: NPS72Xj+SEqml45ybSgtXg==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.21,313,1763452800"; 
-   d="scan'208";a="216833273"
-Received: from lkp-server02.sh.intel.com (HELO a3936d6a266d) ([10.239.97.151])
-  by orviesa007.jf.intel.com with ESMTP; 26 Feb 2026 14:41:01 -0800
-Received: from kbuild by a3936d6a266d with local (Exim 4.98.2)
-	(envelope-from <lkp@intel.com>)
-	id 1vvk2T-000000009x9-42O4;
-	Thu, 26 Feb 2026 22:40:57 +0000
-Date: Fri, 27 Feb 2026 06:40:18 +0800
-From: kernel test robot <lkp@intel.com>
-To: Joshua Hahn <joshua.hahnjy@gmail.com>, Minchan Kim <minchan@kernel.org>,
-	Sergey Senozhatsky <senozhatsky@chromium.org>
-Cc: oe-kbuild-all@lists.linux.dev, Johannes Weiner <hannes@cmpxchg.org>,
-	Yosry Ahmed <yosry.ahmed@linux.dev>,
-	Nhat Pham <hoangnhat.pham@linux.dev>,
-	Chengming Zhou <chengming.zhou@linux.dev>,
-	Michal Hocko <mhocko@kernel.org>,
-	Roman Gushchin <roman.gushchin@linux.dev>,
-	Shakeel Butt <shakeel.butt@linux.dev>,
-	Muchun Song <muchun.song@linux.dev>,
-	Axel Rasmussen <axelrasmussen@google.com>,
-	Yuanchu Xie <yuanchu@google.com>, Wei Xu <weixugc@google.com>,
-	David Hildenbrand <david@kernel.org>,
-	Lorenzo Stoakes <lorenzo.stoakes@oracle.com>,
-	"Liam R . Howlett" <liam.howlett@oracle.com>,
-	Vlastimil Babka <vbabka@suse.cz>, Mike Rapoport <rppt@kernel.org>,
-	Suren Baghdasaryan <surenb@google.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Linux Memory Management List <linux-mm@kvack.org>,
-	cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
-	kernel-team@meta.com
-Subject: Re: [PATCH 8/8] mm/vmstat, memcontrol: Track ZSWAP_B, ZSWAPPED_B
- per-memcg-lruvec
-Message-ID: <202602270607.dJP65LGH-lkp@intel.com>
-References: <20260226192936.3190275-9-joshua.hahnjy@gmail.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=KLAYffIjxfmDQ6Oj2kcWwrSrHfboWWcmkhTEjKwWGw06qxkTftrb0jUlsvYbhOaMyO+PvVifYzKVDKjTmXlfH2qOfTYH+7+afYCjFp+aAbezcVANnBRzKyIlLtz5/geJBG1rP7F2ePo2Lcy/G6+ESPypNzaxyrtu8KhpE89mIbw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gourry.net; spf=pass smtp.mailfrom=gourry.net; dkim=pass (2048-bit key) header.d=gourry.net header.i=@gourry.net header.b=D2J2ejrd; arc=none smtp.client-ip=209.85.160.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gourry.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gourry.net
+Received: by mail-qt1-f173.google.com with SMTP id d75a77b69052e-506251815a3so12073661cf.0
+        for <cgroups@vger.kernel.org>; Thu, 26 Feb 2026 14:49:18 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gourry.net; s=google; t=1772146158; x=1772750958; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=oYDaj+HYxxwd2SoII0inXN8E5ab2WhHpXFva2vqM1nA=;
+        b=D2J2ejrdhnArACxLg9uAeQ9+NW5S58YpyCDQaZzSokmaJcfCXRGYy436PIK29mgmtu
+         cx4dA240xqdH99Lqtyty1l/UHS+QiMTCJ5lBHUFmehAIddTtEAESjsz1AA1FovL8m8Ha
+         Yp0QUrFqZp/kzwVMJ3ihV5z37VwNSmpv83VYfN8XfU+OzVz7dUk+xTkEFkLxmQcOogMB
+         +8pQ4g6zOtVqZUnsIXZ+DvndxzGO3sSgEe2z/JUQ4GLOESFfCF5YFAHKNzpcK6wbEWx0
+         QXILWTf/u2qZQirY+fTysy5oe3z7emyye3x8fU5gSeNEvCBGImKazCPHekFy/ga5/uRE
+         8rNg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1772146158; x=1772750958;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=oYDaj+HYxxwd2SoII0inXN8E5ab2WhHpXFva2vqM1nA=;
+        b=WFd1azyD1fCjG4vI4HO1E/WhdZsoe9l9jQ0NC2cAwVg6a5PEAoyQVL1AbVCmaL3nmM
+         PeRsQaz9f/KHSN2AsFk6WG1OUj9UbBXn/Nb91SNZvOfWK58/BIluFKgsQX7yGMEjI/mx
+         AY+kHVkxXPeZ2tikQ7D1uSDQVlrxoVpoPTO5/JTHn1/5VjRyMlTE9HUSCutFOyMacc27
+         EZ0Kwi7tE4SSg1x+ES8At2Hsc5ydSoSwZPmmsfMVCbroaE8XrPHvkZi5uSZn59oaDbuJ
+         z9dIPP+djwL8zm+z3nQZ2RD8n7VXS7m3f7fA6N0+kANnCIPs2IyXbH1Pne4UB8kMAF1q
+         20fA==
+X-Forwarded-Encrypted: i=1; AJvYcCVbhS3rhYavIVHyjtgH17KsQL8le5ByuuXp0s+p9PC40A4WJOXGhw3EruVbiXoR+2L12otccBV3@vger.kernel.org
+X-Gm-Message-State: AOJu0Yw4K6mDU2+HA7RhmibT5D/EDfQ8KHZshUoat4bC2f7WLlDmUr44
+	6d06ohTHTA7COtkmR6wLYkQyw3V4I6D+0qAupTWJmvaSU1iVvhyeULgSJpxQWNYkcBk=
+X-Gm-Gg: ATEYQzyQ8TNtuYGa3utPHqGjVdJMpM8aJhJTlUMw3m6dXzt3d8p3aLd4I+n8kq8V01Q
+	s0nnT4WjM1N8YnxHk/jJk2YJXYd5HN8IxDnvk4JwYgyFk54gkKJtMlo7DaY0RQCmBG4jR6NNBvI
+	btI4kuFQ9xT2ZaCsIIUyXCgFOig4uNAb+yV7sNgbKERe3yFs5OYVsfRJHM2X6QCAcSYGeSDqpw8
+	zssKfIetdAVrTWYFr9MMiwHgLK//ByITJsMpSfM5FzLpR9pp/Sn6PcpAxJiPLUi2egltaRuKLnP
+	6JEOoPsM4V+fZp9eqLi7PXA2RS/u6RKHv/+EPRmmpwiTBHPBHBlHQtV4p91fpqQomNmaLnGSroG
+	QnpFsfT0GkdbbZt3sDEk4Xjd4G0cW1H3ulnz4Dqq7fSrO0urGio2GO9BAaSv45r7kfPK7ukJjVB
+	zp6d8lFCtk8ep2X3gOqbTo6H60WcG4+juL6kGg6etcit1rbScFG8WUNDahrSF++DkkOs0cPumuw
+	1DGY0j6qw==
+X-Received: by 2002:a05:622a:1984:b0:502:a100:4054 with SMTP id d75a77b69052e-507528c1f89mr8534231cf.23.1772146157581;
+        Thu, 26 Feb 2026 14:49:17 -0800 (PST)
+Received: from gourry-fedora-PF4VCD3F (pool-96-255-20-138.washdc.ftas.verizon.net. [96.255.20.138])
+        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-899c7159b72sm29449326d6.7.2026.02.26.14.49.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 26 Feb 2026 14:49:17 -0800 (PST)
+Date: Thu, 26 Feb 2026 17:49:14 -0500
+From: Gregory Price <gourry@gourry.net>
+To: Alistair Popple <apopple@nvidia.com>
+Cc: lsf-pc@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
+	linux-cxl@vger.kernel.org, cgroups@vger.kernel.org,
+	linux-mm@kvack.org, linux-trace-kernel@vger.kernel.org,
+	damon@lists.linux.dev, kernel-team@meta.com,
+	gregkh@linuxfoundation.org, rafael@kernel.org, dakr@kernel.org,
+	dave@stgolabs.net, jonathan.cameron@huawei.com,
+	dave.jiang@intel.com, alison.schofield@intel.com,
+	vishal.l.verma@intel.com, ira.weiny@intel.com,
+	dan.j.williams@intel.com, longman@redhat.com,
+	akpm@linux-foundation.org, david@kernel.org,
+	lorenzo.stoakes@oracle.com, Liam.Howlett@oracle.com, vbabka@suse.cz,
+	rppt@kernel.org, surenb@google.com, mhocko@suse.com,
+	osalvador@suse.de, ziy@nvidia.com, matthew.brost@intel.com,
+	joshua.hahnjy@gmail.com, rakie.kim@sk.com, byungchul@sk.com,
+	ying.huang@linux.alibaba.com, axelrasmussen@google.com,
+	yuanchu@google.com, weixugc@google.com, yury.norov@gmail.com,
+	linux@rasmusvillemoes.dk, mhiramat@kernel.org,
+	mathieu.desnoyers@efficios.com, tj@kernel.org, hannes@cmpxchg.org,
+	mkoutny@suse.com, jackmanb@google.com, sj@kernel.org,
+	baolin.wang@linux.alibaba.com, npache@redhat.com,
+	ryan.roberts@arm.com, dev.jain@arm.com, baohua@kernel.org,
+	lance.yang@linux.dev, muchun.song@linux.dev, xu.xin16@zte.com.cn,
+	chengming.zhou@linux.dev, jannh@google.com, linmiaohe@huawei.com,
+	nao.horiguchi@gmail.com, pfalcato@suse.de, rientjes@google.com,
+	shakeel.butt@linux.dev, riel@surriel.com, harry.yoo@oracle.com,
+	cl@gentwo.org, roman.gushchin@linux.dev, chrisl@kernel.org,
+	kasong@tencent.com, shikemeng@huaweicloud.com, nphamcs@gmail.com,
+	bhe@redhat.com, zhengqi.arch@bytedance.com, terry.bowman@amd.com
+Subject: Re: [LSF/MM/BPF TOPIC][RFC PATCH v4 00/27] Private Memory Nodes (w/
+ Compressed RAM)
+Message-ID: <aaDN6ocubzGUz6zc@gourry-fedora-PF4VCD3F>
+References: <20260222084842.1824063-1-gourry@gourry.net>
+ <fzy6f6dpv3oq3ksr2mkst7pz3daeb3buhuvdvcw4633pcl7h6u@mxjgiwpg5acv>
+ <aZ3BEn_73Rk8Fn7L@gourry-fedora-PF4VCD3F>
+ <a6izpi2wlqro72erhbvxhlx2lwdnae7my3ghfs6t33ivtixo4h@bi2u4x6qv7ul>
+ <aZ_gALm7aE3d4IcP@gourry-fedora-PF4VCD3F>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -100,107 +123,80 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20260226192936.3190275-9-joshua.hahnjy@gmail.com>
+In-Reply-To: <aZ_gALm7aE3d4IcP@gourry-fedora-PF4VCD3F>
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [0.34 / 15.00];
 	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_CONTAINS_FROM(1.00)[];
-	DMARC_POLICY_ALLOW(-0.50)[intel.com,none];
-	R_DKIM_ALLOW(-0.20)[intel.com:s=Intel];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64:c];
+	MID_RHS_NOT_FQDN(0.50)[];
+	R_DKIM_ALLOW(-0.20)[gourry.net:s=google];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
+	TAGGED_FROM(0.00)[bounces-14451-lists,cgroups=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-14450-lists,cgroups=lfdr.de];
-	FREEMAIL_TO(0.00)[gmail.com,kernel.org,chromium.org];
+	FROM_HAS_DN(0.00)[];
+	DMARC_NA(0.00)[gourry.net];
+	FREEMAIL_CC(0.00)[lists.linux-foundation.org,vger.kernel.org,kvack.org,lists.linux.dev,meta.com,linuxfoundation.org,kernel.org,stgolabs.net,huawei.com,intel.com,redhat.com,linux-foundation.org,oracle.com,suse.cz,google.com,suse.com,suse.de,nvidia.com,gmail.com,sk.com,linux.alibaba.com,rasmusvillemoes.dk,efficios.com,cmpxchg.org,arm.com,linux.dev,zte.com.cn,surriel.com,gentwo.org,tencent.com,huaweicloud.com,bytedance.com,amd.com];
 	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[26];
-	FROM_HAS_DN(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	TO_DN_SOME(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[6];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[lkp@intel.com,cgroups@vger.kernel.org];
-	DKIM_TRACE(0.00)[intel.com:+];
-	NEURAL_HAM(-0.00)[-1.000];
-	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
-	TAGGED_RCPT(0.00)[cgroups];
+	DKIM_TRACE(0.00)[gourry.net:+];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
 	MISSING_XM_UA(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[git-scm.com:url,intel.com:mid,intel.com:dkim,intel.com:email,sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns,01.org:url]
-X-Rspamd-Queue-Id: EBCCE1B07AE
+	RCVD_COUNT_FIVE(0.00)[5];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[gourry@gourry.net,cgroups@vger.kernel.org];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	RCPT_COUNT_GT_50(0.00)[73];
+	TAGGED_RCPT(0.00)[cgroups];
+	NEURAL_HAM(-0.00)[-0.997];
+	TO_DN_SOME(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: 7FB321B08E2
 X-Rspamd-Action: no action
 
-Hi Joshua,
+On Thu, Feb 26, 2026 at 12:54:08AM -0500, Gregory Price wrote:
+> On Thu, Feb 26, 2026 at 02:27:24PM +1100, Alistair Popple wrote:
+> 
+> > > If NUMA is the interface we want, then NODE_DATA is the right direction
+> > > regardless of struct page's future or what zone it lives in.
+> > > 
+> > > There's no reason to keep per-page pgmap w/ device-to-node mappings.
+> > 
+> > In reality I suspect that's already the case today. I'm not sure we need
+> > per-page pgmap.
+> >
+> 
+> Probably, and maybe there's a good argument for stealing 80-90% of the
+> common surface here, shunting ZONE_DEVICE to use this instead of pgmap
+> before we go all the way to private nodes.
+> 
 
-kernel test robot noticed the following build errors:
+Out of curiosity i went digging through existing users, and it seems
+like the average driver has 1-8 discrete pgmaps, with Nouveau being an
+outliar that does ad-hoc registering in 256MB chunks, with the relevant
+annoyance being the percpu_ref it uses to track lifetime of the pgmap,
+and the fact that they can be non-contiguous.
 
-[auto build test ERROR on axboe/for-next]
-[also build test ERROR on linus/master v7.0-rc1]
-[cannot apply to akpm-mm/mm-everything next-20260226]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+tl;dr here:  a 1-to-1 mapping of node-to-pgmap isn't realistic for most
+existing ZONE_DEVICE users, meaning a 1-op lookup (page->pgmap) turns
+into a multi-op pointer chase on and range comparison.
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Joshua-Hahn/mm-zsmalloc-Rename-zs_object_copy-to-zs_obj_copy/20260227-033239
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/axboe/linux.git for-next
-patch link:    https://lore.kernel.org/r/20260226192936.3190275-9-joshua.hahnjy%40gmail.com
-patch subject: [PATCH 8/8] mm/vmstat, memcontrol: Track ZSWAP_B, ZSWAPPED_B per-memcg-lruvec
-config: powerpc64-randconfig-r072-20260227 (https://download.01.org/0day-ci/archive/20260227/202602270607.dJP65LGH-lkp@intel.com/config)
-compiler: clang version 18.1.8 (https://github.com/llvm/llvm-project 3b5b5c1ec4a3095ab096dd780e84d7ab81f3d7ff)
-smatch version: v0.5.0-8994-gd50c5a4c
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20260227/202602270607.dJP65LGH-lkp@intel.com/reproduce)
+Not sure that turns out well for anyone (only on ZONE_DEVICE / managed
+node users, all traditional nodes still have a simple pgdat or page->flag
+lookup to check membership).
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202602270607.dJP65LGH-lkp@intel.com/
+There's an argument for trying to do this just for the sake of getting
+pgmap out of struct page/folio, but this only deals with the problem on
+NUMA systems.
 
-All errors (new ones prefixed by >>):
+For non-numa systems the pgmap still probably ends up in folio_ext
+(assuming we get there), but even that might not be sufficient get LRU
+back.  Might need Willy's opinion here.
 
->> mm/zsmalloc.c:813:17: error: call to undeclared function 'zpdesc_objcgs'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
-     813 |         bool objcg = !!zpdesc_objcgs(zspage->first_zpdesc);
-         |                        ^
-   1 error generated.
+~Gregory
 
 
-vim +/zpdesc_objcgs +813 mm/zsmalloc.c
-
-   808	
-   809	static void __free_zspage(struct zs_pool *pool, struct size_class *class,
-   810					struct zspage *zspage)
-   811	{
-   812		struct zpdesc *zpdesc, *next;
- > 813		bool objcg = !!zpdesc_objcgs(zspage->first_zpdesc);
-   814	
-   815		assert_spin_locked(&class->lock);
-   816	
-   817		VM_BUG_ON(get_zspage_inuse(zspage));
-   818		VM_BUG_ON(zspage->fullness != ZS_INUSE_RATIO_0);
-   819	
-   820		next = zpdesc = get_first_zpdesc(zspage);
-   821		do {
-   822			VM_BUG_ON_PAGE(!zpdesc_is_locked(zpdesc), zpdesc_page(zpdesc));
-   823			next = get_next_zpdesc(zpdesc);
-   824			reset_zpdesc(zpdesc);
-   825			zpdesc_unlock(zpdesc);
-   826			zpdesc_dec_zone_page_state(zpdesc);
-   827			if (objcg)
-   828				dec_node_page_state(zpdesc_page(zpdesc), NR_ZSWAP_B);
-   829			zpdesc_put(zpdesc);
-   830			zpdesc = next;
-   831		} while (zpdesc != NULL);
-   832	
-   833		cache_free_zspage(zspage);
-   834	
-   835		class_stat_sub(class, ZS_OBJS_ALLOCATED, class->objs_per_zspage);
-   836		atomic_long_sub(class->pages_per_zspage, &pool->pages_allocated);
-   837	}
-   838	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
 
