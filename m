@@ -1,299 +1,173 @@
-Return-Path: <cgroups+bounces-14410-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-14411-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id QJ6MNfu/n2lOdgQAu9opvQ
-	(envelope-from <cgroups+bounces-14410-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Thu, 26 Feb 2026 04:37:31 +0100
+	id yBkNAvren2kxegQAu9opvQ
+	(envelope-from <cgroups+bounces-14411-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Thu, 26 Feb 2026 06:49:46 +0100
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
-	by mail.lfdr.de (Postfix) with ESMTPS id 21E601A09CA
-	for <lists+cgroups@lfdr.de>; Thu, 26 Feb 2026 04:37:30 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id 413641A11A9
+	for <lists+cgroups@lfdr.de>; Thu, 26 Feb 2026 06:49:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id 4D1333019FDC
-	for <lists+cgroups@lfdr.de>; Thu, 26 Feb 2026 03:37:18 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 3BF9A306DDA3
+	for <lists+cgroups@lfdr.de>; Thu, 26 Feb 2026 05:49:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B95F738759E;
-	Thu, 26 Feb 2026 03:37:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9454A23A9B3;
+	Thu, 26 Feb 2026 05:49:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Ak8kXywN"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="X3hPYEwO"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-lj1-f180.google.com (mail-lj1-f180.google.com [209.85.208.180])
+Received: from mail-ej1-f44.google.com (mail-ej1-f44.google.com [209.85.218.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA89A3876AB
-	for <cgroups@vger.kernel.org>; Thu, 26 Feb 2026 03:37:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.208.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 17CF52AE68
+	for <cgroups@vger.kernel.org>; Thu, 26 Feb 2026 05:49:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.218.44
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772077037; cv=pass; b=iFH2WgUjORDRCH3fODz7PQvcB5HoAktyZocNp+UdutCLdFp6TyNfbdCTMQg3IMuSTnpGQZGx6RdumAusoRUwLTtyY5GJZ0AKZ6L6tfF0QInx7t7EpPuH3sLOTTZ6FHI1MK61glJg0XILRTuye67+9xECtMugPrmEn6U80rVAh6A=
+	t=1772084983; cv=pass; b=FGyUiCQIAlOxPRT7JEn852gRLbnJ96unk1XRaxjpJJGgg4Bf6xu/FK2ix2hJbKmU3Z8xLI4bHmj2Ori6+d6eWQF/uqc0XtBzlfET4OIpcxNIOlV3N1tETPgAaYIKx53nMTJd0mEoOb1zs136nshTmwzR5N4lXo2XVCWlbfZtTMs=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772077037; c=relaxed/simple;
-	bh=eDmbVisUP6UCBopfpI9nCzwz9k0gnAH406FQwQQZzbI=;
-	h=From:In-Reply-To:References:MIME-Version:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=o95Yuk6Mya95ehoGOgf9J1PDJb7t3icsWXB0x1mn0sW7+9UhpXHKd/e0YvO+s9ZBHXL3ngFhZYsR4HpXXxQZ8NJy8TEjnC7PmhGJRj3U5/ya4B1WBXNEAm5iVCuMsk7bcptcxjORiFO5LZhD0lEVYTgm+tMSnv9ws05zGyro5H4=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Ak8kXywN; arc=pass smtp.client-ip=209.85.208.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-lj1-f180.google.com with SMTP id 38308e7fff4ca-387090ae5b1so3504191fa.0
-        for <cgroups@vger.kernel.org>; Wed, 25 Feb 2026 19:37:15 -0800 (PST)
-ARC-Seal: i=1; a=rsa-sha256; t=1772077034; cv=none;
+	s=arc-20240116; t=1772084983; c=relaxed/simple;
+	bh=ClJnevY/Tv+SZ+1wV6fhjTOc+GkukA48ZkPbqBA50+o=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=HwUqr4R3KF5+HZ+HDMee597Xq7ictsvP/T6C1E00jQYCcGueAiKpmwuNuQz59p4x5SThAfOCvmAkJ9TgYanlgRagbOJJDWySn7RQTWYeZod9ur5Z2frDMvOrCHrqi4z3ExcKgRHXEIBsXHVuBCxG99KDQ4M062p4sQ72ih2OaI8=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=X3hPYEwO; arc=pass smtp.client-ip=209.85.218.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f44.google.com with SMTP id a640c23a62f3a-b79f8f7ea43so71736366b.2
+        for <cgroups@vger.kernel.org>; Wed, 25 Feb 2026 21:49:41 -0800 (PST)
+ARC-Seal: i=1; a=rsa-sha256; t=1772084980; cv=none;
         d=google.com; s=arc-20240605;
-        b=PbHU6fiZmR7b3veFxoVEqvN5cICblt7r2aruKzuHIkpF5dJQCd+aDyhd2Pn9AY8YrX
-         8uXDaZCimJyf0b/gtMOPrd1odIoVCVQ3pqSQnWLYtvqj5okbF5n4XeWarecJlSpCepgE
-         b0NX/IiS23TtELT6kalvaE9MetfIL/uMSlEyQ7FLzocAuMfz29+gcTTbNLp0F7YjVzsW
-         +R7RQcjTVsu8HG2sj67/1N/5yNCwhdTZWXYa1SSvO4C3fys8KEqn7WQdID/2GKjeCEq9
-         NcqNCXr1z3rOQtgMor4l1EAhQv3AU4vc6sGsE9cLqHkSlAS81vsyEGAzj5ESSJxCYQ5l
-         4OOg==
+        b=YqOf6MINNkaMCC3UtvB201Td95S9V6QfkZiRsRohaJyjXBvMB9Msc1VYh35XtBcTmQ
+         Czz3LrhLUq7FrQfLtkYgBRndpI7o9Qra+d/+B1ljOYXici6IkiuUeJlaSh/FUZDYUM0c
+         XTuH+Pw0ecSrqf2tMSZW/vacWq2KwvtcSYBWEnoBwP5+v0ZQrzMx2x0PNw5Z4LAVhbnG
+         KzpiWmrdlsCY6pAFJOkvD75fqJLf0/vEzmuK+8ghFs5zVwtnQCW7022PNo56cDFlmAtH
+         Wk4UCUCLGIDpDSMl1OCD9iIHBCGsQ9nt83sAQmOmS417LnL9bNvM/17QnWzZQ5noPG4H
+         AJsg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
-        h=cc:to:subject:message-id:date:mime-version:references:in-reply-to
-         :from:dkim-signature;
-        bh=jg3R22OOVfrafHOHSh0bSMLnUJD5uZeRUb4Z2gkWz+8=;
-        fh=fqfSKoW/AFtvUsq8cvxqNZnp1PFTONJzTLCFyfflCGQ=;
-        b=eS/zHqjNVgKspxhHGgTcK3PETQxLRR3S1490tCe1kbyq5soD5MJzZ6ozTXvMFRHsC7
-         zFH7WSVjy4Kc5BXM6pDvOlnBrL6nUv/docnssYiWTR9RHy2QlE2oIUUIs0MwEox89HQ4
-         t1TnHlFzuQVShgZjuDwZeADwCl2jNxKIyyPo+WseuLRqOnuvGSVKLhcXl80KLRX/WllI
-         vEXBkieVHzm6/8UJtwzhHxao1r6LNMDjmT+y8MTrz/mGNZr7iwRWxqp5jUWOI4KnR/zU
-         weSXGU3rc14/v6xBTMOlYpQXSDV9cwQQTUNEpMW3pzOA3eHlc11zTYn/bH3yatkV6MEF
-         890A==;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:dkim-signature;
+        bh=ClJnevY/Tv+SZ+1wV6fhjTOc+GkukA48ZkPbqBA50+o=;
+        fh=U4ECKJGIdYUa+nG2B9UrBKONMf6wOSnu80ghaqmEl8M=;
+        b=HcLsPY+STaMAWBq3QGu75keaCzizPXNRZOBSeIDa1/l5RMUUHTBEHw5zaHZCKCJqmA
+         ADhlbIGG3lz+SYAqZUKq0C9P7OlDf1aiLYAzQWDS42a/zqkQ5q+1wc3tk/yo9+CP2992
+         VBsEXTo1wHSLWWNL7Cs88HAGfEttHl/jstPqNDGfGIeKgyquk2CBgnyNFNbsLWVrHio2
+         Szmt/iN40rU7wrfbS3RolGQ6GEay+xQO6UYGXtbPClZAPPFt+EaRH6VZ82GvIB5yVJqE
+         9S2cyk+YLZldVvdr93aUT307GHC4tHfe077AgBi2vNTxJ5e4R0Sp/ok2BNX2m6DB6saQ
+         +9ZA==;
         darn=vger.kernel.org
 ARC-Authentication-Results: i=1; mx.google.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1772077034; x=1772681834; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:mime-version:references:in-reply-to
-         :from:from:to:cc:subject:date:message-id:reply-to;
-        bh=jg3R22OOVfrafHOHSh0bSMLnUJD5uZeRUb4Z2gkWz+8=;
-        b=Ak8kXywN/x/OiHV9EGthIusApdumKsUcsQTCUTfqmK2JYDjoCb6paETfZbUs7L6y+p
-         25CMEqWduuaH79yfQdlpa2G5JPGFyeXFzcd6rzTMW6hlX2twwaPFy+q+zwWLs16mYG/2
-         KdHcj3Q0OVKJ9y/VcKKpj/9xpYhTjs3LCj6m1+5CjaZB9aCabkwdA9qVTHA7IlONWVcJ
-         qQohdpWgif8xfQ5jXYZfC8ThSVhii9CM8ylvqcI5MpYtNzritcmI6SACsJhqeG+1mhO7
-         m5/fINVklZKPmNunclgB57kqylMOvPIIWH6NtzHvt62pHDWY9rZXEUzcQQFIXXldLFPg
-         TPPQ==
+        d=gmail.com; s=20230601; t=1772084980; x=1772689780; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ClJnevY/Tv+SZ+1wV6fhjTOc+GkukA48ZkPbqBA50+o=;
+        b=X3hPYEwOKT+37PDZszRG85gdjtvhP3OCPwuyUM0qtEmbvKrdISOfp/jQuiDqV30GAH
+         qIEt64Bj3Or+SWwNHeikMqeLDb4tnkwj/akvV9G6Y4xjUeMBa9nyW3mb7JNOgyS2CG22
+         0jjtVW47+lmKp9EARrRudTn+fD7zAsJy2IDZfRcjMQSLOUsXu51LFTj3feb9QUKQNi+c
+         w2ZNCLYAbejYxkwVBwSCn7SCFy0LZRUEixft1vXUrPog1Ny7yLO/68ARAm7/Ia8nfisB
+         beTtRE/opjPbr2ypeSPDZCLL15K2VqOTl8JXMurGjUEeXPFDA42XNPq9G+AktHaROZVO
+         qaIw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1772077034; x=1772681834;
-        h=cc:to:subject:message-id:date:mime-version:references:in-reply-to
-         :from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=jg3R22OOVfrafHOHSh0bSMLnUJD5uZeRUb4Z2gkWz+8=;
-        b=wj9OFTwxwF+FZeJ2K5EaFYzJCqJDuqNXJZUqD0Moy2OePRTuVSLLjGeoK9wt1nH6+N
-         t9w/Wh0fddl5PE1mNaMrP5My+NBFOf/e8sHLQpZg/6zCB2u/RKJhAEhWion1fPkCGVlD
-         WWUwFXK8Ul7yFd02mHyMC2AvRZp9E8BuDfhXcTFJ8TnshYzF3TK5pUSRdQKR1cz0gz5K
-         1ewJtZLMzRXbwCkiR7YInc80zbLHxOBX3GbDu0wkOdl9tBY7QGkuO2W/K1B0F+AZp0BC
-         7pbEUbBLPv1M3Lf762fanb3/hJLV1Vy7G9x3M1gFvSKN8cUUheGK2zJS7tXO9suiOQP9
-         CkBA==
-X-Forwarded-Encrypted: i=1; AJvYcCX2mY98xSPmukwOEv5S/wlRzJ2BSi7UsglYeo41teX0L1pX44O1GaboUCNbLvVaHiGMJ82NtG/S@vger.kernel.org
-X-Gm-Message-State: AOJu0Ywu1Y70gBUsKSM0Jjirz+I0ZaK2QC1ZQ59CvgNHhhqgECgwiVjI
-	DE85ngLzo/Fgfef7fsimvV4B7yKrBMWtBOxQXa7AhjiIq1mrUorXe1sP84JXWerGTBeE8QwHW1N
-	jR/AEPu2rPeUnIKwrPo90C5ZbuGxxr77q3UHOpVKX
-X-Gm-Gg: ATEYQzwx3a6lWJfqgIf7VX4RrIjtT+dZsG5KQHHEvLG0HUx29TQ+glG0PvHsIGxbhlC
-	NXz47Yw3WHIRyQA7ghwKN9oKnlNWn9kqNG7pQ8yAMCybDw7PTfIH0fEGOUnx76OvxdXwVy/9G0D
-	GxGojObRNx5X8zXUbPkdqw0u3GnDDGpabrm6j6Ln4PLwKikzp8j7uEN0fMKE1h/+MF0gUh10xnB
-	58rL2yoxAxnfhUUAs2LwNgoEDX0ha3PPmZeAwPTH6jPetEDQ8/fk9spQdP5IhUCZcED2VEOIdUR
-	NpaQ5BlOKARJ7az4UuErI6Hnaz41pXGycfxlOK34JMLGh8W9lJSqLy+zva3s/FtNsZZjzg==
-X-Received: by 2002:a05:6512:3d8b:b0:59e:5c8f:75ff with SMTP id
- 2adb3069b0e04-5a105eacea6mr921238e87.35.1772077033614; Wed, 25 Feb 2026
- 19:37:13 -0800 (PST)
-Received: from 176938342045 named unknown by gmailapi.google.com with
- HTTPREST; Wed, 25 Feb 2026 19:37:04 -0800
-Received: from 176938342045 named unknown by gmailapi.google.com with
- HTTPREST; Wed, 25 Feb 2026 19:37:04 -0800
-From: Ackerley Tng <ackerleytng@google.com>
-In-Reply-To: <20260225202437.4077364-1-joshua.hahnjy@gmail.com>
-References: <20260225202437.4077364-1-joshua.hahnjy@gmail.com>
+        d=1e100.net; s=20230601; t=1772084980; x=1772689780;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=ClJnevY/Tv+SZ+1wV6fhjTOc+GkukA48ZkPbqBA50+o=;
+        b=ua7dRd0+yj+K0QR4lW3WKyiDaiVFxRTTCLlVouB5t0lzJQtvRFTS4LPhdtef72f2zF
+         9wfthBWoXRWqcU3yNlfTl87M/q8OyjbEdzfd+d0H3B3ey4IKns2V/fuTnDaiikU5iio1
+         F4mz26PYUlXIXACozaVFPZoolpAm/UEo67pOTy9ShUvLLmDMgMPekl/NH2DzTHR8TLHZ
+         cgJniABGjgW/80EZfnfRYU5J4KkliaGKfSbeSxK38/I1aqhY9e7J6cLJc39TaZdTBDHR
+         mgeAhP+YufvReBSbwcWfpm6zVzH1IbirlOprKa+hyWxCW4GoudPHT6s/VCt1WxNn0TOj
+         ntNQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWZ9yY8f4yTf03RwlcT/jdi4TkxS6MZ7586up0hcuZ8JXC1B3Bu+LVcNxbZnbDqSoOMOzldXBrc@vger.kernel.org
+X-Gm-Message-State: AOJu0YwxL6XRK5Xek04ydb6kK1ZogSHNzZ+bULOddqzT1G3/hcXME+uK
+	cKi8FoZJiq1HmweOWwzfs+0S3olZOmvfjS/rcX/RzWLPxtXMWk/hCG2noTvtZiUvwsaqZFg8bBw
+	r8FXZYkUaZwv8mvDpfCnZrQSkZHDjTTM=
+X-Gm-Gg: ATEYQzyflnkN4R142/YnTEtPNJWJITc/amncg87Bn8KDvhQcRZVpNhC5S2a/4BCxNpu
+	gw9v2b9NyUwRDJIbJO357p+T5esshQhQxvM/cifQ1zosCtpF1jcwvC3zOPsGS2dtPs8/yFzOaVL
+	ZwEo4zzP7rPtHG0hDltO+pkuwmcticWFlfqG3Wemj8jZLL0Q2HOD81i3UzLrZnHAUfvcWMmiCMb
+	LKMP5xnOCcaEGvkj2JOZdMKlv3V3GJIiV2RRpvPTAd51svquDGfg1onpecU6dLfsG7lMGFHN0IW
+	cSsYiaqTj3sChm9EPkAIVERyfJ2xRGlll6lVjVGy
+X-Received: by 2002:a17:907:7ba8:b0:b83:95ca:589b with SMTP id
+ a640c23a62f3a-b935b4b82d0mr52477966b.10.1772084980256; Wed, 25 Feb 2026
+ 21:49:40 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Date: Wed, 25 Feb 2026 19:37:04 -0800
-X-Gm-Features: AaiRm50_sTs9jAEWMqZ835Cj7pEpp2iIBtsZ9twJbpGr-Sc3zM2ecvbh25350Y4
-Message-ID: <CAEvNRgGaJXbOGPQSgvo3rVDfis22DC4hYy=2Rczas0Vm3o66kQ@mail.gmail.com>
-Subject: Re: [RFC PATCH v1 0/7] Open HugeTLB allocation routine for more
- generic use
-To: Joshua Hahn <joshua.hahnjy@gmail.com>
-Cc: akpm@linux-foundation.org, dan.j.williams@intel.com, david@kernel.org, 
-	fvdl@google.com, hannes@cmpxchg.org, jgg@nvidia.com, jiaqiyan@google.com, 
-	jthoughton@google.com, kalyazin@amazon.com, mhocko@kernel.org, 
-	michael.roth@amd.com, muchun.song@linux.dev, osalvador@suse.de, 
-	pasha.tatashin@soleen.com, pbonzini@redhat.com, peterx@redhat.com, 
-	pratyush@kernel.org, rick.p.edgecombe@intel.com, rientjes@google.com, 
-	roman.gushchin@linux.dev, seanjc@google.com, shakeel.butt@linux.dev, 
-	shivankg@amd.com, vannapurve@google.com, yan.y.zhao@intel.com, 
-	cgroups@vger.kernel.org, linux-kernel@vger.kernel.org, linux-mm@kvack.org
+References: <20260220-swap-table-p4-v1-0-104795d19815@tencent.com>
+ <20260220-swap-table-p4-v1-12-104795d19815@tencent.com> <CAGsJ_4yv31utMTsZcRf5adeUzC7NnE0DfMKRFi3v1iCxfdXbdw@mail.gmail.com>
+ <CAMgjq7AMOuLYRX_A-y8aUuQq-yTPhvj05QbNrLWDQgy+H9MsNA@mail.gmail.com> <CAGsJ_4zg_C3YbOLduC5dEb-0Ozm033d-KGK7E1Uv5n6NbjGokQ@mail.gmail.com>
+In-Reply-To: <CAGsJ_4zg_C3YbOLduC5dEb-0Ozm033d-KGK7E1Uv5n6NbjGokQ@mail.gmail.com>
+From: Kairui Song <ryncsn@gmail.com>
+Date: Thu, 26 Feb 2026 13:49:04 +0800
+X-Gm-Features: AaiRm50fvkfk5xfVMBS285B-bWWcDT35PoKH9PJVQqUlUMG8LniXxo0EGMYL3Ck
+Message-ID: <CAMgjq7BsRvdZa6VXomi6X3VjGqd=o-7=ZaE+Mrj8uXR43kBJsA@mail.gmail.com>
+Subject: Re: [PATCH RFC 12/15] mm, swap: merge zeromap into swap table
+To: Barry Song <21cnbao@gmail.com>
+Cc: linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>, 
+	David Hildenbrand <david@kernel.org>, Lorenzo Stoakes <lorenzo.stoakes@oracle.com>, Zi Yan <ziy@nvidia.com>, 
+	Baolin Wang <baolin.wang@linux.alibaba.com>, Hugh Dickins <hughd@google.com>, 
+	Chris Li <chrisl@kernel.org>, Kemeng Shi <shikemeng@huaweicloud.com>, 
+	Nhat Pham <nphamcs@gmail.com>, Baoquan He <bhe@redhat.com>, Johannes Weiner <hannes@cmpxchg.org>, 
+	Yosry Ahmed <yosry.ahmed@linux.dev>, Youngjun Park <youngjun.park@lge.com>, 
+	Chengming Zhou <chengming.zhou@linux.dev>, Roman Gushchin <roman.gushchin@linux.dev>, 
+	Shakeel Butt <shakeel.butt@linux.dev>, Muchun Song <muchun.song@linux.dev>, 
+	Qi Zheng <zhengqi.arch@bytedance.com>, linux-kernel@vger.kernel.org, 
+	cgroups@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-0.66 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
+X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=2];
-	DMARC_POLICY_ALLOW(-0.50)[google.com,reject];
-	R_DKIM_ALLOW(-0.20)[google.com:s=20230601];
-	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
+	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
+	R_DKIM_ALLOW(-0.20)[gmail.com:s=20230601];
+	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
+	TAGGED_FROM(0.00)[bounces-14411-lists,cgroups=lfdr.de];
+	RCVD_COUNT_THREE(0.00)[4];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-14410-lists,cgroups=lfdr.de];
+	FROM_HAS_DN(0.00)[];
 	FREEMAIL_TO(0.00)[gmail.com];
 	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[29];
-	FROM_HAS_DN(0.00)[];
-	MISSING_XM_UA(0.00)[];
+	FREEMAIL_FROM(0.00)[gmail.com];
+	RCPT_COUNT_TWELVE(0.00)[22];
+	FREEMAIL_CC(0.00)[kvack.org,linux-foundation.org,kernel.org,oracle.com,nvidia.com,linux.alibaba.com,google.com,huaweicloud.com,gmail.com,redhat.com,cmpxchg.org,linux.dev,lge.com,bytedance.com,vger.kernel.org];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[6];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[ackerleytng@google.com,cgroups@vger.kernel.org];
-	DKIM_TRACE(0.00)[google.com:+];
-	NEURAL_HAM(-0.00)[-0.999];
-	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
-	TAGGED_RCPT(0.00)[cgroups];
 	TO_DN_SOME(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[mail.gmail.com:mid,sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 21E601A09CA
+	NEURAL_HAM(-0.00)[-1.000];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[ryncsn@gmail.com,cgroups@vger.kernel.org];
+	DKIM_TRACE(0.00)[gmail.com:+];
+	MID_RHS_MATCH_FROMTLD(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
+	TAGGED_RCPT(0.00)[cgroups];
+	MISSING_XM_UA(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[mail.gmail.com:mid]
+X-Rspamd-Queue-Id: 413641A11A9
 X-Rspamd-Action: no action
 
-Joshua Hahn <joshua.hahnjy@gmail.com> writes:
+Barry Song <21cnbao@gmail.com> =E4=BA=8E 2026=E5=B9=B42=E6=9C=8826=E6=97=A5=
+=E5=91=A8=E5=9B=9B 05:40=E5=86=99=E9=81=93=EF=BC=9A
+> I did notice that some cache data has been consolidated from two
+> places=E2=80=94the swap table and the zeromap=E2=80=94into a single locat=
+ion.
+> However, swap_zeromap_batch() previously operated on a bitmap,
+> whereas it now accesses multiple data. Is that also
+> expected to be fine?
 
-> On Wed, 11 Feb 2026 16:37:11 -0800 Ackerley Tng <ackerleytng@google.com> wrote:
->
-> Hi Ackerly, I hope you're donig well!
->
-> [...snip...]
->
->> I would like to get feedback on:
->>
->> 1. Opening up HugeTLB's allocation for more generic use
->
-> I'm not entirely familiar with guest_memfd, so pleae excuse my ignorance
-> if I'm missing anything obvious.
+Yeah, should be totally fine. The only two callers are:
 
-Happy to take questions! Thank you for your thoughts and reviews!
+__swap_cache_check_batch, right before looping the swap table as I
+just mentioned and can be inlined to reduce overhead.
 
-> But I'm wondering what hugeTLB offers
-> that other hugepage solutions cannot offer for guest_memfd, if the
-> goal of this series is to decouple it from hugeTLBfs.
->
-
-The one other huge page source that we've explored is THP pages from the
-buddy allocator. Compared to HugeTLB, huge pages from the buddy
-allocator
-
-+ Has a maximum size of 2M
-+ Does not guarantee huge pages the way HugeTLB does - HugeTLB pages are
-  allocated at boot, and guest_memfd can reserve pages at guest_memfd
-  creation time.
-+ Allocation of HugeTLB pages is also really fast, it's just dequeuing
-  from a preallocated pool
-
-The last reason to use HugeTLB is not because of any inherent advantage
-of using HugeTLB over other sources of huge pages, but for
-administrative/scheduling purposes:
-
-  Given that existing non-guest_memfd workloads are already using
-  HugeTLB, for optimal scheduling, machine memory is already carved up
-  in HugeTLB pages for these workloads. Workloads that require using
-  guest_memfd (like Confidential VMs) must also use HugeTLB to
-  participate in optimial workload scheduling across machines.
-
->> 2. Reverting and re-adopting the try-commit-cancel protocol for memory
->>    charging
->
-> On the second point, I am wondering if reintroducing the try-commit-cancel
-> protocol is tied to factoring out hugetlb_alloc_folio. When I removed
-> the protocol a while back, the justification was that for the most part,
-> grabbing a hugetlb folio was a relatively cheap & fast operation, since
-> hugetlb mostly operates out of a preallocated pool.
->
-> So the cost of being wrong, going above the limit, and having to return
-> the hugetlb folio was also relatively low.
->
-
-Thanks for this! I saw your patch to just optimistically grab a HugeTLB
-page :) For that patch, the primary reason was to simplify the logic,
-and the simplification was justifiable because grabbing a folio is
-cheap, right? (And so grabbing a folio being cheap wasn't a reason in
-itself?)
-
-> It seems like this patch series introduces some new paths for hugetlb
-> pages to be consumed (specifically, without a reservation or vma).
-> I imagine that these new paths make the slowpath for hugetlb more frequent,
-> which makes the cost of assuming that the memcg limit is OK higher?
-> I think explicitly spelling this out in the justification for reintroducing
-> the charging protocol could be helpful.
->
-
-Yes, I should have done that. Will copy the following to the next
-revision.
-
-The main reason is that reintroducing the charging protocol is the
-clearest way (for me) to cleanly refactor out hugetlb_alloc_folio()
-without worrying about the edge cases around HugeTLB reservations and
-charging.
-
-If I didn't reintroduce the charging protocol, I would have to depend on
-freeing the new hugetlb folio on memcg charging failure, and the freeing
-in turn depends on the subpool correctly being set in the folio, and the
-presence of the subpool influences (in free_huge_folio()) whether the
-reservation was returned to the global hstate. Aaannnd... there's also a
-hugetlb_restore_reserve flag that controls whether to return the folio
-to the subpool (and the hstate). I find folio_clear_hugetlb_restore_reserve()
-on certain code paths kind of magical/unexplained too.
-
-I would rather iron out those charging and reservation details
-separately from this series (with more testing support).
-
-
-On the other hand, reintroducing the charging protocol has the benefit
-of avoiding allocations (not just dequeuing, if surplus HugeTLB pages
-are required) if the memcg limit is hit. Also, if the original reason
-for removing the protocol was to simplify the code, refactoring out
-hugetlb_alloc_folio() also simplifies the code, and I think it's
-actually nice that memcg charging is done the same way as the other two
-(h_cg and h_cg_rsvd charging). After hugetlb_alloc_folio() is refactored
-out, the gotos make all three charging systems consistent and symmetric,
-which I think is nice to have :)
-
-I hope the consistent/symmetric charging among all 3 systems is welcome,
-what do you think?
-
-> Thank you for the series, again. I hope you have a great day!
-> Joshua
->
->> To see how hugetlb_alloc_folio() is used by guest_memfd, the most
->> recent patch series that uses this more generic HugeTLB allocation
->> routine is at [1], and a newer revision of that patch series is at
->> [2].
->>
->> Independently of guest_memfd, I believe this change is useful in
->> simplifying alloc_hugetlb_folio(). alloc_hugetlb_folio() was so
->> coupled to a VMA that even HugeTLBfs allocates HugeTLB folios using a
->> pseudo-VMA.
->>
->> [1] https://lore.kernel.org/all/cover.1747264138.git.ackerleytng@google.com/T/
->> [2] https://github.com/googleprodkernel/linux-cc/tree/wip-gmem-conversions-hugetlb-restructuring-12-08-25
->>
->> Ackerley Tng (7):
->>   mm: hugetlb: Consolidate interpretation of gbl_chg within
->>     alloc_hugetlb_folio()
->>   mm: hugetlb: Move mpol interpretation out of
->>     alloc_buddy_hugetlb_folio_with_mpol()
->>   mm: hugetlb: Move mpol interpretation out of
->>     dequeue_hugetlb_folio_vma()
->>   Revert "memcg/hugetlb: remove memcg hugetlb try-commit-cancel
->>     protocol"
->>   mm: hugetlb: Adopt memcg try-commit-cancel protocol
->>   mm: memcontrol: Remove now-unused function mem_cgroup_charge_hugetlb
->>   mm: hugetlb: Refactor out hugetlb_alloc_folio()
->>
->>  include/linux/hugetlb.h    |  11 ++
->>  include/linux/memcontrol.h |  21 +++-
->>  mm/hugetlb.c               | 228 +++++++++++++++++++++----------------
->>  mm/memcontrol.c            |  77 ++++++++-----
->>  4 files changed, 212 insertions(+), 125 deletions(-)
->>
->>
->> base-commit: db9571a66156bfbc0273e66e5c77923869bda547
->> --
->> 2.53.0.310.g728cabbaf7-goog
->>
+Another one is swap_read_folio_zeromap, also should be right after
+adding the folio into swap table.
 
