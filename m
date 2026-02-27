@@ -1,62 +1,62 @@
-Return-Path: <cgroups+bounces-14472-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-14473-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id cFlBHSOgoWl8ugQAu9opvQ
-	(envelope-from <cgroups+bounces-14472-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Fri, 27 Feb 2026 14:46:11 +0100
+	id cKICIsiroWkivgQAu9opvQ
+	(envelope-from <cgroups+bounces-14473-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Fri, 27 Feb 2026 15:35:52 +0100
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id D1DE21B7D7E
-	for <lists+cgroups@lfdr.de>; Fri, 27 Feb 2026 14:46:10 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0E05A1B9128
+	for <lists+cgroups@lfdr.de>; Fri, 27 Feb 2026 15:35:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 010403055D4A
-	for <lists+cgroups@lfdr.de>; Fri, 27 Feb 2026 13:44:33 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 71707309F1D2
+	for <lists+cgroups@lfdr.de>; Fri, 27 Feb 2026 14:33:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 078F83ED12A;
-	Fri, 27 Feb 2026 13:44:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 31ACB2D8393;
+	Fri, 27 Feb 2026 14:33:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Z1NUZVrV"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OygjcJMz"
 X-Original-To: cgroups@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BDDFA3101A5;
-	Fri, 27 Feb 2026 13:44:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C4C402D7D2E;
+	Fri, 27 Feb 2026 14:33:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772199872; cv=none; b=b3AirGREf1zGFOA152LrlTZkP6t5BnyUJiuR/5dw2j94vJbC1tFCf8R9yK3gaTpLoq9zXjQhHaAjYFPQhAgOlfmBEMn+kHK8QbMZon7k6apPTB54Ddd/EbPawD/WOXcBSiTfUzecK34zoL5QiYerEIx770J7jH+N5xRyb7K6Mro=
+	t=1772202806; cv=none; b=B5/owug2ljX4jSTGp0eRtkeb9NWB0pL2mY+XqDwKb7Nfpf/Y5lIlYooL0eiPgOSlj5YOVU4Pt1U6zIIcwHpLYvrMLypJc8QTvucjMsbfmZ1TvyNoGqVw1e+WvnxJYGkb0n6qAaDQ0QDcqvOADy7zDYhlphatJ9iVHRv/wfoyftg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772199872; c=relaxed/simple;
-	bh=6xelK0GBgh31lbjdU70PNZPK3L3GDYg3a/OL3tCNEPg=;
+	s=arc-20240116; t=1772202806; c=relaxed/simple;
+	bh=wTlr065Mxrm4HC7hRwIZ4JNFSpk81XdsYFZasg3vLKA=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Js0XxUTv2nSvdpbQVlHmUqgQV7MI4QsZRvn6dcExEICOzixKRcakSc6SodwA78bfNI2wkKeiV7oc38hDtoFw9SLaP37h597+BsPHhBdyPlSo3Fl8yRe9TnXmiUVeWDBm6hoE1iWouiArNHkiP6EGL7zLkFTgG+YEYrilZIC/3KY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Z1NUZVrV; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C1412C116C6;
-	Fri, 27 Feb 2026 13:44:29 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=iQrboA95F2erYBCKtiiZoeiuAn+g2R8IfELktfAFYY3b2R6QKTSpwcvEVeRH+ViczEzq6Q8EWTkW/6SFV71YoDC0PapWtrpFhiM9TmEz+7+lYlkyWRVsePVzdYvgTeygpVP7jcAuWdJiZyGcNrEtAkY/LNyA1o+xCwt+TusKvjE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OygjcJMz; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C86EFC19423;
+	Fri, 27 Feb 2026 14:33:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1772199872;
-	bh=6xelK0GBgh31lbjdU70PNZPK3L3GDYg3a/OL3tCNEPg=;
+	s=k20201202; t=1772202806;
+	bh=wTlr065Mxrm4HC7hRwIZ4JNFSpk81XdsYFZasg3vLKA=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Z1NUZVrVWdzLjmIp9qPBZeEHHX8xdGP8ocd2+uRhnG3GTEzRyHduQl5SkNupPu7Q2
-	 YCKlWmwb2wm1rVn9pifu/YNoE/TRjj2H5nUKAQRruxHYsRDPtvEJ9jo6kd/Xk0BiUg
-	 cdZ9y0eEP+oasywT/iPUGPFBO9CyTRac/uxnV10Nga2XPJwOJsWTVem5gS4Rf3wF10
-	 8UcR8EYCfauE1r5zqdQ9Hcc5uta/DcPChuvx0J9Th85hMumnzL8J91S5ZEnqYEAKcX
-	 MkeDNyz07DFLTiilaijMrvwbcexozniYkGNQbFGov+AkmKF5tK8Vl8H03oL74ao3Fp
-	 ShMbYyA7Qwdmg==
-Date: Fri, 27 Feb 2026 14:44:27 +0100
+	b=OygjcJMzTY8ovhsMsbu1MOqFaWeJnZoUJfrNVPa4foEGX9k68yazNchyMy2eFw1MI
+	 S/jGYghyq/bcYk3c/iuCM8VhOPpsd2Defd38J1RT7tyCrTjSF3XjasmrmJVPOrbUak
+	 sUmLluNn/WTYaBVhwi34I3XNpfd8ajAYHJSKF/MHG90/yGsmPOq8j1FclQ2NYnZ3Pl
+	 mpq3qjhuBQkG2tnsTkx02c7yzP9rhetu6R63OJ+1RbVdCEnibWKswWd/VeYUQCyPYz
+	 2W+9A850qwkv9Fc5+/KiQco14Eu7BSCKmFWf5k+B0lMZqjhd3+GGad9U/KopecW1wg
+	 e5zWDaqxM4kbA==
+Date: Fri, 27 Feb 2026 15:33:21 +0100
 From: Christian Brauner <brauner@kernel.org>
-To: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
+To: Matt Bobrowski <mattbobrowski@google.com>
 Cc: Alexei Starovoitov <ast@kernel.org>, 
 	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
 	Martin KaFai Lau <martin.lau@linux.dev>, Tejun Heo <tj@kernel.org>, KP Singh <kpsingh@kernel.org>, 
 	bpf@vger.kernel.org, linux-kernel@vger.kernel.org, cgroups@vger.kernel.org, 
 	Lennart Poettering <lennart@poettering.net>
-Subject: Re: [PATCH 2/4] cgroup: add bpf hook for attach
-Message-ID: <20260227-ballverlust-abziehen-51ec7de2d16a@brauner>
+Subject: Re: [PATCH 1/4] ns: add bpf hooks
+Message-ID: <20260227-krass-abzug-a2e42720db80@brauner>
 References: <20260220-work-bpf-namespace-v1-0-866207db7b83@kernel.org>
- <20260220-work-bpf-namespace-v1-2-866207db7b83@kernel.org>
- <tmihfspwvvxv6sle27br4dgsbvepacnqj74zfscndkz722ssby@244dku2izea7>
+ <20260220-work-bpf-namespace-v1-1-866207db7b83@kernel.org>
+ <aZ2pDzhDFpFMjgb1@google.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -65,8 +65,7 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <tmihfspwvvxv6sle27br4dgsbvepacnqj74zfscndkz722ssby@244dku2izea7>
+In-Reply-To: <aZ2pDzhDFpFMjgb1@google.com>
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [2.34 / 15.00];
 	MID_END_EQ_FROM_USER_PART(4.00)[];
@@ -74,20 +73,20 @@ X-Spamd-Result: default: False [2.34 / 15.00];
 	MID_RHS_NOT_FQDN(0.50)[];
 	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
 	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	FROM_HAS_DN(0.00)[];
-	TAGGED_FROM(0.00)[bounces-14472-lists,cgroups=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-14473-lists,cgroups=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
 	RCVD_COUNT_THREE(0.00)[4];
 	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	DKIM_TRACE(0.00)[kernel.org:+];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
 	MISSING_XM_UA(0.00)[];
-	NEURAL_HAM(-0.00)[-0.998];
+	NEURAL_HAM(-0.00)[-1.000];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[brauner@kernel.org,cgroups@vger.kernel.org];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
@@ -95,111 +94,139 @@ X-Spamd-Result: default: False [2.34 / 15.00];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[cgroups];
 	TO_DN_SOME(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: D1DE21B7D7E
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: 0E05A1B9128
 X-Rspamd-Action: no action
 
-On Mon, Feb 23, 2026 at 04:47:11PM +0100, Michal Koutný wrote:
-> Hi.
-> 
-> On Fri, Feb 20, 2026 at 01:38:30AM +0100, Christian Brauner <brauner@kernel.org> wrote:
-> > Add a hook to manage attaching tasks to cgroup. I'm in the process of
-> > adding various "universal truth" bpf programs to systemd that will make
-> > use of this.
+On Tue, Feb 24, 2026 at 01:35:11PM +0000, Matt Bobrowski wrote:
+> On Fri, Feb 20, 2026 at 01:38:29AM +0100, Christian Brauner wrote:
+> > Add the three namespace lifecycle hooks and make them available to bpf
+> > lsm program types. This allows bpf to supervise namespace creation. I'm
+> > in the process of adding various "universal truth" bpf programs to
+> > systemd that will make use of this. This e.g., allows to lock in a
+> > program into a given set of namespaces.
 > > 
-> > This has been a long-standing request (cf. [1] and [2]). It will allow us to
-> > enforce cgroup migrations and ensure that services can never escape their
-> > cgroups. This is just one of many use-cases.
+> > Signed-off-by: Christian Brauner <brauner@kernel.org>
+> > ---
+> >  include/linux/bpf_lsm.h | 21 +++++++++++++++++++++
+> >  kernel/bpf/bpf_lsm.c    | 25 +++++++++++++++++++++++++
+> >  kernel/nscommon.c       |  9 ++++++++-
+> >  kernel/nsproxy.c        |  7 +++++++
+> >  4 files changed, 61 insertions(+), 1 deletion(-)
 > > 
-> > Link: https://github.com/systemd/systemd/issues/6356 [1]
-> > Link: https://github.com/systemd/systemd/issues/22874 [2]
+> > diff --git a/include/linux/bpf_lsm.h b/include/linux/bpf_lsm.h
+> > index 643809cc78c3..5ae438fdf567 100644
+> > --- a/include/linux/bpf_lsm.h
+> > +++ b/include/linux/bpf_lsm.h
+> > @@ -12,6 +12,9 @@
+> >  #include <linux/bpf_verifier.h>
+> >  #include <linux/lsm_hooks.h>
+> >  
+> > +struct ns_common;
+> > +struct nsset;
+> > +
+> >  #ifdef CONFIG_BPF_LSM
+> >  
+> >  #define LSM_HOOK(RET, DEFAULT, NAME, ...) \
+> > @@ -48,6 +51,11 @@ void bpf_lsm_find_cgroup_shim(const struct bpf_prog *prog, bpf_func_t *bpf_func)
+> >  
+> >  int bpf_lsm_get_retval_range(const struct bpf_prog *prog,
+> >  			     struct bpf_retval_range *range);
+> > +
+> > +int bpf_lsm_namespace_alloc(struct ns_common *ns);
+> > +void bpf_lsm_namespace_free(struct ns_common *ns);
+> > +int bpf_lsm_namespace_install(struct nsset *nsset, struct ns_common *ns);
+> > +
+> >  int bpf_set_dentry_xattr_locked(struct dentry *dentry, const char *name__str,
+> >  				const struct bpf_dynptr *value_p, int flags);
+> >  int bpf_remove_dentry_xattr_locked(struct dentry *dentry, const char *name__str);
+> > @@ -104,6 +112,19 @@ static inline bool bpf_lsm_has_d_inode_locked(const struct bpf_prog *prog)
+> >  {
+> >  	return false;
+> >  }
+> > +
+> > +static inline int bpf_lsm_namespace_alloc(struct ns_common *ns)
+> > +{
+> > +	return 0;
+> > +}
+> > +static inline void bpf_lsm_namespace_free(struct ns_common *ns)
+> > +{
+> > +}
+> > +static inline int bpf_lsm_namespace_install(struct nsset *nsset,
+> > +					    struct ns_common *ns)
+> > +{
+> > +	return 0;
+> > +}
+> >  #endif /* CONFIG_BPF_LSM */
+> >  
+> >  #endif /* _LINUX_BPF_LSM_H */
+> > diff --git a/kernel/bpf/bpf_lsm.c b/kernel/bpf/bpf_lsm.c
+> > index 0c4a0c8e6f70..f6378db46220 100644
+> > --- a/kernel/bpf/bpf_lsm.c
+> > +++ b/kernel/bpf/bpf_lsm.c
+> > @@ -30,10 +30,32 @@ __weak noinline RET bpf_lsm_##NAME(__VA_ARGS__)	\
+> >  #include <linux/lsm_hook_defs.h>
+> >  #undef LSM_HOOK
+> >  
+> > +__bpf_hook_start();
+> > +
+> > +__weak noinline int bpf_lsm_namespace_alloc(struct ns_common *ns)
+> > +{
+> > +	return 0;
+> > +}
+> > +
+> > +__weak noinline void bpf_lsm_namespace_free(struct ns_common *ns)
+> > +{
+> > +}
 > 
-> These two issues are misconfigured/misunderstood PAM configs. I don't
-> think those warrant introduction of another permissions mechanism,
-> furthermore they're relatively old and I estimate many of such configs
-> must have been fixed in the course of time.
+> I'm wondering how you foresee this hook functioning in a scenario
+> where the BPF LSM program is attached to this new hook point, although
+> with its attachment type being set to BPF_LSM_CGROUP instead of
+> BPF_LSM_MAC? You probably wouldn't want to utilize something like
+> BPF_LSM_CGROUP for your specific use case, but as things stand
+> currently I don't believe there's anyhthing preventing you from using
+> BPF_LSM_CGROUP with a hook like bpf_lsm_namespace_free().
 
-logind has to allow cgroup migrations but for say Docker this shouldn't
-be allowed. So calling this misconfiguration is like taking a shortcut
-by simply pointing to a different destination. But fine, let's say you
-insist on this not being valid.
+Oh, I very much would like this to be attachable to cgroups.
 
-> As for services escaping their cgroups -- they needn't run as root, do
-> they? And if you seek a mechanism how to prevent even root from
-> migrations, there are cgroupnses for that. (BTW what would prevent a
+> Notably, the BPF_LSM_CGROUP infrastructure is designed to execute BPF
+> programs based on the cgroup of the currently executing task. There
+> could be some surprises if the bpf_lsm_namespace_free() hook were to
+> ever be called from a context (e.g, kworker) other than the one
+> specified whilst attaching the BPF LSM program with type
+> BPF_LSM_CGROUP.
 
-A bunch of tools that do cgroup migrations don't use cgroup namespaces
-and there's no requirement or way to enforce that they do. Plus, there's
-no requirement to only do cgroup management via systemd or its APIs.
+But isn't this then a generic problem? What about:
 
-Frankly, I can't even blame userspace for not having widely adopted
-cgroup namespaces. The implementation atop of a single superblock like
-cgroupfs is questionable.
+# RCU callbacks
+security_cred_free
+security_task_free
+security_inode_free_security_rcu
+security_bpf_prog_free
+security_xfrm_policy_free_security
+security_msg_queue_free_security
+security_shm_free_security
+security_sem_free_security
+security_audit_rule_free
+security_bdev_free_security
+security_sk_free_security
 
-But in general the point is that there's no mechanism to enforce cgroup
-tree policy currently in a sufficiently flexible manner.
+# Workqueues
+security_bpf_map_free
+security_bpf_token_free
+security_sb_free_security
+security_file_free_security
+security_file_release
+security_xfrm_state_free_security
 
-> root detaching/disabling these hook progs anyway?)
+ignoring sofirq/hardirq for now.
 
-I cannot help but read this as you asking me "What if you're too dumb to
-write a security policy that isn't self-defeating?" :)
-
-bpf has security hooks for itself including security_bpf(). First thing
-that comes to mind is to have security.bpf.* or trusted.* xattrs on
-selected processes like PID 1 that mark it as eligible for modifying BPF
-state or BPF LSM programs supervising link/prog detach, update etc and
-then designating only PID 1 as handing out those magical xattrs. Can be
-as fine-grained as needed and that tells everyone else to go away and do
-something else.
-
-There's more fine-grained mechanisms to deal with this. IOW, it's a
-solvable problem.
-
-> I think that the cgroup file permissions are sufficient for many use
-> cases and this BPF hook is too tempting in unnecessary cases (like
-> masking other issues).
-> Could you please expand more about some other reasonable use cases not
-> covered by those?
-
-systemd will gain the ability to implement policy to control cgroup tree
-modifications in as much details as it needs without having the kernel
-in need to be aware of it. This can take various forms by marking only
-select processes as being eligible for managing cgroup migrations or
-even just locking down specific cgroups.
-
-The policy needs to be flexible so it can be live-updated, switched into
-auditing mode, and losened, tightened on-demand as needed.
-
-> (BTW I notice there's already a very similar BPF hook in sched_ext's
-> cgroup_prep_move. It'd be nicer to have only one generic approach to
-> these checks.)
-
-This feels a bit like a wild goose chase. But fine, I'll look at it.
-/me goes off
-
-Ok, let's start with cgroup_can_fork(). The sched ext hook isn't a
-generic permission check. It's called way after
-cgroup_attach_permissions() and is a per cgroup controller check that is
-only called for some cgroup controllers. So effectively useless to pull
-up (Notice also, how some controllers like cpuset call additional
-security hooks already.).
-
-The same problem applies to writes for cgroup.procs and for subtree
-control. The sched ext hook are per cgroup controller not generically
-called.
-
-And they happen to be called in cgroup_migrate_execute() which is way
-deep in the callchain. When cgroup_attach_permissions() fails it's
-effectively free. If migrate_execute() fails it must put/free css sets,
-it must splice back task on mg_tasks, it must call cancel_attach()
-callbacks, thus it must call the sched-ext cancel callbacks for each
-already prepped task, it must uncharge pids for each already prepped
-task, it needs to unlock a bunch of stuff.
-
-On top of that this looks like a category mistake imho. The callbacks
-are a dac-like permission mechanism whereas the hooks is actual mac
-permission checking. I'm not sure lumping this together with
-per-cgroup-controller migration preparations will be very clean. I think
-it will end up looking rather confusing. But that's best left to you
-cgroup maintainers, I think.
+So the only real problem I can see is that someone wants to do something
+from a *_free() hook that isn't actually freeing but actual policy based
+on the cgroup of @current? I find that hard to believe tbh. Fwiw,
+bpf_lsm_namespace_free() is classified as untrusted because at that
+point the outer namespace might already be blown away partially.
+Effectively alloc() and free() hooks are mostly notification mechanisms
+of creation/destructions. If you want to do actual policy you might have
+to defer it until an actual operation is done.
 
