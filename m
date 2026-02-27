@@ -1,208 +1,340 @@
-Return-Path: <cgroups+bounces-14459-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-14460-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id qdLjD8czoWmFrAQAu9opvQ
-	(envelope-from <cgroups+bounces-14459-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Fri, 27 Feb 2026 07:03:51 +0100
+	id oI50OVw0oWmFrAQAu9opvQ
+	(envelope-from <cgroups+bounces-14460-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Fri, 27 Feb 2026 07:06:20 +0100
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 937181B302C
-	for <lists+cgroups@lfdr.de>; Fri, 27 Feb 2026 07:03:50 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id 69AC91B3086
+	for <lists+cgroups@lfdr.de>; Fri, 27 Feb 2026 07:06:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id ECFBF30965BB
-	for <lists+cgroups@lfdr.de>; Fri, 27 Feb 2026 06:03:48 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 5D593306ABC9
+	for <lists+cgroups@lfdr.de>; Fri, 27 Feb 2026 06:06:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 499C43DA7C7;
-	Fri, 27 Feb 2026 06:03:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E83237C10F;
+	Fri, 27 Feb 2026 06:06:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="DSqtfDLF"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="c9XmhPE8"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
+Received: from out-172.mta0.migadu.com (out-172.mta0.migadu.com [91.218.175.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2F1862556E
-	for <cgroups@vger.kernel.org>; Fri, 27 Feb 2026 06:03:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.9
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 43BD636EAA5;
+	Fri, 27 Feb 2026 06:06:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772172228; cv=none; b=Xpen7ucQYUmP7FcND0k70sjCfTLVB+mCyuL/K7qRyegdTX+RQDGmQHOZYaLwngBNrVkUhxx2lCKMpjv0eQC2UJLeQygpVigauJ5UA+u0Pg9XnlnbBMN8QL5lk4vi2cKWWCoN0Xn+geIfevwm72eY5vFYlGFpcHm+scVCQRbwIxE=
+	t=1772172378; cv=none; b=rYzkGHRHhkRhOI6B9tSWsV8o2vuEfnmRpQ8ejJXce6V9O331OtiTCcmbvSCr6ETJ8n5CwqzZMHYij0OHF7v+EoHrfWhRRQDp9G/lz2IIDvK2q1Ir4cYzuWCVsa+AeftrpbDQaWH/ZBG/F6miS6exe7wXspgTGCOn2dRXDItWFiQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772172228; c=relaxed/simple;
-	bh=womFZoMcXmoknjkJ674fsDEBofqxqg/e+sw1HuqnxWc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=dmENWKCJ1dh5f0QtzOyeE/fpmfCvP6npZ6plYzgvI2sJIp1NhO+X21rjSo5qL8thyjHCryAuHzI0LwKW0Itv446wJW95PVl412FKPZuu3Vi1uqVgGeC/btRArpkF3XwXqLq3Rh+QCQT62EtRLlhnTnv8Vxf/PuzYKTNEab4ueGk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=DSqtfDLF; arc=none smtp.client-ip=198.175.65.9
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1772172225; x=1803708225;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=womFZoMcXmoknjkJ674fsDEBofqxqg/e+sw1HuqnxWc=;
-  b=DSqtfDLFKm7JGuI/purbvs6xhjF4d/m2rTtSdrY6GIelvHjzI49RqOxh
-   7/soZyuIxORZF6lxqugAv/8vwQh/V+kiI8vhDo6EsHX+bkddr7xMNGAG1
-   hGVLhQaZ5u8zYiYTCVECQNJtdDIOy4ifZXz0aKVOmRIiYmCz312r5uava
-   rHkDO0NLbOgolFdznMdexTE0AYAbRHdjoYgo+BKUYHcu54+RO6buEKFEK
-   w9j+qRqav6Z3/CSpMPWSD2JJRba4ZrIMqIYPk9TkvtK/Ral2voMdTphA9
-   CzOOLjgpjsgftjneTqVBu8ZnVB1mNHF15AZMOSuv8jXP020ZMRcEhWPxA
-   Q==;
-X-CSE-ConnectionGUID: nk7taQmETyeS8D8KdLq3vQ==
-X-CSE-MsgGUID: 7yI1hjo7Tc+Rzk016qhM2Q==
-X-IronPort-AV: E=McAfee;i="6800,10657,11713"; a="95868718"
-X-IronPort-AV: E=Sophos;i="6.21,313,1763452800"; 
-   d="scan'208";a="95868718"
-Received: from fmviesa010.fm.intel.com ([10.60.135.150])
-  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Feb 2026 22:03:44 -0800
-X-CSE-ConnectionGUID: vtUqWWtBTrqQu561y1GaXQ==
-X-CSE-MsgGUID: VE5jgSE6RpmJV3IxR2vKag==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.21,313,1763452800"; 
-   d="scan'208";a="214690739"
-Received: from lkp-server02.sh.intel.com (HELO a3936d6a266d) ([10.239.97.151])
-  by fmviesa010.fm.intel.com with ESMTP; 26 Feb 2026 22:03:40 -0800
-Received: from kbuild by a3936d6a266d with local (Exim 4.98.2)
-	(envelope-from <lkp@intel.com>)
-	id 1vvqwq-00000000AEF-2p3i;
-	Fri, 27 Feb 2026 06:03:36 +0000
-Date: Fri, 27 Feb 2026 14:02:59 +0800
-From: kernel test robot <lkp@intel.com>
-To: Harry Yoo <harry.yoo@oracle.com>, venkat88@linux.ibm.com
-Cc: oe-kbuild-all@lists.linux.dev, akpm@linux-foundation.org,
-	ast@kernel.org, cgroups@vger.kernel.org, cl@gentwo.org,
-	hannes@cmpxchg.org, hao.li@linux.dev, harry.yoo@oracle.com,
-	linux-mm@kvack.org, mhocko@kernel.org, muchun.song@linux.dev,
-	rientjes@google.com, roman.gushchin@linux.dev,
-	shakeel.butt@linux.dev, surenb@google.com, vbabka@suse.cz
-Subject: Re: [PATCH] mm/slab: a debug patch to investigate the issue further
-Message-ID: <202602271339.xhIvS2iX-lkp@intel.com>
-References: <20260227030733.9517-1-harry.yoo@oracle.com>
+	s=arc-20240116; t=1772172378; c=relaxed/simple;
+	bh=+zClyXwY8D4oFlAh60MJLkXpeSYGYVafZkKg7K3r2o0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=KCajYjhULZHKnKrWR7+f8CNDR7HP1Nff5+IcImYdtXGPOJlhR2wCT/JsZyCNDqdCJpiZHU1plYvvtZy7qkIo8XUDd5mOro5R3osmN0WUzgXC+bZK/Tdbr80SHQtM1cze7ePFhh4JMnuId4s1N/5QS728Qi9tGu726+gkZ2/x3SQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=c9XmhPE8; arc=none smtp.client-ip=91.218.175.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <e15c2304-4874-4adc-bbe5-58ba78b3b84f@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1772172372;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=kujEh6UjGWsl9lfzHWGZ7znWF6eai55OU5WChJt+xgA=;
+	b=c9XmhPE8G1JD2FfjM2TJqqffeBRAuOFYeWGGS5TtF8eJW98q7Z0VB0yO/gK38oKK410h2p
+	dOHRSB4h2oafpb7m5ashEPyRz4PXYeXgJE6OOtQCnSVc0IGyce7KNj2GfYo2CH0rHEJLcd
+	g3XnACS+JPL9kJ8d8SqU4W2eaM71R2Q=
+Date: Fri, 27 Feb 2026 14:05:56 +0800
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20260227030733.9517-1-harry.yoo@oracle.com>
+Subject: Re: [PATCH v5 29/32] mm: memcontrol: prepare for reparenting
+ non-hierarchical stats
+To: Yosry Ahmed <yosry@kernel.org>, Shakeel Butt <shakeel.butt@linux.dev>
+Cc: hannes@cmpxchg.org, hughd@google.com, mhocko@suse.com,
+ roman.gushchin@linux.dev, muchun.song@linux.dev, david@kernel.org,
+ lorenzo.stoakes@oracle.com, ziy@nvidia.com, harry.yoo@oracle.com,
+ yosry.ahmed@linux.dev, imran.f.khan@oracle.com, kamalesh.babulal@oracle.com,
+ axelrasmussen@google.com, yuanchu@google.com, weixugc@google.com,
+ chenridong@huaweicloud.com, mkoutny@suse.com, akpm@linux-foundation.org,
+ hamzamahfooz@linux.microsoft.com, apais@linux.microsoft.com,
+ lance.yang@linux.dev, bhe@redhat.com, usamaarif642@gmail.com,
+ linux-mm@kvack.org, linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+ Qi Zheng <zhengqi.arch@bytedance.com>
+References: <cover.1772005110.git.zhengqi.arch@bytedance.com>
+ <ef13e5974343b37ae2a0e28aff03ea2d033cb888.1772005110.git.zhengqi.arch@bytedance.com>
+ <CAO9r8zOhZgrym6oSrtg7b+HmNHEfWuAzZ0i8eYhm5-OEnfFLdw@mail.gmail.com>
+ <aZ-R87JfacQ2gGq1@linux.dev>
+ <CAO9r8zPmgytmGHAbueFKXcZWY5SJaEwD3Pqk99ws4XeO2_hnKw@mail.gmail.com>
+ <97e296ed-ef73-44b7-ab68-3d79749caa47@linux.dev>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Qi Zheng <qi.zheng@linux.dev>
+In-Reply-To: <97e296ed-ef73-44b7-ab68-3d79749caa47@linux.dev>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-1.16 / 15.00];
+X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_CONTAINS_FROM(1.00)[];
-	DMARC_POLICY_ALLOW(-0.50)[intel.com,none];
-	R_DKIM_ALLOW(-0.20)[intel.com:s=Intel];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	DMARC_POLICY_ALLOW(-0.50)[linux.dev,none];
+	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
+	R_DKIM_ALLOW(-0.20)[linux.dev:s=key1];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-14459-lists,cgroups=lfdr.de];
-	FROM_HAS_DN(0.00)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-14460-lists,cgroups=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[18];
+	RCVD_COUNT_THREE(0.00)[3];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	FREEMAIL_CC(0.00)[cmpxchg.org,google.com,suse.com,linux.dev,kernel.org,oracle.com,nvidia.com,huaweicloud.com,linux-foundation.org,linux.microsoft.com,redhat.com,gmail.com,kvack.org,vger.kernel.org,bytedance.com];
+	RCPT_COUNT_TWELVE(0.00)[29];
 	MIME_TRACE(0.00)[0:+];
-	DKIM_TRACE(0.00)[intel.com:+];
+	FROM_HAS_DN(0.00)[];
 	MISSING_XM_UA(0.00)[];
-	TO_DN_SOME(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[lkp@intel.com,cgroups@vger.kernel.org];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[6];
-	TAGGED_RCPT(0.00)[cgroups];
 	NEURAL_HAM(-0.00)[-1.000];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[intel.com:mid,intel.com:dkim,intel.com:email,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 937181B302C
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[qi.zheng@linux.dev,cgroups@vger.kernel.org];
+	DKIM_TRACE(0.00)[linux.dev:+];
+	MID_RHS_MATCH_FROM(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
+	TAGGED_RCPT(0.00)[cgroups];
+	TO_DN_SOME(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: 69AC91B3086
 X-Rspamd-Action: no action
 
-Hi Harry,
-
-kernel test robot noticed the following build errors:
-
-[auto build test ERROR on akpm-mm/mm-everything]
-
-url:    https://github.com/intel-lab-lkp/linux/commits/Harry-Yoo/mm-slab-a-debug-patch-to-investigate-the-issue-further/20260227-111246
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/akpm/mm.git mm-everything
-patch link:    https://lore.kernel.org/r/20260227030733.9517-1-harry.yoo%40oracle.com
-patch subject: [PATCH] mm/slab: a debug patch to investigate the issue further
-config: nios2-allnoconfig (https://download.01.org/0day-ci/archive/20260227/202602271339.xhIvS2iX-lkp@intel.com/config)
-compiler: nios2-linux-gcc (GCC) 11.5.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20260227/202602271339.xhIvS2iX-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202602271339.xhIvS2iX-lkp@intel.com/
-
-All errors (new ones prefixed by >>):
-
-   mm/slub.c: In function 'slab_pad_check':
->> mm/slub.c:1330:13: error: implicit declaration of function 'obj_exts_in_slab'; did you mean 'obj_exts_in_object'? [-Werror=implicit-function-declaration]
-    1330 |         if (obj_exts_in_slab(s, slab) && !obj_exts_in_object(s, slab)) {
-         |             ^~~~~~~~~~~~~~~~
-         |             obj_exts_in_object
->> mm/slub.c:1332:30: error: implicit declaration of function 'obj_exts_offset_in_slab'; did you mean 'obj_exts_offset_in_object'? [-Werror=implicit-function-declaration]
-    1332 |                 remainder -= obj_exts_offset_in_slab(s, slab);
-         |                              ^~~~~~~~~~~~~~~~~~~~~~~
-         |                              obj_exts_offset_in_object
->> mm/slub.c:1333:30: error: implicit declaration of function 'obj_exts_size_in_slab' [-Werror=implicit-function-declaration]
-    1333 |                 remainder -= obj_exts_size_in_slab(slab);
-         |                              ^~~~~~~~~~~~~~~~~~~~~
-   cc1: some warnings being treated as errors
 
 
-vim +1330 mm/slub.c
+On 2/27/26 11:11 AM, Qi Zheng wrote:
+> Hi Yosry,
+> 
+> On 2/26/26 11:16 PM, Yosry Ahmed wrote:
+>>>> Did you measure the impact of making state_local atomic on the flush
+>>>> path? It's a slow path but we've seen pain from it being too slow
+>>>> before, because it extends the critical section of the rstat flush
+>>>> lock.
+>>>
+>>> Qi, please measure the impact on flushing and if no impact then no 
+>>> need to do
+>>> anything as I don't want anymore churn in this series.
+>>>
+>>>>
+>>>> Can we keep this non-atomic and use mod_memcg_lruvec_state() here? It
+>>>> will update the stat on the local counter and it will be added to
+>>>> state_local in the flush path when needed. We can even force another
+>>>> flush in reparent_state_local () after reparenting is completed, if we
+>>>> want to avoid leaving a potentially large stat update pending, as it
+>>>> can be missed by mem_cgroup_flush_stats_ratelimited().
+>>>>
+>>>> Same for reparent_memcg_state_local(), we can probably use 
+>>>> mod_memcg_state()?
+>>>
+>>> Yosry, do you mind sending the patch you are thinking about over this 
+>>> series?
+>>
+>> Honestly, I'd rather squash it into this patch if possible. It avoids
+>> churn in the history (switch to atomics and back), and is arguably
+>> simpler than checking for regressions in the flush path.
+>>
+>> What I have in mind is the diff below (build tested only). Qi, would
+>> you be able to test this? It applies directly on this patch in mm-new:
+> 
+> Thank you so much for doing this! I'm willing to squash and test.
+> 
+> And I found some issues with the diff:
+> 
+>>
+>> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+>> index d82dbfcc28057..404565e80cbf3 100644
+>> --- a/mm/memcontrol.c
+>> +++ b/mm/memcontrol.c
+>> @@ -234,11 +234,18 @@ static inline void reparent_state_local(struct
+>> mem_cgroup *memcg, struct mem_cgr
+>>          if (cgroup_subsys_on_dfl(memory_cgrp_subsys))
+>>                  return;
+>>
+>> +       /*
+>> +        * Reparent stats exposed non-hierarchically. Flush @memcg's
+>> stats first to
+>> +        * read its stats accurately , and conservatively flush 
+>> @parent's stats
+>> +        * after reparenting to avoid hiding a potentially large stat 
+>> update
+>> +        * (e.g. from callers of mem_cgroup_flush_stats_ratelimited()).
+>> +        */
+>>          __mem_cgroup_flush_stats(memcg, true);
+>>
+>> -       /* The following counts are all non-hierarchical and need to
+>> be reparented. */
+>>          reparent_memcg1_state_local(memcg, parent);
+>>          reparent_memcg1_lruvec_state_local(memcg, parent);
+>> +
+>> +       __mem_cgroup_flush_stats(parent, true);
+>>   }
+>>   #else
+>>   static inline void reparent_state_local(struct mem_cgroup *memcg,
+>> struct mem_cgroup *parent)
+>> @@ -442,7 +449,7 @@ struct lruvec_stats {
+>>          long state[NR_MEMCG_NODE_STAT_ITEMS];
+>>
+>>          /* Non-hierarchical (CPU aggregated) state */
+>> -       atomic_long_t state_local[NR_MEMCG_NODE_STAT_ITEMS];
+>> +       long state_local[NR_MEMCG_NODE_STAT_ITEMS];
+>>
+>>          /* Pending child counts during tree propagation */
+>>          long state_pending[NR_MEMCG_NODE_STAT_ITEMS];
+>> @@ -485,7 +492,7 @@ unsigned long lruvec_page_state_local(struct 
+>> lruvec *lruvec,
+>>                  return 0;
+>>
+>>          pn = container_of(lruvec, struct mem_cgroup_per_node, lruvec);
+>> -       x = atomic_long_read(&(pn->lruvec_stats->state_local[i]));
+>> +       x = READ_ONCE(pn->lruvec_stats->state_local[i]);
+>>   #ifdef CONFIG_SMP
+>>          if (x < 0)
+>>                  x = 0;
+>> @@ -493,6 +500,10 @@ unsigned long lruvec_page_state_local(struct
+>> lruvec *lruvec,
+>>          return x;
+>>   }
+>>
+>> +static void mod_memcg_lruvec_state(struct lruvec *lruvec,
+>> +                                  enum node_stat_item idx,
+>> +                                  int val);
+>> +
+>>   #ifdef CONFIG_MEMCG_V1
+>>   void reparent_memcg_lruvec_state_local(struct mem_cgroup *memcg,
+>>                                         struct mem_cgroup *parent, int 
+>> idx)
+>> @@ -506,12 +517,10 @@ void reparent_memcg_lruvec_state_local(struct
+>> mem_cgroup *memcg,
+>>          for_each_node(nid) {
+>>                  struct lruvec *child_lruvec = mem_cgroup_lruvec(memcg,
+>> NODE_DATA(nid));
+>>                  struct lruvec *parent_lruvec =
+>> mem_cgroup_lruvec(parent, NODE_DATA(nid));
+>> -               struct mem_cgroup_per_node *parent_pn;
+>>                  unsigned long value =
+>> lruvec_page_state_local(child_lruvec, idx);
+>>
+>> -               parent_pn = container_of(parent_lruvec, struct
+>> mem_cgroup_per_node, lruvec);
+>> -
+>> -               atomic_long_add(value,
+>> &(parent_pn->lruvec_stats->state_local[i]));
+>> +               mod_memcg_lruvec_state(child_lruvec, idx, -value);
+> 
+> We can't use mod_memcg_lruvec_state() here, because child memcg has
+> already been set CSS_DYING. So in mod_memcg_lruvec_state(), we will
+> get parent memcg.
+> 
+> It seems we need to reimplement a function or add a parameter to
+> mod_memcg_lruvec_state() to solve the problem. What do you think?
 
-81819f0fc8285a Christoph Lameter          2007-05-06  1311  
-39b264641a0c3b Christoph Lameter          2008-04-14  1312  /* Check the pad bytes at the end of a slab page */
-adea9876180664 Ilya Leoshkevich           2024-06-21  1313  static pad_check_attributes void
-adea9876180664 Ilya Leoshkevich           2024-06-21  1314  slab_pad_check(struct kmem_cache *s, struct slab *slab)
-81819f0fc8285a Christoph Lameter          2007-05-06  1315  {
-2492268472e7d3 Christoph Lameter          2007-07-17  1316  	u8 *start;
-2492268472e7d3 Christoph Lameter          2007-07-17  1317  	u8 *fault;
-2492268472e7d3 Christoph Lameter          2007-07-17  1318  	u8 *end;
-5d682681f8a2bd Balasubramani Vivekanandan 2018-01-31  1319  	u8 *pad;
-2492268472e7d3 Christoph Lameter          2007-07-17  1320  	int length;
-2492268472e7d3 Christoph Lameter          2007-07-17  1321  	int remainder;
-81819f0fc8285a Christoph Lameter          2007-05-06  1322  
-81819f0fc8285a Christoph Lameter          2007-05-06  1323  	if (!(s->flags & SLAB_POISON))
-a204e6d626126d Miaohe Lin                 2022-04-19  1324  		return;
-81819f0fc8285a Christoph Lameter          2007-05-06  1325  
-bb192ed9aa7191 Vlastimil Babka            2021-11-03  1326  	start = slab_address(slab);
-bb192ed9aa7191 Vlastimil Babka            2021-11-03  1327  	length = slab_size(slab);
-39b264641a0c3b Christoph Lameter          2008-04-14  1328  	end = start + length;
-70089d01880750 Harry Yoo                  2026-01-13  1329  
-a77d6d33868502 Harry Yoo                  2026-01-13 @1330  	if (obj_exts_in_slab(s, slab) && !obj_exts_in_object(s, slab)) {
-70089d01880750 Harry Yoo                  2026-01-13  1331  		remainder = length;
-70089d01880750 Harry Yoo                  2026-01-13 @1332  		remainder -= obj_exts_offset_in_slab(s, slab);
-70089d01880750 Harry Yoo                  2026-01-13 @1333  		remainder -= obj_exts_size_in_slab(slab);
-70089d01880750 Harry Yoo                  2026-01-13  1334  	} else {
-39b264641a0c3b Christoph Lameter          2008-04-14  1335  		remainder = length % s->size;
-70089d01880750 Harry Yoo                  2026-01-13  1336  	}
-70089d01880750 Harry Yoo                  2026-01-13  1337  
-81819f0fc8285a Christoph Lameter          2007-05-06  1338  	if (!remainder)
-a204e6d626126d Miaohe Lin                 2022-04-19  1339  		return;
-81819f0fc8285a Christoph Lameter          2007-05-06  1340  
-5d682681f8a2bd Balasubramani Vivekanandan 2018-01-31  1341  	pad = end - remainder;
-a79316c6178ca4 Andrey Ryabinin            2015-02-13  1342  	metadata_access_enable();
-aa1ef4d7b3f67f Andrey Konovalov           2020-12-22  1343  	fault = memchr_inv(kasan_reset_tag(pad), POISON_INUSE, remainder);
-a79316c6178ca4 Andrey Ryabinin            2015-02-13  1344  	metadata_access_disable();
-2492268472e7d3 Christoph Lameter          2007-07-17  1345  	if (!fault)
-a204e6d626126d Miaohe Lin                 2022-04-19  1346  		return;
-2492268472e7d3 Christoph Lameter          2007-07-17  1347  	while (end > fault && end[-1] == POISON_INUSE)
-2492268472e7d3 Christoph Lameter          2007-07-17  1348  		end--;
-2492268472e7d3 Christoph Lameter          2007-07-17  1349  
-3f6f32b14ab354 Hyesoo Yu                  2025-02-26  1350  	slab_bug(s, "Padding overwritten. 0x%p-0x%p @offset=%tu",
-e1b70dd1e6429f Miles Chen                 2019-11-30  1351  		 fault, end - 1, fault - start);
-5d682681f8a2bd Balasubramani Vivekanandan 2018-01-31  1352  	print_section(KERN_ERR, "Padding ", pad, remainder);
-3f6f32b14ab354 Hyesoo Yu                  2025-02-26  1353  	__slab_err(slab);
-2492268472e7d3 Christoph Lameter          2007-07-17  1354  
-5d682681f8a2bd Balasubramani Vivekanandan 2018-01-31  1355  	restore_bytes(s, "slab padding", POISON_INUSE, fault, end);
-81819f0fc8285a Christoph Lameter          2007-05-06  1356  }
-81819f0fc8285a Christoph Lameter          2007-05-06  1357  
+Since child memcg is about to disappear, perhaps we can just add value
+to parent memcg without handling the child memcg. Make sense?
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+> 
+>> +               mod_memcg_lruvec_state(parent_lruvec, idx, value);
+>>          }
+>>   }
+>>   #endif
+>> @@ -598,7 +607,7 @@ struct memcg_vmstats {
+>>          unsigned long           events[NR_MEMCG_EVENTS];
+>>
+>>          /* Non-hierarchical (CPU aggregated) page state & events */
+>> -       atomic_long_t           state_local[MEMCG_VMSTAT_SIZE];
+>> +       long                    state_local[MEMCG_VMSTAT_SIZE];
+>>          unsigned long           events_local[NR_MEMCG_EVENTS];
+>>
+>>          /* Pending child counts during tree propagation */
+>> @@ -835,7 +844,7 @@ unsigned long memcg_page_state_local(struct
+>> mem_cgroup *memcg, int idx)
+>>          if (WARN_ONCE(BAD_STAT_IDX(i), "%s: missing stat item %d\n",
+>> __func__, idx))
+>>                  return 0;
+>>
+>> -       x = atomic_long_read(&(memcg->vmstats->state_local[i]));
+>> +       x = READ_ONCE(memcg->vmstats->state_local[i]);
+>>   #ifdef CONFIG_SMP
+>>          if (x < 0)
+>>                  x = 0;
+>> @@ -852,7 +861,8 @@ void reparent_memcg_state_local(struct mem_cgroup 
+>> *memcg,
+>>          if (WARN_ONCE(BAD_STAT_IDX(i), "%s: missing stat item %d\n",
+>> __func__, idx))
+>>                  return;
+>>
+>> -       atomic_long_add(value, &(parent->vmstats->state_local[i]));
+>> +       mod_memcg_state(memcg, idx, -value);
+> 
+> Same as mod_memcg_lruvec_state().
+> 
+> Thanks,
+> Qi
+> 
+>> +       mod_memcg_state(parent, idx, value);
+>>   }
+>>   #endif
+>>
+>> @@ -4174,8 +4184,6 @@ struct aggregate_control {
+>>          long *aggregate;
+>>          /* pointer to the non-hierarchichal (CPU aggregated) counters */
+>>          long *local;
+>> -       /* pointer to the atomic non-hierarchichal (CPU aggregated) 
+>> counters */
+>> -       atomic_long_t *alocal;
+>>          /* pointer to the pending child counters during tree 
+>> propagation */
+>>          long *pending;
+>>          /* pointer to the parent's pending counters, could be NULL */
+>> @@ -4213,12 +4221,8 @@ static void mem_cgroup_stat_aggregate(struct
+>> aggregate_control *ac)
+>>                  }
+>>
+>>                  /* Aggregate counts on this level and propagate 
+>> upwards */
+>> -               if (delta_cpu) {
+>> -                       if (ac->local)
+>> -                               ac->local[i] += delta_cpu;
+>> -                       else if (ac->alocal)
+>> -                               atomic_long_add(delta_cpu, &(ac- 
+>> >alocal[i]));
+>> -               }
+>> +               if (delta_cpu)
+>> +                       ac->local[i] += delta_cpu;
+>>
+>>                  if (delta) {
+>>                          ac->aggregate[i] += delta;
+>> @@ -4289,8 +4293,7 @@ static void mem_cgroup_css_rstat_flush(struct
+>> cgroup_subsys_state *css, int cpu)
+>>
+>>          ac = (struct aggregate_control) {
+>>                  .aggregate = memcg->vmstats->state,
+>> -               .local = NULL,
+>> -               .alocal = memcg->vmstats->state_local,
+>> +               .local = memcg->vmstats->state_local,
+>>                  .pending = memcg->vmstats->state_pending,
+>>                  .ppending = parent ? parent->vmstats->state_pending : 
+>> NULL,
+>>                  .cstat = statc->state,
+>> @@ -4323,8 +4326,7 @@ static void mem_cgroup_css_rstat_flush(struct
+>> cgroup_subsys_state *css, int cpu)
+>>
+>>                  ac = (struct aggregate_control) {
+>>                          .aggregate = lstats->state,
+>> -                       .local = NULL,
+>> -                       .alocal = lstats->state_local,
+>> +                       .local = lstats->state_local,
+>>                          .pending = lstats->state_pending,
+>>                          .ppending = plstats ? plstats- 
+>> >state_pending : NULL,
+>>                          .cstat = lstatc->state,
+> 
+
 
