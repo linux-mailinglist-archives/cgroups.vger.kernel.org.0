@@ -1,236 +1,288 @@
-Return-Path: <cgroups+bounces-14483-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-14484-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id mBieM9AuommQ0gQAu9opvQ
-	(envelope-from <cgroups+bounces-14483-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Sat, 28 Feb 2026 00:54:56 +0100
+	id 0LxgJqVDomlz1QQAu9opvQ
+	(envelope-from <cgroups+bounces-14484-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Sat, 28 Feb 2026 02:23:49 +0100
 X-Original-To: lists+cgroups@lfdr.de
 Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 527461BF3A1
-	for <lists+cgroups@lfdr.de>; Sat, 28 Feb 2026 00:54:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 16F441BFB69
+	for <lists+cgroups@lfdr.de>; Sat, 28 Feb 2026 02:23:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id A4D483134521
-	for <lists+cgroups@lfdr.de>; Fri, 27 Feb 2026 23:51:55 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id C7CB7307BAA9
+	for <lists+cgroups@lfdr.de>; Sat, 28 Feb 2026 01:23:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 71CBF3E8C65;
-	Fri, 27 Feb 2026 23:51:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 057152F6930;
+	Sat, 28 Feb 2026 01:23:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="PWBWnzcd"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mUsUfYm8"
 X-Original-To: cgroups@vger.kernel.org
-Received: from BL0PR03CU003.outbound.protection.outlook.com (mail-eastusazon11012018.outbound.protection.outlook.com [52.101.53.18])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f45.google.com (mail-wr1-f45.google.com [209.85.221.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B39053A1E66;
-	Fri, 27 Feb 2026 23:51:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.53.18
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772236281; cv=fail; b=kRu/amTloP1NpC5ud7x01QljIrZUJGWkTNHoK48Z0jpoPqo0rsjR2RTxM8Sv2zT4eBwd2X3kvcOBx4i/gs3sEvnFuC7Z3m5gtbyHguv/8nWH2NKO20J818i288MCp0RSS3ufVS69tTMSQgcXJ6FXJWqM6taFXFeJe/Na2n4tWMs=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772236281; c=relaxed/simple;
-	bh=copYfQV1+gwjNBsbgobkVXCOB0kvVafxTjbHCKcb+ac=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=AE6hMK5vW9w8f6TFS+sXKzqtQx2O88uT1pY5sqnScIdxzUntTLIknQjWssVBLgxspLQ+cHJSISyS53dOdTkidf42weNor/mcgnm9EDDaAq1pJo1YnTy0etpFjlCPbIsFr72adbdW4wYiV9xPed+cSWlWLy3yRPsH+3zHnA/WVjA=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=PWBWnzcd; arc=fail smtp.client-ip=52.101.53.18
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=OFdkDTPSE+kEdv5iYD7F7ke3X48iEuIqLiUQXD5Z/ORvlKpm6hI2sQ4DbSnuMMAm1A2PpSOmGPWCbOl11JQ7g1YNhRllgimvJocaWGule9kwoELCdftLcvfnFy7U5AbShpHsCw+dl1oLj8NxkqheZsHxWZmnvHIBVjsbpR8bQo7tdfrcQ91OF/kb3UNiJu2ROguToIhvlnNhBwFVd0XKbkytY6ITpidhEqFOqgQ5xkLaHsLmpwZ9H4Dn1LR1cS8VUbT3ip/YtKyZ/xYEN2mKVbHqS5IhxnP2ihiw5XygAs7hvyHJRU8qWhODLXsAI5k6iMRv9IrZn79ghbv2MG9cPQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=U2Qf1k0U10yVGM/h39ZqX5ZJhhYMH0owWgJEPscJY+A=;
- b=N7Oc2d+Nt97oKl9pNmrjMFzvln187ouIPNVUVIDffaI5BuYErWcwVpLeS9vyuq8TacRcXme4Z4fuCOM0oHrI11DtuCIqFsiqYKQ+TaRw56PutQMFXYi1/b0dPjbCxXCbIPw0saZ9s/ujPnL+huvQfkQpwhAcllKGAbAtl1yJmb/IvevRxs/DyG5CnzTyX5Ydd1ByIlJG+DtmAS2uwxmuZkT/lJA5H3kbWJLxivfuRGeu9ht57XOL390/t9vYcEDIPSKiZ8XhaQPCBuFHe/6l0J2w26l/IzZnkaFsJCW6khlTIn5i3AeRrMDV7OjPtCDrMeNk1uvWA5uWm0v3nyjSnA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=U2Qf1k0U10yVGM/h39ZqX5ZJhhYMH0owWgJEPscJY+A=;
- b=PWBWnzcda9mpK5LfFE0U81mkrjg9TzW4xPr4qKd8qtZYfipK/GLk9yD4xXmEvteYHfIR7ytBg7KQSHM1SAyyv5mWzxqI7UVSS8C/qt4Ltxhzsge7TZsT5Jq3TkIms+fciTdxpsfaXzx8kynK/B4BR2vdoyy6gekTpSngc1OulbwRnNl+X/wyNG6DaBPKhHMSnM3UO4m//IYhdAOJfF/xtP1EclYxO3MTmxZReRq270QdHnQ6tWdYHEbIzNqmaNVYocw0Zq4e2b8KJ8aJX3+LXClGbPaoRB3FUQ/ICu/2RMOBLGyMWnP2mPrA0s7V53xDaWQbHVGYPjSSqPjA6lzhHw==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from LV8PR12MB9620.namprd12.prod.outlook.com (2603:10b6:408:2a1::19)
- by MW4PR12MB7237.namprd12.prod.outlook.com (2603:10b6:303:22a::6) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9654.16; Fri, 27 Feb
- 2026 23:51:07 +0000
-Received: from LV8PR12MB9620.namprd12.prod.outlook.com
- ([fe80::299d:f5e0:3550:1528]) by LV8PR12MB9620.namprd12.prod.outlook.com
- ([fe80::299d:f5e0:3550:1528%5]) with mapi id 15.20.9654.014; Fri, 27 Feb 2026
- 23:51:07 +0000
-Date: Sat, 28 Feb 2026 00:50:57 +0100
-From: Andrea Righi <arighi@nvidia.com>
-To: Tejun Heo <tj@kernel.org>
-Cc: linux-kernel@vger.kernel.org, sched-ext@lists.linux.dev,
-	void@manifault.com, changwoo@igalia.com, emil@etsalapatis.com,
-	hannes@cmpxchg.org, mkoutny@suse.com, cgroups@vger.kernel.org
-Subject: Re: [PATCH 11/34] sched_ext: Enforce scheduler ownership when
- updating slice and dsq_vtime
-Message-ID: <aaIt4aZzWAZSktJg@gpd4>
-References: <20260225050109.1070059-1-tj@kernel.org>
- <20260225050109.1070059-12-tj@kernel.org>
- <aaBjHUr29afGuKVh@gpd4>
- <aaIZ6aeNJrZp14kh@slm.duckdns.org>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <aaIZ6aeNJrZp14kh@slm.duckdns.org>
-X-ClientProxiedBy: MI0P293CA0009.ITAP293.PROD.OUTLOOK.COM
- (2603:10a6:290:44::6) To LV8PR12MB9620.namprd12.prod.outlook.com
- (2603:10b6:408:2a1::19)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D2C68240611
+	for <cgroups@vger.kernel.org>; Sat, 28 Feb 2026 01:23:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.45
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1772241825; cv=none; b=YXeP50hvJE1fKgD1Y6NCQh2dV3JQBoPFx6tve9b3g9qTQdqFFOBfeKN+uc+dwqq4n6RVAkEPyUvFcFOZXKr4S3tQvlpFHhsXkfO6YK3t+FiJ+573TbrI6GM2XXTdIlNSDN+AJfG8QKKi6TpgexfxxS778ry5q12/unP6Lqx34S8=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1772241825; c=relaxed/simple;
+	bh=8K1g0s200C2jXvnlF3n/xCUoV2tw1xf9NKltWq8Auq8=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type:Content-Disposition; b=Hlnvvj5tR2eH6qm8O8/6ZD5XhbaU+6ahWgM5DEl4wInbzuqIYOq67rlox4wkeuZk/Xk1Yn0+GYxkq7+csKEDS2Vd4oTTszo7pOak5pffJ07vt6ZEo571Sf42OFRW/azlWo7jEwKn/DYc2K7F3XCh38P1Pt9zUA+SBVvNb1IS16c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=mUsUfYm8; arc=none smtp.client-ip=209.85.221.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f45.google.com with SMTP id ffacd0b85a97d-4398d1f06caso2453577f8f.0
+        for <cgroups@vger.kernel.org>; Fri, 27 Feb 2026 17:23:42 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1772241821; x=1772846621; darn=vger.kernel.org;
+        h=content-transfer-encoding:content-disposition:mime-version
+         :references:in-reply-to:message-id:date:subject:cc:to:from:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=kpdBycfJnCA5XxdzZKoEBDpwQf+1LoRkJkd0FNmFdis=;
+        b=mUsUfYm8qK+TkLbqzHlWbc/k2m5TnCNm/tkUyMTfuYLbOPrzMgVawMbie2X+P5J1ep
+         p0X2K858n6UtddJW82QZuqZ9UOsy5IwsVgRX2hQVhMQVXaeyYr5oMBUdpcy55cjd4Tpt
+         V+wGCi6kzmWLaeE034Bh+7Ln8+it84vsGz8iMCeSKFGY8vLwiVV2mV+S4On2z7RUBeCt
+         borjvLtdEzarLQzJEbpJZWlm1n2jN52MWr8v7FypEuspxCiqryZmYsn/Bmu5YhYIFKUO
+         ZcTqtXcgGRC3Uj26fpfwxSlHk2tCTXHw5iRyQA9WcBMsXx/fU+b8Gx6e2Vwlwr3tfX0T
+         jy3A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1772241821; x=1772846621;
+        h=content-transfer-encoding:content-disposition:mime-version
+         :references:in-reply-to:message-id:date:subject:cc:to:from:x-gm-gg
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=kpdBycfJnCA5XxdzZKoEBDpwQf+1LoRkJkd0FNmFdis=;
+        b=LGfZWT9pAUBRm/jzSRo4n+fIWV6YvKpVvKR9eo6C/L8xPWJAj1u1agIYgqzo1amMvB
+         3hjPQL7kQmSyrJpmFlS46xFQt2VgeM1FI9wk1Jn37WrNpswYqvh1DOx0OEeluBUCS/Jz
+         HSESXbgyFxcfuYqoqEmYKr6JwVI3FX/n/Tvfv9OwdnAkKmPGBU4huvbeIFLcjTB7y4h6
+         X9Rc026Ql5568c8X5sjqvXBPAW9aDVkOTwRk4yGol3pEIXoGwxRpKX2n182Rt6aOjtSi
+         7SD1ZG60kAk2G7ctDJNA+0LmQzDK3cXe1k8BHoAWJZqgMrOf749VOJO1b1CQ3lyuPXT0
+         MBCg==
+X-Forwarded-Encrypted: i=1; AJvYcCUENCRNQgjOUs9Cu8Z7AMb08zJqTY3PU6oIfwWPAwc725jrByUR2U8wedVzZ+/sVPg3o1YYnYlT@vger.kernel.org
+X-Gm-Message-State: AOJu0Yx+ZuZTH5IDmWdP5/WRIuEs0i7qXJpJ6VIjsQKRiy9t3HEpc9D+
+	mFRxKxRo8w/79xFn0Hz0VVJX1BSFwyTd6SVt7lazfXRDcGtlO+ghapqn
+X-Gm-Gg: ATEYQzwrOfIQ1SujUYFQkCZLIUODJ/Esg48agZX3GcasbTzjkHcH+frqzF6d2bNBW95
+	m4B8i8p9twmR4y5l04lLsh07eDOYT018ve4SvLG529x/1go5Q2CyzMivvib1qLP16ejZa6Ww6ly
+	3RpQQ1E4JeM+VcoI2QRKgFccBgL6gEg2Owz+6pDl9RrghNBgnGJ6ZLPhU3wtNLfdNlGXbe7MEYL
+	mxMUYONsXdiJpqY7TYmmI4RSDEKanv6rRMm+HniAPQRmFr8P6w72a5Q9iecU2Y3iNhP0llUfLRN
+	3LWgQoBKwwFr8KXPwqzeiDTDP9sxBbjf4jkPedVXbuI6QPV0q0gDu83nZGtroJz/tvxJmSYHsHa
+	HwwZstx/52wfQFpAx4WJ/+mgxwaqnshtqI//IbL5eDY+2MIwCfbBj9d6ipJxeyR0u6ZeMrnv5dJ
+	+7PqlQ+h4PbgGmZjEyaIQHWHzoGzUi3iIa40c=
+X-Received: by 2002:a05:6000:1845:b0:435:add0:3d68 with SMTP id ffacd0b85a97d-4399de33986mr8879477f8f.58.1772241820909;
+        Fri, 27 Feb 2026 17:23:40 -0800 (PST)
+Received: from WindFlash.powerhub ([2a0a:ef40:1b2a:fa01:9944:6a8c:dc37:eba5])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-4399c75b272sm10193021f8f.24.2026.02.27.17.23.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 27 Feb 2026 17:23:40 -0800 (PST)
+From: Leonardo Bras <leobras.c@gmail.com>
+To: Michal Hocko <mhocko@suse.com>
+Cc: Leonardo Bras <leobras.c@gmail.com>,
+	Marcelo Tosatti <mtosatti@redhat.com>,
+	linux-kernel@vger.kernel.org,
+	cgroups@vger.kernel.org,
+	linux-mm@kvack.org,
+	Johannes Weiner <hannes@cmpxchg.org>,
+	Roman Gushchin <roman.gushchin@linux.dev>,
+	Shakeel Butt <shakeel.butt@linux.dev>,
+	Muchun Song <muchun.song@linux.dev>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Christoph Lameter <cl@linux.com>,
+	Pekka Enberg <penberg@kernel.org>,
+	David Rientjes <rientjes@google.com>,
+	Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+	Vlastimil Babka <vbabka@suse.cz>,
+	Hyeonggon Yoo <42.hyeyoo@gmail.com>,
+	Leonardo Bras <leobras@redhat.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Waiman Long <longman@redhat.com>,
+	Boqun Feng <boqun.feng@gmail.com>,
+	Frederic Weisbecker <fweisbecker@suse.de>
+Subject: Re: [PATCH 0/4] Introduce QPW for per-cpu operations
+Date: Fri, 27 Feb 2026 22:23:27 -0300
+Message-ID: <aaJDjmnfuo8AM6J9@WindFlash>
+X-Mailer: git-send-email 2.53.0
+In-Reply-To: <aZwYmNuucBspCYhk@tiehlicka>
+References: <20260206143430.021026873@redhat.com> <aYs6Ju2G4bm6_tl2@tiehlicka> <aYxviLoWsrLqDU7o@tpad> <aYywl1hdBQP2_slo@tiehlicka> <aZDw6xI2izFDfuuu@WindFlash> <aZL45yORfkNvS9Rs@tiehlicka> <aZjY9h3XXMNY-Ytd@WindFlash> <aZwYmNuucBspCYhk@tiehlicka>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: LV8PR12MB9620:EE_|MW4PR12MB7237:EE_
-X-MS-Office365-Filtering-Correlation-Id: d685efd7-85cc-4f54-b49b-08de765b13a7
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|376014|1800799024|366016|13003099007;
-X-Microsoft-Antispam-Message-Info:
-	8LLWbxeYvc2ZOWvWcYmq0oJs/lH8rxdOV+vBAZvIyic0+P+XXZgRpN3HY1nIA1F7VNVRmM+T3nab9LxXSpImbm/wfXiJKGXfgBRU4tnXCykhTo0ghUXdCSvxZMUZI58FttzumJIggrwwSyMwtvCVqyuwikctxoJ0tGS4cZ2CCVX6rAvjviFosJskGtsCQSIjkOU48ic4KuCipqM5TWYiw5kMkIWVTKxb0mmvIyuZTSD8Xrq7mAsBmkwkJ5KELw86f7s2aeFI4jT4dYASlROgS7Rmqyr6uvJPtkRIEoKA3vEO6z49IUKkEevT/5AqQ5rTpNw5U4LYEEj8ofwuH26H/c+9p3mQfcoWlwSnNVOrSp0DpR0bQwhcpqn/DTvQFkgbI3D+Q6mbMJbJPysgH+x4pmeqwvpKT25kWDwZFHENGdkWoWBIdaAJ9RkAVyovlPpxKHgfx36+9U0OJHVQwe02L8yPiHX0aJNr6xJ9LDsSpMBRUg7b/gY8go3uncSKMoeTCR2IIEWoYUM4rGL2dmFuEc/QlLysJ6OcM9PZsCBkwV2ONj4YUMJK1bmx9x4u5ZEqetu0IpSaP5yEltZCXanSFs4TgzX/Gxl1U8W7q3O9c/LEiqLnb4MpWebaM68zs+B/3zDKtWnZA4/sWBLT9bWNxKsDmtjw1YpSkAd/mU3bMMDjJWaV+rFNZCNKpHPQwG/vF3KVsTJbjFDRiWVVIr4e1yLBji0roKr/VjG4bV3WFk8=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:LV8PR12MB9620.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(376014)(1800799024)(366016)(13003099007);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?rSDqFOiVLaGQxh8iUpyHLoC9FwjZ/0c9dP/3ViUVJbtL88WgicfibroIzSqa?=
- =?us-ascii?Q?OKHKDsGisdHjuwPLGuXZFZHFI/nR3u5HhofvV/PrOid7wxefC5gME1um+Z3N?=
- =?us-ascii?Q?7z5ZpyhPDuSnLikzsruf/VSIW9eq+/sNUQtc1JBCbSJi4xePDZ937aHQim26?=
- =?us-ascii?Q?kF7jSbB3Hpkt1tmnBKHkOIPXSrGXakXVFK0zOuU1LCBJsONjuK09zXRKiy6w?=
- =?us-ascii?Q?XJp4wK73sTxgtv6+YgRF9i5zuM8AswazlSgM+xQkjEOX41n7Im8JNINZsRIo?=
- =?us-ascii?Q?yjYay/GR6P6S8ML0FiZS3MmkLWZpl5TpDl+87rUHBU8cGRc1frQkq61917jr?=
- =?us-ascii?Q?SS9SAFnYuBh78G1pOikYFxLr3+jLLU3KBp1uRBWpJALL1lE6+zFV2Kn9yE4V?=
- =?us-ascii?Q?LzDgWqugx4MYIli/B275ZTESdwgAH8Ek7m4KrAxQ24LgxCS6XCZFbIaauLqa?=
- =?us-ascii?Q?FHijiuYZtFBacYdByF+0egtuDDL1yCjpT/l4u7Pm1OydVWY2UA6xSCGoiYhi?=
- =?us-ascii?Q?lH6QtNB5zBTEtwVxVHjeESZteJ6aXY0jj2qrOs0Dgl7TUf0lRfbP1qRExyc3?=
- =?us-ascii?Q?Km5VvczlADB/PBnTy1ZtFFt8RsP10NwPQ5FubeIdgNiEsGScAeLIWkox6mMy?=
- =?us-ascii?Q?g+RNK9PObQ7RR8OLAvc5ZgnSWZjnGKblf0PYDWPSmJiw0FBDl7UnvVVvIxKl?=
- =?us-ascii?Q?HM0NxuWrbKwsAaUwTlMRfw5xU9F0Z3esQ+r07prZRfdtg+j5QLp4+GC1+peh?=
- =?us-ascii?Q?fKPMyAI2u5DmkdGYFM73A6RHcdkRR+MrnxeQXSNpmKWZyWrIvszhXtP5+7Ye?=
- =?us-ascii?Q?i6/8b0FmQGLWw0rIAUqjI6cqsnaSP8Mt5Hx/LdIMt0I3OB9nMiwNVYl4b3cL?=
- =?us-ascii?Q?BRHxiP7ZOBMs9i+QLUZdsOGJqFRbSpng4q8BdrgOEXnnGoag1wW4DcAwlVa1?=
- =?us-ascii?Q?I32uaULACzCX0CEwXEbFHRLmeOcI5wdegmYjAhg2XmKkxIhbqy8vaeqYrhLe?=
- =?us-ascii?Q?ZMr1+gFH8w+uaPh8LiqAMhxQIwWO9Iph2mEH037QtFiHnBgk8RQFbjxn8iEo?=
- =?us-ascii?Q?ZorZ4b6RGAxJGrUtrsQtExk7VDdeRfwB3kQn9U/cAe7pXnTJehPrrgb2tm01?=
- =?us-ascii?Q?0mW7CuzNOLGMG2LvR1P87N5QZzkF/aSg8oPq3GmwcSXn4dbLnBAp1LgDO96o?=
- =?us-ascii?Q?EE2tkwWZQ2ODth8scBpDxNhcC4mLL7Ww+qrzHeHgwJOEFgKNQnRt5LtiIIM6?=
- =?us-ascii?Q?1+GeTmoG1nZMc/14zot44HBqHNUYEVzzcL/E6WVlR9ck7YRsVQxWfAE/5foc?=
- =?us-ascii?Q?zTVXDpSaXut7yev0cGHG/xDkXOQwxgG++0bEkDMUH3W78Sl7OIN47Dl5o6hX?=
- =?us-ascii?Q?Kl8grLxc9RJwxAxG82tF/UV1PJ28FlOjNd5PUKk8tlUGD/XdgZi4lsOampmn?=
- =?us-ascii?Q?TFRONYo849l+oKuducfYsogsV2RMqjEVnEoT/hn4msU0U0wVi9ny8427yhab?=
- =?us-ascii?Q?pfMtULJZdT6CMbIpCLVGLr4+Uymp3bw1NtqRsPonil6LxIRYmZ2g/cQNv+2N?=
- =?us-ascii?Q?NtydRpBeQ1DnGdpjjwjx76puPIgtitkNtR+buSuLjMYS8HyyhzVfEd2nPdRF?=
- =?us-ascii?Q?H7sT0De+LgtdH6vNcoKKHkO9I4VqzkF5CMBa7giKMAdsZxMRvF2I+0PTxOmU?=
- =?us-ascii?Q?dJ0R5yctKURyl2A0CruyLeSsqyPxzdGKnZNdlOt5U8th0TUeZj5qva1S72zo?=
- =?us-ascii?Q?kUDYqE06aQ=3D=3D?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: d685efd7-85cc-4f54-b49b-08de765b13a7
-X-MS-Exchange-CrossTenant-AuthSource: LV8PR12MB9620.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Feb 2026 23:51:07.8665
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: x1xonHvfB2ysRq85VgMEbyW6WaBCrRCVb+oSs6y++R2X18+PodJh1k0WgxRDuYzPV+KCBv3NVONYdwM2Ft6wnw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR12MB7237
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [0.34 / 15.00];
-	ARC_REJECT(1.00)[cv is fail on i=2];
-	DMARC_POLICY_ALLOW(-0.50)[nvidia.com,reject];
+X-Spamd-Result: default: False [-0.16 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
 	MID_RHS_NOT_FQDN(0.50)[];
-	R_DKIM_ALLOW(-0.20)[Nvidia.com:s=selector2];
 	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
+	R_DKIM_ALLOW(-0.20)[gmail.com:s=20230601];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-14483-lists,cgroups=lfdr.de];
-	FROM_HAS_DN(0.00)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	RCVD_TLS_LAST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-14484-lists,cgroups=lfdr.de];
+	RCPT_COUNT_TWELVE(0.00)[22];
 	MIME_TRACE(0.00)[0:+];
-	DKIM_TRACE(0.00)[Nvidia.com:+];
-	MISSING_XM_UA(0.00)[];
-	TO_DN_SOME(0.00)[];
+	RCVD_TLS_LAST(0.00)[];
+	FREEMAIL_CC(0.00)[gmail.com,redhat.com,vger.kernel.org,kvack.org,cmpxchg.org,linux.dev,linux-foundation.org,linux.com,kernel.org,google.com,lge.com,suse.cz,linutronix.de,suse.de];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	FREEMAIL_FROM(0.00)[gmail.com];
 	RCVD_COUNT_FIVE(0.00)[5];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[arighi@nvidia.com,cgroups@vger.kernel.org];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[leobrasc@gmail.com,cgroups@vger.kernel.org];
+	DKIM_TRACE(0.00)[gmail.com:+];
 	NEURAL_HAM(-0.00)[-1.000];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[cgroups];
-	RCPT_COUNT_SEVEN(0.00)[9];
 	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,Nvidia.com:dkim]
-X-Rspamd-Queue-Id: 527461BF3A1
+	TO_DN_SOME(0.00)[]
+X-Rspamd-Queue-Id: 16F441BFB69
 X-Rspamd-Action: no action
 
-On Fri, Feb 27, 2026 at 12:25:45PM -1000, Tejun Heo wrote:
-> Hello, Andrea.
-> 
-> On Thu, Feb 26, 2026 at 04:13:33PM +0100, Andrea Righi wrote:
-> > My concern with this is that we may introduce some overhead for those
-> > schedulers that require frequent adjustment of slice / dsq_vtime directly.
-> 
-> I'm a bit skeptical about the premise. Unless p->scx.vtime/slice are used
-> for BPF side book-keeping, the only times they need to be modified are:
-> 
-> - When inserting into a vtime DSQ, vtime needs to be set. However, the
->   interface functions already have provisions for setting vtime, so direct
->   manipulation isn't necessary.
-> 
-> - slice can be simliar but can also be a bit more complicated. As slice only
->   affects when the task actually gets on the CPU and a task may not have its
->   eventual slice known at the time of its insertion into a user DSQ. In such
->   cases, it may be necessary to set the slice as the task starts execution
->   from e.g. ops.running().
-> 
-> - While a task is running, slice modification can be used to give the task
->   more or less CPU time. Most commonly, these would be either extending
->   slice to keep running the current task or preemting the task by setting
->   the slice to zero and triggering a scheduling event.
-> 
-> So, as long as p->scx.vtime/slice are used to instruct the kernel what to
-> do, as opposed to being used for BPF side book-keeping, vtime doesn't need
-> to be directly modified at all and while slice may need to be modified,
-> those are mostly directly tied to actual scheduling operations and context
-> switches. I'd be surprised if the kfunc overhead is noticeable at all. kfunc
-> calls aren't expensive unless you're banging on it in a tight loop. Also,
-> note that in the lowest overhead scheduling scenario - direct dispatch to a
-> local DSQ from select_cpu()/enqueue() - neither is needed. It'd just be a
-> single scx_bpf_dsq_insert() call.
-> 
-> > While the scx_task_on_sched() check itself has likely zero impact, the
-> > kfunc invocations can potentially introduce measurable overhead.
+On Mon, Feb 23, 2026 at 10:06:32AM +0100, Michal Hocko wrote:
+> On Fri 20-02-26 18:58:14, Leonardo Bras wrote:
+> > On Mon, Feb 16, 2026 at 12:00:55PM +0100, Michal Hocko wrote:
+> > > On Sat 14-02-26 19:02:19, Leonardo Bras wrote:
+> > > > On Wed, Feb 11, 2026 at 05:38:47PM +0100, Michal Hocko wrote:
+> > > > > On Wed 11-02-26 09:01:12, Marcelo Tosatti wrote:
+> > > > > > On Tue, Feb 10, 2026 at 03:01:10PM +0100, Michal Hocko wrote:
+> > > > > [...]
+> > > > > > > What about !PREEMPT_RT? We have people running isolated workloads and
+> > > > > > > these sorts of pcp disruptions are really unwelcome as well. They do not
+> > > > > > > have requirements as strong as RT workloads but the underlying
+> > > > > > > fundamental problem is the same. Frederic (now CCed) is working on
+> > > > > > > moving those pcp book keeping activities to be executed to the return to
+> > > > > > > the userspace which should be taking care of both RT and non-RT
+> > > > > > > configurations AFAICS.
+> > > > > > 
+> > > > > > Michal,
+> > > > > > 
+> > > > > > For !PREEMPT_RT, _if_ you select CONFIG_QPW=y, then there is a kernel
+> > > > > > boot option qpw=y/n, which controls whether the behaviour will be
+> > > > > > similar (the spinlock is taken on local_lock, similar to PREEMPT_RT).
+> > > > > 
+> > > > > My bad. I've misread the config space of this.
+> > > > > 
+> > > > > > If CONFIG_QPW=n, or kernel boot option qpw=n, then only local_lock 
+> > > > > > (and remote work via work_queue) is used.
+> > > > > > 
+> > > > > > What "pcp book keeping activities" you refer to ? I don't see how
+> > > > > > moving certain activities that happen under SLUB or LRU spinlocks
+> > > > > > to happen before return to userspace changes things related 
+> > > > > > to avoidance of CPU interruption ?
+> > > > > 
+> > > > > Essentially delayed operations like pcp state flushing happens on return
+> > > > > to the userspace on isolated CPUs. No locking changes are required as
+> > > > > the work is still per-cpu.
+> > > > > 
+> > > > > In other words the approach Frederic is working on is to not change the
+> > > > > locking of pcp delayed work but instead move that work into well defined
+> > > > > place - i.e. return to the userspace.
+> > > > > 
+> > > > > Btw. have you measure the impact of preempt_disbale -> spinlock on hot
+> > > > > paths like SLUB sheeves?
+> > > > 
+> > > > Hi Michal,
+> > > > 
+> > > > I have done some study on this (which I presented on Plumbers 2023):
+> > > > https://lpc.events/event/17/contributions/1484/ 
+> > > > 
+> > > > Since they are per-cpu spinlocks, and the remote operations are not that 
+> > > > frequent, as per design of the current approach, we are not supposed to see 
+> > > > contention (I was not able to detect contention even after stress testing 
+> > > > for weeks), nor relevant cacheline bouncing.
+> > > > 
+> > > > That being said, for RT local_locks already get per-cpu spinlocks, so there 
+> > > > is only difference for !RT, which as you mention, does preemtp_disable():
+> > > > 
+> > > > The performance impact noticed was mostly about jumping around in 
+> > > > executable code, as inlining spinlocks (test #2 on presentation) took care 
+> > > > of most of the added extra cycles, adding about 4-14 extra cycles per 
+> > > > lock/unlock cycle. (tested on memcg with kmalloc test)
+> > > > 
+> > > > Yeah, as expected there is some extra cycles, as we are doing extra atomic 
+> > > > operations (even if in a local cacheline) in !RT case, but this could be 
+> > > > enabled only if the user thinks this is an ok cost for reducing 
+> > > > interruptions.
+> > > > 
+> > > > What do you think?
+> > > 
+> > > The fact that the behavior is opt-in for !RT is certainly a plus. I also
+> > > do not expect the overhead to be really be really big. 
 > > 
-> > I'm wondering if we could instead delegate the authority check at
-> > verification time, introducing something similar to PTR_TRUSTED
-> > (PTR_SCX_AUTH?) to struct task_struct * to represent that the scheduler has
-> > authority to access the task and allow direct writes to p->scx.slice /
-> > p->scx.dsq_vtime only when the register has that flag.
+> > Awesome! Thanks for reviewing!
 > > 
-> > Then:
-> >  - for tasks passed from the core opts (enqueue, dispatch, etc.) we
-> >    automatically tag them with PTR_SCX_AUTH,
-> >  - tasks obtained externally (e.g., via bpf_task_from_pid()): they don't
-> >    have the flag (so no modification allowed) and in this case maybe we
-> >    provide a scx_bpf_auth_task() kfunc to perform the scx_task_on_sched()
-> >    check that returns p (or NULL) setting the auth flag if the scheduler
-> >    has full access to the task.
+> > > To me, a much
+> > > more important question is which of the two approaches is easier to
+> > > maintain long term. The pcp work needs to be done one way or the other.
+> > > Whether we want to tweak locking or do it at a very well defined time is
+> > > the bigger question.
+> > 
+> > That crossed my mind as well, and I went with the idea of changing locking 
+> > because I was working on workloads in which deferring work to a kernel 
+> > re-entry would cause deadline misses as well. Or more critically, the 
+> > drains could take forever, as some of those tasks would avoid returning to 
+> > kernel as much as possible. 
 > 
-> So, I'm not sure this is something we need to invest complexity into. The
-> only cases I can think of where the overhead might become visible is if the
-> BPF sched uses these fields for internal bookkeeping and keeps updating a
-> lot more times than there are actual scheduling events. However, I don't
-> think that's a usage model that we want to encourage.
+> Could you be more specific please?
 
-Ack, also we don't necessarily need to make it perfect right now, we can
-begin with the set_slice/set_dsq_vtime kfuncs and refine the appraoch later
-if we find performance regressions.
+Hi Michal,
+Sorry for the delay
 
-Thanks,
--Andrea
+I think Marcelo covered some of the main topics earlier in this 
+thread:
+
+https://lore.kernel.org/all/aZ3ejedS7nE5mnva@tpad/
+
+But in syntax:
+- There are workloads that are projected not avoid as much as possible 
+return to kernelspace, as they are either cpu intensive, or latency 
+sensitive (RT workloads) such as low-latency automation.
+
+There are scenarios such as industrial automation in which 
+the applications are supposed to reply a request in less than 50us since it 
+was generated (IIRC), so sched-out, dealing with interruptions, or syscalls 
+are a no-go. In those cases, using cpu isolation is a must, and since it 
+can stay really long running in userspace, it may take a very long time to 
+do any syscall to actually perform the scheduled flush.
+
+- Other workloads may need to use syscalls, or rely in interrupts, such as 
+HPC, but it's also not interesting to take long on them, as the time spent 
+there is time not used for processing the required data.
+
+Let's say that for the sake of cpu isolation, a lot of different
+requests made to given isolated cpu are batched to be run on syscall 
+entry/exit. It means the next syscall may take much longer than 
+usual.
+- This may break other RT workloads such as  sensor/sound/image sampling, 
+which could be generally ok with some of the faster syscalls for their 
+application, and now may perceive an error because one of those syscalls 
+took too long. 
+
+While the qpw approach may cost a few extra cycles, it operates remotelly 
+and makes the system a bit more predictable. 
+
+Also, when I was planning the mechanism, I remember it was meant to add 
+zero overhead in case of CONFIG_QPW=n, very little overhead in case of 
+CONFIG_QPW=y + qpw=0 (a couple of static branches, possibly with the 
+cost removed by the cpu branch predictor),  and only add a few cycles in 
+case of qpw=1 + !RT. Which means we may be missing just a few adjustments 
+to get there.
+
+BTW, if the numbers are not that great for your workloads, we could take a 
+look at adding an extra QPW mode in which local_locks are taken in 
+the fastpath and it allows the flush wq to be posponed to that point in 
+syscall return that you mentioned. What I mean is that we don't need to be 
+limitted to choosing between solutions, but instead allow the user (or 
+distro) to choose the desired behavior.
+
+Thanks!
+Leo 
 
