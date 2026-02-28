@@ -1,288 +1,166 @@
-Return-Path: <cgroups+bounces-14484-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-14485-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 0LxgJqVDomlz1QQAu9opvQ
-	(envelope-from <cgroups+bounces-14484-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Sat, 28 Feb 2026 02:23:49 +0100
+	id OLoyOgllomnI2gQAu9opvQ
+	(envelope-from <cgroups+bounces-14485-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Sat, 28 Feb 2026 04:46:17 +0100
 X-Original-To: lists+cgroups@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 16F441BFB69
-	for <lists+cgroups@lfdr.de>; Sat, 28 Feb 2026 02:23:48 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5A9251C0324
+	for <lists+cgroups@lfdr.de>; Sat, 28 Feb 2026 04:46:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id C7CB7307BAA9
-	for <lists+cgroups@lfdr.de>; Sat, 28 Feb 2026 01:23:47 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 258C43004F72
+	for <lists+cgroups@lfdr.de>; Sat, 28 Feb 2026 03:41:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 057152F6930;
-	Sat, 28 Feb 2026 01:23:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F6832D2381;
+	Sat, 28 Feb 2026 03:41:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mUsUfYm8"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="SWuS4p0a"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-wr1-f45.google.com (mail-wr1-f45.google.com [209.85.221.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-178.mta1.migadu.com (out-178.mta1.migadu.com [95.215.58.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D2C68240611
-	for <cgroups@vger.kernel.org>; Sat, 28 Feb 2026 01:23:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 057712D0C82
+	for <cgroups@vger.kernel.org>; Sat, 28 Feb 2026 03:41:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772241825; cv=none; b=YXeP50hvJE1fKgD1Y6NCQh2dV3JQBoPFx6tve9b3g9qTQdqFFOBfeKN+uc+dwqq4n6RVAkEPyUvFcFOZXKr4S3tQvlpFHhsXkfO6YK3t+FiJ+573TbrI6GM2XXTdIlNSDN+AJfG8QKKi6TpgexfxxS778ry5q12/unP6Lqx34S8=
+	t=1772250095; cv=none; b=buDTtfx1C8FBaowxxwzzN8wX9n4SKMlHaL5CzQhK2WXSDrL2jMfSI7RsZxw9UwnWqM85ul6SG0QYsDoS7X5i+WEzWdVtke4GRbUrFgNBUrGvCpX++YBE9C+EpFcIKAyzmWnVtVo9OHmnS6iRKwsCsnn7vAP7jhnCjp6lLroNVvU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772241825; c=relaxed/simple;
-	bh=8K1g0s200C2jXvnlF3n/xCUoV2tw1xf9NKltWq8Auq8=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type:Content-Disposition; b=Hlnvvj5tR2eH6qm8O8/6ZD5XhbaU+6ahWgM5DEl4wInbzuqIYOq67rlox4wkeuZk/Xk1Yn0+GYxkq7+csKEDS2Vd4oTTszo7pOak5pffJ07vt6ZEo571Sf42OFRW/azlWo7jEwKn/DYc2K7F3XCh38P1Pt9zUA+SBVvNb1IS16c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=mUsUfYm8; arc=none smtp.client-ip=209.85.221.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f45.google.com with SMTP id ffacd0b85a97d-4398d1f06caso2453577f8f.0
-        for <cgroups@vger.kernel.org>; Fri, 27 Feb 2026 17:23:42 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1772241821; x=1772846621; darn=vger.kernel.org;
-        h=content-transfer-encoding:content-disposition:mime-version
-         :references:in-reply-to:message-id:date:subject:cc:to:from:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=kpdBycfJnCA5XxdzZKoEBDpwQf+1LoRkJkd0FNmFdis=;
-        b=mUsUfYm8qK+TkLbqzHlWbc/k2m5TnCNm/tkUyMTfuYLbOPrzMgVawMbie2X+P5J1ep
-         p0X2K858n6UtddJW82QZuqZ9UOsy5IwsVgRX2hQVhMQVXaeyYr5oMBUdpcy55cjd4Tpt
-         V+wGCi6kzmWLaeE034Bh+7Ln8+it84vsGz8iMCeSKFGY8vLwiVV2mV+S4On2z7RUBeCt
-         borjvLtdEzarLQzJEbpJZWlm1n2jN52MWr8v7FypEuspxCiqryZmYsn/Bmu5YhYIFKUO
-         ZcTqtXcgGRC3Uj26fpfwxSlHk2tCTXHw5iRyQA9WcBMsXx/fU+b8Gx6e2Vwlwr3tfX0T
-         jy3A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1772241821; x=1772846621;
-        h=content-transfer-encoding:content-disposition:mime-version
-         :references:in-reply-to:message-id:date:subject:cc:to:from:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=kpdBycfJnCA5XxdzZKoEBDpwQf+1LoRkJkd0FNmFdis=;
-        b=LGfZWT9pAUBRm/jzSRo4n+fIWV6YvKpVvKR9eo6C/L8xPWJAj1u1agIYgqzo1amMvB
-         3hjPQL7kQmSyrJpmFlS46xFQt2VgeM1FI9wk1Jn37WrNpswYqvh1DOx0OEeluBUCS/Jz
-         HSESXbgyFxcfuYqoqEmYKr6JwVI3FX/n/Tvfv9OwdnAkKmPGBU4huvbeIFLcjTB7y4h6
-         X9Rc026Ql5568c8X5sjqvXBPAW9aDVkOTwRk4yGol3pEIXoGwxRpKX2n182Rt6aOjtSi
-         7SD1ZG60kAk2G7ctDJNA+0LmQzDK3cXe1k8BHoAWJZqgMrOf749VOJO1b1CQ3lyuPXT0
-         MBCg==
-X-Forwarded-Encrypted: i=1; AJvYcCUENCRNQgjOUs9Cu8Z7AMb08zJqTY3PU6oIfwWPAwc725jrByUR2U8wedVzZ+/sVPg3o1YYnYlT@vger.kernel.org
-X-Gm-Message-State: AOJu0Yx+ZuZTH5IDmWdP5/WRIuEs0i7qXJpJ6VIjsQKRiy9t3HEpc9D+
-	mFRxKxRo8w/79xFn0Hz0VVJX1BSFwyTd6SVt7lazfXRDcGtlO+ghapqn
-X-Gm-Gg: ATEYQzwrOfIQ1SujUYFQkCZLIUODJ/Esg48agZX3GcasbTzjkHcH+frqzF6d2bNBW95
-	m4B8i8p9twmR4y5l04lLsh07eDOYT018ve4SvLG529x/1go5Q2CyzMivvib1qLP16ejZa6Ww6ly
-	3RpQQ1E4JeM+VcoI2QRKgFccBgL6gEg2Owz+6pDl9RrghNBgnGJ6ZLPhU3wtNLfdNlGXbe7MEYL
-	mxMUYONsXdiJpqY7TYmmI4RSDEKanv6rRMm+HniAPQRmFr8P6w72a5Q9iecU2Y3iNhP0llUfLRN
-	3LWgQoBKwwFr8KXPwqzeiDTDP9sxBbjf4jkPedVXbuI6QPV0q0gDu83nZGtroJz/tvxJmSYHsHa
-	HwwZstx/52wfQFpAx4WJ/+mgxwaqnshtqI//IbL5eDY+2MIwCfbBj9d6ipJxeyR0u6ZeMrnv5dJ
-	+7PqlQ+h4PbgGmZjEyaIQHWHzoGzUi3iIa40c=
-X-Received: by 2002:a05:6000:1845:b0:435:add0:3d68 with SMTP id ffacd0b85a97d-4399de33986mr8879477f8f.58.1772241820909;
-        Fri, 27 Feb 2026 17:23:40 -0800 (PST)
-Received: from WindFlash.powerhub ([2a0a:ef40:1b2a:fa01:9944:6a8c:dc37:eba5])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-4399c75b272sm10193021f8f.24.2026.02.27.17.23.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 27 Feb 2026 17:23:40 -0800 (PST)
-From: Leonardo Bras <leobras.c@gmail.com>
-To: Michal Hocko <mhocko@suse.com>
-Cc: Leonardo Bras <leobras.c@gmail.com>,
-	Marcelo Tosatti <mtosatti@redhat.com>,
-	linux-kernel@vger.kernel.org,
-	cgroups@vger.kernel.org,
-	linux-mm@kvack.org,
-	Johannes Weiner <hannes@cmpxchg.org>,
-	Roman Gushchin <roman.gushchin@linux.dev>,
-	Shakeel Butt <shakeel.butt@linux.dev>,
-	Muchun Song <muchun.song@linux.dev>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Christoph Lameter <cl@linux.com>,
-	Pekka Enberg <penberg@kernel.org>,
-	David Rientjes <rientjes@google.com>,
-	Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-	Vlastimil Babka <vbabka@suse.cz>,
-	Hyeonggon Yoo <42.hyeyoo@gmail.com>,
-	Leonardo Bras <leobras@redhat.com>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Waiman Long <longman@redhat.com>,
-	Boqun Feng <boqun.feng@gmail.com>,
-	Frederic Weisbecker <fweisbecker@suse.de>
-Subject: Re: [PATCH 0/4] Introduce QPW for per-cpu operations
-Date: Fri, 27 Feb 2026 22:23:27 -0300
-Message-ID: <aaJDjmnfuo8AM6J9@WindFlash>
-X-Mailer: git-send-email 2.53.0
-In-Reply-To: <aZwYmNuucBspCYhk@tiehlicka>
-References: <20260206143430.021026873@redhat.com> <aYs6Ju2G4bm6_tl2@tiehlicka> <aYxviLoWsrLqDU7o@tpad> <aYywl1hdBQP2_slo@tiehlicka> <aZDw6xI2izFDfuuu@WindFlash> <aZL45yORfkNvS9Rs@tiehlicka> <aZjY9h3XXMNY-Ytd@WindFlash> <aZwYmNuucBspCYhk@tiehlicka>
+	s=arc-20240116; t=1772250095; c=relaxed/simple;
+	bh=zUEouOCUxs1h0Fqdi1kLzelsJ7E80sSVekgFA08Ybt0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=o/dWoj40RwE9RewGgMN13tnxEVdbD2UbCxoRxRB35c0WcFTYTN1n01jXCh3EKYPrGEFYzawcaDbgqxcKLBgiA2j06jdsQMsV13K+tIdpQ/DTkUp3kD7uVQ9bQJDSWvksQawd32pyiK/dCLp1GmuEqDdzWLvL5291fxFkfszZP3o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=SWuS4p0a; arc=none smtp.client-ip=95.215.58.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <8f230f3d-4005-433e-b91a-885d2a1cdc84@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1772250081;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=C4heYZ2tE4N42LcNTwv/w/mLqT1Jp6f8zKyKbYhkIGg=;
+	b=SWuS4p0a6o8LfHm6WUSteK8eCJ1R5+EemwAlJ0ubROwRHhF30Y3+j616kbWvcgMEMUUjSh
+	P+hDK83K0ulySPL1tIA/G2VsGVgeWZqb6mdsty7dqxuQOfp0mlhU+0mrmFp5YxhG/KhM1h
+	twirmqYmZ6XTYzXteXwii3uHdj3okII=
+Date: Sat, 28 Feb 2026 11:40:57 +0800
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH v5 29/32] mm: memcontrol: prepare for reparenting
+ non-hierarchical stats
+To: Yosry Ahmed <yosry@kernel.org>
+Cc: Shakeel Butt <shakeel.butt@linux.dev>, hannes@cmpxchg.org,
+ hughd@google.com, mhocko@suse.com, roman.gushchin@linux.dev,
+ muchun.song@linux.dev, david@kernel.org, lorenzo.stoakes@oracle.com,
+ ziy@nvidia.com, harry.yoo@oracle.com, yosry.ahmed@linux.dev,
+ imran.f.khan@oracle.com, kamalesh.babulal@oracle.com,
+ axelrasmussen@google.com, yuanchu@google.com, weixugc@google.com,
+ chenridong@huaweicloud.com, mkoutny@suse.com, akpm@linux-foundation.org,
+ hamzamahfooz@linux.microsoft.com, apais@linux.microsoft.com,
+ lance.yang@linux.dev, bhe@redhat.com, usamaarif642@gmail.com,
+ linux-mm@kvack.org, linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+ Qi Zheng <zhengqi.arch@bytedance.com>
+References: <cover.1772005110.git.zhengqi.arch@bytedance.com>
+ <ef13e5974343b37ae2a0e28aff03ea2d033cb888.1772005110.git.zhengqi.arch@bytedance.com>
+ <CAO9r8zOhZgrym6oSrtg7b+HmNHEfWuAzZ0i8eYhm5-OEnfFLdw@mail.gmail.com>
+ <aZ-R87JfacQ2gGq1@linux.dev>
+ <CAO9r8zPmgytmGHAbueFKXcZWY5SJaEwD3Pqk99ws4XeO2_hnKw@mail.gmail.com>
+ <97e296ed-ef73-44b7-ab68-3d79749caa47@linux.dev>
+ <e15c2304-4874-4adc-bbe5-58ba78b3b84f@linux.dev>
+ <CAO9r8zP-peywvtq-3HF2-PjCx9X_ABHEQF2vMO3OFoGfVOHTAg@mail.gmail.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Qi Zheng <qi.zheng@linux.dev>
+In-Reply-To: <CAO9r8zP-peywvtq-3HF2-PjCx9X_ABHEQF2vMO3OFoGfVOHTAg@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-0.16 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
+X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
-	MID_RHS_NOT_FQDN(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
-	R_DKIM_ALLOW(-0.20)[gmail.com:s=20230601];
+	DMARC_POLICY_ALLOW(-0.50)[linux.dev,none];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_DKIM_ALLOW(-0.20)[linux.dev:s=key1];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-14484-lists,cgroups=lfdr.de];
-	RCPT_COUNT_TWELVE(0.00)[22];
-	MIME_TRACE(0.00)[0:+];
+	TAGGED_FROM(0.00)[bounces-14485-lists,cgroups=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	FREEMAIL_CC(0.00)[gmail.com,redhat.com,vger.kernel.org,kvack.org,cmpxchg.org,linux.dev,linux-foundation.org,linux.com,kernel.org,google.com,lge.com,suse.cz,linutronix.de,suse.de];
+	RCVD_COUNT_THREE(0.00)[3];
 	FORGED_SENDER_MAILLIST(0.00)[];
+	FREEMAIL_CC(0.00)[linux.dev,cmpxchg.org,google.com,suse.com,kernel.org,oracle.com,nvidia.com,huaweicloud.com,linux-foundation.org,linux.microsoft.com,redhat.com,gmail.com,kvack.org,vger.kernel.org,bytedance.com];
+	RCPT_COUNT_TWELVE(0.00)[29];
+	MIME_TRACE(0.00)[0:+];
 	FROM_HAS_DN(0.00)[];
+	MISSING_XM_UA(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	FREEMAIL_FROM(0.00)[gmail.com];
-	RCVD_COUNT_FIVE(0.00)[5];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[leobrasc@gmail.com,cgroups@vger.kernel.org];
-	DKIM_TRACE(0.00)[gmail.com:+];
 	NEURAL_HAM(-0.00)[-1.000];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[qi.zheng@linux.dev,cgroups@vger.kernel.org];
+	DKIM_TRACE(0.00)[linux.dev:+];
+	MID_RHS_MATCH_FROM(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
 	TAGGED_RCPT(0.00)[cgroups];
-	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
-	TO_DN_SOME(0.00)[]
-X-Rspamd-Queue-Id: 16F441BFB69
+	TO_DN_SOME(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: 5A9251C0324
 X-Rspamd-Action: no action
 
-On Mon, Feb 23, 2026 at 10:06:32AM +0100, Michal Hocko wrote:
-> On Fri 20-02-26 18:58:14, Leonardo Bras wrote:
-> > On Mon, Feb 16, 2026 at 12:00:55PM +0100, Michal Hocko wrote:
-> > > On Sat 14-02-26 19:02:19, Leonardo Bras wrote:
-> > > > On Wed, Feb 11, 2026 at 05:38:47PM +0100, Michal Hocko wrote:
-> > > > > On Wed 11-02-26 09:01:12, Marcelo Tosatti wrote:
-> > > > > > On Tue, Feb 10, 2026 at 03:01:10PM +0100, Michal Hocko wrote:
-> > > > > [...]
-> > > > > > > What about !PREEMPT_RT? We have people running isolated workloads and
-> > > > > > > these sorts of pcp disruptions are really unwelcome as well. They do not
-> > > > > > > have requirements as strong as RT workloads but the underlying
-> > > > > > > fundamental problem is the same. Frederic (now CCed) is working on
-> > > > > > > moving those pcp book keeping activities to be executed to the return to
-> > > > > > > the userspace which should be taking care of both RT and non-RT
-> > > > > > > configurations AFAICS.
-> > > > > > 
-> > > > > > Michal,
-> > > > > > 
-> > > > > > For !PREEMPT_RT, _if_ you select CONFIG_QPW=y, then there is a kernel
-> > > > > > boot option qpw=y/n, which controls whether the behaviour will be
-> > > > > > similar (the spinlock is taken on local_lock, similar to PREEMPT_RT).
-> > > > > 
-> > > > > My bad. I've misread the config space of this.
-> > > > > 
-> > > > > > If CONFIG_QPW=n, or kernel boot option qpw=n, then only local_lock 
-> > > > > > (and remote work via work_queue) is used.
-> > > > > > 
-> > > > > > What "pcp book keeping activities" you refer to ? I don't see how
-> > > > > > moving certain activities that happen under SLUB or LRU spinlocks
-> > > > > > to happen before return to userspace changes things related 
-> > > > > > to avoidance of CPU interruption ?
-> > > > > 
-> > > > > Essentially delayed operations like pcp state flushing happens on return
-> > > > > to the userspace on isolated CPUs. No locking changes are required as
-> > > > > the work is still per-cpu.
-> > > > > 
-> > > > > In other words the approach Frederic is working on is to not change the
-> > > > > locking of pcp delayed work but instead move that work into well defined
-> > > > > place - i.e. return to the userspace.
-> > > > > 
-> > > > > Btw. have you measure the impact of preempt_disbale -> spinlock on hot
-> > > > > paths like SLUB sheeves?
-> > > > 
-> > > > Hi Michal,
-> > > > 
-> > > > I have done some study on this (which I presented on Plumbers 2023):
-> > > > https://lpc.events/event/17/contributions/1484/ 
-> > > > 
-> > > > Since they are per-cpu spinlocks, and the remote operations are not that 
-> > > > frequent, as per design of the current approach, we are not supposed to see 
-> > > > contention (I was not able to detect contention even after stress testing 
-> > > > for weeks), nor relevant cacheline bouncing.
-> > > > 
-> > > > That being said, for RT local_locks already get per-cpu spinlocks, so there 
-> > > > is only difference for !RT, which as you mention, does preemtp_disable():
-> > > > 
-> > > > The performance impact noticed was mostly about jumping around in 
-> > > > executable code, as inlining spinlocks (test #2 on presentation) took care 
-> > > > of most of the added extra cycles, adding about 4-14 extra cycles per 
-> > > > lock/unlock cycle. (tested on memcg with kmalloc test)
-> > > > 
-> > > > Yeah, as expected there is some extra cycles, as we are doing extra atomic 
-> > > > operations (even if in a local cacheline) in !RT case, but this could be 
-> > > > enabled only if the user thinks this is an ok cost for reducing 
-> > > > interruptions.
-> > > > 
-> > > > What do you think?
-> > > 
-> > > The fact that the behavior is opt-in for !RT is certainly a plus. I also
-> > > do not expect the overhead to be really be really big. 
-> > 
-> > Awesome! Thanks for reviewing!
-> > 
-> > > To me, a much
-> > > more important question is which of the two approaches is easier to
-> > > maintain long term. The pcp work needs to be done one way or the other.
-> > > Whether we want to tweak locking or do it at a very well defined time is
-> > > the bigger question.
-> > 
-> > That crossed my mind as well, and I went with the idea of changing locking 
-> > because I was working on workloads in which deferring work to a kernel 
-> > re-entry would cause deadline misses as well. Or more critically, the 
-> > drains could take forever, as some of those tasks would avoid returning to 
-> > kernel as much as possible. 
+
+
+On 2/28/26 2:18 AM, Yosry Ahmed wrote:
+> [..]
+>>>> @@ -506,12 +517,10 @@ void reparent_memcg_lruvec_state_local(struct
+>>>> mem_cgroup *memcg,
+>>>>           for_each_node(nid) {
+>>>>                   struct lruvec *child_lruvec = mem_cgroup_lruvec(memcg,
+>>>> NODE_DATA(nid));
+>>>>                   struct lruvec *parent_lruvec =
+>>>> mem_cgroup_lruvec(parent, NODE_DATA(nid));
+>>>> -               struct mem_cgroup_per_node *parent_pn;
+>>>>                   unsigned long value =
+>>>> lruvec_page_state_local(child_lruvec, idx);
+>>>>
+>>>> -               parent_pn = container_of(parent_lruvec, struct
+>>>> mem_cgroup_per_node, lruvec);
+>>>> -
+>>>> -               atomic_long_add(value,
+>>>> &(parent_pn->lruvec_stats->state_local[i]));
+>>>> +               mod_memcg_lruvec_state(child_lruvec, idx, -value);
+>>>
+>>> We can't use mod_memcg_lruvec_state() here, because child memcg has
+>>> already been set CSS_DYING. So in mod_memcg_lruvec_state(), we will
+>>> get parent memcg.
+>>>
+>>> It seems we need to reimplement a function or add a parameter to
+>>> mod_memcg_lruvec_state() to solve the problem. What do you think?
+>>
+>> Since child memcg is about to disappear, perhaps we can just add value
+>> to parent memcg without handling the child memcg. Make sense?
 > 
-> Could you be more specific please?
+> Ugh yes, I missed that, thanks.
+> 
+> I don't think we can just leave the child's memcg wrong. Aside from
+> the fact that I would be nervous if access to those stats is still
+> possible after it's offlined (e.g. can userspace already have the
+> stats file open, or maybe some in-kernel code uses it), there's a
+> bigger issue.
+> 
+> When the child cgroup is released, css_release_work_fn() will flush
+> its stats and then it will be double counted at the parent.
+> 
+> Maybe refactor the part sof mod_memcg_lruvec_state() and
+> mod_memcg_state () without get_non_dying_memcg_{start/end}() into
+> helpers, and call that directly from the reparenting functions? Adding
 
-Hi Michal,
-Sorry for the delay
+OK, will do.
 
-I think Marcelo covered some of the main topics earlier in this 
-thread:
+> a boolean argument to mod_memcg_lruvec_state() and mod_memcg_state()
+> will add a lot of churn, and naked boolean arguments are not ideal.
 
-https://lore.kernel.org/all/aZ3ejedS7nE5mnva@tpad/
-
-But in syntax:
-- There are workloads that are projected not avoid as much as possible 
-return to kernelspace, as they are either cpu intensive, or latency 
-sensitive (RT workloads) such as low-latency automation.
-
-There are scenarios such as industrial automation in which 
-the applications are supposed to reply a request in less than 50us since it 
-was generated (IIRC), so sched-out, dealing with interruptions, or syscalls 
-are a no-go. In those cases, using cpu isolation is a must, and since it 
-can stay really long running in userspace, it may take a very long time to 
-do any syscall to actually perform the scheduled flush.
-
-- Other workloads may need to use syscalls, or rely in interrupts, such as 
-HPC, but it's also not interesting to take long on them, as the time spent 
-there is time not used for processing the required data.
-
-Let's say that for the sake of cpu isolation, a lot of different
-requests made to given isolated cpu are batched to be run on syscall 
-entry/exit. It means the next syscall may take much longer than 
-usual.
-- This may break other RT workloads such as  sensor/sound/image sampling, 
-which could be generally ok with some of the faster syscalls for their 
-application, and now may perceive an error because one of those syscalls 
-took too long. 
-
-While the qpw approach may cost a few extra cycles, it operates remotelly 
-and makes the system a bit more predictable. 
-
-Also, when I was planning the mechanism, I remember it was meant to add 
-zero overhead in case of CONFIG_QPW=n, very little overhead in case of 
-CONFIG_QPW=y + qpw=0 (a couple of static branches, possibly with the 
-cost removed by the cpu branch predictor),  and only add a few cycles in 
-case of qpw=1 + !RT. Which means we may be missing just a few adjustments 
-to get there.
-
-BTW, if the numbers are not that great for your workloads, we could take a 
-look at adding an extra QPW mode in which local_locks are taken in 
-the fastpath and it allows the flush wq to be posponed to that point in 
-syscall return that you mentioned. What I mean is that we don't need to be 
-limitted to choosing between solutions, but instead allow the user (or 
-distro) to choose the desired behavior.
-
-Thanks!
-Leo 
 
