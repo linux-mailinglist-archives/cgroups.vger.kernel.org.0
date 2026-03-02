@@ -1,193 +1,183 @@
-Return-Path: <cgroups+bounces-14515-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-14519-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id IKzeCfWzpWkBFQAAu9opvQ
-	(envelope-from <cgroups+bounces-14515-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Mon, 02 Mar 2026 16:59:49 +0100
+	id mG6WK1K8pWnNFQAAu9opvQ
+	(envelope-from <cgroups+bounces-14519-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Mon, 02 Mar 2026 17:35:30 +0100
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7A9781DC48A
-	for <lists+cgroups@lfdr.de>; Mon, 02 Mar 2026 16:59:48 +0100 (CET)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8BB721DCF6F
+	for <lists+cgroups@lfdr.de>; Mon, 02 Mar 2026 17:35:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 3C8DA30A6474
-	for <lists+cgroups@lfdr.de>; Mon,  2 Mar 2026 15:54:24 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 294783087185
+	for <lists+cgroups@lfdr.de>; Mon,  2 Mar 2026 16:14:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 02DCE41C2E5;
-	Mon,  2 Mar 2026 15:53:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 93C3241C0B6;
+	Mon,  2 Mar 2026 16:14:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="eCB+SkR+"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="YG01ILjL"
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out-186.mta1.migadu.com (out-186.mta1.migadu.com [95.215.58.186])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2DCDF387372
-	for <cgroups@vger.kernel.org>; Mon,  2 Mar 2026 15:53:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2378641C0A3;
+	Mon,  2 Mar 2026 16:14:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.186
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772466802; cv=none; b=WWh8RVZ7dDdCkEktLdmToUtiaiJJdkDJF78mG0S30WbgqYtUNw7dVl8mTVwZfrOjeBCMaOJFEtjoqf6yP1UfvzlPCsVDntBlE9ldGnT0PzyjVSvXSTJ7ozGyzm62F/OFsnKqD2apMlnPWxLdOQloweU2yPqLNuJM4zWM72Rp+XA=
+	t=1772468057; cv=none; b=EdFeiU2WbXQ14X+NwmKito/MBK+K7QIE0JQwmzKfjZmNe+p1j8sP0x6tFAOgX9kk2lH72+1gghoAVdQwe/PJomdSRaPkcczEMPIVxkKDaQzDUc+p9RKNZd1J3tVVeFVzIdzS+BTiyyTsO//Jy3M/lJ5/vfs/RC9S0FBb6ksEcbk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772466802; c=relaxed/simple;
-	bh=Lzcw9bSxmejm0gJDOTach+8XGgnELPRdfMZnwQFuwiY=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=qtUPlPMicF5Pd4CuulORYKVH6s4/yl5cyu7f05tOPuqyoch2u39ZvMZT5zIBFrY8vN1pUIKiAYsgcwiM+oRmdIE8K9dMZwHE2gtHx9sObTqvH6/A4mlk0tuuGP9fLToGSTz8XtjsihQUgu0Zo+XfRi7p87FU4LpAOLWuWkD7yb0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=eCB+SkR+; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A29D5C2BCB7
-	for <cgroups@vger.kernel.org>; Mon,  2 Mar 2026 15:53:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1772466801;
-	bh=Lzcw9bSxmejm0gJDOTach+8XGgnELPRdfMZnwQFuwiY=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=eCB+SkR+v2AojvuGPK20HGDla7EykNAGMD5qya144xypRtN5GzUmuArNyTTTiJaFs
-	 6IIYsGXW6bpBJvgMIwI/dnIrOGTDYgDijE01p81q0RHg6e7tLEuTtW3wI/qAF5DlCW
-	 hwER0nCkM02bkQ45v78lSXTUHYd0U3U/YjmRTQOFs/2zSn3+MOoFDt0N8RyXIba0i4
-	 GVpEMeLV5gN1v3kNRfJvfhsR/754C06q7sGynIQUOjasUyfRJgLQezitgBTEr+Z1dq
-	 xdeVlklYTDmUz4N4SboVuIeuyscuKyaEc3qdtfg6Rnb0kjIR7kdTMU6ifFdnVllAHc
-	 G+S+E0noPWL/g==
-Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-b936505e7a0so106583966b.1
-        for <cgroups@vger.kernel.org>; Mon, 02 Mar 2026 07:53:21 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCVljOQ8+M30HBhbtufPY6hp7QG3elLF4o9SMF74+sRyYqbcdp+pqJfxH89OwHsCVPkzP3GAHAtg@vger.kernel.org
-X-Gm-Message-State: AOJu0YyyoBeJbGu3s4o0i3AyJuT3pc1V0GiDxznv8DyaQ9QaOCINMPYr
-	fxW/pffNn+bItOsLrY3TqTcY+JKspm0NRwnsZdpWSEp4322lg6BgFCQdvJvvzC8/23AiE289HEn
-	dTJDg4HIyXbTMcJgYnL9mGYkih1+Dyg4=
-X-Received: by 2002:a17:907:7b8e:b0:b8e:a126:66be with SMTP id
- a640c23a62f3a-b9375932a96mr906965466b.18.1772466800366; Mon, 02 Mar 2026
- 07:53:20 -0800 (PST)
+	s=arc-20240116; t=1772468057; c=relaxed/simple;
+	bh=YI1rAxGkTWrOMsOCcvJkmb0xR/cuc9o+Z4PTFycl9PA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=MD4CYRNHLgWL2T7I+H31JYTZJ1jD7WgwSzcd6SzotipID56W7b3mSIsBoFVpF+4ItmbHUVBcafTYOQQXi22Lb11tH1uIv6WSR86mAGITFkvv1pVQhSS5jMDwRHrEnyPriiKY+b+9mR0K5Hvx3dA6OHgrfPh1RcPUB7X6yFtld7o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=YG01ILjL; arc=none smtp.client-ip=95.215.58.186
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Date: Mon, 2 Mar 2026 08:14:05 -0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1772468053;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=MLL8CQedq0WsIHC423sVIgR4mj4t68qiQx4HMXd9uDE=;
+	b=YG01ILjLYI0dk46V+QncPZZT1q3hBjoc84PeXOZJVUm0yLSx284+Q4kliCpzftFLybp+5L
+	kpTVPFxfUITqsKaMqQAgDHi5QNKoE5mvAK0ecsIL/CeH8tWyYKJTYft+DRokoxgqFSwbBG
+	1ptqeewLBnfoxD5xDpCIAv4liTj8Y2c=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Shakeel Butt <shakeel.butt@linux.dev>
+To: Chen Ridong <chenridong@huaweicloud.com>
+Cc: Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>, 
+	Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>, Roman Gushchin <roman.gushchin@linux.dev>, 
+	Kuniyuki Iwashima <kuniyu@google.com>, Daniel Sedlak <daniel.sedlak@cdn77.com>, 
+	Meta kernel team <kernel-team@meta.com>, linux-mm@kvack.org, netdev@vger.kernel.org, 
+	cgroups@vger.kernel.org, linux-kernel@vger.kernel.org, Jakub Kicinski <kuba@kernel.org>
+Subject: Re: [PATCH 2/3] cgroup: add lockless fast-path checks to
+ cgroup_file_notify()
+Message-ID: <aaW2feETIF7I65i1@linux.dev>
+References: <20260228142018.3178529-1-shakeel.butt@linux.dev>
+ <20260228142018.3178529-3-shakeel.butt@linux.dev>
+ <40c77bba-0862-4422-b23e-2a10cd01c728@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <ef13e5974343b37ae2a0e28aff03ea2d033cb888.1772005110.git.zhengqi.arch@bytedance.com>
- <20260228072556.31793-1-qi.zheng@linux.dev>
-In-Reply-To: <20260228072556.31793-1-qi.zheng@linux.dev>
-From: Yosry Ahmed <yosry@kernel.org>
-Date: Mon, 2 Mar 2026 07:53:08 -0800
-X-Gmail-Original-Message-ID: <CAO9r8zNYFvNnz_oTu10kPBYL6=1ZewKUMRYcMmcMdSqbro_miA@mail.gmail.com>
-X-Gm-Features: AaiRm53G0wvbwkndbhtmVzlFp2bgI26S0fTTYledhanzWTm5GQC0n2lE4RDJ0yo
-Message-ID: <CAO9r8zNYFvNnz_oTu10kPBYL6=1ZewKUMRYcMmcMdSqbro_miA@mail.gmail.com>
-Subject: Re: [PATCH v5 update 29/32] mm: memcontrol: prepare for reparenting
- non-hierarchical stats
-To: Qi Zheng <qi.zheng@linux.dev>
-Cc: hannes@cmpxchg.org, hughd@google.com, mhocko@suse.com, 
-	roman.gushchin@linux.dev, shakeel.butt@linux.dev, muchun.song@linux.dev, 
-	david@kernel.org, lorenzo.stoakes@oracle.com, ziy@nvidia.com, 
-	harry.yoo@oracle.com, yosry.ahmed@linux.dev, imran.f.khan@oracle.com, 
-	kamalesh.babulal@oracle.com, axelrasmussen@google.com, yuanchu@google.com, 
-	weixugc@google.com, chenridong@huaweicloud.com, mkoutny@suse.com, 
-	akpm@linux-foundation.org, hamzamahfooz@linux.microsoft.com, 
-	apais@linux.microsoft.com, lance.yang@linux.dev, bhe@redhat.com, 
-	usamaarif642@gmail.com, linux-mm@kvack.org, linux-kernel@vger.kernel.org, 
-	cgroups@vger.kernel.org, Qi Zheng <zhengqi.arch@bytedance.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Rspamd-Queue-Id: 7A9781DC48A
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <40c77bba-0862-4422-b23e-2a10cd01c728@huaweicloud.com>
+X-Migadu-Flow: FLOW_OUT
+X-Rspamd-Queue-Id: 8BB721DCF6F
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	DMARC_POLICY_ALLOW(-0.50)[linux.dev,none];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64:c];
+	R_DKIM_ALLOW(-0.20)[linux.dev:s=key1];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-14515-lists,cgroups=lfdr.de];
-	FREEMAIL_CC(0.00)[cmpxchg.org,google.com,suse.com,linux.dev,kernel.org,oracle.com,nvidia.com,huaweicloud.com,linux-foundation.org,linux.microsoft.com,redhat.com,gmail.com,kvack.org,vger.kernel.org,bytedance.com];
+	TAGGED_FROM(0.00)[bounces-14519-lists,cgroups=lfdr.de];
 	FROM_HAS_DN(0.00)[];
+	RCVD_COUNT_THREE(0.00)[3];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	RCVD_TLS_LAST(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[29];
 	MIME_TRACE(0.00)[0:+];
-	DKIM_TRACE(0.00)[kernel.org:+];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	DKIM_TRACE(0.00)[linux.dev:+];
+	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
 	MISSING_XM_UA(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[5];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[yosry@kernel.org,cgroups@vger.kernel.org];
+	FROM_NEQ_ENVFROM(0.00)[shakeel.butt@linux.dev,cgroups@vger.kernel.org];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	NEURAL_HAM(-0.00)[-0.994];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
+	NEURAL_HAM(-0.00)[-0.999];
 	TAGGED_RCPT(0.00)[cgroups];
-	TO_DN_SOME(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,mail.gmail.com:mid]
+	MID_RHS_MATCH_FROM(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[13];
+	TO_DN_SOME(0.00)[]
 X-Rspamd-Action: no action
 
-[..]
-> @@ -763,6 +851,64 @@ unsigned long memcg_page_state_local(struct mem_cgroup *memcg, int idx)
->  #endif
->         return x;
->  }
-> +
-> +static void __mod_memcg_state(struct mem_cgroup *memcg,
-> +                             enum memcg_stat_item idx, int val)
-> +{
-> +       int i = memcg_stats_index(idx);
-> +       int cpu;
-> +
-> +       if (mem_cgroup_disabled())
-> +               return;
-> +
-> +       cpu = get_cpu();
-> +
-> +       this_cpu_add(memcg->vmstats_percpu->state[i], val);
-> +       val = memcg_state_val_in_pages(idx, val);
-> +       memcg_rstat_updated(memcg, val, cpu);
-> +       trace_mod_memcg_state(memcg, idx, val);
-> +
-> +       put_cpu();
-> +}
-> +
-> +static void __mod_memcg_lruvec_state(struct lruvec *lruvec,
-> +                                    enum node_stat_item idx, int val)
-> +{
-> +       struct mem_cgroup_per_node *pn;
-> +       struct mem_cgroup *memcg;
-> +       int i = memcg_stats_index(idx);
-> +       int cpu;
-> +
-> +       pn = container_of(lruvec, struct mem_cgroup_per_node, lruvec);
-> +       memcg = pn->memcg;
-> +
-> +       cpu = get_cpu();
-> +
-> +       /* Update memcg */
-> +       this_cpu_add(memcg->vmstats_percpu->state[i], val);
-> +
-> +       /* Update lruvec */
-> +       this_cpu_add(pn->lruvec_stats_percpu->state[i], val);
-> +
-> +       val = memcg_state_val_in_pages(idx, val);
-> +       memcg_rstat_updated(memcg, val, cpu);
-> +       trace_mod_memcg_lruvec_state(memcg, idx, val);
-> +
-> +       put_cpu();
-> +}
+Hi Chen, thanks for taking a look.
 
-I don't think we should end up with two copies of
-__mod_memcg_state/mod_memcg_state() and
-__mod_memcg_lruvec_state/mod_memcg_lruvec_state(). I meant to refactor
-mod_memcg_state() to call __mod_memcg_state(), where the latter does
-not call get_non_dying_memcg_{start/end}(). Same for
-mod_memcg_lruvec_state().
+On Mon, Mar 02, 2026 at 09:50:53AM +0800, Chen Ridong wrote:
+> 
+> Hi Shakeel,
+> 
+> Good series to move away from the global lock.
+> 
+> On 2026/2/28 22:20, Shakeel Butt wrote:
+> > Add two lockless checks before acquiring the lock:
+> > 
+> > 1. READ_ONCE(cfile->kn) NULL check to skip torn-down files.
+> > 2. READ_ONCE(cfile->notified_at) check to skip when within the
+> >    rate-limit window (~10ms).
+> > 
+> > Both checks have safe error directions -- a stale read can only cause
+> > unnecessary lock acquisition, never a missed notification.  Annotate
+> > all write sites with WRITE_ONCE() to pair with the lockless readers.
+> > 
+> > The trade-off is that trailing timer_reduce() calls during bursts are
+> > skipped, so the deferred notification that delivers the final state
+> > may be lost.  This is acceptable for the primary callers like
+> > __memcg_memory_event() where events keep arriving.
+> > 
+> > Signed-off-by: Shakeel Butt <shakeel.butt@linux.dev>
+> > Reported-by: Jakub Kicinski <kuba@kernel.org>
+> > ---
+> >  kernel/cgroup/cgroup.c | 21 ++++++++++++++-------
+> >  1 file changed, 14 insertions(+), 7 deletions(-)
+> > 
+> > diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
+> > index 33282c7d71e4..5473ebd0f6c1 100644
+> > --- a/kernel/cgroup/cgroup.c
+> > +++ b/kernel/cgroup/cgroup.c
+> > @@ -1749,7 +1749,7 @@ static void cgroup_rm_file(struct cgroup *cgrp, const struct cftype *cft)
+> >  		struct cgroup_file *cfile = (void *)css + cft->file_offset;
+> >  
+> >  		spin_lock_irq(&cgroup_file_kn_lock);
+> > -		cfile->kn = NULL;
+> > +		WRITE_ONCE(cfile->kn, NULL);
+> >  		spin_unlock_irq(&cgroup_file_kn_lock);
+> >  
+> >  		timer_delete_sync(&cfile->notify_timer);
+> > @@ -4430,7 +4430,7 @@ static int cgroup_add_file(struct cgroup_subsys_state *css, struct cgroup *cgrp,
+> >  		timer_setup(&cfile->notify_timer, cgroup_file_notify_timer, 0);
+> >  
+> >  		spin_lock_irq(&cgroup_file_kn_lock);
+> > -		cfile->kn = kn;
+> > +		WRITE_ONCE(cfile->kn, kn);
+> >  		spin_unlock_irq(&cgroup_file_kn_lock);
+> >  	}
+> >  
+> > @@ -4686,20 +4686,27 @@ int cgroup_add_legacy_cftypes(struct cgroup_subsys *ss, struct cftype *cfts)
+> >   */
+> >  void cgroup_file_notify(struct cgroup_file *cfile)
+> >  {
+> > -	unsigned long flags;
+> > +	unsigned long flags, last, next;
+> >  	struct kernfs_node *kn = NULL;
+> >  
+> > +	if (!READ_ONCE(cfile->kn))
+> > +		return;
+> > +
+> > +	last = READ_ONCE(cfile->notified_at);
+> > +	if (time_before_eq(jiffies, last + CGROUP_FILE_NOTIFY_MIN_INTV))
+> > +		return;
+> > +
+> 
+> Previously, if a notification arrived within the rate-limit window, we would
+> still call timer_reduce(&cfile->notify_timer, next) to schedule a deferred
+> notification.
+> 
+> With this change, returning early here bypasses that timer scheduling entirely.
+> Does this risk missing notifications that would have been delivered by the timer?
+> 
 
-> +
-> +void reparent_memcg_state_local(struct mem_cgroup *memcg,
-> +                               struct mem_cgroup *parent, int idx)
-> +{
-> +       int i = memcg_stats_index(idx);
-> +       unsigned long value = memcg_page_state_local(memcg, idx);
-> +
-> +       if (WARN_ONCE(BAD_STAT_IDX(i), "%s: missing stat item %d\n", __func__, idx))
-> +               return;
-> +
-> +       __mod_memcg_state(memcg, idx, -value);
-> +       __mod_memcg_state(parent, idx, value);
-> +}
->  #endif
->
->  static void mod_memcg_lruvec_state(struct lruvec *lruvec,
-> --
-> 2.20.1
->
->
+You are indeed right that this can cause missed notifications. After giving some
+thought I think the lockless check-and-return can be pretty much simplified to
+timer_pending() check. If timer is active, just do nothing and the notification
+will be delivered eventually.
+
+I will send the updated version soon. Any comments on the other two patches?
+
 
