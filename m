@@ -1,296 +1,168 @@
-Return-Path: <cgroups+bounces-14504-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-14506-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id eD+/C4yGpWkeDAYAu9opvQ
-	(envelope-from <cgroups+bounces-14504-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Mon, 02 Mar 2026 13:46:04 +0100
+	id yNAzAYOepWltCAAAu9opvQ
+	(envelope-from <cgroups+bounces-14506-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Mon, 02 Mar 2026 15:28:19 +0100
 X-Original-To: lists+cgroups@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 214AD1D8FB1
-	for <lists+cgroups@lfdr.de>; Mon, 02 Mar 2026 13:46:02 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 59C0F1DAC38
+	for <lists+cgroups@lfdr.de>; Mon, 02 Mar 2026 15:28:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id D0F0D3042441
-	for <lists+cgroups@lfdr.de>; Mon,  2 Mar 2026 12:38:00 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 6F18731474C8
+	for <lists+cgroups@lfdr.de>; Mon,  2 Mar 2026 14:16:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 790C5372B5F;
-	Mon,  2 Mar 2026 12:38:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 13FD23FFAD4;
+	Mon,  2 Mar 2026 14:15:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.de header.i=natalie.vock@gmx.de header.b="QuT7KO98"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="CtR1/196"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.18])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 81A7536C9D6
-	for <cgroups@vger.kernel.org>; Mon,  2 Mar 2026 12:37:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A17183FFAB2
+	for <cgroups@vger.kernel.org>; Mon,  2 Mar 2026 14:15:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772455080; cv=none; b=RoWAqewflf44v2xjcEpuTJwfyH13klQxWiNmwEsJQePPEqJov6Im5VvsnfbPbmPiyh7zDR36pLBUfmBh3xFMmvkCiWd9413qhJ1WoyV9FOibcWx0PEiH+uxcuMdS4jpzEXgF0iNAKLVspdW3Evx2KwDqJpxuUWRcF71A+QcEAiE=
+	t=1772460923; cv=none; b=D4gYf6OtQVrS1S0oSY+xXoci8fL4w6EvDOmR1eaJg2Qy5YCHCgmlRBftQYE/flf45E1U0hb/fpcP/UeHIxiuVEOpLurChjqalxB7+0VFRe3iWZESLuTj2XK4rHQvZ9+iWRb/q/BZ8RNzuJQIVzGrxkOQy1ZiPsuExWzMNc7bcbo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772455080; c=relaxed/simple;
-	bh=ijhQeQA6o6bYP5JMJzwfBWfBYcI8HEXcCwBTyegjiUc=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=jGcWF4JPlFERICTj0a6bZ6LZ5CBcrHIvQtwFEjis2lsxOYqJf5ykskCa/m0whqtdNDT+4IxJFCjraaXwPVMMagAQ7odCU1UmpsyVAL2cDFaX+zrOGHDSZOXw7Y2XGekodfjKih+5FyLutVB3gPs6MHOfO+664Gg21fJ+1kQJV2A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de; spf=pass smtp.mailfrom=gmx.de; dkim=pass (2048-bit key) header.d=gmx.de header.i=natalie.vock@gmx.de header.b=QuT7KO98; arc=none smtp.client-ip=212.227.15.18
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.de;
-	s=s31663417; t=1772455059; x=1773059859; i=natalie.vock@gmx.de;
-	bh=7syQO1SWpI/aFoH7QGUdhqKQYRN5D9E2zCGKsw5a/Y0=;
-	h=X-UI-Sender-Class:From:Date:Subject:MIME-Version:Content-Type:
-	 Content-Transfer-Encoding:Message-Id:References:In-Reply-To:To:Cc:
-	 cc:content-transfer-encoding:content-type:date:from:message-id:
-	 mime-version:reply-to:subject:to;
-	b=QuT7KO98e8wAaaKrggUV0A8lTGy6MWtQ9TGlAYBMQ8Ajr9W6FgMCNvjmLFwWYVOe
-	 LLZUC8DZPhNREPzVF9n6ZsAGiE+778n8//Hm0rUe+ws4qLsk/RP5ZGP38GzxikT34
-	 d1bqHJwRGzzOsUTR65oKo0z95aO1JsPwKIWJhJQkexGBqxtxhnpgXBkIXHrwwsIMx
-	 L892ffCEe2Ny8+371wKwiq61GDOe9uFB/pAoBv3HeiuAJ+628ZhNACDgPxoeNBSh/
-	 wnkApKWRuMND+AdKlQgdCcktPAlRAD5TFJPjs2E2n2u6dBAo1vfF3+iLSFUoK/FV2
-	 4Pi44vW5bHM+33crlQ==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from client.hidden.invalid by mail.gmx.net (mrgmx004
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1MBlxW-1vpNZH16s8-000WIg; Mon, 02
- Mar 2026 13:37:39 +0100
-From: Natalie Vock <natalie.vock@gmx.de>
-Date: Mon, 02 Mar 2026 13:37:08 +0100
-Subject: [PATCH v5 6/6] drm/ttm: Use common ancestor of evictor and evictee
- as limit pool
+	s=arc-20240116; t=1772460923; c=relaxed/simple;
+	bh=PO9LFxjHRiXSZV0ZTkBcY+OJzR2dcqixVUYO6d+SoyE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=bIML0GZtk8+IohM7JjXwff/xuptEVvHtS+WkWtyk5neUi6gu6l++J4OjJHdaCynxkR9I67OdX8NY6jtZP7V5rG0FsaehDnQaGGCOC8y/FuFaTqoeK9N8HKHfpn8t8bmJI+TOckzUiEVHYMTYX3P+NsNV3NKGZZ5bBhieFYaTwfE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=CtR1/196; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1772460921;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=4PUUY1opl6eDiW1jZM0WQddZV4oH4gcaLepSTLvQvQY=;
+	b=CtR1/196Ns+BIIUSYGlYQhblRZQHo1oCJrDZs7xShZiSzqJFohZY0vf+U4TSv41Wz3wsxR
+	RveWgzYwD9LTFgqWa7+ABgpiuxqLWyQQ2R4LaNedrrBUoPzR1d7EDW5iDk9fAKb3BnzSZm
+	amgNX85nYGQ0OOYudzALZT6BP083lnY=
+Received: from mx-prod-mc-05.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-428-GXUYZp7WMB23NG-YsYS2RQ-1; Mon,
+ 02 Mar 2026 09:15:18 -0500
+X-MC-Unique: GXUYZp7WMB23NG-YsYS2RQ-1
+X-Mimecast-MFC-AGG-ID: GXUYZp7WMB23NG-YsYS2RQ_1772460916
+Received: from mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.12])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mx-prod-mc-05.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id A2EFF19560B9;
+	Mon,  2 Mar 2026 14:15:15 +0000 (UTC)
+Received: from [10.22.65.79] (unknown [10.22.65.79])
+	by mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id 2221A19560A7;
+	Mon,  2 Mar 2026 14:15:12 +0000 (UTC)
+Message-ID: <69ec4b3c-818b-4784-9b90-1ac5e977ae58@redhat.com>
+Date: Mon, 2 Mar 2026 09:15:11 -0500
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <20260302-dmemcg-aggressive-protect-v5-6-ffd3a2602309@gmx.de>
-References: <20260302-dmemcg-aggressive-protect-v5-0-ffd3a2602309@gmx.de>
-In-Reply-To: <20260302-dmemcg-aggressive-protect-v5-0-ffd3a2602309@gmx.de>
-To: Maarten Lankhorst <dev@lankhorst.se>, 
- Maxime Ripard <mripard@kernel.org>, Tejun Heo <tj@kernel.org>, 
- Johannes Weiner <hannes@cmpxchg.org>, 
- =?utf-8?q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>, 
- Christian Koenig <christian.koenig@amd.com>, Huang Rui <ray.huang@amd.com>, 
- Matthew Auld <matthew.auld@intel.com>, 
- Matthew Brost <matthew.brost@intel.com>, 
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, 
- Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>, 
- Simona Vetter <simona@ffwll.ch>, Tvrtko Ursulin <tursulin@ursulin.net>
-Cc: cgroups@vger.kernel.org, dri-devel@lists.freedesktop.org, 
- Natalie Vock <natalie.vock@gmx.de>
-X-Mailer: b4 0.14.3
-X-Provags-ID: V03:K1:InDs2d32a9VfGYkuypjyYYttNT80AULKFd+mX2B81jhw/0nnt59
- 00lfuMo0M2/e0aDUTKiXCjq+x+vkFP5CzYhQ73vE+DJJTmJtd3gOkcWRAcmJJrVurMss4kL
- ssk5wSu+UqynYVEUEeTxKg0LXAPk6ZfamVeA40bdOWySwrLpaqy4b1xNrbq19/KyiY7YSdt
- vdtDzcFAAKGlvSBdEJ/2w==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:oM+VQ7A14DI=;/8Sh8jekz02+mMK/K+VrONFZymt
- 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
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v6 8/8] cgroup/cpuset: Call housekeeping_update() without
+ holding cpus_read_lock
+To: Frederic Weisbecker <frederic@kernel.org>
+Cc: Chen Ridong <chenridong@huaweicloud.com>, Tejun Heo <tj@kernel.org>,
+ Johannes Weiner <hannes@cmpxchg.org>, =?UTF-8?Q?Michal_Koutn=C3=BD?=
+ <mkoutny@suse.com>, Ingo Molnar <mingo@redhat.com>,
+ Peter Zijlstra <peterz@infradead.org>, Juri Lelli <juri.lelli@redhat.com>,
+ Vincent Guittot <vincent.guittot@linaro.org>,
+ Steven Rostedt <rostedt@goodmis.org>, Ben Segall <bsegall@google.com>,
+ Mel Gorman <mgorman@suse.de>, Valentin Schneider <vschneid@redhat.com>,
+ Thomas Gleixner <tglx@linutronix.de>, Shuah Khan <shuah@kernel.org>,
+ cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-kselftest@vger.kernel.org
+References: <20260221185418.29319-1-longman@redhat.com>
+ <20260221185418.29319-9-longman@redhat.com> <aaV/Jme7NAooNxZQ@lothringen>
+Content-Language: en-US
+From: Waiman Long <longman@redhat.com>
+In-Reply-To: <aaV/Jme7NAooNxZQ@lothringen>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.0 on 10.30.177.12
+X-Rspamd-Queue-Id: 59C0F1DAC38
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[gmx.de,quarantine];
-	R_DKIM_ALLOW(-0.20)[gmx.de:s=s31663417];
-	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
+	DMARC_POLICY_ALLOW(-0.50)[redhat.com,quarantine];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_DKIM_ALLOW(-0.20)[redhat.com:s=mimecast20190719];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FROM_HAS_DN(0.00)[];
-	TAGGED_FROM(0.00)[bounces-14504-lists,cgroups=lfdr.de];
-	RCVD_TLS_LAST(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
-	FREEMAIL_TO(0.00)[lankhorst.se,kernel.org,cmpxchg.org,suse.com,amd.com,intel.com,linux.intel.com,suse.de,gmail.com,ffwll.ch,ursulin.net];
 	MIME_TRACE(0.00)[0:+];
+	RCPT_COUNT_TWELVE(0.00)[18];
+	TAGGED_FROM(0.00)[bounces-14506-lists,cgroups=lfdr.de];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	FREEMAIL_FROM(0.00)[gmx.de];
-	RCPT_COUNT_TWELVE(0.00)[17];
-	FREEMAIL_CC(0.00)[vger.kernel.org,lists.freedesktop.org,gmx.de];
+	RCVD_TLS_LAST(0.00)[];
+	DKIM_TRACE(0.00)[redhat.com:+];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	FROM_HAS_DN(0.00)[];
 	TO_DN_SOME(0.00)[];
-	NEURAL_HAM(-0.00)[-0.998];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[natalie.vock@gmx.de,cgroups@vger.kernel.org];
-	DKIM_TRACE(0.00)[gmx.de:+];
+	FROM_NEQ_ENVFROM(0.00)[longman@redhat.com,cgroups@vger.kernel.org];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	RCVD_COUNT_FIVE(0.00)[6];
 	MID_RHS_MATCH_FROM(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
+	NEURAL_HAM(-0.00)[-1.000];
 	TAGGED_RCPT(0.00)[cgroups];
-	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,gmx.de:mid,gmx.de:dkim,gmx.de:email]
-X-Rspamd-Queue-Id: 214AD1D8FB1
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo]
 X-Rspamd-Action: no action
 
-When checking whether to skip certain buffers because they're protected
-by dmem.low, we're checking the effective protection of the evictee's
-cgroup, but depending on how the evictor's cgroup relates to the
-evictee's, the semantics of effective protection values change.
+On 3/2/26 7:14 AM, Frederic Weisbecker wrote:
+> On Sat, Feb 21, 2026 at 01:54:18PM -0500, Waiman Long wrote:
+>> The current cpuset partition code is able to dynamically update
+>> the sched domains of a running system and the corresponding
+>> HK_TYPE_DOMAIN housekeeping cpumask to perform what is essentally the
+>> "isolcpus=domain,..." boot command line feature at run time.
+>>
+>> The housekeeping cpumask update requires flushing a number of different
+>> workqueues which may not be safe with cpus_read_lock() held as the
+>> workqueue flushing code may acquire cpus_read_lock() or acquiring locks
+>> which have locking dependency with cpus_read_lock() down the chain. Below
+>> is an example of such circular locking problem.
+>>
+>>    ======================================================
+>>    WARNING: possible circular locking dependency detected
+>>    6.18.0-test+ #2 Tainted: G S
+>>    ------------------------------------------------------
+>>    test_cpuset_prs/10971 is trying to acquire lock:
+>>    ffff888112ba4958 ((wq_completion)sync_wq){+.+.}-{0:0}, at: touch_wq_lockdep_map+0x7a/0x180
+>>
+>>    but task is already holding lock:
+>>    ffffffffae47f450 (cpuset_mutex){+.+.}-{4:4}, at: cpuset_partition_write+0x85/0x130
+>>
+>>    which lock already depends on the new lock.
+>>
+>>    the existing dependency chain (in reverse order) is:
+>>    -> #4 (cpuset_mutex){+.+.}-{4:4}:
+>>    -> #3 (cpu_hotplug_lock){++++}-{0:0}:
+>>    -> #2 (rtnl_mutex){+.+.}-{4:4}:
+>>    -> #1 ((work_completion)(&arg.work)){+.+.}-{0:0}:
+>>    -> #0 ((wq_completion)sync_wq){+.+.}-{0:0}:
+>>
+>>    Chain exists of:
+>>      (wq_completion)sync_wq --> cpu_hotplug_lock --> cpuset_mutex
+> Which workqueue is involved here that holds rtnl_mutex?
+> Is this an existing problem or added test code?
 
-When testing against cgroups from different subtrees, page_counter's
-recursive protection propagates memory protection afforded to a parent
-down to the child cgroups, even if the children were not explicitly
-protected. This prevents cgroups whose parents were afforded no
-protection from stealing memory from cgroups whose parents were afforded
-more protection, without users having to explicitly propagate this
-protection.
+Circular locking dependency here may not necessarily mean that 
+rtnl_mutex is directly used in a work function.  However it can be used 
+in a locking chain involving multiple parties that can result in a 
+deadlock situation if they happen in the right order. So it is better 
+safe that sorry even if the chance of this occurrence is minimal.
 
-However, if we always calculate protection from the root cgroup, this
-breaks prioritization of sibling cgroups: If one cgroup was explicitly
-protected and its siblings were not, the protected cgroup should get
-higher priority, i.e. the protected cgroup should be able to steal from
-unprotected siblings. This only works if we restrict the protection
-calculation to the subtree shared by evictor and evictee.
-
-Signed-off-by: Natalie Vock <natalie.vock@gmx.de>
-=2D--
- drivers/gpu/drm/ttm/ttm_bo.c | 43 +++++++++++++++++++++++++++++++++++++++=
-+---
- 1 file changed, 40 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/gpu/drm/ttm/ttm_bo.c b/drivers/gpu/drm/ttm/ttm_bo.c
-index 86f99237f6490..53b53a2791725 100644
-=2D-- a/drivers/gpu/drm/ttm/ttm_bo.c
-+++ b/drivers/gpu/drm/ttm/ttm_bo.c
-@@ -528,11 +528,48 @@ static s64 ttm_bo_evict_cb(struct ttm_lru_walk *walk=
-, struct ttm_buffer_object *
- {
- 	struct ttm_bo_evict_walk *evict_walk =3D
- 		container_of(walk, typeof(*evict_walk), walk);
-+	struct dmem_cgroup_pool_state *limit_pool, *ancestor =3D NULL;
-+	bool evict_valuable;
- 	s64 lret;
-=20
--	if (!dmem_cgroup_state_evict_valuable(evict_walk->alloc_state->limit_poo=
-l,
--					      bo->resource->css, evict_walk->try_low,
--					      &evict_walk->hit_low))
-+	/*
-+	 * If only_evict_unprotected is set, then we're trying to evict unprotec=
-ted
-+	 * buffers in favor of a protected allocation for charge_pool. Explicitl=
-y skip
-+	 * buffers belonging to the same cgroup here - that cgroup is definitely=
- protected,
-+	 * even though dmem_cgroup_state_evict_valuable would allow the eviction=
- because a
-+	 * cgroup is always allowed to evict from itself even if it is protected=
-.
-+	 */
-+	if (evict_walk->alloc_state->only_evict_unprotected &&
-+			bo->resource->css =3D=3D evict_walk->alloc_state->charge_pool)
-+		return 0;
-+
-+	limit_pool =3D evict_walk->alloc_state->limit_pool;
-+	/*
-+	 * If there is no explicit limit pool, find the root of the shared subtr=
-ee between
-+	 * evictor and evictee. This is important so that recursive protection r=
-ules can
-+	 * apply properly: Recursive protection distributes cgroup protection af=
-forded
-+	 * to a parent cgroup but not used explicitly by a child cgroup between =
-all child
-+	 * cgroups (see docs of effective_protection in mm/page_counter.c). Howe=
-ver, when
-+	 * direct siblings compete for memory, siblings that were explicitly pro=
-tected
-+	 * should get prioritized over siblings that weren't. This only happens =
-correctly
-+	 * when the root of the shared subtree is passed to
-+	 * dmem_cgroup_state_evict_valuable. Otherwise, the effective-protection
-+	 * calculation cannot distinguish direct siblings from unrelated subtree=
-s and the
-+	 * calculated protection ends up wrong.
-+	 */
-+	if (!limit_pool) {
-+		ancestor =3D dmem_cgroup_common_ancestor(bo->resource->css,
-+						       evict_walk->alloc_state->charge_pool);
-+		limit_pool =3D ancestor;
-+	}
-+
-+	evict_valuable =3D dmem_cgroup_state_evict_valuable(limit_pool, bo->reso=
-urce->css,
-+							  evict_walk->try_low,
-+							  &evict_walk->hit_low);
-+	if (ancestor)
-+		dmem_cgroup_pool_state_put(ancestor);
-+
-+	if (!evict_valuable)
- 		return 0;
-=20
- 	if (bo->pin_count || !bo->bdev->funcs->eviction_valuable(bo, evict_walk-=
->place))
-
-=2D-=20
-2.53.0
+Cheers,
+Longman
 
 
