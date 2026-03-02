@@ -1,192 +1,283 @@
-Return-Path: <cgroups+bounces-14520-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-14521-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id WAKmJ3nDpWnEFgAAu9opvQ
-	(envelope-from <cgroups+bounces-14520-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Mon, 02 Mar 2026 18:06:01 +0100
+	id 4JrKBR3EpWnEFgAAu9opvQ
+	(envelope-from <cgroups+bounces-14521-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Mon, 02 Mar 2026 18:08:45 +0100
 X-Original-To: lists+cgroups@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id D6B8B1DD7F7
-	for <lists+cgroups@lfdr.de>; Mon, 02 Mar 2026 18:06:00 +0100 (CET)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id AC25A1DD8B1
+	for <lists+cgroups@lfdr.de>; Mon, 02 Mar 2026 18:08:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id C54DB3095942
-	for <lists+cgroups@lfdr.de>; Mon,  2 Mar 2026 17:00:30 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id D0F1C30039B5
+	for <lists+cgroups@lfdr.de>; Mon,  2 Mar 2026 17:02:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6DA7A42314F;
-	Mon,  2 Mar 2026 17:00:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C865B425CE3;
+	Mon,  2 Mar 2026 17:02:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="QM+FemWK"
+	dkim=pass (2048-bit key) header.d=ursulin.net header.i=@ursulin.net header.b="oTCdo1BH"
 X-Original-To: cgroups@vger.kernel.org
-Received: from out-170.mta1.migadu.com (out-170.mta1.migadu.com [95.215.58.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ed1-f51.google.com (mail-ed1-f51.google.com [209.85.208.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E3AD5421A14
-	for <cgroups@vger.kernel.org>; Mon,  2 Mar 2026 17:00:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0BA152EACEF
+	for <cgroups@vger.kernel.org>; Mon,  2 Mar 2026 17:02:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772470830; cv=none; b=FzVjHnUXBC44jea1xmuGS12qXb+gMUzLyTSkNYH2D+FACme99JAB1oy8s5fToqruzK4kB3JkpfQphixS8hjatwMssXUY6EfLL5UlXy+/6UXNsHi+UTdR2dJ5eKjGelYI+PHM1hSICSKRU1S5Ig6YzlLpMEiRp6jGiiWWWgyKfng=
+	t=1772470925; cv=none; b=EiVDCHYLgKdGmggxh3mwIh7Y08rcuzHTB+cJqUZM+UJT9h0uIYr3oMVwuB/8YKRpWZpL9z4hOyxA0tO+NhlZ+S67zhdlrANK/5rBmsJeD+j6mYNbseUfapMEaf1zVDxC/IpCiPrgCJO9Oe0ftuvvtpjpJ0/VWkT7/XdHa824ChU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772470830; c=relaxed/simple;
-	bh=qNDFaM+YfYwiLYlicpcDxZluGw6w/AEmiQ+6S3VzBeE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Ct784MEOjoJeNYAOlTsSU3mu+auHFsmTkSG4jbnOvp7d7H83hgKkovYU4GTHhABH1n6f+8QTk73uvPz+BXciAaf7haFCPZJwEb2JRa6i1NvBOtP8Q0tMVUPcnyDWpvBY8Ao0Z6vLNkQF+jjbdVpL8w6Z0UaaU+CVss1xa4II4bY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=QM+FemWK; arc=none smtp.client-ip=95.215.58.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Mon, 2 Mar 2026 09:00:10 -0800
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1772470826;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=WbAs9ykKjGj1acVkdZLpnTflSlmI29KTifSwOcqBl6o=;
-	b=QM+FemWKuEjzR06V0+l7g/FTA9BP0C/iPlSfw9pkv9G5M1hdQfOly2TwTD4+rNwMhqH/bn
-	T+8kvhEDBbuIhVFJ8GbNVA5bJCEsWUXglP1KG0rc5R/dx16wW2t2fj/+Z3PO0epJAgbm6B
-	/qIfXUGfLqj4AceUt5U7OJ0Eh/hTSwA=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Shakeel Butt <shakeel.butt@linux.dev>
-To: Chen Ridong <chenridong@huaweicloud.com>
-Cc: Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>, 
-	Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>, Roman Gushchin <roman.gushchin@linux.dev>, 
-	Kuniyuki Iwashima <kuniyu@google.com>, Daniel Sedlak <daniel.sedlak@cdn77.com>, 
-	Meta kernel team <kernel-team@meta.com>, linux-mm@kvack.org, netdev@vger.kernel.org, 
-	cgroups@vger.kernel.org, linux-kernel@vger.kernel.org, Jakub Kicinski <kuba@kernel.org>
-Subject: Re: [PATCH 2/3] cgroup: add lockless fast-path checks to
- cgroup_file_notify()
-Message-ID: <aaXB0A7eTbyZ4wA_@linux.dev>
-References: <20260228142018.3178529-1-shakeel.butt@linux.dev>
- <20260228142018.3178529-3-shakeel.butt@linux.dev>
- <40c77bba-0862-4422-b23e-2a10cd01c728@huaweicloud.com>
- <aaW2feETIF7I65i1@linux.dev>
+	s=arc-20240116; t=1772470925; c=relaxed/simple;
+	bh=BRAy7ZbLCiGT6dhJwyaFJ80rqHQpZxSDm2do8couWGA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=NC1+xDP2jCETNeqolhTxv1ifMSCe++HwAFjPlF6544QmLBAvNZmtsJMeVxEQDcjsYVEpd1zTXctpweVWveSmx20b1/4NyMZw02B4nyGxDFWlZoW24nChLi//YWXlMAbIL8Fe/5ck1vgWJM00tmC2MjiTWG809y24e1nhr4/iFek=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ursulin.net; spf=pass smtp.mailfrom=ursulin.net; dkim=pass (2048-bit key) header.d=ursulin.net header.i=@ursulin.net header.b=oTCdo1BH; arc=none smtp.client-ip=209.85.208.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ursulin.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ursulin.net
+Received: by mail-ed1-f51.google.com with SMTP id 4fb4d7f45d1cf-65f771c6b89so6914866a12.3
+        for <cgroups@vger.kernel.org>; Mon, 02 Mar 2026 09:02:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ursulin.net; s=google; t=1772470922; x=1773075722; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=bKMuMJCSdxxmw3RSD5uAPmfVmq1uYJz0WuSv/dBgVQs=;
+        b=oTCdo1BHAaV/nl+Ed48jCxZ7xT1RTEH7MjiG2rdyVGKxCUKmxePsre0TKLMvejSZD6
+         RqK1tIHD2SEMHnzy+vOjgT9ByEHT/w+Zj6UjEUC04ddHWUkfePvDF6Iu15v7wRSNNr35
+         FksBA0Cn8jG0ceOn9JYTuTHIobglEaNQ37echN7jNg0pQSjNYWx3pJV4odoiN9HT0hz6
+         GWwV3g1cWc2SJBvY9yyunmcgEDSpHYYhhzAt81P3xdwDuLH8PPP8HpBz3oCR2+c9jXRt
+         5pHAaizsW6EXJ+eOrd4ImzRIXGHh0Y+C+29QNh/sknqxqCTSnZT4vryvSro40Ho3jK3W
+         /vWA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1772470922; x=1773075722;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=bKMuMJCSdxxmw3RSD5uAPmfVmq1uYJz0WuSv/dBgVQs=;
+        b=T/q/kiy0J0fJNu6n+mREkOwBlLXn1QGt7Pv/0ESdpvHsqZJDe2kMJJykS/WApouz5K
+         cFM1tTzfgzx25ABNqu4Fhfb5eWHZHhbiV0QGvmy2uGcYQqkd7I1QZ0BNJq3OsvV7KYE/
+         ospCrCVkYsQFpzL1DfxVnJd7hXjooTZhT19mUzquCZEoBCR9f4XRyM+qUT0SyQ3Ocx1L
+         GmFvgZAPh8iD+1gXEJJc54Ac957dDn38enaxAsSLLklqjYXlSh4Ya1We4VbhL7KT7nu5
+         cl/e3OJ1+vEqff0chJFKCZZYQmRfDShNn+iOpaKRUL9pqXCQfCmcCcSId9Suq1b8w4sA
+         prDw==
+X-Gm-Message-State: AOJu0YwkDkWnjUzpCyrKtqKpzPQoiDfv3hJ92HmpQsJfZLTaCydy5RsN
+	7av5Jf5zNuCz5/BkfXCf+OZg+kPPkl+izj2KEyz9dzTiRJOMdYRw9tIgh5G2cILEDN8=
+X-Gm-Gg: ATEYQzwt8kXZ/RV0zwVgLFRvKSSxRJK8GAz0BvDdgD9OvvJeTsiJF2GLb+8zVuPtJib
+	GPMw4jJovozWz0uESlrZmZt2AvG2qEg7aADNOEfC9CvuRFbnkhbUYozWlR8RXwq3aHzugbb13VK
+	RZptuu0Xay2EIE4OBgZTvhGoqbjIAMHRfk3gblCZX+2A9uydRpLuJOQtOZ6UEuFSZJ/578tbPqy
+	r+Sy2sNsax2gsqBwU6h1iv8xJ+ZCIGT2AFBU1wvsDBYgx0L8Wa93xkzGSAd0lTCPvOETcL+6nQ8
+	Nd8fqHKnhU0+sIwn9CbhCfISpDUlxewNjYI1X/P7RHPqVRfmqweYBapK20Au4SkQAjBr/8cK7V9
+	+/An7LaGFHbDwIloERSNdK8v6CabEAgkjZAwTKfUwsAHlCr4OITFHpTA98eRN10bBqiAAAsqDum
+	LVcuLbBOBJXjVarIPfad/ty7PiKivA+6e6kQSYrP6J/2VI
+X-Received: by 2002:a17:907:7fac:b0:b93:cae3:5832 with SMTP id a640c23a62f3a-b93cae3ae31mr47113266b.22.1772470922107;
+        Mon, 02 Mar 2026 09:02:02 -0800 (PST)
+Received: from [192.168.0.101] ([90.240.106.137])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-b935ac84863sm499538966b.29.2026.03.02.09.02.01
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 02 Mar 2026 09:02:01 -0800 (PST)
+Message-ID: <86ef0e02-ac40-4bd4-bfcb-173d4312acb2@ursulin.net>
+Date: Mon, 2 Mar 2026 17:02:00 +0000
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <aaW2feETIF7I65i1@linux.dev>
-X-Migadu-Flow: FLOW_OUT
-X-Rspamd-Queue-Id: D6B8B1DD7F7
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v5 5/6] drm/ttm: Be more aggressive when allocating below
+ protection limit
+To: Natalie Vock <natalie.vock@gmx.de>, Maarten Lankhorst <dev@lankhorst.se>,
+ Maxime Ripard <mripard@kernel.org>, Tejun Heo <tj@kernel.org>,
+ Johannes Weiner <hannes@cmpxchg.org>, =?UTF-8?Q?Michal_Koutn=C3=BD?=
+ <mkoutny@suse.com>, Christian Koenig <christian.koenig@amd.com>,
+ Huang Rui <ray.huang@amd.com>, Matthew Auld <matthew.auld@intel.com>,
+ Matthew Brost <matthew.brost@intel.com>,
+ Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+ Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>,
+ Simona Vetter <simona@ffwll.ch>
+Cc: cgroups@vger.kernel.org, dri-devel@lists.freedesktop.org
+References: <20260302-dmemcg-aggressive-protect-v5-0-ffd3a2602309@gmx.de>
+ <20260302-dmemcg-aggressive-protect-v5-5-ffd3a2602309@gmx.de>
+Content-Language: en-GB
+From: Tvrtko Ursulin <tursulin@ursulin.net>
+In-Reply-To: <20260302-dmemcg-aggressive-protect-v5-5-ffd3a2602309@gmx.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Rspamd-Queue-Id: AC25A1DD8B1
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-2.16 / 15.00];
+X-Spamd-Result: default: False [-1.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[linux.dev,none];
-	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
-	R_DKIM_ALLOW(-0.20)[linux.dev:s=key1];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64:c];
+	R_DKIM_ALLOW(-0.20)[ursulin.net:s=google];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
+	TAGGED_FROM(0.00)[bounces-14521-lists,cgroups=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-14520-lists,cgroups=lfdr.de];
-	FROM_HAS_DN(0.00)[];
-	RCVD_COUNT_THREE(0.00)[3];
-	MIME_TRACE(0.00)[0:+];
+	DMARC_NA(0.00)[ursulin.net];
+	FREEMAIL_TO(0.00)[gmx.de,lankhorst.se,kernel.org,cmpxchg.org,suse.com,amd.com,intel.com,linux.intel.com,suse.de,gmail.com,ffwll.ch];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[13];
-	DKIM_TRACE(0.00)[linux.dev:+];
-	MISSING_XM_UA(0.00)[];
-	TO_DN_SOME(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[shakeel.butt@linux.dev,cgroups@vger.kernel.org];
+	DKIM_TRACE(0.00)[ursulin.net:+];
+	RCPT_COUNT_TWELVE(0.00)[16];
+	MIME_TRACE(0.00)[0:+];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	NEURAL_HAM(-0.00)[-0.999];
+	FROM_HAS_DN(0.00)[];
+	TO_DN_SOME(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[5];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[tursulin@ursulin.net,cgroups@vger.kernel.org];
+	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
+	NEURAL_HAM(-0.00)[-0.997];
 	TAGGED_RCPT(0.00)[cgroups];
 	MID_RHS_MATCH_FROM(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo,linux.dev:dkim,linux.dev:email,linux.dev:mid]
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:rdns,sto.lore.kernel.org:helo,ursulin.net:dkim,ursulin.net:mid]
 X-Rspamd-Action: no action
 
-On Mon, Mar 02, 2026 at 08:14:05AM -0800, Shakeel Butt wrote:
-> Hi Chen, thanks for taking a look.
+
+On 02/03/2026 12:37, Natalie Vock wrote:
+> When the cgroup's memory usage is below the low/min limit and allocation
+> fails, try evicting some unprotected buffers to make space. Otherwise,
+> application buffers may be forced to go into GTT even though usage is
+> below the corresponding low/min limit, if other applications filled VRAM
+> with their allocations first.
 > 
-> On Mon, Mar 02, 2026 at 09:50:53AM +0800, Chen Ridong wrote:
-> > 
-[...]
-> > > +	last = READ_ONCE(cfile->notified_at);
-> > > +	if (time_before_eq(jiffies, last + CGROUP_FILE_NOTIFY_MIN_INTV))
-> > > +		return;
-> > > +
-> > 
-> > Previously, if a notification arrived within the rate-limit window, we would
-> > still call timer_reduce(&cfile->notify_timer, next) to schedule a deferred
-> > notification.
-> > 
-> > With this change, returning early here bypasses that timer scheduling entirely.
-> > Does this risk missing notifications that would have been delivered by the timer?
-> > 
+> Signed-off-by: Natalie Vock <natalie.vock@gmx.de>
+> ---
+>   drivers/gpu/drm/ttm/ttm_bo.c | 52 +++++++++++++++++++++++++++++++++++++++-----
+>   1 file changed, 47 insertions(+), 5 deletions(-)
 > 
-> You are indeed right that this can cause missed notifications. After giving some
-> thought I think the lockless check-and-return can be pretty much simplified to
-> timer_pending() check. If timer is active, just do nothing and the notification
-> will be delivered eventually.
+> diff --git a/drivers/gpu/drm/ttm/ttm_bo.c b/drivers/gpu/drm/ttm/ttm_bo.c
+> index 53c4de4bcc1e3..86f99237f6490 100644
+> --- a/drivers/gpu/drm/ttm/ttm_bo.c
+> +++ b/drivers/gpu/drm/ttm/ttm_bo.c
+> @@ -494,6 +494,10 @@ struct ttm_bo_alloc_state {
+>   	struct dmem_cgroup_pool_state *charge_pool;
+>   	/** @limit_pool: Which pool limit we should test against */
+>   	struct dmem_cgroup_pool_state *limit_pool;
+> +	/** @only_evict_unprotected: If only unprotected BOs, i.e. BOs whose cgroup
+> +	 *  is exceeding its dmem low/min protection, should be considered for eviction
+> +	 */
+> +	bool only_evict_unprotected;
+>   };
+>   
+>   /**
+> @@ -598,8 +602,12 @@ static int ttm_bo_evict_alloc(struct ttm_device *bdev,
+>   	evict_walk.walk.arg.trylock_only = true;
+>   	lret = ttm_lru_walk_for_evict(&evict_walk.walk, bdev, man, 1);
+>   
+> -	/* One more attempt if we hit low limit? */
+> -	if (!lret && evict_walk.hit_low) {
+> +	/* If we failed to find enough BOs to evict, but we skipped over
+> +	 * some BOs because they were covered by dmem low protection, retry
+> +	 * evicting these protected BOs too, except if we're told not to
+> +	 * consider protected BOs at all.
+> +	 */
+> +	if (!lret && evict_walk.hit_low && !state->only_evict_unprotected) {
+>   		evict_walk.try_low = true;
+>   		lret = ttm_lru_walk_for_evict(&evict_walk.walk, bdev, man, 1);
+>   	}
+> @@ -620,7 +628,8 @@ static int ttm_bo_evict_alloc(struct ttm_device *bdev,
+>   	} while (!lret && evict_walk.evicted);
+>   
+>   	/* We hit the low limit? Try once more */
+> -	if (!lret && evict_walk.hit_low && !evict_walk.try_low) {
+> +	if (!lret && evict_walk.hit_low && !evict_walk.try_low &&
+> +			!state->only_evict_unprotected) {
+>   		evict_walk.try_low = true;
+>   		goto retry;
+>   	}
+> @@ -730,7 +739,7 @@ static int ttm_bo_alloc_at_place(struct ttm_buffer_object *bo,
+>   				 struct ttm_resource **res,
+>   				 struct ttm_bo_alloc_state *alloc_state)
+>   {
+> -	bool may_evict;
+> +	bool may_evict, below_low;
+>   	int ret;
+>   
+>   	may_evict = (force_space && place->mem_type != TTM_PL_SYSTEM);
+> @@ -749,9 +758,42 @@ static int ttm_bo_alloc_at_place(struct ttm_buffer_object *bo,
+>   		return ret;
+>   	}
+>   
+> +	/*
+> +	 * cgroup protection plays a special role in eviction.
+> +	 * Conceptually, protection of memory via the dmem cgroup controller
+> +	 * entitles the protected cgroup to use a certain amount of memory.
+> +	 * There are two types of protection - the 'low' limit is a
+> +	 * "best-effort" protection, whereas the 'min' limit provides a hard
+> +	 * guarantee that memory within the cgroup's allowance will not be
+> +	 * evicted under any circumstance.
+> +	 *
+> +	 * To faithfully model this concept in TTM, we also need to take cgroup
+> +	 * protection into account when allocating. When allocation in one
+> +	 * place fails, TTM will default to trying other places first before
+> +	 * evicting.
+> +	 * If the allocation is covered by dmem cgroup protection, however,
+> +	 * this prevents the allocation from using the memory it is "entitled"
+> +	 * to. To make sure unprotected allocations cannot push new protected
+> +	 * allocations out of places they are "entitled" to use, we should
+> +	 * evict buffers not covered by any cgroup protection, if this
+> +	 * allocation is covered by cgroup protection.
+> +	 *
+> +	 * Buffers covered by 'min' protection are a special case - the 'min'
+> +	 * limit is a stronger guarantee than 'low', and thus buffers protected
+> +	 * by 'low' but not 'min' should also be considered for eviction.
+> +	 * Buffers protected by 'min' will never be considered for eviction
+> +	 * anyway, so the regular eviction path should be triggered here.
+> +	 * Buffers protected by 'low' but not 'min' will take a special
+> +	 * eviction path that only evicts buffers covered by neither 'low' or
+> +	 * 'min' protections.
+> +	 */
+> +	may_evict |= dmem_cgroup_below_min(NULL, alloc_state->charge_pool);
+
+It may make sense to group the two lines which "calculate" may_evict 
+together. which would probably mean also pulling two lines below to 
+before try charge, so that the whole logical block is not split.
+
+> +	below_low = dmem_cgroup_below_low(NULL, alloc_state->charge_pool);
+> +	alloc_state->only_evict_unprotected = !may_evict && below_low;
+
+Would it work to enable may_evict also if below_low is true, and assign 
+below_low directly to only_evict_unprotected? I mean along the lines of:
+
+may_evict = force_space && place->mem_type != TTM_PL_SYSTEM;
+may_evict |= dmem_cgroup_below_min(NULL, alloc_state->charge_pool);
+alloc_state->only_evict_unprotected = dmem_cgroup_below_low(NULL, 
+alloc_state->charge_pool);
+
+It would allow the if condition below to be simpler. Evict callback 
+would remain the same I guess.
+
+And maybe only_evict_unprotected could be renamed to "try_low" to align 
+with the naming in there? Then in the callback the condition would be like:
+
+  	/* We hit the low limit? Try once more */
+	if (!lret && evict_walk.hit_low &&
+	    !(evict_walk.try_low | state->try_low))
+  		evict_walk.try_low = true;
+  		goto retry;
+
+Give or take.. Would that be more readable eg. obvious? Although I am 
+endlessly confused how !try_low ends up being try_low = true in this 
+condition so maybe I am mixing something up. You get my gist though? 
+Unifying the naming and logic for easier understanding in essence if you 
+can find some workable way in this spirit I think it is worth thinking 
+about it.
+
+Regards,
+
+Tvrtko
+
+> +
+>   	ret = ttm_resource_alloc(bo, place, res, alloc_state->charge_pool);
+>   	if (ret) {
+> -		if (ret == -ENOSPC && may_evict)
+> +		if (ret == -ENOSPC && (may_evict || below_low))
+>   			ret = -EBUSY;
+>   		return ret;
+>   	}
 > 
-> I will send the updated version soon. Any comments on the other two patches?
-> 
-
-Something like the following:
-
-From 598199723b50813b015393122796f6775eee02d7 Mon Sep 17 00:00:00 2001
-From: Shakeel Butt <shakeel.butt@linux.dev>
-Date: Sat, 28 Feb 2026 04:01:28 -0800
-Subject: [PATCH] cgroup: add lockless fast-path checks to cgroup_file_notify()
-
-Add two lockless checks before acquiring the lock:
-
-1. READ_ONCE(cfile->kn) NULL check to skip torn-down files.
-2. timer_pending() check to skip when a deferred notification
-   timer is already armed.
-
-Both checks have safe error directions -- a stale read can only
-cause unnecessary lock acquisition, never a missed notification.
-
-Annotate cfile->kn write sites with WRITE_ONCE() to pair with the
-lockless reader.
-
-Signed-off-by: Shakeel Butt <shakeel.butt@linux.dev>
-Reported-by: Jakub Kicinski <kuba@kernel.org>
----
- kernel/cgroup/cgroup.c | 10 ++++++++--
- 1 file changed, 8 insertions(+), 2 deletions(-)
-
-diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
-index 2b298a2cf206..6e816d27ee25 100644
---- a/kernel/cgroup/cgroup.c
-+++ b/kernel/cgroup/cgroup.c
-@@ -1749,7 +1749,7 @@ static void cgroup_rm_file(struct cgroup *cgrp, const struct cftype *cft)
- 		struct cgroup_file *cfile = (void *)css + cft->file_offset;
- 
- 		spin_lock_irq(&cgroup_file_kn_lock);
--		cfile->kn = NULL;
-+		WRITE_ONCE(cfile->kn, NULL);
- 		spin_unlock_irq(&cgroup_file_kn_lock);
- 
- 		timer_delete_sync(&cfile->notify_timer);
-@@ -4430,7 +4430,7 @@ static int cgroup_add_file(struct cgroup_subsys_state *css, struct cgroup *cgrp,
- 		timer_setup(&cfile->notify_timer, cgroup_file_notify_timer, 0);
- 
- 		spin_lock_irq(&cgroup_file_kn_lock);
--		cfile->kn = kn;
-+		WRITE_ONCE(cfile->kn, kn);
- 		spin_unlock_irq(&cgroup_file_kn_lock);
- 	}
- 
-@@ -4689,6 +4689,12 @@ void cgroup_file_notify(struct cgroup_file *cfile)
- 	unsigned long flags;
- 	struct kernfs_node *kn = NULL;
- 
-+	if (!READ_ONCE(cfile->kn))
-+		return;
-+
-+	if (timer_pending(&cfile->notify_timer))
-+		return;
-+
- 	spin_lock_irqsave(&cgroup_file_kn_lock, flags);
- 	if (cfile->kn) {
- 		unsigned long last = cfile->notified_at;
--- 
-2.47.3
 
 
