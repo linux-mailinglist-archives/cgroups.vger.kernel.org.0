@@ -1,280 +1,234 @@
-Return-Path: <cgroups+bounces-14566-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-14567-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id wIQxFqgCp2k7bgAAu9opvQ
-	(envelope-from <cgroups+bounces-14566-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Tue, 03 Mar 2026 16:47:52 +0100
+	id uLSSHgEHp2k7bgAAu9opvQ
+	(envelope-from <cgroups+bounces-14567-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Tue, 03 Mar 2026 17:06:25 +0100
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id B42221F2E6B
-	for <lists+cgroups@lfdr.de>; Tue, 03 Mar 2026 16:47:51 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 25B681F33EE
+	for <lists+cgroups@lfdr.de>; Tue, 03 Mar 2026 17:06:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 5D78030417AC
-	for <lists+cgroups@lfdr.de>; Tue,  3 Mar 2026 15:43:39 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 488CF3135EAC
+	for <lists+cgroups@lfdr.de>; Tue,  3 Mar 2026 16:01:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8160047DF8D;
-	Tue,  3 Mar 2026 15:43:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BF00B494A02;
+	Tue,  3 Mar 2026 16:01:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cmpxchg.org header.i=@cmpxchg.org header.b="cqQ4Dt4e"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="TkbPJX8l"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-qv1-f41.google.com (mail-qv1-f41.google.com [209.85.219.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1A9D642F55E
-	for <cgroups@vger.kernel.org>; Tue,  3 Mar 2026 15:43:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 43EE74949F7
+	for <cgroups@vger.kernel.org>; Tue,  3 Mar 2026 16:01:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772552618; cv=none; b=h4gGvoGZ4Sd4bwsoLj9/VPfUcFIIVlQ6pMYKu7w63iVdA8dyv4/haW61G2VX0XF4yFtrvFB8kB6gseMkes8Xh+j7R0hq3xcRgUlNxouMLT2H7N+fFiI/8QTk/fm2gY4rb772m5qH/3AuyQngmqJlM9fC5RZqQkJykS8o6gCv+ko=
+	t=1772553681; cv=none; b=bsfnb9mpUyhvuymJLdbkCKdotaMZ+y2BWMP6M/tDl+FKDiCbemIyVwBdtZz8FsfojcgmSWJ5IB8qQNY/U7Epue+Vr0pUUaCmcqrb6qTUNeRhmNkM4wWKduk1oqP5xQ/TtR1iQn27sQ0GgXOMYaCwpeXzJpVFM3rxyiEXEBP8Axg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772552618; c=relaxed/simple;
-	bh=WnhesxNW489SQ6o9/JVmLHwAJ+1lIx01AIUokx4m7x8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=domz9A3SbLhmH7Zcr14eZQuicw8Orfudc7JqttzlXFTnIpK3TuCVgkzWB+I3/CSj6wCUxtq9XQSwjkI4GVAEyd3xBsDaIgbi3/YAqObAHOCbH8goWzuIRaJiRI1N3jnbyPsUZXcGweaDewUEOcXW8gsb/SArowt9QQ1WzUXoF1A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org; spf=pass smtp.mailfrom=cmpxchg.org; dkim=pass (2048-bit key) header.d=cmpxchg.org header.i=@cmpxchg.org header.b=cqQ4Dt4e; arc=none smtp.client-ip=209.85.219.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cmpxchg.org
-Received: by mail-qv1-f41.google.com with SMTP id 6a1803df08f44-89a0ecbc713so7970106d6.1
-        for <cgroups@vger.kernel.org>; Tue, 03 Mar 2026 07:43:35 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg.org; s=google; t=1772552615; x=1773157415; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=5iJQaiUJrWfplRxtcMoHp1zPaYjGQn94g6/CCuRZvsM=;
-        b=cqQ4Dt4ePHk8gYbSUkw+Es+PrNkl1xj2N0d/myQpYb0qzrR7hTOItklIZN8Z7akJze
-         8wyAlHcSoSKrl0vfL0CFeP05KoT3gfFRUuKn8RrMZyJ7cQYBt3B0thLKhF6IKOo0WABT
-         PcgEy3eDiRn3h7H50orV0iOiYR+NI5Ihg0IIoixjR7ILM85Fd0koQ9x/6ExCupkY3GUf
-         eyZdITDzGCqgYq8PSiMisnQ5AkjmEGMC/GjBXCAo4m3+Sw374tVYcrrYmGdNunKo5Cj1
-         3mdbRAnm35Ba87vzqbAJr53+Pt58MrVicEWdJzNbBwO6aijSTmARgZIaPbLBULXEPvav
-         UiLA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1772552615; x=1773157415;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=5iJQaiUJrWfplRxtcMoHp1zPaYjGQn94g6/CCuRZvsM=;
-        b=I9sfp3bfHYa64rbCwa0/78cl0yifkHm5gD/l7bzmSyixQwnA0V4i7Cp01/AxtPUtSr
-         aXPUeSwD+wrOw2aXpJ/ZRhli1kL1ZIBZ5FDqALF77UqgOC/Co3x1lKatqY+5Xf0Nrh1a
-         Ibv4TDeuaRIAcB0WyCcyk3fZ9WaluCBVP2k1HCOjA2Nx14GDvK3+oiDZ5BVwR6swvVTo
-         Fcp1GYFuLa/TcEfaOMUfNR4taq9vyYD7OcmDYpQf1Tb0yXACPJ6W0B7dbm9DRIU77yBA
-         1yIkwjoiACUQaJKLB2GQE1Cme+jFXBJ4APpmqVh5feyzskdEOMfVr37emnwth4Mlh43G
-         bNOw==
-X-Forwarded-Encrypted: i=1; AJvYcCVUO1mGxaFTlP4Hkno+qrbrMzSzW3wh1sFvDyGjX6h/euhUQ8OeeirqVNBN3VtPkBEKatmupWxD@vger.kernel.org
-X-Gm-Message-State: AOJu0YzQZgTI9RGU4u1rVct7u/DAssL4rrL+HywFi4heEtpw/lW/sNqR
-	GiUVvKpmNJMKJXNfP1Tqvdurvdct4JnKdCovxu8lOdGPAtoIY67Jxst0nSKaMUt+4Ec=
-X-Gm-Gg: ATEYQzz+iQHSuDZ8VsGIJG54C+lHYjnRwvsyYWajlz70xn7C2KpHgO8v8QjmJVulICr
-	S29UITc3ArO4BgB//ERU4kPMwbxkcQDrmM3ebkWJ/Fzk0HSZoGgJrl2btEIhKvg5sw1VBff4Oef
-	rnOTJuMYPfKfHwXjnnaI2vhIaG9uQ+rwg9FTaWhxvD17OJ8dgQYnbn4aacUJU9UNPogyIa5VENo
-	Icw8uA6wThigE1WxmU9+cDGA65NwF5ffVddnza/c4OS5hh2VUCPnUtJJKOS6mhTbTPcya4ef7+j
-	4/6o7Pw+aLeI8MqkuCdIQyEs6K3nEH1LvMFhqi6QfzCBf3NvTJzd7LJErKegn6DS7TaR89YuUlf
-	oeKejisXTFlvwjbKx3cSq0J236B5c7rBXzf9OEzUjMS7rSQUkUFGekXVKbjQxYeWxNFCUvdMCBK
-	jff6v0xfCiWxALFvaW05El7ottvS73yjOg
-X-Received: by 2002:a05:6214:21c7:b0:899:f39f:b884 with SMTP id 6a1803df08f44-89a0a86c9d5mr33626696d6.9.1772552614690;
-        Tue, 03 Mar 2026 07:43:34 -0800 (PST)
-Received: from localhost ([2603:7000:c00:3a00:365a:60ff:fe62:ff29])
-        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-899c7374e07sm134729676d6.33.2026.03.03.07.43.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 03 Mar 2026 07:43:33 -0800 (PST)
-Date: Tue, 3 Mar 2026 10:43:29 -0500
-From: Johannes Weiner <hannes@cmpxchg.org>
-To: Shakeel Butt <shakeel.butt@linux.dev>
-Cc: "Vlastimil Babka (SUSE)" <vbabka@kernel.org>, Hao Li <hao.li@linux.dev>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Michal Hocko <mhocko@kernel.org>,
-	Roman Gushchin <roman.gushchin@linux.dev>,
-	Vlastimil Babka <vbabka@suse.cz>, Harry Yoo <harry.yoo@oracle.com>,
-	linux-mm@kvack.org, cgroups@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 5/5] mm: memcg: separate slab stat accounting from objcg
- charge cache
-Message-ID: <aacBoazC21TAi-Q2@cmpxchg.org>
-References: <20260302195305.620713-1-hannes@cmpxchg.org>
- <20260302195305.620713-6-hannes@cmpxchg.org>
- <ji2jjt4vtmt2ox7wzytpivttc4z7j3u6cwmv23r6xit5322gns@te4t4djl5nlk>
- <541a6661-7bfe-4517-a32c-5839002c61e5@kernel.org>
- <aablae2eFl9ne5fW@linux.dev>
+	s=arc-20240116; t=1772553681; c=relaxed/simple;
+	bh=kBs6YeVI4ZGaefGQXETZ1A0somIfTOLdEbAPV/EzfKs=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=vGRcYlnfhAAtAhDJACoeLb+/501gEZACLF25nTdEvCdMsYSyFpGYDH3uWB9+QxO56+leZmX1Nt+vVWC8HV8YRsBvyYRWR296oLJsdzjRnjvZYY3fsoq/LVB2QOwZsH/J+4FyCFPXqcAP2bzjLxp+WK+qoFP5wVJcWUyx4c5Gy/E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=TkbPJX8l; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1772553679;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=/dUXt5Ka5EUKQpjBNwUoDbUSHKGe/xh8PsikJk52ylI=;
+	b=TkbPJX8lUHqtLIE79bw+yKxPN3ND2Kkj1iMIoTxj53A8vg91xJDznm71EzlpqvWO8yESQG
+	V4kwgH89oYvNvI9OnWevKQC/RMbcsh633MplIfy6NUXvAiqjYbsRlmRoshjgJLYU4NtIOl
+	nxHFaQKA4S0d/evEf5qCr0c5964xWTI=
+Received: from mx-prod-mc-06.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-35-165-154-97.us-west-2.compute.amazonaws.com [35.165.154.97]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-516-H2VeZw1rPH6RKyeOnh0WCA-1; Tue,
+ 03 Mar 2026 11:01:15 -0500
+X-MC-Unique: H2VeZw1rPH6RKyeOnh0WCA-1
+X-Mimecast-MFC-AGG-ID: H2VeZw1rPH6RKyeOnh0WCA_1772553669
+Received: from mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.17])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mx-prod-mc-06.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id D3CB31800266;
+	Tue,  3 Mar 2026 16:01:08 +0000 (UTC)
+Received: from [10.22.88.179] (unknown [10.22.88.179])
+	by mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id 333011956053;
+	Tue,  3 Mar 2026 16:00:56 +0000 (UTC)
+Message-ID: <c999838a-cfdf-4556-8416-cb21aa2b69e7@redhat.com>
+Date: Tue, 3 Mar 2026 11:00:54 -0500
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <aablae2eFl9ne5fW@linux.dev>
-X-Rspamd-Queue-Id: B42221F2E6B
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v6 7/8] cgroup/cpuset: Defer housekeeping_update() calls
+ from CPU hotplug to workqueue
+To: Frederic Weisbecker <frederic@kernel.org>
+Cc: Chen Ridong <chenridong@huaweicloud.com>, Tejun Heo <tj@kernel.org>,
+ Johannes Weiner <hannes@cmpxchg.org>, =?UTF-8?Q?Michal_Koutn=C3=BD?=
+ <mkoutny@suse.com>, Ingo Molnar <mingo@redhat.com>,
+ Peter Zijlstra <peterz@infradead.org>, Juri Lelli <juri.lelli@redhat.com>,
+ Vincent Guittot <vincent.guittot@linaro.org>,
+ Steven Rostedt <rostedt@goodmis.org>, Ben Segall <bsegall@google.com>,
+ Mel Gorman <mgorman@suse.de>, Valentin Schneider <vschneid@redhat.com>,
+ Thomas Gleixner <tglx@linutronix.de>, Shuah Khan <shuah@kernel.org>,
+ cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-kselftest@vger.kernel.org
+References: <20260221185418.29319-1-longman@redhat.com>
+ <20260221185418.29319-8-longman@redhat.com>
+ <aaBvc4ikB1H-WQDd@localhost.localdomain>
+Content-Language: en-US
+From: Waiman Long <longman@redhat.com>
+In-Reply-To: <aaBvc4ikB1H-WQDd@localhost.localdomain>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.0 on 10.30.177.17
+X-Rspamd-Queue-Id: 25B681F33EE
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[cmpxchg.org,none];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
-	R_DKIM_ALLOW(-0.20)[cmpxchg.org:s=google];
+	DMARC_POLICY_ALLOW(-0.50)[redhat.com,quarantine];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_DKIM_ALLOW(-0.20)[redhat.com:s=mimecast20190719];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	DKIM_TRACE(0.00)[cmpxchg.org:+];
 	MIME_TRACE(0.00)[0:+];
+	RCPT_COUNT_TWELVE(0.00)[18];
+	TAGGED_FROM(0.00)[bounces-14567-lists,cgroups=lfdr.de];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-14566-lists,cgroups=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	RECEIVED_HELO_LOCALHOST(0.00)[];
+	DKIM_TRACE(0.00)[redhat.com:+];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	MISSING_XM_UA(0.00)[];
 	FROM_HAS_DN(0.00)[];
 	TO_DN_SOME(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[5];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[hannes@cmpxchg.org,cgroups@vger.kernel.org];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	NEURAL_HAM(-0.00)[-1.000];
-	RCPT_COUNT_SEVEN(0.00)[11];
+	FROM_NEQ_ENVFROM(0.00)[longman@redhat.com,cgroups@vger.kernel.org];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	RCVD_COUNT_FIVE(0.00)[6];
 	MID_RHS_MATCH_FROM(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
+	NEURAL_HAM(-0.00)[-1.000];
 	TAGGED_RCPT(0.00)[cgroups];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,cmpxchg.org:dkim,cmpxchg.org:email,cmpxchg.org:mid]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo]
 X-Rspamd-Action: no action
 
-On Tue, Mar 03, 2026 at 05:45:18AM -0800, Shakeel Butt wrote:
-> On Tue, Mar 03, 2026 at 11:42:31AM +0100, Vlastimil Babka (SUSE) wrote:
-> > On 3/3/26 09:54, Hao Li wrote:
-> > > On Mon, Mar 02, 2026 at 02:50:18PM -0500, Johannes Weiner wrote:
-> > >> Cgroup slab metrics are cached per-cpu the same way as the sub-page
-> > >> charge cache. However, the intertwined code to manage those dependent
-> > >> caches right now is quite difficult to follow.
-> > >> 
-> > >> Specifically, cached slab stat updates occur in consume() if there was
-> > >> enough charge cache to satisfy the new object. If that fails, whole
-> > >> pages are reserved, and slab stats are updated when the remainder of
-> > >> those pages, after subtracting the size of the new slab object, are
-> > >> put into the charge cache. This already juggles a delicate mix of the
-> > >> object size, the page charge size, and the remainder to put into the
-> > >> byte cache. Doing slab accounting in this path as well is fragile, and
-> > >> has recently caused a bug where the input parameters between the two
-> > >> caches were mixed up.
-> > >> 
-> > >> Refactor the consume() and refill() paths into unlocked and locked
-> > >> variants that only do charge caching. Then let the slab path manage
-> > >> its own lock section and open-code charging and accounting.
-> > >> 
-> > >> This makes the slab stat cache subordinate to the charge cache:
-> > >> __refill_obj_stock() is called first to prepare it;
-> > >> __account_obj_stock() follows to hitch a ride.
-> > >> 
-> > >> This results in a minor behavioral change: previously, a mismatching
-> > >> percpu stock would always be drained for the purpose of setting up
-> > >> slab account caching, even if there was no byte remainder to put into
-> > >> the charge cache. Now, the stock is left alone, and slab accounting
-> > >> takes the uncached path if there is a mismatch. This is exceedingly
-> > >> rare, and it was probably never worth draining the whole stock just to
-> > >> cache the slab stat update.
-> > >> 
-> > >> Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
-> > >> ---
-> > >>  mm/memcontrol.c | 100 +++++++++++++++++++++++++++++-------------------
-> > >>  1 file changed, 61 insertions(+), 39 deletions(-)
-> > >> 
-> > >> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> > >> index 4f12b75743d4..9c6f9849b717 100644
-> > >> --- a/mm/memcontrol.c
-> > >> +++ b/mm/memcontrol.c
-> > >> @@ -3218,16 +3218,18 @@ static struct obj_stock_pcp *trylock_stock(void)
-> > >>  
-> > > 
-> > > [...]
-> > > 
-> > >> @@ -3376,17 +3383,14 @@ static bool obj_stock_flush_required(struct obj_stock_pcp *stock,
-> > >>  	return flush;
-> > >>  }
-> > >>  
-> > >> -static void refill_obj_stock(struct obj_cgroup *objcg, unsigned int nr_bytes,
-> > >> -		bool allow_uncharge, int nr_acct, struct pglist_data *pgdat,
-> > >> -		enum node_stat_item idx)
-> > >> +static void __refill_obj_stock(struct obj_cgroup *objcg,
-> > >> +			       struct obj_stock_pcp *stock,
-> > >> +			       unsigned int nr_bytes,
-> > >> +			       bool allow_uncharge)
-> > >>  {
-> > >> -	struct obj_stock_pcp *stock;
-> > >>  	unsigned int nr_pages = 0;
-> > >>  
-> > >> -	stock = trylock_stock();
-> > >>  	if (!stock) {
-> > >> -		if (pgdat)
-> > >> -			__account_obj_stock(objcg, NULL, nr_acct, pgdat, idx);
-> > >>  		nr_pages = nr_bytes >> PAGE_SHIFT;
-> > >>  		nr_bytes = nr_bytes & (PAGE_SIZE - 1);
-> > >>  		atomic_add(nr_bytes, &objcg->nr_charged_bytes);
-> > >> @@ -3404,20 +3408,25 @@ static void refill_obj_stock(struct obj_cgroup *objcg, unsigned int nr_bytes,
-> > >>  	}
-> > >>  	stock->nr_bytes += nr_bytes;
-> > >>  
-> > >> -	if (pgdat)
-> > >> -		__account_obj_stock(objcg, stock, nr_acct, pgdat, idx);
-> > >> -
-> > >>  	if (allow_uncharge && (stock->nr_bytes > PAGE_SIZE)) {
-> > >>  		nr_pages = stock->nr_bytes >> PAGE_SHIFT;
-> > >>  		stock->nr_bytes &= (PAGE_SIZE - 1);
-> > >>  	}
-> > >>  
-> > >> -	unlock_stock(stock);
-> > >>  out:
-> > >>  	if (nr_pages)
-> > >>  		obj_cgroup_uncharge_pages(objcg, nr_pages);
-> > >>  }
-> > >>  
-> > >> +static void refill_obj_stock(struct obj_cgroup *objcg,
-> > >> +			     unsigned int nr_bytes,
-> > >> +			     bool allow_uncharge)
-> > >> +{
-> > >> +	struct obj_stock_pcp *stock = trylock_stock();
-> > >> +	__refill_obj_stock(objcg, stock, nr_bytes, allow_uncharge);
-> > >> +	unlock_stock(stock);
-> > > 
-> > > Hi Johannes,
-> > > 
-> > > I noticed that after this patch, obj_cgroup_uncharge_pages() is now inside
-> > > the obj_stock.lock critical section. Since obj_cgroup_uncharge_pages() calls
-> > > refill_stock(), which seems non-trivial, this might increase the lock hold time.
-> > > In particular, could that lead to more failed trylocks for IRQ handlers on
-> > > non-RT kernel (or for tasks that preempt others on RT kernel)?
+On 2/26/26 11:06 AM, Frederic Weisbecker wrote:
+> Le Sat, Feb 21, 2026 at 01:54:17PM -0500, Waiman Long a écrit :
+>> The cpuset_handle_hotplug() may need to invoke housekeeping_update(),
+>> for instance, when an isolated partition is invalidated because its
+>> last active CPU has been put offline.
+>>
+>> As we are going to enable dynamic update to the nozh_full housekeeping
+>> cpumask (HK_TYPE_KERNEL_NOISE) soon with the help of CPU hotplug,
+>> allowing the CPU hotplug path to call into housekeeping_update() directly
+>> from update_isolation_cpumasks() will likely cause deadlock.
+> I am a bit confused here. Why would CPU hotplug path need to call
+> update_isolation_cpumasks() -> housekeeping_update() for
+> HK_TYPE_KERNEL_NOISE?
 
-Good catch. I did ponder this, but forgot by the time I wrote the
-changelog.
+Oh, this is not the current behavior. However, to make nohz_full fully 
+dynamically changeable in the near future, we will have to do that 
+eventually.
 
-> > Yes, it also seems a bit self-defeating? (at least in theory)
-> > 
-> > refill_obj_stock()
-> >   trylock_stock()
-> >   __refill_obj_stock()
-> >     obj_cgroup_uncharge_pages()
-> >       refill_stock()
-> >         local_trylock() -> nested, will fail
-> 
-> Not really as the local_locks are different i.e. memcg_stock.lock in
-> refill_stock() and obj_stock.lock in refill_obj_stock().
+Cheers,
+Longman
 
-Right, refilling the *byte* stock could produce enough excess that we
-refill the *page* stock. Which in turn could produce enough excess
-that we drain that back to the page counters (shared atomics).
 
-> However Hao's concern is valid and I think it can be easily fixed by
-> moving obj_cgroup_uncharge_pages() out of obj_stock.lock.
+>> So we
+>> have to defer any call to housekeeping_update() after the CPU hotplug
+>> operation has finished. This is now done via the workqueue where
+>> the update_hk_sched_domains() function will be invoked via the
+>> hk_sd_workfn().
+>>
+>> An concurrent cpuset control file write may have executed the required
+>> update_hk_sched_domains() function before the work function is called. So
+>> the work function call may become a no-op when it is invoked.
+>>
+>> Signed-off-by: Waiman Long <longman@redhat.com>
+>> ---
+>>   kernel/cgroup/cpuset.c                        | 31 ++++++++++++++++---
+>>   .../selftests/cgroup/test_cpuset_prs.sh       | 11 ++++++-
+>>   2 files changed, 36 insertions(+), 6 deletions(-)
+>>
+>> diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
+>> index 3d0d18bf182f..2c80bfc30bbc 100644
+>> --- a/kernel/cgroup/cpuset.c
+>> +++ b/kernel/cgroup/cpuset.c
+>> @@ -1323,6 +1323,16 @@ static void update_hk_sched_domains(void)
+>>   		rebuild_sched_domains_locked();
+>>   }
+>>   
+>> +/*
+>> + * Work function to invoke update_hk_sched_domains()
+>> + */
+>> +static void hk_sd_workfn(struct work_struct *work)
+>> +{
+>> +	cpuset_full_lock();
+>> +	update_hk_sched_domains();
+>> +	cpuset_full_unlock();
+>> +}
+>> +
+>>   /**
+>>    * rm_siblings_excl_cpus - Remove exclusive CPUs that are used by sibling cpusets
+>>    * @parent: Parent cpuset containing all siblings
+>> @@ -3795,6 +3805,7 @@ static void cpuset_hotplug_update_tasks(struct cpuset *cs, struct tmpmasks *tmp)
+>>    */
+>>   static void cpuset_handle_hotplug(void)
+>>   {
+>> +	static DECLARE_WORK(hk_sd_work, hk_sd_workfn);
+>>   	static cpumask_t new_cpus;
+>>   	static nodemask_t new_mems;
+>>   	bool cpus_updated, mems_updated;
+>> @@ -3877,11 +3888,21 @@ static void cpuset_handle_hotplug(void)
+>>   	}
+>>   
+>>   
+>> -	if (update_housekeeping || force_sd_rebuild) {
+>> -		mutex_lock(&cpuset_mutex);
+>> -		update_hk_sched_domains();
+>> -		mutex_unlock(&cpuset_mutex);
+>> -	}
+>> +	/*
+>> +	 * Queue a work to call housekeeping_update() & rebuild_sched_domains()
+>> +	 * There will be a slight delay before the HK_TYPE_DOMAIN housekeeping
+>> +	 * cpumask can correctly reflect what is in isolated_cpus.
+>> +	 *
+>> +	 * We rely on WORK_STRUCT_PENDING_BIT to not requeue a work item that
+>> +	 * is still pending. Before the pending bit is cleared, the work data
+>> +	 * is copied out and work item dequeued. So it is possible to queue
+>> +	 * the work again before the hk_sd_workfn() is invoked to process the
+>> +	 * previously queued work. Since hk_sd_workfn() doesn't use the work
+>> +	 * item at all, this is not a problem.
+>> +	 */
+>> +	if (update_housekeeping || force_sd_rebuild)
+>> +		queue_work(system_unbound_wq, &hk_sd_work);
+> Nit about recent wq renames:
+>
+> s/system_unbound_wq/system_dfl_wq
+Good point. Will send additional patch to do the rename.
+>
+> But what makes sure this work is executed by the end of the hotplug operations?
+> Is there a risk for a stale hierarchy to be observed when it shouldn't? Or a
+> stale housekeeping cpumask?
 
-Note that we now have multiple callsites of __refill_obj_stock(). Do
-we care enough to move this to the caller?
+If you look at the work function, it will make a copy of HK_TYPE_DOMAIN 
+cpumask while holding rcu_read_lock(). So the current hotplug operation 
+must have finished at that point. Of course, if there is another 
+hot-add/remove operation right after the rcu_read_lock is released, the 
+cpumask passed down to housekeeping_update() may not be the latest one. 
+In this case, another work will be scheduled to call 
+housekeeping_update() with the new cpumask again.
 
-There are a few other places with a similar pattern:
+Cheers,
+Longman
 
-- drain_obj_stock(): calls memcg_uncharge() under the lock
-- drain_stock(): calls memcg_uncharge() under the lock
-- refill_stock(): still does full drain_stock()
 
-All of these could be more intentional about only updating the per-cpu
-data under the lock and the page counters outside of it.
-
-Given that IRQ allocations/frees are rare, nested ones even rarer, and
-the "slowpath" is a few extra atomics, I'm not sure it's worth the
-code complication. At least until proven otherwise.
-
-What do you think?
 
