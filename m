@@ -1,80 +1,72 @@
-Return-Path: <cgroups+bounces-14557-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-14558-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 2M+RKm7BpmlDTQAAu9opvQ
-	(envelope-from <cgroups+bounces-14557-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Tue, 03 Mar 2026 12:09:34 +0100
+	id 6IHRLbPfpmlkYAAAu9opvQ
+	(envelope-from <cgroups+bounces-14558-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Tue, 03 Mar 2026 14:18:43 +0100
 X-Original-To: lists+cgroups@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 551941ED6F6
-	for <lists+cgroups@lfdr.de>; Tue, 03 Mar 2026 12:09:34 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 088991F0136
+	for <lists+cgroups@lfdr.de>; Tue, 03 Mar 2026 14:18:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 39D3B30612B1
-	for <lists+cgroups@lfdr.de>; Tue,  3 Mar 2026 11:08:16 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id ABC7430F0F31
+	for <lists+cgroups@lfdr.de>; Tue,  3 Mar 2026 13:13:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 374703F23A3;
-	Tue,  3 Mar 2026 11:08:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0676B423A77;
+	Tue,  3 Mar 2026 13:13:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pi97jkDc"
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="lIb1i6qL";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="o29c4EBL"
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE54C3E5EF8;
-	Tue,  3 Mar 2026 11:08:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9294935F169
+	for <cgroups@vger.kernel.org>; Tue,  3 Mar 2026 13:13:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772536093; cv=none; b=cD+3TILu7vkrim58LS2zLIjgu/mzbSrmF+5MngEfBJnPV3uTgPpdN+GoDW3vR9I/Hsu53ecwksmAoLrTqqrLWF7kCSvoJMWC7hoUPfng9TWJvw7Q/zVOsKLz6g9oqDoQ5KfcMIe7X4lstfwtcwQcedMwmSvJHhFgWThWpgMoxrM=
+	t=1772543586; cv=none; b=EnrcVppdp69EdEpOMO1dsYUMMftXPicAwL/lngS9kXpDmev278ZOn2PiZku8TomLFX3skJ+KIMfspwYXmuH+pwBmgv4xkOkH5cGa+3YTUOzQ6R6lvwiaif3YbTFio8d/8AIAsXbkWev0WSPwnYrHbIKnwrossYvPL+KoXpbbM7k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772536093; c=relaxed/simple;
-	bh=Pg+bxff6RLm2vjCjXAjEClO/zTnaUHcveVBLVQYUn1c=;
+	s=arc-20240116; t=1772543586; c=relaxed/simple;
+	bh=N59rhKekYSzO90t0Z7GXfxgOY++spj7v6aQcINF0/l8=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ZeBTraMQorFB+GRn7z+SaAt9sXhWedX831VBZ1JvQ+ZaqRjYIbeP8Dv1a6IIbMU2wXJe/1Tg7LRLd8W63Kb4j3IcS3H1Xz6fq9Yo2Gq+px7wwk+tXWV4ekuPtbyTaec+sIgfGuSXiu2HyAXTMLOX6tckkfO3IHs0+psiaMNs6MY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=pi97jkDc; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 187F5C116C6;
-	Tue,  3 Mar 2026 11:08:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1772536092;
-	bh=Pg+bxff6RLm2vjCjXAjEClO/zTnaUHcveVBLVQYUn1c=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=pi97jkDcT/ZjH3j1UUJ6X1W7VKCwQsInCbpeBFP2WSVyZpLzXJu8QPzcM+MpXLHaP
-	 v5fS7YCVHzOkRmsCOTvuoXmGSPdwd3i7T6x9y8gY1ZZEe7GFJ0w4TFdDGSPW2IFV0O
-	 Rl7Ox3oKMYqpsUiSjnHzKLW80EIJLqCnlDmaidVAx9ChJ9HN8OizgUIjCoqB6JFQjw
-	 9wBJDinzGnXWndQrjDIPTncYKV9DPeK2E/9jBboaAV2+942cFv7Vb5JkoLtFKJUHFK
-	 b9HlDor/+weZnR5MYZV+X3vw19vXWqNARlzTRdKwKemmjkEwoDKfcf9zbEO4CUb1c7
-	 LlzlaYyt5bL8A==
-Date: Tue, 3 Mar 2026 12:08:09 +0100
-From: Frederic Weisbecker <frederic@kernel.org>
-To: Marcelo Tosatti <mtosatti@redhat.com>
-Cc: Michal Hocko <mhocko@suse.com>, Leonardo Bras <leobras.c@gmail.com>,
-	linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-	linux-mm@kvack.org, Johannes Weiner <hannes@cmpxchg.org>,
-	Roman Gushchin <roman.gushchin@linux.dev>,
-	Shakeel Butt <shakeel.butt@linux.dev>,
-	Muchun Song <muchun.song@linux.dev>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Christoph Lameter <cl@linux.com>, Pekka Enberg <penberg@kernel.org>,
-	David Rientjes <rientjes@google.com>,
-	Joonsoo Kim <iamjoonsoo.kim@lge.com>,
-	Vlastimil Babka <vbabka@suse.cz>,
-	Hyeonggon Yoo <42.hyeyoo@gmail.com>,
-	Leonardo Bras <leobras@redhat.com>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Waiman Long <longman@redhat.com>, Boqun Feng <boqun.feng@gmail.com>,
-	Frederic Weisbecker <fweisbecker@suse.de>
-Subject: Re: [PATCH 0/4] Introduce QPW for per-cpu operations
-Message-ID: <aabBGcuhVaFVwtus@pavilion.home>
-References: <aYxviLoWsrLqDU7o@tpad>
- <aYywl1hdBQP2_slo@tiehlicka>
- <aZDw6xI2izFDfuuu@WindFlash>
- <aZL45yORfkNvS9Rs@tiehlicka>
- <aZcr255pGT3B/eaL@tpad>
- <aZdk19MqYhWK90Do@tiehlicka>
- <aZzM_44L1vKzcOCy@pavilion.home>
- <aZ3ejedS7nE5mnva@tpad>
- <aZ9ugjKvb4U7_R93@pavilion.home>
- <aaAxVbt/DQyTgIs3@tpad>
+	 Content-Type:Content-Disposition:In-Reply-To; b=epMlC3oIKQ2HKyHhSEsVXQLXqikF1hIpQ5EJ7F3lQlW+ahVpmFpu31tAsuch+1cvuFD8wTR3k02wZtfltnMBpmYOto4DU/QQcdOtyw0eSr4MsanwKL2oNwdwgS/F5LiaGT3wp4SJiSc/h0CWQDGVJKYmWEPUfecc+loWVx1SB/w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=lIb1i6qL; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=o29c4EBL; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+Date: Tue, 3 Mar 2026 14:13:01 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1772543583;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=sAffNeouQczhPYqzPOrjv2nqytQtFK/BWssDR6V5N1s=;
+	b=lIb1i6qL8h9MiRz42pmMwbLciNyDm5IQ6eABURTTARl7DsaIUiasoYaVSxaVP4jwRtIRia
+	GjRl31HlqzJ37onhVJie3y5ct3884XS6frlcXGpgCn7OtufgB/qTwVM5+Cj+vVhWHUrgYT
+	wr7GiMRUQfSOtVYWyhvsjOkwNLKH+KKJtEQNx8ASUw+QcC/XtYNEOXFlZb8JZ5/BnqDH1G
+	PLM77SIOfFOlpBUIe/rDdfWXZk8O5Jq0hdClHf4oAGOhxkr5WF120bXylGhSTvzH9amx3/
+	yCTJn9S+A7FX+7kntjyLkSr72YnKW76EaQMshLAekWjx0gxCA0HXlgY4a7YN7g==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1772543583;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=sAffNeouQczhPYqzPOrjv2nqytQtFK/BWssDR6V5N1s=;
+	b=o29c4EBLvJKzIMvSBUfZqFdIYT6eJwH/q6/QO6+gsueadrZwXrIjWoptJSI87JG/zCTr1K
+	onyzCHoNtItEeqAw==
+From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To: Tejun Heo <tj@kernel.org>
+Cc: linux-rt-devel@lists.linux.dev, cgroups@vger.kernel.org,
+	Johannes Weiner <hannes@cmpxchg.org>,
+	Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>,
+	Clark Williams <clrkwllms@kernel.org>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Bert Karwatzki <spasswolf@web.de>
+Subject: Re: [PATCH] cgroup: Don't expose dead tasks in cgroup
+Message-ID: <20260303131301.ieSSCM4n@linutronix.de>
+References: <20260302120738.6KkDipsR@linutronix.de>
+ <aaYHmCV2CW-tOT-Z@slm.duckdns.org>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -83,94 +75,149 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <aaAxVbt/DQyTgIs3@tpad>
-X-Rspamd-Queue-Id: 551941ED6F6
+In-Reply-To: <aaYHmCV2CW-tOT-Z@slm.duckdns.org>
+X-Rspamd-Queue-Id: 088991F0136
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-0.66 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
+X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
-	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
+	DMARC_POLICY_ALLOW(-0.50)[linutronix.de,none];
+	R_DKIM_ALLOW(-0.20)[linutronix.de:s=2020,linutronix.de:s=2020e];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-14557-lists,cgroups=lfdr.de];
-	RCVD_COUNT_THREE(0.00)[4];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	FREEMAIL_CC(0.00)[suse.com,gmail.com,vger.kernel.org,kvack.org,cmpxchg.org,linux.dev,linux-foundation.org,linux.com,kernel.org,google.com,lge.com,suse.cz,redhat.com,linutronix.de,suse.de];
-	RCPT_COUNT_TWELVE(0.00)[22];
-	MIME_TRACE(0.00)[0:+];
+	FREEMAIL_CC(0.00)[lists.linux.dev,vger.kernel.org,cmpxchg.org,suse.com,kernel.org,goodmis.org,web.de];
+	TAGGED_FROM(0.00)[bounces-14558-lists,cgroups=lfdr.de];
 	FROM_HAS_DN(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	TO_DN_SOME(0.00)[];
-	NEURAL_HAM(-0.00)[-0.998];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[frederic@kernel.org,cgroups@vger.kernel.org];
-	DKIM_TRACE(0.00)[kernel.org:+];
-	TAGGED_RCPT(0.00)[cgroups];
-	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
+	RCVD_COUNT_THREE(0.00)[3];
+	RCVD_TLS_LAST(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	DKIM_TRACE(0.00)[linutronix.de:+];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
 	MISSING_XM_UA(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo,pavilion.home:mid]
+	NEURAL_HAM(-0.00)[-0.991];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[bigeasy@linutronix.de,cgroups@vger.kernel.org];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	MID_RHS_MATCH_FROM(0.00)[];
+	TAGGED_RCPT(0.00)[cgroups];
+	RCPT_COUNT_SEVEN(0.00)[8];
+	TO_DN_SOME(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo]
 X-Rspamd-Action: no action
 
-Le Thu, Feb 26, 2026 at 08:41:09AM -0300, Marcelo Tosatti a écrit :
-> On Wed, Feb 25, 2026 at 10:49:54PM +0100, Frederic Weisbecker wrote:
-> 
-> <snip>
-> 
-> > > There are specific parts of a simulation that are intensive, but
-> > > researchers try to minimize them:
-> > > 
-> > > I/O Operations: Writing "checkpoints" or large trajectory files to disk
-> > > (using write()). This is why high-end HPC systems use Asynchronous I/O
-> > > or dedicated I/O nodes—to keep the compute cores from getting bogged
-> > > down in system calls.
-> > > 
-> > > Memory Allocation: Constantly calling malloc/free involves the brk or
-> > > mmap system calls. Optimized simulation tools pre-allocate all the
-> > > memory they need at startup to avoid this.
-> > 
-> > Ok. I asked a similar question and got this (you made me use an LLM for the
-> > first time btw, I held out for 4 years... I'm sure I can wait 4 more years until
-> > the next usage :o)
-> 
-> You should use it more often, it can save a significant amount of time
-> :-)
+On 2026-03-02 11:56:40 [-1000], Tejun Heo wrote:
+> Hello, Seb.
+Hi Tejun,
 
-I fear the earth doesn't have the resources to serve daily use of LLM to us
-all. Meanwhile it was a pleasant surprise to see it in action and answer questions
-I had to myself for a long while. And I might use it again on the rare occasions
-where a simple search engine request doesn't do the job.
-
-> > ### 2. The "Slow Path" (System Calls / Syscalls)
-> > 
-> > Passing through the kernel (a syscall) is necessary in certain situations, but it is "expensive" because it forces a **context switch**, which flushes CPU caches.
-> > 
-> > * **Initialization:** During startup (`MPI_Init`), many syscalls are used to create sockets, map shared memory (`mmap`), and configure network interfaces.
-> > * **Standard TCP/IP:** If you are not using a high-performance network (RDMA) but simple Ethernet instead, MPI must call `send()` and `recv()`, which are syscalls. The Linux kernel then takes over to manage the TCP/IP stack.
-> > * **Sleep Mode (Blocking):** If an MPI process waits for a message for too long, it may decide to "go to sleep" to yield the CPU to another task via syscalls like `futex()` or `poll()`.
-> > 
-> > **In summary:** MPI synchronization aims to be **100% User-Space** (via memory polling) to avoid syscall latency. It is precisely because MPI tries to bypass the kernel that we use `nohz_full`: we are asking the kernel not to even "knock on the CPU's door" with its clock interruptions.
+> On Mon, Mar 02, 2026 at 01:07:38PM +0100, Sebastian Andrzej Siewior wrote:
+> > Tejun, with this change, would it be okay to
+> > - replace the irq-work with kworker? With this change it should address
+> >   your concern regarding "run in definite time" as mentioned in [0]. So
+> >   it might be significantly delayed but it shouldn't be visible.
+> >   This would lift the restriction that a irq-work needs to run on this
+> >   CPU and the kworker could run on any CPU. 
 > 
-> Of course, there is a cost to system calls. However, considering
-> "low latency applications must necessarily remain in userspace,
-> therefore lets optimize only for that case" is limiting IMHO.
+> Yeah, that's fine.
+
+Okay.
+
+> > - would it be okay to treat RT and !RT equally here (and do this delayed
+> >   cgroup_task_dead() in both cases)
 > 
-> Should avoid interruptions whenever possible, for isolated CPUs
-> (in userspace _and_ kernelspace).
+> I don't see why we'd bounce on !RT. Are there any benefits?
 
-Very low latency requirements really should bend toward full userspace.
-But you're right that isolation (even full with nohz_full) should probably
-not be limited to that. HPC shows such a usecase where the workload is not
-perfectly isolated and yet nohz_full brings improvements.
+You would have the same bugs if any and not two separate types if at
+all. It would get rid of the ifdef. No other benefit.
 
-Thanks.
+> > @@ -5283,6 +5283,11 @@ static void *cgroup_procs_start(struct seq_file *s, loff_t *pos)
+> >  
+> >  static int cgroup_procs_show(struct seq_file *s, void *v)
+> >  {
+> > +	struct task_struct *tsk = v;
+> > +
+> > +	if (READ_ONCE(tsk->__state) & TASK_DEAD)
+> > +		return 0;
+> 
+> Does this actually close the window for systemd through operation ordering
+> or does it just reduce the race window?
 
--- 
-Frederic Weisbecker
-SUSE Labs
+I see the task in questing exiting via sched_process_exit() and after
+its schedule() it is removed from the cgroup list as per current logic.
+
+The parent systemd task doing all its cleanup gets probably active
+because its child died/ SIGCHLD. So we have sched_process_exit(), wake
+parent, final schedule() leaving as zombie removing itself from the
+cgroup list.
+Judging from do_exit(), a preemption after exit_notify() before
+do_task_dead() should lead to the same problem. By adding a delay
+
+--- a/kernel/exit.c
++++ b/kernel/exit.c
+@@ -893,6 +893,7 @@ static void synchronize_group_exit(struct task_struct *tsk, long code)
+ 		coredump_task_exit(tsk, core_state);
+ }
+ 
++#include <linux/delay.h>
+ void __noreturn do_exit(long code)
+ {
+ 	struct task_struct *tsk = current;
+@@ -1004,6 +1005,7 @@ void __noreturn do_exit(long code)
+ 	exit_task_stack_account(tsk);
+ 
+ 	check_stack_usage();
++	ssleep(1);
+ 	preempt_disable();
+ 	if (tsk->nr_dirtied)
+ 		__this_cpu_add(dirty_throttle_leaks, tsk->nr_dirtied);
+
+I get the same timeout behaviour on !PREEMPT_RT. So it seems like I did
+reduce the race window.
+
+So what about doing the removal before sending the signal about the
+upcoming death? Something like:
+
+--- a/kernel/cgroup/cgroup.c
++++ b/kernel/cgroup/cgroup.c
+@@ -6975,6 +6975,7 @@ void cgroup_post_fork(struct task_struct *child,
+  * Description: Detach cgroup from @tsk.
+  *
+  */
++static void do_cgroup_task_dead(struct task_struct *tsk);
+ void cgroup_task_exit(struct task_struct *tsk)
+ {
+ 	struct cgroup_subsys *ss;
+@@ -6984,6 +6985,7 @@ void cgroup_task_exit(struct task_struct *tsk)
+ 	do_each_subsys_mask(ss, i, have_exit_callback) {
+ 		ss->exit(tsk);
+ 	} while_each_subsys_mask();
++	do_cgroup_task_dead(tsk);
+ }
+ 
+ static void do_cgroup_task_dead(struct task_struct *tsk)
+@@ -7050,16 +7052,12 @@ static void __init cgroup_rt_init(void)
+ 
+ void cgroup_task_dead(struct task_struct *task)
+ {
+-	get_task_struct(task);
+-	llist_add(&task->cg_dead_lnode, this_cpu_ptr(&cgrp_dead_tasks));
+-	irq_work_queue(this_cpu_ptr(&cgrp_dead_tasks_iwork));
+ }
+ #else	/* CONFIG_PREEMPT_RT */
+ static void __init cgroup_rt_init(void) {}
+ 
+ void cgroup_task_dead(struct task_struct *task)
+ {
+-	do_cgroup_task_dead(task);
+ }
+ #endif	/* CONFIG_PREEMPT_RT */
+ 
+
+cgroup_task_exit() is invoked a few functions before exit_notify(). Not
+sure what else I might have broken but the race window should be closed.
+
+> Thanks.
+
+Sebastian
 
