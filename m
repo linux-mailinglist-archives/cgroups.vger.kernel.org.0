@@ -1,364 +1,280 @@
-Return-Path: <cgroups+bounces-14565-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-14566-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id KNxzAND7pmk7bgAAu9opvQ
-	(envelope-from <cgroups+bounces-14565-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Tue, 03 Mar 2026 16:18:40 +0100
+	id wIQxFqgCp2k7bgAAu9opvQ
+	(envelope-from <cgroups+bounces-14566-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Tue, 03 Mar 2026 16:47:52 +0100
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
-	by mail.lfdr.de (Postfix) with ESMTPS id D006A1F260A
-	for <lists+cgroups@lfdr.de>; Tue, 03 Mar 2026 16:18:39 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id B42221F2E6B
+	for <lists+cgroups@lfdr.de>; Tue, 03 Mar 2026 16:47:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 4076D300B583
-	for <lists+cgroups@lfdr.de>; Tue,  3 Mar 2026 15:18:39 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 5D78030417AC
+	for <lists+cgroups@lfdr.de>; Tue,  3 Mar 2026 15:43:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B632D481ABA;
-	Tue,  3 Mar 2026 15:18:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8160047DF8D;
+	Tue,  3 Mar 2026 15:43:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="r0ZejM7g"
+	dkim=pass (2048-bit key) header.d=cmpxchg.org header.i=@cmpxchg.org header.b="cqQ4Dt4e"
 X-Original-To: cgroups@vger.kernel.org
-Received: from SJ2PR03CU001.outbound.protection.outlook.com (mail-westusazon11012059.outbound.protection.outlook.com [52.101.43.59])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qv1-f41.google.com (mail-qv1-f41.google.com [209.85.219.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB4E63CA4BF;
-	Tue,  3 Mar 2026 15:18:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.43.59
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772551115; cv=fail; b=qqBQMyW6IKn9QH2WwyLhKh3lYLh7Q1AyyPXfWr/ij6jWaf0hyUZu5s/bMjsoY8UIyarkz9dhzym9wcwoJPOR9PppPK8sq2nIqUgjTBLtLNuK/e5z8Zh63kknjZerO0ymg3gNOc3rWjDudAJgPO6wy7eUuf8gXTkQPTQSXJQKHjU=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772551115; c=relaxed/simple;
-	bh=VcGUH1vgkXNEVGc2OpWGxJmrARRKQ0vP2h6/1SEXyOU=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=iCX09mDDhmqW+kSJ0XTR58SgGwia7Lo3AqwlTJb4LA+Qrb9+GExi+TwLsqV4B/rTF+jsgNrkU6hfPXHLf3LessRUGjOvBFCLid+NFzzobySAM3x6dC1BHc7SbvYh1zP2c2BpF5SI00iH5itSg7cpuEIhPLirGiFbIVOhx7Dpm8s=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=r0ZejM7g; arc=fail smtp.client-ip=52.101.43.59
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=x1SaxzMgxSjknGHKFUt5wes5Uc3WyDhSaRjo9FjGAAZDwQKECv/eprGiQq6zY7K5A06hWxYjWo0D7UMIf5ShZT2pNDelDb9QcF+w3O2sjO/9hRBMgkclYOH6gVEZE+Yi5N68x01jPkKltaaRoxcCv+fBqNWrR73UYH+BlTTzWtOfRJG2ShQv+Lqr9XpeFnSSYqqR6HczmLlVhHv+XEK3jNVNlzX+QZ4/h37tqWl4soEhSr/xkGeCjlboi1+KeKAoHHSDy0W2yDP5vZWS+YsZL5n+NplxVNRuxrAzTVwW3T36jZrti5Rlh+aYVvu2kMEXmKQPrR0EkwWCZIfp3mdQVg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=HO2YaJcqZoKCdrO6i5ZW3v0x/wWnJirffOB/rQZKW7Q=;
- b=ora9V+0YO56saNPgtDkR3MOg8Ui3wxhnIqBi6ayV+kD7PT97pDWfDK+kKpPrcprm/+nftOdsNIR5VvG5Y4esnljcz19ikiFp3A7IMTQcpdbv1lF4M31jOBMu+6tvb+hcBAMXZcUJwpZPXw1VyHyLeqDpiiSA1mH9gSzTxMIuMU9oThIBOkLLnrO+4R1bIgcJ91FfbkgKY2I1oVUqNEWKxu/wK4koZ5uGITBfy8qMt5sw+P3ue9aOTokv/lByas0XhyNrjLqyF7HvvYLcpSpbfXPv4DxjwL0nD3mCJ0BI4IDqqqjWJiBjQ4IMA5QOAXOz4WQb5EXM0zF3IGEvylotTA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=HO2YaJcqZoKCdrO6i5ZW3v0x/wWnJirffOB/rQZKW7Q=;
- b=r0ZejM7gSHkGUwMQxlo4ygnKpKjDY6zUMgwkJZMINKdtAyB6NlX6KXmG2Y6gDkqjyHXyQA47ahjefjd5bq0LIeBYoDgGizLDluacNjrEuPBofOd+TUu16loQbp50hcesywvdh657pXYmHrpn8n18K4d3nCkRaIc74iq9PnMOTzTS9EaOFA+qC+kyegUZTE+sHGjOqhOsJ7gm0rynYUbSVkMiGTLtqNnYzGtrsH5qSOd00YUqJx247NXpkkphNu8WJUHt4lwrAYZmIWJnBQInX2VAbyvGCklGWEnEsjkk32RTYmLK+PHLZ2uCB6SwuS9oKa1jd1nOb1zpmdZkeMqQYw==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from DS2PR12MB9750.namprd12.prod.outlook.com (2603:10b6:8:2b0::12)
- by IA0PR12MB9011.namprd12.prod.outlook.com (2603:10b6:208:488::8) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9654.22; Tue, 3 Mar
- 2026 15:18:22 +0000
-Received: from DS2PR12MB9750.namprd12.prod.outlook.com
- ([fe80::56a8:d6bf:e24c:b391]) by DS2PR12MB9750.namprd12.prod.outlook.com
- ([fe80::56a8:d6bf:e24c:b391%5]) with mapi id 15.20.9654.022; Tue, 3 Mar 2026
- 15:18:22 +0000
-Message-ID: <1a89aceb-48db-4edd-a730-b445e41221fe@nvidia.com>
-Date: Tue, 3 Mar 2026 15:18:16 +0000
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v6 7/8] cgroup/cpuset: Defer housekeeping_update() calls
- from CPU hotplug to workqueue
-To: Waiman Long <longman@redhat.com>, Chen Ridong
- <chenridong@huaweicloud.com>, Tejun Heo <tj@kernel.org>,
- Johannes Weiner <hannes@cmpxchg.org>, =?UTF-8?Q?Michal_Koutn=C3=BD?=
- <mkoutny@suse.com>, Ingo Molnar <mingo@redhat.com>,
- Peter Zijlstra <peterz@infradead.org>, Juri Lelli <juri.lelli@redhat.com>,
- Vincent Guittot <vincent.guittot@linaro.org>,
- Steven Rostedt <rostedt@goodmis.org>, Ben Segall <bsegall@google.com>,
- Mel Gorman <mgorman@suse.de>, Valentin Schneider <vschneid@redhat.com>,
- Frederic Weisbecker <frederic@kernel.org>,
- Thomas Gleixner <tglx@linutronix.de>, Shuah Khan <shuah@kernel.org>
-Cc: cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-kselftest@vger.kernel.org,
- "linux-tegra@vger.kernel.org" <linux-tegra@vger.kernel.org>
-References: <20260221185418.29319-1-longman@redhat.com>
- <20260221185418.29319-8-longman@redhat.com>
-From: Jon Hunter <jonathanh@nvidia.com>
-Content-Language: en-US
-In-Reply-To: <20260221185418.29319-8-longman@redhat.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: LO2P265CA0010.GBRP265.PROD.OUTLOOK.COM
- (2603:10a6:600:62::22) To DS2PR12MB9750.namprd12.prod.outlook.com
- (2603:10b6:8:2b0::12)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1A9D642F55E
+	for <cgroups@vger.kernel.org>; Tue,  3 Mar 2026 15:43:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.41
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1772552618; cv=none; b=h4gGvoGZ4Sd4bwsoLj9/VPfUcFIIVlQ6pMYKu7w63iVdA8dyv4/haW61G2VX0XF4yFtrvFB8kB6gseMkes8Xh+j7R0hq3xcRgUlNxouMLT2H7N+fFiI/8QTk/fm2gY4rb772m5qH/3AuyQngmqJlM9fC5RZqQkJykS8o6gCv+ko=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1772552618; c=relaxed/simple;
+	bh=WnhesxNW489SQ6o9/JVmLHwAJ+1lIx01AIUokx4m7x8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=domz9A3SbLhmH7Zcr14eZQuicw8Orfudc7JqttzlXFTnIpK3TuCVgkzWB+I3/CSj6wCUxtq9XQSwjkI4GVAEyd3xBsDaIgbi3/YAqObAHOCbH8goWzuIRaJiRI1N3jnbyPsUZXcGweaDewUEOcXW8gsb/SArowt9QQ1WzUXoF1A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org; spf=pass smtp.mailfrom=cmpxchg.org; dkim=pass (2048-bit key) header.d=cmpxchg.org header.i=@cmpxchg.org header.b=cqQ4Dt4e; arc=none smtp.client-ip=209.85.219.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cmpxchg.org
+Received: by mail-qv1-f41.google.com with SMTP id 6a1803df08f44-89a0ecbc713so7970106d6.1
+        for <cgroups@vger.kernel.org>; Tue, 03 Mar 2026 07:43:35 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cmpxchg.org; s=google; t=1772552615; x=1773157415; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=5iJQaiUJrWfplRxtcMoHp1zPaYjGQn94g6/CCuRZvsM=;
+        b=cqQ4Dt4ePHk8gYbSUkw+Es+PrNkl1xj2N0d/myQpYb0qzrR7hTOItklIZN8Z7akJze
+         8wyAlHcSoSKrl0vfL0CFeP05KoT3gfFRUuKn8RrMZyJ7cQYBt3B0thLKhF6IKOo0WABT
+         PcgEy3eDiRn3h7H50orV0iOiYR+NI5Ihg0IIoixjR7ILM85Fd0koQ9x/6ExCupkY3GUf
+         eyZdITDzGCqgYq8PSiMisnQ5AkjmEGMC/GjBXCAo4m3+Sw374tVYcrrYmGdNunKo5Cj1
+         3mdbRAnm35Ba87vzqbAJr53+Pt58MrVicEWdJzNbBwO6aijSTmARgZIaPbLBULXEPvav
+         UiLA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1772552615; x=1773157415;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=5iJQaiUJrWfplRxtcMoHp1zPaYjGQn94g6/CCuRZvsM=;
+        b=I9sfp3bfHYa64rbCwa0/78cl0yifkHm5gD/l7bzmSyixQwnA0V4i7Cp01/AxtPUtSr
+         aXPUeSwD+wrOw2aXpJ/ZRhli1kL1ZIBZ5FDqALF77UqgOC/Co3x1lKatqY+5Xf0Nrh1a
+         Ibv4TDeuaRIAcB0WyCcyk3fZ9WaluCBVP2k1HCOjA2Nx14GDvK3+oiDZ5BVwR6swvVTo
+         Fcp1GYFuLa/TcEfaOMUfNR4taq9vyYD7OcmDYpQf1Tb0yXACPJ6W0B7dbm9DRIU77yBA
+         1yIkwjoiACUQaJKLB2GQE1Cme+jFXBJ4APpmqVh5feyzskdEOMfVr37emnwth4Mlh43G
+         bNOw==
+X-Forwarded-Encrypted: i=1; AJvYcCVUO1mGxaFTlP4Hkno+qrbrMzSzW3wh1sFvDyGjX6h/euhUQ8OeeirqVNBN3VtPkBEKatmupWxD@vger.kernel.org
+X-Gm-Message-State: AOJu0YzQZgTI9RGU4u1rVct7u/DAssL4rrL+HywFi4heEtpw/lW/sNqR
+	GiUVvKpmNJMKJXNfP1Tqvdurvdct4JnKdCovxu8lOdGPAtoIY67Jxst0nSKaMUt+4Ec=
+X-Gm-Gg: ATEYQzz+iQHSuDZ8VsGIJG54C+lHYjnRwvsyYWajlz70xn7C2KpHgO8v8QjmJVulICr
+	S29UITc3ArO4BgB//ERU4kPMwbxkcQDrmM3ebkWJ/Fzk0HSZoGgJrl2btEIhKvg5sw1VBff4Oef
+	rnOTJuMYPfKfHwXjnnaI2vhIaG9uQ+rwg9FTaWhxvD17OJ8dgQYnbn4aacUJU9UNPogyIa5VENo
+	Icw8uA6wThigE1WxmU9+cDGA65NwF5ffVddnza/c4OS5hh2VUCPnUtJJKOS6mhTbTPcya4ef7+j
+	4/6o7Pw+aLeI8MqkuCdIQyEs6K3nEH1LvMFhqi6QfzCBf3NvTJzd7LJErKegn6DS7TaR89YuUlf
+	oeKejisXTFlvwjbKx3cSq0J236B5c7rBXzf9OEzUjMS7rSQUkUFGekXVKbjQxYeWxNFCUvdMCBK
+	jff6v0xfCiWxALFvaW05El7ottvS73yjOg
+X-Received: by 2002:a05:6214:21c7:b0:899:f39f:b884 with SMTP id 6a1803df08f44-89a0a86c9d5mr33626696d6.9.1772552614690;
+        Tue, 03 Mar 2026 07:43:34 -0800 (PST)
+Received: from localhost ([2603:7000:c00:3a00:365a:60ff:fe62:ff29])
+        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-899c7374e07sm134729676d6.33.2026.03.03.07.43.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 03 Mar 2026 07:43:33 -0800 (PST)
+Date: Tue, 3 Mar 2026 10:43:29 -0500
+From: Johannes Weiner <hannes@cmpxchg.org>
+To: Shakeel Butt <shakeel.butt@linux.dev>
+Cc: "Vlastimil Babka (SUSE)" <vbabka@kernel.org>, Hao Li <hao.li@linux.dev>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Michal Hocko <mhocko@kernel.org>,
+	Roman Gushchin <roman.gushchin@linux.dev>,
+	Vlastimil Babka <vbabka@suse.cz>, Harry Yoo <harry.yoo@oracle.com>,
+	linux-mm@kvack.org, cgroups@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 5/5] mm: memcg: separate slab stat accounting from objcg
+ charge cache
+Message-ID: <aacBoazC21TAi-Q2@cmpxchg.org>
+References: <20260302195305.620713-1-hannes@cmpxchg.org>
+ <20260302195305.620713-6-hannes@cmpxchg.org>
+ <ji2jjt4vtmt2ox7wzytpivttc4z7j3u6cwmv23r6xit5322gns@te4t4djl5nlk>
+ <541a6661-7bfe-4517-a32c-5839002c61e5@kernel.org>
+ <aablae2eFl9ne5fW@linux.dev>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DS2PR12MB9750:EE_|IA0PR12MB9011:EE_
-X-MS-Office365-Filtering-Correlation-Id: 43a45b6e-80b9-4dc2-f990-08de79381ba5
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|10070799003|1800799024|376014|7416014|366016|7053199007|921020;
-X-Microsoft-Antispam-Message-Info:
-	rpOB7Ik9v0HuuBOfVvdOXSRawzHjyDtfqHx6JxZBYfqfWphcy+d8PeUzS7LbB181NXsIxWqiK3JTMsV6cwKx42qaXOS27ERFDSy8bRa03O5mqZPTPY+0plEiwdNV1AVKhsJHqEiMauESu0KR5DO62c00cO6io6CyiHzzC5TG3PM/uOhlUao4G953zhOFF/LLKP6l1TyF8pmRxc17tAT0FZKoxYd2Bc57sY63Acc//y6vDvqpjHyEhG+DzC3nLxAQJoViEgHy38GFSY8O+jDkNjyqqsDGdqnRIQ2yEndSjzbaca8EUqrRyD2YTv6/vbc5hw4FD8KukhMUBf5EkPM3I8+J2RQyuhuS7iYkNPGaNkAWJ8CZGFufgnUVaOy1xstlyMecwrK5qhU7TVdHF96b3+3L2ocwf+tC6Ac6RPt8QrI672lGOQ2XPLx9SlM4EAD1jkDZ0fi382Xp8O98QJB4gbCUz+63oYMBMwHRPPVN4s7tu4mQ7qgkoxRytNSw8smLBopUuT2F69NVn4lj3kMdme2ROZLSgkEHVP2y/uDdAkZukLbKgA5GjB57Y5qQrILIlc8yLcB6qYJI16GKGhgG66Hq6g8hO3Mwgyz4GF2EdBoTrEfaLYNUzLtUoqRmwSJ6cfDHCWx7d/E2h567HRz1vabOVboMmrPg7Ct9EbVc3ZX2wJvpbRZONrQLz2yWI8OchxqWig5G4+qXuXFG1HaVbf+6Qb7ocp6bgZq7s5nDNhatAcq8StGX2S8oBmkjrxuEzRgAUuO2LOhssGc7FmXDBpJqQ9Z8d7mfpA1H7RKXcPY=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS2PR12MB9750.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(10070799003)(1800799024)(376014)(7416014)(366016)(7053199007)(921020);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 2
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?VXlhQkVjV215QXJXSDlpSG5MMEs0LytsaHlJZGtseGRURThHWjRublVFNDFR?=
- =?utf-8?B?bXpwRFcrb1ROcGJ3S3R1blFNUnpscC9tYk4yOU9CMjFZTzkvd3pVdVFoampt?=
- =?utf-8?B?Z0tmcnZNZ1huWmFyOFdvYnJZbUs5dytRMlV3ZWl6VU10SjcrVjQ1Zkhjb1Uw?=
- =?utf-8?B?aWN6YTV6QnRwb1YyVUcvVlEvRG81M3ZVL3RrbHAvRW5xRXBQald2UkF1cldl?=
- =?utf-8?B?WXNYQUNtUU45OWpMNUtjbjI1Vm5pTWUyeXBWMFVMYXJxUEpFYmZqQSt0SWtY?=
- =?utf-8?B?ckZvbEdxSXRycStoanVZbDVnN2t2Sk9ySFVoaFA5UWtNYld5VHFFZnAraWh5?=
- =?utf-8?B?U3lqZGxFYjlaSjB6OTVFTEs0VTBuY1ZxTmtqUUJPMWpsMXcyWWFWWmtIYjlC?=
- =?utf-8?B?eXE4b2NBNnJpR1FVN3MzRVIrTFA1dUR0cy92Wi9uRHk2VnZ5VUlRT1RUY2E4?=
- =?utf-8?B?OU80UitNcUZpalQyL0p3bDVoZFZ5cjF2SGJiR2F3d2RCZDBxK3dUNkhJbjho?=
- =?utf-8?B?d3ovMGFVRUoyQTBYTWJjd3MxU0UzMGp3cW1DUGtpM1Jnd3p2OUkyeGlNdXda?=
- =?utf-8?B?ZFFFRHRlNDZXVm1nRmJnalhyUEFGdG85M1AwVXlXUmZWN0lrYXRDeHZDWHBK?=
- =?utf-8?B?MzVxekxNT2NLa2x0aWtYY3NRVDRYQlZjY0l5SDlTNTA4aGhrTjdwcmZCZTBB?=
- =?utf-8?B?OWxISXo2VDZCMUFnYUxDZTFYTlJ1YzJCNnQxS3JFMENQak0xWi9pRGRSUVZ5?=
- =?utf-8?B?RTdiSW41VWY3SkV5d2sxNWdGSXUrQ3RnOXdIUUF3TFJBVGtHRmVrbis5NWRh?=
- =?utf-8?B?elBuMi82QlVtMWs5d1B5Y0wwMklPVExwQzNNU1BrS2hjT1hIaDBNdUpKemR1?=
- =?utf-8?B?MnhGZVpMZ2JRczR5eDlDNmtZMXBDV2FQY3c5aEFVa09aOFBkTU1qYzZxWDcr?=
- =?utf-8?B?M3YyNmQ1VHZxZ2ZNbzJFdm1OUGM3WkJmYmNPWjMvYlZ5Q3c3Z1NnYVRySW1B?=
- =?utf-8?B?bXF6VEc5Q2U2d2dCWEkvKzJjQS8wWnFYWjhSb1dubzdCL0Mwd28yWEJsSXB0?=
- =?utf-8?B?Q0F1OUxJRkJkb0hFMlZtVzJTdW1ZMk93UENrWGloa0ZFUEpxak0xc2VRQmhG?=
- =?utf-8?B?byt4Mk1JV0hnQkMyTkhOdHJJYVFQeHROYXJSSmhLWFBDSnMrSXVxWWM2U2Vk?=
- =?utf-8?B?d2ZydzdaOXdOSTh3OTh0U24xZ3BacDFScm9lTVBJdlFKbXdyb0YvaEVIVitk?=
- =?utf-8?B?VmVJckxud0NwVXMweHlKRG11RWxIYjZMRmFNc2Y5aDk0YWhzWVBmbDdQV3pD?=
- =?utf-8?B?bjZBNkpXalFUUTVEWFFkUFdmcTZ0MVNjek1yVGkzbWZIaUpDamRiNm9LcVdQ?=
- =?utf-8?B?L0hIaVZueUxMZmF1L0o3bkpHaFRqcUdITVpLNnB4QzFZR2FWZnV2NUJHQmNI?=
- =?utf-8?B?cFJOejFCOXM0LzM0alZVM2IyanlFUFZ5Qk5zNVZUSER0dEdCSUJLRGxaTDJ0?=
- =?utf-8?B?aUkwK3MrbFMyNU5xbXpQbjVuYnNDQzNrSm9KRmpZb25ieDRuMnhuQ0lQREFS?=
- =?utf-8?B?U0hNOFZpNEFlTTV1Y2IrSFU5TkUySE8zVmRZbGxJd1h3MkZBbDIveDYrUkxP?=
- =?utf-8?B?Tkt2UG9HMXhkdGRSU1JSS0F1ZU1yZkV2TWpCaWlLckp6UmVnaWtEY2drVG85?=
- =?utf-8?B?QTNjWm1WeUQyaG1jSGFadkd1OHZoMmY1NmgySGlQc1luWmU4bG1CYUxrNFU4?=
- =?utf-8?B?MER6OEZtNWJ0dnhHZVJQUjRUN0Exa292b1FRZGhBanNOSGlYZXpqY3pHMGcr?=
- =?utf-8?B?Zy91R0VVdDJLYWxicUpNUmNxTUVhM2tvTnBMS1hhbnhzRlo1YkduSTA4S0xr?=
- =?utf-8?B?TjhVUzNZZm5hR1BvR0VjdWd5cllqKzJGWHQrQzRvRm8zRk9FU2lscHNZa0h4?=
- =?utf-8?B?bnNHanV5QTIxOEsyZ0l4aDVBNlZDNzR0SkN5K0xZZXBpSlF5NE11SmtHSEtp?=
- =?utf-8?B?bGEvT3hXckxlazNOaS9peWtVRktmZzd3TU00bEFXTm4ycDVPb0lad3hLU3gr?=
- =?utf-8?B?TEdCRE5QKys4c1UwY2ZaaFlZUnpZQStXd0h2K1NibTRjNWRORnJ6Z3lkTUMz?=
- =?utf-8?B?WElGL3BxblRaVkcwa0tZUnlNSi9UeVIva1I4OHh4Q3A4Ly9Pald5bW5VM2Nq?=
- =?utf-8?B?UHBEbGhLK0lEOUdVdmk2c0RzY1JCdS9VTzRYaXRKN0dwWi9SeVFxQzNNbDFH?=
- =?utf-8?B?dVBrUFdnVkRMYk9EdHI0c1F1NlpEbm03K2pHRVAvT1RzVGVyT2pQVjdCekVM?=
- =?utf-8?B?ZnB5Ly9FUm1SaW5sUlY1RjJCVlRCdVVramhyNUdoeDFLaFpsMVBBTWliamVO?=
- =?utf-8?Q?yGjeycCR64rFfE0IvowPcRuQvB4UciyZUyQvpAKueJjYp?=
-X-MS-Exchange-AntiSpam-MessageData-1: seRspblkphMi6Q==
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 43a45b6e-80b9-4dc2-f990-08de79381ba5
-X-MS-Exchange-CrossTenant-AuthSource: DS2PR12MB9750.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 03 Mar 2026 15:18:22.3447
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: DI0mjiz2fk+CNdJ71zDlS8TTg+AXXAM6OeHLyMrMKL92HvbYO+9ILJ3zPc0ZyHjCkaHNb0qRdLQ4TkbbvfawcQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA0PR12MB9011
-X-Rspamd-Queue-Id: D006A1F260A
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <aablae2eFl9ne5fW@linux.dev>
+X-Rspamd-Queue-Id: B42221F2E6B
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-0.16 / 15.00];
-	ARC_REJECT(1.00)[cv is fail on i=2];
-	DMARC_POLICY_ALLOW(-0.50)[nvidia.com,reject];
-	R_DKIM_ALLOW(-0.20)[Nvidia.com:s=selector2];
-	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
+X-Spamd-Result: default: False [-2.16 / 15.00];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+	DMARC_POLICY_ALLOW(-0.50)[cmpxchg.org,none];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_DKIM_ALLOW(-0.20)[cmpxchg.org:s=google];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-14565-lists,cgroups=lfdr.de];
-	RCVD_TLS_LAST(0.00)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
+	DKIM_TRACE(0.00)[cmpxchg.org:+];
 	MIME_TRACE(0.00)[0:+];
-	TO_DN_EQ_ADDR_SOME(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[20];
-	DKIM_TRACE(0.00)[Nvidia.com:+];
-	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
-	TO_DN_SOME(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[jonathanh@nvidia.com,cgroups@vger.kernel.org];
-	FROM_HAS_DN(0.00)[];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-14566-lists,cgroups=lfdr.de];
+	RCVD_TLS_LAST(0.00)[];
+	RECEIVED_HELO_LOCALHOST(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	MISSING_XM_UA(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	TO_DN_SOME(0.00)[];
 	RCVD_COUNT_FIVE(0.00)[5];
-	MID_RHS_MATCH_FROM(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[hannes@cmpxchg.org,cgroups@vger.kernel.org];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
 	NEURAL_HAM(-0.00)[-1.000];
+	RCPT_COUNT_SEVEN(0.00)[11];
+	MID_RHS_MATCH_FROM(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[cgroups];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:rdns,sto.lore.kernel.org:helo,Nvidia.com:dkim,self.online:url,nvidia.com:mid]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,cmpxchg.org:dkim,cmpxchg.org:email,cmpxchg.org:mid]
 X-Rspamd-Action: no action
 
-Hi Waiman,
+On Tue, Mar 03, 2026 at 05:45:18AM -0800, Shakeel Butt wrote:
+> On Tue, Mar 03, 2026 at 11:42:31AM +0100, Vlastimil Babka (SUSE) wrote:
+> > On 3/3/26 09:54, Hao Li wrote:
+> > > On Mon, Mar 02, 2026 at 02:50:18PM -0500, Johannes Weiner wrote:
+> > >> Cgroup slab metrics are cached per-cpu the same way as the sub-page
+> > >> charge cache. However, the intertwined code to manage those dependent
+> > >> caches right now is quite difficult to follow.
+> > >> 
+> > >> Specifically, cached slab stat updates occur in consume() if there was
+> > >> enough charge cache to satisfy the new object. If that fails, whole
+> > >> pages are reserved, and slab stats are updated when the remainder of
+> > >> those pages, after subtracting the size of the new slab object, are
+> > >> put into the charge cache. This already juggles a delicate mix of the
+> > >> object size, the page charge size, and the remainder to put into the
+> > >> byte cache. Doing slab accounting in this path as well is fragile, and
+> > >> has recently caused a bug where the input parameters between the two
+> > >> caches were mixed up.
+> > >> 
+> > >> Refactor the consume() and refill() paths into unlocked and locked
+> > >> variants that only do charge caching. Then let the slab path manage
+> > >> its own lock section and open-code charging and accounting.
+> > >> 
+> > >> This makes the slab stat cache subordinate to the charge cache:
+> > >> __refill_obj_stock() is called first to prepare it;
+> > >> __account_obj_stock() follows to hitch a ride.
+> > >> 
+> > >> This results in a minor behavioral change: previously, a mismatching
+> > >> percpu stock would always be drained for the purpose of setting up
+> > >> slab account caching, even if there was no byte remainder to put into
+> > >> the charge cache. Now, the stock is left alone, and slab accounting
+> > >> takes the uncached path if there is a mismatch. This is exceedingly
+> > >> rare, and it was probably never worth draining the whole stock just to
+> > >> cache the slab stat update.
+> > >> 
+> > >> Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
+> > >> ---
+> > >>  mm/memcontrol.c | 100 +++++++++++++++++++++++++++++-------------------
+> > >>  1 file changed, 61 insertions(+), 39 deletions(-)
+> > >> 
+> > >> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> > >> index 4f12b75743d4..9c6f9849b717 100644
+> > >> --- a/mm/memcontrol.c
+> > >> +++ b/mm/memcontrol.c
+> > >> @@ -3218,16 +3218,18 @@ static struct obj_stock_pcp *trylock_stock(void)
+> > >>  
+> > > 
+> > > [...]
+> > > 
+> > >> @@ -3376,17 +3383,14 @@ static bool obj_stock_flush_required(struct obj_stock_pcp *stock,
+> > >>  	return flush;
+> > >>  }
+> > >>  
+> > >> -static void refill_obj_stock(struct obj_cgroup *objcg, unsigned int nr_bytes,
+> > >> -		bool allow_uncharge, int nr_acct, struct pglist_data *pgdat,
+> > >> -		enum node_stat_item idx)
+> > >> +static void __refill_obj_stock(struct obj_cgroup *objcg,
+> > >> +			       struct obj_stock_pcp *stock,
+> > >> +			       unsigned int nr_bytes,
+> > >> +			       bool allow_uncharge)
+> > >>  {
+> > >> -	struct obj_stock_pcp *stock;
+> > >>  	unsigned int nr_pages = 0;
+> > >>  
+> > >> -	stock = trylock_stock();
+> > >>  	if (!stock) {
+> > >> -		if (pgdat)
+> > >> -			__account_obj_stock(objcg, NULL, nr_acct, pgdat, idx);
+> > >>  		nr_pages = nr_bytes >> PAGE_SHIFT;
+> > >>  		nr_bytes = nr_bytes & (PAGE_SIZE - 1);
+> > >>  		atomic_add(nr_bytes, &objcg->nr_charged_bytes);
+> > >> @@ -3404,20 +3408,25 @@ static void refill_obj_stock(struct obj_cgroup *objcg, unsigned int nr_bytes,
+> > >>  	}
+> > >>  	stock->nr_bytes += nr_bytes;
+> > >>  
+> > >> -	if (pgdat)
+> > >> -		__account_obj_stock(objcg, stock, nr_acct, pgdat, idx);
+> > >> -
+> > >>  	if (allow_uncharge && (stock->nr_bytes > PAGE_SIZE)) {
+> > >>  		nr_pages = stock->nr_bytes >> PAGE_SHIFT;
+> > >>  		stock->nr_bytes &= (PAGE_SIZE - 1);
+> > >>  	}
+> > >>  
+> > >> -	unlock_stock(stock);
+> > >>  out:
+> > >>  	if (nr_pages)
+> > >>  		obj_cgroup_uncharge_pages(objcg, nr_pages);
+> > >>  }
+> > >>  
+> > >> +static void refill_obj_stock(struct obj_cgroup *objcg,
+> > >> +			     unsigned int nr_bytes,
+> > >> +			     bool allow_uncharge)
+> > >> +{
+> > >> +	struct obj_stock_pcp *stock = trylock_stock();
+> > >> +	__refill_obj_stock(objcg, stock, nr_bytes, allow_uncharge);
+> > >> +	unlock_stock(stock);
+> > > 
+> > > Hi Johannes,
+> > > 
+> > > I noticed that after this patch, obj_cgroup_uncharge_pages() is now inside
+> > > the obj_stock.lock critical section. Since obj_cgroup_uncharge_pages() calls
+> > > refill_stock(), which seems non-trivial, this might increase the lock hold time.
+> > > In particular, could that lead to more failed trylocks for IRQ handlers on
+> > > non-RT kernel (or for tasks that preempt others on RT kernel)?
 
-On 21/02/2026 18:54, Waiman Long wrote:
-> The cpuset_handle_hotplug() may need to invoke housekeeping_update(),
-> for instance, when an isolated partition is invalidated because its
-> last active CPU has been put offline.
+Good catch. I did ponder this, but forgot by the time I wrote the
+changelog.
+
+> > Yes, it also seems a bit self-defeating? (at least in theory)
+> > 
+> > refill_obj_stock()
+> >   trylock_stock()
+> >   __refill_obj_stock()
+> >     obj_cgroup_uncharge_pages()
+> >       refill_stock()
+> >         local_trylock() -> nested, will fail
 > 
-> As we are going to enable dynamic update to the nozh_full housekeeping
-> cpumask (HK_TYPE_KERNEL_NOISE) soon with the help of CPU hotplug,
-> allowing the CPU hotplug path to call into housekeeping_update() directly
-> from update_isolation_cpumasks() will likely cause deadlock. So we
-> have to defer any call to housekeeping_update() after the CPU hotplug
-> operation has finished. This is now done via the workqueue where
-> the update_hk_sched_domains() function will be invoked via the
-> hk_sd_workfn().
-> 
-> An concurrent cpuset control file write may have executed the required
-> update_hk_sched_domains() function before the work function is called. So
-> the work function call may become a no-op when it is invoked.
-> 
-> Signed-off-by: Waiman Long <longman@redhat.com>
-> ---
->   kernel/cgroup/cpuset.c                        | 31 ++++++++++++++++---
->   .../selftests/cgroup/test_cpuset_prs.sh       | 11 ++++++-
->   2 files changed, 36 insertions(+), 6 deletions(-)
-> 
-> diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
-> index 3d0d18bf182f..2c80bfc30bbc 100644
-> --- a/kernel/cgroup/cpuset.c
-> +++ b/kernel/cgroup/cpuset.c
-> @@ -1323,6 +1323,16 @@ static void update_hk_sched_domains(void)
->   		rebuild_sched_domains_locked();
->   }
->   
-> +/*
-> + * Work function to invoke update_hk_sched_domains()
-> + */
-> +static void hk_sd_workfn(struct work_struct *work)
-> +{
-> +	cpuset_full_lock();
-> +	update_hk_sched_domains();
-> +	cpuset_full_unlock();
-> +}
-> +
->   /**
->    * rm_siblings_excl_cpus - Remove exclusive CPUs that are used by sibling cpusets
->    * @parent: Parent cpuset containing all siblings
-> @@ -3795,6 +3805,7 @@ static void cpuset_hotplug_update_tasks(struct cpuset *cs, struct tmpmasks *tmp)
->    */
->   static void cpuset_handle_hotplug(void)
->   {
-> +	static DECLARE_WORK(hk_sd_work, hk_sd_workfn);
->   	static cpumask_t new_cpus;
->   	static nodemask_t new_mems;
->   	bool cpus_updated, mems_updated;
-> @@ -3877,11 +3888,21 @@ static void cpuset_handle_hotplug(void)
->   	}
->   
->   
-> -	if (update_housekeeping || force_sd_rebuild) {
-> -		mutex_lock(&cpuset_mutex);
-> -		update_hk_sched_domains();
-> -		mutex_unlock(&cpuset_mutex);
-> -	}
-> +	/*
-> +	 * Queue a work to call housekeeping_update() & rebuild_sched_domains()
-> +	 * There will be a slight delay before the HK_TYPE_DOMAIN housekeeping
-> +	 * cpumask can correctly reflect what is in isolated_cpus.
-> +	 *
-> +	 * We rely on WORK_STRUCT_PENDING_BIT to not requeue a work item that
-> +	 * is still pending. Before the pending bit is cleared, the work data
-> +	 * is copied out and work item dequeued. So it is possible to queue
-> +	 * the work again before the hk_sd_workfn() is invoked to process the
-> +	 * previously queued work. Since hk_sd_workfn() doesn't use the work
-> +	 * item at all, this is not a problem.
-> +	 */
-> +	if (update_housekeeping || force_sd_rebuild)
-> +		queue_work(system_unbound_wq, &hk_sd_work);
-> +
->   	free_tmpmasks(ptmp);
->   }
->   
-> diff --git a/tools/testing/selftests/cgroup/test_cpuset_prs.sh b/tools/testing/selftests/cgroup/test_cpuset_prs.sh
-> index 0c5db118f2d1..dc2dff361ec6 100755
-> --- a/tools/testing/selftests/cgroup/test_cpuset_prs.sh
-> +++ b/tools/testing/selftests/cgroup/test_cpuset_prs.sh
-> @@ -246,6 +246,9 @@ TEST_MATRIX=(
->   	"  C2-3:P1  C3:P1   .      .     O3=0    .      .      .     0 A1:2|A2: A1:P1|A2:P1"
->   	"  C2-3:P1  C3:P1   .      .    T:O2=0   .      .      .     0 A1:3|A2:3 A1:P1|A2:P-1"
->   	"  C2-3:P1  C3:P1   .      .      .    T:O3=0   .      .     0 A1:2|A2:2 A1:P1|A2:P-1"
-> +	"  C2-3:P1  C3:P2   .      .    T:O2=0   .      .      .     0 A1:3|A2:3 A1:P1|A2:P-2"
-> +	"  C1-3:P1  C3:P2   .      .      .    T:O3=0   .      .     0 A1:1-2|A2:1-2 A1:P1|A2:P-2 3|"
-> +	"  C1-3:P1  C3:P2   .      .      .    T:O3=0  O3=1    .     0 A1:1-2|A2:3 A1:P1|A2:P2  3"
->   	"$SETUP_A123_PARTITIONS    .     O1=0    .      .      .     0 A1:|A2:2|A3:3 A1:P1|A2:P1|A3:P1"
->   	"$SETUP_A123_PARTITIONS    .     O2=0    .      .      .     0 A1:1|A2:|A3:3 A1:P1|A2:P1|A3:P1"
->   	"$SETUP_A123_PARTITIONS    .     O3=0    .      .      .     0 A1:1|A2:2|A3: A1:P1|A2:P1|A3:P1"
-> @@ -762,7 +765,7 @@ check_cgroup_states()
->   # only CPUs in isolated partitions as well as those that are isolated at
->   # boot time.
->   #
-> -# $1 - expected isolated cpu list(s) <isolcpus1>{,<isolcpus2>}
-> +# $1 - expected isolated cpu list(s) <isolcpus1>{|<isolcpus2>}
->   # <isolcpus1> - expected sched/domains value
->   # <isolcpus2> - cpuset.cpus.isolated value = <isolcpus1> if not defined
->   #
-> @@ -771,6 +774,7 @@ check_isolcpus()
->   	EXPECTED_ISOLCPUS=$1
->   	ISCPUS=${CGROUP2}/cpuset.cpus.isolated
->   	ISOLCPUS=$(cat $ISCPUS)
-> +	HKICPUS=$(cat /sys/devices/system/cpu/isolated)
->   	LASTISOLCPU=
->   	SCHED_DOMAINS=/sys/kernel/debug/sched/domains
->   	if [[ $EXPECTED_ISOLCPUS = . ]]
-> @@ -808,6 +812,11 @@ check_isolcpus()
->   	ISOLCPUS=
->   	EXPECTED_ISOLCPUS=$EXPECTED_SDOMAIN
->   
-> +	#
-> +	# The inverse of HK_TYPE_DOMAIN cpumask in $HKICPUS should match $ISOLCPUS
-> +	#
-> +	[[ "$ISOLCPUS" != "$HKICPUS" ]] && return 1
-> +
->   	#
->   	# Use the sched domain in debugfs to check isolated CPUs, if available
->   	#
+> Not really as the local_locks are different i.e. memcg_stock.lock in
+> refill_stock() and obj_stock.lock in refill_obj_stock().
 
-We have a CPU hotplug test that cycles through all CPUs off-lining them 
-and on-lining them in different combinations. Since this change was 
-added to -next, this test is failing on our Tegra210 boards. Bisecting 
-the issue, it pointed to this commit and reverting this on top of -next 
-fixes the issue.
+Right, refilling the *byte* stock could produce enough excess that we
+refill the *page* stock. Which in turn could produce enough excess
+that we drain that back to the page counters (shared atomics).
 
-The test is quite simple and part of Thierry's tegra-test suite [0].
+> However Hao's concern is valid and I think it can be easily fixed by
+> moving obj_cgroup_uncharge_pages() out of obj_stock.lock.
 
-$ ./tegra-tests/tests/cpu.py --verbose hotplug
-cpu: hotplug: CPU#0: mask: 1
-cpu: hotplug: CPU#1: mask: 2
-cpu: hotplug: CPU#2: mask: 4
-cpu: hotplug: CPU#3: mask: 8
-cpu: hotplug: applying mask 0xf
-cpu: hotplug: applying mask 0xe
-cpu: hotplug: applying mask 0xd
-cpu: hotplug: applying mask 0xc
-cpu: hotplug: applying mask 0xb
-cpu: hotplug: applying mask 0xa
-...
-cpu: hotplug: applying mask 0x1
-Traceback (most recent call last):
-   File "./tegra-tests/tests/cpu.py", line 159, in <module>
-     runner.standalone(module)
-   File "./tegra-tests/tests/runner.py", line 147, in standalone
-     log.test(log = log, args = args)
-   File "./tegra-tests/tests/cpu.py", line 29, in __call__
-     cpus.apply_mask(mask)
-   File "./tegra-tests/linux/system.py", line 149, in apply_mask
-     cpu.set_online(False)
-   File "./tegra-tests/linux/system.py", line 45, in set_online
-     self.online = online
-OSError: [Errno 16] Device or resource busy
+Note that we now have multiple callsites of __refill_obj_stock(). Do
+we care enough to move this to the caller?
 
- From looking at different runs it appears to fail at different places.
+There are a few other places with a similar pattern:
 
-Let me know if you have any thoughts.
+- drain_obj_stock(): calls memcg_uncharge() under the lock
+- drain_stock(): calls memcg_uncharge() under the lock
+- refill_stock(): still does full drain_stock()
 
-Thanks
-Jon
+All of these could be more intentional about only updating the per-cpu
+data under the lock and the page counters outside of it.
 
-[0] https://github.com/thierryreding/tegra-tests/blob/master/tests/cpu.py
+Given that IRQ allocations/frees are rare, nested ones even rarer, and
+the "slowpath" is a few extra atomics, I'm not sure it's worth the
+code complication. At least until proven otherwise.
 
--- 
-nvpublic
-
+What do you think?
 
