@@ -1,129 +1,141 @@
-Return-Path: <cgroups+bounces-14608-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-14609-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id wHaxCANiqGmduAAAu9opvQ
-	(envelope-from <cgroups+bounces-14608-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Wed, 04 Mar 2026 17:46:59 +0100
+	id KMmKFSRmqGl3uQAAu9opvQ
+	(envelope-from <cgroups+bounces-14609-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Wed, 04 Mar 2026 18:04:36 +0100
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 776472048E5
-	for <lists+cgroups@lfdr.de>; Wed, 04 Mar 2026 17:46:58 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id C80EC204CEA
+	for <lists+cgroups@lfdr.de>; Wed, 04 Mar 2026 18:04:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 00DFF3002287
-	for <lists+cgroups@lfdr.de>; Wed,  4 Mar 2026 16:42:37 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 1825830B85A1
+	for <lists+cgroups@lfdr.de>; Wed,  4 Mar 2026 16:46:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C65AC35FF66;
-	Wed,  4 Mar 2026 16:42:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D938A372692;
+	Wed,  4 Mar 2026 16:46:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KJekaLHE"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dScc6NZ2"
 X-Original-To: cgroups@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A340D36AB7D;
-	Wed,  4 Mar 2026 16:42:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 116911DEFE9
+	for <cgroups@vger.kernel.org>; Wed,  4 Mar 2026 16:46:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772642553; cv=none; b=SmGIvvi9jTVg/JGdDJqgbKmalrKoRtYDNGm32tskFgENp36t2cbz9CPVTbpwNqxXwc9I0P2CdHVcWrHT9LL1WGMwIfIM4LVPXBZSfuPxfCuUpVehHrzZ9I7Y8eC6rocCxM9oqsM0urgUmDtdnZMoqxoqkwiGD4QyjCAskoyUhn0=
+	t=1772642763; cv=none; b=BOudY6tc46dKf56WrwJ17PgFAuRwVY+MIyGloenoqGDG2WgMacTHMPrrfLVlmDtPRx+v6bGqsXOtdEiCZoOVInSyXz3niYp/C/qR5ROIS4QKH9HWqL/EpktXQSY+097YKlNdeXzXMo9pRRqOxMHHzOxh9W39SRctBfwvGuH9SBU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772642553; c=relaxed/simple;
-	bh=PUN9MokrNUQzb1CRuNzEuvihL2Rfl4GYvtOUTRwsVH0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=aBtH/INCb4dPWNwZC9YaLNXcxjW/Z4rDBFRi7y2l190VHZJS1r4BNS1IFfiHPWKbCbwHgOT5Q+CNhjzVE5xtHBK3Ib0pDRyeYBtXKv67b5G18NZAorCkMW0s3WAnPA3EYx8xnENTItl1cSs16DXm1lCxQQvRMXVqD7AyZA3O3cU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KJekaLHE; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4632FC4CEF7;
-	Wed,  4 Mar 2026 16:42:33 +0000 (UTC)
+	s=arc-20240116; t=1772642763; c=relaxed/simple;
+	bh=AhTOnMFysHR+r+BB39zBGqkEpVC36GukS5qbEHX2CcE=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=R45aK8IvK9iGO4V2jc83/f8gk4GSMnIlBR/YrKM0V2xh0eWX7Ox8YiTHXHs8OIkGD3VfOgsAvwfFSMARfeVhJkJQPgEn3iV1V1JH9VRXDXwKfdpC7r7U626T4o2HAD3yHWQf/aY1FNG1b6D+WHIEoFgR5HF2BdJoZlx1vI5kkhI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dScc6NZ2; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 965C7C2BCB5
+	for <cgroups@vger.kernel.org>; Wed,  4 Mar 2026 16:46:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1772642553;
-	bh=PUN9MokrNUQzb1CRuNzEuvihL2Rfl4GYvtOUTRwsVH0=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=KJekaLHEc6yHM0DWkmu6wUVO7dUymf0IAb+kvnxU6m81luYkPmU1UFN7FB2W0lFjB
-	 neMK82ko9l6EfyrLQlD3nBx8cFpbahfTGiyPABju3bj4ci56UV7Azx0GLvYtwVCmHL
-	 1LqIx2DegU07+QgFYk7hP7DgmEye2ADD33HW6M5YHpRN3upHOLV+SjHEWWgXyfa4TO
-	 xHpb94R1UxmxbUOVp47K0+JpW1yVL5c+5TZOjmXfdCOw5q2Ydl/HzBOu6cumbYyOSV
-	 Y5Zgxq9msTcoQCadMWT6WyKkB8sp31DUaZ40ylxB84I8EH1LMUbPY63XN8dvZt1eOj
-	 Wwo+PpS/ZE7OA==
-Date: Wed, 4 Mar 2026 06:42:32 -1000
-From: Tejun Heo <tj@kernel.org>
-To: Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>
-Cc: Breno Leitao <leitao@debian.org>, Jens Axboe <axboe@kernel.dk>,
-	Josef Bacik <josef@toxicpanda.com>, linux-block@vger.kernel.org,
-	linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
-	thevlad@meta.com, kernel-team@meta.com
-Subject: Re: [PATCH v2] blk-cgroup: always display debug stats in io.stat
-Message-ID: <aahg-PreSQLlNq2p@slm.duckdns.org>
-References: <20260303-blk_cgroup_debug_stats-v2-1-196c713cb762@debian.org>
- <aacehv3rpO9irhEG@slm.duckdns.org>
- <poawwl44nvy4ru4mmjqi3kxfq7xqcpdeq6ghixphcrwhpv3bnz@xsltjt52rbqm>
+	s=k20201202; t=1772642762;
+	bh=AhTOnMFysHR+r+BB39zBGqkEpVC36GukS5qbEHX2CcE=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=dScc6NZ23rpQgRG0mnUtaHbs+phKE4alwTdDATYmyx+k/qMCkMvxIU/TMHgU2A1zX
+	 NkA9mPrBPMiwMCzgcE5lcbGagTvz5564+PIn/fkl+qtUk3KL1mboy/EUS2pBSH+oCe
+	 OUfV0W73ir4/QMlknh+JKUQR6qLEj/qpPYlH2oEfdC2WLXUHyN9qNJ20cyIsBx+u1/
+	 verpiBBOZhORPo+bsYW/EVV1hvRcuP1Futk0QIF8X2cMqC0nAYsxpI8Y/dxnmLvJzL
+	 PCdb8mvoc6wpYqgf4dstFwPu0Ar0ApmHF5GC6vpoOFda6iXp7dx6pSNABFEm6j1Akm
+	 yY/qaQFl3ZcDQ==
+Received: by mail-ej1-f46.google.com with SMTP id a640c23a62f3a-b934fdced05so943663066b.3
+        for <cgroups@vger.kernel.org>; Wed, 04 Mar 2026 08:46:02 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCVDjrGRwdTJ57t38YQDS4/FS3w0XiWwkqfDxmues7iATW/3NzmhWwGXeUWmmAw9AyRqdmyQnUz8@vger.kernel.org
+X-Gm-Message-State: AOJu0Yy0Au/h80PkRC8F2nuzIj9Npp2mV3VLzSY4isk+ikpRqRP78sAT
+	hZQp4u5LkWnhkCeO2O9y2AgC1r+Dczl/7Vw8Kg/wFiG0RDEDi8ZetFbkr7U1aUIEGZTPqE8f+sJ
+	3u/RK+22UdQgPeSaC5ICWxySOYO1RA1U=
+X-Received: by 2002:a17:907:6e87:b0:b87:1d30:7e6 with SMTP id
+ a640c23a62f3a-b93f1171ad5mr143317366b.11.1772642761216; Wed, 04 Mar 2026
+ 08:46:01 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <poawwl44nvy4ru4mmjqi3kxfq7xqcpdeq6ghixphcrwhpv3bnz@xsltjt52rbqm>
-X-Rspamd-Queue-Id: 776472048E5
+References: <CAO9r8zOFS7zU-eGkErcjud=DW0t00_WqNqCzq_QDf061dOsYSQ@mail.gmail.com>
+ <20260304151120.3512645-1-joshua.hahnjy@gmail.com> <CAO9r8zOJ5bkJzptM7+8V2G00dHuycAEAF4CDcaR1YMk0kWyktA@mail.gmail.com>
+ <CAKEwX=ObFWm6cKbi4hL8JLDKui3MsRu-JpEFohBdkqHFY9tVfA@mail.gmail.com>
+In-Reply-To: <CAKEwX=ObFWm6cKbi4hL8JLDKui3MsRu-JpEFohBdkqHFY9tVfA@mail.gmail.com>
+From: Yosry Ahmed <yosry@kernel.org>
+Date: Wed, 4 Mar 2026 08:45:47 -0800
+X-Gmail-Original-Message-ID: <CAO9r8zMbU8ikA4jAUyOvvorsm3L4UD2X-KVcGyQaKwTZ0nV1Qw@mail.gmail.com>
+X-Gm-Features: AaiRm51RdP-6QF1MGy0rT8q9i5bzC5Umqr3wPeGTQwIJROXe85VGcaFk_DtQxSE
+Message-ID: <CAO9r8zMbU8ikA4jAUyOvvorsm3L4UD2X-KVcGyQaKwTZ0nV1Qw@mail.gmail.com>
+Subject: Re: [PATCH 6/8] mm/zsmalloc, zswap: Handle objcg charging and
+ lifetime in zsmalloc
+To: Nhat Pham <nphamcs@gmail.com>
+Cc: Joshua Hahn <joshua.hahnjy@gmail.com>, Minchan Kim <minchan@kernel.org>, 
+	Sergey Senozhatsky <senozhatsky@chromium.org>, Johannes Weiner <hannes@cmpxchg.org>, 
+	Yosry Ahmed <yosry.ahmed@linux.dev>, Nhat Pham <hoangnhat.pham@linux.dev>, 
+	Chengming Zhou <chengming.zhou@linux.dev>, Michal Hocko <mhocko@kernel.org>, 
+	Roman Gushchin <roman.gushchin@linux.dev>, Shakeel Butt <shakeel.butt@linux.dev>, 
+	Muchun Song <muchun.song@linux.dev>, Andrew Morton <akpm@linux-foundation.org>, 
+	cgroups@vger.kernel.org, linux-mm@kvack.org, linux-kernel@vger.kernel.org, 
+	kernel-team@meta.com
+Content-Type: text/plain; charset="UTF-8"
+X-Rspamd-Queue-Id: C80EC204CEA
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-2.16 / 15.00];
+X-Spamd-Result: default: False [-0.66 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
 	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-14608-lists,cgroups=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-14609-lists,cgroups=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
-	DKIM_TRACE(0.00)[kernel.org:+];
-	MIME_TRACE(0.00)[0:+];
+	FREEMAIL_TO(0.00)[gmail.com];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	TO_DN_SOME(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[tj@kernel.org,cgroups@vger.kernel.org];
+	FREEMAIL_CC(0.00)[gmail.com,kernel.org,chromium.org,cmpxchg.org,linux.dev,linux-foundation.org,vger.kernel.org,kvack.org,meta.com];
+	RCPT_COUNT_TWELVE(0.00)[17];
+	MIME_TRACE(0.00)[0:+];
+	FROM_HAS_DN(0.00)[];
 	MISSING_XM_UA(0.00)[];
-	NEURAL_HAM(-0.00)[-1.000];
-	TAGGED_RCPT(0.00)[cgroups];
-	RCPT_COUNT_SEVEN(0.00)[9];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[5];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[yosry@kernel.org,cgroups@vger.kernel.org];
+	DKIM_TRACE(0.00)[kernel.org:+];
+	NEURAL_HAM(-0.00)[-0.996];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,slm.duckdns.org:mid]
+	TAGGED_RCPT(0.00)[cgroups];
+	TO_DN_SOME(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[mail.gmail.com:mid,tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo]
 X-Rspamd-Action: no action
 
-Hello,
+> > AFAICT the only zswap-specific part is the actual stat indexes, what
+> > if these are parameterized at the zsmalloc pool level? AFAICT zswap
+> > and zram will never share a pool.
+>
+> TBH, if we were to start from scratch, these should be zsmalloc
+> counters not zswap counters. Only zsmalloc knows about the memory
+> placement and real memory consumption (i.e taking into account
+> intra-slot wasted space) - this information is abstracted away from
+> all of the callers.
 
-On Wed, Mar 04, 2026 at 02:28:03PM +0100, Michal Koutný wrote:
-> On Tue, Mar 03, 2026 at 07:46:46AM -1000, Tejun Heo <tj@kernel.org> wrote:
-> > > has not been modularized since commit 32e380aedc3de ("blkcg: make
-> > > CONFIG_BLK_CGROUP bool"), making the module parameter a historical
-> > > artifact. Readers of the nested-keys format should be able to handle
-> > > additional fields.
-> > 
-> > I'm not sure what the above para means. Module param works just fine for
-> > built-in modules on both boot command line and through sysfs.
-> 
-> Yeah, it works but BLK_CGROUP is not a module/built-in it's config
-> option affecting builds. I find the module_param() in blk-cgroup.c to be
-> a residual, I admit it's convenient way how to expose a tunable to
-> userspace.
-> 
-> (Contemporary way of implementing the option could also be a cgroupfs
-> mount option/feature or maybe sysctl for which tooling is available.)
+I agree, but we cannot change the zswap stats now that we added them.
+Keep in mind that when they were added zsmalloc was not the only
+backend.
 
-I don't konw whether I'm the only one doing it but I use moduleparams as an
-easy way to get non-API boot and runtime toggles whether the target code is
-actually module or not. It's easy to use and the params are in a pretty gray
-area in terms of API stability, so if you wanna throw in a debug option, it
-works.
+> And if/when zram supports cgroup tracking, memory
+> used by zswap and memory used by zram is indistinguishable, no?
 
-Thanks.
+It is distinguishable as long as they use different zsmalloc pools, I
+don't see why we'd need to share a pool.
 
--- 
-tejun
+> Anyway, Joshua, do you think this is doable? Seems promising to me,
+> but idk if it will be clean to implement or not.
+
+Not sure what you mean here? Changing the stats to be zsmalloc-based?
+IIUC we can't do this without breaking userspace.
 
