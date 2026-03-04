@@ -1,253 +1,239 @@
-Return-Path: <cgroups+bounces-14597-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-14598-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id GP56I9wGqGnSnQAAu9opvQ
-	(envelope-from <cgroups+bounces-14597-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Wed, 04 Mar 2026 11:18:04 +0100
+	id cMn0A74TqGnUngAAu9opvQ
+	(envelope-from <cgroups+bounces-14598-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Wed, 04 Mar 2026 12:13:02 +0100
 X-Original-To: lists+cgroups@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id E9A0B1FE34A
-	for <lists+cgroups@lfdr.de>; Wed, 04 Mar 2026 11:18:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id AEB511FEC7D
+	for <lists+cgroups@lfdr.de>; Wed, 04 Mar 2026 12:13:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id B1E373025D34
-	for <lists+cgroups@lfdr.de>; Wed,  4 Mar 2026 10:17:52 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 563DC3199DC5
+	for <lists+cgroups@lfdr.de>; Wed,  4 Mar 2026 11:08:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1B462366836;
-	Wed,  4 Mar 2026 10:17:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DAFF63A6F01;
+	Wed,  4 Mar 2026 11:08:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="J31y4cKl"
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="DVdWkI3g"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-wm1-f42.google.com (mail-wm1-f42.google.com [209.85.128.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from SJ2PR03CU001.outbound.protection.outlook.com (mail-westusazon11012009.outbound.protection.outlook.com [52.101.43.9])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1A4F236A029
-	for <cgroups@vger.kernel.org>; Wed,  4 Mar 2026 10:17:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.42
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772619470; cv=none; b=AM6i+NM1qWWTw1BbqwkX1jiiNFhER4I4TRcdYMNR7PHme1lI/ZOJ05WggFhWW7R8y+T9RkPmJZ9mT/ebTC8+fMYESGuozOlCiOwEjKbdQIuf1KYjQKueD4oekVZKOJeo6iwmPds3Vpb9rzB23N/Riq6lrMDafgzJ5DDiUQox7tQ=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772619470; c=relaxed/simple;
-	bh=SwIzlRPlqfSDrp319lbWKH5+yaj3K7TQ/FajYAitnaA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=W3ONdXKr0CyvLCxF5L+FAQnExw62Niwcn0hMRfhWtfMiWKwOfTk69xP0/AcZL+t+YcM8A8x4QQWLUAmYh20zLONkt0taqv9ll7ZHiGEd2cyjKFH4zLvcUXUcMvKp04Dm57CIzMOC0zFdaGT+bhPiDXuS3KT1T0AWoagzDqIdtpY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=J31y4cKl; arc=none smtp.client-ip=209.85.128.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-wm1-f42.google.com with SMTP id 5b1f17b1804b1-4806fd9033bso11470075e9.3
-        for <cgroups@vger.kernel.org>; Wed, 04 Mar 2026 02:17:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1772619467; x=1773224267; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=5KoS4d1g/sHa9EtIML/M64KShORyKTnEsKbcSse0JEQ=;
-        b=J31y4cKlXFzWwMcWx4vVHZ5bPq2YIihRcGjIXe6Eg5mHK7iEuVo/kwXwNk1VeUcNaI
-         47Y48Hc8s7FD+G4WpYu94ppfqUz7Qd0sHJIUoW+L3jt0uSVJ1hifGTwNYp/+ikO8jp4g
-         CFl095MuDePN2GjMtqrYSAGzAuIFSrmLIwKK5kMzgqSwdqyToeoMO8cx12+bTrGEL/yh
-         VHCrGnpJd+hlVIJhFEWrnfSnAE11xJChq3k0jE02giKI0Io+EUTtVwcYunKvxussy7wz
-         wJz+fI0XG+Ex0rbLibC5LkTcYNStR6NqHaOGgbj07ppkSmEDHV7gqpbIj1coaEziU4zw
-         AeYw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1772619467; x=1773224267;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=5KoS4d1g/sHa9EtIML/M64KShORyKTnEsKbcSse0JEQ=;
-        b=kjA3kxnSBVaizr3egeQMbt8rq4s7LqtV1N+Q2uATzk+eLUSqGG6uUMT1e485Nlo1Jy
-         04LaDVwazaufU/Y+FXKNiqQRUQlwswUds3Oyz6o7EPKOQ6GXa5ojHB8D+WbDMEBxRLJW
-         D/hggXEXRkqvHsKJpm7AxLBVnr3PIuHvhPC2cGsHovwmKfqGrVUBfWpUkd6yrhWrhlQ6
-         PYHA5JaBQuOvSnwo7aoJRYrBA7757MqidDSnOOtSDgTB/tPufWwYsEF1QCARRWKQLHuK
-         fsnBP2fZcUtYuX29lDfgmZdGM/cnKcUnKjtNg3yxgHLDqpWJycCWosMkiOntwDiDc5qo
-         BxGw==
-X-Gm-Message-State: AOJu0Yz3StZYyk45/10UmHvt1sFygA4IDF3/R6qaW6N8KBW/v/nwIwrt
-	eYwnpVJgasND7adGeaWa1JzU9bCw00jCkeuH0HX/bxGyz0gWeHByOUMKIHUGKwkeJqo=
-X-Gm-Gg: ATEYQzwsnWR+wkkDX6IJhdyuEAF+TQoJVC8upj5JvwJRr9qo/Y9lU1x7fpJ/y/rLpK9
-	2gS0tuIE6G6pk4KsiUv1iUNJ5g+29QhACrtGPSaYu0vV2m7b8ORV+RAJP5scXQDrHgQbNrFp9ih
-	tZWDX0u6eAryDaIkfUVKrevLl0wkZBZCoNoUbzSs5IBB6+c2IW2O1FtemsYBgUfjzg2IpzWyFqm
-	XF2feBbjSzkx9ya5gHgT0UEpfliBsOY1ayQpz0/+dDzFahTFjtv1nghqHi2AT5V8plnpCVDRxwa
-	IOmKoM20g3+WR8gV5eqKSgNaFoxZF8hVu08wEmkkJzA0jLY1hyjl4hNwaPoHyDTKqgT9rS6h6t4
-	l5zS3vTMkG6Zd2TEg5J+lVy0rjW057HA36RRovFcyeldCU2h9AJk1Y9J4EIzym5J9/N9US59gt+
-	y2oPQMOmGMszznElxcp4DAmQ18iGRJdx39WDmd3r4=
-X-Received: by 2002:a05:600c:3489:b0:483:7631:befd with SMTP id 5b1f17b1804b1-48519896e6dmr14055045e9.7.1772619467328;
-        Wed, 04 Mar 2026 02:17:47 -0800 (PST)
-Received: from [192.168.43.36] (nat2.prg.suse.com. [195.250.132.146])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4851880724esm79793035e9.9.2026.03.04.02.17.46
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 04 Mar 2026 02:17:47 -0800 (PST)
-Message-ID: <fe9dacdd-8b96-4375-8730-8fb9ed5fad60@suse.com>
-Date: Wed, 4 Mar 2026 11:17:46 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A5D73A4F26;
+	Wed,  4 Mar 2026 11:08:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.43.9
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1772622490; cv=fail; b=mtaNGPNijl1IRNAOLC4MOYAVEh/wNzkFL6ksx/VuU137KJx7CLR1zhvGoDdlG13NaGnHzFr3ltIVU+ceKqqFt4770UlkWT0GNJXGoCBrPf30kitujJPJjnaoeoNJpu0P12TTSUtYIEmnCc6fjle2Mtzo/8Dgu51W2/6Te9aIGJQ=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1772622490; c=relaxed/simple;
+	bh=LGU4niA6oxUGFVqMfl9kqNCnGy2gqaLSYmdj9iR4iyM=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=Mt7Q9Ukm3z0253kLXbUcXQWyHKEEk5jVYQazNefMKPwkoyYlzoQq6r5Z0jesYkctEq+/z2SbV+sa/LxR+q3aAbZZxxDnXOFw2h5WnuppEWdJip0Mdc+AQoHpBr48ASdM3UF3XACPnn0oiJYVeHdAA05RU7ez2++u8Rta1ARRrmI=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=DVdWkI3g; arc=fail smtp.client-ip=52.101.43.9
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=kdDO8VGdNpgkfVQLyQJO35EBuC7swecWFtdKEnPMI9ohonKMnDKEMeatPAZ40zJbz/mAwF3GFsLpLbg4rlJGWmQNenvAiY0G49qkaSgoqVz7sczfQxkyExvgW6nlgcVql5epwZwRgrJ43id4WFOgEeoqzoXItg67z2Q993Lo86sOSHK2ztg2eP3v0RsrexR69tcsEHr+T7pdqMa8S+MsBbIGjtXVpJiaXdeK2oYVFcJU+JnGDSsGvTgc44waxda6BgfIvAoPQ/wCsGmTc7yWRXb4SJwCG2ClRMEAsn8OYUSdkQxXL2tvKA4Zn9+ZO3DNLBusgkV1jPAcEAXmKkB0QQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=jsjJJaoqPt01PiUxU+4/DzgKWsuR6tsYnAhRLZRi5Ck=;
+ b=EvwMRpGBll/NTlVuLyKYIkjSJPKs6VJe4afAIcUbKSKNgzua+XOOTk5PVlhB0RnAoMiFzmro9LdeejRx1jzGtBUjlzYqScIqUno0ie14z7sIc8b4+Y+XjfMkoM/DZMTg4RG8mILySfxiwW6n7YMvJ3qPucVl+9zRq90JIDco7DgcagK/kX25KrOBPwOVIxVqrhhlm0l2P9g9j2bvAnvifbL+kdbmuyy1KTILGv2jQeaGZ0k64VdyKkez8uV6bzGQVmwOJOkmZhP5nUmVee9itUf7/Z/PszErI14Z4hxZIcLWc2SVgM99p8b599h7yoPLjYD9lA2COU/rP35mQvtZRg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=jsjJJaoqPt01PiUxU+4/DzgKWsuR6tsYnAhRLZRi5Ck=;
+ b=DVdWkI3gWTCqEPyStYw22c028p6XmhpzwVUK2b8zWv7RqJpKZ29NIW+yJ1yra3RR8Dimd7rqUeDyb645n41Y9iKrtIkhutO7zILsmpx1WATr3oaAxdxVv1Mdn1TtqzDQE0goGZGh3NR0JY2TZJZyedk6551Ip+yySzaUSywb7e7B3YcqPPU4NNs7TZwQoHXq0GVvMnkL9dEBTIMoSZnDyh6hnfx3/S059b+yx/55akwtWhAZYxzsUyTa/dKOVbv6Ex9r8Q/hr2ip6jlSMEuDuIcDELptPD7n3ZJ/LikdfSGpBnLdui4yWpDMR/4PMbQyVBDbnSfeJHTDRJKu5TAH8g==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from DS2PR12MB9750.namprd12.prod.outlook.com (2603:10b6:8:2b0::12)
+ by CH2PR12MB4312.namprd12.prod.outlook.com (2603:10b6:610:af::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9678.17; Wed, 4 Mar
+ 2026 11:08:05 +0000
+Received: from DS2PR12MB9750.namprd12.prod.outlook.com
+ ([fe80::56a8:d6bf:e24c:b391]) by DS2PR12MB9750.namprd12.prod.outlook.com
+ ([fe80::56a8:d6bf:e24c:b391%5]) with mapi id 15.20.9678.016; Wed, 4 Mar 2026
+ 11:08:04 +0000
+Message-ID: <d0695355-87bd-4d05-ad4e-8e591e226108@nvidia.com>
+Date: Wed, 4 Mar 2026 11:07:58 +0000
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v6 7/8] cgroup/cpuset: Defer housekeeping_update() calls
+ from CPU hotplug to workqueue
+To: Waiman Long <longman@redhat.com>, Chen Ridong
+ <chenridong@huaweicloud.com>, Tejun Heo <tj@kernel.org>,
+ Johannes Weiner <hannes@cmpxchg.org>, =?UTF-8?Q?Michal_Koutn=C3=BD?=
+ <mkoutny@suse.com>, Ingo Molnar <mingo@redhat.com>,
+ Peter Zijlstra <peterz@infradead.org>, Juri Lelli <juri.lelli@redhat.com>,
+ Vincent Guittot <vincent.guittot@linaro.org>,
+ Steven Rostedt <rostedt@goodmis.org>, Ben Segall <bsegall@google.com>,
+ Mel Gorman <mgorman@suse.de>, Valentin Schneider <vschneid@redhat.com>,
+ Frederic Weisbecker <frederic@kernel.org>,
+ Thomas Gleixner <tglx@linutronix.de>, Shuah Khan <shuah@kernel.org>
+Cc: cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-kselftest@vger.kernel.org,
+ "linux-tegra@vger.kernel.org" <linux-tegra@vger.kernel.org>
+References: <20260221185418.29319-1-longman@redhat.com>
+ <20260221185418.29319-8-longman@redhat.com>
+ <1a89aceb-48db-4edd-a730-b445e41221fe@nvidia.com>
+ <8ad885a8-be65-4d1b-b8c4-dabe50fe3788@redhat.com>
+From: Jon Hunter <jonathanh@nvidia.com>
+Content-Language: en-US
+In-Reply-To: <8ad885a8-be65-4d1b-b8c4-dabe50fe3788@redhat.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: LO3P123CA0031.GBRP123.PROD.OUTLOOK.COM
+ (2603:10a6:600:388::10) To DS2PR12MB9750.namprd12.prod.outlook.com
+ (2603:10b6:8:2b0::12)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] mm/slab: change stride type from unsigned short to
- unsigned int
-To: Harry Yoo <harry.yoo@oracle.com>, vbabka@suse.cz,
- akpm@linux-foundation.org
-Cc: cgroups@vger.kernel.org, cl@gentwo.org, hannes@cmpxchg.org,
- hao.li@linux.dev, linux-mm@kvack.org, mhocko@kernel.org,
- muchun.song@linux.dev, rientjes@google.com, roman.gushchin@linux.dev,
- shakeel.butt@linux.dev, surenb@google.com, venkat88@linux.ibm.com,
- pfalcato@suse.de
-References: <20260303135722.2680521-1-harry.yoo@oracle.com>
-Content-Language: en-US
-From: Vlastimil Babka <vbabka@suse.com>
-In-Reply-To: <20260303135722.2680521-1-harry.yoo@oracle.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Rspamd-Queue-Id: E9A0B1FE34A
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DS2PR12MB9750:EE_|CH2PR12MB4312:EE_
+X-MS-Office365-Filtering-Correlation-Id: 10013708-0ac7-49a8-9717-08de79de4ed6
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam:
+	BCL:0;ARA:13230040|7416014|376014|366016|1800799024|10070799003|921020;
+X-Microsoft-Antispam-Message-Info:
+	jiINDewGwWZH5qAr8GZS+cKV9iQuw4Q/RzmZX977zG5F+hSFhCZzWWmDmPW+yFRWlCQiiUHXlGqRXVj3Q1M2s4tXSp8minjtcgcv/EEZ2iodcoPTitIhnXSnoBh8wJh9b+b5kqc9hIjdQlU2gYrNdgPfL35rcD5p22sgQ1fesPAOGkNwkYvjFTHIZPmlSWybxLnm74iDBsFtsg+seunfXkB691hyUYCyWqt70RPM0eCen171Uvs+8WEk5Or3wB70OtE2GQARHCYfXr25lxjrfGmkH3M38qd9m9w84BFIyKpykpK+2zme9q/BO2goxcinnN43ULosRZewAf4mphb86EezOR3NJxw4MX752afZ2qppWAtvVIHeVfGSbR2K93j7t3Cao1Uyu5A9HcLXS50NRNdvXIVQRNBaS4k/si3KLOvZ/CK6j6OS7B6SVup9UQ0icTF9AnRVfSo6KkL+yQrw4FGEykCcJjuro8MtWTkWnXgTfRI+cVvLKvGtPnw7R2pBJt10roLiUe4XgbfS09V6AdkJ4VINNsAvRwlkdrMLJLN9CN2ZSeaoIJHue8blMFLtKy6r+oOs9zLs9q2B7KI6H9MYAsCt5giDMkjrO3wccFy073s0eFQ4oAi77a9kjj7r4UzVzGHJjbhUbyUOuRbXheNhbV3JfJdTAYsDdy+KdscHC9CUYOANegj3V35YEawBG5QJN3xrf45Njacg+SzG+pFBa67LDiAdqyq+7Gmisyh5p6ZyF6VMdpiaj07j8XuheMjtpq/CExvGDTNnV46uwQ==
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS2PR12MB9750.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(7416014)(376014)(366016)(1800799024)(10070799003)(921020);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 2
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?RVA4ZTdadUx1WnJHQWYxYlFzRnBoTUV2TEpHMFpFK3hiQWREYlNoZldlWjhn?=
+ =?utf-8?B?Njlxdm9CMDJod0c3YVRrQ29ZV2ZQMHFSMUdMVFFUaGh4VkpLMGRad1dOWDhI?=
+ =?utf-8?B?RnZoMk9nOUZiQ2hMcnJkRFVkaGIrRkE0c2NQWHVoVkZKUHhkS0xyaE1NUnAz?=
+ =?utf-8?B?WWYwUytHVFpEQmpYZ3FoektNdmxWdXREVTlubzc2N1E4Q0xETHhRV281WTk2?=
+ =?utf-8?B?OExBTWtVTkZvR0RTOHkxRWpxa0liYUcwZHc4RTQxUXhHdU5LM2pqbVRvY1g3?=
+ =?utf-8?B?eDhSL2Flcjl0QnlTQkVSYXhkenFZQkQxY3RvOGM5eWoxYXRjUkZYVVNKbzBy?=
+ =?utf-8?B?WFhuV2ZzeVFXY3Q1cWNoRG9aeDBObmhaRmhER0ZQZ1lwN2lmb3VWaVp5Y0cz?=
+ =?utf-8?B?RVVWN1BNcXBOVEJzMFFHc1h0aENvOXdmb1dNUlFHWEhEdXRnSEcrTzFCb3Fs?=
+ =?utf-8?B?TUtLaThjczJ6akFRZHRPWUJjZVNFVDBFdVFXMiswTENFbytMMlA3NzBqZDNK?=
+ =?utf-8?B?MVFGS3BWb1JxT3MxL1NvZlRJUFp6VVdlZngzaEdaWUZ4TXVYSEgwOERITFRJ?=
+ =?utf-8?B?b2FoWkpJQ05VUFloNi9HUS9GVWNZS2RVNkhlM0FkUk1FbTdKVENCejdrNndk?=
+ =?utf-8?B?dkFOWnFTdi9ZNGwxbU5Vc3lXT3BzTGpOZnZ1NW9ZMHNyKzB3azE5MXQ0clVo?=
+ =?utf-8?B?anFBUnFrTmE2RVRnNk9GSWUwV0lVNGJKUTgxM1ZpYk1RQnQyK1RWTzA1UzZr?=
+ =?utf-8?B?UnROS1BqMWVWQTJEdklJdjliVzh5aGIzWlcvcEwzdWxFUFk4UzlBbGhCVmRz?=
+ =?utf-8?B?RXJCcFBabHVGbDZWK3kvRmM0VXhQeFhtTndvQlFyWW1HM29SbEY0Tm0xQWdk?=
+ =?utf-8?B?ZXNpMEdlU0p4dzR4aW1aTEpaS0c1c0hEY1JEeDNWUUpGcjRmaG9ua29vaFNY?=
+ =?utf-8?B?cFZWMDNmMFJtSVYyNE52RVdwZ2hvMW9kenBDdmdDSHVZNVFHUnFHaWx0L2kx?=
+ =?utf-8?B?RlRnalpwSytWN2MxN1RpMG83R01SWkFIWVBJNnlvMTdNekR1YmE4dnQrcXMz?=
+ =?utf-8?B?OVBORUNkbnNtVFhzZnpYNTlrVy9WOGNJRzRRcTNFUWJNbTdBRWd3a3Yzc2ty?=
+ =?utf-8?B?ZitOb0VmNU9GZWY5OWFFRG9MVytyVWRyTkNGd0FZM3orWDFkK29McWlqTjcv?=
+ =?utf-8?B?M1lJTC9pVGNIK0thRFRBdjlpU2VDb29sVWl5ZjBNRXprYVFKeGRkR3RQYW5C?=
+ =?utf-8?B?V2RRa3FiTEJVQjN6UWpqeHhJS1R1NEFlTWJzNTUrNFBwM1d0LzJXS0N1WkJX?=
+ =?utf-8?B?bzI3ektsekZJMUV2WmJMYy9uYjJYd2xQbEU4eXoyNVJuSDlMZFV0eGloL2Zh?=
+ =?utf-8?B?a2s1TU5DTHJEMUxIWWdFbzBuSWZxRHFJQjFUdmxKWU1icVlmT21GemNLSmZB?=
+ =?utf-8?B?T3N6NlJrZnpMWCtDTXBLRmJycGduRGhUNHNQcjlLaW9ud1FWYk1MNW1oSCtO?=
+ =?utf-8?B?RGVzdC93eHMwK0kzWExQamNIVzdDOGN6ZE1JU2NGT1NlZXFoN2tQSlVCR1lM?=
+ =?utf-8?B?OE5iSWlQU3Q3NGlLVTIvSVp5a01tcUJFV0cxSGZaWWpSZm9BL2N6Q01wL2hw?=
+ =?utf-8?B?eVdhWmIwcEdvS1FYaU9RSWloMG93NCtyT0J0djNiUFVQRjQzSXZiN0JtL0Z6?=
+ =?utf-8?B?UGhNdTcrOEhKSkc4bHA3NE05SkFheDNPaXpzcnB0d0g4NjVrbHJ5bG4vWlVS?=
+ =?utf-8?B?Wm5lVnh0aU5oQ0VWRnUyTVJWaHVWUGJnRnBYcnQ5T3h1NUNsK2cybFFQSjAx?=
+ =?utf-8?B?aGVBb1pJQWl0d1k2bHptbFIybmllL21mZ2ZUWU1GaEZPTEQ5dTc4cWx2Y1JC?=
+ =?utf-8?B?S2o4RTVLZ3M5eHpWMk9lRFd6cUlRTzQ0WmVUOVUyV0VlaFArb21KMmcvSDhE?=
+ =?utf-8?B?ditwL2FUNnRsdWFxSnc3dGZBR0ZqbjQ1aHFVQU1QTjJpb3Q4OFdyVlFoUDBn?=
+ =?utf-8?B?NTJSbStBeDhsV2s5TGEyMXpWd2ttRGI4bDBJY3ZmOXFwSUExY2hLQ3FmcVo1?=
+ =?utf-8?B?ZG4xamJMWjBnUW1vaHJhQnI2K0tMSGFFaUt0bGV4MTNSZ1JWRzJocUhTaG1S?=
+ =?utf-8?B?VklqR2t4eFg3amw2RTMyTk9zV295ZEhnUnovT3pneC9VUjAzK3Jja2kxWGtD?=
+ =?utf-8?B?eUQvNnV6am84TzBmeElrSG1YMTJxamh2dS9yR09NdUp6d0FwMVBqY2JMSkpp?=
+ =?utf-8?B?TnJUTFczSTMyYllRUHVwbE5CUjlPTWcwYU1NUDdJZFB2Q3RkZm5GNklWQVF4?=
+ =?utf-8?B?YVltUW9mZnJPMCtzQVNaV1BaZzhhMHBuNUJoTjZ0QXZWVFVnUFJQZWNOK0RZ?=
+ =?utf-8?Q?VPNcYKVck7i1MKMjljxzX+d2RdDNNxRuPkVNmEk5QxhF2?=
+X-MS-Exchange-AntiSpam-MessageData-1: AspCzMZcReoXZQ==
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 10013708-0ac7-49a8-9717-08de79de4ed6
+X-MS-Exchange-CrossTenant-AuthSource: DS2PR12MB9750.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Mar 2026 11:08:04.7522
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: WMBA5YG2mSb0gLhsCC1ybte6s5U9ZgGwkhqj1HZ1r30lQHSwTF2PIPssbTEi6uSO2t8z3yIijhEM/56gGOAaxw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH2PR12MB4312
+X-Rspamd-Queue-Id: AEB511FEC7D
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-2.16 / 15.00];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[suse.com,quarantine];
+X-Spamd-Result: default: False [-0.16 / 15.00];
+	ARC_REJECT(1.00)[cv is fail on i=2];
+	DMARC_POLICY_ALLOW(-0.50)[nvidia.com,reject];
+	R_DKIM_ALLOW(-0.20)[Nvidia.com:s=selector2];
 	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
-	R_DKIM_ALLOW(-0.20)[suse.com:s=google];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	MIME_TRACE(0.00)[0:+];
-	RCPT_COUNT_TWELVE(0.00)[16];
-	TAGGED_FROM(0.00)[bounces-14597-lists,cgroups=lfdr.de];
-	FORGED_SENDER_MAILLIST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-14598-lists,cgroups=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	DKIM_TRACE(0.00)[suse.com:+];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	TO_DN_SOME(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[5];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[vbabka@suse.com,cgroups@vger.kernel.org];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	TO_DN_EQ_ADDR_SOME(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[20];
+	DKIM_TRACE(0.00)[Nvidia.com:+];
 	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	TO_DN_SOME(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[jonathanh@nvidia.com,cgroups@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[5];
+	MID_RHS_MATCH_FROM(0.00)[];
 	NEURAL_HAM(-0.00)[-1.000];
 	TAGGED_RCPT(0.00)[cgroups];
-	MID_RHS_MATCH_FROM(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,suse.com:dkim,suse.com:mid]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[Nvidia.com:dkim,nvidia.com:mid,nvidia.com:email,sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo]
 X-Rspamd-Action: no action
 
-On 3/3/26 2:57 PM, Harry Yoo wrote:
-> Commit 7a8e71bc619d ("mm/slab: use stride to access slabobj_ext")
-> defined the type of slab->stride as unsigned short, because the author
-> initially planned to store stride within the lower 16 bits of the
-> page_type field, but later stored it in unused bits in the counters
-> field instead.
-> 
-> However, the idea of having only 2-byte stride turned out to be a
-> serious mistake. On systems with 64k pages, order-1 pages are 128k,
-> which is larger than USHRT_MAX. It triggers a debug warning because
-> s->size is 128k while stride, truncated to 2 bytes, becomes zero:
-> 
->   ------------[ cut here ]------------
->   Warning! stride (0) != s->size (131072)
->   WARNING: mm/slub.c:2231 at alloc_slab_obj_exts_early.constprop.0+0x524/0x534, CPU#6: systemd-sysctl/307
->   Modules linked in:
->   CPU: 6 UID: 0 PID: 307 Comm: systemd-sysctl Not tainted 7.0.0-rc1+ #6 PREEMPTLAZY
->   Hardware name: IBM,9009-22A POWER9 (architected) 0x4e0202 0xf000005 of:IBM,FW950.E0 (VL950_179) hv:phyp pSeries
->   NIP:  c0000000008a9ac0 LR: c0000000008a9abc CTR: 0000000000000000
->   REGS: c0000000141f7390 TRAP: 0700   Not tainted  (7.0.0-rc1+)
->   MSR:  8000000000029033 <SF,EE,ME,IR,DR,RI,LE>  CR: 28004400  XER: 00000005
->   CFAR: c000000000279318 IRQMASK: 0
->   GPR00: c0000000008a9abc c0000000141f7630 c00000000252a300 c00000001427b200
->   GPR04: 0000000000000004 0000000000000000 c000000000278fd0 0000000000000000
->   GPR08: fffffffffffe0000 0000000000000000 0000000000000000 0000000022004400
->   GPR12: c000000000f644b0 c000000017ff8f00 0000000000000000 0000000000000000
->   GPR16: 0000000000000000 c0000000141f7aa0 0000000000000000 c0000000141f7a88
->   GPR20: 0000000000000000 0000000000400cc0 ffffffffffffffff c00000001427b180
->   GPR24: 0000000000000004 00000000000c0cc0 c000000004e89a20 c00000005de90011
->   GPR28: 0000000000010010 c00000005df00000 c000000006017f80 c00c000000177a00
->   NIP [c0000000008a9ac0] alloc_slab_obj_exts_early.constprop.0+0x524/0x534
->   LR [c0000000008a9abc] alloc_slab_obj_exts_early.constprop.0+0x520/0x534
->   Call Trace:
->   [c0000000141f7630] [c0000000008a9abc] alloc_slab_obj_exts_early.constprop.0+0x520/0x534 (unreliable)
->   [c0000000141f76c0] [c0000000008aafbc] allocate_slab+0x154/0x94c
->   [c0000000141f7760] [c0000000008b41c0] refill_objects+0x124/0x16c
->   [c0000000141f77c0] [c0000000008b4be0] __pcs_replace_empty_main+0x2b0/0x444
->   [c0000000141f7810] [c0000000008b9600] __kvmalloc_node_noprof+0x840/0x914
->   [c0000000141f7900] [c000000000a3dd40] seq_read_iter+0x60c/0xb00
->   [c0000000141f7a10] [c000000000b36b24] proc_reg_read_iter+0x154/0x1fc
->   [c0000000141f7a50] [c0000000009cee7c] vfs_read+0x39c/0x4e4
->   [c0000000141f7b30] [c0000000009d0214] ksys_read+0x9c/0x180
->   [c0000000141f7b90] [c00000000003a8d0] system_call_exception+0x1e0/0x4b0
->   [c0000000141f7e50] [c00000000000d05c] system_call_vectored_common+0x15c/0x2ec
-> 
-> This leads to slab_obj_ext() returning the first slabobj_ext or all
-> objects and confuses the reference counting of object cgroups [1] and
-> memory (un)charging for memory cgroups [2].
-> 
-> Fortunately, the counters field has 32 unused bits instead of 16
-> on 64-bit CPUs, which is wide enough to hold any value of s->size.
-> Change the type to unsigned int.
-> 
-> Reported-by: Venkat Rao Bagalkote <venkat88@linux.ibm.com>
-> Closes: https://lore.kernel.org/lkml/ca241daa-e7e7-4604-a48d-de91ec9184a5@linux.ibm.com [1]
-> Closes: https://lore.kernel.org/all/ddff7c7d-c0c3-4780-808f-9a83268bbf0c@linux.ibm.com [2]
-> Fixes: 7a8e71bc619d ("mm/slab: use stride to access slabobj_ext")
-> Signed-off-by: Harry Yoo <harry.yoo@oracle.com>
 
-Added to slab/for-next-fixes, thanks!
-Hopefully Venkat confirms the fix and we can close and try to forget
-about the memory ordering can of worms again ;)
+On 04/03/2026 03:58, Waiman Long wrote:
 
-> ---
+...
+
+> It looks that -EBUSY was returned when the script tries to online/ 
+> offline a CPU. I ran a simple script to repetitively doing offline/ 
+> online operation and couldn't reproduce the problem. I don't have access 
+> to the tegra board that you use for testing. Would you mind trying out 
+> the following patch to see if it can get rid of the problem.
 > 
-> Hi Venkat, could you please test this on top of 7.0-rc2 (instead of
-> 7.0-rc1) and see if the bugs [1] [2] are reproduced on your machine?
+> Thanks,
+> Longman
 > 
-> I reproduced a debug warning on a ppc machine and fixed it.
-> The bugs are expected to be resolved by this fix.
+> diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
+> index e200de7c60b6..5a5953fb391c 100644
+> --- a/kernel/cgroup/cpuset.c
+> +++ b/kernel/cgroup/cpuset.c
+> @@ -3936,8 +3936,10 @@ static void cpuset_handle_hotplug(void)
+>           * previously queued work. Since hk_sd_workfn() doesn't use the 
+> work
+>           * item at all, this is not a problem.
+>           */
+> -       if (update_housekeeping || force_sd_rebuild)
+> -               queue_work(system_unbound_wq, &hk_sd_work);
+> +       if (force_sd_rebuild)
+> +               rebuild_sched_domains_cpuslocked();
+> +       if (update_housekeeping)
+> +               queue_work(system_dfl_wq, &hk_sd_work);
 > 
-> p.s. After more debugging, I saw stride appeared as 0 even on the CPU
-> that wrote it, which likely rules out a memory ordering issue...
-> and I discovered this while decoding ppc assembly suspecting memory
-> corruption or a compiler bug, which came down to:
->   
->     "Hmm... why is the size truncated to 2 bytes?... OH WAIT!"
+>          free_tmpmasks(ptmp);
+>   }
 > 
->  mm/slab.h | 10 +++++-----
->  1 file changed, 5 insertions(+), 5 deletions(-)
 > 
-> diff --git a/mm/slab.h b/mm/slab.h
-> index f6ef862b60ef..e9ab292acd22 100644
-> --- a/mm/slab.h
-> +++ b/mm/slab.h
-> @@ -59,7 +59,7 @@ struct freelist_counters {
->  					 * to save memory. In case ->stride field is not available,
->  					 * such optimizations are disabled.
->  					 */
-> -					unsigned short stride;
-> +					unsigned int stride;
->  #endif
->  				};
->  			};
-> @@ -559,20 +559,20 @@ static inline void put_slab_obj_exts(unsigned long obj_exts)
->  }
->  
->  #ifdef CONFIG_64BIT
-> -static inline void slab_set_stride(struct slab *slab, unsigned short stride)
-> +static inline void slab_set_stride(struct slab *slab, unsigned int stride)
->  {
->  	slab->stride = stride;
->  }
-> -static inline unsigned short slab_get_stride(struct slab *slab)
-> +static inline unsigned int slab_get_stride(struct slab *slab)
->  {
->  	return slab->stride;
->  }
->  #else
-> -static inline void slab_set_stride(struct slab *slab, unsigned short stride)
-> +static inline void slab_set_stride(struct slab *slab, unsigned int stride)
->  {
->  	VM_WARN_ON_ONCE(stride != sizeof(struct slabobj_ext));
->  }
-> -static inline unsigned short slab_get_stride(struct slab *slab)
-> +static inline unsigned int slab_get_stride(struct slab *slab)
->  {
->  	return sizeof(struct slabobj_ext);
->  }
+
+Yes that did the trick. Works for me. Feel free to add my ...
+
+Tested-by: Jon Hunter <jonathanh@nvidia.com>
+
+Thanks
+Jon
+
+-- 
+nvpublic
 
 
