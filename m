@@ -1,176 +1,344 @@
-Return-Path: <cgroups+bounces-14583-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-14584-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id kTFkCgp/p2kyiAAAu9opvQ
-	(envelope-from <cgroups+bounces-14583-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Wed, 04 Mar 2026 01:38:34 +0100
+	id D+RrOeilp2kHjAAAu9opvQ
+	(envelope-from <cgroups+bounces-14584-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Wed, 04 Mar 2026 04:24:24 +0100
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1EA4A1F8F0D
-	for <lists+cgroups@lfdr.de>; Wed, 04 Mar 2026 01:38:33 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 35CF11FA4DC
+	for <lists+cgroups@lfdr.de>; Wed, 04 Mar 2026 04:24:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id C713330547CA
-	for <lists+cgroups@lfdr.de>; Wed,  4 Mar 2026 00:38:31 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 15D3F303C008
+	for <lists+cgroups@lfdr.de>; Wed,  4 Mar 2026 03:24:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 363012EC090;
-	Wed,  4 Mar 2026 00:38:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 60557364EA5;
+	Wed,  4 Mar 2026 03:24:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="HQXeg3jA"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="K5uYc0yT"
 X-Original-To: cgroups@vger.kernel.org
-Received: from out-183.mta1.migadu.com (out-183.mta1.migadu.com [95.215.58.183])
+Received: from out-178.mta0.migadu.com (out-178.mta0.migadu.com [91.218.175.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 25C8823BD1B
-	for <cgroups@vger.kernel.org>; Wed,  4 Mar 2026 00:38:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.183
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF191344DB9
+	for <cgroups@vger.kernel.org>; Wed,  4 Mar 2026 03:24:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772584710; cv=none; b=g04SWM0aVphJdnDaurTm+MIQq+uwSR+mDHIaXczQD2m/mPwSTRP9nhP4o6DNYunMpAaKNaE4H8FEiOdBAufemH+bwDHFBuDG9GWppZoyKmGMOk1cCkS1qfcSAcLyguAT3d6ZOB+yhYiYCW43twISE9vaN37Dz0ja1TjwDcXp5Ok=
+	t=1772594660; cv=none; b=fXr9q+cBIMsdsM5/aQhsrMB1TOrwGmeZA2kFrY1jXPlzqpmSPFrvlhQb0l3tdeivTtXlWCtWJ6xSxAN9AKhyrMIPd8n4DwC9J8dkJ3KtkIARsq5AM693iwRROTxsGxpKwzcpyMRtB3lqemWjE0LM5Owz8qMJlOIA/NHfaIr6/mQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772584710; c=relaxed/simple;
-	bh=HyLCNqi5PMYfwoXlDhIafh7quLt+QvevoQr9US0Cac4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=mscf/480NHpIbyyj4t6pDLm3gLJeAuc+DMv028tS5hoJ82JhRjn3zdUw4RSvsh0v5fbfP9cEvFykCXvubKASngIVT6WKENtaSc1OIB1vkyj8k527O0fNvmHNtba6aV+QjzJGcsuBq6LRaOe1g8CLpNIGwfz+tQWw+NterhsWvgs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=HQXeg3jA; arc=none smtp.client-ip=95.215.58.183
+	s=arc-20240116; t=1772594660; c=relaxed/simple;
+	bh=f+smSvMvkTmfYxnVrcQBClhnbtqsOti65WkXtbWBT2o=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=pUqKEt0DUfVjVgc+uZFx3/jnSWPUgFATEu51M13A4t45O9bqALcNqisXG8Arx7al5I10//aQuEW8Cea7Z/fXuxLNmjYqqmFhZZ0JlCdfOhR0eSmbmVLBVaJI80qCn+A72v4sFCG2N0n0fxWRn9L/w1OBjwSACnJAf0AWVszQHxs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=K5uYc0yT; arc=none smtp.client-ip=91.218.175.178
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Wed, 4 Mar 2026 08:38:16 +0800
+Message-ID: <d6c00506-ed17-4a8e-8703-f2c810d79c24@linux.dev>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1772584707;
+	t=1772594652;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=TuOjJb0QLX0PUZAbW78/fXsQ37xDNTOQP0GeAROixpg=;
-	b=HQXeg3jA5M2DlYI5TaOZoKc4YNVf6oCl+zTv2vwriNIb8jpFfo6QewVUO8T/BNxCj0BaSf
-	2TFJKFFW/F1EI0AwcMb2c/VD6A/vg26MYXq53MP8VrpHkeduuVxvvPIcCoyyrv0KgbP9wA
-	EO4JPclNHQC/BgIaup/7iyLkO/wvGAo=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Hao Li <hao.li@linux.dev>
-To: Johannes Weiner <hannes@cmpxchg.org>, 
-	Shakeel Butt <shakeel.butt@linux.dev>
-Cc: "Vlastimil Babka (SUSE)" <vbabka@kernel.org>, 
-	Andrew Morton <akpm@linux-foundation.org>, Michal Hocko <mhocko@kernel.org>, 
-	Roman Gushchin <roman.gushchin@linux.dev>, Vlastimil Babka <vbabka@suse.cz>, 
-	Harry Yoo <harry.yoo@oracle.com>, linux-mm@kvack.org, cgroups@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 5/5] mm: memcg: separate slab stat accounting from objcg
- charge cache
-Message-ID: <6sjgaoxzbipxpza4pjnwpm57yx4d662gpjtuuzv66bvl3fazjt@4repfcgybk5t>
-References: <20260302195305.620713-1-hannes@cmpxchg.org>
- <20260302195305.620713-6-hannes@cmpxchg.org>
- <ji2jjt4vtmt2ox7wzytpivttc4z7j3u6cwmv23r6xit5322gns@te4t4djl5nlk>
- <541a6661-7bfe-4517-a32c-5839002c61e5@kernel.org>
- <aablae2eFl9ne5fW@linux.dev>
- <aacBoazC21TAi-Q2@cmpxchg.org>
- <aacLODh5BY45Zp9s@linux.dev>
+	bh=TiFasV7q554QQZ+b7KIKLHXnRz8w7IAo+x3gjiCpnRs=;
+	b=K5uYc0yT7/tr/jxcqAsPNxNyrdC5x1qrLEBqlyj9letyzALTULsPuWpp+Q9dK5ds8O6FYW
+	a8p3UqwpwRqlpxvI0g9vNeTb2uB8MZIY1wrCXjFGzl9/bTGouRBQDwqwpsfea8F2CQ6b/d
+	LJ/c8XNYT8GHA1aWDo1Pbg12xKUtEps=
+Date: Wed, 4 Mar 2026 11:23:39 +0800
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <aacLODh5BY45Zp9s@linux.dev>
+Subject: Re: [PATCH v5 update 29/32] mm: memcontrol: prepare for reparenting
+ non-hierarchical stats
+To: Yosry Ahmed <yosry@kernel.org>
+Cc: hannes@cmpxchg.org, hughd@google.com, mhocko@suse.com,
+ roman.gushchin@linux.dev, shakeel.butt@linux.dev, muchun.song@linux.dev,
+ david@kernel.org, lorenzo.stoakes@oracle.com, ziy@nvidia.com,
+ harry.yoo@oracle.com, yosry.ahmed@linux.dev, imran.f.khan@oracle.com,
+ kamalesh.babulal@oracle.com, axelrasmussen@google.com, yuanchu@google.com,
+ weixugc@google.com, chenridong@huaweicloud.com, mkoutny@suse.com,
+ akpm@linux-foundation.org, hamzamahfooz@linux.microsoft.com,
+ apais@linux.microsoft.com, lance.yang@linux.dev, bhe@redhat.com,
+ usamaarif642@gmail.com, linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+ cgroups@vger.kernel.org, Qi Zheng <zhengqi.arch@bytedance.com>
+References: <ef13e5974343b37ae2a0e28aff03ea2d033cb888.1772005110.git.zhengqi.arch@bytedance.com>
+ <20260228072556.31793-1-qi.zheng@linux.dev>
+ <CAO9r8zNYFvNnz_oTu10kPBYL6=1ZewKUMRYcMmcMdSqbro_miA@mail.gmail.com>
+ <de1476aa-20a3-420e-9cd7-9238efd3c85f@linux.dev>
+ <46bgg2vwqvmex7wtk2fkvf454tqgaychb7l4odnnrx7svci5ha@vy4b4ophm763>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Qi Zheng <qi.zheng@linux.dev>
+In-Reply-To: <46bgg2vwqvmex7wtk2fkvf454tqgaychb7l4odnnrx7svci5ha@vy4b4ophm763>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 X-Migadu-Flow: FLOW_OUT
-X-Rspamd-Queue-Id: 1EA4A1F8F0D
+X-Rspamd-Queue-Id: 35CF11FA4DC
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-1.66 / 15.00];
+X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_RHS_NOT_FQDN(0.50)[];
 	DMARC_POLICY_ALLOW(-0.50)[linux.dev,none];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	R_DKIM_ALLOW(-0.20)[linux.dev:s=key1];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
+	TAGGED_FROM(0.00)[bounces-14584-lists,cgroups=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-14583-lists,cgroups=lfdr.de];
-	FROM_HAS_DN(0.00)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
 	RCVD_COUNT_THREE(0.00)[3];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	FREEMAIL_CC(0.00)[cmpxchg.org,google.com,suse.com,linux.dev,kernel.org,oracle.com,nvidia.com,huaweicloud.com,linux-foundation.org,linux.microsoft.com,redhat.com,gmail.com,kvack.org,vger.kernel.org,bytedance.com];
+	RCPT_COUNT_TWELVE(0.00)[29];
 	MIME_TRACE(0.00)[0:+];
-	DKIM_TRACE(0.00)[linux.dev:+];
+	FROM_HAS_DN(0.00)[];
 	MISSING_XM_UA(0.00)[];
-	TO_DN_SOME(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[hao.li@linux.dev,cgroups@vger.kernel.org];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	NEURAL_HAM(-0.00)[-1.000];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[qi.zheng@linux.dev,cgroups@vger.kernel.org];
+	DKIM_TRACE(0.00)[linux.dev:+];
+	MID_RHS_MATCH_FROM(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
 	TAGGED_RCPT(0.00)[cgroups];
-	RCPT_COUNT_SEVEN(0.00)[11];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[linux.dev:dkim,linux.dev:email,sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo]
+	TO_DN_SOME(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[linux.dev:dkim,linux.dev:mid,sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo]
 X-Rspamd-Action: no action
 
-On Tue, Mar 03, 2026 at 08:26:31AM -0800, Shakeel Butt wrote:
-> On Tue, Mar 03, 2026 at 10:43:29AM -0500, Johannes Weiner wrote:
-> > On Tue, Mar 03, 2026 at 05:45:18AM -0800, Shakeel Butt wrote:
-> > > On Tue, Mar 03, 2026 at 11:42:31AM +0100, Vlastimil Babka (SUSE) wrote:
-> > > > On 3/3/26 09:54, Hao Li wrote:
-> > > > > On Mon, Mar 02, 2026 at 02:50:18PM -0500, Johannes Weiner wrote:
-> > > > >>  
-> > > > >> +static void refill_obj_stock(struct obj_cgroup *objcg,
-> > > > >> +			     unsigned int nr_bytes,
-> > > > >> +			     bool allow_uncharge)
-> > > > >> +{
-> > > > >> +	struct obj_stock_pcp *stock = trylock_stock();
-> > > > >> +	__refill_obj_stock(objcg, stock, nr_bytes, allow_uncharge);
-> > > > >> +	unlock_stock(stock);
-> > > > > 
-> > > > > Hi Johannes,
-> > > > > 
-> > > > > I noticed that after this patch, obj_cgroup_uncharge_pages() is now inside
-> > > > > the obj_stock.lock critical section. Since obj_cgroup_uncharge_pages() calls
-> > > > > refill_stock(), which seems non-trivial, this might increase the lock hold time.
-> > > > > In particular, could that lead to more failed trylocks for IRQ handlers on
-> > > > > non-RT kernel (or for tasks that preempt others on RT kernel)?
-> > 
-> > Good catch. I did ponder this, but forgot by the time I wrote the
-> > changelog.
-> > 
-> > > > Yes, it also seems a bit self-defeating? (at least in theory)
-> > > > 
-> > > > refill_obj_stock()
-> > > >   trylock_stock()
-> > > >   __refill_obj_stock()
-> > > >     obj_cgroup_uncharge_pages()
-> > > >       refill_stock()
-> > > >         local_trylock() -> nested, will fail
-> > > 
-> > > Not really as the local_locks are different i.e. memcg_stock.lock in
-> > > refill_stock() and obj_stock.lock in refill_obj_stock().
-> > 
-> > Right, refilling the *byte* stock could produce enough excess that we
-> > refill the *page* stock. Which in turn could produce enough excess
-> > that we drain that back to the page counters (shared atomics).
-> > 
-> > > However Hao's concern is valid and I think it can be easily fixed by
-> > > moving obj_cgroup_uncharge_pages() out of obj_stock.lock.
-> > 
-> > Note that we now have multiple callsites of __refill_obj_stock(). Do
-> > we care enough to move this to the caller?
-> > 
-> > There are a few other places with a similar pattern:
-> > 
-> > - drain_obj_stock(): calls memcg_uncharge() under the lock
-> > - drain_stock(): calls memcg_uncharge() under the lock
-> > - refill_stock(): still does full drain_stock()
-> > 
-> > All of these could be more intentional about only updating the per-cpu
-> > data under the lock and the page counters outside of it.
-> > 
-> > Given that IRQ allocations/frees are rare, nested ones even rarer, and
-> > the "slowpath" is a few extra atomics, I'm not sure it's worth the
-> > code complication. At least until proven otherwise.
-> > 
-> > What do you think?
+
+
+On 3/3/26 10:56 PM, Yosry Ahmed wrote:
+> On Tue, Mar 03, 2026 at 11:08:56AM +0800, Qi Zheng wrote:
+>> Hi Yosry,
+> [..]
+>>>
+>>> I don't think we should end up with two copies of
+>>> __mod_memcg_state/mod_memcg_state() and
+>>> __mod_memcg_lruvec_state/mod_memcg_lruvec_state(). I meant to refactor
+>>> mod_memcg_state() to call __mod_memcg_state(), where the latter does
+>>> not call get_non_dying_memcg_{start/end}(). Same for
+>>> mod_memcg_lruvec_state().
+>>
+>> Okay, like the following? But this would require modifications to
+>> [PATCH v5 31/32]. If there are no problems, I will send the updated
+>> patch to [PATCH v5 29/32] and [PATCH v5 31/32].
 > 
-> Yes this makes sense. We already have at least one evidence (bug Hao fixed) that
-> these are very rare, so optimizing for such cases will just increase complexity
-> without real benefit.
+> I cannot apply the diff, seems a bit corrupted.
+> 
+> But ideally, instead of a @reparent argument, we just have
+> __mod_memcg_lruvec_state() and __mod_memcg_state() do the work without
+> getting parent of dead memcgs, and then mod_memcg_lruvec_state() and
+> mod_memcg_state() just call them after get_non_dying_memcg_start().
+> 
+> What about this (untested), it should apply on top of 'mm: memcontrol:
+> eliminate the problem of dying memory cgroup for LRU folios' in mm-new,
+> so maybe it needs to be broken down across different patches:
 
-Yes, make sense to me too. Thanks for taking a look.
+It looks feasible. I will apply and test it. If there are no problems,
+I will send the update patch.
 
-Reviewed-by: Hao Li <hao.li@linux.dev>
+Thanks,
+Qi
+
+> 
+> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> index 753d76e96cc67..f0d55e1f9c49a 100644
+> --- a/mm/memcontrol.c
+> +++ b/mm/memcontrol.c
+> @@ -527,7 +527,7 @@ unsigned long lruvec_page_state_local(struct lruvec *lruvec,
+>   }
+>   
+>   #ifdef CONFIG_MEMCG_V1
+> -static void __mod_memcg_lruvec_state(struct lruvec *lruvec,
+> +static void __mod_memcg_lruvec_state(struct mem_cgroup_per_node *pn,
+>   				     enum node_stat_item idx, int val);
+>   
+>   void reparent_memcg_lruvec_state_local(struct mem_cgroup *memcg,
+> @@ -536,16 +536,17 @@ void reparent_memcg_lruvec_state_local(struct mem_cgroup *memcg,
+>   	int i = memcg_stats_index(idx);
+>   	int nid;
+>   
+> -	if (WARN_ONCE(BAD_STAT_IDX(i), "%s: missing stat item %d\n", __func__, idx))
+> -		return;
+> -
+>   	for_each_node(nid) {
+>   		struct lruvec *child_lruvec = mem_cgroup_lruvec(memcg, NODE_DATA(nid));
+>   		struct lruvec *parent_lruvec = mem_cgroup_lruvec(parent, NODE_DATA(nid));
+>   		unsigned long value = lruvec_page_state_local(child_lruvec, idx);
+> +		struct mem_cgroup_per_node *child_pn, *parent_pn;
+>   
+> -		__mod_memcg_lruvec_state(child_lruvec, idx, -value);
+> -		__mod_memcg_lruvec_state(parent_lruvec, idx, value);
+> +		child_pn = container_of(child_lruvec, struct mem_cgroup_per_node, lruvec);
+> +		parent_pn = container_of(parent_lruvec, struct mem_cgroup_per_node, lruvec);
+> +
+> +		__mod_memcg_lruvec_state(child_pn, idx, -value);
+> +		__mod_memcg_lruvec_state(parent_pn, idx, value);
+>   	}
+>   }
+>   #endif
+> @@ -831,39 +832,42 @@ static inline void get_non_dying_memcg_end(void)
+>   }
+>   #endif
+>   
+> -/**
+> - * mod_memcg_state - update cgroup memory statistics
+> - * @memcg: the memory cgroup
+> - * @idx: the stat item - can be enum memcg_stat_item or enum node_stat_item
+> - * @val: delta to add to the counter, can be negative
+> - */
+> -void mod_memcg_state(struct mem_cgroup *memcg, enum memcg_stat_item idx,
+> -		       int val)
+> +static void __mod_memcg_state(struct mem_cgroup *memcg,
+> +			      enum memcg_stat_item idx, int val)
+>   {
+>   	int i = memcg_stats_index(idx);
+>   	int cpu;
+>   
+> -	if (mem_cgroup_disabled())
+> -		return;
+> -
+>   	if (WARN_ONCE(BAD_STAT_IDX(i), "%s: missing stat item %d\n", __func__, idx))
+>   		return;
+>   
+>   	cpu = get_cpu();
+>   
+> -	memcg = get_non_dying_memcg_start(memcg);
+> -
+>   	this_cpu_add(memcg->vmstats_percpu->state[i], val);
+>   	val = memcg_state_val_in_pages(idx, val);
+>   	memcg_rstat_updated(memcg, val, cpu);
+> -
+> -	get_non_dying_memcg_end();
+> -
+>   	trace_mod_memcg_state(memcg, idx, val);
+>   
+>   	put_cpu();
+>   }
+>   
+> +/**
+> + * mod_memcg_state - update cgroup memory statistics
+> + * @memcg: the memory cgroup
+> + * @idx: the stat item - can be enum memcg_stat_item or enum node_stat_item
+> + * @val: delta to add to the counter, can be negative
+> + */
+> +void mod_memcg_state(struct mem_cgroup *memcg, enum memcg_stat_item idx,
+> +		     int val)
+> +{
+> +	if (mem_cgroup_disabled())
+> +		return;
+> +
+> +	memcg = get_non_dying_memcg_start(memcg);
+> +	__mod_memcg_state(memcg, idx, val);
+> +	get_non_dying_memcg_end();
+> +}
+> +
+>   #ifdef CONFIG_MEMCG_V1
+>   /* idx can be of type enum memcg_stat_item or node_stat_item. */
+>   unsigned long memcg_page_state_local(struct mem_cgroup *memcg, int idx)
+> @@ -882,35 +886,26 @@ unsigned long memcg_page_state_local(struct mem_cgroup *memcg, int idx)
+>   	return x;
+>   }
+>   
+> -static void __mod_memcg_state(struct mem_cgroup *memcg,
+> -			      enum memcg_stat_item idx, int val)
+> +void reparent_memcg_state_local(struct mem_cgroup *memcg,
+> +				struct mem_cgroup *parent, int idx)
+>   {
+>   	int i = memcg_stats_index(idx);
+> -	int cpu;
+> -
+> -	if (mem_cgroup_disabled())
+> -		return;
+> -
+> -	cpu = get_cpu();
+> -
+> -	this_cpu_add(memcg->vmstats_percpu->state[i], val);
+> -	val = memcg_state_val_in_pages(idx, val);
+> -	memcg_rstat_updated(memcg, val, cpu);
+> -	trace_mod_memcg_state(memcg, idx, val);
+> +	unsigned long value = memcg_page_state_local(memcg, idx);
+>   
+> -	put_cpu();
+> +	__mod_memcg_state(memcg, idx, -value);
+> +	__mod_memcg_state(parent, idx, value);
+>   }
+> +#endif
+>   
+> -static void __mod_memcg_lruvec_state(struct lruvec *lruvec,
+> +static void __mod_memcg_lruvec_state(struct mem_cgroup_per_node *pn,
+>   				     enum node_stat_item idx, int val)
+>   {
+> -	struct mem_cgroup_per_node *pn;
+> -	struct mem_cgroup *memcg;
+> +	struct mem_cgroup *memcg = pn->memcg;
+>   	int i = memcg_stats_index(idx);
+>   	int cpu;
+>   
+> -	pn = container_of(lruvec, struct mem_cgroup_per_node, lruvec);
+> -	memcg = pn->memcg;
+> +	if (WARN_ONCE(BAD_STAT_IDX(i), "%s: missing stat item %d\n", __func__, idx))
+> +		return;
+>   
+>   	cpu = get_cpu();
+>   
+> @@ -927,20 +922,6 @@ static void __mod_memcg_lruvec_state(struct lruvec *lruvec,
+>   	put_cpu();
+>   }
+>   
+> -void reparent_memcg_state_local(struct mem_cgroup *memcg,
+> -				struct mem_cgroup *parent, int idx)
+> -{
+> -	int i = memcg_stats_index(idx);
+> -	unsigned long value = memcg_page_state_local(memcg, idx);
+> -
+> -	if (WARN_ONCE(BAD_STAT_IDX(i), "%s: missing stat item %d\n", __func__, idx))
+> -		return;
+> -
+> -	__mod_memcg_state(memcg, idx, -value);
+> -	__mod_memcg_state(parent, idx, value);
+> -}
+> -#endif
+> -
+>   static void mod_memcg_lruvec_state(struct lruvec *lruvec,
+>   				     enum node_stat_item idx,
+>   				     int val)
+> @@ -948,32 +929,13 @@ static void mod_memcg_lruvec_state(struct lruvec *lruvec,
+>   	struct pglist_data *pgdat = lruvec_pgdat(lruvec);
+>   	struct mem_cgroup_per_node *pn;
+>   	struct mem_cgroup *memcg;
+> -	int i = memcg_stats_index(idx);
+> -	int cpu;
+> -
+> -	if (WARN_ONCE(BAD_STAT_IDX(i), "%s: missing stat item %d\n", __func__, idx))
+> -		return;
+>   
+>   	pn = container_of(lruvec, struct mem_cgroup_per_node, lruvec);
+> -	memcg = pn->memcg;
+> -
+> -	cpu = get_cpu();
+> -
+> -	memcg = get_non_dying_memcg_start(memcg);
+> +	memcg = get_non_dying_memcg_start(pn->memcg);
+>   	pn = memcg->nodeinfo[pgdat->node_id];
+> -
+> -	/* Update memcg */
+> -	this_cpu_add(memcg->vmstats_percpu->state[i], val);
+> -	/* Update lruvec */
+> -	this_cpu_add(pn->lruvec_stats_percpu->state[i], val);
+> -	val = memcg_state_val_in_pages(idx, val);
+> -	memcg_rstat_updated(memcg, val, cpu);
+> -
+> +	__mod_memcg_lruvec_state(pn, idx, val);
+>   	get_non_dying_memcg_end();
+>   
+> -	trace_mod_memcg_lruvec_state(memcg, idx, val);
+> -
+> -	put_cpu();
+>   }
+>   
+>   /
+
 
