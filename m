@@ -1,137 +1,233 @@
-Return-Path: <cgroups+bounces-14599-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-14600-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id sKXKOYktqGlPpQAAu9opvQ
-	(envelope-from <cgroups+bounces-14599-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Wed, 04 Mar 2026 14:03:05 +0100
+	id OEVnKh00qGm+pQAAu9opvQ
+	(envelope-from <cgroups+bounces-14600-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Wed, 04 Mar 2026 14:31:09 +0100
 X-Original-To: lists+cgroups@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 149B120001D
-	for <lists+cgroups@lfdr.de>; Wed, 04 Mar 2026 14:03:05 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0C4B9200745
+	for <lists+cgroups@lfdr.de>; Wed, 04 Mar 2026 14:31:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id DB64D3011790
-	for <lists+cgroups@lfdr.de>; Wed,  4 Mar 2026 13:03:03 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 25B3B303AB72
+	for <lists+cgroups@lfdr.de>; Wed,  4 Mar 2026 13:26:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CCD2326159E;
-	Wed,  4 Mar 2026 13:03:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5CD911E86E;
+	Wed,  4 Mar 2026 13:26:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="g6NpVag2"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mDwbmgrl"
 X-Original-To: cgroups@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E67A1B0439;
-	Wed,  4 Mar 2026 13:03:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D287351C12;
+	Wed,  4 Mar 2026 13:26:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772629382; cv=none; b=EbR/k0itJkYwn0vhASDwcdEnjx46JBmwxxdigwpBCygWWXL+YzjbBHVD/DHSXA3Li4DwYsjt9S3rFuIkg1OkCHiY6f/Ak0/fVIktUAKBnCxO0dX7rMoMALzAaUzXrAZltmCRr86WxEpZmwbYMHaxJPS1ITeTqz4k7t+B/rkzTDw=
+	t=1772630777; cv=none; b=D367NN2EEMpoK1EdS0HZVj0Nz9vhWnXl9AeNAzu4qzpcFPxCybX3E0KospeUIE1bmJQFTwYJl+xs4xyt8epJIX5TjaQGzXCw4231JsBwih68YglESiuD+xM+I5K4CHcweq3NEBtinK+iYIOsfCq+8yvrt1lg4Ir94JVmw0Q5FlY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772629382; c=relaxed/simple;
-	bh=TqA3vtHqmK2J2FK5mNjZzCVGaW+JImAg60XzuHNKSk8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=SAjoDzfEFyWRkNIg1I8HQVj3iw1ja1MhKd3rjMEtCmsWY8/EWZ7F/0YdCP9FlEIoDBmpTof1ya/LrCBUysguGY2q7ZccVKtS0eDgvsKtjG1jJDnhGOMItJPvWM/fqyUHPB2YE6fZkFmckGE8LUSSo3c5paWNv1TIdnG+ZfoeBMg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=g6NpVag2; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C092AC2BC87;
-	Wed,  4 Mar 2026 13:02:59 +0000 (UTC)
+	s=arc-20240116; t=1772630777; c=relaxed/simple;
+	bh=be80xrXFvqsj4B2KiGyXnFiziheG6DObQtQoTIVQ0lg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Ce9Nu0JpIGSxliSj4klkYvPxmWDM/8LKnevJz6UUc2nxPXa+gLvSkHlxuet1+D36AHixc+V0gnloTnoNnFm7hYoWTp6lW9dyznjj/qb8P//WF/sg6fZTbhiMEgHBcwNdUwwMt+6kE+ibgi6m/oedx0rW68UAh/PUkfcdGd38A54=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mDwbmgrl; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 259DBC19423;
+	Wed,  4 Mar 2026 13:26:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1772629382;
-	bh=TqA3vtHqmK2J2FK5mNjZzCVGaW+JImAg60XzuHNKSk8=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=g6NpVag2wYWX+aprYWMsse+oPMxIK3jNcy+BS3pnNRtMb4TbjuqM/yaE3hjf9goJA
-	 1Nh3eQEgVu2qX/p8k9fvx90ctsUb69BZaIVeGtEXAKx3PW8fvS70A00D5h3kTf9T9W
-	 Lf5kEjD7Rm8QHPlYBR5kDauqX4AwYhBjuMrq8UDUmZ1idEY/Ts5/Xs0ivw8L97ll0s
-	 io0FJ58pylg3xVQ80FDpxIIPo1LyLmE6dbk6dM1G7KKYgJVQaJCXjYlYr6LMNgwT27
-	 mjiE/LFcubpLvXBgs6fOy+gbQxl5AcBqfqCwMwDTv+B4EjJl0Ql7mE0H8586C3BDy8
-	 Jdo9gxfZRD7PA==
-Message-ID: <a61c62ca-45f3-49f3-90d6-a708e468af12@kernel.org>
-Date: Wed, 4 Mar 2026 14:02:58 +0100
+	s=k20201202; t=1772630776;
+	bh=be80xrXFvqsj4B2KiGyXnFiziheG6DObQtQoTIVQ0lg=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=mDwbmgrlU4thinihsg5IwRF4mQMzvYn7gpVOH906/ciACr3TYYPgMhYz0zthqSDxl
+	 bDVRTlEkxEFPvnJ+UfzmECyMWbs2yz2CNlxEXPBA+owV6SKnV5Pjv2T6u/gqJnfy1A
+	 2s6udaDINTw3Qq3dln22jdTHETSD1wWkwnKIGJ7n8GHESQf/ImR5T++Lw+Dsgw9KBf
+	 XmPmT5G6xpWvULmkkdC7VZxcSbcjbeCD+R8sNYy1PpmJZWGHygYvmI+AUkkgHQOZqa
+	 nqFphxQLD5ZRdpDzDB+iT4ZltnSCNnQkuqJ5IFiw7ju8XiYZ0xQtg6ldzIW9CZA9xf
+	 iQMRA5UGqnULw==
+Date: Wed, 4 Mar 2026 14:26:11 +0100
+From: Christian Brauner <brauner@kernel.org>
+To: Amir Goldstein <amir73il@gmail.com>
+Cc: jack@suse.cz, Tejun Heo <tj@kernel.org>, 
+	"T.J. Mercier" <tjmercier@google.com>, gregkh@linuxfoundation.org, driver-core@lists.linux.dev, 
+	linux-kernel@vger.kernel.org, cgroups@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
+	shuah@kernel.org, linux-kselftest@vger.kernel.org
+Subject: Re: [PATCH v4 2/3] kernfs: Send IN_DELETE_SELF and IN_IGNORED
+Message-ID: <20260304-glasig-amtieren-5010757246ae@brauner>
+References: <20260220055449.3073-3-tjmercier@google.com>
+ <aZh-orwoaeAh52Bf@slm.duckdns.org>
+ <CAOQ4uxjgXa1q-8-ajSBwza-Tkv91tFP-_wWzCQPW+PwJMehEWA@mail.gmail.com>
+ <aZi6_K-pSRwAe7F5@slm.duckdns.org>
+ <CAOQ4uxjZZSRBwZ2ZL31juAUu0-sAUnPrJWvQuJ2NDaWZMeq0Fg@mail.gmail.com>
+ <aZju-GFHf8Eez-07@slm.duckdns.org>
+ <CAOQ4uxgzuxaLt2xs5a5snu9CBA_4esQ_+t0Wb6CX4M5OqM5AOA@mail.gmail.com>
+ <aZx_8_rJNPF2EYgn@slm.duckdns.org>
+ <20260224-hetzen-zeitnah-a3e1e08367cc@brauner>
+ <CAOQ4uxhSL3ZRzNjM6AM_poxeTsYgWb5_f3tO6_4ketg8sFSOBw@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 5/5] mm: memcg: separate slab stat accounting from objcg
- charge cache
-To: Johannes Weiner <hannes@cmpxchg.org>,
- Andrew Morton <akpm@linux-foundation.org>
-Cc: Hao Li <hao.li@linux.dev>, Michal Hocko <mhocko@kernel.org>,
- Roman Gushchin <roman.gushchin@linux.dev>,
- Shakeel Butt <shakeel.butt@linux.dev>, Vlastimil Babka <vbabka@suse.cz>,
- Harry Yoo <harry.yoo@oracle.com>, linux-mm@kvack.org,
- cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20260302195305.620713-1-hannes@cmpxchg.org>
- <20260302195305.620713-6-hannes@cmpxchg.org>
-From: "Vlastimil Babka (SUSE)" <vbabka@kernel.org>
-Content-Language: en-US
-In-Reply-To: <20260302195305.620713-6-hannes@cmpxchg.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Rspamd-Queue-Id: 149B120001D
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAOQ4uxhSL3ZRzNjM6AM_poxeTsYgWb5_f3tO6_4ketg8sFSOBw@mail.gmail.com>
+X-Rspamd-Queue-Id: 0C4B9200745
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-2.16 / 15.00];
+X-Spamd-Result: default: False [2.34 / 15.00];
+	MID_END_EQ_FROM_USER_PART(4.00)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
+	MID_RHS_NOT_FQDN(0.50)[];
 	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-14599-lists,cgroups=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-14600-lists,cgroups=lfdr.de];
+	FROM_HAS_DN(0.00)[];
 	RCVD_COUNT_THREE(0.00)[4];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	DKIM_TRACE(0.00)[kernel.org:+];
+	FREEMAIL_TO(0.00)[gmail.com];
 	MIME_TRACE(0.00)[0:+];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	TO_DN_SOME(0.00)[];
-	NEURAL_HAM(-0.00)[-1.000];
+	DKIM_TRACE(0.00)[kernel.org:+];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	MISSING_XM_UA(0.00)[];
+	NEURAL_HAM(-0.00)[-0.998];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[vbabka@kernel.org,cgroups@vger.kernel.org];
-	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
-	MID_RHS_MATCH_FROM(0.00)[];
-	TAGGED_RCPT(0.00)[cgroups];
+	FROM_NEQ_ENVFROM(0.00)[brauner@kernel.org,cgroups@vger.kernel.org];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	RCPT_COUNT_SEVEN(0.00)[11];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo]
+	TAGGED_RCPT(0.00)[cgroups];
+	TO_DN_SOME(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo]
 X-Rspamd-Action: no action
 
-On 3/2/26 8:50 PM, Johannes Weiner wrote:
-> Cgroup slab metrics are cached per-cpu the same way as the sub-page
-> charge cache. However, the intertwined code to manage those dependent
-> caches right now is quite difficult to follow.
+On Tue, Mar 03, 2026 at 03:27:52PM +0100, Amir Goldstein wrote:
+> On Tue, Feb 24, 2026 at 12:03 PM Christian Brauner <brauner@kernel.org> wrote:
+> >
+> > On Mon, Feb 23, 2026 at 06:27:31AM -1000, Tejun Heo wrote:
+> > > (cc'ing Christian Brauner)
+> > >
+> > > On Sat, Feb 21, 2026 at 06:11:28PM +0200, Amir Goldstein wrote:
+> > > > On Sat, Feb 21, 2026 at 12:32 AM Tejun Heo <tj@kernel.org> wrote:
+> > > > >
+> > > > > Hello, Amir.
+> > > > >
+> > > > > On Fri, Feb 20, 2026 at 10:11:15PM +0200, Amir Goldstein wrote:
+> > > > > > > Yeah, that can be useful. For cgroupfs, there would probably need to be a
+> > > > > > > way to scope it so that it can be used on delegation boundaries too (which
+> > > > > > > we can require to coincide with cgroup NS boundaries).
+> > > > > >
+> > > > > > I have no idea what the above means.
+> > > > > > I could ask Gemini or you and I prefer the latter ;)
+> > > > >
+> > > > > Ah, you chose wrong. :)
+> > > > >
+> > > > > > What are delegation boundaries and NFS boundaries in this context?
+> > > > >
+> > > > > cgroup delegation is giving control of a subtree to someone else:
+> > > > >
+> > > > > https://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git/tree/Documentation/admin-guide/cgroup-v2.rst#n537
+> > > > >
+> > > > > There's an old way of doing it by changing perms on some files and new way
+> > > > > using cgroup namespace.
+> > > > >
+> > > > > > > Would it be possible to make FAN_MNT_ATTACH work for that?
+> > > > > >
+> > > > > > FAN_MNT_ATTACH is an event generated on a mntns object.
+> > > > > > If "cgroup NS boundaries" is referring to a mntns object and if
+> > > > > > this object is available in the context of cgroup create/destroy
+> > > > > > then it should be possible.
+> > > > >
+> > > > > Great, yes, cgroup namespace way should work then.
+> > > > >
+> > > > > > But FAN_MNT_ATTACH reports a mountid. Is there a mountid
+> > > > > > to report on cgroup create? Probably not?
+> > > > >
+> > > > > Sorry, I thought that was per-mount recursive file event monitoring.
+> > > > > FAN_MARK_MOUNT looks like the right thing if we want to allow monitoring
+> > > > > cgroup creations / destructions in a subtree without recursively watching
+> > > > > each cgroup.
+> > > >
+> > > > The problem sounds very similar to subtree monitoring for mkdir/rmdir on
+> > > > a filesystem, which is a problem that we have not yet solved.
+> > > >
+> > > > The problem with FAN_MARK_MOUNT is that it does not support the
+> > > > events CREATE/DELETE, because those events are currently
+> > >
+> > > Ah, bummer.
+> > >
+> > > > monitored in context where the mount is not available and anyway
+> > > > what users want to get notified on a deleted file/dir in a subtree
+> > > > regardless of the mount through which the create/delete was done.
+> > > >
+> > > > Since commit 58f5fbeb367ff ("fanotify: support watching filesystems
+> > > > and mounts inside userns") and fnaotify groups can be associated
+> > > > with a userns.
+> > > >
+> > > > I was thinking that we can have a model where events are delivered
+> > > > to a listener based on whether or not the uid/gid of the object are
+> > > > mappable to the userns of the group.
+> > >
+> > > Given how different NSes can be used independently of each other, it'd
+> > > probably be cleaner if it doesn't have to depend on another NS.
+> > >
+> > > > In a filesystem, this criteria cannot guarantee the subtree isolation.
+> > > > I imagine that for delegated cgroups this criteria could match what
+> > > > you need, but I am basing this on pure speculation.
+> > >
+> > > There's a lot of flexibility in the mechanism, so it's difficult to tell.
+> > > e.g. There's nothing preventing somebody from creating two separate subtrees
+> > > delegated to the same user.
+> >
+> > Delegation is based on inode ownership I'm not sure how well this will
+> > fit into the fanotify model. Maybe the group logic for userns that
+> > fanotify added works. I'm not super sure.
+> >
+> > > Christian was mentioning allowing separate super for different cgroup mounts
+> > > in another thread. cc'ing him for context.
+> >
+> > If cgroupfs changes to tmpfs semantics where each mount gives you a new
+> > superblock then it's possible to give each container its own superblock.
+> > That in turn would make it possible to place fanotify watches on the
+> > superblock itself. I think you'd roughly need something like the
+> > following permission model:
+> >
 > 
-> Specifically, cached slab stat updates occur in consume() if there was
-> enough charge cache to satisfy the new object. If that fails, whole
-> pages are reserved, and slab stats are updated when the remainder of
-> those pages, after subtracting the size of the new slab object, are
-> put into the charge cache. This already juggles a delicate mix of the
-> object size, the page charge size, and the remainder to put into the
-> byte cache. Doing slab accounting in this path as well is fragile, and
-> has recently caused a bug where the input parameters between the two
-> caches were mixed up.
+> It's hard for me to estimate the effort of changing to multi sb model,
+> but judging by the length of the email I trimmed below, it does not
+> sound trivial...
 > 
-> Refactor the consume() and refill() paths into unlocked and locked
-> variants that only do charge caching. Then let the slab path manage
-> its own lock section and open-code charging and accounting.
+> How do you guys feel about something like this patch which associates
+> an owner userns to every cgroup?
 > 
-> This makes the slab stat cache subordinate to the charge cache:
-> __refill_obj_stock() is called first to prepare it;
-> __account_obj_stock() follows to hitch a ride.
+> I have this POC branch from a long time ago [1] to filter all events
+> on sb by in_userns() criteria.  The semantics for real filesystems
+> were a bit difficult, but perhaps this model can work well for these
+> pseudo singleton fs.
 > 
-> This results in a minor behavioral change: previously, a mismatching
-> percpu stock would always be drained for the purpose of setting up
-> slab account caching, even if there was no byte remainder to put into
-> the charge cache. Now, the stock is left alone, and slab accounting
-> takes the uncached path if there is a mismatch. This is exceedingly
-> rare, and it was probably never worth draining the whole stock just to
-> cache the slab stat update.
+> I am trying to work on a model that could be useful for both cgroupfs
+> and nsfs:
 > 
-> Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
+> If user is capable in userns, user will be able to set an sb
+> watch for all events (say DELETE_SELF) on the sb, for objects
+> whose owner_userns is in_userns() of the fanotify listener.
+> 
+> This will enable watching for torn down cgroups and namepsaces
+> which are visible to said user via delegated cgroups mount
+> or via listns().
+> 
+> I would like to allow calling fsnotify_obj_remove() hook with
+> encoded object fid (e.g. nsfs_file_handle) instead of the vfs inode,
+> so that cgroupfs/nsfs could report dying objects without needing
+> to associate a vfs inode with them.
+> 
+> WDYT? Is this an interesting direction to persure?
 
-Acked-by: Vlastimil Babka (SUSE) <vbabka@kernel.org>
-
+I'd need to see the patches. I barely remember the details tbh.
+It doesn't sound crazy though.
 
