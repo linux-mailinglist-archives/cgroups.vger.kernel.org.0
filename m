@@ -1,50 +1,50 @@
-Return-Path: <cgroups+bounces-14657-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-14658-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id oBgdLzhxqWnH7AAAu9opvQ
-	(envelope-from <cgroups+bounces-14657-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Thu, 05 Mar 2026 13:04:08 +0100
+	id ULcTEt1xqWnH7AAAu9opvQ
+	(envelope-from <cgroups+bounces-14658-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Thu, 05 Mar 2026 13:06:53 +0100
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id C69BE2112BE
-	for <lists+cgroups@lfdr.de>; Thu, 05 Mar 2026 13:04:02 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id BD171211457
+	for <lists+cgroups@lfdr.de>; Thu, 05 Mar 2026 13:06:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id 37EA3306B698
-	for <lists+cgroups@lfdr.de>; Thu,  5 Mar 2026 11:58:30 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id DE2113110C8E
+	for <lists+cgroups@lfdr.de>; Thu,  5 Mar 2026 11:58:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8CF5C39A7F3;
-	Thu,  5 Mar 2026 11:57:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 075CA399030;
+	Thu,  5 Mar 2026 11:58:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="oWqeSw21"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="nqgE8YuM"
 X-Original-To: cgroups@vger.kernel.org
-Received: from out-173.mta0.migadu.com (out-173.mta0.migadu.com [91.218.175.173])
+Received: from out-180.mta0.migadu.com (out-180.mta0.migadu.com [91.218.175.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2CAEB38424E
-	for <cgroups@vger.kernel.org>; Thu,  5 Mar 2026 11:57:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E34139B49C
+	for <cgroups@vger.kernel.org>; Thu,  5 Mar 2026 11:58:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772711871; cv=none; b=S85owzYEDQ/ZdY3tOqgvDoc6shn02YIK/C7VI1lEY6rZslyXIMLQDkkLpcXCZjK1Z2d1PXcyHkM8nWBWIf54DBdtbQD0ncTsDkpsfkTky8n7HrOaWkdyDRquhwVOwisTdCxWx//bb2QdgL3VbhVnQJYG+5aExSdm2zLKvvffbMI=
+	t=1772711883; cv=none; b=iZ73l5iyvawYVKOT83bKe3nXmR2ssPH6JkLj9qDWkeFNFI8Q646QbPqQQJyseNDzQ6HrixxyV1Rte/PRBIO+Z2/R5+gLsQ4THuhOXXp5fvCimNImhKQqboo/YN0MOtuORaZtfRK2rqpsawiGcb9UitDOoc2FnraigNt9G5E7ScY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772711871; c=relaxed/simple;
-	bh=6p1rTQSn/szsvXfKM1Mr1/YwGhM74koqcntWzctOIok=;
+	s=arc-20240116; t=1772711883; c=relaxed/simple;
+	bh=g3B0/y0HnBKBMdib3yq+p45Vtq4UjGZbi5z7OwUWoXU=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Lk6Z/+5109Io21+kWdzLV8az47Z9vGj3fZUlNYiMyKPvTfcfUZN++UdBubj8TQ0oB0/oLxt9PvnqttYiK6FROKQPQopVsYkWbUea7vyIAMwJj55vigWOj7E/BlBiKAYpHRpeDh3AM6BCtG19dYC34StotFQeIA5IM9ZpKt0vcQI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=oWqeSw21; arc=none smtp.client-ip=91.218.175.173
+	 MIME-Version; b=tNGbkh4zJXrvjxFbmSrLg1Bm7p6OUeA2DWjH3zAGBnoGqAc90OLKd3PCpbWo/siygm3eS6G3fFhrCI4V3X/blrQJeDzC+32CD0bvF6/1yiGcza3dHN9vyZM8XOmSp6LRWFkCQa4OmEFi+3AqIiK5j0v7TqAvWnN0NHYJ7u1Dc2s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=nqgE8YuM; arc=none smtp.client-ip=91.218.175.180
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1772711868;
+	t=1772711880;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=9FlmauyfzMJ30WpiQCMliVOAMipux2gAWQ7/AZwbz08=;
-	b=oWqeSw21EVIisf+Wj+u9dXY6H5MlWHP/u/aRWPVeg4N/9LvC8U7YDcY9wxveLdQ3v0BfUa
-	E8sqMktWT4x/T8OfAXV48BSFpMOvHwZPJVZm55nALNnWmslbD3f9FJ4zhCQyiZ4svU0plW
-	AxWzHDpEn9gcI+cA28kiHMl7w8XkEAU=
+	bh=f+e+MrbxStkCyw/Uqa2jpcsS2d2D2I5PIhTEX7t4Mug=;
+	b=nqgE8YuMYpDeMSH70KNVeXPS0W/PRINNke44gBx7AlwJ4YmwlZE50vf2Y4Jo1VuXMWZp62
+	KPKir4dzqgTTlpd9/Attzl0mRO9jxg8AH2zpwt1vEZFsP+YMJW7CyX4oq3KY/eLsrnIwsf
+	T0X1I8DTJfskCOaiY4Ntpo66q467K2k=
 From: Qi Zheng <qi.zheng@linux.dev>
 To: hannes@cmpxchg.org,
 	hughd@google.com,
@@ -75,9 +75,9 @@ Cc: linux-mm@kvack.org,
 	cgroups@vger.kernel.org,
 	Muchun Song <songmuchun@bytedance.com>,
 	Qi Zheng <zhengqi.arch@bytedance.com>
-Subject: [PATCH v6 21/33] mm: swap: prevent lruvec release in lru_gen_clear_refs()
-Date: Thu,  5 Mar 2026 19:52:39 +0800
-Message-ID: <986cd26227191a48a7c34a2a15812d361f4ebd53.1772711148.git.zhengqi.arch@bytedance.com>
+Subject: [PATCH v6 22/33] mm: workingset: prevent lruvec release in workingset_activation()
+Date: Thu,  5 Mar 2026 19:52:40 +0800
+Message-ID: <c6130476affbba0a7d309a887c3df11e0167990b.1772711148.git.zhengqi.arch@bytedance.com>
 In-Reply-To: <cover.1772711148.git.zhengqi.arch@bytedance.com>
 References: <cover.1772711148.git.zhengqi.arch@bytedance.com>
 Precedence: bulk
@@ -88,14 +88,14 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
-X-Rspamd-Queue-Id: C69BE2112BE
+X-Rspamd-Queue-Id: BD171211457
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-1.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	R_MISSING_CHARSET(0.50)[];
 	DMARC_POLICY_ALLOW(-0.50)[linux.dev,none];
 	R_DKIM_ALLOW(-0.20)[linux.dev:s=key1];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
@@ -103,7 +103,7 @@ X-Spamd-Result: default: False [-1.66 / 15.00];
 	RCVD_TLS_LAST(0.00)[];
 	RCPT_COUNT_TWELVE(0.00)[29];
 	RCVD_COUNT_THREE(0.00)[3];
-	TAGGED_FROM(0.00)[bounces-14657-lists,cgroups=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-14658-lists,cgroups=lfdr.de];
 	MIME_TRACE(0.00)[0:+];
 	FREEMAIL_TO(0.00)[cmpxchg.org,google.com,suse.com,linux.dev,kernel.org,oracle.com,nvidia.com,huaweicloud.com,linux-foundation.org,linux.microsoft.com,redhat.com,gmail.com];
 	MISSING_XM_UA(0.00)[];
@@ -113,10 +113,10 @@ X-Spamd-Result: default: False [-1.66 / 15.00];
 	FROM_HAS_DN(0.00)[];
 	DKIM_TRACE(0.00)[linux.dev:+];
 	NEURAL_HAM(-0.00)[-0.999];
-	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
 	TAGGED_RCPT(0.00)[cgroups];
 	TO_DN_SOME(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[linux.dev:dkim,linux.dev:email,cmpxchg.org:email,bytedance.com:mid,bytedance.com:email,sin.lore.kernel.org:rdns,sin.lore.kernel.org:helo,oracle.com:email]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[oracle.com:email,linux.dev:dkim,linux.dev:email,bytedance.com:mid,bytedance.com:email,tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo,cmpxchg.org:email]
 X-Rspamd-Action: no action
 
 From: Muchun Song <songmuchun@bytedance.com>
@@ -127,7 +127,7 @@ released without the rcu read lock or a reference to its memory
 cgroup.
 
 In the current patch, the rcu read lock is employed to safeguard
-against the release of the lruvec in lru_gen_clear_refs().
+against the release of the lruvec in workingset_activation().
 
 This serves as a preparatory measure for the reparenting of the
 LRU pages.
@@ -138,37 +138,26 @@ Reviewed-by: Harry Yoo <harry.yoo@oracle.com>
 Acked-by: Johannes Weiner <hannes@cmpxchg.org>
 Acked-by: Shakeel Butt <shakeel.butt@linux.dev>
 ---
- mm/swap.c | 8 +++++---
- 1 file changed, 5 insertions(+), 3 deletions(-)
+ mm/workingset.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-diff --git a/mm/swap.c b/mm/swap.c
-index 245ba159e01d7..cb1148a92d8ec 100644
---- a/mm/swap.c
-+++ b/mm/swap.c
-@@ -412,18 +412,20 @@ static void lru_gen_inc_refs(struct folio *folio)
- 
- static bool lru_gen_clear_refs(struct folio *folio)
- {
--	struct lru_gen_folio *lrugen;
- 	int gen = folio_lru_gen(folio);
- 	int type = folio_is_file_lru(folio);
-+	unsigned long seq;
- 
- 	if (gen < 0)
- 		return true;
- 
- 	set_mask_bits(&folio->flags.f, LRU_REFS_FLAGS | BIT(PG_workingset), 0);
- 
--	lrugen = &folio_lruvec(folio)->lrugen;
-+	rcu_read_lock();
-+	seq = READ_ONCE(folio_lruvec(folio)->lrugen.min_seq[type]);
-+	rcu_read_unlock();
- 	/* whether can do without shuffling under the LRU lock */
--	return gen == lru_gen_from_seq(READ_ONCE(lrugen->min_seq[type]));
-+	return gen == lru_gen_from_seq(seq);
+diff --git a/mm/workingset.c b/mm/workingset.c
+index 2de2a355f0f86..95d722a452e1c 100644
+--- a/mm/workingset.c
++++ b/mm/workingset.c
+@@ -603,8 +603,11 @@ void workingset_activation(struct folio *folio)
+ 	 * Filter non-memcg pages here, e.g. unmap can call
+ 	 * mark_page_accessed() on VDSO pages.
+ 	 */
+-	if (mem_cgroup_disabled() || folio_memcg_charged(folio))
++	if (mem_cgroup_disabled() || folio_memcg_charged(folio)) {
++		rcu_read_lock();
+ 		workingset_age_nonresident(folio_lruvec(folio), folio_nr_pages(folio));
++		rcu_read_unlock();
++	}
  }
  
- #else /* !CONFIG_LRU_GEN */
+ /*
 -- 
 2.20.1
 
