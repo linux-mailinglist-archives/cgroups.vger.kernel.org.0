@@ -1,296 +1,390 @@
-Return-Path: <cgroups+bounces-14677-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-14678-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id oOkQGm7fqWm4GgEAu9opvQ
-	(envelope-from <cgroups+bounces-14677-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Thu, 05 Mar 2026 20:54:22 +0100
+	id mBAAFl/jqWnuHAEAu9opvQ
+	(envelope-from <cgroups+bounces-14678-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Thu, 05 Mar 2026 21:11:11 +0100
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id C0B97217D23
-	for <lists+cgroups@lfdr.de>; Thu, 05 Mar 2026 20:54:21 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id C96BA218070
+	for <lists+cgroups@lfdr.de>; Thu, 05 Mar 2026 21:11:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id B946830440B2
-	for <lists+cgroups@lfdr.de>; Thu,  5 Mar 2026 19:53:51 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 73EE430764B4
+	for <lists+cgroups@lfdr.de>; Thu,  5 Mar 2026 20:04:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EFDC33E5ED8;
-	Thu,  5 Mar 2026 19:53:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BF47D3EFD00;
+	Thu,  5 Mar 2026 20:03:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="ImAxkDOn"
+	dkim=pass (2048-bit key) header.d=gmx.de header.i=natalie.vock@gmx.de header.b="DLi5r1xp"
 X-Original-To: cgroups@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3965A3C3BF9
-	for <cgroups@vger.kernel.org>; Thu,  5 Mar 2026 19:53:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4CE032DAFAF
+	for <cgroups@vger.kernel.org>; Thu,  5 Mar 2026 20:03:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.19
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772740430; cv=none; b=S1V+qTypVquTyDfJ7TJv5aIRUt5ejCrflARf89K2qV7MexDSWXWxsndkIJ0rI+VgMxVWx/ZOV6SL7rhDuWbTY6GfV4SlBOunwh2UZKhuMlOqDZiYSPMnADxHAX4hAZoFbkOS63/UrKQxhFhBpaUUrJu6GqCHFyPkdD9ozSugKZs=
+	t=1772740984; cv=none; b=mseT9OHPYCgBXawEsBUIjQVaLFVDuPvIKNS7VOtZVYVvPq3FOPQ48GDHUoNjlAJ6s+vzfNzlyZzqy934IYTb5FtRfIzeUkVwYx4QUjbkGYGmN6DT6TuzozBBEYCPdh0oufgqCiTyRWtjF4h2F/jFt7P9HaLkkTUvYCIvv492w1E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772740430; c=relaxed/simple;
-	bh=U0xcJjrpeWeCz6JcshJ4kwihw/IrwhIHDkNVlpUMSAw=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=trBA5YilO+3bYpeS/M5WofFQBR9eO39QVRqI/GyGq1nC8YOhfmT6B7eeyDFLTcISKPt/99v5tTSqHPvYmVoiv0rDd08A+XolXcp+yzgnfqiVPnZll59IZKV8D6laWYwSAlhzQRfheE6DxwQUwz3388CDhdDcm+1/P+BC1MwspDY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=ImAxkDOn; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1772740428;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=cMUMu0KtXPOEGnfV1oHqnwxPip1bDhNZtmQHZ2TGiRY=;
-	b=ImAxkDOn7anwTtaX4fKQ18f+c6q5bBzyZJESLXB1Mntdww/agFQ0cOWD05L3uzzNRcfEM/
-	ItBQ0T9ODPcibP2AGAqB6Dk8aj9zHortqYiqLgxZure/WsAVMHQohRtwfIC6moMwgqPGOS
-	+yGgFU9+eQjv+SfRa212cPmbDWDKvc4=
-Received: from mx-prod-mc-03.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-554-tQem2QxvN3u35khqi6cWbw-1; Thu,
- 05 Mar 2026 14:53:46 -0500
-X-MC-Unique: tQem2QxvN3u35khqi6cWbw-1
-X-Mimecast-MFC-AGG-ID: tQem2QxvN3u35khqi6cWbw_1772740425
-Received: from mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.12])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mx-prod-mc-03.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id CF32A195605A;
-	Thu,  5 Mar 2026 19:53:44 +0000 (UTC)
-Received: from llong-thinkpadp16vgen1.westford.csb (unknown [10.22.88.171])
-	by mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id 728281958DC5;
-	Thu,  5 Mar 2026 19:53:42 +0000 (UTC)
-From: Waiman Long <longman@redhat.com>
-To: Chen Ridong <chenridong@huawei.com>,
-	Tejun Heo <tj@kernel.org>,
-	Johannes Weiner <hannes@cmpxchg.org>,
-	=?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>,
-	Frederic Weisbecker <frederic@kernel.org>
-Cc: cgroups@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Jon Hunter <jonathanh@nvidia.com>,
-	Waiman Long <longman@redhat.com>,
-	Chen Ridong <chenridong@huaweicloud.com>
-Subject: [PATCH v2] cgroup/cpuset: Call rebuild_sched_domains() directly in hotplug
-Date: Thu,  5 Mar 2026 14:53:29 -0500
-Message-ID: <20260305195329.282556-1-longman@redhat.com>
+	s=arc-20240116; t=1772740984; c=relaxed/simple;
+	bh=zVS9TmJQUKnbuEEyVwJYs3JaP7TVKRDhkrs5/x++xMk=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=gwojzPPrCEqM7SFAOZauo0JuJKmzT8+5O7UxlsNzQJ9IKx5YtL9nKhB96gvGwSES9GE1/oZR0Xuit2waEq+w3OkZNnH+x4XQxYj3302PNePVV+qk0EZe8NJKqKIv1sasgbT6uBBrwa4NcRJI0PBkGbrCrTc6giXqEtihmrh7LNE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de; spf=pass smtp.mailfrom=gmx.de; dkim=pass (2048-bit key) header.d=gmx.de header.i=natalie.vock@gmx.de header.b=DLi5r1xp; arc=none smtp.client-ip=212.227.15.19
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.de;
+	s=s31663417; t=1772740971; x=1773345771; i=natalie.vock@gmx.de;
+	bh=phDzhtlQizgMyOC1yfYUp7PKzd+JtfBxgdJqOaZTptU=;
+	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
+	 References:From:In-Reply-To:Content-Type:
+	 Content-Transfer-Encoding:cc:content-transfer-encoding:
+	 content-type:date:from:message-id:mime-version:reply-to:subject:
+	 to;
+	b=DLi5r1xpIzSSSbdbiiFEZAh/vxLXfsqfPAekyNDHFq5FhaxIPbahClQk8E3rwA5y
+	 fQOXCx8rVcLpAfckVZt2Z6wwEsKIch5bgMZuLjMqkHeacgkoa8Jr/bxFOI+eqeKXV
+	 P9mAEKZ26yJyzaPLfWZIgYbiq7Cv2BZ8CzOCBQ3/MR7IrqO9/D51i5tfXYPqNybAS
+	 9JB7GKRs7gPwPWG3xP/lDbwfxAvFokFRByYNA08rAKVey9QykdM6P82c150alXtTr
+	 2SVtEqniG32+aGqAVxm7TKR/b8rMLhBJ+OsLhW3IUqs3nZgfvWzAnHtXtsOTzcmbU
+	 IQAvAEhxmwaVAEOBTA==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from client.hidden.invalid by mail.gmx.net (mrgmx005
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1M89Gj-1w2vsG2OW3-00GoLV; Thu, 05
+ Mar 2026 21:02:51 +0100
+Message-ID: <893f4113-bbc9-4947-8bb2-a4d02d9714fb@gmx.de>
+Date: Thu, 5 Mar 2026 21:02:45 +0100
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.0 on 10.30.177.12
-X-Rspamd-Queue-Id: C0B97217D23
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v5 2/6] cgroup,cgroup/dmem: Add
+ (dmem_)cgroup_common_ancestor helper
+To: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+ Maarten Lankhorst <dev@lankhorst.se>, Maxime Ripard <mripard@kernel.org>,
+ Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>,
+ =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
+ Christian Koenig <christian.koenig@amd.com>, Huang Rui <ray.huang@amd.com>,
+ Matthew Auld <matthew.auld@intel.com>,
+ Matthew Brost <matthew.brost@intel.com>,
+ Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>,
+ Simona Vetter <simona@ffwll.ch>, Tvrtko Ursulin <tursulin@ursulin.net>
+Cc: cgroups@vger.kernel.org, dri-devel@lists.freedesktop.org
+References: <20260302-dmemcg-aggressive-protect-v5-0-ffd3a2602309@gmx.de>
+ <20260302-dmemcg-aggressive-protect-v5-2-ffd3a2602309@gmx.de>
+ <c87a99bc-5481-444e-8841-b09d20016cfd@linux.intel.com>
+Content-Language: en-US
+From: Natalie Vock <natalie.vock@gmx.de>
+In-Reply-To: <c87a99bc-5481-444e-8841-b09d20016cfd@linux.intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:inoGMv/YVdTcuTz04Iy5wDEN4mEJYw7Qk585yWnJHR+efwwrzJB
+ 1rZM/EwVzWdlj5/KxEW4jVXHzVQhy+FYeSHzpmBS0egYXkUELSpawTPbp3BP9MTkgrE/HWI
+ XKBMHRmPaVRH2Da5TMCuVa0u4HW3S4YABwRm2aegdS5wJkGQBieBnq/CwwuvqLP50utSqgJ
+ opxi448C7k1DI4TBBqMgg==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:DBqRdHiFvyw=;tsF+IXvhK92PczdTDWcQMwqPA1p
+ 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
+X-Rspamd-Queue-Id: C96BA218070
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-0.66 / 15.00];
+X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_CONTAINS_FROM(1.00)[];
-	DMARC_POLICY_ALLOW(-0.50)[redhat.com,quarantine];
-	R_MISSING_CHARSET(0.50)[];
-	R_DKIM_ALLOW(-0.20)[redhat.com:s=mimecast20190719];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	DMARC_POLICY_ALLOW(-0.50)[gmx.de,quarantine];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
+	R_DKIM_ALLOW(-0.20)[gmx.de:s=s31663417];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-14677-lists,cgroups=lfdr.de];
-	FROM_HAS_DN(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[6];
+	RCVD_COUNT_THREE(0.00)[4];
+	FREEMAIL_TO(0.00)[linux.intel.com,lankhorst.se,kernel.org,cmpxchg.org,suse.com,amd.com,intel.com,suse.de,gmail.com,ffwll.ch,ursulin.net];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[longman@redhat.com,cgroups@vger.kernel.org];
+	TAGGED_FROM(0.00)[bounces-14678-lists,cgroups=lfdr.de];
+	RCPT_COUNT_TWELVE(0.00)[16];
 	MIME_TRACE(0.00)[0:+];
-	DKIM_TRACE(0.00)[redhat.com:+];
-	MISSING_XM_UA(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	RCPT_COUNT_SEVEN(0.00)[10];
-	NEURAL_HAM(-0.00)[-1.000];
+	FROM_HAS_DN(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	NEURAL_HAM(-0.00)[-0.999];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[natalie.vock@gmx.de,cgroups@vger.kernel.org];
+	DKIM_TRACE(0.00)[gmx.de:+];
+	MID_RHS_MATCH_FROM(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[cgroups];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	TO_DN_SOME(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,huaweicloud.com:email]
+	FREEMAIL_FROM(0.00)[gmx.de];
+	TO_DN_SOME(0.00)[]
 X-Rspamd-Action: no action
 
-Besides deferring the call to housekeeping_update(), commit 6df415aa46ec
-("cgroup/cpuset: Defer housekeeping_update() calls from CPU hotplug
-to workqueue") also defers the rebuild_sched_domains() call to
-the workqueue. So a new offline CPU may still be in a sched domain
-or new online CPU not showing up in the sched domains for a short
-transition period. That could be a problem in some corner cases and
-can be the cause of a reported test failure[1]. Fix it by calling
-rebuild_sched_domains_cpuslocked() directly in hotplug as before. If
-isolated partition invalidation or recreation is being done, the
-housekeeping_update() call to update the housekeeping cpumasks will
-still be deferred to a workqueue.
+On 3/2/26 15:38, Maarten Lankhorst wrote:
+> Hey,
+>=20
+> This should probably have a Co-developed-by: Tejun Heo <tj@kernel.org>
 
-In commit 3bfe47967191 ("cgroup/cpuset: Move
-housekeeping_update()/rebuild_sched_domains() together"),
-housekeeping_update() is called before rebuild_sched_domains() because
-it needs to access the HK_TYPE_DOMAIN housekeeping cpumask. That is now
-changed to use the static HK_TYPE_DOMAIN_BOOT cpumask as HK_TYPE_DOMAIN
-cpumask is now changeable at run time.  As a result, we can move the
-rebuild_sched_domains() call before housekeeping_update() with
-the slight advantage that it will be done in the same cpus_read_lock
-critical section without the possibility of interference by a concurrent
-cpu hot add/remove operation.
+Oh, that's a good point, sorry!
 
-As it doesn't make sense to acquire cpuset_mutex/cpuset_top_mutex after
-calling housekeeping_update() and immediately release them again, move
-the cpuset_full_unlock() operation inside update_hk_sched_domains()
-and rename it to cpuset_update_sd_hk_unlock() to signify that it will
-release the full set of locks.
+Although, I think I also need to add a S-o-b tag, then, don't I?
 
-[1] https://lore.kernel.org/lkml/1a89aceb-48db-4edd-a730-b445e41221fe@nvidia.com
+Tejun, just to confirm, would you be fine with that? Wouldn't want to=20
+claim people certify something without talking to them first :P
 
-Fixes: 6df415aa46ec ("cgroup/cpuset: Defer housekeeping_update() calls from CPU hotplug to workqueue")
-Tested-by: Jon Hunter <jonathanh@nvidia.com>
-Reviewed-by: Chen Ridong <chenridong@huaweicloud.com>
-Signed-off-by: Waiman Long <longman@redhat.com>
----
- kernel/cgroup/cpuset.c | 59 ++++++++++++++++++++++--------------------
- 1 file changed, 31 insertions(+), 28 deletions(-)
+>=20
+> I need to take a closer look at patch 4 and 6, to add my r-b over the re=
+st.
+>=20
+> Den 2026-03-02 kl. 13:37, skrev Natalie Vock:
+>> This helps to find a common subtree of two resources, which is importan=
+t
+>> when determining whether it's helpful to evict one resource in favor of
+>> another.
+>>
+>> To facilitate this, add a common helper to find the ancestor of two
+>> cgroups using each cgroup's ancestor array.
+>>
+>> Signed-off-by: Natalie Vock <natalie.vock@gmx.de>
+>> ---
+>>   include/linux/cgroup.h      | 21 +++++++++++++++++++++
+>>   include/linux/cgroup_dmem.h |  9 +++++++++
+>>   kernel/cgroup/dmem.c        | 43 ++++++++++++++++++++++++++++++++++++=
+++++---
+>>   3 files changed, 70 insertions(+), 3 deletions(-)
+>>
+>> diff --git a/include/linux/cgroup.h b/include/linux/cgroup.h
+>> index bc892e3b37eea..560ae995e3a54 100644
+>> --- a/include/linux/cgroup.h
+>> +++ b/include/linux/cgroup.h
+>> @@ -561,6 +561,27 @@ static inline struct cgroup *cgroup_ancestor(struc=
+t cgroup *cgrp,
+>>   	return cgrp->ancestors[ancestor_level];
+>>   }
+>>  =20
+>> +/**
+>> + * cgroup_common_ancestor - find common ancestor of two cgroups
+>> + * @a: first cgroup to find common ancestor of
+>> + * @b: second cgroup to find common ancestor of
+>> + *
+>> + * Find the first cgroup that is an ancestor of both @a and @b, if it =
+exists
+>> + * and return a pointer to it. If such a cgroup doesn't exist, return =
+NULL.
+>> + *
+>> + * This function is safe to call as long as both @a and @b are accessi=
+ble.
+>> + */
+>> +static inline struct cgroup *cgroup_common_ancestor(struct cgroup *a,
+>> +						    struct cgroup *b)
+>> +{
+>> +	int level;
+>> +
+>> +	for (level =3D min(a->level, b->level); level >=3D 0; level--)
+>> +		if (a->ancestors[level] =3D=3D b->ancestors[level])
+>> +			return a->ancestors[level];
+>> +	return NULL;
+>> +}
+>> +
+>>   /**
+>>    * task_under_cgroup_hierarchy - test task's membership of cgroup anc=
+estry
+>>    * @task: the task to be tested
+>> diff --git a/include/linux/cgroup_dmem.h b/include/linux/cgroup_dmem.h
+>> index 1a88cd0c9eb00..444b84f4c253a 100644
+>> --- a/include/linux/cgroup_dmem.h
+>> +++ b/include/linux/cgroup_dmem.h
+>> @@ -28,6 +28,8 @@ bool dmem_cgroup_below_min(struct dmem_cgroup_pool_st=
+ate *root,
+>>   			   struct dmem_cgroup_pool_state *test);
+>>   bool dmem_cgroup_below_low(struct dmem_cgroup_pool_state *root,
+>>   			   struct dmem_cgroup_pool_state *test);
+>> +struct dmem_cgroup_pool_state *dmem_cgroup_common_ancestor(struct dmem=
+_cgroup_pool_state *a,
+>> +							   struct dmem_cgroup_pool_state *b);
+>>  =20
+>>   void dmem_cgroup_pool_state_put(struct dmem_cgroup_pool_state *pool);
+>>   #else
+>> @@ -75,6 +77,13 @@ static inline bool dmem_cgroup_below_low(struct dmem=
+_cgroup_pool_state *root,
+>>   	return false;
+>>   }
+>>  =20
+>> +static inline
+>> +struct dmem_cgroup_pool_state *dmem_cgroup_common_ancestor(struct dmem=
+_cgroup_pool_state *a,
+>> +							   struct dmem_cgroup_pool_state *b)
+>> +{
+>> +	return NULL;
+>> +}
+>> +
+>>   static inline void dmem_cgroup_pool_state_put(struct dmem_cgroup_pool=
+_state *pool)
+>>   { }
+>>  =20
+>> diff --git a/kernel/cgroup/dmem.c b/kernel/cgroup/dmem.c
+>> index 28227405f7cfe..a3ba865f4c68f 100644
+>> --- a/kernel/cgroup/dmem.c
+>> +++ b/kernel/cgroup/dmem.c
+>> @@ -569,11 +569,10 @@ void dmem_cgroup_pool_state_put(struct dmem_cgrou=
+p_pool_state *pool)
+>>   EXPORT_SYMBOL_GPL(dmem_cgroup_pool_state_put);
+>>  =20
+>>   static struct dmem_cgroup_pool_state *
+>> -get_cg_pool_unlocked(struct dmemcg_state *cg, struct dmem_cgroup_regio=
+n *region)
+>> +find_cg_pool_unlocked(struct dmemcg_state *cg, struct dmem_cgroup_regi=
+on *region)
+>>   {
+>> -	struct dmem_cgroup_pool_state *pool, *allocpool =3D NULL;
+>> +	struct dmem_cgroup_pool_state *pool;
+>>  =20
+>> -	/* fastpath lookup? */
+>>   	rcu_read_lock();
+>>   	pool =3D find_cg_pool_locked(cg, region);
+>>   	if (pool && !READ_ONCE(pool->inited))
+>> @@ -582,6 +581,17 @@ get_cg_pool_unlocked(struct dmemcg_state *cg, stru=
+ct dmem_cgroup_region *region)
+>>   		pool =3D NULL;
+>>   	rcu_read_unlock();
+>>  =20
+>> +	return pool;
+>> +}
+>> +
+>> +static struct dmem_cgroup_pool_state *
+>> +get_cg_pool_unlocked(struct dmemcg_state *cg, struct dmem_cgroup_regio=
+n *region)
+>> +{
+>> +	struct dmem_cgroup_pool_state *pool, *allocpool =3D NULL;
+>> +
+>> +	/* fastpath lookup? */
+>> +	pool =3D find_cg_pool_unlocked(cg, region);
+>> +
+>>   	while (!pool) {
+>>   		spin_lock(&dmemcg_lock);
+>>   		if (!region->unregistered)
+>> @@ -756,6 +766,33 @@ bool dmem_cgroup_below_low(struct dmem_cgroup_pool=
+_state *root,
+>>   }
+>>   EXPORT_SYMBOL_GPL(dmem_cgroup_below_low);
+>>  =20
+>> +/**
+>> + * dmem_cgroup_common_ancestor(): Find the first common ancestor of tw=
+o pools.
+>> + * @a: First pool to find the common ancestor of.
+>> + * @b: First pool to find the common ancestor of.
+>> + *
+>> + * Return: The first pool that is a parent of both @a and @b, or NULL =
+if either @a or @b are NULL,
+>> + * or if such a pool does not exist.
+>> + */
+>> +struct dmem_cgroup_pool_state *dmem_cgroup_common_ancestor(struct dmem=
+_cgroup_pool_state *a,
+>> +							   struct dmem_cgroup_pool_state *b)
+>> +{
+>> +	struct cgroup *ancestor_cgroup;
+>> +	struct cgroup_subsys_state *ancestor_css;
+>> +
+>> +	if (!a || !b)
+>> +		return NULL;
+>> +
+>> +	ancestor_cgroup =3D cgroup_common_ancestor(a->cs->css.cgroup, b->cs->=
+css.cgroup);
+>> +	if (!ancestor_cgroup)
+>> +		return NULL;
+>> +
+>> +	ancestor_css =3D cgroup_e_css(ancestor_cgroup, &dmem_cgrp_subsys);
+>> +
+>> +	return find_cg_pool_unlocked(css_to_dmemcs(ancestor_css), a->region);
+>> +}
+>> +EXPORT_SYMBOL_GPL(dmem_cgroup_common_ancestor);
+>  From the naming, I would not expect a reference to be taken to the comm=
+on ancestor, especially because the reference through a and b would both b=
+e able keep the ancestor alive. Otherwise it would not be an ancestor. Ren=
+ame to dmem_cgroup_get_common_ancestor perhaps? Same for the find_, perhap=
+s rename to lookup_ or use the unmodified get_cg_pool_unlocked version, be=
+cause the common ancestor's pool_state definitely exists if either a or b =
+do.
 
-diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
-index 271bb99b1b9d..f7657b325490 100644
---- a/kernel/cgroup/cpuset.c
-+++ b/kernel/cgroup/cpuset.c
-@@ -881,7 +881,7 @@ static int generate_sched_domains(cpumask_var_t **domains,
- 	/*
- 	 * Cgroup v2 doesn't support domain attributes, just set all of them
- 	 * to SD_ATTR_INIT. Also non-isolating partition root CPUs are a
--	 * subset of HK_TYPE_DOMAIN housekeeping CPUs.
-+	 * subset of HK_TYPE_DOMAIN_BOOT housekeeping CPUs.
- 	 */
- 	for (i = 0; i < ndoms; i++) {
- 		/*
-@@ -890,7 +890,7 @@ static int generate_sched_domains(cpumask_var_t **domains,
- 		 */
- 		if (!csa || csa[i] == &top_cpuset)
- 			cpumask_and(doms[i], top_cpuset.effective_cpus,
--				    housekeeping_cpumask(HK_TYPE_DOMAIN));
-+				    housekeeping_cpumask(HK_TYPE_DOMAIN_BOOT));
- 		else
- 			cpumask_copy(doms[i], csa[i]->effective_cpus);
- 		if (dattr)
-@@ -1331,17 +1331,22 @@ static bool prstate_housekeeping_conflict(int prstate, struct cpumask *new_cpus)
- }
- 
- /*
-- * update_hk_sched_domains - Update HK cpumasks & rebuild sched domains
-+ * cpuset_update_sd_hk_unlock - Rebuild sched domains, update HK & unlock
-  *
-- * Update housekeeping cpumasks and rebuild sched domains if necessary.
-- * This should be called at the end of cpuset or hotplug actions.
-+ * Update housekeeping cpumasks and rebuild sched domains if necessary and
-+ * then do a cpuset_full_unlock().
-+ * This should be called at the end of cpuset operation.
-  */
--static void update_hk_sched_domains(void)
-+static void cpuset_update_sd_hk_unlock(void)
-+	__releases(&cpuset_mutex)
-+	__releases(&cpuset_top_mutex)
- {
-+	/* force_sd_rebuild will be cleared in rebuild_sched_domains_locked() */
-+	if (force_sd_rebuild)
-+		rebuild_sched_domains_locked();
-+
- 	if (update_housekeeping) {
--		/* Updating HK cpumasks implies rebuild sched domains */
- 		update_housekeeping = false;
--		force_sd_rebuild = true;
- 		cpumask_copy(isolated_hk_cpus, isolated_cpus);
- 
- 		/*
-@@ -1352,22 +1357,19 @@ static void update_hk_sched_domains(void)
- 		mutex_unlock(&cpuset_mutex);
- 		cpus_read_unlock();
- 		WARN_ON_ONCE(housekeeping_update(isolated_hk_cpus));
--		cpus_read_lock();
--		mutex_lock(&cpuset_mutex);
-+		mutex_unlock(&cpuset_top_mutex);
-+	} else {
-+		cpuset_full_unlock();
- 	}
--	/* force_sd_rebuild will be cleared in rebuild_sched_domains_locked() */
--	if (force_sd_rebuild)
--		rebuild_sched_domains_locked();
- }
- 
- /*
-- * Work function to invoke update_hk_sched_domains()
-+ * Work function to invoke cpuset_update_sd_hk_unlock()
-  */
- static void hk_sd_workfn(struct work_struct *work)
- {
- 	cpuset_full_lock();
--	update_hk_sched_domains();
--	cpuset_full_unlock();
-+	cpuset_update_sd_hk_unlock();
- }
- 
- /**
-@@ -3232,8 +3234,7 @@ ssize_t cpuset_write_resmask(struct kernfs_open_file *of,
- 
- 	free_cpuset(trialcs);
- out_unlock:
--	update_hk_sched_domains();
--	cpuset_full_unlock();
-+	cpuset_update_sd_hk_unlock();
- 	if (of_cft(of)->private == FILE_MEMLIST)
- 		schedule_flush_migrate_mm();
- 	return retval ?: nbytes;
-@@ -3340,8 +3341,7 @@ static ssize_t cpuset_partition_write(struct kernfs_open_file *of, char *buf,
- 	cpuset_full_lock();
- 	if (is_cpuset_online(cs))
- 		retval = update_prstate(cs, val);
--	update_hk_sched_domains();
--	cpuset_full_unlock();
-+	cpuset_update_sd_hk_unlock();
- 	return retval ?: nbytes;
- }
- 
-@@ -3515,8 +3515,7 @@ static void cpuset_css_killed(struct cgroup_subsys_state *css)
- 	/* Reset valid partition back to member */
- 	if (is_partition_valid(cs))
- 		update_prstate(cs, PRS_MEMBER);
--	update_hk_sched_domains();
--	cpuset_full_unlock();
-+	cpuset_update_sd_hk_unlock();
- }
- 
- static void cpuset_css_free(struct cgroup_subsys_state *css)
-@@ -3925,11 +3924,13 @@ static void cpuset_handle_hotplug(void)
- 		rcu_read_unlock();
- 	}
- 
--
- 	/*
--	 * Queue a work to call housekeeping_update() & rebuild_sched_domains()
--	 * There will be a slight delay before the HK_TYPE_DOMAIN housekeeping
--	 * cpumask can correctly reflect what is in isolated_cpus.
-+	 * rebuild_sched_domains() will always be called directly if needed
-+	 * to make sure that newly added or removed CPU will be reflected in
-+	 * the sched domains. However, if isolated partition invalidation
-+	 * or recreation is being done (update_housekeeping set), a work item
-+	 * will be queued to call housekeeping_update() to update the
-+	 * corresponding housekeeping cpumasks after some slight delay.
- 	 *
- 	 * We rely on WORK_STRUCT_PENDING_BIT to not requeue a work item that
- 	 * is still pending. Before the pending bit is cleared, the work data
-@@ -3938,8 +3939,10 @@ static void cpuset_handle_hotplug(void)
- 	 * previously queued work. Since hk_sd_workfn() doesn't use the work
- 	 * item at all, this is not a problem.
- 	 */
--	if (update_housekeeping || force_sd_rebuild)
--		queue_work(system_unbound_wq, &hk_sd_work);
-+	if (force_sd_rebuild)
-+		rebuild_sched_domains_cpuslocked();
-+	if (update_housekeeping)
-+		queue_work(system_dfl_wq, &hk_sd_work);
- 
- 	free_tmpmasks(ptmp);
- }
--- 
-2.53.0
+Right. Will rename to dmem_cgroup_get_common_ancestor, and also point=20
+out in the documentation that a reference is taken.
+
+Thanks,
+Natalie
+
+>=20
+> Kind regards,
+> ~Maarten Lankhorst
 
 
