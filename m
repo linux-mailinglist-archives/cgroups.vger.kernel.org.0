@@ -1,189 +1,188 @@
-Return-Path: <cgroups+bounces-14633-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-14634-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id uCAtLB01qWlH3AAAu9opvQ
-	(envelope-from <cgroups+bounces-14633-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Thu, 05 Mar 2026 08:47:41 +0100
+	id iDA/DfZJqWm53wAAu9opvQ
+	(envelope-from <cgroups+bounces-14634-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Thu, 05 Mar 2026 10:16:38 +0100
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
-	by mail.lfdr.de (Postfix) with ESMTPS id A1A8520CDFD
-	for <lists+cgroups@lfdr.de>; Thu, 05 Mar 2026 08:47:40 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 484B520E259
+	for <lists+cgroups@lfdr.de>; Thu, 05 Mar 2026 10:16:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id E2A063020218
-	for <lists+cgroups@lfdr.de>; Thu,  5 Mar 2026 07:47:35 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 1BDF130FED74
+	for <lists+cgroups@lfdr.de>; Thu,  5 Mar 2026 09:10:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A6DDE31F983;
-	Thu,  5 Mar 2026 07:47:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C87B0375F8E;
+	Thu,  5 Mar 2026 09:10:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="HIUBD1Is"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="L7x4mezl"
 X-Original-To: cgroups@vger.kernel.org
-Received: from out-185.mta0.migadu.com (out-185.mta0.migadu.com [91.218.175.185])
+Received: from out-173.mta0.migadu.com (out-173.mta0.migadu.com [91.218.175.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D3A514EC73
-	for <cgroups@vger.kernel.org>; Thu,  5 Mar 2026 07:47:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.185
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4CE43364EA5
+	for <cgroups@vger.kernel.org>; Thu,  5 Mar 2026 09:10:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772696852; cv=none; b=NEkuVLrHub9fgj9jYZfa9eZFlTRbhTxEpWd6hKdhZ+Nk5Q6jELzKCItj8/B3J/DZ5X0S2Kfa9fkLvhfTVU2r6GxsaBP50Nq7S5B4oCbXt+4Gf9ovEpAh5B60d4BHXisrX3yJX3oFCsHMkmmKgBnpORX6NmreNPBIooOcfj1D12k=
+	t=1772701839; cv=none; b=haSK9zKP6tBf6xDxWLem8Ex7bzsJuY8qrQmxyxfXTCgzW4uEiq2pQSVw3jCCxYpkIgg9Z6IG5r75OuhRy15EvL+OOnSfyERU/zzgDSYjVlifZnPigL7nax+I36S/woqhytaeDUvInw5dnapc5Q1L9UoeDhMmLTAiP9GtPmBzj4w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772696852; c=relaxed/simple;
-	bh=A7r5JUDLIbWdZBIBfoX0e7lLv65Mt+iLGAcydteV/cQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=aYcY6v+ENpNbtp05/SSsONNdIoFc7l+3ndjyek58QPkcmsiTx4l4sbBgVg5c2mUNGlF1AsMwMmH8EoOHMmd+0pzzjpHtIF4cYfIo6pcCSq9/lMs10zWgmuPNYadJiNA0mglY8OxnwdKGMhf5+FGjzwiqJlKHSirIA8eSdJsMhy8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=HIUBD1Is; arc=none smtp.client-ip=91.218.175.185
+	s=arc-20240116; t=1772701839; c=relaxed/simple;
+	bh=6ddPn5CAeywNeKr549PcEFXW+NwD0kk2WrcM8RcO4Ls=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=eW1k2X1n51bC8f/63lqE/C02T9rMjqhvcx6MflDro8gXWxTUrJoo/YQ12oE54ip3Rhr3vSbFKc+cR3FAasWnKjFteDwZYGoutFFjCTBjgN4ZTPJ3lIW8mxeo3LAsiNorQG+D37afjloXPJJkAGb2bEshFQqZAaoC0U5+PFFephQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=L7x4mezl; arc=none smtp.client-ip=91.218.175.173
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Thu, 5 Mar 2026 15:47:18 +0800
+Message-ID: <d65039f7-eaa9-4fa5-b03d-e184f0eb59fc@linux.dev>
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1772696846;
+	t=1772701834;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=tKeJ7rMALYTbebsY+kRx+KAJHf7HkxWsA8p9wEo81Rc=;
-	b=HIUBD1IsTFwPZ4qEjY/0K3tu4spsSjCBv9LEDoadmVWlxoimJNXZbtQnZuhYoozLN9lIh6
-	yX2QtLVwxcO6I5E87dHbUAbmbSGOloHzhyD7Qe1JWS/A4YNXr4vCjWgcoOnlyVX0c7p90u
-	0xThu9wpor+iBCIhzgduOWfywjKUr5Q=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Hao Li <hao.li@linux.dev>
-To: Harry Yoo <harry.yoo@oracle.com>
-Cc: Venkat Rao Bagalkote <venkat88@linux.ibm.com>, vbabka@suse.cz, 
-	akpm@linux-foundation.org, cgroups@vger.kernel.org, cl@gentwo.org, hannes@cmpxchg.org, 
-	linux-mm@kvack.org, mhocko@kernel.org, muchun.song@linux.dev, rientjes@google.com, 
-	roman.gushchin@linux.dev, shakeel.butt@linux.dev, surenb@google.com, pfalcato@suse.de
-Subject: Re: [PATCH] mm/slab: change stride type from unsigned short to
- unsigned int
-Message-ID: <osbee2ajebflm2rlcyh6qe5yhra6zulmjyz5j775z4pcmsxrmy@qgs6pi4s4fpd>
-References: <20260303135722.2680521-1-harry.yoo@oracle.com>
- <41f1c856-2c41-4d11-96e6-079d95d8efbb@linux.ibm.com>
- <aakrMQ9fKG52WtxE@hyeyoo>
+	bh=tr1o9KhyPyLCXwJBlDrE8nwwf9NNG4p8828XvNLTvd8=;
+	b=L7x4mezlG6AujZehqOM4oJ1mkz12yinb96zksZNN/IssZlPMeo22txA9u/1JGvJm0IQIZX
+	knTzFQOroszSlf2YtuFByiAoYTLA3ZgsDnHx7Xob8QK6lAjuJc0iRLD0Agun4RoT41YxJa
+	M/cyIE844GMBmEI/anCkSsaJEZq87i8=
+Date: Thu, 5 Mar 2026 17:10:12 +0800
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <aakrMQ9fKG52WtxE@hyeyoo>
+Subject: Re: [PATCH v5 update 30/32] mm: memcontrol: convert objcg to be
+ per-memcg per-node type
+To: Shakeel Butt <shakeel.butt@linux.dev>
+Cc: hannes@cmpxchg.org, hughd@google.com, mhocko@suse.com,
+ roman.gushchin@linux.dev, muchun.song@linux.dev, david@kernel.org,
+ lorenzo.stoakes@oracle.com, ziy@nvidia.com, harry.yoo@oracle.com,
+ yosry.ahmed@linux.dev, imran.f.khan@oracle.com, kamalesh.babulal@oracle.com,
+ axelrasmussen@google.com, yuanchu@google.com, weixugc@google.com,
+ chenridong@huaweicloud.com, mkoutny@suse.com, akpm@linux-foundation.org,
+ hamzamahfooz@linux.microsoft.com, apais@linux.microsoft.com,
+ lance.yang@linux.dev, bhe@redhat.com, usamaarif642@gmail.com,
+ linux-mm@kvack.org, linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+ Qi Zheng <zhengqi.arch@bytedance.com>
+References: <0f915487ffc653cf6ea19335c21c01aa06004641.1772005110.git.zhengqi.arch@bytedance.com>
+ <20260225094456.74145-1-qi.zheng@linux.dev> <aZ-uNV1biPYLhJ48@linux.dev>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Qi Zheng <qi.zheng@linux.dev>
+In-Reply-To: <aZ-uNV1biPYLhJ48@linux.dev>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 X-Migadu-Flow: FLOW_OUT
-X-Rspamd-Queue-Id: A1A8520CDFD
+X-Rspamd-Queue-Id: 484B520E259
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-1.66 / 15.00];
+X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_RHS_NOT_FQDN(0.50)[];
 	DMARC_POLICY_ALLOW(-0.50)[linux.dev,none];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	R_DKIM_ALLOW(-0.20)[linux.dev:s=key1];
-	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
+	TAGGED_FROM(0.00)[bounces-14634-lists,cgroups=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
 	RCVD_COUNT_THREE(0.00)[3];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-14633-lists,cgroups=lfdr.de];
-	RCPT_COUNT_TWELVE(0.00)[15];
+	FREEMAIL_CC(0.00)[cmpxchg.org,google.com,suse.com,linux.dev,kernel.org,oracle.com,nvidia.com,huaweicloud.com,linux-foundation.org,linux.microsoft.com,redhat.com,gmail.com,kvack.org,vger.kernel.org,bytedance.com];
+	RCPT_COUNT_TWELVE(0.00)[28];
 	MIME_TRACE(0.00)[0:+];
 	FROM_HAS_DN(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	TO_DN_SOME(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[hao.li@linux.dev,cgroups@vger.kernel.org];
-	DKIM_TRACE(0.00)[linux.dev:+];
-	NEURAL_HAM(-0.00)[-1.000];
-	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
-	TAGGED_RCPT(0.00)[cgroups];
 	MISSING_XM_UA(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:rdns,sto.lore.kernel.org:helo,linux.dev:dkim,oracle.com:email]
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	NEURAL_HAM(-0.00)[-1.000];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[qi.zheng@linux.dev,cgroups@vger.kernel.org];
+	DKIM_TRACE(0.00)[linux.dev:+];
+	MID_RHS_MATCH_FROM(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	TAGGED_RCPT(0.00)[cgroups];
+	TO_DN_SOME(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,bytedance.com:email,linux.dev:dkim,linux.dev:email,linux.dev:mid]
 X-Rspamd-Action: no action
 
-On Thu, Mar 05, 2026 at 04:05:21PM +0900, Harry Yoo wrote:
-> On Thu, Mar 05, 2026 at 12:24:08PM +0530, Venkat Rao Bagalkote wrote:
-> > On 03/03/26 7:27 pm, Harry Yoo wrote:
-> > > Commit 7a8e71bc619d ("mm/slab: use stride to access slabobj_ext")
-> > > defined the type of slab->stride as unsigned short, because the author
-> > > initially planned to store stride within the lower 16 bits of the
-> > > page_type field, but later stored it in unused bits in the counters
-> > > field instead.
-> > > 
-> > > However, the idea of having only 2-byte stride turned out to be a
-> > > serious mistake. On systems with 64k pages, order-1 pages are 128k,
-> > > which is larger than USHRT_MAX. It triggers a debug warning because
-> > > s->size is 128k while stride, truncated to 2 bytes, becomes zero:
-> > > 
-> > >    ------------[ cut here ]------------
-> > >    Warning! stride (0) != s->size (131072)
-> > >    WARNING: mm/slub.c:2231 at alloc_slab_obj_exts_early.constprop.0+0x524/0x534, CPU#6: systemd-sysctl/307
-> > >    Modules linked in:
-> > >    CPU: 6 UID: 0 PID: 307 Comm: systemd-sysctl Not tainted 7.0.0-rc1+ #6 PREEMPTLAZY
-> > >    Hardware name: IBM,9009-22A POWER9 (architected) 0x4e0202 0xf000005 of:IBM,FW950.E0 (VL950_179) hv:phyp pSeries
-> > >    NIP:  c0000000008a9ac0 LR: c0000000008a9abc CTR: 0000000000000000
-> > >    REGS: c0000000141f7390 TRAP: 0700   Not tainted  (7.0.0-rc1+)
-> > >    MSR:  8000000000029033 <SF,EE,ME,IR,DR,RI,LE>  CR: 28004400  XER: 00000005
-> > >    CFAR: c000000000279318 IRQMASK: 0
-> > >    GPR00: c0000000008a9abc c0000000141f7630 c00000000252a300 c00000001427b200
-> > >    GPR04: 0000000000000004 0000000000000000 c000000000278fd0 0000000000000000
-> > >    GPR08: fffffffffffe0000 0000000000000000 0000000000000000 0000000022004400
-> > >    GPR12: c000000000f644b0 c000000017ff8f00 0000000000000000 0000000000000000
-> > >    GPR16: 0000000000000000 c0000000141f7aa0 0000000000000000 c0000000141f7a88
-> > >    GPR20: 0000000000000000 0000000000400cc0 ffffffffffffffff c00000001427b180
-> > >    GPR24: 0000000000000004 00000000000c0cc0 c000000004e89a20 c00000005de90011
-> > >    GPR28: 0000000000010010 c00000005df00000 c000000006017f80 c00c000000177a00
-> > >    NIP [c0000000008a9ac0] alloc_slab_obj_exts_early.constprop.0+0x524/0x534
-> > >    LR [c0000000008a9abc] alloc_slab_obj_exts_early.constprop.0+0x520/0x534
-> > >    Call Trace:
-> > >    [c0000000141f7630] [c0000000008a9abc] alloc_slab_obj_exts_early.constprop.0+0x520/0x534 (unreliable)
-> > >    [c0000000141f76c0] [c0000000008aafbc] allocate_slab+0x154/0x94c
-> > >    [c0000000141f7760] [c0000000008b41c0] refill_objects+0x124/0x16c
-> > >    [c0000000141f77c0] [c0000000008b4be0] __pcs_replace_empty_main+0x2b0/0x444
-> > >    [c0000000141f7810] [c0000000008b9600] __kvmalloc_node_noprof+0x840/0x914
-> > >    [c0000000141f7900] [c000000000a3dd40] seq_read_iter+0x60c/0xb00
-> > >    [c0000000141f7a10] [c000000000b36b24] proc_reg_read_iter+0x154/0x1fc
-> > >    [c0000000141f7a50] [c0000000009cee7c] vfs_read+0x39c/0x4e4
-> > >    [c0000000141f7b30] [c0000000009d0214] ksys_read+0x9c/0x180
-> > >    [c0000000141f7b90] [c00000000003a8d0] system_call_exception+0x1e0/0x4b0
-> > >    [c0000000141f7e50] [c00000000000d05c] system_call_vectored_common+0x15c/0x2ec
-> > > 
-> > > This leads to slab_obj_ext() returning the first slabobj_ext or all
-> > > objects and confuses the reference counting of object cgroups [1] and
-> > > memory (un)charging for memory cgroups [2].
-> > > 
-> > > Fortunately, the counters field has 32 unused bits instead of 16
-> > > on 64-bit CPUs, which is wide enough to hold any value of s->size.
-> > > Change the type to unsigned int.
-> > > 
-> > > Reported-by: Venkat Rao Bagalkote <venkat88@linux.ibm.com>
-> > > Closes: https://lore.kernel.org/lkml/ca241daa-e7e7-4604-a48d-de91ec9184a5@linux.ibm.com
-> > > Closes: https://lore.kernel.org/all/ddff7c7d-c0c3-4780-808f-9a83268bbf0c@linux.ibm.com
-> > > Fixes: 7a8e71bc619d ("mm/slab: use stride to access slabobj_ext")
-> > > Signed-off-by: Harry Yoo <harry.yoo@oracle.com>
-> > > ---
-> > > 
-> > > Hi Venkat, could you please test this on top of 7.0-rc2 (instead of
-> > > 7.0-rc1) and see if the bugs [1] [2] are reproduced on your machine?
-> > 
-> > 
-> > Hello Harry,
-> > 
-> > Apologizes for delayed response,
-> 
-> No worries.
-> 
-> > I was out sick.
-> 
-> Ouch :( hope you feel better now.
-> 
-> > I have tested this patch on top of 7.0-rc2, and confirm, this patch fixes
-> > both the reported issue.
-> >
-> > Tested-by: Venkat Rao Bagalkote <venkat88@linux.ibm.com>
-> 
-> Thanks a lot for testing & confirming!
+Hi Shakeel,
 
-Indeed!
-What a counterintuitive issue!
+On 2/26/26 10:27 AM, Shakeel Butt wrote:
+> On Wed, Feb 25, 2026 at 05:44:56PM +0800, Qi Zheng wrote:
+>> From: Qi Zheng <zhengqi.arch@bytedance.com>
+>>
+>> Convert objcg to be per-memcg per-node type, so that when reparent LRU
+>> folios later, we can hold the lru lock at the node level, thus avoiding
+>> holding too many lru locks at once.
+>>
+>> Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
+>> ---
+>> changlog:
+>>   - fix a missing root_obj_cgroup conversion and completely delete
+>>     root_obj_cgroup.
+>>
+>>   include/linux/memcontrol.h | 23 +++++------
+>>   include/linux/sched.h      |  2 +-
+>>   mm/memcontrol.c            | 79 +++++++++++++++++++++++---------------
+>>   3 files changed, 62 insertions(+), 42 deletions(-)
+>>
+>> diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
+>> index 45d911dd903e7..6e11552a90618 100644
+>> --- a/include/linux/memcontrol.h
+>> +++ b/include/linux/memcontrol.h
+>> @@ -116,6 +116,16 @@ struct mem_cgroup_per_node {
+>>   	unsigned long		lru_zone_size[MAX_NR_ZONES][NR_LRU_LISTS];
+>>   	struct mem_cgroup_reclaim_iter	iter;
+>>   
+>> +	/*
+>> +	 * objcg is wiped out as a part of the objcg repaprenting process.
+>> +	 * orig_objcg preserves a pointer (and a reference) to the original
+>> +	 * objcg until the end of live of memcg.
+>> +	 */
+>> +	struct obj_cgroup __rcu	*objcg;
+>> +	struct obj_cgroup	*orig_objcg;
+> 
+> The layout of struct mem_cgroup_per_node is very performance sensitive. Please
+> couple of performance benchmarks after rearranging the fields particularly the
 
--- 
-Thanks,
-Hao
+I ran a simple test using will-it-scale page_fault1, and the results are
+as follows:
+
+tasks    | baseline     | with-patch   | diff       | %
+-------------------------------------------------------------
+1        | 216394       | 217537       | +1143      | +0.53%
+2        | 419895       | 421510       | +1615      | +0.38%
+3        | 626275       | 629533       | +3258      | +0.52%
+4        | 833146       | 830481       | -2665      | -0.32%
+5        | 1037597      | 1034334      | -3263      | -0.31%
+6        | 1229398      | 1231656      | +2258      | +0.18%
+7        | 1425040      | 1424432      | -608       | -0.04%
+8        | 1603738      | 1626028      | +22290     | +1.39%
+9        | 1797881      | 1803901      | +6020      | +0.33%
+10       | 1976264      | 1966342      | -9922      | -0.50%
+11       | 2150073      | 2159328      | +9255      | +0.43%
+12       | 2304435      | 2321128      | +16693     | +0.72%
+13       | 2524668      | 2538582      | +13914     | +0.55%
+14       | 2763854      | 2743098      | -20756     | -0.75%
+15       | 2938939      | 2961671      | +22732     | +0.77%
+16       | 3152497      | 3181420      | +28923     | +0.92%
+17       | 3333936      | 3370667      | +36731     | +1.10%
+18       | 3531225      | 3552907      | +21682     | +0.61%
+19       | 3732347      | 3769889      | +37542     | +1.01%
+20       | 3917502      | 3951226      | +33724     | +0.86%
+21       | 4118040      | 4134952      | +16912     | +0.41%
+22       | 4268932      | 4312343      | +43411     | +1.02%
+23       | 4438411      | 4484408      | +45997     | +1.04%
+24       | 4618400      | 4683531      | +65131     | +1.41%
+
+No obvious degradation observed, so I'll keep this arrangement in v6.
+
+> above two pointers together at the start of the struct.
+> 
+> Otherwise:
+> 
+> Acked-by: Shakeel Butt <shakeel.butt@linux.dev>
+
+Thanks! I'll add this tag in v6.
+
+
 
