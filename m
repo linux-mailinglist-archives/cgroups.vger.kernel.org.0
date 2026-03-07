@@ -1,242 +1,243 @@
-Return-Path: <cgroups+bounces-14698-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-14699-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id oMfNM3JtrGmepgEAu9opvQ
-	(envelope-from <cgroups+bounces-14698-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Sat, 07 Mar 2026 19:24:50 +0100
+	id mJ7VNFqDrGk1qQEAu9opvQ
+	(envelope-from <cgroups+bounces-14699-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Sat, 07 Mar 2026 20:58:18 +0100
 X-Original-To: lists+cgroups@lfdr.de
 Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6FC0322D384
-	for <lists+cgroups@lfdr.de>; Sat, 07 Mar 2026 19:24:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 7B9D122D6FE
+	for <lists+cgroups@lfdr.de>; Sat, 07 Mar 2026 20:58:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 25903300750C
-	for <lists+cgroups@lfdr.de>; Sat,  7 Mar 2026 18:24:49 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id CDAE8300CA02
+	for <lists+cgroups@lfdr.de>; Sat,  7 Mar 2026 19:58:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1FC1A371871;
-	Sat,  7 Mar 2026 18:24:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 11B8D38F231;
+	Sat,  7 Mar 2026 19:58:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Yr93vZIU"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="MXdxDGOy"
 X-Original-To: cgroups@vger.kernel.org
-Received: from out-179.mta0.migadu.com (out-179.mta0.migadu.com [91.218.175.179])
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.18])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 523A63321A3
-	for <cgroups@vger.kernel.org>; Sat,  7 Mar 2026 18:24:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 96717361DA5;
+	Sat,  7 Mar 2026 19:58:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.18
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772907885; cv=none; b=BDgksnN9BovAcaqiKcauKH70X3ctFioeRI6XFi07tok0QEiTpxpmAor55I1g5W5WFbqrpjJz5tNUXBBjj922iLQCbVHqPfVxlvtACeCVzJG/b255n9CqVpSGy2Q7WwZIpdaQsi2IVAI/Vj3jQngbTSwZJdVNEGSnFFUp+RHInlQ=
+	t=1772913496; cv=none; b=u4AElGw0Oli44rMHyzu0zJKo8kdE3OjOZpC8rMAID3FDtZGsuRk59zV+v4xsmgOops9qznumNyQDfwCyoClz/o1tew9iGy97dJa9XlWCYCqqc2qk++gPJxdRWUrf7x0152PiZ0KC+gadG5rtZrihHYVtsRrHRhglBSILoz52x0I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772907885; c=relaxed/simple;
-	bh=8sjvbr2kIRhpYOnuj7cZHDnKrydwIns1Qn6GNN6m5uc=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=oq6bVlTuoTSQUoDOJ0v2908D/1YhQtFrvS7HZ1vguHZ4LeEJeM0fDWUWmFdqEP8Y1SB37MPVwfJ2TmjQrVg18KZLFfnIVPZfmiar6TR0+U1bFYogaUjKZ81OBeXdmITz69wpKsPMzB6uYBUFamsu/6n6xc41UatNkxxI8EMz9dA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Yr93vZIU; arc=none smtp.client-ip=91.218.175.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1772907872;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=3t0Kg5Rp4+B0pW4g3HfgV1XxcRBiIIV6pjcS9WKTZpo=;
-	b=Yr93vZIU/9FTq2N3W+CLFQpHOnWJOoOlHH0hv+nked4gC1lopvAg3gisKJWSx/GXwTm623
-	kZHWTqT0Zvdld/dL4DfMdRb3yCqk0/aKzDLEgXl13ADcsVB1ZU3bhEIB7STp0H3bip+rHz
-	d2djOnWQdt2ey4gh2IEdRiJqzYYJvTg=
-From: Shakeel Butt <shakeel.butt@linux.dev>
-To: lsf-pc@lists.linux-foundation.org
-Cc: Andrew Morton <akpm@linux-foundation.org>,
-	Tejun Heo <tj@kernel.org>,
-	Michal Hocko <mhocko@suse.com>,
-	Johannes Weiner <hannes@cmpxchg.org>,
-	Alexei Starovoitov <ast@kernel.org>,
-	=?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>,
-	Roman Gushchin <roman.gushchin@linux.dev>,
-	Hui Zhu <hui.zhu@linux.dev>,
-	JP Kobryn <inwardvessel@gmail.com>,
-	Muchun Song <muchun.song@linux.dev>,
-	Geliang Tang <geliang@kernel.org>,
-	Sweet Tea Dorminy <sweettea-kernel@dorminy.me>,
-	Emil Tsalapatis <emil@etsalapatis.com>,
-	David Rientjes <rientjes@google.com>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Meta kernel team <kernel-team@meta.com>,
-	linux-mm@kvack.org,
-	cgroups@vger.kernel.org,
-	bpf@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [LSF/MM/BPF TOPIC] Reimagining Memory Cgroup (memcg_ext)
-Date: Sat,  7 Mar 2026 10:24:24 -0800
-Message-ID: <20260307182424.2889780-1-shakeel.butt@linux.dev>
+	s=arc-20240116; t=1772913496; c=relaxed/simple;
+	bh=6EfkCLhJg+AlZw6TkaO6d/504vUAp5tN3HoH1lQUwjY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=N2JSyoShBsFzH0kCY8pg6DqdpYpHGMF23KpKBVNT32I1e9fBmD7xN80fhfrN3YWf/gt6rE8GXlW0iC6P3ViQefokdBHxvwgit7b701UAFajLN7wv79oDKAy7sXYtrS3lsm1KNpO80KNiUoqZOTUjactrm3QS+OAFVMiR1tepP7U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=MXdxDGOy; arc=none smtp.client-ip=198.175.65.18
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1772913494; x=1804449494;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=6EfkCLhJg+AlZw6TkaO6d/504vUAp5tN3HoH1lQUwjY=;
+  b=MXdxDGOyDZOvGWmfnN6+XCR7wkzT+E+dYMqsY1zLzix+mE0uTzTMw4yx
+   kr8F/GXZi4JhXmc12GRHRXRgAT9K2yzpBB5MGfWQNpEVNk9S/M6SjBULE
+   943RqL6x/VwMyW1wM5t9uOHIW+SnZ2B4SVWzl1NVpMUXWYLFje0c76EVA
+   coB7yB+ewuNMXFLMd0o0qWMeMp0wU/V/QHxgjJqbj4IiGAmwTXnF9xIfB
+   Q0B1Xlflc/4eGn1ffpCgjpFqJT30boPQn/KQrwAFFsS0Dx6Z/lisXd1YQ
+   o7PBBV/1cs9/Bm0M9Nd7CL9mrr7+xzsChCabHVYWgJwsTyxaeND8n7PEz
+   A==;
+X-CSE-ConnectionGUID: q2DgOJgkQSKaHZt0+JIVWg==
+X-CSE-MsgGUID: Hq2ZkY4BRJO/XXEz5XPE7w==
+X-IronPort-AV: E=McAfee;i="6800,10657,11722"; a="74038493"
+X-IronPort-AV: E=Sophos;i="6.23,107,1770624000"; 
+   d="scan'208";a="74038493"
+Received: from orviesa010.jf.intel.com ([10.64.159.150])
+  by orvoesa110.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Mar 2026 11:58:13 -0800
+X-CSE-ConnectionGUID: Wlk16Iu4Q/eU4k+9d912cQ==
+X-CSE-MsgGUID: /0+ldayrS5+1d6aZKJqv6g==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.23,107,1770624000"; 
+   d="scan'208";a="218552919"
+Received: from lkp-server01.sh.intel.com (HELO 058beb05654c) ([10.239.97.150])
+  by orviesa010.jf.intel.com with ESMTP; 07 Mar 2026 11:58:05 -0800
+Received: from kbuild by 058beb05654c with local (Exim 4.98.2)
+	(envelope-from <lkp@intel.com>)
+	id 1vyxmj-000000002b5-2cTQ;
+	Sat, 07 Mar 2026 19:58:01 +0000
+Date: Sun, 8 Mar 2026 03:57:41 +0800
+From: kernel test robot <lkp@intel.com>
+To: "JP Kobryn (Meta)" <jp.kobryn@linux.dev>, linux-mm@kvack.org,
+	akpm@linux-foundation.org, mhocko@suse.com, vbabka@suse.cz
+Cc: oe-kbuild-all@lists.linux.dev, apopple@nvidia.com,
+	axelrasmussen@google.com, byungchul@sk.com, cgroups@vger.kernel.org,
+	david@kernel.org, eperezma@redhat.com, gourry@gourry.net,
+	jasowang@redhat.com, hannes@cmpxchg.org, joshua.hahnjy@gmail.com,
+	Liam.Howlett@oracle.com, linux-kernel@vger.kernel.org,
+	lorenzo.stoakes@oracle.com, matthew.brost@intel.com, mst@redhat.com,
+	rppt@kernel.org, muchun.song@linux.dev, zhengqi.arch@bytedance.com,
+	rakie.kim@sk.com, roman.gushchin@linux.dev, shakeel.butt@linux.dev,
+	surenb@google.com, virtualization@lists.linux.dev,
+	weixugc@google.com, xuanzhuo@linux.alibaba.com,
+	ying.huang@linux.alibaba.com
+Subject: Re: [PATCH v2] mm/mempolicy: track page allocations per mempolicy
+Message-ID: <202603080349.ya7tIjgk-lkp@intel.com>
+References: <20260307045520.247998-1-jp.kobryn@linux.dev>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
-X-Rspamd-Queue-Id: 6FC0322D384
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20260307045520.247998-1-jp.kobryn@linux.dev>
+X-Rspamd-Queue-Id: 7B9D122D6FE
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-0.66 / 15.00];
+X-Spamd-Result: default: False [0.34 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
 	MID_CONTAINS_FROM(1.00)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_MISSING_CHARSET(0.50)[];
-	DMARC_POLICY_ALLOW(-0.50)[linux.dev,none];
-	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
-	R_DKIM_ALLOW(-0.20)[linux.dev:s=key1];
+	DMARC_POLICY_ALLOW(-0.50)[intel.com,none];
+	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74];
+	R_DKIM_ALLOW(-0.20)[intel.com:s=Intel];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	FREEMAIL_CC(0.00)[linux-foundation.org,kernel.org,suse.com,cmpxchg.org,linux.dev,gmail.com,dorminy.me,etsalapatis.com,google.com,meta.com,kvack.org,vger.kernel.org];
+	RCPT_COUNT_TWELVE(0.00)[32];
+	FREEMAIL_CC(0.00)[lists.linux.dev,nvidia.com,google.com,sk.com,vger.kernel.org,kernel.org,redhat.com,gourry.net,cmpxchg.org,gmail.com,oracle.com,intel.com,linux.dev,bytedance.com,linux.alibaba.com];
+	TAGGED_FROM(0.00)[bounces-14699-lists,cgroups=lfdr.de];
 	MIME_TRACE(0.00)[0:+];
-	TAGGED_FROM(0.00)[bounces-14698-lists,cgroups=lfdr.de];
-	RCPT_COUNT_TWELVE(0.00)[21];
 	RCVD_TLS_LAST(0.00)[];
-	RCVD_COUNT_THREE(0.00)[3];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	FROM_HAS_DN(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	TO_DN_SOME(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[6];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[shakeel.butt@linux.dev,cgroups@vger.kernel.org];
-	FROM_HAS_DN(0.00)[];
-	DKIM_TRACE(0.00)[linux.dev:+];
+	FROM_NEQ_ENVFROM(0.00)[lkp@intel.com,cgroups@vger.kernel.org];
+	DKIM_TRACE(0.00)[intel.com:+];
 	NEURAL_HAM(-0.00)[-0.992];
 	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
 	TAGGED_RCPT(0.00)[cgroups];
 	MISSING_XM_UA(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[linux.dev:dkim,linux.dev:mid,sto.lore.kernel.org:rdns,sto.lore.kernel.org:helo]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[intel.com:dkim,intel.com:email,intel.com:mid,01.org:url,sto.lore.kernel.org:rdns,sto.lore.kernel.org:helo]
 X-Rspamd-Action: no action
 
-Over the last couple of weeks, I have been brainstorming on how I would go
-about redesigning memcg, taking inspiration from sched_ext and bpfoom, with a
-focus on existing challenges and issues. This proposal outlines the high-level
-direction. Followup emails and patch series will cover and brainstorm the
-mechanisms (of course BPF) to achieve these goals.
+Hi JP,
 
-Memory cgroups provide memory accounting and the ability to control memory usage
-of workloads through two categories of limits. Throttling limits (memory.max and
-memory.high) cap memory consumption. Protection limits (memory.min and
-memory.low) shield a workload's memory from reclaim under external memory
-pressure.
+kernel test robot noticed the following build errors:
 
-Challenges
-----------
+[auto build test ERROR on akpm-mm/mm-everything]
 
-- Workload owners rarely know their actual memory requirements, leading to
-  overprovisioned limits, lower utilization, and higher infrastructure costs.
+url:    https://github.com/intel-lab-lkp/linux/commits/JP-Kobryn-Meta/mm-mempolicy-track-page-allocations-per-mempolicy/20260307-125642
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/akpm/mm.git mm-everything
+patch link:    https://lore.kernel.org/r/20260307045520.247998-1-jp.kobryn%40linux.dev
+patch subject: [PATCH v2] mm/mempolicy: track page allocations per mempolicy
+config: arm64-randconfig-001-20260307 (https://download.01.org/0day-ci/archive/20260308/202603080349.ya7tIjgk-lkp@intel.com/config)
+compiler: aarch64-linux-gcc (GCC) 8.5.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20260308/202603080349.ya7tIjgk-lkp@intel.com/reproduce)
 
-- Throttling limit enforcement is synchronous in the allocating task's context,
-  which can stall latency-sensitive threads.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202603080349.ya7tIjgk-lkp@intel.com/
 
-- The stalled thread may hold shared locks, causing priority inversion -- all
-  waiters are blocked regardless of their priority.
+All error/warnings (new ones prefixed by >>):
 
-- Enforcement is indiscriminate -- there is no way to distinguish a
-  performance-critical or latency-critical allocator from a latency-tolerant
-  one.
+   mm/mempolicy.c: In function 'mpol_count_numa_alloc':
+>> mm/mempolicy.c:2489:10: error: implicit declaration of function 'mem_cgroup_from_task'; did you mean 'perf_cgroup_from_task'? [-Werror=implicit-function-declaration]
+     memcg = mem_cgroup_from_task(current);
+             ^~~~~~~~~~~~~~~~~~~~
+             perf_cgroup_from_task
+>> mm/mempolicy.c:2489:8: warning: assignment to 'struct mem_cgroup *' from 'int' makes pointer from integer without a cast [-Wint-conversion]
+     memcg = mem_cgroup_from_task(current);
+           ^
+   cc1: some warnings being treated as errors
 
-- Protection limits assume static working sets size, forcing owners to either
-  overprovision or build complex userspace infrastructure to dynamically adjust
-  them.
 
-Feature Wishlist
-----------------
+vim +2489 mm/mempolicy.c
 
-Here is the list of features and capabilities I want to enable in the
-redesigned memcg limit enforcement world.
+  2429	
+  2430	/*
+  2431	 * Count a mempolicy allocation. Stats are tracked per-node and per-cgroup.
+  2432	 * The following numa_{hit/miss/foreign} pattern is used:
+  2433	 *
+  2434	 *   hit
+  2435	 *     - for BIND and PREFERRED_MANY, allocation succeeded on node in nodemask
+  2436	 *     - for other policies, allocation succeeded on intended node
+  2437	 *     - counted on the node of the allocation
+  2438	 *   miss
+  2439	 *     - allocation intended for other node, but happened on this one
+  2440	 *     - counted on other node
+  2441	 *   foreign
+  2442	 *     - allocation intended on this node, but happened on other node
+  2443	 *     - counted on this node
+  2444	 */
+  2445	static void mpol_count_numa_alloc(struct mempolicy *pol, int intended_nid,
+  2446					  struct page *page, unsigned int order)
+  2447	{
+  2448		int actual_nid = page_to_nid(page);
+  2449		long nr_pages = 1L << order;
+  2450		enum node_stat_item hit_idx;
+  2451		struct mem_cgroup *memcg;
+  2452		struct lruvec *lruvec;
+  2453		bool is_hit;
+  2454	
+  2455		if (!root_mem_cgroup || mem_cgroup_disabled())
+  2456			return;
+  2457	
+  2458		/*
+  2459		 * Start with hit then use +1 or +2 later on to change to miss or
+  2460		 * foreign respectively if needed.
+  2461		 */
+  2462		switch (pol->mode) {
+  2463		case MPOL_PREFERRED:
+  2464			hit_idx = NUMA_MPOL_PREFERRED_HIT;
+  2465			break;
+  2466		case MPOL_PREFERRED_MANY:
+  2467			hit_idx = NUMA_MPOL_PREFERRED_MANY_HIT;
+  2468			break;
+  2469		case MPOL_BIND:
+  2470			hit_idx = NUMA_MPOL_BIND_HIT;
+  2471			break;
+  2472		case MPOL_INTERLEAVE:
+  2473			hit_idx = NUMA_MPOL_INTERLEAVE_HIT;
+  2474			break;
+  2475		case MPOL_WEIGHTED_INTERLEAVE:
+  2476			hit_idx = NUMA_MPOL_WEIGHTED_INTERLEAVE_HIT;
+  2477			break;
+  2478		default:
+  2479			hit_idx = NUMA_MPOL_LOCAL_HIT;
+  2480			break;
+  2481		}
+  2482	
+  2483		if (pol->mode == MPOL_BIND || pol->mode == MPOL_PREFERRED_MANY)
+  2484			is_hit = node_isset(actual_nid, pol->nodes);
+  2485		else
+  2486			is_hit = (actual_nid == intended_nid);
+  2487	
+  2488		rcu_read_lock();
+> 2489		memcg = mem_cgroup_from_task(current);
+  2490	
+  2491		if (is_hit) {
+  2492			lruvec = mem_cgroup_lruvec(memcg, NODE_DATA(actual_nid));
+  2493			mod_lruvec_state(lruvec, hit_idx, nr_pages);
+  2494		} else {
+  2495			/* account for miss on the fallback node */
+  2496			lruvec = mem_cgroup_lruvec(memcg, NODE_DATA(actual_nid));
+  2497			mod_lruvec_state(lruvec, hit_idx + 1, nr_pages);
+  2498	
+  2499			/* account for foreign on the intended node */
+  2500			lruvec = mem_cgroup_lruvec(memcg, NODE_DATA(intended_nid));
+  2501			mod_lruvec_state(lruvec, hit_idx + 2, nr_pages);
+  2502		}
+  2503	
+  2504		rcu_read_unlock();
+  2505	}
+  2506	
 
-Per-Memcg Background Reclaim
-
-In the new memcg world, with the goal of (mostly) eliminating direct synchronous
-reclaim for limit enforcement, provide per-memcg background reclaimers which can
-scale across CPUs with the allocation rate.
-
-Lock-Aware Throttling
-
-The ability to avoid throttling an allocating task that is holding locks, to
-prevent priority inversion. In Meta's fleet, we have observed lock holders stuck
-in memcg reclaim, blocking all waiters regardless of their priority or
-criticality.
-
-Thread-Level Throttling Control
-
-Workloads should be able to indicate at the thread level which threads can be
-synchronously throttled and which cannot. For example, while experimenting with
-sched_ext, we drastically improved the performance of AI training workloads by
-prioritizing threads interacting with the GPU. Similarly, applications can
-identify the threads or thread pools on their performance-critical paths and
-the memcg enforcement mechanism should not throttle them.
-
-Combined Memory and Swap Limits
-
-Some users (Google actually) need the ability to enforce limits based on
-combined memory and swap usage, similar to cgroup v1's memsw limit, providing a
-ceiling on total memory commitment rather than treating memory and swap
-independently.
-
-Dynamic Protection Limits
-
-Rather than static protection limits, the kernel should support defining
-protection based on the actual working set of the workload, leveraging signals
-such as working set estimation, PSI, refault rates, or a combination thereof to
-automatically adapt to the workload's current memory needs.
-
-Shared Memory Semantics
-
-With more flexibility in limit enforcement, the kernel should be able to
-account for memory shared between workloads (cgroups) during enforcement.
-Today, enforcement only looks at each workload's memory usage independently.
-Sensible shared memory semantics would allow the enforcer to consider
-cross-cgroup sharing when making reclaim and throttling decisions.
-
-Memory Tiering
-
-With a flexible limit enforcement mechanism, the kernel can balance memory
-usage of different workloads across memory tiers based on their performance
-requirements. Tier accounting and hotness tracking are orthogonal, but the
-decisions of when and how to balance memory between tiers should be handled by
-the enforcer.
-
-Collaborative Load Shedding
-
-Many workloads communicate with an external entity for load balancing and rely
-on their own usage metrics like RSS or memory pressure to signal whether they
-can accept more or less work. This is guesswork. Instead of the
-workload guessing, the limit enforcer -- which is actually managing the
-workload's memory usage -- should be able to communicate available headroom or
-request the workload to shed load or reduce memory usage. This collaborative
-load shedding mechanism would allow workloads to make informed decisions rather
-than reacting to coarse signals.
-
-Cross-Subsystem Collaboration
-
-Finally, the limit enforcement mechanism should collaborate with the CPU
-scheduler and other subsystems that can release memory. For example, dirty
-memory is not reclaimable and the memory subsystem wakes up flushers to trigger
-writeback. However, flushers need CPU to run -- asking the CPU scheduler to
-prioritize them ensures the kernel does not lack reclaimable memory under
-stressful conditions. Similarly, some subsystems free memory through workqueues
-or RCU callbacks. While this may seem orthogonal to limit enforcement, we can
-definitely take advantage by having visibility into these situations.
-
-Putting It All Together
------------------------
-
-To illustrate the end goal, here is an example of the scenario I want to
-enable. Suppose there is an AI agent controlling the resources of a host. I
-should be able to provide the following policy and everything should work out
-of the box:
-
-Policy: "keep system-level memory utilization below 95 percent;
-avoid priority inversions by not throttling allocators holding locks; trim each
-workload's usage to its working set without regressing its relevant performance
-metrics; collaborate with workloads on load shedding and memory trimming
-decisions; and under extreme memory pressure, collaborate with the OOM killer
-and the central job scheduler to kill and clean up a workload."
-
-Initially I added this example for fun, but from [1] it seems like there is a
-real need to enable such capabilities.
-
-[1] https://arxiv.org/abs/2602.09345
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
