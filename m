@@ -1,242 +1,237 @@
-Return-Path: <cgroups+bounces-14695-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-14696-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id cOUHB083rGkbnAEAu9opvQ
-	(envelope-from <cgroups+bounces-14695-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Sat, 07 Mar 2026 15:33:51 +0100
+	id OE8LIEldrGl/pAEAu9opvQ
+	(envelope-from <cgroups+bounces-14696-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Sat, 07 Mar 2026 18:15:53 +0100
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 72BE822C2F1
-	for <lists+cgroups@lfdr.de>; Sat, 07 Mar 2026 15:33:50 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id D62A222CDB9
+	for <lists+cgroups@lfdr.de>; Sat, 07 Mar 2026 18:15:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id E14DE30428B5
-	for <lists+cgroups@lfdr.de>; Sat,  7 Mar 2026 14:33:30 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 321F2300C904
+	for <lists+cgroups@lfdr.de>; Sat,  7 Mar 2026 17:15:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4EAC0275864;
-	Sat,  7 Mar 2026 14:33:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3976317BED0;
+	Sat,  7 Mar 2026 17:15:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ausBEM6j"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="FCO9svbo"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.16])
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.10])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A784629D277;
-	Sat,  7 Mar 2026 14:33:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.16
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D8B0533689C
+	for <cgroups@vger.kernel.org>; Sat,  7 Mar 2026 17:15:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.10
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1772894010; cv=none; b=Zd9Bn1MN7ZAcwGQsvFNxn9THA88YIYCuRcXjqT9/oQ8V7WIEnmrXdfelDAI35b15A20aC95Uazu+HAGG4molQOC1f0GRkKviSljT9uQYB79eFcfNzZfGynbHLAnVnwbvwiOJriMFiGgXcpVaP/0Gm7BdtNGza350jR+o9uS0c9s=
+	t=1772903749; cv=none; b=hZoAjKCe3sbV4EsJki2UsHLGixopnYOOtLeJI+U3Yd2SRVi77UcQvykU8eo/YcV7L1sqjvZjuM5l5ZDEYaezAOyyKn3vk8tQZdWQ8W/U3OByAJa0IvOV+yCWEM5WCR2Kr1WeNC5fZpDqlTXLgKc8kuaf1aImZH5wK1Id6IdXPOM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1772894010; c=relaxed/simple;
-	bh=MQ+yt5XOavwgGdppdINTOkJAiLO6+ABk5bgoDv4J9aI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=mua+NbiOcQcLJr7QXThkAhN/nN5bTBLR9/mGuUk0KhmLQleyGXR0cPo3qehoBdQA5iwHehldHgZh2BloTnH0yupWES+aXi3aMh04oIWz20+DJ5u1StdyQw88aw2dCDoIcr3saSCwJTP8/iXzRMIVgVH3ioR4gTmQ/GJOb+8LwJM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=ausBEM6j; arc=none smtp.client-ip=198.175.65.16
+	s=arc-20240116; t=1772903749; c=relaxed/simple;
+	bh=a3X+QqCDfmoH3tv/Jzovq2+Uy8UEVb+E6t2R5U11OYM=;
+	h=Date:From:To:Cc:Subject:Message-ID; b=SwtpaAUyWjJDuQbVKMmycGaqWtp/jXYEgnVJ9E2FS+737Qr3P+aCu6Wqh/ggItGcVHxK82se+UBD79dsD/MCrhnl0H0meLTCckj4gr/RhGIf/7gIU7sSoppy+ZdDKBLh/mrbGpvz3gIf2X1L7YvGAxmhOo4Gk791F9rb8O9MsOM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=FCO9svbo; arc=none smtp.client-ip=192.198.163.10
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1772894008; x=1804430008;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=MQ+yt5XOavwgGdppdINTOkJAiLO6+ABk5bgoDv4J9aI=;
-  b=ausBEM6jYC86N99qeFPtYU40P58/jgnk2xlRfBUg3/qsWH+5dBNygbhd
-   fMRBQ+BXGBwEjdCX87nohfEse+umLtBm7tUOPkoK3iQyvEYdJFiRH4S5X
-   6FdGD329SpHfAUmc8FUPI6Svgptml6PivUUy5Yc9QtqOQMOLBnR7WganJ
-   WucDgH4kt/v1iCmgw0xzXYStk7quqxrzvNPIIl+5gE5sEk4YDyHNrnbfN
-   vjkNL45sUcWvM1ktgye/nXj4g4jt349DOFgvNVHV7dAF/I58FeCEiA7no
-   mAD70KdZy2kpA3FWk45b3G7iS3ljqyDmUjMh+x27bnz6ssHaizGpWVmsh
+  t=1772903747; x=1804439747;
+  h=date:from:to:cc:subject:message-id;
+  bh=a3X+QqCDfmoH3tv/Jzovq2+Uy8UEVb+E6t2R5U11OYM=;
+  b=FCO9svboeqYipr+2blOVGh33dPMYFHl5OKGacD+yDp3ojvj2JwHds9VG
+   rZ/YT5euA9xuS/LdcygNpnf+5puT1Tj/VKNO0T67C6SlHXGzEetQNsLiV
+   zGbI5zpyMio9YJsDgY9nhMAj/qxyFv6PT+L2SgQAt5qnTYWuiO/uqEOV+
+   SIduTjI9g5JUan3hUYpzfDPK0MDpU0Fx7TV/fzn2GnOy7Z33TwKParnqR
+   mExk775ywVHrxND1aMD0JzzOz35jQW8eoAz3U1PLdP0XhPhslFnKupZWf
+   XE5T00BnccLRhcBcC+f8E2wuQqWoqt0R7NB8OvrZPCAKhxtVgjzawP2f7
    A==;
-X-CSE-ConnectionGUID: jl4yDdU3SPKg0HktE9p/KQ==
-X-CSE-MsgGUID: G8rJ5F2GTFCeZC4C1LUkSg==
-X-IronPort-AV: E=McAfee;i="6800,10657,11722"; a="74171587"
-X-IronPort-AV: E=Sophos;i="6.23,106,1770624000"; 
-   d="scan'208";a="74171587"
+X-CSE-ConnectionGUID: aiNhgNU2RTCDD9HXIaLJRQ==
+X-CSE-MsgGUID: aGUBo+MoSYy+MB24oUJe5A==
+X-IronPort-AV: E=McAfee;i="6800,10657,11722"; a="85340074"
+X-IronPort-AV: E=Sophos;i="6.23,107,1770624000"; 
+   d="scan'208";a="85340074"
 Received: from fmviesa006.fm.intel.com ([10.60.135.146])
-  by orvoesa108.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Mar 2026 06:33:28 -0800
-X-CSE-ConnectionGUID: bfLuj/j3TcaKl8o5BKZvKg==
-X-CSE-MsgGUID: 5d60jMlaTaa8hpa25AhjXg==
+  by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Mar 2026 09:15:46 -0800
+X-CSE-ConnectionGUID: yQgjanrYRB2HvT7iX4Y8ZQ==
+X-CSE-MsgGUID: M4PEspV8SQWZhjEf2h8EhA==
 X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.23,106,1770624000"; 
-   d="scan'208";a="215902739"
+X-IronPort-AV: E=Sophos;i="6.23,107,1770624000"; 
+   d="scan'208";a="215921464"
 Received: from lkp-server01.sh.intel.com (HELO 058beb05654c) ([10.239.97.150])
-  by fmviesa006.fm.intel.com with ESMTP; 07 Mar 2026 06:33:21 -0800
+  by fmviesa006.fm.intel.com with ESMTP; 07 Mar 2026 09:15:45 -0800
 Received: from kbuild by 058beb05654c with local (Exim 4.98.2)
 	(envelope-from <lkp@intel.com>)
-	id 1vysiT-0000000025R-3M8N;
-	Sat, 07 Mar 2026 14:33:17 +0000
-Date: Sat, 7 Mar 2026 22:32:47 +0800
+	id 1vyvFe-000000002NJ-3j1R;
+	Sat, 07 Mar 2026 17:15:42 +0000
+Date: Sun, 08 Mar 2026 01:15:39 +0800
 From: kernel test robot <lkp@intel.com>
-To: "JP Kobryn (Meta)" <jp.kobryn@linux.dev>, linux-mm@kvack.org,
-	akpm@linux-foundation.org, mhocko@suse.com, vbabka@suse.cz
-Cc: oe-kbuild-all@lists.linux.dev, apopple@nvidia.com,
-	axelrasmussen@google.com, byungchul@sk.com, cgroups@vger.kernel.org,
-	david@kernel.org, eperezma@redhat.com, gourry@gourry.net,
-	jasowang@redhat.com, hannes@cmpxchg.org, joshua.hahnjy@gmail.com,
-	Liam.Howlett@oracle.com, linux-kernel@vger.kernel.org,
-	lorenzo.stoakes@oracle.com, matthew.brost@intel.com, mst@redhat.com,
-	rppt@kernel.org, muchun.song@linux.dev, zhengqi.arch@bytedance.com,
-	rakie.kim@sk.com, roman.gushchin@linux.dev, shakeel.butt@linux.dev,
-	surenb@google.com, virtualization@lists.linux.dev,
-	weixugc@google.com, xuanzhuo@linux.alibaba.com,
-	ying.huang@linux.alibaba.com
-Subject: Re: [PATCH v2] mm/mempolicy: track page allocations per mempolicy
-Message-ID: <202603072210.TSPUKsyq-lkp@intel.com>
-References: <20260307045520.247998-1-jp.kobryn@linux.dev>
+To: Tejun Heo <tj@kernel.org>
+Cc: cgroups@vger.kernel.org
+Subject: [tj-cgroup:for-7.0-fixes] BUILD SUCCESS
+ a72f73c4dd9b209c53cf8b03b6e97fcefad4262c
+Message-ID: <202603080132.zsne00Bz-lkp@intel.com>
+User-Agent: s-nail v14.9.25
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20260307045520.247998-1-jp.kobryn@linux.dev>
-X-Rspamd-Queue-Id: 72BE822C2F1
+X-Rspamd-Queue-Id: D62A222CDB9
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [0.34 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
-	MID_CONTAINS_FROM(1.00)[];
+X-Spamd-Result: default: False [-0.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+	MID_CONTAINS_FROM(1.00)[];
+	R_MISSING_CHARSET(0.50)[];
 	DMARC_POLICY_ALLOW(-0.50)[intel.com,none];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	R_DKIM_ALLOW(-0.20)[intel.com:s=Intel];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCPT_COUNT_TWELVE(0.00)[32];
-	FREEMAIL_CC(0.00)[lists.linux.dev,nvidia.com,google.com,sk.com,vger.kernel.org,kernel.org,redhat.com,gourry.net,cmpxchg.org,gmail.com,oracle.com,intel.com,linux.dev,bytedance.com,linux.alibaba.com];
-	TAGGED_FROM(0.00)[bounces-14695-lists,cgroups=lfdr.de];
-	MIME_TRACE(0.00)[0:+];
-	RCVD_TLS_LAST(0.00)[];
 	FORGED_SENDER_MAILLIST(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	RCPT_COUNT_TWO(0.00)[2];
+	RCVD_TLS_LAST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-14696-lists,cgroups=lfdr.de];
+	DKIM_TRACE(0.00)[intel.com:+];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	TO_DN_SOME(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[lkp@intel.com,cgroups@vger.kernel.org];
 	FROM_HAS_DN(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	TO_DN_SOME(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[6];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[lkp@intel.com,cgroups@vger.kernel.org];
-	DKIM_TRACE(0.00)[intel.com:+];
-	NEURAL_HAM(-0.00)[-0.992];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	NEURAL_HAM(-0.00)[-0.998];
+	RCVD_COUNT_FIVE(0.00)[6];
 	TAGGED_RCPT(0.00)[cgroups];
-	MISSING_XM_UA(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,intel.com:dkim,intel.com:email,intel.com:mid]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[intel.com:dkim,intel.com:mid,sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo]
 X-Rspamd-Action: no action
 
-Hi JP,
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git for-7.0-fixes
+branch HEAD: a72f73c4dd9b209c53cf8b03b6e97fcefad4262c  cgroup: Don't expose dead tasks in cgroup
 
-kernel test robot noticed the following build errors:
+elapsed time: 1092m
 
-[auto build test ERROR on akpm-mm/mm-everything]
+configs tested: 112
+configs skipped: 0
 
-url:    https://github.com/intel-lab-lkp/linux/commits/JP-Kobryn-Meta/mm-mempolicy-track-page-allocations-per-mempolicy/20260307-125642
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/akpm/mm.git mm-everything
-patch link:    https://lore.kernel.org/r/20260307045520.247998-1-jp.kobryn%40linux.dev
-patch subject: [PATCH v2] mm/mempolicy: track page allocations per mempolicy
-config: x86_64-randconfig-074-20260307 (https://download.01.org/0day-ci/archive/20260307/202603072210.TSPUKsyq-lkp@intel.com/config)
-compiler: gcc-14 (Debian 14.2.0-19) 14.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20260307/202603072210.TSPUKsyq-lkp@intel.com/reproduce)
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202603072210.TSPUKsyq-lkp@intel.com/
+tested configs:
+alpha                             allnoconfig    gcc-15.2.0
+alpha                            allyesconfig    gcc-15.2.0
+arc                              allmodconfig    gcc-15.2.0
+arc                               allnoconfig    gcc-15.2.0
+arc                              allyesconfig    gcc-15.2.0
+arc                   randconfig-001-20260307    gcc-14.3.0
+arc                   randconfig-002-20260307    gcc-14.3.0
+arm                               allnoconfig    clang-23
+arm                              allyesconfig    gcc-15.2.0
+arm                   randconfig-001-20260307    clang-23
+arm                   randconfig-002-20260307    gcc-15.2.0
+arm                   randconfig-003-20260307    gcc-13.4.0
+arm                   randconfig-004-20260307    gcc-11.5.0
+arm64                            allmodconfig    clang-19
+arm64                             allnoconfig    gcc-15.2.0
+arm64                 randconfig-001-20260307    gcc-8.5.0
+arm64                 randconfig-002-20260307    gcc-11.5.0
+arm64                 randconfig-003-20260307    gcc-15.2.0
+arm64                 randconfig-004-20260307    gcc-8.5.0
+csky                             allmodconfig    gcc-15.2.0
+csky                              allnoconfig    gcc-15.2.0
+csky                  randconfig-001-20260307    gcc-15.2.0
+csky                  randconfig-002-20260307    gcc-15.2.0
+hexagon                          allmodconfig    clang-17
+hexagon                           allnoconfig    clang-23
+hexagon               randconfig-001-20260307    clang-23
+hexagon               randconfig-002-20260307    clang-23
+i386                             allmodconfig    gcc-14
+i386                              allnoconfig    gcc-14
+i386                             allyesconfig    gcc-14
+i386        buildonly-randconfig-001-20260307    gcc-14
+i386        buildonly-randconfig-002-20260307    gcc-14
+i386        buildonly-randconfig-003-20260307    gcc-12
+i386        buildonly-randconfig-004-20260307    clang-20
+i386        buildonly-randconfig-005-20260307    gcc-14
+i386        buildonly-randconfig-006-20260307    clang-20
+i386                  randconfig-011-20260307    clang-20
+i386                  randconfig-012-20260307    clang-20
+i386                  randconfig-013-20260307    clang-20
+i386                  randconfig-014-20260307    clang-20
+i386                  randconfig-015-20260307    gcc-14
+i386                  randconfig-016-20260307    gcc-14
+i386                  randconfig-017-20260307    gcc-14
+loongarch                        allmodconfig    clang-19
+loongarch                         allnoconfig    clang-23
+loongarch             randconfig-001-20260307    gcc-15.2.0
+loongarch             randconfig-002-20260307    gcc-15.2.0
+m68k                             allmodconfig    gcc-15.2.0
+m68k                              allnoconfig    gcc-15.2.0
+m68k                             allyesconfig    gcc-15.2.0
+microblaze                        allnoconfig    gcc-15.2.0
+microblaze                       allyesconfig    gcc-15.2.0
+mips                             allmodconfig    gcc-15.2.0
+mips                              allnoconfig    gcc-15.2.0
+mips                             allyesconfig    gcc-15.2.0
+nios2                            allmodconfig    gcc-11.5.0
+nios2                             allnoconfig    gcc-11.5.0
+nios2                 randconfig-001-20260307    gcc-10.5.0
+nios2                 randconfig-002-20260307    gcc-8.5.0
+openrisc                         allmodconfig    gcc-15.2.0
+openrisc                          allnoconfig    gcc-15.2.0
+parisc                           allmodconfig    gcc-15.2.0
+parisc                            allnoconfig    gcc-15.2.0
+parisc                           allyesconfig    gcc-15.2.0
+parisc                randconfig-001-20260307    gcc-12.5.0
+parisc                randconfig-002-20260307    gcc-8.5.0
+powerpc                          allmodconfig    gcc-15.2.0
+powerpc                           allnoconfig    gcc-15.2.0
+powerpc               randconfig-001-20260307    gcc-8.5.0
+powerpc               randconfig-002-20260307    gcc-11.5.0
+powerpc64             randconfig-001-20260307    gcc-8.5.0
+powerpc64             randconfig-002-20260307    gcc-12.5.0
+riscv                            allmodconfig    clang-23
+riscv                             allnoconfig    gcc-15.2.0
+riscv                            allyesconfig    clang-16
+riscv                 randconfig-001-20260307    clang-17
+riscv                 randconfig-002-20260307    clang-23
+s390                             allmodconfig    clang-18
+s390                              allnoconfig    clang-23
+s390                             allyesconfig    gcc-15.2.0
+s390                  randconfig-001-20260307    clang-23
+s390                  randconfig-002-20260307    clang-23
+sh                               allmodconfig    gcc-15.2.0
+sh                                allnoconfig    gcc-15.2.0
+sh                               allyesconfig    gcc-15.2.0
+sh                    randconfig-001-20260307    gcc-15.2.0
+sh                    randconfig-002-20260307    gcc-15.2.0
+sparc                             allnoconfig    gcc-15.2.0
+sparc                 randconfig-001-20260307    gcc-15.2.0
+sparc                 randconfig-002-20260307    gcc-11.5.0
+sparc64                          allmodconfig    clang-23
+sparc64               randconfig-001-20260307    clang-23
+sparc64               randconfig-002-20260307    gcc-8.5.0
+um                               allmodconfig    clang-19
+um                                allnoconfig    clang-23
+um                               allyesconfig    gcc-14
+um                    randconfig-001-20260307    gcc-14
+um                    randconfig-002-20260307    clang-23
+x86_64                           allmodconfig    clang-20
+x86_64                            allnoconfig    clang-20
+x86_64                           allyesconfig    clang-20
+x86_64      buildonly-randconfig-001-20260307    gcc-14
+x86_64      buildonly-randconfig-002-20260307    gcc-14
+x86_64      buildonly-randconfig-003-20260307    gcc-14
+x86_64      buildonly-randconfig-004-20260307    clang-20
+x86_64      buildonly-randconfig-005-20260307    clang-20
+x86_64      buildonly-randconfig-006-20260307    gcc-14
+x86_64                          rhel-9.4-rust    clang-20
+xtensa                            allnoconfig    gcc-15.2.0
+xtensa                           allyesconfig    gcc-15.2.0
+xtensa                randconfig-001-20260307    gcc-8.5.0
+xtensa                randconfig-002-20260307    gcc-8.5.0
 
-All errors (new ones prefixed by >>):
-
-   mm/mempolicy.c: In function 'mpol_count_numa_alloc':
-   mm/mempolicy.c:2489:17: error: implicit declaration of function 'mem_cgroup_from_task'; did you mean 'mem_cgroup_from_css'? [-Wimplicit-function-declaration]
-    2489 |         memcg = mem_cgroup_from_task(current);
-         |                 ^~~~~~~~~~~~~~~~~~~~
-         |                 mem_cgroup_from_css
->> mm/mempolicy.c:2489:15: error: assignment to 'struct mem_cgroup *' from 'int' makes pointer from integer without a cast [-Wint-conversion]
-    2489 |         memcg = mem_cgroup_from_task(current);
-         |               ^
-
-
-vim +2489 mm/mempolicy.c
-
-  2429	
-  2430	/*
-  2431	 * Count a mempolicy allocation. Stats are tracked per-node and per-cgroup.
-  2432	 * The following numa_{hit/miss/foreign} pattern is used:
-  2433	 *
-  2434	 *   hit
-  2435	 *     - for BIND and PREFERRED_MANY, allocation succeeded on node in nodemask
-  2436	 *     - for other policies, allocation succeeded on intended node
-  2437	 *     - counted on the node of the allocation
-  2438	 *   miss
-  2439	 *     - allocation intended for other node, but happened on this one
-  2440	 *     - counted on other node
-  2441	 *   foreign
-  2442	 *     - allocation intended on this node, but happened on other node
-  2443	 *     - counted on this node
-  2444	 */
-  2445	static void mpol_count_numa_alloc(struct mempolicy *pol, int intended_nid,
-  2446					  struct page *page, unsigned int order)
-  2447	{
-  2448		int actual_nid = page_to_nid(page);
-  2449		long nr_pages = 1L << order;
-  2450		enum node_stat_item hit_idx;
-  2451		struct mem_cgroup *memcg;
-  2452		struct lruvec *lruvec;
-  2453		bool is_hit;
-  2454	
-  2455		if (!root_mem_cgroup || mem_cgroup_disabled())
-  2456			return;
-  2457	
-  2458		/*
-  2459		 * Start with hit then use +1 or +2 later on to change to miss or
-  2460		 * foreign respectively if needed.
-  2461		 */
-  2462		switch (pol->mode) {
-  2463		case MPOL_PREFERRED:
-  2464			hit_idx = NUMA_MPOL_PREFERRED_HIT;
-  2465			break;
-  2466		case MPOL_PREFERRED_MANY:
-  2467			hit_idx = NUMA_MPOL_PREFERRED_MANY_HIT;
-  2468			break;
-  2469		case MPOL_BIND:
-  2470			hit_idx = NUMA_MPOL_BIND_HIT;
-  2471			break;
-  2472		case MPOL_INTERLEAVE:
-  2473			hit_idx = NUMA_MPOL_INTERLEAVE_HIT;
-  2474			break;
-  2475		case MPOL_WEIGHTED_INTERLEAVE:
-  2476			hit_idx = NUMA_MPOL_WEIGHTED_INTERLEAVE_HIT;
-  2477			break;
-  2478		default:
-  2479			hit_idx = NUMA_MPOL_LOCAL_HIT;
-  2480			break;
-  2481		}
-  2482	
-  2483		if (pol->mode == MPOL_BIND || pol->mode == MPOL_PREFERRED_MANY)
-  2484			is_hit = node_isset(actual_nid, pol->nodes);
-  2485		else
-  2486			is_hit = (actual_nid == intended_nid);
-  2487	
-  2488		rcu_read_lock();
-> 2489		memcg = mem_cgroup_from_task(current);
-  2490	
-  2491		if (is_hit) {
-  2492			lruvec = mem_cgroup_lruvec(memcg, NODE_DATA(actual_nid));
-  2493			mod_lruvec_state(lruvec, hit_idx, nr_pages);
-  2494		} else {
-  2495			/* account for miss on the fallback node */
-  2496			lruvec = mem_cgroup_lruvec(memcg, NODE_DATA(actual_nid));
-  2497			mod_lruvec_state(lruvec, hit_idx + 1, nr_pages);
-  2498	
-  2499			/* account for foreign on the intended node */
-  2500			lruvec = mem_cgroup_lruvec(memcg, NODE_DATA(intended_nid));
-  2501			mod_lruvec_state(lruvec, hit_idx + 2, nr_pages);
-  2502		}
-  2503	
-  2504		rcu_read_unlock();
-  2505	}
-  2506	
-
--- 
+--
 0-DAY CI Kernel Test Service
 https://github.com/intel/lkp-tests/wiki
 
