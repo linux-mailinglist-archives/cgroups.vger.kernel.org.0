@@ -1,166 +1,173 @@
-Return-Path: <cgroups+bounces-14716-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-14717-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id ELGfNY7SrmlhJAIAu9opvQ
-	(envelope-from <cgroups+bounces-14716-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Mon, 09 Mar 2026 15:00:46 +0100
+	id mHoXK8XwrmkWKQIAu9opvQ
+	(envelope-from <cgroups+bounces-14717-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Mon, 09 Mar 2026 17:09:41 +0100
 X-Original-To: lists+cgroups@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id CB76423A33E
-	for <lists+cgroups@lfdr.de>; Mon, 09 Mar 2026 15:00:44 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2E97C23C7B1
+	for <lists+cgroups@lfdr.de>; Mon, 09 Mar 2026 17:09:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 13042302866F
-	for <lists+cgroups@lfdr.de>; Mon,  9 Mar 2026 14:00:25 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 7498B313D71A
+	for <lists+cgroups@lfdr.de>; Mon,  9 Mar 2026 16:03:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D7EDC3CB2E3;
-	Mon,  9 Mar 2026 14:00:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC5693BE160;
+	Mon,  9 Mar 2026 16:03:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ovj5osbH"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="K6r4DGW3"
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 95F9A38F948;
-	Mon,  9 Mar 2026 14:00:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B54B53E3DAD
+	for <cgroups@vger.kernel.org>; Mon,  9 Mar 2026 16:03:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1773064822; cv=none; b=jOXFqjCuwhTlf3hPDgTzHEWJ7jM7CBatopmxNBz5mh++BmU5O8LytrVWY+C4PGx3+RODzEWYsbClaPZ9bLu/3t6Qv5Q3yyh/+Lrgcde9MDAxkaHgxxZNZjBPvu7i8rtswcjChvRcMUb3ou1becz4WQWb9Fsggradi6amm6lE2ak=
+	t=1773072183; cv=none; b=NXgZgGa2llKMV2DbIWJm1adgTEO/DEV79BXLem75MVMc31poUdWAwNtSmcJ2mia4t1uhNkv7zGgJMYFnl2NamvyA4qjLvWPzYndUdPFFgT+lWkjztFx7hXYVDQNd4XfH3LsSIPsXNr8gsCaSHmJNNkX2YGbYjGoOtIPnJBuNcJE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1773064822; c=relaxed/simple;
-	bh=DnCTxrCceZEz1a9g0WegA+3Sbf1oc314HptMlIzKbcc=;
-	h=Message-ID:Date:MIME-Version:From:Subject:To:Cc:References:
-	 In-Reply-To:Content-Type; b=MhqisUpAl/LiL53bZYCbEKDfqqmdPF3k35VC9umOegXD915Z/sMLbdH9nsyZZRqqWMM4drcK30SqJkKxPL9gQ5jI6otgDJaCH2FmO2Oenke0kh+b7sMN+PoCanqJuoVoRLXi/kCD7Z7TTVzwUWKzB8GDQc2yo5d3bJpPRADR6hQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ovj5osbH; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0526AC4CEF7;
-	Mon,  9 Mar 2026 14:00:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1773064822;
-	bh=DnCTxrCceZEz1a9g0WegA+3Sbf1oc314HptMlIzKbcc=;
-	h=Date:From:Subject:To:Cc:References:In-Reply-To:From;
-	b=ovj5osbHOQZAbykrOKjaNKiC/PPZQXDRw1nyH+1XViznnSZDCqkeDx5eL9quBIBsQ
-	 UJC+r+PeVEAN8FjGoAUaaUnJPFZsycuEXyK1aLyYFm/GX3yiwe1Fbikx5wo5UJMDLV
-	 t10Ji3OWaEXZKc4PSXFCVEo0FVKQnUg5SUgfFK053iSmBp33N2MsYc/DSRmpr/4Jsv
-	 vq+RV1XC7qsxFY0uDaafX1ZuQj6Fx7MFR86Q1orM8qJtHBkOGLsO8FwPp2RBLLZbjp
-	 8xvRNFuZc0up6rzLjRwgdBlNLKCUbwfCpB6EwHAdTu2Vw3T5Q9uPTXbGs9bbimOBva
-	 DxPEH+dJN/kWQ==
-Message-ID: <0a25d83b-c6ea-4230-a89d-1f496b91764c@kernel.org>
-Date: Mon, 9 Mar 2026 15:00:17 +0100
+	s=arc-20240116; t=1773072183; c=relaxed/simple;
+	bh=VZ1BIqL8i6P+He8dWltWZCbdPkS9xTO6wWulg2F5f48=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=l13/dFmCJS5DoFQo7tmtEOXB4tar6OYX7o93PcmxM4kMHsmoVfFay7abjFgIg0eexGukzkAzu5D1DXPJjQCoy9vjKwMY4637wlJHo4N3DPVHLpNDXs7H10D/3QTQp2ZrMDrRsuTmWDEm8UnQXt/Gwe2h5lWyNy4/7JLDwUvb2l8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=K6r4DGW3; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1773072179;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=u4dkpXFG4aTyAb5XVO2UTWBuvIYgMqymSwley3GnlI8=;
+	b=K6r4DGW39Gf0wXV11HdHB7kytz37D0JR5VnE7e8L4FtO6Q938/otHXmG1NlhXZTygmQaAy
+	VFwGOTVQcfoJCsaDDSMBqKZH6GZyM6fzVTWx8h0sX8dPDQ/6o0WmcrIzfZSttXl+7NMMqn
+	J1FRZ6wbKQubxcBMECntGeXETOukk9w=
+Received: from mx-prod-mc-05.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-540-B65hgm3aN2CjtyE_8CYC3A-1; Mon,
+ 09 Mar 2026 12:02:54 -0400
+X-MC-Unique: B65hgm3aN2CjtyE_8CYC3A-1
+X-Mimecast-MFC-AGG-ID: B65hgm3aN2CjtyE_8CYC3A_1773072172
+Received: from mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.17])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mx-prod-mc-05.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 00B881955D48;
+	Mon,  9 Mar 2026 16:02:29 +0000 (UTC)
+Received: from llong-thinkpadp16vgen1.westford.csb (unknown [10.22.81.138])
+	by mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id 285521955D71;
+	Mon,  9 Mar 2026 16:02:25 +0000 (UTC)
+From: Waiman Long <longman@redhat.com>
+To: Johannes Weiner <hannes@cmpxchg.org>,
+	Michal Hocko <mhocko@kernel.org>,
+	Roman Gushchin <roman.gushchin@linux.dev>,
+	Shakeel Butt <shakeel.butt@linux.dev>,
+	Muchun Song <muchun.song@linux.dev>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Tejun Heo <tj@kernel.org>,
+	=?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>,
+	Shuah Khan <shuah@kernel.org>,
+	Mike Rapoport <rppt@kernel.org>
+Cc: linux-kernel@vger.kernel.org,
+	cgroups@vger.kernel.org,
+	linux-mm@kvack.org,
+	linux-kselftest@vger.kernel.org,
+	Waiman Long <longman@redhat.com>
+Subject: [PATCH] selftest: memcg: Skp memcg_sock test if address family not supported
+Date: Mon,  9 Mar 2026 12:02:05 -0400
+Message-ID: <20260309160205.651754-1-longman@redhat.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-From: vbabka@kernel.org
-Subject: Re: [PATCH] mm/slab: fix an incorrect check in obj_exts_alloc_size()
-Content-Language: en-US
-To: Harry Yoo <harry.yoo@oracle.com>
-Cc: adilger.kernel@dilger.ca, akpm@linux-foundation.org,
- cgroups@vger.kernel.org, hannes@cmpxchg.org, hao.li@linux.dev,
- linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-mm@kvack.org, shicenci@gmail.com,
- cl@gentwo.org, rientjes@google.com, roman.gushchin@linux.dev,
- viro@zeniv.linux.org.uk, surenb@google.com, stable@vger.kernel.org
-References: <aa5NmA25QsFDMhof@hyeyoo>
- <20260309072219.22653-1-harry.yoo@oracle.com>
-In-Reply-To: <20260309072219.22653-1-harry.yoo@oracle.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Rspamd-Queue-Id: CB76423A33E
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.0 on 10.30.177.17
+X-Rspamd-Queue-Id: 2E97C23C7B1
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-2.16 / 15.00];
+X-Spamd-Result: default: False [-0.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
+	MID_CONTAINS_FROM(1.00)[];
+	R_MISSING_CHARSET(0.50)[];
+	DMARC_POLICY_ALLOW(-0.50)[redhat.com,quarantine];
+	R_DKIM_ALLOW(-0.20)[redhat.com:s=mimecast20190719];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-14716-lists,cgroups=lfdr.de];
-	RCVD_COUNT_THREE(0.00)[4];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	FREEMAIL_CC(0.00)[dilger.ca,linux-foundation.org,vger.kernel.org,cmpxchg.org,linux.dev,kvack.org,gmail.com,gentwo.org,google.com,zeniv.linux.org.uk];
-	RCPT_COUNT_TWELVE(0.00)[17];
 	MIME_TRACE(0.00)[0:+];
-	FROM_NEQ_ENVFROM(0.00)[vbabka@kernel.org,cgroups@vger.kernel.org];
-	FROM_NO_DN(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	MID_RHS_MATCH_FROM(0.00)[];
-	NEURAL_HAM(-0.00)[-0.972];
+	RCPT_COUNT_TWELVE(0.00)[15];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	RCVD_TLS_LAST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-14717-lists,cgroups=lfdr.de];
+	DKIM_TRACE(0.00)[redhat.com:+];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	MISSING_XM_UA(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
-	DKIM_TRACE(0.00)[kernel.org:+];
+	FROM_NEQ_ENVFROM(0.00)[longman@redhat.com,cgroups@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[6];
 	TAGGED_RCPT(0.00)[cgroups];
-	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
+	NEURAL_HAM(-0.00)[-0.984];
 	TO_DN_SOME(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:rdns,tor.lore.kernel.org:helo,oracle.com:email]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo]
 X-Rspamd-Action: no action
 
-On 3/9/26 08:22, Harry Yoo wrote:
-> obj_exts_alloc_size() prevents recursive allocation of slabobj_ext
-> array from the same cache, to avoid creating slabs that are never freed.
-> 
-> There is one mistake that returns the original size when memory
-> allocation profiling is disabled. The assumption was that
-> memcg-triggered slabobj_ext allocation is always served from
-> KMALLOC_CGROUP type. But this is wrong [1]: when the caller specifies
-> both __GFP_RECLAIMABLE and __GFP_ACCOUNT with SLUB_TINY enabled, the
-> allocation is served from normal kmalloc. This is because kmalloc_type()
-> prioritizes __GFP_RECLAIMABLE over __GFP_ACCOUNT, and SLUB_TINY aliases
-> KMALLOC_RECLAIM with KMALLOC_NORMAL.
+On systems where IPv6 isn't enabled or not configured to support
+SOCK_STREAM, the test_memcg_sock test always fails. The purpose
+of the test_memcg_sock test is to verify that memory.stat.sock and
+memory.current values are close. If the socket() call fails, there is
+no way we can test that. I believe it is better to just skip the test
+in this case instead of reporting a test failure hinting that there
+may be something wrong with the memcg code.
 
-Hm that's suboptimal (leads to sparsely used obj_exts in normal kmalloc
-slabs) and maybe separately from this hotfix we could make sure that with
-SLUB_TINY, __GFP_ACCOUNT is preferred going forward?
+Fixes: 5f8f019380b8 ("selftests: cgroup/memcontrol: add basic test for socket accounting")
+Signed-off-by: Waiman Long <longman@redhat.com>
+---
+ tools/testing/selftests/cgroup/test_memcontrol.c | 11 ++++++++++-
+ 1 file changed, 10 insertions(+), 1 deletion(-)
 
-> As a result, the recursion guard is bypassed and the problematic slabs
-> can be created. Fix this by removing the mem_alloc_profiling_enabled()
-> check entirely. The remaining is_kmalloc_normal() check is still
-> sufficient to detect whether the cache is of KMALLOC_NORMAL type and
-> avoid bumping the size if it's not.
-> 
-> Without SLUB_TINY, no functional change intended.
-> With SLUB_TINY, allocations with __GFP_ACCOUNT|__GFP_RECLAIMABLE
-> now allocate a larger array if the sizes equal.
-> 
-> Reported-by: Zw Tang <shicenci@gmail.com>
-> Fixes: 280ea9c3154b ("mm/slab: avoid allocating slabobj_ext array from its own slab")
-> Closes: https://lore.kernel.org/linux-mm/CAPHJ_VKuMKSke8b11AZQw1PTSFN4n2C0gFxC6xGOG0ZLHgPmnA@mail.gmail.com [1]
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Harry Yoo <harry.yoo@oracle.com>
-
-Added to slab/for-next-fixes, thanks!
-
-> ---
-> 
-> Zw Tang, could you please confirm that the warning disappears
-> on your test environment, with this patch applied?
-> 
->  mm/slub.c | 7 -------
->  1 file changed, 7 deletions(-)
-> 
-> diff --git a/mm/slub.c b/mm/slub.c
-> index 20cb4f3b636d..6371838d2352 100644
-> --- a/mm/slub.c
-> +++ b/mm/slub.c
-> @@ -2119,13 +2119,6 @@ static inline size_t obj_exts_alloc_size(struct kmem_cache *s,
->  	size_t sz = sizeof(struct slabobj_ext) * slab->objects;
->  	struct kmem_cache *obj_exts_cache;
->  
-> -	/*
-> -	 * slabobj_ext array for KMALLOC_CGROUP allocations
-> -	 * are served from KMALLOC_NORMAL caches.
-> -	 */
-> -	if (!mem_alloc_profiling_enabled())
-> -		return sz;
-> -
->  	if (sz > KMALLOC_MAX_CACHE_SIZE)
->  		return sz;
->  
-> 
-> base-commit: 6432f15c818cb30eec7c4ca378ecdebd9796f741
+diff --git a/tools/testing/selftests/cgroup/test_memcontrol.c b/tools/testing/selftests/cgroup/test_memcontrol.c
+index 2fb096a2a9f9..3c13ef67fafb 100644
+--- a/tools/testing/selftests/cgroup/test_memcontrol.c
++++ b/tools/testing/selftests/cgroup/test_memcontrol.c
+@@ -1280,8 +1280,11 @@ static int tcp_server(const char *cgroup, void *arg)
+ 	saddr.sin6_port = htons(srv_args->port);
+ 
+ 	sk = socket(AF_INET6, SOCK_STREAM, 0);
+-	if (sk < 0)
++	if (sk < 0) {
++		/* Pass back errno to the ctl_fd */
++		write(ctl_fd, &errno, sizeof(errno));
+ 		return ret;
++	}
+ 
+ 	if (setsockopt(sk, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(yes)) < 0)
+ 		goto cleanup;
+@@ -1414,6 +1417,9 @@ static int test_memcg_sock(const char *root)
+ 
+ 		if (!err)
+ 			break;
++		if (err == EAFNOSUPPORT)
++			/* Skip if address family not supported by protocol */
++			goto skip;
+ 		if (err != EADDRINUSE)
+ 			goto cleanup;
+ 
+@@ -1460,6 +1466,9 @@ static int test_memcg_sock(const char *root)
+ 	free(memcg);
+ 
+ 	return ret;
++skip:
++	ret = KSFT_SKIP;
++	goto cleanup;
+ }
+ 
+ /*
+-- 
+2.53.0
 
 
