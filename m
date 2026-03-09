@@ -1,193 +1,243 @@
-Return-Path: <cgroups+bounces-14719-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-14720-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id kMvhK9UNr2njNAIAu9opvQ
-	(envelope-from <cgroups+bounces-14719-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Mon, 09 Mar 2026 19:13:41 +0100
+	id yFi4A5o9r2mDSgIAu9opvQ
+	(envelope-from <cgroups+bounces-14720-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Mon, 09 Mar 2026 22:37:30 +0100
 X-Original-To: lists+cgroups@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1AC0123E634
-	for <lists+cgroups@lfdr.de>; Mon, 09 Mar 2026 19:13:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id A9E99241CA0
+	for <lists+cgroups@lfdr.de>; Mon, 09 Mar 2026 22:37:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id DC3E73158077
-	for <lists+cgroups@lfdr.de>; Mon,  9 Mar 2026 18:07:41 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 4415B308E487
+	for <lists+cgroups@lfdr.de>; Mon,  9 Mar 2026 21:33:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 75C69339B41;
-	Mon,  9 Mar 2026 18:07:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 87574314B72;
+	Mon,  9 Mar 2026 21:33:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="D3SxbZGT"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="HilA6hXG"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-wr1-f53.google.com (mail-wr1-f53.google.com [209.85.221.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-189.mta0.migadu.com (out-189.mta0.migadu.com [91.218.175.189])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CDBD933A039
-	for <cgroups@vger.kernel.org>; Mon,  9 Mar 2026 18:07:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B9030366804
+	for <cgroups@vger.kernel.org>; Mon,  9 Mar 2026 21:33:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.189
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1773079629; cv=none; b=iACtfLV2pp8FoOVO68LTV7Z88TnwHKPDV7nLK3xHWMjRSSBhDQL55SCW0/XFP7Zi7uPgcS1sWcdNjsr5DFzCSBk3t0h2ChIDhvsR1XJWOl+sBV5OktLDIorvDNlXjtsv+ZlZFJZnbtR0anoguKsF2JbCYM/VPnzhrk/EuUOL/Ag=
+	t=1773092014; cv=none; b=JppZu72+3hyZM8eCIVZOFsaBXCl96BOB5cMadng/nInQA9Q/hbKY8vMXBa+OTfpHxZmZgX6pK+88UyzOb8qRDSiQuzXAaIS27Stpw3rLr0/nR/F0EYRJLn79iisJl6i9eRPa1e6TCFsjNvAIyC+7B/jNIIszGSnTTLZ1uqVZb2k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1773079629; c=relaxed/simple;
-	bh=MmljSQnw2lcYLsSo3FghZOv/9z9lThlxmlthDeAKQp4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=J6x/PcY0UoWXLFlijWqQss7k82YseuhvXcsurQfbyFOZmqJ6dESrHwjItJmuCLxHfTW08zMqdH1Ngvog0JH5bt/jR3/ot3yhFnLqWtzk9T1M2zWXK5cKazfZ7efQEl80xB0EJHNKtxq3Wn4SGKCCCed/pkH3QaaKl0WfetvGpkA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=D3SxbZGT; arc=none smtp.client-ip=209.85.221.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-wr1-f53.google.com with SMTP id ffacd0b85a97d-439af7d77f0so7694410f8f.0
-        for <cgroups@vger.kernel.org>; Mon, 09 Mar 2026 11:07:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1773079626; x=1773684426; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=MrfDzIDC5Rwkn3qiBzXUKn7XOVFFMBF2JI8saiP7iIE=;
-        b=D3SxbZGT9Lz/X6NgZ1mHGvVazeFTqbOb+mX+TpTFjbUPJUZY0K/f/Cpxjfm/uOubGF
-         Xrp5QMS93zFqoO8hkb8PLN3q5DdW6V6bVd3++6JIr4AOxVjZT1m9NyBj0ebk45rxlSZo
-         e4cDAcDYIap7KFnDY8Cd1kqK9TsgzK/qdm5j0BJmqoNfCMJkUGBpFy62Xora3AnRWF4N
-         PqsNb06kPaUoxdfoPl+pKNIuwXXUIxhJFXM4MQ5pX6ucOVrSS9Ta84tAbr91pEqYFRZ/
-         r/GxtSS4K69EKQQ3MJ5FaMJSuEVN5vnsIb6b4p7c+/OPcawjwZXqIEIt7rn75plc7fXl
-         IvQA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1773079626; x=1773684426;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=MrfDzIDC5Rwkn3qiBzXUKn7XOVFFMBF2JI8saiP7iIE=;
-        b=KpHs2dvydegVE0WXvfxAfWhFiqQzXk3X/lwe5WxAQaIsYjAvoA4rA37glWMub+2njY
-         KQ230AGlyXYMo448LhDGkYi2+EVUGLvxld9dIZEZgvVTpG5Gze26PJYDbRDsIh8KR5Lt
-         EbDDrXLOyq7sD33DTliXNxKlmdslYRUrU0eBeyC/UBnTs0wk3YP/ueYY75HKjwWV+U3t
-         qpgWovVxU7qXQa3/lzV6ibdlTBqOaiYyyvJHhK5Z7c9NLZsc1FwYYsR4Mb9arzmgio6l
-         iwAiiO1EZKebTyezrOVS5WmdJ9tcpNx0N/DiBM48HzCgJEYu5wQnT4OHkYoyXu+O5zSa
-         De9w==
-X-Forwarded-Encrypted: i=1; AJvYcCU76ePmCudKfNIRdmFgSLhHcHJz7p2KoTmg2v+2SiSr08Ub4DpbscUroqsJc4iiPxJNebFkghhN@vger.kernel.org
-X-Gm-Message-State: AOJu0Yy56KvpeRQguD/zgne//TplIUtjy/CpslN1Po6liMc9vwXZYA9n
-	tz5BOw78SV316DXaUNt96XNHV2Z1BeVlOo46L6MzurCXvwspjxfBKxCQLz5JVIQI1iY=
-X-Gm-Gg: ATEYQzzpxzQ5hcSj0F6aFIwlzNAwpGAtw8DcPZqqYV+Dt3F3/foodtaV5FeYzKHx1kk
-	i2sq55jYARf2nf3R+RmU2FH3Z1pqzYbuoUOCzPf79Ua2Np+FVv/ld0eAXFyxn16hrl1lmOQbq3X
-	eDWSFr/Mh5X3QZAUyIfAVP0WZ5UqTPUHd94kt10WCYn7GVH2SHsuZLaYSsilgIjML+73pJUAacf
-	9pMm1TWH0mvq4vCIjagiFz40yqKln+xZlEJjbFwIAFvmblg2F4vGAccqFY15AXkrfPLnrJRePXc
-	/GnT1I0YRYA507a78ot/PLiZpqzG05ygWHMsXojOS9XtpOnsEDxHjWIz3cKAExe8394wIkBZ3UZ
-	Qw+1Zoh1SH8Md4FpTJyoFtAPSXPftNGVmNYPqkkOWjvlPRsu1oam6ua+GcYyofamjpNnkGbp43q
-	/XYuH7WWrY5/saBoAWHV80ETR5Wr5y/bNJ96BF/SIAyis=
-X-Received: by 2002:a05:6000:220d:b0:439:c43a:acb1 with SMTP id ffacd0b85a97d-439da67c0bcmr22231635f8f.35.1773079626120;
-        Mon, 09 Mar 2026 11:07:06 -0700 (PDT)
-Received: from blackdock.suse.cz (nat2.prg.suse.com. [195.250.132.146])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-439dae2ba66sm24939422f8f.20.2026.03.09.11.07.05
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 09 Mar 2026 11:07:05 -0700 (PDT)
-Date: Mon, 9 Mar 2026 19:07:04 +0100
-From: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
-To: Waiman Long <longman@redhat.com>
-Cc: Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>, 
-	Roman Gushchin <roman.gushchin@linux.dev>, Shakeel Butt <shakeel.butt@linux.dev>, 
-	Muchun Song <muchun.song@linux.dev>, Andrew Morton <akpm@linux-foundation.org>, 
-	Tejun Heo <tj@kernel.org>, Shuah Khan <shuah@kernel.org>, Mike Rapoport <rppt@kernel.org>, 
-	linux-kernel@vger.kernel.org, cgroups@vger.kernel.org, linux-mm@kvack.org, 
-	linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH] selftest: memcg: Skp memcg_sock test if address family
- not supported
-Message-ID: <4ddd3jascnb6nt7quhyjfmsgsmtfmjofwmnrgjktz57cfbfymj@6ejbdgbg4lz2>
-References: <20260309160205.651754-1-longman@redhat.com>
+	s=arc-20240116; t=1773092014; c=relaxed/simple;
+	bh=sX6BwC3BCH9RqGWQ0rs0ZhqsSUA0OElBmhhKAo8x29U=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=lyAaWMP+fTk8E33Ay1i/w1RmKBk+7D17kV2TgDmFAGtnY6Wz5GesfUQSNRXtTlpQZ9MNfgcEUA6/ji5WeeI2uP3iWzvAcIr6dXn0+KQk6q1kqenopUKp5V/DIzS8kS9lDdCooxTB8jA+ddk8rtWldejaGd+KKtcR/IXEGH2zSQw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=HilA6hXG; arc=none smtp.client-ip=91.218.175.189
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1773092010;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=rdIdQECuuDl6/Ar1yEpr/74GArV/vN6WZaGFta6VVEM=;
+	b=HilA6hXGBS3zlK+1DJFkasUJrC0tswqKYMhZWKCAiaIEc2Egp+H0cvGUVM0xZu3ODgB951
+	JUlv+ib/MdrGbUsFxrOEB1lSez7AepQYHC/Pvh1Gc4MJ1WSuo97JCC338RbrmNabeyxyIK
+	fJ/df6cmzuFMGm5fFy3xj/H8Mslldow=
+From: Roman Gushchin <roman.gushchin@linux.dev>
+To: Shakeel Butt <shakeel.butt@linux.dev>
+Cc: lsf-pc@lists.linux-foundation.org,  Andrew Morton
+ <akpm@linux-foundation.org>,  Tejun Heo <tj@kernel.org>,  Michal Hocko
+ <mhocko@suse.com>,  Johannes Weiner <hannes@cmpxchg.org>,  Alexei
+ Starovoitov <ast@kernel.org>,  Michal =?utf-8?Q?Koutn=C3=BD?=
+ <mkoutny@suse.com>,  Hui Zhu
+ <hui.zhu@linux.dev>,  JP Kobryn <inwardvessel@gmail.com>,  Muchun Song
+ <muchun.song@linux.dev>,  Geliang Tang <geliang@kernel.org>,  Sweet Tea
+ Dorminy <sweettea-kernel@dorminy.me>,  Emil Tsalapatis
+ <emil@etsalapatis.com>,  David Rientjes <rientjes@google.com>,  Martin
+ KaFai Lau <martin.lau@linux.dev>,  Meta kernel team
+ <kernel-team@meta.com>,  linux-mm@kvack.org,  cgroups@vger.kernel.org,
+  bpf@vger.kernel.org,  linux-kernel@vger.kernel.org
+Subject: Re: [LSF/MM/BPF TOPIC] Reimagining Memory Cgroup (memcg_ext)
+In-Reply-To: <20260307182424.2889780-1-shakeel.butt@linux.dev> (Shakeel Butt's
+	message of "Sat, 7 Mar 2026 10:24:24 -0800")
+References: <20260307182424.2889780-1-shakeel.butt@linux.dev>
+Date: Mon, 09 Mar 2026 14:33:22 -0700
+Message-ID: <87sea8zo0t.fsf@linux.dev>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="yd53fwzzczbtgjoq"
-Content-Disposition: inline
-In-Reply-To: <20260309160205.651754-1-longman@redhat.com>
-X-Rspamd-Queue-Id: 1AC0123E634
+Content-Type: text/plain
+X-Migadu-Flow: FLOW_OUT
+X-Rspamd-Queue-Id: A9E99241CA0
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-3.76 / 15.00];
-	SIGNED_PGP(-2.00)[];
+X-Spamd-Result: default: False [-1.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_RHS_NOT_FQDN(0.50)[];
-	DMARC_POLICY_ALLOW(-0.50)[suse.com,quarantine];
-	R_DKIM_ALLOW(-0.20)[suse.com:s=google];
-	MIME_GOOD(-0.20)[multipart/signed,text/plain];
+	DMARC_POLICY_ALLOW(-0.50)[linux.dev,none];
+	R_MISSING_CHARSET(0.50)[];
+	R_DKIM_ALLOW(-0.20)[linux.dev:s=key1];
 	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	MAILLIST(-0.15)[generic];
+	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-14719-lists,cgroups=lfdr.de];
-	RCVD_TLS_LAST(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	MIME_TRACE(0.00)[0:+,1:+,2:~];
+	TAGGED_FROM(0.00)[bounces-14720-lists,cgroups=lfdr.de];
+	FREEMAIL_CC(0.00)[lists.linux-foundation.org,linux-foundation.org,kernel.org,suse.com,cmpxchg.org,linux.dev,gmail.com,dorminy.me,etsalapatis.com,google.com,meta.com,kvack.org,vger.kernel.org];
+	RCVD_COUNT_THREE(0.00)[3];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[14];
-	DKIM_TRACE(0.00)[suse.com:+];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	RCVD_TLS_LAST(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[21];
+	MIME_TRACE(0.00)[0:+];
+	DKIM_TRACE(0.00)[linux.dev:+];
 	MISSING_XM_UA(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[5];
+	TO_DN_SOME(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[mkoutny@suse.com,cgroups@vger.kernel.org];
+	FROM_NEQ_ENVFROM(0.00)[roman.gushchin@linux.dev,cgroups@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	NEURAL_HAM(-0.00)[-1.000];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[cgroups];
-	TO_DN_SOME(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,suse.com:dkim]
+	MID_RHS_MATCH_FROM(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[linux.dev:dkim,linux.dev:email,linux.dev:mid,sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo]
 X-Rspamd-Action: no action
 
+Shakeel Butt <shakeel.butt@linux.dev> writes:
 
---yd53fwzzczbtgjoq
-Content-Type: text/plain; protected-headers=v1; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-Subject: Re: [PATCH] selftest: memcg: Skp memcg_sock test if address family
- not supported
-MIME-Version: 1.0
+> Over the last couple of weeks, I have been brainstorming on how I would go
+> about redesigning memcg, taking inspiration from sched_ext and bpfoom, with a
+> focus on existing challenges and issues. This proposal outlines the high-level
+> direction. Followup emails and patch series will cover and brainstorm the
+> mechanisms (of course BPF) to achieve these goals.
+>
+> Memory cgroups provide memory accounting and the ability to control memory usage
+> of workloads through two categories of limits. Throttling limits (memory.max and
+> memory.high) cap memory consumption. Protection limits (memory.min and
+> memory.low) shield a workload's memory from reclaim under external memory
+> pressure.
+>
+> Challenges
+> ----------
+>
+> - Workload owners rarely know their actual memory requirements, leading to
+>   overprovisioned limits, lower utilization, and higher infrastructure costs.
+>
+> - Throttling limit enforcement is synchronous in the allocating task's context,
+>   which can stall latency-sensitive threads.
+>
+> - The stalled thread may hold shared locks, causing priority inversion -- all
+>   waiters are blocked regardless of their priority.
+>
+> - Enforcement is indiscriminate -- there is no way to distinguish a
+>   performance-critical or latency-critical allocator from a latency-tolerant
+>   one.
+>
+> - Protection limits assume static working sets size, forcing owners to either
+>   overprovision or build complex userspace infrastructure to dynamically adjust
+>   them.
+>
+> Feature Wishlist
+> ----------------
+>
+> Here is the list of features and capabilities I want to enable in the
+> redesigned memcg limit enforcement world.
+>
+> Per-Memcg Background Reclaim
+>
+> In the new memcg world, with the goal of (mostly) eliminating direct synchronous
+> reclaim for limit enforcement, provide per-memcg background reclaimers which can
+> scale across CPUs with the allocation rate.
+>
+> Lock-Aware Throttling
+>
+> The ability to avoid throttling an allocating task that is holding locks, to
+> prevent priority inversion. In Meta's fleet, we have observed lock holders stuck
+> in memcg reclaim, blocking all waiters regardless of their priority or
+> criticality.
+>
+> Thread-Level Throttling Control
+>
+> Workloads should be able to indicate at the thread level which threads can be
+> synchronously throttled and which cannot. For example, while experimenting with
+> sched_ext, we drastically improved the performance of AI training workloads by
+> prioritizing threads interacting with the GPU. Similarly, applications can
+> identify the threads or thread pools on their performance-critical paths and
+> the memcg enforcement mechanism should not throttle them.
+>
+> Combined Memory and Swap Limits
+>
+> Some users (Google actually) need the ability to enforce limits based on
+> combined memory and swap usage, similar to cgroup v1's memsw limit, providing a
+> ceiling on total memory commitment rather than treating memory and swap
+> independently.
+>
+> Dynamic Protection Limits
+>
+> Rather than static protection limits, the kernel should support defining
+> protection based on the actual working set of the workload, leveraging signals
+> such as working set estimation, PSI, refault rates, or a combination thereof to
+> automatically adapt to the workload's current memory needs.
+>
+> Shared Memory Semantics
+>
+> With more flexibility in limit enforcement, the kernel should be able to
+> account for memory shared between workloads (cgroups) during enforcement.
+> Today, enforcement only looks at each workload's memory usage independently.
+> Sensible shared memory semantics would allow the enforcer to consider
+> cross-cgroup sharing when making reclaim and throttling decisions.
+>
+> Memory Tiering
+>
+> With a flexible limit enforcement mechanism, the kernel can balance memory
+> usage of different workloads across memory tiers based on their performance
+> requirements. Tier accounting and hotness tracking are orthogonal, but the
+> decisions of when and how to balance memory between tiers should be handled by
+> the enforcer.
+>
+> Collaborative Load Shedding
+>
+> Many workloads communicate with an external entity for load balancing and rely
+> on their own usage metrics like RSS or memory pressure to signal whether they
+> can accept more or less work. This is guesswork. Instead of the
+> workload guessing, the limit enforcer -- which is actually managing the
+> workload's memory usage -- should be able to communicate available headroom or
+> request the workload to shed load or reduce memory usage. This collaborative
+> load shedding mechanism would allow workloads to make informed decisions rather
+> than reacting to coarse signals.
+>
+> Cross-Subsystem Collaboration
+>
+> Finally, the limit enforcement mechanism should collaborate with the CPU
+> scheduler and other subsystems that can release memory. For example, dirty
+> memory is not reclaimable and the memory subsystem wakes up flushers to trigger
+> writeback. However, flushers need CPU to run -- asking the CPU scheduler to
+> prioritize them ensures the kernel does not lack reclaimable memory under
+> stressful conditions. Similarly, some subsystems free memory through workqueues
+> or RCU callbacks. While this may seem orthogonal to limit enforcement, we can
+> definitely take advantage by having visibility into these situations.
+>
+> Putting It All Together
+> -----------------------
+>
+> To illustrate the end goal, here is an example of the scenario I want to
+> enable. Suppose there is an AI agent controlling the resources of a host. I
+> should be able to provide the following policy and everything should work out
+> of the box:
+>
+> Policy: "keep system-level memory utilization below 95 percent;
+> avoid priority inversions by not throttling allocators holding locks; trim each
+> workload's usage to its working set without regressing its relevant performance
+> metrics; collaborate with workloads on load shedding and memory trimming
+> decisions; and under extreme memory pressure, collaborate with the OOM killer
+> and the central job scheduler to kill and clean up a workload."
 
-On Mon, Mar 09, 2026 at 12:02:05PM -0400, Waiman Long <longman@redhat.com> =
-wrote:
-> On systems where IPv6 isn't enabled or not configured to support
-> SOCK_STREAM, the test_memcg_sock test always fails.
+This is fantastic, thanks Shakeel!
 
-I think IPv6 is not substantial for the check...
+I'd be very interested to discuss it! I suggested a somewhat
+similar/related topic to the bpf track (bpf use cases in mm), we might
+think of joining them.
 
-> The purpose of the test_memcg_sock test is to verify that
-> memory.stat.sock and memory.current values are close.
-
-=2E.. so this should work with IPv4 too.
-
-> If the socket() call fails, there is no way we can test that. I
-> believe it is better to just skip the test in this case instead of
-> reporting a test failure hinting that there may be something wrong
-> with the memcg code.
-
-Yes, the skip on (any) socket creation is also (independently) good.
-
-> @@ -1460,6 +1466,9 @@ static int test_memcg_sock(const char *root)
->  	free(memcg);
-> =20
->  	return ret;
-> +skip:
-> +	ret =3D KSFT_SKIP;
-> +	goto cleanup;
-
-Maybe make this analogous with other cases where there is no specific skip-=
-label but
-
-	if (err =3D=3D EAFNOSUPPORT) {
-		ret =3D KSFT_SKIP;
-		goto cleanup;
-	}
-
-Thanks,
-Michal
-
---yd53fwzzczbtgjoq
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iJEEABYKADkWIQRCE24Fn/AcRjnLivR+PQLnlNv4CAUCaa8MRBsUgAAAAAAEAA5t
-YW51MiwyLjUrMS4xMiwyLDIACgkQfj0C55Tb+AjPoQD+PmjLLORgemm6L6Wd7y1R
-hoB0caqu50AlVSz1SKP3ThsBAP+AO9l6EzSrSBWNiUV7LSV/NsXeLyrdxjriU91M
-fVEL
-=GNSq
------END PGP SIGNATURE-----
-
---yd53fwzzczbtgjoq--
+Thanks!
 
