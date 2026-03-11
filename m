@@ -1,171 +1,318 @@
-Return-Path: <cgroups+bounces-14758-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-14764-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id ME+tAMcssWkBrgIAu9opvQ
-	(envelope-from <cgroups+bounces-14758-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Wed, 11 Mar 2026 09:50:15 +0100
+	id qHSTIsKasWnkDAAAu9opvQ
+	(envelope-from <cgroups+bounces-14764-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Wed, 11 Mar 2026 17:39:30 +0100
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4B25C25FB64
-	for <lists+cgroups@lfdr.de>; Wed, 11 Mar 2026 09:50:14 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id EECDF267761
+	for <lists+cgroups@lfdr.de>; Wed, 11 Mar 2026 17:39:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id 29212301EA3F
-	for <lists+cgroups@lfdr.de>; Wed, 11 Mar 2026 08:50:00 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 8C561308AF5F
+	for <lists+cgroups@lfdr.de>; Wed, 11 Mar 2026 16:37:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A97D3B9D89;
-	Wed, 11 Mar 2026 08:49:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0FC4C3DDDDB;
+	Wed, 11 Mar 2026 16:37:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="WxZtBfmn";
-	dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b="Jx1JxbEt"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="PTJTNxua"
 X-Original-To: cgroups@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC5823C2794
-	for <cgroups@vger.kernel.org>; Wed, 11 Mar 2026 08:49:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=170.10.133.124
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1773218992; cv=pass; b=bI63v7HBMPOtFaJJonDyCTuxd+RWFn3DR80oCqX4LSts+tx32n3fTJ14h45hlOlWWSlm7pjF/HTfn5MRSnlOTbaF5Ru4v4r1PtLyRLnWZB7pF49kUyBDrdi5YYZTcwyweqckGmR/sK78TrCJqg8iOzEAjMKmqjBUpNx9Ta3oVPo=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1773218992; c=relaxed/simple;
-	bh=Qo7WbD1QbdNemF38QHPtSbMk0ng5osXjI0DVE3wZsWQ=;
-	h=MIME-Version:From:Date:Message-ID:Subject:To:Content-Type; b=CSwyWZ5MNhYkZubp8QHH/yIG9crLbYOE2jMcTLln+3pnT/jXQJvV1kWCcIps1mxbq/hGBOfBrMdDr4SmGKQR0zvImXKiaaUr2pyskh9HJxCuRfalYMjGJLXh7HkMW3ksx54ePkL6l+NEDX4yVGPkMvhVzftdx3CU+0EHiSN8u/0=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=WxZtBfmn; dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b=Jx1JxbEt; arc=pass smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E34B2D595D
+	for <cgroups@vger.kernel.org>; Wed, 11 Mar 2026 16:37:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1773247070; cv=none; b=Zq58OW4dNoLypEG+uLhm4OnAewvK+Wfm2R4/fpk3cM7XvkBFpeqV7+LLQe7EaSGwI7DBtgTvA24f59tIH6V8Zr4923ToTDmhrQMve1p6uM1/5MF4kpDcRyJPQ8H1Fx73Ji52rkjZ4L7f/Zy2uOYBFuEz1bSzKA2SMt+nt5ge+Yg=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1773247070; c=relaxed/simple;
+	bh=5OvuHZyQrLn200Z63geYiTj5JvynNGQ7QO/CdyCFQAs=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Py4lOb+OUho59pWyzAREPZYM0duZia8X1iFk+5ptc7GXj/mWrdcdVJ3uhAdVzk/lJwuzeOu22O5td+Pm1bD4ezQS9yYOZvL2sSQiAgLFwpYi2PLJ08TnSk3lSEkgXy529cJapgiTTy/PnK6QVXzJTE66nzw0a/V6DJyBINsJC/c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=PTJTNxua; arc=none smtp.client-ip=170.10.129.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1773218985;
+	s=mimecast20190719; t=1773247068;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:mime-version:mime-version:content-type:content-type;
-	bh=Qo7WbD1QbdNemF38QHPtSbMk0ng5osXjI0DVE3wZsWQ=;
-	b=WxZtBfmnJf6oXUj9VnlnNZ64RVE4upyHGYOxpWap+eyL8hpRzPN/f42ryW+zFLFtDkbGQw
-	hOYv6BIPZXevEbiq7Clap9WXEAclI74ZWdXAaE9I5LAxvVfZ8Lh9RGuVXh9D/g2iPWArxP
-	NG27aOChB7hjyhB9tllFZTkn/HzXb/k=
-Received: from mail-ej1-f69.google.com (mail-ej1-f69.google.com
- [209.85.218.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-292-CfRBMpiYNs25-F_0s8n0UA-1; Wed, 11 Mar 2026 04:49:44 -0400
-X-MC-Unique: CfRBMpiYNs25-F_0s8n0UA-1
-X-Mimecast-MFC-AGG-ID: CfRBMpiYNs25-F_0s8n0UA_1773218983
-Received: by mail-ej1-f69.google.com with SMTP id a640c23a62f3a-b96edb0feeaso289766266b.1
-        for <cgroups@vger.kernel.org>; Wed, 11 Mar 2026 01:49:44 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; t=1773218983; cv=none;
-        d=google.com; s=arc-20240605;
-        b=k/aN3+tM3s2MF+ZoTRb4bv7lgci9HJQktGxR0CXQey8aqFlnb3f0zH7AbBUY4xaWC/
-         XPEXo9djJNs6zO5w1KHrlWlbs2c6TFd0aDdsoIjB9UZwRs3XolsLFMyOd2Uy6t54nsDz
-         /RFWD2D+MwFIHPynss5Q/bICMexJl8bdlKN28A88kB9hjoH2MooEEqlr/i7yPJDIfzqN
-         y1/FPvcpO/GIamGFh6i1n2IzJ6GeHFD7kOEmKks3ivmirVIIq3g+yn/0rlqWJyenBEBS
-         R5Ve9CEfsJxwRoM1MLd29ISybmjFFCwTVQj2FEuF0mErxYw0u8O5pnedSo1XhOaxVA0o
-         J0UQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
-        h=to:subject:message-id:date:from:mime-version:dkim-signature;
-        bh=Qo7WbD1QbdNemF38QHPtSbMk0ng5osXjI0DVE3wZsWQ=;
-        fh=/VRlkVNHEsrQ9zqVZXnAg8lRt77OVKWaLx0DQfkmUoM=;
-        b=gcsprzls8UfUP2gK4QeCTCxJOuGxSUMjAh0cS9U58OGl0GKamEf9U3Dz3u3F9DHKmw
-         pBdtS/IDGfj3IEI0fzuW2gkYzPrfDry9UmoPKLbg91bP4ZUMZR25S9FidwAgmCUQZefP
-         Mq2dOjlVkRPGxw6xrJenqnk8+jrTn5ERdqyjkWlRlHZ2bttSA6heR2kYxdEuWMSwRViE
-         Yshnp0+je/EdBzocuR1wF5L2TUayb4BLbGXu3+ItPSdiuMHA2gdxvUHauzxBC8Z0YJp8
-         batgy3Ki/dQdccdnQeou9GjtwEal1YiJqfLrCU38vYoVVYhfZq+2+leDyCCmDKsTkG+L
-         QaVA==;
-        darn=vger.kernel.org
-ARC-Authentication-Results: i=1; mx.google.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=redhat.com; s=google; t=1773218983; x=1773823783; darn=vger.kernel.org;
-        h=to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=Qo7WbD1QbdNemF38QHPtSbMk0ng5osXjI0DVE3wZsWQ=;
-        b=Jx1JxbEtayeQTehXEH54bsK86pZWqev2rU6um8eTOAbSz0uoimGasPOOKgei3F24+w
-         s/fc5eiYlcpES34v8cZJxLlt1F7TOpndwd/aeOBoF4pSdXBfWlb7Tohqbc7yKqzVy2uZ
-         2EUnkQv32lzW01TCIPgX39FlOP8uQIis/VBFk5aDQcLox0L/AX8+iris6JtkWX/YNWvr
-         Fv1weR8ZPVfbIaUZy7/rUNuoVT95Cgls1nUcAOV9GAJvqYGofov47b75oEDDbtxghGhb
-         vmFZWN6LL2XdsqguKVbUVmhukAqXcQr+VNttA7y2VekSkyV3OMvjK7pRpizUr6Dv7WiN
-         CTbQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1773218983; x=1773823783;
-        h=to:subject:message-id:date:from:mime-version:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Qo7WbD1QbdNemF38QHPtSbMk0ng5osXjI0DVE3wZsWQ=;
-        b=GrafdBaUtWqR9abBhwwiWAy4K1r2RXXj5w9GOezE16rUI/mH1ofIcVtDvpK0PYruQE
-         38zcuOYFzoQfbcbmfaDbImA+0dhed5W5KJQKKW7q5Jm7bqS0if/0jpgWCsH6bIdA2BKV
-         ZoZhvYdySzxIHX8hmbutmRBXuS/tOYPFyP5jxzoKfjLsT/A75W3NjNLudARljyuA+R8M
-         4JvwXvb1ESXsofrgK59h6E4Sxf2nRsJrBfNwnipYUZOJLgUPmjYdmd/ywjSwF2dvqSt+
-         xWXZtB9cCdzZsUpNuFS3vjjT4ceqqa/KXLD8FfxCgJgMNKph4j+AnIdYExKlFI6CO+N+
-         Wo4A==
-X-Gm-Message-State: AOJu0YyQkeuP+8m94k5r18OWS2AVGZiVjg4O24IL+8U7T91aHfvykyar
-	zT4nPpilofRFiK3pTeqXj9stnqEWwnK32wEwmsbc5PeSOXg0U/AfTPjf5N9bP1i+mKU72DnipsO
-	UpAWtGK4zqfm2/BFISuMg26qEX/1ljgZp/g/ZDjS4CCBRJp4eV+bkH32lo2RJpaw2zsF/7filHC
-	8eabbSCVibTk2oMh3Vs0vQuHvVUI1W+zC0/NwtGayt9JjWX9Nn1g==
-X-Gm-Gg: ATEYQzx1mP/PwRkD94dnzgcSYbTtfUhLj9tODt1yhZM2bXai7s4cbbfPk6vAgBMLN1t
-	Kwh+vStlq8aKXYit9AL8MNyXeRNVQlUSr+xOpCItKbpQFj6EX2EhDdBhvNRPeDjuojAdFPTd6Ft
-	JLfxADeZRLWIQ4K1gvl7R1YRivTzt9XcUtApoX+duu93hOF7dPrwzHPUtiL35UhYudYzf6jE0Xh
-	Lcs584=
-X-Received: by 2002:a17:907:1b13:b0:b88:5bbc:3658 with SMTP id a640c23a62f3a-b972e5a2d9amr90241066b.52.1773218982711;
-        Wed, 11 Mar 2026 01:49:42 -0700 (PDT)
-X-Received: by 2002:a17:907:1b13:b0:b88:5bbc:3658 with SMTP id
- a640c23a62f3a-b972e5a2d9amr90238966b.52.1773218982184; Wed, 11 Mar 2026
- 01:49:42 -0700 (PDT)
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=R/zsIrZ3k0UmQpOmPvuPlBsjs52eW5q3aaq8jYkZIKQ=;
+	b=PTJTNxuad3oxbmGZPg39cbV/AkWVnm1ZcvSEyUO+pwtL2/I3oFnvSFPQfAOh6pJQoVSeW4
+	Rerzd0gflzmefJugGApJpV7zbbC11Nczu+p+ZSqki2Nl9DxIig2xLssJ4laD3fjzYlWxex
+	YWqih5nmo/HIyuTdp1OOgvstxac48OE=
+Received: from mx-prod-mc-05.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-661-032I48B1PwuD_vNs1Xdqig-1; Wed,
+ 11 Mar 2026 12:37:44 -0400
+X-MC-Unique: 032I48B1PwuD_vNs1Xdqig-1
+X-Mimecast-MFC-AGG-ID: 032I48B1PwuD_vNs1Xdqig_1773247060
+Received: from mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.4])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mx-prod-mc-05.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 855CE195609E;
+	Wed, 11 Mar 2026 16:37:39 +0000 (UTC)
+Received: from tpad.localdomain (unknown [10.96.133.6])
+	by mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 0FC843000223;
+	Wed, 11 Mar 2026 16:37:36 +0000 (UTC)
+Received: by tpad.localdomain (Postfix, from userid 1000)
+	id 71EC1401E2187; Wed, 11 Mar 2026 07:23:32 -0300 (-03)
+Date: Wed, 11 Mar 2026 07:23:32 -0300
+From: Marcelo Tosatti <mtosatti@redhat.com>
+To: Leonardo Bras <leobras.c@gmail.com>
+Cc: Michal Hocko <mhocko@suse.com>, linux-kernel@vger.kernel.org,
+	cgroups@vger.kernel.org, linux-mm@kvack.org,
+	Johannes Weiner <hannes@cmpxchg.org>,
+	Roman Gushchin <roman.gushchin@linux.dev>,
+	Shakeel Butt <shakeel.butt@linux.dev>,
+	Muchun Song <muchun.song@linux.dev>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Christoph Lameter <cl@linux.com>, Pekka Enberg <penberg@kernel.org>,
+	David Rientjes <rientjes@google.com>,
+	Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+	Vlastimil Babka <vbabka@suse.cz>,
+	Hyeonggon Yoo <42.hyeyoo@gmail.com>,
+	Leonardo Bras <leobras@redhat.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Waiman Long <longman@redhat.com>, Boqun Feng <boqun.feng@gmail.com>,
+	Frederic Weisbecker <fweisbecker@suse.de>
+Subject: Re: [PATCH 0/4] Introduce QPW for per-cpu operations
+Message-ID: <abFCpCTB64NACMH2@tpad>
+References: <aYywl1hdBQP2_slo@tiehlicka>
+ <aZDw6xI2izFDfuuu@WindFlash>
+ <aZL45yORfkNvS9Rs@tiehlicka>
+ <aZjY9h3XXMNY-Ytd@WindFlash>
+ <aZwYmNuucBspCYhk@tiehlicka>
+ <aaJDjmnfuo8AM6J9@WindFlash>
+ <aaYpICV55B70U1I2@tpad>
+ <aa20uDGqnmiqYJ1w@WindFlash>
+ <abCL8vE3cttL1Yq0@tpad>
+ <abCxXZCJPgNuOPG2@WindFlash>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-From: Lucas Liu <hongzliu@redhat.com>
-Date: Wed, 11 Mar 2026 16:49:31 +0800
-X-Gm-Features: AaiRm50MpBmDYcuIM3Ue2rspwscP1maHNKx8QhP8fX5PDlXRPos8qDnvink7D2o
-Message-ID: <CAEnjF8FxM2CGgGC0R42R7R4=udHMtkwV9bCVcw7NDq7KTZMLkg@mail.gmail.com>
-Subject: [ISSUE] cgroup: test_percpu_basic fails on PREEMPT_RT due to lazy
- percpu stat flushing
-To: cgroups@vger.kernel.org, linux-kselftest@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Rspamd-Queue-Id: 4B25C25FB64
-X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-2.16 / 15.00];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=2];
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <abCxXZCJPgNuOPG2@WindFlash>
+X-Scanned-By: MIMEDefang 3.4.1 on 10.30.177.4
+X-Spamd-Result: default: False [-0.16 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+	MID_RHS_NOT_FQDN(0.50)[];
 	DMARC_POLICY_ALLOW(-0.50)[redhat.com,quarantine];
-	R_DKIM_ALLOW(-0.20)[redhat.com:s=mimecast20190719,redhat.com:s=google];
-	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_DKIM_ALLOW(-0.20)[redhat.com:s=mimecast20190719];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	DKIM_TRACE(0.00)[redhat.com:+];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCPT_COUNT_TWO(0.00)[2];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-14758-lists,cgroups=lfdr.de];
-	MISSING_XM_UA(0.00)[];
-	FROM_HAS_DN(0.00)[];
+	TAGGED_FROM(0.00)[bounces-14764-lists,cgroups=lfdr.de];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[lpc.events:url,fedvm:email];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	FREEMAIL_TO(0.00)[gmail.com];
+	RCPT_COUNT_TWELVE(0.00)[21];
 	MIME_TRACE(0.00)[0:+];
+	FREEMAIL_CC(0.00)[suse.com,vger.kernel.org,kvack.org,cmpxchg.org,linux.dev,linux-foundation.org,linux.com,kernel.org,google.com,lge.com,suse.cz,gmail.com,redhat.com,linutronix.de,suse.de];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	TO_DN_SOME(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[hongzliu@redhat.com,cgroups@vger.kernel.org];
-	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
-	RCVD_COUNT_FIVE(0.00)[5];
+	FROM_NEQ_ENVFROM(0.00)[mtosatti@redhat.com,cgroups@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	DKIM_TRACE(0.00)[redhat.com:+];
 	NEURAL_HAM(-0.00)[-1.000];
-	TO_DN_NONE(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
 	TAGGED_RCPT(0.00)[cgroups];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:rdns,sin.lore.kernel.org:helo,mail.gmail.com:mid]
+	MISSING_XM_UA(0.00)[];
+	RCVD_COUNT_SEVEN(0.00)[7]
+X-Rspamd-Queue-Id: EECDF267761
 X-Rspamd-Action: no action
+X-Rspamd-Server: lfdr
 
-Hi recently I met this issue
- ./test_kmem
-ok 1 test_kmem_basic
-ok 2 test_kmem_memcg_deletion
-ok 3 test_kmem_proc_kpagecgroup
-ok 4 test_kmem_kernel_stacks
-ok 5 test_kmem_dead_cgroups
-memory.current 24514560
-percpu 15280000
-not ok 6 test_percpu_basic
+On Tue, Mar 10, 2026 at 09:03:41PM -0300, Leonardo Bras wrote:
+> On Tue, Mar 10, 2026 at 06:24:02PM -0300, Marcelo Tosatti wrote:
+> > On Sun, Mar 08, 2026 at 02:41:12PM -0300, Leonardo Bras wrote:
+> > > On Mon, Mar 02, 2026 at 09:19:44PM -0300, Marcelo Tosatti wrote:
+> > > > On Fri, Feb 27, 2026 at 10:23:27PM -0300, Leonardo Bras wrote:
+> > > > > On Mon, Feb 23, 2026 at 10:06:32AM +0100, Michal Hocko wrote:
+> > > > > > On Fri 20-02-26 18:58:14, Leonardo Bras wrote:
+> > > > > > > On Mon, Feb 16, 2026 at 12:00:55PM +0100, Michal Hocko wrote:
+> > > > > > > > On Sat 14-02-26 19:02:19, Leonardo Bras wrote:
+> > > > > > > > > On Wed, Feb 11, 2026 at 05:38:47PM +0100, Michal Hocko wrote:
+> > > > > > > > > > On Wed 11-02-26 09:01:12, Marcelo Tosatti wrote:
+> > > > > > > > > > > On Tue, Feb 10, 2026 at 03:01:10PM +0100, Michal Hocko wrote:
+> > > > > > > > > > [...]
+> > > > > > > > > > > > What about !PREEMPT_RT? We have people running isolated workloads and
+> > > > > > > > > > > > these sorts of pcp disruptions are really unwelcome as well. They do not
+> > > > > > > > > > > > have requirements as strong as RT workloads but the underlying
+> > > > > > > > > > > > fundamental problem is the same. Frederic (now CCed) is working on
+> > > > > > > > > > > > moving those pcp book keeping activities to be executed to the return to
+> > > > > > > > > > > > the userspace which should be taking care of both RT and non-RT
+> > > > > > > > > > > > configurations AFAICS.
+> > > > > > > > > > > 
+> > > > > > > > > > > Michal,
+> > > > > > > > > > > 
+> > > > > > > > > > > For !PREEMPT_RT, _if_ you select CONFIG_QPW=y, then there is a kernel
+> > > > > > > > > > > boot option qpw=y/n, which controls whether the behaviour will be
+> > > > > > > > > > > similar (the spinlock is taken on local_lock, similar to PREEMPT_RT).
+> > > > > > > > > > 
+> > > > > > > > > > My bad. I've misread the config space of this.
+> > > > > > > > > > 
+> > > > > > > > > > > If CONFIG_QPW=n, or kernel boot option qpw=n, then only local_lock 
+> > > > > > > > > > > (and remote work via work_queue) is used.
+> > > > > > > > > > > 
+> > > > > > > > > > > What "pcp book keeping activities" you refer to ? I don't see how
+> > > > > > > > > > > moving certain activities that happen under SLUB or LRU spinlocks
+> > > > > > > > > > > to happen before return to userspace changes things related 
+> > > > > > > > > > > to avoidance of CPU interruption ?
+> > > > > > > > > > 
+> > > > > > > > > > Essentially delayed operations like pcp state flushing happens on return
+> > > > > > > > > > to the userspace on isolated CPUs. No locking changes are required as
+> > > > > > > > > > the work is still per-cpu.
+> > > > > > > > > > 
+> > > > > > > > > > In other words the approach Frederic is working on is to not change the
+> > > > > > > > > > locking of pcp delayed work but instead move that work into well defined
+> > > > > > > > > > place - i.e. return to the userspace.
+> > > > > > > > > > 
+> > > > > > > > > > Btw. have you measure the impact of preempt_disbale -> spinlock on hot
+> > > > > > > > > > paths like SLUB sheeves?
+> > > > > > > > > 
+> > > > > > > > > Hi Michal,
+> > > > > > > > > 
+> > > > > > > > > I have done some study on this (which I presented on Plumbers 2023):
+> > > > > > > > > https://lpc.events/event/17/contributions/1484/ 
+> > > > > > > > > 
+> > > > > > > > > Since they are per-cpu spinlocks, and the remote operations are not that 
+> > > > > > > > > frequent, as per design of the current approach, we are not supposed to see 
+> > > > > > > > > contention (I was not able to detect contention even after stress testing 
+> > > > > > > > > for weeks), nor relevant cacheline bouncing.
+> > > > > > > > > 
+> > > > > > > > > That being said, for RT local_locks already get per-cpu spinlocks, so there 
+> > > > > > > > > is only difference for !RT, which as you mention, does preemtp_disable():
+> > > > > > > > > 
+> > > > > > > > > The performance impact noticed was mostly about jumping around in 
+> > > > > > > > > executable code, as inlining spinlocks (test #2 on presentation) took care 
+> > > > > > > > > of most of the added extra cycles, adding about 4-14 extra cycles per 
+> > > > > > > > > lock/unlock cycle. (tested on memcg with kmalloc test)
+> > > > > > > > > 
+> > > > > > > > > Yeah, as expected there is some extra cycles, as we are doing extra atomic 
+> > > > > > > > > operations (even if in a local cacheline) in !RT case, but this could be 
+> > > > > > > > > enabled only if the user thinks this is an ok cost for reducing 
+> > > > > > > > > interruptions.
+> > > > > > > > > 
+> > > > > > > > > What do you think?
+> > > > > > > > 
+> > > > > > > > The fact that the behavior is opt-in for !RT is certainly a plus. I also
+> > > > > > > > do not expect the overhead to be really be really big. 
+> > > > > > > 
+> > > > > > > Awesome! Thanks for reviewing!
+> > > > > > > 
+> > > > > > > > To me, a much
+> > > > > > > > more important question is which of the two approaches is easier to
+> > > > > > > > maintain long term. The pcp work needs to be done one way or the other.
+> > > > > > > > Whether we want to tweak locking or do it at a very well defined time is
+> > > > > > > > the bigger question.
+> > > > > > > 
+> > > > > > > That crossed my mind as well, and I went with the idea of changing locking 
+> > > > > > > because I was working on workloads in which deferring work to a kernel 
+> > > > > > > re-entry would cause deadline misses as well. Or more critically, the 
+> > > > > > > drains could take forever, as some of those tasks would avoid returning to 
+> > > > > > > kernel as much as possible. 
+> > > > > > 
+> > > > > > Could you be more specific please?
+> > > > > 
+> > > > > Hi Michal,
+> > > > > Sorry for the delay
+> > > > > 
+> > > > > I think Marcelo covered some of the main topics earlier in this 
+> > > > > thread:
+> > > > > 
+> > > > > https://lore.kernel.org/all/aZ3ejedS7nE5mnva@tpad/
+> > > > > 
+> > > > > But in syntax:
+> > > > > - There are workloads that are projected not avoid as much as possible 
+> > > > > return to kernelspace, as they are either cpu intensive, or latency 
+> > > > > sensitive (RT workloads) such as low-latency automation.
+> > > > > 
+> > > > > There are scenarios such as industrial automation in which 
+> > > > > the applications are supposed to reply a request in less than 50us since it 
+> > > > > was generated (IIRC), so sched-out, dealing with interruptions, or syscalls 
+> > > > > are a no-go. In those cases, using cpu isolation is a must, and since it 
+> > > > > can stay really long running in userspace, it may take a very long time to 
+> > > > > do any syscall to actually perform the scheduled flush.
+> > > > > 
+> > > > > - Other workloads may need to use syscalls, or rely in interrupts, such as 
+> > > > > HPC, but it's also not interesting to take long on them, as the time spent 
+> > > > > there is time not used for processing the required data.
+> > > > > 
+> > > > > Let's say that for the sake of cpu isolation, a lot of different
+> > > > > requests made to given isolated cpu are batched to be run on syscall 
+> > > > > entry/exit. It means the next syscall may take much longer than 
+> > > > > usual.
+> > > > > - This may break other RT workloads such as  sensor/sound/image sampling, 
+> > > > > which could be generally ok with some of the faster syscalls for their 
+> > > > > application, and now may perceive an error because one of those syscalls 
+> > > > > took too long. 
+> > > > > 
+> > > > > While the qpw approach may cost a few extra cycles, it operates remotelly 
+> > > > > and makes the system a bit more predictable. 
+> > > > > 
+> > > > > Also, when I was planning the mechanism, I remember it was meant to add 
+> > > > > zero overhead in case of CONFIG_QPW=n, very little overhead in case of 
+> > > > > CONFIG_QPW=y + qpw=0 (a couple of static branches, possibly with the 
+> > > > > cost removed by the cpu branch predictor),  and only add a few cycles in 
+> > > > > case of qpw=1 + !RT. Which means we may be missing just a few adjustments 
+> > > > > to get there.
+> > > > 
+> > > > Leo,
+> > > > 
+> > > > v2 of the patchset adds only 2 cycles to CONFIG_QPW=y + qpw=0. 
+> > > > The larger overhead was due to migrate_disable, which is now (on v2)
+> > > > hidden inside the static branch.
+> > > > My bad.
+> > > 
+> > > Hi Marcelo,
+> > > 
+> > > Great, hiding migrate_disable under the static branch is the best scenario.
+> > > 
+> > > I wonder why we spend 2 cycles on the static branches, though, should be 
+> > > close to nothing unless the branch predictor is too busy already. Well, we 
+> > > can always try to optimize in a different way.
+> > > 
+> > > Thanks for the effort on this!
+> > 
+> > Leo,
+> > 
+> > migrate_enable was leaking out of the static key section 
+> > into the common error path.
+> > 
+> > With preempt_disable, as suggested by Vlastimil, those 2 cycles are
+> > gone:
+> > 
+> > [   61.217232] kmalloc_bench: Avg cycles per kmalloc: 164
+> > [   68.047789] kmalloc_bench: Avg cycles per kmalloc: 165
+> > [   73.266568] kmalloc_bench: Avg cycles per kmalloc: 165
+> > [  120.634168] kmalloc_bench: Avg cycles per kmalloc: 164
+> > [  127.617872] kmalloc_bench: Avg cycles per kmalloc: 164
+> > [  157.803679] kmalloc_bench: Avg cycles per kmalloc: 163
+> > [root@fedvm kmalloc-perf-test]# dmesg | grep qpw
+> > [    0.000000] Command line: BOOT_IMAGE=(hd0,gpt2)/vmlinuz-tip root=UUID=35cfa00b-ed70-483f-b7b2-1964e14f719e ro rootflags=subvol=root console=ttyS0,115200 qpw=0 skew_tick=1 tsc=reliable rcupdate.rcu_normal_after_boot=1 rcutree.nohz_full_patience_delay=1000 isolcpus=managed_irq,domain,14,15 amd_pstate=disable nosoftlockup crashkernel=1024M
+> > [    0.118274] Kernel command line: BOOT_IMAGE=(hd0,gpt2)/vmlinuz-tip root=UUID=35cfa00b-ed70-483f-b7b2-1964e14f719e ro rootflags=subvol=root console=ttyS0,115200 qpw=0 skew_tick=1 tsc=reliable rcupdate.rcu_normal_after_boot=1 rcutree.nohz_full_patience_delay=1000 isolcpus=managed_irq,domain,14,15 amd_pstate=disable nosoftlockup crashkernel=1024M
+> > 
+> 
+> Ohh, awesome then.
+> That means we can have a QPW-enabled kernel and zero overhead perceived if 
+> qpw=0, right?
 
-In this test the memory.current 24514560, percpu 15280000, Diff ~9.2MB.
+Yes.
 
-#define MAX_VMSTAT_ERROR (4096 * 64 * get_nprocs())
-
-in this part (8cpus) MAX_VMSTAT_ERROR is 4M memory. On the RT kernel,
-the labs(current - percpu) is 9.2M, that is the root cause for this
-failure. I am not sure what value is suitable for this case(2M per cpu
-maybe?)
+> (Yeah, instruction cache will have to fetch extra instructions, but 
+> hopefully that stays hidden enough.)
 
 
