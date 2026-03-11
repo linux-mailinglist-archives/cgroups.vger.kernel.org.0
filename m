@@ -1,188 +1,143 @@
-Return-Path: <cgroups+bounces-14751-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-14752-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id wDDyDUPasGlTnwIAu9opvQ
-	(envelope-from <cgroups+bounces-14751-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Wed, 11 Mar 2026 03:58:11 +0100
+	id yAX4DDbcsGmHnwIAu9opvQ
+	(envelope-from <cgroups+bounces-14752-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Wed, 11 Mar 2026 04:06:30 +0100
 X-Original-To: lists+cgroups@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7094B25B304
-	for <lists+cgroups@lfdr.de>; Wed, 11 Mar 2026 03:58:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 865F125B44E
+	for <lists+cgroups@lfdr.de>; Wed, 11 Mar 2026 04:06:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id D561D3075E96
-	for <lists+cgroups@lfdr.de>; Wed, 11 Mar 2026 02:58:08 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id EF289306CEFC
+	for <lists+cgroups@lfdr.de>; Wed, 11 Mar 2026 03:06:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4E846299A84;
-	Wed, 11 Mar 2026 02:58:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C06B2FD7C3;
+	Wed, 11 Mar 2026 03:06:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="JInCquuA"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="dAvyt5ry"
 X-Original-To: cgroups@vger.kernel.org
-Received: from out30-133.freemail.mail.aliyun.com (out30-133.freemail.mail.aliyun.com [115.124.30.133])
+Received: from out-178.mta1.migadu.com (out-178.mta1.migadu.com [95.215.58.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BCED51A9FA0;
-	Wed, 11 Mar 2026 02:58:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.133
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 745442F3C3E
+	for <cgroups@vger.kernel.org>; Wed, 11 Mar 2026 03:06:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1773197888; cv=none; b=QCdVPi14uLnm0qpvhzv9M5fal7aPlm3knzvSmVNt1VVQQqqDnDg3wunUmfuTSSvOlh/rQiX+B2pLzFu0PWNN+8nrtW/L4nTtBJQ3kba6FbS8Mpx4S3D2S6T83o5BKz+0eXtYOfqRpcYMqMoO9EdhiBblN6jymxEMv7lMLGgqOWQ=
+	t=1773198387; cv=none; b=toMZ8Ld0dnu01VS7sj8kFcCZqXW2qlgcSSib72mY52agAasucwscTuzfLyoeMzWAYf6WgTu8LJG/1K9V6g6/gXcn6fiXyCdRpSpQXOtEhkDk4x0l8PuAO5Li8RF/eJJtV3UdE7UnfB+TaRB2ZQTDFcyELHPG8frX1gmZmVVUF5Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1773197888; c=relaxed/simple;
-	bh=vl21MbKWHSssbLSFKCDtGoRXg4pvqpBMdC6BYftVXI4=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=PGiJv6hqkdw1AsaPDcrd6lOOeFfmE4uvv/lnRtilXdfbQTgXXlN9+ZUA82TELvdDh4V3W0n9nr1J2xNgTM+sehDVhLnD2ccCd+vZKQ4ODte38ukKhuruytHWdEq0OF9ZeILtMuXB2f6S3DjLcHrgqm34ljisi6EU9/hUxzrVTi0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=JInCquuA; arc=none smtp.client-ip=115.124.30.133
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=linux.alibaba.com; s=default;
-	t=1773197878; h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type;
-	bh=KCqCXWA7676dPICIruRpxokb7vPTtkgULujt8gpuiuM=;
-	b=JInCquuAyYVo6WrsPz3G/U10+FE07lbCkddBVH7ON/DYwbq3DhJfFmn8Y1rTWOnqxFcKR+I1t+rz7LNIk1ymZttqz4o1ln4A+zy0YhzN9gSEC96PCbw1ZwthiEgWVCwqIafCbpoxxxY9QdhZS7JAvX1QY+iZIhRNe2Q+Xk8ICws=
-Received: from DESKTOP-5N7EMDA(mailfrom:ying.huang@linux.alibaba.com fp:SMTPD_---0X-iF9Lj_1773197800 cluster:ay36)
-          by smtp.aliyun-inc.com;
-          Wed, 11 Mar 2026 10:57:56 +0800
-From: "Huang, Ying" <ying.huang@linux.alibaba.com>
-To: "JP Kobryn (Meta)" <jp.kobryn@linux.dev>
-Cc: linux-mm@kvack.org,  akpm@linux-foundation.org,  mhocko@suse.com,
-  vbabka@suse.cz,  apopple@nvidia.com,  axelrasmussen@google.com,
-  byungchul@sk.com,  cgroups@vger.kernel.org,  david@kernel.org,
-  eperezma@redhat.com,  gourry@gourry.net,  jasowang@redhat.com,
-  hannes@cmpxchg.org,  joshua.hahnjy@gmail.com,  Liam.Howlett@oracle.com,
-  linux-kernel@vger.kernel.org,  lorenzo.stoakes@oracle.com,
-  matthew.brost@intel.com,  mst@redhat.com,  rppt@kernel.org,
-  muchun.song@linux.dev,  zhengqi.arch@bytedance.com,  rakie.kim@sk.com,
-  roman.gushchin@linux.dev,  shakeel.butt@linux.dev,  surenb@google.com,
-  virtualization@lists.linux.dev,  weixugc@google.com,
-  xuanzhuo@linux.alibaba.com,  yuanchu@google.com,  ziy@nvidia.com,
-  kernel-team@meta.com
-Subject: Re: [PATCH v2] mm/mempolicy: track page allocations per mempolicy
-In-Reply-To: <977dc43d-622c-411d-99a6-4204fa26c21e@linux.dev> (JP Kobryn's
-	message of "Sun, 8 Mar 2026 21:31:27 -0700")
-References: <20260307045520.247998-1-jp.kobryn@linux.dev>
-	<87seabu8np.fsf@DESKTOP-5N7EMDA>
-	<977dc43d-622c-411d-99a6-4204fa26c21e@linux.dev>
-Date: Wed, 11 Mar 2026 10:56:38 +0800
-Message-ID: <87cy1boyzd.fsf@DESKTOP-5N7EMDA>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+	s=arc-20240116; t=1773198387; c=relaxed/simple;
+	bh=WJNEuudC1gDCXpbLPovNaD7zZyG+9rJza+6MdbvSZwY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=LAMrlUbvoX+xsQ4hLGwLJpEmXkhtD5EvnOojTzFSOr329O32BhS1SYbnsiyGXLruybH46PE5Ds+9CLVnQCS0byp2R3vvoTALMUiwo3qopEtr6HMDeVQ2abjaDS0d0RjF3leUmokDKL6G8MEzGT5zPt41ptXt3mHOZsvCKm47vLA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=dAvyt5ry; arc=none smtp.client-ip=95.215.58.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Date: Wed, 11 Mar 2026 11:06:10 +0800
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1773198383;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=1kYOYGnrkLB9Ow4Bw65owtN+BtAuCoQOFqB6t3I3SeU=;
+	b=dAvyt5ry8mq2RbaSF6G1SFClTulZETLboPrAdgs6rTl3hPpd51q5Y8ivfi5YeZX2Y/YfRs
+	Y/7MJMuRB5Zcd2okhZTHVW4/AAtIwwQlk5N+orbzK4lGc7j6yLQl4OPbkJe+DY5oI7oebE
+	q/NDsp22PeOcrOI7CjDzWE8E41emAGU=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Hao Li <hao.li@linux.dev>
+To: Harry Yoo <harry.yoo@oracle.com>
+Cc: ranxiaokai627@163.com, hannes@cmpxchg.org, mhocko@kernel.org, 
+	roman.gushchin@linux.dev, shakeel.butt@linux.dev, muchun.song@linux.dev, 
+	akpm@linux-foundation.org, vbabka@kernel.org, cl@gentwo.org, rientjes@google.com, 
+	cgroups@vger.kernel.org, linux-mm@kvack.org, linux-kernel@vger.kernel.org, 
+	ran.xiaokai@zte.com.cn
+Subject: Re: [PATCH 0/2] fix kmem over-charging for embedded obj_exts array
+Message-ID: <exe5r2q526ym5qcypup73yltv3jqnplwhybr3zwxgcs5vfgoin@t6yj2ntfs7jk>
+References: <20260310113804.245647-1-ranxiaokai627@163.com>
+ <abDPvjUld-2BTpRa@hyeyoo>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ascii
-X-Rspamd-Queue-Id: 7094B25B304
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <abDPvjUld-2BTpRa@hyeyoo>
+X-Migadu-Flow: FLOW_OUT
+X-Rspamd-Queue-Id: 865F125B44E
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-7.16 / 15.00];
-	WHITELIST_DMARC(-7.00)[alibaba.com:D:+];
-	SUSPICIOUS_RECIPS(1.50)[];
+X-Spamd-Result: default: False [-1.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	MID_RHS_NOT_FQDN(0.50)[];
-	DMARC_POLICY_ALLOW(-0.50)[linux.alibaba.com,none];
+	DMARC_POLICY_ALLOW(-0.50)[linux.dev,none];
 	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
-	R_DKIM_ALLOW(-0.20)[linux.alibaba.com:s=default];
+	R_DKIM_ALLOW(-0.20)[linux.dev:s=key1];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
+	TAGGED_FROM(0.00)[bounces-14752-lists,cgroups=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	TAGGED_FROM(0.00)[bounces-14751-lists,cgroups=lfdr.de];
-	RCPT_COUNT_TWELVE(0.00)[33];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
 	FROM_HAS_DN(0.00)[];
-	DKIM_TRACE(0.00)[linux.alibaba.com:+];
+	RCVD_COUNT_THREE(0.00)[3];
+	MIME_TRACE(0.00)[0:+];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[15];
+	FREEMAIL_CC(0.00)[163.com,cmpxchg.org,kernel.org,linux.dev,linux-foundation.org,gentwo.org,google.com,vger.kernel.org,kvack.org,zte.com.cn];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	TO_DN_SOME(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[ying.huang@linux.alibaba.com,cgroups@vger.kernel.org];
-	FREEMAIL_CC(0.00)[kvack.org,linux-foundation.org,suse.com,suse.cz,nvidia.com,google.com,sk.com,vger.kernel.org,kernel.org,redhat.com,gourry.net,cmpxchg.org,gmail.com,oracle.com,intel.com,linux.dev,bytedance.com,lists.linux.dev,linux.alibaba.com,meta.com];
-	NEURAL_HAM(-0.00)[-1.000];
+	FROM_NEQ_ENVFROM(0.00)[hao.li@linux.dev,cgroups@vger.kernel.org];
+	DKIM_TRACE(0.00)[linux.dev:+];
+	NEURAL_HAM(-0.00)[-0.999];
 	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
 	TAGGED_RCPT(0.00)[cgroups];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[linux.dev:email,sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo,linux.alibaba.com:dkim]
+	MISSING_XM_UA(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:rdns,sea.lore.kernel.org:helo]
 X-Rspamd-Action: no action
 
-"JP Kobryn (Meta)" <jp.kobryn@linux.dev> writes:
+On Wed, Mar 11, 2026 at 11:13:18AM +0900, Harry Yoo wrote:
+> On Tue, Mar 10, 2026 at 11:38:02AM +0000, ranxiaokai627@163.com wrote:
+> > From: Ran Xiaokai <ran.xiaokai@zte.com.cn>
+> > 
+> > Since commit a77d6d338685 ("mm/slab: place slabobj_ext metadata
+> > in unused space within s->size"), the struct slabobj_ext array can
+> > use slab leftover space or be embedded into the slub object to save
+> > memory. In these cases, no extra kmalloc space is allocated for the
+> > obj_exts array.
+> > 
+> > However, obj_full_size() always returns extra sizeof(struct obj_cgroup *)
+> > bytes for every object, which leads to over-charging for slabs with
+> > embedded obj_exts.
+> > 
+> > This series optimizes obj_full_size() to check whether obj_exts uses
+> > slab leftover space or is embedded in the object. If so, only the object
+> > size is charged. Otherwise, the extra obj_cgroup pointer space is also
+> > charged.
+> 
+> Hi Ran,
+> 
+> At first look, I'm not sure if it's a good idea - although it's
+> allocated from wasted space, it's still memory that's needed to
+> charge objects.
 
-> On 3/7/26 4:27 AM, Huang, Ying wrote:
->> "JP Kobryn (Meta)" <jp.kobryn@linux.dev> writes:
->> 
->>> When investigating pressure on a NUMA node, there is no straightforward way
->>> to determine which policies are driving allocations to it.
->>>
->>> Add per-policy page allocation counters as new node stat items. These
->>> counters track allocations to nodes and also whether the allocations were
->>> intentional or fallbacks.
->>>
->>> The new stats follow the existing numa hit/miss/foreign style and have the
->>> following meanings:
->>>
->>>    hit
->>>      - for BIND and PREFERRED_MANY, allocation succeeded on node in nodemask
->>>      - for other policies, allocation succeeded on intended node
->>>      - counted on the node of the allocation
->>>    miss
->>>      - allocation intended for other node, but happened on this one
->>>      - counted on other node
->>>    foreign
->>>      - allocation intended on this node, but happened on other node
->>>      - counted on this node
->>>
->>> Counters are exposed per-memcg, per-node in memory.numa_stat and globally
->>> in /proc/vmstat.
->> IMHO, it may be better to describe your workflow as an example to
->> use
->> the newly added statistics.  That can describe why we need them.  For
->> example, what you have described in
->> https://lore.kernel.org/linux-mm/9ae80317-f005-474c-9da1-95462138f3c6@gmail.com/
->> 
->>> 1) Pressure/OOMs reported while system-wide memory is free.
->>> 2) Check per-node pgscan/pgsteal stats (provided by patch 2) to narrow
->>> down node(s) under pressure. They become available in
->>> /sys/devices/system/node/nodeN/vmstat.
->>> 3) Check per-policy allocation counters (this patch) on that node to
->>> find what policy was driving it. Same readout at nodeN/vmstat.
->>> 4) Now use /proc/*/numa_maps to identify tasks using the policy.
->> 
->
-> Good call. I'll add a workflow adapted for the current approach in
-> the next revision. I included it in another response in this thread, but
-> I'll repeat here because it will make it easier to answer your question
-> below.
->
-> 1) Pressure/OOMs reported while system-wide memory is free.
-> 2) Check /proc/zoneinfo or per-node stats in .../nodeN/vmstat to narrow
->    down node(s) under pressure.
-> 3) Check per-policy hit/miss/foreign counters (added by this patch) on
->    node(s) to see what policy is driving allocations there (intentional
->    vs fallback).
-> 4) Use /proc/*/numa_maps to identify tasks using the policy.
->
->> One question.  If we have to search /proc/*/numa_maps, why can't we
->> find all necessary information via /proc/*/numa_maps?  For example,
->> which VMA uses the most pages on the node?  Which policy is used in the
->> VMA? ...
->> 
->
-> There's a gap in the flow of information if we go straight from a node
-> in question to numa_maps. Without step 3 above, we can't distinguish
-> whether pages landed there intentionally, as a fallback, or were
-> migrated sometime after the allocation. These new counters track the
-> results of allocations at the time they happen, preserving that
-> information regardless of what may happen later on.
+Yes, I've been thinking about this as well.
 
-Sorry for late reply.
+For slabobj_ext that lives at the end of the whole slab, it seems reasonable to
+charge it to the cgroup.
 
-IMHO, step 3) doesn't add much to the flow.  It only counts allocation,
-not migration, freeing, etc.  I'm afraid that it may be misleading.  For
-example, if a lot of pages have been allocated with a mempolicy, then
-these pages are freed.  /proc/*/numa_maps are more useful stats for the
-goal.  To get all necessary information, I think that more thorough
-tracing is necessary.
+> 
+> But for "embedded into the slub object" case, yeah,
+> the metadata is charged twice, as it's already included in s->size.
 
----
-Best Regards,
-Huang, Ying
+While reading patch 2, I was also thinking about whether it would make sense to
+call obj_exts_in_slab() on every object allocation and free for this case...
+
+I wonder if we could use objext_flags to carry a bit of information about where
+slabobj_ext is located.
+
+-- 
+Thanks,
+Hao
 
