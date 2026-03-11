@@ -1,89 +1,92 @@
-Return-Path: <cgroups+bounces-14776-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-14777-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id sMFPKivUsWk2FgAAu9opvQ
-	(envelope-from <cgroups+bounces-14776-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Wed, 11 Mar 2026 21:44:27 +0100
+	id 6L1WK1ngsWngGgAAu9opvQ
+	(envelope-from <cgroups+bounces-14777-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Wed, 11 Mar 2026 22:36:25 +0100
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id EBAE726A1DD
-	for <lists+cgroups@lfdr.de>; Wed, 11 Mar 2026 21:44:26 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9111A26A797
+	for <lists+cgroups@lfdr.de>; Wed, 11 Mar 2026 22:36:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 7052730668BD
-	for <lists+cgroups@lfdr.de>; Wed, 11 Mar 2026 20:39:19 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 794DC303F477
+	for <lists+cgroups@lfdr.de>; Wed, 11 Mar 2026 21:36:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B59D9375AA1;
-	Wed, 11 Mar 2026 20:39:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E3BDB33D6EE;
+	Wed, 11 Mar 2026 21:36:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="RElTbM1F"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="WTIWSTrJ"
 X-Original-To: cgroups@vger.kernel.org
 Received: from out-178.mta1.migadu.com (out-178.mta1.migadu.com [95.215.58.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9FEDD358375
-	for <cgroups@vger.kernel.org>; Wed, 11 Mar 2026 20:39:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CAEC131F9A3;
+	Wed, 11 Mar 2026 21:36:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1773261558; cv=none; b=QSL3KFkxl9jg9nP7q0ALl8mmZm2OhPCB8XIVFmigezwEQI3oNDs8LmC6QjHYlMDmPwyP9sfIX5yUpQCaNfZOM5RVK1iXKfvc3A/AO3o4HhqD7jbzER4AMvjA2rkJ9w1bgBeVS2Jw5ouZ/4e6Ov0QgLELVWX92FWYl9SS+aBrY5I=
+	t=1773264979; cv=none; b=B3bjmMw1Gp5xOZyGM7rVpSKJaaDGgIzeUgVkZCDv/j+iNQmskaQ/yTL6VBj8IhKqK7zDT7FMA/j+03r5AXMAYLHNw0lgCunnhOuZIlN4xW8DSNC3qVNVRiNkamAyG152lBw/vOcefF4XMpJFheO4/RoitcB9eNttK3fS1OSDjBw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1773261558; c=relaxed/simple;
-	bh=tSWD3M4HidTSq9Bq42B5WqUwH+sIJInGjN1RInkRHCQ=;
+	s=arc-20240116; t=1773264979; c=relaxed/simple;
+	bh=g8SZ11jzjBJsPzGm6q4EByRc1LqT5tmqbviCSXS4o24=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=hxeDcxH6X+W4bf8AUnlQ2ntHTB2bI6XV1hfP+jwUa96VHrlrgtIWak6mJE1I05DOW3L1lpIvBibWGn8q+MKghQ2YkDH6huX98LeOAI/1xNXT0VwKfdoUn4y8SwDZI7VDdd8bARzmer4EGpjnE5+QRK9jxQ6gLs7i8u+ubStIPEo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=RElTbM1F; arc=none smtp.client-ip=95.215.58.178
+	 Content-Type:Content-Disposition:In-Reply-To; b=CzoGWgvzQNrGnt+93WenZnZ1zRMWz83LnncIDQ69XmmGwvH/I/BG1WPQs821ZuJy4YrHY32lsxu6S45oCSQTDAyBsUL5gO2CdXH0SmkV0idfNK1g1559ChNCfArwKov/yb6Dv/fTqHhM6KE5qEqMyb7veEdyT5AFEcx2F4UDATU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=WTIWSTrJ; arc=none smtp.client-ip=95.215.58.178
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Wed, 11 Mar 2026 13:39:06 -0700
+Date: Wed, 11 Mar 2026 14:35:50 -0700
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1773261554;
+	t=1773264975;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=EwfKeZ56gyoF6sCCv42pKYEgEb5eXyBSdLdTd3tijNU=;
-	b=RElTbM1FwjqljucTmdeVwDIoKFhMo33LPh8IBRa+k7zUaN5agQSCK/giiJSuNYntvKf6IP
-	+Em8Pl6YTKXHnwLvk5U/qqTIXI5LsN/XNmGxC7BzoGxlsz5md3nPd6WwVq2gYh1hNlLKL8
-	J/ZHH1ikawcxl/HfrMWR2Iphd6nAd/Q=
+	bh=Telfpf5ptlGpB/om4pC5uPZFX+x6oNBegoretK0UrkE=;
+	b=WTIWSTrJNE/IH8KAHN4q6P27nFGK3ez/6AduhtafzWVM2kHwhzgvWyg3lqR4of8XKkrgfW
+	m8ZXwdWVbuDEouJn7z57FXHM0Opn/jUXqzyxQkSBC1o0LeZRCQaovR0fruTt9ZtvQXY8JG
+	yfdxyedVzx8yQu1uB/i8i2YiG4TwzV0=
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 From: Shakeel Butt <shakeel.butt@linux.dev>
-To: Muchun Song <muchun.song@linux.dev>
+To: Greg Thelen <gthelen@google.com>
 Cc: lsf-pc@lists.linux-foundation.org, 
 	Andrew Morton <akpm@linux-foundation.org>, Tejun Heo <tj@kernel.org>, Michal Hocko <mhocko@suse.com>, 
 	Johannes Weiner <hannes@cmpxchg.org>, Alexei Starovoitov <ast@kernel.org>, 
 	Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>, Roman Gushchin <roman.gushchin@linux.dev>, 
 	Hui Zhu <hui.zhu@linux.dev>, JP Kobryn <inwardvessel@gmail.com>, 
-	Geliang Tang <geliang@kernel.org>, Sweet Tea Dorminy <sweettea-kernel@dorminy.me>, 
-	Emil Tsalapatis <emil@etsalapatis.com>, David Rientjes <rientjes@google.com>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Meta kernel team <kernel-team@meta.com>, linux-mm@kvack.org, 
-	cgroups@vger.kernel.org, bpf@vger.kernel.org, linux-kernel@vger.kernel.org
+	Muchun Song <muchun.song@linux.dev>, Geliang Tang <geliang@kernel.org>, 
+	Sweet Tea Dorminy <sweettea-kernel@dorminy.me>, Emil Tsalapatis <emil@etsalapatis.com>, 
+	David Rientjes <rientjes@google.com>, Martin KaFai Lau <martin.lau@linux.dev>, 
+	Meta kernel team <kernel-team@meta.com>, linux-mm@kvack.org, cgroups@vger.kernel.org, bpf@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
 Subject: Re: [LSF/MM/BPF TOPIC] Reimagining Memory Cgroup (memcg_ext)
-Message-ID: <abHPsCypwo7ZhqIt@linux.dev>
+Message-ID: <abHWslV0KmjF7x80@linux.dev>
 References: <20260307182424.2889780-1-shakeel.butt@linux.dev>
- <3ECC9B38-6C1A-4F60-9C18-98B7A1A56355@linux.dev>
+ <CAHH2K0ZBJV1peAZVZC9Lm=rFRzSfxsvbrxRjyB=+0xkHGRcdLA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <3ECC9B38-6C1A-4F60-9C18-98B7A1A56355@linux.dev>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAHH2K0ZBJV1peAZVZC9Lm=rFRzSfxsvbrxRjyB=+0xkHGRcdLA@mail.gmail.com>
 X-Migadu-Flow: FLOW_OUT
 X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	DMARC_POLICY_ALLOW(-0.50)[linux.dev,none];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
 	R_DKIM_ALLOW(-0.20)[linux.dev:s=key1];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-14776-lists,cgroups=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-14777-lists,cgroups=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
 	RCVD_COUNT_THREE(0.00)[3];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	FREEMAIL_CC(0.00)[lists.linux-foundation.org,linux-foundation.org,kernel.org,suse.com,cmpxchg.org,linux.dev,gmail.com,dorminy.me,etsalapatis.com,google.com,meta.com,kvack.org,vger.kernel.org];
-	RCPT_COUNT_TWELVE(0.00)[21];
+	RCPT_COUNT_TWELVE(0.00)[22];
 	MIME_TRACE(0.00)[0:+];
 	FROM_HAS_DN(0.00)[];
 	MISSING_XM_UA(0.00)[];
@@ -93,61 +96,58 @@ X-Spamd-Result: default: False [-2.16 / 15.00];
 	FROM_NEQ_ENVFROM(0.00)[shakeel.butt@linux.dev,cgroups@vger.kernel.org];
 	DKIM_TRACE(0.00)[linux.dev:+];
 	MID_RHS_MATCH_FROM(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
 	TAGGED_RCPT(0.00)[cgroups];
 	TO_DN_SOME(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,linux.dev:dkim,linux.dev:email,linux.dev:mid]
-X-Rspamd-Queue-Id: EBAE726A1DD
+	DBL_BLOCKED_OPENRESOLVER(0.00)[linux.dev:dkim,linux.dev:email,linux.dev:mid,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: 9111A26A797
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-On Wed, Mar 11, 2026 at 03:19:31PM +0800, Muchun Song wrote:
-> 
-> 
-> > On Mar 8, 2026, at 02:24, Shakeel Butt <shakeel.butt@linux.dev> wrote:
-> > 
+Hi Greg,
 
-[...]
-
-> > 
-> > Per-Memcg Background Reclaim
-> > 
-> > In the new memcg world, with the goal of (mostly) eliminating direct synchronous
-> > reclaim for limit enforcement, provide per-memcg background reclaimers which can
-> > scale across CPUs with the allocation rate.
+On Wed, Mar 11, 2026 at 12:29:45AM -0700, Greg Thelen wrote:
+> On Sat, Mar 7, 2026 at 10:24 AM Shakeel Butt <shakeel.butt@linux.dev> wrote:
+> >
+> >
 > 
-> Hi Shakeel,
-> 
-> I'm quite interested in this. Internally, we privately maintain a set
-> of code to implement asynchronous reclamation, but we're also trying to
-> discard these private codes as much as possible. Therefore, we want to
-> implement a similar asynchronous reclamation mechanism in user space
-> through the memory.reclaim mechanism. However, currently there's a lack
-> of suitable policy notification mechanisms to trigger user threads to
-> proactively reclaim in advance.
+> Very interesting set of topics. A few more come to mind.
 
-Cool, can you please share what "suitable policy notification mechanisms" you
-need for your use-case? This will give me more data on the comparison between
-memory.reclaim and the proposed approach.
-
+Thanks.
 
 > 
-> > 
-> > Lock-Aware Throttling
-> > 
-> > The ability to avoid throttling an allocating task that is holding locks, to
-> > prevent priority inversion. In Meta's fleet, we have observed lock holders stuck
-> > in memcg reclaim, blocking all waiters regardless of their priority or
-> > criticality.
+> I've wondered about preallocating memory or guaranteeing access to
+> physical memory for a job. Memcg has max limits and min protections,
+> but no preallocation (i.e. no conceptual memcg free list). So if a job
+> is configured with 1GB min workingset protection that only ensures 1GB
+> won't be reclaimed, not that 1GB can be allocated in a reasonable
+> amount of time. This isn't just a job startup problem: if a page is
+> freed with MADV_DONTNEED a subsequent pgfault may require a lot of
+> time to handle, even if usage is below min.
+
+This is indeed correct i.e. protection limits protect the workload from external
+reclaim but does not provide any gurantee on allocating memory in a reasonable
+cheap way (without triggering reclaim/compaction). This is one of the challenge
+to implement userspace oom-killer in an aggressively overcommitted environment.
+
+However to me providing memory allocation guarantees is more of a system level
+feature and orthogonal to memcg. And I see your next para is about that :)
+
+Anyways I think if we keep system memory utilization below some value and
+guarantee there is always some free memory (this can be done by having common
+ancestor of all workloads and ancestor has a limit or node controller maintains
+the condition that the sum of limits of all top level cgroups is below some
+percentage of total memory) then we might not need memcg free list or similar
+mechanisms (most of the time, I think).
+
 > 
-> This is a real problem we encountered, especially with the jbd handler
-> resources of the ext4 file system. Our current attempt is to defer
-> memory reclamation until returning to user space, in order to solve
-> various priority inversion issues caused by the jbd handler. Therefore,
-> I would be interested to discuss this topic.
+> Initial allocation policies are controlled by mempolicy/cpuset. Should
+> we continue to keep allocation policies and resource accounting
+> separate? It's a little strange that memcg can (1) cap max usage of
+> tier X memory, and (2) provide minimum protection for tier X usage,
+> but has no influence on where memory is initially allocated?
 
-Awesome, do you use memory.max and memory.high both and defer the reclaim for
-both? Are you deferring all the reclaims or just the ones where the charging
-process has the lock? (I need to look what jbd handler is).
-
+I think I understand your point but I think the implementation would be too
+messy. This is orthogonal to the proposal but I would say a good topic for
+LSFMMBPF if you want to lead the discussion.
 
