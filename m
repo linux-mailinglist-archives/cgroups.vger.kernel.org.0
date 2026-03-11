@@ -1,79 +1,81 @@
-Return-Path: <cgroups+bounces-14769-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-14770-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id IEaIL+nHsWnvFAAAu9opvQ
-	(envelope-from <cgroups+bounces-14769-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Wed, 11 Mar 2026 20:52:09 +0100
+	id kLxxCjXIsWnvFAAAu9opvQ
+	(envelope-from <cgroups+bounces-14770-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Wed, 11 Mar 2026 20:53:25 +0100
 X-Original-To: lists+cgroups@lfdr.de
 Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3DA08269A1D
-	for <lists+cgroups@lfdr.de>; Wed, 11 Mar 2026 20:52:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 9D193269A7E
+	for <lists+cgroups@lfdr.de>; Wed, 11 Mar 2026 20:53:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 29E54300A4E9
-	for <lists+cgroups@lfdr.de>; Wed, 11 Mar 2026 19:52:08 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 884753028659
+	for <lists+cgroups@lfdr.de>; Wed, 11 Mar 2026 19:53:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ACA2537B02E;
-	Wed, 11 Mar 2026 19:52:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB645385505;
+	Wed, 11 Mar 2026 19:52:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UnmGKMYx"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="foAkeCW2"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-oi1-f173.google.com (mail-oi1-f173.google.com [209.85.167.173])
+Received: from mail-oa1-f50.google.com (mail-oa1-f50.google.com [209.85.160.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B341F37A4B2
-	for <cgroups@vger.kernel.org>; Wed, 11 Mar 2026 19:51:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 90D1638237F
+	for <cgroups@vger.kernel.org>; Wed, 11 Mar 2026 19:52:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1773258719; cv=none; b=EEzlKosU/qkq41QtISjKQWOWHLF8MqPIujYRNS/U/0M3rWsdqgZqFKgxusCRh0zjGT9lU7cUaFQ6YSCmtmDdgu4JTOs/1kK/mgXhXOjnTDNApfsRAelJEDum0naHKGYh+xEKEKHOYpMZ6ihWGKKF6raaOre9AELUAg1TdnTo1EM=
+	t=1773258730; cv=none; b=COz2y6f8iKvLotc27DluUrZLIALe8nbqJx1qqv+CCUEzIJPryXWgqBzg8jUMDKi3ITAN4M+ZJci0evnl1YcMbfH+v72kGY2IpSocr9QuX5FF0X098D30qFxz6WSXUYIiR4M0huURdOfjTn0t3hSCCwZY55x0jT6C1dfB7ETQNDQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1773258719; c=relaxed/simple;
-	bh=2/WN+rUaGr+rojGU+gbqUBINEwtxu/oqu3Hvusx/7nQ=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Oc0VOqWyHVlfdtlqH56mMgdDeWOHeUvL/fyBBm0N2pgG3yoMTxW6hWp/7UTzf6YfSuRU/Sp5iesvBwZXgJ1+Yq6rLh0WPtM7wiUEXZn0iaEu9eSINIBeS/Ad20ybT6hMXYcUfYT7PWzJapJXuOP6aAfl0eTkk6QpMDJJvpW/8/M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=UnmGKMYx; arc=none smtp.client-ip=209.85.167.173
+	s=arc-20240116; t=1773258730; c=relaxed/simple;
+	bh=ltWZnUnXeRVqYVTEBtTy0eYCoDdqibyFZCtqJ7qUlq8=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=rIwnPe3uGMfqUsyXNOrdh9Z/gfEmmyXfQcOyGir5VXdo+f3ckjXhD/DFBGSnq39Ja+pl0zaySAwi6Tvw4gwpNqO2axMJQYQkbDKZBNBD0u3dS1CJvY7unZ+NhEdl8sFds014UvN+vSzsNDxSvrDpdHfyWyjopVtzxjDBcE3J6lo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=foAkeCW2; arc=none smtp.client-ip=209.85.160.50
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oi1-f173.google.com with SMTP id 5614622812f47-4671cbce465so171449b6e.3
-        for <cgroups@vger.kernel.org>; Wed, 11 Mar 2026 12:51:55 -0700 (PDT)
+Received: by mail-oa1-f50.google.com with SMTP id 586e51a60fabf-41708f6c3feso189562fac.3
+        for <cgroups@vger.kernel.org>; Wed, 11 Mar 2026 12:52:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1773258714; x=1773863514; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=7aHPhdDyOXpYHbCyzKIIDvUmbmQ3BcfB3tK1FnL3jrw=;
-        b=UnmGKMYxjhLRBj1ibHd8UAVdmmL9PmzzUQKE9uMIOFrvXvvC2KcVNqEIX5Vtge03kG
-         Rk1dfkKZn4/IludvXrsJKvITXduoXU0YWdnDwdB0FYl+tizzWNGXL7+/KHOxJpKS4SYU
-         0u2TC0LKKIMkzqrAwI2zZB8wzb2RjkJY5ugXv50/Ao0XA9GfV2mFRJI1CAVIddK365QU
-         0/7Xk2uBzw2WILLDd3UJ2esMHl6Fr5qYBi3JjDIakRhr/SZv44SBkBUwKbnM1ikP9O42
-         zLCXhs+USyPPzcJKq0Pl+TCY4e3Q9KRWL0h4Y5SigyoTh/NTwkxLwxZd7hMv3MrG8gTd
-         2VMA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1773258714; x=1773863514;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1773258724; x=1773863524; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=7aHPhdDyOXpYHbCyzKIIDvUmbmQ3BcfB3tK1FnL3jrw=;
-        b=KpxmwPD/IVV0Z0KM2tclwvERThVmn/dmd/dbquSo7+eNLY/5SoyE8SUs32IajC7qN6
-         Near3UwIPi2SUWnUh9f4hYmkJoNq0LKcnzPijIqvM2m2jLWQYElb1oOQhjqfl7SSqINk
-         rKYE+UFba2Nw7H5hlS9cU469tiMZXEpEBJAWgFmdW/LFtOFmqq0dwuVG2mkoVRzOXAfU
-         c1zDgW4TVOsvfgJZa0HUzTkk5+jXUPANdn2EKaZhRF9MHA81/aF24WQNMyQYDnJilhLE
-         b53YMoxkH8FaUU3viUydi7KqF44rXaNkyPKIX3nyr0/Y1dLvSyDWMA6VqsGICJJe0oWo
-         DT8w==
-X-Forwarded-Encrypted: i=1; AJvYcCUTeOIUaailg17Nzo2PxX03mJd2KeufT2vk8HGF6NOyqsZRs/LwqMaBe4I9KZQf8XpMzma6/y+N@vger.kernel.org
-X-Gm-Message-State: AOJu0YzBzonegJkTn42yKnaMZ4yNS172T3UFRnQ/7//6qo3SA2mZrdKy
-	2YuhrXf2TkbFGNecqitrV1bAs2BABC2ptYJP0DU7zaw3XSspxOMn0Rvo
-X-Gm-Gg: ATEYQzyV4nRbO7n3Gt12vXzVvjJZhwAn8UbXk2J9IIGRg1QdL8U/iY/HSa73OT+sjgb
-	jyDDVaRSPqMyooXBMwFcEdWOxFEruwo0Ru6QDWRJbqJLBQsWO+S6ZZDAXQskyd34DXsHSaM3MFA
-	0N4xsJOBW1L3NLUoNiXAjj4VLWfEz6EWhUSUEWesPf+2UD5uN5xTe55ZU4dEWLC9wI7YLpAL/22
-	MOQ0CR6pK2lnyOhVLnL8qqcqMjHT3ur9EgK+Ak7MraA08McGcGO1EyLt4/9OZ/vUXnC6vOXq4Wp
-	AkcWRDwOckTGP7UVM3qxUxI5jWNCuA1t5Sto4/+V8ApEGUX6nTOCvSGZ/7rXwOlhkhxKS19Y1TT
-	jnAR1aVsnUdYA+BiTeO9+Gc9T6forpSpKT+RVrqJz1OOb2o3Kt0QA6oNC0QU06WD1kTtpCcH/GJ
-	FIhb48udxs7H7zGFKZ14jn
-X-Received: by 2002:a05:6808:14c6:b0:467:e7b:6fd5 with SMTP id 5614622812f47-4673359a676mr2487176b6e.41.1773258714266;
-        Wed, 11 Mar 2026 12:51:54 -0700 (PDT)
-Received: from localhost ([2a03:2880:10ff:8::])
-        by smtp.gmail.com with ESMTPSA id 5614622812f47-46734125bdasm1805164b6e.1.2026.03.11.12.51.53
+        bh=8u5o092L3ULCpmoipnWOnXiIPpIcwoMHmpMXH/cA6Oo=;
+        b=foAkeCW2rLG48Jt1YjeSANAiyq3bdHTJ6/zTw+Sp677+qvV0xiPJ9PKZgczYzHi8NC
+         e6ZQtHTwqyOaL4gEXamXx/JzgULF/0zGxwKfmqo2iEQ48VEo4hvVzUnV2VnFSAvEX47+
+         4eBiEIP00POoi2ATzv4xQDaVA3s+CdtbqqEBspnJM5se/YZ60Be158amBJHcE38W2/UI
+         ZU4Rs/QbF5TIlNTeg/ugHB9ShVS5lUO4mDK4zoSCwYvXg2sgfQ44825xzs9rLrrh6pqm
+         igf02XDUUHdA22HqjVXojxGx0mN99w+tu0gSD8RwQX+Nu/ld7HvLsbb7DUP8V23ZcDi6
+         FZWw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1773258724; x=1773863524;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=8u5o092L3ULCpmoipnWOnXiIPpIcwoMHmpMXH/cA6Oo=;
+        b=pqih3zqCDoNY0q+UbdLP8BKagihCo4gnqXWX2oMws9tIfBbbQ5P/AXfqUxp9jtKYka
+         uyKUNrsof1LMuLAp4Ah/0+fzhT/8v1ycKgGlXyXTuH0jWXk6o1oQSQeYg/dQ/qptyH/m
+         u4Ljnoon6ejdOglgpA3zGEJOc+ortOFDVrVzQ1ifWdn3d4hszzjDEfu4+RRnTg90g9QE
+         EIrYADAmdFaIF2N1zkFB5Xi2BO111a8Qvc4EfoqlB3zuQavvhR/3+d5Z62GCVjis6D/Z
+         oJFYCYF0qlxFEQ0bgNYdIZ7zwIOsZ+DK6Qncpq16F+pMdKzqkSKttOP1/6Yv9NYaU6nv
+         Pavg==
+X-Forwarded-Encrypted: i=1; AJvYcCU6ZyG8pC5oR6s4eMjWE7MZtaWmsb7lBwofPlZ/XG9726eEmmeurL2QPGfNfcDMdU5w0Rq1TPOV@vger.kernel.org
+X-Gm-Message-State: AOJu0YzzDOb2aqUNj4fbS7+e69VSgRyy4I1HE8tH+/0iY8rOecMfE8WZ
+	bQeXwIkRmTdaO+xDZv+tGvvSeA5fp7siwIZF2j4TKSNqvPO8otZ5Lj4J
+X-Gm-Gg: ATEYQzzngs+sfYg/Be2p1AZVHEDfCGjozI8qIfEqTYP7/BEoDQN/qA1QKDgBG/kxsY9
+	JIpOM+dY9nWTP8AjoYNOmi8hr0dBdelKLx9x4u9siAoB6TrR5RnLRc0ejjU+l/HJeQDPQTcOSJI
+	nS6g8uo4PfxlQqib29EmnkgT1Znq1Gns0GHncOGr/pj6/apgtwTr98J3izh25AiIF9tBZYJwiFU
+	YQaq0H3umPhZUscXk7U9mdiakKd6BCP2it1PDx/LomrKPyW0FoHNl/joSr2tO5Hr6jgpZKrxMPn
+	JpzBndWLqRjJy7yx56tku/UzPceZm7iAdun/P0c2gVFK8Q/mqEoHS1p/1YjlPQkrF2TX3QGqYW7
+	Zd7dqprtybqlneINgMQGyhheUor9sAOFXzFdNX6lNl6/2+fX9gtGgDd0QQKrdqMOD/cy1+QCQY8
+	qU6r8PFcZARR+wj67ij7j9ag==
+X-Received: by 2002:a05:6870:169d:b0:3fa:eb8:4c92 with SMTP id 586e51a60fabf-4177c9c1dd0mr2187825fac.50.1773258724198;
+        Wed, 11 Mar 2026 12:52:04 -0700 (PDT)
+Received: from localhost ([2a03:2880:10ff:46::])
+        by smtp.gmail.com with ESMTPSA id 586e51a60fabf-4177e6e82cdsm3116391fac.18.2026.03.11.12.52.03
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 Mar 2026 12:51:53 -0700 (PDT)
+        Wed, 11 Mar 2026 12:52:03 -0700 (PDT)
 From: Joshua Hahn <joshua.hahnjy@gmail.com>
 To: Minchan Kim <minchan@kernel.org>,
 	Sergey Senozhatsky <senozhatsky@chromium.org>
@@ -86,16 +88,17 @@ Cc: Johannes Weiner <hannes@cmpxchg.org>,
 	Roman Gushchin <roman.gushchin@linux.dev>,
 	Shakeel Butt <shakeel.butt@linux.dev>,
 	Muchun Song <muchun.song@linux.dev>,
-	Harry Yoo <harry.yoo@oracle.com>,
 	Andrew Morton <akpm@linux-foundation.org>,
 	cgroups@vger.kernel.org,
 	linux-mm@kvack.org,
 	linux-kernel@vger.kernel.org,
 	kernel-team@meta.com
-Subject: [PATCH 00/11] mm/zswap, zsmalloc: Per-memcg-lruvec zswap accounting
-Date: Wed, 11 Mar 2026 12:51:37 -0700
-Message-ID: <20260311195153.4013476-1-joshua.hahnjy@gmail.com>
+Subject: [PATCH 07/11] mm/zsmalloc, zswap: Handle objcg charging and lifetime in zsmalloc
+Date: Wed, 11 Mar 2026 12:51:44 -0700
+Message-ID: <20260311195153.4013476-8-joshua.hahnjy@gmail.com>
 X-Mailer: git-send-email 2.52.0
+In-Reply-To: <20260311195153.4013476-1-joshua.hahnjy@gmail.com>
+References: <20260311195153.4013476-1-joshua.hahnjy@gmail.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -112,14 +115,14 @@ X-Spamd-Result: default: False [-1.66 / 15.00];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FREEMAIL_CC(0.00)[cmpxchg.org,linux.dev,gmail.com,kernel.org,oracle.com,linux-foundation.org,vger.kernel.org,kvack.org,meta.com];
-	TAGGED_FROM(0.00)[bounces-14769-lists,cgroups=lfdr.de];
+	FREEMAIL_CC(0.00)[cmpxchg.org,linux.dev,gmail.com,kernel.org,linux-foundation.org,vger.kernel.org,kvack.org,meta.com];
+	TAGGED_FROM(0.00)[bounces-14770-lists,cgroups=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
 	RECEIVED_HELO_LOCALHOST(0.00)[];
 	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	FREEMAIL_FROM(0.00)[gmail.com];
-	RCPT_COUNT_TWELVE(0.00)[17];
+	RCPT_COUNT_TWELVE(0.00)[16];
 	DKIM_TRACE(0.00)[gmail.com:+];
 	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
 	TO_DN_SOME(0.00)[];
@@ -133,184 +136,269 @@ X-Spamd-Result: default: False [-1.66 / 15.00];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[cgroups];
 	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 3DA08269A1D
+X-Rspamd-Queue-Id: 9D193269A7E
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-INTRODUCTION
-============
-The current design for zswap and zsmalloc leaves a clean divide between
-layers of the memory stack. At the higher level, we have zswap, which
-interacts directly with memory consumers, compression algorithms, and
-handles memory usage accounting via memcg limits. At the lower level,
-we have zsmalloc, which handles the page allocation and migration of
-physical pages.
-
-While this logical separation simplifies the codebase, it leaves
-problems for accounting that requires both memory cgroup awareness and
-physical memory location. To name a few:
-
- - On tiered systems, it is impossible to understand how much toptier
-   memory a cgroup is using, since zswap has no understanding of where
-   the compressed memory is physically stored.
-   + With SeongJae Park's work to store incompressible pages as-is in
-     zswap [1], the size of compressed memory can become non-trivial,
-     and easily consume a meaningful portion of memory.
-
- - cgroups that restrict memory nodes have no control over which nodes
-   their zswapped objects live on. This can lead to unexpectedly high
-   fault times for workloads, who must eat the remote access latency
-   cost of retrieving the compressed object from a remote node.
-   + Nhat Pham addressed this issue via a best-effort attempt to place
-     compressed objects in the same page as the original page, but this
-     cannot guarantee complete isolation [2].
-
- - On the flip side, zsmalloc's ignorance of cgroup also makes its
-   shrinker memcg-unaware, which can lead to ineffective reclaim when
-   pressure is localized to a single cgroup.
-
-Until recently, zpool acted as another layer of indirection between
-zswap and zsmalloc, which made bridging memcg and physical location
-difficult. Now that zsmalloc is the only allocator backend for zswap and
-zram [3], it is possible to move memory-cgroup accounting to the
+Now that zswap_entries do not directly track obj_cgroups of the entries,
+handle the lifetime management and charging of these entries into the
 zsmalloc layer.
 
-Introduce a new per-zspage array of objcg pointers to track
-per-memcg-lruvec memory usage by zswap, while leaving zram users
-mostly unaffected.
+One functional change is that zswap entries are now no longer accounted
+by the size of the compressed object, but by the size of the size_class
+slot they occupy.
 
-In addition, move the accounting of memcg charges from the consumer
-layer (zswap, zram) to the zsmalloc layer. Stat indices are
-parameterized at pool creation time, meaning future consumers that wish
-to account memory statistics can do so using the compressed object
-memory accounting infrastructure introduced here.
+This brings charging one step closer to an accurate representation of
+the memory consumed in the zpdesc; even if a compressed object doesn't
+consume the entirety of a obj slot, we should account the entirety of
+the compressed object slot that the object makes unusable.
 
-PERFORMANCE
-===========
-The experiments were performed across 5 trials on a 2-NUMA machine.
+While at it, also remove an unnecessary newline in obj_free.
 
-Experiment 1
-Node-bound workload, churning memory by allocating 2GB in 1GB cgroup.
-0.638% regression, standard deviation: +/- 0.603%
+Signed-off-by: Joshua Hahn <joshua.hahnjy@gmail.com>
+---
+ include/linux/memcontrol.h | 10 ------
+ mm/memcontrol.c            | 54 ++-----------------------------
+ mm/zsmalloc.c              | 65 ++++++++++++++++++++++++++++++++++++--
+ mm/zswap.c                 |  8 -----
+ 4 files changed, 66 insertions(+), 71 deletions(-)
 
-Experiment 2:
-Writeback with zswap pressure
-0.295% gain, standard deviation: +/- 0.456%
-
-Experiment 3:
-1 cgroup, 2 workloads each bound to a NUMA node.
-2.126% regression, standard deviation: +/- 3.008%
-
-Experiment 4:
-Reading memory.stat 10000x
-1.464% gain, standard deviation: +/- 2.239%
-
-Experiment 5:
-Reading memory.numa_stat 10000x
-0.281% gain, standard deviation: +/- 1.878%
-
-It seems like all of the gains or regressions are mostly within the
-standard deviation. I would like to note that workloads that span NUMA
-nodes may see some contention as the zsmalloc migration path becomes
-more expensive.
-
-PATCH OUTLINE
-=============
-Patches 1 and 2 are small cleanups that make the codebase consistent and
-easier to digest.
-
-Patch 3 introduces memcg accounting-awareness to struct zs_pool, and
-allows consumers to provide the memcg stat item indices that should be
-accounted. The awareness is not functional at this point.
-
-Patches 4, 5, and 6 allocate and populate the new zspage->objcgs field
-with compressed objects' obj_cgroups. zswap_entry->objcgs is removed
-and redirected to look at the zspage for memcg information.
-
-Patch 7 moves the charging and lifetime management of obj_cgroups to the
-zsmalloc layer, which leaves zswwap only as a plumbing layer to hand
-cgroup information to zsmalloc at compression time.
-
-Patches 8 and 9 introduce node counters and memcg-lruvec counters for
-zswap.
-
-Patches 10 and 11 handle charge migrations for the two types of compressed
-object migration in zsmalloc. Special care is taken for compressed
-objects that span multiple nodes.
-
-CHANGELOG V1 [4] --> V2
-=======================
-A lot has changed from v1 and v2, thanks to the generous suggestions
-from reviewers.
-- Harry Yoo's suggestion to make the objcgs array per-zspage instead of
-  per-zpdesc simplified much of the code needed to handle boundary
-  cases. By moving the array to be per-zspage, much of the index
-  translation (from per-zspage to per-zpdesc) has been simplified. Note
-  that this does make the reverse true (per-zpdesc to per-zspage is
-  harder now), but the only case this really matters is during the
-  charge migration case in patch 10. Thank you Harry!
-
-- Yosry Ahmed's suggestion to make memcg awareness a per-zspool decision
-  has simplified much of the #ifdef casing needed, which makes the code
-  a lot easier to follow (and makes changes less invasive for zram).
-
-- Yosry Ahmed's suggestion to parameterize the memcg stat indices as
-  zs_pool parameter makes the awkward hardcoding of zswap stat indices
-  in zsmalloc code more natural & leaves room for future consumers to
-  follow. Thank you Yosry!
-
-- Shakeel Butt's suggestion to turn the objcgs array from an unsigned
-  long to an objcgs ** pointer made the code much cleaner. However,
-  after moving the pointer from zpdesc to zspage, there is now no longer
-  a need to tag the pointer. Thank you, Shakeel!
-
-- v1 only handled the migration case for single compressed objects.
-  Patch 10 in v2 is written to handle the migration case for zpdesc
-  replacement.
-  + Special-casing compressed objects living at the boundary are a tad
-    bit harder with per-zspage objcgs. I felt that this difficulty was
-    outweighed by the simplification in the "typical" write/free case,
-    though. 
-
-REVIEWERS NOTE
-==============
-Patches 10 and 11 are a bit hairy, since they have to deal with special
-casing scenarios for objects that span pages. I originally implemented a
-very simple approach which uses the existing zs_charge_objcg functions,
-but later realized that these migration paths take spin locks and
-therefore cannot accept obj_cgroup_charge going to sleep.
-
-The workaround is less elegant, but gets the job done. Feedback on these
-two commits would be greatly appreciated!
-
-[1] https://lore.kernel.org/linux-mm/20250822190817.49287-1-sj@kernel.org/
-[2] https://lore.kernel.org/linux-mm/20250402204416.3435994-1-nphamcs@gmail.com/#t3
-[3] https://lore.kernel.org/linux-mm/20250829162212.208258-1-hannes@cmpxchg.org/
-[4] https://lore.kernel.org/all/20260226192936.3190275-1-joshua.hahnjy@gmail.com/
-
-Joshua Hahn (11):
-  mm/zsmalloc: Rename zs_object_copy to zs_obj_copy
-  mm/zsmalloc: Make all obj_idx unsigned ints
-  mm/zsmalloc: Introduce conditional memcg awareness to zs_pool
-  mm/zsmalloc: Introduce objcgs pointer in struct zspage
-  mm/zsmalloc: Store obj_cgroup pointer in zspage
-  mm/zsmalloc, zswap: Redirect zswap_entry->objcg to zspage
-  mm/zsmalloc, zswap: Handle objcg charging and lifetime in zsmalloc
-  mm/memcontrol: Track MEMCG_ZSWAPPED in bytes
-  mm/vmstat, memcontrol: Track ZSWAP_B, ZSWAPPED_B per-memcg-lruvec
-  mm/zsmalloc: Handle single object charge migration in migrate_zspage
-  mm/zsmalloc: Handle charge migration in zpdesc substitution
-
- drivers/block/zram/zram_drv.c |  10 +-
- include/linux/memcontrol.h    |  20 +-
- include/linux/mmzone.h        |   2 +
- include/linux/zsmalloc.h      |   9 +-
- mm/memcontrol.c               |  75 ++-----
- mm/vmstat.c                   |   2 +
- mm/zsmalloc.c                 | 381 ++++++++++++++++++++++++++++++++--
- mm/zswap.c                    |  66 +++---
- 8 files changed, 431 insertions(+), 134 deletions(-)
-
+diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
+index 0652db4ff2d5..701d9ab6fef1 100644
+--- a/include/linux/memcontrol.h
++++ b/include/linux/memcontrol.h
+@@ -1851,22 +1851,12 @@ static inline bool memcg_is_dying(struct mem_cgroup *memcg)
+ 
+ #if defined(CONFIG_MEMCG) && defined(CONFIG_ZSWAP)
+ bool obj_cgroup_may_zswap(struct obj_cgroup *objcg);
+-void obj_cgroup_charge_zswap(struct obj_cgroup *objcg, size_t size);
+-void obj_cgroup_uncharge_zswap(struct obj_cgroup *objcg, size_t size);
+ bool mem_cgroup_zswap_writeback_enabled(struct mem_cgroup *memcg);
+ #else
+ static inline bool obj_cgroup_may_zswap(struct obj_cgroup *objcg)
+ {
+ 	return true;
+ }
+-static inline void obj_cgroup_charge_zswap(struct obj_cgroup *objcg,
+-					   size_t size)
+-{
+-}
+-static inline void obj_cgroup_uncharge_zswap(struct obj_cgroup *objcg,
+-					     size_t size)
+-{
+-}
+ static inline bool mem_cgroup_zswap_writeback_enabled(struct mem_cgroup *memcg)
+ {
+ 	/* if zswap is disabled, do not block pages going to the swapping device */
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index a52da3a5e4fd..68139be66a4f 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -716,6 +716,7 @@ void mod_memcg_state(struct mem_cgroup *memcg, enum memcg_stat_item idx,
+ 
+ 	put_cpu();
+ }
++EXPORT_SYMBOL(mod_memcg_state);
+ 
+ #ifdef CONFIG_MEMCG_V1
+ /* idx can be of type enum memcg_stat_item or node_stat_item. */
+@@ -3169,11 +3170,13 @@ int obj_cgroup_charge(struct obj_cgroup *objcg, gfp_t gfp, size_t size)
+ {
+ 	return obj_cgroup_charge_account(objcg, gfp, size, NULL, 0);
+ }
++EXPORT_SYMBOL(obj_cgroup_charge);
+ 
+ void obj_cgroup_uncharge(struct obj_cgroup *objcg, size_t size)
+ {
+ 	refill_obj_stock(objcg, size, true, 0, NULL, 0);
+ }
++EXPORT_SYMBOL(obj_cgroup_uncharge);
+ 
+ static inline size_t obj_full_size(struct kmem_cache *s)
+ {
+@@ -5488,57 +5491,6 @@ bool obj_cgroup_may_zswap(struct obj_cgroup *objcg)
+ 	return ret;
+ }
+ 
+-/**
+- * obj_cgroup_charge_zswap - charge compression backend memory
+- * @objcg: the object cgroup
+- * @size: size of compressed object
+- *
+- * This forces the charge after obj_cgroup_may_zswap() allowed
+- * compression and storage in zswap for this cgroup to go ahead.
+- */
+-void obj_cgroup_charge_zswap(struct obj_cgroup *objcg, size_t size)
+-{
+-	struct mem_cgroup *memcg;
+-
+-	if (!cgroup_subsys_on_dfl(memory_cgrp_subsys))
+-		return;
+-
+-	VM_WARN_ON_ONCE(!(current->flags & PF_MEMALLOC));
+-
+-	/* PF_MEMALLOC context, charging must succeed */
+-	if (obj_cgroup_charge(objcg, GFP_KERNEL, size))
+-		VM_WARN_ON_ONCE(1);
+-
+-	rcu_read_lock();
+-	memcg = obj_cgroup_memcg(objcg);
+-	mod_memcg_state(memcg, MEMCG_ZSWAP_B, size);
+-	mod_memcg_state(memcg, MEMCG_ZSWAPPED, 1);
+-	rcu_read_unlock();
+-}
+-
+-/**
+- * obj_cgroup_uncharge_zswap - uncharge compression backend memory
+- * @objcg: the object cgroup
+- * @size: size of compressed object
+- *
+- * Uncharges zswap memory on page in.
+- */
+-void obj_cgroup_uncharge_zswap(struct obj_cgroup *objcg, size_t size)
+-{
+-	struct mem_cgroup *memcg;
+-
+-	if (!cgroup_subsys_on_dfl(memory_cgrp_subsys))
+-		return;
+-
+-	obj_cgroup_uncharge(objcg, size);
+-
+-	rcu_read_lock();
+-	memcg = obj_cgroup_memcg(objcg);
+-	mod_memcg_state(memcg, MEMCG_ZSWAP_B, -size);
+-	mod_memcg_state(memcg, MEMCG_ZSWAPPED, -1);
+-	rcu_read_unlock();
+-}
+-
+ bool mem_cgroup_zswap_writeback_enabled(struct mem_cgroup *memcg)
+ {
+ 	/* if zswap is disabled, do not block pages going to the swapping device */
+diff --git a/mm/zsmalloc.c b/mm/zsmalloc.c
+index a94ca8c26ad9..291194572a09 100644
+--- a/mm/zsmalloc.c
++++ b/mm/zsmalloc.c
+@@ -1028,6 +1028,59 @@ static bool zspage_empty(struct zspage *zspage)
+ 	return get_zspage_inuse(zspage) == 0;
+ }
+ 
++#ifdef CONFIG_MEMCG
++static void zs_charge_objcg(struct zs_pool *pool, struct obj_cgroup *objcg,
++			    int size)
++{
++	struct mem_cgroup *memcg;
++
++	if (!cgroup_subsys_on_dfl(memory_cgrp_subsys))
++		return;
++
++	VM_WARN_ON_ONCE(!(current->flags & PF_MEMALLOC));
++	WARN_ON_ONCE(!pool->memcg_aware);
++
++	/* PF_MEMALLOC context, charging must succeed */
++	if (obj_cgroup_charge(objcg, GFP_KERNEL, size))
++		VM_WARN_ON_ONCE(1);
++
++	rcu_read_lock();
++	memcg = obj_cgroup_memcg(objcg);
++	mod_memcg_state(memcg, pool->compressed_stat, size);
++	mod_memcg_state(memcg, pool->uncompressed_stat, 1);
++	rcu_read_unlock();
++}
++
++static void zs_uncharge_objcg(struct zs_pool *pool, struct obj_cgroup *objcg,
++			      int size)
++{
++	struct mem_cgroup *memcg;
++
++	if (!cgroup_subsys_on_dfl(memory_cgrp_subsys))
++		return;
++
++	WARN_ON_ONCE(!pool->memcg_aware);
++
++	obj_cgroup_uncharge(objcg, size);
++
++	rcu_read_lock();
++	memcg = obj_cgroup_memcg(objcg);
++	mod_memcg_state(memcg, pool->compressed_stat, -size);
++	mod_memcg_state(memcg, pool->uncompressed_stat, -1);
++	rcu_read_unlock();
++}
++#else
++static void zs_charge_objcg(struct zs_pool *pool, struct obj_cgroup *objcg,
++			    int size)
++{
++}
++
++static void zs_uncharge_objcg(struct zs_pool *pool, struct obj_cgroup *objcg,
++			      int size)
++{
++}
++#endif
++
+ /**
+  * zs_lookup_class_index() - Returns index of the zsmalloc &size_class
+  * that hold objects of the provided size.
+@@ -1244,6 +1297,8 @@ void zs_obj_write(struct zs_pool *pool, unsigned long handle,
+ 	if (objcg) {
+ 		WARN_ON_ONCE(!pool->memcg_aware);
+ 		zspage->objcgs[obj_idx] = objcg;
++		obj_cgroup_get(objcg);
++		zs_charge_objcg(pool, objcg, class->size);
+ 	}
+ 
+ 	if (!ZsHugePage(zspage))
+@@ -1409,17 +1464,23 @@ static void obj_free(int class_size, unsigned long obj)
+ 	struct link_free *link;
+ 	struct zspage *zspage;
+ 	struct zpdesc *f_zpdesc;
++	struct zs_pool *pool;
+ 	unsigned long f_offset;
+ 	unsigned int f_objidx;
+ 	void *vaddr;
+ 
+-
+ 	obj_to_location(obj, &f_zpdesc, &f_objidx);
+ 	f_offset = offset_in_page(class_size * f_objidx);
+ 	zspage = get_zspage(f_zpdesc);
++	pool = zspage->pool;
++
++	if (pool->memcg_aware && zspage->objcgs[f_objidx]) {
++		struct obj_cgroup *objcg = zspage->objcgs[f_objidx];
+ 
+-	if (zspage->pool->memcg_aware)
++		zs_uncharge_objcg(pool, objcg, class_size);
++		obj_cgroup_put(objcg);
+ 		zspage->objcgs[f_objidx] = NULL;
++	}
+ 
+ 	vaddr = kmap_local_zpdesc(f_zpdesc);
+ 	link = (struct link_free *)(vaddr + f_offset);
+diff --git a/mm/zswap.c b/mm/zswap.c
+index 436066965413..bca29a6e18f3 100644
+--- a/mm/zswap.c
++++ b/mm/zswap.c
+@@ -711,10 +711,6 @@ static void zswap_entry_free(struct zswap_entry *entry)
+ 	zswap_lru_del(&zswap_list_lru, entry, objcg);
+ 	zs_free(entry->pool->zs_pool, entry->handle);
+ 	zswap_pool_put(entry->pool);
+-	if (objcg) {
+-		obj_cgroup_uncharge_zswap(objcg, entry->length);
+-		obj_cgroup_put(objcg);
+-	}
+ 	if (entry->length == PAGE_SIZE)
+ 		atomic_long_dec(&zswap_stored_incompressible_pages);
+ 	zswap_entry_cache_free(entry);
+@@ -1437,10 +1433,6 @@ static bool zswap_store_page(struct page *page,
+ 	 * when the entry is removed from the tree.
+ 	 */
+ 	zswap_pool_get(pool);
+-	if (objcg) {
+-		obj_cgroup_get(objcg);
+-		obj_cgroup_charge_zswap(objcg, entry->length);
+-	}
+ 	atomic_long_inc(&zswap_stored_pages);
+ 	if (entry->length == PAGE_SIZE)
+ 		atomic_long_inc(&zswap_stored_incompressible_pages);
 -- 
 2.52.0
 
