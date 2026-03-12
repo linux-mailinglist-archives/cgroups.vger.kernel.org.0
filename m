@@ -1,244 +1,437 @@
-Return-Path: <cgroups+bounces-14787-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-14788-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id iGl4NsmVsmlJNwAAu9opvQ
-	(envelope-from <cgroups+bounces-14787-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Thu, 12 Mar 2026 11:30:33 +0100
+	id mLkVNC3DsmmvPAAAu9opvQ
+	(envelope-from <cgroups+bounces-14788-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Thu, 12 Mar 2026 14:44:13 +0100
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 422A12705A4
-	for <lists+cgroups@lfdr.de>; Thu, 12 Mar 2026 11:30:33 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4D8C6272D02
+	for <lists+cgroups@lfdr.de>; Thu, 12 Mar 2026 14:44:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id ADBC03040237
-	for <lists+cgroups@lfdr.de>; Thu, 12 Mar 2026 10:30:31 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id D34FC305FD97
+	for <lists+cgroups@lfdr.de>; Thu, 12 Mar 2026 13:40:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F15A37F74F;
-	Thu, 12 Mar 2026 10:30:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 86DD23A7592;
+	Thu, 12 Mar 2026 13:40:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="WGSc4b9X";
-	dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b="UYpxdQYU"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="U9s93MWZ"
 X-Original-To: cgroups@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BFF903090D5
-	for <cgroups@vger.kernel.org>; Thu, 12 Mar 2026 10:30:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4992C1E1C02;
+	Thu, 12 Mar 2026 13:40:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1773311431; cv=none; b=gtjHF3IXchnWfLCmSekfFtKKPBVDOoD668rCDXEokvxy1mdLXzn97hN6+TdMwXPVrHWs60bouEZYIEQQDai7r0K3fLZc1Z8AhIBVueeBNXvb+9jZXP/pcgGRO374wIxxy4dvG/tOfMjYv8cuLEJ4R0UN/VJKjudjtlxkAZqnpoA=
+	t=1773322825; cv=none; b=KTyhN4cyBemcH3sTbqH30PO5wuP/bG/+RN2VkW+RrNmPRZ38buvccYl4d7XUmjzEb5/1F3dD8F8nmiA8Fw2zj1oSJPqSZHavjitPT9ROLrs+2/R/J8cHO54IJGkHtDdjUjpZnlcTPDMPf2RGUryI81ofJs5Fg1J75jxC4Pa1NsI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1773311431; c=relaxed/simple;
-	bh=AyXFsmDJUCozY6rSpw74QhgERTg2l2RQ8xHZngKetwU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=NsjbwMq4wxVGjYhI02zNG9HsCfyVdBilSUYRByxCOOSDTWNPpA6y/ItCwWUTu99bGWuRCksyQfsME4i5NohjCv+op7hGpCw+YxMfHHcmBC0iZl6PJaLv7zwujPsEuyxa7skYiZay4O8dpsGikd1CjUv98iJjM18DiHN9JFpRJLg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=WGSc4b9X; dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b=UYpxdQYU; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1773311428;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=32DVdFVoSSIS89IzKF6JWHAvaVblS/d3/X9dpjjM4Ns=;
-	b=WGSc4b9XhZ3plZIBA55yy3lSscPNSMHpk3+tRgpIziu623IbL4DjXtPXXmvGwkIlPjI6iF
-	qkspOM0gdz8Jglcejj1uCUcCOsrICihHJ2P40kyd/hvs57fc2kbBQgLg4wmzMc3hHT7rnS
-	ekCroN+W8IVaqBKiLfKftxa/QzZTSp0=
-Received: from mail-pg1-f197.google.com (mail-pg1-f197.google.com
- [209.85.215.197]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-60-K0CasnsYPgSJtavo32Gtpg-1; Thu, 12 Mar 2026 06:30:27 -0400
-X-MC-Unique: K0CasnsYPgSJtavo32Gtpg-1
-X-Mimecast-MFC-AGG-ID: K0CasnsYPgSJtavo32Gtpg_1773311426
-Received: by mail-pg1-f197.google.com with SMTP id 41be03b00d2f7-c7398e393a6so325899a12.1
-        for <cgroups@vger.kernel.org>; Thu, 12 Mar 2026 03:30:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=redhat.com; s=google; t=1773311426; x=1773916226; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=32DVdFVoSSIS89IzKF6JWHAvaVblS/d3/X9dpjjM4Ns=;
-        b=UYpxdQYU5Y+Nq2vJs6qlUfkJsr//F0lDPMzWQe11tLk0gkJh7/NfEvkXCasVZpjvLz
-         36dfp/G2Zl8tMkpQeoE2AG4X9rl2ueKMQat6wIbTrSH+3YX+GTxCaDD1g1vrDrJrvR2o
-         Qn42dvOEPHUgd+sFc81DkkEG4Qpt/vytgeQjjoCf7cfr80SwHqv06jrNonDgzG3ILhHn
-         8t6qA0Bo4cBEL+Fs+AboFwgiV90mx8OxyxuidgtONW4jz5XGdaKNcUTj8itCMj5n0Eoa
-         WdbEQkOJoaGlHVX97GNu7aVW29lX4IRpGZm8HM9YTYk+1PM4u6kaqlQPQ0H+eG6bns17
-         4ZoQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1773311426; x=1773916226;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=32DVdFVoSSIS89IzKF6JWHAvaVblS/d3/X9dpjjM4Ns=;
-        b=GimQMdKwKkCLxYzUzeAp0SxDTuZy5oGHcPClnIgX37O5DjrqmIGnPAY/+zs56YIk9H
-         bH3P00QwDHzUKGWiOaI/aZ4HJsKBXjmREvcOe6fSvXkyhEwlfXwwL+1FAF6sivdUQjLs
-         8K/hRfMrHB8o73NuFkaZ1k6lNzkvwn/Glgtfyy7T+JVb4Fq3A+o7aB2xvmBB5yDgEnbS
-         WI2WMOAt9VjTUTUEgJ0F99jUnT5utx7qjci/78XfxrZxTEIfwngLmh1Fg5NawJV4sRlF
-         +QQtLmMyT9ihvrI5Oph76TmMwHi6y2mEGdxVKaKrfuevZS8qwZA2hkyERPlKsCqSoalK
-         DuTg==
-X-Gm-Message-State: AOJu0Yx6RHQ1AKsfq1XNF9y9MSJtdZFQNGeocCwgqbtajg/TLdvZA5G7
-	l5gtyE5VpCV1JLjFqaFJ2AThoyBR+TL6xYqZylhCDwth5iKvq2rpffhR/cBh0Mg3sGMf0J65cY9
-	JKt9WA7OFMxDvSU7jRldVl/MVJgwR2lu23xQRRRvRWlWj6lz4jL0EWc7Uu0BAzqgUMrI=
-X-Gm-Gg: ATEYQzyCPtC1ErE/aKWvwLT+ISL3aCI1zh1fezQ7njxnqsq1oS040iJBFNPnps+7eI8
-	YDlSep1CX8ZgNpZ3d6yZlOWtzeiX75PTURUj7ZrgQKQDB12BqSCPSmRW1Fyw4LPuUaTdiIYyVy1
-	jYCTu94fiHuVtp8MR+BGoJQiY6F4MwrQeMi5tvhBMS5kTlkKLpcm2cRlszwB7kL8syyuL/kYEKc
-	APohrRc7ta+wUcoy+s3218+EhcrIB2bqYXJj8vOfsEFilcHV5+IYXV56zR4UBbWHavzV4uI6m4/
-	gLNd3wba76ABpI8/8io2QBuk+fhltp+Ovu1uRgkn8fJIf4dYe9cGzPaSKTGhkrwVzfQ7cxbEq0j
-	fVvciKrM/miLLK4RrzQ==
-X-Received: by 2002:a05:6a21:7103:b0:398:c0ba:9cee with SMTP id adf61e73a8af0-398c5e6c8d1mr5177812637.8.1773311425445;
-        Thu, 12 Mar 2026 03:30:25 -0700 (PDT)
-X-Received: by 2002:a05:6a21:7103:b0:398:c0ba:9cee with SMTP id adf61e73a8af0-398c5e6c8d1mr5177736637.8.1773311424350;
-        Thu, 12 Mar 2026 03:30:24 -0700 (PDT)
-Received: from redhat.com ([209.132.188.88])
-        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-c73cdf9303csm5128727a12.18.2026.03.12.03.30.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 12 Mar 2026 03:30:23 -0700 (PDT)
-Date: Thu, 12 Mar 2026 18:30:21 +0800
-From: Li Wang <liwang@redhat.com>
-To: Waiman Long <longman@redhat.com>, Lucas Liu <hongzliu@redhat.com>
-Cc: cgroups@vger.kernel.org, linux-kselftest@vger.kernel.org,
-	Li Wang <liwan@redhat.com>
-Subject: Re: [ISSUE] cgroup: test_percpu_basic fails on PREEMPT_RT due to
- lazy percpu stat flushing
-Message-ID: <abKVvQc7NPAnoWq8@redhat.com>
-References: <CAEnjF8FxM2CGgGC0R42R7R4=udHMtkwV9bCVcw7NDq7KTZMLkg@mail.gmail.com>
- <4238fec3-1a37-4924-b13e-a42d2454412c@redhat.com>
- <abKS4Qt72UP8rYS_@redhat.com>
+	s=arc-20240116; t=1773322825; c=relaxed/simple;
+	bh=bJ/FJZ5A5ABznD3gU1iqfOJTIvGzpAFjUy3xCqCvego=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=k7H5pUGpxmmzUDZWgeYq3ofepMJUSWVVgTfGTlL2Z9oVp0ZfMZkVq8l+7BNutbEKBYeSIPr2UiLwu958l0kkXsUDjEeQeyAPAl5xEvYwdiTOXLKZJkCfhkTy4AWddhtfLWtCWjzOtAzo3cS/uPyfdFdPHgo6sg9ycNlgfgWtm9s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=U9s93MWZ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 88B60C19424;
+	Thu, 12 Mar 2026 13:40:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1773322824;
+	bh=bJ/FJZ5A5ABznD3gU1iqfOJTIvGzpAFjUy3xCqCvego=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=U9s93MWZmg2ZJqu5UyKbC/QKGTnuHMlQIllu9gvx5i8Ds1oVAvP1sUye2GcPkEHmf
+	 sdv4AdCYhTAttzvKMQOTckfuOsc7NCtUmd2vPli1EZ8kAXxpDyDHQ3wv8vgxBsoHlw
+	 2FGJ6Q/ue+w5wmLeXlSsj23uVV+VtxyYulHyIHWCgj+5hO+YDjQ/sgvTCSyUhYSQab
+	 Zxs8BpJ/D8alLYqcmtFp8XW74D/gM3A4ItededFvePFk4JOtQsEZSd3OZnIgPlQQTS
+	 fhQGXPa+zKGkx7FxrFphRZX5/8AdU9qqBTx3WQgLoN65wqPdpXHvDnDeOQtJ26DGyR
+	 KA/EuXdToFQBg==
+Message-ID: <3a42463b-9ddd-4d64-b64c-6c2e6e4fc75d@kernel.org>
+Date: Thu, 12 Mar 2026 14:40:16 +0100
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <abKS4Qt72UP8rYS_@redhat.com>
-X-Spamd-Result: default: False [-2.16 / 15.00];
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] mm/mempolicy: track page allocations per mempolicy
+Content-Language: en-US
+To: "JP Kobryn (Meta)" <jp.kobryn@linux.dev>, linux-mm@kvack.org,
+ akpm@linux-foundation.org, mhocko@suse.com
+Cc: apopple@nvidia.com, axelrasmussen@google.com, byungchul@sk.com,
+ cgroups@vger.kernel.org, david@kernel.org, eperezma@redhat.com,
+ gourry@gourry.net, jasowang@redhat.com, hannes@cmpxchg.org,
+ joshua.hahnjy@gmail.com, Liam.Howlett@oracle.com,
+ linux-kernel@vger.kernel.org, lorenzo.stoakes@oracle.com,
+ matthew.brost@intel.com, mst@redhat.com, rppt@kernel.org,
+ muchun.song@linux.dev, zhengqi.arch@bytedance.com, rakie.kim@sk.com,
+ roman.gushchin@linux.dev, shakeel.butt@linux.dev, surenb@google.com,
+ virtualization@lists.linux.dev, weixugc@google.com,
+ xuanzhuo@linux.alibaba.com, ying.huang@linux.alibaba.com,
+ yuanchu@google.com, ziy@nvidia.com, kernel-team@meta.com
+References: <20260307045520.247998-1-jp.kobryn@linux.dev>
+From: "Vlastimil Babka (SUSE)" <vbabka@kernel.org>
+In-Reply-To: <20260307045520.247998-1-jp.kobryn@linux.dev>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Spamd-Result: default: False [-0.66 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[redhat.com,quarantine];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
-	R_DKIM_ALLOW(-0.20)[redhat.com:s=mimecast20190719,redhat.com:s=google];
+	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
+	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
+	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	DKIM_TRACE(0.00)[redhat.com:+];
-	TO_DN_SOME(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	TAGGED_FROM(0.00)[bounces-14787-lists,cgroups=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-14788-lists,cgroups=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
+	RCVD_COUNT_THREE(0.00)[4];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	MISSING_XM_UA(0.00)[];
+	FREEMAIL_CC(0.00)[nvidia.com,google.com,sk.com,vger.kernel.org,kernel.org,redhat.com,gourry.net,cmpxchg.org,gmail.com,oracle.com,intel.com,linux.dev,bytedance.com,lists.linux.dev,linux.alibaba.com,meta.com];
+	RCPT_COUNT_TWELVE(0.00)[33];
+	MIME_TRACE(0.00)[0:+];
 	FROM_HAS_DN(0.00)[];
-	RCPT_COUNT_FIVE(0.00)[5];
-	RCVD_COUNT_FIVE(0.00)[6];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[liwang@redhat.com,cgroups@vger.kernel.org];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	TO_DN_SOME(0.00)[];
 	NEURAL_HAM(-0.00)[-1.000];
-	TAGGED_RCPT(0.00)[cgroups];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[vbabka@kernel.org,cgroups@vger.kernel.org];
+	DKIM_TRACE(0.00)[kernel.org:+];
 	MID_RHS_MATCH_FROM(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 422A12705A4
+	TAGGED_RCPT(0.00)[cgroups];
+	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[linux.dev:email,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: 4D8C6272D02
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-On Thu, Mar 12, 2026 at 06:18:09PM +0800, Li Wang wrote:
-> Waiman Long wrote:
+On 3/7/26 05:55, JP Kobryn (Meta) wrote:
+> When investigating pressure on a NUMA node, there is no straightforward way
+> to determine which policies are driving allocations to it.
 > 
-> > On 3/11/26 4:49 AM, Lucas Liu wrote:
-> > > Hi recently I met this issue
-> > >   ./test_kmem
-> > > ok 1 test_kmem_basic
-> > > ok 2 test_kmem_memcg_deletion
-> > > ok 3 test_kmem_proc_kpagecgroup
-> > > ok 4 test_kmem_kernel_stacks
-> > > ok 5 test_kmem_dead_cgroups
-> > > memory.current 24514560
-> > > percpu 15280000
-> > > not ok 6 test_percpu_basic
-> > > 
-> > > In this test the memory.current 24514560, percpu 15280000, Diff ~9.2MB.
-> > > 
-> > > #define MAX_VMSTAT_ERROR (4096 * 64 * get_nprocs())
-> > > 
-> > > in this part (8cpus) MAX_VMSTAT_ERROR is 4M memory. On the RT kernel,
-> > > the labs(current - percpu) is 9.2M, that is the root cause for this
-> > > failure. I am not sure what value is suitable for this case(2M per cpu
-> > > maybe?)
-> > 
-> > Li Wang had posted patches to address some of the problems in this test.
-> > 
-> > https://lore.kernel.org/lkml/20260306071843.149147-2-liwang@redhat.com/
-> > 
-> > It could be the case that lazy percpu stat flushing can also be a factor
-> > here. In this case, we may need to reread the stat counters again several
-> > time with some delay to solve this problem.
+> Add per-policy page allocation counters as new node stat items. These
+> counters track allocations to nodes and also whether the allocations were
+> intentional or fallbacks.
 > 
-> When memory.stat is read, the kernel calls mem_cgroup_flush_stats(), which
-> invokes cgroup_rstat_flush() to drain per-cpu counters before returning
-> results. So in the normal read path, stats are flushed, they aren't
-> arbitrarily stale at the point this test reads them.
+> The new stats follow the existing numa hit/miss/foreign style and have the
+> following meanings:
 > 
-> The "lazy" aspect, my understand, is that background flushing maybe skipped
-> sometime, as there is an situation: __mem_cgroup_flush_stats() skips the
-> flush if the total pending update is below a threshold, i.e.
+>   hit
+>     - for BIND and PREFERRED_MANY, allocation succeeded on node in nodemask
+>     - for other policies, allocation succeeded on intended node
+>     - counted on the node of the allocation
+>   miss
+>     - allocation intended for other node, but happened on this one
+>     - counted on other node
+>   foreign
+>     - allocation intended on this node, but happened on other node
+>     - counted on this node
 > 
->   575  static bool memcg_vmstats_needs_flush(struct memcg_vmstats *vmstats)
->   576  {
->   577          return atomic64_read(&vmstats->stats_updates) >
->   578                  MEMCG_CHARGE_BATCH * num_online_cpus();
->   579  }
+> Counters are exposed per-memcg, per-node in memory.numa_stat and globally
+> in /proc/vmstat.
 > 
-> So the "lazy" could happen on a machine with too many CPUs, that threshold
-> can be non-trivial and could contribute a few MB of discrepancy.
-> 
-> But my failure observed on a 3CPUs box, it shouldn't go with "lazy" skip.
-> 
->  # ./test_kmem
->  TAP version 13
->  1..6
->  ok 1 test_kmem_basic
->  ok 2 test_kmem_memcg_deletion
->  ok 3 test_kmem_proc_kpagecgroup
->  ok 4 test_kmem_kernel_stacks
->  ok 5 test_kmem_dead_cgroups
->  memory.current 11530240
->  percpu 8440000
->  not ok 6 test_percpu_basic
->  # Totals: pass:5 fail:1 xfail:0 xpass:0 skip:0 error:0
->  
->  # uname -r
->  6.12.0-211.el10.aarch64
->  
->  # getconf PAGE_SIZE
->  4096
->  
->  # lscpu
->  Architecture:                aarch64
->    CPU op-mode(s):            32-bit, 64-bit
->    Byte Order:                Little Endian
->  CPU(s):                      3
->    On-line CPU(s) list:       0-2
->  ...
-> 
-> Even on Lucas's test system, (8cpus), I assume the pagesize is 4k, the
-> threashold is 2M is still less than the failed result:
->   64 × 8 = 512 pages = 512 × 4096 = 2 MB
-> 
-> Bose on the above two testing, the lazy produce deviation is not
-> like the root cause.
+> Signed-off-by: JP Kobryn (Meta) <jp.kobryn@linux.dev>
 
-BTW, if the lazy flush does become a problem on large-CPU machines
-in real test, we can add a retry loop (like Waiman suggested) in a
-seperate patch. But I'd prefer to keep this one focused on the
-missing slab accounting first.
+I think I've been on of the folks on previous versions arguing against the
+many counters, and one of the arguments was it they can't tell the full
+story anyway (compared to e.g. tracing), but I don't think adding even more
+counters is the right solution. Seems like a number of other people
+responding to the thread are providing similar feedback.
 
--- 
-Regards,
-Li Wang
+For example I'm still not sure how it would help me if I knew the
+hits/misses were due to a preferred vs preferred_many policy, or interleave
+vs weithed interleave?
+
+> ---
+> v2:
+>   - Replaced single per-policy total counter (PGALLOC_MPOL_*) with
+>     hit/miss/foreign triplet per policy
+>   - Changed from global node stats to per-memcg per-node tracking
+> 
+> v1:
+> https://lore.kernel.org/linux-mm/20260212045109.255391-2-inwardvessel@gmail.com/
+> 
+>  include/linux/mmzone.h | 20 ++++++++++
+>  mm/memcontrol.c        | 60 ++++++++++++++++++++++++++++
+>  mm/mempolicy.c         | 90 ++++++++++++++++++++++++++++++++++++++++--
+>  mm/vmstat.c            | 20 ++++++++++
+>  4 files changed, 187 insertions(+), 3 deletions(-)
+> 
+> diff --git a/include/linux/mmzone.h b/include/linux/mmzone.h
+> index 7bd0134c241c..c0517cbcb0e2 100644
+> --- a/include/linux/mmzone.h
+> +++ b/include/linux/mmzone.h
+> @@ -323,6 +323,26 @@ enum node_stat_item {
+>  	PGSCAN_ANON,
+>  	PGSCAN_FILE,
+>  	PGREFILL,
+> +#ifdef CONFIG_NUMA
+> +	NUMA_MPOL_LOCAL_HIT,
+> +	NUMA_MPOL_LOCAL_MISS,
+> +	NUMA_MPOL_LOCAL_FOREIGN,
+> +	NUMA_MPOL_PREFERRED_HIT,
+> +	NUMA_MPOL_PREFERRED_MISS,
+> +	NUMA_MPOL_PREFERRED_FOREIGN,
+> +	NUMA_MPOL_PREFERRED_MANY_HIT,
+> +	NUMA_MPOL_PREFERRED_MANY_MISS,
+> +	NUMA_MPOL_PREFERRED_MANY_FOREIGN,
+> +	NUMA_MPOL_BIND_HIT,
+> +	NUMA_MPOL_BIND_MISS,
+> +	NUMA_MPOL_BIND_FOREIGN,
+> +	NUMA_MPOL_INTERLEAVE_HIT,
+> +	NUMA_MPOL_INTERLEAVE_MISS,
+> +	NUMA_MPOL_INTERLEAVE_FOREIGN,
+> +	NUMA_MPOL_WEIGHTED_INTERLEAVE_HIT,
+> +	NUMA_MPOL_WEIGHTED_INTERLEAVE_MISS,
+> +	NUMA_MPOL_WEIGHTED_INTERLEAVE_FOREIGN,
+> +#endif
+>  #ifdef CONFIG_HUGETLB_PAGE
+>  	NR_HUGETLB,
+>  #endif
+> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> index 982231a078f2..4d29f723a2de 100644
+> --- a/mm/memcontrol.c
+> +++ b/mm/memcontrol.c
+> @@ -420,6 +420,26 @@ static const unsigned int memcg_node_stat_items[] = {
+>  	PGSCAN_ANON,
+>  	PGSCAN_FILE,
+>  	PGREFILL,
+> +#ifdef CONFIG_NUMA
+> +	NUMA_MPOL_LOCAL_HIT,
+> +	NUMA_MPOL_LOCAL_MISS,
+> +	NUMA_MPOL_LOCAL_FOREIGN,
+> +	NUMA_MPOL_PREFERRED_HIT,
+> +	NUMA_MPOL_PREFERRED_MISS,
+> +	NUMA_MPOL_PREFERRED_FOREIGN,
+> +	NUMA_MPOL_PREFERRED_MANY_HIT,
+> +	NUMA_MPOL_PREFERRED_MANY_MISS,
+> +	NUMA_MPOL_PREFERRED_MANY_FOREIGN,
+> +	NUMA_MPOL_BIND_HIT,
+> +	NUMA_MPOL_BIND_MISS,
+> +	NUMA_MPOL_BIND_FOREIGN,
+> +	NUMA_MPOL_INTERLEAVE_HIT,
+> +	NUMA_MPOL_INTERLEAVE_MISS,
+> +	NUMA_MPOL_INTERLEAVE_FOREIGN,
+> +	NUMA_MPOL_WEIGHTED_INTERLEAVE_HIT,
+> +	NUMA_MPOL_WEIGHTED_INTERLEAVE_MISS,
+> +	NUMA_MPOL_WEIGHTED_INTERLEAVE_FOREIGN,
+> +#endif
+>  #ifdef CONFIG_HUGETLB_PAGE
+>  	NR_HUGETLB,
+>  #endif
+> @@ -1591,6 +1611,26 @@ static const struct memory_stat memory_stats[] = {
+>  #ifdef CONFIG_NUMA_BALANCING
+>  	{ "pgpromote_success",		PGPROMOTE_SUCCESS	},
+>  #endif
+> +#ifdef CONFIG_NUMA
+> +	{ "numa_mpol_local_hit",		NUMA_MPOL_LOCAL_HIT		},
+> +	{ "numa_mpol_local_miss",		NUMA_MPOL_LOCAL_MISS		},
+> +	{ "numa_mpol_local_foreign",		NUMA_MPOL_LOCAL_FOREIGN		},
+> +	{ "numa_mpol_preferred_hit",		NUMA_MPOL_PREFERRED_HIT		},
+> +	{ "numa_mpol_preferred_miss",		NUMA_MPOL_PREFERRED_MISS	},
+> +	{ "numa_mpol_preferred_foreign",	NUMA_MPOL_PREFERRED_FOREIGN	},
+> +	{ "numa_mpol_preferred_many_hit",	NUMA_MPOL_PREFERRED_MANY_HIT	},
+> +	{ "numa_mpol_preferred_many_miss",	NUMA_MPOL_PREFERRED_MANY_MISS	},
+> +	{ "numa_mpol_preferred_many_foreign",	NUMA_MPOL_PREFERRED_MANY_FOREIGN },
+> +	{ "numa_mpol_bind_hit",			NUMA_MPOL_BIND_HIT		},
+> +	{ "numa_mpol_bind_miss",		NUMA_MPOL_BIND_MISS		},
+> +	{ "numa_mpol_bind_foreign",		NUMA_MPOL_BIND_FOREIGN		},
+> +	{ "numa_mpol_interleave_hit",		NUMA_MPOL_INTERLEAVE_HIT	},
+> +	{ "numa_mpol_interleave_miss",		NUMA_MPOL_INTERLEAVE_MISS	},
+> +	{ "numa_mpol_interleave_foreign",	NUMA_MPOL_INTERLEAVE_FOREIGN	},
+> +	{ "numa_mpol_weighted_interleave_hit",	NUMA_MPOL_WEIGHTED_INTERLEAVE_HIT },
+> +	{ "numa_mpol_weighted_interleave_miss",	NUMA_MPOL_WEIGHTED_INTERLEAVE_MISS },
+> +	{ "numa_mpol_weighted_interleave_foreign", NUMA_MPOL_WEIGHTED_INTERLEAVE_FOREIGN },
+> +#endif
+>  };
+>  
+>  /* The actual unit of the state item, not the same as the output unit */
+> @@ -1642,6 +1682,26 @@ static int memcg_page_state_output_unit(int item)
+>  	case PGREFILL:
+>  #ifdef CONFIG_NUMA_BALANCING
+>  	case PGPROMOTE_SUCCESS:
+> +#endif
+> +#ifdef CONFIG_NUMA
+> +	case NUMA_MPOL_LOCAL_HIT:
+> +	case NUMA_MPOL_LOCAL_MISS:
+> +	case NUMA_MPOL_LOCAL_FOREIGN:
+> +	case NUMA_MPOL_PREFERRED_HIT:
+> +	case NUMA_MPOL_PREFERRED_MISS:
+> +	case NUMA_MPOL_PREFERRED_FOREIGN:
+> +	case NUMA_MPOL_PREFERRED_MANY_HIT:
+> +	case NUMA_MPOL_PREFERRED_MANY_MISS:
+> +	case NUMA_MPOL_PREFERRED_MANY_FOREIGN:
+> +	case NUMA_MPOL_BIND_HIT:
+> +	case NUMA_MPOL_BIND_MISS:
+> +	case NUMA_MPOL_BIND_FOREIGN:
+> +	case NUMA_MPOL_INTERLEAVE_HIT:
+> +	case NUMA_MPOL_INTERLEAVE_MISS:
+> +	case NUMA_MPOL_INTERLEAVE_FOREIGN:
+> +	case NUMA_MPOL_WEIGHTED_INTERLEAVE_HIT:
+> +	case NUMA_MPOL_WEIGHTED_INTERLEAVE_MISS:
+> +	case NUMA_MPOL_WEIGHTED_INTERLEAVE_FOREIGN:
+>  #endif
+>  		return 1;
+>  	default:
+> diff --git a/mm/mempolicy.c b/mm/mempolicy.c
+> index 0e5175f1c767..2417de75098d 100644
+> --- a/mm/mempolicy.c
+> +++ b/mm/mempolicy.c
+> @@ -117,6 +117,7 @@
+>  #include <asm/tlb.h>
+>  #include <linux/uaccess.h>
+>  #include <linux/memory.h>
+> +#include <linux/memcontrol.h>
+>  
+>  #include "internal.h"
+>  
+> @@ -2426,6 +2427,83 @@ static struct page *alloc_pages_preferred_many(gfp_t gfp, unsigned int order,
+>  	return page;
+>  }
+>  
+> +/*
+> + * Count a mempolicy allocation. Stats are tracked per-node and per-cgroup.
+> + * The following numa_{hit/miss/foreign} pattern is used:
+> + *
+> + *   hit
+> + *     - for BIND and PREFERRED_MANY, allocation succeeded on node in nodemask
+> + *     - for other policies, allocation succeeded on intended node
+> + *     - counted on the node of the allocation
+> + *   miss
+> + *     - allocation intended for other node, but happened on this one
+> + *     - counted on other node
+> + *   foreign
+> + *     - allocation intended on this node, but happened on other node
+> + *     - counted on this node
+> + */
+> +static void mpol_count_numa_alloc(struct mempolicy *pol, int intended_nid,
+> +				  struct page *page, unsigned int order)
+> +{
+> +	int actual_nid = page_to_nid(page);
+> +	long nr_pages = 1L << order;
+> +	enum node_stat_item hit_idx;
+> +	struct mem_cgroup *memcg;
+> +	struct lruvec *lruvec;
+> +	bool is_hit;
+> +
+> +	if (!root_mem_cgroup || mem_cgroup_disabled())
+> +		return;
+> +
+> +	/*
+> +	 * Start with hit then use +1 or +2 later on to change to miss or
+> +	 * foreign respectively if needed.
+> +	 */
+> +	switch (pol->mode) {
+> +	case MPOL_PREFERRED:
+> +		hit_idx = NUMA_MPOL_PREFERRED_HIT;
+> +		break;
+> +	case MPOL_PREFERRED_MANY:
+> +		hit_idx = NUMA_MPOL_PREFERRED_MANY_HIT;
+> +		break;
+> +	case MPOL_BIND:
+> +		hit_idx = NUMA_MPOL_BIND_HIT;
+> +		break;
+> +	case MPOL_INTERLEAVE:
+> +		hit_idx = NUMA_MPOL_INTERLEAVE_HIT;
+> +		break;
+> +	case MPOL_WEIGHTED_INTERLEAVE:
+> +		hit_idx = NUMA_MPOL_WEIGHTED_INTERLEAVE_HIT;
+> +		break;
+> +	default:
+> +		hit_idx = NUMA_MPOL_LOCAL_HIT;
+> +		break;
+> +	}
+> +
+> +	if (pol->mode == MPOL_BIND || pol->mode == MPOL_PREFERRED_MANY)
+> +		is_hit = node_isset(actual_nid, pol->nodes);
+> +	else
+> +		is_hit = (actual_nid == intended_nid);
+> +
+> +	rcu_read_lock();
+> +	memcg = mem_cgroup_from_task(current);
+> +
+> +	if (is_hit) {
+> +		lruvec = mem_cgroup_lruvec(memcg, NODE_DATA(actual_nid));
+> +		mod_lruvec_state(lruvec, hit_idx, nr_pages);
+> +	} else {
+> +		/* account for miss on the fallback node */
+> +		lruvec = mem_cgroup_lruvec(memcg, NODE_DATA(actual_nid));
+> +		mod_lruvec_state(lruvec, hit_idx + 1, nr_pages);
+> +
+> +		/* account for foreign on the intended node */
+> +		lruvec = mem_cgroup_lruvec(memcg, NODE_DATA(intended_nid));
+> +		mod_lruvec_state(lruvec, hit_idx + 2, nr_pages);
+> +	}
+> +
+> +	rcu_read_unlock();
+> +}
+> +
+>  /**
+>   * alloc_pages_mpol - Allocate pages according to NUMA mempolicy.
+>   * @gfp: GFP flags.
+> @@ -2444,8 +2522,10 @@ static struct page *alloc_pages_mpol(gfp_t gfp, unsigned int order,
+>  
+>  	nodemask = policy_nodemask(gfp, pol, ilx, &nid);
+>  
+> -	if (pol->mode == MPOL_PREFERRED_MANY)
+> -		return alloc_pages_preferred_many(gfp, order, nid, nodemask);
+> +	if (pol->mode == MPOL_PREFERRED_MANY) {
+> +		page = alloc_pages_preferred_many(gfp, order, nid, nodemask);
+> +		goto out;
+> +	}
+>  
+>  	if (IS_ENABLED(CONFIG_TRANSPARENT_HUGEPAGE) &&
+>  	    /* filter "hugepage" allocation, unless from alloc_pages() */
+> @@ -2471,7 +2551,7 @@ static struct page *alloc_pages_mpol(gfp_t gfp, unsigned int order,
+>  				gfp | __GFP_THISNODE | __GFP_NORETRY, order,
+>  				nid, NULL);
+>  			if (page || !(gfp & __GFP_DIRECT_RECLAIM))
+> -				return page;
+> +				goto out;
+>  			/*
+>  			 * If hugepage allocations are configured to always
+>  			 * synchronous compact or the vma has been madvised
+> @@ -2494,6 +2574,10 @@ static struct page *alloc_pages_mpol(gfp_t gfp, unsigned int order,
+>  		}
+>  	}
+>  
+> +out:
+> +	if (page)
+> +		mpol_count_numa_alloc(pol, nid, page, order);
+> +
+>  	return page;
+>  }
+>  
+> diff --git a/mm/vmstat.c b/mm/vmstat.c
+> index b33097ab9bc8..d9f745831624 100644
+> --- a/mm/vmstat.c
+> +++ b/mm/vmstat.c
+> @@ -1291,6 +1291,26 @@ const char * const vmstat_text[] = {
+>  	[I(PGSCAN_ANON)]			= "pgscan_anon",
+>  	[I(PGSCAN_FILE)]			= "pgscan_file",
+>  	[I(PGREFILL)]				= "pgrefill",
+> +#ifdef CONFIG_NUMA
+> +	[I(NUMA_MPOL_LOCAL_HIT)]		= "numa_mpol_local_hit",
+> +	[I(NUMA_MPOL_LOCAL_MISS)]		= "numa_mpol_local_miss",
+> +	[I(NUMA_MPOL_LOCAL_FOREIGN)]		= "numa_mpol_local_foreign",
+> +	[I(NUMA_MPOL_PREFERRED_HIT)]		= "numa_mpol_preferred_hit",
+> +	[I(NUMA_MPOL_PREFERRED_MISS)]		= "numa_mpol_preferred_miss",
+> +	[I(NUMA_MPOL_PREFERRED_FOREIGN)]	= "numa_mpol_preferred_foreign",
+> +	[I(NUMA_MPOL_PREFERRED_MANY_HIT)]	= "numa_mpol_preferred_many_hit",
+> +	[I(NUMA_MPOL_PREFERRED_MANY_MISS)]	= "numa_mpol_preferred_many_miss",
+> +	[I(NUMA_MPOL_PREFERRED_MANY_FOREIGN)]	= "numa_mpol_preferred_many_foreign",
+> +	[I(NUMA_MPOL_BIND_HIT)]			= "numa_mpol_bind_hit",
+> +	[I(NUMA_MPOL_BIND_MISS)]		= "numa_mpol_bind_miss",
+> +	[I(NUMA_MPOL_BIND_FOREIGN)]		= "numa_mpol_bind_foreign",
+> +	[I(NUMA_MPOL_INTERLEAVE_HIT)]		= "numa_mpol_interleave_hit",
+> +	[I(NUMA_MPOL_INTERLEAVE_MISS)]		= "numa_mpol_interleave_miss",
+> +	[I(NUMA_MPOL_INTERLEAVE_FOREIGN)]	= "numa_mpol_interleave_foreign",
+> +	[I(NUMA_MPOL_WEIGHTED_INTERLEAVE_HIT)]	= "numa_mpol_weighted_interleave_hit",
+> +	[I(NUMA_MPOL_WEIGHTED_INTERLEAVE_MISS)]	= "numa_mpol_weighted_interleave_miss",
+> +	[I(NUMA_MPOL_WEIGHTED_INTERLEAVE_FOREIGN)] = "numa_mpol_weighted_interleave_foreign",
+> +#endif
+>  #ifdef CONFIG_HUGETLB_PAGE
+>  	[I(NR_HUGETLB)]				= "nr_hugetlb",
+>  #endif
 
 
