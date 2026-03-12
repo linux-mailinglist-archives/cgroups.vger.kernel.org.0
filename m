@@ -1,196 +1,152 @@
-Return-Path: <cgroups+bounces-14785-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-14786-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id eLkJH9VcsmkZMAAAu9opvQ
-	(envelope-from <cgroups+bounces-14785-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Thu, 12 Mar 2026 07:27:33 +0100
+	id aHjMG+ySsmnONgAAu9opvQ
+	(envelope-from <cgroups+bounces-14786-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Thu, 12 Mar 2026 11:18:20 +0100
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id D6B8526DA18
-	for <lists+cgroups@lfdr.de>; Thu, 12 Mar 2026 07:27:32 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id E012A27041A
+	for <lists+cgroups@lfdr.de>; Thu, 12 Mar 2026 11:18:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 8D4A83024162
-	for <lists+cgroups@lfdr.de>; Thu, 12 Mar 2026 06:27:31 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id D7D953006536
+	for <lists+cgroups@lfdr.de>; Thu, 12 Mar 2026 10:18:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 11B22352C3C;
-	Thu, 12 Mar 2026 06:27:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 04C91373C15;
+	Thu, 12 Mar 2026 10:18:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="SiDMRYk6";
-	dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b="OrDJmEQH"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="d2XNUNdc";
+	dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b="capZ3wXv"
 X-Original-To: cgroups@vger.kernel.org
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A75FB303CA0
-	for <cgroups@vger.kernel.org>; Thu, 12 Mar 2026 06:27:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=170.10.133.124
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1773296850; cv=pass; b=DzmWuFfwvkNOQBNqwqxAD1QkkC2nH8rbbc2OuhM3F4hY+xTBFCRL3JSv8/SV8zqxCSGaXOXM8xuZ95+c2TxoU5m7z/nzHirrheYc4xA3okN2xEIkTjH0Qi0ezW0YQXf4H3KyjIhUQsTz2O2ueJRdoLauc1ubZeemFTHSdh7+KqM=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1773296850; c=relaxed/simple;
-	bh=Po5VbDI3dsUYUexHvnvx0I8KnYPHdZR/pSpQyqf3bfg=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=bpZ9Z3FyRQB8a4hxjW5DgSxZAEI/xkNXaJmJuSNrRuw5SF4E+mR1df4N+Y0OXcf/HwLN4PvznT2ji8+HqZOXI0lxBhAizcWmjfhqr5foGvSwbSdnPxn+RgIVIXFDIvcW/0LRjFWM5tMeUQhCEmmu+BRpURhjH++G7Hi/p5ONutU=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=SiDMRYk6; dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b=OrDJmEQH; arc=pass smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 907A823A9B3
+	for <cgroups@vger.kernel.org>; Thu, 12 Mar 2026 10:18:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1773310697; cv=none; b=ane9tQ5qb6EsIg6uzCJYaN1RfKJc7ho1sXc78S1GprPHQZ7myxuEAARFiR087Svpvh1cJlO97Pnx6D+qyzG0+GvFaGZdbTzYdrQfONrHucvVoKd2Es5GpEPnIL2oxpZXHfk1qr8/1VndwWfOrVEhmBuzVWEhzEu7ExnNLy73kKs=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1773310697; c=relaxed/simple;
+	bh=KRa4nEL6VAUnm3fAZ8Iplu+mkuF9gZAzbtyCij9zg54=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Y6of0yp7LRZtQjMnrbdBZPKVkcpkK2g9U3MUDLtZITmfeH8nkIKkF3uj3CzjkojU8NCEnOHy2yFRCBvX66i1KJlFcxm3Dnr3eP4pTdYGiOd49PJ63eleiHKm/NBQLG9NfITOOhUmSwiVN0KJNVFpZVliz9xg37QB2Fw8H1CX0t0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=d2XNUNdc; dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b=capZ3wXv; arc=none smtp.client-ip=170.10.133.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1773296848;
+	s=mimecast20190719; t=1773310695;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=KA7MHHq5ctaVMhUhQrU15S9h10dJC9tJn/h4KcAT1oA=;
-	b=SiDMRYk6d4QaOk1Jm6zHVCBIZPo0SpYiwGeI+1NGF1qOqasHnvGcWvqABv1RB2E194zs87
-	EvJhDcqC32cMCaWmx/C6y6X49Z0meTg4v5i0hbURVNUut/HD8Y+6X1AgldO7DMc6Jk+Gmq
-	CbqhVfdlv9N3xFkfsjopRT5o+2QeWjQ=
-Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
- [209.85.208.71]) by relay.mimecast.com with ESMTP with STARTTLS
+	bh=v+Ji6hNrczoVrWaESBn86h3gDK3SZFevfxChGYgg3H0=;
+	b=d2XNUNdceQZDR8ZWuHQMjRBS0k12dbL+PxW99EQpS73cTv38m79wmEbQzHTcYjx43uBOVK
+	Sw3HXggZB9WqyjhMyNSh7ZpXcdLloauxVHGSXHkt1vCdPgjR+jjJfT8HJf3pUZds5pvDR0
+	u+YEiwTQXME7dfCsCjXgcFVNfnf4+bY=
+Received: from mail-pf1-f198.google.com (mail-pf1-f198.google.com
+ [209.85.210.198]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-100-j1w-Yn1QNkCRXx6r8kTWkQ-1; Thu, 12 Mar 2026 02:27:25 -0400
-X-MC-Unique: j1w-Yn1QNkCRXx6r8kTWkQ-1
-X-Mimecast-MFC-AGG-ID: j1w-Yn1QNkCRXx6r8kTWkQ_1773296844
-Received: by mail-ed1-f71.google.com with SMTP id 4fb4d7f45d1cf-66142e571c9so493300a12.3
-        for <cgroups@vger.kernel.org>; Wed, 11 Mar 2026 23:27:25 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; t=1773296844; cv=none;
-        d=google.com; s=arc-20240605;
-        b=O5hUYW9GU61ZieewReaVyuWNPACdHdF7foDFy1uxQ4h5xE1YiuvMniB7pjrKjCNIJs
-         RHX9fFJMv2GfgzHMJcKXBznmx5uc1pdtOVTAGF991HTJuY2SmlUxh3e3n4I6nCX9pOhq
-         8HkZGF7JcTZ472ua00Z2DGX/Q/U4sGyod1WcQUzScx/16Y+k02dv2CfrrMISsGq81Wyz
-         +92iiLHJHNhEA8LHGbFIgd57ivaSCuqiyuCuR+k+b6Uns/dxspnNcUBO8v7X4D7nEHF0
-         oOdpG4vkF57VZeQlv74GHIyfX54DEZ2WTBHxSQmErIm+EGKWiU2sd1cypTVnHMXQLpmJ
-         liQw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:dkim-signature;
-        bh=KA7MHHq5ctaVMhUhQrU15S9h10dJC9tJn/h4KcAT1oA=;
-        fh=lTv4Egv1YL19blEdIsCaDGQKhTMvfpvoRew+d/QOkgk=;
-        b=WooPQ/G3tkclGQDCTrFAGv8/K3izYj01uI6jAhIEQ/vE79gGh+Vu8GOkhRulD5D1gR
-         a2R9PmUJTofs85Zr9KYWEpX4rXpobN3Y9EIvwUoSoiTZ9x8+N4htCkU6O2ptS2b5Hzz9
-         7RDav22efOd4uj0HLzML1FpI2GXbR1todkuUX24Uyh5A3XkILR8GUyDWuUgKAdR6Ujg2
-         5EhR9dL4dJxgPT90PHqBVwxsZknAISaOfaAXcDQiP9tqnwQIaUnNovJ6ekZ/OJM62LnJ
-         6gFmiVUv3df25quHU4rN3gL9/ZQ7OAC95Z/tws2auLwmMLFsR52BtPXsk0JemxBOs+f5
-         H/HA==;
-        darn=vger.kernel.org
-ARC-Authentication-Results: i=1; mx.google.com; arc=none
+ us-mta-490--Qe3VylPNxKy616PS5j6wQ-1; Thu, 12 Mar 2026 06:18:14 -0400
+X-MC-Unique: -Qe3VylPNxKy616PS5j6wQ-1
+X-Mimecast-MFC-AGG-ID: -Qe3VylPNxKy616PS5j6wQ_1773310693
+Received: by mail-pf1-f198.google.com with SMTP id d2e1a72fcca58-82988b04c5cso3031827b3a.3
+        for <cgroups@vger.kernel.org>; Thu, 12 Mar 2026 03:18:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=redhat.com; s=google; t=1773296844; x=1773901644; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=KA7MHHq5ctaVMhUhQrU15S9h10dJC9tJn/h4KcAT1oA=;
-        b=OrDJmEQH6O/avIOtkAVply2SyV0v5jnus/As3rVnZZX33ACFzvzYu+cpF21QYbceAb
-         wRAy+HTKRFxrj9Pr4DUnna0NwpjIiFG+ofWL7hSxpbPF6SWEu/bhUAo6T7GvDJak4gJP
-         lZiI9MfhGhXW0cif7d8rH2YCaKKyQvInIlSZkNz7dUxkrw55v/g+Hx36AYFlj+Okm74Q
-         QUw/F6iI+Ej6kmCgmVwXgR04Ofq0S8J7QN3Sqc0gn+FkMwYYmeU9ynfmF3uRwuLH7W9K
-         ZbtEsQqKaM2OKFC8/oCSfnNvxRovtvQJLQMMw8Vfdeu/Q6pg/nAX4W5KwLpRV17/dQ2k
-         BdWQ==
+        d=redhat.com; s=google; t=1773310693; x=1773915493; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=v+Ji6hNrczoVrWaESBn86h3gDK3SZFevfxChGYgg3H0=;
+        b=capZ3wXvdA9v+pth5rWa7wSYHWM68bCpLNPVrycN8DFP1GUe+WA9ufMlZby9qs/t0B
+         mSU6Z+ovsfJGocpHip8OCKlNuJqrUZJauF5AeN80YUvJ9+pmlWZkhWyJEcYd2fWP8zL8
+         xGfPfSlM+LaBAX4gmduVurNjuZTrLaC1cXGn3ryo9A1ya5ScyvniYlbsGOC5I0u8pHQR
+         ul3tGGx2vo363HRRqZKw0ti3L91HMzD5FDPflYV12Wo/EbRqigHIlNx7IIEkwtMo5Ni9
+         g/Vb7XtUVcbngTKIyLGP9DgyVo9R74el2BJw6DKUeB3/IM8xJZgr28NKK5cJfLgDmWgm
+         y0Nw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1773296844; x=1773901644;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=KA7MHHq5ctaVMhUhQrU15S9h10dJC9tJn/h4KcAT1oA=;
-        b=gY5Zj/CEJHQA5Sbaw/iLmtxqkMovQ13yHelD2H4KGzUanYMUDF0EFvKLo1TZyGe/6p
-         ghcrk3dnbVeXXRuC8djv9JD8e3SEwcunsJQAZP1IELJLflpQd+zU5T7iArbMNfd82Lzz
-         OTqlIV5YcAU12+wzaYP6BY+mTv9l+ehJ2P6ej0J8ufasLi4CbUYC7hR2kmTSULFqWiAG
-         yQQQva3TarVEUxqUWQ1vm1jBk6lPJh5Wbl4AoiLL04nsj0xwpuSGgfugRvcXer5iYrfA
-         ki3jeXikpoATfBfEp5YXKe7mTiZr8BertchLYmsNwLlie5Dq4Z1T9sSv5JdTHJWKM8RE
-         RvBA==
-X-Gm-Message-State: AOJu0YwCLuOkhOmZuGKfd0rSRQH6il9dhn+N+cMXzfK3HOuZhC7oJTDU
-	WHZqzHbfX0AAHiJqJ5OxqFmLA4euVEBz9AvZ/DJV6+arPFI5taYb+BEC1aB2PynUE/ge9Uw19EE
-	AxAf3i4a4rixXu+iCd6ONn4Z2Puq7L2y+KFcJQXPavRiUac/RWUSA6JgdmzQSHwKOJYKQuWl9kO
-	q49KXjCbL0D9WvmvwuwLcf62hVPPCcIEr9Dl/HfbLGftNcTwyfcg==
-X-Gm-Gg: ATEYQzzoP+7NPCwr2aoeNgYXonCraXzLAP2ik1lrMxVoPurLEmslo71Xbghvecl/7vt
-	ki7rZNLCle5KD09PIEmcjYVhJDS5YMq7eSVT+2qzBktmTuQIM008fUZrOFEIW15C3q+mHFsv0zV
-	AQpFbDI0WPgFLi4ReZ3BGmYdivc4v6qQPbTkwjN5BKbZyH4nObOFK4Yvrq2xh/Nb3xGPjCMquD2
-	8lzIhs=
-X-Received: by 2002:a05:6402:254f:b0:661:51a1:8d18 with SMTP id 4fb4d7f45d1cf-6631a8d7acamr2574653a12.31.1773296843966;
-        Wed, 11 Mar 2026 23:27:23 -0700 (PDT)
-X-Received: by 2002:a05:6402:254f:b0:661:51a1:8d18 with SMTP id
- 4fb4d7f45d1cf-6631a8d7acamr2574642a12.31.1773296843581; Wed, 11 Mar 2026
- 23:27:23 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1773310693; x=1773915493;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:x-gm-gg
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=v+Ji6hNrczoVrWaESBn86h3gDK3SZFevfxChGYgg3H0=;
+        b=hhATmgnPlQ7X6+brwpHOk3Byu/4NzuW2j8RsF+w0xv+8BFJXQV9gVIwfjv3F/JiTi/
+         rpOpm8l5ijTFemek+AYdymNjXDp6cS137kQ6vxkMQ89K0LM+/SItS2bJxlRiilKBasbX
+         Z+GaDnvju6Yle6/JDHHuClz3N1es4+YDNs+r92K9YZRrl12w3ZzdcwE6lcsqPydS5eb5
+         cAojyExnjSzu3U37IiZCAHWriZF0zyVKJUHl/1QqSgTA2/nuZc31KjD9PpOk5BLyBW5U
+         HVt4t3aATA0QYq72BGnMXCGfQVkxEqg9TVmt+qW6gS/76zszJjB/1dvzKYJjRU+GyID1
+         EjPA==
+X-Gm-Message-State: AOJu0YzNPDn9MIPxpf+sr+YGi8wPZsFu6z5ooXwxYAeDwdPVJHupM1WJ
+	l7O3ETVyhmtFXywM3XYgT1D85rPLUTKz/uthDsBcZoU35qBEOlSe2YFeUu5DIHf+rrr5VKw1hDX
+	JrfT9zk/2mXDBB51gQVfSjiYYkoiUGlFLDPKeJyzyMb2cIKhA0uL1XGt6eeoQsBj/z3k=
+X-Gm-Gg: ATEYQzzPHQyxIEqZOX74G1wYVfaOXEHtyNEWqfcsoZNIqxy63qAKKomH0ahDgicgD01
+	M7ug0w49flLgzlDUmEsb70VmXZJLEPDDuhP6caHXfQFQP17HubgKWfHBg4roh+MauoiM7JgYVta
+	2ygPbhmRVfS1O8agh53Etp1ai8zIJEDIyZ1yQ/QXcUOz9sm/t8/PpVPYoNfUPGzYvOltth/kVc3
+	+vMRngqZxFYTISEbPe9tmf2kLfkM7yaheOk86c5UK9jReSukZ0Zj3of+gA8lv8BdotUgmrWWIFL
+	m34T8yViiacbtbsDY2DsigokCrvGBlA2Qv+v12pNvJAqH62RXYHO4MaX2gh8sdlOGuUcLky79MA
+	9SorFrWv7dYC18vplhw==
+X-Received: by 2002:a05:6a00:4c90:b0:823:5270:ef48 with SMTP id d2e1a72fcca58-829f7108c0bmr5039381b3a.33.1773310692843;
+        Thu, 12 Mar 2026 03:18:12 -0700 (PDT)
+X-Received: by 2002:a05:6a00:4c90:b0:823:5270:ef48 with SMTP id d2e1a72fcca58-829f7108c0bmr5039356b3a.33.1773310692404;
+        Thu, 12 Mar 2026 03:18:12 -0700 (PDT)
+Received: from redhat.com ([209.132.188.88])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-82a06fe211csm2635592b3a.0.2026.03.12.03.18.11
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 12 Mar 2026 03:18:11 -0700 (PDT)
+Date: Thu, 12 Mar 2026 18:18:09 +0800
+From: Li Wang <liwang@redhat.com>
+To: Waiman Long <longman@redhat.com>, Lucas Liu <hongzliu@redhat.com>
+Cc: cgroups@vger.kernel.org, linux-kselftest@vger.kernel.org,
+	Li Wang <liwan@redhat.com>
+Subject: Re: [ISSUE] cgroup: test_percpu_basic fails on PREEMPT_RT due to
+ lazy percpu stat flushing
+Message-ID: <abKS4Qt72UP8rYS_@redhat.com>
+References: <CAEnjF8FxM2CGgGC0R42R7R4=udHMtkwV9bCVcw7NDq7KTZMLkg@mail.gmail.com>
+ <4238fec3-1a37-4924-b13e-a42d2454412c@redhat.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CAEnjF8FxM2CGgGC0R42R7R4=udHMtkwV9bCVcw7NDq7KTZMLkg@mail.gmail.com>
- <4238fec3-1a37-4924-b13e-a42d2454412c@redhat.com>
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 In-Reply-To: <4238fec3-1a37-4924-b13e-a42d2454412c@redhat.com>
-From: Lucas Liu <hongzliu@redhat.com>
-Date: Thu, 12 Mar 2026 14:27:12 +0800
-X-Gm-Features: AaiRm51s2sbZ-V7wlsSb_KbYKHb1lBQV8FzGRHjVYoDhNs9_i_DNWXmOCFLGp2U
-Message-ID: <CAEnjF8EMW1F9WQE5rSVMeU5aoYi2sJGruxiaj8SxXtVHp6m8tA@mail.gmail.com>
-Subject: Re: [ISSUE] cgroup: test_percpu_basic fails on PREEMPT_RT due to lazy
- percpu stat flushing
-To: Waiman Long <longman@redhat.com>
-Cc: cgroups@vger.kernel.org, linux-kselftest@vger.kernel.org, 
-	Li Wang <liwan@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 X-Spamd-Result: default: False [-2.16 / 15.00];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=2];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	DMARC_POLICY_ALLOW(-0.50)[redhat.com,quarantine];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
 	R_DKIM_ALLOW(-0.20)[redhat.com:s=mimecast20190719,redhat.com:s=google];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	DKIM_TRACE(0.00)[redhat.com:+];
-	TAGGED_FROM(0.00)[bounces-14785-lists,cgroups=lfdr.de];
-	FROM_HAS_DN(0.00)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	RCVD_TLS_LAST(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	RCPT_COUNT_THREE(0.00)[4];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	MISSING_XM_UA(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[hongzliu@redhat.com,cgroups@vger.kernel.org];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[5];
-	TAGGED_RCPT(0.00)[cgroups];
-	NEURAL_HAM(-0.00)[-1.000];
 	TO_DN_SOME(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[localhost:email,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,mail.gmail.com:mid]
-X-Rspamd-Queue-Id: D6B8526DA18
+	MIME_TRACE(0.00)[0:+];
+	TAGGED_FROM(0.00)[bounces-14786-lists,cgroups=lfdr.de];
+	RCVD_TLS_LAST(0.00)[];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	MISSING_XM_UA(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	RCPT_COUNT_FIVE(0.00)[5];
+	RCVD_COUNT_FIVE(0.00)[6];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[liwang@redhat.com,cgroups@vger.kernel.org];
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
+	NEURAL_HAM(-0.00)[-1.000];
+	TAGGED_RCPT(0.00)[cgroups];
+	MID_RHS_MATCH_FROM(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: E012A27041A
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-Hi Waiman:
-Thanks for responding, I have tried Li Wang's patch, The problem has been f=
-ixed.
+Waiman Long wrote:
 
-# ./test_kmem
-ok 1 test_kmem_basic
-ok 2 test_kmem_memcg_deletion
-ok 3 test_kmem_proc_kpagecgroup
-ok 4 test_kmem_kernel_stacks
-ok 5 test_kmem_dead_cgroups
-ok 6 test_percpu_basic
-[root@localhost cgroup]# bash run.sh
-run 100 times...
---------------------------------------
-proccess: 100/100  status: [  OK  ]  failure: 0
---------------------------------------
-done
-overall: 100
-ok: 100
-fail: 0
-
-
-For the lazy percpu stat flushing, I assume this is expected behavior
-for RT kernels? So Li Wang's patch can be our final solution? Please
-correct me if I am wrong.
-
-Thanks
-
-On Wed, Mar 11, 2026 at 10:17=E2=80=AFPM Waiman Long <longman@redhat.com> w=
-rote:
->
 > On 3/11/26 4:49 AM, Lucas Liu wrote:
 > > Hi recently I met this issue
 > >   ./test_kmem
@@ -202,26 +158,80 @@ rote:
 > > memory.current 24514560
 > > percpu 15280000
 > > not ok 6 test_percpu_basic
-> >
+> > 
 > > In this test the memory.current 24514560, percpu 15280000, Diff ~9.2MB.
-> >
+> > 
 > > #define MAX_VMSTAT_ERROR (4096 * 64 * get_nprocs())
-> >
+> > 
 > > in this part (8cpus) MAX_VMSTAT_ERROR is 4M memory. On the RT kernel,
 > > the labs(current - percpu) is 9.2M, that is the root cause for this
 > > failure. I am not sure what value is suitable for this case(2M per cpu
 > > maybe?)
->
+> 
 > Li Wang had posted patches to address some of the problems in this test.
->
+> 
 > https://lore.kernel.org/lkml/20260306071843.149147-2-liwang@redhat.com/
->
+> 
 > It could be the case that lazy percpu stat flushing can also be a factor
-> here. In this case, we may need to reread the stat counters again
-> several time with some delay to solve this problem.
->
-> Cheers,
-> Longman
->
+> here. In this case, we may need to reread the stat counters again several
+> time with some delay to solve this problem.
+
+When memory.stat is read, the kernel calls mem_cgroup_flush_stats(), which
+invokes cgroup_rstat_flush() to drain per-cpu counters before returning
+results. So in the normal read path, stats are flushed, they aren't
+arbitrarily stale at the point this test reads them.
+
+The "lazy" aspect, my understand, is that background flushing maybe skipped
+sometime, as there is an situation: __mem_cgroup_flush_stats() skips the
+flush if the total pending update is below a threshold, i.e.
+
+  575  static bool memcg_vmstats_needs_flush(struct memcg_vmstats *vmstats)
+  576  {
+  577          return atomic64_read(&vmstats->stats_updates) >
+  578                  MEMCG_CHARGE_BATCH * num_online_cpus();
+  579  }
+
+So the "lazy" could happen on a machine with too many CPUs, that threshold
+can be non-trivial and could contribute a few MB of discrepancy.
+
+But my failure observed on a 3CPUs box, it shouldn't go with "lazy" skip.
+
+ # ./test_kmem
+ TAP version 13
+ 1..6
+ ok 1 test_kmem_basic
+ ok 2 test_kmem_memcg_deletion
+ ok 3 test_kmem_proc_kpagecgroup
+ ok 4 test_kmem_kernel_stacks
+ ok 5 test_kmem_dead_cgroups
+ memory.current 11530240
+ percpu 8440000
+ not ok 6 test_percpu_basic
+ # Totals: pass:5 fail:1 xfail:0 xpass:0 skip:0 error:0
+ 
+ # uname -r
+ 6.12.0-211.el10.aarch64
+ 
+ # getconf PAGE_SIZE
+ 4096
+ 
+ # lscpu
+ Architecture:                aarch64
+   CPU op-mode(s):            32-bit, 64-bit
+   Byte Order:                Little Endian
+ CPU(s):                      3
+   On-line CPU(s) list:       0-2
+ ...
+
+Even on Lucas's test system, (8cpus), I assume the pagesize is 4k, the
+threashold is 2M is still less than the failed result:
+  64 × 8 = 512 pages = 512 × 4096 = 2 MB
+
+Bose on the above two testing, the lazy produce deviation is not
+like the root cause.
+
+-- 
+Regards,
+Li Wang
 
 
