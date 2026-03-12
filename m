@@ -1,317 +1,227 @@
-Return-Path: <cgroups+bounces-14784-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-14785-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id qIL9Ccc0smkuJgAAu9opvQ
-	(envelope-from <cgroups+bounces-14784-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Thu, 12 Mar 2026 04:36:39 +0100
+	id eLkJH9VcsmkZMAAAu9opvQ
+	(envelope-from <cgroups+bounces-14785-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Thu, 12 Mar 2026 07:27:33 +0100
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
-	by mail.lfdr.de (Postfix) with ESMTPS id BFF9626CD4F
-	for <lists+cgroups@lfdr.de>; Thu, 12 Mar 2026 04:36:38 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id D6B8526DA18
+	for <lists+cgroups@lfdr.de>; Thu, 12 Mar 2026 07:27:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 259FA3014FF5
-	for <lists+cgroups@lfdr.de>; Thu, 12 Mar 2026 03:36:38 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 8D4A83024162
+	for <lists+cgroups@lfdr.de>; Thu, 12 Mar 2026 06:27:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C63AD37CD34;
-	Thu, 12 Mar 2026 03:36:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 11B22352C3C;
+	Thu, 12 Mar 2026 06:27:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="IYZJby7Y"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="SiDMRYk6";
+	dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b="OrDJmEQH"
 X-Original-To: cgroups@vger.kernel.org
-Received: from out-172.mta1.migadu.com (out-172.mta1.migadu.com [95.215.58.172])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 04A7F35DA74
-	for <cgroups@vger.kernel.org>; Thu, 12 Mar 2026 03:36:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.172
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1773286596; cv=none; b=u/LX+uin086ywFYYBcaNCgBA/L16gXVKyGFloYEf1fC9d4sZavyfmL21et/WCxsKGz40bRLoZHghqdoZf6tH7L2sKU9jinWFzD+PS2IZBOyHe3RN0lKjQo722lGnT5t6T2XQXEVzQ1uliRSod+KLffLKb6zXCQFiNAaKuexNJ08=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1773286596; c=relaxed/simple;
-	bh=gA79HwwC9YG0qehzJSnQ5zdv8V0OGEbH1xlPeE/ltJg=;
-	h=MIME-Version:Date:Content-Type:From:Message-ID:Subject:To:Cc:
-	 In-Reply-To:References; b=Xw+DZJzH5VRxeV0wHttVvOOTNKZ+MYQzm0wzKgadQmSXH81LuBiGylU0VpdkXozNM+7z2l1ZuMuPeIURUQCurg3Up9B1OVI9ovcxoSuFVU8AOrS5n00Nv9I4nI7JMlddRR1aVYUneFPXqF7E/RkJEjHW3SlwnLyD43XJulpOwEw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=IYZJby7Y; arc=none smtp.client-ip=95.215.58.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A75FB303CA0
+	for <cgroups@vger.kernel.org>; Thu, 12 Mar 2026 06:27:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=170.10.133.124
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1773296850; cv=pass; b=DzmWuFfwvkNOQBNqwqxAD1QkkC2nH8rbbc2OuhM3F4hY+xTBFCRL3JSv8/SV8zqxCSGaXOXM8xuZ95+c2TxoU5m7z/nzHirrheYc4xA3okN2xEIkTjH0Qi0ezW0YQXf4H3KyjIhUQsTz2O2ueJRdoLauc1ubZeemFTHSdh7+KqM=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1773296850; c=relaxed/simple;
+	bh=Po5VbDI3dsUYUexHvnvx0I8KnYPHdZR/pSpQyqf3bfg=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=bpZ9Z3FyRQB8a4hxjW5DgSxZAEI/xkNXaJmJuSNrRuw5SF4E+mR1df4N+Y0OXcf/HwLN4PvznT2ji8+HqZOXI0lxBhAizcWmjfhqr5foGvSwbSdnPxn+RgIVIXFDIvcW/0LRjFWM5tMeUQhCEmmu+BRpURhjH++G7Hi/p5ONutU=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=SiDMRYk6; dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b=OrDJmEQH; arc=pass smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1773296848;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=KA7MHHq5ctaVMhUhQrU15S9h10dJC9tJn/h4KcAT1oA=;
+	b=SiDMRYk6d4QaOk1Jm6zHVCBIZPo0SpYiwGeI+1NGF1qOqasHnvGcWvqABv1RB2E194zs87
+	EvJhDcqC32cMCaWmx/C6y6X49Z0meTg4v5i0hbURVNUut/HD8Y+6X1AgldO7DMc6Jk+Gmq
+	CbqhVfdlv9N3xFkfsjopRT5o+2QeWjQ=
+Received: from mail-ed1-f71.google.com (mail-ed1-f71.google.com
+ [209.85.208.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-100-j1w-Yn1QNkCRXx6r8kTWkQ-1; Thu, 12 Mar 2026 02:27:25 -0400
+X-MC-Unique: j1w-Yn1QNkCRXx6r8kTWkQ-1
+X-Mimecast-MFC-AGG-ID: j1w-Yn1QNkCRXx6r8kTWkQ_1773296844
+Received: by mail-ed1-f71.google.com with SMTP id 4fb4d7f45d1cf-66142e571c9so493300a12.3
+        for <cgroups@vger.kernel.org>; Wed, 11 Mar 2026 23:27:25 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1773296844; cv=none;
+        d=google.com; s=arc-20240605;
+        b=O5hUYW9GU61ZieewReaVyuWNPACdHdF7foDFy1uxQ4h5xE1YiuvMniB7pjrKjCNIJs
+         RHX9fFJMv2GfgzHMJcKXBznmx5uc1pdtOVTAGF991HTJuY2SmlUxh3e3n4I6nCX9pOhq
+         8HkZGF7JcTZ472ua00Z2DGX/Q/U4sGyod1WcQUzScx/16Y+k02dv2CfrrMISsGq81Wyz
+         +92iiLHJHNhEA8LHGbFIgd57ivaSCuqiyuCuR+k+b6Uns/dxspnNcUBO8v7X4D7nEHF0
+         oOdpG4vkF57VZeQlv74GHIyfX54DEZ2WTBHxSQmErIm+EGKWiU2sd1cypTVnHMXQLpmJ
+         liQw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:dkim-signature;
+        bh=KA7MHHq5ctaVMhUhQrU15S9h10dJC9tJn/h4KcAT1oA=;
+        fh=lTv4Egv1YL19blEdIsCaDGQKhTMvfpvoRew+d/QOkgk=;
+        b=WooPQ/G3tkclGQDCTrFAGv8/K3izYj01uI6jAhIEQ/vE79gGh+Vu8GOkhRulD5D1gR
+         a2R9PmUJTofs85Zr9KYWEpX4rXpobN3Y9EIvwUoSoiTZ9x8+N4htCkU6O2ptS2b5Hzz9
+         7RDav22efOd4uj0HLzML1FpI2GXbR1todkuUX24Uyh5A3XkILR8GUyDWuUgKAdR6Ujg2
+         5EhR9dL4dJxgPT90PHqBVwxsZknAISaOfaAXcDQiP9tqnwQIaUnNovJ6ekZ/OJM62LnJ
+         6gFmiVUv3df25quHU4rN3gL9/ZQ7OAC95Z/tws2auLwmMLFsR52BtPXsk0JemxBOs+f5
+         H/HA==;
+        darn=vger.kernel.org
+ARC-Authentication-Results: i=1; mx.google.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=redhat.com; s=google; t=1773296844; x=1773901644; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=KA7MHHq5ctaVMhUhQrU15S9h10dJC9tJn/h4KcAT1oA=;
+        b=OrDJmEQH6O/avIOtkAVply2SyV0v5jnus/As3rVnZZX33ACFzvzYu+cpF21QYbceAb
+         wRAy+HTKRFxrj9Pr4DUnna0NwpjIiFG+ofWL7hSxpbPF6SWEu/bhUAo6T7GvDJak4gJP
+         lZiI9MfhGhXW0cif7d8rH2YCaKKyQvInIlSZkNz7dUxkrw55v/g+Hx36AYFlj+Okm74Q
+         QUw/F6iI+Ej6kmCgmVwXgR04Ofq0S8J7QN3Sqc0gn+FkMwYYmeU9ynfmF3uRwuLH7W9K
+         ZbtEsQqKaM2OKFC8/oCSfnNvxRovtvQJLQMMw8Vfdeu/Q6pg/nAX4W5KwLpRV17/dQ2k
+         BdWQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1773296844; x=1773901644;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=KA7MHHq5ctaVMhUhQrU15S9h10dJC9tJn/h4KcAT1oA=;
+        b=gY5Zj/CEJHQA5Sbaw/iLmtxqkMovQ13yHelD2H4KGzUanYMUDF0EFvKLo1TZyGe/6p
+         ghcrk3dnbVeXXRuC8djv9JD8e3SEwcunsJQAZP1IELJLflpQd+zU5T7iArbMNfd82Lzz
+         OTqlIV5YcAU12+wzaYP6BY+mTv9l+ehJ2P6ej0J8ufasLi4CbUYC7hR2kmTSULFqWiAG
+         yQQQva3TarVEUxqUWQ1vm1jBk6lPJh5Wbl4AoiLL04nsj0xwpuSGgfugRvcXer5iYrfA
+         ki3jeXikpoATfBfEp5YXKe7mTiZr8BertchLYmsNwLlie5Dq4Z1T9sSv5JdTHJWKM8RE
+         RvBA==
+X-Gm-Message-State: AOJu0YwCLuOkhOmZuGKfd0rSRQH6il9dhn+N+cMXzfK3HOuZhC7oJTDU
+	WHZqzHbfX0AAHiJqJ5OxqFmLA4euVEBz9AvZ/DJV6+arPFI5taYb+BEC1aB2PynUE/ge9Uw19EE
+	AxAf3i4a4rixXu+iCd6ONn4Z2Puq7L2y+KFcJQXPavRiUac/RWUSA6JgdmzQSHwKOJYKQuWl9kO
+	q49KXjCbL0D9WvmvwuwLcf62hVPPCcIEr9Dl/HfbLGftNcTwyfcg==
+X-Gm-Gg: ATEYQzzoP+7NPCwr2aoeNgYXonCraXzLAP2ik1lrMxVoPurLEmslo71Xbghvecl/7vt
+	ki7rZNLCle5KD09PIEmcjYVhJDS5YMq7eSVT+2qzBktmTuQIM008fUZrOFEIW15C3q+mHFsv0zV
+	AQpFbDI0WPgFLi4ReZ3BGmYdivc4v6qQPbTkwjN5BKbZyH4nObOFK4Yvrq2xh/Nb3xGPjCMquD2
+	8lzIhs=
+X-Received: by 2002:a05:6402:254f:b0:661:51a1:8d18 with SMTP id 4fb4d7f45d1cf-6631a8d7acamr2574653a12.31.1773296843966;
+        Wed, 11 Mar 2026 23:27:23 -0700 (PDT)
+X-Received: by 2002:a05:6402:254f:b0:661:51a1:8d18 with SMTP id
+ 4fb4d7f45d1cf-6631a8d7acamr2574642a12.31.1773296843581; Wed, 11 Mar 2026
+ 23:27:23 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1773286583;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=sIeIxnDFvCAVP63KN+jaya1voCxZiwj51bRsQygs0ok=;
-	b=IYZJby7YmNF5PqJObweKxlt2ztpfKjN1MBTXhN0dFwGBJiLYqMS0qgEUy1itQcuW8lfJ/X
-	MlXMyOy3uccORXsDLLBn5YQPZEHeG82Dc6J6io5oum0++DdKfNv9AXbaoxzAnTfsg6ItS1
-	P4z3KYzUznaP8gVpK/Pcy0wg8BxYNT8=
-Date: Thu, 12 Mar 2026 03:36:11 +0000
-Content-Type: text/plain; charset="utf-8"
+References: <CAEnjF8FxM2CGgGC0R42R7R4=udHMtkwV9bCVcw7NDq7KTZMLkg@mail.gmail.com>
+ <4238fec3-1a37-4924-b13e-a42d2454412c@redhat.com>
+In-Reply-To: <4238fec3-1a37-4924-b13e-a42d2454412c@redhat.com>
+From: Lucas Liu <hongzliu@redhat.com>
+Date: Thu, 12 Mar 2026 14:27:12 +0800
+X-Gm-Features: AaiRm51s2sbZ-V7wlsSb_KbYKHb1lBQV8FzGRHjVYoDhNs9_i_DNWXmOCFLGp2U
+Message-ID: <CAEnjF8EMW1F9WQE5rSVMeU5aoYi2sJGruxiaj8SxXtVHp6m8tA@mail.gmail.com>
+Subject: Re: [ISSUE] cgroup: test_percpu_basic fails on PREEMPT_RT due to lazy
+ percpu stat flushing
+To: Waiman Long <longman@redhat.com>
+Cc: cgroups@vger.kernel.org, linux-kselftest@vger.kernel.org, 
+	Li Wang <liwan@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: hui.zhu@linux.dev
-Message-ID: <12bb0c22707193b94e7740b562daec80300544fe@linux.dev>
-TLS-Required: No
-Subject: Re: [LSF/MM/BPF TOPIC] Reimagining Memory Cgroup (memcg_ext)
-To: "Shakeel Butt" <shakeel.butt@linux.dev>,
- lsf-pc@lists.linux-foundation.org
-Cc: "Andrew Morton" <akpm@linux-foundation.org>, "Tejun Heo" <tj@kernel.org>,
- "Michal Hocko" <mhocko@suse.com>, "Johannes Weiner" <hannes@cmpxchg.org>,
- "Alexei Starovoitov" <ast@kernel.org>, "=?utf-8?B?TWljaGFsIEtvdXRuw70=?="
- <mkoutny@suse.com>, "Roman Gushchin" <roman.gushchin@linux.dev>, "JP
- Kobryn" <inwardvessel@gmail.com>, "Muchun Song" <muchun.song@linux.dev>,
- "Geliang Tang" <geliang@kernel.org>, "Sweet Tea Dorminy"
- <sweettea-kernel@dorminy.me>, "Emil Tsalapatis" <emil@etsalapatis.com>,
- "David Rientjes" <rientjes@google.com>, "Martin KaFai Lau"
- <martin.lau@linux.dev>, "Meta kernel team" <kernel-team@meta.com>,
- linux-mm@kvack.org, cgroups@vger.kernel.org, bpf@vger.kernel.org,
- linux-kernel@vger.kernel.org
-In-Reply-To: <20260307182424.2889780-1-shakeel.butt@linux.dev>
-References: <20260307182424.2889780-1-shakeel.butt@linux.dev>
-X-Migadu-Flow: FLOW_OUT
 X-Spamd-Result: default: False [-2.16 / 15.00];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[linux.dev,none];
-	R_DKIM_ALLOW(-0.20)[linux.dev:s=key1];
-	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=2];
+	DMARC_POLICY_ALLOW(-0.50)[redhat.com,quarantine];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_DKIM_ALLOW(-0.20)[redhat.com:s=mimecast20190719,redhat.com:s=google];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-14784-lists,cgroups=lfdr.de];
-	RCVD_COUNT_THREE(0.00)[3];
+	DKIM_TRACE(0.00)[redhat.com:+];
+	TAGGED_FROM(0.00)[bounces-14785-lists,cgroups=lfdr.de];
+	FROM_HAS_DN(0.00)[];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	FREEMAIL_CC(0.00)[linux-foundation.org,kernel.org,suse.com,cmpxchg.org,linux.dev,gmail.com,dorminy.me,etsalapatis.com,google.com,meta.com,kvack.org,vger.kernel.org];
-	RCPT_COUNT_TWELVE(0.00)[21];
+	RCVD_TLS_LAST(0.00)[];
 	MIME_TRACE(0.00)[0:+];
-	FROM_NEQ_ENVFROM(0.00)[hui.zhu@linux.dev,cgroups@vger.kernel.org];
+	RCPT_COUNT_THREE(0.00)[4];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
 	MISSING_XM_UA(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	MID_RHS_MATCH_FROM(0.00)[];
-	NEURAL_HAM(-0.00)[-1.000];
 	PRECEDENCE_BULK(0.00)[];
-	DKIM_TRACE(0.00)[linux.dev:+];
+	FROM_NEQ_ENVFROM(0.00)[hongzliu@redhat.com,cgroups@vger.kernel.org];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[5];
 	TAGGED_RCPT(0.00)[cgroups];
-	FROM_NO_DN(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
+	NEURAL_HAM(-0.00)[-1.000];
 	TO_DN_SOME(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[arxiv.org:url,sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns,linux.dev:dkim,linux.dev:email,linux.dev:mid]
-X-Rspamd-Queue-Id: BFF9626CD4F
+	DBL_BLOCKED_OPENRESOLVER(0.00)[localhost:email,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,mail.gmail.com:mid]
+X-Rspamd-Queue-Id: D6B8526DA18
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-2026=E5=B9=B43=E6=9C=888=E6=97=A5 02:24, "Shakeel Butt" <shakeel.butt@lin=
-ux.dev mailto:shakeel.butt@linux.dev?to=3D%22Shakeel%20Butt%22%20%3Cshake=
-el.butt%40linux.dev%3E > =E5=86=99=E5=88=B0:
+Hi Waiman:
+Thanks for responding, I have tried Li Wang's patch, The problem has been f=
+ixed.
+
+# ./test_kmem
+ok 1 test_kmem_basic
+ok 2 test_kmem_memcg_deletion
+ok 3 test_kmem_proc_kpagecgroup
+ok 4 test_kmem_kernel_stacks
+ok 5 test_kmem_dead_cgroups
+ok 6 test_percpu_basic
+[root@localhost cgroup]# bash run.sh
+run 100 times...
+--------------------------------------
+proccess: 100/100  status: [  OK  ]  failure: 0
+--------------------------------------
+done
+overall: 100
+ok: 100
+fail: 0
 
 
->=20
->=20Over the last couple of weeks, I have been brainstorming on how I wou=
-ld go
-> about redesigning memcg, taking inspiration from sched_ext and bpfoom, =
-with a
-> focus on existing challenges and issues. This proposal outlines the hig=
-h-level
-> direction. Followup emails and patch series will cover and brainstorm t=
-he
-> mechanisms (of course BPF) to achieve these goals.
->=20
->=20Memory cgroups provide memory accounting and the ability to control m=
-emory usage
-> of workloads through two categories of limits. Throttling limits (memor=
-y.max and
-> memory.high) cap memory consumption. Protection limits (memory.min and
-> memory.low) shield a workload's memory from reclaim under external memo=
-ry
-> pressure.
->=20
->=20Challenges
-> ----------
->=20
->=20- Workload owners rarely know their actual memory requirements, leadi=
-ng to
->  overprovisioned limits, lower utilization, and higher infrastructure c=
-osts.
->=20
->=20- Throttling limit enforcement is synchronous in the allocating task'=
-s context,
->  which can stall latency-sensitive threads.
->=20
->=20- The stalled thread may hold shared locks, causing priority inversio=
-n -- all
->  waiters are blocked regardless of their priority.
->=20
->=20- Enforcement is indiscriminate -- there is no way to distinguish a
->  performance-critical or latency-critical allocator from a latency-tole=
-rant
->  one.
->=20
->=20- Protection limits assume static working sets size, forcing owners t=
-o either
->  overprovision or build complex userspace infrastructure to dynamically=
- adjust
->  them.
->=20
->=20Feature Wishlist
-> ----------------
->=20
->=20Here is the list of features and capabilities I want to enable in the
-> redesigned memcg limit enforcement world.
->=20
->=20Per-Memcg Background Reclaim
->=20
->=20In the new memcg world, with the goal of (mostly) eliminating direct =
-synchronous
-> reclaim for limit enforcement, provide per-memcg background reclaimers =
-which can
-> scale across CPUs with the allocation rate.
+For the lazy percpu stat flushing, I assume this is expected behavior
+for RT kernels? So Li Wang's patch can be our final solution? Please
+correct me if I am wrong.
 
-I am aware that several companies maintain out-of-tree patches for
-asynchronous reclaim, though some have not yet attempted to upstream
-them.
+Thanks
 
-Would it be feasible to introduce a generic memcg asynchronous reclaim
-framework into the upstream kernel, where eBPF is used to orchestrate
-and control the reclaim logic? In this model, the kernel's role would
-be to enforce "guardrails" for these operations=E2=80=94for instance,
-restricting a BPF program to initiating only one asynchronous reclaim
-pass at a time=E2=80=94to ensure system safety and predictability.
-
-Best,
-Hui
-
-
->=20
->=20Lock-Aware Throttling
->=20
->=20The ability to avoid throttling an allocating task that is holding lo=
-cks, to
-> prevent priority inversion. In Meta's fleet, we have observed lock hold=
-ers stuck
-> in memcg reclaim, blocking all waiters regardless of their priority or
-> criticality.
->=20
->=20Thread-Level Throttling Control
->=20
->=20Workloads should be able to indicate at the thread level which thread=
-s can be
-> synchronously throttled and which cannot. For example, while experiment=
-ing with
-> sched_ext, we drastically improved the performance of AI training workl=
-oads by
-> prioritizing threads interacting with the GPU. Similarly, applications =
-can
-> identify the threads or thread pools on their performance-critical path=
-s and
-> the memcg enforcement mechanism should not throttle them.
->=20
->=20Combined Memory and Swap Limits
->=20
->=20Some users (Google actually) need the ability to enforce limits based=
- on
-> combined memory and swap usage, similar to cgroup v1's memsw limit, pro=
-viding a
-> ceiling on total memory commitment rather than treating memory and swap
-> independently.
->=20
->=20Dynamic Protection Limits
->=20
->=20Rather than static protection limits, the kernel should support defin=
-ing
-> protection based on the actual working set of the workload, leveraging =
-signals
-> such as working set estimation, PSI, refault rates, or a combination th=
-ereof to
-> automatically adapt to the workload's current memory needs.
->=20
->=20Shared Memory Semantics
->=20
->=20With more flexibility in limit enforcement, the kernel should be able=
- to
-> account for memory shared between workloads (cgroups) during enforcemen=
-t.
-> Today, enforcement only looks at each workload's memory usage independe=
-ntly.
-> Sensible shared memory semantics would allow the enforcer to consider
-> cross-cgroup sharing when making reclaim and throttling decisions.
->=20
->=20Memory Tiering
->=20
->=20With a flexible limit enforcement mechanism, the kernel can balance m=
-emory
-> usage of different workloads across memory tiers based on their perform=
-ance
-> requirements. Tier accounting and hotness tracking are orthogonal, but =
-the
-> decisions of when and how to balance memory between tiers should be han=
-dled by
-> the enforcer.
->=20
->=20Collaborative Load Shedding
->=20
->=20Many workloads communicate with an external entity for load balancing=
- and rely
-> on their own usage metrics like RSS or memory pressure to signal whethe=
-r they
-> can accept more or less work. This is guesswork. Instead of the
-> workload guessing, the limit enforcer -- which is actually managing the
-> workload's memory usage -- should be able to communicate available head=
-room or
-> request the workload to shed load or reduce memory usage. This collabor=
-ative
-> load shedding mechanism would allow workloads to make informed decision=
-s rather
-> than reacting to coarse signals.
->=20
->=20Cross-Subsystem Collaboration
->=20
->=20Finally, the limit enforcement mechanism should collaborate with the =
-CPU
-> scheduler and other subsystems that can release memory. For example, di=
-rty
-> memory is not reclaimable and the memory subsystem wakes up flushers to=
- trigger
-> writeback. However, flushers need CPU to run -- asking the CPU schedule=
-r to
-> prioritize them ensures the kernel does not lack reclaimable memory und=
-er
-> stressful conditions. Similarly, some subsystems free memory through wo=
-rkqueues
-> or RCU callbacks. While this may seem orthogonal to limit enforcement, =
-we can
-> definitely take advantage by having visibility into these situations.
->=20
->=20Putting It All Together
-> -----------------------
->=20
->=20To illustrate the end goal, here is an example of the scenario I want=
- to
-> enable. Suppose there is an AI agent controlling the resources of a hos=
-t. I
-> should be able to provide the following policy and everything should wo=
-rk out
-> of the box:
->=20
->=20Policy: "keep system-level memory utilization below 95 percent;
-> avoid priority inversions by not throttling allocators holding locks; t=
-rim each
-> workload's usage to its working set without regressing its relevant per=
-formance
-> metrics; collaborate with workloads on load shedding and memory trimmin=
-g
-> decisions; and under extreme memory pressure, collaborate with the OOM =
-killer
-> and the central job scheduler to kill and clean up a workload."
->=20
->=20Initially I added this example for fun, but from [1] it seems like th=
-ere is a
-> real need to enable such capabilities.
->=20
->=20[1] https://arxiv.org/abs/2602.09345
+On Wed, Mar 11, 2026 at 10:17=E2=80=AFPM Waiman Long <longman@redhat.com> w=
+rote:
 >
+> On 3/11/26 4:49 AM, Lucas Liu wrote:
+> > Hi recently I met this issue
+> >   ./test_kmem
+> > ok 1 test_kmem_basic
+> > ok 2 test_kmem_memcg_deletion
+> > ok 3 test_kmem_proc_kpagecgroup
+> > ok 4 test_kmem_kernel_stacks
+> > ok 5 test_kmem_dead_cgroups
+> > memory.current 24514560
+> > percpu 15280000
+> > not ok 6 test_percpu_basic
+> >
+> > In this test the memory.current 24514560, percpu 15280000, Diff ~9.2MB.
+> >
+> > #define MAX_VMSTAT_ERROR (4096 * 64 * get_nprocs())
+> >
+> > in this part (8cpus) MAX_VMSTAT_ERROR is 4M memory. On the RT kernel,
+> > the labs(current - percpu) is 9.2M, that is the root cause for this
+> > failure. I am not sure what value is suitable for this case(2M per cpu
+> > maybe?)
+>
+> Li Wang had posted patches to address some of the problems in this test.
+>
+> https://lore.kernel.org/lkml/20260306071843.149147-2-liwang@redhat.com/
+>
+> It could be the case that lazy percpu stat flushing can also be a factor
+> here. In this case, we may need to reread the stat counters again
+> several time with some delay to solve this problem.
+>
+> Cheers,
+> Longman
+>
+
 
