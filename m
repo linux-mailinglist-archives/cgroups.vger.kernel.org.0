@@ -1,269 +1,322 @@
-Return-Path: <cgroups+bounces-14780-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-14781-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id M2JrNRTxsWk7HQAAu9opvQ
-	(envelope-from <cgroups+bounces-14780-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Wed, 11 Mar 2026 23:47:48 +0100
+	id 6BIvF5AKsml7IAAAu9opvQ
+	(envelope-from <cgroups+bounces-14781-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Thu, 12 Mar 2026 01:36:32 +0100
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5C98326AFB1
-	for <lists+cgroups@lfdr.de>; Wed, 11 Mar 2026 23:47:48 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id B7BDC26BB74
+	for <lists+cgroups@lfdr.de>; Thu, 12 Mar 2026 01:36:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id B10513014A1A
-	for <lists+cgroups@lfdr.de>; Wed, 11 Mar 2026 22:47:47 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 40011303C52B
+	for <lists+cgroups@lfdr.de>; Thu, 12 Mar 2026 00:36:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7CC57396B65;
-	Wed, 11 Mar 2026 22:47:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="J3/Q3jJl"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 28C8132D45C;
+	Thu, 12 Mar 2026 00:36:27 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from out-181.mta0.migadu.com (out-181.mta0.migadu.com [91.218.175.181])
+Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA1F438F64A;
-	Wed, 11 Mar 2026 22:47:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DDA9D3264DA
+	for <cgroups@vger.kernel.org>; Thu, 12 Mar 2026 00:36:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1773269265; cv=none; b=Rp09ksX36DyfZsSg3TJdQeNWOv3qVJBUO68Q14rBPDlKJ+SI+iq26v1lhV7j5WNFuM3zIN9bBlc3ES5ePrF/bwZEJFg8BSWWvLPfADDmUSdnU+7zRbtU0IwTrY7wkOr6USVRiqFjYnAPlazf+2e58twzgGSX2s5N5bSvNLRcG00=
+	t=1773275787; cv=none; b=LWgobX9nw16oLbM1xnelRqtAmQnEG+wF5sJeL6Lq11P6uQsZkktZ89MAtbPaHFj6O+wLV+BGsqWzjchCqS2yO4fMMxnoLUattDLV7JRrA1+7pKMXQMJl1jn9jhIs0R+JkH7rr5bpoIX+MH91aTWukKyT/cBjYVVvXt/YxKcEUBg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1773269265; c=relaxed/simple;
-	bh=c9JJ1Se/2dklmtLIWzAhrY/xtfeMK6yV/rqaHoj+I0c=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=UgugnENtdos6k+OzSkd+6jSm4SL3jTnky8gfmLcMZlTmM9homgpyl1adEyiXy7rjepVt1tKh+Gt++C0wY+jf/nl7VffkPLV2oIb9UmbSgJY3/1sCDyaribGnlzmltJV4xI91NL0N9xvPI39RwxRpJj1M9B4OVjbBhgoy4RyGTVo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=J3/Q3jJl; arc=none smtp.client-ip=91.218.175.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Wed, 11 Mar 2026 15:47:31 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1773269260;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=idJIoDyRymSwYZXU6eln9CZA4jpBWR8zpwLI0BXP8sA=;
-	b=J3/Q3jJlcBtYWHhvfiCDAHeSGCSlT63Vi8A2HqV+6c/5XDOdfLpWbNuGt1jCGMEAnhkiGv
-	1pDFkLzGdte5uWGuunLt/DbDcC3xMOZwa0IS5kUmCFRjhAUMgzzSqde38mxX34LAABpGOn
-	V55eKMA2a90nM1sz4o6MVtdgvrJp+Wg=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Shakeel Butt <shakeel.butt@linux.dev>
-To: Johannes Weiner <hannes@cmpxchg.org>
-Cc: lsf-pc@lists.linux-foundation.org, 
-	Andrew Morton <akpm@linux-foundation.org>, Tejun Heo <tj@kernel.org>, Michal Hocko <mhocko@suse.com>, 
-	Alexei Starovoitov <ast@kernel.org>, Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>, 
-	Roman Gushchin <roman.gushchin@linux.dev>, Hui Zhu <hui.zhu@linux.dev>, JP Kobryn <inwardvessel@gmail.com>, 
-	Muchun Song <muchun.song@linux.dev>, Geliang Tang <geliang@kernel.org>, 
-	Sweet Tea Dorminy <sweettea-kernel@dorminy.me>, Emil Tsalapatis <emil@etsalapatis.com>, 
-	David Rientjes <rientjes@google.com>, Martin KaFai Lau <martin.lau@linux.dev>, 
-	Meta kernel team <kernel-team@meta.com>, linux-mm@kvack.org, cgroups@vger.kernel.org, bpf@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Subject: Re: [LSF/MM/BPF TOPIC] Reimagining Memory Cgroup (memcg_ext)
-Message-ID: <abHkgYHEq5U7G7rF@linux.dev>
-References: <20260307182424.2889780-1-shakeel.butt@linux.dev>
- <abFsDg5m3lp2vVOX@cmpxchg.org>
+	s=arc-20240116; t=1773275787; c=relaxed/simple;
+	bh=VB1tmU+ezTEA2WQqC/Gezmd80khmnORRZ0v+65FmpVU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=g5TBSAhUDvQkxa6bB+5m+kP2uaLi2Cb7VzH2eLusWiMPSNXG/jkIPvpYLoCkgIVjRpoU8LO6NjJCskowxkFoWY0b9zUABfh26FoA/sZhMNoUx7rMPdVzYPsUDPhLJ+ooXgP32nWVCWby2b2e9w+WtNU6sk+NqCx4F4nqjDk0ZGo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.170])
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTPS id 4fWTDt3GvqzKHMXm
+	for <cgroups@vger.kernel.org>; Thu, 12 Mar 2026 08:35:58 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.252])
+	by mail.maildlp.com (Postfix) with ESMTP id 149114056E
+	for <cgroups@vger.kernel.org>; Thu, 12 Mar 2026 08:36:16 +0800 (CST)
+Received: from [10.67.111.176] (unknown [10.67.111.176])
+	by APP3 (Coremail) with SMTP id _Ch0CgBXN1R8CrJpwfBMAg--.53761S2;
+	Thu, 12 Mar 2026 08:36:13 +0800 (CST)
+Message-ID: <45f4ec59-7d7b-4f68-a43b-e89a8bb717e4@huaweicloud.com>
+Date: Thu, 12 Mar 2026 08:36:12 +0800
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <abFsDg5m3lp2vVOX@cmpxchg.org>
-X-Migadu-Flow: FLOW_OUT
-X-Spamd-Result: default: False [-2.16 / 15.00];
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v5 1/6] cgroup/dmem: Add queries for protection values
+To: Natalie Vock <natalie.vock@gmx.de>, Maarten Lankhorst <dev@lankhorst.se>,
+ Maxime Ripard <mripard@kernel.org>, Tejun Heo <tj@kernel.org>,
+ Johannes Weiner <hannes@cmpxchg.org>, =?UTF-8?Q?Michal_Koutn=C3=BD?=
+ <mkoutny@suse.com>, Christian Koenig <christian.koenig@amd.com>,
+ Huang Rui <ray.huang@amd.com>, Matthew Auld <matthew.auld@intel.com>,
+ Matthew Brost <matthew.brost@intel.com>,
+ Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+ Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>,
+ Simona Vetter <simona@ffwll.ch>, Tvrtko Ursulin <tursulin@ursulin.net>
+Cc: cgroups@vger.kernel.org, dri-devel@lists.freedesktop.org
+References: <20260302-dmemcg-aggressive-protect-v5-0-ffd3a2602309@gmx.de>
+ <20260302-dmemcg-aggressive-protect-v5-1-ffd3a2602309@gmx.de>
+ <47edbd3d-e681-4999-b1ad-ba7c987e3430@huaweicloud.com>
+ <be9b9446-c835-4ab9-8f19-906f842414dd@gmx.de>
+Content-Language: en-US
+From: Chen Ridong <chenridong@huaweicloud.com>
+In-Reply-To: <be9b9446-c835-4ab9-8f19-906f842414dd@gmx.de>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:_Ch0CgBXN1R8CrJpwfBMAg--.53761S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxtF43Gr1UGw45XF48Ar15XFb_yoW3Kr4DpF
+	1kGFy3K3y5Cr1xJr1Iy34jvFyrAw40qw1UJryxGF18JrnrJr1aqr17Zr1jgF1UCFs7Jr17
+	A3WYvrnru3yayrDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUv0b4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxkF7I0En4kS
+	14v26r4a6rW5MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I
+	8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVW8ZVWr
+	XwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x
+	0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_
+	Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU0
+	s2-5UUUUU==
+X-CM-SenderInfo: hfkh02xlgr0w46kxt4xhlfz01xgou0bp/
+X-Spamd-Result: default: False [-1.46 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[linux.dev,none];
-	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
-	R_DKIM_ALLOW(-0.20)[linux.dev:s=key1];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-14780-lists,cgroups=lfdr.de];
-	RCVD_TLS_LAST(0.00)[];
-	RCVD_COUNT_THREE(0.00)[3];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	FREEMAIL_CC(0.00)[lists.linux-foundation.org,linux-foundation.org,kernel.org,suse.com,linux.dev,gmail.com,dorminy.me,etsalapatis.com,google.com,meta.com,kvack.org,vger.kernel.org];
-	RCPT_COUNT_TWELVE(0.00)[21];
-	MIME_TRACE(0.00)[0:+];
-	FROM_HAS_DN(0.00)[];
-	MISSING_XM_UA(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	NEURAL_HAM(-0.00)[-1.000];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[shakeel.butt@linux.dev,cgroups@vger.kernel.org];
-	DKIM_TRACE(0.00)[linux.dev:+];
-	MID_RHS_MATCH_FROM(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-14781-lists,cgroups=lfdr.de];
+	RCVD_TLS_LAST(0.00)[];
+	DMARC_NA(0.00)[huaweicloud.com];
+	FREEMAIL_TO(0.00)[gmx.de,lankhorst.se,kernel.org,cmpxchg.org,suse.com,amd.com,intel.com,linux.intel.com,suse.de,gmail.com,ffwll.ch,ursulin.net];
+	MIME_TRACE(0.00)[0:+];
+	RCPT_COUNT_TWELVE(0.00)[17];
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
+	FROM_HAS_DN(0.00)[];
 	TAGGED_RCPT(0.00)[cgroups];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[chenridong@huaweicloud.com,cgroups@vger.kernel.org];
 	TO_DN_SOME(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns,linux.dev:dkim,linux.dev:mid]
-X-Rspamd-Queue-Id: 5C98326AFB1
+	RCVD_COUNT_FIVE(0.00)[6];
+	R_DKIM_NA(0.00)[];
+	NEURAL_HAM(-0.00)[-0.594];
+	MID_RHS_MATCH_FROM(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[gmx.de:email,huaweicloud.com:mid]
+X-Rspamd-Queue-Id: B7BDC26BB74
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-On Wed, Mar 11, 2026 at 09:20:14AM -0400, Johannes Weiner wrote:
-> On Sat, Mar 07, 2026 at 10:24:24AM -0800, Shakeel Butt wrote:
 
-[...]
 
-> > 
-> > - Workload owners rarely know their actual memory requirements, leading to
-> >   overprovisioned limits, lower utilization, and higher infrastructure costs.
+On 2026/3/11 16:33, Natalie Vock wrote:
+> On 3/11/26 02:12, Chen Ridong wrote:
+>>
+>>
+>> On 2026/3/2 20:37, Natalie Vock wrote:
+>>> Callers can use this feedback to be more aggressive in making space for
+>>> allocations of a cgroup if they know it is protected.
+>>>
+>>> These are counterparts to memcg's mem_cgroup_below_{min,low}.
+>>>
+>>> Signed-off-by: Natalie Vock <natalie.vock@gmx.de>
+>>> ---
+>>>   include/linux/cgroup_dmem.h | 16 ++++++++++++
+>>>   kernel/cgroup/dmem.c        | 62 +++++++++++++++++++++++++++++++++++++++++++++
+>>>   2 files changed, 78 insertions(+)
+>>>
+>>> diff --git a/include/linux/cgroup_dmem.h b/include/linux/cgroup_dmem.h
+>>> index dd4869f1d736e..1a88cd0c9eb00 100644
+>>> --- a/include/linux/cgroup_dmem.h
+>>> +++ b/include/linux/cgroup_dmem.h
+>>> @@ -24,6 +24,10 @@ void dmem_cgroup_uncharge(struct dmem_cgroup_pool_state
+>>> *pool, u64 size);
+>>>   bool dmem_cgroup_state_evict_valuable(struct dmem_cgroup_pool_state
+>>> *limit_pool,
+>>>                         struct dmem_cgroup_pool_state *test_pool,
+>>>                         bool ignore_low, bool *ret_hit_low);
+>>> +bool dmem_cgroup_below_min(struct dmem_cgroup_pool_state *root,
+>>> +               struct dmem_cgroup_pool_state *test);
+>>> +bool dmem_cgroup_below_low(struct dmem_cgroup_pool_state *root,
+>>> +               struct dmem_cgroup_pool_state *test);
+>>>     void dmem_cgroup_pool_state_put(struct dmem_cgroup_pool_state *pool);
+>>>   #else
+>>> @@ -59,6 +63,18 @@ bool dmem_cgroup_state_evict_valuable(struct
+>>> dmem_cgroup_pool_state *limit_pool,
+>>>       return true;
+>>>   }
+>>>   +static inline bool dmem_cgroup_below_min(struct dmem_cgroup_pool_state *root,
+>>> +                     struct dmem_cgroup_pool_state *test)
+>>> +{
+>>> +    return false;
+>>> +}
+>>> +
+>>> +static inline bool dmem_cgroup_below_low(struct dmem_cgroup_pool_state *root,
+>>> +                     struct dmem_cgroup_pool_state *test)
+>>> +{
+>>> +    return false;
+>>> +}
+>>> +
+>>>   static inline void dmem_cgroup_pool_state_put(struct dmem_cgroup_pool_state
+>>> *pool)
+>>>   { }
+>>>   diff --git a/kernel/cgroup/dmem.c b/kernel/cgroup/dmem.c
+>>> index 9d95824dc6fa0..28227405f7cfe 100644
+>>> --- a/kernel/cgroup/dmem.c
+>>> +++ b/kernel/cgroup/dmem.c
+>>> @@ -694,6 +694,68 @@ int dmem_cgroup_try_charge(struct dmem_cgroup_region
+>>> *region, u64 size,
+>>>   }
+>>>   EXPORT_SYMBOL_GPL(dmem_cgroup_try_charge);
+>>>   +/**
+>>> + * dmem_cgroup_below_min() - Tests whether current usage is within min limit.
+>>> + *
+>>> + * @root: Root of the subtree to calculate protection for, or NULL to
+>>> calculate global protection.
+>>> + * @test: The pool to test the usage/min limit of.
+>>> + *
+>>> + * Return: true if usage is below min and the cgroup is protected, false
+>>> otherwise.
+>>> + */
+>>> +bool dmem_cgroup_below_min(struct dmem_cgroup_pool_state *root,
+>>> +               struct dmem_cgroup_pool_state *test)
+>>> +{
+>>> +    if (root == test || !pool_parent(test))
+>>> +        return false;
+>>> +
+>>> +    if (!root) {
+>>> +        for (root = test; pool_parent(root); root = pool_parent(root))
+>>> +            {}
+>>> +    }
+>>
+>> It seems we don't have find the global protection(root), since the root's
+>> protection can not be set. If !root, we can return false directly, right?
+>>
+>> Or do I miss anything?
+>>
+>> ```
+>>     {
+>>         .name = "min",
+>>         .write = dmem_cgroup_region_min_write,
+>>         .seq_show = dmem_cgroup_region_min_show,
+>>         .flags = CFTYPE_NOT_ON_ROOT,
+>>     },
+>>     {
+>>         .name = "low",
+>>         .write = dmem_cgroup_region_low_write,
+>>         .seq_show = dmem_cgroup_region_low_show,
+>>         .flags = CFTYPE_NOT_ON_ROOT,
+>>     },
+>> ```
 > 
-> Is this actually a challenge?
+> That's not quite how it works. You're correct that the min/low properties don't
+> exist on the root cgroup, but we don't use the root for that.
 > 
-> It appears to me proactive reclaim is fairly widespread at this point,
-> giving workload owners, job schedulers, and capacity planners
-> real-world, long-term profiles of memory usage.
+> The reason we have a root here in the first place has to do with how recursive
+> memory protection works in cgroups. Note that for the test cgroup, we don't read
+> the literal min/low protection setting, but the "emin"/"elow" value, referring
+> to effective protection. The effective protection value depends not just on the
+> settings of the "test" cgroup, but also its ancestors (and potentially, their
+> sibling groups). See [1] for some documentation on how effective protection
+> varies with different cgroup relationships.
 > 
-> Workload owners can use this to adjust their limits accordingly, of
-> course, but even that is less relevant if schedulers and planners go
-> off of the measured information. The limits become failsafes, no
-> longer the declarative source of truth for memory size.
+> The "root" parameter here refers to the root of the common subtree between the
+> test cgroup and what the documentation refers to as the "reclaim target". For
+> device memory there usually isn't really any reclaim happening in the
+> traditional sense, but e.g. TTM evictions follow the same principle (the reclaim
+> target is simply the cgroup owning the buffer that is to be evicted).
+> 
+> Sometimes, precise reclaim targets may not really be known yet (or we want to
+> try evicting different buffers originating from different cgroups). In that
+> case, the "root" parameter here is NULL. However, we obviously know that all
+> cgroups must be descendants of the root cgroup, so the root cgroup is a
+> guaranteed safe value for the shared subtree between the test cgroup and any
+> potential reclaim target.
+> 
+> In practice, this means that the effective min/low protection will be capped by
+> the protection value specified in all ancestors, which is the most conservative
+> estimate.
+> 
+> Regards,
+> Natalie
+> 
+> [1] https://docs.kernel.org/admin-guide/cgroup-v2.html#reclaim-protection
+> 
 
-Yes for sophisticated users, this is a solved problem, particularly for
-workloads with consistent memory usage behavior. I think workloads with
-inconsistent or sporadic usage behavior is still a challenge. 
+Thank you for your explanation. I made a mistake.
+Sorry for the noisy.
 
-> 
-> > 
-> > Per-Memcg Background Reclaim
-> > 
-> > In the new memcg world, with the goal of (mostly) eliminating direct synchronous
-> > reclaim for limit enforcement, provide per-memcg background reclaimers which can
-> > scale across CPUs with the allocation rate.
-> 
-> Meta has been carrying this patch for half a decade:
-> 
-> https://lore.kernel.org/linux-mm/20200219181219.54356-1-hannes@cmpxchg.org/
-> 
-> It sounds like others have carried similar patches.
+>>
+>>> +
+>>> +    /*
+>>> +     * In mem_cgroup_below_min(), the memcg pendant, this call is missing.
+>>> +     * mem_cgroup_below_min() gets called during traversal of the cgroup
+>>> tree, where
+>>> +     * protection is already calculated as part of the traversal. dmem
+>>> cgroup eviction
+>>> +     * does not traverse the cgroup tree, so we need to recalculate
+>>> effective protection
+>>> +     * here.
+>>> +     */
+>>> +    dmem_cgroup_calculate_protection(root, test);
+>>> +    return page_counter_read(&test->cnt) <= READ_ONCE(test->cnt.emin);
+>>> +}
+>>> +EXPORT_SYMBOL_GPL(dmem_cgroup_below_min);
+>>> +
+>>> +/**
+>>> + * dmem_cgroup_below_low() - Tests whether current usage is within low limit.
+>>> + *
+>>> + * @root: Root of the subtree to calculate protection for, or NULL to
+>>> calculate global protection.
+>>> + * @test: The pool to test the usage/low limit of.
+>>> + *
+>>> + * Return: true if usage is below low and the cgroup is protected, false
+>>> otherwise.
+>>> + */
+>>> +bool dmem_cgroup_below_low(struct dmem_cgroup_pool_state *root,
+>>> +               struct dmem_cgroup_pool_state *test)
+>>> +{
+>>> +    if (root == test || !pool_parent(test))
+>>> +        return false;
+>>> +
+>>> +    if (!root) {
+>>> +        for (root = test; pool_parent(root); root = pool_parent(root))
+>>> +            {}
+>>> +    }
+>>> +
+>>> +    /*
+>>> +     * In mem_cgroup_below_low(), the memcg pendant, this call is missing.
+>>> +     * mem_cgroup_below_low() gets called during traversal of the cgroup
+>>> tree, where
+>>> +     * protection is already calculated as part of the traversal. dmem
+>>> cgroup eviction
+>>> +     * does not traverse the cgroup tree, so we need to recalculate
+>>> effective protection
+>>> +     * here.
+>>> +     */
+>>> +    dmem_cgroup_calculate_protection(root, test);
+>>> +    return page_counter_read(&test->cnt) <= READ_ONCE(test->cnt.elow);
+>>> +}
+>>> +EXPORT_SYMBOL_GPL(dmem_cgroup_below_low);
+>>> +
+>>>   static int dmem_cgroup_region_capacity_show(struct seq_file *sf, void *v)
+>>>   {
+>>>       struct dmem_cgroup_region *region;
+>>>
+>>
 
-Yeah ByteDance has something similar too.
+-- 
+Best regards,
+Ridong
 
-> 
-> The relevance of this, too, has somewhat faded with proactive
-> reclaim. But I think it would still be worthwhile to have. The primary
-> objection was a lack of attribution of the consumed CPU cycles.
-> 
-> > Lock-Aware Throttling
-> > 
-> > The ability to avoid throttling an allocating task that is holding locks, to
-> > prevent priority inversion. In Meta's fleet, we have observed lock holders stuck
-> > in memcg reclaim, blocking all waiters regardless of their priority or
-> > criticality.
-> > 
-> > Thread-Level Throttling Control
-> > 
-> > Workloads should be able to indicate at the thread level which threads can be
-> > synchronously throttled and which cannot. For example, while experimenting with
-> > sched_ext, we drastically improved the performance of AI training workloads by
-> > prioritizing threads interacting with the GPU. Similarly, applications can
-> > identify the threads or thread pools on their performance-critical paths and
-> > the memcg enforcement mechanism should not throttle them.
-> 
-> I'm struggling to envision this.
-> 
-> CPU and GPU are renewable resources where a bias in access time and
-> scheduling delays over time is naturally compensated.
-> 
-> With memory access past the limit, though, such a bias adds up over
-> time. How do you prevent high priority threads from runaway memory
-> consumption that ends up OOMing the host?
-
-Oh don't consider this feature in isolation. In practice there definitely will
-be background reclaimers running here. The way I am envisioning the scenario for
-this feature is something like: At some usage threshold, we will start the
-background reclaimers, at the next threshold, we will start synchronously
-throttle the threads that are allowed by the workload and at next threshold
-point we may decide to just kill the workload.
-
-> 
-> > Combined Memory and Swap Limits
-> > 
-> > Some users (Google actually) need the ability to enforce limits based on
-> > combined memory and swap usage, similar to cgroup v1's memsw limit, providing a
-> > ceiling on total memory commitment rather than treating memory and swap
-> > independently.
-> > 
-> > Dynamic Protection Limits
-> > 
-> > Rather than static protection limits, the kernel should support defining
-> > protection based on the actual working set of the workload, leveraging signals
-> > such as working set estimation, PSI, refault rates, or a combination thereof to
-> > automatically adapt to the workload's current memory needs.
-> 
-> This should be possible with today's interfaces of memory.reclaim,
-> memory.pressure and memory.low, right?
-
-Yes, node controller or workload can dynamically their protection limit based on
-psi or refaults or some other metrics.
-
-> 
-> > Shared Memory Semantics
-> > 
-> > With more flexibility in limit enforcement, the kernel should be able to
-> > account for memory shared between workloads (cgroups) during enforcement.
-> > Today, enforcement only looks at each workload's memory usage independently.
-> > Sensible shared memory semantics would allow the enforcer to consider
-> > cross-cgroup sharing when making reclaim and throttling decisions.
-> 
-> My understanding is that this hasn't been a problem of implementation,
-> but one of identifying reasonable, predictable semantics - how exactly
-> the liability of shared resources are allocated to participating groups.
-> 
-
-This particular feature is hand-wavy at the moment particulary due to lack of
-mechanism that tells how much memory is really shared.
-
-The high level idea is when we know there is shared memory/fs between different
-workloads, during throttling decision, we can consider their memory usage
-excluding the shared usage. So, mainly their exclusive memory usage. Will this
-help or is useful, I need to brainstorm more.
-
-> > Memory Tiering
-> > 
-> > With a flexible limit enforcement mechanism, the kernel can balance memory
-> > usage of different workloads across memory tiers based on their performance
-> > requirements. Tier accounting and hotness tracking are orthogonal, but the
-> > decisions of when and how to balance memory between tiers should be handled by
-> > the enforcer.
-> > 
-> > Collaborative Load Shedding
-> > 
-> > Many workloads communicate with an external entity for load balancing and rely
-> > on their own usage metrics like RSS or memory pressure to signal whether they
-> > can accept more or less work. This is guesswork. Instead of the
-> > workload guessing, the limit enforcer -- which is actually managing the
-> > workload's memory usage -- should be able to communicate available headroom or
-> > request the workload to shed load or reduce memory usage. This collaborative
-> > load shedding mechanism would allow workloads to make informed decisions rather
-> > than reacting to coarse signals.
-> > 
-> > Cross-Subsystem Collaboration
-> > 
-> > Finally, the limit enforcement mechanism should collaborate with the CPU
-> > scheduler and other subsystems that can release memory. For example, dirty
-> > memory is not reclaimable and the memory subsystem wakes up flushers to trigger
-> > writeback. However, flushers need CPU to run -- asking the CPU scheduler to
-> > prioritize them ensures the kernel does not lack reclaimable memory under
-> > stressful conditions. Similarly, some subsystems free memory through workqueues
-> > or RCU callbacks. While this may seem orthogonal to limit enforcement, we can
-> > definitely take advantage by having visibility into these situations.
-> 
-> It sounds like the lock holder problem would also fit into this
-> category: Identifying critical lock holders and allowing them
-> temporary access past the memory and CPU limits.
-> 
-> But as per above, I'm not sure if blank check exemptions are workable
-> for memory. It makes sense for allocations in the reclaim path for
-> example, because it doesn't leave us wondering who will pay for the
-> excess through a deficit. It's less obvious for a path that is
-> involved with further expansion of the cgroup's footprint.
-
-No need to have blank check. Same as above for the thread throttling, the lock
-holder not getting throttled will be, in practice, in the presense of background
-reclaimers and may get killed if going over board too much.
-
-Thanks for taking a look and poking holes.
 
