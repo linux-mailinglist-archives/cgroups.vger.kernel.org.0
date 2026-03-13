@@ -1,83 +1,83 @@
-Return-Path: <cgroups+bounces-14808-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-14809-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id OORVM8MUtGlkgwAAu9opvQ
-	(envelope-from <cgroups+bounces-14808-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Fri, 13 Mar 2026 14:44:35 +0100
+	id aC+IF34ctGlLhQAAu9opvQ
+	(envelope-from <cgroups+bounces-14809-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Fri, 13 Mar 2026 15:17:34 +0100
 X-Original-To: lists+cgroups@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4699D284237
-	for <lists+cgroups@lfdr.de>; Fri, 13 Mar 2026 14:44:35 +0100 (CET)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
+	by mail.lfdr.de (Postfix) with ESMTPS id 20CA7284C45
+	for <lists+cgroups@lfdr.de>; Fri, 13 Mar 2026 15:17:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id E13EE313A124
-	for <lists+cgroups@lfdr.de>; Fri, 13 Mar 2026 13:36:20 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id 5B07230849FD
+	for <lists+cgroups@lfdr.de>; Fri, 13 Mar 2026 14:11:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 56B153A257B;
-	Fri, 13 Mar 2026 13:29:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 00A9E37268C;
+	Fri, 13 Mar 2026 14:11:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ursulin.net header.i=@ursulin.net header.b="IKvUhoWE"
+	dkim=pass (2048-bit key) header.d=ursulin.net header.i=@ursulin.net header.b="KqRmv8xJ"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-wm1-f48.google.com (mail-wm1-f48.google.com [209.85.128.48])
+Received: from mail-wr1-f44.google.com (mail-wr1-f44.google.com [209.85.221.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4625E258CD9
-	for <cgroups@vger.kernel.org>; Fri, 13 Mar 2026 13:29:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E7FA33A702
+	for <cgroups@vger.kernel.org>; Fri, 13 Mar 2026 14:11:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1773408553; cv=none; b=Ehg9KUPb/CBC01QsgxgAE/Y8IaOJ4zXOahYbfRYeDLGVOrpUZYCbxDGwpdX68YxWTxeJADWPtb/8r+26XoCNV8qNCcCmMSMhSmqzMHjJXeEt5SeXyrQiZTJ2lCelTqOqzAT2tuLQOxquDyEQ6B1adNQafe5thSi1YnKtBoWcNLM=
+	t=1773411095; cv=none; b=kUJmWMtWEoZzwtlf/ou0XoblkL7oFMDV8CkIbh8NU08r3nyIL4MYa8rcjH0a36H8LdrRn6odQAclgcpUID78+z9ytVT+8RonFij1SPKW9bcJZlbbTRlojFtMvkfDQam/9vWySPk6WAQE7fojH7s01N5Stch9TjGMGg8CkOZX96E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1773408553; c=relaxed/simple;
-	bh=LZXIYkuKtyK+BFFxd5GBr9JATiQaB0j+unkXzepFu5k=;
+	s=arc-20240116; t=1773411095; c=relaxed/simple;
+	bh=t/2amWgQLcHmCxqm8guQT5B+nch5AtnkD5UItqvubJ8=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Cvo2gn+YCGByUJT7/OHvJaucfMjJcIoXTK8ry2eE5yo5dVo3Z9Z6sZkwOgGj5cm6m3yGV6BMCDAgPcsrJdREXzHh3YvPhBrzjtB573Nsag5ew5LqX/xJ8RmnCWAUTAOhT10gNOpH12Ca4Q90v+ifgecrBk/jNedyWGIaxA0AtJE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ursulin.net; spf=pass smtp.mailfrom=ursulin.net; dkim=pass (2048-bit key) header.d=ursulin.net header.i=@ursulin.net header.b=IKvUhoWE; arc=none smtp.client-ip=209.85.128.48
+	 In-Reply-To:Content-Type; b=IhPNJY/HPG+9qzC3ye81We9zH2rIG+CZFjPxElcAN4PPzLKK4Aa+0yxqbAqC6+5RVH/Af4aAE2YPuq7Zmt+Ce2gDZ+SWxObm9StA/6kC3PbjeG2W4oC568nfRM2WiAfsM0OU17l5x/zwTiLl8zMNZZnzboYZOn19Ptom+IuwGpQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ursulin.net; spf=pass smtp.mailfrom=ursulin.net; dkim=pass (2048-bit key) header.d=ursulin.net header.i=@ursulin.net header.b=KqRmv8xJ; arc=none smtp.client-ip=209.85.221.44
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ursulin.net
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ursulin.net
-Received: by mail-wm1-f48.google.com with SMTP id 5b1f17b1804b1-482f454be5bso32935385e9.0
-        for <cgroups@vger.kernel.org>; Fri, 13 Mar 2026 06:29:11 -0700 (PDT)
+Received: by mail-wr1-f44.google.com with SMTP id ffacd0b85a97d-439d8df7620so1670698f8f.0
+        for <cgroups@vger.kernel.org>; Fri, 13 Mar 2026 07:11:33 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ursulin.net; s=google; t=1773408549; x=1774013349; darn=vger.kernel.org;
+        d=ursulin.net; s=google; t=1773411092; x=1774015892; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:from:content-language
          :references:cc:to:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=JRHdwoAhh6Z6VJ1IOXt8YpVwRbA24oij+up+nK+z+qQ=;
-        b=IKvUhoWEk3RakNWb21z+2xcQSmUld2HDymWVjETUryIpxvAn8Rm1QclPnZDVpUH43K
-         fiLVRIPGoFJyIJxpuRsNZgLuqpUIXQHPp9OVDNTVudgkK/VNDzGd8vFBwJ1cFFYRM9FJ
-         LP5Bmo79Fz/iCuwft5/lFrqSgdbVppA31aMnyHMQ9nDlXwiZA8NnzLUlwSjbaut8WQIL
-         nxvV3tP9l/n7ECcY4fN4/QfzQguIcmrP4EzgSyzJz0GXRbJU6ybFjOP2qItK+UaC7wYY
-         m7hFdXPeB+A5IV6j/JYkfUAQBsHwrFKvq6fa27L8UHLE6QRvvSNdYWnLYnlFILMg961n
-         9a8A==
+        bh=LafAaegGRU7i9rzjjUW1sBiK+ZDukEKzI9QIgeF8Beg=;
+        b=KqRmv8xJZj4Lt6y/xbJfG9KIKIb22JSNFd2CvCdl0+CVJ3Z1vH78q/Q/WVdGvNJJxm
+         eKKVXt3by5FPIxU5MikVwdd1ks7D16tOGaoI+wiV1eJaPT2LhUAdeRAJ/sDR1CoO7Lb+
+         jWJQzXnpBG/6ARe1oJXjSMsfYFlq/UAs5tTy6OsY2T8ZHWsKTntYBXDzKOoaefDcOkM1
+         BV454U4qjvPCpzYgtWe3c1jyv3DgrxCNuVZyA3984sdcyeYKOLIF2TWok4gdqwHU8B5k
+         Uz4kb0xK+VuQXPX8ykCTM06zzAxeBns0u4DM/spFdLipOqJ51NpTndZfln5Esr0cwF5c
+         0ENA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1773408549; x=1774013349;
+        d=1e100.net; s=20251104; t=1773411092; x=1774015892;
         h=content-transfer-encoding:in-reply-to:from:content-language
          :references:cc:to:subject:user-agent:mime-version:date:message-id
          :x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=JRHdwoAhh6Z6VJ1IOXt8YpVwRbA24oij+up+nK+z+qQ=;
-        b=GyLa2/KFlqWRTJkPABnwbWwqTGrYpt+uxDxjKWLbMbWRk530JF7AOqQw39g5EyWIex
-         dfLEauttHDWUMVOYF5erdzLgjNpOD/VvYSf0I+TrpZbig8DMlOxppHmSaFysTFBLPBtE
-         FTb1cbbwMLWcNAkI5fOlZt8B9QuZXNKw5XpB4vdEQx1Dd7gbnfpYL7UnIf1ChxoOMf3g
-         lTUwTokvkRGwpuryFMeHOn5rzV3MPrIAVpEnmnfddAN4dBLyUk2GQoPgfUBEsGe+so2b
-         UN8y1p36W7fL40WiurTumBARHQ9ICB5E/yU9K35SKKjI3Cu++cta/rl7h1tv29MYJQoY
-         O+og==
-X-Gm-Message-State: AOJu0YyExijiB2+Ydp/dpkhxvw3EMG9Rwu7AtjJEl7xHa7DxN7Gx9jio
-	y6Pzkuxdci9hBYBYbim3NXUKKgg6lVsaI+54eThq9SfACOvr6lwf80/0oVOLcZtWngE=
-X-Gm-Gg: ATEYQzw5+OqH5AJDNuiw11+NEoBhtSic4Y3N9+eO+CWUSW2OOiOKijaIkpMPQQIVekg
-	H7wjA8ggL144gxRUx8UF/ZRD0pxOEEBXxfbw+vBDHRXlzRnC947M3ubJRFMnxhgxawY+v3fYrsA
-	vQ1KzwGeS+3j+0YYhKrLmP2qUWk4vnd9DwKzgmDvZniXs8Swvz9C/1wQWDlYnYwEXgrdgyZyFgI
-	uMnHW0fPBBjsyFBpZUbsjQcZlnvXkOS821Z0qNh/XZefWOdyc7gEQNR0iMI2JzgFg0OqLqSjywR
-	F5lFigTkx+QqpsXxa0FOKm2jF42ybS7nZNTcIra0gsKELlFh5mhvOLznTg3c190AOYVRnJE8A6N
-	G8iWUQzMSd8jGu8zje+mun6vKeF4oxlFI13vK526EmCpk8UhPOPLvjvQEHp0ozyTdaT3mrlQGoQ
-	aNZYHL+P9E6nTrGBpr8FRirNWnYNp9+O7OrOpszbadkPV3
-X-Received: by 2002:a05:600c:2295:b0:483:a2b0:d210 with SMTP id 5b1f17b1804b1-4854f56d693mr91452245e9.7.1773408549051;
-        Fri, 13 Mar 2026 06:29:09 -0700 (PDT)
+        bh=LafAaegGRU7i9rzjjUW1sBiK+ZDukEKzI9QIgeF8Beg=;
+        b=iBqxxFT5fGrhS5Hdy0W+zJho+CKCKDMnN7Ltew4x33CDy1nl0DcJxe7ZlBQ8tWFZIR
+         xgluHRVqe0jcUxXZB2IGVWHHDXZ1Q9Ykii+JuLmpezLhy46F0+vkJ0cKVmvzcUmXV4hF
+         IoqlnDECwog9SINgpdlH7pI5FrD82qs/NqPhJLyuulk/vxGMuHb7kka0gwy9iuX6PEXI
+         f4hgV9+kWuJv1V4dHDzQcdmwzHrZLi4w3A22B/KydMWTqQ0au4wrdh8py6YTkEVN3Tcm
+         5pN+46F/BMhvntS/XbweAP6VfatBMgH1/m4iBEYFVdoP8XDlB8OpBLyl/41g8ghEljaR
+         Jrig==
+X-Gm-Message-State: AOJu0YyrweWFWJst9SH9rxRcdRTWTKKJYAji6nVmom/6vLvhgzPqVExh
+	G3Jo0k12ejAapu3Az+5WuguMal7AFmkoCmcp+WJXgDHhXaM/Smep/iBjl8H84OlliXY=
+X-Gm-Gg: ATEYQzw4nyaVltO4vRKC5BsZFBewUGlxvlgESJM5QuvcFiACSHdwNIclCqBFOLe1PXa
+	x9CVHxPZopUOZ41eRvMS6vVpPdpm1Qu3jIKjDfUIzMhhDQzFjYU9PVqA14Du3JLjRs3mcs23ZRE
+	+yzuFgP3p30lVPOdtLQYPml+KoW+NHNh8Tz0KN1WWTclYxbkN2uFs6b3+3H9/FM8efIYKNfoOmi
+	Kb0G4IyuXMCJnLKNAo9Z/Sfcny7CC8/LVtvi158ertRKulEGYew620YBAzAJlSs1Pb1Eh1BLpxD
+	iySDhDLqV0NCzJdT+kl0jHvcPL0FLvcBqXipXihlNzz8LlLSt07pg76DwnvJoFVwyiqzRuvgMGm
+	y91pJ06K7eG+viU6l2S/bwAzZ2OvPG1Wvpm/5iEqr5nyAzG444qmS3l1pSCX72PWKTImOxX7G+L
+	rVaxV1rMnUJ+sn1Lk5w1edKNYk/KO0pFxlAa7Y41KCyLqF
+X-Received: by 2002:a05:600c:5247:b0:485:3c8f:e4c5 with SMTP id 5b1f17b1804b1-485566fcaaemr55645355e9.17.1773411091876;
+        Fri, 13 Mar 2026 07:11:31 -0700 (PDT)
 Received: from [192.168.0.101] ([90.240.106.137])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-439fe20bb90sm18046479f8f.19.2026.03.13.06.29.08
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-48557a732cesm21788415e9.12.2026.03.13.07.11.30
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 13 Mar 2026 06:29:08 -0700 (PDT)
-Message-ID: <c1b8d304-09d3-47cf-a314-4a8777b85e6f@ursulin.net>
-Date: Fri, 13 Mar 2026 13:29:07 +0000
+        Fri, 13 Mar 2026 07:11:31 -0700 (PDT)
+Message-ID: <cf522bc4-09ef-4e19-afc4-2c8a9d8a1abc@ursulin.net>
+Date: Fri, 13 Mar 2026 14:11:30 +0000
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -85,8 +85,8 @@ List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v6 5/6] drm/ttm: Be more aggressive when allocating below
- protection limit
+Subject: Re: [PATCH v6 6/6] drm/ttm: Use common ancestor of evictor and
+ evictee as limit pool
 To: Natalie Vock <natalie.vock@gmx.de>, Maarten Lankhorst <dev@lankhorst.se>,
  Maxime Ripard <mripard@kernel.org>, Tejun Heo <tj@kernel.org>,
  Johannes Weiner <hannes@cmpxchg.org>, =?UTF-8?Q?Michal_Koutn=C3=BD?=
@@ -98,20 +98,20 @@ To: Natalie Vock <natalie.vock@gmx.de>, Maarten Lankhorst <dev@lankhorst.se>,
  Simona Vetter <simona@ffwll.ch>
 Cc: cgroups@vger.kernel.org, dri-devel@lists.freedesktop.org
 References: <20260313-dmemcg-aggressive-protect-v6-0-7c71cc1492db@gmx.de>
- <20260313-dmemcg-aggressive-protect-v6-5-7c71cc1492db@gmx.de>
+ <20260313-dmemcg-aggressive-protect-v6-6-7c71cc1492db@gmx.de>
 Content-Language: en-GB
 From: Tvrtko Ursulin <tursulin@ursulin.net>
-In-Reply-To: <20260313-dmemcg-aggressive-protect-v6-5-7c71cc1492db@gmx.de>
+In-Reply-To: <20260313-dmemcg-aggressive-protect-v6-6-7c71cc1492db@gmx.de>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 X-Spamd-Result: default: False [-1.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
 	R_DKIM_ALLOW(-0.20)[ursulin.net:s=google];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-14808-lists,cgroups=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-14809-lists,cgroups=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
 	DMARC_NA(0.00)[ursulin.net];
 	FREEMAIL_TO(0.00)[gmx.de,lankhorst.se,kernel.org,cmpxchg.org,suse.com,amd.com,intel.com,linux.intel.com,suse.de,gmail.com,ffwll.ch];
@@ -125,130 +125,112 @@ X-Spamd-Result: default: False [-1.66 / 15.00];
 	RCVD_COUNT_FIVE(0.00)[5];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[tursulin@ursulin.net,cgroups@vger.kernel.org];
-	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
+	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
 	NEURAL_HAM(-0.00)[-1.000];
 	TAGGED_RCPT(0.00)[cgroups];
 	MID_RHS_MATCH_FROM(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,gmx.de:email]
-X-Rspamd-Queue-Id: 4699D284237
+	DBL_BLOCKED_OPENRESOLVER(0.00)[ursulin.net:dkim,ursulin.net:mid,sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns,gmx.de:email]
+X-Rspamd-Queue-Id: 20CA7284C45
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
 
 On 13/03/2026 11:40, Natalie Vock wrote:
-> When the cgroup's memory usage is below the low/min limit and allocation
-> fails, try evicting some unprotected buffers to make space. Otherwise,
-> application buffers may be forced to go into GTT even though usage is
-> below the corresponding low/min limit, if other applications filled VRAM
-> with their allocations first.
+> When checking whether to skip certain buffers because they're protected
+> by dmem.low, we're checking the effective protection of the evictee's
+> cgroup, but depending on how the evictor's cgroup relates to the
+> evictee's, the semantics of effective protection values change.
+> 
+> When testing against cgroups from different subtrees, page_counter's
+> recursive protection propagates memory protection afforded to a parent
+> down to the child cgroups, even if the children were not explicitly
+> protected. This prevents cgroups whose parents were afforded no
+> protection from stealing memory from cgroups whose parents were afforded
+> more protection, without users having to explicitly propagate this
+> protection.
+> 
+> However, if we always calculate protection from the root cgroup, this
+> breaks prioritization of sibling cgroups: If one cgroup was explicitly
+> protected and its siblings were not, the protected cgroup should get
+> higher priority, i.e. the protected cgroup should be able to steal from
+> unprotected siblings. This only works if we restrict the protection
+> calculation to the subtree shared by evictor and evictee.
 > 
 > Signed-off-by: Natalie Vock <natalie.vock@gmx.de>
 > ---
->   drivers/gpu/drm/ttm/ttm_bo.c | 51 +++++++++++++++++++++++++++++++++++++++++---
->   1 file changed, 48 insertions(+), 3 deletions(-)
+>   drivers/gpu/drm/ttm/ttm_bo.c | 43 ++++++++++++++++++++++++++++++++++++++++---
+>   1 file changed, 40 insertions(+), 3 deletions(-)
 > 
 > diff --git a/drivers/gpu/drm/ttm/ttm_bo.c b/drivers/gpu/drm/ttm/ttm_bo.c
-> index 4adc9b80cba4a..7300b91b77dd3 100644
+> index 7300b91b77dd3..df4f4633a3a53 100644
 > --- a/drivers/gpu/drm/ttm/ttm_bo.c
 > +++ b/drivers/gpu/drm/ttm/ttm_bo.c
-> @@ -496,6 +496,10 @@ struct ttm_bo_alloc_state {
->   	struct dmem_cgroup_pool_state *limit_pool;
->   	/** @in_evict: Whether we are currently evicting buffers */
->   	bool in_evict;
-> +	/** @may_try_low: If only unprotected BOs, i.e. BOs whose cgroup
-> +	 *  is exceeding its dmem low/min protection, should be considered for eviction
-> +	 */
-> +	bool may_try_low;
->   };
+> @@ -628,11 +628,48 @@ static s64 ttm_bo_evict_cb(struct ttm_lru_walk *walk, struct ttm_buffer_object *
+>   {
+>   	struct ttm_bo_evict_walk *evict_walk =
+>   		container_of(walk, typeof(*evict_walk), walk);
+> +	struct dmem_cgroup_pool_state *limit_pool, *ancestor = NULL;
+> +	bool evict_valuable;
+>   	s64 lret;
 >   
->   /**
-> @@ -545,6 +549,42 @@ static int ttm_bo_alloc_at_place(struct ttm_buffer_object *bo,
->   		}
->   	}
->   
+> -	if (!dmem_cgroup_state_evict_valuable(evict_walk->alloc_state->limit_pool,
+> -					      bo->resource->css, evict_walk->try_low,
+> -					      &evict_walk->hit_low))
 > +	/*
-> +	 * cgroup protection plays a special role in eviction.
-> +	 * Conceptually, protection of memory via the dmem cgroup controller
-> +	 * entitles the protected cgroup to use a certain amount of memory.
-> +	 * There are two types of protection - the 'low' limit is a
-> +	 * "best-effort" protection, whereas the 'min' limit provides a hard
-> +	 * guarantee that memory within the cgroup's allowance will not be
-> +	 * evicted under any circumstance.
-> +	 *
-> +	 * To faithfully model this concept in TTM, we also need to take cgroup
-> +	 * protection into account when allocating. When allocation in one
-> +	 * place fails, TTM will default to trying other places first before
-> +	 * evicting.
-> +	 * If the allocation is covered by dmem cgroup protection, however,
-> +	 * this prevents the allocation from using the memory it is "entitled"
-> +	 * to. To make sure unprotected allocations cannot push new protected
-> +	 * allocations out of places they are "entitled" to use, we should
-> +	 * evict buffers not covered by any cgroup protection, if this
-> +	 * allocation is covered by cgroup protection.
-> +	 *
-> +	 * Buffers covered by 'min' protection are a special case - the 'min'
-> +	 * limit is a stronger guarantee than 'low', and thus buffers protected
-> +	 * by 'low' but not 'min' should also be considered for eviction.
-> +	 * Buffers protected by 'min' will never be considered for eviction
-> +	 * anyway, so the regular eviction path should be triggered here.
-> +	 * Buffers protected by 'low' but not 'min' will take a special
-> +	 * eviction path that only evicts buffers covered by neither 'low' or
-> +	 * 'min' protections.
+> +	 * If may_try_low is not set, then we're trying to evict unprotected
+> +	 * buffers in favor of a protected allocation for charge_pool. Explicitly skip
+> +	 * buffers belonging to the same cgroup here - that cgroup is definitely protected,
+> +	 * even though dmem_cgroup_state_evict_valuable would allow the eviction because a
+> +	 * cgroup is always allowed to evict from itself even if it is protected.
 > +	 */
-> +	if (!alloc_state->in_evict) {
-> +		may_evict |= dmem_cgroup_below_min(NULL, alloc_state->charge_pool);
-> +		alloc_state->may_try_low = may_evict;
+> +	if (!evict_walk->alloc_state->may_try_low &&
+> +			bo->resource->css == evict_walk->alloc_state->charge_pool)
+> +		return 0;
+
+Hm.. should this hunk go into the previous patch?
+
 > +
-> +		may_evict |= dmem_cgroup_below_low(NULL, alloc_state->charge_pool);
+> +	limit_pool = evict_walk->alloc_state->limit_pool;
+> +	/*
+> +	 * If there is no explicit limit pool, find the root of the shared subtree between
+> +	 * evictor and evictee. This is important so that recursive protection rules can
+> +	 * apply properly: Recursive protection distributes cgroup protection afforded
+> +	 * to a parent cgroup but not used explicitly by a child cgroup between all child
+> +	 * cgroups (see docs of effective_protection in mm/page_counter.c). However, when
+> +	 * direct siblings compete for memory, siblings that were explicitly protected
+> +	 * should get prioritized over siblings that weren't. This only happens correctly
+> +	 * when the root of the shared subtree is passed to
+> +	 * dmem_cgroup_state_evict_valuable. Otherwise, the effective-protection
+> +	 * calculation cannot distinguish direct siblings from unrelated subtrees and the
+> +	 * calculated protection ends up wrong.
+> +	 */
+> +	if (!limit_pool) {
+> +		ancestor = dmem_cgroup_get_common_ancestor(bo->resource->css,
+> +							   evict_walk->alloc_state->charge_pool);
+> +		limit_pool = ancestor;
+> +	}
+> +
+> +	evict_valuable = dmem_cgroup_state_evict_valuable(limit_pool, bo->resource->css,
+> +							  evict_walk->try_low,
+> +							  &evict_walk->hit_low);
+> +	if (ancestor)
+> +		dmem_cgroup_pool_state_put(ancestor);
+> +
+> +	if (!evict_valuable)
 
-For some value of optimisation you could combine the two calls of 
-dmem_cgroup_below_min/low into a single helper which returns both min 
-and low, given how it is the only callers, saving a pair of function 
-calls and tree traversing calculations. Or.. I am not sure if simply 
-exporting dmem_cgroup_calculate_protection() and making it return 
-page_counters would be okay, or a copy of them, or a new data structure 
-would need to be added.
-
-Anyway, that can be discussed separately. In the meantime this patch 
-looks good to me:
-
-Reviewed-by: Tvrtko Ursulin <tvrtko.ursulin@igalia.com>
+This part is probably better reviewed by someone more familiar with the 
+dmem controller. One question I have though is whether this patch is 
+independent from the rest of the series or it really makes sense for it 
+to be last?
 
 Regards,
 
 Tvrtko
 
-> +	}
-> +
->   	ret = ttm_resource_alloc(bo, place, res, alloc_state->charge_pool);
->   	if (ret) {
->   		if (ret == -ENOSPC && may_evict)
-> @@ -657,8 +697,12 @@ static int ttm_bo_evict_alloc(struct ttm_device *bdev,
->   	evict_walk.walk.arg.trylock_only = true;
->   	lret = ttm_lru_walk_for_evict(&evict_walk.walk, bdev, man, 1);
+>   		return 0;
 >   
-> -	/* One more attempt if we hit low limit? */
-> -	if (!lret && evict_walk.hit_low) {
-> +	/* If we failed to find enough BOs to evict, but we skipped over
-> +	 * some BOs because they were covered by dmem low protection, retry
-> +	 * evicting these protected BOs too, except if we're told not to
-> +	 * consider protected BOs at all.
-> +	 */
-> +	if (!lret && evict_walk.hit_low && state->may_try_low) {
->   		evict_walk.try_low = true;
->   		lret = ttm_lru_walk_for_evict(&evict_walk.walk, bdev, man, 1);
->   	}
-> @@ -679,7 +723,8 @@ static int ttm_bo_evict_alloc(struct ttm_device *bdev,
->   	} while (!lret && evict_walk.evicted);
->   
->   	/* We hit the low limit? Try once more */
-> -	if (!lret && evict_walk.hit_low && !evict_walk.try_low) {
-> +	if (!lret && evict_walk.hit_low && !evict_walk.try_low &&
-> +			state->may_try_low) {
->   		evict_walk.try_low = true;
->   		goto retry;
->   	}
+>   	if (bo->pin_count || !bo->bdev->funcs->eviction_valuable(bo, evict_walk->place))
 > 
 
 
