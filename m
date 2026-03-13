@@ -1,59 +1,60 @@
-Return-Path: <cgroups+bounces-14805-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-14802-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id aJugEJ34s2nYdgAAu9opvQ
-	(envelope-from <cgroups+bounces-14805-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Fri, 13 Mar 2026 12:44:29 +0100
+	id YP3sKMn3s2nYdgAAu9opvQ
+	(envelope-from <cgroups+bounces-14802-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Fri, 13 Mar 2026 12:40:57 +0100
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4B08328265A
-	for <lists+cgroups@lfdr.de>; Fri, 13 Mar 2026 12:44:23 +0100 (CET)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4717D2825A9
+	for <lists+cgroups@lfdr.de>; Fri, 13 Mar 2026 12:40:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id CFE07322F3DE
-	for <lists+cgroups@lfdr.de>; Fri, 13 Mar 2026 11:41:00 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id B553E302B1A8
+	for <lists+cgroups@lfdr.de>; Fri, 13 Mar 2026 11:40:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 35EC73321D4;
-	Fri, 13 Mar 2026 11:41:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F0D1385501;
+	Fri, 13 Mar 2026 11:40:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.de header.i=natalie.vock@gmx.de header.b="DJFmCkAh"
+	dkim=pass (2048-bit key) header.d=gmx.de header.i=natalie.vock@gmx.de header.b="MVMuzy7e"
 X-Original-To: cgroups@vger.kernel.org
 Received: from mout.gmx.net (mout.gmx.net [212.227.15.15])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3ACDE37F8CF
-	for <cgroups@vger.kernel.org>; Fri, 13 Mar 2026 11:40:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9FD8B37B011
+	for <cgroups@vger.kernel.org>; Fri, 13 Mar 2026 11:40:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.15
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1773402060; cv=none; b=iX+7XfvygJhr7R6HVoJQmvWMyYeKXK1hHNM+wqORYKChgeFtPZibvQqCRSNZQ/CTA5OTtKYkRYtULXPiksFRT73eHSF6i+44oNgrMQsTPhSz36rkD3TMuvHyfNsux0Xo6PVlKBuzme9Obm1p3BamX5bMGr/TboIh5b2/MydsU2Y=
+	t=1773402055; cv=none; b=VipbhwcJySXI6U4GL7vxaVVgbPTtM2QRoHwblB6vgkb0WzhWf8fQ8E9YOnf5fCdFW+Jgu8/4fk6yjCnkgn9RPWX4xYNzl6St2obWZpT+KLdjJMyzAAVA0p36j61ngsfmZNbaWJkXcZ/1v19QSBQG0BoAh1ZMu31jJbzhDq4AWIM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1773402060; c=relaxed/simple;
-	bh=sp5BDGjdd8iCRhBIHh/LU0TAGdskzbUpHTKqakzqADc=;
+	s=arc-20240116; t=1773402055; c=relaxed/simple;
+	bh=5O2KX1gWlM9iBbtvN+pk5KYmjUBfDReWPmj++Dy74Zk=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=P7OiFsk+eiX8sFcly0djozE+pK21iSeiDM4OSo2Yf5WXW5Atu1KI4ukAc+InxfZ2XOCEOQ93prHly1u5eXlQ2SHSR4OVUHUUfpI+/8NfXLkIrSOCbFQEv/8dXFlpjS9UKzWfb/IkHENCIMnLygJpMDWYQYKI4S8AmSQVmBuHeP8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de; spf=pass smtp.mailfrom=gmx.de; dkim=pass (2048-bit key) header.d=gmx.de header.i=natalie.vock@gmx.de header.b=DJFmCkAh; arc=none smtp.client-ip=212.227.15.15
+	 In-Reply-To:To:Cc; b=cuvPOMQhgFR3RfPtRPyi5Pee2X4WUaqah4fFcWLeArJ4nq/1XZawn/RVG3MF/nfUhEGPHlYxrg76nfJE1bGU0DHn2hkUYVEkSzYEVbkc6xPXvw1as4rce8lNXRMV3DS8htExNLplO3sfUMEPEK9OSIckOuz+jjWHyLg0IdWrWbY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de; spf=pass smtp.mailfrom=gmx.de; dkim=pass (2048-bit key) header.d=gmx.de header.i=natalie.vock@gmx.de header.b=MVMuzy7e; arc=none smtp.client-ip=212.227.15.15
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.de
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.de;
 	s=s31663417; t=1773402039; x=1774006839; i=natalie.vock@gmx.de;
-	bh=SGJNX4Qkk79IEgQD6sd68YtMQ/20ZfHySZcdsK9WfCk=;
+	bh=jyxNsWjQUwN88wBWiD0lRivRZ9t0VJu7d0gxymunrJo=;
 	h=X-UI-Sender-Class:From:Date:Subject:MIME-Version:Content-Type:
 	 Content-Transfer-Encoding:Message-Id:References:In-Reply-To:To:Cc:
 	 cc:content-transfer-encoding:content-type:date:from:message-id:
 	 mime-version:reply-to:subject:to;
-	b=DJFmCkAh1VP6LQVV/GDNYUGlWkhyhM5yK02BsBBKxy4DRHZWLvgYbTgqJp2K6qK6
-	 q6X85h+DIPuf3rtEjNdez74lBKbYc4O2J8jD8gqpyqp1ny3Y16Pe/GJkWpQUAkeG4
-	 TYCl6zzyeC31LcF0AhR4sf/fe5Rb+XGUVuDThy/55lMxKIbMM7ukGaSdvR/+iXwDc
-	 ds6qFB0YDwFlp6H/S+TQpfE5CHdE8f3Wc8TZrzrjqA15a6Adn8ovhh7Jhz/oGIgWR
-	 Ees9Ef/HlEDKqtBOtFwqqZcKI5YuGGprdyV2vO23MmX0HD7TkS84MIuMTjWZD6o98
-	 Q/VMo/MiNQ/76//trA==
+	b=MVMuzy7eOaxuOwUZW3GT1wKqR3jbCt9GUcop8o6IPO/Rkdi9gH7zDgXxXqJSVYVq
+	 v7TQRe0LB8d0YCWFwqmsWm351IRVbbu9ttdVMyawnDmlWeM6+o4LOJG4p6sfZYQcf
+	 p1tlwKKxkeNqA0eq/r6akwMxBbOWT3hqxHXNo9mAGVpfmw2xqvpEpTsjMgcLtB+uX
+	 Uw9n2dhN288IJdeNCNiwsXtGRdJVPPWeHlyHCuZvwFTJ1bcnE+8oaAU13FPdBJpE0
+	 lhtREeYBXyPrkC22CepgrHrWyCYIylSiAoVoUMq+cC+L/yoKCEJR3bb11wWasuUh+
+	 LTKSMUyrapLxqAtGQg==
 X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
 Received: from client.hidden.invalid by mail.gmx.net (mrgmx005
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1MG9kM-1vr4B835wq-00HSbC; Fri, 13
- Mar 2026 12:40:38 +0100
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1MAOJV-1vtYku2wgd-00B6wn; Fri, 13
+ Mar 2026 12:40:39 +0100
 From: Natalie Vock <natalie.vock@gmx.de>
-Date: Fri, 13 Mar 2026 12:40:00 +0100
-Subject: [PATCH v6 1/6] cgroup/dmem: Add queries for protection values
+Date: Fri, 13 Mar 2026 12:40:01 +0100
+Subject: [PATCH v6 2/6] cgroup,cgroup/dmem: Add
+ (dmem_)cgroup_common_ancestor helper
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -62,7 +63,7 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: quoted-printable
-Message-Id: <20260313-dmemcg-aggressive-protect-v6-1-7c71cc1492db@gmx.de>
+Message-Id: <20260313-dmemcg-aggressive-protect-v6-2-7c71cc1492db@gmx.de>
 References: <20260313-dmemcg-aggressive-protect-v6-0-7c71cc1492db@gmx.de>
 In-Reply-To: <20260313-dmemcg-aggressive-protect-v6-0-7c71cc1492db@gmx.de>
 To: Maarten Lankhorst <dev@lankhorst.se>, 
@@ -78,96 +79,96 @@ To: Maarten Lankhorst <dev@lankhorst.se>,
 Cc: cgroups@vger.kernel.org, dri-devel@lists.freedesktop.org, 
  Natalie Vock <natalie.vock@gmx.de>
 X-Mailer: b4 0.14.3
-X-Provags-ID: V03:K1:VFFZeV8T5nNWn0JJo1L/v5/jY1g5meLNIFNDoAMXIsHgCK/ygRK
- VvER0htUvMTjvCNgjTymDkgV2GVF/CqYh5bYMFvh2jqsgj1veKeRZO3ctPqHH98LeyhJmGi
- 3PTvBJsmNgCXNkscGuTU2/+qy8/3BcjLAwS2gIsZLsFCEtKZze/9pocObAwoOg8ZmBFud5V
- lUKoOO8kUHb8Ou9k7cAIw==
+X-Provags-ID: V03:K1:qPsCUhfxHJm/95r5qCnHSNK3M6ewd00PXh4ItfNabnAeEY8Peyq
+ 0gR4N1rgAKINA848AI7iYa8mWHNyMJhDqjv9BFRByKMpj9Zo+piSOQ7fhxQk85F51+8Ijsj
+ QUOEerAkQdTgpLIwiU/4G924en31kzVR9mPZj0vmiBdEeTWUQFGLnKz4WR9c39ueL2xns0F
+ HOCi3ycgfPBR1YbwJGB7A==
 X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:SvTxRTqbNMU=;35SF/lGP+MjygSkMqyoVRFZAlUh
- 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
+UI-OutboundReport: notjunk:1;M01:P0:ix9fUxQAnVI=;n2ZFRaxlLCK9iogaSSDSCqLZgFa
+ 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
 X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	DMARC_POLICY_ALLOW(-0.50)[gmx.de,quarantine];
 	R_DKIM_ALLOW(-0.20)[gmx.de:s=s31663417];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	FROM_HAS_DN(0.00)[];
-	TAGGED_FROM(0.00)[bounces-14805-lists,cgroups=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-14802-lists,cgroups=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
 	RCVD_COUNT_THREE(0.00)[4];
 	FREEMAIL_TO(0.00)[lankhorst.se,kernel.org,cmpxchg.org,suse.com,amd.com,intel.com,linux.intel.com,suse.de,gmail.com,ffwll.ch,ursulin.net];
@@ -185,58 +186,89 @@ X-Spamd-Result: default: False [-2.16 / 15.00];
 	MID_RHS_MATCH_FROM(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[cgroups];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[gmx.de:dkim,gmx.de:email,gmx.de:mid,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 4B08328265A
+	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[gmx.de:dkim,gmx.de:email,gmx.de:mid,sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: 4717D2825A9
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-Callers can use this feedback to be more aggressive in making space for
-allocations of a cgroup if they know it is protected.
+This helps to find a common subtree of two resources, which is important
+when determining whether it's helpful to evict one resource in favor of
+another.
 
-These are counterparts to memcg's mem_cgroup_below_{min,low}.
+To facilitate this, add a common helper to find the ancestor of two
+cgroups using each cgroup's ancestor array.
 
 Signed-off-by: Natalie Vock <natalie.vock@gmx.de>
 =2D--
- include/linux/cgroup_dmem.h | 16 ++++++++++++
- kernel/cgroup/dmem.c        | 62 ++++++++++++++++++++++++++++++++++++++++=
-+++++
- 2 files changed, 78 insertions(+)
+ include/linux/cgroup.h      | 21 +++++++++++++++++++++
+ include/linux/cgroup_dmem.h |  9 +++++++++
+ kernel/cgroup/dmem.c        | 28 ++++++++++++++++++++++++++++
+ 3 files changed, 58 insertions(+)
 
+diff --git a/include/linux/cgroup.h b/include/linux/cgroup.h
+index bc892e3b37eea..560ae995e3a54 100644
+=2D-- a/include/linux/cgroup.h
++++ b/include/linux/cgroup.h
+@@ -561,6 +561,27 @@ static inline struct cgroup *cgroup_ancestor(struct c=
+group *cgrp,
+ 	return cgrp->ancestors[ancestor_level];
+ }
+=20
++/**
++ * cgroup_common_ancestor - find common ancestor of two cgroups
++ * @a: first cgroup to find common ancestor of
++ * @b: second cgroup to find common ancestor of
++ *
++ * Find the first cgroup that is an ancestor of both @a and @b, if it exi=
+sts
++ * and return a pointer to it. If such a cgroup doesn't exist, return NUL=
+L.
++ *
++ * This function is safe to call as long as both @a and @b are accessible=
+.
++ */
++static inline struct cgroup *cgroup_common_ancestor(struct cgroup *a,
++						    struct cgroup *b)
++{
++	int level;
++
++	for (level =3D min(a->level, b->level); level >=3D 0; level--)
++		if (a->ancestors[level] =3D=3D b->ancestors[level])
++			return a->ancestors[level];
++	return NULL;
++}
++
+ /**
+  * task_under_cgroup_hierarchy - test task's membership of cgroup ancestr=
+y
+  * @task: the task to be tested
 diff --git a/include/linux/cgroup_dmem.h b/include/linux/cgroup_dmem.h
-index dd4869f1d736e..1a88cd0c9eb00 100644
+index 1a88cd0c9eb00..9d72457c4cb9d 100644
 =2D-- a/include/linux/cgroup_dmem.h
 +++ b/include/linux/cgroup_dmem.h
-@@ -24,6 +24,10 @@ void dmem_cgroup_uncharge(struct dmem_cgroup_pool_state=
- *pool, u64 size);
- bool dmem_cgroup_state_evict_valuable(struct dmem_cgroup_pool_state *limi=
-t_pool,
- 				      struct dmem_cgroup_pool_state *test_pool,
- 				      bool ignore_low, bool *ret_hit_low);
-+bool dmem_cgroup_below_min(struct dmem_cgroup_pool_state *root,
-+			   struct dmem_cgroup_pool_state *test);
-+bool dmem_cgroup_below_low(struct dmem_cgroup_pool_state *root,
-+			   struct dmem_cgroup_pool_state *test);
+@@ -28,6 +28,8 @@ bool dmem_cgroup_below_min(struct dmem_cgroup_pool_state=
+ *root,
+ 			   struct dmem_cgroup_pool_state *test);
+ bool dmem_cgroup_below_low(struct dmem_cgroup_pool_state *root,
+ 			   struct dmem_cgroup_pool_state *test);
++struct dmem_cgroup_pool_state *dmem_cgroup_get_common_ancestor(struct dme=
+m_cgroup_pool_state *a,
++							       struct dmem_cgroup_pool_state *b);
 =20
  void dmem_cgroup_pool_state_put(struct dmem_cgroup_pool_state *pool);
  #else
-@@ -59,6 +63,18 @@ bool dmem_cgroup_state_evict_valuable(struct dmem_cgrou=
-p_pool_state *limit_pool,
- 	return true;
+@@ -75,6 +77,13 @@ static inline bool dmem_cgroup_below_low(struct dmem_cg=
+roup_pool_state *root,
+ 	return false;
  }
 =20
-+static inline bool dmem_cgroup_below_min(struct dmem_cgroup_pool_state *r=
-oot,
-+					 struct dmem_cgroup_pool_state *test)
++static inline
++struct dmem_cgroup_pool_state *dmem_cgroup_get_common_ancestor(struct dme=
+m_cgroup_pool_state *a,
++							       struct dmem_cgroup_pool_state *b)
 +{
-+	return false;
-+}
-+
-+static inline bool dmem_cgroup_below_low(struct dmem_cgroup_pool_state *r=
-oot,
-+					 struct dmem_cgroup_pool_state *test)
-+{
-+	return false;
++	return NULL;
 +}
 +
  static inline void dmem_cgroup_pool_state_put(struct dmem_cgroup_pool_sta=
@@ -244,87 +276,46 @@ te *pool)
  { }
 =20
 diff --git a/kernel/cgroup/dmem.c b/kernel/cgroup/dmem.c
-index 9d95824dc6fa0..28227405f7cfe 100644
+index 28227405f7cfe..9ae085a7fcb73 100644
 =2D-- a/kernel/cgroup/dmem.c
 +++ b/kernel/cgroup/dmem.c
-@@ -694,6 +694,68 @@ int dmem_cgroup_try_charge(struct dmem_cgroup_region =
-*region, u64 size,
+@@ -756,6 +756,34 @@ bool dmem_cgroup_below_low(struct dmem_cgroup_pool_st=
+ate *root,
  }
- EXPORT_SYMBOL_GPL(dmem_cgroup_try_charge);
+ EXPORT_SYMBOL_GPL(dmem_cgroup_below_low);
 =20
 +/**
-+ * dmem_cgroup_below_min() - Tests whether current usage is within min li=
-mit.
++ * dmem_cgroup_get_common_ancestor(): Find the first common ancestor of t=
+wo pools.
++ * @a: First pool to find the common ancestor of.
++ * @b: First pool to find the common ancestor of.
 + *
-+ * @root: Root of the subtree to calculate protection for, or NULL to cal=
-culate global protection.
-+ * @test: The pool to test the usage/min limit of.
-+ *
-+ * Return: true if usage is below min and the cgroup is protected, false =
-otherwise.
++ * Return: The first pool that is a parent of both @a and @b, or NULL if =
+either @a or @b are NULL,
++ * or if such a pool does not exist. A reference to the returned pool is =
+grabbed and must be
++ * released by the caller when it is done using the pool.
 + */
-+bool dmem_cgroup_below_min(struct dmem_cgroup_pool_state *root,
-+			   struct dmem_cgroup_pool_state *test)
++struct dmem_cgroup_pool_state *dmem_cgroup_get_common_ancestor(struct dme=
+m_cgroup_pool_state *a,
++							       struct dmem_cgroup_pool_state *b)
 +{
-+	if (root =3D=3D test || !pool_parent(test))
-+		return false;
++	struct cgroup *ancestor_cgroup;
++	struct cgroup_subsys_state *ancestor_css;
 +
-+	if (!root) {
-+		for (root =3D test; pool_parent(root); root =3D pool_parent(root))
-+			{}
-+	}
++	if (!a || !b)
++		return NULL;
 +
-+	/*
-+	 * In mem_cgroup_below_min(), the memcg pendant, this call is missing.
-+	 * mem_cgroup_below_min() gets called during traversal of the cgroup tre=
-e, where
-+	 * protection is already calculated as part of the traversal. dmem cgrou=
-p eviction
-+	 * does not traverse the cgroup tree, so we need to recalculate effectiv=
-e protection
-+	 * here.
-+	 */
-+	dmem_cgroup_calculate_protection(root, test);
-+	return page_counter_read(&test->cnt) <=3D READ_ONCE(test->cnt.emin);
++	ancestor_cgroup =3D cgroup_common_ancestor(a->cs->css.cgroup, b->cs->css=
+.cgroup);
++	if (!ancestor_cgroup)
++		return NULL;
++
++	ancestor_css =3D cgroup_e_css(ancestor_cgroup, &dmem_cgrp_subsys);
++
++	return get_cg_pool_unlocked(css_to_dmemcs(ancestor_css), a->region);
 +}
-+EXPORT_SYMBOL_GPL(dmem_cgroup_below_min);
-+
-+/**
-+ * dmem_cgroup_below_low() - Tests whether current usage is within low li=
-mit.
-+ *
-+ * @root: Root of the subtree to calculate protection for, or NULL to cal=
-culate global protection.
-+ * @test: The pool to test the usage/low limit of.
-+ *
-+ * Return: true if usage is below low and the cgroup is protected, false =
-otherwise.
-+ */
-+bool dmem_cgroup_below_low(struct dmem_cgroup_pool_state *root,
-+			   struct dmem_cgroup_pool_state *test)
-+{
-+	if (root =3D=3D test || !pool_parent(test))
-+		return false;
-+
-+	if (!root) {
-+		for (root =3D test; pool_parent(root); root =3D pool_parent(root))
-+			{}
-+	}
-+
-+	/*
-+	 * In mem_cgroup_below_low(), the memcg pendant, this call is missing.
-+	 * mem_cgroup_below_low() gets called during traversal of the cgroup tre=
-e, where
-+	 * protection is already calculated as part of the traversal. dmem cgrou=
-p eviction
-+	 * does not traverse the cgroup tree, so we need to recalculate effectiv=
-e protection
-+	 * here.
-+	 */
-+	dmem_cgroup_calculate_protection(root, test);
-+	return page_counter_read(&test->cnt) <=3D READ_ONCE(test->cnt.elow);
-+}
-+EXPORT_SYMBOL_GPL(dmem_cgroup_below_low);
++EXPORT_SYMBOL_GPL(dmem_cgroup_get_common_ancestor);
 +
  static int dmem_cgroup_region_capacity_show(struct seq_file *sf, void *v)
  {
