@@ -1,167 +1,164 @@
-Return-Path: <cgroups+bounces-14814-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-14815-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id EHYpMj82tGnTiwAAu9opvQ
-	(envelope-from <cgroups+bounces-14814-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Fri, 13 Mar 2026 17:07:27 +0100
+	id sIPGCo04tGl3jAAAu9opvQ
+	(envelope-from <cgroups+bounces-14815-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Fri, 13 Mar 2026 17:17:17 +0100
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3B219286ACB
-	for <lists+cgroups@lfdr.de>; Fri, 13 Mar 2026 17:07:27 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 85B1A286D31
+	for <lists+cgroups@lfdr.de>; Fri, 13 Mar 2026 17:17:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 3B8A332DA598
-	for <lists+cgroups@lfdr.de>; Fri, 13 Mar 2026 16:01:15 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id A88133016EDB
+	for <lists+cgroups@lfdr.de>; Fri, 13 Mar 2026 16:13:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C617C3AE1AD;
-	Fri, 13 Mar 2026 16:01:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C9363BD25E;
+	Fri, 13 Mar 2026 16:13:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="U01M9q2b"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="T+bFpeO7"
 X-Original-To: cgroups@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-lf1-f45.google.com (mail-lf1-f45.google.com [209.85.167.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 443F31A681C
-	for <cgroups@vger.kernel.org>; Fri, 13 Mar 2026 16:01:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1773417674; cv=none; b=U3Me/s0JOnTzXKyeU2zlPMYGvLvPUE4s0aEJwfs4wTv0SgFimtnzZqRDw/6MxI6EUkslqnVcXjEC6ONed8+gawlPL3cGc6OpFWQjjA8eLfbE5G8Sw4QktUUqzGVLCmHD0pWaNjzR7vQ/za1+UQb4F8XD+RPOXfd3eaAthmV1S6o=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1773417674; c=relaxed/simple;
-	bh=FkznTkA5DKX2N8U+3L1wdA2sZUzJA/41sNgeh8xHSm4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=XSgR9sYHQDM5vI3xJaOf+vJ93BL63LDzaArm14Nn+8k1+Z/cr2CsX+bNCw1Q6cJzkOxJIubImq3IO6NCmYigUWpTpOQLEgP9PJCQBg1MWL8PyszB6hV0PXEqcgRoR6tQg6z/YpVFFHMFbxvryGjcVTf1ROBB722ejejcvdN138U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=U01M9q2b; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1773417672;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=3rAeZciFy1NQAVUPN4+v5kB+w5GHPp0m5S00iLF1Qp0=;
-	b=U01M9q2bZyZFAxfGH9KYagxDQTSo63eynn0JBE9wMK9SWn81nvHA6V/GPw4qje5O+unyFG
-	GfbEEIxVEuv34Yui9OOpAm1OU9lWrhvpg6pEWnKO+yhuPm00BTLkrcOa+TS5VN1KPgIos7
-	ztfQJZEM5TuU6mQlNlXBTu7396pxPaQ=
-Received: from mx-prod-mc-08.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-35-165-154-97.us-west-2.compute.amazonaws.com [35.165.154.97]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-608-ekej8OXZOzilGQcM9jf5Cg-1; Fri,
- 13 Mar 2026 12:01:07 -0400
-X-MC-Unique: ekej8OXZOzilGQcM9jf5Cg-1
-X-Mimecast-MFC-AGG-ID: ekej8OXZOzilGQcM9jf5Cg_1773417665
-Received: from mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.93])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mx-prod-mc-08.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 374A218002DD;
-	Fri, 13 Mar 2026 16:01:05 +0000 (UTC)
-Received: from [10.22.65.113] (unknown [10.22.65.113])
-	by mx-prod-int-06.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id B4B7B180075D;
-	Fri, 13 Mar 2026 16:01:02 +0000 (UTC)
-Message-ID: <62813cce-36b7-4255-b748-dc450d83aa3c@redhat.com>
-Date: Fri, 13 Mar 2026 12:01:01 -0400
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 19EAD34D4CB
+	for <cgroups@vger.kernel.org>; Fri, 13 Mar 2026 16:13:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.167.45
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1773418407; cv=pass; b=kOuvAGJPmP+HEqLtbpMOPWejsIeWJC46kEn8qwtE2JAtQ1n+Suh5eSxwiB3e+atIBZDIo0kLX8ZGbeeRSDK7771qP78DEZJu3Qb/RK8pW8U5LMG8zXdIaBTkOD9mnrnETSG5TydV1AZn542n3pTVPcvCCLsN7CV+TsabLJkNR20=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1773418407; c=relaxed/simple;
+	bh=id4GH/npJy6jS2u7G+5krgbEzwWItVyVTXnX92MsqJw=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=gBhIKEZpefz+6LJrPrwudL4TwlK4W9ivPdKqlJfM4L2LXjhhzaerBBzZpIlzQSs/X1THAdzWtBp7r1H7Oj9dKt2oIcyNP9xDL3Qze/xbeZoyIFKfLezdlD7nj7Bnbm9Fyx/dVIYVbVHW03tvuCCDnN04PU/ZTh8wRcoM4HTVaP8=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=T+bFpeO7; arc=pass smtp.client-ip=209.85.167.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-lf1-f45.google.com with SMTP id 2adb3069b0e04-5a13d1c6f25so2473121e87.3
+        for <cgroups@vger.kernel.org>; Fri, 13 Mar 2026 09:13:25 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1773418404; cv=none;
+        d=google.com; s=arc-20240605;
+        b=fKIWvJyQbX6gNBpE4pR2jh8dqCAdJ4LO7tceJ1wJvDodqU2QRExEGu7bFFmDMFEbgN
+         nwZyNm2FL+M8BvU+y+VF2nPnoqsA7swCf0cOE/CbDpGrs99B1o5kMxKaKfKQwxUn11dv
+         dtDrKV6WaTmUzDYZedsiBmZvq5PS3iIPHLggcukk7q9JdnYoEMAIz6X+NL6zZ2eBnkOf
+         1iYLrfIT7sLxYzRDzW2hFnNv6ndjIz/UbzQyIMxdG87APJm++Iw+ipdGAzgqTWI9gmlr
+         mplCKZ56FkEVC6gmtiqJwPMgvP/0zxngSryHPhkgwG11fHa4W8fXIJutjIVnoCktbxd6
+         6fdg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:dkim-signature;
+        bh=W7Hc+3jBOAZVSVOSxE6vz5APIZ1uejXRfbKvQ4/dcrI=;
+        fh=id+w151wiTNw9R1NaOW8zOSWUKSD6FRPwLjFjAGwius=;
+        b=AuyG5ECY+tshYcBRH8sC+46utO3noVEAD3O9wt8IKS+P8vzf8qZHs/lL5Yjg9UorNJ
+         hgX3hIwwRnMnzP252wlort292vCCTS5nTOfjqJ6jKgS13pE9pHhUnd5+i7FvoTM5DXMw
+         SEimsmL2J6I+OobvJIXxK2RNN16ZUpiXC/32/tschZyShGFsq9JbEuXbMkSfQGaL7hCA
+         itlaPvZ1y8QVTI6v3eZoyMK6KUMb/yQmNJABx/DClopmCQC9BPpCkDClIkZRSLP5vAQA
+         6aF0NlWzaqffiRuHa4EkXgjhX9tTFA1xnLtJqX/3i/FCmlPvUQHxkRXh6p0EDR8FJaDP
+         cx2w==;
+        darn=vger.kernel.org
+ARC-Authentication-Results: i=1; mx.google.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1773418404; x=1774023204; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=W7Hc+3jBOAZVSVOSxE6vz5APIZ1uejXRfbKvQ4/dcrI=;
+        b=T+bFpeO7eruwEydPueueRDVbkn2uYKTSvBXbT2N/Ne5FnTRxrpEW/7f+Fy9ugqh0iK
+         3Ffv285wPqzqln5RxxuPshMcIC5xmTYnzMegm+ra4DESKn1mrVPD7vTk+pDwupb3XnJk
+         ex2tncoM7U/9vWoMOZ2n0GytyjR5rnS05Pnv8Gg0FzvZ/2K4heDEIf2nBmpoVX9yqhl5
+         oMALU2hMpQPj5TjahXKjKwX09HAjwpiRgEbfl4pRegu/T++1Ws/Y9wVt8ZTuV/qc+NLn
+         /Ej6mg6CY3u4Z7iFS9mWcODGsGXTIqI2ZxEzxD7FKxHOdVKqE6QaXNZ9GdvneopyxwMF
+         eSFg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1773418404; x=1774023204;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=W7Hc+3jBOAZVSVOSxE6vz5APIZ1uejXRfbKvQ4/dcrI=;
+        b=LHth/Vsz440xlCwTRyOPj+5nRpSwxis3RITDVd16buHunuyN2DSjQrC6FS1WvTM2x2
+         2Fakjk+3JGNyt9L+53D7SiKOWbJ8ZFecbeQWjNVLs5pgosDj6yXxx28I8mEsjNywYGoA
+         +lKF8Bh7ySnGaeY3y5E2PFWLWXFan7MIJRCPB25J4Ga+nOivdLGG6LIhNtpj/8EJq2Qe
+         iHAmaW4h2j+R65acKLR3m0PTdtBoRfSUyNt3bk684rYqPjh8Otjaunw8XVTKOAA2Mi3r
+         rnJ+FjkD6h170tdHiqRPFmSguUSHOFyJ99wvSYzfTDkCMWqpYsPDC1GkFc6GOveheDGN
+         pNwQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXm3DAGCuRlXxZLkutrHReG5TDeUsvyfShHXy6lrAZeJIHdkZvCEj4woaKz71AnZ7LkCVGaJuJz@vger.kernel.org
+X-Gm-Message-State: AOJu0YxAZKb/jpXMnRG/Nsm83QLyS6snNKcbCiEFBxegVxGnzXlAuf2y
+	D7xJTSryNQdvBJYLZqFpxXI+FaWGu3AX6ELyHZMVAi2ISJlM3vdGXkT27wC/8s6AT4DUqbuiG8A
+	uP0xt4MdkymCd08b0jmOYId3HPMXiwe7ZO/BhXaYIAQ==
+X-Gm-Gg: ATEYQzyLZ76yDvyuY3sGtzBEsG2wHf48Mb8eeEzRm/HyHNnGkjf3HNJLGybJVGYpF4W
+	9IeLR3wzkzzjSPPXZIpIieR1wCNCYzh4iwDzULjRfjyDWBER+m0J47DrsK19xddoWTafo5oZuZP
+	BbccohQk95JQP9F4dTT3swehWzLTrsGHYDr3Xsa2NPUWP6ler5zGngDIPq7T4HqVc7sKoZbUiP7
+	+DQO2QEg4ox3TblOzG+KrqK5IudspWE6Wt5shYViGabvX4CpWIUBtA3aXVFsc47c/Y8DIJR0zem
+	r+x8fc9v5BnwZNG3N3G0tu0oEE4DevvYvAHhqmT1
+X-Received: by 2002:a05:6512:155a:20b0:5a1:3ee1:2756 with SMTP id
+ 2adb3069b0e04-5a1626f2ed1mr954035e87.4.1773418404230; Fri, 13 Mar 2026
+ 09:13:24 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] cgroup/cpuset: Replace use of system_unbound_wq with
- system_dfl_wq
-To: Marco Crivellari <marco.crivellari@suse.com>,
- linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
-Cc: Tejun Heo <tj@kernel.org>, Lai Jiangshan <jiangshanlai@gmail.com>,
- Frederic Weisbecker <frederic@kernel.org>,
- Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
- Michal Hocko <mhocko@suse.com>, Chen Ridong <chenridong@huaweicloud.com>,
- Johannes Weiner <hannes@cmpxchg.org>, Michal Koutny <mkoutny@suse.com>
-References: <20260313154520.302888-1-marco.crivellari@suse.com>
-Content-Language: en-US
-From: Waiman Long <longman@redhat.com>
-In-Reply-To: <20260313154520.302888-1-marco.crivellari@suse.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.30.177.93
+References: <20260313154520.302888-1-marco.crivellari@suse.com> <62813cce-36b7-4255-b748-dc450d83aa3c@redhat.com>
+In-Reply-To: <62813cce-36b7-4255-b748-dc450d83aa3c@redhat.com>
+From: Marco Crivellari <marco.crivellari@suse.com>
+Date: Fri, 13 Mar 2026 17:13:13 +0100
+X-Gm-Features: AaiRm52XG8novgqzi-5ijI1D59whWx29g1fs8hJ7LtWjsI3e7BF5n34TDZpxYy8
+Message-ID: <CAAofZF5CrNGbJ+8Ne-m1LCB85WTu7TeQQ+EtNNiG32RpaQXo1A@mail.gmail.com>
+Subject: Re: [PATCH] cgroup/cpuset: Replace use of system_unbound_wq with system_dfl_wq
+To: Waiman Long <longman@redhat.com>
+Cc: linux-kernel@vger.kernel.org, cgroups@vger.kernel.org, 
+	Tejun Heo <tj@kernel.org>, Lai Jiangshan <jiangshanlai@gmail.com>, 
+	Frederic Weisbecker <frederic@kernel.org>, Sebastian Andrzej Siewior <bigeasy@linutronix.de>, 
+	Michal Hocko <mhocko@suse.com>, Chen Ridong <chenridong@huaweicloud.com>, 
+	Johannes Weiner <hannes@cmpxchg.org>, Michal Koutny <mkoutny@suse.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spamd-Result: default: False [-2.16 / 15.00];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[redhat.com,quarantine];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
-	R_DKIM_ALLOW(-0.20)[redhat.com:s=mimecast20190719];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=2];
+	DMARC_POLICY_ALLOW(-0.50)[suse.com,quarantine];
+	R_DKIM_ALLOW(-0.20)[suse.com:s=google];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	FREEMAIL_CC(0.00)[kernel.org,gmail.com,linutronix.de,suse.com,huaweicloud.com,cmpxchg.org];
-	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-14814-lists,cgroups=lfdr.de];
-	DKIM_TRACE(0.00)[redhat.com:+];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	FREEMAIL_CC(0.00)[vger.kernel.org,kernel.org,gmail.com,linutronix.de,suse.com,huaweicloud.com,cmpxchg.org];
+	TAGGED_FROM(0.00)[bounces-14815-lists,cgroups=lfdr.de];
 	FROM_HAS_DN(0.00)[];
+	RCVD_COUNT_THREE(0.00)[4];
+	RCVD_TLS_LAST(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	DKIM_TRACE(0.00)[suse.com:+];
+	MISSING_XM_UA(0.00)[];
 	TO_DN_SOME(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[6];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[longman@redhat.com,cgroups@vger.kernel.org];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	FROM_NEQ_ENVFROM(0.00)[marco.crivellari@suse.com,cgroups@vger.kernel.org];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	NEURAL_HAM(-0.00)[-1.000];
-	RCPT_COUNT_SEVEN(0.00)[11];
-	MID_RHS_MATCH_FROM(0.00)[];
 	TAGGED_RCPT(0.00)[cgroups];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,suse.com:email]
-X-Rspamd-Queue-Id: 3B219286ACB
+	RCPT_COUNT_SEVEN(0.00)[11];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,suse.com:dkim,mail.gmail.com:mid]
+X-Rspamd-Queue-Id: 85B1A286D31
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-On 3/13/26 11:45 AM, Marco Crivellari wrote:
-> This patch continues the effort to refactor workqueue APIs, which has begun
-> with the changes introducing new workqueues and a new alloc_workqueue flag:
+On Fri, Mar 13, 2026 at 5:01=E2=80=AFPM Waiman Long <longman@redhat.com> wr=
+ote:
+> [...]
 >
->     commit 128ea9f6ccfb ("workqueue: Add system_percpu_wq and system_dfl_wq")
->     commit 930c2ea566af ("workqueue: Add new WQ_PERCPU flag")
->
-> The point of the refactoring is to eventually alter the default behavior of
-> workqueues to become unbound by default so that their workload placement is
-> optimized by the scheduler.
->
-> Before that to happen, workqueue users must be converted to the better named
-> new workqueues with no intended behaviour changes:
->
->     system_wq -> system_percpu_wq
->     system_unbound_wq -> system_dfl_wq
->
-> This way the old obsolete workqueues (system_wq, system_unbound_wq) can be
-> removed in the future.
->
-> Link: https://lore.kernel.org/all/20250221112003.1dSuoGyc@linutronix.de/
-> Suggested-by: Tejun Heo <tj@kernel.org>
-> Signed-off-by: Marco Crivellari <marco.crivellari@suse.com>
-> ---
->   kernel/cgroup/cpuset.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
-> index e200de7c60b6..b399f5d0a158 100644
-> --- a/kernel/cgroup/cpuset.c
-> +++ b/kernel/cgroup/cpuset.c
-> @@ -3937,7 +3937,7 @@ static void cpuset_handle_hotplug(void)
->   	 * item at all, this is not a problem.
->   	 */
->   	if (update_housekeeping || force_sd_rebuild)
-> -		queue_work(system_unbound_wq, &hk_sd_work);
-> +		queue_work(system_dfl_wq, &hk_sd_work);
->   
->   	free_tmpmasks(ptmp);
->   }
+> Thanks for the patch, but there is another patch that makes the
+> same change as part of a larger fix to the cpuset code. See commit
+> ca174c705db5 ("cgroup/cpuset: Call rebuild_sched_domains() directly in
+> hotplug")  in the cgroup tree.
 
-Thanks for the patch, but there is another patch that makes the
-same change as part of a larger fix to the cpuset code. See commit
-ca174c705db5 ("cgroup/cpuset: Call rebuild_sched_domains() directly in
-hotplug")  in the cgroup tree.
+Aha, thank you!
 
-Thanks,
-Longman
 
+--=20
+
+Marco Crivellari
+
+L3 Support Engineer
 
