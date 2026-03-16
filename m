@@ -1,161 +1,216 @@
-Return-Path: <cgroups+bounces-14825-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-14826-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 0EoVDPZwt2n8RAEAu9opvQ
-	(envelope-from <cgroups+bounces-14825-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Mon, 16 Mar 2026 03:54:46 +0100
+	id WFQuFmN9t2muRgEAu9opvQ
+	(envelope-from <cgroups+bounces-14826-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Mon, 16 Mar 2026 04:47:47 +0100
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
-	by mail.lfdr.de (Postfix) with ESMTPS id C63A5294484
-	for <lists+cgroups@lfdr.de>; Mon, 16 Mar 2026 03:54:45 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 43818294764
+	for <lists+cgroups@lfdr.de>; Mon, 16 Mar 2026 04:47:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 3EFCA3004908
-	for <lists+cgroups@lfdr.de>; Mon, 16 Mar 2026 02:54:45 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 0879C3012C54
+	for <lists+cgroups@lfdr.de>; Mon, 16 Mar 2026 03:47:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 520FA31E106;
-	Mon, 16 Mar 2026 02:54:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 589532C375A;
+	Mon, 16 Mar 2026 03:47:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="l9BePq72"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="CqdAeQ8x"
 X-Original-To: cgroups@vger.kernel.org
-Received: from out30-100.freemail.mail.aliyun.com (out30-100.freemail.mail.aliyun.com [115.124.30.100])
+Received: from out-182.mta1.migadu.com (out-182.mta1.migadu.com [95.215.58.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D039831D72E;
-	Mon, 16 Mar 2026 02:54:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 463632836E
+	for <cgroups@vger.kernel.org>; Mon, 16 Mar 2026 03:47:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1773629683; cv=none; b=nuyfsJItzapOoS/+TmVy5ArTFSIxhmrCaMV8DGOPr/Tnj26lfXGHMppPlhx6SSu/wAkEc96aUQz6XO8wyTczCK7XFTXPHDgnlLDkYGmlX94E9ZA4gUOSh1QkRKWpvuNFXofYq3solZtKFmpcd7EGIBPlLgjB4c1M9+eeZf98VbU=
+	t=1773632864; cv=none; b=ICGKLqB6SB6jLbiv9qUhmRyWdk8XU2lb1dfL4wkfRnHyYNezYps3o89YXVTWvH9Gx9Bs87Kss/encZ0q8NoYN9LbBNw0KQm8GnHWK1eFfl5Nct75Oq1g9HqTrPhwb3fhVyViquKg3rdDnaepjsLTD3So1F3/T+EUnSXjgWXXiR0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1773629683; c=relaxed/simple;
-	bh=czmgvKSkWorSh1qUwUlivcTnGg2JfzlR8yJGfiNC2IU=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=TDTW3hPSNjOWoBsO/DsDlXj/Ku6htvwFOKZah2Z27ON7K587Zdy3St7NHAYw7iCQKgdfCO66VikN7K4nbypVg4EJIRmbFU4RYDYDLDCXvn+BaG7z5GMk4omrQl+AZ2v/rr5KMAIt/NMilDEkJ7XntQs8q0p1/O7zdtR1R4Cj+bI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=l9BePq72; arc=none smtp.client-ip=115.124.30.100
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=linux.alibaba.com; s=default;
-	t=1773629672; h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type;
-	bh=czmgvKSkWorSh1qUwUlivcTnGg2JfzlR8yJGfiNC2IU=;
-	b=l9BePq72YgYdFv4VFjHvyMKOxAqh5RE6Cw7UN9xHkpU/NQIe0SfTSj/8lWSyIsqL22O7pmpU7JKqxQj6QDlsAz2kYH1/b27TNkBvN5HLQuXugp+weIX1wJSatqBSlwm16gqvFioCRIoZc2rF9Ru4VOE1Key0WhJNwmWDmFN3BCc=
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R111e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=maildocker-contentspam033037026112;MF=ying.huang@linux.alibaba.com;NM=1;PH=DS;RN=33;SR=0;TI=SMTPD_---0X.-KIlz_1773629668;
-Received: from DESKTOP-5N7EMDA(mailfrom:ying.huang@linux.alibaba.com fp:SMTPD_---0X.-KIlz_1773629668 cluster:ay36)
-          by smtp.aliyun-inc.com;
-          Mon, 16 Mar 2026 10:54:30 +0800
-From: "Huang, Ying" <ying.huang@linux.alibaba.com>
-To: "JP Kobryn (Meta)" <jp.kobryn@linux.dev>
-Cc: "Vlastimil Babka (SUSE)" <vbabka@kernel.org>,  linux-mm@kvack.org,
-  akpm@linux-foundation.org,  mhocko@suse.com,  apopple@nvidia.com,
-  axelrasmussen@google.com,  byungchul@sk.com,  cgroups@vger.kernel.org,
-  david@kernel.org,  eperezma@redhat.com,  gourry@gourry.net,
-  jasowang@redhat.com,  hannes@cmpxchg.org,  joshua.hahnjy@gmail.com,
-  Liam.Howlett@oracle.com,  linux-kernel@vger.kernel.org,
-  lorenzo.stoakes@oracle.com,  matthew.brost@intel.com,  mst@redhat.com,
-  rppt@kernel.org,  muchun.song@linux.dev,  zhengqi.arch@bytedance.com,
-  rakie.kim@sk.com,  roman.gushchin@linux.dev,  shakeel.butt@linux.dev,
-  surenb@google.com,  virtualization@lists.linux.dev,  weixugc@google.com,
-  xuanzhuo@linux.alibaba.com,  yuanchu@google.com,  ziy@nvidia.com,
-  kernel-team@meta.com
-Subject: Re: [PATCH v2] mm/mempolicy: track page allocations per mempolicy
-In-Reply-To: <c4e5cc3c-5daa-404e-8c55-cface8aa969d@linux.dev> (JP Kobryn's
-	message of "Fri, 13 Mar 2026 11:09:58 -0700")
-References: <20260307045520.247998-1-jp.kobryn@linux.dev>
-	<3a42463b-9ddd-4d64-b64c-6c2e6e4fc75d@kernel.org>
-	<343bbd5b-67a0-46c4-8ec4-69158bf26b3f@linux.dev>
-	<874imkpba1.fsf@DESKTOP-5N7EMDA>
-	<cd3d7e2c-79fa-4c00-89ad-83beddf98bae@linux.dev>
-	<60f71f4c-71d9-4751-8c6b-10179b98bef0@kernel.org>
-	<c4e5cc3c-5daa-404e-8c55-cface8aa969d@linux.dev>
-Date: Mon, 16 Mar 2026 10:54:26 +0800
-Message-ID: <87sea0o55p.fsf@DESKTOP-5N7EMDA>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+	s=arc-20240116; t=1773632864; c=relaxed/simple;
+	bh=WOfrTdOdu/x4/wGth2qMAUuJTbObQXADe3tE7SPlL9Q=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=PFJ5RZNirjY4U+ZWGZTmYW9DOW7fhkVNW2002kJWx0H7jdtfhzR7BbvR808USt/N37SLW2J5b08lCaF4S+kH8yWkX8GWqecnenoBGkxXqNprYZBiYONTaYMC+Qc3qheWkFgTdng7kNGSipJH05d5rrVncWFkpsp1+Syg9B9KuwA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=CqdAeQ8x; arc=none smtp.client-ip=95.215.58.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <d07a0787-dd00-402c-b8bd-3a6380608c0d@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1773632859;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=BC/9VRvnBx2Fbj7AWhZPfEGKyE+15so5XBYMY8jq8jw=;
+	b=CqdAeQ8xg8xe5XJljnNCPre7futB6K0k00xwmOjFkgULmZSHb4opCfSw2vsPa5wzqNXcWO
+	fzFYYPFQ/K3WUWO6OY3euHKDMdSWVovLrYZEHR1esnICG4oK6qmP5mqeRgiuCt1q4tsrG1
+	NU7ZpkPh03uzkBJfquOm246sapaN1/8=
+Date: Mon, 16 Mar 2026 11:47:06 +0800
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ascii
-X-Spamd-Result: default: False [-7.16 / 15.00];
-	WHITELIST_DMARC(-7.00)[alibaba.com:D:+];
-	SUSPICIOUS_RECIPS(1.50)[];
+Subject: Re: [PATCH v6 30/33] mm: memcontrol: prepare for reparenting
+ non-hierarchical stats
+To: =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>
+Cc: hannes@cmpxchg.org, hughd@google.com, mhocko@suse.com,
+ roman.gushchin@linux.dev, shakeel.butt@linux.dev, muchun.song@linux.dev,
+ david@kernel.org, lorenzo.stoakes@oracle.com, ziy@nvidia.com,
+ harry.yoo@oracle.com, yosry.ahmed@linux.dev, imran.f.khan@oracle.com,
+ kamalesh.babulal@oracle.com, axelrasmussen@google.com, yuanchu@google.com,
+ weixugc@google.com, chenridong@huaweicloud.com, akpm@linux-foundation.org,
+ hamzamahfooz@linux.microsoft.com, apais@linux.microsoft.com,
+ lance.yang@linux.dev, bhe@redhat.com, usamaarif642@gmail.com,
+ linux-mm@kvack.org, linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+ Qi Zheng <zhengqi.arch@bytedance.com>, Yosry Ahmed <yosry@kernel.org>
+References: <cover.1772711148.git.zhengqi.arch@bytedance.com>
+ <e862995c45a7101a541284b6ebee5e5c32c89066.1772711148.git.zhengqi.arch@bytedance.com>
+ <hwcqvplnn2knclpivgagctmcaiutyv2qprgoqmwp7suzj6fqb2@diq6grkwo33b>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Qi Zheng <qi.zheng@linux.dev>
+In-Reply-To: <hwcqvplnn2knclpivgagctmcaiutyv2qprgoqmwp7suzj6fqb2@diq6grkwo33b>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
+X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_RHS_NOT_FQDN(0.50)[];
-	DMARC_POLICY_ALLOW(-0.50)[linux.alibaba.com,none];
-	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
-	R_DKIM_ALLOW(-0.20)[linux.alibaba.com:s=default];
+	DMARC_POLICY_ALLOW(-0.50)[linux.dev,none];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_DKIM_ALLOW(-0.20)[linux.dev:s=key1];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
+	TAGGED_FROM(0.00)[bounces-14826-lists,cgroups=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	TAGGED_FROM(0.00)[bounces-14825-lists,cgroups=lfdr.de];
-	RCPT_COUNT_TWELVE(0.00)[33];
+	RCVD_COUNT_THREE(0.00)[3];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
+	FREEMAIL_CC(0.00)[cmpxchg.org,google.com,suse.com,linux.dev,kernel.org,oracle.com,nvidia.com,huaweicloud.com,linux-foundation.org,linux.microsoft.com,redhat.com,gmail.com,kvack.org,vger.kernel.org,bytedance.com];
+	RCPT_COUNT_TWELVE(0.00)[29];
+	MIME_TRACE(0.00)[0:+];
 	FROM_HAS_DN(0.00)[];
-	DKIM_TRACE(0.00)[linux.alibaba.com:+];
-	TO_DN_SOME(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[ying.huang@linux.alibaba.com,cgroups@vger.kernel.org];
-	FREEMAIL_CC(0.00)[kernel.org,kvack.org,linux-foundation.org,suse.com,nvidia.com,google.com,sk.com,vger.kernel.org,redhat.com,gourry.net,cmpxchg.org,gmail.com,oracle.com,intel.com,linux.dev,bytedance.com,lists.linux.dev,linux.alibaba.com,meta.com];
-	NEURAL_HAM(-0.00)[-1.000];
-	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
-	TAGGED_RCPT(0.00)[cgroups];
+	MISSING_XM_UA(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns,linux.dev:email,linux.alibaba.com:dkim]
-X-Rspamd-Queue-Id: C63A5294484
+	NEURAL_HAM(-0.00)[-1.000];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[qi.zheng@linux.dev,cgroups@vger.kernel.org];
+	DKIM_TRACE(0.00)[linux.dev:+];
+	MID_RHS_MATCH_FROM(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	TAGGED_RCPT(0.00)[cgroups];
+	TO_DN_SOME(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: 43818294764
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-"JP Kobryn (Meta)" <jp.kobryn@linux.dev> writes:
+Hi Michal,
 
-> On 3/13/26 12:34 AM, Vlastimil Babka (SUSE) wrote:
->> On 3/13/26 07:14, JP Kobryn (Meta) wrote:
->>> On 3/12/26 10:07 PM, Huang, Ying wrote:
->>>> "JP Kobryn (Meta)" <jp.kobryn@linux.dev> writes:
->>>>
->>>>> On 3/12/26 6:40 AM, Vlastimil Babka (SUSE) wrote:
->>>>>
->>>>> How about I change from per-policy hit/miss/foreign triplets to a single
->>>>> aggregated policy triplet (i.e. just 3 new counters which account for
->>>>> all policies)? They would follow the same hit/miss/foreign semantics
->>>>> already proposed (visible in quoted text above). This would still
->>>>> provide the otherwise missing signal of whether policy-driven
->>>>> allocations to a node are intentional or fallback.
->>>>>
->>>>> Note that I am also planning on moving the stats off of the memcg so the
->>>>> 3 new counters will be global per-node in response to similar feedback.
->>>>
->>>> Emm, what's the difference between these newly added counters and the
->>>> existing numa_hit/miss/foreign counters?
->>>
->>> The existing counters don't account for node masks in the policies that
->>> make use of them. An allocation can land on a node in the mask and still
->>> be considered a miss because it wasn't the preferred node.
->> That sounds like we could just a new counter e.g. numa_hit_preferred
->> and
->> adjust definitions accordingly? Or some other variant that fills the gap?
->
-> It's an interesting thought. Looking into these existing counters more,
-> the in-kernel direct node allocations, which don't fall under any
-> mempolicy, are also included in these stats. One good example might be
-> include/linux/skbuff.h, where __dev_alloc_pages() calls
-> alloc_pages_node_noprof(NUMA_NO_NODE, ...) which eventually reaches
-> zone_statistics() and increments the stats.
+On 3/14/26 12:22 AM, Michal Koutný wrote:
+> Hello Qi.
+> 
+> On Thu, Mar 05, 2026 at 07:52:48PM +0800, Qi Zheng <qi.zheng@linux.dev> wrote:
+>> To ensure that these non-hierarchical stats work properly, we need to
+>> reparent these non-hierarchical stats after reparenting LRU folios. To
+>> this end, this commit makes the following preparations:
+>>
+>> 1. implement reparent_state_local() to reparent non-hierarchical stats
+>> 2. make css_killed_work_fn() to be called in rcu work, and implement
+>>     get_non_dying_memcg_start() and get_non_dying_memcg_end() to avoid race
+>>     between mod_memcg_state()/mod_memcg_lruvec_state()
+>>     and reparent_state_local()
+> 
+> 
+> css_free_rwork_fn has() already RCU deferal but we discussed some
+> reasons why stats reparenting cannot be done from there. IIUC something
+> like:
+> 
+> | reparent_state_local() must be already at css_killed_work_fn() because
+> | waiting until css_free_rwork_fn() would mean the non-hierarchical
+> | stats of the surrogate ancestor are outdated, e.g. underflown.
+> | And the waiting until css_free_rwork_fn() may still be indefinite due
+> | to non-folio references to the offlined memcg.
 
-IIUC, the default memory policy is used here, that is, MPOL_LOCAL.
+We need to ensure that when reparent_state_local() is called, no writer
+modifies the non-hierarchical stats of child memcg, otherwise these
+stats modifications may be missed.
 
-> So if we applied the hit/miss/foreign semantics in this patch to the
-> existing counters we would be mixing allocations that are in and out
-> of policy, losing the accuracy.
->
-> The new 3 counters I last proposed (in an effort to reduce the amount of
-> new counters as much as possible) would isolate mempolicy allocs and be
-> named to reflect that: numa_mpol_{hit,miss,foreign}.
+In the v3, we used synchronize_rcu() in reparent_state_local() to ensure
+this, but this could cause blocking, so in this version we changed to
+this asynchronous approach.
 
----
-Best Regards,
-Huang, Ying
+> 
+> Could this be captured in the commit (if it's correct)?
+> 
+> 
+>> --- a/kernel/cgroup/cgroup.c
+>> +++ b/kernel/cgroup/cgroup.c
+>> @@ -6044,8 +6044,9 @@ int cgroup_mkdir(struct kernfs_node *parent_kn, const char *name, umode_t mode)
+>>    */
+>>   static void css_killed_work_fn(struct work_struct *work)
+>>   {
+>> -	struct cgroup_subsys_state *css =
+>> -		container_of(work, struct cgroup_subsys_state, destroy_work);
+>> +	struct cgroup_subsys_state *css;
+>> +
+>> +	css = container_of(to_rcu_work(work), struct cgroup_subsys_state, destroy_rwork);
+>>   
+>>   	cgroup_lock();
+>>   
+>> @@ -6066,8 +6067,8 @@ static void css_killed_ref_fn(struct percpu_ref *ref)
+>>   		container_of(ref, struct cgroup_subsys_state, refcnt);
+>>   
+>>   	if (atomic_dec_and_test(&css->online_cnt)) {
+>> -		INIT_WORK(&css->destroy_work, css_killed_work_fn);
+>> -		queue_work(cgroup_offline_wq, &css->destroy_work);
+>> +		INIT_RCU_WORK(&css->destroy_rwork, css_killed_work_fn);
+>> +		queue_rcu_work(cgroup_offline_wq, &css->destroy_rwork);
+>>   	}
+>>   }
+>>
+> 
+> Could this be
+> 
+> #ifdef CONFIG_MEMCG_V1
+> 		/* See get_non_dying_memcg_start, get_non_dying_memcg_end
+> 		INIT_RCU_WORK(&css->destroy_rwork, css_killed_work_fn);
+> 		queue_rcu_work(cgroup_offline_wq, &css->destroy_rwork);
+> #else
+> 		INIT_WORK(&css->destroy_work, css_killed_work_fn);
+> 		queue_work(cgroup_offline_wq, &css->destroy_work);
+> #endif
+> 
+> ?
+> 
+> IOW there's no need to make the cgroup release path even more
+> asynchronous without CONFIG_MEMCG_V1 (all this seems CONFIG_MEMCG_V1
+> specific).
+
+Right. But I'm wondering if it's necessary to use ifdefing, since
+asynchronous methods shouldn't cause any significant drawbacks?
+
+> 
+> (+not so beautiful css_killed_work_fn ifdefing but given there are the
+> variants of _start, _end)
+> 
+>> +#ifdef CONFIG_MEMCG_V1
+>> +/*
+>> + * Used in mod_memcg_state() and mod_memcg_lruvec_state() to avoid race with
+>> + * reparenting of non-hierarchical state_locals.
+>> + */
+>> +static inline struct mem_cgroup *get_non_dying_memcg_start(struct mem_cgroup *memcg)
+> 
+> Nit: I think the idiomatic names are begin + end (in the meaning of
+> paired parenthesis, don't look at css_task_iter_start ;-).
+
+Both are fine for me, but changing the name requires changing
+[PACTH v6 30/33] and [PACTH v6 32/33], if we need to update to v7,
+I can include them.
+
+Thanks,
+Qi
+
+
+
 
