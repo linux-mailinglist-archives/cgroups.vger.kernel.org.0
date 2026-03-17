@@ -1,58 +1,58 @@
-Return-Path: <cgroups+bounces-14844-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-14842-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id gNVsEJ0xuWn4uAEAu9opvQ
-	(envelope-from <cgroups+bounces-14844-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Tue, 17 Mar 2026 11:49:01 +0100
+	id qJnjJWQxuWn4uAEAu9opvQ
+	(envelope-from <cgroups+bounces-14842-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Tue, 17 Mar 2026 11:48:04 +0100
 X-Original-To: lists+cgroups@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id CE3B32A83F0
-	for <lists+cgroups@lfdr.de>; Tue, 17 Mar 2026 11:49:00 +0100 (CET)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3A7672A836F
+	for <lists+cgroups@lfdr.de>; Tue, 17 Mar 2026 11:48:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 09830306A388
-	for <lists+cgroups@lfdr.de>; Tue, 17 Mar 2026 10:48:07 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id 3D5A93025139
+	for <lists+cgroups@lfdr.de>; Tue, 17 Mar 2026 10:47:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EBAF13A6F10;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D7DC37BE97;
 	Tue, 17 Mar 2026 10:47:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="ivcBvy+Y"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="j/WkfZSk"
 X-Original-To: cgroups@vger.kernel.org
-Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
+Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A1FF36F409;
-	Tue, 17 Mar 2026 10:47:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 943063659FA;
+	Tue, 17 Mar 2026 10:47:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.92.199
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1773744470; cv=none; b=p00bSpEKjwpdOysDkVh0lcHM9LrvZyOvyWWmX8NhqyBH1K7xxu3FTO/tENWVhcd533rmlnisc07OwOBQ4bX233mmtGz7MWMCKvaHA5Trd1CNfalsn7rnrUaNcRbJ4MsnyrgLdsNEK0TwwexxdlrHfka92cIbUSmwSysm72tco2I=
+	t=1773744469; cv=none; b=UMG072a1Pa1MeAT8Ly3pUMSDDIJObzhuHO0IF29PYdgtrwudADRMXEJ65UN7QQpGPwvhTlKR1014n8lJR+qrLplouCepLetzTtrfcjUOhSEh/gIPlK/dgqP/TkpCd28lKRcbtnMRkIog8C9OX9yjtkmoNtaiWAgSvz26/v6as/Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1773744470; c=relaxed/simple;
-	bh=Njtr4wetw4qnMu7EczptHyAJpUMZpiLKP/9d7iDF+C8=;
+	s=arc-20240116; t=1773744469; c=relaxed/simple;
+	bh=+pFF1AelRju298M6nOKw8/46MZRO/cTJx2ER7TBzv7M=;
 	h=Message-ID:Date:From:To:Cc:Subject:References:MIME-Version:
-	 Content-Type; b=C+x7gQPovE0guaaWfN6x9rBQCstihOBJLGv3EYGUOc8IhbaEYusgVv/ud0GuSqGr0J39vk2uApu2no8qcZ0InPlq8OfEzD73UgvpuQdni0W3fFZB1hE6Cp77SxYlsvbIx7gouU5sZH+b6NWTQGFnawcY3HTb1EMHnpSD6ah3vNM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=ivcBvy+Y; arc=none smtp.client-ip=90.155.50.34
+	 Content-Type; b=KMGfdqswsF9Ovl+mIehPTNHgSlMHMGq+AjKMvF4fBi4VWOipenMjBZDAnlSCRm4iyZMxdq9DdxphSkYZWcfiJwVkTKEltz9JxAn8DRBhvI45g84j5+iiV3tpxor86u8kKxxZUqpAlv2WwcQPOYqZKffTkfcVePKtPoMeYbfmbEo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=j/WkfZSk; arc=none smtp.client-ip=90.155.92.199
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=Content-Type:MIME-Version:References:
+	d=infradead.org; s=desiato.20200630; h=Content-Type:MIME-Version:References:
 	Subject:Cc:To:From:Date:Message-ID:Sender:Reply-To:Content-Transfer-Encoding:
 	Content-ID:Content-Description:In-Reply-To;
-	bh=1UIIxXcXTofvHqmLg2jEeMe7ZJOig4GgUp8eZAjd+Bo=; b=ivcBvy+Y1L1R2I5qROLM6gFZvt
-	NG8FMMhjDoY77MzqUbshJubV6PWQcbZjZ7gfxDddkoRr6BBna0FdQdARZ5g2Vofm91A9X5RhH6yCT
-	EmgyuTYh6VVwYS6wggjvIR1oHfOiHOdlUYIBrVbeQRb+OcE/ngbY9I7+qTwOxQGVma39e8OhRRvat
-	jfZL2ojofWsi2Npd1BSzEIyGv4/gcXB+2i6uB/cm8gLD05JIFJyRpuhezj8WSsx9J7H+4SPi8IQlQ
-	ntLRBVIMoXhd9kM/kfWrSiRpINzKAFiS5QUVgISBKOpd+ppZmxRGle9HU1cjauELzwgpyDzhn1Mpy
-	JAVFoD5Q==;
-Received: from 2001-1c00-8d85-5700-266e-96ff-fe07-7dcc.cable.dynamic.v6.ziggo.nl ([2001:1c00:8d85:5700:266e:96ff:fe07:7dcc] helo=noisy.programming.kicks-ass.net)
-	by casper.infradead.org with esmtpsa (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1w2RxY-00000002YWo-0rFg;
+	bh=senJf2wakpmdGrsim4pMJJFM9+m5WIr95mcaSzWPbVY=; b=j/WkfZSkvwvSjSiz0uvv/G/gGI
+	2Pdj75YO4x6l2Rpc9iCkiaMV05cH862ToCeuTi5RwaJT6+zwGZQrt4sKRcIrskrYNamGOO2f1hvTL
+	yGHZQc2BhptyaV8j49Iyq0ZTb3595Qnap9GbQMlmzKcRi0Pl+k/dSarO1SRLXcCvWlbMM5KFdWaJ6
+	pVfo0dBeHZeuSim8M1Dt57Y7R6uLsgdQyK6ZtgZZniSptHltQZZPhwIQkd+jD9/FXvjO+nxJOg2LC
+	dCdRxRX3IMvF9IzGAbHLXZl6txt5OTTWAlEygu0rQ2ELvoZJG+xhB0I+zjMgPhdozOJmYw7qWQHjG
+	vJWYeyvg==;
+Received: from 77-249-17-252.cable.dynamic.v4.ziggo.nl ([77.249.17.252] helo=noisy.programming.kicks-ass.net)
+	by desiato.infradead.org with esmtpsa (Exim 4.98.2 #2 (Red Hat Linux))
+	id 1w2RxY-00000008kbs-1VAE;
 	Tue, 17 Mar 2026 10:47:36 +0000
 Received: by noisy.programming.kicks-ass.net (Postfix, from userid 0)
-	id 2624D3032C7; Tue, 17 Mar 2026 11:47:35 +0100 (CET)
-Message-ID: <20260317104342.815599388@infradead.org>
+	id 2B93B3032EB; Tue, 17 Mar 2026 11:47:35 +0100 (CET)
+Message-ID: <20260317104342.931729160@infradead.org>
 User-Agent: quilt/0.68
-Date: Tue, 17 Mar 2026 10:51:17 +0100
+Date: Tue, 17 Mar 2026 10:51:18 +0100
 From: Peter Zijlstra <peterz@infradead.org>
 To: mingo@kernel.org
 Cc: longman@redhat.com,
@@ -72,7 +72,7 @@ Cc: longman@redhat.com,
  linux-kernel@vger.kernel.org,
  jstultz@google.com,
  kprateek.nayak@amd.com
-Subject: [RFC][PATCH 4/8] sched/fair: Add cgroup_mode: MAX
+Subject: [RFC][PATCH 5/8] sched/fair: Add cgroup_mode: CONCUR
 References: <20260317095113.387450089@infradead.org>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
@@ -84,8 +84,8 @@ Content-Type: text/plain; charset=UTF-8
 X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	DMARC_POLICY_ALLOW(-0.50)[infradead.org,none];
-	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
-	R_DKIM_ALLOW(-0.20)[infradead.org:s=casper.20170209];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64:c];
+	R_DKIM_ALLOW(-0.20)[infradead.org:s=desiato.20200630];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
@@ -93,10 +93,10 @@ X-Spamd-Result: default: False [-2.16 / 15.00];
 	DKIM_TRACE(0.00)[infradead.org:+];
 	FROM_HAS_DN(0.00)[];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-14844-lists,cgroups=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-14842-lists,cgroups=lfdr.de];
 	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
+	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[cgroups];
 	PRECEDENCE_BULK(0.00)[];
@@ -106,166 +106,138 @@ X-Spamd-Result: default: False [-2.16 / 15.00];
 	NEURAL_HAM(-0.00)[-1.000];
 	TO_DN_NONE(0.00)[];
 	MID_RHS_MATCH_FROM(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[infradead.org:dkim,infradead.org:email,infradead.org:mid,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: CE3B32A83F0
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns,infradead.org:dkim,infradead.org:email,infradead.org:mid]
+X-Rspamd-Queue-Id: 3A7672A836F
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-In order to avoid the CPU shares becoming tiny '1 / nr_cpus', assume each
-cgroup is maximally concurrent and distrubute 'nr_cpus * tg->shares',
-such that each CPU ends up with a 'tg->shares' sized fraction (on
-average).
+A variation of MAX; where instead of assuming maximal concurrent, this scales
+with 'min(nr_tasks, nr_cpus)'. This handles the low concurrency cases more
+gracefully, with the exception of CPU affnity.
 
-There is the corner case, when a cgroup is minimally loaded, eg a
-single spinner, therefore limit the CPU shares to that of a nice -20
-task to avoid getting too much load.
-
-It was previously suggested to allow raising cpu.weight to '100 * nr_cpus'
-to combat this same problem, but the problem there is the above corner case,
-allowing multiple cgroups with such immense weight to the runqueue has
-significant problems.
-
-It would drown the kthreads, but it also risks overflowing the load values.
+Note: the tracking of tg->tasks is somewhat expensive :-/
 
 Signed-off-by: Peter Zijlstra (Intel) <peterz@infradead.org>
 ---
- include/linux/cpuset.h |    6 +++++
- kernel/cgroup/cpuset.c |   15 ++++++++++++++
- kernel/sched/debug.c   |    1 
- kernel/sched/fair.c    |   50 ++++++++++++++++++++++++++++++++++++++++++++-----
- 4 files changed, 67 insertions(+), 5 deletions(-)
+ kernel/sched/debug.c |    1 +
+ kernel/sched/fair.c  |   38 +++++++++++++++++++++++++++++++++++---
+ kernel/sched/sched.h |    3 +++
+ 3 files changed, 39 insertions(+), 3 deletions(-)
 
---- a/include/linux/cpuset.h
-+++ b/include/linux/cpuset.h
-@@ -80,6 +80,7 @@ extern void lockdep_assert_cpuset_lock_h
- extern void cpuset_cpus_allowed_locked(struct task_struct *p, struct cpumask *mask);
- extern void cpuset_cpus_allowed(struct task_struct *p, struct cpumask *mask);
- extern bool cpuset_cpus_allowed_fallback(struct task_struct *p);
-+extern int cpuset_num_cpus(struct cgroup *cgroup);
- extern nodemask_t cpuset_mems_allowed(struct task_struct *p);
- #define cpuset_current_mems_allowed (current->mems_allowed)
- void cpuset_init_current_mems_allowed(void);
-@@ -216,6 +217,11 @@ static inline bool cpuset_cpus_allowed_f
- 	return false;
- }
- 
-+static inline int cpuset_num_cpus(struct cgroup *cgroup)
-+{
-+	return num_online_cpus();
-+}
-+
- static inline nodemask_t cpuset_mems_allowed(struct task_struct *p)
- {
- 	return node_possible_map;
---- a/kernel/cgroup/cpuset.c
-+++ b/kernel/cgroup/cpuset.c
-@@ -4097,6 +4097,21 @@ bool cpuset_cpus_allowed_fallback(struct
- 	return changed;
- }
- 
-+int cpuset_num_cpus(struct cgroup *cgrp)
-+{
-+	int nr = num_online_cpus();
-+	struct cpuset *cs;
-+
-+	if (is_in_v2_mode()) {
-+		guard(rcu)();
-+		cs = css_cs(cgroup_e_css(cgrp, &cpuset_cgrp_subsys));
-+		if (cs)
-+			nr = cpumask_weight(cs->effective_cpus);
-+	}
-+
-+	return nr;
-+}
-+
- void __init cpuset_init_current_mems_allowed(void)
- {
- 	nodes_setall(current->mems_allowed);
 --- a/kernel/sched/debug.c
 +++ b/kernel/sched/debug.c
 @@ -593,6 +593,7 @@ int cgroup_mode = 1;
  static const char *cgroup_mode_str[] = {
  	"up",
  	"smp",
-+	"max",
++	"concur",
+ 	"max",
  };
  
- static int sched_cgroup_mode(const char *str)
 --- a/kernel/sched/fair.c
 +++ b/kernel/sched/fair.c
-@@ -4150,12 +4150,10 @@ static inline int throttled_hierarchy(st
-  *
-  * hence icky!
-  */
--static long calc_smp_shares(struct cfs_rq *cfs_rq)
-+static long __calc_smp_shares(struct cfs_rq *cfs_rq, long tg_shares, long shares_max)
- {
--	long tg_weight, tg_shares, load, shares;
- 	struct task_group *tg = cfs_rq->tg;
--
--	tg_shares = READ_ONCE(tg->shares);
-+	long tg_weight, load, shares;
+@@ -4210,6 +4210,30 @@ static long calc_max_shares(struct cfs_r
+ 	return __calc_smp_shares(cfs_rq, tg_shares * nr, max_shares);
+ }
  
- 	load = max(scale_load_down(cfs_rq->load.weight), cfs_rq->avg.load_avg);
- 
-@@ -4181,7 +4179,47 @@ static long calc_smp_shares(struct cfs_r
- 	 * case no task is runnable on a CPU MIN_SHARES=2 should be returned
- 	 * instead of 0.
- 	 */
--	return clamp_t(long, shares, MIN_SHARES, tg_shares);
-+	return clamp_t(long, shares, MIN_SHARES, shares_max);
-+}
-+
-+static int tg_cpus(struct task_group *tg)
++static inline int tg_tasks(struct task_group *tg)
 +{
-+	int nr = num_online_cpus();
-+
-+	if (cpusets_enabled()) {
-+		struct cgroup *cgrp = tg->css.cgroup;
-+		nr = cpuset_num_cpus(cgrp);
-+	}
-+
-+	return nr;
++	return max(1, atomic_long_read(&tg->tasks));
 +}
 +
 +/*
-+ * Func: min(fraction(num_cpus * tg->shares), nice -20)
++ * Func: min(fraction(num * tg->shares), nice -20); where
++ *       num = min(nr_tasks, nr_cpus)
 + *
-+ * Scale tg->shares by the maximal number of CPUs; but clip the max shares at
-+ * nice -20, otherwise a single spinner on a 512 CPU machine would result in
-+ * 512*NICE_0_LOAD, which is also crazy.
++ * Similar to max, except scale with min(nr_tasks, nr_cpus), which gives
++ * a far more natural distrubution. Can still create edge case using CPU
++ * affinity.
 + */
-+static long calc_max_shares(struct cfs_rq *cfs_rq)
++static long calc_concur_shares(struct cfs_rq *cfs_rq)
 +{
 +	struct task_group *tg = cfs_rq->tg;
-+	int nr = tg_cpus(tg);
++	int nr_cpus = tg_cpus(tg);
++	int nr_tasks = tg_tasks(tg);
++	int nr = min(nr_tasks, nr_cpus);
 +	long tg_shares = READ_ONCE(tg->shares);
 +	long max_shares = scale_load(sched_prio_to_weight[0]);
-+	return __calc_smp_shares(cfs_rq, tg_shares * nr, max_shares);
++	return __calc_smp_shares(cfs_rq, nr * tg_shares, max_shares);
 +}
 +
-+/*
-+ * Func: fraction(tg->shares)
-+ *
-+ * This infamously results in tiny shares when you have many CPUs.
-+ */
-+static long calc_smp_shares(struct cfs_rq *cfs_rq)
-+{
-+	struct task_group *tg = cfs_rq->tg;
-+	long tg_shares = READ_ONCE(tg->shares);
-+	return __calc_smp_shares(cfs_rq, tg_shares, tg_shares);
- }
- 
  /*
-@@ -4197,6 +4235,8 @@ static long calc_group_shares(struct cfs
- {
+  * Func: fraction(tg->shares)
+  *
+@@ -4236,6 +4260,8 @@ static long calc_group_shares(struct cfs
  	if (cgroup_mode == 0)
  		return calc_up_shares(cfs_rq);
-+	if (cgroup_mode == 2)
-+		return calc_max_shares(cfs_rq);
+ 	if (cgroup_mode == 2)
++		return calc_concur_shares(cfs_rq);
++	if (cgroup_mode == 3)
+ 		return calc_max_shares(cfs_rq);
  
  	return calc_smp_shares(cfs_rq);
+@@ -4381,7 +4407,7 @@ static inline bool cfs_rq_is_decayed(str
+  */
+ static inline void update_tg_load_avg(struct cfs_rq *cfs_rq)
+ {
+-	long delta;
++	long delta, dt;
+ 	u64 now;
+ 
+ 	/*
+@@ -4403,16 +4429,19 @@ static inline void update_tg_load_avg(st
+ 		return;
+ 
+ 	delta = cfs_rq->avg.load_avg - cfs_rq->tg_load_avg_contrib;
+-	if (abs(delta) > cfs_rq->tg_load_avg_contrib / 64) {
++	dt = cfs_rq->h_nr_queued - cfs_rq->tg_tasks_contrib;
++	if (dt || abs(delta) > cfs_rq->tg_load_avg_contrib / 64) {
+ 		atomic_long_add(delta, &cfs_rq->tg->load_avg);
++		atomic_long_add(dt, &cfs_rq->tg->tasks);
+ 		cfs_rq->tg_load_avg_contrib = cfs_rq->avg.load_avg;
++		cfs_rq->tg_tasks_contrib = cfs_rq->h_nr_queued;
+ 		cfs_rq->last_update_tg_load_avg = now;
+ 	}
  }
+ 
+ static inline void clear_tg_load_avg(struct cfs_rq *cfs_rq)
+ {
+-	long delta;
++	long delta, dt;
+ 	u64 now;
+ 
+ 	/*
+@@ -4423,8 +4452,11 @@ static inline void clear_tg_load_avg(str
+ 
+ 	now = sched_clock_cpu(cpu_of(rq_of(cfs_rq)));
+ 	delta = 0 - cfs_rq->tg_load_avg_contrib;
++	dt = 0 - cfs_rq->tg_tasks_contrib;
+ 	atomic_long_add(delta, &cfs_rq->tg->load_avg);
++	atomic_long_add(dt, &cfs_rq->tg->tasks);
+ 	cfs_rq->tg_load_avg_contrib = 0;
++	cfs_rq->tg_tasks_contrib = 0;
+ 	cfs_rq->last_update_tg_load_avg = now;
+ }
+ 
+--- a/kernel/sched/sched.h
++++ b/kernel/sched/sched.h
+@@ -491,6 +491,8 @@ struct task_group {
+ 	 * will also be accessed at each tick.
+ 	 */
+ 	atomic_long_t		load_avg ____cacheline_aligned;
++	atomic_long_t		tasks;
++
+ #endif /* CONFIG_FAIR_GROUP_SCHED */
+ 
+ #ifdef CONFIG_RT_GROUP_SCHED
+@@ -720,6 +722,7 @@ struct cfs_rq {
+ #ifdef CONFIG_FAIR_GROUP_SCHED
+ 	u64			last_update_tg_load_avg;
+ 	unsigned long		tg_load_avg_contrib;
++	unsigned long		tg_tasks_contrib;
+ 	long			propagate;
+ 	long			prop_runnable_sum;
+ 
 
 
 
