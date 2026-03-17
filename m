@@ -1,51 +1,51 @@
-Return-Path: <cgroups+bounces-14847-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-14848-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id aAGQEMVSuWnYAgIAu9opvQ
-	(envelope-from <cgroups+bounces-14847-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Tue, 17 Mar 2026 14:10:29 +0100
+	id aIe7E0xXuWnYAgIAu9opvQ
+	(envelope-from <cgroups+bounces-14848-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Tue, 17 Mar 2026 14:29:48 +0100
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id D5FE92AA8C8
-	for <lists+cgroups@lfdr.de>; Tue, 17 Mar 2026 14:10:28 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 03BDF2AAE25
+	for <lists+cgroups@lfdr.de>; Tue, 17 Mar 2026 14:29:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id EFFAC3041987
-	for <lists+cgroups@lfdr.de>; Tue, 17 Mar 2026 13:06:14 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 5F03C3087682
+	for <lists+cgroups@lfdr.de>; Tue, 17 Mar 2026 13:25:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B218F3C73FE;
-	Tue, 17 Mar 2026 13:06:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B3D73CBE60;
+	Tue, 17 Mar 2026 13:25:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gKIPqh0w"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="EyRGysGg"
 X-Original-To: cgroups@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 713063C140C;
-	Tue, 17 Mar 2026 13:06:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 59371375F6B;
+	Tue, 17 Mar 2026 13:25:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1773752772; cv=none; b=YbDmV10pa8XmCWHfHKJYjY9YWSxoe/Foyplw93VOAlN8Ox1xRYhH+jmiYxYURAqZPse/IrnAjoIGDMAlYdc9+1fn9CmWhAd4Nu++CBEnjGcGgGK91GXLtHS1r6rbwcANRH7eR652UZxbHqci+AWrhJS8KoHFVVloOtsYYhf8Li0=
+	t=1773753949; cv=none; b=RyQpx4+PaAfNKcSHwvKzgt5dh2Uw+fI3wB1bjBa0udyV7cxI+urfjmmQKdBA2OcVWTLXAz3GTAuxlSjtKB7F4SwuQCrZQIZE+XMzwtLCVPkx1WGWkyuamHISCekMRaL4x2jY/G+C5k8uoI4Db1ISMmJN4E/6msReQRtvp1vQFQU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1773752772; c=relaxed/simple;
-	bh=Psbirt/YP7hNGPqGR4mZdh4NA6DQF0ohxeq1831l9KE=;
+	s=arc-20240116; t=1773753949; c=relaxed/simple;
+	bh=NbMxuERCb9JHAsoZXa40NtkHjx682HdeZjRT7I45/4A=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ou9RhyGrW4rGwcuotV2+LCN7uOCE0fypPZsqcw8zOm+LTD4otGRLZsI91sG/AhaM+6XbYlY1oKv1D9plzju+NqZhO7/2gF+bmLkp6cuZRnZ+YQZzV5rZW3JyoNcJYcnkQdbr2ByEipMdaXjaPIvKc1pQl46pnWeBeLMbuWDB00o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gKIPqh0w; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AB425C19425;
-	Tue, 17 Mar 2026 13:05:55 +0000 (UTC)
+	 In-Reply-To:Content-Type; b=dSDWhnvOVqRfoQDTswwbGxYAohgXHY/+hXv8thmQMC9FSuh8bbEhx+geuC73s6lEN1KU5/K7ydmt1cp/RnigTYr3N2F7KcV95ALXc5RzsAgvb/NOu+9I31MD7+CyXnL0xyFlWUCx2IuwJqlwJ+54GqS85kg3C49b25UR6REOjI0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=EyRGysGg; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 40E33C4CEF7;
+	Tue, 17 Mar 2026 13:25:30 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1773752772;
-	bh=Psbirt/YP7hNGPqGR4mZdh4NA6DQF0ohxeq1831l9KE=;
+	s=k20201202; t=1773753949;
+	bh=NbMxuERCb9JHAsoZXa40NtkHjx682HdeZjRT7I45/4A=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=gKIPqh0wjUeANGMDdq7LVx5gZCDNbXAI3zeBGD+RFqIx1XJ6omk9ZYbGXbcPWi3No
-	 ionisDQH5w4gli0Yi0kg8zTkv1UWw+2fdHqZfC3jOylVwAPd9jz1zdJOs0sh84Bbh6
-	 IynphC85kTHWzw33qqswiVuCuxXiDIUas+pYdgG3uLOAFrmG2IqadkNToYIzm6KmU7
-	 A0ohkV7z3dmqJBPiGVDi+NdVWQr/mnCzvEQTyy40eANihkKBiWr3avR2L4ligsr5vG
-	 eOXx/kO5s9EFSzLM3C0H9YOWa2BqRac1wxr2HiR/AnMA0g24pwGm12G3i1xVv8/i95
-	 PC0YTXsmgngyw==
-Message-ID: <049d056b-844b-4480-b90e-bf4c850fc70e@kernel.org>
-Date: Tue, 17 Mar 2026 14:05:53 +0100
+	b=EyRGysGgOyFFvG7qMB5gGnylt0h0q9g8KKVIFOAcPBTTzTr300k+WkSOCAQXMWcex
+	 7ccF18bHEaCKDandZn4R8JHkPf92HY9s+bux2XaUPPWclIlNabVXUvq9WPwV0JFStS
+	 VhebImaylFWTQB5xxBEmA6GdQL1GEyFf/2PViHN/P5BCV73QbtRRj+KJx7wD/Htl6g
+	 f8TfUluXqVSUtK5o4eg8Ws6XPGx0vu8BIHEZj+/gnde3WE6FZpyfeR9A//oynqFsCl
+	 GKzjjIbuUs71EuzjSLWz8sT6Bdx2faIwpimHvFqZLz7P/QmvhQ+SzN/4jJCvIFYoot
+	 xCH6zuoklkiZw==
+Message-ID: <3342acb5-8d34-4270-98a2-866b1ff80faf@kernel.org>
+Date: Tue, 17 Mar 2026 14:25:29 +0100
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -55,7 +55,7 @@ MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
 Subject: Re: [LSF/MM/BPF TOPIC][RFC PATCH v4 00/27] Private Memory Nodes (w/
  Compressed RAM)
-To: Gregory Price <gourry@gourry.net>
+To: Gregory Price <gourry@gourry.net>, lsf-pc@lists.linux-foundation.org
 Cc: linux-kernel@vger.kernel.org, linux-cxl@vger.kernel.org,
  cgroups@vger.kernel.org, linux-mm@kvack.org,
  linux-trace-kernel@vger.kernel.org, damon@lists.linux.dev,
@@ -82,9 +82,6 @@ Cc: linux-kernel@vger.kernel.org, linux-cxl@vger.kernel.org,
  shikemeng@huaweicloud.com, nphamcs@gmail.com, bhe@redhat.com,
  zhengqi.arch@bytedance.com, terry.bowman@amd.com
 References: <20260222084842.1824063-1-gourry@gourry.net>
- <c10400db-2259-4465-a07e-19d0691101a4@kernel.org>
- <aZxqP7J1kOClQUPQ@gourry-fedora-PF4VCD3F>
- <aZx7hsVNU0XOCCiG@gourry-fedora-PF4VCD3F>
 From: "David Hildenbrand (Arm)" <david@kernel.org>
 Content-Language: en-US
 Autocrypt: addr=david@kernel.org; keydata=
@@ -131,29 +128,29 @@ Autocrypt: addr=david@kernel.org; keydata=
  3iyY2Nsd7JxfKu1PRhCGwXzRw5TlfEsoRI7V9A8isUCoqE2Dzh3FvYHVeX4Us+bRL/oqareJ
  CIFqgYMyvHj7Q06kTKmauOe4Nf0l0qEkIuIzfoLJ3qr5UyXc2hLtWyT9Ir+lYlX9efqh7mOY
  qIws/H2t
-In-Reply-To: <aZx7hsVNU0XOCCiG@gourry-fedora-PF4VCD3F>
+In-Reply-To: <20260222084842.1824063-1-gourry@gourry.net>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 X-Spamd-Result: default: False [-0.66 / 15.00];
 	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
 	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	FREEMAIL_CC(0.00)[vger.kernel.org,kvack.org,lists.linux.dev,meta.com,linuxfoundation.org,kernel.org,stgolabs.net,huawei.com,intel.com,redhat.com,linux-foundation.org,oracle.com,suse.cz,google.com,suse.com,suse.de,nvidia.com,gmail.com,sk.com,linux.alibaba.com,rasmusvillemoes.dk,efficios.com,cmpxchg.org,arm.com,linux.dev,zte.com.cn,surriel.com,gentwo.org,tencent.com,huaweicloud.com,bytedance.com,amd.com];
-	TAGGED_FROM(0.00)[bounces-14847-lists,cgroups=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-14848-lists,cgroups=lfdr.de];
 	FROM_HAS_DN(0.00)[];
 	RCVD_COUNT_THREE(0.00)[4];
 	RCVD_TLS_LAST(0.00)[];
 	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	DKIM_TRACE(0.00)[kernel.org:+];
-	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
 	TO_DN_SOME(0.00)[];
-	RCPT_COUNT_GT_50(0.00)[72];
+	RCPT_COUNT_GT_50(0.00)[73];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[david@kernel.org,cgroups@vger.kernel.org];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
@@ -161,45 +158,208 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	TAGGED_RCPT(0.00)[cgroups];
 	MID_RHS_MATCH_FROM(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: D5FE92AA8C8
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: 03BDF2AAE25
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-On 2/23/26 17:08, Gregory Price wrote:
-> On Mon, Feb 23, 2026 at 09:54:55AM -0500, Gregory Price wrote:
->> On Mon, Feb 23, 2026 at 02:07:15PM +0100, David Hildenbrand (Arm) wrote:
->>>
->>> I'm concerned about adding more special-casing (similar to what we already
->>> added for ZONE_DEVICE) all over the place.
->>>
->>> Like the whole folio_managed_() stuff in mprotect.c
->>>
->>> Having that said, sounds like a reasonable topic to discuss.
->>>
->>
->> Another option would be to add the hook to vma_wants_writenotify()
->> instead of the page table code - and mask MM_CP_TRY_CHANGE_WRITABLE.
->>
-> 
-> scratch all this - existing hooks exist for exactly this purpose:
-> 
-> 	can_change_[pte|pmd]_writable()
-> 
-> Surprised I missed this.
-> 
-> I can clean this up to remove it from the page table walks.
+On 2/22/26 09:48, Gregory Price wrote:
+> Topic type: MM
 
-Sorry for the late reply -- sounds like we can handle this cleaner.
+Hi Gregory,
 
-But I am wondering: why is this even required?
+stumbling over this again, some questions whereby I'll just ignore the
+compressed RAM bits for now and focus on use cases where promotion etc
+are not relevant :)
 
-Is it just for "Services that intercept write faults (e.g., for
-promotion tracking) need PTEs to stay read-only"
+[...]
 
-But that promotion tracking sounds like some orthogonal work to me. What
-am I missing that this is required in this patch set? (is it just for
-the special compressed RAM bits?)
+> 
+> TL;DR
+> ===
+> 
+> N_MEMORY_PRIVATE is all about isolating NUMA nodes and then punching
+> explicit holes in that isolation to do useful things we couldn't do
+> before without re-implementing entire portions of mm/ in a driver.
+
+Just to clarify: we don't currently have any mechanism to expose, say,
+SPM/PMEM/whatsoever to the buddy allocator through the dax/kmem driver
+and *not* have random allocations end up on it, correct?
+
+Assume we online the memory to ZONE_MOVABLE, still other (fallback)
+allocations might end up on that memory.
+
+How would we currently handle something like that? (do we have drivers
+for that? I'd assume that drivers would only migrate some user memory to
+ZONE_DEVICE memory.)
+
+Assuming we don't have such a mechanism, I assume that part of your
+proposal would be very interesting: online the memory to a
+"special"/"restricted" (you call it private) NUMA node, whereby all
+memory of that NUMA node will only be consumable through
+mbind() and friends.
+
+Any other allocations (including automatic page migration etc) would not
+end up on that memory.
+
+Thinking of some "terribly slow" or "terribly fast" memory that we don't
+want to involve in automatic memory tiering, being able to just let
+selected workloads consume that memory sounds very helpful.
+
+
+(wondering if there could be some way allocations might get migrated out
+of the node, for example, during memory offlining etc, which might also
+not be desirable)
+
+I am not sure if __GFP_PRIVATE etc is really required for that. But some
+mechanism to make that work seems extremely helpful.
+
+Because ...
+
+> 
+> 
+> /* This is my memory. There are many like it, but this one is mine. */
+> rc = add_private_memory_driver_managed(nid, start, size, name, flags,
+>                                        online_type, private_context);
+> 
+> page = alloc_pages_node(nid, __GFP_PRIVATE, 0);
+> 
+> /* Ok but I want to do something useful with it */
+> static const struct node_private_ops ops = {
+>         .migrate_to     = my_migrate_to,
+>         .folio_migrate  = my_folio_migrate,
+>         .flags = NP_OPS_MIGRATION | NP_OPS_MEMPOLICY,
+> };
+> node_private_set_ops(nid, &ops);
+> 
+> /* And now I can use mempolicy with my memory */
+> buf = mmap(...);
+> mbind(buf, len, mode, private_node, ...);
+> buf[0] = 0xdeadbeef;  /* Faults onto private node */
+
+... just being able to consume that memory through mbind() and having
+guarantees sounds extremely helpful.
+
+[...]
+
+> 
+> 
+> Background
+> ===
+> 
+> Today, drivers that want mm-like services on non-general-purpose
+> memory either use ZONE_DEVICE (self-managed memory) or hotplug into
+> N_MEMORY and accept the risk of uncontrolled allocation.
+> 
+> Neither option provides what we really want - the ability to:
+> 	1) selectively participate in mm/ subsystems, while
+> 	2) isolating that memory from general purpose use.
+> 
+> Some device-attached memory cannot be managed as fully general-purpose
+> system RAM.  CXL devices with inline compression, for example, may
+> corrupt data or crash the machine if the compression ratio drops
+> below a threshold -- we simply run out of physical memory.
+> 
+> This is a hard problem to solve: how does an operating system deal
+> with a device that basically lies about how much capacity it has?
+> 
+> (We'll discuss that in the CRAM section)
+> 
+> 
+> Core Proposal: N_MEMORY_PRIVATE
+> ===
+> 
+> Introduce N_MEMORY_PRIVATE, a NUMA node state for memory managed by
+> the buddy allocator, but excluded from normal allocation paths.
+> 
+> Private nodes:
+> 
+>   - Are filtered from zonelist fallback: all existing callers to
+>     get_page_from_freelist cannot reach these nodes through any
+>     normal fallback mechanism.
+
+Good.
+
+> 
+>   - Filter allocation requests on __GFP_PRIVATE
+>     	numa_zone_allowed() excludes them otherwise. 
+
+I think we discussed that in the past, but why can't we find a way that
+only people requesting __GFP_THISNODE could allocate that memory, for
+example? I guess we'd have to remove it from all "default NUMA bitmaps"
+somehow.
+
+> 
+>     Applies to systems with and without cpusets.
+> 
+>     GFP_PRIVATE is (__GFP_PRIVATE | __GFP_THISNODE).
+> 
+>     Services use it when they need to allocate specifically from
+>     a private node (e.g., CRAM allocating a destination folio).
+> 
+>     No existing allocator path sets __GFP_PRIVATE, so private nodes
+>     are unreachable by default.
+> 
+>   - Use standard struct page / folio.  No ZONE_DEVICE, no pgmap,
+>     no struct page metadata limitations.
+
+Good.
+
+> 
+>   - Use a node-scoped metadata structure to accomplish filtering
+>     and callback support.
+> 
+>   - May participate in the buddy allocator, reclaim, compaction,
+>     and LRU like normal memory, gated by an opt-in set of flags.
+> 
+> The key abstraction is node_private_ops: a per-node callback table
+> registered by a driver or service.  
+> 
+> Each callback is individually gated by an NP_OPS_* capability flag.
+> 
+> A driver opts in only to the mm/ operations it needs.
+> 
+> It is similar to ZONE_DEVICE's pgmap at a node granularity.
+> 
+> In fact...
+> 
+> 
+> Re-use of ZONE_DEVICE Hooks
+> ===
+
+I think all of that might not be required for the simplistic use case I
+mentioned above (fast/slow memory only to be consumed by selected user
+space that opts in through mbind() and friends).
+
+Or are there other use cases for these callbacks
+
+[...]
+> 
+> 
+> Flag-gated behavior (NP_OPS_*) controls:
+> ===
+> 
+> We use OPS flags to denote what mm/ services we want to allow on our
+> private node.   I've plumbed these through so far:
+> 
+>   NP_OPS_MIGRATION       - Node supports migration
+>   NP_OPS_MEMPOLICY       - Node supports mempolicy actions
+>   NP_OPS_DEMOTION        - Node appears in demotion target lists
+>   NP_OPS_PROTECT_WRITE   - Node memory is read-only (wrprotect)
+>   NP_OPS_RECLAIM         - Node supports reclaim
+>   NP_OPS_NUMA_BALANCING  - Node supports numa balancing
+>   NP_OPS_COMPACTION      - Node supports compaction
+>   NP_OPS_LONGTERM_PIN    - Node supports longterm pinning
+>   NP_OPS_OOM_ELIGIBLE	 - (MIGRATION | DEMOTION), node is reachable
+>                            as normal system ram storage, so it should
+> 			   be considered in OOM pressure calculations.
+
+I have to think about all that, and whether that would be required as a
+first step. I'd assume in a simplistic use case mentioned above we might
+only forbid the memory to be used as a fallback for any oom etc.
+
+Whether reclaim (e.g., swapout) makes sense is a good question.
+
 
 -- 
 Cheers,
