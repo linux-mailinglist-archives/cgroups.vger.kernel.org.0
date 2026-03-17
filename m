@@ -1,72 +1,72 @@
-Return-Path: <cgroups+bounces-14856-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-14857-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id WIogAq3guWk7PAIAu9opvQ
-	(envelope-from <cgroups+bounces-14856-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Wed, 18 Mar 2026 00:15:57 +0100
+	id ICf2IbfguWlhPAIAu9opvQ
+	(envelope-from <cgroups+bounces-14857-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Wed, 18 Mar 2026 00:16:07 +0100
 X-Original-To: lists+cgroups@lfdr.de
 Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id DB2802B40CC
-	for <lists+cgroups@lfdr.de>; Wed, 18 Mar 2026 00:15:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 64FDA2B40E5
+	for <lists+cgroups@lfdr.de>; Wed, 18 Mar 2026 00:16:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id F20E830C32D2
-	for <lists+cgroups@lfdr.de>; Tue, 17 Mar 2026 23:12:39 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id C3E4A30CDF20
+	for <lists+cgroups@lfdr.de>; Tue, 17 Mar 2026 23:12:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A49F73FA5C9;
-	Tue, 17 Mar 2026 23:07:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 844513FA5E6;
+	Tue, 17 Mar 2026 23:07:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="muesGX3u"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="D5UjtZbv"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-pl1-f202.google.com (mail-pl1-f202.google.com [209.85.214.202])
+Received: from mail-dl1-f74.google.com (mail-dl1-f74.google.com [74.125.82.74])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 06BE83F9F2A
-	for <cgroups@vger.kernel.org>; Tue, 17 Mar 2026 23:07:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D59F3F9F2A
+	for <cgroups@vger.kernel.org>; Tue, 17 Mar 2026 23:07:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.82.74
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1773788847; cv=none; b=WDw2xyqHMlHByhcF2gvz8I9XT63A/wA5xUOKoGLMV/dvVfm6QMq99FkqvX4MoyJ4eNdX3LTl2lMge/s9Qh681c2gBzbacxomwvns3/bikRut9PfsaCfuoxcOGFMbal/56MW9XQoHyIHTwKBY6q4aQBlMUcjrM41x19KBuwuXAtA=
+	t=1773788849; cv=none; b=DQIkuL4qI86nhNZqYkIglXiSynxsjiAagX8CqSEqU6mW/mmxZFsJPPDhH0ceCH1ZDTyrmbA/ADzn7YYRcxogiQFp//21N1faHFWF5QYxS0hL9UzvAFaFL0Ur/SSO2RiYpbUeemogYD7KAIQ7uwdlw14I3dt8eSGz1YuvhvbKLuQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1773788847; c=relaxed/simple;
-	bh=lTY2DkVlB1ZqmArZtsCW+40/HO85obKkV4Bbav50FdY=;
+	s=arc-20240116; t=1773788849; c=relaxed/simple;
+	bh=ZfWE2COIH+ldGUo90wdzJ/MxDEymNSaHSsDjounjNKw=;
 	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=jjuqBg4mmM2vH7HdU+S1aEQdpZJQMUB0xwA+Cg+9QzO+lW4ut7WnymNFyGfbqyWk82JvBYCh1b5l8b3ylIRZHnvVJKSm51jLEcw+RZ18UOVkvHr0948MWPJluz4IYkVEE+f9Ab4nqZ5vpGnT+5MC5jU0ZCgJByM7MnsfVbpk7Qg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--bingjiao.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=muesGX3u; arc=none smtp.client-ip=209.85.214.202
+	 To:Cc:Content-Type; b=ZrMq1fDXkZp9bQjcvASk3mbMOq45nNjXHGCNkOM0aPnSplH1WQUP/XsbxOfn5rVldDeAqgeGFuhheNhWhC8LX8lV42Qgy+hMbknyJ0dXMc+gMKjxSqFdgqw2qI0/TMnmYsbiwhphFWrDuVGrD9rSBRd8tuqEiiKMiDKkqOZ+mrE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--bingjiao.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=D5UjtZbv; arc=none smtp.client-ip=74.125.82.74
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--bingjiao.bounces.google.com
-Received: by mail-pl1-f202.google.com with SMTP id d9443c01a7336-2ae3badc00dso91913975ad.3
-        for <cgroups@vger.kernel.org>; Tue, 17 Mar 2026 16:07:25 -0700 (PDT)
+Received: by mail-dl1-f74.google.com with SMTP id a92af1059eb24-128d59030d0so2037787c88.0
+        for <cgroups@vger.kernel.org>; Tue, 17 Mar 2026 16:07:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20251104; t=1773788845; x=1774393645; darn=vger.kernel.org;
+        d=google.com; s=20251104; t=1773788847; x=1774393647; darn=vger.kernel.org;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=By9SVSNyV82E5eeo5rQU1kGPzHgbL0ThBDCP4IlBKCg=;
-        b=muesGX3uZ4sPoOWXsfwkJ0bxJTO3/DnReO0HtDdsSTAWX0sKLtEFLVvSjQi8tyXgNE
-         NnXn2mUvxDExVOJJkF3ZNnfMXXIM/6vYssOp2tEEeBffq7PiI3TZ4CJIpBaFGysUB2VY
-         77bcubsbrlT3unBOEm90JZ3j9KUB+8xXzOHAt+SXGo7ChYx0izEaRF8Wd7qRpar2m2rh
-         SRcp+Z5UPGBBb192UxDAN3k9ASktuSMPi5oYHd7F9VeEiBRdG9san6bk3iaPed/ofNEm
-         7G8R6JDMbphBKCc8N9bxEls8sKIfm8UhPfi4X75WkENOx1xaVMPgxae/gccB0HuYpGm0
-         HkLA==
+        bh=2sLkrHizaGZBp890B7+nzygesvVkoY/tFf4Qx2iHrc0=;
+        b=D5UjtZbv3NJS6j8ZtyKUljmjPFX3Bd52ycLqWXTKwyBlR+Ebja4J3fpcSYNqFAF8/k
+         ox4ickECjfEHg8yBCX1MJiyB755Qk0eClW52q7t1+dLc4gyHnBS70m8PESLg5N2Nj5a9
+         jKlx8WzWsxun/9DUxHMDrCr7GVZoRMImoMC/WLnkhRusFdAGAE/eSZ/FeN5yJmCOlLxb
+         0ZD1jOvHx8+1/cEpfnhFMjkhIrJsK8pri6gSKxLQYR+it8VbuDZ2LRp9V94oYyNVpvgB
+         r9LY0IgvBFpsAPS+FhGqkUGRX+nhupv4+cFFE5xErxQkadnfIwGzQXz0R6C//bPvNqKS
+         tlWA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1773788845; x=1774393645;
+        d=1e100.net; s=20251104; t=1773788847; x=1774393647;
         h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
          :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=By9SVSNyV82E5eeo5rQU1kGPzHgbL0ThBDCP4IlBKCg=;
-        b=JY8WkbHcZ68S/7TROsER7saw0PRZUziulXN54Y7BPyVcJE2d6wkZ8vV3akDZ/pJ6nH
-         b6YNQlA4itZMXCkNuT6WeP9T2JWY72WVLmQIBOCRV7+wivzBAb/zZpgGpfL5VORgav0B
-         60vYiQOZ6dgbaTy1pPLSdRmjV7dMXckZ633xxhbrb8Gdq5SKlPGTgfZ3Obj/8YfPFFjI
-         W/zbiDhRWWjTieXU4/xyGzZYU1Z77KO3A3gieyrBEmkJiKxBcrcSoYcTOddG2x//QLdt
-         5PZ7oAvQMAX0v3dP09Q6dNxq076X9XEjzbiSvWC9YN7e/0z9EQBA9QnOzE5VbsRGJmSX
-         p//w==
-X-Forwarded-Encrypted: i=1; AJvYcCV5XeyxhxE4N2Dj9CN+TmtgIwMHY4YxilRWEuwGuXSkZb+FRPzr1DF6eYsQ/Y+QVTuI2+d5vogB@vger.kernel.org
-X-Gm-Message-State: AOJu0YyiX2HEJkY6ne+OS421oTziMCkNJuTdubIIMSBr2ezsc69ymPAz
-	zdpYKJbWOXh4w4cjPKkmVjRUE8b+3jllBfXZ3R6l5WKFUtVSWL0jnA85w58fB0MllcaZ2ohNurs
-	4vNuYQCZV2f+nmg==
-X-Received: from plbli7.prod.google.com ([2002:a17:903:2947:b0:2b0:4e8e:5c09])
+        bh=2sLkrHizaGZBp890B7+nzygesvVkoY/tFf4Qx2iHrc0=;
+        b=oz2SnARlqpC1Z0XT0DUwSwqwSa7obUY9ijiShXxnWvVletAMc0rq/r4sMKx8l0pZKn
+         uF48Fmc+iuPV8sABwgCXIiiwlWn2SyNNarJhgZrB2pjLVDHZxbec9XD6OvolocxiFvYp
+         PIOd6jVjJ8ZcOzJFnP7v1h3I4jZ1+96lJ57znvB5rlmOSnCAxgJKqd+KXrUMfwjpkj9P
+         dzltWe/ZQVpEZPgxQNrKuJlMAb+IZfL1eYYjU+aXvs0UahjJu/gQWP7Bd2aXbf+UVsdO
+         KrdGhk6BndlDir4l9mjYQCL8gX730zPF16ca1YgJjLr27XZMeju4Re2e8gSIIHhYK8qu
+         Kykg==
+X-Forwarded-Encrypted: i=1; AJvYcCX26DTflgP24cq1HOd02bgFsQO2howxl2vJ6aLd9LUXFJzvlG+usQ94kgEegW2Hc33PJKO/AGFM@vger.kernel.org
+X-Gm-Message-State: AOJu0YzziTiPKN5IJYwnIlS9mhaGDbAz7XCfzUcTyHs94TiDGHlBkFRT
+	1HSiNVmBGnNg76TrV7xU43iE7tqrUKYarAw47ngmhP1Z64jjSVvqMh+q/zsnSGZGxrtJdm6BMV5
+	Jxc6phnNMcF9sNw==
+X-Received: from dlbrn2.prod.google.com ([2002:a05:7022:1502:b0:128:d185:c6ff])
  (user=bingjiao job=prod-delivery.src-stubby-dispatcher) by
- 2002:a17:902:f544:b0:2ae:4732:285a with SMTP id d9443c01a7336-2b06e332b4fmr12404475ad.3.1773788845155;
- Tue, 17 Mar 2026 16:07:25 -0700 (PDT)
-Date: Tue, 17 Mar 2026 23:07:01 +0000
+ 2002:a05:7022:2218:b0:119:e569:fb9b with SMTP id a92af1059eb24-129a7111483mr694227c88.10.1773788846767;
+ Tue, 17 Mar 2026 16:07:26 -0700 (PDT)
+Date: Tue, 17 Mar 2026 23:07:02 +0000
 In-Reply-To: <20260317230720.990329-1-bingjiao@google.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
@@ -76,8 +76,8 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
 References: <20260317230720.990329-1-bingjiao@google.com>
 X-Mailer: git-send-email 2.53.0.851.ga537e3e6e9-goog
-Message-ID: <20260317230720.990329-3-bingjiao@google.com>
-Subject: [PATCH 2/3] mm/memcontrol: disable demotion in memcg direct reclaim
+Message-ID: <20260317230720.990329-4-bingjiao@google.com>
+Subject: [PATCH 3/3] mm/vmscan: add demote= option to proactive reclaim
 From: Bing Jiao <bingjiao@google.com>
 To: linux-mm@kvack.org
 Cc: Bing Jiao <bingjiao@google.com>, Johannes Weiner <hannes@cmpxchg.org>, 
@@ -104,7 +104,7 @@ X-Spamd-Result: default: False [0.84 / 15.00];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-14856-lists,cgroups=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-14857-lists,cgroups=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
 	RCVD_COUNT_THREE(0.00)[4];
 	MIME_TRACE(0.00)[0:+];
@@ -121,175 +121,82 @@ X-Spamd-Result: default: False [0.84 / 15.00];
 	TAGGED_RCPT(0.00)[cgroups];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: DB2802B40CC
+X-Rspamd-Queue-Id: 64FDA2B40E5
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-NUMA demotion counts towards reclaim targets in shrink_folio_list(), but
-it does not reduce the total memory usage of a memcg. In memcg direct
-reclaim paths (e.g., charge-triggered or manual limit writes), where
-demotion is allowed, this leads to "fake progress" where the reclaim
-loop concludes it has satisfied the memory request without actually
-reducing the cgroup's charge.
+In tiered-memory systems, proactive memory reclaim (via the cgroup
+memory.reclaim interface) can demote pages to a lower memory tier
+before eventually reclaiming them to swap.
 
-This could result in inefficient reclaim loops, CPU waste, moving all
-pages to far-tier nodes, and potentially premature OOM kills when the
-cgroup is under memory pressure but demotion is still possible.
+Add a 'demote=%u' option to memory.reclaim to allow users to control
+this behavior. Setting 'demote=1' enables demotion, while 'demote=0'
+disables it. By default, demote is disabled (0).
 
-Introduce the MEMCG_RECLAIM_NO_DEMOTION flag to disable demotion in
-these memcg-specific reclaim paths. This ensures that reclaim
-progress is only counted when memory is actually freed or swapped out.
+This change ensures that proactive reclaim behaves consistently with
+cgroup limit-based reclaim (e.g., memory.high), where the goal is
+typically to reduce the overall memory footprint rather than migrating
+it to slower tiers.
 
 Signed-off-by: Bing Jiao <bingjiao@google.com>
 ---
- include/linux/swap.h |  1 +
- mm/memcontrol-v1.c   | 10 ++++++++--
- mm/memcontrol.c      | 16 +++++++++++-----
- mm/vmscan.c          |  1 +
- 4 files changed, 21 insertions(+), 7 deletions(-)
+ mm/vmscan.c | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
 
-diff --git a/include/linux/swap.h b/include/linux/swap.h
-index 7a09df6977a5..e83897a6dc72 100644
---- a/include/linux/swap.h
-+++ b/include/linux/swap.h
-@@ -356,6 +356,7 @@ unsigned long lruvec_lru_size(struct lruvec *lruvec, enum lru_list lru, int zone
-
- #define MEMCG_RECLAIM_MAY_SWAP (1 << 1)
- #define MEMCG_RECLAIM_PROACTIVE (1 << 2)
-+#define MEMCG_RECLAIM_NO_DEMOTION (1 << 3)
- #define MIN_SWAPPINESS 0
- #define MAX_SWAPPINESS 200
-
-diff --git a/mm/memcontrol-v1.c b/mm/memcontrol-v1.c
-index 433bba9dfe71..3cb600e28e5b 100644
---- a/mm/memcontrol-v1.c
-+++ b/mm/memcontrol-v1.c
-@@ -1466,6 +1466,10 @@ static int mem_cgroup_resize_max(struct mem_cgroup *memcg,
- 	int ret;
- 	bool limits_invariant;
- 	struct page_counter *counter = memsw ? &memcg->memsw : &memcg->memory;
-+	unsigned int reclaim_options = MEMCG_RECLAIM_NO_DEMOTION;
-+
-+	if (!memsw)
-+		reclaim_options |= MEMCG_RECLAIM_MAY_SWAP;
-
- 	do {
- 		if (signal_pending(current)) {
-@@ -1500,7 +1504,7 @@ static int mem_cgroup_resize_max(struct mem_cgroup *memcg,
- 		}
-
- 		if (!try_to_free_mem_cgroup_pages(memcg, 1, GFP_KERNEL,
--				memsw ? 0 : MEMCG_RECLAIM_MAY_SWAP, NULL)) {
-+						 reclaim_options, NULL)) {
- 			ret = -EBUSY;
- 			break;
- 		}
-@@ -1520,6 +1524,8 @@ static int mem_cgroup_resize_max(struct mem_cgroup *memcg,
- static int mem_cgroup_force_empty(struct mem_cgroup *memcg)
- {
- 	int nr_retries = MAX_RECLAIM_RETRIES;
-+	unsigned int reclaim_options = MEMCG_RECLAIM_MAY_SWAP |
-+				       MEMCG_RECLAIM_NO_DEMOTION;
-
- 	/* we call try-to-free pages for make this cgroup empty */
- 	lru_add_drain_all();
-@@ -1532,7 +1538,7 @@ static int mem_cgroup_force_empty(struct mem_cgroup *memcg)
- 			return -EINTR;
-
- 		if (!try_to_free_mem_cgroup_pages(memcg, 1, GFP_KERNEL,
--						  MEMCG_RECLAIM_MAY_SWAP, NULL))
-+						  reclaim_options, NULL))
- 			nr_retries--;
- 	}
-
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index 303ac622d22d..fcf1cd0da643 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -2287,6 +2287,8 @@ static unsigned long reclaim_high(struct mem_cgroup *memcg,
- 				  gfp_t gfp_mask)
- {
- 	unsigned long nr_reclaimed = 0;
-+	unsigned int reclaim_options = MEMCG_RECLAIM_MAY_SWAP |
-+				       MEMCG_RECLAIM_NO_DEMOTION;
-
- 	do {
- 		unsigned long pflags;
-@@ -2300,7 +2302,7 @@ static unsigned long reclaim_high(struct mem_cgroup *memcg,
- 		psi_memstall_enter(&pflags);
- 		nr_reclaimed += try_to_free_mem_cgroup_pages(memcg, nr_pages,
- 							gfp_mask,
--							MEMCG_RECLAIM_MAY_SWAP,
-+							reclaim_options,
- 							NULL);
- 		psi_memstall_leave(&pflags);
- 	} while ((memcg = parent_mem_cgroup(memcg)) &&
-@@ -2572,7 +2574,7 @@ static int try_charge_memcg(struct mem_cgroup *memcg, gfp_t gfp_mask,
- 		/* Avoid the refill and flush of the older stock */
- 		batch = nr_pages;
-
--	reclaim_options = MEMCG_RECLAIM_MAY_SWAP;
-+	reclaim_options = MEMCG_RECLAIM_MAY_SWAP | MEMCG_RECLAIM_NO_DEMOTION;
- 	if (!do_memsw_account() ||
- 	    page_counter_try_charge(&memcg->memsw, batch, &counter)) {
- 		if (page_counter_try_charge(&memcg->memory, batch, &counter))
-@@ -2610,7 +2612,7 @@ static int try_charge_memcg(struct mem_cgroup *memcg, gfp_t gfp_mask,
-
- 	psi_memstall_enter(&pflags);
- 	nr_reclaimed = try_to_free_mem_cgroup_pages(mem_over_limit, nr_pages,
--						    gfp_mask, reclaim_options, NULL);
-+					gfp_mask, reclaim_options, NULL);
- 	psi_memstall_leave(&pflags);
-
- 	if (mem_cgroup_margin(mem_over_limit) >= nr_pages)
-@@ -4638,6 +4640,8 @@ static ssize_t memory_high_write(struct kernfs_open_file *of,
- {
- 	struct mem_cgroup *memcg = mem_cgroup_from_css(of_css(of));
- 	unsigned int nr_retries = MAX_RECLAIM_RETRIES;
-+	unsigned int reclaim_options = MEMCG_RECLAIM_MAY_SWAP |
-+				       MEMCG_RECLAIM_NO_DEMOTION;
- 	bool drained = false;
- 	unsigned long high;
- 	int err;
-@@ -4669,7 +4673,7 @@ static ssize_t memory_high_write(struct kernfs_open_file *of,
- 		}
-
- 		reclaimed = try_to_free_mem_cgroup_pages(memcg, nr_pages - high,
--					GFP_KERNEL, MEMCG_RECLAIM_MAY_SWAP, NULL);
-+					GFP_KERNEL, reclaim_options, NULL);
-
- 		if (!reclaimed && !nr_retries--)
- 			break;
-@@ -4690,6 +4694,8 @@ static ssize_t memory_max_write(struct kernfs_open_file *of,
- {
- 	struct mem_cgroup *memcg = mem_cgroup_from_css(of_css(of));
- 	unsigned int nr_reclaims = MAX_RECLAIM_RETRIES;
-+	unsigned int reclaim_options = MEMCG_RECLAIM_MAY_SWAP |
-+				       MEMCG_RECLAIM_NO_DEMOTION;
- 	bool drained = false;
- 	unsigned long max;
- 	int err;
-@@ -4721,7 +4727,7 @@ static ssize_t memory_max_write(struct kernfs_open_file *of,
-
- 		if (nr_reclaims) {
- 			if (!try_to_free_mem_cgroup_pages(memcg, nr_pages - max,
--					GFP_KERNEL, MEMCG_RECLAIM_MAY_SWAP, NULL))
-+					GFP_KERNEL, reclaim_options, NULL))
- 				nr_reclaims--;
- 			continue;
- 		}
 diff --git a/mm/vmscan.c b/mm/vmscan.c
-index 33287ba4a500..7a8617ba1748 100644
+index 7a8617ba1748..80194270fa2e 100644
 --- a/mm/vmscan.c
 +++ b/mm/vmscan.c
-@@ -6809,6 +6809,7 @@ unsigned long try_to_free_mem_cgroup_pages(struct mem_cgroup *memcg,
- 		.may_unmap = 1,
- 		.may_swap = !!(reclaim_options & MEMCG_RECLAIM_MAY_SWAP),
- 		.proactive = !!(reclaim_options & MEMCG_RECLAIM_PROACTIVE),
-+		.no_demotion = !!(reclaim_options & MEMCG_RECLAIM_NO_DEMOTION),
- 	};
- 	/*
- 	 * Traverse the ZONELIST_FALLBACK zonelist of the current node to put
+@@ -7878,11 +7878,13 @@ static unsigned long __node_reclaim(struct pglist_data *pgdat, gfp_t gfp_mask,
+ enum {
+ 	MEMORY_RECLAIM_SWAPPINESS = 0,
+ 	MEMORY_RECLAIM_SWAPPINESS_MAX,
++	MEMORY_RECLAIM_ALLOW_DEMOTION,
+ 	MEMORY_RECLAIM_NULL,
+ };
+ static const match_table_t tokens = {
+ 	{ MEMORY_RECLAIM_SWAPPINESS, "swappiness=%d"},
+ 	{ MEMORY_RECLAIM_SWAPPINESS_MAX, "swappiness=max"},
++	{ MEMORY_RECLAIM_ALLOW_DEMOTION, "demote=%u"},
+ 	{ MEMORY_RECLAIM_NULL, NULL },
+ };
+
+@@ -7890,6 +7892,7 @@ int user_proactive_reclaim(char *buf,
+ 			   struct mem_cgroup *memcg, pg_data_t *pgdat)
+ {
+ 	unsigned int nr_retries = MAX_RECLAIM_RETRIES;
++	unsigned int allow_demotion = 0;
+ 	unsigned long nr_to_reclaim, nr_reclaimed = 0;
+ 	int swappiness = -1;
+ 	char *old_buf, *start;
+@@ -7922,6 +7925,10 @@ int user_proactive_reclaim(char *buf,
+ 		case MEMORY_RECLAIM_SWAPPINESS_MAX:
+ 			swappiness = SWAPPINESS_ANON_ONLY;
+ 			break;
++		case MEMORY_RECLAIM_ALLOW_DEMOTION:
++			if (match_uint(&args[0], &allow_demotion))
++				return -EINVAL;
++			break;
+ 		default:
+ 			return -EINVAL;
+ 		}
+@@ -7947,6 +7954,8 @@ int user_proactive_reclaim(char *buf,
+
+ 			reclaim_options = MEMCG_RECLAIM_MAY_SWAP |
+ 					  MEMCG_RECLAIM_PROACTIVE;
++			if (!allow_demotion)
++				reclaim_options |= MEMCG_RECLAIM_NO_DEMOTION;
+ 			reclaimed = try_to_free_mem_cgroup_pages(memcg,
+ 						 batch_size, gfp_mask,
+ 						 reclaim_options,
+@@ -7962,6 +7971,7 @@ int user_proactive_reclaim(char *buf,
+ 				.may_unmap = 1,
+ 				.may_swap = 1,
+ 				.proactive = 1,
++				.no_demotion = !(allow_demotion),
+ 			};
+
+ 			if (test_and_set_bit_lock(PGDAT_RECLAIM_LOCKED,
 --
 2.53.0.851.ga537e3e6e9-goog
 
