@@ -1,145 +1,163 @@
-Return-Path: <cgroups+bounces-14853-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-14854-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 4JXTFfu2uWnJMQIAu9opvQ
-	(envelope-from <cgroups+bounces-14853-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Tue, 17 Mar 2026 21:18:03 +0100
+	id KPXcFJzguWk7PAIAu9opvQ
+	(envelope-from <cgroups+bounces-14854-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Wed, 18 Mar 2026 00:15:40 +0100
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3AEA52B2224
-	for <lists+cgroups@lfdr.de>; Tue, 17 Mar 2026 21:18:02 +0100 (CET)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id EFD532B4076
+	for <lists+cgroups@lfdr.de>; Wed, 18 Mar 2026 00:15:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id BECDF302F233
-	for <lists+cgroups@lfdr.de>; Tue, 17 Mar 2026 20:17:53 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id CC3AB30B0B2B
+	for <lists+cgroups@lfdr.de>; Tue, 17 Mar 2026 23:12:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5AC62385512;
-	Tue, 17 Mar 2026 20:17:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 756B034676D;
+	Tue, 17 Mar 2026 23:07:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=yandex-team.ru header.i=@yandex-team.ru header.b="ApcygpHP"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="R97arZgQ"
 X-Original-To: cgroups@vger.kernel.org
-Received: from forwardcorp1a.mail.yandex.net (forwardcorp1a.mail.yandex.net [178.154.239.72])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-dy1-f201.google.com (mail-dy1-f201.google.com [74.125.82.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5460F31065B;
-	Tue, 17 Mar 2026 20:17:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=178.154.239.72
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 104D31E5B7B
+	for <cgroups@vger.kernel.org>; Tue, 17 Mar 2026 23:07:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.82.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1773778672; cv=none; b=OSM2QqfYi09fQsvNDe4ra7FhoVH7ntn7qW0AGY7+Rt/8ficGcpv5BZsglqXePECEAOy1fQXC/ATShyf6V7nXys+1xCL6AlPCv5PLicBI2jb4AUXDnSw8M8OdS1AraXB2qIhyTrAgD1QMlpwaytWfWWYtYykCVUEi9d7Vp6BPIfo=
+	t=1773788844; cv=none; b=POQJEk+s6AF1MC/zy+ocTrQvN5gD4xUlk/68SGfX1P8lhAkrA7G4xY9HAdkTkJo0Tf1JbxvfaDTkISnlIRb2edOuaRfO+iO7E/197yAzlqwagOdfztk3j7KuLEGPjp1vB5v3SXJieaPLUtHr1f9sLaR3ix8u51LQdZLXeFkRZG8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1773778672; c=relaxed/simple;
-	bh=cmufDcTL+XlnrwjEPCmwsR8y8up1koqC9R78WNqqg+E=;
-	h=Message-ID:Date:MIME-Version:From:Subject:To:Cc:References:
-	 In-Reply-To:Content-Type; b=SfYGXs5+TAyG3L1LqIfkwIJBJJKGXiHi+EbE8kQ9TQsIBxWSvwMkIVo4tP092R9eqv5TDr5yhjnJepi+S1LhegdAd+MPDRIoaYhmsLuLJLFai3FqvvLxvf15xDKnaSXWtVzkOeLi/7obbwI0fayG7ShLY+AVBgAE6tp39dvBc9I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=yandex-team.ru; spf=pass smtp.mailfrom=yandex-team.ru; dkim=pass (1024-bit key) header.d=yandex-team.ru header.i=@yandex-team.ru header.b=ApcygpHP; arc=none smtp.client-ip=178.154.239.72
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=yandex-team.ru
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=yandex-team.ru
-Received: from mail-nwsmtp-smtp-corp-main-69.vla.yp-c.yandex.net (mail-nwsmtp-smtp-corp-main-69.vla.yp-c.yandex.net [IPv6:2a02:6b8:c1f:3a87:0:640:845c:0])
-	by forwardcorp1a.mail.yandex.net (Yandex) with ESMTPS id 763D0C01B1;
-	Tue, 17 Mar 2026 23:17:38 +0300 (MSK)
-Received: from [IPV6:2a02:6bf:8080:b50::1:27] (unknown [2a02:6bf:8080:b50::1:27])
-	by mail-nwsmtp-smtp-corp-main-69.vla.yp-c.yandex.net (smtpcorp/Yandex) with ESMTPSA id SHT6Lg1Aj4Y0-i9H44wn6;
-	Tue, 17 Mar 2026 23:17:37 +0300
-Precedence: bulk
-X-Yandex-Fwd: 1
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yandex-team.ru;
-	s=default; t=1773778657;
-	bh=KTpZkYcbRbdNorzXR3SBiT4lxA2YcKe7kjGcwQ9qQ+E=;
-	h=In-Reply-To:Cc:Date:References:To:Subject:From:Message-ID;
-	b=ApcygpHP/MK6B1QUZFw9cpUZcLIBq7MtG1QJ2KD70SfjA/KYWP8fvk8n0lDfWXzQg
-	 vNYerE2ARSv89j3nKJbnKghHLnTcTMJBc2dFlqO+ZPwuSlpe5zis3gSO55Vxjofcyo
-	 7jchpQcd2voG1vGP6+zQpPVNaA7+SiN9P6Y+HMAo=
-Authentication-Results: mail-nwsmtp-smtp-corp-main-69.vla.yp-c.yandex.net; dkim=pass header.i=@yandex-team.ru
-Message-ID: <3db237d0-1ee8-44b7-a356-f3015173f7c2@yandex-team.ru>
-Date: Tue, 17 Mar 2026 23:17:28 +0300
+	s=arc-20240116; t=1773788844; c=relaxed/simple;
+	bh=FK+9YKQ/DIUq0kXP72niYHWDNfO5DIOWYPw/t2u7uU0=;
+	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=MaiRzMI9Ej6wD5OU9N4XNGB25MOIVjYZ1Hs0UZY87mMREiHMw3rIyte9GGoZmiUbmg+HmWyagAGqbH+bItc+HqlpFMD2SqyqioLnanXk5IWmYnoJUNIyEZbwAfm4Le2VEsIAKOYwP46RT/9smKQJ+vx8JWnDdUogS0xkvlhyH/A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--bingjiao.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=R97arZgQ; arc=none smtp.client-ip=74.125.82.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--bingjiao.bounces.google.com
+Received: by mail-dy1-f201.google.com with SMTP id 5a478bee46e88-2bead0a9123so3287853eec.1
+        for <cgroups@vger.kernel.org>; Tue, 17 Mar 2026 16:07:22 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20251104; t=1773788842; x=1774393642; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=Lb4d72Dw6v8zTFjLSshGhZJgBDqi5O2Bbx7kiArqy98=;
+        b=R97arZgQQwZCl2Lhn6y/oiy1W53Wsn4aEo24Jd+S4uU0KZh/HvTLJy0HE4Zu/wV6XS
+         gtw3HoI96xdOGSKXEBGroASyvZM28b+K9I6pLADv97eprqXCLTjgEhf3nw3Df+GqR+yA
+         uA9sQEX4FymB0I8Pd2QahatZSeQ8l2G7C2tMJEOKqV3R+lWaiBM6hR6qyMK4O6P2kpav
+         LGfau3krwvdtfVlNF1F0SwoPnZd87EcMKKiF8FtrEE8WvBiTV8fFXQyfNsPncxnjmnL3
+         CaS6wAEONJwFV7SiMgsSRsC9kzoR9hIGP7pFtKRBN1M2LRusJw/s7B7pWqR/I0+Z/lcK
+         0M1g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1773788842; x=1774393642;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Lb4d72Dw6v8zTFjLSshGhZJgBDqi5O2Bbx7kiArqy98=;
+        b=IgQHynpIDatXdnZLwkM2e5E8hHM+6SwOTe6VEJzl9KAlnDamesPFGA67K7CwHT0UgT
+         1NR0WK8k9X+q4adZZYeAsGqAZtMum/8ZtrZcYO8ydFWhL+j+SL3rKk2bCZ6lKfm1R7q2
+         1LbD7w57pT/akbLAqcjLz4lRPAeRx1aO3UI4Wn+9SQfTU2YvPpHb+Lo/EtrFr533Z6UZ
+         c1HMQ4YGm4HFBJS45qeqg866dqq9IZf5d2CzwMX0k+KMKF6CDjbbuQo+xQQjgxw4lJLL
+         gDvWpGlMCuXFUJGgRmJSGxkDGDv4aMWhFttixF4HPDw7mmz1wOwdn3hUToDhlvKSOlnY
+         HKTg==
+X-Forwarded-Encrypted: i=1; AJvYcCWOg36ZvK1nY8jgPVMI+BCh6i8izOj3Qwt5MIpcv3wi/pSo37kgSlKe8UiMVKtBN3trVnOXrHa9@vger.kernel.org
+X-Gm-Message-State: AOJu0Yyvp/tkIX77Q4GD9IFj0aviMIcg5Cggy16kttIW8ZCuuCwhyJVJ
+	KvqTQKMOL6IBOk1FN9xzEe9Zyai+/f6r4QwtQsluRQ/RglgPAtffbYCE5bm5agu5K+ZDzgvvZ0H
+	NAH1v7FCuwXM0yg==
+X-Received: from dybb24.prod.google.com ([2002:a05:693c:6098:b0:2c0:ccba:438b])
+ (user=bingjiao job=prod-delivery.src-stubby-dispatcher) by
+ 2002:a05:7300:7316:b0:2be:3cd:62bc with SMTP id 5a478bee46e88-2c0e4f9f0f1mr601175eec.13.1773788841723;
+ Tue, 17 Mar 2026 16:07:21 -0700 (PDT)
+Date: Tue, 17 Mar 2026 23:06:59 +0000
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-From: Daniil Tatianin <d-tatianin@yandex-team.ru>
-Subject: Re: [PATCH] mm: add memory.compact_unevictable_allowed cgroup
- attribute
-To: Andrew Morton <akpm@linux-foundation.org>
-Cc: Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>,
- Roman Gushchin <roman.gushchin@linux.dev>,
- Shakeel Butt <shakeel.butt@linux.dev>, Muchun Song <muchun.song@linux.dev>,
- David Hildenbrand <david@kernel.org>, Lorenzo Stoakes <ljs@kernel.org>,
- "Liam R. Howlett" <Liam.Howlett@oracle.com>,
- Vlastimil Babka <vbabka@kernel.org>, Mike Rapoport <rppt@kernel.org>,
- Suren Baghdasaryan <surenb@google.com>,
- Axel Rasmussen <axelrasmussen@google.com>, Yuanchu Xie <yuanchu@google.com>,
- Wei Xu <weixugc@google.com>, Brendan Jackman <jackmanb@google.com>,
- Zi Yan <ziy@nvidia.com>, cgroups@vger.kernel.org, linux-mm@kvack.org,
- linux-kernel@vger.kernel.org, yc-core@yandex-team.ru
-References: <20260317100058.2316997-1-d-tatianin@yandex-team.ru>
- <20260317121736.f73a828de2a989d1a07efea1@linux-foundation.org>
-Content-Language: en-US
-In-Reply-To: <20260317121736.f73a828de2a989d1a07efea1@linux-foundation.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Spamd-Result: default: False [-9.16 / 15.00];
-	WHITELIST_DMARC(-7.00)[yandex-team.ru:D:+];
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.53.0.851.ga537e3e6e9-goog
+Message-ID: <20260317230720.990329-1-bingjiao@google.com>
+Subject: [PATCH 0/3] mm/memcontrol: control demotion in memcg reclaim
+From: Bing Jiao <bingjiao@google.com>
+To: linux-mm@kvack.org
+Cc: Bing Jiao <bingjiao@google.com>, Johannes Weiner <hannes@cmpxchg.org>, 
+	Michal Hocko <mhocko@kernel.org>, Roman Gushchin <roman.gushchin@linux.dev>, 
+	Shakeel Butt <shakeel.butt@linux.dev>, Muchun Song <muchun.song@linux.dev>, 
+	Andrew Morton <akpm@linux-foundation.org>, David Rientjes <rientjes@google.com>, 
+	Yosry Ahmed <yosry@kernel.org>, cgroups@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	Chris Li <chrisl@kernel.org>, Kairui Song <kasong@tencent.com>, 
+	Kemeng Shi <shikemeng@huaweicloud.com>, Nhat Pham <nphamcs@gmail.com>, 
+	Baoquan He <bhe@redhat.com>, Barry Song <baohua@kernel.org>, 
+	Youngjun Park <youngjun.park@lge.com>, David Hildenbrand <david@kernel.org>, 
+	Qi Zheng <zhengqi.arch@bytedance.com>, Lorenzo Stoakes <ljs@kernel.org>, 
+	Axel Rasmussen <axelrasmussen@google.com>, Yuanchu Xie <yuanchu@google.com>, 
+	Wei Xu <weixugc@google.com>, Joshua Hahn <joshua.hahnjy@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Spamd-Result: default: False [0.84 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
+	MID_CONTAINS_FROM(1.00)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[yandex-team.ru,none];
-	R_DKIM_ALLOW(-0.20)[yandex-team.ru:s=default];
-	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4];
+	DMARC_POLICY_ALLOW(-0.50)[google.com,reject];
+	MV_CASE(0.50)[];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64:c];
+	R_DKIM_ALLOW(-0.20)[google.com:s=20251104];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-14853-lists,cgroups=lfdr.de];
-	FROM_HAS_DN(0.00)[];
-	DKIM_TRACE(0.00)[yandex-team.ru:+];
-	RCPT_COUNT_TWELVE(0.00)[21];
+	TAGGED_FROM(0.00)[bounces-14854-lists,cgroups=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
+	RCVD_COUNT_THREE(0.00)[4];
 	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[26];
+	FROM_HAS_DN(0.00)[];
+	DKIM_TRACE(0.00)[google.com:+];
 	TO_DN_SOME(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[d-tatianin@yandex-team.ru,cgroups@vger.kernel.org];
-	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
-	RCVD_COUNT_FIVE(0.00)[5];
-	MID_RHS_MATCH_FROM(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[bingjiao@google.com,cgroups@vger.kernel.org];
+	FREEMAIL_CC(0.00)[google.com,cmpxchg.org,kernel.org,linux.dev,linux-foundation.org,vger.kernel.org,tencent.com,huaweicloud.com,gmail.com,redhat.com,lge.com,bytedance.com];
 	NEURAL_HAM(-0.00)[-1.000];
+	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
 	TAGGED_RCPT(0.00)[cgroups];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[yandex-team.ru:dkim,yandex-team.ru:email,yandex-team.ru:mid,sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns,sashiko.dev:url]
-X-Rspamd-Queue-Id: 3AEA52B2224
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: EFD532B4076
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
+In tiered-memory systems, NUMA demotion counts towards reclaim targets
+in shrink_folio_list(), but it does not reduce the total memory usage of
+a memcg.
 
-On 3/17/26 10:17 PM, Andrew Morton wrote:
-> On Tue, 17 Mar 2026 13:00:58 +0300 Daniil Tatianin <d-tatianin@yandex-team.ru> wrote:
->
->> The current global sysctl compact_unevictable_allowed is too coarse.
->> In environments with mixed workloads, we may want to protect specific
->> important cgroups from compaction to ensure their stability and
->> responsiveness, while allowing compaction for others.
->>
->> This patch introduces a per-memcg compact_unevictable_allowed attribute.
->> This allows granular control over whether unevictable pages in a specific
->> cgroup can be compacted. The global sysctl still takes precedence if set
->> to disallow compaction, but this new setting allows opting out specific
->> cgroups.
->>
->> This also adds a new ISOLATE_UNEVICTABLE_CHECK_MEMCG flag to
->> isolate_migratepages_block to preserve the old behavior for the
->> ISOLATE_UNEVICTABLE flag unconditionally used by
->> isolage_migratepages_range.
-> AI review asked questions:
-> 	https://sashiko.dev/#/patchset/20260317100058.2316997-1-d-tatianin@yandex-team.ru
+In memcg direct reclaim paths (charge-triggered or manual limit writes),
+this leads to "fake progress" where the reclaim loop concludes it has
+satisfied the memory request without actually reducing the cgroup's charge.
+This results in inefficient reclaim loops, CPU waste, moving all pages
+to far-tier nodes, and potentially premature OOM kills, and potentially
+premature OOM kills when the cgroup is under memory pressure but demotion
+is still possible.
 
-> Should this dynamically walk up the ancestor chain during evaluation to
-> ensure it returns false if any ancestor has disallowed compaction?
+This series fixes this issue by disabling demotion in memcg-specific
+direct reclaim paths and provides user control for proactive reclaim.
 
-I think ultimately it's up to cgroup maintainers whether the code should 
-do that, but as far as I understand the whole point of cgroups is that a 
-child can override the settings of its parent. Moreover, this property 
-doesn't have CFTYPE_NS_DELEGATABLE set, so a child cgroup cannot just 
-toggle it at will.
+Patch 1: Fixes a state leak in try_charge_memcg() where reclaim_options
+were modified and carried over to retries improperly.
 
+Patch 2: Introduces MEMCG_RECLAIM_NO_DEMOTION and disables demotion in
+memcg direct reclaim paths.
+
+Patch 3: Adds a 'demote=' option to the proactive reclaim interface
+(memory.reclaim), allowing users to explicitly enable demotion if
+desired, while defaulting it to disabled for consistency.
+
+Bing Jiao (3):
+  mm/memcontrol: fix reclaim_options leak in try_charge_memcg()
+  mm/memcontrol: disable demotion in memcg direct reclaim
+  mm/vmscan: add demote= option to proactive reclaim
+
+ include/linux/swap.h |  1 +
+ mm/memcontrol-v1.c   | 10 ++++++++--
+ mm/memcontrol.c      | 17 ++++++++++++-----
+ mm/vmscan.c          | 11 +++++++++++
+ 4 files changed, 32 insertions(+), 7 deletions(-)
+
+--
+2.53.0.851.ga537e3e6e9-goog
 
