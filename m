@@ -1,105 +1,69 @@
-Return-Path: <cgroups+bounces-14860-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-14861-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id mKfYFP5iummoVwIAu9opvQ
-	(envelope-from <cgroups+bounces-14860-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Wed, 18 Mar 2026 09:31:58 +0100
+	id QECqAt1qumnnWAIAu9opvQ
+	(envelope-from <cgroups+bounces-14861-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Wed, 18 Mar 2026 10:05:33 +0100
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
-	by mail.lfdr.de (Postfix) with ESMTPS id 02DEC2B80D4
-	for <lists+cgroups@lfdr.de>; Wed, 18 Mar 2026 09:31:56 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7F4772B8A5E
+	for <lists+cgroups@lfdr.de>; Wed, 18 Mar 2026 10:05:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id 155083068B90
-	for <lists+cgroups@lfdr.de>; Wed, 18 Mar 2026 08:27:05 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 582BC303B4D3
+	for <lists+cgroups@lfdr.de>; Wed, 18 Mar 2026 09:03:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA15637F8C1;
-	Wed, 18 Mar 2026 08:25:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C1DDA36C0B7;
+	Wed, 18 Mar 2026 09:03:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="e/ZSKPjm"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="O8Xpap+l"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com [209.85.128.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C16E1F471F
-	for <cgroups@vger.kernel.org>; Wed, 18 Mar 2026 08:25:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C01C1392C3A;
+	Wed, 18 Mar 2026 09:03:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.92.199
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1773822354; cv=none; b=FZi9Iuw33B+PF/+Fg9s+8aCwK3BLi6CGy8uVXsSAOPfapJH+sZvlojWduFGmGm+4o+8uclsaTgP52WAk5uztEC2SjZowyu89g7IvHOKYgk8Xty2FzSf4FWo1IWkLl+kKqW2op4GUbviB2m8GAfqLFdddRnv1A7io7QFcIFrbL9w=
+	t=1773824592; cv=none; b=NdoTbMh7jVI/wdbEbHoTjJd77ku03riL4onvnFRoiFjhfcfB9qf7453mIejwOLhilyEUU37BY7cUU2D92GVyeyh9wE1u8kI5wgoCVj6Wu4CkuwfDtfP2dKfT1xEaIfkN0D2d64d+dsIfn0qMWfeCg8OKK+geHxJiyN5XW/rOGDc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1773822354; c=relaxed/simple;
-	bh=QQVMaXaAflgjwrw9LePhqS1Qap8U+Lqqz6w2uj7bOGg=;
+	s=arc-20240116; t=1773824592; c=relaxed/simple;
+	bh=y+igbPyBNoJzyUZWac9pYNzpR0+D8wuRRbSVJttzpt4=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=BOG4+alyijjFMnM5X7v420oPyLBr1P1UUqpqAdxkELrdsJBWFKM9A2/kXcLi0DS8l3q2ZsPb97R8lD7bfZcqQNkzwH7AVQgDgiVf3rLLPn1HYZJE8cE6eC+Xs424hGUFytWycRDPDe3UTeMfNCTj4AXrHSeV9FCiCtE83A8NGKU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=e/ZSKPjm; arc=none smtp.client-ip=209.85.128.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-486507134e4so18502815e9.0
-        for <cgroups@vger.kernel.org>; Wed, 18 Mar 2026 01:25:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1773822350; x=1774427150; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=qct1M6uDgddyZIwhlydpZnvmv7ZwIfwluJBCESYJnoQ=;
-        b=e/ZSKPjmpxeJJVM2zlJGotb6EPzQvTHfQk2lut2/ZxU9GkfM4TJnrE0IGy41Cw4rNs
-         aklLIJSHI6wjz6rnn+RGXqBwSJx2rhdXvMT0CCT3KvxSuL0AbVrNF3U2pJ6hRUr3he2p
-         uLWCs76QG1Ytc62wrKkjjvDtJaSm7t6t7EpKfqpo/tzF/w+wlGTBnSrfp6pjxPbwoEZU
-         doC6XQmIfvV/XMyKaEn//kvxBR7O0Aakas6I4pesr+NKwcdBeMZDyt/CAzkqKLjAncVr
-         RBnsoXaQ2ZRuzCQtSKLOjUwQZEqLwvC6khugKvTp1519bblqKxnx9mJZbq9WmavD74iV
-         +EuA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1773822350; x=1774427150;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=qct1M6uDgddyZIwhlydpZnvmv7ZwIfwluJBCESYJnoQ=;
-        b=QGzUS4N3x6GZrXMRPoNhHeMoWYYZWDYcJnAPzqPFxLDQuVpEREhzmWG5FihppCUMac
-         +uA7jlHFlWDFN1BP5HiQRUdrgyzajNu7QUzIt9Nq16xEHwqDnQirWQyeEnS4+C0p9dHr
-         NwjpdVPZ1nqv6AykkF28ePsMfOBUfB9KDJ5xmyQQ3Axu35ELgzbjLc5CJWVhjAiL9ISa
-         Ea98+MfYUncjzS+JysydZEF7oOBbcJ6nW/7urZcBGlxzsAcPfNheUodsG6T1hgux8aHM
-         Pjf5+cBE6ls4x5qwsq4jRGboOKfqGE0NCI48aISxWXUn4i2tLxTDvu8XiKPDVP5BK8YE
-         2ELQ==
-X-Forwarded-Encrypted: i=1; AJvYcCU3638jSkfEVUBXtSInSAn9FOHdZ4At5KT+f4ABwSWuJZ2VS+Turb09uSY6yvNlBnDZHL64lzba@vger.kernel.org
-X-Gm-Message-State: AOJu0Yx9UsUcbPqZWzcXcAE8vm7esvtAHg/mgBZzM7ZNLdqEef0eky0G
-	vc+D4HLUsy4uAUKDPaeE64kNkzwDvLV8O2/mB20SEycbP33aIqNvmQOutMENsiX49Cc=
-X-Gm-Gg: ATEYQzzhwx158FlewRnmo8siCx2GEj8eZqxdxgCCqEk+Ql+bnDjqNZK6t7JSWHxqalZ
-	m+K52ETGxwVezG5yedt8q0hkAxi1vVcALCHbtlFQ0vVpIsnuhcYbZu64zZtW5iaOJlgM2wdDQLy
-	gDmjIVpqQY/dE6FWPTqEd5DSTbYAzCX3knbE+AEYbqX45m5EEDx9QCxVkbp7Mh8p66Tf1i1eRIs
-	Atn7GnkaglUFNaZhZFaWD6IW+aRLTEYj1TEGUPl9G//BbJcBUlLfG/VlgJCzzP2hQGYsFIAZ1Q9
-	x8V7jKJWK+Luq+WxzHJHqYT1XVG1t/1H9jE5Hk9rrqg1bFDOwzp2WCTtCw0qrEVmgQplReONdBi
-	6jqWAS76RcHmJWoOuxCbGYigsTZw+0swsWvrF1Rvq1YuJO6+aI2kYkRWjnRiM6f8K2xwdwnht7n
-	RqGHNm6x1Go6aZKdP+72AKzBgfEblzPQqACcbF
-X-Received: by 2002:a05:600c:8486:b0:485:3a22:69b9 with SMTP id 5b1f17b1804b1-486f4457e6dmr35524025e9.29.1773822350370;
-        Wed, 18 Mar 2026 01:25:50 -0700 (PDT)
-Received: from localhost (109-81-21-195.rct.o2.cz. [109.81.21.195])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4856eae3322sm105879665e9.10.2026.03.18.01.25.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 18 Mar 2026 01:25:50 -0700 (PDT)
-Date: Wed, 18 Mar 2026 09:25:48 +0100
-From: Michal Hocko <mhocko@suse.com>
-To: Daniil Tatianin <d-tatianin@yandex-team.ru>
-Cc: Andrew Morton <akpm@linux-foundation.org>,
-	Johannes Weiner <hannes@cmpxchg.org>,
-	Roman Gushchin <roman.gushchin@linux.dev>,
-	Shakeel Butt <shakeel.butt@linux.dev>,
-	Muchun Song <muchun.song@linux.dev>,
-	David Hildenbrand <david@kernel.org>,
-	Lorenzo Stoakes <ljs@kernel.org>,
-	"Liam R. Howlett" <Liam.Howlett@oracle.com>,
-	Vlastimil Babka <vbabka@kernel.org>,
-	Mike Rapoport <rppt@kernel.org>,
-	Suren Baghdasaryan <surenb@google.com>,
-	Axel Rasmussen <axelrasmussen@google.com>,
-	Yuanchu Xie <yuanchu@google.com>, Wei Xu <weixugc@google.com>,
-	Brendan Jackman <jackmanb@google.com>, Zi Yan <ziy@nvidia.com>,
-	cgroups@vger.kernel.org, linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org, yc-core@yandex-team.ru
-Subject: Re: [PATCH] mm: add memory.compact_unevictable_allowed cgroup
- attribute
-Message-ID: <abphjNOYaNslTA90@tiehlicka>
-References: <20260317100058.2316997-1-d-tatianin@yandex-team.ru>
- <20260317121736.f73a828de2a989d1a07efea1@linux-foundation.org>
- <3db237d0-1ee8-44b7-a356-f3015173f7c2@yandex-team.ru>
+	 Content-Type:Content-Disposition:In-Reply-To; b=qv5CcclLU8w3rJ+dYUb/AY8v42buynaj5I2hrLrh1VKP3Ssc5AEC8DZpfkTwUuTD0tyIQrDoEHqL2fPS7d5fKejOsF1t0WWGjh1YREZaNkzqh2TY6s74bo6VVlFjgphmm25uKbMA3qq/oa3lSSHLKqYxcBJe0EJ1oYZCi38Lw3w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=O8Xpap+l; arc=none smtp.client-ip=90.155.92.199
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=QbbsA76HDYSuEudE+7hi5OEI6ET5j03hz+4ah49fLkE=; b=O8Xpap+lVVdyBTrnxsM2eNCFUW
+	BxYEO1ib+0Wc/onAqkArMN8ZVFDjbNfcJQvV/z4vB1kE9OKlQb/9vbVEJ1YiFMeWqz93uhWpyl5fc
+	nNsVVECsj8b6IeeMq7eFQjLR9tvE8oHxjoafsGNebt07NVt1N3rk/Z6FunRgQ/lxmuESMga4AOmZ0
+	u7EEEowV757HR8Qgz/vLwKg1hG1LGKpq6iA8FS7MJzMnPhagWqlRotr/RUiX7sAuOZ35jQJV8XPAd
+	fp0WZO7U+0vm3prPUvMkBxr/fa6ykO11esdnsKn735uSW+zknEwENDXq1RlzbEVY/nXatFCzWcnJm
+	iOwhpC2A==;
+Received: from 77-249-17-252.cable.dynamic.v4.ziggo.nl ([77.249.17.252] helo=noisy.programming.kicks-ass.net)
+	by desiato.infradead.org with esmtpsa (Exim 4.98.2 #2 (Red Hat Linux))
+	id 1w2mnp-0000000AmLl-113A;
+	Wed, 18 Mar 2026 09:02:57 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+	id 14EB3303249; Wed, 18 Mar 2026 10:02:56 +0100 (CET)
+Date: Wed, 18 Mar 2026 10:02:55 +0100
+From: Peter Zijlstra <peterz@infradead.org>
+To: K Prateek Nayak <kprateek.nayak@amd.com>
+Cc: mingo@kernel.org, longman@redhat.com, chenridong@huaweicloud.com,
+	juri.lelli@redhat.com, vincent.guittot@linaro.org,
+	dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
+	mgorman@suse.de, vschneid@redhat.com, tj@kernel.org,
+	hannes@cmpxchg.org, mkoutny@suse.com, cgroups@vger.kernel.org,
+	linux-kernel@vger.kernel.org, jstultz@google.com
+Subject: Re: [RFC][PATCH 8/8] sched/eevdf: Move to a single runqueue
+Message-ID: <20260318090255.GG3738010@noisy.programming.kicks-ass.net>
+References: <20260317095113.387450089@infradead.org>
+ <20260317104343.338573840@infradead.org>
+ <dc1a390f-16de-49b2-af85-a9df3f62eb8e@amd.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -108,79 +72,128 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <3db237d0-1ee8-44b7-a356-f3015173f7c2@yandex-team.ru>
-X-Spamd-Result: default: False [-1.66 / 15.00];
+In-Reply-To: <dc1a390f-16de-49b2-af85-a9df3f62eb8e@amd.com>
+X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_RHS_NOT_FQDN(0.50)[];
-	DMARC_POLICY_ALLOW(-0.50)[suse.com,quarantine];
-	R_DKIM_ALLOW(-0.20)[suse.com:s=google];
-	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
+	DMARC_POLICY_ALLOW(-0.50)[infradead.org,none];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_DKIM_ALLOW(-0.20)[infradead.org:s=desiato.20200630];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-14860-lists,cgroups=lfdr.de];
-	FROM_HAS_DN(0.00)[];
-	RECEIVED_HELO_LOCALHOST(0.00)[];
 	MIME_TRACE(0.00)[0:+];
+	DKIM_TRACE(0.00)[infradead.org:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[21];
-	DKIM_TRACE(0.00)[suse.com:+];
-	MISSING_XM_UA(0.00)[];
-	TO_DN_SOME(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[5];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[mhocko@suse.com,cgroups@vger.kernel.org];
+	RCVD_TLS_LAST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-14861-lists,cgroups=lfdr.de];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	MISSING_XM_UA(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[17];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[peterz@infradead.org,cgroups@vger.kernel.org];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	RCVD_COUNT_FIVE(0.00)[5];
+	TAGGED_RCPT(0.00)[cgroups];
 	NEURAL_HAM(-0.00)[-1.000];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	TAGGED_RCPT(0.00)[cgroups];
-	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sashiko.dev:url,yandex-team.ru:email,sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 02DEC2B80D4
+	TO_DN_SOME(0.00)[]
+X-Rspamd-Queue-Id: 7F4772B8A5E
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-On Tue 17-03-26 23:17:28, Daniil Tatianin wrote:
-> 
-> On 3/17/26 10:17 PM, Andrew Morton wrote:
-> > On Tue, 17 Mar 2026 13:00:58 +0300 Daniil Tatianin <d-tatianin@yandex-team.ru> wrote:
-> > 
-> > > The current global sysctl compact_unevictable_allowed is too coarse.
-> > > In environments with mixed workloads, we may want to protect specific
-> > > important cgroups from compaction to ensure their stability and
-> > > responsiveness, while allowing compaction for others.
-> > > 
-> > > This patch introduces a per-memcg compact_unevictable_allowed attribute.
-> > > This allows granular control over whether unevictable pages in a specific
-> > > cgroup can be compacted. The global sysctl still takes precedence if set
-> > > to disallow compaction, but this new setting allows opting out specific
-> > > cgroups.
-> > > 
-> > > This also adds a new ISOLATE_UNEVICTABLE_CHECK_MEMCG flag to
-> > > isolate_migratepages_block to preserve the old behavior for the
-> > > ISOLATE_UNEVICTABLE flag unconditionally used by
-> > > isolage_migratepages_range.
-> > AI review asked questions:
-> > 	https://sashiko.dev/#/patchset/20260317100058.2316997-1-d-tatianin@yandex-team.ru
-> 
-> > Should this dynamically walk up the ancestor chain during evaluation to
-> > ensure it returns false if any ancestor has disallowed compaction?
-> 
-> I think ultimately it's up to cgroup maintainers whether the code should do
-> that, but as far as I understand the whole point of cgroups is that a child
-> can override the settings of its parent. Moreover, this property doesn't
-> have CFTYPE_NS_DELEGATABLE set, so a child cgroup cannot just toggle it at
-> will.
+On Tue, Mar 17, 2026 at 11:16:52PM +0530, K Prateek Nayak wrote:
 
-In general any attributes should have proper hieararchical semantic. I
-am not sure what that should be in this case. What is a desire in a
-child cgroup can become fragmentation pressure to others.
+> > +	/*
+> > +	 * XXX comment on the curr thing
+> > +	 */
+> > +	curr = (cfs_rq->curr == se);
+> > +	if (curr)
+> > +		place_entity(cfs_rq, se, flags);
+> >  
+> > +	if (se->on_rq && se->sched_delayed)
+> > +		requeue_delayed_entity(cfs_rq, se);
+> >  
+> > +	weight = enqueue_hierarchy(p, flags);
+> 
+> Here is question I had when I first saw this on sched/flat and I've
+> only looked at the series briefly:
+> 
+> enqueue_hierarchy() would end up updating the averages, and reweighing
+> the hierarchical load of the entities in the new task's hierarchy ...
+> 
+> >  
+> > +	if (!curr) {
+> > +		reweight_eevdf(cfs_rq, se, weight, false);
+> > +		place_entity(cfs_rq, se, flags | ENQUEUE_QUEUED);
+> 
+> ... and the hierarchical weight of the newly enqueued task would be
+> based on this updated hierarchical proportion.
+> 
+> However, the tasks that are already queued have their deadlines
+> calculated based on the old hierarchical proportions at the time they
+> were enqueued / during the last task_tick_fair() for an entity that
+> was put back.
+> 
+> Consider two tasks of equal weight on cgroups with equal weights:
+> 
+>     root    (weight: 1024)
+>    /    \
+>   CG0   CG1 (wight(CG0,CG1) = 512)
+>    |     |
+>    T0    T1 (h_weight(T0,T1) = 256)
+> 
+> 
+> and a third task of equal weight arrives (for the sake of simplicity
+> also consider both cgroups have saturated their respective global
+> shares on this CPU - similar to UP mode):
+> 
+> 
+>                             root        (weight: 1024)
+>                            /    \
+>          (weight: 512)   CG0    CG1     (weight: 512)
+>                          /     /   \
+>   (h_weight(T0) = 256)  T0    T1    T2  (h_weight(T2) = 128)
+>                        
+>                            (h_weight(T1) = 256)
+> 
+> 
+> Logically, once T2 arrives, T1 should also be reweighed, it's
+> hierarchical proportions be adjusted, and its vruntime and deadline
+> be also adjusted accordingly based on the lag but that doesn't
+> happen.
 
-I think it would be really important to explain more thoroughly about
-those usecases of mixed workloads. Is the memcg even a suitable level of
-abstraction for this tunable? Doesn't this belong to tasks if anything?
--- 
-Michal Hocko
-SUSE Labs
+You are absolutely right.
+
+> Instead, we continue with an approximation of h_load as seen
+> sometime during the past. Is that alright with EEVDF or am I missing
+> something?
+
+Strictly speaking it is dodgy as heck ;-) I was hoping that on average
+it would all work out. Esp. since PELT is a fairly slow and smooth
+function, the reweights will mostly be minor adjustments.
+
+> Can it so happen that on SMP, future enqueues, and SMP conditions
+> always lead to larger h_load for the newly enqueued tasks and as a
+> result the older tasks become less favorable for the pick leading
+> to starvation? (Am I being paranoid?)
+
+So typically the most recent enqueue will always have the smaller
+fraction of the group weight. This would lead to a slight favour to the
+older enqueue. So I think this would lead to a FIFO like bias.
+
+But there is definitely some fun to be had here.
+
+One definite fix is setting cgroup_mode to 'up' :-)
+
+> > +		__enqueue_entity(cfs_rq, se);
+> >  	}
+> >  
+> >  	if (!rq_h_nr_queued && rq->cfs.h_nr_queued)
+> 
+> Anyhow, me goes and sees if any of this makes a difference to the
+> benchmarks - I'll throw the biggest one at it first and see how
+> that goes.
+
+Thanks, fingers crossed. :-)
 
