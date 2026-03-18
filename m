@@ -1,81 +1,81 @@
-Return-Path: <cgroups+bounces-14898-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-14897-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id QNjEMRgou2kcfwIAu9opvQ
-	(envelope-from <cgroups+bounces-14898-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Wed, 18 Mar 2026 23:32:56 +0100
+	id gINcDsgou2kcfwIAu9opvQ
+	(envelope-from <cgroups+bounces-14897-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Wed, 18 Mar 2026 23:35:52 +0100
 X-Original-To: lists+cgroups@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 878762C3709
-	for <lists+cgroups@lfdr.de>; Wed, 18 Mar 2026 23:32:56 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 96D8F2C3855
+	for <lists+cgroups@lfdr.de>; Wed, 18 Mar 2026 23:35:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id B6B423046D89
-	for <lists+cgroups@lfdr.de>; Wed, 18 Mar 2026 22:31:21 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id B1A52324295A
+	for <lists+cgroups@lfdr.de>; Wed, 18 Mar 2026 22:31:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 03DCB3A962B;
-	Wed, 18 Mar 2026 22:30:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D1773A0E85;
+	Wed, 18 Mar 2026 22:30:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ODFnzVc8"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LPFLMiRj"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-ot1-f53.google.com (mail-ot1-f53.google.com [209.85.210.53])
+Received: from mail-oa1-f47.google.com (mail-oa1-f47.google.com [209.85.160.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 40851395DA5
-	for <cgroups@vger.kernel.org>; Wed, 18 Mar 2026 22:30:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 995D039B4A5
+	for <cgroups@vger.kernel.org>; Wed, 18 Mar 2026 22:30:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1773873027; cv=none; b=d1lmaN1YbwI27uGvbpOkK6dSpIIU39wuyR3MzdZJxGioXhxslKoClUqaFOfAoJBu9P5YPjwJ0j/jg1gt0M0Lm5sd0xsqGDdgu0sUgvDmuGr/n9boQfhsQDBf5rSqtjnWobAOyDnYL/XME6dcHBIfOoJzdtnueHTR5WMnrpNC/Is=
+	t=1773873027; cv=none; b=iV7RZS6/tEeKaDCrG5SoIPrx47p5tga6SMuwUb12Pg4LeEmeCNzlYxcL+QMPUBYUJdS1CGrqsnlj6vtqHhdTzir4lw+/uHNCHlFXGrJJqwQ4k3/G3+TGuqfDmicgniP+iMJTd+zXUDBFdmYXj7/lubQ54vomv+b5QQEuYeIJ7qQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1773873027; c=relaxed/simple;
-	bh=fnjImx7VCwMKBpHwkDW1K85lk6CY/A2Ul7Cqjhn0QzU=;
+	bh=qex24j/fvB5i2Hxp1YyD8djSdhK+3xIGWCRj2JuMS4Q=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=MpvY1uWrrSZk+HulZHFQdPREn6wKlEejo2zWFDu6jgFelM8NnkhRP4zjtm06l0kDlkgz14DmU0kQMcioRkTO/NGEPlB1ur9Mwk/YhiBUF9MXtE1m4E5/fL/lTMs7G2MclVo5WTIZJVRZxPlWbaTm/Dz0M5SIz2xMvBNdVwzLs4E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ODFnzVc8; arc=none smtp.client-ip=209.85.210.53
+	 MIME-Version; b=tqmhh32QESegN6UeodvnxD4b4sPiVbYBR+VY7W53Ktg/ivpsiBNh0kaV0uqPk+mzSFAQVTlUCuYzxeItlmxYNKJeW7/uZuZ8Sw3PAUnF/Xz1iBj4cB2EERhNKGy8+YY9xCTaqWB1j6b7KDi6JziCWAWwbSOSWPZGxOvZjv9r9Sw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=LPFLMiRj; arc=none smtp.client-ip=209.85.160.47
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ot1-f53.google.com with SMTP id 46e09a7af769-7d75371d873so415919a34.3
-        for <cgroups@vger.kernel.org>; Wed, 18 Mar 2026 15:30:23 -0700 (PDT)
+Received: by mail-oa1-f47.google.com with SMTP id 586e51a60fabf-415c8a4d2e6so201945fac.0
+        for <cgroups@vger.kernel.org>; Wed, 18 Mar 2026 15:30:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1773873022; x=1774477822; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1773873023; x=1774477823; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=FKrmsaRryTJ5nHXiiuirqMc/v+zxITLhw4bMyN6ZWm0=;
-        b=ODFnzVc858qDi1mXZysSz7VqRXZ85fqpT46m+xw2hCc9HoK+NtVe89BIpGAhlBGfyU
-         5ezJDUWEqTUnfH7FhbRGCtzJSao3DOonIXH+/ApmLLNzbaIGxGaD9QGgBvPvfFwqMXth
-         aN659UwJvSnoeL3AchKQx8fAL8UOMCQVpaIWi4IvXdYuS3kU0hOElHN4vlALkfnXKXwj
-         2oMnALciPcEHPy4MUeOKoj/X8Rn5DSoCAsUlfhFXaZCjT6aYTVkpuq99Iuf9aRG+PT55
-         fRbqLOmnGkYGR7qFQXb9U3tgQ7ui2Stny67g/GdX2maZCsudg/LosPB3Q2U9xP043z/E
-         n1cw==
+        bh=7LyvvsB8h9QhouSf22weZV/t1lxO86Z5/SzpfGB0vfc=;
+        b=LPFLMiRjp/Vh3Ey0gniZZWilBC2NdVWSiUdP2K8UBYnb8wT/zBh83oZIL4VrzT3PBf
+         3Wi+J1qVvUDFSn5TBRSxfe5NSwjj4gGHQIhOe8JvmGkLWiW3qm9E6iHBsWySZzNbXFEX
+         c5Yqp9gBDgLXJ6TONv5CtLEpFWxGMhlzH1uQl7L5EqkNav+H4FEhiyupqDsJUTTzv9qx
+         TQeXwDWvT4A+IIblNfDs1TX/g7hnx2MdmT3a8cGjGRHNcGmDQhpG8uQ7jWHL4KWOvtIm
+         bFTnvDG+cLVLvvMxukrYPzpijVIX+ez+Wb0j80l8SK1tOvYzRLOiFcnYRNYJkiS3Qy5D
+         1KSw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1773873022; x=1774477822;
+        d=1e100.net; s=20251104; t=1773873023; x=1774477823;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=FKrmsaRryTJ5nHXiiuirqMc/v+zxITLhw4bMyN6ZWm0=;
-        b=RBx/e6QigK4BPMzdq1K8d3OBAcqvCbeFRYYAxipEWG3Wu5LKN11FmqfNd2uWCAqI3z
-         ak/vu3YwjP1gFBXOy9RKaEWfeHv+Sdpu+dwhtt7UjdOdR33fc0He7FMZ4z7yKm+4VhoL
-         3wCUvrdNIqn6yx2Iu0pI9+TaOtvIOavIpPf1qw1EZVGBCymP0KJw81uqX4oAMYeSwXQT
-         wYmIBCII8PXie1ZEGVWHjMfUJb/k+4mrjRbCB/coOBPtHYDgLcPnwFsJ5nMRtceLvlfA
-         4S3E+dU19gBCqL9R09ApXy79tqzvjSY8GXIDTe+695W9VQHUsWIZMjZw9e+cagKwxEhq
-         6BKA==
-X-Forwarded-Encrypted: i=1; AJvYcCW69pLMlgx46ws8oJA7cLUT8Urcp5lSYMhshld8Kjnzk/ud/fcMIaHNCkbIkMezRoc773DXuNBn@vger.kernel.org
-X-Gm-Message-State: AOJu0YwIv7wOIQaZFL6yY3YFPthNlYTM/XV8+j0x+ztrr/mgPztPG8+u
-	mChVvPMV0Ef0lR8q27a4lASbZ//d5lh+ihd7ob/OH7RiV14uuNg0C6rX
-X-Gm-Gg: ATEYQzxx++L0a8/qcDtnKQ1rAsevf4hyLJ15WyPYAn++kv93Lz5K/+iFJgqnObEP9sM
-	oImzD47pQjE8OCAZPxHLnNU5kPdZ6c0TNRAdH0nghhmsxbI478OHD+vRfzbJ4M08zoi0qV2F8mr
-	Qz6Am8oPxtoWUG+YaKrKgwNKSulJVFyGidwUNMXiQTnRsgVoQz9/VARIL3O2wKq8octnMKUmM5o
-	JMB3lEEh1T2Z9vmVc7unOP19cq6CUNm80M9dq0luLuQU5qigp09+ysqxead9nYsD9PpL9jWNrdp
-	kD7mIzfeE2uDMAkJPJtbDRxhV6Kx9LM8JJUpvf6WPkz+mEfAOF/Kx3RTcY012Dx9wxr8+E79lBj
-	xjUgzVbbb43i87r/kVzW9MhUCOV9UMj91DNiCzfV7jBZu3V3Oi5irWYARSVyZOKE/FSRj+X0uZF
-	PYQvaYhe98L9xr57jhbkRlZUV32D2fiTGh50ZBawF2HfQ52Q==
-X-Received: by 2002:a05:6830:6af5:b0:7d7:d217:5116 with SMTP id 46e09a7af769-7d7d21752afmr1935454a34.17.1773873022052;
-        Wed, 18 Mar 2026 15:30:22 -0700 (PDT)
-Received: from localhost ([2a03:2880:10ff:48::])
-        by smtp.gmail.com with ESMTPSA id 46e09a7af769-7d7c9b3696asm3133813a34.16.2026.03.18.15.30.19
+        bh=7LyvvsB8h9QhouSf22weZV/t1lxO86Z5/SzpfGB0vfc=;
+        b=s2YeZZXlYk8qoDqgCwB56dGwyHC4Rs7yat4BWBSCL8YVwS8dZalXng5Iw5FyG37O9p
+         6AE4PYednobrMGkXQ1GWJLie/Gg8kr1URe73c1BxMGjrnGt5Zeqr/Pe4pXUJzjGmWNNR
+         fXRk0hM2cl7pW79l06qOhvzrH4NvRelU+XW5hug2vBbWIC07iCcyazkP5pwnjsW7AGgS
+         X3HCYAAL+29mlm40j1L6PiHQdS9KYG6LwY4DiHvtuecEysIcMCKBhH7v1nkenbHKRTLZ
+         onIbUqLn5MlEmL4VCrK8f4OqEaGXes6LXn5sITEAVKmEpD+Z359dgzItKKnS3ZD+bldk
+         Zrug==
+X-Forwarded-Encrypted: i=1; AJvYcCXZrqiCnyhYLMbNzz4V/iBkvHrpDsoUEY3nMV7ubZGpQafrHqhQXqvltUHu6sdhIchsyz2BTlzY@vger.kernel.org
+X-Gm-Message-State: AOJu0YzY7nQwaR1kh/+5M6/XOVAXSJrYqgBE2CndC7Ro0T2lsM9Y/1FC
+	XBKnjitXinUQTOI3bdfaT81Ogq8+G2/8ogxfYKKHlFMZdtz880tuL3XU
+X-Gm-Gg: ATEYQzz0bytZ9v83dQrZssRvdAN47Z+Ewj7jUGU1PXI5T1CTqMCXfO816ZEz8L16xqG
+	pHyZVYQ1e7DuuimC9xhUwX5mR3ogEwiM2iPg59zNfVognu5FBD++MD8EurRqoowOnuw6ivfzfV4
+	snpHGDYrthhiVXr7qLQvYQtF1/BJxJLu2J6TPSahHzq9sXdk62k6HGTljmMjpIDeYoj7PdNiKLq
+	HXghk+OcJPrconFKLbO3yxkZJzCtMd0KT7dWHuroR4errYES9GJEidH0joZE4kDGoW3uJWYP9eV
+	kpOr8PR7+FwfNPjpSXMomT08D/JwBvNoEknsfxQD/1IKlEXJL+dy8Hkkc00MsHHWZBlnSKX8w/x
+	Jz80fPcej5DOonkP8YRZKODSnP2qhvTNH0Bk/HNFBHP6lPYzCZRrwXOwFc4Oy1dNWR9+7Iw7F5B
+	lJAKkGuBCIJute1PW1Z1RzH6qxT66qpVt6XsgxqAagD4jrLw==
+X-Received: by 2002:a05:6870:ac09:b0:409:77a9:f951 with SMTP id 586e51a60fabf-41bd3f3e873mr3474315fac.11.1773873023263;
+        Wed, 18 Mar 2026 15:30:23 -0700 (PDT)
+Received: from localhost ([2a03:2880:10ff:41::])
+        by smtp.gmail.com with ESMTPSA id 586e51a60fabf-41bd2d4cb20sm3817722fac.17.2026.03.18.15.30.22
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 18 Mar 2026 15:30:20 -0700 (PDT)
+        Wed, 18 Mar 2026 15:30:22 -0700 (PDT)
 From: Nhat Pham <nphamcs@gmail.com>
 To: kasong@tencent.com
 Cc: Liam.Howlett@oracle.com,
@@ -131,9 +131,9 @@ Cc: Liam.Howlett@oracle.com,
 	ziy@nvidia.com,
 	kernel-team@meta.com,
 	riel@surriel.com
-Subject: [PATCH v4 16/21] swap: do not unnecesarily pin readahead swap entries
-Date: Wed, 18 Mar 2026 15:29:47 -0700
-Message-ID: <20260318222953.441758-17-nphamcs@gmail.com>
+Subject: [PATCH v4 17/21] swapfile: remove zeromap bitmap
+Date: Wed, 18 Mar 2026 15:29:48 -0700
+Message-ID: <20260318222953.441758-18-nphamcs@gmail.com>
 X-Mailer: git-send-email 2.52.0
 In-Reply-To: <20260318222953.441758-1-nphamcs@gmail.com>
 References: <20260318222953.441758-1-nphamcs@gmail.com>
@@ -151,7 +151,7 @@ X-Spamd-Result: default: False [0.84 / 15.00];
 	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
 	R_MISSING_CHARSET(0.50)[];
 	R_DKIM_ALLOW(-0.20)[gmail.com:s=20230601];
-	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
@@ -159,7 +159,7 @@ X-Spamd-Result: default: False [0.84 / 15.00];
 	FROM_HAS_DN(0.00)[];
 	FREEMAIL_CC(0.00)[oracle.com,linux-foundation.org,nvidia.com,google.com,kernel.org,linux.alibaba.com,redhat.com,sk.com,vger.kernel.org,linux.dev,lwn.net,arm.com,gourry.net,cmpxchg.org,gmail.com,kvack.org,intel.com,suse.com,infradead.org,suse.de,huaweicloud.com,suse.cz,bytedance.com,meta.com,surriel.com];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-14898-lists,cgroups=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-14897-lists,cgroups=lfdr.de];
 	MIME_TRACE(0.00)[0:+];
 	RCVD_TLS_LAST(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[nphamcs@gmail.com,cgroups@vger.kernel.org];
@@ -167,98 +167,155 @@ X-Spamd-Result: default: False [0.84 / 15.00];
 	DKIM_TRACE(0.00)[gmail.com:+];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	TO_DN_NONE(0.00)[];
-	NEURAL_HAM(-0.00)[-0.876];
+	NEURAL_HAM(-0.00)[-0.868];
 	RCPT_COUNT_GT_50(0.00)[54];
 	RCVD_COUNT_FIVE(0.00)[5];
 	TAGGED_RCPT(0.00)[cgroups];
 	FREEMAIL_FROM(0.00)[gmail.com];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 878762C3709
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: 96D8F2C3855
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-When we perform swap readahead, the target entry is already pinned by
-the caller. No need to pin swap entries in the readahead window that
-belongs in the same virtual swap cluster as the target swap entry.
+Zero swap entries are now treated as a separate, decoupled backend in
+the virtual swap layer. The zeromap bitmap of physical swapfile is no
+longer used - remove it. This does not have any behavioral change, and
+save 1 bit per swap page in terms of memory overhead.
 
 Signed-off-by: Nhat Pham <nphamcs@gmail.com>
 ---
- mm/swap.h       |  1 +
- mm/swap_state.c | 22 +++++++++-------------
- mm/vswap.c      | 10 ++++++++++
- 3 files changed, 20 insertions(+), 13 deletions(-)
+ include/linux/swap.h |  1 -
+ mm/swapfile.c        | 30 +++++-------------------------
+ 2 files changed, 5 insertions(+), 26 deletions(-)
 
-diff --git a/mm/swap.h b/mm/swap.h
-index d7981ec82cf49..2229c3485b7e2 100644
---- a/mm/swap.h
-+++ b/mm/swap.h
-@@ -213,6 +213,7 @@ void swap_cache_lock(swp_entry_t entry);
- void swap_cache_unlock(swp_entry_t entry);
- void vswap_rmap_set(struct swap_cluster_info *ci, swp_slot_t slot,
- 			   unsigned long vswap, int nr);
-+bool vswap_same_cluster(swp_entry_t entry1, swp_entry_t entry2);
+diff --git a/include/linux/swap.h b/include/linux/swap.h
+index fa73696733744..cc1ca4ac2946d 100644
+--- a/include/linux/swap.h
++++ b/include/linux/swap.h
+@@ -260,7 +260,6 @@ struct swap_info_struct {
+ 	signed char	type;		/* strange name for an index */
+ 	unsigned int	max;		/* extent of the swap_map */
+ 	unsigned char *swap_map;	/* vmalloc'ed array of usage counts */
+-	unsigned long *zeromap;		/* kvmalloc'ed bitmap to track zero pages */
+ 	struct swap_cluster_info *cluster_info; /* cluster info. Only for SSD */
+ 	struct list_head free_clusters; /* free clusters list */
+ 	struct list_head full_clusters; /* full clusters list */
+diff --git a/mm/swapfile.c b/mm/swapfile.c
+index 32aa080d96a4d..aeb3575df8a0b 100644
+--- a/mm/swapfile.c
++++ b/mm/swapfile.c
+@@ -2320,8 +2320,7 @@ static int setup_swap_extents(struct swap_info_struct *sis, sector_t *span)
  
- static inline struct address_space *swap_address_space(swp_entry_t entry)
+ static void setup_swap_info(struct swap_info_struct *si, int prio,
+ 			    unsigned char *swap_map,
+-			    struct swap_cluster_info *cluster_info,
+-			    unsigned long *zeromap)
++			    struct swap_cluster_info *cluster_info)
  {
-diff --git a/mm/swap_state.c b/mm/swap_state.c
-index ad80bf098b63f..e8e0905c7723f 100644
---- a/mm/swap_state.c
-+++ b/mm/swap_state.c
-@@ -553,22 +553,18 @@ static struct folio *swap_vma_readahead(swp_entry_t targ_entry, gfp_t gfp_mask,
- 		pte_unmap(pte);
- 		pte = NULL;
- 		/*
--		 * Readahead entry may come from a device that we are not
--		 * holding a reference to, try to grab a reference, or skip.
--		 *
--		 * XXX: for now, always try to pin the swap entries in the
--		 * readahead window to avoid the annoying conversion to physical
--		 * swap slots. Once we move all swap metadata to virtual swap
--		 * layer, we can simply compare the clusters of the target
--		 * swap entry and the current swap entry, and pin the latter
--		 * swap entry's cluster if it differ from the former's.
-+		 * The target entry is already pinned - if the readahead entry
-+		 * belongs to the same cluster, it's already protected.
- 		 */
--		swapoff_locked = tryget_swap_entry(entry, &si);
--		if (!swapoff_locked)
--			continue;
-+		if (!vswap_same_cluster(entry, targ_entry)) {
-+			swapoff_locked = tryget_swap_entry(entry, &si);
-+			if (!swapoff_locked)
-+				continue;
-+		}
- 		folio = __read_swap_cache_async(entry, gfp_mask, mpol, ilx,
- 						&page_allocated, false);
--		put_swap_entry(entry, si);
-+		if (swapoff_locked)
-+			put_swap_entry(entry, si);
- 		if (!folio)
- 			continue;
- 		if (page_allocated) {
-diff --git a/mm/vswap.c b/mm/vswap.c
-index fbb7c6003ad8c..b391511e0f0b9 100644
---- a/mm/vswap.c
-+++ b/mm/vswap.c
-@@ -1418,6 +1418,16 @@ void put_swap_entry(swp_entry_t entry, struct swap_info_struct *si)
- 	rcu_read_unlock();
+ 	si->prio = prio;
+ 	/*
+@@ -2332,7 +2331,6 @@ static void setup_swap_info(struct swap_info_struct *si, int prio,
+ 	si->avail_list.prio = -si->prio;
+ 	si->swap_map = swap_map;
+ 	si->cluster_info = cluster_info;
+-	si->zeromap = zeromap;
  }
  
-+/*
-+ * Check if two virtual swap entries belong to the same vswap cluster.
-+ * Useful for optimizing readahead when entries in the same cluster
-+ * share protection from a pinned target entry.
-+ */
-+bool vswap_same_cluster(swp_entry_t entry1, swp_entry_t entry2)
-+{
-+	return VSWAP_CLUSTER_IDX(entry1) == VSWAP_CLUSTER_IDX(entry2);
-+}
-+
- static int vswap_cpu_dead(unsigned int cpu)
+ static void _enable_swap_info(struct swap_info_struct *si)
+@@ -2350,12 +2348,11 @@ static void _enable_swap_info(struct swap_info_struct *si)
+ 
+ static void enable_swap_info(struct swap_info_struct *si, int prio,
+ 				unsigned char *swap_map,
+-				struct swap_cluster_info *cluster_info,
+-				unsigned long *zeromap)
++				struct swap_cluster_info *cluster_info)
  {
- 	struct vswap_cluster *cluster;
+ 	spin_lock(&swap_lock);
+ 	spin_lock(&si->lock);
+-	setup_swap_info(si, prio, swap_map, cluster_info, zeromap);
++	setup_swap_info(si, prio, swap_map, cluster_info);
+ 	spin_unlock(&si->lock);
+ 	spin_unlock(&swap_lock);
+ 	/*
+@@ -2373,7 +2370,7 @@ static void reinsert_swap_info(struct swap_info_struct *si)
+ {
+ 	spin_lock(&swap_lock);
+ 	spin_lock(&si->lock);
+-	setup_swap_info(si, si->prio, si->swap_map, si->cluster_info, si->zeromap);
++	setup_swap_info(si, si->prio, si->swap_map, si->cluster_info);
+ 	_enable_swap_info(si);
+ 	spin_unlock(&si->lock);
+ 	spin_unlock(&swap_lock);
+@@ -2444,7 +2441,6 @@ SYSCALL_DEFINE1(swapoff, const char __user *, specialfile)
+ {
+ 	struct swap_info_struct *p = NULL;
+ 	unsigned char *swap_map;
+-	unsigned long *zeromap;
+ 	struct swap_cluster_info *cluster_info;
+ 	struct file *swap_file, *victim;
+ 	struct address_space *mapping;
+@@ -2539,8 +2535,6 @@ SYSCALL_DEFINE1(swapoff, const char __user *, specialfile)
+ 	p->swap_file = NULL;
+ 	swap_map = p->swap_map;
+ 	p->swap_map = NULL;
+-	zeromap = p->zeromap;
+-	p->zeromap = NULL;
+ 	maxpages = p->max;
+ 	cluster_info = p->cluster_info;
+ 	p->max = 0;
+@@ -2552,7 +2546,6 @@ SYSCALL_DEFINE1(swapoff, const char __user *, specialfile)
+ 	kfree(p->global_cluster);
+ 	p->global_cluster = NULL;
+ 	vfree(swap_map);
+-	kvfree(zeromap);
+ 	free_cluster_info(cluster_info, maxpages);
+ 
+ 	inode = mapping->host;
+@@ -3016,7 +3009,6 @@ SYSCALL_DEFINE2(swapon, const char __user *, specialfile, int, swap_flags)
+ 	sector_t span;
+ 	unsigned long maxpages;
+ 	unsigned char *swap_map = NULL;
+-	unsigned long *zeromap = NULL;
+ 	struct swap_cluster_info *cluster_info = NULL;
+ 	struct folio *folio = NULL;
+ 	struct inode *inode = NULL;
+@@ -3122,17 +3114,6 @@ SYSCALL_DEFINE2(swapon, const char __user *, specialfile, int, swap_flags)
+ 	if (error)
+ 		goto bad_swap_unlock_inode;
+ 
+-	/*
+-	 * Use kvmalloc_array instead of bitmap_zalloc as the allocation order might
+-	 * be above MAX_PAGE_ORDER incase of a large swap file.
+-	 */
+-	zeromap = kvmalloc_array(BITS_TO_LONGS(maxpages), sizeof(long),
+-				    GFP_KERNEL | __GFP_ZERO);
+-	if (!zeromap) {
+-		error = -ENOMEM;
+-		goto bad_swap_unlock_inode;
+-	}
+-
+ 	if (si->bdev && bdev_stable_writes(si->bdev))
+ 		si->flags |= SWP_STABLE_WRITES;
+ 
+@@ -3199,7 +3180,7 @@ SYSCALL_DEFINE2(swapon, const char __user *, specialfile, int, swap_flags)
+ 	prio = DEF_SWAP_PRIO;
+ 	if (swap_flags & SWAP_FLAG_PREFER)
+ 		prio = swap_flags & SWAP_FLAG_PRIO_MASK;
+-	enable_swap_info(si, prio, swap_map, cluster_info, zeromap);
++	enable_swap_info(si, prio, swap_map, cluster_info);
+ 
+ 	pr_info("Adding %uk swap on %s.  Priority:%d extents:%d across:%lluk %s%s%s%s\n",
+ 		K(si->pages), name->name, si->prio, nr_extents,
+@@ -3227,7 +3208,6 @@ SYSCALL_DEFINE2(swapon, const char __user *, specialfile, int, swap_flags)
+ 	si->flags = 0;
+ 	spin_unlock(&swap_lock);
+ 	vfree(swap_map);
+-	kvfree(zeromap);
+ 	if (cluster_info)
+ 		free_cluster_info(cluster_info, maxpages);
+ 	if (inced_nr_rotate_swap)
 -- 
 2.52.0
 
