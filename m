@@ -1,102 +1,79 @@
-Return-Path: <cgroups+bounces-14866-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-14867-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id UM3ID2t5ummTWwIAu9opvQ
-	(envelope-from <cgroups+bounces-14866-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Wed, 18 Mar 2026 11:07:39 +0100
+	id sHT6ISx6ummTWwIAu9opvQ
+	(envelope-from <cgroups+bounces-14867-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Wed, 18 Mar 2026 11:10:52 +0100
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5DB5C2B9A1C
-	for <lists+cgroups@lfdr.de>; Wed, 18 Mar 2026 11:07:38 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id 06CF52B9A9F
+	for <lists+cgroups@lfdr.de>; Wed, 18 Mar 2026 11:10:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id 9758C3058194
-	for <lists+cgroups@lfdr.de>; Wed, 18 Mar 2026 10:01:53 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id BD0783014110
+	for <lists+cgroups@lfdr.de>; Wed, 18 Mar 2026 10:09:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 71AB93BA231;
-	Wed, 18 Mar 2026 10:01:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 89E7A3A7846;
+	Wed, 18 Mar 2026 10:08:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="ZtDKNaZd"
+	dkim=pass (1024-bit key) header.d=yandex-team.ru header.i=@yandex-team.ru header.b="RP2fJK9Q"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-wm1-f50.google.com (mail-wm1-f50.google.com [209.85.128.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from forwardcorp1d.mail.yandex.net (forwardcorp1d.mail.yandex.net [178.154.239.200])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 85B403B7B7A
-	for <cgroups@vger.kernel.org>; Wed, 18 Mar 2026 10:01:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E7E13B583E;
+	Wed, 18 Mar 2026 10:08:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=178.154.239.200
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1773828104; cv=none; b=NQ8+RAnziIRlPmCl6uBEIolb9e24/dI7qvmMvYqsVx8TkniUIgu5RI5OOJLGC6C1V+FeH9MQ3trx6kqAeAOjnUekv8pZuDAr7iFrq0XhAE7WGJ0FgFj0gu1wBOV0hzxALr+qT/ECSOKjDQF1m/GliwwOT5D/hNaZwMOv8uQjvHk=
+	t=1773828530; cv=none; b=UpMUjQdER89SCA/4BQrJggvPnl6DRCBF81ZrtzWr96ObOkmNh5MnevI3iMF+wDuMH1XqbnkIX+NasqsmN9ooDBXCRBe/cphqtvx/N0y46Y+9bKvc+DhDXjTXcneloB8j7O9nCPyrOqqvp1nb+wcnwrvktyNARg7js2hfWzYnUMo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1773828104; c=relaxed/simple;
-	bh=LC5MhTXBmrWgwfDOl+wr0Q6LGnjbn6Gf58JCzqtAsLY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ccvurvFXNpVz49ZuxDQfRvvyz6Au3a1Eq0SCRChD8TUprsL4Y3yq+HGehpqFBctws0xrLtKznmao/jfzKYfQ9fN6firIh28s6AS25UZFvm9p4uarnwFtt2Oxd1NRG66x9cM3cJxAghwzRIB1pfpW1+x32PnSKB3avbx5cWzGAIs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=ZtDKNaZd; arc=none smtp.client-ip=209.85.128.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-wm1-f50.google.com with SMTP id 5b1f17b1804b1-48534237460so71382135e9.3
-        for <cgroups@vger.kernel.org>; Wed, 18 Mar 2026 03:01:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1773828095; x=1774432895; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=30lcLe83ZfeeJjPOw57FdUnRLS2QbPrl5sgOSEvO6uE=;
-        b=ZtDKNaZdL0eWJpQhrfmVdfbgZBbMxJhFU9WFC4UOzt5eHzTVqDeRHFpM7iq30CW89U
-         N4eY7Bl/V9vX3UTnN0nNmehWn+nFLu/VZdw3J2zCXIP+6MxEUjT5VhMlPa6m/TYhAabl
-         tvdV8C0O+r8UdWcQiS9I/mnG84doBA/A5EMO069xg9q71VTsKncmXS8MrOLeORB3e2uw
-         cf6xJVmeXa6Jh1s53JMjitJeaFUbtFJFFwH2lNX29m0KCoVyNtjfLIyLWsDaCF4KhMGg
-         jNOMFqWTmKUjNShNXy2PRPDUIHT6w3tJQmXNofwh1Kb/htYvBTwTgPpz0mb1Tvg+5egJ
-         gQyA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1773828095; x=1774432895;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=30lcLe83ZfeeJjPOw57FdUnRLS2QbPrl5sgOSEvO6uE=;
-        b=qMSlLGLI68NB0Om/IoiN/zgqwYmxKcBHNdFVjb0aS+DdjgtGXqyYuj5eOoDG2HSLIF
-         nZkLjTzAfHuJjyEWQihvg8zaP0yU+wHKCD1wL8SlkebnbtU3Ax3bKAw4pLuqIB4RI+gs
-         oj6x/RVRYv4GzlAFQWv9zcgciVWcb8k47Owo4uJ8NVqDa9PXtLYsnPsHekzGdj1/rDlS
-         QviWRAfFu9zWNJmmIJXJkVtH5tOpiH23IRP8vF9JrPzVFsNieNnel5E7dxXqRCLVjl1+
-         ukUGxywGm/lH2GGkWstzn8TOVG6Iy24+PnLrkYrrmNxRvLISVSuoQ3dg/g884Vkv7hHx
-         fgNg==
-X-Forwarded-Encrypted: i=1; AJvYcCUr+MjgZ73n1sCM/vBOyy6Je63YyThm2GWPgFstEQ7Oxvk384apuiKWjFnnM/sb4fTLemy5bBeC@vger.kernel.org
-X-Gm-Message-State: AOJu0YzaBZzagURGCf/3K7gBxvZgygPUEqR4KkOll5/mH+mz+2+67dnY
-	jznXfQemYoEsAfAn1ZlnBwuPs+hwoDof6Gn3WJwAHu7Y2sSIQnEmMY+gxdKtjUaW+z8=
-X-Gm-Gg: ATEYQzz+itlac87YG1BqicmxCqLkZZ715atX0x4vq+5BFndiQEIThfla57BxbglPpXh
-	b3s43mKiLSRUKDhOfDeKgVYkGuCo3n9t9d59HdfX0pqOng5QlFcoMmKYce8IQFFY5vLMSieceMa
-	hS+deRALvqJGui/rjYdYnQDxshS2xxgSarUnyiADdjuYjhigkjUkyuUJ4UId7sdRASJzsPyUPfR
-	SdMQuuPMW/SP1qxiIgbpLUlSIejdha1CGgwmmi30R2HbUbo9qJPTCPLru4S/6lbrz+ffCWY7Sh2
-	c088x5Fp54lDa30W6ILFZRGTCQ9zHb/38deOKvsJhH7Efno7MszVIJSzOP9oHfYb+OeT14fA7kq
-	AQqrXTxM5TT+H1UHH2tZnFsPtRhvqS6NFbb7XwBYBaZ0rHbKbFgzTvYyRxsbTqx5/UuUbe/FMub
-	tlRRvYAexA0W0qEprSFl7aFrB9LmpIjLhys1we
-X-Received: by 2002:a05:600c:4fc4:b0:485:3b00:f92e with SMTP id 5b1f17b1804b1-486f441bc46mr42711335e9.2.1773828095163;
-        Wed, 18 Mar 2026 03:01:35 -0700 (PDT)
-Received: from localhost (109-81-21-195.rct.o2.cz. [109.81.21.195])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-486f5e162d7sm10843415e9.33.2026.03.18.03.01.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 18 Mar 2026 03:01:34 -0700 (PDT)
-Date: Wed, 18 Mar 2026 11:01:30 +0100
-From: Michal Hocko <mhocko@suse.com>
-To: Daniil Tatianin <d-tatianin@yandex-team.ru>
-Cc: Andrew Morton <akpm@linux-foundation.org>,
-	Johannes Weiner <hannes@cmpxchg.org>,
-	Roman Gushchin <roman.gushchin@linux.dev>,
-	Shakeel Butt <shakeel.butt@linux.dev>,
-	Muchun Song <muchun.song@linux.dev>,
-	David Hildenbrand <david@kernel.org>,
-	Lorenzo Stoakes <ljs@kernel.org>,
-	"Liam R. Howlett" <Liam.Howlett@oracle.com>,
-	Vlastimil Babka <vbabka@kernel.org>,
-	Mike Rapoport <rppt@kernel.org>,
-	Suren Baghdasaryan <surenb@google.com>,
-	Axel Rasmussen <axelrasmussen@google.com>,
-	Yuanchu Xie <yuanchu@google.com>, Wei Xu <weixugc@google.com>,
-	Brendan Jackman <jackmanb@google.com>, Zi Yan <ziy@nvidia.com>,
-	cgroups@vger.kernel.org, linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org, yc-core@yandex-team.ru
+	s=arc-20240116; t=1773828530; c=relaxed/simple;
+	bh=lAKCsUESusrvTiiXivO62NQeQo0GCTP7AN+sqhkA+BU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=RQU8QNIgC5geNEyJYY6g44RZiO15x97B18YS/GRf5ujLNrWn3COdMYZ/x8gzzktQDHN4a+qq/BpnHzqWXkbN3wkiIxTjLkIdX1NlsOaLCdZtcj7Qk0cfu7TL6X8fxCETvYn8jzguyjb1vat6nlIv30tMbG9SFdb1x3/Z8ENsvxY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=yandex-team.ru; spf=pass smtp.mailfrom=yandex-team.ru; dkim=pass (1024-bit key) header.d=yandex-team.ru header.i=@yandex-team.ru header.b=RP2fJK9Q; arc=none smtp.client-ip=178.154.239.200
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=yandex-team.ru
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=yandex-team.ru
+Received: from mail-nwsmtp-smtp-corp-main-68.klg.yp-c.yandex.net (mail-nwsmtp-smtp-corp-main-68.klg.yp-c.yandex.net [IPv6:2a02:6b8:c42:94a9:0:640:a3fa:0])
+	by forwardcorp1d.mail.yandex.net (Yandex) with ESMTPS id A1FC580720;
+	Wed, 18 Mar 2026 13:08:34 +0300 (MSK)
+Received: from [IPV6:2a02:6bf:8080:d76::1:28] (unknown [2a02:6bf:8080:d76::1:28])
+	by mail-nwsmtp-smtp-corp-main-68.klg.yp-c.yandex.net (smtpcorp/Yandex) with ESMTPSA id V8KPvu1Aka60-RYge9HYj;
+	Wed, 18 Mar 2026 13:08:34 +0300
+Precedence: bulk
+X-Yandex-Fwd: 1
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yandex-team.ru;
+	s=default; t=1773828514;
+	bh=/UYl0wznLJWGqNkj7uK+GNRr0a5dPYQcnw33o6x4SnE=;
+	h=From:In-Reply-To:Cc:Date:References:To:Subject:Message-ID;
+	b=RP2fJK9QMV9DI3DIYbpl2gXRektdNtQ0uUySwjAUUsKpm2gMrUJieKw5VeHWdFprO
+	 e+YYMyJpw5rrcAogL3qaBI2g6tPjN0ZlOSkk5fMKsJtivBgqnFdGVBkIUvLjebGulE
+	 rwmv/t5PjzSJkGLNNm5FndLJLBM714B52zpR5wS0=
+Authentication-Results: mail-nwsmtp-smtp-corp-main-68.klg.yp-c.yandex.net; dkim=pass header.i=@yandex-team.ru
+Message-ID: <b9ceff32-1f8f-454e-84ce-b8788b3a4952@yandex-team.ru>
+Date: Wed, 18 Mar 2026 13:08:31 +0300
+Precedence: bulk
+X-Mailing-List: cgroups@vger.kernel.org
+List-Id: <cgroups.vger.kernel.org>
+List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
+List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
 Subject: Re: [PATCH] mm: add memory.compact_unevictable_allowed cgroup
  attribute
-Message-ID: <abp3-iJbazCpygIm@tiehlicka>
+To: Michal Hocko <mhocko@suse.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>,
+ Johannes Weiner <hannes@cmpxchg.org>,
+ Roman Gushchin <roman.gushchin@linux.dev>,
+ Shakeel Butt <shakeel.butt@linux.dev>, Muchun Song <muchun.song@linux.dev>,
+ David Hildenbrand <david@kernel.org>, Lorenzo Stoakes <ljs@kernel.org>,
+ "Liam R. Howlett" <Liam.Howlett@oracle.com>,
+ Vlastimil Babka <vbabka@kernel.org>, Mike Rapoport <rppt@kernel.org>,
+ Suren Baghdasaryan <surenb@google.com>,
+ Axel Rasmussen <axelrasmussen@google.com>, Yuanchu Xie <yuanchu@google.com>,
+ Wei Xu <weixugc@google.com>, Brendan Jackman <jackmanb@google.com>,
+ Zi Yan <ziy@nvidia.com>, cgroups@vger.kernel.org, linux-mm@kvack.org,
+ linux-kernel@vger.kernel.org, yc-core@yandex-team.ru
 References: <20260317100058.2316997-1-d-tatianin@yandex-team.ru>
  <20260317121736.f73a828de2a989d1a07efea1@linux-foundation.org>
  <3db237d0-1ee8-44b7-a356-f3015173f7c2@yandex-team.ru>
@@ -104,65 +81,73 @@ References: <20260317100058.2316997-1-d-tatianin@yandex-team.ru>
  <7ca9876c-f3fa-441c-9a21-ae0ee5523318@yandex-team.ru>
  <abpue_k_9mjQAP6X@tiehlicka>
  <73322279-c6f8-4319-827b-938c20c96b9b@yandex-team.ru>
-Precedence: bulk
-X-Mailing-List: cgroups@vger.kernel.org
-List-Id: <cgroups.vger.kernel.org>
-List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
-List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <73322279-c6f8-4319-827b-938c20c96b9b@yandex-team.ru>
-X-Spamd-Result: default: False [-1.66 / 15.00];
+ <abp3-iJbazCpygIm@tiehlicka>
+Content-Language: en-US
+From: Daniil Tatianin <d-tatianin@yandex-team.ru>
+In-Reply-To: <abp3-iJbazCpygIm@tiehlicka>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spamd-Result: default: False [-9.16 / 15.00];
+	WHITELIST_DMARC(-7.00)[yandex-team.ru:D:+];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_RHS_NOT_FQDN(0.50)[];
-	DMARC_POLICY_ALLOW(-0.50)[suse.com,quarantine];
-	R_DKIM_ALLOW(-0.20)[suse.com:s=google];
-	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
+	DMARC_POLICY_ALLOW(-0.50)[yandex-team.ru,none];
+	R_DKIM_ALLOW(-0.20)[yandex-team.ru:s=default];
+	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-14866-lists,cgroups=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-14867-lists,cgroups=lfdr.de];
 	FROM_HAS_DN(0.00)[];
-	RECEIVED_HELO_LOCALHOST(0.00)[];
+	DKIM_TRACE(0.00)[yandex-team.ru:+];
+	RCPT_COUNT_TWELVE(0.00)[21];
+	RCVD_TLS_LAST(0.00)[];
 	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[21];
-	DKIM_TRACE(0.00)[suse.com:+];
-	MISSING_XM_UA(0.00)[];
-	TO_DN_SOME(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[5];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[mhocko@suse.com,cgroups@vger.kernel.org];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	NEURAL_HAM(-0.00)[-1.000];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
+	TO_DN_SOME(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[d-tatianin@yandex-team.ru,cgroups@vger.kernel.org];
+	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
+	RCVD_COUNT_FIVE(0.00)[5];
+	MID_RHS_MATCH_FROM(0.00)[];
+	NEURAL_HAM(-0.00)[-1.000];
 	TAGGED_RCPT(0.00)[cgroups];
-	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns,suse.com:dkim]
-X-Rspamd-Queue-Id: 5DB5C2B9A1C
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,yandex-team.ru:dkim,yandex-team.ru:mid]
+X-Rspamd-Queue-Id: 06CF52B9A9F
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-On Wed 18-03-26 12:25:17, Daniil Tatianin wrote:
-> 
-> On 3/18/26 12:20 PM, Michal Hocko wrote:
-[...]
-> > Shouldn't those use mlock?
-> 
-> Absolutely, mlock is required to mark a folio as unevictable. Note that
-> unevictable folios are still
-> perfectly eligible for compaction. This new property makes it so a cgroup
-> can say whether its
-> unevictable pages should be compacted (same as the global
-> compact_unevictable_allowed sysctl).
 
-If the mlock is already used then why do we need a per memcg control as
-well? Do we have different classes of mlocked pages some with acceptable
-compaction while others without?
+On 3/18/26 1:01 PM, Michal Hocko wrote:
+> On Wed 18-03-26 12:25:17, Daniil Tatianin wrote:
+>> On 3/18/26 12:20 PM, Michal Hocko wrote:
+> [...]
+>>> Shouldn't those use mlock?
+>> Absolutely, mlock is required to mark a folio as unevictable. Note that
+>> unevictable folios are still
+>> perfectly eligible for compaction. This new property makes it so a cgroup
+>> can say whether its
+>> unevictable pages should be compacted (same as the global
+>> compact_unevictable_allowed sysctl).
+> If the mlock is already used then why do we need a per memcg control as
+> well? Do we have different classes of mlocked pages some with acceptable
+> compaction while others without?
+>
+The way it works is mlock(2) only prevents pages from being evicted from 
+the page cache by
+setting unevictable | mlocked flags on the page. Such pages, however, 
+are still allowed for
+compaction by default, unless /proc/sys/vm/compact_unevictable_allowed 
+is set to 0. That
+property essentially "promotes" ALL such (unevictable) pages to a new 
+synthetic tier by
+making compaction skip them. The per-cgroup property works similarly, 
+however, it allows
+the scope to be much smaller: from a global setting that promotes 
+literally ALL unevictable
+(mlocked) pages to this tier, to only promoting pages belonging to the 
+cgroup that has
+memory.compact_unevictable_allowed as 0.
 
--- 
-Michal Hocko
-SUSE Labs
 
