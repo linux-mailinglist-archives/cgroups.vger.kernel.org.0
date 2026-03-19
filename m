@@ -1,171 +1,130 @@
-Return-Path: <cgroups+bounces-14924-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-14925-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id OD4YJv5NvGkXwwIAu9opvQ
-	(envelope-from <cgroups+bounces-14924-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Thu, 19 Mar 2026 20:26:54 +0100
+	id +GDfA8pkvGlLyAIAu9opvQ
+	(envelope-from <cgroups+bounces-14925-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Thu, 19 Mar 2026 22:04:10 +0100
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id EFC3B2D1A5A
-	for <lists+cgroups@lfdr.de>; Thu, 19 Mar 2026 20:26:53 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7B2B72D278B
+	for <lists+cgroups@lfdr.de>; Thu, 19 Mar 2026 22:04:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 9503330B6144
-	for <lists+cgroups@lfdr.de>; Thu, 19 Mar 2026 19:26:28 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id F24AC3012CB6
+	for <lists+cgroups@lfdr.de>; Thu, 19 Mar 2026 21:04:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 245C938F65C;
-	Thu, 19 Mar 2026 19:26:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 877DF374748;
+	Thu, 19 Mar 2026 21:04:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="azlytz9z"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="FwDtVO6p"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-wr1-f49.google.com (mail-wr1-f49.google.com [209.85.221.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7FD6734D903
-	for <cgroups@vger.kernel.org>; Thu, 19 Mar 2026 19:26:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.221.49
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1773948387; cv=pass; b=nrNDjRFdMDI+hA8tO0bMfS+5sUgAzGPh13wpxc+tXNH41AHh3ZCqdNhNccCYi4YZbdCpY7gwc74zdmd9n54DSswJTSfM1m7grzWcMZTt2zS5ysAmK9bNhPHJkPpuC91iDwLNX+PsP/OxHqLezkACJLf/6f6NBkKxuw/KrBakB4I=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1773948387; c=relaxed/simple;
-	bh=SMnbKcM0hUtzaR1GU2NyR71o3cgHMSUw0IGV8L9jlGA=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=L6BxWhkxKys/eLmqMRnNpwRYB4f/5pAHP1wZNSsVq9qC7YXO4d13cG8Kf1bVd9CtMH7pny1n2FUeNX0Eb4/0TxG0xo8qBrGRmAz4JzPxvM5vk0aZPNpuOrT1S7v0sDQemPNbAokPHfiaLUp619z14yKiPmf7q4FAvRvfM8aZawA=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=azlytz9z; arc=pass smtp.client-ip=209.85.221.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f49.google.com with SMTP id ffacd0b85a97d-43b4121c40aso877305f8f.0
-        for <cgroups@vger.kernel.org>; Thu, 19 Mar 2026 12:26:25 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; t=1773948384; cv=none;
-        d=google.com; s=arc-20240605;
-        b=lWMPUHQRCdMYk3LrESILLrXGiSRQHtpOFCbP8FhTOPtf9uWeoFWl/N0YpI/Owre3yu
-         7kEf+Wisy0LUDfYwc3ts3wOzHAYhicLXmIA2CRqbnZKpKCY2cS5sA57JOqMoGkzPIR7c
-         5t02A0sz4xiS0pd8ATK6vTaS7qHoh5LKMEH0xdYJS7z28QCFTUZ664ThW7Fc72/ls7SJ
-         qRHzbIzAhSs4dwEJyUX23pUeVlaB7ZXagH8u6kSXGC1aA8ha5nlhP5FGjWygWac24CsX
-         0TRe8GFAoe8cnMZIZHNrHFC+Ar0WpfVkK2EwfrbvFAC45oSAPkfGZoA0LGd1vcVNBopH
-         5q0Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:dkim-signature;
-        bh=STbYRptw5mPVfwcJPai4/18g1DT8t9j5hz3bTmCzNvY=;
-        fh=BgxRO70iKMcPE7BYo0KEaIS0Izr/vLKDlIh6Ju8Pk30=;
-        b=MTwt8SQJ1CkiBkjzGRi30zDF4eFU0dLNZQzhXBBYDW8fjfjceXYX67k1ogVkiZZxPq
-         onziQGDTJynpNH8RBFTZCJ9JuH5HcDZCvB3QrcviWzF5bKamru/p+mESIPtHkC+7fMG9
-         gn6jEyrING+Oyo10anUByuJaKCzwBkoIbcc3DCq3YGH/2UeDggVHSZPVKFPU1C43Po5j
-         ZB17JERSfekUOcW6SE4EwFEpfyb5wNOgnw6XH9x648aBKt006e1jbTnaKkTOZ063HUR+
-         ebj19m9msrvdoG1E+iY6trs5pgoUqQJj4FVmeDvQLW6pBmYqmpg4fJBNl6K4byZIeB8A
-         L+cw==;
-        darn=vger.kernel.org
-ARC-Authentication-Results: i=1; mx.google.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1773948384; x=1774553184; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=STbYRptw5mPVfwcJPai4/18g1DT8t9j5hz3bTmCzNvY=;
-        b=azlytz9z55giRucLwQBXJnvDsmJgVV+BvIS/FGWSJecbPojKY/ZcQUn8Rj5aDVJgAY
-         ZDGLwxyrsNJRRvBEemL15yO608Lxdy+Nn3m/HCX5r5CoXt94c1cmaxTt0chgxeLh+kpZ
-         Q6wXw3mIBrdITdVVJR0h0e9y6ZNROAXvyh97dhS4HQzW1CNnx5/GidRn5KSN+zSKa4nK
-         39iah9St5FqmEIIOH4831/3EUu+so+c4qqNe5hI57VDjFpuUNicWJA36I9nCcr3hS1u6
-         oYSts+zQ17grXi2ECuJQmVIuBz3x51EzlsDTrejuSFq3C1zt4NEl1z5GQ417Vr+A7ohV
-         BohQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1773948384; x=1774553184;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=STbYRptw5mPVfwcJPai4/18g1DT8t9j5hz3bTmCzNvY=;
-        b=bpIosL5ygjy9Pg41DAKSSgqq3dy/xolwGlqNFnhiM7z6Ql4+yg9mu0Fti0TWm9rc8W
-         p0izVEk+xR/VWfYYkg8a0mKET77zPnww56bF24gq9xlsBGIq83dcPgbRA3DFT4LPlzrm
-         Jymcd0Y3A885hq+oASZtfQpiqdogDimeZ1aZFLbXRlfS7Ktlr7bia5q7NEcZHGqucYU8
-         Onng5HuEnCfi3idFpNWWrD0+jfaBn4x+qBpV6bw4m5DHDJXgllISOX9ncp1VDq6Z5Tc7
-         DGwYTVEYXSot/uR1yefdOtSxINcdxCHw8lzteMCtWdBdYlmjyUN8lltsTXRXWEZJWr2G
-         0Sag==
-X-Forwarded-Encrypted: i=1; AJvYcCUnvc3wsrRFSE+D6GdZvjCnsh/9EuyTxrqx8n0YBcV+pApVPCmlVuAhe7P5nsA5hnuLsE3rlEbS@vger.kernel.org
-X-Gm-Message-State: AOJu0YxjROpnTtFidIBv2mdNWVF1CHiCoyxolqCUM1RO+iEfOtlN2Xa/
-	PLMAyTQKzzuif4V2n+RE6HptbguEhCXUuS9pBP85eJpGpWaLTxTe3UNVoUT9qr7t3FXMZHOSCJ+
-	LoOYF4IpzpIvj6yaPsoJeIWSj2W1uIlk=
-X-Gm-Gg: ATEYQzzi3eeff/nAqR/4/jJl7GDC6k44OBORfhnOdvgIp/9TQyApIunn7u6lJVj0XDk
-	yD6RujArD++4SF/LCXp9n4aYw4VOxbA1ZHV9WakE0CsfDccpRfjObPFQMFGldfY/Ftq3uPlqjYp
-	KGnLBwCzsR1YuccsOw7diFLfKD3s/9kIG1qv4wLLl/c3JjAbVCTBAK2E/mFr2LrSYkLlEfBkQGW
-	I2WK91hETMgcLWIzbBCbRCgu8rnxL+OhPhHhhjJcui4bXEyouJqVYDXz6+BCdlpSLfkoMxFv0LR
-	KvKiWh8yjJXFkKffOP6vRLGhHKRdeuIZvsdvLSfomejN62na7A==
-X-Received: by 2002:a5d:590e:0:b0:43b:4352:1bd8 with SMTP id
- ffacd0b85a97d-43b6428ba33mr631337f8f.53.1773948383714; Thu, 19 Mar 2026
- 12:26:23 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9267136A022
+	for <cgroups@vger.kernel.org>; Thu, 19 Mar 2026 21:04:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1773954246; cv=none; b=XgHmNR/uPKtk4OsvpmmfCK2LAHrlmjvF7rhbSXPOr1jcLc2pEE8+S/FsPZa2q0uj73yjxWzdmg7hB3h3QHQmEEPHGJOGi3d2tJTlsanm+/KJqup4F09Fc9DpHb6aao/XaO2nYi6MHZE/05nYyaZ814RqQDfuRqh4DMyLK4zdvYE=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1773954246; c=relaxed/simple;
+	bh=CZ4LzfEzmBrFuUMplyx12SbCKkallZ+U8mGHkQc28mw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=B5XZDIGs1V7MV8ZrY1+RsXoH5wY32fNJVvXnXO3ha3YE3FX7lmEI4GwH0yOnVcuOI7Mt4hMnoZWW1XFYueoKv13nqDfK78qdOryll5+W0ZzgGq4ptQPkvliOfcLNof4NRtTpBG0aJeSWvq2rs+IRF6123Ldlms2x01i26q9dJus=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=FwDtVO6p; arc=none smtp.client-ip=90.155.50.34
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Transfer-Encoding:
+	Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+	Sender:Reply-To:Content-ID:Content-Description;
+	bh=+rvv7aCV1Zjgon2qQiEl2mtSdsKlc0SDViVfsxmkIzE=; b=FwDtVO6psrwm3HyfFlsZB3+cxi
+	4ESQHmvJpiItXpqmIc5tUF7I461OModDiHygNQ+t5xYXd8oWUTgF+pw10aZcZAvgCZxMbEHMkZ/47
+	ucUcxdlT1pKawgJjtFtRSi8Gh/0gG4PkYDs+c42AKhIrWgTKHsqB21uDM/ja3x3FME1m+6OHX2qie
+	5RVKmV1Y5FYsG0WLuzRcPhHXyfo5UgNJx/3RsfIb/69M/l4ttRMBAOhns/48es+GybKhyEu3boeGR
+	lYUZqptfzyPxY9S7S01nmzA9Lf0wHtZg4VwiqKM3d5GP84CrE5+DkKksPdZdVc3xMAkSUBmTBcsq5
+	W7grO4bA==;
+Received: from 2001-1c00-8d85-5700-266e-96ff-fe07-7dcc.cable.dynamic.v6.ziggo.nl ([2001:1c00:8d85:5700:266e:96ff:fe07:7dcc] helo=noisy.programming.kicks-ass.net)
+	by casper.infradead.org with esmtpsa (Exim 4.98.2 #2 (Red Hat Linux))
+	id 1w3KWW-00000006hf8-1bpC;
+	Thu, 19 Mar 2026 21:03:20 +0000
+Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
+	id E08433004F8; Thu, 19 Mar 2026 22:03:19 +0100 (CET)
+Date: Thu, 19 Mar 2026 22:03:19 +0100
+From: Peter Zijlstra <peterz@infradead.org>
+To: Nhat Pham <nphamcs@gmail.com>
+Cc: kasong@tencent.com, Liam.Howlett@oracle.com, akpm@linux-foundation.org,
+	apopple@nvidia.com, axelrasmussen@google.com, baohua@kernel.org,
+	baolin.wang@linux.alibaba.com, bhe@redhat.com, byungchul@sk.com,
+	cgroups@vger.kernel.org, chengming.zhou@linux.dev,
+	chrisl@kernel.org, corbet@lwn.net, david@kernel.org,
+	dev.jain@arm.com, gourry@gourry.net, hannes@cmpxchg.org,
+	hughd@google.com, jannh@google.com, joshua.hahnjy@gmail.com,
+	lance.yang@linux.dev, lenb@kernel.org, linux-doc@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+	linux-pm@vger.kernel.org, lorenzo.stoakes@oracle.com,
+	matthew.brost@intel.com, mhocko@suse.com, muchun.song@linux.dev,
+	npache@redhat.com, pavel@kernel.org, peterx@redhat.com,
+	pfalcato@suse.de, rafael@kernel.org, rakie.kim@sk.com,
+	roman.gushchin@linux.dev, rppt@kernel.org, ryan.roberts@arm.com,
+	shakeel.butt@linux.dev, shikemeng@huaweicloud.com,
+	surenb@google.com, tglx@kernel.org, vbabka@suse.cz,
+	weixugc@google.com, ying.huang@linux.alibaba.com,
+	yosry.ahmed@linux.dev, yuanchu@google.com,
+	zhengqi.arch@bytedance.com, ziy@nvidia.com, kernel-team@meta.com,
+	riel@surriel.com
+Subject: Re: [PATCH v4 09/21] mm: swap: allocate a virtual swap slot for each
+ swapped out page
+Message-ID: <20260319210319.GK3738786@noisy.programming.kicks-ass.net>
+References: <20260318222953.441758-1-nphamcs@gmail.com>
+ <20260318222953.441758-10-nphamcs@gmail.com>
+ <20260319075621.GR3738010@noisy.programming.kicks-ass.net>
+ <CAKEwX=MUrLtZAcmwqBau5GLnWQrjL7A_4tYrdZ4TQQaE+hsVkA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20260318222953.441758-1-nphamcs@gmail.com> <20260318222953.441758-10-nphamcs@gmail.com>
- <20260319075621.GR3738010@noisy.programming.kicks-ass.net> <CAKEwX=MUrLtZAcmwqBau5GLnWQrjL7A_4tYrdZ4TQQaE+hsVkA@mail.gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
 In-Reply-To: <CAKEwX=MUrLtZAcmwqBau5GLnWQrjL7A_4tYrdZ4TQQaE+hsVkA@mail.gmail.com>
-From: Nhat Pham <nphamcs@gmail.com>
-Date: Thu, 19 Mar 2026 12:26:11 -0700
-X-Gm-Features: AaiRm529wWFONjiD2biQuzKZu-r4Xpu1F03-qQuQMU-V-fDEyZaMmWMBQx2xjec
-Message-ID: <CAKEwX=Mp3=E_nVhFFvdyKWjHtdp6TB=edp9-x4OajZp6MPRwrA@mail.gmail.com>
-Subject: Re: [PATCH v4 09/21] mm: swap: allocate a virtual swap slot for each
- swapped out page
-To: Peter Zijlstra <peterz@infradead.org>
-Cc: kasong@tencent.com, Liam.Howlett@oracle.com, akpm@linux-foundation.org, 
-	apopple@nvidia.com, axelrasmussen@google.com, baohua@kernel.org, 
-	baolin.wang@linux.alibaba.com, bhe@redhat.com, byungchul@sk.com, 
-	cgroups@vger.kernel.org, chengming.zhou@linux.dev, chrisl@kernel.org, 
-	corbet@lwn.net, david@kernel.org, dev.jain@arm.com, gourry@gourry.net, 
-	hannes@cmpxchg.org, hughd@google.com, jannh@google.com, 
-	joshua.hahnjy@gmail.com, lance.yang@linux.dev, lenb@kernel.org, 
-	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, linux-mm@kvack.org, 
-	linux-pm@vger.kernel.org, lorenzo.stoakes@oracle.com, matthew.brost@intel.com, 
-	mhocko@suse.com, muchun.song@linux.dev, npache@redhat.com, pavel@kernel.org, 
-	peterx@redhat.com, pfalcato@suse.de, rafael@kernel.org, rakie.kim@sk.com, 
-	roman.gushchin@linux.dev, rppt@kernel.org, ryan.roberts@arm.com, 
-	shakeel.butt@linux.dev, shikemeng@huaweicloud.com, surenb@google.com, 
-	tglx@kernel.org, vbabka@suse.cz, weixugc@google.com, 
-	ying.huang@linux.alibaba.com, yosry.ahmed@linux.dev, yuanchu@google.com, 
-	zhengqi.arch@bytedance.com, ziy@nvidia.com, kernel-team@meta.com, 
-	riel@surriel.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 X-Spamd-Result: default: False [-0.66 / 15.00];
 	SUSPICIOUS_RECIPS(1.50)[];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=2];
-	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
-	R_DKIM_ALLOW(-0.20)[gmail.com:s=20230601];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+	DMARC_POLICY_ALLOW(-0.50)[infradead.org,none];
+	R_DKIM_ALLOW(-0.20)[infradead.org:s=casper.20170209];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-14924-lists,cgroups=lfdr.de];
-	RCVD_TLS_LAST(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
-	FORGED_SENDER_MAILLIST(0.00)[];
 	FREEMAIL_CC(0.00)[tencent.com,oracle.com,linux-foundation.org,nvidia.com,google.com,kernel.org,linux.alibaba.com,redhat.com,sk.com,vger.kernel.org,linux.dev,lwn.net,arm.com,gourry.net,cmpxchg.org,gmail.com,kvack.org,intel.com,suse.com,suse.de,huaweicloud.com,suse.cz,bytedance.com,meta.com,surriel.com];
-	TO_DN_SOME(0.00)[];
-	MIME_TRACE(0.00)[0:+];
+	TAGGED_FROM(0.00)[bounces-14925-lists,cgroups=lfdr.de];
 	FROM_HAS_DN(0.00)[];
+	FREEMAIL_TO(0.00)[gmail.com];
+	RCVD_TLS_LAST(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	DKIM_TRACE(0.00)[infradead.org:+];
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
 	MISSING_XM_UA(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[5];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[peterz@infradead.org,cgroups@vger.kernel.org];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	RCPT_COUNT_GT_50(0.00)[53];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[nphamcs@gmail.com,cgroups@vger.kernel.org];
-	DKIM_TRACE(0.00)[gmail.com:+];
-	NEURAL_HAM(-0.00)[-0.484];
 	TAGGED_RCPT(0.00)[cgroups];
-	MID_RHS_MATCH_FROMTLD(0.00)[];
-	FREEMAIL_FROM(0.00)[gmail.com];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[mail.gmail.com:mid,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,infradead.org:email]
-X-Rspamd-Queue-Id: EFC3B2D1A5A
+	NEURAL_HAM(-0.00)[-0.970];
+	TO_DN_SOME(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[infradead.org:dkim,infradead.org:email,noisy.programming.kicks-ass.net:mid,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: 7B2B72D278B
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-On Thu, Mar 19, 2026 at 11:37=E2=80=AFAM Nhat Pham <nphamcs@gmail.com> wrot=
-e:
->
-> On Thu, Mar 19, 2026 at 12:56=E2=80=AFAM Peter Zijlstra <peterz@infradead=
-.org> wrote:
+On Thu, Mar 19, 2026 at 11:37:19AM -0700, Nhat Pham wrote:
+> On Thu, Mar 19, 2026 at 12:56 AM Peter Zijlstra <peterz@infradead.org> wrote:
 > >
 > > On Wed, Mar 18, 2026 at 03:29:40PM -0700, Nhat Pham wrote:
 > > > diff --git a/include/linux/cpuhotplug.h b/include/linux/cpuhotplug.h
@@ -191,18 +150,16 @@ e:
 > > nit:
 > >         guard(rcu)();
 > >
-> > > +     for (order =3D 0; order < SWAP_NR_ORDERS; order++) {
-> > > +             cluster =3D per_cpu(percpu_vswap_cluster.clusters[order=
-], cpu);
+> > > +     for (order = 0; order < SWAP_NR_ORDERS; order++) {
+> > > +             cluster = per_cpu(percpu_vswap_cluster.clusters[order], cpu);
 > > > +             if (cluster) {
-> > > +                     per_cpu(percpu_vswap_cluster.clusters[order], c=
-pu) =3D NULL;
+> > > +                     per_cpu(percpu_vswap_cluster.clusters[order], cpu) = NULL;
 > > > +                     spin_lock(&cluster->lock);
 > >
 > > This breaks on PREEMPT_RT as this is ran with IRQs disabled. This must
 > > be a raw_spinlock_t.
 > >
-> > > +                     cluster->cached =3D false;
+> > > +                     cluster->cached = false;
 > > > +                     if (refcount_dec_and_test(&cluster->refcnt))
 > > > +                             vswap_cluster_free(cluster);
 > >
@@ -235,17 +192,9 @@ pu) =3D NULL;
 > >
 > > Strictly speaking this can end up in xas_alloc(), which is again, not
 > > allowed in a DEAD callback.
->
+> 
 > I see. I'll take a look at this. Thanks for pointing this out, Peter!
 
-Hmm seems like we can just defer-free on the cpu_dead path, and that
-should be safe?
-
-Right now, if a cluster is cached on a CPU, we know that it's not
-cached on any other CPU, and it's not on any other partial lists.
-Maybe can call_rcu() here to defer-free it. Hopefully cpu dead is rare
-enough of an event that we dont have a backlog of free deferrals :)
-
-The other alternative is workqueue (with some careful rcu handling in
-the free callback), but that seems unnecessary.
+Oh, I think I might have confused DEAD and DYING here. DYING is the
+tricky one, DEAD should be okay. Sorry about that.
 
