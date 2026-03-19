@@ -1,290 +1,254 @@
-Return-Path: <cgroups+bounces-14931-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-14932-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 4PPcA9SGvGlk0AIAu9opvQ
-	(envelope-from <cgroups+bounces-14931-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Fri, 20 Mar 2026 00:29:24 +0100
+	id uO0PE0qIvGlk0AIAu9opvQ
+	(envelope-from <cgroups+bounces-14932-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Fri, 20 Mar 2026 00:35:38 +0100
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 99CC12D41D4
-	for <lists+cgroups@lfdr.de>; Fri, 20 Mar 2026 00:29:23 +0100 (CET)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
+	by mail.lfdr.de (Postfix) with ESMTPS id 481B72D4307
+	for <lists+cgroups@lfdr.de>; Fri, 20 Mar 2026 00:35:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 5C79F302FFEC
-	for <lists+cgroups@lfdr.de>; Thu, 19 Mar 2026 23:28:02 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 418E530200DB
+	for <lists+cgroups@lfdr.de>; Thu, 19 Mar 2026 23:28:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 67B173EDADA;
-	Thu, 19 Mar 2026 23:26:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DBC4F15CD74;
+	Thu, 19 Mar 2026 23:28:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hZjyjfGr"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ntpMk/SX"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-wr1-f49.google.com (mail-wr1-f49.google.com [209.85.221.49])
+Received: from mail-wr1-f44.google.com (mail-wr1-f44.google.com [209.85.221.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7CDD03F8E09
-	for <cgroups@vger.kernel.org>; Thu, 19 Mar 2026 23:26:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.221.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 32359345CAA
+	for <cgroups@vger.kernel.org>; Thu, 19 Mar 2026 23:28:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.221.44
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1773962785; cv=pass; b=Kfz7Vctrq/irVVqUK+LMqwttvRqvf59XHuUECFQ0FAtruxlWqZpLwRW7VkpUAY8bLo33WRljbCYCA4CO6tfZg9Rz2SiRtFeid8y87b4ij6Fx4tqb8SLdgkSE/b7Aws4lDYhwSIJgbY1Xi5omwzth2idSonUmeCgcsmjyoDCohzA=
+	t=1773962893; cv=pass; b=qccTKNbUKJuyWHxfmczk8wsNPrFKjRqVIgfu4wRfMnmVVN1zytx+NctHZV9wfaOLDIVX72CVjk29K3UA1knIdcXyWB832eqazKnA5FwTMcv045piRx0LzbwSEHr3XenafmIzrn+JZwJB1TJjrLJ9396mS6cilX3j8EaD9razukA=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1773962785; c=relaxed/simple;
-	bh=biWQzYmkSAT7COHU3SJ1yQbLPGtRxmVBoGdTj8nctes=;
+	s=arc-20240116; t=1773962893; c=relaxed/simple;
+	bh=/dvPkx/pvBcotP6nSquXBwzk1NIgIOFThsc2f/pMPDo=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=HGB1Rv3E7U2YHx1mttcQ3LequQN8ssa/YDzRWq2vmiOse3tTTXCyqclom5yEwiwMzkXsNRQ5t7id8TPyD9vEXBHRqHiNcVRD4f0DCmHkbyWxkvYeVNcxaEdhuvn5btI8IB7lDeDAvxwzTVAklnB3Qxj2AVD099hHv814anvYFV4=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hZjyjfGr; arc=pass smtp.client-ip=209.85.221.49
+	 To:Cc:Content-Type; b=FaeNe9UJj03FafM7/xyhlkQkhkHXdUp5huft2Ipw8wN201E4zrcBtR8dCXOG//iC6K3GWL3X0ePblRWqtVoqjHDgv5W9cl7e6tc84P7d58axrs1nCjNQ0AfWwbwolGCkPfnHyfyvlhK68z62+oscFfaY6V0BS58q7brPaL2G7BE=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ntpMk/SX; arc=pass smtp.client-ip=209.85.221.44
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f49.google.com with SMTP id ffacd0b85a97d-439b7c2788dso22867f8f.1
-        for <cgroups@vger.kernel.org>; Thu, 19 Mar 2026 16:26:23 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; t=1773962782; cv=none;
+Received: by mail-wr1-f44.google.com with SMTP id ffacd0b85a97d-43a03cb1df9so1427266f8f.1
+        for <cgroups@vger.kernel.org>; Thu, 19 Mar 2026 16:28:12 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1773962890; cv=none;
         d=google.com; s=arc-20240605;
-        b=He95YF6NDas9BuV+ky0Tj2rXfnauYnUT3kKyzkVwtohnmS19HGk1UbQU6DF23e0iYz
-         KUk5a4+/ZHb3dh4c0DBGp8sWk/RFULRH8NOP3Amk54B/+H6MZwOkNgIPi7Z0G93BalcD
-         /Gj5/ByLQ63Y7VZi/UHHb9Ut477p2pyhd0a0YB58zI53BFdX388fXRYphvTdNg2VpOk7
-         O/OYuGeb4pBmpTXHhYnkdzKINwy3X1NBslnqonuuj0xDsxo95BaGy+mkIqe7inqV83xm
-         3fNEUmo3ljpnGIymWYoe2dW0BPrTK5V6EtYse4mw6LDgJtJDfqnKrqc4Acfo67Jva9T0
-         6paA==
+        b=OFnbKXAaFzxw68TaTn0O11spumfDQXU+310rK1/ItzwYDi80MhYssjKSHAYI5QpQwl
+         fvEi/3mK+50QbamtBnFf8gwvNs6hn66h8V8c01kjbyZI1GhgBAyiH2dNrFQr/rnp+KQl
+         E+p/NHqb3ofsgF5r9AI41dmzQtyKCH5LWXfoo6z2isK8Ek+LSw3ej6dN/7kg2i8RjrLW
+         6prInNyp0pDwCdBz47LKNUbKSGB7P+bCZMcpTO7sFE/4Iq0xyB+bb3iw7JAHSg4gMkTr
+         J5RZdbpzT4HEzjhcUKzGu0mnJv+1zEQKOTbbXcLIiYffsiqwmBx6msQAEoWvFlteavyy
+         TERA==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:dkim-signature;
-        bh=7beb8gjsdwOqcZgIyiO7JeS7nO6wuiWGWdh35QWvwZE=;
-        fh=/KWw2Yuo9WpzPT8sUfbeYJggWvfzq8pDb/mSATY47aM=;
-        b=lhmhe1LaZXB3XDUMebcmcBrWqrmhumabRh/P+Vo7+RV+KR/jhGoJv/AxjuSEprmUIs
-         4nWPyHV/89adLNOin40wKnKk1jAJo62GB8T3XFQoZjMEhA3Fg04T90VgajB/3YtXN1kj
-         GPSrW9SAoP+ThDxyl874UsP8C+2ZY24DzNAiBpruxeRAOXnkJDc24eBNuU9i539Mq7Rk
-         z002wH7BeScBCbV8p4Mtf06i4eKc71eQ3IrIclMLztqQHUg4EpXiMRkfC8J+5cpVOCxL
-         2MtGz2lpshFJSeER1UzXzXVkAF1vj+FxZ7yMJOjPtwzWmYmoEHZhOytWfy+ZoO5ixgHU
-         NUkw==;
+        bh=K9OWBtdlQRn2CWoGv55axZFQst3AHYCAYnvEd326GJU=;
+        fh=lc+l4WLdJZdpdFMa2+Ow09ipD9/4Z0ikKMiUfP1RziU=;
+        b=JjSCBok9lPylQBCxpNfZMQK2uiVZaWVbPvC+32V0tsrvxTiZzgAi6OWFqjWXr18gQi
+         mfqbGrIa0NFEXYXTHRGAEjuQSuI1qBL9p7RjwHdJdtHYXow/Be5JESIQcL8E9Y7J2Zlm
+         KJW3q50HTx2TDS0/1zZ2vJKipCRysu9yfUSBPb2NDotjdp07ObG8cBRiWoGbxDyvjJIj
+         jubVJw4DVzGPz2XC0gLtIne8r6AogiSfW3uLJHFHJFZozZoWz7o5E+kNsaJaDzn6tUXy
+         MqxMJALKusQ8qYvxeBttenEd2q4srveHJ50sF8x76S7REmOOXOst5LRI7HBGXpFSOzhb
+         OeTg==;
         darn=vger.kernel.org
 ARC-Authentication-Results: i=1; mx.google.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1773962782; x=1774567582; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1773962890; x=1774567690; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=7beb8gjsdwOqcZgIyiO7JeS7nO6wuiWGWdh35QWvwZE=;
-        b=hZjyjfGrKp6/17A6t7uU+OrJML0J38+3AvZMwgwCYFolY1XGTM7f8osamH+gMvoTu6
-         b4Zq/j2TEz+YGIJvB+v3C3hABISG/9nc3+YQbPtxc7CV9Lk29PaeM6wFs1gKKxBak1Bc
-         146+wYgFl3w2upobFF8LK67fVdMlZPi55p7bPh8NDZ2GISYRDlEks3mKfyN+RJzTsRzv
-         ETUuTu5p2f5sWnk+QvWZgz3YBJE05JNGw3WUGCdoKI9ZXe5F/h+GGlc7SjKro9KGgMxX
-         YAu8RkfJAuDGcWK7fw/wVrsFMJ5vgVMUWcP8wblvjPmbeZWmNyuWSU+E0Y4RgpqYso9M
-         tvKQ==
+        bh=K9OWBtdlQRn2CWoGv55axZFQst3AHYCAYnvEd326GJU=;
+        b=ntpMk/SXT8L/BMfU1kroeGlMTpVflTCl85zJA1Ri/XLJcf5zwibQhB7rcirXdez8aJ
+         9FqniLfYLEUBkzCdkHfs20VKBtyTpFgEVZwYFnwhj+/BA54+PPBfxqYLV3naEiuxLYup
+         dq75/wic9EmRt3OOCYK6k9NjnYowMCVRQf84j2SmB4JCDhImb8Sic84cEqsvsWX2Av4V
+         rI6NBPbw+SKY3BlDHA/L6VOf/HvhwhlsV1aqUe8otDybTcam0l+Jk+O038pKW2qCDgjh
+         Xz0cqeBA4naGv0AvPb1hPZH0nymqjUj84/MK/YGsGFnWaqUxVZpnRTZTxwqvaK969Nc8
+         DTaw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1773962782; x=1774567582;
+        d=1e100.net; s=20251104; t=1773962890; x=1774567690;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=7beb8gjsdwOqcZgIyiO7JeS7nO6wuiWGWdh35QWvwZE=;
-        b=cDlMTejGatl1b0hwWAaKHj0k8i3mN21oA8SqVO5+mY6bJBUOfYHLkfWbC4zPDDUJSN
-         d36/eg4TbExsx0vpCh9xmNXYsWe8vDTQ2DNoS/fqiCQyGKJPk8Ej0kl0d1X5vTNCqYOK
-         QEFz5HvhkwqsN9THOEnJqqX3XZBWA2hYbPvCZX7+ox/o6pQZLf5UH4RtixrFGqEmZmBE
-         2sUFlwqaaG8wjURsX4MEnMHafeoQzmwzsZ8nsCgrDvr++LTkHnQuA2A/yCuNb+QnMK3o
-         /Qe96AIclAyUiSND3JSxivfuVjyRRHPWobKNRar2TBfeTL4h6FudAvJXQLW2yPXx+pm0
-         J2SQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWjmbLgje+c/LQBnt8a/13CjnwmV9fnOHvcc1nv9RwCmgJyTT4Y755ERqRa+L5/V9WF+/DM5Ntw@vger.kernel.org
-X-Gm-Message-State: AOJu0YzAmJpBy6T2zx+xKYV6z683FRfilYOniWayiOib1iOmKR35dS3q
-	DMalRiV1t49123MSqsj7YXh/MeKFCjUdWbM5S0PAjZO/uae9hO2AKOc5lN2wB+IJHTuqRBp19Tb
-	slIfLDhofGkFs79AtN0RA045HwzojCHQ=
-X-Gm-Gg: ATEYQzwLQbtYWiKCVgEDF7g8LAFGb85Lvofq47K1h6QVuKGiNdIZrvDuQ28exDyeFif
-	cPRStY3VhcQDEV5dQyfhsH73x6TAELyaMywjxoLp0HhpKfrsLj9iwcXwRi59xt9ClTnkb4vd0qt
-	Ystak5xrQLhTQ49O8DnNzcVZVOC1ESnmFfcu/+R+JWA+ddhwAilcKR85qXrSrOmWbTg/GeSQqVM
-	q+S8S2QpAIxduRDjka6Vk5fsG2jo4oMmdNiAbLTOIkN6/lLklo6C1QVqiINxY/aKu3eijNdPN9+
-	gPTaX4fH9KHaP/zScn8wjRUCsGAx8TLx2peimsg=
-X-Received: by 2002:a05:6000:1a88:b0:432:5c34:fb32 with SMTP id
- ffacd0b85a97d-43b64257edamr2078092f8f.23.1773962781517; Thu, 19 Mar 2026
- 16:26:21 -0700 (PDT)
+        bh=K9OWBtdlQRn2CWoGv55axZFQst3AHYCAYnvEd326GJU=;
+        b=TggNsuL/yI6f3tw1OnU1ZAQMCWyCjI7V4iHTi+YGJizzx3A3L7+A69mSrSkNqWGjPi
+         HVRa15ucTjB/3IGm1Z0SknsRD5WTSqZMwRK0tGu8dCu+TuHiazHtEhmP6Zu2047CLMQP
+         bma0Ev2C5clWmiZlw/vIVoBwuYJfUaBidousy0ZKTht0VF8tJYJM/9W9wyKALLzhXxUu
+         pnOBMIywjr/uMFwVhw6wKco+5LgaxycdFhDKNHCfHwvHhe8FfPKhoVLUUDlvO1LuLFlz
+         pJhx9yxlZdizHE8jfVPaQnmbpBWYw9ohI/vKPKZG4jsoYDOjOpnpHTmG8IhacrKkIHDU
+         GuQQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWy+IJiEdDnCYy7VsPOczA+zXyb981XQ8OEHFgeuAGrr9Y9cE6uY9m6l+7+lHif6ya1lGHgYCYf@vger.kernel.org
+X-Gm-Message-State: AOJu0YxkseIGpCQ0mqIaKgHJ6RsGkiFJTiL7cY8Tn1GzSNiaBa55PR7o
+	oR63Nj8XE7gSFrBUOMciOFl/iSc3IoPJTM+GSXcgMsmBUeknl8pahNvUQ8/qgh8wyg0pEs5bcGq
+	d/iF9XYOgLlRzSaqDG2DdbcyKbT7ozLs=
+X-Gm-Gg: ATEYQzwjnfvLiZa3QbCGNfRD+mROWyzx1hYzn0T7qD/52mGTJn6FCfNgTKqKwb7fW3n
+	mBIzGZAmNHU6byIm/Ei6wJ8qW8TDIRM+1z2Ev4uPMr/StLbif/UwYLHZFjK1OxW1Nk/OaC8nWD3
+	DzO1XN9axFlmuNYVveCNA57GVquZqxYwdGpkgPXk11VLLQ49AtlCpoFQOPDrYdDPMbCAkeqJDcP
+	AaccnDVm1VSYS4hU+Z/L+0Ge6xkT7MfzeRn+h/76GxkBpdnfwp5Dtqq4tIqhRYwl6ix/r8stN9E
+	Mm8GgJ65vrPcL8ik/QO6fHvmJmsjNW5Fdz11Y9k=
+X-Received: by 2002:a05:6000:420c:b0:439:c62a:6dc2 with SMTP id
+ ffacd0b85a97d-43b6427973bmr1895992f8f.41.1773962890359; Thu, 19 Mar 2026
+ 16:28:10 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20260318222953.441758-1-nphamcs@gmail.com> <69bc6c4f.050a0220.3bf4de.0001.GAE@google.com>
-In-Reply-To: <69bc6c4f.050a0220.3bf4de.0001.GAE@google.com>
+References: <20260318222953.441758-1-nphamcs@gmail.com> <20260318222953.441758-10-nphamcs@gmail.com>
+ <20260319075621.GR3738010@noisy.programming.kicks-ass.net>
+ <CAKEwX=MUrLtZAcmwqBau5GLnWQrjL7A_4tYrdZ4TQQaE+hsVkA@mail.gmail.com> <20260319210319.GK3738786@noisy.programming.kicks-ass.net>
+In-Reply-To: <20260319210319.GK3738786@noisy.programming.kicks-ass.net>
 From: Nhat Pham <nphamcs@gmail.com>
-Date: Thu, 19 Mar 2026 16:26:10 -0700
-X-Gm-Features: AaiRm53Xe0ySNcLwX_1MJR-ZkSlSVSu1aeYx4yiRcGwlx-CLDipgZeR1y7Vur74
-Message-ID: <CAKEwX=PF470op0e+eXcFS3SHKaLRd5v6ZuE+_aUk_4xfdGosog@mail.gmail.com>
-Subject: Re: [syzbot ci] Re: Virtual Swap Space
-To: syzbot ci <syzbot+ci0215525ee2c0ed89@syzkaller.appspotmail.com>
-Cc: akpm@linux-foundation.org, apopple@nvidia.com, axelrasmussen@google.com, 
-	baohua@kernel.org, baolin.wang@linux.alibaba.com, bhe@redhat.com, 
-	byungchul@sk.com, cgroups@vger.kernel.org, chengming.zhou@linux.dev, 
-	chrisl@kernel.org, corbet@lwn.net, david@kernel.org, dev.jain@arm.com, 
-	gourry@gourry.net, hannes@cmpxchg.org, hughd@google.com, jannh@google.com, 
-	joshua.hahnjy@gmail.com, kasong@tencent.com, kernel-team@meta.com, 
-	lance.yang@linux.dev, lenb@kernel.org, liam.howlett@oracle.com, 
+Date: Thu, 19 Mar 2026 16:27:59 -0700
+X-Gm-Features: AaiRm51gvauVsANsKDMAP1QUJ1JVBGH5RQXhUw4QEOuff8EZUUd-LXduXX7csLg
+Message-ID: <CAKEwX=N_oAjYy3pKzXG+oq9arhNrmPVBm6gvVC_Hx2Utvjfr7A@mail.gmail.com>
+Subject: Re: [PATCH v4 09/21] mm: swap: allocate a virtual swap slot for each
+ swapped out page
+To: Peter Zijlstra <peterz@infradead.org>
+Cc: kasong@tencent.com, Liam.Howlett@oracle.com, akpm@linux-foundation.org, 
+	apopple@nvidia.com, axelrasmussen@google.com, baohua@kernel.org, 
+	baolin.wang@linux.alibaba.com, bhe@redhat.com, byungchul@sk.com, 
+	cgroups@vger.kernel.org, chengming.zhou@linux.dev, chrisl@kernel.org, 
+	corbet@lwn.net, david@kernel.org, dev.jain@arm.com, gourry@gourry.net, 
+	hannes@cmpxchg.org, hughd@google.com, jannh@google.com, 
+	joshua.hahnjy@gmail.com, lance.yang@linux.dev, lenb@kernel.org, 
 	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, linux-mm@kvack.org, 
 	linux-pm@vger.kernel.org, lorenzo.stoakes@oracle.com, matthew.brost@intel.com, 
 	mhocko@suse.com, muchun.song@linux.dev, npache@redhat.com, pavel@kernel.org, 
-	peterx@redhat.com, peterz@infradead.org, pfalcato@suse.de, rafael@kernel.org, 
-	rakie.kim@sk.com, riel@surriel.com, roman.gushchin@linux.dev, rppt@kernel.org, 
-	ryan.roberts@arm.com, shakeel.butt@linux.dev, shikemeng@huaweicloud.com, 
-	surenb@google.com, tglx@kernel.org, vbabka@suse.cz, weixugc@google.com, 
-	ying.huang@linux.alibaba.com, syzbot@lists.linux.dev, 
-	syzkaller-bugs@googlegroups.com
+	peterx@redhat.com, pfalcato@suse.de, rafael@kernel.org, rakie.kim@sk.com, 
+	roman.gushchin@linux.dev, rppt@kernel.org, ryan.roberts@arm.com, 
+	shakeel.butt@linux.dev, shikemeng@huaweicloud.com, surenb@google.com, 
+	tglx@kernel.org, vbabka@suse.cz, weixugc@google.com, 
+	ying.huang@linux.alibaba.com, yosry.ahmed@linux.dev, yuanchu@google.com, 
+	zhengqi.arch@bytedance.com, ziy@nvidia.com, kernel-team@meta.com, 
+	riel@surriel.com
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 X-Spamd-Result: default: False [-0.66 / 15.00];
 	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=2];
 	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
 	R_DKIM_ALLOW(-0.20)[gmail.com:s=20230601];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-14931-lists,cgroups=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-14932-lists,cgroups=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
 	RCVD_COUNT_THREE(0.00)[4];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	FREEMAIL_CC(0.00)[linux-foundation.org,nvidia.com,google.com,kernel.org,linux.alibaba.com,redhat.com,sk.com,vger.kernel.org,linux.dev,lwn.net,arm.com,gourry.net,cmpxchg.org,gmail.com,tencent.com,meta.com,oracle.com,kvack.org,intel.com,suse.com,infradead.org,suse.de,surriel.com,huaweicloud.com,suse.cz,lists.linux.dev,googlegroups.com];
+	FREEMAIL_CC(0.00)[tencent.com,oracle.com,linux-foundation.org,nvidia.com,google.com,kernel.org,linux.alibaba.com,redhat.com,sk.com,vger.kernel.org,linux.dev,lwn.net,arm.com,gourry.net,cmpxchg.org,gmail.com,kvack.org,intel.com,suse.com,suse.de,huaweicloud.com,suse.cz,bytedance.com,meta.com,surriel.com];
 	TO_DN_SOME(0.00)[];
 	MIME_TRACE(0.00)[0:+];
 	FROM_HAS_DN(0.00)[];
 	MISSING_XM_UA(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCPT_COUNT_GT_50(0.00)[52];
+	RCPT_COUNT_GT_50(0.00)[53];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[nphamcs@gmail.com,cgroups@vger.kernel.org];
 	DKIM_TRACE(0.00)[gmail.com:+];
-	NEURAL_HAM(-0.00)[-0.771];
-	TAGGED_RCPT(0.00)[cgroups,ci0215525ee2c0ed89];
+	NEURAL_HAM(-0.00)[-0.577];
+	TAGGED_RCPT(0.00)[cgroups];
 	MID_RHS_MATCH_FROMTLD(0.00)[];
 	FREEMAIL_FROM(0.00)[gmail.com];
-	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[appspotmail.com:email,syzbot.org:url,sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns,googlesource.com:url,mail.gmail.com:mid]
-X-Rspamd-Queue-Id: 99CC12D41D4
+	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[mail.gmail.com:mid,infradead.org:email,sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: 481B72D4307
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-On Thu, Mar 19, 2026 at 2:36=E2=80=AFPM syzbot ci
-<syzbot+ci0215525ee2c0ed89@syzkaller.appspotmail.com> wrote:
+On Thu, Mar 19, 2026 at 2:03=E2=80=AFPM Peter Zijlstra <peterz@infradead.or=
+g> wrote:
 >
-> syzbot ci has tested the following series
+> On Thu, Mar 19, 2026 at 11:37:19AM -0700, Nhat Pham wrote:
+> > On Thu, Mar 19, 2026 at 12:56=E2=80=AFAM Peter Zijlstra <peterz@infrade=
+ad.org> wrote:
+> > >
+> > > On Wed, Mar 18, 2026 at 03:29:40PM -0700, Nhat Pham wrote:
+> > > > diff --git a/include/linux/cpuhotplug.h b/include/linux/cpuhotplug.=
+h
+> > > > index 62cd7b35a29c9..85cb45022e796 100644
+> > > > --- a/include/linux/cpuhotplug.h
+> > > > +++ b/include/linux/cpuhotplug.h
+> > > > @@ -86,6 +86,7 @@ enum cpuhp_state {
+> > > >       CPUHP_FS_BUFF_DEAD,
+> > > >       CPUHP_PRINTK_DEAD,
+> > > >       CPUHP_MM_MEMCQ_DEAD,
+> > > > +     CPUHP_MM_VSWAP_DEAD,
+> > > >       CPUHP_PERCPU_CNT_DEAD,
+> > > >       CPUHP_RADIX_DEAD,
+> > > >       CPUHP_PAGE_ALLOC,
+> > >
+> > > > +static int vswap_cpu_dead(unsigned int cpu)
+> > > > +{
+> > > > +     struct vswap_cluster *cluster;
+> > > > +     int order;
+> > > > +
+> > > > +     rcu_read_lock();
+> > >
+> > > nit:
+> > >         guard(rcu)();
+> > >
+> > > > +     for (order =3D 0; order < SWAP_NR_ORDERS; order++) {
+> > > > +             cluster =3D per_cpu(percpu_vswap_cluster.clusters[ord=
+er], cpu);
+> > > > +             if (cluster) {
+> > > > +                     per_cpu(percpu_vswap_cluster.clusters[order],=
+ cpu) =3D NULL;
+> > > > +                     spin_lock(&cluster->lock);
+> > >
+> > > This breaks on PREEMPT_RT as this is ran with IRQs disabled. This mus=
+t
+> > > be a raw_spinlock_t.
+> > >
+> > > > +                     cluster->cached =3D false;
+> > > > +                     if (refcount_dec_and_test(&cluster->refcnt))
+> > > > +                             vswap_cluster_free(cluster);
+> > >
+> > > And this... below.
+> > >
+> > > > +                     spin_unlock(&cluster->lock);
+> > > > +             }
+> > > > +     }
+> > > > +     rcu_read_unlock();
+> > > > +
+> > > > +     return 0;
+> > > > +}
+> > >
+> > > > +static void vswap_cluster_free(struct vswap_cluster *cluster)
+> > > > +{
+> > > > +     VM_WARN_ON(cluster->count || cluster->cached);
+> > > > +     VM_WARN_ON(!spin_is_locked(&cluster->lock));
+> > >
+> > > This is terrible, please use:
+> > >
+> > >         lockdep_assert_held(&cluster->lock);
+> > >
+> > > > +     xa_lock(&vswap_cluster_map);
+> > >
+> > > This is again broken, this cannot be from a DEAD callback with IRQs
+> > > disabled.
+> > >
+> > > > +     list_del_init(&cluster->list);
+> > > > +     __xa_erase(&vswap_cluster_map, cluster->id);
+> > >
+> > > Strictly speaking this can end up in xas_alloc(), which is again, not
+> > > allowed in a DEAD callback.
+> >
+> > I see. I'll take a look at this. Thanks for pointing this out, Peter!
 >
-> [v4] Virtual Swap Space
-> https://lore.kernel.org/all/20260318222953.441758-1-nphamcs@gmail.com
-> * [PATCH v4 01/21] mm/swap: decouple swap cache from physical swap infras=
-tructure
-> * [PATCH v4 02/21] swap: rearrange the swap header file
-> * [PATCH v4 03/21] mm: swap: add an abstract API for locking out swapoff
-> * [PATCH v4 04/21] zswap: add new helpers for zswap entry operations
-> * [PATCH v4 05/21] mm/swap: add a new function to check if a swap entry i=
-s in swap cached.
-> * [PATCH v4 06/21] mm: swap: add a separate type for physical swap slots
-> * [PATCH v4 07/21] mm: create scaffolds for the new virtual swap implemen=
-tation
-> * [PATCH v4 08/21] zswap: prepare zswap for swap virtualization
-> * [PATCH v4 09/21] mm: swap: allocate a virtual swap slot for each swappe=
-d out page
-> * [PATCH v4 10/21] swap: move swap cache to virtual swap descriptor
-> * [PATCH v4 11/21] zswap: move zswap entry management to the virtual swap=
- descriptor
-> * [PATCH v4 12/21] swap: implement the swap_cgroup API using virtual swap
-> * [PATCH v4 13/21] swap: manage swap entry lifecycle at the virtual swap =
-layer
-> * [PATCH v4 14/21] mm: swap: decouple virtual swap slot from backing stor=
-e
-> * [PATCH v4 15/21] zswap: do not start zswap shrinker if there is no phys=
-ical swap slots
-> * [PATCH v4 16/21] swap: do not unnecesarily pin readahead swap entries
-> * [PATCH v4 17/21] swapfile: remove zeromap bitmap
-> * [PATCH v4 18/21] memcg: swap: only charge physical swap slots
-> * [PATCH v4 19/21] swap: simplify swapoff using virtual swap
-> * [PATCH v4 20/21] swapfile: replace the swap map with bitmaps
-> * [PATCH v4 21/21] vswap: batch contiguous vswap free calls
->
-> and found the following issue:
-> possible deadlock in vswap_iter
->
-> Full report is available here:
-> https://ci.syzbot.org/series/f8238a2a-370e-404d-b3f7-5945b574bd63
->
-> ***
->
-> possible deadlock in vswap_iter
->
-> tree:      bpf-next
-> URL:       https://kernel.googlesource.com/pub/scm/linux/kernel/git/bpf/b=
-pf-next.git
-> base:      05f7e89ab9731565d8a62e3b5d1ec206485eeb0b
-> arch:      amd64
-> compiler:  Debian clang version 21.1.8 (++20251221033036+2078da43e25a-1~e=
-xp1~20251221153213.50), Debian LLD 21.1.8
-> config:    https://ci.syzbot.org/builds/cf1517a6-d391-46d8-bfbe-98e6be6b9=
-3ce/config
-> syz repro: https://ci.syzbot.org/findings/b4e84ae7-17d4-4bf8-9c3f-4c13b10=
-a1e52/syz_repro
->
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> WARNING: possible recursive locking detected
-> syzkaller #0 Not tainted
-> --------------------------------------------
-> syz.1.18/6001 is trying to acquire lock:
-> ffff88811fba0018 (&cluster->lock){+.+.}-{3:3}, at: spin_lock include/linu=
-x/spinlock.h:351 [inline]
-> ffff88811fba0018 (&cluster->lock){+.+.}-{3:3}, at: vswap_iter+0xfa/0x1b0 =
-mm/vswap.c:274
->
-> but task is already holding lock:
-> ffff88811fba0018 (&cluster->lock){+.+.}-{3:3}, at: spin_lock_irq include/=
-linux/spinlock.h:376 [inline]
-> ffff88811fba0018 (&cluster->lock){+.+.}-{3:3}, at: swap_cache_lock_irq+0x=
-e2/0x190 mm/vswap.c:1529
->
-> other info that might help us debug this:
->  Possible unsafe locking scenario:
->
->        CPU0
->        ----
->   lock(&cluster->lock);
->   lock(&cluster->lock);
->
->  *** DEADLOCK ***
->
->  May be due to missing lock nesting notation
->
-> 3 locks held by syz.1.18/6001:
->  #0: ffff8881bb523440 (&mm->mmap_lock){++++}-{4:4}, at: mmap_read_lock in=
-clude/linux/mmap_lock.h:391 [inline]
->  #0: ffff8881bb523440 (&mm->mmap_lock){++++}-{4:4}, at: madvise_lock+0x15=
-2/0x2e0 mm/madvise.c:1789
->  #1: ffff88811fba0018 (&cluster->lock){+.+.}-{3:3}, at: spin_lock_irq inc=
-lude/linux/spinlock.h:376 [inline]
->  #1: ffff88811fba0018 (&cluster->lock){+.+.}-{3:3}, at: swap_cache_lock_i=
-rq+0xe2/0x190 mm/vswap.c:1529
->  #2: ffffffff8e55a360 (rcu_read_lock){....}-{1:3}, at: rcu_lock_acquire i=
-nclude/linux/rcupdate.h:331 [inline]
->  #2: ffffffff8e55a360 (rcu_read_lock){....}-{1:3}, at: rcu_read_lock incl=
-ude/linux/rcupdate.h:867 [inline]
->  #2: ffffffff8e55a360 (rcu_read_lock){....}-{1:3}, at: vswap_cgroup_recor=
-d+0x41/0x440 mm/vswap.c:1909
->
-> stack backtrace:
-> CPU: 0 UID: 0 PID: 6001 Comm: syz.1.18 Not tainted syzkaller #0 PREEMPT(f=
-ull)
-> Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.2-debian-1.=
-16.2-1 04/01/2014
-> Call Trace:
->  <TASK>
->  dump_stack_lvl+0xe8/0x150 lib/dump_stack.c:120
->  print_deadlock_bug+0x279/0x290 kernel/locking/lockdep.c:3041
->  check_deadlock kernel/locking/lockdep.c:3093 [inline]
->  validate_chain kernel/locking/lockdep.c:3895 [inline]
->  __lock_acquire+0x253f/0x2cf0 kernel/locking/lockdep.c:5237
->  lock_acquire+0x106/0x330 kernel/locking/lockdep.c:5868
->  __raw_spin_lock include/linux/spinlock_api_smp.h:133 [inline]
->  _raw_spin_lock+0x2e/0x40 kernel/locking/spinlock.c:154
->  spin_lock include/linux/spinlock.h:351 [inline]
->  vswap_iter+0xfa/0x1b0 mm/vswap.c:274
->  vswap_cgroup_record+0xeb/0x440 mm/vswap.c:1910
->  swap_cgroup_record+0xc5/0x130 mm/vswap.c:1933
->  memcg1_swapout+0x358/0x9e0 mm/memcontrol-v1.c:623
+> Oh, I think I might have confused DEAD and DYING here. DYING is the
+> tricky one, DEAD should be okay. Sorry about that.
 
-Good (syz)bot! We're already holding the cluster lock here - shouldn't
-need to reacquire the lock.
+No worries at all. Thanks for help taking a look - the other comment
+regarding lock-checking still hold regardless, and will be amended in
+the next version :)
 
-Should be an easy-ish fix.
+I'll stare at it a bit more while the context of this portion of the
+code is still in my head.
 
