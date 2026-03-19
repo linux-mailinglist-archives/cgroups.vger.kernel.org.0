@@ -1,184 +1,237 @@
-Return-Path: <cgroups+bounces-14922-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-14923-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id oCApEbk1vGl3uwIAu9opvQ
-	(envelope-from <cgroups+bounces-14922-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Thu, 19 Mar 2026 18:43:21 +0100
+	id UBYSKJhCvGlBwAIAu9opvQ
+	(envelope-from <cgroups+bounces-14923-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Thu, 19 Mar 2026 19:38:16 +0100
 X-Original-To: lists+cgroups@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id CC2AF2D0308
-	for <lists+cgroups@lfdr.de>; Thu, 19 Mar 2026 18:43:20 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0062F2D1242
+	for <lists+cgroups@lfdr.de>; Thu, 19 Mar 2026 19:38:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 72444305A961
-	for <lists+cgroups@lfdr.de>; Thu, 19 Mar 2026 17:41:36 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 6E3F6305366D
+	for <lists+cgroups@lfdr.de>; Thu, 19 Mar 2026 18:37:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 19CCB39184A;
-	Thu, 19 Mar 2026 17:39:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 56DE732937A;
+	Thu, 19 Mar 2026 18:37:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="aLalJSfs"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gvSG/1SJ"
 X-Original-To: cgroups@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wr1-f49.google.com (mail-wr1-f49.google.com [209.85.221.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 419A63DD50C
-	for <cgroups@vger.kernel.org>; Thu, 19 Mar 2026 17:39:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1773941965; cv=none; b=U0A9DsDU7QKoxIJu3qBJvWFbrXENPYbYtARazOA02vJthcysi6bfg5qXdZijocoxDHh2Uytp3yGGb8yLOEoEnpyR76u0zv1TpPeqm7p7Xt4qFVwtDXzb+TIQL5wMFrTHhht2WK98EY9kRoxzMg23vSpEFzk1c7pJ01+njDB66TE=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1773941965; c=relaxed/simple;
-	bh=wFAtlTmn43+vpFnlZmsivMZE1tzHU7BC53jPKGhv5C0=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=RgUpNrhuNuH9r8UIOy/dFVTY4fI7VEm3rtNEmGt4Uk7G/T68svF5teGil2a8FdSNAo2J3eVd7iT1m2viTvBTSlGth8TNpiJLAocbOJ4cMSdAV+MwOArsTmXZl6Nzu6SRO8CusrlR59TdS1oE9I3393eN4ipAWenVOAYnsEEa7ww=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=aLalJSfs; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1773941959;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=y8AJoJFhemnk1DLT2xYvQamPJ/h63aubGqhq+ZDBiKQ=;
-	b=aLalJSfsmaq/XAgufrfop47XPy6TGfAHnjZL+TUpl2wzWuhlEqa2WcpwTyfCZ4Bz2eZSLy
-	QFLSAD3j3cpYpzN2wmgHes4/zyYRg2j57BklIiMUV1H5GQfudrPS45G3d+alOqIBK3mc+l
-	WVRRbA/YmB5u9gU8ddvVix3DgoP3aFw=
-Received: from mx-prod-mc-06.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-35-165-154-97.us-west-2.compute.amazonaws.com [35.165.154.97]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-45-N4MyzdgGOh-xRtock0apmA-1; Thu,
- 19 Mar 2026 13:39:15 -0400
-X-MC-Unique: N4MyzdgGOh-xRtock0apmA-1
-X-Mimecast-MFC-AGG-ID: N4MyzdgGOh-xRtock0apmA_1773941953
-Received: from mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.4])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mx-prod-mc-06.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id D731818005BB;
-	Thu, 19 Mar 2026 17:39:12 +0000 (UTC)
-Received: from llong-thinkpadp16vgen1.westford.csb (unknown [10.22.80.194])
-	by mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id A7CE330001A1;
-	Thu, 19 Mar 2026 17:39:09 +0000 (UTC)
-From: Waiman Long <longman@redhat.com>
-To: Johannes Weiner <hannes@cmpxchg.org>,
-	Michal Hocko <mhocko@kernel.org>,
-	Roman Gushchin <roman.gushchin@linux.dev>,
-	Shakeel Butt <shakeel.butt@linux.dev>,
-	Muchun Song <muchun.song@linux.dev>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Tejun Heo <tj@kernel.org>,
-	=?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>,
-	Shuah Khan <shuah@kernel.org>,
-	Mike Rapoport <rppt@kernel.org>
-Cc: linux-kernel@vger.kernel.org,
-	cgroups@vger.kernel.org,
-	linux-mm@kvack.org,
-	linux-kselftest@vger.kernel.org,
-	Sean Christopherson <seanjc@google.com>,
-	James Houghton <jthoughton@google.com>,
-	Sebastian Chlad <sebastianchlad@gmail.com>,
-	Guopeng Zhang <zhangguopeng@kylinos.cn>,
-	Li Wang <liwan@redhat.com>,
-	Waiman Long <longman@redhat.com>
-Subject: [PATCH 7/7] selftests: memcg: Treat failure for zeroing sock in test_memcg_sock as XFAIL
-Date: Thu, 19 Mar 2026 13:37:52 -0400
-Message-ID: <20260319173752.1472864-8-longman@redhat.com>
-In-Reply-To: <20260319173752.1472864-1-longman@redhat.com>
-References: <20260319173752.1472864-1-longman@redhat.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9AE772BD5A7
+	for <cgroups@vger.kernel.org>; Thu, 19 Mar 2026 18:37:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.221.49
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1773945455; cv=pass; b=pDG3u1QV7If8g4XPtuOxWBVRnYE2nC5QvtoGI9cQu5XXREMnb8mmWo6UVuXBm7bj6DBjImpvMgnZIjgafbjn+0vQyI+VmH9RFB61Ez1Mm+KuCiHClajVD0QiXgJKs1KjU4LXIdq64InQFNO9i0+8M5Yx13dlUNGN5r2vvKbpl5M=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1773945455; c=relaxed/simple;
+	bh=Ljd1nDUnqT7HjpseLLlArUsMFAua4xKP9JZ0zvMVBtI=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=bY4FAX2pOMXVdzdE0jMllopS8LSlscHMtRuHjbqMDCAi29cAfay431YZ/OaDzvQXVzJkaO838I0uOaKK7jn50AZH4GTmtxPiiYzhPxeUGhC2/jaJjHKOTjElpTMLjNAhQS3qIBRcxJbzmRp1hK3D7mEfHt6+Hz1l98T1qE/ESgY=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gvSG/1SJ; arc=pass smtp.client-ip=209.85.221.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f49.google.com with SMTP id ffacd0b85a97d-439b611274bso558417f8f.3
+        for <cgroups@vger.kernel.org>; Thu, 19 Mar 2026 11:37:32 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1773945451; cv=none;
+        d=google.com; s=arc-20240605;
+        b=QbHGVoLZszHx9p/7j8srRXck0WrsRDJ73eyjSev0HdODGG8AIj+Uib0eKEzL7ucAQ0
+         94PtMpX4uM5XDNEh7B5pBj+s25iHH11hIxpqcKnomKLMxiF70puqUKmOiVapKxZy1/oZ
+         p84Ur3ltRuuEOpdJunvTflFHdjtw5AHdzArWvOYDiJ0zCMECkjhFE+QSdjcwgTJ2cXUA
+         Q6SZIvv80KiIUJE3Ke0m2mReSZHxpXNfBRtSJWdzSS/Og3Gc7ttURXttDTWLOZL1wEk+
+         HTea/jQPm7S9NmO9AAfWc+V5dWb8gyGlmOhTTht4Po4vgtht/NOqMXfVQOCS2gsj59sV
+         RJyA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:dkim-signature;
+        bh=frA7u7Xc3APzc2EM7Lp+OpzxNxJLgzQFv8DZjhDK9GY=;
+        fh=JH1Ct46g7Gz05wvihBV61o47H0C/+ANaLuRNdTOl7IU=;
+        b=Yf3ar4tK2RwUCXNkSwSui3e1PbXilOdgnWWq/D7BA7H0QlbkOJfDOmHh35rcvKIZtR
+         8acxqA1EYkWyNXjfgq9Di4T37odHoFyytVuHfPcybvzeobEykAg4PjwWSTqAwIf0L66Y
+         tOVPmqmJP3/Q+zztlckG2piiASxFqzM4Qqy4n8rkXImPkdWDa2ng9tF1qML1YGItt+kB
+         DogbdxQISX08CEfP5HcYQhg08+xasseaBU+VoF05hew34qoToVSta3fAtE5sKW+zRAnm
+         hmiy7rm2FkbXkgxOHD2VpgjsWy1b5EKtwyXdDqXmJTAyeKjaZ3BNjdnXL6fnUuRqFAVx
+         UHUw==;
+        darn=vger.kernel.org
+ARC-Authentication-Results: i=1; mx.google.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1773945451; x=1774550251; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=frA7u7Xc3APzc2EM7Lp+OpzxNxJLgzQFv8DZjhDK9GY=;
+        b=gvSG/1SJ6SqTkBbQiLzGcjeUi/b8T6RuyxthouoknB9X5HjwTnyCOqJkos2GEyxwC2
+         O5A/j2ocmdwv6LLSD5jGmu41aG+ZUfAt/S7SsqCacRSRx2kSkecsLq9JdkCnV5tPrRzV
+         JL315xliybXOb9XI68uVMZAN508touHpDjz3J9JFdhagqagqY7o+RhFlOiAEeSVexIrc
+         IAa3u+d73+ohPvvIyU1EsCfXwRl9L4A7x8kS5581txCKQ3UiIMcL2PDWuQw2zEOt/Pwj
+         q8gAihaIMbfh7X6ZVX0IkJ2gfKEU+mWpOakEv2dNkIvbXI/0zMG+pL9pZCCpQt7o6twd
+         uM5w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1773945451; x=1774550251;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=frA7u7Xc3APzc2EM7Lp+OpzxNxJLgzQFv8DZjhDK9GY=;
+        b=KbuP7lV8HXgh05tyEcdeY8CuAbnmQzFS3Dz/y5dDGdLo6OpRsZibsSTD/LlW0MPEsH
+         oYXuOwOeX89O1SZgUwxyYDdy7LLUHWrUrN3uf5Kg6rkSTWoi7EhxREbyjNdV/9bX+aUf
+         v1sEaP+oznMo3AVICmqkrxjydpHdhu+FkO1HlrazxCfn5E1h9mT/BSiCAZH4JWcXwuTE
+         LMRd0VK5ad6MvrR3KpbzmL9tgE4bBUbWmXZ6PjWPzM1ns65q6hiCHkGPZXC8ftIkQb4q
+         s2VTvUin90rvCLANCVB3hicbDp+ukq+3Ts3JquWmpDQl31a+eADtLBXECJkish/Iwg/L
+         a+Kw==
+X-Forwarded-Encrypted: i=1; AJvYcCWb9487aA0WPGmDGH3czl5dmDimCuChBkpRKkKAhKSOSftvs0sajMlTAl4VVm9/Jm7nMqnsGHQy@vger.kernel.org
+X-Gm-Message-State: AOJu0Yx6EphYC1wewRoXTNN27UPO2klyts9Jin5/MGAszMMM65izs8oN
+	eawY2IAGVZoitLMWL6VdygBRIgLYQ2dHZ1m97oMIi+JzMcpkXmLz66e8gBFYTlxI8/n5sQ5Fgg9
+	ZvTSsctqN5wEGGubeS44lBm5GZ/hPlBc=
+X-Gm-Gg: ATEYQzxIbst5A4YbHp2pd4MGilGaCKIk8mZhjlgc+NoZlamvtgCoAnZKhuKRU81ps90
+	UzYPn6KPkiUnzRWKQKgw0/bmAvUgeRzRlxf/CDbhsTdepsv6efexZCMW/P8uQDFGgHRjmGmMMRX
+	3hpqO+ifw+FOb07W2dTXhL+8RwFURahFlttWckuBvdgdaFmDeOr5sPVO9Hi6dQFgZ5RFWLilBwE
+	OuM1jvg3YhD8AH2HMY4yyELdPWjrQ7v7RInz5c0CUQsl6Std/2qblhi1dujVjwDWxIF56CyZxfT
+	QcZwFIC23OoChiGdu3JywToluy8g4PHXOqROZ5M=
+X-Received: by 2002:a05:6000:3113:b0:43b:5003:e300 with SMTP id
+ ffacd0b85a97d-43b642814fbmr636579f8f.43.1773945450700; Thu, 19 Mar 2026
+ 11:37:30 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.30.177.4
+References: <20260318222953.441758-1-nphamcs@gmail.com> <20260318222953.441758-10-nphamcs@gmail.com>
+ <20260319075621.GR3738010@noisy.programming.kicks-ass.net>
+In-Reply-To: <20260319075621.GR3738010@noisy.programming.kicks-ass.net>
+From: Nhat Pham <nphamcs@gmail.com>
+Date: Thu, 19 Mar 2026 11:37:19 -0700
+X-Gm-Features: AaiRm50Q6KPbZbD6bEq0DQLWi-DLG4OekR5us80lL4mbKl_agLxOnXc4Kgcmx4Q
+Message-ID: <CAKEwX=MUrLtZAcmwqBau5GLnWQrjL7A_4tYrdZ4TQQaE+hsVkA@mail.gmail.com>
+Subject: Re: [PATCH v4 09/21] mm: swap: allocate a virtual swap slot for each
+ swapped out page
+To: Peter Zijlstra <peterz@infradead.org>
+Cc: kasong@tencent.com, Liam.Howlett@oracle.com, akpm@linux-foundation.org, 
+	apopple@nvidia.com, axelrasmussen@google.com, baohua@kernel.org, 
+	baolin.wang@linux.alibaba.com, bhe@redhat.com, byungchul@sk.com, 
+	cgroups@vger.kernel.org, chengming.zhou@linux.dev, chrisl@kernel.org, 
+	corbet@lwn.net, david@kernel.org, dev.jain@arm.com, gourry@gourry.net, 
+	hannes@cmpxchg.org, hughd@google.com, jannh@google.com, 
+	joshua.hahnjy@gmail.com, lance.yang@linux.dev, lenb@kernel.org, 
+	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, linux-mm@kvack.org, 
+	linux-pm@vger.kernel.org, lorenzo.stoakes@oracle.com, matthew.brost@intel.com, 
+	mhocko@suse.com, muchun.song@linux.dev, npache@redhat.com, pavel@kernel.org, 
+	peterx@redhat.com, pfalcato@suse.de, rafael@kernel.org, rakie.kim@sk.com, 
+	roman.gushchin@linux.dev, rppt@kernel.org, ryan.roberts@arm.com, 
+	shakeel.butt@linux.dev, shikemeng@huaweicloud.com, surenb@google.com, 
+	tglx@kernel.org, vbabka@suse.cz, weixugc@google.com, 
+	ying.huang@linux.alibaba.com, yosry.ahmed@linux.dev, yuanchu@google.com, 
+	zhengqi.arch@bytedance.com, ziy@nvidia.com, kernel-team@meta.com, 
+	riel@surriel.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 X-Spamd-Result: default: False [-0.66 / 15.00];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_CONTAINS_FROM(1.00)[];
-	R_MISSING_CHARSET(0.50)[];
-	DMARC_POLICY_ALLOW(-0.50)[redhat.com,quarantine];
-	R_DKIM_ALLOW(-0.20)[redhat.com:s=mimecast20190719];
-	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
+	SUSPICIOUS_RECIPS(1.50)[];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=2];
+	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_DKIM_ALLOW(-0.20)[gmail.com:s=20230601];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FREEMAIL_CC(0.00)[vger.kernel.org,kvack.org,google.com,gmail.com,kylinos.cn,redhat.com];
-	RCPT_COUNT_TWELVE(0.00)[20];
-	MIME_TRACE(0.00)[0:+];
-	TAGGED_FROM(0.00)[bounces-14922-lists,cgroups=lfdr.de];
-	FORGED_SENDER_MAILLIST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-14923-lists,cgroups=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	DKIM_TRACE(0.00)[redhat.com:+];
-	MISSING_XM_UA(0.00)[];
+	RCVD_COUNT_THREE(0.00)[4];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	FREEMAIL_CC(0.00)[tencent.com,oracle.com,linux-foundation.org,nvidia.com,google.com,kernel.org,linux.alibaba.com,redhat.com,sk.com,vger.kernel.org,linux.dev,lwn.net,arm.com,gourry.net,cmpxchg.org,gmail.com,kvack.org,intel.com,suse.com,suse.de,huaweicloud.com,suse.cz,bytedance.com,meta.com,surriel.com];
 	TO_DN_SOME(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[longman@redhat.com,cgroups@vger.kernel.org];
+	MIME_TRACE(0.00)[0:+];
 	FROM_HAS_DN(0.00)[];
+	MISSING_XM_UA(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[6];
+	RCPT_COUNT_GT_50(0.00)[53];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[nphamcs@gmail.com,cgroups@vger.kernel.org];
+	DKIM_TRACE(0.00)[gmail.com:+];
+	NEURAL_HAM(-0.00)[-0.573];
 	TAGGED_RCPT(0.00)[cgroups];
-	NEURAL_HAM(-0.00)[-0.959];
-	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: CC2AF2D0308
+	MID_RHS_MATCH_FROMTLD(0.00)[];
+	FREEMAIL_FROM(0.00)[gmail.com];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[infradead.org:email,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,mail.gmail.com:mid]
+X-Rspamd-Queue-Id: 0062F2D1242
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-Although there is supposed to be a periodic and asynchronous flush of
-stats every 2 seconds, the actual time lag between succesive runs can
-actually vary quite a bit. In fact, I have seen time lag of up to 10s
-of seconds in some cases.
+On Thu, Mar 19, 2026 at 12:56=E2=80=AFAM Peter Zijlstra <peterz@infradead.o=
+rg> wrote:
+>
+> On Wed, Mar 18, 2026 at 03:29:40PM -0700, Nhat Pham wrote:
+> > diff --git a/include/linux/cpuhotplug.h b/include/linux/cpuhotplug.h
+> > index 62cd7b35a29c9..85cb45022e796 100644
+> > --- a/include/linux/cpuhotplug.h
+> > +++ b/include/linux/cpuhotplug.h
+> > @@ -86,6 +86,7 @@ enum cpuhp_state {
+> >       CPUHP_FS_BUFF_DEAD,
+> >       CPUHP_PRINTK_DEAD,
+> >       CPUHP_MM_MEMCQ_DEAD,
+> > +     CPUHP_MM_VSWAP_DEAD,
+> >       CPUHP_PERCPU_CNT_DEAD,
+> >       CPUHP_RADIX_DEAD,
+> >       CPUHP_PAGE_ALLOC,
+>
+> > +static int vswap_cpu_dead(unsigned int cpu)
+> > +{
+> > +     struct vswap_cluster *cluster;
+> > +     int order;
+> > +
+> > +     rcu_read_lock();
+>
+> nit:
+>         guard(rcu)();
+>
+> > +     for (order =3D 0; order < SWAP_NR_ORDERS; order++) {
+> > +             cluster =3D per_cpu(percpu_vswap_cluster.clusters[order],=
+ cpu);
+> > +             if (cluster) {
+> > +                     per_cpu(percpu_vswap_cluster.clusters[order], cpu=
+) =3D NULL;
+> > +                     spin_lock(&cluster->lock);
+>
+> This breaks on PREEMPT_RT as this is ran with IRQs disabled. This must
+> be a raw_spinlock_t.
+>
+> > +                     cluster->cached =3D false;
+> > +                     if (refcount_dec_and_test(&cluster->refcnt))
+> > +                             vswap_cluster_free(cluster);
+>
+> And this... below.
+>
+> > +                     spin_unlock(&cluster->lock);
+> > +             }
+> > +     }
+> > +     rcu_read_unlock();
+> > +
+> > +     return 0;
+> > +}
+>
+> > +static void vswap_cluster_free(struct vswap_cluster *cluster)
+> > +{
+> > +     VM_WARN_ON(cluster->count || cluster->cached);
+> > +     VM_WARN_ON(!spin_is_locked(&cluster->lock));
+>
+> This is terrible, please use:
+>
+>         lockdep_assert_held(&cluster->lock);
+>
+> > +     xa_lock(&vswap_cluster_map);
+>
+> This is again broken, this cannot be from a DEAD callback with IRQs
+> disabled.
+>
+> > +     list_del_init(&cluster->list);
+> > +     __xa_erase(&vswap_cluster_map, cluster->id);
+>
+> Strictly speaking this can end up in xas_alloc(), which is again, not
+> allowed in a DEAD callback.
 
-At the end of test_memcg_sock, it waits up to 3 seconds for the
-"sock" attribute of memory.stat to go back down to 0. Obviously it
-may occasionally fail especially when the kernel has large page size
-(e.g. 64k). Treat this failure as an expected failure (XFAIL) to
-distinguish it from the other failure cases.
-
-Signed-off-by: Waiman Long <longman@redhat.com>
----
- tools/testing/selftests/cgroup/test_memcontrol.c | 13 ++++++++++++-
- 1 file changed, 12 insertions(+), 1 deletion(-)
-
-diff --git a/tools/testing/selftests/cgroup/test_memcontrol.c b/tools/testing/selftests/cgroup/test_memcontrol.c
-index 0ef09bafa68c..9206da51ac83 100644
---- a/tools/testing/selftests/cgroup/test_memcontrol.c
-+++ b/tools/testing/selftests/cgroup/test_memcontrol.c
-@@ -1486,12 +1486,20 @@ static int test_memcg_sock(const char *root)
- 	 * Poll memory.stat for up to 3 seconds (~FLUSH_TIME plus some
- 	 * scheduling slack) and require that the "sock " counter
- 	 * eventually drops to zero.
-+	 *
-+	 * The actual run-to-run elapse time between consecutive run
-+	 * of asynchronous memcg rstat flush may varies quite a bit.
-+	 * So the 3 seconds wait time may not be enough for the "sock"
-+	 * counter to go down to 0. Treat it as a XFAIL instead of
-+	 * a FAIL.
- 	 */
- 	sock_post = cg_read_key_long_poll(memcg, "memory.stat", "sock ", 0,
- 					 MEMCG_SOCKSTAT_WAIT_RETRIES,
- 					 DEFAULT_WAIT_INTERVAL_US);
--	if (sock_post)
-+	if (sock_post) {
-+		ret = KSFT_XFAIL;
- 		goto cleanup;
-+	}
- 
- 	ret = KSFT_PASS;
- 
-@@ -1753,6 +1761,9 @@ int main(int argc, char **argv)
- 		case KSFT_SKIP:
- 			ksft_test_result_skip("%s\n", tests[i].name);
- 			break;
-+		case KSFT_XFAIL:
-+			ksft_test_result_xfail("%s\n", tests[i].name);
-+			break;
- 		default:
- 			ksft_test_result_fail("%s\n", tests[i].name);
- 			break;
--- 
-2.53.0
-
+I see. I'll take a look at this. Thanks for pointing this out, Peter!
 
