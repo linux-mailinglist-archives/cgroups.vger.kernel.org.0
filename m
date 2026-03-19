@@ -1,180 +1,205 @@
-Return-Path: <cgroups+bounces-14912-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-14913-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id qBc7FMHHu2leoQIAu9opvQ
-	(envelope-from <cgroups+bounces-14912-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Thu, 19 Mar 2026 10:54:09 +0100
+	id +KNGLGILvGkArgIAu9opvQ
+	(envelope-from <cgroups+bounces-14913-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Thu, 19 Mar 2026 15:42:42 +0100
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id BB7BA2C919B
-	for <lists+cgroups@lfdr.de>; Thu, 19 Mar 2026 10:54:08 +0100 (CET)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id CF4DD2CD10F
+	for <lists+cgroups@lfdr.de>; Thu, 19 Mar 2026 15:42:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id C9162327D47C
-	for <lists+cgroups@lfdr.de>; Thu, 19 Mar 2026 09:41:43 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 6E262304CB40
+	for <lists+cgroups@lfdr.de>; Thu, 19 Mar 2026 14:30:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5677D3BADAD;
-	Thu, 19 Mar 2026 09:40:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 408D53A6EEC;
+	Thu, 19 Mar 2026 14:30:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="PUzjCv6J"
+	dkim=pass (2048-bit key) header.d=gourry.net header.i=@gourry.net header.b="twd9D5QT"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-wr1-f48.google.com (mail-wr1-f48.google.com [209.85.221.48])
+Received: from mail-qk1-f169.google.com (mail-qk1-f169.google.com [209.85.222.169])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC7303ACF16
-	for <cgroups@vger.kernel.org>; Thu, 19 Mar 2026 09:40:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 593643803DC
+	for <cgroups@vger.kernel.org>; Thu, 19 Mar 2026 14:30:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1773913245; cv=none; b=oui5S2geAFV9JTZtINcZDhclPtN21RcAuTlDxO1FCIzrxzfqT8Gkr+lGh2z9nfPb3+wiwn49hzHHIRF5xHm1w3YAQZlydrc+0OTK290dhLBaTGlRA8BjyR8aTbF4NziWjsqnNeHQmt3b5qrOS4Y99uQceQ2vuL4artILkLGmlZM=
+	t=1773930603; cv=none; b=AY2QhIVwjO6G+LL++SnyboGT2Meq/FArNzb8pvTt63zV9HfARgX7Qgq44ZmElZTneQGe8rdBUzTLsMHeN2hTHlD1Xak9nIv7U1/3sDSTkOe911gDIvNSynCm+vcLIqpUhBU9tFAyW9FnyLqyxRbSLsL5rp0a7cUPhVXa4RP0J4U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1773913245; c=relaxed/simple;
-	bh=ksv+ktKaC8GevXcLZ+qMKcgkHRuEIu5UtXoIbyr6KGc=;
+	s=arc-20240116; t=1773930603; c=relaxed/simple;
+	bh=BArAqxuNOMZmZ3DFzVkEiSDUW/6K7+Jdphve/CIcCPA=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=e9n0Fwes957v8TetRZQPCoFxLOEka1BHJbwbQQCk84snApxccHF7yH8pzhvMjgaDKpL4HEeAIyZOk2t9xx1ywHDogZkx8KbCcbjIR36L2JKH3Fh6n6VHvdxbSsO/Pe+slikItI/SFEFSON2HQzi6PTN22promUf6mx3+K9eXlu0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=PUzjCv6J; arc=none smtp.client-ip=209.85.221.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-wr1-f48.google.com with SMTP id ffacd0b85a97d-439c56e822eso740732f8f.2
-        for <cgroups@vger.kernel.org>; Thu, 19 Mar 2026 02:40:42 -0700 (PDT)
+	 Content-Type:Content-Disposition:In-Reply-To; b=ZYCmg7rJcPO+C7HBjp78crU9OQG1hkekZLtHgN/uGppcWLEzmWuE5rVCRPttUNJ5qCfYqg+1aPTlbxD2W7raUfSqsbnPM1940PSi6SbGFQr9DzMNJn/kNs2LBMzapnPpBPGw1zV/9ZEcHAHhmAPFdNQHcjfkbtQ1pXsRzgxtNCQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gourry.net; spf=pass smtp.mailfrom=gourry.net; dkim=pass (2048-bit key) header.d=gourry.net header.i=@gourry.net header.b=twd9D5QT; arc=none smtp.client-ip=209.85.222.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gourry.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gourry.net
+Received: by mail-qk1-f169.google.com with SMTP id af79cd13be357-8c70b5594f4so119859885a.1
+        for <cgroups@vger.kernel.org>; Thu, 19 Mar 2026 07:30:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1773913241; x=1774518041; darn=vger.kernel.org;
+        d=gourry.net; s=google; t=1773930601; x=1774535401; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=ksv+ktKaC8GevXcLZ+qMKcgkHRuEIu5UtXoIbyr6KGc=;
-        b=PUzjCv6JT+0+9TTHndlr5N/kDbyXAew/nYtoXToQh4D0ypwPRqeBcYdLCjMzGUnlDF
-         GRD0ZuTiDb8H6byaJKoglAM7tCl6nLbkasX/1vdA6qhGKV3kWul5zwS1VaDqWfEam5RK
-         WeWeDtqOhQ7RMOiv/RuqrWHbhdWmC59/6xkX2bIaHzSn065lrDknQ2KY6y++NrYXPQ55
-         bb1VEIqNC08W0Wjlrgj9yftHOQ7lJ6X5O0yMCHJI5GzpHOXlGw/THJZKCPMdwSZY5lXl
-         3my76TKTfxpyHzt+lg1ZubOQ9VGZgGJVyYqDNmPM1NRQ/qXAHMC+vDRnS2psNJmpBwj1
-         hQFA==
+        bh=MZ62zRGDMh84ev+ADivtxhXkIe87cWoaQL4WKudvzqg=;
+        b=twd9D5QTV+/09D1m8dWBXwC+k4zz/klk9ygEPnE7kaQ3jMDwY2JDJX7QOlF/Y2tBsS
+         P8C7lf+4F2tdOenzTlWmc3kH5GhHdB0iLZzybt8SROcnrmfTdGWvu5ID5HvwLUCujeCG
+         6a60XL3y6R+skrRmRzesHu9ui+3wbNnmBgJqmnZ2eQIiOPc0cxiXUbiY5TZIiyUKo1zh
+         PtEtQIM9wBpfBlJtCy/or1Uw8buUZzVxLcWikstswAax3uE5bgBr6N7rxWiJjLkSuxFY
+         C9mtP46Hr8W6I8ZnK/4AWpB5+Jm/DVJHRmJlvDF3V1AFlxVmCQw+YDdN2zg1I7DL273W
+         DyqA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1773913241; x=1774518041;
+        d=1e100.net; s=20251104; t=1773930601; x=1774535401;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=ksv+ktKaC8GevXcLZ+qMKcgkHRuEIu5UtXoIbyr6KGc=;
-        b=RD68Hnb90Tq0yVWgjJNgMHLt61NE1LjsqIq6CO08FptKSC8A2/Re2h0Vot2PT1gcQM
-         tHGfYPAsXcS1h9MfMCnPYBreJHVfvyAKxoFfv5onC0vXx5d1NgPURBiAbaCCEUIp94ap
-         kvIz+iS0/X4Yh/o/sl/Y69NhuuxYPHYv71EWd2TPh8OaQXNkvwgbIZHB6ZvBmMHinpaE
-         VeuROYLiakkovZvj3yGOF+mqERpbaPnsnzCOoMTf9+dW2EwyDozkZ+5KEz/clKgn/5Cd
-         TncAiPWzvHxVsK4tt8ptj1veZRW/TKQPOKUeHPW4uInmVbn8UbHIWwSaquHZLauEG6rA
-         q/xw==
-X-Forwarded-Encrypted: i=1; AJvYcCU5p2hH2pLLv2IhyhW/GbIah8FL5jCBcteIlz48PlnsjpQzWUUVqM22neOjWbuQy0Z2R5Cv9zy+@vger.kernel.org
-X-Gm-Message-State: AOJu0YxfAFY4JyAyDYSrt+cYioC0yS1ggPoTwEZ2qVZsx/G7VMjFOSLb
-	pbwZCDZ7hcKMqHu4xADncaPJ5CHWVKpa6AW0Hx61xs1ybCp8qFMns6gQNxWG3RIP+ew=
-X-Gm-Gg: ATEYQzxjtwpLIIjarSTc6GIHGpOls/K4sJp8nZ2ZfweXV8WntOSSLwpvAfkBYWBr0Kk
-	XYqpaKRzZQnyXU4iXDOC2vpgCMCD2NGa9jpUelz7KK82yAlHI2xgL/qu7t/IyhJS/WTvaP/7H7w
-	HA9VQhk19fxPBRWscpE1lprKbia1g5g04tkpyxDUBF1HyocKkwrawDJ19Y8jK+A2QZ0pMy4Z9+k
-	eyP3ZfPyg5gq/nrw1S5EWseB49oVx3rf0xWhJJFFG3dK11Wovk6DBXcmAwwHFR0o0f+cnYmAEPi
-	ZCQ+F6XIjf0Nty5XXSlctMKqtJsowMavAi7bywvOPWcRyIMrqdabHZjL0zb3YNKEI6bMVP8aDl2
-	1ckd7okOYcn1R8X3vlCGUVMe2wM+KABKjgMWD44YjqnfVu+0gklZxsM3RRB2hHiOSTCKv+F5IOK
-	x1F92mL51O0MQ9Dy7HPCxV3Qy/vbIW7EjyF4JhoBI0ypE=
-X-Received: by 2002:a05:6000:40df:b0:439:dfae:8083 with SMTP id ffacd0b85a97d-43b527c8185mr11899125f8f.38.1773913240768;
-        Thu, 19 Mar 2026 02:40:40 -0700 (PDT)
-Received: from blackdock.suse.cz (nat2.prg.suse.com. [195.250.132.146])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-43b51852aa8sm13291972f8f.15.2026.03.19.02.40.39
+        bh=MZ62zRGDMh84ev+ADivtxhXkIe87cWoaQL4WKudvzqg=;
+        b=HvEFuiYT29jDLxipLaAw5qEI9P7+qOO8X8Zg0CgvPJNFxpuCXaGFFOrUutE0LOiMfX
+         YDpvlh127t4Nji4Cyi8xyCK2mN2muCKSuBXv+WPOs7yUhcy0Ho+amDehd3aEW9dEeaje
+         adPL1v3b46Ov3ZtKBRYcidx6NCHEh0zVltuu9Db2YwT+IevgqMTl4uB2zxVtJWCy2jmQ
+         D40b4Dpq7CSI5GOkKoX4Xvu3IPcASiIebMN9X/hgtR2zXmN/4hzQPVJ0UH2tdXTXJDo+
+         jGpY0+TpTx/LIf0TJL2Wto/Az97y6ppm1fQKj2YA+eQEiBMLVIei2yrAa0M4/SL3INfd
+         mGKA==
+X-Forwarded-Encrypted: i=1; AJvYcCWV9Lh0N0YaBLz4IAIXSY2tj8TU+xr5c8PTC5jdl0liRPiO86v42WMKnyw7Pr82yWm9xGLzNWW9@vger.kernel.org
+X-Gm-Message-State: AOJu0Yw/aoFwpOFkPV7fWeOCBeFWnXK+E9qm3uyY3cLEnh/8vt2rkO+J
+	FSvHe1+5FQIpEKhqS6bKniUP3jz8MGFDSSoPzTqjenspCr1PduD+JUk5N9K/M796/78=
+X-Gm-Gg: ATEYQzzAE5kIZnsS3+0BEQaRw3HpP4iZgsYHwh13D9QZZDWwW08BQ1sOHp6hjYutFid
+	P2mtit1FYKKk9c8GEwoRhJb5fBL0CGPAZ3dveDNMpgpwyl8gOolnCg8Ub1KCeic6kMjf4/bOZmY
+	F96zgFnAXBpAN4Am/WTPRzuGz9LHomZsN2iaCD3ZuXkMX3Nmw4ez2M3RxL986dnGRiIx9UGWK+q
+	JZPoW3SMfTd6NsqVaOAdTUkVDEEaJquGIB+Zxolg613U9secCLiGZ4Vt6VSkHFzygESNtbt+rR6
+	Ey5a49Cd1LY8g4TNfeW1/O46weP22ER/UYUTcb04CpQ6ERDOw1otzAkv9cbhAbmEkYNPrsGD/lx
+	RLAZpSRjYWQ2nu8Or6nqk2OXwc2mevVSId3jo20VauYosMzuOg5NvHbjO57lDOIEGCkXPAwHbdH
+	ZCn8gJ7xEMmylnP0F+lmnr/X3s1LMhRFshhTTT3e+nJlUue4D/oPiEyRuEkuHwCPAhZ6I4BXAWv
+	akgw+dPBA==
+X-Received: by 2002:a05:620a:1a21:b0:8cd:b024:114d with SMTP id af79cd13be357-8cfb9ea6bb2mr485207585a.40.1773930600903;
+        Thu, 19 Mar 2026 07:30:00 -0700 (PDT)
+Received: from gourry-fedora-PF4VCD3F (pool-96-255-20-138.washdc.ftas.verizon.net. [96.255.20.138])
+        by smtp.gmail.com with ESMTPSA id af79cd13be357-8cfc25f0340sm87627185a.1.2026.03.19.07.29.58
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 19 Mar 2026 02:40:40 -0700 (PDT)
-Date: Thu, 19 Mar 2026 10:40:38 +0100
-From: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
-To: Maarten Lankhorst <dev@lankhorst.se>
-Cc: Thadeu Lima de Souza Cascardo <cascardo@igalia.com>, 
-	Maxime Ripard <mripard@kernel.org>, Natalie Vock <natalie.vock@gmx.de>, Tejun Heo <tj@kernel.org>, 
-	Johannes Weiner <hannes@cmpxchg.org>, cgroups@vger.kernel.org, dri-devel@lists.freedesktop.org, 
-	linux-kernel@vger.kernel.org, kernel-dev@igalia.com
-Subject: Re: [PATCH] cgroup/dmem: return error when failing to set dmem.max
-Message-ID: <2q5heaiptuzya3nkmskzudeorda5segp7t2sf76btmjcgaip3n@unslzqgudcv5>
-References: <20260318-dmem_max_ebusy-v1-1-b7e461157b29@igalia.com>
- <02c0752a-1a66-4938-9f5e-152c8c98741f@lankhorst.se>
+        Thu, 19 Mar 2026 07:30:00 -0700 (PDT)
+Date: Thu, 19 Mar 2026 10:29:57 -0400
+From: Gregory Price <gourry@gourry.net>
+To: "David Hildenbrand (Arm)" <david@kernel.org>
+Cc: linux-kernel@vger.kernel.org, linux-cxl@vger.kernel.org,
+	cgroups@vger.kernel.org, linux-mm@kvack.org,
+	linux-trace-kernel@vger.kernel.org, damon@lists.linux.dev,
+	kernel-team@meta.com, gregkh@linuxfoundation.org, rafael@kernel.org,
+	dakr@kernel.org, dave@stgolabs.net, jonathan.cameron@huawei.com,
+	dave.jiang@intel.com, alison.schofield@intel.com,
+	vishal.l.verma@intel.com, ira.weiny@intel.com,
+	dan.j.williams@intel.com, longman@redhat.com,
+	akpm@linux-foundation.org, lorenzo.stoakes@oracle.com,
+	Liam.Howlett@oracle.com, vbabka@suse.cz, rppt@kernel.org,
+	surenb@google.com, mhocko@suse.com, osalvador@suse.de,
+	ziy@nvidia.com, matthew.brost@intel.com, joshua.hahnjy@gmail.com,
+	rakie.kim@sk.com, byungchul@sk.com, ying.huang@linux.alibaba.com,
+	apopple@nvidia.com, axelrasmussen@google.com, yuanchu@google.com,
+	weixugc@google.com, yury.norov@gmail.com, linux@rasmusvillemoes.dk,
+	mhiramat@kernel.org, mathieu.desnoyers@efficios.com, tj@kernel.org,
+	hannes@cmpxchg.org, mkoutny@suse.com, jackmanb@google.com,
+	sj@kernel.org, baolin.wang@linux.alibaba.com, npache@redhat.com,
+	ryan.roberts@arm.com, dev.jain@arm.com, baohua@kernel.org,
+	lance.yang@linux.dev, muchun.song@linux.dev, xu.xin16@zte.com.cn,
+	chengming.zhou@linux.dev, jannh@google.com, linmiaohe@huawei.com,
+	nao.horiguchi@gmail.com, pfalcato@suse.de, rientjes@google.com,
+	shakeel.butt@linux.dev, riel@surriel.com, harry.yoo@oracle.com,
+	cl@gentwo.org, roman.gushchin@linux.dev, chrisl@kernel.org,
+	kasong@tencent.com, shikemeng@huaweicloud.com, nphamcs@gmail.com,
+	bhe@redhat.com, zhengqi.arch@bytedance.com, terry.bowman@amd.com
+Subject: Re: [LSF/MM/BPF TOPIC][RFC PATCH v4 00/27] Private Memory Nodes (w/
+ Compressed RAM)
+Message-ID: <abwIZd7FNPj5YYXQ@gourry-fedora-PF4VCD3F>
+References: <20260222084842.1824063-1-gourry@gourry.net>
+ <c10400db-2259-4465-a07e-19d0691101a4@kernel.org>
+ <aZxqP7J1kOClQUPQ@gourry-fedora-PF4VCD3F>
+ <aZx7hsVNU0XOCCiG@gourry-fedora-PF4VCD3F>
+ <049d056b-844b-4480-b90e-bf4c850fc70e@kernel.org>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="aikibhpbtycrduju"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <02c0752a-1a66-4938-9f5e-152c8c98741f@lankhorst.se>
-X-Spamd-Result: default: False [-3.76 / 15.00];
-	SIGNED_PGP(-2.00)[];
+In-Reply-To: <049d056b-844b-4480-b90e-bf4c850fc70e@kernel.org>
+X-Spamd-Result: default: False [0.34 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	MID_RHS_NOT_FQDN(0.50)[];
-	DMARC_POLICY_ALLOW(-0.50)[suse.com,quarantine];
-	R_DKIM_ALLOW(-0.20)[suse.com:s=google];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
-	MIME_GOOD(-0.20)[multipart/signed,text/plain];
+	R_DKIM_ALLOW(-0.20)[gourry.net:s=google];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64:c];
 	MAILLIST(-0.15)[generic];
+	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FREEMAIL_CC(0.00)[igalia.com,kernel.org,gmx.de,cmpxchg.org,vger.kernel.org,lists.freedesktop.org];
-	MIME_TRACE(0.00)[0:+,1:+,2:~];
-	DKIM_TRACE(0.00)[suse.com:+];
-	FORGED_SENDER_MAILLIST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-14913-lists,cgroups=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-14912-lists,cgroups=lfdr.de];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	FROM_HAS_DN(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	DMARC_NA(0.00)[gourry.net];
+	FREEMAIL_CC(0.00)[vger.kernel.org,kvack.org,lists.linux.dev,meta.com,linuxfoundation.org,kernel.org,stgolabs.net,huawei.com,intel.com,redhat.com,linux-foundation.org,oracle.com,suse.cz,google.com,suse.com,suse.de,nvidia.com,gmail.com,sk.com,linux.alibaba.com,rasmusvillemoes.dk,efficios.com,cmpxchg.org,arm.com,linux.dev,zte.com.cn,surriel.com,gentwo.org,tencent.com,huaweicloud.com,bytedance.com,amd.com];
+	MIME_TRACE(0.00)[0:+];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	DKIM_TRACE(0.00)[gourry.net:+];
+	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
+	MISSING_XM_UA(0.00)[];
 	RCVD_COUNT_FIVE(0.00)[5];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[mkoutny@suse.com,cgroups@vger.kernel.org];
-	MISSING_XM_UA(0.00)[];
-	NEURAL_HAM(-0.00)[-0.991];
+	FROM_NEQ_ENVFROM(0.00)[gourry@gourry.net,cgroups@vger.kernel.org];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	RCPT_COUNT_GT_50(0.00)[72];
 	TAGGED_RCPT(0.00)[cgroups];
-	RCPT_COUNT_SEVEN(0.00)[10];
+	NEURAL_HAM(-0.00)[-0.963];
 	TO_DN_SOME(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,suse.com:dkim,lankhorst.se:email]
-X-Rspamd-Queue-Id: BB7BA2C919B
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns,gourry.net:dkim]
+X-Rspamd-Queue-Id: CF4DD2CD10F
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
+On Tue, Mar 17, 2026 at 02:05:53PM +0100, David Hildenbrand (Arm) wrote:
+> On 2/23/26 17:08, Gregory Price wrote:
+> > On Mon, Feb 23, 2026 at 09:54:55AM -0500, Gregory Price wrote:
+> >> On Mon, Feb 23, 2026 at 02:07:15PM +0100, David Hildenbrand (Arm) wrote:
+> >>>
+> >>> I'm concerned about adding more special-casing (similar to what we already
+> >>> added for ZONE_DEVICE) all over the place.
+> >>>
+> >>> Like the whole folio_managed_() stuff in mprotect.c
+> >>>
+> >>> Having that said, sounds like a reasonable topic to discuss.
+> >>>
+> >>
+> >> Another option would be to add the hook to vma_wants_writenotify()
+> >> instead of the page table code - and mask MM_CP_TRY_CHANGE_WRITABLE.
+> >>
+> > 
+> > scratch all this - existing hooks exist for exactly this purpose:
+> > 
+> > 	can_change_[pte|pmd]_writable()
+> > 
+> > Surprised I missed this.
+> > 
+> > I can clean this up to remove it from the page table walks.
+> 
+> Sorry for the late reply -- sounds like we can handle this cleaner.
+> 
+> But I am wondering: why is this even required?
+> 
+> Is it just for "Services that intercept write faults (e.g., for
+> promotion tracking) need PTEs to stay read-only"
+> 
+> But that promotion tracking sounds like some orthogonal work to me. What
+> am I missing that this is required in this patch set? (is it just for
+> the special compressed RAM bits?)
+> 
 
---aikibhpbtycrduju
-Content-Type: text/plain; protected-headers=v1; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-Subject: Re: [PATCH] cgroup/dmem: return error when failing to set dmem.max
-MIME-Version: 1.0
+Yes, this was specific to the compressed ram bits - it allows for a
+service to control where/when writes to the device can happen.  In this
+case, I've limited writes to just the demotion step. (Although I have
+since realized i need to not allow file-backed memory to be demoted).
 
-On Thu, Mar 19, 2026 at 08:33:12AM +0100, Maarten Lankhorst <dev@lankhorst.=
-se> wrote:
-> The semantics of dmemcg should not substantially differ from the memory c=
-group
-> controller. I believe the memory cgroup controller does allow setting a l=
-ower
-> max, and will evict until below the new max.
->=20
-> See mm/memcontrol.c:memory_max_write
->=20
-> We should probably do the same in dmemcg instead, although we currently h=
-ave no
-> mechanism to evict, setting a new lower max at least prevents future allo=
-cations
-> from failing.
+There may be a better way to do this, but also it may very well be the
+case that such a hook is just a bridge too far and isn't wanted. I think
+this debate is warranted.
 
-+1
-
-Yes, if the dmem resource is preemptible, the limit decrement should take an
-action to fullfill the limit (like with memory.max).
-Even as non-preemptible resource, the behavior could be more consistent
-with misc controller that allows "storing" any value (with the effect of
-preventing further growth).
-
-Thanks,
-Michal
-
---aikibhpbtycrduju
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iJEEABYKADkWIQRCE24Fn/AcRjnLivR+PQLnlNv4CAUCabvEhBsUgAAAAAAEAA5t
-YW51MiwyLjUrMS4xMiwyLDIACgkQfj0C55Tb+AhoFQD/Xj/3hWTWWjgyzyS5VfxQ
-PXZGrYFoikR/GSRiLFv6JW8A/jfpwR80FGuMsA73ceRBxHElklIgX47i2XquoClx
-W24K
-=xuQS
------END PGP SIGNATURE-----
-
---aikibhpbtycrduju--
+~Gregory
 
