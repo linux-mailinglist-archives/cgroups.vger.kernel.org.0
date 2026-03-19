@@ -1,37 +1,37 @@
-Return-Path: <cgroups+bounces-14928-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-14929-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id MAF+CkVpvGlQyQIAu9opvQ
-	(envelope-from <cgroups+bounces-14928-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Thu, 19 Mar 2026 22:23:17 +0100
+	id UDPnHAtqvGlQyQIAu9opvQ
+	(envelope-from <cgroups+bounces-14929-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Thu, 19 Mar 2026 22:26:35 +0100
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
-	by mail.lfdr.de (Postfix) with ESMTPS id 116142D29F9
-	for <lists+cgroups@lfdr.de>; Thu, 19 Mar 2026 22:23:17 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id CB93B2D2A7C
+	for <lists+cgroups@lfdr.de>; Thu, 19 Mar 2026 22:26:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id B3B7A3019C89
-	for <lists+cgroups@lfdr.de>; Thu, 19 Mar 2026 21:23:14 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id B19F231F0FBC
+	for <lists+cgroups@lfdr.de>; Thu, 19 Mar 2026 21:23:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AB0F2402BA4;
-	Thu, 19 Mar 2026 21:23:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DAC79402B9A;
+	Thu, 19 Mar 2026 21:23:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=igalia.com header.i=@igalia.com header.b="nowxwRTx"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=igalia.com header.i=@igalia.com header.b="LMpFtUUO"
 X-Original-To: cgroups@vger.kernel.org
 Received: from fanzine2.igalia.com (fanzine2.igalia.com [213.97.179.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AED772DF14C;
-	Thu, 19 Mar 2026 21:23:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C864402459;
+	Thu, 19 Mar 2026 21:23:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.97.179.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1773955391; cv=none; b=WBlVwgi2rfjrFgAhf8Bvd6G8MMyirQg2rLOqaiXvnSms5dkg0L/qReIhyBEK5/MQc+JHmG7U6zHxljNff6GMhr8XNZUj2fbQuMxKIGjnCKAG/tyHEBrVROxy0hDhBoDnvi4kvoL2yrVhY9e6YlvgFosJZY3yNSVL54u9UmdSs0w=
+	t=1773955394; cv=none; b=R57YCV+r88e5Y1K7g/NOsGUAkCReW6ghT3bRUvN4G4ksSeO/PknCRtcsVePs3JNF6IR/TzOGb21XlW6mwl8nn0fOyD6mU2sHS7z4b+dJ9rlgmJZ+jcApOBoeeB/0qjuJcDakkRSXak9N955j6ENGyuGMnj+NkDmMr1QJVwzDKHg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1773955391; c=relaxed/simple;
-	bh=g5/ovbO83gw3owROdHHFwAcK0U2EAjP+PJQWko9myI8=;
+	s=arc-20240116; t=1773955394; c=relaxed/simple;
+	bh=VvMsIIeDvHubQIh6pouwIc6v/ijLQKebg1s8Sh1NjP8=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=iFY5LFAjHfdfhcEzF8/1bZPFvzhVIO3Oykp6Ko75nNMU1V/hRRF8TyjGpkoQiw+nSkkskTQCV46F1IrKzLYVLt/ez+qqJrQvRQj672B8LOwps5ddJ6G2IVO9aGvN6AAxKQP9tGiGneTWb/m7zX2MDiqggWM4vNiHRWHyv3EP14M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=igalia.com; spf=pass smtp.mailfrom=igalia.com; dkim=pass (2048-bit key) header.d=igalia.com header.i=@igalia.com header.b=nowxwRTx; arc=none smtp.client-ip=213.97.179.56
+	 In-Reply-To:To:Cc; b=RNNqG22IOpx6Bt71g1VuP5sfCgOqpxQ7keB8XJxK4bMy+Vem8OSVTmDk5WpFyMlfbnOhPz04N3zLPGOdjtRH3NuIE1relqal1XyEZZyLjFv0psYcppO9nFrtElwHW7r360HN6IaH7w0YLFCrpEjYs1dACw4QOn6xS7nvdOm/oMs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=igalia.com; spf=pass smtp.mailfrom=igalia.com; dkim=pass (2048-bit key) header.d=igalia.com header.i=@igalia.com header.b=LMpFtUUO; arc=none smtp.client-ip=213.97.179.56
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=igalia.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=igalia.com
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=igalia.com;
@@ -40,20 +40,20 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=igalia.com;
 	Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
 	:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
 	List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=SPSdVVjfXYlYXJdvMtjOrLqjwSNywcgu5lDpY2FUZA0=; b=nowxwRTxSjf5akurlgjLLCkOTY
-	oVO2RWolPa8D1A0+s9ZW8XRAOzqmyno181GJME8GLWnR2UHgMBn2POKCpZHn0T9H9A8P32xVKGTwG
-	9sZVwdg6hoQ1Gq/juJ/ETG5OcIRjdDz8cYjSJtuJcoAj328TeP+6kYzMpe/kRFYEmp22bEtRDOvR0
-	sh57FFitMtLvtgiVC09kdEyISqHAUjfnZtrZkTjRL+Kmr+EFnXbKX5PIgNdYln+RA5wiegTowZpkf
-	FtwtA6bfz87MCcpNejt+IiI1rIjDUi+fwke4ZQZFv+jlDFxTucRF1Y7+J3OZr5cGSC29kJdT8TmLL
-	+D5Ucj2A==;
+	bh=41Uqa2RC7e8RnridV7NcZa89g+tR7DrEjBJo4ZJoKfg=; b=LMpFtUUOVWSRIZzlFDX2PsOh5v
+	4FVXZUMoSWNgRFRRF++SE32KrZTjbHGsbKrg9D27SeDKJePa2miGCo2hfFhYfx4poAuA3V2w7Ksbq
+	ZcjYmf+5jRkhR8wy2W/2qvoTQ2oeptzV/dHCME2uDG8vFOLJJrNVFjNri2SvfHjiKdW/gwfQmo+UJ
+	WY6Nyu3oAuXNFc/jKV8fDrXlJUvYPGJpNhXyjCbFPxB0yRws9fTwfvlUXTyWYHv39Tr2IYA170fwe
+	vu8CKXVLJgyFNQqMQXtZf8Fx6zeQL71E27ihGcK6IZL0I9j2A0HcArMBUbscjTmmi/dCrtdVfj9Ni
+	kiDje2Ew==;
 Received: from 179-125-87-252-dinamico.pombonet.net.br ([179.125.87.252] helo=[127.0.0.1])
 	by fanzine2.igalia.com with esmtpsa 
 	(Cipher TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256) (Exim)
-	id 1w3Kpe-003VvC-JL; Thu, 19 Mar 2026 22:23:06 +0100
+	id 1w3Kpi-003VvC-J9; Thu, 19 Mar 2026 22:23:10 +0100
 From: Thadeu Lima de Souza Cascardo <cascardo@igalia.com>
-Date: Thu, 19 Mar 2026 18:22:43 -0300
-Subject: [PATCH v2 2/3] cgroup/dmem: accept a single region when writing to
- attributes
+Date: Thu, 19 Mar 2026 18:22:44 -0300
+Subject: [PATCH v2 3/3] cgroup/dmem: allow max to be set below current
+ usage
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -62,7 +62,7 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20260319-dmem_max_ebusy-v2-2-b5ce97205269@igalia.com>
+Message-Id: <20260319-dmem_max_ebusy-v2-3-b5ce97205269@igalia.com>
 References: <20260319-dmem_max_ebusy-v2-0-b5ce97205269@igalia.com>
 In-Reply-To: <20260319-dmem_max_ebusy-v2-0-b5ce97205269@igalia.com>
 To: Maarten Lankhorst <dev@lankhorst.se>, 
@@ -76,13 +76,13 @@ X-Mailer: b4 0.14.2
 X-Spamd-Result: default: False [-0.36 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	R_DKIM_REJECT(1.00)[igalia.com:s=20170329];
-	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	DMARC_POLICY_SOFTFAIL(0.10)[igalia.com : SPF not aligned (relaxed),none];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-14928-lists,cgroups=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-14929-lists,cgroups=lfdr.de];
 	RCVD_COUNT_THREE(0.00)[4];
 	FREEMAIL_TO(0.00)[lankhorst.se,kernel.org,gmx.de,cmpxchg.org,suse.com];
 	DKIM_TRACE(0.00)[igalia.com:-];
@@ -91,123 +91,47 @@ X-Spamd-Result: default: False [-0.36 / 15.00];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	FROM_HAS_DN(0.00)[];
 	TO_DN_SOME(0.00)[];
-	NEURAL_HAM(-0.00)[-0.718];
+	NEURAL_HAM(-0.00)[-0.723];
 	FROM_NEQ_ENVFROM(0.00)[cascardo@igalia.com,cgroups@vger.kernel.org];
 	PRECEDENCE_BULK(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
 	MID_RHS_MATCH_FROM(0.00)[];
 	TAGGED_RCPT(0.00)[cgroups];
 	RCPT_COUNT_SEVEN(0.00)[11];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[igalia.com:email,igalia.com:mid,sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 116142D29F9
+	DBL_BLOCKED_OPENRESOLVER(0.00)[igalia.com:email,igalia.com:mid,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: CB93B2D2A7C
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-When writing to dmem.{min,low,max}, if multiple lines are given, one of
-them might succeed while the next one fails, but an error is returned. That
-is, there is no atomicity where either all changes succeed or all of them
-fail.
+page_counter_set_max may return -EBUSY in case the current usage is above
+the new max. When writing to dmem.max, this error is ignored and the new
+max is not set.
 
-Only accept a single region instead of trying to parse multiple lines and
-process multiple regions at the same write.
+Instead of using page_counter_set_max when writing to dmem.max, atomically
+update its value irrespective of the current usage.
+
+Since there is no current mechanism to evict a given dmemcg pool, this will
+at least prevent the current usage from growing any further.
 
 Signed-off-by: Thadeu Lima de Souza Cascardo <cascardo@igalia.com>
 ---
- kernel/cgroup/dmem.c | 69 +++++++++++++++++++++++-----------------------------
- 1 file changed, 30 insertions(+), 39 deletions(-)
+ kernel/cgroup/dmem.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/kernel/cgroup/dmem.c b/kernel/cgroup/dmem.c
-index 1ab1fb47f2711ecc60dd13e611a8a4920b48f3e9..695d2b7516081256da030c80b54ec1c5fcd6ca16 100644
+index 695d2b7516081256da030c80b54ec1c5fcd6ca16..bf9e0d11e46156a437196c77fdfde84250e65420 100644
 --- a/kernel/cgroup/dmem.c
 +++ b/kernel/cgroup/dmem.c
-@@ -729,56 +729,47 @@ static ssize_t dmemcg_limit_write(struct kernfs_open_file *of,
+@@ -159,7 +159,7 @@ set_resource_low(struct dmem_cgroup_pool_state *pool, u64 val)
+ static void
+ set_resource_max(struct dmem_cgroup_pool_state *pool, u64 val)
  {
- 	struct dmemcg_state *dmemcs = css_to_dmemcs(of_css(of));
- 	int err = 0;
-+	struct dmem_cgroup_pool_state *pool = NULL;
-+	char *region_name;
-+	struct dmem_cgroup_region *region;
-+	u64 new_limit;
- 
--	while (buf && !err) {
--		struct dmem_cgroup_pool_state *pool = NULL;
--		char *options, *region_name;
--		struct dmem_cgroup_region *region;
--		u64 new_limit;
--
--		options = buf;
--		buf = strchr(buf, '\n');
--		if (buf)
--			*buf++ = '\0';
--
--		options = strstrip(options);
-+	buf = strstrip(buf);
-+	if (!buf[0])
-+		return -EINVAL;
- 
--		/* eat empty lines */
--		if (!options[0])
--			continue;
-+	region_name = strsep(&buf, " \t");
-+	if (!region_name[0])
-+		return -EINVAL;
- 
--		region_name = strsep(&options, " \t");
--		if (!region_name[0])
--			continue;
-+	if (!buf || !*buf)
-+		return -EINVAL;
- 
--		if (!options || !*options)
--			return -EINVAL;
-+	buf = skip_spaces(buf);
- 
--		rcu_read_lock();
--		region = dmemcg_get_region_by_name(region_name);
--		rcu_read_unlock();
-+	err = dmemcg_parse_limit(buf, &new_limit);
-+	if (err < 0)
-+		return -EINVAL;
- 
--		if (!region)
--			return -EINVAL;
-+	rcu_read_lock();
-+	region = dmemcg_get_region_by_name(region_name);
-+	rcu_read_unlock();
- 
--		err = dmemcg_parse_limit(options, &new_limit);
--		if (err < 0)
--			goto out_put;
-+	if (!region)
-+		return -EINVAL;
- 
--		pool = get_cg_pool_unlocked(dmemcs, region);
--		if (IS_ERR(pool)) {
--			err = PTR_ERR(pool);
--			goto out_put;
--		}
-+	pool = get_cg_pool_unlocked(dmemcs, region);
-+	if (IS_ERR(pool)) {
-+		err = PTR_ERR(pool);
-+		goto out_put;
-+	}
- 
--		/* And commit */
--		apply(pool, new_limit);
--		dmemcg_pool_put(pool);
-+	/* And commit */
-+	apply(pool, new_limit);
-+	dmemcg_pool_put(pool);
- 
- out_put:
--		kref_put(&region->ref, dmemcg_free_region);
--	}
--
-+	kref_put(&region->ref, dmemcg_free_region);
- 
- 	return err ?: nbytes;
+-	page_counter_set_max(&pool->cnt, val);
++	xchg(&pool->cnt.max, val);
  }
+ 
+ static u64 get_resource_low(struct dmem_cgroup_pool_state *pool)
 
 -- 
 2.47.3
