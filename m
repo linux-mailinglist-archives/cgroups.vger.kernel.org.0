@@ -1,65 +1,65 @@
-Return-Path: <cgroups+bounces-14920-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-14922-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id UMriKiw3vGnGvAIAu9opvQ
-	(envelope-from <cgroups+bounces-14920-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Thu, 19 Mar 2026 18:49:32 +0100
+	id oCApEbk1vGl3uwIAu9opvQ
+	(envelope-from <cgroups+bounces-14922-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Thu, 19 Mar 2026 18:43:21 +0100
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 108BF2D0486
-	for <lists+cgroups@lfdr.de>; Thu, 19 Mar 2026 18:49:32 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id CC2AF2D0308
+	for <lists+cgroups@lfdr.de>; Thu, 19 Mar 2026 18:43:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 34E32325BB31
-	for <lists+cgroups@lfdr.de>; Thu, 19 Mar 2026 17:41:14 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 72444305A961
+	for <lists+cgroups@lfdr.de>; Thu, 19 Mar 2026 17:41:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F1F623947B1;
-	Thu, 19 Mar 2026 17:39:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 19CCB39184A;
+	Thu, 19 Mar 2026 17:39:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="hMmpcTci"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="aLalJSfs"
 X-Original-To: cgroups@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C87A3ECBCC
-	for <cgroups@vger.kernel.org>; Thu, 19 Mar 2026 17:39:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 419A63DD50C
+	for <cgroups@vger.kernel.org>; Thu, 19 Mar 2026 17:39:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1773941961; cv=none; b=mX3akN74Ffeab6PNuARmPwst5WFk3FANHj6kGZFfOlq49WkSR3c3mec1hCr0N022FW9VuYdAv1KDB08t5b86+XmP5qbpUO/U3qWZsxb7SAThRzIpJ21LW9HpV/GIHRcwfwmfDFL0+V6G4ARVWgvM846G9AmJvux8ZKt1JW9580k=
+	t=1773941965; cv=none; b=U0A9DsDU7QKoxIJu3qBJvWFbrXENPYbYtARazOA02vJthcysi6bfg5qXdZijocoxDHh2Uytp3yGGb8yLOEoEnpyR76u0zv1TpPeqm7p7Xt4qFVwtDXzb+TIQL5wMFrTHhht2WK98EY9kRoxzMg23vSpEFzk1c7pJ01+njDB66TE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1773941961; c=relaxed/simple;
-	bh=mInYEpsHgQ0sSu1v8PF2dLL2Vd4hkmR1DRzwhCUTikg=;
+	s=arc-20240116; t=1773941965; c=relaxed/simple;
+	bh=wFAtlTmn43+vpFnlZmsivMZE1tzHU7BC53jPKGhv5C0=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=k9pGAQbotjThVoeciFxrcjpqbq0tC4aLH5XTcsZwVYgIRmX3bAtED6Uz/pukL2Bxpztz43Hp/BxTSusyhEUzN82XIaVkh3M6T4jWHIqANRIIhnW5R3SfTVTf7kfBjy42QaviKYP37Nq92tQ7UrFGoYEUk5zorLleOsSd8hTxKaA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=hMmpcTci; arc=none smtp.client-ip=170.10.133.124
+	 MIME-Version; b=RgUpNrhuNuH9r8UIOy/dFVTY4fI7VEm3rtNEmGt4Uk7G/T68svF5teGil2a8FdSNAo2J3eVd7iT1m2viTvBTSlGth8TNpiJLAocbOJ4cMSdAV+MwOArsTmXZl6Nzu6SRO8CusrlR59TdS1oE9I3393eN4ipAWenVOAYnsEEa7ww=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=aLalJSfs; arc=none smtp.client-ip=170.10.129.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1773941955;
+	s=mimecast20190719; t=1773941959;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=08dKphVfSTLtdpNxVh0zM+lKvwtD8+RfKPGuI2AqB10=;
-	b=hMmpcTcipKnDtTj6w1vteAIVmN9utZYTsMFnXHhNRwKBwn2HEWWjrHHCnoEvrZU81TND/S
-	mecFRKaDlgTpLj0WT3zg/4XGX2oqlrUAbym3QC0LBHDoBWk5ZrVPFgErRhcWF3zB6Pti1L
-	p3fBLeBDpeEE2twCFkH00g8DURIabR4=
-Received: from mx-prod-mc-05.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
+	bh=y8AJoJFhemnk1DLT2xYvQamPJ/h63aubGqhq+ZDBiKQ=;
+	b=aLalJSfsmaq/XAgufrfop47XPy6TGfAHnjZL+TUpl2wzWuhlEqa2WcpwTyfCZ4Bz2eZSLy
+	QFLSAD3j3cpYpzN2wmgHes4/zyYRg2j57BklIiMUV1H5GQfudrPS45G3d+alOqIBK3mc+l
+	WVRRbA/YmB5u9gU8ddvVix3DgoP3aFw=
+Received: from mx-prod-mc-06.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-35-165-154-97.us-west-2.compute.amazonaws.com [35.165.154.97]) by
  relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-212-FclM--_NPeiuVWdz8HznfA-1; Thu,
- 19 Mar 2026 13:39:12 -0400
-X-MC-Unique: FclM--_NPeiuVWdz8HznfA-1
-X-Mimecast-MFC-AGG-ID: FclM--_NPeiuVWdz8HznfA_1773941949
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-45-N4MyzdgGOh-xRtock0apmA-1; Thu,
+ 19 Mar 2026 13:39:15 -0400
+X-MC-Unique: N4MyzdgGOh-xRtock0apmA-1
+X-Mimecast-MFC-AGG-ID: N4MyzdgGOh-xRtock0apmA_1773941953
 Received: from mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.4])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mx-prod-mc-05.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 525641955F6A;
-	Thu, 19 Mar 2026 17:39:09 +0000 (UTC)
+	by mx-prod-mc-06.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id D731818005BB;
+	Thu, 19 Mar 2026 17:39:12 +0000 (UTC)
 Received: from llong-thinkpadp16vgen1.westford.csb (unknown [10.22.80.194])
-	by mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id 0FE4130001A1;
-	Thu, 19 Mar 2026 17:39:05 +0000 (UTC)
+	by mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id A7CE330001A1;
+	Thu, 19 Mar 2026 17:39:09 +0000 (UTC)
 From: Waiman Long <longman@redhat.com>
 To: Johannes Weiner <hannes@cmpxchg.org>,
 	Michal Hocko <mhocko@kernel.org>,
@@ -81,9 +81,9 @@ Cc: linux-kernel@vger.kernel.org,
 	Guopeng Zhang <zhangguopeng@kylinos.cn>,
 	Li Wang <liwan@redhat.com>,
 	Waiman Long <longman@redhat.com>
-Subject: [PATCH 6/7] selftests: memcg: Don't call reclaim_until() if already in target
-Date: Thu, 19 Mar 2026 13:37:51 -0400
-Message-ID: <20260319173752.1472864-7-longman@redhat.com>
+Subject: [PATCH 7/7] selftests: memcg: Treat failure for zeroing sock in test_memcg_sock as XFAIL
+Date: Thu, 19 Mar 2026 13:37:52 -0400
+Message-ID: <20260319173752.1472864-8-longman@redhat.com>
 In-Reply-To: <20260319173752.1472864-1-longman@redhat.com>
 References: <20260319173752.1472864-1-longman@redhat.com>
 Precedence: bulk
@@ -100,14 +100,14 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	R_MISSING_CHARSET(0.50)[];
 	DMARC_POLICY_ALLOW(-0.50)[redhat.com,quarantine];
 	R_DKIM_ALLOW(-0.20)[redhat.com:s=mimecast20190719];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	FREEMAIL_CC(0.00)[vger.kernel.org,kvack.org,google.com,gmail.com,kylinos.cn,redhat.com];
 	RCPT_COUNT_TWELVE(0.00)[20];
 	MIME_TRACE(0.00)[0:+];
-	TAGGED_FROM(0.00)[bounces-14920-lists,cgroups=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-14922-lists,cgroups=lfdr.de];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	RCVD_TLS_LAST(0.00)[];
 	DKIM_TRACE(0.00)[redhat.com:+];
@@ -119,59 +119,65 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	RCVD_COUNT_FIVE(0.00)[6];
 	TAGGED_RCPT(0.00)[cgroups];
-	NEURAL_HAM(-0.00)[-0.961];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 108BF2D0486
+	NEURAL_HAM(-0.00)[-0.959];
+	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: CC2AF2D0308
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-Near the end of test_memcg_protection(), reclaim_until() is called
-to reduce memory.current of children[0] to 10M. It was found that
-with larger page size (e.g. 64k) the various memory cgroups in
-test_memcg_protection() would deviate further from the expected values
-especially for the test_memcg_low test. As a result, children[0] might
-have reached the target already without reclamation. The will cause the
-reclaim_until() function to report failure as no reclamation is needed.
+Although there is supposed to be a periodic and asynchronous flush of
+stats every 2 seconds, the actual time lag between succesive runs can
+actually vary quite a bit. In fact, I have seen time lag of up to 10s
+of seconds in some cases.
 
-Avoid this unexpected failure by skipping the reclaim_until() call if
-memory.current of children[0] has already reached the target size for
-kernel with non-4k page size.
+At the end of test_memcg_sock, it waits up to 3 seconds for the
+"sock" attribute of memory.stat to go back down to 0. Obviously it
+may occasionally fail especially when the kernel has large page size
+(e.g. 64k). Treat this failure as an expected failure (XFAIL) to
+distinguish it from the other failure cases.
 
 Signed-off-by: Waiman Long <longman@redhat.com>
 ---
- tools/testing/selftests/cgroup/test_memcontrol.c | 11 ++++++++++-
- 1 file changed, 10 insertions(+), 1 deletion(-)
+ tools/testing/selftests/cgroup/test_memcontrol.c | 13 ++++++++++++-
+ 1 file changed, 12 insertions(+), 1 deletion(-)
 
 diff --git a/tools/testing/selftests/cgroup/test_memcontrol.c b/tools/testing/selftests/cgroup/test_memcontrol.c
-index 4f12d4b4f9f8..0ef09bafa68c 100644
+index 0ef09bafa68c..9206da51ac83 100644
 --- a/tools/testing/selftests/cgroup/test_memcontrol.c
 +++ b/tools/testing/selftests/cgroup/test_memcontrol.c
-@@ -490,6 +490,7 @@ static int test_memcg_protection(const char *root, bool min)
- 	long current;
- 	int i, attempts;
- 	int fd;
-+	bool do_reclaim;
- 
- 	fd = get_temp_fd();
- 	if (fd < 0)
-@@ -602,7 +603,15 @@ static int test_memcg_protection(const char *root, bool min)
- 				       9 + (min ? 0 : 6) * pscale_factor))
+@@ -1486,12 +1486,20 @@ static int test_memcg_sock(const char *root)
+ 	 * Poll memory.stat for up to 3 seconds (~FLUSH_TIME plus some
+ 	 * scheduling slack) and require that the "sock " counter
+ 	 * eventually drops to zero.
++	 *
++	 * The actual run-to-run elapse time between consecutive run
++	 * of asynchronous memcg rstat flush may varies quite a bit.
++	 * So the 3 seconds wait time may not be enough for the "sock"
++	 * counter to go down to 0. Treat it as a XFAIL instead of
++	 * a FAIL.
+ 	 */
+ 	sock_post = cg_read_key_long_poll(memcg, "memory.stat", "sock ", 0,
+ 					 MEMCG_SOCKSTAT_WAIT_RETRIES,
+ 					 DEFAULT_WAIT_INTERVAL_US);
+-	if (sock_post)
++	if (sock_post) {
++		ret = KSFT_XFAIL;
  		goto cleanup;
++	}
  
--	if (!reclaim_until(children[0], MB(10)))
-+	/*
-+	 * With larger page size, it is possible that memory.current of
-+	 * children[0] is close to 10M. Skip the reclaim_until() call if
-+	 * that is the case.
-+	 */
-+	current = cg_read_long(children[0], "memory.current");
-+	do_reclaim = (page_size == KB(4)) ||
-+		     ((current > MB(10)) && !values_close(current, MB(10), 3));
-+	if (do_reclaim && !reclaim_until(children[0], MB(10)))
- 		goto cleanup;
+ 	ret = KSFT_PASS;
  
- 	if (min) {
+@@ -1753,6 +1761,9 @@ int main(int argc, char **argv)
+ 		case KSFT_SKIP:
+ 			ksft_test_result_skip("%s\n", tests[i].name);
+ 			break;
++		case KSFT_XFAIL:
++			ksft_test_result_xfail("%s\n", tests[i].name);
++			break;
+ 		default:
+ 			ksft_test_result_fail("%s\n", tests[i].name);
+ 			break;
 -- 
 2.53.0
 
