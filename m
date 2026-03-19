@@ -1,65 +1,65 @@
-Return-Path: <cgroups+bounces-14921-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-14920-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id KD5FE302vGl3uwIAu9opvQ
-	(envelope-from <cgroups+bounces-14921-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Thu, 19 Mar 2026 18:46:37 +0100
+	id UMriKiw3vGnGvAIAu9opvQ
+	(envelope-from <cgroups+bounces-14920-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Thu, 19 Mar 2026 18:49:32 +0100
 X-Original-To: lists+cgroups@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id A3AAE2D03CE
-	for <lists+cgroups@lfdr.de>; Thu, 19 Mar 2026 18:46:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 108BF2D0486
+	for <lists+cgroups@lfdr.de>; Thu, 19 Mar 2026 18:49:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 194E8326202A
-	for <lists+cgroups@lfdr.de>; Thu, 19 Mar 2026 17:41:25 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 34E32325BB31
+	for <lists+cgroups@lfdr.de>; Thu, 19 Mar 2026 17:41:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8602038F939;
-	Thu, 19 Mar 2026 17:39:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F1F623947B1;
+	Thu, 19 Mar 2026 17:39:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="c74EOEhF"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="hMmpcTci"
 X-Original-To: cgroups@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7653839150A
-	for <cgroups@vger.kernel.org>; Thu, 19 Mar 2026 17:39:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C87A3ECBCC
+	for <cgroups@vger.kernel.org>; Thu, 19 Mar 2026 17:39:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1773941962; cv=none; b=UTRqcd6PcJR9n948mwHw685s0lD+EUGqbDclNk2BaqtMOvqN18xJscqaCzVy4oc0BL14rzxvkNZswc7D2MrB52GpulBTYUYnTdT+1xl40ApsJ23EBFdGry0KlcFqkq4z98CcsznXCMCl+M+mj/CL/joLmDj1sYiW7EaS4Nj8d4Q=
+	t=1773941961; cv=none; b=mX3akN74Ffeab6PNuARmPwst5WFk3FANHj6kGZFfOlq49WkSR3c3mec1hCr0N022FW9VuYdAv1KDB08t5b86+XmP5qbpUO/U3qWZsxb7SAThRzIpJ21LW9HpV/GIHRcwfwmfDFL0+V6G4ARVWgvM846G9AmJvux8ZKt1JW9580k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1773941962; c=relaxed/simple;
-	bh=nxAjAjAgP+lCo3v+SKq8jvMRzDUk+BwOWF50IkkWiZc=;
+	s=arc-20240116; t=1773941961; c=relaxed/simple;
+	bh=mInYEpsHgQ0sSu1v8PF2dLL2Vd4hkmR1DRzwhCUTikg=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Fotom8vhK25a+yHFTkM+c04gL3cdJTZcqoI1kOZj7L2bhe6o5Jkp4vFVnUIXRl192rnRjSV4J4y175hZzFqvqc0az7MXYkImya1ppSj5o1XCxltJi2+V/JVbh6hzvxv4RxJwompxAigF2eQJZfRXXpbwqW/g9CDWFDa+BZtbcTA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=c74EOEhF; arc=none smtp.client-ip=170.10.129.124
+	 MIME-Version; b=k9pGAQbotjThVoeciFxrcjpqbq0tC4aLH5XTcsZwVYgIRmX3bAtED6Uz/pukL2Bxpztz43Hp/BxTSusyhEUzN82XIaVkh3M6T4jWHIqANRIIhnW5R3SfTVTf7kfBjy42QaviKYP37Nq92tQ7UrFGoYEUk5zorLleOsSd8hTxKaA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=hMmpcTci; arc=none smtp.client-ip=170.10.133.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1773941953;
+	s=mimecast20190719; t=1773941955;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=zkUulf/dklOOtLe7ygalmkfZiPOwnIaF4ZwIQQPoF50=;
-	b=c74EOEhFY26gD/pSfhuOPbFpMlWZGIU9DEFs9oQqyYPjVa1kLBDC4Q/3ozg8UIi60L3/QH
-	Q61lj+Lfu05K8EjEeVe49rXJMcDm4kcdLREAZ+0mmvfCtNh2lIBKw2xf51vIUZ0jZLymzV
-	pHqKQNfbRH21VTryPOgv+5JnsxWb50c=
-Received: from mx-prod-mc-03.mail-002.prod.us-west-2.aws.redhat.com
+	bh=08dKphVfSTLtdpNxVh0zM+lKvwtD8+RfKPGuI2AqB10=;
+	b=hMmpcTcipKnDtTj6w1vteAIVmN9utZYTsMFnXHhNRwKBwn2HEWWjrHHCnoEvrZU81TND/S
+	mecFRKaDlgTpLj0WT3zg/4XGX2oqlrUAbym3QC0LBHDoBWk5ZrVPFgErRhcWF3zB6Pti1L
+	p3fBLeBDpeEE2twCFkH00g8DURIabR4=
+Received: from mx-prod-mc-05.mail-002.prod.us-west-2.aws.redhat.com
  (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
  relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-611-HIcTViPWP_quBmhI6xe-QA-1; Thu,
- 19 Mar 2026 13:39:08 -0400
-X-MC-Unique: HIcTViPWP_quBmhI6xe-QA-1
-X-Mimecast-MFC-AGG-ID: HIcTViPWP_quBmhI6xe-QA_1773941946
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-212-FclM--_NPeiuVWdz8HznfA-1; Thu,
+ 19 Mar 2026 13:39:12 -0400
+X-MC-Unique: FclM--_NPeiuVWdz8HznfA-1
+X-Mimecast-MFC-AGG-ID: FclM--_NPeiuVWdz8HznfA_1773941949
 Received: from mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.4])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mx-prod-mc-03.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id CB044195607B;
-	Thu, 19 Mar 2026 17:39:05 +0000 (UTC)
+	by mx-prod-mc-05.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 525641955F6A;
+	Thu, 19 Mar 2026 17:39:09 +0000 (UTC)
 Received: from llong-thinkpadp16vgen1.westford.csb (unknown [10.22.80.194])
-	by mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id C4BCD30001A1;
-	Thu, 19 Mar 2026 17:39:02 +0000 (UTC)
+	by mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id 0FE4130001A1;
+	Thu, 19 Mar 2026 17:39:05 +0000 (UTC)
 From: Waiman Long <longman@redhat.com>
 To: Johannes Weiner <hannes@cmpxchg.org>,
 	Michal Hocko <mhocko@kernel.org>,
@@ -81,9 +81,9 @@ Cc: linux-kernel@vger.kernel.org,
 	Guopeng Zhang <zhangguopeng@kylinos.cn>,
 	Li Wang <liwan@redhat.com>,
 	Waiman Long <longman@redhat.com>
-Subject: [PATCH 5/7] selftests: memcg: Reduce the expected swap.peak with larger page size
-Date: Thu, 19 Mar 2026 13:37:50 -0400
-Message-ID: <20260319173752.1472864-6-longman@redhat.com>
+Subject: [PATCH 6/7] selftests: memcg: Don't call reclaim_until() if already in target
+Date: Thu, 19 Mar 2026 13:37:51 -0400
+Message-ID: <20260319173752.1472864-7-longman@redhat.com>
 In-Reply-To: <20260319173752.1472864-1-longman@redhat.com>
 References: <20260319173752.1472864-1-longman@redhat.com>
 Precedence: bulk
@@ -107,7 +107,7 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	FREEMAIL_CC(0.00)[vger.kernel.org,kvack.org,google.com,gmail.com,kylinos.cn,redhat.com];
 	RCPT_COUNT_TWELVE(0.00)[20];
 	MIME_TRACE(0.00)[0:+];
-	TAGGED_FROM(0.00)[bounces-14921-lists,cgroups=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-14920-lists,cgroups=lfdr.de];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	RCVD_TLS_LAST(0.00)[];
 	DKIM_TRACE(0.00)[redhat.com:+];
@@ -119,104 +119,59 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	RCVD_COUNT_FIVE(0.00)[6];
 	TAGGED_RCPT(0.00)[cgroups];
-	NEURAL_HAM(-0.00)[-0.960];
+	NEURAL_HAM(-0.00)[-0.961];
 	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
 	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: A3AAE2D03CE
+X-Rspamd-Queue-Id: 108BF2D0486
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-When running the test_memcg_swap_max_peak test which sets swap.max
-to 30M on an arm64 system with 64k page size, the test failed as the
-swap.peak could only reach up only to 27,328,512 bytes (about 25.45
-MB which is lower than the expected 29M) before the allocating task
-got oom-killed.
+Near the end of test_memcg_protection(), reclaim_until() is called
+to reduce memory.current of children[0] to 10M. It was found that
+with larger page size (e.g. 64k) the various memory cgroups in
+test_memcg_protection() would deviate further from the expected values
+especially for the test_memcg_low test. As a result, children[0] might
+have reached the target already without reclamation. The will cause the
+reclaim_until() function to report failure as no reclamation is needed.
 
-It is likely due to the fact that it takes longer to write out a larger
-page to swap and hence a lower swap.peak is being reached. Setting
-memory.high to 29M to throttle memory allocation when nearing memory.max
-helps, but it still could only reach up to 29,032,448 bytes (about
-27.04M). As a result, we have to reduce the expected swap.peak with
-larger page size. Now swap.peak is expected to reach only 27M with 64k
-page, 29M with 4k page and 28M with 16k page.
+Avoid this unexpected failure by skipping the reclaim_until() call if
+memory.current of children[0] has already reached the target size for
+kernel with non-4k page size.
 
 Signed-off-by: Waiman Long <longman@redhat.com>
 ---
- .../selftests/cgroup/test_memcontrol.c        | 26 ++++++++++++++++---
- 1 file changed, 22 insertions(+), 4 deletions(-)
+ tools/testing/selftests/cgroup/test_memcontrol.c | 11 ++++++++++-
+ 1 file changed, 10 insertions(+), 1 deletion(-)
 
 diff --git a/tools/testing/selftests/cgroup/test_memcontrol.c b/tools/testing/selftests/cgroup/test_memcontrol.c
-index 2c3a838536ae..4f12d4b4f9f8 100644
+index 4f12d4b4f9f8..0ef09bafa68c 100644
 --- a/tools/testing/selftests/cgroup/test_memcontrol.c
 +++ b/tools/testing/selftests/cgroup/test_memcontrol.c
-@@ -1032,6 +1032,7 @@ static int test_memcg_swap_max_peak(const char *root)
- 	char *memcg;
- 	long max, peak;
- 	struct stat ss;
-+	long swap_peak;
- 	int swap_peak_fd = -1, mem_peak_fd = -1;
+@@ -490,6 +490,7 @@ static int test_memcg_protection(const char *root, bool min)
+ 	long current;
+ 	int i, attempts;
+ 	int fd;
++	bool do_reclaim;
  
- 	/* any non-empty string resets */
-@@ -1119,6 +1120,23 @@ static int test_memcg_swap_max_peak(const char *root)
- 	if (cg_write(memcg, "memory.max", "30M"))
+ 	fd = get_temp_fd();
+ 	if (fd < 0)
+@@ -602,7 +603,15 @@ static int test_memcg_protection(const char *root, bool min)
+ 				       9 + (min ? 0 : 6) * pscale_factor))
  		goto cleanup;
  
+-	if (!reclaim_until(children[0], MB(10)))
 +	/*
-+	 * The swap.peak that can be reached will depend on the system page
-+	 * size. With larger page size (e.g. 64k), it takes more time to write
-+	 * the anonymous memory page to swap and so the peak reached will be
-+	 * lower before the memory allocation process get oom-killed. One way
-+	 * to allow the swap.peak to go higher is to throttle memory allocation
-+	 * by setting memory.high to, say, 29M to give more time to swap out the
-+	 * memory before oom-kill. This is still not enough for it to reach
-+	 * 29M reachable with 4k page. So we still need to reduce the expected
-+	 * swap.peak accordingly.
++	 * With larger page size, it is possible that memory.current of
++	 * children[0] is close to 10M. Skip the reclaim_until() call if
++	 * that is the case.
 +	 */
-+	swap_peak = (page_size == KB(4)) ? MB(29) :
-+		   ((page_size <= KB(16)) ? MB(28) : MB(27));
-+
-+	if (cg_write(memcg, "memory.high", "29M"))
-+		goto cleanup;
-+
- 	/* Should be killed by OOM killer */
- 	if (!cg_run(memcg, alloc_anon, (void *)MB(100)))
- 		goto cleanup;
-@@ -1134,7 +1152,7 @@ static int test_memcg_swap_max_peak(const char *root)
++	current = cg_read_long(children[0], "memory.current");
++	do_reclaim = (page_size == KB(4)) ||
++		     ((current > MB(10)) && !values_close(current, MB(10), 3));
++	if (do_reclaim && !reclaim_until(children[0], MB(10)))
  		goto cleanup;
  
- 	peak = cg_read_long(memcg, "memory.swap.peak");
--	if (peak < MB(29))
-+	if (peak < swap_peak)
- 		goto cleanup;
- 
- 	peak = cg_read_long_fd(mem_peak_fd);
-@@ -1142,7 +1160,7 @@ static int test_memcg_swap_max_peak(const char *root)
- 		goto cleanup;
- 
- 	peak = cg_read_long_fd(swap_peak_fd);
--	if (peak < MB(29))
-+	if (peak < swap_peak)
- 		goto cleanup;
- 
- 	/*
-@@ -1181,7 +1199,7 @@ static int test_memcg_swap_max_peak(const char *root)
- 	if (cg_read_long(memcg, "memory.peak") < MB(29))
- 		goto cleanup;
- 
--	if (cg_read_long(memcg, "memory.swap.peak") < MB(29))
-+	if (cg_read_long(memcg, "memory.swap.peak") < swap_peak)
- 		goto cleanup;
- 
- 	if (cg_run(memcg, alloc_anon_50M_check_swap, (void *)MB(30)))
-@@ -1196,7 +1214,7 @@ static int test_memcg_swap_max_peak(const char *root)
- 		goto cleanup;
- 
- 	peak = cg_read_long(memcg, "memory.swap.peak");
--	if (peak < MB(29))
-+	if (peak < swap_peak)
- 		goto cleanup;
- 
- 	peak = cg_read_long_fd(mem_peak_fd);
+ 	if (min) {
 -- 
 2.53.0
 
