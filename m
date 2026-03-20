@@ -1,133 +1,165 @@
-Return-Path: <cgroups+bounces-14934-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-14935-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id aPZ7JWq0vGn32AIAu9opvQ
-	(envelope-from <cgroups+bounces-14934-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Fri, 20 Mar 2026 03:43:54 +0100
+	id GDoZCIjBvGnM2gIAu9opvQ
+	(envelope-from <cgroups+bounces-14935-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Fri, 20 Mar 2026 04:39:52 +0100
 X-Original-To: lists+cgroups@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 341E12D5366
-	for <lists+cgroups@lfdr.de>; Fri, 20 Mar 2026 03:43:54 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7A8172D59C9
+	for <lists+cgroups@lfdr.de>; Fri, 20 Mar 2026 04:39:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 23B90302836B
-	for <lists+cgroups@lfdr.de>; Fri, 20 Mar 2026 02:43:53 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id E19BE305A6F8
+	for <lists+cgroups@lfdr.de>; Fri, 20 Mar 2026 03:39:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA6D52DAFA5;
-	Fri, 20 Mar 2026 02:43:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0CAA12D8DDF;
+	Fri, 20 Mar 2026 03:39:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="Hgkr4hg7"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="HDkuQyc5"
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f178.google.com (mail-pl1-f178.google.com [209.85.214.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 07E9D2C027C;
-	Fri, 20 Mar 2026 02:43:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B706A2C027E
+	for <cgroups@vger.kernel.org>; Fri, 20 Mar 2026 03:39:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1773974630; cv=none; b=hrCiTkpPuTr9qSsuQwPkGtu96ziKTJo4gZv06yETx3ZYF8ahAQshDUOkV8Je8Af0cWa83AZJZrWmEz7Ft9tB9B0Eknk16pgva09l4MdfpMRrVhBtKNF/HCoFzdHm03INk3aH5zkT0ABiF32Fctnq/4D7/YZa5oVGPy91KT64lPE=
+	t=1773977987; cv=none; b=o7cxCNcUSldBD6glC3VcLJ9n/LbrFs41PDS6qSv8ju2SYFwFMWObHqZ1gj2cpNptvYgXN2PBVGwJQPY1E+eq6E9n1pyJDrHJXqhcOO5DvPHpkA4Z0t5xhaeOwaizs7yHmwXiGhl+4AszX5yCv097cADPM9FfexedCTE0wC55+8k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1773974630; c=relaxed/simple;
-	bh=IM7odbRo5JmXvV35WSNt2mLDPESwML5Li6T+qlytX5s=;
-	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
-	 Mime-Version:Content-Type; b=nQPA8YiT56h4P4rezfmazWnp7t5ZufgUcHPC71tCH2uedKtOxrDiPOF48lyo/A/jL8kjFVPPdr1oP+njC9DtnEZ4md6gqaZ5AZLigh6yeP9IdtkXfG8tTJ57du4SY2Q/gfcwZ5JK/po2eKHzKUJ1sz7zvL3J0fqmgG8kzJLJcQY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=Hgkr4hg7; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 46D87C19424;
-	Fri, 20 Mar 2026 02:43:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
-	s=korg; t=1773974628;
-	bh=IM7odbRo5JmXvV35WSNt2mLDPESwML5Li6T+qlytX5s=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=Hgkr4hg7zQXTt/YOkRxPkZIHUtK1zTNcywzH1MTqkkREzmi+9td5X05r118VG/gIv
-	 EUhIpque6aM/JP1B3c6Vr0hPdX5qI+jqzi3lt2YguscLplbGdsloC37l/N6PfVU0CG
-	 3BB+Li1V5rF2Lm7aIiOKKHmYDkcoC8MS2OnOO6CE=
-Date: Thu, 19 Mar 2026 19:43:47 -0700
-From: Andrew Morton <akpm@linux-foundation.org>
-To: Waiman Long <longman@redhat.com>
-Cc: Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>,
- Roman Gushchin <roman.gushchin@linux.dev>, Shakeel Butt
- <shakeel.butt@linux.dev>, Muchun Song <muchun.song@linux.dev>, Tejun Heo
- <tj@kernel.org>, Michal =?ISO-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>, Shuah
- Khan <shuah@kernel.org>, Mike Rapoport <rppt@kernel.org>,
- linux-kernel@vger.kernel.org, cgroups@vger.kernel.org, linux-mm@kvack.org,
- linux-kselftest@vger.kernel.org, Sean Christopherson <seanjc@google.com>,
- James Houghton <jthoughton@google.com>, Sebastian Chlad
- <sebastianchlad@gmail.com>, Guopeng Zhang <zhangguopeng@kylinos.cn>, Li
- Wang <liwan@redhat.com>
-Subject: Re: [PATCH 0/7] selftests: memcg: Fix test_memcontrol test failures
- with large page sizes
-Message-Id: <20260319194347.1048fc8d737b6e8f9d82663d@linux-foundation.org>
-In-Reply-To: <20260319173752.1472864-1-longman@redhat.com>
-References: <20260319173752.1472864-1-longman@redhat.com>
-X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1773977987; c=relaxed/simple;
+	bh=P/YXk8VBR+UZp/m/PSuTOoFARBhxT4ayCpwB7zK7i+8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=hcGEFKqh8mdZhhujcldUwHVLGmXBhAX2WUI/raanFq5Jvjd73dIWUPtk10ZgA0J2xMR1NGxkXb9CzN+EZ+yxUF8lcBDD71jtphhO0mwSKwXIRKXBPTVi1ovAV11CtkkFcIw+uv22BmcmJ6WcASyJdtMLH0wgzQ6aZozvPa8bMJU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=HDkuQyc5; arc=none smtp.client-ip=209.85.214.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-pl1-f178.google.com with SMTP id d9443c01a7336-2aeab6ff148so33695ad.1
+        for <cgroups@vger.kernel.org>; Thu, 19 Mar 2026 20:39:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20251104; t=1773977986; x=1774582786; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=P/YXk8VBR+UZp/m/PSuTOoFARBhxT4ayCpwB7zK7i+8=;
+        b=HDkuQyc5wdWOrTTiAF0r9uAO359HQMWWYIm33aXXfxUY9cwsIjUXjtW72USk73aCUI
+         +EMCuE+37tDq8q5a03AtBR5XGrUesWsubS5x/Y7o/3RgQ4dcL6wJs7O8bBjcNRwcPkYL
+         ipSPuyC9GHVqUG5Ro936VcWb8dDmP0Hxfdqpl/zquh62Fe5UgBmepRdbZMzXad9OU45R
+         ILoaZU7/nxdMeRcTStOSoTOVhBxXo/IYY7Iq0BC0JPCZKoY3QKZ50EAfX1CBIZFg8SaN
+         iWRdOLDXYRoVCJNd7fyQC5x3d5OyVgDOcYUrPnSDk8IPQccAz9oz+QHdGp6mkWEbsgcY
+         BtwQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1773977986; x=1774582786;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=P/YXk8VBR+UZp/m/PSuTOoFARBhxT4ayCpwB7zK7i+8=;
+        b=OJZYbhQqK66faDtiMwTGkfAtTIcU/wbfewWWO8JyW1xCdWeLb4T/+ITHIlbRR4gtFN
+         zrucH72j6e82cxvnJrt+vWgHM27L0YZ57DDMLOqzJO1TJNEcNqMY2DjEPA58lWSebZ5J
+         P82F/9NuYCaX+jBud9f2/7AjJLjlTxpXP8lkCCcviaX6NSLW+lDAPvoElIyKWBlD/+V1
+         +4mCKyXqB73MkGObnWyxxUJpVFnE3OJOGOlqvOQfBHKFVJVvMnwBskqWhlDqv+TUG3Du
+         jEHyfQI/1ZXvJjbolubOup6m28b+W3o6FqXOhjFwtNjNOc34oJKMzxyRoXm4y3MAXS1S
+         cY3A==
+X-Forwarded-Encrypted: i=1; AJvYcCUW7K0uXpzHoa2U3UgBmLulnKic6Yf3ntBr3SCUdPEhxn7afwLVBwG/nbD4iC08X8l4mH7EtHYI@vger.kernel.org
+X-Gm-Message-State: AOJu0YwJV0EmT32MXhn+0C6PvVmjnY4lBdDSPYVGIh8DAItMYbakl5sd
+	CxeJs32eIemTa7jNs27ydkCWAuT6yGDiH39pJ2u7p7Cz5lS/b5GHHrjz53DKoPRiAQ==
+X-Gm-Gg: ATEYQzyfrmr5hH5D7A7vQH6kS65K19c+vS2ysrn4n4eo6ViCilt+0+sqKgZGD3zHE7y
+	c3fM/+iKHnsCcPGcUFCwQuQDW7l4GK4I94FOMH4g1IyoSYR3NcJ+uVqHBtLnh0f4pYliF6sKaV8
+	runCI5zobbI2a9EpHDM0EXe3S3tk6k89Z459UJf5NkEImBFMzHpuEfzfr9PpP7GPH879bKVA1Y2
+	pQ/t3Xy49rBBBDsmcOfjFSdtdNbT6tqO0mu5QEuW3rYq3hK47DuX0nrKnqeMJn2zVVNGuod4rDa
+	axeoBfiyDxBGbRdL8EHuK1qnN4BeK/qBV9xlDaRunKvGjD80Q4QYYCJjfTZRpGmJeEKvcwoRgSl
+	lxLT3b+A9byQRz0QCmHVUMePJX/91d3cMcbo1rdoTxzSbj6xzh+SfbWcGOK7MQkTVm2EJbvCd+7
+	+CeiFXt+j5XCGvwO661N1X1J/R2Rvee24Xf9EH/QfqvA0ftb2jAcYSRrbR6J1l+o1unWVsvRZco
+	1/R
+X-Received: by 2002:a17:902:f652:b0:297:f2a0:e564 with SMTP id d9443c01a7336-2b0836e92e2mr1101815ad.11.1773977985452;
+        Thu, 19 Mar 2026 20:39:45 -0700 (PDT)
+Received: from google.com (206.238.125.34.bc.googleusercontent.com. [34.125.238.206])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-35bd412b73bsm502858a91.15.2026.03.19.20.39.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 19 Mar 2026 20:39:44 -0700 (PDT)
+Date: Fri, 20 Mar 2026 03:39:40 +0000
+From: Bing Jiao <bingjiao@google.com>
+To: Michal Hocko <mhocko@suse.com>
+Cc: akpm@linux-foundation.org, axelrasmussen@google.com, baohua@kernel.org,
+	bhe@redhat.com, cgroups@vger.kernel.org, chrisl@kernel.org,
+	david@kernel.org, hannes@cmpxchg.org, joshua.hahnjy@gmail.com,
+	kasong@tencent.com, linux-kernel@vger.kernel.org,
+	linux-mm@kvack.org, ljs@kernel.org, muchun.song@linux.dev,
+	nphamcs@gmail.com, rientjes@google.com, roman.gushchin@linux.dev,
+	shakeel.butt@linux.dev, shikemeng@huaweicloud.com,
+	weixugc@google.com, yosry@kernel.org, youngjun.park@lge.com,
+	yuanchu@google.com, zhengqi.arch@bytedance.com
+Subject: Re: [PATCH v3] mm/memcontrol: fix reclaim_options leak in
+ try_charge_memcg()
+Message-ID: <abzBfHzRndwjrGQY@google.com>
+References: <20260318215629.2849052-1-bingjiao@google.com>
+ <20260318221957.2979346-1-bingjiao@google.com>
+ <abvB65BYCUDT9JF1@tiehlicka>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-Spamd-Result: default: False [-1.16 / 15.00];
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <abvB65BYCUDT9JF1@tiehlicka>
+X-Spamd-Result: default: False [-0.66 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MV_CASE(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
-	R_DKIM_ALLOW(-0.20)[linux-foundation.org:s=korg];
+	DMARC_POLICY_ALLOW(-0.50)[google.com,reject];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_DKIM_ALLOW(-0.20)[google.com:s=20251104];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
+	FREEMAIL_CC(0.00)[linux-foundation.org,google.com,kernel.org,redhat.com,vger.kernel.org,cmpxchg.org,gmail.com,tencent.com,kvack.org,linux.dev,huaweicloud.com,lge.com,bytedance.com];
 	FROM_HAS_DN(0.00)[];
 	RCVD_TLS_LAST(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-14934-lists,cgroups=lfdr.de];
-	DMARC_NA(0.00)[linux-foundation.org];
-	RCPT_COUNT_TWELVE(0.00)[19];
+	DKIM_TRACE(0.00)[google.com:+];
+	TAGGED_FROM(0.00)[bounces-14935-lists,cgroups=lfdr.de];
 	MIME_TRACE(0.00)[0:+];
-	FREEMAIL_CC(0.00)[cmpxchg.org,kernel.org,linux.dev,suse.com,vger.kernel.org,kvack.org,google.com,gmail.com,kylinos.cn,redhat.com];
-	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
+	FORGED_SENDER_MAILLIST(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	MID_RHS_MATCH_FROM(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	RCPT_COUNT_TWELVE(0.00)[25];
+	RCVD_COUNT_FIVE(0.00)[5];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[akpm@linux-foundation.org,cgroups@vger.kernel.org];
-	DKIM_TRACE(0.00)[linux-foundation.org:+];
-	NEURAL_HAM(-0.00)[-0.977];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[bingjiao@google.com,cgroups@vger.kernel.org];
+	MISSING_XM_UA(0.00)[];
+	NEURAL_HAM(-0.00)[-0.945];
 	TAGGED_RCPT(0.00)[cgroups];
-	TO_DN_SOME(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sashiko.dev:url,linux-foundation.org:dkim,linux-foundation.org:mid,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 341E12D5366
+	MID_RHS_MATCH_FROM(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	TO_DN_SOME(0.00)[]
+X-Rspamd-Queue-Id: 7A8172D59C9
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-On Thu, 19 Mar 2026 13:37:45 -0400 Waiman Long <longman@redhat.com> wrote:
+On Thu, Mar 19, 2026 at 10:29:15AM +0100, Michal Hocko wrote:
+> On Wed 18-03-26 22:19:46, Bing Jiao wrote:
+> > In try_charge_memcg(), the 'reclaim_options' variable is initialized
+> > once at the start of the function. However, the function contains a
+> > retry loop. If reclaim_options were modified during an iteration
+> > (e.g., by encountering a memsw limit), the modified state would
+> > persist into subsequent retries.
+> >
+> > This leads to incorrect reclaim behavior. Specifically,
+> > MEMCG_RECLAIM_MAY_SWAP is cleared when the combined memcg->memsw limit
+> > is reached. After reclaimation attemps, a subsequent retry may
+> > successfully charge memcg->memsw but fail on the memcg->memory charge.
+> > In this case, swapping should be permitted, but the carried-over state
+> > prevents it.
+>
+> Have you noticed this happening in practice or is this based on the code
+> reading?
 
-> There are a number of test failures with the running of the
-> test_memcontrol selftest on a 128-core arm64 system on kernels with
-> 4k/16k/64k page sizes. This patch series makes some minor changes to
-> the kernel and the test_memcontrol selftest to address these failures.
-> 
-> The first kernel patch scales the memcg vmstats flush threshold
-> logarithmetically instead of linearly with the total number of CPUs. The
-> second kernel patch scale down MEMCG_CHARGE_BATCH with increases in page
-> size. These 2 patches help to reduce the discrepancies between the
-> reported usage data with the real ones.
-> 
-> The next 5 test_memcontrol selftest patches adjust the testing code to
-> greatly reduce the chance that it will report failure, though some
-> occasional failures is still possible.
-> 
-> To verify the changes, the test_memcontrol selftest was run 100
-> times each on a 128-core arm64 system on kernels with 4k/16k/64k
-> page sizes.  No failure was observed other than some failures of the
-> test_memcg_reclaim test when running on a 16k page size kernel. The
-> reclaim_until() call failed because of the unexpected over-reclaim of
-> memory. This will need a further look but it happens with the 16k page
-> size kernel only and I don't have a production ready kernel config file
-> to use in buildinig this 16k page size kernel. The new test_memcontrol
-> selftest and kernel were also run on a 96-core x86 system to make sure
-> there was no regression.
+Hi, Michal, thanks for the ack.
 
-AI reviewbot asks questions:
-	https://sashiko.dev/#/patchset/20260319173752.1472864-1-longman%40redhat.com
+This issue was identified during code reading, when I was analyzing
+the memsw limit behavior in try_charge_memcg(); specifically how
+retries are handled when demotion is disabled (the demotion patch
+itself was dropped).
+
+Best,
+Bing
 
