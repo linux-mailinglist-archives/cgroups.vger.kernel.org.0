@@ -1,81 +1,81 @@
-Return-Path: <cgroups+bounces-14961-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-14963-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 8P1CGjChvWkM/wIAu9opvQ
-	(envelope-from <cgroups+bounces-14961-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Fri, 20 Mar 2026 20:34:08 +0100
+	id EM9DBWWhvWkM/wIAu9opvQ
+	(envelope-from <cgroups+bounces-14963-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Fri, 20 Mar 2026 20:35:01 +0100
 X-Original-To: lists+cgroups@lfdr.de
 Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 26DA92E00EF
-	for <lists+cgroups@lfdr.de>; Fri, 20 Mar 2026 20:34:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id C79FE2E0140
+	for <lists+cgroups@lfdr.de>; Fri, 20 Mar 2026 20:35:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 911003067754
-	for <lists+cgroups@lfdr.de>; Fri, 20 Mar 2026 19:30:13 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 0630830BA481
+	for <lists+cgroups@lfdr.de>; Fri, 20 Mar 2026 19:30:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 32F063F0AA0;
-	Fri, 20 Mar 2026 19:28:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 60F013F8DF4;
+	Fri, 20 Mar 2026 19:28:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="EhIUErbB"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RaTKsdHb"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-oa1-f45.google.com (mail-oa1-f45.google.com [209.85.160.45])
+Received: from mail-ot1-f43.google.com (mail-ot1-f43.google.com [209.85.210.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 624B93F211A
-	for <cgroups@vger.kernel.org>; Fri, 20 Mar 2026 19:28:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F8303F23DC
+	for <cgroups@vger.kernel.org>; Fri, 20 Mar 2026 19:28:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1774034892; cv=none; b=jiinDFK0J7YWUmbxMcdGwQcitLK8IlVTVOGr8uqZmXVJhkiF094Cyaz7us+AAdNISkxj7/u4z+SfFyhyLhGFrqhk6QnLH6dFfCImYhdZuy5Dwly+xEfwZyfbv/JRgl+fRQhALiGef7OhmPPCiFArvR+W4nLF00iFDK+WiMWEPt4=
+	t=1774034894; cv=none; b=MU/8S6tUBcWhxAb0YiI6CnlyDrcBG6xW0Z2rmPefEcZhCSKuHJfi+33a7F5MCMdPFmnu2P5GvBMfBZTd7fkIyQKjIF8xQinwJsE64561EQ1TQgpAbb0K5EDtXeGT/g0EBRyRsqT1/EsF/+8E4OC0Vnf/FP8FVGRDVQeJX5JC4+8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1774034892; c=relaxed/simple;
-	bh=fLrqs/MUnUNB7tDySRKUurHQIx3PY5X8jg3B7iWPLHY=;
+	s=arc-20240116; t=1774034894; c=relaxed/simple;
+	bh=oWlsx/GR6MFfgg4lg3d7Z5Pjk9ia0CfFJsRiaFfeNms=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=C4wU6pC8yo9cpFzd8UmrNnqr01TTjNZqCKONyV3K7Cur6x+M+w19Dke68xyyL7ZoX6fAKbwwdwZkWSWg3uNHCD4Mb+M5lHXi/uQdKJBPisGwd9MMOrAzehFqy256HwH+sQ/27VudZLaO1aBFTW6e4VCw9kWnRsAj8bbZgm5VCkc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=EhIUErbB; arc=none smtp.client-ip=209.85.160.45
+	 MIME-Version; b=R8oPaNBlYhUKyip/D4S26q69NcnyhWwQTpUrV1kTLiMTLxox9bXvv+qDVQXr0t5hX682+mqnWCXrQyFyThnbIP53vv7KuOnEN80gpxUQhNqNWNzdrPadE663yctEuFhpS3iu3gtUInwyXqTI8Mn5ZD60ngIVYigOHjmjDd4dCdk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=RaTKsdHb; arc=none smtp.client-ip=209.85.210.43
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oa1-f45.google.com with SMTP id 586e51a60fabf-40f387a688dso1919194fac.0
-        for <cgroups@vger.kernel.org>; Fri, 20 Mar 2026 12:28:08 -0700 (PDT)
+Received: by mail-ot1-f43.google.com with SMTP id 46e09a7af769-7d73d6976adso1662793a34.2
+        for <cgroups@vger.kernel.org>; Fri, 20 Mar 2026 12:28:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1774034887; x=1774639687; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1774034888; x=1774639688; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=03afpDvtGuNWbxO8rXYZMIlB93FyoeHq7W5GxGEi1h8=;
-        b=EhIUErbBg+AFHWS0U0U491e3xkKoMi21Qb45PHSr4FWG7KPKO9tlz7t+DJoF4t4eje
-         a27LfUQVkd9jIoPyhzgAXvOj9bqfiltpWO6gKax8ACMIrXKW/FYa9z5D3dokcKiE1+36
-         hr8C9u2JQeKj7WXJ4ambJsyhK+yoTcOU3HKxmRUe4tvDHqfItRNB57hg0fXwLg1aSzby
-         aWNE9JF+ra2ejV+vY4Nza6ZSRscU0Ajg9v+hKZebXzjq67MjK0FJ1k8BL2UpI3mhG6hE
-         KLb9f6UQkj4TA6zPdE2U2W/Iv33Dgc6G5rBfrXZpwJL9bdJRAAJwGJWHkTCoHLnaGt8e
-         tzkQ==
+        bh=VRQf7iywx8TRv6dj+dUpDGMfIu8qRC23MBFf4aVP63g=;
+        b=RaTKsdHbifGXZQ5j6K9sIBmMR6yLpru8iQv5osn2vIF+xObRZnhbspAp2XVsKxqKgZ
+         Z+dJXmpB+rCadjol1VhG5PjBw/NXMGzCHmH+dr/wmbuOg07pUK3AGW0rQ+/lMoKMnVOn
+         aVZsJO4MT1mxCQG+t8deP+TLKhZKtMtOUN+wwLvuSt9g/p2U8d7bhWgmsgEtuKsBI0k4
+         Ueq39WDBv3rs4tPBFPe/2eGqLgxn0ia/BQe/gk4n/DWXxXVH99Qcd95+3j9lZTD0BurY
+         gIpYIWtxd0gdX8W7MaN5Ek2ni4kbW7IPOdzEOCT4EWQCMFI4BcI47MP8Bla0jrEZiGme
+         MWiQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1774034887; x=1774639687;
+        d=1e100.net; s=20251104; t=1774034888; x=1774639688;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=03afpDvtGuNWbxO8rXYZMIlB93FyoeHq7W5GxGEi1h8=;
-        b=H63yycij6h6bXpluhDAUy5YrE0DWh2VtuASK/qnkMQBnztuWedKsqqhj71F8/X41r0
-         006Meem9ricaKa0iD6gIoZphJ03Jbhs+ls4I8NpP+MwyWl0fxs4sh4c7Q1xzIQDoGcrB
-         kSd3Z4cmaCIc/9TbpMCYXKj6XR0G/HD9KFssQPuMX71grSIQPm7v4Cf6nZdOtHcMdmuO
-         6tCMIroGLvqJfacYbkeNsXemnMo/Rfr7ZNo9L1y6mwOD63hdvMRAnTSOIdr/Q+sCN73w
-         kLat7+7FrScUCDKak6ls8I+JZd6SKAQg8Z0W3jj78DfQyDznUw6mGXfgHuYd1XsdlkR4
-         oA5A==
-X-Forwarded-Encrypted: i=1; AJvYcCVyTioebmrGlHkC4lAO1N/a0dHERXsAb8j5bR9f9Kj2V8M+3lFf5gDjUGvLdeTrNqcSdjme9bMr@vger.kernel.org
-X-Gm-Message-State: AOJu0YzZAW5yMWqe92fH/6JTShHs5KLG4rNekljo+pB3bKKH0Ni4Q3ic
-	CmPqBJ8a28mP7b9JApj7y+h2gCXqPF4mj7eN8lAz2Ud/xwmD+ECM1kLq
-X-Gm-Gg: ATEYQzwQpRJ9UCNgBg67wzzauVL2I+mKS0WQ8ibTf9NVJ+VNjzpXzOd2jYBM1Org7BA
-	p9fODTen0haFF9hc0DQ4pA8Hk3dBHENSIAkliF3L/OBrzncsg0CMcxRQq54xvNegbIkuE3JyE/b
-	jzSxq17TDqZD3HTf4/glB07ZI6BNOD8M/r7oqGpSmJadiiPZFCccIZAifEwmqtaxh5hCMBT/yEN
-	LJJXdCZ6ldwV3tm36Z5OmSIYke11mNj6NSggGnsltwkl77pi3xn+/G1SKjqjS3gJmY7+dEPCNnN
-	b22RI8Xss6uY9q8PjkXzJaVCquFvk/ZTkbCRLYwW/PkUa8piDsmps9KofswquH0IYBqNRhhiDCK
-	9jiUdejRZtz+vvaMONIv1jgV3okpMKodGo2fjUehM+OCX5Glg59L5F+/kMQF8iWrkYHNZit7QBj
-	FaCFTT+zn8xUX4FGsS3uFAEdGIegrKA8cGGw/iPiaxrVfOYg==
-X-Received: by 2002:a05:6871:1cf:b0:409:54ac:12ae with SMTP id 586e51a60fabf-41c10f6ae20mr2677223fac.8.1774034886900;
-        Fri, 20 Mar 2026 12:28:06 -0700 (PDT)
-Received: from localhost ([2a03:2880:10ff:41::])
-        by smtp.gmail.com with ESMTPSA id 586e51a60fabf-41c148a5f99sm3030503fac.2.2026.03.20.12.28.06
+        bh=VRQf7iywx8TRv6dj+dUpDGMfIu8qRC23MBFf4aVP63g=;
+        b=kV+Ew+BSWZpDJGy3krltNxmqZOjdTBLRQxKRktNeQDRxWPwMHBeTKho/CdRY8HjOAw
+         95APreuZy63skgTodGvZvz+HoA/nikxWBvsi3OD0hQugxZ7wvJllQhQoABXCjDIHDshG
+         T+Ss4tPB3H6cinZIpPgZfWRZJRdpn8Z0sPWX7QI1ED+l7agMQTLaYFzwrfQvoIuzgvF/
+         26MSDIxN61nVbdT1JVYzIqh9Zq1KMjhM09ZCXQUFIDyoSePiFwkH19oIpvnhS2PYk4A9
+         0S20qkvV+Mpz311OIlTcpMFt6lOnbUBjX1klc7LKg4URgpvFZelYF5huX6c9N7bQn97W
+         1gpg==
+X-Forwarded-Encrypted: i=1; AJvYcCUUzi4LTIRKsCEvpDsOzmt1LyTOKUaV9SxQOcKflYbxLH297PTAmOmQA9R4NLaZnW47jAXbwhqv@vger.kernel.org
+X-Gm-Message-State: AOJu0Yw3c1COoI6xz1hMblJ/hbwGY7mZlrqfbEyugP5j9dvkPBcRtAux
+	KStjeL1Tez+6aywUuk4DkKvYDzIEBWw22Jaz0hr/NRGlOODfR0hckZ8J
+X-Gm-Gg: ATEYQzy+Fv61+ljPTmFHKA1YGPXslNrwUVZRdCrs4aZ7KVvN+Mod4TTWkdu8z1v7zgi
+	bTm3mUunKMHTaxqaxo96mV8/BtAJsQH/wQ+YLS64J/shIWCr5s0rvxXw+DW9D35D2WwsHoFKX0u
+	6mJ/82IoKG4WS67Twrp2PEXsuUNinRroawzr3dcA3jkWEWZEkW8g8FDn49EMCvG+HA8ZiuB7cz+
+	xivAuaZ9z+SjzGyHchZPoy3/eRQW+oQZeLaEKTAb3ht6S1B0i0EjscE+0LZt+pQqS796ZP9KSjQ
+	R49LF2zXuqaiZjmKWFVHCcs/ViSzgrdKa5THWIgLxKQh8oiwAGXCACOyqstWHHdcgjxgNaZcZev
+	c+kVoy5FxRXdiM/17HBypPOAfHdS5Qt64iBWGTZ6mSEvHt4osmphqXGaTRjpLFKf+5JLFWsTSQw
+	egPa+UK0JcJFouLQUEiWljaoiSOeP1yHnLd2kBBotmP/FvVg==
+X-Received: by 2002:a05:6830:730c:b0:7d7:fcdd:3f8c with SMTP id 46e09a7af769-7d7fcdd510fmr146495a34.34.1774034888110;
+        Fri, 20 Mar 2026 12:28:08 -0700 (PDT)
+Received: from localhost ([2a03:2880:10ff:45::])
+        by smtp.gmail.com with ESMTPSA id 46e09a7af769-7d7eabe90f6sm2860154a34.6.2026.03.20.12.28.07
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 20 Mar 2026 12:28:06 -0700 (PDT)
+        Fri, 20 Mar 2026 12:28:07 -0700 (PDT)
 From: Nhat Pham <nphamcs@gmail.com>
 To: kasong@tencent.com
 Cc: Liam.Howlett@oracle.com,
@@ -131,9 +131,9 @@ Cc: Liam.Howlett@oracle.com,
 	ziy@nvidia.com,
 	kernel-team@meta.com,
 	riel@surriel.com
-Subject: [PATCH v5 20/21] swapfile: replace the swap map with bitmaps
-Date: Fri, 20 Mar 2026 12:27:34 -0700
-Message-ID: <20260320192735.748051-21-nphamcs@gmail.com>
+Subject: [PATCH v5 21/21] vswap: batch contiguous vswap free calls
+Date: Fri, 20 Mar 2026 12:27:35 -0700
+Message-ID: <20260320192735.748051-22-nphamcs@gmail.com>
 X-Mailer: git-send-email 2.52.0
 In-Reply-To: <20260320192735.748051-1-nphamcs@gmail.com>
 References: <20260320192735.748051-1-nphamcs@gmail.com>
@@ -158,7 +158,7 @@ X-Spamd-Result: default: False [0.84 / 15.00];
 	FREEMAIL_CC(0.00)[oracle.com,linux-foundation.org,nvidia.com,google.com,kernel.org,linux.alibaba.com,redhat.com,sk.com,vger.kernel.org,linux.dev,lwn.net,arm.com,gourry.net,cmpxchg.org,gmail.com,kvack.org,intel.com,suse.com,infradead.org,suse.de,huaweicloud.com,suse.cz,bytedance.com,meta.com,surriel.com];
 	RCVD_TLS_LAST(0.00)[];
 	RECEIVED_HELO_LOCALHOST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-14961-lists,cgroups=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-14963-lists,cgroups=lfdr.de];
 	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	DKIM_TRACE(0.00)[gmail.com:+];
@@ -174,272 +174,396 @@ X-Spamd-Result: default: False [0.84 / 15.00];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[cgroups];
 	FROM_HAS_DN(0.00)[]
-X-Rspamd-Queue-Id: 26DA92E00EF
+X-Rspamd-Queue-Id: C79FE2E0140
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-Now that we have moved the swap count state to virtual swap layer, each
-swap map entry only has 3 possible states: free, allocated, and bad.
-Replace the swap map with 2 bitmaps (one for allocated state and one for
-bad state), saving 6 bits per swap entry.
+In vswap_free(), we release and reacquire the cluster lock for every
+single entry, even for non-disk-swap backends where the lock drop is
+unnecessary. Batch consecutive free operations to avoid this overhead.
 
 Signed-off-by: Nhat Pham <nphamcs@gmail.com>
 ---
- include/linux/swap.h |  3 +-
- mm/swapfile.c        | 81 +++++++++++++++++++++++---------------------
- 2 files changed, 44 insertions(+), 40 deletions(-)
+ include/linux/memcontrol.h |   6 ++
+ mm/memcontrol.c            |   2 +-
+ mm/vswap.c                 | 185 ++++++++++++++++++++++++-------------
+ 3 files changed, 126 insertions(+), 67 deletions(-)
 
-diff --git a/include/linux/swap.h b/include/linux/swap.h
-index 21e528d8d3480..3c789149996c5 100644
---- a/include/linux/swap.h
-+++ b/include/linux/swap.h
-@@ -259,7 +259,8 @@ struct swap_info_struct {
- 	struct plist_node list;		/* entry in swap_active_head */
- 	signed char	type;		/* strange name for an index */
- 	unsigned int	max;		/* extent of the swap_map */
--	unsigned char *swap_map;	/* vmalloc'ed array of usage counts */
-+	unsigned long *swap_map;	/* bitmap for allocated state */
-+	unsigned long *bad_map;		/* bitmap for bad state */
- 	struct swap_cluster_info *cluster_info; /* cluster info. Only for SSD */
- 	struct list_head free_clusters; /* free clusters list */
- 	struct list_head full_clusters; /* full clusters list */
-diff --git a/mm/swapfile.c b/mm/swapfile.c
-index b553652125d11..3e2bfcf1aa789 100644
---- a/mm/swapfile.c
-+++ b/mm/swapfile.c
-@@ -760,25 +760,19 @@ static bool cluster_reclaim_range(struct swap_info_struct *si,
- 				  struct swap_cluster_info *ci,
- 				  unsigned long start, unsigned long end)
- {
--	unsigned char *map = si->swap_map;
- 	unsigned long offset = start;
- 	int nr_reclaim;
+diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
+index 0651865a4564f..0f7f5489e1675 100644
+--- a/include/linux/memcontrol.h
++++ b/include/linux/memcontrol.h
+@@ -827,6 +827,7 @@ static inline unsigned short mem_cgroup_id(struct mem_cgroup *memcg)
+ 	return memcg->id.id;
+ }
+ struct mem_cgroup *mem_cgroup_from_id(unsigned short id);
++void mem_cgroup_id_put_many(struct mem_cgroup *memcg, unsigned int n);
  
- 	spin_unlock(&ci->lock);
- 	do {
--		switch (READ_ONCE(map[offset])) {
--		case 0:
-+		if (!test_bit(offset, si->swap_map)) {
- 			offset++;
--			break;
--		case SWAP_MAP_ALLOCATED:
-+		} else {
- 			nr_reclaim = __try_to_reclaim_swap(si, offset, TTRS_ANYWAY);
- 			if (nr_reclaim > 0)
- 				offset += nr_reclaim;
- 			else
- 				goto out;
--			break;
--		default:
--			goto out;
- 		}
- 	} while (offset < end);
- out:
-@@ -787,11 +781,7 @@ static bool cluster_reclaim_range(struct swap_info_struct *si,
- 	 * Recheck the range no matter reclaim succeeded or not, the slot
- 	 * could have been be freed while we are not holding the lock.
- 	 */
--	for (offset = start; offset < end; offset++)
--		if (READ_ONCE(map[offset]))
--			return false;
--
--	return true;
-+	return find_next_bit(si->swap_map, end, start) >= end;
+ #ifdef CONFIG_SHRINKER_DEBUG
+ static inline unsigned long mem_cgroup_ino(struct mem_cgroup *memcg)
+@@ -1289,6 +1290,11 @@ static inline struct mem_cgroup *mem_cgroup_from_id(unsigned short id)
+ 	return NULL;
  }
  
- static bool cluster_scan_range(struct swap_info_struct *si,
-@@ -800,15 +790,16 @@ static bool cluster_scan_range(struct swap_info_struct *si,
- 			       bool *need_reclaim)
- {
- 	unsigned long offset, end = start + nr_pages;
--	unsigned char *map = si->swap_map;
--	unsigned char count;
- 
- 	if (cluster_is_empty(ci))
- 		return true;
- 
- 	for (offset = start; offset < end; offset++) {
--		count = READ_ONCE(map[offset]);
--		if (!count)
-+		/* Bad slots cannot be used for allocation */
-+		if (test_bit(offset, si->bad_map))
-+			return false;
++static inline void mem_cgroup_id_put_many(struct mem_cgroup *memcg,
++					  unsigned int n)
++{
++}
 +
-+		if (!test_bit(offset, si->swap_map))
- 			continue;
- 
- 		if (swap_cache_only(si, offset)) {
-@@ -841,7 +832,7 @@ static bool cluster_alloc_range(struct swap_info_struct *si, struct swap_cluster
- 	if (cluster_is_empty(ci))
- 		ci->order = order;
- 
--	memset(si->swap_map + start, usage, nr_pages);
-+	bitmap_set(si->swap_map, start, nr_pages);
- 	swap_range_alloc(si, nr_pages);
- 	ci->count += nr_pages;
- 
-@@ -1407,7 +1398,7 @@ static struct swap_info_struct *_swap_info_get(swp_slot_t slot)
- 	offset = swp_slot_offset(slot);
- 	if (offset >= si->max)
- 		goto bad_offset;
--	if (data_race(!si->swap_map[swp_slot_offset(slot)]))
-+	if (data_race(!test_bit(offset, si->swap_map)))
- 		goto bad_free;
- 	return si;
- 
-@@ -1521,8 +1512,7 @@ static void swap_slots_free(struct swap_info_struct *si,
- 			      swp_slot_t slot, unsigned int nr_pages)
+ #ifdef CONFIG_SHRINKER_DEBUG
+ static inline unsigned long mem_cgroup_ino(struct mem_cgroup *memcg)
  {
- 	unsigned long offset = swp_slot_offset(slot);
--	unsigned char *map = si->swap_map + offset;
--	unsigned char *map_end = map + nr_pages;
-+	unsigned long end = offset + nr_pages;
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index 4525c21754e7f..c6d307b8127a8 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -3597,7 +3597,7 @@ void __maybe_unused mem_cgroup_id_get_many(struct mem_cgroup *memcg,
+ 	refcount_add(n, &memcg->id.ref);
+ }
  
- 	/* It should never free entries across different clusters */
- 	VM_BUG_ON(ci != __swap_offset_to_cluster(si, offset + nr_pages - 1));
-@@ -1530,10 +1520,8 @@ static void swap_slots_free(struct swap_info_struct *si,
- 	VM_BUG_ON(ci->count < nr_pages);
- 
- 	ci->count -= nr_pages;
--	do {
--		VM_BUG_ON(!swap_is_last_ref(*map));
--		*map = 0;
--	} while (++map < map_end);
-+	VM_BUG_ON(find_next_zero_bit(si->swap_map, end, offset) < end);
-+	bitmap_clear(si->swap_map, offset, nr_pages);
- 
- 	swap_range_free(si, offset, nr_pages);
- 
-@@ -1744,9 +1732,7 @@ unsigned int count_swap_pages(int type, int free)
- static bool swap_slot_allocated(struct swap_info_struct *si,
- 		unsigned long offset)
+-static void mem_cgroup_id_put_many(struct mem_cgroup *memcg, unsigned int n)
++void mem_cgroup_id_put_many(struct mem_cgroup *memcg, unsigned int n)
  {
--	unsigned char count = READ_ONCE(si->swap_map[offset]);
--
--	return count && swap_count(count) != SWAP_MAP_BAD;
-+	return test_bit(offset, si->swap_map);
+ 	if (refcount_sub_and_test(n, &memcg->id.ref)) {
+ 		mem_cgroup_id_remove(memcg);
+diff --git a/mm/vswap.c b/mm/vswap.c
+index fa37165cb10d0..82092502130a6 100644
+--- a/mm/vswap.c
++++ b/mm/vswap.c
+@@ -482,18 +482,18 @@ static void vswap_cluster_free(struct vswap_cluster *cluster)
+ 	kvfree_rcu(cluster, rcu);
+ }
+ 
+-static inline void release_vswap_slot(struct vswap_cluster *cluster,
+-		unsigned long index)
++static inline void release_vswap_slot_nr(struct vswap_cluster *cluster,
++		unsigned long index, int nr)
+ {
+ 	unsigned long slot_index = VSWAP_IDX_WITHIN_CLUSTER_VAL(index);
+ 
+ 	lockdep_assert_held(&cluster->lock);
+-	cluster->count--;
++	cluster->count -= nr;
+ 
+-	bitmap_clear(cluster->bitmap, slot_index, 1);
++	bitmap_clear(cluster->bitmap, slot_index, nr);
+ 
+ 	/* we only free uncached empty clusters */
+-	if (refcount_dec_and_test(&cluster->refcnt))
++	if (refcount_sub_and_test(nr, &cluster->refcnt))
+ 		vswap_cluster_free(cluster);
+ 	else if (cluster->full && cluster_is_alloc_candidate(cluster)) {
+ 		cluster->full = false;
+@@ -506,7 +506,7 @@ static inline void release_vswap_slot(struct vswap_cluster *cluster,
+ 		}
+ 	}
+ 
+-	atomic_dec(&vswap_used);
++	atomic_sub(nr, &vswap_used);
  }
  
  /*
-@@ -2067,7 +2053,7 @@ static int setup_swap_extents(struct swap_info_struct *sis, sector_t *span)
+@@ -528,23 +528,33 @@ void vswap_rmap_set(struct swap_cluster_info *ci, swp_slot_t slot,
  }
  
- static void setup_swap_info(struct swap_info_struct *si, int prio,
--			    unsigned char *swap_map,
-+			    unsigned long *swap_map,
- 			    struct swap_cluster_info *cluster_info)
+ /*
+- * Caller needs to handle races with other operations themselves.
++ * release_backing - release the backend storage for a given range of virtual
++ * swap slots.
+  *
+- * Specifically, this function is safe to be called in contexts where the swap
+- * entry has been added to the swap cache and the associated folio is locked.
+- * We cannot race with other accessors, and the swap entry is guaranteed to be
+- * valid the whole time (since swap cache implies one refcount).
++ * Entered with the cluster locked, but might drop the lock in between.
++ * This is because several operations, such as releasing physical swap slots
++ * (i.e swap_slot_free_nr()) require the cluster to be unlocked to avoid
++ * deadlocks.
+  *
+- * We cannot assume that the backends will be of the same type,
+- * contiguous, etc. We might have a large folio coalesced from subpages with
+- * mixed backend, which is only rectified when it is reclaimed.
++ * This is safe, because:
++ *
++ * 1. Callers ensure no concurrent modification of the swap entry's internal
++ *    state can occur. This is guaranteed by one of the following:
++ *    - For vswap_free_nr() callers: the swap entry's refcnt (swap count and
++ *      swapcache pin) is down to 0.
++ *    - For vswap_store_folio(), swap_zeromap_folio_set(), and zswap_entry_store()
++ *      callers: the folio is locked and in the swap cache.
++ *
++ * 2. The swap entry still holds a refcnt to the cluster, keeping the cluster
++ *    itself valid.
++ *
++ * We will exit the function with the cluster re-locked.
+  */
+-static void release_backing(swp_entry_t entry, int nr)
++static void release_backing(struct vswap_cluster *cluster, swp_entry_t entry,
++		int nr)
  {
- 	si->prio = prio;
-@@ -2095,7 +2081,7 @@ static void _enable_swap_info(struct swap_info_struct *si)
- }
+-	struct vswap_cluster *cluster = NULL;
+ 	struct swp_desc *desc;
+ 	unsigned long flush_nr, phys_swap_start = 0, phys_swap_end = 0;
+-	unsigned long phys_swap_released = 0;
+ 	unsigned int phys_swap_type = 0;
+ 	bool need_flushing_phys_swap = false;
+ 	swp_slot_t flush_slot;
+@@ -552,9 +562,8 @@ static void release_backing(swp_entry_t entry, int nr)
  
- static void enable_swap_info(struct swap_info_struct *si, int prio,
--				unsigned char *swap_map,
-+				unsigned long *swap_map,
- 				struct swap_cluster_info *cluster_info)
- {
- 	spin_lock(&swap_lock);
-@@ -2188,7 +2174,8 @@ static void flush_percpu_swap_cluster(struct swap_info_struct *si)
- SYSCALL_DEFINE1(swapoff, const char __user *, specialfile)
- {
- 	struct swap_info_struct *p = NULL;
--	unsigned char *swap_map;
-+	unsigned long *swap_map;
-+	unsigned long *bad_map;
- 	struct swap_cluster_info *cluster_info;
- 	struct file *swap_file, *victim;
- 	struct address_space *mapping;
-@@ -2283,6 +2270,8 @@ SYSCALL_DEFINE1(swapoff, const char __user *, specialfile)
- 	p->swap_file = NULL;
- 	swap_map = p->swap_map;
- 	p->swap_map = NULL;
-+	bad_map = p->bad_map;
-+	p->bad_map = NULL;
- 	maxpages = p->max;
- 	cluster_info = p->cluster_info;
- 	p->max = 0;
-@@ -2293,7 +2282,8 @@ SYSCALL_DEFINE1(swapoff, const char __user *, specialfile)
- 	mutex_unlock(&swapon_mutex);
- 	kfree(p->global_cluster);
- 	p->global_cluster = NULL;
--	vfree(swap_map);
-+	kvfree(swap_map);
-+	kvfree(bad_map);
- 	free_cluster_info(cluster_info, maxpages);
+ 	VM_WARN_ON(!entry.val);
  
- 	inode = mapping->host;
-@@ -2641,18 +2631,20 @@ static unsigned long read_swap_header(struct swap_info_struct *si,
+-	rcu_read_lock();
+ 	for (i = 0; i < nr; i++) {
+-		desc = vswap_iter(&cluster, entry.val + i);
++		desc = __vswap_iter(cluster, entry.val + i);
+ 		VM_WARN_ON(!desc);
  
- static int setup_swap_map(struct swap_info_struct *si,
- 			  union swap_header *swap_header,
--			  unsigned char *swap_map,
-+			  unsigned long *swap_map,
-+			  unsigned long *bad_map,
- 			  unsigned long maxpages)
- {
- 	unsigned long i;
+ 		/*
+@@ -574,7 +583,6 @@ static void release_backing(swp_entry_t entry, int nr)
+ 		if (desc->type == VSWAP_ZSWAP && desc->zswap_entry) {
+ 			zswap_entry_free(desc->zswap_entry);
+ 		} else if (desc->type == VSWAP_SWAPFILE) {
+-			phys_swap_released++;
+ 			if (!phys_swap_start) {
+ 				/* start a new contiguous range of phys swap */
+ 				phys_swap_start = swp_slot_offset(desc->slot);
+@@ -590,56 +598,49 @@ static void release_backing(swp_entry_t entry, int nr)
  
--	swap_map[0] = SWAP_MAP_BAD; /* omit header page */
-+	set_bit(0, bad_map); /* omit header page */
-+
- 	for (i = 0; i < swap_header->info.nr_badpages; i++) {
- 		unsigned int page_nr = swap_header->info.badpages[i];
- 		if (page_nr == 0 || page_nr > swap_header->info.last_page)
- 			return -EINVAL;
- 		if (page_nr < maxpages) {
--			swap_map[page_nr] = SWAP_MAP_BAD;
-+			set_bit(page_nr, bad_map);
- 			si->pages--;
+ 		if (need_flushing_phys_swap) {
+ 			spin_unlock(&cluster->lock);
+-			cluster = NULL;
+ 			swap_slot_free_nr(flush_slot, flush_nr);
++			mem_cgroup_uncharge_swap(entry, flush_nr);
++			spin_lock(&cluster->lock);
+ 			need_flushing_phys_swap = false;
  		}
  	}
-@@ -2756,7 +2748,7 @@ SYSCALL_DEFINE2(swapon, const char __user *, specialfile, int, swap_flags)
- 	int nr_extents;
- 	sector_t span;
- 	unsigned long maxpages;
--	unsigned char *swap_map = NULL;
-+	unsigned long *swap_map = NULL, *bad_map = NULL;
- 	struct swap_cluster_info *cluster_info = NULL;
- 	struct folio *folio = NULL;
- 	struct inode *inode = NULL;
-@@ -2852,16 +2844,24 @@ SYSCALL_DEFINE2(swapon, const char __user *, specialfile, int, swap_flags)
- 	maxpages = si->max;
+-	if (cluster)
+-		spin_unlock(&cluster->lock);
+-	rcu_read_unlock();
  
- 	/* OK, set up the swap map and apply the bad block list */
--	swap_map = vzalloc(maxpages);
-+	swap_map = kvcalloc(BITS_TO_LONGS(maxpages), sizeof(long), GFP_KERNEL);
- 	if (!swap_map) {
- 		error = -ENOMEM;
- 		goto bad_swap_unlock_inode;
+ 	/* Flush any remaining physical swap range */
+ 	if (phys_swap_start) {
+ 		flush_slot = swp_slot(phys_swap_type, phys_swap_start);
+ 		flush_nr = phys_swap_end - phys_swap_start;
++		spin_unlock(&cluster->lock);
+ 		swap_slot_free_nr(flush_slot, flush_nr);
++		mem_cgroup_uncharge_swap(entry, flush_nr);
++		spin_lock(&cluster->lock);
  	}
+-
+-	if (phys_swap_released)
+-		mem_cgroup_uncharge_swap(entry, phys_swap_released);
+ }
  
--	error = setup_swap_map(si, swap_header, swap_map, maxpages);
-+	bad_map = kvcalloc(BITS_TO_LONGS(maxpages), sizeof(long), GFP_KERNEL);
-+	if (!bad_map) {
-+		error = -ENOMEM;
-+		goto bad_swap_unlock_inode;
++static void __vswap_swap_cgroup_clear(struct vswap_cluster *cluster,
++		swp_entry_t entry, unsigned int nr_ents);
++
+ /*
+- * Entered with the cluster locked, but might unlock the cluster.
+- * This is because several operations, such as releasing physical swap slots
+- * (i.e swap_slot_free_nr()) require the cluster to be unlocked to avoid
+- * deadlocks.
+- *
+- * This is safe, because:
+- *
+- * 1. The swap entry to be freed has refcnt (swap count and swapcache pin)
+- *    down to 0, so no one can change its internal state
+- *
+- * 2. The swap entry to be freed still holds a refcnt to the cluster, keeping
+- *    the cluster itself valid.
+- *
+- * We will exit the function with the cluster re-locked.
++ * Entered with the cluster locked. We will exit the function with the cluster
++ * still locked.
+  */
+-static void vswap_free(struct vswap_cluster *cluster, struct swp_desc *desc,
+-	swp_entry_t entry)
++static void vswap_free_nr(struct vswap_cluster *cluster, swp_entry_t entry,
++		int nr)
+ {
+-	/* Clear shadow if present */
+-	if (xa_is_value(desc->shadow))
+-		desc->shadow = NULL;
+-	spin_unlock(&cluster->lock);
++	struct swp_desc *desc;
++	int i;
+ 
+-	release_backing(entry, 1);
+-	mem_cgroup_clear_swap(entry, 1);
++	for (i = 0; i < nr; i++) {
++		desc = __vswap_iter(cluster, entry.val + i);
++		/* Clear shadow if present */
++		if (xa_is_value(desc->shadow))
++			desc->shadow = NULL;
 +	}
-+
-+	error = setup_swap_map(si, swap_header, swap_map, bad_map, maxpages);
- 	if (error)
- 		goto bad_swap_unlock_inode;
  
-+	si->bad_map = bad_map;
+-	/* erase forward mapping and release the virtual slot for reallocation */
+-	spin_lock(&cluster->lock);
+-	release_vswap_slot(cluster, entry.val);
++	release_backing(cluster, entry, nr);
++	__vswap_swap_cgroup_clear(cluster, entry, nr);
 +
- 	if (si->bdev && bdev_stable_writes(si->bdev))
- 		si->flags |= SWP_STABLE_WRITES;
++	/* erase forward mapping and release the virtual slots for reallocation */
++	release_vswap_slot_nr(cluster, entry.val, nr);
+ }
  
-@@ -2955,7 +2955,10 @@ SYSCALL_DEFINE2(swapon, const char __user *, specialfile, int, swap_flags)
- 	si->swap_file = NULL;
- 	si->flags = 0;
- 	spin_unlock(&swap_lock);
--	vfree(swap_map);
-+	if (swap_map)
-+		kvfree(swap_map);
-+	if (bad_map)
-+		kvfree(bad_map);
- 	if (cluster_info)
- 		free_cluster_info(cluster_info, maxpages);
- 	if (inced_nr_rotate_swap)
+ /**
+@@ -818,18 +819,32 @@ static bool vswap_free_nr_any_cache_only(swp_entry_t entry, int nr)
+ 	struct vswap_cluster *cluster = NULL;
+ 	struct swp_desc *desc;
+ 	bool ret = false;
+-	int i;
++	swp_entry_t free_start;
++	int i, free_nr = 0;
+ 
++	free_start.val = 0;
+ 	rcu_read_lock();
+ 	for (i = 0; i < nr; i++) {
++		/* flush pending free batch at cluster boundary */
++		if (free_nr && !VSWAP_IDX_WITHIN_CLUSTER_VAL(entry.val)) {
++			vswap_free_nr(cluster, free_start, free_nr);
++			free_nr = 0;
++		}
+ 		desc = vswap_iter(&cluster, entry.val);
+ 		VM_WARN_ON(!desc);
+ 		ret |= (desc->swap_count == 1 && desc->in_swapcache);
+ 		desc->swap_count--;
+-		if (!desc->swap_count && !desc->in_swapcache)
+-			vswap_free(cluster, desc, entry);
++		if (!desc->swap_count && !desc->in_swapcache) {
++			if (!free_nr++)
++				free_start = entry;
++		} else if (free_nr) {
++			vswap_free_nr(cluster, free_start, free_nr);
++			free_nr = 0;
++		}
+ 		entry.val++;
+ 	}
++	if (free_nr)
++		vswap_free_nr(cluster, free_start, free_nr);
+ 	if (cluster)
+ 		spin_unlock(&cluster->lock);
+ 	rcu_read_unlock();
+@@ -952,19 +967,33 @@ void swapcache_clear(swp_entry_t entry, int nr)
+ {
+ 	struct vswap_cluster *cluster = NULL;
+ 	struct swp_desc *desc;
+-	int i;
++	swp_entry_t free_start;
++	int i, free_nr = 0;
+ 
+ 	if (!nr)
+ 		return;
+ 
++	free_start.val = 0;
+ 	rcu_read_lock();
+ 	for (i = 0; i < nr; i++) {
++		/* flush pending free batch at cluster boundary */
++		if (free_nr && !VSWAP_IDX_WITHIN_CLUSTER_VAL(entry.val)) {
++			vswap_free_nr(cluster, free_start, free_nr);
++			free_nr = 0;
++		}
+ 		desc = vswap_iter(&cluster, entry.val);
+ 		desc->in_swapcache = false;
+-		if (!desc->swap_count)
+-			vswap_free(cluster, desc, entry);
++		if (!desc->swap_count) {
++			if (!free_nr++)
++				free_start = entry;
++		} else if (free_nr) {
++			vswap_free_nr(cluster, free_start, free_nr);
++			free_nr = 0;
++		}
+ 		entry.val++;
+ 	}
++	if (free_nr)
++		vswap_free_nr(cluster, free_start, free_nr);
+ 	if (cluster)
+ 		spin_unlock(&cluster->lock);
+ 	rcu_read_unlock();
+@@ -1105,11 +1134,13 @@ void vswap_store_folio(swp_entry_t entry, struct folio *folio)
+ 	VM_BUG_ON(!folio_test_locked(folio));
+ 	VM_BUG_ON(folio->swap.val != entry.val);
+ 
+-	release_backing(entry, nr);
+-
+ 	rcu_read_lock();
++	desc = vswap_iter(&cluster, entry.val);
++	VM_WARN_ON(!desc);
++	release_backing(cluster, entry, nr);
++
+ 	for (i = 0; i < nr; i++) {
+-		desc = vswap_iter(&cluster, entry.val + i);
++		desc = __vswap_iter(cluster, entry.val + i);
+ 		VM_WARN_ON(!desc);
+ 		desc->type = VSWAP_FOLIO;
+ 		desc->swap_cache = folio;
+@@ -1134,11 +1165,13 @@ void swap_zeromap_folio_set(struct folio *folio)
+ 	VM_BUG_ON(!folio_test_locked(folio));
+ 	VM_BUG_ON(!entry.val);
+ 
+-	release_backing(entry, nr);
+-
+ 	rcu_read_lock();
++	desc = vswap_iter(&cluster, entry.val);
++	VM_WARN_ON(!desc);
++	release_backing(cluster, entry, nr);
++
+ 	for (i = 0; i < nr; i++) {
+-		desc = vswap_iter(&cluster, entry.val + i);
++		desc = __vswap_iter(cluster, entry.val + i);
+ 		VM_WARN_ON(!desc);
+ 		desc->type = VSWAP_ZERO;
+ 	}
+@@ -1772,11 +1805,10 @@ void zswap_entry_store(swp_entry_t swpentry, struct zswap_entry *entry)
+ 	struct vswap_cluster *cluster = NULL;
+ 	struct swp_desc *desc;
+ 
+-	release_backing(swpentry, 1);
+-
+ 	rcu_read_lock();
+ 	desc = vswap_iter(&cluster, swpentry.val);
+ 	VM_WARN_ON(!desc);
++	release_backing(cluster, swpentry, 1);
+ 	desc->zswap_entry = entry;
+ 	desc->type = VSWAP_ZSWAP;
+ 	spin_unlock(&cluster->lock);
+@@ -1850,6 +1882,22 @@ static unsigned short __vswap_cgroup_record(struct vswap_cluster *cluster,
+ 	return oldid;
+ }
+ 
++/*
++ * Clear swap cgroup for a range of swap entries.
++ * Entered with the cluster locked. Caller must be under rcu_read_lock().
++ */
++static void __vswap_swap_cgroup_clear(struct vswap_cluster *cluster,
++				      swp_entry_t entry, unsigned int nr_ents)
++{
++	unsigned short id;
++	struct mem_cgroup *memcg;
++
++	id = __vswap_cgroup_record(cluster, entry, 0, nr_ents);
++	memcg = mem_cgroup_from_id(id);
++	if (memcg)
++		mem_cgroup_id_put_many(memcg, nr_ents);
++}
++
+ static unsigned short vswap_cgroup_record(swp_entry_t entry,
+ 				unsigned short memcgid, unsigned int nr_ents)
+ {
+@@ -1955,6 +2003,11 @@ unsigned short lookup_swap_cgroup_id(swp_entry_t entry)
+ 	rcu_read_unlock();
+ 	return ret;
+ }
++#else /* !CONFIG_MEMCG */
++static void __vswap_swap_cgroup_clear(struct vswap_cluster *cluster,
++				      swp_entry_t entry, unsigned int nr_ents)
++{
++}
+ #endif /* CONFIG_MEMCG */
+ 
+ int vswap_init(void)
 -- 
 2.52.0
 
