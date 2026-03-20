@@ -1,257 +1,133 @@
-Return-Path: <cgroups+bounces-14933-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-14934-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id aNpVOjGsvGnz1wIAu9opvQ
-	(envelope-from <cgroups+bounces-14933-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Fri, 20 Mar 2026 03:08:49 +0100
+	id aPZ7JWq0vGn32AIAu9opvQ
+	(envelope-from <cgroups+bounces-14934-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Fri, 20 Mar 2026 03:43:54 +0100
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 551B72D5029
-	for <lists+cgroups@lfdr.de>; Fri, 20 Mar 2026 03:08:49 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id 341E12D5366
+	for <lists+cgroups@lfdr.de>; Fri, 20 Mar 2026 03:43:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id E42A530036FF
-	for <lists+cgroups@lfdr.de>; Fri, 20 Mar 2026 02:08:07 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 23B90302836B
+	for <lists+cgroups@lfdr.de>; Fri, 20 Mar 2026 02:43:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 660422F5337;
-	Fri, 20 Mar 2026 02:08:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA6D52DAFA5;
+	Fri, 20 Mar 2026 02:43:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="p7gazw7S"
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="Hgkr4hg7"
 X-Original-To: cgroups@vger.kernel.org
-Received: from out-170.mta0.migadu.com (out-170.mta0.migadu.com [91.218.175.170])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 13DA978F4F;
-	Fri, 20 Mar 2026 02:08:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 07E9D2C027C;
+	Fri, 20 Mar 2026 02:43:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1773972486; cv=none; b=aWeLinchLCE5UKsyKo/HzFJZWW8e+HeMIt9sQ+1he0rcru3YzeHQIHj2CHefkZRydr0a+KEw6tiEMMAZ6NnjXTtBfASDXY+e4P3UAlXS2KNZc6sMzFOzM4oT5iKTkOiC0aedNIYb5NqOMa87FMG4nREhO/OwMdFIA0R81K62R3A=
+	t=1773974630; cv=none; b=hrCiTkpPuTr9qSsuQwPkGtu96ziKTJo4gZv06yETx3ZYF8ahAQshDUOkV8Je8Af0cWa83AZJZrWmEz7Ft9tB9B0Eknk16pgva09l4MdfpMRrVhBtKNF/HCoFzdHm03INk3aH5zkT0ABiF32Fctnq/4D7/YZa5oVGPy91KT64lPE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1773972486; c=relaxed/simple;
-	bh=LIir2MfY0RVvQN3XacjAfAWAndFzxhYs+H+akkEkZYw=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=S1G98VWalOBlDnU1isSLbS3Qg6SeZT6qxkdvOjEORAztHYFMblkU0F35qpJCRUvwp1WFJbuNZY648YWVJw0E+EAIZfF2KkgHDawKhZXwCvjbdIPxfg2Jy3+YgcGNoVdd4mRBjp9dexDfIyuJZbnk0/e7nckjn42IftGC6EsivPU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=p7gazw7S; arc=none smtp.client-ip=91.218.175.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1773972480;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=uqC2n4jtYgB5WUI932AbJPwrEp5yFTXjiuWiQl2OLvg=;
-	b=p7gazw7Sd5DvqjmrmCeeYyG+kF0rT7XzsytLSmfQ6QmPI4oYDSPX/cFGW6gajPcCqYxtRP
-	7XHxOgkJiDZ5VmnVo5/Z0UZyEer5xbjbWuBuCFzdbE1MpHJ4oRzWsySeEAA7ebVgbb/rw+
-	MEBapoa2/iU3PuPeI4RewH3Bgmdx8Hw=
-From: Hui Zhu <hui.zhu@linux.dev>
-To: Johannes Weiner <hannes@cmpxchg.org>,
-	Michal Hocko <mhocko@kernel.org>,
-	Roman Gushchin <roman.gushchin@linux.dev>,
-	Shakeel Butt <shakeel.butt@linux.dev>,
-	Muchun Song <muchun.song@linux.dev>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	cgroups@vger.kernel.org,
-	linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org
-Cc: teawater <zhuhui@kylinos.cn>
-Subject: [PATCH mm-unstable v2] mm/memcontrol: batch memcg charging in __memcg_slab_post_alloc_hook
-Date: Fri, 20 Mar 2026 10:07:45 +0800
-Message-ID: <20260320020745.833792-1-hui.zhu@linux.dev>
+	s=arc-20240116; t=1773974630; c=relaxed/simple;
+	bh=IM7odbRo5JmXvV35WSNt2mLDPESwML5Li6T+qlytX5s=;
+	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
+	 Mime-Version:Content-Type; b=nQPA8YiT56h4P4rezfmazWnp7t5ZufgUcHPC71tCH2uedKtOxrDiPOF48lyo/A/jL8kjFVPPdr1oP+njC9DtnEZ4md6gqaZ5AZLigh6yeP9IdtkXfG8tTJ57du4SY2Q/gfcwZ5JK/po2eKHzKUJ1sz7zvL3J0fqmgG8kzJLJcQY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=Hgkr4hg7; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 46D87C19424;
+	Fri, 20 Mar 2026 02:43:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+	s=korg; t=1773974628;
+	bh=IM7odbRo5JmXvV35WSNt2mLDPESwML5Li6T+qlytX5s=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=Hgkr4hg7zQXTt/YOkRxPkZIHUtK1zTNcywzH1MTqkkREzmi+9td5X05r118VG/gIv
+	 EUhIpque6aM/JP1B3c6Vr0hPdX5qI+jqzi3lt2YguscLplbGdsloC37l/N6PfVU0CG
+	 3BB+Li1V5rF2Lm7aIiOKKHmYDkcoC8MS2OnOO6CE=
+Date: Thu, 19 Mar 2026 19:43:47 -0700
+From: Andrew Morton <akpm@linux-foundation.org>
+To: Waiman Long <longman@redhat.com>
+Cc: Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>,
+ Roman Gushchin <roman.gushchin@linux.dev>, Shakeel Butt
+ <shakeel.butt@linux.dev>, Muchun Song <muchun.song@linux.dev>, Tejun Heo
+ <tj@kernel.org>, Michal =?ISO-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>, Shuah
+ Khan <shuah@kernel.org>, Mike Rapoport <rppt@kernel.org>,
+ linux-kernel@vger.kernel.org, cgroups@vger.kernel.org, linux-mm@kvack.org,
+ linux-kselftest@vger.kernel.org, Sean Christopherson <seanjc@google.com>,
+ James Houghton <jthoughton@google.com>, Sebastian Chlad
+ <sebastianchlad@gmail.com>, Guopeng Zhang <zhangguopeng@kylinos.cn>, Li
+ Wang <liwan@redhat.com>
+Subject: Re: [PATCH 0/7] selftests: memcg: Fix test_memcontrol test failures
+ with large page sizes
+Message-Id: <20260319194347.1048fc8d737b6e8f9d82663d@linux-foundation.org>
+In-Reply-To: <20260319173752.1472864-1-longman@redhat.com>
+References: <20260319173752.1472864-1-longman@redhat.com>
+X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
-X-Spamd-Result: default: False [-0.66 / 15.00];
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-Spamd-Result: default: False [-1.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_CONTAINS_FROM(1.00)[];
-	R_MISSING_CHARSET(0.50)[];
-	DMARC_POLICY_ALLOW(-0.50)[linux.dev,none];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
-	R_DKIM_ALLOW(-0.20)[linux.dev:s=key1];
+	MV_CASE(0.50)[];
+	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
+	R_DKIM_ALLOW(-0.20)[linux-foundation.org:s=korg];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	RCVD_COUNT_THREE(0.00)[3];
-	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-14933-lists,cgroups=lfdr.de];
-	DKIM_TRACE(0.00)[linux.dev:+];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	MISSING_XM_UA(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[hui.zhu@linux.dev,cgroups@vger.kernel.org];
 	FROM_HAS_DN(0.00)[];
+	RCVD_TLS_LAST(0.00)[];
+	RCVD_COUNT_THREE(0.00)[4];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-14934-lists,cgroups=lfdr.de];
+	DMARC_NA(0.00)[linux-foundation.org];
+	RCPT_COUNT_TWELVE(0.00)[19];
+	MIME_TRACE(0.00)[0:+];
+	FREEMAIL_CC(0.00)[cmpxchg.org,kernel.org,linux.dev,suse.com,vger.kernel.org,kvack.org,google.com,gmail.com,kylinos.cn,redhat.com];
+	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	NEURAL_HAM(-0.00)[-0.924];
+	MID_RHS_MATCH_FROM(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[akpm@linux-foundation.org,cgroups@vger.kernel.org];
+	DKIM_TRACE(0.00)[linux-foundation.org:+];
+	NEURAL_HAM(-0.00)[-0.977];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[cgroups];
-	RCPT_COUNT_SEVEN(0.00)[10];
 	TO_DN_SOME(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[kylinos.cn:email,sashiko.dev:url,linux.dev:dkim,linux.dev:mid,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 551B72D5029
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sashiko.dev:url,linux-foundation.org:dkim,linux-foundation.org:mid,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: 341E12D5366
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-From: teawater <zhuhui@kylinos.cn>
+On Thu, 19 Mar 2026 13:37:45 -0400 Waiman Long <longman@redhat.com> wrote:
 
-When kmem_cache_alloc_bulk() allocates multiple objects, the post-alloc
-hook __memcg_slab_post_alloc_hook() previously charged memcg one object
-at a time, even though consecutive objects may reside on slabs backed by
-the same pgdat node.
+> There are a number of test failures with the running of the
+> test_memcontrol selftest on a 128-core arm64 system on kernels with
+> 4k/16k/64k page sizes. This patch series makes some minor changes to
+> the kernel and the test_memcontrol selftest to address these failures.
+> 
+> The first kernel patch scales the memcg vmstats flush threshold
+> logarithmetically instead of linearly with the total number of CPUs. The
+> second kernel patch scale down MEMCG_CHARGE_BATCH with increases in page
+> size. These 2 patches help to reduce the discrepancies between the
+> reported usage data with the real ones.
+> 
+> The next 5 test_memcontrol selftest patches adjust the testing code to
+> greatly reduce the chance that it will report failure, though some
+> occasional failures is still possible.
+> 
+> To verify the changes, the test_memcontrol selftest was run 100
+> times each on a 128-core arm64 system on kernels with 4k/16k/64k
+> page sizes.  No failure was observed other than some failures of the
+> test_memcg_reclaim test when running on a 16k page size kernel. The
+> reclaim_until() call failed because of the unexpected over-reclaim of
+> memory. This will need a further look but it happens with the 16k page
+> size kernel only and I don't have a production ready kernel config file
+> to use in buildinig this 16k page size kernel. The new test_memcontrol
+> selftest and kernel were also run on a 96-core x86 system to make sure
+> there was no regression.
 
-Batch the memcg charging by scanning ahead from the current position to
-find a contiguous run of objects whose slabs share the same pgdat, then
-issue a single __obj_cgroup_charge() / __consume_obj_stock() call for
-the entire run. The per-object obj_ext assignment loop is preserved as-is
-since it cannot be further collapsed.
-
-This implements the TODO comment left in commit bc730030f956 ("memcg:
-combine slab obj stock charging and accounting").
-
-The existing error-recovery contract is unchanged: if size == 1 then
-memcg_alloc_abort_single() will free the sole object, and for larger
-bulk allocations kmem_cache_free_bulk() will uncharge any objects that
-were already charged before the failure.
-
-Benchmark using kmem_cache_alloc_bulk() with SLAB_ACCOUNT
-(iters=100000):
-
-  bulk=32  before: 215 ns/object   after: 174 ns/object  (-19%)
-  bulk=1   before: 344 ns/object   after: 335 ns/object  (  ~)
-
-No measurable regression for bulk=1, as expected.
-
-Signed-off-by: teawater <zhuhui@kylinos.cn>
----
-Changelog:
-v2:
-According to the comments in [1], add code to handle the integer
-overflow issue.
-
-[1] https://sashiko.dev/#/patchset/20260316084839.1342163-1-hui.zhu%40linux.dev
-
- mm/memcontrol.c | 77 +++++++++++++++++++++++++++++++++++++------------
- 1 file changed, 58 insertions(+), 19 deletions(-)
-
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index a47fb68dd65f..e65130d521d7 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -3448,51 +3448,90 @@ bool __memcg_slab_post_alloc_hook(struct kmem_cache *s, struct list_lru *lru,
- 			return false;
- 	}
- 
--	for (i = 0; i < size; i++) {
-+	for (i = 0; i < size; ) {
- 		unsigned long obj_exts;
- 		struct slabobj_ext *obj_ext;
- 		struct obj_stock_pcp *stock;
-+		struct pglist_data *pgdat;
-+		int batch_bytes;
-+		size_t run_len = 0;
-+		size_t j;
-+		size_t max_size;
-+		bool skip_next = false;
- 
- 		slab = virt_to_slab(p[i]);
- 
- 		if (!slab_obj_exts(slab) &&
- 		    alloc_slab_obj_exts(slab, s, flags, false)) {
-+			i++;
- 			continue;
- 		}
- 
-+		pgdat = slab_pgdat(slab);
-+		run_len = 1;
-+
-+		/*
-+		 * The value of batch_bytes must not exceed
-+		 * (INT_MAX - PAGE_SIZE) to prevent integer overflow in
-+		 * the final accumulation performed by __account_obj_stock().
-+		 */
-+		max_size = min((size_t)((INT_MAX - PAGE_SIZE) / obj_size),
-+			       size);
-+
-+		for (j = i + 1; j < max_size; j++) {
-+			struct slab *slab_j = virt_to_slab(p[j]);
-+
-+			if (slab_pgdat(slab_j) != pgdat)
-+				break;
-+
-+			if (!slab_obj_exts(slab_j) &&
-+			    alloc_slab_obj_exts(slab_j, s, flags, false)) {
-+				skip_next = true;
-+				break;
-+			}
-+
-+			run_len++;
-+		}
-+
- 		/*
--		 * if we fail and size is 1, memcg_alloc_abort_single() will
-+		 * If we fail and size is 1, memcg_alloc_abort_single() will
- 		 * just free the object, which is ok as we have not assigned
--		 * objcg to its obj_ext yet
--		 *
--		 * for larger sizes, kmem_cache_free_bulk() will uncharge
--		 * any objects that were already charged and obj_ext assigned
-+		 * objcg to its obj_ext yet.
- 		 *
--		 * TODO: we could batch this until slab_pgdat(slab) changes
--		 * between iterations, with a more complicated undo
-+		 * For larger sizes, kmem_cache_free_bulk() will uncharge
-+		 * any objects that were already charged and obj_ext assigned.
- 		 */
-+		batch_bytes = obj_size * run_len;
- 		stock = trylock_stock();
--		if (!stock || !__consume_obj_stock(objcg, stock, obj_size)) {
-+		if (!stock || !__consume_obj_stock(objcg, stock, batch_bytes)) {
- 			size_t remainder;
- 
- 			unlock_stock(stock);
--			if (__obj_cgroup_charge(objcg, flags, obj_size, &remainder))
-+			if (__obj_cgroup_charge(objcg, flags, batch_bytes, &remainder))
- 				return false;
- 			stock = trylock_stock();
- 			if (remainder)
- 				__refill_obj_stock(objcg, stock, remainder, false);
- 		}
--		__account_obj_stock(objcg, stock, obj_size,
--				    slab_pgdat(slab), cache_vmstat_idx(s));
-+		__account_obj_stock(objcg, stock, batch_bytes,
-+				    pgdat, cache_vmstat_idx(s));
- 		unlock_stock(stock);
- 
--		obj_exts = slab_obj_exts(slab);
--		get_slab_obj_exts(obj_exts);
--		off = obj_to_index(s, slab, p[i]);
--		obj_ext = slab_obj_ext(slab, obj_exts, off);
--		obj_cgroup_get(objcg);
--		obj_ext->objcg = objcg;
--		put_slab_obj_exts(obj_exts);
-+		for (j = 0; j < run_len; j++) {
-+			slab = virt_to_slab(p[i + j]);
-+			obj_exts = slab_obj_exts(slab);
-+			get_slab_obj_exts(obj_exts);
-+			off = obj_to_index(s, slab, p[i + j]);
-+			obj_ext = slab_obj_ext(slab, obj_exts, off);
-+			obj_cgroup_get(objcg);
-+			obj_ext->objcg = objcg;
-+			put_slab_obj_exts(obj_exts);
-+		}
-+
-+		if (skip_next)
-+			i = i + run_len + 1;
-+		else
-+			i += run_len;
- 	}
- 
- 	return true;
--- 
-2.43.0
-
+AI reviewbot asks questions:
+	https://sashiko.dev/#/patchset/20260319173752.1472864-1-longman%40redhat.com
 
