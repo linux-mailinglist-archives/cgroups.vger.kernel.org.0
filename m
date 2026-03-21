@@ -1,183 +1,204 @@
-Return-Path: <cgroups+bounces-14976-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-14977-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id UDtSBBASvmnFFwMAu9opvQ
-	(envelope-from <cgroups+bounces-14976-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Sat, 21 Mar 2026 04:35:44 +0100
+	id wEYGEewYvmkxGQMAu9opvQ
+	(envelope-from <cgroups+bounces-14977-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Sat, 21 Mar 2026 05:05:00 +0100
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6A2772E321F
-	for <lists+cgroups@lfdr.de>; Sat, 21 Mar 2026 04:35:43 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 96A5D2E32E8
+	for <lists+cgroups@lfdr.de>; Sat, 21 Mar 2026 05:04:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 3AC30302D5D3
-	for <lists+cgroups@lfdr.de>; Sat, 21 Mar 2026 03:35:23 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 69B8C30333B2
+	for <lists+cgroups@lfdr.de>; Sat, 21 Mar 2026 04:04:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A0D53016E1;
-	Sat, 21 Mar 2026 03:35:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8EA0F27FB0E;
+	Sat, 21 Mar 2026 04:04:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="TiiIokb7"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="eMWwq7tA"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-dl1-f73.google.com (mail-dl1-f73.google.com [74.125.82.73])
+Received: from mail-pl1-f181.google.com (mail-pl1-f181.google.com [209.85.214.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 593704317D
-	for <cgroups@vger.kernel.org>; Sat, 21 Mar 2026 03:35:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.82.73
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3ED08230BE9
+	for <cgroups@vger.kernel.org>; Sat, 21 Mar 2026 04:04:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1774064122; cv=none; b=rN8oLU8gUzj+EoJ7+p/FAfZEVg0idgOMYRKnH/BVSdjncH8bqmGxd2mvYf2cOJqTf8p2EylQ5FOGLQb0cGjctW5y/FKaTjpB11E86YKW+7Ftc/CKpNJJoC16VSmEmeEy9z3Kr76v4eMD+OLtpFuAV9vJY6Nf9ISuqITpDitkNjM=
+	t=1774065895; cv=none; b=NALnC12RHSJAv4GOFr8QFDfw2QBk02Yf0eSPK2lAi0JapFyo3hfB5lyaCYBWnoToG0cVjYfUR3ms+ltRtA8MWUclTlxYXorxZd2jnnY5Gwh7xRjfYiW1M/Hr4a4KXgHqfNJ08/TQzptmcwxypqaOQE/W4+mv/0seQd7oLvfBbP4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1774064122; c=relaxed/simple;
-	bh=96B7pb5M0XiruGqfKkKfkAko2qpTlFcP4SKbRs28Wgo=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=lkIBpLwuC8s8Mr2AxqSFSiFrxuE0LRLl00qjuv+r10H+HpcdXWbvhp/uflRiKtGFg+sCdJntX2e4kp/dK4yyqm7BfjlqA5OL6d68qRQrnvK9nZM4nAdtjosUdmVINYQVKlM3eO9yiXkkYKjN+ohxDwwx91wJsPSgdQUA/YCJ+yE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--bingjiao.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=TiiIokb7; arc=none smtp.client-ip=74.125.82.73
+	s=arc-20240116; t=1774065895; c=relaxed/simple;
+	bh=Vb0hgyyRQxiEoRD57QPoNnifO28j8YAw05wFPmEsgvQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=UAF1RusqtCpOUvUtZUN5d/HhXESDxMNMAKnUIrhPklfiXy4q5k8w3sKIe7H/J9Gc2eCQYH/Do7E1UgSJstJd/h0rI8di18zHk/t2qESam847h4KPEI/+PXvDys38jh4mVkt0BguVUipsyCfuDnqKZcgvozdj2DKzIzw28ZVEv/U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=eMWwq7tA; arc=none smtp.client-ip=209.85.214.181
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--bingjiao.bounces.google.com
-Received: by mail-dl1-f73.google.com with SMTP id a92af1059eb24-12a77b008deso14507769c88.0
-        for <cgroups@vger.kernel.org>; Fri, 20 Mar 2026 20:35:19 -0700 (PDT)
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-pl1-f181.google.com with SMTP id d9443c01a7336-2b052ec7176so36145ad.1
+        for <cgroups@vger.kernel.org>; Fri, 20 Mar 2026 21:04:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20251104; t=1774064118; x=1774668918; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=AoMBtlhfnp9XRcs7RdoT2ynBQbMVoKkeC7D17jrPW5U=;
-        b=TiiIokb7r2JG6VUOYJwsD5NumP7Y2EUqF67ZeT17OYe7mbqCUGt68knko571W5Nvya
-         enP0ZCOSWJpD6zFgnSgjidc8Jac35BySQ7atl1LDNNVokOqwUCyDTnZBPTSYdIlZnJoR
-         JQvVPJECEanRbvhKXTNQAAPxDzHKsH7iHob49eJcUz2ABr8d15Z3AUIY/z6HR6kO55Ov
-         tOuj5r7TrIVx0YPG9zxpVT11P0dQWiUllqLBYr79eZ6VeWXZ4hleppUKJ7mG/TqW3vub
-         BxwIGT8o9r1xW1e1iE/WLjK5pTq6MXp1vo2uoFjVBEeTgSxMqAC2WPEOJ/YOa3YH5Vis
-         axlQ==
+        d=google.com; s=20251104; t=1774065893; x=1774670693; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=Vb0hgyyRQxiEoRD57QPoNnifO28j8YAw05wFPmEsgvQ=;
+        b=eMWwq7tATjetERtfSIF+fUO4VC9GJYpUP8A9Z5JeO4t2OFY5u91IL8YCR44iXM9wo5
+         Me2n56vNuYSI0al58qlNXVwkeoSxermFyv1ibcNqnIldErprGg2kzVseq332FJLq2TgR
+         HA8klWkQn6+pouGR4pVly9mMe/jAgCj8Zrr+LFOjfy7SW1RceV2vh+8neuVMBEERMzim
+         6aZB2XjHyYuTfN0Nwq/8D7SqBoAzbl2mQqpVIqPAeVPRQUeUA2bQ8HzO1kScTEW7bs16
+         jEviwJpAtKyIVLNKG83G9io8OPhZydrJlAx0osBkSCzLEJ8ogBiy2MmbBuK0PbdbrNRt
+         R67A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1774064118; x=1774668918;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=AoMBtlhfnp9XRcs7RdoT2ynBQbMVoKkeC7D17jrPW5U=;
-        b=SCTnGnoFhZTBgYercim508fHWdG1aC08C3yLmv3fRhq+XCFZ7bnFSgbzEOa5G1Rir8
-         xqBIVzrMhZ2hU7J1PX4UTQkY+MXxgBHf7oW9Jqie4mzQRLsnJCGSs0YJft1xCEYfdKxK
-         gGVt1pbgqSrEEmbWNDenL4yA6/3zdPuo6h/ohTtBfaXzF5fbeJArcqsU5eMra5Ve9eXy
-         VV04qd3yEu7Y1FEu01Uw2y5WeJXaGKE89LeGP+yaJWoc/pJ5aiKYWMW13xuPb0zY7Joc
-         dV0wMxjsKxIUY+vlQbUttN8vUMF1x9SFdssTszexbFoJQpCpOv+LlSedx+4DBvftVnYd
-         FpAA==
-X-Forwarded-Encrypted: i=1; AJvYcCUNcxr7ceUnk0/KxgesYtaST5R24PIEYzflWzbdjQ7kFVybW+sltRJ5DA7d2toNjm+JK+kXZgo0@vger.kernel.org
-X-Gm-Message-State: AOJu0YwFm8ZuzoIJD5/+qDxiuktcYFnXpoQEv5xcUM0tULP2ludzTw+p
-	kkn/6MC43pbSfLlPUY8uhOmVWcE7uBJIxQbaEAfuajnwnZrMTArCtecoWqtm3yYTJGYOTiIUgAN
-	OwnaBVUO29bHcIg==
-X-Received: from dlak23.prod.google.com ([2002:a05:701b:2917:b0:128:d29c:ddaa])
- (user=bingjiao job=prod-delivery.src-stubby-dispatcher) by
- 2002:a05:7022:2525:b0:128:cedb:33c6 with SMTP id a92af1059eb24-12a7266088amr3054155c88.16.1774064118178;
- Fri, 20 Mar 2026 20:35:18 -0700 (PDT)
-Date: Sat, 21 Mar 2026 03:34:13 +0000
-In-Reply-To: <20260318221957.2979346-1-bingjiao@google.com>
+        d=1e100.net; s=20251104; t=1774065893; x=1774670693;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Vb0hgyyRQxiEoRD57QPoNnifO28j8YAw05wFPmEsgvQ=;
+        b=qu0YBSS2kSegr8OgG7F77fx7E3kLyLT5hgDcZ1ox/7cM50nLlqvxBiBvz3NRUr6gf7
+         7Gzd7H0uZKEzrQnBSO3/GTCf6WecyccDBUQVc0i447Y7Ax6uPliTpMFL1QmBbhUC7FdM
+         HTTlrlni8oqbjTjk3qFYupW9ApBZWEqii9iKxlZY56FY+XCjIGATK1jpdp0U5ZlXaISD
+         bVD9Nn6bhWBX2ZUcNhxXLDL/53bSYc/8uDsSzh0y8/2Q0x0UVe8MJrgAXOq2k7dRg+1t
+         aWjQIygN8jOY00/2JCnU93OYJJbRgnRtZ/wsBt0EfYwwaucQZVScARHpBrZsFYclKdcp
+         IC6g==
+X-Forwarded-Encrypted: i=1; AJvYcCUZPmO0Cqz9qf1dxh9AHTjFrVV6cBRF3GSnfCGlaufLk2khZnxWcRQSaKd3NAo7cZRmJLuMZO0R@vger.kernel.org
+X-Gm-Message-State: AOJu0YwGG50l/NKYZl7VqyPCsA3zcwyXR+JinyfR2Pp3RklitCJb8inJ
+	iysHmZAmO0XaHEE5RDyr7O1wfanJO79u3qncf/YttbzT/lqK6MwGF/XYCHGXc313Cw==
+X-Gm-Gg: ATEYQzwtLbeCLkATnVmE9vZNJZlKlmXOiVdcfbmqautNRH0xsiiFt6sq0EOgjHXdqlm
+	0PELaVhcwKimUNULP7Z9xp0Wo5/VoEqiOlxjLn63GPVSevvrIGE4Sc2TFojwuRHLbrJwMONHRDH
+	jP3duAwGZbx3PkyVQ0Nfks2wYuiE0uL7Mkm36hU+r6qRBN0Cp1EYreyAceqwYbRpsrYkE4DkWQ7
+	L0HUj/922sfyzHWD7/aWTdwK+F1AaWvKH2sbmd7CQyfjb+iMzMORVqY98rGt8F4Ume0FxMPzVvM
+	+tsgbodpsTLnBE7ZUeatZXeHmyFpod5FwL7knSckwEjlxgqYq+RgtN6cFeisAbNFp/XJaQDyCRV
+	s6tBoe675XH+vI0KLw97fS55lPa03I92cGzPTTWd+dbZvDLEhI4QLjoU28EakRv8iMhILbPjKsB
+	Z2w8NObRJxQclppRbZNO1So1sxL3/1KugjrGrkngkFpEtyklzNapDw8z22D2lwEJyM
+X-Received: by 2002:a17:902:ebc5:b0:2ae:7fa2:6bda with SMTP id d9443c01a7336-2b08c38a9b3mr1002905ad.1.1774065892911;
+        Fri, 20 Mar 2026 21:04:52 -0700 (PDT)
+Received: from google.com (206.238.125.34.bc.googleusercontent.com. [34.125.238.206])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-82b0409f582sm3411460b3a.33.2026.03.20.21.04.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 20 Mar 2026 21:04:52 -0700 (PDT)
+Date: Sat, 21 Mar 2026 04:04:47 +0000
+From: Bing Jiao <bingjiao@google.com>
+To: Donet Tom <donettom@linux.ibm.com>
+Cc: linux-mm@kvack.org, Johannes Weiner <hannes@cmpxchg.org>,
+	Michal Hocko <mhocko@kernel.org>,
+	Roman Gushchin <roman.gushchin@linux.dev>,
+	Shakeel Butt <shakeel.butt@linux.dev>,
+	Muchun Song <muchun.song@linux.dev>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	David Rientjes <rientjes@google.com>,
+	Yosry Ahmed <yosry@kernel.org>, cgroups@vger.kernel.org,
+	linux-kernel@vger.kernel.org, Chris Li <chrisl@kernel.org>,
+	Kairui Song <kasong@tencent.com>,
+	Kemeng Shi <shikemeng@huaweicloud.com>,
+	Nhat Pham <nphamcs@gmail.com>, Baoquan He <bhe@redhat.com>,
+	Barry Song <baohua@kernel.org>,
+	Youngjun Park <youngjun.park@lge.com>,
+	David Hildenbrand <david@kernel.org>,
+	Qi Zheng <zhengqi.arch@bytedance.com>,
+	Lorenzo Stoakes <ljs@kernel.org>,
+	Axel Rasmussen <axelrasmussen@google.com>,
+	Yuanchu Xie <yuanchu@google.com>, Wei Xu <weixugc@google.com>,
+	Joshua Hahn <joshua.hahnjy@gmail.com>
+Subject: Re: [PATCH 2/3] mm/memcontrol: disable demotion in memcg direct
+ reclaim
+Message-ID: <ab4Y33lBuYiOTGx7@google.com>
+References: <20260317230720.990329-1-bingjiao@google.com>
+ <20260317230720.990329-3-bingjiao@google.com>
+ <380c52cb-fc8d-4fbe-8d2a-f153bd179816@linux.ibm.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20260318221957.2979346-1-bingjiao@google.com>
-X-Mailer: git-send-email 2.53.0.959.g497ff81fa9-goog
-Message-ID: <20260321033500.2558070-1-bingjiao@google.com>
-Subject: [PATCH v4] mm/memcontrol: fix reclaim_options leak in try_charge_memcg()
-From: Bing Jiao <bingjiao@google.com>
-To: bingjiao@google.com
-Cc: akpm@linux-foundation.org, axelrasmussen@google.com, baohua@kernel.org, 
-	bhe@redhat.com, cgroups@vger.kernel.org, chrisl@kernel.org, david@kernel.org, 
-	hannes@cmpxchg.org, joshua.hahnjy@gmail.com, kasong@tencent.com, 
-	linux-kernel@vger.kernel.org, linux-mm@kvack.org, ljs@kernel.org, 
-	mhocko@kernel.org, muchun.song@linux.dev, nphamcs@gmail.com, 
-	rientjes@google.com, roman.gushchin@linux.dev, shakeel.butt@linux.dev, 
-	shikemeng@huaweicloud.com, weixugc@google.com, yosry@kernel.org, 
-	youngjun.park@lge.com, yuanchu@google.com, zhengqi.arch@bytedance.com, 
-	Michal Hocko <mhocko@suse.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Spamd-Result: default: False [0.84 / 15.00];
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <380c52cb-fc8d-4fbe-8d2a-f153bd179816@linux.ibm.com>
+X-Spamd-Result: default: False [-0.66 / 15.00];
 	SUSPICIOUS_RECIPS(1.50)[];
-	MID_CONTAINS_FROM(1.00)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	DMARC_POLICY_ALLOW(-0.50)[google.com,reject];
-	MV_CASE(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
 	R_DKIM_ALLOW(-0.20)[google.com:s=20251104];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-14976-lists,cgroups=lfdr.de];
-	RCVD_TLS_LAST(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
-	MIME_TRACE(0.00)[0:+];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[27];
+	FREEMAIL_CC(0.00)[kvack.org,cmpxchg.org,kernel.org,linux.dev,linux-foundation.org,google.com,vger.kernel.org,tencent.com,huaweicloud.com,gmail.com,redhat.com,lge.com,bytedance.com];
+	TAGGED_FROM(0.00)[bounces-14977-lists,cgroups=lfdr.de];
 	FROM_HAS_DN(0.00)[];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	RCVD_TLS_LAST(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[26];
+	MIME_TRACE(0.00)[0:+];
 	DKIM_TRACE(0.00)[google.com:+];
-	TO_DN_SOME(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
+	MISSING_XM_UA(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[5];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[bingjiao@google.com,cgroups@vger.kernel.org];
-	FREEMAIL_CC(0.00)[linux-foundation.org,google.com,kernel.org,redhat.com,vger.kernel.org,cmpxchg.org,gmail.com,tencent.com,kvack.org,linux.dev,huaweicloud.com,lge.com,bytedance.com,suse.com];
-	NEURAL_HAM(-0.00)[-1.000];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	TAGGED_RCPT(0.00)[cgroups];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,cmpxchg.org:email]
-X-Rspamd-Queue-Id: 6A2772E321F
+	NEURAL_HAM(-0.00)[-1.000];
+	TAGGED_RCPT(0.00)[cgroups];
+	MID_RHS_MATCH_FROM(0.00)[];
+	TO_DN_SOME(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: 96A5D2E32E8
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-In try_charge_memcg(), the 'reclaim_options' variable is initialized
-once at the start of the function. However, the function contains a
-retry loop. If reclaim_options were modified during an iteration
-(e.g., by encountering a memsw limit), the modified state would
-persist into subsequent retries.
+On Fri, Mar 20, 2026 at 06:47:14PM +0530, Donet Tom wrote:
+> Hi Bing
+>
+> On 3/18/26 4:37 AM, Bing Jiao wrote:
+> > NUMA demotion counts towards reclaim targets in shrink_folio_list(), but
+> > it does not reduce the total memory usage of a memcg. In memcg direct
+> > reclaim paths (e.g., charge-triggered or manual limit writes), where
+> > demotion is allowed, this leads to "fake progress" where the reclaim
+> > loop concludes it has satisfied the memory request without actually
+> > reducing the cgroup's charge.
+> >
+> > This could result in inefficient reclaim loops, CPU waste, moving all
+> > pages to far-tier nodes, and potentially premature OOM kills when the
+> > cgroup is under memory pressure but demotion is still possible.
+> >
+> > Introduce the MEMCG_RECLAIM_NO_DEMOTION flag to disable demotion in
+> > these memcg-specific reclaim paths. This ensures that reclaim
+> > progress is only counted when memory is actually freed or swapped out.
 
-This leads to incorrect reclaim behavior. Specifically,
-MEMCG_RECLAIM_MAY_SWAP is cleared when the combined memcg->memsw limit
-is reached. After reclaimation attemps, a subsequent retry may
-successfully charge memcg->memsw but fail on the memcg->memory charge.
-In this case, swapping should be permitted, but the carried-over state
-prevents it.
+Hi, Donet,
 
-This issue was identified during code reading of try_charge_memcg()
-while analyzing memsw limit behavior in tiered-memory systems;
-no production failures have been reported yet.
+Thank you for the feedback and reviewing the patch.
 
-Fix by moving the initialization of 'reclaim_options' inside the
-retry loop, ensuring a clean state for every reclaim attempt.
+> Thanks for the patch. With this change, are we completely disabling memory
+> tiering in memcg?
 
-Fixes: 6539cc053869 ("mm: memcontrol: fold mem_cgroup_do_charge()")
-Signed-off-by: Bing Jiao <bingjiao@google.com>
-Reviewed-by: Yosry Ahmed <yosry@kernel.org>
-Acked-by: Michal Hocko <mhocko@suse.com>
-Acked-by: Johannes Weiner <hannes@cmpxchg.org>
----
-v4:
-- Clarify in the commit message that the issue was found via
-  code reading (Michal).
-- Add ACKs (Michal and Johannes).
+Yes, this change will completely disable demotion from memcg
+directly reclaim, as demotion does not help to reduce memory usage.
 
- mm/memcontrol.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+>
+> Did you run any performance benchmarks with this patch?
+>
+>
+> This patch looks good to me. Feel free to add
+>
+> Reviewed by: Donet Tom <donettom@linux.ibm.com>
 
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index a47fb68dd65f..303ac622d22d 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -2558,7 +2558,7 @@ static int try_charge_memcg(struct mem_cgroup *memcg, gfp_t gfp_mask,
- 	struct page_counter *counter;
- 	unsigned long nr_reclaimed;
- 	bool passed_oom = false;
--	unsigned int reclaim_options = MEMCG_RECLAIM_MAY_SWAP;
-+	unsigned int reclaim_options;
- 	bool drained = false;
- 	bool raised_max_event = false;
- 	unsigned long pflags;
-@@ -2572,6 +2572,7 @@ static int try_charge_memcg(struct mem_cgroup *memcg, gfp_t gfp_mask,
- 		/* Avoid the refill and flush of the older stock */
- 		batch = nr_pages;
+Thanks again for the review!
 
-+	reclaim_options = MEMCG_RECLAIM_MAY_SWAP;
- 	if (!do_memsw_account() ||
- 	    page_counter_try_charge(&memcg->memsw, batch, &counter)) {
- 		if (page_counter_try_charge(&memcg->memory, batch, &counter))
---
-2.53.0.959.g497ff81fa9-goog
+Following a discussion with Yosry regarding demotion as an aging process,
+I have decided to drop patches 2 and 3 from this series for now.
 
+Additionally, Joshua Hahn's RFC ('Make memcg limits tier-aware') [1]
+introduces a mechanism to scale memcg limits based on the ratio of
+top-tier to total memory. This approach or similar approaches might
+provide a more comprehensive way to resolve 'fake progress' in memcg
+direct reclaim or establish a better framework for addressing such
+issues in the future.
+
+Hope you have great weekend!
+
+Best regards,
+Bing
+
+[1] https://lore.kernel.org/linux-mm/20260223223830.586018-1-joshua.hahnjy@gmail.com/
 
