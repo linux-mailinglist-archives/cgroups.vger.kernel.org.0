@@ -1,187 +1,209 @@
-Return-Path: <cgroups+bounces-14994-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-14995-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 4F5iGK8nwWmbRAQAu9opvQ
-	(envelope-from <cgroups+bounces-14994-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Mon, 23 Mar 2026 12:44:47 +0100
+	id GFqbKT0xwWm7RQQAu9opvQ
+	(envelope-from <cgroups+bounces-14995-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Mon, 23 Mar 2026 13:25:33 +0100
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id B93032F163A
-	for <lists+cgroups@lfdr.de>; Mon, 23 Mar 2026 12:44:46 +0100 (CET)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3277A2F1E39
+	for <lists+cgroups@lfdr.de>; Mon, 23 Mar 2026 13:25:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id E5BD2303276F
-	for <lists+cgroups@lfdr.de>; Mon, 23 Mar 2026 11:32:58 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id 2F483301062C
+	for <lists+cgroups@lfdr.de>; Mon, 23 Mar 2026 12:25:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DDC2B39098C;
-	Mon, 23 Mar 2026 11:32:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C31DC39DBFC;
+	Mon, 23 Mar 2026 12:25:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="BifyUbd3";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="n2oNmWvU"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WONIsc1l"
 X-Original-To: cgroups@vger.kernel.org
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 71F4D35F169;
-	Mon, 23 Mar 2026 11:32:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 83F9339DBF5;
+	Mon, 23 Mar 2026 12:25:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1774265577; cv=none; b=Tyssj484Ikbaydpf7NRBc0rUFCOfApJVq4RVKQR84x40MqQ/wjd3B+XGx/zIyVs5nJZs7jU56S8o8uHunNrn52sukt/p/2GMWhkKxMalIQvqCV3eIF4wPxqpJd0tQ5gIERzfA75hEy1JAr/HpROCFuHUvQBfDO24V2Ftk0dRJCs=
+	t=1774268727; cv=none; b=L2FXkqjnnMc/uD/gg/y5ONHfFR2cg9MDvvWi5xNIW7WYoYg9mmGHNvo4t+wlZULyRLyR1K3//NwjusL5R0lopReh/FiwcL6z0PS6KisjlGUTn+3wyt685UBOdxIwH357W1Blow6P36MnR13Bk6CrQ3JrnPt6PSML98Df2vNRsx8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1774265577; c=relaxed/simple;
-	bh=mDJqRMloJ3NBUZezW6whF3idh6ZlNm3zXpp3r1muV6Y=;
+	s=arc-20240116; t=1774268727; c=relaxed/simple;
+	bh=mVUWgOe9lLa+VOf+1norSky46GtkHIE150PlVzhR5NM=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Rk+4Wjfd/4KqXDj52ZRpTNjRJti6o/kL0zZ3mhSUuMu63rS4hd09CoURZcHfWDp5nyZTWvISzum0g6dPoWlTT68sWCm4WBC5eydeKNdQnr8ThPkcMyGgQdgJb3M6DFwABOUs0qvGEsyw5SE/SBLtb6U+8EpYvIwJSLqS4Or5r5w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=BifyUbd3; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=n2oNmWvU; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-Date: Mon, 23 Mar 2026 12:32:52 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1774265574;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=4Jtm/lLUOB2ez4Z+Om5po55H772f0PRRvnT4Ebhp4Sc=;
-	b=BifyUbd3AoQjKkNpjKKJ4MgyFn1A5ZsjznMvRoCQd+BydSSwksLYVquwZ+9TNDxwtcp55I
-	2sdDS1e12Lx5hIEbBU14FgQXhFR/AN6/QNSvY9ajXASNzSxfCX20jT/0Hme+mhW807mXn3
-	DhPXUYVHswdX4/6fgo6Jja9/G9LWY6Xqe+PrBEyzkdyvyIv4/rT//1t7MOZWxNF3SYCfMH
-	2z4LXzGoVo9yCS5mFKU960ZNSsCGcXmMStW7YTKj/pPDviIBei/zJdH9xtzqnrBXZS2B5P
-	gbLhNgnMyWtyg+H7de9zIGYWbNKme+QsziTMtz5wR9qlFN2+DccW8R8CumrAeg==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1774265574;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=4Jtm/lLUOB2ez4Z+Om5po55H772f0PRRvnT4Ebhp4Sc=;
-	b=n2oNmWvUovocIvaEQlMmFaZEbecNFL42cXhP+BSv9+o3xp2cXssWCk1aFZvZhaEWjbxhlB
-	FySQYoA84OsjRHBw==
-From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-To: Tejun Heo <tj@kernel.org>
-Cc: cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Bert Karwatzki <spasswolf@web.de>, Michal Koutny <mkoutny@suse.com>,
-	kernel test robot <oliver.sang@intel.com>
-Subject: Re: [PATCH] cgroup: Wait for dying tasks to leave on rmdir
-Message-ID: <20260323113252.xsuwQA3z@linutronix.de>
-References: <20260323035806.724798-1-tj@kernel.org>
+	 Content-Type:Content-Disposition:In-Reply-To; b=fW+rVkYZ/l0HSXcpD6vw/rcUDQqamJFvB3Vttj5p4ly2EH3QbwEOdgTbuViSZvPnIj/hHQPxx7tZbqd7beRUZiYl6p1CFqwJPYz57W9QAv21FcBnRpEoZF/tUj245esBv50To+o1VztZY44BeN4G8gRdSdOrwxM+CQ9C3LsffUA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WONIsc1l; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D5C00C4CEF7;
+	Mon, 23 Mar 2026 12:25:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1774268727;
+	bh=mVUWgOe9lLa+VOf+1norSky46GtkHIE150PlVzhR5NM=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=WONIsc1lDroD/0B2DmWkU07c304Bgbaz1sDLm4sqC90nX5zNNUlehXG+d/k6WMGCL
+	 n1XsU5A4867Yp8O91JLHBXxmirPFn8fnK8bc+q2yicnGX/3eq1cMGZSFR74B+ljsvY
+	 9PqGCRnW7WvIn8rAG2XkC9w8zfqBby7axEFF3CLbFM4G0RSNW0ZLv2h87dC29Ov8H1
+	 KVSXwlkiOP+ujCOPheBlJv2Es9jtsDFXmanMKq5ryebUtMJk6R80sZLgZX5F5/LZqY
+	 VSlQ5nL6eatb8ZvlOCPuwZkme1LE+LjkYNEyatKLbMGGt2JpCEg3Jo1dIjmoyrJsBG
+	 1F/u8KGuq8+rw==
+Date: Mon, 23 Mar 2026 21:25:25 +0900
+From: "Harry Yoo (Oracle)" <harry@kernel.org>
+To: Qi Zheng <qi.zheng@linux.dev>
+Cc: hannes@cmpxchg.org, hughd@google.com, mhocko@suse.com,
+	roman.gushchin@linux.dev, shakeel.butt@linux.dev,
+	muchun.song@linux.dev, david@kernel.org, lorenzo.stoakes@oracle.com,
+	ziy@nvidia.com, harry.yoo@oracle.com, yosry.ahmed@linux.dev,
+	imran.f.khan@oracle.com, kamalesh.babulal@oracle.com,
+	axelrasmussen@google.com, yuanchu@google.com, weixugc@google.com,
+	chenridong@huaweicloud.com, mkoutny@suse.com,
+	akpm@linux-foundation.org, hamzamahfooz@linux.microsoft.com,
+	apais@linux.microsoft.com, lance.yang@linux.dev, bhe@redhat.com,
+	usamaarif642@gmail.com, linux-mm@kvack.org,
+	linux-kernel@vger.kernel.org, cgroups@vger.kernel.org,
+	Qi Zheng <zhengqi.arch@bytedance.com>,
+	Yosry Ahmed <yosry@kernel.org>
+Subject: Re: [PATCH v6 30/33] mm: memcontrol: prepare for reparenting
+ non-hierarchical stats
+Message-ID: <acExNWaaKdhrBH-J@hyeyoo>
+References: <cover.1772711148.git.zhengqi.arch@bytedance.com>
+ <e862995c45a7101a541284b6ebee5e5c32c89066.1772711148.git.zhengqi.arch@bytedance.com>
+ <acDxaEgnqPI-Z4be@hyeyoo>
+ <2d39ea5e-fd69-4acf-8518-a504f5f7a838@linux.dev>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-In-Reply-To: <20260323035806.724798-1-tj@kernel.org>
-X-Spamd-Result: default: False [-2.16 / 15.00];
+In-Reply-To: <2d39ea5e-fd69-4acf-8518-a504f5f7a838@linux.dev>
+X-Spamd-Result: default: False [-1.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[linutronix.de,none];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
-	R_DKIM_ALLOW(-0.20)[linutronix.de:s=2020,linutronix.de:s=2020e];
+	MID_RHS_NOT_FQDN(0.50)[];
+	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
+	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
+	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-14994-lists,cgroups=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	RCVD_COUNT_THREE(0.00)[3];
+	TAGGED_FROM(0.00)[bounces-14995-lists,cgroups=lfdr.de];
+	RCVD_COUNT_THREE(0.00)[4];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	FREEMAIL_CC(0.00)[vger.kernel.org,web.de,suse.com,intel.com];
-	TO_DN_SOME(0.00)[];
+	FREEMAIL_CC(0.00)[cmpxchg.org,google.com,suse.com,linux.dev,kernel.org,oracle.com,nvidia.com,huaweicloud.com,linux-foundation.org,linux.microsoft.com,redhat.com,gmail.com,kvack.org,vger.kernel.org,bytedance.com];
+	RCPT_COUNT_TWELVE(0.00)[30];
 	MIME_TRACE(0.00)[0:+];
 	FROM_HAS_DN(0.00)[];
-	MISSING_XM_UA(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	TO_DN_SOME(0.00)[];
 	NEURAL_HAM(-0.00)[-1.000];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[bigeasy@linutronix.de,cgroups@vger.kernel.org];
-	DKIM_TRACE(0.00)[linutronix.de:+];
-	MID_RHS_MATCH_FROM(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	FROM_NEQ_ENVFROM(0.00)[harry@kernel.org,cgroups@vger.kernel.org];
+	DKIM_TRACE(0.00)[kernel.org:+];
 	TAGGED_RCPT(0.00)[cgroups];
-	RCPT_COUNT_FIVE(0.00)[6];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,test_stress.sh:url,linutronix.de:dkim,linutronix.de:mid]
-X-Rspamd-Queue-Id: B93032F163A
+	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	MISSING_XM_UA(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns,bytedance.com:email]
+X-Rspamd-Queue-Id: 3277A2F1E39
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-On 2026-03-22 17:58:06 [-1000], Tejun Heo wrote:
-> --- a/kernel/cgroup/cgroup.c
-> +++ b/kernel/cgroup/cgroup.c
-> @@ -6224,6 +6225,63 @@ static int cgroup_destroy_locked(struct cgroup *cg=
-rp)
-=E2=80=A6
-> +static int cgroup_drain_dying(struct cgroup *cgrp)
-> +	__releases(&cgroup_mutex) __acquires(&cgroup_mutex)
-> +{
-> +	struct css_task_iter it;
-> +	struct task_struct *task;
-> +	DEFINE_WAIT(wait);
-> +
-> +	lockdep_assert_held(&cgroup_mutex);
-> +retry:
-> +	if (!cgroup_is_populated(cgrp))
-> +		return 0;
-> +
-> +	/* Same iterator as cgroup.threads - if any task is visible, it's busy =
-*/
-> +	css_task_iter_start(&cgrp->self, 0, &it);
-> +	task =3D css_task_iter_next(&it);
-> +	css_task_iter_end(&it);
-> +
-> +	if (task)
-> +		return -EBUSY;
-> +
-> +	/*
-> +	 * All remaining tasks are PF_EXITING and will pass through
-> +	 * cgroup_task_dead() shortly. Wait for a kick and retry.
-> +	 */
-> +	prepare_to_wait(&cgrp->dying_populated_waitq, &wait,
-> +			TASK_UNINTERRUPTIBLE);
-> +	mutex_unlock(&cgroup_mutex);
+On Mon, Mar 23, 2026 at 05:47:27PM +0800, Qi Zheng wrote:
+> Hi Harry,
+> 
+> On 3/23/26 3:53 PM, Harry Yoo (Oracle) wrote:
+> > On Thu, Mar 05, 2026 at 07:52:48PM +0800, Qi Zheng wrote:
+> > > From: Qi Zheng <zhengqi.arch@bytedance.com>
+> > > 
+> > > To resolve the dying memcg issue, we need to reparent LRU folios of child
+> > > memcg to its parent memcg. This could cause problems for non-hierarchical
+> > > stats.
+> > > 
+> > > As Yosry Ahmed pointed out:
+> > > 
+> > > ```
+> > > In short, if memory is charged to a dying cgroup at the time of
+> > > reparenting, when the memory gets uncharged the stats updates will occur
+> > > at the parent. This will update both hierarchical and non-hierarchical
+> > > stats of the parent, which would corrupt the parent's non-hierarchical
+> > > stats (because those counters were never incremented when the memory was
+> > > charged).
+> > > ```
+> > > 
+> > > Now we have the following two types of non-hierarchical stats, and they
+> > > are only used in CONFIG_MEMCG_V1:
+> > > 
+> > > a. memcg->vmstats->state_local[i]
+> > > b. pn->lruvec_stats->state_local[i]
+> > > 
+> > > To ensure that these non-hierarchical stats work properly, we need to
+> > > reparent these non-hierarchical stats after reparenting LRU folios. To
+> > > this end, this commit makes the following preparations:
+> > > 
+> > > 1. implement reparent_state_local() to reparent non-hierarchical stats
+> > > 2. make css_killed_work_fn() to be called in rcu work, and implement
+> > >     get_non_dying_memcg_start() and get_non_dying_memcg_end() to avoid race
+> > >     between mod_memcg_state()/mod_memcg_lruvec_state()
+> > >     and reparent_state_local()
+> > > 
+> > > Co-developed-by: Yosry Ahmed <yosry@kernel.org>
+> > > Signed-off-by: Yosry Ahmed <yosry@kernel.org>
+> > > Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
+> > > Acked-by: Shakeel Butt <shakeel.butt@linux.dev>
+> > > ---
+> > >   kernel/cgroup/cgroup.c |  9 ++--
+> > >   mm/memcontrol-v1.c     | 16 +++++++
+> > >   mm/memcontrol-v1.h     |  7 +++
+> > >   mm/memcontrol.c        | 97 ++++++++++++++++++++++++++++++++++++++++++
+> > >   4 files changed, 125 insertions(+), 4 deletions(-)
+> > > 
+> > > diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+> > > index 23b70bd80ddc9..b0519a16f5684 100644
+> > > --- a/mm/memcontrol.c
+> > > +++ b/mm/memcontrol.c
+> > > @@ -473,6 +501,30 @@ unsigned long lruvec_page_state_local(struct lruvec *lruvec,
+> > >   	return x;
+> > >   }
+> > > +#ifdef CONFIG_MEMCG_V1
+> > > +static void __mod_memcg_lruvec_state(struct mem_cgroup_per_node *pn,
+> > > +				     enum node_stat_item idx, int val);
+> > > +
+> > > +void reparent_memcg_lruvec_state_local(struct mem_cgroup *memcg,
+> > > +				       struct mem_cgroup *parent, int idx)
+> > > +{
+> > > +	int nid;
+> > > +
+> > > +	for_each_node(nid) {
+> > > +		struct lruvec *child_lruvec = mem_cgroup_lruvec(memcg, NODE_DATA(nid));
+> > > +		struct lruvec *parent_lruvec = mem_cgroup_lruvec(parent, NODE_DATA(nid));
+> > > +		unsigned long value = lruvec_page_state_local(child_lruvec, idx);
+> > > +		struct mem_cgroup_per_node *child_pn, *parent_pn;
+> > > +
+> > > +		child_pn = container_of(child_lruvec, struct mem_cgroup_per_node, lruvec);
+> > > +		parent_pn = container_of(parent_lruvec, struct mem_cgroup_per_node, lruvec);
+> > > +
+> > > +		__mod_memcg_lruvec_state(child_pn, idx, -value);
+> > > +		__mod_memcg_lruvec_state(parent_pn, idx, value);
+> > 
+> > We should probably change the type of `@val` from int to val to avoid
+> > losing non hierarchical stats during reparenting?
+> 
+> The parameter and return value of memcg_state_val_in_pages() are both
+> of type int, so perhaps we need a cleanup patch to do this?
 
-I had to add here
-	if (cgroup_is_populated(cgrp))
+Yes!
 
-> +	schedule();
+and @val in memcg_rstat_updated() too, I think.
 
-I saw instances on PREEMPT_RT where the above cgroup_is_populated()
-reported true due to cgrp->nr_populated_csets =3D 1, the following
-iterator returned NULL but in that time do_cgroup_task_dead() saw no
-waiter and continued without a wake_up and then the following schedule()
-hung.
-There is no serialisation between this wait/ check and latter wake. An
-alternative would be to check and prepare_to_wait() under css_set_lock.
+> I will send a cleanup patchset to do this, which includes the following:
+> 
+> https://lore.kernel.org/all/5e178b4e-a9e0-44dc-a18d-8c014365ee2f@linux.dev/
 
-> +	finish_wait(&cgrp->dying_populated_waitq, &wait);
-> +	mutex_lock(&cgroup_mutex);
-> +	goto retry;
-> +}
+Thanks!
 
-Then I added my RCU patch. This led to a problem already during boot up
-(didn't manage to get to the test suite).
+Should that ideally be applied before this patchset?
 
-systemd-1 places modprobe-1044 in a cgroup, then destroys the cgroup.
-It hangs in cgroup_drain_dying() because nr_populated_csets is still 1.
-modprobe-1044 is still there in Z so the cgroup removal didn't get there
-yet. That irq_work was quicker than RCU in this case. This can be
-reproduced without RCU by
--       irq_work_queue(this_cpu_ptr(&cgrp_dead_tasks_iwork));
-+       schedule_delayed_work(this_cpu_ptr(&cgrp_delayed_tasks_iwork), HZ);
-
-So there is always a one second delay. If I give up waiting after 10secs
-then it boots eventually and there are no zombies around. The test_core
-seems to complete=E2=80=A6
-
-Having the irq_work as-is, then the "cgroup_dead()" happens on the HZ
-tick. test_core then complains just with
-| not ok 7 test_cgcore_populated
-
-everything else passes. With schedule_work() (as in right away) all
-tests pass including test_stress.sh
-
-Is there another race lurking?
-
-Sebastian
+-- 
+Cheers,
+Harry / Hyeonggon
 
