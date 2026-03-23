@@ -1,98 +1,98 @@
-Return-Path: <cgroups+bounces-14999-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-15000-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id ABXIJ8FkwWkjSwQAu9opvQ
-	(envelope-from <cgroups+bounces-14999-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Mon, 23 Mar 2026 17:05:21 +0100
+	id MEtsBIOBwWl2TgQAu9opvQ
+	(envelope-from <cgroups+bounces-15000-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Mon, 23 Mar 2026 19:08:03 +0100
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 451232F78B2
-	for <lists+cgroups@lfdr.de>; Mon, 23 Mar 2026 17:05:21 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6A6122FAE85
+	for <lists+cgroups@lfdr.de>; Mon, 23 Mar 2026 19:08:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id BB12E332E861
-	for <lists+cgroups@lfdr.de>; Mon, 23 Mar 2026 15:39:44 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id EF2AD3206AE0
+	for <lists+cgroups@lfdr.de>; Mon, 23 Mar 2026 16:41:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CEAD93B3C08;
-	Mon, 23 Mar 2026 15:33:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 624273C1974;
+	Mon, 23 Mar 2026 16:41:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PZjwIrys"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="AQw/Tj+l"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-wr1-f44.google.com (mail-wr1-f44.google.com [209.85.221.44])
+Received: from mail-ed1-f50.google.com (mail-ed1-f50.google.com [209.85.208.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CDF9B3AE1BB
-	for <cgroups@vger.kernel.org>; Mon, 23 Mar 2026 15:33:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.221.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E6B33BA238
+	for <cgroups@vger.kernel.org>; Mon, 23 Mar 2026 16:41:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.208.50
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1774279992; cv=pass; b=jsvj0PeTmDtA3sGt9nfJtxBaIlnSXevyPNU/9PBht1Hl4gP8vyxasE0mwFb1AjpKnY2gqo+ev3jhV7cawcoTgwCPxJPZoV5LhVLRbapr4AbDdvjk81B0o72BUSxk7vWUsECOljBlX1S5slSCNIUNNQLASqDwCtxH7g82K03ek28=
+	t=1774284094; cv=pass; b=k1hfYXgrWiI93CtFO3mCMgb+LI6khcki2/pvaMv47zTwKQ2gG17yo+k7IsrRauYYnan5LIqo9eP+H0GkUaRoZuEcKKbLo4Ak3RYrEtz1hqqsgRYrNdl1BxuKFuhZDlcNawpCKKXTlKrcUl1vn1f2adbJycp8HWOJb6FBuS7wWkY=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1774279992; c=relaxed/simple;
-	bh=arS6rKQpeugPn1Nw9evVWPQO6eJXSH50PWdiL/uU/vU=;
+	s=arc-20240116; t=1774284094; c=relaxed/simple;
+	bh=qfm+jxRDid/tXrKxPwqn57nuEjBnj1DDrZrU+wNae2E=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Fxhon5PPKGXt9D0ioDZbX7FOSLqjSGUoP3eVtBEYqxIMlaNtjxqD8AgoaSPqL/n+x0c0WKG4VdrY++kt/AN5ohiWEUo1doifMjUQbg2128psInsEsG0h7xUT9mKTzv1QLQebo7X3yBToweXHl2yidte7YH8lGQx7luL4P5ErHbk=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=PZjwIrys; arc=pass smtp.client-ip=209.85.221.44
+	 To:Cc:Content-Type; b=lHyABpM9JcGIFC2e1X6eEF4kObEqqML/R98DJvv5oAIHopKPSTsn4XLrudHAGYR3+7vQELTvpZ9UfYmGhz6ULuzCM5BtF0Baw+6XFm8+bvKY3xo0Vm/TmqXGLfR7tgYSRCBw/GiucKjYyyuQ8Gkpou6cZNW7rJm1TwtrFv/p+x4=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=AQw/Tj+l; arc=pass smtp.client-ip=209.85.208.50
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f44.google.com with SMTP id ffacd0b85a97d-439b7c2788dso1899510f8f.1
-        for <cgroups@vger.kernel.org>; Mon, 23 Mar 2026 08:33:10 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; t=1774279989; cv=none;
+Received: by mail-ed1-f50.google.com with SMTP id 4fb4d7f45d1cf-669462b0fecso544572a12.3
+        for <cgroups@vger.kernel.org>; Mon, 23 Mar 2026 09:41:31 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1774284090; cv=none;
         d=google.com; s=arc-20240605;
-        b=Awjh7CNcyxhRBP+gFHANrEeXBu2Ossn+SDZILelTgcL0FhdxkbWtjb9CJMhm5AjApq
-         vjQtUPboetALGXg4Xl/CsT0bAdze26kHvHjabOXz5vbDHb6WCHqMaSbLbSfhXqMiUae2
-         PGbp6s6COimIoecX6L+F4uZWpF5rd63WJJBkumU7cNZ7VdN8ZYfM3s+rUFJWNA41yxw+
-         5ty+/euIBv0cLVeTiDNQGFePkAvWLdO0aehUCR9ILfjSGgna2Z6b0B2YCYrzicL3/gVX
-         MhMDRdTEG1e0HPt3Bh2tDCwWVInn/YoxT+dkMZfPCO78xlq/OswBPNu2BzGyqBxhl4NO
-         SUjA==
+        b=CSi61upnCuLshN6PuZz488KY5TyQ/JflSxJ9E+k1BxrxdC711ULHTXwfgX0yka03YD
+         /2o7AAdiVAAt1FtugjkgrQEaxNk44Pxk7IuJUDexzTVtYYHnFLpD55jNaYhFkRaA3zA+
+         Z5axi/dcr9r+AWNqlL0TneIATR4dmAiZPeWC9aEvV5uYACARp5kJ5FXiJ/HleVckMP0v
+         JPpR3cbNReQeKwwwNuyWfkW6sn8Vi0pPnsMeZxSj0mUoneGml7BeiADkVXN77webEa6e
+         GCzAE6BW8Ja0eUqQjdkDszlAwLoR0Ghbbfl8LySXMMroF71eNO4dMI3RKw05rytMb0+D
+         wwlQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:dkim-signature;
-        bh=/8/EpSUMiobTzSVmJaDTjFNXTjCi0aA95G2967Wvfq8=;
-        fh=AJFvbxuSdvwwD0XE0AYDGNf7oORDWt8v3FgFMv4kXDs=;
-        b=TyUaJzEvYUjJDdlKpQciHshpJxFBwwzhW1kSeLW7AvqoTEMduUX686ujyw9eVigOc+
-         YPpBNGASrw9ng11Aupp5gRXsrS3FvvvqRVfx7s0E34r0Bnn8sufgZFf/j6WM7Wf2ZrkY
-         Es3AzyVHSHa1sENU5GyInl9In5xbmBp+5bk/XkUQXG/pBITxQNbxjMx2tRQYAUe25Yln
-         ZeDTibCz+oH3FDUOm8I/YanHXmF+cC1D91THYjIofNAHmQy6Z4Ftd5g3TV9h1wz3cSsp
-         db32qEXx58chMn/fN9sBjU3POjWTC1AA6xvEiMaaR4547Gjw03seJm5AeibeVgX7hkh/
-         2EAA==;
+        bh=vmCa6NJatdq+42qe8sVhhvk4aoBatMqzy8mT5DZOBUc=;
+        fh=J7McyCsMi/BOQfXbSJ1641YFnsiI/zQ0yL7mjZAOXso=;
+        b=LffN2MhEHIDUmghMlQCblR+bh9hIy2N8PimQgUQyd01bpRNvzsLiS2ZzWgoDdCZSrq
+         3FtjT7H/eX5uj3X6GRFDPSh8LtCzrrOzM52upKsY1QFVlr4VXbB64yVEsXxXHZKKwhwB
+         upD/TNchcsiS8AficiWIssPDVwHf/ibUMDTKfk0kSo9Q2NEWHaGzrLxNsNhSYv0zDPd1
+         pOrYTYsq5Vp/gWM/CPhkhWZ7uq0JCLBu+eP7Bc1Q5+oAciZhfYUhQzeeOjD2l3nQS4GQ
+         yQ/OSYEJzZM41Og7hmTBn/QGGfBisZScWzOdno7VOo/eeRzdY5nUcBb0+D8XctEXHoBu
+         GvKw==;
         darn=vger.kernel.org
 ARC-Authentication-Results: i=1; mx.google.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1774279989; x=1774884789; darn=vger.kernel.org;
+        d=gmail.com; s=20251104; t=1774284090; x=1774888890; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=/8/EpSUMiobTzSVmJaDTjFNXTjCi0aA95G2967Wvfq8=;
-        b=PZjwIrysaUY04YiNZGW8yIggnceuIonNG1kp4/viAwXQeNEO0i55lo5gOao1Kir4W1
-         qSiSLZfnvNhXvJMt0m3lPixAJA4qcycSa7aLtudq2abTJlPQU6UkDE6+VF998QVu4gfA
-         szeaamGx7JReHhnP4IGS4AKwMQlFNtzrWgE4m6CNDRLM/xNkfNk8cZmiVYF5uwswsHcw
-         CbzP/Rj9rDtwdgLWpBlyskRdl9yUuev+DOYnb+8AKFFtYSolujcxkvJSTZJ+dJPY1p+u
-         aVKZfOaAHRr52AX/pEAoJtx7ovftL7tBECTAYVLFKirg4T89MP/3nhIb9ujnh0eUsFcw
-         id4w==
+        bh=vmCa6NJatdq+42qe8sVhhvk4aoBatMqzy8mT5DZOBUc=;
+        b=AQw/Tj+lI1htlIyduQK+LigMZe4ERziEeLn9lfuqmPjqbBpqoeZRLKp4k1oAAvbfwY
+         vHjjcuo48HwT0/yCLIP/DM2xX8DfnBxfd24mR+HqP88YTe4n3uj9SkaHV2YKOejJz3Y5
+         olgr6ZYJqiVHo9Y3fSwDb/cE9O60ZexePMb4qPWGnKphqQqnHUuchODbk5TEFJfugPJL
+         OwboUfm0V38awswDw1iSbJZv+S4YeJJgiYXuhEH7E4M58WtUxYyWS9gI7ZDGWRgp0Wcl
+         7uq9ChgUTp5SPI52gxLQxHooBcJj8toMw8+Yhtw07Mbl+xd5wfVzvj3fhhZicjXDUuSn
+         ww0Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1774279989; x=1774884789;
+        d=1e100.net; s=20251104; t=1774284090; x=1774888890;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=/8/EpSUMiobTzSVmJaDTjFNXTjCi0aA95G2967Wvfq8=;
-        b=Wc4wGEJp6zDG1fTY+NyYQPowwkwfCLWtchT2DHiOIKLT9UpP1uGktNw7XneZ9tzdCX
-         ZyUSWkczOTMkS1IoUazPF70dt+dtW3Cxa5bPE5OoXxqHYJtOLwD9t+nIf1tTyELzeVlR
-         nAfw3P0aznBrgFrexRd6DdJSmYtx16P459GXR/InzRgpsEELJI3XGQyveBO/0BVWEGL5
-         0zuYfiG6x4MpfGnf2W6INtkMPQVh7OKoBRGGjyhHO8ZT8AWeWASDpyQrw2tjJnX1q0Oi
-         6pfHgLDxcekXDLRmJo1C4xfCbtnPMH9BU7jPmSucysRk8EmFPFvdO7tuQKaSOlb42/uY
-         lenQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVjC7c9ALH1hRFduDLDcIa9OQLN9U/jajOEFOuAy/1YkHL6Ut3NWvaJrjhtPHmEJeFksgKynd34@vger.kernel.org
-X-Gm-Message-State: AOJu0YwO3zlRvPuhoMiKWNvqPFF7wIA1/VqgQZ1cq/DnerNhfgvwkHTs
-	EufBvIctHDn4fPxO44CoUq0sKqfVgVhr+2+asI9MrAP0Nxmnbh4kHZ5z1EPG310ES1mebR+tExX
-	7zbJCn3diErA6RSa93o7o1Iq0CMxIpiU=
-X-Gm-Gg: ATEYQzzWfFwaFV5XkzAyPJXw5sZ95vvO4W0asxlF+D/XOElfaWq2KHlTyDoj4mTXcUH
-	1kA9a7G1kOINnPTpQoVVOIbPvCOhdeAFE9Fyk1MzrWu3ucu/uxP4baT0JeBHdL7wr3AZZ36z1Xu
-	kbNhIpAS20FU8JWyAFzJpZXgUenPbH0FabLdlhBs6hgPrS7WN/lmNXYJbWLF5rHax2xxneflPom
-	R8m+3+WcoIrp5WG1ooRRZ1aIVmwLe9oqhmmbbJoq762D0cI8h7kjCm7jbOmPNNTWHA5/EGl8i4D
-	WNO5I/4cMsiJIqTfQJwlwWcKfu3fmVz2P4vfmQfa0GOMhuLuZFca
-X-Received: by 2002:a5d:5f84:0:b0:43b:4703:9de5 with SMTP id
- ffacd0b85a97d-43b642870f9mr18306704f8f.44.1774279988876; Mon, 23 Mar 2026
- 08:33:08 -0700 (PDT)
+        bh=vmCa6NJatdq+42qe8sVhhvk4aoBatMqzy8mT5DZOBUc=;
+        b=i9Lr5Ed5prFw4U3YmmA9Rjs6ZL2sAyY0qQms3j8keM+/225A1qPymkFFb08Mo4SmNp
+         ZqBp0qI1ogp+J+R47w48Wc4U4l6wTvn6KSwop5fe0N5BFm0vJGtlr2pkMtFx4HgnMr2E
+         8JC1BwivUSZRt6NtBC4eOef6hcU0NFJ+I/QUXhf2B5z5Geaizp2WwSCMTiX3Jvpp/XGD
+         mYlZUu+Vp5Hil8ZmFzthsVVSEKUYuXF233bdQFzgzvlINGHJex6Y77h53Eg4B0JmH4MZ
+         2v6VManE6m0MKf/CICGtr1ClhWomJgfmT9VmnfToSIRIf8xq+Dqy5Vbt6ez6JKpER5jK
+         IZ2g==
+X-Forwarded-Encrypted: i=1; AJvYcCVsdVhSnInZDEMsENwYq/6ABEcRyohNntEeBR35Or2vh7gOuswpj6uA9jAh+INYeMwzOdmAnCW+@vger.kernel.org
+X-Gm-Message-State: AOJu0YyPp4yjn88me3k3AxK/B5E5hclEt3Q84Bh0DlOh5mkAMS1BHG97
+	9a0KHy66QfPHYTyEH3Efvh4RU6QwtRgWbcyF+7YFnZzZgK4NfmY/xnp6Gde+IBL/prO+Ayz0x+U
+	YS+fzj+5o8Wq17GLWXEpmkJTvA52u8iU=
+X-Gm-Gg: ATEYQzxPBKWxDrh1X62Ya1mYHoVYOK4D9y7NBYctCA5qtrq4c9dl0B03QE1sXGYwjhd
+	QNa3oaZB7HCB3Q4VBaiZSMBL/3+mQ57biVSwrJxN7yXHwlYr1cKxdjUgP9VoKgKqLv53RTRMy6S
+	O9GYApnuLQXsjnny+a0xQIcag0D7iVoaboWor25L94oger7b9CUtQjyiVGReoVnum7u7wsgtpCk
+	hy3TdjHkbkBJ15golXk7n/ESl7CFpJgYwJ6I8/dYOu5unMf7SQRfw7EuIlGdKy0U7EuurAhwyTW
+	hHqYgsYna75yrDUZmr1PkRyp36pHB6Kdi0VH7+a9
+X-Received: by 2002:a17:906:c398:b0:b97:1009:7536 with SMTP id
+ a640c23a62f3a-b982f286a8fmr671723566b.15.1774284089391; Mon, 23 Mar 2026
+ 09:41:29 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -100,13 +100,14 @@ List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 References: <20260320192735.748051-1-nphamcs@gmail.com> <CAMgjq7AiUr_Ntj51qoqvV+=XbEATjr7S4MH+rgD32T5pHfF7mg@mail.gmail.com>
-In-Reply-To: <CAMgjq7AiUr_Ntj51qoqvV+=XbEATjr7S4MH+rgD32T5pHfF7mg@mail.gmail.com>
-From: Nhat Pham <nphamcs@gmail.com>
-Date: Mon, 23 Mar 2026 11:32:57 -0400
-X-Gm-Features: AQROBzBAs5nRbrIlBu1cKcNEaCz87nNyEV8cMyR6rMkBGG9vg_P1d2ioQYJMLuk
-Message-ID: <CAKEwX=PBjMVfMvKkNfqbgiw7o10NFyZBSB62ODzsqogv-WDYKQ@mail.gmail.com>
+ <CAKEwX=PBjMVfMvKkNfqbgiw7o10NFyZBSB62ODzsqogv-WDYKQ@mail.gmail.com>
+In-Reply-To: <CAKEwX=PBjMVfMvKkNfqbgiw7o10NFyZBSB62ODzsqogv-WDYKQ@mail.gmail.com>
+From: Kairui Song <ryncsn@gmail.com>
+Date: Tue, 24 Mar 2026 00:40:52 +0800
+X-Gm-Features: AQROBzD1kpskNn11W5HqnEfFhEQur5XfLuCkDmtbLopJRo-HyQHAInVqxx1Q2Xw
+Message-ID: <CAMgjq7AzySv801qDxfc8mEkEsFDv4P=_qw0rNOTe0n+qy7Fz6A@mail.gmail.com>
 Subject: Re: [PATCH v5 00/21] Virtual Swap Space
-To: Kairui Song <ryncsn@gmail.com>
+To: Nhat Pham <nphamcs@gmail.com>
 Cc: Liam.Howlett@oracle.com, akpm@linux-foundation.org, apopple@nvidia.com, 
 	axelrasmussen@google.com, baohua@kernel.org, baolin.wang@linux.alibaba.com, 
 	bhe@redhat.com, byungchul@sk.com, cgroups@vger.kernel.org, 
@@ -130,12 +131,12 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=2];
 	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
-	R_DKIM_ALLOW(-0.20)[gmail.com:s=20230601];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_DKIM_ALLOW(-0.20)[gmail.com:s=20251104];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-14999-lists,cgroups=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-15000-lists,cgroups=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
 	RCVD_COUNT_THREE(0.00)[4];
 	FREEMAIL_TO(0.00)[gmail.com];
@@ -148,184 +149,150 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	FREEMAIL_FROM(0.00)[gmail.com];
 	RCPT_COUNT_GT_50(0.00)[53];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[nphamcs@gmail.com,cgroups@vger.kernel.org];
+	FROM_NEQ_ENVFROM(0.00)[ryncsn@gmail.com,cgroups@vger.kernel.org];
 	DKIM_TRACE(0.00)[gmail.com:+];
 	NEURAL_HAM(-0.00)[-1.000];
 	TAGGED_RCPT(0.00)[cgroups];
 	MID_RHS_MATCH_FROMTLD(0.00)[];
 	MISSING_XM_UA(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[mail.gmail.com:mid,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 451232F78B2
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,mail.gmail.com:mid,man7.org:url]
+X-Rspamd-Queue-Id: 6A6122FAE85
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-On Mon, Mar 23, 2026 at 6:09=E2=80=AFAM Kairui Song <ryncsn@gmail.com> wrot=
+On Mon, Mar 23, 2026 at 11:33=E2=80=AFPM Nhat Pham <nphamcs@gmail.com> wrot=
 e:
 >
-> On Sat, Mar 21, 2026 at 3:29=E2=80=AFAM Nhat Pham <nphamcs@gmail.com> wro=
-te:
-> > This patch series is based on 6.19. There are a couple more
-> > swap-related changes in mainline that I would need to coordinate
-> > with, but I still want to send this out as an update for the
-> > regressions reported by Kairui Song in [15]. It's probably easier
-> > to just build this thing rather than dig through that series of
-> > emails to get the fix patch :)
+> On Mon, Mar 23, 2026 at 6:09=E2=80=AFAM Kairui Song <ryncsn@gmail.com> wr=
+ote:
 > >
-> > Changelog:
-> > * v4 -> v5:
-> >     * Fix a deadlock in memcg1_swapout (reported by syzbot [16]).
-> >     * Replace VM_WARN_ON(!spin_is_locked()) with lockdep_assert_held(),
-> >       and use guard(rcu) in vswap_cpu_dead
-> >       (reported by Peter Zijlstra [17]).
-> > * v3 -> v4:
-> >     * Fix poor swap free batching behavior to alleviate a regression
-> >       (reported by Kairui Song).
+> > On Sat, Mar 21, 2026 at 3:29=E2=80=AFAM Nhat Pham <nphamcs@gmail.com> w=
+rote:
+> > > This patch series is based on 6.19. There are a couple more
+> > > swap-related changes in mainline that I would need to coordinate
+> > > with, but I still want to send this out as an update for the
+> > > regressions reported by Kairui Song in [15]. It's probably easier
+> > > to just build this thing rather than dig through that series of
+> > > emails to get the fix patch :)
+> > >
+> > > Changelog:
+> > > * v4 -> v5:
+> > >     * Fix a deadlock in memcg1_swapout (reported by syzbot [16]).
+> > >     * Replace VM_WARN_ON(!spin_is_locked()) with lockdep_assert_held(=
+),
+> > >       and use guard(rcu) in vswap_cpu_dead
+> > >       (reported by Peter Zijlstra [17]).
+> > > * v3 -> v4:
+> > >     * Fix poor swap free batching behavior to alleviate a regression
+> > >       (reported by Kairui Song).
+> >
 >
+> Hi Kairui! Thanks a lot for the testing big boss :) I will focus on
+> the regression in this patch series - we can talk more about
+> directions in another thread :)
 
-Hi Kairui! Thanks a lot for the testing big boss :) I will focus on
-the regression in this patch series - we can talk more about
-directions in another thread :)
+Hi Nhat,
 
-> I tested the v5 (including the batched-free hotfix) and am still
-> seeing significant regressions in both sequential and concurrent swap
-> workloads
+> Interesting. Normally "lots of zero-filled page" is a very beneficial
+> case for vswap. You don't need a swapfile, or any zram/zswap metadata
+> overhead - it's a native swap backend. If production workload has this
+> many zero-filled pages, I think the numbers of vswap would be much
+> less alarming - perhaps even matching memory overhead because you
+> don't need to maintain a zram entry metadata (it's at least 2 words
+> per zram entry right?), while there's no reverse map overhead induced
+> (so it's 24 bytes on both side), and no need to do zram-side locking
+> :)
 >
-> Thanks for the update as I can see It's a lot of thoughtful work.
-> Actually I did run some tests already with your previously posted
-> hotfix based on v3. I didn't update the result because very
-> unfortunately, I still see a major performance regression even with a
-> very simple setup.
+> So I was surprised to see that it's not working out very well here. I
+> checked the implementation of memhog - let me know if this is wrong
+> place to look:
 >
-> BTW there seems a simpler way to reproduce that, just use memhog:
-> sudo mkswap /dev/pmem0; sudo swapon /dev/pmem0; time memhog 48G; sudo swa=
-poff -a
+> https://man7.org/linux/man-pages/man8/memhog.8.html
+> https://github.com/numactl/numactl/blob/master/memhog.c#L52
 >
-> Before:
-> (I'm using fish shell on that test machine so this is fish time format):
-> ________________________________________________________
-> Executed in   20.80 secs    fish           external
->    usr time    5.14 secs    0.00 millis    5.14 secs
->    sys time   15.65 secs    1.17 millis   15.65 secs
-> ________________________________________________________
-> Executed in   21.69 secs    fish           external
->    usr time    5.31 secs  725.00 micros    5.31 secs
->    sys time   16.36 secs  579.00 micros   16.36 secs
-> ________________________________________________________
-> Executed in   21.86 secs    fish           external
->    usr time    5.39 secs    1.02 millis    5.39 secs
->    sys time   16.46 secs    0.27 millis   16.46 secs
+> I think this is what happened here: memhog was populating the memory
+> 0xff, which triggers the full overhead of a swapfile-backed swap entry
+> because even though it's "same-filled" it's not zero-filled! I was
+> following Usama's observation - "less than 1% of the same-filled pages
+> were non-zero" - and so I only handled the zero-filled case here:
 >
-> After:
-> ________________________________________________________
-> Executed in   30.77 secs    fish           external
->    usr time    5.16 secs  767.00 micros    5.16 secs
->    sys time   25.59 secs  580.00 micros   25.59 secs
-> ________________________________________________________
-> Executed in   37.47 secs    fish           external
->    usr time    5.48 secs    0.00 micros    5.48 secs
->    sys time   31.98 secs  674.00 micros   31.98 secs
-> ________________________________________________________
-> Executed in   31.34 secs    fish           external
->    usr time    5.22 secs    0.00 millis    5.22 secs
->    sys time   26.09 secs    1.30 millis   26.09 secs
+> https://lore.kernel.org/all/20240530102126.357438-1-usamaarif642@gmail.co=
+m/
 >
-> It's obviously a lot slower.
+> This sounds a bit artificial IMHO - as Usama pointed out above, I
+> think most samefilled pages are zero pages, in real production
+> workloads. However, if you think there are real use cases with a lot
+
+I vaguely remember some workloads like Java or some JS engine
+initialize their heap with fixed value, same fill might not be that
+common but not a rare thing, it strongly depends on the workload.
+
+> of non-zero samefilled pages, please let me know I can fix this real
+> quick. We can support this in vswap with zero extra metadata overhead
+> - change the VSWAP_ZERO swap entry type to VSWAP_SAME_FILLED, then use
+> the backend field to store that value. I can send you a patch if
+> you're interested.
+
+Actually I don't think that's the main problem. For example, I just
+wrote a few lines C bench program to zerofill ~50G of memory
+and swapout sequentially:
+
+Before:
+Swapout: 4415467us
+Swapin: 49573297us
+
+After:
+Swapout: 4955874us
+Swapin: 56223658us
+
+And vmstat:
+cat /proc/vmstat | grep zero
+thp_zero_page_alloc 0
+thp_zero_page_alloc_failed 0
+swpin_zero 12239329
+swpout_zero 21516634
+
+There are all zero filled pages, but still slower. And what's more, a
+more critical issue, I just found the cgroup and global swap usage
+accounting are both somehow broken for zero page swap,
+maybe because you skipped some allocation? Users can
+no longer see how many pages are swapped out. I don't think you can
+break that, that's one major reason why we use a zero entry instead of
+mapping to a zero readonly page. If that is acceptable, we can have
+a very nice optimization right away with current swap.
+
+That's still just an example. bypassing the accounting and still
+slower is not a good sign. We should focus on the generic
+performance and design.
+
+Yet this is just another new found issue, there are many other parts
+like the folio swap allocation may still occur even if a lower device
+can no longer accept more whole folios, which I'm currently
+unsure how it will affect swap.
+
+> 1. Regarding pmem backend - I'm not sure if I can get my hands on one
+> of these, but if you think SSD has the same characteristics maybe I
+> can give that a try? The problem with SSD is for some reason variance
+> tends to be pretty high, between iterations yes, but especially across
+> reboots. Or maybe zram?
+
+Yeah, ZRAM has a very similar number for some cases, but storage is
+getting faster and faster and swap occurs through high speed networks
+too. We definitely shouldn't ignore that.
+
+> 2. What about the other numbers below? Are they also on pmem? FTR I
+> was running most of my benchmarks on zswap, except for one kernel
+> build benchmark on SSD.
 >
-> pmem may seem rare but SSDs are good at sequential, and memhog uses
-> the same filled page and backend like ZRAM has extremely low overhead
-> for same filled pages. Results with ZRAM are very similar, and many
-> production workloads have massive amounts of samefill memory.
+> 3. Any other backends and setup you're interested in?
 >
-> For example on the Android phone I'm using right now at this moment:
-> # cat /sys/block/zram0/mm_stat
-> 4283899904 1317373036 1370259456        0 1475977216   116457  1991851
->    87273  1793760
-> ~450M of samefill page in ZRAM, we may see more on some server
-> workload. And I'm seeing similar memhog results with ZRAM, pmem is
-> just easier to setup and less noisy. also simulates high speed
-> storage.
+> BTW, sounds like you have a great benchmark suite - is it open source
+> somewhere? If not, can you share it with us :) Vswap aside, I think
+> this would be a good suite to run all swap related changes for every
+> swap contributor.
 
-Interesting. Normally "lots of zero-filled page" is a very beneficial
-case for vswap. You don't need a swapfile, or any zram/zswap metadata
-overhead - it's a native swap backend. If production workload has this
-many zero-filled pages, I think the numbers of vswap would be much
-less alarming - perhaps even matching memory overhead because you
-don't need to maintain a zram entry metadata (it's at least 2 words
-per zram entry right?), while there's no reverse map overhead induced
-(so it's 24 bytes on both side), and no need to do zram-side locking
-:)
-
-So I was surprised to see that it's not working out very well here. I
-checked the implementation of memhog - let me know if this is wrong
-place to look:
-
-https://man7.org/linux/man-pages/man8/memhog.8.html
-https://github.com/numactl/numactl/blob/master/memhog.c#L52
-
-I think this is what happened here: memhog was populating the memory
-0xff, which triggers the full overhead of a swapfile-backed swap entry
-because even though it's "same-filled" it's not zero-filled! I was
-following Usama's observation - "less than 1% of the same-filled pages
-were non-zero" - and so I only handled the zero-filled case here:
-
-https://lore.kernel.org/all/20240530102126.357438-1-usamaarif642@gmail.com/
-
-This sounds a bit artificial IMHO - as Usama pointed out above, I
-think most samefilled pages are zero pages, in real production
-workloads. However, if you think there are real use cases with a lot
-of non-zero samefilled pages, please let me know I can fix this real
-quick. We can support this in vswap with zero extra metadata overhead
-- change the VSWAP_ZERO swap entry type to VSWAP_SAME_FILLED, then use
-the backend field to store that value. I can send you a patch if
-you're interested.
-
->
-> I also ran the previous usemem matrix, which seems better than V3 but
-> still pretty bad:
-> Test: usemem --init-time -O -n 1 56G, 16G mem, 48G swap, avgs of 8 run.
-> Before:
-> Throughput (Sum): 528.98 MB/s Throughput (Mean): 526.113333 MB/s Free
-> Latency: 3037932.888889
-> After:
-> Throughput (Sum): 453.74 MB/s Throughput (Mean): 454.875000 MB/s Free
-> Latency: 5001144.500000 (~10%, 64% slower)
->
-> I'm not sure why our results differ so much =E2=80=94 perhaps different L=
-RU
-> settings, memory pressure ratios, or THP/mTHP configs? Here's my exact
-> config in the attachment. Also includes the full log and info, with
-> all debug options disabled for close to production. I ran it 8 times
-> and just attached the first result log, it's all similar anyway, my
-> test framework reboot the machine after each test run to reduce any
-> potential noise.
-
-Ohh interesting - I see that you're testing with MGLRU. I can give that a t=
-ry.
-
-I'm not enabling THP/mTHP, but I don't see that you're enabling it
-either - there's some 2MB swpout but that seems incidental.
-
-Another difference is the swap backend:
-
-1. Regarding pmem backend - I'm not sure if I can get my hands on one
-of these, but if you think SSD has the same characteristics maybe I
-can give that a try? The problem with SSD is for some reason variance
-tends to be pretty high, between iterations yes, but especially across
-reboots. Or maybe zram?
-
-2. What about the other numbers below? Are they also on pmem? FTR I
-was running most of my benchmarks on zswap, except for one kernel
-build benchmark on SSD.
-
-3. Any other backends and setup you're interested in?
-
-BTW, sounds like you have a great benchmark suite - is it open source
-somewhere? If not, can you share it with us :) Vswap aside, I think
-this would be a good suite to run all swap related changes for every
-swap contributor.
-
-Once again, thank you so much for your engagement, Kairui. Very much
-appreciated - I owe you a beverage of your choice whenever we meet.
-And have a great rest of your day :)
+I can try to post that somewhere, really nothing fancy just some
+wrapper to make use of systemd for reboot and auto test. But all test
+steps I mentioned before are already posted and publically available.
 
