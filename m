@@ -1,119 +1,139 @@
-Return-Path: <cgroups+bounces-15001-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-15002-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id MOhyEJh7wWkQTQQAu9opvQ
-	(envelope-from <cgroups+bounces-15001-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Mon, 23 Mar 2026 18:42:48 +0100
+	id 0BxkDn2AwWl2TgQAu9opvQ
+	(envelope-from <cgroups+bounces-15002-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Mon, 23 Mar 2026 19:03:41 +0100
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4A18F2FA44C
-	for <lists+cgroups@lfdr.de>; Mon, 23 Mar 2026 18:42:47 +0100 (CET)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8F5A82FAD38
+	for <lists+cgroups@lfdr.de>; Mon, 23 Mar 2026 19:03:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id 4C7B8310832A
-	for <lists+cgroups@lfdr.de>; Mon, 23 Mar 2026 16:46:46 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 0EE10302F7F8
+	for <lists+cgroups@lfdr.de>; Mon, 23 Mar 2026 17:37:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 513213C1980;
-	Mon, 23 Mar 2026 16:46:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1CCA83C8735;
+	Mon, 23 Mar 2026 17:37:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=lankhorst.se header.i=@lankhorst.se header.b="YqEYhYAT"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=igalia.com header.i=@igalia.com header.b="lYcAXcDJ"
 X-Original-To: cgroups@vger.kernel.org
-Received: from lankhorst.se (unknown [141.105.120.124])
+Received: from fanzine2.igalia.com (fanzine2.igalia.com [213.97.179.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B52C63B8D5C;
-	Mon, 23 Mar 2026 16:46:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=141.105.120.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0560726F2AF;
+	Mon, 23 Mar 2026 17:37:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.97.179.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1774284400; cv=none; b=st5UWYXwood2fjtEPlHdx2yroi+iPwRe34SfrOY1gNrKr1hQnN1Gcyl+TvL8sNaecrmZ1Cd/g7M3Z3wJ2zsu3ZE80zzU09TIG17rhMKpjyYbyhmXFNtgN2zc9yzB181OetWyNp3tjbR0ePLXu3gngjWqSFQh0a08DbJNbkai1JI=
+	t=1774287440; cv=none; b=u9cxjec6qJhEbKEHOhB/JVOvi4r7fio5dH/1wilZyAfXaNiZIsqwpcwdXgPxw+LM52J4jmJkyWYhF7ILDMq1nivObcIb7ebvAAUxROO2drjNOZkLLPlCxYjTFbzL+T/KJkBpvvFnpwQHnIi5Ff+nnx7VK0i/Bwwow7U+pLRxud0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1774284400; c=relaxed/simple;
-	bh=qmg1nPZUUxwm/Z10Trz1LjJPIJku5DoJhWgq9/ietK0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Fap0FiiWPNq7vLzRqCo/6CgNzJwtG32Xh7ElXGsAlrs9GXgWYwvsp3o2jCtUKDCiXNQAzjyqyz3D3K/sMaUcB4KQmyvSMyPmw7aSQvQSYmO+fpzr27j0GWpVBku4L0+t1bv40U2mOiDExN58M8MqcYWBN2qHLYK/yIMK/rLOkiU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lankhorst.se; spf=pass smtp.mailfrom=lankhorst.se; dkim=pass (2048-bit key) header.d=lankhorst.se header.i=@lankhorst.se header.b=YqEYhYAT; arc=none smtp.client-ip=141.105.120.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lankhorst.se
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lankhorst.se
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lankhorst.se;
-	s=default; t=1774284390;
-	bh=qmg1nPZUUxwm/Z10Trz1LjJPIJku5DoJhWgq9/ietK0=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=YqEYhYATKrEyMMtia5knDmEsnZmz8Dx6D7UxDLLaDBZfjviT7yi9v9pqkj3R21Seg
-	 tkQnUjy1jXW07s3v9BWoSABzKqnQzu//wD5ymeGsK/ipY5SXyMj6EDZiHio1TRSGlN
-	 XiOKImX6vEJY4wQ14ArsWJcrXTzH8dfTWQYBvn94gwOkor5iT3p8NfuxwoNM7s9K5/
-	 Mm3Y2SvZUib0ha0/qTfxVepOS4MhDAmk3PdTDr2rF51p0m8qIk/DeT1MnD2LJb3FTY
-	 kPFM8aahN9t24rknO+O3j3OecSk+9G16YdpjTnknRxMB6tLzdM9TwhrOKukcXYfZ3Q
-	 ue9J7dVP6aHXA==
-Message-ID: <88f89d75-1e1f-4457-8c1f-57e934c251cc@lankhorst.se>
-Date: Mon, 23 Mar 2026 17:46:28 +0100
+	s=arc-20240116; t=1774287440; c=relaxed/simple;
+	bh=puX5TgWvejyiLt5zpT1fl1p3IhIcHcMCHEhk+lKbi74=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=bhZjP4NrPttmM2Fn8/VORQvxPJ6VSHSOBtI1AiG5fns/VJEyiJm30HFe1zRSr4GoO/FA5WO434kJ0Iocsk3kVVjNt9kFvk0l/nxn2c/iQjhCzDEON3FHeRcl/kKIg9CY5z6MinSHg8KgKl3wVNFsj5i99GbTweq8Up7tJaWyZWs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=igalia.com; spf=pass smtp.mailfrom=igalia.com; dkim=pass (2048-bit key) header.d=igalia.com header.i=@igalia.com header.b=lYcAXcDJ; arc=none smtp.client-ip=213.97.179.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=igalia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=igalia.com
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=igalia.com;
+	s=20170329; h=In-Reply-To:Content-Transfer-Encoding:Content-Type:MIME-Version
+	:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:Content-ID:
+	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
+	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+	List-Post:List-Owner:List-Archive;
+	bh=6jsp5pl6BE8AiZ+2bUPvf03tn1StSlT2dkeyW+GDIIA=; b=lYcAXcDJ2E0KqgmaGG9Dncypon
+	sKaX+qqRNMQkrQi66KUIK88RtztRuSB4Bv0qxrKG7PCX2otW9+cVnye1NaS2ZKi3102XYFKBST4r5
+	CcrmvigIFemAPeFSuTiXJIE18d4ASnyGaVvHzgseZf/rpSsi/I9LebgP+JXpStmfpE1girmbFaoFy
+	0Dmzux80wj1oD2EBMGleGsVuSQ14rxxH+svV/T+eATIF6MxsW9Z0nSn5uDwK9YRytaYbmvd0Rcn5z
+	iOGTLnm0OE2KtpH4GYHTfVIB1AyJfhYtp2ws8c8g6UHhfXZhZoxvtBSWdzGNG24mxqWHz34ZIK4AP
+	QVtBZHWw==;
+Received: from [177.180.73.242] (helo=quatroqueijos.cascardo.eti.br)
+	by fanzine2.igalia.com with esmtpsa 
+	(Cipher TLS1.3:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256) (Exim)
+	id 1w4jD9-004ynB-Cy; Mon, 23 Mar 2026 18:37:08 +0100
+Date: Mon, 23 Mar 2026 14:37:00 -0300
+From: Thadeu Lima de Souza Cascardo <cascardo@igalia.com>
+To: Maarten Lankhorst <dev@lankhorst.se>
+Cc: Tejun Heo <tj@kernel.org>, Maxime Ripard <mripard@kernel.org>,
+	Natalie Vock <natalie.vock@gmx.de>,
+	Johannes Weiner <hannes@cmpxchg.org>,
+	Michal Koutny <mkoutny@suse.com>, cgroups@vger.kernel.org,
+	dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+	kernel-dev@igalia.com
+Subject: Re: [PATCH v2 0/3] cgroup/dmem: allow atomic irrestrictive writes to
+ dmem.max
+Message-ID: <acF6PMV-aezq3dWc@quatroqueijos.cascardo.eti.br>
+References: <20260319-dmem_max_ebusy-v2-0-b5ce97205269@igalia.com>
+ <b099d9248df084fed8d4252e3c6fc485@kernel.org>
+ <88f89d75-1e1f-4457-8c1f-57e934c251cc@lankhorst.se>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 0/3] cgroup/dmem: allow atomic irrestrictive writes to
- dmem.max
-To: Tejun Heo <tj@kernel.org>,
- Thadeu Lima de Souza Cascardo <cascardo@igalia.com>,
- Maxime Ripard <mripard@kernel.org>, Natalie Vock <natalie.vock@gmx.de>
-Cc: Johannes Weiner <hannes@cmpxchg.org>, Michal Koutny <mkoutny@suse.com>,
- cgroups@vger.kernel.org, dri-devel@lists.freedesktop.org,
- linux-kernel@vger.kernel.org, kernel-dev@igalia.com
-References: <20260319-dmem_max_ebusy-v2-0-b5ce97205269@igalia.com>
- <b099d9248df084fed8d4252e3c6fc485@kernel.org>
-Content-Language: en-US
-From: Maarten Lankhorst <dev@lankhorst.se>
-In-Reply-To: <b099d9248df084fed8d4252e3c6fc485@kernel.org>
-Content-Type: text/plain; charset=UTF-8
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Spamd-Result: default: False [-2.16 / 15.00];
+In-Reply-To: <88f89d75-1e1f-4457-8c1f-57e934c251cc@lankhorst.se>
+X-Spamd-Result: default: False [-0.36 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[lankhorst.se,none];
-	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
-	R_DKIM_ALLOW(-0.20)[lankhorst.se:s=default];
+	R_DKIM_REJECT(1.00)[igalia.com:s=20170329];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
 	MAILLIST(-0.15)[generic];
+	DMARC_POLICY_SOFTFAIL(0.10)[igalia.com : SPF not aligned (relaxed),none];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FROM_HAS_DN(0.00)[];
-	TAGGED_FROM(0.00)[bounces-15001-lists,cgroups=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-15002-lists,cgroups=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	RCVD_COUNT_THREE(0.00)[3];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	FREEMAIL_TO(0.00)[kernel.org,igalia.com,gmx.de];
+	FROM_HAS_DN(0.00)[];
+	RCVD_COUNT_THREE(0.00)[4];
+	FREEMAIL_CC(0.00)[kernel.org,gmx.de,cmpxchg.org,suse.com,vger.kernel.org,lists.freedesktop.org,igalia.com];
 	MIME_TRACE(0.00)[0:+];
-	DKIM_TRACE(0.00)[lankhorst.se:+];
-	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
-	TO_DN_SOME(0.00)[];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	DKIM_TRACE(0.00)[igalia.com:-];
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
+	MISSING_XM_UA(0.00)[];
+	NEURAL_HAM(-0.00)[-0.917];
+	FROM_NEQ_ENVFROM(0.00)[cascardo@igalia.com,cgroups@vger.kernel.org];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[dev@lankhorst.se,cgroups@vger.kernel.org];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	NEURAL_HAM(-0.00)[-1.000];
 	RCPT_COUNT_SEVEN(0.00)[10];
-	MID_RHS_MATCH_FROM(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[cgroups];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 4A18F2FA44C
+	TO_DN_SOME(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,quatroqueijos.cascardo.eti.br:mid]
+X-Rspamd-Queue-Id: 8F5A82FAD38
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-Hey,
-
-
-Den 2026-03-21 kl. 20:27, skrev Tejun Heo:
-> Hello,
+On Mon, Mar 23, 2026 at 05:46:28PM +0100, Maarten Lankhorst wrote:
+> Hey,
 > 
-> Generally looks okay to me. One comment on 3/3 — the naked xchg() in
-> set_resource_max() needs a comment explaining why it's used instead of
-> page_counter_set_max() and what the semantics are (unconditionally sets max
-> regardless of current usage to prevent further allocations, since there's no
-> eviction mechanism yet).
 > 
-> Applied 1/3. Maarten, Michal, what do you think?
+> Den 2026-03-21 kl. 20:27, skrev Tejun Heo:
+> > Hello,
+> > 
+> > Generally looks okay to me. One comment on 3/3 — the naked xchg() in
+> > set_resource_max() needs a comment explaining why it's used instead of
+> > page_counter_set_max() and what the semantics are (unconditionally sets max
+> > regardless of current usage to prevent further allocations, since there's no
+> > eviction mechanism yet).
+> > 
+> > Applied 1/3. Maarten, Michal, what do you think?
+> 
+> Yeah probably drop 2/3 too since there is no longer a case where setting a limit may fail.
+> 
+> Kind regards,
+> ~Maarten Lankhorst
 
-Yeah probably drop 2/3 too since there is no longer a case where setting a limit may fail.
+Actually, this can still happen if an invalid region name is given.
 
-Kind regards,
-~Maarten Lankhorst
+So, one could write:
+
+echo -e 'region1 max\ninvalidregion2 max\n' > dmem.max
+
+And even though setting the value for region1 would be applied, the write
+would return -EINVAL.
+
+Cascardo.
 
