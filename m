@@ -1,78 +1,78 @@
-Return-Path: <cgroups+bounces-15027-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-15028-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id KOZfCrGzwmkvlAQAu9opvQ
-	(envelope-from <cgroups+bounces-15027-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Tue, 24 Mar 2026 16:54:25 +0100
+	id CAtzFei4wmlilAQAu9opvQ
+	(envelope-from <cgroups+bounces-15028-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Tue, 24 Mar 2026 17:16:40 +0100
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7CA9F3186DC
-	for <lists+cgroups@lfdr.de>; Tue, 24 Mar 2026 16:54:24 +0100 (CET)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
+	by mail.lfdr.de (Postfix) with ESMTPS id F3BD6318D4B
+	for <lists+cgroups@lfdr.de>; Tue, 24 Mar 2026 17:16:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 3001D30297B1
-	for <lists+cgroups@lfdr.de>; Tue, 24 Mar 2026 15:47:51 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id E523830D1573
+	for <lists+cgroups@lfdr.de>; Tue, 24 Mar 2026 16:07:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3C0FE2773C3;
-	Tue, 24 Mar 2026 15:47:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 434FC396B6B;
+	Tue, 24 Mar 2026 16:07:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="nIeCWc6R"
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="ltHEVA/O"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E9F7B29ACC6;
-	Tue, 24 Mar 2026 15:47:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 66D653976A7;
+	Tue, 24 Mar 2026 16:07:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1774367270; cv=none; b=I85vsmQH7vDXngKay9qyR+dCV7pSQiDAza/jQyWbUyIF8XscOM9/3dovHLedC9XpA0D0wPwBqSOwzklNleRHTmumKvaIMpIA8HfXZcRumgYySk+vJBs/UaBgpdwi5uBl3Oj70kNltKy0gGT7E7sfWYeHjOSkSm4pQW8+hRWgg5Y=
+	t=1774368460; cv=none; b=tah04GeC6/mbQfqIbFIBgoLAFODQGjfqQQV0AA8ne6QJIhF3uD85UiFIixS1MLbsHSsa0ZWzz/lrEyZmi/HIyvvRuivEV3t5/gfwqoPq7g/n0ZRQ0dy9NgQNozEn5P8KTPL3dF39nZyFmxGxDzL0wI/mIiKa7G001F7BO1OZUww=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1774367270; c=relaxed/simple;
-	bh=d9hMfezXmreGlpwJ2fZfYIYHB5ksi38AVQoG5a+cqXY=;
+	s=arc-20240116; t=1774368460; c=relaxed/simple;
+	bh=jLyjQJ8B06fZCf1hME+l9mYN2e1ySS1Q2gqMTAcA6LQ=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=lRLak8TsT4o/Acatvwidn8puHWKZ5mL/Uj93RTOv5MCfEqGSQjaBwJzwICrhRZssNQ18TZwq8GDgXHzLBBt3iQLnv8f0p8uWcnr136uIHQuPInieukZkaBIl1mR56YZdPpGwSEg+pIVTEKdwMsiu12lmV5iuf76K/GZeoZ4SNKE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=nIeCWc6R; arc=none smtp.client-ip=148.163.156.1
+	 In-Reply-To:Content-Type; b=V0u0YarLnzucbxYsCdvYHZcS/NOxqnlhlFuQbe3d8/RMb+tvTXEbZ1wHMiIksljkCX5FGHSKWb6k3ajis17f6KUtt66mRZvoqSjWaaWL8tUhHOZeC8F0+riV9RGF8zNFvglnSF495een5ahOTxt+ugeiZP4iu2n1SIumjIx5tLo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=ltHEVA/O; arc=none smtp.client-ip=148.163.158.5
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0360083.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 62O5TmJ0556595;
-	Tue, 24 Mar 2026 15:47:08 GMT
+Received: from pps.filterd (m0360072.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 62O70Z5w415280;
+	Tue, 24 Mar 2026 16:06:31 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
 	:content-transfer-encoding:content-type:date:from:in-reply-to
-	:message-id:mime-version:references:subject:to; s=pp1; bh=nR9MIX
-	G5cbSNnabzc/Wmq/ZEfcuykgTeKIrZ+2D7JWc=; b=nIeCWc6R3MwyeJCONqz0ET
-	v1g1hlulkdHkxmzgrreYFO4GCNkMfSnMj7wv28bOFXhxjW84wEv0aZSGhsyATnob
-	xUywx1MxRkgtQ9kzOT2DdhLFIDp5YiYZLqe2spiijHoPxjlrGt2I3hBH5/W1wXF8
-	bubF702lCFNckMyi6YfABFTtyW7Lx9v0fBS62/O8GtVO4PP9ck6DaEnLm9EIPly3
-	nvAVR0e3K+TG1wGEykfWjF1HfS+1rc84ng+KwbhtELCPiT6972gIGGHRr/4v44Bs
-	gA8pQZA4RUAxZZYXtnicZ6vQOglA6ejVBGsal1jVYDHRda4A48B/WyS45HnGHSYA
+	:message-id:mime-version:references:subject:to; s=pp1; bh=2DabmZ
+	mrMAnP5JPSCcsIQW6Bj+sjnHfmrij8n/J4K0w=; b=ltHEVA/OjID7gMmJSyBGcM
+	Hpb6Z4qNZXY1KXvJCFbreuTuCSB8+FECfn6bTXuJwPXgJE50NCxA6XUaFXBZ0Jdi
+	yVQcY1WwVLrwWsaKA4Utdhdc3wodDpePL999Ig/NRLPbJBpgPZ/oLOwG/0XQA05M
+	XaTCIwHrAHhYOWxYqaBnZDDUjqQ6ZiR7+n39AgX9Apu7yJMT/c6hqe0fxNC/IzDT
+	AOKaBmT31+OVDCi45N+5zO0sngkPWej3afDFgdRReUi+aONTEWZKyKYzr+cxWi+R
+	lJG0nJKMnE1XtjTbS+/FWgdP6DBtdAsdA8V2cp4gUNjjo1JhhvvG7n4ReVGBV0/Q
 	==
 Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4d1kxqcbkq-1
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4d1kumkvnv-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 24 Mar 2026 15:47:07 +0000 (GMT)
+	Tue, 24 Mar 2026 16:06:30 +0000 (GMT)
 Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma12.dal12v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 62OFJ7mB031687;
-	Tue, 24 Mar 2026 15:47:07 GMT
-Received: from smtprelay06.dal12v.mail.ibm.com ([172.16.1.8])
-	by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 4d25nstq4s-1
+	by ppma12.dal12v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 62OFha2A031635;
+	Tue, 24 Mar 2026 16:06:30 GMT
+Received: from smtprelay04.dal12v.mail.ibm.com ([172.16.1.6])
+	by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 4d25nstt93-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 24 Mar 2026 15:47:06 +0000
+	Tue, 24 Mar 2026 16:06:30 +0000
 Received: from smtpav03.dal12v.mail.ibm.com (smtpav03.dal12v.mail.ibm.com [10.241.53.102])
-	by smtprelay06.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 62OFl6wO22414060
+	by smtprelay04.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 62OG6TrR22872764
 	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Tue, 24 Mar 2026 15:47:06 GMT
+	Tue, 24 Mar 2026 16:06:29 GMT
 Received: from smtpav03.dal12v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 885C758056;
-	Tue, 24 Mar 2026 15:47:06 +0000 (GMT)
+	by IMSVA (Postfix) with ESMTP id 9C74B5805A;
+	Tue, 24 Mar 2026 16:06:29 +0000 (GMT)
 Received: from smtpav03.dal12v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 1A5965803F;
-	Tue, 24 Mar 2026 15:47:01 +0000 (GMT)
+	by IMSVA (Postfix) with ESMTP id 16D035803F;
+	Tue, 24 Mar 2026 16:06:24 +0000 (GMT)
 Received: from [9.39.25.178] (unknown [9.39.25.178])
 	by smtpav03.dal12v.mail.ibm.com (Postfix) with ESMTP;
-	Tue, 24 Mar 2026 15:47:00 +0000 (GMT)
-Message-ID: <5bf5a4f2-0505-44ef-9cea-df6ec25d9603@linux.ibm.com>
-Date: Tue, 24 Mar 2026 21:16:59 +0530
+	Tue, 24 Mar 2026 16:06:23 +0000 (GMT)
+Message-ID: <537ea1c6-e631-4d13-8169-1a1b96834762@linux.ibm.com>
+Date: Tue, 24 Mar 2026 21:36:22 +0530
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -81,9 +81,8 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
 Subject: Re: [RFC PATCH 6/6] mm/memcontrol: Make memory.high tier-aware
-To: Gregory Price <gourry@gourry.net>
-Cc: Joshua Hahn <joshua.hahnjy@gmail.com>,
-        Andrew Morton <akpm@linux-foundation.org>,
+To: Joshua Hahn <joshua.hahnjy@gmail.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>,
         David Hildenbrand <david@kernel.org>,
         Lorenzo Stoakes <lorenzo.stoakes@oracle.com>,
         Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@suse.com>,
@@ -95,58 +94,55 @@ Cc: Joshua Hahn <joshua.hahnjy@gmail.com>,
         Yuanchu Xie <yuanchu@google.com>, Wei Xu <weixugc@google.com>,
         linux-mm@kvack.org, cgroups@vger.kernel.org,
         linux-kernel@vger.kernel.org, kernel-team@meta.com
-References: <20260223223830.586018-1-joshua.hahnjy@gmail.com>
- <20260223223830.586018-7-joshua.hahnjy@gmail.com>
- <90749965-ebc8-43b2-92e3-baec5f6e3de0@linux.ibm.com>
- <acKsb06lnywch8DV@gourry-fedora-PF4VCD3F>
+References: <20260324154414.195150-1-joshua.hahnjy@gmail.com>
 Content-Language: en-US
 From: Donet Tom <donettom@linux.ibm.com>
-In-Reply-To: <acKsb06lnywch8DV@gourry-fedora-PF4VCD3F>
+In-Reply-To: <20260324154414.195150-1-joshua.hahnjy@gmail.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 X-TM-AS-GCONF: 00
 X-Proofpoint-Reinject: loops=2 maxloops=12
-X-Proofpoint-ORIG-GUID: LVdurRN2EDTT67M7-3BJiK4bPS0nldWJ
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwMzI0MDExOSBTYWx0ZWRfX1s3/DoQnR89W
- 4OyHHua3rqv4GFjhuCfmRD+wRHyX9XpxaUnWFV0CjxWxY0+qaGst+wECvYnFNnS+P1R2KSqWsmy
- hF4WEydo5virXXt1dSZuQjbQRTFL7y/deW0iHb6zb7lw7UrKZyhgwzO6jn6GaMwRc6hShSUnHpU
- 351n0cZgj2fEY1jC0dFDy66jrgwZS/lw2F1uwYYWynlpy8vmYJJnPhbv3TYd3wGPFS7n3lwWrOR
- /BHtI2xJiY9+yrhU3mr25Q0irzNJL92D+PeX9sChTnAVDnyBoRk8MZtgZvbnn8Wx2HzikRkOJ/t
- EdQ1tMNsslsL7N6g5SohPrK6zddkVGCIyhzBsC31BUhnH8sorqp0XoIE99oC1vQI6WkYjyVWsKm
- D8ZU5HsUDQ2rII9G4sbSgg0TjmEHpLKzIrva4HV4Eh6b835F8OWON4m2VPi9Hd/NCzK3er7f1Z2
- eWwRupQX2Pgw93AT88A==
-X-Authority-Analysis: v=2.4 cv=bLEb4f+Z c=1 sm=1 tr=0 ts=69c2b1fc cx=c_pps
+X-Proofpoint-GUID: r9ujSe3VNxAPEMHzMB-f4qRIQV0EF_vt
+X-Proofpoint-ORIG-GUID: iGZaYGwDGoTS6lHfgsxRnCrWibAtMXQp
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwMzI0MDEyMyBTYWx0ZWRfXz2D+Y0KIRzTN
+ 3mRzWQmU8YYdEHBDMTYgRcjuij9OYd/WM/2JcE6km5CAi+m6jIxXJlLNrM8TeRfC0UT7tPQ/o57
+ qbnhLwvhrwWF5qXFJmdVPkGv4/jUiosCaeIJXn3qqx0OnikEVVd115deOV/dgqonM+HogMD6QvB
+ Rm8CHvIDVs3Cm5QdQumIyywCvLZcVaXdTiUpfbWQ9Kvsy3UGc6Zs0xSEPTxo+GmpZ/BzSj/cG+a
+ 55NiE1OdR8JjvU342EnZt9yjUsLhb0avdASknNmogYm9YTlfWdlzmXvx4GuVORl7YbftyL8rkFo
+ vcZizlsUH7AzbSMISPxdEjrkIUNhXH4RjJ9W67HOX4/1fACZM/8Nf4RWJExf8TpeDH4NIycRf1A
+ 6lk5AkQwIocTSBZ12tIFL+ta31QEkID3769uggylXJIlRg7TKEe3njKWs0I4w4xOX9aS3vLhhQT
+ /LtXwbdcxPm2A8nunKw==
+X-Authority-Analysis: v=2.4 cv=KbXfcAYD c=1 sm=1 tr=0 ts=69c2b687 cx=c_pps
  a=bLidbwmWQ0KltjZqbj+ezA==:117 a=bLidbwmWQ0KltjZqbj+ezA==:17
  a=IkcTkHD0fZMA:10 a=Yq5XynenixoA:10 a=VkNPw1HP01LnGYTKEx00:22
- a=RnoormkPH1_aCDwRdu11:22 a=iQ6ETzBq9ecOQQE5vZCe:22 a=0D6tOVm0XesP3UCEPNQA:9
+ a=RnoormkPH1_aCDwRdu11:22 a=RzCfie-kr_QcCd8fBx8p:22 a=VwQbUJbxAAAA:8
+ a=1XWaLZrsAAAA:8 a=VnNF1IyMAAAA:8 a=pGLkceISAAAA:8 a=DV77l5TmE7YLv7A2xvoA:9
  a=3ZKOabzyN94A:10 a=QEXdDO2ut3YA:10
-X-Proofpoint-GUID: BF40lhA_4j4DGEWWyDFDVxmTk2uqOXny
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.293,Aquarius:18.0.1143,Hydra:6.1.51,FMLib:17.12.100.49
  definitions=2026-03-24_03,2026-03-23_02,2025-10-01_01
 X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- spamscore=0 adultscore=0 clxscore=1015 phishscore=0 impostorscore=0
- malwarescore=0 lowpriorityscore=0 suspectscore=0 bulkscore=0
- priorityscore=1501 classifier=typeunknown authscore=0 authtc= authcc=
- route=outbound adjust=0 reason=mlx scancount=1 engine=8.22.0-2603050001
- definitions=main-2603240119
+ suspectscore=0 impostorscore=0 malwarescore=0 adultscore=0 clxscore=1015
+ priorityscore=1501 bulkscore=0 lowpriorityscore=0 phishscore=0 spamscore=0
+ classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
+ reason=mlx scancount=1 engine=8.22.0-2603050001 definitions=main-2603240123
 X-Spamd-Result: default: False [-0.66 / 15.00];
 	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	DMARC_POLICY_ALLOW(-0.50)[ibm.com,none];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	R_DKIM_ALLOW(-0.20)[ibm.com:s=pp1];
+	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	MIME_TRACE(0.00)[0:+];
-	RCPT_COUNT_TWELVE(0.00)[18];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-15027-lists,cgroups=lfdr.de];
-	FREEMAIL_CC(0.00)[gmail.com,linux-foundation.org,kernel.org,oracle.com,cmpxchg.org,suse.com,linux.dev,bytedance.com,google.com,kvack.org,vger.kernel.org,meta.com];
+	TAGGED_FROM(0.00)[bounces-15028-lists,cgroups=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[linux.ibm.com:mid,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	FREEMAIL_TO(0.00)[gmail.com];
+	MIME_TRACE(0.00)[0:+];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[17];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns,linux.ibm.com:mid];
+	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[donettom@linux.ibm.com,cgroups@vger.kernel.org];
@@ -157,13 +153,107 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	MID_RHS_MATCH_FROM(0.00)[];
 	TO_DN_SOME(0.00)[];
 	RCVD_COUNT_SEVEN(0.00)[11]
-X-Rspamd-Queue-Id: 7CA9F3186DC
+X-Rspamd-Queue-Id: F3BD6318D4B
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
 
-On 3/24/26 8:53 PM, Gregory Price wrote:
-> On Tue, Mar 24, 2026 at 04:21:06PM +0530, Donet Tom wrote:
+On 3/24/26 9:14 PM, Joshua Hahn wrote:
+> On Tue, 24 Mar 2026 16:21:06 +0530 Donet Tom <donettom@linux.ibm.com> wrote:
+>
+>> On 2/24/26 4:08 AM, Joshua Hahn wrote:
+>>> On machines serving multiple workloads whose memory is isolated via the
+>>> memory cgroup controller, it is currently impossible to enforce a fair
+>>> distribution of toptier memory among the workloads, as the only
+>>> enforcable limits have to do with total memory footprint, but not where
+>>> that memory resides.
+>>>
+>>> This makes ensuring a consistent and baseline performance difficult, as
+>>> each workload's performance is heavily impacted by workload-external
+>>> factors wuch as which other workloads are co-located in the same host,
+>>> and the order at which different workloads are started.
+>>>
+>>> Extend the existing memory.high protection to be tier-aware in the
+>>> charging and enforcement to limit toptier-hogging for workloads.
+>>>
+>>> Also, add a new nodemask parameter to try_to_free_mem_cgroup_pages,
+>>> which can be used to selectively reclaim from memory at the
+>>> memcg-tier interection of a cgroup.
+>>>
+>>> Signed-off-by: Joshua Hahn <joshua.hahnjy@gmail.com>
+>>> ---
+>>>    include/linux/swap.h |  3 +-
+>>>    mm/memcontrol-v1.c   |  6 ++--
+>>>    mm/memcontrol.c      | 85 +++++++++++++++++++++++++++++++++++++-------
+>>>    mm/vmscan.c          | 11 +++---
+>>>    4 files changed, 84 insertions(+), 21 deletions(-)
+>>>
+>>> diff --git a/include/linux/swap.h b/include/linux/swap.h
+>>> index 0effe3cc50f5..c6037ac7bf6e 100644
+>>> --- a/include/linux/swap.h
+>>> +++ b/include/linux/swap.h
+>>> @@ -368,7 +368,8 @@ extern unsigned long try_to_free_mem_cgroup_pages(struct mem_cgroup *memcg,
+>>>    						  unsigned long nr_pages,
+>>>    						  gfp_t gfp_mask,
+>>>    						  unsigned int reclaim_options,
+>>> -						  int *swappiness);
+>>> +						  int *swappiness,
+>>> +						  nodemask_t *allowed);
+>>>    extern unsigned long mem_cgroup_shrink_node(struct mem_cgroup *mem,
+>>>    						gfp_t gfp_mask, bool noswap,
+>>>    						pg_data_t *pgdat,
+>>> diff --git a/mm/memcontrol-v1.c b/mm/memcontrol-v1.c
+>>> index 0b39ba608109..29630c7f3567 100644
+>>> --- a/mm/memcontrol-v1.c
+>>> +++ b/mm/memcontrol-v1.c
+>>> @@ -1497,7 +1497,8 @@ static int mem_cgroup_resize_max(struct mem_cgroup *memcg,
+>>>    		}
+>>>    
+>>>    		if (!try_to_free_mem_cgroup_pages(memcg, 1, GFP_KERNEL,
+>>> -				memsw ? 0 : MEMCG_RECLAIM_MAY_SWAP, NULL)) {
+>>> +				memsw ? 0 : MEMCG_RECLAIM_MAY_SWAP,
+>>> +				NULL, NULL)) {
+>>>    			ret = -EBUSY;
+>>>    			break;
+>>>    		}
+>>> @@ -1529,7 +1530,8 @@ static int mem_cgroup_force_empty(struct mem_cgroup *memcg)
+>>>    			return -EINTR;
+>>>    
+>>>    		if (!try_to_free_mem_cgroup_pages(memcg, 1, GFP_KERNEL,
+>>> -						  MEMCG_RECLAIM_MAY_SWAP, NULL))
+>>> +						  MEMCG_RECLAIM_MAY_SWAP,
+>>> +						  NULL, NULL))
+>>>    			nr_retries--;
+>>>    	}
+>>>    
+>>> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+>>> index 8aa7ae361a73..ebd4a1b73c51 100644
+>>> --- a/mm/memcontrol.c
+>>> +++ b/mm/memcontrol.c
+>>> @@ -2184,18 +2184,30 @@ static unsigned long reclaim_high(struct mem_cgroup *memcg,
+>>>    
+>>>    	do {
+>>>    		unsigned long pflags;
+>>> -
+>>> -		if (page_counter_read(&memcg->memory) <=
+>>> -		    READ_ONCE(memcg->memory.high))
+>>> +		nodemask_t toptier_nodes, *reclaim_nodes;
+>>> +		bool mem_high_ok, toptier_high_ok;
+>>> +
+>>> +		mt_get_toptier_nodemask(&toptier_nodes, NULL);
+>>> +		mem_high_ok = page_counter_read(&memcg->memory) <=
+>>> +			      READ_ONCE(memcg->memory.high);
+>>> +		toptier_high_ok = !(tier_aware_memcg_limits &&
+>>> +				    mem_cgroup_toptier_usage(memcg) >
+>>> +				    page_counter_toptier_high(&memcg->memory));
+>>> +		if (mem_high_ok && toptier_high_ok)
+>>>    			continue;
+>>>    
+>>> +		if (mem_high_ok && !toptier_high_ok)
+>>> +			reclaim_nodes = &toptier_nodes;
+>>> +		else
+>>> +			reclaim_nodes = NULL;
+>>
 >> IIUC The intent of this patch is to partition cgroup memory such that
 >> 0 → toptier_high is backed by higher-tier memory, and
 >> toptier_high → max is backed by lower-tier memory.
@@ -171,48 +261,64 @@ On 3/24/26 8:53 PM, Gregory Price wrote:
 >> Based on this:
 >>
 >> 1.If top-tier usage exceeds toptier_high, pages should be
->>    demoted to the lower tier.
+>>     demoted to the lower tier.
 >>
 >> 2. If lower-tier usage exceeds (max - toptier_high), pages
->>    should be swapped out.
+>>     should be swapped out.
 >>
-> This is not accurate and an incorrect heuristic.
->
-> Transiently, lower-tier usage may exceed (max - toptier_high) for any
-> number of reasons which should not be used as signal for pushing swap.
->
-> driving swap usage is a function of (usage > memory.high) without regard
-> for toptier / lowtier.
->
 >> 3. If total memory usage exceeds max, demotion should be
->>    avoided and reclaim should directly swap out pages.
+>>     avoided and reclaim should directly swap out pages.
 >>
-> This is also incorrect, as it would drive agingin inversions.
-> Demotion is a natural extension of the LRU infrastructure:
->
-> toptier active -> toptier inactive -> lowtier inactive -> swap
->
-> if you do (toptier inactive -> swap) you have inverted the LRU.
-
-
-Thanks, Gregory, for the clarification.
-
-One remaining concern is that under cgroup memory pressure,
-demotion to the lower tier can still happen. Since demotion
-does not uncharge the memcg, this could still trigger OOM.
-
-Is this an issue we should address?
-
-
->
-> As far as I know, from testing, we retain all the existing behavior - we
-> are just managing a limited resource (top tier memory) to manage the
-> noisy-neighbor issue.  So...
->
->
+>> I think we are only handling case (1) in this patch. When
+>> mem_high_ok && !toptier_high_ok, we are reclaiming pages (demotion first)
+>>
+>> However, if !mem_high_ok, the memcg reclaim path works as if
+>> there is no memory tiering  in cgroup. This can lead to more demotion
+>> and may eventually result in OOM.
+>>
 >> Should we also handle cases (2) and (3) in this patch?
-> No, I don't think we should
+> Hello Donet! I hope you are doing well.
 >
-> ~Gregory
+> For the second condition, should pages be swapped out? If a workload
+> is using 0 toptier memory (extreme case, let's say they haven't set
+> memory.low) then lower-tier should be able to use all the way up to
+> max memory.
+>
+> Maybe you mean if lowtier_usage exceeds (max - toptier_usage) pages
+> should be swapped out? But if we rearrange this
+>
+>                  lowtier_usage >= max - toptier_usage
+> lowtier_usage + toptier_usage >= max
+>                    total_usage >= max
+>
+> And this is just the memory.max check and is already handled by
+> existing reclaim semantics : -)
+>
+> I think case 3 is a bit more nuanced. If we directly swap out from
+> high tier and skip demotions, this is introducing a priority inversion
+> since memory in toptier should be hotter than memory in lowtier, so
+> we should prefer to swap out the colder memory in lowtier before
+> swapping out memory in toptier.
+>
+> The idea was discussed at length at [1]. It also feels like an orthogonal
+> discussion since the behavior isn't related to toptier high or low
+> behaviors.
+>
+> Please let me know what you think. Thank you, I hope you have a great day!
+
+
+Thanks, Joshua, for your clarification.
+
+[1] disabled demotion from memcg. With memcg limits now being
+tier-aware, I was thinking about how to handle the demotion
+issue. You are right that this is a separate topic not related to this.
+
+[1] 
+https://lore.kernel.org/linux-mm/20260317230720.990329-3-bingjiao@google.com/
+
+
+> Joshua
+>
+> [1] https://lore.kernel.org/linux-mm/20260317230720.990329-3-bingjiao@google.com/
 >
 
