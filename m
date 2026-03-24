@@ -1,151 +1,232 @@
-Return-Path: <cgroups+bounces-15008-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-15009-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id oIL6I9vZwWmJXQQAu9opvQ
-	(envelope-from <cgroups+bounces-15008-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Tue, 24 Mar 2026 01:24:59 +0100
+	id sPIoAnn7wWlSYgQAu9opvQ
+	(envelope-from <cgroups+bounces-15009-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Tue, 24 Mar 2026 03:48:25 +0100
 X-Original-To: lists+cgroups@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0002B2FFA42
-	for <lists+cgroups@lfdr.de>; Tue, 24 Mar 2026 01:24:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 5BB42301505
+	for <lists+cgroups@lfdr.de>; Tue, 24 Mar 2026 03:48:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 61143304DF0D
-	for <lists+cgroups@lfdr.de>; Tue, 24 Mar 2026 00:17:24 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 714E6304E328
+	for <lists+cgroups@lfdr.de>; Tue, 24 Mar 2026 02:46:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E0F301FF7C8;
-	Tue, 24 Mar 2026 00:17:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D2DDC388E60;
+	Tue, 24 Mar 2026 02:46:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Rsogh3ho"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="a/glTq6O"
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out-178.mta1.migadu.com (out-178.mta1.migadu.com [95.215.58.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A436C1A3164
-	for <cgroups@vger.kernel.org>; Tue, 24 Mar 2026 00:17:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 23566388E6C
+	for <cgroups@vger.kernel.org>; Tue, 24 Mar 2026 02:46:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1774311442; cv=none; b=TDo+l05ue7FLZx1kULlhKwLh0eASHTcvXSA1d4GL3eBunAJYzQHZGqL4FPvileewPImirYZ6DfRQMUF+livR6+Jg5lTc4LNsFWFq1WpsuxYHxeRxlz4ycKsRFlvOaezG5Uz9AkL0DN0TnagpX5Sq4BrlOtCRMzdR0CEYueFdLn0=
+	t=1774320408; cv=none; b=e3fODoyriqBpBh+kYdqOtTCYfYCS2+KxGLI6dU9xcpwqqtSr3ImuWLNrhgH/RU4O1ZzxA5A90QWBpF8r2fiT6OZcqlPkL6CUA5j39zO+V4daC+LEliHWSv8p7u6TfRqOrdzEEtESjprr2A++3dz6z/IijedvRZJcT6Wqql5sJjE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1774311442; c=relaxed/simple;
-	bh=mkPMr+Ubw3gE/jNPJ4cFqrp/19KQd/EAePHNoJi1hak=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=c8vFqskJ9hSLRY1C4A+kiz8/Pw8Y6AB83KTZItL6wRPmm2Gw8z+JZsw6KlZe8lFjdEDQa3OPf9YFu/w6O58VjOcsrbPU9XCENuOUnO/t66s5jpU6XzXF/Um5+Jgt1KmqBW6rpZHO6PYM9tSfhjRJLk672WIn+TCx6+k3Uqszi0U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Rsogh3ho; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 53045C2BCB5
-	for <cgroups@vger.kernel.org>; Tue, 24 Mar 2026 00:17:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1774311442;
-	bh=mkPMr+Ubw3gE/jNPJ4cFqrp/19KQd/EAePHNoJi1hak=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=Rsogh3hoyoYJmf99kdqKt6lBJDTP+1xdPyj5kVS2IlN8iHQ3wzE8MkGQ2vG/+vCIQ
-	 jglMKyhVHQJLdfMPDmwTBMOYPrv3+D+zxHavwso9XNlhtALMMJjzVyWn1cyTquak5J
-	 eYPMoo4H9FNyOu7lRZ4j9CFL0iSDN1ty/nOFJ4CcUJFJDOyfvelrs4EnK/wpc3lDi3
-	 vUn5cGfhk9lLEhPwXRKx6PF/rSZNgL8Nn4GVPiuqcdjrhzR7kqcTLKCBF6Lk5unZeU
-	 brDDMtaAqTyg+Z5imL12U3VK6iprVbhLo9pompG9YcNDMsaP1Af8EnYT7q/u04edCt
-	 eUEztT/Te8+ag==
-Received: by mail-ej1-f51.google.com with SMTP id a640c23a62f3a-b98133bdc4bso571172666b.0
-        for <cgroups@vger.kernel.org>; Mon, 23 Mar 2026 17:17:22 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCWV9EMTtxQpvH8bD/gjb0uv1uAuaOkxyl9ji3VVKzCz8r6cFV/Byr1vX8J2sDM6zIJoajtEFFo9@vger.kernel.org
-X-Gm-Message-State: AOJu0Yx9jwr4gQG2LhMN02GlvZuh3R/2CTcOV/0b/icZ9sJUYbQsUw/K
-	ibGHGAKo1XlK1Yv1CXszhfHczS5bfXnQET6YN3vc4DHzHgQ76CMTnkA0oOYp1TpnRYB6rJJVQwh
-	o3j3fPEC2GCyMzk9ty2P/7O5oscA117E=
-X-Received: by 2002:a17:907:3f28:b0:b98:4e9b:7e49 with SMTP id
- a640c23a62f3a-b984e9b9366mr668007566b.33.1774311441088; Mon, 23 Mar 2026
- 17:17:21 -0700 (PDT)
+	s=arc-20240116; t=1774320408; c=relaxed/simple;
+	bh=1FYuLNdWS0USt95/63h5h3/CEmUJ86hIDzG1HPJ/Efc=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=f2l7KAT/ry5K1OMPcQJYqDZCJA8CrZ5i5tIt4q1wAsqSVPZYbwPDzdJkXfB/cpgszfSnViueVGkwPWe4sHB6f1OP4HneSt8pQvKwtDDBxB+NEU6ZYQBSKp6dG17+UGSaI0/64QvVPSquwb9iQEBPD93w2BmF1ajdJkWbfpOyY0s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=a/glTq6O; arc=none smtp.client-ip=95.215.58.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <a17b441e-fe6f-4e5c-ab26-0ab71475fbbc@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1774320395;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=qGGy2UriqUad3XopEFOCAp7JAApD+roBCI5i10BvlVY=;
+	b=a/glTq6OdDzqBk054fBaNRf1YQfSf9qqa7zrtsfqKjMT3HrWJygwOce3dCrKDI4GSd3pED
+	v8DRAwlqTMrxaaax61tUHbDrPY4EpNBhEZUV0NakFcOZckuBTbbPVoc/RROZXQ/4LmTx6a
+	MePPyWSY1LxmmfhvQscxvIgF0NUGahY=
+Date: Tue, 24 Mar 2026 10:46:12 +0800
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20260320204241.1613861-1-longman@redhat.com> <20260320204241.1613861-3-longman@redhat.com>
- <acE2WDuto9cdp5Lx@redhat.com>
-In-Reply-To: <acE2WDuto9cdp5Lx@redhat.com>
-From: Yosry Ahmed <yosry@kernel.org>
-Date: Mon, 23 Mar 2026 17:17:09 -0700
-X-Gmail-Original-Message-ID: <CAO9r8zNqHVCOYcun=WWwF3CROi-nLAsJUSJJtcsrQGUKF-CKQQ@mail.gmail.com>
-X-Gm-Features: AaiRm531iQ3S4jGCxOVHcyk6sudkGI-5HpMDYVgYjNPDeV0yeExZpsLA0GLu9_E
-Message-ID: <CAO9r8zNqHVCOYcun=WWwF3CROi-nLAsJUSJJtcsrQGUKF-CKQQ@mail.gmail.com>
-Subject: Re: [PATCH v2 2/7] memcg: Scale down MEMCG_CHARGE_BATCH with increase
- in PAGE_SIZE
-To: Li Wang <liwang@redhat.com>
-Cc: Waiman Long <longman@redhat.com>, Johannes Weiner <hannes@cmpxchg.org>, 
-	Michal Hocko <mhocko@kernel.org>, Roman Gushchin <roman.gushchin@linux.dev>, 
-	Shakeel Butt <shakeel.butt@linux.dev>, Muchun Song <muchun.song@linux.dev>, 
-	Andrew Morton <akpm@linux-foundation.org>, Tejun Heo <tj@kernel.org>, 
-	=?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>, 
-	Shuah Khan <shuah@kernel.org>, Mike Rapoport <rppt@kernel.org>, linux-kernel@vger.kernel.org, 
-	cgroups@vger.kernel.org, linux-mm@kvack.org, linux-kselftest@vger.kernel.org, 
-	Sean Christopherson <seanjc@google.com>, James Houghton <jthoughton@google.com>, 
-	Sebastian Chlad <sebastianchlad@gmail.com>, Guopeng Zhang <zhangguopeng@kylinos.cn>, 
-	Li Wang <liwan@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH v6 26/33] mm: vmscan: prepare for reparenting MGLRU folios
+To: "Harry Yoo (Oracle)" <harry@kernel.org>
+Cc: hannes@cmpxchg.org, hughd@google.com, mhocko@suse.com,
+ roman.gushchin@linux.dev, shakeel.butt@linux.dev, muchun.song@linux.dev,
+ david@kernel.org, lorenzo.stoakes@oracle.com, ziy@nvidia.com,
+ harry.yoo@oracle.com, yosry.ahmed@linux.dev, imran.f.khan@oracle.com,
+ kamalesh.babulal@oracle.com, axelrasmussen@google.com, yuanchu@google.com,
+ weixugc@google.com, chenridong@huaweicloud.com, mkoutny@suse.com,
+ akpm@linux-foundation.org, hamzamahfooz@linux.microsoft.com,
+ apais@linux.microsoft.com, lance.yang@linux.dev, bhe@redhat.com,
+ usamaarif642@gmail.com, linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+ cgroups@vger.kernel.org, Qi Zheng <zhengqi.arch@bytedance.com>
+References: <cover.1772711148.git.zhengqi.arch@bytedance.com>
+ <e75050354cdbc42221a04f7cf133292b61105548.1772711148.git.zhengqi.arch@bytedance.com>
+ <acFALMLIvjP4i76U@hyeyoo>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Qi Zheng <qi.zheng@linux.dev>
+In-Reply-To: <acFALMLIvjP4i76U@hyeyoo>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
+	DMARC_POLICY_ALLOW(-0.50)[linux.dev,none];
 	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_DKIM_ALLOW(-0.20)[linux.dev:s=key1];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-15008-lists,cgroups=lfdr.de];
-	FREEMAIL_CC(0.00)[redhat.com,cmpxchg.org,kernel.org,linux.dev,linux-foundation.org,suse.com,vger.kernel.org,kvack.org,google.com,gmail.com,kylinos.cn];
-	FROM_HAS_DN(0.00)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-15009-lists,cgroups=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[21];
+	RCVD_COUNT_THREE(0.00)[3];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	FREEMAIL_CC(0.00)[cmpxchg.org,google.com,suse.com,linux.dev,kernel.org,oracle.com,nvidia.com,huaweicloud.com,linux-foundation.org,linux.microsoft.com,redhat.com,gmail.com,kvack.org,vger.kernel.org,bytedance.com];
+	RCPT_COUNT_TWELVE(0.00)[29];
 	MIME_TRACE(0.00)[0:+];
-	DKIM_TRACE(0.00)[kernel.org:+];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	FROM_HAS_DN(0.00)[];
 	MISSING_XM_UA(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[5];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[yosry@kernel.org,cgroups@vger.kernel.org];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	NEURAL_HAM(-0.00)[-1.000];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[qi.zheng@linux.dev,cgroups@vger.kernel.org];
+	DKIM_TRACE(0.00)[linux.dev:+];
+	MID_RHS_MATCH_FROM(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
 	TAGGED_RCPT(0.00)[cgroups];
 	TO_DN_SOME(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,mail.gmail.com:mid]
-X-Rspamd-Queue-Id: 0002B2FFA42
+	DBL_BLOCKED_OPENRESOLVER(0.00)[bytedance.com:email,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,linux.dev:dkim,linux.dev:mid,oracle.com:email]
+X-Rspamd-Queue-Id: 5BB42301505
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-On Mon, Mar 23, 2026 at 5:47=E2=80=AFAM Li Wang <liwang@redhat.com> wrote:
->
-> On Fri, Mar 20, 2026 at 04:42:36PM -0400, Waiman Long wrote:
-> > For a system with 4k page size, each percpu memcg_stock can hide up
-> > to 256 kbytes of memory with the current MEMCG_CHARGE_BATCH value of
-> > 64. For another system with 64k page size, that becomes 4 Mbytes. This
-> > hidden charges will affect the accurary of the memory.current value.
-> >
-> > This MEMCG_CHARGE_BATCH value also controls how often should the
-> > memcg vmstat values need flushing. As a result, the values reported
-> > in memory.stat cgroup control files are less indicative of the actual
-> > memory consumption of a particular memory cgroup when the page size
-> > increases from 4k.
-> >
-> > This problem can be illustrated by running the test_memcontrol
-> > selftest. Running a 4k page size kernel on a 128-core arm64 system,
-> > the test_memcg_current_peak test which allocates a 50M anonymous memory
-> > passed. With a 64k page size kernel on the same system, however, the
-> > same test failed because the "anon" attribute of memory.stat file might
-> > report a size of 0 depending on the number of CPUs the system has.
-> >
-> > To solve this inaccurate memory stats problem, we need to scale down
-> > the amount of memory that can be hidden by reducing MEMCG_CHARGE_BATCH
-> > when the page size increases. The same user application will likely
-> > consume more memory on systems with larger page size and it is also
-> > less efficient if we scale down MEMCG_CHARGE_BATCH by too much.  So I
-> > believe a good compromise is to scale down MEMCG_CHARGE_BATCH by 2 for
-> > 16k page size and by 4 with 64k page size.
-> >
-> > With that change, the test_memcg_current_peak test passed again with
-> > the modified 64k page size kernel.
-> >
-> > Signed-off-by: Waiman Long <longman@redhat.com>
 
-We need performance testing for this too.
+
+On 3/23/26 9:29 PM, Harry Yoo (Oracle) wrote:
+> On Thu, Mar 05, 2026 at 07:52:44PM +0800, Qi Zheng wrote:
+>> From: Qi Zheng <zhengqi.arch@bytedance.com>
+>>
+>> Similar to traditional LRU folios, in order to solve the dying memcg
+>> problem, we also need to reparenting MGLRU folios to the parent memcg when
+>> memcg offline.
+>>
+>> However, there are the following challenges:
+>>
+>> 1. Each lruvec has between MIN_NR_GENS and MAX_NR_GENS generations, the
+>>     number of generations of the parent and child memcg may be different,
+>>     so we cannot simply transfer MGLRU folios in the child memcg to the
+>>     parent memcg as we did for traditional LRU folios.
+>> 2. The generation information is stored in folio->flags, but we cannot
+>>     traverse these folios while holding the lru lock, otherwise it may
+>>     cause softlockup.
+>> 3. In walk_update_folio(), the gen of folio and corresponding lru size
+>>     may be updated, but the folio is not immediately moved to the
+>>     corresponding lru list. Therefore, there may be folios of different
+>>     generations on an LRU list.
+>> 4. In lru_gen_del_folio(), the generation to which the folio belongs is
+>>     found based on the generation information in folio->flags, and the
+>>     corresponding LRU size will be updated. Therefore, we need to update
+>>     the lru size correctly during reparenting, otherwise the lru size may
+>>     be updated incorrectly in lru_gen_del_folio().
+>>
+>> Finally, this patch chose a compromise method, which is to splice the lru
+>> list in the child memcg to the lru list of the same generation in the
+>> parent memcg during reparenting. And in order to ensure that the parent
+>> memcg has the same generation, we need to increase the generations in the
+>> parent memcg to the MAX_NR_GENS before reparenting.
+>>
+>> Of course, the same generation has different meanings in the parent and
+>> child memcg, this will cause confusion in the hot and cold information of
+>> folios. But other than that, this method is simple enough, the lru size
+>> is correct, and there is no need to consider some concurrency issues (such
+>> as lru_gen_del_folio()).
+>>
+>> To prepare for the above work, this commit implements the specific
+>> functions, which will be used during reparenting.
+>>
+>> Suggested-by: Harry Yoo <harry.yoo@oracle.com>
+>> Suggested-by: Imran Khan <imran.f.khan@oracle.com>
+>> Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
+>> Acked-by: Harry Yoo <harry.yoo@oracle.com>
+>> ---
+>> +/*
+>> + * Compared to traditional LRU, MGLRU faces the following challenges:
+>> + *
+>> + * 1. Each lruvec has between MIN_NR_GENS and MAX_NR_GENS generations, the
+>> + *    number of generations of the parent and child memcg may be different,
+>> + *    so we cannot simply transfer MGLRU folios in the child memcg to the
+>> + *    parent memcg as we did for traditional LRU folios.
+>> + * 2. The generation information is stored in folio->flags, but we cannot
+>> + *    traverse these folios while holding the lru lock, otherwise it may
+>> + *    cause softlockup.
+>> + * 3. In walk_update_folio(), the gen of folio and corresponding lru size
+>> + *    may be updated, but the folio is not immediately moved to the
+>> + *    corresponding lru list. Therefore, there may be folios of different
+>> + *    generations on an LRU list.
+>> + * 4. In lru_gen_del_folio(), the generation to which the folio belongs is
+>> + *    found based on the generation information in folio->flags, and the
+>> + *    corresponding LRU size will be updated. Therefore, we need to update
+>> + *    the lru size correctly during reparenting, otherwise the lru size may
+>> + *    be updated incorrectly in lru_gen_del_folio().
+>> + *
+>> + * Finally, we choose a compromise method, which is to splice the lru list in
+>> + * the child memcg to the lru list of the same generation in the parent memcg
+>> + * during reparenting.
+>> + *
+>> + * The same generation has different meanings in the parent and child memcg,
+>> + * so this compromise method will cause the LRU inversion problem. But as the
+>> + * system runs, this problem will be fixed automatically.
+>> + */
+>> +static void __lru_gen_reparent_memcg(struct lruvec *child_lruvec, struct lruvec *parent_lruvec,
+>> +				     int zone, int type)
+>> +{
+>> +	struct lru_gen_folio *child_lrugen, *parent_lrugen;
+>> +	enum lru_list lru = type * LRU_INACTIVE_FILE;
+>> +	int i;
+>> +
+>> +	child_lrugen = &child_lruvec->lrugen;
+>> +	parent_lrugen = &parent_lruvec->lrugen;
+>> +
+>> +	for (i = 0; i < get_nr_gens(child_lruvec, type); i++) {
+>> +		int gen = lru_gen_from_seq(child_lrugen->max_seq - i);
+>> +		long nr_pages = child_lrugen->nr_pages[gen][type][zone];
+>> +		int child_lru_active = lru_gen_is_active(child_lruvec, gen) ? LRU_ACTIVE : 0;
+>> +		int parent_lru_active = lru_gen_is_active(parent_lruvec, gen) ? LRU_ACTIVE : 0;
+> 
+> Not a correctness thing, but...
+> 
+>> +		/* Assuming that child pages are colder than parent pages */
+>> +		list_splice_init(&child_lrugen->folios[gen][type][zone],
+>> +				 &parent_lrugen->folios[gen][type][zone]);
+> 
+> I think the other end (tail) is where cold pages go in MGLRU just like
+> in the traditional LRU, since  lru_to_folio(head) returns the tail folio?
+
+I checked the history, and in v2 we used list_splice_tail_init() here,
+but I don't know why I changed it to list_splice_init() in v3.
+
+Right, lru_to_folio(head) returns the tail folio, and lruvec_add_folio()
+adds folio to the head, so the tail page is colder, so now I think we
+should go back and use list_splice_tail_init().
+
+Thanks,
+Qi
+
+> 
+>> +		WRITE_ONCE(child_lrugen->nr_pages[gen][type][zone], 0);
+>> +		WRITE_ONCE(parent_lrugen->nr_pages[gen][type][zone],
+>> +			   parent_lrugen->nr_pages[gen][type][zone] + nr_pages);
+>> +
+>> +		if (lru_gen_is_active(child_lruvec, gen) != lru_gen_is_active(parent_lruvec, gen)) {
+>> +			__update_lru_size(child_lruvec, lru + child_lru_active, zone, -nr_pages);
+>> +			__update_lru_size(parent_lruvec, lru + parent_lru_active, zone, nr_pages);
+>> +		}
+>> +	}
+>> +}
+> 
+
 
