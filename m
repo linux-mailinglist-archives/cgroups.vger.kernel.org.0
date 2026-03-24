@@ -1,232 +1,189 @@
-Return-Path: <cgroups+bounces-15024-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-15025-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id yLQ1OY+mwmkyggQAu9opvQ
-	(envelope-from <cgroups+bounces-15024-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Tue, 24 Mar 2026 15:58:23 +0100
+	id +Dl9CimtwmkyggQAu9opvQ
+	(envelope-from <cgroups+bounces-15025-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Tue, 24 Mar 2026 16:26:33 +0100
 X-Original-To: lists+cgroups@lfdr.de
 Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8333B30A987
-	for <lists+cgroups@lfdr.de>; Tue, 24 Mar 2026 15:58:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 71A49317FA9
+	for <lists+cgroups@lfdr.de>; Tue, 24 Mar 2026 16:26:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 7A76430387E6
-	for <lists+cgroups@lfdr.de>; Tue, 24 Mar 2026 14:58:22 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 76CD7304B3A5
+	for <lists+cgroups@lfdr.de>; Tue, 24 Mar 2026 15:23:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E2B63FFACD;
-	Tue, 24 Mar 2026 14:58:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 70B3240245C;
+	Tue, 24 Mar 2026 15:23:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gCmGxzMp"
+	dkim=pass (2048-bit key) header.d=gourry.net header.i=@gourry.net header.b="DmqjbMUP"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-oa1-f54.google.com (mail-oa1-f54.google.com [209.85.160.54])
+Received: from mail-qv1-f53.google.com (mail-qv1-f53.google.com [209.85.219.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0A46A3C279B
-	for <cgroups@vger.kernel.org>; Tue, 24 Mar 2026 14:58:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E4F383D5246
+	for <cgroups@vger.kernel.org>; Tue, 24 Mar 2026 15:23:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1774364301; cv=none; b=PbgCKSFEVSqY1qkOTkizV1Wy5rF6we98K39Dh7Bx2b5x0PcSNR4lknmy61LitAQTGRB1FfhR+zAYRlOOmYvsAmFpa0VeiSJm0R7NdoovhZGC6KhCzJf5ZYuyjBNQ/PR/hSn/MUcVp7ugwlypS2YvFLBKSY29HgWcTg+sPBgVZvk=
+	t=1774365812; cv=none; b=YOy53mDBIXLhh07x/065HFx3JGAvCzf3uSKgJN5B/JWAppSlewJFbRiQQXJQ0q/s+b88Vn/a3z/6XLNIkrFvUeIpAyuLGQUSi3Tx0/TsPsvTvQEppk7BjuNy3s33mN7l+c7XDXZQyxDu2SWbJPD5zP4MP7fN+yyk6tmfoXQ5Llk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1774364301; c=relaxed/simple;
-	bh=UmL+1K91qgh5SgxUxjDJBvS9D7yGeWFwhKJrrOnDlSE=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=khHD21x5vviudp1rWUXlwMp8PC5EL5fpgmmxXdqVJ4H3eO13+v3S25c6FZ3SY1aoNTjJuH2JSqHQs67YJyai9txW8Snw7PfvDYAlGDMCd13+f5Sqmbv8YfaYxRBbtovY8PyQscXK8+6mhebs4Pel7ZmC1QthRiO5kyDAdkclmkY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gCmGxzMp; arc=none smtp.client-ip=209.85.160.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oa1-f54.google.com with SMTP id 586e51a60fabf-417c34b0509so3393755fac.1
-        for <cgroups@vger.kernel.org>; Tue, 24 Mar 2026 07:58:19 -0700 (PDT)
+	s=arc-20240116; t=1774365812; c=relaxed/simple;
+	bh=eBIb1ZNnQtgJPCgnufRRyjX7zGSQdC1Es+T2piwApMs=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=gxdywSAYlS6AxiqSkzIKUKHG5HvDgiSkq3MGEo0LCFqDkZ7+kj0G/uQxpJzgf5vWM5w+4fIG0toNv2LC7p9y8E786WlPq5NLLxwqyLjlBwNLxxLVhkCaRs/rtZzIr3up4at+34umQfvwLJvCf9cpdA0CyS6qORw4whqTXAtHiSI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gourry.net; spf=pass smtp.mailfrom=gourry.net; dkim=pass (2048-bit key) header.d=gourry.net header.i=@gourry.net header.b=DmqjbMUP; arc=none smtp.client-ip=209.85.219.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gourry.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gourry.net
+Received: by mail-qv1-f53.google.com with SMTP id 6a1803df08f44-89c52ef3c2fso12689206d6.0
+        for <cgroups@vger.kernel.org>; Tue, 24 Mar 2026 08:23:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1774364299; x=1774969099; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=NiY1YRqWKN2c0v1X9CNmB9tc2X+pcdgcgZJabn7k3xw=;
-        b=gCmGxzMpPKHYcr7Y24z9dK3Xor3T4cRN61VB2yLj3bbCnTuhSrzRHeHypnL3vIANoa
-         IjdyLUczaaxocXJY1hV8qb2pZrN1YJEUeM0E+JhCIhbX6K/1R9pODF41iNFnOUIdFtdt
-         /Eik9IqBJENG5/NciuwfEaNEBRtyiO4eQX+LjUnA3Rut5anN+GziW6tDne/SitRCnfyt
-         yzcTjJ2jVmcy+PjyALrRT6gQxbPTiAxipYQDdNae+oZAIJRWkx5ObKDFH/2enW1Jm5m1
-         tAdrIjjfuEdDQms4u91aIxhgemMzlSb7Q732UN5NKnuZDnwK2mtO4y4uywB4LtfKQt7x
-         ZqYw==
+        d=gourry.net; s=google; t=1774365810; x=1774970610; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=dN9bTdcC5or2P8tjA2XnE4l+JSY6/+Dfgf14OK19Eqo=;
+        b=DmqjbMUPHBKQaHQAIHGZlBLsswjFXHTYze99zHsAlCvVk0cWNQgPhW7Vl/m2W9/N6a
+         iOVQZSW4sa0h1ZwZFA4d6RjskDb2EUN9tJA9E+DIJMaTEzMNpEi4mfqRve4Erq6MB+8Y
+         ZFX0JriZcR7rfVl9LcQMLZb2kkJ8a9FjTXqGlhK4xwn5MwA9LxDs5wL2eQ+3Otp6pwBW
+         AKnPjgvoN3IW/yjdKQbASJnHEQnTdV8MY9taR+LGuUUNtvM1OruKktJi4WpNyKSkVXE4
+         tz3z6ieiInvLZXBv1F70cSHD/gJ79EsFT3tbERIKgTurq9VZjqHAcHwrOp01Km54i6VG
+         skQA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1774364299; x=1774969099;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=NiY1YRqWKN2c0v1X9CNmB9tc2X+pcdgcgZJabn7k3xw=;
-        b=ZgsMy6ArZ/DtYsdBzM5PsG7JYbclpuO2WtT+1jhHT3Z+hCR03oSTm9oDYDxTjLp4BB
-         t3hpN4CjTZDUtfUJxRqSWDPsBFn5THAKxzTHhVStmjnirCJXsX/ROJyIv+kuwLEdB3AD
-         6/ribU8nvaFCv79SJnSR/c9p+bj8TJb/ovdwsMWF/9uafPlyG5v/JDgT0YWw7EwTAbaX
-         oaHgHCWcJ+DXQyQ6Ng7tKlL/ueccKuxhwwiJUGD2xjG8jCIogA0hXAMjpmpzjVhK7OQM
-         CfhpLqDNzguehuWeUaT/XSekbgd36VLw5ZBHXjB2dWoQIiRz99r6BDsmqpubo9Cz7xUu
-         aNjg==
-X-Forwarded-Encrypted: i=1; AJvYcCVpCGT3o64NHxc/D5wGrCij0pVNWnWjIE1kjKM7fF8pTMw7uJc2urcgLYP+b0h53HLjDs7/23GE@vger.kernel.org
-X-Gm-Message-State: AOJu0Yw238PBYkTl6fIl6TO+NQ8mXlQfSUy0hgzXc8+S8RJW1nlsKCLG
-	ieL0O5nahwfugpaLcF9m6VIEQWJwQCCcjfWWLkvBgSaV5rndfOVT/3fR
-X-Gm-Gg: ATEYQzxGY3fdHJ+f6wNPrdKPSN6Xiag5UN+eLfLzE9gDRczqYMxYk6WvUAugqa4jhid
-	bI/jyNHaIJYh2YT//xJAtJ1mh0Mkqdn4CJAPiKItIdMw23Q73ScLyuCJ9mgcR5kQI5zlCsr1+JM
-	IfVtG4HHxEEdh3DYUfxuXhrikCP58D+0tmRfyr2lZqoFFvDNEA/tGaSUDtW9UuGAuaPHGipSZdl
-	VT7GHUDG6pP7eRAofV9GWIKCCdriu3Es3aA/kcmlnLlciSCcyDmT1JT5HWvOqsB422qpr6ikmFN
-	o3hMr1OPySZcatCheQZkLBaFL0t9MnWgFKiBC/Ad8EvK+BIUsXqwI/rhtFfEZnVWqACsLJsH7vP
-	8P8521x5rH8dTjknPO2tloqi6cNXlqnIF3kmwbeb4ni6XZ0xTXPWvsfYc52Eml4DZvSBzcAWiy4
-	YIWOj0xC8wThAMSRk9KAHogw==
-X-Received: by 2002:a05:6870:c248:b0:409:6862:aba5 with SMTP id 586e51a60fabf-41c11157d40mr10061336fac.25.1774364298770;
-        Tue, 24 Mar 2026 07:58:18 -0700 (PDT)
-Received: from localhost ([2a03:2880:10ff:5e::])
-        by smtp.gmail.com with ESMTPSA id 586e51a60fabf-41c14ddbcb3sm13662511fac.14.2026.03.24.07.58.18
+        d=1e100.net; s=20251104; t=1774365810; x=1774970610;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:x-gm-gg
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=dN9bTdcC5or2P8tjA2XnE4l+JSY6/+Dfgf14OK19Eqo=;
+        b=f2R49tXCud07x25Lw6i+SNqi3uD7JZ4kvZFbhcXuN0IBY8vlWRdyenB6hHEQ53w8JV
+         8N4PNmbm2wKaIPUivhwLC/n6fT9N8R4uqPMGdSGefIyomFSwP/grRv38VOm3Gn04tKpk
+         UCt5NtS+Qfw3uMcqAoXe2iZ4APTlz6YGciUHsIPnYhTWyUX+Tjeo299nvEugYJZh2l8W
+         PmydSaIiq2pZYti+92QzDzEA1gm/Gzb7RFVgjAWtHNuhzkpvquuc5QDaNmU4PEXPAYax
+         5eKOkQ442ZiX0k9aOS23nofOytYfJPxtp89gcUBs9e0WxBpIKrFkUPOYMJ8wqlo0tc8M
+         +gfA==
+X-Forwarded-Encrypted: i=1; AJvYcCUrzXQ35o5A8YnyTQk9npzZ0DE/5HDZHvab3IvufjifQn2A8KhEzzx88xheLHn09WeUkPEN7FmN@vger.kernel.org
+X-Gm-Message-State: AOJu0Yx6vDJYY7NqAC1bUPFCsJ/IbVFyO5opgYqgN9KAZ2Pfk3+yl1em
+	ltkNZTFfiyIwCbLQ/UCztD3aQkP5n6Wiey+lwGTD9qbIpDVNTm9XJotZea8Egi8jmsY=
+X-Gm-Gg: ATEYQzzynpLRlHVsjTXk/pupszdUlS4KWH4teHVgHm5TE45QJmpkN2wvEmS6qbB+h5N
+	4Y33wkJmj4zHVaq7CPC8tWcWCu2GqAsM/DSaZMSHksANaO7M0PsAn48/wTc3YTVgxWzbkY3D4HF
+	iohxJykxy3Qew+eclVpGY8V96QmlLywQoTtBZFkvNJjnYHHTY5kiipv6lVB1VF0cvUYXkpVz5mf
+	pt94ZROxmwpU2OK7eLKwPFq4hofonAgZ3wxwh+3qN4IqYyHN5d7Yu83Hj/oVpC5IaPFQb5dGcoD
+	XaK1o2dZ+3r1o/rcY2rMkCeJjTFRv8nSRNgO3F3xMWlKg75pzHx/rKJm4QpceBslcssDF6VGOym
+	nE0Etd+yCEngEuneQriZNS8+Y9QB8AIV4eEn16oDlsBilV82gCrNJy785kCDFk2x1UwAwT8AYTI
+	ZLWflxeQq8jTSGgxlCGw==
+X-Received: by 2002:a05:6214:3306:b0:899:f929:d85b with SMTP id 6a1803df08f44-89cc4b1be87mr159996d6.61.1774365809892;
+        Tue, 24 Mar 2026 08:23:29 -0700 (PDT)
+Received: from gourry-fedora-PF4VCD3F ([2620:10d:c091:500::de62])
+        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-89c85335745sm117576556d6.32.2026.03.24.08.23.28
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 24 Mar 2026 07:58:18 -0700 (PDT)
-From: Joshua Hahn <joshua.hahnjy@gmail.com>
+        Tue, 24 Mar 2026 08:23:29 -0700 (PDT)
+Date: Tue, 24 Mar 2026 10:23:27 -0500
+From: Gregory Price <gourry@gourry.net>
 To: Donet Tom <donettom@linux.ibm.com>
-Cc: Gregory Price <gourry@gourry.net>,
-	Johannes Weiner <hannes@cmpxchg.org>,
-	Kaiyang Zhao <kaiyang2@cs.cmu.edu>,
+Cc: Joshua Hahn <joshua.hahnjy@gmail.com>,
 	Andrew Morton <akpm@linux-foundation.org>,
 	David Hildenbrand <david@kernel.org>,
 	Lorenzo Stoakes <lorenzo.stoakes@oracle.com>,
-	"Liam R . Howlett" <Liam.Howlett@oracle.com>,
-	Vlastimil Babka <vbabka@kernel.org>,
-	Mike Rapoport <rppt@kernel.org>,
-	Suren Baghdasaryan <surenb@google.com>,
+	Johannes Weiner <hannes@cmpxchg.org>,
 	Michal Hocko <mhocko@suse.com>,
 	Roman Gushchin <roman.gushchin@linux.dev>,
 	Shakeel Butt <shakeel.butt@linux.dev>,
 	Muchun Song <muchun.song@linux.dev>,
-	Waiman Long <longman@redhat.com>,
-	Chen Ridong <chenridong@huaweicloud.com>,
-	Tejun Heo <tj@kernel.org>,
-	Michal Koutny <mkoutny@suse.com>,
-	Axel Rasmussen <axelrasmussen@google.com>,
-	Yuanchu Xie <yuanchu@google.com>,
-	Wei Xu <weixugc@google.com>,
 	Qi Zheng <zhengqi.arch@bytedance.com>,
-	linux-mm@kvack.org,
-	cgroups@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	kernel-team@meta.com
-Subject: Re: [RFC PATCH 0/6] mm/memcontrol: Make memcg limits tier-aware
-Date: Tue, 24 Mar 2026 07:58:16 -0700
-Message-ID: <20260324145816.3939303-1-joshua.hahnjy@gmail.com>
-X-Mailer: git-send-email 2.52.0
-In-Reply-To: <13eb0f7a-95bc-4337-9d38-a06db0700777@linux.ibm.com>
-References: 
+	Axel Rasmussen <axelrasmussen@google.com>,
+	Yuanchu Xie <yuanchu@google.com>, Wei Xu <weixugc@google.com>,
+	linux-mm@kvack.org, cgroups@vger.kernel.org,
+	linux-kernel@vger.kernel.org, kernel-team@meta.com
+Subject: Re: [RFC PATCH 6/6] mm/memcontrol: Make memory.high tier-aware
+Message-ID: <acKsb06lnywch8DV@gourry-fedora-PF4VCD3F>
+References: <20260223223830.586018-1-joshua.hahnjy@gmail.com>
+ <20260223223830.586018-7-joshua.hahnjy@gmail.com>
+ <90749965-ebc8-43b2-92e3-baec5f6e3de0@linux.ibm.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Spamd-Result: default: False [-1.66 / 15.00];
+In-Reply-To: <90749965-ebc8-43b2-92e3-baec5f6e3de0@linux.ibm.com>
+X-Spamd-Result: default: False [0.34 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_MISSING_CHARSET(0.50)[];
-	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
+	MID_RHS_NOT_FQDN(0.50)[];
+	R_DKIM_ALLOW(-0.20)[gourry.net:s=google];
 	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
-	R_DKIM_ALLOW(-0.20)[gmail.com:s=20251104];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-15024-lists,cgroups=lfdr.de];
-	FORGED_SENDER_MAILLIST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-15025-lists,cgroups=lfdr.de];
+	FROM_HAS_DN(0.00)[];
+	DMARC_NA(0.00)[gourry.net];
 	MIME_TRACE(0.00)[0:+];
-	RECEIVED_HELO_LOCALHOST(0.00)[];
-	FREEMAIL_FROM(0.00)[gmail.com];
-	RCPT_COUNT_TWELVE(0.00)[27];
-	DKIM_TRACE(0.00)[gmail.com:+];
-	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
-	TO_DN_SOME(0.00)[];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[18];
+	FREEMAIL_CC(0.00)[gmail.com,linux-foundation.org,kernel.org,oracle.com,cmpxchg.org,suse.com,linux.dev,bytedance.com,google.com,kvack.org,vger.kernel.org,meta.com];
+	MISSING_XM_UA(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	RCVD_COUNT_FIVE(0.00)[5];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[joshuahahnjy@gmail.com,cgroups@vger.kernel.org];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[gourry@gourry.net,cgroups@vger.kernel.org];
+	DKIM_TRACE(0.00)[gourry.net:+];
 	NEURAL_HAM(-0.00)[-1.000];
-	TAGGED_RCPT(0.00)[cgroups];
-	MID_RHS_MATCH_FROM(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	FROM_HAS_DN(0.00)[]
-X-Rspamd-Queue-Id: 8333B30A987
+	TAGGED_RCPT(0.00)[cgroups];
+	TO_DN_SOME(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: 71A49317FA9
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-On Tue, 24 Mar 2026 16:00:34 +0530 Donet Tom <donettom@linux.ibm.com> wrote:
-
-> Hi Josua
+On Tue, Mar 24, 2026 at 04:21:06PM +0530, Donet Tom wrote:
 > 
-> On 2/24/26 4:08 AM, Joshua Hahn wrote:
-> > Memory cgroups provide an interface that allow multiple workloads on a
-> > host to co-exist, and establish both weak and strong memory isolation
-> > guarantees. For large servers and small embedded systems alike, memcgs
-> > provide an effective way to provide a baseline quality of service for
-> > protected workloads.
-> >
-> > This works, because for the most part, all memory is equal (except for
-> > zram / zswap). Restricting a cgroup's memory footprint restricts how
-> > much it can hurt other workloads competing for memory. Likewise, setting
-> > memory.low or memory.min limits can provide weak and strong guarantees
-> > to the performance of a cgroup.
-> >
-> > However, on systems with tiered memory (e.g. CXL / compressed memory),
-> > the quality of service guarantees that memcg limits enforced become less
-> > effective, as memcg has no awareness of the physical location of its
-> > charged memory. In other words, a workload that is well-behaved within
-> > its memcg limits may still be hurting the performance of other
-> > well-behaving workloads on the system by hogging more than its
-> > "fair share" of toptier memory.
-> >
-> > Introduce tier-aware memcg limits, which scale memory.low/high to
-> > reflect the ratio of toptier:total memory the cgroup has access.
-> >
-> > Take the following scenario as an example:
-> > On a host with 3:1 toptier:lowtier, say 150G toptier, and 50Glowtier,
-> > setting a cgroup's limits to:
-> > 	memory.min:  15G
-> > 	memory.low:  20G
-> > 	memory.high: 40G
-> > 	memory.max:  50G
-> >
-> > Will be enforced at the toptier as:
-> > 	memory.min:          15G
-> > 	memory.toptier_low:  15G (20 * 150/200)
-> > 	memory.toptier_high: 30G (40 * 150/200)
-> > 	memory.max:          50G
+> IIUC The intent of this patch is to partition cgroup memory such that
+> 0 → toptier_high is backed by higher-tier memory, and
+> toptier_high → max is backed by lower-tier memory.
 > 
+> Based on this:
+> 
+> 1.If top-tier usage exceeds toptier_high, pages should be
+>   demoted to the lower tier.
+> 
+> 2. If lower-tier usage exceeds (max - toptier_high), pages
+>   should be swapped out.
 > 
 
-Hello Donet,
+This is not accurate and an incorrect heuristic.
 
-Thank you for reviewing the series! I hope you are doing well.
+Transiently, lower-tier usage may exceed (max - toptier_high) for any
+number of reasons which should not be used as signal for pushing swap.
 
-> Currently, the high and low thresholds are adjusted based on the ratio 
-> of top-tier to total memory. One concern I see is that if the working 
-> set size exceeds the top-tier high threshold, it could lead to frequent 
-> demotions and promotions. Instead, would it make sense to introduce a 
-> tunable knob to configure the top-tier high threshold?
+driving swap usage is a function of (usage > memory.high) without regard
+for toptier / lowtier.
 
-Yes, this is true. It is also a concern that I have, and I think that
-adding a tunable knob could be helpful. The other side of the question is
-whether there are too many tunables for the users already, with min / 
-low / high / max. I'm hoping to get a consensus for this at LSFMMBPF, 
-I hope we can talk about it there!
+> 3. If total memory usage exceeds max, demotion should be
+>   avoided and reclaim should directly swap out pages.
+> 
 
-The other way to approach this is to throttle promotions and demotions
-when workloads are thrashing. Personally I prefer this decision, although
-it isn't mutually exclusive to adding more knobs. 
+This is also incorrect, as it would drive agingin inversions.
+Demotion is a natural extension of the LRU infrastructure:
 
-> Another concern is that if the lower-tier memory size is very large, the 
-> cgroup may end up getting only a small portion of higher-tier memory.
+toptier active -> toptier inactive -> lowtier inactive -> swap
 
-I think the issue you mentioned above is a bigger problem.
+if you do (toptier inactive -> swap) you have inverted the LRU.
 
-If the lower tier memory is large and the toptier memory is small, then it
-makes toptier memory an even more constrained resource, so splitting it
-fairly among the cgroups becomes an even bigger issue. Remember, we're
-limiting workloads' toptier memory usage because other workloads have
-to use it; if we let a cgroup use more toptier memory, it has to come
-from another cgroup's share.
+As far as I know, from testing, we retain all the existing behavior - we
+are just managing a limited resource (top tier memory) to manage the
+noisy-neighbor issue.  So...
 
-Thanks again. Please let me know if you have any other concerns, I'm
-excited to talk about this more as well!
 
-Joshua
+> Should we also handle cases (2) and (3) in this patch?
+
+No, I don't think we should
+
+~Gregory
+
 
