@@ -1,201 +1,143 @@
-Return-Path: <cgroups+bounces-15034-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-15035-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id AOgrIx5Kw2lnpwQAu9opvQ
-	(envelope-from <cgroups+bounces-15034-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Wed, 25 Mar 2026 03:36:14 +0100
+	id sFEnGMJXw2k2qQQAu9opvQ
+	(envelope-from <cgroups+bounces-15035-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Wed, 25 Mar 2026 04:34:26 +0100
 X-Original-To: lists+cgroups@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 277B831EBD6
-	for <lists+cgroups@lfdr.de>; Wed, 25 Mar 2026 03:36:14 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id BC4C731F289
+	for <lists+cgroups@lfdr.de>; Wed, 25 Mar 2026 04:34:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 8DCCA306BE34
-	for <lists+cgroups@lfdr.de>; Wed, 25 Mar 2026 02:35:48 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id AB649304020F
+	for <lists+cgroups@lfdr.de>; Wed, 25 Mar 2026 03:33:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6D69428726A;
-	Wed, 25 Mar 2026 02:35:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 808382949E0;
+	Wed, 25 Mar 2026 03:33:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="EurudgTY"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="RF3IUIig"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-wr1-f48.google.com (mail-wr1-f48.google.com [209.85.221.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 065221DE894
-	for <cgroups@vger.kernel.org>; Wed, 25 Mar 2026 02:35:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2ABA7155C82
+	for <cgroups@vger.kernel.org>; Wed, 25 Mar 2026 03:33:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1774406144; cv=none; b=pQiN+7mYhXa/Yb4Ra7PQeQplMmY6ziPvFZwmp3CwKYVepLtdwXHOjAHQNv6huppmXjYtdmvF1FINZSWNJH6kWd2qh+nihXFgI7UwSKAVQOmnfuCtga+2K9DHTm1IX4joiEYmJs93B9pSdLGl4RVAw1zkIAk07rrSfyCTNxjnluI=
+	t=1774409597; cv=none; b=UJE2DKr/j7YblRZJYT0ixdMZIcTzvOK+y+pPR4NB38TFmgv0F2JSKiILHV4IQwA8pNSj8XT9PzkNNx+Dsxt89QgqQsho1+tly4ooKMzakr1u0vtG5EW8PCuSvj7sWxZfsB1I5xeClHovSeheD0ZQqRb0WMcZDyihKFu2ibP8EqY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1774406144; c=relaxed/simple;
-	bh=ubJF9m/wLx7bYWwOAm7o0d8tY4ejMPWhdFfkGi74I9s=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=MAQhUrSGGTgV49qqGFTV0KSO5M3t3AfDbPQAVXJat4pxKwZW/nYPeAZw70H8L9NQAP+PRuFdTmz3daA8YWUWlAT0J4Qf50Ml+yRkvqaeQmO7jOIgdW3qV0/ukCxRyfKkFOJoIu3xskwQ5UV8xW8zPSQF5b72vAfM8seh0oiXuCQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=EurudgTY; arc=none smtp.client-ip=209.85.221.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f48.google.com with SMTP id ffacd0b85a97d-439cd6b09f8so4355069f8f.3
-        for <cgroups@vger.kernel.org>; Tue, 24 Mar 2026 19:35:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1774406141; x=1775010941; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=e/WqiqBCLyiLY/v28qTyeW3QcaRTjQUhA8ri92uqPms=;
-        b=EurudgTYj3bgYiWZTc/rEzyiUkWBbjOsAiiT89wURxO/FYynIbN13FcNHNxXUEpLH5
-         /Hb3dxM9wI3LWT6fQ5036QJudRU29qe+LzX3WYY+DrnqYjm50GmyAGBog6ncaWRbumnQ
-         j9Hw5HpXl5ug1Ipp+IKmtX/y9qy9vtWQbd286QzAADbonJ2P5qDII+qKVzKMvGwhErgI
-         A4RwRjBShlN9WqEX1FNtyhvyq2k6x3DhqPez5rTFgr+EWTs1wEJ7zzb/xtyZKALiPudX
-         +JX6EGkr84JxVMtmzypATXAPr5qWwTj6xgiW2sFrJCMJ3WkV0VqlYIFSxQ7AyLWkrz6F
-         n9/w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1774406141; x=1775010941;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=e/WqiqBCLyiLY/v28qTyeW3QcaRTjQUhA8ri92uqPms=;
-        b=UxakMAiSdP4UU3KArlK3XTvC6Y2m+TgOtaLkQ2LKOuyEZMFIbQ3338xEoUbPIhBqJ3
-         IUvQ9NU2ZlJdPFWqJa6qGvkde1N0l4vZyp73Iz3A76xoo19n/JLxsIv1JOirfdJzggPx
-         IElweYfSTCpw49AObC9feAZoXXpnQ7eywrgrobsSLrSl+COVRYZlNC8JqrUlZfc0L9wD
-         idzQHu1pTXchcCuaFue00u+KXjO9WRnS+1Y49DzDpeihJolLyxHZXaQ1sebfL1EMGa9r
-         tKrcBSSnJlv4WQOG/ajuzS295ga3jQdY7Low+6/+evfgfk4gLlyutcNyzDmLPe5bdpK6
-         LafQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUqFmyS0JMVAIjdu5ShmRu8Ojlddbir8CP77mk9LIp2NvIO5cdBcQ+tyHFsprS/x9oZF+NDovPd@vger.kernel.org
-X-Gm-Message-State: AOJu0YydrOaRGU6KbI5aiOSMdElL4DHOvERZcCJuCfE7W0nynYPBuOyv
-	0V9AwxXxXix9psWrxOYFUxPqH5nvYkmPlydphVYn3F/verWXWj2byd9T
-X-Gm-Gg: ATEYQzw2CvT6hDcPwIkhGakL3l3GQZlWEST9bkE61WITPlmNruOWWy871LpP82uM22v
-	KA1hfaNlvcm3GBXHAqn9FwCDzDmENySVKrOyz8yEuUrTms7MHR/H/SVNNUjon0MFm6JWUOt1nu/
-	X7kZXgwtKB4eAcxByOBAyutgPa2lgitXEuwxchMqOca+L7enmxZdW2Bk40HfFSmqd/ZLc1ia3xP
-	FU46A8kMwLJnfzsygIIogaqD88NAqu8b/JtM2o2xMWWhlZVyvuvFHL8gEsSZRlEjo8GykEXq0/P
-	VN45ZCh7sQDRVzISqY1LGycUqanGTvDArZmIcIA9UIkSVpx0n7uphsEUuEFaIhKfgdCkS02MbEq
-	DkqHQa4vkAIhnedzETjMXRGvt80OdcKR22wtb6txlCm46bXk9vYXSdQFi1LifU9pgOYxfJ7H2Qt
-	XM19knXpjfrkkE0VlfQX+mAxj/VaB/VA==
-X-Received: by 2002:a05:6000:18a8:b0:439:b440:b8a2 with SMTP id ffacd0b85a97d-43b88a0d156mr2181278f8f.28.1774406141184;
-        Tue, 24 Mar 2026 19:35:41 -0700 (PDT)
-Received: from localhost ([212.73.77.104])
-        by smtp.gmail.com with UTF8SMTPSA id ffacd0b85a97d-43b6470f902sm45426571f8f.28.2026.03.24.19.35.35
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 24 Mar 2026 19:35:40 -0700 (PDT)
-From: Askar Safin <safinaskar@gmail.com>
-To: nphamcs@gmail.com
-Cc: Liam.Howlett@oracle.com,
-	akpm@linux-foundation.org,
-	apopple@nvidia.com,
-	axelrasmussen@google.com,
-	baohua@kernel.org,
-	baolin.wang@linux.alibaba.com,
-	bhe@redhat.com,
-	byungchul@sk.com,
-	cgroups@vger.kernel.org,
-	chengming.zhou@linux.dev,
-	chrisl@kernel.org,
-	corbet@lwn.net,
-	david@kernel.org,
-	dev.jain@arm.com,
-	gourry@gourry.net,
-	hannes@cmpxchg.org,
-	hughd@google.com,
-	jannh@google.com,
-	joshua.hahnjy@gmail.com,
-	kasong@tencent.com,
-	kernel-team@meta.com,
-	lance.yang@linux.dev,
-	lenb@kernel.org,
-	linux-doc@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-mm@kvack.org,
-	linux-pm@vger.kernel.org,
-	lorenzo.stoakes@oracle.com,
-	matthew.brost@intel.com,
-	mhocko@suse.com,
-	muchun.song@linux.dev,
-	npache@redhat.com,
-	pavel@kernel.org,
-	peterx@redhat.com,
-	peterz@infradead.org,
-	pfalcato@suse.de,
-	rafael@kernel.org,
-	rakie.kim@sk.com,
-	riel@surriel.com,
-	roman.gushchin@linux.dev,
-	rppt@kernel.org,
-	ryan.roberts@arm.com,
-	ryncsn@gmail.com,
-	shakeel.butt@linux.dev,
-	shikemeng@huaweicloud.com,
-	surenb@google.com,
-	tglx@kernel.org,
-	vbabka@suse.cz,
-	weixugc@google.com,
-	willy@infradead.org,
-	ying.huang@linux.alibaba.com,
-	yosry.ahmed@linux.dev,
-	yuanchu@google.com,
-	zhengqi.arch@bytedance.com,
-	ziy@nvidia.com
-Subject: Re: [PATCH v5 00/21] Virtual Swap Space
-Date: Wed, 25 Mar 2026 05:35:30 +0300
-Message-ID: <20260325023530.222944-1-safinaskar@gmail.com>
-X-Mailer: git-send-email 2.47.3
-In-Reply-To: <CAKEwX=MgoPmiFdBQXK_4=XuR-8mVpGr+3Ku2MfjPmHCeuUdGJg@mail.gmail.com>
-References: <CAKEwX=MgoPmiFdBQXK_4=XuR-8mVpGr+3Ku2MfjPmHCeuUdGJg@mail.gmail.com>
+	s=arc-20240116; t=1774409597; c=relaxed/simple;
+	bh=AnFNRlwct+JKKFysr9tCwmyAG+J8Rx9h6o3BWb5kgmk=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=h+daMdqT/jh94WkQfdjF8phh5xXiwI9mJxYn/LWQtPxIIirPanZrzZZsvMiZpwjMNDsgdyZPGAKYg+/81P/6PjjosakXeM7bZsPmBm8DVxPkRkd2Hv78v9k2w5H7uu5WOi51bu0aFerzcu2DOeFD/zYCoi5EhR/Mo3dIIevsEMc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=RF3IUIig; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1774409594;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=pIqXsf7qQRyhZC/GxHM1lgBAlnhtV7VGCfnX70dQLZU=;
+	b=RF3IUIigvQ2h2MyIoeaprMIDn12aHSDC1WzGF6eZ5JDrR51PWXwQ0osGBCZd+j3Hz5MTVh
+	A+P67RIZ47AOK+tVXL7LJJqN7fDeePsLT/xfuZqusRW1gdmDrnnOgGqdne7Z1/qJfLRmYK
+	3hfy53j37mFpSbfd9CgyiNiDns79I5g=
+Received: from mx-prod-mc-01.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-361-e4auf-kGMv-Z8m6w-sMMkw-1; Tue,
+ 24 Mar 2026 23:33:11 -0400
+X-MC-Unique: e4auf-kGMv-Z8m6w-sMMkw-1
+X-Mimecast-MFC-AGG-ID: e4auf-kGMv-Z8m6w-sMMkw_1774409588
+Received: from mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.111])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mx-prod-mc-01.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id DB67319560AA;
+	Wed, 25 Mar 2026 03:33:07 +0000 (UTC)
+Received: from [10.22.65.192] (unknown [10.22.65.192])
+	by mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id 343DA1800361;
+	Wed, 25 Mar 2026 03:33:03 +0000 (UTC)
+Message-ID: <201249f4-d07d-4baf-a77c-d77543a9cd55@redhat.com>
+Date: Tue, 24 Mar 2026 23:33:03 -0400
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spamd-Result: default: False [0.84 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
-	MID_CONTAINS_FROM(1.00)[];
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 3/7] selftests: memcg: Iterate pages based on the
+ actual page size
+To: Li Wang <liwang@redhat.com>
+Cc: Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>,
+ Roman Gushchin <roman.gushchin@linux.dev>,
+ Shakeel Butt <shakeel.butt@linux.dev>, Muchun Song <muchun.song@linux.dev>,
+ Andrew Morton <akpm@linux-foundation.org>, Tejun Heo <tj@kernel.org>,
+ =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
+ Shuah Khan <shuah@kernel.org>, Mike Rapoport <rppt@kernel.org>,
+ linux-kernel@vger.kernel.org, cgroups@vger.kernel.org, linux-mm@kvack.org,
+ linux-kselftest@vger.kernel.org, Sean Christopherson <seanjc@google.com>,
+ James Houghton <jthoughton@google.com>,
+ Sebastian Chlad <sebastianchlad@gmail.com>,
+ Guopeng Zhang <zhangguopeng@kylinos.cn>
+References: <20260320204241.1613861-1-longman@redhat.com>
+ <20260320204241.1613861-4-longman@redhat.com>
+ <CAEemH2cJeTWLCLnmHqQY+tAs8b8FM+AmQ3UYd8McM760cN_Atw@mail.gmail.com>
+Content-Language: en-US
+From: Waiman Long <longman@redhat.com>
+In-Reply-To: <CAEemH2cJeTWLCLnmHqQY+tAs8b8FM+AmQ3UYd8McM760cN_Atw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 3.4.1 on 10.30.177.111
+X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_MISSING_CHARSET(0.50)[];
-	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
-	R_DKIM_ALLOW(-0.20)[gmail.com:s=20251104];
+	DMARC_POLICY_ALLOW(-0.50)[redhat.com,quarantine];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10];
+	R_DKIM_ALLOW(-0.20)[redhat.com:s=mimecast20190719];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RECEIVED_HELO_LOCALHOST(0.00)[];
-	FREEMAIL_CC(0.00)[oracle.com,linux-foundation.org,nvidia.com,google.com,kernel.org,linux.alibaba.com,redhat.com,sk.com,vger.kernel.org,linux.dev,lwn.net,arm.com,gourry.net,cmpxchg.org,gmail.com,tencent.com,meta.com,kvack.org,intel.com,suse.com,infradead.org,suse.de,surriel.com,huaweicloud.com,suse.cz,bytedance.com];
-	RCVD_TLS_LAST(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	FREEMAIL_TO(0.00)[gmail.com];
-	TAGGED_FROM(0.00)[bounces-15034-lists,cgroups=lfdr.de];
-	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[5];
-	FROM_NEQ_ENVFROM(0.00)[safinaskar@gmail.com,cgroups@vger.kernel.org];
+	FREEMAIL_CC(0.00)[cmpxchg.org,kernel.org,linux.dev,linux-foundation.org,suse.com,vger.kernel.org,kvack.org,google.com,gmail.com,kylinos.cn];
+	TAGGED_FROM(0.00)[bounces-15035-lists,cgroups=lfdr.de];
 	FROM_HAS_DN(0.00)[];
-	DKIM_TRACE(0.00)[gmail.com:+];
-	RCPT_COUNT_GT_50(0.00)[56];
-	TO_DN_NONE(0.00)[];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	RCVD_TLS_LAST(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[19];
+	MIME_TRACE(0.00)[0:+];
+	DKIM_TRACE(0.00)[redhat.com:+];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	TO_DN_SOME(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[longman@redhat.com,cgroups@vger.kernel.org];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[6];
+	MID_RHS_MATCH_FROM(0.00)[];
 	NEURAL_HAM(-0.00)[-1.000];
-	FREEMAIL_FROM(0.00)[gmail.com];
 	TAGGED_RCPT(0.00)[cgroups];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 277B831EBD6
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: BC4C731F289
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-Nhat Pham <nphamcs@gmail.com>:
-> I'm aware of that work. It's an improvement, but my understanding is:
 
-Thank you for answer!
+On 3/22/26 10:53 PM, Li Wang wrote:
+> Hi Waiman,
+>
+> I currently have another patch in hand that is functionally identical to
+> patch 3/7 here (requested by Sashiko).
+>
+> May I go ahead and merge it directly into my patch series, while
+> retaining your authorship attribution?
 
-Also, is it possible to have checksummed swap?
+Sure. You can merge this patch into your series. I just need a page_size 
+global variable to show the system page size for the rests of my 
+memcontrol.c changes. I will then based my series on top of yours since 
+it is further along.
 
-I want to have checksummed swap to be protected from disk bit-rot
-(I already have ECC memory, so RAM is protected).
+Cheers,
+Longman
 
-And hibernation image should be protected, too.
-
-I tried to put swap on top of dm-integrity, but this is
-incompatible with hibernation in mainline kernel.
-
--- 
-Askar Safin
 
