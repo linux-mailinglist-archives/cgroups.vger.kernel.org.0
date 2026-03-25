@@ -1,322 +1,171 @@
-Return-Path: <cgroups+bounces-15053-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-15054-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id aGQGBUUvxGkAxQQAu9opvQ
-	(envelope-from <cgroups+bounces-15053-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Wed, 25 Mar 2026 19:53:57 +0100
+	id CLcDFekvxGkAxQQAu9opvQ
+	(envelope-from <cgroups+bounces-15054-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Wed, 25 Mar 2026 19:56:41 +0100
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 64EF932AD2D
-	for <lists+cgroups@lfdr.de>; Wed, 25 Mar 2026 19:53:56 +0100 (CET)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id BE78C32AE11
+	for <lists+cgroups@lfdr.de>; Wed, 25 Mar 2026 19:56:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id C2078305BAA7
-	for <lists+cgroups@lfdr.de>; Wed, 25 Mar 2026 18:48:37 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 7DFD13048571
+	for <lists+cgroups@lfdr.de>; Wed, 25 Mar 2026 18:53:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B79531AA87;
-	Wed, 25 Mar 2026 18:48:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="PrkyhMXA"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 84706346FAE;
+	Wed, 25 Mar 2026 18:53:52 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+Received: from lgeamrelo07.lge.com (lgeamrelo07.lge.com [156.147.51.103])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 70A25F4F1;
-	Wed, 25 Mar 2026 18:48:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8725734A794
+	for <cgroups@vger.kernel.org>; Wed, 25 Mar 2026 18:53:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.147.51.103
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1774464516; cv=none; b=Rcuy+LSy+93qkYB3dVxBl59yuPqUMMG1diEFPnlhuTSsLUqSLK+hPxNUHMnc/6CxBRn48lU4Z+2trJm7tln2I/qcmI2V4s01iVH0aVLq44Ekm+NmHf5N+BWykTpsb8UWsg2+GN0KD8xusiLshdmoq195RFKDVaR0uyXt3l6UCxk=
+	t=1774464832; cv=none; b=GCR2+jAXVo9g4N1eVRkb6VN+VLIHcJVRch/DmBiMo4gG7CLzX83bulM1FGMuWF1O414bMJ5FS3XZ0+dtjte6kUjSmihLaV3F7q5i3EgA1sE2Ub8p/79MeCrCdMUuXMis0gEG2c1UUFRXv5wwtIXqRxKkg3p7ax0B5P8zfQenHcc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1774464516; c=relaxed/simple;
-	bh=JkMNj3FSDd/tbhaMJKw31dgFlYA/xwxw1aa1/iQ5cvo=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=iu+yPy8AU76rz+3BFiXrWyVRF8u2VQnXg1Oz8uG4Vtm4M08g+80H60tAzwwovxwqtZ/uCB2nZ8cPZ3cT41FluvCkEXwxj+NZkYoJK+Y+zg+KA8Hl0KVjjezgWxor7xm5s3AWddZq1cHpbMUa74KMq0F7N6BJ9JOW0Wsu0PFaHhE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=PrkyhMXA; arc=none smtp.client-ip=148.163.158.5
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0360072.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 62PD2rww646583;
-	Wed, 25 Mar 2026 18:48:08 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
-	:content-transfer-encoding:content-type:date:from:in-reply-to
-	:message-id:mime-version:references:subject:to; s=pp1; bh=K669+j
-	AXFfOnMiVShjbjDrGlaYoW4qKt7UsN03oR2Tk=; b=PrkyhMXAeiYAgswbUog5R9
-	7gVy5oLBN9izZWsF5eCVqlrB21CX7VySH3fqgzG75/3IqjJf70mRpCU8DftvSFfo
-	ZnccaGHuimmY48jDqy0UwpMhlwZ321JEIdPr8cZQ5G3X2BwsOAAbqPV4kyiFzg+2
-	2RE0THdArOR+iFvTFYTigP0y0eVSN+TOaDGh1K2R7DU3L++Fie0fsK6CDwIQrSbG
-	aEwjb6DjXL1yPYbOMrhaWTMXWwbkTRvJiwOxIWPJN1a4I5MrjsviHsRB55iza5tS
-	/HJjn0F+dx3VnZ/wTRmL8nygVvmTfgnQYpde6HrlwqzfHgULAJgw0eTcf3uO8ibQ
-	==
-Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4d1kums5gj-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 25 Mar 2026 18:48:07 +0000 (GMT)
-Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma23.wdc07v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 62PFjiKi026685;
-	Wed, 25 Mar 2026 18:48:07 GMT
-Received: from smtprelay05.wdc07v.mail.ibm.com ([172.16.1.72])
-	by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 4d275kyrfp-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 25 Mar 2026 18:48:06 +0000
-Received: from smtpav06.wdc07v.mail.ibm.com (smtpav06.wdc07v.mail.ibm.com [10.39.53.233])
-	by smtprelay05.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 62PIm6GS63963452
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Wed, 25 Mar 2026 18:48:06 GMT
-Received: from smtpav06.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 8A7605803F;
-	Wed, 25 Mar 2026 18:48:06 +0000 (GMT)
-Received: from smtpav06.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 475B858055;
-	Wed, 25 Mar 2026 18:47:58 +0000 (GMT)
-Received: from [9.39.25.125] (unknown [9.39.25.125])
-	by smtpav06.wdc07v.mail.ibm.com (Postfix) with ESMTP;
-	Wed, 25 Mar 2026 18:47:57 +0000 (GMT)
-Message-ID: <14403d89-c77c-4011-bfad-681c7b10187a@linux.ibm.com>
-Date: Thu, 26 Mar 2026 00:17:56 +0530
+	s=arc-20240116; t=1774464832; c=relaxed/simple;
+	bh=UEoTyIJYna8viJe9xzaww5o+VrPLcSrda7wcuEf6C3k=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=DDZipvV85iuwXcR4gyIw7XHceiiqLbhH/gKEmXOB0jItC9+OQZ0K6CkY9ehTRTkejXclgi+scTWgCBZrW/aphdnUlrVMsCkIHyLfODHq8ooH34PPEzJ5pnkhQbA9Kid9HTgcTHEeH5hmOdiu44Rz1ibKVEhH8ArNmhE4Yqo7Edw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lge.com; spf=pass smtp.mailfrom=lge.com; arc=none smtp.client-ip=156.147.51.103
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lge.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lge.com
+Received: from unknown (HELO yjaykim-PowerEdge-T330) (10.177.112.156)
+	by 156.147.51.103 with ESMTP; 26 Mar 2026 03:53:41 +0900
+X-Original-SENDERIP: 10.177.112.156
+X-Original-MAILFROM: youngjun.park@lge.com
+Date: Thu, 26 Mar 2026 03:53:41 +0900
+From: YoungJun Park <youngjun.park@lge.com>
+To: Nhat Pham <nphamcs@gmail.com>
+Cc: Kairui Song <ryncsn@gmail.com>, Liam.Howlett@oracle.com,
+	akpm@linux-foundation.org, apopple@nvidia.com,
+	axelrasmussen@google.com, baohua@kernel.org,
+	baolin.wang@linux.alibaba.com, bhe@redhat.com, byungchul@sk.com,
+	cgroups@vger.kernel.org, chengming.zhou@linux.dev,
+	chrisl@kernel.org, corbet@lwn.net, david@kernel.org,
+	dev.jain@arm.com, gourry@gourry.net, hannes@cmpxchg.org,
+	hughd@google.com, jannh@google.com, joshua.hahnjy@gmail.com,
+	lance.yang@linux.dev, lenb@kernel.org, linux-doc@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+	linux-pm@vger.kernel.org, lorenzo.stoakes@oracle.com,
+	matthew.brost@intel.com, mhocko@suse.com, muchun.song@linux.dev,
+	npache@redhat.com, pavel@kernel.org, peterx@redhat.com,
+	peterz@infradead.org, pfalcato@suse.de, rafael@kernel.org,
+	rakie.kim@sk.com, roman.gushchin@linux.dev, rppt@kernel.org,
+	ryan.roberts@arm.com, shakeel.butt@linux.dev,
+	shikemeng@huaweicloud.com, surenb@google.com, tglx@kernel.org,
+	vbabka@suse.cz, weixugc@google.com, ying.huang@linux.alibaba.com,
+	yosry.ahmed@linux.dev, yuanchu@google.com,
+	zhengqi.arch@bytedance.com, ziy@nvidia.com, kernel-team@meta.com,
+	riel@surriel.com
+Subject: Re: [PATCH v5 00/21] Virtual Swap Space
+Message-ID: <acQvNRLpHwnHt7i+@yjaykim-PowerEdge-T330>
+References: <20260320192735.748051-1-nphamcs@gmail.com>
+ <CAMgjq7AiUr_Ntj51qoqvV+=XbEATjr7S4MH+rgD32T5pHfF7mg@mail.gmail.com>
+ <CAKEwX=PBjMVfMvKkNfqbgiw7o10NFyZBSB62ODzsqogv-WDYKQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [LSF/MM/BPF TOPIC] Reimagining Memory Cgroup (memcg_ext)
-To: Shakeel Butt <shakeel.butt@linux.dev>, lsf-pc@lists.linux-foundation.org
-Cc: Andrew Morton <akpm@linux-foundation.org>, Tejun Heo <tj@kernel.org>,
-        Michal Hocko <mhocko@suse.com>, Johannes Weiner <hannes@cmpxchg.org>,
-        Alexei Starovoitov <ast@kernel.org>,
-        =?UTF-8?Q?Michal_Koutn=C3=BD?=
- <mkoutny@suse.com>,
-        Roman Gushchin <roman.gushchin@linux.dev>, Hui Zhu <hui.zhu@linux.dev>,
-        JP Kobryn <inwardvessel@gmail.com>,
-        Muchun Song <muchun.song@linux.dev>, Geliang Tang <geliang@kernel.org>,
-        Sweet Tea Dorminy <sweettea-kernel@dorminy.me>,
-        Emil Tsalapatis <emil@etsalapatis.com>,
-        David Rientjes
- <rientjes@google.com>,
-        Martin KaFai Lau <martin.lau@linux.dev>,
-        Meta kernel team <kernel-team@meta.com>, linux-mm@kvack.org,
-        cgroups@vger.kernel.org, bpf@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-References: <20260307182424.2889780-1-shakeel.butt@linux.dev>
-Content-Language: en-US
-From: Donet Tom <donettom@linux.ibm.com>
-In-Reply-To: <20260307182424.2889780-1-shakeel.butt@linux.dev>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-Reinject: loops=2 maxloops=12
-X-Proofpoint-GUID: 6FmiCLs32PS63n5oqMNtpfe4PvUiBYsr
-X-Proofpoint-ORIG-GUID: pJfccnXiV3nwWrj2BDc5BsTHSbA8hxMy
-X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwMzI1MDEzNyBTYWx0ZWRfX3sjkXq14IWb2
- gZ1IZK+3cm8rUowKHKnRHKbcxXFjihOSmWnVAeP9o8VlzL6+LAEqNWg/u3msB+iRQcI1a08+MKL
- Xvo7QsyUvpHdu52TgoFjFsNWFrR8UYcfXNbw1jGo/p1Q9XPaRipJGUyLFUtwVJH8A90S0SedNnR
- 0oE7Oe/g5ScWc/A2Zz0QKkecXDRZNOnbsHhvxz7cXDbJbndeQeIhsgNyh9b89xAICSfjAsiecDw
- kqTh6IPiLoGi41RKUxRMk3DY2FRamP0VAyfCukGoDWgs35qaIPT0c14yRKKOHrG+tUKKuMfQDg4
- KqEv8Tluzl2+yAVsQcPhgnpHGt35si3MKbz/t8Ey22v4NN52ZoxS21pPxcWpswcF8og4z8RHLF6
- BItOVy9zb/cS4S+ME/laXIYiIL6/kgFCtf9op5TwA0Ry1mQTSwMvxPMd4NwPJrcXU8QCpE+p+UG
- hNz44EpVAKG0woaNThQ==
-X-Authority-Analysis: v=2.4 cv=KbXfcAYD c=1 sm=1 tr=0 ts=69c42de8 cx=c_pps
- a=3Bg1Hr4SwmMryq2xdFQyZA==:117 a=3Bg1Hr4SwmMryq2xdFQyZA==:17
- a=IkcTkHD0fZMA:10 a=Yq5XynenixoA:10 a=VkNPw1HP01LnGYTKEx00:22
- a=RnoormkPH1_aCDwRdu11:22 a=RzCfie-kr_QcCd8fBx8p:22 a=EWPDJS0nAAAA:8
- a=qRGbQyZx1wJ4HwBk7TQA:9 a=3ZKOabzyN94A:10 a=QEXdDO2ut3YA:10
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1143,Hydra:6.1.51,FMLib:17.12.100.49
- definitions=2026-03-25_05,2026-03-24_01,2025-10-01_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
- suspectscore=0 impostorscore=0 malwarescore=0 adultscore=0 clxscore=1011
- priorityscore=1501 bulkscore=0 lowpriorityscore=0 phishscore=0 spamscore=0
- classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
- reason=mlx scancount=1 engine=8.22.0-2603050001 definitions=main-2603250137
-X-Spamd-Result: default: False [-2.16 / 15.00];
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAKEwX=PBjMVfMvKkNfqbgiw7o10NFyZBSB62ODzsqogv-WDYKQ@mail.gmail.com>
+X-Spamd-Result: default: False [0.64 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[ibm.com,none];
-	R_DKIM_ALLOW(-0.20)[ibm.com:s=pp1];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	MID_RHS_NOT_FQDN(0.50)[];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
+	DMARC_POLICY_SOFTFAIL(0.10)[lge.com : SPF not aligned (relaxed), No valid DKIM,none];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-15053-lists,cgroups=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-15054-lists,cgroups=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	FREEMAIL_CC(0.00)[linux-foundation.org,kernel.org,suse.com,cmpxchg.org,linux.dev,gmail.com,dorminy.me,etsalapatis.com,google.com,meta.com,kvack.org,vger.kernel.org];
-	RCPT_COUNT_TWELVE(0.00)[22];
 	FROM_HAS_DN(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	FREEMAIL_TO(0.00)[gmail.com];
+	RCVD_COUNT_THREE(0.00)[4];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	FREEMAIL_CC(0.00)[gmail.com,oracle.com,linux-foundation.org,nvidia.com,google.com,kernel.org,linux.alibaba.com,redhat.com,sk.com,vger.kernel.org,linux.dev,lwn.net,arm.com,gourry.net,cmpxchg.org,kvack.org,intel.com,suse.com,infradead.org,suse.de,huaweicloud.com,suse.cz,bytedance.com,meta.com,surriel.com];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	MISSING_XM_UA(0.00)[];
+	RCPT_COUNT_GT_50(0.00)[54];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[donettom@linux.ibm.com,cgroups@vger.kernel.org];
-	DKIM_TRACE(0.00)[ibm.com:+];
-	NEURAL_HAM(-0.00)[-1.000];
+	FROM_NEQ_ENVFROM(0.00)[youngjun.park@lge.com,cgroups@vger.kernel.org];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	NEURAL_HAM(-0.00)[-0.998];
 	TAGGED_RCPT(0.00)[cgroups];
-	MID_RHS_MATCH_FROM(0.00)[];
-	TO_DN_SOME(0.00)[];
-	RCVD_COUNT_SEVEN(0.00)[11]
-X-Rspamd-Queue-Id: 64EF932AD2D
+	R_DKIM_NA(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	TO_DN_SOME(0.00)[]
+X-Rspamd-Queue-Id: BE78C32AE11
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
+On Mon, Mar 23, 2026 at 11:32:57AM -0400, Nhat Pham wrote:
 
-On 3/7/26 11:54 PM, Shakeel Butt wrote:
-> Over the last couple of weeks, I have been brainstorming on how I would go
-> about redesigning memcg, taking inspiration from sched_ext and bpfoom, with a
-> focus on existing challenges and issues. This proposal outlines the high-level
-> direction. Followup emails and patch series will cover and brainstorm the
-> mechanisms (of course BPF) to achieve these goals.
->
-> Memory cgroups provide memory accounting and the ability to control memory usage
-> of workloads through two categories of limits. Throttling limits (memory.max and
-> memory.high) cap memory consumption. Protection limits (memory.min and
-> memory.low) shield a workload's memory from reclaim under external memory
-> pressure.
->
-> Challenges
-> ----------
->
-> - Workload owners rarely know their actual memory requirements, leading to
->    overprovisioned limits, lower utilization, and higher infrastructure costs.
->
-> - Throttling limit enforcement is synchronous in the allocating task's context,
->    which can stall latency-sensitive threads.
->
-> - The stalled thread may hold shared locks, causing priority inversion -- all
->    waiters are blocked regardless of their priority.
->
-> - Enforcement is indiscriminate -- there is no way to distinguish a
->    performance-critical or latency-critical allocator from a latency-tolerant
->    one.
->
-> - Protection limits assume static working sets size, forcing owners to either
->    overprovision or build complex userspace infrastructure to dynamically adjust
->    them.
->
-> Feature Wishlist
-> ----------------
->
-> Here is the list of features and capabilities I want to enable in the
-> redesigned memcg limit enforcement world.
->
-> Per-Memcg Background Reclaim
->
-> In the new memcg world, with the goal of (mostly) eliminating direct synchronous
-> reclaim for limit enforcement, provide per-memcg background reclaimers which can
-> scale across CPUs with the allocation rate.
->
-> Lock-Aware Throttling
->
-> The ability to avoid throttling an allocating task that is holding locks, to
-> prevent priority inversion. In Meta's fleet, we have observed lock holders stuck
-> in memcg reclaim, blocking all waiters regardless of their priority or
-> criticality.
->
-> Thread-Level Throttling Control
->
-> Workloads should be able to indicate at the thread level which threads can be
-> synchronously throttled and which cannot. For example, while experimenting with
-> sched_ext, we drastically improved the performance of AI training workloads by
-> prioritizing threads interacting with the GPU. Similarly, applications can
-> identify the threads or thread pools on their performance-critical paths and
-> the memcg enforcement mechanism should not throttle them.
->
-> Combined Memory and Swap Limits
->
-> Some users (Google actually) need the ability to enforce limits based on
-> combined memory and swap usage, similar to cgroup v1's memsw limit, providing a
-> ceiling on total memory commitment rather than treating memory and swap
-> independently.
->
-> Dynamic Protection Limits
->
-> Rather than static protection limits, the kernel should support defining
-> protection based on the actual working set of the workload, leveraging signals
-> such as working set estimation, PSI, refault rates, or a combination thereof to
-> automatically adapt to the workload's current memory needs.
->
-> Shared Memory Semantics
->
-> With more flexibility in limit enforcement, the kernel should be able to
-> account for memory shared between workloads (cgroups) during enforcement.
-> Today, enforcement only looks at each workload's memory usage independently.
-> Sensible shared memory semantics would allow the enforcer to consider
-> cross-cgroup sharing when making reclaim and throttling decisions.
->
-> Memory Tiering
->
-> With a flexible limit enforcement mechanism, the kernel can balance memory
-> usage of different workloads across memory tiers based on their performance
-> requirements. Tier accounting and hotness tracking are orthogonal, but the
-> decisions of when and how to balance memory between tiers should be handled by
-> the enforcer.
+> Interesting. Normally "lots of zero-filled page" is a very beneficial
+> case for vswap. You don't need a swapfile, or any zram/zswap metadata
+> overhead - it's a native swap backend. If production workload has this
+> many zero-filled pages, I think the numbers of vswap would be much
+> less alarming - perhaps even matching memory overhead because you
+> don't need to maintain a zram entry metadata (it's at least 2 words
+> per zram entry right?), while there's no reverse map overhead induced
+> (so it's 24 bytes on both side), and no need to do zram-side locking
+> :)
+> 
+> So I was surprised to see that it's not working out very well here. I
+> checked the implementation of memhog - let me know if this is wrong
+> place to look:
+> 
+> https://man7.org/linux/man-pages/man8/memhog.8.html
+> https://github.com/numactl/numactl/blob/master/memhog.c#L52
+> 
+> I think this is what happened here: memhog was populating the memory
+> 0xff, which triggers the full overhead of a swapfile-backed swap entry
+> because even though it's "same-filled" it's not zero-filled! I was
+> following Usama's observation - "less than 1% of the same-filled pages
+> were non-zero" - and so I only handled the zero-filled case here:
+> 
+> https://lore.kernel.org/all/20240530102126.357438-1-usamaarif642@gmail.com/
+> 
+> This sounds a bit artificial IMHO - as Usama pointed out above, I
+> think most samefilled pages are zero pages, in real production
+> workloads. However, if you think there are real use cases with a lot
+> of non-zero samefilled pages, please let me know I can fix this real
+> quick. We can support this in vswap with zero extra metadata overhead
+> - change the VSWAP_ZERO swap entry type to VSWAP_SAME_FILLED, then use
+> the backend field to store that value. I can send you a patch if
+> you're interested.
 
-
-Hi Shakeel
-
-
-This looks like a good idea. I was thinking along similar lines,
-but wasn’t sure about the best way to implement it.
-
-For memcg with memory tiering, the idea is that we set
-memory.high and memory.max as the maximum limits. Within
-memory.high, a certain percentage (x%) could be backed by
-higher-tier memory, with the remaining portion coming from
-lower-tier memory.
-
-In this model, an application would get up to
-memory.high * x / 100 from higher-tier memory, and the rest
-from lower-tier memory.
-
-Once the higher-tier usage reaches its limit, we would start
-demoting pages. If the lower-tier usage also reaches its
-limit, we would then start swapping out pages from lower tier.
-
-What is your opinion on how memory tiering should be handled in memcg?
-
-
--Donet
-
->
-> Collaborative Load Shedding
->
-> Many workloads communicate with an external entity for load balancing and rely
-> on their own usage metrics like RSS or memory pressure to signal whether they
-> can accept more or less work. This is guesswork. Instead of the
-> workload guessing, the limit enforcer -- which is actually managing the
-> workload's memory usage -- should be able to communicate available headroom or
-> request the workload to shed load or reduce memory usage. This collaborative
-> load shedding mechanism would allow workloads to make informed decisions rather
-> than reacting to coarse signals.
->
-> Cross-Subsystem Collaboration
->
-> Finally, the limit enforcement mechanism should collaborate with the CPU
-> scheduler and other subsystems that can release memory. For example, dirty
-> memory is not reclaimable and the memory subsystem wakes up flushers to trigger
-> writeback. However, flushers need CPU to run -- asking the CPU scheduler to
-> prioritize them ensures the kernel does not lack reclaimable memory under
-> stressful conditions. Similarly, some subsystems free memory through workqueues
-> or RCU callbacks. While this may seem orthogonal to limit enforcement, we can
-> definitely take advantage by having visibility into these situations.
->
-> Putting It All Together
-> -----------------------
->
-> To illustrate the end goal, here is an example of the scenario I want to
-> enable. Suppose there is an AI agent controlling the resources of a host. I
-> should be able to provide the following policy and everything should work out
-> of the box:
->
-> Policy: "keep system-level memory utilization below 95 percent;
-> avoid priority inversions by not throttling allocators holding locks; trim each
-> workload's usage to its working set without regressing its relevant performance
-> metrics; collaborate with workloads on load shedding and memory trimming
-> decisions; and under extreme memory pressure, collaborate with the OOM killer
-> and the central job scheduler to kill and clean up a workload."
->
-> Initially I added this example for fun, but from [1] it seems like there is a
-> real need to enable such capabilities.
->
-> [1] https://arxiv.org/abs/2602.09345
->
+This brings back memories -- I'm pretty sure we talked about
+exactly this at LPC. Our custom swap device already handles both
+zero-filled and same-filled pages on its own, so what we really
+wanted was a way to tell the swap layer "just skip the detection
+and let it through."
+ 
+I looked at two approaches back then but never submitted either:
+ 
+  - A per-swap_info flag to opt out of zero/same-filled handling.
+    But this felt wrong from vswap's perspective -- if even one
+    device opts out of the zeromap, the model gets messy.
+ 
+  - Revisiting Usama's patch 2 approach.
+    Sounded good in theory, but as you said,
+    it's not as simple to verify in practice. And it is more clean design
+    swapout time zero check as I see. So,  I gave up on it.
+ 
+Seeing this come up again is actually kind of nice :)
+ 
+One thought -- maybe a compile-time CONFIG or a boot param to
+control the scope? e.g. zero-only, same-filled, or disabled.
+That way vendors like us just turn it off, and setups like
+Kairui's can opt into broader detection. Just an idea though --
+open to other approaches if you have something in mind.
+ 
+Thanks,
+Youngjun Park
 
