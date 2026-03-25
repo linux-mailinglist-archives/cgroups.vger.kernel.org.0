@@ -1,178 +1,127 @@
-Return-Path: <cgroups+bounces-15048-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-15051-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id qNqaHhMixGmZwgQAu9opvQ
-	(envelope-from <cgroups+bounces-15048-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Wed, 25 Mar 2026 18:57:39 +0100
+	id KLNSGE8kxGmZwgQAu9opvQ
+	(envelope-from <cgroups+bounces-15051-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Wed, 25 Mar 2026 19:07:11 +0100
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id E05FA32A2D6
-	for <lists+cgroups@lfdr.de>; Wed, 25 Mar 2026 18:57:38 +0100 (CET)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8916A32A486
+	for <lists+cgroups@lfdr.de>; Wed, 25 Mar 2026 19:07:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id DBE9E3032063
-	for <lists+cgroups@lfdr.de>; Wed, 25 Mar 2026 17:55:13 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 73ACF300D4D6
+	for <lists+cgroups@lfdr.de>; Wed, 25 Mar 2026 18:06:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 942B040B6F0;
-	Wed, 25 Mar 2026 17:55:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 622EC359A7E;
+	Wed, 25 Mar 2026 18:06:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="f5KmIQxm";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="8e3O1glO"
 X-Original-To: cgroups@vger.kernel.org
-Received: from lgeamrelo03.lge.com (lgeamrelo03.lge.com [156.147.51.102])
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C869040B6E4
-	for <cgroups@vger.kernel.org>; Wed, 25 Mar 2026 17:55:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.147.51.102
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B9F57263B;
+	Wed, 25 Mar 2026 18:06:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1774461308; cv=none; b=XSzrZiJRu2Nnyf7De7JOXL0Ofyz3F0d1ialLsW7I0hG6uxtsJ47yV6b4ZyzidfMRIFX3MQK3i1UzhqJBofTZe1xX2SZ3Gg30xfLlZSFJeoWPCxczpjA6w4ZLkhay1NaNP1x7zayDbvaiOTfDdJzg8Jf46RpLI5x534zae+W2IjQ=
+	t=1774461987; cv=none; b=jEAf633IgFE/eo9ZvoPbPtfpeApxwt5LhWPAtq3uqPk84cdpFZxdIfLRovBtuS6PFsya4IQtm7Xo/ycQyY1lU+uN40XSXT7m6pZVkB+TsDULHxlY0Y+PP6yZAMXzAy+FLhJws1gLtHDgtiO/H7uQptxzf7aOV3AAGWnaGJAWfMw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1774461308; c=relaxed/simple;
-	bh=3jReesnbo+6fxWSQiMSlmEbBtfmn95VxBkJ86UYJpXk=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=ASayVq1RfBzyBBJEQfh+2AoEuftG4nd/E6gz6AwcUzT62Ku3ED2H/02Wq1PgPJJuNMfgRh0NKNVBY4atbuTSUf2tOIhggNfH4ndigwVZwoxXDVYZcfE13ic6O4vRONUZlhk1JrbE4ef1SGpFrn7cl/IyLAIlCE/5m2+F3EAl0tg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lge.com; spf=pass smtp.mailfrom=lge.com; arc=none smtp.client-ip=156.147.51.102
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lge.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lge.com
-Received: from unknown (HELO yjaykim-PowerEdge-T330.lge.net) (10.177.112.156)
-	by 156.147.51.102 with ESMTP; 26 Mar 2026 02:55:01 +0900
-X-Original-SENDERIP: 10.177.112.156
-X-Original-MAILFROM: youngjun.park@lge.com
-From: Youngjun Park <youngjun.park@lge.com>
-To: Andrew Morton <akpm@linux-foundation.org>
-Cc: Chris Li <chrisl@kernel.org>,
-	Youngjun Park <youngjun.park@lge.com>,
-	linux-mm@kvack.org,
-	cgroups@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	kasong@tencent.com,
-	hannes@cmpxchg.org,
-	mhocko@kernel.org,
-	roman.gushchin@linux.dev,
-	shakeel.butt@linux.dev,
-	muchun.song@linux.dev,
-	shikemeng@huaweicloud.com,
-	nphamcs@gmail.com,
-	bhe@redhat.com,
-	baohua@kernel.org,
-	gunho.lee@lge.com,
-	taejoon.song@lge.com,
-	hyungjun.cho@lge.com,
-	mkoutny@suse.com
-Subject: [PATCH v5 4/4] mm: swap: filter swap allocation by memcg tier mask
-Date: Thu, 26 Mar 2026 02:54:53 +0900
-Message-Id: <20260325175453.2523280-5-youngjun.park@lge.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20260325175453.2523280-1-youngjun.park@lge.com>
-References: <20260325175453.2523280-1-youngjun.park@lge.com>
+	s=arc-20240116; t=1774461987; c=relaxed/simple;
+	bh=bD7MgkNGeu/Yje4V0Nr7YUOixmtk7YxumIFtxeHnw90=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=IkQQctbMYGBjBQS57VA1FLmH5LtdRDrPX5ZxbRcSfqRUh0id3FyOtDzdiq/fSwqo3bBrmZ4HOpOgojXj0KYFiYlXNwHcXUmeGdKJzPPtSluxnMobR/K1uMvxha/G1UvUq/2A6tZ+ZVevMNd+0dv/W3kxZ9jtAldU2Zca6onbu5E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=f5KmIQxm; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=8e3O1glO; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+Date: Wed, 25 Mar 2026 19:06:23 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1774461984;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=bD7MgkNGeu/Yje4V0Nr7YUOixmtk7YxumIFtxeHnw90=;
+	b=f5KmIQxmTtrxyQQ9o80lfRyp9VEq9de3cjg41orhSja1frgOuVyybJGcIME2TonXxm1/wV
+	2/9/6V1VdAI3sxgOIYJeQs65pBfweoXP0NtGqKzmIdrJEv+eA8sepARP3s6i1ZJPkhrcNJ
+	IgAByzL1tE/fMGUtoVPoOdZm77qotZtlrU4z8E1rBlP6LgSRLnDNhl+5Q9jZ9xkcVtc7tq
+	K/2Q7/7tTIDHogKRwWzdoBWUj2MDl6PdSOLHymv65VEQrLbKBr/TJCUw0TvU5nQBBg/ZTy
+	fPVEnIr7rKODPMuvi3KSvNZwrFNI7uz8D5TpLMy9u0LOekjzEkPWXvZNnNzGuw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1774461984;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=bD7MgkNGeu/Yje4V0Nr7YUOixmtk7YxumIFtxeHnw90=;
+	b=8e3O1glO3toTLmT9JDpNbveiRsZYf2rVEVppEuBDjwzvf2CYdqfYrdsNOP3JJYtvwkzY+t
+	g0PfQFZR5J818/CA==
+From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To: Tejun Heo <tj@kernel.org>
+Cc: cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Bert Karwatzki <spasswolf@web.de>, Michal Koutny <mkoutny@suse.com>,
+	Johannes Weiner <hannes@cmpxchg.org>,
+	kernel test robot <oliver.sang@intel.com>
+Subject: Re: [PATCH v3 cgroup/for-7.0-fixes] cgroup: Fix cgroup_drain_dying()
+ testing the wrong condition
+Message-ID: <20260325180623.EcyNsp2L@linutronix.de>
+References: <68d8881fd985a410c0f619f009334c28@kernel.org>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spamd-Result: default: False [0.14 / 15.00];
-	MID_CONTAINS_FROM(1.00)[];
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <68d8881fd985a410c0f619f009334c28@kernel.org>
+X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	DMARC_POLICY_ALLOW(-0.50)[linutronix.de,none];
+	R_DKIM_ALLOW(-0.20)[linutronix.de:s=2020,linutronix.de:s=2020e];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
-	DMARC_POLICY_SOFTFAIL(0.10)[lge.com : SPF not aligned (relaxed), No valid DKIM,none];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCPT_COUNT_TWELVE(0.00)[20];
-	TAGGED_FROM(0.00)[bounces-15048-lists,cgroups=lfdr.de];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	RCVD_TLS_LAST(0.00)[];
-	FREEMAIL_CC(0.00)[kernel.org,lge.com,kvack.org,vger.kernel.org,tencent.com,cmpxchg.org,linux.dev,huaweicloud.com,gmail.com,redhat.com,suse.com];
-	RCVD_COUNT_THREE(0.00)[4];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	TO_DN_SOME(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[youngjun.park@lge.com,cgroups@vger.kernel.org];
+	FREEMAIL_CC(0.00)[vger.kernel.org,web.de,suse.com,cmpxchg.org,intel.com];
+	TAGGED_FROM(0.00)[bounces-15051-lists,cgroups=lfdr.de];
 	FROM_HAS_DN(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	R_DKIM_NA(0.00)[];
+	RCVD_COUNT_THREE(0.00)[3];
+	RCVD_TLS_LAST(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	DKIM_TRACE(0.00)[linutronix.de:+];
+	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
+	MISSING_XM_UA(0.00)[];
 	NEURAL_HAM(-0.00)[-1.000];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[bigeasy@linutronix.de,cgroups@vger.kernel.org];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	MID_RHS_MATCH_FROM(0.00)[];
 	TAGGED_RCPT(0.00)[cgroups];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[lge.com:email,lge.com:mid,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: E05FA32A2D6
+	RCPT_COUNT_SEVEN(0.00)[7];
+	TO_DN_SOME(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[linutronix.de:dkim,linutronix.de:email,linutronix.de:mid,sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: 8916A32A486
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-Apply memcg tier effective mask during swap slot allocation to
-enforce per-cgroup swap tier restrictions.
+On 2026-03-25 07:23:48 [-1000], Tejun Heo wrote:
+> cgroup_drain_dying() was using cgroup_is_populated() to test whether ther=
+e are
+> dying tasks to wait for. cgroup_is_populated() tests nr_populated_csets,
+> nr_populated_domain_children and nr_populated_threaded_children, but
+> cgroup_drain_dying() only needs to care about this cgroup's own tasks - w=
+hether
+> there are children is cgroup_destroy_locked()'s concern.
+=E2=80=A6
 
-In the fast path, check the percpu cached swap_info's tier_mask
-against the folio's effective mask. If it does not match, fall
-through to the slow path. In the slow path, skip swap devices
-whose tier_mask is not covered by the folio's effective mask.
+Tested-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 
-This works correctly when there is only one non-rotational
-device in the system and no devices share the same priority.
-However, there are known limitations:
+The only issue I see is if I delay the irq_work callback by a second.
+Other than that, I don't see any problems.
 
- - When multiple non-rotational devices exist, percpu swap
-   caches from different memcg contexts may reference
-   mismatched tiers, causing unnecessary fast path misses.
-
- - When multiple non-rotational devices are assigned to
-   different tiers and same-priority devices exist among
-   them, cluster-based rotation may not work correctly.
-
-These edge cases do not affect the primary use case of
-directing swap traffic per cgroup. Further optimization is
-planned for future work.
-
-Signed-off-by: Youngjun Park <youngjun.park@lge.com>
----
- mm/swapfile.c | 13 ++++++++++++-
- 1 file changed, 12 insertions(+), 1 deletion(-)
-
-diff --git a/mm/swapfile.c b/mm/swapfile.c
-index 645e10c3af28..627b09e57c1d 100644
---- a/mm/swapfile.c
-+++ b/mm/swapfile.c
-@@ -1352,15 +1352,22 @@ static bool swap_alloc_fast(struct folio *folio)
- 	struct swap_cluster_info *ci;
- 	struct swap_info_struct *si;
- 	unsigned int offset;
-+	int mask = folio_tier_effective_mask(folio);
- 
- 	/*
- 	 * Once allocated, swap_info_struct will never be completely freed,
- 	 * so checking it's liveness by get_swap_device_info is enough.
- 	 */
- 	si = this_cpu_read(percpu_swap_cluster.si[order]);
-+	if (!si || !swap_tiers_mask_test(si->tier_mask, mask) ||
-+		!get_swap_device_info(si))
-+		return false;
-+
- 	offset = this_cpu_read(percpu_swap_cluster.offset[order]);
--	if (!si || !offset || !get_swap_device_info(si))
-+	if (!offset) {
-+		put_swap_device(si);
- 		return false;
-+	}
- 
- 	ci = swap_cluster_lock(si, offset);
- 	if (cluster_is_usable(ci, order)) {
-@@ -1379,10 +1386,14 @@ static bool swap_alloc_fast(struct folio *folio)
- static void swap_alloc_slow(struct folio *folio)
- {
- 	struct swap_info_struct *si, *next;
-+	int mask = folio_tier_effective_mask(folio);
- 
- 	spin_lock(&swap_avail_lock);
- start_over:
- 	plist_for_each_entry_safe(si, next, &swap_avail_head, avail_list) {
-+		if (!swap_tiers_mask_test(si->tier_mask, mask))
-+			continue;
-+
- 		/* Rotate the device and switch to a new cluster */
- 		plist_requeue(&si->avail_list, &swap_avail_head);
- 		spin_unlock(&swap_avail_lock);
--- 
-2.34.1
-
+Sebastian
 
