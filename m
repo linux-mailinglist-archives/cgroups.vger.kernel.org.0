@@ -1,445 +1,301 @@
-Return-Path: <cgroups+bounces-15060-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-15061-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 6BQ5OKYCxWlZ5gQAu9opvQ
-	(envelope-from <cgroups+bounces-15060-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Thu, 26 Mar 2026 10:55:50 +0100
+	id YAJJHQEuxWnb7gQAu9opvQ
+	(envelope-from <cgroups+bounces-15061-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Thu, 26 Mar 2026 14:00:49 +0100
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 45220332BEB
-	for <lists+cgroups@lfdr.de>; Thu, 26 Mar 2026 10:55:50 +0100 (CET)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 42293335A30
+	for <lists+cgroups@lfdr.de>; Thu, 26 Mar 2026 14:00:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id EE79D30214FD
-	for <lists+cgroups@lfdr.de>; Thu, 26 Mar 2026 09:48:34 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id BCC4C301DA46
+	for <lists+cgroups@lfdr.de>; Thu, 26 Mar 2026 12:56:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CFB3E390C85;
-	Thu, 26 Mar 2026 09:48:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1E3F92848A1;
+	Thu, 26 Mar 2026 12:56:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="PedKNfNb"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-oa1-f80.google.com (mail-oa1-f80.google.com [209.85.160.80])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.10])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C17D383C60
-	for <cgroups@vger.kernel.org>; Thu, 26 Mar 2026 09:48:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.80
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 95EBC23D2AB
+	for <cgroups@vger.kernel.org>; Thu, 26 Mar 2026 12:56:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.10
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1774518512; cv=none; b=GoyiJg5HjVjf7eKTdW8004f30ZfTgeDEzpvo7wSHShIUerDx5iuNPLC0Z9ByekJd5yE6mSFX+yfsD3cRZKuAnyJSfSYsMdVDbWaejAXZ+kN4esv4+mKbHZju5DaAZZf8KqxrCSjJmKTN5zdcOqpgJeZ1QnqsgVpCkbrdJonE830=
+	t=1774529789; cv=none; b=qkC1eCW/ZB5hz4x4ju/E+KtL0CUmqhJG2qoMTplQs0AZ4M+ziQzCc9KBRbA9PjmdB5fE8vXJgrdwXLJy4zIcycoSGcqqPADoluluAkhGrOn+KViyG0GYcI0z5vOgbkB7b6sjETAaD6Gb8q2tgv+VEf8H43U+KZ2Yem+vow8JNpM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1774518512; c=relaxed/simple;
-	bh=wlPdDfgqUR/fzj19hhiVk9ZIZdbJizMj731AQtKiM9o=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=cf4uDJD10dcBVtyuV5quY9RlEaCzydHv8i5sdVdVUcNJktuDn/T7rlEbxqVqDIbFd7v3dXOLyKuhTSXRKZWeiUG/5XLvyO1gpGkIaU8XUpX2mX5RoY5T+t2dbvP/JFWLVZWjw3PKn5dS+GAw+x0UzdDxHkh4RYlt2HyGywkYtoc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.160.80
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-oa1-f80.google.com with SMTP id 586e51a60fabf-415e1e9aa5dso1619943fac.0
-        for <cgroups@vger.kernel.org>; Thu, 26 Mar 2026 02:48:27 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1774518506; x=1775123306;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=mV9qxyNpxIpit9zhhJvu6Ts4rH2PT5dFxsnJpRoxiK8=;
-        b=CjHHNcoMO/u6ZvwlSVVPpqMvEqXUwDOlAhLsGdqox6r57NTYSHo8QrLQzjPeQCe7Z2
-         8HL0eFF893c0pGH0TwUcfsiIaUVf7tFvrCQgkNSiIPu21cGl9yfesACASLO+0mDQI8QO
-         LwX7yjDKcbr1huncGB4E7cFGPI+X6rkF0d21g/+wPJNxccwqldj3jrFNvapMfLn0KAIs
-         Q4IFQvW32Hq8exsGGqJNb7C70xMk96dYpN133ztvsiDH1V9WNgqcEIlXUGpxTNAPARRn
-         5EwfIs9N8Kv5V17tGM7Ju++0uqxbFiGDWicHRb3I/BJUSdQ+vSI/YEGzgwxTUcjTBgXg
-         xyeg==
-X-Gm-Message-State: AOJu0Yx6xQC/phEDnzJASntKG0u4xO4RcSBS5xaqh6fvj7uE+pRoSXFQ
-	8Z1S2Ru0UhqBrAnfPqvFZpDjTLSdDxKF/7j4uSEdl9JE/azci/s0fpuOaUexLJ8vUuWyNRwV/EX
-	qIcc0BuV4/ycPTnLFhKgS7aJ95zLWK4+gq0nQ3UNf3HiIzz9pderVoyv1T1ymYA==
+	s=arc-20240116; t=1774529789; c=relaxed/simple;
+	bh=nNNLQLpmaJ2vq0KV+iCIZ+9AXRH3qjOyEhoeVX2lwWM=;
+	h=Date:From:To:Cc:Subject:Message-ID; b=shrDkz5KHV/DCzQ2JMoS2YuJCi9ePGKdv3dX+i94Q8PYvb5yuH+O6tPIRHsrbcmK9pmKIKWUS/Obq0FekrDn2yQ0zL8woQWoAKvighpPO52BtDdeq0Vmlyp8wKEpR8hf3LvlYMREz0i+qz7wiPkSjTutZrJYbgHcbC2q6veaGqA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=PedKNfNb; arc=none smtp.client-ip=192.198.163.10
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1774529787; x=1806065787;
+  h=date:from:to:cc:subject:message-id;
+  bh=nNNLQLpmaJ2vq0KV+iCIZ+9AXRH3qjOyEhoeVX2lwWM=;
+  b=PedKNfNbCbFxUvQs4iAAUjtsrGiab2fJG7lPmxPJlQehFdWajvdCG02L
+   UlwQ9+CMrkkOvCGwUehMMUFXeY7/OKJ+Whnb16gOjOYEdLhPZDLXluOg7
+   SgLuspVSdkT4GNxUewAmBQn1toN//jLEDPXuKQh398P5RPe5upQX07dAR
+   +eo0clvJyRR+xViSassxHq1EvjG8ty+CI0h2QCyk7jqWuOTGtd+SZRwBE
+   b13ds1WVH4Qq0QTal2nQgSL7dA4z31QfqMpOgRj4BW8ZbWiy1agDrEKex
+   /sppwo4yC7lnBPuID2k+dYnH1GeLsn+PC6ssLb/qRlseXKIHAIvJHSD1g
+   A==;
+X-CSE-ConnectionGUID: O3MM7J1aRFeKFK7LJAEuPQ==
+X-CSE-MsgGUID: umFRLeEGQGW88gAONIIk5g==
+X-IronPort-AV: E=McAfee;i="6800,10657,11740"; a="86964568"
+X-IronPort-AV: E=Sophos;i="6.23,142,1770624000"; 
+   d="scan'208";a="86964568"
+Received: from fmviesa003.fm.intel.com ([10.60.135.143])
+  by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Mar 2026 05:56:27 -0700
+X-CSE-ConnectionGUID: 3tnQUvVYSRG4C3jxLIFMmg==
+X-CSE-MsgGUID: JuufZ5M1RnKNLVrbWFu2zA==
+X-ExtLoop1: 1
+Received: from lkp-server01.sh.intel.com (HELO 3905d212be1b) ([10.239.97.150])
+  by fmviesa003.fm.intel.com with ESMTP; 26 Mar 2026 05:56:26 -0700
+Received: from kbuild by 3905d212be1b with local (Exim 4.98.2)
+	(envelope-from <lkp@intel.com>)
+	id 1w5kG7-000000008s5-2dcB;
+	Thu, 26 Mar 2026 12:56:23 +0000
+Date: Thu, 26 Mar 2026 20:56:14 +0800
+From: kernel test robot <lkp@intel.com>
+To: Tejun Heo <tj@kernel.org>
+Cc: cgroups@vger.kernel.org
+Subject: [tj-cgroup:for-7.0-fixes] BUILD SUCCESS
+ 4c56a8ac6869855866de0bb368a4189739e1d24f
+Message-ID: <202603262006.XjlSNsoD-lkp@intel.com>
+User-Agent: s-nail v14.9.25
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-X-Received: by 2002:a05:6820:f00a:b0:67c:170c:d90a with SMTP id
- 006d021491bc7-67dff515bd3mr3600933eaf.33.1774518506570; Thu, 26 Mar 2026
- 02:48:26 -0700 (PDT)
-Date: Thu, 26 Mar 2026 02:48:26 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <69c500ea.a70a0220.234938.0084.GAE@google.com>
-Subject: [syzbot] [cgroups?] possible deadlock in copy_process
-From: syzbot <syzbot+327400a7d1255e319efb@syzkaller.appspotmail.com>
-To: cgroups@vger.kernel.org, hannes@cmpxchg.org, linux-kernel@vger.kernel.org, 
-	mkoutny@suse.com, syzkaller-bugs@googlegroups.com, tj@kernel.org
-Content-Type: text/plain; charset="UTF-8"
-X-Spamd-Result: default: False [-0.36 / 15.00];
+X-Spamd-Result: default: False [-0.66 / 15.00];
+	MID_CONTAINS_FROM(1.00)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	URI_HIDDEN_PATH(1.00)[https://syzkaller.appspot.com/x/.config?x=22bf3527036b9be1];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_MISSING_CHARSET(0.50)[];
+	DMARC_POLICY_ALLOW(-0.50)[intel.com,none];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64:c];
+	R_DKIM_ALLOW(-0.20)[intel.com:s=Intel];
 	MAILLIST(-0.15)[generic];
-	DMARC_POLICY_SOFTFAIL(0.10)[appspotmail.com : SPF not aligned (relaxed), No valid DKIM,none];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	MISSING_XM_UA(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	TAGGED_FROM(0.00)[bounces-15060-lists,cgroups=lfdr.de,327400a7d1255e319efb];
+	ASN_FAIL(0.00)[1.2.3.5.c.f.2.1.0.0.0.0.0.0.0.0.5.7.0.0.1.0.0.e.5.1.c.3.0.0.6.2.asn6.rspamd.com:query timed out];
+	TAGGED_FROM(0.00)[bounces-15061-lists,cgroups=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
+	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	SUBJECT_HAS_QUESTION(0.00)[];
-	REDIRECTOR_URL(0.00)[goo.gl];
+	RCPT_COUNT_TWO(0.00)[2];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	TO_DN_SOME(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[syzbot@syzkaller.appspotmail.com,cgroups@vger.kernel.org];
 	FROM_HAS_DN(0.00)[];
-	RCPT_COUNT_FIVE(0.00)[6];
-	TO_DN_NONE(0.00)[];
-	R_DKIM_NA(0.00)[];
+	DKIM_TRACE(0.00)[intel.com:+];
+	FROM_NEQ_ENVFROM(0.00)[lkp@intel.com,cgroups@vger.kernel.org];
 	NEURAL_HAM(-0.00)[-1.000];
+	RCVD_COUNT_FIVE(0.00)[6];
 	TAGGED_RCPT(0.00)[cgroups];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[appspotmail.com:email,goo.gl:url,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,googlegroups.com:email,storage.googleapis.com:url]
-X-Rspamd-Queue-Id: 45220332BEB
+	DBL_BLOCKED_OPENRESOLVER(0.00)[intel.com:dkim,intel.com:mid,sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: 42293335A30
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-Hello,
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git for-7.0-fixes
+branch HEAD: 4c56a8ac6869855866de0bb368a4189739e1d24f  cgroup: Fix cgroup_drain_dying() testing the wrong condition
 
-syzbot found the following issue on:
+elapsed time: 752m
 
-HEAD commit:    785f0eb2f85d Add linux-next specific files for 20260320
-git tree:       linux-next
-console output: https://syzkaller.appspot.com/x/log.txt?x=105e2a06580000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=22bf3527036b9be1
-dashboard link: https://syzkaller.appspot.com/bug?extid=327400a7d1255e319efb
-compiler:       Debian clang version 21.1.8 (++20251221033036+2078da43e25a-1~exp1~20251221153213.50), Debian LLD 21.1.8
+configs tested: 178
+configs skipped: 2
 
-Unfortunately, I don't have any reproducer for this issue yet.
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/2e684d8ea98b/disk-785f0eb2.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/b33fd1111047/vmlinux-785f0eb2.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/2c5ee1287187/bzImage-785f0eb2.xz
+tested configs:
+alpha                             allnoconfig    gcc-15.2.0
+alpha                            allyesconfig    gcc-15.2.0
+alpha                               defconfig    gcc-15.2.0
+arc                              allmodconfig    clang-16
+arc                               allnoconfig    gcc-15.2.0
+arc                              allyesconfig    clang-23
+arc                                 defconfig    gcc-15.2.0
+arc                   randconfig-001-20260326    gcc-8.5.0
+arc                   randconfig-002-20260326    gcc-8.5.0
+arm                               allnoconfig    gcc-15.2.0
+arm                              allyesconfig    clang-16
+arm                                 defconfig    gcc-15.2.0
+arm                   randconfig-001-20260326    gcc-8.5.0
+arm                   randconfig-002-20260326    gcc-8.5.0
+arm                   randconfig-003-20260326    gcc-8.5.0
+arm                   randconfig-004-20260326    gcc-8.5.0
+arm64                            allmodconfig    clang-23
+arm64                             allnoconfig    gcc-15.2.0
+arm64                               defconfig    gcc-15.2.0
+arm64                 randconfig-001-20260326    clang-19
+arm64                 randconfig-002-20260326    clang-19
+arm64                 randconfig-003-20260326    clang-19
+arm64                 randconfig-004-20260326    clang-19
+csky                             allmodconfig    gcc-15.2.0
+csky                              allnoconfig    gcc-15.2.0
+csky                                defconfig    gcc-15.2.0
+csky                  randconfig-001-20260326    clang-19
+csky                  randconfig-002-20260326    clang-19
+hexagon                          allmodconfig    gcc-15.2.0
+hexagon                           allnoconfig    gcc-15.2.0
+hexagon                             defconfig    gcc-15.2.0
+hexagon               randconfig-001-20260326    gcc-8.5.0
+hexagon               randconfig-002-20260326    gcc-8.5.0
+i386                             allmodconfig    clang-20
+i386                              allnoconfig    gcc-15.2.0
+i386                             allyesconfig    clang-20
+i386        buildonly-randconfig-001-20260326    gcc-14
+i386        buildonly-randconfig-002-20260326    gcc-14
+i386        buildonly-randconfig-003-20260326    gcc-14
+i386        buildonly-randconfig-004-20260326    gcc-14
+i386        buildonly-randconfig-005-20260326    gcc-14
+i386        buildonly-randconfig-006-20260326    gcc-14
+i386                                defconfig    gcc-15.2.0
+i386                  randconfig-001-20260326    gcc-14
+i386                  randconfig-002-20260326    gcc-14
+i386                  randconfig-003-20260326    gcc-14
+i386                  randconfig-004-20260326    gcc-14
+i386                  randconfig-005-20260326    gcc-14
+i386                  randconfig-006-20260326    gcc-14
+i386                  randconfig-007-20260326    gcc-14
+i386                  randconfig-011-20260326    clang-20
+i386                  randconfig-012-20260326    clang-20
+i386                  randconfig-013-20260326    clang-20
+i386                  randconfig-014-20260326    clang-20
+i386                  randconfig-015-20260326    clang-20
+i386                  randconfig-016-20260326    clang-20
+i386                  randconfig-017-20260326    clang-20
+loongarch                        allmodconfig    clang-23
+loongarch                         allnoconfig    gcc-15.2.0
+loongarch                           defconfig    clang-19
+loongarch             randconfig-001-20260326    gcc-8.5.0
+loongarch             randconfig-002-20260326    gcc-8.5.0
+m68k                             allmodconfig    gcc-15.2.0
+m68k                              allnoconfig    gcc-15.2.0
+m68k                             allyesconfig    clang-16
+m68k                                defconfig    clang-19
+m68k                            q40_defconfig    gcc-15.2.0
+microblaze                        allnoconfig    gcc-15.2.0
+microblaze                       allyesconfig    gcc-15.2.0
+microblaze                          defconfig    clang-19
+mips                             allmodconfig    gcc-15.2.0
+mips                              allnoconfig    gcc-15.2.0
+mips                             allyesconfig    gcc-15.2.0
+mips                           ip30_defconfig    gcc-15.2.0
+nios2                            allmodconfig    clang-23
+nios2                             allnoconfig    clang-23
+nios2                             allnoconfig    gcc-11.5.0
+nios2                               defconfig    clang-19
+nios2                 randconfig-001-20260326    gcc-8.5.0
+nios2                 randconfig-002-20260326    gcc-8.5.0
+openrisc                         allmodconfig    clang-23
+openrisc                          allnoconfig    clang-23
+openrisc                          allnoconfig    gcc-15.2.0
+openrisc                            defconfig    gcc-15.2.0
+parisc                           allmodconfig    gcc-15.2.0
+parisc                            allnoconfig    clang-23
+parisc                            allnoconfig    gcc-15.2.0
+parisc                           allyesconfig    clang-19
+parisc                              defconfig    gcc-15.2.0
+parisc                randconfig-001-20260326    clang-19
+parisc                randconfig-002-20260326    clang-19
+parisc64                            defconfig    clang-19
+powerpc                          allmodconfig    gcc-15.2.0
+powerpc                           allnoconfig    clang-23
+powerpc                           allnoconfig    gcc-15.2.0
+powerpc               randconfig-001-20260326    clang-19
+powerpc               randconfig-002-20260326    clang-19
+powerpc64             randconfig-001-20260326    clang-19
+powerpc64             randconfig-002-20260326    clang-19
+riscv                            allmodconfig    clang-23
+riscv                             allnoconfig    clang-23
+riscv                             allnoconfig    gcc-15.2.0
+riscv                            allyesconfig    clang-16
+riscv                               defconfig    gcc-15.2.0
+riscv                 randconfig-001-20260326    clang-23
+riscv                 randconfig-002-20260326    clang-23
+s390                             allmodconfig    clang-19
+s390                              allnoconfig    clang-23
+s390                             allyesconfig    gcc-15.2.0
+s390                                defconfig    gcc-15.2.0
+s390                  randconfig-001-20260326    clang-23
+s390                  randconfig-002-20260326    clang-23
+sh                               allmodconfig    gcc-15.2.0
+sh                                allnoconfig    clang-23
+sh                                allnoconfig    gcc-15.2.0
+sh                               allyesconfig    clang-19
+sh                                  defconfig    gcc-14
+sh                    randconfig-001-20260326    clang-23
+sh                    randconfig-002-20260326    clang-23
+sparc                             allnoconfig    clang-23
+sparc                             allnoconfig    gcc-15.2.0
+sparc                               defconfig    gcc-15.2.0
+sparc                 randconfig-001-20260326    gcc-14
+sparc                 randconfig-002-20260326    gcc-14
+sparc64                          allmodconfig    clang-23
+sparc64                             defconfig    gcc-14
+sparc64               randconfig-001-20260326    gcc-14
+sparc64               randconfig-002-20260326    gcc-14
+um                               allmodconfig    clang-19
+um                                allnoconfig    clang-23
+um                               allyesconfig    gcc-15.2.0
+um                                  defconfig    gcc-14
+um                             i386_defconfig    gcc-14
+um                    randconfig-001-20260326    gcc-14
+um                    randconfig-002-20260326    gcc-14
+um                           x86_64_defconfig    gcc-14
+x86_64                           allmodconfig    clang-20
+x86_64                            allnoconfig    clang-20
+x86_64                            allnoconfig    clang-23
+x86_64                           allyesconfig    clang-20
+x86_64      buildonly-randconfig-001-20260326    clang-20
+x86_64      buildonly-randconfig-002-20260326    clang-20
+x86_64      buildonly-randconfig-003-20260326    clang-20
+x86_64      buildonly-randconfig-004-20260326    clang-20
+x86_64      buildonly-randconfig-005-20260326    clang-20
+x86_64      buildonly-randconfig-006-20260326    clang-20
+x86_64                              defconfig    gcc-14
+x86_64                                  kexec    clang-20
+x86_64                randconfig-001-20260326    clang-20
+x86_64                randconfig-002-20260326    clang-20
+x86_64                randconfig-003-20260326    clang-20
+x86_64                randconfig-004-20260326    clang-20
+x86_64                randconfig-005-20260326    clang-20
+x86_64                randconfig-006-20260326    clang-20
+x86_64                randconfig-011-20260326    gcc-14
+x86_64                randconfig-012-20260326    gcc-14
+x86_64                randconfig-013-20260326    gcc-14
+x86_64                randconfig-014-20260326    gcc-14
+x86_64                randconfig-015-20260326    gcc-14
+x86_64                randconfig-016-20260326    gcc-14
+x86_64                randconfig-071-20260326    gcc-14
+x86_64                randconfig-072-20260326    gcc-14
+x86_64                randconfig-073-20260326    gcc-14
+x86_64                randconfig-074-20260326    gcc-14
+x86_64                randconfig-075-20260326    gcc-14
+x86_64                randconfig-076-20260326    gcc-14
+x86_64                               rhel-9.4    clang-20
+x86_64                           rhel-9.4-bpf    gcc-14
+x86_64                          rhel-9.4-func    clang-20
+x86_64                    rhel-9.4-kselftests    clang-20
+x86_64                         rhel-9.4-kunit    gcc-14
+x86_64                           rhel-9.4-ltp    gcc-14
+x86_64                          rhel-9.4-rust    clang-20
+xtensa                            allnoconfig    clang-23
+xtensa                            allnoconfig    gcc-15.2.0
+xtensa                           allyesconfig    clang-23
+xtensa                randconfig-001-20260326    gcc-14
+xtensa                randconfig-002-20260326    gcc-14
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+327400a7d1255e319efb@syzkaller.appspotmail.com
-
-======================================================
-WARNING: possible circular locking dependency detected
-syzkaller #0 Tainted: G             L     
-------------------------------------------------------
-syz.9.3615/18333 is trying to acquire lock:
-ffffffff8ea843c0 (fs_reclaim){+.+.}-{0:0}, at: might_alloc include/linux/sched/mm.h:317 [inline]
-ffffffff8ea843c0 (fs_reclaim){+.+.}-{0:0}, at: slab_pre_alloc_hook mm/slub.c:4520 [inline]
-ffffffff8ea843c0 (fs_reclaim){+.+.}-{0:0}, at: slab_alloc_node mm/slub.c:4875 [inline]
-ffffffff8ea843c0 (fs_reclaim){+.+.}-{0:0}, at: kmem_cache_alloc_lru_noprof+0x45/0x640 mm/slub.c:4917
-
-but task is already holding lock:
-ffffffff8e99cfd0 (cgroup_threadgroup_rwsem){++++}-{0:0}, at: copy_process+0x2a1a/0x4430 kernel/fork.c:2375
-
-which lock already depends on the new lock.
-
-
-the existing dependency chain (in reverse order) is:
-
--> #7 (cgroup_threadgroup_rwsem){++++}-{0:0}:
-       percpu_down_write+0x54/0x320 kernel/locking/percpu-rwsem.c:232
-       cgroup_attach_lock kernel/cgroup/cgroup.c:2484 [inline]
-       cgroup_procs_write_start+0x574/0x900 kernel/cgroup/cgroup.c:3043
-       __cgroup_procs_write+0x9b/0x300 kernel/cgroup/cgroup.c:5326
-       cgroup_procs_write+0x27/0x50 kernel/cgroup/cgroup.c:5361
-       cgroup_file_write+0x331/0x8f0 kernel/cgroup/cgroup.c:4249
-       kernfs_fop_write_iter+0x3af/0x540 fs/kernfs/file.c:352
-       new_sync_write fs/read_write.c:595 [inline]
-       vfs_write+0x61d/0xb90 fs/read_write.c:688
-       ksys_write+0x150/0x270 fs/read_write.c:740
-       do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
-       do_syscall_64+0x14d/0xf80 arch/x86/entry/syscall_64.c:94
-       entry_SYSCALL_64_after_hwframe+0x77/0x7f
-
--> #6 (cpu_hotplug_lock){++++}-{0:0}:
-       percpu_down_read_internal include/linux/percpu-rwsem.h:53 [inline]
-       percpu_down_read include/linux/percpu-rwsem.h:77 [inline]
-       cpus_read_lock+0x42/0x160 kernel/cpu.c:490
-       static_key_slow_inc+0x12/0x30 kernel/jump_label.c:190
-       nbd_reconnect_socket drivers/block/nbd.c:1342 [inline]
-       nbd_genl_reconfigure+0x132f/0x1ea0 drivers/block/nbd.c:2431
-       genl_family_rcv_msg_doit+0x22a/0x330 net/netlink/genetlink.c:1114
-       genl_family_rcv_msg net/netlink/genetlink.c:1194 [inline]
-       genl_rcv_msg+0x61c/0x7a0 net/netlink/genetlink.c:1209
-       netlink_rcv_skb+0x232/0x4b0 net/netlink/af_netlink.c:2550
-       genl_rcv+0x28/0x40 net/netlink/genetlink.c:1218
-       netlink_unicast_kernel net/netlink/af_netlink.c:1318 [inline]
-       netlink_unicast+0x80f/0x9b0 net/netlink/af_netlink.c:1344
-       netlink_sendmsg+0x813/0xb40 net/netlink/af_netlink.c:1894
-       sock_sendmsg_nosec+0x112/0x150 net/socket.c:796
-       __sock_sendmsg net/socket.c:811 [inline]
-       ____sys_sendmsg+0x589/0x8c0 net/socket.c:2668
-       ___sys_sendmsg+0x2a5/0x360 net/socket.c:2722
-       __sys_sendmsg net/socket.c:2754 [inline]
-       __do_sys_sendmsg net/socket.c:2759 [inline]
-       __se_sys_sendmsg net/socket.c:2757 [inline]
-       __x64_sys_sendmsg+0x1bd/0x2a0 net/socket.c:2757
-       do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
-       do_syscall_64+0x14d/0xf80 arch/x86/entry/syscall_64.c:94
-       entry_SYSCALL_64_after_hwframe+0x77/0x7f
-
--> #5 (&nsock->tx_lock){+.+.}-{4:4}:
-       __mutex_lock_common kernel/locking/mutex.c:632 [inline]
-       __mutex_lock+0x19e/0x1420 kernel/locking/mutex.c:794
-       nbd_handle_cmd drivers/block/nbd.c:1143 [inline]
-       nbd_queue_rq+0x37b/0x1100 drivers/block/nbd.c:1207
-       blk_mq_dispatch_rq_list+0xa70/0x1910 block/blk-mq.c:2148
-       __blk_mq_do_dispatch_sched block/blk-mq-sched.c:168 [inline]
-       blk_mq_do_dispatch_sched block/blk-mq-sched.c:182 [inline]
-       __blk_mq_sched_dispatch_requests+0xdcc/0x1600 block/blk-mq-sched.c:307
-       blk_mq_sched_dispatch_requests+0xd7/0x190 block/blk-mq-sched.c:329
-       blk_mq_run_hw_queue+0x348/0x4f0 block/blk-mq.c:2386
-       blk_mq_dispatch_list+0xd16/0xe10 include/linux/spinlock.h:-1
-       blk_mq_flush_plug_list+0x48d/0x570 block/blk-mq.c:2997
-       __blk_flush_plug+0x3ed/0x4d0 block/blk-core.c:1230
-       blk_finish_plug block/blk-core.c:1257 [inline]
-       __submit_bio+0x28d/0x580 block/blk-core.c:649
-       __submit_bio_noacct_mq block/blk-core.c:722 [inline]
-       submit_bio_noacct_nocheck+0x2f4/0xa40 block/blk-core.c:753
-       submit_bh fs/buffer.c:2842 [inline]
-       block_read_full_folio+0x599/0x830 fs/buffer.c:2444
-       filemap_read_folio+0x137/0x3b0 mm/filemap.c:2502
-       do_read_cache_folio+0x358/0x590 mm/filemap.c:4107
-       read_mapping_folio include/linux/pagemap.h:1028 [inline]
-       read_part_sector+0xb6/0x2b0 block/partitions/core.c:723
-       adfspart_check_ICS+0xa5/0xa40 block/partitions/acorn.c:360
-       check_partition block/partitions/core.c:142 [inline]
-       blk_add_partitions block/partitions/core.c:590 [inline]
-       bdev_disk_changed+0x7ba/0x1550 block/partitions/core.c:694
-       blkdev_get_whole+0x380/0x510 block/bdev.c:764
-       bdev_open+0x31e/0xd30 block/bdev.c:973
-       blkdev_open+0x470/0x610 block/fops.c:697
-       do_dentry_open+0x785/0x14e0 fs/open.c:949
-       vfs_open+0x3b/0x340 fs/open.c:1081
-       do_open fs/namei.c:4693 [inline]
-       path_openat+0x2e08/0x3860 fs/namei.c:4852
-       do_file_open+0x23e/0x4a0 fs/namei.c:4881
-       do_sys_openat2+0x113/0x200 fs/open.c:1366
-       do_sys_open fs/open.c:1372 [inline]
-       __do_sys_openat fs/open.c:1388 [inline]
-       __se_sys_openat fs/open.c:1383 [inline]
-       __x64_sys_openat+0x138/0x170 fs/open.c:1383
-       do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
-       do_syscall_64+0x14d/0xf80 arch/x86/entry/syscall_64.c:94
-       entry_SYSCALL_64_after_hwframe+0x77/0x7f
-
--> #4 (&cmd->lock){+.+.}-{4:4}:
-       __mutex_lock_common kernel/locking/mutex.c:632 [inline]
-       __mutex_lock+0x19e/0x1420 kernel/locking/mutex.c:794
-       nbd_queue_rq+0xc6/0x1100 drivers/block/nbd.c:1199
-       blk_mq_dispatch_rq_list+0xa70/0x1910 block/blk-mq.c:2148
-       __blk_mq_do_dispatch_sched block/blk-mq-sched.c:168 [inline]
-       blk_mq_do_dispatch_sched block/blk-mq-sched.c:182 [inline]
-       __blk_mq_sched_dispatch_requests+0xdcc/0x1600 block/blk-mq-sched.c:307
-       blk_mq_sched_dispatch_requests+0xd7/0x190 block/blk-mq-sched.c:329
-       blk_mq_run_hw_queue+0x348/0x4f0 block/blk-mq.c:2386
-       blk_mq_dispatch_list+0xd16/0xe10 include/linux/spinlock.h:-1
-       blk_mq_flush_plug_list+0x48d/0x570 block/blk-mq.c:2997
-       __blk_flush_plug+0x3ed/0x4d0 block/blk-core.c:1230
-       blk_finish_plug block/blk-core.c:1257 [inline]
-       __submit_bio+0x28d/0x580 block/blk-core.c:649
-       __submit_bio_noacct_mq block/blk-core.c:722 [inline]
-       submit_bio_noacct_nocheck+0x2f4/0xa40 block/blk-core.c:753
-       submit_bh fs/buffer.c:2842 [inline]
-       block_read_full_folio+0x599/0x830 fs/buffer.c:2444
-       filemap_read_folio+0x137/0x3b0 mm/filemap.c:2502
-       do_read_cache_folio+0x358/0x590 mm/filemap.c:4107
-       read_mapping_folio include/linux/pagemap.h:1028 [inline]
-       read_part_sector+0xb6/0x2b0 block/partitions/core.c:723
-       adfspart_check_ICS+0xa5/0xa40 block/partitions/acorn.c:360
-       check_partition block/partitions/core.c:142 [inline]
-       blk_add_partitions block/partitions/core.c:590 [inline]
-       bdev_disk_changed+0x7ba/0x1550 block/partitions/core.c:694
-       blkdev_get_whole+0x380/0x510 block/bdev.c:764
-       bdev_open+0x31e/0xd30 block/bdev.c:973
-       blkdev_open+0x470/0x610 block/fops.c:697
-       do_dentry_open+0x785/0x14e0 fs/open.c:949
-       vfs_open+0x3b/0x340 fs/open.c:1081
-       do_open fs/namei.c:4693 [inline]
-       path_openat+0x2e08/0x3860 fs/namei.c:4852
-       do_file_open+0x23e/0x4a0 fs/namei.c:4881
-       do_sys_openat2+0x113/0x200 fs/open.c:1366
-       do_sys_open fs/open.c:1372 [inline]
-       __do_sys_openat fs/open.c:1388 [inline]
-       __se_sys_openat fs/open.c:1383 [inline]
-       __x64_sys_openat+0x138/0x170 fs/open.c:1383
-       do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
-       do_syscall_64+0x14d/0xf80 arch/x86/entry/syscall_64.c:94
-       entry_SYSCALL_64_after_hwframe+0x77/0x7f
-
--> #3 (set->srcu){.+.+}-{0:0}:
-       srcu_lock_sync include/linux/srcu.h:199 [inline]
-       __synchronize_srcu+0xca/0x3e0 kernel/rcu/srcutree.c:1505
-       elevator_switch+0x1e8/0x7a0 block/elevator.c:576
-       elevator_change+0x2cc/0x450 block/elevator.c:681
-       elevator_set_default+0x36c/0x430 block/elevator.c:754
-       blk_register_queue+0x3e9/0x4e0 block/blk-sysfs.c:987
-       __add_disk+0x677/0xd50 block/genhd.c:528
-       add_disk_fwnode+0xfb/0x480 block/genhd.c:597
-       add_disk include/linux/blkdev.h:793 [inline]
-       nbd_dev_add+0x72c/0xb50 drivers/block/nbd.c:1984
-       nbd_init+0x168/0x1f0 drivers/block/nbd.c:2692
-       do_one_initcall+0x250/0x870 init/main.c:1386
-       do_initcall_level+0x104/0x190 init/main.c:1448
-       do_initcalls+0x59/0xa0 init/main.c:1464
-       kernel_init_freeable+0x2a6/0x3e0 init/main.c:1696
-       kernel_init+0x1d/0x1d0 init/main.c:1586
-       ret_from_fork+0x51e/0xb90 arch/x86/kernel/process.c:158
-       ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:245
-
--> #2 (&q->elevator_lock){+.+.}-{4:4}:
-       __mutex_lock_common kernel/locking/mutex.c:632 [inline]
-       __mutex_lock+0x19e/0x1420 kernel/locking/mutex.c:794
-       elevator_change+0x1b3/0x450 block/elevator.c:679
-       elevator_set_none+0xb5/0x140 block/elevator.c:769
-       blk_mq_elv_switch_none block/blk-mq.c:5131 [inline]
-       __blk_mq_update_nr_hw_queues block/blk-mq.c:5176 [inline]
-       blk_mq_update_nr_hw_queues+0x5e7/0x1a60 block/blk-mq.c:5241
-       nbd_start_device+0x17f/0xb10 drivers/block/nbd.c:1489
-       nbd_genl_connect+0x165b/0x1cf0 drivers/block/nbd.c:2239
-       genl_family_rcv_msg_doit+0x22a/0x330 net/netlink/genetlink.c:1114
-       genl_family_rcv_msg net/netlink/genetlink.c:1194 [inline]
-       genl_rcv_msg+0x61c/0x7a0 net/netlink/genetlink.c:1209
-       netlink_rcv_skb+0x232/0x4b0 net/netlink/af_netlink.c:2550
-       genl_rcv+0x28/0x40 net/netlink/genetlink.c:1218
-       netlink_unicast_kernel net/netlink/af_netlink.c:1318 [inline]
-       netlink_unicast+0x80f/0x9b0 net/netlink/af_netlink.c:1344
-       netlink_sendmsg+0x813/0xb40 net/netlink/af_netlink.c:1894
-       sock_sendmsg_nosec+0x112/0x150 net/socket.c:796
-       __sock_sendmsg net/socket.c:811 [inline]
-       ____sys_sendmsg+0x589/0x8c0 net/socket.c:2668
-       ___sys_sendmsg+0x2a5/0x360 net/socket.c:2722
-       __sys_sendmsg net/socket.c:2754 [inline]
-       __do_sys_sendmsg net/socket.c:2759 [inline]
-       __se_sys_sendmsg net/socket.c:2757 [inline]
-       __x64_sys_sendmsg+0x1bd/0x2a0 net/socket.c:2757
-       do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
-       do_syscall_64+0x14d/0xf80 arch/x86/entry/syscall_64.c:94
-       entry_SYSCALL_64_after_hwframe+0x77/0x7f
-
--> #1 (&q->q_usage_counter(io)#49){++++}-{0:0}:
-       blk_alloc_queue+0x546/0x680 block/blk-core.c:461
-       blk_mq_alloc_queue block/blk-mq.c:4450 [inline]
-       __blk_mq_alloc_disk+0x197/0x390 block/blk-mq.c:4497
-       nbd_dev_add+0x499/0xb50 drivers/block/nbd.c:1954
-       nbd_init+0x168/0x1f0 drivers/block/nbd.c:2692
-       do_one_initcall+0x250/0x870 init/main.c:1386
-       do_initcall_level+0x104/0x190 init/main.c:1448
-       do_initcalls+0x59/0xa0 init/main.c:1464
-       kernel_init_freeable+0x2a6/0x3e0 init/main.c:1696
-       kernel_init+0x1d/0x1d0 init/main.c:1586
-       ret_from_fork+0x51e/0xb90 arch/x86/kernel/process.c:158
-       ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:245
-
--> #0 (fs_reclaim){+.+.}-{0:0}:
-       check_prev_add kernel/locking/lockdep.c:3165 [inline]
-       check_prevs_add kernel/locking/lockdep.c:3284 [inline]
-       validate_chain kernel/locking/lockdep.c:3908 [inline]
-       __lock_acquire+0x15a5/0x2cf0 kernel/locking/lockdep.c:5237
-       lock_acquire+0x106/0x350 kernel/locking/lockdep.c:5868
-       __fs_reclaim_acquire mm/page_alloc.c:4312 [inline]
-       fs_reclaim_acquire+0x71/0x100 mm/page_alloc.c:4326
-       might_alloc include/linux/sched/mm.h:317 [inline]
-       slab_pre_alloc_hook mm/slub.c:4520 [inline]
-       slab_alloc_node mm/slub.c:4875 [inline]
-       kmem_cache_alloc_lru_noprof+0x45/0x640 mm/slub.c:4917
-       alloc_inode+0xb8/0x1b0 fs/inode.c:349
-       iget_locked+0x131/0x6a0 fs/inode.c:1480
-       kernfs_get_inode+0x4f/0x780 fs/kernfs/inode.c:252
-       cgroup_may_write kernel/cgroup/cgroup.c:5252 [inline]
-       cgroup_css_set_fork kernel/cgroup/cgroup.c:6693 [inline]
-       cgroup_can_fork+0xaf9/0xe70 kernel/cgroup/cgroup.c:6783
-       copy_process+0x2a1a/0x4430 kernel/fork.c:2375
-       kernel_clone+0x26d/0x8e0 kernel/fork.c:2720
-       __do_sys_clone3 kernel/fork.c:3021 [inline]
-       __se_sys_clone3+0x33c/0x360 kernel/fork.c:3000
-       do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
-       do_syscall_64+0x14d/0xf80 arch/x86/entry/syscall_64.c:94
-       entry_SYSCALL_64_after_hwframe+0x77/0x7f
-
-other info that might help us debug this:
-
-Chain exists of:
-  fs_reclaim --> cpu_hotplug_lock --> cgroup_threadgroup_rwsem
-
- Possible unsafe locking scenario:
-
-       CPU0                    CPU1
-       ----                    ----
-  rlock(cgroup_threadgroup_rwsem);
-                               lock(cpu_hotplug_lock);
-                               lock(cgroup_threadgroup_rwsem);
-  lock(fs_reclaim);
-
- *** DEADLOCK ***
-
-2 locks held by syz.9.3615/18333:
- #0: ffffffff8e99cd20 (cgroup_mutex){+.+.}-{4:4}, at: cgroup_lock include/linux/cgroup.h:455 [inline]
- #0: ffffffff8e99cd20 (cgroup_mutex){+.+.}-{4:4}, at: cgroup_css_set_fork kernel/cgroup/cgroup.c:6651 [inline]
- #0: ffffffff8e99cd20 (cgroup_mutex){+.+.}-{4:4}, at: cgroup_can_fork+0x7c/0xe70 kernel/cgroup/cgroup.c:6783
- #1: ffffffff8e99cfd0 (cgroup_threadgroup_rwsem){++++}-{0:0}, at: copy_process+0x2a1a/0x4430 kernel/fork.c:2375
-
-stack backtrace:
-CPU: 1 UID: 0 PID: 18333 Comm: syz.9.3615 Tainted: G             L      syzkaller #0 PREEMPT(full) 
-Tainted: [L]=SOFTLOCKUP
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 02/12/2026
-Call Trace:
- <TASK>
- dump_stack_lvl+0xe8/0x150 lib/dump_stack.c:120
- print_circular_bug+0x2e1/0x300 kernel/locking/lockdep.c:2043
- check_noncircular+0x12e/0x150 kernel/locking/lockdep.c:2175
- check_prev_add kernel/locking/lockdep.c:3165 [inline]
- check_prevs_add kernel/locking/lockdep.c:3284 [inline]
- validate_chain kernel/locking/lockdep.c:3908 [inline]
- __lock_acquire+0x15a5/0x2cf0 kernel/locking/lockdep.c:5237
- lock_acquire+0x106/0x350 kernel/locking/lockdep.c:5868
- __fs_reclaim_acquire mm/page_alloc.c:4312 [inline]
- fs_reclaim_acquire+0x71/0x100 mm/page_alloc.c:4326
- might_alloc include/linux/sched/mm.h:317 [inline]
- slab_pre_alloc_hook mm/slub.c:4520 [inline]
- slab_alloc_node mm/slub.c:4875 [inline]
- kmem_cache_alloc_lru_noprof+0x45/0x640 mm/slub.c:4917
- alloc_inode+0xb8/0x1b0 fs/inode.c:349
- iget_locked+0x131/0x6a0 fs/inode.c:1480
- kernfs_get_inode+0x4f/0x780 fs/kernfs/inode.c:252
- cgroup_may_write kernel/cgroup/cgroup.c:5252 [inline]
- cgroup_css_set_fork kernel/cgroup/cgroup.c:6693 [inline]
- cgroup_can_fork+0xaf9/0xe70 kernel/cgroup/cgroup.c:6783
- copy_process+0x2a1a/0x4430 kernel/fork.c:2375
- kernel_clone+0x26d/0x8e0 kernel/fork.c:2720
- __do_sys_clone3 kernel/fork.c:3021 [inline]
- __se_sys_clone3+0x33c/0x360 kernel/fork.c:3000
- do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
- do_syscall_64+0x14d/0xf80 arch/x86/entry/syscall_64.c:94
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
-RIP: 0033:0x7f49a759c799
-Code: ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 44 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 e8 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007f49a8387ef8 EFLAGS: 00000246 ORIG_RAX: 00000000000001b3
-RAX: ffffffffffffffda RBX: 0000000000000058 RCX: 00007f49a759c799
-RDX: 00007f49a8387f10 RSI: 0000000000000058 RDI: 00007f49a8387f10
-RBP: 00007f49a7632c99 R08: 0000000000000000 R09: 0000000000000058
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-R13: 00007f49a7816038 R14: 00007f49a7815fa0 R15: 00007fff59f21a58
- </TASK>
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
+--
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
