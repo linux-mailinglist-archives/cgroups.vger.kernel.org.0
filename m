@@ -1,201 +1,183 @@
-Return-Path: <cgroups+bounces-15098-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-15099-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id PCnzGZDWyWnE2wUAu9opvQ
-	(envelope-from <cgroups+bounces-15098-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Mon, 30 Mar 2026 03:49:04 +0200
+	id ONcIGsJjymkj8gUAu9opvQ
+	(envelope-from <cgroups+bounces-15099-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Mon, 30 Mar 2026 13:51:30 +0200
 X-Original-To: lists+cgroups@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 51A78354A5E
-	for <lists+cgroups@lfdr.de>; Mon, 30 Mar 2026 03:49:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 067B935A920
+	for <lists+cgroups@lfdr.de>; Mon, 30 Mar 2026 13:51:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id EDAF5300B068
-	for <lists+cgroups@lfdr.de>; Mon, 30 Mar 2026 01:49:01 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id A34BB300879C
+	for <lists+cgroups@lfdr.de>; Mon, 30 Mar 2026 11:41:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D9A82254B18;
-	Mon, 30 Mar 2026 01:49:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1D1013C7E11;
+	Mon, 30 Mar 2026 11:41:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QriGvYrj"
 X-Original-To: cgroups@vger.kernel.org
-Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-dl1-f45.google.com (mail-dl1-f45.google.com [74.125.82.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 070526DCE1;
-	Mon, 30 Mar 2026 01:48:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B93243C73F9
+	for <cgroups@vger.kernel.org>; Mon, 30 Mar 2026 11:41:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.82.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1774835340; cv=none; b=lZBU67m2f0iA0TQiAL5fjitDu4fAj2or1vyogK3lKbp/iRSVz+GI6dCoVYvhDKDrxc3zYrsopHmuu/CPyvHagKFWayFcdNmSZG8dbDlA+Pt64W+P/RRvKbSdHYtleP8YuTwEE9vSByEy5lo4sxGkV2Lqv3KAVxu5umlRDL4Fz7s=
+	t=1774870914; cv=none; b=JLBGk9mhzOIJfR6URD7ChyD7XQS1IEg0CSZLvqQFJ3+m6zWnIfYCaVtDK4SiQRNRIXO32Qj4hGLeHYEgLBfVCdEc9h08K+6NRqAHoA7OIIY0AtG09mPhxaSJPWTFpoEbB00EDP+uezOu3pw/etR23mNOddw9QiiE0cEmUfPGRcc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1774835340; c=relaxed/simple;
-	bh=O4S9DQ4/Sw38eGYqAXr40GNp1o8gol7Zg1etvO162bs=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=VY8NsKevbmTo8dH5nMkqSK8uKcNEZbbFskUld6OTwGG7j7kUXKa7hsqF3cVLUK0S3qPblLVk0P9i0iLFujmmuFB0YjTUH8Kr6Vf30kPP3rHj8wL+r2HXf1kGHwTHuKgN72m5tRhrmacwME7CfPBAW+bVundf4INmjLd+D0W6nHw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.170])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTPS id 4fkYzk6MGqzKHMVg;
-	Mon, 30 Mar 2026 09:48:02 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.128])
-	by mail.maildlp.com (Postfix) with ESMTP id AEDFF40572;
-	Mon, 30 Mar 2026 09:48:48 +0800 (CST)
-Received: from [10.67.111.176] (unknown [10.67.111.176])
-	by APP4 (Coremail) with SMTP id gCh0CgDHoEt_1slpEJzwCg--.6825S2;
-	Mon, 30 Mar 2026 09:48:48 +0800 (CST)
-Message-ID: <c80c6838-e33e-4e5c-82ac-9bfa4d012dcb@huaweicloud.com>
-Date: Mon, 30 Mar 2026 09:48:46 +0800
+	s=arc-20240116; t=1774870914; c=relaxed/simple;
+	bh=jy4JXObkxn6zs5G9yFF18bF4JPw9+ojVLYoPuhxyOMc=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=HfGKTAdqqBcM0RxnIKrNlrAfhy4KUNk3PMZuwafxTgDXPdt7ywSSrT/z1a2EVHGa94yq9jDgBiH5zSI6OeFsgWiTRQ4uZAllSlrJDkT5mO37KA1LM7DLB1SPLgot39dByu5s25OXIq9cgJKqVWw1kbVsNphhDIp4ywkEVQhS2jU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QriGvYrj; arc=none smtp.client-ip=74.125.82.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-dl1-f45.google.com with SMTP id a92af1059eb24-126ea4b77adso5956532c88.1
+        for <cgroups@vger.kernel.org>; Mon, 30 Mar 2026 04:41:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20251104; t=1774870913; x=1775475713; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=O8qbAM+0abt2Xsw25EiZl6rgD9G86cRKj274QNi4sMI=;
+        b=QriGvYrjwcEeiOdDxdSPz/bkSiWT6RprRk+aTdrU2IXcqAPLIIhrTbv20Y+e0dhseY
+         Q6r8j/TvYKLQIj64d40XvKCLikE65OUcr9lsDIbDBfzevvQmrfICTTrl1AkZ0mT3MwBy
+         kk+8EQSmsb3TvDt3+bRl5Z3n+oLHVlWlkceSFdx8sDA8tbA97aPNzOE85nMfrkfdTOga
+         wEGna2Z2tclWxx/xa3UKtYNaAOV0gEWT8seRD8DkFFIwERMaDsSr6X/YmTiL4xvZSWQs
+         skweBd8wYRqUIIju2jZDYepRhI90NFLR+VFsZn4fEMP9zXAweOksr0VKRhoJN49x28b6
+         0DFw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1774870913; x=1775475713;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=O8qbAM+0abt2Xsw25EiZl6rgD9G86cRKj274QNi4sMI=;
+        b=IDTKrOfsV6Q1To83yJaIML/3On36JYjUwSrnUeKFsCmIeFID+iZj4uxe2cR7mfOcJt
+         9Lj3t+Ny7qz18rQJKyBfyoghmbS/tqYTMTeiuQFGX4KS1jrxr0T+setY/Ob7LEDk9cJk
+         ezX71n8HeLjDWCG0Hth1K7JQ5MSarhLjCPWS2zvZgq42ajI/VyqtzGrwv++1T0y8CHNb
+         GXhjb+8viqoCOMo125JxUwH7aTKr46l9UO5EVJB/rkC/bT/png/AsfnSje/RPFjKK0yy
+         YJpJdYu484248SS2sDB40EZL+HJTLnbyH8ncqNRP423LVwb2GKsKZOEkeyZeYFgmXn20
+         m5zA==
+X-Forwarded-Encrypted: i=1; AJvYcCUkNXAAU+fYjmz8vWCkTStHxUo4jN5nEkcMvYevfAZjF0RfnRCxZPUB14khrL9nOhYQjBVRhxkt@vger.kernel.org
+X-Gm-Message-State: AOJu0Yxph6c+7YYOnkwDA0a5wGOWevJVvb1ZYUJDoWBfiH8xn/at06RP
+	T+I23FiL1/6cwAPuOBmy5cVB7ht0knbEC0Sky/Vfpd30DAG4eqzksW1v
+X-Gm-Gg: ATEYQzypCNqrYFsAM+bEOFDxFMbePrrj28dak5Bl5kdSfmrAgIdPK4/G9ZXRsciazb2
+	YCRO4GH/5IljdJrQnDndfb51U3wo13ACHSeHFg3P7gZzEf1xK7SS8mhCnZ73c66wG/Ch/CcXKs3
+	yLsp0HiO5rqnTKVcj5meaXQdlQ79DBpVe7XFldgs2t1c/aSfrLdtaggdHT0AXhG6ARetUqiBTHf
+	wjCn7I4JVyAetiyhBR5wslw/93dsdxcr/v3/pXOZMfW91BK8E8f3Yyv4ufmoIte1OjyGtzxlHkV
+	2ky343W7PmXlcPZszMLuxKgA2qbrWMs8RwajUmmfKC08CHJoyn7nC9OtV9FCet+7p2SOT9AwMrY
+	KZDYO6/2/NW2Uon+DmiFFynesE+3Mc81rh6QUCIoUdxzjBI4/GE7eqgnMCByggmBfUmcrSkrLAs
+	vUqgMqsmaDoQ8SKJHikk6BMz2XzS/YyBx64EY=
+X-Received: by 2002:a05:7022:4393:b0:128:d396:f2e2 with SMTP id a92af1059eb24-12ab2857b2emr5938952c88.8.1774870912754;
+        Mon, 30 Mar 2026 04:41:52 -0700 (PDT)
+Received: from localhost.localdomain ([74.48.213.230])
+        by smtp.gmail.com with ESMTPSA id a92af1059eb24-12ab97cad88sm7602987c88.1.2026.03.30.04.41.43
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 30 Mar 2026 04:41:51 -0700 (PDT)
+From: Qiliang Yuan <realwujing@gmail.com>
+To: tj@kernel.org
+Cc: longman@redhat.com,
+	cgroups@vger.kernel.org,
+	akpm@linux-foundation.org,
+	anna-maria@linutronix.de,
+	boqun.feng@gmail.com,
+	bsegall@google.com,
+	dietmar.eggemann@arm.com,
+	frederic@kernel.org,
+	hannes@cmpxchg.org,
+	jackmanb@google.com,
+	jiangshanlai@gmail.com,
+	joelagnelf@nvidia.com,
+	josh@joshtriplett.org,
+	juri.lelli@redhat.com,
+	linux-kernel@vger.kernel.org,
+	linux-kselftest@vger.kernel.org,
+	linux-mm@kvack.org,
+	mathieu.desnoyers@efficios.com,
+	mgorman@suse.de,
+	mhocko@suse.com,
+	mingo@kernel.org,
+	mingo@redhat.com,
+	neeraj.upadhyay@kernel.org,
+	paulmck@kernel.org,
+	peterz@infradead.org,
+	qiang.zhang@linux.dev,
+	rcu@vger.kernel.org,
+	realwujing@gmail.com,
+	rostedt@goodmis.org,
+	shuah@kernel.org,
+	surenb@google.com,
+	tglx@kernel.org,
+	urezki@gmail.com,
+	vbabka@suse.cz,
+	vincent.guittot@linaro.org,
+	vschneid@redhat.com,
+	ziy@nvidia.com
+Subject: Re: [PATCH 00/15] Implementation of Dynamic Housekeeping & Enhanced Isolation (DHEI)
+Date: Mon, 30 Mar 2026 19:41:21 +0800
+Message-ID: <20260330114121.101232-1-realwujing@gmail.com>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <acQHKwGhYrpoOH1P@slm.duckdns.org>
+References: <acQHKwGhYrpoOH1P@slm.duckdns.org>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 2/3] cgroup/cpuset: Skip security check for hotplug
- induced v1 task migration
-To: Waiman Long <longman@redhat.com>, Chen Ridong <chenridong@huawei.com>,
- Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>,
- =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>
-Cc: cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20260329173958.2634925-1-longman@redhat.com>
- <20260329173958.2634925-3-longman@redhat.com>
-Content-Language: en-US
-From: Chen Ridong <chenridong@huaweicloud.com>
-In-Reply-To: <20260329173958.2634925-3-longman@redhat.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID:gCh0CgDHoEt_1slpEJzwCg--.6825S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxWF18uF1ftr1xGw1kKrW8Crg_yoWrJrykpF
-	W8Ga45Ar45G3Wjk347t3yDWryrKw4kJF17G3Z8trn8AF9xt3W09F1jgwn8Xry0yF4UW3W2
-	yF4ava1a93WDtrJanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUylb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxkF7I0En4kS14v26r126r1DMxAIw28IcxkI7VAK
-	I48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7
-	xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUAVWUtwCIc40Y0x0EwIxGrwCI42IY6xII
-	jxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw2
-	0EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x02
-	67AKxVWUJVW8JbIYCTnIWIevJa73UjIFyTuYvjxUwxhLUUUUU
-X-CM-SenderInfo: hfkh02xlgr0w46kxt4xhlfz01xgou0bp/
-X-Spamd-Result: default: False [-1.46 / 15.00];
+Content-Transfer-Encoding: 8bit
+X-Spamd-Result: default: False [0.84 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10];
+	MID_CONTAINS_FROM(1.00)[];
+	R_MISSING_CHARSET(0.50)[];
+	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
+	R_DKIM_ALLOW(-0.20)[gmail.com:s=20251104];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	MID_RHS_MATCH_FROM(0.00)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	TAGGED_RCPT(0.00)[cgroups];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	NEURAL_HAM(-0.00)[-1.000];
-	TO_DN_SOME(0.00)[];
 	MIME_TRACE(0.00)[0:+];
-	RCPT_COUNT_SEVEN(0.00)[7];
-	R_DKIM_NA(0.00)[];
-	DMARC_NA(0.00)[huaweicloud.com];
-	FROM_NEQ_ENVFROM(0.00)[chenridong@huaweicloud.com,cgroups@vger.kernel.org];
+	RCPT_COUNT_TWELVE(0.00)[38];
+	FREEMAIL_CC(0.00)[redhat.com,vger.kernel.org,linux-foundation.org,linutronix.de,gmail.com,google.com,arm.com,kernel.org,cmpxchg.org,nvidia.com,joshtriplett.org,kvack.org,efficios.com,suse.de,suse.com,infradead.org,linux.dev,goodmis.org,suse.cz,linaro.org];
+	RCVD_TLS_LAST(0.00)[];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-15099-lists,cgroups=lfdr.de];
+	DKIM_TRACE(0.00)[gmail.com:+];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	FREEMAIL_FROM(0.00)[gmail.com];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[realwujing@gmail.com,cgroups@vger.kernel.org];
 	FROM_HAS_DN(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	TAGGED_FROM(0.00)[bounces-15098-lists,cgroups=lfdr.de];
-	RCVD_COUNT_FIVE(0.00)[6];
-	RCVD_TLS_LAST(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[5];
+	NEURAL_HAM(-0.00)[-1.000];
+	TO_DN_NONE(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	TAGGED_RCPT(0.00)[cgroups];
 	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 51A78354A5E
+X-Rspamd-Queue-Id: 067B935A920
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
+Hi Tejun,
 
+On Wed, Mar 25, 2026 at 04:02:44PM +0100, Tejun Heo wrote:
+> This needs to be coordinated with the existing cpuset and isolation
+> infrastructures.
 
-On 2026/3/30 1:39, Waiman Long wrote:
-> When a CPU hot removal causes a v1 cpuset to lose all its CPUs, the
-> cpuset hotplug handler will schedule a work function to migrate tasks
-> in that cpuset with no CPU to its ancestor to enable those tasks to
-> continue running.
-> 
-> If a strict security policy is in place, however, the task migration
-> may fail when security_task_setscheduler() call in cpuset_can_attach()
-> returns a -EACCESS error. That will mean that those tasks will have
-> no CPU to run on. The system administrators will have to explicitly
-> intervene to either add CPUs to that cpuset or move the tasks elsewhere
-> if they are aware of it.
-> 
-> This problem was found by a reported test failure in the LTP's
-> cpuset_hotplug_test.sh. Fix this problem by treating this special case
-> as an exception to skip the setsched security check as it is initated
-> internally within the kernel itself instead of from user input. Do that
-> by setting a new one-off CS_TASKS_OUT flag in the affected cpuset by the
-> hotplug handler to allow cpuset_can_attach() to skip the security check.
-> 
-> With that patch applied, the cpuset_hotplug_test.sh test can be run
-> successfully without failure.
-> 
-> Signed-off-by: Waiman Long <longman@redhat.com>
-> ---
->  kernel/cgroup/cpuset-internal.h |  1 +
->  kernel/cgroup/cpuset-v1.c       |  3 +++
->  kernel/cgroup/cpuset.c          | 14 ++++++++++++++
->  3 files changed, 18 insertions(+)
-> 
-> diff --git a/kernel/cgroup/cpuset-internal.h b/kernel/cgroup/cpuset-internal.h
-> index fd7d19842ded..75e2c20249ad 100644
-> --- a/kernel/cgroup/cpuset-internal.h
-> +++ b/kernel/cgroup/cpuset-internal.h
-> @@ -46,6 +46,7 @@ typedef enum {
->  	CS_SCHED_LOAD_BALANCE,
->  	CS_SPREAD_PAGE,
->  	CS_SPREAD_SLAB,
-> +	CS_TASKS_OUT,
->  } cpuset_flagbits_t;
->  
->  /* The various types of files and directories in a cpuset file system */
-> diff --git a/kernel/cgroup/cpuset-v1.c b/kernel/cgroup/cpuset-v1.c
-> index 7308e9b02495..0c818edd0a1d 100644
-> --- a/kernel/cgroup/cpuset-v1.c
-> +++ b/kernel/cgroup/cpuset-v1.c
-> @@ -322,6 +322,9 @@ void cpuset1_hotplug_update_tasks(struct cpuset *cs,
->  			return;
->  		}
->  
-> +		/* Enable task removal without security check */
-> +		set_bit(CS_TASKS_OUT, &cs->flags);
-> +
->  		s->cs = cs;
->  		INIT_WORK(&s->work, cpuset_migrate_tasks_workfn);
->  		schedule_work(&s->work);
-> diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
-> index 58c5b7b72cca..24d3ceef7991 100644
-> --- a/kernel/cgroup/cpuset.c
-> +++ b/kernel/cgroup/cpuset.c
-> @@ -3011,6 +3011,20 @@ static int cpuset_can_attach(struct cgroup_taskset *tset)
->  	setsched_check = !cpuset_v2() ||
->  		!cpumask_equal(cs->effective_cpus, oldcs->effective_cpus) ||
->  		!nodes_equal(cs->effective_mems, oldcs->effective_mems);
-> +	/*
-> +	 * Also check if task migration away from the old cpuset is allowed
-> +	 * without security check. This bit should only be set by the hotplug
-> +	 * handler when task migration from a child v1 cpuset to its ancestor
-> +	 * is needed because there is no CPU left for the tasks to run on after
-> +	 * a hot CPU removal. Clear the bit if set as it is one-off. Also
-> +	 * doube-check the CPU emptiness of oldcs to be sure before clearing
-> +	 * setsched_check.
-> +	 */
-> +	if (test_bit(CS_TASKS_OUT, &oldcs->flags)) {
-> +		if (cpumask_empty(oldcs->effective_cpus))
-> +			setsched_check = false;
-> +		clear_bit(CS_TASKS_OUT, &oldcs->flags);
-> +	}
->  
+Thank you for pointing this out. I agree that coordination is key to avoid 
+fragmentation of the isolation logic in the kernel.
 
-If there are many tasks in the cpuset that has no CPUs, they will be migrated
-one by one. I'm afraid that only the first task will succeed, and the rest will
-fail because the flag is cleared after processing the first one.
+In V13, I will focus on integrating this "Dynamic Housekeeping" logic 
+directly with the cpuset subsystem. The idea is to allow the root cpuset 
+to act as the orchestrator for both task isolation (which it already handles) 
+and kernel overhead isolation (which DHEI enables).
 
--- 
-Best regards,
-Ridong
+> Also, Waiman Long should definitely be in the CC list for this.
 
+Acknowledge. I will make sure to CC Waiman and the cgroups mailing list 
+in the next iteration.
 
