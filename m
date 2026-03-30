@@ -1,193 +1,149 @@
-Return-Path: <cgroups+bounces-15105-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-15106-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id mHHsJzNjymn27gUAu9opvQ
-	(envelope-from <cgroups+bounces-15105-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Mon, 30 Mar 2026 13:49:07 +0200
+	id OsiJO6loymn48gUAu9opvQ
+	(envelope-from <cgroups+bounces-15106-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Mon, 30 Mar 2026 14:12:25 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 52DAA35A872
-	for <lists+cgroups@lfdr.de>; Mon, 30 Mar 2026 13:49:07 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 719FA35ADB4
+	for <lists+cgroups@lfdr.de>; Mon, 30 Mar 2026 14:12:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 6DADF301D32C
-	for <lists+cgroups@lfdr.de>; Mon, 30 Mar 2026 11:46:54 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 4F56530ADBBD
+	for <lists+cgroups@lfdr.de>; Mon, 30 Mar 2026 12:04:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BAEE040DFB4;
-	Mon, 30 Mar 2026 11:46:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 91E5E3C872B;
+	Mon, 30 Mar 2026 12:03:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="IHfAFMPQ"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="LHY/T1bN"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-dy1-f169.google.com (mail-dy1-f169.google.com [74.125.82.169])
+Received: from mail-wr1-f53.google.com (mail-wr1-f53.google.com [209.85.221.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6331D379EE6
-	for <cgroups@vger.kernel.org>; Mon, 30 Mar 2026 11:46:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.82.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E8733BE621
+	for <cgroups@vger.kernel.org>; Mon, 30 Mar 2026 12:03:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1774871212; cv=none; b=PN4eMdggLIGSDH+nR7l2uNqALPsl7DJ+x1JEM0s+pTyoX23m8GVsLUgX1S8ikgSjaxy5LHcNY9y0/XPXbp6BxMeSykiuRq5vfbA0tdfpwEPiaZIAFU7TrLrmf/zCZwrcGomayB5swMqoT4VsJK22OzprWkLBtsEpYLypLrQwvvY=
+	t=1774872214; cv=none; b=j2yp7fgGFcigBkNuBmaZMGC65PVmdKcJm54ChcWzGLkgjQiFji1nK7nQAL3Zo1Iz0bJIkr1FkzpIwT7CoZ/tK6eWbvSwH2u1DLcUZldzAEC8buwuI2v4LnvDkxYE+hDCZf2FfItYEdDrlXWWayYvLtX2mLcm8Hyklx2LQWta57I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1774871212; c=relaxed/simple;
-	bh=NL8trraTtD0OpTkWQqnsyUPcWRWAvLDDCm/yybFJDGA=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=pEtkuT5yfQd9QS6moYIyZTzMNOD9BWGgREupKPoqRDi6tF+Uqm74oHjFmg3HdnOpMYPF3kP99c+rOR6nFVk/2A7+CGsHgMbRqIUMEWwmLKdKuqyDM+PrsER2JmdUMCOg1Ki7UFxbejKTfqMJSIR1oVWpzDf6myzVW6X13Qvpeh4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=IHfAFMPQ; arc=none smtp.client-ip=74.125.82.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-dy1-f169.google.com with SMTP id 5a478bee46e88-2c160cb021cso4197651eec.1
-        for <cgroups@vger.kernel.org>; Mon, 30 Mar 2026 04:46:51 -0700 (PDT)
+	s=arc-20240116; t=1774872214; c=relaxed/simple;
+	bh=br0uOsoE0+NMulw9aQ0iIRWRS5+7V6Os/D/c1fIeQGI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=KTYtU92TN3BV8+tsc8ELe3KGCPw4ScgBRJ8nvaRUyveRejqzxqj5wQJxHWDdn6pfBpMD0dITDvupxPnWL7zaf69KsJq7+PC1YAd1tNcK7V/4U06HhvIjW7bsgN9iCNTrvDDnDxVtp4ttZqPUAgEbp6kdy877OiFGgkMr97godwQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=LHY/T1bN; arc=none smtp.client-ip=209.85.221.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-wr1-f53.google.com with SMTP id ffacd0b85a97d-43cf7683a28so716129f8f.2
+        for <cgroups@vger.kernel.org>; Mon, 30 Mar 2026 05:03:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1774871210; x=1775476010; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=eML4waLa1Jl6y2CJpXYjrV0+SpUpnkgbYk+PFVbKujU=;
-        b=IHfAFMPQa2UkHnwN5HtXTnEJHlCyBFHtJhbg/fqYG9RKMP0H9r4Wqb2qnmHMLm5h1g
-         Kl8ZBmXyNNJxVGjMfWWckKfHdaHSCT+eODL5/Ovq3OpBztLfVwgdHAKtCxaY4PgxOwMB
-         eDnVxr2QWgL3TfTDGUfr3Me5tWybpCrSTHYKZ2FG3F35SLhLoUTqaIs5bAL6nM66WkSU
-         GgVI3/O8KoUDQ4sKRbURty2x7yIedY7nIDQTdAKulyxpOkztwYNDtDN0bhfraVT8Darg
-         2MkaYnnmEg/VdpW2urqn3V7+Cbj1w4F/ieFl6Vk9PXZWYcegrfyCOxlWRZNSuW7tCNQF
-         QuBQ==
+        d=suse.com; s=google; t=1774872211; x=1775477011; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=h/pCkZp0kOo5osdLzRpybPSjj/VyMtaU3zoXyQksTzs=;
+        b=LHY/T1bNfCLjQy0x3+rR+Vg0SfF+1GZndjhkYd2PnClPit9CAyuEs9H5nyzc5vro1C
+         Ln/XpSnWQUvaQ5mYlEHw3sdCXERT+54URr0kMblMQxZV24pXvpPkCJ8tSdtanK4HNbhR
+         3770uB6Dm29Y1QxGTz1C7MK2EwYkjx5mANK0r+bOIImkz0bx1wadsUeoE+ixlkvLMecp
+         Slv6LwHwPjiOSayR/Jk2+gNveIf7VS/73ZH3Hidf+IRSfvVHAZLdTw0SrPLU5UonQfdr
+         m3+ByiXoWI46o8VdT0HGIjOmQnXJUnzJFpEvw5cj9ily7whb/ZkmPWD/Hg/jC5WhEz7C
+         zhJQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1774871210; x=1775476010;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=eML4waLa1Jl6y2CJpXYjrV0+SpUpnkgbYk+PFVbKujU=;
-        b=EfiCyT8Pu7vMNWshJ2AVeTD/+Y3G8wuIyl7TWOdzWSaMkuezvQ0lrIi+PuNstKqUyG
-         r9yIWCpcp4SHmVDZ2u1CZN9RirT22JL1dnYyPFfSSzdy4EI0GxCSC/kwfHJBud3qKEuH
-         k6BYMD9SMNVXMCjBLTbhy2LyA9HLmWepzV++mR67eGNJLkck5Opje+vPgAULzKuALhsA
-         m5v5Wr+K70z386Zxs088tUY5FGtu5D5AFjRUiw5/6pukBvvb/W19OW4t3YlyZSu+Yj7Z
-         9IWYmWyy4aZRDh8ZQqXRfMPI2suWcQYTOJs7qC+/bZHiRfhIL0Rcg0rawnWfQdF0fqSw
-         LAEQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWfUprGXMDreffUHeJy++EIUjH6gmDNCZkLnHE4VcMopBCzFF96DuOv/xl7Lsck+1OHhxNPzhql@vger.kernel.org
-X-Gm-Message-State: AOJu0YxSlf2PoJakIGZ/PXKNnrvJAh1WJVUp+1fw54wSpg1H716OlGrH
-	NCQ0GL3eZSEc6PLvpACP2bU3E5eI8EyOgJtG5N4/bMJrLLNQ4weSzwav
-X-Gm-Gg: ATEYQzxeB5vKBea/kxNL3h8F7fFQo+TLJ84o3enSwI583PA1q6349pxstq9eQEeSklR
-	AFUOxss7y29pTsluSWocustrtE2PXCUmhTdhZqso5xY8aaSDycBmT5HI20FK8mbpVy8+zvu+KBw
-	yKtV9ul0pkCPg8y69/ZG19Pbci3POc5bUcs7f8Rz6ec8/lNDD2WDKtAdR3QO7FF4ISvTOw3a0UB
-	IEC1kr5ZS6TfNwjgpRo7CpjM5Erx5QDE3FFjRrtxggL5BylvsHwotqx98zcxOnaOGsBc1sa6T23
-	ARe8vvsWZPi1EAuNLqc+kFWsgA5wbbbwvW59bKJwSULiqFmelngF3Syi3OZDlWz2TYUrWOMOxQ7
-	5QnbbsTGc3a5LKu5eS/zmeQOr8FMBeXKpfQONsQwh3SMKVSHx4QFemIr7W12inZAdpt6Mkti0b3
-	2elhAB+bUb/BnV3OKTC/o+HfCAXBGkZLCr0lg=
-X-Received: by 2002:a05:7300:fb8d:b0:2c5:3b87:2ffc with SMTP id 5a478bee46e88-2c53b8732c9mr2663188eec.7.1774871210414;
-        Mon, 30 Mar 2026 04:46:50 -0700 (PDT)
-Received: from localhost.localdomain ([74.48.213.230])
-        by smtp.gmail.com with ESMTPSA id 5a478bee46e88-2c3c3bda147sm6869724eec.5.2026.03.30.04.46.43
+        d=1e100.net; s=20251104; t=1774872211; x=1775477011;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=h/pCkZp0kOo5osdLzRpybPSjj/VyMtaU3zoXyQksTzs=;
+        b=nPwXhiu9P39/3uqhYIabgS0wspSH2XoaxvL8GrnWoZxI8KAiNMyzUyQ1e/X2TmwfvU
+         k4uKpUUJUDk7nSO/r6yMH+SsTwwuwXQMSJgkt0czQo7JXFOGV4Lm07msMCSJWTK1hf6/
+         4Dm//7J0/66oCJ3J4Tcnpkz/a4yekaFvSobasUK/oKQ7w0b+NHJzJbKNXXDVPoEE4CxH
+         DUpWQDLlUvDwJOmbSOHBvxGO0nLMhHhxg2MP/2dUDXHuMDcMP9cLpmpfJEfGtztqhaLD
+         lt1wBfASQ5+BQgyz789RM3gucV/sMyNyQ6j0wkbKjC+vcd60Ft3w9lBxcIgKgreYD60A
+         Mbng==
+X-Forwarded-Encrypted: i=1; AJvYcCU3QXPC6Lhh/iFio/Ot/g5EGZ5dxCJbqYjQ8Pg/UkltgcXadY9c7ZFAJIm5eDcfep4b1GMc9+zI@vger.kernel.org
+X-Gm-Message-State: AOJu0YwNf9u2XkqsJPf0Oq1pYlFcwBy/ZcLxq7qhZe4eSw31P8GmgnjD
+	D9k2XcLWHCXOG08j5YBP41WwJycx5/YabV7NnFL+R4hlve7Xq9G7zGOK04y+csWYzNGYrQBhB/1
+	/tWAfFPU=
+X-Gm-Gg: ATEYQzwiHY/11BMhzIz1AAaKbtvHog2IFPhUoJaPJxNrOrCZi7rJpWm4CrBOXAzyreW
+	J12DtUsQlniirFgblmnkvKdG92L81GRCgFvCrS7bPEDzptI/JUPpqBXCENeiGTbNAJVKMUaKw9q
+	4bLMwXMwpvM6RDg2+jB08+MZvGPD7Elq4wNcslwtfGcRcH9WPi/sFZLYaSFt6WoQeiY/+XAPIxz
+	Qe2Z4mV2uXo1iYLqpjMYexit7KK9A4dJP3lGmYzYHlhPT94uvjtW8v5BV/l31JQlxUQ2zRrb3cQ
+	/ru/OtAA3ZEB0xkEuTBloOJG2dHIlCvqAQ55y1lYIjxzTKjiQdbdMAGDx80xVtCvoglAsJPRXht
+	i36SBUYGgPNNosRAfEtvSyTx10oB/HlcGKrrRmP2ghWBPvxj4ZjhncU+FY6q80NbK3i4OUbL/gg
+	k4RBZBQVKF+tpDVkUZHoUVtmFTfVgmRnfvimKo
+X-Received: by 2002:a05:600c:1d8c:b0:480:69b6:dfed with SMTP id 5b1f17b1804b1-48727efabf6mr230701685e9.24.1774872211429;
+        Mon, 30 Mar 2026 05:03:31 -0700 (PDT)
+Received: from localhost (109-81-17-175.rct.o2.cz. [109.81.17.175])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-48727192012sm79669865e9.32.2026.03.30.05.03.30
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 30 Mar 2026 04:46:50 -0700 (PDT)
-From: Qiliang Yuan <realwujing@gmail.com>
-To: peterz@infradead.org
-Cc: longman@redhat.com,
-	cgroups@vger.kernel.org,
-	akpm@linux-foundation.org,
-	anna-maria@linutronix.de,
-	boqun.feng@gmail.com,
-	bsegall@google.com,
-	dietmar.eggemann@arm.com,
-	frederic@kernel.org,
-	hannes@cmpxchg.org,
-	jackmanb@google.com,
-	jiangshanlai@gmail.com,
-	joelagnelf@nvidia.com,
-	josh@joshtriplett.org,
-	juri.lelli@redhat.com,
-	linux-kernel@vger.kernel.org,
-	linux-kselftest@vger.kernel.org,
-	linux-mm@kvack.org,
-	mathieu.desnoyers@efficios.com,
-	mgorman@suse.de,
-	mhocko@suse.com,
-	mingo@kernel.org,
-	mingo@redhat.com,
-	neeraj.upadhyay@kernel.org,
-	paulmck@kernel.org,
-	qiang.zhang@linux.dev,
-	rcu@vger.kernel.org,
-	realwujing@gmail.com,
-	rostedt@goodmis.org,
-	shuah@kernel.org,
-	surenb@google.com,
-	tglx@kernel.org,
-	tj@kernel.org,
-	urezki@gmail.com,
-	vbabka@suse.cz,
-	vincent.guittot@linaro.org,
-	vschneid@redhat.com,
-	ziy@nvidia.com
-Subject: Re: [PATCH 13/15] sched/isolation: Implement sysfs interface for dynamic housekeeping
-Date: Mon, 30 Mar 2026 19:46:20 +0800
-Message-ID: <20260330114620.104027-1-realwujing@gmail.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20260325140432.GE3738786@noisy.programming.kicks-ass.net>
-References: <20260325140432.GE3738786@noisy.programming.kicks-ass.net>
+        Mon, 30 Mar 2026 05:03:31 -0700 (PDT)
+Date: Mon, 30 Mar 2026 14:03:29 +0200
+From: Michal Hocko <mhocko@suse.com>
+To: Joshua Hahn <joshua.hahnjy@gmail.com>
+Cc: Johannes Weiner <hannes@cmpxchg.org>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Roman Gushchin <roman.gushchin@linux.dev>,
+	Shakeel Butt <shakeel.butt@linux.dev>,
+	Muchun Song <muchun.song@linux.dev>,
+	David Hildenbrand <david@kernel.org>,
+	Lorenzo Stoakes <ljs@kernel.org>,
+	Vlastimil Babka <vbabka@kernel.org>,
+	Dennis Zhou <dennis@kernel.org>, Tejun Heo <tj@kernel.org>,
+	Christoph Lameter <cl@gentwo.org>, cgroups@vger.kernel.org,
+	linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+	kernel-team@meta.com
+Subject: Re: [PATCH] mm/percpu, memcontrol: Per-memcg-lruvec percpu accounting
+Message-ID: <acpmkY6_gWLdtJCB@tiehlicka>
+References: <20260327191936.1980054-1-joshua.hahnjy@gmail.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spamd-Result: default: False [0.84 / 15.00];
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20260327191936.1980054-1-joshua.hahnjy@gmail.com>
+X-Spamd-Result: default: False [-0.16 / 15.00];
 	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_CONTAINS_FROM(1.00)[];
-	R_MISSING_CHARSET(0.50)[];
-	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
-	R_DKIM_ALLOW(-0.20)[gmail.com:s=20251104];
-	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
+	MID_RHS_NOT_FQDN(0.50)[];
+	DMARC_POLICY_ALLOW(-0.50)[suse.com,quarantine];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_DKIM_ALLOW(-0.20)[suse.com:s=google];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	MIME_TRACE(0.00)[0:+];
-	RCPT_COUNT_TWELVE(0.00)[38];
-	FREEMAIL_CC(0.00)[redhat.com,vger.kernel.org,linux-foundation.org,linutronix.de,gmail.com,google.com,arm.com,kernel.org,cmpxchg.org,nvidia.com,joshtriplett.org,kvack.org,efficios.com,suse.de,suse.com,linux.dev,goodmis.org,suse.cz,linaro.org];
 	RCVD_TLS_LAST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-15106-lists,cgroups=lfdr.de];
+	RECEIVED_HELO_LOCALHOST(0.00)[];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-15105-lists,cgroups=lfdr.de];
-	DKIM_TRACE(0.00)[gmail.com:+];
-	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
-	FREEMAIL_FROM(0.00)[gmail.com];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[realwujing@gmail.com,cgroups@vger.kernel.org];
+	FREEMAIL_TO(0.00)[gmail.com];
+	RCPT_COUNT_TWELVE(0.00)[16];
+	MIME_TRACE(0.00)[0:+];
 	FROM_HAS_DN(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	TO_DN_SOME(0.00)[];
 	RCVD_COUNT_FIVE(0.00)[5];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[mhocko@suse.com,cgroups@vger.kernel.org];
+	DKIM_TRACE(0.00)[suse.com:+];
 	NEURAL_HAM(-0.00)[-1.000];
-	TO_DN_NONE(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[cgroups];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 52DAA35A872
+	MISSING_XM_UA(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:dkim,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: 719FA35ADB4
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-On Wed, Mar 25, 2026 at 03:04:32PM +0100, Peter Zijlstra wrote:
-> Why? What was wrong with cpusets?
+On Fri 27-03-26 12:19:35, Joshua Hahn wrote:
+> Convert MEMCG_PERCPU_B from a memcg_stat_item to a memcg_node_stat_item
+> to give visibility into per-node breakdowns for percpu allocations and
+> turn it into NR_PERCPU_B.
 
-This is the central point of the architecture. The distinction I was 
-trying to address is:
-
-1. Task Isolation (Current CPUSets):
-   The `cpuset` subsystem (especially `cpuset.cpus.partition = isolated`) 
-   is excellent at managing task placement and load balancing. It 
-   ensures no user tasks are pushed to isolated CPUs.
-
-2. Kernel Overhead Isolation (Housekeeping):
-   Currently, `cpusets` do not manage kernel-internal overhead like RCU 
-   callbacks, timers, or unbound workqueues. These are managed by the 
-   global `housekeeping_cpumask`, which is settled at boot via 
-   `isolcpus`/`nohz_full` and is static.
-
-DHEI fills this second gap by making the housekeeping mask dynamic. 
-However, I agree that a parallel sysfs interface is redundant.
-
-In V13, I will move the control interface to `cpuset`. The root cpuset 
-will serve as the primary interface, allowing changes in the cpuset 
-partition state to automatically trigger the migration of kernel 
-housekeeping overhead. This achieves "Full Dynamic Isolation" (both tasks 
-and kernel overhead) through a single, unified interface.
-
-Best regards,
-Qiliang
+Why do we need/want this?
+-- 
+Michal Hocko
+SUSE Labs
 
