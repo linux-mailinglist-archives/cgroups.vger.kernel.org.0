@@ -1,210 +1,175 @@
-Return-Path: <cgroups+bounces-15118-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-15119-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id WKNfHZvoymkkBQYAu9opvQ
-	(envelope-from <cgroups+bounces-15118-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Mon, 30 Mar 2026 23:18:19 +0200
+	id sDV0Bc0dy2kEEAYAu9opvQ
+	(envelope-from <cgroups+bounces-15119-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Tue, 31 Mar 2026 03:05:17 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
-	by mail.lfdr.de (Postfix) with ESMTPS id 803D936156C
-	for <lists+cgroups@lfdr.de>; Mon, 30 Mar 2026 23:18:18 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 706A9362F9C
+	for <lists+cgroups@lfdr.de>; Tue, 31 Mar 2026 03:05:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id 95C3D300F79F
-	for <lists+cgroups@lfdr.de>; Mon, 30 Mar 2026 21:18:15 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 060573010DBD
+	for <lists+cgroups@lfdr.de>; Tue, 31 Mar 2026 01:05:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6A3243A1A5B;
-	Mon, 30 Mar 2026 21:18:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 75CA723A9BD;
+	Tue, 31 Mar 2026 01:05:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="tDkSvbLf"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Z9xWemdy"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-oa1-f51.google.com (mail-oa1-f51.google.com [209.85.160.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D0D7F288D0
-	for <cgroups@vger.kernel.org>; Mon, 30 Mar 2026 21:18:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E8AFE199EAD
+	for <cgroups@vger.kernel.org>; Tue, 31 Mar 2026 01:05:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1774905492; cv=none; b=KgAWOBehpsUFEJ5LpAG6XjkyHOvhlqgOONcA/doOm693FuIyAlW0fHOJptJiKytrIc1xbhTW0RE5IFQxEvNwPXsmRI2BQZzfSDRpR+VmRY+IPmPkeI4PUaoPrG+7KfcnqoWPHP0olkusdPcSb3LuGlMah0WYwrFK1jBnC2r/l58=
+	t=1774919114; cv=none; b=MwB8x7U0OqjAG1HOOLI6IXcAPM55emiFYj37qdQ3i7NuncsMHOfe3+T6nSM0AjzOOxWMD6eXBwgASynpLXuezUzIHd5OIZGC72qfdVeTJoMcGDehtn1vhAoHORyJQAGCEoKB8q0zPc/IHB4Aq1UW3y22/WimZRz+6yK8SiPZq/A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1774905492; c=relaxed/simple;
-	bh=gST/9RRrMQTtXqyOvwpjZs+8sip20ZbFBGJzGchU/jg=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=tLHJlHLsfsWNKFTlDMP9BI0Pkm7a033Jw9dZHELOQB/IYhyw5gQuuU06aafwXejz3iSU9mwICGgkdNFB6BtRZIiAROQJpOio8XMlRLNfY8VM+w8Jh6xsw1SHDMPiudUXH+ghoypLGpJoQdcPjms9Km1mkgXqh2xErI2T5gTMExg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=tDkSvbLf; arc=none smtp.client-ip=209.85.160.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oa1-f51.google.com with SMTP id 586e51a60fabf-4042905015cso3024635fac.0
-        for <cgroups@vger.kernel.org>; Mon, 30 Mar 2026 14:18:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1774905490; x=1775510290; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=YpynBP+G3ZnDHhHUsVCEALCguQRacTThLF+4zfYVNbU=;
-        b=tDkSvbLfF5r/zlVNRlxJFgk+bYMyvRYlhgTVJC+jUlh8tpX6p0HOsbbTJq4LJhOwxg
-         JgoVKfOhi0JZGKZ9HXN9bTl8IN8/yG1j1tnZS9IpyucGsCcOej9cTJrCtJUCADRxo9D0
-         ykeCQhFdXQiFTFv9VyZuiq3n6WvqUTZUcbczuh5rWYf41cwAPdmQtpESIDq9Q2LggxiT
-         /+NxNM05q3qAS59aDXyRtbxr3Oa6tckAYXDmmQkQ9iy41jWEnGNhIhrjpLUq42nOTZMY
-         g6xGaXDJuPoreP/jbTKv+EVLJxhxaZ+9JJTHkLYvsr3nTHHQabVsJ77OEr1ZIJL77HQq
-         ATTg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1774905490; x=1775510290;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=YpynBP+G3ZnDHhHUsVCEALCguQRacTThLF+4zfYVNbU=;
-        b=o5pz4FinXNWFjyozmEjczT7D7tfGzSOZiImwPmRQM75AyPcR5cdhmFz7G6zdbeK7Z4
-         +CdV7zpEZgqJxBbfNL1hmHpUw9qauupDgAKYK3pDrBRLZ9M45uo9kQzUTnMHXTFZkD01
-         uvJFWZfKt9O0eYRLhDclFzW0jPsFBKi883VHP8dUB4q+0PlLkyoYMbLOmotGvhtxkFOJ
-         r4xCYEWFHSulyWtR5D8bGrUTTLVDGhgP5/i0zBDOlxwikamFs3xJxMh7B3XkJFJvKKAe
-         7DynivWQ/WwwLJBF72ha2wmoqgebcGQieuWyryfjH+InQrxlhRiQFzuUxWIjMf4S4U1Z
-         51mw==
-X-Forwarded-Encrypted: i=1; AJvYcCXrZuAetnjOkP6Qn029m0rzp36Bqd5/FXyaRlegs8CCWV/IQgfWMUY9LClEQZMD49exXSBTZwyg@vger.kernel.org
-X-Gm-Message-State: AOJu0YxM0zVMOZ3BnU1p8w3SoYLvWs+BaVjAkv+4eQfrkI2Y/eHQM23a
-	AGQxhdQgBXXOO18KICwxXSjLbOKVTvaAfRB63JOQ/QKFjxf3/ghDdVIy
-X-Gm-Gg: ATEYQzywrvTrVLxtR9oaReDktq0t3cJNOLik740fwOQgyCoTgTyNuKtxsXF0aBzMlgD
-	+xsLlr89bMz1EulsS2AHmDixEbsGx81w3kDT480U2pIQjVRyZgQMZmfdjgEjPRgZrCCGBMZE/jy
-	5TdKmFvSehqv0IShLYPYK+PpXtwTfsi4jjgFvB16EJVghIkIdxM/mqau2ybIT+u+pz11zxHFQD5
-	KgrTqRnabjYLkpocM0JW33kVwzI6jE0mR3+9alXGJoq/VLJyUNQfidmlxl/enaIGr0Fnsemz1aJ
-	R3mT/Jb8F/NbbR1kSPKuLzcYyjMI9MoXtMIqnRGyRTTbuOs6Gu6egcUJ6m6tpP0U/NnqGSwdF83
-	3MDrAzQPDFscRnju/v8almEV1NgfruGMIJgP5wxWomFIvTIw3b3U/FuhjOvuKGVLGnlGtPMi5Pr
-	OTzCX1ly0v7VVNT45l/rFmfg==
-X-Received: by 2002:a05:6870:b30f:b0:41c:6512:8419 with SMTP id 586e51a60fabf-41cec27e409mr7957130fac.28.1774905489749;
-        Mon, 30 Mar 2026 14:18:09 -0700 (PDT)
-Received: from localhost ([2a03:2880:10ff:5f::])
-        by smtp.gmail.com with ESMTPSA id 586e51a60fabf-41d048e1984sm5978777fac.4.2026.03.30.14.18.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 30 Mar 2026 14:18:09 -0700 (PDT)
-From: Joshua Hahn <joshua.hahnjy@gmail.com>
-To: Michal Hocko <mhocko@suse.com>
-Cc: Johannes Weiner <hannes@cmpxchg.org>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Roman Gushchin <roman.gushchin@linux.dev>,
-	Shakeel Butt <shakeel.butt@linux.dev>,
-	Muchun Song <muchun.song@linux.dev>,
-	David Hildenbrand <david@kernel.org>,
-	Lorenzo Stoakes <ljs@kernel.org>,
-	Vlastimil Babka <vbabka@kernel.org>,
-	Dennis Zhou <dennis@kernel.org>,
-	Tejun Heo <tj@kernel.org>,
-	Christoph Lameter <cl@gentwo.org>,
-	cgroups@vger.kernel.org,
-	linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org,
-	kernel-team@meta.com
-Subject: Re: [PATCH] mm/percpu, memcontrol: Per-memcg-lruvec percpu accounting
-Date: Mon, 30 Mar 2026 14:18:07 -0700
-Message-ID: <20260330211807.349539-1-joshua.hahnjy@gmail.com>
-X-Mailer: git-send-email 2.52.0
-In-Reply-To: <acqG2Mr5ekCn2HD0@tiehlicka>
-References: 
+	s=arc-20240116; t=1774919114; c=relaxed/simple;
+	bh=KdkmwfmKrvwrbcPquPDdKLOwKfZTktAWssADTf4EJmQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=iToyX7Q6yO55CExXafYNAt6a8+usN0e8B5rbFdt3bnfNIlJN7U7KYno/4HgAMCI3Qrg2eVhgRAzV7tey8hZTGFv4LghC2dBjR1HV5QU3yR99AS+NiLJ6g0JfpqOfQNVZj5Xvke9a+MtWPRTWGvneDieZaK1a+CD4QzK+2Piu/TY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Z9xWemdy; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1774919112;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=SX38vnS1+tzyZc3Js6IfBjhxP3WWNyUYQxTa5nQuAsw=;
+	b=Z9xWemdyE6gQZlndDQJW5tG8qD10C5BKEZ3THl+K3iTnAPw+wInRVE4VQInDUbCBtd1b8h
+	h376QP1+RkjcszkzmtVbQe8Biw/civJACfPPc4zymHReTncuoPPRz6EvS6+N/d6zeCQgjN
+	rz9QyHtOHieurVtn8ByeY9hnztlZP+g=
+Received: from mx-prod-mc-06.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-35-165-154-97.us-west-2.compute.amazonaws.com [35.165.154.97]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-335-saKPWvr2Ph-FHuy-rs2NQw-1; Mon,
+ 30 Mar 2026 21:05:08 -0400
+X-MC-Unique: saKPWvr2Ph-FHuy-rs2NQw-1
+X-Mimecast-MFC-AGG-ID: saKPWvr2Ph-FHuy-rs2NQw_1774919106
+Received: from mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.4])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mx-prod-mc-06.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 68E0B1800365;
+	Tue, 31 Mar 2026 01:05:06 +0000 (UTC)
+Received: from [10.22.64.128] (unknown [10.22.64.128])
+	by mx-prod-int-01.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id 3F39730001A1;
+	Tue, 31 Mar 2026 01:05:05 +0000 (UTC)
+Message-ID: <4495aa7c-7d06-412f-82ce-345e5743955e@redhat.com>
+Date: Mon, 30 Mar 2026 21:05:04 -0400
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spamd-Result: default: False [-1.66 / 15.00];
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 3/3] cgroup/cpuset: Improve check for v1 task migration
+ out of empty cpuset
+To: Tejun Heo <tj@kernel.org>
+Cc: Chen Ridong <chenridong@huawei.com>, Johannes Weiner
+ <hannes@cmpxchg.org>, =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
+ cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20260329173958.2634925-1-longman@redhat.com>
+ <20260329173958.2634925-4-longman@redhat.com>
+ <acrAHQ5EOecgZVOg@slm.duckdns.org>
+Content-Language: en-US
+From: Waiman Long <longman@redhat.com>
+In-Reply-To: <acrAHQ5EOecgZVOg@slm.duckdns.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 3.4.1 on 10.30.177.4
+X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
-	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
-	R_DKIM_ALLOW(-0.20)[gmail.com:s=20251104];
+	DMARC_POLICY_ALLOW(-0.50)[redhat.com,quarantine];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_DKIM_ALLOW(-0.20)[redhat.com:s=mimecast20190719];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RECEIVED_HELO_LOCALHOST(0.00)[];
-	RCVD_TLS_LAST(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
 	MIME_TRACE(0.00)[0:+];
-	TAGGED_FROM(0.00)[bounces-15118-lists,cgroups=lfdr.de];
+	TO_DN_SOME(0.00)[];
+	TAGGED_FROM(0.00)[bounces-15119-lists,cgroups=lfdr.de];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	FREEMAIL_FROM(0.00)[gmail.com];
-	RCPT_COUNT_TWELVE(0.00)[16];
-	FROM_HAS_DN(0.00)[];
+	RCVD_TLS_LAST(0.00)[];
+	DKIM_TRACE(0.00)[redhat.com:+];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[joshuahahnjy@gmail.com,cgroups@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	RCPT_COUNT_FIVE(0.00)[6];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[longman@redhat.com,cgroups@vger.kernel.org];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	RCVD_COUNT_FIVE(0.00)[6];
 	MID_RHS_MATCH_FROM(0.00)[];
 	NEURAL_HAM(-0.00)[-1.000];
-	RCVD_COUNT_FIVE(0.00)[5];
-	DKIM_TRACE(0.00)[gmail.com:+];
 	TAGGED_RCPT(0.00)[cgroups];
-	TO_DN_SOME(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 803D936156C
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: 706A9362F9C
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-On Mon, 30 Mar 2026 16:21:12 +0200 Michal Hocko <mhocko@suse.com> wrote:
+On 3/30/26 2:25 PM, Tejun Heo wrote:
+> On Sun, Mar 29, 2026 at 01:39:58PM -0400, Waiman Long wrote:
+>> With the "cpuset_v2_mode" mount option, cpuset v1 will emulate v2 in
+>> how it handles the management of CPUs. As a result, the effective_cpus
+>> can differ from cpus_allowed and an empty cpus_allowed will cause
+>> effective_cpus to inherit the value from its parent. Therefore task
+>> migration out of a cpuset with empty "cpuset.cpus" should no longer
+>> be needed in this case.
+>>
+>> The current code doesn't handle this particular case. Update the code to
+>> correctly detect that the cpuset has really no CPUs left by checking
+>> effective_cpus instead of cpus_allowed.
+>>
+>> Signed-off-by: Waiman Long <longman@redhat.com>
+>> ---
+>>   kernel/cgroup/cpuset-v1.c | 10 ++++++----
+>>   1 file changed, 6 insertions(+), 4 deletions(-)
+>>
+>> diff --git a/kernel/cgroup/cpuset-v1.c b/kernel/cgroup/cpuset-v1.c
+>> index 0c818edd0a1d..9855de37d011 100644
+>> --- a/kernel/cgroup/cpuset-v1.c
+>> +++ b/kernel/cgroup/cpuset-v1.c
+>> @@ -261,7 +261,7 @@ static void remove_tasks_in_empty_cpuset(struct cpuset *cs)
+>>   	 * has online cpus, so can't be empty).
+>>   	 */
+>>   	parent = parent_cs(cs);
+>> -	while (cpumask_empty(parent->cpus_allowed) ||
+>> +	while (cpumask_empty(parent->effective_cpus) ||
+>>   			nodes_empty(parent->mems_allowed))
+>>   		parent = parent_cs(parent);
+>>   
+>> @@ -297,14 +297,16 @@ void cpuset1_hotplug_update_tasks(struct cpuset *cs,
+>>   
+>>   	/*
+>>   	 * Don't call cpuset_update_tasks_cpumask() if the cpuset becomes empty,
+>> -	 * as the tasks will be migrated to an ancestor.
+>> +	 * as the tasks will be migrated to an ancestor. If cpuset_v2_mode mount
+>> +	 * option is used, effective_cpus can differ from cpus_allowed. So
+>> +	 * checking effective_cpus is more accurate for determining emptiness.
+>>   	 */
+>> -	if (cpus_updated && !cpumask_empty(cs->cpus_allowed))
+>> +	if (cpus_updated && !cpumask_empty(cs->effective_cpus))
+>>   		cpuset_update_tasks_cpumask(cs, new_cpus);
+>>   	if (mems_updated && !nodes_empty(cs->mems_allowed))
+>>   		cpuset_update_tasks_nodemask(cs);
+>>   
+>> -	is_empty = cpumask_empty(cs->cpus_allowed) ||
+>> +	is_empty = cpumask_empty(cs->effective_cpus) ||
+>>   		   nodes_empty(cs->mems_allowed);
+> Are these meaningful changes? cpuset1_hotplug_update_tasks() is called by
+> cpuset_hotplug_update_tasks() when !is_in_v2_mode(). As is_in_v2_mode() says
+> yes on cpuset_v2_mode, the above change doesn't really change anything, no?
 
-> On Mon 30-03-26 07:10:10, Joshua Hahn wrote:
-> > On Mon, 30 Mar 2026 14:03:29 +0200 Michal Hocko <mhocko@suse.com> wrote:
-> > 
-> > > On Fri 27-03-26 12:19:35, Joshua Hahn wrote:
-> > > > Convert MEMCG_PERCPU_B from a memcg_stat_item to a memcg_node_stat_item
-> > > > to give visibility into per-node breakdowns for percpu allocations and
-> > > > turn it into NR_PERCPU_B.
-> > > 
-> > > Why do we need/want this?
-> > 
-> > Hello Michal,
-> > 
-> > Thank you for reviewing my patch! I hope you are doing well.
-> > 
-> > You're right, I could have done a better job of motivating the patch.
-> > My intent with this patch is to give some more visibility into where
-> > memory is physically, once you know which memcg it is in.
-> 
-> Please keep in mind that WHY is very often much more important than HOW
-> in the patch so you should always start with the intention and
-> justification.
-> 
-> > Percpu memory could probably be seen as "trivial" when it comes to figuring
-> > out what node it is on, but I'm hoping to make similar transitions to the
-> > rest of enum memcg_stat_item as well (you can see my work for the zswap
-> > stats in [1]).
-> > 
-> > When all of the memory is moved from being tracked per-memcg to per-lruvec,
-> > then the final vision would be able to attribute node placement within
-> > each memcg, which can help with diagnosing things like asymmetric node
-> > pressure within a memcg, which is currently only partially accurate.
-> > 
-> > Getting per-node breakdowns of percpu memory orthogonal to memcgs also
-> > seems like a win to me. While unlikely, I think that we can benefit from
-> > some amount of visibility into whether percpu allocations are happening
-> > equally across all CPUs.
-> > 
-> > What do you think? Thank you again, I hope you have a great day!
-> 
-> I think that you should have started with this intended outcome first
-> rather than slicing it in pieces. Why do we want to shift to per-node
-> stats for other/all counters? What is the cost associated comparing to the
-> existing accounting (if any)?
+You are right. I missed that part. So it is really a no-op then. Will 
+drop this patch.
 
-I went and ran a few tests, which seem to show rather negligible performance
-differences (phew). I wrote a kernel module that does 100k percpu allocations
-via __alloc_percpu_gfp with GFP_KERNEL | __GFP_ACCOUNT in a cgroup. I then
-measured how long each allocation takes across two trials, one where I do
-all 100k allocations and then free all of them at once, and another where I
-interleave the allocs and frees. Everything below is ns / alloc, and the
-+/- is the standard deviation across 20 trials.
+Thanks!
+Longman
 
-+-------------+----------------+--------------+--------------+
-|    Test     | linus-upstream |    patch     |     diff     |
-+-------------+----------------+--------------+--------------+
-| Batched     | 6586 +/- 51    | 6595 +/- 35  | +9 (0.13%)   |
-| Interleaved | 1053 +/- 126   | 1085 +/- 113 | +32 (+0.85%) |
-+-------------+----------------+--------------+--------------+
-
-I'll include this, as well as the additional memory overhead that Yosry
-suggested to include in a v2. I think we can get more accurate accounting
-by distributing the obj_cgroup pointer size across the CPUs, so I've
-gone ahead and made another iteration.
-
-Thank you again for your insight, Michal!
-Joshua
 
