@@ -1,180 +1,146 @@
-Return-Path: <cgroups+bounces-15165-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-15166-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id kDgVHd1DzmlQmQYAu9opvQ
-	(envelope-from <cgroups+bounces-15165-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Thu, 02 Apr 2026 12:24:29 +0200
+	id eEfEA0lgzmnvnAYAu9opvQ
+	(envelope-from <cgroups+bounces-15166-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Thu, 02 Apr 2026 14:25:45 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1AE38387AC8
-	for <lists+cgroups@lfdr.de>; Thu, 02 Apr 2026 12:24:29 +0200 (CEST)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 09845389046
+	for <lists+cgroups@lfdr.de>; Thu, 02 Apr 2026 14:25:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id CF6BF308833F
-	for <lists+cgroups@lfdr.de>; Thu,  2 Apr 2026 10:20:08 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id DE56330091ED
+	for <lists+cgroups@lfdr.de>; Thu,  2 Apr 2026 12:25:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2CF4F3DE435;
-	Thu,  2 Apr 2026 10:20:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 956423E121E;
+	Thu,  2 Apr 2026 12:25:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="RxhVT7de";
-	dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b="kNRjvj9y"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="eBPMscet"
 X-Original-To: cgroups@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f49.google.com (mail-wm1-f49.google.com [209.85.128.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3BEA437DE88
-	for <cgroups@vger.kernel.org>; Thu,  2 Apr 2026 10:20:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F38B23D3CEA
+	for <cgroups@vger.kernel.org>; Thu,  2 Apr 2026 12:24:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1775125207; cv=none; b=FCqC77ExYzrd8XUSPz2Bx2HKRn7z/2SzysNFL5wwpclcNWaiC3wuCC5Nqx5pZkPAwHCDtYSCR8+2R4DKITjyr6suZVdycLXZtl0ERz3hyoyjMkGsOGVUNFxObjp8n4DxUwMUYU2AIHf21zT9KVhCp6LVgoUSe07EgjCKsm8jLaE=
+	t=1775132701; cv=none; b=IIIWb35we3+boYM6I1YhBXOQpjzhvg8kqQVA8U7YtU3+MhFokG4WVEKfc9RdKQiD4INteMp0PCLAg/2wYTWBNqK3qzE20epgDZO7rXZotYTu4/5wvJIjRJXfU5r+jo90wF62FjIf1px7qZ0wZb+IZqCwE2dTPlagBCxBik10op0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1775125207; c=relaxed/simple;
-	bh=C97VEa+NVtr1a+zTAOjF7qbw7z5ErHahekcY3LMMzjQ=;
+	s=arc-20240116; t=1775132701; c=relaxed/simple;
+	bh=oRZ8kRRX4pkXj9dqw4wCdgK8U3A54Kgkv1lh5JPHNI4=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Whszy8gRDkizfrDKuQJXTYvnf3xFT0mVmu3vryCSR8Rz+xu7qdoUWKDa95gsesAvcxLXLdCJWI3wBYbW0bTCZyS9xk6kAhUYZysJ2GBsvgKiQEVrG5X3y3FGNvYm1lNlnyXWe5H5HzHw/l6IrU84DDgUCAfl+xcm0k/opkBAUy4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=RxhVT7de; dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b=kNRjvj9y; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1775125204;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=R9FNAq6JXxyYmLFJe3V/l1GPxm6IdqNxZH3xpVlwE3k=;
-	b=RxhVT7deWSP0YaN0sQBWQyh5x0I6K54kiPOaKx23444CclWhOJDKDgGqDXQuLibWvI7O3W
-	o560Yxz0l2xirwGWXu3rrX8i2GbvD6NIcy0V9jYd8oNexlt8ByXJYqMy4fp5PUEaS4Spzq
-	gLkfHa53VAKBjjbw/TXeMjuG4PqF7Fk=
-Received: from mail-pl1-f198.google.com (mail-pl1-f198.google.com
- [209.85.214.198]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-282-AQ45qLPQP36d-WL9qB-C1w-1; Thu, 02 Apr 2026 06:20:02 -0400
-X-MC-Unique: AQ45qLPQP36d-WL9qB-C1w-1
-X-Mimecast-MFC-AGG-ID: AQ45qLPQP36d-WL9qB-C1w_1775125202
-Received: by mail-pl1-f198.google.com with SMTP id d9443c01a7336-2b250d3699aso16933235ad.2
-        for <cgroups@vger.kernel.org>; Thu, 02 Apr 2026 03:20:02 -0700 (PDT)
+	 Content-Type:Content-Disposition:In-Reply-To; b=IlAlcVa3J8zRHkr9zwohS4UkHrojN0x5RN98CQqv87y165B1dS2IPHw5KsRszN4K8r7pU1mhES9+NHXGoIU8CUDJPoExPqo2hdDpKRPqIajAnllrJ+9gHMPXrOvx8YHG9OXHf2sgcoWGeDJlK0jmbR98O6+dp7A0Hb0WXErVCSw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=eBPMscet; arc=none smtp.client-ip=209.85.128.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-wm1-f49.google.com with SMTP id 5b1f17b1804b1-48702d51cd0so10213715e9.2
+        for <cgroups@vger.kernel.org>; Thu, 02 Apr 2026 05:24:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=redhat.com; s=google; t=1775125201; x=1775730001; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=R9FNAq6JXxyYmLFJe3V/l1GPxm6IdqNxZH3xpVlwE3k=;
-        b=kNRjvj9yiFQWTmwG/KTDnmcx/HtqjW+9dc4qKa4IlbqCLf+aiE9HAjybGN73a2yHhK
-         XZGJK8vjmWwqrTR7i5eWXlTYyY2U9b1IcS6f0poGK7V6y4acTVgXuYLY/PWn21DfjgQe
-         rWJQ6Cfk5cEzrQ9KlPtwVqAsmuCJG1RFZPe9807+6fWPcwC/e5J+vWX7XfimdhAIQSIS
-         SVzKgcaMXPJKNMU1X8WQIOIAlpu5eSzju1J/7d0ze55pN+4c2QDsN9I8Dy4rUtBuYicz
-         8hUkKEcapI6muqdHNI6E6zxRDZUJ6y0oVxmRjzbtifttYaCV8vhHXTSdQEeeKeciFFO2
-         weGw==
+        d=suse.com; s=google; t=1775132698; x=1775737498; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=pWNBOu549I6UawEB8azvVtlnMXVCESZYifMy8KsFwjs=;
+        b=eBPMscetbR7R04+4uSqtBErAGQs8bzLdJFvXpEUyo9Bemb5JibzH6XF/ERZ4b06a//
+         lfFjmBK2/G5SDghO/7ftBmf6x8z6bWM7F97e+KeNYwCYKs0Ka6yHnsWncbqfANjF5nT/
+         +JrxB74SOY7rRdzAWzJdlFGrjbfgCdJe68cAZSEIFOu5FsayKXg2t1p5rtdBDEYlwtP5
+         rzmpmgmuwGNPdvEWg6LworcoVBRcjzwWhA6EmO+XYl/CH+mAgKZD3qPWjUZRC04Q8FCI
+         Ye043o7MMFVVovJgRrXRgaEfpItQztwfMe0wsf3D3FIbTgKFl6m5fBvI1RnkWhXOJv18
+         NnuQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1775125201; x=1775730001;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:x-gm-gg
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=R9FNAq6JXxyYmLFJe3V/l1GPxm6IdqNxZH3xpVlwE3k=;
-        b=BfAyzM+OyBvuitIdsuU33ff4DWD+/KSgR5JokxfVj/iriruDxccF10CJ4v7zszGZlO
-         NPQiwasFTcxKyqUabZ43xIIRGKd33mqrrwCdhZm0tijjeHBjE/52GJZ678xg5rQ1lbuO
-         4erzpddTylHLs8CTE2Xw51xVoedizdHkXq9S7WapkYR/wjhVI3FU/0lxnD7TwRuLqOLa
-         egHLRCtS1XTftXKLL9VUkcpK+oFZd2UoynmUjHbtcez1m2I1f67K0z4Ymxwbwc1FMq80
-         uGamVtNy+M4RFQ1PZI4nIg3rjT1drBObhgMBOgWoVuZ8C9R6QGhj8d2i7CYPB6hbzjs5
-         3GGg==
-X-Forwarded-Encrypted: i=1; AJvYcCWaaTVD5cFly9wTWmImdb85Xok+bNhtguWtaoY2WFIpM84LN/cS3w5OFDA/emY3dL/gKWfeZNoK@vger.kernel.org
-X-Gm-Message-State: AOJu0Ywi1NYdT7884gzFVRGw+L4416g8M0lvrTYEvNE06DrE5fVb5fdx
-	UkQizVnpewuktH34iCCQvjdPKJd9e99HTaseZerDMp7hgGGHVXvJQ6DC0Z1l0LCum9UdvkNLeqB
-	CpSUXVdrd4PNk6EaM4dfaTGZZgTduWk16hqYRDHULzjWvEUfZh/sJwGp03Dk=
-X-Gm-Gg: AeBDievo1+LtpkwxWLTV5HfQVxLlKeU8Nh3avUSKXdJEdwJErZJwY+p+Wlmt07Bx/HN
-	B+kPvpKMhXxI0R4IaF1e9aNLzdtPvw57X0Tlqq2/vddrMZ3X0ck4i9jCSWHJd5W918Ha+5Scqpa
-	3Qr3b5ueidFiE1DbYCz2my4/QrI1HulWIqsE7+bPXFxooy0+RvwRrn6lk1BemIHaYwMxSJuaLF4
-	HX7fcUT1Bi8NMvypbTHeoxREqag+GjfoyTh4v2pOEuAJx+XqWcM9E3GSxXmIpa7AGalVKbZE0zg
-	dFDCgchU0ttGud1GPS04yJoC51n8uSonftOxpxlwhuRgqTuim0WsQc5bwGI9+NyIupJHy9lXM3L
-	SzQHmOljMs3No0pZKrw==
-X-Received: by 2002:a17:903:248:b0:2b0:af2f:b26a with SMTP id d9443c01a7336-2b269ce75dfmr68411145ad.48.1775125200921;
-        Thu, 02 Apr 2026 03:20:00 -0700 (PDT)
-X-Received: by 2002:a17:903:248:b0:2b0:af2f:b26a with SMTP id d9443c01a7336-2b269ce75dfmr68410865ad.48.1775125200433;
-        Thu, 02 Apr 2026 03:20:00 -0700 (PDT)
-Received: from redhat.com ([209.132.188.88])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2b2749cada2sm22687075ad.71.2026.04.02.03.19.59
+        d=1e100.net; s=20251104; t=1775132698; x=1775737498;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=pWNBOu549I6UawEB8azvVtlnMXVCESZYifMy8KsFwjs=;
+        b=ckCzX3CNtD1VwmodvdAHBXGg9jrb/Fi30820xcCe+m5aVtZuj0rvSAamq4l0hVHNnZ
+         Z2jdYRQ/hXcm+CIMutYyEe+Csp0f5/elkkxQspo+kW3WRXgIwcH4L9hnUpI/eHKK6Zuh
+         OTEs7n+5lKWMMP+8yynghnZDlsUdxFfyBoL3rjyjsKd2UIj85v8g3mCXIDNmuLDzQ8DS
+         UCHqKkREhts6h18c1v9o+c/V0iLJRh2hJr0nGvt7xP1+qDJ3r7uKMQthcM73SgUBdbgs
+         AAQCDJmB15vlxgPd1B/3ZBHPlzbHDuxHMnWbFG6JsGYHpbTMf2Fk17bPejfsFNxCRWVM
+         rtrg==
+X-Forwarded-Encrypted: i=1; AJvYcCXGmIKz/ln6KQsTz1itma2ohWkn664nK0Mg4T62aBRoa6IATLZR4AXvL53l4HysVAJoBi/y6AJH@vger.kernel.org
+X-Gm-Message-State: AOJu0YxWHDJRCDpnNGCNfM08PifT93CGgmnrVj6eJVa8P4Rt372x0ZC/
+	UPadXZkzRyRepR/9XhkVelsyhPNk4TH89J9HootLT+BaIvMenGSeXobPbaq8e10lC7E=
+X-Gm-Gg: ATEYQzxUutZS20doLDbL5+WkT8CliK8PbrmwqbpaYscrC1eyAuevWlvjc9cGrOFumIr
+	bYWynn/JUX8co8idgTjotFIPNOjDRM/M+feuCYGQEGN8KmdlsjKhXTK2cE4cEF8EMigIAph5mYv
+	ovcDkXMZogaMz33Rb8d/qvtci1a+N8hSaAi2PLYd4kxv8DFCd9MuK2Dge2PMGq/tQvhDLg+aUAG
+	QvUtUUJ+H2qphSmVnzRowdrd6wOv9m7mq8PfPgmuGCAkmwK0duSwSq6gugJhe8H1+UtkBhWu59O
+	nm27IDUPdBuMk9T6yA9BSMeaU+5WA+J1ufN/JjGPNL4JG1eCbAATta/TY4Y4m0ZhyhanQlz72EV
+	XVzdRv1aEqJIuwb4MQc/BgJ6a+AHfcQQgsCImpzzsPwH1loYV0fV3i5vXbH6TI23GVh98R+cObu
+	CFcXq0YO587JS5uhcgK6ApA6juytr+iHM=
+X-Received: by 2002:a05:600c:821a:b0:486:fdba:f5db with SMTP id 5b1f17b1804b1-48883307a37mr124889995e9.0.1775132698332;
+        Thu, 02 Apr 2026 05:24:58 -0700 (PDT)
+Received: from localhost (nat2.prg.suse.com. [195.250.132.146])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-43d1e4d282esm7670221f8f.18.2026.04.02.05.24.57
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 02 Apr 2026 03:19:59 -0700 (PDT)
-Date: Thu, 2 Apr 2026 18:19:56 +0800
-From: Li Wang <liwang@redhat.com>
-To: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
-Cc: Waiman Long <longman@redhat.com>, Johannes Weiner <hannes@cmpxchg.org>,
-	Michal Hocko <mhocko@kernel.org>,
+        Thu, 02 Apr 2026 05:24:57 -0700 (PDT)
+Date: Thu, 2 Apr 2026 14:24:57 +0200
+From: Michal Hocko <mhocko@suse.com>
+To: Joshua Hahn <joshua.hahnjy@gmail.com>
+Cc: Johannes Weiner <hannes@cmpxchg.org>,
+	Andrew Morton <akpm@linux-foundation.org>,
 	Roman Gushchin <roman.gushchin@linux.dev>,
 	Shakeel Butt <shakeel.butt@linux.dev>,
 	Muchun Song <muchun.song@linux.dev>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Tejun Heo <tj@kernel.org>, Shuah Khan <shuah@kernel.org>,
-	Mike Rapoport <rppt@kernel.org>, linux-kernel@vger.kernel.org,
-	cgroups@vger.kernel.org, linux-mm@kvack.org,
-	linux-kselftest@vger.kernel.org,
-	Sean Christopherson <seanjc@google.com>,
-	James Houghton <jthoughton@google.com>,
-	Sebastian Chlad <sebastianchlad@gmail.com>,
-	Guopeng Zhang <zhangguopeng@kylinos.cn>, Li Wang <liwan@redhat.com>
-Subject: Re: [PATCH v2 1/7] memcg: Scale up vmstats flush threshold with
- int_sqrt(nr_cpus+2)
-Message-ID: <ac5CzJ5S0kp71rrs@redhat.com>
-References: <20260320204241.1613861-1-longman@redhat.com>
- <20260320204241.1613861-2-longman@redhat.com>
- <n6mhkjsxsami3qmczkdh57eep4lmcgbtyl7ox3ajzveke44yf6@m4bjevvsr47k>
- <ac42aIDVaGim5moO@redhat.com>
+	David Hildenbrand <david@kernel.org>,
+	Lorenzo Stoakes <ljs@kernel.org>,
+	Vlastimil Babka <vbabka@kernel.org>,
+	Dennis Zhou <dennis@kernel.org>, Tejun Heo <tj@kernel.org>,
+	Christoph Lameter <cl@gentwo.org>, cgroups@vger.kernel.org,
+	linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+	kernel-team@meta.com
+Subject: Re: [PATCH] mm/percpu, memcontrol: Per-memcg-lruvec percpu accounting
+Message-ID: <ac5gGS5eMFFCNaqH@tiehlicka>
+References: <acqG2Mr5ekCn2HD0@tiehlicka>
+ <20260330145608.3574897-1-joshua.hahnjy@gmail.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <ac42aIDVaGim5moO@redhat.com>
-X-Spamd-Result: default: False [-2.16 / 15.00];
+In-Reply-To: <20260330145608.3574897-1-joshua.hahnjy@gmail.com>
+X-Spamd-Result: default: False [-0.16 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[redhat.com,quarantine];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
-	R_DKIM_ALLOW(-0.20)[redhat.com:s=mimecast20190719,redhat.com:s=google];
+	MID_RHS_NOT_FQDN(0.50)[];
+	DMARC_POLICY_ALLOW(-0.50)[suse.com,quarantine];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64:c];
+	R_DKIM_ALLOW(-0.20)[suse.com:s=google];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	DKIM_TRACE(0.00)[redhat.com:+];
-	FREEMAIL_CC(0.00)[redhat.com,cmpxchg.org,kernel.org,linux.dev,linux-foundation.org,vger.kernel.org,kvack.org,google.com,gmail.com,kylinos.cn];
 	RCVD_TLS_LAST(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-15165-lists,cgroups=lfdr.de];
-	MIME_TRACE(0.00)[0:+];
+	TAGGED_FROM(0.00)[bounces-15166-lists,cgroups=lfdr.de];
+	RECEIVED_HELO_LOCALHOST(0.00)[];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	MISSING_XM_UA(0.00)[];
+	FREEMAIL_TO(0.00)[gmail.com];
+	RCPT_COUNT_TWELVE(0.00)[16];
+	MIME_TRACE(0.00)[0:+];
 	FROM_HAS_DN(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[20];
-	RCVD_COUNT_FIVE(0.00)[6];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	TO_DN_SOME(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[5];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[liwang@redhat.com,cgroups@vger.kernel.org];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	NEURAL_HAM(-0.00)[-1.000];
-	TAGGED_RCPT(0.00)[cgroups];
-	MID_RHS_MATCH_FROM(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[mhocko@suse.com,cgroups@vger.kernel.org];
+	DKIM_TRACE(0.00)[suse.com:+];
+	NEURAL_HAM(-0.00)[-0.998];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	TO_DN_SOME(0.00)[]
-X-Rspamd-Queue-Id: 1AE38387AC8
+	TAGGED_RCPT(0.00)[cgroups];
+	MISSING_XM_UA(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:dkim,sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: 09845389046
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-> > with kernel functions:
-> > 	var1 = 65536*nr_cpus / (45426 * ilog2(nr_cpus) + 65536)
-> > 	var2 = DIV_ROUND_UP(65536*nr_cpus, 45426 * ilog2(nr_cpus) + 65536)
-> > 	var3 = roundup_pow_of_two(var2)
-
-
-Consider a 1024-CPU machine with a cpuset-constrained cgroup using only 2 CPUs.
-
-Its unavoidable batching error is just 2MB, yet the global threshold imposes
-256MB (harmonic-mean) or 32MB (sqrt) of additional error — 128x and 16x
-overprovisioning respectively. Both overshoot, but sqrt stays bit closer to
-the ideal.
+Sorry, I got side tracked and didn't get to your follow up yet. I will
+try sometimes next week. Please poke if I do not respond.
 
 -- 
-Regards,
-Li Wang
-
+Michal Hocko
+SUSE Labs
 
