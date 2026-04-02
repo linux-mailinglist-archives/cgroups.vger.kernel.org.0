@@ -1,63 +1,65 @@
-Return-Path: <cgroups+bounces-15154-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-15155-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id oNgzJvIOzmmnkgYAu9opvQ
-	(envelope-from <cgroups+bounces-15154-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Thu, 02 Apr 2026 08:38:42 +0200
+	id mKrbCWQQzmmnkgYAu9opvQ
+	(envelope-from <cgroups+bounces-15155-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Thu, 02 Apr 2026 08:44:52 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0C51C384910
-	for <lists+cgroups@lfdr.de>; Thu, 02 Apr 2026 08:38:42 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7E7E1384A1D
+	for <lists+cgroups@lfdr.de>; Thu, 02 Apr 2026 08:44:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 13CB430A6BC7
-	for <lists+cgroups@lfdr.de>; Thu,  2 Apr 2026 06:37:41 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 05928308FCF5
+	for <lists+cgroups@lfdr.de>; Thu,  2 Apr 2026 06:37:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 980D731E82E;
-	Thu,  2 Apr 2026 06:37:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7492A35CB8C;
+	Thu,  2 Apr 2026 06:37:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="hpj855FU"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="JM8c4f5a"
 X-Original-To: cgroups@vger.kernel.org
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2CF8C273D6D
-	for <cgroups@vger.kernel.org>; Thu,  2 Apr 2026 06:37:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A62A8301471
+	for <cgroups@vger.kernel.org>; Thu,  2 Apr 2026 06:37:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1775111858; cv=none; b=ajuVB2HWFb8LCHMjBJvRNICs37hnVQwjEvUSmNya3KFU/LWNDJG0/qtVzMWrrwkGG/qzo+HAtwaxsBdI2CW5dR7V8AwLXbZx/G2IWqnkDOW4oUBow/J9jq+A7rCM1Hw+J5gWzNVLyy3QG0PGnqUnH2zdMKUsF45zQNYHeHQnUgY=
+	t=1775111868; cv=none; b=pwX/HRwoCaM7aKcLbsVffmS8feVgSgoRKkfD6Pp5EbY4FSH1wt6TccXN2JK1+xBMcFR2+QuHn1ekPu1i6K57ESbJdiCyPjleSfc69+z5YOCrRZF8Zma6wW9rUtnvS+0N7/B9dPw/eACcwXVDsUgTevg8NC6IHbcajyTWdCe/nOI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1775111858; c=relaxed/simple;
-	bh=mEPg2DvSUlXaoHR3OjRrYufSbyrK7gnFlb8nHPB+SZs=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=lOtuEe8IMDNaf5GH1v87SttXBT80vfbBB/p5F5IsfBTfZfDzRK4+2Q4CZC+VT8T2h4s4Yq0Y6RidzytIrsTHE+vgdUVyXk4FKDr8+mWlvdMGel9V0ZgvzpaZcZKRtz5X2aiVBafooc/ESiWPnQ0SJADvpAfQPw+TP/tEKtFLyDg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=hpj855FU; arc=none smtp.client-ip=170.10.129.124
+	s=arc-20240116; t=1775111868; c=relaxed/simple;
+	bh=Y7cvX4iItstxup7jbTx3F/baoeYVtifB8nzEha9pwSg=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=CSxXuKnrQbDcdQV86VBDh2CcIWe23dHrsoLgzho23rvdm+DF7JbHlj6UrJalNIFLaoSfgi8nBmam3X5jyuXR8sn5h5mc5uKz1ZVOcRirFHI538RCVMceDLray3gG6EaMZWY6n+qA3de+P1r6yJ86lypEzqza8/r6PhFJWi7Rx5A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=JM8c4f5a; arc=none smtp.client-ip=170.10.129.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1775111855;
+	s=mimecast20190719; t=1775111864;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=5ySkwRxMWsN/b1cF+ftDoDLaCJSoF5606499RQFGjCI=;
-	b=hpj855FUXjoKNQZgwnMWuw1ycL9O3riqEyxB3xfpVpyM4T52kFtrG2jQTJ+PRBUSnce3kC
-	oUewCoPKWbGXPV2CJsUMcb+//s90N7EDc2y57Kiy/tTzNP0of2dDnJ2I6VpsCe+zsIrJE6
-	Pa2k6XskxIjPvPHql45vz6bKeeb/hF4=
-Received: from mx-prod-mc-03.mail-002.prod.us-west-2.aws.redhat.com
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=dW2A0MrwEuJvXNSWOJou7ZrIoh0fBOElxwXftetMLVw=;
+	b=JM8c4f5aYnx4ovED0iYDG7HnyZW2FqasMXvdVhQU+9cd75u3BoFOgzi4z5/g3dwaiT3sLg
+	ELduEM8J8aF9Uxf1zad5QP+6ojIfaSxorcEm3l86qykjxFGvSHDepvURRBGxbalVbHt5lQ
+	u5RL2f/ouTHlrCuCsQMcR/KEzsunNgI=
+Received: from mx-prod-mc-01.mail-002.prod.us-west-2.aws.redhat.com
  (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
  relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-563-P_vobo2hMEOZLwDmrychMw-1; Thu,
- 02 Apr 2026 02:37:29 -0400
-X-MC-Unique: P_vobo2hMEOZLwDmrychMw-1
-X-Mimecast-MFC-AGG-ID: P_vobo2hMEOZLwDmrychMw_1775111846
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-607-Pb50ZLBTOwqFvnA_DynilQ-1; Thu,
+ 02 Apr 2026 02:37:39 -0400
+X-MC-Unique: Pb50ZLBTOwqFvnA_DynilQ-1
+X-Mimecast-MFC-AGG-ID: Pb50ZLBTOwqFvnA_DynilQ_1775111856
 Received: from mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.111])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mx-prod-mc-03.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 3A75019560AA;
-	Thu,  2 Apr 2026 06:37:26 +0000 (UTC)
+	by mx-prod-mc-01.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 3A36319560A7;
+	Thu,  2 Apr 2026 06:37:36 +0000 (UTC)
 Received: from fedora-laptop-x1.redhat.com (unknown [10.72.112.158])
-	by mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 3BB611800361;
-	Thu,  2 Apr 2026 06:37:18 +0000 (UTC)
+	by mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id F0E091800351;
+	Thu,  2 Apr 2026 06:37:26 +0000 (UTC)
 From: Li Wang <liwang@redhat.com>
 To: akpm@linux-foundation.org,
 	rppt@kernel.org,
@@ -74,10 +76,19 @@ To: akpm@linux-foundation.org,
 Cc: linux-mm@kvack.org,
 	linux-kselftest@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
-	cgroups@vger.kernel.org
-Subject: [PATCH v6 0/8] selftests/cgroup: improve zswap tests robustness and support large page sizes
-Date: Thu,  2 Apr 2026 14:37:06 +0800
-Message-ID: <20260402063714.55124-1-liwang@redhat.com>
+	cgroups@vger.kernel.org,
+	Michal Hocko <mhocko@kernel.org>,
+	=?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>,
+	Muchun Song <muchun.song@linux.dev>,
+	Tejun Heo <tj@kernel.org>,
+	Roman Gushchin <roman.gushchin@linux.dev>,
+	Shakeel Butt <shakeel.butt@linux.dev>,
+	Yosry Ahmed <yosryahmed@google.com>
+Subject: [PATCH v6 1/8] selftests/cgroup: skip test_zswap if zswap is globally disabled
+Date: Thu,  2 Apr 2026 14:37:07 +0800
+Message-ID: <20260402063714.55124-2-liwang@redhat.com>
+In-Reply-To: <20260402063714.55124-1-liwang@redhat.com>
+References: <20260402063714.55124-1-liwang@redhat.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -91,85 +102,128 @@ X-Spamd-Result: default: False [-1.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	MID_CONTAINS_FROM(1.00)[];
 	DMARC_POLICY_ALLOW(-0.50)[redhat.com,quarantine];
-	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
 	R_DKIM_ALLOW(-0.20)[redhat.com:s=mimecast20190719];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-15154-lists,cgroups=lfdr.de];
-	FROM_HAS_DN(0.00)[];
-	FREEMAIL_TO(0.00)[linux-foundation.org,kernel.org,cmpxchg.org,oracle.com,suse.com,linux.dev,redhat.com,gmail.com];
 	RCVD_TLS_LAST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-15155-lists,cgroups=lfdr.de];
+	FREEMAIL_TO(0.00)[linux-foundation.org,kernel.org,cmpxchg.org,oracle.com,suse.com,linux.dev,redhat.com,gmail.com];
 	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	DKIM_TRACE(0.00)[redhat.com:+];
-	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
+	RCPT_COUNT_TWELVE(0.00)[23];
+	FROM_HAS_DN(0.00)[];
 	MISSING_XM_UA(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	RCVD_COUNT_FIVE(0.00)[6];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[liwang@redhat.com,cgroups@vger.kernel.org];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	TO_DN_NONE(0.00)[];
-	TAGGED_RCPT(0.00)[cgroups];
+	DKIM_TRACE(0.00)[redhat.com:+];
 	NEURAL_HAM(-0.00)[-1.000];
-	RCPT_COUNT_TWELVE(0.00)[16];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 0C51C384910
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	TAGGED_RCPT(0.00)[cgroups];
+	TO_DN_SOME(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,cmpxchg.org:email,suse.com:email,linux.dev:email]
+X-Rspamd-Queue-Id: 7E7E1384A1D
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-This patchset aims to fix various spurious failures and improve the overall
-robustness of the cgroup zswap selftests.
+test_zswap currently only checks whether zswap is present by testing
+/sys/module/zswap. This misses the runtime global state exposed in
+/sys/module/zswap/parameters/enabled.
 
-The primary motivation is to make the tests compatible with architectures
-that use non-4K page sizes (such as 64K on ppc64le and arm64). Currently,
-the tests rely heavily on hardcoded 4K page sizes and fixed memory limits.
-On 64K page size systems, these hardcoded values lead to sub-page granularity
-accesses, incorrect page count calculations, and insufficient memory pressure
-to trigger zswap writeback, ultimately causing the tests to fail.
+When zswap is built/loaded but globally disabled, the zswap cgroup
+selftests run in an invalid environment and may fail spuriously.
 
-Additionally, this series addresses OOM kills occurring in test_swapin_nozswap
-by dynamically scaling memory limits, and prevents spurious test failures
-when zswap is built into the kernel but globally disabled.
+Check the runtime enabled state before running the tests:
+  - skip if zswap is not configured,
+  - fail if the enabled knob cannot be read,
+  - skip if zswap is globally disabled.
 
-Changes in v6:
-  Patch 4/8: Use page_size instead of BUF_SIZE
-             Declear page_size as int but not size_t
-  Patch 5/8: Use page_size replace the sysconf(_SC_PAGE_SIZE).
-  Patch 7/8: Adjust the code comments.
-  Patch 8/8: Declear long type for elapsed and count variables.
+Also print a hint in the skip message on how to enable zswap.
 
-Changes in v5:
-  Patch 1/8: Defined PATH_ZSWAP and PATH_ZSWAP_ENABLED macros.
-  Patch 4/8: Merge Waiman's work into this patch (use page_size).
-  Patch 5/8: Change pagesize by the global page_size.
-  Patch 6/8: Swap data patterns: use getrandom() for wb_group and simple
-             memset for zw_group to fix the reversed allocation logic.
-  Patch 7/8: Setting zswap.max to zswap_usage/4 to increase writeback pressure.
-  Patch 8/8: New added. Just add loops for read zswpwb more times.
+Signed-off-by: Li Wang <liwang@redhat.com>
+Cc: Johannes Weiner <hannes@cmpxchg.org>
+Cc: Michal Hocko <mhocko@kernel.org>
+Cc: Michal Koutný <mkoutny@suse.com>
+Cc: Muchun Song <muchun.song@linux.dev>
+Cc: Nhat Pham <nphamcs@gmail.com>
+Cc: Tejun Heo <tj@kernel.org>
+Cc: Roman Gushchin <roman.gushchin@linux.dev>
+Cc: Shakeel Butt <shakeel.butt@linux.dev>
+Cc: Yosry Ahmed <yosryahmed@google.com>
+Acked-by: Yosry Ahmed <yosry@kernel.org>
+Acked-by: Nhat Pham <nphamcs@gmail.com>
+---
 
-Test all passed on:
-  x86_64(4k), aarch64(4K, 64K), ppc64le(64K).
+Notes:
+    v5:
+         - Defined PATH_ZSWAP and PATH_ZSWAP_ENABLED macros to avoid line breaks
+    v4:
+         - No changes.
+    
+    v3:
+         - Replace tri-state zswap_enabled() with check_zswap_enabled() for clearer flow.
+         - Move skip/fail decisions into the helper instead of branching in main().
+         - Make read failure reporting more explicit by naming
+           `/sys/module/zswap/parameters/enabled`.
+         - Keep skip hint for enabling zswap:
+           `echo 1 > /sys/module/zswap/parameters/enabled`.
+    
+     v2:
+         - remove enable/disable_zswap functions
+         - skip the test if zswap is not enabled
+         - reporting fail when zswap_enabled return -1
 
-Li Wang (8):
-  selftests/cgroup: skip test_zswap if zswap is globally disabled
-  selftests/cgroup: avoid OOM in test_swapin_nozswap
-  selftests/cgroup: use runtime page size for zswpin check
-  selftests/cgroup: rename PAGE_SIZE to BUF_SIZE in cgroup_util
-  selftests/cgroup: replace hardcoded page size values in test_zswap
-  selftest/cgroup: fix zswap test_no_invasive_cgroup_shrink on large
-    pagesize system
-  selftest/cgroup: fix zswap attempt_writeback() on 64K pagesize system
-  selftests/cgroup: test_zswap: wait for asynchronous writeback
+ tools/testing/selftests/cgroup/test_zswap.c | 19 +++++++++++++++----
+ 1 file changed, 15 insertions(+), 4 deletions(-)
 
- .../selftests/cgroup/lib/cgroup_util.c        |  18 +-
- .../cgroup/lib/include/cgroup_util.h          |   4 +-
- tools/testing/selftests/cgroup/test_core.c    |   2 +-
- tools/testing/selftests/cgroup/test_freezer.c |   2 +-
- .../selftests/cgroup/test_memcontrol.c        |  19 +-
- tools/testing/selftests/cgroup/test_zswap.c   | 179 ++++++++++++------
- 6 files changed, 151 insertions(+), 73 deletions(-)
-
+diff --git a/tools/testing/selftests/cgroup/test_zswap.c b/tools/testing/selftests/cgroup/test_zswap.c
+index 64ebc3f3f203..44fa81ef6157 100644
+--- a/tools/testing/selftests/cgroup/test_zswap.c
++++ b/tools/testing/selftests/cgroup/test_zswap.c
+@@ -13,6 +13,9 @@
+ #include "kselftest.h"
+ #include "cgroup_util.h"
+ 
++#define PATH_ZSWAP "/sys/module/zswap"
++#define PATH_ZSWAP_ENABLED "/sys/module/zswap/parameters/enabled"
++
+ static int read_int(const char *path, size_t *value)
+ {
+ 	FILE *file;
+@@ -589,9 +592,18 @@ struct zswap_test {
+ };
+ #undef T
+ 
+-static bool zswap_configured(void)
++static void check_zswap_enabled(void)
+ {
+-	return access("/sys/module/zswap", F_OK) == 0;
++	char value[2];
++
++	if (access(PATH_ZSWAP, F_OK))
++		ksft_exit_skip("zswap isn't configured\n");
++
++	if (read_text(PATH_ZSWAP_ENABLED, value, sizeof(value)) <= 0)
++		ksft_exit_fail_msg("Failed to read " PATH_ZSWAP_ENABLED "\n");
++
++	if (value[0] == 'N')
++		ksft_exit_skip("zswap is disabled (hint: echo 1 > " PATH_ZSWAP_ENABLED ")\n");
+ }
+ 
+ int main(int argc, char **argv)
+@@ -604,8 +616,7 @@ int main(int argc, char **argv)
+ 	if (cg_find_unified_root(root, sizeof(root), NULL))
+ 		ksft_exit_skip("cgroup v2 isn't mounted\n");
+ 
+-	if (!zswap_configured())
+-		ksft_exit_skip("zswap isn't configured\n");
++	check_zswap_enabled();
+ 
+ 	/*
+ 	 * Check that memory controller is available:
 -- 
 2.53.0
 
