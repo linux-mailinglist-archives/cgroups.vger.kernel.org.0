@@ -1,100 +1,103 @@
-Return-Path: <cgroups+bounces-15168-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-15169-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 2Kl6IWfMz2m50gYAu9opvQ
-	(envelope-from <cgroups+bounces-15168-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Fri, 03 Apr 2026 16:19:19 +0200
+	id YG6POLXMz2m50gYAu9opvQ
+	(envelope-from <cgroups+bounces-15169-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Fri, 03 Apr 2026 16:20:37 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3A0AF3951CF
-	for <lists+cgroups@lfdr.de>; Fri, 03 Apr 2026 16:19:18 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4E7EE395223
+	for <lists+cgroups@lfdr.de>; Fri, 03 Apr 2026 16:20:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id B564730628C0
-	for <lists+cgroups@lfdr.de>; Fri,  3 Apr 2026 14:13:18 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 970C530D67F4
+	for <lists+cgroups@lfdr.de>; Fri,  3 Apr 2026 14:13:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 498703C343A;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F236C3C4542;
 	Fri,  3 Apr 2026 14:13:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Suv+fQKZ";
-	dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b="O8hPjr+f"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Fw1vH9Wz";
+	dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b="R6LGROoX"
 X-Original-To: cgroups@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AAA7132AABD
-	for <cgroups@vger.kernel.org>; Fri,  3 Apr 2026 14:13:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 45FA2386427
+	for <cgroups@vger.kernel.org>; Fri,  3 Apr 2026 14:13:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1775225596; cv=none; b=TSKgvVxXUeK3ZHevW5sJn6cSiQ54nPCWYDlTDKFxmLlQ0aILF86yCoc7m4myz2ajRQzq8TttqHYGxNQXIiKZaJbN0sNGilNKWcyQgpcVh7rhLL2en5pNO2wHAQEwC2G860XV/5DHdZWC9187Nl3YnDu4MYZPQj6hPTRig5HIQdo=
+	t=1775225596; cv=none; b=sLk9Qe50LcLpIsfpqL2aEydJLFvgLJBtCeYnt5WOgfkPpEvN+8T86lJXFZZ+4McGFV252+TongUSD+cO99hHoywMcCpXkbORP+hZMTmaSWCRhO1PBv5BH2xX0D5CWAvIRVZJpTkQu4rpWImT6lewURxxmfKfjL03tlxIreLy5Rw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1775225596; c=relaxed/simple;
-	bh=Wy0RU0H7LQVQR4Z95trOr/a0R3UCW8jXOuycekYnywc=;
-	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=kfGlaytUyexvQBWVTDZrer8N/vvwbhLbExhM95ZTWfzwx8XxJVfh6eXVB3JR48/F87FciYZZ4uIXR2jZiCsQ+n7IW6KzVTk7JyJAmaIClbld6ljwqrwr5mi8FASSr3hvb43hjzR/bE8MPpQSp0Pgl0ZO9UfxEHJbBSl7jGHyAEc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Suv+fQKZ; dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b=O8hPjr+f; arc=none smtp.client-ip=170.10.133.124
+	bh=pKR+okoCybqgnvAwwN0fmXR4Q8RrZm0wNhzQW0p4g3M=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
+	 In-Reply-To:To:Cc; b=s8vtyL8NNUQGUGYtAVfBZHAtd8sxgW7ST2M02/32vJ2IxjraczNuoVxFku1GAnv8JJCyKFvo6jpX1QPglKi7uGdY+04VFmBCmDqwu0RNskh8p0ulPvnA7F0Ozh1Zei5/R64y3J0B6lAjFsfUVpyuVmdbhODJr7N8GWll85Nwx9o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Fw1vH9Wz; dkim=pass (2048-bit key) header.d=redhat.com header.i=@redhat.com header.b=R6LGROoX; arc=none smtp.client-ip=170.10.129.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1775225592;
+	s=mimecast20190719; t=1775225594;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=zCsOheHk8XlC9CSFSmzc3izuiVKcS+6jE7o78F0/vE0=;
-	b=Suv+fQKZFOiYRGGcw0e1oMc36UcYdbvpwqwqACxBevfQduVHtr6ZRbVywSWjuhPxt+SKq8
-	OLYlDncSH+NinHc61HKdlhhwfw0pGR2z6WTOv0pSFLCyYZvoaqyuj0OTQ+OB6CbWBzHB1Z
-	L51DFyDhfSwqSXFQeN9Td8uRyK2Ft5w=
-Received: from mail-qk1-f200.google.com (mail-qk1-f200.google.com
- [209.85.222.200]) by relay.mimecast.com with ESMTP with STARTTLS
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=F2OXmkPnk3xdLi6S85WCOSMj2pCVYR8dHaWwnDoveRE=;
+	b=Fw1vH9WzkLV0kB9htYYwuju/QCwYnEvPzffJOimRcNAeznXBhISWp+VYz9UlnCbOj11r0g
+	Sqs5tI4LVCLw+sGc9XJ8FxhiYs4fdyPV2PwTJMJ6XXFSyxJufboYPSqi56NtSr4D/Ni9YY
+	sZXM9JUmkiloJ9jwD0B1eDZn+mnJECE=
+Received: from mail-qv1-f70.google.com (mail-qv1-f70.google.com
+ [209.85.219.70]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-294-E01-exmLMjaiYfUGwPsQeA-1; Fri, 03 Apr 2026 10:13:11 -0400
-X-MC-Unique: E01-exmLMjaiYfUGwPsQeA-1
-X-Mimecast-MFC-AGG-ID: E01-exmLMjaiYfUGwPsQeA_1775225591
-Received: by mail-qk1-f200.google.com with SMTP id af79cd13be357-8cd7de0e161so498257485a.2
-        for <cgroups@vger.kernel.org>; Fri, 03 Apr 2026 07:13:11 -0700 (PDT)
+ us-mta-577-uSOGESxkNke9B8CR8YZ6bw-1; Fri, 03 Apr 2026 10:13:13 -0400
+X-MC-Unique: uSOGESxkNke9B8CR8YZ6bw-1
+X-Mimecast-MFC-AGG-ID: uSOGESxkNke9B8CR8YZ6bw_1775225592
+Received: by mail-qv1-f70.google.com with SMTP id 6a1803df08f44-8a1f96bf221so74041636d6.3
+        for <cgroups@vger.kernel.org>; Fri, 03 Apr 2026 07:13:12 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=redhat.com; s=google; t=1775225591; x=1775830391; darn=vger.kernel.org;
-        h=cc:to:content-transfer-encoding:mime-version:message-id:date
-         :subject:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=zCsOheHk8XlC9CSFSmzc3izuiVKcS+6jE7o78F0/vE0=;
-        b=O8hPjr+fCtDUXgcUB/zEOVZ1xV4yNYOSpxepmzLRmZ8lvIsBxNh/KNSEEWH5TJbI87
-         d0wRYfGUXF07uBe6xpDx178CmzumBW580FgJrM0r+yoVqO00f076QYm4ni8rsd2pQgMu
-         og64tdgVsERB59dlGzuOAS1fn8L121ScRxE+7e3L8QhFJLrXrOsLzICBMK4AZNTg6l0C
-         CZQw/HbfEqHsFKaTafOpMYWu9aH6jj4d300YSdn+ereLd2XnXHoTcMP/0AtPXMFphFr0
-         ADHfdUO0vWtWQ69v4n8/z3larE5WApCTjt0wgCM5ipgqTQTh1bUXplJ2Kt3354pXBRtP
-         nD5w==
+        d=redhat.com; s=google; t=1775225592; x=1775830392; darn=vger.kernel.org;
+        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
+         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=F2OXmkPnk3xdLi6S85WCOSMj2pCVYR8dHaWwnDoveRE=;
+        b=R6LGROoXW6ZwzHBKEiwXnn2uA8/HHGcRPAdjqne9MXGYk5BbntXhXWE3b62fgUFQVm
+         gLTmWnWOZmjM32R5vFYbvXZSg2WVIp7EtqvINWEZq78j9OjwdyQ/btUwC+m2eP0kJQgF
+         zP1Msj88PxEGhGd3P6Qga5tXg3/XeFpR+ReZrnrQ54rOQva73wCeCSlKgRhuaAG10w1E
+         qQKnUVkbOsvhDrMnjpi0A4Jndr6GCkyKAwXLEsTOfHMEK88dY7+5gtvDXqypoVbuTVDj
+         vy9Dcj/lkIwQqH6c0DIMiNTaLbYt+MpXz/N3QxHUJE0tvCAQiOuRIfVhjw/6YunUcxWl
+         o/Lw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1775225591; x=1775830391;
-        h=cc:to:content-transfer-encoding:mime-version:message-id:date
-         :subject:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=zCsOheHk8XlC9CSFSmzc3izuiVKcS+6jE7o78F0/vE0=;
-        b=WMl9VU8MyJF7Sf7ByDGLRCMDBoYztT0gDUKF2P+FIIZjf8cAoGYK2MJwRAk1eRtMd0
-         L1tVqI1IWxOcpU/LJZ68oQ+9c22k7h3hRYoTkGIPXIGLLr1Pdc70Qoi3W5wPuuLUR5Lh
-         T97ZyKhiduf/TFdtOmYo2LDPox8anihN8FIJv5LpSTtqi0SkfOSvlu/8X/Twpip3lilT
-         Ao1inHnSo5GA7AMtfaS0WPNWcww6L0NSxNpvXEKtoDxJbqgmqbqSkFUKNrRRby/yG6ly
-         MzSXCy6Y0BocI1bCJqqQ855jej3zUjImtgMYJgJLEnAb0fUYZe0NSQ8s8ZQM9g4VyNB9
-         qhrQ==
-X-Gm-Message-State: AOJu0YyN2C5EbboZ/RV1fbwpWIADEsTedns5yikQq4ZZ55TyFF8bCdFQ
-	7k/K931yP5/+PY3NGRb+1Gt/f04jKqZKdQQwPr9xCTMpTW1hMpWiKynh++ZCAgHDen6m+9gN7Ke
-	yS4mxCYX3s1YYnrX/hwtvjmgo4JusdY63/0pAoX21n6fFF9r8vw+AenHwFUk=
-X-Gm-Gg: ATEYQzyHD5dGbzuKrVMaNNfoaBXzrhY40fUgDt+06nbMpimBUZbGNYj7DIm+MmVNL4M
-	2NzOV6jHFZV+QAL6kUv+NRXZsaDJj4s7McmaAVhO+UhnDm9JJTnQiET80wf3obKgiH3C//VadDm
-	7Ik1YbCk8TGM5u1ArerKpSQ8WaG/1aB79lH8QIeg2ZhqcNq3CjR6/VeupvwErgCtdJ6qYv8W28N
-	uXTwWs5L6w1ocF7f2Ol9ssn1q/9p/YXukvoyjfrxZ0LMYyjbGNlu/hNO7Y6e4wZJHLF/AWRqD8d
-	TP6zVwBxhEN6DK/xRhbtKHL0VDygAxFWH/5SRrm8vzy9/egy2iuZeil+MPzBtNVDBHnS137V7Eb
-	zenjy0NJfKaEM8DpGW+WySTD9/MPQUM3aWs7UOlbKgubswqQsMHB7OALIsVv5TYo=
-X-Received: by 2002:a05:620a:470d:b0:8d0:176:58bf with SMTP id af79cd13be357-8d41ec0d06emr460638185a.63.1775225590908;
-        Fri, 03 Apr 2026 07:13:10 -0700 (PDT)
-X-Received: by 2002:a05:620a:470d:b0:8d0:176:58bf with SMTP id af79cd13be357-8d41ec0d06emr460628785a.63.1775225590198;
-        Fri, 03 Apr 2026 07:13:10 -0700 (PDT)
+        d=1e100.net; s=20251104; t=1775225592; x=1775830392;
+        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
+         :mime-version:subject:date:from:x-gm-gg:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=F2OXmkPnk3xdLi6S85WCOSMj2pCVYR8dHaWwnDoveRE=;
+        b=f0myXCSnyGSXZ5UevOT6uiHFywS8c23APOwPmoQVwS7t3VOU4RGakMG8PGnc1ZkekA
+         UVWA9pVEe8O3SAU9NZLxSOC/ptbwbPwU1T++a2gusZR1riaDqaCcXPTeUQHGp7am+Hw8
+         qriTJ11uFzmhXJWOYl+Blmprnj2BtkGVQuZ5lFsqM33LjF1hRVV1iQ3g+5f4aVpGnUtH
+         QjzMi/8yXoASs1xGJxg9HHWeFMG1u0S8lUY4uOQjLxan0XmWitQetdZRMF6wT6hlTuqT
+         Ac1qOb7EYtbUo2UnERdsXLcDPFn/SSqo7GxxlDwt0yG1ozFH5qONvIN61yquTJeN+/Q7
+         2vNw==
+X-Gm-Message-State: AOJu0YwdXtJXjtvY6Tphk9syGoIa1sQJZ2+E7Wg+3GcGSEWvqtFlrfV5
+	OnB4IE51GGmgEbUzVeVzjGQc8/yJ/8LZjUwhs+Y9qeyc6NxEeha6pBJ5ivz3HUDbaZdpUyxhjUL
+	T5KR0J2Ab3VwWk+dyQ9tXHTkF7GRLVeHjKJWXO0qoDNEpHx+zg7C3wCGpIHw=
+X-Gm-Gg: AeBDieuB95QcPVQFaUsK8RwMo+yLsgCSrZ4ZQZb9MGH7u0su3SvR75HFm2OtfQcIMz/
+	BuDengPLAW/l5N2drDY/QqZgJL+kbfgShjSShO6OPRJOIt8FYf5krvy5drWLIzwIIz2EAKJNMqe
+	ThiECO+GhEMrBijixSBnp2/2zJjLCE1iF5e2oeV9CmM5bXZ9jmScMraEluputWBhJ1NA3afTxCL
+	CYUjUzDU8OWY5XnDL66rRwlW2NCdGw7XcMcuJ8+95+uWcgDYpZ0SD2O2S9fgOPPbxWcoa9vpKQR
+	k/o3H6bmQ/5gxYFgZAovDPSYsqJ6BtPjcbQqFN8D8BUVZvg2ENqojQTRRLTkZVjghXPjdfePn3o
+	B9Zcgu6p4kj10KQImHQL3Rdg+ALO2TBLkNimeD6nUIIhdQ0hRte1eV9W4VcgarDU=
+X-Received: by 2002:a05:6214:76d:b0:89f:123c:4d9c with SMTP id 6a1803df08f44-8a7025b7636mr47917186d6.18.1775225592236;
+        Fri, 03 Apr 2026 07:13:12 -0700 (PDT)
+X-Received: by 2002:a05:6214:76d:b0:89f:123c:4d9c with SMTP id 6a1803df08f44-8a7025b7636mr47916446d6.18.1775225591562;
+        Fri, 03 Apr 2026 07:13:11 -0700 (PDT)
 Received: from localhost (pool-100-17-19-56.bstnma.fios.verizon.net. [100.17.19.56])
-        by smtp.gmail.com with ESMTPSA id af79cd13be357-8d5336aa9f0sm21287085a.28.2026.04.03.07.13.09
+        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-8a593330a98sm50147126d6.2.2026.04.03.07.13.10
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 03 Apr 2026 07:13:09 -0700 (PDT)
+        Fri, 03 Apr 2026 07:13:11 -0700 (PDT)
 From: Eric Chanudet <echanude@redhat.com>
-Subject: [PATCH RFC 0/2] cgroup/mem: add a node to double charge in memcg
-Date: Fri, 03 Apr 2026 10:08:34 -0400
-Message-Id: <20260403-cgroup-dmem-memcg-double-charge-v1-0-c371d155de2a@redhat.com>
+Date: Fri, 03 Apr 2026 10:08:35 -0400
+Subject: [PATCH RFC 1/2] mm/memcontrol: add page-level charge/uncharge
+ functions
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -103,10 +106,9 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-B4-Tracking: v=1; b=H4sIAAAAAAAC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
- vPSU3UzU4B8JSMDIzMDYyNz3eT0ovzSAt2U3NRcXSBOTtdNyS9NyknVBSovAio3SDM0MEi0TEt
- LSjNSAppSUJSallkBtiFaKcjNWSm2thYATWgic3YAAAA=
-X-Change-ID: 20260327-cgroup-dmem-memcg-double-charge-0f100a9ffbf2
+Message-Id: <20260403-cgroup-dmem-memcg-double-charge-v1-1-c371d155de2a@redhat.com>
+References: <20260403-cgroup-dmem-memcg-double-charge-v1-0-c371d155de2a@redhat.com>
+In-Reply-To: <20260403-cgroup-dmem-memcg-double-charge-v1-0-c371d155de2a@redhat.com>
 To: Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>, 
  Roman Gushchin <roman.gushchin@linux.dev>, 
  Shakeel Butt <shakeel.butt@linux.dev>, Muchun Song <muchun.song@linux.dev>, 
@@ -124,13 +126,13 @@ X-Mailer: b4 0.14.2
 X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	DMARC_POLICY_ALLOW(-0.50)[redhat.com,quarantine];
-	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	R_DKIM_ALLOW(-0.20)[redhat.com:s=mimecast20190719,redhat.com:s=google];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-15168-lists,cgroups=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-15169-lists,cgroups=lfdr.de];
 	FREEMAIL_TO(0.00)[cmpxchg.org,kernel.org,linux.dev,linux-foundation.org,lankhorst.se,gmx.de,suse.com];
 	FREEMAIL_CC(0.00)[vger.kernel.org,kvack.org,lists.freedesktop.org,google.com,amd.com,redhat.com,gmail.com];
 	RCPT_COUNT_TWELVE(0.00)[21];
@@ -138,7 +140,7 @@ X-Spamd-Result: default: False [-2.16 / 15.00];
 	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	FROM_HAS_DN(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	RCVD_COUNT_FIVE(0.00)[6];
 	PRECEDENCE_BULK(0.00)[];
@@ -149,35 +151,86 @@ X-Spamd-Result: default: False [-2.16 / 15.00];
 	MID_RHS_MATCH_FROM(0.00)[];
 	TO_DN_SOME(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 3A0AF3951CF
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: 4E7EE395223
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-It was suggested previously[1] to introduce a knob for dmem region to
-double charge dmem and memcg at the will of the administrator.
-
-This RFC tries do that in the dmem controller through the cgroupfs
-interface already available and walk through the problems that creates.
-
-[1] https://lore.kernel.org/all/a446b598-5041-450b-aaa9-3c39a09ff6a0@amd.com/
+Expose functions to charge/uncharge memcg with a number of pages instead
+of a folio.
 
 Signed-off-by: Eric Chanudet <echanude@redhat.com>
 ---
-Eric Chanudet (2):
-      mm/memcontrol: add page-level charge/uncharge functions
-      cgroup/dmem: add a node to double charge in memcg
+ include/linux/memcontrol.h |  4 ++++
+ mm/memcontrol.c            | 24 ++++++++++++++++++++++++
+ 2 files changed, 28 insertions(+)
 
- include/linux/memcontrol.h |  4 +++
- kernel/cgroup/dmem.c       | 86 ++++++++++++++++++++++++++++++++++++++++++++--
- mm/memcontrol.c            | 24 +++++++++++++
- 3 files changed, 111 insertions(+), 3 deletions(-)
----
-base-commit: 4b9c36c83b34f710da9573291404f6a2246251c1
-change-id: 20260327-cgroup-dmem-memcg-double-charge-0f100a9ffbf2
+diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
+index 70b685a85bf4cd0e830c9c0253e4d48f75957fe4..32f03890f13e06551fc910515eb478597c1235d8 100644
+--- a/include/linux/memcontrol.h
++++ b/include/linux/memcontrol.h
+@@ -642,6 +642,8 @@ static inline bool mem_cgroup_below_min(struct mem_cgroup *target,
+ 
+ int __mem_cgroup_charge(struct folio *folio, struct mm_struct *mm, gfp_t gfp);
+ 
++int mem_cgroup_try_charge_pages(struct mem_cgroup *memcg, gfp_t gfp_mask,
++				unsigned int nr_pages);
+ /**
+  * mem_cgroup_charge - Charge a newly allocated folio to a cgroup.
+  * @folio: Folio to charge.
+@@ -692,6 +694,8 @@ static inline void mem_cgroup_uncharge_folios(struct folio_batch *folios)
+ 	__mem_cgroup_uncharge_folios(folios);
+ }
+ 
++void mem_cgroup_uncharge_pages(struct mem_cgroup *memcg, unsigned int nr_pages);
++
+ void mem_cgroup_replace_folio(struct folio *old, struct folio *new);
+ void mem_cgroup_migrate(struct folio *old, struct folio *new);
+ 
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index 772bac21d15584ce495cba6ad2eebfa7f693677f..49ed069a2dafd5d26d77e6737dffe7e64ba5118c 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -4764,6 +4764,24 @@ int __mem_cgroup_charge(struct folio *folio, struct mm_struct *mm, gfp_t gfp)
+ 	return ret;
+ }
+ 
++/**
++ * mem_cgroup_try_charge_pages - charge pages to a memory cgroup
++ * @memcg: memory cgroup to charge
++ * @gfp_mask: reclaim mode
++ * @nr_pages: number of pages to charge
++ *
++ * Try to charge @nr_pages to @memcg through try_charge_memcg.
++ *
++ * Returns 0 on success, an error code on failure.
++ */
++int mem_cgroup_try_charge_pages(struct mem_cgroup *memcg, gfp_t gfp_mask,
++				unsigned int nr_pages)
++{
++	return try_charge(memcg, gfp_mask, nr_pages);
++}
++EXPORT_SYMBOL_GPL(mem_cgroup_try_charge_pages);
++
++
+ /**
+  * mem_cgroup_charge_hugetlb - charge the memcg for a hugetlb folio
+  * @folio: folio being charged
+@@ -4948,6 +4966,12 @@ void __mem_cgroup_uncharge_folios(struct folio_batch *folios)
+ 		uncharge_batch(&ug);
+ }
+ 
++void mem_cgroup_uncharge_pages(struct mem_cgroup *memcg, unsigned int nr_pages)
++{
++	memcg_uncharge(memcg, nr_pages);
++}
++EXPORT_SYMBOL_GPL(mem_cgroup_uncharge_pages);
++
+ /**
+  * mem_cgroup_replace_folio - Charge a folio's replacement.
+  * @old: Currently circulating folio.
 
-Best regards,
 -- 
-Eric Chanudet <echanude@redhat.com>
+2.52.0
 
 
