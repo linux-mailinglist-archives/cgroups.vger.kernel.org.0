@@ -1,118 +1,80 @@
-Return-Path: <cgroups+bounces-15177-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-15178-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id qJxeB1H302k4ogcAu9opvQ
-	(envelope-from <cgroups+bounces-15177-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Mon, 06 Apr 2026 20:11:29 +0200
+	id 2I4cJ+9Y1GkrtQcAu9opvQ
+	(envelope-from <cgroups+bounces-15178-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Tue, 07 Apr 2026 03:07:59 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 98E873A60C3
-	for <lists+cgroups@lfdr.de>; Mon, 06 Apr 2026 20:11:28 +0200 (CEST)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6B5C83A894F
+	for <lists+cgroups@lfdr.de>; Tue, 07 Apr 2026 03:07:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id ECE3230134B0
-	for <lists+cgroups@lfdr.de>; Mon,  6 Apr 2026 18:11:24 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id 916A230071D6
+	for <lists+cgroups@lfdr.de>; Tue,  7 Apr 2026 01:07:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 64B55390219;
-	Mon,  6 Apr 2026 18:11:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2825D1C8603;
+	Tue,  7 Apr 2026 01:07:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UMj2OxG3"
+	dkim=pass (2048-bit key) header.d=amazon.com header.i=@amazon.com header.b="Rt0rhBdV"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-oa1-f47.google.com (mail-oa1-f47.google.com [209.85.160.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from pdx-out-014.esa.us-west-2.outbound.mail-perimeter.amazon.com (pdx-out-014.esa.us-west-2.outbound.mail-perimeter.amazon.com [35.83.148.184])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6DECA392C47
-	for <cgroups@vger.kernel.org>; Mon,  6 Apr 2026 18:11:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B1D471A9FB0;
+	Tue,  7 Apr 2026 01:07:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=35.83.148.184
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1775499083; cv=none; b=TMAxmi/yFD59ZPeTxrfQPRYhkROGr3q2d5z/UlNO/lQZdZao4Hy7di8t6qoDnmZJRdQ8LP05MwELR6oxfBJqEalgO7PUwIRztLJphaIDEMOJRFOnuyc+zWDrRx49U+XnVelfClWDDldlzT7RV25hVvW7kQvMgi7VQz95ZYto0TU=
+	t=1775524073; cv=none; b=f+z+UgOhm5MmGgn58XC8MJFAZd4Tn44lPzGuSkGYO91oavhT9DjcxHpT4NPCW8M2Luon4i1zdj5f2KTQc+SBQsuEolnZx4w6Zklm5Qa7GrIVjzCHgUF8sKPwtd7hKWcdtnsvO4Q6H/aJ/Ypmo19rUme+IQx8vDzWyvPOBsfctPM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1775499083; c=relaxed/simple;
-	bh=mvJHDQSniuPRVZlhKG7TgD8Kalt9wGJugRQKAMePGzY=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=ogp6pIeicA2MxiKrNPDjyPuYU1/72p5cay+rLZvyWc7uC0xZAsM9gtf5vOELqDxZAxFb2/a7EYTkkf27Gq8XNAXJQRKRjX3AudPQUNcdrUPkJOoXbNUEL157DzdBDhku13KgJ8BRG7sG7JAYp2O/JzD3J/tpFp0H64XGQkko8oM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=UMj2OxG3; arc=none smtp.client-ip=209.85.160.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oa1-f47.google.com with SMTP id 586e51a60fabf-415b23dd6e5so1623264fac.3
-        for <cgroups@vger.kernel.org>; Mon, 06 Apr 2026 11:11:20 -0700 (PDT)
+	s=arc-20240116; t=1775524073; c=relaxed/simple;
+	bh=mfAgd54s/h1ICwrQqLGafvBK66JUCbAVdoH2zv42efQ=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=vBC6KAO+Q/JoI20SHYub0L5CUvpGc1GFhipOiYMUAiPyd+RFhxTNTMNIjCwUkyx0Tc1uPHV8n8J6fnkvKGb6HMTWTddhRejUJqgghipDcWkJv29uCes3OcaFljioCSOOqQep29bRHg0sQIFpxJSk/8qKDh0+z4pwTfAzaqSra8I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com; spf=pass smtp.mailfrom=amazon.com; dkim=pass (2048-bit key) header.d=amazon.com header.i=@amazon.com header.b=Rt0rhBdV; arc=none smtp.client-ip=35.83.148.184
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amazon.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1775499079; x=1776103879; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=6TnCmX+3/CCMvkLoaDVEag7E8oCzFpXmbhOnswXUGMo=;
-        b=UMj2OxG3ecKWh1FDE08uukTWTT8W9SbEGjMMHVbjDRjROzlWpOKOlRZQXFQInZe3gL
-         xd7KZpOliIgoXE4eTXXJJLuebLI7SZ5GtJKJtMcRy2UbAYZzsc11uCKMUf4I2iQ33ogl
-         M+UgQdejoseRp57+Of4HETjuGAHxgsuTvoWE3RUB/CQ+8D01am4g5MPyzu25SpMJ0GQt
-         bPaSBU6COFrEPkDgHOunaHoS9504ObpksD3H42f0W9YJChhDBaFZM5a8rRvnuFuJLVep
-         /3PsQ44q1AcQuMda2N8Sg0t3VI3EV/zZ347t2bTZ0JEdncDofIPW5ylt9Pv1g/J8hE8N
-         OiaQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1775499079; x=1776103879;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=6TnCmX+3/CCMvkLoaDVEag7E8oCzFpXmbhOnswXUGMo=;
-        b=MkE+56EUXDwanVokfn60phwMA6uoHs6e3dcpz5tVn5xRrKh4geberGp5r6nPi9pymr
-         7Vss5oiZ+OwZIAzdRyCpiHOMLwHK73f8x0jR9TEw4fKn66dnlLUjrPi1/alj2s/5W2mx
-         3giPOa/3EL7ZrrzqV7DxSpoukIXfs4ulloXBg8hBEtua4WAcr1s1E0Q7Ywf2/KdFHlDt
-         B5yT0QjsrnfJOuHpBnM6zSB1Bk/qCh05t25ZXAKDMyzcWr4z8IG28k6W9FFcEBkLzB3o
-         PqzdxQajYy0H8yzkSomXRilGw6R8IwvULrCutNnehSpl++LXH+HQnW7R7da8ByIkhyoj
-         lXDg==
-X-Forwarded-Encrypted: i=1; AJvYcCUHWxwt8hBj0qyxtwkadTOElRqT/UKnczM6mk1LWprDyEvLjzL7qJ9Qnbw84xydVgmIqIXk7IQY@vger.kernel.org
-X-Gm-Message-State: AOJu0YzNSTnmcKh47uOvksfF9eKcObGxwwThEFsD1mfADadLaJeqLc3s
-	7MosEfIo2IGyoPEmeWsIhicckfnQugxOwPw42xOZ/4fI7aoo91Fd1eKa
-X-Gm-Gg: AeBDievWg4r9QlHHjrvSkM4/X/ugmQwPNV2eHYqdCz5DCfUSm8AE43pC66eycoj8Xsn
-	OtTxQS2nR23y3ato1KnjJc/ynQMylk9V8xEoIu1KalQrkxpJcpN2ogsma4LGpcjkJM16+0Ky0/j
-	GwF0o2Z5J7N3o5KR+z7vJ3M1YlKCq/12bzIPj+5rMHUQxBpfTBrNoEfKp4+bFZy8zIf+clYfHUa
-	AtzDigtZlLyCzaVDKLk31hQsIM4yWx3e9dlhuwZKDzsf0QIODqv7QaHRWoN4ql1OvirWogGWRFZ
-	KrrUGiyfqzb/LX9BVTrOphEI35Sn0x1mfHukM30uU1KpGgTLJcaqHw4wM8fIxF5CmeHQZ5mlvmB
-	7uKKQ+IqAVOrO+c1YRgNaixJWtfjkC0zYGsr2hj1wCam0n8LTJLoZuRpQMiwv8bUCzdsw0X6gJ1
-	VnxbbDSwEJGqGBgDAU5uxzxQ==
-X-Received: by 2002:a05:6871:2313:b0:423:6559:ae4d with SMTP id 586e51a60fabf-4236559b3edmr2499144fac.37.1775499079203;
-        Mon, 06 Apr 2026 11:11:19 -0700 (PDT)
-Received: from localhost ([2a03:2880:10ff:50::])
-        by smtp.gmail.com with ESMTPSA id 586e51a60fabf-4232eb3d0e4sm7345417fac.6.2026.04.06.11.11.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 06 Apr 2026 11:11:18 -0700 (PDT)
-From: Joshua Hahn <joshua.hahnjy@gmail.com>
-To: Qi Zheng <qi.zheng@linux.dev>
-Cc: hannes@cmpxchg.org,
-	hughd@google.com,
-	mhocko@suse.com,
-	roman.gushchin@linux.dev,
-	shakeel.butt@linux.dev,
-	muchun.song@linux.dev,
-	david@kernel.org,
-	lorenzo.stoakes@oracle.com,
-	ziy@nvidia.com,
-	harry.yoo@oracle.com,
-	yosry.ahmed@linux.dev,
-	imran.f.khan@oracle.com,
-	kamalesh.babulal@oracle.com,
-	axelrasmussen@google.com,
-	yuanchu@google.com,
-	weixugc@google.com,
-	chenridong@huaweicloud.com,
-	mkoutny@suse.com,
-	akpm@linux-foundation.org,
-	hamzamahfooz@linux.microsoft.com,
-	apais@linux.microsoft.com,
-	lance.yang@linux.dev,
-	bhe@redhat.com,
-	usamaarif642@gmail.com,
-	linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org,
-	cgroups@vger.kernel.org,
-	Muchun Song <songmuchun@bytedance.com>,
-	Qi Zheng <zhengqi.arch@bytedance.com>
-Subject: Re: [PATCH v6 32/33] mm: memcontrol: eliminate the problem of dying memory cgroup for LRU folios
-Date: Mon,  6 Apr 2026 11:11:16 -0700
-Message-ID: <20260406181116.4053796-1-joshua.hahnjy@gmail.com>
-X-Mailer: git-send-email 2.52.0
-In-Reply-To: <80cb7af198dc6f2173fe616d1207a4c315ece141.1772711148.git.zhengqi.arch@bytedance.com>
-References: 
+  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazoncorp2;
+  t=1775524072; x=1807060072;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=co6wh8FdcwJFRSY1XyBB43ALGdvZ6Z0Vl5vtqguZSls=;
+  b=Rt0rhBdVF6fehU3YWkccSqOJWLAy9UEsKwPS+0lgxRlsnvGzthjrETwQ
+   JpkxB5mshwybM/U5Q8XuOsJSXbbDH4yK9mucG9qYEKDzAcbaKe9F9e9vq
+   tVxcJgsLkaiB0t1cBpSQkcTnXKgXh0zuN07BkTSZTBfR3sWh4v2MJhGDp
+   ugzTCGZv3V/P6WaKMiMpX7ILxrt+vb2KePdQ58OvmVnQXefqhOV9NrjUw
+   AN5fqBfMuZJ/6k36H4M6upvBl/rS/qz/M9rpDhc6podEGG59JvadV04KW
+   kiXALjjNw9wJd5oXNPC41xdpEO43HeK57hdWdz669MISYBcGUmFhYWPUf
+   A==;
+X-CSE-ConnectionGUID: tjOOPnVaSo+Bkz85Dbc1gg==
+X-CSE-MsgGUID: W3GVGG+9SM28omMKa4GH8Q==
+X-IronPort-AV: E=Sophos;i="6.23,164,1770595200"; 
+   d="scan'208";a="16482096"
+Received: from ip-10-5-12-219.us-west-2.compute.internal (HELO smtpout.naws.us-west-2.prod.farcaster.email.amazon.dev) ([10.5.12.219])
+  by internal-pdx-out-014.esa.us-west-2.outbound.mail-perimeter.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 07 Apr 2026 01:07:50 +0000
+Received: from EX19MTAUWB001.ant.amazon.com [205.251.233.51:18836]
+ by smtpin.naws.us-west-2.prod.farcaster.email.amazon.dev [10.0.57.195:2525] with esmtp (Farcaster)
+ id d439e589-ddbd-46ae-bf14-06f8af17c3d4; Tue, 7 Apr 2026 01:07:49 +0000 (UTC)
+X-Farcaster-Flow-ID: d439e589-ddbd-46ae-bf14-06f8af17c3d4
+Received: from EX19D001UWA001.ant.amazon.com (10.13.138.214) by
+ EX19MTAUWB001.ant.amazon.com (10.250.64.248) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.2562.37;
+ Tue, 7 Apr 2026 01:07:49 +0000
+Received: from 6c7e67b75e78.amazon.com (10.187.171.24) by
+ EX19D001UWA001.ant.amazon.com (10.13.138.214) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA) id 15.2.2562.37;
+ Tue, 7 Apr 2026 01:07:49 +0000
+From: Willy Barro Raffel <willybar@amazon.com>
+To: Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>,
+	=?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>,
+	<cgroups@vger.kernel.org>, <linux-kernel@vger.kernel.org>, Willy Barro Raffel
+	<willybar@amazon.com>
+CC: Justinien Bouron <jbouron@amazon.com>, Gunnar Kudrjavets
+	<gunnarku@amazon.com>
+Subject: [PATCH] cgroup: add cpu.stat.percpu for per-CPU cgroup stats
+Date: Mon, 6 Apr 2026 18:06:43 -0700
+Message-ID: <20260407010642.3249-2-willybar@amazon.com>
+X-Mailer: git-send-email 2.50.1
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -120,76 +82,148 @@ List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spamd-Result: default: False [-1.66 / 15.00];
+Content-Type: text/plain
+X-ClientProxiedBy: EX19D046UWA003.ant.amazon.com (10.13.139.18) To
+ EX19D001UWA001.ant.amazon.com (10.13.138.214)
+X-Spamd-Result: default: False [-7.66 / 15.00];
+	WHITELIST_DMARC(-7.00)[amazon.com:D:+];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
+	MID_CONTAINS_FROM(1.00)[];
+	DMARC_POLICY_ALLOW(-0.50)[amazon.com,quarantine];
 	R_MISSING_CHARSET(0.50)[];
-	R_DKIM_ALLOW(-0.20)[gmail.com:s=20251104];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_DKIM_ALLOW(-0.20)[amazon.com:s=amazoncorp2];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FREEMAIL_CC(0.00)[cmpxchg.org,google.com,suse.com,linux.dev,kernel.org,oracle.com,nvidia.com,huaweicloud.com,linux-foundation.org,linux.microsoft.com,redhat.com,gmail.com,kvack.org,vger.kernel.org,bytedance.com];
-	TAGGED_FROM(0.00)[bounces-15177-lists,cgroups=lfdr.de];
-	RCVD_TLS_LAST(0.00)[];
-	RECEIVED_HELO_LOCALHOST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-15178-lists,cgroups=lfdr.de];
+	FROM_NEQ_ENVFROM(0.00)[willybar@amazon.com,cgroups@vger.kernel.org];
 	MIME_TRACE(0.00)[0:+];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	FREEMAIL_FROM(0.00)[gmail.com];
-	RCPT_COUNT_TWELVE(0.00)[30];
-	DKIM_TRACE(0.00)[gmail.com:+];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	TO_DN_SOME(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[joshuahahnjy@gmail.com,cgroups@vger.kernel.org];
+	RCVD_TLS_LAST(0.00)[];
 	FROM_HAS_DN(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[5];
-	MID_RHS_MATCH_FROM(0.00)[];
+	PRECEDENCE_BULK(0.00)[];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	DKIM_TRACE(0.00)[amazon.com:+];
+	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
+	RCPT_COUNT_SEVEN(0.00)[8];
 	NEURAL_HAM(-0.00)[-1.000];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	TAGGED_RCPT(0.00)[cgroups];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[linux.dev:email,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 98E873A60C3
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns];
+	TO_DN_SOME(0.00)[];
+	RCVD_COUNT_SEVEN(0.00)[7]
+X-Rspamd-Queue-Id: 6B5C83A894F
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-On Thu,  5 Mar 2026 19:52:50 +0800 Qi Zheng <qi.zheng@linux.dev> wrote:
+Expose per-CPU subtree_bstat via a new cgroupfs file cpu.stat.percpu.
+Each line shows one CPU cumulative stats in io.stat-style key=value
+format:
 
-> From: Muchun Song <songmuchun@bytedance.com>
-> 
-> Now that everything is set up, switch folio->memcg_data pointers to
-> objcgs, update the accessors, and execute reparenting on cgroup death.
-> 
-> Finally, folio->memcg_data of LRU folios and kmem folios will always
-> point to an object cgroup pointer. The folio->memcg_data of slab
-> folios will point to an vector of object cgroups.
-> 
-> Signed-off-by: Muchun Song <songmuchun@bytedance.com>
-> Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
-> Acked-by: Shakeel Butt <shakeel.butt@linux.dev>
-> ---
+  cpu0 usage_usec=123 user_usec=45 system_usec=78 nice_usec=0
+  cpu1 usage_usec=456 user_usec=123 system_usec=333 nice_usec=0
 
-Hello Qi, thank you for this series!
+This completes the interface left as a TODO in commit 7716f383a583
+("Merge tag 'cgroup-for-6.6' of git://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup")
+which added per-CPU subtree_bstat but only exposed it via BPF/drgn.
 
->  static void memcg_online_kmem(struct mem_cgroup *memcg)
-> @@ -4949,16 +4985,20 @@ void mem_cgroup_calculate_protection(struct mem_cgroup *root,
->  static int charge_memcg(struct folio *folio, struct mem_cgroup *memcg,
->  			gfp_t gfp)
->  {
-> -	int ret;
-> -
-> -	ret = try_charge(memcg, gfp, folio_nr_pages(folio));
+Signed-off-by: Willy Barro Raffel <willybar@amazon.com>
+Reviewed-by: Justinien Bouron <jbouron@amazon.com>
+Reviewed-by: Gunnar Kudrjavets <gunnarku@amazon.com>
+---
+ kernel/cgroup/cgroup-internal.h |  1 +
+ kernel/cgroup/cgroup.c          | 10 +++++++++
+ kernel/cgroup/rstat.c           | 36 +++++++++++++++++++++++++++++++++
+ 3 files changed, 47 insertions(+)
 
-While developing on top of mm-new I found that this was the last caller of
-try_charge(). I was thinking that it might be a nice opportunity to just
-remove the definition of try_charge() as well, maybe as a clean up patch
-at the end of the series.
+diff --git a/kernel/cgroup/cgroup-internal.h b/kernel/cgroup/cgroup-internal.h
+index 3bfe37693d68..28aff03975f2 100644
+--- a/kernel/cgroup/cgroup-internal.h
++++ b/kernel/cgroup/cgroup-internal.h
+@@ -277,6 +277,7 @@ int css_rstat_init(struct cgroup_subsys_state *css);
+ void css_rstat_exit(struct cgroup_subsys_state *css);
+ int ss_rstat_init(struct cgroup_subsys *ss);
+ void cgroup_base_stat_cputime_show(struct seq_file *seq);
++void cgroup_base_stat_cputime_show_percpu(struct seq_file *seq);
+ 
+ /*
+  * namespace.c
+diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
+index be1d71dda317..652fae15d7c5 100644
+--- a/kernel/cgroup/cgroup.c
++++ b/kernel/cgroup/cgroup.c
+@@ -3968,6 +3968,12 @@ static int cpu_local_stat_show(struct seq_file *seq, void *v)
+ 	return ret;
+ }
+ 
++
++static int cpu_percpu_stat_show(struct seq_file *seq, void *v)
++{
++	cgroup_base_stat_cputime_show_percpu(seq);
++	return 0;
++}
+ #ifdef CONFIG_PSI
+ static int cgroup_io_pressure_show(struct seq_file *seq, void *v)
+ {
+@@ -5499,6 +5505,10 @@ static struct cftype cgroup_base_files[] = {
+ 		.name = "cpu.stat.local",
+ 		.seq_show = cpu_local_stat_show,
+ 	},
++	{
++		.name = "cpu.stat.percpu",
++		.seq_show = cpu_percpu_stat_show,
++	},
+ 	{ }	/* terminate */
+ };
+ 
+diff --git a/kernel/cgroup/rstat.c b/kernel/cgroup/rstat.c
+index 150e5871e66f..f1aaed87180c 100644
+--- a/kernel/cgroup/rstat.c
++++ b/kernel/cgroup/rstat.c
+@@ -743,6 +743,42 @@ void cgroup_base_stat_cputime_show(struct seq_file *seq)
+ 	cgroup_force_idle_show(seq, &bstat);
+ }
+ 
++
++void cgroup_base_stat_cputime_show_percpu(struct seq_file *seq)
++{
++	struct cgroup *cgrp = seq_css(seq)->cgroup;
++	int cpu;
++
++	css_rstat_flush(&cgrp->self);
++
++	for_each_possible_cpu(cpu) {
++		struct cgroup_rstat_base_cpu *rstatbc;
++		struct cgroup_base_stat bstat;
++		unsigned int seq_cnt;
++
++		/* Reacquire for each CPU to avoid disabling IRQs too long */
++		__css_rstat_lock(&cgrp->self, cpu);
++		rstatbc = cgroup_rstat_base_cpu(cgrp, cpu);
++		do {
++			seq_cnt = __u64_stats_fetch_begin(&rstatbc->bsync);
++			bstat = rstatbc->subtree_bstat;
++		} while (__u64_stats_fetch_retry(&rstatbc->bsync, seq_cnt));
++		__css_rstat_unlock(&cgrp->self, cpu);
++
++		do_div(bstat.cputime.sum_exec_runtime, NSEC_PER_USEC);
++		do_div(bstat.cputime.utime, NSEC_PER_USEC);
++		do_div(bstat.cputime.stime, NSEC_PER_USEC);
++		do_div(bstat.ntime, NSEC_PER_USEC);
++
++		seq_printf(seq, "cpu%d usage_usec=%llu user_usec=%llu system_usec=%llu nice_usec=%llu\n",
++			   cpu,
++			   bstat.cputime.sum_exec_runtime,
++			   bstat.cputime.utime,
++			   bstat.cputime.stime,
++			   bstat.ntime);
++	}
++}
++
+ /* Add bpf kfuncs for css_rstat_updated() and css_rstat_flush() */
+ BTF_KFUNCS_START(bpf_rstat_kfunc_ids)
+ BTF_ID_FLAGS(func, css_rstat_updated)
+-- 
+2.50.1 (Apple Git-155)
 
-I see there are many acks on the entire series as well, and I don't think
-it is worth doing a new version just for this. But if you are planning on
-submitting a new version, I hope that you can consider this.
-
-Thank you! Have a great day : -)
-Joshua
 
