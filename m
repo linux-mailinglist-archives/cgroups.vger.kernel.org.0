@@ -1,60 +1,58 @@
-Return-Path: <cgroups+bounces-15197-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-15198-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id UMKvEI6p1mlKHAgAu9opvQ
-	(envelope-from <cgroups+bounces-15197-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Wed, 08 Apr 2026 21:16:30 +0200
+	id gBBCGcSp1mlmHAgAu9opvQ
+	(envelope-from <cgroups+bounces-15198-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Wed, 08 Apr 2026 21:17:24 +0200
 X-Original-To: lists+cgroups@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 854463C2AA2
-	for <lists+cgroups@lfdr.de>; Wed, 08 Apr 2026 21:16:29 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 8E0823C2B20
+	for <lists+cgroups@lfdr.de>; Wed, 08 Apr 2026 21:17:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 962A3325798D
-	for <lists+cgroups@lfdr.de>; Wed,  8 Apr 2026 18:51:58 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id C957C3195266
+	for <lists+cgroups@lfdr.de>; Wed,  8 Apr 2026 18:52:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 44A433D75C9;
-	Wed,  8 Apr 2026 18:51:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA76438736D;
+	Wed,  8 Apr 2026 18:52:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="1jEdyxlx"
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="LrfXExgC"
 X-Original-To: cgroups@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 06E48337B81;
-	Wed,  8 Apr 2026 18:51:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6DB232727F3;
+	Wed,  8 Apr 2026 18:52:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1775674317; cv=none; b=b/dFFnVMAGF6msru/xWlW0Hl4bam08rw+qiEpMourRPQ710EN0IH6aRtpdgNzPU4EFY6vQs/DmueNIameszzwKl35t0R4vCUA9XEQQHfjgQjulThrb7O0U5iM1H9hHToNBp80F8MLAyNgNnpymmepfuhoFU1JHUuUdjOCLeuw5Q=
+	t=1775674345; cv=none; b=ueWrxcWLydiRiG5Ptc2Eq4Hl+wAxQptl9hKKyTLpuyyvYodMrbrllkGSnpAmOlz6bWrPoZDxh54D7srIe41QriHEMtb6GsvUO+92VRBp0Krmgf11F7m/7zHa26+jbhwHdUteMbuwVzhGyTyAE+6ahnIpMf1JM7iVkoG0DJo/kfA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1775674317; c=relaxed/simple;
-	bh=rYnwl9ozbcRDsExaEKFrD/dV4o7dreV5JI01LEfOIVM=;
+	s=arc-20240116; t=1775674345; c=relaxed/simple;
+	bh=SELW4TiPptRnmXdWxotjOyA8YS4BchLlO1nacMGkv0U=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=bTuwACv1nhlP2sBFyxplycZ5ln4LnD5FYXqEC5h1J55Pd58Lr8GAyXQXWqMbNpWewTQePruJFhL/XGjOlEiiFOpwZZB3yvuYMDJYOpN5SVwBdyKvLJ3jyEIjvlAUdwApSbzvGF0NvE07hbU2Jnz6YwKV5Ss559zRHhg/LiudsNE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=1jEdyxlx; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8F0EFC19421;
-	Wed,  8 Apr 2026 18:51:56 +0000 (UTC)
+	 MIME-Version; b=O6/DYzY6+Ta9qVSCEERfImnTck2vxHmODxa2Lt2R2wJmbB7fsoTqtLmvES185kSLek/Aj/r5PXtEYHeyxLD/dEkaquSrtD9oTC83sCwBbAst9jEt51ZnSIbLq810zQYauKhkAOceRBcmoIPt4lQlzueZxtMaZMZ6l6FTfOPre+k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=LrfXExgC; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 05BE3C19421;
+	Wed,  8 Apr 2026 18:52:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1775674316;
-	bh=rYnwl9ozbcRDsExaEKFrD/dV4o7dreV5JI01LEfOIVM=;
+	s=korg; t=1775674345;
+	bh=SELW4TiPptRnmXdWxotjOyA8YS4BchLlO1nacMGkv0U=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=1jEdyxlxCpyr6cD6qU7WLd0DNcH34/R0aG6mCHFRpdhkdMA6S3u4XQrt0kXoZjw8F
-	 A0RNgUhLNnv5p9yGIK/rpTWY6vKKTMxmKSxGNk1jdEEjbuGW5fzKs2JTzT8ieQlaik
-	 +k+Cku3DGoN5r/xzEndM+smXe6P2/rRWqwrFMI6k=
+	b=LrfXExgC9mZ6zR2d2+voUKOxgql672vZmMJyY+qTi5bbIgLcG5QRA4PvuafTK/ILl
+	 DQavDPl1NP8CmiW4XYQ98ZlcE7EaNyhFdlCD2wL8OfgR5XiK4lnSt+CdqC5zEtupgj
+	 oY0qoegv7aPKcU0+mcEv1PgggFzyN8JX65d/fJ0I=
 From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
 To: stable@vger.kernel.org
 Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
 	patches@lists.linux.dev,
-	kernel test robot <oliver.sang@intel.com>,
 	Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
 	Tejun Heo <tj@kernel.org>,
-	Bert Karwatzki <spasswolf@web.de>,
-	Michal Koutny <mkoutny@suse.com>,
+	Christian Brauner <brauner@kernel.org>,
 	cgroups@vger.kernel.org,
 	Sasha Levin <sashal@kernel.org>
-Subject: [PATCH 6.19 033/311] cgroup: Wait for dying tasks to leave on rmdir
-Date: Wed,  8 Apr 2026 20:00:33 +0200
-Message-ID: <20260408175940.650588610@linuxfoundation.org>
+Subject: [PATCH 6.19 034/311] selftests/cgroup: Dont require synchronous populated update on task exit
+Date: Wed,  8 Apr 2026 20:00:34 +0200
+Message-ID: <20260408175940.688785924@linuxfoundation.org>
 X-Mailer: git-send-email 2.53.0
 In-Reply-To: <20260408175939.393281918@linuxfoundation.org>
 References: <20260408175939.393281918@linuxfoundation.org>
@@ -77,26 +75,25 @@ X-Spamd-Result: default: False [-1.66 / 15.00];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_TLS_LAST(0.00)[];
-	FREEMAIL_CC(0.00)[linuxfoundation.org,lists.linux.dev,intel.com,linutronix.de,kernel.org,web.de,suse.com,vger.kernel.org];
-	TAGGED_FROM(0.00)[bounces-15197-lists,cgroups=lfdr.de];
-	PRECEDENCE_BULK(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	FROM_HAS_DN(0.00)[];
 	MIME_TRACE(0.00)[0:+];
 	DKIM_TRACE(0.00)[linuxfoundation.org:+];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	FROM_NEQ_ENVFROM(0.00)[gregkh@linuxfoundation.org,cgroups@vger.kernel.org];
-	MID_RHS_MATCH_FROM(0.00)[];
-	NEURAL_HAM(-0.00)[-1.000];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-15198-lists,cgroups=lfdr.de];
+	RCVD_COUNT_THREE(0.00)[4];
+	RCVD_TLS_LAST(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCPT_COUNT_SEVEN(0.00)[10];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	TAGGED_RCPT(0.00)[cgroups];
 	TO_DN_SOME(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,linutronix.de:email,linuxfoundation.org:dkim,linuxfoundation.org:mid,suse.com:email,intel.com:email]
-X-Rspamd-Queue-Id: 854463C2AA2
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[gregkh@linuxfoundation.org,cgroups@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	NEURAL_HAM(-0.00)[-1.000];
+	RCPT_COUNT_SEVEN(0.00)[8];
+	MID_RHS_MATCH_FROM(0.00)[];
+	TAGGED_RCPT(0.00)[cgroups];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[linuxfoundation.org:dkim,linuxfoundation.org:mid,cgroup.events:url,linutronix.de:email,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: 8E0823C2B20
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
@@ -106,180 +103,126 @@ X-Rspamd-Server: lfdr
 
 From: Tejun Heo <tj@kernel.org>
 
-[ Upstream commit 1b164b876c36c3eb5561dd9b37702b04401b0166 ]
+[ Upstream commit 6680c162b4850976ee52b57372eddc4450c1d074 ]
 
-a72f73c4dd9b ("cgroup: Don't expose dead tasks in cgroup") hid PF_EXITING
-tasks from cgroup.procs so that systemd doesn't see tasks that have already
-been reaped via waitpid(). However, the populated counter (nr_populated_csets)
-is only decremented when the task later passes through cgroup_task_dead() in
-finish_task_switch(). This means cgroup.procs can appear empty while the
-cgroup is still populated, causing rmdir to fail with -EBUSY.
+test_cgcore_populated (test_core) and test_cgkill_{simple,tree,forkbomb}
+(test_kill) check cgroup.events "populated 0" immediately after reaping
+child tasks with waitpid(). This used to work because cgroup_task_exit() in
+do_exit() unlinked tasks from css_sets before exit_notify() woke up
+waitpid().
 
-Fix this by making cgroup_rmdir() wait for dying tasks to fully leave. If the
-cgroup is populated but all remaining tasks have PF_EXITING set (the task
-iterator returns none due to the existing filter), wait for a kick from
-cgroup_task_dead() and retry. The wait is brief as tasks are removed from the
-cgroup's css_set between PF_EXITING assertion in do_exit() and
-cgroup_task_dead() in finish_task_switch().
+d245698d727a ("cgroup: Defer task cgroup unlink until after the task is done
+switching out") moved the unlink to cgroup_task_dead() in
+finish_task_switch(), which runs after exit_notify(). The populated counter
+is now decremented after the parent's waitpid() can return, so there is no
+longer a synchronous ordering guarantee. On PREEMPT_RT, where
+cgroup_task_dead() is further deferred through lazy irq_work, the race
+window is even larger.
 
-v2: cgroup_is_populated() true to false transition happens under css_set_lock
-    not cgroup_mutex, so retest under css_set_lock before sleeping to avoid
-    missed wakeups (Sebastian).
+The synchronous populated transition was never part of the cgroup interface
+contract - it was an implementation artifact. Use cg_read_strcmp_wait() which
+retries for up to 1 second, matching what these tests actually need to
+verify: that the cgroup eventually becomes unpopulated after all tasks exit.
 
-Fixes: a72f73c4dd9b ("cgroup: Don't expose dead tasks in cgroup")
-Reported-by: kernel test robot <oliver.sang@intel.com>
-Closes: https://lore.kernel.org/oe-lkp/202603222104.2c81684e-lkp@intel.com
+Fixes: d245698d727a ("cgroup: Defer task cgroup unlink until after the task is done switching out")
 Reported-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
 Signed-off-by: Tejun Heo <tj@kernel.org>
-Reviewed-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Cc: Bert Karwatzki <spasswolf@web.de>
-Cc: Michal Koutny <mkoutny@suse.com>
+Tested-by: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Cc: Christian Brauner <brauner@kernel.org>
 Cc: cgroups@vger.kernel.org
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- include/linux/cgroup-defs.h |  3 ++
- kernel/cgroup/cgroup.c      | 86 +++++++++++++++++++++++++++++++++++--
- 2 files changed, 86 insertions(+), 3 deletions(-)
+ tools/testing/selftests/cgroup/lib/cgroup_util.c  | 15 +++++++++++++++
+ .../selftests/cgroup/lib/include/cgroup_util.h    |  2 ++
+ tools/testing/selftests/cgroup/test_core.c        |  3 ++-
+ tools/testing/selftests/cgroup/test_kill.c        |  7 ++++---
+ 4 files changed, 23 insertions(+), 4 deletions(-)
 
-diff --git a/include/linux/cgroup-defs.h b/include/linux/cgroup-defs.h
-index f7cc60de00583..2bff3e2be0d3b 100644
---- a/include/linux/cgroup-defs.h
-+++ b/include/linux/cgroup-defs.h
-@@ -609,6 +609,9 @@ struct cgroup {
- 	/* used to wait for offlining of csses */
- 	wait_queue_head_t offline_waitq;
- 
-+	/* used by cgroup_rmdir() to wait for dying tasks to leave */
-+	wait_queue_head_t dying_populated_waitq;
-+
- 	/* used to schedule release agent */
- 	struct work_struct release_agent_work;
- 
-diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
-index 3f9e4bcd71988..257d1ddea1ada 100644
---- a/kernel/cgroup/cgroup.c
-+++ b/kernel/cgroup/cgroup.c
-@@ -2126,6 +2126,7 @@ static void init_cgroup_housekeeping(struct cgroup *cgrp)
- #endif
- 
- 	init_waitqueue_head(&cgrp->offline_waitq);
-+	init_waitqueue_head(&cgrp->dying_populated_waitq);
- 	INIT_WORK(&cgrp->release_agent_work, cgroup1_release_agent);
+diff --git a/tools/testing/selftests/cgroup/lib/cgroup_util.c b/tools/testing/selftests/cgroup/lib/cgroup_util.c
+index 44c52f620fda1..4b0f2c46d4322 100644
+--- a/tools/testing/selftests/cgroup/lib/cgroup_util.c
++++ b/tools/testing/selftests/cgroup/lib/cgroup_util.c
+@@ -123,6 +123,21 @@ int cg_read_strcmp(const char *cgroup, const char *control,
+ 	return ret;
  }
  
-@@ -6224,6 +6225,76 @@ static int cgroup_destroy_locked(struct cgroup *cgrp)
- 	return 0;
- };
- 
-+/**
-+ * cgroup_drain_dying - wait for dying tasks to leave before rmdir
-+ * @cgrp: the cgroup being removed
-+ *
-+ * The PF_EXITING filter in css_task_iter_advance() hides exiting tasks from
-+ * cgroup.procs so that userspace (e.g. systemd) doesn't see tasks that have
-+ * already been reaped via waitpid(). However, the populated counter
-+ * (nr_populated_csets) is only decremented when the task later passes through
-+ * cgroup_task_dead() in finish_task_switch(). This creates a window where
-+ * cgroup.procs appears empty but cgroup_is_populated() is still true, causing
-+ * rmdir to fail with -EBUSY.
-+ *
-+ * This function bridges that gap. If the cgroup is populated but all remaining
-+ * tasks have PF_EXITING set, we wait for cgroup_task_dead() to process them.
-+ * Tasks are removed from the cgroup's css_set in cgroup_task_dead() called from
-+ * finish_task_switch(). As the window between PF_EXITING and cgroup_task_dead()
-+ * is short, the number of PF_EXITING tasks on the list is small and the wait
-+ * is brief.
-+ *
-+ * Each cgroup_task_dead() kicks the waitqueue via cset->cgrp_links, and we
-+ * retry the full check from scratch.
-+ *
-+ * Must be called with cgroup_mutex held.
-+ */
-+static int cgroup_drain_dying(struct cgroup *cgrp)
-+	__releases(&cgroup_mutex) __acquires(&cgroup_mutex)
++int cg_read_strcmp_wait(const char *cgroup, const char *control,
++			    const char *expected)
 +{
-+	struct css_task_iter it;
-+	struct task_struct *task;
-+	DEFINE_WAIT(wait);
++	int i, ret;
 +
-+	lockdep_assert_held(&cgroup_mutex);
-+retry:
-+	if (!cgroup_is_populated(cgrp))
-+		return 0;
-+
-+	/* Same iterator as cgroup.threads - if any task is visible, it's busy */
-+	css_task_iter_start(&cgrp->self, 0, &it);
-+	task = css_task_iter_next(&it);
-+	css_task_iter_end(&it);
-+
-+	if (task)
-+		return -EBUSY;
-+
-+	/*
-+	 * All remaining tasks are PF_EXITING and will pass through
-+	 * cgroup_task_dead() shortly. Wait for a kick and retry.
-+	 *
-+	 * cgroup_is_populated() can't transition from false to true while
-+	 * we're holding cgroup_mutex, but the true to false transition
-+	 * happens under css_set_lock (via cgroup_task_dead()). We must
-+	 * retest and prepare_to_wait() under css_set_lock. Otherwise, the
-+	 * transition can happen between our first test and
-+	 * prepare_to_wait(), and we sleep with no one to wake us.
-+	 */
-+	spin_lock_irq(&css_set_lock);
-+	if (!cgroup_is_populated(cgrp)) {
-+		spin_unlock_irq(&css_set_lock);
-+		return 0;
++	for (i = 0; i < 100; i++) {
++		ret = cg_read_strcmp(cgroup, control, expected);
++		if (!ret)
++			return ret;
++		usleep(10000);
 +	}
-+	prepare_to_wait(&cgrp->dying_populated_waitq, &wait,
-+			TASK_UNINTERRUPTIBLE);
-+	spin_unlock_irq(&css_set_lock);
-+	mutex_unlock(&cgroup_mutex);
-+	schedule();
-+	finish_wait(&cgrp->dying_populated_waitq, &wait);
-+	mutex_lock(&cgroup_mutex);
-+	goto retry;
++
++	return ret;
 +}
 +
- int cgroup_rmdir(struct kernfs_node *kn)
+ int cg_read_strstr(const char *cgroup, const char *control, const char *needle)
  {
- 	struct cgroup *cgrp;
-@@ -6233,9 +6304,12 @@ int cgroup_rmdir(struct kernfs_node *kn)
- 	if (!cgrp)
- 		return 0;
+ 	char buf[PAGE_SIZE];
+diff --git a/tools/testing/selftests/cgroup/lib/include/cgroup_util.h b/tools/testing/selftests/cgroup/lib/include/cgroup_util.h
+index 7ab2824ed7b54..1cbe3b0ac6f73 100644
+--- a/tools/testing/selftests/cgroup/lib/include/cgroup_util.h
++++ b/tools/testing/selftests/cgroup/lib/include/cgroup_util.h
+@@ -59,6 +59,8 @@ extern int cg_read(const char *cgroup, const char *control,
+ 		   char *buf, size_t len);
+ extern int cg_read_strcmp(const char *cgroup, const char *control,
+ 			  const char *expected);
++extern int cg_read_strcmp_wait(const char *cgroup, const char *control,
++				   const char *expected);
+ extern int cg_read_strstr(const char *cgroup, const char *control,
+ 			  const char *needle);
+ extern long cg_read_long(const char *cgroup, const char *control);
+diff --git a/tools/testing/selftests/cgroup/test_core.c b/tools/testing/selftests/cgroup/test_core.c
+index 102262555a599..7b83c7e7c9d4f 100644
+--- a/tools/testing/selftests/cgroup/test_core.c
++++ b/tools/testing/selftests/cgroup/test_core.c
+@@ -233,7 +233,8 @@ static int test_cgcore_populated(const char *root)
+ 	if (err)
+ 		goto cleanup;
  
--	ret = cgroup_destroy_locked(cgrp);
--	if (!ret)
--		TRACE_CGROUP_PATH(rmdir, cgrp);
-+	ret = cgroup_drain_dying(cgrp);
-+	if (!ret) {
-+		ret = cgroup_destroy_locked(cgrp);
-+		if (!ret)
-+			TRACE_CGROUP_PATH(rmdir, cgrp);
-+	}
+-	if (cg_read_strcmp(cg_test_d, "cgroup.events", "populated 0\n"))
++	if (cg_read_strcmp_wait(cg_test_d, "cgroup.events",
++				   "populated 0\n"))
+ 		goto cleanup;
  
- 	cgroup_kn_unlock(kn);
- 	return ret;
-@@ -6995,6 +7069,7 @@ void cgroup_task_exit(struct task_struct *tsk)
+ 	/* Remove cgroup. */
+diff --git a/tools/testing/selftests/cgroup/test_kill.c b/tools/testing/selftests/cgroup/test_kill.c
+index c8c9d306925b6..f6cd23a8ecc71 100644
+--- a/tools/testing/selftests/cgroup/test_kill.c
++++ b/tools/testing/selftests/cgroup/test_kill.c
+@@ -86,7 +86,7 @@ static int test_cgkill_simple(const char *root)
+ 		wait_for_pid(pids[i]);
  
- static void do_cgroup_task_dead(struct task_struct *tsk)
- {
-+	struct cgrp_cset_link *link;
- 	struct css_set *cset;
- 	unsigned long flags;
+ 	if (ret == KSFT_PASS &&
+-	    cg_read_strcmp(cgroup, "cgroup.events", "populated 0\n"))
++	    cg_read_strcmp_wait(cgroup, "cgroup.events", "populated 0\n"))
+ 		ret = KSFT_FAIL;
  
-@@ -7008,6 +7083,11 @@ static void do_cgroup_task_dead(struct task_struct *tsk)
- 	if (thread_group_leader(tsk) && atomic_read(&tsk->signal->live))
- 		list_add_tail(&tsk->cg_list, &cset->dying_tasks);
+ 	if (cgroup)
+@@ -190,7 +190,8 @@ static int test_cgkill_tree(const char *root)
+ 		wait_for_pid(pids[i]);
  
-+	/* kick cgroup_drain_dying() waiters, see cgroup_rmdir() */
-+	list_for_each_entry(link, &cset->cgrp_links, cgrp_link)
-+		if (waitqueue_active(&link->cgrp->dying_populated_waitq))
-+			wake_up(&link->cgrp->dying_populated_waitq);
-+
- 	if (dl_task(tsk))
- 		dec_dl_tasks_cs(tsk);
+ 	if (ret == KSFT_PASS &&
+-	    cg_read_strcmp(cgroup[0], "cgroup.events", "populated 0\n"))
++	    cg_read_strcmp_wait(cgroup[0], "cgroup.events",
++				   "populated 0\n"))
+ 		ret = KSFT_FAIL;
  
+ 	for (i = 9; i >= 0 && cgroup[i]; i--) {
+@@ -251,7 +252,7 @@ static int test_cgkill_forkbomb(const char *root)
+ 		wait_for_pid(pid);
+ 
+ 	if (ret == KSFT_PASS &&
+-	    cg_read_strcmp(cgroup, "cgroup.events", "populated 0\n"))
++	    cg_read_strcmp_wait(cgroup, "cgroup.events", "populated 0\n"))
+ 		ret = KSFT_FAIL;
+ 
+ 	if (cgroup)
 -- 
 2.53.0
 
