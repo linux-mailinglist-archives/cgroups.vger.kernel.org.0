@@ -1,81 +1,81 @@
-Return-Path: <cgroups+bounces-15213-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-15214-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id EF4tMmJn2Wm8pQgAu9opvQ
-	(envelope-from <cgroups+bounces-15213-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Fri, 10 Apr 2026 23:10:58 +0200
+	id oN3hNslm2Wm8pQgAu9opvQ
+	(envelope-from <cgroups+bounces-15214-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Fri, 10 Apr 2026 23:08:25 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 211443DCC1B
-	for <lists+cgroups@lfdr.de>; Fri, 10 Apr 2026 23:10:57 +0200 (CEST)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5830D3DCBD0
+	for <lists+cgroups@lfdr.de>; Fri, 10 Apr 2026 23:08:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 49D7030641FE
-	for <lists+cgroups@lfdr.de>; Fri, 10 Apr 2026 21:07:54 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 720E3303B146
+	for <lists+cgroups@lfdr.de>; Fri, 10 Apr 2026 21:07:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C33F33A7595;
-	Fri, 10 Apr 2026 21:07:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AFF143A963A;
+	Fri, 10 Apr 2026 21:07:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Wu2WG49k"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="rQZUHWeo"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-ot1-f48.google.com (mail-ot1-f48.google.com [209.85.210.48])
+Received: from mail-oa1-f50.google.com (mail-oa1-f50.google.com [209.85.160.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 309843A9D87
-	for <cgroups@vger.kernel.org>; Fri, 10 Apr 2026 21:07:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9867B3A7F75
+	for <cgroups@vger.kernel.org>; Fri, 10 Apr 2026 21:07:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1775855271; cv=none; b=YMnVUPzpIm3bwcga6hrXsOsAC8LDv8cOCXCCGdHPLPjlGp19SmDT86Ez32C2w4VQxKl8ZhmprL7XPjqERgQAhBTEd9Peo1M6hwCFs/+5YpPddWj1F2APYJ0fonCBSaPR4MQoOimk7xPYOt5kQozgyxe8Dw5AlVhFupkzsdqZ4NQ=
+	t=1775855275; cv=none; b=ngUGg0mf+gcDaNJM2HPZRbtjjMwWjOzJ+Bb82zwlMUldfHedKm/FJY1d4/Ms1Z55LwhVAbbYZDEIGeLm24L5bQFSPyjOry0xxgSnbYGiNpY4atHAv0wf+kbg4WmDEPlgqS7QfsDGVjYJic3Aq+Lf1joL3BXtXVDGY1dLfdwL3yM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1775855271; c=relaxed/simple;
-	bh=CVQ20RllDi00A02ezby1KNQZkIpJboxutLoOO03cGmU=;
+	s=arc-20240116; t=1775855275; c=relaxed/simple;
+	bh=3w6H/F3uWcnpSwsuRvgJu5YTfmoXTOuwZ4SFgkURGe0=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Q9GkwGOKQoPh2J5cW9rtOxD1osVNlVFHhgB/egWIlhK4eJZrC5Q7bXeJbP7rwP4CL5EFFwmktmz8uSocAn2HjEPdevK8UFxxQ9FPsCe2d+UIGg0nT6Mbdf5JlJPtz2pZJSozEYMgU4DFvo+6pgQ3nb+f2Gm5Wubrz9H6LYVH3r0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Wu2WG49k; arc=none smtp.client-ip=209.85.210.48
+	 MIME-Version; b=PkkiSG6OyE7QpjgdmKQjrA96zDWyDC4UXHgPB0ZPip+ukiEB9fS4mtO4wZeSa+ib19Zy/Iu/JfkpCmWkbzkRZ5+gBX4VA/gIn7ryEIfaaLUXfnTI6ZJXM7fK4DKU0zxBXuWtmBIYxGx788uozgVfruPY6dgH3pNDKNZbBFFHaDI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=rQZUHWeo; arc=none smtp.client-ip=209.85.160.50
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ot1-f48.google.com with SMTP id 46e09a7af769-7dbcd61429cso1244990a34.2
-        for <cgroups@vger.kernel.org>; Fri, 10 Apr 2026 14:07:50 -0700 (PDT)
+Received: by mail-oa1-f50.google.com with SMTP id 586e51a60fabf-4042fe53946so1145419fac.3
+        for <cgroups@vger.kernel.org>; Fri, 10 Apr 2026 14:07:52 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1775855269; x=1776460069; darn=vger.kernel.org;
+        d=gmail.com; s=20251104; t=1775855271; x=1776460071; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=ZqJC8Gmg2c8f/XCk9+e6dccXNeaFU07UyyA9/we+nYU=;
-        b=Wu2WG49ktKAmJXvTovsACGm3LDfDYHFhdEwe8Fsc/lVmBZy1Ylbb2yPhDrMovubJwn
-         YmXzek3EOMAScdzdCwffzxSHjbwOkhI1RqCseKOc7ZAYmXoNMhLi2wZ/poeVgyQ0znQi
-         tR4HA8uvfu+69lJinKjRHL/n7cZ/Wlb0hba/EJ/pruegfSzA8ekLJV0iJJAPgzG+fH3N
-         vmlgQBw3GNhYKjJRvwENAyCZMZYWesJiPO5esJ4vAOL/h1a3GiM+LGwlSi3bD0708+fx
-         iCjQJBqjVM/GLNDM0zinsom10FZoWzcXNszR2sTYMJQxORDHBOG7BF2lu1ulAjJ5E9cM
-         vpkg==
+        bh=LPG2mb1u3XIYy2E/F4fu0GfPhkkeNWm+Yupk0vqgtxA=;
+        b=rQZUHWeo0zsjE+s50VZLIc5rCefbkEo4bZWsqlkxy0MxSRE/CZPE7noxSQu4fq4uUZ
+         BpQYi4l78e+uJ0oUAZ2K3o/6FlltwtsoLhdpWC+DVjO0W1rAJ/olOVsJJ3LO54Mwu7bR
+         l6U+Ka8ovXZda8yQ0dEhMBvSzeb7fFZnts8i+kZwhUNgzpEPrYKCEMl4UnW3uynhiOYI
+         Tv7HlVQiR44WiitiD7AnbA8cCo42EvVqRMO7XgV/hc+FLQ8wXz0pvd6z3E/1l5iAeb9s
+         5KkTYTc8c4r6JXX+urqI0i/UBwoyE6qrj2PRIV8SIIJrgKSFaoTiEGRdupb3K38x7Hqk
+         +FZw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1775855269; x=1776460069;
+        d=1e100.net; s=20251104; t=1775855271; x=1776460071;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=ZqJC8Gmg2c8f/XCk9+e6dccXNeaFU07UyyA9/we+nYU=;
-        b=O9y+3VTEOWZ5yEdenv32uFhLavGgKtHBt2Z6eosso+z10XbgjN6p9SyjuR390FkN/Y
-         XsAcXUCv3noiEJcFJTgaNIdOSiU6wPeUU4PwXRnqS5isKyHbBK6p1pdDNFusCefAMcJj
-         36dP9/t8VoWqpYgTKg5YkpLgb3expelIGJS5hwGtH/Zu81VzK6x6gm0ExH1rMnNG8xo3
-         QyM4O6wRom9em5HscG/mLTatvJ5B+JshoI9wu1kTLtqxCjsj38JuC6CaL6gSAOTwq4fd
-         5bvI90tu7cZmNQSyn/oql/QE4mlNqYiSbLWHbqkqkFsh3PkU3uVLF6q5O7dPg3yy76lG
-         mowA==
-X-Forwarded-Encrypted: i=1; AJvYcCWlEK3Jfeocjk7DdkJOR5kIbXKi3LDCrbcw0dRMl6QxHRRj4rVB7IdQ16d3JL4dI4z9JJ8XnBSM@vger.kernel.org
-X-Gm-Message-State: AOJu0Yw5PCh76iaxOqN64SjqZQA23jUhT7GBHYXiuOE06ovND6Bmr372
-	6VXrGf5JZ59np6azMItjpKjzO1PxZ06ZN/81LtPkVSuvZJ/uQ/wg9pPd
-X-Gm-Gg: AeBDiev1CjLiv+1eUN2u1OiWfAI8swJPKbQbmenYDEElQyekhx/eEu6cHpawzltqo7Z
-	POqjD78T+snVeGQ5WIEfR7MJngORsEPYn56a2Fd+efVO9B1aK2xsh71sV+43KbEU2kVdXFKMhWf
-	lnpeX0k6zIug2MbLUvIbqr7PlzG5sNFI+WE5+rSCdrh9YPb7W1xH72uuzeOeTl4SQaEjL19tXXT
-	ByDOzM0J+wtEX//NUUHPjLxUpChI9ScJv8KH3KrQYEPgjaFt9hq6EHHi/CfN9cCqBaAiFbC6NPL
-	YzgrcDhAuoP/LFoRCkISNJYT5PvaZaoRGjmtKY3VmYUc3GA71LejkkQylEAZvNW6cvf3OK/7yus
-	aFvBg/YzscoZdweKn2GzYE+PZNliutgFUnHjj4S9QK0guDEoS3vpMya7Mqg7WDYL8DSM1/8T41t
-	bE3Tkrr2nHAaX3A2N39l4fJw==
-X-Received: by 2002:a05:6830:3747:b0:7dc:18e:b5b2 with SMTP id 46e09a7af769-7dc27cb91acmr3191143a34.9.1775855269238;
-        Fri, 10 Apr 2026 14:07:49 -0700 (PDT)
-Received: from localhost ([2a03:2880:10ff:56::])
-        by smtp.gmail.com with ESMTPSA id 46e09a7af769-7dc269402b9sm2561044a34.20.2026.04.10.14.07.48
+        bh=LPG2mb1u3XIYy2E/F4fu0GfPhkkeNWm+Yupk0vqgtxA=;
+        b=RfuUYc8LDGpNkvg/H5wbhTNc5HGCrk0P7WTwqauxTsVuaO/3iyDHoSHGy3aZKjHy90
+         +G1dDhVSbGm0UocpHYQFohUYwDGc50ojg1chXdIbWTXvhzmd7rQYShVElWsrxBKEZJkL
+         /lTgXPWpBUSRYfW8omsvy7490/h2qPyFudqwoowelKJXc6w0GzJZE/1FGBoI+b4H1Yef
+         HnaKkObKy3xIh0cAj5n/MXfAcgTYCYlCzOACSmERNyya++mmgJgkq7ZXOAV0Ns8n5pCQ
+         iJMA4R6ixVBrb5d2mPEq4gGWe6Rhxri5QBzHcFwxRUOhut26Zi0cGCq2GcsPkCxPlEYz
+         8H1A==
+X-Forwarded-Encrypted: i=1; AJvYcCUcEBn1WBFWPMfbdWx9pM786r8ovyoQDOoc0L667g82pkyN4Zc3gInFOnauHm1d12uV7fILnShJ@vger.kernel.org
+X-Gm-Message-State: AOJu0YwGM71CzDpVUZltSR7aUIE2s+FFL+0yxxnKTeJn4rhNwcmc1hY8
+	2aobpa97W+lslOOpf7IHKe4JWiOYwV4KjuJiGixBmy+GZ7T1LFW3Dmij
+X-Gm-Gg: AeBDietoPq4b3E4aSaFcEzbXJ+7HuysrGeRUgm1+48E42iyoozCe8l4DsLi+Jo95nPt
+	XRKgGs9VH441dGy1f7pbzGvcfjgOnDYSdW0KaF41r3pT5ipsXAj2LiPe7IgN6mW4MVza/T6/fbM
+	ywic7tmYQ+L/437Iw/m7/9dHHJCUwq/nKFWT7GHv8HM7jPVpqWybwcODP5oMNh+itIvRpzsDpC1
+	XL8p3I+8sGeQxLk/ouYBc69ysktovUvGSTdey+7d4CkHNx/oRWVqkHPi9ZrP9YgioTtSt7HC+LY
+	YISWKpKxx6bHYN2ORixvMwd943w04RjiOVm0Cicq+A7qkKAu7hRZvQUSmZX3dPdbuixxOtoim0l
+	rybMazKrha2YFtb5tJSSmwo3lJ2hsGYW0XjeZNsaQuoe9eXLxAbkOpwW+wzohpJeHgkZ/jbbbtv
+	Gf8jYA0e5NTNcFUhkoZyGC
+X-Received: by 2002:a05:6870:6986:b0:417:2a17:285 with SMTP id 586e51a60fabf-423e10a1761mr2566760fac.30.1775855271475;
+        Fri, 10 Apr 2026 14:07:51 -0700 (PDT)
+Received: from localhost ([2a03:2880:10ff:4::])
+        by smtp.gmail.com with ESMTPSA id 586e51a60fabf-423ddcf0376sm3027396fac.18.2026.04.10.14.07.49
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 10 Apr 2026 14:07:48 -0700 (PDT)
+        Fri, 10 Apr 2026 14:07:50 -0700 (PDT)
 From: Joshua Hahn <joshua.hahnjy@gmail.com>
 To: Johannes Weiner <hannes@cmpxchg.org>
 Cc: Michal Hocko <mhocko@kernel.org>,
@@ -83,13 +83,19 @@ Cc: Michal Hocko <mhocko@kernel.org>,
 	Shakeel Butt <shakeel.butt@linux.dev>,
 	Muchun Song <muchun.song@linux.dev>,
 	Andrew Morton <akpm@linux-foundation.org>,
+	David Hildenbrand <david@kernel.org>,
+	Lorenzo Stoakes <ljs@kernel.org>,
+	"Liam R . Howlett" <liam.howlett@oracle.com>,
+	Vlastimil Babka <vbabka@kernel.org>,
+	Mike Rapoport <rppt@kernel.org>,
+	Suren Baghdasaryan <surenb@google.com>,
 	cgroups@vger.kernel.org,
 	linux-mm@kvack.org,
 	linux-kernel@vger.kernel.org,
 	kernel-team@meta.com
-Subject: [PATCH 3/8 RFC] mm/page_counter: use page_counter_stock in page_counter_uncharge
-Date: Fri, 10 Apr 2026 14:06:57 -0700
-Message-ID: <20260410210742.550489-4-joshua.hahnjy@gmail.com>
+Subject: [PATCH 4/8 RFC] mm/page_counter: introduce stock drain APIs
+Date: Fri, 10 Apr 2026 14:06:58 -0700
+Message-ID: <20260410210742.550489-5-joshua.hahnjy@gmail.com>
 X-Mailer: git-send-email 2.52.0
 In-Reply-To: <20260410210742.550489-1-joshua.hahnjy@gmail.com>
 References: <20260410210742.550489-1-joshua.hahnjy@gmail.com>
@@ -104,118 +110,136 @@ X-Spamd-Result: default: False [-1.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
 	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
 	R_DKIM_ALLOW(-0.20)[gmail.com:s=20251104];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	MIME_TRACE(0.00)[0:+];
-	DKIM_TRACE(0.00)[gmail.com:+];
-	TO_DN_SOME(0.00)[];
-	TAGGED_FROM(0.00)[bounces-15213-lists,cgroups=lfdr.de];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	RCVD_TLS_LAST(0.00)[];
 	RECEIVED_HELO_LOCALHOST(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	FREEMAIL_FROM(0.00)[gmail.com];
+	RCVD_TLS_LAST(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[joshuahahnjy@gmail.com,cgroups@vger.kernel.org];
+	MIME_TRACE(0.00)[0:+];
+	TAGGED_FROM(0.00)[bounces-15214-lists,cgroups=lfdr.de];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	FREEMAIL_FROM(0.00)[gmail.com];
+	RCPT_COUNT_TWELVE(0.00)[16];
 	FROM_HAS_DN(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	RCVD_COUNT_FIVE(0.00)[5];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[joshuahahnjy@gmail.com,cgroups@vger.kernel.org];
 	MID_RHS_MATCH_FROM(0.00)[];
 	NEURAL_HAM(-0.00)[-1.000];
+	RCVD_COUNT_FIVE(0.00)[5];
+	DKIM_TRACE(0.00)[gmail.com:+];
 	TAGGED_RCPT(0.00)[cgroups];
-	RCPT_COUNT_SEVEN(0.00)[10];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[cmpxchg.org:email,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 211443DCC1B
+	TO_DN_SOME(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,cmpxchg.org:email]
+X-Rspamd-Queue-Id: 5830D3DCBD0
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-Make page_counter_uncharge() stock-aware. We preserve the same semantics
-as the existing stock handling logic in try_charge_memcg:
+Introduce page_counter_drain_stock() and page_counter_drain_cpu()
+to replace memcg stock draining functions.
 
-1. Instead of immediately walking the page_counter hierarchy, see if
-   depositing the charge to the stock puts it over the batch limit.
-   If not, deposit the charge and return immediately.
-2. If we put the stock over the batch limit, walk up the page_counter
-   hierarchy and uncharge the excess.
+page_counter_drain_stock() runs from drain_all_stock, which is called
+when the system is under memory pressure or a cgroup is dying. Because
+it is a rare operation, it uses work_on_cpu() to synchronously drain
+each online CPU's stock and synchronizes with concurrent charge/uncharge
+via local_lock.
 
-Extract the repeated work of hierarchically cancelling page_counter
-charges into a helper function as well.
-
-As of this patch, the page_counter_stock is unused, as it has not been
-enabled on any memcg yet. No functional changes intended.
+page_counter_drain_cpu() handles the CPU hotplug dead path, where the
+stock can be accessed directly without locking since the CPU is dead.
 
 Suggested-by: Johannes Weiner <hannes@cmpxchg.org>
 Signed-off-by: Joshua Hahn <joshua.hahnjy@gmail.com>
 ---
- mm/page_counter.c | 36 +++++++++++++++++++++++++++---------
- 1 file changed, 27 insertions(+), 9 deletions(-)
+ include/linux/page_counter.h |  2 ++
+ mm/page_counter.c            | 51 ++++++++++++++++++++++++++++++++++++
+ 2 files changed, 53 insertions(+)
 
+diff --git a/include/linux/page_counter.h b/include/linux/page_counter.h
+index c7e3ab3356d20..c6772531074b5 100644
+--- a/include/linux/page_counter.h
++++ b/include/linux/page_counter.h
+@@ -111,6 +111,8 @@ static inline void page_counter_reset_watermark(struct page_counter *counter)
+ int page_counter_enable_stock(struct page_counter *counter, unsigned int batch);
+ void page_counter_disable_stock(struct page_counter *counter);
+ void page_counter_free_stock(struct page_counter *counter);
++void page_counter_drain_stock(struct page_counter *counter);
++void page_counter_drain_cpu(struct page_counter *counter, unsigned int cpu);
+ 
+ #if IS_ENABLED(CONFIG_MEMCG) || IS_ENABLED(CONFIG_CGROUP_DMEM)
+ void page_counter_calculate_protection(struct page_counter *root,
 diff --git a/mm/page_counter.c b/mm/page_counter.c
-index 7a921872079b8..7be214034bfad 100644
+index 7be214034bfad..28c2e6442f7d3 100644
 --- a/mm/page_counter.c
 +++ b/mm/page_counter.c
-@@ -207,6 +207,15 @@ bool page_counter_try_charge(struct page_counter *counter,
- 	return false;
+@@ -12,6 +12,8 @@
+ #include <linux/string.h>
+ #include <linux/sched.h>
+ #include <linux/bug.h>
++#include <linux/cpu.h>
++#include <linux/workqueue.h>
+ #include <asm/page.h>
+ 
+ static bool track_protection(struct page_counter *c)
+@@ -402,6 +404,55 @@ void page_counter_free_stock(struct page_counter *counter)
+ 	counter->stock = NULL;
  }
  
-+static void page_counter_cancel_hierarchy(struct page_counter *counter,
-+					  unsigned long nr_pages)
++static long page_counter_drain_stock_cpu(void *arg)
 +{
-+	struct page_counter *c;
++	struct page_counter *counter = arg;
++	struct page_counter_stock *stock;
++	unsigned long nr_pages;
 +
-+	for (c = counter; c; c = c->parent)
-+		page_counter_cancel(c, nr_pages);
++	local_lock(&counter->stock->lock);
++	stock = this_cpu_ptr(counter->stock);
++	nr_pages = stock->nr_pages;
++	stock->nr_pages = 0;
++	local_unlock(&counter->stock->lock);
++
++	if (nr_pages)
++		page_counter_cancel_hierarchy(counter, nr_pages);
++
++	return 0;
++}
++/*
++ * Drain per-cpu stock across all online CPUs. Caller (drain_all_stock) is
++ * already protected by a mutex, all future callers must serialize as well.
++ */
++void page_counter_drain_stock(struct page_counter *counter)
++{
++	int cpu;
++
++	if (!counter->stock)
++		return;
++
++	cpus_read_lock();
++	for_each_online_cpu(cpu)
++		work_on_cpu(cpu, page_counter_drain_stock_cpu, counter);
++	cpus_read_unlock();
 +}
 +
- /**
-  * page_counter_uncharge - hierarchically uncharge pages
-  * @counter: counter
-@@ -214,10 +223,23 @@ bool page_counter_try_charge(struct page_counter *counter,
-  */
- void page_counter_uncharge(struct page_counter *counter, unsigned long nr_pages)
- {
--	struct page_counter *c;
-+	unsigned long charge = nr_pages;
- 
--	for (c = counter; c; c = c->parent)
--		page_counter_cancel(c, nr_pages);
-+	if (counter->stock && local_trylock(&counter->stock->lock)) {
-+		struct page_counter_stock *stock = this_cpu_ptr(counter->stock);
++void page_counter_drain_cpu(struct page_counter *counter, unsigned int cpu)
++{
++	struct page_counter_stock *stock;
++	unsigned long nr_pages;
 +
-+		stock->nr_pages += nr_pages;
-+		if (stock->nr_pages > counter->batch) {
-+			charge = stock->nr_pages - counter->batch;
-+			stock->nr_pages = counter->batch;
-+			local_unlock(&counter->stock->lock);
-+		} else {
-+			local_unlock(&counter->stock->lock);
-+			return;
-+		}
++	if (!counter->stock)
++		return;
++
++	stock = per_cpu_ptr(counter->stock, cpu);
++	nr_pages = stock->nr_pages;
++	if (nr_pages) {
++		stock->nr_pages = 0;
++		page_counter_cancel_hierarchy(counter, nr_pages);
 +	}
-+
-+	page_counter_cancel_hierarchy(counter, charge);
- }
++}
  
- /**
-@@ -364,12 +386,8 @@ void page_counter_disable_stock(struct page_counter *counter)
- 		stock_to_drain += stock->nr_pages;
- 	}
- 
--	if (stock_to_drain) {
--		struct page_counter *c;
--
--		for (c = counter; c; c = c->parent)
--			page_counter_cancel(c, stock_to_drain);
--	}
-+	if (stock_to_drain)
-+		page_counter_cancel_hierarchy(counter, stock_to_drain);
- 
- 	/* This prevents future charges from trying to deposit pages */
- 	counter->batch = 0;
+ #if IS_ENABLED(CONFIG_MEMCG) || IS_ENABLED(CONFIG_CGROUP_DMEM)
+ /*
 -- 
 2.52.0
 
