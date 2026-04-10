@@ -1,252 +1,310 @@
-Return-Path: <cgroups+bounces-15207-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-15208-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id YMieM//x2GnrjwgAu9opvQ
-	(envelope-from <cgroups+bounces-15207-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Fri, 10 Apr 2026 14:50:07 +0200
+	id gG1OCqwy2WkOnQgAu9opvQ
+	(envelope-from <cgroups+bounces-15208-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Fri, 10 Apr 2026 19:26:04 +0200
 X-Original-To: lists+cgroups@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2E8BA3D7B44
-	for <lists+cgroups@lfdr.de>; Fri, 10 Apr 2026 14:50:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 772E13DB082
+	for <lists+cgroups@lfdr.de>; Fri, 10 Apr 2026 19:26:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 7DAD4304224D
-	for <lists+cgroups@lfdr.de>; Fri, 10 Apr 2026 12:39:57 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 0760830067AA
+	for <lists+cgroups@lfdr.de>; Fri, 10 Apr 2026 17:24:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D8EB9195811;
-	Fri, 10 Apr 2026 12:39:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="Pol2o8A3"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D75E43E0C57;
+	Fri, 10 Apr 2026 17:24:27 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from xmbghk7.mail.qq.com (xmbghk7.mail.qq.com [43.163.128.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ot1-f78.google.com (mail-ot1-f78.google.com [209.85.210.78])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A00F219E8;
-	Fri, 10 Apr 2026 12:39:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=43.163.128.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 185C53E2769
+	for <cgroups@vger.kernel.org>; Fri, 10 Apr 2026 17:24:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.78
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1775824795; cv=none; b=f5pr5ZSE/erHjV1Lrtnj/gdyvz+ud+lns9vfaU6Ff0bWnCZGENzUrmgJIMI4D4W9blDX7qXzoQDFNgl4WxPCKL5wO1O+hrEejSXCJFaR1ZMk6DlhSXo3D0j24+tRYt6Z9XVALeFcQaOwCynM2DjQPSfpqB4EpmxjRIGMuS58SPw=
+	t=1775841867; cv=none; b=KIKWzcx/FJ1eDQwM/JafyP2SvQH/O0U2ZCmV7Ff7AhZhI0DRsLxfHGfb1cg4DVnspV4SLBb3tGi6UQuoYXIHfpmaIGX4da8hhe5ArItNezOMQ2whK2twqbAj6YoPM2mB0lnCSn2WIYB2Z/cwnkBEXoe7HDDi2Vf4RCN8rKL0Pgk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1775824795; c=relaxed/simple;
-	bh=MthejXCd0ZER7QImZIUA64CG/BkwH2U7NaSU/C4eLXM=;
-	h=Message-ID:From:To:Cc:Subject:Date:In-Reply-To:References:
-	 MIME-Version; b=IWRuW6Hv03xMCX04Vh5RxVf6kdQpIEXZx4tgLJAXkDjcmPzfBbeiJWzZvLhxZW9bl0iHOtkLNsi0mhCJD6CbxXCP3K6MolrLGPJSh/Vsid++C5WCxBeS17MPyBfrWq2yhvHy7c7kf7bqotKLA0MR2Aku/aS0jey5v0T4gC2MpZU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com; spf=pass smtp.mailfrom=qq.com; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=Pol2o8A3; arc=none smtp.client-ip=43.163.128.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
-	t=1775824789; bh=F1Ae6FTHVOQ6zslykD70RR5MNcQ71hhG3E0kf4ix2mk=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=Pol2o8A3sU35d3MQNy8kkSB8d+4s9TnvOvisRZbskLOcA0hP7rjKk+yi9qivNSyrf
-	 C3cv0fMC+Kyyxay32pPEsWpotro78h2fa+eHqaX0eRH+qefKPo2+GLeD3sIZrw8h7I
-	 LJVFhxamZdTMcGU/EQu+eInOsFBjzrMqPCn7vXg8=
-Received: from lxu-ped-host.. ([111.198.231.89])
-	by newxmesmtplogicsvrsza63-0.qq.com (NewEsmtp) with SMTP
-	id 9EDB68FD; Fri, 10 Apr 2026 20:39:45 +0800
-X-QQ-mid: xmsmtpt1775824785tqzox3pnm
-Message-ID: <tencent_6F3C1F36BA97BA37AA4A2C7403766F675A09@qq.com>
-X-QQ-XMAILINFO: MllZffuBkEb5EoqQDCec6LRt3XZIbUSZrleefb5kFxvm7b3fDT7FQdOHi3/gan
-	 LK/RYG6SHRFEJfU3KtnGO9mOith/959BF3xjv/lUAtBIN4niMLisIKu0iv2P8/QktWU4S9UzsZV6
-	 Rl3GWh5mmP2+Oykm9G/gGjni9jd4XKY12wXdIQF22t5vL2OubX3EyusdTgOb+AlyOvUrgAVuyPxr
-	 ZHNMG9Ps52gf2qFckJAkf6O67ufN5qzGINZhARXbTqJx3Udps91IcmOXAgYUW4bT7YNj/V9kOwtO
-	 ZQbU+kcwrnYfzRsPkFQVJkdRiuW9cdae2PoSl3oUvzc/EJoXI7SrJ6wCCkhL9iN1YykbsPVv5ATD
-	 jNLKOrU23DfCUqvbGNWWOmQ9MEk8F6yiemw2ZpvtnyxfbIovqsBf5wVxVXbdSlwGrFNHeeOqrMi3
-	 BhQ2caENx6TdRe8EHGw1AvKrjwrT94l0aEcz+2yy5wBPMlC5KShV9S13QfQXTufbvcLJWjCiX8Dn
-	 mzSOQHVZFBjo4EE9butsXrxVw5R9KCj/1G0xJP216jEPszcjLTFsH4UnKuYNkCyQioIyO92dCLB+
-	 C/V0GBE1XvUvFruObjE4G8Bb6yI2pvIHBzXdJL3XsS1ZUPcXvaTEbi5IWGauqpOoyJ2ASpNUsEbZ
-	 GHvIXokp71raw2ZHwZxYDnvbnRckLPZH2eWcz9pWpgbVPcbfXl4mfqA5DjY0q7lRrWdaiIjaPYHX
-	 gw4vd0MAhywEE2sxjV3+9bPWnscpLflZ2VNLhL0M5g0xMH48HP9S43S6n0bgkGkuXBUWRa5Gwp+W
-	 qFPsLGEqEek9vwxNMO4dES3PILSFNLprPfJUaQVj0DjKATjrhNieb4szTUa13iyTf/lSVNX/hUdn
-	 AiSRowiSXGPkmpxvCajTzAasybBMv2/HFPsNSV2TDBnEuOwd2Vpemw/LMs4fQS2zngJTNBF7GHtF
-	 cXk4QEwmz/HtybU9K5YkdODCvrOzPi24UE/Fj8hN2oldRKTh7fKGHiKYucnTShehM/Yw8PJIt2r5
-	 2tnlFSeDu5MOhrWbAn1IlN28i5hbcODYGR6FvxiavdPlu1UWFKbUpTC65UcHUtVUAxQfDX6lvbEj
-	 sw7zkd
-X-QQ-XMRINFO: OWPUhxQsoeAVwkVaQIEGSKwwgKCxK/fD5g==
-From: Edward Adam Davis <eadavis@qq.com>
-To: eadavis@qq.com
-Cc: cgroups@vger.kernel.org,
-	chenridong@huaweicloud.com,
-	hannes@cmpxchg.org,
-	linux-kernel@vger.kernel.org,
-	mkoutny@suse.com,
-	syzbot+33e571025d88efd1312c@syzkaller.appspotmail.com,
-	syzkaller-bugs@googlegroups.com,
-	tj@kernel.org
-Subject: [PATCH v2] sched/psi: fix race between file release and pressure write
-Date: Fri, 10 Apr 2026 20:39:45 +0800
-X-OQ-MSGID: <20260410123944.149873-2-eadavis@qq.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <tencent_90482DC16CB494F8EB1AEDE6CDD87B3A6F0A@qq.com>
-References: <tencent_90482DC16CB494F8EB1AEDE6CDD87B3A6F0A@qq.com>
+	s=arc-20240116; t=1775841867; c=relaxed/simple;
+	bh=+gKTHxoxDMKo3u7evTWoh9TWfhwBQlT6ukGhjEx6wjA=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=sewrpy2/XDMYg3sCSHVyIrj/V6Y4FNa/hp8kcY4JjnkiHKK1zoS44wZ1+5siAFos8ZAn5zVPjrOHUsGLYFu5iawRbDZSXqtXpESISmYNW9Uo3CiAw+Nb86M5rBavnCpvarmCktJxR3BEKAJTGWY+BMo95dgliUIOURBoeQUucTE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.210.78
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-ot1-f78.google.com with SMTP id 46e09a7af769-7d7f23bd25bso6830206a34.0
+        for <cgroups@vger.kernel.org>; Fri, 10 Apr 2026 10:24:25 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1775841865; x=1776446665;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=1FOmNqJ3sPBDzLwH7LK8E0lSFhzB2S92n5VYz6A1mpM=;
+        b=E8vQLLjZsjR9h9yXQrMryNd7RMx1U6O5p8S/8MHRZKa34pC0HU1rl3WGb8I78Ch5/7
+         JmDZhdvM+qB/Mq56/tTWgJrkYBpBstE8FRX4a7/S+Rj5EFeM1T9olRdt+kCLdyI4UOBa
+         RZX97fPPfOvR46Q/0tY0E2EJG14VuuL3T8C59UWCvE4z93qINL48WjH2TPcQe7CMUqra
+         v6KCWsjwldnFQJDXa/u6boe6LlhYMSvndAEJhlF0XCttJUbonDEUfg3niz5jGGsDiZEk
+         wlLUM5cur0Qlymi+yoTkeG598aXICRCX5Lb5mzt/YIAPbQj/rEohzwTER5ylV2pA5uk/
+         +c5g==
+X-Gm-Message-State: AOJu0YywOBpD2Dtjhs39Nh2xYPhzH1b6jDSwVVPhhCrivnS6tCX++ZIf
+	BdU+FWsG6/A1wZjefHTRybABaYZA7hJhhLfFdPQe0G+y2O8i8xVip9Ed+4iUxfBc8NLkGWxshDq
+	W7PTsFcendUZteOsmIHTZcwb1UxTGgcDYBgpvFdJx6Rs//CghFFw3vVMhXRSWXg==
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spamd-Result: default: False [-0.16 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
+X-Received: by 2002:a05:6820:8406:b0:682:4005:5a56 with SMTP id
+ 006d021491bc7-68a68d601b9mr2542571eaf.12.1775841865008; Fri, 10 Apr 2026
+ 10:24:25 -0700 (PDT)
+Date: Fri, 10 Apr 2026 10:24:24 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <69d93248.050a0220.3030df.002f.GAE@google.com>
+Subject: [syzbot] [cgroups?] possible deadlock in cgroup_kn_lock_live (2)
+From: syzbot <syzbot+6dc923fb5b4671f0fcf0@syzkaller.appspotmail.com>
+To: cgroups@vger.kernel.org, hannes@cmpxchg.org, linux-kernel@vger.kernel.org, 
+	mkoutny@suse.com, syzkaller-bugs@googlegroups.com, tj@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+X-Spamd-Result: default: False [-0.36 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_MISSING_CHARSET(0.50)[];
-	DMARC_POLICY_ALLOW(-0.50)[qq.com,quarantine];
-	R_DKIM_ALLOW(-0.20)[qq.com:s=s201512];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	URI_HIDDEN_PATH(1.00)[https://syzkaller.appspot.com/x/.config?x=64e78d99d9bf8b4c];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10];
 	MAILLIST(-0.15)[generic];
+	DMARC_POLICY_SOFTFAIL(0.10)[appspotmail.com : SPF not aligned (relaxed), No valid DKIM,none];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-15207-lists,cgroups=lfdr.de];
-	RCVD_COUNT_THREE(0.00)[4];
-	FREEMAIL_TO(0.00)[qq.com];
-	RCVD_TLS_LAST(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	DKIM_TRACE(0.00)[qq.com:+];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	FREEMAIL_FROM(0.00)[qq.com];
-	TO_DN_NONE(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[eadavis@qq.com,cgroups@vger.kernel.org];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	MISSING_XM_UA(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	TAGGED_FROM(0.00)[bounces-15208-lists,cgroups=lfdr.de,6dc923fb5b4671f0fcf0];
+	RCVD_TLS_LAST(0.00)[];
+	RCVD_COUNT_THREE(0.00)[4];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	SUBJECT_HAS_QUESTION(0.00)[];
+	REDIRECTOR_URL(0.00)[goo.gl];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[syzbot@syzkaller.appspotmail.com,cgroups@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	RCPT_COUNT_FIVE(0.00)[6];
+	TO_DN_NONE(0.00)[];
+	R_DKIM_NA(0.00)[];
 	NEURAL_HAM(-0.00)[-1.000];
-	RCPT_COUNT_SEVEN(0.00)[9];
-	MID_RHS_MATCH_FROM(0.00)[];
-	TAGGED_RCPT(0.00)[cgroups,33e571025d88efd1312c];
-	FROM_HAS_DN(0.00)[]
-X-Rspamd-Queue-Id: 2E8BA3D7B44
+	TAGGED_RCPT(0.00)[cgroups];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,goo.gl:url,googlegroups.com:email,storage.googleapis.com:url,appspotmail.com:email,syzkaller.appspot.com:url]
+X-Rspamd-Queue-Id: 772E13DB082
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-A potential race condition exists between pressure write and cgroup file
-release regarding the priv member of struct kernfs_open_file, which
-triggers the uaf reported in [1].
+Hello,
 
-Consider the following scenario involving execution on two separate CPUs:
+syzbot found the following issue on:
 
-   CPU0					CPU1
-   ====					====
-					vfs_rmdir()
-					kernfs_iop_rmdir()
-					cgroup_rmdir()
-					cgroup_kn_lock_live()
-					cgroup_destroy_locked()
-					cgroup_addrm_files()
-					cgroup_rm_file()
-					kernfs_remove_by_name()
-					kernfs_remove_by_name_ns()
- vfs_write()				__kernfs_remove()
- new_sync_write()			kernfs_drain()
- kernfs_fop_write_iter()		kernfs_drain_open_files()
- cgroup_file_write()			kernfs_release_file()
- pressure_write()			cgroup_file_release()
- ctx = of->priv;
-					kfree(ctx);
- 					of->priv = NULL;
-					cgroup_kn_unlock()
- cgroup_kn_lock_live()
- cgroup_get(cgrp)
- cgroup_kn_unlock()
- if (ctx->psi.trigger)  // here, trigger uaf for ctx, that is of->priv
+HEAD commit:    591cd656a1bf Linux 7.0-rc7
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=138ddd02580000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=64e78d99d9bf8b4c
+dashboard link: https://syzkaller.appspot.com/bug?extid=6dc923fb5b4671f0fcf0
+compiler:       gcc (Debian 14.2.0-19) 14.2.0, GNU ld (GNU Binutils for Debian) 2.44
 
-The cgroup_rmdir() is protected by the cgroup_mutex, it also safeguards
-the memory deallocation of of->priv performed within cgroup_file_release().
-However, the operations involving of->priv executed within pressure_write()
-are not entirely covered by the protection of cgroup_mutex. Consequently,
-if the code in pressure_write(), specifically the section handling the
-ctx variable executes after cgroup_file_release() has completed, a uaf
-vulnerability involving of->priv is triggered.
+Unfortunately, I don't have any reproducer for this issue yet.
 
-Therefore, the issue can be resolved by extending the scope of the
-cgroup_mutex lock within pressure_write() to encompass all code paths
-involving of->priv, thereby properly synchronizing the race condition
-occurring between cgroup_file_release() and pressure_write().
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/bf0f027c93ec/disk-591cd656.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/60d829be17f4/vmlinux-591cd656.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/673c009c7550/bzImage-591cd656.xz
 
-[1]
-BUG: KASAN: slab-use-after-free in pressure_write+0xa4/0x210 kernel/cgroup/cgroup.c:4011
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+6dc923fb5b4671f0fcf0@syzkaller.appspotmail.com
+
+======================================================
+WARNING: possible circular locking dependency detected
+syzkaller #0 Tainted: G             L     
+------------------------------------------------------
+syz.1.1390/12323 is trying to acquire lock:
+ffffffff8e84a7c8 (cgroup_mutex){+.+.}-{4:4}, at: cgroup_lock include/linux/cgroup.h:394 [inline]
+ffffffff8e84a7c8 (cgroup_mutex){+.+.}-{4:4}, at: cgroup_kn_lock_live+0x116/0x520 kernel/cgroup/cgroup.c:1732
+
+but task is already holding lock:
+ffff888059c1d5c0 (&type->i_mutex_dir_key#7){++++}-{4:4}, at: inode_lock include/linux/fs.h:1028 [inline]
+ffff888059c1d5c0 (&type->i_mutex_dir_key#7){++++}-{4:4}, at: vfs_rmdir fs/namei.c:5329 [inline]
+ffff888059c1d5c0 (&type->i_mutex_dir_key#7){++++}-{4:4}, at: vfs_rmdir+0xed/0x8a0 fs/namei.c:5317
+
+which lock already depends on the new lock.
+
+
+the existing dependency chain (in reverse order) is:
+
+-> #3 (&type->i_mutex_dir_key#7){++++}-{4:4}:
+       down_read+0x99/0x460 kernel/locking/rwsem.c:1537
+       inode_lock_shared include/linux/fs.h:1043 [inline]
+       lookup_slow+0x42/0x70 fs/namei.c:1932
+       walk_component fs/namei.c:2279 [inline]
+       lookup_last fs/namei.c:2786 [inline]
+       path_lookupat+0x5e8/0xc40 fs/namei.c:2810
+       filename_lookup+0x202/0x590 fs/namei.c:2839
+       kern_path+0x37/0x50 fs/namei.c:3046
+       lookup_bdev+0xd8/0x280 block/bdev.c:1221
+       bdev_file_open_by_path+0x82/0x330 block/bdev.c:1094
+       add_device drivers/mtd/devices/block2mtd.c:279 [inline]
+       block2mtd_setup2.isra.0+0x2ee/0xc70 drivers/mtd/devices/block2mtd.c:459
+       block2mtd_setup+0xbd/0xd0 drivers/mtd/devices/block2mtd.c:476
+       param_attr_store+0x199/0x300 kernel/params.c:589
+       module_attr_store+0x58/0x80 kernel/params.c:913
+       sysfs_kf_write+0xf2/0x150 fs/sysfs/file.c:142
+       kernfs_fop_write_iter+0x3e0/0x5f0 fs/kernfs/file.c:352
+       new_sync_write fs/read_write.c:595 [inline]
+       vfs_write+0x6ac/0x1070 fs/read_write.c:688
+       ksys_write+0x12a/0x250 fs/read_write.c:740
+       do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
+       do_syscall_64+0x106/0xf80 arch/x86/entry/syscall_64.c:94
+       entry_SYSCALL_64_after_hwframe+0x77/0x7f
+
+-> #2 (param_lock){+.+.}-{4:4}:
+       __mutex_lock_common kernel/locking/mutex.c:614 [inline]
+       __mutex_lock+0x1a2/0x1b90 kernel/locking/mutex.c:776
+       ieee80211_rate_control_ops_get net/mac80211/rate.c:223 [inline]
+       rate_control_alloc net/mac80211/rate.c:269 [inline]
+       ieee80211_init_rate_ctrl_alg+0x1df/0x3b0 net/mac80211/rate.c:1016
+       ieee80211_register_hw+0x2950/0x4140 net/mac80211/main.c:1544
+       mac80211_hwsim_new_radio+0x2847/0x57d0 drivers/net/wireless/virtual/mac80211_hwsim.c:5809
+       init_mac80211_hwsim+0x6db/0x7f0 drivers/net/wireless/virtual/mac80211_hwsim.c:7172
+       do_one_initcall+0x11d/0x760 init/main.c:1382
+       do_initcall_level init/main.c:1444 [inline]
+       do_initcalls init/main.c:1460 [inline]
+       do_basic_setup init/main.c:1479 [inline]
+       kernel_init_freeable+0x6e5/0x7a0 init/main.c:1692
+       kernel_init+0x1f/0x1e0 init/main.c:1582
+       ret_from_fork+0x754/0xd80 arch/x86/kernel/process.c:158
+       ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:245
+
+-> #1 (rtnl_mutex){+.+.}-{4:4}:
+       __mutex_lock_common kernel/locking/mutex.c:614 [inline]
+       __mutex_lock+0x1a2/0x1b90 kernel/locking/mutex.c:776
+       cgrp_css_online+0xa1/0x1f0 net/core/netprio_cgroup.c:157
+       online_css+0xb2/0x350 kernel/cgroup/cgroup.c:5739
+       css_create kernel/cgroup/cgroup.c:5827 [inline]
+       cgroup_apply_control_enable+0x8bd/0xbd0 kernel/cgroup/cgroup.c:3390
+       cgroup_mkdir+0x57f/0x1330 kernel/cgroup/cgroup.c:6028
+       kernfs_iop_mkdir+0x111/0x190 fs/kernfs/dir.c:1273
+       vfs_mkdir+0x361/0x850 fs/namei.c:5239
+       filename_mkdirat+0x48b/0x5e0 fs/namei.c:5272
+       __do_sys_mkdirat fs/namei.c:5293 [inline]
+       __se_sys_mkdirat fs/namei.c:5290 [inline]
+       __x64_sys_mkdirat+0x89/0xc0 fs/namei.c:5290
+       do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
+       do_syscall_64+0x106/0xf80 arch/x86/entry/syscall_64.c:94
+       entry_SYSCALL_64_after_hwframe+0x77/0x7f
+
+-> #0 (cgroup_mutex){+.+.}-{4:4}:
+       check_prev_add kernel/locking/lockdep.c:3165 [inline]
+       check_prevs_add kernel/locking/lockdep.c:3284 [inline]
+       validate_chain kernel/locking/lockdep.c:3908 [inline]
+       __lock_acquire+0x14b8/0x2630 kernel/locking/lockdep.c:5237
+       lock_acquire kernel/locking/lockdep.c:5868 [inline]
+       lock_acquire+0x1cf/0x380 kernel/locking/lockdep.c:5825
+       __mutex_lock_common kernel/locking/mutex.c:614 [inline]
+       __mutex_lock+0x1a2/0x1b90 kernel/locking/mutex.c:776
+       cgroup_lock include/linux/cgroup.h:394 [inline]
+       cgroup_kn_lock_live+0x116/0x520 kernel/cgroup/cgroup.c:1732
+       cgroup_rmdir+0x22/0x300 kernel/cgroup/cgroup.c:6305
+       kernfs_iop_rmdir+0x106/0x170 fs/kernfs/dir.c:1291
+       vfs_rmdir fs/namei.c:5344 [inline]
+       vfs_rmdir+0x328/0x8a0 fs/namei.c:5317
+       filename_rmdir+0x31a/0x5c0 fs/namei.c:5399
+       __do_sys_rmdir fs/namei.c:5422 [inline]
+       __se_sys_rmdir fs/namei.c:5419 [inline]
+       __x64_sys_rmdir+0x46/0x70 fs/namei.c:5419
+       do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
+       do_syscall_64+0x106/0xf80 arch/x86/entry/syscall_64.c:94
+       entry_SYSCALL_64_after_hwframe+0x77/0x7f
+
+other info that might help us debug this:
+
+Chain exists of:
+  cgroup_mutex --> param_lock --> &type->i_mutex_dir_key#7
+
+ Possible unsafe locking scenario:
+
+       CPU0                    CPU1
+       ----                    ----
+  lock(&type->i_mutex_dir_key#7);
+                               lock(param_lock);
+                               lock(&type->i_mutex_dir_key#7);
+  lock(cgroup_mutex);
+
+ *** DEADLOCK ***
+
+3 locks held by syz.1.1390/12323:
+ #0: ffff88807fec2420 (sb_writers#10){.+.+}-{0:0}, at: filename_rmdir+0x1ff/0x5c0 fs/namei.c:5388
+ #1: ffff88805cae8148 (&type->i_mutex_dir_key#7/1){+.+.}-{4:4}, at: inode_lock_nested include/linux/fs.h:1073 [inline]
+ #1: ffff88805cae8148 (&type->i_mutex_dir_key#7/1){+.+.}-{4:4}, at: __start_dirop fs/namei.c:2929 [inline]
+ #1: ffff88805cae8148 (&type->i_mutex_dir_key#7/1){+.+.}-{4:4}, at: start_dirop fs/namei.c:2940 [inline]
+ #1: ffff88805cae8148 (&type->i_mutex_dir_key#7/1){+.+.}-{4:4}, at: filename_rmdir+0x258/0x5c0 fs/namei.c:5392
+ #2: ffff888059c1d5c0 (&type->i_mutex_dir_key#7){++++}-{4:4}, at: inode_lock include/linux/fs.h:1028 [inline]
+ #2: ffff888059c1d5c0 (&type->i_mutex_dir_key#7){++++}-{4:4}, at: vfs_rmdir fs/namei.c:5329 [inline]
+ #2: ffff888059c1d5c0 (&type->i_mutex_dir_key#7){++++}-{4:4}, at: vfs_rmdir+0xed/0x8a0 fs/namei.c:5317
+
+stack backtrace:
+CPU: 0 UID: 0 PID: 12323 Comm: syz.1.1390 Tainted: G             L      syzkaller #0 PREEMPT(full) 
+Tainted: [L]=SOFTLOCKUP
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 03/18/2026
 Call Trace:
- pressure_write+0xa4/0x210 kernel/cgroup/cgroup.c:4011
- cgroup_file_write+0x36f/0x790 kernel/cgroup/cgroup.c:4311
- kernfs_fop_write_iter+0x3b0/0x540 fs/kernfs/file.c:352
+ <TASK>
+ __dump_stack lib/dump_stack.c:94 [inline]
+ dump_stack_lvl+0x100/0x190 lib/dump_stack.c:120
+ print_circular_bug.cold+0x178/0x1c7 kernel/locking/lockdep.c:2043
+ check_noncircular+0x146/0x160 kernel/locking/lockdep.c:2175
+ check_prev_add kernel/locking/lockdep.c:3165 [inline]
+ check_prevs_add kernel/locking/lockdep.c:3284 [inline]
+ validate_chain kernel/locking/lockdep.c:3908 [inline]
+ __lock_acquire+0x14b8/0x2630 kernel/locking/lockdep.c:5237
+ lock_acquire kernel/locking/lockdep.c:5868 [inline]
+ lock_acquire+0x1cf/0x380 kernel/locking/lockdep.c:5825
+ __mutex_lock_common kernel/locking/mutex.c:614 [inline]
+ __mutex_lock+0x1a2/0x1b90 kernel/locking/mutex.c:776
+ cgroup_lock include/linux/cgroup.h:394 [inline]
+ cgroup_kn_lock_live+0x116/0x520 kernel/cgroup/cgroup.c:1732
+ cgroup_rmdir+0x22/0x300 kernel/cgroup/cgroup.c:6305
+ kernfs_iop_rmdir+0x106/0x170 fs/kernfs/dir.c:1291
+ vfs_rmdir fs/namei.c:5344 [inline]
+ vfs_rmdir+0x328/0x8a0 fs/namei.c:5317
+ filename_rmdir+0x31a/0x5c0 fs/namei.c:5399
+ __do_sys_rmdir fs/namei.c:5422 [inline]
+ __se_sys_rmdir fs/namei.c:5419 [inline]
+ __x64_sys_rmdir+0x46/0x70 fs/namei.c:5419
+ do_syscall_x64 arch/x86/entry/syscall_64.c:63 [inline]
+ do_syscall_64+0x106/0xf80 arch/x86/entry/syscall_64.c:94
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
+RIP: 0033:0x7f8142b9c819
+Code: ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 44 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 e8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f81439b7028 EFLAGS: 00000246 ORIG_RAX: 0000000000000054
+RAX: ffffffffffffffda RBX: 00007f8142e16180 RCX: 00007f8142b9c819
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000200000000040
+RBP: 00007f8142c32c91 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 00007f8142e16218 R14: 00007f8142e16180 R15: 00007ffc92158f68
+ </TASK>
 
-Allocated by task 9352:
- cgroup_file_open+0x90/0x3a0 kernel/cgroup/cgroup.c:4256
- kernfs_fop_open+0x9eb/0xcb0 fs/kernfs/file.c:724
- do_dentry_open+0x83d/0x13e0 fs/open.c:949
 
-Freed by task 9353:
- cgroup_file_release+0xd6/0x100 kernel/cgroup/cgroup.c:4283
- kernfs_release_file fs/kernfs/file.c:764 [inline]
- kernfs_drain_open_files+0x392/0x720 fs/kernfs/file.c:834
- kernfs_drain+0x470/0x600 fs/kernfs/dir.c:525
-
-Fixes: 0e94682b73bf ("psi: introduce psi monitor")
-Reported-by: syzbot+33e571025d88efd1312c@syzkaller.appspotmail.com
-Closes: https://syzkaller.appspot.com/bug?extid=33e571025d88efd1312c
-Tested-by: syzbot+33e571025d88efd1312c@syzkaller.appspotmail.com
-Signed-off-by: Edward Adam Davis <eadavis@qq.com>
 ---
-v1 -> v2: refactor unlock and update comments
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
- kernel/cgroup/cgroup.c | 21 +++++++++++++++++----
- 1 file changed, 17 insertions(+), 4 deletions(-)
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
 
-diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
-index 4ca3cb993da2..46db30de817b 100644
---- a/kernel/cgroup/cgroup.c
-+++ b/kernel/cgroup/cgroup.c
-@@ -3995,34 +3995,47 @@ static int cgroup_cpu_pressure_show(struct seq_file *seq, void *v)
- static ssize_t pressure_write(struct kernfs_open_file *of, char *buf,
- 			      size_t nbytes, enum psi_res res)
- {
--	struct cgroup_file_ctx *ctx = of->priv;
-+	struct cgroup_file_ctx *ctx;
- 	struct psi_trigger *new;
- 	struct cgroup *cgrp;
- 	struct psi_group *psi;
-+	ssize_t ret = 0;
- 
- 	cgrp = cgroup_kn_lock_live(of->kn, false);
- 	if (!cgrp)
- 		return -ENODEV;
- 
-+	ctx = of->priv;
-+	if (!ctx) {
-+		ret = -ENODEV;
-+		goto out_unlock;
-+	}
-+
- 	cgroup_get(cgrp);
--	cgroup_kn_unlock(of->kn);
- 
- 	/* Allow only one trigger per file descriptor */
- 	if (ctx->psi.trigger) {
- 		cgroup_put(cgrp);
--		return -EBUSY;
-+		ret = -EBUSY;
-+		goto out_unlock;
- 	}
- 
- 	psi = cgroup_psi(cgrp);
- 	new = psi_trigger_create(psi, buf, res, of->file, of);
- 	if (IS_ERR(new)) {
- 		cgroup_put(cgrp);
--		return PTR_ERR(new);
-+		ret = PTR_ERR(new);
-+		goto out_unlock;
- 	}
- 
- 	smp_store_release(&ctx->psi.trigger, new);
- 	cgroup_put(cgrp);
- 
-+out_unlock:
-+	cgroup_kn_unlock(of->kn);
-+	if (ret)
-+		return ret;
-+
- 	return nbytes;
- }
- 
--- 
-2.43.0
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
 
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
 
