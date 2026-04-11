@@ -1,128 +1,117 @@
-Return-Path: <cgroups+bounces-15222-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-15223-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id swTdLuDs2WnSvwgAu9opvQ
-	(envelope-from <cgroups+bounces-15222-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Sat, 11 Apr 2026 08:40:32 +0200
+	id JoKZHcz62WlTxggAu9opvQ
+	(envelope-from <cgroups+bounces-15223-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Sat, 11 Apr 2026 09:39:56 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 107423DE8C1
-	for <lists+cgroups@lfdr.de>; Sat, 11 Apr 2026 08:40:31 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id E8C123DEB61
+	for <lists+cgroups@lfdr.de>; Sat, 11 Apr 2026 09:39:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 1AFF43027B6C
-	for <lists+cgroups@lfdr.de>; Sat, 11 Apr 2026 06:40:28 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 4E2CF302D959
+	for <lists+cgroups@lfdr.de>; Sat, 11 Apr 2026 07:39:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E9B2F31A556;
-	Sat, 11 Apr 2026 06:40:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A9550332634;
+	Sat, 11 Apr 2026 07:39:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mqpCemMQ"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-oo1-f69.google.com (mail-oo1-f69.google.com [209.85.161.69])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 82692212FAD
-	for <cgroups@vger.kernel.org>; Sat, 11 Apr 2026 06:40:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.69
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C4A325393B;
+	Sat, 11 Apr 2026 07:39:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1775889625; cv=none; b=s8MKPNkfyoWqtWFbB3A+51zRWEU/3cqlIQQ4h6qC2X0FOOGYFwnmzvaDUTeFY8jRiqp2i1nHMvd8J8QNw+uwH6Tb/DDfuArULrRO014BIMh6eZJEJtS/umI6HJIQUIy6QbGQvibnH1lteSw/tjpVGzAcJ1OXycHHlHMP0r4jQj8=
+	t=1775893191; cv=none; b=fhyAocwYuWz6A4S1iI89Tb83+aLNlKBioo2PH7/yK3GabNf0IVN2prgm+MsgP1r199TQGB9SbhjUGzGHCVLU4hl6Wf+JWKr29ZxZZmB+GAd6VS+iml3h0JgbRrOyZE3Sh95Au+A9szwet12gHDKJqQX0OHyTS13z7A/nTiG9E1s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1775889625; c=relaxed/simple;
-	bh=dbb6aTKaKbiMB2sn+6KmRfNJzQQBQNdvIVbM3TLMQ4A=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=ANYgXekazSxgJmBIOUEz+g/0ulSPpt3YR/gpp1C2WkeGaCQgVseJd84c1gz5GVKhB/hlLLNC0D0RCqswONIq0fo8UqZP5UQgNW3Vb0RbXu4Ilm4A63iVXoMUm/nSXn9xWJIGekKEDxJQtyPWSdS9DeydAApJinoDRORgfk358VQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.161.69
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-oo1-f69.google.com with SMTP id 006d021491bc7-66308f16ea1so4247509eaf.2
-        for <cgroups@vger.kernel.org>; Fri, 10 Apr 2026 23:40:24 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1775889623; x=1776494423;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=jsSF9DtpaRe65xxA9jUXk6g0C0ICjz59ZSKLowAmLxY=;
-        b=rXW3opoPezSKRW4nBUE/fvad30s/rwcKuJkDil84Qv9mwsfdQ1dn2i4h8E1roIXYjd
-         I+CN2e+8cYVnHo+stJ7Od2GLLIAMt00GekLCLttppxTkHvz36ignN0zmaGe4kJ0WdQqP
-         CWpmdKqxDYF2g1J9/wGOkdwYvuSlD3bK6XcVgYEnLrmkzX2gawDYQ246x+pASBsrRVVk
-         eZm5kOydAekDmApH7jbDAdzqAyvcW2KZbhv573iMDFdM6+apAcSGGyehm3S1F06JC5xK
-         tJ1wRVxH8mEa/wTQYawJ86WXZMO2MiZRdWaxraUPrWHDPiCPqor3cCsUidIA5niJezET
-         ihpA==
-X-Gm-Message-State: AOJu0YwW7HyG8yAzeUhYeP9gOz12k/s4d1iREVXRVjnH3/9aRid+oNE/
-	+tXQvj57kOJrlwaJVJ1n8KO3LaQEtxjyeXoygOAwBeYsccUJn8/ZeNeVxSM1RZWVrc4KmXoMoBe
-	IPjgXfP62uCsAV+7TNMESXNfFZTQhSnAcS86Zzr4hbkryn2iX50/ixrhoTdE=
+	s=arc-20240116; t=1775893191; c=relaxed/simple;
+	bh=yvEmeIb3VoEuclqDPGg9CUH5w0Of9eqWWWBPUSlGwL8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Y6F3158oeeUJvDIjYm+g0fHP1Pv4qW2Y1gm1OysbOjPYMi1v824O4afPpA7/OnC5Lbf1H5PhTYC5j9iwlDiE0CjcHi8Ge293lBzoeYmb6LTUNTydyX2B0CzSepvP+0wO5siyYwkhrLe0us52P58hHG0MaXM0TWXTsjWqRnbYW/4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mqpCemMQ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DCB9AC4CEF7;
+	Sat, 11 Apr 2026 07:39:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1775893191;
+	bh=yvEmeIb3VoEuclqDPGg9CUH5w0Of9eqWWWBPUSlGwL8=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=mqpCemMQtI7CeEB5nP1ZJNdQDOB9/woQSwFq+6rNbHCwv07e2zkWaS+N+HNFXS03m
+	 OUFubnTx44Maf7+tKeQH628TYIDx+ACaHbUFWtzkRnGsqyGy5MG4rWvUPe7BmRL/Rk
+	 zBsDUsHS4FznaboaDz56etUJttxQ7faqKUXZkXu6LvzFz2XXq0MhFQuEabdEX4nxvo
+	 0V6jFBpvWQ5jttgUyCwxJU7tbEzK7/wfCDpX9QyL0CS5Dokogx0OFKiSoxUBFtBaGP
+	 BWLiK7gDNewZgUum8Fhved5EbbdlS/lxyYFdpSFqfoag588CbjU9lQl6WiN1CvkmoQ
+	 hwg6L0TWIjv0g==
+Date: Fri, 10 Apr 2026 21:39:49 -1000
+From: Tejun Heo <tj@kernel.org>
+To: Edward Adam Davis <eadavis@qq.com>
+Cc: cgroups@vger.kernel.org, chenridong@huaweicloud.com, hannes@cmpxchg.org,
+	linux-kernel@vger.kernel.org, mkoutny@suse.com,
+	syzbot+33e571025d88efd1312c@syzkaller.appspotmail.com,
+	syzkaller-bugs@googlegroups.com
+Subject: Re: [PATCH v2] sched/psi: fix race between file release and pressure
+ write
+Message-ID: <adn6xRNYwep9dQyQ@slm.duckdns.org>
+References: <adlL_QXVAgCBH9L8@slm.duckdns.org>
+ <tencent_851B66256EBA58BB8933329E6D1BD54BBE08@qq.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6820:60e:b0:685:2a2d:cccb with SMTP id
- 006d021491bc7-68be5b5ed9emr2898920eaf.12.1775889623655; Fri, 10 Apr 2026
- 23:40:23 -0700 (PDT)
-Date: Fri, 10 Apr 2026 23:40:23 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <69d9ecd7.050a0220.3030df.003e.GAE@google.com>
-Subject: [syzbot] Monthly cgroups report (Apr 2026)
-From: syzbot <syzbot+list98c0d38a716dbe5645c6@syzkaller.appspotmail.com>
-To: cgroups@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
-X-Spamd-Result: default: False [-1.36 / 15.00];
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <tencent_851B66256EBA58BB8933329E6D1BD54BBE08@qq.com>
+X-Spamd-Result: default: False [-0.66 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
+	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64];
 	MAILLIST(-0.15)[generic];
-	DMARC_POLICY_SOFTFAIL(0.10)[appspotmail.com : SPF not aligned (relaxed), No valid DKIM,none];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	MISSING_XM_UA(0.00)[];
-	RCPT_COUNT_THREE(0.00)[3];
-	TAGGED_FROM(0.00)[bounces-15222-lists,cgroups=lfdr.de,list98c0d38a716dbe5645c6];
+	FROM_HAS_DN(0.00)[];
+	TAGGED_FROM(0.00)[bounces-15223-lists,cgroups=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
 	RCVD_COUNT_THREE(0.00)[4];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	FROM_HAS_DN(0.00)[];
-	REDIRECTOR_URL(0.00)[goo.gl];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[syzbot@syzkaller.appspotmail.com,cgroups@vger.kernel.org];
+	FREEMAIL_TO(0.00)[qq.com];
 	MIME_TRACE(0.00)[0:+];
-	TO_DN_NONE(0.00)[];
-	R_DKIM_NA(0.00)[];
+	DKIM_TRACE(0.00)[kernel.org:+];
+	MISSING_XM_UA(0.00)[];
+	TO_DN_SOME(0.00)[];
 	NEURAL_HAM(-0.00)[-1.000];
-	TAGGED_RCPT(0.00)[cgroups];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,googlegroups.com:email,syzkaller.appspot.com:url,goo.gl:url]
-X-Rspamd-Queue-Id: 107423DE8C1
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[tj@kernel.org,cgroups@vger.kernel.org];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	RCPT_COUNT_SEVEN(0.00)[8];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	TAGGED_RCPT(0.00)[cgroups,33e571025d88efd1312c];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,slm.duckdns.org:mid]
+X-Rspamd-Queue-Id: E8C123DEB61
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-Hello cgroups maintainers/developers,
+Hello, Edward.
 
-This is a 31-day syzbot report for the cgroups subsystem.
-All related reports/information can be found at:
-https://syzkaller.appspot.com/upstream/s/cgroups
+On Sat, Apr 11, 2026 at 12:25:47PM +0800, Edward Adam Davis wrote:
+> > > +	ctx = of->priv;
+> > > +	if (!ctx) {
+> > 
+> > This test likely isn't necessary but that's pre-existing.
+> Where?
+> Are you referring to the check for of->released within:
 
-During the period, 5 new issues were detected and 0 were fixed.
-In total, 8 issues are still open and 48 have already been fixed.
+No, I'm talking about of->priv. I don't think it can be NULL while a live
+cgroup kn is locked, can it?
 
-Some of the still happening issues:
+Thanks.
 
-Ref Crashes Repro Title
-<1> 3831    Yes   possible deadlock in console_flush_all (4)
-                  https://syzkaller.appspot.com/bug?extid=d10e9d53059eb8aed654
-<2> 8       No    possible deadlock in copy_process
-                  https://syzkaller.appspot.com/bug?extid=327400a7d1255e319efb
-<3> 4       No    KASAN: wild-memory-access Read in lookup_swap_cgroup_id (2)
-                  https://syzkaller.appspot.com/bug?extid=e12bd9ca48157add237a
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-To disable reminders for individual bugs, reply with the following command:
-#syz set <Ref> no-reminders
-
-To change bug's subsystems, reply with:
-#syz set <Ref> subsystems: new-subsystem
-
-You may send multiple commands in a single email message.
+-- 
+tejun
 
