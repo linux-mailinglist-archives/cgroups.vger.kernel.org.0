@@ -1,256 +1,235 @@
-Return-Path: <cgroups+bounces-15229-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-15230-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id iBU6CgcI22nI8QgAu9opvQ
-	(envelope-from <cgroups+bounces-15229-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Sun, 12 Apr 2026 04:48:39 +0200
+	id CFYFBrvr22lZIwkAu9opvQ
+	(envelope-from <cgroups+bounces-15230-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Sun, 12 Apr 2026 21:00:11 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 84CD63E28CE
-	for <lists+cgroups@lfdr.de>; Sun, 12 Apr 2026 04:48:38 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 784163E58DA
+	for <lists+cgroups@lfdr.de>; Sun, 12 Apr 2026 21:00:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id A5830301841B
-	for <lists+cgroups@lfdr.de>; Sun, 12 Apr 2026 02:48:36 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id AEF4F300B05E
+	for <lists+cgroups@lfdr.de>; Sun, 12 Apr 2026 18:59:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DCAD51EB5E3;
-	Sun, 12 Apr 2026 02:48:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C6237379EE8;
+	Sun, 12 Apr 2026 18:59:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="TzAXZ741"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lxfu5tG4"
 X-Original-To: cgroups@vger.kernel.org
-Received: from out203-205-221-209.mail.qq.com (out203-205-221-209.mail.qq.com [203.205.221.209])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7CC60883F;
-	Sun, 12 Apr 2026 02:48:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.205.221.209
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 87B36CA5A;
+	Sun, 12 Apr 2026 18:59:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1775962112; cv=none; b=YNqAg68OkEXpm2EIg4OAHUp9HrYMAESPcI+ta8f1m94yB98ttIAIbLV48e78fibZN97iO5f5UwZwqOnFUfyZAHMJrXRqVMXE43ptJIAqtTWalo3xE/iW7kddRB1aQIES5fJv4vShBYfU0I9pvETAl96X+CEynaReAmBKM4GpOCQ=
+	t=1776020397; cv=none; b=XBMBOOASaRkM7ZnmW84JRwx6ujEPKRAJ5pcwV4TBDd+mwG8vjEtvOTXvzQBJf/PJfuVAJ1zkxJqOxB22dLzadC9xjlXDAWu2xv47uObOrtJSK8RPXljBQap+dMuU8Lj3IvC8/psQ5L/h3AgDTAZhlwEAs3h4juLO7apMAtD3Yck=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1775962112; c=relaxed/simple;
-	bh=4bZez45wX1tONsFn+sdhvCNeqwz6D8cRYlK/EfbXSqw=;
-	h=Message-ID:From:To:Cc:Subject:Date:In-Reply-To:References:
-	 MIME-Version; b=bdG9S1e7p846nXaf29+QfsSqz/b66OUFne7J4aQHs0B5oqIYbn5hFZPMl65k/qKKTbZEupP+Lb6FNngHHE9hzw86rcniWMfn5CFtFr+7YRr0HiVnpzVZGWBOsf6VK3z2n/HTgh+7Wwzbj8Uy9D9+btnmTwyYXXSxp9+RN54xJL0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com; spf=pass smtp.mailfrom=qq.com; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=TzAXZ741; arc=none smtp.client-ip=203.205.221.209
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
-	t=1775962107; bh=hDJKoPZ28NvwCYgTG+e3GiMbln0U8KQEclXpwKyaONo=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=TzAXZ7413y5/AOknh0JfJiSsIliMo1aOAU5Ms2P6HZzb9P66lyQCP6dA8bXj0zMoJ
-	 KuaQCt0JJ8gHIgFYrNtKuv4NXIN9pppXx8sxsHsmKBWnDW2t7R2V2N+y/0FeN8l5Ss
-	 UUKMJPzi9Kq5jwgQYBtEPa36vpVMBAYyxPBo5Nd4=
-Received: from lxu-ped-host.. ([111.198.231.89])
-	by newxmesmtplogicsvrszc50-0.qq.com (NewEsmtp) with SMTP
-	id BC915057; Sun, 12 Apr 2026 10:47:09 +0800
-X-QQ-mid: xmsmtpt1775962029tjrcqvo21
-Message-ID: <tencent_4EBF67F246C092DF064149932ECC6ECC8C06@qq.com>
-X-QQ-XMAILINFO: MllZffuBkEb5ie534oxXaZdAEzQmuTymua/DIBc9fADJFXTr0wikI8vzkQzD3G
-	 DMPtTkTYiIXuUtqemFhVTdl6Zw0iN7142q6XNx145qDS6dBi5+A3WVge5Fb7B1PDVKFBKthCyOVw
-	 JzdhoAJ+cHb2fe1Wqng5pRYn5GYvKxaAcC+XDTPbs+C+pMwLluzN025vZH7Gw2wsplTxIqkU20yJ
-	 xoZ/n8KUGODaAlLHFC9czygGUZz5L/GyRCemxt5iH29lwKmBEr8spqlPNTnh11Zb71FjmQu32Ss3
-	 St/sJBRa6P86BgyL26l7SwcqfzO/ImC2CsxOOIS/U4Jwi9S6qjq1esY/MMK6ennnfCWRuZ0vYSyg
-	 XvkcN11dWIgiqyJNlzEzkaQi9/EXGAqpVNSrxEpLJ2SF0ADOcXXUaJKE5Bp7dFSPM+L3+NDgAhc7
-	 MruZr5lDII8juz810kGTVfuZIj0PNNCzjG+Soh245xLG+k+0zRHF6PbI+1O972KssKBwm2o8Fjeq
-	 uFr+5WzNtV+EL3dVdZ0yRf4XoVSIPbRhb0WdUXytj3+wE0oMzKE8mBAUdgjCQ3HTMgxc6OW0zRD3
-	 3Y1SQ2+fUpg0tiLgLbZQT1EvAp68ihEDqXAxcZCLHV/H07JbY647sw/nc+9w5/AbQaAvY4CC5+G4
-	 tJ85jEII6vEF7+KCmPcJfGtBkv5YQ+w6KYPJkRnlaFabFz20P6P+knUbu5uQSIymMLQLkDgro4Du
-	 KFySgECSLW+LRUfJdnEJFvcqVgZNm1E2WP4XP4/WNUQP6kWN246xHWvgRNJT+iDeKLMcWPNqZxEJ
-	 9FZkD5hdSwZGx3kChez0WddgXUAm6RUJhhUym5jF5wLCI4xPXWvqHPsMPKZ48IXEwNHKGgZr/oIm
-	 ZGkhG04N38yG+peQfpDaNyUkluJmhJ5HENgt8SEwQ2OdBHfh5eFflxiAbTa3jKkXMboUO14R6LEG
-	 vWANncasATj2HOm9zGyMb5elRALXMJ+QPjathS37qmidb9riVD60sdClMPaPfVonvGFtVZWntZb6
-	 N28v/MvI9iXB7FcmlciZO4aV7rBovWWesYR5717VsZsp1L2kHCN35JV6iZTmAa9OueZxy2Gw==
-X-QQ-XMRINFO: Nq+8W0+stu50tPAe92KXseR0ZZmBTk3gLg==
-From: Edward Adam Davis <eadavis@qq.com>
-To: eadavis@qq.com
-Cc: cgroups@vger.kernel.org,
-	chenridong@huaweicloud.com,
-	hannes@cmpxchg.org,
-	linux-kernel@vger.kernel.org,
-	mkoutny@suse.com,
-	syzbot+33e571025d88efd1312c@syzkaller.appspotmail.com,
-	syzkaller-bugs@googlegroups.com,
-	tj@kernel.org
-Subject: [PATCH v3] sched/psi: fix race between file release and pressure write
-Date: Sun, 12 Apr 2026 10:47:09 +0800
-X-OQ-MSGID: <20260412024708.192123-2-eadavis@qq.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <tencent_A146D952E4866889986EDAAECA8CB1A7EA06@qq.com>
-References: <tencent_A146D952E4866889986EDAAECA8CB1A7EA06@qq.com>
+	s=arc-20240116; t=1776020397; c=relaxed/simple;
+	bh=c5nX17VEd6pfb8YBjWIDLaDupaE+dxyisObEf1BO9qU=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=fADszMghgw1pWywUU935VkP2vI8G+XObBYrq19Xo3cm2LLlmNa2e97bf0YEg0S5CWg4ubWS80AGvu2CBXOiPKfp36Fc8TV5f2wS9AnggI9be7/xb0FZdIwaY476u/jLKFMTbR6eu33y1GKx8IpE2xqwI6T0Cs3+DPKWdCCBp4ck=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lxfu5tG4; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 22BE5C19424;
+	Sun, 12 Apr 2026 18:59:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1776020397;
+	bh=c5nX17VEd6pfb8YBjWIDLaDupaE+dxyisObEf1BO9qU=;
+	h=From:Subject:Date:To:Cc:From;
+	b=lxfu5tG4r1oBXYBsWqkORgXMFdEEWDR1s2ofUH+NE9ImdK8k4lw9lqbaSRhOUoQ2Q
+	 99CzxakPFcjKWNYyVZcbfwyAiIQe+KcTS5G0jWUfyz7f1XqXd/RoE+LOVV7N1wzZYb
+	 bXna0M/w7a7Xc3ZmXjwGtk5UiMyabygE/pFLUWjhkm4Qy+//1yGoLPjNS8TAox4t8a
+	 +a2TU2+kx+Mp+kiv+EEPK6Fb8rXXk2Dd+S/w+0YM/gh4WcrXt8NLxIjCxiaoVt6/Qt
+	 cc341LiNqvQpTQyqp1QU8uT1SkuxMXtGBb7JTL8bGZTvcn17/Vo6k8FGz32GNT42K6
+	 rAoDjru9ItEOg==
+From: "David Hildenbrand (Arm)" <david@kernel.org>
+Subject: [PATCH RFC 00/13] mm/rmap: support arbitrary folio mappings
+Date: Sun, 12 Apr 2026 20:59:31 +0200
+Message-Id: <20260412-mapcount-v1-0-05e8dfab52e0@kernel.org>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spamd-Result: default: False [-0.16 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAJPr22kC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
+ vPSU3UzU4B8JSMDIzMDY2MD3dzEguT80rwSXWMjAzOzZDMLcwNDAyWg8oKi1LTMCrBR0UpBbs5
+ KsbW1AN0GLIlfAAAA
+To: Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>, 
+ =?utf-8?q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>, 
+ Jonathan Corbet <corbet@lwn.net>, Shuah Khan <skhan@linuxfoundation.org>, 
+ Andrew Morton <akpm@linux-foundation.org>, Lorenzo Stoakes <ljs@kernel.org>, 
+ "Liam R. Howlett" <Liam.Howlett@oracle.com>, 
+ Vlastimil Babka <vbabka@kernel.org>, Mike Rapoport <rppt@kernel.org>, 
+ Suren Baghdasaryan <surenb@google.com>, Michal Hocko <mhocko@suse.com>, 
+ Rik van Riel <riel@surriel.com>, Harry Yoo <harry@kernel.org>, 
+ Jann Horn <jannh@google.com>, Brendan Jackman <jackmanb@google.com>, 
+ Zi Yan <ziy@nvidia.com>, Pedro Falcato <pfalcato@suse.de>, 
+ Matthew Wilcox <willy@infradead.org>
+Cc: cgroups@vger.kernel.org, linux-doc@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, linux-mm@kvack.org, 
+ linux-fsdevel@vger.kernel.org, "David Hildenbrand (Arm)" <david@kernel.org>
+X-Mailer: b4 0.13.0
+X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[qq.com,quarantine];
-	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64];
-	R_DKIM_ALLOW(-0.20)[qq.com:s=s201512];
+	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-15229-lists,cgroups=lfdr.de];
-	TO_DN_NONE(0.00)[];
-	FREEMAIL_TO(0.00)[qq.com];
+	TAGGED_FROM(0.00)[bounces-15230-lists,cgroups=lfdr.de];
 	FROM_HAS_DN(0.00)[];
 	RCVD_COUNT_THREE(0.00)[4];
 	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[eadavis@qq.com,cgroups@vger.kernel.org];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[25];
+	DKIM_TRACE(0.00)[kernel.org:+];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	TO_DN_SOME(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
-	MID_RHS_MATCH_FROM(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[david@kernel.org,cgroups@vger.kernel.org];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	NEURAL_HAM(-0.00)[-1.000];
-	DKIM_TRACE(0.00)[qq.com:+];
-	RCPT_COUNT_SEVEN(0.00)[9];
-	FREEMAIL_FROM(0.00)[qq.com];
-	TAGGED_RCPT(0.00)[cgroups,33e571025d88efd1312c];
-	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,qq.com:dkim,qq.com:email,qq.com:mid,appspotmail.com:email]
-X-Rspamd-Queue-Id: 84CD63E28CE
+	TAGGED_RCPT(0.00)[cgroups];
+	MID_RHS_MATCH_FROM(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: 784163E58DA
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-A potential race condition exists between pressure write and cgroup file
-release regarding the priv member of struct kernfs_open_file, which
-triggers the uaf reported in [1].
+This series is related to my LSF/MM/BPF topic:
 
-Consider the following scenario involving execution on two separate CPUs:
+	[LSF/MM/BPF TOPIC] Towards removing CONFIG_PAGE_MAPCOUNT [1]
 
-   CPU0					CPU1
-   ====					====
-					vfs_rmdir()
-					kernfs_iop_rmdir()
-					cgroup_rmdir()
-					cgroup_kn_lock_live()
-					cgroup_destroy_locked()
-					cgroup_addrm_files()
-					cgroup_rm_file()
-					kernfs_remove_by_name()
-					kernfs_remove_by_name_ns()
- vfs_write()				__kernfs_remove()
- new_sync_write()			kernfs_drain()
- kernfs_fop_write_iter()		kernfs_drain_open_files()
- cgroup_file_write()			kernfs_release_file()
- pressure_write()			cgroup_file_release()
- ctx = of->priv;
-					kfree(ctx);
- 					of->priv = NULL;
-					cgroup_kn_unlock()
- cgroup_kn_lock_live()
- cgroup_get(cgrp)
- cgroup_kn_unlock()
- if (ctx->psi.trigger)  // here, trigger uaf for ctx, that is of->priv
+And does the following things:
 
-The cgroup_rmdir() is protected by the cgroup_mutex, it also safeguards
-the memory deallocation of of->priv performed within cgroup_file_release().
-However, the operations involving of->priv executed within pressure_write()
-are not entirely covered by the protection of cgroup_mutex. Consequently,
-if the code in pressure_write(), specifically the section handling the
-ctx variable executes after cgroup_file_release() has completed, a uaf
-vulnerability involving of->priv is triggered.
+(a) Gets rid of CONFIG_PAGE_MAPCOUNT, stopping rmap-related code to no
+    longer use page->_mapcount.
 
-Therefore, the issue can be resolved by extending the scope of the
-cgroup_mutex lock within pressure_write() to encompass all code paths
-involving of->priv, thereby properly synchronizing the race condition
-occurring between cgroup_file_release() and pressure_write().
+(b) Converts the entire mapcount to a "total mapped pages" counter, that
+    can trivially be used to calculate the per-page average mapcount in
+    a folio.
 
-And, if an active kn lock can be successfully acquired while executing
-the pressure write operation, it indicates that the cgroup deletion
-process has not yet reached its final stage; consequently, the priv
-pointer within open_file cannot be NULL. Therefore, the operation to
-retrieve the ctx value must be moved to a point *after* the active kn
-lock has been successfully acquired.
+(c) Cleans up the code heavily,
 
-[1]
-BUG: KASAN: slab-use-after-free in pressure_write+0xa4/0x210 kernel/cgroup/cgroup.c:4011
-Call Trace:
- pressure_write+0xa4/0x210 kernel/cgroup/cgroup.c:4011
- cgroup_file_write+0x36f/0x790 kernel/cgroup/cgroup.c:4311
- kernfs_fop_write_iter+0x3b0/0x540 fs/kernfs/file.c:352
+(d) Teaches RMAP code to support arbitrary folio mappings: For example,
+    supporting PMD-mapping of folios that span multiple PMDs.
 
-Allocated by task 9352:
- cgroup_file_open+0x90/0x3a0 kernel/cgroup/cgroup.c:4256
- kernfs_fop_open+0x9eb/0xcb0 fs/kernfs/file.c:724
- do_dentry_open+0x83d/0x13e0 fs/open.c:949
+Initially, I wanted to use a PMD + PUD mapcount, but once I realized that
+we can do the same thing much easier with a "total mapped pages" counters,
+I tried that. And was surprised how clean it looks.
 
-Freed by task 9353:
- cgroup_file_release+0xd6/0x100 kernel/cgroup/cgroup.c:4283
- kernfs_release_file fs/kernfs/file.c:764 [inline]
- kernfs_drain_open_files+0x392/0x720 fs/kernfs/file.c:834
- kernfs_drain+0x470/0x600 fs/kernfs/dir.c:525
+More details in the last patch.
 
-Fixes: 0e94682b73bf ("psi: introduce psi monitor")
-Reported-by: syzbot+33e571025d88efd1312c@syzkaller.appspotmail.com
-Closes: https://syzkaller.appspot.com/bug?extid=33e571025d88efd1312c
-Tested-by: syzbot+33e571025d88efd1312c@syzkaller.appspotmail.com
-Signed-off-by: Edward Adam Davis <eadavis@qq.com>
+Functional Changes
+------------------
+
+The kernel now always behaves like CONFIG_PAGE_NO_MAPCOUNT currently
+does, in particular:
+
+(1) System/node/memcg stats account large folios as fully mapped as soon
+    as a single page is mapped, instead of the precise number of pages
+    a partially-mapped folio has mapped. For example, this affects
+    "AnonPages:", "Mapped:" and "Shmem" in /proc/meminfo.
+
+(2) "mapmax" part of /proc/$PID/numa_maps uses the average page mapcount
+    in a folio instead of the effective page mapcount.
+
+(3) Determining the PM_MMAP_EXCLUSIVE flag for /proc/$PID/pagemap is based on
+    folio_maybe_mapped_shared() instead of the effective page mapcount.
+
+(4) /proc/kpagecount exposes the average page mapcount in a folio
+    instead of the effective page mapcount.
+
+(5) Calculating the Pss for /proc/$PID/smaps and /proc/$PID/smaps_rollup
+    uses the average page mapcount in a folio instead of the effective
+    page mapcount.
+
+(6) Calculating the Uss for /proc/$PID/smaps and /proc/$PID/smaps_rollup
+    uses folio_maybe_mapped_shared() instead of the effective page
+    mapcount.
+
+(7) Detecting partially-mapped anonymous folios uses the average
+    page-page mapcount. This implies that we cannot detect partial
+    mappings of shared anonymous folios in all cases.
+
+TODOs
+-----
+
+Partially-mapped folios:
+
+If deemed relevant, we could detect more partially-mapped shared
+anonymous folios on the memory reclaim path (e.g., during access-bit
+harvesting) and flag them accordingly, so they can get deferred-split.
+We might also just let the deferred splitting logic perform more such
+scanning of possible candidates.
+
+Mapcount overflows:
+
+It may already be possible to overflow a large folio's mapcount
+(+refcount). With this series, it may be possible to overflow
+"total mapped pages" on 32bit; and I'd like to avoid making it an
+unsigned long long on 32bit.
+
+In a distant future, we may want a 64bit mapcountv value, but for
+the time being (no relevant use cases), we should likely reject new
+folio mappings if there is the possibility for mapcount +
+"total mapped pages" overflows early. I assume doing some basic checks
+during fork() + file folio mapping should be good enough (e.g., stop
+once it would turn negative).
+
+This series saw only very basic testing on 64bit and no performance
+fine-tuning yet.
+
+[1] https://lore.kernel.org/all/fe6afcc3-7539-4650-863b-04d971e89cfb@kernel.org/
+
 ---
-v1 -> v2: refactor unlock and update comments
-v2 -> v3: remove check for !ctx and update comments
+David Hildenbrand (Arm) (13):
+      mm/rmap: remove folio->_nr_pages_mapped
+      fs/proc/task_mmu: remove CONFIG_PAGE_MAPCOUNT handling for "mapmax"
+      fs/proc/page: remove CONFIG_PAGE_MAPCOUNT handling for kpagecount
+      fs/proc/task_mmu: remove CONFIG_PAGE_MAPCOUNT handling for PM_MMAP_EXCLUSIVE
+      fs/proc/task_mmu: remove mapcount comment in smaps_account()
+      fs/proc/task_mmu: remove CONFIG_PAGE_MAPCOUNT handling in smaps_account()
+      mm/rmap: remove CONFIG_PAGE_MAPCOUNT
+      mm: re-consolidate folio->_entire_mapcount
+      mm: move _large_mapcount to _mapcount in page[1] of a large folio
+      mm: re-consolidate folio->_pincount
+      mm/rmap: stop using the entire mapcount for hugetlb folios
+      mm/rmap: large mapcount interface cleanups
+      mm/rmap: support arbitrary folio mappings
 
- kernel/cgroup/cgroup.c | 17 +++++++++++++----
- 1 file changed, 13 insertions(+), 4 deletions(-)
+ Documentation/admin-guide/cgroup-v1/memory.rst |   6 +-
+ Documentation/admin-guide/cgroup-v2.rst        |  13 +-
+ Documentation/admin-guide/mm/pagemap.rst       |  30 ++-
+ Documentation/filesystems/proc.rst             |  41 ++--
+ Documentation/mm/transhuge.rst                 |  29 +--
+ fs/proc/internal.h                             |  58 +----
+ fs/proc/page.c                                 |  10 +-
+ fs/proc/task_mmu.c                             |  69 ++----
+ include/linux/mm.h                             |  37 +--
+ include/linux/mm_types.h                       |  22 +-
+ include/linux/pgtable.h                        |  22 ++
+ include/linux/rmap.h                           | 221 ++++++++----------
+ mm/Kconfig                                     |  17 --
+ mm/debug.c                                     |  10 +-
+ mm/internal.h                                  |  30 +--
+ mm/memory.c                                    |   3 +-
+ mm/page_alloc.c                                |  31 +--
+ mm/rmap.c                                      | 302 ++++++++-----------------
+ 18 files changed, 325 insertions(+), 626 deletions(-)
+---
+base-commit: 196ab4af58d724f24335fed3da62920c3cea945f
+change-id: 20260330-mapcount-32066c687010
 
-diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
-index 4ca3cb993da2..1d89fab82850 100644
---- a/kernel/cgroup/cgroup.c
-+++ b/kernel/cgroup/cgroup.c
-@@ -3995,34 +3995,43 @@ static int cgroup_cpu_pressure_show(struct seq_file *seq, void *v)
- static ssize_t pressure_write(struct kernfs_open_file *of, char *buf,
- 			      size_t nbytes, enum psi_res res)
- {
--	struct cgroup_file_ctx *ctx = of->priv;
-+	struct cgroup_file_ctx *ctx;
- 	struct psi_trigger *new;
- 	struct cgroup *cgrp;
- 	struct psi_group *psi;
-+	ssize_t ret = 0;
- 
- 	cgrp = cgroup_kn_lock_live(of->kn, false);
- 	if (!cgrp)
- 		return -ENODEV;
- 
-+	/* of->priv can not be NULL, because cgroup is CSS_ONLINE */
-+	ctx = of->priv;
- 	cgroup_get(cgrp);
--	cgroup_kn_unlock(of->kn);
- 
- 	/* Allow only one trigger per file descriptor */
- 	if (ctx->psi.trigger) {
- 		cgroup_put(cgrp);
--		return -EBUSY;
-+		ret = -EBUSY;
-+		goto out_unlock;
- 	}
- 
- 	psi = cgroup_psi(cgrp);
- 	new = psi_trigger_create(psi, buf, res, of->file, of);
- 	if (IS_ERR(new)) {
- 		cgroup_put(cgrp);
--		return PTR_ERR(new);
-+		ret = PTR_ERR(new);
-+		goto out_unlock;
- 	}
- 
- 	smp_store_release(&ctx->psi.trigger, new);
- 	cgroup_put(cgrp);
- 
-+out_unlock:
-+	cgroup_kn_unlock(of->kn);
-+	if (ret)
-+		return ret;
-+
- 	return nbytes;
- }
- 
+Best regards,
 -- 
-2.43.0
+David Hildenbrand (Arm) <david@kernel.org>
 
 
