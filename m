@@ -1,52 +1,53 @@
-Return-Path: <cgroups+bounces-15240-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-15241-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id KFVKFUfs22lkIwkAu9opvQ
-	(envelope-from <cgroups+bounces-15240-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Sun, 12 Apr 2026 21:02:31 +0200
+	id kJ4XBRvs22lkIwkAu9opvQ
+	(envelope-from <cgroups+bounces-15241-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Sun, 12 Apr 2026 21:01:47 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id C58133E5985
-	for <lists+cgroups@lfdr.de>; Sun, 12 Apr 2026 21:02:30 +0200 (CEST)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5C8E63E5957
+	for <lists+cgroups@lfdr.de>; Sun, 12 Apr 2026 21:01:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 80E993011059
-	for <lists+cgroups@lfdr.de>; Sun, 12 Apr 2026 19:01:05 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 98F753004434
+	for <lists+cgroups@lfdr.de>; Sun, 12 Apr 2026 19:01:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 37037376462;
-	Sun, 12 Apr 2026 19:01:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 27AD937BE8B;
+	Sun, 12 Apr 2026 19:01:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Q164J1pa"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="iRr9aHWa"
 X-Original-To: cgroups@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC53430FC34;
-	Sun, 12 Apr 2026 19:01:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC718363C73;
+	Sun, 12 Apr 2026 19:01:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1776020463; cv=none; b=LM5QfnXNyZaYRwND5nklTIhv4rvnsO24Haj0qpRAcSGCLWTpw/U3JMV2ndetgDMusyH9pepkcMDyaiN9WUlvmqLhR+X2TR8butQT2ZouMW+c2psuwcKNoP/b6l3aTFcl7/W/OAQZRI/AZhxI1LxJfB5pG6qtWOXA3136QwNC65E=
+	t=1776020469; cv=none; b=ILeJc4tToaB553SnqkwePLIMpjCgvEhH2LSXxivfostdZfxoqXnzOiBdncD9xgRq86i89M+DbroST0wyZ+NMkcnpVe6FadFgz26pWtBa3COEdCKEb6eki6yzzctA4NAuI45dPMzXZ0IcsIz33ta/KesH7z5etnzxvBM/zDwm1wQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1776020463; c=relaxed/simple;
-	bh=k8TV/mQzckSwoxZFZIPvSw0wxio7o/z3Stq1Dmp0NZo=;
+	s=arc-20240116; t=1776020469; c=relaxed/simple;
+	bh=JZvLJcjv2gHfduMXKfq+mJwAx6s5YsFTAkgnQcxaWZ8=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=myBUgr8Vn33qhFiKqzizkF1iyutBpyX88ShGuo9iV/RPhDrnvyZXGXrZaGnp4bw8cp78NQU88NO/NpqdgCmr17Uhkb6koFvOXLC5yDCwjDSlVVhoZM+MsA7KAKBYMTx7KWE7NdKutjQTbZ9Sk5n5Y94axd6qXP+y7upXBATIruw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Q164J1pa; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BD326C19424;
-	Sun, 12 Apr 2026 19:00:56 +0000 (UTC)
+	 In-Reply-To:To:Cc; b=fH8BT8Wgb5fWoP0kpuGynXgMU6KulUO1YFU68/GZXy5EeA6tHZSNTa/rDUm8/pccueUvS6N9Fq6fdYu5wQd2uxK2eds5OsrCbBcxCXeP3ug1HSZI3b0U/dLXWfTxi0rB5lw/dAkFjLRBqiNlnuoAqbkRPDmzJBd1MEh6d+EjdKY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=iRr9aHWa; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1EC77C19424;
+	Sun, 12 Apr 2026 19:01:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1776020462;
-	bh=k8TV/mQzckSwoxZFZIPvSw0wxio7o/z3Stq1Dmp0NZo=;
+	s=k20201202; t=1776020469;
+	bh=JZvLJcjv2gHfduMXKfq+mJwAx6s5YsFTAkgnQcxaWZ8=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-	b=Q164J1pajjP4GBWPj23Lp4mHTBftGYsPTAk2vvdxdR/yQe+DD7tj2pRK8pcMKN634
-	 +GAdTuR6FVgGt3/WAZXgGtlQ984Z24P8H+PirEXkevyNklnZEL4D7G7wwRUak4ZMeN
-	 k+6v8smDNXW2RTuj294tKZxMvWuyyTgP+sD7wZOXa6ZGFQVa//ETaavK1A2OzCpQEG
-	 +qMp+227FiOVegvRcSgAZL88fSP9wyn0gykkYJTd3EGJZOdL6Ozdoq3p+jOfgK252Z
-	 u/jyERY99l2LOXyf011ZvhceXK8RGQbnnceVAsg2bTXj5lBfbmhyIwuxdBr+spdGHB
-	 VnXsbGFVt1YaQ==
+	b=iRr9aHWahhYBJDnSK4lcL93nbxXeh1H0DOCfQ3M9PZ2xMgUj97NCkumGeDCiyxP9v
+	 oT+3kt1T/dyrZHEOIZlECOMCBIEiJUpdkMSemjLbuzq7qAOpEch/qupOm6M0JiD1Dt
+	 rW3TF8KL0nFUKarTNHNLta0ujwL5itdjcrL+Pj3K7cwzRmKfDQx3xiZaxYTmxD7yMr
+	 FPgIb7KZk9/riNdA0ehd6LerPOaFiwbPf7y3cVArZX5v4QAwYMsisneU9NxeHwzu/G
+	 Ug24HXsQ3mPwPnftLqoO+iy071bG7XdjEOopTktpsA28fJyxFeHYZmfd0cCSXr5zAW
+	 kYbKmvc9lQqdQ==
 From: "David Hildenbrand (Arm)" <david@kernel.org>
-Date: Sun, 12 Apr 2026 20:59:41 +0200
-Subject: [PATCH RFC 10/13] mm: re-consolidate folio->_pincount
+Date: Sun, 12 Apr 2026 20:59:42 +0200
+Subject: [PATCH RFC 11/13] mm/rmap: stop using the entire mapcount for
+ hugetlb folios
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -55,7 +56,7 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20260412-mapcount-v1-10-05e8dfab52e0@kernel.org>
+Message-Id: <20260412-mapcount-v1-11-05e8dfab52e0@kernel.org>
 References: <20260412-mapcount-v1-0-05e8dfab52e0@kernel.org>
 In-Reply-To: <20260412-mapcount-v1-0-05e8dfab52e0@kernel.org>
 To: Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>, 
@@ -76,20 +77,20 @@ X-Mailer: b4 0.13.0
 X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
+	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
 	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-15240-lists,cgroups=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-15241-lists,cgroups=lfdr.de];
 	FROM_HAS_DN(0.00)[];
 	RCVD_COUNT_THREE(0.00)[4];
 	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	RCPT_COUNT_TWELVE(0.00)[25];
 	DKIM_TRACE(0.00)[kernel.org:+];
-	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
+	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
 	TO_DN_SOME(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[david@kernel.org,cgroups@vger.kernel.org];
@@ -98,128 +99,122 @@ X-Spamd-Result: default: False [-2.16 / 15.00];
 	TAGGED_RCPT(0.00)[cgroups];
 	MID_RHS_MATCH_FROM(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: C58133E5985
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: 5C8E63E5957
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-Now that we have some space left in page[1] of a large folio on 32bit,
-we can re-consolidate folio->_pincount.
+There is no real reason why hugetlb still updates the entire mapcount:
+the value always corresponds to folio_mapcount().
+
+As we want to change the semantics of the entire mapcount in a way
+incompatible with hugetlb, let's just stop using the entire mapcount
+for hugetlb folios entirely.
+
+We only have to teach folio_average_page_mapcount() about the change.
 
 Signed-off-by: David Hildenbrand (Arm) <david@kernel.org>
 ---
- include/linux/mm.h       |  4 +---
- include/linux/mm_types.h |  7 ++-----
- mm/debug.c               |  5 +----
- mm/internal.h            |  3 +--
- mm/page_alloc.c          | 14 +++-----------
- 5 files changed, 8 insertions(+), 25 deletions(-)
+ fs/proc/internal.h   | 3 +++
+ include/linux/mm.h   | 2 ++
+ include/linux/rmap.h | 3 ---
+ mm/debug.c           | 2 +-
+ mm/rmap.c            | 4 +---
+ 5 files changed, 7 insertions(+), 7 deletions(-)
 
+diff --git a/fs/proc/internal.h b/fs/proc/internal.h
+index a5908167ce2d..1dd46e55c850 100644
+--- a/fs/proc/internal.h
++++ b/fs/proc/internal.h
+@@ -186,6 +186,9 @@ static inline int folio_average_page_mapcount(struct folio *folio)
+ 	mapcount = folio_large_mapcount(folio);
+ 	if (unlikely(mapcount <= 0))
+ 		return 0;
++	if (folio_test_hugetlb(folio))
++		return mapcount;
++
+ 	entire_mapcount = folio_entire_mapcount(folio);
+ 	if (mapcount <= entire_mapcount)
+ 		return entire_mapcount;
 diff --git a/include/linux/mm.h b/include/linux/mm.h
-index 1715c6ed14d4..6dd906585420 100644
+index 6dd906585420..3092db64a009 100644
 --- a/include/linux/mm.h
 +++ b/include/linux/mm.h
-@@ -2593,9 +2593,7 @@ static inline pud_t folio_mk_pud(const struct folio *folio, pgprot_t pgprot)
- 
- static inline bool folio_has_pincount(const struct folio *folio)
+@@ -1829,6 +1829,8 @@ static inline int is_vmalloc_or_module_addr(const void *x)
+  * How many times the entire folio is mapped as a single unit (eg by a
+  * PMD or PUD entry).  This is probably not what you want, except for
+  * debugging purposes or implementation of other core folio_*() primitives.
++ *
++ * Always 0 for hugetlb folios.
+  */
+ static inline int folio_entire_mapcount(const struct folio *folio)
  {
--	if (IS_ENABLED(CONFIG_64BIT))
--		return folio_test_large(folio);
--	return folio_order(folio) > 1;
-+	return folio_test_large(folio);
+diff --git a/include/linux/rmap.h b/include/linux/rmap.h
+index 4894e43e5f52..b81b1d9e1eaa 100644
+--- a/include/linux/rmap.h
++++ b/include/linux/rmap.h
+@@ -443,7 +443,6 @@ static inline int hugetlb_try_dup_anon_rmap(struct folio *folio,
+ 			return -EBUSY;
+ 		ClearPageAnonExclusive(&folio->page);
+ 	}
+-	atomic_inc(&folio->_entire_mapcount);
+ 	atomic_inc(&folio->_large_mapcount);
+ 	return 0;
+ }
+@@ -477,7 +476,6 @@ static inline void hugetlb_add_file_rmap(struct folio *folio)
+ 	VM_WARN_ON_FOLIO(!folio_test_hugetlb(folio), folio);
+ 	VM_WARN_ON_FOLIO(folio_test_anon(folio), folio);
+ 
+-	atomic_inc(&folio->_entire_mapcount);
+ 	atomic_inc(&folio->_large_mapcount);
  }
  
- /**
-diff --git a/include/linux/mm_types.h b/include/linux/mm_types.h
-index e59571d2f81d..450f61cad678 100644
---- a/include/linux/mm_types.h
-+++ b/include/linux/mm_types.h
-@@ -451,11 +451,11 @@ struct folio {
- 			union {
- 				struct {
- 	/* public: */
--					unsigned int _unused_2;
-+					atomic_t _pincount;
- 					atomic_t _entire_mapcount;
- #ifdef CONFIG_64BIT
- 					unsigned int _unused_1;
--					atomic_t _pincount;
-+					unsigned int _unused_2;
- #endif /* CONFIG_64BIT */
- 					mm_id_mapcount_t _mm_id_mapcount[2];
- 					union {
-@@ -482,9 +482,6 @@ struct folio {
- 			unsigned long _head_2;
- 	/* public: */
- 			struct list_head _deferred_list;
--#ifndef CONFIG_64BIT
--			atomic_t _pincount;
--#endif /* !CONFIG_64BIT */
- 	/* private: the union with struct page is transitional */
- 		};
- 		struct page __page_2;
+@@ -485,7 +483,6 @@ static inline void hugetlb_remove_rmap(struct folio *folio)
+ {
+ 	VM_WARN_ON_FOLIO(!folio_test_hugetlb(folio), folio);
+ 
+-	atomic_dec(&folio->_entire_mapcount);
+ 	atomic_dec(&folio->_large_mapcount);
+ }
+ 
 diff --git a/mm/debug.c b/mm/debug.c
-index bfb41ef17a5e..80e050bf29ba 100644
+index 80e050bf29ba..82baaf87ef3d 100644
 --- a/mm/debug.c
 +++ b/mm/debug.c
-@@ -81,10 +81,7 @@ static void __dump_folio(const struct folio *folio, const struct page *page,
- 			folio_ref_count(folio), mapcount, mapping,
- 			folio->index + idx, pfn);
- 	if (folio_test_large(folio)) {
--		int pincount = 0;
--
--		if (folio_has_pincount(folio))
--			pincount = atomic_read(&folio->_pincount);
-+		int pincount = atomic_read(&folio->_pincount);
- 
+@@ -86,7 +86,7 @@ static void __dump_folio(const struct folio *folio, const struct page *page,
  		pr_warn("head: order:%u mapcount:%d entire_mapcount:%d pincount:%d\n",
  				folio_order(folio),
-diff --git a/mm/internal.h b/mm/internal.h
-index 53b20de141b9..aa1206495bc6 100644
---- a/mm/internal.h
-+++ b/mm/internal.h
-@@ -869,8 +869,7 @@ static inline void prep_compound_head(struct page *page, unsigned int order)
- 		folio->_mm_id_mapcount[1] = -1;
+ 				folio_mapcount(folio),
+-				folio_entire_mapcount(folio),
++				folio_entire_mapcount(folio);
+ 				pincount);
  	}
- 	atomic_set(&folio->_entire_mapcount, -1);
--	if (IS_ENABLED(CONFIG_64BIT) || order > 1)
--		atomic_set(&folio->_pincount, 0);
-+	atomic_set(&folio->_pincount, 0);
- 	if (order > 1)
- 		INIT_LIST_HEAD(&folio->_deferred_list);
+ 
+diff --git a/mm/rmap.c b/mm/rmap.c
+index 27488183448b..d08927949284 100644
+--- a/mm/rmap.c
++++ b/mm/rmap.c
+@@ -3042,11 +3042,10 @@ void hugetlb_add_anon_rmap(struct folio *folio, struct vm_area_struct *vma,
+ 	VM_WARN_ON_FOLIO(!folio_test_hugetlb(folio), folio);
+ 	VM_WARN_ON_FOLIO(!folio_test_anon(folio), folio);
+ 
+-	atomic_inc(&folio->_entire_mapcount);
+ 	atomic_inc(&folio->_large_mapcount);
+ 	if (flags & RMAP_EXCLUSIVE)
+ 		SetPageAnonExclusive(&folio->page);
+-	VM_WARN_ON_FOLIO(folio_entire_mapcount(folio) > 1 &&
++	VM_WARN_ON_FOLIO(folio_large_mapcount(folio) > 1 &&
+ 			 PageAnonExclusive(&folio->page), folio);
  }
-diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index 1c09d79cade3..8ed4c73fdba4 100644
---- a/mm/page_alloc.c
-+++ b/mm/page_alloc.c
-@@ -1125,11 +1125,9 @@ static int free_tail_page_prepare(struct page *head_page, struct page *page)
- 			bad_page(page, "nonzero entire_mapcount");
- 			goto out;
- 		}
--		if (IS_ENABLED(CONFIG_64BIT)) {
--			if (unlikely(atomic_read(&folio->_pincount))) {
--				bad_page(page, "nonzero pincount");
--				goto out;
--			}
-+		if (unlikely(atomic_read(&folio->_pincount))) {
-+			bad_page(page, "nonzero pincount");
-+			goto out;
- 		}
- 		break;
- 	case 2:
-@@ -1138,12 +1136,6 @@ static int free_tail_page_prepare(struct page *head_page, struct page *page)
- 			bad_page(page, "on deferred list");
- 			goto out;
- 		}
--		if (!IS_ENABLED(CONFIG_64BIT)) {
--			if (unlikely(atomic_read(&folio->_pincount))) {
--				bad_page(page, "nonzero pincount");
--				goto out;
--			}
--		}
- 		break;
- 	case 3:
- 		/* the third tail page: hugetlb specifics overlap ->mappings */
+ 
+@@ -3057,7 +3056,6 @@ void hugetlb_add_new_anon_rmap(struct folio *folio,
+ 
+ 	BUG_ON(address < vma->vm_start || address >= vma->vm_end);
+ 	/* increment count (starts at -1) */
+-	atomic_set(&folio->_entire_mapcount, 0);
+ 	atomic_set(&folio->_large_mapcount, 0);
+ 	folio_clear_hugetlb_restore_reserve(folio);
+ 	__folio_set_anon(folio, vma, address, true);
 
 -- 
 2.43.0
