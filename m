@@ -1,225 +1,160 @@
-Return-Path: <cgroups+bounces-15246-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-15247-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 2BzDOAU53GkTOQkAu9opvQ
-	(envelope-from <cgroups+bounces-15246-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Mon, 13 Apr 2026 02:29:57 +0200
+	id j7IKGylM3GkpPAkAu9opvQ
+	(envelope-from <cgroups+bounces-15247-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Mon, 13 Apr 2026 03:51:37 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1981C3E67C2
-	for <lists+cgroups@lfdr.de>; Mon, 13 Apr 2026 02:29:57 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 84EFD3E6B36
+	for <lists+cgroups@lfdr.de>; Mon, 13 Apr 2026 03:51:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id 3BB4830028C9
-	for <lists+cgroups@lfdr.de>; Mon, 13 Apr 2026 00:29:54 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 8462F30078F1
+	for <lists+cgroups@lfdr.de>; Mon, 13 Apr 2026 01:51:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 146581E9919;
-	Mon, 13 Apr 2026 00:29:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WCzh424r"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C6641F8755;
+	Mon, 13 Apr 2026 01:51:33 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-wr1-f53.google.com (mail-wr1-f53.google.com [209.85.221.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7041C1D6DA9
-	for <cgroups@vger.kernel.org>; Mon, 13 Apr 2026 00:29:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.221.53
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1776040190; cv=pass; b=qg3+hLUt6kdTzYc2KnnQgVhXtFbX357pnUZ76AcjGtLck32omZq4i0Ft/Wc+Kf869fFIc9lzjX3DMqEyG6So8Jc4ScBbeuWD2BncrMJmuSt/gora38IyV41dNz2D48e40CrM/I1m4VysWzQiZxUSAcLt4Z9R5g2KgGwjMGHmso0=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1776040190; c=relaxed/simple;
-	bh=prg3U8HK731gOVXqc4EbhlCEjxMTyQb7yWGPWCz2KOs=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=o3kiSavf50IeEDJ+YBCJHYuWttd3iKIa9rsZfmDr47EfRdcmspKw+0tp5oNJk8VC5PGWFBNy6qe7Ee5+7QsjF5MIJx2065gNm4/299UDFmw68pyIpkQI/bj5+qZhrO66h5SZcZPKhq7UwqfAxAdklBwFn6dfLXvi1O4Mi75uKdk=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=WCzh424r; arc=pass smtp.client-ip=209.85.221.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f53.google.com with SMTP id ffacd0b85a97d-43d76dd4ee8so513118f8f.2
-        for <cgroups@vger.kernel.org>; Sun, 12 Apr 2026 17:29:49 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; t=1776040188; cv=none;
-        d=google.com; s=arc-20240605;
-        b=hnAHfJQjATq4wVibg3W1JFqCkr08F62fIJjf8cfjrTrMAnQHUhOkpka+XBTsYaToY4
-         JQGMzigMwrnNZmdxZ/Zme+WbSSHCYM+UdQLyU7PY4lnenlIM/L71RCTLFq0YvscdGj/J
-         M2t7qN2A0+PleP9QV5RIa4yxZpWA3aUfRYzx1pd4YVbfekbvL04ByWnRXOuCCfRJSQJ+
-         5eqrUdqmjEXQFzBojHBe8dNjJLieL4iPIcA92bqQRKHLlhtP3QDmqBMuPAd/Vk0NvBMb
-         v21pbHPBAZWHfPeO7MSA4zqpG/1RzBkYWqZrqZDl80hdxMd2Q8nkt402MwI2z6X06N4W
-         /1QQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:dkim-signature;
-        bh=p+QXCRNJsvBJXHEfK6416uGa9fOl7qqDApTOq7sS6hE=;
-        fh=0cO9GNCUGnAKW8I42ZaCwwJFdecGXvS7yI8wdjv6Hxc=;
-        b=ai7DiH2EbUbL2xMwk+/jIopWQNZ8rlEa+zEoCyiAmNVuMomdagVpjgLJ1BUAd96vui
-         CdDGs7q9PzqTkponEOSufRcTsa4pU2H+NI2OM197pJ4JW4CW+3OQ/8SgTf6phdPgGvtk
-         BN/87RDp75mLQBje2OJYEOXvDmDPsJc52mRQXRPgOZf8dLlZc+w/kYYFxJnzkh1sWFa6
-         b/cysnJPEIXg5Fc1kOEdFHR+Wpc4f5bZXDr/HbXwXlBUESwFYRenoRfWiCZLn55TalAD
-         32RggihdleT6BjwACxrzmkTwB9qdzq+n8HcV8aW3kMi0FF9jmj6OsvnHoJkzEC6P8B9I
-         uUUg==;
-        darn=vger.kernel.org
-ARC-Authentication-Results: i=1; mx.google.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1776040188; x=1776644988; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=p+QXCRNJsvBJXHEfK6416uGa9fOl7qqDApTOq7sS6hE=;
-        b=WCzh424rX6dPKb0bSVGcm5pW+jzuAnvH6EU9fbQNxzNEXp5+T01LkyHK8YbNCN3v84
-         BnOvsEvvmTZvOv83/WZB90yL24x78H1OnJtvvtZVpHeYkMBms7H+c6P8LhOr6r9iG/0g
-         Xlp9FALPCLbDLun9h0C1CD3x7YCTyB6da4tuKKfy3mWbbf8qAnoFsdjHxCCClmooM9sZ
-         bIeXGsPKLmlFfPducp0TxJEAOJNorKujne6nfwr8P2jvHrbcT1Kgqar3wLE22NXC+iZ9
-         DXfZqqVGufpvPw46i6DvAJdK9bzlYaekIT6sCsfkju8Wn+JdAVY0ON7cSophOZjq98Tc
-         0SwA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1776040188; x=1776644988;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=p+QXCRNJsvBJXHEfK6416uGa9fOl7qqDApTOq7sS6hE=;
-        b=NdSfmObIIRxvrZFY2CeSyXPWkbJT2UaAUiPI04hRH479ZT9p/bk9JIgjYvB0OvYomY
-         ZBd4+s1tQ5rtMBfi8SDnaFxIWD+Qtbeh9s9oZU3hqYe0EHkRfH7vHfOftT/W2JfbD+aH
-         oAQCB1fHDm/RfD6d9wXlWkSXbAKt/ozlrMO/x90VD4dLj5/qWuxaOYFyeb/i2hCwTZvG
-         VarjNV7m76UeqCLwwmrEX1ZdfYJiw5+Ba6eGFXI1sbgVYLsDXXVrPW0jD6YoMVL9TTXk
-         Y8AYgam5ePEeV2UX+L9MC/EORCxOYEjW4tw3Lal2zHy7oDxIae3hPfOuo/e6qvCYFpMk
-         8HWw==
-X-Forwarded-Encrypted: i=1; AFNElJ90aQB10Dsrx+9qI8VSfzjUHFM0aBrIwoPtZwR69dep1StUlIP2XQSi803+cQdBDBEppXz7qNlT@vger.kernel.org
-X-Gm-Message-State: AOJu0YxdyKxquNmFAk2kB2oz0YBGRNe/EClPxqrXU3uusxD38vHH3mJq
-	/yF1u85y5612pOyARYUpMFUElJNkoBz76JA+38tJ0XmUKM0Wz/b6ju97c2Ecu+hQP92bW89OG47
-	dILB3na9rdSgalu+5ROK5yRSVpZAZBXs=
-X-Gm-Gg: AeBDietQLuDDjwEPUXweJFQ4XDVndINtYG8nu9zltdsesGOYRymSuX1qz6XnDj3wVD/
-	af8LFURUp8EwNoRXn7uZdsG71tko4oL8g5+tEAiPYKD1XQMDyFRcFEmrdUIuqgshKQCJY4pu418
-	nTqOeVgQVNDr/Drx6m/Zw9E34O9CHHGzqNvbsDd1Q606FTSGpWROEMn+VgM2PzGMjR4dhpGu27k
-	E0FMjV+cWsJL6OmeivgqYCbzI/nXlYtC6Yialg+qNki7lePQnY3+avQ+6BXki+Yie3dfushlmGY
-	ldcSe4b9PJvleXqL4xzHJwAejE78E5vVWtkMVw==
-X-Received: by 2002:a05:6000:184d:b0:43d:7b23:bc99 with SMTP id
- ffacd0b85a97d-43d7b23bdd2mr577667f8f.15.1776040187608; Sun, 12 Apr 2026
- 17:29:47 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3DCA627470;
+	Mon, 13 Apr 2026 01:51:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1776045093; cv=none; b=LaAMsxz56KXeH3Ys7Nkg7GOi7VNPZHKCD1kGG98/b4xfbYjsGkLVa/qWS6WQ9LFcyp10QS201aG7+Yzwk5YLPRI3VOrQju3Fydd2Nhldg8mHDmTrRTngByUYzBVjSXI0+6dYvR3JAWkSMgUcRjET+B6qZVTij6pA9OtzpB9tawo=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1776045093; c=relaxed/simple;
+	bh=ggeuTUFoJhDYvuhCm63u5dkkOBpk4RdQGVwHJDuQ0oo=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=r/U0pf0weH4oAvCElnAeRd6AnV5mfDTwDPwMm6fBgPooPlKgFltoPkxDuKS9KnhQO7M0czlmEi3xIseBZmxZyg5BGuDtwcV6gTJwDJ4n4CMklAo3qxQ5sOBSK3uO+FsbrwmQQgPhrnTDF81Me7uGGtCrrut0QSo5aZcX5apjXMs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=none smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.170])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTPS id 4fv9NH0S7HzYQth5;
+	Mon, 13 Apr 2026 09:50:39 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.75])
+	by mail.maildlp.com (Postfix) with ESMTP id E589840571;
+	Mon, 13 Apr 2026 09:51:20 +0800 (CST)
+Received: from [10.67.111.176] (unknown [10.67.111.176])
+	by APP2 (Coremail) with SMTP id Syh0CgDXum8XTNxpcGvXAA--.1230S2;
+	Mon, 13 Apr 2026 09:51:20 +0800 (CST)
+Message-ID: <b586bd09-8b47-415d-a183-7385a678c723@huaweicloud.com>
+Date: Mon, 13 Apr 2026 09:51:19 +0800
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20260402063714.55124-1-liwang@redhat.com> <20260402063714.55124-7-liwang@redhat.com>
-In-Reply-To: <20260402063714.55124-7-liwang@redhat.com>
-From: Nhat Pham <nphamcs@gmail.com>
-Date: Sun, 12 Apr 2026 17:29:35 -0700
-X-Gm-Features: AQROBzDA_W2wnhZr93RNMhtdQJumotHsjmSnSZPteOoUEt7sHLGd9BTXQt8gj-w
-Message-ID: <CAKEwX=M150Hw0Ncs69SCWRr7J+vK5F0biotkz=MSFvFG3rgjow@mail.gmail.com>
-Subject: Re: [PATCH v6 6/8] selftest/cgroup: fix zswap test_no_invasive_cgroup_shrink
- on large pagesize system
-To: Li Wang <liwang@redhat.com>
-Cc: akpm@linux-foundation.org, rppt@kernel.org, david@kernel.org, 
-	hannes@cmpxchg.org, yosry@kernel.org, ljs@kernel.org, Liam.Howlett@oracle.com, 
-	mhocko@suse.com, shuah@kernel.org, chengming.zhou@linux.dev, 
-	longman@redhat.com, linux-mm@kvack.org, linux-kselftest@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, cgroups@vger.kernel.org, 
-	Michal Hocko <mhocko@kernel.org>, =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>, 
-	Muchun Song <muchun.song@linux.dev>, Tejun Heo <tj@kernel.org>, 
-	Roman Gushchin <roman.gushchin@linux.dev>, Shakeel Butt <shakeel.butt@linux.dev>, 
-	Yosry Ahmed <yosryahmed@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spamd-Result: default: False [-2.16 / 15.00];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=2];
-	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
-	R_DKIM_ALLOW(-0.20)[gmail.com:s=20251104];
-	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] sched/psi: fix race between file release and pressure
+ write
+To: Edward Adam Davis <eadavis@qq.com>, tj@kernel.org
+Cc: cgroups@vger.kernel.org, hannes@cmpxchg.org,
+ linux-kernel@vger.kernel.org, mkoutny@suse.com,
+ syzbot+33e571025d88efd1312c@syzkaller.appspotmail.com,
+ syzkaller-bugs@googlegroups.com
+References: <adlL_QXVAgCBH9L8@slm.duckdns.org>
+ <tencent_851B66256EBA58BB8933329E6D1BD54BBE08@qq.com>
+Content-Language: en-US
+From: Chen Ridong <chenridong@huaweicloud.com>
+In-Reply-To: <tencent_851B66256EBA58BB8933329E6D1BD54BBE08@qq.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:Syh0CgDXum8XTNxpcGvXAA--.1230S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7KFyrKrW3ArWrXry5tr18Krg_yoW8Gr1rpr
+	9YyayUtrWDJrykWw40ga4jvF1Iyw48JF15J3yUG3W3t3sIgr1fKr17urWj9a4rArsakr42
+	vrs0vrWfur9YqFJanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUylb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxkF7I0En4kS14v26r126r1DMxAIw28IcxkI7VAK
+	I48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7
+	xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xII
+	jxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw2
+	0EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x02
+	67AKxVWUJVW8JbIYCTnIWIevJa73UjIFyTuYvjxUwxhLUUUUU
+X-CM-SenderInfo: hfkh02xlgr0w46kxt4xhlfz01xgou0bp/
+X-Spamd-Result: default: False [0.04 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_TLS_LAST(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	TAGGED_FROM(0.00)[bounces-15246-lists,cgroups=lfdr.de];
-	FREEMAIL_FROM(0.00)[gmail.com];
-	RCPT_COUNT_TWELVE(0.00)[23];
-	FROM_HAS_DN(0.00)[];
-	MISSING_XM_UA(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	NEURAL_HAM(-0.00)[-1.000];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-15247-lists,cgroups=lfdr.de];
+	RCVD_TLS_LAST(0.00)[];
+	DMARC_NA(0.00)[huaweicloud.com];
+	FREEMAIL_TO(0.00)[qq.com,kernel.org];
+	FROM_HAS_DN(0.00)[];
+	TAGGED_RCPT(0.00)[cgroups,33e571025d88efd1312c];
+	MID_RHS_MATCH_FROM(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[nphamcs@gmail.com,cgroups@vger.kernel.org];
-	DKIM_TRACE(0.00)[gmail.com:+];
-	MID_RHS_MATCH_FROMTLD(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
-	TAGGED_RCPT(0.00)[cgroups];
-	TO_DN_SOME(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[mail.gmail.com:mid,sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns,linux.dev:email,suse.com:email,cmpxchg.org:email]
-X-Rspamd-Queue-Id: 1981C3E67C2
+	FROM_NEQ_ENVFROM(0.00)[chenridong@huaweicloud.com,cgroups@vger.kernel.org];
+	MIME_TRACE(0.00)[0:+];
+	RCVD_COUNT_FIVE(0.00)[6];
+	R_DKIM_NA(0.00)[];
+	NEURAL_HAM(-0.00)[-1.000];
+	RCPT_COUNT_SEVEN(0.00)[8];
+	TO_DN_SOME(0.00)[]
+X-Rspamd-Queue-Id: 84EFD3E6B36
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-On Wed, Apr 1, 2026 at 11:38=E2=80=AFPM Li Wang <liwang@redhat.com> wrote:
->
-> test_no_invasive_cgroup_shrink sets up two cgroups: wb_group, which is
-> expected to trigger zswap writeback, and a control group (renamed to
-> zw_group), which should only have pages sitting in zswap without any
-> writeback.
->
-> There are two problems with the current test:
->
-> 1) The data patterns are reversed. wb_group uses allocate_bytes(), which
->    writes only a single byte per page =E2=80=94 trivially compressible,
->    especially by zstd =E2=80=94 so compressed pages fit within zswap.max =
-and
->    writeback is never triggered. Meanwhile, the control group uses
->    getrandom() to produce hard-to-compress data, but it is the group
->    that does *not* need writeback.
->
-> 2) The test uses fixed sizes (10K zswap.max, 10MB allocation) that are
->    too small on systems with large PAGE_SIZE (e.g. 64K), failing to
->    build enough memory pressure to trigger writeback reliably.
->
-> Fix both issues by:
->   - Swapping the data patterns: fill wb_group pages with partially
->     random data (getrandom for page_size/4 bytes) to resist compression
->     and trigger writeback, and fill zw_group pages with simple repeated
->     data to stay compressed in zswap.
->   - Making all size parameters PAGE_SIZE-aware: set allocation size to
->     PAGE_SIZE * 1024, memory.zswap.max to PAGE_SIZE, and memory.max to
->     allocation_size / 2 for both cgroups.
->   - Allocating memory inline instead of via cg_run() so the pages
->     remain resident throughout the test.
->
-> =3D=3D=3D Error Log =3D=3D=3D
->  # getconf PAGESIZE
->  65536
->
->  # ./test_zswap
->  TAP version 13
->  ...
->  ok 5 test_zswap_writeback_disabled
->  ok 6 # SKIP test_no_kmem_bypass
->  not ok 7 test_no_invasive_cgroup_shrink
 
-I assume the test passed after fix? ;)
 
->
-> Signed-off-by: Li Wang <liwang@redhat.com>
-> Cc: Johannes Weiner <hannes@cmpxchg.org>
-> Cc: Michal Hocko <mhocko@kernel.org>
-> Cc: Michal Koutn=C3=BD <mkoutny@suse.com>
-> Cc: Muchun Song <muchun.song@linux.dev>
-> Cc: Nhat Pham <nphamcs@gmail.com>
-> Cc: Tejun Heo <tj@kernel.org>
-> Cc: Roman Gushchin <roman.gushchin@linux.dev>
-> Cc: Shakeel Butt <shakeel.butt@linux.dev>
-> Cc: Yosry Ahmed <yosryahmed@google.com>
-> ---
->
-> Notes:
->     v5:
->         - Swap data patterns: use getrandom() for wb_group and simple
->           memset for zw_group to fix the reversed allocation logic.
->         - Rename control_group to zw_group for clarity.
->         - Allocate memory inline instead of via cg_run() so pages remain
->           resident throughout the test.
->
->  tools/testing/selftests/cgroup/test_zswap.c | 70 ++++++++++++++-------
->  1 file changed, 49 insertions(+), 21 deletions(-)
+On 2026/4/11 12:25, Edward Adam Davis wrote:
+> On Fri, 10 Apr 2026 09:14:05 -1000, Tejun Heo wrote:
+>>>  static ssize_t pressure_write(struct kernfs_open_file *of, char *buf,
+>>>  			      size_t nbytes, enum psi_res res)
+>>>  {
+>>> -	struct cgroup_file_ctx *ctx = of->priv;
+>>> +	struct cgroup_file_ctx *ctx;
+>>>  	struct psi_trigger *new;
+>>>  	struct cgroup *cgrp;
+>>>  	struct psi_group *psi;
+>>> +	ssize_t ret = 0;
+>>>
+>>>  	cgrp = cgroup_kn_lock_live(of->kn, false);
+>>>  	if (!cgrp)
+>>>  		return -ENODEV;
+>>>
+>>> +	ctx = of->priv;
+>>> +	if (!ctx) {
+>>
+>> This test likely isn't necessary but that's pre-existing.
+> Where?
+> Are you referring to the check for of->released within:
+> 'kernfs_fop_write_iter()->kernfs_get_active_of()'? This check is not
+> performed under the protection of the cgroup_mutex; consequently, it
+> is susceptible to race conditions, rendering the value unreliable, as
+> it could be updated at any moment.
+>>
+>>> +		ret = -ENODEV;
+>>> +		goto out_unlock;
+>>> +	}
+>>> +
+>>>  	cgroup_get(cgrp);
+>>
+>> We don't need get/put if we don't drop the mutex, right?
+> I believe that is indeed the case; the cgroup_get() call here is intended
+> to facilitate subsequent operations, such as executing an smp store.
+> 
 
-LGTM. Thanks for fixing the tests :)
+Sorry, I don’t quite understand why get/put is needed. Could you elaborate a bit
+more?
 
-Acked-by: Nhat Pham <nphamcs@gmail.com>
+-- 
+Best regards,
+Ridong
+
 
