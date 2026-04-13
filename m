@@ -1,112 +1,112 @@
-Return-Path: <cgroups+bounces-15245-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-15246-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id oDiuD6w13GmnOAkAu9opvQ
-	(envelope-from <cgroups+bounces-15245-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Mon, 13 Apr 2026 02:15:40 +0200
+	id 2BzDOAU53GkTOQkAu9opvQ
+	(envelope-from <cgroups+bounces-15246-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Mon, 13 Apr 2026 02:29:57 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 39C973E6763
-	for <lists+cgroups@lfdr.de>; Mon, 13 Apr 2026 02:15:39 +0200 (CEST)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1981C3E67C2
+	for <lists+cgroups@lfdr.de>; Mon, 13 Apr 2026 02:29:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id 4A11D300252E
-	for <lists+cgroups@lfdr.de>; Mon, 13 Apr 2026 00:15:36 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 3BB4830028C9
+	for <lists+cgroups@lfdr.de>; Mon, 13 Apr 2026 00:29:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E090191F94;
-	Mon, 13 Apr 2026 00:15:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 146581E9919;
+	Mon, 13 Apr 2026 00:29:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="SgGXo85Q"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WCzh424r"
 X-Original-To: cgroups@vger.kernel.org
 Received: from mail-wr1-f53.google.com (mail-wr1-f53.google.com [209.85.221.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F0C011A275
-	for <cgroups@vger.kernel.org>; Mon, 13 Apr 2026 00:15:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7041C1D6DA9
+	for <cgroups@vger.kernel.org>; Mon, 13 Apr 2026 00:29:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.221.53
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1776039334; cv=pass; b=BoDL6xsHMF5o52D1pNPzPQdGxXMYFI9Bc2T1cxdQWfd1GVPk6lt2hb9+pJD9+3TbKlFYww+CiNf3TS++Cn1LvPvPiXar5+o6fG7JgYnKGATbVSfLMYSvzpXD2TzsDdkIvVss/3rKt8wZ+iwyone8md+RT4veyaI3zOQVqCCKZaA=
+	t=1776040190; cv=pass; b=qg3+hLUt6kdTzYc2KnnQgVhXtFbX357pnUZ76AcjGtLck32omZq4i0Ft/Wc+Kf869fFIc9lzjX3DMqEyG6So8Jc4ScBbeuWD2BncrMJmuSt/gora38IyV41dNz2D48e40CrM/I1m4VysWzQiZxUSAcLt4Z9R5g2KgGwjMGHmso0=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1776039334; c=relaxed/simple;
-	bh=Bc7qQZzyiNRpV3OWkFvuiy4V8mNnpMrll52klrXJfPI=;
+	s=arc-20240116; t=1776040190; c=relaxed/simple;
+	bh=prg3U8HK731gOVXqc4EbhlCEjxMTyQb7yWGPWCz2KOs=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=cFeEGAYtfJYq5/lq8X19D5ubHWmAiDKCgN0ZBXLRzZVVnnRj+bsRiONRWcI1Du8v3qfGDMNZeN5uwGYNDxPA5ZpDOwFTu6ZyZzKL7TEIpvslI7niZP0jTI8dP+UHf5Q+77JztZYxR+TtS/3BhhHiaU0EzsiWIWQalPAhkOTQKv0=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=SgGXo85Q; arc=pass smtp.client-ip=209.85.221.53
+	 To:Cc:Content-Type; b=o3kiSavf50IeEDJ+YBCJHYuWttd3iKIa9rsZfmDr47EfRdcmspKw+0tp5oNJk8VC5PGWFBNy6qe7Ee5+7QsjF5MIJx2065gNm4/299UDFmw68pyIpkQI/bj5+qZhrO66h5SZcZPKhq7UwqfAxAdklBwFn6dfLXvi1O4Mi75uKdk=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=WCzh424r; arc=pass smtp.client-ip=209.85.221.53
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f53.google.com with SMTP id ffacd0b85a97d-43cfd96354aso2173170f8f.1
-        for <cgroups@vger.kernel.org>; Sun, 12 Apr 2026 17:15:32 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; t=1776039331; cv=none;
+Received: by mail-wr1-f53.google.com with SMTP id ffacd0b85a97d-43d76dd4ee8so513118f8f.2
+        for <cgroups@vger.kernel.org>; Sun, 12 Apr 2026 17:29:49 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1776040188; cv=none;
         d=google.com; s=arc-20240605;
-        b=joxy+qhutsGmly0H2Fsrwiqb7obNCCqZfAUsAzhBkGHB4q1XaR1VIlKamcmLrZByeQ
-         cBWz6Jnf3LcQYzpgOK77u4Ib/fObt4/Ow08Cx+CNBCqF6AG47GDu+9vtd3ud14bg0nVl
-         CVWODxr5HdhGPYeT9j/LX0UvzzGA9e49Ma9PXzVxHa6K+sjxx1QEeKg3YSYwae9auo9M
-         ElzjEKYSKqhly2MOT6qtg7MfflzmefPUo7lG1GMJxYdiZZBiTEnBsAHAQXWUW2N3FZTp
-         lyBiQcL4G/3G26R1bGUHNExIAUPB5SKeNBbqWDm4PHouD05InLfBEW8Cjtd2jpV9C502
-         BBvQ==
+        b=hnAHfJQjATq4wVibg3W1JFqCkr08F62fIJjf8cfjrTrMAnQHUhOkpka+XBTsYaToY4
+         JQGMzigMwrnNZmdxZ/Zme+WbSSHCYM+UdQLyU7PY4lnenlIM/L71RCTLFq0YvscdGj/J
+         M2t7qN2A0+PleP9QV5RIa4yxZpWA3aUfRYzx1pd4YVbfekbvL04ByWnRXOuCCfRJSQJ+
+         5eqrUdqmjEXQFzBojHBe8dNjJLieL4iPIcA92bqQRKHLlhtP3QDmqBMuPAd/Vk0NvBMb
+         v21pbHPBAZWHfPeO7MSA4zqpG/1RzBkYWqZrqZDl80hdxMd2Q8nkt402MwI2z6X06N4W
+         /1QQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:dkim-signature;
-        bh=/ZjAoNv/0bH6d96ZJoX3aNNUEH/X9X2mePXXADQJKVw=;
-        fh=x34euyk/4TlXMPF4WTZgaaXd6eOQub3k+NEf6bKiBBs=;
-        b=hfoR/l5qAYaPUrUZVf8psqx0xwPGhDB3/aNsPlwa4kiMf0P//s7iNaE7DbZmjHJIfH
-         9xW1qh7Hy3rSrK8KaFLsi5D+sl9QG0madVRXD9zd4aPyb+CtWwXG5xICJ+Rf+FRC3wau
-         Jc3G8uLalgcwyAxOkXBRg9753j3hYYeWC6Fieu5k2Cimlkx1n1Q85qpdyivS+fITrMCU
-         u5JWAcaM3uq77jDdx+3aLMB17iwPfHrPuIYYUgp9GZo5aK1Ohvb+xTDM+lRiUmiT/UGK
-         fZxMw923IDf3Cr3nUubEJxxIiNZLluNBcNTtV0wPO2zf8zXVBDnpd8g7+vRt/i9YU7iP
-         hdhQ==;
+        bh=p+QXCRNJsvBJXHEfK6416uGa9fOl7qqDApTOq7sS6hE=;
+        fh=0cO9GNCUGnAKW8I42ZaCwwJFdecGXvS7yI8wdjv6Hxc=;
+        b=ai7DiH2EbUbL2xMwk+/jIopWQNZ8rlEa+zEoCyiAmNVuMomdagVpjgLJ1BUAd96vui
+         CdDGs7q9PzqTkponEOSufRcTsa4pU2H+NI2OM197pJ4JW4CW+3OQ/8SgTf6phdPgGvtk
+         BN/87RDp75mLQBje2OJYEOXvDmDPsJc52mRQXRPgOZf8dLlZc+w/kYYFxJnzkh1sWFa6
+         b/cysnJPEIXg5Fc1kOEdFHR+Wpc4f5bZXDr/HbXwXlBUESwFYRenoRfWiCZLn55TalAD
+         32RggihdleT6BjwACxrzmkTwB9qdzq+n8HcV8aW3kMi0FF9jmj6OsvnHoJkzEC6P8B9I
+         uUUg==;
         darn=vger.kernel.org
 ARC-Authentication-Results: i=1; mx.google.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1776039331; x=1776644131; darn=vger.kernel.org;
+        d=gmail.com; s=20251104; t=1776040188; x=1776644988; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=/ZjAoNv/0bH6d96ZJoX3aNNUEH/X9X2mePXXADQJKVw=;
-        b=SgGXo85QiWhnF0XUanoosZE7Cm07gc70RpX1epZgTIoQ95BEKTREhWcppNBEjFIgn8
-         FsiDiXNM2JGeqm/jATfk1w3YR0TBU0X/XFuwiSaLW/UI/5pZhdM7g1WHS7DrvtoxuJCG
-         M8JFOk6b5N46kkLvLla8ACQNtv/sfEmr4Yyj+pzF3i7Ki+OD6aEIHCV6/ywbXFk6BtOa
-         G3urc2HlQ5aj82IuLLTV/TKJWDuXrl0Klt5pZNWtZ+z8cv0WyxY/4kID0obQ0bpsDefd
-         bMS5Uv7Xqf8LoFoaKWTlPX9ylhb2zX9vnh4FBbgr0Z14ZI6D06sHgJw9y36w9QBBcc76
-         X4ow==
+        bh=p+QXCRNJsvBJXHEfK6416uGa9fOl7qqDApTOq7sS6hE=;
+        b=WCzh424rX6dPKb0bSVGcm5pW+jzuAnvH6EU9fbQNxzNEXp5+T01LkyHK8YbNCN3v84
+         BnOvsEvvmTZvOv83/WZB90yL24x78H1OnJtvvtZVpHeYkMBms7H+c6P8LhOr6r9iG/0g
+         Xlp9FALPCLbDLun9h0C1CD3x7YCTyB6da4tuKKfy3mWbbf8qAnoFsdjHxCCClmooM9sZ
+         bIeXGsPKLmlFfPducp0TxJEAOJNorKujne6nfwr8P2jvHrbcT1Kgqar3wLE22NXC+iZ9
+         DXfZqqVGufpvPw46i6DvAJdK9bzlYaekIT6sCsfkju8Wn+JdAVY0ON7cSophOZjq98Tc
+         0SwA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1776039331; x=1776644131;
+        d=1e100.net; s=20251104; t=1776040188; x=1776644988;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=/ZjAoNv/0bH6d96ZJoX3aNNUEH/X9X2mePXXADQJKVw=;
-        b=TN6a3pgtHYNmIXoS0iWpIuhD188TF9i3wdrUVucPUgudKgvQN4JyMPVfz1sqamqv78
-         IWjPNRSTSbegNN/lNviVJ5/zdh0oDyuUHpvu8436wUP3gBB3w4Tv8bETiPKRXd7RkvU/
-         u7S8EVUWJdA+FOBmdCJig6KWS5NAHYq7RrRGwS8ERv5QZ8hUXnKXhlt9IcDivdTmDQqB
-         5VvuBoLwu46Ep+VfpFeNSK+KR93zI92On44QajysFTWHrstyhCX1+hLdV8c1pryrXN0a
-         2utkogJsjbaLOyd8WFC1opMpvjYmBUUBDxABiCXfRowWlA0Fw5jU8L6fEuJKaI7l1YyW
-         5USA==
-X-Forwarded-Encrypted: i=1; AFNElJ/nOTpQUrtIDHEy3sbSjMs1F/qTTJc50wH18/caeJI9k4RpIDoERiWRUCbU98nkPqQOoUE3QBDk@vger.kernel.org
-X-Gm-Message-State: AOJu0Yw1BavMvcMQw8HQGDxPJ0f3rJzwPAOP7Fur6JogrMcLkLRhbyZN
-	FMHJjj/Y2EyxA7mfDZDVNyzgqCpAz5HgDacydrXg5om0PfQqBf/yJzGI4J3cRUtg8EhS6O3aP23
-	/fi1OTNg4RZS1Jel/jUEXvxgpoVwyVNE=
-X-Gm-Gg: AeBDieszU+fQHPwL0DRzyre2iA5B7QzHWa9V9jJMamT4I+XZiTdYNrVdU+qndbCy7o7
-	JqCSTKgr7FFN++U2HVEKJUCoFzlXyJ+i9FaQtFPBIUm5wsiOuIegGEQbUpsA9eAjbcXlRSQuJnu
-	KT5n6bDN8gFSZ9YawOhfpJM80iowCt7hXB5yhprh/iy732z6yDxoptEB4AHuLaoUtHCcfvWsP/e
-	68Yc798I7tjSt8SiRxxzqSwhYszLfBQMCrA6mO/Bam9EMhJZvJbKXYX3Kn4xKR21fcq3DkcXyYv
-	6Y7OoBAvClOc0OzAdGjAg6m76rZu5XtsZ726/CC8e+GYBN8p
-X-Received: by 2002:a05:6000:4387:b0:43d:7508:c9c1 with SMTP id
- ffacd0b85a97d-43d7508cd32mr5342542f8f.50.1776039331323; Sun, 12 Apr 2026
- 17:15:31 -0700 (PDT)
+        bh=p+QXCRNJsvBJXHEfK6416uGa9fOl7qqDApTOq7sS6hE=;
+        b=NdSfmObIIRxvrZFY2CeSyXPWkbJT2UaAUiPI04hRH479ZT9p/bk9JIgjYvB0OvYomY
+         ZBd4+s1tQ5rtMBfi8SDnaFxIWD+Qtbeh9s9oZU3hqYe0EHkRfH7vHfOftT/W2JfbD+aH
+         oAQCB1fHDm/RfD6d9wXlWkSXbAKt/ozlrMO/x90VD4dLj5/qWuxaOYFyeb/i2hCwTZvG
+         VarjNV7m76UeqCLwwmrEX1ZdfYJiw5+Ba6eGFXI1sbgVYLsDXXVrPW0jD6YoMVL9TTXk
+         Y8AYgam5ePEeV2UX+L9MC/EORCxOYEjW4tw3Lal2zHy7oDxIae3hPfOuo/e6qvCYFpMk
+         8HWw==
+X-Forwarded-Encrypted: i=1; AFNElJ90aQB10Dsrx+9qI8VSfzjUHFM0aBrIwoPtZwR69dep1StUlIP2XQSi803+cQdBDBEppXz7qNlT@vger.kernel.org
+X-Gm-Message-State: AOJu0YxdyKxquNmFAk2kB2oz0YBGRNe/EClPxqrXU3uusxD38vHH3mJq
+	/yF1u85y5612pOyARYUpMFUElJNkoBz76JA+38tJ0XmUKM0Wz/b6ju97c2Ecu+hQP92bW89OG47
+	dILB3na9rdSgalu+5ROK5yRSVpZAZBXs=
+X-Gm-Gg: AeBDietQLuDDjwEPUXweJFQ4XDVndINtYG8nu9zltdsesGOYRymSuX1qz6XnDj3wVD/
+	af8LFURUp8EwNoRXn7uZdsG71tko4oL8g5+tEAiPYKD1XQMDyFRcFEmrdUIuqgshKQCJY4pu418
+	nTqOeVgQVNDr/Drx6m/Zw9E34O9CHHGzqNvbsDd1Q606FTSGpWROEMn+VgM2PzGMjR4dhpGu27k
+	E0FMjV+cWsJL6OmeivgqYCbzI/nXlYtC6Yialg+qNki7lePQnY3+avQ+6BXki+Yie3dfushlmGY
+	ldcSe4b9PJvleXqL4xzHJwAejE78E5vVWtkMVw==
+X-Received: by 2002:a05:6000:184d:b0:43d:7b23:bc99 with SMTP id
+ ffacd0b85a97d-43d7b23bdd2mr577667f8f.15.1776040187608; Sun, 12 Apr 2026
+ 17:29:47 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20260402063714.55124-1-liwang@redhat.com> <20260402063714.55124-8-liwang@redhat.com>
-In-Reply-To: <20260402063714.55124-8-liwang@redhat.com>
+References: <20260402063714.55124-1-liwang@redhat.com> <20260402063714.55124-7-liwang@redhat.com>
+In-Reply-To: <20260402063714.55124-7-liwang@redhat.com>
 From: Nhat Pham <nphamcs@gmail.com>
-Date: Sun, 12 Apr 2026 17:15:20 -0700
-X-Gm-Features: AQROBzCifv09xX9_r3AlbMnr7448_s_gW4fyAOGpR6oYAtKp0TkiGlmLrGMOEK8
-Message-ID: <CAKEwX=P5vet_tfsLtOcF5x4vMu3NFkq=2oP1npiY1uemR-GZvg@mail.gmail.com>
-Subject: Re: [PATCH v6 7/8] selftest/cgroup: fix zswap attempt_writeback() on
- 64K pagesize system
+Date: Sun, 12 Apr 2026 17:29:35 -0700
+X-Gm-Features: AQROBzDA_W2wnhZr93RNMhtdQJumotHsjmSnSZPteOoUEt7sHLGd9BTXQt8gj-w
+Message-ID: <CAKEwX=M150Hw0Ncs69SCWRr7J+vK5F0biotkz=MSFvFG3rgjow@mail.gmail.com>
+Subject: Re: [PATCH v6 6/8] selftest/cgroup: fix zswap test_no_invasive_cgroup_shrink
+ on large pagesize system
 To: Li Wang <liwang@redhat.com>
 Cc: akpm@linux-foundation.org, rppt@kernel.org, david@kernel.org, 
 	hannes@cmpxchg.org, yosry@kernel.org, ljs@kernel.org, Liam.Howlett@oracle.com, 
@@ -115,14 +115,15 @@ Cc: akpm@linux-foundation.org, rppt@kernel.org, david@kernel.org,
 	linux-kernel@vger.kernel.org, cgroups@vger.kernel.org, 
 	Michal Hocko <mhocko@kernel.org>, =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>, 
 	Muchun Song <muchun.song@linux.dev>, Tejun Heo <tj@kernel.org>, 
-	Roman Gushchin <roman.gushchin@linux.dev>, Shakeel Butt <shakeel.butt@linux.dev>
+	Roman Gushchin <roman.gushchin@linux.dev>, Shakeel Butt <shakeel.butt@linux.dev>, 
+	Yosry Ahmed <yosryahmed@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=2];
 	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
 	R_DKIM_ALLOW(-0.20)[gmail.com:s=20251104];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
@@ -130,9 +131,9 @@ X-Spamd-Result: default: False [-2.16 / 15.00];
 	RCVD_COUNT_THREE(0.00)[4];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	MIME_TRACE(0.00)[0:+];
-	TAGGED_FROM(0.00)[bounces-15245-lists,cgroups=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-15246-lists,cgroups=lfdr.de];
 	FREEMAIL_FROM(0.00)[gmail.com];
-	RCPT_COUNT_TWELVE(0.00)[22];
+	RCPT_COUNT_TWELVE(0.00)[23];
 	FROM_HAS_DN(0.00)[];
 	MISSING_XM_UA(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
@@ -141,39 +142,84 @@ X-Spamd-Result: default: False [-2.16 / 15.00];
 	FROM_NEQ_ENVFROM(0.00)[nphamcs@gmail.com,cgroups@vger.kernel.org];
 	DKIM_TRACE(0.00)[gmail.com:+];
 	MID_RHS_MATCH_FROMTLD(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
+	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
 	TAGGED_RCPT(0.00)[cgroups];
 	TO_DN_SOME(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[mail.gmail.com:mid,sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 39C973E6763
+	DBL_BLOCKED_OPENRESOLVER(0.00)[mail.gmail.com:mid,sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns,linux.dev:email,suse.com:email,cmpxchg.org:email]
+X-Rspamd-Queue-Id: 1981C3E67C2
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
 On Wed, Apr 1, 2026 at 11:38=E2=80=AFPM Li Wang <liwang@redhat.com> wrote:
 >
-> In attempt_writeback(), a memsize of 4M only covers 64 pages on 64K
-> page size systems. When memory.reclaim is called, the kernel prefers
-> reclaiming clean file pages (binary, libc, linker, etc.) over swapping
-> anonymous pages. With only 64 pages of anonymous memory, the reclaim
-> target can be largely or entirely satisfied by dropping file pages,
-> resulting in very few or zero anonymous pages being pushed into zswap.
+> test_no_invasive_cgroup_shrink sets up two cgroups: wb_group, which is
+> expected to trigger zswap writeback, and a control group (renamed to
+> zw_group), which should only have pages sitting in zswap without any
+> writeback.
 >
-> This causes zswap_usage to be extremely small or zero, making
-> zswap_usage/4 insufficient to create meaningful writeback pressure.
-> The test then fails because no writeback is triggered.
+> There are two problems with the current test:
 >
-> On 4K page size systems this is not an issue because 4M covers 1024
-> pages, and file pages are a small fraction of the reclaim target.
+> 1) The data patterns are reversed. wb_group uses allocate_bytes(), which
+>    writes only a single byte per page =E2=80=94 trivially compressible,
+>    especially by zstd =E2=80=94 so compressed pages fit within zswap.max =
+and
+>    writeback is never triggered. Meanwhile, the control group uses
+>    getrandom() to produce hard-to-compress data, but it is the group
+>    that does *not* need writeback.
 >
-> Fix this by:
-> - Always allocating 1024 pages regardless of page size. This ensures
->   enough anonymous pages to reliably populate zswap and trigger
->   writeback, while keeping the original 4M allocation on 4K systems.
-> - Setting zswap.max to zswap_usage/4 instead of zswap_usage/2 to
->   create stronger writeback pressure, ensuring reclaim reliably
->   triggers writeback even on large page size systems.
+> 2) The test uses fixed sizes (10K zswap.max, 10MB allocation) that are
+>    too small on systems with large PAGE_SIZE (e.g. 64K), failing to
+>    build enough memory pressure to trigger writeback reliably.
+>
+> Fix both issues by:
+>   - Swapping the data patterns: fill wb_group pages with partially
+>     random data (getrandom for page_size/4 bytes) to resist compression
+>     and trigger writeback, and fill zw_group pages with simple repeated
+>     data to stay compressed in zswap.
+>   - Making all size parameters PAGE_SIZE-aware: set allocation size to
+>     PAGE_SIZE * 1024, memory.zswap.max to PAGE_SIZE, and memory.max to
+>     allocation_size / 2 for both cgroups.
+>   - Allocating memory inline instead of via cg_run() so the pages
+>     remain resident throughout the test.
+>
+> =3D=3D=3D Error Log =3D=3D=3D
+>  # getconf PAGESIZE
+>  65536
+>
+>  # ./test_zswap
+>  TAP version 13
+>  ...
+>  ok 5 test_zswap_writeback_disabled
+>  ok 6 # SKIP test_no_kmem_bypass
+>  not ok 7 test_no_invasive_cgroup_shrink
 
-Makes sense to me. We should scale the test by PAGE_SIZE.
+I assume the test passed after fix? ;)
+
+>
+> Signed-off-by: Li Wang <liwang@redhat.com>
+> Cc: Johannes Weiner <hannes@cmpxchg.org>
+> Cc: Michal Hocko <mhocko@kernel.org>
+> Cc: Michal Koutn=C3=BD <mkoutny@suse.com>
+> Cc: Muchun Song <muchun.song@linux.dev>
+> Cc: Nhat Pham <nphamcs@gmail.com>
+> Cc: Tejun Heo <tj@kernel.org>
+> Cc: Roman Gushchin <roman.gushchin@linux.dev>
+> Cc: Shakeel Butt <shakeel.butt@linux.dev>
+> Cc: Yosry Ahmed <yosryahmed@google.com>
+> ---
+>
+> Notes:
+>     v5:
+>         - Swap data patterns: use getrandom() for wb_group and simple
+>           memset for zw_group to fix the reversed allocation logic.
+>         - Rename control_group to zw_group for clarity.
+>         - Allocate memory inline instead of via cg_run() so pages remain
+>           resident throughout the test.
+>
+>  tools/testing/selftests/cgroup/test_zswap.c | 70 ++++++++++++++-------
+>  1 file changed, 49 insertions(+), 21 deletions(-)
+
+LGTM. Thanks for fixing the tests :)
 
 Acked-by: Nhat Pham <nphamcs@gmail.com>
 
