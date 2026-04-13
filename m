@@ -1,85 +1,85 @@
-Return-Path: <cgroups+bounces-15253-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-15254-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id wOGzHcOe3GkEUgkAu9opvQ
-	(envelope-from <cgroups+bounces-15253-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Mon, 13 Apr 2026 09:44:03 +0200
+	id 4HV4LPGe3GkEUgkAu9opvQ
+	(envelope-from <cgroups+bounces-15254-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Mon, 13 Apr 2026 09:44:49 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2BA583E8691
-	for <lists+cgroups@lfdr.de>; Mon, 13 Apr 2026 09:44:03 +0200 (CEST)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id 275A23E86CD
+	for <lists+cgroups@lfdr.de>; Mon, 13 Apr 2026 09:44:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id EFD413016265
-	for <lists+cgroups@lfdr.de>; Mon, 13 Apr 2026 07:43:40 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 63D183027DA5
+	for <lists+cgroups@lfdr.de>; Mon, 13 Apr 2026 07:43:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AC22D397E67;
-	Mon, 13 Apr 2026 07:43:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2ADD839890A;
+	Mon, 13 Apr 2026 07:43:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MdsYd+sq"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="aMq/tAXi"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-dl1-f41.google.com (mail-dl1-f41.google.com [74.125.82.41])
+Received: from mail-dl1-f43.google.com (mail-dl1-f43.google.com [74.125.82.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 73D4A3947B0
-	for <cgroups@vger.kernel.org>; Mon, 13 Apr 2026 07:43:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.82.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A2C333988FA
+	for <cgroups@vger.kernel.org>; Mon, 13 Apr 2026 07:43:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.82.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1776066217; cv=none; b=HQ8HfuuI0/AeNSduJVLhwmugKQWjDXX/64E2PIcloplYjll7RlJ5iaytZdDf8gv8TrjjTvxG9ndhEHOL587aRr2ZcnBB8x08+I/+TnahadUYUMSWf3VeG5aUqw1+0by7UCRsG1JwM2bBc1bH6jzwcA/6bEWw62Xs9vEp3stz92c=
+	t=1776066227; cv=none; b=GBm+txz7lgISNNBrursbholq0eLFtwdwa3idNOvQ5OcFKVGjAl8i7iyZsWrCcYXfFlGRcnMhWyT1WhsYHN7b0ew1qEeey4Zh59wi04ubmkBnr9LlRaL6BhX58SO31ghMxhnke/LO6pR6gSfqI9gZOmI8/Z58oq2I+ssrl2B/tLg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1776066217; c=relaxed/simple;
-	bh=rTHf4UhK6kWkIWPvhrP0nC+nWJz71sfU6irjbkXjF94=;
+	s=arc-20240116; t=1776066227; c=relaxed/simple;
+	bh=MShK07QngNcPAGv1iPWC1iUlxvhu3WgkHxBSDLvs5+A=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=tE41KkHYfcMTMFJFhUyTuba+m4RztzKjWybzvCXFLHhI/sTh0W6mErxvCEhTcsvccv+IgsTi8GD6b7vG5K91d+azFEBYvbMnrkF+2oGVAUIJD0TvMKln8NkkQo1cCxcT//0tGscYFlGB2UtFUBRVmxOnd/sRKO6t7lz2fxjIZrA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=MdsYd+sq; arc=none smtp.client-ip=74.125.82.41
+	 In-Reply-To:To:Cc; b=qo5Z3kjbc7UlpOs+oxPvXeFcRcqEaCDocMl/CHCIJWADBJ0o3ZS3vwFcQMomqKh3rGLJDibGbSdqCEREOONqlXggLXrYmdK2fZefzIT0DB0U+GPM/Q6CVsMalOK/EEIMSal7nJeRGCOpZgmWv+b44Yb/Uwy/9cpFQKel0esx2Zs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=aMq/tAXi; arc=none smtp.client-ip=74.125.82.43
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-dl1-f41.google.com with SMTP id a92af1059eb24-128b9b7e3edso5429809c88.0
-        for <cgroups@vger.kernel.org>; Mon, 13 Apr 2026 00:43:35 -0700 (PDT)
+Received: by mail-dl1-f43.google.com with SMTP id a92af1059eb24-12c20010f10so10473466c88.0
+        for <cgroups@vger.kernel.org>; Mon, 13 Apr 2026 00:43:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1776066215; x=1776671015; darn=vger.kernel.org;
+        d=gmail.com; s=20251104; t=1776066225; x=1776671025; darn=vger.kernel.org;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=XnF7VA67yV6q+bGidLmOjD6jCKMoavIh1c7OZfJv2nE=;
-        b=MdsYd+sqDbrkF6hJRgJP+zfVWfsaWHt44qgzzHBORFCNt+0XS8wZT4yfbJf8gYcrH2
-         Km1p+LGSup6E1GJ87DCRHisGxCe9SsH9M394SHZkDdhh62NWIEsGtVxQdGSnb57k85hh
-         zMqgOYzeAGS300fAm7/VibRsxf59x76cmusCObNP+9Ggy8BNkDVZE6Jw6Y2JQeP3hagh
-         ldY241t0cS5H1W4ToBdXPX1mmw12BpGZXA/WlTA0kHqmk3E922VWRoAsjIMv6PG79wY8
-         UwX3jvIo/xMSvl2S2HeQ7yS57VCBuy/a3DO+rPTdEnqpVDyb17Sq7a9hYwQGLC8onNc9
-         2Nvg==
+        bh=LuagEmmraWwH0d8g+cKuhFh1+5bCP0hdNVypbGGgG6g=;
+        b=aMq/tAXi0PqDKyDp4TwV7FgMTwJs1orFXxdpfpU4r0iMHCcjv9Ix+Hd6l8Ic6wUad9
+         SE07Ug6ec1I2KWgnc05UL/FGA0Kb7MmbUZQfSw0ViNlBWPr23wBTmVowH9WCSrxETAa8
+         0uCDHukGCwhWeWrEfH1UcRrCyUwVrrBVaRnl562Xs8sQ7LSRlbskcHmT8XHQoTnDkoIj
+         6i5o5OgBXvOI9kgjH4HHA0XUJ1bvXg2pxl2+uumWDVh/ns7YbeBjSGy2Zbs04FVAyQT/
+         RRrWcgcj244+eNVxo6uEriJYFOBHmfFjdzVSqsUSWQsonnVovFL2uN61/qMVo1sHxX9E
+         cCvA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1776066215; x=1776671015;
+        d=1e100.net; s=20251104; t=1776066225; x=1776671025;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:x-gm-gg:x-gm-message-state:from:to
          :cc:subject:date:message-id:reply-to;
-        bh=XnF7VA67yV6q+bGidLmOjD6jCKMoavIh1c7OZfJv2nE=;
-        b=XNcNecI0Q1LC+YFwsafGaIdKCzeR12I93lvKlx8hRP6RBxSCMTTP31inDBfuGD2iYx
-         0O6YaAwxExgsihsWPlQ4mmr/W61Y1+3YhP5piqtIL1IBFK53fg9XFGFNPiN3kBNnnIWc
-         us4YqHffpYVNi3sw0RaVvGAi014IeJFos7DhKT/h42QZM99gstcn2GIS8yYkuhCOkmoS
-         2YRZe3AEpE50Wt5ZocObByux01v048HC2FGbS+vB7Qvz6CtYucefQhjWyavc8KA9tFrJ
-         EKQy5XPbVnReTxim1KRBB0jN98uQY+R521eRYUY77jJjkBrvdTINjGGihMiOyp4kqcyg
-         ajwQ==
-X-Forwarded-Encrypted: i=1; AFNElJ/7TMcn1LBwXRDzwsF1LuACO8FeOPZ+hdHUE1Ay7Cu1E9uaHC9LrtLsxJWLpHmPUw+gL4gfM8gB@vger.kernel.org
-X-Gm-Message-State: AOJu0YzivhHzifbFB5IIZUCtaov4T2dxCrQ+PCQEO6n5CW1ww+GtZlpH
-	9Nsdpw3VQdp/Y0xa/X90aw0AWzvXkLq2CAQB40eFDzjDHoCee+wB8zUR
-X-Gm-Gg: AeBDiesPhaTPF5786L+GKlhFG41vIcXXcVZAZ85U5rZ4EElkWPOT2hnf9uZdtl07/xQ
-	orafqK6LKsDixSzbCr6f/QYmcWXDxD4Tp3KJglRJPRB4eVR9tITvxHAuEvAIOwiFsLi6A/7RCIM
-	WMJJ6oTlrQt2YkdgVIRFQvYjDqq+cueJlSJ0tpge3zKoPOCREXGngb+i+SU9E4Es7VVmq70o2LT
-	awBg7DnigwfwI2nl+NWstsHgGc3tCTdqO3FYZhRM+pubciKh0lCJZHkxr+Xtncjov4Wk2MRXEb/
-	Rjuans9zcVLoaRnpgCALNna990MP0KNPxI889SOgGSMefGBmLgGIlm6JU1j3BGFPEv4Pv/WV21+
-	zk23YLl9tArEDR/2ck3fZegt3/h/ptcyoOQYC3YqBPD6nPUaQcji/ay8af5/xVOpXnKDOYR0o79
-	hDPnpHZ420P/RrK9eEmrIaGSwyRic=
-X-Received: by 2002:a05:7022:eac5:b0:128:d2b3:5df with SMTP id a92af1059eb24-12c34ecea05mr6569881c88.23.1776066214618;
-        Mon, 13 Apr 2026 00:43:34 -0700 (PDT)
+        bh=LuagEmmraWwH0d8g+cKuhFh1+5bCP0hdNVypbGGgG6g=;
+        b=mK8HJlI8DU7VUCDqQjz58snvv8EZyqZYvdtzb6qShmzdyKkVOf3ksQQtdsyQfLb8S+
+         FqvCSUR1wVbC94jpIU2dftUZ/Gr4cVft+1zOXg6dlDiMHPPHCRTuzIrpUzNgoWcnkHzz
+         kE43PkAhKy6gDLjDrrpehvc2bTGUMn00yCSyRhnE+NmQvFxoRcYj08YJb8DSP0LdcRd8
+         5+qoaFAKii2CoLmBHmmRKsLwUU+LiAtLm3ILlTZ4vwL8YQb4U9yEW3kvYRb9nKu6phog
+         Zw6QEAE20TCbitjvYJN7IYDnFUZp64ux24VrDuRL8Gs/342EWxq2tjyzC1J7xQYdRR3P
+         Fozw==
+X-Forwarded-Encrypted: i=1; AFNElJ+Oz5TyAZmCdkoJUcW4d8icxhAhWQfE+SiVbaPdmc9X/throPbmcKV+Y5sIr5uEVnh4c5JQ3ppu@vger.kernel.org
+X-Gm-Message-State: AOJu0Yxna3XE38TFnNccdoKzh+6LVlegSCKfVP4sAoJ1GaL2NO07oKgo
+	ENvTpnEr5aYT+iiHWTcD0RENkz1pVY2ncWToSQwK/XpVZ6UvqI2z4w4v
+X-Gm-Gg: AeBDieuqf7YxoR4X24xF+u5NYREpyUOJ5gm4ZpSuqgrt/lvWKZ3j2RzVJGZAQPDkC+G
+	lvnO71nToCCsKE7t2pb0uxA3dm6Y5k+PKwgAKw0R4ErVdJIQ4g4I2FR4psgZJvqtWS7eqBFj8ql
+	GsKlORcRD0PHh5/nhSoNgknfMTFUXmdATZ7Te6fffqSYquGexOwAEoIOGZHu4h4JuDSOnqwNpug
+	faU7nxByjiYFuLCPTMALYPWtDyQqqYO2qwcXO5H9vdEnO195v9jGEMNl56FRR8GiV6GBMWPHekh
+	bQel6pXdfkjbXViP1dpLUy7Io1fl+krKG/zYMXNj3iP1yEveGutGQAf5TCHp2rAsnPl7uzXl/Iy
+	mcrKNVve9nBlRNL5sOND8A8YqlxATsZTF8ZnGsbUMNkdRtFAaNxvaQEFl7QL18z4p3/6bE6Kgo2
+	32jrIIR9iPUXQJOcPp
+X-Received: by 2002:a05:7022:2528:b0:127:33e0:ea44 with SMTP id a92af1059eb24-12c34eec8d0mr7477882c88.29.1776066224747;
+        Mon, 13 Apr 2026 00:43:44 -0700 (PDT)
 Received: from wujing. ([74.48.213.230])
-        by smtp.gmail.com with ESMTPSA id a92af1059eb24-12c347fa2c9sm12884610c88.15.2026.04.13.00.43.24
+        by smtp.gmail.com with ESMTPSA id a92af1059eb24-12c347fa2c9sm12884610c88.15.2026.04.13.00.43.34
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 13 Apr 2026 00:43:34 -0700 (PDT)
+        Mon, 13 Apr 2026 00:43:44 -0700 (PDT)
 From: Qiliang Yuan <realwujing@gmail.com>
-Date: Mon, 13 Apr 2026 15:43:07 +0800
-Subject: [PATCH v2 01/12] sched/isolation: Separate housekeeping types in
- enum hk_type
+Date: Mon, 13 Apr 2026 15:43:08 +0800
+Subject: [PATCH v2 02/12] sched/isolation: Introduce housekeeping notifier
+ infrastructure
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -88,7 +88,7 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20260413-wujing-dhm-v2-1-06df21caba5d@gmail.com>
+Message-Id: <20260413-wujing-dhm-v2-2-06df21caba5d@gmail.com>
 References: <20260413-wujing-dhm-v2-0-06df21caba5d@gmail.com>
 In-Reply-To: <20260413-wujing-dhm-v2-0-06df21caba5d@gmail.com>
 To: Ingo Molnar <mingo@redhat.com>, Peter Zijlstra <peterz@infradead.org>, 
@@ -122,13 +122,13 @@ X-Mailer: b4 0.13.0
 X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
 	R_DKIM_ALLOW(-0.20)[gmail.com:s=20251104];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-15253-lists,cgroups=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-15254-lists,cgroups=lfdr.de];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	FREEMAIL_CC(0.00)[vger.kernel.org,kvack.org,gmail.com];
 	FREEMAIL_FROM(0.00)[gmail.com];
@@ -136,93 +136,140 @@ X-Spamd-Result: default: False [-2.16 / 15.00];
 	RCPT_COUNT_TWELVE(0.00)[43];
 	MIME_TRACE(0.00)[0:+];
 	FROM_HAS_DN(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
+	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	RCVD_COUNT_FIVE(0.00)[5];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[realwujing@gmail.com,cgroups@vger.kernel.org];
 	DKIM_TRACE(0.00)[gmail.com:+];
-	NEURAL_HAM(-0.00)[-0.999];
+	NEURAL_HAM(-0.00)[-1.000];
 	TAGGED_RCPT(0.00)[cgroups];
 	MID_RHS_MATCH_FROM(0.00)[];
 	TO_DN_SOME(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 2BA583E8691
+X-Rspamd-Queue-Id: 275A23E86CD
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-Most kernel noise types (TICK, TIMER, RCU, etc.) are currently aliased
-to a single HK_TYPE_KERNEL_NOISE enum value. This prevents fine-grained
-runtime isolation control as all masks are forced to be identical.
+Subsystems currently rely on static housekeeping masks determined at
+boot. Supporting runtime reconfiguration (DHM v2) requires a mechanism
+to broadcast mask changes to affected kernel components.
 
-Un-alias service-specific housekeeping types in enum hk_type. This
-separation provides the necessary granularity for DHM subsystems to
-subscribe to and maintain independent affinity masks.
+Implement a blocking notifier chain for housekeeping mask updates. This
+infrastructure enables subsystems like genirq, workqueues, and RCU to
+react dynamically to isolation changes triggered by cpusets.
 
 Signed-off-by: Qiliang Yuan <realwujing@gmail.com>
 ---
- include/linux/sched/isolation.h | 20 ++++++++------------
- kernel/sched/isolation.c        | 10 +++++++++-
- 2 files changed, 17 insertions(+), 13 deletions(-)
+ include/linux/sched/isolation.h | 21 +++++++++++++++++++++
+ kernel/sched/isolation.c        | 26 ++++++++++++++++++++++++++
+ 2 files changed, 47 insertions(+)
 
 diff --git a/include/linux/sched/isolation.h b/include/linux/sched/isolation.h
-index dc3975ff1b2e1..b9a041247565c 100644
+index b9a041247565c..aea1dbc4d7486 100644
 --- a/include/linux/sched/isolation.h
 +++ b/include/linux/sched/isolation.h
-@@ -17,21 +17,17 @@ enum hk_type {
- 	/* Inverse of boot-time isolcpus=managed_irq argument */
- 	HK_TYPE_MANAGED_IRQ,
- 	/* Inverse of boot-time nohz_full= or isolcpus=nohz arguments */
--	HK_TYPE_KERNEL_NOISE,
-+	HK_TYPE_TICK,
-+	HK_TYPE_TIMER,
-+	HK_TYPE_RCU,
-+	HK_TYPE_MISC,
-+	HK_TYPE_WQ,
-+	HK_TYPE_KTHREAD,
- 	HK_TYPE_MAX,
--
--	/*
--	 * The following housekeeping types are only set by the nohz_full
--	 * boot commandline option. So they can share the same value.
--	 */
--	HK_TYPE_TICK    = HK_TYPE_KERNEL_NOISE,
--	HK_TYPE_TIMER   = HK_TYPE_KERNEL_NOISE,
--	HK_TYPE_RCU     = HK_TYPE_KERNEL_NOISE,
--	HK_TYPE_MISC    = HK_TYPE_KERNEL_NOISE,
--	HK_TYPE_WQ      = HK_TYPE_KERNEL_NOISE,
--	HK_TYPE_KTHREAD = HK_TYPE_KERNEL_NOISE
- };
+@@ -4,6 +4,7 @@
+ #include <linux/cpumask.h>
+ #include <linux/init.h>
+ #include <linux/tick.h>
++#include <linux/notifier.h>
  
-+#define HK_TYPE_KERNEL_NOISE HK_TYPE_TICK
+ enum hk_type {
+ 	/* Inverse of boot-time isolcpus= argument */
+@@ -28,6 +29,13 @@ enum hk_type {
+ 
+ #define HK_TYPE_KERNEL_NOISE HK_TYPE_TICK
+ 
++struct housekeeping_update {
++	enum hk_type type;
++	const struct cpumask *new_mask;
++};
++
++#define HK_UPDATE_MASK	0x01
 +
  #ifdef CONFIG_CPU_ISOLATION
  DECLARE_STATIC_KEY_FALSE(housekeeping_overridden);
  extern int housekeeping_any_cpu(enum hk_type type);
+@@ -38,6 +46,9 @@ extern bool housekeeping_test_cpu(int cpu, enum hk_type type);
+ extern int housekeeping_update(struct cpumask *isol_mask);
+ extern void __init housekeeping_init(void);
+ 
++extern int housekeeping_register_notifier(struct notifier_block *nb);
++extern int housekeeping_unregister_notifier(struct notifier_block *nb);
++
+ #else
+ 
+ static inline int housekeeping_any_cpu(enum hk_type type)
+@@ -65,6 +76,16 @@ static inline bool housekeeping_test_cpu(int cpu, enum hk_type type)
+ 
+ static inline int housekeeping_update(struct cpumask *isol_mask) { return 0; }
+ static inline void housekeeping_init(void) { }
++
++static inline int housekeeping_register_notifier(struct notifier_block *nb)
++{
++	return 0;
++}
++
++static inline int housekeeping_unregister_notifier(struct notifier_block *nb)
++{
++	return 0;
++}
+ #endif /* CONFIG_CPU_ISOLATION */
+ 
+ static inline bool housekeeping_cpu(int cpu, enum hk_type type)
 diff --git a/kernel/sched/isolation.c b/kernel/sched/isolation.c
-index ef152d401fe20..e05ed5118e651 100644
+index e05ed5118e651..0462b41807161 100644
 --- a/kernel/sched/isolation.c
 +++ b/kernel/sched/isolation.c
-@@ -15,9 +15,17 @@ enum hk_flags {
- 	HK_FLAG_DOMAIN_BOOT	= BIT(HK_TYPE_DOMAIN_BOOT),
- 	HK_FLAG_DOMAIN		= BIT(HK_TYPE_DOMAIN),
- 	HK_FLAG_MANAGED_IRQ	= BIT(HK_TYPE_MANAGED_IRQ),
--	HK_FLAG_KERNEL_NOISE	= BIT(HK_TYPE_KERNEL_NOISE),
-+	HK_FLAG_TICK		= BIT(HK_TYPE_TICK),
-+	HK_FLAG_TIMER		= BIT(HK_TYPE_TIMER),
-+	HK_FLAG_RCU		= BIT(HK_TYPE_RCU),
-+	HK_FLAG_MISC		= BIT(HK_TYPE_MISC),
-+	HK_FLAG_WQ		= BIT(HK_TYPE_WQ),
-+	HK_FLAG_KTHREAD		= BIT(HK_TYPE_KTHREAD),
- };
+@@ -10,6 +10,7 @@
+ #include <linux/sched/isolation.h>
+ #include <linux/pci.h>
+ #include "sched.h"
++#include <linux/notifier.h>
  
-+#define HK_FLAG_KERNEL_NOISE (HK_FLAG_TICK | HK_FLAG_TIMER | HK_FLAG_RCU | \
-+			      HK_FLAG_MISC | HK_FLAG_WQ | HK_FLAG_KTHREAD)
+ enum hk_flags {
+ 	HK_FLAG_DOMAIN_BOOT	= BIT(HK_TYPE_DOMAIN_BOOT),
+@@ -26,6 +27,8 @@ enum hk_flags {
+ #define HK_FLAG_KERNEL_NOISE (HK_FLAG_TICK | HK_FLAG_TIMER | HK_FLAG_RCU | \
+ 			      HK_FLAG_MISC | HK_FLAG_WQ | HK_FLAG_KTHREAD)
+ 
++static BLOCKING_NOTIFIER_HEAD(housekeeping_notifier_list);
 +
  DEFINE_STATIC_KEY_FALSE(housekeeping_overridden);
  EXPORT_SYMBOL_GPL(housekeeping_overridden);
  
+@@ -170,6 +173,29 @@ int housekeeping_update(struct cpumask *isol_mask)
+ 	return 0;
+ }
+ 
++int housekeeping_register_notifier(struct notifier_block *nb)
++{
++	return blocking_notifier_chain_register(&housekeeping_notifier_list, nb);
++}
++EXPORT_SYMBOL_GPL(housekeeping_register_notifier);
++
++int housekeeping_unregister_notifier(struct notifier_block *nb)
++{
++	return blocking_notifier_chain_unregister(&housekeeping_notifier_list, nb);
++}
++EXPORT_SYMBOL_GPL(housekeeping_unregister_notifier);
++
++int housekeeping_update_notify(enum hk_type type, const struct cpumask *new_mask)
++{
++	struct housekeeping_update update = {
++		.type = type,
++		.new_mask = new_mask,
++	};
++
++	return blocking_notifier_call_chain(&housekeeping_notifier_list, HK_UPDATE_MASK, &update);
++}
++EXPORT_SYMBOL_GPL(housekeeping_update_notify);
++
+ void __init housekeeping_init(void)
+ {
+ 	enum hk_type type;
 
 -- 
 2.43.0
