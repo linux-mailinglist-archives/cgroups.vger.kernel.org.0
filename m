@@ -1,220 +1,189 @@
-Return-Path: <cgroups+bounces-15250-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-15251-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id YPfoFC2S3Gl9TAkAu9opvQ
-	(envelope-from <cgroups+bounces-15250-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Mon, 13 Apr 2026 08:50:21 +0200
+	id 0FFMFAKa3GkxUAkAu9opvQ
+	(envelope-from <cgroups+bounces-15251-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Mon, 13 Apr 2026 09:23:46 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7995D3E7EDF
-	for <lists+cgroups@lfdr.de>; Mon, 13 Apr 2026 08:50:20 +0200 (CEST)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id A47553E82B5
+	for <lists+cgroups@lfdr.de>; Mon, 13 Apr 2026 09:23:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 2C270300FB76
-	for <lists+cgroups@lfdr.de>; Mon, 13 Apr 2026 06:50:19 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 87A7730068CB
+	for <lists+cgroups@lfdr.de>; Mon, 13 Apr 2026 07:23:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BBD6535F5E2;
-	Mon, 13 Apr 2026 06:50:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7AB9C3921E0;
+	Mon, 13 Apr 2026 07:23:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="GGVCDxLE"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="axhB9mbw"
 X-Original-To: cgroups@vger.kernel.org
-Received: from m16.mail.163.com (m16.mail.163.com [220.197.31.3])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com [209.85.128.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8521C1FC101;
-	Mon, 13 Apr 2026 06:50:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=220.197.31.3
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E143838947C
+	for <cgroups@vger.kernel.org>; Mon, 13 Apr 2026 07:23:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1776063015; cv=none; b=StyVufGPLEFhuWkLXG1u4/rpgfLwrBF/aimFqE6295bgdYfwb0rhE98uwnpuWFeQWLt+cK6zcuiESWUQ3C6cVaFJi1jA2yF0sMTJ3/OWUFS9UesAyIxOiU7tS4g0zr0cnTYx3CtnVM/I32VBe5OnrAJiqeY5XdOIOTS+WIVoueA=
+	t=1776065023; cv=none; b=jmwZvImjiFqUO+yktNzlg7cCzZRH+kIyl+DDypmvd7LRF/dkaXP2utwNVyTQrMMCYBeCp3I19344dP5TCwMGqgeOK4nMNQd2rr35ok+yGnL++fF1CREqvLyt0HlDxmtqfLHCF2sZAqN+D/UmOv7qsRgG6GF3tUYxp3p/GwSl0XU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1776063015; c=relaxed/simple;
-	bh=1c+oQ5XqxvspiGn/S5QU54NrjGTo0h82WESWxud8Uko=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=FtSA3FzkQ1nAn/aieczYykbjPEKWECXp3ahChLUB02NsZeEO+h4CxnfnhKX6KHtEdZPkKnhkp21vb0FKqiWDwJ+4xtO+5IAVdZU/POBSjhzA2xG7BaUwpIQoDNCmHZO2Vjn/zCF7q15/aSJWSHb+gHhT61o3Jwo1Iyg93LxP27Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com; spf=pass smtp.mailfrom=163.com; dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b=GGVCDxLE; arc=none smtp.client-ip=220.197.31.3
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-	s=s110527; h=From:To:Subject:Date:Message-Id:MIME-Version; bh=zf
-	duVNm09jkIhQ0je1BjJHQXUBdHMcI7s4tD6ILgtWg=; b=GGVCDxLE1P+Yqxfwm0
-	FIWfflqakXtJXGvBj5M29AMd6A4wyG0laUlAIqT1BMsEbBAMSb/fftCbrEHJfjc6
-	Ydr1Ma6Y7jXFibeb6nMLZKmx4V1sZMWotyiGtzDVINCgr83aITaNHvvalup6G6lk
-	LJwZV+XFVS3hssr2Dtm3TABk4=
-Received: from localhost.localdomain (unknown [])
-	by gzsmtp1 (Coremail) with SMTP id PCgvCgC3oOrOkdxp7MvIUw--.32984S2;
-	Mon, 13 Apr 2026 14:48:52 +0800 (CST)
-From: Cao Ruichuang <create0818@163.com>
-To: Johannes Weiner <hannes@cmpxchg.org>,
-	Michal Hocko <mhocko@kernel.org>,
+	s=arc-20240116; t=1776065023; c=relaxed/simple;
+	bh=x3SDL32StMHQJXTyvvaxQCfLIBFSGgUUXwjjJZ0WEQM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=dvd814XgRcAum+mpWJVueliInEhGK5Hrlr3mtY/u4a89dxjTeb664GLiOrJHd4LAPHAfmB2lyH7s99G+JV2uplwLuMz6mOuAkfpBkiysFaX6yacm2kVai6quCCsoku859W2nzdTg0p/Kxm5nGDAuWt0z+bb09PD0G6k+t7uNI0g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=axhB9mbw; arc=none smtp.client-ip=209.85.128.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-48334ee0aeaso37833515e9.1
+        for <cgroups@vger.kernel.org>; Mon, 13 Apr 2026 00:23:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1776065020; x=1776669820; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=2nzuZ3kIIyE/QcfErtqwJVEa14xLXdZqRnEwseWxDOo=;
+        b=axhB9mbw9wC0Q0r8zPkxhQegXkjtDlIpg1WPwB7XpDiLxzM6cqCLYlIZaCnIVklZzz
+         FO9mgwGl4KPKZG/4LZ9Uz6bVwRDwLG18dBRZsvvAIErNu1278Dk+tC6eBXFcPBAq2Go0
+         1CibuuTkLZ/rd5Mw9fb1KGaBRCgn4cHMHfFnFbYwQc1kFu7AHgvQcnC0+osXiHO0Mmlu
+         r8zTvOfS3suxmUf+83y7Gm7N6CauIlatidhduJz3SY9bclHJ6mrsh3F17CGmyfAAi8YO
+         qijJhmwt5qVxV4l//8i4ZgSkVdHpK7BfSeDc5FQEorPqY7aKoETyM2tF6iJNrIt9u3U9
+         Y/qg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1776065020; x=1776669820;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=2nzuZ3kIIyE/QcfErtqwJVEa14xLXdZqRnEwseWxDOo=;
+        b=aIGUHleUd6ot/TEQpwtVwpfON1eQkaZNMiI3txaujfisVGtSTXWoa+G4W5P3w3IzUr
+         WtpqigDhNJ6r7qbEz7lxcOABEYlKPAiAAtNaQC1J9JDhjnZFbiAnVBL2F9sGTrss2M1N
+         58jXcdfUb+ZPVTxYVBNnoUkdmZsUUDMIhFPflx1wS7SVu8B9nK4qKKw4kiFlDpThEfPm
+         Xdu42MESUgZZdVkvIH3+aveZUUQ1sdTHT7t7bBXoiOGOve8v46LgUNI005CdcSUU1/Dm
+         dnZVhOjaj6Bb5/7Cg56/6pMiR36D/qkmvyYSGPudWmIGAqtM7t9GB5Ym7fQFh6SQMtau
+         r2Kw==
+X-Forwarded-Encrypted: i=1; AFNElJ+F8sNRuZRs0eDNziMrDVD2tS2KDHXtZtUXpkkVpa+vg20xvJ9yhtpZRq0ktOcfWuyWuM4L6VPd@vger.kernel.org
+X-Gm-Message-State: AOJu0YwRA208Fvg1uxe1dVWnnMe2MgvQeS46Y3wYoyNpgdcj8TvLnAbV
+	xTa+bzbqwkenMFylwE+O/ifjLStzFh5n87N0rYtpMxo4h/VX6JSbaZqT3fxGSQD/ccE=
+X-Gm-Gg: AeBDieuyS0NaoMPBHPcaracQ1t8Myl+nXKMgKWjNLtm1RkHlEG4hXnWXL8Dyni3yc2G
+	/WbOslhMf9CBtrEE6K/zonX59+qj7QiWaot4zSzYVkTrpYZikv6I3uL1N/HdVYXtLMCQ7MmDsUS
+	oD82kqZ4tUQiulCSe6N9QGEYkHfHa9SKWh+UxWwJbDuAReMc0pXTw8CKGDI/JvRV0G0PLzw4aFS
+	lg0tgpgBB+abUCJpinVrB77rxiQkpseb66Bn5Z4UTbW7kbwSuYjvqM9ibO8RCD+xlm9IPR8F54G
+	n/YF8UzqVdEhmf9Ea4hLxrPOPpHAF4G3J1QXJxQTFWzY0ir64IZTEohvceK4ib3RpOklvoBfQ/b
+	/J1T+LyL3j9U76tOIJ8UTV89NfDYZVo5w8hFmBpqftR/99TdJWd8qBaYuQSCpPDGIp4qXlDmW3E
+	9uUrLdQ+bKuzuc85MdkSQ2D57Qo4mO87zXDQBAKE9mL34/
+X-Received: by 2002:a05:600c:5292:b0:486:fe39:28b7 with SMTP id 5b1f17b1804b1-488d67fa48emr170788255e9.9.1776065020262;
+        Mon, 13 Apr 2026 00:23:40 -0700 (PDT)
+Received: from localhost (109-81-29-22.rct.o2.cz. [109.81.29.22])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-488d5dc7070sm89322685e9.10.2026.04.13.00.23.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 13 Apr 2026 00:23:39 -0700 (PDT)
+Date: Mon, 13 Apr 2026 09:23:38 +0200
+From: Michal Hocko <mhocko@suse.com>
+To: Joshua Hahn <joshua.hahnjy@gmail.com>
+Cc: Johannes Weiner <hannes@cmpxchg.org>,
 	Roman Gushchin <roman.gushchin@linux.dev>,
-	Shakeel Butt <shakeel.butt@linux.dev>
-Cc: Muchun Song <muchun.song@linux.dev>,
+	Shakeel Butt <shakeel.butt@linux.dev>,
+	Muchun Song <muchun.song@linux.dev>,
 	Andrew Morton <akpm@linux-foundation.org>,
 	David Hildenbrand <david@kernel.org>,
 	Lorenzo Stoakes <ljs@kernel.org>,
-	"Liam R. Howlett" <Liam.Howlett@oracle.com>,
+	"Liam R . Howlett" <liam.howlett@oracle.com>,
 	Vlastimil Babka <vbabka@kernel.org>,
 	Mike Rapoport <rppt@kernel.org>,
-	Suren Baghdasaryan <surenb@google.com>,
-	cgroups@vger.kernel.org,
-	linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org,
-	Cao Ruichuang <create0818@163.com>,
-	syzbot+1a3353a77896e73a8f53@syzkaller.appspotmail.com
-Subject: [PATCH] mm/memcontrol: restore irq wrapper for lruvec_stat_mod_folio()
-Date: Mon, 13 Apr 2026 14:48:33 +0800
-Message-Id: <20260413064833.964-1-create0818@163.com>
-X-Mailer: git-send-email 2.39.5 (Apple Git-154)
+	Suren Baghdasaryan <surenb@google.com>, cgroups@vger.kernel.org,
+	linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+	kernel-team@meta.com
+Subject: Re: [PATCH 0/8 RFC] mm/memcontrol, page_counter: move stock from
+ mem_cgroup to page_counter
+Message-ID: <adyZ-t4fiKFv_X5p@tiehlicka>
+References: <20260410210742.550489-1-joshua.hahnjy@gmail.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:PCgvCgC3oOrOkdxp7MvIUw--.32984S2
-X-Coremail-Antispam: 1Uf129KBjvJXoWxXF45XF4UCw13ur4fKw1UGFg_yoWrAFWkpF
-	4DKrs5C397JFyagF17Xw4qy345Z34IqrW5ZFWxWr4fZF9Iq343Kw1DKay7WFyUuFy8ZF4f
-	X34jyrn3Xa1jvFUanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x0zio5dtUUUUU=
-X-CM-SenderInfo: pfuht3jhqyimi6rwjhhfrp/xtbC5xQrZGnckdRsXgAA3+
-X-Spamd-Result: default: False [0.84 / 15.00];
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20260410210742.550489-1-joshua.hahnjy@gmail.com>
+X-Spamd-Result: default: False [-0.16 / 15.00];
 	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_CONTAINS_FROM(1.00)[];
-	DMARC_POLICY_ALLOW(-0.50)[163.com,none];
-	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
-	R_DKIM_ALLOW(-0.20)[163.com:s=s110527];
+	MID_RHS_NOT_FQDN(0.50)[];
+	DMARC_POLICY_ALLOW(-0.50)[suse.com,quarantine];
+	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
+	R_DKIM_ALLOW(-0.20)[suse.com:s=google];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-15250-lists,cgroups=lfdr.de];
-	FREEMAIL_FROM(0.00)[163.com];
 	RCVD_TLS_LAST(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[17];
+	TAGGED_FROM(0.00)[bounces-15251-lists,cgroups=lfdr.de];
+	RECEIVED_HELO_LOCALHOST(0.00)[];
 	FORGED_SENDER_MAILLIST(0.00)[];
+	FREEMAIL_TO(0.00)[gmail.com];
+	RCPT_COUNT_TWELVE(0.00)[16];
 	MIME_TRACE(0.00)[0:+];
-	RCVD_COUNT_THREE(0.00)[4];
-	DKIM_TRACE(0.00)[163.com:+];
-	TO_DN_SOME(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[create0818@163.com,cgroups@vger.kernel.org];
 	FROM_HAS_DN(0.00)[];
-	FREEMAIL_CC(0.00)[linux.dev,linux-foundation.org,kernel.org,oracle.com,google.com,vger.kernel.org,kvack.org,163.com,syzkaller.appspotmail.com];
-	NEURAL_HAM(-0.00)[-1.000];
-	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
-	TAGGED_RCPT(0.00)[cgroups,1a3353a77896e73a8f53];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,syzkaller.appspot.com:url,appspotmail.com:email]
-X-Rspamd-Queue-Id: 7995D3E7EDF
+	TO_DN_SOME(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[5];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[mhocko@suse.com,cgroups@vger.kernel.org];
+	DKIM_TRACE(0.00)[suse.com:+];
+	NEURAL_HAM(-0.00)[-1.000];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	TAGGED_RCPT(0.00)[cgroups];
+	MISSING_XM_UA(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:dkim,nr_leaf_cgroups:email,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: A47553E82B5
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-Commit c1bd09994c4d ("memcg: remove __lruvec_stat_mod_folio") removed
-the local_irq_save/restore wrapper around lruvec_stat_mod_folio(), based
-on the assumption that the underlying stat update path was already
-IRQ-safe.
+On Fri 10-04-26 14:06:54, Joshua Hahn wrote:
+> Memcg currently keeps a "stock" of 64 pages per-cpu to cache pre-charged
+> allocations, allowing small allocations and frees to avoid walking the
+> expensive mem_cgroup hierarchy traversal on each charge. This design
+> introduces a fastpath to charge/uncharge, but has several limitations:
+> 
+> 1. Each CPU can track up to 7 (NR_MEMCG_STOCK) mem_cgroups. When more
+>    than 7 mem_cgroups are actively charging on a single CPU, a random
+>    victim is evicted, and its associated stock is drained, which
+>    triggers unnecessary hierarchy walks.
+> 
+>    Note that previously there used to be a 1-1 mapping between CPU and
+>    memcg stock; it was bumped up to 7 in f735eebe55f8f ("multi-memcg
+>    percpu charge cache") because it was observed that stock would
+>    frequently get flushed and refilled.
 
-That assumption is too broad for lruvec_stat_mod_folio() callers.
-This helper is not just a thin stat primitive.  It also resolves
-folio -> memcg -> lruvec under a helper-managed RCU read-side section.
+All true but it is quite important to note that this all is bounded to
+nr_online_cpus*NR_MEMCG_STOCK*MEMCG_CHARGE_BATCH. You are proposing to
+increase this to s@NR_MEMCG_STOCK@nr_leaf_cgroups@. In invornments with
+many cpus and and directly charged cgroups this can be considerable
+hidden overcharge. Have you considered that and evaluated potential
+impact?
 
-syzbot now reports a PREEMPT_RT warning from:
+> 2. Stock management is tightly coupled to struct mem_cgroup, which
+>    makes it difficult to add a new page_counter to struct mem_cgroup
+>    and do its own stock management, since each operation has to be
+>    duplicated.
 
-  __filemap_add_folio()
-    -> lruvec_stat_mod_folio()
-       -> __rcu_read_unlock()
+Could you expand why this is a problem we need to address?
 
-ending in bad unlock balance / negative RCU nesting.
+> 3. Each stock slot requires a css reference, as well as a traversal
+>    overhead on every stock operation to check which cpu-memcg we are
+>    trying to consume stock for.
 
-The PREEMPT_RT detail matters here.  The affected filemap path calls
-lruvec_stat_mod_folio() under xas_lock_irq(), but on PREEMPT_RT
-xas_lock_irq() maps to spin_lock_irq(), and spin_lock_irq() does not
-disable hard IRQs.  Before c1bd09994c4d, lruvec_stat_mod_folio() still
-provided explicit hard-IRQ masking around the folio-based memcg/lruvec
-lookup path.  After that commit, those callers no longer get real
-hard-IRQ masking from either the xarray lock or the helper itself.
-
-Direct mod_lruvec_state() callers do not have the same problem surface:
-they already operate on a stable lruvec under caller-provided locking or
-caller-provided RCU coverage.  The narrower regression boundary is the
-folio-based helper that combines ownership lookup with helper-managed
-RCU.  Restore only that helper's irq wrapper instead of reverting the
-lower-level lruvec state update cleanups.
-
-This restores the previous calling contract for lruvec_stat_mod_folio()
-without changing the lower-level lruvec state interfaces.
-
-Fixes: c1bd09994c4d ("memcg: remove __lruvec_stat_mod_folio")
-Link: https://syzkaller.appspot.com/bug?extid=1a3353a77896e73a8f53
-Reported-by: syzbot+1a3353a77896e73a8f53@syzkaller.appspotmail.com
-Signed-off-by: Cao Ruichuang <create0818@163.com>
----
- include/linux/vmstat.h | 18 +++++++++++++++++-
- mm/memcontrol.c        |  4 ++--
- 2 files changed, 19 insertions(+), 3 deletions(-)
-
-diff --git a/include/linux/vmstat.h b/include/linux/vmstat.h
-index 3c9c266cf78..59cf2676649 100644
---- a/include/linux/vmstat.h
-+++ b/include/linux/vmstat.h
-@@ -519,9 +519,19 @@ static inline const char *vm_event_name(enum vm_event_item item)
- void mod_lruvec_state(struct lruvec *lruvec, enum node_stat_item idx,
- 			int val);
+Why is this a problem?
  
--void lruvec_stat_mod_folio(struct folio *folio,
-+void __lruvec_stat_mod_folio(struct folio *folio,
- 			     enum node_stat_item idx, int val);
- 
-+static inline void lruvec_stat_mod_folio(struct folio *folio,
-+					 enum node_stat_item idx, int val)
-+{
-+	unsigned long flags;
-+
-+	local_irq_save(flags);
-+	__lruvec_stat_mod_folio(folio, idx, val);
-+	local_irq_restore(flags);
-+}
-+
- static inline void mod_lruvec_page_state(struct page *page,
- 					 enum node_stat_item idx, int val)
- {
-@@ -536,6 +546,12 @@ static inline void mod_lruvec_state(struct lruvec *lruvec,
- 	mod_node_page_state(lruvec_pgdat(lruvec), idx, val);
- }
- 
-+static inline void __lruvec_stat_mod_folio(struct folio *folio,
-+					 enum node_stat_item idx, int val)
-+{
-+	mod_node_page_state(folio_pgdat(folio), idx, val);
-+}
-+
- static inline void lruvec_stat_mod_folio(struct folio *folio,
- 					 enum node_stat_item idx, int val)
- {
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index 772bac21d15..ffe6ae885f5 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -787,7 +787,7 @@ void mod_lruvec_state(struct lruvec *lruvec, enum node_stat_item idx,
- 		mod_memcg_lruvec_state(lruvec, idx, val);
- }
- 
--void lruvec_stat_mod_folio(struct folio *folio, enum node_stat_item idx,
-+void __lruvec_stat_mod_folio(struct folio *folio, enum node_stat_item idx,
- 			     int val)
- {
- 	struct mem_cgroup *memcg;
-@@ -807,7 +807,7 @@ void lruvec_stat_mod_folio(struct folio *folio, enum node_stat_item idx,
- 	mod_lruvec_state(lruvec, idx, val);
- 	rcu_read_unlock();
- }
--EXPORT_SYMBOL(lruvec_stat_mod_folio);
-+EXPORT_SYMBOL(__lruvec_stat_mod_folio);
- 
- void mod_lruvec_kmem_state(void *p, enum node_stat_item idx, int val)
- {
+Please also be more explicit what kind of workloads are going to benefit
+from this change. The existing caching scheme is simple and ineffective
+but is it worth improving (likely your points 2 and 3 could clarify that)?
+
+All that being said, I like the resulting code which is much easier to
+follow. The caching is nicely transparent in the charging path which is
+a plus. My main worry is that caching has caused some confusion in the
+past and this change will amplify that by the scaling the amount of
+cached charge. This needs to be really carefully evaluated.
 -- 
-2.39.5 (Apple Git-154)
-
+Michal Hocko
+SUSE Labs
 
