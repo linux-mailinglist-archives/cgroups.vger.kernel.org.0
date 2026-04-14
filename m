@@ -1,163 +1,139 @@
-Return-Path: <cgroups+bounces-15289-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-15290-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id ML2+CETy3WmMlQkAu9opvQ
-	(envelope-from <cgroups+bounces-15289-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Tue, 14 Apr 2026 09:52:36 +0200
+	id eD0NBsfz3WmMlQkAu9opvQ
+	(envelope-from <cgroups+bounces-15290-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Tue, 14 Apr 2026 09:59:03 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
-	by mail.lfdr.de (Postfix) with ESMTPS id 158863F6C1D
-	for <lists+cgroups@lfdr.de>; Tue, 14 Apr 2026 09:52:35 +0200 (CEST)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id B4DAD3F6D43
+	for <lists+cgroups@lfdr.de>; Tue, 14 Apr 2026 09:59:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id 20BC23010802
-	for <lists+cgroups@lfdr.de>; Tue, 14 Apr 2026 07:52:32 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 7C03D3050C21
+	for <lists+cgroups@lfdr.de>; Tue, 14 Apr 2026 07:56:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 57B2A383C94;
-	Tue, 14 Apr 2026 07:52:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6FF4F386C0A;
+	Tue, 14 Apr 2026 07:56:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="XsS8wses"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="SxNNWlJe"
 X-Original-To: cgroups@vger.kernel.org
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1ADEC3346B4;
-	Tue, 14 Apr 2026 07:52:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 33DA4382F00;
+	Tue, 14 Apr 2026 07:56:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1776153148; cv=none; b=J6BN+/BhO1Wb+OPZCJl9/cA0MYlj0whvZCwsQFOfQSDOZawK5rcJNAHwjCtCjp0ZOIbADq+dbeigWuunXTHOk1zZ77lgXz4NnKCpHfvQsu2hbYLQXf85gk6ntY+0ViA41QrRb/DRDhNDYwy4+333yM1Spx+wZ47yclCo6Utl5xs=
+	t=1776153402; cv=none; b=qd5+NfrkndZkNZW6k2PcgDq4Hy64AsjjBdlJ9bV72WslPNYbDVLE3diiifOX14CREqckIBHRUEmQ6bWWBOKO/iWJdEP7ZEdk85lpvPrkfDHAM7skjt2zXuy9xq2AqSk9v/lJA+JGTr/NF/KmDPHE6IA6KUg2xcfzLFZCpBG3bJw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1776153148; c=relaxed/simple;
-	bh=Kr1LMwhdJOWLQWlocTKROvlTOl/ZC6wCJghvd+MVtFs=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=h58w5g4HMyVYwGNqXP9DA+YPdTLeLfk2SjH8xozUEIkoySC8uKvaAeKoyCeiwusPOj0kDLdy5gw6dJut7FA9eKmguNmkfnX2RbJ9GfusRp3FYUn6SdyUjVuqeGc439LWDAurXAM3ROgUYGNKyrOBhtX9X+F61E/+vpV7MavwMCU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=XsS8wses; arc=none smtp.client-ip=198.137.202.133
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
-	:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=NTxaoTWsYIT6XinpmC611FM9scC20rVnNKMI/IZpFxY=; b=XsS8wsesxfQHJeuybXI9UlK1MH
-	5Sksd8i1n8hsFjUjYeaSfkUHe0jE0+SqlsoUnoCGG8SErY8odbMf4TBWHD/CRawf0WlGVvTsbUt05
-	l1xMx1w3D64214rmihWMGYe96OMd6PH7aZ5YcU9my2HHe/6AOtWlOF80RhZAEbPKm8m2ycaYZ+ukS
-	d/OeQL8oHUpIdN9nIG54unA+EgsAkO8gihqjQKT6cQiC90JSgEhCRanOlc80xOFH5vLcnq70PrRWl
-	PSgoPGw9CrKwYYK2Cmo6bbyRVDEx3mihLAWDPGHf2bpAMXou+5xrT9GLNEPXeq4m8g/VfWzeWnq/0
-	zCmqhsLQ==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.98.2 #2 (Red Hat Linux))
-	id 1wCYZ4-0000000GvSy-0kII;
-	Tue, 14 Apr 2026 07:52:06 +0000
-Date: Tue, 14 Apr 2026 00:52:06 -0700
-From: Christoph Hellwig <hch@infradead.org>
-To: Nhat Pham <nphamcs@gmail.com>
-Cc: YoungJun Park <youngjun.park@lge.com>, kasong@tencent.com,
-	Liam.Howlett@oracle.com, akpm@linux-foundation.org,
-	apopple@nvidia.com, axelrasmussen@google.com, baohua@kernel.org,
-	baolin.wang@linux.alibaba.com, bhe@redhat.com, byungchul@sk.com,
-	cgroups@vger.kernel.org, chengming.zhou@linux.dev,
-	chrisl@kernel.org, corbet@lwn.net, david@kernel.org,
-	dev.jain@arm.com, gourry@gourry.net, hannes@cmpxchg.org,
-	hughd@google.com, jannh@google.com, joshua.hahnjy@gmail.com,
-	lance.yang@linux.dev, lenb@kernel.org, linux-doc@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-	linux-pm@vger.kernel.org, lorenzo.stoakes@oracle.com,
-	matthew.brost@intel.com, mhocko@suse.com, muchun.song@linux.dev,
-	npache@redhat.com, pavel@kernel.org, peterx@redhat.com,
-	peterz@infradead.org, pfalcato@suse.de, rafael@kernel.org,
-	rakie.kim@sk.com, roman.gushchin@linux.dev, rppt@kernel.org,
-	ryan.roberts@arm.com, shakeel.butt@linux.dev,
-	shikemeng@huaweicloud.com, surenb@google.com, tglx@kernel.org,
-	vbabka@suse.cz, weixugc@google.com, ying.huang@linux.alibaba.com,
-	yosry.ahmed@linux.dev, yuanchu@google.com,
-	zhengqi.arch@bytedance.com, ziy@nvidia.com, kernel-team@meta.com,
-	riel@surriel.com
-Subject: Re: [PATCH v5 00/21] Virtual Swap Space
-Message-ID: <ad3yJiHuxT_-quHG@infradead.org>
-References: <20260320192735.748051-1-nphamcs@gmail.com>
- <acQrQYHJgqof0yx4@yjaykim-PowerEdge-T330>
- <CAKEwX=NnHxpQKp9qBg2=r_euyjgxw2nHXjbgof3MymHTgJmRAQ@mail.gmail.com>
+	s=arc-20240116; t=1776153402; c=relaxed/simple;
+	bh=MF/GH4Czp0/CzU5o1NW/2mD2/47rYS+yvk8ECsG09p0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=vDYS9DBwk4vL+PNQwhtqH7EqDJ0x9kglLO3wA5O0hsABI34HskAkRgTVsY4EwbKh2ToMtcsjBySVbpsIGwewNcNLO3peXP3ortB4drJ4BJKZtt0mFzuSNUz7ray63ucgZ16EA2PkNEp8rv9J24inKJumv27i01Ry+yiX0SpQNS0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=SxNNWlJe; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CB928C19425;
+	Tue, 14 Apr 2026 07:56:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1776153401;
+	bh=MF/GH4Czp0/CzU5o1NW/2mD2/47rYS+yvk8ECsG09p0=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=SxNNWlJeD5aohOwDA3UkElufaBir7/GNQbd0STtHgax6fm620fA3M1/yHj/e1LkC/
+	 HugQj9UB8Z3rF61Ifmjq5/UN0LoYVyGyt0r328Nkx4gYET5Oj6MfG/IP6lwuZ8a+nL
+	 QykXPzLtkRXaTJocTjQuRT88y9HJpES6Smzpk7PZ3MwQXOJ+BpAi6HoJyVxNEOeMVU
+	 G4ztlGlMM0a9KkZANrWgosRSGYNSaNSRJWgIgQIINSZGt12U8lI5CohU5ZYKOvWp+G
+	 53aOSuX0qa8nwDkonPSp5S9MOdIn8qGMFQJaB4r7jAgOfnqdfIdGHCRjsnn/7tghPX
+	 bsksHMA4MzY/Q==
+Message-ID: <ef2d8f65-b3b4-4a9c-a77f-78ad1cadff28@kernel.org>
+Date: Tue, 14 Apr 2026 09:56:36 +0200
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAKEwX=NnHxpQKp9qBg2=r_euyjgxw2nHXjbgof3MymHTgJmRAQ@mail.gmail.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] mm/memcontrol: restore irq wrapper for
+ lruvec_stat_mod_folio()
+Content-Language: en-US
+To: Shakeel Butt <shakeel.butt@linux.dev>, Cao Ruichuang <create0818@163.com>
+Cc: Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>,
+ Roman Gushchin <roman.gushchin@linux.dev>,
+ Muchun Song <muchun.song@linux.dev>,
+ Andrew Morton <akpm@linux-foundation.org>,
+ David Hildenbrand <david@kernel.org>, Lorenzo Stoakes <ljs@kernel.org>,
+ "Liam R. Howlett" <Liam.Howlett@oracle.com>, Mike Rapoport
+ <rppt@kernel.org>, Suren Baghdasaryan <surenb@google.com>,
+ cgroups@vger.kernel.org, linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+ syzbot+1a3353a77896e73a8f53@syzkaller.appspotmail.com
+References: <20260413064833.964-1-create0818@163.com>
+ <ad0clnEYxf1H4_S1@linux.dev>
+From: "Vlastimil Babka (SUSE)" <vbabka@kernel.org>
+In-Reply-To: <ad0clnEYxf1H4_S1@linux.dev>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 X-Spamd-Result: default: False [-0.66 / 15.00];
 	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[infradead.org,none];
-	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
-	R_DKIM_ALLOW(-0.20)[infradead.org:s=bombadil.20210309];
+	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
+	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FREEMAIL_CC(0.00)[lge.com,tencent.com,oracle.com,linux-foundation.org,nvidia.com,google.com,kernel.org,linux.alibaba.com,redhat.com,sk.com,vger.kernel.org,linux.dev,lwn.net,arm.com,gourry.net,cmpxchg.org,gmail.com,kvack.org,intel.com,suse.com,infradead.org,suse.de,huaweicloud.com,suse.cz,bytedance.com,meta.com,surriel.com];
-	TAGGED_FROM(0.00)[bounces-15289-lists,cgroups=lfdr.de];
-	FROM_HAS_DN(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
 	RCVD_TLS_LAST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-15290-lists,cgroups=lfdr.de];
+	FREEMAIL_TO(0.00)[linux.dev,163.com];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	FREEMAIL_TO(0.00)[gmail.com];
-	DKIM_TRACE(0.00)[infradead.org:+];
-	MISSING_XM_UA(0.00)[];
+	RCVD_COUNT_THREE(0.00)[4];
+	RCPT_COUNT_TWELVE(0.00)[16];
 	MIME_TRACE(0.00)[0:+];
-	RCPT_COUNT_GT_50(0.00)[55];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[hch@infradead.org,cgroups@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	NEURAL_HAM(-0.00)[-0.999];
-	TAGGED_RCPT(0.00)[cgroups];
+	TO_DN_SOME(0.00)[];
+	NEURAL_HAM(-0.00)[-1.000];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[vbabka@kernel.org,cgroups@vger.kernel.org];
+	DKIM_TRACE(0.00)[kernel.org:+];
 	MID_RHS_MATCH_FROM(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
-	TO_DN_SOME(0.00)[]
-X-Rspamd-Queue-Id: 158863F6C1D
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	TAGGED_RCPT(0.00)[cgroups,1a3353a77896e73a8f53];
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: B4DAD3F6D43
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-On Sat, Apr 11, 2026 at 06:40:44PM -0700, Nhat Pham wrote:
-> > However, if the modularization from point 1 is achieved and
-> > vswap acts as a swap device itself, then we can cleanly
-> > establish a:
-> >
-> >   virtual -> physical
+On 4/13/26 18:44, Shakeel Butt wrote:
+> On Mon, Apr 13, 2026 at 02:48:33PM +0800, Cao Ruichuang wrote:
+>> Commit c1bd09994c4d ("memcg: remove __lruvec_stat_mod_folio") removed
+>> the local_irq_save/restore wrapper around lruvec_stat_mod_folio(), based
+>> on the assumption that the underlying stat update path was already
+>> IRQ-safe.
 > 
-> I read that thread sometimes ago. Some remarks:
+> Why is that an assumption? Please explain how lruvec_stat_mod_folio() is not
+> safe against IRQs?
 > 
-> 1. I think Christoph has a point. Seems like some of your ideas ( are
-> broadly applicable to swap in general. Maybe fixing swap infra
-> generally would make a lot of sense?
-
-I think a first step would be a dump of that code, even if it is against
-an old kernel so that everyone knows what we are talking about.
-
-> 2. Why do we need to do two virtual layers here? For example, If you
-> want to buffer multiple swap outs and turn them into a sequential
-> request, you can:
+>> 
+>> That assumption is too broad for lruvec_stat_mod_folio() callers.
+>> This helper is not just a thin stat primitive.  It also resolves
+>> folio -> memcg -> lruvec under a helper-managed RCU read-side section.
+>> 
+>> syzbot now reports a PREEMPT_RT warning from:
 > 
-> a. Allocate virtual swap space for them as you wish. They don't even
-> need to be sequential.
+> The syzbot link you have provided has the kernel config without PREEMPT_RT?
+> Where does this claim come from?
 > 
-> b. At swap_writeout() time, don't allocate physical swap space for
-> them right away. Instead, accumulate them into a buffer. You can add a
-> new virtual swap entry type to flag it if necessary.
+>> 
+>>   __filemap_add_folio()
+>>     -> lruvec_stat_mod_folio()
+>>        -> __rcu_read_unlock()
+>> 
+>> ending in bad unlock balance / negative RCU nesting.
 > 
-> c. Once that buffer reaches a certain size, you can now allocate
-> contiguous physical swap space for them. Then flush etc. You can flush
-> at swap_writeout() time, or use a dedicated threads etc.
+> If there is bad unlock balance, how is disabling/enabling IRQs would solve that
+> issue?
 
-That matches what file systems do with delalloc, where space 2 just
-adjust an in-memory counter for space reservations.
-
-> Deduplication sounds like something that should live at a lower layer
-> - I was thinking about it for zswap/zsmalloc back then. I mean, I
-> assume you don't want content sharing across different swap media? :)
-> Something along the line of:
-
-Does dedup in swap really make much sense?  If you want to dedup you
-also want to do that in-memory, i.e. using ksm.
-
+This is obviously a product of LLM producing a patch from the syzbot report.
+I suggest we ignore everything from this author.
 
