@@ -1,122 +1,143 @@
-Return-Path: <cgroups+bounces-15278-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-15279-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id CCxLOgNv3WnweAkAu9opvQ
-	(envelope-from <cgroups+bounces-15278-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Tue, 14 Apr 2026 00:32:35 +0200
+	id CAhdODOe3WmZggkAu9opvQ
+	(envelope-from <cgroups+bounces-15279-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Tue, 14 Apr 2026 03:53:55 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 449603F3E33
-	for <lists+cgroups@lfdr.de>; Tue, 14 Apr 2026 00:32:34 +0200 (CEST)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
+	by mail.lfdr.de (Postfix) with ESMTPS id 42DA53F4DB6
+	for <lists+cgroups@lfdr.de>; Tue, 14 Apr 2026 03:53:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 2873830480CE
-	for <lists+cgroups@lfdr.de>; Mon, 13 Apr 2026 22:29:12 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id 665F53012229
+	for <lists+cgroups@lfdr.de>; Tue, 14 Apr 2026 01:53:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CB01E39B4A3;
-	Mon, 13 Apr 2026 22:29:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Acn3ot68"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A8662C375A;
+	Tue, 14 Apr 2026 01:53:51 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from out-179.mta0.migadu.com (out-179.mta0.migadu.com [91.218.175.179])
+Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C4BB3909A2
-	for <cgroups@vger.kernel.org>; Mon, 13 Apr 2026 22:29:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 368CE2D3A60
+	for <cgroups@vger.kernel.org>; Tue, 14 Apr 2026 01:53:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=124.126.103.232
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1776119350; cv=none; b=mJC9JGvIsbH5o5/WXx/6oDW0pdmzI6LWjO9WUeSOoR6nf/X5tW7D8iWMF/fbG6VFN2YezDk1pflfoy9nBjSZR8Zdp4nNSEpOh8hi5V9DAX7WezMZHMG1oSxohmyq09ShuYeK1BeFDeURbgqgnwgar52CF00i+c5nkXmHKBIFzgY=
+	t=1776131631; cv=none; b=CEbNDkKXvqMsBwKliVLHVZR2q85u+2F6XqlffCcWUytRUzV5R6OaWbImDdzlV7IgzIhTx4TfjmNO+EH9R8lSRnveumPz15zqSp2mCPADws+bnCc4jzJsoOwGBqJ3PgXTk11IJGetmJNS13kxE/AHtcTeqWjBDWobqkSaa0SXr7Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1776119350; c=relaxed/simple;
-	bh=Zu9t9xMwSwTdbUO8QXwwxTD/AJlEofFg31G2lARa+/o=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=lbR3+zjvD9TJgcT7NW90rdHcrknK7sYhLhH6qDTC/PD2AnA4Eef85eMGR2StX69hzYVkBsF0wiTvvF2Uu/jqaBcZdtHerG78hQxRBPM6oSLl7oPlmU8keo57fhpoWO5jQlCk89qXRHkG5Lxs6QsMCSElbAsMeDPySdqIescfOGI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Acn3ot68; arc=none smtp.client-ip=91.218.175.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Mon, 13 Apr 2026 15:28:52 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1776119337;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=R0C0oTbgMZYbhrAvkMy0ApjkIhijnhBgwg9sMmLsR0w=;
-	b=Acn3ot68zMGKTsDYvK5Aa4s1RXOMEuYQGZqR09u3VG6a016vJp8EKZeK2gFbESKUvWoT0Q
-	0SarXFhI/s/uQHW9HYZOEIS6bKHCakE8/CMF4YrhNIlAFdkEoKqBkFrIOdowTV4y4HWI3M
-	mOVL5DjirDprGIsRuX9t3ZRr2Rhp5gk=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Shakeel Butt <shakeel.butt@linux.dev>
-To: syzbot <syzbot+1a3353a77896e73a8f53@syzkaller.appspotmail.com>
-Cc: akpm@linux-foundation.org, cgroups@vger.kernel.org, hannes@cmpxchg.org, 
-	linux-kernel@vger.kernel.org, linux-mm@kvack.org, mhocko@kernel.org, muchun.song@linux.dev, 
-	roman.gushchin@linux.dev, syzkaller-bugs@googlegroups.com, zhengqi.arch@bytedance.com, 
-	yosry@kernel.org
-Subject: Re: [syzbot] [mm?] [cgroups?] WARNING: bad unlock balance in
- lruvec_stat_mod_folio
-Message-ID: <ad1tV5WpFhxbQ86N@linux.dev>
-References: <69d54494.050a0220.3030df.0002.GAE@google.com>
+	s=arc-20240116; t=1776131631; c=relaxed/simple;
+	bh=6NmmvwfI4uCGYW6BbgyL0NRG8hR7BaqFNT/jYIULGL8=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=eylyJHtm6hyiVESD9BxfGL0wzvUPws0YlOr7nIwn9mbVrMIvfCY4hw6USrFtE9ZPCIGcFEZoKbkGEoWATjZ9qX6utgqUb2rs4Ggh1Bshkoa6u0A7+drDI8bsVgVEZg6XdtTNMgUpFK/4LzKozeqGghlzO1ZYce6xqJSeoBxVuvY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn; spf=pass smtp.mailfrom=kylinos.cn; arc=none smtp.client-ip=124.126.103.232
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kylinos.cn
+X-UUID: c2d31f9437a411f1aa26b74ffac11d73-20260414
+X-CTIC-Tags:
+	HR_CC_AS_FROM, HR_CC_COUNT, HR_CC_DOMAIN_COUNT, HR_CC_NAME, HR_CTE_8B
+	HR_CTT_MISS, HR_DATE_H, HR_DATE_WKD, HR_DATE_ZONE, HR_FROM_NAME
+	HR_SJ_LANG, HR_SJ_LEN, HR_SJ_LETTER, HR_SJ_NOR_SYM, HR_SJ_PHRASE
+	HR_SJ_PHRASE_LEN, HR_SJ_WS, HR_TO_COUNT, HR_TO_DOMAIN_COUNT, HR_TO_NO_NAME
+	IP_TRUSTED, SRC_TRUSTED, DN_TRUSTED, SA_EXISTED, SN_EXISTED
+	SPF_NOPASS, DKIM_NOPASS, DMARC_NOPASS, CIE_BAD, CIE_GOOD
+	CIE_GOOD_SPF, GTI_FG_BS, GTI_RG_INFO, GTI_C_BU, AMN_GOOD
+	ABX_MISS_RDNS
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.3.12,REQID:59cb6854-abcd-4850-8323-9a7efd5f1b02,IP:10,
+	URL:0,TC:0,Content:0,EDM:-25,RT:0,SF:-5,FILE:0,BULK:0,RULE:Release_Ham,ACT
+	ION:release,TS:-20
+X-CID-INFO: VERSION:1.3.12,REQID:59cb6854-abcd-4850-8323-9a7efd5f1b02,IP:10,UR
+	L:0,TC:0,Content:0,EDM:-25,RT:0,SF:-5,FILE:0,BULK:0,RULE:NOTI_GNA5D1EA,ACT
+	ION:release,TS:-20
+X-CID-META: VersionHash:e7bac3a,CLOUDID:5b8a7b0d69af65bc78db49a572846463,BulkI
+	D:260414095342KXU5QIJ4,BulkQuantity:0,Recheck:0,SF:17|19|38|66|78|102|127|
+	898,TC:nil,Content:0|15|50,EDM:2,IP:-2,URL:0,File:nil,RT:nil,Bulk:nil,QS:n
+	il,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0,ARC
+	:0
+X-CID-BVR: 2,SSN|SDN
+X-CID-BAS: 2,SSN|SDN,0,_
+X-CID-FACTOR: TF_CID_SPAM_FSD,TF_CID_SPAM_SNR,TF_CID_SPAM_FAS
+X-CID-RHF: D41D8CD98F00B204E9800998ECF8427E
+X-UUID: c2d31f9437a411f1aa26b74ffac11d73-20260414
+X-User: cuitao@kylinos.cn
+Received: from ctao-book.. [(183.242.174.23)] by mailgw.kylinos.cn
+	(envelope-from <cuitao@kylinos.cn>)
+	(Generic MTA with TLSv1.3 TLS_AES_256_GCM_SHA384 256/256)
+	with ESMTP id 239643313; Tue, 14 Apr 2026 09:53:40 +0800
+From: cuitao <cuitao@kylinos.cn>
+To: tj@kernel.org,
+	hannes@cmpxchg.org,
+	mkoutny@suse.com,
+	cgroups@vger.kernel.org
+Cc: cuitao <cuitao@kylinos.cn>
+Subject: [PATCH] cgroup/rdma: fix integer overflow in rdmacg_try_charge()
+Date: Tue, 14 Apr 2026 09:53:27 +0800
+Message-ID: <20260414015327.306721-1-cuitao@kylinos.cn>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <69d54494.050a0220.3030df.0002.GAE@google.com>
-X-Migadu-Flow: FLOW_OUT
-X-Spamd-Result: default: False [0.34 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
-	URI_HIDDEN_PATH(1.00)[https://syzkaller.appspot.com/x/.config?x=4e6c8be618ab359];
+Content-Transfer-Encoding: 8bit
+X-Spamd-Result: default: False [0.04 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[linux.dev,none];
-	R_DKIM_ALLOW(-0.20)[linux.dev:s=key1];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	MID_CONTAINS_FROM(1.00)[];
+	R_MISSING_CHARSET(0.50)[];
+	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-15278-lists,cgroups=lfdr.de];
-	RCVD_COUNT_THREE(0.00)[3];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	RCVD_TLS_LAST(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[12];
-	MIME_TRACE(0.00)[0:+];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,linux.dev:dkim,linux.dev:mid];
-	MISSING_XM_UA(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	DMARC_NA(0.00)[kylinos.cn];
+	RCVD_COUNT_THREE(0.00)[4];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[shakeel.butt@linux.dev,cgroups@vger.kernel.org];
-	FROM_HAS_DN(0.00)[];
-	DKIM_TRACE(0.00)[linux.dev:+];
-	NEURAL_HAM(-0.00)[-1.000];
-	TAGGED_RCPT(0.00)[cgroups,1a3353a77896e73a8f53];
-	MID_RHS_MATCH_FROM(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	RCVD_TLS_LAST(0.00)[];
+	FORGED_SENDER_MAILLIST(0.00)[];
 	TO_DN_SOME(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	SUBJECT_HAS_QUESTION(0.00)[]
-X-Rspamd-Queue-Id: 449603F3E33
+	TAGGED_FROM(0.00)[bounces-15279-lists,cgroups=lfdr.de];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[cuitao@kylinos.cn,cgroups@vger.kernel.org];
+	R_DKIM_NA(0.00)[];
+	NEURAL_HAM(-0.00)[-0.980];
+	FROM_HAS_DN(0.00)[];
+	TAGGED_RCPT(0.00)[cgroups];
+	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
+	RCPT_COUNT_FIVE(0.00)[5];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns,kylinos.cn:email,kylinos.cn:mid]
+X-Rspamd-Queue-Id: 42DA53F4DB6
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-+Qi & Yosry
+The expression `rpool->resources[index].usage + 1` is computed in int
+arithmetic before being assigned to s64 variable `new`. When usage equals
+INT_MAX (the default "max" value), the addition overflows to INT_MIN.
+This negative value then passes the `new > max` check incorrectly,
+allowing a charge that should be rejected and corrupting usage to
+negative.
 
-On Tue, Apr 07, 2026 at 10:53:24AM -0700, syzbot wrote:
-> Hello,
-> 
-> syzbot found the following issue on:
-> 
-> HEAD commit:    cc13002a9f98 Add linux-next specific files for 20260402
-> git tree:       linux-next
-> console output: https://syzkaller.appspot.com/x/log.txt?x=10d8946a580000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=4e6c8be618ab359
-> dashboard link: https://syzkaller.appspot.com/bug?extid=1a3353a77896e73a8f53
-> compiler:       Debian clang version 21.1.8 (++20251221033036+2078da43e25a-1~exp1~20251221153213.50), Debian LLD 21.1.8
-> 
-> Unfortunately, I don't have any reproducer for this issue yet.
+Fix by casting usage to s64 before the addition so the arithmetic is
+done in 64-bit.
 
-Let's wait for the reproducer. I can only think of cgroup_subsys_on_dfl() check
-returning different value in get_non_dying_memcg_start() and
-get_non_dying_memcg_end() to cause this uneven rcu unlock. However I can't think
-why and how that can happen.
+Signed-off-by: cuitao <cuitao@kylinos.cn>
+---
+ kernel/cgroup/rdma.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/kernel/cgroup/rdma.c b/kernel/cgroup/rdma.c
+index 09258eebb5c7..7d21a0db3cef 100644
+--- a/kernel/cgroup/rdma.c
++++ b/kernel/cgroup/rdma.c
+@@ -283,7 +283,7 @@ int rdmacg_try_charge(struct rdma_cgroup **rdmacg,
+ 			ret = PTR_ERR(rpool);
+ 			goto err;
+ 		} else {
+-			new = rpool->resources[index].usage + 1;
++			new = (s64)rpool->resources[index].usage + 1;
+ 			if (new > rpool->resources[index].max) {
+ 				ret = -EAGAIN;
+ 				goto err;
+-- 
+2.43.0
 
 
