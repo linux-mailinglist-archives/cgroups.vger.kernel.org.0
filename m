@@ -1,48 +1,48 @@
-Return-Path: <cgroups+bounces-15292-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-15293-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 0E9XLuQf3mk1ngkAu9opvQ
-	(envelope-from <cgroups+bounces-15292-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Tue, 14 Apr 2026 13:07:16 +0200
+	id FAgNF+4f3mkynwkAu9opvQ
+	(envelope-from <cgroups+bounces-15293-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Tue, 14 Apr 2026 13:07:26 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
-	by mail.lfdr.de (Postfix) with ESMTPS id 581343F91DA
-	for <lists+cgroups@lfdr.de>; Tue, 14 Apr 2026 13:07:16 +0200 (CEST)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2B76C3F91E3
+	for <lists+cgroups@lfdr.de>; Tue, 14 Apr 2026 13:07:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id C90A93012B42
-	for <lists+cgroups@lfdr.de>; Tue, 14 Apr 2026 11:07:13 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 4DFB1301077E
+	for <lists+cgroups@lfdr.de>; Tue, 14 Apr 2026 11:07:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3C0023D8123;
-	Tue, 14 Apr 2026 11:07:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A1023D811B;
+	Tue, 14 Apr 2026 11:07:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="bx0+lO4e"
+	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="VW8Jbnkt"
 X-Original-To: cgroups@vger.kernel.org
-Received: from m16.mail.163.com (m16.mail.163.com [220.197.31.5])
+Received: from m16.mail.163.com (m16.mail.163.com [117.135.210.3])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0109C3D8135;
-	Tue, 14 Apr 2026 11:07:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=220.197.31.5
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DAAF33D75CF;
+	Tue, 14 Apr 2026 11:07:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=117.135.210.3
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1776164828; cv=none; b=VUwVW66vUe5jZ1hOeilSgIqDXMTw8Gq1OVNKM8GKlMKclCIP96CIaAAJE9udZ6SqegTW0OAa1CdgJ7XwDSltJBJZp/DhoGTfm1JhB9LfNEeg6p32ygyVUzJhTFkhzOs2hIPoN5zcTXxV+skHRiZbrtlTuopTmSfi+aqtT2Ng4bI=
+	t=1776164840; cv=none; b=Sr1JDa8rNo8/aiQ5qbN/PnEGnM4i3g3K9lEg9sO1i7lT9+tZVNlKkXI+hCuwzp4Ht4wOcLMjBwYDQuBqjCtI4M190dLxaVwAIco5cBtQOivNUXGHcnUu2uJznimlz5YiyWSnIaWVTMc+Lp03S76WpKlK0fR4W2e+KwEIF22aFtc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1776164828; c=relaxed/simple;
-	bh=odbw2zHxq1iG4fbOnoXpUiNRcYVeB/XVY1YKKBUEn7s=;
+	s=arc-20240116; t=1776164840; c=relaxed/simple;
+	bh=Y8eeT+7o2AEJ8S44YbJfEHq4tO6opDMaCRGbOasJ/nU=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=dmCPyrh0yeB3GN6a1IFEt/HsqEcvbio2LWYbOqusgUPYA/21JjrQ83aWA7oE8Nlp7uBMsAjjfGBDWeeyjKqAP+a53QooRg5qT9cA2vSTx2gNRpzREksI1ZYRYPqPHvtXyn6uuZJy/aDpH2/qOpulyHb+R0UnssYE4qxlwqkmjas=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com; spf=pass smtp.mailfrom=163.com; dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b=bx0+lO4e; arc=none smtp.client-ip=220.197.31.5
+	 MIME-Version; b=XbH5/+MO0FkZTjvjtwV4WtFVJWcyAEwM34Mp4+zsrbdVSQz7LhcBzqwfUkA0TiPZ4vws095MwWHSmyZIvtc0QUAq0Ju8QN1fTaUvG3OMy/GhGUHfRMWuHKcv+FhSIZ8k7IqOmoQX4CDwG5C1bOMyEgovJ1etDsq/xM6hlv6tQao=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com; spf=pass smtp.mailfrom=163.com; dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b=VW8Jbnkt; arc=none smtp.client-ip=117.135.210.3
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-	s=s110527; h=From:To:Subject:Date:Message-ID:MIME-Version; bh=Su
-	xd8W/enAVPZbmnsORtZjfIS+87GmyYpLzs7e2B95M=; b=bx0+lO4eyFbzp6awnD
-	yhrErhvDNKDeg4ebQx5borCoIug08hdFF43r5RQCTk1rBo7Tsf1hTI++S5wdrVlu
-	ReAoRSxR++C0WFI7msr8FC11BNR6E4IAJp0zjXDx+6xQ51MuByRUPQae1xt8Ilbl
-	ErpqFYqbabtZ05BVHrSgoY/b0=
+	s=s110527; h=From:To:Subject:Date:Message-ID:MIME-Version; bh=Sg
+	2tnVpaCRON/cP+7gSdWa+iWUUmwfSiFQT93SEuIFU=; b=VW8JbnktrCN31hXN/m
+	ZRxuZMCswnlDTlAW8P2XreK8Dw/m569blPObWwb51TYYrfmmSxRl1yIQuM2bPZ3a
+	qqDK4QWbFCDvGELskajRHbhSeKOh9AYb6rzAfbJawxfA1WU83m7WFJlqVPhID6It
+	8OB3JNh436NC2mM/ZpMDjAbUo=
 Received: from ubuntu24-z.. (unknown [])
-	by gzga-smtp-mtada-g0-0 (Coremail) with SMTP id _____wBnrLh2H95pqLbvEg--.46126S3;
-	Tue, 14 Apr 2026 19:05:30 +0800 (CST)
+	by gzga-smtp-mtada-g0-0 (Coremail) with SMTP id _____wBnrLh2H95pqLbvEg--.46126S4;
+	Tue, 14 Apr 2026 19:05:32 +0800 (CST)
 From: ranxiaokai627@163.com
 To: hannes@cmpxchg.org,
 	mhocko@kernel.org,
@@ -61,9 +61,9 @@ Cc: cgroups@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	ran.xiaokai@zte.com.cn,
 	ranxiaokai627@163.com
-Subject: [PATCH 1/2] kselftests: cgroup: update kmem test tolerance for multi-memcg stock
-Date: Tue, 14 Apr 2026 11:05:23 +0000
-Message-ID: <20260414110524.2414-2-ranxiaokai627@163.com>
+Subject: [PATCH 2/2] kselftests: cgroup: account for slab memory in test_percpu_basic
+Date: Tue, 14 Apr 2026 11:05:24 +0000
+Message-ID: <20260414110524.2414-3-ranxiaokai627@163.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20260414110524.2414-1-ranxiaokai627@163.com>
 References: <20260414110524.2414-1-ranxiaokai627@163.com>
@@ -74,18 +74,18 @@ List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:_____wBnrLh2H95pqLbvEg--.46126S3
-X-Coremail-Antispam: 1Uf129KBjvJXoW7tFWxWry7Xw1UGw15urWxWFg_yoW8uF43pa
-	s3AFyjywnagFsxAa1Yv3s2gFWfua97XF4UAw1Sqw1fCw13tw1IqF1akFW3Jr95AFZayr4f
-	Z3Z3t3yrW3WjvaUanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x0ziwiSJUUUUU=
-X-CM-SenderInfo: xudq5x5drntxqwsxqiywtou0bp/xtbCxRr3RGneH3p3ugAA3z
+X-CM-TRANSID:_____wBnrLh2H95pqLbvEg--.46126S4
+X-Coremail-Antispam: 1Uf129KBjvJXoW7Aw4fGr17GF45WrWfCF18Grg_yoW8WF1xpF
+	ykG34qya10gFnxCa10kr4kXrWrW3s5Za18Gw1DAw1xAwsxtr9rtr1SyFWUJr97CFZ2vr1Y
+	v34ag3sxu3WUA3JanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x0zR8OzxUUUUU=
+X-CM-SenderInfo: xudq5x5drntxqwsxqiywtou0bp/xtbCxhz4RWneH3yBlgAA3k
 X-Spamd-Result: default: False [-0.66 / 15.00];
 	MID_CONTAINS_FROM(1.00)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	R_MISSING_CHARSET(0.50)[];
 	DMARC_POLICY_ALLOW(-0.50)[163.com,none];
-	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
+	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
 	R_DKIM_ALLOW(-0.20)[163.com:s=s110527];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
@@ -93,7 +93,7 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	FREEMAIL_CC(0.00)[vger.kernel.org,kvack.org,zte.com.cn,163.com];
 	MIME_TRACE(0.00)[0:+];
-	TAGGED_FROM(0.00)[bounces-15292-lists,cgroups=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-15293-lists,cgroups=lfdr.de];
 	RCPT_COUNT_TWELVE(0.00)[17];
 	RCVD_TLS_LAST(0.00)[];
 	RCVD_COUNT_THREE(0.00)[4];
@@ -104,64 +104,54 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	FROM_NEQ_ENVFROM(0.00)[ranxiaokai627@163.com,cgroups@vger.kernel.org];
 	DKIM_TRACE(0.00)[163.com:+];
 	NEURAL_HAM(-0.00)[-0.996];
-	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
+	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
 	TAGGED_RCPT(0.00)[cgroups];
 	FROM_NO_DN(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns,zte.com.cn:email]
-X-Rspamd-Queue-Id: 581343F91DA
+	DBL_BLOCKED_OPENRESOLVER(0.00)[zte.com.cn:email,sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: 2B76C3F91E3
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
 From: Ran Xiaokai <ran.xiaokai@zte.com.cn>
 
-Commit f735eebe55f8 ("memcg: multi-memcg percpu charge cache") changed
-the percpu charge cache to support multiple memory cgroups
-(NR_MEMCG_STOCK) instead of a single memcg per CPU.
+The test verifies memory.current approximates memory.stat.percpu within
+a tolerance. However, memory.current includes slab overhead. On systems
+with few CPUs(<= 4), slab consumption exceeds percpu usage. While percpu
+usage grows linearly and dominates as CPU count increases, the
+significant slab portion on such few CPU systems causes the difference
+to exceed MAX_VMSTAT_ERROR, leading to false test failures.
 
-Prior to the multi-memcg stock change, the tolerance was calculated as:
-  PAGE_SIZE * MEMCG_CHARGE_BATCH * num_cpus
+Fix this by including slab memory in the calculation.
 
-With NR_MEMCG_STOCK slots per CPU, the worst-case discrepancy is now:
-  PAGE_SIZE * MEMCG_CHARGE_BATCH * NR_MEMCG_STOCK * num_cpus
-
-Update the test tolerance to include the NR_MEMCG_STOCK factor to
-prevent false positive test failures.
-
-Fixes: f735eebe55f8 ("memcg: multi-memcg percpu charge cache")
 Signed-off-by: Ran Xiaokai <ran.xiaokai@zte.com.cn>
 ---
- tools/testing/selftests/cgroup/test_kmem.c | 17 ++++++++++++-----
- 1 file changed, 12 insertions(+), 5 deletions(-)
+ tools/testing/selftests/cgroup/test_kmem.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
 diff --git a/tools/testing/selftests/cgroup/test_kmem.c b/tools/testing/selftests/cgroup/test_kmem.c
-index eeabd34bf083..15b8bb424cb5 100644
+index 15b8bb424cb5..263aedb0727a 100644
 --- a/tools/testing/selftests/cgroup/test_kmem.c
 +++ b/tools/testing/selftests/cgroup/test_kmem.c
-@@ -19,12 +19,19 @@
+@@ -360,7 +360,7 @@ static int test_percpu_basic(const char *root)
+ {
+ 	int ret = KSFT_FAIL;
+ 	char *parent, *child;
+-	long current, percpu;
++	long current, percpu, slab;
+ 	int i;
  
+ 	parent = cg_name(root, "percpu_basic_test");
+@@ -386,8 +386,9 @@ static int test_percpu_basic(const char *root)
  
- /*
-- * Memory cgroup charging is performed using percpu batches 64 pages
-- * big (look at MEMCG_CHARGE_BATCH), whereas memory.stat is exact. So
-- * the maximum discrepancy between charge and vmstat entries is number
-- * of cpus multiplied by 64 pages.
-+ * Memory cgroup charging is performed using per-CPU batches to reduce
-+ * accounting overhead. Each cache slot can hold up to MEMCG_CHARGE_BATCH
-+ * pages for a specific memcg. The per-CPU charge cache supports multiple
-+ * memcgs simultaneously (NR_MEMCG_STOCK slots).
-+ *
-+ * While memory.stat reports exact usage, per-CPU charges are pending
-+ * until flushed. Therefore, the maximum discrepancy between charge and
-+ * vmstat entries is:
-+ *
-+ *   PAGE_SIZE * MEMCG_CHARGE_BATCH * NR_MEMCG_STOCK * num_cpus
-  */
--#define MAX_VMSTAT_ERROR (4096 * 64 * get_nprocs())
-+#define NR_MEMCG_STOCK 7
-+#define MAX_VMSTAT_ERROR (4096 * 64 * NR_MEMCG_STOCK * get_nprocs())
+ 	current = cg_read_long(parent, "memory.current");
+ 	percpu = cg_read_key_long(parent, "memory.stat", "percpu ");
++	slab = cg_read_key_long(parent, "memory.stat", "slab ");
  
- #define KMEM_DEAD_WAIT_RETRIES        80
- 
+-	if (current > 0 && percpu > 0 && labs(current - percpu) <
++	if (current > 0 && percpu > 0 && labs(current - percpu - slab) <
+ 	    MAX_VMSTAT_ERROR)
+ 		ret = KSFT_PASS;
+ 	else
 -- 
 2.25.1
 
