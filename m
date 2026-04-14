@@ -1,289 +1,254 @@
-Return-Path: <cgroups+bounces-15281-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-15282-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id OGHrL4+m3WnchQkAu9opvQ
-	(envelope-from <cgroups+bounces-15281-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Tue, 14 Apr 2026 04:29:35 +0200
+	id cFXzN/Wu3WlPhwkAu9opvQ
+	(envelope-from <cgroups+bounces-15282-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Tue, 14 Apr 2026 05:05:25 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
-	by mail.lfdr.de (Postfix) with ESMTPS id C78653F50A2
-	for <lists+cgroups@lfdr.de>; Tue, 14 Apr 2026 04:29:34 +0200 (CEST)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9C4DB3F5289
+	for <lists+cgroups@lfdr.de>; Tue, 14 Apr 2026 05:05:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id 72ACC300BE9C
-	for <lists+cgroups@lfdr.de>; Tue, 14 Apr 2026 02:29:31 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 23EE230333A1
+	for <lists+cgroups@lfdr.de>; Tue, 14 Apr 2026 03:05:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9611E3002CF;
-	Tue, 14 Apr 2026 02:29:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A557D3168EB;
+	Tue, 14 Apr 2026 03:05:14 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+Received: from lgeamrelo03.lge.com (lgeamrelo03.lge.com [156.147.51.102])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E1FC26ED37;
-	Tue, 14 Apr 2026 02:29:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E06CF313277
+	for <cgroups@vger.kernel.org>; Tue, 14 Apr 2026 03:05:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.147.51.102
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1776133768; cv=none; b=Of/jUFZc7STRiiH+AuzAjoJWA5RBjeqzNwXczdjgSJNEhX3vfG7IUexaYafX+9rOQ+Mxi+JzcNogPiR1izpE5KtzepOsVtJ/Q4YMnA6zgyYGuFkdUrTGDiT5xeLWVkTFcKPPSxpWw+imKdyaa2Oh9BgZa30godg+o6ht5V8jA4U=
+	t=1776135914; cv=none; b=ITdF9aca2FyL14zI/6gXeNPRcLLveFgjUKkyfFKKHJej3b0Qt/Bjn743hGKr2WI0aSqfglOoRzJBLTbRJOM0BxNik/LP7oWhnUco4A/g4p0hFr/TGBxozgIfQ6txHMAbVehYeb6PPNBl/DQ8Zp3D4esRZL/PUHHFTudxV4d/nr8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1776133768; c=relaxed/simple;
-	bh=dAQL1BzfrvROk9KRMrk9tZAXqiuq5cr+VS4Qqak3YCo=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=aWFqaD8ex5KlT0Yx2LNOFUueK4Zc5HEbTrO2C85IVoq3zPJ1Y2eTRnbXrUYBbpoTLxAA38FO6sGA3ZeId0AL7DoZxx24VYZgMJfL2+DyPsJDGgheg2JnAdN7Vpnas+C4BoWK2F9wE6rQhGpHGs0Oyqjm2ZaFCikmmHWE+yArpGU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.177])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTPS id 4fvp9g32tSzYQtlH;
-	Tue, 14 Apr 2026 10:28:39 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.75])
-	by mail.maildlp.com (Postfix) with ESMTP id 0A24D40590;
-	Tue, 14 Apr 2026 10:29:23 +0800 (CST)
-Received: from [10.67.111.176] (unknown [10.67.111.176])
-	by APP2 (Coremail) with SMTP id Syh0CgD32W6Apt1peClUAQ--.34910S2;
-	Tue, 14 Apr 2026 10:29:21 +0800 (CST)
-Message-ID: <febf75a0-5fc7-4fad-b43b-3c4bc2543531@huaweicloud.com>
-Date: Tue, 14 Apr 2026 10:29:20 +0800
+	s=arc-20240116; t=1776135914; c=relaxed/simple;
+	bh=iIkey2oim3PlO7vo+3FK0G8oXI2A0hzPeh0Tb+R90y4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=pC0YAHqiY+1FR42g/CjjNJYol3fvW62MT5j1oIAt5HZloQ9IfpIFXxa353Wwg26oPYCZ6XF5o5AxMqMD6z78TwWkPQfg89/IJpFKz0QRvA/9OH1cEq0Wf/tXPc39xHg/0RwB5xpkHsKWBq8ToP7JPDV14zY2PPdEm1I/9/woAvQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lge.com; spf=pass smtp.mailfrom=lge.com; arc=none smtp.client-ip=156.147.51.102
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lge.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lge.com
+Received: from unknown (HELO yjaykim-PowerEdge-T330) (10.177.112.156)
+	by 156.147.51.102 with ESMTP; 14 Apr 2026 11:50:09 +0900
+X-Original-SENDERIP: 10.177.112.156
+X-Original-MAILFROM: youngjun.park@lge.com
+Date: Tue, 14 Apr 2026 11:50:08 +0900
+From: YoungJun Park <youngjun.park@lge.com>
+To: Nhat Pham <nphamcs@gmail.com>
+Cc: kasong@tencent.com, Liam.Howlett@oracle.com, akpm@linux-foundation.org,
+	apopple@nvidia.com, axelrasmussen@google.com, baohua@kernel.org,
+	baolin.wang@linux.alibaba.com, bhe@redhat.com, byungchul@sk.com,
+	cgroups@vger.kernel.org, chengming.zhou@linux.dev,
+	chrisl@kernel.org, corbet@lwn.net, david@kernel.org,
+	dev.jain@arm.com, gourry@gourry.net, hannes@cmpxchg.org,
+	hughd@google.com, jannh@google.com, joshua.hahnjy@gmail.com,
+	lance.yang@linux.dev, lenb@kernel.org, linux-doc@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+	linux-pm@vger.kernel.org, lorenzo.stoakes@oracle.com,
+	matthew.brost@intel.com, mhocko@suse.com, muchun.song@linux.dev,
+	npache@redhat.com, pavel@kernel.org, peterx@redhat.com,
+	peterz@infradead.org, pfalcato@suse.de, rafael@kernel.org,
+	rakie.kim@sk.com, roman.gushchin@linux.dev, rppt@kernel.org,
+	ryan.roberts@arm.com, shakeel.butt@linux.dev,
+	shikemeng@huaweicloud.com, surenb@google.com, tglx@kernel.org,
+	vbabka@suse.cz, weixugc@google.com, ying.huang@linux.alibaba.com,
+	yosry.ahmed@linux.dev, yuanchu@google.com,
+	zhengqi.arch@bytedance.com, ziy@nvidia.com, kernel-team@meta.com,
+	riel@surriel.com
+Subject: Re: [PATCH v5 00/21] Virtual Swap Space
+Message-ID: <ad2rYH9tUPthHFoj@yjaykim-PowerEdge-T330>
+References: <20260320192735.748051-1-nphamcs@gmail.com>
+ <acQrQYHJgqof0yx4@yjaykim-PowerEdge-T330>
+ <CAKEwX=NnHxpQKp9qBg2=r_euyjgxw2nHXjbgof3MymHTgJmRAQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4] sched/psi: fix race between file release and pressure
- write
-To: Edward Adam Davis <eadavis@qq.com>
-Cc: cgroups@vger.kernel.org, hannes@cmpxchg.org,
- linux-kernel@vger.kernel.org, mkoutny@suse.com,
- syzbot+33e571025d88efd1312c@syzkaller.appspotmail.com,
- syzkaller-bugs@googlegroups.com, tj@kernel.org
-References: <tencent_71D4D2F5C6460999EEE5AEC14C8767C74606@qq.com>
- <tencent_47844C97747762E6DA1374E37BA96283A205@qq.com>
-Content-Language: en-US
-From: Chen Ridong <chenridong@huaweicloud.com>
-In-Reply-To: <tencent_47844C97747762E6DA1374E37BA96283A205@qq.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID:Syh0CgD32W6Apt1peClUAQ--.34910S2
-X-Coremail-Antispam: 1UD129KBjvJXoW3Xr13Xw1rCr15tr4rtr1UKFg_yoW7Kw4fpF
-	90y34ft3s8GryDJr48ta409F1fGw4xXFW3Xws7Jr1fAw1aqr1vgr129r1jq348CFn3AFsF
-	qF4YyrWUKw1jvaUanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUymb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
-	0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
-	x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
-	0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lc7CjxVAaw2AFwI0_JF0_Jw1l42xK82IYc2Ij64vI
-	r41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8Gjc
-	xK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0
-	cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8V
-	AvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E
-	14v26r1j6r4UYxBIdaVFxhVjvjDU0xZFpf9x07UK2NtUUUUU=
-X-CM-SenderInfo: hfkh02xlgr0w46kxt4xhlfz01xgou0bp/
-X-Spamd-Result: default: False [0.04 / 15.00];
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAKEwX=NnHxpQKp9qBg2=r_euyjgxw2nHXjbgof3MymHTgJmRAQ@mail.gmail.com>
+X-Spamd-Result: default: False [0.64 / 15.00];
 	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
+	MID_RHS_NOT_FQDN(0.50)[];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
 	MAILLIST(-0.15)[generic];
+	DMARC_POLICY_SOFTFAIL(0.10)[lge.com : SPF not aligned (relaxed), No valid DKIM,none];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	MIME_TRACE(0.00)[0:+];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-15281-lists,cgroups=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	DMARC_NA(0.00)[huaweicloud.com];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
-	FREEMAIL_TO(0.00)[qq.com];
+	TAGGED_FROM(0.00)[bounces-15282-lists,cgroups=lfdr.de];
 	FROM_HAS_DN(0.00)[];
-	TAGGED_RCPT(0.00)[cgroups,33e571025d88efd1312c];
-	RCVD_COUNT_FIVE(0.00)[6];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[chenridong@huaweicloud.com,cgroups@vger.kernel.org];
+	RCVD_COUNT_THREE(0.00)[4];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	FREEMAIL_TO(0.00)[gmail.com];
+	MIME_TRACE(0.00)[0:+];
+	FREEMAIL_CC(0.00)[tencent.com,oracle.com,linux-foundation.org,nvidia.com,google.com,kernel.org,linux.alibaba.com,redhat.com,sk.com,vger.kernel.org,linux.dev,lwn.net,arm.com,gourry.net,cmpxchg.org,gmail.com,kvack.org,intel.com,suse.com,infradead.org,suse.de,huaweicloud.com,suse.cz,bytedance.com,meta.com,surriel.com];
+	MISSING_XM_UA(0.00)[];
 	TO_DN_SOME(0.00)[];
-	NEURAL_HAM(-0.00)[-0.999];
-	RCPT_COUNT_SEVEN(0.00)[8];
+	RCPT_COUNT_GT_50(0.00)[54];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[youngjun.park@lge.com,cgroups@vger.kernel.org];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	NEURAL_HAM(-0.00)[-0.976];
+	TAGGED_RCPT(0.00)[cgroups];
 	R_DKIM_NA(0.00)[];
-	MID_RHS_MATCH_FROM(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns,qq.com:email,appspotmail.com:email]
-X-Rspamd-Queue-Id: C78653F50A2
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: 9C4DB3F5289
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
+On Sat, Apr 11, 2026 at 06:40:44PM -0700, Nhat Pham wrote:
 
+Hello Nhat!
 
-On 2026/4/13 10:44, Edward Adam Davis wrote:
-> A potential race condition exists between pressure write and cgroup file
-> release regarding the priv member of struct kernfs_open_file, which
-> triggers the uaf reported in [1].
-> 
-> Consider the following scenario involving execution on two separate CPUs:
-> 
->    CPU0					CPU1
->    ====					====
-> 					vfs_rmdir()
-> 					kernfs_iop_rmdir()
-> 					cgroup_rmdir()
-> 					cgroup_kn_lock_live()
-> 					cgroup_destroy_locked()
-> 					cgroup_addrm_files()
-> 					cgroup_rm_file()
-> 					kernfs_remove_by_name()
-> 					kernfs_remove_by_name_ns()
->  vfs_write()				__kernfs_remove()
->  new_sync_write()			kernfs_drain()
->  kernfs_fop_write_iter()		kernfs_drain_open_files()
->  cgroup_file_write()			kernfs_release_file()
->  pressure_write()			cgroup_file_release()
->  ctx = of->priv;
-> 					kfree(ctx);
->  					of->priv = NULL;
-> 					cgroup_kn_unlock()
->  cgroup_kn_lock_live()
->  cgroup_get(cgrp)
->  cgroup_kn_unlock()
->  if (ctx->psi.trigger)  // here, trigger uaf for ctx, that is of->priv
-> 
-> The cgroup_rmdir() is protected by the cgroup_mutex, it also safeguards
-> the memory deallocation of of->priv performed within cgroup_file_release().
-> However, the operations involving of->priv executed within pressure_write()
-> are not entirely covered by the protection of cgroup_mutex. Consequently,
-> if the code in pressure_write(), specifically the section handling the
-> ctx variable executes after cgroup_file_release() has completed, a uaf
-> vulnerability involving of->priv is triggered.
-> 
-> Therefore, the issue can be resolved by extending the scope of the
-> cgroup_mutex lock within pressure_write() to encompass all code paths
-> involving of->priv, thereby properly synchronizing the race condition
-> occurring between cgroup_file_release() and pressure_write().
-> 
-> And, if an active kn lock can be successfully acquired while executing
-> the pressure write operation, it indicates that the cgroup deletion
-> process has not yet reached its final stage; consequently, the priv
-> pointer within open_file cannot be NULL. Therefore, the operation to
-> retrieve the ctx value must be moved to a point *after* the active kn
-> lock has been successfully acquired.
-> 
-> Now that the scope of the cgroup_mutex has been expanded, the original
-> explicit cgroup_get/put operations are no longer necessary, this is
-> because acquiring/releasing the live kn lock inherently executes a
-> cgroup get/put operation. 
-> 
-> [1]
-> BUG: KASAN: slab-use-after-free in pressure_write+0xa4/0x210 kernel/cgroup/cgroup.c:4011
-> Call Trace:
->  pressure_write+0xa4/0x210 kernel/cgroup/cgroup.c:4011
->  cgroup_file_write+0x36f/0x790 kernel/cgroup/cgroup.c:4311
->  kernfs_fop_write_iter+0x3b0/0x540 fs/kernfs/file.c:352
-> 
-> Allocated by task 9352:
->  cgroup_file_open+0x90/0x3a0 kernel/cgroup/cgroup.c:4256
->  kernfs_fop_open+0x9eb/0xcb0 fs/kernfs/file.c:724
->  do_dentry_open+0x83d/0x13e0 fs/open.c:949
-> 
-> Freed by task 9353:
->  cgroup_file_release+0xd6/0x100 kernel/cgroup/cgroup.c:4283
->  kernfs_release_file fs/kernfs/file.c:764 [inline]
->  kernfs_drain_open_files+0x392/0x720 fs/kernfs/file.c:834
->  kernfs_drain+0x470/0x600 fs/kernfs/dir.c:525
-> 
-> Fixes: 0e94682b73bf ("psi: introduce psi monitor")
-> Reported-by: syzbot+33e571025d88efd1312c@syzkaller.appspotmail.com
-> Closes: https://syzkaller.appspot.com/bug?extid=33e571025d88efd1312c
-> Tested-by: syzbot+33e571025d88efd1312c@syzkaller.appspotmail.com
-> Signed-off-by: Edward Adam Davis <eadavis@qq.com>
-> ---
-> v1 -> v2: refactor unlock and update comments
-> v2 -> v3: remove check for !ctx and update comments
-> v3 -> v4: remove orig get/put for get cgroup refcnt and update comments
-> 
->  kernel/cgroup/cgroup.c | 21 +++++++++++++--------
->  1 file changed, 13 insertions(+), 8 deletions(-)
-> 
-> diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
-> index 4ca3cb993da2..c94a16352c33 100644
-> --- a/kernel/cgroup/cgroup.c
-> +++ b/kernel/cgroup/cgroup.c
-> @@ -3995,33 +3995,38 @@ static int cgroup_cpu_pressure_show(struct seq_file *seq, void *v)
->  static ssize_t pressure_write(struct kernfs_open_file *of, char *buf,
->  			      size_t nbytes, enum psi_res res)
->  {
-> -	struct cgroup_file_ctx *ctx = of->priv;
-> +	struct cgroup_file_ctx *ctx;
->  	struct psi_trigger *new;
->  	struct cgroup *cgrp;
->  	struct psi_group *psi;
-> +	ssize_t ret = 0;
->  
->  	cgrp = cgroup_kn_lock_live(of->kn, false);
->  	if (!cgrp)
->  		return -ENODEV;
->  
-> -	cgroup_get(cgrp);
-> -	cgroup_kn_unlock(of->kn);
-> +	/* of->priv can not be NULL, because cgroup is CSS_ONLINE */
-> +	ctx = of->priv;
->  
->  	/* Allow only one trigger per file descriptor */
->  	if (ctx->psi.trigger) {
-> -		cgroup_put(cgrp);
-> -		return -EBUSY;
-> +		ret = -EBUSY;
-> +		goto out_unlock;
->  	}
->  
+> > 1. Modularization
+> >
+> > You removed CONFIG_* and went with a unified approach. I recall
+> > you were also considering a module-based structure at some point.
+> > What are your thoughts on that direction?
+> >
+>
+> The CONFIG-based approach was a huge mess. It makes me not want to
+> look at the code, and I'm the author :)
+>
+> > If we take that approach, we could extend the recent swap ops
+> > patchset (https://lore.kernel.org/linux-mm/20260302104016.163542-1-bhe@redhat.com/)
+> > as follows:
+> > - Make vswap a swap module
+> > - Have cluster allocation functions reside in swapops
+> > - Enable vswap through swapon
+>
+> Hmmmmm.
 
-CPU0: write memory.pressure               CPU1: write cgroup.pressure=0
-  ==================================       ==================================
+I think this would be a happy world, but I wonder what others think.
+Anyway, I'm looking forward to the future direction.
 
-  kernfs_fop_write_iter()
-    kernfs_get_active_of(of)
-    pressure_write()
-      cgroup_kn_lock_live(memory.pressure)
-        cgroup_tryget(cgrp)
-        kernfs_break_active_protection(kn)
-        ... blocks on cgroup_mutex
+> > 2. Flash-friendly swap integration (for my use case)
+> >
+> > I've been thinking about the flash-friendly swap concept that
+> > I mentioned before and recently proposed:
+> > (https://lore.kernel.org/linux-mm/aZW0voL4MmnMQlaR@yjaykim-PowerEdge-T330/)
+> >
+> > One of its core functions requires buffering RAM-swapped pages
+> > and writing them sequentially at an appropriate time -- not
+> > immediately, but in proper block-sized units, sequentially.
+> >
+> > This means allocated offsets must essentially be virtual, and
+> > physical offsets need to be managed separately at the actual
+> > write time.
+> >
+> > If we integrate this into the current vswap, we would either
+> > need vswap itself to handle the sequential writes (bypassing
+> > the physical device and receiving pages directly), or swapon
+> > a swap device and have vswap obtain physical offsets from it.
+> > But since those offsets cannot be used directly (due to
+> > buffering and sequential write requirements), they become
+> > virtual too, resulting in:
+> >
+> >   virtual -> virtual -> physical
+> >
+> > This triple indirection is not ideal.
+> >
+> > However, if the modularization from point 1 is achieved and
+> > vswap acts as a swap device itself, then we can cleanly
+> > establish a:
+> >
+> >   virtual -> physical
+>
+> I read that thread sometimes ago. Some remarks:
+>
+> 1. I think Christoph has a point. Seems like some of your ideas ( are
+> broadly applicable to swap in general. Maybe fixing swap infra
+> generally would make a lot of sense?
 
-                                        cgroup_pressure_write()
-                                        cgroup_kn_lock_live(cgroup.pressure)
-                                        cgroup_file_show(memory.pressure, false)
-                                          kernfs_show(false)
-                                            kernfs_drain_open_files()
-                                              cgroup_file_release(of)
-                                                kfree(ctx)
-                                                  of->priv = NULL
-                                        cgroup_kn_unlock()
+Broadly speaking, there are two main ideas:
+1. Swap I/O buffering (which is also tied to cluster management issues)
+2. Deduplication
 
-      ... acquires cgroup_mutex
-      ctx = of->priv;        // may now be NULL
-      if (ctx->psi.trigger)  // NULL dereference
+Are you leaning towards the view that these two should be placed in a
+higher layer?
 
-IIUC, for rmdir, 'of->priv cannot be NULL' may be true, but for the other patch
-shown above, it might not be.
+> 2. Why do we need to do two virtual layers here? For example, If you
+> want to buffer multiple swap outs and turn them into a sequential
+> request, you can:
+>
+> a. Allocate virtual swap space for them as you wish. They don't even
+> need to be sequential.
+>
+> b. At swap_writeout() time, don't allocate physical swap space for
+> them right away. Instead, accumulate them into a buffer. You can add a
+> new virtual swap entry type to flag it if necessary.
+>
+> c. Once that buffer reaches a certain size, you can now allocate
+> contiguous physical swap space for them. Then flush etc. You can flush
+> at swap_writeout() time, or use a dedicated threads etc.
 
->  	psi = cgroup_psi(cgrp);
->  	new = psi_trigger_create(psi, buf, res, of->file, of);
->  	if (IS_ERR(new)) {
-> -		cgroup_put(cgrp);
-> -		return PTR_ERR(new);
-> +		ret = PTR_ERR(new);
-> +		goto out_unlock;
->  	}
->  
->  	smp_store_release(&ctx->psi.trigger, new);
-> -	cgroup_put(cgrp);
-> +
-> +out_unlock:
-> +	cgroup_kn_unlock(of->kn);
-> +	if (ret)
-> +		return ret;
->  
->  	return nbytes;
->  }
+I initially thought implementing this in vswap would be complicated
+(due to the ripple effects of altering behavior at swap_writeout timing),
+but it seems entirely possible!
 
--- 
+1. We could change the behavior (e.g., buffering) at vswap_alloc_swap_slot
+   timing by checking things like the si type.
+2. Additionally, if we can handle the cluster data structures and
+   mechanisms in the swap_info_struct privately, a virtual-to-physical
+   one-direction approach seems feasible.
+   (Come to think of it, it might be better to refactor the infra to let
+   other modules handle this, potentially removing the swap_info_struct
+   mechanism entirely. Just imagination ;) )
+
+> Deduplication sounds like something that should live at a lower layer
+> - I was thinking about it for zswap/zsmalloc back then. I mean, I
+> assume you don't want content sharing across different swap media? :)
+> Something along the line of:
+>
+> 1. Maintain an content index for swapped out pages.
+>
+> 2. For the swap media that support deduplication, you'll need to add
+> some sort of reference count (more overhead ew).
+>
+> 3. Each time we swapped out, we can content-check to see if the same
+> piece of conent has been swapped out before. If so, set the vswap
+> backend to the physical location of the data, increment some sort of
+> reference count (perhaps we can use swap count) of the older entry,
+> and have the swap type point to it.
+
+As for reference count management, applying it loosely might be a good
+approach. Instead of strictly managing the lifecycle of the dedup contents
+with refcounts, we could just periodically clean up the hash. This also
+has the benefit of reducing I/O for the same swap content compared to
+deleting it immediately.
+
+> But have you considered the implications of sharing swap data like
+> this? I need to read the paper you cite - seems like a potential fun
+> read. But what happen when these two pages that share the content
+> belong to two different cgroups? How does the
+> charging/uncharging/charge transferring story work? That's one of the
+> things that made me pause when I wanted to implement deduplication for
+> zswap/zsmalloc. Zram does not charge memory towards cgroup, but zswap
+> does, so we'll need to handle this somehow, and at that point all the
+> complexity might no longer be worth it.
+
+Since our private swap device is similar to ZRAM, I hadn't considered
+the charging aspect. It is indeed a complex issue.
+
+If it goes into ZSWAP, there would definitely be a clear advantage of
+seeing dedup benefits across all swap devices. It's a technically
+interesting area, and I'd like to discuss it in a separate thread if
+I have more ideas or thoughts.
+
+Just a thought that comes to mind here: if vswap becomes modularized,
+how about doing memcg charging for this entire area? 
+(Come to think of it, to fully benefit from vswap modularization,
+zswap should also be applied within its scope.)
+
 Best regards,
-Ridong
-
+Youngjun Park
 
