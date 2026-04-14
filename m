@@ -1,259 +1,262 @@
-Return-Path: <cgroups+bounces-15284-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-15285-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 0EpoE4a03WkZiAkAu9opvQ
-	(envelope-from <cgroups+bounces-15284-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Tue, 14 Apr 2026 05:29:10 +0200
+	id qE0xKbS13WlRiAkAu9opvQ
+	(envelope-from <cgroups+bounces-15285-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Tue, 14 Apr 2026 05:34:12 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id B496F3F542A
-	for <lists+cgroups@lfdr.de>; Tue, 14 Apr 2026 05:29:09 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 03F4F3F5478
+	for <lists+cgroups@lfdr.de>; Tue, 14 Apr 2026 05:34:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id D798430470CD
-	for <lists+cgroups@lfdr.de>; Tue, 14 Apr 2026 03:27:30 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id DC7C33035D72
+	for <lists+cgroups@lfdr.de>; Tue, 14 Apr 2026 03:29:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B89732F1FE3;
-	Tue, 14 Apr 2026 03:27:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DBE8F3290A0;
+	Tue, 14 Apr 2026 03:29:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZTMJuDx1"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ecjj8Qxf"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-ed1-f54.google.com (mail-ed1-f54.google.com [209.85.208.54])
+Received: from mail-ed1-f43.google.com (mail-ed1-f43.google.com [209.85.208.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 12FAF2D3A69
-	for <cgroups@vger.kernel.org>; Tue, 14 Apr 2026 03:27:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.208.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C73B2DAFAF
+	for <cgroups@vger.kernel.org>; Tue, 14 Apr 2026 03:29:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.208.43
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1776137249; cv=pass; b=PZDMWpWcCiu5zEv6UKusjuFY33pfRTgJE6/8f7w31ICH+n7x8btFj39jwJoeTrUtLx+j39YgkQmUmOu5f2uGnG66N/NVeqhjX+bWvTfTyTkrxYp+vnva5C6kNl5Fw/8nruorXrukEzq7E/DFeyLJnupEQdhb+cyq6KxsFjZOFjg=
+	t=1776137365; cv=pass; b=LN1HsEd+MiuXes0+31v78sbOh9kI4ZKjikMNbsXf/ZdfEBXB8VhCil6qUgrYqJZQMIDr7HYfSnd7XQ9KCk/mEj17akKzKpVdbNP1lsZf6HaxqT3N1Gs/muE3HZrfDaM5Bk4zg5NuWor+O4ccJs3rQksw6O0IhxTs1zMCEVb+c3k=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1776137249; c=relaxed/simple;
-	bh=V4vxAkP59gN+SGiN4wu3EWxyT+DD3dx5sNcnwFfhnGA=;
+	s=arc-20240116; t=1776137365; c=relaxed/simple;
+	bh=02XAKz/14kc6zksPNYP7oVuf6DQGS1WSgbuT+EiabeM=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=d1qeaz7eusBa6ZKIcYOoEzEB6RyXDm669wLEVWv5kz37Z7XpkwdJ36YyOpz8X39s5oDu7BTjx/8W0PsslKVkc5zC+iQFhLpUWaUhgKHD26vEbwgTsXRtjlqt8+zJObLHS003a6Ny3foJsVUucXDuflyAoZZRBjyxl87qwYw/tVk=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ZTMJuDx1; arc=pass smtp.client-ip=209.85.208.54
+	 To:Cc:Content-Type; b=t/EvlPQiuhhDxJIMSrYoH4c8FGpQeE37xitrnrBY22iw7TvH7FKqVLlXy83uv2rnsSZP6VF546feNX96W0ltH+tAJhsMEOzPAZcQLLN90e1YA+WmOGjQRjqJkzZUPLJ8rR74gfdLc+2qVAFh1RKTwleOktUCNI/SisATEXiElv0=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ecjj8Qxf; arc=pass smtp.client-ip=209.85.208.43
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f54.google.com with SMTP id 4fb4d7f45d1cf-671c4d08dc2so609719a12.3
-        for <cgroups@vger.kernel.org>; Mon, 13 Apr 2026 20:27:27 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; t=1776137246; cv=none;
+Received: by mail-ed1-f43.google.com with SMTP id 4fb4d7f45d1cf-671a901584eso1712441a12.0
+        for <cgroups@vger.kernel.org>; Mon, 13 Apr 2026 20:29:24 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1776137363; cv=none;
         d=google.com; s=arc-20240605;
-        b=Vdg7WiBb/Ell91QGN1C7gTebr3FCFBCi5pkUu8OYiSN4+1rOl5n667eolJ+j6h2uVC
-         YHNc1dcWayz6Vt9V+nBtG/fmx1uAWZI+H6ChJWoUeLwz7LMrmVn+L8GgprCOQjBFkBB9
-         LDBgWyYDMwGRdq3wG7DIGnlhB+TvLEQhh8BAdAC62h+YPyRTgwCchRguEtCDqcF0wZvm
-         1cncWZpAD8rHtRxwshQauv3bYt834Nlenf+NFHoWycJG1PRBOuz7JCTv6vNCjRJB8OJe
-         c+c2yQLNf2zG8mCeqN0W4XjSqUNTASJTI9P0Ohgsrq8hdMQ1nV/3Eot07BW945mu680b
-         ZACQ==
+        b=KkoxBG7cKM60f7lTGnfvihgl1lnYr162p48iUurCFFGuSJ6kIR+RN3THQwg7PdXvYU
+         YynX7s+bxcSqf73byNx8qowdCWmuI6ypsmnTdPX7dWE7LxjIz73B3W+m9XCfW8GhtZ2o
+         vDQzeOvsbNFzPEXPfG2chBvdhypCLsa9U88J9ScebGClViatlrw0+Hi161qTdZ7oyndn
+         HK4tuv3SZEvLd0LdDrd6PErqUUzgWYeiWZF8TWZ3K1OszxjtUK201+j+KZv7hyKoLKh4
+         bgi7FxxLm5Oq8XDIpKzlHD99fSrn2INj+qLLrZh5D1L3mpk21en9YCUV056QW/f6G5P0
+         ucQQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:dkim-signature;
-        bh=pOnRFYTB9oKY4AxXu1Op5pVF1RPrbIg8+CUKW94/JvQ=;
-        fh=l1Ov4LYGkD8L005zQnqFPEXzVYTth6GwJV8ErKnnGtY=;
-        b=To5jpG0gq8s1GaglUv0wuRaGZK5htFZqgtI21RXGw7B5IPbRWp6Ppp7u7tOXzt75on
-         ZnnJEpRf54euGFhyJMylqh1uX7nawBkS7qoXuqww5eJjG7FGaqWo06qjCVLKW61IOMd9
-         SgNTNp8tZbniWpkWThNcMGi17F3uLOvDNHfh3OOJN9LnqLqxcnHRSfxFuAtweVkEvBK8
-         KeBwv73Jns6Z9Yg+VMtcIlNmP1d6ORHe7YZtLEIKn9hxJISXnr1u6ybZoIfBECIV8epY
-         G9yW+H9gB16fmQDy7YDNpzRuM4ootP6S85Bv6dZvFbEBHSFfEOYUcb4JQtD6briYYiN+
-         5B8Q==;
+        bh=9IgEcKdFGPBfiWmGanmcMdBmry9woiQGfJg0pQl8nak=;
+        fh=Y46yJ+320iTOWjqNAWdRvm7FrTf5teLoAODE+QeU7+M=;
+        b=CbVlfOSicnoRN81pmAup7K4UZy/uMj0BtcDPs/1iPVB/4gFKyCPw6mSjb0vDq+9wOR
+         +PdIfoRfOndIMFw2L4U0qxyf4j7zZ/uc+Iu96APeyp1PqgzgWAsMwF4zSwzUfnjoYuOh
+         z0rJUJJ3XHruf64dpmIs3zw5AF3NBJVEmDvak2AlBkf9tVHb+FPJlU0PhswUhg+FmVFC
+         iUwYRaeAS7gm9joahHYbpawjGtSI3pqnRtSUY6hGN+fuMsRGT9aD/ZPNvcEMWxR5S/te
+         VClCSvV+INXDe/QNQtp4B0cgbfGrGDHd3+GTxeE6o7LgdwjKLHSt1oki0xLQ77G8xpf0
+         m9hQ==;
         darn=vger.kernel.org
 ARC-Authentication-Results: i=1; mx.google.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1776137246; x=1776742046; darn=vger.kernel.org;
+        d=gmail.com; s=20251104; t=1776137363; x=1776742163; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=pOnRFYTB9oKY4AxXu1Op5pVF1RPrbIg8+CUKW94/JvQ=;
-        b=ZTMJuDx1uorvKQJQMGmu2idUx23V7n9NQ61MRoEJSRgqSSjOaVhFa8PSjWdC5scb9y
-         1gHl5CSC4+Y1MDxeXyha4bMFgAzjF8prpd6AQrimVubUY8894AIjQ4n+6BkrFgMw1oWu
-         /REPL6lXw0359ASx8v4X/tVP0pjRsvL4pt8dhxwPNzr+/KNGEzlSMcR9NJXvJqr7NdyK
-         LAluIFVX0wpkmfcWqiTe+eT5Ov5F/bwSCN78wcOKgX/V0YJ7wi7xMwULF6aw3AMtcC/R
-         kgsh9/tqzhzbUJjDdQPsbxHUuQZvo7RvkIURox5Evkb85L5YG0MJgSLCvbHbSzPPxzzB
-         rQHg==
+        bh=9IgEcKdFGPBfiWmGanmcMdBmry9woiQGfJg0pQl8nak=;
+        b=ecjj8QxfO+rMnQFYOxQV86Jd652ldg0OD4W28l93J4/sj8NQ+ZfQEh0EHaWD4XEvuI
+         05FA9dC/aeNhXL0T0RQTA+Uz0EcAf/sSzOaMA5OuwVfGdh2U8VS7F20Vow4dB1RGoyO6
+         jod3M3+DM6/ei+b3V3vGG1WvDyGbTTHoerXlUq0KQ88gDfmLgCT9QWUYlXvYJa2yQnwz
+         VB91bqZMN40QaLyQJ+Wo07uRpstQJvhzdLlJPItFYcnOVz9aMrMauAuQnO6Fdp8eOcnh
+         7g+6JrNdXZFyRniEGzHbbfkPBdD+izGJ72XpIkYrHmc/Mx47Kz1QBaT1qfVkT9I/IIsE
+         l/3A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1776137246; x=1776742046;
+        d=1e100.net; s=20251104; t=1776137363; x=1776742163;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=pOnRFYTB9oKY4AxXu1Op5pVF1RPrbIg8+CUKW94/JvQ=;
-        b=YLvMQHccqLGaLO65EZhcFcabuvnAjCIfDpqeGnNJeTuyw7Lzrj4Ive2qH+8IosXYCF
-         Dr5W9KCKXe/y8BJtq6TqhfbD1h6i7MN5cxEwRnm4eyg6156PzX02NLrhAIkwlJg4dFPs
-         MZ/HkayejES5otQKCXPMkWeRv6oFWZlabIJSXTQtkeov6aZqNF1NVsjk/yIb9Xoa3TJD
-         c8q7BZbxEpLdi75J0uqGlZtp7McU2OyaPLX9mjTJe9GHzH7CLhw/RN88MwO1Ze+FHnNu
-         vRZoUL9ThOchx1wPwjc12mlo2P+9qPZ3m0ZSxgnge1qlEaxo2lUeMXddFw3hPbsJGM2C
-         O4uQ==
-X-Forwarded-Encrypted: i=1; AFNElJ/05+21oW5te7KhhFMEV6xYFo/3OXUvn/hWLzhjaclCWjQIYJQAItgd1xz+VaDOGTGvTcvGr9pA@vger.kernel.org
-X-Gm-Message-State: AOJu0Yxjs+HnymvsB+1B6ld+jugeVVP/NFeshuHMBx2GnUrpqNfQi68u
-	IFpKdYVIPAb7H0OZnzoyhsTRociL+W08f3LE+57X4e9tEp6zlitNcrQRvmIIjcfZUlpMgU+BrrD
-	HOt8jJToeF/D1FeOsdD2tRGgM1Ob5gfI=
-X-Gm-Gg: AeBDievJhK0OLJqJVggpdkL50uLhX4NS7+i3KuZS9v4fF2ruxbQqzIllFEWqvrXCxOh
-	S5p8PxecQLkIbRCWEXZFzHQGim7vw/dCiUumZktQudimSC6NelJHwswlA9FdKcIn8hQ7EL5MQx4
-	YAMwLgm+3OZ/PK3Pyw2wSw2IwgUVfyPFhbNQlt4ZFGEzhqxDSJmAjc5eNMBLM5q3kvzolJSqxmE
-	jWQPRGRgyHlKnc2jv4eWdb1AANzEH0ddEE+HLGb1XmXiCUT8S20knB8ZLUc/cjc5RPXknHFXXY7
-	7VKoZWIhy/bi5uh/Dx9T0t+eDX1pV2V3CI/VUxXH
-X-Received: by 2002:a05:6402:2116:b0:671:a6e2:97b0 with SMTP id
- 4fb4d7f45d1cf-671a6e2994fmr2262250a12.0.1776137245805; Mon, 13 Apr 2026
- 20:27:25 -0700 (PDT)
+        bh=9IgEcKdFGPBfiWmGanmcMdBmry9woiQGfJg0pQl8nak=;
+        b=f0CzXED+cb5wmxOGsd6tYVaUlCLV2RmVxdjxEtEUKX/B9SkaqTFmN0ggwAjNG7Kyiu
+         7+VhmHMClc4LEadY1ulEHg4u+rjy7i7J5LGpPnimnfxGRUoL7FenwCyRsLcnp0dh4jSC
+         gKDSFdGFvRbw1YyFfNcWTYpOf59lV+7osKLlzQJ5L2WvaffLZDPvGb+QEpZHxQ601ZHk
+         /+j8nDa/+5rjAC4ra+Q+kyY1ujW7vHuVIu3q+Eo+E18+FgQ/DQiF5kxg1uCfk/koCBOk
+         cnh+4HjTW9N7trkIQT3ZoqttUlUW5a9YEzkOasejd5AUWQXcppVNV4/9/PbGaN2NjysF
+         MbdQ==
+X-Forwarded-Encrypted: i=1; AFNElJ+GkoqBFdAnBMIOaRUdNrd8EGMKwTP/JqrqL5aCBBY4IuReXgASVsJoHWCyXNwLWCZN4SmkEvvk@vger.kernel.org
+X-Gm-Message-State: AOJu0Yx/KXt64BoVE0ofo3lDOUIW40JzNQhCIZAcDE5zUa2ZrcrHPLWW
+	DmtPhxIXIB1wOit4JLn30iPJfLsMUI6VeaWz/D8ZiiMbARnHGaVB2sSPls/Jfrzc5l3DUW587G9
+	kcheb+q3AnKuIOitOPEmv2yv7etTCsv0=
+X-Gm-Gg: AeBDietycQ88ps2gMsWEraqcXHP3keXHlaGlBj2hkpf5z2sSXVTEe99xQIkem0C/np+
+	VmdEeejg4CCXZbxD0IhHusD+XwVo0rlFaM4JcqiJXog7wE6QXYbRJ9wpvlMVtdgYz0sD+vvc/HT
+	77Qb3XVybbe6UhAFVmM9KzlEMUHZZ0hM2hRu759HgUnoPE5Q6YVLpjQ40ui/hbj3ynGxg26N8W1
+	ibgnV3hiD73Ca9UOt3d8BxxplQv14lgIPqa+KRbeXOGlVh9YBAaiFYx61NLiWQviWVXAlR/MMdA
+	DKgi2UMzi97tOQtdMy7ooHrYsWkY7V91CFLn4jVD
+X-Received: by 2002:a05:6402:a54d:20b0:670:8d90:e861 with SMTP id
+ 4fb4d7f45d1cf-6708d90f131mr5258361a12.6.1776137362474; Mon, 13 Apr 2026
+ 20:29:22 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20260407-swap-memcg-fix-v1-0-a473ce2e5bb8@tencent.com> <adycRemx6QmSOX8n@yjaykim-PowerEdge-T330>
-In-Reply-To: <adycRemx6QmSOX8n@yjaykim-PowerEdge-T330>
+References: <20260320192735.748051-1-nphamcs@gmail.com> <acQrQYHJgqof0yx4@yjaykim-PowerEdge-T330>
+ <CAKEwX=NnHxpQKp9qBg2=r_euyjgxw2nHXjbgof3MymHTgJmRAQ@mail.gmail.com> <ad2rYH9tUPthHFoj@yjaykim-PowerEdge-T330>
+In-Reply-To: <ad2rYH9tUPthHFoj@yjaykim-PowerEdge-T330>
 From: Kairui Song <ryncsn@gmail.com>
-Date: Tue, 14 Apr 2026 11:26:49 +0800
-X-Gm-Features: AQROBzCyZoZKqmWRCentpJTVxu-E7g1IvgKn93O8Ud6MPqO0q94XIMEqzEqSiZw
-Message-ID: <CAMgjq7CEY+4JqUcnqbEsr7XET9oD7o+Dra=8dn_BRouu39TkSA@mail.gmail.com>
-Subject: Re: [PATCH RFC 0/2] mm, swap: fix swapin race that causes inaccurate
- memcg accounting
+Date: Tue, 14 Apr 2026 11:28:46 +0800
+X-Gm-Features: AQROBzBcwys1sJE14-sqswOYWhGVy-YykuPt2kRn0gHSFefB_BbHyO5y_ejkPqk
+Message-ID: <CAMgjq7BO6SLZPfNXDh1F-7RAOqDAfqMQ4PM=qjAq1mCsWyD0LQ@mail.gmail.com>
+Subject: Re: [PATCH v5 00/21] Virtual Swap Space
 To: YoungJun Park <youngjun.park@lge.com>
-Cc: linux-mm@kvack.org, Michal Hocko <mhocko@kernel.org>, 
-	Roman Gushchin <roman.gushchin@linux.dev>, Shakeel Butt <shakeel.butt@linux.dev>, 
-	Muchun Song <muchun.song@linux.dev>, Andrew Morton <akpm@linux-foundation.org>, 
-	Chris Li <chrisl@kernel.org>, Kemeng Shi <shikemeng@huaweicloud.com>, 
-	Nhat Pham <nphamcs@gmail.com>, Baoquan He <bhe@redhat.com>, Barry Song <baohua@kernel.org>, 
-	Johannes Weiner <hannes@cmpxchg.org>, Alexandre Ghiti <alex@ghiti.fr>, David Hildenbrand <david@kernel.org>, 
-	Lorenzo Stoakes <ljs@kernel.org>, "Liam R. Howlett" <Liam.Howlett@oracle.com>, 
-	Vlastimil Babka <vbabka@kernel.org>, Mike Rapoport <rppt@kernel.org>, 
-	Suren Baghdasaryan <surenb@google.com>, Michal Hocko <mhocko@suse.com>, Hugh Dickins <hughd@google.com>, 
-	Baolin Wang <baolin.wang@linux.alibaba.com>, Chuanhua Han <hanchuanhua@oppo.com>, 
-	linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
+Cc: Nhat Pham <nphamcs@gmail.com>, Liam.Howlett@oracle.com, akpm@linux-foundation.org, 
+	apopple@nvidia.com, axelrasmussen@google.com, baohua@kernel.org, 
+	baolin.wang@linux.alibaba.com, bhe@redhat.com, byungchul@sk.com, 
+	cgroups@vger.kernel.org, chengming.zhou@linux.dev, chrisl@kernel.org, 
+	corbet@lwn.net, david@kernel.org, dev.jain@arm.com, gourry@gourry.net, 
+	hannes@cmpxchg.org, hughd@google.com, jannh@google.com, 
+	joshua.hahnjy@gmail.com, lance.yang@linux.dev, lenb@kernel.org, 
+	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, linux-mm@kvack.org, 
+	linux-pm@vger.kernel.org, lorenzo.stoakes@oracle.com, matthew.brost@intel.com, 
+	mhocko@suse.com, muchun.song@linux.dev, npache@redhat.com, pavel@kernel.org, 
+	peterx@redhat.com, peterz@infradead.org, pfalcato@suse.de, rafael@kernel.org, 
+	rakie.kim@sk.com, roman.gushchin@linux.dev, rppt@kernel.org, 
+	ryan.roberts@arm.com, shakeel.butt@linux.dev, shikemeng@huaweicloud.com, 
+	surenb@google.com, tglx@kernel.org, vbabka@suse.cz, weixugc@google.com, 
+	ying.huang@linux.alibaba.com, yosry.ahmed@linux.dev, yuanchu@google.com, 
+	zhengqi.arch@bytedance.com, ziy@nvidia.com, kernel-team@meta.com, 
+	riel@surriel.com
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Spamd-Result: default: False [-2.16 / 15.00];
+X-Spamd-Result: default: False [-0.66 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=2];
 	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	R_DKIM_ALLOW(-0.20)[gmail.com:s=20251104];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-15284-lists,cgroups=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-15285-lists,cgroups=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	FREEMAIL_CC(0.00)[kvack.org,kernel.org,linux.dev,linux-foundation.org,huaweicloud.com,gmail.com,redhat.com,cmpxchg.org,ghiti.fr,oracle.com,google.com,suse.com,linux.alibaba.com,oppo.com,vger.kernel.org];
-	FREEMAIL_FROM(0.00)[gmail.com];
 	RCVD_COUNT_THREE(0.00)[4];
-	RCPT_COUNT_TWELVE(0.00)[26];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	FREEMAIL_CC(0.00)[gmail.com,oracle.com,linux-foundation.org,nvidia.com,google.com,kernel.org,linux.alibaba.com,redhat.com,sk.com,vger.kernel.org,linux.dev,lwn.net,arm.com,gourry.net,cmpxchg.org,kvack.org,intel.com,suse.com,infradead.org,suse.de,huaweicloud.com,suse.cz,bytedance.com,meta.com,surriel.com];
+	TO_DN_SOME(0.00)[];
 	MIME_TRACE(0.00)[0:+];
 	FROM_HAS_DN(0.00)[];
+	MISSING_XM_UA(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	TO_DN_SOME(0.00)[];
-	NEURAL_HAM(-0.00)[-1.000];
+	RCPT_COUNT_GT_50(0.00)[54];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[ryncsn@gmail.com,cgroups@vger.kernel.org];
 	DKIM_TRACE(0.00)[gmail.com:+];
-	MID_RHS_MATCH_FROMTLD(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	NEURAL_HAM(-0.00)[-1.000];
 	TAGGED_RCPT(0.00)[cgroups];
-	MISSING_XM_UA(0.00)[];
+	MID_RHS_MATCH_FROMTLD(0.00)[];
+	FREEMAIL_FROM(0.00)[gmail.com];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
 	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,mail.gmail.com:mid,lge.com:email]
-X-Rspamd-Queue-Id: B496F3F542A
+X-Rspamd-Queue-Id: 03F4F3F5478
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-On Mon, Apr 13, 2026 at 3:54=E2=80=AFPM YoungJun Park <youngjun.park@lge.co=
-m> wrote:
+On Tue, Apr 14, 2026 at 11:05=E2=80=AFAM YoungJun Park <youngjun.park@lge.c=
+om> wrote:
 >
-> On Tue, Apr 07, 2026 at 10:55:41PM +0800, Kairui Song via B4 Relay wrote:
-> > While doing code inspection, I noticed there is a long-existing issue
-> > THP swapin may got charged into the wrong memcg since commit
-> > 242d12c981745 ("mm: support large folios swap-in for sync io devices").
-> > And a recent fix made it a bit worse.
+
+Hi All,
+
+> On Sat, Apr 11, 2026 at 06:40:44PM -0700, Nhat Pham wrote:
+> > > 1. Modularization
+> > >
+> > > You removed CONFIG_* and went with a unified approach. I recall
+> > > you were also considering a module-based structure at some point.
+> > > What are your thoughts on that direction?
+> > >
 > >
-
-...
-
-> > SYNCHRONOUS_IO fix seems also good, but it changes the current fallback
-> > logic. Instead of fallback to next order it will fallback to order 0
-> > directly. That should be fine though. This issue can be fixed / cleaned
-> > up in a better way with swap table P4 as demostrated previously by
-> > allocating the folio in swap cache directly with proper fallback and a
-> > more compat loop for error handling:
+> > The CONFIG-based approach was a huge mess. It makes me not want to
+> > look at the code, and I'm the author :)
 > >
-> > https://lore.kernel.org/linux-mm/20260220-swap-table-p4-v1-4-104795d198=
-15@tencent.com/
+> > > If we take that approach, we could extend the recent swap ops
+> > > patchset (https://lore.kernel.org/linux-mm/20260302104016.163542-1-bh=
+e@redhat.com/)
+> > > as follows:
+> > > - Make vswap a swap module
+> > > - Have cluster allocation functions reside in swapops
+> > > - Enable vswap through swapon
+> >
+> > Hmmmmm.
 >
-> Hello Kairui,
+> I think this would be a happy world, but I wonder what others think.
+> Anyway, I'm looking forward to the future direction.
 >
-> Nice catch!
->
-> I have reviewed the proposed patches, and LGTM :D
-> (For 1/2, flattening the if-statement depth slightly could help readabili=
-ty.
-> However, since this is planned to be refactored as part of the P4 swap ta=
-ble work,
-> I think it is fine as is.)
 
-Hi YoungJun
+Yeah, I agree with this.
 
->
-> I mostly agree with your rationale.
->
-> > memcg0 is not completely irrelevant as it's true that it is now
-> > memcg1 faulting this folio. Shmem may have similar issue.
->
-> That said, I would like to leave one small comment.
->
-> My understanding is that if we account based on the folio that was
-> allocated while running in memcg0 (on CPU 0), then having
-> set_pte_at() install it with memcg0 already charged may still be
-> considered acceptable from a acceptable coarse-grained synchronization pe=
-rspective.
-> (cuz folio is alloced at the time of "memcg 1 epoch")
+And I do think swapoff of the virtual space itself is also necessary,
+we really need a failsafe, e.g. a clean way to drop the swap
+cache and data, kind of like drop_caches or shrinker fs are
+commonly used.
 
-Right... which is also why I sent it as an RFC, I wasn't completely
-sure that if I missed anything. Charging into memcg0 is not really
-that wrong, so this might be a negligible problem.
-
+> > > 2. Flash-friendly swap integration (for my use case)
+> > >
+> > > I've been thinking about the flash-friendly swap concept that
+> > > I mentioned before and recently proposed:
+> > > (https://lore.kernel.org/linux-mm/aZW0voL4MmnMQlaR@yjaykim-PowerEdge-=
+T330/)
+> > >
+> > > One of its core functions requires buffering RAM-swapped pages
+> > > and writing them sequentially at an appropriate time -- not
+> > > immediately, but in proper block-sized units, sequentially.
+> > >
+> > > This means allocated offsets must essentially be virtual, and
+> > > physical offsets need to be managed separately at the actual
+> > > write time.
+> > >
+> > > If we integrate this into the current vswap, we would either
+> > > need vswap itself to handle the sequential writes (bypassing
+> > > the physical device and receiving pages directly), or swapon
+> > > a swap device and have vswap obtain physical offsets from it.
+> > > But since those offsets cannot be used directly (due to
+> > > buffering and sequential write requirements), they become
+> > > virtual too, resulting in:
+> > >
+> > >   virtual -> virtual -> physical
+> > >
+> > > This triple indirection is not ideal.
+> > >
+> > > However, if the modularization from point 1 is achieved and
+> > > vswap acts as a swap device itself, then we can cleanly
+> > > establish a:
+> > >
+> > >   virtual -> physical
+> >
+> > I read that thread sometimes ago. Some remarks:
+> >
+> > 1. I think Christoph has a point. Seems like some of your ideas ( are
+> > broadly applicable to swap in general. Maybe fixing swap infra
+> > generally would make a lot of sense?
 >
-> Let's think of the situation below
+> Broadly speaking, there are two main ideas:
+> 1. Swap I/O buffering (which is also tied to cluster management issues)
+> 2. Deduplication
 >
->   CPU 0 (memcg0)                 CPU 1
->   ---------------------------    -----------------------------
->   charge folio to memcg0
->   allocate / prepare folio
->                                    task migrates to memcg1
->   ...
->   set_pte_at() installs PTE
->   (folio is already charged to memcg0)
->
-> In this flow, the charge follows the allocation context (memcg0),
-> even though the actual PTE installation happens after migration
-> to memcg1.
->
-> I understand that we cannot strictly guarantee correctness without
-> fully synchronized migration, so this region inherently has some
-> ambiguity. In that sense, the patch is addressing a corner of that
-> problem space.
->
-> But, I largely agree with your argument (the rationale is sound,
-> and the change is not intrusive).
->
-> I would have no further concerns if the following hold:
->
-> - There is a tangible benefit to modifying this patch.
+> Are you leaning towards the view that these two should be placed in a
+> higher layer?
 
-I can't really say that. The effect might be hardly observable, the
-time window is really short and a few pages of inaccuracy (and in this
-case, it's not completely inaccurate, just ambiguous) of the memcg
-counter is hard to detect too.
+IMHO the swap infra should be doing less, not more, so we can have
+more flexible design, and different backends can implement their own
+way to manage the data and layer. e.g. Having one backend being
+flash friendly and it can do this without caring or affecting other devices
+or backends.
 
-> - There is no meaningful behavioral difference between charging
->   earlier (current behavior) and charging later (proposed change),
->   (e.g especially when memcg limits are hit.)
+> If it goes into ZSWAP, there would definitely be a clear advantage of
+> seeing dedup benefits across all swap devices. It's a technically
+> interesting area, and I'd like to discuss it in a separate thread if
+> I have more ideas or thoughts.
 
-This part should be fine. Charge after swap cache might help to avoid thras=
-hing.
-
-> If those assumptions are correct, I am fully on board.
-
-Thanks! It seems the benefit of this RFC is indeed trivial. I also ran
-some performance tests later and didn't observe anything meaningful so
-far.
-
-Maybe we can then just go with the swap table p4 series directly, I
-might overthinked about the potential issues, it would be solved
-cleaner if we skip this here.
+Just branstorm... Why don't we just merge these identical pages like
+KSM? Maybe at least zero folios might benefit a lot if we keep them
+mapped as RO instead of recording them in swap, seems better in the
+long term?
 
