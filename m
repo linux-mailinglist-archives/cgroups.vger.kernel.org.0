@@ -1,46 +1,47 @@
-Return-Path: <cgroups+bounces-15282-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-15283-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id cFXzN/Wu3WlPhwkAu9opvQ
-	(envelope-from <cgroups+bounces-15282-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Tue, 14 Apr 2026 05:05:25 +0200
+	id UOwxD+ev3WmLhwkAu9opvQ
+	(envelope-from <cgroups+bounces-15283-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Tue, 14 Apr 2026 05:09:27 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9C4DB3F5289
-	for <lists+cgroups@lfdr.de>; Tue, 14 Apr 2026 05:05:25 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 897E43F529F
+	for <lists+cgroups@lfdr.de>; Tue, 14 Apr 2026 05:09:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 23EE230333A1
-	for <lists+cgroups@lfdr.de>; Tue, 14 Apr 2026 03:05:19 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 683383039882
+	for <lists+cgroups@lfdr.de>; Tue, 14 Apr 2026 03:09:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A557D3168EB;
-	Tue, 14 Apr 2026 03:05:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EFEBE318146;
+	Tue, 14 Apr 2026 03:09:09 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
 Received: from lgeamrelo03.lge.com (lgeamrelo03.lge.com [156.147.51.102])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E06CF313277
-	for <cgroups@vger.kernel.org>; Tue, 14 Apr 2026 03:05:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E6CA311C01
+	for <cgroups@vger.kernel.org>; Tue, 14 Apr 2026 03:09:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.147.51.102
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1776135914; cv=none; b=ITdF9aca2FyL14zI/6gXeNPRcLLveFgjUKkyfFKKHJej3b0Qt/Bjn743hGKr2WI0aSqfglOoRzJBLTbRJOM0BxNik/LP7oWhnUco4A/g4p0hFr/TGBxozgIfQ6txHMAbVehYeb6PPNBl/DQ8Zp3D4esRZL/PUHHFTudxV4d/nr8=
+	t=1776136149; cv=none; b=Gfbq+CGBv8hH2h/oXl1mmI+xbiRPCatR910WnDOs7AUUoyQve42sUZsJGmfBRW+zbOV3HZakBF3tHRJ0MQ5RceAHUi5Q/dQFtN0x41jGE0oQ6Pb+hKtsvxOvAPnOam35RzjIXUZEvapwaZ+XAVEKB/mTDmmKa2SGYLMnOpm1IuM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1776135914; c=relaxed/simple;
-	bh=iIkey2oim3PlO7vo+3FK0G8oXI2A0hzPeh0Tb+R90y4=;
+	s=arc-20240116; t=1776136149; c=relaxed/simple;
+	bh=y0o0JTSP6gGQ96STNTXKQmAB/WfbYk1NdkZRprMhCjw=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=pC0YAHqiY+1FR42g/CjjNJYol3fvW62MT5j1oIAt5HZloQ9IfpIFXxa353Wwg26oPYCZ6XF5o5AxMqMD6z78TwWkPQfg89/IJpFKz0QRvA/9OH1cEq0Wf/tXPc39xHg/0RwB5xpkHsKWBq8ToP7JPDV14zY2PPdEm1I/9/woAvQ=
+	 Content-Type:Content-Disposition:In-Reply-To; b=UljhtAdl1knkX/hZN7OOaY5A3zgm0VQ8WMA0RRNr76qkOpmUWGZ+WRZmpgT8mcjz+W7nQHBhzP+PlU6MCXK57o1rxjuWAjxQvNrxUfzxr6riB1KCi+TEbrFS0UXR/S16uOzQfUT6XcDBfAsTB+zhpnNL9evCFj0FFroLNRprN+o=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lge.com; spf=pass smtp.mailfrom=lge.com; arc=none smtp.client-ip=156.147.51.102
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lge.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lge.com
 Received: from unknown (HELO yjaykim-PowerEdge-T330) (10.177.112.156)
-	by 156.147.51.102 with ESMTP; 14 Apr 2026 11:50:09 +0900
+	by 156.147.51.102 with ESMTP; 14 Apr 2026 12:09:06 +0900
 X-Original-SENDERIP: 10.177.112.156
 X-Original-MAILFROM: youngjun.park@lge.com
-Date: Tue, 14 Apr 2026 11:50:08 +0900
+Date: Tue, 14 Apr 2026 12:09:04 +0900
 From: YoungJun Park <youngjun.park@lge.com>
 To: Nhat Pham <nphamcs@gmail.com>
-Cc: kasong@tencent.com, Liam.Howlett@oracle.com, akpm@linux-foundation.org,
-	apopple@nvidia.com, axelrasmussen@google.com, baohua@kernel.org,
+Cc: Kairui Song <ryncsn@gmail.com>, Liam.Howlett@oracle.com,
+	akpm@linux-foundation.org, apopple@nvidia.com,
+	axelrasmussen@google.com, baohua@kernel.org,
 	baolin.wang@linux.alibaba.com, bhe@redhat.com, byungchul@sk.com,
 	cgroups@vger.kernel.org, chengming.zhou@linux.dev,
 	chrisl@kernel.org, corbet@lwn.net, david@kernel.org,
@@ -60,195 +61,132 @@ Cc: kasong@tencent.com, Liam.Howlett@oracle.com, akpm@linux-foundation.org,
 	zhengqi.arch@bytedance.com, ziy@nvidia.com, kernel-team@meta.com,
 	riel@surriel.com
 Subject: Re: [PATCH v5 00/21] Virtual Swap Space
-Message-ID: <ad2rYH9tUPthHFoj@yjaykim-PowerEdge-T330>
+Message-ID: <ad2v0LgMhgZwBmFS@yjaykim-PowerEdge-T330>
 References: <20260320192735.748051-1-nphamcs@gmail.com>
- <acQrQYHJgqof0yx4@yjaykim-PowerEdge-T330>
- <CAKEwX=NnHxpQKp9qBg2=r_euyjgxw2nHXjbgof3MymHTgJmRAQ@mail.gmail.com>
+ <CAMgjq7AiUr_Ntj51qoqvV+=XbEATjr7S4MH+rgD32T5pHfF7mg@mail.gmail.com>
+ <CAKEwX=PBjMVfMvKkNfqbgiw7o10NFyZBSB62ODzsqogv-WDYKQ@mail.gmail.com>
+ <acQvNRLpHwnHt7i+@yjaykim-PowerEdge-T330>
+ <CAKEwX=Pt04pYfhYOwmtXJKU5OqcxBC14SAf1wpBxBo1D7rPpGw@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <CAKEwX=NnHxpQKp9qBg2=r_euyjgxw2nHXjbgof3MymHTgJmRAQ@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAKEwX=Pt04pYfhYOwmtXJKU5OqcxBC14SAf1wpBxBo1D7rPpGw@mail.gmail.com>
 X-Spamd-Result: default: False [0.64 / 15.00];
 	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	MID_RHS_NOT_FQDN(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	MAILLIST(-0.15)[generic];
 	DMARC_POLICY_SOFTFAIL(0.10)[lge.com : SPF not aligned (relaxed), No valid DKIM,none];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-15282-lists,cgroups=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-15283-lists,cgroups=lfdr.de];
 	FROM_HAS_DN(0.00)[];
 	RCVD_COUNT_THREE(0.00)[4];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	FREEMAIL_TO(0.00)[gmail.com];
 	MIME_TRACE(0.00)[0:+];
-	FREEMAIL_CC(0.00)[tencent.com,oracle.com,linux-foundation.org,nvidia.com,google.com,kernel.org,linux.alibaba.com,redhat.com,sk.com,vger.kernel.org,linux.dev,lwn.net,arm.com,gourry.net,cmpxchg.org,gmail.com,kvack.org,intel.com,suse.com,infradead.org,suse.de,huaweicloud.com,suse.cz,bytedance.com,meta.com,surriel.com];
+	FREEMAIL_CC(0.00)[gmail.com,oracle.com,linux-foundation.org,nvidia.com,google.com,kernel.org,linux.alibaba.com,redhat.com,sk.com,vger.kernel.org,linux.dev,lwn.net,arm.com,gourry.net,cmpxchg.org,kvack.org,intel.com,suse.com,infradead.org,suse.de,huaweicloud.com,suse.cz,bytedance.com,meta.com,surriel.com];
 	MISSING_XM_UA(0.00)[];
 	TO_DN_SOME(0.00)[];
 	RCPT_COUNT_GT_50(0.00)[54];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[youngjun.park@lge.com,cgroups@vger.kernel.org];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	NEURAL_HAM(-0.00)[-0.976];
+	NEURAL_HAM(-0.00)[-0.989];
 	TAGGED_RCPT(0.00)[cgroups];
 	R_DKIM_NA(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 9C4DB3F5289
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[lge.com:email,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: 897E43F529F
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-On Sat, Apr 11, 2026 at 06:40:44PM -0700, Nhat Pham wrote:
-
-Hello Nhat!
-
-> > 1. Modularization
+On Sat, Apr 11, 2026 at 06:03:04PM -0700, Nhat Pham wrote:
+> On Wed, Mar 25, 2026 at 11:53 AM YoungJun Park <youngjun.park@lge.com> wrote:
 > >
-> > You removed CONFIG_* and went with a unified approach. I recall
-> > you were also considering a module-based structure at some point.
-> > What are your thoughts on that direction?
+> > On Mon, Mar 23, 2026 at 11:32:57AM -0400, Nhat Pham wrote:
 > >
->
-> The CONFIG-based approach was a huge mess. It makes me not want to
-> look at the code, and I'm the author :)
->
-> > If we take that approach, we could extend the recent swap ops
-> > patchset (https://lore.kernel.org/linux-mm/20260302104016.163542-1-bhe@redhat.com/)
-> > as follows:
-> > - Make vswap a swap module
-> > - Have cluster allocation functions reside in swapops
-> > - Enable vswap through swapon
->
-> Hmmmmm.
-
-I think this would be a happy world, but I wonder what others think.
-Anyway, I'm looking forward to the future direction.
-
-> > 2. Flash-friendly swap integration (for my use case)
+> > > Interesting. Normally "lots of zero-filled page" is a very beneficial
+> > > case for vswap. You don't need a swapfile, or any zram/zswap metadata
+> > > overhead - it's a native swap backend. If production workload has this
+> > > many zero-filled pages, I think the numbers of vswap would be much
+> > > less alarming - perhaps even matching memory overhead because you
+> > > don't need to maintain a zram entry metadata (it's at least 2 words
+> > > per zram entry right?), while there's no reverse map overhead induced
+> > > (so it's 24 bytes on both side), and no need to do zram-side locking
+> > > :)
+> > >
+> > > So I was surprised to see that it's not working out very well here. I
+> > > checked the implementation of memhog - let me know if this is wrong
+> > > place to look:
+> > >
+> > > https://man7.org/linux/man-pages/man8/memhog.8.html
+> > > https://github.com/numactl/numactl/blob/master/memhog.c#L52
+> > >
+> > > I think this is what happened here: memhog was populating the memory
+> > > 0xff, which triggers the full overhead of a swapfile-backed swap entry
+> > > because even though it's "same-filled" it's not zero-filled! I was
+> > > following Usama's observation - "less than 1% of the same-filled pages
+> > > were non-zero" - and so I only handled the zero-filled case here:
+> > >
+> > > https://lore.kernel.org/all/20240530102126.357438-1-usamaarif642@gmail.com/
+> > >
+> > > This sounds a bit artificial IMHO - as Usama pointed out above, I
+> > > think most samefilled pages are zero pages, in real production
+> > > workloads. However, if you think there are real use cases with a lot
+> > > of non-zero samefilled pages, please let me know I can fix this real
+> > > quick. We can support this in vswap with zero extra metadata overhead
+> > > - change the VSWAP_ZERO swap entry type to VSWAP_SAME_FILLED, then use
+> > > the backend field to store that value. I can send you a patch if
+> > > you're interested.
 > >
-> > I've been thinking about the flash-friendly swap concept that
-> > I mentioned before and recently proposed:
-> > (https://lore.kernel.org/linux-mm/aZW0voL4MmnMQlaR@yjaykim-PowerEdge-T330/)
+> > This brings back memories -- I'm pretty sure we talked about
+> > exactly this at LPC. Our custom swap device already handles both
+> > zero-filled and same-filled pages on its own, so what we really
+> > wanted was a way to tell the swap layer "just skip the detection
+> > and let it through."
 > >
-> > One of its core functions requires buffering RAM-swapped pages
-> > and writing them sequentially at an appropriate time -- not
-> > immediately, but in proper block-sized units, sequentially.
+> > I looked at two approaches back then but never submitted either:
 > >
-> > This means allocated offsets must essentially be virtual, and
-> > physical offsets need to be managed separately at the actual
-> > write time.
+> >   - A per-swap_info flag to opt out of zero/same-filled handling.
+> >     But this felt wrong from vswap's perspective -- if even one
+> >     device opts out of the zeromap, the model gets messy.
 > >
-> > If we integrate this into the current vswap, we would either
-> > need vswap itself to handle the sequential writes (bypassing
-> > the physical device and receiving pages directly), or swapon
-> > a swap device and have vswap obtain physical offsets from it.
-> > But since those offsets cannot be used directly (due to
-> > buffering and sequential write requirements), they become
-> > virtual too, resulting in:
+> >   - Revisiting Usama's patch 2 approach.
+> >     Sounded good in theory, but as you said,
+> >     it's not as simple to verify in practice. And it is more clean design
+> >     swapout time zero check as I see. So,  I gave up on it.
 > >
-> >   virtual -> virtual -> physical
+> > Seeing this come up again is actually kind of nice :)
 > >
-> > This triple indirection is not ideal.
-> >
-> > However, if the modularization from point 1 is achieved and
-> > vswap acts as a swap device itself, then we can cleanly
-> > establish a:
-> >
-> >   virtual -> physical
->
-> I read that thread sometimes ago. Some remarks:
->
-> 1. I think Christoph has a point. Seems like some of your ideas ( are
-> broadly applicable to swap in general. Maybe fixing swap infra
-> generally would make a lot of sense?
+> > One thought -- maybe a compile-time CONFIG or a boot param to
+> > control the scope? e.g. zero-only, same-filled, or disabled.
+> > That way vendors like us just turn it off, and setups like
+> > Kairui's can opt into broader detection. Just an idea though --
+> > open to other approaches if you have something in mind.
+> 
+> Yeah for vswap it's probably going to be a CONFIG or boot param.
+> 
+> But in the status quo, we can always add a swapfile flag. That one
+> should work already, right?
 
-Broadly speaking, there are two main ideas:
-1. Swap I/O buffering (which is also tied to cluster management issues)
-2. Deduplication
+I'm a bit hesitant about the swapfile flag approach. If vswap gets merged,
+handling devices with this flag set might complicate the vswap design.
 
-Are you leaning towards the view that these two should be placed in a
-higher layer?
+Moreover, exposing a new swap flag to the user interface (e.g., at swapon)
+raises concerns about backward compatibility. Do you think that would be safe?
 
-> 2. Why do we need to do two virtual layers here? For example, If you
-> want to buffer multiple swap outs and turn them into a sequential
-> request, you can:
->
-> a. Allocate virtual swap space for them as you wish. They don't even
-> need to be sequential.
->
-> b. At swap_writeout() time, don't allocate physical swap space for
-> them right away. Instead, accumulate them into a buffer. You can add a
-> new virtual swap entry type to flag it if necessary.
->
-> c. Once that buffer reaches a certain size, you can now allocate
-> contiguous physical swap space for them. Then flush etc. You can flush
-> at swap_writeout() time, or use a dedicated threads etc.
+Since our use case isn't very common, we just need a simple knob to tune it.
+That's why I still prefer a boot param or CONFIG approach.
 
-I initially thought implementing this in vswap would be complicated
-(due to the ripple effects of altering behavior at swap_writeout timing),
-but it seems entirely possible!
-
-1. We could change the behavior (e.g., buffering) at vswap_alloc_swap_slot
-   timing by checking things like the si type.
-2. Additionally, if we can handle the cluster data structures and
-   mechanisms in the swap_info_struct privately, a virtual-to-physical
-   one-direction approach seems feasible.
-   (Come to think of it, it might be better to refactor the infra to let
-   other modules handle this, potentially removing the swap_info_struct
-   mechanism entirely. Just imagination ;) )
-
-> Deduplication sounds like something that should live at a lower layer
-> - I was thinking about it for zswap/zsmalloc back then. I mean, I
-> assume you don't want content sharing across different swap media? :)
-> Something along the line of:
->
-> 1. Maintain an content index for swapped out pages.
->
-> 2. For the swap media that support deduplication, you'll need to add
-> some sort of reference count (more overhead ew).
->
-> 3. Each time we swapped out, we can content-check to see if the same
-> piece of conent has been swapped out before. If so, set the vswap
-> backend to the physical location of the data, increment some sort of
-> reference count (perhaps we can use swap count) of the older entry,
-> and have the swap type point to it.
-
-As for reference count management, applying it loosely might be a good
-approach. Instead of strictly managing the lifecycle of the dedup contents
-with refcounts, we could just periodically clean up the hash. This also
-has the benefit of reducing I/O for the same swap content compared to
-deleting it immediately.
-
-> But have you considered the implications of sharing swap data like
-> this? I need to read the paper you cite - seems like a potential fun
-> read. But what happen when these two pages that share the content
-> belong to two different cgroups? How does the
-> charging/uncharging/charge transferring story work? That's one of the
-> things that made me pause when I wanted to implement deduplication for
-> zswap/zsmalloc. Zram does not charge memory towards cgroup, but zswap
-> does, so we'll need to handle this somehow, and at that point all the
-> complexity might no longer be worth it.
-
-Since our private swap device is similar to ZRAM, I hadn't considered
-the charging aspect. It is indeed a complex issue.
-
-If it goes into ZSWAP, there would definitely be a clear advantage of
-seeing dedup benefits across all swap devices. It's a technically
-interesting area, and I'd like to discuss it in a separate thread if
-I have more ideas or thoughts.
-
-Just a thought that comes to mind here: if vswap becomes modularized,
-how about doing memcg charging for this entire area? 
-(Come to think of it, to fully benefit from vswap modularization,
-zswap should also be applied within its scope.)
-
-Best regards,
+Thanks :D
 Youngjun Park
 
