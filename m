@@ -1,210 +1,221 @@
-Return-Path: <cgroups+bounces-15303-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-15304-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id YJ5eKpv23mkNNAAAu9opvQ
-	(envelope-from <cgroups+bounces-15303-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Wed, 15 Apr 2026 04:23:23 +0200
+	id 8GguHtr43mkNNAAAu9opvQ
+	(envelope-from <cgroups+bounces-15304-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Wed, 15 Apr 2026 04:32:58 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 040223FFB8E
-	for <lists+cgroups@lfdr.de>; Wed, 15 Apr 2026 04:23:22 +0200 (CEST)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id E00453FFCB6
+	for <lists+cgroups@lfdr.de>; Wed, 15 Apr 2026 04:32:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id ACC143040768
-	for <lists+cgroups@lfdr.de>; Wed, 15 Apr 2026 02:22:41 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id B76D7300E3D1
+	for <lists+cgroups@lfdr.de>; Wed, 15 Apr 2026 02:32:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6D4C278F4A;
-	Wed, 15 Apr 2026 02:22:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4E97D303C83;
+	Wed, 15 Apr 2026 02:32:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="IOjTynhS"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ihO8yONh"
 X-Original-To: cgroups@vger.kernel.org
-Received: from out-185.mta0.migadu.com (out-185.mta0.migadu.com [91.218.175.185])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9FC2B3090C1
-	for <cgroups@vger.kernel.org>; Wed, 15 Apr 2026 02:22:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.185
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8DF0B301486;
+	Wed, 15 Apr 2026 02:32:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1776219760; cv=none; b=obRqcVvoGTR3Hbe6fqibKqGyh7fnppgAwZUUc/NNq2IBu8dTE4SZee6V0ya8yKscJDocpbWbEaxt+R+EbWh8rUOW5oPdLzOljYIYzag33QDngTtFboRpsqKaANv5AxTgCxhbI+rmqHiXkFKGTlj9P1R5sxHBRG7A6NvJfjb1hPk=
+	t=1776220370; cv=none; b=A0bMrfLIaQVMulNbwz2sbmBds8YyEWL33olBiwDDmgjsyBcz7T2/WOkUd5K6Ed9e4iOguOhmDm6jPrhJb7mGvCNnRMJ1rkryoq3FcH31I3UPbng1lh6qxVgvq8jsBdsFKelBoPP2zTOV/48Lp5yarUUzm1am4s0aQPrwoHYmB+4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1776219760; c=relaxed/simple;
-	bh=jdSheN3HpBEtv6EP089OLg7gp2WBe8q9pFmRKgZtS8Q=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=PjqVJH+fbM2zAwg67NdbpiP0mRccV8ze2RJlzS1ZjKcS12e2kl5C/dCboy75FCNE7tc8TL3sdrJfKd5I/Ij27jFPGe4CGyEhJ9e8JaCUzxTs4TcbNQoRRgg0yqXyj0i+RKwbGD1E6kb0Oxa0Zrod/Qmx07YjupYSgXv771r0vxs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=IOjTynhS; arc=none smtp.client-ip=91.218.175.185
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <e657c791-0768-452e-9a21-ae5dd13aa706@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1776219755;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=SxdlTa6h3czNPKK/Gx4JCfQxJJmMB+PRQCNkrNojt5w=;
-	b=IOjTynhSxRbXbBSIhYqt2yRd7gag1Ol6pIPFPPWfKEsMNn0st+gT7Nx2aN/4/2E9c0tByV
-	o2/VyHreSZkVVP70OUwZcbozDNSPvno3Q4trUeesMZXyk/tXVVMWMlHl+WLb4/JQU3iAJb
-	UrympiKJEuVbJBeZ/4t3uteVtAH3I6k=
-Date: Wed, 15 Apr 2026 10:22:05 +0800
+	s=arc-20240116; t=1776220370; c=relaxed/simple;
+	bh=nJMDOKwUC4j12LbXLzHBYxV0fA5WtS3uw2VZtj0OTNI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=MMeNB8hS1SLM5L1DJEcEYMHa58duvJhtDWHzHau7GErPfVE1HAGumBmEhj99KlHWh9o8dG1uxIJFEldOHIPbX6as16MDp3uYADjgavk4dBrF/VDzjEV+oIPhN+SfGVPLC0GybSaKinj509s5byXbyAQI2tHU4rJ5sPhDpqAq2I4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ihO8yONh; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8D4C3C19425;
+	Wed, 15 Apr 2026 02:32:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1776220370;
+	bh=nJMDOKwUC4j12LbXLzHBYxV0fA5WtS3uw2VZtj0OTNI=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=ihO8yONhn73jqtT9LKoDI8ZQvx+l2ahTGx+fKK5FDeGDdx43suX9nWb1kgJ8GzZNg
+	 u8OdnnwKye8rgsgGTLidab2SYSTZ0JyTtpayVtZLhqJZSuJVb1BscXnwA/XMEU17AZ
+	 6gSKbcn16Qd+OXCnjbozDLpCyunvc2q62WycDcZB+dxiRCPVoXaHHxD1/1QB8Zr7hM
+	 unRtpY/GXTc0v/nJKc/zI12bfcfdHIr14nQW4IJ1XRIfSM2O7oNU0sjWobavxiNuzZ
+	 kRKKwRe7zayEqxVcUKN9cuv2/8h/Mb3ut3/8lyW9TMqBoy1+TDmwTYdFt0vTSmcfhq
+	 /J6HZJ+NhBOKw==
+Date: Wed, 15 Apr 2026 11:32:47 +0900
+From: "Harry Yoo (Oracle)" <harry@kernel.org>
+To: Joshua Hahn <joshua.hahnjy@gmail.com>
+Cc: Johannes Weiner <hannes@cmpxchg.org>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Michal Hocko <mhocko@kernel.org>, Yosry Ahmed <yosry@kernel.org>,
+	Roman Gushchin <roman.gushchin@linux.dev>,
+	Shakeel Butt <shakeel.butt@linux.dev>,
+	Muchun Song <muchun.song@linux.dev>,
+	David Hildenbrand <david@kernel.org>,
+	Lorenzo Stoakes <ljs@kernel.org>,
+	Vlastimil Babka <vbabka@kernel.org>,
+	Dennis Zhou <dennis@kernel.org>, Tejun Heo <tj@kernel.org>,
+	Christoph Lameter <cl@gentwo.org>, cgroups@vger.kernel.org,
+	linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+	kernel-team@meta.com
+Subject: Re: [PATCH v2] mm/percpu, memcontrol: Per-memcg-lruvec percpu
+ accounting
+Message-ID: <ad74z5aSkwxn9QQG@hyeyoo>
+References: <20260404033844.1892595-1-joshua.hahnjy@gmail.com>
+ <20260414202631.2753640-1-joshua.hahnjy@gmail.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [syzbot] [mm?] [cgroups?] WARNING: bad unlock balance in
- lruvec_stat_mod_folio
-To: Shakeel Butt <shakeel.butt@linux.dev>
-Cc: syzbot <syzbot+1a3353a77896e73a8f53@syzkaller.appspotmail.com>,
- akpm@linux-foundation.org, cgroups@vger.kernel.org, hannes@cmpxchg.org,
- linux-kernel@vger.kernel.org, linux-mm@kvack.org, mhocko@kernel.org,
- muchun.song@linux.dev, roman.gushchin@linux.dev,
- syzkaller-bugs@googlegroups.com, zhengqi.arch@bytedance.com, yosry@kernel.org
-References: <69d54494.050a0220.3030df.0002.GAE@google.com>
- <ad1tV5WpFhxbQ86N@linux.dev> <358c60e1-fa91-40a1-9e00-84c93340c04e@linux.dev>
- <ad5134-5FkAKDqtP@linux.dev>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Qi Zheng <qi.zheng@linux.dev>
-In-Reply-To: <ad5134-5FkAKDqtP@linux.dev>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
-X-Spamd-Result: default: False [0.34 / 15.00];
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20260414202631.2753640-1-joshua.hahnjy@gmail.com>
+X-Spamd-Result: default: False [-0.16 / 15.00];
 	SUSPICIOUS_RECIPS(1.50)[];
-	URI_HIDDEN_PATH(1.00)[https://syzkaller.appspot.com/x/.config?x=4e6c8be618ab359];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[linux.dev,none];
-	R_DKIM_ALLOW(-0.20)[linux.dev:s=key1];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
+	MID_RHS_NOT_FQDN(0.50)[];
+	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-15303-lists,cgroups=lfdr.de];
-	RCVD_COUNT_THREE(0.00)[3];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	RCVD_TLS_LAST(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[13];
+	TAGGED_FROM(0.00)[bounces-15304-lists,cgroups=lfdr.de];
+	RCPT_COUNT_TWELVE(0.00)[18];
 	MIME_TRACE(0.00)[0:+];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[localhost:email,linux.dev:dkim,linux.dev:mid,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,syzkaller.appspot.com:url];
-	MISSING_XM_UA(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[qi.zheng@linux.dev,cgroups@vger.kernel.org];
+	FREEMAIL_TO(0.00)[gmail.com];
+	RCVD_COUNT_THREE(0.00)[4];
 	FROM_HAS_DN(0.00)[];
-	DKIM_TRACE(0.00)[linux.dev:+];
-	NEURAL_HAM(-0.00)[-1.000];
-	TAGGED_RCPT(0.00)[cgroups,1a3353a77896e73a8f53];
-	MID_RHS_MATCH_FROM(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	TO_DN_SOME(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	SUBJECT_HAS_QUESTION(0.00)[]
-X-Rspamd-Queue-Id: 040223FFB8E
+	NEURAL_HAM(-0.00)[-1.000];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[harry@kernel.org,cgroups@vger.kernel.org];
+	DKIM_TRACE(0.00)[kernel.org:+];
+	TAGGED_RCPT(0.00)[cgroups];
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	MISSING_XM_UA(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: E00453FFCB6
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-
-
-On 4/15/26 1:15 AM, Shakeel Butt wrote:
-> On Tue, Apr 14, 2026 at 11:52:13AM +0800, Qi Zheng wrote:
->> Hi Shakeel,
->>
->> On 4/14/26 6:28 AM, Shakeel Butt wrote:
->>> +Qi & Yosry
->>>
->>> On Tue, Apr 07, 2026 at 10:53:24AM -0700, syzbot wrote:
->>>> Hello,
->>>>
->>>> syzbot found the following issue on:
->>>>
->>>> HEAD commit:    cc13002a9f98 Add linux-next specific files for 20260402
->>>> git tree:       linux-next
->>>> console output: https://syzkaller.appspot.com/x/log.txt?x=10d8946a580000
->>>> kernel config:  https://syzkaller.appspot.com/x/.config?x=4e6c8be618ab359
->>>> dashboard link: https://syzkaller.appspot.com/bug?extid=1a3353a77896e73a8f53
->>>> compiler:       Debian clang version 21.1.8 (++20251221033036+2078da43e25a-1~exp1~20251221153213.50), Debian LLD 21.1.8
->>>>
->>>> Unfortunately, I don't have any reproducer for this issue yet.
->>>
->>> Let's wait for the reproducer. I can only think of cgroup_subsys_on_dfl() check
->>> returning different value in get_non_dying_memcg_start() and
->>> get_non_dying_memcg_end() to cause this uneven rcu unlock. However I can't think
->>> why and how that can happen.
->>>
->>
->> My AI bot told me that the cgroup_subsys_on_dfl_key can be dynamically
->> modified at runtime during a rebind:
->>
->> rebind_subsystems()
->> --> if (dst_root == &cgrp_dfl_root) {
->> 		static_branch_enable(cgroup_subsys_on_dfl_key[ssid]);
->>      } else {
->> 		dcgrp->subtree_control |= 1 << ssid;
->> 		static_branch_disable(cgroup_subsys_on_dfl_key[ssid]);
->>      }
->>
->> However, when I actually tested it, I hit the following error:
->>
->> mount: /tmp/cg-rb-repro: mount point is busy.
->>
->> Indeed, there are already many child cgroups under the cgroup v2 root
->> (the VM just booted):
->>
->> root@localhost:~# find /sys/fs/cgroup -mindepth 1 -maxdepth 2 -type d | head
->> -50
->> /sys/fs/cgroup/sys-kernel-debug.mount
->> /sys/fs/cgroup/dev-mqueue.mount
->> /sys/fs/cgroup/user.slice
->> /sys/fs/cgroup/user.slice/user-0.slice
->> /sys/fs/cgroup/sys-kernel-tracing.mount
->> /sys/fs/cgroup/init.scope
->> /sys/fs/cgroup/system.slice
->> /sys/fs/cgroup/system.slice/systemd-networkd.service
->> /sys/fs/cgroup/system.slice/systemd-udevd.service
->> /sys/fs/cgroup/system.slice/system-serial\x2dgetty.slice
->> /sys/fs/cgroup/system.slice/wpa_supplicant.service
->> /sys/fs/cgroup/system.slice/system-modprobe.slice
->> /sys/fs/cgroup/system.slice/systemd-journald.service
->> /sys/fs/cgroup/system.slice/unattended-upgrades.service
->> /sys/fs/cgroup/system.slice/system-systemd\x2dgrowfs.slice
->> /sys/fs/cgroup/system.slice/ssh.service
->> /sys/fs/cgroup/system.slice/dhcpcd.service
->> /sys/fs/cgroup/system.slice/systemd-resolved.service
->> /sys/fs/cgroup/system.slice/dbus.service
->> /sys/fs/cgroup/system.slice/systemd-timesyncd.service
->> /sys/fs/cgroup/system.slice/system-getty.slice
->> /sys/fs/cgroup/system.slice/systemd-logind.service
->> /sys/fs/cgroup/dev-hugepages.mount
->>
->> So it seems impossible to rebind memory in a production environment
->> using systemd?
->>
->> Then I disabled systemd:
->>
->> set `init=/bin/bash`
->>
->> and found that I could successfully run the following commands:
->>
->> root@(none):/# mkdir -p /tmp/cg-rb-repro
->> root@(none):/# mount -t cgroup -o none,name=rb none /tmp/cg-rb-repro
->> root@(none):/# mount -t cgroup -o remount,memory none /tmp/cg-rb-repro
->> [   65.903125][  T241] option changes via remount are deprecated (pid=241
->> comm=mount)
->> root@(none):/# mount -t cgroup -o remount,name=rb none /tmp/cg-rb-repro
->> [   73.405829][  T242] option changes via remount are deprecated (pid=242
->> comm=mount)
->> root@(none):/# umount /tmp/cg-rb-repro
->>
->> So it seems this race condition does exist. Should we fix it?
+On Tue, Apr 14, 2026 at 01:26:31PM -0700, Joshua Hahn wrote:
+> On Fri,  3 Apr 2026 20:38:43 -0700 Joshua Hahn <joshua.hahnjy@gmail.com> wrote:
 > 
-> This only succeeded because there weren't any active cgroups. Were you able to
-> trigger the warning as well. If not, I think we should just wait for
-
-Nope.
-
-> reproducer from syzbot before doing anything.
-
-OK, Let's wait for syzbot to reproduce it.
-
+> > enum memcg_stat_item includes memory that is tracked on a per-memcg
+> > level, but not at a per-node (and per-lruvec) level. Diagnosing
+> > memory pressure for memcgs in multi-NUMA systems can be difficult,
+> > since not all of the memory accounted in memcg can be traced back
+> > to a node. In scenarios where numa nodes in an memcg are asymmetrically
+> > stressed, this difference can be invisible to the user.
+> > 
+> > Convert MEMCG_PERCPU_B from a memcg_stat_item to a memcg_node_stat_item
+> > to give visibility into per-node breakdowns for percpu allocations.
+> > 
+> > This will get us closer to being able to know the memcg and physical
+> > association of all memory on the system. Specifically for percpu, this
+> > granularity will help demonstrate footprint differences on systems with
+> > asymmetric NUMA nodes.
+> > 
+> > Because percpu memory is accounted at a sub-PAGE_SIZE level, we must
+> > account node level statistics (accounted in PAGE_SIZE units) and
+> > memcg-lruvec statistics separately. Account node statistics when the pcpu
+> > pages are allocated, and account memcg-lruvec statistics when pcpu
+> > objects are handed out.
 > 
+> [...snip...]
+> 
+> > @@ -55,7 +55,8 @@ static void pcpu_free_pages(struct pcpu_chunk *chunk,
+> >  			    struct page **pages, int page_start, int page_end)
+> >  {
+> >  	unsigned int cpu;
+> > -	int i;
+> > +	int nr_pages = page_end - page_start;
+> > +	int i, nid;
+> >  
+> >  	for_each_possible_cpu(cpu) {
+> >  		for (i = page_start; i < page_end; i++) {
+> > @@ -65,6 +66,10 @@ static void pcpu_free_pages(struct pcpu_chunk *chunk,
+> >  				__free_page(page);
+> >  		}
+> >  	}
+> > +
+> > +	for_each_node(nid)
+> > +		mod_node_page_state(NODE_DATA(nid), NR_PERCPU_B,
+> > +				-1L * nr_pages * nr_cpus_node(nid) * PAGE_SIZE);
+> >  }
+> >  
+> >  /**
+> > @@ -84,7 +89,8 @@ static int pcpu_alloc_pages(struct pcpu_chunk *chunk,
+> >  			    gfp_t gfp)
+> >  {
+> >  	unsigned int cpu, tcpu;
+> > -	int i;
+> > +	int nr_pages = page_end - page_start;
+> > +	int i, nid;
+> >  
+> >  	gfp |= __GFP_HIGHMEM;
+> >  
+> > @@ -97,6 +103,10 @@ static int pcpu_alloc_pages(struct pcpu_chunk *chunk,
+> >  				goto err;
+> >  		}
+> >  	}
+> > +
+> > +	for_each_node(nid)
+> > +		mod_node_page_state(NODE_DATA(nid), NR_PERCPU_B,
+> > +				    nr_pages * nr_cpus_node(nid) * PAGE_SIZE);
+> >  	return 0;
+> 
+> Hello reviewers,
+> 
+> Since I submitted this, I have been thinking about the feedback that Sashiko
+> has given this patch [1]. Harry has already pointed out the points about
+> drifting due to CPU hotplug, but one there is one particular concern that
+> I have been trying to tackle with no avail.
+> 
+> The issue is, pcpu allocations for CPUs on node A may actually fall back to
+> node B, if node A is out of space and under pressure. This design seems to be
+> intentional, to prevent memory pressure from failing these allocations.
+> 
+> However, this means that we cannot charge percpu memory based on the number
+> of CPUs present on a node, because although the memory "belongs" to the node
+> (since the CPU it actually belongs to is on the node), the memory can be
+> serviced from elsewhere.
 
+Ouch.
+
+> To handle this, I've tried several approaches. All of them were either too
+> expensive (iterating through all pages at allocation / free time)
+
+How expensive was it compared to the baseline?
+
+> or introduces
+> new drift (I thought of managing per-chunk statistics as well).
+
+How does it introduce a new drift?
+
+> To be honest, I think I'm out of ideas at this point :/ So I wanted to see
+> what others thought about how to track physical locations for pcpu allocations
+> that were allocated via fallback. Are these rare enough that we are OK with
+> the misattributing here? Should we eat the cost of iterating through all pages
+> to find out where it is physically?
+> 
+> Or is this patch not worth pursuing at the moment? ; -)
+> 
+> I hope this all makes sense. Thank you all in advance!
+> Joshua
+> 
+> [1] https://sashiko.dev/#/patchset/20260404033844.1892595-1-joshua.hahnjy%40gmail.com
+
+-- 
+Cheers,
+Harry / Hyeonggon
 
