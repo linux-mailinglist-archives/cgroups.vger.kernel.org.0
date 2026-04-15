@@ -1,165 +1,259 @@
-Return-Path: <cgroups+bounces-15314-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-15315-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id IG2YDKmU32l9WQAAu9opvQ
-	(envelope-from <cgroups+bounces-15314-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Wed, 15 Apr 2026 15:37:45 +0200
+	id AHWnFTSj32miXAAAu9opvQ
+	(envelope-from <cgroups+bounces-15315-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Wed, 15 Apr 2026 16:39:48 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
-	by mail.lfdr.de (Postfix) with ESMTPS id C4729404E7E
-	for <lists+cgroups@lfdr.de>; Wed, 15 Apr 2026 15:37:44 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7D48140568C
+	for <lists+cgroups@lfdr.de>; Wed, 15 Apr 2026 16:39:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 7BAAE3019067
-	for <lists+cgroups@lfdr.de>; Wed, 15 Apr 2026 13:37:36 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id BED763019525
+	for <lists+cgroups@lfdr.de>; Wed, 15 Apr 2026 14:33:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BBDA334214F;
-	Wed, 15 Apr 2026 13:37:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AC4CC3D3322;
+	Wed, 15 Apr 2026 14:33:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="gx5XogfU"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jEcRJ4Dh"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-wm1-f48.google.com (mail-wm1-f48.google.com [209.85.128.48])
+Received: from mail-ot1-f42.google.com (mail-ot1-f42.google.com [209.85.210.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D42C2BDC3F
-	for <cgroups@vger.kernel.org>; Wed, 15 Apr 2026 13:37:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8AD0E3A3E99
+	for <cgroups@vger.kernel.org>; Wed, 15 Apr 2026 14:33:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1776260253; cv=none; b=LSuwWuwKeih+CMlRbzPYQf3A4JP02MJ2h4b6jhadDeHRPh3ruI6W4RuCeIiYqe8M9ExyJF2FaO0YfEdHl+1dribOq3sUQky9cXxNnlS1LgdYne+T2gfd1hAdW1UrjVlWBXq9XjTJUIikx94K1wn4lTDhKtsQyvUODyxortgePAY=
+	t=1776263627; cv=none; b=F95pX2D3A6K9MXQkL94r16ZLoz5ZRx5XQEdOurGVxL71MtV/hb5oMizZw2kT83h2qK3KdBEf9vtpgMRMSCQ08RGFxk4LWTJ3yKN2ipqWEKmfUON3o5a6p2KPNcDf9UxgzdOCi0J+2Ij/sxvXQLS4wCUxkDzuPBSLbFkcbKfEqKw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1776260253; c=relaxed/simple;
-	bh=1UdAUPi001wp94FfqwFP2mABCGqvSXFEk05dXCEhWxg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=LCF1Cu5RzgNO74drH+Yz14adHESyOXp9kipFBIz0P7j0+aLggVncJ9vupXqMaZU3xAtBDKUI/wPXB7BNk+ZPx3eWrK37yTUhH+Q+O/IB1AiPbDUu2uNwfqzkz8q/4fnP2flbmXKyc2nLqTPZNNEfYrBgYTfdPQbYYyMYWF5uLGc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=gx5XogfU; arc=none smtp.client-ip=209.85.128.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-wm1-f48.google.com with SMTP id 5b1f17b1804b1-488a14c31eeso55194985e9.0
-        for <cgroups@vger.kernel.org>; Wed, 15 Apr 2026 06:37:31 -0700 (PDT)
+	s=arc-20240116; t=1776263627; c=relaxed/simple;
+	bh=xeYCvVYl5EmlyGhsvk2ia+r2JwTVIu16RVm9l3KArIE=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=YZ6eaf9bBT5yJFPwVEg2dzTzuoG8/LmhQCt/7VdWGRaxrL34/wZ3V2xlRDyFFjZ7ljhRUaPTdlNJB8aXpNWWRDBzbNaJLy0+hw2oB/1E2Uoo7gn0OntYeVQf6PIGEnE7Kx5TzEpaVEi7HWwg8UodjJ3SxhJks6mckAX1q1bDP+0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=jEcRJ4Dh; arc=none smtp.client-ip=209.85.210.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ot1-f42.google.com with SMTP id 46e09a7af769-7d4c12ff3d5so6095145a34.2
+        for <cgroups@vger.kernel.org>; Wed, 15 Apr 2026 07:33:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1776260250; x=1776865050; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=t3HGShUqwXmU53xc4UmjBc1ReH1MKh0qjB6rxMysh+Q=;
-        b=gx5XogfUnl5tBtMnk74bL4O/oJEO6EGxp5FXXq4xF/6AxX92BqYlOQAaSkMYIkufzN
-         QIGXeC1FuVzvF7/bCabiRZhCbNQKbJ40Tbf8yGM785VYQzFP0YZc1GpvX0HdvuYZhFAX
-         Ixv4j51OVbt1nCNVdrJEqiYp0BCyj3sKTjZ5kvWGwA0WDDKC1YuJrdsUU3JZrxwYinnY
-         Ix6FStnVsXmgZwWg0CfmaK3Hk2vTzYqqY3J74pSSzTsh3ka841wU6pd/b5WriCBwZycX
-         WyDT427LMSgU7JYoGto8NPNI8+vrwRnjp1uEXKTsppR7b60nNr0sbSyU3zAToCxQA7+L
-         jv1w==
+        d=gmail.com; s=20251104; t=1776263624; x=1776868424; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=z6++CI4laqgUkEu/9WjoRCFUvBg1ZLNaXzfHGKxYlnY=;
+        b=jEcRJ4DhvYbumj7pOB8WPx8X5NRIIfgvSfIk/PFHyOfk9UDcLm4qSNZMicqZFuab2N
+         Bw5SfQuip2+Hds/jvjfBp+fqdRFxrMR5yksMy0HrvXSTqhpKG9korBepZokfStATIbr7
+         8hHwwg8WnoIx1WhKIO4uAsojPzEvOvr2P7W4aioEePLzdaUupwZzRj5Bod4GBAICjRrh
+         Sd4ke2RVomjfaNo2KSN+tcnJAcjhdfEKPgVOfWr8vSU/JJM9Si+ayV9U2EreGN6uxjlo
+         0zDTnVdPXX9ru8TMfWcp0ZC0UOqT9UPp50gTzHcpLbpC/oyVH/NIi1Vn40RryjA9yHWu
+         pE4Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1776260250; x=1776865050;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=t3HGShUqwXmU53xc4UmjBc1ReH1MKh0qjB6rxMysh+Q=;
-        b=J/5IP4Tr5ys9mLQNwgI+W7tI2QO3hIHkpKv5L4cKsklENavI71XRda7CHLA0LLH5o0
-         q3XQazmdY78iVuIGEwrxTz3WOcQN2b3gGoDbcq6slA75Rlb/ux3CbrLeZ94ePRnpNeZ5
-         E90U8OGV/KK3Q8jW4aMJHq0AY53Ul8RaqUgZWU4wQbngRrTwX0nuyHkwzLTYBRJeACxY
-         354oLBIimrNj+g986LVrjzIxBcj8aGyXXJc5wtKYcOmHwRpwo8HMVvTfFShQd+XpURKH
-         6NVMZdWdLd4+2QrvvEy9jmpkcVlXF2s4kJ9lQreFEnDaLHAbuTNcIfpXhLMso9Rmx0Mu
-         0wvA==
-X-Forwarded-Encrypted: i=1; AFNElJ+ZvOSBlTLxt50AHUcNke4Z8wOPjuigw34Srsgvw+/cJnP9H2KaeIVCiZyYYARp0L/cUSuyD0kU@vger.kernel.org
-X-Gm-Message-State: AOJu0YxY8IFOL1+QRWWO0/ZOE9m2czON/dtQ4b7K8KVde1P8PtS765VE
-	VYBYvRpbykdLtFOxZMmbM09xiMWXukroUfa6UXeR1VkAFyHPBLISzqU39Aryh5zJFeo=
-X-Gm-Gg: AeBDieshEoXheo9FLlJnPxjECZ6gdxmrseOGrHvulFhKNgoqJMEmMVxiyWSRuJ+Yt/f
-	knBPU9OTSRKXf4MY+QH6TwGYCMzVWHtMXHdr/e8vzuOzX3pk6WFmZ4sexWRDuH5eyLwcMFJOYEx
-	zotivj/gFHiVFDN0Qek5ajCtQrmLSHw4wdz1oE3UqjeQimbfzBhM6KDmky8zjSUTQc5kqoZKvZ7
-	9ckNH4SnssVFLNR1dyt+So0KjnwHsWjKzvGwsCHlPeRFceibIsPY5m8Fiy70dpFM66qcfSArigf
-	E/7wywJ3Tomxq0a0qHHo0neu9554mVXl/NoQV8A2CF07jFn+qrCepZd3pYbQ4RmuyPFYKLQh5u2
-	n0uqJRelx2XYyfU2eSjVI7Arb3bKMZXiMmU6b+9P/w+RkPTcobz0IZ0R/hxfDNJhpsx5lKAl5Hf
-	yJGe40j621KtvoN0I7nSMSVgPn5xdMLTpmrufotp2WFp/PotPVC1P/8w==
-X-Received: by 2002:a05:600c:c0c8:b0:488:af14:f1de with SMTP id 5b1f17b1804b1-488d67b8de8mr221931205e9.4.1776260250430;
-        Wed, 15 Apr 2026 06:37:30 -0700 (PDT)
-Received: from blackdock.suse.cz (nat2.prg.suse.com. [195.250.132.146])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-488ede1513csm144847375e9.2.2026.04.15.06.37.29
+        d=1e100.net; s=20251104; t=1776263624; x=1776868424;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=z6++CI4laqgUkEu/9WjoRCFUvBg1ZLNaXzfHGKxYlnY=;
+        b=Eq80H/5maKWeMSw8MgZr7BQCyHMx0GTNrOndwuixGMLkgUnXxElt/9WlC2uHZo0sBf
+         9fjB0/mxCJuKg+P/1eJXz1Ie6cggiej5WqcY72Ul5yMqXj4vWOvyxiqxcUlVIE+darFM
+         k1ii+r6IrDFvtX4QIa3oJkq6aXN4oo7+4DeI7YR1Kfxryj7orlFcXJ1y0pFVvNLBV55Y
+         qry84xMJrrsqnbqTGKw6YwyL9yBaZ0hfrjC0HoKE3Eh2fL/21FTTEiLci/b76wG9/rqu
+         qN44wBkcMzHZvE3sh8iIGaRyAwq7pBMGHIt+icJv8oD4e3zbJw6U80ZWQBJ7/W3EIkZ3
+         5vnQ==
+X-Forwarded-Encrypted: i=1; AFNElJ9c3VeHl4DJj9EgFPsQB7kBcxlaIt8R+VegR+Bj9MFeHElRM/V0XZKuObqIuXWPi/tUbGxBeKG1@vger.kernel.org
+X-Gm-Message-State: AOJu0YwrcL+0ktNgWIuFvXPHIyVnqhLt/v/P9R4A9s+IGmsSFHlWEPP5
+	IWFhaGk6VwpArlDSlve8iYgAa/sF97c8w753QVWxXiOmdknqK9lkL8AL
+X-Gm-Gg: AeBDiet7O/WvN7mHXbpd6u+N6CGElPIFF6x49rkGq2C1WuvDPh5QtzrAUhVo6zYQxKI
+	Nlo6Zj9Sm0VtbUn3yYXJiZ16g5TG4pbjcFzhi+k0MbKk9wgwDwSW0wuYr7BJnxdIANsMhNEnLm5
+	5bvpT0y222/TRVrIXjtSbsRxj3FtiAoD8Av+hRVdmEzIzkziRtWdwlxrT4SUkJdAIn46Z4ni+5+
+	wCUrJZg5BjMAHVxMgHpgVtVBLplFsnWfvTTPx3h3dB8tMfUQXU/d4Y64awnxfcbwtRCnJnd441r
+	TAFFCvq2n6CuKo+et3WpzjFmJs+w8GTWHjck0918s0ckqpk6Wzvvii9xK61Ib83U7mAVMJFwCV8
+	uAjlF7hPXckh8jQih5v3VWR+gpNCGRQET/GnZlrls90hKSluDLqa0sr6J40n96MZPybKrJh7blr
+	Nu7h8JaVsk51h+kfx3Ljqa+A==
+X-Received: by 2002:a05:6830:6ae9:b0:7d7:d8ca:c211 with SMTP id 46e09a7af769-7dc27dde06fmr13267298a34.1.1776263624373;
+        Wed, 15 Apr 2026 07:33:44 -0700 (PDT)
+Received: from localhost ([2a03:2880:10ff:53::])
+        by smtp.gmail.com with ESMTPSA id 46e09a7af769-7dc76a3612dsm1524656a34.10.2026.04.15.07.33.43
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 15 Apr 2026 06:37:30 -0700 (PDT)
-Date: Wed, 15 Apr 2026 15:37:28 +0200
-From: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
-To: cuitao <cuitao@kylinos.cn>
-Cc: tj@kernel.org, hannes@cmpxchg.org, cgroups@vger.kernel.org
-Subject: Re: [PATCH] cgroup/rdma: fix strncmp prefix match in parse_resource()
-Message-ID: <hh55ocozzvg6uyfjmwu2hldksmrq33kdqo5hpxi2q4nszztj2s@nmacfk64ks65>
-References: <20260414020936.306853-1-cuitao@kylinos.cn>
+        Wed, 15 Apr 2026 07:33:43 -0700 (PDT)
+From: Joshua Hahn <joshua.hahnjy@gmail.com>
+To: "Harry Yoo (Oracle)" <harry@kernel.org>
+Cc: Johannes Weiner <hannes@cmpxchg.org>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Michal Hocko <mhocko@kernel.org>,
+	Yosry Ahmed <yosry@kernel.org>,
+	Roman Gushchin <roman.gushchin@linux.dev>,
+	Shakeel Butt <shakeel.butt@linux.dev>,
+	Muchun Song <muchun.song@linux.dev>,
+	David Hildenbrand <david@kernel.org>,
+	Lorenzo Stoakes <ljs@kernel.org>,
+	Vlastimil Babka <vbabka@kernel.org>,
+	Dennis Zhou <dennis@kernel.org>,
+	Tejun Heo <tj@kernel.org>,
+	Christoph Lameter <cl@gentwo.org>,
+	cgroups@vger.kernel.org,
+	linux-mm@kvack.org,
+	linux-kernel@vger.kernel.org,
+	kernel-team@meta.com
+Subject: Re: [PATCH v2] mm/percpu, memcontrol: Per-memcg-lruvec percpu accounting
+Date: Wed, 15 Apr 2026 07:33:41 -0700
+Message-ID: <20260415143342.81714-1-joshua.hahnjy@gmail.com>
+X-Mailer: git-send-email 2.52.0
+In-Reply-To: <ad74z5aSkwxn9QQG@hyeyoo>
+References: 
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="rff5pgdcxrgpjs5m"
-Content-Disposition: inline
-In-Reply-To: <20260414020936.306853-1-cuitao@kylinos.cn>
-X-Spamd-Result: default: False [-3.76 / 15.00];
-	SIGNED_PGP(-2.00)[];
+Content-Transfer-Encoding: 8bit
+X-Spamd-Result: default: False [-1.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[suse.com,quarantine];
-	MID_RHS_NOT_FQDN(0.50)[];
-	MIME_GOOD(-0.20)[multipart/signed,text/plain];
-	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
-	R_DKIM_ALLOW(-0.20)[suse.com:s=google];
+	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
+	R_MISSING_CHARSET(0.50)[];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_DKIM_ALLOW(-0.20)[gmail.com:s=20251104];
 	MAILLIST(-0.15)[generic];
+	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-15314-lists,cgroups=lfdr.de];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
+	RECEIVED_HELO_LOCALHOST(0.00)[];
 	RCVD_TLS_LAST(0.00)[];
-	MIME_TRACE(0.00)[0:+,1:+,2:~];
-	DKIM_TRACE(0.00)[suse.com:+];
-	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
-	MISSING_XM_UA(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[5];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[mkoutny@suse.com,cgroups@vger.kernel.org];
-	RCPT_COUNT_THREE(0.00)[4];
+	MIME_TRACE(0.00)[0:+];
+	TAGGED_FROM(0.00)[bounces-15315-lists,cgroups=lfdr.de];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	FREEMAIL_FROM(0.00)[gmail.com];
+	RCPT_COUNT_TWELVE(0.00)[18];
+	FROM_HAS_DN(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[joshuahahnjy@gmail.com,cgroups@vger.kernel.org];
+	MID_RHS_MATCH_FROM(0.00)[];
 	NEURAL_HAM(-0.00)[-1.000];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[5];
+	DKIM_TRACE(0.00)[gmail.com:+];
 	TAGGED_RCPT(0.00)[cgroups];
 	TO_DN_SOME(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:dkim,sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: C4729404E7E
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: 7D48140568C
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
+On Wed, 15 Apr 2026 11:32:47 +0900 "Harry Yoo (Oracle)" <harry@kernel.org> wrote:
 
---rff5pgdcxrgpjs5m
-Content-Type: text/plain; protected-headers=v1; charset=us-ascii
-Content-Disposition: inline
-Subject: Re: [PATCH] cgroup/rdma: fix strncmp prefix match in parse_resource()
-MIME-Version: 1.0
+> On Tue, Apr 14, 2026 at 01:26:31PM -0700, Joshua Hahn wrote:
+> > On Fri,  3 Apr 2026 20:38:43 -0700 Joshua Hahn <joshua.hahnjy@gmail.com> wrote:
+> > 
+> > > enum memcg_stat_item includes memory that is tracked on a per-memcg
+> > > level, but not at a per-node (and per-lruvec) level. Diagnosing
+> > > memory pressure for memcgs in multi-NUMA systems can be difficult,
+> > > since not all of the memory accounted in memcg can be traced back
+> > > to a node. In scenarios where numa nodes in an memcg are asymmetrically
+> > > stressed, this difference can be invisible to the user.
+> > > 
+> > > Convert MEMCG_PERCPU_B from a memcg_stat_item to a memcg_node_stat_item
+> > > to give visibility into per-node breakdowns for percpu allocations.
+> > > 
+> > > This will get us closer to being able to know the memcg and physical
+> > > association of all memory on the system. Specifically for percpu, this
+> > > granularity will help demonstrate footprint differences on systems with
+> > > asymmetric NUMA nodes.
+> > > 
+> > > Because percpu memory is accounted at a sub-PAGE_SIZE level, we must
+> > > account node level statistics (accounted in PAGE_SIZE units) and
+> > > memcg-lruvec statistics separately. Account node statistics when the pcpu
+> > > pages are allocated, and account memcg-lruvec statistics when pcpu
+> > > objects are handed out.
+> > 
+> > [...snip...]
+> > 
+> > > @@ -55,7 +55,8 @@ static void pcpu_free_pages(struct pcpu_chunk *chunk,
+> > >  			    struct page **pages, int page_start, int page_end)
+> > >  {
+> > >  	unsigned int cpu;
+> > > -	int i;
+> > > +	int nr_pages = page_end - page_start;
+> > > +	int i, nid;
+> > >  
+> > >  	for_each_possible_cpu(cpu) {
+> > >  		for (i = page_start; i < page_end; i++) {
+> > > @@ -65,6 +66,10 @@ static void pcpu_free_pages(struct pcpu_chunk *chunk,
+> > >  				__free_page(page);
+> > >  		}
+> > >  	}
+> > > +
+> > > +	for_each_node(nid)
+> > > +		mod_node_page_state(NODE_DATA(nid), NR_PERCPU_B,
+> > > +				-1L * nr_pages * nr_cpus_node(nid) * PAGE_SIZE);
+> > >  }
+> > >  
+> > >  /**
+> > > @@ -84,7 +89,8 @@ static int pcpu_alloc_pages(struct pcpu_chunk *chunk,
+> > >  			    gfp_t gfp)
+> > >  {
+> > >  	unsigned int cpu, tcpu;
+> > > -	int i;
+> > > +	int nr_pages = page_end - page_start;
+> > > +	int i, nid;
+> > >  
+> > >  	gfp |= __GFP_HIGHMEM;
+> > >  
+> > > @@ -97,6 +103,10 @@ static int pcpu_alloc_pages(struct pcpu_chunk *chunk,
+> > >  				goto err;
+> > >  		}
+> > >  	}
+> > > +
+> > > +	for_each_node(nid)
+> > > +		mod_node_page_state(NODE_DATA(nid), NR_PERCPU_B,
+> > > +				    nr_pages * nr_cpus_node(nid) * PAGE_SIZE);
+> > >  	return 0;
+> > 
+> > Hello reviewers,
+> > 
+> > Since I submitted this, I have been thinking about the feedback that Sashiko
+> > has given this patch [1]. Harry has already pointed out the points about
+> > drifting due to CPU hotplug, but one there is one particular concern that
+> > I have been trying to tackle with no avail.
+> > 
+> > The issue is, pcpu allocations for CPUs on node A may actually fall back to
+> > node B, if node A is out of space and under pressure. This design seems to be
+> > intentional, to prevent memory pressure from failing these allocations.
+> > 
+> > However, this means that we cannot charge percpu memory based on the number
+> > of CPUs present on a node, because although the memory "belongs" to the node
+> > (since the CPU it actually belongs to is on the node), the memory can be
+> > serviced from elsewhere.
+> 
+> Ouch.
+> 
+> > To handle this, I've tried several approaches. All of them were either too
+> > expensive (iterating through all pages at allocation / free time)
+> 
+> How expensive was it compared to the baseline?
 
-Hello.
+I haven't done any performance analyses, but the changes that were made required
+every pcpu allocation to iterate over all the pages in a loop, and account the
+page where it came from, whereas previously we didn't need to do any iteration,
+just charging or uncharging based on the size. But maybe it's not so bad
+after all, since these allocations should usually be pretty small.
 
-On Tue, Apr 14, 2026 at 10:09:36AM +0800, cuitao <cuitao@kylinos.cn> wrote:
->  	}
-> -	if (strncmp(value, RDMACG_MAX_STR, len) == 0) {
-> +	if (strcmp(value, RDMACG_MAX_STR) == 0) {
+Let me try running some tests to see what the absolute worst case scenario
+regression would look like.
 
-Have you tested this? (When 'max' isn't the last assignment.)
+> > or introduces
+> > new drift (I thought of managing per-chunk statistics as well).
+> 
+> How does it introduce a new drift?
 
-That value/c string is taken out of the whole line (see
-rdmacg_parse_limits), so it wouldn't be necessarily equal to
-RDMACG_MAX_STR. So bounded compare is still somewhat needed:
+The other approach I tried to do to avoid the iteration over pages was to
+stash per-node counters per-chunk. But of course this doesn't work well if
+we need to have statistics per-pcpu allocation, or if we change the ordering
+of the charges based on the ordering of the chunk's pcpu allocations.
 
-	if (strncmp(value, RDMACG_MAX_STR, strlen(RDMACG_MAX_STR)) == 0) {
+In any case, thanks for taking the time to check on the patch.
+I'll try to spin up something soon!
 
-Thanks,
-Michal
-
---rff5pgdcxrgpjs5m
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iJEEABYKADkWIQRCE24Fn/AcRjnLivR+PQLnlNv4CAUCad+UlBsUgAAAAAAEAA5t
-YW51MiwyLjUrMS4xMiwyLDIACgkQfj0C55Tb+AiP2gEA0bGpAFwDh3O629PPoLMK
-UWXSuHl6hYAFDiLH7wUGFLEA/3+i89WTIOB1ILbPODiJIc39P4H14zNz/FmugCna
-exkP
-=7wZy
------END PGP SIGNATURE-----
-
---rff5pgdcxrgpjs5m--
+Joshua
 
