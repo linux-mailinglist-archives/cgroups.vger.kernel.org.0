@@ -1,305 +1,210 @@
-Return-Path: <cgroups+bounces-15302-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-15303-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id wC3oLuXi3mklMAAAu9opvQ
-	(envelope-from <cgroups+bounces-15302-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Wed, 15 Apr 2026 02:59:17 +0200
+	id YJ5eKpv23mkNNAAAu9opvQ
+	(envelope-from <cgroups+bounces-15303-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Wed, 15 Apr 2026 04:23:23 +0200
 X-Original-To: lists+cgroups@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 12D873FF69C
-	for <lists+cgroups@lfdr.de>; Wed, 15 Apr 2026 02:59:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 040223FFB8E
+	for <lists+cgroups@lfdr.de>; Wed, 15 Apr 2026 04:23:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id BFEEE305C8FA
-	for <lists+cgroups@lfdr.de>; Wed, 15 Apr 2026 00:48:17 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id ACC143040768
+	for <lists+cgroups@lfdr.de>; Wed, 15 Apr 2026 02:22:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5BD2E23EAB4;
-	Wed, 15 Apr 2026 00:48:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6D4C278F4A;
+	Wed, 15 Apr 2026 02:22:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="IOjTynhS"
 X-Original-To: cgroups@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+Received: from out-185.mta0.migadu.com (out-185.mta0.migadu.com [91.218.175.185])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 459087080D;
-	Wed, 15 Apr 2026 00:48:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9FC2B3090C1
+	for <cgroups@vger.kernel.org>; Wed, 15 Apr 2026 02:22:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.185
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1776214096; cv=none; b=IDEYEtRpSYMnh904fYh7FAALvcV2aFMWzYu1/s/TGXdWu4nRqkPc/5ZJVXqHGzo0EtzDJ8Zbszx/FiTbT8aovG4lb13JsqM/LapJAMs1/be4bZSNI/JiWUU+7Cc+WkIjkIC2BmUOEq/ZPRIS15SP6gfr96fJqsqkSORTXYS3HS8=
+	t=1776219760; cv=none; b=obRqcVvoGTR3Hbe6fqibKqGyh7fnppgAwZUUc/NNq2IBu8dTE4SZee6V0ya8yKscJDocpbWbEaxt+R+EbWh8rUOW5oPdLzOljYIYzag33QDngTtFboRpsqKaANv5AxTgCxhbI+rmqHiXkFKGTlj9P1R5sxHBRG7A6NvJfjb1hPk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1776214096; c=relaxed/simple;
-	bh=U07JHgEMr46+58Phc9mmtHw8ZNgNaV07zILe7RI1nOk=;
+	s=arc-20240116; t=1776219760; c=relaxed/simple;
+	bh=jdSheN3HpBEtv6EP089OLg7gp2WBe8q9pFmRKgZtS8Q=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=BXsX+fCFJvA+wyqb3TYwkZJ+MVpmpC2jFcvtNJDrNKnh3JuX3Ksk/gQzONT6Gk8p+bx+BFOY1PTfe6Zw7z1YXFHrbt0n5/pDg84DBcVFAI3dFjHmDtYbPM4COXaIbwqTojzsOTGSxY/6M56x3YjMTVInWxOe5QlcdjZXQuwfelM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.177])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTPS id 4fwMtN4Z0yzYQtlN;
-	Wed, 15 Apr 2026 08:47:24 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.252])
-	by mail.maildlp.com (Postfix) with ESMTP id CA5C84058D;
-	Wed, 15 Apr 2026 08:48:09 +0800 (CST)
-Received: from [10.67.111.176] (unknown [10.67.111.176])
-	by APP3 (Coremail) with SMTP id _Ch0CgDnlL5G4N5p19DBAQ--.21997S2;
-	Wed, 15 Apr 2026 08:48:07 +0800 (CST)
-Message-ID: <a0bf7a4d-19f8-4b7c-835d-6d8fd0db3d3c@huaweicloud.com>
-Date: Wed, 15 Apr 2026 08:48:06 +0800
+	 In-Reply-To:Content-Type; b=PjqVJH+fbM2zAwg67NdbpiP0mRccV8ze2RJlzS1ZjKcS12e2kl5C/dCboy75FCNE7tc8TL3sdrJfKd5I/Ij27jFPGe4CGyEhJ9e8JaCUzxTs4TcbNQoRRgg0yqXyj0i+RKwbGD1E6kb0Oxa0Zrod/Qmx07YjupYSgXv771r0vxs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=IOjTynhS; arc=none smtp.client-ip=91.218.175.185
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <e657c791-0768-452e-9a21-ae5dd13aa706@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1776219755;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=SxdlTa6h3czNPKK/Gx4JCfQxJJmMB+PRQCNkrNojt5w=;
+	b=IOjTynhSxRbXbBSIhYqt2yRd7gag1Ol6pIPFPPWfKEsMNn0st+gT7Nx2aN/4/2E9c0tByV
+	o2/VyHreSZkVVP70OUwZcbozDNSPvno3Q4trUeesMZXyk/tXVVMWMlHl+WLb4/JQU3iAJb
+	UrympiKJEuVbJBeZ/4t3uteVtAH3I6k=
+Date: Wed, 15 Apr 2026 10:22:05 +0800
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5] sched/psi: fix race between file release and pressure
- write
-To: Edward Adam Davis <eadavis@qq.com>
-Cc: cgroups@vger.kernel.org, hannes@cmpxchg.org,
- linux-kernel@vger.kernel.org, mkoutny@suse.com,
- syzbot+33e571025d88efd1312c@syzkaller.appspotmail.com,
- syzkaller-bugs@googlegroups.com, tj@kernel.org
-References: <tencent_4ED99363237E896983BEC4571777B767C605@qq.com>
- <tencent_FBCECE887BCA6C3C2CE96E5896C8E9AEEE0A@qq.com>
-Content-Language: en-US
-From: Chen Ridong <chenridong@huaweicloud.com>
-In-Reply-To: <tencent_FBCECE887BCA6C3C2CE96E5896C8E9AEEE0A@qq.com>
-Content-Type: text/plain; charset=UTF-8
+Subject: Re: [syzbot] [mm?] [cgroups?] WARNING: bad unlock balance in
+ lruvec_stat_mod_folio
+To: Shakeel Butt <shakeel.butt@linux.dev>
+Cc: syzbot <syzbot+1a3353a77896e73a8f53@syzkaller.appspotmail.com>,
+ akpm@linux-foundation.org, cgroups@vger.kernel.org, hannes@cmpxchg.org,
+ linux-kernel@vger.kernel.org, linux-mm@kvack.org, mhocko@kernel.org,
+ muchun.song@linux.dev, roman.gushchin@linux.dev,
+ syzkaller-bugs@googlegroups.com, zhengqi.arch@bytedance.com, yosry@kernel.org
+References: <69d54494.050a0220.3030df.0002.GAE@google.com>
+ <ad1tV5WpFhxbQ86N@linux.dev> <358c60e1-fa91-40a1-9e00-84c93340c04e@linux.dev>
+ <ad5134-5FkAKDqtP@linux.dev>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Qi Zheng <qi.zheng@linux.dev>
+In-Reply-To: <ad5134-5FkAKDqtP@linux.dev>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-CM-TRANSID:_Ch0CgDnlL5G4N5p19DBAQ--.21997S2
-X-Coremail-Antispam: 1UD129KBjvJXoW3Xr13Xw1rCr15tr4rtr1UKFg_yoWxXry7pF
-	90y34ft3s5GryDJw40qa409F1fC3ySqrW5Xws7Jr1fAw1aqr1vgr129r1jq348CFn3ArsI
-	qFs0yrWUKw1jqaUanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUyvb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxV
-	AFwI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2
-	j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7x
-	kEbVWUJVW8JwACjcxG0xvEwIxGrwCY1x0262kKe7AKxVWUAVWUtwCF04k20xvY0x0EwIxG
-	rwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4
-	vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IY
-	x2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26c
-	xKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAF
-	wI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7IU1veHDUUUUU==
-X-CM-SenderInfo: hfkh02xlgr0w46kxt4xhlfz01xgou0bp/
-X-Spamd-Result: default: False [4.84 / 15.00];
-	SEM_URIBL(3.50)[huaweicloud.com:email];
+X-Migadu-Flow: FLOW_OUT
+X-Spamd-Result: default: False [0.34 / 15.00];
 	SUSPICIOUS_RECIPS(1.50)[];
+	URI_HIDDEN_PATH(1.00)[https://syzkaller.appspot.com/x/.config?x=4e6c8be618ab359];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+	DMARC_POLICY_ALLOW(-0.50)[linux.dev,none];
+	R_DKIM_ALLOW(-0.20)[linux.dev:s=key1];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	MAILLIST(-0.15)[generic];
-	BAD_REP_POLICIES(0.10)[];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-15302-lists,cgroups=lfdr.de];
-	RCVD_TLS_LAST(0.00)[];
-	DMARC_NA(0.00)[huaweicloud.com];
-	FREEMAIL_TO(0.00)[qq.com];
-	GREYLIST(0.00)[pass,body];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	MIME_TRACE(0.00)[0:+];
+	TAGGED_FROM(0.00)[bounces-15303-lists,cgroups=lfdr.de];
+	RCVD_COUNT_THREE(0.00)[3];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	FROM_HAS_DN(0.00)[];
-	TO_DN_SOME(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[6];
-	NEURAL_HAM(-0.00)[-0.999];
+	RCVD_TLS_LAST(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[13];
+	MIME_TRACE(0.00)[0:+];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[localhost:email,linux.dev:dkim,linux.dev:mid,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,syzkaller.appspot.com:url];
+	MISSING_XM_UA(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[chenridong@huaweicloud.com,cgroups@vger.kernel.org];
-	ARC_ALLOW(0.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_DKIM_NA(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[qi.zheng@linux.dev,cgroups@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	DKIM_TRACE(0.00)[linux.dev:+];
+	NEURAL_HAM(-0.00)[-1.000];
+	TAGGED_RCPT(0.00)[cgroups,1a3353a77896e73a8f53];
 	MID_RHS_MATCH_FROM(0.00)[];
-	RCPT_COUNT_SEVEN(0.00)[8];
-	R_SPF_ALLOW(0.00)[+ip6:2600:3c0a:e001:db::/64:c];
-	TAGGED_RCPT(0.00)[cgroups,33e571025d88efd1312c];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,huaweicloud.com:mid,huaweicloud.com:email,qq.com:email,appspotmail.com:email,syzkaller.appspot.com:url]
-X-Rspamd-Queue-Id: 12D873FF69C
+	TO_DN_SOME(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	SUBJECT_HAS_QUESTION(0.00)[]
+X-Rspamd-Queue-Id: 040223FFB8E
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
 
 
-On 2026/4/14 14:15, Edward Adam Davis wrote:
-> A potential race condition exists between pressure write and cgroup file
-> release regarding the priv member of struct kernfs_open_file, which
-> triggers the uaf reported in [1].
+On 4/15/26 1:15 AM, Shakeel Butt wrote:
+> On Tue, Apr 14, 2026 at 11:52:13AM +0800, Qi Zheng wrote:
+>> Hi Shakeel,
+>>
+>> On 4/14/26 6:28 AM, Shakeel Butt wrote:
+>>> +Qi & Yosry
+>>>
+>>> On Tue, Apr 07, 2026 at 10:53:24AM -0700, syzbot wrote:
+>>>> Hello,
+>>>>
+>>>> syzbot found the following issue on:
+>>>>
+>>>> HEAD commit:    cc13002a9f98 Add linux-next specific files for 20260402
+>>>> git tree:       linux-next
+>>>> console output: https://syzkaller.appspot.com/x/log.txt?x=10d8946a580000
+>>>> kernel config:  https://syzkaller.appspot.com/x/.config?x=4e6c8be618ab359
+>>>> dashboard link: https://syzkaller.appspot.com/bug?extid=1a3353a77896e73a8f53
+>>>> compiler:       Debian clang version 21.1.8 (++20251221033036+2078da43e25a-1~exp1~20251221153213.50), Debian LLD 21.1.8
+>>>>
+>>>> Unfortunately, I don't have any reproducer for this issue yet.
+>>>
+>>> Let's wait for the reproducer. I can only think of cgroup_subsys_on_dfl() check
+>>> returning different value in get_non_dying_memcg_start() and
+>>> get_non_dying_memcg_end() to cause this uneven rcu unlock. However I can't think
+>>> why and how that can happen.
+>>>
+>>
+>> My AI bot told me that the cgroup_subsys_on_dfl_key can be dynamically
+>> modified at runtime during a rebind:
+>>
+>> rebind_subsystems()
+>> --> if (dst_root == &cgrp_dfl_root) {
+>> 		static_branch_enable(cgroup_subsys_on_dfl_key[ssid]);
+>>      } else {
+>> 		dcgrp->subtree_control |= 1 << ssid;
+>> 		static_branch_disable(cgroup_subsys_on_dfl_key[ssid]);
+>>      }
+>>
+>> However, when I actually tested it, I hit the following error:
+>>
+>> mount: /tmp/cg-rb-repro: mount point is busy.
+>>
+>> Indeed, there are already many child cgroups under the cgroup v2 root
+>> (the VM just booted):
+>>
+>> root@localhost:~# find /sys/fs/cgroup -mindepth 1 -maxdepth 2 -type d | head
+>> -50
+>> /sys/fs/cgroup/sys-kernel-debug.mount
+>> /sys/fs/cgroup/dev-mqueue.mount
+>> /sys/fs/cgroup/user.slice
+>> /sys/fs/cgroup/user.slice/user-0.slice
+>> /sys/fs/cgroup/sys-kernel-tracing.mount
+>> /sys/fs/cgroup/init.scope
+>> /sys/fs/cgroup/system.slice
+>> /sys/fs/cgroup/system.slice/systemd-networkd.service
+>> /sys/fs/cgroup/system.slice/systemd-udevd.service
+>> /sys/fs/cgroup/system.slice/system-serial\x2dgetty.slice
+>> /sys/fs/cgroup/system.slice/wpa_supplicant.service
+>> /sys/fs/cgroup/system.slice/system-modprobe.slice
+>> /sys/fs/cgroup/system.slice/systemd-journald.service
+>> /sys/fs/cgroup/system.slice/unattended-upgrades.service
+>> /sys/fs/cgroup/system.slice/system-systemd\x2dgrowfs.slice
+>> /sys/fs/cgroup/system.slice/ssh.service
+>> /sys/fs/cgroup/system.slice/dhcpcd.service
+>> /sys/fs/cgroup/system.slice/systemd-resolved.service
+>> /sys/fs/cgroup/system.slice/dbus.service
+>> /sys/fs/cgroup/system.slice/systemd-timesyncd.service
+>> /sys/fs/cgroup/system.slice/system-getty.slice
+>> /sys/fs/cgroup/system.slice/systemd-logind.service
+>> /sys/fs/cgroup/dev-hugepages.mount
+>>
+>> So it seems impossible to rebind memory in a production environment
+>> using systemd?
+>>
+>> Then I disabled systemd:
+>>
+>> set `init=/bin/bash`
+>>
+>> and found that I could successfully run the following commands:
+>>
+>> root@(none):/# mkdir -p /tmp/cg-rb-repro
+>> root@(none):/# mount -t cgroup -o none,name=rb none /tmp/cg-rb-repro
+>> root@(none):/# mount -t cgroup -o remount,memory none /tmp/cg-rb-repro
+>> [   65.903125][  T241] option changes via remount are deprecated (pid=241
+>> comm=mount)
+>> root@(none):/# mount -t cgroup -o remount,name=rb none /tmp/cg-rb-repro
+>> [   73.405829][  T242] option changes via remount are deprecated (pid=242
+>> comm=mount)
+>> root@(none):/# umount /tmp/cg-rb-repro
+>>
+>> So it seems this race condition does exist. Should we fix it?
 > 
-> Consider the following scenario involving execution on two separate CPUs:
-> 
->    CPU0					CPU1
->    ====					====
-> 					vfs_rmdir()
-> 					kernfs_iop_rmdir()
-> 					cgroup_rmdir()
-> 					cgroup_kn_lock_live()
-> 					cgroup_destroy_locked()
-> 					cgroup_addrm_files()
-> 					cgroup_rm_file()
-> 					kernfs_remove_by_name()
-> 					kernfs_remove_by_name_ns()
->  vfs_write()				__kernfs_remove()
->  new_sync_write()			kernfs_drain()
->  kernfs_fop_write_iter()		kernfs_drain_open_files()
->  cgroup_file_write()			kernfs_release_file()
->  pressure_write()			cgroup_file_release()
->  ctx = of->priv;
-> 					kfree(ctx);
->  					of->priv = NULL;
-> 					cgroup_kn_unlock()
->  cgroup_kn_lock_live()
->  cgroup_get(cgrp)
->  cgroup_kn_unlock()
->  if (ctx->psi.trigger)  // here, trigger uaf for ctx, that is of->priv
-> 
-> The cgroup_rmdir() is protected by the cgroup_mutex, it also safeguards
-> the memory deallocation of of->priv performed within cgroup_file_release().
-> However, the operations involving of->priv executed within pressure_write()
-> are not entirely covered by the protection of cgroup_mutex. Consequently,
-> if the code in pressure_write(), specifically the section handling the
-> ctx variable executes after cgroup_file_release() has completed, a uaf
-> vulnerability involving of->priv is triggered.
-> 
-> Therefore, the issue can be resolved by extending the scope of the
-> cgroup_mutex lock within pressure_write() to encompass all code paths
-> involving of->priv, thereby properly synchronizing the race condition
-> occurring between cgroup_file_release() and pressure_write().
-> 
-> And, if an live kn lock can be successfully acquired while executing
-> the pressure write operation, it indicates that the cgroup deletion
-> process has not yet reached its final stage; consequently, the priv
-> pointer within open_file cannot be NULL. Therefore, the operation to
-> retrieve the ctx value must be moved to a point *after* the live kn
-> lock has been successfully acquired.
-> 
-> In another situation, specifically after entering cgroup_kn_lock_live()
-> but before acquiring cgroup_mutex, there exists a different class of
-> race condition:
-> 
-> CPU0: write memory.pressure               CPU1: write cgroup.pressure=0
-> ===========================		  =============================
-> 
-> kernfs_fop_write_iter()
->  kernfs_get_active_of(of)
->  pressure_write()
->    cgroup_kn_lock_live(memory.pressure)
->      cgroup_tryget(cgrp)
->      kernfs_break_active_protection(kn)
->      ... blocks on cgroup_mutex
-> 
->                                      	  cgroup_pressure_write()
->                                      	  cgroup_kn_lock_live(cgroup.pressure)
->                                      	  cgroup_file_show(memory.pressure, false)
->                                      	    kernfs_show(false)
->                                      	      kernfs_drain_open_files()
->                                      	        cgroup_file_release(of)
->                                      	          kfree(ctx)
->                                      	            of->priv = NULL
->                                      	  cgroup_kn_unlock()
-> 
->    ... acquires cgroup_mutex
->    ctx = of->priv;        // may now be NULL
->    if (ctx->psi.trigger)  // NULL dereference
-> 
-> Consequently, there is a possibility that of->priv is NULL, the pressure
-> write needs to check for this.
-> 
-> Now that the scope of the cgroup_mutex has been expanded, the original
-> explicit cgroup_get/put operations are no longer necessary, this is
-> because acquiring/releasing the live kn lock inherently executes a
-> cgroup get/put operation. 
-> 
-> [1]
-> BUG: KASAN: slab-use-after-free in pressure_write+0xa4/0x210 kernel/cgroup/cgroup.c:4011
-> Call Trace:
->  pressure_write+0xa4/0x210 kernel/cgroup/cgroup.c:4011
->  cgroup_file_write+0x36f/0x790 kernel/cgroup/cgroup.c:4311
->  kernfs_fop_write_iter+0x3b0/0x540 fs/kernfs/file.c:352
-> 
-> Allocated by task 9352:
->  cgroup_file_open+0x90/0x3a0 kernel/cgroup/cgroup.c:4256
->  kernfs_fop_open+0x9eb/0xcb0 fs/kernfs/file.c:724
->  do_dentry_open+0x83d/0x13e0 fs/open.c:949
-> 
-> Freed by task 9353:
->  cgroup_file_release+0xd6/0x100 kernel/cgroup/cgroup.c:4283
->  kernfs_release_file fs/kernfs/file.c:764 [inline]
->  kernfs_drain_open_files+0x392/0x720 fs/kernfs/file.c:834
->  kernfs_drain+0x470/0x600 fs/kernfs/dir.c:525
-> 
-> Fixes: 0e94682b73bf ("psi: introduce psi monitor")
-> Reported-by: syzbot+33e571025d88efd1312c@syzkaller.appspotmail.com
-> Closes: https://syzkaller.appspot.com/bug?extid=33e571025d88efd1312c
-> Tested-by: syzbot+33e571025d88efd1312c@syzkaller.appspotmail.com
-> Signed-off-by: Edward Adam Davis <eadavis@qq.com>
-> ---
-> v1 -> v2: refactor unlock and update comments
-> v2 -> v3: remove check for !ctx and update comments
-> v3 -> v4: remove orig get/put for get cgroup refcnt and update comments
-> v4 -> v5: check !ctx
-> 
->  kernel/cgroup/cgroup.c | 24 ++++++++++++++++--------
->  1 file changed, 16 insertions(+), 8 deletions(-)
-> 
-> diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
-> index 4ca3cb993da2..4366fd62eb3d 100644
-> --- a/kernel/cgroup/cgroup.c
-> +++ b/kernel/cgroup/cgroup.c
-> @@ -3995,33 +3995,41 @@ static int cgroup_cpu_pressure_show(struct seq_file *seq, void *v)
->  static ssize_t pressure_write(struct kernfs_open_file *of, char *buf,
->  			      size_t nbytes, enum psi_res res)
->  {
-> -	struct cgroup_file_ctx *ctx = of->priv;
-> +	struct cgroup_file_ctx *ctx;
->  	struct psi_trigger *new;
->  	struct cgroup *cgrp;
->  	struct psi_group *psi;
-> +	ssize_t ret = 0;
->  
->  	cgrp = cgroup_kn_lock_live(of->kn, false);
->  	if (!cgrp)
->  		return -ENODEV;
->  
-> -	cgroup_get(cgrp);
-> -	cgroup_kn_unlock(of->kn);
-> +	ctx = of->priv;
-> +	if (!ctx) {
-> +		ret = -ENODEV;
-> +		goto out_unlock;
-> +	}
->  
->  	/* Allow only one trigger per file descriptor */
->  	if (ctx->psi.trigger) {
-> -		cgroup_put(cgrp);
-> -		return -EBUSY;
-> +		ret = -EBUSY;
-> +		goto out_unlock;
->  	}
->  
->  	psi = cgroup_psi(cgrp);
->  	new = psi_trigger_create(psi, buf, res, of->file, of);
->  	if (IS_ERR(new)) {
-> -		cgroup_put(cgrp);
-> -		return PTR_ERR(new);
-> +		ret = PTR_ERR(new);
-> +		goto out_unlock;
->  	}
->  
->  	smp_store_release(&ctx->psi.trigger, new);
-> -	cgroup_put(cgrp);
-> +
-> +out_unlock:
-> +	cgroup_kn_unlock(of->kn);
-> +	if (ret)
-> +		return ret;
->  
->  	return nbytes;
->  }
+> This only succeeded because there weren't any active cgroups. Were you able to
+> trigger the warning as well. If not, I think we should just wait for
 
-LGTM.
+Nope.
 
-Thanks.
+> reproducer from syzbot before doing anything.
 
-Reviewed-by: Chen Ridong <chenridong@huaweicloud.com>
+OK, Let's wait for syzbot to reproduce it.
 
--- 
-Best regards,
-Ridong
+> 
 
 
