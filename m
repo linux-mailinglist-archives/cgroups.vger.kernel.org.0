@@ -1,51 +1,51 @@
-Return-Path: <cgroups+bounces-15342-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-15343-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id kKq6KK0D4mna0QAAu9opvQ
-	(envelope-from <cgroups+bounces-15342-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Fri, 17 Apr 2026 11:55:57 +0200
+	id MGucCSQD4mna0QAAu9opvQ
+	(envelope-from <cgroups+bounces-15343-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Fri, 17 Apr 2026 11:53:40 +0200
 X-Original-To: lists+cgroups@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1E479419ACD
-	for <lists+cgroups@lfdr.de>; Fri, 17 Apr 2026 11:55:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 93B83419A03
+	for <lists+cgroups@lfdr.de>; Fri, 17 Apr 2026 11:53:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 0CFD03293AE3
-	for <lists+cgroups@lfdr.de>; Fri, 17 Apr 2026 09:39:01 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 04D933221234
+	for <lists+cgroups@lfdr.de>; Fri, 17 Apr 2026 09:40:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 482C23B7746;
-	Fri, 17 Apr 2026 09:37:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D8C423B8BC7;
+	Fri, 17 Apr 2026 09:39:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ucuzcPqc"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="e9ShCoZ6"
 X-Original-To: cgroups@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DCA643B9D9D;
-	Fri, 17 Apr 2026 09:37:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 97E5C3AE6EB;
+	Fri, 17 Apr 2026 09:39:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1776418678; cv=none; b=aaOe/8Kn6XU9s+Opbt4v1f26TGxqYRbaV/eoMnlwO78zJ1jDjz4nKBMqZUm+h1RZuL4svoJUPfTfifmeJzNdXPoZVBl0j2rdU7kpAnO25QveZY58dFDfY4lIs78ADe5UPMlJArlKsxHFVbgiPb9PaRc8JRXBhbwtIs90/MJ/EVc=
+	t=1776418796; cv=none; b=Zp9nbsNbiWR1bLGBynp54HiPs18bwueoaZvJCSTe26JwIXpRcHV/4kz281UcLpeBHMxIZlOmwEiKOCnUOl9d3rIIOST4Lb4PnkW/fnLg+BYnr8rHUXhfJZWTIZ61zypwgHgGKrqUb2lc9oboYap5/MZ/L4b+1iC82vQeVXNOJT4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1776418678; c=relaxed/simple;
-	bh=/Mm05rNcceoP1klbDIHSBZQ6nPBeCz4Ze+snoKdOIUg=;
+	s=arc-20240116; t=1776418796; c=relaxed/simple;
+	bh=ZlBEZsBcLmBVD873um0dOpJ+0/Uzp3232ROvFxfCaWQ=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=KLSfIsVoLDasY+8wsyM1Pvry/5g1OSluRpX4EC8VMjsXTqaqq61iuukqt72d+6Ba3Lm76X7NnpB270ntX+o399n3+8UJgkqtGZ1ZxpDtSMNPKUHOplZ4IRx+KmoQoG8LVAQlTGGpmdk6emxIrkJ9rR8/M4DnZtCLgQW/158iSK0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ucuzcPqc; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4A9ABC19425;
-	Fri, 17 Apr 2026 09:37:39 +0000 (UTC)
+	 In-Reply-To:Content-Type; b=puUaQMHrQAGxLHjVpxEiSVrWt8mEoWjX4SRAEY6qmnm79McTIThJMnRqLZppRcNeKb9O+YENHPb8AnQPxIupW87SvtNVx8pbfvBus5FHvhdp49qIGnVv5T+KekUpnubXFyFPU/tWXVa/EtmLoIdxVHj4HMf9YVgX3qHro7TxlBg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=e9ShCoZ6; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 542ABC2BCB3;
+	Fri, 17 Apr 2026 09:39:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1776418678;
-	bh=/Mm05rNcceoP1klbDIHSBZQ6nPBeCz4Ze+snoKdOIUg=;
+	s=k20201202; t=1776418796;
+	bh=ZlBEZsBcLmBVD873um0dOpJ+0/Uzp3232ROvFxfCaWQ=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=ucuzcPqc/qKtpNlnFKyEBAGTowF9YO5oMsF1YF8bCJBIH4SeiCZY9SXlcFn3kgMZG
-	 qr8uaZql95ScHw3ch5wbYyQJm7+DW6ad0/Eu3X0Csad4YJ39DNzrsAJD7IGrZBOE8L
-	 cs+Fm//oWJsKd3MdrKudiV3SP5RUTKv+WpwouG+tg5JAXIc24kxeitKJU+4TpsUW3J
-	 Kb5OAuFtRxuTgAjj2WFrtaxBheeN6JHa6VyOju92+PPsDZoslndlxCpNlfU5mK9EWa
-	 5cb216jZkLaXRSls22pItPJXV7PEiOLqfMlrf33+oWb4rE4XuD94lqDzeP2Vjz5jKh
-	 kwW6FRvArOU0g==
-Message-ID: <46837cea-5d90-49d8-be67-7306e0e89aa3@kernel.org>
-Date: Fri, 17 Apr 2026 11:37:36 +0200
+	b=e9ShCoZ6JNibZsrNsC//t2gDqjYgg5hm2N0x84g9LxqyQw/rZ9JR3wvPtoh44ZML7
+	 8uvsSO8uGWh23k6ycBNnml5MfkL0jBKuO9kObHmWs0cYJERFdAqhjLCT4z511c1gkq
+	 E+N39tRFMvW0R7eInWo7PN5O05f1e8aA3FXBHj3tXz5yYBn3dXoAchOpIqZ+fjD9Is
+	 Nybu+WOxx+O9VFdjOmceuvJIZ2NcHCaHEbq9/gEHW2dK5MZ6kFvxtevLIsE0aJVu/a
+	 4z7t7TM1J8E9rRTH56g3mF8IJdt8pmIrkOdRPt6sTAGg/+52N0GoaKwlX0HVQqP+Mz
+	 zORBWgjCVWQ6g==
+Message-ID: <3d077c4c-6abe-47f6-a4df-3e853fbcc551@kernel.org>
+Date: Fri, 17 Apr 2026 11:39:33 +0200
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -55,7 +55,7 @@ MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
 Subject: Re: [LSF/MM/BPF TOPIC][RFC PATCH v4 00/27] Private Memory Nodes (w/
  Compressed RAM)
-To: Gregory Price <gourry@gourry.net>
+To: Frank van der Linden <fvdl@google.com>, Gregory Price <gourry@gourry.net>
 Cc: lsf-pc@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
  linux-cxl@vger.kernel.org, cgroups@vger.kernel.org, linux-mm@kvack.org,
  linux-trace-kernel@vger.kernel.org, damon@lists.linux.dev,
@@ -88,6 +88,7 @@ References: <20260222084842.1824063-1-gourry@gourry.net>
  <ad0iT4UWka3gMUpu@gourry-fedora-PF4VCD3F>
  <38cf52d1-32a8-462f-ac6a-8fad9d14c4f0@kernel.org>
  <ad-r7hwIdnvKsrh9@gourry-fedora-PF4VCD3F>
+ <CAPTztWajm_JLpp9BjRcX=h72r25ELrXeGkOXVachybBxLJGS=g@mail.gmail.com>
 From: "David Hildenbrand (Arm)" <david@kernel.org>
 Content-Language: en-US
 Autocrypt: addr=david@kernel.org; keydata=
@@ -134,9 +135,9 @@ Autocrypt: addr=david@kernel.org; keydata=
  3iyY2Nsd7JxfKu1PRhCGwXzRw5TlfEsoRI7V9A8isUCoqE2Dzh3FvYHVeX4Us+bRL/oqareJ
  CIFqgYMyvHj7Q06kTKmauOe4Nf0l0qEkIuIzfoLJ3qr5UyXc2hLtWyT9Ir+lYlX9efqh7mOY
  qIws/H2t
-In-Reply-To: <ad-r7hwIdnvKsrh9@gourry-fedora-PF4VCD3F>
+In-Reply-To: <CAPTztWajm_JLpp9BjRcX=h72r25ELrXeGkOXVachybBxLJGS=g@mail.gmail.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 X-Spamd-Result: default: False [-0.66 / 15.00];
 	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
@@ -147,7 +148,7 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	FREEMAIL_CC(0.00)[lists.linux-foundation.org,vger.kernel.org,kvack.org,lists.linux.dev,meta.com,linuxfoundation.org,kernel.org,stgolabs.net,huawei.com,intel.com,redhat.com,linux-foundation.org,oracle.com,suse.cz,google.com,suse.com,suse.de,nvidia.com,gmail.com,sk.com,linux.alibaba.com,rasmusvillemoes.dk,efficios.com,cmpxchg.org,arm.com,linux.dev,zte.com.cn,surriel.com,gentwo.org,tencent.com,huaweicloud.com,bytedance.com,amd.com];
-	TAGGED_FROM(0.00)[bounces-15342-lists,cgroups=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-15343-lists,cgroups=lfdr.de];
 	FROM_HAS_DN(0.00)[];
 	RCVD_COUNT_THREE(0.00)[4];
 	RCVD_TLS_LAST(0.00)[];
@@ -156,7 +157,7 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	DKIM_TRACE(0.00)[kernel.org:+];
 	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
 	TO_DN_SOME(0.00)[];
-	RCPT_COUNT_GT_50(0.00)[73];
+	RCPT_COUNT_GT_50(0.00)[74];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[david@kernel.org,cgroups@vger.kernel.org];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
@@ -164,265 +165,257 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	TAGGED_RCPT(0.00)[cgroups];
 	MID_RHS_MATCH_FROM(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 1E479419ACD
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,gourry.net:email]
+X-Rspamd-Queue-Id: 93B83419A03
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-On 4/15/26 17:17, Gregory Price wrote:
-> On Wed, Apr 15, 2026 at 11:49:59AM +0200, David Hildenbrand (Arm) wrote:
->> On 4/13/26 19:05, Gregory Price wrote:
-> 
-> As a preface - the current RFC was informed by ZONE_DEVICE patterns.
-
-:)
-
-> 
-> I think that was useful as a way to find existing friction points - but
-> ultimately wrong for this new interface.
-> 
-> I don't thinks an ops struct here is the right design, and I think there
-> are only a few patterns that actually make sense for device memory using
-> nodes this way.
-> 
-> So there's going to be a *major* contraction in the complexity of this
-> patch series (hopefully I'll have something next week), and much of what
-> you point out below is already in-flight.
-
-Sounds like this discussion was valuable. Sorry for not being that
-responsive  ... repeatedly :)
-
-
-[...]
-
+On 4/15/26 21:47, Frank van der Linden wrote:
+> On Wed, Apr 15, 2026 at 8:18 AM Gregory Price <gourry@gourry.net> wrote:
 >>
->> Something else people were discussing in the past was to physically
->> limit the area where virtio queues could be placed.
+>> On Wed, Apr 15, 2026 at 11:49:59AM +0200, David Hildenbrand (Arm) wrote:
 >>
-> 
-> That is functionally what I did - the idea was pretty simple, just have
-> a separate memfd/node dedicated for the queues:
-> 
-> guest_memory = memfd(MAP_PRIVATE)
-> net_memory = memfd(MAP_SHARED)
-> 
-> And boom, you get what you want.
-> 
-> So yeah "It works" - but there's likely other ways to do this too, and
-> as you note re: compatibility, i'm not sure virtio actually wants this,
-> but it's a nice proof-of-concept for a network device on the host that
-> carries its own memory.
-> 
-
-Jup.
-
-
-[...]
-
->> Needs a second thought regarding fallback logic I raised above.
+>> As a preface - the current RFC was informed by ZONE_DEVICE patterns.
 >>
->> What I think would have to be audited is the usage of __GFP_THISNODE by
->> kernel allocations, where we would not actually want to allocate from
->> this private node.
+>> I think that was useful as a way to find existing friction points - but
+>> ultimately wrong for this new interface.
 >>
-> 
-> This is fair, and I a re-visit is absolutely warranted.
-> 
-> Re-examining the quick audit from my last response suggests - I should
-> never have seen leakage in those cases, but the fallbacks are needed.
-> 
-> So yes, this all requires a second look (and a third, and a ninth).
-> 
-> I'm not married to __GFP_PRIVATE, but it has been reliable for me.
-
-Yes, we should carefully describe which semantics we want to achieve, to
-then figure out how we could achieve them.
-
-> 
->> Maybe we could just outright refuse *any* non-user (movable) allocations
->> that target the node, even with __GFP_THISNODE.
+>> I don't thinks an ops struct here is the right design, and I think there
+>> are only a few patterns that actually make sense for device memory using
+>> nodes this way.
 >>
->> Because, why would we want kernel allocations to even end up on a
->> private node that is supposed to only be consumed by user space? Or
->> which use cases are there where we would want to place kernel
->> allocations on there?
+>> So there's going to be a *major* contraction in the complexity of this
+>> patch series (hopefully I'll have something next week), and much of what
+>> you point out below is already in-flight.
 >>
-> 
-> As a start, maybe? But as a permanent invariant?  I would wonder whether
-> the decision here would lock us into a design.
-> 
-> But then - this is all kernel internal, so i think it would be feasible
-> to change this out from under users without backward compatibility pain.
-
-Right. Was just an idea, whether it would currently even make sense to
-allow any kernel allocations on there.
-
-The handful of kernel allocations that would be allowed to end up on
-there would likely be extremely special.
-
-[...]
-
->> Again, I am not sure about compaction and khugepaged. All we want to
->> guarantee is that our memory does not leave the private node.
->>
->> That doesn't require any __GFP_PRIVATE magic, just en-lighting these
->> subsystems that private nodes must use __GFP_THISNODE and must not leak
->> to other nodes.
-> 
-> This is where specific use-cases matter.
-> 
-> In the compressed memory example - the device doesn't care about memory
-> leaving - but it cares about memory arriving and *and being modified*.
-> (more on this in your next question)
-
-Right, but naive me would say that that's a memory allocation problem,
-right?
-
-khugepaged() wants to allocate a 2M page to collapse. Goes to the buddy
-to allocate it.
-
-Buddy has to say no if the device cannot support it.
-
-So there are free pages but we just don't want to hand them out.
-
-I am being very naive here about the compressed memory scenario, because
-it's one of these extremely weird corner cases ;)
-
-[...]
-
->>> If you want the mbind contract to stay intact:
 >>>
->>>    NP_OPS_MIGRATION (mbind can generate migrations)
->>>    NP_OPS_MEMPOLICY (this just tells mempolicy.c to allow the node)
->>
->> I'm missing why these are even opt-in. What's the problem with allowing
->> mbind and mempolicy to use these nodes in some of your drivers?
->>
-> 
-> First:
-> 
-> In my latest working branch these two flags have been folded into just
-> _OPS_MEMPOLICY and any other migration interaction is just handled by
-> filtering with the GFP flag. 
-> 
-> 
-> on always allowing mbind and mempolicy vs opt-in
-> ---
-> 
-> A proper compressed memory solution should not allow mbind/mempolicy.
-> 
-> Compressed memory is different from normal memory - as the kernel can
-> percieves free memory (many unused struct page in the buddy) when the
-> device knows there's none left (the physical capacity is actually full).
-> 
-> Any form of write to a compressed memory device is essentially a
-> dangerous condition (OOMs = poison, not oom_kill()).
-> 
-> So you need two controls:  Allocation and (userland) Write protection
-> I implemented via:
->     - Demotion-only (allocations only happen in reclaim path)
->     - Write-protecting the entire node
-> 
-> (I fully accept that a write-protection extension here might be a bridge
->  to far, but please stick with me for the sake of exploration).
-> 
-> 
-> There's a serious argument to limit these devices to using an mbind
-> pattern, but I wanted to make a full-on attempt to integrate this device
-> into the demotion path as a transparent tier (kinda like zswap).
-> 
-> I could not square write-protection with mempolicy, so i had to make
-> them both optional and mutually exclusive.
-> 
-> If you limit the device to mbind interactions, you do limit what can
-> crash - but this forces userland software to be less portable by design:
-> 
->   - am i running on a system where this device is present?
->   - is that device exposing its memory on a node?
->   - which node?
->   - what memory can i put on that node? (can you prevent a process from
->     putting libc on that node?)
->   - how much compression ratio is left on the device?
->   - can i safety write to this virtual address?
->   - should i write-protect compressed VMAs? Can i handle those faults?
->   - many more
-> 
-> That sounds a lot like re-implementing a bunch of mm/ in userland, and
-> that's exactly where we were at with DAX.  We know this pattern failed.
-> 
-> I'm trying to very much avoid repeating these mistakes, and so I'm very
-> much trying to find a good path forward here that results in transparent
-> usage of this memory.
-> 
-
-As stated above, maybe that's really just a memory allocation problem
-for mbind/khugepaged etc, and the memory allocator would need hooks to
-say "well, I do have that free memory. but sorry bro, you really cannot
-have it right now because it's actually not really free right now, -ENOMEM".
-
-Devil is in the detail, I suppose.
-
-(again, I consider such devices an extreme corner cases; if it makes the
-overall design waaaaayy to complicated, we might just want to say "we
-cannot reasonably support this without shittifying MM". But maybe there
-are ways to handle this in a better way, as of above)
-
-> 
->> I also have some questions about longterm pinnings, but that's better
->> discussed in person :)
->>
-> 
-> The longterm pin extention came from auditing existing zone_device
-> filters.  
-> 
-> tl;dr: informative mechanism - but it probably should be dropped,
-> it makes no sense (it's device memory, pinnings mean nothing?).
-
-What I was thinking: We still have different zone options for this memory.
-
-Expose memory to ZONE_MOVABLE -> no longterm pinning allowed.
-
-Expose memory to ZONE_NORMAL -> longterm pinning allowed.
-
-And if we don't even allow arbitrary kernel allocations to end up
-ZONE_NORMAL of these special nodes, we can just start using ZONE_NORMAL
-and let user space (using vfio/iouring fixed buffers etc) consume this
-private memory with longterm pinning.
-
-Just a random thought.
-
-> 
-> 
+>> ... snip ...
 >>>
->>> The task dies and frees the pages back to the buddy - the question is
->>> whether the 4-5 free_folio paths (put_folio, put_unref_folios, etc) can
->>> all eat an ops.free_folio() callback to inform the driver the memory has
->>> been freed.
+>>> A related series proposed some  MEM_READ/WRITE backend requests [1]
+>>>
+>>> [1] https://lists.nongnu.org/archive/html/qemu-devel/2024-09/msg02693.html
+>>>
 >>
->> Right, that's rather invasive.
+>> Oh interesting, thank you for the reference here.
 >>
+>>>
+>>> Something else people were discussing in the past was to physically
+>>> limit the area where virtio queues could be placed.
+>>>
+>>
+>> That is functionally what I did - the idea was pretty simple, just have
+>> a separate memfd/node dedicated for the queues:
+>>
+>> guest_memory = memfd(MAP_PRIVATE)
+>> net_memory = memfd(MAP_SHARED)
+>>
+>> And boom, you get what you want.
+>>
+>> So yeah "It works" - but there's likely other ways to do this too, and
+>> as you note re: compatibility, i'm not sure virtio actually wants this,
+>> but it's a nice proof-of-concept for a network device on the host that
+>> carries its own memory.
+>>
+>> I'll try post my hack as an example with the next RFC version, as I
+>> think it's informative.
+>>
+>>>
+>>> But that's a different "fallback" problem, no?
+>>>
+>>> You want allocations that target the "special node" to fallback to
+>>> *other* nodes, but not other allocations to fallback to *this special* node.
+>>>
+>> ... snip - slight reordering to put thoughts together ...
+>>>
+>>> Needs a second thought regarding fallback logic I raised above.
+>>>
+>>> What I think would have to be audited is the usage of __GFP_THISNODE by
+>>> kernel allocations, where we would not actually want to allocate from
+>>> this private node.
+>>>
+>>
+>> This is fair, and I a re-visit is absolutely warranted.
+>>
+>> Re-examining the quick audit from my last response suggests - I should
+>> never have seen leakage in those cases, but the fallbacks are needed.
+>>
+>> So yes, this all requires a second look (and a third, and a ninth).
+>>
+>> I'm not married to __GFP_PRIVATE, but it has been reliable for me.
+>>
+>>> Maybe we could just outright refuse *any* non-user (movable) allocations
+>>> that target the node, even with __GFP_THISNODE.
+>>>
+>>> Because, why would we want kernel allocations to even end up on a
+>>> private node that is supposed to only be consumed by user space? Or
+>>> which use cases are there where we would want to place kernel
+>>> allocations on there?
+>>>
+>>
+>> As a start, maybe? But as a permanent invariant?  I would wonder whether
+>> the decision here would lock us into a design.
+>>
+>> But then - this is all kernel internal, so i think it would be feasible
+>> to change this out from under users without backward compatibility pain.
+>>
+>> So far I have done my best to avoid changing any userland interfaces in
+>> a way that would fundamentally change the contracts.  If anything
+>> private-node other than just the node's `has_memory_private` attribute
+>> leaks into userland, someone messed up.
+>>
+>> So... I think that's reasonable.
+>>
+>>>
+>>> I assume you will be as LSF/MM? Would be good to discuss some of that in
+>>> person.
+>>>
+>>
+>> Yes, looking forward to it :]
+>>
+>>
+>>>
+>>>
+>>> Again, I am not sure about compaction and khugepaged. All we want to
+>>> guarantee is that our memory does not leave the private node.
+>>>
+>>> That doesn't require any __GFP_PRIVATE magic, just en-lighting these
+>>> subsystems that private nodes must use __GFP_THISNODE and must not leak
+>>> to other nodes.
+>>
+>> This is where specific use-cases matter.
+>>
+>> In the compressed memory example - the device doesn't care about memory
+>> leaving - but it cares about memory arriving and *and being modified*.
+>> (more on this in your next question)
+>>
+>> So i'm not convinced *all possible devices* would always want to support
+>> move_pages(), mbind(), and set_mempolicy().
+>>
+>> But, I do want to give this serious thought, and I agree the absolute
+>> minimal patch set could just be the fallback control mechanism and
+>> mm/ component filters/audit on __GFP_*.
+>>
+>>
+>>>
+>>> I'm missing why these are even opt-in. What's the problem with allowing
+>>> mbind and mempolicy to use these nodes in some of your drivers?
+>>>
+>>
+>> First:
+>>
+>> In my latest working branch these two flags have been folded into just
+>> _OPS_MEMPOLICY and any other migration interaction is just handled by
+>> filtering with the GFP flag.
+>>
+>>
+>> on always allowing mbind and mempolicy vs opt-in
+>> ---
+>>
+>> A proper compressed memory solution should not allow mbind/mempolicy.
+>>
+>> Compressed memory is different from normal memory - as the kernel can
+>> percieves free memory (many unused struct page in the buddy) when the
+>> device knows there's none left (the physical capacity is actually full).
+>>
+>> Any form of write to a compressed memory device is essentially a
+>> dangerous condition (OOMs = poison, not oom_kill()).
+>>
+>> So you need two controls:  Allocation and (userland) Write protection
+>> I implemented via:
+>>     - Demotion-only (allocations only happen in reclaim path)
+>>     - Write-protecting the entire node
+>>
+>> (I fully accept that a write-protection extension here might be a bridge
+>>  to far, but please stick with me for the sake of exploration).
+>>
+>>
+>> There's a serious argument to limit these devices to using an mbind
+>> pattern, but I wanted to make a full-on attempt to integrate this device
+>> into the demotion path as a transparent tier (kinda like zswap).
+>>
+>> I could not square write-protection with mempolicy, so i had to make
+>> them both optional and mutually exclusive.
+>>
+>> If you limit the device to mbind interactions, you do limit what can
+>> crash - but this forces userland software to be less portable by design:
+>>
+>>   - am i running on a system where this device is present?
+>>   - is that device exposing its memory on a node?
+>>   - which node?
+>>   - what memory can i put on that node? (can you prevent a process from
+>>     putting libc on that node?)
+>>   - how much compression ratio is left on the device?
+>>   - can i safety write to this virtual address?
+>>   - should i write-protect compressed VMAs? Can i handle those faults?
+>>   - many more
+>>
+>> That sounds a lot like re-implementing a bunch of mm/ in userland, and
+>> that's exactly where we were at with DAX.  We know this pattern failed.
+>>
+>> I'm trying to very much avoid repeating these mistakes, and so I'm very
+>> much trying to find a good path forward here that results in transparent
+>> usage of this memory.
+>>
+>>
+>>> I also have some questions about longterm pinnings, but that's better
+>>> discussed in person :)
+>>>
+>>
+>> The longterm pin extention came from auditing existing zone_device
+>> filters.
+>>
+>> tl;dr: informative mechanism - but it probably should be dropped,
+>> it makes no sense (it's device memory, pinnings mean nothing?).
+>>
+>>
+>>>
+>>> Right, that's rather invasive.
+>>>
+>>
+>> Yeah i'm trying to avoid it, and the answer may actually just exist in
+>> the task-death and VMA cleanup path rather than the folio-free path.
+>>
+>> From what i've seen of accelerator drivers that implement this, when you
+>> inform the driver of a memory region with a task, the driver should have
+>> a mechanism to take references on that VMA (or something like this) - so
+>> that when the task dies the driver has a way to be notified of the VMA
+>> being cleaned up.
+>>
+>> This probably exists - I just haven't gotten there yet.
+>>
+>> ~Gregory
 > 
-> Yeah i'm trying to avoid it, and the answer may actually just exist in
-> the task-death and VMA cleanup path rather than the folio-free path.
+> This has been a really great discussion. I just wanted to add a few
+> points that I think I have mentioned in other forums, but not here.
 > 
-> From what i've seen of accelerator drivers that implement this, when you
-> inform the driver of a memory region with a task, the driver should have
-> a mechanism to take references on that VMA (or something like this) - so
-> that when the task dies the driver has a way to be notified of the VMA
-> being cleaned up.
+> In essence, this is a discussion about memory properties and the level
+> at which they should be dealt with. Right now there are basically 3
+> levels: pageblocks, zones and nodes. While these levels exist for good
+> reasons, they also sometimes lead to issues. There's duplication of
+> functionality. MIGRATE_CMA and ZONE_MOVABLE both implement the same
+> basic property, but at different levels (attempts have been made to
+> merge them, but it didn't work out). There's also memory with clashing
+> properties inhabiting the same data structure: LRUs. Having strictly
+> movable memory on the same LRU as unmovable memory is a mismatch. It
+> leads to the well known problem of reclaim done in the name of an
+> unmovable allocation attempt can be entirely pointless in the face of
+> large amounts of ZONE_MOVABLE or MIGRATE_CMA memory: the anon LRU will
+> be chock full of movable-only pages. Reclaiming them is useless for
+> your allocation, and skipping them leads to locking up the system
+> because you're holding on to the LRU lock a long time.
 > 
-> This probably exists - I just haven't gotten there yet.
+> So, looking at having some properties set at the node level makes
+> sense to me even in the non-device case. But perhaps that is out of
+> scope for the initial discussion.
+> 
+> One use case that seems like a good match for private nodes is guest
+> memory. Guest memory is special enough to want to allocate / maintain
+> it separately, which is acknowledged by the introduction of
+> guest_memfd.
 
-That sounds reasonable. Alternatively, maybe the buddy can just inform
-the driver about pages getting freed?
-
-Again, just a another random thought. But if these nodes are already
-special-private, then why not enlighten the buddy in some way.
-
-That also aligns with my "buddy rejects to hand out free pages if the
-device says no" case.
-
-Something to thinker about.
+Yes. There is now an interface to configure mbind() for guest_memfd. So
+with that and some tweaks, maybe that ... would just work, if we get the
+mbind() interaction right?
 
 -- 
 Cheers,
