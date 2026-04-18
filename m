@@ -1,237 +1,150 @@
-Return-Path: <cgroups+bounces-15353-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-15354-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id M84YJMVW42l4FQEAu9opvQ
-	(envelope-from <cgroups+bounces-15353-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Sat, 18 Apr 2026 12:02:45 +0200
+	id 4Bk8Ab5442lHHQEAu9opvQ
+	(envelope-from <cgroups+bounces-15354-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Sat, 18 Apr 2026 14:27:42 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id C1E8B4209EC
-	for <lists+cgroups@lfdr.de>; Sat, 18 Apr 2026 12:02:44 +0200 (CEST)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
+	by mail.lfdr.de (Postfix) with ESMTPS id 08C37421161
+	for <lists+cgroups@lfdr.de>; Sat, 18 Apr 2026 14:27:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 78431302B3B7
-	for <lists+cgroups@lfdr.de>; Sat, 18 Apr 2026 10:02:42 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id B9D4F300BE91
+	for <lists+cgroups@lfdr.de>; Sat, 18 Apr 2026 12:27:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A981B313522;
-	Sat, 18 Apr 2026 10:02:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="EkS+icW0"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 94D853624B3;
+	Sat, 18 Apr 2026 12:27:36 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-pj1-f44.google.com (mail-pj1-f44.google.com [209.85.216.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from lgeamrelo03.lge.com (lgeamrelo03.lge.com [156.147.51.102])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8102D134CF
-	for <cgroups@vger.kernel.org>; Sat, 18 Apr 2026 10:02:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA3E235838B
+	for <cgroups@vger.kernel.org>; Sat, 18 Apr 2026 12:27:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.147.51.102
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1776506561; cv=none; b=BGAouMdYLg/q0EKR8ZTNeaiPc453sZI1d4D+ZrWVFawwPrEgOtPl1ScG/3ZTwZv7scu7jt+LpRuJWhp2zi2E6O1Oy3Jx3UAfDp4mupTFHP9sp3xmBzbPNSZVAbPyrO1QTcqOOaeoFtU2iHgR5CbzS9edXBO3Fv8B0WZdknB5+eE=
+	t=1776515256; cv=none; b=OKu9x5wsMMgkd/nQ4rxlN3VsRox02Hp4EquIsZPcFN4ZVzQxl+hIfphYEWYxjpkuV8XK7k6HnoEnR5f9Yl/y7vu4/RvSHbuEyFtZhR8++CqZeov5+/j1ol0r9kEZuvx62Uzn8fHcaswAAXxgeh1H2jv19w4t1ixCgPDl0X07mMQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1776506561; c=relaxed/simple;
-	bh=ZYzUnEiKq9S+vGGS0++5U+7rfjGOkutHI7PMS8wqIpU=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=a1292LtuwX2nicO8BDAu4hhhjvbe8QhOAcDpyrZxg/J7K8RcO9xZVkkgjjM72fyJ3k6YY8C3eZAsGkDN89mPifSofSmEYNb6peM5cPfdDZWJOq5qf6H4oEArEZCshaFeWhCNxWbPXfDqP0HRmQTnmjg9zDmGR9Qs9FC/QyYeig0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=EkS+icW0; arc=none smtp.client-ip=209.85.216.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
-Received: by mail-pj1-f44.google.com with SMTP id 98e67ed59e1d1-35da9692ec3so1506474a91.1
-        for <cgroups@vger.kernel.org>; Sat, 18 Apr 2026 03:02:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1776506559; x=1777111359; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=gZnSL+paj3Qwpah58bb/0dGs7eb4dbR7OOIO5FaRgaw=;
-        b=EkS+icW0BHdCrYViYfbI/kfPpDoXNWQKofcST78lti/opuOC2RZfpJesX4fmsniMeT
-         uHQo0Waj35fGJMzMvHfJnzCXBX61aOrZMUa0EXWJvNHkaKwydmrnI7RBnEaFFqNLyKIS
-         t2IOUefs21WzUUR2zkQe7PRp7sBpGhqE33FDvDdU88xS6cpzrssP6RpKiKFR6sNHZFM/
-         F69RroImgKDWQCP92ywkDN32Q2vVh9mgCKjpBOF7B46vsVpew6U8av9RUK6BCfX8vZLB
-         Ldg72qcfL6WD9oFde4kOdlM3POV0VyukjzjUfnONqCFZzfjZZ0lHHqaHRDBbo8pNteMa
-         MVtw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1776506559; x=1777111359;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=gZnSL+paj3Qwpah58bb/0dGs7eb4dbR7OOIO5FaRgaw=;
-        b=lt8jZ4cx6Us6gVYA64BlcK95z57uzBRsil5z9e6Jdfx+HLgk1x3aDR8OxKQrzjwohB
-         pqDFDTmVuNUyImZkgGryuT8JZ9mrGNp15fexxCXXb5QwkteIH4mLWKDl2RvMBHb6OfJ9
-         PpQx8GUaXOoliv7WHp9U2PT7+R0pueoWrykKHB0MiOfZzhJEIufa01MPe3jFs0Eej58X
-         TZxjcPGdtH1RweSblMX+QNAaOxcXo+/fBg1aLbqd9QE/7F7xZvqwGZOMa4UFAhGwoKpc
-         LjFoMKP4zp/X6fMJ8P/UE7ZPTcBE4oN+vIbQtVU9eu4+8jhF9W4Y5LcKk0Dc/A/EMjTJ
-         MuZg==
-X-Gm-Message-State: AOJu0Ywk2oAW0pH8tvX0xaFDvqKN/3PBqeBirRneHAbghd9JOQJP21Cc
-	iA0kDj51EOouCQ6jov0AJOyv8kzt/UNMpn6Ub85uhdxayUDrPhw1vCFZWxFCm9gBdPAaxplg3ME
-	M1Vpd
-X-Gm-Gg: AeBDieu3aNoh2Ba9dAGiHmZPiB/U2sAVVCF8sB3wXeklRVeXVmsQwQtLDx1gLguHBb4
-	rgkixyw4nsTVnlXmHaVO/R7oMGQso6J/WNxD0iy6XEaTnf9MkkJujiz+NV0ic2Fs2LKtjYohm7O
-	mWV31IL+7K5O0e+BcMb/vnIpQTticWE79KaTI35thVJFQ7Wirp1BCr6YqBhcvJ1FIB/dlKrkTnf
-	Zw2ngQCrZVje6xmpVO64WGpE7Z6vuTjdm1Fb1CQus1KNLBRCCsXz5HnUYHEld88+jOtuScLyst2
-	kBrnSlWAdIRgy60nhfWzv7UOBp7azNrmMsD4ZIinNuQCsvWK98khyIky/B4xZmGIsA7NhhOZ6u0
-	Pg0gdc9IF2YzDvu7bFztFnvrgfTv5Xxz+aO1oLfUDYajq4f+X5lVJu4e57rTdD/BQy6tT7V6+SW
-	6DHfX75mqaQnPn6A==
-X-Received: by 2002:a17:90b:3d86:b0:35d:a90d:580e with SMTP id 98e67ed59e1d1-36140490bedmr6618135a91.23.1776506558459;
-        Sat, 18 Apr 2026 03:02:38 -0700 (PDT)
-Received: from localhost ([240e:b1:e401:3::95])
-        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-c797701d9bfsm3319010a12.16.2026.04.18.03.02.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 18 Apr 2026 03:02:38 -0700 (PDT)
-From: Julian Sun <sunjunchao@bytedance.com>
-To: cgroups@vger.kernel.org
-Cc: longman@redhat.com,
-	chenridong@huaweicloud.com,
-	tj@kernel.org,
-	hannes@cmpxchg.org,
-	mkoutny@suse.com
-Subject: [PATCH] cgroup/cpuset: Skip cpuset_top_mutex for cpuset.mems writes
-Date: Sat, 18 Apr 2026 18:02:20 +0800
-Message-Id: <20260418100220.3717207-1-sunjunchao@bytedance.com>
-X-Mailer: git-send-email 2.39.5
+	s=arc-20240116; t=1776515256; c=relaxed/simple;
+	bh=789KyVGeT3sgUL0ELlTj+p02bnEamtRqykKebIxryAo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=mF8HtYhWLc45K3XDpDsvwsvSElafPuhqkWEL4vBpjPDr1rS5zKYIXbwbN9QKSLokVPx2kRZS/dALX8r54Zdz68VIK+rxp5j37nRm1k1YzSeK4aNsJSD81Kzwd+do8iTh8+0sbA/o6m+ay1w3K9ByoO875m2w0+4Vu88EBAVfwaA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lge.com; spf=pass smtp.mailfrom=lge.com; arc=none smtp.client-ip=156.147.51.102
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lge.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lge.com
+Received: from unknown (HELO yjaykim-PowerEdge-T330) (10.177.112.156)
+	by 156.147.51.102 with ESMTP; 18 Apr 2026 21:27:23 +0900
+X-Original-SENDERIP: 10.177.112.156
+X-Original-MAILFROM: youngjun.park@lge.com
+Date: Sat, 18 Apr 2026 21:27:23 +0900
+From: YoungJun Park <youngjun.park@lge.com>
+To: kasong@tencent.com
+Cc: linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
+	David Hildenbrand <david@kernel.org>, Zi Yan <ziy@nvidia.com>,
+	Baolin Wang <baolin.wang@linux.alibaba.com>,
+	Barry Song <baohua@kernel.org>, Hugh Dickins <hughd@google.com>,
+	Chris Li <chrisl@kernel.org>,
+	Kemeng Shi <shikemeng@huaweicloud.com>,
+	Nhat Pham <nphamcs@gmail.com>, Baoquan He <bhe@redhat.com>,
+	Johannes Weiner <hannes@cmpxchg.org>,
+	Chengming Zhou <chengming.zhou@linux.dev>,
+	Roman Gushchin <roman.gushchin@linux.dev>,
+	Shakeel Butt <shakeel.butt@linux.dev>,
+	Muchun Song <muchun.song@linux.dev>,
+	Qi Zheng <zhengqi.arch@bytedance.com>, linux-kernel@vger.kernel.org,
+	cgroups@vger.kernel.org, Yosry Ahmed <yosry@kernel.org>,
+	Lorenzo Stoakes <ljs@kernel.org>, Dev Jain <dev.jain@arm.com>,
+	Lance Yang <lance.yang@linux.dev>, Michal Hocko <mhocko@suse.com>,
+	Michal Hocko <mhocko@kernel.org>, Qi Zheng <qi.zheng@linux.dev>
+Subject: Re: [PATCH v2 11/11] mm, swap: merge zeromap into swap table
+Message-ID: <aeN4qzqfyFpWJXYZ@yjaykim-PowerEdge-T330>
+References: <20260417-swap-table-p4-v2-0-17f5d1015428@tencent.com>
+ <20260417-swap-table-p4-v2-11-17f5d1015428@tencent.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spamd-Result: default: False [-0.66 / 15.00];
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20260417-swap-table-p4-v2-11-17f5d1015428@tencent.com>
+X-Spamd-Result: default: False [-0.86 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_CONTAINS_FROM(1.00)[];
-	DMARC_POLICY_ALLOW(-0.50)[bytedance.com,quarantine];
-	R_MISSING_CHARSET(0.50)[];
-	R_DKIM_ALLOW(-0.20)[bytedance.com:s=google];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	MID_RHS_NOT_FQDN(0.50)[];
+	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
 	MAILLIST(-0.15)[generic];
+	DMARC_POLICY_SOFTFAIL(0.10)[lge.com : SPF not aligned (relaxed), No valid DKIM,none];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RECEIVED_HELO_LOCALHOST(0.00)[];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-15353-lists,cgroups=lfdr.de];
-	RCVD_COUNT_FIVE(0.00)[5];
-	FORGED_SENDER_MAILLIST(0.00)[];
 	FROM_HAS_DN(0.00)[];
+	RCVD_COUNT_THREE(0.00)[4];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-15354-lists,cgroups=lfdr.de];
 	MIME_TRACE(0.00)[0:+];
-	FROM_NEQ_ENVFROM(0.00)[sunjunchao@bytedance.com,cgroups@vger.kernel.org];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	FREEMAIL_CC(0.00)[kvack.org,linux-foundation.org,kernel.org,nvidia.com,linux.alibaba.com,google.com,huaweicloud.com,gmail.com,redhat.com,cmpxchg.org,linux.dev,bytedance.com,vger.kernel.org,arm.com,suse.com];
+	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
+	MISSING_XM_UA(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[youngjun.park@lge.com,cgroups@vger.kernel.org];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	NEURAL_HAM(-0.00)[-1.000];
-	TO_DN_NONE(0.00)[];
-	DKIM_TRACE(0.00)[bytedance.com:+];
 	TAGGED_RCPT(0.00)[cgroups];
-	RCPT_COUNT_FIVE(0.00)[6];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[bytedance.com:email,bytedance.com:dkim,bytedance.com:mid,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: C1E8B4209EC
+	R_DKIM_NA(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[27];
+	TO_DN_SOME(0.00)[]
+X-Rspamd-Queue-Id: 08C37421161
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-cpuset_top_mutex serializes regular cpuset writes against the
-housekeeping_update() path. That path has to drop cpus_read_lock() and
-cpuset_mutex before calling housekeeping_update(), while keeping the
-housekeeping cpumask update ordered against other cpuset writes.
+On Fri, Apr 17, 2026 at 02:34:41AM +0800, Kairui Song via B4 Relay wrote:
 
-cpuset_write_resmask() currently takes cpuset_top_mutex for all
-resource-mask writes. This is broader than needed for cpuset.mems. The
-mems path updates nodemasks, task mems_allowed and mempolicy state, and
-may queue page migration work, but it does not change isolated CPUs,
-scheduler domains or housekeeping cpumasks.
+>   *
+>   * Usages:
+>   *
+> @@ -74,17 +76,22 @@ struct swap_memcg_table {
+>  #define SWP_TB_PFN_MARK_BITS	2
+>  #define SWP_TB_PFN_MARK_MASK	(BIT(SWP_TB_PFN_MARK_BITS) - 1)
+>  
+> -/* SWAP_COUNT part for PFN or shadow, the width can be shrunk or extended */
+> -#define SWP_TB_COUNT_BITS      min(4, BITS_PER_LONG - SWP_TB_PFN_BITS)
+> +/* SWAP_COUNT and flags for PFN or shadow, width can be shrunk or extended */
+> +#define SWP_TB_FLAGS_BITS	min(5, BITS_PER_LONG - SWP_TB_PFN_BITS)
+> +#define SWP_TB_COUNT_BITS	(SWP_TB_FLAGS_BITS - 1)
 
-Add cpuset_mems_lock()/cpuset_mems_unlock() for FILE_MEMLIST. The new
-lock helper still takes cpus_read_lock() and cpuset_mutex because
-update_nodemask() can reach check_insane_mems_config(), which calls
-static_branch_enable_cpuslocked(). CPU mask writes keep using
-cpuset_full_lock().
+Hi Kairui :)
 
-Record update_housekeeping and force_sd_rebuild on entry and warn if
-FILE_MEMLIST changes either value. If that warning ever fires, the mems
-path has gained a sched-domain or housekeeping side effect and must stop
-using the lighter lock path.
+Would this break the build on 32-bit arches with 40-bit phys
+addrs (MAX_POSSIBLE_PHYSMEM_BITS = 40)?
 
-Signed-off-by: Julian Sun <sunjunchao@bytedance.com>
----
- kernel/cgroup/cpuset.c | 40 ++++++++++++++++++++++++++++++++++++----
- 1 file changed, 36 insertions(+), 4 deletions(-)
+Architectures I checked.
+  - ARM LPAE   (CONFIG_ARM_LPAE=y)
+  - ARC PAE40  (CONFIG_ARC_HAS_PAE40=y)
+  - MIPS XPA   (CONFIG_XPA=y)
 
-diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
-index 1335e437098e..5e0927ea71a9 100644
---- a/kernel/cgroup/cpuset.c
-+++ b/kernel/cgroup/cpuset.c
-@@ -331,6 +331,28 @@ void cpuset_full_unlock(void)
- 	mutex_unlock(&cpuset_top_mutex);
- }
- 
-+/*
-+ * cpuset.mems writes cannot change isolated CPUs or sched domains. Skip
-+ * cpuset_top_mutex, but verify that the path leaves finalizer state unchanged.
-+ */
-+static void cpuset_mems_lock(bool *hk_update, bool *sd_rebuild)
-+{
-+	cpus_read_lock();
-+	mutex_lock(&cpuset_mutex);
-+
-+	*hk_update = update_housekeeping;
-+	*sd_rebuild = force_sd_rebuild;
-+}
-+
-+static void cpuset_mems_unlock(bool hk_update, bool sd_rebuild)
-+{
-+	WARN_ON_ONCE(update_housekeeping != hk_update);
-+	WARN_ON_ONCE(force_sd_rebuild != sd_rebuild);
-+
-+	mutex_unlock(&cpuset_mutex);
-+	cpus_read_unlock();
-+}
-+
- #ifdef CONFIG_LOCKDEP
- bool lockdep_is_cpuset_held(void)
- {
-@@ -3209,6 +3231,10 @@ ssize_t cpuset_write_resmask(struct kernfs_open_file *of,
- {
- 	struct cpuset *cs = css_cs(of_css(of));
- 	struct cpuset *trialcs;
-+	cpuset_filetype_t type = of_cft(of)->private;
-+	bool mems = type == FILE_MEMLIST;
-+	bool hk_update = false;
-+	bool sd_rebuild = false;
- 	int retval = -ENODEV;
- 
- 	/* root is read-only */
-@@ -3216,7 +3242,10 @@ ssize_t cpuset_write_resmask(struct kernfs_open_file *of,
- 		return -EACCES;
- 
- 	buf = strstrip(buf);
--	cpuset_full_lock();
-+	if (mems)
-+		cpuset_mems_lock(&hk_update, &sd_rebuild);
-+	else
-+		cpuset_full_lock();
- 	if (!is_cpuset_online(cs))
- 		goto out_unlock;
- 
-@@ -3226,7 +3255,7 @@ ssize_t cpuset_write_resmask(struct kernfs_open_file *of,
- 		goto out_unlock;
- 	}
- 
--	switch (of_cft(of)->private) {
-+	switch (type) {
- 	case FILE_CPULIST:
- 		retval = update_cpumask(cs, trialcs, buf);
- 		break;
-@@ -3243,9 +3272,12 @@ ssize_t cpuset_write_resmask(struct kernfs_open_file *of,
- 
- 	free_cpuset(trialcs);
- out_unlock:
--	cpuset_update_sd_hk_unlock();
--	if (of_cft(of)->private == FILE_MEMLIST)
-+	if (mems) {
-+		cpuset_mems_unlock(hk_update, sd_rebuild);
- 		schedule_flush_migrate_mm();
-+	} else {
-+		cpuset_update_sd_hk_unlock();
-+	}
- 	return retval ?: nbytes;
- }
- 
--- 
-2.39.5
+Calculations.
 
+  SWP_TB_PFN_BITS   = 28 + 2 = 30
+  SWP_TB_FLAGS_BITS = min(5, 32 - 30) = 2
+  SWP_TB_COUNT_BITS = 2 - 1 = 1
+
+The BUILD_BUG_ON looks like the real problem. it needs at
+least 3 count values (free/used/overflow).
+
+  BUILD_BUG_ON(SWP_TB_COUNT_MAX < 2 || SWP_TB_COUNT_BITS < 2);
+
+Confirmed with a cross build (multi_v7_defconfig + lpae.config).
+
+  error: BUILD_BUG_ON failed: SWP_TB_COUNT_MAX < 2 || SWP_TB_COUNT_BITS < 2
+    at __count_to_swp_tb (mm/swap_table.h:227)
+
+I think the right fix is widening swap_tb to 64 bits
+unconditionally (atomic64_t).
+
+(Or, uglier, these arches could always route counts through the
+extend table.)
+
+Best regards,
+Youngjun Park
 
