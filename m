@@ -1,247 +1,259 @@
-Return-Path: <cgroups+bounces-15366-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-15367-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id sGVlG+CV5WnrlgEAu9opvQ
-	(envelope-from <cgroups+bounces-15366-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Mon, 20 Apr 2026 04:56:32 +0200
+	id yCjtOnSq5WkCmwEAu9opvQ
+	(envelope-from <cgroups+bounces-15367-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Mon, 20 Apr 2026 06:24:20 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [IPv6:2600:3c09:e001:a7::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 105EF42671B
-	for <lists+cgroups@lfdr.de>; Mon, 20 Apr 2026 04:56:32 +0200 (CEST)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8C7E7426B6F
+	for <lists+cgroups@lfdr.de>; Mon, 20 Apr 2026 06:24:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 5268230071D8
-	for <lists+cgroups@lfdr.de>; Mon, 20 Apr 2026 02:56:31 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 7C76A30082BE
+	for <lists+cgroups@lfdr.de>; Mon, 20 Apr 2026 04:24:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 47BE737EFEE;
-	Mon, 20 Apr 2026 02:56:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 857FD37F8C0;
+	Mon, 20 Apr 2026 04:24:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gourry.net header.i=@gourry.net header.b="t1b3S+bk"
+	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="e7yWFhT1"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-qk1-f171.google.com (mail-qk1-f171.google.com [209.85.222.171])
+Received: from mail-pl1-f178.google.com (mail-pl1-f178.google.com [209.85.214.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 845FC37EFE2
-	for <cgroups@vger.kernel.org>; Mon, 20 Apr 2026 02:56:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A4662F744F
+	for <cgroups@vger.kernel.org>; Mon, 20 Apr 2026 04:24:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1776653787; cv=none; b=lTkdh6ADcwGQn4R6kXz3a8t2YDSu5qXUSXGLYVm/4EkRBwzmCpxI54Cv+NNi5s0gY34ML80Xvb5Y9NpgBaOnXbQKhoQRq+00Tf+U8LgyGLPS/VbGr/6NkL5z9JVKOr2QS6nEu486EOjqv40pzkI+NuK5pFSxz0VoTzCMcH0dBv8=
+	t=1776659058; cv=none; b=KvDly8fmHJHWC8fpQEXD8u5TRA8h1QdsHuaPWgirLXrU/21TSYWBhavh1DsI71J34jq335P7dbKBh7eUDkt+97RHX8tczYcdQts+QaWi45z6HsCbc0W1lb11BqCIVxeFSpZ6RPIiUAooL/pCqAY2m/QALy6YdyB2YWRsJcFbf0g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1776653787; c=relaxed/simple;
-	bh=Gy7C5LgAy0+dNJVh3a/spG3LUsjag46Tvhe61CPzqjQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=OrZVNCpOw4JvkAjPQOBFD/QhH88CZo4BWg5lo7AtjbTsWRZsUixD6p0NncfOtL5LagRt6Y8IiDkbpuHC0tvb3/FZM+O+sohQz1Np5sqtDYPAqnORfhSUms6uVGmtqrSsRrDFhW5w+tKhAJtml59pQKLwJNZrdTN/vyMr49M+g30=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gourry.net; spf=pass smtp.mailfrom=gourry.net; dkim=pass (2048-bit key) header.d=gourry.net header.i=@gourry.net header.b=t1b3S+bk; arc=none smtp.client-ip=209.85.222.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gourry.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gourry.net
-Received: by mail-qk1-f171.google.com with SMTP id af79cd13be357-8d4f78fc9f6so287819185a.3
-        for <cgroups@vger.kernel.org>; Sun, 19 Apr 2026 19:56:25 -0700 (PDT)
+	s=arc-20240116; t=1776659058; c=relaxed/simple;
+	bh=0ZpLmOcLcnK4da77S5TGIzVJmjCohlBH6F21+hRNvbM=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=KgJBUnIqI7Li5RhCd/3fVPKKLIy0A6HRF4mNnlazisG/dUYjBuDj0mg8MwECgTPKXAoIzhjAKtatykG9rKqSlAvl/nhF5K/WR+mQZmsZvIfjrxpqiuMLcHZmqZYQ3fzUTr3a4Kejn0I3x77YjKOsR+DBwTfanTjfgDsT5ZdB+Dc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=e7yWFhT1; arc=none smtp.client-ip=209.85.214.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
+Received: by mail-pl1-f178.google.com with SMTP id d9443c01a7336-2b24fdac394so24420855ad.3
+        for <cgroups@vger.kernel.org>; Sun, 19 Apr 2026 21:24:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gourry.net; s=google; t=1776653784; x=1777258584; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=tugQt2aIOJgoqj0Ob37lQ1a1TrVKhZ7jSIgjv7qjxfc=;
-        b=t1b3S+bkTXE3j00v5UNCH8rPHlmuEMJsB+F6lwv8trpr/PskjdnmsL4XxF9lpDjdF0
-         hzhD9hJ/y1a/SqHQ9k6S04uBN6tyzhw5ddh6/Dr0Efbu75Z1tYBl2rwLwqjXkXjwnWgi
-         zo99c5KrKmAg31ptTacy0m7WGoFP2qXpCPOewg5RUjcFmBnHyEsPkQ3CXu4Ap0yWF8Jp
-         y2Tsuja+wRqOw1p5f5NtBwF5g9oGJSKcc6UHi76irOasuXa4l6PJP9bbsi4xnRWezIZd
-         Dv7TbLaOn+YYUq/YkJ20RultXKWF5eKRrsoyZjlEXfxwcliifnoOs3LV8VCvxdCBCLUA
-         uHww==
+        d=bytedance.com; s=google; t=1776659056; x=1777263856; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
+         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=4vxCa2z6HMfkqchkIRH1SCRyDKSV7iNrjCESWkp9vxY=;
+        b=e7yWFhT1Hm3gVMRlIDFzbxz9muB+yqiltvZJ6mKEoCEp1aMKI7jGQjxPtZgyvrjKQO
+         JMHdN3YxgiaK+UddUbeIkROCWrqkYKPd/aI3JH+Z91ol6qGzY9QQWmypCs2tTmkGolp+
+         G1t//iZssQzRh8rtbdOyXTI9mjvdnG8RetSRpB4en5PamoEnOC0RzVFY9zDXHFjg8Dr2
+         1UDaTT2E5eJ1HsVZLwPGuiTp1/3Z3ZMDT9b8upGijjH3MfNAJaklOZnmYvJBvn2qW8V/
+         R4DafwzofokCIoShbSLvrtg9WQpQUMqfH1KYhXf+RmTaXh1/IF/N4SLroS/CMT+PH7F0
+         CYwA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1776653784; x=1777258584;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=tugQt2aIOJgoqj0Ob37lQ1a1TrVKhZ7jSIgjv7qjxfc=;
-        b=a4lH7N4GVIYb8sdFHo9Ou2ZZZAGEaZRmw6ZIa3mUd9qfcbe6A/oVRpUlY81y+Cs56X
-         x32D8G/U5oIBvet58OjbnBrBhrVSPln/7a4+LshT7dALL+nCLd5wXj5wWJ2ar5jfyyIf
-         htTMzycjhjRC4Qea4HmWySTzyiofoQwU/SAqS6hcZisbcXar8m7MApm2OlfXv5OW+bOm
-         j6drR/dseqeNKfMJiKmUcfliszuW0+SfJIxdo9Amts1H0DYUUgngPtYCe9bfXR7UL0or
-         mqOzxmVzCQVC2CCmiJVzjARIvj2itaITHFyk6IX8uddx8B2l6mg262ZBombEmtthOnVC
-         BMEg==
-X-Forwarded-Encrypted: i=1; AFNElJ//U1PyEV7OQtzT724xxpIptw1UnkTG9VT3Op2pW7l5pjxA8KmJfZPjn5PzRz6o8K3EOQlee94m@vger.kernel.org
-X-Gm-Message-State: AOJu0YxP5HiHxhPLXSEDtCnCWTHuXI5e32I8/mS/BtRVx3rz86iAIWC+
-	VH5kfW2Ba6vNkpldytL1SNmQ00dtsrZfgAV/BDSNUB3hpxqZpMAJrYSuW3tuYsMgcOQ=
-X-Gm-Gg: AeBDieuUj7dcxPTAeprvqeRqyll9tNXpnvr0jk1IrF9ICviooNYYPsFW9c9IgI7OZ4D
-	cYjQzFUxzpXzxj4OxZseQ9sJWQJEepwnY9Wj3SAIBvvxNY5BMmwfp3kmBTMxfNWHb3qPa+nrf/c
-	S4ke2AJuhMjLQcojkEW8LsQv9mLaJmwOyyoQb/fSg9gVuXMKbY+Z3ZOi004ophNCwLU6ucOtrf+
-	q06UonXGai0e6kbsmwd1EanIXTiTw6dlWkP9VX8P66CWBaVj9bodcC1Usgcfw00bWQ9Le7qOrOc
-	kzGAEp92n6zeMMytrOA6vUHTUtiMzocQtQRXlonOpdZmQzpdwgM3Qm12Wd9GZUH4jv9Y+OElwMD
-	wQN9vHOasdsWzqzuqMIPS1HKPLzDju++mdl15jb21m1gfinrECuC87xHrAbwQLzzOcEN8DXQv1+
-	6aSfRqju9Sn/DbLIDJ5zp21LZZoQ10GJxDZW5C5uRwdDg47IBplEyinJM35IyWHiiFNuouSqu9j
-	MiwjULa7hodSH1c/h3pnSI=
-X-Received: by 2002:a05:620a:a2c3:10b0:8e8:bedd:14b2 with SMTP id af79cd13be357-8e8bedd1701mr799144185a.43.1776653784400;
-        Sun, 19 Apr 2026 19:56:24 -0700 (PDT)
-Received: from gourry-fedora-PF4VCD3F (pool-108-28-184-223.washdc.fios.verizon.net. [108.28.184.223])
-        by smtp.gmail.com with ESMTPSA id af79cd13be357-8e7d5fe9638sm706089185a.1.2026.04.19.19.56.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 19 Apr 2026 19:56:23 -0700 (PDT)
-Date: Sun, 19 Apr 2026 22:56:20 -0400
-From: Gregory Price <gourry@gourry.net>
-To: "David Hildenbrand (Arm)" <david@kernel.org>
-Cc: lsf-pc@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
-	linux-cxl@vger.kernel.org, cgroups@vger.kernel.org,
-	linux-mm@kvack.org, linux-trace-kernel@vger.kernel.org,
-	damon@lists.linux.dev, kernel-team@meta.com,
-	gregkh@linuxfoundation.org, rafael@kernel.org, dakr@kernel.org,
-	dave@stgolabs.net, jonathan.cameron@huawei.com,
-	dave.jiang@intel.com, alison.schofield@intel.com,
-	vishal.l.verma@intel.com, ira.weiny@intel.com,
-	dan.j.williams@intel.com, longman@redhat.com,
-	akpm@linux-foundation.org, lorenzo.stoakes@oracle.com,
-	Liam.Howlett@oracle.com, vbabka@suse.cz, rppt@kernel.org,
-	surenb@google.com, mhocko@suse.com, osalvador@suse.de,
-	ziy@nvidia.com, matthew.brost@intel.com, joshua.hahnjy@gmail.com,
-	rakie.kim@sk.com, byungchul@sk.com, ying.huang@linux.alibaba.com,
-	apopple@nvidia.com, axelrasmussen@google.com, yuanchu@google.com,
-	weixugc@google.com, yury.norov@gmail.com, linux@rasmusvillemoes.dk,
-	mhiramat@kernel.org, mathieu.desnoyers@efficios.com, tj@kernel.org,
-	hannes@cmpxchg.org, mkoutny@suse.com, jackmanb@google.com,
-	sj@kernel.org, baolin.wang@linux.alibaba.com, npache@redhat.com,
-	ryan.roberts@arm.com, dev.jain@arm.com, baohua@kernel.org,
-	lance.yang@linux.dev, muchun.song@linux.dev, xu.xin16@zte.com.cn,
-	chengming.zhou@linux.dev, jannh@google.com, linmiaohe@huawei.com,
-	nao.horiguchi@gmail.com, pfalcato@suse.de, rientjes@google.com,
-	shakeel.butt@linux.dev, riel@surriel.com, harry.yoo@oracle.com,
-	cl@gentwo.org, roman.gushchin@linux.dev, chrisl@kernel.org,
-	kasong@tencent.com, shikemeng@huaweicloud.com, nphamcs@gmail.com,
-	bhe@redhat.com, zhengqi.arch@bytedance.com, terry.bowman@amd.com
-Subject: Re: [LSF/MM/BPF TOPIC][RFC PATCH v4 00/27] Private Memory Nodes (w/
- Compressed RAM)
-Message-ID: <aeWV1CvP9ImZ3eEG@gourry-fedora-PF4VCD3F>
-References: <20260222084842.1824063-1-gourry@gourry.net>
- <3342acb5-8d34-4270-98a2-866b1ff80faf@kernel.org>
- <abwRu1FNqI3dVyqL@gourry-fedora-PF4VCD3F>
- <2608a03b-72bb-4033-8e6f-a439502b5573@kernel.org>
- <ad0iT4UWka3gMUpu@gourry-fedora-PF4VCD3F>
- <38cf52d1-32a8-462f-ac6a-8fad9d14c4f0@kernel.org>
- <ad-r7hwIdnvKsrh9@gourry-fedora-PF4VCD3F>
- <46837cea-5d90-49d8-be67-7306e0e89aa3@kernel.org>
+        d=1e100.net; s=20251104; t=1776659056; x=1777263856;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
+         :user-agent:mime-version:date:message-id:x-gm-gg:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=4vxCa2z6HMfkqchkIRH1SCRyDKSV7iNrjCESWkp9vxY=;
+        b=LTFl+ffqsqeDNoW3J3IPSDbTJ+NVhXeOnoiEQyYOW4ByewNWKch5jPXtTemDbd+NSF
+         B5+6Sa7X0GfZScDl45hgiOGSDLeT42gyUsWqikT8LtAAM0xZa7r1DJV1tnrnIbSFM+zX
+         YMafNKigz7OyxjXZih6GtEgLelgwqJ5Ho+tDRv2K8CTPCApoxEstU49g+D31AtK5B1yS
+         CrWxNoX7vzXdnxYPqgVggwYgb5FW1vIiwU6khPrm8o9VuEVoQ2dlswCARTkWl6n/UIxr
+         qNJa8FBac2Al3YgDh2Ums/cdomlxYCm15zU5LRsXE/+odaJPYR2/TY/BqtuJ0hRtzoZB
+         T3kg==
+X-Forwarded-Encrypted: i=1; AFNElJ9yGcIvNiMLtlurpbRysWwBPOJApAB8BfoOvfeqUZIpi4Yp/qUx+7wRqpdJ54ZF4ekHLLPuDFsp@vger.kernel.org
+X-Gm-Message-State: AOJu0YyZHazcqOQm/JaXlDCHIr8/agFJKKKm6Zxn3yEn5JoV6pvZVt88
+	jn7DhvoK0PPJveb28mPrmdZfDn18vSjwcEPd3E+lt3t4HVMN/Re3TP7BpKa7HOW03/4=
+X-Gm-Gg: AeBDievYmxikn9GcH1Lxx+sbxkh9lpChvv5n/ouKDa9ax31QUijEdXEjDh+8HLsW9vn
+	3Kgj/g57BVC2RWMJfxHtQkht0k+sR7R802TttVd+ifBy8w13xfn4Gp9JgsAiHvV1Oh/dpB5hM7a
+	fvNYd3HtRhkpTpIWkarW6jjY0aabZlxI2zYcOaBUSZEkoaUj9K0CaQyXMkyEO9AJP8zsVbgBbN9
+	H/FtgwNi0HHQ2ibDfLJ8SVJfwndDchu0nRM7NhqO+Pls5dTo6AMaj4sEBJvwYRiLEt2tq9lF8Uf
+	rgfTyOBQIBhYmC0Wsar1Aq0tfwlw044tW3LDNc2Y05uXGCs/PIfxvAvD92Xs0cBomHqPvZz7DFV
+	CW1d7JboOfWDbeAdiNcwInukLUP5KIv+MgRLiMPoKI9h/KAtj9+MnD/cD/Vz3ZMuhwG23OITw1Z
+	qw1AkisQygmvn+IUwLodvUgabFBqZj3CP0v14l6KGRmH/nRGjcLDdrdVjvd16SbkWoEEzIXV4S5
+	xmatw==
+X-Received: by 2002:a17:903:2acb:b0:2b4:5ed3:415f with SMTP id d9443c01a7336-2b5f9f05bc9mr131455295ad.18.1776659055637;
+        Sun, 19 Apr 2026 21:24:15 -0700 (PDT)
+Received: from [10.88.210.107] ([61.213.176.57])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2b5faa1739fsm89696905ad.22.2026.04.19.21.24.13
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 19 Apr 2026 21:24:15 -0700 (PDT)
+Message-ID: <53e18c70-a670-47cd-ba17-2d6f1adde1c8@bytedance.com>
+Date: Mon, 20 Apr 2026 12:24:11 +0800
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <46837cea-5d90-49d8-be67-7306e0e89aa3@kernel.org>
-X-Spamd-Result: default: False [0.34 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] cgroup/cpuset: Skip cpuset_top_mutex for cpuset.mems
+ writes
+To: Chen Ridong <chenridong@huaweicloud.com>, cgroups@vger.kernel.org
+Cc: longman@redhat.com, tj@kernel.org, hannes@cmpxchg.org, mkoutny@suse.com
+References: <20260418100220.3717207-1-sunjunchao@bytedance.com>
+ <7249e345-8218-4232-9fc1-4109039a9aad@huaweicloud.com>
+From: Julian Sun <sunjunchao@bytedance.com>
+In-Reply-To: <7249e345-8218-4232-9fc1-4109039a9aad@huaweicloud.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_RHS_NOT_FQDN(0.50)[];
-	R_DKIM_ALLOW(-0.20)[gourry.net:s=google];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c09:e001:a7::/64:c];
+	DMARC_POLICY_ALLOW(-0.50)[bytedance.com,quarantine];
+	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
+	R_DKIM_ALLOW(-0.20)[bytedance.com:s=google];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-15366-lists,cgroups=lfdr.de];
-	RCVD_TLS_LAST(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	DMARC_NA(0.00)[gourry.net];
-	FREEMAIL_CC(0.00)[lists.linux-foundation.org,vger.kernel.org,kvack.org,lists.linux.dev,meta.com,linuxfoundation.org,kernel.org,stgolabs.net,huawei.com,intel.com,redhat.com,linux-foundation.org,oracle.com,suse.cz,google.com,suse.com,suse.de,nvidia.com,gmail.com,sk.com,linux.alibaba.com,rasmusvillemoes.dk,efficios.com,cmpxchg.org,arm.com,linux.dev,zte.com.cn,surriel.com,gentwo.org,tencent.com,huaweicloud.com,bytedance.com,amd.com];
 	MIME_TRACE(0.00)[0:+];
+	TO_DN_SOME(0.00)[];
+	TAGGED_FROM(0.00)[bounces-15367-lists,cgroups=lfdr.de];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	DKIM_TRACE(0.00)[gourry.net:+];
-	ASN(0.00)[asn:63949, ipnet:2600:3c09::/32, country:SG];
-	MISSING_XM_UA(0.00)[];
+	RCVD_TLS_LAST(0.00)[];
+	DKIM_TRACE(0.00)[bytedance.com:+];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	RCPT_COUNT_FIVE(0.00)[6];
 	RCVD_COUNT_FIVE(0.00)[5];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[gourry@gourry.net,cgroups@vger.kernel.org];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCPT_COUNT_GT_50(0.00)[73];
-	TAGGED_RCPT(0.00)[cgroups];
+	FROM_NEQ_ENVFROM(0.00)[sunjunchao@bytedance.com,cgroups@vger.kernel.org];
+	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
 	NEURAL_HAM(-0.00)[-1.000];
-	TO_DN_SOME(0.00)[];
+	TAGGED_RCPT(0.00)[cgroups];
+	MID_RHS_MATCH_FROM(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 105EF42671B
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,bytedance.com:email,bytedance.com:dkim,bytedance.com:mid]
+X-Rspamd-Queue-Id: 8C7E7426B6F
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-On Fri, Apr 17, 2026 at 11:37:36AM +0200, David Hildenbrand (Arm) wrote:
-> On 4/15/26 17:17, Gregory Price wrote:
+On 4/20/26 9:24 AM, Chen Ridong wrote:
 > 
-> >> Needs a second thought regarding fallback logic I raised above.
-> >>
-> >> What I think would have to be audited is the usage of __GFP_THISNODE by
-> >> kernel allocations, where we would not actually want to allocate from
-> >> this private node.
-> >>
-> > 
-> > This is fair, and I a re-visit is absolutely warranted.
-> > 
-> > Re-examining the quick audit from my last response suggests - I should
-> > never have seen leakage in those cases, but the fallbacks are needed.
-> > 
-> > So yes, this all requires a second look (and a third, and a ninth).
-> > 
-> > I'm not married to __GFP_PRIVATE, but it has been reliable for me.
 > 
-> Yes, we should carefully describe which semantics we want to achieve, to
-> then figure out how we could achieve them.
+> On 2026/4/18 18:02, Julian Sun wrote:
+>> cpuset_top_mutex serializes regular cpuset writes against the
+>> housekeeping_update() path. That path has to drop cpus_read_lock() and
+>> cpuset_mutex before calling housekeeping_update(), while keeping the
+>> housekeeping cpumask update ordered against other cpuset writes.
+>>
+>> cpuset_write_resmask() currently takes cpuset_top_mutex for all
+>> resource-mask writes. This is broader than needed for cpuset.mems. The
+>> mems path updates nodemasks, task mems_allowed and mempolicy state, and
+>> may queue page migration work, but it does not change isolated CPUs,
+>> scheduler domains or housekeeping cpumasks.
+>>
+> 
+> Hello,
+
+Hi, Thanks for your review.
+> 
+> Has any regression been observed that prompted you to make this change?
+
+No regression has been observed.
+
+I sent this patch because I recently noticed the global cpuset_top_mutex 
+while looking at the cpuset locking. After checking what it is used for, 
+it looked like the cpuset.mems path does not need to take it.
+
+> 
+>> Add cpuset_mems_lock()/cpuset_mems_unlock() for FILE_MEMLIST. The new
+>> lock helper still takes cpus_read_lock() and cpuset_mutex because
+>> update_nodemask() can reach check_insane_mems_config(), which calls
+>> static_branch_enable_cpuslocked(). CPU mask writes keep using
+>> cpuset_full_lock().
+>>
+>> Record update_housekeeping and force_sd_rebuild on entry and warn if
+>> FILE_MEMLIST changes either value. If that warning ever fires, the mems
+>> path has gained a sched-domain or housekeeping side effect and must stop
+>> using the lighter lock path.
+>>
+>> Signed-off-by: Julian Sun <sunjunchao@bytedance.com>
+>> ---
+>>   kernel/cgroup/cpuset.c | 40 ++++++++++++++++++++++++++++++++++++----
+>>   1 file changed, 36 insertions(+), 4 deletions(-)
+>>
+>> diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
+>> index 1335e437098e..5e0927ea71a9 100644
+>> --- a/kernel/cgroup/cpuset.c
+>> +++ b/kernel/cgroup/cpuset.c
+>> @@ -331,6 +331,28 @@ void cpuset_full_unlock(void)
+>>   	mutex_unlock(&cpuset_top_mutex);
+>>   }
+>>   
+>> +/*
+>> + * cpuset.mems writes cannot change isolated CPUs or sched domains. Skip
+>> + * cpuset_top_mutex, but verify that the path leaves finalizer state unchanged.
+>> + */
+>> +static void cpuset_mems_lock(bool *hk_update, bool *sd_rebuild)
+>> +{
+>> +	cpus_read_lock();
+>> +	mutex_lock(&cpuset_mutex);
+>> +
+>> +	*hk_update = update_housekeeping;
+>> +	*sd_rebuild = force_sd_rebuild;
+>> +}
+>> +
+>> +static void cpuset_mems_unlock(bool hk_update, bool sd_rebuild)
+>> +{
+>> +	WARN_ON_ONCE(update_housekeeping != hk_update);
+>> +	WARN_ON_ONCE(force_sd_rebuild != sd_rebuild);
+>> +
+>> +	mutex_unlock(&cpuset_mutex);
+>> +	cpus_read_unlock();
+>> +}
+>> +
+>>   #ifdef CONFIG_LOCKDEP
+>>   bool lockdep_is_cpuset_held(void)
+>>   {
+>> @@ -3209,6 +3231,10 @@ ssize_t cpuset_write_resmask(struct kernfs_open_file *of,
+>>   {
+>>   	struct cpuset *cs = css_cs(of_css(of));
+>>   	struct cpuset *trialcs;
+>> +	cpuset_filetype_t type = of_cft(of)->private;
+>> +	bool mems = type == FILE_MEMLIST;
+>> +	bool hk_update = false;
+>> +	bool sd_rebuild = false;
+>>   	int retval = -ENODEV;
+>>   
+>>   	/* root is read-only */
+>> @@ -3216,7 +3242,10 @@ ssize_t cpuset_write_resmask(struct kernfs_open_file *of,
+>>   		return -EACCES;
+>>   
+>>   	buf = strstrip(buf);
+>> -	cpuset_full_lock();
+>> +	if (mems)
+>> +		cpuset_mems_lock(&hk_update, &sd_rebuild);
+>> +	else
+>> +		cpuset_full_lock();
+>>   	if (!is_cpuset_online(cs))
+>>   		goto out_unlock;
+>>   
+>> @@ -3226,7 +3255,7 @@ ssize_t cpuset_write_resmask(struct kernfs_open_file *of,
+>>   		goto out_unlock;
+>>   	}
+>>   
+>> -	switch (of_cft(of)->private) {
+>> +	switch (type) {
+>>   	case FILE_CPULIST:
+>>   		retval = update_cpumask(cs, trialcs, buf);
+>>   		break;
+>> @@ -3243,9 +3272,12 @@ ssize_t cpuset_write_resmask(struct kernfs_open_file *of,
+>>   
+>>   	free_cpuset(trialcs);
+>>   out_unlock:
+>> -	cpuset_update_sd_hk_unlock();
+>> -	if (of_cft(of)->private == FILE_MEMLIST)
+>> +	if (mems) {
+>> +		cpuset_mems_unlock(hk_update, sd_rebuild);
+>>   		schedule_flush_migrate_mm();
+>> +	} else {
+>> +		cpuset_update_sd_hk_unlock();
+>> +	}
+>>   	return retval ?: nbytes;
+>>   }
+>>   
 > 
 
-Ah, I finally dug up my notes on this.
-
-If we overload __GFP_THISNODE - then we have to audit all gfp_mask's
-with THISNODE against the use of any of the following *forever*:
-
-#define node_online_map         node_states[N_ONLINE]
-#define node_possible_map       node_states[N_POSSIBLE]
-#define for_each_node(node)        for_each_node_state(node, N_POSSIBLE)
-#define for_each_online_node(node) for_each_node_state(node, N_ONLINE)
-
-  or
-
-cgroup.cpuset.mems_allowed / mems_effective
-
-
-Anyone that attempts to do:
-
-    for_each_online_node(node):
-        buf = alloc_pages_node(node, __GFP_THISNODE, NULL)
-
-*will* get incidental access to private node memory, and it won't be
-obvious to existing tooling that this should be considered a bug.
-
-
-rate of occurance in the current code:
------------------
-node_online_map       -  21 instances
-node_possible_map     -  25 instances
-for_each_node         -  346 instances
-for_each_online_node  -  67 instances
-GFP_THISNODE          -  58 instances
-(notes don't have mems_allowed/mems_effective instances)
-
-
-But it's not always going to be obvious - since nodemasks and gfp_masks
-get passed around as variables all throughout the kernel.
-
-I ultimately determined that auditing this in-tree is already a fools
-errand - and suggesting we try to validate this never occurs for all
-future code moving forward is just not realistic in any sense.
-
-I could not come up with a way to remove private nodes from
-node_online/possible_map - and private nodes must be added to
-cpuset.mems_allowed to allow cpuset control (otherwise all userland
-access is blanket denied).
-
-So I moved back to __GFP_PRIVATE.
-
-=== TL;DR:
-
-The core premise of private nodes is isolation first.
-
-So we want this code:
-
-   for node in cpuset.mems_allowed / online_map
-       buf = alloc_pages_node(node, __GFP_THISNODE, NULL)
-
-To explicitly fail - so that the caller knows they can't use these
-masks this way anymore (it was already potentially a bug, but could
-have been masked if all online nodes had memory).
-
-~Gregory
+Thanks,
+-- 
+Julian Sun <sunjunchao@bytedance.com>
 
