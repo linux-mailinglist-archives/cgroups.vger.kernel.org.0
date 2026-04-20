@@ -1,653 +1,311 @@
-Return-Path: <cgroups+bounces-15372-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-15373-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id cBNHFwQ75mlutgEAu9opvQ
-	(envelope-from <cgroups+bounces-15372-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Mon, 20 Apr 2026 16:41:08 +0200
+	id uNqBBFpn5mnBvwEAu9opvQ
+	(envelope-from <cgroups+bounces-15373-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Mon, 20 Apr 2026 19:50:18 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id BC77C42D52B
-	for <lists+cgroups@lfdr.de>; Mon, 20 Apr 2026 16:41:07 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8CEDD432291
+	for <lists+cgroups@lfdr.de>; Mon, 20 Apr 2026 19:50:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id EB141314BA38
-	for <lists+cgroups@lfdr.de>; Mon, 20 Apr 2026 14:01:36 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id E644B32B0007
+	for <lists+cgroups@lfdr.de>; Mon, 20 Apr 2026 16:03:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DC57B40627C;
-	Mon, 20 Apr 2026 13:27:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A4B8B33F8C2;
+	Mon, 20 Apr 2026 16:03:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JRCXTIJB"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NmkkjOD5"
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f53.google.com (mail-wm1-f53.google.com [209.85.128.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 99F7C3C4557;
-	Mon, 20 Apr 2026 13:27:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1776691624; cv=none; b=K3l1jKWbILQU+i8hTSHv89xBcPY/Sx/bc7Ta2l7nVth/JNr/BSySpI6syJY+n7UO+PnIB3AUIOl1CFSSwO/oOdAdpMb4rfmbXDQE2reHZrbKs+oCjDe+t/pD/jdFHh2D6hbXBKbEFG5r9yWtjM8U1lHt0gxXH8o9OoMIONJ/EUk=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1776691624; c=relaxed/simple;
-	bh=hz57hE/p0A28oIY9p/zSUK6pTcs0E6TaovPB9ItLdg8=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=mnSOa8dmP7Rw7a+9T0gMdBFDSeujuNA2stDt8tU1oJk/m73Vw2Q4v4mf9C8w7X6oaV+MO4rx9hyokzvEHQW4Se9eU+q39lH2zBuaVReFpjyLMu42nqWZsjZ43EShKDnjolOkUd+/ATvDFVbT6sezyjN66EMyZy7ELBvcyAFCTLs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=JRCXTIJB; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DCA26C2BCC4;
-	Mon, 20 Apr 2026 13:27:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1776691624;
-	bh=hz57hE/p0A28oIY9p/zSUK6pTcs0E6TaovPB9ItLdg8=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=JRCXTIJBMV/iwlBOUURK4R8Iz3FnZzIge2i9H/2F8G0BDVaqUh9Tby6tKozLqgibg
-	 DAVbkfR4egpBKfg8fPxrqO7AXR1AMtkzHErOEzXyXrggUjZLeuMIIjKnAl5SMz9RpY
-	 lRiNQBVOJfvKDm5hwj2y6QJS4DgJIiIE2Ie3LsrwACkdQqFRmS+Ax8JQS491srTmQw
-	 y84ulFh0tNewUU+OXXgYiQb20u6qsA1hmKkjGnRVNMVScsRBMnFqzSZrIqbgwq9pmR
-	 Kx5qnM0flvE7bgJCKzRJTjigyn6ba6sKzf85XvSNVG47G7zI5wpoVbluj596BZcL94
-	 ZLG5SO2lo+Khg==
-From: Sasha Levin <sashal@kernel.org>
-To: patches@lists.linux.dev,
-	stable@vger.kernel.org
-Cc: Jialin Wang <wjl.linux@gmail.com>,
-	Tejun Heo <tj@kernel.org>,
-	Jens Axboe <axboe@kernel.dk>,
-	Sasha Levin <sashal@kernel.org>,
-	josef@toxicpanda.com,
-	cgroups@vger.kernel.org,
-	linux-block@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH AUTOSEL 7.0-6.6] blk-iocost: fix busy_level reset when no IOs complete
-Date: Mon, 20 Apr 2026 09:18:52 -0400
-Message-ID: <20260420132314.1023554-138-sashal@kernel.org>
-X-Mailer: git-send-email 2.53.0
-In-Reply-To: <20260420132314.1023554-1-sashal@kernel.org>
-References: <20260420132314.1023554-1-sashal@kernel.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C0D7E3358B0
+	for <cgroups@vger.kernel.org>; Mon, 20 Apr 2026 16:03:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.128.53
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1776700987; cv=pass; b=rMDtEVCQGWCT8u01h0AN3BA7g/yKti24gtRwRCeU7wJuEn9xY5BJ8+HL2z8/WgImH9NtChMy9MrFUS9PqG/UTdULnEMj1ezOgrx2SM5a0QTqZSQeIEfs8NgoORDygoATPW2NXoAkZ+X6Z3da0SjQNvyR1t9eaYldN5nqZ9rOgHo=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1776700987; c=relaxed/simple;
+	bh=R9V9R4q8xvWULOX3gjvoRnt/IB++lyxSgzyFQ02/p8w=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=j6zgcJUw4/FnpavCjYNAT7J9mQJoo0CZXZUaKcaxZvhDqVqwfbbWZfpQUFKyVXseKZamMTToB+ovKoSEOGn0yr6iLAmUtuKThreuQo8XG/g8BEIY8UopPkrH9xwaf+bV382Dc302wxxhebWRnVb2FB6H+nw9LuCVSlte8bpkj58=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=NmkkjOD5; arc=pass smtp.client-ip=209.85.128.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f53.google.com with SMTP id 5b1f17b1804b1-488a88aeec9so46755655e9.2
+        for <cgroups@vger.kernel.org>; Mon, 20 Apr 2026 09:03:05 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1776700984; cv=none;
+        d=google.com; s=arc-20240605;
+        b=AkX+a6DEBEIZo5Eb7X3jXYokl251Spv75rs53aZnRJ70aw0yaR7Age8OFijday8Ngy
+         MDv4DjTPIXV4bIWJYgU5R8AmML0tWycuddlEdjm/UlLaCP1CvhXJ46JIfhoWuo4pxJuD
+         DT9o6um+e7AbmevTa1OY2XF9ljabTHNopIq+MgjRDVvKtgtotZn6SUlUA2ymCjfe6yLz
+         5WI6/Zhi9CPy9z/ayHd7mCLv+71vWNccsyuRONNwjOovmObSrKsTRAQUn2KXquhEGgXc
+         VxTx/kQQTXZzbYku4BujGXhLV5x25oN3CcOwr+wRBpMDu0whd2iljWWX+87iLqtDHdCR
+         3uLQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:dkim-signature;
+        bh=iBF/huw+jCdmavak8Kfcjpi9kTHcjyw4uzaIxzF9jcE=;
+        fh=vepL5t0JIhyt3BBZgh7/LD2SObie15luew4Usd+cNws=;
+        b=QJ9XehXoOmnhKSbUr+CnSXiWjdsRqOn5O7bgxiN2S5TM1KHwNCV2/9LYjA4iXE+3NW
+         GFAjnemxZnbF/pw2sx8oVD7VMDfticjf6dHRLiWtPdOUB5ByDwdr3Nqw5G0VtqLlOEZM
+         rcTlA68HoLvGFibmW3Y30Grf7gG9FMFVqMKG/YJUxBDbKmM6Q8iK3Y+w4wbuzWP1ZA2V
+         oL3/UTFhmR2RLAWAvX4I4c8/6yV2sbj9uxrllWZaiYOGikqHEcMlWUeLxUOCm0+ucYt4
+         GzVAN4FnptlnJjIIx7dWcgdLPk6NOhr47IKfLWMFXS1wIXYC22u57XTvo0N+fLjlMcU6
+         avUQ==;
+        darn=vger.kernel.org
+ARC-Authentication-Results: i=1; mx.google.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20251104; t=1776700984; x=1777305784; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=iBF/huw+jCdmavak8Kfcjpi9kTHcjyw4uzaIxzF9jcE=;
+        b=NmkkjOD5u/+xKdbPi3ue948LOpoVNlpcP93rwGZQRjN4eC2c4+BbPMvh/gJk+u0fNy
+         nHkU5uJu7/oSzvXPTJ+9wr81WiYxhhVo7xQDskFeZO78P5xDddoSoYOfOQ77obBpmrCf
+         rhKjqjus5yuPp3zE6YheSV7Fw4ZYnQ5lJh+phdHn6TZmtqDZZEIRTrTzPaiv3X7HDeyb
+         ovt1juVx8YkxiJXIf2QtY1Q6nn/4Yf3rrkHmQNz1YhHf6ycWNjO/nqFQWZoAVVSvefJ4
+         ZAOQ0LlxoILJa8/eTVekAXqxIhjV30BD0FdUwSUzcTyE/o1qKWQ9nXQWtb7Mb8g5v15v
+         sVDg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1776700984; x=1777305784;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=iBF/huw+jCdmavak8Kfcjpi9kTHcjyw4uzaIxzF9jcE=;
+        b=Fw1CaIXkBa0/3xvsrwIblOqzdp2PNl90I5lDapf0OShAtJ+k/u8f242A7A+oDhfuei
+         6YzlL22/9i9Kczx4+fLP6V69QJ22jdNwa0/3dYJOcwSt24+JVO5zmaeCwA76Eu7sbRE8
+         IsKB03imsiDqacZvVPCE58XcxfdMH3s1EGwpgMDEtoaAUdaZaxi0W5MdxsEGk0yTq/ft
+         +ktb3x0kXOPNX47nxaAqRxA5wG0M/jBj8PsE4J5sDu8RCPXMgjKKI2s5CMdDd1Cz5QFJ
+         xAScCvTZNuFpfOxuEm80RquT88StXbx0Ex+2g9/tSJ7WFP+I/NRBuzlEmoKv3KGNIcnr
+         UYLg==
+X-Forwarded-Encrypted: i=1; AFNElJ+VeZzja5GNl0ry2oeJJnXMRk1FpHgf0iZXqRQp6dPdmtw+2wQUesryXCfC66CgU9xVdmelbV+3@vger.kernel.org
+X-Gm-Message-State: AOJu0YxPgBWA3THgiZMZj+lHt5uEMhgXLgQtR0FCA901vStpq6K91wol
+	3ZjeKLbRyHPT/JLUXKGArJC3zId6ZrPYKM9DYDgUrv2TnjIW0tNYkKyoUgGntmmNofIkoLfRIKW
+	q9HSptqRbJifSi+YFmrrFizLFfvG9f28=
+X-Gm-Gg: AeBDietwOGSL0Vs3GfO2ZkpYjd6S4LrMR3QNFFFoEcCsmybqGmM48RhcayuIxTkcs8l
+	lqnHpkIrPBW3p0APEvqCi3YLIGDicAjzZKi+DakdM4e/Z+nxmnIqJbzs7SQM6MgiPIwL2FCc2SK
+	5X7khf4oj/9MNMU8KBQkTpn9tmKjmlsKH5+Gu1aKxgbhxAbLRUJrJgqh8BMGeJ4tCu0E9UbxG4Y
+	fUrf8kkhcss2sU1+3spaidoDZDITkVHXURFN8QHjxA6o1QQS8wxZVc4YRmXLPboPIbM2uF09Dq/
+	DyAvGrMcAR8CVlpreH0EnpNBnx1Z73tN3v5bGx7tgsiUcz6Hou0UVxsRuKu8tILRIg==
+X-Received: by 2002:a05:600d:8449:b0:488:a894:b27a with SMTP id
+ 5b1f17b1804b1-488fb74a8c2mr175647735e9.8.1776700983794; Mon, 20 Apr 2026
+ 09:03:03 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-X-stable-base: Linux 7.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Spamd-Result: default: False [0.34 / 15.00];
+References: <20260320192735.748051-1-nphamcs@gmail.com> <CAMgjq7AiUr_Ntj51qoqvV+=XbEATjr7S4MH+rgD32T5pHfF7mg@mail.gmail.com>
+In-Reply-To: <CAMgjq7AiUr_Ntj51qoqvV+=XbEATjr7S4MH+rgD32T5pHfF7mg@mail.gmail.com>
+From: Nhat Pham <nphamcs@gmail.com>
+Date: Mon, 20 Apr 2026 09:02:52 -0700
+X-Gm-Features: AQROBzDxid6PXLYOtsvRL4lA7x1zRB3nMTMN0giu6Su7fE6kLvWGH4GcqL7x9i4
+Message-ID: <CAKEwX=M4nWeAw1-geCwABuv-0okz3-x9SwNswL-1Ks9KEAS6Mw@mail.gmail.com>
+Subject: Re: [PATCH v5 00/21] Virtual Swap Space
+To: Kairui Song <ryncsn@gmail.com>
+Cc: Liam.Howlett@oracle.com, akpm@linux-foundation.org, apopple@nvidia.com, 
+	axelrasmussen@google.com, baohua@kernel.org, baolin.wang@linux.alibaba.com, 
+	bhe@redhat.com, byungchul@sk.com, cgroups@vger.kernel.org, 
+	chengming.zhou@linux.dev, chrisl@kernel.org, corbet@lwn.net, david@kernel.org, 
+	dev.jain@arm.com, gourry@gourry.net, hannes@cmpxchg.org, hughd@google.com, 
+	jannh@google.com, joshua.hahnjy@gmail.com, lance.yang@linux.dev, 
+	lenb@kernel.org, linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-mm@kvack.org, linux-pm@vger.kernel.org, lorenzo.stoakes@oracle.com, 
+	matthew.brost@intel.com, mhocko@suse.com, muchun.song@linux.dev, 
+	npache@redhat.com, pavel@kernel.org, peterx@redhat.com, peterz@infradead.org, 
+	pfalcato@suse.de, rafael@kernel.org, rakie.kim@sk.com, 
+	roman.gushchin@linux.dev, rppt@kernel.org, ryan.roberts@arm.com, 
+	shakeel.butt@linux.dev, shikemeng@huaweicloud.com, surenb@google.com, 
+	tglx@kernel.org, vbabka@suse.cz, weixugc@google.com, 
+	ying.huang@linux.alibaba.com, yosry.ahmed@linux.dev, yuanchu@google.com, 
+	zhengqi.arch@bytedance.com, ziy@nvidia.com, kernel-team@meta.com, 
+	riel@surriel.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Spamd-Result: default: False [-0.66 / 15.00];
 	SUSPICIOUS_RECIPS(1.50)[];
-	MID_CONTAINS_FROM(1.00)[];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
-	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=2];
+	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_DKIM_ALLOW(-0.20)[gmail.com:s=20251104];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_COUNT_THREE(0.00)[4];
-	FREEMAIL_CC(0.00)[gmail.com,kernel.org,kernel.dk,toxicpanda.com,vger.kernel.org];
-	MIME_TRACE(0.00)[0:+];
-	TAGGED_FROM(0.00)[bounces-15372-lists,cgroups=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-15373-lists,cgroups=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
+	RCVD_COUNT_THREE(0.00)[4];
+	FREEMAIL_TO(0.00)[gmail.com];
+	TO_DN_SOME(0.00)[];
+	FREEMAIL_CC(0.00)[oracle.com,linux-foundation.org,nvidia.com,google.com,kernel.org,linux.alibaba.com,redhat.com,sk.com,vger.kernel.org,linux.dev,lwn.net,arm.com,gourry.net,cmpxchg.org,gmail.com,kvack.org,intel.com,suse.com,infradead.org,suse.de,huaweicloud.com,suse.cz,bytedance.com,meta.com,surriel.com];
+	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	FROM_HAS_DN(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	TO_DN_SOME(0.00)[];
-	NEURAL_HAM(-0.00)[-1.000];
+	FREEMAIL_FROM(0.00)[gmail.com];
+	RCPT_COUNT_GT_50(0.00)[53];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[sashal@kernel.org,cgroups@vger.kernel.org];
-	DKIM_TRACE(0.00)[kernel.org:+];
-	RCPT_COUNT_SEVEN(0.00)[10];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[nphamcs@gmail.com,cgroups@vger.kernel.org];
+	DKIM_TRACE(0.00)[gmail.com:+];
+	NEURAL_HAM(-0.00)[-1.000];
 	TAGGED_RCPT(0.00)[cgroups];
-	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,msgid.link:url]
-X-Rspamd-Queue-Id: BC77C42D52B
+	MID_RHS_MATCH_FROMTLD(0.00)[];
+	MISSING_XM_UA(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[mail.gmail.com:mid,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: 8CEDD432291
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-From: Jialin Wang <wjl.linux@gmail.com>
-
-[ Upstream commit f91ffe89b2016d280995a9c28d73288b02d83615 ]
-
-When a disk is saturated, it is common for no IOs to complete within a
-timer period. Currently, in this case, rq_wait_pct and missed_ppm are
-calculated as 0, the iocost incorrectly interprets this as meeting QoS
-targets and resets busy_level to 0.
-
-This reset prevents busy_level from reaching the threshold (4) needed
-to reduce vrate. On certain cloud storage, such as Azure Premium SSD,
-we observed that iocost may fail to reduce vrate for tens of seconds
-during saturation, failing to mitigate noisy neighbor issues.
-
-Fix this by tracking the number of IO completions (nr_done) in a period.
-If nr_done is 0 and there are lagging IOs, the saturation status is
-unknown, so we keep busy_level unchanged.
-
-The issue is consistently reproducible on Azure Standard_D8as_v5 (Dasv5)
-VMs with 512GB Premium SSD (P20) using the script below. It was not
-observed on GCP n2d VMs (with 100G pd-ssd and 1.5T local-ssd), and no
-regressions were found with this patch. In this script, cgA performs
-large IOs with iodepth=128, while cgB performs small IOs with iodepth=1
-rate_iops=100 rw=randrw. With iocost enabled, we expect it to throttle
-cgA, the submission latency (slat) of cgA should be significantly higher,
-cgB can reach 200 IOPS and the completion latency (clat) should below.
-
-  BLK_DEVID="8:0"
-  MODEL="rbps=173471131 rseqiops=3566 rrandiops=3566 wbps=173333269 wseqiops=3566 wrandiops=3566"
-  QOS="rpct=90 rlat=3500 wpct=90 wlat=3500 min=80 max=10000"
-
-  echo "$BLK_DEVID ctrl=user model=linear $MODEL" > /sys/fs/cgroup/io.cost.model
-  echo "$BLK_DEVID enable=1 ctrl=user $QOS" > /sys/fs/cgroup/io.cost.qos
-
-  CG_A="/sys/fs/cgroup/cgA"
-  CG_B="/sys/fs/cgroup/cgB"
-
-  FILE_A="/path/to/sda/A.fio.testfile"
-  FILE_B="/path/to/sda/B.fio.testfile"
-  RESULT_DIR="./iocost_results_$(date +%Y%m%d_%H%M%S)"
-
-  mkdir -p "$CG_A" "$CG_B" "$RESULT_DIR"
-
-  get_result() {
-    local file=$1
-    local label=$2
-
-    local results=$(jq -r '
-    .jobs[0].mixed |
-    ( .iops | tonumber | round ) as $iops |
-    ( .bw_bytes / 1024 / 1024 ) as $bps |
-    ( .slat_ns.mean / 1000000 ) as $slat |
-    ( .clat_ns.mean / 1000000 ) as $avg |
-    ( .clat_ns.max / 1000000 ) as $max |
-    ( .clat_ns.percentile["90.000000"] / 1000000 ) as $p90 |
-    ( .clat_ns.percentile["99.000000"] / 1000000 ) as $p99 |
-    ( .clat_ns.percentile["99.900000"] / 1000000 ) as $p999 |
-    ( .clat_ns.percentile["99.990000"] / 1000000 ) as $p9999 |
-    "\($iops)|\($bps)|\($slat)|\($avg)|\($max)|\($p90)|\($p99)|\($p999)|\($p9999)"
-    ' "$file")
-
-    IFS='|' read -r iops bps slat avg max p90 p99 p999 p9999 <<<"$results"
-    printf "%-8s %-6s %-7.2f %-8.2f %-8.2f %-8.2f %-8.2f %-8.2f %-8.2f %-8.2f\n" \
-           "$label" "$iops" "$bps" "$slat" "$avg" "$max" "$p90" "$p99" "$p999" "$p9999"
-  }
-
-  run_fio() {
-    local cg_path=$1
-    local filename=$2
-    local name=$3
-    local bs=$4
-    local qd=$5
-    local out=$6
-    shift 6
-    local extra=$@
-
-    (
-      pid=$(sh -c 'echo $PPID')
-      echo $pid >"${cg_path}/cgroup.procs"
-      fio --name="$name" --filename="$filename" --direct=1 --rw=randrw --rwmixread=50 \
-          --ioengine=libaio --bs="$bs" --iodepth="$qd" --size=4G --runtime=10 \
-          --time_based --group_reporting --unified_rw_reporting=mixed \
-          --output-format=json --output="$out" $extra >/dev/null 2>&1
-    ) &
-  }
-
-  echo "Starting Test ..."
-
-  for bs_b in "4k" "32k" "256k"; do
-    echo "Running iteration: BS=$bs_b"
-    out_a="${RESULT_DIR}/cgA_1m.json"
-    out_b="${RESULT_DIR}/cgB_${bs_b}.json"
-
-    # cgA: Heavy background (BS 1MB, QD 128)
-    run_fio "$CG_A" "$FILE_A" "cgA" "1m" 128 "$out_a"
-    # cgB: Latency sensitive (Variable BS, QD 1, Read/Write IOPS limit 100)
-    run_fio "$CG_B" "$FILE_B" "cgB" "$bs_b" 1 "$out_b" "--rate_iops=100"
-
-    wait
-    SUMMARY_DATA+="$(get_result "$out_a" "cgA-1m")"$'\n'
-    SUMMARY_DATA+="$(get_result "$out_b" "cgB-$bs_b")"$'\n\n'
-  done
-
-  echo -e "\nFinal Results Summary:\n"
-
-  printf "%-8s %-6s %-7s %-8s %-8s %-8s %-8s %-8s %-8s %-8s\n" \
-          "" "" "" "slat" "clat" "clat" "clat" "clat" "clat" "clat"
-  printf "%-8s %-6s %-7s %-8s %-8s %-8s %-8s %-8s %-8s %-8s\n\n" \
-          "CGROUP" "IOPS" "MB/s" "avg(ms)" "avg(ms)" "max(ms)" "P90(ms)" "P99" "P99.9" "P99.99"
-  echo "$SUMMARY_DATA"
-
-  echo "Results saved in $RESULT_DIR"
-
-Before:
-                          slat     clat     clat     clat     clat     clat     clat
-  CGROUP   IOPS   MB/s    avg(ms)  avg(ms)  max(ms)  P90(ms)  P99      P99.9    P99.99
-
-  cgA-1m   166    166.37  3.44     748.95   1298.29  977.27   1233.13  1300.23  1300.23
-  cgB-4k   5      0.02    0.02     181.74   761.32   742.39   759.17   759.17   759.17
-
-  cgA-1m   167    166.51  1.98     748.68   1549.41  809.50   1451.23  1551.89  1551.89
-  cgB-32k  6      0.18    0.02     169.98   761.76   742.39   759.17   759.17   759.17
-
-  cgA-1m   166    165.55  2.89     750.89   1540.37  851.44   1451.23  1535.12  1535.12
-  cgB-256k 5      1.30    0.02     191.35   759.51   750.78   759.17   759.17   759.17
-
-After:
-                          slat     clat     clat     clat     clat     clat     clat
-  CGROUP   IOPS   MB/s    avg(ms)  avg(ms)  max(ms)  P90(ms)  P99      P99.9    P99.99
-
-  cgA-1m   162    162.48  6.14     749.69   850.02   826.28   834.67   843.06   851.44
-  cgB-4k   199    0.78    0.01     1.95     42.12    2.57     7.50     34.87    42.21
-
-  cgA-1m   146    146.20  6.83     833.04   908.68   893.39   901.78   910.16   910.16
-  cgB-32k  200    6.25    0.01     2.32     31.40    3.06     7.50     16.58    31.33
-
-  cgA-1m   110    110.46  9.04     1082.67  1197.91  1182.79  1199.57  1199.57  1199.57
-  cgB-256k 200    49.98   0.02     3.69     22.20    4.88     9.11     20.05    22.15
-
-Signed-off-by: Jialin Wang <wjl.linux@gmail.com>
-Acked-by: Tejun Heo <tj@kernel.org>
-Link: https://patch.msgid.link/20260331100509.182882-1-wjl.linux@gmail.com
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
-
-LLM Generated explanations, may be completely bogus:
-
-I now have all the information needed for a comprehensive analysis. Let
-me compile the findings.
-
----
-
-## PHASE 1: COMMIT MESSAGE FORENSICS
-
-### Step 1.1: Subject Line
-- **Subsystem:** `blk-iocost` (block layer IO cost controller)
-- **Action verb:** "fix"
-- **Summary:** Fix incorrect busy_level reset when no IO completions
-  occur within a timer period
-- Record: [blk-iocost] [fix] [busy_level incorrectly reset to 0 when no
-  IOs complete, preventing vrate reduction during saturation]
-
-### Step 1.2: Tags
-- **Signed-off-by:** Jialin Wang <wjl.linux@gmail.com> (author)
-- **Acked-by:** Tejun Heo <tj@kernel.org> (blk-iocost creator and
-  maintainer)
-- **Link:**
-  https://patch.msgid.link/20260331100509.182882-1-wjl.linux@gmail.com
-- **Signed-off-by:** Jens Axboe <axboe@kernel.dk> (block layer
-  maintainer)
-- No Fixes: tag (expected for AUTOSEL candidates)
-- No Cc: stable (expected for AUTOSEL candidates)
-- Record: Acked by the subsystem maintainer (Tejun Heo) and merged by
-  the block layer maintainer (Jens Axboe). Strong quality signals.
-
-### Step 1.3: Commit Body Analysis
-- **Bug description:** When a disk is saturated, no IOs may complete
-  within a timer period. When this happens, rq_wait_pct=0 and
-  missed_ppm=0, which iocost incorrectly interprets as "meeting QoS
-  targets."
-- **Symptom:** busy_level gets reset to 0, preventing it from reaching
-  threshold (4) needed to reduce vrate. On certain cloud storage (Azure
-  Premium SSD), iocost can fail to reduce vrate for tens of seconds
-  during saturation, breaking cgroup IO isolation.
-- **Failure mode:** Noisy neighbor problem - heavy IO from one cgroup is
-  not properly throttled, causing high latency for latency-sensitive
-  workloads in other cgroups.
-- **Testing:** Detailed benchmark script provided with before/after
-  results showing dramatic improvement (cgB: 5 IOPS -> 200 IOPS; clat:
-  181ms -> 1.95ms).
-- Record: Clear real-world bug with concrete impact on cloud
-  environments. Reproducible with specific test setup.
-
-### Step 1.4: Hidden Bug Fix Detection
-This is explicitly labeled as "fix" - no hidden nature. The commit
-message clearly explains the bug mechanism and the fix approach.
-
----
-
-## PHASE 2: DIFF ANALYSIS
-
-### Step 2.1: Inventory
-- **Files changed:** 1 (`block/blk-iocost.c`)
-- **Lines added/removed:** ~15 lines of actual code (plus comments)
-- **Functions modified:** `ioc_lat_stat()` (signature + 1 line),
-  `ioc_timer_fn()` (variable + call site + new branch)
-- **Scope:** Single-file, surgical fix
-- Record: Minimal change in a single file affecting two functions in the
-  same subsystem.
-
-### Step 2.2: Code Flow Change
-**Hunk 1 - `ioc_lat_stat()` signature:**
-- Before: `ioc_lat_stat(ioc, missed_ppm_ar, rq_wait_pct_p)` - 2 output
-  params
-- After: `ioc_lat_stat(ioc, missed_ppm_ar, rq_wait_pct_p, nr_done)` - 3
-  output params
-- Adds computation: `*nr_done = nr_met[READ] + nr_met[WRITE] +
-  nr_missed[READ] + nr_missed[WRITE]`
-
-**Hunk 2 - `ioc_timer_fn()` variable:**
-- Adds `u32 nr_done` variable and passes `&nr_done` to `ioc_lat_stat()`.
-
-**Hunk 3 - busy_level decision logic:**
-- Before: Directly checks `rq_wait_pct > RQ_WAIT_BUSY_PCT ||
-  missed_ppm...`
-- After: First checks `if (!nr_done && nr_lagging)` - if no completions
-  and lagging IOs exist, skip all busy_level changes (keep unchanged).
-  Otherwise, proceed with existing logic.
-
-### Step 2.3: Bug Mechanism
-This is a **logic/correctness fix**. When no IOs complete during a timer
-period:
-1. `nr_met` and `nr_missed` are both 0 → `missed_ppm = 0`
-2. `rq_wait_ns = 0` → `rq_wait_pct = 0`
-3. All metrics being 0 falls into the "UNBUSY" branch (second condition)
-4. If `nr_shortages = 0`: `busy_level` is reset to 0 (the bug)
-5. This prevents `busy_level` from ever reaching 4, which is required to
-   trigger vrate reduction
-
-The fix adds a guard: when `nr_done == 0 && nr_lagging > 0`, the
-saturation status is truly unknown, so busy_level is preserved
-unchanged.
-
-### Step 2.4: Fix Quality
-- Obviously correct: if we have zero completions, we have zero data to
-  make QoS decisions
-- Minimal/surgical: only adds a new guard condition before the existing
-  logic
-- Regression risk: Very low. The new code path only triggers when
-  `nr_done == 0 && nr_lagging > 0`, and it preserves the previous state
-  rather than making any change.
-- The existing logic is completely unchanged in all other cases.
-
----
-
-## PHASE 3: GIT HISTORY INVESTIGATION
-
-### Step 3.1: Blame
-The buggy busy_level decision logic was introduced by:
-- `7caa47151ab2e6` (Tejun Heo, 2019-08-28): Original blk-iocost
-  implementation (v5.4)
-- `81ca627a933063` (Tejun Heo, 2019-10-14): "iocost: don't let vrate run
-  wild while there's no saturation signal" - This commit restructured
-  the busy_level logic and added the `else { ioc->busy_level = 0; }`
-  branch for "Nobody is being throttled." This is the commit that
-  introduced the specific behavior this fix addresses. Present since
-  v5.8.
-
-### Step 3.2: Fixes Tag
-No explicit Fixes: tag. However, the buggy behavior was introduced by
-81ca627a933063, which is present in v5.8+ (including all currently
-active stable trees: v5.10, v5.15, v6.1, v6.6, v6.12).
-
-### Step 3.3: File History
-Recent blk-iocost changes are mostly unrelated (hrtimer_setup, min_t
-cleanup, treewide conversions). No conflicting changes. The busy_level
-decision logic has been stable since 81ca627a933063 with only one minor
-change (065655c862fedf removed `nr_surpluses` check).
-
-### Step 3.4: Author
-Jialin Wang is not the regular blk-iocost maintainer, but the fix was
-acked by Tejun Heo (creator and maintainer of blk-iocost) and merged by
-Jens Axboe (block layer maintainer).
-
-### Step 3.5: Dependencies
-No dependencies. The patch is self-contained and the code it modifies is
-identical across all stable trees (v5.10 through current mainline,
-verified by comparing `ioc_lat_stat()` and `ioc_timer_fn()` busy_level
-logic).
-
----
-
-## PHASE 4: MAILING LIST RESEARCH
-
-### Step 4.1-4.5
-Lore.kernel.org was blocked by bot protection. Web search found limited
-direct results. However, the commit has strong signals:
-- **Acked-by: Tejun Heo** - the creator and primary maintainer of blk-
-  iocost
-- **Merged by: Jens Axboe** - the block layer maintainer
-- The commit was merged via the standard block tree path
-
----
-
-## PHASE 5: CODE SEMANTIC ANALYSIS
-
-### Step 5.1: Functions Modified
-- `ioc_lat_stat()`: Collects per-CPU IO latency statistics
-- `ioc_timer_fn()`: The main timer callback that evaluates QoS and
-  adjusts vrate
-
-### Step 5.2: Callers
-- `ioc_lat_stat()` is called only from `ioc_timer_fn()` (single call
-  site)
-- `ioc_timer_fn()` is the periodic timer callback for the IO cost
-  controller, runs once per period
-
-### Step 5.3: Impact Surface
-The `ioc_timer_fn()` timer runs periodically for every block device with
-iocost enabled. The busy_level directly controls vrate adjustment, which
-governs IO throttling for cgroups. This is the core feedback loop of the
-entire iocost controller.
-
-### Step 5.4: Call Chain
-`timer_list callback` → `ioc_timer_fn()` → evaluates QoS → adjusts
-`busy_level` → calls `ioc_adjust_base_vrate()` → adjusts
-`vtime_base_rate`. This path is always active when iocost is enabled.
-
----
-
-## PHASE 6: STABLE TREE ANALYSIS
-
-### Step 6.1: Code Existence in Stable Trees
-Verified the exact busy_level decision logic is **byte-for-byte
-identical** in:
-- v5.10 (line 2272-2310)
-- v5.15 (line 2348-2390)
-- v6.1 (line 2354-2396)
-- v6.6 (line 2381-2420)
-- v7.0 mainline (line 2399-2435)
-
-The `ioc_lat_stat()` function is also identical across all these
-versions.
-
-### Step 6.2: Backport Complications
-The patch should apply **cleanly** to all active stable trees. The code
-context is identical. In v5.10, `ioc_adjust_base_vrate()` is inline
-rather than a separate function, but the busy_level decision logic
-(where the patch applies) is identical.
-
-### Step 6.3: No Related Fixes Already in Stable
-No prior fix for this specific issue was found in stable trees.
-
----
-
-## PHASE 7: SUBSYSTEM CONTEXT
-
-### Step 7.1: Subsystem
-- **Subsystem:** Block layer - IO cost controller (blk-iocost)
-- **Criticality:** IMPORTANT - affects all users of cgroup v2 IO
-  control, widely used in cloud environments (systemd, container
-  orchestrators, cloud VMs)
-
-### Step 7.2: Activity
-The subsystem is mature with occasional fixes. The busy_level logic
-hasn't changed since 2020, indicating this is a long-standing bug.
-
----
-
-## PHASE 8: IMPACT AND RISK ASSESSMENT
-
-### Step 8.1: Affected Users
-- All users of cgroup v2 IO cost control during disk saturation
-- Particularly cloud users on virtualized block devices (Azure, etc.)
-- Container environments using IO throttling (Kubernetes, Docker with
-  cgroup v2)
-
-### Step 8.2: Trigger Conditions
-- Disk saturated with large IOs (e.g., 1MB writes at high queue depth)
-- Timer period passes with zero IO completions
-- **Common trigger:** Any scenario where IO completion time exceeds the
-  timer period (~10ms-100ms typically)
-- Reproducible consistently on certain cloud storage types
-
-### Step 8.3: Severity
-- **Failure mode:** IO isolation failure - a noisy neighbor cgroup
-  cannot be properly throttled during saturation
-- **Impact:** Latency-sensitive workloads experience 100x+ higher
-  latency than expected (181ms vs 1.95ms in the benchmark)
-- **Severity:** HIGH - not a crash, but a significant functional failure
-  of the IO controller that defeats its core purpose
-
-### Step 8.4: Risk-Benefit
-- **Benefit:** HIGH - Fixes IO isolation during saturation, critical for
-  cloud multi-tenant environments
-- **Risk:** VERY LOW - ~15 lines, only adds a "preserve state" guard
-  condition, all existing paths unchanged
-- **Ratio:** Strongly favorable for backporting
-
----
-
-## PHASE 9: FINAL SYNTHESIS
-
-### Step 9.1: Evidence Summary
-
-**FOR backporting:**
-- Fixes a real, reproducible bug with concrete user impact
-- Affects IO isolation in cloud/container environments (high-value use
-  case)
-- Small, surgical fix (~15 lines actual code in 1 file)
-- Obviously correct (no completions = no data = preserve state)
-- Acked by subsystem creator (Tejun Heo)
-- Merged by block maintainer (Jens Axboe)
-- Detailed testing with before/after benchmarks showing 40x improvement
-- Code is identical across all stable trees - clean apply expected
-- Bug present since v5.8 (81ca627a933063), affects v5.10+ stable trees
-- No regression found in testing (including GCP which worked before)
-
-**AGAINST backporting:**
-- No explicit Cc: stable or Fixes: tag (expected for AUTOSEL)
-- Not a crash/panic - it's a performance/isolation failure
-- The commit message is long (includes test script), but the actual diff
-  is small
-
-### Step 9.2: Stable Rules Checklist
-1. **Obviously correct?** YES - if zero IOs completed, QoS metrics are
-   meaningless
-2. **Fixes real bug?** YES - IO throttling fails during saturation,
-   breaking cgroup isolation
-3. **Important issue?** YES - significant performance isolation failure
-   in cloud environments
-4. **Small and contained?** YES - ~15 lines in 1 file
-5. **No new features?** CORRECT - only fixes existing logic
-6. **Can apply to stable?** YES - code is identical across all stable
-   trees
-
-### Step 9.3: Exception Categories
-Not an exception category - this is a standard important bug fix.
-
----
-
-## Verification
-
-- [Phase 1] Parsed tags: Acked-by Tejun Heo (blk-iocost maintainer),
-  Signed-off-by Jens Axboe (block maintainer)
-- [Phase 2] Diff analysis: ~15 lines added in `ioc_lat_stat()` and
-  `ioc_timer_fn()`, adds nr_done tracking and guard condition
-- [Phase 3] git blame: buggy code introduced in 81ca627a933063 (v5.8,
-  "iocost: don't let vrate run wild"), verified present in all stable
-  trees
-- [Phase 3] git show 81ca627a933063: confirmed it added the `else {
-  busy_level = 0 }` branch that causes the bug
-- [Phase 3] git merge-base: confirmed 81ca627a933063 is in v5.8+,
-  present in v5.10, v5.15, v6.1, v6.6
-- [Phase 3] git log --oneline -20: no conflicting or prerequisite
-  changes found
-- [Phase 4] b4 dig: could not find commit (not yet in tree);
-  lore.kernel.org blocked by bot protection
-- [Phase 5] Grep for callers: `ioc_lat_stat()` called only from
-  `ioc_timer_fn()`, single call site
-- [Phase 5] Grep for busy_level: 20 references in file, all consistent
-  with this fix
-- [Phase 6] Compared ioc_lat_stat() across v5.10, v5.15, v6.1, v6.6,
-  v7.0: byte-for-byte identical
-- [Phase 6] Compared busy_level decision logic across v5.10, v5.15,
-  v6.1, v6.6, v7.0: structurally identical
-- [Phase 6] No prior fix for this issue found in any stable tree
-- [Phase 8] Failure mode: IO isolation failure, 40x latency increase for
-  latency-sensitive workloads, severity HIGH
-- UNVERIFIED: Mailing list discussion (lore blocked), but commit has
-  strong trust signals (Acked-by maintainer, merged via standard path)
-
-The fix is small, surgical, obviously correct, acked by the subsystem
-maintainer, fixes a real-world IO isolation failure affecting cloud
-environments, and applies cleanly to all active stable trees. The risk
-is very low (adds only a "preserve state" guard) while the benefit is
-high (restores IO throttling during disk saturation).
-
-**YES**
-
- block/blk-iocost.c | 23 +++++++++++++++++------
- 1 file changed, 17 insertions(+), 6 deletions(-)
-
-diff --git a/block/blk-iocost.c b/block/blk-iocost.c
-index d145db61e5c31..0cca88a366dc9 100644
---- a/block/blk-iocost.c
-+++ b/block/blk-iocost.c
-@@ -1596,7 +1596,8 @@ static enum hrtimer_restart iocg_waitq_timer_fn(struct hrtimer *timer)
- 	return HRTIMER_NORESTART;
- }
- 
--static void ioc_lat_stat(struct ioc *ioc, u32 *missed_ppm_ar, u32 *rq_wait_pct_p)
-+static void ioc_lat_stat(struct ioc *ioc, u32 *missed_ppm_ar, u32 *rq_wait_pct_p,
-+			 u32 *nr_done)
- {
- 	u32 nr_met[2] = { };
- 	u32 nr_missed[2] = { };
-@@ -1633,6 +1634,8 @@ static void ioc_lat_stat(struct ioc *ioc, u32 *missed_ppm_ar, u32 *rq_wait_pct_p
- 
- 	*rq_wait_pct_p = div64_u64(rq_wait_ns * 100,
- 				   ioc->period_us * NSEC_PER_USEC);
-+
-+	*nr_done = nr_met[READ] + nr_met[WRITE] + nr_missed[READ] + nr_missed[WRITE];
- }
- 
- /* was iocg idle this period? */
-@@ -2250,12 +2253,12 @@ static void ioc_timer_fn(struct timer_list *timer)
- 	u64 usage_us_sum = 0;
- 	u32 ppm_rthr;
- 	u32 ppm_wthr;
--	u32 missed_ppm[2], rq_wait_pct;
-+	u32 missed_ppm[2], rq_wait_pct, nr_done;
- 	u64 period_vtime;
- 	int prev_busy_level;
- 
- 	/* how were the latencies during the period? */
--	ioc_lat_stat(ioc, missed_ppm, &rq_wait_pct);
-+	ioc_lat_stat(ioc, missed_ppm, &rq_wait_pct, &nr_done);
- 
- 	/* take care of active iocgs */
- 	spin_lock_irq(&ioc->lock);
-@@ -2397,9 +2400,17 @@ static void ioc_timer_fn(struct timer_list *timer)
- 	 * and should increase vtime rate.
- 	 */
- 	prev_busy_level = ioc->busy_level;
--	if (rq_wait_pct > RQ_WAIT_BUSY_PCT ||
--	    missed_ppm[READ] > ppm_rthr ||
--	    missed_ppm[WRITE] > ppm_wthr) {
-+	if (!nr_done && nr_lagging) {
-+		/*
-+		 * When there are lagging IOs but no completions, we don't
-+		 * know if the IO latency will meet the QoS targets. The
-+		 * disk might be saturated or not. We should not reset
-+		 * busy_level to 0 (which would prevent vrate from scaling
-+		 * up or down), but rather to keep it unchanged.
-+		 */
-+	} else if (rq_wait_pct > RQ_WAIT_BUSY_PCT ||
-+		   missed_ppm[READ] > ppm_rthr ||
-+		   missed_ppm[WRITE] > ppm_wthr) {
- 		/* clearly missing QoS targets, slow down vrate */
- 		ioc->busy_level = max(ioc->busy_level, 0);
- 		ioc->busy_level++;
--- 
-2.53.0
-
+On Mon, Mar 23, 2026 at 3:09=E2=80=AFAM Kairui Song <ryncsn@gmail.com> wrot=
+e:
+>
+> On Sat, Mar 21, 2026 at 3:29=E2=80=AFAM Nhat Pham <nphamcs@gmail.com> wro=
+te:
+> > This patch series is based on 6.19. There are a couple more
+> > swap-related changes in mainline that I would need to coordinate
+> > with, but I still want to send this out as an update for the
+> > regressions reported by Kairui Song in [15]. It's probably easier
+> > to just build this thing rather than dig through that series of
+> > emails to get the fix patch :)
+> >
+> > Changelog:
+> > * v4 -> v5:
+> >     * Fix a deadlock in memcg1_swapout (reported by syzbot [16]).
+> >     * Replace VM_WARN_ON(!spin_is_locked()) with lockdep_assert_held(),
+> >       and use guard(rcu) in vswap_cpu_dead
+> >       (reported by Peter Zijlstra [17]).
+> > * v3 -> v4:
+> >     * Fix poor swap free batching behavior to alleviate a regression
+> >       (reported by Kairui Song).
+>
+> I tested the v5 (including the batched-free hotfix) and am still
+> seeing significant regressions in both sequential and concurrent swap
+> workloads
+>
+> Thanks for the update as I can see It's a lot of thoughtful work.
+> Actually I did run some tests already with your previously posted
+> hotfix based on v3. I didn't update the result because very
+> unfortunately, I still see a major performance regression even with a
+> very simple setup.
+>
+> BTW there seems a simpler way to reproduce that, just use memhog:
+> sudo mkswap /dev/pmem0; sudo swapon /dev/pmem0; time memhog 48G; sudo swa=
+poff -a
+>
+> Before:
+> (I'm using fish shell on that test machine so this is fish time format):
+> ________________________________________________________
+> Executed in   20.80 secs    fish           external
+>    usr time    5.14 secs    0.00 millis    5.14 secs
+>    sys time   15.65 secs    1.17 millis   15.65 secs
+> ________________________________________________________
+> Executed in   21.69 secs    fish           external
+>    usr time    5.31 secs  725.00 micros    5.31 secs
+>    sys time   16.36 secs  579.00 micros   16.36 secs
+> ________________________________________________________
+> Executed in   21.86 secs    fish           external
+>    usr time    5.39 secs    1.02 millis    5.39 secs
+>    sys time   16.46 secs    0.27 millis   16.46 secs
+>
+> After:
+> ________________________________________________________
+> Executed in   30.77 secs    fish           external
+>    usr time    5.16 secs  767.00 micros    5.16 secs
+>    sys time   25.59 secs  580.00 micros   25.59 secs
+> ________________________________________________________
+> Executed in   37.47 secs    fish           external
+>    usr time    5.48 secs    0.00 micros    5.48 secs
+>    sys time   31.98 secs  674.00 micros   31.98 secs
+> ________________________________________________________
+> Executed in   31.34 secs    fish           external
+>    usr time    5.22 secs    0.00 millis    5.22 secs
+>    sys time   26.09 secs    1.30 millis   26.09 secs
+>
+> It's obviously a lot slower.
+>
+> pmem may seem rare but SSDs are good at sequential, and memhog uses
+> the same filled page and backend like ZRAM has extremely low overhead
+> for same filled pages. Results with ZRAM are very similar, and many
+> production workloads have massive amounts of samefill memory.
+>
+> For example on the Android phone I'm using right now at this moment:
+> # cat /sys/block/zram0/mm_stat
+> 4283899904 1317373036 1370259456        0 1475977216   116457  1991851
+>    87273  1793760
+> ~450M of samefill page in ZRAM, we may see more on some server
+> workload. And I'm seeing similar memhog results with ZRAM, pmem is
+> just easier to setup and less noisy. also simulates high speed
+> storage.
+>
+> I also ran the previous usemem matrix, which seems better than V3 but
+> still pretty bad:
+> Test: usemem --init-time -O -n 1 56G, 16G mem, 48G swap, avgs of 8 run.
+> Before:
+> Throughput (Sum): 528.98 MB/s Throughput (Mean): 526.113333 MB/s Free
+> Latency: 3037932.888889
+> After:
+> Throughput (Sum): 453.74 MB/s Throughput (Mean): 454.875000 MB/s Free
+> Latency: 5001144.500000 (~10%, 64% slower)
+>
+> I'm not sure why our results differ so much =E2=80=94 perhaps different L=
+RU
+> settings, memory pressure ratios, or THP/mTHP configs? Here's my exact
+> config in the attachment. Also includes the full log and info, with
+> all debug options disabled for close to production. I ran it 8 times
+> and just attached the first result log, it's all similar anyway, my
+> test framework reboot the machine after each test run to reduce any
+> potential noise.
+>
+> And the above tests are only about sequential performance, concurrent
+> ones seem worse:
+> Test: usemem --init-time -O -R -n 32 622M, 16G mem, 48G swap, avgs of 8 r=
+un.
+> Before:
+> Throughput (Sum): 5467.51 MB/s Throughput (Mean): 170.04 MB/s Free
+> Latency: 28648.65
+> After:
+> Throughput (Sum): 4914.86 MB/s Throughput (Mean): 152.74 MB/s Free
+> Latency: 67789.81 (~10%, 230% slower)
+
+For this test case, I took my 16G (a bit less than that technically)
+52 cores host, using zram as the backend and MGLRU, for a spin.
+
+Keeping the same parameters as your usemem command, unfortunately, led
+to massive thrashing (even with baseline kernel) - unfortunately zram
+still used physical memory so the overcommit level is too large
+(especially with random access pattern, i.e the -R flag).
+
+I then tried reducing the 622M part to 480M, but the problem with that
+is VSS5 did not show any regression - probably because the
+overcommitting is too low, or not enough concurrency. I had to push
+the concurrency up to 52 workers, allocating 300M each (which is
+slightly more memory allocated overall than the 480 x 32 case), to
+finally show the regression you reported. Variance was very big with 8
+runs though (what I normally use for usemem these days), so I had to
+do 20 runs per kernel - fortunately these runs are fast:
+
+
+Metric      baseline       vss_v5         new_opt_v2     cc_v2
+real (s)    15.0 +/- 0.8   18.3 +/- 1.8   15.1 +/- 1.0   14.7 +/- 1.0
+sys (s)     396.4 +/- 31.1 511.9 +/- 60.3 404.1 +/- 34.5 392.4 +/- 39.9
+tput (KB/s) 28188 +/- 6996 23287 +/- 6629 27999 +/- 6623 28744 +/- 7015
+free (ms)   101.1 +/- 52.4 91.4 +/- 41.5  93.1 +/- 43.8  97.6 +/- 49.5
+% real      n/a            +22.4%         +0.7%          -1.7%
+% sys       n/a            +29.1%         +1.9%          -1.0%
+% tput      n/a            -17.4%         -0.7%          +2.0%
+% free      n/a            -9.6%          -7.9%          -3.5%
+
+
+(I realized I mangled the output last time of the "memory reclaim
+metrics table" table due to auto line break. Let's hope this is
+better).
+
+Strangely, no free regression. Hmmm.
+
+But real, sys, and throughput regression are real. The optimizations
+do close the gap to within noise level here too.
 
