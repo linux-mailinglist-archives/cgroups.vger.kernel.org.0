@@ -1,49 +1,49 @@
-Return-Path: <cgroups+bounces-15431-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-15432-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id EEVkLSw+52no5QEAu9opvQ
-	(envelope-from <cgroups+bounces-15431-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Tue, 21 Apr 2026 11:06:52 +0200
+	id mIoyLao952no5QEAu9opvQ
+	(envelope-from <cgroups+bounces-15432-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Tue, 21 Apr 2026 11:04:42 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 166C7438A01
-	for <lists+cgroups@lfdr.de>; Tue, 21 Apr 2026 11:06:51 +0200 (CEST)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id EF79E438951
+	for <lists+cgroups@lfdr.de>; Tue, 21 Apr 2026 11:04:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id D84503077550
-	for <lists+cgroups@lfdr.de>; Tue, 21 Apr 2026 08:59:33 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 591B8300B51F
+	for <lists+cgroups@lfdr.de>; Tue, 21 Apr 2026 09:02:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C95D33A1E73;
-	Tue, 21 Apr 2026 08:59:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6CCBE3A3811;
+	Tue, 21 Apr 2026 09:02:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZCu/+kUk"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dTHsJ8O1"
 X-Original-To: cgroups@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 86AF839C657;
-	Tue, 21 Apr 2026 08:59:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A87823D7DC;
+	Tue, 21 Apr 2026 09:02:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1776761969; cv=none; b=D410J9Hn1nFtfQN0261o01HGZt1Nm1ZlsMfvc25XACi9K8z2CVy/nnG741WBvExKrDlYFcWmFwAf6HjaYA7TQfqFI9b3dYBnJmCWS3hfHheZ8Xadi3ur0nRNGS1EUC0F5yh5zncwrKqVlO5D59RhTT6Bm77LEB6cQbmXU1m0C1w=
+	t=1776762153; cv=none; b=kM7cXqrVB4SJsHLqPjyt/rpCaxmVRXv/K59iwuPFUZOOaEKug6s/6CBX8H0sr+M4Uo1TdJAPDVTb85NR9qVHmOGP4f4yrPvT3YZNpmSffQmhH6AhIpVv5e0a1K5IiE0rY9Q1oge5jzw20qbsFYWAbory5N5wL/vENttORWtk/MM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1776761969; c=relaxed/simple;
-	bh=0q0Gpy8lbZm91XWD5TmDJAobYHfE8UG/1WqUhR93NM0=;
+	s=arc-20240116; t=1776762153; c=relaxed/simple;
+	bh=hyZWWcOnCF0YqBIfepMB2TKvI6XHZWcg6x6y0OZJQLI=;
 	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=c22hs64lsCqkd85DhloDVbtMA/fhji0SZLoX9D2uIZPGvGeGsFGzcFLfW5cZdbycnrUNMmX597XtR4K952DYbYTH4w6fQeT/MPtjkGV3i7Ir9yyzZYgDtY0PGOGe039rM6u0ZibgTZdFznnIjV2ZOxfon2Duxwfxp0B0bXwKkg4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ZCu/+kUk; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 828C3C2BCB0;
-	Tue, 21 Apr 2026 08:59:28 +0000 (UTC)
+	 MIME-Version:Content-Type; b=QGmpFxmiLi2ZiMh/4pUFdLub6B8g0tlQ9SU9FiSw1LJv1U2kQ1/N5fa8KUiSa12yvSQfA/r8BjOcl3BoMGOapUoDSh4903ESek074jkamKBFu7tOxvT7m5xq/dxXM/BLCscPVXvO3234xeIkMVyz7zPp19QuwVAnOXgpu3zS2n4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dTHsJ8O1; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DB781C2BCB5;
+	Tue, 21 Apr 2026 09:02:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1776761969;
-	bh=0q0Gpy8lbZm91XWD5TmDJAobYHfE8UG/1WqUhR93NM0=;
+	s=k20201202; t=1776762152;
+	bh=hyZWWcOnCF0YqBIfepMB2TKvI6XHZWcg6x6y0OZJQLI=;
 	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-	b=ZCu/+kUk82qDnHMMO6LfBHDcTLR/zEhWpNl9fdYgQdxm/xNzi+3OKS5RYOvdLfDoz
-	 kNiu0Zg6PkSfg2oOtk43qfDHmgT0elCicP8BJe7MXfB04wE7Cme9EA0WSI929HydcS
-	 T8hR04ipy64qcx9Ho+jPpiV0NA7ZAX7tPFux345/2psxILPUlrgcObeN3+q4KWTvVt
-	 lmy1YVjISyiCBdVj35jnAgI7mv17I7V4nfenlvt6RCuonYCDDuhAvjW8nM6vqSK3sg
-	 wy1kLGroMkQ8Potfz3j4Allbh6G50kClsfQDdxP4MK2/PVly+1TeDZU37OTBrtOrcJ
-	 A+IkpJepKbBfQ==
+	b=dTHsJ8O1tmL/CMMD9GDGnTM+P4zaYf0VkAPrivxCnrtZ13VF+imGxW9VTBIRq/Uf2
+	 SOF+NB6yQxfQQYNPzJk34BR5kVyD+W+jdDXneQtqRSWhS4SD+QZSj6I4bQzTtcspBX
+	 e8pzBlONSb73VG8u3/0biZVM1Fe2lfQa3EkCLYd20CL1r9ZXze4oaIXMZz5tEqWYTF
+	 Ji9ZurauMtTzsXivS8ZiFUfHXNA89x8w0rTDN5iIoWs3qPAfjwgLXFVn5Tx64Jrd8S
+	 IZ8CmCzIzJA5ncBEo/OSVj1zWApAUV1Ddw4xCcHDxilmuZ4e5C0ni0Qolyo9QgCEwE
+	 5Nrc5IUcYX9Og==
 From: Thomas Gleixner <tglx@kernel.org>
 To: Waiman Long <longman@redhat.com>, Tejun Heo <tj@kernel.org>, Johannes
  Weiner <hannes@cmpxchg.org>, Michal =?utf-8?Q?Koutn=C3=BD?=
@@ -74,13 +74,13 @@ Cc: cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
  rcu@vger.kernel.org, netdev@vger.kernel.org,
  linux-kselftest@vger.kernel.org, Costa Shulyupin <cshulyup@redhat.com>,
  Qiliang Yuan <realwujing@gmail.com>, Waiman Long <longman@redhat.com>
-Subject: Re: [PATCH 11/23] hrtimer: Use RCU to protect access of
- HK_TYPE_TIMER cpumask
-In-Reply-To: <20260421030351.281436-12-longman@redhat.com>
+Subject: Re: [PATCH 16/23] genirq/cpuhotplug: Use RCU to protect access of
+ HK_TYPE_MANAGED_IRQ cpumask
+In-Reply-To: <20260421030351.281436-17-longman@redhat.com>
 References: <20260421030351.281436-1-longman@redhat.com>
- <20260421030351.281436-12-longman@redhat.com>
-Date: Tue, 21 Apr 2026 10:59:24 +0200
-Message-ID: <87tst4bser.ffs@tglx>
+ <20260421030351.281436-17-longman@redhat.com>
+Date: Tue, 21 Apr 2026 11:02:29 +0200
+Message-ID: <87qzo8bs9m.ffs@tglx>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -95,19 +95,19 @@ X-Spamd-Result: default: False [2.84 / 15.00];
 	MID_RHS_NOT_FQDN(0.50)[];
 	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
 	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	RCVD_COUNT_THREE(0.00)[4];
-	TAGGED_FROM(0.00)[bounces-15431-lists,cgroups=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-15432-lists,cgroups=lfdr.de];
 	FREEMAIL_CC(0.00)[vger.kernel.org,lists.infradead.org,redhat.com,gmail.com];
 	MIME_TRACE(0.00)[0:+];
 	RCVD_TLS_LAST(0.00)[];
 	FREEMAIL_TO(0.00)[redhat.com,kernel.org,cmpxchg.org,suse.com,lwn.net,linuxfoundation.org,arm.com,microsoft.com,roeck-us.net,nvidia.com,joshtriplett.org,gmail.com,goodmis.org,efficios.com,linux.dev,linutronix.de,huaweicloud.com,infradead.org,linaro.org,google.com,suse.de,amd.com,davemloft.net];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	DKIM_TRACE(0.00)[kernel.org:+];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
 	MISSING_XM_UA(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[tglx@kernel.org,cgroups@vger.kernel.org];
@@ -118,22 +118,48 @@ X-Spamd-Result: default: False [2.84 / 15.00];
 	NEURAL_HAM(-0.00)[-0.998];
 	TO_DN_SOME(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 166C7438A01
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: EF79E438951
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
 On Mon, Apr 20 2026 at 23:03, Waiman Long wrote:
-> As HK_TYPE_TIMER cpumask is going to be changeable at run time, use
 
-As the ...
-
-> RCU to protect access to the cpumask.
+> As HK_TYPE_MANAGED_IRQ cpumask is going to be changeable at run time,
+> use RCU to protect access to the cpumask.
 >
-> The access of HK_TYPE_TIMER cpumask within hrtimers_cpu_dying() is
-> protected as interrupt is disabled and all the other CPUs are stopped
+> To enable the new HK_TYPE_MANAGED_IRQ cpumask to take effect, the
+> following steps can be done.
 
-interrupts are disabled
+Can be done?
 
-> when this function is invoked as part of the CPU tear down process.
+>  1) Update the HK_TYPE_MANAGED_IRQ cpumask to take out the newly isolated
+>     CPUs and add back the de-isolated CPUs.
+>  2) Tear down the affected CPUs to cause irq_migrate_all_off_this_cpu()
+>     to be called on the affected CPUs to migrate the irqs to other
+>     HK_TYPE_MANAGED_IRQ housekeeping CPUs.
+>  3) Bring up the previously offline CPUs to invoke
+>     irq_affinity_online_cpu() to allow the newly de-isolated CPUs to
+>     be used for managed irqs.
+
+Which previously offline CPUs?
+
+> diff --git a/kernel/irq/manage.c b/kernel/irq/manage.c
+> index 2e8072437826..8270c4de260b 100644
+> --- a/kernel/irq/manage.c
+> +++ b/kernel/irq/manage.c
+> @@ -263,6 +263,7 @@ int irq_do_set_affinity(struct irq_data *data, const struct cpumask *mask, bool
+>  	    housekeeping_enabled(HK_TYPE_MANAGED_IRQ)) {
+>  		const struct cpumask *hk_mask;
+>  
+> +		guard(rcu)();
+>  		hk_mask = housekeeping_cpumask(HK_TYPE_MANAGED_IRQ);
+>  
+>  		cpumask_and(tmp_mask, mask, hk_mask);
+
+How is this hunk related to $Subject?
+
+Thanks,
+
+        tglx
 
