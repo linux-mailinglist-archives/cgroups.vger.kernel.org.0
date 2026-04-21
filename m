@@ -1,55 +1,56 @@
-Return-Path: <cgroups+bounces-15416-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-15417-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id yAV5Nu0W52lQ3wEAu9opvQ
-	(envelope-from <cgroups+bounces-15416-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Tue, 21 Apr 2026 08:19:25 +0200
+	id uIu/KfAW52lQ3wEAu9opvQ
+	(envelope-from <cgroups+bounces-15417-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Tue, 21 Apr 2026 08:19:28 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9BFA2436D94
-	for <lists+cgroups@lfdr.de>; Tue, 21 Apr 2026 08:19:25 +0200 (CEST)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3BB2C436D9B
+	for <lists+cgroups@lfdr.de>; Tue, 21 Apr 2026 08:19:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id B94293042438
-	for <lists+cgroups@lfdr.de>; Tue, 21 Apr 2026 06:17:05 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 636B23042EAB
+	for <lists+cgroups@lfdr.de>; Tue, 21 Apr 2026 06:17:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6FFC93914FA;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 768133921C9;
 	Tue, 21 Apr 2026 06:16:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="aF4Q8T/C"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kkBcnAyk"
 X-Original-To: cgroups@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E46F38737F;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1895938757F;
 	Tue, 21 Apr 2026 06:16:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1776752215; cv=none; b=g47k3d1seVcrrbHA54BJBntiLCnT3NaIYI998M9IlD6F3ndazWURO1MBvcuPwlb/pUeudD8uDxeP8QHN1EkUhT1cbtPQBypM4UJUOzTDHY3PpZebGoHIckSOwQU2dA9nglwmzkyxbdmBFcXoRFU+9YUIPOM7Exm58GNWjhSvtzg=
+	t=1776752215; cv=none; b=T8S6SKXHK7/3dQxAJmc9TIPBVvpqn5hZUEY7b0fzv20NrNhWXr+HHDAZiko3SKK9OkRDIsgcSvyKsVklKlUZYsmlDqZBSLcIYui+e2gcFXi98tExAZ+tqKcoVhhb6hdRFk9Q2i+uybtPbadd3r1bn3SB9a3ho+FWqCxeaBp/v28=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1776752215; c=relaxed/simple;
-	bh=6i9YAUZYwrRc5SgpD4usGKW1EHQYKdPdq9tqPGDElhg=;
+	bh=PlzncJfQNFjdUMXyth90oRU2KFUzgWZz7MGCiTQVVgA=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=oC2JpN1IskbRDjoDEp7tTA4p3UC773zqPscOOdd3/iFGsjqqXFpBqBIaXTF9iaYtYc/mVIMsDzTD0dIltxTDmMx5YCJeDjfQmZpkyBGK51SGtHkcCR+wK1oT+2ujhYipncRswjjrvCoW4jZ2+WHMkT9EdxtYmHYj+M72K5dbszM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=aF4Q8T/C; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id BEE2FC2BCFC;
+	 In-Reply-To:To:Cc; b=XlGF2HzmDL8ggaZUYhmcDEJDsJL5k0JjtFYFMPap5knuituyF8urQdCddKZA/1+I7b0JVwYXVUbLtKRA5Wmxsmwsawj9UxHrOL7r8togLq2Bu0xp7n11TovQ7ua0ru5GhWhY3q9Y3FSE+da96GJCeA7owqj8K4CRGkeg8AQDETc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kkBcnAyk; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id C6DD4C4AF0B;
 	Tue, 21 Apr 2026 06:16:54 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1776752214;
-	bh=6i9YAUZYwrRc5SgpD4usGKW1EHQYKdPdq9tqPGDElhg=;
+	bh=PlzncJfQNFjdUMXyth90oRU2KFUzgWZz7MGCiTQVVgA=;
 	h=From:Date:Subject:References:In-Reply-To:To:Cc:Reply-To:From;
-	b=aF4Q8T/CgsBWUB3LkN/wKWqimcuH3PbKYijQ6Oazwp/vKnzyEPfV+MX+1qNen+6h9
-	 nWCZNt4S+h2S6603XYqpfIfxYwThxLx1SjdR4iWrd+NXKhbkS1dyqsRWW4z1SPRUeO
-	 nlC1lrFNZtuHcoba+mRnG78tWmulvJyVVch5uGg/k8DJSLnf80dCGn7s4/wbv9fItG
-	 NqnG4uRH9zkObc7aJy8ZX3QYUWAlJSEehJWFs+EWXycnRtw74mlFeyy/yWNNKJCojw
-	 jcFDHzcG4Twwk/3bNK38hZFsEABt1b/2MoU5D2PkGCPAftuavDo6jr2e+w1zlLqBgS
-	 V2fJ2U6c1CNCg==
+	b=kkBcnAykqJbcmE8MDbY6mpCC9n6uf2EZwPXA7/dKWPc0lmv81gJfu8WG9H5yUXM98
+	 MEu/RfWpz9DKIyZSJxWkHOOsr1CtrNhovOFDx5ky5I8UUmIjV74fDj3y3/Ccr0u4ju
+	 iWu41YsflNAxUtqkLuJRhgpeH7z8ZXkL2kbhnbT4bgJmNzPMBlTtsqhOMOPofwvDwT
+	 JJGfQXkAWm4I5AnUuKlQOgU2EFQ6cWgeBp9NditM2CXzDM9shY3DOOLwjsnfevPSfQ
+	 FN1p09qICsPhFPIMdoc6aocNwfzfaZtDX58eCUVyzl55ZAool9ivuQitdf7tb9sheT
+	 +Mka9ZIvD4lbg==
 Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id A7220F327AB;
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BB2B4F327AD;
 	Tue, 21 Apr 2026 06:16:54 +0000 (UTC)
 From: Kairui Song via B4 Relay <devnull+kasong.tencent.com@kernel.org>
-Date: Tue, 21 Apr 2026 14:16:53 +0800
-Subject: [PATCH v3 09/12] mm, swap: consolidate cluster allocation helpers
+Date: Tue, 21 Apr 2026 14:16:54 +0800
+Subject: [PATCH v3 10/12] mm/memcg, swap: store cgroup id in cluster table
+ directly
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -58,7 +59,7 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20260421-swap-table-p4-v3-9-2f23759a76bc@tencent.com>
+Message-Id: <20260421-swap-table-p4-v3-10-2f23759a76bc@tencent.com>
 References: <20260421-swap-table-p4-v3-0-2f23759a76bc@tencent.com>
 In-Reply-To: <20260421-swap-table-p4-v3-0-2f23759a76bc@tencent.com>
 To: linux-mm@kvack.org
@@ -81,11 +82,11 @@ Cc: Andrew Morton <akpm@linux-foundation.org>,
  Axel Rasmussen <axelrasmussen@google.com>, Lorenzo Stoakes <ljs@kernel.org>, 
  Yosry Ahmed <yosry@kernel.org>
 X-Mailer: b4 0.15.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1776752211; l=7165;
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1776752211; l=15097;
  i=kasong@tencent.com; s=kasong-sign-tencent; h=from:subject:message-id;
- bh=B+TeE8JVn80xKMjcMTb6N8fSNYHExA8Vz1o7UX2umm0=;
- b=gFNJDYUx2Qi1b6tclNArTC3/ZBh+XOnQIKjENIqfaDW3MxZTmBC+CWRd0K0isOUmj/RKSAGRs
- etswOk+N4jYAJJFmaGGHHDVi6RaLrS5YYbacYwojhQ++Rsr81T/aLOF
+ bh=GDNJvZd9jKkeZPU5tNtzh1bfN+1CNsOhbeDPGAt1qAg=;
+ b=N3e47p2Dqgj6HQuYsv788ntodJW8wyh5KFNmjmY7W+3p2leFTo6SMVaPzyB+szjODm8g6FNv9
+ aGWfLXccH8ZDdIEv/VjZhb0RVFmhujCd28JfO7FII5afBXkoXL1+Cbz
 X-Developer-Key: i=kasong@tencent.com; a=ed25519;
  pk=kCdoBuwrYph+KrkJnrr7Sm1pwwhGDdZKcKrqiK8Y1mI=
 X-Endpoint-Received: by B4 Relay for kasong@tencent.com/kasong-sign-tencent
@@ -96,11 +97,11 @@ X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
 	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-15416-lists,cgroups=lfdr.de,kasong.tencent.com];
+	TAGGED_FROM(0.00)[bounces-15417-lists,cgroups=lfdr.de,kasong.tencent.com];
 	RCVD_TLS_LAST(0.00)[];
 	FROM_HAS_DN(0.00)[];
 	FORGED_SENDER_MAILLIST(0.00)[];
@@ -116,235 +117,473 @@ X-Spamd-Result: default: False [-2.16 / 15.00];
 	FROM_NEQ_ENVFROM(0.00)[devnull@kernel.org,cgroups@vger.kernel.org];
 	DKIM_TRACE(0.00)[kernel.org:+];
 	NEURAL_HAM(-0.00)[-1.000];
-	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
+	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
 	TAGGED_RCPT(0.00)[cgroups];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,tencent.com:email,tencent.com:replyto,tencent.com:mid]
-X-Rspamd-Queue-Id: 9BFA2436D94
+X-Rspamd-Queue-Id: 3BB2C436D9B
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
 From: Kairui Song <kasong@tencent.com>
 
-Swap cluster table management is spread across several narrow
-helpers. As a result, the allocation and fallback sequences are
-open-coded in multiple places.
+Drop the usage of the swap_cgroup_ctrl, and use the dynamic cluster
+table instead.
 
-A few more per-cluster tables will be added soon, so avoid
-duplicating these sequences per table type. Fold the existing
-pairs into cluster-oriented helpers, and rename for consistency.
-
-No functional change, only a few sanity checks are slightly adjusted.
+The per-cluster memcg table is 1024 / 512 bytes on most archs, and does
+not need RCU protection: the cgroup data is only read and written under
+the cluster lock. That keeps things simple, lets the allocation use
+plain kmalloc with immediate kfree (no deferred free), and keeps
+fragmentation acceptable.
 
 Signed-off-by: Kairui Song <kasong@tencent.com>
 ---
- mm/swapfile.c | 110 ++++++++++++++++++++++++++--------------------------------
- 1 file changed, 49 insertions(+), 61 deletions(-)
+ include/linux/memcontrol.h |  6 ++++--
+ include/linux/swap.h       |  8 +++----
+ mm/memcontrol-v1.c         | 42 +++++++++++++++++++++++-------------
+ mm/memcontrol.c            | 14 +++++++-----
+ mm/swap.h                  |  4 ++++
+ mm/swap_state.c            |  6 ++----
+ mm/swap_table.h            | 54 ++++++++++++++++++++++++++++++++++++++++++++++
+ mm/swapfile.c              | 35 +++++++++++++++++++-----------
+ mm/vmscan.c                |  2 +-
+ 9 files changed, 128 insertions(+), 43 deletions(-)
 
-diff --git a/mm/swapfile.c b/mm/swapfile.c
-index 8d3d22c463f3..2d16aa89a4fd 100644
---- a/mm/swapfile.c
-+++ b/mm/swapfile.c
-@@ -411,20 +411,7 @@ static inline unsigned int cluster_offset(struct swap_info_struct *si,
- 	return cluster_index(si, ci) * SWAPFILE_CLUSTER;
+diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
+index a013f37f24aa..bf1a6e131eca 100644
+--- a/include/linux/memcontrol.h
++++ b/include/linux/memcontrol.h
+@@ -29,6 +29,7 @@ struct obj_cgroup;
+ struct page;
+ struct mm_struct;
+ struct kmem_cache;
++struct swap_cluster_info;
+ 
+ /* Cgroup-specific page state, on top of universal node page state */
+ enum memcg_stat_item {
+@@ -1899,7 +1900,7 @@ static inline void mem_cgroup_exit_user_fault(void)
+ 	current->in_user_fault = 0;
  }
  
--static struct swap_table *swap_table_alloc(gfp_t gfp)
--{
--	struct folio *folio;
--
--	if (!SWP_TABLE_USE_PAGE)
--		return kmem_cache_zalloc(swap_table_cachep, gfp);
--
--	folio = folio_alloc(gfp | __GFP_ZERO, 0);
--	if (folio)
--		return folio_address(folio);
--	return NULL;
--}
--
--static void swap_table_free_folio_rcu_cb(struct rcu_head *head)
-+static void swap_cluster_free_table_folio_rcu_cb(struct rcu_head *head)
- {
- 	struct folio *folio;
+-void __memcg1_swapout(struct folio *folio);
++void __memcg1_swapout(struct folio *folio, struct swap_cluster_info *ci);
+ void memcg1_swapin(struct folio *folio);
  
-@@ -432,15 +419,46 @@ static void swap_table_free_folio_rcu_cb(struct rcu_head *head)
- 	folio_put(folio);
+ #else /* CONFIG_MEMCG_V1 */
+@@ -1929,7 +1930,8 @@ static inline void mem_cgroup_exit_user_fault(void)
+ {
  }
  
--static void swap_table_free(struct swap_table *table)
-+static void swap_cluster_free_table(struct swap_cluster_info *ci)
+-static inline void __memcg1_swapout(struct folio *folio)
++static inline void __memcg1_swapout(struct folio *folio,
++		struct swap_cluster_info *ci)
  {
-+	struct swap_table *table;
+ }
+ 
+diff --git a/include/linux/swap.h b/include/linux/swap.h
+index f2949f5844a6..57af4647d432 100644
+--- a/include/linux/swap.h
++++ b/include/linux/swap.h
+@@ -582,12 +582,12 @@ static inline int mem_cgroup_try_charge_swap(struct folio *folio)
+ 	return __mem_cgroup_try_charge_swap(folio);
+ }
+ 
+-extern void __mem_cgroup_uncharge_swap(swp_entry_t entry, unsigned int nr_pages);
+-static inline void mem_cgroup_uncharge_swap(swp_entry_t entry, unsigned int nr_pages)
++extern void __mem_cgroup_uncharge_swap(unsigned short id, unsigned int nr_pages);
++static inline void mem_cgroup_uncharge_swap(unsigned short id, unsigned int nr_pages)
+ {
+ 	if (mem_cgroup_disabled())
+ 		return;
+-	__mem_cgroup_uncharge_swap(entry, nr_pages);
++	__mem_cgroup_uncharge_swap(id, nr_pages);
+ }
+ 
+ extern long mem_cgroup_get_nr_swap_pages(struct mem_cgroup *memcg);
+@@ -598,7 +598,7 @@ static inline int mem_cgroup_try_charge_swap(struct folio *folio)
+ 	return 0;
+ }
+ 
+-static inline void mem_cgroup_uncharge_swap(swp_entry_t entry,
++static inline void mem_cgroup_uncharge_swap(unsigned short id,
+ 					    unsigned int nr_pages)
+ {
+ }
+diff --git a/mm/memcontrol-v1.c b/mm/memcontrol-v1.c
+index 36c507d81dc5..494e7b9adc60 100644
+--- a/mm/memcontrol-v1.c
++++ b/mm/memcontrol-v1.c
+@@ -14,6 +14,7 @@
+ 
+ #include "internal.h"
+ #include "swap.h"
++#include "swap_table.h"
+ #include "memcontrol-v1.h"
+ 
+ /*
+@@ -606,14 +607,15 @@ void memcg1_commit_charge(struct folio *folio, struct mem_cgroup *memcg)
+ /**
+  * __memcg1_swapout - transfer a memsw charge to swap
+  * @folio: folio whose memsw charge to transfer
++ * @ci: the locked swap cluster holding the swap entries
+  *
+  * Transfer the memsw charge of @folio to the swap entry stored in
+  * folio->swap.
+  *
+- * Context: folio must be isolated, unmapped, locked and is just about
+- * to be freed, and caller must disable IRQs.
++ * Context: folio must be isolated, unmapped, locked and is just about to
++ * be freed, and caller must disable IRQs and hold the swap cluster lock.
+  */
+-void __memcg1_swapout(struct folio *folio)
++void __memcg1_swapout(struct folio *folio, struct swap_cluster_info *ci)
+ {
+ 	struct mem_cgroup *memcg, *swap_memcg;
+ 	struct obj_cgroup *objcg;
+@@ -646,7 +648,8 @@ void __memcg1_swapout(struct folio *folio)
+ 	swap_memcg = mem_cgroup_private_id_get_online(memcg, nr_entries);
+ 	mod_memcg_state(swap_memcg, MEMCG_SWAP, nr_entries);
+ 
+-	swap_cgroup_record(folio, mem_cgroup_private_id(swap_memcg), folio->swap);
++	__swap_cgroup_set(ci, swp_cluster_offset(folio->swap), nr_entries,
++			  mem_cgroup_private_id(swap_memcg));
+ 
+ 	folio_unqueue_deferred_split(folio);
+ 	folio->memcg_data = 0;
+@@ -661,8 +664,7 @@ void __memcg1_swapout(struct folio *folio)
+ 	}
+ 
+ 	/*
+-	 * Interrupts should be disabled here because the caller holds the
+-	 * i_pages lock which is taken with interrupts-off. It is
++	 * The caller must hold the swap cluster lock with IRQ off. It is
+ 	 * important here to have the interrupts disabled because it is the
+ 	 * only synchronisation we have for updating the per-CPU variables.
+ 	 */
+@@ -677,7 +679,7 @@ void __memcg1_swapout(struct folio *folio)
+ }
+ 
+ /**
+- * memcg1_swapin - uncharge swap slot
++ * memcg1_swapin - uncharge swap slot on swapin
+  * @folio: folio being swapped in
+  *
+  * Call this function after successfully adding the charged
+@@ -687,6 +689,10 @@ void __memcg1_swapout(struct folio *folio)
+  */
+ void memcg1_swapin(struct folio *folio)
+ {
++	struct swap_cluster_info *ci;
++	unsigned long nr_pages;
++	unsigned short id;
 +
-+	table = (struct swap_table *)rcu_dereference_protected(ci->table, true);
-+	if (!table)
+ 	VM_WARN_ON_ONCE_FOLIO(!folio_test_swapcache(folio), folio);
+ 	VM_WARN_ON_ONCE_FOLIO(!folio_test_locked(folio), folio);
+ 
+@@ -702,14 +708,20 @@ void memcg1_swapin(struct folio *folio)
+ 	 * correspond 1:1 to page and swap slot lifetimes: we charge the
+ 	 * page to memory here, and uncharge swap when the slot is freed.
+ 	 */
+-	if (do_memsw_account()) {
+-		/*
+-		 * The swap entry might not get freed for a long time,
+-		 * let's not wait for it.  The page already received a
+-		 * memory+swap charge, drop the swap entry duplicate.
+-		 */
+-		mem_cgroup_uncharge_swap(folio->swap, folio_nr_pages(folio));
+-	}
++	if (!do_memsw_account())
 +		return;
 +
-+	rcu_assign_pointer(ci->table, NULL);
- 	if (!SWP_TABLE_USE_PAGE) {
- 		kmem_cache_free(swap_table_cachep, table);
- 		return;
- 	}
++	/*
++	 * The swap entry might not get freed for a long time,
++	 * let's not wait for it.  The page already received a
++	 * memory+swap charge, drop the swap entry duplicate.
++	 */
++	nr_pages = folio_nr_pages(folio);
++	ci = swap_cluster_get_and_lock(folio);
++	id = __swap_cgroup_clear(ci, swp_cluster_offset(folio->swap),
++				 nr_pages);
++	swap_cluster_unlock(ci);
++	mem_cgroup_uncharge_swap(id, nr_pages);
+ }
  
- 	call_rcu(&(folio_page(virt_to_folio(table), 0)->rcu_head),
--		 swap_table_free_folio_rcu_cb);
-+		 swap_cluster_free_table_folio_rcu_cb);
+ void memcg1_uncharge_batch(struct mem_cgroup *memcg, unsigned long pgpgout,
+diff --git a/mm/memcontrol.c b/mm/memcontrol.c
+index 641706fa47bf..193c8eb73be7 100644
+--- a/mm/memcontrol.c
++++ b/mm/memcontrol.c
+@@ -64,6 +64,8 @@
+ #include <linux/sched/isolation.h>
+ #include <linux/kmemleak.h>
+ #include "internal.h"
++#include "swap.h"
++#include "swap_table.h"
+ #include <net/sock.h>
+ #include <net/ip.h>
+ #include "slab.h"
+@@ -5462,6 +5464,7 @@ int __init mem_cgroup_init(void)
+ int __mem_cgroup_try_charge_swap(struct folio *folio)
+ {
+ 	unsigned int nr_pages = folio_nr_pages(folio);
++	struct swap_cluster_info *ci;
+ 	struct page_counter *counter;
+ 	struct mem_cgroup *memcg;
+ 	struct obj_cgroup *objcg;
+@@ -5495,22 +5498,23 @@ int __mem_cgroup_try_charge_swap(struct folio *folio)
+ 	}
+ 	mod_memcg_state(memcg, MEMCG_SWAP, nr_pages);
+ 
+-	swap_cgroup_record(folio, mem_cgroup_private_id(memcg), folio->swap);
++	ci = swap_cluster_get_and_lock(folio);
++	__swap_cgroup_set(ci, swp_cluster_offset(folio->swap), nr_pages,
++			  mem_cgroup_private_id(memcg));
++	swap_cluster_unlock(ci);
+ 
+ 	return 0;
+ }
+ 
+ /**
+  * __mem_cgroup_uncharge_swap - uncharge swap space
+- * @entry: swap entry to uncharge
++ * @id: cgroup id to uncharge
+  * @nr_pages: the amount of swap space to uncharge
+  */
+-void __mem_cgroup_uncharge_swap(swp_entry_t entry, unsigned int nr_pages)
++void __mem_cgroup_uncharge_swap(unsigned short id, unsigned int nr_pages)
+ {
+ 	struct mem_cgroup *memcg;
+-	unsigned short id;
+ 
+-	id = swap_cgroup_clear(entry, nr_pages);
+ 	rcu_read_lock();
+ 	memcg = mem_cgroup_from_private_id(id);
+ 	if (memcg) {
+diff --git a/mm/swap.h b/mm/swap.h
+index 80c2f1bf7a57..e4ac7dbc1080 100644
+--- a/mm/swap.h
++++ b/mm/swap.h
+@@ -5,6 +5,7 @@
+ #include <linux/atomic.h> /* for atomic_long_t */
+ struct mempolicy;
+ struct swap_iocb;
++struct swap_memcg_table;
+ 
+ extern int page_cluster;
+ 
+@@ -38,6 +39,9 @@ struct swap_cluster_info {
+ 	u8 order;
+ 	atomic_long_t __rcu *table;	/* Swap table entries, see mm/swap_table.h */
+ 	unsigned int *extend_table;	/* For large swap count, protected by ci->lock */
++#ifdef CONFIG_MEMCG
++	struct swap_memcg_table *memcg_table;	/* Swap table entries' cgroup record */
++#endif
+ 	struct list_head list;
+ };
+ 
+diff --git a/mm/swap_state.c b/mm/swap_state.c
+index 86d517a33a55..71a3f128fcf0 100644
+--- a/mm/swap_state.c
++++ b/mm/swap_state.c
+@@ -176,21 +176,19 @@ static int __swap_cache_add_check(struct swap_cluster_info *ci,
+ 	if (shadowp && swp_tb_is_shadow(old_tb))
+ 		*shadowp = swp_tb_to_shadow(old_tb);
+ 	if (memcg_id)
+-		*memcg_id = lookup_swap_cgroup_id(targ_entry);
++		*memcg_id = __swap_cgroup_get(ci, ci_off);
+ 
+ 	if (nr == 1)
+ 		return 0;
+ 
+-	targ_entry.val = round_down(targ_entry.val, nr);
+ 	ci_off = round_down(ci_off, nr);
+ 	ci_end = ci_off + nr;
+ 	do {
+ 		old_tb = __swap_table_get(ci, ci_off);
+ 		if (unlikely(swp_tb_is_folio(old_tb) ||
+ 			     !__swp_tb_get_count(old_tb) ||
+-			     (memcg_id && *memcg_id != lookup_swap_cgroup_id(targ_entry))))
++			     (memcg_id && *memcg_id != __swap_cgroup_get(ci, ci_off))))
+ 			return -EBUSY;
+-		targ_entry.val++;
+ 	} while (++ci_off < ci_end);
+ 
+ 	return 0;
+diff --git a/mm/swap_table.h b/mm/swap_table.h
+index 8415ffbe2b9c..b2b02ee161b1 100644
+--- a/mm/swap_table.h
++++ b/mm/swap_table.h
+@@ -11,6 +11,11 @@ struct swap_table {
+ 	atomic_long_t entries[SWAPFILE_CLUSTER];
+ };
+ 
++/* For storing memcg private id */
++struct swap_memcg_table {
++	unsigned short id[SWAPFILE_CLUSTER];
++};
++
+ #define SWP_TABLE_USE_PAGE (sizeof(struct swap_table) == PAGE_SIZE)
+ 
+ /*
+@@ -247,4 +252,53 @@ static inline unsigned long swap_table_get(struct swap_cluster_info *ci,
+ 
+ 	return swp_tb;
+ }
++
++#ifdef CONFIG_MEMCG
++static inline void __swap_cgroup_set(struct swap_cluster_info *ci,
++		unsigned int ci_off, unsigned long nr, unsigned short id)
++{
++	lockdep_assert_held(&ci->lock);
++	VM_WARN_ON_ONCE(ci_off >= SWAPFILE_CLUSTER);
++	do {
++		ci->memcg_table->id[ci_off++] = id;
++	} while (--nr);
 +}
 +
-+static int swap_cluster_alloc_table(struct swap_cluster_info *ci, gfp_t gfp)
++static inline unsigned short __swap_cgroup_get(struct swap_cluster_info *ci,
++					       unsigned int ci_off)
 +{
-+	struct swap_table *table = NULL;
-+	struct folio *folio;
++	lockdep_assert_held(&ci->lock);
++	VM_WARN_ON_ONCE(ci_off >= SWAPFILE_CLUSTER);
++	return ci->memcg_table->id[ci_off];
++}
 +
-+	/* The cluster must be empty and not on any list during allocation. */
-+	VM_WARN_ON_ONCE(ci->flags || !cluster_is_empty(ci));
-+	if (rcu_access_pointer(ci->table))
-+		return 0;
++static inline unsigned short __swap_cgroup_clear(struct swap_cluster_info *ci,
++						 unsigned int ci_off,
++						 unsigned long nr)
++{
++	unsigned short old = ci->memcg_table->id[ci_off];
 +
-+	if (SWP_TABLE_USE_PAGE) {
-+		folio = folio_alloc(gfp | __GFP_ZERO, 0);
-+		if (folio)
-+			table = folio_address(folio);
-+	} else {
-+		table = kmem_cache_zalloc(swap_table_cachep, gfp);
-+	}
-+	if (!table)
-+		return -ENOMEM;
++	__swap_cgroup_set(ci, ci_off, nr, 0);
++	return old;
++}
++#else
++static inline void __swap_cgroup_set(struct swap_cluster_info *ci,
++		unsigned int ci_off, unsigned long nr, unsigned short id)
++{
++}
 +
-+	rcu_assign_pointer(ci->table, table);
++static inline unsigned short __swap_cgroup_get(struct swap_cluster_info *ci,
++					       unsigned int ci_off)
++{
 +	return 0;
- }
- 
- /*
-@@ -471,27 +489,15 @@ static void swap_cluster_assert_empty(struct swap_cluster_info *ci,
- 	WARN_ON_ONCE(nr == SWAPFILE_CLUSTER && ci->extend_table);
- }
- 
--static void swap_cluster_free_table(struct swap_cluster_info *ci)
--{
--	struct swap_table *table;
--
--	/* Only empty cluster's table is allow to be freed  */
--	lockdep_assert_held(&ci->lock);
--	table = (void *)rcu_dereference_protected(ci->table, true);
--	rcu_assign_pointer(ci->table, NULL);
--
--	swap_table_free(table);
--}
--
- /*
-  * Allocate swap table for one cluster. Attempt an atomic allocation first,
-  * then fallback to sleeping allocation.
-  */
- static struct swap_cluster_info *
--swap_cluster_alloc_table(struct swap_info_struct *si,
-+swap_cluster_populate(struct swap_info_struct *si,
- 			 struct swap_cluster_info *ci)
++}
++
++static inline unsigned short __swap_cgroup_clear(struct swap_cluster_info *ci,
++						 unsigned int ci_off,
++						 unsigned long nr)
++{
++	return 0;
++}
++#endif
++
+ #endif
+diff --git a/mm/swapfile.c b/mm/swapfile.c
+index 2d16aa89a4fd..edf4cb36728e 100644
+--- a/mm/swapfile.c
++++ b/mm/swapfile.c
+@@ -423,7 +423,12 @@ static void swap_cluster_free_table(struct swap_cluster_info *ci)
  {
--	struct swap_table *table;
-+	int ret;
+ 	struct swap_table *table;
  
- 	/*
- 	 * Only cluster isolation from the allocator does table allocation.
-@@ -502,14 +508,9 @@ swap_cluster_alloc_table(struct swap_info_struct *si,
- 		lockdep_assert_held(&si->global_cluster_lock);
- 	lockdep_assert_held(&ci->lock);
+-	table = (struct swap_table *)rcu_dereference_protected(ci->table, true);
++#ifdef CONFIG_MEMCG
++	kfree(ci->memcg_table);
++	ci->memcg_table = NULL;
++#endif
++
++	table = (struct swap_table *)rcu_access_pointer(ci->table);
+ 	if (!table)
+ 		return;
  
--	/* The cluster must be free and was just isolated from the free list. */
--	VM_WARN_ON_ONCE(ci->flags || !cluster_is_empty(ci));
--
--	table = swap_table_alloc(__GFP_HIGH | __GFP_NOMEMALLOC | __GFP_NOWARN);
--	if (table) {
--		rcu_assign_pointer(ci->table, table);
-+	if (!swap_cluster_alloc_table(ci, __GFP_HIGH | __GFP_NOMEMALLOC |
-+					  __GFP_NOWARN))
- 		return ci;
--	}
+@@ -441,6 +446,7 @@ static int swap_cluster_alloc_table(struct swap_cluster_info *ci, gfp_t gfp)
+ {
+ 	struct swap_table *table = NULL;
+ 	struct folio *folio;
++	int ret = 0;
  
- 	/*
- 	 * Try a sleep allocation. Each isolated free cluster may cause
-@@ -521,7 +522,8 @@ swap_cluster_alloc_table(struct swap_info_struct *si,
- 		spin_unlock(&si->global_cluster_lock);
- 	local_unlock(&percpu_swap_cluster.lock);
+ 	/* The cluster must be empty and not on any list during allocation. */
+ 	VM_WARN_ON_ONCE(ci->flags || !cluster_is_empty(ci));
+@@ -458,7 +464,17 @@ static int swap_cluster_alloc_table(struct swap_cluster_info *ci, gfp_t gfp)
+ 		return -ENOMEM;
  
--	table = swap_table_alloc(__GFP_HIGH | __GFP_NOMEMALLOC | GFP_KERNEL);
-+	ret = swap_cluster_alloc_table(ci, __GFP_HIGH | __GFP_NOMEMALLOC |
-+					   GFP_KERNEL);
- 
- 	/*
- 	 * Back to atomic context. We might have migrated to a new CPU with a
-@@ -536,20 +538,11 @@ swap_cluster_alloc_table(struct swap_info_struct *si,
- 		spin_lock(&si->global_cluster_lock);
- 	spin_lock(&ci->lock);
- 
--	/* Nothing except this helper should touch a dangling empty cluster. */
--	if (WARN_ON_ONCE(cluster_table_is_alloced(ci))) {
--		if (table)
--			swap_table_free(table);
--		return ci;
--	}
--
--	if (!table) {
-+	if (ret) {
- 		move_cluster(si, ci, &si->free_clusters, CLUSTER_FLAG_FREE);
- 		spin_unlock(&ci->lock);
- 		return NULL;
- 	}
--
--	rcu_assign_pointer(ci->table, table);
- 	return ci;
+ 	rcu_assign_pointer(ci->table, table);
+-	return 0;
++
++#ifdef CONFIG_MEMCG
++	if (!ci->memcg_table)
++		ci->memcg_table = kzalloc(sizeof(*ci->memcg_table), gfp);
++	if (!ci->memcg_table)
++		ret = -ENOMEM;
++#endif
++	if (ret)
++		swap_cluster_free_table(ci);
++
++	return ret;
  }
  
-@@ -621,12 +614,11 @@ static struct swap_cluster_info *isolate_lock_cluster(
- 	}
- 	spin_unlock(&si->lock);
+ /*
+@@ -483,6 +499,7 @@ static void swap_cluster_assert_empty(struct swap_cluster_info *ci,
+ 			bad_slots++;
+ 		else
+ 			WARN_ON_ONCE(!swp_tb_is_null(swp_tb));
++		WARN_ON_ONCE(__swap_cgroup_get(ci, ci_off));
+ 	} while (++ci_off < ci_end);
  
--	if (found && !cluster_table_is_alloced(found)) {
--		/* Only an empty free cluster's swap table can be freed. */
--		VM_WARN_ON_ONCE(flags != CLUSTER_FLAG_FREE);
-+	/* Cluster's table is freed when and only when it's on the free list. */
-+	if (found && flags == CLUSTER_FLAG_FREE) {
- 		VM_WARN_ON_ONCE(list != &si->free_clusters);
--		VM_WARN_ON_ONCE(!cluster_is_empty(found));
--		return swap_cluster_alloc_table(si, found);
-+		VM_WARN_ON_ONCE(cluster_table_is_alloced(found));
-+		return swap_cluster_populate(si, found);
- 	}
+ 	WARN_ON_ONCE(bad_slots != (swapoff ? ci->count : 0));
+@@ -1860,12 +1877,10 @@ void __swap_cluster_free_entries(struct swap_info_struct *si,
+ 				 unsigned int ci_start, unsigned int nr_pages)
+ {
+ 	unsigned long old_tb;
+-	unsigned int type = si->type;
+ 	unsigned short id = 0, id_cur;
+ 	unsigned int ci_off = ci_start, ci_end = ci_start + nr_pages;
+ 	unsigned long offset = cluster_offset(si, ci);
+ 	unsigned int ci_batch = ci_off;
+-	swp_entry_t entry;
  
- 	return found;
-@@ -769,7 +761,6 @@ static int swap_cluster_setup_bad_slot(struct swap_info_struct *si,
- 	unsigned int ci_off = offset % SWAPFILE_CLUSTER;
- 	unsigned long idx = offset / SWAPFILE_CLUSTER;
- 	struct swap_cluster_info *ci;
--	struct swap_table *table;
- 	int ret = 0;
+ 	VM_WARN_ON(ci->count < nr_pages);
  
- 	/* si->max may got shrunk by swap swap_activate() */
-@@ -790,12 +781,9 @@ static int swap_cluster_setup_bad_slot(struct swap_info_struct *si,
- 	}
- 
- 	ci = cluster_info + idx;
--	if (!ci->table) {
--		table = swap_table_alloc(GFP_KERNEL);
--		if (!table)
--			return -ENOMEM;
--		rcu_assign_pointer(ci->table, table);
--	}
-+	/* Need to allocate swap table first for initial bad slot marking. */
-+	if (!ci->count && swap_cluster_alloc_table(ci, GFP_KERNEL))
-+		return -ENOMEM;
- 	spin_lock(&ci->lock);
- 	/* Check for duplicated bad swap slots. */
- 	if (__swap_table_xchg(ci, ci_off, SWP_TB_BAD) != SWP_TB_NULL) {
-@@ -2992,7 +2980,7 @@ static void free_swap_cluster_info(struct swap_cluster_info *cluster_info,
- 		ci = cluster_info + i;
- 		/* Cluster with bad marks count will have a remaining table */
- 		spin_lock(&ci->lock);
--		if (rcu_dereference_protected(ci->table, true)) {
-+		if (cluster_table_is_alloced(ci)) {
- 			swap_cluster_assert_empty(ci, 0, SWAPFILE_CLUSTER, true);
- 			swap_cluster_free_table(ci);
+@@ -1883,21 +1898,17 @@ void __swap_cluster_free_entries(struct swap_info_struct *si,
+ 		 * Uncharge swap slots by memcg in batches. Consecutive
+ 		 * slots with the same cgroup id are uncharged together.
+ 		 */
+-		entry = swp_entry(type, offset + ci_off);
+-		id_cur = lookup_swap_cgroup_id(entry);
++		id_cur = __swap_cgroup_clear(ci, ci_off, 1);
+ 		if (id != id_cur) {
+ 			if (id)
+-				mem_cgroup_uncharge_swap(swp_entry(type, offset + ci_batch),
+-							 ci_off - ci_batch);
++				mem_cgroup_uncharge_swap(id, ci_off - ci_batch);
+ 			id = id_cur;
+ 			ci_batch = ci_off;
  		}
+ 	} while (++ci_off < ci_end);
+ 
+-	if (id) {
+-		mem_cgroup_uncharge_swap(swp_entry(type, offset + ci_batch),
+-					 ci_off - ci_batch);
+-	}
++	if (id)
++		mem_cgroup_uncharge_swap(id, ci_off - ci_batch);
+ 
+ 	swap_range_free(si, offset + ci_start, nr_pages);
+ 	swap_cluster_assert_empty(ci, ci_start, nr_pages, false);
+diff --git a/mm/vmscan.c b/mm/vmscan.c
+index 63d06930d8e3..50d87ff58f86 100644
+--- a/mm/vmscan.c
++++ b/mm/vmscan.c
+@@ -739,7 +739,7 @@ static int __remove_mapping(struct address_space *mapping, struct folio *folio,
+ 
+ 		if (reclaimed && !mapping_exiting(mapping))
+ 			shadow = workingset_eviction(folio, target_memcg);
+-		__memcg1_swapout(folio);
++		__memcg1_swapout(folio, ci);
+ 		__swap_cache_del_folio(ci, folio, swap, shadow);
+ 		swap_cluster_unlock_irq(ci);
+ 	} else {
 
 -- 
 2.53.0
