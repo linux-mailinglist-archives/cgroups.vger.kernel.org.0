@@ -1,65 +1,65 @@
-Return-Path: <cgroups+bounces-15400-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-15401-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id eJ7mL4/r5mnF1wEAu9opvQ
-	(envelope-from <cgroups+bounces-15400-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Tue, 21 Apr 2026 05:14:23 +0200
+	id iDq6FN3r5mnF1wEAu9opvQ
+	(envelope-from <cgroups+bounces-15401-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Tue, 21 Apr 2026 05:15:41 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id CAC13435E8C
-	for <lists+cgroups@lfdr.de>; Tue, 21 Apr 2026 05:14:22 +0200 (CEST)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id B8E2B435F0C
+	for <lists+cgroups@lfdr.de>; Tue, 21 Apr 2026 05:15:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id B51A630235AD
-	for <lists+cgroups@lfdr.de>; Tue, 21 Apr 2026 03:09:28 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 2B1AF3074CD8
+	for <lists+cgroups@lfdr.de>; Tue, 21 Apr 2026 03:09:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 89BB437DEA0;
-	Tue, 21 Apr 2026 03:07:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9A02A3A6EE4;
+	Tue, 21 Apr 2026 03:07:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="XbRfozG6"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Bm9x71Zw"
 X-Original-To: cgroups@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BFC0F37DEAD
-	for <cgroups@vger.kernel.org>; Tue, 21 Apr 2026 03:07:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0EB65379EDC
+	for <cgroups@vger.kernel.org>; Tue, 21 Apr 2026 03:07:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1776740866; cv=none; b=foVlRjUXufZUfoV/nDD4Qz4bqnttjHOKLKQgC2tmae5MzDaV3uSsFtrGCBHH41e9jk5z1Ih9Zy3iG3Q61KLtabiFNDprrQjJYBiuXPF3jIwIw/eL7ubQvitAs2NJVjrtnhMXk3WwME82NUfZQALaKY8e4zsYH1CBdm+WBDE3n6w=
+	t=1776740877; cv=none; b=EyymKTCu/OXgD+gChNfsAHTsCh1CSOz0ckq7Pf70AstocFFWfHTJ421oqA3kouH8hWF9J7jBwesKJX4t5pr83nHjMuVBo5kUAlMsETsr/Bh0im3muBYk4SCpTPv4ZXy45rAaKyFJ3ao5pExtMMlgZqHTpuiXQULNvUw/MJCoQIc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1776740866; c=relaxed/simple;
-	bh=Qgh3Rtjk2sr92+QFAulS1sInUiw/DjGtzsAE3YOzHGU=;
+	s=arc-20240116; t=1776740877; c=relaxed/simple;
+	bh=pdahzaI6TYYLoH1na7BPnX7x2KDai2pfXdzq/9hklYw=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=AEJ0CHqZI2T0mSaNKQh8+OkvEL3WIMKfvPJNQPQhxLs8RQ19VQlSknvF6bO2XTwHFVSqOrl2YyXApVeBDHb0iXZWDvjxZp77ZU6mjzFDIOoZ8cQ46k+CPuc79EkcNzqNN1gPzVkkz7noqUkzmzCpbTWwpF1iVPR+CwjAMaO4b5g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=XbRfozG6; arc=none smtp.client-ip=170.10.133.124
+	 MIME-Version; b=iPGgIhtLbqf4JdCUlq9tX0mT8TnOg56bTWjp72hToGa5kb9vEJZbhM/VNaucqmyjtiFXcO5Fu+2J+JBDWXbmHGeO+MeVuOHYsRmRYTJanWUbHzXOCz1u64e9bHTL0XMvpoC1bmA2YSg97QIso9aQqHTp6gLWB8biUcWA7xPgn+0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Bm9x71Zw; arc=none smtp.client-ip=170.10.129.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1776740864;
+	s=mimecast20190719; t=1776740874;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=T0PwgcY00dmEA7hW8N56Wi13Enoq6qNEhgoYsfVh+9A=;
-	b=XbRfozG62lUhjfA5yYAu3GGDfJFNS3JWTbayq9j+CejAqZ5Z/66mIXXowWFffct/n5oyXu
-	e6XpOBdFyZHKjGFI+OQGOPB6Zfh8KiEFRGcI0ud8efiVtxN0jZIn5srPfKM5HG1rbw5bCt
-	XMOC8UG++4cjL5qCYhR3ymvLVa53aas=
-Received: from mx-prod-mc-06.mail-002.prod.us-west-2.aws.redhat.com
+	bh=id5gu+CSXzoxxDihrOTSOMQURNR0EZCi73AeA6doMCM=;
+	b=Bm9x71ZwYqhNoTiKmYPwc6BBhyIMnMlZyMS2VKu81R1meaWt5epLNi1ZgB0jBfn41au6nc
+	whNxBb+0S5c5OeIW//tQehOFlwOLwtrvRkt7hV+XZ+Q+J8lAc9qrzWwELazeObiFFA97Pe
+	4qs55BOtEHNMeYjScNjONJc3UdI5PaY=
+Received: from mx-prod-mc-08.mail-002.prod.us-west-2.aws.redhat.com
  (ec2-35-165-154-97.us-west-2.compute.amazonaws.com [35.165.154.97]) by
  relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-660-oW13N3nrN_K8wRsUogg44g-1; Mon,
- 20 Apr 2026 23:07:41 -0400
-X-MC-Unique: oW13N3nrN_K8wRsUogg44g-1
-X-Mimecast-MFC-AGG-ID: oW13N3nrN_K8wRsUogg44g_1776740856
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-113-eswoHUPCNHOcZgPwTq7aKQ-1; Mon,
+ 20 Apr 2026 23:07:48 -0400
+X-MC-Unique: eswoHUPCNHOcZgPwTq7aKQ-1
+X-Mimecast-MFC-AGG-ID: eswoHUPCNHOcZgPwTq7aKQ_1776740863
 Received: from mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.12])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mx-prod-mc-06.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id A40451800358;
-	Tue, 21 Apr 2026 03:07:36 +0000 (UTC)
+	by mx-prod-mc-08.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id AFC621800367;
+	Tue, 21 Apr 2026 03:07:43 +0000 (UTC)
 Received: from llong-thinkpadp16vgen1.westford.csb (unknown [10.22.65.81])
-	by mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id 5E4F719560AB;
-	Tue, 21 Apr 2026 03:07:29 +0000 (UTC)
+	by mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id C546C19560AB;
+	Tue, 21 Apr 2026 03:07:36 +0000 (UTC)
 From: Waiman Long <longman@redhat.com>
 To: Tejun Heo <tj@kernel.org>,
 	Johannes Weiner <hannes@cmpxchg.org>,
@@ -114,9 +114,9 @@ Cc: cgroups@vger.kernel.org,
 	Costa Shulyupin <cshulyup@redhat.com>,
 	Qiliang Yuan <realwujing@gmail.com>,
 	Waiman Long <longman@redhat.com>
-Subject: [PATCH 22/23] cgroup/cpuset: Prevent offline_disabled CPUs from being used in isolated partition
-Date: Mon, 20 Apr 2026 23:03:50 -0400
-Message-ID: <20260421030351.281436-23-longman@redhat.com>
+Subject: [PATCH 23/23] cgroup/cpuset: Documentation and kselftest updates
+Date: Mon, 20 Apr 2026 23:03:51 -0400
+Message-ID: <20260421030351.281436-24-longman@redhat.com>
 In-Reply-To: <20260421030351.281436-1-longman@redhat.com>
 References: <20260421030351.281436-1-longman@redhat.com>
 Precedence: bulk
@@ -133,7 +133,7 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	R_MISSING_CHARSET(0.50)[];
 	DMARC_POLICY_ALLOW(-0.50)[redhat.com,quarantine];
 	R_DKIM_ALLOW(-0.20)[redhat.com:s=mimecast20190719];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
@@ -141,244 +141,247 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	MIME_TRACE(0.00)[0:+];
 	RCVD_TLS_LAST(0.00)[];
 	FREEMAIL_TO(0.00)[kernel.org,cmpxchg.org,suse.com,lwn.net,linuxfoundation.org,arm.com,microsoft.com,roeck-us.net,nvidia.com,joshtriplett.org,gmail.com,goodmis.org,efficios.com,linux.dev,linutronix.de,huaweicloud.com,infradead.org,redhat.com,linaro.org,google.com,suse.de,amd.com,davemloft.net];
-	TAGGED_FROM(0.00)[bounces-15400-lists,cgroups=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-15401-lists,cgroups=lfdr.de];
 	FREEMAIL_CC(0.00)[vger.kernel.org,lists.infradead.org,redhat.com,gmail.com];
 	DKIM_TRACE(0.00)[redhat.com:+];
-	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
 	MISSING_XM_UA(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[longman@redhat.com,cgroups@vger.kernel.org];
 	FROM_HAS_DN(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	RCVD_COUNT_FIVE(0.00)[6];
-	NEURAL_HAM(-0.00)[-1.000];
+	NEURAL_HAM(-0.00)[-0.999];
 	RCPT_COUNT_GT_50(0.00)[53];
 	TO_DN_SOME(0.00)[];
 	TAGGED_RCPT(0.00)[cgroups];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: CAC13435E8C
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: B8E2B435F0C
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-If tick_nohz_full_enabled() is true, we are going to use CPU
-hotplug to enable runtime changes to the HK_TYPE_KERNEL_NOISE and
-HK_TYPE_MANAGED_IRQ cpumasks. However, for some architectures, one
-or maybe more CPUs will have the offline_disabled flag set in their
-cpu devices. For instance, x64-64 will set this flag for its boot CPU
-(typically CPU 0) to disable it from going offline. Those CPUs can't
-be used in cpuset isolated partition, or we are going to have problem
-in the CPU offline process.
+As CPU hotplug is now being used to enable runtime update to the list
+of nohz_full and managed_irq CPUs, we should avoid using CPU 0 in the
+formation of isolated partition as CPU 0 may not be able to be brought
+offline like in the case of x86-64 architecture. So a number of the
+test cases in test_cpuset_prs.sh will have to be updated accordingly.
 
-Find out the set of CPUs with offline_disabled set in a
-new cpuset_init_late() helper, set the corresponding bits in
-offline_disabled_cpus cpumask and check it when isolated partitions are
-being created or modified to ensure that we will not use any of those
-offline disabled CPUs in an isolated partition.
+A new test will also be run in offline isn't allowed in CPU 0 to verify
+that using CPU 0 as part of an isolated partition will fail.
 
-An error message mentioning those offline disabled CPUs will be
-constructed in cpuset_init_late() and shown in "cpuset.cpus.partition"
-when isolated creation or modification fails.
+The cgroup-v2.rst is also updated to reflect the new capability of using
+CPU hotplug to enable run time change to the nohz_full and managed_irq
+CPU lists.
+
+Since there is a slight performance overhead to enable runtime changes
+to nohz_full CPU list, users have to explicitly opt in by adding a
+"nohz_ful" kernel command line parameter with or without a CPU list.
 
 Signed-off-by: Waiman Long <longman@redhat.com>
 ---
- kernel/cgroup/cpuset-internal.h |  1 +
- kernel/cgroup/cpuset.c          | 89 ++++++++++++++++++++++++++++++++-
- 2 files changed, 88 insertions(+), 2 deletions(-)
+ Documentation/admin-guide/cgroup-v2.rst       | 35 +++++++---
+ .../selftests/cgroup/test_cpuset_prs.sh       | 70 +++++++++++++++++--
+ 2 files changed, 92 insertions(+), 13 deletions(-)
 
-diff --git a/kernel/cgroup/cpuset-internal.h b/kernel/cgroup/cpuset-internal.h
-index fd7d19842ded..87b7411540ff 100644
---- a/kernel/cgroup/cpuset-internal.h
-+++ b/kernel/cgroup/cpuset-internal.h
-@@ -35,6 +35,7 @@ enum prs_errcode {
- 	PERR_HKEEPING,
- 	PERR_ACCESS,
- 	PERR_REMOTE,
-+	PERR_OL_DISABLED,
- };
+diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admin-guide/cgroup-v2.rst
+index 8ad0b2781317..e97fc031eb86 100644
+--- a/Documentation/admin-guide/cgroup-v2.rst
++++ b/Documentation/admin-guide/cgroup-v2.rst
+@@ -2604,11 +2604,12 @@ Cpuset Interface Files
  
- /* bits in struct cpuset flags field */
-diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
-index 5f6b4e67748f..f3af8ef6c64e 100644
---- a/kernel/cgroup/cpuset.c
-+++ b/kernel/cgroup/cpuset.c
-@@ -20,6 +20,8 @@
-  */
- #include "cpuset-internal.h"
+ 	It accepts only the following input values when written to.
  
-+#include <linux/cpu.h>
-+#include <linux/device.h>
- #include <linux/init.h>
- #include <linux/interrupt.h>
- #include <linux/kernel.h>
-@@ -48,7 +50,7 @@ DEFINE_STATIC_KEY_FALSE(cpusets_enabled_key);
-  */
- DEFINE_STATIC_KEY_FALSE(cpusets_insane_config_key);
+-	  ==========	=====================================
++	  ==========	===============================================
+ 	  "member"	Non-root member of a partition
+ 	  "root"	Partition root
+-	  "isolated"	Partition root without load balancing
+-	  ==========	=====================================
++	  "isolated"	Partition root without load balancing and other
++		        OS noises
++	  ==========	===============================================
  
--static const char * const perr_strings[] = {
-+static const char *perr_strings[] __ro_after_init = {
- 	[PERR_INVCPUS]   = "Invalid cpu list in cpuset.cpus.exclusive",
- 	[PERR_INVPARENT] = "Parent is an invalid partition root",
- 	[PERR_NOTPART]   = "Parent is not a partition root",
-@@ -59,6 +61,7 @@ static const char * const perr_strings[] = {
- 	[PERR_HKEEPING]  = "partition config conflicts with housekeeping setup",
- 	[PERR_ACCESS]    = "Enable partition not permitted",
- 	[PERR_REMOTE]    = "Have remote partition underneath",
-+	[PERR_OL_DISABLED] = "", /* To be set up later */
- };
+ 	A cpuset partition is a collection of cpuset-enabled cgroups with
+ 	a partition root at the top of the hierarchy and its descendants
+@@ -2652,11 +2653,29 @@ Cpuset Interface Files
+ 	partition or scheduling domain.  The set of exclusive CPUs is
+ 	determined by the value of its "cpuset.cpus.exclusive.effective".
  
- /*
-@@ -164,6 +167,12 @@ static cpumask_var_t	isolated_mirq_cpus;	/* T */
- static bool		boot_nohz_le_domain __ro_after_init;
- static bool		boot_mirq_le_domain __ro_after_init;
- 
-+/*
-+ * Cpumask of CPUs with offline_disabled set
-+ * The cpumask is effectively __ro_after_init.
-+ */
-+static cpumask_var_t	offline_disabled_cpus;
+-	When set to "isolated", the CPUs in that partition will be in
+-	an isolated state without any load balancing from the scheduler
+-	and excluded from the unbound workqueues.  Tasks placed in such
+-	a partition with multiple CPUs should be carefully distributed
+-	and bound to each of the individual CPUs for optimal performance.
++	When set to "isolated", the CPUs in that partition will be in an
++	isolated state without any load balancing from the scheduler and
++	excluded from the unbound workqueues as well as other OS noises.
++	Tasks placed in such a partition with multiple CPUs should be
++	carefully distributed and bound to each of the individual CPUs
++	for optimal performance.
 +
- /*
-  * A flag to force sched domain rebuild at the end of an operation.
-  * It can be set in
-@@ -1649,6 +1658,8 @@ static int remote_partition_enable(struct cpuset *cs, int new_prs,
- 	 * The effective_xcpus mask can contain offline CPUs, but there must
- 	 * be at least one or more online CPUs present before it can be enabled.
- 	 *
-+	 * An isolated partition cannot contain CPUs with offline disabled.
-+	 *
- 	 * Note that creating a remote partition with any local partition root
- 	 * above it or remote partition root underneath it is not allowed.
- 	 */
-@@ -1661,6 +1672,9 @@ static int remote_partition_enable(struct cpuset *cs, int new_prs,
- 	     !isolated_cpus_can_update(tmp->new_cpus, NULL)) ||
- 	    prstate_housekeeping_conflict(new_prs, tmp->new_cpus))
- 		return PERR_HKEEPING;
-+	if (tick_nohz_full_enabled() && (new_prs == PRS_ISOLATED) &&
-+	    cpumask_intersects(tmp->new_cpus, offline_disabled_cpus))
-+		return PERR_OL_DISABLED;
- 
- 	spin_lock_irq(&callback_lock);
- 	partition_xcpus_add(new_prs, NULL, tmp->new_cpus);
-@@ -1746,6 +1760,16 @@ static void remote_cpus_update(struct cpuset *cs, struct cpumask *xcpus,
- 		goto invalidate;
- 	}
- 
-+	/*
-+	 * Isolated partition cannot contains CPUs with offline_disabled
-+	 * bit set.
-+	 */
-+	if (tick_nohz_full_enabled() && (prs == PRS_ISOLATED) &&
-+	    cpumask_intersects(excpus, offline_disabled_cpus)) {
-+		cs->prs_err = PERR_OL_DISABLED;
-+		goto invalidate;
-+	}
++	As CPU hotplug, if supported, is used to improve the degree of
++	CPU isolation close to the "nohz_full" kernel boot parameter.
++	In some architectures, like x86-64, the boot CPU (typically CPU
++	0) cannot be brought offline, so the boot CPU should not be used
++	for forming isolated partitions.  The "nohz_full" kernel boot
++	parameter needs to be present to enable full dynticks support
++	and RCU no-callback CPU mode for CPUs in isolated partitions
++	even if the optional cpu list isn't provided.
 +
- 	adding   = cpumask_andnot(tmp->addmask, excpus, cs->effective_xcpus);
- 	deleting = cpumask_andnot(tmp->delmask, cs->effective_xcpus, excpus);
++	Using CPU hotplug for creating or destroying an isolated
++	partition can cause latency spike in applications running
++	in other isolated partitions.  A reserved list of CPUs can
++	optionally be put in the "nohz_full" kernel boot parameter to
++	alleviate this problem.  When these reserved CPUs are used for
++	isolated partitions, CPU hotplug won't need to be invoked and
++	so there won't be latency spike in other isolated partitions.
  
-@@ -1913,6 +1937,11 @@ static int update_parent_effective_cpumask(struct cpuset *cs, int cmd,
- 		if (tasks_nocpu_error(parent, cs, xcpus))
- 			return PERR_NOCPUS;
+ 	A partition root ("root" or "isolated") can be in one of the
+ 	two possible states - valid or invalid.  An invalid partition
+diff --git a/tools/testing/selftests/cgroup/test_cpuset_prs.sh b/tools/testing/selftests/cgroup/test_cpuset_prs.sh
+index a56f4153c64d..eebb4122b581 100755
+--- a/tools/testing/selftests/cgroup/test_cpuset_prs.sh
++++ b/tools/testing/selftests/cgroup/test_cpuset_prs.sh
+@@ -67,6 +67,12 @@ then
+ 	echo Y > /sys/kernel/debug/sched/verbose
+ fi
  
-+		if (tick_nohz_full_enabled() &&
-+		    (new_prs == PRS_ISOLATED) &&
-+		    cpumask_intersects(xcpus, offline_disabled_cpus))
-+			return PERR_OL_DISABLED;
++# Enable dynamic debug message if available
++DYN_DEBUG=/proc/dynamic_debug/control
++[[ -f $DYN_DEBUG ]] && {
++	echo "file kernel/cpu.c +p" > $DYN_DEBUG
++}
 +
- 		/*
- 		 * This function will only be called when all the preliminary
- 		 * checks have passed. At this point, the following condition
-@@ -1979,12 +2008,21 @@ static int update_parent_effective_cpumask(struct cpuset *cs, int cmd,
- 					       parent->effective_xcpus);
+ cd $CGROUP2
+ echo +cpuset > cgroup.subtree_control
+ 
+@@ -84,6 +90,15 @@ echo member > test/cpuset.cpus.partition
+ echo "" > test/cpuset.cpus
+ [[ $RESULT -eq 0 ]] && skip_test "Child cgroups are using cpuset!"
+ 
++#
++# If nohz_full parameter is specified and nohz_full file exists, CPU hotplug
++# will be used to modify nohz_full cpumask to include all the isolated CPUs
++# in cpuset isolated partitions.
++#
++NOHZ_FULL=/sys/devices/system/cpu/nohz_full
++BOOT_NOHZ_FULL=$(fmt -1 /proc/cmdline | grep "^nohz_full")
++[[ "$BOOT_NOHZ_FULL" = nohz_full ]] && CHK_NOHZ_FULL=1
++
+ #
+ # If isolated CPUs have been reserved at boot time (as shown in
+ # cpuset.cpus.isolated), these isolated CPUs should be outside of CPUs 0-8
+@@ -318,8 +333,8 @@ TEST_MATRIX=(
+ 	# Invalid to valid local partition direct transition tests
+ 	" C1-3:P2  X4:P2    .      .      .      .      .      .     0 A1:1-3|XA1:1-3|A2:1-3:XA2: A1:P2|A2:P-2 1-3"
+ 	" C1-3:P2  X4:P2    .      .      .    X3:P2    .      .     0 A1:1-2|XA1:1-3|A2:3:XA2:3 A1:P2|A2:P2 1-3"
+-	" C0-3:P2    .      .    C4-6   C0-4     .      .      .     0 A1:0-4|B1:5-6 A1:P2|B1:P0"
+-	" C0-3:P2    .      .    C4-6 C0-4:C0-3  .      .      .     0 A1:0-3|B1:4-6 A1:P2|B1:P0 0-3"
++	" C1-3:P2    .      .    C4-6   C1-4     .      .      .     0 A1:1-4|B1:5-6 A1:P2|B1:P0"
++	" C1-3:P2    .      .    C4-6 C1-4:C1-3  .      .      .     0 A1:1-3|B1:4-6 A1:P2|B1:P0 1-3"
+ 
+ 	# Local partition invalidation tests
+ 	" C0-3:X1-3:P2 C1-3:X2-3:P2 C2-3:X3:P2 \
+@@ -329,8 +344,8 @@ TEST_MATRIX=(
+ 	" C0-3:X1-3:P2 C1-3:X2-3:P2 C2-3:X3:P2 \
+ 				   .      .    C4:X     .      .     0 A1:1-3|A2:1-3|A3:2-3|XA2:|XA3: A1:P2|A2:P-2|A3:P-2 1-3"
+ 	# Local partition CPU change tests
+-	" C0-5:P2  C4-5:P1  .      .      .    C3-5     .      .     0 A1:0-2|A2:3-5 A1:P2|A2:P1 0-2"
+-	" C0-5:P2  C4-5:P1  .      .    C1-5     .      .      .     0 A1:1-3|A2:4-5 A1:P2|A2:P1 1-3"
++	" C1-5:P2  C4-5:P1  .      .      .    C3-5     .      .     0 A1:1-2|A2:3-5 A1:P2|A2:P1 1-2"
++	" C1-5:P2  C4-5:P1  .      .    C2-5     .      .      .     0 A1:2-3|A2:4-5 A1:P2|A2:P1 2-3"
+ 
+ 	# cpus_allowed/exclusive_cpus update tests
+ 	" C0-3:X2-3 C1-3:X2-3 C2-3:X2-3 \
+@@ -442,6 +457,21 @@ TEST_MATRIX=(
+ 	"   C0-3     .      .    C4-5   X3-5     .      .      .     1 A1:0-3|B1:4-5"
+ )
+ 
++#
++# Test matrix to verify that using CPU 0 in isolated (local or remote) partition
++# will fail when offline isn't allowed for CPU 0.
++#
++CPU0_ISOLCPUS_MATRIX=(
++	#  old-A1 old-A2 old-A3 old-B1 new-A1 new-A2 new-A3 new-B1 fail ECPUs Pstate ISOLCPUS
++	#  ------ ------ ------ ------ ------ ------ ------ ------ ---- ----- ------ --------
++	"   C0-3     .      .    C4-5     P2     .      .      .     0 A1:0-3|B1:4-5 A1:P-2"
++	"   C1-3     .      .      .      P2     .      .      .     0 A1:1-3 A1:P2"
++	"   C1-3     .      .      .    P2:C0-3  .      .      .     0 A1:0-3 A1:P-2"
++	"  CX0-3   C0-3     .      .       .     P2     .      .     0 A1:0-3|A2:0-3 A2:P-2"
++	"  CX0-3 C0-3:X1-3  .      .       .     P2     .      .     0 A1:0|A2:1-3 A2:P2"
++	"  CX0-3 C0-3:X1-3  .      .       .   P2:X0-3  .      .     0 A1:0-3|A2:0-3 A2:P-2"
++)
++
+ #
+ # Cpuset controller remote partition test matrix.
+ #
+@@ -513,7 +543,7 @@ write_cpu_online()
  		}
- 
-+		/*
-+		 * Isolated partition cannot contain CPUs with offline_disabled
-+		 * bit set.
-+		 */
-+		if (tick_nohz_full_enabled() &&
-+		   ((old_prs == PRS_ISOLATED) ||
-+		    (old_prs == PRS_INVALID_ISOLATED)) &&
-+		    cpumask_intersects(newmask, offline_disabled_cpus)) {
-+			part_error = PERR_OL_DISABLED;
- 		/*
- 		 * TBD: Invalidate a currently valid child root partition may
- 		 * still break isolated_cpus_can_update() rule if parent is an
- 		 * isolated partition.
- 		 */
--		if (is_partition_valid(cs) && (old_prs != parent_prs)) {
-+		} else if (is_partition_valid(cs) && (old_prs != parent_prs)) {
- 			if ((parent_prs == PRS_ROOT) &&
- 			    /* Adding to parent means removing isolated CPUs */
- 			    !isolated_cpus_can_update(tmp->delmask, tmp->addmask))
-@@ -1995,6 +2033,19 @@ static int update_parent_effective_cpumask(struct cpuset *cs, int cmd,
- 				part_error = PERR_HKEEPING;
- 		}
- 
-+		if (part_error) {
-+			deleting = false;
-+			/*
-+			 * For a previously valid partition, we need to move
-+			 * the exclusive CPUs back to its parent.
-+			 */
-+			if (is_partition_valid(cs) &&
-+			    !cpumask_empty(cs->effective_xcpus)) {
-+				cpumask_copy(tmp->addmask, cs->effective_xcpus);
-+				adding = true;
-+			}
-+		}
-+
- 		/*
- 		 * The new CPUs to be removed from parent's effective CPUs
- 		 * must be present.
-@@ -3829,6 +3880,7 @@ int __init cpuset_init(void)
- 	BUG_ON(!zalloc_cpumask_var(&subpartitions_cpus, GFP_KERNEL));
- 	BUG_ON(!zalloc_cpumask_var(&isolated_cpus, GFP_KERNEL));
- 	BUG_ON(!zalloc_cpumask_var(&isolated_hk_cpus, GFP_KERNEL));
-+	BUG_ON(!zalloc_cpumask_var(&offline_disabled_cpus, GFP_KERNEL));
- 
- 	cpumask_setall(top_cpuset.cpus_allowed);
- 	nodes_setall(top_cpuset.mems_allowed);
-@@ -4188,6 +4240,39 @@ void __init cpuset_init_smp(void)
- 	BUG_ON(!cpuset_migrate_mm_wq);
+ 	fi
+ 	echo $VAL > $CPUFILE
+-	pause 0.05
++	pause 0.10
  }
  
-+/**
-+ * cpuset_init_late - initialize the list of CPUs with offline_disabled set
-+ *
-+ * Description: Initialize a cpumask with CPUs that have the offline_disabled
-+ *		bit set. It is done in a separate initcall as cpuset_init_smp()
-+ *		is called before driver_init() where the CPU devices will be
-+ *		set up.
-+ */
-+static int __init cpuset_init_late(void)
+ #
+@@ -654,6 +684,8 @@ dump_states()
+ 		[[ -e $PCPUS  ]] && echo "$PCPUS: $(cat $PCPUS)"
+ 		[[ -e $ISCPUS ]] && echo "$ISCPUS: $(cat $ISCPUS)"
+ 	done
++	# Dump nohz_full
++	[[ -f $NOHZ_FULL ]] && echo "nohz_full: $(cat $NOHZ_FULL)"
+ }
+ 
+ #
+@@ -789,6 +821,18 @@ check_isolcpus()
+ 		EXPECTED_SDOMAIN=$EXPECTED_ISOLCPUS
+ 	fi
+ 
++	#
++	# Check if nohz_full match cpuset.cpus.isolated if nohz_boot parameter
++	# specified with no parameter.
++	#
++	[[ -f $NOHZ_FULL && "$BOOT_NOHZ_FULL" = nohz_full ]] && {
++		NOHZ_FULL_CPUS=$(cat $NOHZ_FULL)
++		[[ "$ISOLCPUS" != "$NOHZ_FULL_CPUS" ]] && {
++			echo "nohz_full ($NOHZ_FULL_CPUS) does not match cpuset.cpus.isolated ($ISOLCPUS)"
++			return 1
++		}
++	}
++
+ 	#
+ 	# Appending pre-isolated CPUs
+ 	# Even though CPU #8 isn't used for testing, it can't be pre-isolated
+@@ -1070,6 +1114,21 @@ run_remote_state_test()
+ 	echo "All $I tests of $TEST PASSED."
+ }
+ 
++#
++# Testing CPU 0 isolated partition test when offline is disabled
++#
++run_cpu0_isol_test()
 +{
-+	int cpu;
++	# Skip the test if CPU0 offline is allowed or if nohz_full kernel
++	# boot parameter is missing.
++	CPU0_ONLINE=/sys/devices/system/cpu/cpu0/online
++	[[ -f $CPU0_ONLINE ]] && return
++	grep -q -w nohz_full /proc/cmdline
++	[[ $? -ne 0 ]] && return
 +
-+	if (!tick_nohz_full_enabled())
-+		return 0;
-+	/*
-+	 * Iterate all the possible CPUs to see which one has offline disabled.
-+	 */
-+	for_each_possible_cpu(cpu) {
-+		if (get_cpu_device(cpu)->offline_disabled)
-+			__cpumask_set_cpu(cpu, offline_disabled_cpus);
-+	}
-+	if (!cpumask_empty(offline_disabled_cpus)) {
-+		char buf[128];
-+
-+		snprintf(buf, sizeof(buf),
-+			 "CPU %*pbl with offline disabled not allowed in isolated partition",
-+			 cpumask_pr_args(offline_disabled_cpus));
-+		perr_strings[PERR_OL_DISABLED] = kstrdup(buf, GFP_KERNEL);
-+	}
-+	return 0;
++	run_state_test CPU0_ISOLCPUS_MATRIX
 +}
-+pure_initcall(cpuset_init_late);
 +
- /*
-  * Return cpus_allowed mask from a task's cpuset.
-  */
+ #
+ # Testing the new "isolated" partition root type
+ #
+@@ -1207,6 +1266,7 @@ test_inotify()
+ trap cleanup 0 2 3 6
+ run_state_test TEST_MATRIX
+ run_remote_state_test REMOTE_TEST_MATRIX
++run_cpu0_isol_test
+ test_isolated
+ test_inotify
+ echo "All tests PASSED."
 -- 
 2.53.0
 
