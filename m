@@ -1,248 +1,349 @@
-Return-Path: <cgroups+bounces-15427-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-15428-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id KPJJN+M652no5QEAu9opvQ
-	(envelope-from <cgroups+bounces-15427-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Tue, 21 Apr 2026 10:52:51 +0200
+	id 8IQoOhs752no5QEAu9opvQ
+	(envelope-from <cgroups+bounces-15428-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Tue, 21 Apr 2026 10:53:47 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id A15024386AD
-	for <lists+cgroups@lfdr.de>; Tue, 21 Apr 2026 10:52:51 +0200 (CEST)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9AE604386D4
+	for <lists+cgroups@lfdr.de>; Tue, 21 Apr 2026 10:53:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 18BC6304EB91
-	for <lists+cgroups@lfdr.de>; Tue, 21 Apr 2026 08:50:08 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id CA5CE300E5B8
+	for <lists+cgroups@lfdr.de>; Tue, 21 Apr 2026 08:53:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE6D3399345;
-	Tue, 21 Apr 2026 08:50:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pR8Z523t"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F18E839A818;
+	Tue, 21 Apr 2026 08:53:43 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8C3E933F8C2;
-	Tue, 21 Apr 2026 08:50:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 69A4E39DBDC;
+	Tue, 21 Apr 2026 08:53:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=124.126.103.232
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1776761405; cv=none; b=lOIGx6YXscpfqI0bLAOdsUshkLoHN1byaSH9z3pjDsR7p+jR1nZT7ZtPM8kLej4RadszpYD9vUwFVFDckxJlRp7tQAYkrsRk8mskvzxJsDa+ewGnqig3/6noJX949bsnLigGsUydoTNxoeR1DlazZJtsGYnSKScchMBVu4B/Coo=
+	t=1776761623; cv=none; b=LF6qW9eWI++45j7tSL14DVc3zVYTQ5M/AY4am6hBnV/B9VKJa/kxtYIYvVSCLVfwxJeZ/kdYZb3kEKuHW1msf/lGTns1IW02S26294ZidnLYBRQp4H64bzMS+2+sVy4AotucrBFE6Hwvez4hJJQSrTaZ6KN6wZGVeFvw0DK/DMw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1776761405; c=relaxed/simple;
-	bh=HaTQPXvOEJyusO788jGddOJOEFqrCuHs2/f3+g1Am18=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=T2cuOIyS0I6Iac9j8mdgjq7OuJsnpFJaXsWPHLMIACAEkKMsDHbmuPJ3rNSEjRkXRsRtGjfZOvDtP0dBGJH1TdcmWW4GULNUSw1/qwaEWA/SfsIPVgWPA29H50DY7ISjnhdmdO5x7IaND3HFuhtNI4igdfDGoIQ5c3kNwdu3AZE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=pR8Z523t; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B8BB7C2BCB5;
-	Tue, 21 Apr 2026 08:50:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1776761405;
-	bh=HaTQPXvOEJyusO788jGddOJOEFqrCuHs2/f3+g1Am18=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-	b=pR8Z523tl/pYJTgna0TzpDJ97VzUhuDGpfMXUMlZSvJUP88/Uf6wwLL6TZpPWR05u
-	 fD93UYvGK1Z22WuxegmEtlR4ePNUVX6G2eE2ADwU3KwsnRkrgv6KuslEMDj4RRqwRM
-	 14skmyaN7pOCw5z4aXywKO7WdmtNgjWIjQBE7KBokI+Z8nr8LT+UnHedRP0w1FkO7/
-	 PdygA/+aEmRmgNTyEpaQ4QOWy0df653T3ZV/1poX6L5HiEPSJxYDfp5OljRX0SkdFT
-	 tqfeD8TETWZix6tWtCS922YGEo3mzAzhVFRtMGSFWkbCfLN9whd61bgc0fioeZwxZd
-	 WIVg9roArtZ/w==
-From: Thomas Gleixner <tglx@kernel.org>
-To: Waiman Long <longman@redhat.com>, Tejun Heo <tj@kernel.org>, Johannes
- Weiner <hannes@cmpxchg.org>, Michal =?utf-8?Q?Koutn=C3=BD?=
- <mkoutny@suse.com>, Jonathan
- Corbet <corbet@lwn.net>, Shuah Khan <skhan@linuxfoundation.org>, Catalin
- Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, "K. Y.
- Srinivasan" <kys@microsoft.com>, Haiyang Zhang <haiyangz@microsoft.com>,
- Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>, Long Li
- <longli@microsoft.com>, Guenter Roeck <linux@roeck-us.net>, Frederic
- Weisbecker <frederic@kernel.org>, "Paul E. McKenney" <paulmck@kernel.org>,
- Neeraj Upadhyay <neeraj.upadhyay@kernel.org>, Joel Fernandes
- <joelagnelf@nvidia.com>, Josh Triplett <josh@joshtriplett.org>, Boqun Feng
- <boqun@kernel.org>, Uladzislau Rezki <urezki@gmail.com>, Steven Rostedt
- <rostedt@goodmis.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
- Lai Jiangshan <jiangshanlai@gmail.com>, Zqiang <qiang.zhang@linux.dev>,
- Anna-Maria Behnsen <anna-maria@linutronix.de>, Ingo Molnar
- <mingo@kernel.org>, Chen Ridong <chenridong@huaweicloud.com>, Peter
- Zijlstra <peterz@infradead.org>, Juri Lelli <juri.lelli@redhat.com>,
- Vincent Guittot <vincent.guittot@linaro.org>, Dietmar Eggemann
- <dietmar.eggemann@arm.com>, Ben Segall <bsegall@google.com>, Mel Gorman
- <mgorman@suse.de>, Valentin Schneider <vschneid@redhat.com>, K Prateek
- Nayak <kprateek.nayak@amd.com>, "David S. Miller" <davem@davemloft.net>,
- Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
- Paolo Abeni <pabeni@redhat.com>, Simon Horman <horms@kernel.org>
-Cc: cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-hyperv@vger.kernel.org, linux-hwmon@vger.kernel.org,
- rcu@vger.kernel.org, netdev@vger.kernel.org,
- linux-kselftest@vger.kernel.org, Costa Shulyupin <cshulyup@redhat.com>,
- Qiliang Yuan <realwujing@gmail.com>, Waiman Long <longman@redhat.com>
-Subject: Re: [PATCH 04/23] tick/nohz: Allow runtime changes in full dynticks
- CPUs
-In-Reply-To: <20260421030351.281436-5-longman@redhat.com>
-References: <20260421030351.281436-1-longman@redhat.com>
- <20260421030351.281436-5-longman@redhat.com>
-Date: Tue, 21 Apr 2026 10:50:00 +0200
-Message-ID: <87340od7ev.ffs@tglx>
+	s=arc-20240116; t=1776761623; c=relaxed/simple;
+	bh=SzmPKt5yZqPTFSqj+BfxX+QUOx3prIS63aahYxX+dPI=;
+	h=Message-ID:Date:MIME-Version:From:Subject:To:Cc:References:
+	 In-Reply-To:Content-Type; b=Jsfx89up9eDlXHDzY7hUlV+zrwWZ0OhWKCmhCfJBsW8voh6LRiFQGNFnLfB4F6uVoJyuzbLeFqsL+9uwaPOxSS/5nNP7wy3tlNfxDMMnDIiFRRClDo/M01qt6qXa7YPuwq3rUbzsWW6fGaqRYkHPQgM4lYXYAtFTx+51ivXh7lg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn; spf=pass smtp.mailfrom=kylinos.cn; arc=none smtp.client-ip=124.126.103.232
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kylinos.cn
+X-UUID: 9444e5483d5f11f1aa26b74ffac11d73-20260421
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.3.12,REQID:9a4d808b-35a9-4799-83de-7fe31160462f,IP:20,
+	URL:0,TC:0,Content:0,EDM:0,RT:0,SF:-5,FILE:0,BULK:0,RULE:Release_Ham,ACTIO
+	N:release,TS:15
+X-CID-INFO: VERSION:1.3.12,REQID:9a4d808b-35a9-4799-83de-7fe31160462f,IP:20,UR
+	L:0,TC:0,Content:0,EDM:0,RT:0,SF:-5,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
+	release,TS:15
+X-CID-META: VersionHash:e7bac3a,CLOUDID:fe6df8a5ed6e6aa4455c96c7e29b854f,BulkI
+	D:260418025220HY7ZQDDV,BulkQuantity:5,Recheck:0,SF:17|19|38|64|66|78|80|81
+	|82|83|102|127|841|898,TC:nil,Content:0|15|52,EDM:-3,IP:-2,URL:99|1,File:n
+	il,RT:nil,Bulk:40,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0
+	,DKP:0,BRR:0,BRE:0,ARC:0
+X-CID-BVR: 2,SSN|SDN
+X-CID-BAS: 2,SSN|SDN,0,_
+X-CID-FACTOR: TF_CID_SPAM_FAS,TF_CID_SPAM_FSD,TF_CID_SPAM_ULS,TF_CID_SPAM_SNR
+X-CID-RHF: D41D8CD98F00B204E9800998ECF8427E
+X-UUID: 9444e5483d5f11f1aa26b74ffac11d73-20260421
+X-User: zhangguopeng@kylinos.cn
+Received: from [192.168.109.140] [(183.242.174.22)] by mailgw.kylinos.cn
+	(envelope-from <zhangguopeng@kylinos.cn>)
+	(Generic MTA with TLSv1.3 TLS_AES_128_GCM_SHA256 128/128)
+	with ESMTP id 1070723433; Tue, 21 Apr 2026 16:53:34 +0800
+Message-ID: <d683b3c8-f746-47cd-a306-314a8f3eecea@kylinos.cn>
+Date: Tue, 21 Apr 2026 16:53:29 +0800
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spamd-Result: default: False [2.84 / 15.00];
-	MID_END_EQ_FROM_USER_PART(4.00)[];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_RHS_NOT_FQDN(0.50)[];
-	R_MISSING_CHARSET(0.50)[];
-	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
-	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
+User-Agent: Mozilla Thunderbird
+From: Guopeng Zhang <zhangguopeng@kylinos.cn>
+Subject: Re: [PATCH 1/2] cgroup/cpuset: record DL BW alloc CPU for attach
+ rollback
+To: Waiman Long <longman@redhat.com>, tj@kernel.org, hannes@cmpxchg.org,
+ mkoutny@suse.com, void@manifault.com, arighi@nvidia.com,
+ changwoo@igalia.com, shuah@kernel.org, chenridong@huaweicloud.com,
+ Juri Lelli <juri.lelli@redhat.com>, Valentin Schneider
+ <vschneid@redhat.com>, Dietmar Eggemann <dietmar.eggemann@arm.com>
+Cc: cgroups@vger.kernel.org, sched-ext@lists.linux.dev,
+ linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20260417033742.40793-1-zhangguopeng@kylinos.cn>
+ <20260417033742.40793-2-zhangguopeng@kylinos.cn>
+ <fd28bea7-83bd-48b7-8c3c-ad44474b8b5b@redhat.com>
+ <6aca2465-1ea7-417a-beb8-e385fa3902bf@kylinos.cn>
+ <e0fea6ec-397c-40a6-9300-a3529a3d1167@redhat.com>
+In-Reply-To: <e0fea6ec-397c-40a6-9300-a3529a3d1167@redhat.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spamd-Result: default: False [1.44 / 15.00];
+	SUSPICIOUS_URL_IN_SUSPICIOUS_MESSAGE(1.00)[];
+	URIBL_RED(0.50)[kylinos.cn:mid,kylinos.cn:email];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
+	BAD_REP_POLICIES(0.10)[];
+	HAS_ANON_DOMAIN(0.10)[];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-15427-lists,cgroups=lfdr.de];
+	FROM_HAS_DN(0.00)[];
+	TAGGED_FROM(0.00)[bounces-15428-lists,cgroups=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	FREEMAIL_TO(0.00)[redhat.com,kernel.org,cmpxchg.org,suse.com,lwn.net,linuxfoundation.org,arm.com,microsoft.com,roeck-us.net,nvidia.com,joshtriplett.org,gmail.com,goodmis.org,efficios.com,linux.dev,linutronix.de,huaweicloud.com,infradead.org,linaro.org,google.com,suse.de,amd.com,davemloft.net];
-	FREEMAIL_CC(0.00)[vger.kernel.org,lists.infradead.org,redhat.com,gmail.com];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	RCVD_COUNT_THREE(0.00)[4];
-	MISSING_XM_UA(0.00)[];
+	DMARC_NA(0.00)[kylinos.cn];
+	RCPT_COUNT_TWELVE(0.00)[16];
+	MIME_TRACE(0.00)[0:+];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCPT_COUNT_GT_50(0.00)[53];
+	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
+	ARC_ALLOW(0.00)[subspace.kernel.org:s=arc-20240116:i=1];
+	NEURAL_HAM(-0.00)[-1.000];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[tglx@kernel.org,cgroups@vger.kernel.org];
-	DKIM_TRACE(0.00)[kernel.org:+];
-	NEURAL_HAM(-0.00)[-0.998];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	TAGGED_RCPT(0.00)[cgroups];
+	FROM_NEQ_ENVFROM(0.00)[zhangguopeng@kylinos.cn,cgroups@vger.kernel.org];
 	TO_DN_SOME(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
-	FROM_HAS_DN(0.00)[]
-X-Rspamd-Queue-Id: A15024386AD
+	R_DKIM_NA(0.00)[];
+	TAGGED_RCPT(0.00)[cgroups];
+	MID_RHS_MATCH_FROM(0.00)[];
+	R_SPF_ALLOW(0.00)[+ip4:172.232.135.74:c];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[kylinos.cn:mid,kylinos.cn:email,sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: 9AE604386D4
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-On Mon, Apr 20 2026 at 23:03, Waiman Long wrote:
-> Full dynticks can only be enabled if "nohz_full" boot option has been
-> been specified with or without parameter. Any change in the list of
-> nohz_full CPUs have to be reflected in tick_nohz_full_mask. Introduce
-> a new tick_nohz_full_update_cpus() helper that can be called to update
-> the tick_nohz_full_mask at run time. The housekeeping_update() function
-> is modified to call the new helper when the HK_TYPE_KERNEL_NOSIE cpumask
-> is going to be changed.
->
-> We also need to enable CPU context tracking for those CPUs that
 
-We need nothing. Use passive voice for change logs as requested in
-documentation.
 
-> are in tick_nohz_full_mask. So remove __init from tick_nohz_init()
-> and ct_cpu_track_user() so that they be called later when an isolated
-> cpuset partition is being created. The __ro_after_init attribute is
-> taken away from context_tracking_key as well.
->
-> Also add a new ct_cpu_untrack_user() function to reverse the action of
-> ct_cpu_track_user() in case we need to disable the nohz_full mode of
-> a CPU.
->
-> With nohz_full enabled, the boot CPU (typically CPU 0) will be the
-> tick CPU which cannot be shut down easily. So the boot CPU should not
-> be used in an isolated cpuset partition.
->
-> With runtime modification of nohz_full CPUs, tick_do_timer_cpu can become
-> TICK_DO_TIMER_NONE. So remove the two TICK_DO_TIMER_NONE WARN_ON_ONCE()
-> checks in tick-sched.c to avoid unnecessary warnings.
+在 2026/4/20 10:31, Waiman Long 写道:
+> On 4/19/26 10:21 PM, Guopeng Zhang wrote:
+>>
+>> 在 2026/4/18 2:51, Waiman Long 写道:
+>>> On 4/16/26 11:37 PM, Guopeng Zhang wrote:
+>>>> cpuset_can_attach() allocates DL bandwidth only when migrating
+>>>> deadline tasks to a disjoint CPU mask, but cpuset_cancel_attach()
+>>>> rolls back based only on nr_migrate_dl_tasks. This makes the DL
+>>>> bandwidth alloc/free paths asymmetric: rollback can call dl_bw_free()
+>>>> even when no dl_bw_alloc() was done.
+>>>>
+>>>> Rollback also needs to undo the reservation against the same CPU/root
+>>>> domain that was charged. Record the CPU used by dl_bw_alloc() and use
+>>>> that state in cpuset_cancel_attach(). If no allocation happened,
+>>>> dl_bw_cpu stays at -1 and rollback skips dl_bw_free(). If allocation
+>>>> did happen, bandwidth is returned to the same CPU/root domain.
+>>>>
+>>>> Successful attach paths are unchanged. This only fixes failed attach
+>>>> rollback accounting.
+>>>>
+>>>> Fixes: 2ef269ef1ac0 ("cgroup/cpuset: Free DL BW in case can_attach() fails")
+>>>> Signed-off-by: Guopeng Zhang <zhangguopeng@kylinos.cn>
+>> ...
+>>> The patch looks correct to me.
+>>>
+>>> Reviewed-by: Waiman Long <longman@redhat.com>
+>> Hi Waiman,
+>>
+>> Thank you for the review and for the Reviewed-by.
+>>> However, I have a DL bandwidth accounting question unrelated to this patch that I would like the scheduler people to clarify. The allocation of additional DL BW is based on the condition
+>>>
+>>>          if (!cpumask_intersects(oldcs->effective_cpus, cs->effective_cpus)) {
+>>>
+>>> IOW, additional DL BW will need to be allocated when the old and new cpuset doesn't overlap. However, they could still be in the same root domain. Does that mean we will be double counting it?
+>> I think you are right to call this out. Looking at the
+>> current logic, !cpumask_intersects(oldcs->effective_cpus, cs->effective_cpus)
+>> does not obviously guarantee that the migration is crossing into a different
+>> root domain. If the old and new cpusets are disjoint but still belong to the
+>> same root domain, it does look possible that we reserve bandwidth on the
+>> destination side without a corresponding subtraction from the source side.
+>> I will try to reproduce that configuration and follow up with results.
+Hi Waiman,
 
-in tick-sched.c? Describe the functions which contain that.
+I reproduced the issue you pointed out, and the result does support
+your concern.
 
->  static inline void tick_nohz_task_switch(void)
-> diff --git a/kernel/context_tracking.c b/kernel/context_tracking.c
-> index 925999de1a28..394e432630a3 100644
-> --- a/kernel/context_tracking.c
-> +++ b/kernel/context_tracking.c
-> @@ -411,7 +411,7 @@ static __always_inline void ct_kernel_enter(bool user, int offset) { }
->  #define CREATE_TRACE_POINTS
->  #include <trace/events/context_tracking.h>
->  
-> -DEFINE_STATIC_KEY_FALSE_RO(context_tracking_key);
-> +DEFINE_STATIC_KEY_FALSE(context_tracking_key);
->  EXPORT_SYMBOL_GPL(context_tracking_key);
->  
->  static noinstr bool context_tracking_recursion_enter(void)
-> @@ -674,9 +674,9 @@ void user_exit_callable(void)
->  }
->  NOKPROBE_SYMBOL(user_exit_callable);
->  
-> -void __init ct_cpu_track_user(int cpu)
-> +void ct_cpu_track_user(int cpu)
->  {
-> -	static __initdata bool initialized = false;
-> +	static bool initialized;
->  
->  	if (cpu == CONTEXT_TRACKING_FORCE_ENABLE) {
->  		static_branch_inc(&context_tracking_key);
-> @@ -700,6 +700,15 @@ void __init ct_cpu_track_user(int cpu)
->  	initialized = true;
->  }
->  
-> +void ct_cpu_untrack_user(int cpu)
-> +{
-> +	if (!per_cpu(context_tracking.active, cpu))
-> +		return;
-> +
-> +	per_cpu(context_tracking.active, cpu) = false;
-> +	static_branch_dec(&context_tracking_key);
-> +}
-> +
+I also tested the follow-up fix here:
+https://lore.kernel.org/all/20260421083449.95750-1-zhangguopeng@kylinos.cn/
 
-Why is this in a patch which makes tick/nohz related changes? This is a
-preparatory change, so make it that way and do not bury it inside
-something else.
+I tested two cases:
+1. disjoint member cpusets that still belong to the same root-domain
+   setup
+2. disjoint partition-root cpusets that do cross root domains
 
-> +/* Get the new set of run-time nohz CPU list & update accordingly */
-> +void tick_nohz_full_update_cpus(struct cpumask *cpumask)
-> +{
-> +	int cpu;
-> +
-> +	if (!tick_nohz_full_running) {
-> +		pr_warn_once("Full dynticks cannot be enabled without the nohz_full kernel boot parameter!\n");
+The results look consistent with the bug and with the fix.
+Case 1: disjoint member cpusets
+Setup:
+src: cpuset.cpus = 1-15
+dst: cpuset.cpus = 0
+both remained "member"
 
-That's the result of this enforced enable hackery. Make this work
-properly.
+Without the fix, successful back-and-forth migration of the same
+SCHED_DEADLINE task caused dl_bw->total_bw on CPU0 to increase
+monotonically:
+BW0 = 2027221
+BW1 = 2376746
+BW2 = 2726271
 
-> +		return;
-> +	}
-> +
-> +	/*
-> +	 * To properly enable/disable nohz_full dynticks for the affected CPUs,
-> +	 * the new nohz_full CPUs have to be copied to tick_nohz_full_mask and
-> +	 * ct_cpu_track_user/ct_cpu_untrack_user() will have to be called
-> +	 * for those CPUs that have their states changed. Those CPUs should be
-> +	 * in an offline state.
-> +	 */
-> +	for_each_cpu_andnot(cpu, cpumask, tick_nohz_full_mask) {
-> +		WARN_ON_ONCE(cpu_online(cpu));
-> +		ct_cpu_track_user(cpu);
-> +		cpumask_set_cpu(cpu, tick_nohz_full_mask);
-> +	}
-> +
-> +	for_each_cpu_andnot(cpu, tick_nohz_full_mask, cpumask) {
-> +		WARN_ON_ONCE(cpu_online(cpu));
-> +		ct_cpu_untrack_user(cpu);
-> +		cpumask_clear_cpu(cpu, tick_nohz_full_mask);
-> +	}
-> +}
+So:
+BW1 - BW0 = 349525
+BW2 - BW0 = 699050
 
-So this writes to tick_nohz_full_mask while other CPUs can access
-it. That's just wrong and I'm not at all interested in the resulting
-KCSAN warnings.
+That is, after src -> dst, dl_bw->total_bw increased, and after
+dst -> src it increased again by about the same amount instead of
+returning to the original value.
 
-tick_nohz_full_mask needs to become a RCU protected pointer, which is
-updated once the new mask is established in a separately allocated one.
+With the fix applied, the same reproducer no longer shows any net
+increase, while the attach path still succeeds:
 
-Thanks,
+BW0 = 2027221
+BW1 = 2027221
+BW2 = 2027221
 
-        tglx
+So:
+BW1 - BW0 = 0
+BW2 - BW0 = 0
 
+Case 2: disjoint partition-root cpusets (true cross-root-domain move)
+I also tested a configuration where src and dst are separate partition
+roots:
+src: cpuset.cpus = 0-6, cpuset.cpus.partition = root
+dst: cpuset.cpus = 8-14, cpuset.cpus.partition = root
+
+Then I started the DL task in src and migrated it to dst.
+
+The accounting moved as expected:
+Before src -> dst:
+SRC0 = 1083517
+DST0 =  733992
+
+After src -> dst:
+SRC1 =  733992
+DST1 = 1083517
+
+Deltas:
+SRC delta after src -> dst = -349525
+DST delta after src -> dst = +349525
+
+After moving the same task back to src:
+SRC2 = 1083517
+DST2 =  733992
+
+So both sides returned to baseline:
+SRC2 - SRC0 = 0
+DST2 - DST0 = 0
+
+So with the fix applied, the same-root-domain case no longer leaves
+persistent extra DL bandwidth accounting, while the true cross-root-domain
+case still moves the bandwidth accounting as expected.
+
+Shortened reproducers and observed values are below.
+Case 1: disjoint member cpusets
+
+echo "+cpu +cpuset" > /sys/fs/cgroup/cgroup.subtree_control
+mkdir -p /sys/fs/cgroup/dl-rd-test
+echo 0-15 > /sys/fs/cgroup/dl-rd-test/cpuset.cpus
+echo 0 > /sys/fs/cgroup/dl-rd-test/cpuset.mems
+echo "+cpu +cpuset" > /sys/fs/cgroup/dl-rd-test/cgroup.subtree_control
+
+mkdir -p /sys/fs/cgroup/dl-rd-test/src
+mkdir -p /sys/fs/cgroup/dl-rd-test/dst
+echo 1-15 > /sys/fs/cgroup/dl-rd-test/src/cpuset.cpus
+echo 0 > /sys/fs/cgroup/dl-rd-test/src/cpuset.mems
+echo 0 > /sys/fs/cgroup/dl-rd-test/dst/cpuset.cpus
+echo 0 > /sys/fs/cgroup/dl-rd-test/dst/cpuset.mems
+
+/tmp/dl_test &
+PID=$!
+echo $PID > /sys/fs/cgroup/dl-rd-test/src/cgroup.procs
+
+# read BW0 from cpu0 dl_bw->total_bw
+# move src -> dst
+# read BW1
+# move dst -> src
+# read BW2
+
+Observed without fix:
+BW0=2027221
+BW1=2376746
+BW2=2726271
+
+Observed with fix:
+BW0=2027221
+BW1=2027221
+BW2=2027221
+
+Case 2: disjoint partition-root cpusets
+echo "+cpu +cpuset" > /sys/fs/cgroup/cgroup.subtree_control
+mkdir -p /sys/fs/cgroup/dl-rd-part-test
+echo 0-15 > /sys/fs/cgroup/dl-rd-part-test/cpuset.cpus
+echo 0 > /sys/fs/cgroup/dl-rd-part-test/cpuset.mems
+echo 0-15 > /sys/fs/cgroup/dl-rd-part-test/cpuset.cpus.exclusive
+echo "+cpu +cpuset" > /sys/fs/cgroup/dl-rd-part-test/cgroup.subtree_control
+
+mkdir -p /sys/fs/cgroup/dl-rd-part-test/src
+echo 0-6 > /sys/fs/cgroup/dl-rd-part-test/src/cpuset.cpus
+echo 0 > /sys/fs/cgroup/dl-rd-part-test/src/cpuset.mems
+echo 0-6 > /sys/fs/cgroup/dl-rd-part-test/src/cpuset.cpus.exclusive
+echo root > /sys/fs/cgroup/dl-rd-part-test/src/cpuset.cpus.partition
+
+mkdir -p /sys/fs/cgroup/dl-rd-part-test/dst
+echo 8-14 > /sys/fs/cgroup/dl-rd-part-test/dst/cpuset.cpus
+echo 0 > /sys/fs/cgroup/dl-rd-part-test/dst/cpuset.mems
+echo 8-14 > /sys/fs/cgroup/dl-rd-part-test/dst/cpuset.cpus.exclusive
+echo root > /sys/fs/cgroup/dl-rd-part-test/dst/cpuset.cpus.partition
+
+sh -c 'echo $$ > /sys/fs/cgroup/dl-rd-part-test/src/cgroup.procs; exec /tmp/dl_test' &
+PID=$!
+
+# read source-side and destination-side dl_bw->total_bw
+# move src -> dst
+# read both again
+# move dst -> src
+# read both again
+
+Observed with fix:
+SRC0=1083517
+DST0=733992
+SRC1=733992
+DST1=1083517
+SRC2=1083517
+DST2=733992
+
+This matches the intended behavior: no persistent increase within one
+root domain, and correct bandwidth transfer across root domains.
+
+Cheers,
+Guopeng
+
+>>> Looking from the other side, the root domain may have enough DL BW for the task migration, but the subset of CPUs in the cpuset itself may not have enough total DL BW to host all the DL tasks to be migrated, is that a problem?
+>> my current understanding is that the DL bandwidth
+>> accounting is done at root-domain granularity, not at arbitrary cpuset-subset
+>> granularity.
+> That is my understanding too.
+>> That also seems consistent with
+>> Documentation/scheduler/sched-deadline.rst, which says that deadline tasks
+>> cannot have a CPU affinity mask smaller than the root domain they are created
+>> on, and that a restricted CPU set should be achieved by creating a restricted
+>> root domain with cpuset.
+> 
+> A root domain should be created by creating cpuset root partition for v2 or using the cpuset.cpu_exclusive flag in v1.
+> 
+> What is listed in the documentation is the ideal case, but users may not strictly follow the rule.
+> 
+> Cheers,
+> Longman
+> 
+>>
+>> So if a cpuset is only a subset inside a larger root domain, it does not seem
+>> to get an independent DL bandwidth limit of its own. If that understanding is
+>> correct, then the smaller cpuset not having enough bandwidth by itself would
+>> be a limitation of that model rather than something this code checks
+>> separately. I'd appreciate confirmation from the scheduler folks on that
+>> point.
+>>
+>> Thanks,
+>> Guopeng
+>>> Cheers,
+>>> Longman
 
 
