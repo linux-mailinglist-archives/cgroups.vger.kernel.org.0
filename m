@@ -1,227 +1,165 @@
-Return-Path: <cgroups+bounces-15424-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-15425-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 2HeZOawn52kf4wEAu9opvQ
-	(envelope-from <cgroups+bounces-15424-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Tue, 21 Apr 2026 09:30:52 +0200
+	id KKeEEKA252mg5QEAu9opvQ
+	(envelope-from <cgroups+bounces-15425-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Tue, 21 Apr 2026 10:34:40 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
-	by mail.lfdr.de (Postfix) with ESMTPS id E745D4379BA
-	for <lists+cgroups@lfdr.de>; Tue, 21 Apr 2026 09:30:51 +0200 (CEST)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id DF3334383B6
+	for <lists+cgroups@lfdr.de>; Tue, 21 Apr 2026 10:34:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id 07D303009E0E
-	for <lists+cgroups@lfdr.de>; Tue, 21 Apr 2026 07:23:24 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id D864F30347A2
+	for <lists+cgroups@lfdr.de>; Tue, 21 Apr 2026 08:32:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E2673ACA51;
-	Tue, 21 Apr 2026 07:20:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C39973876A0;
+	Tue, 21 Apr 2026 08:32:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="hZ+HMq1R"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PfS7qPKo"
 X-Original-To: cgroups@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2515339A818
-	for <cgroups@vger.kernel.org>; Tue, 21 Apr 2026 07:20:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 80FB432D7FA;
+	Tue, 21 Apr 2026 08:32:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1776756040; cv=none; b=gtl78Ih9pcPr6blIReviOG3jpBnX5FKHMQBS1/OgmM5mNpf3m5q4klAso/YpH8iiBYMqtdF26nAvRG4gCnToWXbsAkIGoHGCMHXdX0RfZGT2Ybj3DfZUTia2nfYI3VL+mm3ucczew1Y7uynfUFbVwo46XETV3mvLIl/sVbsFGRc=
+	t=1776760344; cv=none; b=g6ew15eNpWA4kL8Ojz9YjIR+fclu6no+w1rCsVkPZAhgzDY2FGxGpqxnUQBhrLf7dZLaJKVzF9Zat45ydaGZgGodgUu3wG3R/DDVLmiDZkdjS3pztkmBGjHdNe0RASdrtP88LFd5IQT4nV3vgzTH9/f4xbcDDlwHYt9WecXAgqc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1776756040; c=relaxed/simple;
-	bh=r3oDADiv+N0A8T7lQH96TM08ffovG+vlf4ODJIsA3Tw=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=Z8bbcQDW7g/tydnVSpDsU32QmDzjHYJ/F413/HxL3xmuOeLCHC9oFC7S0dkpxOXLyq1jqTMeqFMwkEcZGr0RBfhaxiwNxXWVgMbtzYoW8LTGvEonLlAYDWawKND9Fia3E+kmn9cAbJ+5PohYPGOvzbqQx1epRCcfPzuxjI1NyhI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=hZ+HMq1R; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1776756038;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=dAEpDAchAD1vBPaag8bT1as/DxfEf/i9ISWEXwjmEg4=;
-	b=hZ+HMq1RbnQ5dSi+udhu36OSPF5xUjSLS88e9Z/UHWghnMbp4y+nvuoCluj3RtmSeVNudE
-	6dvbbiztwf8xO/yJHju3GBZ7EXuVPKENVJpA9le2aVMnFWHlfp+Y08vLQIgA8Ctq8IPosH
-	7X+19OzMEYhcjg2vxrvH0HnQGUx7qhY=
-Received: from mx-prod-mc-06.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-35-165-154-97.us-west-2.compute.amazonaws.com [35.165.154.97]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-447-iW5YCpy7Pqeb_aiSM6uFmQ-1; Tue,
- 21 Apr 2026 03:20:35 -0400
-X-MC-Unique: iW5YCpy7Pqeb_aiSM6uFmQ-1
-X-Mimecast-MFC-AGG-ID: iW5YCpy7Pqeb_aiSM6uFmQ_1776756033
-Received: from mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.17])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mx-prod-mc-06.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id D47661800464;
-	Tue, 21 Apr 2026 07:20:33 +0000 (UTC)
-Received: from [192.168.1.153] (headnet01.pony-001.prod.iad2.dc.redhat.com [10.2.32.101])
-	by mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 4552A195608E;
-	Tue, 21 Apr 2026 07:20:31 +0000 (UTC)
-From: Albert Esteve <aesteve@redhat.com>
-Date: Tue, 21 Apr 2026 09:19:50 +0200
-Subject: [PATCH v2 4/4] selftests: cgroup: handle vmtest-dmem -b to test
- locally built kernel
+	s=arc-20240116; t=1776760344; c=relaxed/simple;
+	bh=3AcEuu4rBoAM4PHRXKIwJtTm21PzPN71Sn/og8FiSjs=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=I2buC8+P5Um3fBM3H1QmBw/WNzCWHO5zcR2K9OesTE39O0NspQ1w039vOT4TGplansGnshhzRi4wemmseO5e8tIpO+CJVP6Mny4u2jr8Ha9oZg4O7mB7ie9lrnfs44+93kAwDofJV1Q55Z+7ga+vEGPlgW27N7csmCwkb7DQ1rc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=PfS7qPKo; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2555DC2BCB6;
+	Tue, 21 Apr 2026 08:32:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1776760344;
+	bh=3AcEuu4rBoAM4PHRXKIwJtTm21PzPN71Sn/og8FiSjs=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+	b=PfS7qPKozeqAUB5Zl+iQ1lO9PY0zsrU6jMDx05jt62pS21tKlPO+joZxotJ/8wwMy
+	 klgJ3OKt3Zxt2/su+CMy+xAXgJySWhzXsLNJ+rreFdIFmdH2TiB+U6m0ckRtew7qeY
+	 iu+DBPVxYXmx7t+eFXiJCy19r9mWhbfRIZPdgaMVKJGlvNLFdRJGHJ93A5dIp8Nry1
+	 TkiFkUBMfjzQVt2uV6h/itwg2w8YlRvOe2XhljJzkrArkr5UFh3ZPUP/XFiZxGY8J5
+	 ohfT37dU3CgucSqG2Fb5q3IxMgIjOZD3sUpAWZC6Qe0RhpRH861xqLXTyBPYJz7Dap
+	 Uy3MffWfNb8hQ==
+From: Thomas Gleixner <tglx@kernel.org>
+To: Waiman Long <longman@redhat.com>, Tejun Heo <tj@kernel.org>, Johannes
+ Weiner <hannes@cmpxchg.org>, Michal =?utf-8?Q?Koutn=C3=BD?=
+ <mkoutny@suse.com>, Jonathan
+ Corbet <corbet@lwn.net>, Shuah Khan <skhan@linuxfoundation.org>, Catalin
+ Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, "K. Y.
+ Srinivasan" <kys@microsoft.com>, Haiyang Zhang <haiyangz@microsoft.com>,
+ Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>, Long Li
+ <longli@microsoft.com>, Guenter Roeck <linux@roeck-us.net>, Frederic
+ Weisbecker <frederic@kernel.org>, "Paul E. McKenney" <paulmck@kernel.org>,
+ Neeraj Upadhyay <neeraj.upadhyay@kernel.org>, Joel Fernandes
+ <joelagnelf@nvidia.com>, Josh Triplett <josh@joshtriplett.org>, Boqun Feng
+ <boqun@kernel.org>, Uladzislau Rezki <urezki@gmail.com>, Steven Rostedt
+ <rostedt@goodmis.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+ Lai Jiangshan <jiangshanlai@gmail.com>, Zqiang <qiang.zhang@linux.dev>,
+ Anna-Maria Behnsen <anna-maria@linutronix.de>, Ingo Molnar
+ <mingo@kernel.org>, Chen Ridong <chenridong@huaweicloud.com>, Peter
+ Zijlstra <peterz@infradead.org>, Juri Lelli <juri.lelli@redhat.com>,
+ Vincent Guittot <vincent.guittot@linaro.org>, Dietmar Eggemann
+ <dietmar.eggemann@arm.com>, Ben Segall <bsegall@google.com>, Mel Gorman
+ <mgorman@suse.de>, Valentin Schneider <vschneid@redhat.com>, K Prateek
+ Nayak <kprateek.nayak@amd.com>, "David S. Miller" <davem@davemloft.net>,
+ Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+ Paolo Abeni <pabeni@redhat.com>, Simon Horman <horms@kernel.org>
+Cc: cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-hyperv@vger.kernel.org, linux-hwmon@vger.kernel.org,
+ rcu@vger.kernel.org, netdev@vger.kernel.org,
+ linux-kselftest@vger.kernel.org, Costa Shulyupin <cshulyup@redhat.com>,
+ Qiliang Yuan <realwujing@gmail.com>, Waiman Long <longman@redhat.com>
+Subject: Re: [PATCH 03/23] tick/nohz: Make nohz_full parameter optional
+In-Reply-To: <20260421030351.281436-4-longman@redhat.com>
+References: <20260421030351.281436-1-longman@redhat.com>
+ <20260421030351.281436-4-longman@redhat.com>
+Date: Tue, 21 Apr 2026 10:32:18 +0200
+Message-ID: <875x5kd88d.ffs@tglx>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20260421-kunit_cgroups-v2-4-bb6675d8249c@redhat.com>
-References: <20260421-kunit_cgroups-v2-0-bb6675d8249c@redhat.com>
-In-Reply-To: <20260421-kunit_cgroups-v2-0-bb6675d8249c@redhat.com>
-To: Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>, 
- =?utf-8?q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>, 
- Shuah Khan <shuah@kernel.org>
-Cc: linux-kernel@vger.kernel.org, cgroups@vger.kernel.org, 
- linux-kselftest@vger.kernel.org, Albert Esteve <aesteve@redhat.com>, 
- mripard@redhat.com, Eric Chanudet <echanude@redhat.com>
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1776756020; l=2885;
- i=aesteve@redhat.com; s=20260303; h=from:subject:message-id;
- bh=VyPxWSFvU4OcET+PkfTmCG2H+xrQkI2juMymHBuFUyY=;
- b=VWGhi3RDtL9AdYDYlykueSsNZ4apNw6iwuzCH91Angksv5T6oALG7Twi0URclS4Sr5UKKJW2v
- L4CyOIojxzSA3a+FS4h1pDmAa/K2i5ahPPmccPbJKAQmoYG0DhI/NxX
-X-Developer-Key: i=aesteve@redhat.com; a=ed25519;
- pk=YSFz6sOHd2L45+Fr8DIvHTi6lSIjhLZ5T+rkxspJt1s=
-X-Scanned-By: MIMEDefang 3.0 on 10.30.177.17
-X-Spamd-Result: default: False [-2.16 / 15.00];
+Content-Type: text/plain
+X-Spamd-Result: default: False [2.84 / 15.00];
+	MID_END_EQ_FROM_USER_PART(4.00)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[redhat.com,quarantine];
-	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
-	R_DKIM_ALLOW(-0.20)[redhat.com:s=mimecast20190719];
+	R_MISSING_CHARSET(0.50)[];
+	MID_RHS_NOT_FQDN(0.50)[];
+	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
+	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
+	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	DKIM_TRACE(0.00)[redhat.com:+];
+	RCVD_COUNT_THREE(0.00)[4];
+	TAGGED_FROM(0.00)[bounces-15425-lists,cgroups=lfdr.de];
+	FREEMAIL_CC(0.00)[vger.kernel.org,lists.infradead.org,redhat.com,gmail.com];
 	MIME_TRACE(0.00)[0:+];
-	FORGED_SENDER_MAILLIST(0.00)[];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-15424-lists,cgroups=lfdr.de];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	FREEMAIL_TO(0.00)[redhat.com,kernel.org,cmpxchg.org,suse.com,lwn.net,linuxfoundation.org,arm.com,microsoft.com,roeck-us.net,nvidia.com,joshtriplett.org,gmail.com,goodmis.org,efficios.com,linux.dev,linutronix.de,huaweicloud.com,infradead.org,linaro.org,google.com,suse.de,amd.com,davemloft.net];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	DKIM_TRACE(0.00)[kernel.org:+];
+	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
 	MISSING_XM_UA(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	TO_DN_SOME(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[6];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[aesteve@redhat.com,cgroups@vger.kernel.org];
-	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
-	NEURAL_HAM(-0.00)[-1.000];
-	RCPT_COUNT_SEVEN(0.00)[10];
-	MID_RHS_MATCH_FROM(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[tglx@kernel.org,cgroups@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	RCPT_COUNT_GT_50(0.00)[53];
 	TAGGED_RCPT(0.00)[cgroups];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[vmtest.sh:url,vmtest-dmem.sh:url,sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: E745D4379BA
+	NEURAL_HAM(-0.00)[-0.998];
+	TO_DN_SOME(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: DF3334383B6
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-From: Eric Chanudet <echanude@redhat.com>
+On Mon, Apr 20 2026 at 23:03, Waiman Long wrote:
+> To provide nohz_full tick support, there is a set of tick dependency
+> masks that need to be evaluated on every IRQ and context switch.
 
-Currently vmtest-dmem.sh relies on the host's running kernel or a
-pre-built one when booting the virtme-ng VM, with no option to
-configure and build a local kernel tree directly.
+s/IRQ/interrupt/
 
-This adds friction to the development cycle: the user must manually
-run vng --kconfig with the correct config fragment, build the kernel,
-and pass the result to the script.
+This is a changelog and not a SMS service.
 
-Add a -b flag that automates this workflow.  When set, handle_build()
-configures the kernel using vng --kconfig with the selftest config
-fragment, builds it with make -j$(nproc), and vm_start() passes the
-local tree to vng --run so the VM boots the freshly built kernel.
+> Switching on nohz_full tick support at runtime will be problematic
+> as some of the tick dependency masks may not be properly set causing
+> problem down the road.
 
-Signed-off-by: Eric Chanudet <echanude@redhat.com>
-Signed-off-by: Albert Esteve <aesteve@redhat.com>
----
- tools/testing/selftests/cgroup/vmtest-dmem.sh | 34 ++++++++++++++++++++++++++-
- 1 file changed, 33 insertions(+), 1 deletion(-)
+That's useless blurb with zero content.
 
-diff --git a/tools/testing/selftests/cgroup/vmtest-dmem.sh b/tools/testing/selftests/cgroup/vmtest-dmem.sh
-index 3174f22b06361..a5f1e529e1aa0 100755
---- a/tools/testing/selftests/cgroup/vmtest-dmem.sh
-+++ b/tools/testing/selftests/cgroup/vmtest-dmem.sh
-@@ -23,6 +23,7 @@ readonly WAIT_TOTAL=$((WAIT_PERIOD * WAIT_PERIOD_MAX))
- readonly QEMU_PIDFILE="$(mktemp /tmp/qemu_dmem_vmtest_XXXX.pid)"
- readonly QEMU_OPTS=" --pidfile ${QEMU_PIDFILE} "
- 
-+BUILD=0
- QEMU="qemu-system-$(uname -m)"
- VERBOSE=0
- SHELL_MODE=0
-@@ -72,17 +73,46 @@ check_deps() {
- 	done
- }
- 
-+handle_build() {
-+	if [[ ! "${BUILD}" -eq 1 ]]; then
-+		return
-+	fi
-+
-+	if [[ ! -d "${KERNEL_CHECKOUT}" ]]; then
-+		echo "-b requires vmtest.sh called from the kernel source tree" >&2
-+		exit 1
-+	fi
-+
-+	pushd "${KERNEL_CHECKOUT}" &>/dev/null
-+
-+	if ! vng --kconfig --config "${SCRIPT_DIR}"/config; then
-+		die "failed to generate .config for kernel source tree (${KERNEL_CHECKOUT})"
-+	fi
-+
-+	if ! make -j"$(nproc)"; then
-+		die "failed to build kernel from source tree (${KERNEL_CHECKOUT})"
-+	fi
-+
-+	popd &>/dev/null
-+}
-+
- vm_start() {
- 	local logfile=/dev/null
- 	local verbose_opt=""
-+	local kernel_opt=""
- 
- 	if [[ "${VERBOSE}" -eq 2 ]]; then
- 		verbose_opt="--verbose"
- 		logfile=/dev/stdout
- 	fi
- 
-+	if [[ "${BUILD}" -eq 1 ]]; then
-+		kernel_opt="${KERNEL_CHECKOUT}"
-+	fi
-+
- 	vng \
- 		--run \
-+		"$kernel_opt" \
- 		${verbose_opt} \
- 		--qemu-opts="${QEMU_OPTS}" \
- 		--qemu="$(command -v "${QEMU}")" \
-@@ -165,10 +195,11 @@ run_test() {
- 	vm_ssh -- "cd '${GUEST_TREE}' && ./tools/testing/selftests/cgroup/test_dmem"
- }
- 
--while getopts ":hvq:s" o; do
-+while getopts ":hvq:sb" o; do
- 	case "${o}" in
- 	v) VERBOSE=$((VERBOSE + 1)) ;;
- 	q) QEMU="${OPTARG}" ;;
-+	b) BUILD=1 ;;
- 	s) SHELL_MODE=1 ;;
- 	h|*) usage ;;
- 	esac
-@@ -177,6 +208,7 @@ done
- trap cleanup EXIT
- 
- check_deps
-+handle_build
- echo "Booting virtme-ng VM..."
- vm_start
- vm_wait_for_ssh
+> Allow nohz_full boot option to be specified without any
+> parameter to force enable nohz_full tick support without any
+> CPU in the tick_nohz_full_mask yet. The context_tracking_key and
+> tick_nohz_full_running flag will be enabled in this case to make
+> tick_nohz_full_enabled() return true.
 
--- 
-2.52.0
+I kinda can crystal-ball what you are trying to say here, but that does
+not make it qualified as a proper change log.
+
+> There is still a small performance overhead by force enable nohz_full
+> this way. So it should only be used if there is a chance that some
+> CPUs may become isolated later via the cpuset isolated partition
+> functionality and better CPU isolation closed to nohz_full is desired.
+
+Why has this key to be enabled on boot if there are no CPUs in the
+isolated mask?
+
+If you want to manage this dynamically at runtime then enable the key
+once CPUs are isolated. Yes, it's more work, but that avoids the "should
+only be used" nonsense and makes this more robust down the road.
+
+Thanks,
+
+        tglx
+
 
 
