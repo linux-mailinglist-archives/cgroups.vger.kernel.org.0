@@ -1,55 +1,68 @@
-Return-Path: <cgroups+bounces-15419-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-15420-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 8Pj4IvkW52lQ3wEAu9opvQ
-	(envelope-from <cgroups+bounces-15419-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Tue, 21 Apr 2026 08:19:37 +0200
+	id yIjdOj4m52nV4QEAu9opvQ
+	(envelope-from <cgroups+bounces-15420-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Tue, 21 Apr 2026 09:24:46 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 47CA4436DB2
-	for <lists+cgroups@lfdr.de>; Tue, 21 Apr 2026 08:19:36 +0200 (CEST)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8ED3B4377EB
+	for <lists+cgroups@lfdr.de>; Tue, 21 Apr 2026 09:24:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id B1B6F30242AE
-	for <lists+cgroups@lfdr.de>; Tue, 21 Apr 2026 06:17:07 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id 8669D3031B6F
+	for <lists+cgroups@lfdr.de>; Tue, 21 Apr 2026 07:21:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C2253939D7;
-	Tue, 21 Apr 2026 06:16:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B9B863A3E87;
+	Tue, 21 Apr 2026 07:20:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="b2GmWDka"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="ajukfVsR"
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3EE4E3876AF;
-	Tue, 21 Apr 2026 06:16:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 13BE139EF2A
+	for <cgroups@vger.kernel.org>; Tue, 21 Apr 2026 07:20:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1776752215; cv=none; b=tieOZhtJ2sXL7jQSAAaIelPb2yihXJEeBwgrx6U9xQ/G4VHQ97Pu5j7W9nKagwd87dsyZ2UyoSn1eXY3mpELfzt0LI9jM20zSHb95U6446LSWe6RsaVCWxW4Mm/aQeTo5iwTE1OF8C/VKBm/S6ABQY4S+EtN1mZdDrP6kLmrHZ4=
+	t=1776756030; cv=none; b=XtaUkKN20XLif6LHRAU+Ii7a91YMLq2Sxv79udm1ybdn1gHJ22n4qwIQvBM5HimWKnTq1jHdscKVcvRe2AK16JOIX7CesUw0n5X7VpftCZfy77Utmel7MbQgwIA4nShHVZjrASK77knGZr4+LQB+a50Xoy3/B9pHBfbgB5HszFY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1776752215; c=relaxed/simple;
-	bh=z1DhFJGAwMxnrTei/MweANZUTKem2Lo6Z2ZfSz6Rw5k=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=rURpVvm7DWP/R43bqHzAUkJgfCEQrtbjr6Ulo6eqYWIlVAkPuKEX6NOLjsU6p9WiVKdGviIfmElISg2+DBB8iET/AHSq1m/RcH/PnMsmXnpNRmSMvBTBIwq1az7xiFlsLd5gTFiRgA/0BksiC46FzvvqCraQLxcKqUu7grrpOdw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=b2GmWDka; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id EF9AAC2BCF5;
-	Tue, 21 Apr 2026 06:16:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1776752215;
-	bh=z1DhFJGAwMxnrTei/MweANZUTKem2Lo6Z2ZfSz6Rw5k=;
-	h=From:Date:Subject:References:In-Reply-To:To:Cc:Reply-To:From;
-	b=b2GmWDkazhWpbgSdDk8utED9oUh15xFgVVCuHZwKnjseZzIWDUQXhUqOaqMo4A6EW
-	 rc2vhvEhXteuSFYaN2dppr+ljUY2qYFc90ZxaCuQ2/cgLKrU5JWd1k2o37qDF4thkb
-	 /JA5ML1Sr8pNl9xn7eWnIe6kMXrgsEH1SkK239x8M4uE+wOoWxFVMiXuC6M1ehPBQt
-	 qfF0PL4DUUQUl/kusLAGDbgEJ4OCkYTmMoyATuq/6mLxZaYDyj6cByrwLp2/euQgcV
-	 7fjbUlduWGsS/m80y7hWhqfgn0NXaIl/8iTdqOEb2qM7kOGTt/8oVzb0Std4/vrL7f
-	 gDLoQBpYrfjwQ==
-Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by smtp.lore.kernel.org (Postfix) with ESMTP id E0030F327AA;
-	Tue, 21 Apr 2026 06:16:54 +0000 (UTC)
-From: Kairui Song via B4 Relay <devnull+kasong.tencent.com@kernel.org>
-Date: Tue, 21 Apr 2026 14:16:56 +0800
-Subject: [PATCH v3 12/12] mm, swap: merge zeromap into swap table
+	s=arc-20240116; t=1776756030; c=relaxed/simple;
+	bh=BZ2AunLdNbPVhERPo0uKCewyTQ3NmKL+DTJFDGx5KEg=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=JE3XpIq1AXaSxOz283csM5Ubza99jzqD0ESObosZ5PZhEaLcqPW5xEMhXTvLBJ+0jy3TQoS7LuTPC2VM6uqSCxSIbr0Bv5y13qs0ejv0PTHuFfUGbxWhERzrI6xGbh35GwXFwN+hYn62odY2qliE8A4W/HypL3OzFuB1gGCU69I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=ajukfVsR; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1776756028;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=ZF036EXcXXO3sY+n5l1QRXR2i08R4oiTYTb6LgXxFQM=;
+	b=ajukfVsRAy+QlaAMBa8Da7/Xmzx0RYi5KAqGpxiMNC12VR3TBD7LExYcbdJOed5FRuKNrV
+	oF1i2JQJGnYPQkB/XzLlWhmqKx1GmE6CibbBTxn8iM1NxrNFmR5a9B+ZuVWN9/eCnqPuyO
+	p+RZa+LkSdFKkIZDOk+DQuuxluYNPY4=
+Received: from mx-prod-mc-01.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-663-sdmzgtJcNLut9r8ukKPwjA-1; Tue,
+ 21 Apr 2026 03:20:24 -0400
+X-MC-Unique: sdmzgtJcNLut9r8ukKPwjA-1
+X-Mimecast-MFC-AGG-ID: sdmzgtJcNLut9r8ukKPwjA_1776756023
+Received: from mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.17])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mx-prod-mc-01.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 67F1D195609D;
+	Tue, 21 Apr 2026 07:20:23 +0000 (UTC)
+Received: from [192.168.1.153] (headnet01.pony-001.prod.iad2.dc.redhat.com [10.2.32.101])
+	by mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id A3B35195608E;
+	Tue, 21 Apr 2026 07:20:20 +0000 (UTC)
+From: Albert Esteve <aesteve@redhat.com>
+Subject: [PATCH v2 0/4] cgroup: dmem: add selftest helper, coverage, and VM
+ runner
+Date: Tue, 21 Apr 2026 09:19:46 +0200
+Message-Id: <20260421-kunit_cgroups-v2-0-bb6675d8249c@redhat.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -58,757 +71,121 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20260421-swap-table-p4-v3-12-2f23759a76bc@tencent.com>
-References: <20260421-swap-table-p4-v3-0-2f23759a76bc@tencent.com>
-In-Reply-To: <20260421-swap-table-p4-v3-0-2f23759a76bc@tencent.com>
-To: linux-mm@kvack.org
-Cc: Andrew Morton <akpm@linux-foundation.org>, 
- David Hildenbrand <david@kernel.org>, Zi Yan <ziy@nvidia.com>, 
- Baolin Wang <baolin.wang@linux.alibaba.com>, Barry Song <baohua@kernel.org>, 
- Hugh Dickins <hughd@google.com>, Chris Li <chrisl@kernel.org>, 
- Kemeng Shi <shikemeng@huaweicloud.com>, Nhat Pham <nphamcs@gmail.com>, 
- Baoquan He <bhe@redhat.com>, Johannes Weiner <hannes@cmpxchg.org>, 
- Youngjun Park <youngjun.park@lge.com>, 
- Chengming Zhou <chengming.zhou@linux.dev>, 
- Roman Gushchin <roman.gushchin@linux.dev>, 
- Shakeel Butt <shakeel.butt@linux.dev>, Muchun Song <muchun.song@linux.dev>, 
- Qi Zheng <zhengqi.arch@bytedance.com>, linux-kernel@vger.kernel.org, 
- cgroups@vger.kernel.org, Kairui Song <kasong@tencent.com>, 
- Yosry Ahmed <yosry@kernel.org>, Lorenzo Stoakes <ljs@kernel.org>, 
- Dev Jain <dev.jain@arm.com>, Lance Yang <lance.yang@linux.dev>, 
- Michal Hocko <mhocko@suse.com>, Michal Hocko <mhocko@kernel.org>, 
- Suren Baghdasaryan <surenb@google.com>, 
- Axel Rasmussen <axelrasmussen@google.com>, Lorenzo Stoakes <ljs@kernel.org>, 
- Yosry Ahmed <yosry@kernel.org>
-X-Mailer: b4 0.15.2
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1776752211; l=24873;
- i=kasong@tencent.com; s=kasong-sign-tencent; h=from:subject:message-id;
- bh=01mjfdFTUN50r0xBOr+e4WLspf3PKcIbPIZl7zrMd2Q=;
- b=oYe2SrPHUVcofSu3eMgg0Fl3ptRn32dAMP9ax1i1cFH1iIueu//+Wp0V2RgmGLX3vlTDBr1wB
- 2Ux/TkNT4KLBDx3nq3h0B7qFK8QHE6WgBcGjXRvyAk02GbO4hkgKJTs
-X-Developer-Key: i=kasong@tencent.com; a=ed25519;
- pk=kCdoBuwrYph+KrkJnrr7Sm1pwwhGDdZKcKrqiK8Y1mI=
-X-Endpoint-Received: by B4 Relay for kasong@tencent.com/kasong-sign-tencent
- with auth_id=562
-X-Original-From: Kairui Song <kasong@tencent.com>
-Reply-To: kasong@tencent.com
+X-B4-Tracking: v=1; b=H4sIAAAAAAAC/13MQQ6CMBCF4auQWVszLYaKK+9hiGnLABMjJS0QD
+ endrcSVy/8l79sgUmCKcCk2CLRyZD/mUIcC3GDGngS3uUGhqrCUZ/FYRp7vrg9+maLQnUVbU3V
+ CqSF/pkAdv3bv1uQeOM4+vHd+ld/1Jyn9J61SoKi1tKXTZW0Qr4HawcxH55/QpJQ+5sITTasAA
+ AA=
+X-Change-ID: 20260318-kunit_cgroups-7fb0b9e64017
+To: Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>, 
+ =?utf-8?q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>, 
+ Shuah Khan <shuah@kernel.org>
+Cc: linux-kernel@vger.kernel.org, cgroups@vger.kernel.org, 
+ linux-kselftest@vger.kernel.org, Albert Esteve <aesteve@redhat.com>, 
+ mripard@redhat.com, Eric Chanudet <echanude@redhat.com>
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1776756020; l=2765;
+ i=aesteve@redhat.com; s=20260303; h=from:subject:message-id;
+ bh=BZ2AunLdNbPVhERPo0uKCewyTQ3NmKL+DTJFDGx5KEg=;
+ b=dHyjmsXlsVNAM/u7xpOKHvuGyAfLWZnP9qONBtp8HUx0ciU4aHQKlsVLYhNktMYqn2q0EPt4h
+ qmsEsU9WjxvB0CMrjx5j5/lq4wdRzev8poiqjOboJehdJ6sJ1a7nioY
+X-Developer-Key: i=aesteve@redhat.com; a=ed25519;
+ pk=YSFz6sOHd2L45+Fr8DIvHTi6lSIjhLZ5T+rkxspJt1s=
+X-Scanned-By: MIMEDefang 3.0 on 10.30.177.17
 X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
+	DMARC_POLICY_ALLOW(-0.50)[redhat.com,quarantine];
+	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
+	R_DKIM_ALLOW(-0.20)[redhat.com:s=mimecast20190719];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-15419-lists,cgroups=lfdr.de,kasong.tencent.com];
-	RCVD_TLS_LAST(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
+	DKIM_TRACE(0.00)[redhat.com:+];
 	MIME_TRACE(0.00)[0:+];
-	FREEMAIL_CC(0.00)[linux-foundation.org,kernel.org,nvidia.com,linux.alibaba.com,google.com,huaweicloud.com,gmail.com,redhat.com,cmpxchg.org,lge.com,linux.dev,bytedance.com,vger.kernel.org,tencent.com,arm.com,suse.com];
-	TO_DN_SOME(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[31];
-	REPLYTO_DOM_NEQ_FROM_DOM(0.00)[];
-	REPLYTO_DOM_NEQ_TO_DOM(0.00)[];
-	HAS_REPLYTO(0.00)[kasong@tencent.com];
-	RCVD_COUNT_FIVE(0.00)[5];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[devnull@kernel.org,cgroups@vger.kernel.org];
-	DKIM_TRACE(0.00)[kernel.org:+];
-	NEURAL_HAM(-0.00)[-1.000];
-	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
-	TAGGED_RCPT(0.00)[cgroups];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	RCVD_TLS_LAST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-15420-lists,cgroups=lfdr.de];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,tencent.com:email,tencent.com:replyto,tencent.com:mid]
-X-Rspamd-Queue-Id: 47CA4436DB2
+	MISSING_XM_UA(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	TO_DN_SOME(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[6];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[aesteve@redhat.com,cgroups@vger.kernel.org];
+	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
+	NEURAL_HAM(-0.00)[-1.000];
+	RCPT_COUNT_SEVEN(0.00)[10];
+	MID_RHS_MATCH_FROM(0.00)[];
+	TAGGED_RCPT(0.00)[cgroups];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: 8ED3B4377EB
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-From: Kairui Song <kasong@tencent.com>
+Hi all,
 
-By allocating one additional bit in the swap table entry's flags field
-alongside the count, we can store the zeromap inline
+This small series adds practical test coverage for the dmem
+cgroup controller.
 
-For certain 32-bit archs, there might not be enough bits in the swap
-table to contain both PFN and flags. Therefore, conditionally let each
-cluster have a zeromap field at build time, and use that instead of the
-swap table for these archs. A few macros were moved to different headers
-for build time struct definition.
+The motivation came from following the recent dmem API discussion in
+thread [1]. That discussion considered changing the dmem API and
+adding a new knob. Currently there are no dedicated tests covering
+dmem behaviour, which makes such changes riskier.
 
-Signed-off-by: Kairui Song <kasong@tencent.com>
+Adding selftests has an additional challenge: dmem charging paths
+are driver-driven today, so regression testing is harder unless a
+suitable driver is present in the test environment.
+
+This series addresses that by adding:
+- a kernel-side selftest helper module to trigger charge/uncharge
+  from userspace in a controlled way,
+- cgroup selftests covering dmem accounting and protection semantics
+  (including dmem.max enforcement and byte-granularity checks),
+- a virtme-based VM runner for repeatable execution of the dmem tests.
+
+The goal is to make dmem behavior easier to validate when evolving the API
+and implementation, while keeping tests deterministic and driver-independent.
+
+Thanks.
+
+[1] - https://lore.kernel.org/all/aZoHfloupKvF2oSu@fedora/
+
+Signed-off-by: Albert Esteve <aesteve@redhat.com>
 ---
- include/linux/swap.h |   1 -
- mm/memory.c          |  11 +----
- mm/page_io.c         |  58 ++++++++++++++++++++++----
- mm/swap.h            |  51 +++++++++--------------
- mm/swap_state.c      |  14 ++++---
- mm/swap_table.h      | 115 +++++++++++++++++++++++++++++++++++++--------------
- mm/swapfile.c        |  45 +++++++++-----------
- 7 files changed, 184 insertions(+), 111 deletions(-)
+Changes in v2:
+- Fix debugfs_create_dir() error check
+- Fix module teardown race: call dmem_selftest_remove() before
+  uncharging so debugfs files are torn down
+- Use IS_ERR_OR_NULL() in selftest() sanity check
+- Add CONFIG_CGROUP_DMEM=y to the cgroup selftest config
+- Replace config-file parsing in check_guest_requirements() with
+  a direct check of /sys/fs/cgroup/cgroup.controllers
+- Add new patch 4 (from Eric Chanudet): vmtest-dmem.sh -b flag
+  to configure and build a local kernel tree
+- Link to v1: https://lore.kernel.org/r/20260327-kunit_cgroups-v1-0-971b3c739a00@redhat.com
 
-diff --git a/include/linux/swap.h b/include/linux/swap.h
-index 57af4647d432..8f0f68e245ba 100644
---- a/include/linux/swap.h
-+++ b/include/linux/swap.h
-@@ -253,7 +253,6 @@ struct swap_info_struct {
- 	struct plist_node list;		/* entry in swap_active_head */
- 	signed char	type;		/* strange name for an index */
- 	unsigned int	max;		/* size of this swap device */
--	unsigned long *zeromap;		/* kvmalloc'ed bitmap to track zero pages */
- 	struct swap_cluster_info *cluster_info; /* cluster info. Only for SSD */
- 	struct list_head free_clusters; /* free clusters list */
- 	struct list_head full_clusters; /* full clusters list */
-diff --git a/mm/memory.c b/mm/memory.c
-index 404734a5bcff..a45905f8728f 100644
---- a/mm/memory.c
-+++ b/mm/memory.c
-@@ -4595,13 +4595,11 @@ static vm_fault_t handle_pte_marker(struct vm_fault *vmf)
- 
- #ifdef CONFIG_TRANSPARENT_HUGEPAGE
- /*
-- * Check if the PTEs within a range are contiguous swap entries
-- * and have consistent swapcache, zeromap.
-+ * Check if the PTEs within a range are contiguous swap entries.
-  */
- static bool can_swapin_thp(struct vm_fault *vmf, pte_t *ptep, int nr_pages)
- {
- 	unsigned long addr;
--	softleaf_t entry;
- 	int idx;
- 	pte_t pte;
- 
-@@ -4611,18 +4609,13 @@ static bool can_swapin_thp(struct vm_fault *vmf, pte_t *ptep, int nr_pages)
- 
- 	if (!pte_same(pte, pte_move_swp_offset(vmf->orig_pte, -idx)))
- 		return false;
--	entry = softleaf_from_pte(pte);
--	if (swap_pte_batch(ptep, nr_pages, pte) != nr_pages)
--		return false;
--
- 	/*
- 	 * swap_read_folio() can't handle the case a large folio is hybridly
- 	 * from different backends. And they are likely corner cases. Similar
- 	 * things might be added once zswap support large folios.
- 	 */
--	if (unlikely(swap_zeromap_batch(entry, nr_pages, NULL) != nr_pages))
-+	if (swap_pte_batch(ptep, nr_pages, pte) != nr_pages)
- 		return false;
--
- 	return true;
- }
- 
-diff --git a/mm/page_io.c b/mm/page_io.c
-index 70cea9e24d2f..c2557e72c381 100644
---- a/mm/page_io.c
-+++ b/mm/page_io.c
-@@ -26,6 +26,7 @@
- #include <linux/delayacct.h>
- #include <linux/zswap.h>
- #include "swap.h"
-+#include "swap_table.h"
- 
- static void __end_swap_bio_write(struct bio *bio)
- {
-@@ -204,15 +205,20 @@ static bool is_folio_zero_filled(struct folio *folio)
- static void swap_zeromap_folio_set(struct folio *folio)
- {
- 	struct obj_cgroup *objcg = get_obj_cgroup_from_folio(folio);
--	struct swap_info_struct *sis = __swap_entry_to_info(folio->swap);
- 	int nr_pages = folio_nr_pages(folio);
-+	struct swap_cluster_info *ci;
- 	swp_entry_t entry;
- 	unsigned int i;
- 
-+	VM_WARN_ON_ONCE_FOLIO(!folio_test_swapcache(folio), folio);
-+	VM_WARN_ON_ONCE_FOLIO(!folio_test_locked(folio), folio);
-+
-+	ci = swap_cluster_get_and_lock(folio);
- 	for (i = 0; i < folio_nr_pages(folio); i++) {
- 		entry = page_swap_entry(folio_page(folio, i));
--		set_bit(swp_offset(entry), sis->zeromap);
-+		__swap_table_set_zero(ci, swp_cluster_offset(entry));
- 	}
-+	swap_cluster_unlock(ci);
- 
- 	count_vm_events(SWPOUT_ZERO, nr_pages);
- 	if (objcg) {
-@@ -223,14 +229,19 @@ static void swap_zeromap_folio_set(struct folio *folio)
- 
- static void swap_zeromap_folio_clear(struct folio *folio)
- {
--	struct swap_info_struct *sis = __swap_entry_to_info(folio->swap);
-+	struct swap_cluster_info *ci;
- 	swp_entry_t entry;
- 	unsigned int i;
- 
-+	VM_WARN_ON_ONCE_FOLIO(!folio_test_swapcache(folio), folio);
-+	VM_WARN_ON_ONCE_FOLIO(!folio_test_locked(folio), folio);
-+
-+	ci = swap_cluster_get_and_lock(folio);
- 	for (i = 0; i < folio_nr_pages(folio); i++) {
- 		entry = page_swap_entry(folio_page(folio, i));
--		clear_bit(swp_offset(entry), sis->zeromap);
-+		__swap_table_clear_zero(ci, swp_cluster_offset(entry));
- 	}
-+	swap_cluster_unlock(ci);
- }
- 
- /*
-@@ -255,10 +266,9 @@ int swap_writeout(struct folio *folio, struct swap_iocb **swap_plug)
- 	}
- 
- 	/*
--	 * Use a bitmap (zeromap) to avoid doing IO for zero-filled pages.
--	 * The bits in zeromap are protected by the locked swapcache folio
--	 * and atomic updates are used to protect against read-modify-write
--	 * corruption due to other zero swap entries seeing concurrent updates.
-+	 * Use the swap table zero mark to avoid doing IO for zero-filled
-+	 * pages. The zero mark is protected by the cluster lock, which is
-+	 * acquired internally by swap_zeromap_folio_set/clear.
- 	 */
- 	if (is_folio_zero_filled(folio)) {
- 		swap_zeromap_folio_set(folio);
-@@ -509,16 +519,48 @@ static void sio_read_complete(struct kiocb *iocb, long ret)
- 	mempool_free(sio, sio_pool);
- }
- 
-+/*
-+ * Return the count of contiguous swap entries that share the same
-+ * zeromap status as the starting entry. If is_zerop is not NULL,
-+ * it will return the zeromap status of the starting entry.
-+ *
-+ * Context: Caller must ensure the cluster containing the entries
-+ * that will be checked won't be freed.
-+ */
-+static int swap_zeromap_batch(swp_entry_t entry, int max_nr,
-+			      bool *is_zerop)
-+{
-+	bool is_zero;
-+	struct swap_cluster_info *ci = __swap_entry_to_cluster(entry);
-+	unsigned int ci_start = swp_cluster_offset(entry), ci_off, ci_end;
-+
-+	ci_off = ci_start;
-+	ci_end = ci_off + max_nr;
-+	rcu_read_lock();
-+	is_zero = __swap_table_test_zero(ci, ci_off);
-+	if (is_zerop)
-+		*is_zerop = is_zero;
-+	while (++ci_off < ci_end) {
-+		if (is_zero != __swap_table_test_zero(ci, ci_off))
-+			break;
-+	}
-+	rcu_read_unlock();
-+	return ci_off - ci_start;
-+}
-+
- static bool swap_read_folio_zeromap(struct folio *folio)
- {
- 	int nr_pages = folio_nr_pages(folio);
- 	struct obj_cgroup *objcg;
- 	bool is_zeromap;
- 
-+	VM_WARN_ON_ONCE_FOLIO(!folio_test_locked(folio), folio);
-+
- 	/*
- 	 * Swapping in a large folio that is partially in the zeromap is not
- 	 * currently handled. Return true without marking the folio uptodate so
- 	 * that an IO error is emitted (e.g. do_swap_page() will sigbus).
-+	 * Folio lock stabilizes the cluster and map, so the check is safe.
- 	 */
- 	if (WARN_ON_ONCE(swap_zeromap_batch(folio->swap, nr_pages,
- 			&is_zeromap) != nr_pages))
-diff --git a/mm/swap.h b/mm/swap.h
-index e4ac7dbc1080..025ff4f0b021 100644
---- a/mm/swap.h
-+++ b/mm/swap.h
-@@ -3,12 +3,29 @@
- #define _MM_SWAP_H
- 
- #include <linux/atomic.h> /* for atomic_long_t */
-+#include <linux/mm.h> /* for PAGE_SHIFT */
- struct mempolicy;
- struct swap_iocb;
- struct swap_memcg_table;
- 
- extern int page_cluster;
- 
-+#if defined(MAX_POSSIBLE_PHYSMEM_BITS)
-+#define SWAP_CACHE_PFN_BITS (MAX_POSSIBLE_PHYSMEM_BITS - PAGE_SHIFT)
-+#elif defined(MAX_PHYSMEM_BITS)
-+#define SWAP_CACHE_PFN_BITS (MAX_PHYSMEM_BITS - PAGE_SHIFT)
-+#else
-+#define SWAP_CACHE_PFN_BITS (BITS_PER_LONG - PAGE_SHIFT)
-+#endif
-+
-+/* Swap table marker, 0x1 means shadow, 0x2 means PFN (SWP_TB_PFN_MARK) */
-+#define SWAP_CACHE_PFN_MARK_BITS	2
-+/* At least 2 bits are needed to distinguish SWP_TB_COUNT_MAX, 1 and 0 */
-+#define SWAP_COUNT_MIN_BITS		2
-+/* If there are enough bits besides PFN and marker, store zero flag inline */
-+#define SWAP_TABLE_HAS_ZEROFLAG		((BITS_PER_LONG - SWAP_CACHE_PFN_MARK_BITS - \
-+					  SWAP_CACHE_PFN_BITS) > SWAP_COUNT_MIN_BITS)
-+
- #ifdef CONFIG_THP_SWAP
- #define SWAPFILE_CLUSTER	HPAGE_PMD_NR
- #define swap_entry_order(order)	(order)
-@@ -41,6 +58,9 @@ struct swap_cluster_info {
- 	unsigned int *extend_table;	/* For large swap count, protected by ci->lock */
- #ifdef CONFIG_MEMCG
- 	struct swap_memcg_table *memcg_table;	/* Swap table entries' cgroup record */
-+#endif
-+#if !SWAP_TABLE_HAS_ZEROFLAG
-+	unsigned long *zero_bitmap;
- #endif
- 	struct list_head list;
- };
-@@ -314,31 +334,6 @@ static inline unsigned int folio_swap_flags(struct folio *folio)
- 	return __swap_entry_to_info(folio->swap)->flags;
- }
- 
--/*
-- * Return the count of contiguous swap entries that share the same
-- * zeromap status as the starting entry. If is_zeromap is not NULL,
-- * it will return the zeromap status of the starting entry.
-- */
--static inline int swap_zeromap_batch(swp_entry_t entry, int max_nr,
--		bool *is_zeromap)
--{
--	struct swap_info_struct *sis = __swap_entry_to_info(entry);
--	unsigned long start = swp_offset(entry);
--	unsigned long end = start + max_nr;
--	bool first_bit;
--
--	first_bit = test_bit(start, sis->zeromap);
--	if (is_zeromap)
--		*is_zeromap = first_bit;
--
--	if (max_nr <= 1)
--		return max_nr;
--	if (first_bit)
--		return find_next_zero_bit(sis->zeromap, end, start) - start;
--	else
--		return find_next_bit(sis->zeromap, end, start) - start;
--}
--
- #else /* CONFIG_SWAP */
- struct swap_iocb;
- static inline struct swap_cluster_info *swap_cluster_lock(
-@@ -476,11 +471,5 @@ static inline unsigned int folio_swap_flags(struct folio *folio)
- {
- 	return 0;
- }
--
--static inline int swap_zeromap_batch(swp_entry_t entry, int max_nr,
--		bool *has_zeromap)
--{
--	return 0;
--}
- #endif /* CONFIG_SWAP */
- #endif /* _MM_SWAP_H */
-diff --git a/mm/swap_state.c b/mm/swap_state.c
-index 71a3f128fcf0..fa4ef9f4a1d3 100644
---- a/mm/swap_state.c
-+++ b/mm/swap_state.c
-@@ -159,6 +159,7 @@ static int __swap_cache_add_check(struct swap_cluster_info *ci,
- {
- 	unsigned int ci_off, ci_end;
- 	unsigned long old_tb;
-+	bool is_zero;
- 
- 	/*
- 	 * If the target slot is not swapped out, return
-@@ -181,12 +182,14 @@ static int __swap_cache_add_check(struct swap_cluster_info *ci,
- 	if (nr == 1)
- 		return 0;
- 
-+	is_zero = __swap_table_test_zero(ci, ci_off);
- 	ci_off = round_down(ci_off, nr);
- 	ci_end = ci_off + nr;
- 	do {
- 		old_tb = __swap_table_get(ci, ci_off);
- 		if (unlikely(swp_tb_is_folio(old_tb) ||
- 			     !__swp_tb_get_count(old_tb) ||
-+			     is_zero != __swap_table_test_zero(ci, ci_off) ||
- 			     (memcg_id && *memcg_id != __swap_cgroup_get(ci, ci_off))))
- 			return -EBUSY;
- 	} while (++ci_off < ci_end);
-@@ -210,7 +213,7 @@ static void __swap_cache_do_add_folio(struct swap_cluster_info *ci,
- 	do {
- 		old_tb = __swap_table_get(ci, ci_off);
- 		VM_WARN_ON_ONCE(swp_tb_is_folio(old_tb));
--		__swap_table_set(ci, ci_off, pfn_to_swp_tb(pfn, __swp_tb_get_count(old_tb)));
-+		__swap_table_set(ci, ci_off, pfn_to_swp_tb(pfn, __swp_tb_get_flags(old_tb)));
- 	} while (++ci_off < ci_end);
- 
- 	folio_ref_add(folio, nr_pages);
-@@ -246,7 +249,6 @@ static void __swap_cache_do_del_folio(struct swap_cluster_info *ci,
- 				      struct folio *folio,
- 				      swp_entry_t entry, void *shadow)
- {
--	int count;
- 	unsigned long old_tb;
- 	struct swap_info_struct *si;
- 	unsigned int ci_start, ci_off, ci_end;
-@@ -266,13 +268,13 @@ static void __swap_cache_do_del_folio(struct swap_cluster_info *ci,
- 		old_tb = __swap_table_get(ci, ci_off);
- 		WARN_ON_ONCE(!swp_tb_is_folio(old_tb) ||
- 			     swp_tb_to_folio(old_tb) != folio);
--		count = __swp_tb_get_count(old_tb);
--		if (count)
-+		if (__swp_tb_get_count(old_tb))
- 			folio_swapped = true;
- 		else
- 			need_free = true;
- 		/* If shadow is NULL, we set an empty shadow. */
--		__swap_table_set(ci, ci_off, shadow_to_swp_tb(shadow, count));
-+		__swap_table_set(ci, ci_off, shadow_to_swp_tb(shadow,
-+				 __swp_tb_get_flags(old_tb)));
- 	} while (++ci_off < ci_end);
- 
- 	folio->swap.val = 0;
-@@ -366,7 +368,7 @@ void __swap_cache_replace_folio(struct swap_cluster_info *ci,
- 	do {
- 		old_tb = __swap_table_get(ci, ci_off);
- 		WARN_ON_ONCE(!swp_tb_is_folio(old_tb) || swp_tb_to_folio(old_tb) != old);
--		__swap_table_set(ci, ci_off, pfn_to_swp_tb(pfn, __swp_tb_get_count(old_tb)));
-+		__swap_table_set(ci, ci_off, pfn_to_swp_tb(pfn, __swp_tb_get_flags(old_tb)));
- 	} while (++ci_off < ci_end);
- 
- 	/*
-diff --git a/mm/swap_table.h b/mm/swap_table.h
-index b2b02ee161b1..6cf1575eb26e 100644
---- a/mm/swap_table.h
-+++ b/mm/swap_table.h
-@@ -26,12 +26,14 @@ struct swap_memcg_table {
-  * Swap table entry type and bits layouts:
-  *
-  * NULL:     |---------------- 0 ---------------| - Free slot
-- * Shadow:   | SWAP_COUNT |---- SHADOW_VAL ---|1| - Swapped out slot
-- * PFN:      | SWAP_COUNT |------ PFN -------|10| - Cached slot
-+ * Shadow:   |SWAP_COUNT|Z|---- SHADOW_VAL ---|1| - Swapped out slot
-+ * PFN:      |SWAP_COUNT|Z|------ PFN -------|10| - Cached slot
-  * Pointer:  |----------- Pointer ----------|100| - (Unused)
-  * Bad:      |------------- 1 -------------|1000| - Bad slot
-  *
-- * SWAP_COUNT is `SWP_TB_COUNT_BITS` long, each entry is an atomic long.
-+ * COUNT is `SWP_TB_COUNT_BITS` long, Z is the `SWP_TB_ZERO_FLAG` bit,
-+ * and together they form the `SWP_TB_FLAGS_BITS` wide flags field.
-+ * Each entry is an atomic long.
-  *
-  * Usages:
-  *
-@@ -54,14 +56,6 @@ struct swap_memcg_table {
-  * - Bad: Swap slot is reserved, protects swap header or holes on swap devices.
-  */
- 
--#if defined(MAX_POSSIBLE_PHYSMEM_BITS)
--#define SWAP_CACHE_PFN_BITS (MAX_POSSIBLE_PHYSMEM_BITS - PAGE_SHIFT)
--#elif defined(MAX_PHYSMEM_BITS)
--#define SWAP_CACHE_PFN_BITS (MAX_PHYSMEM_BITS - PAGE_SHIFT)
--#else
--#define SWAP_CACHE_PFN_BITS (BITS_PER_LONG - PAGE_SHIFT)
--#endif
--
- /* NULL Entry, all 0 */
- #define SWP_TB_NULL		0UL
- 
-@@ -69,22 +63,26 @@ struct swap_memcg_table {
- #define SWP_TB_SHADOW_MARK	0b1UL
- 
- /* Cached: PFN */
--#define SWP_TB_PFN_BITS		(SWAP_CACHE_PFN_BITS + SWP_TB_PFN_MARK_BITS)
-+#define SWP_TB_PFN_BITS		(SWAP_CACHE_PFN_BITS + SWAP_CACHE_PFN_MARK_BITS)
- #define SWP_TB_PFN_MARK		0b10UL
--#define SWP_TB_PFN_MARK_BITS	2
--#define SWP_TB_PFN_MARK_MASK	(BIT(SWP_TB_PFN_MARK_BITS) - 1)
-+#define SWP_TB_PFN_MARK_MASK	(BIT(SWAP_CACHE_PFN_MARK_BITS) - 1)
- 
--/* SWAP_COUNT part for PFN or shadow, the width can be shrunk or extended */
--#define SWP_TB_COUNT_BITS      min(4, BITS_PER_LONG - SWP_TB_PFN_BITS)
-+/* Flags: For PFN or shadow, contains SWAP_COUNT, width changes */
-+#define SWP_TB_FLAGS_BITS	min(5, BITS_PER_LONG - SWP_TB_PFN_BITS)
-+#define SWP_TB_COUNT_BITS	(SWP_TB_FLAGS_BITS - SWAP_TABLE_HAS_ZEROFLAG)
-+#define SWP_TB_FLAGS_MASK	(~((~0UL) >> SWP_TB_FLAGS_BITS))
- #define SWP_TB_COUNT_MASK      (~((~0UL) >> SWP_TB_COUNT_BITS))
-+#define SWP_TB_FLAGS_SHIFT     (BITS_PER_LONG - SWP_TB_FLAGS_BITS)
- #define SWP_TB_COUNT_SHIFT     (BITS_PER_LONG - SWP_TB_COUNT_BITS)
- #define SWP_TB_COUNT_MAX       ((1 << SWP_TB_COUNT_BITS) - 1)
-+/* The first flag is zero bit (SWAP_TABLE_HAS_ZEROFLAG) */
-+#define SWP_TB_ZERO_FLAG	BIT(BITS_PER_LONG - SWP_TB_FLAGS_BITS)
- 
- /* Bad slot: ends with 0b1000 and rests of bits are all 1 */
- #define SWP_TB_BAD		((~0UL) << 3)
- 
- /* Macro for shadow offset calculation */
--#define SWAP_COUNT_SHIFT	SWP_TB_COUNT_BITS
-+#define SWAP_COUNT_SHIFT	SWP_TB_FLAGS_BITS
- 
- /*
-  * Helpers for casting one type of info into a swap table entry.
-@@ -102,40 +100,47 @@ static inline unsigned long __count_to_swp_tb(unsigned char count)
- 	 * used (count > 0 && count < SWP_TB_COUNT_MAX), and
- 	 * overflow (count == SWP_TB_COUNT_MAX).
- 	 */
--	BUILD_BUG_ON(SWP_TB_COUNT_MAX < 2 || SWP_TB_COUNT_BITS < 2);
-+	BUILD_BUG_ON(SWP_TB_COUNT_BITS < SWAP_COUNT_MIN_BITS);
- 	VM_WARN_ON(count > SWP_TB_COUNT_MAX);
- 	return ((unsigned long)count) << SWP_TB_COUNT_SHIFT;
- }
- 
--static inline unsigned long pfn_to_swp_tb(unsigned long pfn, unsigned int count)
-+static inline unsigned long __flags_to_swp_tb(unsigned char flags)
-+{
-+	BUILD_BUG_ON(SWP_TB_FLAGS_BITS > BITS_PER_BYTE);
-+	VM_WARN_ON(flags >> SWP_TB_FLAGS_BITS);
-+	return ((unsigned long)flags) << SWP_TB_FLAGS_SHIFT;
-+}
-+
-+static inline unsigned long pfn_to_swp_tb(unsigned long pfn, unsigned char flags)
- {
- 	unsigned long swp_tb;
- 
- 	BUILD_BUG_ON(sizeof(unsigned long) != sizeof(void *));
- 	BUILD_BUG_ON(SWAP_CACHE_PFN_BITS >
--		     (BITS_PER_LONG - SWP_TB_PFN_MARK_BITS - SWP_TB_COUNT_BITS));
-+		     (BITS_PER_LONG - SWAP_CACHE_PFN_MARK_BITS - SWP_TB_FLAGS_BITS));
- 
--	swp_tb = (pfn << SWP_TB_PFN_MARK_BITS) | SWP_TB_PFN_MARK;
--	VM_WARN_ON_ONCE(swp_tb & SWP_TB_COUNT_MASK);
-+	swp_tb = (pfn << SWAP_CACHE_PFN_MARK_BITS) | SWP_TB_PFN_MARK;
-+	VM_WARN_ON_ONCE(swp_tb & SWP_TB_FLAGS_MASK);
- 
--	return swp_tb | __count_to_swp_tb(count);
-+	return swp_tb | __flags_to_swp_tb(flags);
- }
- 
--static inline unsigned long folio_to_swp_tb(struct folio *folio, unsigned int count)
-+static inline unsigned long folio_to_swp_tb(struct folio *folio, unsigned char flags)
- {
--	return pfn_to_swp_tb(folio_pfn(folio), count);
-+	return pfn_to_swp_tb(folio_pfn(folio), flags);
- }
- 
--static inline unsigned long shadow_to_swp_tb(void *shadow, unsigned int count)
-+static inline unsigned long shadow_to_swp_tb(void *shadow, unsigned char flags)
- {
- 	BUILD_BUG_ON((BITS_PER_XA_VALUE + 1) !=
- 		     BITS_PER_BYTE * sizeof(unsigned long));
- 	BUILD_BUG_ON((unsigned long)xa_mk_value(0) != SWP_TB_SHADOW_MARK);
- 
- 	VM_WARN_ON_ONCE(shadow && !xa_is_value(shadow));
--	VM_WARN_ON_ONCE(shadow && ((unsigned long)shadow & SWP_TB_COUNT_MASK));
-+	VM_WARN_ON_ONCE(shadow && ((unsigned long)shadow & SWP_TB_FLAGS_MASK));
- 
--	return (unsigned long)shadow | __count_to_swp_tb(count) | SWP_TB_SHADOW_MARK;
-+	return (unsigned long)shadow | SWP_TB_SHADOW_MARK | __flags_to_swp_tb(flags);
- }
- 
- /*
-@@ -173,14 +178,14 @@ static inline bool swp_tb_is_countable(unsigned long swp_tb)
- static inline struct folio *swp_tb_to_folio(unsigned long swp_tb)
- {
- 	VM_WARN_ON(!swp_tb_is_folio(swp_tb));
--	return pfn_folio((swp_tb & ~SWP_TB_COUNT_MASK) >> SWP_TB_PFN_MARK_BITS);
-+	return pfn_folio((swp_tb & ~SWP_TB_FLAGS_MASK) >> SWAP_CACHE_PFN_MARK_BITS);
- }
- 
- static inline void *swp_tb_to_shadow(unsigned long swp_tb)
- {
- 	VM_WARN_ON(!swp_tb_is_shadow(swp_tb));
- 	/* No shift needed, xa_value is stored as it is in the lower bits. */
--	return (void *)(swp_tb & ~SWP_TB_COUNT_MASK);
-+	return (void *)(swp_tb & ~SWP_TB_FLAGS_MASK);
- }
- 
- static inline unsigned char __swp_tb_get_count(unsigned long swp_tb)
-@@ -189,6 +194,12 @@ static inline unsigned char __swp_tb_get_count(unsigned long swp_tb)
- 	return ((swp_tb & SWP_TB_COUNT_MASK) >> SWP_TB_COUNT_SHIFT);
- }
- 
-+static inline unsigned char __swp_tb_get_flags(unsigned long swp_tb)
-+{
-+	VM_WARN_ON(!swp_tb_is_countable(swp_tb));
-+	return ((swp_tb & SWP_TB_FLAGS_MASK) >> SWP_TB_FLAGS_SHIFT);
-+}
-+
- static inline int swp_tb_get_count(unsigned long swp_tb)
- {
- 	if (swp_tb_is_countable(swp_tb))
-@@ -253,6 +264,50 @@ static inline unsigned long swap_table_get(struct swap_cluster_info *ci,
- 	return swp_tb;
- }
- 
-+static inline void __swap_table_set_zero(struct swap_cluster_info *ci,
-+					 unsigned int ci_off)
-+{
-+#if SWAP_TABLE_HAS_ZEROFLAG
-+	unsigned long swp_tb = __swap_table_get(ci, ci_off);
-+
-+	BUILD_BUG_ON(SWP_TB_ZERO_FLAG & ~SWP_TB_FLAGS_MASK);
-+	VM_WARN_ON(!swp_tb_is_countable(swp_tb));
-+	swp_tb |= SWP_TB_ZERO_FLAG;
-+	__swap_table_set(ci, ci_off, swp_tb);
-+#else
-+	__set_bit(ci_off, ci->zero_bitmap);
-+#endif
-+}
-+
-+static inline bool __swap_table_test_zero(struct swap_cluster_info *ci,
-+					  unsigned int ci_off)
-+{
-+#if SWAP_TABLE_HAS_ZEROFLAG
-+	unsigned long swp_tb = __swap_table_get(ci, ci_off);
-+
-+	VM_WARN_ON(!swp_tb_is_countable(swp_tb));
-+	return !!(swp_tb & SWP_TB_ZERO_FLAG);
-+#else
-+	return test_bit(ci_off, ci->zero_bitmap);
-+#endif
-+}
-+
-+static inline void __swap_table_clear_zero(struct swap_cluster_info *ci,
-+					   unsigned int ci_off)
-+{
-+
-+#if SWAP_TABLE_HAS_ZEROFLAG
-+	unsigned long swp_tb = __swap_table_get(ci, ci_off);
-+
-+	VM_WARN_ON(!swp_tb_is_countable(swp_tb));
-+	swp_tb &= ~SWP_TB_ZERO_FLAG;
-+	__swap_table_set(ci, ci_off, swp_tb);
-+#else
-+	lockdep_assert_held(&ci->lock);
-+	__clear_bit(ci_off, ci->zero_bitmap);
-+#endif
-+}
-+
- #ifdef CONFIG_MEMCG
- static inline void __swap_cgroup_set(struct swap_cluster_info *ci,
- 		unsigned int ci_off, unsigned long nr, unsigned short id)
-diff --git a/mm/swapfile.c b/mm/swapfile.c
-index 2172920e68d1..287d5807b8f7 100644
---- a/mm/swapfile.c
-+++ b/mm/swapfile.c
-@@ -427,6 +427,11 @@ static void swap_cluster_free_table(struct swap_cluster_info *ci)
- 	ci->memcg_table = NULL;
- #endif
- 
-+#if !SWAP_TABLE_HAS_ZEROFLAG
-+	kfree(ci->zero_bitmap);
-+	ci->zero_bitmap = NULL;
-+#endif
-+
- 	table = (struct swap_table *)rcu_access_pointer(ci->table);
- 	if (!table)
- 		return;
-@@ -470,6 +475,13 @@ static int swap_cluster_alloc_table(struct swap_cluster_info *ci, gfp_t gfp)
- 	if (!ci->memcg_table)
- 		ret = -ENOMEM;
- #endif
-+
-+#if !SWAP_TABLE_HAS_ZEROFLAG
-+	ci->zero_bitmap = bitmap_zalloc(SWAPFILE_CLUSTER, gfp);
-+	if (!ci->zero_bitmap)
-+		ret = -ENOMEM;
-+#endif
-+
- 	if (ret)
- 		swap_cluster_free_table(ci);
- 
-@@ -926,8 +938,8 @@ static bool __swap_cluster_alloc_entries(struct swap_info_struct *si,
- 		order = 0;
- 		nr_pages = 1;
- 		swap_cluster_assert_empty(ci, ci_off, 1, false);
--		/* Sets a fake shadow as placeholder */
--		__swap_table_set(ci, ci_off, shadow_to_swp_tb(NULL, 1));
-+		/* Fake shadow placeholder with no flag, hibernation does not use the zeromap */
-+		__swap_table_set(ci, ci_off, __swp_tb_mk_count(shadow_to_swp_tb(NULL, 0), 1));
- 	} else {
- 		/* Allocation without folio is only possible with hibernation */
- 		WARN_ON_ONCE(1);
-@@ -1299,14 +1311,8 @@ static void swap_range_free(struct swap_info_struct *si, unsigned long offset,
- 	void (*swap_slot_free_notify)(struct block_device *, unsigned long);
- 	unsigned int i;
- 
--	/*
--	 * Use atomic clear_bit operations only on zeromap instead of non-atomic
--	 * bitmap_clear to prevent adjacent bits corruption due to simultaneous writes.
--	 */
--	for (i = 0; i < nr_entries; i++) {
--		clear_bit(offset + i, si->zeromap);
-+	for (i = 0; i < nr_entries; i++)
- 		zswap_invalidate(swp_entry(si->type, offset + i));
--	}
- 
- 	if (si->flags & SWP_BLKDEV)
- 		swap_slot_free_notify =
-@@ -1891,7 +1897,11 @@ void __swap_cluster_free_entries(struct swap_info_struct *si,
- 		 * ref, or after swap cache is dropped
- 		 */
- 		VM_WARN_ON(!swp_tb_is_shadow(old_tb) || __swp_tb_get_count(old_tb) > 1);
-+
-+		/* Resetting the slot to NULL also clears the inline flags. */
- 		__swap_table_set(ci, ci_off, null_to_swp_tb());
-+		if (!SWAP_TABLE_HAS_ZEROFLAG)
-+			__swap_table_clear_zero(ci, ci_off);
- 
- 		/*
- 		 * Uncharge swap slots by memcg in batches. Consecutive
-@@ -3024,7 +3034,6 @@ static void flush_percpu_swap_cluster(struct swap_info_struct *si)
- SYSCALL_DEFINE1(swapoff, const char __user *, specialfile)
- {
- 	struct swap_info_struct *p = NULL;
--	unsigned long *zeromap;
- 	struct swap_cluster_info *cluster_info;
- 	struct file *swap_file, *victim;
- 	struct address_space *mapping;
-@@ -3120,8 +3129,6 @@ SYSCALL_DEFINE1(swapoff, const char __user *, specialfile)
- 
- 	swap_file = p->swap_file;
- 	p->swap_file = NULL;
--	zeromap = p->zeromap;
--	p->zeromap = NULL;
- 	maxpages = p->max;
- 	cluster_info = p->cluster_info;
- 	p->max = 0;
-@@ -3133,7 +3140,6 @@ SYSCALL_DEFINE1(swapoff, const char __user *, specialfile)
- 	mutex_unlock(&swapon_mutex);
- 	kfree(p->global_cluster);
- 	p->global_cluster = NULL;
--	kvfree(zeromap);
- 	free_swap_cluster_info(cluster_info, maxpages);
- 
- 	inode = mapping->host;
-@@ -3665,17 +3671,6 @@ SYSCALL_DEFINE2(swapon, const char __user *, specialfile, int, swap_flags)
- 	if (error)
- 		goto bad_swap_unlock_inode;
- 
--	/*
--	 * Use kvmalloc_array instead of bitmap_zalloc as the allocation order might
--	 * be above MAX_PAGE_ORDER incase of a large swap file.
--	 */
--	si->zeromap = kvmalloc_array(BITS_TO_LONGS(maxpages), sizeof(long),
--				     GFP_KERNEL | __GFP_ZERO);
--	if (!si->zeromap) {
--		error = -ENOMEM;
--		goto bad_swap_unlock_inode;
--	}
--
- 	if (si->bdev && bdev_stable_writes(si->bdev))
- 		si->flags |= SWP_STABLE_WRITES;
- 
-@@ -3777,8 +3772,6 @@ SYSCALL_DEFINE2(swapon, const char __user *, specialfile, int, swap_flags)
- 	destroy_swap_extents(si, swap_file);
- 	free_swap_cluster_info(si->cluster_info, si->max);
- 	si->cluster_info = NULL;
--	kvfree(si->zeromap);
--	si->zeromap = NULL;
- 	/*
- 	 * Clear the SWP_USED flag after all resources are freed so
- 	 * alloc_swap_info can reuse this si safely.
+---
+Albert Esteve (3):
+      cgroup: Add dmem_selftest module
+      selftests: cgroup: Add dmem selftest coverage
+      selftests: cgroup: Add vmtest-dmem runner based on hid vmtest
 
+Eric Chanudet (1):
+      selftests: cgroup: handle vmtest-dmem -b to test locally built kernel
+
+ init/Kconfig                                  |  12 +
+ kernel/cgroup/Makefile                        |   1 +
+ kernel/cgroup/dmem_selftest.c                 | 198 +++++++++++
+ tools/testing/selftests/cgroup/.gitignore     |   1 +
+ tools/testing/selftests/cgroup/Makefile       |   2 +
+ tools/testing/selftests/cgroup/config         |   1 +
+ tools/testing/selftests/cgroup/test_dmem.c    | 490 ++++++++++++++++++++++++++
+ tools/testing/selftests/cgroup/vmtest-dmem.sh | 229 ++++++++++++
+ 8 files changed, 934 insertions(+)
+---
+base-commit: 80234b5ab240f52fa45d201e899e207b9265ef91
+change-id: 20260318-kunit_cgroups-7fb0b9e64017
+
+Best regards,
 -- 
-2.53.0
-
+Albert Esteve <aesteve@redhat.com>
 
 
