@@ -1,458 +1,203 @@
-Return-Path: <cgroups+bounces-15459-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-15460-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id YB6wEh6l6GngOAIAu9opvQ
-	(envelope-from <cgroups+bounces-15459-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Wed, 22 Apr 2026 12:38:22 +0200
+	id UPcxJ73U6GklQQIAu9opvQ
+	(envelope-from <cgroups+bounces-15460-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Wed, 22 Apr 2026 16:01:33 +0200
 X-Original-To: lists+cgroups@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 91B86444CD5
-	for <lists+cgroups@lfdr.de>; Wed, 22 Apr 2026 12:38:21 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 8D47D44703E
+	for <lists+cgroups@lfdr.de>; Wed, 22 Apr 2026 16:01:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id B520F302ED59
-	for <lists+cgroups@lfdr.de>; Wed, 22 Apr 2026 10:37:02 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id CAC903069FF9
+	for <lists+cgroups@lfdr.de>; Wed, 22 Apr 2026 13:57:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CF5CE3C13FD;
-	Wed, 22 Apr 2026 10:37:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C2BF3DB626;
+	Wed, 22 Apr 2026 13:57:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="cUR6pV1O"
+	dkim=pass (2048-bit key) header.d=malat-biz.20251104.gappssmtp.com header.i=@malat-biz.20251104.gappssmtp.com header.b="Rq8iuJ++"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ua1-f41.google.com (mail-ua1-f41.google.com [209.85.222.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD94F3B27E2;
-	Wed, 22 Apr 2026 10:36:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.7
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1776854221; cv=none; b=uKAG9v7sQsYYwZBivbRas1Hj91j/kNMm7vIy7+lC2uTm4LMAQdf5V+iRMDmZvGSnwT4aeTmWJvThDQ9TLQqxjq79gCHU0vjstxtiHQuQfct7PCVJKwbBtIhm7UVE6KG8EHoP70YLXHW3n2ReFptv9010wFntLBFFi94YLhSyc8M=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1776854221; c=relaxed/simple;
-	bh=MYbZD+o7SL+SdehTaLNLk+7U8cxNYZJD1M/ErSEyheE=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=j7a52qCWmmKcrsUqiiXN8BCmIbkqmiOwXR3UdLWT4P8op6krYnSrFTOvEEU8GxfM6wnuPTSdTbwbagZ/LvvrWgJSQBWuoAbAlT1XhSE+afD476ZfHXSCOf7dXP5tBCgNGDQu5sDW1tdqggCuPm/Iz7L/FPXzsnxoeQaTAG+egwU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=pass smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=cUR6pV1O; arc=none smtp.client-ip=192.198.163.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1776854220; x=1808390220;
-  h=message-id:subject:from:to:cc:date:in-reply-to:
-   references:content-transfer-encoding:mime-version;
-  bh=MYbZD+o7SL+SdehTaLNLk+7U8cxNYZJD1M/ErSEyheE=;
-  b=cUR6pV1O/1w5n54kKMvsA6DSFxONggFwCXIi2keednXvr66m7fPT+lH9
-   HzXZKsWeu+obQXPlF8zmGa+/cPXT64s9jCypBJWwRipA6BMF6W6ZgXMcv
-   eEWJ0hw0uYMEBdRRqJPQLIT35EdEr3w96pmGU2U5cnQi2vZWlW68Tv8kQ
-   sHQQqW183Bj05lU0qb9Bi65fKFZrwtjEhBXvpereiPJHSBgbUuanuJ6cU
-   +WuOyq8zox2xxdjpO+I4kO4Km4NwoAH0KkNfqiskWXrYws303Y0MQKJ6Z
-   zzlmBZ+2NSZ4nyyO3fHO6Ji5TJoQ1UO7gbox6twRUUWsov4RE8rMcFitS
-   w==;
-X-CSE-ConnectionGUID: Ko3koWKMTLiNwWB3IXvlyw==
-X-CSE-MsgGUID: LI3pWfqrRyuUuHK4/qqq7A==
-X-IronPort-AV: E=McAfee;i="6800,10657,11763"; a="103263225"
-X-IronPort-AV: E=Sophos;i="6.23,192,1770624000"; 
-   d="scan'208";a="103263225"
-Received: from orviesa001.jf.intel.com ([10.64.159.141])
-  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Apr 2026 03:36:59 -0700
-X-CSE-ConnectionGUID: ZWU++b6gS9+bPP+cwHT7Vw==
-X-CSE-MsgGUID: 7YlKUPI2QKmOvv8dRAQNbQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.23,192,1770624000"; 
-   d="scan'208";a="270424225"
-Received: from abityuts-desk.ger.corp.intel.com (HELO [10.245.245.239]) ([10.245.245.239])
-  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Apr 2026 03:36:54 -0700
-Message-ID: <fb353b64e9084bc8fff01f8d5cc45701a2a60a60.camel@linux.intel.com>
-Subject: Re: [PATCH 2/5] cgroup/dmem: Add reclaim callback for lowering max
- below current usage
-From: Thomas =?ISO-8859-1?Q?Hellstr=F6m?= <thomas.hellstrom@linux.intel.com>
-To: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, 
-	intel-xe@lists.freedesktop.org
-Cc: Natalie Vock <natalie.vock@gmx.de>, Johannes Weiner
- <hannes@cmpxchg.org>,  Tejun Heo <tj@kernel.org>, Michal
- =?ISO-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>, 	cgroups@vger.kernel.org,
- Huang Rui <ray.huang@amd.com>, Matthew Brost	 <matthew.brost@intel.com>,
- Matthew Auld <matthew.auld@intel.com>, Maxime Ripard	 <mripard@kernel.org>,
- Thomas Zimmermann <tzimmermann@suse.de>, Simona Vetter	 <simona@ffwll.ch>,
- David Airlie <airlied@gmail.com>, Christian =?ISO-8859-1?Q?K=F6nig?=	
- <christian.koenig@amd.com>, Alex Deucher <alexander.deucher@amd.com>, 
- Rodrigo Vivi <rodrigo.vivi@intel.com>, dri-devel@lists.freedesktop.org,
- amd-gfx@lists.freedesktop.org, 	linux-kernel@vger.kernel.org, Thadeu Lima
- de Souza Cascardo <cascardo@igalia.com>
-Date: Wed, 22 Apr 2026 12:36:50 +0200
-In-Reply-To: <4f74cacc-ff98-426f-ac31-c25e6cbec314@linux.intel.com>
-References: <20260327081600.4885-1-thomas.hellstrom@linux.intel.com>
-	 <20260327081600.4885-3-thomas.hellstrom@linux.intel.com>
-	 <4b647952-0038-4878-b67e-6c7fc7ab27a6@linux.intel.com>
-	 <398623a092c65ce4e53d1713112fa39ac0979fd7.camel@linux.intel.com>
-	 <8ecda206-d290-4895-bf57-346419afdc3c@linux.intel.com>
-	 <3b662522e17e380953d9b981d8c2febecf42455e.camel@linux.intel.com>
-	 <4f74cacc-ff98-426f-ac31-c25e6cbec314@linux.intel.com>
-Organization: Intel Sweden AB, Registration Number: 556189-6027
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.58.3 (3.58.3-1.fc43) 
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A2663B27EB
+	for <cgroups@vger.kernel.org>; Wed, 22 Apr 2026 13:57:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.222.41
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1776866228; cv=pass; b=MfMDnpFZ+MgC5vgMQUxZos7HKphpQZrFoYDwauEFwJViG3Rp8+NjGCQu8u5Fb6NbWg5pVn8ZYfdqzYJgp4nM0pl1NXc5T71MHIGh/B5Bv9M0Et5iOddZjqPYgj+F+VFcB9etWw+45V8oGzrhH/8Z6j6e/KC87vT57t/1hXnpg0A=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1776866228; c=relaxed/simple;
+	bh=l4YU3bB4RJnlC8XPxjBgonIaVQqpVmuVMJX+gjvuQ78=;
+	h=From:MIME-Version:Date:Message-ID:Subject:To:Cc:Content-Type; b=AC81GW+frGTMl+g+q5HBrXrzP8QWz2lcVlwVXrpy/p8CugHtymUL48C27CvAh2R44ZWf8a0UW9EJG2FADSE+sOVLjBRy8lF+BRsfR2rKPXZwADc7A7JHJFyNNST4ARQUhdMDlPl7lHYUaIR2IfflKl7Zrn1KZGEJal8uZx3eYC4=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=malat.biz; spf=none smtp.mailfrom=malat.biz; dkim=pass (2048-bit key) header.d=malat-biz.20251104.gappssmtp.com header.i=@malat-biz.20251104.gappssmtp.com header.b=Rq8iuJ++; arc=pass smtp.client-ip=209.85.222.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=malat.biz
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=malat.biz
+Received: by mail-ua1-f41.google.com with SMTP id a1e0cc1a2514c-953ac1602f8so3804315241.1
+        for <cgroups@vger.kernel.org>; Wed, 22 Apr 2026 06:57:06 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1776866225; cv=none;
+        d=google.com; s=arc-20240605;
+        b=M48blgAGC4XyZbMaFcUVjycKXfe1tQg4vm+bHLlUg2kQ83fqNxMCKN3klsdOZ7cjNA
+         +BY3Jyj3o3tR/rOMxqi5yf8UhQJYeOTKwfDZWQrs5xx1F+B6D2tir3z9jKyA1JHuYa4g
+         /VP6BdwJbunUX7gi18NO1QUBuGwj2JUt4EuSYBc9KFyhcxNQI/5wg4lFku1eouKxnyL4
+         yG3lFIkg+qO5cTuExUDjiiqLR0Wq9EUg3keq75DNczCaEW2hNQSV4c+mSo+nU0udn6gg
+         BAyt0F0OHTARyrnBlYSkZ2yCJp69HHRolPEqN4K3rLbVRXcomvkRaPmxdhyZm5KPRqMS
+         2UUw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
+        h=cc:to:subject:message-id:date:mime-version:from:dkim-signature;
+        bh=xGFyCFFG1EkWA/b2EA9XlJUl05rNyK01irvoWYc32Bw=;
+        fh=JXicV0gJ9suSKGEfX89+Vg3T/sMWy3CY4UnXqixp7dg=;
+        b=R7RxfQBkQLJUoDsl6iB+JOqeTeywDTlTXUcb3BYmNxPCuPp/JtM+onpQIXqVOWRgny
+         2NeBo/6zEBCfA6aiW1XMvNHiBqFKfQyGxiljhIS5wQmSLMsXpSc2fA1ErcO3Zesce5GO
+         3zJL2Pg+jUOrNMBkcLlvoa3HC2+tlPhgrzwQosXsQEIGsqd6ZSLbUsRJ+L35akdHSW9S
+         sNiqOyuS1ECwy1f1+XWzAO+2oiDDXWPTFW4/pLITZ6w78lNVoK5IpM84dW93bkkrwpZs
+         lAzQGIWe9mbdp0YuZlb6SyZY311LpIBlmXzRMOnbOCvn8fuEID0MvkGGmugnOH4kzYZ8
+         F/wQ==;
+        darn=vger.kernel.org
+ARC-Authentication-Results: i=1; mx.google.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=malat-biz.20251104.gappssmtp.com; s=20251104; t=1776866225; x=1777471025; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:mime-version:from:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=xGFyCFFG1EkWA/b2EA9XlJUl05rNyK01irvoWYc32Bw=;
+        b=Rq8iuJ++Cc+dJe9yypHhmqVCVEFPYRaanI61zGT5WuzuMl/Ej4cm0oQZ2RL+Q3MKm1
+         VlFoonVecv9aPbyjB+Aiv4EZu55v5eSVjhqunB9RZUf5QCHRywbVlTdWXv2viLcc/FR9
+         vBJwuxp788jc/Mk/YxhfCvAHIZVy6tIq49TQ2xSOWBM3ufQGyEQmRSCPWD80x5dS5B3t
+         3xyVwg51XCVJeImLvVqI1W6uMofgKT+Yh2Mr31rp8MWFqYIygpRyQg77EnCWxn/5stlJ
+         0MPzLnQ2A3dXy5O/V3aM+Tkxcn2tGE+AcXGJSt4sEIezxvDpaNhnLweg55wvSngjPLbP
+         HBiQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1776866225; x=1777471025;
+        h=cc:to:subject:message-id:date:mime-version:from:x-gm-gg
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=xGFyCFFG1EkWA/b2EA9XlJUl05rNyK01irvoWYc32Bw=;
+        b=InFGHxe0zcoka9l7TEsbvJBmkwmhAWpY9T1ewFRFZCvDTbcfb/LsPIZGeENPJhiFc+
+         ODTHLb779rodk7Hy02YR1vFgvyuMR+Z2/oITXYz5oDP/jMgwEBSeRNA8iDkGCPc7z9CP
+         IimPSAga9tBRIm4LFHp2fPYMzHiE1dyHZ6bdLeRz8w7Cygx2wRzgiCsRDV+czkBzwh0h
+         Iv+0WRszrYKeshLtR0xZHlq4uoI4JGPptqohqxqbzU0ZuWb/GMszHItUTAAn1sqPX69Y
+         PLpg4wYaqdicmGCtzVnxJ/ahnWHV/tyokeLm5JNzMw06q0sX4srmc1XMy9sWSzfi8Vee
+         ix6A==
+X-Gm-Message-State: AOJu0YxQgIRQEgjDNjS95uzdWCW8rcLLHC3ii6/+IGLyV2BQ7wMHt2dC
+	7yzAp5CSDPnOY8XSBaDOXFXxxRUBtY5qjlc6EDWB9vdracblSyoq7d3E71dZT3oN3D/q9ETDVv/
+	mlIGY4jO7HLLEhk01m3h1A6d/xbxjtATut5YTy/dBZECihw+3XyA=
+X-Gm-Gg: AeBDiesvftJd9MQhVACDxPRKMAPpljaV6uuuS3HCxNylVaJ8PVeKi0S/50NrqMlpwKm
+	wuHmi4eQD7/yLPnOmC+qyd55Rwo+4sWUKH7iow4/z2lJwMwOnUuPZXPekpRTdYfnf3ZwQwWvpGz
+	/TubxLGNg9xaQcip8pjXzj5PsKj+r1mfM6zaoWimbDJTa1MZUgqBtcBSpJxuHVQaRANEeouzIsA
+	fWvyPcmYO+8zeBAb8CD1Qkxl9e8zO1LPwwEMLMYUoYipzwadELxnxSkVM6XUV1vxsOtmwSEbkZp
+	9kUfyTkEvT7TBPwfrSaz/bw/ncuN
+X-Received: by 2002:a05:6102:5114:b0:608:ce6d:4db1 with SMTP id
+ ada2fe7eead31-616fb5837a1mr7192460137.3.1776866225012; Wed, 22 Apr 2026
+ 06:57:05 -0700 (PDT)
+Received: from 753933720722 named unknown by gmailapi.google.com with
+ HTTPREST; Wed, 22 Apr 2026 09:57:03 -0400
+Received: from 753933720722 named unknown by gmailapi.google.com with
+ HTTPREST; Wed, 22 Apr 2026 09:57:03 -0400
+From: Petr Malat <oss@malat.biz>
+X-Mailer: git-send-email 2.47.3
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Spamd-Result: default: False [-2.16 / 15.00];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[intel.com,none];
+Date: Wed, 22 Apr 2026 09:57:03 -0400
+X-Gm-Features: AQROBzByWVjqbDioiwjxGKchCnZcXzf3X_5K7tde9xekXZrg1zTRSaqXxKf-3-I
+Message-ID: <CANMuvJnpVSHNJ1=6Auw7zYnZ9w32J0mn+dw6PkdXi-WDU4Lrqg@mail.gmail.com>
+Subject: [PATCH] cgroup: Increment dying descendants from rmdir context
+To: cgroups@vger.kernel.org
+Cc: Johannes Weiner <hannes@cmpxchg.org>, Tejun Heo <tj@kernel.org>, Petr Malat <oss@malat.biz>
+Content-Type: text/plain; charset="UTF-8"
+X-Spamd-Result: default: False [-1.66 / 15.00];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=2];
+	R_DKIM_ALLOW(-0.20)[malat-biz.20251104.gappssmtp.com:s=20251104];
 	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
-	R_DKIM_ALLOW(-0.20)[intel.com:s=Intel];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	MIME_TRACE(0.00)[0:+];
-	RCPT_COUNT_TWELVE(0.00)[21];
-	FREEMAIL_CC(0.00)[gmx.de,cmpxchg.org,kernel.org,suse.com,vger.kernel.org,amd.com,intel.com,suse.de,ffwll.ch,gmail.com,lists.freedesktop.org,igalia.com];
-	TAGGED_FROM(0.00)[bounces-15459-lists,cgroups=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	HAS_ORG_HEADER(0.00)[];
-	DKIM_TRACE(0.00)[intel.com:+];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	TO_DN_SOME(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[thomas.hellstrom@linux.intel.com,cgroups@vger.kernel.org];
+	DMARC_NA(0.00)[malat.biz];
 	FROM_HAS_DN(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	RCVD_COUNT_FIVE(0.00)[5];
-	MID_RHS_MATCH_FROM(0.00)[];
+	RSPAMD_URIBL_FAIL(0.00)[malat-biz.20251104.gappssmtp.com:query timed out];
+	ASN_FAIL(0.00)[10.253.234.172.asn.rspamd.com:query timed out];
+	TAGGED_FROM(0.00)[bounces-15460-lists,cgroups=lfdr.de];
+	MIME_TRACE(0.00)[0:+];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	DKIM_TRACE(0.00)[malat-biz.20251104.gappssmtp.com:+];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	TO_DN_SOME(0.00)[];
+	MAILSPIKE_FAIL(0.00)[172.234.253.10:query timed out];
+	FROM_NEQ_ENVFROM(0.00)[oss@malat.biz,cgroups@vger.kernel.org];
+	RCPT_COUNT_THREE(0.00)[4];
+	RCVD_COUNT_FIVE(0.00)[6];
 	NEURAL_HAM(-0.00)[-1.000];
+	PRECEDENCE_BULK(0.00)[];
 	TAGGED_RCPT(0.00)[cgroups];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,linux.intel.com:mid]
-X-Rspamd-Queue-Id: 91B86444CD5
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,mail.gmail.com:mid,malat-biz.20251104.gappssmtp.com:dkim]
+X-Rspamd-Queue-Id: 8D47D44703E
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-On Wed, 2026-04-22 at 12:29 +0200, Maarten Lankhorst wrote:
-> Hey,
->=20
-> Den 2026-04-22 kl. 12:20, skrev Thomas Hellstr=C3=B6m:
-> > On Wed, 2026-04-22 at 11:50 +0200, Maarten Lankhorst wrote:
-> > > Hey,
-> > >=20
-> > > Den 2026-04-22 kl. 10:42, skrev Thomas Hellstr=C3=B6m:
-> > > > On Wed, 2026-04-22 at 10:31 +0200, Maarten Lankhorst wrote:
-> > > > > Hey,
-> > > > >=20
-> > > > > (Adding Thadeu to cc since they've been working on the same
-> > > > > issue)
-> > > > >=20
-> > > > > Den 2026-03-27 kl. 09:15, skrev Thomas Hellstr=C3=B6m:
-> > > > > > Add an optional reclaim callback to struct
-> > > > > > dmem_cgroup_region.=C2=A0
-> > > > > > When
-> > > > > > dmem.max is set below current usage, invoke the callback to
-> > > > > > evict
-> > > > > > memory
-> > > > > > and retry setting the limit rather than failing
-> > > > > > immediately.=C2=A0
-> > > > > > Signal
-> > > > > > interruptions propagate back to the write() caller.
-> > > > > >=20
-> > > > > > RFC:
-> > > > > > Due to us updating the max limit _after_ the usage has been
-> > > > > > sufficiently lowered, this should be prone to failures if
-> > > > > > there
-> > > > > > are
-> > > > > > aggressive allocators running in parallel to the reclaim.
-> > > > > > So can we somehow enforce the new limit while the eviction
-> > > > > > is
-> > > > > > happening?
-> > > > > >=20
-> > > > > > Assisted-by: GitHub Copilot:claude-sonnet-4.6
-> > > > > > Signed-off-by: Thomas Hellstr=C3=B6m
-> > > > > > <thomas.hellstrom@linux.intel.com>
-> > > > > > ---
-> > > > > > =C2=A0include/linux/cgroup_dmem.h | 11 +++++
-> > > > > > =C2=A0kernel/cgroup/dmem.c=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0 | 94
-> > > > > > +++++++++++++++++++++++++++++++++----
-> > > > > > =C2=A02 files changed, 96 insertions(+), 9 deletions(-)
-> > > > > >=20
-> > > > > > diff --git a/include/linux/cgroup_dmem.h
-> > > > > > b/include/linux/cgroup_dmem.h
-> > > > > > index dd4869f1d736..61520a431740 100644
-> > > > > > --- a/include/linux/cgroup_dmem.h
-> > > > > > +++ b/include/linux/cgroup_dmem.h
-> > > > > > @@ -26,6 +26,10 @@ bool
-> > > > > > dmem_cgroup_state_evict_valuable(struct
-> > > > > > dmem_cgroup_pool_state *limit_pool,
-> > > > > > =C2=A0				=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 bool ignore_low,
-> > > > > > bool
-> > > > > > *ret_hit_low);
-> > > > > > =C2=A0
-> > > > > > =C2=A0void dmem_cgroup_pool_state_put(struct
-> > > > > > dmem_cgroup_pool_state
-> > > > > > *pool);
-> > > > > > +void dmem_cgroup_region_set_reclaim(struct
-> > > > > > dmem_cgroup_region
-> > > > > > *region,
-> > > > > > +				=C2=A0=C2=A0=C2=A0 int (*reclaim)(struct
-> > > > > > dmem_cgroup_pool_state *pool,
-> > > > > > +						=C2=A0=C2=A0 u64
-> > > > > > target_bytes, void *priv),
-> > > > > > +				=C2=A0=C2=A0=C2=A0 void *priv);
-> > > > > > =C2=A0#else
-> > > > > > =C2=A0static inline __printf(2,3) struct dmem_cgroup_region *
-> > > > > > =C2=A0dmem_cgroup_register_region(u64 size, const char
-> > > > > > *name_fmt,
-> > > > > > ...)
-> > > > > > @@ -62,5 +66,12 @@ bool
-> > > > > > dmem_cgroup_state_evict_valuable(struct
-> > > > > > dmem_cgroup_pool_state *limit_pool,
-> > > > > > =C2=A0static inline void dmem_cgroup_pool_state_put(struct
-> > > > > > dmem_cgroup_pool_state *pool)
-> > > > > > =C2=A0{ }
-> > > > > > =C2=A0
-> > > > > > +static inline void
-> > > > > > +dmem_cgroup_region_set_reclaim(struct dmem_cgroup_region
-> > > > > > *region,
-> > > > > > +			=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 int (*reclaim)(struct
-> > > > > > dmem_cgroup_pool_state *pool,
-> > > > > > +					=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 u64
-> > > > > > target_bytes,
-> > > > > > void *priv),
-> > > > > > +			=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 void *priv)
-> > > > > > +{ }
-> > > > > > +
-> > > > > > =C2=A0#endif
-> > > > > > =C2=A0#endif	/* _CGROUP_DMEM_H */
-> > > > > > diff --git a/kernel/cgroup/dmem.c b/kernel/cgroup/dmem.c
-> > > > > > index 3e6d4c0b26a1..f993fb058b74 100644
-> > > > > > --- a/kernel/cgroup/dmem.c
-> > > > > > +++ b/kernel/cgroup/dmem.c
-> > > > > > @@ -51,6 +51,18 @@ struct dmem_cgroup_region {
-> > > > > > =C2=A0	 * No new pools should be added to the region
-> > > > > > afterwards.
-> > > > > > =C2=A0	 */
-> > > > > > =C2=A0	bool unregistered;
-> > > > > > +
-> > > > > > +	/**
-> > > > > > +	 * @reclaim: Optional callback invoked when
-> > > > > > dmem.max
-> > > > > > is
-> > > > > > set below the
-> > > > > > +	 * current usage of a pool. The driver should
-> > > > > > attempt
-> > > > > > to
-> > > > > > free at least
-> > > > > > +	 * @target_bytes from @pool. May be called
-> > > > > > multiple
-> > > > > > times
-> > > > > > if usage
-> > > > > > +	 * remains above the limit after returning.
-> > > > > > +	 */
-> > > > > > +	int (*reclaim)(struct dmem_cgroup_pool_state
-> > > > > > *pool,
-> > > > > > u64
-> > > > > > target_bytes,
-> > > > > > +		=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 void *priv);
-> > > > > > +
-> > > > > > +	/** @reclaim_priv: Private data passed to
-> > > > > > @reclaim. */
-> > > > > > +	void *reclaim_priv;
-> > > > > > =C2=A0};
-> > > > > > =C2=A0
-> > > > > > =C2=A0struct dmemcg_state {
-> > > > > > @@ -145,23 +157,59 @@ static void free_cg_pool(struct
-> > > > > > dmem_cgroup_pool_state *pool)
-> > > > > > =C2=A0}
-> > > > > > =C2=A0
-> > > > > > =C2=A0static int
-> > > > > > -set_resource_min(struct dmem_cgroup_pool_state *pool, u64
-> > > > > > val)
-> > > > > > +set_resource_min(struct dmem_cgroup_pool_state *pool, u64
-> > > > > > val,
-> > > > > > +		 struct dmem_cgroup_region *region)
-> > > > > > =C2=A0{
-> > > > > > =C2=A0	page_counter_set_min(&pool->cnt, val);
-> > > > > > =C2=A0	return 0;
-> > > > > > =C2=A0}
-> > > > > > =C2=A0
-> > > > > > =C2=A0static int
-> > > > > > -set_resource_low(struct dmem_cgroup_pool_state *pool, u64
-> > > > > > val)
-> > > > > > +set_resource_low(struct dmem_cgroup_pool_state *pool, u64
-> > > > > > val,
-> > > > > > +		 struct dmem_cgroup_region *region)
-> > > > > > =C2=A0{
-> > > > > > =C2=A0	page_counter_set_low(&pool->cnt, val);
-> > > > > > =C2=A0	return 0;
-> > > > > > =C2=A0}
-> > > > > > =C2=A0
-> > > > > > =C2=A0static int
-> > > > > > -set_resource_max(struct dmem_cgroup_pool_state *pool, u64
-> > > > > > val)
-> > > > > > +set_resource_max(struct dmem_cgroup_pool_state *pool, u64
-> > > > > > val,
-> > > > > > +		 struct dmem_cgroup_region *region)
-> > > > > > =C2=A0{
-> > > > > > -	return page_counter_set_max(&pool->cnt, val);
-> > > > > > +	int err =3D page_counter_set_max(&pool->cnt, val);
-> > > > > > +
-> > > > > > +	if (err !=3D -EBUSY || !region || !region->reclaim)
-> > > > > > +		return err;
-> > > > > > +
-> > > > > > +	/*
-> > > > > > +	 * The new max is below current usage.=C2=A0 Ask the
-> > > > > > driver
-> > > > > > to
-> > > > > > evict memory
-> > > > > > +	 * and retry, up to a bounded number of times.=C2=A0
-> > > > > > Signal
-> > > > > > interruptions are
-> > > > > > +	 * propagated back to the write() caller; other
-> > > > > > reclaim
-> > > > > > failures leave
-> > > > > > +	 * -EBUSY as the result.
-> > > > > > +	 */
-> > > > > > +	for (int retries =3D 5; retries > 0; retries--) {
-> > > > > > +		u64 usage =3D page_counter_read(&pool->cnt);
-> > > > > > +		u64 target =3D usage > val ? usage - val :
-> > > > > > 0;
-> > > > > > +		int reclaim_err;
-> > > > > > +
-> > > > > > +		if (!target) {
-> > > > > > +			err =3D page_counter_set_max(&pool-
-> > > > > > >cnt,
-> > > > > > val);
-> > > > > > +			break;
-> > > > > > +		}
-> > > > > > +
-> > > > > > +		reclaim_err =3D region->reclaim(pool,
-> > > > > > target,
-> > > > > > region->reclaim_priv);
-> > > > > > +		if (reclaim_err) {
-> > > > > > +			if (reclaim_err =3D=3D -EINTR ||
-> > > > > > reclaim_err
-> > > > > > =3D=3D -ERESTARTSYS)
-> > > > > > +				err =3D reclaim_err;
-> > > > > > +			break;
-> > > > > > +		}
-> > > > > > +
-> > > > > > +		err =3D page_counter_set_max(&pool->cnt,
-> > > > > > val);
-> > > > > > +		if (err !=3D -EBUSY)
-> > > > > > +			break;
-> > > > > > +	}
-> > > > > > +
-> > > > > > +	return err;
-> > > > > > =C2=A0}
-> > > > >=20
-> > > > > I mentioned this in chat but I wanted to mention it on the
-> > > > > mailing
-> > > > > list for others as well,
-> > > > > can we reproduce the behavior from memory_max_write() in
-> > > > > mm/memcontrol.c?
-> > > > >=20
-> > > > > 1. First set new limit through xchg.
-> > > > > 2. If O_NONBLOCK is set -> do nothing, next allocation in
-> > > > > target
-> > > > > region will fail and cause reclaim.
-> > > > > 3. If not set -> reclaim until below new limit or interrupted
-> > > > > by
-> > > > > a
-> > > > > signal, return success in all cases here since we set new
-> > > > > limit.
-> > > > >=20
-> > > > >=20
-> > > >=20
-> > > > Yup.
-> > > >=20
-> > > > For 3, we also need to consider the case where we fail to
-> > > > reclaim
-> > > > due
-> > > > to memory being pinned. If it's OK to (usually temporary) have
-> > > > current
-> > > > usage above max, that would work.
-> > > >=20
-> > > > I have that coded up and also add a patch on top to defer
-> > > > reclaim
-> > > > to a
-> > > > thread if we bail due to signal or O_NONBLOCK. Perhaps we could
-> > > > discuss
-> > > > whether that's a good or bad idea in that patch.
-> > >=20
-> > > That doesn't sound like a good idea. The semantics of O_NONBLOCK
-> > > are deliberately intended to be able to change the max without
-> > > causing
-> > > reclaim.
-> > >=20
-> > > See the details in commit ("memcg: introduce non-blocking limit
-> > > setting option")
-> >=20
-> > From reading the docs that introduces, it sounds more like that
-> > avoids
-> > *synchronous* reclaim, which is also in line with O_NONBLOCK
-> > semantics.
-> >=20
-> > The analogy with launching a thread would be more that of kswapd
-> > doing
-> > the reclaim in the memcg case?
-> >=20
-> > But OTOH, if we were to introduce a thread-driven dmem reclaim that
-> > would perhaps be something that wasn't directly tied to the dmem
-> > controller but rather to the dmem provider itself. (TTM in this
-> > case).
->=20
-> From the docs:
-> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 If memory.max is opened with =
-O_NONBLOCK, then the
-> synchronous
-> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 reclaim and oom-kill are bypa=
-ssed. This is useful for admin
-> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 processes that need to dynami=
-cally adjust the job's memory
-> limits
-> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 without expending their own C=
-PU resources on memory
-> reclamation.
-> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 The job will trigger the recl=
-aim and/or oom-kill on its next
-> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 charge request.
->=20
-> The task writing to max will not trigger a reclaim,
-> only set the new max value.
+Incrementing dying descendants in offline_css(), which is executed by
+cgroup_offline_wq worker, leads to a race where user can see dying
+descendants to be 0 if he reads cgroup.stat after calling rmdir and
+before the worker executes. This makes the user wrongly expect resources
+released by the removed cgroup to be available for a new assignment.
 
-I still read *synchronous* reclaim.
+Increment dying descendants from kill_css(), which is called from the
+cgroup_rmdir() context.
 
->=20
-> But when a process, part of the affected cgroup, tries to allocate
-> memory,
-> it will be forced to reclaim memory until below max again.=20
->=20
-> This is a workflow where instead of the updater doing all
-> the evictions, the evictions handled by a process in the cgroup
-> itself.
+Signed-off-by: Petr Malat <oss@malat.biz>
+---
+ kernel/cgroup/cgroup.c | 22 ++++++++++++----------
+ 1 file changed, 12 insertions(+), 10 deletions(-)
 
-But kswapd is still used to do background per-cgroup reclaim in this
-case, right?
+diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
+index 3243c2087ee3..c928dea9dea6 100644
+--- a/kernel/cgroup/cgroup.c
++++ b/kernel/cgroup/cgroup.c
+@@ -5724,16 +5724,6 @@ static void offline_css(struct cgroup_subsys_state *css)
+ 	RCU_INIT_POINTER(css->cgroup->subsys[ss->id], NULL);
 
-Thanks,
-Thomas
+ 	wake_up_all(&css->cgroup->offline_waitq);
+-
+-	css->cgroup->nr_dying_subsys[ss->id]++;
+-	/*
+-	 * Parent css and cgroup cannot be freed until after the freeing
+-	 * of child css, see css_free_rwork_fn().
+-	 */
+-	while ((css = css->parent)) {
+-		css->nr_descendants--;
+-		css->cgroup->nr_dying_subsys[ss->id]++;
+-	}
+ }
 
+ /**
+@@ -6045,6 +6035,8 @@ static void css_killed_ref_fn(struct percpu_ref *ref)
+  */
+ static void kill_css(struct cgroup_subsys_state *css)
+ {
++	struct cgroup_subsys *ss = css->ss;
++
+ 	lockdep_assert_held(&cgroup_mutex);
 
->=20
-> > >=20
-> > > I also believe it's ok not to continue reclaiming if aborted, the
-> > > caller can
-> > > always try again if necessary.
-> > >=20
-> > > If we want to deviate from the memcg controller, we need a very
-> > > good
-> > > reason
-> > > to do so. I'd like to keep the semantics the same if possible.
-> > >=20
-> > > > Will send out when I've updated the IGT tests accordingly.
-> > > >=20
-> > > > Thanks,
-> > > > Thomas
-> > >=20
-> > > Kind regards,
-> > > ~Maarten Lankhorst
+ 	if (css->flags & CSS_DYING)
+@@ -6081,6 +6073,16 @@ static void kill_css(struct cgroup_subsys_state *css)
+ 	 * css is confirmed to be seen as killed on all CPUs.
+ 	 */
+ 	percpu_ref_kill_and_confirm(&css->refcnt, css_killed_ref_fn);
++
++	css->cgroup->nr_dying_subsys[ss->id]++;
++	/*
++	 * Parent css and cgroup cannot be freed until after the freeing
++	 * of child css, see css_free_rwork_fn().
++	 */
++	while ((css = css->parent)) {
++		css->nr_descendants--;
++		css->cgroup->nr_dying_subsys[ss->id]++;
++	}
+ }
+
+ /**
+-- 
+2.47.3
 
