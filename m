@@ -1,48 +1,68 @@
-Return-Path: <cgroups+bounces-15451-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-15452-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id wM+GJZVu6GkSKQIAu9opvQ
-	(envelope-from <cgroups+bounces-15451-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Wed, 22 Apr 2026 08:45:41 +0200
+	id eCxrHXCH6Gk6LgIAu9opvQ
+	(envelope-from <cgroups+bounces-15452-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Wed, 22 Apr 2026 10:31:44 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id E35D6442924
-	for <lists+cgroups@lfdr.de>; Wed, 22 Apr 2026 08:45:40 +0200 (CEST)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id DEF624437A0
+	for <lists+cgroups@lfdr.de>; Wed, 22 Apr 2026 10:31:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 92E55303853E
-	for <lists+cgroups@lfdr.de>; Wed, 22 Apr 2026 06:39:54 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id DEDD83020E9C
+	for <lists+cgroups@lfdr.de>; Wed, 22 Apr 2026 08:31:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B7EF32692B;
-	Wed, 22 Apr 2026 06:39:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 71B4C3BF675;
+	Wed, 22 Apr 2026 08:31:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ML4/oefa"
 X-Original-To: cgroups@vger.kernel.org
-Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.13])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7062F31D366;
-	Wed, 22 Apr 2026 06:39:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CFBB235DA53;
+	Wed, 22 Apr 2026 08:31:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.13
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1776839991; cv=none; b=ubi8fsCt1YlwNTO9/+7yFf0518ZUd/bmrMffppvDWwXhORJgACdXz9lbQHS/VnSj2YifgtubvKAkSxf6UnygfxLqG9pafVRfhOslpg7idv4JX/K9ia+ze3rxBvBFkxFMJsr9jPYW6hSYZ4pqJOcrUsYIwMPkEBOPjGqVx8X2ePY=
+	t=1776846697; cv=none; b=FxOwq72rKBrasWT0aN0e+miTGoMsNDjiqH+rfnPlWwbHZhB9mX16/9tNe9h8P+KoI4ggTUrH58ttAaNorSlGTHmGOoqtKWWxPaXRVzOO1JUkKvtPLpbFqJ224FRET/0Vv52gsxoGRbXbxZTYd614zWuiehUS39S2zVlaqsPw4Sg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1776839991; c=relaxed/simple;
-	bh=8auo9fApI0AJJbM0oVqd4iDvIZsHR0GHU8PCbKdtgfE=;
+	s=arc-20240116; t=1776846697; c=relaxed/simple;
+	bh=BLoTYMxGQTA/oOMa4NfPFqVslSfO4JVYrMUvoKq0rLQ=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=nEhnGlESkxk5sTuFyBRbXIkhzrOCb3a9m6NVJMgX5h698N9L6IaDoJzJnGGMxyXwfdPUnlx1I3gpIIZb/V8RPGtu/hmYgiGiRa6PX89OP81YlWNyIueKxfpE6A0OBr8SHCHG7g1GSK05fbutgELtbW6ibiBjAWzTBpLWKfF088Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.198])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTPS id 4g0qMJ3lLGzKHMN6;
-	Wed, 22 Apr 2026 14:39:24 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.128])
-	by mail.maildlp.com (Postfix) with ESMTP id CB50540600;
-	Wed, 22 Apr 2026 14:39:44 +0800 (CST)
-Received: from [10.67.111.176] (unknown [10.67.111.176])
-	by APP4 (Coremail) with SMTP id gCh0CgBnBMIubehpzQ43BQ--.59576S2;
-	Wed, 22 Apr 2026 14:39:44 +0800 (CST)
-Message-ID: <48f5e1f5-bfb0-44cc-ae6a-14f66158796f@huaweicloud.com>
-Date: Wed, 22 Apr 2026 14:39:42 +0800
+	 In-Reply-To:Content-Type; b=u0dTwiLciM27MjdNidpLc/Ps1J4EpSd7D9D/lIgMGJEFjqFGLhYMKcKnc9tUlHitTeAPa83zjKk/D++RuplxMn5J3kRVlbsUU01yriPzsv2RL+agHRXrnfTKpgHW2BqaQhWbFkPTlqGa83yF10bBDNZigZK3MYHiEcBXn95q2q4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=pass smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=ML4/oefa; arc=none smtp.client-ip=198.175.65.13
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1776846696; x=1808382696;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=BLoTYMxGQTA/oOMa4NfPFqVslSfO4JVYrMUvoKq0rLQ=;
+  b=ML4/oefaGYjIlKiYDKe0CWZoPsM8Hy5mGSk9WjfQqVsOZWBHLxmxElno
+   9PbByHb5+AEMgps5mFzYN4aw2CcOKeogZhjXTz/EZA48lXq4BH81VDGe+
+   Qissu6ujjMmsrvUEJevDWrVSr6FUu4+pSRsSRDq8m7VOszlAeP8l0Pgq9
+   jozSmmvH5NnwwrIHlRlDHhTss3JaKXpZd5CvfMMhTlUPrBtWz5MkLazDf
+   ytZnJHI6Vi62Bu1XmrhPBImuz24Pijy577olaaZQhujLv6QddsyK9vU6r
+   mbG68Ty2JEVJ++Ml2GgCuMcwWfrCCcBrZGkwGqre6UoS8wclyqfnZkHaG
+   g==;
+X-CSE-ConnectionGUID: UFIfg9WCSkOX3e6BIcCkVw==
+X-CSE-MsgGUID: h+975VQAR8mijHNCm/NIbQ==
+X-IronPort-AV: E=McAfee;i="6800,10657,11763"; a="88870013"
+X-IronPort-AV: E=Sophos;i="6.23,192,1770624000"; 
+   d="scan'208";a="88870013"
+Received: from orviesa009.jf.intel.com ([10.64.159.149])
+  by orvoesa105.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Apr 2026 01:31:35 -0700
+X-CSE-ConnectionGUID: t8N3QOulRZCJDsonFBsNWA==
+X-CSE-MsgGUID: f0JvRIgESJ+fIWx0meLcwQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.23,192,1770624000"; 
+   d="scan'208";a="232159328"
+Received: from amilburn-desk.amilburn-desk (HELO [10.245.245.228]) ([10.245.245.228])
+  by orviesa009-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Apr 2026 01:31:31 -0700
+Message-ID: <4b647952-0038-4878-b67e-6c7fc7ab27a6@linux.intel.com>
+Date: Wed, 22 Apr 2026 10:31:14 +0200
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -50,274 +70,272 @@ List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 02/23] sched/isolation: Enhance housekeeping_update() to
- support updating more than one HK cpumask
-To: Waiman Long <longman@redhat.com>, Tejun Heo <tj@kernel.org>,
- Johannes Weiner <hannes@cmpxchg.org>, =?UTF-8?Q?Michal_Koutn=C3=BD?=
- <mkoutny@suse.com>, Jonathan Corbet <corbet@lwn.net>,
- Shuah Khan <skhan@linuxfoundation.org>,
- Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
- "K. Y. Srinivasan" <kys@microsoft.com>,
- Haiyang Zhang <haiyangz@microsoft.com>, Wei Liu <wei.liu@kernel.org>,
- Dexuan Cui <decui@microsoft.com>, Long Li <longli@microsoft.com>,
- Guenter Roeck <linux@roeck-us.net>, Frederic Weisbecker
- <frederic@kernel.org>, "Paul E. McKenney" <paulmck@kernel.org>,
- Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
- Joel Fernandes <joelagnelf@nvidia.com>, Josh Triplett
- <josh@joshtriplett.org>, Boqun Feng <boqun@kernel.org>,
- Uladzislau Rezki <urezki@gmail.com>, Steven Rostedt <rostedt@goodmis.org>,
- Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
- Lai Jiangshan <jiangshanlai@gmail.com>, Zqiang <qiang.zhang@linux.dev>,
- Anna-Maria Behnsen <anna-maria@linutronix.de>, Ingo Molnar
- <mingo@kernel.org>, Thomas Gleixner <tglx@kernel.org>,
- Peter Zijlstra <peterz@infradead.org>, Juri Lelli <juri.lelli@redhat.com>,
- Vincent Guittot <vincent.guittot@linaro.org>,
- Dietmar Eggemann <dietmar.eggemann@arm.com>, Ben Segall
- <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
- Valentin Schneider <vschneid@redhat.com>,
- K Prateek Nayak <kprateek.nayak@amd.com>,
- "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
- Simon Horman <horms@kernel.org>
-Cc: cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-hyperv@vger.kernel.org, linux-hwmon@vger.kernel.org,
- rcu@vger.kernel.org, netdev@vger.kernel.org,
- linux-kselftest@vger.kernel.org, Costa Shulyupin <cshulyup@redhat.com>,
- Qiliang Yuan <realwujing@gmail.com>
-References: <20260421030351.281436-1-longman@redhat.com>
- <20260421030351.281436-3-longman@redhat.com>
+Subject: Re: [PATCH 2/5] cgroup/dmem: Add reclaim callback for lowering max
+ below current usage
+To: =?UTF-8?Q?Thomas_Hellstr=C3=B6m?= <thomas.hellstrom@linux.intel.com>,
+ intel-xe@lists.freedesktop.org
+Cc: Natalie Vock <natalie.vock@gmx.de>, Johannes Weiner <hannes@cmpxchg.org>,
+ Tejun Heo <tj@kernel.org>, =?UTF-8?Q?Michal_Koutn=C3=BD?=
+ <mkoutny@suse.com>, cgroups@vger.kernel.org, Huang Rui <ray.huang@amd.com>,
+ Matthew Brost <matthew.brost@intel.com>,
+ Matthew Auld <matthew.auld@intel.com>, Maxime Ripard <mripard@kernel.org>,
+ Thomas Zimmermann <tzimmermann@suse.de>, Simona Vetter <simona@ffwll.ch>,
+ David Airlie <airlied@gmail.com>, =?UTF-8?Q?Christian_K=C3=B6nig?=
+ <christian.koenig@amd.com>, Alex Deucher <alexander.deucher@amd.com>,
+ Rodrigo Vivi <rodrigo.vivi@intel.com>, dri-devel@lists.freedesktop.org,
+ amd-gfx@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+ Thadeu Lima de Souza Cascardo <cascardo@igalia.com>
+References: <20260327081600.4885-1-thomas.hellstrom@linux.intel.com>
+ <20260327081600.4885-3-thomas.hellstrom@linux.intel.com>
 Content-Language: en-US
-From: Chen Ridong <chenridong@huaweicloud.com>
-In-Reply-To: <20260421030351.281436-3-longman@redhat.com>
+From: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>
+In-Reply-To: <20260327081600.4885-3-thomas.hellstrom@linux.intel.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID:gCh0CgBnBMIubehpzQ43BQ--.59576S2
-X-Coremail-Antispam: 1UD129KBjvJXoW3GFyrGF4kGw1fAF4xGFyxAFb_yoW7Kw4Dpr
-	Z8W3y3GFWkJr13G3s8Zw1DJr4rWw4kCw1vk3sxWw15tFy2g3WkA3409F9xJr97ur9rCr17
-	ZFZ8KwsIgFyjyrDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUvFb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxkF7I0En4kS
-	14v26rWY6Fy7MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I
-	8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWrXVW8
-	Jr1lIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7
-	CjxVAFwI0_Cr0_Gr1UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AK
-	xVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvj
-	xUVZ2-UUUUU
-X-CM-SenderInfo: hfkh02xlgr0w46kxt4xhlfz01xgou0bp/
-X-Spamd-Result: default: False [-1.46 / 15.00];
+Content-Transfer-Encoding: 8bit
+X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	DMARC_POLICY_ALLOW(-0.50)[intel.com,none];
+	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
+	R_DKIM_ALLOW(-0.20)[intel.com:s=Intel];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-15451-lists,cgroups=lfdr.de];
-	FREEMAIL_CC(0.00)[vger.kernel.org,lists.infradead.org,redhat.com,gmail.com];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	FREEMAIL_TO(0.00)[redhat.com,kernel.org,cmpxchg.org,suse.com,lwn.net,linuxfoundation.org,arm.com,microsoft.com,roeck-us.net,nvidia.com,joshtriplett.org,gmail.com,goodmis.org,efficios.com,linux.dev,linutronix.de,infradead.org,linaro.org,google.com,suse.de,amd.com,davemloft.net];
-	RCVD_TLS_LAST(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	MIME_TRACE(0.00)[0:+];
-	DMARC_NA(0.00)[huaweicloud.com];
-	FORGED_SENDER_MAILLIST(0.00)[];
+	FREEMAIL_CC(0.00)[gmx.de,cmpxchg.org,kernel.org,suse.com,vger.kernel.org,amd.com,intel.com,suse.de,ffwll.ch,gmail.com,lists.freedesktop.org,igalia.com];
+	TAGGED_FROM(0.00)[bounces-15452-lists,cgroups=lfdr.de];
 	FROM_HAS_DN(0.00)[];
-	TAGGED_RCPT(0.00)[cgroups];
-	RCVD_COUNT_FIVE(0.00)[6];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[chenridong@huaweicloud.com,cgroups@vger.kernel.org];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	RCVD_TLS_LAST(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[21];
+	MIME_TRACE(0.00)[0:+];
+	DKIM_TRACE(0.00)[intel.com:+];
+	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
 	TO_DN_SOME(0.00)[];
-	RCPT_COUNT_GT_50(0.00)[52];
-	R_DKIM_NA(0.00)[];
-	NEURAL_HAM(-0.00)[-1.000];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[maarten.lankhorst@linux.intel.com,cgroups@vger.kernel.org];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[5];
 	MID_RHS_MATCH_FROM(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,huaweicloud.com:mid]
-X-Rspamd-Queue-Id: E35D6442924
+	NEURAL_HAM(-0.00)[-1.000];
+	TAGGED_RCPT(0.00)[cgroups];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,intel.com:dkim,intel.com:email,linux.intel.com:mid]
+X-Rspamd-Queue-Id: DEF624437A0
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
+Hey,
 
+(Adding Thadeu to cc since they've been working on the same issue)
 
-On 2026/4/21 11:03, Waiman Long wrote:
-> The housekeeping_update() function currently allows update to the
-> HK_TYPE_DOMAIN cpumask only. As we are going to enable dynamic
-> modification of the other housekeeping cpumasks, we need to extend
-> it to support passing in the information about the HK cpumask(s) to
-> be updated.  In cases where some HK cpumasks happen to be the same,
-> it will be more efficient to update multiple HK cpumasks in one single
-> call instead of calling it multiple times. Extend housekeeping_update()
-> to support that as well.
+Den 2026-03-27 kl. 09:15, skrev Thomas Hellström:
+> Add an optional reclaim callback to struct dmem_cgroup_region.  When
+> dmem.max is set below current usage, invoke the callback to evict memory
+> and retry setting the limit rather than failing immediately.  Signal
+> interruptions propagate back to the write() caller.
 > 
-> Also add the restriction that passed in isolated cpumask parameter
-> of housekeeping_update() must include all the CPUs isolated at boot
-> time. This is currently the case for cpuset anyway.
+> RFC:
+> Due to us updating the max limit _after_ the usage has been
+> sufficiently lowered, this should be prone to failures if there are
+> aggressive allocators running in parallel to the reclaim.
+> So can we somehow enforce the new limit while the eviction is
+> happening?
 > 
-> Signed-off-by: Waiman Long <longman@redhat.com>
+> Assisted-by: GitHub Copilot:claude-sonnet-4.6
+> Signed-off-by: Thomas Hellström <thomas.hellstrom@linux.intel.com>
 > ---
->  include/linux/sched/isolation.h |  2 +-
->  kernel/cgroup/cpuset.c          |  2 +-
->  kernel/sched/isolation.c        | 99 +++++++++++++++++++++++----------
->  3 files changed, 71 insertions(+), 32 deletions(-)
+>  include/linux/cgroup_dmem.h | 11 +++++
+>  kernel/cgroup/dmem.c        | 94 +++++++++++++++++++++++++++++++++----
+>  2 files changed, 96 insertions(+), 9 deletions(-)
 > 
-> diff --git a/include/linux/sched/isolation.h b/include/linux/sched/isolation.h
-> index d1707f121e20..a17f16e0156e 100644
-> --- a/include/linux/sched/isolation.h
-> +++ b/include/linux/sched/isolation.h
-> @@ -51,7 +51,7 @@ extern const struct cpumask *housekeeping_cpumask(enum hk_type type);
->  extern bool housekeeping_enabled(enum hk_type type);
->  extern void housekeeping_affine(struct task_struct *t, enum hk_type type);
->  extern bool housekeeping_test_cpu(int cpu, enum hk_type type);
-> -extern int housekeeping_update(struct cpumask *isol_mask);
-> +extern int housekeeping_update(struct cpumask *isol_mask, unsigned long flags);
->  extern void __init housekeeping_init(void);
+> diff --git a/include/linux/cgroup_dmem.h b/include/linux/cgroup_dmem.h
+> index dd4869f1d736..61520a431740 100644
+> --- a/include/linux/cgroup_dmem.h
+> +++ b/include/linux/cgroup_dmem.h
+> @@ -26,6 +26,10 @@ bool dmem_cgroup_state_evict_valuable(struct dmem_cgroup_pool_state *limit_pool,
+>  				      bool ignore_low, bool *ret_hit_low);
 >  
+>  void dmem_cgroup_pool_state_put(struct dmem_cgroup_pool_state *pool);
+> +void dmem_cgroup_region_set_reclaim(struct dmem_cgroup_region *region,
+> +				    int (*reclaim)(struct dmem_cgroup_pool_state *pool,
+> +						   u64 target_bytes, void *priv),
+> +				    void *priv);
 >  #else
-> diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
-> index 1335e437098e..a4eccb0ec0d1 100644
-> --- a/kernel/cgroup/cpuset.c
-> +++ b/kernel/cgroup/cpuset.c
-> @@ -1354,7 +1354,7 @@ static void cpuset_update_sd_hk_unlock(void)
->  		 */
->  		mutex_unlock(&cpuset_mutex);
->  		cpus_read_unlock();
-> -		WARN_ON_ONCE(housekeeping_update(isolated_hk_cpus));
-> +		WARN_ON_ONCE(housekeeping_update(isolated_hk_cpus, BIT(HK_TYPE_DOMAIN)));
->  		mutex_unlock(&cpuset_top_mutex);
->  	} else {
->  		cpuset_full_unlock();
-> diff --git a/kernel/sched/isolation.c b/kernel/sched/isolation.c
-> index 9ec9ae510dc7..965d6f8fe344 100644
-> --- a/kernel/sched/isolation.c
-> +++ b/kernel/sched/isolation.c
-> @@ -120,48 +120,87 @@ bool housekeeping_test_cpu(int cpu, enum hk_type type)
+>  static inline __printf(2,3) struct dmem_cgroup_region *
+>  dmem_cgroup_register_region(u64 size, const char *name_fmt, ...)
+> @@ -62,5 +66,12 @@ bool dmem_cgroup_state_evict_valuable(struct dmem_cgroup_pool_state *limit_pool,
+>  static inline void dmem_cgroup_pool_state_put(struct dmem_cgroup_pool_state *pool)
+>  { }
+>  
+> +static inline void
+> +dmem_cgroup_region_set_reclaim(struct dmem_cgroup_region *region,
+> +			       int (*reclaim)(struct dmem_cgroup_pool_state *pool,
+> +					      u64 target_bytes, void *priv),
+> +			       void *priv)
+> +{ }
+> +
+>  #endif
+>  #endif	/* _CGROUP_DMEM_H */
+> diff --git a/kernel/cgroup/dmem.c b/kernel/cgroup/dmem.c
+> index 3e6d4c0b26a1..f993fb058b74 100644
+> --- a/kernel/cgroup/dmem.c
+> +++ b/kernel/cgroup/dmem.c
+> @@ -51,6 +51,18 @@ struct dmem_cgroup_region {
+>  	 * No new pools should be added to the region afterwards.
+>  	 */
+>  	bool unregistered;
+> +
+> +	/**
+> +	 * @reclaim: Optional callback invoked when dmem.max is set below the
+> +	 * current usage of a pool. The driver should attempt to free at least
+> +	 * @target_bytes from @pool. May be called multiple times if usage
+> +	 * remains above the limit after returning.
+> +	 */
+> +	int (*reclaim)(struct dmem_cgroup_pool_state *pool, u64 target_bytes,
+> +		       void *priv);
+> +
+> +	/** @reclaim_priv: Private data passed to @reclaim. */
+> +	void *reclaim_priv;
+>  };
+>  
+>  struct dmemcg_state {
+> @@ -145,23 +157,59 @@ static void free_cg_pool(struct dmem_cgroup_pool_state *pool)
 >  }
->  EXPORT_SYMBOL_GPL(housekeeping_test_cpu);
 >  
-> -int housekeeping_update(struct cpumask *isol_mask)
-> -{
-> -	struct cpumask *trial, *old = NULL;
-> -	int err;
-> +/* HK type processing table */
-> +static struct {
-> +	int type;
-> +	int boot_type;
-> +} hk_types[] = {
-> +	{ HK_TYPE_DOMAIN,       HK_TYPE_DOMAIN_BOOT	  },
-> +	{ HK_TYPE_MANAGED_IRQ,  HK_TYPE_MANAGED_IRQ_BOOT  },
-> +	{ HK_TYPE_KERNEL_NOISE, HK_TYPE_KERNEL_NOISE_BOOT }
-> +};
+>  static int
+> -set_resource_min(struct dmem_cgroup_pool_state *pool, u64 val)
+> +set_resource_min(struct dmem_cgroup_pool_state *pool, u64 val,
+> +		 struct dmem_cgroup_region *region)
+>  {
+>  	page_counter_set_min(&pool->cnt, val);
+>  	return 0;
+>  }
 >  
-> -	trial = kmalloc(cpumask_size(), GFP_KERNEL);
-> -	if (!trial)
-> -		return -ENOMEM;
-> +#define HK_TYPE_CNT	ARRAY_SIZE(hk_types)
+>  static int
+> -set_resource_low(struct dmem_cgroup_pool_state *pool, u64 val)
+> +set_resource_low(struct dmem_cgroup_pool_state *pool, u64 val,
+> +		 struct dmem_cgroup_region *region)
+>  {
+>  	page_counter_set_low(&pool->cnt, val);
+>  	return 0;
+>  }
 >  
-> -	cpumask_andnot(trial, housekeeping_cpumask(HK_TYPE_DOMAIN_BOOT), isol_mask);
-> -	if (!cpumask_intersects(trial, cpu_online_mask)) {
-> -		kfree(trial);
-> -		return -EINVAL;
-> +int housekeeping_update(struct cpumask *isol_mask, unsigned long flags)
-> +{
-> +	struct cpumask *trial[HK_TYPE_CNT];
-> +	int i, err = 0;
+>  static int
+> -set_resource_max(struct dmem_cgroup_pool_state *pool, u64 val)
+> +set_resource_max(struct dmem_cgroup_pool_state *pool, u64 val,
+> +		 struct dmem_cgroup_region *region)
+>  {
+> -	return page_counter_set_max(&pool->cnt, val);
+> +	int err = page_counter_set_max(&pool->cnt, val);
 > +
-> +	for (i = 0; i < HK_TYPE_CNT; i++) {
-> +		int type = hk_types[i].type;
-> +		int boot = hk_types[i].boot_type;
+> +	if (err != -EBUSY || !region || !region->reclaim)
+> +		return err;
 > +
-> +		trial[i] = NULL;
-> +		if (flags & BIT(type)) {
-> +			trial[i] = kmalloc(cpumask_size(), GFP_KERNEL);
-> +			if (!trial[i]) {
-> +				err = -ENOMEM;
-> +				goto out;
-> +			}
-> +			/*
-> +			 * The new HK cpumask must be a subset of its boot
-> +			 * cpumask.
-> +			 */
-> +			cpumask_andnot(trial[i], cpu_possible_mask, isol_mask);
-> +			if (!cpumask_intersects(trial[i], cpu_online_mask) ||
-> +			    !cpumask_subset(trial[i], housekeeping_cpumask(boot))) {
-> +				i++;
-> +				err = -EINVAL;
-> +				goto out;
-> +			}
+> +	/*
+> +	 * The new max is below current usage.  Ask the driver to evict memory
+> +	 * and retry, up to a bounded number of times.  Signal interruptions are
+> +	 * propagated back to the write() caller; other reclaim failures leave
+> +	 * -EBUSY as the result.
+> +	 */
+> +	for (int retries = 5; retries > 0; retries--) {
+> +		u64 usage = page_counter_read(&pool->cnt);
+> +		u64 target = usage > val ? usage - val : 0;
+> +		int reclaim_err;
+> +
+> +		if (!target) {
+> +			err = page_counter_set_max(&pool->cnt, val);
+> +			break;
 > +		}
->  	}
->  
-
-The i++ here is confusing. Wouldn't it be more readable to just use
-kfree(trial[i]) and then break out?
-
->  	if (!housekeeping.flags)
->  		static_branch_enable(&housekeeping_overridden);
->  
-> -	if (housekeeping.flags & HK_FLAG_DOMAIN)
-> -		old = housekeeping_cpumask_dereference(HK_TYPE_DOMAIN);
-> -	else
-> -		WRITE_ONCE(housekeeping.flags, housekeeping.flags | HK_FLAG_DOMAIN);
-> -	rcu_assign_pointer(housekeeping.cpumasks[HK_TYPE_DOMAIN], trial);
-> -
-> -	synchronize_rcu();
-> -
-> -	pci_probe_flush_workqueue();
-> -	mem_cgroup_flush_workqueue();
-> -	vmstat_flush_workqueue();
-> +	for (i = 0; i < HK_TYPE_CNT; i++) {
-> +		int type =  hk_types[i].type;
-> +		struct cpumask *old;
->  
-> -	err = workqueue_unbound_housekeeping_update(housekeeping_cpumask(HK_TYPE_DOMAIN));
-> -	WARN_ON_ONCE(err < 0);
-> +		if (!trial[i])
-> +			continue;
-> +		old = NULL;
-> +		if (housekeeping.flags & BIT(type))
-> +			old = housekeeping_cpumask_dereference(type);
-> +		rcu_assign_pointer(housekeeping.cpumasks[type], trial[i]);
-> +		trial[i] = old;
-> +	}
->  
-> -	err = tmigr_isolated_exclude_cpumask(isol_mask);
-> -	WARN_ON_ONCE(err < 0);
-> +	if ((housekeeping.flags & flags) != flags)
-> +		WRITE_ONCE(housekeeping.flags, housekeeping.flags | flags);
->  
-> -	err = kthreads_update_housekeeping();
-> -	WARN_ON_ONCE(err < 0);
-> +	synchronize_rcu();
->  
-> -	kfree(old);
-> +	if (flags & HK_FLAG_DOMAIN) {
-> +		/*
-> +		 * HK_TYPE_DOMAIN specific callbacks
-> +		 */
-> +		pci_probe_flush_workqueue();
-> +		mem_cgroup_flush_workqueue();
-> +		vmstat_flush_workqueue();
 > +
-> +		WARN_ON_ONCE(workqueue_unbound_housekeeping_update(
-> +				housekeeping_cpumask(HK_TYPE_DOMAIN)) < 0);
-> +		WARN_ON_ONCE(tmigr_isolated_exclude_cpumask(isol_mask) < 0);
-> +		WARN_ON_ONCE(kthreads_update_housekeeping() < 0);
+> +		reclaim_err = region->reclaim(pool, target, region->reclaim_priv);
+> +		if (reclaim_err) {
+> +			if (reclaim_err == -EINTR || reclaim_err == -ERESTARTSYS)
+> +				err = reclaim_err;
+> +			break;
+> +		}
+> +
+> +		err = page_counter_set_max(&pool->cnt, val);
+> +		if (err != -EBUSY)
+> +			break;
 > +	}
->  
-> -	return 0;
-> +out:
-> +	while (--i >= 0)
-> +		kfree(trial[i]);
+> +
 > +	return err;
 >  }
+
+I mentioned this in chat but I wanted to mention it on the mailing list for others as well,
+can we reproduce the behavior from memory_max_write() in mm/memcontrol.c?
+
+1. First set new limit through xchg.
+2. If O_NONBLOCK is set -> do nothing, next allocation in target region will fail and cause reclaim.
+3. If not set -> reclaim until below new limit or interrupted by a signal, return success in all cases here since we set new limit.
+
 >  
->  void __init housekeeping_init(void)
+>  static u64 get_resource_low(struct dmem_cgroup_pool_state *pool)
+> @@ -186,9 +234,9 @@ static u64 get_resource_current(struct dmem_cgroup_pool_state *pool)
+>  
+>  static void reset_all_resource_limits(struct dmem_cgroup_pool_state *rpool)
+>  {
+> -	set_resource_min(rpool, 0);
+> -	set_resource_low(rpool, 0);
+> -	set_resource_max(rpool, PAGE_COUNTER_MAX);
+> +	set_resource_min(rpool, 0, NULL);
+> +	set_resource_low(rpool, 0, NULL);
+> +	set_resource_max(rpool, PAGE_COUNTER_MAX, NULL);
+>  }
+>  
+>  static void dmemcs_offline(struct cgroup_subsys_state *css)
+> @@ -570,6 +618,32 @@ void dmem_cgroup_pool_state_put(struct dmem_cgroup_pool_state *pool)
+>  }
+>  EXPORT_SYMBOL_GPL(dmem_cgroup_pool_state_put);
+>  
+> +/**
+> + * dmem_cgroup_region_set_reclaim - Register a reclaim callback on a region.
+> + * @region: The region to register the callback for.
+> + * @reclaim: Callback to invoke when dmem.max is set below current usage.
+> + *           Called with the pool that needs reclaiming and the number of
+> + *           bytes to free. Returns 0 on progress, negative on failure.
+> + * @priv: Opaque pointer passed back to @reclaim.
+> + *
+> + * When dmem.max is lowered below the current usage of a cgroup pool, the
+> + * dmem controller will call @reclaim with a target number of bytes to free.
+> + * After @reclaim returns the controller retries setting the limit; if usage
+> + * is still too high it calls @reclaim again, up to a bounded retry count.
+> + */
+> +void dmem_cgroup_region_set_reclaim(struct dmem_cgroup_region *region,
+> +				    int (*reclaim)(struct dmem_cgroup_pool_state *pool,
+> +						   u64 target_bytes, void *priv),
+> +				    void *priv)
+> +{
+> +	if (!region)
+> +		return;
+> +
+> +	region->reclaim = reclaim;
+> +	region->reclaim_priv = priv;
+> +}
+> +EXPORT_SYMBOL_GPL(dmem_cgroup_region_set_reclaim);
+> +
+>  static struct dmem_cgroup_pool_state *
+>  get_cg_pool_unlocked(struct dmemcg_state *cg, struct dmem_cgroup_region *region)
+>  {
+> @@ -728,7 +802,8 @@ static int dmemcg_parse_limit(char *options, struct dmem_cgroup_region *region,
+>  
+>  static ssize_t dmemcg_limit_write(struct kernfs_open_file *of,
+>  				 char *buf, size_t nbytes, loff_t off,
+> -				 int (*apply)(struct dmem_cgroup_pool_state *, u64))
+> +				 int (*apply)(struct dmem_cgroup_pool_state *, u64,
+> +					      struct dmem_cgroup_region *))
+>  {
+>  	struct dmemcg_state *dmemcs = css_to_dmemcs(of_css(of));
+>  	int err = 0;
+> @@ -775,7 +850,8 @@ static ssize_t dmemcg_limit_write(struct kernfs_open_file *of,
+>  		}
+>  
+>  		/* And commit */
+> -		err = apply(pool, new_limit);
+> +		err = apply(pool, new_limit, region);
+> +
+>  		dmemcg_pool_put(pool);
+>  
+>  out_put:
 
--- 
-Best regards,
-Ridong
-
+Kind regards,
+~Maarten Lankhorst
 
