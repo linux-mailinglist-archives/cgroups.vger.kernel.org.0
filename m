@@ -1,322 +1,466 @@
-Return-Path: <cgroups+bounces-15453-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-15454-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id oJJiLlyK6Gk6LgIAu9opvQ
-	(envelope-from <cgroups+bounces-15453-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Wed, 22 Apr 2026 10:44:12 +0200
+	id 4CIdOqKO6GmpMQIAu9opvQ
+	(envelope-from <cgroups+bounces-15454-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Wed, 22 Apr 2026 11:02:26 +0200
 X-Original-To: lists+cgroups@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2259F4439A6
-	for <lists+cgroups@lfdr.de>; Wed, 22 Apr 2026 10:44:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 46701443B90
+	for <lists+cgroups@lfdr.de>; Wed, 22 Apr 2026 11:02:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id BD1C9300EF77
-	for <lists+cgroups@lfdr.de>; Wed, 22 Apr 2026 08:42:22 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id AB891302A6BC
+	for <lists+cgroups@lfdr.de>; Wed, 22 Apr 2026 09:00:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 808C7346A0C;
-	Wed, 22 Apr 2026 08:42:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E3B0E3C0630;
+	Wed, 22 Apr 2026 09:00:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="FXsGc3WR"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="evKnj1hN"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.19])
+Received: from out-179.mta0.migadu.com (out-179.mta0.migadu.com [91.218.175.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E78252D8DB0;
-	Wed, 22 Apr 2026 08:42:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.19
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B4B743B27EC
+	for <cgroups@vger.kernel.org>; Wed, 22 Apr 2026 09:00:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1776847341; cv=none; b=XzjmiyclEiXBzro2L1ELbgMS9k0hJxg10cePX4O6hsCBDazndG9RaUoJ3b+d1eN4MIrYjshtUY3AZ+tRzZ45uwk+X+N0ovyRtjiskiNF5UZYQaR8hzdKYaNaVvV1Kv2o/tSvMCssVBtbPe243P/U1l/dAD5fzYIAdfmaAMDExS4=
+	t=1776848418; cv=none; b=XH4SlzINqu6RuvAQBTUzVElF3KjJARpHHnT4DWw6w9kEBM9mDNgh2vj/3G3MPGTkVNdWuhVNbL1ujAJs77l7g+XIVBQqrNVUgFFN5fYSmfAF64ek9UGEfu2dWNS4Snu2Cdt5FxAnp8nJsnGAkgn4jPevPxOpyvBPh3A/cMQHMpA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1776847341; c=relaxed/simple;
-	bh=tgT/NiGuGyLMbkWXDtIGFUpu0M7Z2r7OkRxVmJlcCgE=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=BVfmju6fBeAVFFlfbZDa7vEvINi4mnktwYN4ihXVNZODHewWs4Y/7epieMwzZ9lZYDDuDjVWBRFQOVU5Q5WOZPLTH3yoZqfvZ3yXlB0td7kyIMOMNLTUDlIA/uG2Gsr1MaXtLNBSDnjxtFyr4PvItrnefcu5RogeNTHHiJwVVUc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=pass smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=FXsGc3WR; arc=none smtp.client-ip=198.175.65.19
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1776847339; x=1808383339;
-  h=message-id:subject:from:to:cc:date:in-reply-to:
-   references:content-transfer-encoding:mime-version;
-  bh=tgT/NiGuGyLMbkWXDtIGFUpu0M7Z2r7OkRxVmJlcCgE=;
-  b=FXsGc3WRxvD2602PJK2QFWWsNEwvhf0qoG1qzJDpn7j9aXbStw4f1wvC
-   hmJN0VQyRJzCWJAKoxwiYA0vN1Ae4T0Qpp6zuTdKG2h1COYTP+fHIMfen
-   ipIPHPmCed92B/smSr+KKnjIVSlqR4fEhS1rSPOpKM9u87VL1478hlptC
-   vqbYoqV997EorYI0nF4/l8iBey+WinYFdgLre5ZHuGQ7awechtEMXXat1
-   0qIBNrv8m5/5iBG0jvnIP4l41G6kBAB5sSGSdCBPi9rvS/h5eQxwPbFlo
-   GKLf91oHqnR6OvB+GtHo8EqQMUoxiPf8o1M6tqDvt6HCV/CEg1nCdWbZZ
-   g==;
-X-CSE-ConnectionGUID: TxFVNrZ+RUSe/kkqbU5sUg==
-X-CSE-MsgGUID: jSxHDGNbQKSOHP5Kb3NV3g==
-X-IronPort-AV: E=McAfee;i="6800,10657,11763"; a="77709167"
-X-IronPort-AV: E=Sophos;i="6.23,192,1770624000"; 
-   d="scan'208";a="77709167"
-Received: from fmviesa001.fm.intel.com ([10.60.135.141])
-  by orvoesa111.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Apr 2026 01:42:19 -0700
-X-CSE-ConnectionGUID: +U/3/pmqSB6F1hgjJ5IJAg==
-X-CSE-MsgGUID: Wm3z3MPtR3q2gdxyy2cDbw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.23,192,1770624000"; 
-   d="scan'208";a="255775796"
-Received: from abityuts-desk.ger.corp.intel.com (HELO [10.245.245.239]) ([10.245.245.239])
-  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 22 Apr 2026 01:42:14 -0700
-Message-ID: <398623a092c65ce4e53d1713112fa39ac0979fd7.camel@linux.intel.com>
-Subject: Re: [PATCH 2/5] cgroup/dmem: Add reclaim callback for lowering max
- below current usage
-From: Thomas =?ISO-8859-1?Q?Hellstr=F6m?= <thomas.hellstrom@linux.intel.com>
-To: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, 
-	intel-xe@lists.freedesktop.org
-Cc: Natalie Vock <natalie.vock@gmx.de>, Johannes Weiner
- <hannes@cmpxchg.org>,  Tejun Heo <tj@kernel.org>, Michal
- =?ISO-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>, 	cgroups@vger.kernel.org,
- Huang Rui <ray.huang@amd.com>, Matthew Brost	 <matthew.brost@intel.com>,
- Matthew Auld <matthew.auld@intel.com>, Maxime Ripard	 <mripard@kernel.org>,
- Thomas Zimmermann <tzimmermann@suse.de>, Simona Vetter	 <simona@ffwll.ch>,
- David Airlie <airlied@gmail.com>, Christian =?ISO-8859-1?Q?K=F6nig?=	
- <christian.koenig@amd.com>, Alex Deucher <alexander.deucher@amd.com>, 
- Rodrigo Vivi <rodrigo.vivi@intel.com>, dri-devel@lists.freedesktop.org,
- amd-gfx@lists.freedesktop.org, 	linux-kernel@vger.kernel.org, Thadeu Lima
- de Souza Cascardo <cascardo@igalia.com>
-Date: Wed, 22 Apr 2026 10:42:11 +0200
-In-Reply-To: <4b647952-0038-4878-b67e-6c7fc7ab27a6@linux.intel.com>
-References: <20260327081600.4885-1-thomas.hellstrom@linux.intel.com>
-	 <20260327081600.4885-3-thomas.hellstrom@linux.intel.com>
-	 <4b647952-0038-4878-b67e-6c7fc7ab27a6@linux.intel.com>
-Organization: Intel Sweden AB, Registration Number: 556189-6027
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.58.3 (3.58.3-1.fc43) 
+	s=arc-20240116; t=1776848418; c=relaxed/simple;
+	bh=xSVx0Ax4mEHQifNm1XH5uXvw17q+ccHYHWnCW3tKJOc=;
+	h=MIME-Version:Date:Content-Type:From:Message-ID:Subject:To:Cc:
+	 In-Reply-To:References; b=KKnbFgsYRb3ngaqVu3JxB1PDR6HdBh7iTOxyWSgIm4cJXlgSUSIEsREq18ydHzADIZ+1aXmfetCvkOXyhGmmxnB9yxYRYINc+oY61Lxyjfmmd7DjbGjsk+tt/OcrqbA8ONHTtBiousINTtJXLMSkqfhgWoCGGDjR81amqDfiF3A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=evKnj1hN; arc=none smtp.client-ip=91.218.175.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1776848403;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Onr23ZhU90nAAF2Ds/wbFjmbNXeYzOB39lTbfI481a4=;
+	b=evKnj1hNq3/eWjRUGArqwyeb+kwlwPvRvryfqgWTpN2FoeTWQCb1oGTbxam8ULRpY2wlwA
+	lUOzQASbHOn/FgbVKoSQbxDHW/vr99gDyA/YV3jZILoQa8k3W5TXdJ7wzqePDBAJwOlKSj
+	iGZ6EsH2/zkguHEQaQz6DJKSl+Djejg=
+Date: Wed, 22 Apr 2026 09:00:01 +0000
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: "teawater" <hui.zhu@linux.dev>
+Message-ID: <9871d2cd927f7410e95ddc77ece8b9d00ed5b787@linux.dev>
+TLS-Required: No
+Subject: Re: [PATCH mm-stable v3] mm/memcontrol: batch memcg charging in
+ __memcg_slab_post_alloc_hook
+To: "Harry Yoo (Oracle)" <harry@kernel.org>, "Shakeel Butt"
+ <shakeel.butt@linux.dev>
+Cc: "Johannes Weiner" <hannes@cmpxchg.org>, "Michal Hocko"
+ <mhocko@kernel.org>, "Roman Gushchin" <roman.gushchin@linux.dev>, "Muchun
+ Song" <muchun.song@linux.dev>, "Andrew Morton"
+ <akpm@linux-foundation.org>, cgroups@vger.kernel.org, linux-mm@kvack.org,
+ linux-kernel@vger.kernel.org, "Hui Zhu" <zhuhui@kylinos.cn>, "Vlastimil
+ Babka" <vbabka@kernel.org>, "Hao Li" <hao.li@linux.dev>
+In-Reply-To: <acv5QCe0qMUUW2xP@hyeyoo>
+References: <20260331091707.226786-1-hui.zhu@linux.dev>
+ <acvnjCr26zpQUW0h@linux.dev> <acv5QCe0qMUUW2xP@hyeyoo>
+X-Migadu-Flow: FLOW_OUT
 X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[intel.com,none];
+	DMARC_POLICY_ALLOW(-0.50)[linux.dev,none];
 	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
-	R_DKIM_ALLOW(-0.20)[intel.com:s=Intel];
+	R_DKIM_ALLOW(-0.20)[linux.dev:s=key1];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	MIME_TRACE(0.00)[0:+];
-	RCPT_COUNT_TWELVE(0.00)[21];
-	FREEMAIL_CC(0.00)[gmx.de,cmpxchg.org,kernel.org,suse.com,vger.kernel.org,amd.com,intel.com,suse.de,ffwll.ch,gmail.com,lists.freedesktop.org,igalia.com];
-	TAGGED_FROM(0.00)[bounces-15453-lists,cgroups=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	HAS_ORG_HEADER(0.00)[];
-	DKIM_TRACE(0.00)[intel.com:+];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-15454-lists,cgroups=lfdr.de];
+	FROM_HAS_DN(0.00)[];
+	RCVD_COUNT_THREE(0.00)[3];
+	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[13];
+	DKIM_TRACE(0.00)[linux.dev:+];
+	MISSING_XM_UA(0.00)[];
 	TO_DN_SOME(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[thomas.hellstrom@linux.intel.com,cgroups@vger.kernel.org];
-	FROM_HAS_DN(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	RCVD_COUNT_FIVE(0.00)[5];
-	MID_RHS_MATCH_FROM(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[hui.zhu@linux.dev,cgroups@vger.kernel.org];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	NEURAL_HAM(-0.00)[-1.000];
 	TAGGED_RCPT(0.00)[cgroups];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,linux.intel.com:mid,intel.com:dkim,intel.com:email]
-X-Rspamd-Queue-Id: 2259F4439A6
+	MID_RHS_MATCH_FROM(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[linux.dev:dkim,linux.dev:mid,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,kylinos.cn:email]
+X-Rspamd-Queue-Id: 46701443B90
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-On Wed, 2026-04-22 at 10:31 +0200, Maarten Lankhorst wrote:
-> Hey,
 >=20
-> (Adding Thadeu to cc since they've been working on the same issue)
+>=20On Tue, Mar 31, 2026 at 08:32:30AM -0700, Shakeel Butt wrote:
 >=20
-> Den 2026-03-27 kl. 09:15, skrev Thomas Hellstr=C3=B6m:
-> > Add an optional reclaim callback to struct dmem_cgroup_region.=C2=A0
-> > When
-> > dmem.max is set below current usage, invoke the callback to evict
-> > memory
-> > and retry setting the limit rather than failing immediately.=C2=A0
-> > Signal
-> > interruptions propagate back to the write() caller.
+>=20>=20
+>=20> On Tue, Mar 31, 2026 at 05:17:07PM +0800, Hui Zhu wrote:
+> >  From: Hui Zhu <zhuhui@kylinos.cn>
+> >=20=20
+>=20>  When kmem_cache_alloc_bulk() allocates multiple objects, the post-=
+alloc
+> >  hook __memcg_slab_post_alloc_hook() previously charged memcg one obj=
+ect
+> >  at a time, even though consecutive objects may reside on slabs backe=
+d by
+> >  the same pgdat node.
+> >=20=20
+>=20>  Batch the memcg charging by scanning ahead from the current positi=
+on to
+> >  find a contiguous run of objects whose slabs share the same pgdat, t=
+hen
+> >  issue a single __obj_cgroup_charge() / __consume_obj_stock() call fo=
+r
+> >  the entire run. The per-object obj_ext assignment loop is preserved =
+as-is
+> >  since it cannot be further collapsed.
+> >=20=20
+>=20>  This implements the TODO comment left in commit bc730030f956 ("mem=
+cg:
+> >  combine slab obj stock charging and accounting").
+> >=20=20
+>=20>  The existing error-recovery contract is unchanged: if size =3D=3D =
+1 then
+> >  memcg_alloc_abort_single() will free the sole object, and for larger
+> >  bulk allocations kmem_cache_free_bulk() will uncharge any objects th=
+at
+> >  were already charged before the failure.
+> >=20=20
+>=20>  Benchmark using kmem_cache_alloc_bulk() with SLAB_ACCOUNT
+> >  (iters=3D100000):
+> >=20=20
+>=20>  bulk=3D32 before: 215 ns/object after: 174 ns/object (-19%)
+> >  bulk=3D1 before: 344 ns/object after: 335 ns/object ( ~)
+> >=20=20
+>=20>  No measurable regression for bulk=3D1, as expected.
+> >=20=20
+>=20>  Signed-off-by: Hui Zhu <zhuhui@kylinos.cn>
+> >=20=20
+>=20>  Do we have an actual user of kmem_cache_alloc_bulk(GFP_ACCOUNT) in=
+ kernel?
 > >=20
-> > RFC:
-> > Due to us updating the max limit _after_ the usage has been
-> > sufficiently lowered, this should be prone to failures if there are
-> > aggressive allocators running in parallel to the reclaim.
-> > So can we somehow enforce the new limit while the eviction is
-> > happening?
+>=20Apparently we have a SLAB_ACCOUNT user in io_uring.c.
+> (perhaps it's the only user?)
+>=20
+>=20>=20
+>=20> If yes, can you please benchmark that usage? Otherwise can we pleas=
+e wait for
+> >  an actual user before adding more complexity? Or you can look for op=
+portunities
+> >  for kmem_cache_alloc_bulk(GFP_ACCOUNT) users and add the optimizatio=
+n along with
+> >  the user.
 > >=20
-> > Assisted-by: GitHub Copilot:claude-sonnet-4.6
-> > Signed-off-by: Thomas Hellstr=C3=B6m <thomas.hellstrom@linux.intel.com>
-> > ---
-> > =C2=A0include/linux/cgroup_dmem.h | 11 +++++
-> > =C2=A0kernel/cgroup/dmem.c=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 | =
-94
-> > +++++++++++++++++++++++++++++++++----
-> > =C2=A02 files changed, 96 insertions(+), 9 deletions(-)
+>=20Good point. I was also wondering what are use cases benefiting
+> from this beyond the microbenchmark.
+>=20
+>=20>=20
+>=20> Have you looked at the bulk free side? I think we already have rcu =
+freeing in
+> >  bulk as a user. Did you find any opportunities in optimizing the
+> >  __memcg_slab_free_hook() from bulk free?
 > >=20
-> > diff --git a/include/linux/cgroup_dmem.h
-> > b/include/linux/cgroup_dmem.h
-> > index dd4869f1d736..61520a431740 100644
-> > --- a/include/linux/cgroup_dmem.h
-> > +++ b/include/linux/cgroup_dmem.h
-> > @@ -26,6 +26,10 @@ bool dmem_cgroup_state_evict_valuable(struct
-> > dmem_cgroup_pool_state *limit_pool,
-> > =C2=A0				=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 bool ignore_low, bool
-> > *ret_hit_low);
-> > =C2=A0
-> > =C2=A0void dmem_cgroup_pool_state_put(struct dmem_cgroup_pool_state
-> > *pool);
-> > +void dmem_cgroup_region_set_reclaim(struct dmem_cgroup_region
-> > *region,
-> > +				=C2=A0=C2=A0=C2=A0 int (*reclaim)(struct
-> > dmem_cgroup_pool_state *pool,
-> > +						=C2=A0=C2=A0 u64
-> > target_bytes, void *priv),
-> > +				=C2=A0=C2=A0=C2=A0 void *priv);
-> > =C2=A0#else
-> > =C2=A0static inline __printf(2,3) struct dmem_cgroup_region *
-> > =C2=A0dmem_cgroup_register_region(u64 size, const char *name_fmt, ...)
-> > @@ -62,5 +66,12 @@ bool dmem_cgroup_state_evict_valuable(struct
-> > dmem_cgroup_pool_state *limit_pool,
-> > =C2=A0static inline void dmem_cgroup_pool_state_put(struct
-> > dmem_cgroup_pool_state *pool)
-> > =C2=A0{ }
-> > =C2=A0
-> > +static inline void
-> > +dmem_cgroup_region_set_reclaim(struct dmem_cgroup_region *region,
-> > +			=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 int (*reclaim)(struct
-> > dmem_cgroup_pool_state *pool,
-> > +					=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 u64 target_bytes,
-> > void *priv),
-> > +			=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 void *priv)
-> > +{ }
-> > +
-> > =C2=A0#endif
-> > =C2=A0#endif	/* _CGROUP_DMEM_H */
-> > diff --git a/kernel/cgroup/dmem.c b/kernel/cgroup/dmem.c
-> > index 3e6d4c0b26a1..f993fb058b74 100644
-> > --- a/kernel/cgroup/dmem.c
-> > +++ b/kernel/cgroup/dmem.c
-> > @@ -51,6 +51,18 @@ struct dmem_cgroup_region {
-> > =C2=A0	 * No new pools should be added to the region afterwards.
-> > =C2=A0	 */
-> > =C2=A0	bool unregistered;
-> > +
-> > +	/**
-> > +	 * @reclaim: Optional callback invoked when dmem.max is
-> > set below the
-> > +	 * current usage of a pool. The driver should attempt to
-> > free at least
-> > +	 * @target_bytes from @pool. May be called multiple times
-> > if usage
-> > +	 * remains above the limit after returning.
-> > +	 */
-> > +	int (*reclaim)(struct dmem_cgroup_pool_state *pool, u64
-> > target_bytes,
-> > +		=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 void *priv);
-> > +
-> > +	/** @reclaim_priv: Private data passed to @reclaim. */
-> > +	void *reclaim_priv;
-> > =C2=A0};
-> > =C2=A0
-> > =C2=A0struct dmemcg_state {
-> > @@ -145,23 +157,59 @@ static void free_cg_pool(struct
-> > dmem_cgroup_pool_state *pool)
-> > =C2=A0}
-> > =C2=A0
-> > =C2=A0static int
-> > -set_resource_min(struct dmem_cgroup_pool_state *pool, u64 val)
-> > +set_resource_min(struct dmem_cgroup_pool_state *pool, u64 val,
-> > +		 struct dmem_cgroup_region *region)
-> > =C2=A0{
-> > =C2=A0	page_counter_set_min(&pool->cnt, val);
-> > =C2=A0	return 0;
-> > =C2=A0}
-> > =C2=A0
-> > =C2=A0static int
-> > -set_resource_low(struct dmem_cgroup_pool_state *pool, u64 val)
-> > +set_resource_low(struct dmem_cgroup_pool_state *pool, u64 val,
-> > +		 struct dmem_cgroup_region *region)
-> > =C2=A0{
-> > =C2=A0	page_counter_set_low(&pool->cnt, val);
-> > =C2=A0	return 0;
-> > =C2=A0}
-> > =C2=A0
-> > =C2=A0static int
-> > -set_resource_max(struct dmem_cgroup_pool_state *pool, u64 val)
-> > +set_resource_max(struct dmem_cgroup_pool_state *pool, u64 val,
-> > +		 struct dmem_cgroup_region *region)
-> > =C2=A0{
-> > -	return page_counter_set_max(&pool->cnt, val);
-> > +	int err =3D page_counter_set_max(&pool->cnt, val);
-> > +
-> > +	if (err !=3D -EBUSY || !region || !region->reclaim)
-> > +		return err;
-> > +
-> > +	/*
-> > +	 * The new max is below current usage.=C2=A0 Ask the driver to
-> > evict memory
-> > +	 * and retry, up to a bounded number of times.=C2=A0 Signal
-> > interruptions are
-> > +	 * propagated back to the write() caller; other reclaim
-> > failures leave
-> > +	 * -EBUSY as the result.
-> > +	 */
-> > +	for (int retries =3D 5; retries > 0; retries--) {
-> > +		u64 usage =3D page_counter_read(&pool->cnt);
-> > +		u64 target =3D usage > val ? usage - val : 0;
-> > +		int reclaim_err;
-> > +
-> > +		if (!target) {
-> > +			err =3D page_counter_set_max(&pool->cnt,
-> > val);
-> > +			break;
-> > +		}
-> > +
-> > +		reclaim_err =3D region->reclaim(pool, target,
-> > region->reclaim_priv);
-> > +		if (reclaim_err) {
-> > +			if (reclaim_err =3D=3D -EINTR || reclaim_err
-> > =3D=3D -ERESTARTSYS)
-> > +				err =3D reclaim_err;
-> > +			break;
-> > +		}
-> > +
-> > +		err =3D page_counter_set_max(&pool->cnt, val);
-> > +		if (err !=3D -EBUSY)
-> > +			break;
-> > +	}
-> > +
-> > +	return err;
-> > =C2=A0}
+>=20Probably a bit out of scope but one thing to note on slab side:
+> kfree_bulk() (called by kfree_rcu batching) doesn't specify slab cache,
+> and it builds a detached freelist which contains objects from the same =
+slab.
 >=20
-> I mentioned this in chat but I wanted to mention it on the mailing
-> list for others as well,
-> can we reproduce the behavior from memory_max_write() in
-> mm/memcontrol.c?
+>=20On the other hand kmem_cache_free_bulk() with non-NULL slab cache
+> simply calls free_to_pcs_bulk() and it passes objects one by one to
+> __memcg_slab_free_hook() since objects may not come from the same slab.
 >=20
-> 1. First set new limit through xchg.
-> 2. If O_NONBLOCK is set -> do nothing, next allocation in target
-> region will fail and cause reclaim.
-> 3. If not set -> reclaim until below new limit or interrupted by a
-> signal, return success in all cases here since we set new limit.
+>=20Now that we have sheaves enabled for (almost) all slab caches, it mig=
+ht
+> be worth revisiting - e.g. sort objects by slab cache and
+> pass them to free_to_pcs_bulk() instead of building a detached freelist=
+.
 >=20
+>=20And let __memcg_slab_free_hook() handle objects from the same cache b=
+ut
+> from different slabs.
 >=20
-
-Yup.
-
-For 3, we also need to consider the case where we fail to reclaim due
-to memory being pinned. If it's OK to (usually temporary) have current
-usage above max, that would work.
-
-I have that coded up and also add a patch on top to defer reclaim to a
-thread if we bail due to signal or O_NONBLOCK. Perhaps we could discuss
-whether that's a good or bad idea in that patch.
-
-Will send out when I've updated the IGT tests accordingly.
-
-Thanks,
-Thomas
+>=20--=20
+>=20Cheers,
+> Harry / Hyeonggon
+>
 
 
+Hi Shakeel and Harry,
+
+I ran a couple of benchmarks against the patch and wanted to share
+the results.
+
+The first test exercises the __io_alloc_req_refill bulk-refill path
+directly. It submits POLL_ADD requests against a pipe fd that never
+becomes readable, so requests accumulate in the poll wait queue and
+force repeated refills at high throughput. With the patch applied,
+elapsed time dropped by 8.7% =E2=80=94 a clear win for that code path.
+
+However, the second test focuses on single-object allocation speed
+under the same ring setup. There, the patch actually regressed
+performance by 5.7%.
+
+I also tried two targeted mitigations to recover that regression:
+
+  1. Replacing `likely` with `unlikely` in the relevant branch.
+  2. Replacing `check_mul_overflow` with a simpler bounds check:
+       size <=3D (size_t)(INT_MAX - PAGE_SIZE) /
+              (KMALLOC_MAX_SIZE + sizeof(struct obj_cgroup *))
+
+Neither approach recovered the single-allocation loss in a
+meaningful way.
+
+Given that only the __io_alloc_req_refill call path benefits from
+this patch while the common single-allocation path takes a step
+back, the trade-off doesn't seem worthwhile at this point. I'd
+suggest we hold off on merging until we find an approach that
+improves =E2=80=94 or at least doesn't hurt =E2=80=94 the general case.
+
+Happy to discuss further or run additional benchmarks if that
+would help. The two test programs I used are included at the
+bottom of this email.
+
+Best,
+Hui
+
+#define _GNU_SOURCE
+#include <liburing.h>
+#include <stdatomic.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <sys/resource.h>
+#include <time.h>
+#include <unistd.h>
+
+#define QD		4096	/* SQ depth per ring */
+#define BURST		2048	/* SQEs submitted per round; refills =E2=89=88 BURST/=
+8 */
+#define RING_RECYCLE	32	/* rounds before recycling the ring */
+
+/*
+ * Default total number of submissions.  Can be overridden via argv[1].
+ * The loop exits as soon as the cumulative submitted count reaches this =
+value.
+ */
+#define DEFAULT_TOTAL	(1UL << 24)
+
+int main(int argc, char **argv)
+{
+	unsigned long target =3D argc > 1 ? strtoul(argv[1], NULL, 0) : DEFAULT_=
+TOTAL;
+	unsigned long submitted =3D 0;
+
+	/* Raise nofile/memlock limits; poll requests are heavy on fd table and =
+slab */
+	struct rlimit rl =3D { .rlim_cur =3D 1 << 20, .rlim_max =3D 1 << 20 };
+	setrlimit(RLIMIT_NOFILE, &rl);
+	setrlimit(RLIMIT_MEMLOCK, &rl);
+
+	printf("target=3D%lu QD=3D%d burst=3D%d ring_recycle=3D%d\n",
+	       target, QD, BURST, RING_RECYCLE);
+
+	/*
+	 * A pipe whose read end will never become readable.
+	 * POLL_ADD(POLLIN) requests submitted against pfd[0] will hang
+	 * indefinitely in the poll wait queue without producing a CQE,
+	 * which is exactly what exercises the refill path at high rate.
+	 */
+	int pfd[2];
+	if (pipe(pfd) < 0) {
+		perror("pipe");
+		return 1;
+	}
+
+	struct timespec t0, t1;
+	clock_gettime(CLOCK_MONOTONIC, &t0);
+
+	while (submitted < target) {
+		struct io_uring ring;
+		struct io_uring_params pr =3D { 0 };
+
+		/*
+		 * No SQPOLL: submissions go through io_submit_sqes(), which is
+		 * the code path where refill is invoked.
+		 */
+		if (io_uring_queue_init_params(QD, &ring, &pr) < 0) {
+			perror("io_uring_queue_init_params");
+			break;
+		}
+
+		for (int round =3D 0; round < RING_RECYCLE && submitted < target; round=
+++) {
+			int prepared =3D 0;
+
+			for (int i =3D 0; i < BURST; i++) {
+				struct io_uring_sqe *sqe =3D io_uring_get_sqe(&ring);
+
+				if (!sqe)
+					break;
+
+				/*
+				 * POLL_ADD on an fd that never fires: the request
+				 * is parked on the poll wait queue and does not
+				 * return to the free list until ring exit.
+				 */
+				io_uring_prep_poll_add(sqe, pfd[0], POLL_IN);
+				sqe->user_data =3D i;
+				prepared++;
+			}
+
+			if (!prepared)
+				break;
+
+			int r =3D io_uring_submit(&ring);
+
+			if (r < 0)
+				break;
+
+			submitted +=3D r;
+		}
+
+		/*
+		 * Destroy the ring periodically so that the io_kiocb objects
+		 * accumulated in nr_req_allocated are returned to req_cachep.
+		 * ring_exit() drains all pending poll requests; once the
+		 * percpu_ref reaches zero the slab objects are released in
+		 * bulk, preventing unbounded memory growth.
+		 */
+		io_uring_queue_exit(&ring);
+	}
+
+	clock_gettime(CLOCK_MONOTONIC, &t1);
+
+	close(pfd[0]);
+	close(pfd[1]);
+
+	double dt =3D (t1.tv_sec - t0.tv_sec) +
+		    (t1.tv_nsec - t0.tv_nsec) / 1e9;
+
+	printf("submitted=3D%lu  refills=3D%lu  elapsed=3D%.3fs  (%.2f Mrefill/s=
+)\n",
+	       submitted, submitted / 8,
+	       dt, (submitted / 8.0) / dt / 1e6);
+
+	return 0;
+}
+
+
+#include <linux/module.h>
+#include <linux/kernel.h>
+#include <linux/slab.h>
+#include <linux/ktime.h>
+#include <linux/mm.h>
+
+MODULE_LICENSE("GPL");
+MODULE_AUTHOR("Hui Zhu");
+MODULE_DESCRIPTION("Benchmark for kmem_cache_alloc_bulk with memcg accoun=
+ting");
+
+/* Default number of iterations */
+static int iters =3D 100000;
+module_param(iters, int, 0444);
+MODULE_PARM_DESC(iters, "Number of iterations");=0D
+
+/*
+ * Default bulk size. Set to 32 or 64 to evaluate
+ * the effect of bulk allocation optimizations.
+ */
+static int bulk_size =3D 32;
+module_param(bulk_size, int, 0444);
+MODULE_PARM_DESC(bulk_size, "Number of objects per bulk allocation");
+
+#define OBJ_SIZE 256
+
+static int __init bench_init(void)
+{
+	struct kmem_cache *cache;
+	void **objs;
+	int i;
+	u64 start, end, delta;
+	int ret =3D 0;
+
+	pr_info("Benchmarking kmem_cache_alloc_bulk with SLAB_ACCOUNT...\n");
+
+	/*
+	 * Create the cache with SLAB_ACCOUNT so that every allocation
+	 * from it triggers the memcg accounting hooks, specifically
+	 * __memcg_slab_post_alloc_hook.
+	 */
+	cache =3D kmem_cache_create("bench_memcg_cache", OBJ_SIZE, 0,
+				  SLAB_ACCOUNT, NULL);
+	if (!cache) {
+		pr_err("Failed to create cache\n");
+		return -ENOMEM;
+	}
+
+	/* Allocate the pointer array to hold bulk-allocated objects */
+	objs =3D kmalloc_array(bulk_size, sizeof(void *), GFP_KERNEL);
+	if (!objs) {
+		pr_err("Failed to allocate pointer array\n");
+		kmem_cache_destroy(cache);
+		return -ENOMEM;
+	}
+
+	/* Warm up once to avoid cold-start overhead on the first run */
+	ret =3D kmem_cache_alloc_bulk(cache, GFP_KERNEL, bulk_size, objs);
+	if (ret)
+		kmem_cache_free_bulk(cache, ret, objs);
+
+	/* Start timing */
+	start =3D ktime_get_ns();
+
+	for (i =3D 0; i < iters; i++) {
+		/* Core measurement: bulk allocation */
+		ret =3D kmem_cache_alloc_bulk(cache, GFP_KERNEL, bulk_size, objs);
+		if (unlikely(!ret)) {
+			pr_err("Allocation failed at iteration %d\n", i);
+			break;
+		}
+		/*
+		 * Free immediately; we only care about the performance
+		 * of the allocation-path hooks.
+		 */
+		kmem_cache_free_bulk(cache, ret, objs);
+	}
+
+	end =3D ktime_get_ns();
+
+	delta =3D end - start;
+	pr_info("Benchmark Result (iters=3D%d, bulk=3D%d):\n", iters, bulk_size)=
+;
+	pr_info("  Total Time:              %llu ns\n", delta);
+	pr_info("  Avg Time per Iteration:  %llu ns\n", delta / iters);
+	pr_info("  Avg Time per Object:     %llu ns\n",
+		delta / (iters * bulk_size));
+
+	/* Release resources */
+	kfree(objs);
+	kmem_cache_destroy(cache);
+
+	/*
+	 * Return -EAGAIN to prevent the module from being fully loaded.
+	 * insmod will report an error and exit, but the benchmark results
+	 * are already recorded in dmesg, so no manual rmmod is needed.
+	 */
+	return -EAGAIN;
+}
+
+static void __exit bench_exit(void)
+{
+}
+
+module_init(bench_init);
+module_exit(bench_exit);
 
