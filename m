@@ -1,225 +1,323 @@
-Return-Path: <cgroups+bounces-15450-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-15451-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id KNEFJEUy6GmeGgIAu9opvQ
-	(envelope-from <cgroups+bounces-15450-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Wed, 22 Apr 2026 04:28:21 +0200
+	id wM+GJZVu6GkSKQIAu9opvQ
+	(envelope-from <cgroups+bounces-15451-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Wed, 22 Apr 2026 08:45:41 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3DC6144170A
-	for <lists+cgroups@lfdr.de>; Wed, 22 Apr 2026 04:28:21 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id E35D6442924
+	for <lists+cgroups@lfdr.de>; Wed, 22 Apr 2026 08:45:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id C346730E5707
-	for <lists+cgroups@lfdr.de>; Wed, 22 Apr 2026 02:19:46 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 92E55303853E
+	for <lists+cgroups@lfdr.de>; Wed, 22 Apr 2026 06:39:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 26C6F31714B;
-	Wed, 22 Apr 2026 02:19:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="sjZn0BUQ"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B7EF32692B;
+	Wed, 22 Apr 2026 06:39:51 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-ed1-f50.google.com (mail-ed1-f50.google.com [209.85.208.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 720B1316197
-	for <cgroups@vger.kernel.org>; Wed, 22 Apr 2026 02:19:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.208.50
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1776824356; cv=pass; b=DX2pmNTj1pXuWTkuBxLgezGuSnFzdQBTpD+4nsn0KVOcBGy+ewpCGLRN5YiKqaSwAl6FmSX1mRbj5oIY02RuYWfjE7igJMOjcJzOkOsXmHwBSuFAax6qyuE2vFm02nXHwMxyQ2weHqCd78Az6bqNM/lavlljytpxPtDZUpud7nw=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1776824356; c=relaxed/simple;
-	bh=/P3Rk4TtuDYfsPdnBrw4iKE8r+bV3HKR+Fx10JBb+ns=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=DF7irLnHF66YhFUQxSwwT2wFWopERmwczThkQaUdEhk2vwvFOzUdnXzU46VUQG9EQTBHNHLCbvR/qAn7fix7AV0Y4OIcF1tVwNN3cKdSxaPY3CWKVjry5HGmKwTg4l8/2u/qIlS6BVcqaDgZAi2L0nFI8EcKuWFxzuK2GZaAxR0=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=sjZn0BUQ; arc=pass smtp.client-ip=209.85.208.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f50.google.com with SMTP id 4fb4d7f45d1cf-676a89de629so2264392a12.1
-        for <cgroups@vger.kernel.org>; Tue, 21 Apr 2026 19:19:15 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; t=1776824354; cv=none;
-        d=google.com; s=arc-20240605;
-        b=CTEtUQOt4pINN7lLqElD9BL3qJGDsC5zs4ZOtIpj1vFUZp6lq1otUlRk38xH9msifQ
-         6bpkGJ0zwBzlJHu+T9ktdW94CXx4Kn20l4veTl0RbN4uJleiFvs0sRc0cDzb0IMfti6G
-         dmUIW8s0QA3M5tvWkJpPCaYDFzE2dXdV4N3FJT5p+E5EuWzCbVGsTDEIDtFgrOr55IYU
-         6hVHd9HyHJajKRlLjjikxp5MFUgTtJjjOYOm0OYSGTJ0ZeQmEY/L+aMAP3QDC4d4EIoc
-         wA9hluHeSYe7D8R6WwziRrWBhOM2x4+u3V2by0QnYPB/ku8okDYqpkR10I6n5JYL0h/y
-         jOqw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:dkim-signature;
-        bh=/P3Rk4TtuDYfsPdnBrw4iKE8r+bV3HKR+Fx10JBb+ns=;
-        fh=i/fQgUhOrCNr+1sBtrUk+RBO7zC2oiz3QfB2MfInifE=;
-        b=PLaEjMkUIudV7NzK0y/FFCu5g3hmYp6Nbr0vtJpiHsbg4Jg+Li/0utOP1X57UF/549
-         BzOVsW382/k2zlJVolw/m/EuaSsKW/emdcbtezHwHyG3QUzXD8kF7bl8nahGoUImtr6n
-         ksvsKsDlfO4fA0oYt+A84XG7zju8WE0XG3RMCdPbT9PyeGUKJ/XXJULWRz+ETATeHYtz
-         sek4wCA5/3B8OLgscBfoChx8JiOzaaA2TSEKeCCBBHNyCAAbGuSpKlbxmQEeeDr9akCi
-         4qW2as7WrdvRDiAaQBWjtSWNZmMtbRo0u1Hawz7RL0fSeVaRae9+XhH3eiDvVttRvpqw
-         Zxrw==;
-        darn=vger.kernel.org
-ARC-Authentication-Results: i=1; mx.google.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1776824354; x=1777429154; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=/P3Rk4TtuDYfsPdnBrw4iKE8r+bV3HKR+Fx10JBb+ns=;
-        b=sjZn0BUQljheTtpVl7ncqNF7+J9T11OG/6zfZHc9VdBEewdvtBX9uo0LZxv3sZ6QU7
-         sJD5pmmU+ZjQt6AAl6Op4qvAK9geAUB7bkt8Z1UMbBXIciceeoZtIzKs7Nh1+g7xTUyC
-         vIhjiOn5QpOYFmQpmVvgGOG/U2q03Z6JFLPe4k+42EvA/J7A3beQOoLAs7zEGneOuJlw
-         iLo7wca2mXlH5m7Cn3vkzYQBisUnIlRtkz1DN+WcSs9Ixlg5U5Sd1uMaqncjtJH3YDQy
-         zREFK03OAIaP2/4jpybYQOBi+FlXbWEDy7UzEpY3GYtPKi7VJxM0BJhW5dH2Qg6Q2hSm
-         /Lag==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1776824354; x=1777429154;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=/P3Rk4TtuDYfsPdnBrw4iKE8r+bV3HKR+Fx10JBb+ns=;
-        b=q/S03U5URqjCMb0HcMJJmbmtYuWyNEue1WduI4IhVWHpwkWsFCf/NYtDw5qjfQgCsK
-         1K/Azl97B/6ud6TEhQeGzH4dDaUBhZB+kGvjq409NivhJYLl0Tq/rS3bRF2c5vI39srj
-         784qJ8aHcTkr4pckozUraCeE1EyLPlPFwpqabzFF7jvbyIActO9D5RBHkL/ANcGIv3Ow
-         lCXhK+0RQfe+zZJXyV1MNBd9/ngEw6A8XMvw8X+nDfV0kSf0JeWwEc9fREhEjnAPUvJk
-         S6/Io4b/5xzJd2Dq37hDfVG0QhU4ysJDf1teDFLkI6BV6JT51myF4xT82D77OzQ81wqy
-         ciEw==
-X-Forwarded-Encrypted: i=1; AFNElJ/X/6GVYwrz4582xO3Tm3gFoFau3QrmoaXQs4cQr/7ovivVnn/BOzhGzEYhEascCxqDrZBND396@vger.kernel.org
-X-Gm-Message-State: AOJu0Yz12sx1QWlxmlVnxX12CDn9qsUX2wA4vxPVETrhufjKHrvbnK42
-	ZT8pMR/Bw81mkZFJ8S6YmBs9kGR2UjGO04JvGaWOUri51LW0Gmn5OBatTRKtggAPLTBHzihg499
-	d2N0QP4P152ABwwSV0DWokBZAyDsxAd4=
-X-Gm-Gg: AeBDieuaUxoloQl5+1owsn1lbdBU33XJ4yl1ey9t+CdhrAxWZ6ELgFjggn0eBenqx16
-	FN1uGmgnjKuxaucCDaoWT0QSfnlGF+eTx+rx99htjuq3jIZsFZ6cdvavTeaO6j+1GjJFAwni+Jj
-	HruWZ+XSSXtVftwRyQSQS/rbKoHI92qNTCAFonBd4ICkkWvJV16GBxVb9NJaDpBm1WmQEWEtRmA
-	KT+Cyk2PrOTTV2NkblopO844zpCif7jS2LYgnzd2zW1QhOq9Ih62CCYqdp6+wbsrqVCvXgCKcAI
-	YTIqoyymBrVL/b+BhxvdPlf5iXW/6wgxz3ZJoExi7ESIW/bq0K8=
-X-Received: by 2002:a05:6402:26d6:b0:676:d863:ce29 with SMTP id
- 4fb4d7f45d1cf-676d863cf85mr1407081a12.28.1776824353486; Tue, 21 Apr 2026
- 19:19:13 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7062F31D366;
+	Wed, 22 Apr 2026 06:39:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1776839991; cv=none; b=ubi8fsCt1YlwNTO9/+7yFf0518ZUd/bmrMffppvDWwXhORJgACdXz9lbQHS/VnSj2YifgtubvKAkSxf6UnygfxLqG9pafVRfhOslpg7idv4JX/K9ia+ze3rxBvBFkxFMJsr9jPYW6hSYZ4pqJOcrUsYIwMPkEBOPjGqVx8X2ePY=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1776839991; c=relaxed/simple;
+	bh=8auo9fApI0AJJbM0oVqd4iDvIZsHR0GHU8PCbKdtgfE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=nEhnGlESkxk5sTuFyBRbXIkhzrOCb3a9m6NVJMgX5h698N9L6IaDoJzJnGGMxyXwfdPUnlx1I3gpIIZb/V8RPGtu/hmYgiGiRa6PX89OP81YlWNyIueKxfpE6A0OBr8SHCHG7g1GSK05fbutgELtbW6ibiBjAWzTBpLWKfF088Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.198])
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTPS id 4g0qMJ3lLGzKHMN6;
+	Wed, 22 Apr 2026 14:39:24 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.128])
+	by mail.maildlp.com (Postfix) with ESMTP id CB50540600;
+	Wed, 22 Apr 2026 14:39:44 +0800 (CST)
+Received: from [10.67.111.176] (unknown [10.67.111.176])
+	by APP4 (Coremail) with SMTP id gCh0CgBnBMIubehpzQ43BQ--.59576S2;
+	Wed, 22 Apr 2026 14:39:44 +0800 (CST)
+Message-ID: <48f5e1f5-bfb0-44cc-ae6a-14f66158796f@huaweicloud.com>
+Date: Wed, 22 Apr 2026 14:39:42 +0800
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20260320192735.748051-1-nphamcs@gmail.com> <aegUoOiUbjUAH5aT@google.com>
-In-Reply-To: <aegUoOiUbjUAH5aT@google.com>
-From: Kairui Song <ryncsn@gmail.com>
-Date: Wed, 22 Apr 2026 10:18:35 +0800
-X-Gm-Features: AQROBzDy3s1eJBSM4ivRYyuVreJ6HWEvbaw8uJ7B00A6nArMH1jrA77MWD0vRmM
-Message-ID: <CAMgjq7C53WRS5oYxO157mX7JxhfoPoi34k+taiKLrMah-b-iRg@mail.gmail.com>
-Subject: Re: [PATCH v5 00/21] Virtual Swap Space
-To: Yosry Ahmed <yosry@kernel.org>
-Cc: Nhat Pham <nphamcs@gmail.com>, Liam.Howlett@oracle.com, akpm@linux-foundation.org, 
-	apopple@nvidia.com, axelrasmussen@google.com, baohua@kernel.org, 
-	baolin.wang@linux.alibaba.com, bhe@redhat.com, byungchul@sk.com, 
-	cgroups@vger.kernel.org, chengming.zhou@linux.dev, chrisl@kernel.org, 
-	corbet@lwn.net, david@kernel.org, dev.jain@arm.com, gourry@gourry.net, 
-	hannes@cmpxchg.org, hughd@google.com, jannh@google.com, 
-	joshua.hahnjy@gmail.com, lance.yang@linux.dev, lenb@kernel.org, 
-	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, linux-mm@kvack.org, 
-	linux-pm@vger.kernel.org, lorenzo.stoakes@oracle.com, matthew.brost@intel.com, 
-	mhocko@suse.com, muchun.song@linux.dev, npache@redhat.com, pavel@kernel.org, 
-	peterx@redhat.com, peterz@infradead.org, pfalcato@suse.de, rafael@kernel.org, 
-	rakie.kim@sk.com, roman.gushchin@linux.dev, rppt@kernel.org, 
-	ryan.roberts@arm.com, shakeel.butt@linux.dev, shikemeng@huaweicloud.com, 
-	surenb@google.com, tglx@kernel.org, vbabka@suse.cz, weixugc@google.com, 
-	ying.huang@linux.alibaba.com, yosry.ahmed@linux.dev, yuanchu@google.com, 
-	zhengqi.arch@bytedance.com, ziy@nvidia.com, kernel-team@meta.com, 
-	riel@surriel.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Spamd-Result: default: False [-0.66 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=2];
-	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
-	R_DKIM_ALLOW(-0.20)[gmail.com:s=20251104];
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 02/23] sched/isolation: Enhance housekeeping_update() to
+ support updating more than one HK cpumask
+To: Waiman Long <longman@redhat.com>, Tejun Heo <tj@kernel.org>,
+ Johannes Weiner <hannes@cmpxchg.org>, =?UTF-8?Q?Michal_Koutn=C3=BD?=
+ <mkoutny@suse.com>, Jonathan Corbet <corbet@lwn.net>,
+ Shuah Khan <skhan@linuxfoundation.org>,
+ Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
+ "K. Y. Srinivasan" <kys@microsoft.com>,
+ Haiyang Zhang <haiyangz@microsoft.com>, Wei Liu <wei.liu@kernel.org>,
+ Dexuan Cui <decui@microsoft.com>, Long Li <longli@microsoft.com>,
+ Guenter Roeck <linux@roeck-us.net>, Frederic Weisbecker
+ <frederic@kernel.org>, "Paul E. McKenney" <paulmck@kernel.org>,
+ Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
+ Joel Fernandes <joelagnelf@nvidia.com>, Josh Triplett
+ <josh@joshtriplett.org>, Boqun Feng <boqun@kernel.org>,
+ Uladzislau Rezki <urezki@gmail.com>, Steven Rostedt <rostedt@goodmis.org>,
+ Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+ Lai Jiangshan <jiangshanlai@gmail.com>, Zqiang <qiang.zhang@linux.dev>,
+ Anna-Maria Behnsen <anna-maria@linutronix.de>, Ingo Molnar
+ <mingo@kernel.org>, Thomas Gleixner <tglx@kernel.org>,
+ Peter Zijlstra <peterz@infradead.org>, Juri Lelli <juri.lelli@redhat.com>,
+ Vincent Guittot <vincent.guittot@linaro.org>,
+ Dietmar Eggemann <dietmar.eggemann@arm.com>, Ben Segall
+ <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+ Valentin Schneider <vschneid@redhat.com>,
+ K Prateek Nayak <kprateek.nayak@amd.com>,
+ "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+ Simon Horman <horms@kernel.org>
+Cc: cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-hyperv@vger.kernel.org, linux-hwmon@vger.kernel.org,
+ rcu@vger.kernel.org, netdev@vger.kernel.org,
+ linux-kselftest@vger.kernel.org, Costa Shulyupin <cshulyup@redhat.com>,
+ Qiliang Yuan <realwujing@gmail.com>
+References: <20260421030351.281436-1-longman@redhat.com>
+ <20260421030351.281436-3-longman@redhat.com>
+Content-Language: en-US
+From: Chen Ridong <chenridong@huaweicloud.com>
+In-Reply-To: <20260421030351.281436-3-longman@redhat.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID:gCh0CgBnBMIubehpzQ43BQ--.59576S2
+X-Coremail-Antispam: 1UD129KBjvJXoW3GFyrGF4kGw1fAF4xGFyxAFb_yoW7Kw4Dpr
+	Z8W3y3GFWkJr13G3s8Zw1DJr4rWw4kCw1vk3sxWw15tFy2g3WkA3409F9xJr97ur9rCr17
+	ZFZ8KwsIgFyjyrDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUvFb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxkF7I0En4kS
+	14v26rWY6Fy7MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I
+	8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWrXVW8
+	Jr1lIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7
+	CjxVAFwI0_Cr0_Gr1UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AK
+	xVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvj
+	xUVZ2-UUUUU
+X-CM-SenderInfo: hfkh02xlgr0w46kxt4xhlfz01xgou0bp/
+X-Spamd-Result: default: False [-1.46 / 15.00];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-15450-lists,cgroups=lfdr.de];
-	RCVD_TLS_LAST(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	FREEMAIL_CC(0.00)[gmail.com,oracle.com,linux-foundation.org,nvidia.com,google.com,kernel.org,linux.alibaba.com,redhat.com,sk.com,vger.kernel.org,linux.dev,lwn.net,arm.com,gourry.net,cmpxchg.org,kvack.org,intel.com,suse.com,infradead.org,suse.de,huaweicloud.com,suse.cz,bytedance.com,meta.com,surriel.com];
-	TO_DN_SOME(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	FROM_HAS_DN(0.00)[];
-	MISSING_XM_UA(0.00)[];
+	TAGGED_FROM(0.00)[bounces-15451-lists,cgroups=lfdr.de];
+	FREEMAIL_CC(0.00)[vger.kernel.org,lists.infradead.org,redhat.com,gmail.com];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCPT_COUNT_GT_50(0.00)[54];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[ryncsn@gmail.com,cgroups@vger.kernel.org];
-	DKIM_TRACE(0.00)[gmail.com:+];
-	NEURAL_HAM(-0.00)[-1.000];
+	FREEMAIL_TO(0.00)[redhat.com,kernel.org,cmpxchg.org,suse.com,lwn.net,linuxfoundation.org,arm.com,microsoft.com,roeck-us.net,nvidia.com,joshtriplett.org,gmail.com,goodmis.org,efficios.com,linux.dev,linutronix.de,infradead.org,linaro.org,google.com,suse.de,amd.com,davemloft.net];
+	RCVD_TLS_LAST(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	MIME_TRACE(0.00)[0:+];
+	DMARC_NA(0.00)[huaweicloud.com];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	FROM_HAS_DN(0.00)[];
 	TAGGED_RCPT(0.00)[cgroups];
-	MID_RHS_MATCH_FROMTLD(0.00)[];
-	FREEMAIL_FROM(0.00)[gmail.com];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,mail.gmail.com:mid]
-X-Rspamd-Queue-Id: 3DC6144170A
+	RCVD_COUNT_FIVE(0.00)[6];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[chenridong@huaweicloud.com,cgroups@vger.kernel.org];
+	TO_DN_SOME(0.00)[];
+	RCPT_COUNT_GT_50(0.00)[52];
+	R_DKIM_NA(0.00)[];
+	NEURAL_HAM(-0.00)[-1.000];
+	MID_RHS_MATCH_FROM(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,huaweicloud.com:mid]
+X-Rspamd-Queue-Id: E35D6442924
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-On Wed, Apr 22, 2026 at 8:26=E2=80=AFAM Yosry Ahmed <yosry@kernel.org> wrot=
-e:
->
-> On Fri, Mar 20, 2026 at 12:27:14PM -0700, Nhat Pham wrote:
-> >
-> > This patch series implements the virtual swap space idea, based on Yosr=
-y's
-> > proposals at LSFMMBPF 2023 (see [1], [2], [3]), as well as valuable
-> > inputs from Johannes Weiner. The same idea (with different
-> > implementation details) has been floated by Rik van Riel since at least
-> > 2011 (see [8]).
->
-> Unfortuantely, I haven't been able to keep up with virtual swap and swap
-> table development, as my time is mostly being spent elsewhere these
-> days. I do have a question tho, which might have already been answered
-> or is too naive/stupid -- so apologies in advance.
 
-Hi Yosry,
 
-Not a stupid question at all=E2=80=94it's actually spot on. :)
+On 2026/4/21 11:03, Waiman Long wrote:
+> The housekeeping_update() function currently allows update to the
+> HK_TYPE_DOMAIN cpumask only. As we are going to enable dynamic
+> modification of the other housekeeping cpumasks, we need to extend
+> it to support passing in the information about the HK cpumask(s) to
+> be updated.  In cases where some HK cpumasks happen to be the same,
+> it will be more efficient to update multiple HK cpumasks in one single
+> call instead of calling it multiple times. Extend housekeeping_update()
+> to support that as well.
+> 
+> Also add the restriction that passed in isolated cpumask parameter
+> of housekeeping_update() must include all the CPUs isolated at boot
+> time. This is currently the case for cpuset anyway.
+> 
+> Signed-off-by: Waiman Long <longman@redhat.com>
+> ---
+>  include/linux/sched/isolation.h |  2 +-
+>  kernel/cgroup/cpuset.c          |  2 +-
+>  kernel/sched/isolation.c        | 99 +++++++++++++++++++++++----------
+>  3 files changed, 71 insertions(+), 32 deletions(-)
+> 
+> diff --git a/include/linux/sched/isolation.h b/include/linux/sched/isolation.h
+> index d1707f121e20..a17f16e0156e 100644
+> --- a/include/linux/sched/isolation.h
+> +++ b/include/linux/sched/isolation.h
+> @@ -51,7 +51,7 @@ extern const struct cpumask *housekeeping_cpumask(enum hk_type type);
+>  extern bool housekeeping_enabled(enum hk_type type);
+>  extern void housekeeping_affine(struct task_struct *t, enum hk_type type);
+>  extern bool housekeeping_test_cpu(int cpu, enum hk_type type);
+> -extern int housekeeping_update(struct cpumask *isol_mask);
+> +extern int housekeeping_update(struct cpumask *isol_mask, unsigned long flags);
+>  extern void __init housekeeping_init(void);
+>  
+>  #else
+> diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
+> index 1335e437098e..a4eccb0ec0d1 100644
+> --- a/kernel/cgroup/cpuset.c
+> +++ b/kernel/cgroup/cpuset.c
+> @@ -1354,7 +1354,7 @@ static void cpuset_update_sd_hk_unlock(void)
+>  		 */
+>  		mutex_unlock(&cpuset_mutex);
+>  		cpus_read_unlock();
+> -		WARN_ON_ONCE(housekeeping_update(isolated_hk_cpus));
+> +		WARN_ON_ONCE(housekeeping_update(isolated_hk_cpus, BIT(HK_TYPE_DOMAIN)));
+>  		mutex_unlock(&cpuset_top_mutex);
+>  	} else {
+>  		cpuset_full_unlock();
+> diff --git a/kernel/sched/isolation.c b/kernel/sched/isolation.c
+> index 9ec9ae510dc7..965d6f8fe344 100644
+> --- a/kernel/sched/isolation.c
+> +++ b/kernel/sched/isolation.c
+> @@ -120,48 +120,87 @@ bool housekeeping_test_cpu(int cpu, enum hk_type type)
+>  }
+>  EXPORT_SYMBOL_GPL(housekeeping_test_cpu);
+>  
+> -int housekeeping_update(struct cpumask *isol_mask)
+> -{
+> -	struct cpumask *trial, *old = NULL;
+> -	int err;
+> +/* HK type processing table */
+> +static struct {
+> +	int type;
+> +	int boot_type;
+> +} hk_types[] = {
+> +	{ HK_TYPE_DOMAIN,       HK_TYPE_DOMAIN_BOOT	  },
+> +	{ HK_TYPE_MANAGED_IRQ,  HK_TYPE_MANAGED_IRQ_BOOT  },
+> +	{ HK_TYPE_KERNEL_NOISE, HK_TYPE_KERNEL_NOISE_BOOT }
+> +};
+>  
+> -	trial = kmalloc(cpumask_size(), GFP_KERNEL);
+> -	if (!trial)
+> -		return -ENOMEM;
+> +#define HK_TYPE_CNT	ARRAY_SIZE(hk_types)
+>  
+> -	cpumask_andnot(trial, housekeeping_cpumask(HK_TYPE_DOMAIN_BOOT), isol_mask);
+> -	if (!cpumask_intersects(trial, cpu_online_mask)) {
+> -		kfree(trial);
+> -		return -EINVAL;
+> +int housekeeping_update(struct cpumask *isol_mask, unsigned long flags)
+> +{
+> +	struct cpumask *trial[HK_TYPE_CNT];
+> +	int i, err = 0;
+> +
+> +	for (i = 0; i < HK_TYPE_CNT; i++) {
+> +		int type = hk_types[i].type;
+> +		int boot = hk_types[i].boot_type;
+> +
+> +		trial[i] = NULL;
+> +		if (flags & BIT(type)) {
+> +			trial[i] = kmalloc(cpumask_size(), GFP_KERNEL);
+> +			if (!trial[i]) {
+> +				err = -ENOMEM;
+> +				goto out;
+> +			}
+> +			/*
+> +			 * The new HK cpumask must be a subset of its boot
+> +			 * cpumask.
+> +			 */
+> +			cpumask_andnot(trial[i], cpu_possible_mask, isol_mask);
+> +			if (!cpumask_intersects(trial[i], cpu_online_mask) ||
+> +			    !cpumask_subset(trial[i], housekeeping_cpumask(boot))) {
+> +				i++;
+> +				err = -EINVAL;
+> +				goto out;
+> +			}
+> +		}
+>  	}
+>  
 
->
-> Given the recent advancements in the swap table and that most metadata
-> and the swap cache are already being pulled into it, is it possible to
-> use the swap table in the virtual swap layer instead of the xarray?
->
-> Basically pull the swap table one layer higher, and have it point to
-> either a zswap entry or a physical swap slot (or others in the future)?
-> If my understanding is correct, we kinda get the best of both worlds and
-> reuse the integration already done by the swap table with the swap
-> cache, as well as the lock paritioning.
->
-> In this world, the clusters would be in the virtual swap space, and we'd
-> create the clusters on-demand as needed.
->
-> Does this even work or make the least amount of sense (I guess the
-> question is for both Nhat and Kairui)?
->
+The i++ here is confusing. Wouldn't it be more readable to just use
+kfree(trial[i]) and then break out?
 
-Yes, this absolutely works. In fact, I previously posted a working RFC
-based on this idea. In that series, clusters are dynamically
-allocated, allowing the swap space to be dynamically sized
-(essentially infinite) while reusing all the existing infrastructure:
-https://lore.kernel.org/all/20260220-swap-table-p4-v1-0-104795d19815@tencen=
-t.com/
+>  	if (!housekeeping.flags)
+>  		static_branch_enable(&housekeeping_overridden);
+>  
+> -	if (housekeeping.flags & HK_FLAG_DOMAIN)
+> -		old = housekeeping_cpumask_dereference(HK_TYPE_DOMAIN);
+> -	else
+> -		WRITE_ONCE(housekeeping.flags, housekeeping.flags | HK_FLAG_DOMAIN);
+> -	rcu_assign_pointer(housekeeping.cpumasks[HK_TYPE_DOMAIN], trial);
+> -
+> -	synchronize_rcu();
+> -
+> -	pci_probe_flush_workqueue();
+> -	mem_cgroup_flush_workqueue();
+> -	vmstat_flush_workqueue();
+> +	for (i = 0; i < HK_TYPE_CNT; i++) {
+> +		int type =  hk_types[i].type;
+> +		struct cpumask *old;
+>  
+> -	err = workqueue_unbound_housekeeping_update(housekeeping_cpumask(HK_TYPE_DOMAIN));
+> -	WARN_ON_ONCE(err < 0);
+> +		if (!trial[i])
+> +			continue;
+> +		old = NULL;
+> +		if (housekeeping.flags & BIT(type))
+> +			old = housekeeping_cpumask_dereference(type);
+> +		rcu_assign_pointer(housekeeping.cpumasks[type], trial[i]);
+> +		trial[i] = old;
+> +	}
+>  
+> -	err = tmigr_isolated_exclude_cpumask(isol_mask);
+> -	WARN_ON_ONCE(err < 0);
+> +	if ((housekeeping.flags & flags) != flags)
+> +		WRITE_ONCE(housekeeping.flags, housekeeping.flags | flags);
+>  
+> -	err = kthreads_update_housekeeping();
+> -	WARN_ON_ONCE(err < 0);
+> +	synchronize_rcu();
+>  
+> -	kfree(old);
+> +	if (flags & HK_FLAG_DOMAIN) {
+> +		/*
+> +		 * HK_TYPE_DOMAIN specific callbacks
+> +		 */
+> +		pci_probe_flush_workqueue();
+> +		mem_cgroup_flush_workqueue();
+> +		vmstat_flush_workqueue();
+> +
+> +		WARN_ON_ONCE(workqueue_unbound_housekeeping_update(
+> +				housekeeping_cpumask(HK_TYPE_DOMAIN)) < 0);
+> +		WARN_ON_ONCE(tmigr_isolated_exclude_cpumask(isol_mask) < 0);
+> +		WARN_ON_ONCE(kthreads_update_housekeeping() < 0);
+> +	}
+>  
+> -	return 0;
+> +out:
+> +	while (--i >= 0)
+> +		kfree(trial[i]);
+> +	return err;
+>  }
+>  
+>  void __init housekeeping_init(void)
 
-The only missing pieces are a few helpers like folio_realloc_swap()
-and folio_migrate_swap() for lower layer allocation and migration. I
-prototyped this locally and it wasn't difficult to implement.
-Furthermore, this approach works perfectly with YoungJun's tiering
-work with zero conflicts, the dynamic layer can be runtime or
-per-memcg optional.
+-- 
+Best regards,
+Ridong
 
-To move this forward, I've stripped out the RFC features and memcg
-behavior changes, and recently sent a V3 that focuses purely on the
-infrastructure. It introduces no behavior changes or new features,
-just optimizations.
-
-It cleans up a lot of allocation and ordering, as well as memcg
-swap lookups. Since some of these problems were also observed in the
-vss discussion, I think this will make things easier for all of us:
-https://lore.kernel.org/all/20260421-swap-table-p4-v3-0-2f23759a76bc@tencen=
-t.com/
 
