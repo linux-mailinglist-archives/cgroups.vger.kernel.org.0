@@ -1,182 +1,129 @@
-Return-Path: <cgroups+bounces-15447-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-15448-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id +HjfLMAV6GmaEwIAu9opvQ
-	(envelope-from <cgroups+bounces-15447-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Wed, 22 Apr 2026 02:26:40 +0200
+	id yBMOAmwv6GlHGgIAu9opvQ
+	(envelope-from <cgroups+bounces-15448-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Wed, 22 Apr 2026 04:16:12 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2B772440DA2
-	for <lists+cgroups@lfdr.de>; Wed, 22 Apr 2026 02:26:40 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 06C6A4414AF
+	for <lists+cgroups@lfdr.de>; Wed, 22 Apr 2026 04:16:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 786CB301DC16
-	for <lists+cgroups@lfdr.de>; Wed, 22 Apr 2026 00:26:28 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 62CAA30302A2
+	for <lists+cgroups@lfdr.de>; Wed, 22 Apr 2026 02:14:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A6A2C19AD5C;
-	Wed, 22 Apr 2026 00:26:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AfWfAYVV"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BF1D430B53F;
+	Wed, 22 Apr 2026 02:14:20 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 658F3137750;
-	Wed, 22 Apr 2026 00:26:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 19C8F18DB2A;
+	Wed, 22 Apr 2026 02:14:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=124.126.103.232
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1776817583; cv=none; b=lkZwGe2YOj8AUpzk95wm5doE/W2OeqNKHg3ufc2p1xNCMNyp8vzN4DlyD1P9QQ3niySHuzMQTSbnXk5/7DxZZDYCaPyWJVS1eiZ6dUNEMy32ugDLr6wByzGYxhewl156CKJ4fLx7r/K0uy5gyRXqekIoLsoCx2S+oe2Czcp8MCc=
+	t=1776824060; cv=none; b=tZPsfHns4Vwjnk66UwyNsK0BS5SwSxn3o8hvFMmBZkRv/GElbh+oZs6Sz8AWUISMys0u25s/4bcKkmaVK+iIHYiKqaUakq2o+2n6xnvsMP+U3vYJ6ft1HJxvQGYELad370KQ4eyW2VQ/0W4y5slZ1IH50kJ7bACp3h2uwMBniD0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1776817583; c=relaxed/simple;
-	bh=jqBAEzAIAkAs5KK0c26HBfL5HhvElj7G2+7Aq7pEawY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ISRV/nKLlqarcInYLrEe6Jvly+Rett1/uzvBOE0ceaOtqKZjxFxDR2RQoBb+6UPaaylYTkdi6jdfbAazkU5GrZb98Ptj5gWJJs3ZMKNDnNEv2TcCBkIwqQq2eejOkx+oiP9dZzVZLEOsgebJy2h36OY9L4ZHLwB1i6gReZw9UG4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=AfWfAYVV; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 34DE9C2BCB0;
-	Wed, 22 Apr 2026 00:26:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1776817583;
-	bh=jqBAEzAIAkAs5KK0c26HBfL5HhvElj7G2+7Aq7pEawY=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=AfWfAYVV308wNpkitQfHp/i3Vv5ItGGWY2XqHA/y9idxCYm3dPzbSK+1q5SSNH6QK
-	 DsOwfy745VLjMiMxHcKCq6uTftlyufiRX44wgFujFSOigdKnuHKMyIYbWJW0dnCZry
-	 gJJe6OSYz8y79D39pR0T8X0/y2Zqr0TkD8jmzC2m9WHa2+j0bD/tngildZbAJ4zUlK
-	 eM2Hg0B3R5Uch2WC4xDPUI0ZVJS+OwSVimBYSur8g0v7HEu7AFTJMa8N7db6oAY7EC
-	 0T/KpkGxdNkaUTu2q/8Lam6bV19HUx2qf8ZYxfd1xFvzAcrzqClGURW5mWc/w1v7Oq
-	 DJ/3mdtpqSKhw==
-Date: Wed, 22 Apr 2026 00:26:19 +0000
-From: Yosry Ahmed <yosry@kernel.org>
-To: Nhat Pham <nphamcs@gmail.com>
-Cc: kasong@tencent.com, Liam.Howlett@oracle.com, akpm@linux-foundation.org, 
-	apopple@nvidia.com, axelrasmussen@google.com, baohua@kernel.org, 
-	baolin.wang@linux.alibaba.com, bhe@redhat.com, byungchul@sk.com, cgroups@vger.kernel.org, 
-	chengming.zhou@linux.dev, chrisl@kernel.org, corbet@lwn.net, david@kernel.org, 
-	dev.jain@arm.com, gourry@gourry.net, hannes@cmpxchg.org, hughd@google.com, 
-	jannh@google.com, joshua.hahnjy@gmail.com, lance.yang@linux.dev, lenb@kernel.org, 
-	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, linux-mm@kvack.org, 
-	linux-pm@vger.kernel.org, lorenzo.stoakes@oracle.com, matthew.brost@intel.com, 
-	mhocko@suse.com, muchun.song@linux.dev, npache@redhat.com, pavel@kernel.org, 
-	peterx@redhat.com, peterz@infradead.org, pfalcato@suse.de, rafael@kernel.org, 
-	rakie.kim@sk.com, roman.gushchin@linux.dev, rppt@kernel.org, ryan.roberts@arm.com, 
-	shakeel.butt@linux.dev, shikemeng@huaweicloud.com, surenb@google.com, tglx@kernel.org, 
-	vbabka@suse.cz, weixugc@google.com, ying.huang@linux.alibaba.com, 
-	yosry.ahmed@linux.dev, yuanchu@google.com, zhengqi.arch@bytedance.com, ziy@nvidia.com, 
-	kernel-team@meta.com, riel@surriel.com
-Subject: Re: [PATCH v5 00/21] Virtual Swap Space
-Message-ID: <aegUoOiUbjUAH5aT@google.com>
-References: <20260320192735.748051-1-nphamcs@gmail.com>
+	s=arc-20240116; t=1776824060; c=relaxed/simple;
+	bh=23egVKJYSw9ace8WgOUoSFSghoooZBrk1sWrkiCcs34=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=ZRua5hBwVEdoB42qM/fHOKwytsTwyi+uw/PVVTmAEtH/Q5m1wtylkebF2ektugiB9KAdqzkF66LVT9aiXoPJFlsODPrJEC1h+mGnUH1dmn2oy+GW086iyEWPCbWYznPsIji0jH1sfACQMZtpRmaFFl3g1PgP5AVnZPgGgPIUAQY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn; spf=pass smtp.mailfrom=kylinos.cn; arc=none smtp.client-ip=124.126.103.232
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kylinos.cn
+X-UUID: f43704ea3df011f1aa26b74ffac11d73-20260422
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.3.12,REQID:13354373-c6a5-4ec0-b59c-24552106c631,IP:10,
+	URL:0,TC:0,Content:-5,EDM:0,RT:0,SF:-5,FILE:0,BULK:0,RULE:Release_Ham,ACTI
+	ON:release,TS:0
+X-CID-INFO: VERSION:1.3.12,REQID:13354373-c6a5-4ec0-b59c-24552106c631,IP:10,UR
+	L:0,TC:0,Content:-5,EDM:0,RT:0,SF:-5,FILE:0,BULK:0,RULE:Release_Ham,ACTION
+	:release,TS:0
+X-CID-META: VersionHash:e7bac3a,CLOUDID:f7e07e7224e1ad61b7e4cd2c4d596444,BulkI
+	D:26042210141563B83QR0,BulkQuantity:0,Recheck:0,SF:17|19|38|66|78|81|82|83
+	|102|127|898,TC:nil,Content:0|15|52,EDM:-3,IP:-2,URL:99|1,File:nil,RT:nil,
+	Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BR
+	R:0,BRE:0,ARC:0
+X-CID-BVR: 2,SSN|SDN
+X-CID-BAS: 2,SSN|SDN,0,_
+X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_FAS,TF_CID_SPAM_FSD,TF_CID_SPAM_ULS
+X-CID-RHF: D41D8CD98F00B204E9800998ECF8427E
+X-UUID: f43704ea3df011f1aa26b74ffac11d73-20260422
+X-User: zhangguopeng@kylinos.cn
+Received: from [192.168.109.140] [(183.242.174.21)] by mailgw.kylinos.cn
+	(envelope-from <zhangguopeng@kylinos.cn>)
+	(Generic MTA with TLSv1.3 TLS_AES_128_GCM_SHA256 128/128)
+	with ESMTP id 270174658; Wed, 22 Apr 2026 10:14:12 +0800
+Message-ID: <bca5f779-1550-45af-a0d0-74b427b25c8f@kylinos.cn>
+Date: Wed, 22 Apr 2026 10:14:08 +0800
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20260320192735.748051-1-nphamcs@gmail.com>
-X-Spamd-Result: default: False [-0.66 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
-	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] cgroup/cpuset: make DL attach bandwidth reservation
+ root-domain aware
+To: longman@redhat.com, tj@kernel.org, juri.lelli@redhat.com,
+ chenridong@huaweicloud.com, mkoutny@suse.com
+Cc: hannes@cmpxchg.org, mingo@redhat.com, peterz@infradead.org,
+ vincent.guittot@linaro.org, dietmar.eggemann@arm.com, rostedt@goodmis.org,
+ bsegall@google.com, mgorman@suse.de, vschneid@redhat.com,
+ kprateek.nayak@amd.com, linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
+References: <20260421083449.95750-1-zhangguopeng@kylinos.cn>
+From: Guopeng Zhang <zhangguopeng@kylinos.cn>
+In-Reply-To: <20260421083449.95750-1-zhangguopeng@kylinos.cn>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spamd-Result: default: False [1.44 / 15.00];
+	SUSPICIOUS_URL_IN_SUSPICIOUS_MESSAGE(1.00)[];
+	URIBL_RED(0.50)[kylinos.cn:mid];
 	MAILLIST(-0.15)[generic];
+	BAD_REP_POLICIES(0.10)[];
 	MIME_GOOD(-0.10)[text/plain];
+	HAS_ANON_DOMAIN(0.10)[];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-15447-lists,cgroups=lfdr.de];
-	RCVD_COUNT_THREE(0.00)[4];
-	FREEMAIL_TO(0.00)[gmail.com];
-	FREEMAIL_CC(0.00)[tencent.com,oracle.com,linux-foundation.org,nvidia.com,google.com,kernel.org,linux.alibaba.com,redhat.com,sk.com,vger.kernel.org,linux.dev,lwn.net,arm.com,gourry.net,cmpxchg.org,gmail.com,kvack.org,intel.com,suse.com,infradead.org,suse.de,huaweicloud.com,suse.cz,bytedance.com,meta.com,surriel.com];
-	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	MISSING_XM_UA(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	RCVD_COUNT_THREE(0.00)[4];
+	TAGGED_FROM(0.00)[bounces-15448-lists,cgroups=lfdr.de];
+	DMARC_NA(0.00)[kylinos.cn];
+	RCVD_TLS_LAST(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCPT_COUNT_GT_50(0.00)[54];
+	FROM_HAS_DN(0.00)[];
+	ARC_ALLOW(0.00)[subspace.kernel.org:s=arc-20240116:i=1];
+	RCPT_COUNT_TWELVE(0.00)[17];
+	TO_DN_NONE(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[yosry@kernel.org,cgroups@vger.kernel.org];
-	DKIM_TRACE(0.00)[kernel.org:+];
+	FROM_NEQ_ENVFROM(0.00)[zhangguopeng@kylinos.cn,cgroups@vger.kernel.org];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
 	NEURAL_HAM(-0.00)[-1.000];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
+	MID_RHS_MATCH_FROM(0.00)[];
+	R_DKIM_NA(0.00)[];
+	R_SPF_ALLOW(0.00)[+ip6:2600:3c0a:e001:db::/64:c];
 	TAGGED_RCPT(0.00)[cgroups];
-	TO_DN_SOME(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 2B772440DA2
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,kylinos.cn:mid]
+X-Rspamd-Queue-Id: 06C6A4414AF
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-On Fri, Mar 20, 2026 at 12:27:14PM -0700, Nhat Pham wrote:
-> 
-> This patch series is based on 6.19. There are a couple more
-> swap-related changes in mainline that I would need to coordinate
-> with, but I still want to send this out as an update for the
-> regressions reported by Kairui Song in [15]. It's probably easier
-> to just build this thing rather than dig through that series of
-> emails to get the fix patch :)
-> 
-> Changelog:
-> * v4 -> v5:
->     * Fix a deadlock in memcg1_swapout (reported by syzbot [16]).
->     * Replace VM_WARN_ON(!spin_is_locked()) with lockdep_assert_held(),
->       and use guard(rcu) in vswap_cpu_dead
->       (reported by Peter Zijlstra [17]).
-> * v3 -> v4:
->     * Fix poor swap free batching behavior to alleviate a regression
->       (reported by Kairui Song).
->     * Fix assorted kernel build errors reported by kernel test robots
->       in the case of CONFIG_SWAP=n.
-> * RFC v2 -> v3:
->     * Implement a cluster-based allocation algorithm for virtual swap
->       slots, inspired by Kairui Song and Chris Li's implementation, as
->       well as Johannes Weiner's suggestions. This eliminates the lock
-> 	  contention issues on the virtual swap layer.
->     * Re-use swap table for the reverse mapping.
->     * Remove CONFIG_VIRTUAL_SWAP.
->     * Reducing the size of the swap descriptor from 48 bytes to 24
->       bytes, i.e another 50% reduction in memory overhead from v2.
->     * Remove swap cache and zswap tree and use the swap descriptor
->       for this.
->     * Remove zeromap, and replace the swap_map bytemap with 2 bitmaps
->       (one for allocated slots, and one for bad slots).
->     * Rebase on top of 6.19 (7d0a66e4bb9081d75c82ec4957c50034cb0ea449)
-> 	* Update cover letter to include new benchmark results and discussion
-> 	  on overhead in various cases.
-> * RFC v1 -> RFC v2:
->     * Use a single atomic type (swap_refs) for reference counting
->       purpose. This brings the size of the swap descriptor from 64 B
->       down to 48 B (25% reduction). Suggested by Yosry Ahmed.
->     * Zeromap bitmap is removed in the virtual swap implementation.
->       This saves one bit per physical swapfile slot.
->     * Rearrange the patches and the code change to make things more
->       reviewable. Suggested by Johannes Weiner.
->     * Update the cover letter a bit.
-> 
-> This patch series implements the virtual swap space idea, based on Yosry's
-> proposals at LSFMMBPF 2023 (see [1], [2], [3]), as well as valuable
-> inputs from Johannes Weiner. The same idea (with different
-> implementation details) has been floated by Rik van Riel since at least
-> 2011 (see [8]).
+Hi,
 
-Unfortuantely, I haven't been able to keep up with virtual swap and swap
-table development, as my time is mostly being spent elsewhere these
-days. I do have a question tho, which might have already been answered
-or is too naive/stupid -- so apologies in advance.
+For another case Waiman raised while reviewing the "record DL BW
+alloc CPU for attach rollback" patch, I did some validation and
+summarized the test results here:
 
-Given the recent advancements in the swap table and that most metadata
-and the swap cache are already being pulled into it, is it possible to
-use the swap table in the virtual swap layer instead of the xarray?
+https://lore.kernel.org/all/d683b3c8-f746-47cd-a306-314a8f3eecea@kylinos.cn/
 
-Basically pull the swap table one layer higher, and have it point to
-either a zswap entry or a physical swap slot (or others in the future)?
-If my understanding is correct, we kinda get the best of both worlds and
-reuse the integration already done by the swap table with the swap
-cache, as well as the lock paritioning.
+In short, the data there shows that the same-root-domain case can
+indeed leave persistent extra DL bandwidth accounting before the fix,
+while the follow-up patch removes that growth and still preserves the
+expected cross-root-domain bandwidth transfer behavior.
 
-In this world, the clusters would be in the virtual swap space, and we'd
-create the clusters on-demand as needed.
-
-Does this even work or make the least amount of sense (I guess the
-question is for both Nhat and Kairui)?
+Thanks,
+Guopeng
+在 2026/4/21 16:34, Guopeng Zhang 写道:
+> [PATCH] cgroup/cpuset: make DL attach bandwidth reservation root-domain aware
 
