@@ -1,81 +1,81 @@
-Return-Path: <cgroups+bounces-15476-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-15480-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id IJgtLjOE6mn80AIAu9opvQ
-	(envelope-from <cgroups+bounces-15476-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Thu, 23 Apr 2026 22:42:27 +0200
+	id cByDLHuD6mn80AIAu9opvQ
+	(envelope-from <cgroups+bounces-15480-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Thu, 23 Apr 2026 22:39:23 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id C6472457560
-	for <lists+cgroups@lfdr.de>; Thu, 23 Apr 2026 22:42:26 +0200 (CEST)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6A09C457531
+	for <lists+cgroups@lfdr.de>; Thu, 23 Apr 2026 22:39:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 37006307C2DA
-	for <lists+cgroups@lfdr.de>; Thu, 23 Apr 2026 20:35:01 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id E25A930712C1
+	for <lists+cgroups@lfdr.de>; Thu, 23 Apr 2026 20:35:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5643D347536;
-	Thu, 23 Apr 2026 20:35:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3C3C634EEE1;
+	Thu, 23 Apr 2026 20:35:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dmZktplk"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Up/P7GKv"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-ot1-f43.google.com (mail-ot1-f43.google.com [209.85.210.43])
+Received: from mail-oi1-f178.google.com (mail-oi1-f178.google.com [209.85.167.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B780B34677F
-	for <cgroups@vger.kernel.org>; Thu, 23 Apr 2026 20:34:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 42439346784
+	for <cgroups@vger.kernel.org>; Thu, 23 Apr 2026 20:35:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1776976500; cv=none; b=lw6Y9RKNanxoX1LZDgavOgnJmS0pc4OkGPIeSdADCQ/R36VlDGIRrRXJ6E52RvaUL6C01mzTanq780xNAGsiO9rqa2YFyCPPXR3l6mv+gG1Mbu+FbvbC6ykTrmJl1ymRgKKQ8WXMi7fcV9Wh1Uy5+/V2xIMAcZeDFEfaW2E5dBY=
+	t=1776976506; cv=none; b=MHl1kU4AdjhtMm6pNbwp3dtsteN3LEHJWq0eIm7Kn9HHh5gF/G2D7TXH9W2rblPNrsy56FgOyQbLCqtDEyWiNAXzSebM1Yk0fyEv4EI0X5t/eWDj7aXiahu92cUb5ZHwKMakh5DbTYxOOPcf9qE9vHvg1J3latzTIQSvS/Bvq9c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1776976500; c=relaxed/simple;
-	bh=uWRjBtJOPcmcOipDjZW5A0jtm6KKpRLRzR3YtzGjk2Y=;
+	s=arc-20240116; t=1776976506; c=relaxed/simple;
+	bh=RKwyc5ityashLjP4KmDsx4hUDeZ5424iiaAS5OUt9G8=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=d2SU2k2LbrabTiWeWyYxr5jYfPXK2+MyuTSiv0mLUv0dgr+kdJpNHGDK6qFjbBK++3hMPLD7BI4aC/B4hEVxz1oNUWaPIbg9h4IpvC6M8tbf9B6haBzrjcEjxzZWTixyrtSwS6hVWWiXG01ZGvjwlsuEGVqUtHOMbw4cOsNjm+Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=dmZktplk; arc=none smtp.client-ip=209.85.210.43
+	 MIME-Version; b=Nw41gKFgaFCEVJbdQNRtSrjzBoVgCmg5Rpj1Lkzr2TkCMfLAMlbg05KmU5K5YR/C3d+626rmhQX/cEjAlVcNnJpPNdI2m3TS3jyovG7CWRaJgPAjzLUC6qaD5K7pEssViseFVdoH1xMer2rhrCq2RprvRGVhsRpiWX7tdRzlwzY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Up/P7GKv; arc=none smtp.client-ip=209.85.167.178
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ot1-f43.google.com with SMTP id 46e09a7af769-7dcdd1b492eso3027615a34.1
-        for <cgroups@vger.kernel.org>; Thu, 23 Apr 2026 13:34:58 -0700 (PDT)
+Received: by mail-oi1-f178.google.com with SMTP id 5614622812f47-479ef2b7979so2353374b6e.3
+        for <cgroups@vger.kernel.org>; Thu, 23 Apr 2026 13:35:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1776976498; x=1777581298; darn=vger.kernel.org;
+        d=gmail.com; s=20251104; t=1776976502; x=1777581302; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=gL+yOOTEXjRtHcz4KSAUpDgaXmbkTootS4bc3SQomf4=;
-        b=dmZktplkF4al2B7NXOlJlvuV2x0CrQN3HPhb/11HqO3Chkh7a7fFTHEHNUzttZHYkz
-         RTOm/DrVojQChNpLPJcyRtz3pR9wOKNoc13nZ5XigkRYdNko6gRdtAexe90JAGh2/YUC
-         9qHDKNayvq1nrbL5jIimCb3paQtRe/KNjM+o/GdJUzh41NfS6mQx1Dx3A/xp2aJIJ/Hk
-         zIBB2BkVnTaBzNtLXZuZnMp8LLF8v2b7A1DfLcumxShqQ7/NcXYIKms0uWAbJMZcE/7D
-         72nc6rGZMcSrrz87CaME3UHxNlW92bjzNzCRaovKWBjALpNf3gyH4gw3j85D3gGWtocD
-         G20w==
+        bh=VIA1ATnBximdIVrwS2AHkBrrXRUA8+TS+BtXj7CLEVI=;
+        b=Up/P7GKvUbF4l6R9eDD3e55iDJn4oMitWq3vVPJxmOnzScR0LE/skShKjaYFeckoX4
+         45MoXfrADQ1hj7aLMtDm+Ho25yS4P6dMxAsK1eogvg7tuGnSt3N3u3G7ydHP/6K5eNkG
+         JRnz7UUQCcAVuOhtkOs+vOhZl7UDzMSvm6nTmgJbZT6Z0Iz7TEQt5MYAyG3axP3kvHPF
+         qTzGcaYQu+rgm6FlzeVcqiIlal/v5Wk/x41hWw3FzuvZG+uDWsw59SKPk56Tq0OoHwHg
+         EPCQb7T1UXd+WJ7uZU9qcZ9j6VDT/LMEBmrNIA8Wb5jP4Oot6sKSiyh7ePLWftHZtDhJ
+         bPNg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1776976498; x=1777581298;
+        d=1e100.net; s=20251104; t=1776976502; x=1777581302;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
          :to:cc:subject:date:message-id:reply-to;
-        bh=gL+yOOTEXjRtHcz4KSAUpDgaXmbkTootS4bc3SQomf4=;
-        b=Ji72O3mhnNsUr8V7ibKHcQnRWEmueT72aHjzgaAWT6RSLSmgoYPoItlhIQlVk5Lbjo
-         MeZ12zTaKGRYZKsOAysKaIkhGjj8PDLKkYCvFYIMhbHuI2yYRnYrDDnR/MDZvMirssy6
-         QiKqrxnRpMzoqiCahMr910RapLsmK7q8yYQsx7glYZStEeqTTbAijR9QdV21jteAajEz
-         Elfyy8QS1EJiN8idoGui0e0sWJLddXRV7VNam5Uoh45H0lASu5Ys6NS3p2bpWOmyKaNH
-         c85jUBRx7MDOmTXBoZvQfHoymNjXMS4R35dnzr3E2wAERAEaRZDwGzi9TfXEGa8oz4yP
-         WxlQ==
-X-Forwarded-Encrypted: i=1; AFNElJ+HczzsCysBBb4SmUhMQXnsPuuyUpqVJZ0EGx39K5HfZn8AsUTkaCLnyXw1csi/c08f0cvSALp+@vger.kernel.org
-X-Gm-Message-State: AOJu0Yxet0Z8+dbuOH+jl4Zi4GGUr1pDLWPzfbyKY1xmq2WTXXbF7E2g
-	SfaMNtINGiQF5KoHvZT67S6bzcns1Cti8PAbISJcKL+DlYQMkNQbUU87
-X-Gm-Gg: AeBDieutDPAyGOZR+PMGGGmYIJ3nRt+PWaMnI7Ypti0eG3fD+jKggt9Krj+xCmISHdD
-	coFpme4J4RdLnzmfcZRM5cxiMfuSnB1bVysjUb18VHTscgXOQBQhkIP5u4OqfxWNxNhaSmOFzkw
-	Mc4lR5AXVbpWwWRZOv+n37XIabpbEl8nObivHWebrN+T0WWdG4AevKEHtwQCf2EWYIl/hIyAnxk
-	IUemAo0ssu43494Kiw6RDkdTb2NYiyB0VIj39AFNBORiqEbVBMzk9jjUxhXG4aaiY/FhizzWFHN
-	mu6emq0fQOXtHIXSOI8r5oQw5N/28CK3PXcEVvxMprTnIYl9TEWmK2fP9SdWzReACoiduqB18gm
-	dyjJShv09SwcEOOGtuFXHHoAQAI5bhV6drtk3sTEq+6IuE6F486j/+8OVBc7iQ+V6/hafTEQb86
-	LxalbHLIbAqjZ9CgfYg8e6qu+VbbxMbfM=
-X-Received: by 2002:a05:6830:82e3:b0:7dc:d7e5:8d43 with SMTP id 46e09a7af769-7dcd7e5a2e6mr8038210a34.2.1776976497705;
-        Thu, 23 Apr 2026 13:34:57 -0700 (PDT)
-Received: from localhost ([2a03:2880:10ff:8::])
-        by smtp.gmail.com with ESMTPSA id 46e09a7af769-7dcc953e39asm10485258a34.15.2026.04.23.13.34.56
+        bh=VIA1ATnBximdIVrwS2AHkBrrXRUA8+TS+BtXj7CLEVI=;
+        b=s3ybdQWcz4q2I/8bvtMjHh2Bchc37VAb2W1n8/Esn3p3uI4dnTnzGCM2tWrzXb4BHV
+         kGJiTmGVcaxm89SJ9mJ4xMQtBJg/6FJJWPxgkxB6Ezt0PLKH0FCCJDv8U3j2qMp1fbtK
+         n0si92Q8nBif+ole9L47Z/XJGlgSaYtW/z2oZb7A+ce4FJag/ElfDVIyuzsOnl8D/6JZ
+         jBnITJ0uwFjF10+SWrxbX/qCtdnwS/HwtmrPcQn5qrQRRE/bDXbhsdFTz8inQTIfrvWE
+         GjlmaOo37vMRTQbWTFnkonC59qm55kG97gYBZpiOK4vieLdoQBuy2O8PKzXARn+vrQCv
+         bkwg==
+X-Forwarded-Encrypted: i=1; AFNElJ+xAK+L5/3EMMFFwE0dVgXl3QdsFcfM86W1H33CjtpVF0tpii2E2yVep0ySNBXs1VKR7nLGzb1O@vger.kernel.org
+X-Gm-Message-State: AOJu0Yxc0pReoqNevCUPY2nJvDeCmNR/+YVF9FssFLZ75+E57QTD5AxU
+	7QYYWD5jYjOSTzUXPXaNrDlIXyNJihhvCq3+OLCAekjAcKEdY2L9LnNHeAM5HA==
+X-Gm-Gg: AeBDieuVTOZTjj2fiMRK/3iuCUjAu6fzTDnPpyQRIGuq/YTvBWOfPDTzuK2mOQclmpF
+	WQxXiubw1nItckZPRL95KIiRjV38mnciS2t7HPW3wdMsZg5+9xiJke8tuPr8XulP+oThlDI3ACN
+	ah83wod49HUBDyvGj4eAab/HOcyfBQbwpsmmPrN+eMSnIHjIACr9T10SdFyZLsBz0PIPzkkMd7D
+	ZQ/wUFmL20AnKzlRm26g65t0iwUB08KY45zl9CAaCbsF8+biWgz7S6LAf1Fv2EDYs+UtkIplBCd
+	d2+cYLos3UYz5A9gQ7AC+BKhKTIdr2yCcRv2nQgJ7NEhhZi2X7rIUpvqNMszo6FN940p6kEDoVj
+	/h/Q6MLoZIZOzAFRMlhP3Ydg2+Bk6/LPIgdGuL96K/mqWukQBAywRX49ybxR+U2XQkxKCmgksQR
+	sKjdmvWCgvF2IGGHcpvb7dtHaJVhmTrrc=
+X-Received: by 2002:a05:6808:e642:b0:47a:ae7:b5f6 with SMTP id 5614622812f47-47a0ae7c548mr3040802b6e.43.1776976501368;
+        Thu, 23 Apr 2026 13:35:01 -0700 (PDT)
+Received: from localhost ([2a03:2880:10ff:7::])
+        by smtp.gmail.com with ESMTPSA id 5614622812f47-479f6705d7asm5629481b6e.10.2026.04.23.13.34.58
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 23 Apr 2026 13:34:57 -0700 (PDT)
+        Thu, 23 Apr 2026 13:34:58 -0700 (PDT)
 From: Joshua Hahn <joshua.hahnjy@gmail.com>
 To: linux-mm@kvack.org
 Cc: Johannes Weiner <hannes@cmpxchg.org>,
@@ -87,9 +87,9 @@ Cc: Johannes Weiner <hannes@cmpxchg.org>,
 	cgroups@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	kernel-team@meta.com
-Subject: [RFC PATCH 7/9 v2] mm/memcontrol: Make memory.low and memory.min tier-aware
-Date: Thu, 23 Apr 2026 13:34:41 -0700
-Message-ID: <20260423203445.2914963-8-joshua.hahnjy@gmail.com>
+Subject: [RFC PATCH 8/9 v2] mm/memcontrol: Make memory.high tier-aware
+Date: Thu, 23 Apr 2026 13:34:42 -0700
+Message-ID: <20260423203445.2914963-9-joshua.hahnjy@gmail.com>
 X-Mailer: git-send-email 2.52.0
 In-Reply-To: <20260423203445.2914963-1-joshua.hahnjy@gmail.com>
 References: <20260423203445.2914963-1-joshua.hahnjy@gmail.com>
@@ -104,7 +104,7 @@ X-Spamd-Result: default: False [-1.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
 	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
 	R_DKIM_ALLOW(-0.20)[gmail.com:s=20251104];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
@@ -112,7 +112,7 @@ X-Spamd-Result: default: False [-1.66 / 15.00];
 	MIME_TRACE(0.00)[0:+];
 	DKIM_TRACE(0.00)[gmail.com:+];
 	TO_DN_SOME(0.00)[];
-	TAGGED_FROM(0.00)[bounces-15476-lists,cgroups=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-15480-lists,cgroups=lfdr.de];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	RCVD_TLS_LAST(0.00)[];
 	RECEIVED_HELO_LOCALHOST(0.00)[];
@@ -122,78 +122,195 @@ X-Spamd-Result: default: False [-1.66 / 15.00];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[joshuahahnjy@gmail.com,cgroups@vger.kernel.org];
 	FROM_HAS_DN(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
 	RCVD_COUNT_FIVE(0.00)[5];
 	MID_RHS_MATCH_FROM(0.00)[];
 	NEURAL_HAM(-0.00)[-1.000];
 	TAGGED_RCPT(0.00)[cgroups];
 	RCPT_COUNT_SEVEN(0.00)[10];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: C6472457560
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: 6A09C457531
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-On machines serving multiple workloads whose memory is isolated via
-the memory cgroup controller, it is currently impossible to enforce a
-fair distribution of toptier memory among the workloads, as the only
-enforceable limits have to do with total memory footprint, but not where
-that memory resides.
+On machines serving multiple workloads whose memory is isolated via the
+memory cgroup controller, it is currently impossible to enforce a fair
+distribution of toptier memory among the workloads, as the limits only
+enforce total memory footprint, but not where that memory resides.
 
-This makes ensuring a consistent and baseline performance difficult, as
-each workload's performance is heavily impacted by workload-external
-factors such as which other workloads are co-located in the same host,
-and the order at which different workloads are started.
+This makes ensuring consistent baseline performance difficult, as each
+workload's performance is heavily impacted by workload-external factors
+such as which other workloads are co-located in the same host, and the
+order in which the workloads are started.
 
-Extend the existing memory.{low, min} protection to be tier-aware in
-order to enforce proportional best-effort and guaranteed memory
-protection of toptier memory.
+Extend the existing memory.high protection to be tier-aware.
+
+Depending on the combination of limit breaches, selectively reclaim on
+toptier nodes: when memory.high is breached, perform reclaim on all
+nodes. When memory.high is safe but toptier.high is breached, perform
+targeted reclaim on toptier nodes only.
+
+Also, throttle allocations when toptier is breached as well, making sure
+not to double-penalize when both toptier and memory limits are met.
 
 Signed-off-by: Joshua Hahn <joshua.hahnjy@gmail.com>
 ---
- include/linux/memcontrol.h | 8 ++++++++
- mm/memcontrol.c            | 3 +++
- 2 files changed, 11 insertions(+)
+ mm/memcontrol.c | 82 +++++++++++++++++++++++++++++++++++++++++++------
+ 1 file changed, 72 insertions(+), 10 deletions(-)
 
-diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-index 6bcb866440075..2222b390ebf10 100644
---- a/include/linux/memcontrol.h
-+++ b/include/linux/memcontrol.h
-@@ -624,6 +624,10 @@ static inline bool mem_cgroup_below_low(struct mem_cgroup *target,
- 	if (mem_cgroup_unprotected(target, memcg))
- 		return false;
- 
-+	if (mem_cgroup_tiered_limits() && READ_ONCE(memcg->toptier.elow) >=
-+					  page_counter_read(&memcg->toptier))
-+		return true;
-+
- 	return READ_ONCE(memcg->memory.elow) >=
- 		page_counter_read(&memcg->memory);
- }
-@@ -634,6 +638,10 @@ static inline bool mem_cgroup_below_min(struct mem_cgroup *target,
- 	if (mem_cgroup_unprotected(target, memcg))
- 		return false;
- 
-+	if (mem_cgroup_tiered_limits() && READ_ONCE(memcg->toptier.emin) >=
-+					  page_counter_read(&memcg->toptier))
-+		return true;
-+
- 	return READ_ONCE(memcg->memory.emin) >=
- 		page_counter_read(&memcg->memory);
- }
 diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index 3fb1ee1d18603..b115ff40e268d 100644
+index b115ff40e268d..e5f39830d250d 100644
 --- a/mm/memcontrol.c
 +++ b/mm/memcontrol.c
-@@ -4933,6 +4933,9 @@ void mem_cgroup_calculate_protection(struct mem_cgroup *root,
- 		root = root_mem_cgroup;
+@@ -2112,10 +2112,25 @@ static unsigned long reclaim_high(struct mem_cgroup *memcg,
  
- 	page_counter_calculate_protection(&root->memory, &memcg->memory, recursive_protection);
-+	if (mem_cgroup_tiered_limits())
-+		page_counter_calculate_protection(&root->toptier,
-+				&memcg->toptier, recursive_protection);
+ 	do {
+ 		unsigned long pflags;
++		nodemask_t toptier_nodes;
++		nodemask_t *reclaim_targets = NULL;
+ 
+ 		if (page_counter_read(&memcg->memory) <=
+-		    READ_ONCE(memcg->memory.high))
+-			continue;
++		    READ_ONCE(memcg->memory.high)) {
++			if (!mem_cgroup_tiered_limits())
++				continue;
++
++			/*
++			 * Even if the memcg is under the memory limit, toptier
++			 * may have breached the toptier limit. Engage
++			 * targeted reclaim on toptier nodes if so.
++			 */
++			if (page_counter_read(&memcg->toptier) <=
++			    READ_ONCE(memcg->toptier.high))
++				continue;
++			get_toptier_nodemask(&toptier_nodes);
++			reclaim_targets = &toptier_nodes;
++		}
+ 
+ 		memcg_memory_event(memcg, MEMCG_HIGH);
+ 
+@@ -2123,7 +2138,7 @@ static unsigned long reclaim_high(struct mem_cgroup *memcg,
+ 		nr_reclaimed += try_to_free_mem_cgroup_pages(memcg, nr_pages,
+ 							gfp_mask,
+ 							MEMCG_RECLAIM_MAY_SWAP,
+-							NULL, NULL);
++							NULL, reclaim_targets);
+ 		psi_memstall_leave(&pflags);
+ 	} while ((memcg = parent_mem_cgroup(memcg)) &&
+ 		 !mem_cgroup_is_root(memcg));
+@@ -2224,6 +2239,23 @@ static u64 mem_find_max_overage(struct mem_cgroup *memcg)
+ 	return max_overage;
  }
  
- static int charge_memcg(struct folio *folio, struct mem_cgroup *memcg,
++static u64 toptier_find_max_overage(struct mem_cgroup *memcg)
++{
++	u64 overage, max_overage = 0;
++
++	if (!mem_cgroup_tiered_limits())
++		return 0;
++
++	do {
++		overage = calculate_overage(page_counter_read(&memcg->toptier),
++					    READ_ONCE(memcg->toptier.high));
++		max_overage = max(overage, max_overage);
++	} while ((memcg = parent_mem_cgroup(memcg)) &&
++		  !mem_cgroup_is_root(memcg));
++
++	return max_overage;
++}
++
+ static u64 swap_find_max_overage(struct mem_cgroup *memcg)
+ {
+ 	u64 overage, max_overage = 0;
+@@ -2326,6 +2358,14 @@ void __mem_cgroup_handle_over_high(gfp_t gfp_mask)
+ 	penalty_jiffies = calculate_high_delay(memcg, nr_pages,
+ 					       mem_find_max_overage(memcg));
+ 
++	/*
++	 * Don't double-penalize for toptier high overage if memory.high
++	 * overage penalization has already been accounted for.
++	 */
++	if (!penalty_jiffies)
++		penalty_jiffies += calculate_high_delay(memcg, nr_pages,
++					toptier_find_max_overage(memcg));
++
+ 	penalty_jiffies += calculate_high_delay(memcg, nr_pages,
+ 						swap_find_max_overage(memcg));
+ 
+@@ -2522,22 +2562,26 @@ static int try_charge_memcg(struct mem_cgroup *memcg, gfp_t gfp_mask,
+ 	 */
+ 	do {
+ 		bool mem_high, swap_high;
++		bool toptier_high = false;
+ 
+ 		mem_high = page_counter_read(&memcg->memory) >
+ 			READ_ONCE(memcg->memory.high);
+ 		swap_high = page_counter_read(&memcg->swap) >
+ 			READ_ONCE(memcg->swap.high);
++		toptier_high = mem_cgroup_tiered_limits() &&
++			       page_counter_read(&memcg->toptier) >
++			       READ_ONCE(memcg->toptier.high);
+ 
+ 		/* Don't bother a random interrupted task */
+ 		if (!in_task()) {
+-			if (mem_high) {
++			if (mem_high || toptier_high) {
+ 				schedule_work(&memcg->high_work);
+ 				break;
+ 			}
+ 			continue;
+ 		}
+ 
+-		if (mem_high || swap_high) {
++		if (mem_high || swap_high || toptier_high) {
+ 			/*
+ 			 * The allocating tasks in this cgroup will need to do
+ 			 * reclaim or be throttled to prevent further growth
+@@ -4577,10 +4621,28 @@ static ssize_t memory_high_write(struct kernfs_open_file *of,
+ 
+ 	for (;;) {
+ 		unsigned long nr_pages = page_counter_read(&memcg->memory);
+-		unsigned long reclaimed;
++		unsigned long reclaimed, charge;
++		nodemask_t toptier_nodes;
++		nodemask_t *reclaim_targets = NULL;
+ 
+-		if (nr_pages <= high)
+-			break;
++		if (nr_pages <= high) {
++			unsigned long toptier_nr_pages, toptier_high;
++
++			if (!mem_cgroup_tiered_limits())
++				break;
++
++			toptier_nr_pages = page_counter_read(&memcg->toptier);
++			toptier_high = READ_ONCE(memcg->toptier.high);
++
++			if (toptier_nr_pages <= toptier_high)
++				break;
++
++			get_toptier_nodemask(&toptier_nodes);
++			reclaim_targets = &toptier_nodes;
++			charge = toptier_nr_pages - toptier_high;
++		} else {
++			charge = nr_pages - high;
++		}
+ 
+ 		if (signal_pending(current))
+ 			break;
+@@ -4591,9 +4653,9 @@ static ssize_t memory_high_write(struct kernfs_open_file *of,
+ 			continue;
+ 		}
+ 
+-		reclaimed = try_to_free_mem_cgroup_pages(memcg, nr_pages - high,
++		reclaimed = try_to_free_mem_cgroup_pages(memcg, charge,
+ 					GFP_KERNEL, MEMCG_RECLAIM_MAY_SWAP,
+-					NULL, NULL);
++					NULL, reclaim_targets);
+ 
+ 		if (!reclaimed && !nr_retries--)
+ 			break;
 -- 
 2.52.0
 
