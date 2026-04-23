@@ -1,285 +1,222 @@
-Return-Path: <cgroups+bounces-15479-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-15481-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id UDnHNniD6mn80AIAu9opvQ
-	(envelope-from <cgroups+bounces-15479-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Thu, 23 Apr 2026 22:39:20 +0200
+	id 0MAGJ3mG6mmP0QIAu9opvQ
+	(envelope-from <cgroups+bounces-15481-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Thu, 23 Apr 2026 22:52:09 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9CA3E45752A
-	for <lists+cgroups@lfdr.de>; Thu, 23 Apr 2026 22:39:20 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 314484575E9
+	for <lists+cgroups@lfdr.de>; Thu, 23 Apr 2026 22:52:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 1BF13306EF10
-	for <lists+cgroups@lfdr.de>; Thu, 23 Apr 2026 20:35:15 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 4CE63302836B
+	for <lists+cgroups@lfdr.de>; Thu, 23 Apr 2026 20:48:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1CAFA347536;
-	Thu, 23 Apr 2026 20:35:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 179AF33BBCC;
+	Thu, 23 Apr 2026 20:48:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="izpImXtv"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Rx89kRCS"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-ot1-f44.google.com (mail-ot1-f44.google.com [209.85.210.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B2E83451A9
-	for <cgroups@vger.kernel.org>; Thu, 23 Apr 2026 20:35:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CDC972D0C7E
+	for <cgroups@vger.kernel.org>; Thu, 23 Apr 2026 20:48:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1776976505; cv=none; b=dLawZeU+ybeGhq9JXBR+4lvU+SKEqOptvNzIeZIDbOptheK5v7U2SjI5KDkH9pXWmPT52ndhRwmwqu2qiggeyA3O+xDi+QsI/UlyPItLif+pMsjETD6XqpatYdhhJ4ZrKV0FfyaUrP/X4xMHZrOKODFiSfx5i5nB3RUcnjjZXvU=
+	t=1776977283; cv=none; b=JE19LwXVA7GEClmMVPvM5DWpSVTA2o9i/JkExNAPwFClwFGK6c+JDbuw4uKq5+x+YaGKe8xOb2WYzkHeDC0jeQAkBNfMw7aKQy1hTPD2h1RCN+4GBZFbQaQemqg5V/bZ3J31MNlLbozUwKR5UH+BmCAA33WnFj0gkgLzO+jAPTM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1776976505; c=relaxed/simple;
-	bh=X0KVZocSB/kQAXbaJ8RFL/IxN+NQQ785g3daaat8ObI=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=qmt19ORn6O06EswWU/FiwBSNN/1hr0swG7xF5YZkmOWx/YEw4Hhs1Mq8i60vea8vz2KvMCch92J9KWYhHOL6+db3QnlmXwTXSOVLtC7ukxnjgLG9G7UR4zFqdFQ+sZPVa4oQUB7XEXJ3a2z6l2kEfoPxafIL1StoRlRKGKsKDLo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=izpImXtv; arc=none smtp.client-ip=209.85.210.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ot1-f44.google.com with SMTP id 46e09a7af769-7dcdd1b492eso3027675a34.1
-        for <cgroups@vger.kernel.org>; Thu, 23 Apr 2026 13:35:03 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1776976503; x=1777581303; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=IxH+yk1exTjyfi+5qxKujuSUOSqkgCGj2Y+qVsczotM=;
-        b=izpImXtv5c/k1MH8h6AcpMi0lGah9eHJckYknV6SrQteZwwI0YDdtr93A1M3dp6mjU
-         y6EdOZSJrZXucQOEgl7BkK78JQiLYYuJRb2AoFikRoWXVfAxFqpfZciQIvR+C0XKGeoo
-         7Ui/7dXslNfjrrSabZh70aHt3Rm3aYSRfU8rjFOW0uLoFSPQSW+yVulr8biOTooNca0Q
-         YQA71K2aBscZIExoJfNvZxC6nWimpescpAsHD0QJo6gGF6XW832QBS6wAdnVnAyFK9ed
-         Vwqsj84yR4uRuJD9c9dYoE+dAo6p3rvhoOf/t1qpfwJRZbx8b3qQx8STSgidxcwPfWRM
-         aiBQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1776976503; x=1777581303;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=IxH+yk1exTjyfi+5qxKujuSUOSqkgCGj2Y+qVsczotM=;
-        b=WMNSa0GOEfsUCmim+Ddrf7PP6YOUhjce7UL7cylkwc5bYiwBnUlgWNJSuKyCIw0v1P
-         bnon5/oso1AKGZT1OxeomZMO0lD5FpHxPXi2cMfLm0QhZBPbE4004NtG0jWgLiqjvE6Y
-         HWNdEiRZDIdZizJl+h3Q2j4F++QMd/hsy+uKWRYeWE1U17TgjMH9aRqbnZp9Uoj0Ww5e
-         iOiBZJxhxqMW+1hTHNJ9TrjWT4NGpZmnaHdklNq+VnI2UeejVvV4HPTB6lWM0F11ckCL
-         KxPoJBWN3q5sVzcSaHLSGwLI/TMMU/2euFzI96Rr5EWJJecnAXA5U6P7E021MOs1EPX4
-         +42A==
-X-Forwarded-Encrypted: i=1; AFNElJ97N+06KH7F4kQb3hYYMKvR+yHoXlTTJ8Y+6Og/22eQkSKRWSPJ9In8/4fOtYRYkg38SgkvjpHB@vger.kernel.org
-X-Gm-Message-State: AOJu0Yw/msUy/XgYoXRfhF/95/LL59O32ZTsCy4q6no46DR0EahXV3PL
-	CK3e0DDhNmUFNe/ezyjpCc37EFNFHjrL7TNS6lZhO+2ADGo0UIxFNeaO
-X-Gm-Gg: AeBDiessZl6hlJ4jbr+i9aJj9cEfExRKzvafqqYmGWO8SbO7fUy3W6kS8zA5tNSvEoi
-	z5haXh7BxsPXo9y7+6iWS59uIyrjNym17FztvkBDkbK2Np6Bn7hKmOqZYKi7OTvbXgSE1b9eW53
-	gDwOjyPKmb1uf5ixLcxPhVEuSWk98qJLG9gt9ZWcSJcZuiIqce/5vXGiYQv4E3oyeLKiaDuGN8z
-	jmn5hMNw+VZEhIDkstgblKlBrVqnBHBPU2Y60GOcDUciP4kNsPzkR4DtYMV+IamqB5bEy2ZxUG6
-	JCMaZuCgDevSqKhnDVn/XHC/24v/kEw2HPjwbG9RSWsUTPaAnFLEFvDQZoPNDllgw98hJ2In81/
-	i0kp/0T2ijhIgX/di7UnA0Rs5MPH0Z6SZIch7un5rm8aSHb3xbRICOU0es4XFRNedzu+cuXvm02
-	bbZHQNt67ZRmCoPDyZH0vRmJ1LkvBKRNOg
-X-Received: by 2002:a9d:6044:0:b0:7dc:807:d1f3 with SMTP id 46e09a7af769-7dc9550d8e2mr10674183a34.7.1776976503071;
-        Thu, 23 Apr 2026 13:35:03 -0700 (PDT)
-Received: from localhost ([2a03:2880:10ff:49::])
-        by smtp.gmail.com with ESMTPSA id 46e09a7af769-7dcc892c515sm10877354a34.21.2026.04.23.13.35.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 23 Apr 2026 13:35:02 -0700 (PDT)
-From: Joshua Hahn <joshua.hahnjy@gmail.com>
-To: linux-mm@kvack.org
-Cc: Johannes Weiner <hannes@cmpxchg.org>,
-	Michal Hocko <mhocko@kernel.org>,
-	Roman Gushchin <roman.gushchin@linux.dev>,
-	Shakeel Butt <shakeel.butt@linux.dev>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Muchun Song <muchun.song@linux.dev>,
-	cgroups@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	kernel-team@meta.com
-Subject: [RFC PATCH 9/9 v2] mm/memcontrol: Make memory.max tier-aware
-Date: Thu, 23 Apr 2026 13:34:43 -0700
-Message-ID: <20260423203445.2914963-10-joshua.hahnjy@gmail.com>
-X-Mailer: git-send-email 2.52.0
-In-Reply-To: <20260423203445.2914963-1-joshua.hahnjy@gmail.com>
-References: <20260423203445.2914963-1-joshua.hahnjy@gmail.com>
+	s=arc-20240116; t=1776977283; c=relaxed/simple;
+	bh=jZDdlWnnmZL0XkbmLmxoEnk709HEQgmgR/yJgX91nRY=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=BFQH4oKrxMl3vV5+aEN43Q9+r6wX9mUEbQTZMHEvKsQyhnSzLzm+9LWbNCXDJMMdeyGkOEJK2kHx2/NZuHPtLzufg+0A8Y7i6iZTBDJlFQCCzoOKDnzGU3A+TCHaqR1HNQWC9LteuFEGRSjZDtRn3AUHDNDA9knZ5YKG/GYMl6A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Rx89kRCS; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 790A5C2BCFC
+	for <cgroups@vger.kernel.org>; Thu, 23 Apr 2026 20:48:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1776977283;
+	bh=jZDdlWnnmZL0XkbmLmxoEnk709HEQgmgR/yJgX91nRY=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=Rx89kRCSlMrd7yHaiWXgQNZ6WFzc+/CKBSqW6tv6BpFT+A/XF9LFoVuRmekZJCcrW
+	 PucoZ+X0h55vGSz9jfRis3+KCvMSGCNSz9d+5It5kj3mDn/0Lxh+DK6iVMDORGNcke
+	 aXsxJBoQ49XvPZLLdxUiYoJ5kF2I5hTANUyf6QqSx22z9Ym8DmMOYvNwgQdbRS8v/Q
+	 m8izcosAHWgz/ZY6Mc5154h2tsCRHenWgtEmselaULHpCVGDLHOTix8xjAPEy4oIZZ
+	 oS79eyKyxiTPY2mWKPU3eVuO8lKJ+WF9QfF0VJEdaYEFuj/xwKjsdE6N9NL1k3Vzsk
+	 16A0t+tpNvBQg==
+Received: by mail-ed1-f44.google.com with SMTP id 4fb4d7f45d1cf-6788838d543so2018054a12.1
+        for <cgroups@vger.kernel.org>; Thu, 23 Apr 2026 13:48:03 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AFNElJ+JahoWJk0HOsniMtpGYkm6hJhnudOUZniY5RPQ/pMxVXcmxU2Zq76RWtDMAB1OohmuuwOlq9hS@vger.kernel.org
+X-Gm-Message-State: AOJu0YykQld1ANl22934jAQh6flS4x9jAVvURGtqK7FSfdcVkd0Eyjua
+	ojz8WVjQb0xNQRU2QMjHXu0teb2hCy4vsPYG/dTCbFuGEk6FALEIdiqFxi65yD6H3Gv2Nxm1sZt
+	tWByyzwGjKzHlmprvc4qJNwfWhmHH8lw=
+X-Received: by 2002:a17:907:3c90:b0:bac:7f7d:2bf8 with SMTP id
+ a640c23a62f3a-bac7f7d3864mr226153866b.0.1776977282033; Thu, 23 Apr 2026
+ 13:48:02 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spamd-Result: default: False [-1.66 / 15.00];
+References: <20260320192735.748051-1-nphamcs@gmail.com> <aegUoOiUbjUAH5aT@google.com>
+ <CAMgjq7C53WRS5oYxO157mX7JxhfoPoi34k+taiKLrMah-b-iRg@mail.gmail.com>
+ <aektdlD4npMVThu3@google.com> <CAMgjq7DRrz4Hdy-s4y-C=3BmPt50LKOfdWjjf2mWmCybdRaJ4w@mail.gmail.com>
+In-Reply-To: <CAMgjq7DRrz4Hdy-s4y-C=3BmPt50LKOfdWjjf2mWmCybdRaJ4w@mail.gmail.com>
+From: Yosry Ahmed <yosry@kernel.org>
+Date: Thu, 23 Apr 2026 13:47:50 -0700
+X-Gmail-Original-Message-ID: <CAO9r8zPvApgxKiVy5NhiWup_m57huF3MTuPvo=iq5kAxjRZC8Q@mail.gmail.com>
+X-Gm-Features: AQROBzCGOvAuB5Pa5DHTHxdTW2aSpPlTxrehClW5Vv-d-Qe-2m8TRnW986l3LBY
+Message-ID: <CAO9r8zPvApgxKiVy5NhiWup_m57huF3MTuPvo=iq5kAxjRZC8Q@mail.gmail.com>
+Subject: Re: [PATCH v5 00/21] Virtual Swap Space
+To: Kairui Song <ryncsn@gmail.com>
+Cc: Nhat Pham <nphamcs@gmail.com>, Liam.Howlett@oracle.com, akpm@linux-foundation.org, 
+	apopple@nvidia.com, axelrasmussen@google.com, baohua@kernel.org, 
+	baolin.wang@linux.alibaba.com, bhe@redhat.com, byungchul@sk.com, 
+	cgroups@vger.kernel.org, chengming.zhou@linux.dev, chrisl@kernel.org, 
+	corbet@lwn.net, david@kernel.org, dev.jain@arm.com, gourry@gourry.net, 
+	hannes@cmpxchg.org, hughd@google.com, jannh@google.com, 
+	joshua.hahnjy@gmail.com, lance.yang@linux.dev, lenb@kernel.org, 
+	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, linux-mm@kvack.org, 
+	linux-pm@vger.kernel.org, lorenzo.stoakes@oracle.com, matthew.brost@intel.com, 
+	mhocko@suse.com, muchun.song@linux.dev, npache@redhat.com, pavel@kernel.org, 
+	peterx@redhat.com, peterz@infradead.org, pfalcato@suse.de, rafael@kernel.org, 
+	rakie.kim@sk.com, roman.gushchin@linux.dev, rppt@kernel.org, 
+	ryan.roberts@arm.com, shakeel.butt@linux.dev, shikemeng@huaweicloud.com, 
+	surenb@google.com, tglx@kernel.org, vbabka@suse.cz, weixugc@google.com, 
+	ying.huang@linux.alibaba.com, yosry.ahmed@linux.dev, yuanchu@google.com, 
+	zhengqi.arch@bytedance.com, ziy@nvidia.com, kernel-team@meta.com, 
+	riel@surriel.com
+Content-Type: text/plain; charset="UTF-8"
+X-Spamd-Result: default: False [-0.66 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
-	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
-	R_DKIM_ALLOW(-0.20)[gmail.com:s=20251104];
+	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
+	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	MIME_TRACE(0.00)[0:+];
-	DKIM_TRACE(0.00)[gmail.com:+];
-	TO_DN_SOME(0.00)[];
-	TAGGED_FROM(0.00)[bounces-15479-lists,cgroups=lfdr.de];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	RCVD_TLS_LAST(0.00)[];
-	RECEIVED_HELO_LOCALHOST(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	FREEMAIL_FROM(0.00)[gmail.com];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[joshuahahnjy@gmail.com,cgroups@vger.kernel.org];
+	FREEMAIL_CC(0.00)[gmail.com,oracle.com,linux-foundation.org,nvidia.com,google.com,kernel.org,linux.alibaba.com,redhat.com,sk.com,vger.kernel.org,linux.dev,lwn.net,arm.com,gourry.net,cmpxchg.org,kvack.org,intel.com,suse.com,infradead.org,suse.de,huaweicloud.com,suse.cz,bytedance.com,meta.com,surriel.com];
+	TAGGED_FROM(0.00)[bounces-15481-lists,cgroups=lfdr.de];
 	FROM_HAS_DN(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
+	FREEMAIL_TO(0.00)[gmail.com];
+	RCVD_TLS_LAST(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	DKIM_TRACE(0.00)[kernel.org:+];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	MISSING_XM_UA(0.00)[];
 	RCVD_COUNT_FIVE(0.00)[5];
-	MID_RHS_MATCH_FROM(0.00)[];
-	NEURAL_HAM(-0.00)[-1.000];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[yosry@kernel.org,cgroups@vger.kernel.org];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	RCPT_COUNT_GT_50(0.00)[54];
 	TAGGED_RCPT(0.00)[cgroups];
-	RCPT_COUNT_SEVEN(0.00)[10];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: 9CA3E45752A
+	NEURAL_HAM(-0.00)[-1.000];
+	TO_DN_SOME(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,mail.gmail.com:mid]
+X-Rspamd-Queue-Id: 314484575E9
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-On machines serving multiple workloads whose memory is isolated via the
-memory cgroup controller, it is currently impossible to enforce a fair
-distribution of toptier memory among the workloads, as the limits only
-enforce total memory footprint, but not where that memory resides.
+> > > Yes, this absolutely works. In fact, I previously posted a working RFC
+> > > based on this idea. In that series, clusters are dynamically
+> > > allocated, allowing the swap space to be dynamically sized
+> > > (essentially infinite) while reusing all the existing infrastructure:
+> > > https://lore.kernel.org/all/20260220-swap-table-p4-v1-0-104795d19815@tencent.com/
+> >
+> > There are a few aspects that I don't agree with in this RFC, and I think
+> > Nhat and Johannes raised most of them. Mostly that I don't want to
+> > expose ghost swapfiles or similar to userspace.
+> >
+> > I think userspace's view of swapfiles should remain the same and reflect
+> > the physical swap slots. The virtual swap layer should be completely
+> > transparent in this case. Userspace shouldn't need to configure it in
+> > any way.
+>
+> That approach is definitely doable. For example, with that RFC we
+> could simply drop the interface I introduced and enable it via a
+> different knob, and that would be very close to it. :)
+>
+> Using a swapfile to represent the virtual layer externally just made
+> it more flexible.
 
-This makes ensuring consistent baseline performance difficult, as each
-workload's performance is heavily impacted by workload-external factors
-such as which other workloads are co-located in the same host, and the
-order in which the workloads are started.
+I think it makes it less flexible to be honest. Once it's exposed to
+userspace there's little we can change about it, and userspace needs
+to set it up.
 
-Extend the existing memory.max protection to be tier-aware.
+> I agree that the RFC design was a bit confusing and
+> could be improved. There is no technical difficulty in hiding it from
+> userspace; it's mostly a design choice. And even if we don't use a
+> swapfile to represent it internally, all the other infrastructure can
+> still be reused without much modification.
 
-Depending on the combination of limit breaches, selectively reclaim on
-toptier nodes: when memory.max is breached, perform reclaim on all
-nodes.  When memory.max is safe but toptier.max is breached, perform
-targeted reclaim on toptier nodes only.
+Yeah that's what I was getting at. It doesn't even need to be a
+swapfile in the kernel, at the very least it should be named
+differently to avoid confusion with actual swapfiles.
 
-Signed-off-by: Joshua Hahn <joshua.hahnjy@gmail.com>
----
- mm/memcontrol.c | 56 ++++++++++++++++++++++++++++++++++++++-----------
- 1 file changed, 44 insertions(+), 12 deletions(-)
+> Using a swapfile does have its benefits, though. For example, the
+> virtual layer could act as an ordinary tier following YoungJun's
+> design:
+> https://lore.kernel.org/linux-mm/20260421055323.940344-1-youngjun.park@lge.com/
 
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index e5f39830d250d..d8d67ada993ff 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -1518,6 +1518,15 @@ static unsigned long mem_cgroup_margin(struct mem_cgroup *memcg)
- 	if (count < limit)
- 		margin = limit - count;
- 
-+	if (mem_cgroup_tiered_limits()) {
-+		count = page_counter_read(&memcg->toptier);
-+		limit = READ_ONCE(memcg->toptier.max);
-+		if (count < limit)
-+			margin = min(margin, limit - count);
-+		else
-+			margin = 0;
-+	}
-+
- 	if (do_memsw_account()) {
- 		count = page_counter_read(&memcg->memsw);
- 		limit = READ_ONCE(memcg->memsw.max);
-@@ -2424,11 +2433,12 @@ static int try_charge_memcg(struct mem_cgroup *memcg, gfp_t gfp_mask,
- 	bool raised_max_event = false;
- 	unsigned long pflags;
- 	bool allow_spinning = gfpflags_allow_spinning(gfp_mask);
--	bool toptier_charged;
-+	nodemask_t toptier_nodes;
-+	nodemask_t *reclaim_nodes;
- 
- retry:
- 	reclaim_options = MEMCG_RECLAIM_MAY_SWAP;
--	toptier_charged = false;
-+	reclaim_nodes = NULL;
- 
- 	if (do_memsw_account() &&
- 	    !page_counter_try_charge(&memcg->memsw, nr_pages, &counter)) {
-@@ -2438,13 +2448,20 @@ static int try_charge_memcg(struct mem_cgroup *memcg, gfp_t gfp_mask,
- 	}
- 
- 	if (toptier &&
--	    page_counter_try_charge(&memcg->toptier, nr_pages, &counter))
--		toptier_charged = true;
-+	    !page_counter_try_charge(&memcg->toptier, nr_pages, &counter)) {
-+		get_toptier_nodemask(&toptier_nodes);
-+		reclaim_nodes = &toptier_nodes;
-+		mem_over_limit = mem_cgroup_from_counter(counter, toptier);
-+
-+		if (do_memsw_account())
-+			page_counter_uncharge(&memcg->memsw, nr_pages);
-+		goto reclaim;
-+	}
- 
- 	if (page_counter_try_charge(&memcg->memory, nr_pages, &counter))
- 		goto done_restock;
- 
--	if (toptier_charged)
-+	if (toptier)
- 		page_counter_uncharge(&memcg->toptier, nr_pages);
- 	if (do_memsw_account())
- 		page_counter_uncharge(&memcg->memsw, nr_pages);
-@@ -2473,7 +2490,7 @@ static int try_charge_memcg(struct mem_cgroup *memcg, gfp_t gfp_mask,
- 	psi_memstall_enter(&pflags);
- 	nr_reclaimed = try_to_free_mem_cgroup_pages(mem_over_limit, nr_pages,
- 						    gfp_mask, reclaim_options,
--						    NULL, NULL);
-+						    NULL, reclaim_nodes);
- 	psi_memstall_leave(&pflags);
- 
- 	if (mem_cgroup_margin(mem_over_limit) >= nr_pages)
-@@ -4683,7 +4700,8 @@ static ssize_t memory_max_write(struct kernfs_open_file *of,
- 	struct mem_cgroup *memcg = mem_cgroup_from_css(of_css(of));
- 	unsigned int nr_reclaims = MAX_RECLAIM_RETRIES;
- 	bool drained = false;
--	unsigned long max;
-+	unsigned long max, toptier_max = PAGE_COUNTER_MAX;
-+	nodemask_t toptier_nodes;
- 	int err;
- 
- 	buf = strstrip(buf);
-@@ -4692,16 +4710,30 @@ static ssize_t memory_max_write(struct kernfs_open_file *of,
- 		return err;
- 
- 	xchg(&memcg->memory.max, max);
--	if (mem_cgroup_tiered_limits())
--		xchg(&memcg->toptier.max, page_counter_max_or_scale(max));
-+	if (mem_cgroup_tiered_limits()) {
-+		toptier_max = page_counter_max_or_scale(max);
-+		xchg(&memcg->toptier.max, toptier_max);
-+		get_toptier_nodemask(&toptier_nodes);
-+	}
- 
- 	if (of->file->f_flags & O_NONBLOCK)
- 		goto out;
- 
- 	for (;;) {
- 		unsigned long nr_pages = page_counter_read(&memcg->memory);
-+		unsigned long nr_toptier = page_counter_read(&memcg->toptier);
-+		unsigned long to_reclaim = 0;
-+		nodemask_t *reclaim_nodes = NULL;
-+
-+		if (nr_pages > max) {
-+			to_reclaim = nr_pages - max;
-+		} else if (mem_cgroup_tiered_limits() &&
-+				nr_toptier > toptier_max) {
-+			to_reclaim = nr_toptier - toptier_max;
-+			reclaim_nodes = &toptier_nodes;
-+		}
- 
--		if (nr_pages <= max)
-+		if (!to_reclaim)
- 			break;
- 
- 		if (signal_pending(current))
-@@ -4714,9 +4746,9 @@ static ssize_t memory_max_write(struct kernfs_open_file *of,
- 		}
- 
- 		if (nr_reclaims) {
--			if (!try_to_free_mem_cgroup_pages(memcg, nr_pages - max,
-+			if (!try_to_free_mem_cgroup_pages(memcg, to_reclaim,
- 					GFP_KERNEL, MEMCG_RECLAIM_MAY_SWAP,
--					NULL, NULL))
-+					NULL, reclaim_nodes))
- 				nr_reclaims--;
- 			continue;
- 		}
--- 
-2.52.0
+Hmm I didn't look too closely at this but I don't understand how
+making it a swapfile helps with tiering? If anything, I think it makes
+tiering more difficult. For tiering to work, we need an
+abstraction/redirection layer, such that we don't need to update the
+page tables (or shmem pagecache) if we demote/promote pages. That is
+exactly the use case for a virtual swap layer. The page tables point
+at a virtual swap ID and the backend could change transparently (e.g.
+for zswap writeback, or tiering).
 
+If we make the virtual layer a swapfile, how do we demote/promote
+without updating page tables?
+
+IOW, I think the whole reason we want a virtual layer is to separate
+the backends, which would facilitate tiering. If the virtual layer is
+itself a swapfile, wouldn't it become one of the tiers?
+
+> It also means we wouldn't need to introduce things like a new,
+> virtual-specific swapoff mechanism.
+
+We don't *need* to introduce this, at least not initially. Only if we
+have a good use case for it.
+
+> > In an ideal world, the only noticeable change from userspace is that
+> > with zswap, compressed pages would stop using slots in the swapfile and
+> > charging the memcg for them -- and that zswap would work even without a
+> > swapfile, by just enabling it. This is admittedly a user-visible
+> > behavioral change, but I am hoping that's a good one that we can live
+> > with.
+>
+> Totally agree with the ideal end goal for zswap. just not sure if
+> that's the right place to start for this usage, zswap doesn't always
+> apply. For instance, we have SSDs with built-in compression,
+> software-based storage stacks with built-in compression and
+> deduplication, swap over RDMA, and, most notably, ZRAM users. They
+> don't necessarily need zswap or a virtual layer, and the upper layer
+> better be as much simplified as possible.
+
+Right, it's not necessarily zswap at all. As I mentioned above, the
+same logic applies for swap tiering. You can actually consider zswap
+one of the tiers (more-or-less). If you have one swapfile (or one
+tier) like the ones you mention above, the virtual layer just always
+points to a single backend (e.g. the slot in the swapfile). There
+might be some additional overhead, but I think it would be minimal if
+we use the cluster-based approach you have been pushing to eliminate
+static overhead and make it all dynamic based on actual usage.
+
+At a high-level, if we have a single tier/swapfile, I think the only
+additional overhead would be the reverse mapping from the swap slot to
+the virtual swap layer, which would be 8 bytes or so for every swapped
+out entry, right?
+
+I think this was discussed before but I still wonder if we really need
+a reverse mapping, if it's only to optimize swapoff then I don't think
+it's a requirement. We can still scan the virtual swap layer to look
+for slots to swapin. It would still be better than scanning the page
+tables as we do today. But I think there were other use cases for the
+reverse mapping, I just forgot what they were.
 
