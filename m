@@ -1,208 +1,231 @@
-Return-Path: <cgroups+bounces-15463-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-15464-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id QLqtDJ8v6WkFVgIAu9opvQ
-	(envelope-from <cgroups+bounces-15463-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Wed, 22 Apr 2026 22:29:19 +0200
+	id iCUgD8tx6WlhZwIAu9opvQ
+	(envelope-from <cgroups+bounces-15464-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Thu, 23 Apr 2026 03:11:39 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id D0CDA44A9BF
-	for <lists+cgroups@lfdr.de>; Wed, 22 Apr 2026 22:29:18 +0200 (CEST)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8BC1544C0BF
+	for <lists+cgroups@lfdr.de>; Thu, 23 Apr 2026 03:11:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 682B1302C5D7
-	for <lists+cgroups@lfdr.de>; Wed, 22 Apr 2026 20:27:11 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id B0DBD302D5B0
+	for <lists+cgroups@lfdr.de>; Thu, 23 Apr 2026 01:11:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9711C374185;
-	Wed, 22 Apr 2026 20:27:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Uumehj9Y"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D75A7283FEF;
+	Thu, 23 Apr 2026 01:11:16 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5825936C5A1;
-	Wed, 22 Apr 2026 20:27:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C78ECA4E;
+	Thu, 23 Apr 2026 01:11:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1776889630; cv=none; b=ddIpr2IfXECHTTBEfcw66E+VII7Rc9kVUjv7ghLCL/ldw+8KanehWKQ2xfrY8HkUzbDAuyKIvTKYhaI7BhjVjR0CDryEUcYyHOhwuz/y+4DVqdpH1UJbU7svvXEJ/KC9WsBfmmf4jylD9mHZybsududYd/R+EEOQVUTv7bkeT9k=
+	t=1776906676; cv=none; b=bJxtXhPF/aRmVHnDnmsNXEjRrF9L3DVByYLyfZjx3CApYaQCx+xkYZuOFw4ZWOURhkA3HqP3W9o+bk+2xMe2+OjbjcQUJPLBIx8ttK+sqclIOhjlhtblop6NN3XoU9t7nbP8HKFY8Y4Za1BTBJ270cmoE0QmGK+9BpqsSd/IFFY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1776889630; c=relaxed/simple;
-	bh=iAUPsm1LDedItMRxQEDcJahVt/xXTKZHOJ4OvRDP31A=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=gt380cGVWdoCXj+0wCHEmP5PgymhNXO/OOfz9gF/MePJI8HUNkMXtOJHFPYyIFLIUFeMTwJKsyKdOGeRhnaApxMExxDnZ0mypN3ISN+Hnk3v2LWZ+kvxJT8hghtt54T1KFWw/Ce/L6ZSOkQ8Wmg+Wutf3gRkySdWY5oK9qkDqUM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Uumehj9Y; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1693BC19425;
-	Wed, 22 Apr 2026 20:27:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1776889629;
-	bh=iAUPsm1LDedItMRxQEDcJahVt/xXTKZHOJ4OvRDP31A=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Uumehj9Yhkcy08Kf8dZ5rOV9nlZTiDXyKcpJXqDHKVVoiLk0k4R/Iy6e4t19WkMGG
-	 K79QlrrLYLsB3ybo4i+jp5gpal9jxBdG0SseGXmwpqJeEQBj/meOaPH+R8eO4m9C6B
-	 04Qpi6ue/mTejuseYYk2F2F0wMb/Pq3coHzcHWBAredtZrQR1mOBynQKXVaK7ySeAh
-	 rGK823XHnPX8G1WtvZ6+m/ROAsxVAqC7fH1XwK6oiJM316apDUAUs7oP0hkRXMRG0a
-	 6jzoEnGRKMnv0OjAZBjz53YtNgPl9drRCxuEGaxZnOzzeSGNKO8hJqRkjU3FhVfBG7
-	 VDOt1f/R7p/BA==
-Date: Wed, 22 Apr 2026 20:27:06 +0000
-From: Yosry Ahmed <yosry@kernel.org>
-To: Kairui Song <ryncsn@gmail.com>
-Cc: Nhat Pham <nphamcs@gmail.com>, Liam.Howlett@oracle.com, 
-	akpm@linux-foundation.org, apopple@nvidia.com, axelrasmussen@google.com, baohua@kernel.org, 
-	baolin.wang@linux.alibaba.com, bhe@redhat.com, byungchul@sk.com, cgroups@vger.kernel.org, 
-	chengming.zhou@linux.dev, chrisl@kernel.org, corbet@lwn.net, david@kernel.org, 
-	dev.jain@arm.com, gourry@gourry.net, hannes@cmpxchg.org, hughd@google.com, 
-	jannh@google.com, joshua.hahnjy@gmail.com, lance.yang@linux.dev, lenb@kernel.org, 
-	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, linux-mm@kvack.org, 
-	linux-pm@vger.kernel.org, lorenzo.stoakes@oracle.com, matthew.brost@intel.com, 
-	mhocko@suse.com, muchun.song@linux.dev, npache@redhat.com, pavel@kernel.org, 
-	peterx@redhat.com, peterz@infradead.org, pfalcato@suse.de, rafael@kernel.org, 
-	rakie.kim@sk.com, roman.gushchin@linux.dev, rppt@kernel.org, ryan.roberts@arm.com, 
-	shakeel.butt@linux.dev, shikemeng@huaweicloud.com, surenb@google.com, tglx@kernel.org, 
-	vbabka@suse.cz, weixugc@google.com, ying.huang@linux.alibaba.com, 
-	yosry.ahmed@linux.dev, yuanchu@google.com, zhengqi.arch@bytedance.com, ziy@nvidia.com, 
-	kernel-team@meta.com, riel@surriel.com
-Subject: Re: [PATCH v5 00/21] Virtual Swap Space
-Message-ID: <aektdlD4npMVThu3@google.com>
-References: <20260320192735.748051-1-nphamcs@gmail.com>
- <aegUoOiUbjUAH5aT@google.com>
- <CAMgjq7C53WRS5oYxO157mX7JxhfoPoi34k+taiKLrMah-b-iRg@mail.gmail.com>
+	s=arc-20240116; t=1776906676; c=relaxed/simple;
+	bh=6IEjWa5Bp2HmWAT63DqZwaxugME+cvx69VMEGChpnTc=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=WVRejSmhhCgsxKtvPEj58Bj3JmWHQnjc2iachVRVjxev+oxqR+ZeQwazuZfDNjxSM9mBV/KwnyRB11mXfm+zcSxImBubeMqKL+uVwQe2Za2GMLYtKCSiaw7vnd6FaE8Xw61t+cNEL0fO965Kjc3CNVrVsAchaY6qqNJtaXLkdzo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.170])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTPS id 4g1J0p05thzYQtjP;
+	Thu, 23 Apr 2026 09:10:02 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.252])
+	by mail.maildlp.com (Postfix) with ESMTP id C684140561;
+	Thu, 23 Apr 2026 09:11:00 +0800 (CST)
+Received: from [10.67.111.176] (unknown [10.67.111.176])
+	by APP3 (Coremail) with SMTP id _Ch0CgAnHbehcelp3eGGBQ--.59173S2;
+	Thu, 23 Apr 2026 09:10:59 +0800 (CST)
+Message-ID: <e8824498-f8ec-496a-a21c-d1dc594f4c8e@huaweicloud.com>
+Date: Thu, 23 Apr 2026 09:10:57 +0800
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAMgjq7C53WRS5oYxO157mX7JxhfoPoi34k+taiKLrMah-b-iRg@mail.gmail.com>
-X-Spamd-Result: default: False [-0.66 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 19/23] cgroup/cpuset: Improve check for calling
+ housekeeping_update()
+To: Waiman Long <longman@redhat.com>, Tejun Heo <tj@kernel.org>,
+ Johannes Weiner <hannes@cmpxchg.org>, =?UTF-8?Q?Michal_Koutn=C3=BD?=
+ <mkoutny@suse.com>, Jonathan Corbet <corbet@lwn.net>,
+ Shuah Khan <skhan@linuxfoundation.org>,
+ Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
+ "K. Y. Srinivasan" <kys@microsoft.com>,
+ Haiyang Zhang <haiyangz@microsoft.com>, Wei Liu <wei.liu@kernel.org>,
+ Dexuan Cui <decui@microsoft.com>, Long Li <longli@microsoft.com>,
+ Guenter Roeck <linux@roeck-us.net>, Frederic Weisbecker
+ <frederic@kernel.org>, "Paul E. McKenney" <paulmck@kernel.org>,
+ Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
+ Joel Fernandes <joelagnelf@nvidia.com>, Josh Triplett
+ <josh@joshtriplett.org>, Boqun Feng <boqun@kernel.org>,
+ Uladzislau Rezki <urezki@gmail.com>, Steven Rostedt <rostedt@goodmis.org>,
+ Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+ Lai Jiangshan <jiangshanlai@gmail.com>, Zqiang <qiang.zhang@linux.dev>,
+ Anna-Maria Behnsen <anna-maria@linutronix.de>, Ingo Molnar
+ <mingo@kernel.org>, Thomas Gleixner <tglx@kernel.org>,
+ Peter Zijlstra <peterz@infradead.org>, Juri Lelli <juri.lelli@redhat.com>,
+ Vincent Guittot <vincent.guittot@linaro.org>,
+ Dietmar Eggemann <dietmar.eggemann@arm.com>, Ben Segall
+ <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+ Valentin Schneider <vschneid@redhat.com>,
+ K Prateek Nayak <kprateek.nayak@amd.com>,
+ "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+ Simon Horman <horms@kernel.org>
+Cc: cgroups@vger.kernel.org, linux-doc@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-hyperv@vger.kernel.org, linux-hwmon@vger.kernel.org,
+ rcu@vger.kernel.org, netdev@vger.kernel.org,
+ linux-kselftest@vger.kernel.org, Costa Shulyupin <cshulyup@redhat.com>,
+ Qiliang Yuan <realwujing@gmail.com>
+References: <20260421030351.281436-1-longman@redhat.com>
+ <20260421030351.281436-20-longman@redhat.com>
+Content-Language: en-US
+From: Chen Ridong <chenridong@huaweicloud.com>
+In-Reply-To: <20260421030351.281436-20-longman@redhat.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID:_Ch0CgAnHbehcelp3eGGBQ--.59173S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxCw1UJF1UurW7urWktr13urg_yoW5AFy5pr
+	yUWrW3t345trs7u343Xwn7Wry0gw48GF17KasxG3WrGF9rZFn2yry0kFnxCry8uwnxGryU
+	ZF9rWws29a4UArDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUvFb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxkF7I0En4kS
+	14v26rWY6Fy7MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I
+	8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWrXVW8
+	Jr1lIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7
+	CjxVAFwI0_Cr0_Gr1UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AK
+	xVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvj
+	xUVZ2-UUUUU
+X-CM-SenderInfo: hfkh02xlgr0w46kxt4xhlfz01xgou0bp/
+X-Spamd-Result: default: False [-1.46 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
-	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
+	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
+	TAGGED_FROM(0.00)[bounces-15464-lists,cgroups=lfdr.de];
+	FREEMAIL_CC(0.00)[vger.kernel.org,lists.infradead.org,redhat.com,gmail.com];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	FREEMAIL_TO(0.00)[redhat.com,kernel.org,cmpxchg.org,suse.com,lwn.net,linuxfoundation.org,arm.com,microsoft.com,roeck-us.net,nvidia.com,joshtriplett.org,gmail.com,goodmis.org,efficios.com,linux.dev,linutronix.de,infradead.org,linaro.org,google.com,suse.de,amd.com,davemloft.net];
 	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-15463-lists,cgroups=lfdr.de];
-	RCVD_COUNT_THREE(0.00)[4];
-	FREEMAIL_TO(0.00)[gmail.com];
-	FREEMAIL_CC(0.00)[gmail.com,oracle.com,linux-foundation.org,nvidia.com,google.com,kernel.org,linux.alibaba.com,redhat.com,sk.com,vger.kernel.org,linux.dev,lwn.net,arm.com,gourry.net,cmpxchg.org,kvack.org,intel.com,suse.com,infradead.org,suse.de,huaweicloud.com,suse.cz,bytedance.com,meta.com,surriel.com];
+	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
 	MIME_TRACE(0.00)[0:+];
+	DMARC_NA(0.00)[huaweicloud.com];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	FROM_HAS_DN(0.00)[];
-	MISSING_XM_UA(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	RCPT_COUNT_GT_50(0.00)[54];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[yosry@kernel.org,cgroups@vger.kernel.org];
-	DKIM_TRACE(0.00)[kernel.org:+];
-	NEURAL_HAM(-0.00)[-1.000];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[cgroups];
+	RCVD_COUNT_FIVE(0.00)[6];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[chenridong@huaweicloud.com,cgroups@vger.kernel.org];
 	TO_DN_SOME(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
-X-Rspamd-Queue-Id: D0CDA44A9BF
+	RCPT_COUNT_GT_50(0.00)[52];
+	R_DKIM_NA(0.00)[];
+	NEURAL_HAM(-0.00)[-1.000];
+	MID_RHS_MATCH_FROM(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
+X-Rspamd-Queue-Id: 8BC1544C0BF
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 
-On Wed, Apr 22, 2026 at 10:18:35AM +0800, Kairui Song wrote:
-> On Wed, Apr 22, 2026 at 8:26 AM Yosry Ahmed <yosry@kernel.org> wrote:
-> >
-> > On Fri, Mar 20, 2026 at 12:27:14PM -0700, Nhat Pham wrote:
-> > >
-> > > This patch series implements the virtual swap space idea, based on Yosry's
-> > > proposals at LSFMMBPF 2023 (see [1], [2], [3]), as well as valuable
-> > > inputs from Johannes Weiner. The same idea (with different
-> > > implementation details) has been floated by Rik van Riel since at least
-> > > 2011 (see [8]).
-> >
-> > Unfortuantely, I haven't been able to keep up with virtual swap and swap
-> > table development, as my time is mostly being spent elsewhere these
-> > days. I do have a question tho, which might have already been answered
-> > or is too naive/stupid -- so apologies in advance.
+
+
+On 2026/4/21 11:03, Waiman Long wrote:
+> By making sure that isolated_hk_cpus matches isolated_cpus at boot time,
+> we can more accurately determine if calling housekeeping_update()
+> is needed by comparing if the two cpumasks are equal. The
+> update_housekeeping flag still have a use in cpuset_handle_hotplug()
+> to determine if a work function should be queued to invoke
+> cpuset_update_sd_hk_unlock() as it is not supposed to look at
+> isolated_hk_cpus without holding cpuset_top_mutex.
 > 
-> Hi Yosry,
+
+Currently, isolated_hk_cpus is updated within the cpuset_mutex critical section
+(before mutex_unlock(&cpuset_mutex)) in cpuset_update_sd_hk_unlock. Therefore, I
+think update_housekeeping can now be removed.
+
+> Signed-off-by: Waiman Long <longman@redhat.com>
+> ---
+>  kernel/cgroup/cpuset.c | 36 ++++++++++++++++++++----------------
+>  1 file changed, 20 insertions(+), 16 deletions(-)
 > 
-> Not a stupid question at all—it's actually spot on. :)
-> 
-> >
-> > Given the recent advancements in the swap table and that most metadata
-> > and the swap cache are already being pulled into it, is it possible to
-> > use the swap table in the virtual swap layer instead of the xarray?
-> >
-> > Basically pull the swap table one layer higher, and have it point to
-> > either a zswap entry or a physical swap slot (or others in the future)?
-> > If my understanding is correct, we kinda get the best of both worlds and
-> > reuse the integration already done by the swap table with the swap
-> > cache, as well as the lock paritioning.
-> >
-> > In this world, the clusters would be in the virtual swap space, and we'd
-> > create the clusters on-demand as needed.
-> >
-> > Does this even work or make the least amount of sense (I guess the
-> > question is for both Nhat and Kairui)?
-> >
-> 
-> Yes, this absolutely works. In fact, I previously posted a working RFC
-> based on this idea. In that series, clusters are dynamically
-> allocated, allowing the swap space to be dynamically sized
-> (essentially infinite) while reusing all the existing infrastructure:
-> https://lore.kernel.org/all/20260220-swap-table-p4-v1-0-104795d19815@tencent.com/
+> diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
+> index a4eccb0ec0d1..1b0c50b46a49 100644
+> --- a/kernel/cgroup/cpuset.c
+> +++ b/kernel/cgroup/cpuset.c
+> @@ -1339,26 +1339,29 @@ static void cpuset_update_sd_hk_unlock(void)
+>  	__releases(&cpuset_mutex)
+>  	__releases(&cpuset_top_mutex)
+>  {
+> +	update_housekeeping = false;
+> +
+>  	/* force_sd_rebuild will be cleared in rebuild_sched_domains_locked() */
+>  	if (force_sd_rebuild)
+>  		rebuild_sched_domains_locked();
+>  
+> -	if (update_housekeeping) {
+> -		update_housekeeping = false;
+> -		cpumask_copy(isolated_hk_cpus, isolated_cpus);
+> -
+> -		/*
+> -		 * housekeeping_update() is now called without holding
+> -		 * cpus_read_lock and cpuset_mutex. Only cpuset_top_mutex
+> -		 * is still being held for mutual exclusion.
+> -		 */
+> -		mutex_unlock(&cpuset_mutex);
+> -		cpus_read_unlock();
+> -		WARN_ON_ONCE(housekeeping_update(isolated_hk_cpus, BIT(HK_TYPE_DOMAIN)));
+> -		mutex_unlock(&cpuset_top_mutex);
+> -	} else {
+> +	if (cpumask_equal(isolated_hk_cpus, isolated_cpus)) {
+> +		/* No housekeeping cpumask update needed */
+>  		cpuset_full_unlock();
+> +		return;
+>  	}
+> +
+> +	cpumask_copy(isolated_hk_cpus, isolated_cpus);
+> +
+> +	/*
+> +	 * housekeeping_update() is now called without holding
+> +	 * cpus_read_lock and cpuset_mutex. Only cpuset_top_mutex
+> +	 * is still being held for mutual exclusion.
+> +	 */
+> +	mutex_unlock(&cpuset_mutex);
+> +	cpus_read_unlock();
+> +	WARN_ON_ONCE(housekeeping_update(isolated_hk_cpus, BIT(HK_TYPE_DOMAIN)));
+> +	mutex_unlock(&cpuset_top_mutex);
+>  }
+>  
+>  /*
+> @@ -3692,10 +3695,11 @@ int __init cpuset_init(void)
+>  
+>  	BUG_ON(!alloc_cpumask_var(&cpus_attach, GFP_KERNEL));
+>  
+> -	if (housekeeping_enabled(HK_TYPE_DOMAIN_BOOT))
+> +	if (housekeeping_enabled(HK_TYPE_DOMAIN_BOOT)) {
+>  		cpumask_andnot(isolated_cpus, cpu_possible_mask,
+>  			       housekeeping_cpumask(HK_TYPE_DOMAIN_BOOT));
+> -
+> +		cpumask_copy(isolated_hk_cpus, isolated_cpus);
+> +	}
+>  	return 0;
+>  }
+>  
 
-There are a few aspects that I don't agree with in this RFC, and I think
-Nhat and Johannes raised most of them. Mostly that I don't want to
-expose ghost swapfiles or similar to userspace.
+-- 
+Best regards,
+Ridong
 
-I think userspace's view of swapfiles should remain the same and reflect
-the physical swap slots. The virtual swap layer should be completely
-transparent in this case. Userspace shouldn't need to configure it in
-any way.
-
-In an ideal world, the only noticeable change from userspace is that
-with zswap, compressed pages would stop using slots in the swapfile and
-charging the memcg for them -- and that zswap would work even without a
-swapfile, by just enabling it. This is admittedly a user-visible
-behavioral change, but I am hoping that's a good one that we can live
-with.
-
-If there are real concerns about this, we can discuss things like a knob
-or config option to keep charging zswap pages as swap slots (ew..) or
-only allow zswap with a real swapfile (double ew..). But I am really
-hoping we can get away with changing the semantics without doing this.
-
-We can add extra interfaces for virtual swap as needed, e.g. virtual
-swapoff that you mentioned to clear the swap cache, or stats about the
-virtual swap space (which translates to memory overhead).
-
-There are also a few missing pieces like different memcg charging, but
-these were already pointed out, and we can figure them out as we go.
-
-Nhat/Johannes, WDYT? Am I missing somthing?
-
-> 
-> The only missing pieces are a few helpers like folio_realloc_swap()
-> and folio_migrate_swap() for lower layer allocation and migration. I
-> prototyped this locally and it wasn't difficult to implement.
-> Furthermore, this approach works perfectly with YoungJun's tiering
-> work with zero conflicts, the dynamic layer can be runtime or
-> per-memcg optional.
-> 
-> To move this forward, I've stripped out the RFC features and memcg
-> behavior changes, and recently sent a V3 that focuses purely on the
-> infrastructure. It introduces no behavior changes or new features,
-> just optimizations.
-> 
-> It cleans up a lot of allocation and ordering, as well as memcg
-> swap lookups. Since some of these problems were also observed in the
-> vss discussion, I think this will make things easier for all of us:
-> https://lore.kernel.org/all/20260421-swap-table-p4-v3-0-2f23759a76bc@tencent.com/
-
-Yeah I saw that (but didn't really have time to do anything else about
-it). Splitting this out is definitely the right thing to do, and the
-series looks great from a very high level. Awesome work, as usual :)
 
