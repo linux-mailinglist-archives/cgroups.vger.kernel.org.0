@@ -1,50 +1,50 @@
-Return-Path: <cgroups+bounces-15488-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-15489-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id mH0PDb3r6mnCFgAAu9opvQ
-	(envelope-from <cgroups+bounces-15488-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Fri, 24 Apr 2026 06:04:13 +0200
+	id AFj8Gd7r6mnCFgAAu9opvQ
+	(envelope-from <cgroups+bounces-15489-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Fri, 24 Apr 2026 06:04:46 +0200
 X-Original-To: lists+cgroups@lfdr.de
 Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8E69A4599DF
-	for <lists+cgroups@lfdr.de>; Fri, 24 Apr 2026 06:04:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2825C459A02
+	for <lists+cgroups@lfdr.de>; Fri, 24 Apr 2026 06:04:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id E140030221D6
-	for <lists+cgroups@lfdr.de>; Fri, 24 Apr 2026 04:02:37 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id C59E530414BC
+	for <lists+cgroups@lfdr.de>; Fri, 24 Apr 2026 04:02:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 12B0D3290B1;
-	Fri, 24 Apr 2026 04:02:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1E33C3290BA;
+	Fri, 24 Apr 2026 04:02:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="k6tohs+/"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="U5fjPqF+"
 X-Original-To: cgroups@vger.kernel.org
-Received: from out-174.mta1.migadu.com (out-174.mta1.migadu.com [95.215.58.174])
+Received: from out-182.mta1.migadu.com (out-182.mta1.migadu.com [95.215.58.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C172325714
-	for <cgroups@vger.kernel.org>; Fri, 24 Apr 2026 04:02:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 53A8D31F9AF
+	for <cgroups@vger.kernel.org>; Fri, 24 Apr 2026 04:02:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1777003353; cv=none; b=Q3tVJwfPQtpOXARyS4P7A9jvmMKTJkUR40HqIPZCHUf/KaHYL7aYFThnU3Qx6JQnExdtkw6oxFdwfhDF2pElYicjzsQuf8Z4Vi1DTMQ3cs2ULki8NKTiUUAU9xAet/MlMGuZ03VRZt6uBvbRX3Dj5lqCWsVJeYy+KO2mtj4bj9o=
+	t=1777003367; cv=none; b=Q8SA0HAsF27TGRgbHca31j6Dld32QPB2ST8OmPG2FLRxeSDjAIdMF9RX2kXg3NlevnSZynfAlPqDXJ1Am9uF5bfSJ8k7F+gb67/Yb4yDXLQcB/dGCGlrkuhbq6cKMK5p3/4XgtXZNgj/1Mlij0DWv6e818Yn5iqapIn6dY2rkIU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1777003353; c=relaxed/simple;
-	bh=utZ738OGl73LzJiF6YHM3dMz7vv57RepQYdH2mAwAAQ=;
+	s=arc-20240116; t=1777003367; c=relaxed/simple;
+	bh=x1qJQuabx2IObDM37E0CnPhAzNweabdWCFnHMf42ZI4=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=Suka9XRHc4vDVGlxEnRiDpO7Mk6I+os9GLCrzZObaFezTEYni1ReLDV0LHp63FyY84GHT1a1lFx3GXh//hBEJmSTihDutIUW5ck1jyzekYRWVAFaKJf60jhKDt9HfkduRmL/Wse7PTat8jfMEo5zh0Eh/2iGNfEcSD9QC04kX5g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=k6tohs+/; arc=none smtp.client-ip=95.215.58.174
+	 MIME-Version:Content-Type; b=remPvlJIalPYnAD67hCFuy4xpIcXiAhe/2dOffbIRutM1FsWbXO8FpBInjPfHQaphNWT8/GpSLLIKN3Jkup27YQum9PxDWcU65U83KHTLfeMljWM/vsLZ7MTttbXzRT4QwkTXxK09xmouXXULPU1zi65lKfq2boY7svIZXXZ0JU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=U5fjPqF+; arc=none smtp.client-ip=95.215.58.182
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1777003350;
+	t=1777003364;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=RYJS1j8xw/dE6gWhFGa+SZVgGWdk++DoAWVOoCmadVc=;
-	b=k6tohs+/IUwCKmIckdzo9H7BiDELRkL8d9a1LjRMVUOFSnHlJvCOEh1BAkKvsx7fwDGH1E
-	B7nqkXTMMb6SP21snYZwjyb30sgQFLZSn8GMvx5BaiRoCucgeUyjU8oP38gQwqMLQ0Of/B
-	9yEHxnyhvPYZepXFZ1FYmMOQfsuyEAE=
+	bh=FdU7Rewe0JBnvI+IPS10alBnrpSA6+jzICgCf1+ep1U=;
+	b=U5fjPqF+pm76sZZaxN+3woOitsl6wVvsvP9t/e4ULmjo3veM4lWVgJjWTRsEplnE37Kr3r
+	VQ21e7PjO8fKU0qLT1WAdg6kCaUmJOW+3ZFViARe1zenaAHAUlZpmIDPKhUC+f0r1E+rCm
+	jDJmH9BVwhZ/Fm7ocQQR/R4r/AHxTLg=
 From: Li Wang <li.wang@linux.dev>
 To: akpm@linux-foundation.org,
 	tj@kernel.org,
@@ -63,11 +63,10 @@ Cc: linux-mm@kvack.org,
 	linux-kernel@vger.kernel.org,
 	Michal Hocko <mhocko@kernel.org>,
 	Muchun Song <muchun.song@linux.dev>,
-	Shakeel Butt <shakeel.butt@linux.dev>,
-	Yosry Ahmed <yosryahmed@google.com>
-Subject: [PATCH v7 6/8] selftest/cgroup: fix zswap test_no_invasive_cgroup_shrink on large pagesize system
-Date: Fri, 24 Apr 2026 12:00:57 +0800
-Message-ID: <20260424040059.12940-7-li.wang@linux.dev>
+	Shakeel Butt <shakeel.butt@linux.dev>
+Subject: [PATCH v7 7/8] selftest/cgroup: fix zswap attempt_writeback() on 64K pagesize system
+Date: Fri, 24 Apr 2026 12:00:58 +0800
+Message-ID: <20260424040059.12940-8-li.wang@linux.dev>
 In-Reply-To: <20260424040059.12940-1-li.wang@linux.dev>
 References: <20260424040059.12940-1-li.wang@linux.dev>
 Precedence: bulk
@@ -79,7 +78,7 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
-X-Rspamd-Queue-Id: 8E69A4599DF
+X-Rspamd-Queue-Id: 2825C459A02
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-1.16 / 15.00];
@@ -91,13 +90,13 @@ X-Spamd-Result: default: False [-1.16 / 15.00];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-15488-lists,cgroups=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-15489-lists,cgroups=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
 	RCVD_COUNT_THREE(0.00)[3];
 	FREEMAIL_TO(0.00)[linux-foundation.org,kernel.org,redhat.com,linux.dev,cmpxchg.org,gmail.com,suse.com];
 	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[19];
+	RCPT_COUNT_TWELVE(0.00)[18];
 	FROM_HAS_DN(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	TO_DN_SOME(0.00)[];
@@ -110,45 +109,43 @@ X-Spamd-Result: default: False [-1.16 / 15.00];
 	MISSING_XM_UA(0.00)[];
 	DBL_BLOCKED_OPENRESOLVER(0.00)[cmpxchg.org:email,linux.dev:email,linux.dev:dkim,linux.dev:mid,suse.com:email,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
 
-test_no_invasive_cgroup_shrink sets up two cgroups: wb_group, which is
-expected to trigger zswap writeback, and a control group (renamed to
-zw_group), which should only have pages sitting in zswap without any
-writeback.
+In attempt_writeback(), a memsize of 4M only covers 64 pages on 64K
+page size systems. When memory.reclaim is called, the kernel prefers
+reclaiming clean file pages (binary, libc, linker, etc.) over swapping
+anonymous pages. With only 64 pages of anonymous memory, the reclaim
+target can be largely or entirely satisfied by dropping file pages,
+resulting in very few or zero anonymous pages being pushed into zswap.
 
-There are two problems with the current test:
+This causes zswap_usage to be extremely small or zero, making
+zswap_usage/4 insufficient to create meaningful writeback pressure.
+The test then fails because no writeback is triggered.
 
-1) The data patterns are reversed. wb_group uses allocate_bytes(), which
-   writes only a single byte per page — trivially compressible,
-   especially by zstd — so compressed pages fit within zswap.max and
-   writeback is never triggered. Meanwhile, the control group uses
-   getrandom() to produce hard-to-compress data, but it is the group
-   that does *not* need writeback.
+On 4K page size systems this is not an issue because 4M covers 1024
+pages, and file pages are a small fraction of the reclaim target.
 
-2) The test uses fixed sizes (10K zswap.max, 10MB allocation) that are
-   too small on systems with large PAGE_SIZE (e.g. 64K), failing to
-   build enough memory pressure to trigger writeback reliably.
-
-Fix both issues by:
-  - Swapping the data patterns: fill wb_group pages with partially
-    random data (getrandom for page_size/4 bytes) to resist compression
-    and trigger writeback, and fill zw_group pages with simple repeated
-    data to stay compressed in zswap.
-  - Making all size parameters PAGE_SIZE-aware: set allocation size to
-    PAGE_SIZE * 1024, memory.zswap.max to PAGE_SIZE, and memory.max to
-    allocation_size / 2 for both cgroups.
-  - Allocating memory inline instead of via cg_run() so the pages
-    remain resident throughout the test.
+Fix this by:
+- Always allocating 1024 pages regardless of page size. This ensures
+  enough anonymous pages to reliably populate zswap and trigger
+  writeback, while keeping the original 4M allocation on 4K systems.
+- Setting zswap.max to zswap_usage/4 instead of zswap_usage/2 to
+  create stronger writeback pressure, ensuring reclaim reliably
+  triggers writeback even on large page size systems.
 
 === Error Log ===
- # getconf PAGESIZE
- 65536
+  # uname -rm
+  6.12.0-211.el10.ppc64le ppc64le
 
- # ./test_zswap
- TAP version 13
- ...
- ok 5 test_zswap_writeback_disabled
- ok 6 # SKIP test_no_kmem_bypass
- not ok 7 test_no_invasive_cgroup_shrink
+  # getconf PAGESIZE
+  65536
+
+  # ./test_zswap
+  TAP version 13
+  1..7
+  ok 1 test_zswap_usage
+  ok 2 test_swapin_nozswap
+  ok 3 test_zswapin
+  not ok 4 test_zswap_writeback_enabled
+  ...
 
 Signed-off-by: Li Wang <li.wang@linux.dev>
 Cc: Johannes Weiner <hannes@cmpxchg.org>
@@ -159,117 +156,48 @@ Cc: Nhat Pham <nphamcs@gmail.com>
 Cc: Tejun Heo <tj@kernel.org>
 Cc: Roman Gushchin <roman.gushchin@linux.dev>
 Cc: Shakeel Butt <shakeel.butt@linux.dev>
-Cc: Yosry Ahmed <yosryahmed@google.com>
+Acked-by: Yosry Ahmed <yosry@kernel.org>
 Acked-by: Nhat Pham <nphamcs@gmail.com>
 ---
- tools/testing/selftests/cgroup/test_zswap.c | 70 ++++++++++++++-------
- 1 file changed, 49 insertions(+), 21 deletions(-)
+ tools/testing/selftests/cgroup/test_zswap.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
 diff --git a/tools/testing/selftests/cgroup/test_zswap.c b/tools/testing/selftests/cgroup/test_zswap.c
-index 23ff11390a3..8f0478923bd 100644
+index 8f0478923bd..5fe0cffb557 100644
 --- a/tools/testing/selftests/cgroup/test_zswap.c
 +++ b/tools/testing/selftests/cgroup/test_zswap.c
-@@ -11,6 +11,7 @@
- #include <string.h>
- #include <sys/wait.h>
- #include <sys/mman.h>
-+#include <sys/random.h>
- 
- #include "kselftest.h"
- #include "cgroup_util.h"
-@@ -426,44 +427,71 @@ static int test_zswap_writeback_disabled(const char *root)
- static int test_no_invasive_cgroup_shrink(const char *root)
+@@ -268,14 +268,14 @@ static int test_zswapin(const char *root)
+       This will move it into zswap.
+  * 3. Save current zswap usage.
+  * 4. Move the memory allocated in step 1 back in from zswap.
+- * 5. Set zswap.max to half the amount that was recorded in step 3.
++ * 5. Set zswap.max to 1/4 of the amount that was recorded in step 3.
+  * 6. Attempt to reclaim memory equal to the amount that was allocated,
+       this will either trigger writeback if it's enabled, or reclamation
+       will fail if writeback is disabled as there isn't enough zswap space.
+  */
+ static int attempt_writeback(const char *cgroup, void *arg)
  {
- 	int ret = KSFT_FAIL;
--	size_t control_allocation_size = MB(10);
--	char *control_allocation = NULL, *wb_group = NULL, *control_group = NULL;
-+	unsigned int off;
-+	size_t allocation_size = page_size * 1024;
-+	unsigned int nr_pages = allocation_size / page_size;
-+	char zswap_max_buf[32], mem_max_buf[32];
-+	char *zw_allocation = NULL, *wb_allocation = NULL;
-+	char *zw_group = NULL, *wb_group = NULL;
-+
-+	snprintf(zswap_max_buf, sizeof(zswap_max_buf), "%d", page_size);
-+	snprintf(mem_max_buf, sizeof(mem_max_buf), "%zu", allocation_size / 2);
- 
- 	wb_group = setup_test_group_1M(root, "per_memcg_wb_test1");
- 	if (!wb_group)
- 		return KSFT_FAIL;
--	if (cg_write(wb_group, "memory.zswap.max", "10K"))
-+	if (cg_write(wb_group, "memory.zswap.max", zswap_max_buf))
-+		goto out;
-+	if (cg_write(wb_group, "memory.max", mem_max_buf))
-+		goto out;
-+
-+	zw_group = setup_test_group_1M(root, "per_memcg_wb_test2");
-+	if (!zw_group)
- 		goto out;
--	control_group = setup_test_group_1M(root, "per_memcg_wb_test2");
--	if (!control_group)
-+	if (cg_write(zw_group, "memory.max", mem_max_buf))
- 		goto out;
- 
--	/* Push some test_group2 memory into zswap */
--	if (cg_enter_current(control_group))
-+	/* Push some zw_group memory into zswap (simple data, easy to compress) */
-+	if (cg_enter_current(zw_group))
- 		goto out;
--	control_allocation = malloc(control_allocation_size);
--	for (int i = 0; i < control_allocation_size; i += page_size)
--		control_allocation[i] = 'a';
--	if (cg_read_key_long(control_group, "memory.stat", "zswapped") < 1)
-+	zw_allocation = malloc(allocation_size);
-+	for (int i = 0; i < nr_pages; i++) {
-+		off = (unsigned long)i * page_size;
-+		memset(&zw_allocation[off], 0, page_size);
-+		memset(&zw_allocation[off], 'a', page_size/4);
-+	}
-+	if (cg_read_key_long(zw_group, "memory.stat", "zswapped") < 1)
- 		goto out;
- 
--	/* Allocate 10x memory.max to push wb_group memory into zswap and trigger wb */
--	if (cg_run(wb_group, allocate_bytes, (void *)MB(10)))
-+	/* Push wb_group memory into zswap with hard-to-compress data to trigger wb */
-+	if (cg_enter_current(wb_group))
-+		goto out;
-+	wb_allocation = malloc(allocation_size);
-+	if (!wb_allocation)
- 		goto out;
-+	for (int i = 0; i < nr_pages; i++) {
-+		off = (unsigned long)i * page_size;
-+		memset(&wb_allocation[off], 0, page_size);
-+		getrandom(&wb_allocation[off], page_size/4, 0);
-+	}
- 
- 	/* Verify that only zswapped memory from gwb_group has been written back */
--	if (get_cg_wb_count(wb_group) > 0 && get_cg_wb_count(control_group) == 0)
-+	if (get_cg_wb_count(wb_group) > 0 && get_cg_wb_count(zw_group) == 0)
- 		ret = KSFT_PASS;
- out:
- 	cg_enter_current(root);
--	if (control_group) {
--		cg_destroy(control_group);
--		free(control_group);
-+	if (zw_group) {
-+		cg_destroy(zw_group);
-+		free(zw_group);
-+	}
-+	if (wb_group) {
-+		cg_destroy(wb_group);
-+		free(wb_group);
+-	size_t memsize = MB(4);
++	size_t memsize = page_size * 1024;
+ 	char buf[page_size];
+ 	long zswap_usage;
+ 	bool wb_enabled = *(bool *) arg;
+@@ -313,12 +313,12 @@ static int attempt_writeback(const char *cgroup, void *arg)
+ 		}
  	}
--	cg_destroy(wb_group);
--	free(wb_group);
--	if (control_allocation)
--		free(control_allocation);
-+	if (zw_allocation)
-+		free(zw_allocation);
-+	if (wb_allocation)
-+		free(wb_allocation);
- 	return ret;
- }
  
+-	if (cg_write_numeric(cgroup, "memory.zswap.max", zswap_usage/2))
++	if (cg_write_numeric(cgroup, "memory.zswap.max", zswap_usage/4))
+ 		goto out;
+ 
+ 	/*
+ 	 * If writeback is enabled, trying to reclaim memory now will trigger a
+-	 * writeback as zswap.max is half of what was needed when reclaim ran the first time.
++	 * writeback as zswap.max is 1/4 of what was needed when reclaim ran the first time.
+ 	 * If writeback is disabled, memory reclaim will fail as zswap is limited and
+ 	 * it can't writeback to swap.
+ 	 */
 -- 
 2.53.0
 
