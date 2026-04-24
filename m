@@ -1,300 +1,188 @@
-Return-Path: <cgroups+bounces-15498-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-15499-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 2M8VFXR762npNAAAu9opvQ
-	(envelope-from <cgroups+bounces-15498-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Fri, 24 Apr 2026 16:17:24 +0200
+	id qG5fFgaT62m7OgAAu9opvQ
+	(envelope-from <cgroups+bounces-15499-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Fri, 24 Apr 2026 17:57:58 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id B1066460151
-	for <lists+cgroups@lfdr.de>; Fri, 24 Apr 2026 16:17:23 +0200 (CEST)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 65C45461130
+	for <lists+cgroups@lfdr.de>; Fri, 24 Apr 2026 17:57:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 9A88E3013A9A
-	for <lists+cgroups@lfdr.de>; Fri, 24 Apr 2026 14:16:13 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 2CEC9300AD68
+	for <lists+cgroups@lfdr.de>; Fri, 24 Apr 2026 15:57:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9803A3DBD5B;
-	Fri, 24 Apr 2026 14:16:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B23273D6487;
+	Fri, 24 Apr 2026 15:57:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Wt6wv7fi"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ajfozHwD"
 X-Original-To: cgroups@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DFEF538AC87
-	for <cgroups@vger.kernel.org>; Fri, 24 Apr 2026 14:16:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E24F1DED5B;
+	Fri, 24 Apr 2026 15:57:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1777040172; cv=none; b=FdH5uZQyJe7+cRbeXyLV+99PDv1arP4bwHswL6vubwUU8sqsU23NCnVI4Pqq4itGMComSJyvIJFRWv6WI6ZNcB2717OR8NSyD0FYLR63Z4+dpvm5whrGg1MLv5Ls4/LMFUmLSgtEDKU4gHS7RvMqpps6TIw3Zf4pcYt3qW/I9hE=
+	t=1777046267; cv=none; b=fHlddOl9rDzcTI3iweNdh2/A0a3gcyDUwndX0+yYkehoFwPlG394VWDZsxJ4oY79w9JUsx8zRpsJJfsqCF7KcTNfaaXfxByFk2H6jI8GFw5RPl5mswihr2Ei83UqmHgDOJWkKjF1QwNrU7wTw/cnLiIWfscyjU8t+9I3xc79edU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1777040172; c=relaxed/simple;
-	bh=pr/YeeW6sDBGQzKAh7tdbqLe+lVtRuNpcFXZB1ufqcM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=VUtTDbB8ubSTQ1wS+/wT881wAd1lXg3D6TsLBMk9zWIsHk+ozV30fNFL7DqF7NCH3Qm88gEKDGU4iRZ7nIfB25fSzn4/JJD9oC90dxjfTPhshbtem68uCzQx3py1sTpPFlEtDAgfkeobnuxbrhFcLCVrjrzLgTxHjtbHsaxFcfo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Wt6wv7fi; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1777040170;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=qnNrABuljqyVBjGi5Ai0o3fCSODLF1F5Mmda4IDLCzY=;
-	b=Wt6wv7fimfypkPHhZ4l4kdpVv5Y4Q1TRAFnHLSFvC9Cdz09/tZBIbLK3sZVuQhPk9ZVXU9
-	TgruHekZ/7JrCpBdZ4s3yqUJM//sfqJ5V8524Em+J8M6ccxoDwz/uXrqNQMu6yjqjkgODw
-	reZSz4okhzygAr9CSujes+1AHfGb3nc=
-Received: from mx-prod-mc-03.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-33-KCI3R-oGNuKNCyf52CfdTw-1; Fri,
- 24 Apr 2026 10:16:05 -0400
-X-MC-Unique: KCI3R-oGNuKNCyf52CfdTw-1
-X-Mimecast-MFC-AGG-ID: KCI3R-oGNuKNCyf52CfdTw_1777040163
-Received: from mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.111])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mx-prod-mc-03.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id ACD171956050;
-	Fri, 24 Apr 2026 14:16:02 +0000 (UTC)
-Received: from [10.22.88.143] (unknown [10.22.88.143])
-	by mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id 0DD941800351;
-	Fri, 24 Apr 2026 14:15:58 +0000 (UTC)
-Message-ID: <6840e385-ef47-4f83-bf4c-8f80843f8c1d@redhat.com>
-Date: Fri, 24 Apr 2026 10:15:58 -0400
+	s=arc-20240116; t=1777046267; c=relaxed/simple;
+	bh=qO/MAUTAHfRFlyhPD2rItuN3QmG4P8rtxuTLbkxNwL0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=JmsT/jq26HBpxr2QofPWP7j6OCG74VoZYZYRz0K8pR7nNuSaHcDzA8ABv1ZVHOTwZO/ncQpwAIY0Ff1mUGMSWhXRFfVjSKN7Ihq+S0sZZAc4JslppF/gpgS3FR+4jIbnoJUYJY8lXWFUoS50mYdlf1xk0YCqPyMPcu308pk15dA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ajfozHwD; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 84C95C2BCB6;
+	Fri, 24 Apr 2026 15:57:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1777046267;
+	bh=qO/MAUTAHfRFlyhPD2rItuN3QmG4P8rtxuTLbkxNwL0=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=ajfozHwD1fCyxVIfcezb1FBnsxwPft4s+SO1HNKvMY5sayIllGVwXOVtVSslBiMZF
+	 iBATPF8Gcw9+n7ropEBl/64VF34ptpNInOVsEsJkrETPnxJJKygFlN1VYMgsTk/aYJ
+	 gYUvbgp7JalTMlmRCPOXSELTijM0xY26ZJKLVNhvwHiNjYbLxtQV/g5iAlxMKVWK29
+	 RGgC4BQzNUj5QUpG0M5muBCkcgoXJy+cqEnzLKsOM+NOcQcatVhMlBI26zUciOzkDE
+	 k9Zm/lBjzIrlUV4Mjw8X3a4NKdoQ0/dEMltXuRb3fUxMSZ+xWpW5L0buiDsXXrS+bR
+	 AlN0XSo5XZv8Q==
+Date: Fri, 24 Apr 2026 17:57:43 +0200
+From: Frederic Weisbecker <frederic@kernel.org>
+To: Waiman Long <longman@redhat.com>
+Cc: Thomas Gleixner <tglx@kernel.org>, Tejun Heo <tj@kernel.org>,
+	Johannes Weiner <hannes@cmpxchg.org>,
+	Michal =?iso-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Shuah Khan <skhan@linuxfoundation.org>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Will Deacon <will@kernel.org>,
+	"K. Y. Srinivasan" <kys@microsoft.com>,
+	Haiyang Zhang <haiyangz@microsoft.com>,
+	Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
+	Long Li <longli@microsoft.com>, Guenter Roeck <linux@roeck-us.net>,
+	"Paul E. McKenney" <paulmck@kernel.org>,
+	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
+	Joel Fernandes <joelagnelf@nvidia.com>,
+	Josh Triplett <josh@joshtriplett.org>,
+	Boqun Feng <boqun@kernel.org>, Uladzislau Rezki <urezki@gmail.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Lai Jiangshan <jiangshanlai@gmail.com>,
+	Zqiang <qiang.zhang@linux.dev>,
+	Anna-Maria Behnsen <anna-maria@linutronix.de>,
+	Ingo Molnar <mingo@kernel.org>,
+	Chen Ridong <chenridong@huaweicloud.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Juri Lelli <juri.lelli@redhat.com>,
+	Vincent Guittot <vincent.guittot@linaro.org>,
+	Dietmar Eggemann <dietmar.eggemann@arm.com>,
+	Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+	Valentin Schneider <vschneid@redhat.com>,
+	K Prateek Nayak <kprateek.nayak@amd.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Simon Horman <horms@kernel.org>, cgroups@vger.kernel.org,
+	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org, linux-hyperv@vger.kernel.org,
+	linux-hwmon@vger.kernel.org, rcu@vger.kernel.org,
+	netdev@vger.kernel.org, linux-kselftest@vger.kernel.org,
+	Costa Shulyupin <cshulyup@redhat.com>,
+	Qiliang Yuan <realwujing@gmail.com>
+Subject: Re: [PATCH 03/23] tick/nohz: Make nohz_full parameter optional
+Message-ID: <aeuS98a-u899PBmR@pavilion.home>
+References: <20260421030351.281436-1-longman@redhat.com>
+ <20260421030351.281436-4-longman@redhat.com>
+ <875x5kd88d.ffs@tglx>
+ <3b796360-81e4-4f90-9b19-8a9f21cbac07@redhat.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] cgroup/cpuset: make DL attach bandwidth reservation
- root-domain aware
-To: Guopeng Zhang <zhangguopeng@kylinos.cn>, tj@kernel.org,
- juri.lelli@redhat.com, chenridong@huaweicloud.com, mkoutny@suse.com
-Cc: hannes@cmpxchg.org, mingo@redhat.com, peterz@infradead.org,
- vincent.guittot@linaro.org, dietmar.eggemann@arm.com, rostedt@goodmis.org,
- bsegall@google.com, mgorman@suse.de, vschneid@redhat.com,
- kprateek.nayak@amd.com, linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
-References: <20260421083449.95750-1-zhangguopeng@kylinos.cn>
-Content-Language: en-US
-From: Waiman Long <longman@redhat.com>
-In-Reply-To: <20260421083449.95750-1-zhangguopeng@kylinos.cn>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.30.177.111
-X-Rspamd-Queue-Id: B1066460151
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <3b796360-81e4-4f90-9b19-8a9f21cbac07@redhat.com>
+X-Rspamd-Queue-Id: 65C45461130
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[redhat.com,quarantine];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
-	R_DKIM_ALLOW(-0.20)[redhat.com:s=mimecast20190719];
+	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
+	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	MIME_TRACE(0.00)[0:+];
-	RCPT_COUNT_TWELVE(0.00)[17];
-	TAGGED_FROM(0.00)[bounces-15498-lists,cgroups=lfdr.de];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	RCVD_TLS_LAST(0.00)[];
-	DKIM_TRACE(0.00)[redhat.com:+];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	FREEMAIL_CC(0.00)[kernel.org,cmpxchg.org,suse.com,lwn.net,linuxfoundation.org,arm.com,microsoft.com,roeck-us.net,nvidia.com,joshtriplett.org,gmail.com,goodmis.org,efficios.com,linux.dev,linutronix.de,huaweicloud.com,infradead.org,redhat.com,linaro.org,google.com,suse.de,amd.com,davemloft.net,vger.kernel.org,lists.infradead.org];
+	TAGGED_FROM(0.00)[bounces-15499-lists,cgroups=lfdr.de];
 	FROM_HAS_DN(0.00)[];
-	TO_DN_SOME(0.00)[];
+	RCVD_COUNT_THREE(0.00)[4];
+	RCVD_TLS_LAST(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	DKIM_TRACE(0.00)[kernel.org:+];
+	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
+	MISSING_XM_UA(0.00)[];
+	RCPT_COUNT_GT_50(0.00)[52];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[longman@redhat.com,cgroups@vger.kernel.org];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	RCVD_COUNT_FIVE(0.00)[6];
-	MID_RHS_MATCH_FROM(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[frederic@kernel.org,cgroups@vger.kernel.org];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	NEURAL_HAM(-0.00)[-1.000];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[cgroups];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,kylinos.cn:email]
+	TO_DN_SOME(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns]
 
-On 4/21/26 4:34 AM, Guopeng Zhang wrote:
-> cpuset_can_attach() currently sums the bandwidth of all migrating
-> SCHED_DEADLINE tasks and reserves destination bandwidth whenever the
-> old and new cpuset effective CPU masks do not overlap.
->
-> That condition is stronger than what the scheduler uses when migrating
-> a deadline task. set_cpus_allowed_dl() only subtracts bandwidth from
-> the source side when moving the task requires a DL bandwidth move
-> between root domains.
->
-> As a result, moving a deadline task between disjoint member cpusets that
-> still belong to the same root domain can reserve destination bandwidth
-> even though no matching source-side subtraction happens. Successful
-> back-and-forth migrations between such cpusets can monotonically
-> increase dl_bw->total_bw.
->
-> Fix this by extracting the source root-domain test already used by
-> set_cpus_allowed_dl() into a shared helper and make cpuset DL bandwidth
-> preallocation use that same condition. Count all migrating deadline
-> tasks for cpuset task accounting, but only accumulate sum_migrate_dl_bw
-> for tasks that actually need a DL bandwidth move. Reserve and rollback
-> bandwidth only for that subset.
->
-> This keeps successful attach accounting aligned with
-> set_cpus_allowed_dl() and avoids double-accounting within a single
-> root domain.
->
-> Fixes: 2ef269ef1ac0 ("cgroup/cpuset: Free DL BW in case can_attach() fails")
-> Signed-off-by: Guopeng Zhang <zhangguopeng@kylinos.cn>
-> ---
->   include/linux/sched/deadline.h  |  9 +++++++++
->   kernel/cgroup/cpuset-internal.h |  1 +
->   kernel/cgroup/cpuset.c          | 34 ++++++++++++++++-----------------
->   kernel/sched/deadline.c         | 14 +++++++++++---
->   4 files changed, 38 insertions(+), 20 deletions(-)
->
-> diff --git a/include/linux/sched/deadline.h b/include/linux/sched/deadline.h
-> index 1198138cb839..273538200a44 100644
-> --- a/include/linux/sched/deadline.h
-> +++ b/include/linux/sched/deadline.h
-> @@ -33,6 +33,15 @@ struct root_domain;
->   extern void dl_add_task_root_domain(struct task_struct *p);
->   extern void dl_clear_root_domain(struct root_domain *rd);
->   extern void dl_clear_root_domain_cpu(int cpu);
-> +/*
-> + * Return whether moving DL task @p to @new_mask requires moving DL
-> + * bandwidth accounting between root domains. This helper is specific to
-> + * DL bandwidth move accounting semantics and is shared by
-> + * cpuset_can_attach() and set_cpus_allowed_dl() so both paths use the
-> + * same source root-domain test.
-> + */
-> +extern bool dl_task_needs_bw_move(struct task_struct *p,
-> +				  const struct cpumask *new_mask);
->   
->   extern u64 dl_cookie;
->   extern bool dl_bw_visited(int cpu, u64 cookie);
-> diff --git a/kernel/cgroup/cpuset-internal.h b/kernel/cgroup/cpuset-internal.h
-> index bb4e692bea30..f7aaf01f7cd5 100644
-> --- a/kernel/cgroup/cpuset-internal.h
-> +++ b/kernel/cgroup/cpuset-internal.h
-> @@ -167,6 +167,7 @@ struct cpuset {
->   	 */
->   	int nr_deadline_tasks;
->   	int nr_migrate_dl_tasks;
-> +	/* DL bandwidth that needs destination reservation for this attach. */
->   	u64 sum_migrate_dl_bw;
->   	/*
->   	 * CPU used for temporary DL bandwidth allocation during attach;
-> diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
-> index e3a081a07c6d..761098b45f23 100644
-> --- a/kernel/cgroup/cpuset.c
-> +++ b/kernel/cgroup/cpuset.c
-> @@ -2993,7 +2993,7 @@ static int cpuset_can_attach(struct cgroup_taskset *tset)
->   	struct cpuset *cs, *oldcs;
->   	struct task_struct *task;
->   	bool setsched_check;
-> -	int ret;
-> +	int cpu, ret;
->   
->   	/* used later by cpuset_attach() */
->   	cpuset_attach_old_cs = task_cs(cgroup_taskset_first(tset, &css));
-> @@ -3039,31 +3039,31 @@ static int cpuset_can_attach(struct cgroup_taskset *tset)
->   
->   		if (dl_task(task)) {
->   			cs->nr_migrate_dl_tasks++;
-> -			cs->sum_migrate_dl_bw += task->dl.dl_bw;
-> +
-> +			if (dl_task_needs_bw_move(task, cs->effective_cpus))
-> +				cs->sum_migrate_dl_bw += task->dl.dl_bw;
->   		}
->   	}
->   
-> -	if (!cs->nr_migrate_dl_tasks)
-> +	if (!cs->sum_migrate_dl_bw)
->   		goto out_success;
-You should make sure that cs->nr_migrate_dl_tasks is cleared too. 
-Alternatively, you can move the dl task increment under the 
-dl_task_needs_bw_move() check. It doesn't seem to do any harm if 
-nr_migrate_dl_tasks is non-zero, but dl_bw is 0, but it still doesn't 
-look right.
->   
-> -	if (!cpumask_intersects(oldcs->effective_cpus, cs->effective_cpus)) {
-> -		int cpu = cpumask_any_and(cpu_active_mask, cs->effective_cpus);
-> +	cpu = cpumask_any_and(cpu_active_mask, cs->effective_cpus);
->   
-> -		if (unlikely(cpu >= nr_cpu_ids)) {
-> -			reset_migrate_dl_data(cs);
-> -			ret = -EINVAL;
-> -			goto out_unlock;
-> -		}
-> -
-> -		ret = dl_bw_alloc(cpu, cs->sum_migrate_dl_bw);
-> -		if (ret) {
-> -			reset_migrate_dl_data(cs);
-> -			goto out_unlock;
-> -		}
-> +	if (unlikely(cpu >= nr_cpu_ids)) {
-> +		reset_migrate_dl_data(cs);
-> +		ret = -EINVAL;
-> +		goto out_unlock;
-> +	}
->   
-> -		cs->dl_bw_cpu = cpu;
-> +	ret = dl_bw_alloc(cpu, cs->sum_migrate_dl_bw);
-> +	if (ret) {
-> +		reset_migrate_dl_data(cs);
-> +		goto out_unlock;
->   	}
->   
-> +	cs->dl_bw_cpu = cpu;
-> +
->   out_success:
->   	/*
->   	 * Mark attach is in progress.  This makes validate_change() fail
-> diff --git a/kernel/sched/deadline.c b/kernel/sched/deadline.c
-> index edca7849b165..5ddfa0d30bf6 100644
-> --- a/kernel/sched/deadline.c
-> +++ b/kernel/sched/deadline.c
-> @@ -3107,20 +3107,18 @@ static void task_woken_dl(struct rq *rq, struct task_struct *p)
->   static void set_cpus_allowed_dl(struct task_struct *p,
->   				struct affinity_context *ctx)
->   {
-> -	struct root_domain *src_rd;
->   	struct rq *rq;
->   
->   	WARN_ON_ONCE(!dl_task(p));
->   
->   	rq = task_rq(p);
-> -	src_rd = rq->rd;
->   	/*
->   	 * Migrating a SCHED_DEADLINE task between exclusive
->   	 * cpusets (different root_domains) entails a bandwidth
->   	 * update. We already made space for us in the destination
->   	 * domain (see cpuset_can_attach()).
->   	 */
-> -	if (!cpumask_intersects(src_rd->span, ctx->new_mask)) {
-> +	if (dl_task_needs_bw_move(p, ctx->new_mask)) {
->   		struct dl_bw *src_dl_b;
->   
->   		src_dl_b = dl_bw_of(cpu_of(rq));
-> @@ -3137,6 +3135,16 @@ static void set_cpus_allowed_dl(struct task_struct *p,
->   	set_cpus_allowed_common(p, ctx);
->   }
->   
-> +bool dl_task_needs_bw_move(struct task_struct *p,
-> +			   const struct cpumask *new_mask)
-> +{
-> +	if (!dl_task(p))
-> +		return false;
-> +
-> +	guard(rcu)();
+Le Tue, Apr 21, 2026 at 10:14:09AM -0400, Waiman Long a écrit :
+11;rgb:2e2e/3434/3636> On 4/21/26 4:32 AM, Thomas Gleixner wrote:
+> > On Mon, Apr 20 2026 at 23:03, Waiman Long wrote:
+> > > To provide nohz_full tick support, there is a set of tick dependency
+> > > masks that need to be evaluated on every IRQ and context switch.
+> > s/IRQ/interrupt/
+> > 
+> > This is a changelog and not a SMS service.
+> > > Switching on nohz_full tick support at runtime will be problematic
+> > > as some of the tick dependency masks may not be properly set causing
+> > > problem down the road.
+> > That's useless blurb with zero content.
+> > 
+> > > Allow nohz_full boot option to be specified without any
+> > > parameter to force enable nohz_full tick support without any
+> > > CPU in the tick_nohz_full_mask yet. The context_tracking_key and
+> > > tick_nohz_full_running flag will be enabled in this case to make
+> > > tick_nohz_full_enabled() return true.
+> > I kinda can crystal-ball what you are trying to say here, but that does
+> > not make it qualified as a proper change log.
+> > 
+> > > There is still a small performance overhead by force enable nohz_full
+> > > this way. So it should only be used if there is a chance that some
+> > > CPUs may become isolated later via the cpuset isolated partition
+> > > functionality and better CPU isolation closed to nohz_full is desired.
+> > Why has this key to be enabled on boot if there are no CPUs in the
+> > isolated mask?
+> > 
+> > If you want to manage this dynamically at runtime then enable the key
+> > once CPUs are isolated. Yes, it's more work, but that avoids the "should
+> > only be used" nonsense and makes this more robust down the road.
+> 
+> OK, I will try to make it fully dynamic. Of course, it will be more work.
 
-What do you need a RCU guard here?
+Since the target CPUs will be offline, it should be fine to just enable/disable
+the static key and masks on runtime. The only issue I see right now is posix
+CPU timers because the tick dependency is per task/process group. And those
+tasks could migrate to nohz_full CPUs by careless users (even though that's
+nonsense) once the target become online. So the per task/process tick dependency
+must be set up unconditionally. I don't think this should bring much noticeable
+overhead though.
 
-Cheers,
-Longman
+Oh and the other way to go, that is removing TICK_DEP_BIT_POSIX_TIMER and forbid to
+run posix cpu timers on nohz_full CPUs, would be even more painful to implement
+so I don't have a better idea.
 
-> +	return !cpumask_intersects(task_rq(p)->rd->span, new_mask);
-> +}
-> +
->   /* Assumes rq->lock is held */
->   static void rq_online_dl(struct rq *rq)
->   {
+Thanks.
 
+-- 
+Frederic Weisbecker
+SUSE Labs
 
