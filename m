@@ -1,287 +1,335 @@
-Return-Path: <cgroups+bounces-15508-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-15509-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id YNLBH//J62nVRQAAu9opvQ
-	(envelope-from <cgroups+bounces-15508-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Fri, 24 Apr 2026 21:52:31 +0200
+	id ACAkB3xi7Gm/YAAAu9opvQ
+	(envelope-from <cgroups+bounces-15509-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Sat, 25 Apr 2026 08:43:08 +0200
 X-Original-To: lists+cgroups@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 095294630A3
-	for <lists+cgroups@lfdr.de>; Fri, 24 Apr 2026 21:52:30 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 47837465322
+	for <lists+cgroups@lfdr.de>; Sat, 25 Apr 2026 08:43:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id D68683019526
-	for <lists+cgroups@lfdr.de>; Fri, 24 Apr 2026 19:52:24 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id C675B300EF4E
+	for <lists+cgroups@lfdr.de>; Sat, 25 Apr 2026 06:42:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E80093FADF5;
-	Fri, 24 Apr 2026 19:52:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="P8DP27ri"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 02A252DAFDE;
+	Sat, 25 Apr 2026 06:42:52 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-ed1-f45.google.com (mail-ed1-f45.google.com [209.85.208.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 09BE63FAE09
-	for <cgroups@vger.kernel.org>; Fri, 24 Apr 2026 19:52:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.208.45
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1777060340; cv=pass; b=mwquMDd694w1bH1Jgc980gdzbs8SmSa/yRKFv00wgj6COD/Zy73cnD2yAg63xxZnttSTS6LyvLu1PMzVizBY4CTVN+DxZKU0Ow9/OHBwoXuEpvHchESGjIraffQ9voBB6fHPVZ6tTgkyIyyCq0JwuQSdutYux5rGlW9al35tgtM=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1777060340; c=relaxed/simple;
-	bh=wE/7ErAGo72joNqsxPMrNEQEyJ7t+edUI6j7ULKzBaM=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=GYUpQ7sHNDtbSrT/kXvuq2xAr84QZbfK3wvA/ACGRwQ7vZ4tKeSWiWntUpm0qedyJoWT7aZVO11AKC9lpAOGHRmZZyuk1B/4ER1Rslc4ld8qRLKXVPxZSyBk+pYyKDtpDRqdM7QjKLKObikIJzKkbveKmazcgl3Rd3DFGNvgK1o=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=P8DP27ri; arc=pass smtp.client-ip=209.85.208.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f45.google.com with SMTP id 4fb4d7f45d1cf-6729c6f0ca7so9771561a12.0
-        for <cgroups@vger.kernel.org>; Fri, 24 Apr 2026 12:52:09 -0700 (PDT)
-ARC-Seal: i=1; a=rsa-sha256; t=1777060327; cv=none;
-        d=google.com; s=arc-20240605;
-        b=Vc8Q1gXjU/lP1M7BrEdyNSAQ4/BGamBqd6bEEAwiiZ8QcdjGhYyUQWI+xa0yXKs2fX
-         RrQjZA4vYN9MZbIC+02TNEc8GaYPgt+RMACS40JixexND/Si3hyWWNDlqMA3Bc1/fV/O
-         qevQsplPdfThx9EFAQ6+wgqV+DzdirX7E/ki8D1T6EgSk1SULXheGcvZtPn75V9JnGc9
-         1HNHJ9ViI4L4qs0E23nrARTAO7uVU/uwG8ux8xoCDPLh1hoApOerWwhI1i8dnEXI29ps
-         o8UiU2iH6hh3T+1uuwFbPpCn37a7hbE9BEKMLNq3RjrWnr/hzC8m3TvF1BLJ19oJnlVw
-         BN5g==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:dkim-signature;
-        bh=wE/7ErAGo72joNqsxPMrNEQEyJ7t+edUI6j7ULKzBaM=;
-        fh=IxghVHJ9e4fedRhJh5oIpPTQcqS40oHH5zMttWQq43Q=;
-        b=OXQ8jBNcwLdpsjHcWnTi8QC0BvZ2xAjsKY+32+AbVn9Dd/gmwuDA4eUxEiMOiXFoOk
-         Ikbm/pngPsxwHlVDTN2NSaeDR7Td9UCB1D2M2V6b6iUOwlb91Rw96cMZgc9pjJiWgj/r
-         3sihbZdUlEmRRQiVV9+J4/dEAKp35pynMjGO/ULMJFB/Z65BM4mdKd3m/t+DH8BvS4qb
-         CHV+spVojY39YPsDtDESrZay5aReFCyqXfLVrNVtqPJIkjulvoSzqhKImz63Jj9sgS5a
-         WNswZyY30S8awG56dId5QyoHfky2HuGbu/CxaERgEMnhhEHYbp7aMiSoaoJ1xx8GyX9g
-         S2fA==;
-        darn=vger.kernel.org
-ARC-Authentication-Results: i=1; mx.google.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1777060327; x=1777665127; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=wE/7ErAGo72joNqsxPMrNEQEyJ7t+edUI6j7ULKzBaM=;
-        b=P8DP27riXPbV32Oz8Ko4j9Ee73SVG6wBWOCcDL7dVsYxi/Mk2R+1ikwDZUE9wRnYXj
-         MaEX31iCZztxlp3HjqViGs2/AFYQPpy3rfDnvCePd9Ty/UZ/KBd+3SxTGDpNhn6qPW0E
-         ojgS7m4EhAoBjEyZ4SimQ9dLkLA13F/96EWtIkn7EKiaO5PnI4BHFt2idi4UrAvCuTlF
-         f4mudn26z/DUyeXlW5WSX/ZUT30lNdU9COrB9yrgd59BWpnf63FKaLCLDHDytbr24OpW
-         d89crHgsj7iMsQQ3umdTDsnKqtZWljzQU7IyrO8sXEXeQFpy3ab+LBBsRmb1eVr/4PSS
-         xS+A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1777060327; x=1777665127;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=wE/7ErAGo72joNqsxPMrNEQEyJ7t+edUI6j7ULKzBaM=;
-        b=EIyNOKGbeQ5IEDueboDcOvh+wKEELhZg7RO7k6uyjZvG/MStJfSgQpBm6HBb+BEyOJ
-         YeV+PDzMO2AcCOXvG0JwCYjOiIQ4sL/ycmU2+YRXcIhI26mK1HCHdOSiz3iiMcusUFkK
-         WqDYQtmJRm/C0/K6GFh5wg8YiNNM/2Vzl4plTwupywkDdfodoscwqAJMWai4+qfkq2LH
-         Woj8j29V6Bc3fel3KLHa4OlK76UkpgN0sTr+dCaDMwKtipz1hWrySc47eKTfr7DGfMnI
-         QFUjv3sN9K8kHUTWt4vF1c2xKLEzs6ioHLY5PzDKJt79prn5kdznOxruomW3AP5fWUXc
-         OEYg==
-X-Forwarded-Encrypted: i=1; AFNElJ+cGF2hELH9rbv0+gjPjbV3qz47hMt9EAdH1bRUpZGh3fyCQcz2elmBIAr19cGQ+FvMT5s8G+3A@vger.kernel.org
-X-Gm-Message-State: AOJu0YzHBaI3oIj3e/eWpoE98lvW0y/jZLcJY05QSiHiHoFFb59LIJHG
-	5Gaogc1D4c28IRXzyTA8HT1+x4F64LNcO60zXaaWbZHYnJ5llqmkHuuEiQW1ggU3CuRv58IV7/k
-	gv8qcSbtbEAdu0l0UikgO23wPz8VzpyE=
-X-Gm-Gg: AeBDieuLeSvEFPCt0/ySph49ulmKd/DRDkzBjDhmXiLQQVGGRGAoQ7LwGzpL0p2IMGT
-	guKg2keLBEqSFbERnQ5J/NZWLXzWhZu5bhn99iWoItczc3zH7z2GGES8BR5qD/KPzb/QBMmJgAc
-	vJDlgB7OWcZ3DoE3A1bVVbbh2byN17evsw7nR0JuCIKLa8ylf+fsRlX5Dw5qnAf/LhMi6n/c26q
-	E1IwRZN3e/ohGUflChvoOehys35/R1wMJsfF3flDfOgGJhPnIzcriW39rGjRANUOxm6VXBQ+30k
-	84cRIRsRNL5U7e7FkmzsOsVNTsVl4AOlj93f0ftf7x2z1VI8Td0=
-X-Received: by 2002:a05:6402:24a2:b0:670:8d90:e861 with SMTP id
- 4fb4d7f45d1cf-672bfd82177mr15503860a12.6.1777060326795; Fri, 24 Apr 2026
- 12:52:06 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 130862D879E;
+	Sat, 25 Apr 2026 06:42:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1777099371; cv=none; b=LT0+2oRmbhHYr7PjiahKtgBovhW7hzmRmOCDcE8dMrcQqvQ0xX6UJEtvd6vMzHiKgb/WMGgt9JyvEvWryakGvQYhNFIDtk0hSboI/xoyO93esL1oruCuNQUEud3SP4QanypNoKF29YD2+mcjerazdjb8iZ77BlrDnlWKKqqtgu4=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1777099371; c=relaxed/simple;
+	bh=2kgocpl43v3B4U78Y6tW9J5mzvEfoEuXvs4KYHjTAQs=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Y87hxkvltYLrC5mzQ2qTt4xO708Arejjcsfeb1/4IwnHCLXwHDMpyg3ZRuPIBH8pcbkKLnjlpgX1x1ttfUM+8OrRRi4BnOILsonw+acSpagYEXzRjr6sZRlA9IUh0uLKzc7xFG2YJmXOTgVkTjkLtUkb94DcmvgOiNezZEzkHwo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.177])
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTPS id 4g2gHC21WPzKHMXJ;
+	Sat, 25 Apr 2026 14:42:15 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.128])
+	by mail.maildlp.com (Postfix) with ESMTP id 5961A4058D;
+	Sat, 25 Apr 2026 14:42:40 +0800 (CST)
+Received: from [10.67.111.176] (unknown [10.67.111.176])
+	by APP4 (Coremail) with SMTP id gCh0CgA3HrxeYuxpzYCiBg--.33183S2;
+	Sat, 25 Apr 2026 14:42:40 +0800 (CST)
+Message-ID: <220aadd9-0d92-44ce-8a70-bd30030defa9@huaweicloud.com>
+Date: Sat, 25 Apr 2026 14:42:38 +0800
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20260320192735.748051-1-nphamcs@gmail.com> <aegUoOiUbjUAH5aT@google.com>
- <CAMgjq7C53WRS5oYxO157mX7JxhfoPoi34k+taiKLrMah-b-iRg@mail.gmail.com>
- <aektdlD4npMVThu3@google.com> <CAMgjq7DRrz4Hdy-s4y-C=3BmPt50LKOfdWjjf2mWmCybdRaJ4w@mail.gmail.com>
- <CAO9r8zPvApgxKiVy5NhiWup_m57huF3MTuPvo=iq5kAxjRZC8Q@mail.gmail.com>
- <CAMgjq7AGzBubCkmv7LubBjPLN1DzL472d4zUm+sGxo8ZptMgRw@mail.gmail.com>
- <CAO9r8zO+tm2J0FRC64VKCYOSuKPXX8cQG7C07SwMWKoLiwoV+w@mail.gmail.com>
- <CAMgjq7D1WXUHqAV1yuXvrUmEsE_m_+yx0mBq6teJhipx6mySbA@mail.gmail.com> <CAO9r8zMk7xTi-Txmj1+Z9=250fD8HuMQFyT1iwjTW9coLXgqoA@mail.gmail.com>
-In-Reply-To: <CAO9r8zMk7xTi-Txmj1+Z9=250fD8HuMQFyT1iwjTW9coLXgqoA@mail.gmail.com>
-From: Kairui Song <ryncsn@gmail.com>
-Date: Sat, 25 Apr 2026 03:51:29 +0800
-X-Gm-Features: AQROBzCsso3pTVLRZNMTqiOUBfD8dT5yym5C4wDmzSyyd7Bc0ZTx2dDcUA3zHto
-Message-ID: <CAMgjq7A4+Sac9-CYkig1LFfEh5rq-4vLka8AXREei_m3svzJ7w@mail.gmail.com>
-Subject: Re: [PATCH v5 00/21] Virtual Swap Space
-To: Yosry Ahmed <yosry@kernel.org>
-Cc: Nhat Pham <nphamcs@gmail.com>, "Liam R . Howlett" <Liam.Howlett@oracle.com>, 
-	akpm@linux-foundation.org, Alistair Popple <apopple@nvidia.com>, 
-	Axel Rasmussen <axelrasmussen@google.com>, Barry Song <baohua@kernel.org>, 
-	Baolin Wang <baolin.wang@linux.alibaba.com>, Baoquan He <bhe@redhat.com>, 
-	Byungchul Park <byungchul@sk.com>, 
-	"open list:CONTROL GROUP - MEMORY RESOURCE CONTROLLER (MEMCG)" <cgroups@vger.kernel.org>, Chengming Zhou <chengming.zhou@linux.dev>, 
-	Chris Li <chrisl@kernel.org>, Jonathan Corbet <corbet@lwn.net>, David Hildenbrand <david@kernel.org>, 
-	Dev Jain <dev.jain@arm.com>, Gregory Price <gourry@gourry.net>, 
-	Johannes Weiner <hannes@cmpxchg.org>, Hugh Dickins <hughd@google.com>, Jann Horn <jannh@google.com>, 
-	Joshua Hahn <joshua.hahnjy@gmail.com>, Lance Yang <lance.yang@linux.dev>, lenb@kernel.org, 
-	linux-doc@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>, 
-	linux-mm <linux-mm@kvack.org>, "open list:SUSPEND TO RAM" <linux-pm@vger.kernel.org>, 
-	Lorenzo Stoakes <lorenzo.stoakes@oracle.com>, Matthew Brost <matthew.brost@intel.com>, 
-	Michal Hocko <mhocko@suse.com>, Muchun Song <muchun.song@linux.dev>, 
-	Mariano Pache <npache@redhat.com>, Pavel Machek <pavel@kernel.org>, Peter Xu <peterx@redhat.com>, 
-	Peter Zijlstra <peterz@infradead.org>, Pedro Falcato <pfalcato@suse.de>, 
-	"Rafael J. Wysocki (Intel)" <rafael@kernel.org>, Rakie Kim <rakie.kim@sk.com>, 
-	Roman Gushchin <roman.gushchin@linux.dev>, Mike Rapoport <rppt@kernel.org>, 
-	Ryan Roberts <ryan.roberts@arm.com>, Shakeel Butt <shakeel.butt@linux.dev>, 
-	Kemeng Shi <shikemeng@huaweicloud.com>, Suren Baghdasaryan <surenb@google.com>, tglx@kernel.org, 
-	Vlastimil Babka <vbabka@suse.cz>, Wei Xu <weixugc@google.com>, 
-	"Huang, Ying" <ying.huang@linux.alibaba.com>, Yosry Ahmed <yosry.ahmed@linux.dev>, 
-	Yuanchu Xie <yuanchu@google.com>, Qi Zheng <zhengqi.arch@bytedance.com>, Zi Yan <ziy@nvidia.com>, 
-	Meta kernel team <kernel-team@meta.com>, Rik van Riel <riel@surriel.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Rspamd-Queue-Id: 095294630A3
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/5] cgroup/dmem: Add reclaim callback for lowering max
+ below current usage
+To: =?UTF-8?Q?Thomas_Hellstr=C3=B6m?= <thomas.hellstrom@linux.intel.com>,
+ intel-xe@lists.freedesktop.org
+Cc: Natalie Vock <natalie.vock@gmx.de>, Johannes Weiner <hannes@cmpxchg.org>,
+ Tejun Heo <tj@kernel.org>, =?UTF-8?Q?Michal_Koutn=C3=BD?=
+ <mkoutny@suse.com>, cgroups@vger.kernel.org, Huang Rui <ray.huang@amd.com>,
+ Matthew Brost <matthew.brost@intel.com>,
+ Matthew Auld <matthew.auld@intel.com>,
+ Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+ Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
+ Simona Vetter <simona@ffwll.ch>, David Airlie <airlied@gmail.com>,
+ =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+ Alex Deucher <alexander.deucher@amd.com>,
+ Rodrigo Vivi <rodrigo.vivi@intel.com>, dri-devel@lists.freedesktop.org,
+ amd-gfx@lists.freedesktop.org, linux-kernel@vger.kernel.org
+References: <20260327081600.4885-1-thomas.hellstrom@linux.intel.com>
+ <20260327081600.4885-3-thomas.hellstrom@linux.intel.com>
+Content-Language: en-US
+From: Chen Ridong <chenridong@huaweicloud.com>
+In-Reply-To: <20260327081600.4885-3-thomas.hellstrom@linux.intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:gCh0CgA3HrxeYuxpzYCiBg--.33183S2
+X-Coremail-Antispam: 1UD129KBjvJXoW3Jr4kKr4xGFWxCr47Ar1DKFg_yoW3XrykpF
+	ZrCr13Kw4rXrW7Zrsay3W8uF93u3Wvgr45W34xGw4fuFsrJw1Yyr4qk3yYyF1UCF9rGr1f
+	Xan0krnruFWjyrDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUvjb4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
+	0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
+	x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
+	0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc7CjxVAaw2AF
+	wI0_GFv_Wryl42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4
+	xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a6rW5
+	MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I
+	0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWU
+	JVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUIa
+	0PDUUUU
+X-CM-SenderInfo: hfkh02xlgr0w46kxt4xhlfz01xgou0bp/
+X-Rspamd-Queue-Id: 47837465322
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-0.66 / 15.00];
-	SUSPICIOUS_RECIPS(1.50)[];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=2];
-	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10];
-	R_DKIM_ALLOW(-0.20)[gmail.com:s=20251104];
+X-Spamd-Result: default: False [-1.46 / 15.00];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FREEMAIL_CC(0.00)[gmail.com,oracle.com,linux-foundation.org,nvidia.com,google.com,kernel.org,linux.alibaba.com,redhat.com,sk.com,vger.kernel.org,linux.dev,lwn.net,arm.com,gourry.net,cmpxchg.org,kvack.org,intel.com,suse.com,infradead.org,suse.de,huaweicloud.com,suse.cz,bytedance.com,meta.com,surriel.com];
-	TAGGED_FROM(0.00)[bounces-15508-lists,cgroups=lfdr.de];
-	FROM_HAS_DN(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
-	RCVD_TLS_LAST(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	DKIM_TRACE(0.00)[gmail.com:+];
-	MISSING_XM_UA(0.00)[];
-	TO_DN_SOME(0.00)[];
-	RCPT_COUNT_GT_50(0.00)[54];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[ryncsn@gmail.com,cgroups@vger.kernel.org];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	NEURAL_HAM(-0.00)[-1.000];
-	TAGGED_RCPT(0.00)[cgroups];
-	MID_RHS_MATCH_FROMTLD(0.00)[];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	FREEMAIL_CC(0.00)[gmx.de,cmpxchg.org,kernel.org,suse.com,vger.kernel.org,amd.com,intel.com,linux.intel.com,suse.de,ffwll.ch,gmail.com,lists.freedesktop.org];
+	TAGGED_FROM(0.00)[bounces-15509-lists,cgroups=lfdr.de];
+	RCVD_TLS_LAST(0.00)[];
+	DMARC_NA(0.00)[huaweicloud.com];
+	MIME_TRACE(0.00)[0:+];
+	RCPT_COUNT_TWELVE(0.00)[21];
 	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	FREEMAIL_FROM(0.00)[gmail.com]
+	FROM_HAS_DN(0.00)[];
+	TAGGED_RCPT(0.00)[cgroups];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[chenridong@huaweicloud.com,cgroups@vger.kernel.org];
+	TO_DN_SOME(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[6];
+	R_DKIM_NA(0.00)[];
+	NEURAL_HAM(-0.00)[-1.000];
+	MID_RHS_MATCH_FROM(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[intel.com:email,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,huaweicloud.com:mid]
 
-On Sat, Apr 25, 2026 at 3:12=E2=80=AFAM Yosry Ahmed <yosry@kernel.org> wrot=
-e
-> > https://lore.kernel.org/linux-mm/20260421055323.940344-1-youngjun.park@=
-lge.com/
->
-> Does this do promotion/demotion of swap entries?
 
-Not yet, let's do things step by step.
 
-> > For example just reserve a type (e.g. type 0) as the virtual type?
-> > (type is really a bad naming though).
-> >
-> > The that swap file (or swap mapping) will be
-> >
-> > I was trying that based on this:
-> > https://lore.kernel.org/linux-mm/20260220-swap-table-p4-v1-15-104795d19=
-815@tencent.com/
-> >
-> > It seems to work and the only thing we need is actually just something
-> > like this one in VSS:
-> > https://lore.kernel.org/linux-mm/20260320192735.748051-15-nphamcs@gmail=
-.com/
-> >
-> > This part:
-> > + /* fall back to physical swap device */
-> > + if (!vswap_alloc_swap_slot(folio)) {
-> >
-> > We do a folio_realloc_swap if folio->swap have type 0.
-> >
-> > Which means, if there is no virtual device / mapping / file / space
-> > (I'm not sure how to name it at this point :) ), the ordinary swap
-> > routine is just still there untouched.
-> >
-> > If there is one, and it's being used, then, it is still the ordinary
-> > swap routine, just do an extra allocation (and the extra allocation
-> > strictly follows YoungJun's tier rule), which is same with VSS, but
-> > everything is reused. From a user or high level interface perspective,
-> > this can be designed with no difference as VSS. Just with a few
-> > bonuses: being per memcg / task / runtime optional, zero overhead if
-> > not enabled, and reusing all the infra.
-> >
-> > BTW this deferred allocation (in VSS or dynamic swap mapping, similar
-> > thing) is actually a bit concerning to me as well. It changes the
-> > common swapout routine and maybe worth reconsideration (e.g.
-> > activate_locked_split and mTHP stats is now ignored?), being optional
-> > for now also seems safer.
->
-> I am not sure if I understand you correctly. I think what you're proposin=
-g is:
->
-> - Page tables either point directly to a swap slot, or to a virtual swap =
-entry.
-> - By default, page tables just point to swap slots maintaining current be=
-havior.
+On 2026/3/27 16:15, Thomas Hellström wrote:
+> Add an optional reclaim callback to struct dmem_cgroup_region.  When
+> dmem.max is set below current usage, invoke the callback to evict memory
+> and retry setting the limit rather than failing immediately.  Signal
+> interruptions propagate back to the write() caller.
+> 
+> RFC:
+> Due to us updating the max limit _after_ the usage has been
+> sufficiently lowered, this should be prone to failures if there are
+> aggressive allocators running in parallel to the reclaim.
+> So can we somehow enforce the new limit while the eviction is
+> happening?
+> 
+> Assisted-by: GitHub Copilot:claude-sonnet-4.6
+> Signed-off-by: Thomas Hellström <thomas.hellstrom@linux.intel.com>
+> ---
+>  include/linux/cgroup_dmem.h | 11 +++++
+>  kernel/cgroup/dmem.c        | 94 +++++++++++++++++++++++++++++++++----
+>  2 files changed, 96 insertions(+), 9 deletions(-)
+> 
+> diff --git a/include/linux/cgroup_dmem.h b/include/linux/cgroup_dmem.h
+> index dd4869f1d736..61520a431740 100644
+> --- a/include/linux/cgroup_dmem.h
+> +++ b/include/linux/cgroup_dmem.h
+> @@ -26,6 +26,10 @@ bool dmem_cgroup_state_evict_valuable(struct dmem_cgroup_pool_state *limit_pool,
+>  				      bool ignore_low, bool *ret_hit_low);
+>  
+>  void dmem_cgroup_pool_state_put(struct dmem_cgroup_pool_state *pool);
+> +void dmem_cgroup_region_set_reclaim(struct dmem_cgroup_region *region,
+> +				    int (*reclaim)(struct dmem_cgroup_pool_state *pool,
+> +						   u64 target_bytes, void *priv),
+> +				    void *priv);
+>  #else
+>  static inline __printf(2,3) struct dmem_cgroup_region *
+>  dmem_cgroup_register_region(u64 size, const char *name_fmt, ...)
+> @@ -62,5 +66,12 @@ bool dmem_cgroup_state_evict_valuable(struct dmem_cgroup_pool_state *limit_pool,
+>  static inline void dmem_cgroup_pool_state_put(struct dmem_cgroup_pool_state *pool)
+>  { }
+>  
+> +static inline void
+> +dmem_cgroup_region_set_reclaim(struct dmem_cgroup_region *region,
+> +			       int (*reclaim)(struct dmem_cgroup_pool_state *pool,
+> +					      u64 target_bytes, void *priv),
+> +			       void *priv)
+> +{ }
+> +
+>  #endif
+>  #endif	/* _CGROUP_DMEM_H */
+> diff --git a/kernel/cgroup/dmem.c b/kernel/cgroup/dmem.c
+> index 3e6d4c0b26a1..f993fb058b74 100644
+> --- a/kernel/cgroup/dmem.c
+> +++ b/kernel/cgroup/dmem.c
+> @@ -51,6 +51,18 @@ struct dmem_cgroup_region {
+>  	 * No new pools should be added to the region afterwards.
+>  	 */
+>  	bool unregistered;
+> +
+> +	/**
+> +	 * @reclaim: Optional callback invoked when dmem.max is set below the
+> +	 * current usage of a pool. The driver should attempt to free at least
+> +	 * @target_bytes from @pool. May be called multiple times if usage
+> +	 * remains above the limit after returning.
+> +	 */
+> +	int (*reclaim)(struct dmem_cgroup_pool_state *pool, u64 target_bytes,
+> +		       void *priv);
+> +
+> +	/** @reclaim_priv: Private data passed to @reclaim. */
+> +	void *reclaim_priv;
+>  };
+>  
+>  struct dmemcg_state {
+> @@ -145,23 +157,59 @@ static void free_cg_pool(struct dmem_cgroup_pool_state *pool)
+>  }
+>  
+>  static int
+> -set_resource_min(struct dmem_cgroup_pool_state *pool, u64 val)
+> +set_resource_min(struct dmem_cgroup_pool_state *pool, u64 val,
+> +		 struct dmem_cgroup_region *region)
+>  {
+>  	page_counter_set_min(&pool->cnt, val);
+>  	return 0;
+>  }
+>  
+>  static int
+> -set_resource_low(struct dmem_cgroup_pool_state *pool, u64 val)
+> +set_resource_low(struct dmem_cgroup_pool_state *pool, u64 val,
+> +		 struct dmem_cgroup_region *region)
+>  {
+>  	page_counter_set_low(&pool->cnt, val);
+>  	return 0;
+>  }
+>  
+>  static int
+> -set_resource_max(struct dmem_cgroup_pool_state *pool, u64 val)
+> +set_resource_max(struct dmem_cgroup_pool_state *pool, u64 val,
 
-I mean, they are all swap entries, nothing special from the page table
-side. Swap subsystems handle things internally.
+Though we are discussing how to set the maximum, renaming 'val' to 'max' would
+improve readability in the next version.
 
-> - If we have multiple backends (e.g. zswap or tiering), we use virtual
-> swap entry instead.
+> +		 struct dmem_cgroup_region *region)
+>  {
+> -	return page_counter_set_max(&pool->cnt, val);
+> +	int err = page_counter_set_max(&pool->cnt, val);
+> +
+> +	if (err != -EBUSY || !region || !region->reclaim)
+> +		return err;
+> +
+> +	/*
+> +	 * The new max is below current usage.  Ask the driver to evict memory
+> +	 * and retry, up to a bounded number of times.  Signal interruptions are
+> +	 * propagated back to the write() caller; other reclaim failures leave
+> +	 * -EBUSY as the result.
+> +	 */
+> +	for (int retries = 5; retries > 0; retries--) {
+> +		u64 usage = page_counter_read(&pool->cnt);
+> +		u64 target = usage > val ? usage - val : 0;
+> +		int reclaim_err;
+> +
+> +		if (!target) {
+> +			err = page_counter_set_max(&pool->cnt, val);
+> +			break;
+> +		}
+> +
+> +		reclaim_err = region->reclaim(pool, target, region->reclaim_priv);
+> +		if (reclaim_err) {
+> +			if (reclaim_err == -EINTR || reclaim_err == -ERESTARTSYS)
+> +				err = reclaim_err;
+> +			break;
+> +		}
+> +
+> +		err = page_counter_set_max(&pool->cnt, val);
+> +		if (err != -EBUSY)
+> +			break;
+> +	}
+> +
+> +	return err;
+>  }
+>  
+>  static u64 get_resource_low(struct dmem_cgroup_pool_state *pool)
+> @@ -186,9 +234,9 @@ static u64 get_resource_current(struct dmem_cgroup_pool_state *pool)
+>  
+>  static void reset_all_resource_limits(struct dmem_cgroup_pool_state *rpool)
+>  {
+> -	set_resource_min(rpool, 0);
+> -	set_resource_low(rpool, 0);
+> -	set_resource_max(rpool, PAGE_COUNTER_MAX);
+> +	set_resource_min(rpool, 0, NULL);
+> +	set_resource_low(rpool, 0, NULL);
+> +	set_resource_max(rpool, PAGE_COUNTER_MAX, NULL);
+>  }
+>  
+>  static void dmemcs_offline(struct cgroup_subsys_state *css)
+> @@ -570,6 +618,32 @@ void dmem_cgroup_pool_state_put(struct dmem_cgroup_pool_state *pool)
+>  }
+>  EXPORT_SYMBOL_GPL(dmem_cgroup_pool_state_put);
+>  
+> +/**
+> + * dmem_cgroup_region_set_reclaim - Register a reclaim callback on a region.
+> + * @region: The region to register the callback for.
+> + * @reclaim: Callback to invoke when dmem.max is set below current usage.
+> + *           Called with the pool that needs reclaiming and the number of
+> + *           bytes to free. Returns 0 on progress, negative on failure.
+> + * @priv: Opaque pointer passed back to @reclaim.
+> + *
+> + * When dmem.max is lowered below the current usage of a cgroup pool, the
+> + * dmem controller will call @reclaim with a target number of bytes to free.
+> + * After @reclaim returns the controller retries setting the limit; if usage
+> + * is still too high it calls @reclaim again, up to a bounded retry count.
+> + */
+> +void dmem_cgroup_region_set_reclaim(struct dmem_cgroup_region *region,
+> +				    int (*reclaim)(struct dmem_cgroup_pool_state *pool,
+> +						   u64 target_bytes, void *priv),
+> +				    void *priv)
+> +{
+> +	if (!region)
+> +		return;
+> +
+> +	region->reclaim = reclaim;
+> +	region->reclaim_priv = priv;
+> +}
+> +EXPORT_SYMBOL_GPL(dmem_cgroup_region_set_reclaim);
+> +
+>  static struct dmem_cgroup_pool_state *
+>  get_cg_pool_unlocked(struct dmemcg_state *cg, struct dmem_cgroup_region *region)
+>  {
+> @@ -728,7 +802,8 @@ static int dmemcg_parse_limit(char *options, struct dmem_cgroup_region *region,
+>  
+>  static ssize_t dmemcg_limit_write(struct kernfs_open_file *of,
+>  				 char *buf, size_t nbytes, loff_t off,
+> -				 int (*apply)(struct dmem_cgroup_pool_state *, u64))
+> +				 int (*apply)(struct dmem_cgroup_pool_state *, u64,
+> +					      struct dmem_cgroup_region *))
+>  {
+>  	struct dmemcg_state *dmemcs = css_to_dmemcs(of_css(of));
+>  	int err = 0;
+> @@ -775,7 +850,8 @@ static ssize_t dmemcg_limit_write(struct kernfs_open_file *of,
+>  		}
+>  
+>  		/* And commit */
+> -		err = apply(pool, new_limit);
+> +		err = apply(pool, new_limit, region);
+> +
+>  		dmemcg_pool_put(pool);
+>  
+>  out_put:
 
-Actually that can just follow the swap priority, or tier rule. Even if
-virtual mapping exists, it can be bypassed. e.g. you have a large NBD
-and don't care about either fragmentation or compression for offline
-workload cgroups, then why use a virtual layer for them which could
-double the kmem usage or spend more CPU? Setup is a different issue
-which can be discussed.
+-- 
+Best regards,
+Ridong
 
-> - The physical swapfile has clusters and swap tables (status quo).
-> - Virtual swap is implemented with clusters and swap tables in a
-> virtual space, and each table entry points to an underlying swap slot
-> or zswap entry.
-> - If a page table has a physical swap slot, and we need to do tiering,
-> we basically "make it virtual" by making the swap table of the
-> physical swapfile point at a virtual swap entry? or another physical
-> swapfile? Not sure.
-
-They are still ordinary swap entries, nothing special. The virtual
-space is also just a ordinary swap file (or swap mapping), which is
-easy to do:
-https://lore.kernel.org/linux-mm/20260220-swap-table-p4-v1-15-104795d19815@=
-tencent.com/
-
-Then its virtual_table will have a different set of swap entries. (I
-left that part undone though).
-
-> > Right... I mean with two layers you will likely have >16 bytes
-> > overhead, and double lookup.
->
-> Why >16 bytes? Do we need anything extra other than the reverse
-> mapping? Also why do we need a double lookup?
-
-You will have to store at least the following info: memcg (2 bytes),
-shadow (8 bytes), count (at least 1 bytes), and revert mapping (8
-bytes, since you have to address a full virtual swap space). And some
-type info is also needed. Part of them can be shrinked but still,
-scientifically, merging two layers into one is considered a kind of
-optimization.
-
-You need lookup the virtual layer, then the lower layer for many
-decision making, is was discussed before to introduce more cache bit
-or things like that and I think that is getting over complex, reminds
-me of the slot cache or HAS_CACHE thing...:
-https://lore.kernel.org/linux-mm/CAMgjq7DJrtE-jARik849kCufd0qNnZQs7C8fcyzVO=
-KE14-O+Dw@mail.gmail.com/
-
-> I don't think I quite understand it yet, maybe I am the problem :)
-
-Haha, not at all! Blame me for the poor explanation. To be honest, the
-design is still evolving and there are definitely details that need to
-be improved. It's hard to discuss these abstractions purely in theory,
-so it's probably best just keep the works moving forward in a clean
-way, and make things simpler and better be opt-in first.
 
