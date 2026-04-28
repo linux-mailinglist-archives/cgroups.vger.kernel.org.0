@@ -1,184 +1,142 @@
-Return-Path: <cgroups+bounces-15536-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-15537-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id GB0CHkWb8GmGVwEAu9opvQ
-	(envelope-from <cgroups+bounces-15536-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Tue, 28 Apr 2026 13:34:29 +0200
+	id wAogOAm88Gn+XwEAu9opvQ
+	(envelope-from <cgroups+bounces-15537-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Tue, 28 Apr 2026 15:54:17 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
-	by mail.lfdr.de (Postfix) with ESMTPS id 19D76483D82
-	for <lists+cgroups@lfdr.de>; Tue, 28 Apr 2026 13:34:29 +0200 (CEST)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id 63C62486554
+	for <lists+cgroups@lfdr.de>; Tue, 28 Apr 2026 15:54:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id A382D3038CE1
-	for <lists+cgroups@lfdr.de>; Tue, 28 Apr 2026 11:28:19 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 4C9C430406AA
+	for <lists+cgroups@lfdr.de>; Tue, 28 Apr 2026 13:18:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B3BE63FCB23;
-	Tue, 28 Apr 2026 11:20:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A40A4534AD;
+	Tue, 28 Apr 2026 13:14:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="ouFfKrgt"
+	dkim=pass (2048-bit key) header.d=lankhorst.se header.i=@lankhorst.se header.b="dNuxLkdu"
 X-Original-To: cgroups@vger.kernel.org
-Received: from out-185.mta0.migadu.com (out-185.mta0.migadu.com [91.218.175.185])
+Received: from lankhorst.se (unknown [141.105.120.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C0E083FBEC5
-	for <cgroups@vger.kernel.org>; Tue, 28 Apr 2026 11:20:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.185
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A87C450910
+	for <cgroups@vger.kernel.org>; Tue, 28 Apr 2026 13:14:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=141.105.120.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1777375250; cv=none; b=gnOsjoYYhUo2QIoRGAHgsYvDdgy/Z773sxyH1CRgS9DA3Mwuoi+5JebVGjoLxIbGtiEk+2/jsByNbwHZ2bOQb5k54kFeBaGPhQiREh+ZRHXXB6pOSIDkxb90NMoAgEEbw/iBOD1ywDIUANggTsHwy6D87YfNdvrqmvWrpKkK4m8=
+	t=1777382069; cv=none; b=JSLmmHbC+5qbN/GJlChrZEii3llkijaI10HZyuHEbNf1l/KS8XvGYVbmP5TCC/8mEZknhK6LWmSc4xE0AvDeW5adxu/JLAihlV3mWzKTg5qMnGhzjjqyFUoyz1oJTxVg49EKS4Yb0MbDfiMb6SOfLRWrY2cvAfOJ7OVErMjfoxM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1777375250; c=relaxed/simple;
-	bh=353j0C2lYD1WIG79bf3Cw3KHgKsdbAQBBwuyhawQXhE=;
-	h=Content-Type:Mime-Version:Subject:From:In-Reply-To:Date:Cc:
-	 Message-Id:References:To; b=XorsrJYuFtRoWAv0u1GO5Hwm55nYIYDGOgVlWL3fiWnS7VPSbkQYH1yQIeqU+H+Sc2r2JhOdnyQ+a3HL4V47LdghOBRzswX2fuicK3/RLxUNoezJW1YEg57/co1KPlkQRDJPdyB+Y1Gq0KqY8OL8wcyHFODso1oMvFQ70JBv/Nk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=ouFfKrgt; arc=none smtp.client-ip=91.218.175.185
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Content-Type: text/plain;
-	charset=us-ascii
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1777375236;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=DZRrlNftEWSaYkPlYuyXhwwlyx7ubbXUhvki06OMnS0=;
-	b=ouFfKrgt/mJqUG5kM3lCytRYJiFU1dwYzJobXtg/Bm5vhjQnLD8Gq0EKE4L1LJ0bOgU+u6
-	O37+6087Dyg8tyYOC+FHSwuGIrtG9YbBCGuvp0KgLCkdsVlmAuhWovFj4T9CADc4y+eOy0
-	v+frVy954rFZDXsCOy7HwrWa7R87LSU=
+	s=arc-20240116; t=1777382069; c=relaxed/simple;
+	bh=nTVAk8FVU9/9Iqogqi1Nlg2TfMCF2sxeKJyQ/8j1X+A=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=OB0EY90txqNa15X3mVkAfkr6KwDbv1GbduhM+DMR321SStsBsU1cjjQegPdQkYnnILQi/tzeBCdrpyLXHAESusTW43AwXFbVuqCWS32bdYtntBVgVfkhH1KSFsF2ZTDQByxF5x4YKl5HLUvqvTqK8u421QrV99528XE621XKp3w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lankhorst.se; spf=pass smtp.mailfrom=lankhorst.se; dkim=pass (2048-bit key) header.d=lankhorst.se header.i=@lankhorst.se header.b=dNuxLkdu; arc=none smtp.client-ip=141.105.120.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lankhorst.se
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lankhorst.se
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=lankhorst.se;
+	s=default; t=1777382059;
+	bh=nTVAk8FVU9/9Iqogqi1Nlg2TfMCF2sxeKJyQ/8j1X+A=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=dNuxLkduwB6bE+D5PePF93PM94aLLhS1Ywf7tnyWekON9xD2WQub3FOhLzs5iPwWo
+	 FSBWG0HYkaaK7+AiRd7RTCuQUgf4nQy7+GxTrsJXc/shlL4RcABxhbnBBLM3uyT/SE
+	 5Jifqsk6NODk5CJt6usjVA8KyL6w9t6MWF80wIMKTZWOqbQYwGZEkjYyJHSht1SE88
+	 M4ICL940urGpJ4dIpVE4N9/c0lIDuSu7SXLOSMlytVGLM0OZ8yXQsTCDFMAGdWKTgc
+	 M4l4Iy3TpDEsuY2XJ4O1VTGdyhgKbgswuscHCJ+XWKej5+2so1BfNNlmUP4VUoX1DT
+	 iGBJCKWphFCJg==
+Message-ID: <e1b698c8-5b9f-4726-9f83-06ed62822bdf@lankhorst.se>
+Date: Tue, 28 Apr 2026 15:14:20 +0200
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3864.500.181\))
-Subject: Re: [PATCH v2] mm: memcontrol: fix rcu unbalance in
- get_non_dying_memcg_end()
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Muchun Song <muchun.song@linux.dev>
-In-Reply-To: <20260428103108.45719-1-qi.zheng@linux.dev>
-Date: Tue, 28 Apr 2026 19:19:55 +0800
-Cc: akpm@linux-foundation.org,
- hannes@cmpxchg.org,
- mhocko@kernel.org,
- roman.gushchin@linux.dev,
- shakeel.butt@linux.dev,
- yosry@kernel.org,
- cgroups@vger.kernel.org,
- linux-mm@kvack.org,
- linux-kernel@vger.kernel.org,
- Qi Zheng <zhengqi.arch@bytedance.com>
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <794DD00D-D6A1-469D-89D9-66FA972D0661@linux.dev>
-References: <20260428103108.45719-1-qi.zheng@linux.dev>
-To: Qi Zheng <qi.zheng@linux.dev>
-X-Migadu-Flow: FLOW_OUT
-X-Rspamd-Queue-Id: 19D76483D82
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v6 2/6] cgroup,cgroup/dmem: Add
+ (dmem_)cgroup_common_ancestor helper
+To: Natalie Vock <natalie.vock@gmx.de>, =?UTF-8?Q?Michal_Koutn=C3=BD?=
+ <mkoutny@suse.com>
+Cc: Maxime Ripard <mripard@kernel.org>, Tejun Heo <tj@kernel.org>,
+ Johannes Weiner <hannes@cmpxchg.org>,
+ Christian Koenig <christian.koenig@amd.com>, Huang Rui <ray.huang@amd.com>,
+ Matthew Auld <matthew.auld@intel.com>,
+ Matthew Brost <matthew.brost@intel.com>,
+ Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+ Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>,
+ Simona Vetter <simona@ffwll.ch>, Tvrtko Ursulin <tursulin@ursulin.net>,
+ cgroups@vger.kernel.org, dri-devel@lists.freedesktop.org
+References: <20260313-dmemcg-aggressive-protect-v6-0-7c71cc1492db@gmx.de>
+ <20260313-dmemcg-aggressive-protect-v6-2-7c71cc1492db@gmx.de>
+ <cykgy6mf4nu5kkwl3uc6modkj3ppela2xgjy2ijidpyzdsnyn4@cbwivcrqa5kh>
+ <911b9bfb-c352-4f6d-93a1-540246ccd5b2@gmx.de>
+Content-Language: en-US
+From: Maarten Lankhorst <dev@lankhorst.se>
+In-Reply-To: <911b9bfb-c352-4f6d-93a1-540246ccd5b2@gmx.de>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Rspamd-Queue-Id: 63C62486554
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-1.66 / 15.00];
+X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[linux.dev,none];
-	MV_CASE(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74:c];
-	R_DKIM_ALLOW(-0.20)[linux.dev:s=key1];
+	DMARC_POLICY_ALLOW(-0.50)[lankhorst.se,none];
+	R_DKIM_ALLOW(-0.20)[lankhorst.se:s=default];
+	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-15536-lists,cgroups=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	RCVD_COUNT_THREE(0.00)[3];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	DKIM_TRACE(0.00)[linux.dev:+];
-	MIME_TRACE(0.00)[0:+];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-15537-lists,cgroups=lfdr.de];
 	FROM_HAS_DN(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
-	MID_RHS_MATCH_FROM(0.00)[];
+	FREEMAIL_TO(0.00)[gmx.de,suse.com];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	RCVD_COUNT_THREE(0.00)[3];
+	RCPT_COUNT_TWELVE(0.00)[16];
+	MIME_TRACE(0.00)[0:+];
+	FREEMAIL_CC(0.00)[kernel.org,cmpxchg.org,amd.com,intel.com,linux.intel.com,suse.de,gmail.com,ffwll.ch,ursulin.net,vger.kernel.org,lists.freedesktop.org];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	TO_DN_SOME(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[muchun.song@linux.dev,cgroups@vger.kernel.org];
-	MISSING_XM_UA(0.00)[];
-	RCPT_COUNT_SEVEN(0.00)[11];
+	FROM_NEQ_ENVFROM(0.00)[dev@lankhorst.se,cgroups@vger.kernel.org];
+	DKIM_TRACE(0.00)[lankhorst.se:+];
 	NEURAL_HAM(-0.00)[-1.000];
 	TAGGED_RCPT(0.00)[cgroups];
-	TO_DN_SOME(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns,linux.dev:email,linux.dev:dkim,linux.dev:mid]
+	MID_RHS_MATCH_FROM(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,gmx.de:email]
 
+Hey,
 
+Den 2026-03-16 kl. 09:46, skrev Natalie Vock:
+> On 3/13/26 15:16, Michal Koutný wrote:
+>> On Fri, Mar 13, 2026 at 12:40:01PM +0100, Natalie Vock <natalie.vock@gmx.de> wrote:
+>>> This helps to find a common subtree of two resources, which is important
+>>> when determining whether it's helpful to evict one resource in favor of
+>>> another.
+>>>
+>>> To facilitate this, add a common helper to find the ancestor of two
+>>> cgroups using each cgroup's ancestor array.
+>>>
+>>> Signed-off-by: Natalie Vock <natalie.vock@gmx.de>
+>>> ---
+>>>   include/linux/cgroup.h      | 21 +++++++++++++++++++++
+>>>   include/linux/cgroup_dmem.h |  9 +++++++++
+>>>   kernel/cgroup/dmem.c        | 28 ++++++++++++++++++++++++++++
+>>>   3 files changed, 58 insertions(+)
+>>
+>> When the helper is added, the idiom in
+>> kernel/cgroup/cgroup.c:cgroup_procs_write_permission() could perhaps be
+>> switched to it too (structured in commits) to "optimize" migrations from
+>> large depths.
+> 
+> Right. Perhaps better suited as follow-up work though, isn't it?
+> 
+> Thanks,
+> Natalie
 
-> On Apr 28, 2026, at 18:31, Qi Zheng <qi.zheng@linux.dev> wrote:
->=20
-> From: Qi Zheng <zhengqi.arch@bytedance.com>
->=20
-> Currently, get_non_dying_memcg_start() and get_non_dying_memcg_end() =
-both
-> evaluate cgroup_subsys_on_dfl(memory_cgrp_subsys) independently to
-> determine whether to acquire or release the RCU read lock.
->=20
-> However, the result of cgroup_subsys_on_dfl() can change dynamically =
-at
-> runtime due to cgroup hierarchy rebinding (e.g., when the memory
-> controller is moved between cgroup v1 and v2 hierarchies). This can =
-cause
-> the following warning:
->=20
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> WARNING: bad unlock balance detected!
-> 7.0.0-next-20260420+ #83 Tainted: G        W
-> -------------------------------------
-> memcg-repro/270 is trying to release lock (rcu_read_lock) at:
-> [<ffffffff815f57f7>] rcu_read_unlock+0x17/0x60
-> but there are no more locks to release!
->=20
-> other info that might help us debug this:
-> 1 lock held by memcg-repro/270:
->  #0: ffff888102fa2088 (vm_lock){++++}-{0:0}, at: =
-do_user_addr_fault+0x285/0x880
->=20
-> stack backtrace:
-> CPU: 0 UID: 0 PID: 270 Comm: memcg-repro Tainted: G        W           =
-7.0.0-next-20260420+ #
-> Tainted: [W]=3DWARN
-> Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.12.0-1 =
-04/01/2014
-> Call Trace:
->  <TASK>
->  ? rcu_read_unlock+0x17/0x60
->  dump_stack_lvl+0x77/0xb0
->  print_unlock_imbalance_bug+0xe0/0xf0
->  ? rcu_read_unlock+0x17/0x60
->  lock_release+0x21d/0x2a0
->  rcu_read_unlock+0x1c/0x60
->  do_pte_missing+0x233/0xb40
->  __handle_mm_fault+0x80e/0xcd0
->  handle_mm_fault+0x146/0x310
->  do_user_addr_fault+0x303/0x880
->  exc_page_fault+0x9b/0x270
->  asm_exc_page_fault+0x26/0x30
-> RIP: 0033:0x5590e4eb41ea
-> Code: 61 cc 66 0f 6f e0 66 0f 61 c2 66 0f db cd 66 0f 69 e2 66 0f 6f =
-d0 66 0f 69 d4 66 0f 61 0
-> RSP: 002b:00007ffcad25f030 EFLAGS: 00010202
-> RAX: 00005590e4eb8010 RBX: 00007ffcad260f7d RCX: 00007f73c474d44d
-> RDX: 00005590e4eb80a0 RSI: 00005590e4eb503c RDI: 000000000000000f
-> RBP: 00005590e4eb70a0 R08: 0000000000000000 R09: 00007f73c483a680
-> R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-> R13: 00007ffcad25f180 R14: 00005590e4eb6dd8 R15: 00007f73c4869020
->  </TASK>
-> ------------[ cut here ]------------
->=20
-> Fix this by explicitly tracking the RCU lock state, ensuring that
-> rcu_read_unlock() in get_non_dying_memcg_end() is strictly paired with
-> the lock acquisition, regardless of any runtime rebinding events.
->=20
-> Fixes: 8285917d6f38 ("mm: memcontrol: prepare for reparenting =
-non-hierarchical stats")
-> Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
-> Acked-by: Shakeel Butt <shakeel.butt@linux.dev>
+Does this patch need an ack to merge through the drm-misc tree?
 
-Reviewed-by: Muchun Song <muchun.song@linux.dev>
-
-Thanks.
-
+Kind regards,
+~Maarten Lankhorst
 
