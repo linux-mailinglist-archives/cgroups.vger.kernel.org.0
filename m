@@ -1,211 +1,206 @@
-Return-Path: <cgroups+bounces-15531-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-15532-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id IKnVFT2M8GkuUwEAu9opvQ
-	(envelope-from <cgroups+bounces-15531-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Tue, 28 Apr 2026 12:30:21 +0200
+	id eFkZH86I8GloUgEAu9opvQ
+	(envelope-from <cgroups+bounces-15532-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Tue, 28 Apr 2026 12:15:42 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id BB816482A5F
-	for <lists+cgroups@lfdr.de>; Tue, 28 Apr 2026 12:30:20 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id CEA3C482688
+	for <lists+cgroups@lfdr.de>; Tue, 28 Apr 2026 12:15:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id E20AF30A852A
-	for <lists+cgroups@lfdr.de>; Tue, 28 Apr 2026 09:59:59 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 2218E3088B83
+	for <lists+cgroups@lfdr.de>; Tue, 28 Apr 2026 10:02:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 12DC43DFC98;
-	Tue, 28 Apr 2026 09:59:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 522073E0C62;
+	Tue, 28 Apr 2026 10:02:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="AgmJ4X1D"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="J3NzFuBF"
 X-Original-To: cgroups@vger.kernel.org
-Received: from out-188.mta1.migadu.com (out-188.mta1.migadu.com [95.215.58.188])
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.10])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 860D173463
-	for <cgroups@vger.kernel.org>; Tue, 28 Apr 2026 09:59:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.188
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C82982BF006;
+	Tue, 28 Apr 2026 10:02:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.10
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1777370396; cv=none; b=KSC0lPNaNdzX0QcWJ2knQI6CrupyscLDAHNtJy5b8rRTGNXDQnfmqAzveZLMEW50GXlqRJRM707tF1ZUom56aylWoL35mmSgxUFcbJhpbUOu1F4JxuskU1GdBxWJxm+6Tcz7uPIRiRmD/Zaff+WXcVxPLJVZVDRhYefcB58RkeU=
+	t=1777370565; cv=none; b=u3Nfwst7iCfkEb+oouOOozyIPYyzJdNK536Abj5KE1cy7z62xvYeReYNeZfREBRg8AobkAHVs++97/YwCk/wk9ZOYGQgASkJ7P3VY3CTkstRvN5X1WYQGbxGSjya16fpza1MnZavUW9XBfT5Arvk5lLvwAB+Y8lKoqb8yiGsM5c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1777370396; c=relaxed/simple;
-	bh=5xFU/lATmgGgFS63VwB0ToNR9W+Z2EIumB/CNijaVs0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=nKmMoa29IiKek03oc+0uurPVA4GLhoLktlHOukd8V8vu2nFB43qTl4pa9hPknidPKWOqkhLBHAN2vqXhyLXCp+zVRiPFIHiYeUHEVfHxw9uXSJeSzmReH6TW4d73YkM/74uqcdu4Ry+dg7ZFrYVOE6rlNE6bUQwjNuHXMugt9Ro=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=AgmJ4X1D; arc=none smtp.client-ip=95.215.58.188
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Tue, 28 Apr 2026 02:59:19 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1777370381;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=MiTyaQb0gH/enfcQNGJbMNOh9xViBgr4r/Sr0EX4sgQ=;
-	b=AgmJ4X1DAE/4K8J4aGBiJGCx4ShRw9Yk4yo1Nm9esDzMbomO1CMTEJ/p/pLVUlLgcw5JT8
-	XV2Z30hj2JKnllRiwYLkUE5OtVei/iU193jyjAmZqF+ab+HCajouQKbV7RBj6tp8BVGw2H
-	G/eCcKQG4Qs6/d568nEW6YW5nqIjA8Y=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Shakeel Butt <shakeel.butt@linux.dev>
-To: Qi Zheng <qi.zheng@linux.dev>
-Cc: akpm@linux-foundation.org, hannes@cmpxchg.org, mhocko@kernel.org, 
-	roman.gushchin@linux.dev, muchun.song@linux.dev, yosry@kernel.org, cgroups@vger.kernel.org, 
-	linux-mm@kvack.org, linux-kernel@vger.kernel.org, 
-	Qi Zheng <zhengqi.arch@bytedance.com>
-Subject: Re: [PATCH] mm: memcontrol: fix rcu unbalance in
- get_non_dying_memcg_end()
-Message-ID: <afCEgUMqhLvrYJe7@linux.dev>
-References: <20260428030621.94470-1-qi.zheng@linux.dev>
+	s=arc-20240116; t=1777370565; c=relaxed/simple;
+	bh=O/fX+/fwObLkLagIKKIXphtPD052eF9ODtQPNirPNA4=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=g+PxEPGGitg36Sa10lQwlirXYIFJ/Qdb4JMg6/WRvhg5XuTelQ/O+Edk8xtBImQ7Oe/GhGmMiHPQmhCAejrJilkWvvdjhfzpdhRxp4II+XPlMbDWj2vu5OKdDohXjezINglITDsf4hUOQU3KnAHdUmSrNJhVUKIf/rcaXmgI5bs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=pass smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=J3NzFuBF; arc=none smtp.client-ip=192.198.163.10
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1777370564; x=1808906564;
+  h=message-id:subject:from:to:cc:date:in-reply-to:
+   references:content-transfer-encoding:mime-version;
+  bh=O/fX+/fwObLkLagIKKIXphtPD052eF9ODtQPNirPNA4=;
+  b=J3NzFuBFmoMRylGkOoE1IAEqHqat0UYT2HrAbFLvcizR20w2vrxq7F/s
+   5vuAsHbaYJXIjYrij1MUQ0XyCyMzbjjKGnjbs0CM1SeiL+c0Pfu9nRSXC
+   5FRS6Ah1acGbwyMr2KsuxcBdoPPU0gqrimOUtWGuGTBJnYDAo7vogMexy
+   w1c2WwoPe6dYdZ7fZhKWMgrnZf1EvyTshi03e6tp5shLlKkEdTRUIrDYD
+   4N/EDsNoTsShOgX0CkI8bbeda+FBHCSdLaMlpMeRSH/gXEZNkUOyMqnN9
+   Yt/fXsMhxkPCMrMljfCY55bWSxlk5zk4e11O6dYWkA6OEYixkC1madlMu
+   Q==;
+X-CSE-ConnectionGUID: f/GRv2y4QsibS2dhw9iSgg==
+X-CSE-MsgGUID: mmHgvJnJT0y9pjHlTx3pAA==
+X-IronPort-AV: E=McAfee;i="6800,10657,11769"; a="89654107"
+X-IronPort-AV: E=Sophos;i="6.23,203,1770624000"; 
+   d="scan'208";a="89654107"
+Received: from fmviesa002.fm.intel.com ([10.60.135.142])
+  by fmvoesa104.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Apr 2026 03:02:40 -0700
+X-CSE-ConnectionGUID: 0QLQBZ8kQU2MR6y1L+2CLQ==
+X-CSE-MsgGUID: zz6QLTN/RV2NA1bgXxOy0A==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.23,203,1770624000"; 
+   d="scan'208";a="257222117"
+Received: from abityuts-desk.ger.corp.intel.com (HELO [10.245.245.33]) ([10.245.245.33])
+  by fmviesa002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Apr 2026 03:02:36 -0700
+Message-ID: <5d36326b1b9c009cd544fe5ca195ae484dbbc915.camel@linux.intel.com>
+Subject: Re: [PATCH v2 3/4] drm/xe: Wire up dmem cgroup reclaim for VRAM
+ manager
+From: Thomas =?ISO-8859-1?Q?Hellstr=F6m?= <thomas.hellstrom@linux.intel.com>
+To: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, 
+	intel-xe@lists.freedesktop.org
+Cc: Natalie Vock <natalie.vock@gmx.de>, Johannes Weiner
+ <hannes@cmpxchg.org>,  Tejun Heo <tj@kernel.org>, Michal
+ =?ISO-8859-1?Q?Koutn=FD?= <mkoutny@suse.com>, 	cgroups@vger.kernel.org,
+ Huang Rui <ray.huang@amd.com>, Matthew Brost	 <matthew.brost@intel.com>,
+ Matthew Auld <matthew.auld@intel.com>, Maxime Ripard	 <mripard@kernel.org>,
+ Thomas Zimmermann <tzimmermann@suse.de>, Simona Vetter	 <simona@ffwll.ch>,
+ David Airlie <airlied@gmail.com>, Christian =?ISO-8859-1?Q?K=F6nig?=	
+ <christian.koenig@amd.com>, Alex Deucher <alexander.deucher@amd.com>, 
+ Rodrigo Vivi <rodrigo.vivi@intel.com>, dri-devel@lists.freedesktop.org,
+ amd-gfx@lists.freedesktop.org, 	linux-kernel@vger.kernel.org
+Date: Tue, 28 Apr 2026 12:02:31 +0200
+In-Reply-To: <84473cbe-79ad-421e-8c8a-171e5784105f@linux.intel.com>
+References: <20260428073116.15687-1-thomas.hellstrom@linux.intel.com>
+	 <20260428073116.15687-4-thomas.hellstrom@linux.intel.com>
+	 <84473cbe-79ad-421e-8c8a-171e5784105f@linux.intel.com>
+Organization: Intel Sweden AB, Registration Number: 556189-6027
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.58.3 (3.58.3-1.fc43) 
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20260428030621.94470-1-qi.zheng@linux.dev>
-X-Migadu-Flow: FLOW_OUT
-X-Rspamd-Queue-Id: BB816482A5F
+X-Rspamd-Queue-Id: CEA3C482688
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[linux.dev,none];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
-	R_DKIM_ALLOW(-0.20)[linux.dev:s=key1];
+	DMARC_POLICY_ALLOW(-0.50)[intel.com,none];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_DKIM_ALLOW(-0.20)[intel.com:s=Intel];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-15531-lists,cgroups=lfdr.de];
-	RCVD_TLS_LAST(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	RCVD_COUNT_THREE(0.00)[3];
-	DKIM_TRACE(0.00)[linux.dev:+];
 	MIME_TRACE(0.00)[0:+];
-	FORGED_SENDER_MAILLIST(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[20];
+	FREEMAIL_CC(0.00)[gmx.de,cmpxchg.org,kernel.org,suse.com,vger.kernel.org,amd.com,intel.com,suse.de,ffwll.ch,gmail.com,lists.freedesktop.org];
+	TAGGED_FROM(0.00)[bounces-15532-lists,cgroups=lfdr.de];
+	RCVD_TLS_LAST(0.00)[];
+	HAS_ORG_HEADER(0.00)[];
+	DKIM_TRACE(0.00)[intel.com:+];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	FORGED_SENDER_MAILLIST(0.00)[];
 	TO_DN_SOME(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[shakeel.butt@linux.dev,cgroups@vger.kernel.org];
-	MISSING_XM_UA(0.00)[];
-	NEURAL_HAM(-0.00)[-1.000];
-	RCPT_COUNT_SEVEN(0.00)[11];
+	FROM_NEQ_ENVFROM(0.00)[thomas.hellstrom@linux.intel.com,cgroups@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	RCVD_COUNT_FIVE(0.00)[5];
 	MID_RHS_MATCH_FROM(0.00)[];
+	NEURAL_HAM(-0.00)[-1.000];
 	TAGGED_RCPT(0.00)[cgroups];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,linux.dev:email,linux.dev:dkim,linux.dev:mid]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[patchwork.freedesktop.org:url,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,linux.intel.com:mid,intel.com:dkim,intel.com:email]
 
-On Tue, Apr 28, 2026 at 11:06:21AM +0800, Qi Zheng wrote:
-> From: Qi Zheng <zhengqi.arch@bytedance.com>
-> 
-> Currently, get_non_dying_memcg_start() and get_non_dying_memcg_end() both
-> evaluate cgroup_subsys_on_dfl(memory_cgrp_subsys) independently to
-> determine whether to acquire or release the RCU read lock.
-> 
-> However, the result of cgroup_subsys_on_dfl() can change dynamically at
-> runtime due to cgroup hierarchy rebinding (e.g., when the memory
-> controller is moved between cgroup v1 and v2 hierarchies). This can cause
-> the following warning:
-> 
->  =====================================
->  WARNING: bad unlock balance detected!
->  7.0.0-next-20260420+ #83 Tainted: G        W
->  -------------------------------------
->  memcg-repro/270 is trying to release lock (rcu_read_lock) at:
->  [<ffffffff815f57f7>] rcu_read_unlock+0x17/0x60
->  but there are no more locks to release!
-> 
->  other info that might help us debug this:
->  1 lock held by memcg-repro/270:
->   #0: ffff888102fa2088 (vm_lock){++++}-{0:0}, at: do_user_addr_fault+0x285/0x880
-> 
->  stack backtrace:
->  CPU: 0 UID: 0 PID: 270 Comm: memcg-repro Tainted: G        W           7.0.0-next-20260420+ #
->  Tainted: [W]=WARN
->  Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.12.0-1 04/01/2014
->  Call Trace:
->   <TASK>
->   ? rcu_read_unlock+0x17/0x60
->   dump_stack_lvl+0x77/0xb0
->   print_unlock_imbalance_bug+0xe0/0xf0
->   ? rcu_read_unlock+0x17/0x60
->   lock_release+0x21d/0x2a0
->   rcu_read_unlock+0x1c/0x60
->   do_pte_missing+0x233/0xb40
->   __handle_mm_fault+0x80e/0xcd0
->   handle_mm_fault+0x146/0x310
->   do_user_addr_fault+0x303/0x880
->   exc_page_fault+0x9b/0x270
->   asm_exc_page_fault+0x26/0x30
->  RIP: 0033:0x5590e4eb41ea
->  Code: 61 cc 66 0f 6f e0 66 0f 61 c2 66 0f db cd 66 0f 69 e2 66 0f 6f d0 66 0f 69 d4 66 0f 61 0
->  RSP: 002b:00007ffcad25f030 EFLAGS: 00010202
->  RAX: 00005590e4eb8010 RBX: 00007ffcad260f7d RCX: 00007f73c474d44d
->  RDX: 00005590e4eb80a0 RSI: 00005590e4eb503c RDI: 000000000000000f
->  RBP: 00005590e4eb70a0 R08: 0000000000000000 R09: 00007f73c483a680
->  R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
->  R13: 00007ffcad25f180 R14: 00005590e4eb6dd8 R15: 00007f73c4869020
->   </TASK>
->  ------------[ cut here ]------------
-> 
-> Fix this by explicitly tracking the RCU lock state, ensuring that
-> rcu_read_unlock() in get_non_dying_memcg_end() is strictly paired with
-> the lock acquisition, regardless of any runtime rebinding events.
-> 
-> Fixes: 8285917d6f38 ("mm: memcontrol: prepare for reparenting non-hierarchical stats")
-> Signed-off-by: Qi Zheng <zhengqi.arch@bytedance.com>
-> ---
->  mm/memcontrol.c | 31 +++++++++++++++++++++----------
->  1 file changed, 21 insertions(+), 10 deletions(-)
-> 
-> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> index c3d98ab41f1f1..38f48a45b7ae5 100644
-> --- a/mm/memcontrol.c
-> +++ b/mm/memcontrol.c
-> @@ -805,12 +805,17 @@ static long memcg_state_val_in_pages(int idx, long val)
->   * Used in mod_memcg_state() and mod_memcg_lruvec_state() to avoid race with
->   * reparenting of non-hierarchical state_locals.
->   */
-> -static inline struct mem_cgroup *get_non_dying_memcg_start(struct mem_cgroup *memcg)
-> +static inline struct mem_cgroup *get_non_dying_memcg_start(struct mem_cgroup *memcg,
-> +							   bool *rcu_locked)
->  {
-> -	if (cgroup_subsys_on_dfl(memory_cgrp_subsys))
-> +	/* Rebinding can cause this value to be changed at runtime */
-> +	if (cgroup_subsys_on_dfl(memory_cgrp_subsys)) {
-> +		*rcu_locked = false;
->  		return memcg;
-> +	}
->  
->  	rcu_read_lock();
-> +	*rcu_locked = true;
->  
->  	while (memcg_is_dying(memcg))
->  		memcg = parent_mem_cgroup(memcg);
-> @@ -818,20 +823,23 @@ static inline struct mem_cgroup *get_non_dying_memcg_start(struct mem_cgroup *me
->  	return memcg;
->  }
->  
-> -static inline void get_non_dying_memcg_end(void)
-> +static inline void get_non_dying_memcg_end(bool rcu_locked)
->  {
-> -	if (cgroup_subsys_on_dfl(memory_cgrp_subsys))
-> +	if (!rcu_locked)
->  		return;
->  
->  	rcu_read_unlock();
->  }
->  #else
-> -static inline struct mem_cgroup *get_non_dying_memcg_start(struct mem_cgroup *memcg)
-> +static inline struct mem_cgroup *get_non_dying_memcg_start(struct mem_cgroup *memcg,
-> +							   bool *rcu_locked)
->  {
-> +	*rcu_locked = false;
+On Tue, 2026-04-28 at 11:50 +0200, Maarten Lankhorst wrote:
+>=20
+>=20
+> Den 2026-04-28 kl. 09:31, skrev Thomas Hellstr=C3=B6m:
+> > Register the VRAM manager with the dmem cgroup reclaim
+> > infrastructure
+> > so that lowering dmem.max below current VRAM usage triggers TTM
+> > eviction rather than failing with -EBUSY.
+> >=20
+> > Assisted-by: GitHub Copilot:claude-sonnet-4.6
+> > Signed-off-by: Thomas Hellstr=C3=B6m <thomas.hellstrom@linux.intel.com>
+> > ---
+> > =C2=A0drivers/gpu/drm/xe/xe_ttm_vram_mgr.c | 19 ++++++++++++-------
+> > =C2=A01 file changed, 12 insertions(+), 7 deletions(-)
+> >=20
+> > diff --git a/drivers/gpu/drm/xe/xe_ttm_vram_mgr.c
+> > b/drivers/gpu/drm/xe/xe_ttm_vram_mgr.c
+> > index 5fd0d5506a7e..1bdcb3fee901 100644
+> > --- a/drivers/gpu/drm/xe/xe_ttm_vram_mgr.c
+> > +++ b/drivers/gpu/drm/xe/xe_ttm_vram_mgr.c
+> > @@ -303,13 +303,6 @@ int __xe_ttm_vram_mgr_init(struct xe_device
+> > *xe, struct xe_ttm_vram_mgr *mgr,
+> > =C2=A0	struct ttm_resource_manager *man =3D &mgr->manager;
+> > =C2=A0	int err;
+> > =C2=A0
+> > -	if (mem_type !=3D XE_PL_STOLEN) {
+> > -		const char *name =3D mem_type =3D=3D XE_PL_VRAM0 ?
+> > "vram0" : "vram1";
+> > -		man->cg =3D drmm_cgroup_register_region(&xe->drm,
+> > name, size);
+> > -		if (IS_ERR(man->cg))
+> > -			return PTR_ERR(man->cg);
+> > -	}
+> > -
+> > =C2=A0	man->func =3D &xe_ttm_vram_mgr_func;
+> > =C2=A0	mgr->mem_type =3D mem_type;
+> > =C2=A0	mutex_init(&mgr->lock);
+> > @@ -318,6 +311,18 @@ int __xe_ttm_vram_mgr_init(struct xe_device
+> > *xe, struct xe_ttm_vram_mgr *mgr,
+> > =C2=A0	mgr->visible_avail =3D io_size;
+> > =C2=A0
+> > =C2=A0	ttm_resource_manager_init(man, &xe->ttm, size);
+> > +
+> > +	if (mem_type !=3D XE_PL_STOLEN) {
+> > +		const char *name =3D mem_type =3D=3D XE_PL_VRAM0 ?
+> > "vram0" : "vram1";
+> > +		struct dmem_cgroup_region *cg =3D
+> > +			drmm_cgroup_register_region(&xe->drm,
+> > name, size);
+> > +
+> > +		if (IS_ERR(cg))
+> > +			return PTR_ERR(cg);
+> > +
+> > +		ttm_resource_manager_set_dmem_region(man, cg);
+> > +	}
+> > +
+> > =C2=A0	err =3D gpu_buddy_init(&mgr->mm, man->size,
+> > default_page_size);
+> > =C2=A0	if (err)
+> > =C2=A0		return err;
+>=20
+> This patch will conflict with=20
+> https://patchwork.freedesktop.org/series/164694/=C2=A0which removes
+> stolen support, can we merge that patch first while we wait for AMD
+> acks?
 
-We don't need to set rcu_locked to false here as we don't access in !V1 build
-option.
+Sure, np.
 
-With that fixed, you can add:
+>=20
+> Do I need an ack to get the series through drm-misc?
 
-Acked-by: Shakeel Butt <shakeel.butt@linux.dev>
+Which series? The stolen support or this cgroup series?
+
+Thanks,
+Thomas
+
+
+>=20
+> Kind regards,
+> ~Maarten Lankhorst
 
