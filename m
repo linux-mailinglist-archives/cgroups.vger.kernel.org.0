@@ -1,148 +1,210 @@
-Return-Path: <cgroups+bounces-15549-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-15553-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id mG4sE51x8WmggwEAu9opvQ
-	(envelope-from <cgroups+bounces-15549-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Wed, 29 Apr 2026 04:49:01 +0200
+	id 6jJhMh7Q8WmjkgEAu9opvQ
+	(envelope-from <cgroups+bounces-15553-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Wed, 29 Apr 2026 11:32:14 +0200
 X-Original-To: lists+cgroups@lfdr.de
 Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id E0D3E48E6E9
-	for <lists+cgroups@lfdr.de>; Wed, 29 Apr 2026 04:48:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 89104491EFE
+	for <lists+cgroups@lfdr.de>; Wed, 29 Apr 2026 11:32:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id C5AD83010485
-	for <lists+cgroups@lfdr.de>; Wed, 29 Apr 2026 02:48:55 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id CC35B3061918
+	for <lists+cgroups@lfdr.de>; Wed, 29 Apr 2026 09:30:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 05D6E332EC1;
-	Wed, 29 Apr 2026 02:48:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 89A573C3442;
+	Wed, 29 Apr 2026 09:30:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="aoBRpeHb"
+	dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b="f4Jz3rp4"
 X-Original-To: cgroups@vger.kernel.org
-Received: from out-186.mta0.migadu.com (out-186.mta0.migadu.com [91.218.175.186])
+Received: from mailout4.samsung.com (mailout4.samsung.com [203.254.224.34])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 39E5732B989
-	for <cgroups@vger.kernel.org>; Wed, 29 Apr 2026 02:48:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.186
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2F5FD3921CC;
+	Wed, 29 Apr 2026 09:30:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.254.224.34
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1777430934; cv=none; b=P5dx3NS5aAx7i13lGGrp/vpg7nPeNRSP/vk2kJKtZUBq6hbZCoSVu1GBOsASIv+X1oqmOFhAHzY/NZu181GMdTGHsmILV5avgrXKDvjO/mkXE+4SG/K0fbVLLcisXq0/8wD5FYS+N9iH/5hht5enHTWS2S7PKY+X/bljEGi9I1o=
+	t=1777455017; cv=none; b=NjDJ5Aw0N8L/wnt3Q1ESjOnpyuytIf5jVknBZPjNMvPjWkQ/m9gwi3ZLeBmzadEKF5a3R9nyITpZ3Fa7sMZrlqQdmZetjJhYFIeWxqhhitUm7tXPdSC2Pi0YfA9PsoEjMCOB35eLjtOi0VM4D1Ii0mZEs3iKtxhVd4tT/HXpmVM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1777430934; c=relaxed/simple;
-	bh=FbA0m6+tniHcNnQeNB4xVc6aZ5BIEKYuLrm2k0G1SCk=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=KFln2gOTEOuS/biSajuxQhFNPOD/FWq9Y0PfJhwdZ3+/OO29sxjwnG/7+gAyBheQ7ojvyqIOQWkIftUN117iOmbkNCjb1bq5URK8gjpakUNA5tzT3RWEhXCGPPlmEG4fc+0Uw9MSJEXhNhUgRQdrdwdpLp71RlmJ30jcgzxRFqY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=aoBRpeHb; arc=none smtp.client-ip=91.218.175.186
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <ea4b2fcc-25e4-42ae-9d3e-5fe7d86ed7fa@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1777430921;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=uiMWZCTeAOPUrZJ5+1IQsZdUyxFEVinUAq4pUHwGoUs=;
-	b=aoBRpeHboqK1C9r6RmublLyhyIrTONH3Jiry0/y/FTwvTxj5hf7xvfUTNAlqHqnsU2+cKh
-	oEF5/o4rq6PRlBk42L0TBnNpeYXqcHBHAmYC/beOU1JzMYX297j77/H7GdIjSK07FuXu77
-	BU1LR6tTSDRk5Np61JNZ5LTYN77/Ryw=
-Date: Wed, 29 Apr 2026 10:48:34 +0800
+	s=arc-20240116; t=1777455017; c=relaxed/simple;
+	bh=yy8oNEAoS/uzpxt3v8eVFMCgeKKpmjXxjvuY7Wbunjs=;
+	h=Message-ID:Date:MIME-Version:From:Subject:To:Cc:In-Reply-To:
+	 Content-Type:References; b=YOu86P6ioza40OWZaO0BFDCpIcmAcvD9e+yGBj8fkqMbl9NM+zqZMUVtOozmbhdXP6Lv89IT4o88hV02I0pRVtvIPkgQzHAbTi7KT2GXtcTxF99Zg/LQjPga6X4nW0o7SEn3cjEbA55k0IXSaAUI1L3CKlb0mE4DYeqUhUI+0tA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com; spf=pass smtp.mailfrom=samsung.com; dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b=f4Jz3rp4; arc=none smtp.client-ip=203.254.224.34
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=samsung.com
+Received: from epcas5p4.samsung.com (unknown [182.195.41.42])
+	by mailout4.samsung.com (KnoxPortal) with ESMTP id 20260429093002epoutp0459abb6078236d1b7922c976b1042db95~qyehotRtY1912719127epoutp04T;
+	Wed, 29 Apr 2026 09:30:02 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout4.samsung.com 20260429093002epoutp0459abb6078236d1b7922c976b1042db95~qyehotRtY1912719127epoutp04T
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+	s=mail20170921; t=1777455003;
+	bh=l2sErW9ifuxlN4x+Sne0CeYYbEJKHpiCBGf6vhcU2Jk=;
+	h=Date:From:Subject:To:Cc:In-Reply-To:References:From;
+	b=f4Jz3rp4k+M6bC+6TqlXloRnoElu8gbjEIiUIua1QviqkO+4RxEinkUKYJCggf8Hd
+	 FVrvtEGPb/OllLUxDO4vDE05M+R+UKBx6SqInb9CWkL+WMtxaQmXCaDix7f3d++h7o
+	 yAcy3bhNxsmOBqM5dvxXy58dF4C26cPcMyLnfNPE=
+Received: from epsnrtp03.localdomain (unknown [182.195.42.155]) by
+	epcas5p4.samsung.com (KnoxPortal) with ESMTPS id
+	20260429093002epcas5p409aa78c4d55a86cef067895205a1b2d5~qyehWqKUG3126931269epcas5p4T;
+	Wed, 29 Apr 2026 09:30:02 +0000 (GMT)
+Received: from epcpadp1new (unknown [182.195.40.141]) by
+	epsnrtp03.localdomain (Postfix) with ESMTP id 4g5Bpy4N4Rz3hhT9; Wed, 29 Apr
+	2026 09:30:02 +0000 (GMT)
+Received: from epsmtip2.samsung.com (unknown [182.195.34.31]) by
+	epcas5p3.samsung.com (KnoxPortal) with ESMTPA id
+	20260429061641epcas5p3c2d6063ba101e347c36ccfa050174482~qv1tDSpkV0853808538epcas5p3d;
+	Wed, 29 Apr 2026 06:16:41 +0000 (GMT)
+Received: from [107.122.10.65] (unknown [107.122.10.65]) by
+	epsmtip2.samsung.com (KnoxPortal) with ESMTPA id
+	20260429061628epsmtip20cd5b871612ade998c9aaa11fb84dd9a~qv1gikvBb1891418914epsmtip2w;
+	Wed, 29 Apr 2026 06:16:28 +0000 (GMT)
+Message-ID: <1891546521.01777455002601.JavaMail.epsvc@epcpadp1new>
+Date: Wed, 29 Apr 2026 11:45:26 +0530
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH v2] mm: memcontrol: fix rcu unbalance in
- get_non_dying_memcg_end()
-To: Andrew Morton <akpm@linux-foundation.org>
-Cc: hannes@cmpxchg.org, mhocko@kernel.org, roman.gushchin@linux.dev,
- shakeel.butt@linux.dev, muchun.song@linux.dev, yosry@kernel.org,
- cgroups@vger.kernel.org, linux-mm@kvack.org, linux-kernel@vger.kernel.org,
- Qi Zheng <zhengqi.arch@bytedance.com>
-References: <20260428103108.45719-1-qi.zheng@linux.dev>
- <20260428151253.bdfb08401ebb74c438df0e52@linux-foundation.org>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Qi Zheng <qi.zheng@linux.dev>
-In-Reply-To: <20260428151253.bdfb08401ebb74c438df0e52@linux-foundation.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+User-Agent: Mozilla Thunderbird
+From: Arun George/Arun George <arun.george@samsung.com>
+Subject: Re: [LSF/MM/BPF TOPIC][RFC PATCH v4 00/27] Private Memory Nodes (w/
+ Compressed RAM)
+To: Gregory Price <gourry@gourry.net>
+Cc: lsf-pc@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
+	linux-cxl@vger.kernel.org, cgroups@vger.kernel.org, linux-mm@kvack.org,
+	linux-trace-kernel@vger.kernel.org, damon@lists.linux.dev,
+	kernel-team@meta.com, gregkh@linuxfoundation.org, rafael@kernel.org,
+	dakr@kernel.org, dave@stgolabs.net, jonathan.cameron@huawei.com,
+	dave.jiang@intel.com, alison.schofield@intel.com, vishal.l.verma@intel.com,
+	ira.weiny@intel.com, dan.j.williams@intel.com, longman@redhat.com,
+	akpm@linux-foundation.org, david@kernel.org, lorenzo.stoakes@oracle.com,
+	Liam.Howlett@oracle.com, vbabka@suse.cz, rppt@kernel.org, surenb@google.com,
+	mhocko@suse.com, osalvador@suse.de, ziy@nvidia.com, matthew.brost@intel.com,
+	joshua.hahnjy@gmail.com, rakie.kim@sk.com, byungchul@sk.com,
+	ying.huang@linux.alibaba.com, apopple@nvidia.com, axelrasmussen@google.com,
+	yuanchu@google.com, weixugc@google.com, yury.norov@gmail.com,
+	linux@rasmusvillemoes.dk, mhiramat@kernel.org,
+	mathieu.desnoyers@efficios.com, tj@kernel.org, hannes@cmpxchg.org,
+	mkoutny@suse.com, jackmanb@google.com, sj@kernel.org,
+	baolin.wang@linux.alibaba.com, npache@redhat.com, ryan.roberts@arm.com,
+	dev.jain@arm.com, baohua@kernel.org, lance.yang@linux.dev,
+	muchun.song@linux.dev, xu.xin16@zte.com.cn, chengming.zhou@linux.dev,
+	jannh@google.com, linmiaohe@huawei.com, nao.horiguchi@gmail.com,
+	pfalcato@suse.de, rientjes@google.com, shakeel.butt@linux.dev,
+	riel@surriel.com, harry.yoo@oracle.com, cl@gentwo.org,
+	roman.gushchin@linux.dev, chrisl@kernel.org, kasong@tencent.com,
+	shikemeng@huaweicloud.com, nphamcs@gmail.com, bhe@redhat.com,
+	zhengqi.arch@bytedance.com, terry.bowman@amd.com, gost.dev@samsung.com,
+	arungeorge05@gmail.com, cpgs@samsung.com
+Content-Language: en-US
+In-Reply-To: <ae_i9IlIndumJWN3@gourry-fedora-PF4VCD3F>
 Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
-X-Rspamd-Queue-Id: E0D3E48E6E9
+X-CMS-MailID: 20260429061641epcas5p3c2d6063ba101e347c36ccfa050174482
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+CMS-TYPE: 105P
+X-CPGSPASS: Y
+X-Hop-Count: 3
+X-CMS-RootMailID: 20260427123800epcas5p1e1a2fed257091b31e2e6c3a7d1b0c2b0
+References: <20260222084842.1824063-1-gourry@gourry.net>
+	<CGME20260427123800epcas5p1e1a2fed257091b31e2e6c3a7d1b0c2b0@epcas5p1.samsung.com>
+	<1983025922.01777297382206.JavaMail.epsvc@epcpadp2new>
+	<ae_i9IlIndumJWN3@gourry-fedora-PF4VCD3F>
+X-Rspamd-Queue-Id: 89104491EFE
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-2.16 / 15.00];
+X-Spamd-Result: default: False [-0.16 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[linux.dev,none];
+	DMARC_POLICY_ALLOW(-0.50)[samsung.com,none];
+	MID_RHS_NOT_FQDN(0.50)[];
+	R_DKIM_ALLOW(-0.20)[samsung.com:s=mail20170921];
 	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
-	R_DKIM_ALLOW(-0.20)[linux.dev:s=key1];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-15549-lists,cgroups=lfdr.de];
+	FORGED_MUA_MAILLIST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-15553-lists,cgroups=lfdr.de];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,samsung.com:dkim];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	RCVD_TLS_LAST(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	RCVD_COUNT_THREE(0.00)[3];
-	DKIM_TRACE(0.00)[linux.dev:+];
 	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	FREEMAIL_CC(0.00)[lists.linux-foundation.org,vger.kernel.org,kvack.org,lists.linux.dev,meta.com,linuxfoundation.org,kernel.org,stgolabs.net,huawei.com,intel.com,redhat.com,linux-foundation.org,oracle.com,suse.cz,google.com,suse.com,suse.de,nvidia.com,gmail.com,sk.com,linux.alibaba.com,rasmusvillemoes.dk,efficios.com,cmpxchg.org,arm.com,linux.dev,zte.com.cn,surriel.com,gentwo.org,tencent.com,huaweicloud.com,bytedance.com,amd.com,samsung.com];
 	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
 	TO_DN_SOME(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[qi.zheng@linux.dev,cgroups@vger.kernel.org];
-	MISSING_XM_UA(0.00)[];
-	NEURAL_HAM(-0.00)[-1.000];
-	RCPT_COUNT_SEVEN(0.00)[11];
-	MID_RHS_MATCH_FROM(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[arun.george@samsung.com,cgroups@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	DKIM_TRACE(0.00)[samsung.com:+];
+	RCPT_COUNT_GT_50(0.00)[77];
 	TAGGED_RCPT(0.00)[cgroups];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sashiko.dev:url,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,linux.dev:email,linux.dev:dkim,linux.dev:mid]
+	NEURAL_HAM(-0.00)[-1.000];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	RCVD_COUNT_SEVEN(0.00)[8]
 
-
-
-On 4/29/26 6:12 AM, Andrew Morton wrote:
-> On Tue, 28 Apr 2026 18:31:08 +0800 Qi Zheng <qi.zheng@linux.dev> wrote:
+On 28-04-2026 03:58 am, Gregory Price wrote:
+> On Mon, Apr 27, 2026 at 06:02:57PM +0530, Arun George wrote:
+>>
+>> Any particular workload you are targeting with
+>> this (which can tolerate this latency)?
+>>
+>> Any deployments you think of where the goal is a capacity expansion
+>> with a compromise in performance?
+>>
+> Primary use cases for us are any workload that benefits from zswap -
+> which is many, many (many, many [many, many]) workloads.
 > 
->> Currently, get_non_dying_memcg_start() and get_non_dying_memcg_end() both
->> evaluate cgroup_subsys_on_dfl(memory_cgrp_subsys) independently to
->> determine whether to acquire or release the RCU read lock.
+A curious question please. If the primary use case is swap, can't we 
+handle this problem statement by re-using the zsmalloc allocation classes?
+
+A separate size class can be reserved for non-compressed pages in 
+zsmalloc. And this interface could be used by zswap, zram etc. (We have 
+been using this implementation for testing btw.). This does not require 
+additional book-keeping or buddy allocator.
+
+But that approach will not give a generic solution and not available for 
+user-land anyway!
+>> And I believe the bear-proof cage might work in the normal scenarios,
+>> but may not work for all.
 > 
-> Sashiko review
-> (https://sashiko.dev/#/patchset/20260428103108.45719-1-qi.zheng@linux.dev)
-> is correct.
+> If it can't work for all workloads, then it's likely not general purpose
+> enough to find core kernel support and should seek to use the existing
+> interfaces (DAX and friends).
 > 
-> mm/memcontrol.c: In function 'mod_memcg_state':
-> mm/memcontrol.c:881:9: error: 'rcu_locked' is used uninitialized [-Werror=uninitialized]
->    881 |         get_non_dying_memcg_end(rcu_locked);
->        |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> mm/memcontrol.c:874:14: note: 'rcu_locked' was declared here
->    874 |         bool rcu_locked;
->        |              ^~~~~~~~~~
-> In function 'mod_memcg_lruvec_state',
->      inlined from 'mod_lruvec_state' at mm/memcontrol.c:973:3:
-> mm/memcontrol.c:952:9: error: 'rcu_locked' is used uninitialized [-Werror=uninitialized]
->    952 |         get_non_dying_memcg_end(rcu_locked);
->        |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> mm/memcontrol.c:944:14: note: 'rcu_locked' was declared here
->    944 |         bool rcu_locked;
->        |              ^~~~~~~~~~
-> In function 'mod_memcg_state',
->      inlined from 'mem_cgroup_sk_uncharge' at mm/memcontrol.c:5392:2:
-> mm/memcontrol.c:881:9: error: 'rcu_locked' is used uninitialized [-Werror=uninitialized]
->    881 |         get_non_dying_memcg_end(rcu_locked);
->        |         ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-> mm/memcontrol.c:874:14: note: 'rcu_locked' was declared here
->    874 |         bool rcu_locked;
->        |              ^~~~~~~~~~
+I agree. That is a good point.
 
-In v1, I explicitly set rcu_locked in get_non_dying_memcg_start() to
-avoid the uninitialized warning. However, I noticed that even if I drop
-it, the warning doesn't actually trigger -- probably due to some GCC
-optimiztions.
+> 
+> You need two controls over compressed RAM for it to be reliable:
+> 
+>    - Allocation control (acquiring new struct page to write to)
+>    - Write-control (preventing new writes to compressed pages)
+> 
+> Private nodes provide the allocation control.
+> 
+> A read-only mapping, and guarantee that only memory that can reach
+> the device is userland memory - is the only way to control the cpu
+> writes from the OS perspective.
+> 
+So write-control part need to handled in the specific back end driver of 
+private pages while the allocation control is a generic front-end sort 
+of, right? (Ex: zswap cram back end for compressed devices case.)>
+> In the next version of the RFC i'll demonstrate cram.c as a new swap
+> backend that allows for read-only mappings to be soft-faulted in,
+> migration on write, isolation to ANON memory, and some optional
+> settings that allow a device or administrator a "writable budget"
+> which allows some number of pages to be made writable without migration.
 
-Anyway, let's explicitly initialize rcu_locked in both
-mod_memcg_state() and mod_memcg_lruvec_state(). Will do it in v3.
-
-Thanks!
-
+Great! I believe "writable budget" could be an interesting idea which 
+can solve the 'bus error' sort of scenarios due to device not capable of 
+taking any more writes. The write budget could be replenished using the 
+control path and writes will not go ahead without the budget available, 
+right?>
+> ~Gregory
+> 
+~Arun George
 
 
