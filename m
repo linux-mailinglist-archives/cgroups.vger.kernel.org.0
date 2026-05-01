@@ -1,50 +1,50 @@
-Return-Path: <cgroups+bounces-15572-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-15574-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id YKPSGjsO9GmJ+AEAu9opvQ
-	(envelope-from <cgroups+bounces-15572-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Fri, 01 May 2026 04:21:47 +0200
+	id qEsPDGMO9GmJ+AEAu9opvQ
+	(envelope-from <cgroups+bounces-15574-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Fri, 01 May 2026 04:22:27 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0C9734A9C95
-	for <lists+cgroups@lfdr.de>; Fri, 01 May 2026 04:21:46 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id CF19A4A9CBB
+	for <lists+cgroups@lfdr.de>; Fri, 01 May 2026 04:22:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 6567430221C4
-	for <lists+cgroups@lfdr.de>; Fri,  1 May 2026 02:21:25 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 2566E30305E3
+	for <lists+cgroups@lfdr.de>; Fri,  1 May 2026 02:21:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2EFF02E62C4;
-	Fri,  1 May 2026 02:21:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 881B52EAB82;
+	Fri,  1 May 2026 02:21:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="pFLCKW17"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="vzRjGgtu"
 X-Original-To: cgroups@vger.kernel.org
-Received: from out-173.mta0.migadu.com (out-173.mta0.migadu.com [91.218.175.173])
+Received: from out-189.mta0.migadu.com (out-189.mta0.migadu.com [91.218.175.189])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A7A12E5B2A
-	for <cgroups@vger.kernel.org>; Fri,  1 May 2026 02:21:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D80A12EACEF
+	for <cgroups@vger.kernel.org>; Fri,  1 May 2026 02:21:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.189
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1777602085; cv=none; b=O6oX0mgkTRNkpBsC3oSf1OUL6aQrmdFkSp8t5hH0tsrJF9IPps981gGh+dpuS/y9NLaIzaZ9OHsvclbkXOgO1uMMIvNyhF/53nTYX6uGfqtKT3wqBW/olF53oGcsdGmrSmBEn4f1+52ijslUGAZH7nk87tsUGxOU3R8UFmCBvVs=
+	t=1777602090; cv=none; b=gD9snsYg/P5zXvyXtB2cMbalfdkHQv8KxwLYL44pbsfxZFyBB6bhgY9bzolg9RSZq0lltpg1f174QbPrAz1K/EykmHEd2Ay0IaHQS5tsfdtxlWDYn4UrQBBHr45301RkoYWaOv55Y0xUzOn7s6MI5ygnN5LSF3ujd5KaFPoRbkg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1777602085; c=relaxed/simple;
-	bh=nWZpn+zuYeF1V9x/teR05sIUTrIzFNN47Ulj38ZPNeA=;
+	s=arc-20240116; t=1777602090; c=relaxed/simple;
+	bh=85yqVfc9aiA3OqKgXtUAbwLO/KOrXwWM03KlTyAOUow=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=HaVZyeoFpnzAJWSCI+rYrAVtxIEpy4GveNaqH42lwQxaVLrfu4awGPRbEpprkrO2zshxLOrQYiFv+DEJtsWj7U78tZmeS+rTXf4iq+sUrleD+Qr52oeyjFzw/4W3NN/wvk/58bmoG8+nEFoeDFPzKdq4gMVpOhVu+n4T55kHEww=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=pFLCKW17; arc=none smtp.client-ip=91.218.175.173
+	 MIME-Version; b=hJXrZTE0HG4smH8Xc/xqhZi5J8RsrokUNhuvviE5b4F/m4sTiczpzLd4ZD0qOHCdbKwqDWGjkWGLqykg18MxnR9qQ//8+svYKS/GEEQbBGGOTtevr2OmSUJa153wSWFSbjTdxjgh7l2GPr1aYnXTYHh1ue0r3SXLAYZvNUym9Ro=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=vzRjGgtu; arc=none smtp.client-ip=91.218.175.189
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1777602080;
+	t=1777602086;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=NBtGLtjRvE4baHy0eRK4mwql+K6PPxqXdGnpl9fPIQ0=;
-	b=pFLCKW176QPS1YiBgSYn6EPexE20q/Nhgy7otY2RejVxCOOgcgct00JRvsqeP7snox6NOo
-	L0jeV/ZbzDieXaq2pKtdp48NdkClEIMNtOl1U0wUHV6rLg5k7Gc6uwrAZwD1WqMD4u2qf8
-	yRgg/5V2jD5mHAAOUVvV1ymCYwLzyc0=
+	bh=O2N4+x1Sn+wQRdLiVZolUUHuNzDmAcEVcLCFnksgkqM=;
+	b=vzRjGgtuFJ1JAtGsc21WhF7K4u4Px7oOGVVXWwhcVFAaoFiF4WrwGixClRcwplk3TT/yOA
+	YKlrafWQIZddgGjYIzxPPtgfc9+svL48E8wXWBqVqG+/JNkB9NSt/0BLp+9ktmyYGf4BR0
+	//dM0MNYWNijWA4/VQynOLmUvtjXGQg=
 From: Li Wang <li.wang@linux.dev>
 To: akpm@linux-foundation.org,
 	hannes@cmpxchg.org,
@@ -63,9 +63,9 @@ Cc: cgroups@vger.kernel.org,
 	Christoph Lameter <cl@linux.com>,
 	Shakeel Butt <shakeelb@google.com>,
 	Vlastimil Babka <vbabka@suse.cz>
-Subject: [PATCH v2 1/2] selftests/cgroup: Fix hardcoded page size in test_percpu_basic
-Date: Fri,  1 May 2026 10:20:57 +0800
-Message-ID: <20260501022058.18024-2-li.wang@linux.dev>
+Subject: [PATCH v2 2/2] selftests/cgroup: include slab in test_percpu_basic memory check
+Date: Fri,  1 May 2026 10:20:58 +0800
+Message-ID: <20260501022058.18024-3-li.wang@linux.dev>
 In-Reply-To: <20260501022058.18024-1-li.wang@linux.dev>
 References: <20260501022058.18024-1-li.wang@linux.dev>
 Precedence: bulk
@@ -76,7 +76,7 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
-X-Rspamd-Queue-Id: 0C9734A9C95
+X-Rspamd-Queue-Id: CF19A4A9CBB
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-0.66 / 15.00];
@@ -84,13 +84,13 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	R_MISSING_CHARSET(0.50)[];
 	DMARC_POLICY_ALLOW(-0.50)[linux.dev,none];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	R_DKIM_ALLOW(-0.20)[linux.dev:s=key1];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-15572-lists,cgroups=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-15574-lists,cgroups=lfdr.de];
 	MIME_TRACE(0.00)[0:+];
 	RCVD_TLS_LAST(0.00)[];
 	RCPT_COUNT_TWELVE(0.00)[17];
@@ -102,21 +102,43 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	FROM_HAS_DN(0.00)[];
 	DKIM_TRACE(0.00)[linux.dev:+];
 	NEURAL_HAM(-0.00)[-1.000];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
 	TAGGED_RCPT(0.00)[cgroups];
 	TO_DN_SOME(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[linux.dev:email,linux.dev:dkim,linux.dev:mid,suse.cz:email]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,linux.dev:email,linux.dev:dkim,linux.dev:mid,linux.com:email,suse.cz:email]
 
-MAX_VMSTAT_ERROR uses a hardcoded page size of 4096, which assumes
-4K pages. This causes test_percpu_basic to fail on systems where
-the kernel is configured with a larger page size, such as aarch64
-systems using 16K or 64K pages, where the maximum permissible
-discrepancy between memory.current and percpu charges is
-proportionally larger.
+test_percpu_basic() currently compares memory.current against only
+memory.stat:percpu after creating 1000 child cgroups.
 
-Replace the hardcoded 4096 with sysconf(_SC_PAGESIZE) to correctly
-derive the page size at runtime regardless of the underlying
-architecture or kernel configuration.
+Observed failure:
+  #./test_kmem
+  ok 1 test_kmem_basic
+  ok 2 test_kmem_memcg_deletion
+  ok 3 test_kmem_proc_kpagecgroup
+  ok 4 test_kmem_kernel_stacks
+  ok 5 test_kmem_dead_cgroups
+  memory.current 11530240
+  percpu 8440000
+  not ok 6 test_percpu_basic
+
+That assumption is too strict: child cgroup creation also allocates
+slab-backed metadata, so memory.current is expected to be larger than
+percpu alone. One visible path is:
+
+  cgroup_mkdir()
+    cgroup_create()
+      cgroup_addrm_file()
+        cgroup_add_file()
+          __kernfs_create_file()
+            __kernfs_new_node()
+              kmem_cache_zalloc()
+
+These kernfs allocations are charged as slab and show up in
+memory.stat:slab.
+
+Update the check to compare memory.current against (percpu + slab)
+within MAX_VMSTAT_ERROR, and print slab/delta in the failure message to
+improve diagnostics.
 
 Signed-off-by: Li Wang <li.wang@linux.dev>
 Cc: Waiman Long <longman@redhat.com>
@@ -126,24 +148,43 @@ Cc: Michal Hocko <mhocko@kernel.org>
 Cc: Shakeel Butt <shakeelb@google.com>
 Cc: Tejun Heo <tj@kernel.org>
 Cc: Vlastimil Babka <vbabka@suse.cz>
-Acked-by: Waiman Long <longman@redhat.com>
+Reviewed-by: Waiman Long <longman@redhat.com>
 ---
- tools/testing/selftests/cgroup/test_kmem.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ tools/testing/selftests/cgroup/test_kmem.c | 11 ++++++-----
+ 1 file changed, 6 insertions(+), 5 deletions(-)
 
 diff --git a/tools/testing/selftests/cgroup/test_kmem.c b/tools/testing/selftests/cgroup/test_kmem.c
-index eeabd34bf08..249d7911306 100644
+index 249d7911306..4b579969889 100644
 --- a/tools/testing/selftests/cgroup/test_kmem.c
 +++ b/tools/testing/selftests/cgroup/test_kmem.c
-@@ -24,7 +24,7 @@
-  * the maximum discrepancy between charge and vmstat entries is number
-  * of cpus multiplied by 64 pages.
-  */
--#define MAX_VMSTAT_ERROR (4096 * 64 * get_nprocs())
-+#define MAX_VMSTAT_ERROR (sysconf(_SC_PAGESIZE) * 64 * get_nprocs())
+@@ -353,7 +353,7 @@ static int test_percpu_basic(const char *root)
+ {
+ 	int ret = KSFT_FAIL;
+ 	char *parent, *child;
+-	long current, percpu;
++	long current, percpu, slab;
+ 	int i;
  
- #define KMEM_DEAD_WAIT_RETRIES        80
+ 	parent = cg_name(root, "percpu_basic_test");
+@@ -379,13 +379,14 @@ static int test_percpu_basic(const char *root)
  
+ 	current = cg_read_long(parent, "memory.current");
+ 	percpu = cg_read_key_long(parent, "memory.stat", "percpu ");
++	slab = cg_read_key_long(parent, "memory.stat", "slab ");
+ 
+-	if (current > 0 && percpu > 0 && labs(current - percpu) <
+-	    MAX_VMSTAT_ERROR)
++	if (current > 0 && percpu > 0 && slab >= 0 &&
++			labs(current - (percpu + slab)) < MAX_VMSTAT_ERROR)
+ 		ret = KSFT_PASS;
+ 	else
+-		printf("memory.current %ld\npercpu %ld\n",
+-		       current, percpu);
++		printf("memory.current %ld\npercpu %ld\nslab %ld\ndelta %ld\n",
++			current, percpu, slab, current - (percpu + slab));
+ 
+ cleanup_children:
+ 	for (i = 0; i < 1000; i++) {
 -- 
 2.54.0
 
