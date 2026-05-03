@@ -1,69 +1,71 @@
-Return-Path: <cgroups+bounces-15582-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-15583-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id INLkAJGj92nXjwIAu9opvQ
-	(envelope-from <cgroups+bounces-15582-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Sun, 03 May 2026 21:35:45 +0200
+	id hqBKNiWt92lwkwIAu9opvQ
+	(envelope-from <cgroups+bounces-15583-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Sun, 03 May 2026 22:16:37 +0200
 X-Original-To: lists+cgroups@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 531044B727E
-	for <lists+cgroups@lfdr.de>; Sun, 03 May 2026 21:35:43 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2EC934B73F4
+	for <lists+cgroups@lfdr.de>; Sun, 03 May 2026 22:16:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id E158F300CC1E
-	for <lists+cgroups@lfdr.de>; Sun,  3 May 2026 19:32:35 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id AAB5C300DE37
+	for <lists+cgroups@lfdr.de>; Sun,  3 May 2026 20:16:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 405DD311968;
-	Sun,  3 May 2026 19:32:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B67CC37C910;
+	Sun,  3 May 2026 20:16:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="f72OfGU0"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="KffNInIP"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.16])
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AC1E637700A;
-	Sun,  3 May 2026 19:32:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.16
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 08BE437996C;
+	Sun,  3 May 2026 20:16:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.8
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1777836755; cv=none; b=HfWw8hYaf6rm9DnDueV9Ae35oU9xYBu/Eav5iLSIN8M9v1zM4Bj/bcE++Dih2d7W8gljGohHVUtO8hwlGXC9iuz+89q8+qqvbuHBdkpHiE8MOXX8ZgEJDjwmNFe+A+ysoz1Hc/yvq3M18DXdfXC4Se5bfmmtDAE/F6fc8v5qSGc=
+	t=1777839390; cv=none; b=D8q9Ik14DFdL9jZKvg56flKd4UPVlINZP/1siEVUCbGUGnaot9LksQMEtX4XFPF/vNwKg3cbL4SaL4jTFCOJVVA+sOYgsPH/oETyhpsOdI/joy/bLjSj3lthVlNe2N8YovpXrzmZGMLBHly1GaZTLP2E+g8xLoappvtGrNtEZYw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1777836755; c=relaxed/simple;
-	bh=PJgmPFGMNo+aUZU7RYDsZtYKqYVzGFJCD9AzjJlTtJo=;
+	s=arc-20240116; t=1777839390; c=relaxed/simple;
+	bh=7sTrUsryfvyq0F5rlvo82fdI2yzv2sNghEcPFvzgBKQ=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=qIL43iZDPnkI1H7pmjmVu1AUrAK/LZnISQaO1JMeTi6/t5aiGs85qrby5bKU/SvGgjC7uYWuTEYH7xIPFi9tcm70BWiWQgMq+rZiAMxvmmTX+Y6KGu22GPHh101ib8xpUZYg4Xd5ErXWSROvJJLUBuTD7FCfEKUFdTUvBaEBDKA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=f72OfGU0; arc=none smtp.client-ip=198.175.65.16
+	 Content-Type:Content-Disposition:In-Reply-To; b=KpVucYrXL0/EVkS7gCubdaBQkC4COCqdTVciBSc9ZsmpyD6AyUyZE3M/Yb1y++ONHnuJWfIpq+usMq8wgaqhxqRbJNlb0vmZIow/oxHWauIeR9dWWgLF5mW5zdAMUzv/oR4XvZxkCQNyXAYgvvgE39BFcCrHbK+KrDyefsL8i8w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=KffNInIP; arc=none smtp.client-ip=192.198.163.8
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1777836754; x=1809372754;
+  t=1777839386; x=1809375386;
   h=date:from:to:cc:subject:message-id:references:
    mime-version:in-reply-to;
-  bh=PJgmPFGMNo+aUZU7RYDsZtYKqYVzGFJCD9AzjJlTtJo=;
-  b=f72OfGU0Q1GK3yYoAR4/JLPzYcadbrFhqQdnP9H1g9y8PqdR05lNNan+
-   hJ4I1WmV0RwSQBOoRq07WP++1472ASgGyLs2LEmU6AQ993TsEFoJqFzHO
-   vrPLG6/A2r2zTtz+F16ayE8vY2IiPk09uXyhxEgi4Q74sQJMIl+7zjUJf
-   V3/+zd/KIoLtCIkudxMyVVrgJhzHMXzBa6knF8eevdoe0bS7/A6DDLgho
-   /ZulitCbKPV71CGC1XzGlH5k9RI32Qb+P/K3ymOPd0v6azVqzoUW2QZBt
-   5ik5OkWdqxyua/PugEW9w6leVK3DRkpE9Bk8Q4waiMTcSJ9OgrdjKRDUU
-   A==;
-X-CSE-ConnectionGUID: ucldw1glT4e9QuwBp1fzZQ==
-X-CSE-MsgGUID: yLUn75ZkSWGbDjj5zvrVNg==
-X-IronPort-AV: E=McAfee;i="6800,10657,11775"; a="78905024"
+  bh=7sTrUsryfvyq0F5rlvo82fdI2yzv2sNghEcPFvzgBKQ=;
+  b=KffNInIPzUykesY4A5WVal2BvEcGp/xYjlfiCOS19XV/gsx1Q8ZXs+gq
+   V6MtlsfOxJqKxPA4IEsA2SYWVSLllvgCVZx3P6zIJQad8w7u7wPH5VHHa
+   MbPEFfOE6Ab2iE9guaytQSRdr3ViaSYt7/2VkrJBtDpeVKiD/S8YBRqyi
+   dN2s/fLz+0rCHlG0ogKQ4IWR7yWv9ya7Ko/lL579rtSR+MhJsaHBCcxS1
+   ugHYbxEN+BVhR0V5kU0cuPxMiW5QyJ7PLscdzsYw0fwQUD2r8X1z/4oZD
+   Zcp4Ug3SmiAhredLnETT98w2n3NneqiMkSlaLuC0B3tak/fTlC+/sxToj
+   Q==;
+X-CSE-ConnectionGUID: f1p7+BR8TK+zNwZUxjyM6g==
+X-CSE-MsgGUID: NC9zo52cSJGzfqP+6hcpJg==
+X-IronPort-AV: E=McAfee;i="6800,10657,11775"; a="96276049"
 X-IronPort-AV: E=Sophos;i="6.23,214,1770624000"; 
-   d="scan'208";a="78905024"
-Received: from fmviesa003.fm.intel.com ([10.60.135.143])
-  by orvoesa108.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 May 2026 12:32:33 -0700
-X-CSE-ConnectionGUID: Da0YIf2qRoG6zrFi3p71Zw==
-X-CSE-MsgGUID: xIySiJImSBqll0oDzWNHyQ==
+   d="scan'208";a="96276049"
+Received: from fmviesa009.fm.intel.com ([10.60.135.149])
+  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 03 May 2026 13:16:19 -0700
+X-CSE-ConnectionGUID: QRnTZKZjSkCXwfGV0xUQrQ==
+X-CSE-MsgGUID: YNGCp4LRSsa7+0IZqQsvAw==
 X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.23,214,1770624000"; 
+   d="scan'208";a="228841291"
 Received: from lkp-server01.sh.intel.com (HELO 781826d00641) ([10.239.97.150])
-  by fmviesa003.fm.intel.com with ESMTP; 03 May 2026 12:32:31 -0700
+  by fmviesa009.fm.intel.com with ESMTP; 03 May 2026 13:16:17 -0700
 Received: from kbuild by 781826d00641 with local (Exim 4.98.2)
 	(envelope-from <lkp@intel.com>)
-	id 1wJcY3-000000002wP-3Loe;
-	Sun, 03 May 2026 19:32:19 +0000
-Date: Mon, 4 May 2026 03:30:48 +0800
+	id 1wJdEP-0000000030P-1JiC;
+	Sun, 03 May 2026 20:16:07 +0000
+Date: Mon, 4 May 2026 04:15:33 +0800
 From: kernel test robot <lkp@intel.com>
 To: Tejun Heo <tj@kernel.org>, Martin Pitt <martin@piware.de>
 Cc: oe-kbuild-all@lists.linux.dev, regressions@lists.linux.dev,
@@ -73,7 +75,7 @@ Cc: oe-kbuild-all@lists.linux.dev, regressions@lists.linux.dev,
 	linux-kernel@vger.kernel.org, Tejun Heo <tj@kernel.org>
 Subject: Re: [PATCH] cgroup: Defer css percpu_ref kill on rmdir until cgroup
  is depopulated
-Message-ID: <202605040315.QbFTzfWy-lkp@intel.com>
+Message-ID: <202605040408.yt7xcKug-lkp@intel.com>
 References: <20260501022943.3714461-1-tj@kernel.org>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
@@ -84,7 +86,7 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 In-Reply-To: <20260501022943.3714461-1-tj@kernel.org>
-X-Rspamd-Queue-Id: 531044B727E
+X-Rspamd-Queue-Id: 2EC934B73F4
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-1.16 / 15.00];
@@ -99,7 +101,7 @@ X-Spamd-Result: default: False [-1.16 / 15.00];
 	FROM_HAS_DN(0.00)[];
 	RCVD_TLS_LAST(0.00)[];
 	DKIM_TRACE(0.00)[intel.com:+];
-	TAGGED_FROM(0.00)[bounces-15582-lists,cgroups=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-15583-lists,cgroups=lfdr.de];
 	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
@@ -112,7 +114,7 @@ X-Spamd-Result: default: False [-1.16 / 15.00];
 	RCPT_COUNT_SEVEN(0.00)[10];
 	NEURAL_HAM(-0.00)[-1.000];
 	TAGGED_RCPT(0.00)[cgroups];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[01.org:url,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,intel.com:email,intel.com:dkim,intel.com:mid,git-scm.com:url]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,01.org:url]
 
 Hi Tejun,
 
@@ -129,43 +131,46 @@ url:    https://github.com/intel-lab-lkp/linux/commits/Tejun-Heo/cgroup-Defer-cs
 base:   https://git.kernel.org/pub/scm/linux/kernel/git/tj/cgroup.git for-next
 patch link:    https://lore.kernel.org/r/20260501022943.3714461-1-tj%40kernel.org
 patch subject: [PATCH] cgroup: Defer css percpu_ref kill on rmdir until cgroup is depopulated
-config: m68k-allmodconfig (https://download.01.org/0day-ci/archive/20260504/202605040315.QbFTzfWy-lkp@intel.com/config)
-compiler: m68k-linux-gcc (GCC) 15.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20260504/202605040315.QbFTzfWy-lkp@intel.com/reproduce)
+config: powerpc-randconfig-r071-20260504 (https://download.01.org/0day-ci/archive/20260504/202605040408.yt7xcKug-lkp@intel.com/config)
+compiler: powerpc-linux-gcc (GCC) 8.5.0
+smatch: v0.5.0-9065-ge9cc34fd
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20260504/202605040408.yt7xcKug-lkp@intel.com/reproduce)
 
 If you fix the issue in a separate patch/commit (i.e. not just a new version of
 the same patch/commit), kindly add following tags
 | Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202605040315.QbFTzfWy-lkp@intel.com/
+| Closes: https://lore.kernel.org/oe-kbuild-all/202605040408.yt7xcKug-lkp@intel.com/
 
 All warnings (new ones prefixed by >>):
 
    kernel/cgroup/cgroup.c: In function 'cgroup_apply_control_disable':
-   kernel/cgroup/cgroup.c:3391:33: error: implicit declaration of function 'kill_css_sync'; did you mean 'kill_fasync'? [-Wimplicit-function-declaration]
-    3391 |                                 kill_css_sync(css);
-         |                                 ^~~~~~~~~~~~~
-         |                                 kill_fasync
-   kernel/cgroup/cgroup.c:3392:33: error: implicit declaration of function 'kill_css_finish' [-Wimplicit-function-declaration]
-    3392 |                                 kill_css_finish(css);
-         |                                 ^~~~~~~~~~~~~~~
+   kernel/cgroup/cgroup.c:3391:5: error: implicit declaration of function 'kill_css_sync'; did you mean 'kill_fasync'? [-Werror=implicit-function-declaration]
+        kill_css_sync(css);
+        ^~~~~~~~~~~~~
+        kill_fasync
+   kernel/cgroup/cgroup.c:3392:5: error: implicit declaration of function 'kill_css_finish'; did you mean 'kill_cad_pid'? [-Werror=implicit-function-declaration]
+        kill_css_finish(css);
+        ^~~~~~~~~~~~~~~
+        kill_cad_pid
    kernel/cgroup/cgroup.c: At top level:
->> kernel/cgroup/cgroup.c:6047:13: warning: conflicting types for 'kill_css_sync'; have 'void(struct cgroup_subsys_state *)'
-    6047 | static void kill_css_sync(struct cgroup_subsys_state *css)
-         |             ^~~~~~~~~~~~~
+>> kernel/cgroup/cgroup.c:6047:13: warning: conflicting types for 'kill_css_sync'
+    static void kill_css_sync(struct cgroup_subsys_state *css)
+                ^~~~~~~~~~~~~
    kernel/cgroup/cgroup.c:6047:13: error: static declaration of 'kill_css_sync' follows non-static declaration
-   kernel/cgroup/cgroup.c:3391:33: note: previous implicit declaration of 'kill_css_sync' with type 'void(struct cgroup_subsys_state *)'
-    3391 |                                 kill_css_sync(css);
-         |                                 ^~~~~~~~~~~~~
->> kernel/cgroup/cgroup.c:6087:13: warning: conflicting types for 'kill_css_finish'; have 'void(struct cgroup_subsys_state *)'
-    6087 | static void kill_css_finish(struct cgroup_subsys_state *css)
-         |             ^~~~~~~~~~~~~~~
+   kernel/cgroup/cgroup.c:3391:5: note: previous implicit declaration of 'kill_css_sync' was here
+        kill_css_sync(css);
+        ^~~~~~~~~~~~~
+>> kernel/cgroup/cgroup.c:6087:13: warning: conflicting types for 'kill_css_finish'
+    static void kill_css_finish(struct cgroup_subsys_state *css)
+                ^~~~~~~~~~~~~~~
    kernel/cgroup/cgroup.c:6087:13: error: static declaration of 'kill_css_finish' follows non-static declaration
-   kernel/cgroup/cgroup.c:3392:33: note: previous implicit declaration of 'kill_css_finish' with type 'void(struct cgroup_subsys_state *)'
-    3392 |                                 kill_css_finish(css);
-         |                                 ^~~~~~~~~~~~~~~
+   kernel/cgroup/cgroup.c:3392:5: note: previous implicit declaration of 'kill_css_finish' was here
+        kill_css_finish(css);
+        ^~~~~~~~~~~~~~~
+   cc1: some warnings being treated as errors
 
 
-vim +6047 kernel/cgroup/cgroup.c
+vim +/kill_css_sync +6047 kernel/cgroup/cgroup.c
 
   6040	
   6041	/**
