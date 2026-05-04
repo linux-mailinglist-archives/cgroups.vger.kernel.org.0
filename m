@@ -1,172 +1,223 @@
-Return-Path: <cgroups+bounces-15591-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-15592-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id MDeHB2SX+GknwwIAu9opvQ
-	(envelope-from <cgroups+bounces-15591-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Mon, 04 May 2026 14:56:04 +0200
+	id aHdeHJih+GlExQIAu9opvQ
+	(envelope-from <cgroups+bounces-15592-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Mon, 04 May 2026 15:39:36 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9FD364BD48C
-	for <lists+cgroups@lfdr.de>; Mon, 04 May 2026 14:56:03 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 89EBF4BDFC7
+	for <lists+cgroups@lfdr.de>; Mon, 04 May 2026 15:39:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id ABDCD301A148
-	for <lists+cgroups@lfdr.de>; Mon,  4 May 2026 12:55:57 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 7C3393018BDA
+	for <lists+cgroups@lfdr.de>; Mon,  4 May 2026 13:38:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 456683D7D7C;
-	Mon,  4 May 2026 12:55:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D0A143DD513;
+	Mon,  4 May 2026 13:38:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="JpNjXDzz"
+	dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b="nmZ8O9mw"
 X-Original-To: cgroups@vger.kernel.org
-Received: from out-180.mta0.migadu.com (out-180.mta0.migadu.com [91.218.175.180])
+Received: from mailout2.samsung.com (mailout2.samsung.com [203.254.224.25])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 262AD333730;
-	Mon,  4 May 2026 12:55:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A18F03D3334;
+	Mon,  4 May 2026 13:38:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.254.224.25
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1777899357; cv=none; b=X1/f46HBypyruH+PUXm6EQO2ABNfQ1uvHKvBnWxhjxeJe+XtKuiINdp7sktxPBj3kiUJNnJ5JRxIath6UhWIZG13pM2O6T+bw7owMDPSFP0HABtOPieyfoASlehXnuJZ26aznRW1KXuxm+HqTUW3oh8iYdp2PkBXyAiY0oXW7sU=
+	t=1777901894; cv=none; b=pnOV9SUmLcJFWxgKnyLxFrmfvzOXZnFHxoiyUWjnZx2mBAA7S3owJGRpWGcxOs++l5GpQRaVozWferPH5VMVSL3uxdl13UEaC12Ol3P47GS3glt3C0id7SpMwhbGMBBy+nRdVJsvP9Sct35n94Ot1A2pCzIA1Yi32k0XlzoL59M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1777899357; c=relaxed/simple;
-	bh=t5OfcCVJYbLenPvZDFNRz9sQX96KmPTLbcL/NKnx1AI=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=PkFhtCFLxDCKPLW0Yo5zQ24rCbDavALy9aykadxSxgmmYHqIBLI9oYvGW0cHwwJSpRaAllMnoZiOcCpz+6hiXfav0OCOQVg1U9blhg33AI4ekL1qhBWxbejdH9bqgP6haQxtob6PDP7qk8m2cEfd/yw8Gf4Sd0+gZh028kCejtk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=JpNjXDzz; arc=none smtp.client-ip=91.218.175.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1777899342;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=xkSPJSdtSlIYcN/7W3fB90ZDg2RbpoO3LlLAO8rSbLw=;
-	b=JpNjXDzzxXd0csPoMAtWz2LjLcw/qa/YsWVq2sPGYE3pYjuCFWfpWtTxkAaZ5Au38h6yZQ
-	Reye66yAvGCgHQJpUKc+V8vWFj+w0syusJLF2nojx6sZaYIJkLrDMNFy6w1djEq4WDFdcf
-	jnM9u/Mc4D3AD1lMfR9xRAJFdzDqtjU=
-From: "Jose Fernandez (Anthropic)" <jose.fernandez@linux.dev>
-Date: Mon, 04 May 2026 12:55:17 +0000
-Subject: [PATCH] mm: swap_cgroup: fix NULL deref in lookup_swap_cgroup_id
- on swapless host
+	s=arc-20240116; t=1777901894; c=relaxed/simple;
+	bh=yxSm6/vu3IyP3srDroK/mn0D3idiK2xCmju19Wy9HrI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:From:In-Reply-To:
+	 Content-Type:References; b=XbNHjD3S/18u1QCUzqm7OWB/YJZg9iloQiU7Vru56Q1+xq38vmkkp92Kzn+SGsj+LascW79fwp3mP5v68D7NF7vh86pf9QTlk1qtcuxdTO6apEO72KWI53zaHds8FbT7SW8NJ/Z6+0kLWTCi+uVL+OSYqh3TTz6EaymerfZS7rw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com; spf=pass smtp.mailfrom=samsung.com; dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b=nmZ8O9mw; arc=none smtp.client-ip=203.254.224.25
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=samsung.com
+Received: from epcas5p2.samsung.com (unknown [182.195.41.40])
+	by mailout2.samsung.com (KnoxPortal) with ESMTP id 20260504133802epoutp02b4fe67eaaad6b60cdae9efe8d85f925e~sYFeNTetM0577405774epoutp02e;
+	Mon,  4 May 2026 13:38:02 +0000 (GMT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.samsung.com 20260504133802epoutp02b4fe67eaaad6b60cdae9efe8d85f925e~sYFeNTetM0577405774epoutp02e
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
+	s=mail20170921; t=1777901882;
+	bh=K5X6546rG8Q7CDMgHYe0dMLLoA8JVhsjJIJ+l/s2c4Y=;
+	h=Date:Subject:To:Cc:From:In-Reply-To:References:From;
+	b=nmZ8O9mwkiw6Qc3oNT26vkjmnNlI2wukd5FwCDzd9H7xY8AuXai7IIgT3MUN5KTvU
+	 zuWhH4yfS4vIWtH7ZZm3cCd5duET+79RK+Yll2CLppi9ZAF+JaB3VR+AtIpQLJzfYp
+	 kuHf8nA1xhwKYRz7MOqFl4cYZJ66wHOLsJP//U40=
+Received: from epsnrtp02.localdomain (unknown [182.195.42.154]) by
+	epcas5p2.samsung.com (KnoxPortal) with ESMTPS id
+	20260504133801epcas5p2868c041e3779e42e6e5fde3d36dba3a3~sYFd4KT8O2899328993epcas5p29;
+	Mon,  4 May 2026 13:38:01 +0000 (GMT)
+Received: from epcpadp2new (unknown [182.195.40.142]) by
+	epsnrtp02.localdomain (Postfix) with ESMTP id 4g8N4n4bV1z2SSKX; Mon,  4 May
+	2026 13:38:01 +0000 (GMT)
+Received: from epsmtip2.samsung.com (unknown [182.195.34.31]) by
+	epcas5p2.samsung.com (KnoxPortal) with ESMTPA id
+	20260504130907epcas5p29c41fc288662c37cd8ad7241772a53f8~sXsPFsdos2990329903epcas5p2Z;
+	Mon,  4 May 2026 13:09:07 +0000 (GMT)
+Received: from [107.122.10.65] (unknown [107.122.10.65]) by
+	epsmtip2.samsung.com (KnoxPortal) with ESMTPA id
+	20260504130855epsmtip2f74fac9944e13b661bd91b5d97d7c8d2~sXsD4QdS72669726697epsmtip2P;
+	Mon,  4 May 2026 13:08:55 +0000 (GMT)
+Message-ID: <1891546521.01777901881625.JavaMail.epsvc@epcpadp2new>
+Date: Mon, 4 May 2026 18:38:54 +0530
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [LSF/MM/BPF TOPIC][RFC PATCH v4 00/27] Private Memory Nodes (w/
+ Compressed RAM)
+To: Gregory Price <gourry@gourry.net>
+Cc: lsf-pc@lists.linux-foundation.org, linux-kernel@vger.kernel.org,
+	linux-cxl@vger.kernel.org, cgroups@vger.kernel.org, linux-mm@kvack.org,
+	linux-trace-kernel@vger.kernel.org, damon@lists.linux.dev,
+	kernel-team@meta.com, gregkh@linuxfoundation.org, rafael@kernel.org,
+	dakr@kernel.org, dave@stgolabs.net, jonathan.cameron@huawei.com,
+	dave.jiang@intel.com, alison.schofield@intel.com, vishal.l.verma@intel.com,
+	ira.weiny@intel.com, longman@redhat.com, akpm@linux-foundation.org,
+	david@kernel.org, lorenzo.stoakes@oracle.com, Liam.Howlett@oracle.com,
+	vbabka@suse.cz, rppt@kernel.org, surenb@google.com, mhocko@suse.com,
+	osalvador@suse.de, ziy@nvidia.com, matthew.brost@intel.com,
+	joshua.hahnjy@gmail.com, rakie.kim@sk.com, byungchul@sk.com,
+	ying.huang@linux.alibaba.com, apopple@nvidia.com, axelrasmussen@google.com,
+	yuanchu@google.com, weixugc@google.com, yury.norov@gmail.com,
+	linux@rasmusvillemoes.dk, mhiramat@kernel.org,
+	mathieu.desnoyers@efficios.com, tj@kernel.org, hannes@cmpxchg.org,
+	mkoutny@suse.com, jackmanb@google.com, sj@kernel.org,
+	baolin.wang@linux.alibaba.com, npache@redhat.com, ryan.roberts@arm.com,
+	dev.jain@arm.com, baohua@kernel.org, lance.yang@linux.dev,
+	muchun.song@linux.dev, xu.xin16@zte.com.cn, chengming.zhou@linux.dev,
+	jannh@google.com, linmiaohe@huawei.com, nao.horiguchi@gmail.com,
+	pfalcato@suse.de, rientjes@google.com, shakeel.butt@linux.dev,
+	riel@surriel.com, harry.yoo@oracle.com, cl@gentwo.org,
+	roman.gushchin@linux.dev, chrisl@kernel.org, kasong@tencent.com,
+	shikemeng@huaweicloud.com, nphamcs@gmail.com, bhe@redhat.com,
+	zhengqi.arch@bytedance.com, terry.bowman@amd.com, gost.dev@samsung.com,
+	arungeorge05@gmail.com, cpgs@samsung.com
+Content-Language: en-US
+From: Arun George/Arun George <arun.george@samsung.com>
+In-Reply-To: <afIKxG5mJZE6QgpR@gourry-fedora-PF4VCD3F>
 Content-Transfer-Encoding: 7bit
-Message-Id: <20260504-swap-cgroup-fix-7-0-v1-1-f53ff41ee553@linux.dev>
-X-B4-Tracking: v=1; b=H4sIADSX+GkC/yWMSQ7CMAxFr1J5jUVaRnGVikWSuqmRSCK7BaSqd
- yeB5fvDW0FJmBRuzQpCL1ZOsUC7a8BPNgZCHgpDZ7qzOZkj6ttm9EHSknHkD17QIA1m9IO7jq0
- 5QHlmoVL9rP39z7q4B/m5qurCWSV0YqOfapSEA8f90+pMAtv2Bctw2NyXAAAA
-X-Change-ID: 20260504-swap-cgroup-fix-7-0-ed0fcdb8f103
-To: Johannes Weiner <hannes@cmpxchg.org>, Michal Hocko <mhocko@kernel.org>, 
- Roman Gushchin <roman.gushchin@linux.dev>, 
- Shakeel Butt <shakeel.butt@linux.dev>, Muchun Song <muchun.song@linux.dev>, 
- Andrew Morton <akpm@linux-foundation.org>, Hugh Dickins <hughd@google.com>, 
- David Hildenbrand <david@kernel.org>, Barry Song <baohua@kernel.org>
-Cc: cgroups@vger.kernel.org, linux-mm@kvack.org, 
- linux-kernel@vger.kernel.org, Kairui Song <ryncsn@gmail.com>, 
- stable@vger.kernel.org, 
- syzbot+e12bd9ca48157add237a@syzkaller.appspotmail.com, 
- "Jose Fernandez (Anthropic)" <jose.fernandez@linux.dev>
-X-Migadu-Flow: FLOW_OUT
-X-Rspamd-Queue-Id: 9FD364BD48C
+X-CMS-MailID: 20260504130907epcas5p29c41fc288662c37cd8ad7241772a53f8
+X-Msg-Generator: CA
+Content-Type: text/plain; charset="utf-8"
+CMS-TYPE: 105P
+X-CPGSPASS: Y
+X-Hop-Count: 3
+X-CMS-RootMailID: 20260427123800epcas5p1e1a2fed257091b31e2e6c3a7d1b0c2b0
+References: <20260222084842.1824063-1-gourry@gourry.net>
+	<CGME20260427123800epcas5p1e1a2fed257091b31e2e6c3a7d1b0c2b0@epcas5p1.samsung.com>
+	<1983025922.01777297382206.JavaMail.epsvc@epcpadp2new>
+	<ae_i9IlIndumJWN3@gourry-fedora-PF4VCD3F>
+	<1891546521.01777455002601.JavaMail.epsvc@epcpadp1new>
+	<afIKxG5mJZE6QgpR@gourry-fedora-PF4VCD3F>
+X-Rspamd-Queue-Id: 89EBF4BDFC7
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-0.66 / 15.00];
+X-Spamd-Result: default: False [-0.16 / 15.00];
 	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[linux.dev,none];
-	R_DKIM_ALLOW(-0.20)[linux.dev:s=key1];
-	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
+	DMARC_POLICY_ALLOW(-0.50)[samsung.com,none];
+	MID_RHS_NOT_FQDN(0.50)[];
+	R_DKIM_ALLOW(-0.20)[samsung.com:s=mail20170921];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-15591-lists,cgroups=lfdr.de];
-	RCVD_COUNT_THREE(0.00)[3];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	FREEMAIL_CC(0.00)[vger.kernel.org,kvack.org,gmail.com,syzkaller.appspotmail.com,linux.dev];
-	RCPT_COUNT_TWELVE(0.00)[16];
-	MIME_TRACE(0.00)[0:+];
-	FROM_HAS_DN(0.00)[];
+	FORGED_MUA_MAILLIST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-15592-lists,cgroups=lfdr.de];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,samsung.com:dkim];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	RCVD_TLS_LAST(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	FREEMAIL_CC(0.00)[lists.linux-foundation.org,vger.kernel.org,kvack.org,lists.linux.dev,meta.com,linuxfoundation.org,kernel.org,stgolabs.net,huawei.com,intel.com,redhat.com,linux-foundation.org,oracle.com,suse.cz,google.com,suse.com,suse.de,nvidia.com,gmail.com,sk.com,linux.alibaba.com,rasmusvillemoes.dk,efficios.com,cmpxchg.org,arm.com,linux.dev,zte.com.cn,surriel.com,gentwo.org,tencent.com,huaweicloud.com,bytedance.com,amd.com,samsung.com];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
 	TO_DN_SOME(0.00)[];
-	NEURAL_HAM(-0.00)[-1.000];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[jose.fernandez@linux.dev,cgroups@vger.kernel.org];
-	DKIM_TRACE(0.00)[linux.dev:+];
-	MID_RHS_MATCH_FROM(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
-	TAGGED_RCPT(0.00)[cgroups,e12bd9ca48157add237a];
-	MISSING_XM_UA(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[appspotmail.com:email,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,linux.dev:email,linux.dev:dkim,linux.dev:mid]
+	FROM_NEQ_ENVFROM(0.00)[arun.george@samsung.com,cgroups@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	DKIM_TRACE(0.00)[samsung.com:+];
+	RCPT_COUNT_GT_50(0.00)[76];
+	TAGGED_RCPT(0.00)[cgroups];
+	NEURAL_HAM(-0.00)[-1.000];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	RCVD_COUNT_SEVEN(0.00)[8]
 
-lookup_swap_cgroup_id() passes swap_cgroup_ctrl[type].map to
-__swap_cgroup_id_lookup() without checking that the type was ever
-registered via swap_cgroup_swapon(). On a swapless host every
-ctrl->map is NULL, so __swap_cgroup_id_lookup() dereferences
-NULL + a scaled swp_offset().
+On 29-04-2026 07:12 pm, Gregory Price wrote:
+>>
+>> Great! I believe "writable budget" could be an interesting idea which
+>> can solve the 'bus error' sort of scenarios due to device not capable of
+>> taking any more writes. The write budget could be replenished using the
+>> control path and writes will not go ahead without the budget available,
+>> right?>
+>>
+> 
+> Write budget is simple
+> 
+> budget=1  (up to 1 page can be writable
+>     1) swap 1 page ->  cram alloc 1 page, put VSWAP_CRAM in PTE
+>     2) read-fault  ->  cram upgrades VSWAP_CRAM to R/O PTE
+>     3) write-fault ->
+>        a) if (writable_cnt < budget) { budget++; mkwrite(pte); }
+>        b) else:  normal swap semantic -> promote to normal memory
+> 
+> Meanwhile - use ballooning and a simple shrinker to dynamically size the
+> region to respond to real compression ratio.
+> 
+> 
+> All said an done - you get something close to zswap but with R/O
+> mappings for all entries, and optional R/W-mappings for administrators
+> who know something about their workload and can afford to take the risk
+> of some amount of capacity being written to uncontended in exchange for
+> performance.
+> 
+> The writable-budget is a risk-dial:  How much do you trust your workload
+> to now spew un/poorly-compressible memory?  The write-budget is a direct
+> measure of that. (so take P99.99999 compression ratios, and you can make
+> a good chunk of that writable).
+> 
+> ~Gregory
+> 
+> 
+I believe we are converging. Agree to most points you mentioned.
 
-Since commit bea67dcc5eea ("mm: attempt to batch free swap entries
-for zap_pte_range()"), zap_pte_range() -> swap_pte_batch() calls
-lookup_swap_cgroup_id() on any non-present, non-none PTE that
-decodes as a real swap entry, without first validating it against
-swap_info[]. A single PTE corrupted into a type-0 swap entry takes
-the host down at process exit.
+I see this problem statement can be solved by 'write-control + write 
+budget' approach similar to what you have described, whether we take 
+swap path or not.
 
-We hit this in production on a swapless 6.12.58 host: ~1s of
-"get_swap_device: Bad swap file entry 3f800204222bb" (do_swap_page()
-being correctly defensive about the same entry) followed by
+But I see this 'write budget' (budget in terms of number of write 
+operations that can be handled by the device, not capacity) to be 
+provided by the device in control plane; not by the workloads in the host.
 
-  BUG: unable to handle page fault for address: 000003f800204220
-  RIP: 0010:lookup_swap_cgroup_id+0x2b/0x60
-  Call Trace:
-   swap_pte_batch+0xbf/0x230
-   zap_pte_range+0x4c8/0x780
-   unmap_page_range+0x190/0x3e0
-   exit_mmap+0xd9/0x3c0
-   do_exit+0x20c/0x4b0
+The budget can be communicated by the device in the device control plane 
+periodically (to be handled in the specific cram back-end driver; may be 
+interpreting the device back-pressure indications into a write budget 
+value). Even if the control plane breaks down, the host does not run 
+into issues except that it will not write further.
 
-syzbot has reported the identical stack.
+I assume you see this value coming from the workloads. This might be a 
+place where I have a different opinion.
 
-The source of the PTE corruption is a separate bug; this change
-makes the teardown path as robust as the fault path already is.
-Every other caller of lookup_swap_cgroup_id() is downstream of a
-get_swap_device() that has already validated the entry, so the new
-branch is cold.
+There are multiple advantages of this value coming from the device:
 
-Fixes: bea67dcc5eea ("mm: attempt to batch free swap entries for zap_pte_range()")
-Cc: stable@vger.kernel.org
-Reported-by: syzbot+e12bd9ca48157add237a@syzkaller.appspotmail.com
-Link: https://lore.kernel.org/r/69859728.050a0220.3b3015.0033.GAE@google.com
-Assisted-by: Claude:unspecified
-Signed-off-by: Jose Fernandez (Anthropic) <jose.fernandez@linux.dev>
----
- mm/swap_cgroup.c | 2 ++
- 1 file changed, 2 insertions(+)
+  1) We can modulate the write budget depending on the actual 
+compressibility in the device (and so workloads data). We don't have to 
+do estimation based on the workloads.
 
-diff --git a/mm/swap_cgroup.c b/mm/swap_cgroup.c
-index de779fed8c210..95c38e54dd587 100644
---- a/mm/swap_cgroup.c
-+++ b/mm/swap_cgroup.c
-@@ -124,6 +124,8 @@ unsigned short lookup_swap_cgroup_id(swp_entry_t ent)
- 		return 0;
- 
- 	ctrl = &swap_cgroup_ctrl[swp_type(ent)];
-+	if (unlikely(!ctrl->map))
-+		return 0;
- 	return __swap_cgroup_id_lookup(ctrl->map, swp_offset(ent));
- }
- 
+  2) We don't have to do the capacity modulation - as in ballooning or 
+shrinker.
 
----
-base-commit: 254f49634ee16a731174d2ae34bc50bd5f45e731
-change-id: 20260504-swap-cgroup-fix-7-0-ed0fcdb8f103
+  3) Even if the control path is broken, host can write only till the 
+available 'write budget'; so it won't get into 'bus error' situations.
 
-Best regards,
---  
-Jose Fernandez (Anthropic) <jose.fernandez@linux.dev>
+~Arun George
+
+
+
 
 
