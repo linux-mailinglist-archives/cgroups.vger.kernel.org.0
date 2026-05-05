@@ -1,49 +1,49 @@
-Return-Path: <cgroups+bounces-15598-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-15599-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id UJHjIRo/+WkZ7QIAu9opvQ
-	(envelope-from <cgroups+bounces-15598-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Tue, 05 May 2026 02:51:38 +0200
+	id QHztChw/+WkZ7QIAu9opvQ
+	(envelope-from <cgroups+bounces-15599-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Tue, 05 May 2026 02:51:40 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [IPv6:2600:3c15:e001:75::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 750B24C58E9
-	for <lists+cgroups@lfdr.de>; Tue, 05 May 2026 02:51:36 +0200 (CEST)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2CB794C58F1
+	for <lists+cgroups@lfdr.de>; Tue, 05 May 2026 02:51:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id 508EC300BC92
-	for <lists+cgroups@lfdr.de>; Tue,  5 May 2026 00:51:29 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id D5F143009E2D
+	for <lists+cgroups@lfdr.de>; Tue,  5 May 2026 00:51:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DDDDB336883;
-	Tue,  5 May 2026 00:51:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E7F50317170;
+	Tue,  5 May 2026 00:51:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="sGCJkb/L"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fQAsj5jY"
 X-Original-To: cgroups@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C742313E34;
-	Tue,  5 May 2026 00:51:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AA5DF315D46;
+	Tue,  5 May 2026 00:51:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1777942285; cv=none; b=j0Ezqt9nDNwH+67VvSvmESCeaFRQq8/QwEwHMdTHRPj725MecDNJ2GihGcNPoRnZ7zL7VwiDNIUsGCgPjywAmbvw3NuLVy2KkAqCdaYKuVnVu/EchUrZXULoi016aFi+o5EQ7DkkrQWkmqWaTv8+XML4DTkkOntxbIDeBZsOmxM=
+	t=1777942286; cv=none; b=s/McaN64D/gDG5tpcakus0hLf1vn9ORkIMmTMFzpS4SIJstEdNuFn1dHDUODhfEdM2pAG+2UiDDDuBzmZPOCm2jzv+trsjTyezdCjRJhw6nwXmKWK1Mxb6aSfAW9U3hlJptbZqYRlH1j5QISP6EJEBTg56omjXE2lH4nAHMiVwU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1777942285; c=relaxed/simple;
-	bh=AqN86WWJ49tR4XlpxNprWLp+7YutwiCs9Yca+jUaAWI=;
+	s=arc-20240116; t=1777942286; c=relaxed/simple;
+	bh=kPgaQnrHp4AYawmT5BkPngm5eN+TTeRnoqQDEjlg1Ko=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=KlU7OP8OHEMzscWz2Iurj4Oxyb/Igetc3Agremltr88FLR7F/vldlhjDsnc9pTNDXREJY9kmnt0Uok4uOPG/3M91cT8+pAOGry0gpIQWPtctB4ogUuY9u+eoIzKNycug59l/1tnu6Waxm/paYgKvX2zTKMEVELGbyPxytIUZTgg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=sGCJkb/L; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 29A50C2BCB9;
-	Tue,  5 May 2026 00:51:25 +0000 (UTC)
+	 MIME-Version; b=NyUI3y4V8SE/8LlDCDjEdExRraC7Lc6IoU2cKDuZuYdpb05VN7rQXSeGvn0I6y3mdiLsLb3jtqzaQeq+5Ao7fWWKcXeFEpAIy0b1pqijcC5RJx1xiNdiePMOLkcLeYr75bjywmqAklboU+hSLB9UvrbLnNAGY4WB874snh1M1R4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fQAsj5jY; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 405A9C2BCF7;
+	Tue,  5 May 2026 00:51:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1777942285;
-	bh=AqN86WWJ49tR4XlpxNprWLp+7YutwiCs9Yca+jUaAWI=;
+	s=k20201202; t=1777942286;
+	bh=kPgaQnrHp4AYawmT5BkPngm5eN+TTeRnoqQDEjlg1Ko=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=sGCJkb/LFodHChZYNtztkwr1MWIBRibk0wm2RnPav7BwFQfs4VTJTBbUXiXLbRrFz
-	 4HRTTskHgkXxIH0Fvxl9K22LekE38oCACZ+iupZls+ocj19+YpLO+Qosn7fY3Es05J
-	 lauKURMtUVlLHL23xi5E0VoL7f+ZqI0COqD+IVNasCnwWZyCUPQtnwgUXeDkKCZtc3
-	 7BuiMIWrIGf/AEDhCyYwV9BCM0KKQ9OdsLIxv1K8zKKomQsMJO4vRRhX4S68tOZuxJ
-	 6DErDacK3ADuVCQXV2jEfT+DAavseu6rkWDIza2b5LlDbaoa7H6WtlRl24I/44bLti
-	 edDXpSmyYmOxw==
+	b=fQAsj5jY3w7fygtR/62MkvzJizLL7J0E0UPLFj+g3eg1bHq4lgZANaSf5KULcADW2
+	 0G3iJHfO6ODB8LsO0dOnfeOfN1kiZyNC8RpgWPxaz+8QaWl2wKN9X6WrVD4Udh59Zz
+	 k1kSAuOgK1SKwMcn+IkkVEXIqYJLKshZpkldjsM943aRSCAWM8fI1eFpP6Mim4fTJG
+	 om+LJQOaYnZQE3qZhplSJ/+/1yvf40WMSLGRyFTPVcvef++vs+UWgwcc1o8Ojuu8GQ
+	 n4DqLfxAULAkq5nSvT7yKY1uebDWvW3qvSBjEN2upWhH8z3xkgHSv7SuxCb56x7l8L
+	 kJD1zAQ6WYSQQ==
 From: Tejun Heo <tj@kernel.org>
 To: Johannes Weiner <hannes@cmpxchg.org>,
 	=?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>
@@ -55,9 +55,9 @@ Cc: Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
 	cgroups@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	Tejun Heo <tj@kernel.org>
-Subject: [PATCH 3/5] cgroup: Move populated counters to cgroup_subsys_state
-Date: Mon,  4 May 2026 14:51:19 -1000
-Message-ID: <20260505005121.1230198-4-tj@kernel.org>
+Subject: [PATCH 4/5] cgroup: Add per-subsys-css kill_css_finish deferral
+Date: Mon,  4 May 2026 14:51:20 -1000
+Message-ID: <20260505005121.1230198-5-tj@kernel.org>
 X-Mailer: git-send-email 2.54.0
 In-Reply-To: <20260505005121.1230198-1-tj@kernel.org>
 References: <20260505005121.1230198-1-tj@kernel.org>
@@ -68,7 +68,7 @@ List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: 750B24C58E9
+X-Rspamd-Queue-Id: 2CB794C58F1
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-0.66 / 15.00];
@@ -76,19 +76,19 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	R_MISSING_CHARSET(0.50)[];
 	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c15:e001:75::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
 	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	MIME_TRACE(0.00)[0:+];
 	FREEMAIL_CC(0.00)[linutronix.de,malat.biz,web.de,intel.com,piware.de,vger.kernel.org,kernel.org];
-	TAGGED_FROM(0.00)[bounces-15598-lists,cgroups=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-15599-lists,cgroups=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	FUZZY_RATELIMITED(0.00)[rspamd.com];
 	RCVD_COUNT_THREE(0.00)[4];
-	ASN(0.00)[asn:63949, ipnet:2600:3c15::/32, country:SG];
+	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[tj@kernel.org,cgroups@vger.kernel.org];
@@ -101,259 +101,220 @@ X-Spamd-Result: default: False [-0.66 / 15.00];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	DBL_BLOCKED_OPENRESOLVER(0.00)[sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns]
 
-Later patches replace the cgroup-level finish_destroy_work deferral added
-by 93618edf7538 ("cgroup: Defer css percpu_ref kill on rmdir until cgroup
-is depopulated") with a per-subsys-css deferral. That needs each subsystem
-css to track its own populated count. Move the populated counters from
-cgroup onto cgroup_subsys_state. cgroup->self is itself a
-cgroup_subsys_state and self.parent walks the same chain as cgroup_parent(),
-so cgroup_update_populated() generalizes to a single css_update_populated()
-taking a css. The cgroup-side bookkeeping runs only when the walk started
-from a self css.
+93618edf7538 ("cgroup: Defer css percpu_ref kill on rmdir until cgroup is
+depopulated") deferred kill_css_finish() at the cgroup level: rmdir waits
+for the entire cgroup's populated count to drop to zero, then fires
+kill_css_finish() on every subsystem css at once. Replace that with
+per-subsys-css deferral. Each subsystem css now tracks its own hierarchical
+populated count and independently defers its kill_css_finish() until its own
+subtree drains.
 
-Keep nr_populated_{domain,threaded}_children on cgroup. Both sum to
-self.nr_populated_children, but staying as dedicated fields to allow readers
-like cgroup_can_be_thread_root() unlocked access.
+The rmdir-race fix carries through unchanged in shape. The dying css's
+->css_offline() still waits until no PF_EXITING task references it, and v2's
+cgroup-level machinery goes away.
 
-css_set_update_populated() also walks the per-subsys-css chain so each
-subsystem css's hierarchical populated count is maintained. No reader
-consumes those counts yet.
+cgroup_apply_control_disable() has the same race shape (PF_EXITING tasks
+pinning a css whose ->css_offline() is about to run) and stays synchronous
+here. This patch lays the groundwork for fixing it - per-cgroup waiting
+can't gate one subsys css being killed while the rest of the cgroup stays
+live, but per-css can.
+
+Subtree-wide invariant preserved: a dying ancestor css stays populated
+through nr_populated_children until every dying descendant's task drains, so
+the walker fires the ancestor's kill_finish_work only after all descendants
+have drained.
+
+Add paired smp_mb()s in kill_css_sync() and css_update_populated() to fence
+the StoreLoad on (CSS_DYING, populated counter), guaranteeing that either
+the walker queues kill_finish_work or the caller fires synchronously.
+cgroup_destroy_locked() was implicitly fenced by an unrelated css_set_lock
+pair; cgroup_apply_control_disable() in the next patch is not.
 
 Signed-off-by: Tejun Heo <tj@kernel.org>
 ---
- include/linux/cgroup-defs.h | 24 ++++++----
- include/linux/cgroup.h      | 11 +++--
- kernel/cgroup/cgroup.c      | 95 +++++++++++++++++++++----------------
- 3 files changed, 76 insertions(+), 54 deletions(-)
+ include/linux/cgroup-defs.h |  6 +--
+ kernel/cgroup/cgroup.c      | 83 +++++++++++++++++++------------------
+ 2 files changed, 46 insertions(+), 43 deletions(-)
 
 diff --git a/include/linux/cgroup-defs.h b/include/linux/cgroup-defs.h
-index 50a784da7a81..c4929f7bbe5a 100644
+index c4929f7bbe5a..de2cd6238c2a 100644
 --- a/include/linux/cgroup-defs.h
 +++ b/include/linux/cgroup-defs.h
-@@ -253,6 +253,15 @@ struct cgroup_subsys_state {
- 	 */
- 	int nr_descendants;
+@@ -262,6 +262,9 @@ struct cgroup_subsys_state {
+ 	int nr_populated_csets;
+ 	int nr_populated_children;
  
-+	/*
-+	 * Hierarchical populated state. For cgroup->self, nr_populated_csets
-+	 * counts populated csets linked via cgrp_cset_link.
-+	 * nr_populated_children counts immediate-child csses whose own
-+	 * populated state is nonzero. Protected by css_set_lock.
-+	 */
-+	int nr_populated_csets;
-+	int nr_populated_children;
++	/* deferred kill_css_finish() queued by css_update_populated() */
++	struct work_struct kill_finish_work;
 +
  	/*
  	 * A singly-linked list of css structures to be rstat flushed.
  	 * This is a scratch field to be used exclusively by
-@@ -504,17 +513,12 @@ struct cgroup {
- 	int max_descendants;
+@@ -615,9 +618,6 @@ struct cgroup {
+ 	/* used to wait for offlining of csses */
+ 	wait_queue_head_t offline_waitq;
  
- 	/*
--	 * Each non-empty css_set associated with this cgroup contributes
--	 * one to nr_populated_csets.  The counter is zero iff this cgroup
--	 * doesn't have any tasks.
--	 *
--	 * All children which have non-zero nr_populated_csets and/or
--	 * nr_populated_children of their own contribute one to either
--	 * nr_populated_domain_children or nr_populated_threaded_children
--	 * depending on their type.  Each counter is zero iff all cgroups
--	 * of the type in the subtree proper don't have any tasks.
-+	 * Domain/threaded split of self.nr_populated_children: each counts
-+	 * immediate-child cgroups whose subtree is populated and sums to
-+	 * self.nr_populated_children. Kept as separate fields to allow readers
-+	 * like cgroup_can_be_thread_root() unlocked access. Protected by
-+	 * css_set_lock; updated by css_update_populated().
- 	 */
--	int nr_populated_csets;
- 	int nr_populated_domain_children;
- 	int nr_populated_threaded_children;
+-	/* defers killing csses after removal until cgroup is depopulated */
+-	struct work_struct finish_destroy_work;
+-
+ 	/* used to schedule release agent */
+ 	struct work_struct release_agent_work;
  
-diff --git a/include/linux/cgroup.h b/include/linux/cgroup.h
-index 9f8bef8f3a60..c2a8c38d8206 100644
---- a/include/linux/cgroup.h
-+++ b/include/linux/cgroup.h
-@@ -654,14 +654,17 @@ static inline bool task_under_cgroup_hierarchy(struct task_struct *task,
-  */
- static inline bool cgroup_has_tasks(struct cgroup *cgrp)
- {
--	return READ_ONCE(cgrp->nr_populated_csets);
-+	return READ_ONCE(cgrp->self.nr_populated_csets);
-+}
-+
-+static inline bool css_is_populated(struct cgroup_subsys_state *css)
-+{
-+	return READ_ONCE(css->nr_populated_csets) || READ_ONCE(css->nr_populated_children);
- }
- 
- static inline bool cgroup_is_populated(struct cgroup *cgrp)
- {
--	return READ_ONCE(cgrp->nr_populated_csets) +
--		READ_ONCE(cgrp->nr_populated_domain_children) +
--		READ_ONCE(cgrp->nr_populated_threaded_children);
-+	return css_is_populated(&cgrp->self);
- }
- 
- /* returns ino associated with a cgroup */
 diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
-index d1395784871a..dd4ea9d83100 100644
+index dd4ea9d83100..fa24102535d9 100644
 --- a/kernel/cgroup/cgroup.c
 +++ b/kernel/cgroup/cgroup.c
-@@ -756,65 +756,70 @@ static bool css_set_populated(struct css_set *cset)
- }
- 
- /**
-- * cgroup_update_populated - update the populated count of a cgroup
-- * @cgrp: the target cgroup
-- * @populated: inc or dec populated count
-- *
-- * One of the css_sets associated with @cgrp is either getting its first
-- * task or losing the last.  Update @cgrp->nr_populated_* accordingly.  The
-- * count is propagated towards root so that a given cgroup's
-- * nr_populated_children is zero iff none of its descendants contain any
-- * tasks.
-- *
-- * @cgrp's interface file "cgroup.populated" is zero if both
-- * @cgrp->nr_populated_csets and @cgrp->nr_populated_children are zero and
-- * 1 otherwise.  When the sum changes from or to zero, userland is notified
-- * that the content of the interface file has changed.  This can be used to
-- * detect when @cgrp and its descendants become populated or empty.
-+ * css_update_populated - update the populated state of a css and ancestors
-+ * @css: leaf css whose own populated count is changing
-+ * @populated: inc or dec
-+ *
-+ * One of the css_sets pinned by @css is getting its first task or losing the
-+ * last. Propagate the transition up the parent chain so that a css's
-+ * nr_populated_children is zero iff none of its descendants contain any tasks.
-+ *
-+ * For a cgroup->self walk, also runs cgroup-side bookkeeping at each level:
-+ * domain/threaded child split, deferred-destroy trigger, and notification via
-+ * "cgroup.populated" (zero iff cgrp->self has neither populated csets nor
-+ * populated children; userland is notified on transitions).
-  */
--static void cgroup_update_populated(struct cgroup *cgrp, bool populated)
-+static void css_update_populated(struct cgroup_subsys_state *css, bool populated)
- {
--	struct cgroup *child = NULL;
-+	struct cgroup_subsys_state *child = NULL;
- 	int adj = populated ? 1 : -1;
- 
- 	lockdep_assert_held(&css_set_lock);
- 
- 	do {
--		bool was_populated = cgroup_is_populated(cgrp);
-+		/* non-NULL only on the cgroup->self walk */
-+		struct cgroup *cgrp = css_is_self(css) ? css->cgroup : NULL;
-+		bool was_populated = css_is_populated(css);
- 
- 		if (!child) {
--			WRITE_ONCE(cgrp->nr_populated_csets,
--				   cgrp->nr_populated_csets + adj);
-+			WRITE_ONCE(css->nr_populated_csets,
-+				   css->nr_populated_csets + adj);
- 		} else {
--			if (cgroup_is_threaded(child))
--				WRITE_ONCE(cgrp->nr_populated_threaded_children,
--					   cgrp->nr_populated_threaded_children + adj);
--			else
--				WRITE_ONCE(cgrp->nr_populated_domain_children,
--					   cgrp->nr_populated_domain_children + adj);
-+			WRITE_ONCE(css->nr_populated_children,
-+				   css->nr_populated_children + adj);
-+			if (cgrp) {
-+				if (cgroup_is_threaded(child->cgroup))
-+					WRITE_ONCE(cgrp->nr_populated_threaded_children,
-+						   cgrp->nr_populated_threaded_children + adj);
-+				else
-+					WRITE_ONCE(cgrp->nr_populated_domain_children,
-+						   cgrp->nr_populated_domain_children + adj);
-+			}
- 		}
- 
--		if (was_populated == cgroup_is_populated(cgrp))
-+		if (was_populated == css_is_populated(css))
+@@ -264,7 +264,6 @@ static void cgroup_finalize_control(struct cgroup *cgrp, int ret);
+ static void css_task_iter_skip(struct css_task_iter *it,
+ 			       struct task_struct *task);
+ static int cgroup_destroy_locked(struct cgroup *cgrp);
+-static void cgroup_finish_destroy(struct cgroup *cgrp);
+ static void kill_css_sync(struct cgroup_subsys_state *css);
+ static void kill_css_finish(struct cgroup_subsys_state *css);
+ static struct cgroup_subsys_state *css_create(struct cgroup *cgrp,
+@@ -801,13 +800,19 @@ static void css_update_populated(struct cgroup_subsys_state *css, bool populated
  			break;
  
  		/*
- 		 * Subtree just emptied below an offlined cgrp. Fire deferred
- 		 * destroy. The transition is one-shot.
+-		 * Subtree just emptied below an offlined cgrp. Fire deferred
+-		 * destroy. The transition is one-shot.
++		 * Pair with smp_mb() in kill_css_sync(). Either we observe
++		 * CSS_DYING and queue, or the caller observes our decrement
++		 * and fires synchronously.
  		 */
--		if (was_populated && !css_is_online(&cgrp->self)) {
-+		if (cgrp && was_populated && !css_is_online(css)) {
- 			cgroup_get(cgrp);
- 			WARN_ON_ONCE(!queue_work(cgroup_offline_wq,
- 						 &cgrp->finish_destroy_work));
+-		if (cgrp && was_populated && !css_is_online(css)) {
+-			cgroup_get(cgrp);
+-			WARN_ON_ONCE(!queue_work(cgroup_offline_wq,
+-						 &cgrp->finish_destroy_work));
++		smp_mb();
++
++		/*
++		 * Subtree just emptied below a dying css. Fire deferred kill.
++		 * The transition is one-shot for a dying css.
++		 */
++		if (was_populated && css_is_dying(css)) {
++			css_get(css);
++			WARN_ON_ONCE(!queue_work(cgroup_offline_wq, &css->kill_finish_work));
  		}
  
--		cgroup1_check_for_release(cgrp);
--		TRACE_CGROUP_PATH(notify_populated, cgrp,
--				  cgroup_is_populated(cgrp));
--		cgroup_file_notify(&cgrp->events_file);
-+		if (cgrp) {
-+			cgroup1_check_for_release(cgrp);
-+			TRACE_CGROUP_PATH(notify_populated, cgrp,
-+					  cgroup_is_populated(cgrp));
-+			cgroup_file_notify(&cgrp->events_file);
-+		}
- 
--		child = cgrp;
--		cgrp = cgroup_parent(cgrp);
--	} while (cgrp);
-+		child = css;
-+		css = css->parent;
-+	} while (css);
+ 		if (cgrp) {
+@@ -2064,16 +2069,6 @@ static int cgroup_reconfigure(struct fs_context *fc)
+ 	return 0;
  }
  
- /**
-@@ -822,17 +827,27 @@ static void cgroup_update_populated(struct cgroup *cgrp, bool populated)
-  * @cset: target css_set
-  * @populated: whether @cset is populated or depopulated
-  *
-- * @cset is either getting the first task or losing the last.  Update the
-- * populated counters of all associated cgroups accordingly.
-+ * @cset is either getting the first task or losing the last. Update the
-+ * populated counters along each linked cgroup's self chain and each
-+ * subsystem css that @cset pins.
-  */
- static void css_set_update_populated(struct css_set *cset, bool populated)
+-static void cgroup_finish_destroy_work_fn(struct work_struct *work)
+-{
+-	struct cgroup *cgrp = container_of(work, struct cgroup, finish_destroy_work);
+-
+-	cgroup_lock();
+-	cgroup_finish_destroy(cgrp);
+-	cgroup_unlock();
+-	cgroup_put(cgrp);
+-}
+-
+ static void init_cgroup_housekeeping(struct cgroup *cgrp)
  {
- 	struct cgrp_cset_link *link;
-+	struct cgroup_subsys *ss;
-+	int ssid;
+ 	struct cgroup_subsys *ss;
+@@ -2100,7 +2095,6 @@ static void init_cgroup_housekeeping(struct cgroup *cgrp)
+ #endif
  
- 	lockdep_assert_held(&css_set_lock);
- 
- 	list_for_each_entry(link, &cset->cgrp_links, cgrp_link)
--		cgroup_update_populated(link->cgrp, populated);
-+		css_update_populated(&link->cgrp->self, populated);
-+
-+	for_each_subsys(ss, ssid) {
-+		struct cgroup_subsys_state *css = cset->subsys[ssid];
-+
-+		if (css)
-+			css_update_populated(css, populated);
-+	}
+ 	init_waitqueue_head(&cgrp->offline_waitq);
+-	INIT_WORK(&cgrp->finish_destroy_work, cgroup_finish_destroy_work_fn);
+ 	INIT_WORK(&cgrp->release_agent_work, cgroup1_release_agent);
  }
  
- /*
-@@ -2190,7 +2205,7 @@ int cgroup_setup_root(struct cgroup_root *root, u32 ss_mask)
- 	hash_for_each(css_set_table, i, cset, hlist) {
- 		link_css_set(&tmp_links, cset, root_cgrp);
- 		if (css_set_populated(cset))
--			cgroup_update_populated(root_cgrp, true);
-+			css_update_populated(&root_cgrp->self, true);
- 	}
- 	spin_unlock_irq(&css_set_lock);
+@@ -5695,6 +5689,22 @@ static void css_release(struct percpu_ref *ref)
+ 	queue_work(cgroup_release_wq, &css->destroy_work);
+ }
  
-@@ -6145,7 +6160,7 @@ static void kill_css_finish(struct cgroup_subsys_state *css)
++/*
++ * Deferred kill_css_finish() fired from css_update_populated() once a dying
++ * css's hierarchical populated state drops to zero. Pinned by css_get() at the
++ * queue site; matched by css_put() here.
++ */
++static void kill_css_finish_work_fn(struct work_struct *work)
++{
++	struct cgroup_subsys_state *css =
++		container_of(work, struct cgroup_subsys_state, kill_finish_work);
++
++	cgroup_lock();
++	kill_css_finish(css);
++	cgroup_unlock();
++	css_put(css);
++}
++
+ static void init_and_link_css(struct cgroup_subsys_state *css,
+ 			      struct cgroup_subsys *ss, struct cgroup *cgrp)
+ {
+@@ -5708,6 +5718,7 @@ static void init_and_link_css(struct cgroup_subsys_state *css,
+ 	css->id = -1;
+ 	INIT_LIST_HEAD(&css->sibling);
+ 	INIT_LIST_HEAD(&css->children);
++	INIT_WORK(&css->kill_finish_work, kill_css_finish_work_fn);
+ 	css->serial_nr = css_serial_nr_next++;
+ 	atomic_set(&css->online_cnt, 0);
+ 
+@@ -6083,6 +6094,13 @@ static void kill_css_sync(struct cgroup_subsys_state *css)
+ 
+ 	css->flags |= CSS_DYING;
+ 
++	/*
++	 * Pair with smp_mb() in css_update_populated(). Either our
++	 * caller observes the walker's decrement and fires
++	 * synchronously, or the walker observes CSS_DYING and queues.
++	 */
++	smp_mb();
++
+ 	/*
+ 	 * This must happen before css is disassociated with its cgroup.
+ 	 * See seq_css() for details.
+@@ -6158,9 +6176,9 @@ static void kill_css_finish(struct cgroup_subsys_state *css)
+  * - This function: synchronous user-visible state teardown plus kill_css_sync()
+  *   on each subsystem css.
   *
-  * - cgroup_finish_destroy(): kicks the percpu_ref kill via kill_css_finish() on
-  *   each subsystem css. Fires once @cgrp's subtree is fully drained, either
-- *   inline here or from cgroup_update_populated().
-+ *   inline here or from css_update_populated().
+- * - cgroup_finish_destroy(): kicks the percpu_ref kill via kill_css_finish() on
+- *   each subsystem css. Fires once @cgrp's subtree is fully drained, either
+- *   inline here or from css_update_populated().
++ * - For each subsys css: fire kill_css_finish() synchronously if the subtree is
++ *   already drained, otherwise rely on css_update_populated() to queue
++ *   kill_finish_work when the last populated cset under the css empties.
   *
   * - The percpu_ref kill chain: css_killed_ref_fn -> css_killed_work_fn ->
   *   ->css_offline() -> release/free.
+@@ -6238,29 +6256,14 @@ static int cgroup_destroy_locked(struct cgroup *cgrp)
+ 	/* put the base reference */
+ 	percpu_ref_kill(&cgrp->self.refcnt);
+ 
+-	if (!cgroup_is_populated(cgrp))
+-		cgroup_finish_destroy(cgrp);
++	for_each_css(css, ssid, cgrp) {
++		if (!css_is_populated(css))
++			kill_css_finish(css);
++	}
+ 
+ 	return 0;
+ };
+ 
+-/**
+- * cgroup_finish_destroy - deferred half of @cgrp destruction
+- * @cgrp: cgroup whose subtree just became empty
+- *
+- * See cgroup_destroy_locked() for the rationale.
+- */
+-static void cgroup_finish_destroy(struct cgroup *cgrp)
+-{
+-	struct cgroup_subsys_state *css;
+-	int ssid;
+-
+-	lockdep_assert_held(&cgroup_mutex);
+-
+-	for_each_css(css, ssid, cgrp)
+-		kill_css_finish(css);
+-}
+-
+ int cgroup_rmdir(struct kernfs_node *kn)
+ {
+ 	struct cgroup *cgrp;
 -- 
 2.54.0
 
