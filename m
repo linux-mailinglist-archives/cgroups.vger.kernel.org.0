@@ -1,346 +1,188 @@
-Return-Path: <cgroups+bounces-15640-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-15641-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id YNAJG2BH+2lPYgMAu9opvQ
-	(envelope-from <cgroups+bounces-15640-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Wed, 06 May 2026 15:51:28 +0200
+	id QFo6DQlI+2lPYgMAu9opvQ
+	(envelope-from <cgroups+bounces-15641-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Wed, 06 May 2026 15:54:17 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 008B94DB573
-	for <lists+cgroups@lfdr.de>; Wed, 06 May 2026 15:51:27 +0200 (CEST)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
+	by mail.lfdr.de (Postfix) with ESMTPS id 30FAA4DB62B
+	for <lists+cgroups@lfdr.de>; Wed, 06 May 2026 15:54:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 9D6A330088B7
-	for <lists+cgroups@lfdr.de>; Wed,  6 May 2026 13:51:26 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 368E53006803
+	for <lists+cgroups@lfdr.de>; Wed,  6 May 2026 13:54:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 959874657D0;
-	Wed,  6 May 2026 13:51:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 34F7B47F2D2;
+	Wed,  6 May 2026 13:54:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Iwx5xamB"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="AmC1CSPt"
 X-Original-To: cgroups@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f45.google.com (mail-wm1-f45.google.com [209.85.128.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 58E663FB060
-	for <cgroups@vger.kernel.org>; Wed,  6 May 2026 13:51:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D0D9444CF59
+	for <cgroups@vger.kernel.org>; Wed,  6 May 2026 13:54:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1778075485; cv=none; b=Q2+vjUaiOhHZZmgJFOQbFNqf04/GF0/rTIG3E1uUzrlng5cCVSvlwY2YA+DWP5+i4n4jUtjrZn9uMUQUFb3wXEHXFDLkDicglLnwfWw6A6cjBwUIZyZd4XxZo4NcKYtDyHFPa0omXyHO0UGnfMRCPsbdo0IjJ5jG0CNLoFekiFY=
+	t=1778075648; cv=none; b=uuJqCQ3b2GRM/glIWjzjY7h8N+pgbR7YvfZZnDekkMz4it3wOnIGKJOW+eIzg83vl0nMn42RbMUg14DQmSGyh2i6A28AX9jMx0kvniAKNYUI3ie9kGprCjuzxNKQDz+brYUTps5w91SJxQS67+1Lo6mJLCd05D/RgB4kPl+EpLw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1778075485; c=relaxed/simple;
-	bh=/b0ojsBTR2WCYdLbzi4IPCJCWiUyBjUlEcAnhywbuVM=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=cddi6yk/MLW74WDQ65ydzzRSO7vkWIsFxMbF3dNj3Az0zmw5xDSua2lkW24nRwti20hHeMbi+GHvWvHon++zdueLSKjFTXTWG93SbQBRov73o+QiH3kEBAT4m3uRSGj9nQu1KFF3UAFJaAgyRpir7yhgxMaFmMf76ClP7Q2BsYk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Iwx5xamB; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EAA55C2BCF4
-	for <cgroups@vger.kernel.org>; Wed,  6 May 2026 13:51:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1778075485;
-	bh=/b0ojsBTR2WCYdLbzi4IPCJCWiUyBjUlEcAnhywbuVM=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=Iwx5xamBl1Qo/aHl/mN4MipNkk1xMJJqIo9TMK+cVhWIx5ThOt9m2yCE0w70ziSZy
-	 Xy+G1h6NCVkG4GoasHcv/uckciH6dbkuyIdy2vErZ+G8Vpr9trVxfhx/zcKc8A7nvx
-	 rXXTb7M7psZG6XnJGVPsgHLTIbjodDp0ASdPSeMPliHe2pAll9pZ7cyMfLGnbvJzHa
-	 mwoYzOoe4X5N0XD6txT4QHOn9WkACCe639JCMLRDlbRHD0v2cGZaiXepQHHj8IoifS
-	 hKzXpfe/82IuuV11DdrHhauUICgW95CmGPR5UDoifaxHg19RQV4c6W9N123yBiWTWS
-	 HDy+7WBYrZg7Q==
-Received: by mail-yx1-f50.google.com with SMTP id 956f58d0204a3-65c396d3b36so4718362d50.0
-        for <cgroups@vger.kernel.org>; Wed, 06 May 2026 06:51:24 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AFNElJ8Hm/MAko+d9OaxUEU6qeiGOiFGAhZ2AMA1uUG7ZeLYJa2iqu6Zdb2VO8IwgBOwANYJ0KsaxiUQ@vger.kernel.org
-X-Gm-Message-State: AOJu0YxP+U8ujrdmnVdOAzjWLaGtM/ciFwwebYXJ/kdmJrbDXVik2BOy
-	WE298o89zUsS1m5O++Zs6WQvF9XrtdC/8mAE8E+L/AR6PPG2qcpSN2joj/ufzyi+K105pvFBD+N
-	XzphSPE3HmzqoM7UrtdI0OQbXiDDX+2PpjBd2+KCsng==
-X-Received: by 2002:a05:690e:1688:b0:651:be8b:e87e with SMTP id
- 956f58d0204a3-65c799989cemr4054814d50.34.1778075484164; Wed, 06 May 2026
- 06:51:24 -0700 (PDT)
+	s=arc-20240116; t=1778075648; c=relaxed/simple;
+	bh=6KlB82Gzxw6Ep4hdvTnTO13cUo4z1IlE435VWxqkbhM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=WhdyplJ4Qnk5kaZgj3lbLfYSIaq0GsFicbUEIOh7LNUOqVTuulNha/8nSsoH0wusW8V7nvO6SL4Ie/Z+xpNva99IYhEVJorMqBh+tfhxLB9V1rnY4pzL3OsAsbChooChTR76g+U+vW72ZL92JQo4wUd4Im3gXAj+hhRYpTJdJAE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=AmC1CSPt; arc=none smtp.client-ip=209.85.128.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-wm1-f45.google.com with SMTP id 5b1f17b1804b1-488d2079582so67213135e9.2
+        for <cgroups@vger.kernel.org>; Wed, 06 May 2026 06:54:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1778075643; x=1778680443; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=6KlB82Gzxw6Ep4hdvTnTO13cUo4z1IlE435VWxqkbhM=;
+        b=AmC1CSPtD90l14uOt/dZlSzXuFtzGtRWgvFplLurCwwjAVxJquPNO/vF6nxFvcXfN/
+         LQSeKVJX5FCRgKX5EGUpi6uemWTBtN69d1arDcoqA23j5iOnahrLtMaJpgHc3B4rRBqB
+         rhaMwMWxO1Vt5KYUFZdq7an9sdYYxoqnwIBh3QlSYvZ5XL3n05psuvqO9stkwbdaxkwp
+         eziocMkxqfwZHH6vUYOKHWQvmQwhAYJif1imJ++9Amdg11Me3fI4VcQS+lg34gvCJ+8H
+         ZAl5S+2GQ8Vt1LKQghlf4oavfmtI961bu9j37Fc4u6x5HpgJMXXa3ANFKAk/mzf77LI9
+         ui/Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1778075643; x=1778680443;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=6KlB82Gzxw6Ep4hdvTnTO13cUo4z1IlE435VWxqkbhM=;
+        b=AszOqdZkx1MO10mkkcwLBtFZT2l/0X4PcSDjn/H/ebubdUqtt8pVmlFmxzCpqyXD9H
+         9KXQIF4fy03URiVUbHdztZTE8YX1MCmTMSqOj6tP+Zvwj8bbYrNljMdCXi9EmMV5cEUR
+         vWpBiYBG2ifKbTU5f5kLRmvcR6Gdq7moFDsDTkcJ6If96hb8dQ8BWdLBkGJ2KdaUCqTr
+         a9ZLSrHQyWn/fwXLODsdAek+dJqztx16daEqzGZycdRZGePR5IphXqimocYz5ZxjZsrm
+         U6H7A4y46/APfh7Zz3+0zCr3c4AC5/hov3ehP+1MmUGhwDiEYtEmLVU0q8GYegXSOtgj
+         Z6UQ==
+X-Forwarded-Encrypted: i=1; AFNElJ+yQGTXFJ4ZjXPuRFns8K59G7cKglN06EUABmJ5zjtVAphwM5FhL6Byud+1lQD8Om4f29V7+CDm@vger.kernel.org
+X-Gm-Message-State: AOJu0YzoRL4mBnDPBfQk+heT+kR7baNB7Ua7nPuYd3GheqHlFhrEwudi
+	An8cNA2UnM6r0UgYApPFQ5DsGdHQSMIkjpDhKULQUEwMmebV+k2KF76y7rJTE2TZVRk=
+X-Gm-Gg: AeBDietn+dvNZrIFo4EkNR86IjVOtPcbZ/SvM40XIAhvz9zC+4atrHWkhf3KG93vLu4
+	HROhzfSFeaozo0ruvK7ZXbC6DxkKesG4rIoiu2uca2c68nsVwd1dPPtBLWC7KJbRKiVE/k22hNx
+	0pBiGDYmvvVZOTpB76fE70FFfIksHRJE0y6Sy3oS+xp+mZDdXO/X3DnQqL4dogFtTPJTm9beacc
+	E33dfUU4EA9tXcHzXIV6UX9mLxkxPSuKjDzlBOrzJ0i/TebyrPAIK36A22i+tchopouvYw1EQQY
+	6fzpXQqrVmGPrdKh6z1P1n210ZCfdVCaippx/ZMdRdpwLwGX66hWJ00aTmqAOpgmFtsl/ZqeINo
+	GPu2JcMPzllIjD9MnNFmliKU3SIwn4aTD4xGXkQ+/zCLf5EzYLPgpV7gsbDQ6oMH0/S8kNZF1vB
+	zNQ6e1klV4KY403KvFY12KPAuRZvf3v3iZ3LQ78z9AdvYLjbau7o3NYcqEcqk=
+X-Received: by 2002:a05:600c:c082:b0:489:6c22:e081 with SMTP id 5b1f17b1804b1-48e51dd3a1bmr46595295e9.0.1778075643420;
+        Wed, 06 May 2026 06:54:03 -0700 (PDT)
+Received: from localhost.localdomain (nat2.prg.suse.com. [195.250.132.146])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-48e530b19adsm17343205e9.3.2026.05.06.06.54.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 06 May 2026 06:54:02 -0700 (PDT)
+Date: Wed, 6 May 2026 15:53:59 +0200
+From: Michal =?utf-8?Q?Koutn=C3=BD?= <mkoutny@suse.com>
+To: Thadeu Lima de Souza Cascardo <cascardo@igalia.com>
+Cc: Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>, 
+	Michal Hocko <mhocko@kernel.org>, Roman Gushchin <roman.gushchin@linux.dev>, 
+	Shakeel Butt <shakeel.butt@linux.dev>, Muchun Song <muchun.song@linux.dev>, 
+	Andrew Morton <akpm@linux-foundation.org>, Jonathan Corbet <corbet@lwn.net>, 
+	Shuah Khan <skhan@linuxfoundation.org>, Maarten Lankhorst <dev@lankhorst.se>, 
+	Maxime Ripard <mripard@kernel.org>, Natalie Vock <natalie.vock@gmx.de>, 
+	Tvrtko Ursulin <tvrtko.ursulin@igalia.com>, cgroups@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-mm@kvack.org, linux-doc@vger.kernel.org, dri-devel@lists.freedesktop.org, 
+	kernel-dev@igalia.com
+Subject: Re: [PATCH 0/2] cgroup/dmem: introduce a peak file
+Message-ID: <aftB-cc5EhDXxCGA@localhost.localdomain>
+References: <20260506-dmem_peak-v1-0-8d803eb3449c@igalia.com>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20260421-swap-table-p4-v3-0-2f23759a76bc@tencent.com> <20260421-swap-table-p4-v3-1-2f23759a76bc@tencent.com>
-In-Reply-To: <20260421-swap-table-p4-v3-1-2f23759a76bc@tencent.com>
-From: Chris Li <chrisl@kernel.org>
-Date: Wed, 6 May 2026 15:51:13 +0200
-X-Gmail-Original-Message-ID: <CACePvbVNwaU=609oJmAwqxse4WTApj30rU9hB_ym=FLjKMk2PA@mail.gmail.com>
-X-Gm-Features: AVHnY4LxL-hGZWVHlEcA-yXqssU0AutiMmJTiSAT10lVjcLbKfjQy6tcLKL8zss
-Message-ID: <CACePvbVNwaU=609oJmAwqxse4WTApj30rU9hB_ym=FLjKMk2PA@mail.gmail.com>
-Subject: Re: [PATCH v3 01/12] mm, swap: simplify swap cache allocation helper
-To: kasong@tencent.com
-Cc: linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>, 
-	David Hildenbrand <david@kernel.org>, Zi Yan <ziy@nvidia.com>, 
-	Baolin Wang <baolin.wang@linux.alibaba.com>, Barry Song <baohua@kernel.org>, 
-	Hugh Dickins <hughd@google.com>, Kemeng Shi <shikemeng@huaweicloud.com>, 
-	Nhat Pham <nphamcs@gmail.com>, Baoquan He <bhe@redhat.com>, Johannes Weiner <hannes@cmpxchg.org>, 
-	Youngjun Park <youngjun.park@lge.com>, Chengming Zhou <chengming.zhou@linux.dev>, 
-	Roman Gushchin <roman.gushchin@linux.dev>, Shakeel Butt <shakeel.butt@linux.dev>, 
-	Muchun Song <muchun.song@linux.dev>, Qi Zheng <zhengqi.arch@bytedance.com>, 
-	linux-kernel@vger.kernel.org, cgroups@vger.kernel.org, 
-	Yosry Ahmed <yosry@kernel.org>, Lorenzo Stoakes <ljs@kernel.org>, Dev Jain <dev.jain@arm.com>, 
-	Lance Yang <lance.yang@linux.dev>, Michal Hocko <mhocko@suse.com>, Michal Hocko <mhocko@kernel.org>, 
-	Suren Baghdasaryan <surenb@google.com>, Axel Rasmussen <axelrasmussen@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Rspamd-Queue-Id: 008B94DB573
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="reykr6qmcqnxtkqn"
+Content-Disposition: inline
+In-Reply-To: <20260506-dmem_peak-v1-0-8d803eb3449c@igalia.com>
+X-Rspamd-Queue-Id: 30FAA4DB62B
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-2.16 / 15.00];
+X-Spamd-Result: default: False [-4.26 / 15.00];
+	SIGNED_PGP(-2.00)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
-	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
-	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
+	DMARC_POLICY_ALLOW(-0.50)[suse.com,quarantine];
+	R_DKIM_ALLOW(-0.20)[suse.com:s=google];
+	MIME_GOOD(-0.20)[multipart/signed,text/plain];
+	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
 	MAILLIST(-0.15)[generic];
-	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FREEMAIL_CC(0.00)[kvack.org,linux-foundation.org,kernel.org,nvidia.com,linux.alibaba.com,google.com,huaweicloud.com,gmail.com,redhat.com,cmpxchg.org,lge.com,linux.dev,bytedance.com,vger.kernel.org,arm.com,suse.com];
+	TAGGED_FROM(0.00)[bounces-15641-lists,cgroups=lfdr.de];
+	FREEMAIL_CC(0.00)[kernel.org,cmpxchg.org,linux.dev,linux-foundation.org,lwn.net,linuxfoundation.org,lankhorst.se,gmx.de,igalia.com,vger.kernel.org,kvack.org,lists.freedesktop.org];
 	FROM_HAS_DN(0.00)[];
-	RCVD_TLS_LAST(0.00)[];
-	DKIM_TRACE(0.00)[kernel.org:+];
-	TAGGED_FROM(0.00)[bounces-15640-lists,cgroups=lfdr.de];
-	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
-	RCPT_COUNT_TWELVE(0.00)[28];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[chrisl@kernel.org,cgroups@vger.kernel.org];
+	RCVD_TLS_LAST(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[20];
+	MIME_TRACE(0.00)[0:+,1:+,2:~];
+	DKIM_TRACE(0.00)[suse.com:+];
+	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
 	MISSING_XM_UA(0.00)[];
 	RCVD_COUNT_FIVE(0.00)[5];
-	TAGGED_RCPT(0.00)[cgroups];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[mkoutny@suse.com,cgroups@vger.kernel.org];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	NEURAL_HAM(-0.00)[-1.000];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	TO_DN_SOME(0.00)[]
+	TAGGED_RCPT(0.00)[cgroups];
+	TO_DN_SOME(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[localhost.localdomain:mid,sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns,suse.com:dkim]
 
-On Tue, Apr 21, 2026 at 8:16=E2=80=AFAM Kairui Song via B4 Relay
-<devnull+kasong.tencent.com@kernel.org> wrote:
->
-> From: Kairui Song <kasong@tencent.com>
->
-> Instead of trying to return the existing folio if the entry is already
-> cached, simply return an error code if the allocation fails and drop the
 
-Nitpick: Spell out which function changes the return type here. It is
-__swap_cache_prepare_and_add()
+--reykr6qmcqnxtkqn
+Content-Type: text/plain; protected-headers=v1; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+Subject: Re: [PATCH 0/2] cgroup/dmem: introduce a peak file
+MIME-Version: 1.0
 
-> output argument. And introduce proper wrappers that handle the
+Hello Thadeu.
 
-Nitpick: Spell out the helper function. It is swap_cache_read_folio().
-> allocation failure in different ways.
+On Wed, May 06, 2026 at 08:58:23AM -0300, Thadeu Lima de Souza Cascardo <ca=
+scardo@igalia.com> wrote:
+> Just like we have memory.peak, introduce a dmem.peak, which uses the
+> page_counter support for that.
+>=20
+> It can be written to in order to reset the peak, but different from
+> memory.peak, which expects any write, dmem.peak expects the region name to
+> be written to it. That region peak is the one that is reset.
+>=20
+> That requires ofp_peak to carry a pointer to the pool that was reset.
 
->
-> For async swapin and readahead, the caller only wants to ensure that a
-> swap-in read is issued when the allocation succeeded. And for zswap swap
-> out, the caller will abort if the allocation failed because the entry is
-> gone or cached already.
+(It'd be nicer to have generic data in that generic structure, at least
+some void *priv. But see below.)
 
-Should you add no functional change expected?
+> Writing a different region name will reset the different region and make
+> the original region peak get back to its non-reset value.
 
->
-> Signed-off-by: Kairui Song <kasong@tencent.com>
+I'm slightly confused by this fds x pool matricity when there's only
+a single slot in cgroup_file_ctx::cgroup_of_peak.
 
-Very nice clean ups. I like it. Here are some nitpicks; feel free to
-ignore them.
+The intended use case is that users should maintain one fd per pool and
+not mix it up?
+This stanza would better fit to cgroup-v2.rst proper than the commit
+message. Or make it simpler and start with non-resettable peak file
+(like memory.peak had started too) and see how it fares. WDYT?
 
-Acked-by: Chris Li <chrisl@kerel.org>
 
-> ---
->  mm/swap.h       |   3 +-
->  mm/swap_state.c | 180 +++++++++++++++++++++++++++++---------------------=
-------
->  mm/zswap.c      |  23 +++-----
->  3 files changed, 103 insertions(+), 103 deletions(-)
->
-> diff --git a/mm/swap.h b/mm/swap.h
-> index a77016f2423b..ad8b17a93758 100644
-> --- a/mm/swap.h
-> +++ b/mm/swap.h
-> @@ -281,8 +281,7 @@ struct folio *swap_cache_get_folio(swp_entry_t entry)=
-;
->  void *swap_cache_get_shadow(swp_entry_t entry);
->  void swap_cache_del_folio(struct folio *folio);
->  struct folio *swap_cache_alloc_folio(swp_entry_t entry, gfp_t gfp_flags,
-> -                                    struct mempolicy *mpol, pgoff_t ilx,
-> -                                    bool *alloced);
-> +                                    struct mempolicy *mpol, pgoff_t ilx)=
-;
->  /* Below helpers require the caller to lock and pass in the swap cluster=
-. */
->  void __swap_cache_add_folio(struct swap_cluster_info *ci,
->                             struct folio *folio, swp_entry_t entry);
-> diff --git a/mm/swap_state.c b/mm/swap_state.c
-> index 1415a5c54a43..204a9499d50c 100644
-> --- a/mm/swap_state.c
-> +++ b/mm/swap_state.c
-> @@ -459,54 +459,38 @@ void swap_update_readahead(struct folio *folio, str=
-uct vm_area_struct *vma,
->   * All swap slots covered by the folio must have a non-zero swap count.
->   *
->   * Context: Caller must protect the swap device with reference count or =
-locks.
-> - * Return: Returns the folio being added on success. Returns the existin=
-g folio
-> - * if @entry is already cached. Returns NULL if raced with swapin or swa=
-poff.
-> + * Return: 0 if success, error code if failed.
->   */
-> -static struct folio *__swap_cache_prepare_and_add(swp_entry_t entry,
-> -                                                 struct folio *folio,
-> -                                                 gfp_t gfp, bool charged=
-)
-> +static int __swap_cache_prepare_and_add(swp_entry_t entry,
-> +                                       struct folio *folio,
-> +                                       gfp_t gfp, bool charged)
->  {
-> -       struct folio *swapcache =3D NULL;
->         void *shadow;
->         int ret;
->
->         __folio_set_locked(folio);
->         __folio_set_swapbacked(folio);
->
-> -       if (!charged && mem_cgroup_swapin_charge_folio(folio, NULL, gfp, =
-entry))
-> +       if (!charged && mem_cgroup_swapin_charge_folio(folio, NULL, gfp, =
-entry)) {
-> +               ret =3D -ENOMEM;
->                 goto failed;
-> -
-> -       for (;;) {
-> -               ret =3D swap_cache_add_folio(folio, entry, &shadow);
-> -               if (!ret)
-> -                       break;
-> -
-> -               /*
-> -                * Large order allocation needs special handling on
-> -                * race: if a smaller folio exists in cache, swapin needs
-> -                * to fallback to order 0, and doing a swap cache lookup
-> -                * might return a folio that is irrelevant to the faultin=
-g
-> -                * entry because @entry is aligned down. Just return NULL=
-.
-> -                */
-> -               if (ret !=3D -EEXIST || folio_test_large(folio))
-> -                       goto failed;
-> -
-> -               swapcache =3D swap_cache_get_folio(entry);
-> -               if (swapcache)
-> -                       goto failed;
->         }
->
-> +       ret =3D swap_cache_add_folio(folio, entry, &shadow);
-> +       if (ret)
-> +               goto failed;
-> +
->         memcg1_swapin(entry, folio_nr_pages(folio));
->         if (shadow)
->                 workingset_refault(folio, shadow);
->
->         /* Caller will initiate read into locked folio */
->         folio_add_lru(folio);
-> -       return folio;
-> +       return 0;
->
->  failed:
->         folio_unlock(folio);
-> -       return swapcache;
-> +       return ret;
->  }
->
->  /**
-> @@ -515,7 +499,6 @@ static struct folio *__swap_cache_prepare_and_add(swp=
-_entry_t entry,
->   * @gfp_mask: memory allocation flags
->   * @mpol: NUMA memory allocation policy to be applied
->   * @ilx: NUMA interleave index, for use only when MPOL_INTERLEAVE
-> - * @new_page_allocated: sets true if allocation happened, false otherwis=
-e
->   *
->   * Allocate a folio in the swap cache for one swap slot, typically befor=
-e
->   * doing IO (e.g. swap in or zswap writeback). The swap slot indicated b=
-y
-> @@ -523,18 +506,40 @@ static struct folio *__swap_cache_prepare_and_add(s=
-wp_entry_t entry,
->   * Currently only supports order 0.
->   *
->   * Context: Caller must protect the swap device with reference count or =
-locks.
-> - * Return: Returns the existing folio if @entry is cached already. Retur=
-ns
-> - * NULL if failed due to -ENOMEM or @entry have a swap count < 1.
-> + * Return: Returns the folio if allocation succeeded and folio is added =
-to
-> + * swap cache. Returns error code if allocation failed due to race.
->   */
->  struct folio *swap_cache_alloc_folio(swp_entry_t entry, gfp_t gfp_mask,
-> -                                    struct mempolicy *mpol, pgoff_t ilx,
-> -                                    bool *new_page_allocated)
-> +                                    struct mempolicy *mpol, pgoff_t ilx)
-> +{
-> +       int ret;
+Thanks,
+Michal
 
-Nitpick: Suggest renaming it to "err" to make it obvious that it is an
-int type for the error code. Because this function previously returned
-a folio pointer, I have to remind myself that it is an int type not a
-folio.
+--reykr6qmcqnxtkqn
+Content-Type: application/pgp-signature; name="signature.asc"
 
-> +       struct folio *folio;
-> +
-> +       /* Allocate a new folio to be added into the swap cache. */
-> +       folio =3D folio_alloc_mpol(gfp_mask, 0, mpol, ilx, numa_node_id()=
-);
-> +       if (!folio)
-> +               return ERR_PTR(-ENOMEM);
-> +
-> +       /*
-> +        * Try to add the new folio to the swap cache. It returns
-> +        * -EEXIST if the entry is already cached.
-> +        */
-> +       ret =3D __swap_cache_prepare_and_add(entry, folio, gfp_mask, fals=
-e);
-> +       if (ret) {
-> +               folio_put(folio);
-> +               return ERR_PTR(ret);
-> +       }
-> +
-> +       return folio;
-> +}
-> +
-> +static struct folio *swap_cache_read_folio(swp_entry_t entry, gfp_t gfp,
-> +                                          struct mempolicy *mpol, pgoff_=
-t ilx,
-> +                                          struct swap_iocb **plug, bool =
-readahead)
->  {
->         struct swap_info_struct *si =3D __swap_entry_to_info(entry);
->         struct folio *folio;
-> -       struct folio *result =3D NULL;
->
-> -       *new_page_allocated =3D false;
->         /* Check the swap cache again for readahead path. */
->         folio =3D swap_cache_get_folio(entry);
->         if (folio)
-> @@ -544,17 +549,24 @@ struct folio *swap_cache_alloc_folio(swp_entry_t en=
-try, gfp_t gfp_mask,
->         if (!swap_entry_swapped(si, entry))
->                 return NULL;
->
-> -       /* Allocate a new folio to be added into the swap cache. */
-> -       folio =3D folio_alloc_mpol(gfp_mask, 0, mpol, ilx, numa_node_id()=
-);
-> -       if (!folio)
-> +       do {
-> +               folio =3D swap_cache_get_folio(entry);
-> +               if (folio)
-> +                       return folio;
-> +
-> +               folio =3D swap_cache_alloc_folio(entry, gfp, mpol, ilx);
-> +       } while (IS_ERR(folio) && PTR_ERR(folio) =3D=3D -EEXIST);
+-----BEGIN PGP SIGNATURE-----
 
-Nitpick: IS_ERR() only checks that the pointer is in the error code
-range. If the pointer is -EEXIST, it will always be in the error code
-range. I think the "IS_ERR(folio)" test can be dropped.
+iJEEABYKADkWIQRCE24Fn/AcRjnLivR+PQLnlNv4CAUCaftH6xsUgAAAAAAEAA5t
+YW51MiwyLjUrMS4xMiwyLDIACgkQfj0C55Tb+AgWBgEA78n1QkHtqLX1e7j+HqA5
+/0hULtuyP0LvN9r2E3h2FskA/0/p9uNIv1XoJqaVguIXjyHW7Kp9SnAM0puHxrMQ
+TzMA
+=pFLa
+-----END PGP SIGNATURE-----
 
-Chris
+--reykr6qmcqnxtkqn--
 
