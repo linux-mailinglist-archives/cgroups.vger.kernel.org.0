@@ -1,383 +1,201 @@
-Return-Path: <cgroups+bounces-15636-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-15637-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id KBb/A5Et+2npXAMAu9opvQ
-	(envelope-from <cgroups+bounces-15636-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Wed, 06 May 2026 14:01:21 +0200
+	id kPIrKcov+2lxXQMAu9opvQ
+	(envelope-from <cgroups+bounces-15637-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Wed, 06 May 2026 14:10:50 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 916954D9EF7
-	for <lists+cgroups@lfdr.de>; Wed, 06 May 2026 14:01:20 +0200 (CEST)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
+	by mail.lfdr.de (Postfix) with ESMTPS id A4F5F4D9FBD
+	for <lists+cgroups@lfdr.de>; Wed, 06 May 2026 14:10:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 2B6F8303266C
-	for <lists+cgroups@lfdr.de>; Wed,  6 May 2026 12:00:15 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id 75DE8300601F
+	for <lists+cgroups@lfdr.de>; Wed,  6 May 2026 12:10:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 26B5643E4B0;
-	Wed,  6 May 2026 12:00:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4EC72425CFD;
+	Wed,  6 May 2026 12:10:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=igalia.com header.i=@igalia.com header.b="N7UJOoSX"
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="kgiI15yA"
 X-Original-To: cgroups@vger.kernel.org
-Received: from fanzine2.igalia.com (fanzine2.igalia.com [213.97.179.56])
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9409D3B8BBF;
-	Wed,  6 May 2026 12:00:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.97.179.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E4E16270540;
+	Wed,  6 May 2026 12:10:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1778068813; cv=none; b=l6KAuK4Q2ohn2UwBEOdtKSGX7xmaa0ImhzeKoTinDh7xSHfiFVs8a176eZh1gKIeXEi5cBWEQxxqOnxuDEO5z8xp8bPIek9lxk3u3sr/9MrVwNI4sHswCf7l/uIQ07QC61cCUXGJmt3s7SoUmm7+Vy/f7jONGEXf1Yu7owSK+HQ=
+	t=1778069445; cv=none; b=g+8twWLtXoM7KTk91N1xCqsCYgPPyfJo+OEUdx18jljDnMHVl1fBIBLeGS/m9p1NkshRLDv4Gr8oE3eVSEl9bW2VwZhXpOD7Nk38nwQwkrajAzu1S/7C64aqEtxNUcvmejefJ9bVFQkuKetxtEhHx/cOyQF9mDTXwtXC+YSC7vc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1778068813; c=relaxed/simple;
-	bh=s0iQw1nuHUf+GNr3teWrkBsxV6MwephCgs2+lAGgxMM=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=fOn4r8EQwqIWzeLgGRfNU8OATfk5NgCCvXts4bs0ouYEcslcbWQVZBWb8J8Do+yaI7DKSgcz3SjoHu1nTL1olxW4VtXyIfsYa+LRZB7EHvYshHOS1rLSK2fM4iefxOb4BKLDgdId+5NOPAb3fBiXxT6D84tGZspJkYNtTHzSlF4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=igalia.com; spf=pass smtp.mailfrom=igalia.com; dkim=pass (2048-bit key) header.d=igalia.com header.i=@igalia.com header.b=N7UJOoSX; arc=none smtp.client-ip=213.97.179.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=igalia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=igalia.com
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=igalia.com;
-	s=20170329; h=Cc:To:In-Reply-To:References:Message-Id:
-	Content-Transfer-Encoding:Content-Type:MIME-Version:Subject:Date:From:Sender:
-	Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
-	:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
-	List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=VzPiqsNNKP8D31HnrqSylsehZjTjNsGJjks0JiVA82w=; b=N7UJOoSXgWni0eCu+o9wxTrZf6
-	AxAqiL6kbPkBb2IQ++jLQV19OgJ8wRTlXztWj+Dx7a0pLObtJnwE0yjtiVer5Vd88BiY0te0LNqdO
-	zKgXMDAsfiejsVOMG/L3qwiiMvqtixf5W+pC4WM858tjWZZTyx2f9dSxzeA2V9B3P9EtMXkr1T4oK
-	9hD9e4YlDhbHxXcRUQ7drQjFpakooglG9HtBBXP/ssDF0pAoMkT12/+3QISFWbIGoO1mHqCOG5Xmb
-	cO2ZM3/7GDO/zs6lm96IDTRgV0kU6aVFiOmCZA2ApkJ7XuZbIBCDAuLlXyR5UHsgO69hRSaj9sR7u
-	6wikuVNg==;
-Received: from 179-125-92-238-dinamico.pombonet.net.br ([179.125.92.238] helo=[127.0.0.1])
-	by fanzine2.igalia.com with esmtpsa 
-	(Cipher TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256) (Exim)
-	id 1wKavB-006sxt-2K; Wed, 06 May 2026 14:00:08 +0200
-From: Thadeu Lima de Souza Cascardo <cascardo@igalia.com>
-Date: Wed, 06 May 2026 08:58:25 -0300
-Subject: [PATCH 2/2] cgroup/dmem: introduce a peak file
+	s=arc-20240116; t=1778069445; c=relaxed/simple;
+	bh=PtupoXMIdRE7Lp16scxC4gNRHteSsm6mTgsMr0hm4hc=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=UJbxgdmoNWr/0zGlqkEjPv9xbrCYT7X7u6vIPkGWe9TTo2UerHZ57uKdqy0CpGYnoewsF0MO21OyaH7dAd8YUyxHBqQTukxk2Wlk+fN74yTm68wjoNuriGK6iZDqPpVG/THbjGgmmpxyWQwwywUK/U61GHQfIWUGbHfJR+keVRw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=kgiI15yA; arc=none smtp.client-ip=148.163.156.1
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0356517.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.18.1.11/8.18.1.11) with ESMTP id 645K6q8H2808530;
+	Wed, 6 May 2026 12:10:11 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
+	:content-transfer-encoding:content-type:date:from:in-reply-to
+	:message-id:mime-version:references:subject:to; s=pp1; bh=ZtwzGj
+	/Cax+3P4OOw+bfUOBHyFVXjSFJ4a1rGiao3GA=; b=kgiI15yA44suZPvLptSlax
+	kSGnWLjQcWrmE1mE0wp6Wh+xcTHItOj2CJM094z4sx1rrAdtuap/2D3jP61eDexE
+	twQ/4OzS0eQFDc3a5rQC+6nZjYzaDj8zESMM0uJ1Dw+DoMlQPYx4kNlgpIvgih9P
+	p4vs15lTPbnHbt9AHg4IuYUOWSGL2nl/JBJ5nmmPorGO68+9EOAcrlxha4Jv7CQx
+	k1bwIw/ie1sEdTqyEGOqiUkIHCwdZgAyZ21Z1aeIIgYPQpuByviwqLeLskyfjMHW
+	r1pBhEEgfEV+sPvATwNxdPuV0KZScgxDi/RB6W6vxoYGhe2hxGhlHTX8iQsYYMXQ
+	==
+Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4dw9y1ggw8-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 06 May 2026 12:10:10 +0000 (GMT)
+Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma21.wdc07v.mail.ibm.com (8.18.1.7/8.18.1.7) with ESMTP id 646C5QqM032540;
+	Wed, 6 May 2026 12:10:09 GMT
+Received: from smtprelay05.wdc07v.mail.ibm.com ([172.16.1.72])
+	by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 4dwvkjx3eb-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 06 May 2026 12:10:09 +0000 (GMT)
+Received: from smtpav01.wdc07v.mail.ibm.com (smtpav01.wdc07v.mail.ibm.com [10.39.53.228])
+	by smtprelay05.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 646CA92B34144898
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Wed, 6 May 2026 12:10:09 GMT
+Received: from smtpav01.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 0489C58055;
+	Wed,  6 May 2026 12:10:09 +0000 (GMT)
+Received: from smtpav01.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 208C65804B;
+	Wed,  6 May 2026 12:10:03 +0000 (GMT)
+Received: from [9.123.3.209] (unknown [9.123.3.209])
+	by smtpav01.wdc07v.mail.ibm.com (Postfix) with ESMTP;
+	Wed,  6 May 2026 12:10:02 +0000 (GMT)
+Message-ID: <5308bbfc-286b-45a9-b527-c282ce95a028@linux.ibm.com>
+Date: Wed, 6 May 2026 17:40:01 +0530
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 1/2] selftests/cgroup: Fix hardcoded page size in
+ test_percpu_basic
+To: Li Wang <li.wang@linux.dev>, akpm@linux-foundation.org, hannes@cmpxchg.org,
+        mhocko@kernel.org, roman.gushchin@linux.dev, shakeel.butt@linux.dev,
+        muchun.song@linux.dev, tj@kernel.org, mkoutny@suse.com,
+        shuah@kernel.org
+Cc: cgroups@vger.kernel.org, linux-mm@kvack.org,
+        linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Waiman Long <longman@redhat.com>, Christoph Lameter <cl@linux.com>,
+        Shakeel Butt <shakeelb@google.com>, Vlastimil Babka <vbabka@suse.cz>
+References: <20260501022058.18024-1-li.wang@linux.dev>
+ <20260501022058.18024-2-li.wang@linux.dev>
+Content-Language: en-IN
+From: Sayali Patil <sayalip@linux.ibm.com>
+In-Reply-To: <20260501022058.18024-2-li.wang@linux.dev>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-Message-Id: <20260506-dmem_peak-v1-2-8d803eb3449c@igalia.com>
-References: <20260506-dmem_peak-v1-0-8d803eb3449c@igalia.com>
-In-Reply-To: <20260506-dmem_peak-v1-0-8d803eb3449c@igalia.com>
-To: Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>, 
- =?utf-8?q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>, 
- Michal Hocko <mhocko@kernel.org>, Roman Gushchin <roman.gushchin@linux.dev>, 
- Shakeel Butt <shakeel.butt@linux.dev>, Muchun Song <muchun.song@linux.dev>, 
- Andrew Morton <akpm@linux-foundation.org>, Jonathan Corbet <corbet@lwn.net>, 
- Shuah Khan <skhan@linuxfoundation.org>, 
- Maarten Lankhorst <dev@lankhorst.se>, Maxime Ripard <mripard@kernel.org>, 
- Natalie Vock <natalie.vock@gmx.de>, 
- Tvrtko Ursulin <tvrtko.ursulin@igalia.com>
-Cc: cgroups@vger.kernel.org, linux-kernel@vger.kernel.org, 
- linux-mm@kvack.org, linux-doc@vger.kernel.org, 
- dri-devel@lists.freedesktop.org, 
- Thadeu Lima de Souza Cascardo <cascardo@igalia.com>, kernel-dev@igalia.com
-X-Mailer: b4 0.16-dev-62088
-X-Rspamd-Queue-Id: 916954D9EF7
+X-TM-AS-GCONF: 00
+X-Proofpoint-Reinject: loops=2 maxloops=12
+X-Proofpoint-ORIG-GUID: JJimJ3U9Ee2f75fvJNMoQyEthf9nE0cr
+X-Proofpoint-GUID: JpMACp870QKhw6LAYNdgB11JVvGe__yj
+X-Proofpoint-Spam-Details-Enc: AW1haW4tMjYwNTA2MDExOSBTYWx0ZWRfX+7mLPDG8OGPN
+ pcmFBnQ03nwA0nYPv4Y505miok8pUv0+rKoRywZfZlh378cPqj/GlnvirMpBMOcopToCFZqAG7H
+ 5RsFbgG/AiFGejzMzhpNF1svhVvCRHIt0SVYuIGb2aHGMCGyaZIXt27TttnrbQD7ZG+1g90RpPm
+ iRqK7HP8lTsn/Z4W+dpwTN1cBgDmPcpwYu9w919k98QWSDFrJicZHyVnAn/huEZ4S+GubK8cVjm
+ HP8TK0yi8EdMXQ2HF3TP6XxjfZpEyD9YSOqMz5JkS57lPp9aS3OSM88cIKimAiZt2GV0qsflPqu
+ dNoqJp/hcU0luEE6yKOy2aCB1hN08rrmdbwPatuVH9s4Z21tnYbwuCPmmhSvMwzJfsYxElcAue3
+ 14ynO/pJhWrzmuqv6b9cL8Wc1yvh42CodcuORry8BGMG5PzyDCxPW8NN015So9h4FfEikwIXXXM
+ Zdxqvk6AIb2sPTcDCPw==
+X-Authority-Analysis: v=2.4 cv=UbFhjqSN c=1 sm=1 tr=0 ts=69fb2fa3 cx=c_pps
+ a=GFwsV6G8L6GxiO2Y/PsHdQ==:117 a=GFwsV6G8L6GxiO2Y/PsHdQ==:17
+ a=IkcTkHD0fZMA:10 a=NGcC8JguVDcA:10 a=VkNPw1HP01LnGYTKEx00:22
+ a=RnoormkPH1_aCDwRdu11:22 a=U7nrCbtTmkRpXpFmAIza:22 a=20KFwNOVAAAA:8
+ a=NufY4J3AAAAA:8 a=ufHFDILaAAAA:8 a=VwQbUJbxAAAA:8 a=1XWaLZrsAAAA:8
+ a=VnNF1IyMAAAA:8 a=3SF8d-dLAay7TFkNkXcA:9 a=QEXdDO2ut3YA:10
+ a=TPcZfFuj8SYsoCJAFAiX:22 a=ZmIg1sZ3JBWsdXgziEIF:22
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1143,Hydra:6.1.51,FMLib:17.12.100.49
+ definitions=2026-05-05_03,2026-05-06_01,2025-10-01_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0
+ clxscore=1011 spamscore=0 lowpriorityscore=0 malwarescore=0 suspectscore=0
+ adultscore=0 priorityscore=1501 bulkscore=0 phishscore=0 impostorscore=0
+ classifier=typeunknown authscore=0 authtc= authcc= route=outbound adjust=0
+ reason=mlx scancount=1 engine=8.22.0-2604200000 definitions=main-2605060119
+X-Rspamd-Queue-Id: A4F5F4D9FBD
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-0.36 / 15.00];
-	R_DKIM_REJECT(1.00)[igalia.com:s=20170329];
+X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	DMARC_POLICY_ALLOW(-0.50)[ibm.com,none];
+	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
+	R_DKIM_ALLOW(-0.20)[ibm.com:s=pp1];
 	MAILLIST(-0.15)[generic];
-	DMARC_POLICY_SOFTFAIL(0.10)[igalia.com : SPF not aligned (relaxed),none];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	RCVD_TLS_LAST(0.00)[];
-	RCVD_COUNT_THREE(0.00)[4];
-	FREEMAIL_TO(0.00)[kernel.org,cmpxchg.org,suse.com,linux.dev,linux-foundation.org,lwn.net,linuxfoundation.org,lankhorst.se,gmx.de,igalia.com];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-15636-lists,cgroups=lfdr.de];
-	RCPT_COUNT_TWELVE(0.00)[21];
 	MIME_TRACE(0.00)[0:+];
-	FROM_HAS_DN(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	RCPT_COUNT_TWELVE(0.00)[18];
+	TAGGED_FROM(0.00)[bounces-15637-lists,cgroups=lfdr.de];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	RCVD_TLS_LAST(0.00)[];
+	DKIM_TRACE(0.00)[ibm.com:+];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	NEURAL_HAM(-0.00)[-0.968];
-	FROM_NEQ_ENVFROM(0.00)[cascardo@igalia.com,cgroups@vger.kernel.org];
-	PRECEDENCE_BULK(0.00)[];
-	DKIM_TRACE(0.00)[igalia.com:-];
-	MID_RHS_MATCH_FROM(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	TAGGED_RCPT(0.00)[cgroups];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[linux.ibm.com:mid,linux.dev:email,sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns];
 	TO_DN_SOME(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[igalia.com:mid,igalia.com:email,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
+	FROM_NEQ_ENVFROM(0.00)[sayalip@linux.ibm.com,cgroups@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
+	PRECEDENCE_BULK(0.00)[];
+	MID_RHS_MATCH_FROM(0.00)[];
+	NEURAL_HAM(-0.00)[-1.000];
+	TAGGED_RCPT(0.00)[cgroups];
+	RCVD_COUNT_SEVEN(0.00)[11]
 
-Just like we have memory.peak, introduce a dmem.peak, which uses the
-page_counter support for that.
 
-It can be written to in order to reset the peak, but different from
-memory.peak, which expects any write, dmem.peak expects the region name to
-be written to it. That region peak is the one that is reset.
 
-That requires ofp_peak to carry a pointer to the pool that was reset.
+On 01/05/26 07:50, Li Wang wrote:
+> MAX_VMSTAT_ERROR uses a hardcoded page size of 4096, which assumes
+> 4K pages. This causes test_percpu_basic to fail on systems where
+> the kernel is configured with a larger page size, such as aarch64
+> systems using 16K or 64K pages, where the maximum permissible
+> discrepancy between memory.current and percpu charges is
+> proportionally larger.
+> 
+> Replace the hardcoded 4096 with sysconf(_SC_PAGESIZE) to correctly
+> derive the page size at runtime regardless of the underlying
+> architecture or kernel configuration.
+> 
+> Signed-off-by: Li Wang <li.wang@linux.dev>
+> Cc: Waiman Long <longman@redhat.com>
+> Cc: Christoph Lameter <cl@linux.com>
+> Cc: Johannes Weiner <hannes@cmpxchg.org>
+> Cc: Michal Hocko <mhocko@kernel.org>
+> Cc: Shakeel Butt <shakeelb@google.com>
+> Cc: Tejun Heo <tj@kernel.org>
+> Cc: Vlastimil Babka <vbabka@suse.cz>
+> Acked-by: Waiman Long <longman@redhat.com>
+> ---
+>   tools/testing/selftests/cgroup/test_kmem.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/tools/testing/selftests/cgroup/test_kmem.c b/tools/testing/selftests/cgroup/test_kmem.c
+> index eeabd34bf08..249d7911306 100644
+> --- a/tools/testing/selftests/cgroup/test_kmem.c
+> +++ b/tools/testing/selftests/cgroup/test_kmem.c
+> @@ -24,7 +24,7 @@
+>    * the maximum discrepancy between charge and vmstat entries is number
+>    * of cpus multiplied by 64 pages.
+>    */
+> -#define MAX_VMSTAT_ERROR (4096 * 64 * get_nprocs())
+> +#define MAX_VMSTAT_ERROR (sysconf(_SC_PAGESIZE) * 64 * get_nprocs())
+>   
+>   #define KMEM_DEAD_WAIT_RETRIES        80
+>   
 
-Writing a different region name will reset the different region and make
-the original region peak get back to its non-reset value.
+Reviewed-by: Sayali Patil <sayalip@linux.ibm.com>
 
-Signed-off-by: Thadeu Lima de Souza Cascardo <cascardo@igalia.com>
----
- Documentation/admin-guide/cgroup-v2.rst |  10 +++
- include/linux/cgroup-defs.h             |   1 +
- kernel/cgroup/dmem.c                    | 132 ++++++++++++++++++++++++++++++--
- 3 files changed, 137 insertions(+), 6 deletions(-)
-
-diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admin-guide/cgroup-v2.rst
-index 6efd0095ed99..3ba7ab3a36b3 100644
---- a/Documentation/admin-guide/cgroup-v2.rst
-+++ b/Documentation/admin-guide/cgroup-v2.rst
-@@ -2808,6 +2808,16 @@ DMEM Interface Files
- 	The semantics are the same as for the memory cgroup controller, and are
- 	calculated in the same way.
- 
-+  dmem.peak
-+	A readwrite nested-keyed file that exists on non-root cgroups.
-+
-+	The max memory usage recorded for the cgroup and its descendants since
-+	either the creation of the cgroup or the most recent reset for that FD.
-+
-+	A write of a region name to this file resets it to the current memory
-+	usage for subsequent reads through the same file descriptor for that
-+	region.
-+
-   dmem.capacity
- 	A read-only file that describes maximum region capacity.
- 	It only exists on the root cgroup. Not all memory can be
-diff --git a/include/linux/cgroup-defs.h b/include/linux/cgroup-defs.h
-index a85044cb0553..b536054bd916 100644
---- a/include/linux/cgroup-defs.h
-+++ b/include/linux/cgroup-defs.h
-@@ -874,6 +874,7 @@ extern bool cgroup_enable_per_threadgroup_rwsem;
- struct cgroup_of_peak {
- 	unsigned long		value;
- 	struct list_head	list;
-+	struct dmem_cgroup_pool_state *pool;
- };
- 
- void of_peak_reset(struct cgroup_of_peak *ofp, struct page_counter *pc,
-diff --git a/kernel/cgroup/dmem.c b/kernel/cgroup/dmem.c
-index 1ab1fb47f271..afa380c9839b 100644
---- a/kernel/cgroup/dmem.c
-+++ b/kernel/cgroup/dmem.c
-@@ -57,6 +57,9 @@ struct dmemcg_state {
- 	struct cgroup_subsys_state css;
- 
- 	struct list_head pools;
-+
-+	/** @peaks_lock: Protects access to the pools' peaks lists */
-+	spinlock_t peaks_lock;
- };
- 
- struct dmem_cgroup_pool_state {
-@@ -72,6 +75,10 @@ struct dmem_cgroup_pool_state {
- 	struct rcu_head rcu;
- 
- 	struct page_counter cnt;
-+
-+	/* Protected by the dmemcg_state peaks_lock */
-+	struct list_head peaks;
-+
- 	struct dmem_cgroup_pool_state *parent;
- 
- 	refcount_t ref;
-@@ -162,26 +169,45 @@ set_resource_max(struct dmem_cgroup_pool_state *pool, u64 val)
- 	page_counter_set_max(&pool->cnt, val);
- }
- 
--static u64 get_resource_low(struct dmem_cgroup_pool_state *pool)
-+static u64 get_resource_low(struct seq_file *sf, struct dmem_cgroup_pool_state *pool)
- {
- 	return pool ? READ_ONCE(pool->cnt.low) : 0;
- }
- 
--static u64 get_resource_min(struct dmem_cgroup_pool_state *pool)
-+static u64 get_resource_min(struct seq_file *sf, struct dmem_cgroup_pool_state *pool)
- {
- 	return pool ? READ_ONCE(pool->cnt.min) : 0;
- }
- 
--static u64 get_resource_max(struct dmem_cgroup_pool_state *pool)
-+static u64 get_resource_max(struct seq_file *sf, struct dmem_cgroup_pool_state *pool)
- {
- 	return pool ? READ_ONCE(pool->cnt.max) : PAGE_COUNTER_MAX;
- }
- 
--static u64 get_resource_current(struct dmem_cgroup_pool_state *pool)
-+static u64 get_resource_current(struct seq_file *sf, struct dmem_cgroup_pool_state *pool)
- {
- 	return pool ? page_counter_read(&pool->cnt) : 0;
- }
- 
-+static u64 get_resource_peak(struct seq_file *sf, struct dmem_cgroup_pool_state *pool)
-+{
-+	struct cgroup_of_peak *ofp = of_peak(sf->private);
-+	u64 fd_peak, peak;
-+	struct dmem_cgroup_pool_state *of_pool;
-+
-+	if (!pool)
-+		return 0;
-+
-+	of_pool = READ_ONCE(ofp->pool);
-+
-+	fd_peak = READ_ONCE(ofp->value);
-+	if (of_pool != pool || fd_peak == OFP_PEAK_UNSET)
-+		peak = pool->cnt.watermark;
-+	else
-+		peak = max(fd_peak, READ_ONCE(pool->cnt.local_watermark));
-+	return peak;
-+}
-+
- static void reset_all_resource_limits(struct dmem_cgroup_pool_state *rpool)
- {
- 	set_resource_min(rpool, 0);
-@@ -227,6 +253,7 @@ dmemcs_alloc(struct cgroup_subsys_state *parent_css)
- 		return ERR_PTR(-ENOMEM);
- 
- 	INIT_LIST_HEAD(&dmemcs->pools);
-+	spin_lock_init(&dmemcs->peaks_lock);
- 	return &dmemcs->css;
- }
- 
-@@ -377,6 +404,7 @@ alloc_pool_single(struct dmemcg_state *dmemcs, struct dmem_cgroup_region *region
- 			  ppool ? &ppool->cnt : NULL, true);
- 	reset_all_resource_limits(pool);
- 	refcount_set(&pool->ref, 1);
-+	INIT_LIST_HEAD(&pool->peaks);
- 	kref_get(&region->ref);
- 	if (ppool && !pool->parent) {
- 		pool->parent = ppool;
-@@ -784,7 +812,7 @@ static ssize_t dmemcg_limit_write(struct kernfs_open_file *of,
- }
- 
- static int dmemcg_limit_show(struct seq_file *sf, void *v,
--			    u64 (*fn)(struct dmem_cgroup_pool_state *))
-+			    u64 (*fn)(struct seq_file *, struct dmem_cgroup_pool_state *))
- {
- 	struct dmemcg_state *dmemcs = css_to_dmemcs(seq_css(sf));
- 	struct dmem_cgroup_region *region;
-@@ -796,7 +824,7 @@ static int dmemcg_limit_show(struct seq_file *sf, void *v,
- 
- 		seq_puts(sf, region->name);
- 
--		val = fn(pool);
-+		val = fn(sf, pool);
- 		if (val < PAGE_COUNTER_MAX)
- 			seq_printf(sf, " %lld\n", val);
- 		else
-@@ -807,6 +835,90 @@ static int dmemcg_limit_show(struct seq_file *sf, void *v,
- 	return 0;
- }
- 
-+static int dmem_cgroup_region_peak_open(struct kernfs_open_file *of)
-+{
-+	struct cgroup_of_peak *ofp = of_peak(of);
-+
-+	ofp->value = OFP_PEAK_UNSET;
-+
-+	return 0;
-+}
-+
-+static void dmem_cgroup_region_peak_remove(struct cgroup_of_peak *ofp)
-+{
-+	struct dmem_cgroup_pool_state *pool;
-+	struct dmemcg_state *dmemcs;
-+
-+	pool = xchg(&ofp->pool, NULL);
-+	if (!pool)
-+		return;
-+
-+	dmemcs = pool->cs;
-+
-+	spin_lock(&dmemcs->peaks_lock);
-+	list_del(&ofp->list);
-+	spin_unlock(&dmemcs->peaks_lock);
-+
-+	WRITE_ONCE(ofp->value, OFP_PEAK_UNSET);
-+
-+	dmemcg_pool_put(pool);
-+}
-+
-+static void dmem_cgroup_region_peak_release(struct kernfs_open_file *of)
-+{
-+	struct cgroup_of_peak *ofp = of_peak(of);
-+
-+	if (ofp->value == OFP_PEAK_UNSET) {
-+		/* fast path (no writes on this fd) */
-+		return;
-+	}
-+
-+	dmem_cgroup_region_peak_remove(ofp);
-+}
-+
-+static ssize_t dmem_cgroup_region_peak_write(struct kernfs_open_file *of,
-+					     char *buf, size_t nbytes, loff_t off)
-+{
-+	struct dmemcg_state *dmemcs = css_to_dmemcs(of_css(of));
-+	struct cgroup_of_peak *ofp = of_peak(of);
-+	struct dmem_cgroup_pool_state *pool = NULL;
-+	struct dmem_cgroup_region *region;
-+	int err = 0;
-+
-+	buf = strstrip(buf);
-+	if (!buf[0])
-+		return -EINVAL;
-+
-+	rcu_read_lock();
-+	region = dmemcg_get_region_by_name(buf);
-+	rcu_read_unlock();
-+
-+	if (!region)
-+		return -EINVAL;
-+
-+	pool = get_cg_pool_unlocked(dmemcs, region);
-+	if (IS_ERR(pool)) {
-+		err = PTR_ERR(pool);
-+		goto out_put;
-+	}
-+
-+	dmem_cgroup_region_peak_remove(ofp);
-+
-+	xchg(&ofp->pool, pool);
-+	spin_lock(&dmemcs->peaks_lock);
-+	of_peak_reset(ofp, &pool->cnt, &pool->peaks);
-+	spin_unlock(&dmemcs->peaks_lock);
-+
-+out_put:
-+	kref_put(&region->ref, dmemcg_free_region);
-+	return err ?: nbytes;
-+}
-+
-+static int dmem_cgroup_region_peak_show(struct seq_file *sf, void *v)
-+{
-+	return dmemcg_limit_show(sf, v, get_resource_peak);
-+}
-+
- static int dmem_cgroup_region_current_show(struct seq_file *sf, void *v)
- {
- 	return dmemcg_limit_show(sf, v, get_resource_current);
-@@ -855,6 +967,14 @@ static struct cftype files[] = {
- 		.name = "current",
- 		.seq_show = dmem_cgroup_region_current_show,
- 	},
-+	{
-+		.name = "peak",
-+		.open = dmem_cgroup_region_peak_open,
-+		.release = dmem_cgroup_region_peak_release,
-+		.write = dmem_cgroup_region_peak_write,
-+		.seq_show = dmem_cgroup_region_peak_show,
-+		.flags = CFTYPE_NOT_ON_ROOT,
-+	},
- 	{
- 		.name = "min",
- 		.write = dmem_cgroup_region_min_write,
-
--- 
-2.47.3
-
+Thanks,
+Sayali
 
