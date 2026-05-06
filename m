@@ -1,37 +1,37 @@
-Return-Path: <cgroups+bounces-15635-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-15636-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id KJ0CH1At+2npXAMAu9opvQ
-	(envelope-from <cgroups+bounces-15635-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Wed, 06 May 2026 14:00:16 +0200
+	id KBb/A5Et+2npXAMAu9opvQ
+	(envelope-from <cgroups+bounces-15636-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Wed, 06 May 2026 14:01:21 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id EFF934D9EBC
-	for <lists+cgroups@lfdr.de>; Wed, 06 May 2026 14:00:15 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 916954D9EF7
+	for <lists+cgroups@lfdr.de>; Wed, 06 May 2026 14:01:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 1691230215B8
-	for <lists+cgroups@lfdr.de>; Wed,  6 May 2026 12:00:08 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 2B6F8303266C
+	for <lists+cgroups@lfdr.de>; Wed,  6 May 2026 12:00:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 80F6443E48E;
-	Wed,  6 May 2026 12:00:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 26B5643E4B0;
+	Wed,  6 May 2026 12:00:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=igalia.com header.i=@igalia.com header.b="XW/qXrnb"
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=igalia.com header.i=@igalia.com header.b="N7UJOoSX"
 X-Original-To: cgroups@vger.kernel.org
 Received: from fanzine2.igalia.com (fanzine2.igalia.com [213.97.179.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A176A43E4A4;
-	Wed,  6 May 2026 12:00:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9409D3B8BBF;
+	Wed,  6 May 2026 12:00:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.97.179.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1778068807; cv=none; b=SKFtNQFdhS/0+blUFhL/i/eayYy3TxKtz0aSyD7BddDJ9EqF1ZKvVQcFk41MPYSFnMnXWxGA2ifJQMiny0bDsoMAVXn9R94Nueb3f8EwR3O+UVWIy+/DRxBH0qc3BxcRLUg7px21bUZ/lNnPy55Sa2AWd50xbwR2qgMHimagFr8=
+	t=1778068813; cv=none; b=l6KAuK4Q2ohn2UwBEOdtKSGX7xmaa0ImhzeKoTinDh7xSHfiFVs8a176eZh1gKIeXEi5cBWEQxxqOnxuDEO5z8xp8bPIek9lxk3u3sr/9MrVwNI4sHswCf7l/uIQ07QC61cCUXGJmt3s7SoUmm7+Vy/f7jONGEXf1Yu7owSK+HQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1778068807; c=relaxed/simple;
-	bh=JLcLtkHLbLHPvJx0jdz/tg8gMNET2TtHppQ1Ooh70Yk=;
+	s=arc-20240116; t=1778068813; c=relaxed/simple;
+	bh=s0iQw1nuHUf+GNr3teWrkBsxV6MwephCgs2+lAGgxMM=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=gXwrYhdkuafm4htQ3+Ek/vrQSa8+qolHiDG0IQB98rh+Lgwab5II0sehUuxdgWGpF/UyYkq9v820b7vUoMR0fPMqL3fgSxO345yxwjrimdahbJSL/MEIzHwdc5Vz2MBi+fuO8wfsYG3he6Wf46w6uNcBVjnWVZ8zCiotV203UDI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=igalia.com; spf=pass smtp.mailfrom=igalia.com; dkim=pass (2048-bit key) header.d=igalia.com header.i=@igalia.com header.b=XW/qXrnb; arc=none smtp.client-ip=213.97.179.56
+	 In-Reply-To:To:Cc; b=fOn4r8EQwqIWzeLgGRfNU8OATfk5NgCCvXts4bs0ouYEcslcbWQVZBWb8J8Do+yaI7DKSgcz3SjoHu1nTL1olxW4VtXyIfsYa+LRZB7EHvYshHOS1rLSK2fM4iefxOb4BKLDgdId+5NOPAb3fBiXxT6D84tGZspJkYNtTHzSlF4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=igalia.com; spf=pass smtp.mailfrom=igalia.com; dkim=pass (2048-bit key) header.d=igalia.com header.i=@igalia.com header.b=N7UJOoSX; arc=none smtp.client-ip=213.97.179.56
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=igalia.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=igalia.com
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=igalia.com;
@@ -40,19 +40,19 @@ DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=igalia.com;
 	Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender
 	:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
 	List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=+geGgtC29tPii/y0xORPdzxzZcUtJ2/stRBH9k/cNK8=; b=XW/qXrnb4pX3o9W+wGI0W1ifJ0
-	NfQ+n+ZFMHfs6VA1ESmzMbKmE1LhTwYO6E5ioKclh1JV02ZMIgaDzq0GWDQGBY0gzF5M76ylnTxrC
-	7E83xUP/BpozMsICavLB6ZnfU1OU6LKx0Wj5aunbLpYvtUEeeieIU3m/Gz6cMFp6EOwENrODXCbf3
-	qOAhjJFrqtO3TTo1KdntZRMNWjDxPaXQbODeZrPCu7vO2kJTzJ2xG5HwK+Qr7Tfm/0zWjMzI9lyRr
-	zfNSZ+lTmJAiOm3aESaWQv9TqyHj0lqJt/pwBZdfMkgX0LhFpjXGu24OPdJYs3yC349aEQjU01NgC
-	TXGtBmgw==;
+	bh=VzPiqsNNKP8D31HnrqSylsehZjTjNsGJjks0JiVA82w=; b=N7UJOoSXgWni0eCu+o9wxTrZf6
+	AxAqiL6kbPkBb2IQ++jLQV19OgJ8wRTlXztWj+Dx7a0pLObtJnwE0yjtiVer5Vd88BiY0te0LNqdO
+	zKgXMDAsfiejsVOMG/L3qwiiMvqtixf5W+pC4WM858tjWZZTyx2f9dSxzeA2V9B3P9EtMXkr1T4oK
+	9hD9e4YlDhbHxXcRUQ7drQjFpakooglG9HtBBXP/ssDF0pAoMkT12/+3QISFWbIGoO1mHqCOG5Xmb
+	cO2ZM3/7GDO/zs6lm96IDTRgV0kU6aVFiOmCZA2ApkJ7XuZbIBCDAuLlXyR5UHsgO69hRSaj9sR7u
+	6wikuVNg==;
 Received: from 179-125-92-238-dinamico.pombonet.net.br ([179.125.92.238] helo=[127.0.0.1])
 	by fanzine2.igalia.com with esmtpsa 
 	(Cipher TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256) (Exim)
-	id 1wKav4-006sxt-Ta; Wed, 06 May 2026 14:00:02 +0200
+	id 1wKavB-006sxt-2K; Wed, 06 May 2026 14:00:08 +0200
 From: Thadeu Lima de Souza Cascardo <cascardo@igalia.com>
-Date: Wed, 06 May 2026 08:58:24 -0300
-Subject: [PATCH 1/2] mm/page_counter: decouple peak_reset from peak_write
+Date: Wed, 06 May 2026 08:58:25 -0300
+Subject: [PATCH 2/2] cgroup/dmem: introduce a peak file
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -61,7 +61,7 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-Message-Id: <20260506-dmem_peak-v1-1-8d803eb3449c@igalia.com>
+Message-Id: <20260506-dmem_peak-v1-2-8d803eb3449c@igalia.com>
 References: <20260506-dmem_peak-v1-0-8d803eb3449c@igalia.com>
 In-Reply-To: <20260506-dmem_peak-v1-0-8d803eb3449c@igalia.com>
 To: Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>, 
@@ -78,13 +78,13 @@ Cc: cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
  dri-devel@lists.freedesktop.org, 
  Thadeu Lima de Souza Cascardo <cascardo@igalia.com>, kernel-dev@igalia.com
 X-Mailer: b4 0.16-dev-62088
-X-Rspamd-Queue-Id: EFF934D9EBC
+X-Rspamd-Queue-Id: 916954D9EF7
 X-Rspamd-Action: no action
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-0.36 / 15.00];
 	R_DKIM_REJECT(1.00)[igalia.com:s=20170329];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	MAILLIST(-0.15)[generic];
 	DMARC_POLICY_SOFTFAIL(0.10)[igalia.com : SPF not aligned (relaxed),none];
 	MIME_GOOD(-0.10)[text/plain];
@@ -93,13 +93,13 @@ X-Spamd-Result: default: False [-0.36 / 15.00];
 	RCVD_COUNT_THREE(0.00)[4];
 	FREEMAIL_TO(0.00)[kernel.org,cmpxchg.org,suse.com,linux.dev,linux-foundation.org,lwn.net,linuxfoundation.org,lankhorst.se,gmx.de,igalia.com];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-15635-lists,cgroups=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-15636-lists,cgroups=lfdr.de];
 	RCPT_COUNT_TWELVE(0.00)[21];
 	MIME_TRACE(0.00)[0:+];
 	FROM_HAS_DN(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	NEURAL_HAM(-0.00)[-0.970];
+	NEURAL_HAM(-0.00)[-0.968];
 	FROM_NEQ_ENVFROM(0.00)[cascardo@igalia.com,cgroups@vger.kernel.org];
 	PRECEDENCE_BULK(0.00)[];
 	DKIM_TRACE(0.00)[igalia.com:-];
@@ -107,167 +107,275 @@ X-Spamd-Result: default: False [-0.36 / 15.00];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[cgroups];
 	TO_DN_SOME(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[igalia.com:mid,igalia.com:email,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[igalia.com:mid,igalia.com:email,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
 
-Create a new function of_peak_reset that resets the page_counter peak for a
-given writer. This should allow it to be reused by other cgroups.
+Just like we have memory.peak, introduce a dmem.peak, which uses the
+page_counter support for that.
+
+It can be written to in order to reset the peak, but different from
+memory.peak, which expects any write, dmem.peak expects the region name to
+be written to it. That region peak is the one that is reset.
+
+That requires ofp_peak to carry a pointer to the pool that was reset.
+
+Writing a different region name will reset the different region and make
+the original region peak get back to its non-reset value.
 
 Signed-off-by: Thadeu Lima de Souza Cascardo <cascardo@igalia.com>
 ---
- include/linux/cgroup-defs.h |  6 ++++++
- kernel/cgroup/cgroup.c      | 32 ++++++++++++++++++++++++++++++++
- mm/memcontrol.c             | 42 ++++++++----------------------------------
- 3 files changed, 46 insertions(+), 34 deletions(-)
+ Documentation/admin-guide/cgroup-v2.rst |  10 +++
+ include/linux/cgroup-defs.h             |   1 +
+ kernel/cgroup/dmem.c                    | 132 ++++++++++++++++++++++++++++++--
+ 3 files changed, 137 insertions(+), 6 deletions(-)
 
+diff --git a/Documentation/admin-guide/cgroup-v2.rst b/Documentation/admin-guide/cgroup-v2.rst
+index 6efd0095ed99..3ba7ab3a36b3 100644
+--- a/Documentation/admin-guide/cgroup-v2.rst
++++ b/Documentation/admin-guide/cgroup-v2.rst
+@@ -2808,6 +2808,16 @@ DMEM Interface Files
+ 	The semantics are the same as for the memory cgroup controller, and are
+ 	calculated in the same way.
+ 
++  dmem.peak
++	A readwrite nested-keyed file that exists on non-root cgroups.
++
++	The max memory usage recorded for the cgroup and its descendants since
++	either the creation of the cgroup or the most recent reset for that FD.
++
++	A write of a region name to this file resets it to the current memory
++	usage for subsequent reads through the same file descriptor for that
++	region.
++
+   dmem.capacity
+ 	A read-only file that describes maximum region capacity.
+ 	It only exists on the root cgroup. Not all memory can be
 diff --git a/include/linux/cgroup-defs.h b/include/linux/cgroup-defs.h
-index f42563739d2e..a85044cb0553 100644
+index a85044cb0553..b536054bd916 100644
 --- a/include/linux/cgroup-defs.h
 +++ b/include/linux/cgroup-defs.h
-@@ -22,6 +22,7 @@
- #include <linux/workqueue.h>
- #include <linux/bpf-cgroup-defs.h>
- #include <linux/psi_types.h>
-+#include <linux/page_counter.h>
- 
- #ifdef CONFIG_CGROUPS
- 
-@@ -868,11 +869,16 @@ struct cgroup_subsys {
- extern struct percpu_rw_semaphore cgroup_threadgroup_rwsem;
- extern bool cgroup_enable_per_threadgroup_rwsem;
- 
-+#define OFP_PEAK_UNSET (((-1UL)))
-+
+@@ -874,6 +874,7 @@ extern bool cgroup_enable_per_threadgroup_rwsem;
  struct cgroup_of_peak {
  	unsigned long		value;
  	struct list_head	list;
++	struct dmem_cgroup_pool_state *pool;
  };
  
-+void of_peak_reset(struct cgroup_of_peak *ofp, struct page_counter *pc,
-+		   struct list_head *watchers);
+ void of_peak_reset(struct cgroup_of_peak *ofp, struct page_counter *pc,
+diff --git a/kernel/cgroup/dmem.c b/kernel/cgroup/dmem.c
+index 1ab1fb47f271..afa380c9839b 100644
+--- a/kernel/cgroup/dmem.c
++++ b/kernel/cgroup/dmem.c
+@@ -57,6 +57,9 @@ struct dmemcg_state {
+ 	struct cgroup_subsys_state css;
+ 
+ 	struct list_head pools;
 +
- /**
-  * cgroup_threadgroup_change_begin - threadgroup exclusion for cgroups
-  * @tsk: target task
-diff --git a/kernel/cgroup/cgroup.c b/kernel/cgroup/cgroup.c
-index 45c0b1ed687a..9b98a5cccf0e 100644
---- a/kernel/cgroup/cgroup.c
-+++ b/kernel/cgroup/cgroup.c
-@@ -1981,6 +1981,38 @@ struct cgroup_of_peak *of_peak(struct kernfs_open_file *of)
- 	return &ctx->peak;
++	/** @peaks_lock: Protects access to the pools' peaks lists */
++	spinlock_t peaks_lock;
+ };
+ 
+ struct dmem_cgroup_pool_state {
+@@ -72,6 +75,10 @@ struct dmem_cgroup_pool_state {
+ 	struct rcu_head rcu;
+ 
+ 	struct page_counter cnt;
++
++	/* Protected by the dmemcg_state peaks_lock */
++	struct list_head peaks;
++
+ 	struct dmem_cgroup_pool_state *parent;
+ 
+ 	refcount_t ref;
+@@ -162,26 +169,45 @@ set_resource_max(struct dmem_cgroup_pool_state *pool, u64 val)
+ 	page_counter_set_max(&pool->cnt, val);
  }
  
-+/**
-+ * of_peak_reset - reset peak
-+ * @ofp: open file context
-+ * @pc: counter
-+ * @watchers: list of other open file contexts
-+ *
-+ * This function updates all contexts in @watchers to the new usage of @pc.
-+ * If @ofp is not in the list yet, that is, if its value is
-+ * %OFP_PEAK_UNSET, it is added to @watchers list.
-+ *
-+ * A lock must be used to protect @watchers.
-+ */
-+void of_peak_reset(struct cgroup_of_peak *ofp, struct page_counter *pc,
-+		   struct list_head *watchers)
+-static u64 get_resource_low(struct dmem_cgroup_pool_state *pool)
++static u64 get_resource_low(struct seq_file *sf, struct dmem_cgroup_pool_state *pool)
+ {
+ 	return pool ? READ_ONCE(pool->cnt.low) : 0;
+ }
+ 
+-static u64 get_resource_min(struct dmem_cgroup_pool_state *pool)
++static u64 get_resource_min(struct seq_file *sf, struct dmem_cgroup_pool_state *pool)
+ {
+ 	return pool ? READ_ONCE(pool->cnt.min) : 0;
+ }
+ 
+-static u64 get_resource_max(struct dmem_cgroup_pool_state *pool)
++static u64 get_resource_max(struct seq_file *sf, struct dmem_cgroup_pool_state *pool)
+ {
+ 	return pool ? READ_ONCE(pool->cnt.max) : PAGE_COUNTER_MAX;
+ }
+ 
+-static u64 get_resource_current(struct dmem_cgroup_pool_state *pool)
++static u64 get_resource_current(struct seq_file *sf, struct dmem_cgroup_pool_state *pool)
+ {
+ 	return pool ? page_counter_read(&pool->cnt) : 0;
+ }
+ 
++static u64 get_resource_peak(struct seq_file *sf, struct dmem_cgroup_pool_state *pool)
 +{
-+	unsigned long usage;
-+	struct cgroup_of_peak *peer_ctx;
++	struct cgroup_of_peak *ofp = of_peak(sf->private);
++	u64 fd_peak, peak;
++	struct dmem_cgroup_pool_state *of_pool;
 +
-+	usage = page_counter_read(pc);
-+	WRITE_ONCE(pc->local_watermark, usage);
++	if (!pool)
++		return 0;
 +
-+	list_for_each_entry(peer_ctx, watchers, list)
-+		if (usage > peer_ctx->value)
-+			WRITE_ONCE(peer_ctx->value, usage);
++	of_pool = READ_ONCE(ofp->pool);
 +
-+	/* initial write, register watcher */
-+	if (ofp->value == OFP_PEAK_UNSET)
-+		list_add(&ofp->list, watchers);
-+
-+	WRITE_ONCE(ofp->value, usage);
++	fd_peak = READ_ONCE(ofp->value);
++	if (of_pool != pool || fd_peak == OFP_PEAK_UNSET)
++		peak = pool->cnt.watermark;
++	else
++		peak = max(fd_peak, READ_ONCE(pool->cnt.local_watermark));
++	return peak;
 +}
 +
- static void apply_cgroup_root_flags(unsigned int root_flags)
+ static void reset_all_resource_limits(struct dmem_cgroup_pool_state *rpool)
  {
- 	if (current->nsproxy->cgroup_ns == &init_cgroup_ns) {
-diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-index c03d4787d466..8754927070d3 100644
---- a/mm/memcontrol.c
-+++ b/mm/memcontrol.c
-@@ -4517,8 +4517,6 @@ static u64 memory_current_read(struct cgroup_subsys_state *css,
- 	return (u64)page_counter_read(&memcg->memory) * PAGE_SIZE;
+ 	set_resource_min(rpool, 0);
+@@ -227,6 +253,7 @@ dmemcs_alloc(struct cgroup_subsys_state *parent_css)
+ 		return ERR_PTR(-ENOMEM);
+ 
+ 	INIT_LIST_HEAD(&dmemcs->pools);
++	spin_lock_init(&dmemcs->peaks_lock);
+ 	return &dmemcs->css;
  }
  
--#define OFP_PEAK_UNSET (((-1UL)))
--
- static int peak_show(struct seq_file *sf, void *v, struct page_counter *pc)
- {
- 	struct cgroup_of_peak *ofp = of_peak(sf->private);
-@@ -4563,45 +4561,18 @@ static void peak_release(struct kernfs_open_file *of)
- 	spin_unlock(&memcg->peaks_lock);
+@@ -377,6 +404,7 @@ alloc_pool_single(struct dmemcg_state *dmemcs, struct dmem_cgroup_region *region
+ 			  ppool ? &ppool->cnt : NULL, true);
+ 	reset_all_resource_limits(pool);
+ 	refcount_set(&pool->ref, 1);
++	INIT_LIST_HEAD(&pool->peaks);
+ 	kref_get(&region->ref);
+ 	if (ppool && !pool->parent) {
+ 		pool->parent = ppool;
+@@ -784,7 +812,7 @@ static ssize_t dmemcg_limit_write(struct kernfs_open_file *of,
  }
  
--static ssize_t peak_write(struct kernfs_open_file *of, char *buf, size_t nbytes,
--			  loff_t off, struct page_counter *pc,
--			  struct list_head *watchers)
-+static ssize_t memory_peak_write(struct kernfs_open_file *of, char *buf,
-+				 size_t nbytes, loff_t off)
+ static int dmemcg_limit_show(struct seq_file *sf, void *v,
+-			    u64 (*fn)(struct dmem_cgroup_pool_state *))
++			    u64 (*fn)(struct seq_file *, struct dmem_cgroup_pool_state *))
  {
--	unsigned long usage;
--	struct cgroup_of_peak *peer_ctx;
- 	struct mem_cgroup *memcg = mem_cgroup_from_css(of_css(of));
- 	struct cgroup_of_peak *ofp = of_peak(of);
+ 	struct dmemcg_state *dmemcs = css_to_dmemcs(seq_css(sf));
+ 	struct dmem_cgroup_region *region;
+@@ -796,7 +824,7 @@ static int dmemcg_limit_show(struct seq_file *sf, void *v,
  
- 	spin_lock(&memcg->peaks_lock);
--
--	usage = page_counter_read(pc);
--	WRITE_ONCE(pc->local_watermark, usage);
--
--	list_for_each_entry(peer_ctx, watchers, list)
--		if (usage > peer_ctx->value)
--			WRITE_ONCE(peer_ctx->value, usage);
--
--	/* initial write, register watcher */
--	if (ofp->value == OFP_PEAK_UNSET)
--		list_add(&ofp->list, watchers);
--
--	WRITE_ONCE(ofp->value, usage);
-+	of_peak_reset(ofp, &memcg->memory, &memcg->memory_peaks);
- 	spin_unlock(&memcg->peaks_lock);
--
- 	return nbytes;
+ 		seq_puts(sf, region->name);
+ 
+-		val = fn(pool);
++		val = fn(sf, pool);
+ 		if (val < PAGE_COUNTER_MAX)
+ 			seq_printf(sf, " %lld\n", val);
+ 		else
+@@ -807,6 +835,90 @@ static int dmemcg_limit_show(struct seq_file *sf, void *v,
+ 	return 0;
  }
  
--static ssize_t memory_peak_write(struct kernfs_open_file *of, char *buf,
--				 size_t nbytes, loff_t off)
--{
--	struct mem_cgroup *memcg = mem_cgroup_from_css(of_css(of));
--
--	return peak_write(of, buf, nbytes, off, &memcg->memory,
--			  &memcg->memory_peaks);
--}
--
--#undef OFP_PEAK_UNSET
--
- static int memory_min_show(struct seq_file *m, void *v)
- {
- 	return seq_puts_memcg_tunable(m,
-@@ -5611,9 +5582,12 @@ static ssize_t swap_peak_write(struct kernfs_open_file *of, char *buf,
- 			       size_t nbytes, loff_t off)
- {
- 	struct mem_cgroup *memcg = mem_cgroup_from_css(of_css(of));
++static int dmem_cgroup_region_peak_open(struct kernfs_open_file *of)
++{
 +	struct cgroup_of_peak *ofp = of_peak(of);
- 
--	return peak_write(of, buf, nbytes, off, &memcg->swap,
--			  &memcg->swap_peaks);
-+	spin_lock(&memcg->peaks_lock);
-+	of_peak_reset(ofp, &memcg->swap, &memcg->swap_peaks);
-+	spin_unlock(&memcg->peaks_lock);
-+	return nbytes;
- }
- 
- static int swap_high_show(struct seq_file *m, void *v)
++
++	ofp->value = OFP_PEAK_UNSET;
++
++	return 0;
++}
++
++static void dmem_cgroup_region_peak_remove(struct cgroup_of_peak *ofp)
++{
++	struct dmem_cgroup_pool_state *pool;
++	struct dmemcg_state *dmemcs;
++
++	pool = xchg(&ofp->pool, NULL);
++	if (!pool)
++		return;
++
++	dmemcs = pool->cs;
++
++	spin_lock(&dmemcs->peaks_lock);
++	list_del(&ofp->list);
++	spin_unlock(&dmemcs->peaks_lock);
++
++	WRITE_ONCE(ofp->value, OFP_PEAK_UNSET);
++
++	dmemcg_pool_put(pool);
++}
++
++static void dmem_cgroup_region_peak_release(struct kernfs_open_file *of)
++{
++	struct cgroup_of_peak *ofp = of_peak(of);
++
++	if (ofp->value == OFP_PEAK_UNSET) {
++		/* fast path (no writes on this fd) */
++		return;
++	}
++
++	dmem_cgroup_region_peak_remove(ofp);
++}
++
++static ssize_t dmem_cgroup_region_peak_write(struct kernfs_open_file *of,
++					     char *buf, size_t nbytes, loff_t off)
++{
++	struct dmemcg_state *dmemcs = css_to_dmemcs(of_css(of));
++	struct cgroup_of_peak *ofp = of_peak(of);
++	struct dmem_cgroup_pool_state *pool = NULL;
++	struct dmem_cgroup_region *region;
++	int err = 0;
++
++	buf = strstrip(buf);
++	if (!buf[0])
++		return -EINVAL;
++
++	rcu_read_lock();
++	region = dmemcg_get_region_by_name(buf);
++	rcu_read_unlock();
++
++	if (!region)
++		return -EINVAL;
++
++	pool = get_cg_pool_unlocked(dmemcs, region);
++	if (IS_ERR(pool)) {
++		err = PTR_ERR(pool);
++		goto out_put;
++	}
++
++	dmem_cgroup_region_peak_remove(ofp);
++
++	xchg(&ofp->pool, pool);
++	spin_lock(&dmemcs->peaks_lock);
++	of_peak_reset(ofp, &pool->cnt, &pool->peaks);
++	spin_unlock(&dmemcs->peaks_lock);
++
++out_put:
++	kref_put(&region->ref, dmemcg_free_region);
++	return err ?: nbytes;
++}
++
++static int dmem_cgroup_region_peak_show(struct seq_file *sf, void *v)
++{
++	return dmemcg_limit_show(sf, v, get_resource_peak);
++}
++
+ static int dmem_cgroup_region_current_show(struct seq_file *sf, void *v)
+ {
+ 	return dmemcg_limit_show(sf, v, get_resource_current);
+@@ -855,6 +967,14 @@ static struct cftype files[] = {
+ 		.name = "current",
+ 		.seq_show = dmem_cgroup_region_current_show,
+ 	},
++	{
++		.name = "peak",
++		.open = dmem_cgroup_region_peak_open,
++		.release = dmem_cgroup_region_peak_release,
++		.write = dmem_cgroup_region_peak_write,
++		.seq_show = dmem_cgroup_region_peak_show,
++		.flags = CFTYPE_NOT_ON_ROOT,
++	},
+ 	{
+ 		.name = "min",
+ 		.write = dmem_cgroup_region_min_write,
 
 -- 
 2.47.3
