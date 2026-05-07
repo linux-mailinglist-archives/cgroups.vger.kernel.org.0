@@ -1,173 +1,201 @@
-Return-Path: <cgroups+bounces-15657-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-15658-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id gIyBEkBv/GknQAAAu9opvQ
-	(envelope-from <cgroups+bounces-15657-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Thu, 07 May 2026 12:53:52 +0200
+	id OIt7Aodw/Gm8QAAAu9opvQ
+	(envelope-from <cgroups+bounces-15658-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Thu, 07 May 2026 12:59:19 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id B80B34E7108
-	for <lists+cgroups@lfdr.de>; Thu, 07 May 2026 12:53:51 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 715774E7233
+	for <lists+cgroups@lfdr.de>; Thu, 07 May 2026 12:59:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 3061530297B5
-	for <lists+cgroups@lfdr.de>; Thu,  7 May 2026 10:53:50 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id CD483302F250
+	for <lists+cgroups@lfdr.de>; Thu,  7 May 2026 10:55:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E7523CFF53;
-	Thu,  7 May 2026 10:53:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD0B437418C;
+	Thu,  7 May 2026 10:54:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="n6cV3VFW"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jC8QDxJj"
 X-Original-To: cgroups@vger.kernel.org
-Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pg1-f193.google.com (mail-pg1-f193.google.com [209.85.215.193])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E87623932ED;
-	Thu,  7 May 2026 10:53:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.92.199
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 770513ED11C
+	for <cgroups@vger.kernel.org>; Thu,  7 May 2026 10:54:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.193
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1778151225; cv=none; b=Uusw2HY5G763+OVdRqtPIFhlsoepTUoWKB1tbrBSGTWFqnEH8J9ZjMgrJZQZYtDCnkqoyTP81IhU9kilZnuNrpWi26owHfvzkIc7unasMG2knlVLTtJIt1L/FJfm3rOIkTxM4L3HlNf9XHyFcTtN+i1ZC7dfhRKRRZm/kGjv1Zk=
+	t=1778151292; cv=none; b=dCJUwYZF3RfT91ROURBQOveGjDU1GNchbINESbsCbxypp7PWpYrVImdfqS5GFdg4c/H4fQwFDCh2m5nb1jtG1fxh+WMIGxgXDckGO5F2BI89BWgmvSu7rnWpBZxGztjCl5yK/NSRaksnMmMPexljpi7X3MIBsCvnyDQM0yV/xUM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1778151225; c=relaxed/simple;
-	bh=70IGI1vNK4APAHcdk4oo+FCzlXGiLiuM2p9m4h/qQww=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=VIPlO0Sw8K3Dki9Ihvz13sveXB8zmZb3edxUzypbefI9LA+FmYkz9p3eH5PNukLPpXoKSXxaU4ASLybX5NgJ86GI/2NV3NOnbEICB/F6RwCacCDxQ3iU/tHpGtdbRchb/7sh6V6IPTzj68r+wGtS8mVFyZNmCGGyZhcVpyDfvyk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=n6cV3VFW; arc=none smtp.client-ip=90.155.92.199
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=desiato.20200630; h=In-Reply-To:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=U1LXP3g90HkCRniJtYUgytJdSLFosGKVOZ2blgFO3hU=; b=n6cV3VFWM/6sCtyrINC1+WwZze
-	PrlOdkcIMPeHSa6036ZmDDuCMJ6oD4Fy90A/tj7okM8166nb8a04ZNZPtMUJnIWX5yIwWn2uUNy8x
-	2gjINH3X0EPBjkJXGmKtlP5cDV0w45/VdyKGFB7+2NGJc7ctcuKHRKM+ugWHmMoVe2cwtEuckr+KH
-	RMY9ZUqltges4iAvBnUWKg9nWqotTAgV6dcMDFQ+aBMJatdiPu1TXv892gpUlfigVcxQLNKDw+ox+
-	PwOxLtY4c2lD2l+WIMkEFXWBt/P6UrEJq7o31f+3nsp/d04sZ4sUf3gUciHuH8q7f4FAtZZujcj7j
-	xkqrBh/g==;
-Received: from 2001-1c00-8d85-4b00-266e-96ff-fe07-7dcc.cable.dynamic.v6.ziggo.nl ([2001:1c00:8d85:4b00:266e:96ff:fe07:7dcc] helo=noisy.programming.kicks-ass.net)
-	by desiato.infradead.org with esmtpsa (Exim 4.99.1 #2 (Red Hat Linux))
-	id 1wKwMG-00000003HM6-28lq;
-	Thu, 07 May 2026 10:53:32 +0000
-Received: by noisy.programming.kicks-ass.net (Postfix, from userid 1000)
-	id 65E51301261; Thu, 07 May 2026 12:53:31 +0200 (CEST)
-Date: Thu, 7 May 2026 12:53:31 +0200
-From: Peter Zijlstra <peterz@infradead.org>
-To: Tejun Heo <tj@kernel.org>
-Cc: Yuri Andriaccio <yurand2000@gmail.com>, Ingo Molnar <mingo@redhat.com>,
-	Juri Lelli <juri.lelli@redhat.com>,
-	Vincent Guittot <vincent.guittot@linaro.org>,
-	Dietmar Eggemann <dietmar.eggemann@arm.com>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
-	Valentin Schneider <vschneid@redhat.com>,
-	linux-kernel@vger.kernel.org,
-	Luca Abeni <luca.abeni@santannapisa.it>,
-	Yuri Andriaccio <yuri.andriaccio@santannapisa.it>,
-	hannes@cmpxchg.org, mkoutny@suse.com, cgroups@vger.kernel.org
-Subject: Re: [RFC PATCH v5 20/29] sched/deadline: Allow deeper hierarchies of
- RT cgroups
-Message-ID: <20260507105331.GQ1026330@noisy.programming.kicks-ass.net>
-References: <20260430213835.62217-1-yurand2000@gmail.com>
- <20260430213835.62217-21-yurand2000@gmail.com>
- <20260505151523.GF3102624@noisy.programming.kicks-ass.net>
- <afpLir8tD0Ycb3D8@slm.duckdns.org>
+	s=arc-20240116; t=1778151292; c=relaxed/simple;
+	bh=U3CPPGK6K4+AyYWoP8vcr58iqNl7s0IMZ7Gx//WlteQ=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=hcBj3jbHjaMvQ8s+FJwCB8/ePEO5nXm6bNpJEhZDvwJfE6Y81TAMHx+TxS56OVoY+eFQNlMpehAfTCNs03Gxk/GgD2rFu+CLVhzYw4TxkhhRpKVa7WfHcxDShtUXQeYpuM/UooJFudInHeP68q7mQHm8pbOfH7c9ApJ0R5ZAKo0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=jC8QDxJj; arc=none smtp.client-ip=209.85.215.193
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f193.google.com with SMTP id 41be03b00d2f7-c822652f82aso448222a12.3
+        for <cgroups@vger.kernel.org>; Thu, 07 May 2026 03:54:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20251104; t=1778151282; x=1778756082; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=9+L6fy6avhrQ4Ubnijze0dregbUMX614xcgQRJNc0Y4=;
+        b=jC8QDxJjETa+KPKdpTRz/KBm72+y5q9yrQRd2zrDSLEGq2Uky8zKHiImMWcbMnk2b/
+         hSlT1kMrn/+sWdisNqlt0rIM0KrYCJ4cCgbLHbG54pH0YfzLBQ4JGhLBT8Yrb7EA2Yxh
+         8BZvSSeYtwvzWqynC5q/M0nV/07tzraaxCTt2TrEq0fhZlyNug1tW9/d3iXRWeww6BUs
+         Wd3cLf8RnrMQ1L3i010aryjr+yK6In90G50TSfyMCmmwJR+I0a+MZsJQY44pwz+D2n62
+         pyB1DzJXI2BhH6tiMbVEpnmwTN89QtEFsUrWYcULXToT7qD8mPQbTFqpTCJ2Il1cft+H
+         PUkA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1778151282; x=1778756082;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-gg:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=9+L6fy6avhrQ4Ubnijze0dregbUMX614xcgQRJNc0Y4=;
+        b=UsIyhRYXDyCbFWQws6KYOfy8dThpNItsHOvW6ue7b10BGGBU1f2RA8URrXL/HZ7UId
+         gc1sPXC5LcYRsA10OK2YykHr2FmPNtQd/ZN0yH1O3T7VJ9Kjco82NRubdMPcSRViahVU
+         ibliwvWIAopL/xgEh7NmCJuZJbEk0Qo67oCVI9UnoduUPF5qewlyynko+OwvoneMHeQQ
+         +wDsi7J++IkiS/5KStPmq19/v81sSGS6X79IAS+24iTxqjQUShUrmd/cZ0nsRs7Jf0lo
+         Y5NIOHpZ05ojBBOTiIxggFs1/qzGvhBawyd1GerOpC90Su2pmXAzCVDsSyYs2jUtW6Q9
+         dOPQ==
+X-Gm-Message-State: AOJu0Yx2UOsvDWenC/BL8s7ruuhYr8q1vvCuRx4vsifL0ueqzKeqAVUu
+	JVVKiC2pI4yQ0npJocJT7NOmlTd3H7eC3QCXx3IKDBFa0xZ9QGGR3W8t
+X-Gm-Gg: AeBDiesZU0M1GFz+Ajujaq7sDOHiamnBgWNvYMCV9fGeumfifqpWlthJ19Ka7dKYJvA
+	9ZQPH+l+qW5btubJLP8FrQ2qakELVphEVQRUI1QSiw3m/PsfFQhrEl3aQO6MT0eMTi1LimJyq43
+	/m8WtVwOGflfIZetoV4hm/KvV2HM9d1AUZ/tdvP67mavx8O7NRHwwW+dImdpKFSR27K8NAzfv2n
+	gpt+Cvury2rbvOpiDqLKQg4UUUcCe3wxqvR3pqugRHDGyjkoEwmrDeRL3qhL8Eg3+7c6y6CCses
+	g5JdpHa9puZuDgWr5D5a18A4IeBnZG8GREOPhlc8NqKUP/fDoYJt1wD/+3TRV+h4Kjz2Vxy8c0V
+	5qvy3/K/6EwD5YlrqAO7sBTzA7pLSsXQ/D4B+CgDWb1YNa1O5gNBcVxcxdEf70mt+m5sdDGZSkb
+	odJvzv3dnQqR93jzhqILmTBu6/fDPMq2KluvpKiS/wjq/DMCsp
+X-Received: by 2002:a05:6a20:394d:b0:398:71e4:6287 with SMTP id adf61e73a8af0-3aa5a830dacmr7784784637.10.1778151282215;
+        Thu, 07 May 2026 03:54:42 -0700 (PDT)
+Received: from intel.company.local ([210.184.73.204])
+        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-c8253b399efsm1889949a12.18.2026.05.07.03.54.38
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 07 May 2026 03:54:41 -0700 (PDT)
+From: Chen Wandun <chenwandun1@gmail.com>
+X-Google-Original-From: Chen Wandun <chenwandun@lixiang.com>
+To: longman@redhat.com,
+	chenridong@huaweicloud.com,
+	tj@kernel.org,
+	hannes@cmpxchg.org,
+	mkoutny@suse.com
+Cc: cgroups@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] cgroup/cpuset: move PF_EXITING check before __GFP_HARDWALL in cpuset_current_node_allowed()
+Date: Thu,  7 May 2026 18:54:34 +0800
+Message-ID: <20260507105434.3266234-1-chenwandun@lixiang.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <afpLir8tD0Ycb3D8@slm.duckdns.org>
-X-Rspamd-Queue-Id: B80B34E7108
+Content-Transfer-Encoding: 8bit
+X-Rspamd-Queue-Id: 715774E7233
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-2.16 / 15.00];
+X-Spamd-Result: default: False [-1.66 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[infradead.org,none];
-	R_DKIM_ALLOW(-0.20)[infradead.org:s=desiato.20200630];
-	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
+	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
+	R_MISSING_CHARSET(0.50)[];
+	R_DKIM_ALLOW(-0.20)[gmail.com:s=20251104];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-15657-lists,cgroups=lfdr.de];
-	FREEMAIL_CC(0.00)[gmail.com,redhat.com,linaro.org,arm.com,goodmis.org,google.com,suse.de,vger.kernel.org,santannapisa.it,cmpxchg.org,suse.com];
-	FROM_HAS_DN(0.00)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[chenwandun1@gmail.com,cgroups@vger.kernel.org];
+	TO_DN_NONE(0.00)[];
+	TAGGED_FROM(0.00)[bounces-15658-lists,cgroups=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[16];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	DKIM_TRACE(0.00)[gmail.com:+];
+	FROM_HAS_DN(0.00)[];
 	MIME_TRACE(0.00)[0:+];
-	DKIM_TRACE(0.00)[infradead.org:+];
-	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
-	MISSING_XM_UA(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[5];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[peterz@infradead.org,cgroups@vger.kernel.org];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
+	PRECEDENCE_BULK(0.00)[];
+	RCPT_COUNT_SEVEN(0.00)[7];
 	NEURAL_HAM(-0.00)[-1.000];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[5];
 	TAGGED_RCPT(0.00)[cgroups];
-	TO_DN_SOME(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[infradead.org:dkim,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,noisy.programming.kicks-ass.net:mid]
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	FREEMAIL_FROM(0.00)[gmail.com];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[lixiang.com:email,lixiang.com:mid,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
 X-Rspamd-Action: no action
 
-On Tue, May 05, 2026 at 09:56:58AM -1000, Tejun Heo wrote:
-> Hello,
-> 
-> Some high level comments:
-> 
-> - Please align it with existing cgroup2 interface files. See cpu.max. This
->   can be e.g. cpu.rt.max without about the same semantics.
-> 
-> - cgroup2 enforces that internal cgroups w/ controllers enabled cannot have
->   threads in them. No need to enforce that separately.
+Since prepare_alloc_pages() unconditionally adds __GFP_HARDWALL for the
+fast path when cpusets are enabled, the __GFP_HARDWALL check in
+cpuset_current_node_allowed() causes the PF_EXITING escape path to be
+skipped on the first allocation attempt.  This makes it unreachable in
+the common case, so dying tasks can get stuck in direct reclaim or even
+trigger OOM while trying to exit, despite being allowed to allocate from
+any node.
 
-Looking at cpu_period_quota_parse() this thing takes two u64 values for:
-{runtime, period} but allows runtime to be the string "max".
+Move the PF_EXITING check before __GFP_HARDWALL so that dying tasks
+can allocate memory from any node to exit quickly, even when cpusets
+are enabled.
 
-I think we'd want an optional extension to that and allow 3 values for:
-{runtime, period, deadline}, where if the deadline is not given, it will
-be the same as period.
+Also update the function comment to reflect the actual behavior of
+prepare_alloc_pages() and the corrected check ordering.
 
-In previous versions there was also an option to specify a cpumask,
-getting rid of that is one of the reasons I suggested making this thing
-a cgroup-v2 thing, then we can use the cpuset controller's effective
-mask.
+Signed-off-by: Chen Wandun <chenwandun@lixiang.com>
+---
+ kernel/cgroup/cpuset.c | 14 ++++++++------
+ 1 file changed, 8 insertions(+), 6 deletions(-)
 
-> - However, the cpu controller is a threaded controller which means that it
->   can have threaded sub-hierarchy where the no-internal-process rule doesn't
->   apply. This was created explicitly for cpu controller. The proposed change
->   blocks it effectively forcing cpu controller into regular domain
->   controller behavior subject to no-internal-process rule. Note these are
->   enforced at controller granularity and this means that users who use the
->   threaded mode will be forced to pick between the two.
+diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
+index e3a081a07c6d..a48901a0416a 100644
+--- a/kernel/cgroup/cpuset.c
++++ b/kernel/cgroup/cpuset.c
+@@ -4176,11 +4176,11 @@ static struct cpuset *nearest_hardwall_ancestor(struct cpuset *cs)
+  * current's mems_allowed, yes.  If it's not a __GFP_HARDWALL request and this
+  * node is set in the nearest hardwalled cpuset ancestor to current's cpuset,
+  * yes.  If current has access to memory reserves as an oom victim, yes.
+- * Otherwise, no.
++ * If the current task is PF_EXITING, yes. Otherwise, no.
+  *
+  * GFP_USER allocations are marked with the __GFP_HARDWALL bit,
+  * and do not allow allocations outside the current tasks cpuset
+- * unless the task has been OOM killed.
++ * unless the task has been OOM killed or is exiting.
+  * GFP_KERNEL allocations are not so marked, so can escape to the
+  * nearest enclosing hardwalled ancestor cpuset.
+  *
+@@ -4194,7 +4194,9 @@ static struct cpuset *nearest_hardwall_ancestor(struct cpuset *cs)
+  * The first call here from mm/page_alloc:get_page_from_freelist()
+  * has __GFP_HARDWALL set in gfp_mask, enforcing hardwall cpusets,
+  * so no allocation on a node outside the cpuset is allowed (unless
+- * in interrupt, of course).
++ * in interrupt, of course).  The PF_EXITING check must therefore
++ * come before the __GFP_HARDWALL check, otherwise a dying task
++ * would be blocked on the fast path.
+  *
+  * The second pass through get_page_from_freelist() doesn't even call
+  * here for GFP_ATOMIC calls.  For those calls, the __alloc_pages()
+@@ -4204,6 +4206,7 @@ static struct cpuset *nearest_hardwall_ancestor(struct cpuset *cs)
+  *	in_interrupt - any node ok (current task context irrelevant)
+  *	GFP_ATOMIC   - any node ok
+  *	tsk_is_oom_victim   - any node ok
++ *	PF_EXITING   - any node ok (let dying task exit quickly)
+  *	GFP_KERNEL   - any node in enclosing hardwalled cpuset ok
+  *	GFP_USER     - only nodes in current tasks mems allowed ok.
+  */
+@@ -4223,11 +4226,10 @@ bool cpuset_current_node_allowed(int node, gfp_t gfp_mask)
+ 	 */
+ 	if (unlikely(tsk_is_oom_victim(current)))
+ 		return true;
+-	if (gfp_mask & __GFP_HARDWALL)	/* If hardwall request, stop here */
+-		return false;
+-
+ 	if (current->flags & PF_EXITING) /* Let dying task have memory */
+ 		return true;
++	if (gfp_mask & __GFP_HARDWALL)	/* If hardwall request, stop here */
++		return false;
+ 
+ 	/* Not hardwall and node outside mems_allowed: scan up cpusets */
+ 	spin_lock_irqsave(&callback_lock, flags);
+-- 
+2.43.0
 
-Right... this then means we need two controls, one to do hierarchical
-bandwidth distribution, and one to assign bandwidth to the internal
-group -- which is then subject to its own bandwidth distribution
-constraint.
-
-This might be a little confusing, but there is no way around that
-AFAICT.
-
-> - This has the same problem with cgroup1's rt cgroup sched support where
->   there is no way to have a permissive default configuration, which means
->   that users who don't really care about distributing rt shares
->   hierarchically would get blocked from running rt processes by default,
->   which basically forces distros to disable rt cgroup sched support. This is
->   not new but it'd be a shame to put in all the work and the end result is
->   that most people don't even have access to the feature.
-
-Right, but cgroup-v2 allows enabling/disabling specific controllers for
-a (sub)-hierarchy, right? So if the controller is not enabled (by
-default), it will fall back to putting the tasks in whatever parent does
-have it on, and by default the root group would have and would accept
-tasks.
-
-Additionally, I think we want a flag to allow non-priv tasks to use RT
-inside the controller -- after all, these tasks would be subject to
-strict bandwidth controls and cannot burn the system like unbounded/root
-FIFO tasks can.
-
-Does that all sound workable?
 
