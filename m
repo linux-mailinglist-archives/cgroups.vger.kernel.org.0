@@ -1,37 +1,38 @@
-Return-Path: <cgroups+bounces-15654-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-15655-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id eG0KGo9q/Gn0PgAAu9opvQ
-	(envelope-from <cgroups+bounces-15654-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Thu, 07 May 2026 12:33:51 +0200
+	id sH8fH7Vq/Gn0PgAAu9opvQ
+	(envelope-from <cgroups+bounces-15655-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Thu, 07 May 2026 12:34:29 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
-	by mail.lfdr.de (Postfix) with ESMTPS id 71BF14E6D2E
-	for <lists+cgroups@lfdr.de>; Thu, 07 May 2026 12:33:49 +0200 (CEST)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
+	by mail.lfdr.de (Postfix) with ESMTPS id F42344E6D52
+	for <lists+cgroups@lfdr.de>; Thu, 07 May 2026 12:34:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sin.lore.kernel.org (Postfix) with ESMTP id 223FE300601D
-	for <lists+cgroups@lfdr.de>; Thu,  7 May 2026 10:33:47 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 5E1E8301231F
+	for <lists+cgroups@lfdr.de>; Thu,  7 May 2026 10:33:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 715FA3E959C;
-	Thu,  7 May 2026 10:33:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B6593E95B2;
+	Thu,  7 May 2026 10:33:48 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
 Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B9612265CDD;
-	Thu,  7 May 2026 10:33:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F7773EAC7F;
+	Thu,  7 May 2026 10:33:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=124.126.103.232
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1778150023; cv=none; b=W3u+nWHYrUdKTkc6ZP0TcGhhvvmT6d9BjpAGEhe0boPp7/qrO1PQyo1wtPQNosxPHCNfWTNj2NVX9itdUQp7ys06mC54u8EDRlWrLi0Aek0Lzmf0gHOTUAFe5B2cA64r5NClx90ihCaji+9ZC4f/46pBL+wa4sGO6DhM/wZxmxM=
+	t=1778150028; cv=none; b=kT2pwVDNkDWyztCGBzgjMck0f8cIeOpWYGKMDcxdM5vuX/kYNd7uGycAVF46n62oa8jopSSYUFQGYGoeriNPyrJETl11eakvv5fH2AI1fy435E7BAlL0jvplDGGC64tKIclMRJn2hQOHqLwXlb1JGpobph3dBvmDmODFoeTdzTU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1778150023; c=relaxed/simple;
-	bh=QBgdPnv+txS3w19bCvvAFrtvt8ziztHBy1rj/tW+GUs=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Vl86JOoqApbH0G811Q7enMrxgjXCChWaN6gbRcw+5dckmHGuejFmCGhZXM9dEQI7E/D65gRn0nsk05c5eZn+pAQBuieElce9U5jfiDSMdWpdBRum5iEaNsptYvxc3K6rtnrUd4nseEe/jcZPeBAoavQPyRBSjlCrVoVVMDNkZVo=
+	s=arc-20240116; t=1778150028; c=relaxed/simple;
+	bh=ndiEryJF5dr5yvqHEXyiGLSxHDdoz5PI8alJ2XM4J3w=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=go6UJAlif8otzWLAMV3qE2cPvTvTGL/hnvyljkQGHGJlLQlKy5ATYBEtaTxS83EdZUAD1nuFiBIsyVD/ZXPcfgN5xAeIbNmXuGWeuudTy5MDiJ/WQYEfTb8orU59E9hroIiOPXIRpAej/paDCvXDBrXrg34KNz3MFBz6hk5KxIU=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn; spf=pass smtp.mailfrom=kylinos.cn; arc=none smtp.client-ip=124.126.103.232
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kylinos.cn
-X-UUID: 32bc2bbc4a0011f1aa26b74ffac11d73-20260507
+X-UUID: 36e4e6984a0011f1aa26b74ffac11d73-20260507
 X-CTIC-Tags:
 	HR_CC_COUNT, HR_CC_DOMAIN_COUNT, HR_CC_NAME, HR_CC_NO_NAME, HR_CHARSET
 	HR_CHARSET_NUM, HR_CTE_8B, HR_CTT_MISS, HR_DATE_H, HR_DATE_WKD
@@ -43,27 +44,27 @@ X-CTIC-Tags:
 	CIE_GOOD, CIE_GOOD_SPF, GTI_FG_BS, GTI_RG_INFO, GTI_C_BU
 	AMN_GOOD, ABX_MISS_RDNS
 X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.3.12,REQID:032ef9d8-fb00-404f-ac08-3585c05a1562,IP:10,
-	URL:0,TC:0,Content:0,EDM:0,RT:0,SF:-5,FILE:0,BULK:0,RULE:Release_Ham,ACTIO
-	N:release,TS:5
-X-CID-INFO: VERSION:1.3.12,REQID:032ef9d8-fb00-404f-ac08-3585c05a1562,IP:10,UR
-	L:0,TC:0,Content:0,EDM:0,RT:0,SF:-5,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
-	release,TS:5
-X-CID-META: VersionHash:e7bac3a,CLOUDID:3b0079b95154bd1db8da9a43230d314f,BulkI
-	D:2605071833362ZLU9Z3U,BulkQuantity:0,Recheck:0,SF:17|19|38|66|78|102|127|
-	898,TC:nil,Content:0|15|50,EDM:-3,IP:-2,URL:99|1,File:nil,RT:nil,Bulk:nil,
-	QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
-	,ARC:0
+X-CID-O-INFO: VERSION:1.3.12,REQID:67c84829-f2f0-46b7-99ff-2eab38ed5cdc,IP:10,
+	URL:0,TC:0,Content:0,EDM:-25,RT:0,SF:-5,FILE:0,BULK:0,RULE:Release_Ham,ACT
+	ION:release,TS:-20
+X-CID-INFO: VERSION:1.3.12,REQID:67c84829-f2f0-46b7-99ff-2eab38ed5cdc,IP:10,UR
+	L:0,TC:0,Content:0,EDM:-25,RT:0,SF:-5,FILE:0,BULK:0,RULE:NOTI_GNA5D1EA,ACT
+	ION:release,TS:-20
+X-CID-META: VersionHash:e7bac3a,CLOUDID:043c4f255d97e4cbabd971c6bab067c9,BulkI
+	D:260507183342ED2WP7B0,BulkQuantity:0,Recheck:0,SF:17|19|38|66|78|81|82|10
+	2|127|898,TC:nil,Content:0|15|50,EDM:2,IP:-2,URL:0,File:nil,RT:nil,Bulk:ni
+	l,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE
+	:0,ARC:0
 X-CID-BVR: 2,SSN|SDN
 X-CID-BAS: 2,SSN|SDN,0,_
-X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_FAS,TF_CID_SPAM_FSD,TF_CID_SPAM_ULS
+X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_FAS,TF_CID_SPAM_FSD
 X-CID-RHF: D41D8CD98F00B204E9800998ECF8427E
-X-UUID: 32bc2bbc4a0011f1aa26b74ffac11d73-20260507
+X-UUID: 36e4e6984a0011f1aa26b74ffac11d73-20260507
 X-User: zhangguopeng@kylinos.cn
 Received: from yan.. [(223.70.159.239)] by mailgw.kylinos.cn
 	(envelope-from <zhangguopeng@kylinos.cn>)
 	(Generic MTA with TLSv1.3 TLS_AES_256_GCM_SHA384 256/256)
-	with ESMTP id 576330279; Thu, 07 May 2026 18:33:33 +0800
+	with ESMTP id 1601359917; Thu, 07 May 2026 18:33:40 +0800
 From: Guopeng Zhang <zhangguopeng@kylinos.cn>
 To: Waiman Long <longman@redhat.com>,
 	Tejun Heo <tj@kernel.org>,
@@ -85,10 +86,12 @@ Cc: Chen Ridong <chenridong@huaweicloud.com>,
 	linux-kernel@vger.kernel.org,
 	cgroups@vger.kernel.org,
 	Guopeng Zhang <zhangguopeng@kylinos.cn>
-Subject: [PATCH v2 0/2] cgroup/cpuset: fix DL attach bandwidth accounting
-Date: Thu,  7 May 2026 18:33:08 +0800
-Message-ID: <20260507103310.35849-1-zhangguopeng@kylinos.cn>
+Subject: [PATCH v2 1/2] cgroup/cpuset: reset DL migration state on can_attach() failure
+Date: Thu,  7 May 2026 18:33:09 +0800
+Message-ID: <20260507103310.35849-2-zhangguopeng@kylinos.cn>
 X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20260507103310.35849-1-zhangguopeng@kylinos.cn>
+References: <20260507103310.35849-1-zhangguopeng@kylinos.cn>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -96,13 +99,13 @@ List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: 71BF14E6D2E
+X-Rspamd-Queue-Id: F42344E6D52
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [0.04 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	MID_CONTAINS_FROM(1.00)[];
 	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
+	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
@@ -113,78 +116,68 @@ X-Spamd-Result: default: False [0.04 / 15.00];
 	RCVD_TLS_LAST(0.00)[];
 	FORGED_SENDER_MAILLIST(0.00)[];
 	RCPT_COUNT_TWELVE(0.00)[20];
-	TAGGED_FROM(0.00)[bounces-15654-lists,cgroups=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-15655-lists,cgroups=lfdr.de];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[zhangguopeng@kylinos.cn,cgroups@vger.kernel.org];
 	R_DKIM_NA(0.00)[];
-	NEURAL_HAM(-0.00)[-0.913];
+	NEURAL_HAM(-0.00)[-0.958];
 	FROM_HAS_DN(0.00)[];
 	TAGGED_RCPT(0.00)[cgroups];
-	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
+	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
 	TO_DN_SOME(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[kylinos.cn:mid,sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,kylinos.cn:email,kylinos.cn:mid]
 X-Rspamd-Action: no action
 
-Hi,
+cpuset_can_attach() accumulates temporary SCHED_DEADLINE migration
+state in the destination cpuset while walking the taskset.
 
-cpuset_can_attach() and set_cpus_allowed_dl() must make the same
-decision about whether migrating a SCHED_DEADLINE task requires moving
-bandwidth accounting between root domains.
+If a later task_can_attach() or security_task_setscheduler() check
+fails, cgroup_migrate_execute() treats cpuset as the failing subsystem
+and does not call cpuset_cancel_attach() for it. The partially
+accumulated state is then left behind and can be consumed by a later
+attach, corrupting cpuset DL task accounting and pending DL bandwidth
+accounting.
 
-The can_attach path used the destination cpuset effective CPU mask for
-that decision. The attach path, however, applies a per-task target mask
-which is constrained by task_cpu_possible_mask(), cpu_active_mask, and
-the fallback walk up the cpuset hierarchy. On asymmetric CPU systems,
-that per-task mask can be a strict subset of the destination cpuset
-effective mask. This can make cpuset_can_attach() skip destination
-bandwidth reservation while set_cpus_allowed_dl() later performs the
-source-side bandwidth subtraction.
+Reset the pending DL migration state before returning from those
+per-task failure paths.
 
-There is also an internal cpuset_can_attach() failure path where
-temporary DL migration state can be left behind if a later per-task
-check fails before cpuset marks attach_in_progress.
-
-Patch 1 resets the temporary DL migration state on those internal
-cpuset_can_attach() failure paths.
-
-Patch 2 computes the same per-task target mask in cpuset_can_attach()
-that cpuset_attach_task() later applies, and only includes DL tasks that
-actually need a root-domain bandwidth move in the destination bandwidth
-reservation.
-
-The broader can_attach()/attach() transaction window is left unchanged.
-This series does not attempt to rework sched_setattr() or source cpuset
-resmask TOCTOU issues. It only aligns the reservation decision with the
-attach-time bandwidth move decision and fixes the temporary state leak.
-
-Guopeng Zhang (2):
-  cgroup/cpuset: reset DL migration state on can_attach() failure
-  cgroup/cpuset: align DL bandwidth reservation with attach target mask
-
- include/linux/sched/deadline.h  |   9 +++
- kernel/cgroup/cpuset-internal.h |   1 +
- kernel/cgroup/cpuset.c          | 105 ++++++++++++++++++++++----------
- kernel/sched/deadline.c         |  13 +++-
- 4 files changed, 92 insertions(+), 36 deletions(-)
-
+Fixes: 2ef269ef1ac0 ("cgroup/cpuset: Free DL BW in case can_attach() fails")
+Signed-off-by: Guopeng Zhang <zhangguopeng@kylinos.cn>
 ---
-Changes since v1:
-- Split the original patch into two patches.
-- Reset temporary DL migration state on cpuset_can_attach() internal
-  failure paths.
-- Computed the same per-task attach mask in cpuset_can_attach() as
-  cpuset_attach_task().
-- Kept nr_migrate_dl_tasks counting all migrating DL tasks for cpuset
-  task accounting, while restricting sum_migrate_dl_bw to tasks that need
-  destination DL bandwidth reservation.
-- Tightened Fixes tags.
-- Documented the existing aggregate reservation invariant near the
-  dl_bw_cpu selection.
-- Removed the unnecessary RCU guard from dl_task_needs_bw_move().
+ kernel/cgroup/cpuset.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
-v1:
-  https://lore.kernel.org/all/20260421083449.95750-1-zhangguopeng@kylinos.cn
-
+diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
+index e3a081a07c6d..ae41736399a1 100644
+--- a/kernel/cgroup/cpuset.c
++++ b/kernel/cgroup/cpuset.c
+@@ -3029,12 +3029,12 @@ static int cpuset_can_attach(struct cgroup_taskset *tset)
+ 	cgroup_taskset_for_each(task, css, tset) {
+ 		ret = task_can_attach(task);
+ 		if (ret)
+-			goto out_unlock;
++			goto out_reset_dl_data;
+ 
+ 		if (setsched_check) {
+ 			ret = security_task_setscheduler(task);
+ 			if (ret)
+-				goto out_unlock;
++				goto out_reset_dl_data;
+ 		}
+ 
+ 		if (dl_task(task)) {
+@@ -3070,6 +3070,10 @@ static int cpuset_can_attach(struct cgroup_taskset *tset)
+ 	 * changes which zero cpus/mems_allowed.
+ 	 */
+ 	cs->attach_in_progress++;
++	goto out_unlock;
++
++out_reset_dl_data:
++	reset_migrate_dl_data(cs);
+ out_unlock:
+ 	mutex_unlock(&cpuset_mutex);
+ 	return ret;
 -- 
 2.43.0
+
 
