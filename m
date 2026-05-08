@@ -1,83 +1,84 @@
-Return-Path: <cgroups+bounces-15677-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-15678-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 4KL3IIiA/WnSfAAAu9opvQ
-	(envelope-from <cgroups+bounces-15677-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Fri, 08 May 2026 08:19:52 +0200
+	id aCgnFoGC/Wk7fQAAu9opvQ
+	(envelope-from <cgroups+bounces-15678-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Fri, 08 May 2026 08:28:17 +0200
 X-Original-To: lists+cgroups@lfdr.de
 Received: from tor.lore.kernel.org (tor.lore.kernel.org [172.105.105.114])
-	by mail.lfdr.de (Postfix) with ESMTPS id 03FD74F266B
-	for <lists+cgroups@lfdr.de>; Fri, 08 May 2026 08:19:51 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id CD4574F2764
+	for <lists+cgroups@lfdr.de>; Fri, 08 May 2026 08:28:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 21DE83025E4D
-	for <lists+cgroups@lfdr.de>; Fri,  8 May 2026 06:15:58 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 48B273027321
+	for <lists+cgroups@lfdr.de>; Fri,  8 May 2026 06:28:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5CB3B376BD5;
-	Fri,  8 May 2026 06:15:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B34AF37A4AF;
+	Fri,  8 May 2026 06:28:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MOxKgS0f"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ap4kO7gm"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-pf1-f194.google.com (mail-pf1-f194.google.com [209.85.210.194])
+Received: from mail-pg1-f196.google.com (mail-pg1-f196.google.com [209.85.215.196])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A9E45377EAC
-	for <cgroups@vger.kernel.org>; Fri,  8 May 2026 06:15:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 18929374E7F
+	for <cgroups@vger.kernel.org>; Fri,  8 May 2026 06:27:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.196
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1778220949; cv=none; b=R5XoA37mtDtjARBpd4UYbM4goQT2WHnLG3NrEuVk5lC2OOgpORBZrknkyeOIyJMcPNE2o40u1r9NCLbvs4iJ02tjijeZv3pBVnoYbVph1zSZ53YCZ6vBCO3qxdKUPdTHcycZUn0Yg1g7ZA+cVjcptXEViSXUE5CZ8nOUebD2wbo=
+	t=1778221688; cv=none; b=A8gQLJyT3dBVmKzRLUkAoJEIbBaIp84WBbJet+x54CJqmXmSfbjax212sk0SM8vvA3wrj7u1ZdgVpFFzrhB8mNj1ATcpQKyATgagh7Y6RozNYjbM8fS8KEZoYU8/neqn/v6uGA/Wxmop8MO5oeUhLaeDO4CX3b1bxTmeh9ISW/8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1778220949; c=relaxed/simple;
-	bh=X/UwBiqYJJsZdLIhzNbBhdHndZA/DHq8ISQzw6+43nQ=;
+	s=arc-20240116; t=1778221688; c=relaxed/simple;
+	bh=yhmlbFiEgxAAdHgzy7VMbB8ZaYPuuYIybwgdOeY8vvU=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=mWkPFALbMPSEzBhz8mipctLtX+GrJNCyToYGN+jUX3j9VuU8/Vm9AlVhhItM7WmSXJQRj1WNjcKUdu3iHjB3dUHZ5sNEwJ+K7Vwcc1Q350oif4UQJ97KFEU7dv89VdZ22lFkuYwFdvUQJxsjymAMdHlnKjSKYfChH9MgaKu7UFY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=MOxKgS0f; arc=none smtp.client-ip=209.85.210.194
+	 In-Reply-To:Content-Type; b=JZrpksCO3auOU1kF5Zrx3A3aYR37Irql5rwOn8OCB1h3LIrPtnt1rBL6NkmdwtccPlLJ8tGNPpMTI7mqtiE5wnFiRJfslD8J3GYj2GjY7WWaluaQhyZJln8KxjyweXNSx8FSrYwaHoDGN2qHk0rpsZT+2Ppz0M44OXTrCjcAiQI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ap4kO7gm; arc=none smtp.client-ip=209.85.215.196
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f194.google.com with SMTP id d2e1a72fcca58-83945063f70so1251118b3a.0
-        for <cgroups@vger.kernel.org>; Thu, 07 May 2026 23:15:38 -0700 (PDT)
+Received: by mail-pg1-f196.google.com with SMTP id 41be03b00d2f7-b6ce6d1d3dcso626546a12.3
+        for <cgroups@vger.kernel.org>; Thu, 07 May 2026 23:27:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20251104; t=1778220936; x=1778825736; darn=vger.kernel.org;
+        d=gmail.com; s=20251104; t=1778221676; x=1778826476; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:from:content-language
          :references:cc:to:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=rTA4CLloFA4PwQRrVh0QkmYUnMpU+ksh9ffBPHB3lKQ=;
-        b=MOxKgS0fwrByji1o9c+g9YVl0zcgayKX+eVmzFysIZzE9wjv1n6gCZepL1qlCevm1K
-         3OPdzM506A0HEZBMJuXtiCozaVZvPc6hXRlvzfAUFk3FoZCPtoB6mK70PF50Be86jOTS
-         JKpErMtA4XHQBYFZ1+b+nfqKgVCJ/fcw8uCm/sdNGrY9CDu3IrD0J8bPDFd6JzjSd9Xy
-         gtlv+JMsULKjeJPI23elYRnds0EuI+jdWtMVOQWCjvlDyXSw/irmXByDoaNmLpi4Gl6l
-         K5ekaSDE/XGHD+CV+/BXELZS91Tg6p0d7nt84tX76U37rkZAQVv7haO3tptHF4W8fvTj
-         LMbg==
+        bh=aekVbvEm7F7IL+LzVt0hfe3fiFB1n+NBAJxeB/SRo7M=;
+        b=ap4kO7gmGBbGtM/H4EevdFTc6yNrwvtuYzQXxLthQDDKM8LNW9VRtS+NqrKW4aeeRl
+         JnXiMgN74TqY6RvM20DUAPSopzHxkZ4wELoFX6CUQPHfWBtg6w9K+bts68JhJKzdPSbr
+         ySO3MozX6yMuyDFYtW9BjtWmuljm7kQPb5VI3oDi16uDExMr0CPcgAWILlxl6r/8pioB
+         ey1RS6+C47deNZ+qw6fK2BM9B85IFjgb4uCajqCLfLBm2pjMZIV5E8f2+PBWMHVQDasN
+         ysn0qN3QEz98kfVhOLg3anNLMw7ia90oAE2dHNjYMjliSZpUfa+oQ9MB4s4/FE4T2KIZ
+         ixTA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1778220936; x=1778825736;
+        d=1e100.net; s=20251104; t=1778221676; x=1778826476;
         h=content-transfer-encoding:in-reply-to:from:content-language
          :references:cc:to:subject:user-agent:mime-version:date:message-id
          :x-gm-gg:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=rTA4CLloFA4PwQRrVh0QkmYUnMpU+ksh9ffBPHB3lKQ=;
-        b=HVvvxFRlA28nDf6d7kWDjiSZp8zmgU1vTP7FkAhimnxg+Iqv6sgaSXTWAjYu+sbaJa
-         1GsPwq77U2XXjSI7RCctxEkLfrxFyVFCYIiEWG3hkTSbnnXdWlP8dDPSjpYZxfW9Hmhf
-         lJceoq+KfAKmtM/DR6ci5Q83tkgMHlXB89AbgRsMk51EHD9iYoR+Y2a7TDI0boyVMti+
-         QwaGXLbgYo/J2V9sX+gnZjYiMH4CBM+sQRHyKf+R5AiB0fL51lXLS7u8w5X2lB6M9AuA
-         iRGuCpgB3Qn4Fx7mZeLOxNZMNHCnraF7jjYvLvQw+JCQNTj6QkuxP1fxwfYky6/lL1I1
-         lM0w==
-X-Gm-Message-State: AOJu0YwviCMhmDJD5ecPcC5T/l5WLSDfjcjXE0sIlVmhU+n7zZ2imRHD
-	yBOlZUnjm/5CC20YtIDisEAITzyBRFAzqxHUDj2iie/u1N++s5862pF/
-X-Gm-Gg: AeBDievEYOIGX/Po+qztcdYOX/+kxY8yOdDU4TarPAUBxhmhp1wQuCt1+l3/7QM9j5M
-	LzSE9RORNH8LEhntW6FidWQ8wbai6zKkGyeND8eUI1ezqbx/eah9+5IjYfL4qHZrIWHTkPq6Cf3
-	jRvGm4OQaNNcgtInbd/L7FmYot2KykDwtUv5UrC9nxnD/e9YCJlQ3YEJqluN+z+LNSSBbpA99Tz
-	SelA7VOjlrVWFu3WoSnPVqjbi1m5Ed9eJgUNFEXme685PVQ8YitrPwfM4OcC7VvzRdGUnyo/IJa
-	4+NnLHlvCq5VSlXk5u2c2xLh+OrnyUz32eBTwst3J7Euk5mPEFzD1cj6JzZ8kgXeTpEzxIYUk05
-	Pcp+0Ye7GByj98rg13I9wwZBDQkwVKRpQ6TQsXiJj2JWzbDvvUiNfNCtqO1hONRNeRVk3HFXI6h
-	KjlQAHUjhClpKp/q5/3TUeAC/RSHmsdnw=
-X-Received: by 2002:a05:6a00:2e96:b0:81f:4e1c:1d3b with SMTP id d2e1a72fcca58-83bb8b74857mr5006976b3a.23.1778220936181;
-        Thu, 07 May 2026 23:15:36 -0700 (PDT)
+        bh=aekVbvEm7F7IL+LzVt0hfe3fiFB1n+NBAJxeB/SRo7M=;
+        b=ezwXpzTdlFnLjxNSulR3hWexPcb3wmW2cup7+f4LXqbvTtZvJ8VKypraxpd2lA6lhC
+         6i75nkyq4yuUA4renbACo8TYM60n5/TtM/j4zEoRgbZOuqGPn69xZ3PSMmeSpB43zN4Y
+         qMH2+Rj4Acl8nvNQH7RCOYA2/HQWg1RWoZBEhXfDVLtyiM3tyIyS4V8G/RXyDz3H+F6o
+         iF8CZatVwlNSLep0bHV/YRsNUznbPUFqfw4nKtw4v7HmRIKcG0ek73ssAlFYAAbOhT4y
+         7Iq4i+xEZy4uSWveCyEzUwUZ5/07oDU+IlZgMM512K9eGiGw7zWUWTnGw31+uWB+sKD4
+         iVAw==
+X-Forwarded-Encrypted: i=1; AFNElJ9hxgWCffvabpOw7aYy/leDHyShJT6V40uL/+RR/HdqGdUq2c4T9nvWREo+BTJkCCrfs9z1M0Mw@vger.kernel.org
+X-Gm-Message-State: AOJu0YxRWlaidkv4kwNuUxZsTEL8nfu/tZ3rbSQWB0UNkYX04pQPZFJV
+	IUb5gsRGBMEKsbvoIOOnl5CyYVJGLUn8RQRtyDuoZ+h+mPHuL5OAorrf
+X-Gm-Gg: Acq92OHQPVY1TNhafjyF0NVRrw7353iral8lpI9JGc5NWNhpHM/ksAHRdYNCWOglkeH
+	p7bkjqwJSthvpOnuJjisX0s+tKBjS9mzmJa9Y0AW/yFq6UEFPImek+xruJNpnshMbyRw1osHTXY
+	wiwWIewJzzSiEzzoN9ULkmVbQEBzeByGpxSbzCDCtaOgXk2Uw4aa5V6lsqgrTZO1rGOsCbaL5aq
+	VbuZzVPJ7ALGxQxllVnd3RgrYhdPEfoN0C21MshaC+reLHWVhLCuZZoLouOQufES5JtVKPd70jW
+	WVkCJFIFgwXUSl4ng/xG7bm9HhdsZxgqjDDksQuEX4MO0fUv/UsRNubbjnXc4bfR7ZuHySVk9xr
+	HGTfvN77jwBdbab9LJOeBU887Yx32B1C1zjUUpRd52gI4ethoj2zKehy0wB5pvYEbd8Utk4CY7y
+	UlI08YOkeVlnVbUfoavlueGv3mjLtsDOU=
+X-Received: by 2002:a17:90a:d004:b0:35b:e4f8:7cc5 with SMTP id 98e67ed59e1d1-365acb88347mr11446508a91.25.1778221676187;
+        Thu, 07 May 2026 23:27:56 -0700 (PDT)
 Received: from [10.125.112.20] ([210.184.73.204])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-839682a52cesm10551955b3a.57.2026.05.07.23.15.32
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-366496d8b87sm476227a91.8.2026.05.07.23.27.51
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 07 May 2026 23:15:35 -0700 (PDT)
-Message-ID: <407ab4a5-87e5-4eca-99d3-baa031935702@gmail.com>
-Date: Fri, 8 May 2026 14:15:28 +0800
+        Thu, 07 May 2026 23:27:55 -0700 (PDT)
+Message-ID: <fc51f9f7-234d-4bc9-adab-a9b03cdb6c94@gmail.com>
+Date: Fri, 8 May 2026 14:27:49 +0800
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -87,133 +88,88 @@ MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
 Subject: Re: [PATCH] cgroup/cpuset: move PF_EXITING check before
  __GFP_HARDWALL in cpuset_current_node_allowed()
-To: Chen Ridong <chenridong@huaweicloud.com>
-Cc: cgroups@vger.kernel.org, linux-kernel@vger.kernel.org,
- longman@redhat.com, tj@kernel.org, hannes@cmpxchg.org, mkoutny@suse.com
+To: =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>
+Cc: longman@redhat.com, chenridong@huaweicloud.com, tj@kernel.org,
+ hannes@cmpxchg.org, cgroups@vger.kernel.org, linux-kernel@vger.kernel.org
 References: <20260507105434.3266234-1-chenwandun@lixiang.com>
- <02352ad2-9c85-4825-82b6-49c6a4b081d8@huaweicloud.com>
+ <afx1u4kV-2kvgEEf@localhost.localdomain>
 Content-Language: en-US
 From: Wandun <chenwandun1@gmail.com>
-In-Reply-To: <02352ad2-9c85-4825-82b6-49c6a4b081d8@huaweicloud.com>
+In-Reply-To: <afx1u4kV-2kvgEEf@localhost.localdomain>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Rspamd-Queue-Id: 03FD74F266B
+Content-Transfer-Encoding: 8bit
+X-Rspamd-Queue-Id: CD4574F2764
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [3.34 / 15.00];
-	SEM_URIBL(3.50)[huaweicloud.com:email];
+X-Spamd-Result: default: False [-2.16 / 15.00];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
+	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
+	R_DKIM_ALLOW(-0.20)[gmail.com:s=20251104];
+	R_SPF_ALLOW(-0.20)[+ip4:172.105.105.114:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
-	BAD_REP_POLICIES(0.10)[];
 	HAS_LIST_UNSUB(-0.01)[];
-	DMARC_POLICY_ALLOW(0.00)[gmail.com,none];
-	TAGGED_FROM(0.00)[bounces-15677-lists,cgroups=lfdr.de];
 	DKIM_TRACE(0.00)[gmail.com:+];
-	RCVD_TLS_LAST(0.00)[];
-	R_DKIM_ALLOW(0.00)[gmail.com:s=20251104];
+	TAGGED_FROM(0.00)[bounces-15678-lists,cgroups=lfdr.de];
+	FROM_HAS_DN(0.00)[];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	RCVD_TLS_LAST(0.00)[];
 	TO_DN_SOME(0.00)[];
 	MIME_TRACE(0.00)[0:+];
-	FROM_HAS_DN(0.00)[];
-	ARC_ALLOW(0.00)[subspace.kernel.org:s=arc-20240116:i=1];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
 	FREEMAIL_FROM(0.00)[gmail.com];
 	RCVD_COUNT_FIVE(0.00)[5];
-	NEURAL_HAM(-0.00)[-0.660];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[chenwandun1@gmail.com,cgroups@vger.kernel.org];
 	ASN(0.00)[asn:63949, ipnet:172.105.96.0/20, country:SG];
+	NEURAL_HAM(-0.00)[-1.000];
+	RCPT_COUNT_SEVEN(0.00)[7];
 	MID_RHS_MATCH_FROM(0.00)[];
 	TAGGED_RCPT(0.00)[cgroups];
-	RCPT_COUNT_SEVEN(0.00)[7];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	R_SPF_ALLOW(0.00)[+ip4:172.105.105.114:c];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns,huaweicloud.com:email,lixiang.com:email]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
 X-Rspamd-Action: no action
 
 
 
-On 5/8/26 09:39, Chen Ridong wrote:
+On 5/7/26 20:33, Michal Koutný wrote:
+> On Thu, May 07, 2026 at 06:54:34PM +0800, Chen Wandun <chenwandun1@gmail.com> wrote:
+>> This makes it unreachable in the common case, so dying tasks can get
+>> stuck in direct reclaim or even trigger OOM while trying to exit,
+>> despite being allowed to allocate from any node.
+> (OTOH, the caused OOM could select this task and bypass the hardwall. So
+> this should only expedite but no unblock the exit path.)
 >
-> On 2026/5/7 18:54, Chen Wandun wrote:
->> Since prepare_alloc_pages() unconditionally adds __GFP_HARDWALL for the
->> fast path when cpusets are enabled, the __GFP_HARDWALL check in
->> cpuset_current_node_allowed() causes the PF_EXITING escape path to be
->> skipped on the first allocation attempt.  This makes it unreachable in
->> the common case, so dying tasks can get stuck in direct reclaim or even
->> trigger OOM while trying to exit, despite being allowed to allocate from
->> any node.
->>
 >> Move the PF_EXITING check before __GFP_HARDWALL so that dying tasks
 >> can allocate memory from any node to exit quickly, even when cpusets
 >> are enabled.
->>
->> Also update the function comment to reflect the actual behavior of
->> prepare_alloc_pages() and the corrected check ordering.
->>
->> Signed-off-by: Chen Wandun <chenwandun@lixiang.com>
->> ---
->>   kernel/cgroup/cpuset.c | 14 ++++++++------
->>   1 file changed, 8 insertions(+), 6 deletions(-)
->>
->> diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
->> index e3a081a07c6d..a48901a0416a 100644
->> --- a/kernel/cgroup/cpuset.c
->> +++ b/kernel/cgroup/cpuset.c
->> @@ -4176,11 +4176,11 @@ static struct cpuset *nearest_hardwall_ancestor(struct cpuset *cs)
->>    * current's mems_allowed, yes.  If it's not a __GFP_HARDWALL request and this
->>    * node is set in the nearest hardwalled cpuset ancestor to current's cpuset,
->>    * yes.  If current has access to memory reserves as an oom victim, yes.
->> - * Otherwise, no.
->> + * If the current task is PF_EXITING, yes. Otherwise, no.
->>    *
->>    * GFP_USER allocations are marked with the __GFP_HARDWALL bit,
->>    * and do not allow allocations outside the current tasks cpuset
->> - * unless the task has been OOM killed.
->> + * unless the task has been OOM killed or is exiting.
->>    * GFP_KERNEL allocations are not so marked, so can escape to the
->>    * nearest enclosing hardwalled ancestor cpuset.
->>    *
->> @@ -4194,7 +4194,9 @@ static struct cpuset *nearest_hardwall_ancestor(struct cpuset *cs)
->>    * The first call here from mm/page_alloc:get_page_from_freelist()
->>    * has __GFP_HARDWALL set in gfp_mask, enforcing hardwall cpusets,
->>    * so no allocation on a node outside the cpuset is allowed (unless
->> - * in interrupt, of course).
->> + * in interrupt, of course).  The PF_EXITING check must therefore
->> + * come before the __GFP_HARDWALL check, otherwise a dying task
->> + * would be blocked on the fast path.
->>    *
->>    * The second pass through get_page_from_freelist() doesn't even call
->>    * here for GFP_ATOMIC calls.  For those calls, the __alloc_pages()
->> @@ -4204,6 +4206,7 @@ static struct cpuset *nearest_hardwall_ancestor(struct cpuset *cs)
->>    *	in_interrupt - any node ok (current task context irrelevant)
->>    *	GFP_ATOMIC   - any node ok
->>    *	tsk_is_oom_victim   - any node ok
->> + *	PF_EXITING   - any node ok (let dying task exit quickly)
->>    *	GFP_KERNEL   - any node in enclosing hardwalled cpuset ok
->>    *	GFP_USER     - only nodes in current tasks mems allowed ok.
->>    */
->> @@ -4223,11 +4226,10 @@ bool cpuset_current_node_allowed(int node, gfp_t gfp_mask)
->>   	 */
->>   	if (unlikely(tsk_is_oom_victim(current)))
->>   		return true;
->> -	if (gfp_mask & __GFP_HARDWALL)	/* If hardwall request, stop here */
->> -		return false;
->> -
->>   	if (current->flags & PF_EXITING) /* Let dying task have memory */
->>   		return true;
->> +	if (gfp_mask & __GFP_HARDWALL)	/* If hardwall request, stop here */
->> +		return false;
->>   
->>   	/* Not hardwall and node outside mems_allowed: scan up cpusets */
->>   	spin_lock_irqsave(&callback_lock, flags);
-> Make sense.
+> This makes sense to me on its own (given other hardwall exemptions,
+> namely the commit c596d9f320aaf ("cpusets: allow TIF_MEMDIE threads to
+> allocate anywhere")).
 >
-> BTW, how did you find this issue?
-I found this while reviewing the cpuset node-allowed logic during an
-investigation into a memory allocation issue (not the root cause of
-that investigation).
+> Acked-by: Michal Koutný <mkoutny@suse.com>
 >
-> Reviewed-by: Chen Ridong <chenridong@huaweicloud.com>
 >
+> At first, I wondered whether this could happen on cpuset v2 -- it can --
+> because only per-cpuset hardwalling is absent but the generic logic for
+> GFP_USER allocations is still meant to be in place. Nevertheless, it
+> occured to me we can spare callback_lock in this function (a separate
+> chaneg for cpuset_current_node_allowed()):
+>
+> --- a/kernel/cgroup/cpuset.c
+> +++ b/kernel/cgroup/cpuset.c
+> @@ -4213,6 +4213,9 @@ bool cpuset_current_node_allowed(int node, gfp_t gfp_mask)
+>          if (current->flags & PF_EXITING) /* Let dying task have memory */
+>                  return true;
+>
+> +       if (is_in_v2_mode())
+> +               return true;
+> +
+Thanks for the suggestion! I'll send a separate patch for this 
+optimization. Best regards, Wandun
+>          /* Not hardwall and node outside mems_allowed: scan up cpusets */
+>          spin_lock_irqsave(&callback_lock, flags);
+>
+> Regards,
+> Michal
 
 
