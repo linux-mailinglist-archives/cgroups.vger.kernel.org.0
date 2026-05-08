@@ -1,141 +1,225 @@
-Return-Path: <cgroups+bounces-15673-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-15674-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id IBtpJN9Z/WkBbAAAu9opvQ
-	(envelope-from <cgroups+bounces-15673-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Fri, 08 May 2026 05:34:55 +0200
+	id mGLlMylg/WkkcQAAu9opvQ
+	(envelope-from <cgroups+bounces-15674-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Fri, 08 May 2026 06:01:45 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
-	by mail.lfdr.de (Postfix) with ESMTPS id 401104F1318
-	for <lists+cgroups@lfdr.de>; Fri, 08 May 2026 05:34:55 +0200 (CEST)
+Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
+	by mail.lfdr.de (Postfix) with ESMTPS id 89C314F157C
+	for <lists+cgroups@lfdr.de>; Fri, 08 May 2026 06:01:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id D4312301466E
-	for <lists+cgroups@lfdr.de>; Fri,  8 May 2026 03:34:50 +0000 (UTC)
+	by sto.lore.kernel.org (Postfix) with ESMTP id 7FDC23005A91
+	for <lists+cgroups@lfdr.de>; Fri,  8 May 2026 04:01:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 317BC2F0680;
-	Fri,  8 May 2026 03:34:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F6542DB788;
+	Fri,  8 May 2026 04:01:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HNE+jU+4"
 X-Original-To: cgroups@vger.kernel.org
-Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 583A87261C;
-	Fri,  8 May 2026 03:34:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=124.126.103.232
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E5BCC1DD0D4
+	for <cgroups@vger.kernel.org>; Fri,  8 May 2026 04:01:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1778211290; cv=none; b=MOYAyQOHrvxLpj3vMECBqpPQd3/q3Cx5UAws00cBiWRhyVgNjnnr8MbuqAEM6yFBkarPJCmAFqOXq0vJJRcDdLFzBkCog2m01btTe4skTRrJRhVb6rFmBn1pdwovJuz1mNufXzoP89rAUukQ5zXXbY+lrv4bnIhaoqxNxc9I9Fg=
+	t=1778212901; cv=none; b=jnqQL1a1Dog8512H5Cl2GaCd8oYcIonBJY5uYg7CBZMFzU41cS/UM72L7w/p5s/dIqECBtbCemWb3QM/ydsBwZJB51p0S8mfDjgmveu12s0JeQNX7FICVIQ/9osxXasu8MkCzX4MtnrBrEFZ0N1giD8cUui1HlhuGLDNGsXNSkI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1778211290; c=relaxed/simple;
-	bh=kSX2u1I3f0Tn1NlMiYtehd71oqmpsdrqM5KGOMu2Yp8=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=ma97aaBwbE95vKawa0XaOAfsuhuFIw5xotk5ieONd5OpVoN5Nn44RK7AGfHG25chY9/3/t1p4Dsvbz3qXzOJqwZrzlQT8Zif+1q3icN6XFeQKij1+dDAJJHQQxb6VEcGA0QRwpRBdI1JXQFYiSRJug0sE1xpqUg9nzFXTMG72+0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn; spf=pass smtp.mailfrom=kylinos.cn; arc=none smtp.client-ip=124.126.103.232
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kylinos.cn
-X-UUID: da6372244a8e11f1aa26b74ffac11d73-20260508
-X-CTIC-Tags:
-	HR_CC_COUNT, HR_CC_DOMAIN_COUNT, HR_CC_NAME, HR_CC_NO_NAME, HR_CTE_8B
-	HR_CTT_MISS, HR_DATE_H, HR_DATE_WKD, HR_DATE_ZONE, HR_FROM_NAME
-	HR_SJ_LANG, HR_SJ_LEN, HR_SJ_LETTER, HR_SJ_NOR_SYM, HR_SJ_PHRASE
-	HR_SJ_PHRASE_LEN, HR_SJ_WS, HR_TO_COUNT, HR_TO_DOMAIN_COUNT, HR_TO_NO_NAME
-	IP_TRUSTED, SRC_TRUSTED, DN_TRUSTED, SA_TRUSTED, SA_EXISTED
-	SN_TRUSTED, SN_EXISTED, SPF_NOPASS, DKIM_NOPASS, DMARC_NOPASS
-	CIE_GOOD, CIE_GOOD_SPF, GTI_FG_BS, GTI_RG_INFO, GTI_C_BU
-	AMN_GOOD, ABX_MISS_RDNS
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.3.12,REQID:8ccf84f5-c22c-4b56-a741-74252e47ac63,IP:10,
-	URL:0,TC:0,Content:0,EDM:0,RT:0,SF:-5,FILE:0,BULK:0,RULE:Release_Ham,ACTIO
-	N:release,TS:5
-X-CID-INFO: VERSION:1.3.12,REQID:8ccf84f5-c22c-4b56-a741-74252e47ac63,IP:10,UR
-	L:0,TC:0,Content:0,EDM:0,RT:0,SF:-5,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
-	release,TS:5
-X-CID-META: VersionHash:e7bac3a,CLOUDID:79f0ebbbad2a746af007f2672fafc150,BulkI
-	D:26050811344413JNI6JL,BulkQuantity:0,Recheck:0,SF:17|19|38|66|78|102|127|
-	850|898,TC:nil,Content:0|15|50,EDM:-3,IP:-2,URL:0,File:nil,RT:nil,Bulk:nil
-	,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:
-	0,ARC:0
-X-CID-BVR: 2,SSN|SDN
-X-CID-BAS: 2,SSN|SDN,0,_
-X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_FAS,TF_CID_SPAM_FSD
-X-CID-RHF: D41D8CD98F00B204E9800998ECF8427E
-X-UUID: da6372244a8e11f1aa26b74ffac11d73-20260508
-X-User: lihongfu@kylinos.cn
-Received: from localhost.localdomain [(223.70.159.239)] by mailgw.kylinos.cn
-	(envelope-from <lihongfu@kylinos.cn>)
-	(Generic MTA with TLSv1.3 TLS_AES_256_GCM_SHA384 256/256)
-	with ESMTP id 1267940299; Fri, 08 May 2026 11:34:43 +0800
-From: Hongfu Li <lihongfu@kylinos.cn>
-To: longman@redhat.com,
-	chenridong@huaweicloud.com,
-	tj@kernel.org,
-	hannes@cmpxchg.org,
-	mkoutny@suse.com,
-	shuah@kernel.org
-Cc: cgroups@vger.kernel.org,
-	linux-kselftest@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Hongfu Li <lihongfu@kylinos.cn>
-Subject: [PATCH] selftests/cgroup: Fix incorrect variable check in online_cpus()
-Date: Fri,  8 May 2026 11:34:53 +0800
-Message-Id: <20260508033453.1425026-1-lihongfu@kylinos.cn>
-X-Mailer: git-send-email 2.25.1
+	s=arc-20240116; t=1778212901; c=relaxed/simple;
+	bh=bFtvUB3+z2oLu1yX9g4cDCufT+/WzAyRWXWCk2y77O4=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=D8adQU63BYIdECL4qPW6VSZDDDaOBM6xKTCeaZG/uGJQN68D2QmWsyf0WyW0Z3nEMFxvPEPnW2WWaAV4yqNtZgeQMntvyiqBNTxZSYnxcET131fdd9fMKL6t1OjIel7ZefwBHJL66HBmDzCy8SBW15ZmB+F+/Ar7rVa2Nqk3YsY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HNE+jU+4; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 771F9C2BCC9
+	for <cgroups@vger.kernel.org>; Fri,  8 May 2026 04:01:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1778212900;
+	bh=bFtvUB3+z2oLu1yX9g4cDCufT+/WzAyRWXWCk2y77O4=;
+	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
+	b=HNE+jU+4f7ZjUHuzs/LtFn+kz9B6ZexM0fMeVnArOOBkJ7r4M3ez98EbtQPEcy1vS
+	 dGN9RBYVGCnq1o44btwZNk+3VMJBfGNUgmELC4nvJkxj3k7uXbPs4PH8onuLZ94wli
+	 DnPd/VJupyTrAKWxUJgdkpJGqJAC0SLapSD77KcAE/ntDlZH8WjExQY3GPtN8DUZyL
+	 NiKu3WknUWIUKyn8g06N1l3KcxKci1lkEQ2cZrg2TfniKKqn4A4JNSGByOfBAem+Us
+	 im2rkdb/eaHJhRPOWAJi4Vt7ay5xvUgizuQeww4k0RzQ816tAOjYVhBbZ/3j3PvUnH
+	 Z30EczN0L911A==
+Received: by mail-yx1-f42.google.com with SMTP id 956f58d0204a3-65c5361142fso1695731d50.0
+        for <cgroups@vger.kernel.org>; Thu, 07 May 2026 21:01:40 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AFNElJ+uR6HD20iAG1JvJsiwAHJzuxik3zX5tFKWPGux07Wh71gsYlrpHd8f4GYQAo0YtMdXjGl7YyfS@vger.kernel.org
+X-Gm-Message-State: AOJu0Yz27b3ywCcHMbf9QjRlL0kx/W0MOg2YXHVM1/qVGPMfDy1tPb/9
+	yo7v+AcR5k4kk1Kv5tHd/NJRCUFry+5773AR08Mqkd0LIu6PVzowRGV6rSc5y+L8kmHbxppPYRv
+	n5qQBTNtADAfUdWYh5KNCP6zngk6nafCyjymkwzxubQ==
+X-Received: by 2002:a53:cf08:0:b0:651:c782:6a8 with SMTP id
+ 956f58d0204a3-65c798f12abmr8129362d50.15.1778212899788; Thu, 07 May 2026
+ 21:01:39 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: 401104F1318
+References: <20260421-swap-table-p4-v3-0-2f23759a76bc@tencent.com> <20260421-swap-table-p4-v3-7-2f23759a76bc@tencent.com>
+In-Reply-To: <20260421-swap-table-p4-v3-7-2f23759a76bc@tencent.com>
+From: Chris Li <chrisl@kernel.org>
+Date: Fri, 8 May 2026 06:01:27 +0200
+X-Gmail-Original-Message-ID: <CACePvbVnDrR6e7wvpF-nf1CWgoMdX4MTf7RSv2bCr28W6d8b2A@mail.gmail.com>
+X-Gm-Features: AVHnY4K3mMy-e35GzbuzGDUDWwNv7K0aRs6FbOSf6WoJUyBYy6_6WeUzQb6RfJ4
+Message-ID: <CACePvbVnDrR6e7wvpF-nf1CWgoMdX4MTf7RSv2bCr28W6d8b2A@mail.gmail.com>
+Subject: Re: [PATCH v3 07/12] mm, swap: support flexible batch freeing of
+ slots in different memcgs
+To: kasong@tencent.com
+Cc: linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>, 
+	David Hildenbrand <david@kernel.org>, Zi Yan <ziy@nvidia.com>, 
+	Baolin Wang <baolin.wang@linux.alibaba.com>, Barry Song <baohua@kernel.org>, 
+	Hugh Dickins <hughd@google.com>, Kemeng Shi <shikemeng@huaweicloud.com>, 
+	Nhat Pham <nphamcs@gmail.com>, Baoquan He <bhe@redhat.com>, Johannes Weiner <hannes@cmpxchg.org>, 
+	Youngjun Park <youngjun.park@lge.com>, Chengming Zhou <chengming.zhou@linux.dev>, 
+	Roman Gushchin <roman.gushchin@linux.dev>, Shakeel Butt <shakeel.butt@linux.dev>, 
+	Muchun Song <muchun.song@linux.dev>, Qi Zheng <zhengqi.arch@bytedance.com>, 
+	linux-kernel@vger.kernel.org, cgroups@vger.kernel.org, 
+	Yosry Ahmed <yosry@kernel.org>, Lorenzo Stoakes <ljs@kernel.org>, Dev Jain <dev.jain@arm.com>, 
+	Lance Yang <lance.yang@linux.dev>, Michal Hocko <mhocko@suse.com>, Michal Hocko <mhocko@kernel.org>, 
+	Suren Baghdasaryan <surenb@google.com>, Axel Rasmussen <axelrasmussen@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Rspamd-Queue-Id: 89C314F157C
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [0.04 / 15.00];
+X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_CONTAINS_FROM(1.00)[];
-	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
+	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
+	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
+	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-15673-lists,cgroups=lfdr.de];
-	RCVD_TLS_LAST(0.00)[];
-	DMARC_NA(0.00)[kylinos.cn];
-	RCVD_COUNT_THREE(0.00)[4];
-	FORGED_SENDER_MAILLIST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-15674-lists,cgroups=lfdr.de];
+	FREEMAIL_CC(0.00)[kvack.org,linux-foundation.org,kernel.org,nvidia.com,linux.alibaba.com,google.com,huaweicloud.com,gmail.com,redhat.com,cmpxchg.org,lge.com,linux.dev,bytedance.com,vger.kernel.org,arm.com,suse.com];
 	FROM_HAS_DN(0.00)[];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	RCVD_TLS_LAST(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[28];
 	MIME_TRACE(0.00)[0:+];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
-	FROM_NEQ_ENVFROM(0.00)[lihongfu@kylinos.cn,cgroups@vger.kernel.org];
-	R_DKIM_NA(0.00)[];
-	NEURAL_HAM(-0.00)[-0.979];
+	DKIM_TRACE(0.00)[kernel.org:+];
+	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
+	MISSING_XM_UA(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[5];
 	PRECEDENCE_BULK(0.00)[];
-	RCPT_COUNT_SEVEN(0.00)[10];
-	TO_DN_SOME(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[chrisl@kernel.org,cgroups@vger.kernel.org];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	NEURAL_HAM(-0.00)[-1.000];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[cgroups];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
+	TO_DN_SOME(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[mail.gmail.com:mid,sto.lore.kernel.org:helo,sto.lore.kernel.org:rdns,tencent.com:email]
 X-Rspamd-Action: no action
 
-"OFFLINE_CPUS" is a literal string that is always non-empty. It should
-be "$OFFLINE_CPUS" to check the variable's value instead.
+On Tue, Apr 21, 2026 at 7:16=E2=80=AFAM Kairui Song via B4 Relay
+<devnull+kasong.tencent.com@kernel.org> wrote:
+>
+> From: Kairui Song <kasong@tencent.com>
+>
+> Instead of requiring the caller to ensure all slots are in the same
+> memcg, make the function handle different memcgs at once.
+>
+> This is both a micro optimization and required for removing the memcg
+> lookup in the page table layer, so it can be unified at the swap layer.
+>
+> We are not removing the memcg lookup in the page table in this commit.
+> It has to be done after the memcg lookup is deferred to the swap layer.
+>
+> Signed-off-by: Kairui Song <kasong@tencent.com>
 
-Signed-off-by: Hongfu Li <lihongfu@kylinos.cn>
----
- tools/testing/selftests/cgroup/test_cpuset_prs.sh | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Overall, it looks good. Some nitpicks follow.
 
-diff --git a/tools/testing/selftests/cgroup/test_cpuset_prs.sh b/tools/testing/selftests/cgroup/test_cpuset_prs.sh
-index a56f4153c64d..df89ddfa073f 100755
---- a/tools/testing/selftests/cgroup/test_cpuset_prs.sh
-+++ b/tools/testing/selftests/cgroup/test_cpuset_prs.sh
-@@ -617,7 +617,7 @@ set_ctrl_state_noerr()
- 
- online_cpus()
- {
--	[[ -n "OFFLINE_CPUS" ]] && {
-+	[[ -n "$OFFLINE_CPUS" ]] && {
- 		for C in $OFFLINE_CPUS
- 		do
- 			write_cpu_online ${C}=1
--- 
-2.25.1
+Acked-by: Chris Li <chrisl@kernel.org>
 
+> ---
+>  mm/swapfile.c | 33 +++++++++++++++++++++++++++++----
+>  1 file changed, 29 insertions(+), 4 deletions(-)
+>
+> diff --git a/mm/swapfile.c b/mm/swapfile.c
+> index e1ad77a69e54..8d3d22c463f3 100644
+> --- a/mm/swapfile.c
+> +++ b/mm/swapfile.c
+> @@ -1872,21 +1872,46 @@ void __swap_cluster_free_entries(struct swap_info=
+_struct *si,
+>                                  unsigned int ci_start, unsigned int nr_p=
+ages)
+>  {
+>         unsigned long old_tb;
+> +       unsigned int type =3D si->type;
+> +       unsigned short id =3D 0, id_cur;
+
+Nitpick: I'm tempted to rename a few variables to improve my
+understanding. Feel free to keep it as it is.
+
+id -> batch_id
+
+>         unsigned int ci_off =3D ci_start, ci_end =3D ci_start + nr_pages;
+> -       unsigned long offset =3D cluster_offset(si, ci) + ci_start;
+> +       unsigned long offset =3D cluster_offset(si, ci);
+
+Nitpick: offset -> ci_offset. This is the fixed offset of the ci which
+is a fixed in the loop.
+
+> +       unsigned int ci_batch =3D ci_off;
+
+Nitpick: ci_batch -> batch_off, this one go with the batch_id.
+
+> +       swp_entry_t entry;
+>
+>         VM_WARN_ON(ci->count < nr_pages);
+>
+>         ci->count -=3D nr_pages;
+>         do {
+>                 old_tb =3D __swap_table_get(ci, ci_off);
+> -               /* Release the last ref, or after swap cache is dropped *=
+/
+> +               /*
+> +                * Freeing is done after release of the last swap count
+> +                * ref, or after swap cache is dropped
+> +                */
+>                 VM_WARN_ON(!swp_tb_is_shadow(old_tb) || __swp_tb_get_coun=
+t(old_tb) > 1);
+>                 __swap_table_set(ci, ci_off, null_to_swp_tb());
+> +
+> +               /*
+> +                * Uncharge swap slots by memcg in batches. Consecutive
+> +                * slots with the same cgroup id are uncharged together.
+> +                */
+> +               entry =3D swp_entry(type, offset + ci_off);
+
+Nitpick: This line confused me a bit. Two offsets are mentioned here:
+"offset + ci_offset". One would assume that ci_offset is the offset of
+the ci, and the offset is the incremental one. It is the other way
+around.
+
+> +               id_cur =3D lookup_swap_cgroup_id(entry);
+> +               if (id !=3D id_cur) {
+> +                       if (id)
+> +                               mem_cgroup_uncharge_swap(swp_entry(type, =
+offset + ci_batch),
+> +                                                        ci_off - ci_batc=
+h);
+
+With the above rename, this become:
+"... swp_entry(type, ci_offset + batch_off)," ; This combined the
+offset turn into the swap entry.
+"ci_off - batch_off". That is the running length from the beginning of batc=
+h.
+
+> +                       id =3D id_cur;
+> +                       ci_batch =3D ci_off;
+> +               }
+>         } while (++ci_off < ci_end);
+>
+> -       mem_cgroup_uncharge_swap(swp_entry(si->type, offset), nr_pages);
+> -       swap_range_free(si, offset, nr_pages);
+> +       if (id) {
+
+This becomes `if (batch_id)`, meaning if we have pending batching, we
+flush the current batch.
+
+Chris
 
