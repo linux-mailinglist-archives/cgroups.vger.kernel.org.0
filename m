@@ -1,73 +1,72 @@
-Return-Path: <cgroups+bounces-15675-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-15676-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id hofaNdZq/WlndwAAu9opvQ
-	(envelope-from <cgroups+bounces-15675-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Fri, 08 May 2026 06:47:18 +0200
+	id iINvG4tu/Wl4eAAAu9opvQ
+	(envelope-from <cgroups+bounces-15676-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Fri, 08 May 2026 07:03:07 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sto.lore.kernel.org (sto.lore.kernel.org [172.232.135.74])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6CCD94F1B86
-	for <lists+cgroups@lfdr.de>; Fri, 08 May 2026 06:47:17 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id C363E4F1CDD
+	for <lists+cgroups@lfdr.de>; Fri, 08 May 2026 07:03:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sto.lore.kernel.org (Postfix) with ESMTP id 387B43009CC0
-	for <lists+cgroups@lfdr.de>; Fri,  8 May 2026 04:47:17 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 7F0AF30226B0
+	for <lists+cgroups@lfdr.de>; Fri,  8 May 2026 05:03:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6DBAA226CFE;
-	Fri,  8 May 2026 04:47:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 250F1321F5F;
+	Fri,  8 May 2026 05:03:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lSRjMKxf"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ZmoHjLb/"
 X-Original-To: cgroups@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3028B171BB
-	for <cgroups@vger.kernel.org>; Fri,  8 May 2026 04:47:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DB43F1A262A
+	for <cgroups@vger.kernel.org>; Fri,  8 May 2026 05:03:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1778215633; cv=none; b=TiHPcLWzxjFilC1k+GFDd7A6gZZvBSOqRMqAMnEFIQ+ItfE3U9MCqZLCPSFd4hM9x2khfpfO60goa8+RZZZHd3rbBMRK6fYHYU4ZewayxTm0XpddaygZJwAX5bHzsBJNMJdYaKt7fMfzO3OHuK5JjsnLsqDapJKBWsbDKcKD32s=
+	t=1778216583; cv=none; b=hF/u3UM9Hbge4sGX0l6iHugZrCZWpEaU6E3MZR4nUYQje8dQkZ1ijtlFfkG+wq+VndDLZs4sqA7UaGKUZpmIS+V+iPKowR5QYhYWC8sTCmGjsYBYPXIR1FiLSYmZ/PuevCnu70OZ5zGHUcJz/odo517JqetSMqvKQDXBi2vE+Vo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1778215633; c=relaxed/simple;
-	bh=0qktAd4l2NHky9b1tIhnepqyzEFVW3UHSxo2N4g8AOk=;
+	s=arc-20240116; t=1778216583; c=relaxed/simple;
+	bh=pvhofntp9fIH4mJaNNksnvFNACL/qXOHhn0SN5yzXTg=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=A7XO/mmeFGQCH9R9jSy8yMHwov16rYvchK9Qqmlpicm4N8+H9PSksrZe/4K5UwPY9SZxOfDrjyQmRP3Lz8vf424bNnKt8qCBMj4p/Ch9CvvKGuXNN3ASUw6TKV52SofPKA7lP4eyADVdqBam8x7VYZICjrjekgDPJ+5kaRIHs4g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lSRjMKxf; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CAF6CC32782
-	for <cgroups@vger.kernel.org>; Fri,  8 May 2026 04:47:12 +0000 (UTC)
+	 To:Cc:Content-Type; b=XLEwkI2Yfx+NrVQjhmewJncr8uIppgxa2u0/u7++Uc47nzFWk2MrRv9636cV2HQkYIisYCKdEVYz3MMo4o/sDo95ejRqgKYZ4d9Uy8lO2XToCq201jFUaqTAmOwytM5RMny8miMi8YMHBD6syL59aTZrPJjCiXvS2d01hg3+fms=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ZmoHjLb/; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 87A48C2BCFC
+	for <cgroups@vger.kernel.org>; Fri,  8 May 2026 05:03:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1778215632;
-	bh=0qktAd4l2NHky9b1tIhnepqyzEFVW3UHSxo2N4g8AOk=;
+	s=k20201202; t=1778216583;
+	bh=pvhofntp9fIH4mJaNNksnvFNACL/qXOHhn0SN5yzXTg=;
 	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=lSRjMKxf0On0ogsyzTsdQrF0HQzLY3+ji3tGUcGepJ9SwGXEA7whjI53MjBA27CvX
-	 obdYqZFfsIAWLkcEu9OCmy8hJFO9OuGxG/NTsiFWxESvnrf+5iQxhMhtkcxPDshEiK
-	 wJbkh6pLhwWn8GeY3Sv8Lf7lwDvhVeP16egfNrzAH6QVVz+bVwhkskwuiKQieH1YYt
-	 dbk4t8ll40KHpeqbExJZX6WznkHJfAYTynFxu+qrlqzxhLiznab3oMrhppfTvrOR06
-	 u2nNiNtLzbYgv8h5DogW1w8+XAtp10IrUNw411HoVMXYB9ONESast5IpoSYhckYUby
-	 Y2HptF5cmpLLA==
-Received: by mail-yx1-f54.google.com with SMTP id 956f58d0204a3-654672a6d68so1714993d50.0
-        for <cgroups@vger.kernel.org>; Thu, 07 May 2026 21:47:12 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AFNElJ9r1Gv5QleQwmrjKdtcRcOI254REPedX0YpKv8Syb2IEmL4bfCDJvvnexVukTvilttZ9nllN5nD@vger.kernel.org
-X-Gm-Message-State: AOJu0Yw5QnPxZplBdmMEvSqti2Xs058mIQD39oQ1/MAKD6MONapxYN9E
-	dwasWq/lqBqNzJru1mudMpwFFInINHSKBAUtRsVLT9FhQMyjanQHw2VcbeDMhordm/tgq1Xl51n
-	THU6R0n+i+YVBvkmFRoAkqVBLaVNZLQTmnPA3E9R8/Q==
-X-Received: by 2002:a53:c0ca:0:b0:65c:7636:2b09 with SMTP id
- 956f58d0204a3-65c7987a6fbmr8008927d50.5.1778215631896; Thu, 07 May 2026
- 21:47:11 -0700 (PDT)
+	b=ZmoHjLb/9ZR+EA0YoF4rDDTUbwO+FT2BTWsm106TVcugL2YKM1dkdqGM4+hiKjlCI
+	 d/SrpEw6VTDDY4DMSVoobpcQjLJKNxAog4G4CUYxk1+olrppNAnyIzvEaW+Ml1QGd1
+	 cf00Njhe+HxvGKDVvhlkMR3yWjY7X1WFhAQBi2Nm/YZRTqTABRzrkgPOAfPqsWmJdU
+	 cr5AUlUi5c0k2Wcx+XT8j4dBFjWn9itZMI0inNMc+xOnMN4MrnTmeioL57XmU6EOSC
+	 uUg++J4nHFkjZN0m2516dB5/RJcLvCNZ0XZORD2IGtasZNs5C7q/d1cV3ie3YeJDlo
+	 nByZa1ZCS06rA==
+Received: by mail-yx1-f54.google.com with SMTP id 956f58d0204a3-64937edbc9eso1382517d50.2
+        for <cgroups@vger.kernel.org>; Thu, 07 May 2026 22:03:03 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AFNElJ/iMnC5QO9tJr9u9s8qoF9aYzcK0yJLppn1TI+ExD64vB6AEDkc8lOFrleU4GGHtq5eGE1j6yrC@vger.kernel.org
+X-Gm-Message-State: AOJu0YxAk3ln7urFU9VXqcyyyIAlxOG19o1A/tGLUqnhEvW/8++HU3Xn
+	+UlK6Y2KN+hQX5eW1tWnzqflXw6xyVbGmtTANBfHGVu3qEFc4vYhNgAK9/GNIA1GMcUaYGdP7o6
+	5vnDZI6ceEU5HF5SNC2y0TNCm5nnjvAbq+MkCmsaQ1Q==
+X-Received: by 2002:a05:690e:4410:b0:654:6a61:fb5a with SMTP id
+ 956f58d0204a3-65c7988c04cmr8359043d50.2.1778216582806; Thu, 07 May 2026
+ 22:03:02 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20260421-swap-table-p4-v3-0-2f23759a76bc@tencent.com> <20260421-swap-table-p4-v3-8-2f23759a76bc@tencent.com>
-In-Reply-To: <20260421-swap-table-p4-v3-8-2f23759a76bc@tencent.com>
+References: <20260421-swap-table-p4-v3-0-2f23759a76bc@tencent.com> <20260421-swap-table-p4-v3-9-2f23759a76bc@tencent.com>
+In-Reply-To: <20260421-swap-table-p4-v3-9-2f23759a76bc@tencent.com>
 From: Chris Li <chrisl@kernel.org>
-Date: Fri, 8 May 2026 06:46:59 +0200
-X-Gmail-Original-Message-ID: <CACePvbUsKUBF=inQDRfcp-_RGiADobAkGDmeMuUZOAxi3v_SAg@mail.gmail.com>
-X-Gm-Features: AVHnY4KetDuole5QnixkPzeG-7HFBT7kfW6Cpd6AWd7bWIYMqoph8vhRCrznyMY
-Message-ID: <CACePvbUsKUBF=inQDRfcp-_RGiADobAkGDmeMuUZOAxi3v_SAg@mail.gmail.com>
-Subject: Re: [PATCH v3 08/12] mm, swap: delay and unify memcg lookup and
- charging for swapin
+Date: Fri, 8 May 2026 07:02:51 +0200
+X-Gmail-Original-Message-ID: <CACePvbUL5m-QniPLqRSrwmWDEpvVcM2DjCRggR+cy7PoEZBfYw@mail.gmail.com>
+X-Gm-Features: AVHnY4Iw2Yw0C4zZB_QSvaFciSxejqqywdSjTcDEpmlXjSWF5O_Cm-Ti_YjH_wc
+Message-ID: <CACePvbUL5m-QniPLqRSrwmWDEpvVcM2DjCRggR+cy7PoEZBfYw@mail.gmail.com>
+Subject: Re: [PATCH v3 09/12] mm, swap: consolidate cluster allocation helpers
 To: kasong@tencent.com
 Cc: linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>, 
 	David Hildenbrand <david@kernel.org>, Zi Yan <ziy@nvidia.com>, 
@@ -83,17 +82,17 @@ Cc: linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
 	Suren Baghdasaryan <surenb@google.com>, Axel Rasmussen <axelrasmussen@google.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
-X-Rspamd-Queue-Id: 6CCD94F1B86
+X-Rspamd-Queue-Id: C363E4F1CDD
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
 	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
-	R_SPF_ALLOW(-0.20)[+ip4:172.232.135.74];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-15675-lists,cgroups=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-15676-lists,cgroups=lfdr.de];
 	FREEMAIL_CC(0.00)[kvack.org,linux-foundation.org,kernel.org,nvidia.com,linux.alibaba.com,google.com,huaweicloud.com,gmail.com,redhat.com,cmpxchg.org,lge.com,linux.dev,bytedance.com,vger.kernel.org,arm.com,suse.com];
 	FROM_HAS_DN(0.00)[];
 	FORGED_SENDER_MAILLIST(0.00)[];
@@ -101,7 +100,7 @@ X-Spamd-Result: default: False [-2.16 / 15.00];
 	RCPT_COUNT_TWELVE(0.00)[28];
 	MIME_TRACE(0.00)[0:+];
 	DKIM_TRACE(0.00)[kernel.org:+];
-	ASN(0.00)[asn:63949, ipnet:172.232.128.0/19, country:SG];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
 	MISSING_XM_UA(0.00)[];
 	RCVD_COUNT_FIVE(0.00)[5];
 	PRECEDENCE_BULK(0.00)[];
@@ -111,7 +110,7 @@ X-Spamd-Result: default: False [-2.16 / 15.00];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[cgroups];
 	TO_DN_SOME(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[mail.gmail.com:mid]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,tencent.com:email,mail.gmail.com:mid]
 X-Rspamd-Action: no action
 
 On Tue, Apr 21, 2026 at 2:16=E2=80=AFAM Kairui Song via B4 Relay
@@ -119,193 +118,260 @@ On Tue, Apr 21, 2026 at 2:16=E2=80=AFAM Kairui Song via B4 Relay
 >
 > From: Kairui Song <kasong@tencent.com>
 >
-> Instead of checking the cgroup private ID during page table walk in
-> swap_pte_batch(), move the memcg lookup into __swap_cache_add_check()
-> under the cluster lock.
+> Swap cluster table management is spread across several narrow
+> helpers. As a result, the allocation and fallback sequences are
+> open-coded in multiple places.
 >
-> The first pre-alloc check is speculative and skips the memcg check since
-> the post-alloc stable check ensures all slots covered by the folio
-> belong to the same memcg. It is very rare for contiguous and aligned
-> entries across a contiguous region of a page table of the same process
-> or shmem mapping to belong to different memcgs.
+> A few more per-cluster tables will be added soon, so avoid
+> duplicating these sequences per table type. Fold the existing
+> pairs into cluster-oriented helpers, and rename for consistency.
 >
-> This also prepares for recording the memcg info in the cluster's table.
-> Also make the order check and fallback more compact.
->
-> There should be no user-observable behavior change.
+> No functional change, only a few sanity checks are slightly adjusted.
 >
 > Signed-off-by: Kairui Song <kasong@tencent.com>
 
 Acked-by: Chris Li <chrisl@kernel.org>
 
-> ---
->  include/linux/memcontrol.h |  6 +++---
->  mm/internal.h              | 10 +---------
->  mm/memcontrol.c            | 10 ++++------
->  mm/swap_state.c            | 28 +++++++++++++++++++---------
->  4 files changed, 27 insertions(+), 27 deletions(-)
->
-> diff --git a/include/linux/memcontrol.h b/include/linux/memcontrol.h
-> index 7d08128de1fd..a013f37f24aa 100644
-> --- a/include/linux/memcontrol.h
-> +++ b/include/linux/memcontrol.h
-> @@ -646,8 +646,8 @@ static inline int mem_cgroup_charge(struct folio *fol=
-io, struct mm_struct *mm,
->
->  int mem_cgroup_charge_hugetlb(struct folio* folio, gfp_t gfp);
->
-> -int mem_cgroup_swapin_charge_folio(struct folio *folio, struct mm_struct=
- *mm,
-> -                                 gfp_t gfp, swp_entry_t entry);
-> +int mem_cgroup_swapin_charge_folio(struct folio *folio, unsigned short i=
-d,
-> +                                  struct mm_struct *mm, gfp_t gfp);
->
->  void __mem_cgroup_uncharge(struct folio *folio);
->
-> @@ -1137,7 +1137,7 @@ static inline int mem_cgroup_charge_hugetlb(struct =
-folio* folio, gfp_t gfp)
->  }
->
->  static inline int mem_cgroup_swapin_charge_folio(struct folio *folio,
-> -                       struct mm_struct *mm, gfp_t gfp, swp_entry_t entr=
-y)
-> +                unsigned short id, struct mm_struct *mm, gfp_t gfp)
->  {
->         return 0;
->  }
-> diff --git a/mm/internal.h b/mm/internal.h
-> index 5a2ddcf68e0b..9d2fec696bd6 100644
-> --- a/mm/internal.h
-> +++ b/mm/internal.h
-> @@ -451,24 +451,16 @@ static inline int swap_pte_batch(pte_t *start_ptep,=
- int max_nr, pte_t pte)
->  {
->         pte_t expected_pte =3D pte_next_swp_offset(pte);
->         const pte_t *end_ptep =3D start_ptep + max_nr;
-> -       const softleaf_t entry =3D softleaf_from_pte(pte);
->         pte_t *ptep =3D start_ptep + 1;
-> -       unsigned short cgroup_id;
->
->         VM_WARN_ON(max_nr < 1);
-> -       VM_WARN_ON(!softleaf_is_swap(entry));
-> +       VM_WARN_ON(!softleaf_is_swap(softleaf_from_pte(pte)));
->
-> -       cgroup_id =3D lookup_swap_cgroup_id(entry);
->         while (ptep < end_ptep) {
-> -               softleaf_t entry;
-> -
->                 pte =3D ptep_get(ptep);
->
->                 if (!pte_same(pte, expected_pte))
->                         break;
-> -               entry =3D softleaf_from_pte(pte);
-> -               if (lookup_swap_cgroup_id(entry) !=3D cgroup_id)
-> -                       break;
->                 expected_pte =3D pte_next_swp_offset(expected_pte);
->                 ptep++;
->         }
-> diff --git a/mm/memcontrol.c b/mm/memcontrol.c
-> index c7df30ca5aa7..641706fa47bf 100644
-> --- a/mm/memcontrol.c
-> +++ b/mm/memcontrol.c
-> @@ -5062,27 +5062,25 @@ int mem_cgroup_charge_hugetlb(struct folio *folio=
-, gfp_t gfp)
->
->  /**
->   * mem_cgroup_swapin_charge_folio - Charge a newly allocated folio for s=
-wapin.
-> - * @folio: folio to charge.
-> + * @folio: the folio to charge
-> + * @id: memory cgroup id
->   * @mm: mm context of the victim
->   * @gfp: reclaim mode
-> - * @entry: swap entry for which the folio is allocated
->   *
->   * This function charges a folio allocated for swapin. Please call this =
-before
->   * adding the folio to the swapcache.
->   *
->   * Returns 0 on success. Otherwise, an error code is returned.
->   */
-> -int mem_cgroup_swapin_charge_folio(struct folio *folio, struct mm_struct=
- *mm,
-> -                                 gfp_t gfp, swp_entry_t entry)
-> +int mem_cgroup_swapin_charge_folio(struct folio *folio, unsigned short i=
-d,
-> +                                  struct mm_struct *mm, gfp_t gfp)
->  {
->         struct mem_cgroup *memcg;
-> -       unsigned short id;
->         int ret;
->
->         if (mem_cgroup_disabled())
->                 return 0;
->
-> -       id =3D lookup_swap_cgroup_id(entry);
->         rcu_read_lock();
->         memcg =3D mem_cgroup_from_private_id(id);
->         if (!memcg || !css_tryget_online(&memcg->css))
-> diff --git a/mm/swap_state.c b/mm/swap_state.c
-> index 12b290d43e45..86d517a33a55 100644
-> --- a/mm/swap_state.c
-> +++ b/mm/swap_state.c
-> @@ -142,16 +142,20 @@ void *swap_cache_get_shadow(swp_entry_t entry)
->   * @ci: The locked swap cluster
->   * @targ_entry: The target swap entry to check, will be rounded down by =
-@nr
->   * @nr: Number of slots to check, must be a power of 2
-> - * @shadowp: Returns the shadow value if one exists in the range.
-> + * @shadowp: Returns the shadow value if one exists in the range
-> + * @memcg_id: Returns the memory cgroup id, NULL to ignore cgroup check
->   *
->   * Check if all slots covered by given range have a swap count >=3D 1.
-> - * Retrieves the shadow if there is one.
-> + * Retrieves the shadow if there is one. If @memcg_id is not NULL, also
-> + * checks if all slots belong to the same cgroup and return the cgroup
-> + * private id.
->   *
->   * Context: Caller must lock the cluster.
->   */
->  static int __swap_cache_add_check(struct swap_cluster_info *ci,
->                                   swp_entry_t targ_entry,
-> -                                 unsigned long nr, void **shadowp)
-> +                                 unsigned long nr, void **shadowp,
-> +                                 unsigned short *memcg_id)
->  {
->         unsigned int ci_off, ci_end;
->         unsigned long old_tb;
-> @@ -169,19 +173,24 @@ static int __swap_cache_add_check(struct swap_clust=
-er_info *ci,
->                 return -EEXIST;
->         if (!__swp_tb_get_count(old_tb))
->                 return -ENOENT;
-> -       if (swp_tb_is_shadow(old_tb) && shadowp)
-> +       if (shadowp && swp_tb_is_shadow(old_tb))
->                 *shadowp =3D swp_tb_to_shadow(old_tb);
-> +       if (memcg_id)
-> +               *memcg_id =3D lookup_swap_cgroup_id(targ_entry);
-
-Nitpick: Consider also use a local variable to stare the memcg_id value her=
-e.
-
->
->         if (nr =3D=3D 1)
->                 return 0;
->
-> +       targ_entry.val =3D round_down(targ_entry.val, nr);
->         ci_off =3D round_down(ci_off, nr);
->         ci_end =3D ci_off + nr;
->         do {
->                 old_tb =3D __swap_table_get(ci, ci_off);
->                 if (unlikely(swp_tb_is_folio(old_tb) ||
-> -                            !__swp_tb_get_count(old_tb)))
-> +                            !__swp_tb_get_count(old_tb) ||
-> +                            (memcg_id && *memcg_id !=3D lookup_swap_cgro=
-up_id(targ_entry))))
-
-Nitpick: You can use the local variable here to avoid a memory fetch.
-Micro optimizations.
-
 Chris
+
+> ---
+>  mm/swapfile.c | 110 ++++++++++++++++++++++++++--------------------------=
+------
+>  1 file changed, 49 insertions(+), 61 deletions(-)
+>
+> diff --git a/mm/swapfile.c b/mm/swapfile.c
+> index 8d3d22c463f3..2d16aa89a4fd 100644
+> --- a/mm/swapfile.c
+> +++ b/mm/swapfile.c
+> @@ -411,20 +411,7 @@ static inline unsigned int cluster_offset(struct swa=
+p_info_struct *si,
+>         return cluster_index(si, ci) * SWAPFILE_CLUSTER;
+>  }
+>
+> -static struct swap_table *swap_table_alloc(gfp_t gfp)
+> -{
+> -       struct folio *folio;
+> -
+> -       if (!SWP_TABLE_USE_PAGE)
+> -               return kmem_cache_zalloc(swap_table_cachep, gfp);
+> -
+> -       folio =3D folio_alloc(gfp | __GFP_ZERO, 0);
+> -       if (folio)
+> -               return folio_address(folio);
+> -       return NULL;
+> -}
+> -
+> -static void swap_table_free_folio_rcu_cb(struct rcu_head *head)
+> +static void swap_cluster_free_table_folio_rcu_cb(struct rcu_head *head)
+>  {
+>         struct folio *folio;
+>
+> @@ -432,15 +419,46 @@ static void swap_table_free_folio_rcu_cb(struct rcu=
+_head *head)
+>         folio_put(folio);
+>  }
+>
+> -static void swap_table_free(struct swap_table *table)
+> +static void swap_cluster_free_table(struct swap_cluster_info *ci)
+>  {
+> +       struct swap_table *table;
+> +
+> +       table =3D (struct swap_table *)rcu_dereference_protected(ci->tabl=
+e, true);
+> +       if (!table)
+> +               return;
+> +
+> +       rcu_assign_pointer(ci->table, NULL);
+>         if (!SWP_TABLE_USE_PAGE) {
+>                 kmem_cache_free(swap_table_cachep, table);
+>                 return;
+>         }
+>
+>         call_rcu(&(folio_page(virt_to_folio(table), 0)->rcu_head),
+> -                swap_table_free_folio_rcu_cb);
+> +                swap_cluster_free_table_folio_rcu_cb);
+> +}
+> +
+> +static int swap_cluster_alloc_table(struct swap_cluster_info *ci, gfp_t =
+gfp)
+> +{
+> +       struct swap_table *table =3D NULL;
+> +       struct folio *folio;
+> +
+> +       /* The cluster must be empty and not on any list during allocatio=
+n. */
+> +       VM_WARN_ON_ONCE(ci->flags || !cluster_is_empty(ci));
+> +       if (rcu_access_pointer(ci->table))
+> +               return 0;
+> +
+> +       if (SWP_TABLE_USE_PAGE) {
+> +               folio =3D folio_alloc(gfp | __GFP_ZERO, 0);
+> +               if (folio)
+> +                       table =3D folio_address(folio);
+> +       } else {
+> +               table =3D kmem_cache_zalloc(swap_table_cachep, gfp);
+> +       }
+> +       if (!table)
+> +               return -ENOMEM;
+> +
+> +       rcu_assign_pointer(ci->table, table);
+> +       return 0;
+>  }
+>
+>  /*
+> @@ -471,27 +489,15 @@ static void swap_cluster_assert_empty(struct swap_c=
+luster_info *ci,
+>         WARN_ON_ONCE(nr =3D=3D SWAPFILE_CLUSTER && ci->extend_table);
+>  }
+>
+> -static void swap_cluster_free_table(struct swap_cluster_info *ci)
+> -{
+> -       struct swap_table *table;
+> -
+> -       /* Only empty cluster's table is allow to be freed  */
+> -       lockdep_assert_held(&ci->lock);
+> -       table =3D (void *)rcu_dereference_protected(ci->table, true);
+> -       rcu_assign_pointer(ci->table, NULL);
+> -
+> -       swap_table_free(table);
+> -}
+> -
+>  /*
+>   * Allocate swap table for one cluster. Attempt an atomic allocation fir=
+st,
+>   * then fallback to sleeping allocation.
+>   */
+>  static struct swap_cluster_info *
+> -swap_cluster_alloc_table(struct swap_info_struct *si,
+> +swap_cluster_populate(struct swap_info_struct *si,
+>                          struct swap_cluster_info *ci)
+>  {
+> -       struct swap_table *table;
+> +       int ret;
+>
+>         /*
+>          * Only cluster isolation from the allocator does table allocatio=
+n.
+> @@ -502,14 +508,9 @@ swap_cluster_alloc_table(struct swap_info_struct *si=
+,
+>                 lockdep_assert_held(&si->global_cluster_lock);
+>         lockdep_assert_held(&ci->lock);
+>
+> -       /* The cluster must be free and was just isolated from the free l=
+ist. */
+> -       VM_WARN_ON_ONCE(ci->flags || !cluster_is_empty(ci));
+> -
+> -       table =3D swap_table_alloc(__GFP_HIGH | __GFP_NOMEMALLOC | __GFP_=
+NOWARN);
+> -       if (table) {
+> -               rcu_assign_pointer(ci->table, table);
+> +       if (!swap_cluster_alloc_table(ci, __GFP_HIGH | __GFP_NOMEMALLOC |
+> +                                         __GFP_NOWARN))
+>                 return ci;
+> -       }
+>
+>         /*
+>          * Try a sleep allocation. Each isolated free cluster may cause
+> @@ -521,7 +522,8 @@ swap_cluster_alloc_table(struct swap_info_struct *si,
+>                 spin_unlock(&si->global_cluster_lock);
+>         local_unlock(&percpu_swap_cluster.lock);
+>
+> -       table =3D swap_table_alloc(__GFP_HIGH | __GFP_NOMEMALLOC | GFP_KE=
+RNEL);
+> +       ret =3D swap_cluster_alloc_table(ci, __GFP_HIGH | __GFP_NOMEMALLO=
+C |
+> +                                          GFP_KERNEL);
+>
+>         /*
+>          * Back to atomic context. We might have migrated to a new CPU wi=
+th a
+> @@ -536,20 +538,11 @@ swap_cluster_alloc_table(struct swap_info_struct *s=
+i,
+>                 spin_lock(&si->global_cluster_lock);
+>         spin_lock(&ci->lock);
+>
+> -       /* Nothing except this helper should touch a dangling empty clust=
+er. */
+> -       if (WARN_ON_ONCE(cluster_table_is_alloced(ci))) {
+> -               if (table)
+> -                       swap_table_free(table);
+> -               return ci;
+> -       }
+> -
+> -       if (!table) {
+> +       if (ret) {
+>                 move_cluster(si, ci, &si->free_clusters, CLUSTER_FLAG_FRE=
+E);
+>                 spin_unlock(&ci->lock);
+>                 return NULL;
+>         }
+> -
+> -       rcu_assign_pointer(ci->table, table);
+>         return ci;
+>  }
+>
+> @@ -621,12 +614,11 @@ static struct swap_cluster_info *isolate_lock_clust=
+er(
+>         }
+>         spin_unlock(&si->lock);
+>
+> -       if (found && !cluster_table_is_alloced(found)) {
+> -               /* Only an empty free cluster's swap table can be freed. =
+*/
+> -               VM_WARN_ON_ONCE(flags !=3D CLUSTER_FLAG_FREE);
+> +       /* Cluster's table is freed when and only when it's on the free l=
+ist. */
+> +       if (found && flags =3D=3D CLUSTER_FLAG_FREE) {
+>                 VM_WARN_ON_ONCE(list !=3D &si->free_clusters);
+> -               VM_WARN_ON_ONCE(!cluster_is_empty(found));
+> -               return swap_cluster_alloc_table(si, found);
+> +               VM_WARN_ON_ONCE(cluster_table_is_alloced(found));
+> +               return swap_cluster_populate(si, found);
+>         }
+>
+>         return found;
+> @@ -769,7 +761,6 @@ static int swap_cluster_setup_bad_slot(struct swap_in=
+fo_struct *si,
+>         unsigned int ci_off =3D offset % SWAPFILE_CLUSTER;
+>         unsigned long idx =3D offset / SWAPFILE_CLUSTER;
+>         struct swap_cluster_info *ci;
+> -       struct swap_table *table;
+>         int ret =3D 0;
+>
+>         /* si->max may got shrunk by swap swap_activate() */
+> @@ -790,12 +781,9 @@ static int swap_cluster_setup_bad_slot(struct swap_i=
+nfo_struct *si,
+>         }
+>
+>         ci =3D cluster_info + idx;
+> -       if (!ci->table) {
+> -               table =3D swap_table_alloc(GFP_KERNEL);
+> -               if (!table)
+> -                       return -ENOMEM;
+> -               rcu_assign_pointer(ci->table, table);
+> -       }
+> +       /* Need to allocate swap table first for initial bad slot marking=
+. */
+> +       if (!ci->count && swap_cluster_alloc_table(ci, GFP_KERNEL))
+> +               return -ENOMEM;
+>         spin_lock(&ci->lock);
+>         /* Check for duplicated bad swap slots. */
+>         if (__swap_table_xchg(ci, ci_off, SWP_TB_BAD) !=3D SWP_TB_NULL) {
+> @@ -2992,7 +2980,7 @@ static void free_swap_cluster_info(struct swap_clus=
+ter_info *cluster_info,
+>                 ci =3D cluster_info + i;
+>                 /* Cluster with bad marks count will have a remaining tab=
+le */
+>                 spin_lock(&ci->lock);
+> -               if (rcu_dereference_protected(ci->table, true)) {
+> +               if (cluster_table_is_alloced(ci)) {
+>                         swap_cluster_assert_empty(ci, 0, SWAPFILE_CLUSTER=
+, true);
+>                         swap_cluster_free_table(ci);
+>                 }
+>
+> --
+> 2.53.0
+>
+>
 
