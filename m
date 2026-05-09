@@ -1,357 +1,259 @@
-Return-Path: <cgroups+bounces-15695-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-15696-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id QJnXOjtj/2kk6AAAu9opvQ
-	(envelope-from <cgroups+bounces-15695-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Sat, 09 May 2026 18:39:23 +0200
+	id yE5BJYRl/2lo6AAAu9opvQ
+	(envelope-from <cgroups+bounces-15696-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Sat, 09 May 2026 18:49:08 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6434E500802
-	for <lists+cgroups@lfdr.de>; Sat, 09 May 2026 18:39:23 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 35D025008BC
+	for <lists+cgroups@lfdr.de>; Sat, 09 May 2026 18:49:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id C88C5301107E
-	for <lists+cgroups@lfdr.de>; Sat,  9 May 2026 16:39:20 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 182CC3011860
+	for <lists+cgroups@lfdr.de>; Sat,  9 May 2026 16:48:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D0ADF2EE262;
-	Sat,  9 May 2026 16:39:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gourry.net header.i=@gourry.net header.b="K8EZnlUw"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 097732EE611;
+	Sat,  9 May 2026 16:48:57 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from mail-dy1-f178.google.com (mail-dy1-f178.google.com [74.125.82.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from CWXP265CU010.outbound.protection.outlook.com (mail-ukwestazon11022080.outbound.protection.outlook.com [52.101.101.80])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E4B75175A69
-	for <cgroups@vger.kernel.org>; Sat,  9 May 2026 16:39:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=74.125.82.178
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1778344755; cv=none; b=uCAbXPU4W26RsLtD8jzRc1jy2f9D+Q2yfe1CXTAa7B+UHRrHfgTnQMUDhSQq4OV6k3DxYZJ+awQqWIXpqaqOtE+w+pw1pJb5/c8fd+rM0fwF0jNNexoLzG9cSbh9k3JMkwZtkBTF/uF3fPmiKXjXQIO26SCFkFDIF4kIT4UOnj4=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1778344755; c=relaxed/simple;
-	bh=FKd0CXJyl9QfJPa0aYz0nVfjWc/cyYUW7BZ587RmS00=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=VaqhVC1A3jsTbQiRoMN20Hikk2om41R4SP1TMSl6cD7ivuZw9qqwylfczL/DuGgAyIPbksZk+oxTPHSP34Ubs8vEFUv9T9W9Lub+2j2ArL22rR6BpuFZWfxSMNBjm/GlHKHk55gXH+kyKZ/w2NzBxI1zMoliYo5IpY0bnMC9Fjo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gourry.net; spf=pass smtp.mailfrom=gourry.net; dkim=pass (2048-bit key) header.d=gourry.net header.i=@gourry.net header.b=K8EZnlUw; arc=none smtp.client-ip=74.125.82.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gourry.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gourry.net
-Received: by mail-dy1-f178.google.com with SMTP id 5a478bee46e88-2f36da5c8fbso2957119eec.0
-        for <cgroups@vger.kernel.org>; Sat, 09 May 2026 09:39:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gourry.net; s=google; t=1778344753; x=1778949553; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=9Z2UMBx5dGhCxet+pSUCVtwvNzhJpnfXCgIbbDTxeL4=;
-        b=K8EZnlUw6Rlcw+P2oxSKatDiYwpGITthu7j2zRaIvDS3ds4uJVM8Lc6U2Ne3wr/sY1
-         +ESlYr3hODkFVTo4dJnV1CADquCb8JsEbE/bdLbiLmrjyUESWUSDUEM+QQfSrnOZKpJG
-         YKP24hW2pEZaAbxe8E/E9FJIG0GxZxfiFr6EHT1VQXatiUe5dUaK50HYu3JiMEYxBTIy
-         vr4aGr6zaZRXvkuocuk/4/du7q0HNGT+m+iL6B6woNiDzRrtgEkMU0bfKocs7MAs9dNg
-         jMAdJplw6wX3vmYkSXDm/jXV7Ah4migDb1P5CNnT5lqGmhsSUjmtoAzcLR7se/lPORYA
-         TuGQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20251104; t=1778344753; x=1778949553;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-gg:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=9Z2UMBx5dGhCxet+pSUCVtwvNzhJpnfXCgIbbDTxeL4=;
-        b=gO8IpftzIh59GE64Ml5EZPm2bGmsLEH8hHXXuYu/jG/jhJiHW1hV5qjpdcNb8/jKu1
-         Kb1/DwbmGUVmRH+bm0V5acq4olsSflEv26uUgjF26z7eQP2mfSRqZDxnOC1OacUh/55r
-         VCuKwQwCX1tJst1r41ZdSXA+HzNKWYMpK+iabqcm8Rq2OA/jLCMkFwFBP80+vlSS9wL6
-         dT+3N02mmAew4xEn6zkDrhm87YfwHg2hOjZRmqI8aAdzXdpT3qk48cCmzk0pPkeOnUcj
-         BQ4D8VJyWT2dlF6zvDXK/chu991TDqdjg7CK0bh20mDftIMKX1mOvCNoxvirQw/vxhM4
-         ehXA==
-X-Forwarded-Encrypted: i=1; AFNElJ/u952gnXaUpUvi7WrfHMQLdc003iiggmXOWobcVRiGAV6d1/G1bCbMCaEbCbO58mi04uk6mRJW@vger.kernel.org
-X-Gm-Message-State: AOJu0YysVMooSHI9LUr3Clf9XGQ6pTsS3LkHBxRij9fDwildyxjO26s1
-	kHJtttMy7aPQdXQEOaX5LhOqvtj7AQLzMr/El0wmdxzG3JwJ+rpglb+RlIJs3n7AhF4=
-X-Gm-Gg: Acq92OE9vWBBW444UNfM5KVt5jPCGtCzau4PH5ZJRtUETeuomV8rs/2IvMqfaPlaHHT
-	xBP93H0U0opDwd6DqQ/TVNndvIsiF7xBcAmmHf2KkjtL3oC4qzo5Ql+Zt9tzkozUdKq5RIfGxO7
-	VKpXLAmxRuLNpliwHRHZ2pd0qdiWqp+W0FoPG5Q82iMGzSnRufK8Y8Eh5TqjsyzU+n8L+6ZUrE8
-	0/6GeU1tkSthUMSHJtpBzNpnNHWMk4Tbzi1Y3nAzJac2soiDicQXRLNmtBlolEVRVq+0FaItSjt
-	ZTMxKewb5pbsrmbBrdK/U5eO2KAIt0iqfPKoqhh82N+NoFjDJLLosY6OmQY5PolKZ1Mtgx0g0Sq
-	CWeMdzk3geFa7s96PK+P/GSzd9dU/xZybDjAJq0eVu63gSmS1csTyRLt92H5FY0xyrKzaK79OSp
-	nRZRV8dO/md6drdTj1JZ4zHRougHZKtG57RIgEyGisHg==
-X-Received: by 2002:a05:7300:724b:b0:2f8:1f2b:bb5d with SMTP id 5a478bee46e88-2fb4dc64acfmr984629eec.25.1778344752833;
-        Sat, 09 May 2026 09:39:12 -0700 (PDT)
-Received: from gourry-fedora-PF4VCD3F ([205.220.129.38])
-        by smtp.gmail.com with ESMTPSA id 5a478bee46e88-2f8859eb4b7sm6994852eec.2.2026.05.09.09.38.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 09 May 2026 09:39:12 -0700 (PDT)
-Date: Sat, 9 May 2026 17:38:05 +0100
-From: Gregory Price <gourry@gourry.net>
-To: lsf-pc@lists.linux-foundation.org
-Cc: linux-kernel@vger.kernel.org, linux-cxl@vger.kernel.org,
-	cgroups@vger.kernel.org, linux-mm@kvack.org,
-	linux-trace-kernel@vger.kernel.org, damon@lists.linux.dev,
-	kernel-team@meta.com, gregkh@linuxfoundation.org, rafael@kernel.org,
-	dakr@kernel.org, dave@stgolabs.net, jonathan.cameron@huawei.com,
-	dave.jiang@intel.com, alison.schofield@intel.com,
-	vishal.l.verma@intel.com, ira.weiny@intel.com,
-	dan.j.williams@intel.com, longman@redhat.com,
-	akpm@linux-foundation.org, david@kernel.org,
-	lorenzo.stoakes@oracle.com, Liam.Howlett@oracle.com, vbabka@suse.cz,
-	rppt@kernel.org, surenb@google.com, mhocko@suse.com,
-	osalvador@suse.de, ziy@nvidia.com, matthew.brost@intel.com,
-	joshua.hahnjy@gmail.com, rakie.kim@sk.com, byungchul@sk.com,
-	ying.huang@linux.alibaba.com, apopple@nvidia.com,
-	axelrasmussen@google.com, yuanchu@google.com, weixugc@google.com,
-	yury.norov@gmail.com, linux@rasmusvillemoes.dk, mhiramat@kernel.org,
-	mathieu.desnoyers@efficios.com, tj@kernel.org, hannes@cmpxchg.org,
-	mkoutny@suse.com, jackmanb@google.com, sj@kernel.org,
-	baolin.wang@linux.alibaba.com, npache@redhat.com,
-	ryan.roberts@arm.com, dev.jain@arm.com, baohua@kernel.org,
-	lance.yang@linux.dev, muchun.song@linux.dev, xu.xin16@zte.com.cn,
-	chengming.zhou@linux.dev, jannh@google.com, linmiaohe@huawei.com,
-	nao.horiguchi@gmail.com, pfalcato@suse.de, rientjes@google.com,
-	shakeel.butt@linux.dev, riel@surriel.com, harry.yoo@oracle.com,
-	cl@gentwo.org, roman.gushchin@linux.dev, chrisl@kernel.org,
-	kasong@tencent.com, shikemeng@huaweicloud.com, nphamcs@gmail.com,
-	bhe@redhat.com, zhengqi.arch@bytedance.com, terry.bowman@amd.com
-Subject: Re: [LSF/MM/BPF TOPIC] Private Memory Nodes - follow up
-Message-ID: <af9i7dkNvGGxPHzu@gourry-fedora-PF4VCD3F>
-References: <20260222084842.1824063-1-gourry@gourry.net>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C0702D2397;
+	Sat,  9 May 2026 16:48:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.101.80
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1778345336; cv=fail; b=BmdriSgWnOfjoPSp/O/RUbwoTSYois8aHGn0YPPjChENKZJ/7kT1rWQ1hxkXaLX5DrtyOFNikuJN/g7U+4P+s5pclIt/fZyloUiGJtmQ1jbT1m6BaNGvfSyrxKmMOFGTJFOgLqeyk3DqsKFV0UjuRVSgpbK1GUIsHNdL6f3zrsI=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1778345336; c=relaxed/simple;
+	bh=SYFXpDSW1F8xxnD0Y1yodYOXwlVIXP8FXiHdsPpj9co=;
+	h=From:To:Cc:Subject:Date:Message-ID:Content-Type:MIME-Version; b=uOTvhPvUfTiAa4E3BngIs1pUlalYG/i0/r3VGmBEAkg8eMDpnn4ITyS+tuP1dJ2s75xH8xS5mW2YfEZvTeX5gJsQ4vrfDzyRurYhkYJlnb6E3PBtmUps4MIrKp9TI4gK3JeApdc3SottC6GKoWQtc6ZDwyBki4Q9CqR5S0GcENQ=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=atomlin.com; spf=pass smtp.mailfrom=atomlin.com; arc=fail smtp.client-ip=52.101.101.80
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=atomlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=atomlin.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=JmukhprMCkLJjGG7N3ewHBldcRX/+ZcfKV4WF/tjGVgpA0yOoVwYWcIMD4SGQcH7pgPr0M1AGJc1Lj5yOfVajrSxIRJbJQrGQqkI1F6/l5PqNPJCWB2NUg0q9zeThcOk2asKxkNRejaphYkU2y77UJeUB5Q4o1TkknZDLwU3j5KYlYap+o6pRlBI1vRjGeLmY+QB3xjTQ9zzdiurc5ofNbkR+q3ah/zOYY3iv/q3W1o02whzbeJ1EIH0jI7HIjhg4+9nO/w4HwxZlMuLT3HdPqiNKjnkGF8aRH+cT0ZOHNz8ibXMLEwoURaNpPC3+2+teYesPB2jBIzcY0c+93IvbA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=bZkB36RKhsi/hL1NlutAcSX0nHdgHD46/mLYW5UgrSw=;
+ b=g3cygSLXbfqVq5wYEb9BCsg4rRdP2o6zaGMt4tPTb680m1CdXcFTnV/lHfPI0/+nOy7o2xAddXEE0GT9hW9u2kTINTfiDQQv3L9AKGlMnN7KOgTIZ4HPLQtQ9tLZeygv7PtI1ubSq5+JssDFOVccSrBjNw/8I1xnocxw1+8KSz9CKnJZ8zV7mETC53XNUCaevCXHd9Lfsk5mtYRtENbmjiGC3j4xMhAP+qUXljLZ/npfpxxZ3HkGXwct2QrPukyateJtc/zzh2qNb8tT1DEsHQbfIceKj8v0RykRvfFetKI/H+keEPNEA2wl5cKqUMrNTwRUgsJtATTsIOMOAzyp+g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=atomlin.com; dmarc=pass action=none header.from=atomlin.com;
+ dkim=pass header.d=atomlin.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=atomlin.com;
+Received: from CWLP123MB3523.GBRP123.PROD.OUTLOOK.COM (2603:10a6:400:70::10)
+ by CWLP123MB6996.GBRP123.PROD.OUTLOOK.COM (2603:10a6:400:1df::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9891.21; Sat, 9 May
+ 2026 16:48:51 +0000
+Received: from CWLP123MB3523.GBRP123.PROD.OUTLOOK.COM
+ ([fe80::de8e:2e4f:6c6:f3bf]) by CWLP123MB3523.GBRP123.PROD.OUTLOOK.COM
+ ([fe80::de8e:2e4f:6c6:f3bf%2]) with mapi id 15.20.9846.025; Sat, 9 May 2026
+ 16:48:51 +0000
+From: Aaron Tomlin <atomlin@atomlin.com>
+To: tsbogend@alpha.franken.de,
+	paul@paul-moore.com,
+	jmorris@namei.org,
+	serge@hallyn.com,
+	mingo@redhat.com,
+	peterz@infradead.org,
+	juri.lelli@redhat.com,
+	vincent.guittot@linaro.org,
+	stephen.smalley.work@gmail.com,
+	casey@schaufler-ca.com,
+	longman@redhat.com,
+	tj@kernel.org,
+	hannes@cmpxchg.org,
+	mkoutny@suse.com
+Cc: chenridong@huaweicloud.com,
+	dietmar.eggemann@arm.com,
+	rostedt@goodmis.org,
+	bsegall@google.com,
+	mgorman@suse.de,
+	vschneid@redhat.com,
+	kprateek.nayak@amd.com,
+	omosnace@redhat.com,
+	kees@kernel.org,
+	atomlin@atomlin.com,
+	neelx@suse.com,
+	sean@ashe.io,
+	chjohnst@gmail.com,
+	steve@abita.co,
+	mproche@gmail.com,
+	nick.lange@gmail.com,
+	cgroups@vger.kernel.org,
+	linux-mips@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org,
+	linux-security-module@vger.kernel.org,
+	selinux@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH 0/3] security, sched: Expand task_setscheduler LSM hook and related fixes
+Date: Sat,  9 May 2026 12:48:44 -0400
+Message-ID: <20260509164847.939294-1-atomlin@atomlin.com>
+X-Mailer: git-send-email 2.51.0
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: BN9PR03CA0470.namprd03.prod.outlook.com
+ (2603:10b6:408:139::25) To CWLP123MB3523.GBRP123.PROD.OUTLOOK.COM
+ (2603:10a6:400:70::10)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20260222084842.1824063-1-gourry@gourry.net>
-X-Rspamd-Queue-Id: 6434E500802
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CWLP123MB3523:EE_|CWLP123MB6996:EE_
+X-MS-Office365-Filtering-Correlation-Id: e79efda5-829e-4f03-5a4f-08deadead8e3
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam:
+	BCL:0;ARA:13230040|7416014|366016|1800799024|376014|921020|56012099003|18002099003;
+X-Microsoft-Antispam-Message-Info:
+	yNhD6W/7jtrEwQsoEgTzDs2BHrFydk1uXnoraQywLUTWBfWbvE7SLMjWIK0qI8mVwwB2YtG/KifuStsLJgEHBDGEX8heilB2OZaGbwTdgjjNhkvK4u/NpH5fUYuRitCmdNKwnrgiwwjdDz5oNDD22WGO7j8f6VqV3Zvt2mErvIf5EWtv8bXreu57LDc2pmFzqbtpMRq86t1Kg6Jlu99aaqeCXP8gT/fhEUN9DBTroZA3LXhSIgpSXI+O8uthqTTMkdIPgCaxMj1QFiJLHAeYVWL5P8oaSgVZgwDrqf63wS346jK1f07g+QGtLyS9+OiIP+MfcNSr43mZHKW3hShA3tu6PMVR5Ewf5uJMdV43Soubn5UI6MxMnPQVmFXV7ep60hY9jgmCSQiFZoquL0e6j+XsSk/0kNGX1wDZV1rZwNPvnN3e/TYe3i2qjReQaAkSeQi+Y4IifA0luRAtwtDSKlidZOk4/FWol9KJcR35cIplbaIcpQuEFgS/ImVxkaOzmAvBKY39SbcfpnkESNzDFld/xUFlwfh8xxjdln2GAw+CMnMkj539rAEnfGVKv4x4QcfVphPqW6LaeiSFGTr4m7uJ3i61q8Jw6hFyLCC1wOMV5UFdVIvcbBAzwqfYCzZ0T9SJuKNSg0eeGW/yXAz2WsFn2CFFGDnMZ/mzxaO2cHjizmdgq8nWzHvhRDOucXOhjVVYHmfCxzkoxayco9GLyVk59VbIFXe76JmZwCeUiow=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CWLP123MB3523.GBRP123.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230040)(7416014)(366016)(1800799024)(376014)(921020)(56012099003)(18002099003);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?MB8hhV4ikI0u5TtwKVD1tZ12/s97r2jBTkMIgHNxFBeOeTszDmX4B2oNH94L?=
+ =?us-ascii?Q?OtWmfPpzZaq3UieqdpKZh1NAPfqpRpXYXvAy3aoZAMI2aClLlC5k7ZNYVaKt?=
+ =?us-ascii?Q?LyRsqjw7ezMhLTWfydR5JFCyfJBL7KkqDQytKvrYbojOpgWO9GjXecUaIg42?=
+ =?us-ascii?Q?F18xtwh0CQ0WaRFc/1OhwVTnnY7fC6j9O5zsbJJC9FJDt2Qks1p9RNH4FSPT?=
+ =?us-ascii?Q?noO93hGhILVe+RiZOWp1vCSFfpSWlSF9tTnwAFfdaUeVsWRESFcAjaiWBEOA?=
+ =?us-ascii?Q?56pfblNcW1F4GrvpgUYaOBaTuSBcZaWFzQIXnGhyG331VmLPCTdAIubL0rUW?=
+ =?us-ascii?Q?xKl72QJNqNgr/dTIS9IxSZyWjC585CEE3hQhaUq+EJbf9sLlJewcBdt5AziJ?=
+ =?us-ascii?Q?gWpaimg25hWvjxCoLhecVa+i+l8OADFkBEibGtbQQFkRD/NBIk3sQGh9zToI?=
+ =?us-ascii?Q?DySiZWhoHey5MUQtwsYEI+Xgj39j+8SZg9igSHn929F2+2IfLDXpseQUULyt?=
+ =?us-ascii?Q?HJAbRUALdlR7QTlI8mbrJ+qbDWBVLvto6WEiiZxX3ZIl1/JjHl+d6DlCL8sE?=
+ =?us-ascii?Q?nYGtlyY2GbqlfSN8dwBv8Gtot/MBgnrwkv3PIp6Yc61O/m3b8DlOJyso1fGW?=
+ =?us-ascii?Q?MexQ3n7PgVNBa3S+vkgb9gBZXP+UGQsWQYSKW1e7CChJNNR6l1HLN51OR91x?=
+ =?us-ascii?Q?Vd2+6QehVoR76U0SqooWTcsJd1zCz3CfKxOLkH6ktkGw8iFwYbm9oxdOxANh?=
+ =?us-ascii?Q?ZjUFhhkxmw64NvphW3FPjmBCXQYMHvSsEWaE4wRveQRdK7g0b+/rlCn1NQ8Q?=
+ =?us-ascii?Q?D/dL8JdUK0Cpb+gJrbgwu8g1JiJLoNsjO3JySkydQqCjqc1jWOm7ehwhyxhs?=
+ =?us-ascii?Q?nCxn7PUal9jzl+bj4Zw+yer3UZIS42j01fAUb2q4AAUo0caQpobfATOyyZ/L?=
+ =?us-ascii?Q?kt0oinhbDFa7YCcd7PfmvJGLurefhyUaoKQo0pqUoRehuiZ2TMJkpJQCedHj?=
+ =?us-ascii?Q?IhQXRVFgupGmrH/FqyunHRi66MKm76jrSraV/uen3eoh8jL3KhX9VHO3minI?=
+ =?us-ascii?Q?Jod/bnnm0/2zGgmwAa5cw7vOU5R0jFounNblxEDR/Gjdy6JoeLVcftH2cDxW?=
+ =?us-ascii?Q?s10fI9UbbpnFUUdKM472hBkFtm4Cl3rGL05m6ghFzT83Ba5yg0c/qRux6sNj?=
+ =?us-ascii?Q?7g0WjmTanwl9i4k1rxN2lAzfv/B2y5EXbgmX63Pn9aJmmTNjOXdCfKKIIJFT?=
+ =?us-ascii?Q?DRsND3BZk2LZX/NqcPNKFsWl2GGsQU/Os7qhEyYO9BXwZs73WcFHvSCT72Ep?=
+ =?us-ascii?Q?XLiwzY56E2ZhVkRhjivq6RKLh+48DE9xFwHvCYr9wE6OFV5weggcJu2GwVjM?=
+ =?us-ascii?Q?hWWVk4dKNiv3u50VpuFUp1pmLdB2mNyJwgMZ6MOWiw5ICtpSA28MakEwKr2v?=
+ =?us-ascii?Q?nwx4JJwhW3Ms4MpWscmlEBPin2tlt4he4nBLNmmbGOgM/QPyoK+MRF0oOLF0?=
+ =?us-ascii?Q?oiT+k6rwELuYh7/JUJvSTork7D9PEr9E9pREJQYt8TpPIvrcEc0KPxN39eos?=
+ =?us-ascii?Q?L/KFZYmOjP8Ilsy47EMr2PK5dcpopiCHPTJZxbNEaeTFnWm/4VWwmTew+X2O?=
+ =?us-ascii?Q?cxjV3ApGIY7YLK5DRNo8DN7cBXSjSbiIn7KWwTT4DYJUNwp/SoembS43H6ei?=
+ =?us-ascii?Q?sQe/jQo6NXLj0eNUsGP7eDF32JegYmBWkQfp6w1aGWn4h0Qly0PuAUVlml/R?=
+ =?us-ascii?Q?cVg7iJMS5A=3D=3D?=
+X-OriginatorOrg: atomlin.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: e79efda5-829e-4f03-5a4f-08deadead8e3
+X-MS-Exchange-CrossTenant-AuthSource: CWLP123MB3523.GBRP123.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 May 2026 16:48:51.0390
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: e6a32402-7d7b-4830-9a2b-76945bbbcb57
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 9YztpON5eWsvqSKQvVW35dyi3KMZAc1Nej7pHu0B+MeaTy59yg5tbfTHhwko13rCJjX4n8kJaMGQ4ftoet0Zqg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CWLP123MB6996
+X-Rspamd-Queue-Id: 35D025008BC
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [0.34 / 15.00];
+X-Spamd-Result: default: False [3.54 / 15.00];
 	SUSPICIOUS_RECIPS(1.50)[];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	MID_RHS_NOT_FQDN(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64];
-	R_DKIM_ALLOW(-0.20)[gourry.net:s=google];
+	MID_CONTAINS_FROM(1.00)[];
+	ARC_REJECT(1.00)[cv is fail on i=2];
+	R_MISSING_CHARSET(0.50)[];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	FORGED_SENDER_MAILLIST(0.00)[];
-	DKIM_TRACE(0.00)[gourry.net:+];
-	FREEMAIL_CC(0.00)[vger.kernel.org,kvack.org,lists.linux.dev,meta.com,linuxfoundation.org,kernel.org,stgolabs.net,huawei.com,intel.com,redhat.com,linux-foundation.org,oracle.com,suse.cz,google.com,suse.com,suse.de,nvidia.com,gmail.com,sk.com,linux.alibaba.com,rasmusvillemoes.dk,efficios.com,cmpxchg.org,arm.com,linux.dev,zte.com.cn,surriel.com,gentwo.org,tencent.com,huaweicloud.com,bytedance.com,amd.com];
-	DMARC_NA(0.00)[gourry.net];
-	RCVD_TLS_LAST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-15695-lists,cgroups=lfdr.de];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	MISSING_XM_UA(0.00)[];
-	FROM_HAS_DN(0.00)[];
 	MIME_TRACE(0.00)[0:+];
-	RCVD_COUNT_FIVE(0.00)[5];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-15696-lists,cgroups=lfdr.de];
+	FREEMAIL_CC(0.00)[huaweicloud.com,arm.com,goodmis.org,google.com,suse.de,redhat.com,amd.com,kernel.org,atomlin.com,suse.com,ashe.io,gmail.com,abita.co,vger.kernel.org];
+	FREEMAIL_TO(0.00)[alpha.franken.de,paul-moore.com,namei.org,hallyn.com,redhat.com,infradead.org,linaro.org,gmail.com,schaufler-ca.com,kernel.org,cmpxchg.org,suse.com];
+	RCVD_TLS_LAST(0.00)[];
+	DMARC_NA(0.00)[atomlin.com];
+	NEURAL_SPAM(0.00)[0.403];
+	RCPT_COUNT_TWELVE(0.00)[36];
 	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[gourry@gourry.net,cgroups@vger.kernel.org];
-	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
-	RCPT_COUNT_GT_50(0.00)[73];
+	FROM_NEQ_ENVFROM(0.00)[atomlin@atomlin.com,cgroups@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[5];
+	R_DKIM_NA(0.00)[];
 	TO_DN_NONE(0.00)[];
-	NEURAL_HAM(-0.00)[-1.000];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
 	TAGGED_RCPT(0.00)[cgroups];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,atomlin.com:mid]
 X-Rspamd-Action: no action
 
-Just wanting to follow up post-conference with a few major take-aways
-since I will be a bit sparse during May / Early June (so want to not
-forget, and garner a bit of input on the notes).
+Hi,
+
+This series expands the task_setscheduler LSM hook to include the requested
+CPU affinity mask, enabling BPF-based security modules to enforce strict
+spatial isolation boundaries. During the development of this expansion, two
+pre-existing subsystem bugs were identified and fixed.
+
+In modern multi-tenant and real-time environments, CPU isolation is a
+critical boundary. Currently, the task_setscheduler hook lacks visibility
+into the actual CPU affinity mask being requested via sched_setaffinity()
+or cgroup migrations. This limits the effectiveness of eBPF-driven security
+policies when attempting to monitor and shield specific cores.
+
+By expanding the LSM hook signature, BPF LSMs are provided with the
+necessary context to audit and even restrict specific CPU pinning requests.
+
+    Patch 1 (cgroup/cpuset): Fixes a pre-existing deadline (DL) bandwidth
+    metric leak in cpuset_can_attach(). It was discovered that if a task
+    fails its security checks mid-batch during a thread group migration,
+    the loop aborts without unwinding previously accumulated DL metrics
+    (nr_migrate_dl_tasks and sum_migrate_dl_bw). This patch introduces an
+    out_unlock_reset path to guarantee clean unwinding.
+
+    Patch 2 (security): Implements the core LSM hook expansion. It safely
+    propagates either the requested cpumask (via sched_setaffinity and
+    cpuset_can_attach) or passes NULL for unchanged affinities. It also
+    adds proper __nullable annotations to ensure the BPF verifier mandates
+    explicit NULL checks for attached eBPF programs, and mechanically
+    updates SELinux, Smack, and Commoncap.
+
+    Patch 3 (mips): Resolves a critical memory corruption vulnerability in
+    the MIPS MT architecture's sched_setaffinity implementation. When
+    CONFIG_CPUMASK_OFFSTACK=y is enabled, copy_from_user() was clobbering
+    the stack pointer due to an invalid sizeof() evaluation, followed by an
+    uninitialised heap allocation. This patch safely reorders the
+    allocations and properly utilises cpumask_size().
+
+These patches have been logically separated to assist subsystem maintainers
+with review and backporting.
+
+Comments and feedback are welcome.
+
+Kind regards,
+
+
+Aaron Tomlin (3):
+  cgroup/cpuset: Fix deadline bandwidth leak in cpuset_can_attach()
+  security: Expand task_setscheduler LSM hook to include CPU affinity
+    mask
+  mips: sched: Fix CPUMASK_OFFSTACK memory corruption
+
+ arch/mips/kernel/mips-mt-fpaff.c | 41 ++++++++++++++++----------------
+ fs/proc/base.c                   |  2 +-
+ include/linux/lsm_hook_defs.h    |  3 ++-
+ include/linux/security.h         | 11 +++++----
+ kernel/cgroup/cpuset.c           | 13 ++++++----
+ kernel/sched/syscalls.c          |  4 ++--
+ security/commoncap.c             |  7 ++++--
+ security/security.c              | 11 +++++----
+ security/selinux/hooks.c         |  3 ++-
+ security/smack/smack_lsm.c       | 11 +++++++--
+ 10 files changed, 64 insertions(+), 42 deletions(-)
+
+-- 
+2.51.0
 
-If you just want the tl;dr:
-
-   0) naming:  private -> managed
-
-   1) remove global general "possible" and "online" node lists
-
-   2) add consistency with "normal" nodes, by opting them all in
-      to all the new things, and just making that the new normal.
-      e.g.: node_is_private_managed -> node_is_lru_eligible
-
-   3) Have __init add init time nodes to all the lists
-      Otherwise service/owner must add/enable services.
-
-   4) Make folio checks just way more explicit per service
-      e.g.: folio_is_private_managed -> folio_is_ksm_eligible
-
-   5) I still think w/o __GFP_PRIVATE this will still be too fragile,
-      but we're going to give it a try.
-
-   6) No callbacks in the MVP
-
-   7) MVP will be, essentially, Buddy + MBind support
-
-Otherwise, more notes below.
-
-~Gregory
-
-<wall of text>
-
-0) Naming is hard.  Willy and Liam expressed concern over "private".
-
-   We briefly discussed "Managed"
-
-   This results in the following changes:
-
-      - if (folio_is_zone_device(folio))
-      + if (folio_is_managed(folio))
-
-   and
-   
-      + if (node_is_managed(nid))
-
-   and
-
-      - N_MEMORY_PRIVATE
-      + N_MEMORY_MANAGED
-
-   I'm less enthused the last one, but i'm ok with it.
-
-
-1) There is a desire to fix possible / online node masks to avoid
-   bad patterns, and maybe to audit existing nodemask users.
-
-   there's one UAPI issue with this, and that that these masks
-   are exposed to userland by nature of existing node attributes
-   (N_MEMORY, N_CPU, N_POSSIBLE, etc).
-
-   I'm considering a name change from `possible` -> `init`, because
-   that's mostly how it is used (initialize some set of per-node
-   resources during __init, not at runtime).  Externally, this set
-   would still be reported to uapi as possible.
-
-
-2) There was concern about inconsistency towards nodes.
-
-   Along the lines of #1 - I'm thinking about actually adding explicit
-   service nodelists, which are populated at boot by __init, and by
-   hotplug if it's a general purpose node.
-
-   So we'd end up with things like:
-
-       for_each_ksm_node
-       for_each_lru_node
-       for_each_x_node
-
-   And we would retire such general defines like
-
-       for_each_node
-       for_each_online_node
-
-   For any "normal" node, it lands in all the lists.
-
-   For the buddy, we would have
-
-       for_buddy_node
-
-   For the default buddy-node list, and otherwise "managed" nodes would
-   still be removed from the standard fallback lists.
-
-   This means these nodes cannot be reached via nodemask arguments, and
-   can only be reached by `alloc_pages_node(nid, ...)` nid argument.
-
-                I *think* might resolve __GFP_PRIVATE.
-
-      But it's still dependent on system-wide for_each good behavior.
-
-
-3) How do private nodes get into the lists in the new system?
-
-   For any private node, the registering driver (owner) and the managing
-   service are responsible for adding/removing the nodes from the list.
-
-   Example workflow:
-
-     0) CXL driver hotplug: add_memory_driver_managed(..., nid, owner)
-           a) owner=NULL means general purpose node
-	   b) otherwise, reserve nid and (pgdat->owner = owner)
-
-     1) hotplug memory onto the node
-          a) if node is normal, add to all service lists
-	  b) if node is "managed" (private), omit from all lists
-
-     2) CXL driver registers node with specific services, e.g.:
-          cram_register_node(..., nid, owner);
-
-     3) Service sets node enabled in appropriate node list, and starts
-        any appropriate services (kswapd, kcompactd, etc) for that node.
-
-   In some cases, nodes would have individual mappings onto services
-   (cram), in other cases the intent would be to have the memory
-   otherwise treated as general-purpose, but with special access
-   patterns (e.g. an LRU node not marked N_MEMORY).
-
-
-4) There are still concerns about random hooks around the kernel.
-
-   My thought is to make this less "random", and more a change
-   in the way we think about folio operations / node operations
-   for ALL nodes.
-
-   ZONE_DEVICE has a bunch of implicit filtering due to not being
-   on the LRU - but the intent is to allow flexible LRU membership.
-
-   So what if we just made these checks much more explict overall
-
-    if (folio_is_ksm_eligible(folio))      /* can be merged */
-    if (folio_is_lru_eligible(folio))      /* managed by lru services */
-    if (folio_is_demotion_eligible(folio)) /* demotion target */
-    if (folio_is_mbind_eligible(folio))    /* can be an mbind target */
-
-  Rather than rathole over what the set of bits should be, i think it's
-  more important to determine what the actual operation here will be.
-
-  right now I have this defined as essentially:
-
-     folio_pgdat(folio)->private.ops.mask & NP_OPT_KSM
-
-  But if we generalize to all nodes / all features, it's essentially
-  a per-pgdat bitmask lookup:
-
-    bool folio_is_ksm_eligible(folio)) {
-        return test_bit(N_FEATURE_KSM, folio_pgdat(folio)->features);
-    }
-
-  With the bonus that all ZONE_DEVICE hooks can be sunk into these
-  checks, so there are many places in mm/ where this becomes essentially
-  a single-line change.
-
-
-5) Lacking __GFP_PRIVATE, I have concern over fragility.
-
-   Previously, __GFP_PRIVATE created a "default opt-out" mechanism.
-
-   I *think* the above nodelist changes, specifically removing:
-
-       for_each_node()
-       for_each_online_node()
-       for_each_node_with_cpus()
-
-   The problem I foresee is with existing node_state masks, like
-
-       node_state((node), N_POSSIBLE)
-       node_state((node), N_CPU)
-
-   This might be tractable, but it may also simply be too fragile.
-   
-   Right now only 3 or 4 locations use node_state() outside mm/, and
-   I'm tempted to try to sink these into mm/internal.h instead of
-   include/linux/nodemask.h.  If that becomes unpalletable, then I will
-   lobby for __GFP_PRIVATE again (I may still anyway :P).
-
-
-
-6) No callbacks by default, but nothing technically prevents it.
-
-   I was already in the process of killing this.  I think mmu_notifier
-   does *most* of what the callbacks where doing anyway, so we can
-   probably collapse that.
-
-
-7) David asked me to limit the MVP to Buddy + MBind support.
-
-   There's some odd interactions with pagecache, so that might evolve
-   too (may not be able to reliably fault a file directly onto a private
-   node, tbd - mempolicy does not apply to page cache faults, so it's
-   just unreliable).
-
-</wall of text>
-
-~Gregory
 
