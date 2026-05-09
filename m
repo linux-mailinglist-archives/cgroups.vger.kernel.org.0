@@ -1,43 +1,44 @@
-Return-Path: <cgroups+bounces-15696-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-15697-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id yE5BJYRl/2lo6AAAu9opvQ
-	(envelope-from <cgroups+bounces-15696-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Sat, 09 May 2026 18:49:08 +0200
+	id QH67NbRl/2lo6AAAu9opvQ
+	(envelope-from <cgroups+bounces-15697-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Sat, 09 May 2026 18:49:56 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 35D025008BC
-	for <lists+cgroups@lfdr.de>; Sat, 09 May 2026 18:49:08 +0200 (CEST)
+Received: from sea.lore.kernel.org (sea.lore.kernel.org [172.234.253.10])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5249D5008FF
+	for <lists+cgroups@lfdr.de>; Sat, 09 May 2026 18:49:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 182CC3011860
-	for <lists+cgroups@lfdr.de>; Sat,  9 May 2026 16:48:59 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id DE5F4301F996
+	for <lists+cgroups@lfdr.de>; Sat,  9 May 2026 16:49:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 097732EE611;
-	Sat,  9 May 2026 16:48:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9A85A30BB9B;
+	Sat,  9 May 2026 16:48:58 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
 Received: from CWXP265CU010.outbound.protection.outlook.com (mail-ukwestazon11022080.outbound.protection.outlook.com [52.101.101.80])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C0702D2397;
-	Sat,  9 May 2026 16:48:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1E8D32FD66D;
+	Sat,  9 May 2026 16:48:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.101.80
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1778345336; cv=fail; b=BmdriSgWnOfjoPSp/O/RUbwoTSYois8aHGn0YPPjChENKZJ/7kT1rWQ1hxkXaLX5DrtyOFNikuJN/g7U+4P+s5pclIt/fZyloUiGJtmQ1jbT1m6BaNGvfSyrxKmMOFGTJFOgLqeyk3DqsKFV0UjuRVSgpbK1GUIsHNdL6f3zrsI=
+	t=1778345338; cv=fail; b=nPZvd1lazHNe8XblC4azQWM7Vcugxaspkxfks64RIScpeD71ZAnwiAFBrerJhpUTJdRe7IjN7OMPsOIhvE6F+Tm7tZX1ZtcEntt80aSXky2Zsea9pQqq4Rz60jhTLS3qE1IBFOnwWDlyRHGlDuPlYMITDDZlNMDhvWMk3tojQDo=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1778345336; c=relaxed/simple;
-	bh=SYFXpDSW1F8xxnD0Y1yodYOXwlVIXP8FXiHdsPpj9co=;
-	h=From:To:Cc:Subject:Date:Message-ID:Content-Type:MIME-Version; b=uOTvhPvUfTiAa4E3BngIs1pUlalYG/i0/r3VGmBEAkg8eMDpnn4ITyS+tuP1dJ2s75xH8xS5mW2YfEZvTeX5gJsQ4vrfDzyRurYhkYJlnb6E3PBtmUps4MIrKp9TI4gK3JeApdc3SottC6GKoWQtc6ZDwyBki4Q9CqR5S0GcENQ=
+	s=arc-20240116; t=1778345338; c=relaxed/simple;
+	bh=uh20slUfdhqE7y2m33b6UYY+EklMaylyVK4dbkRwzes=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=c9J8Xlug8n7bYJ/etv95prSBv4sjLz/rGN1pFbFRy4cFzU/bDznRwYjZPifbpgjO02O79mMG6hCS9hmsgagNeaU1G6QblHFMFF9LqJmj8xPxVu59MfROZhUfBd1iXu3wwbuDFjq5b/VwtgCAW/xpF4HDBj1KmsrH4RRXDfU/Cbk=
 ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=atomlin.com; spf=pass smtp.mailfrom=atomlin.com; arc=fail smtp.client-ip=52.101.101.80
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=atomlin.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=atomlin.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=JmukhprMCkLJjGG7N3ewHBldcRX/+ZcfKV4WF/tjGVgpA0yOoVwYWcIMD4SGQcH7pgPr0M1AGJc1Lj5yOfVajrSxIRJbJQrGQqkI1F6/l5PqNPJCWB2NUg0q9zeThcOk2asKxkNRejaphYkU2y77UJeUB5Q4o1TkknZDLwU3j5KYlYap+o6pRlBI1vRjGeLmY+QB3xjTQ9zzdiurc5ofNbkR+q3ah/zOYY3iv/q3W1o02whzbeJ1EIH0jI7HIjhg4+9nO/w4HwxZlMuLT3HdPqiNKjnkGF8aRH+cT0ZOHNz8ibXMLEwoURaNpPC3+2+teYesPB2jBIzcY0c+93IvbA==
+ b=CW7wHqaTrPuGWBKpWl+iGPJCzaOyXqYan4lSnBP5n3PkaZK5PjhYvRl0PiWOes9qUkN57vM/oIT0AFTreDk4MUrT1gnWEba3XydpNY+p8JFJ7gl61GUr8VuBeO/yR65bEtIUUfGknwo180jRFudveCIyh//6f2tyQFRPaSAlznPsVaE/kxAdnar7YxFKdNPWkkodC25ReHJq2NR5lv0HJo5bG1P2dYQn0JvqBtQtwlTW8GHc4SdFxUDXWeq79z7chw9iYcf79N30jc2fm1Wav0YEQfeyF7hEUttzgZW/TCyrEsaC40VEeEhk8515knidXfTx1Jl4sCGLaUgwJ1lcHQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=bZkB36RKhsi/hL1NlutAcSX0nHdgHD46/mLYW5UgrSw=;
- b=g3cygSLXbfqVq5wYEb9BCsg4rRdP2o6zaGMt4tPTb680m1CdXcFTnV/lHfPI0/+nOy7o2xAddXEE0GT9hW9u2kTINTfiDQQv3L9AKGlMnN7KOgTIZ4HPLQtQ9tLZeygv7PtI1ubSq5+JssDFOVccSrBjNw/8I1xnocxw1+8KSz9CKnJZ8zV7mETC53XNUCaevCXHd9Lfsk5mtYRtENbmjiGC3j4xMhAP+qUXljLZ/npfpxxZ3HkGXwct2QrPukyateJtc/zzh2qNb8tT1DEsHQbfIceKj8v0RykRvfFetKI/H+keEPNEA2wl5cKqUMrNTwRUgsJtATTsIOMOAzyp+g==
+ bh=YeAlbHKemalWGtQv9Osq6NfZmAxT8OeU7qJBbKaVQp0=;
+ b=ZDWRWsUYzgleNcQNtTQT+aC4dXlXOaxE2tQxKc71VEPzvASf0Gg6kXpuEh5jbQjR2BaPxVaVpufIvwJnIBuCfM09YVzbwpfdDFKMakeZNKzqsEfUEMCt6BXid7XZOo0hoWMy2jSxCocokVkTBS2/c5sJ0s/3v0hulcvMjcVMPltvoCRnOX9AnMyCfNGjoVRHosFOYLZBKsJwfqdUi5RRo5K7fRu9vW2OYN7U4r3QHbGNs+vYBNxg63p+2CFK+Ic3uj9krIaIOarBzNL1O98Ldsprm3AXjfodY4E+B3ZMQhIoe9LaA45kHKt4jRw/hVX5y72O1fURhxqijG869Rx3Eg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=atomlin.com; dmarc=pass action=none header.from=atomlin.com;
  dkim=pass header.d=atomlin.com; arc=none
@@ -47,11 +48,11 @@ Received: from CWLP123MB3523.GBRP123.PROD.OUTLOOK.COM (2603:10a6:400:70::10)
  by CWLP123MB6996.GBRP123.PROD.OUTLOOK.COM (2603:10a6:400:1df::14) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9891.21; Sat, 9 May
- 2026 16:48:51 +0000
+ 2026 16:48:55 +0000
 Received: from CWLP123MB3523.GBRP123.PROD.OUTLOOK.COM
  ([fe80::de8e:2e4f:6c6:f3bf]) by CWLP123MB3523.GBRP123.PROD.OUTLOOK.COM
  ([fe80::de8e:2e4f:6c6:f3bf%2]) with mapi id 15.20.9846.025; Sat, 9 May 2026
- 16:48:51 +0000
+ 16:48:55 +0000
 From: Aaron Tomlin <atomlin@atomlin.com>
 To: tsbogend@alpha.franken.de,
 	paul@paul-moore.com,
@@ -89,14 +90,16 @@ Cc: chenridong@huaweicloud.com,
 	linux-security-module@vger.kernel.org,
 	selinux@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH 0/3] security, sched: Expand task_setscheduler LSM hook and related fixes
-Date: Sat,  9 May 2026 12:48:44 -0400
-Message-ID: <20260509164847.939294-1-atomlin@atomlin.com>
+Subject: [PATCH 1/3] cgroup/cpuset: Fix deadline bandwidth leak in cpuset_can_attach()
+Date: Sat,  9 May 2026 12:48:45 -0400
+Message-ID: <20260509164847.939294-2-atomlin@atomlin.com>
 X-Mailer: git-send-email 2.51.0
+In-Reply-To: <20260509164847.939294-1-atomlin@atomlin.com>
+References: <20260509164847.939294-1-atomlin@atomlin.com>
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-ClientProxiedBy: BN9PR03CA0470.namprd03.prod.outlook.com
- (2603:10b6:408:139::25) To CWLP123MB3523.GBRP123.PROD.OUTLOOK.COM
+X-ClientProxiedBy: BN1PR13CA0019.namprd13.prod.outlook.com
+ (2603:10b6:408:e2::24) To CWLP123MB3523.GBRP123.PROD.OUTLOOK.COM
  (2603:10a6:400:70::10)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
@@ -106,77 +109,77 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
 X-MS-TrafficTypeDiagnostic: CWLP123MB3523:EE_|CWLP123MB6996:EE_
-X-MS-Office365-Filtering-Correlation-Id: e79efda5-829e-4f03-5a4f-08deadead8e3
+X-MS-Office365-Filtering-Correlation-Id: ef0dcb95-7335-424f-211f-08deadeadb80
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|7416014|366016|1800799024|376014|921020|56012099003|18002099003;
+	BCL:0;ARA:13230040|7416014|366016|1800799024|376014|921020|22082099003|3023799003|56012099003|18002099003;
 X-Microsoft-Antispam-Message-Info:
-	yNhD6W/7jtrEwQsoEgTzDs2BHrFydk1uXnoraQywLUTWBfWbvE7SLMjWIK0qI8mVwwB2YtG/KifuStsLJgEHBDGEX8heilB2OZaGbwTdgjjNhkvK4u/NpH5fUYuRitCmdNKwnrgiwwjdDz5oNDD22WGO7j8f6VqV3Zvt2mErvIf5EWtv8bXreu57LDc2pmFzqbtpMRq86t1Kg6Jlu99aaqeCXP8gT/fhEUN9DBTroZA3LXhSIgpSXI+O8uthqTTMkdIPgCaxMj1QFiJLHAeYVWL5P8oaSgVZgwDrqf63wS346jK1f07g+QGtLyS9+OiIP+MfcNSr43mZHKW3hShA3tu6PMVR5Ewf5uJMdV43Soubn5UI6MxMnPQVmFXV7ep60hY9jgmCSQiFZoquL0e6j+XsSk/0kNGX1wDZV1rZwNPvnN3e/TYe3i2qjReQaAkSeQi+Y4IifA0luRAtwtDSKlidZOk4/FWol9KJcR35cIplbaIcpQuEFgS/ImVxkaOzmAvBKY39SbcfpnkESNzDFld/xUFlwfh8xxjdln2GAw+CMnMkj539rAEnfGVKv4x4QcfVphPqW6LaeiSFGTr4m7uJ3i61q8Jw6hFyLCC1wOMV5UFdVIvcbBAzwqfYCzZ0T9SJuKNSg0eeGW/yXAz2WsFn2CFFGDnMZ/mzxaO2cHjizmdgq8nWzHvhRDOucXOhjVVYHmfCxzkoxayco9GLyVk59VbIFXe76JmZwCeUiow=
+	6lXSH0yTXl2b6Oz1QEEkPWIYSJTmmfc6uqZeJZ7Qy4n/XQIbuqL0ZccLNkcNrwyON/V6wyIPPGxZK0i1EG2WXFqQ7TmzN8aE07IvAvN88ekrLNltczgN9whVmZ30zqD8qKbcLgNpQU03Gvrmss6460zIhN/QDNHbYkdUSJ48ESulPHf+Glc2ZZvXsKe5FDiFCb6DPyW1Sfj48OSADl5GwOhtrsK7sfRPzEH1AO0H5PYHxtR2eFPuxF+lAHfTncnLBG4U/vU75h1/AnHAIKgznMtbM3AbCQ9M4PSphQrdvruUJUODQ4Wj4EXdhHtKeSBODHxH3rCbWIggmMiVdfBExQ0scUWNoOMhgAYkf8//O5zCadh2DOQwZxtCKmGNp+7CQAxEP7xxE44fo7zn8jTgwNTIwdB9RLnpcOzsFdlZwr2lKS/XzsRK7tjoP8nkjWeoo8kvAaIJL7fN7dvXbktJbpyNBJKTbnnh8LAZOoRzbb7OW1AcGV1+PJliisGMfjQGt/fMShFFFJQ4J0WXl79YN554x13oa8fl/AmwxgvE+gdy1u+k7esgN7YLMGUbDoX32gz0FQ12On34uf1trUZu06B2v087z/cxG2J5CT0oW1CFOJWA/yNIGMyRB3Cc2+Ea9pKnVliMJdr0u32usbPqI1TV16nPiQZaWwBVdBlxNPGeoBkhL944UwVO1X5M3cPlAIRCvdQ74ZL0UJfDKsERo9Ot2FIRve5JP32fYXmezDI=
 X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CWLP123MB3523.GBRP123.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230040)(7416014)(366016)(1800799024)(376014)(921020)(56012099003)(18002099003);DIR:OUT;SFP:1102;
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CWLP123MB3523.GBRP123.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230040)(7416014)(366016)(1800799024)(376014)(921020)(22082099003)(3023799003)(56012099003)(18002099003);DIR:OUT;SFP:1102;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?MB8hhV4ikI0u5TtwKVD1tZ12/s97r2jBTkMIgHNxFBeOeTszDmX4B2oNH94L?=
- =?us-ascii?Q?OtWmfPpzZaq3UieqdpKZh1NAPfqpRpXYXvAy3aoZAMI2aClLlC5k7ZNYVaKt?=
- =?us-ascii?Q?LyRsqjw7ezMhLTWfydR5JFCyfJBL7KkqDQytKvrYbojOpgWO9GjXecUaIg42?=
- =?us-ascii?Q?F18xtwh0CQ0WaRFc/1OhwVTnnY7fC6j9O5zsbJJC9FJDt2Qks1p9RNH4FSPT?=
- =?us-ascii?Q?noO93hGhILVe+RiZOWp1vCSFfpSWlSF9tTnwAFfdaUeVsWRESFcAjaiWBEOA?=
- =?us-ascii?Q?56pfblNcW1F4GrvpgUYaOBaTuSBcZaWFzQIXnGhyG331VmLPCTdAIubL0rUW?=
- =?us-ascii?Q?xKl72QJNqNgr/dTIS9IxSZyWjC585CEE3hQhaUq+EJbf9sLlJewcBdt5AziJ?=
- =?us-ascii?Q?gWpaimg25hWvjxCoLhecVa+i+l8OADFkBEibGtbQQFkRD/NBIk3sQGh9zToI?=
- =?us-ascii?Q?DySiZWhoHey5MUQtwsYEI+Xgj39j+8SZg9igSHn929F2+2IfLDXpseQUULyt?=
- =?us-ascii?Q?HJAbRUALdlR7QTlI8mbrJ+qbDWBVLvto6WEiiZxX3ZIl1/JjHl+d6DlCL8sE?=
- =?us-ascii?Q?nYGtlyY2GbqlfSN8dwBv8Gtot/MBgnrwkv3PIp6Yc61O/m3b8DlOJyso1fGW?=
- =?us-ascii?Q?MexQ3n7PgVNBa3S+vkgb9gBZXP+UGQsWQYSKW1e7CChJNNR6l1HLN51OR91x?=
- =?us-ascii?Q?Vd2+6QehVoR76U0SqooWTcsJd1zCz3CfKxOLkH6ktkGw8iFwYbm9oxdOxANh?=
- =?us-ascii?Q?ZjUFhhkxmw64NvphW3FPjmBCXQYMHvSsEWaE4wRveQRdK7g0b+/rlCn1NQ8Q?=
- =?us-ascii?Q?D/dL8JdUK0Cpb+gJrbgwu8g1JiJLoNsjO3JySkydQqCjqc1jWOm7ehwhyxhs?=
- =?us-ascii?Q?nCxn7PUal9jzl+bj4Zw+yer3UZIS42j01fAUb2q4AAUo0caQpobfATOyyZ/L?=
- =?us-ascii?Q?kt0oinhbDFa7YCcd7PfmvJGLurefhyUaoKQo0pqUoRehuiZ2TMJkpJQCedHj?=
- =?us-ascii?Q?IhQXRVFgupGmrH/FqyunHRi66MKm76jrSraV/uen3eoh8jL3KhX9VHO3minI?=
- =?us-ascii?Q?Jod/bnnm0/2zGgmwAa5cw7vOU5R0jFounNblxEDR/Gjdy6JoeLVcftH2cDxW?=
- =?us-ascii?Q?s10fI9UbbpnFUUdKM472hBkFtm4Cl3rGL05m6ghFzT83Ba5yg0c/qRux6sNj?=
- =?us-ascii?Q?7g0WjmTanwl9i4k1rxN2lAzfv/B2y5EXbgmX63Pn9aJmmTNjOXdCfKKIIJFT?=
- =?us-ascii?Q?DRsND3BZk2LZX/NqcPNKFsWl2GGsQU/Os7qhEyYO9BXwZs73WcFHvSCT72Ep?=
- =?us-ascii?Q?XLiwzY56E2ZhVkRhjivq6RKLh+48DE9xFwHvCYr9wE6OFV5weggcJu2GwVjM?=
- =?us-ascii?Q?hWWVk4dKNiv3u50VpuFUp1pmLdB2mNyJwgMZ6MOWiw5ICtpSA28MakEwKr2v?=
- =?us-ascii?Q?nwx4JJwhW3Ms4MpWscmlEBPin2tlt4he4nBLNmmbGOgM/QPyoK+MRF0oOLF0?=
- =?us-ascii?Q?oiT+k6rwELuYh7/JUJvSTork7D9PEr9E9pREJQYt8TpPIvrcEc0KPxN39eos?=
- =?us-ascii?Q?L/KFZYmOjP8Ilsy47EMr2PK5dcpopiCHPTJZxbNEaeTFnWm/4VWwmTew+X2O?=
- =?us-ascii?Q?cxjV3ApGIY7YLK5DRNo8DN7cBXSjSbiIn7KWwTT4DYJUNwp/SoembS43H6ei?=
- =?us-ascii?Q?sQe/jQo6NXLj0eNUsGP7eDF32JegYmBWkQfp6w1aGWn4h0Qly0PuAUVlml/R?=
- =?us-ascii?Q?cVg7iJMS5A=3D=3D?=
+	=?us-ascii?Q?QfQ39QjBqMgJc7eYlFQJNNpC+ntdheVgIXJ99YAnN9OGkuZ5w0FOkUpGsi+N?=
+ =?us-ascii?Q?uWY9XpHgdWpBaD8R9E7ILfErBrTjFPhhx2P5cw8aP8NhurDfxs/XSgYiK/0A?=
+ =?us-ascii?Q?FO6ZXzlhAZQZug1MIaKiSs+RUI7D+MuK8RS6p74hL0oUcoRQw/dNZvpzqavN?=
+ =?us-ascii?Q?SCut1ecps0b0Run0WrqFIE+2luMucHlYvgSfTGAzLRZmdH1O3rDMli4omwEN?=
+ =?us-ascii?Q?wqCdRFaZTm+gHR8RiNos+RplspyAhM7dhk1kWlX/fA/r3mNzfvNcQNKHXgBC?=
+ =?us-ascii?Q?ivW11bMVdgsqfQcRsK32zG84fp68y20+S2cinbXSgFjEqjXZ+ENVp7ugyXOy?=
+ =?us-ascii?Q?OtmXsxsVHKGeU5freVlGeZ4xyZ8ZnT3DLzGWBG20OAALA7VirK+k6rjuxJxv?=
+ =?us-ascii?Q?X7hvK6DhbL0Qud6ZcCMaNVQGPfKIlPjzLwq+oRwWezrLKECXfmLFGs2+o70x?=
+ =?us-ascii?Q?YBPSBMuR0EzCXCpySg1cetjHsyXCJMR1rvw8k+hJzG7YdfJhqf9nfQX2mrvV?=
+ =?us-ascii?Q?34H0fLBrtHHI8ToKYWeQR8fkumk6l0O7h7fKDCue9aLEXeMpF78C/KRjbu4/?=
+ =?us-ascii?Q?++r3RtfInM9tclWdrbZ41kDqJaRoL0q+ti+McBuDAzOLTfFyV+C5U1yDbmuP?=
+ =?us-ascii?Q?Dud5BwV4aO768HN61LRO5n8RBM9+bufAplxh5bYw+AxC/ZAn9Cis5vgS6A0J?=
+ =?us-ascii?Q?un0JD6Tgfqunx5f+JS/L4/qEvWF5cwauYS3d9Q5yanotv9lrM5lJAEvGKk2R?=
+ =?us-ascii?Q?b+8JLj+nBf9ZsMWin7bNfSEajBwgekh790gXlJJ+T8jyjmX1lJaiSkpVygA3?=
+ =?us-ascii?Q?okQWNd3SHilW+T/heynWaVdVYuV/wGzfMvN8EzeR/dIKRhHALbnypJSKc5tx?=
+ =?us-ascii?Q?pjBD4X4JyJ2iIcSVrit9PScpcj0gVp/Yas0dTgTB9jfcGP5tVCjViylHpMBN?=
+ =?us-ascii?Q?RPXTRsNsEHqr1h/mVAlcB3EydZQyYGkJiQYCowU+S5EzCzxFHI0UXsD0guKW?=
+ =?us-ascii?Q?5U07621638JDTOrXPnUgf3gS5JBlLQGhgxmYcUmF//L41IETYBDPRu7eC6uv?=
+ =?us-ascii?Q?WDm1HtCZNQ+YW+4NSyCXO7EVzdQEJH+Di60fvOQcuBKmbo42v1ZiUIvC9p94?=
+ =?us-ascii?Q?eIdBUXKxeOmALd24qAxZb/98AVUylIUilHu7d7d7MyroKZGz1/OEnUPAlf2h?=
+ =?us-ascii?Q?oVgRrUDsoBDguDjd2Wac8AHRwAx35kDGsLEdELG21BlgM/SN13Y8cHTYh5Qh?=
+ =?us-ascii?Q?GYAQnelCo56rZi0e/RvCfPtFimUwtSjUq/xUl2cd72vCtNHgp9So+MKJKshT?=
+ =?us-ascii?Q?KuR6ta4j0fJpYHgFjFCnarcDQEdOc8JqOYxOaFgBl//DDGbelCi1YDJDUvVq?=
+ =?us-ascii?Q?rXOI86vJlRY2GiN5OJMMFQoFU8pjsFhpDMoNmR32dV4gYWU9tiPrNnyUj2/o?=
+ =?us-ascii?Q?cK6pd+G8QAgzk0DGCK7eLYKfcOsy/4XHkG9Xj5OfN5SL1B/ayPjhj9HqJH7s?=
+ =?us-ascii?Q?4J/k7vzD0Pgd1uS2eEuGRfYwDDq4xw2RyvQAI8oqBxP+t8aAGOHg+QOvF4JF?=
+ =?us-ascii?Q?wC14Z6mJPb7IEKQ49f89Y2iTQgUdlTaKbyVPH3R2SKrTKHQm259taLP3PPSb?=
+ =?us-ascii?Q?i1ZOm2Jx37eGJ/KgXEdMf0lwwtUR9Dz5Zz41xOBzlLQZ6jXlAw+t0N+HmXw0?=
+ =?us-ascii?Q?ZBt+JJaKeBM60TYAG6c6CQB20Y1ZpajhK5B/9X5BjG5sBlc8v+8JkuymVu/p?=
+ =?us-ascii?Q?SCN23N78zA=3D=3D?=
 X-OriginatorOrg: atomlin.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: e79efda5-829e-4f03-5a4f-08deadead8e3
+X-MS-Exchange-CrossTenant-Network-Message-Id: ef0dcb95-7335-424f-211f-08deadeadb80
 X-MS-Exchange-CrossTenant-AuthSource: CWLP123MB3523.GBRP123.PROD.OUTLOOK.COM
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 May 2026 16:48:51.0390
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 May 2026 16:48:55.0689
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: e6a32402-7d7b-4830-9a2b-76945bbbcb57
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 9YztpON5eWsvqSKQvVW35dyi3KMZAc1Nej7pHu0B+MeaTy59yg5tbfTHhwko13rCJjX4n8kJaMGQ4ftoet0Zqg==
+X-MS-Exchange-CrossTenant-UserPrincipalName: NG4r61gOqSbwbDwdwCjy7CIxxflsYZ4a8tp6fV3unUlJ8mw0EZ75M/5H5lGCBF+ofqSsQ7Gw0Xq7LOObcqHA1A==
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: CWLP123MB6996
-X-Rspamd-Queue-Id: 35D025008BC
+X-Rspamd-Queue-Id: 5249D5008FF
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [3.54 / 15.00];
 	SUSPICIOUS_RECIPS(1.50)[];
 	MID_CONTAINS_FROM(1.00)[];
 	ARC_REJECT(1.00)[cv is fail on i=2];
 	R_MISSING_CHARSET(0.50)[];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip4:172.234.253.10:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
 	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	TAGGED_FROM(0.00)[bounces-15696-lists,cgroups=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-15697-lists,cgroups=lfdr.de];
 	FREEMAIL_CC(0.00)[huaweicloud.com,arm.com,goodmis.org,google.com,suse.de,redhat.com,amd.com,kernel.org,atomlin.com,suse.com,ashe.io,gmail.com,abita.co,vger.kernel.org];
 	FREEMAIL_TO(0.00)[alpha.franken.de,paul-moore.com,namei.org,hallyn.com,redhat.com,infradead.org,linaro.org,gmail.com,schaufler-ca.com,kernel.org,cmpxchg.org,suse.com];
 	RCVD_TLS_LAST(0.00)[];
 	DMARC_NA(0.00)[atomlin.com];
-	NEURAL_SPAM(0.00)[0.403];
+	NEURAL_SPAM(0.00)[0.325];
 	RCPT_COUNT_TWELVE(0.00)[36];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[atomlin@atomlin.com,cgroups@vger.kernel.org];
@@ -185,74 +188,71 @@ X-Spamd-Result: default: False [3.54 / 15.00];
 	RCVD_COUNT_FIVE(0.00)[5];
 	R_DKIM_NA(0.00)[];
 	TO_DN_NONE(0.00)[];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	ASN(0.00)[asn:63949, ipnet:172.234.224.0/19, country:SG];
 	TAGGED_RCPT(0.00)[cgroups];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,atomlin.com:mid]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns,atomlin.com:email,atomlin.com:mid]
 X-Rspamd-Action: no action
 
-Hi,
+During a cgroup migration, cpuset_can_attach() iterates over the
+provided taskset. If a task within the batch is a deadline (DL) task,
+the destination cpuset's DL metrics (i.e., nr_migrate_dl_tasks and
+sum_migrate_dl_bw) are appropriately incremented.
 
-This series expands the task_setscheduler LSM hook to include the requested
-CPU affinity mask, enabling BPF-based security modules to enforce strict
-spatial isolation boundaries. During the development of this expansion, two
-pre-existing subsystem bugs were identified and fixed.
+However, if a subsequent task in the same migration batch fails the
+task_can_attach() check, the loop aborts and jumps directly to
+out_unlock. Consequently, any DL metrics accumulated from previously
+processed tasks in the batch remain permanently inflated in the
+destination cpuset. Because the migration is subsequently aborted by the
+cgroup core, cpuset_cancel_attach() is never invoked to unwind these
+specific increments.
 
-In modern multi-tenant and real-time environments, CPU isolation is a
-critical boundary. Currently, the task_setscheduler hook lacks visibility
-into the actual CPU affinity mask being requested via sched_setaffinity()
-or cgroup migrations. This limits the effectiveness of eBPF-driven security
-policies when attempting to monitor and shield specific cores.
+This behaviour results in a permanent leak of deadline bandwidth, which
+incorrectly restricts the admission control capacity of the destination
+cpuset.
 
-By expanding the LSM hook signature, BPF LSMs are provided with the
-necessary context to audit and even restrict specific CPU pinning requests.
+To resolve this, introduce an out_unlock_reset failure path that
+conditionally invokes reset_migrate_dl_data(). This guarantees that if a
+batch migration is aborted for any reason, the pending DL metrics are
+safely reset before returning the error.
 
-    Patch 1 (cgroup/cpuset): Fixes a pre-existing deadline (DL) bandwidth
-    metric leak in cpuset_can_attach(). It was discovered that if a task
-    fails its security checks mid-batch during a thread group migration,
-    the loop aborts without unwinding previously accumulated DL metrics
-    (nr_migrate_dl_tasks and sum_migrate_dl_bw). This patch introduces an
-    out_unlock_reset path to guarantee clean unwinding.
+Fixes: 0a67b847e1f06 ("cpuset: Allow setscheduler regardless of manipulated task")
+Cc: stable@vger.kernel.org
+Signed-off-by: Aaron Tomlin <atomlin@atomlin.com>
+---
+ kernel/cgroup/cpuset.c | 9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
 
-    Patch 2 (security): Implements the core LSM hook expansion. It safely
-    propagates either the requested cpumask (via sched_setaffinity and
-    cpuset_can_attach) or passes NULL for unchanged affinities. It also
-    adds proper __nullable annotations to ensure the BPF verifier mandates
-    explicit NULL checks for attached eBPF programs, and mechanically
-    updates SELinux, Smack, and Commoncap.
-
-    Patch 3 (mips): Resolves a critical memory corruption vulnerability in
-    the MIPS MT architecture's sched_setaffinity implementation. When
-    CONFIG_CPUMASK_OFFSTACK=y is enabled, copy_from_user() was clobbering
-    the stack pointer due to an invalid sizeof() evaluation, followed by an
-    uninitialised heap allocation. This patch safely reorders the
-    allocations and properly utilises cpumask_size().
-
-These patches have been logically separated to assist subsystem maintainers
-with review and backporting.
-
-Comments and feedback are welcome.
-
-Kind regards,
-
-
-Aaron Tomlin (3):
-  cgroup/cpuset: Fix deadline bandwidth leak in cpuset_can_attach()
-  security: Expand task_setscheduler LSM hook to include CPU affinity
-    mask
-  mips: sched: Fix CPUMASK_OFFSTACK memory corruption
-
- arch/mips/kernel/mips-mt-fpaff.c | 41 ++++++++++++++++----------------
- fs/proc/base.c                   |  2 +-
- include/linux/lsm_hook_defs.h    |  3 ++-
- include/linux/security.h         | 11 +++++----
- kernel/cgroup/cpuset.c           | 13 ++++++----
- kernel/sched/syscalls.c          |  4 ++--
- security/commoncap.c             |  7 ++++--
- security/security.c              | 11 +++++----
- security/selinux/hooks.c         |  3 ++-
- security/smack/smack_lsm.c       | 11 +++++++--
- 10 files changed, 64 insertions(+), 42 deletions(-)
-
+diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
+index e3a081a07c6d..b8022f6e2a35 100644
+--- a/kernel/cgroup/cpuset.c
++++ b/kernel/cgroup/cpuset.c
+@@ -3029,12 +3029,12 @@ static int cpuset_can_attach(struct cgroup_taskset *tset)
+ 	cgroup_taskset_for_each(task, css, tset) {
+ 		ret = task_can_attach(task);
+ 		if (ret)
+-			goto out_unlock;
++			goto out_unlock_reset;
+ 
+ 		if (setsched_check) {
+ 			ret = security_task_setscheduler(task);
+ 			if (ret)
+-				goto out_unlock;
++				goto out_unlock_reset;
+ 		}
+ 
+ 		if (dl_task(task)) {
+@@ -3070,6 +3070,11 @@ static int cpuset_can_attach(struct cgroup_taskset *tset)
+ 	 * changes which zero cpus/mems_allowed.
+ 	 */
+ 	cs->attach_in_progress++;
++	goto out_unlock;
++
++out_unlock_reset:
++	if (cs->nr_migrate_dl_tasks)
++		reset_migrate_dl_data(cs);
+ out_unlock:
+ 	mutex_unlock(&cpuset_mutex);
+ 	return ret;
 -- 
 2.51.0
 
