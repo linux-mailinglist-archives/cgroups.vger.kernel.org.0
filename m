@@ -1,82 +1,102 @@
-Return-Path: <cgroups+bounces-15700-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-15701-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id sK+lMTh9/2kU7AAAu9opvQ
-	(envelope-from <cgroups+bounces-15700-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Sat, 09 May 2026 20:30:16 +0200
+	id +BYaGFCp/2ng8wAAu9opvQ
+	(envelope-from <cgroups+bounces-15701-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Sat, 09 May 2026 23:38:24 +0200
 X-Original-To: lists+cgroups@lfdr.de
 Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5E851500FF7
-	for <lists+cgroups@lfdr.de>; Sat, 09 May 2026 20:30:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id EED7F501812
+	for <lists+cgroups@lfdr.de>; Sat, 09 May 2026 23:38:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id BCB48301187C
-	for <lists+cgroups@lfdr.de>; Sat,  9 May 2026 18:29:44 +0000 (UTC)
+	by sea.lore.kernel.org (Postfix) with ESMTP id 73E6C301428B
+	for <lists+cgroups@lfdr.de>; Sat,  9 May 2026 21:38:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 759213B6C09;
-	Sat,  9 May 2026 18:29:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 38DAA39934E;
+	Sat,  9 May 2026 21:38:13 +0000 (UTC)
 X-Original-To: cgroups@vger.kernel.org
-Received: from LO0P265CU003.outbound.protection.outlook.com (mail-uksouthazon11022124.outbound.protection.outlook.com [52.101.96.124])
+Received: from LO2P265CU024.outbound.protection.outlook.com (mail-uksouthazon11021075.outbound.protection.outlook.com [52.101.95.75])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DAD5E1A9FA4;
-	Sat,  9 May 2026 18:29:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.96.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8124B38D018;
+	Sat,  9 May 2026 21:38:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.95.75
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1778351383; cv=fail; b=icMUOMPFeo1ck+EgdCNuOxMoMzQ2qvRFV2BHHesEM10mrbnG9ZbSYKgehe8oYomRFqNSA8nSNxGLVnxFg54RKAJ0vhvtAGqP+yZUbxTj+gsPJIqkivk4JgiUY9gBFnH7gPW7gNCvWl4dMHDqvDjJX0vTWRfo85qTc/xVP8GdbVU=
+	t=1778362693; cv=fail; b=uQK/y+XfpVBMH5uZ1Pc3bkauW6okQwP4SQLyjTODdDQft+wjyMnFIWXEPJ4ocPIIHxMLFFq/0aDyKCFNoD0gLQjJ6XXy55SR/zCNL0DtRlQZLPKhP0iYzKmCyq4JbSRhI32RL7qUphFVWp/jB6HLSCYhWVOxquYuPuvSCeqFoNQ=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1778351383; c=relaxed/simple;
-	bh=k02jLqSfXwie33E+/vasoJP+CnqQInRAw0IOjkxOkdY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=MX5YiL2q/XMB46+VEyK0XKbdYy83OH9HSeTTS6I3eM3z1Oyh/a4tacKATiOUJ+jfosniPIK0/4ssiHPJDt0LccIqj1bLEWQeWRb6TVbtHwh8PlXScaCXsAZpTsmbcRCJm0ZviKOiGEjoedUFBOew9SXskCzjtmKie76BwwLvKTg=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=atomlin.com; spf=pass smtp.mailfrom=atomlin.com; arc=fail smtp.client-ip=52.101.96.124
+	s=arc-20240116; t=1778362693; c=relaxed/simple;
+	bh=buKCANOeWDyGgV/o0ydCJO1RW5cuCMXo7FttBSt1fyk=;
+	h=From:To:Cc:Subject:Date:Message-ID:Content-Type:MIME-Version; b=F896HIKoc7xW6lW1zInxt1P176GFjSsUyq/GBf4NRNJDHjaAChPxyY9zWkBNC4t+cqKTVxUG6Qs8vPpNCWTcAamGI1T3joTFREuW85J461J0rrKXnQ1G12seg0C6vsEloAgZyQZs0g1MKNDbvSBxKnLk9rItZ8DcY5sYgzjOJy0=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=atomlin.com; spf=pass smtp.mailfrom=atomlin.com; arc=fail smtp.client-ip=52.101.95.75
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=atomlin.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=atomlin.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=A53ABu011bLRbyRGcGoQ2X9KOvXS5Smr62gXELofMDmQygcxPOQ3X1MUflpyGa7w+/ebPeBWTlMnPu38a0a3858EZdwWYiG1MXq8xlbknCGpJCYeRC+CQrErIlX/3SZFLxnkvLF38FFvs8wPYyLsfNyfPb3htSBMKQ2W8r0KXNbpDYNWiSKY58XpdfPp9JhzrLlsK8nAYFJfFnZWif3LcZ2rXfCS1K1l0b07yDAlnrHJpAny+mHb54+E/YpQ3P8bak+/2QbcmQHGxLmwi+2fx2I4Yij3XRhYXXds7HoyqdoejSOly2EXL1O28c6jsiCQB5Zwg4oN2gaWzrWVGMkSSQ==
+ b=ykCszCoXeRvDzGt6RJtaVvttkGmFbNtD64gAFpyoztvb5wNOZick/Y1RMT6HlAPkKZ1q15UMUjDqcph2TSRoyd98BrnJbUsCpo5WnFnIfb7VEJHyGV9TgmgFD/JaP9QE/UzV9QLRpa0PYyRm4yJDZyRkXAcmKy0nZUwm+nV7EXycuKJtM5AyO/FEXT8m93Occj8TyVLhkAXu7qrvZhgCVMnzAiKOFamMl0zRkrDktnsZXoiC0J8NOCe6fzX4RX42DckM0bpDnR/ZzTPQRf1o+dDulfPffL/yZtNiECBVdgTIxhfQj2/L4AOP98vlurS8RafuvfdwHILAJ91PiMOKng==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector10001;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=eCJPfQTly8F0Z0XF2rs+TFm7JQXr0vLLvAqRkrQdu/4=;
- b=O6d7CEWtF5Pvv2TrTZlRWTM+nPu/e4KunOvKRkRt2gLaCmmEP2aB/Zb8RWyaq6HPak4Pjol8NpRZiiylMR/7JQpJYoONOk5LsKh8cbGOaN3xSDnwsxtYUSPybqZcV+UHzLyJS67+B7qocIms2P2MLgOrMrTaOG7eaMMkOiMB/tQ0/vwWydL2449/eJ/CN+VT69q7AiI14IHvjilbYw6OzGawWasuATH5dsqKPilTu2h+J++H3u1LcthNvjPQBLQ5VxTlY/VcvmWrNKPD5QN5MWejzAGvIO8mV8YpDJDa1Rs53VxhThItJgVRsQ4n5lCagyffDky4ZJwJ0U6aFOBMCA==
+ bh=lJ+XcmLFKtP65cEQfGCEYtnuWzFnT5QvytvnoKA1qX0=;
+ b=TRc8CYjgc/auPokgrz5Ulc66utfERrqzjq4QVBsVEAFx7dDYS3MtrbfLwFUnRHwDK43VhHSbBEN07KJj2guG49ERCR7pMykhRltFfs2fJ7F3iVDz8ngN1CF7zLQQhqN1L3dyC25Kp8VPeN6HoPNTxyRVtno8tJgDNYOdu/tn+AcVg0+U2jZ9kTuJcHL/TEKWRLBqqKDE8xYIJbMkzytjbdZ1OZRb5LavQ21lIyCHwbEjof+G+fPtRAtmc7R0FDvKvtBSyC3dsstICtY8W0YacRkV8qt57ZDyafh+9+7Ja2p/NGC7Xt2nG0Z7uLbuu/0axtwpBrssWXR+evBbJrGLsA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=atomlin.com; dmarc=pass action=none header.from=atomlin.com;
  dkim=pass header.d=atomlin.com; arc=none
 Authentication-Results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=atomlin.com;
 Received: from CWLP123MB3523.GBRP123.PROD.OUTLOOK.COM (2603:10a6:400:70::10)
- by LO2P123MB7306.GBRP123.PROD.OUTLOOK.COM (2603:10a6:600:32a::15) with
+ by LO2P123MB5888.GBRP123.PROD.OUTLOOK.COM (2603:10a6:600:254::10) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.9891.21; Sat, 9 May
- 2026 18:29:37 +0000
+ 2026 21:38:07 +0000
 Received: from CWLP123MB3523.GBRP123.PROD.OUTLOOK.COM
  ([fe80::de8e:2e4f:6c6:f3bf]) by CWLP123MB3523.GBRP123.PROD.OUTLOOK.COM
  ([fe80::de8e:2e4f:6c6:f3bf%2]) with mapi id 15.20.9846.025; Sat, 9 May 2026
- 18:29:37 +0000
-Date: Sat, 9 May 2026 14:29:31 -0400
+ 21:38:07 +0000
 From: Aaron Tomlin <atomlin@atomlin.com>
-To: tsbogend@alpha.franken.de, paul@paul-moore.com, jmorris@namei.org, 
-	serge@hallyn.com, mingo@redhat.com, peterz@infradead.org, juri.lelli@redhat.com, 
-	vincent.guittot@linaro.org, stephen.smalley.work@gmail.com, casey@schaufler-ca.com, 
-	longman@redhat.com, tj@kernel.org, hannes@cmpxchg.org, mkoutny@suse.com
-Cc: chenridong@huaweicloud.com, dietmar.eggemann@arm.com, 
-	rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de, vschneid@redhat.com, 
-	kprateek.nayak@amd.com, omosnace@redhat.com, kees@kernel.org, neelx@suse.com, 
-	sean@ashe.io, chjohnst@gmail.com, steve@abita.co, mproche@gmail.com, 
-	nick.lange@gmail.com, cgroups@vger.kernel.org, linux-mips@vger.kernel.org, 
-	linux-fsdevel@vger.kernel.org, linux-security-module@vger.kernel.org, selinux@vger.kernel.org, 
+To: tsbogend@alpha.franken.de,
+	paul@paul-moore.com,
+	jmorris@namei.org,
+	serge@hallyn.com,
+	mingo@redhat.com,
+	peterz@infradead.org,
+	juri.lelli@redhat.com,
+	vincent.guittot@linaro.org,
+	stephen.smalley.work@gmail.com,
+	casey@schaufler-ca.com,
+	longman@redhat.com,
+	tj@kernel.org,
+	hannes@cmpxchg.org,
+	mkoutny@suse.com
+Cc: chenridong@huaweicloud.com,
+	dietmar.eggemann@arm.com,
+	rostedt@goodmis.org,
+	bsegall@google.com,
+	mgorman@suse.de,
+	vschneid@redhat.com,
+	kprateek.nayak@amd.com,
+	omosnace@redhat.com,
+	kees@kernel.org,
+	atomlin@atomlin.com,
+	neelx@suse.com,
+	sean@ashe.io,
+	chjohnst@gmail.com,
+	steve@abita.co,
+	mproche@gmail.com,
+	nick.lange@gmail.com,
+	cgroups@vger.kernel.org,
+	linux-mips@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org,
+	linux-security-module@vger.kernel.org,
+	selinux@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/3] security: Expand task_setscheduler LSM hook to
- include CPU affinity mask
-Message-ID: <ork67oi3zx4fgclrv7mukdhw7pgwbb6gjvlchfjc25edfulbuh@azozabcximwr>
-References: <20260509164847.939294-1-atomlin@atomlin.com>
- <20260509164847.939294-3-atomlin@atomlin.com>
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="bfnb57jctgu5ouv2"
-Content-Disposition: inline
-In-Reply-To: <20260509164847.939294-3-atomlin@atomlin.com>
-X-ClientProxiedBy: BN9PR03CA0515.namprd03.prod.outlook.com
- (2603:10b6:408:131::10) To CWLP123MB3523.GBRP123.PROD.OUTLOOK.COM
+Subject: [PATCH v2 0/3] security, sched: Expand task_setscheduler LSM hook and related fixes
+Date: Sat,  9 May 2026 17:37:59 -0400
+Message-ID: <20260509213803.968464-1-atomlin@atomlin.com>
+X-Mailer: git-send-email 2.51.0
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: BN0PR04CA0087.namprd04.prod.outlook.com
+ (2603:10b6:408:ea::32) To CWLP123MB3523.GBRP123.PROD.OUTLOOK.COM
  (2603:10a6:400:70::10)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
@@ -85,147 +105,168 @@ List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CWLP123MB3523:EE_|LO2P123MB7306:EE_
-X-MS-Office365-Filtering-Correlation-Id: b1c373d0-b894-48e3-e7a3-08deadf8ec02
+X-MS-TrafficTypeDiagnostic: CWLP123MB3523:EE_|LO2P123MB5888:EE_
+X-MS-Office365-Filtering-Correlation-Id: cafdaa9b-428b-4b99-467c-08deae1341f9
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam:
-	BCL:0;ARA:13230040|1800799024|376014|7416014|366016|921020|56012099003|18002099003|22082099003|27256017;
+	BCL:0;ARA:13230040|1800799024|366016|7416014|376014|921020|56012099003|18002099003;
 X-Microsoft-Antispam-Message-Info:
-	YeSUtSvevzHTfqRfjbxPATI7Log8h5JDbZQ1QFeMc5pK2vrYj+p6j2KJ7R+zHrxO6MVEaTXbpVQXr/e2bBc+o1n4OdYKj+bGaj1EyIcKShdlMI6c86gIDYlP/m5Z504oasF96yDkcLBXkkkkukzUSGT2o4W06fn/xB20GOxC/Sg1hDxp0Gw08ZBKoHOuQJlOh8sLq3rOyqor1jts2tIAwXfDOS4qYCI+ZgNzp3Qw+zoemljUQIK9LdrJP0W2swnxpoLLKvi4CW2nxiyqmQHdRRNPwr3ikVEdgf4UEKePO/fAWdYSKw03TX1DAmMDzQuoUdbJ+3l5rp1IzLqa1gATD275Ct2juQnsckTUr4y5DNOj5XTXtpSTqU24MYlQHETnzLsAMRAtDyF2oc0EOsgCEUUpW8M0+WHwDOsuzhrclkPzLCWVskY2q/+KEBGuOov6RgpLR9NooZT6ytdpMNPx8SGI7nBV/nYvgYkz5z2rETMYTFTH6nqxeKAA/hz4t1AgBCo6LAPAcBp6/cUcmFkSSMR0qTJLCzIjw4DSP6f+l6Zen8w12+Qgjy4w3E87tmAjmnrqf4bV4cvBsW9sMgODiKZal5m7Pr7AaLT6cThqJV/vUs9gmNXroqErTCqBd7Dabzuk8hVfidBb0eQ69E740Ha/LgoExn7vXdxDO80NhQokqpyaY1Ncm0TzVTPDt2aUeQ5XqhiGG7DIwhU+Pkl8YnHfkeWEVwpcjgSNkkwnngybeQfPIQGpvVyX3RHEqVae381wC8kDHGRUlC+zZxZRvA==
+	2713yXbbE5P3jEtaWA9INqc5BdokFeishe1wgUPN906mbY8A6kxThEFFbhZ1B32PekufVhygBQI4OdytbL6GSY5Pw/ZBP2GjllZD4XXKJ7YR/TENtIre524O8+7o2DO5LNBWxsWoUppIcCEYlhQVt6/3rwax4tyiIQiD0Tm+TCJvukGnTiL0saXi39P5xSA8Us4z1tl+4GMYhe00grPXtD3lLm2oWe8VA9YtwKREYPa4g1VPnoL63c3oWJh1wy1MtA4tP1+YHnT1OvmRaHDCU2h7lldqR+GWiS139/M/de0p64WDbfaUaYu3CCjODCtdRJuqFxWd1WRosBGnBNkws6o6469FZ7B+SEW//ryk7hFOEEONZkE/vVhzdJCT4mIlQItRyFwdJIIy5Z1DVLl7I4bLwdKWn+Og5AJZRVD79OK4Y9zQNoJCM7Cdfbk/kfjDLUeZWoXeTWtm7Uki1d3sq0WFSRirYjyXhdiflDdQBxyPdUAt21NGmFOcAkH+PjHn5yCC9E5yklOZvdsKDK/hWrEDG7MVb3uXjCoiwwpDB0bPysdgwEbfAsWhl1dV2D5nPibcq6bl0PhSWRcaLV6cuPE2sGWDzUGpCt35mzaPDUVjt+9CUzfacWfJpTdawlS1yM1QvD5YWaSTNyBDD3mAEngIz+TAcLYakdQCiiq4abrCd5vYs8i/cePlv36y4z0tv2DCZ0QESRqerqqRee3y8sVRz0xJpwv4P/qnlsyrk5gxqKX95frdXFRDaB0LBDQg
 X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CWLP123MB3523.GBRP123.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(376014)(7416014)(366016)(921020)(56012099003)(18002099003)(22082099003)(27256017);DIR:OUT;SFP:1102;
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CWLP123MB3523.GBRP123.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(366016)(7416014)(376014)(921020)(56012099003)(18002099003);DIR:OUT;SFP:1102;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?LzBvUG40bTdPR0FyR2hFOXB2THJsYncwdjFqSUhjTyt3ZDNDVEpuQ3VPMHdn?=
- =?utf-8?B?ZE1FWTdtTFBpQUNXVzFZRjJRa2lOZUF5ODJxVmk5WisyWTU1Y09HU3p3bEJS?=
- =?utf-8?B?aXhjYUQwbGsxdmdoRGlGL01RN2ZBcjVnYVFDZ3JpT2xTV2xKTlNHc0k1RXU0?=
- =?utf-8?B?MlFVUThzQ1ZrOEM5R25EMkRiVkdwSmMrQlVYZkp4dy9CYUl1d2hONmdodmM4?=
- =?utf-8?B?aFlQcXNML2tNV0tKN0d1YW1pNFpyTCtoQS9XWTRzWWhQd1ZXSk5FT3YzaG1i?=
- =?utf-8?B?UVFjUGI5cDZsSHRKQ1YwTkY0OTU4cy9vQU5FQjNEYXZ6OUpvYll5MWpRRmJM?=
- =?utf-8?B?eFlQbnU3QXJ2L1AwaENhZ2I5aVAxNGI3OHV1MUVFOWpWeXEvSFFGeFlEcFhz?=
- =?utf-8?B?Rjh4eU84UjV3UkFLTTdmazJid1NJQzgwbXRVY1dqd3lHZmJxQXkvRE13VnFV?=
- =?utf-8?B?VE5zSWVsc0ZBUVFCSlBJZUYyY1JWakkwS0xLdUthakFzQ0UrZk5BZ0g1OWFR?=
- =?utf-8?B?VkN3T05OLzRDbmU1U042UGZLMUhtSzQxR1VHVi9oOVp3SlRxTFc3T3E5WkxL?=
- =?utf-8?B?d3FVQUM3Y2hBN2RmRVpoaFdNOTV6eWJxQzlqalVxZFdXZEJpL2ptZDAxcitl?=
- =?utf-8?B?SUdEVzZCSjFsSmpCaEtOWDdjSG9yR3pzV0h3TGh3ckdrU3BDUjZSOVQ5RjZn?=
- =?utf-8?B?MlI2alZmMUZ5Zk8rbFJDNVRKMUhYV1NIelN2ekdTTy8yL2RPQlJwS3lod1FF?=
- =?utf-8?B?cXByUGhKOEQ3aXNFSGRCV01wVWxRdjBwNitMUHhQeEg1dTIwOEw4aG9RTGtn?=
- =?utf-8?B?c3U1QlB4QWFpQUhxUzlvY0x4dUVJTVVzZms0TFRBRGdhMDRqTllmN3pZeVlp?=
- =?utf-8?B?UlpxMm1ua0VjNWFrOXNFOFgydXFMbTFUY2h3YStkYnpwdVlISW1KU2FMVlZK?=
- =?utf-8?B?SHIvdTFCVWVkMnNzV0pZQjl4U252YThNbDBIYnBzb0hHS252QTNkN0cyZlRX?=
- =?utf-8?B?dGJsRW9WaGpMTUF1akhlamZFUjdqOWRPK1g5dmt3RkpIUWhzbTEzZWd5NjR5?=
- =?utf-8?B?TzB4cW9ORUtpVnR6SDdTM2VrZFRTZURWdGdWYWUzYi8rdy90bFViS2Q3VWxT?=
- =?utf-8?B?TUxMaERBUWU4NnFmRm42a3hZR0tlWHZjLzh6dFM3Qmg1VndUN2RrMFZtK2JL?=
- =?utf-8?B?MzNORmFCZFh0d2JDZlZNQUtjZFc0c2tXblZPdXk4SDVsVm1mQkFIaFhYWnBW?=
- =?utf-8?B?Wk1jbmFiSlNPRDE4cnN0b3kxZVd0MVRwd3c5aEtlb05LRjhtWWNQNVJtNDZ2?=
- =?utf-8?B?aytBd3FFOFdoRGNhSTRPb1FyUTZnS1dsREl2Z3ZYZEtCN3RiVFZEbEs0bmxp?=
- =?utf-8?B?WnQvWE1qUXlJc2lYYy90L3k2OEp3K1lqanVMWTVrTUI3MGxOZ1hmM3l2Sm00?=
- =?utf-8?B?TDBTbzg1MzdSelZFcUtPdWRlem1pazJHTHRXRlFCeTljUURNQWJKMCtuV2k2?=
- =?utf-8?B?WGtEbU8vUnNPQStSY2lkV3FzZkd0TmFEemEzTjY3NVlTaENOWGN3UGxOSGFY?=
- =?utf-8?B?Z3A1Uzl1aitrKzc5TVR4akNTTXpFMkF4MzFYdW5ocFhMV2VJSENla0xNQVht?=
- =?utf-8?B?RGcvNTdTb09vS3pSeWV3YnBFU2RWTW9ITnh4MWV1aHpLdjVuWDllT2l5Q3hV?=
- =?utf-8?B?QkpxbWtGSTZvenhFc2RLaDFlZjU0UnA1c2ZWanFleFp0WEt6aHlPbUhXY0lG?=
- =?utf-8?B?VXVXYi9VWjVmSzN2THFxZTZKZXBrdXFGb3pQL1RQcTExVUpxT084bVNNVGtt?=
- =?utf-8?B?anB0bjZkd3owRmNla3NJbGZ3d0ZTcmpyN0tZTFFyMkcvbTQ0Vnk1UWZjdjdR?=
- =?utf-8?B?eXZMVzB6MUNKNVgzRnQ5MFVObUlPSmVZemt5ZExOWGdlQjE2emFZblBMQ3pF?=
- =?utf-8?B?Tkd2K09RS1Bwc3NNandmWWQzMFR6Nk1vQnZxQ2ZaSERyRUdaMElKSFVpbnVD?=
- =?utf-8?B?a0hNaG5wd2diTnRKcG1lcTFncW5IZlNmSjZCWnd5WUJLajQ4SzZRSVozUEZJ?=
- =?utf-8?B?S3FnbGRrNm04MWtaVU1hT1J4Rlo1VUFvbkowM0ppdmNFKzJLUkdIQnAxRGpH?=
- =?utf-8?B?MHNpSzQ2NFZLZkFPcmg1VFpFeEovTmFpTThVMlRmZTdhZUtwZHRaQXpyZjlX?=
- =?utf-8?B?T1ROdEdQVzhCWWdsZHdJb3JmbkpMVW55T01ac1phTzFqaDZVcDZEVUR2SUU1?=
- =?utf-8?B?a2ZGSGszK05yOFlGdmNJZVNOb2RpajdrcW1WZi9xb3BKYjJtQjdlWGsxS1Fh?=
- =?utf-8?B?SnM4L2o2ZnVjSlIwK0tCYm1IVEJId3l1K2k2SUV5WjFvUDVoWTU0dz09?=
+	=?us-ascii?Q?5WQ/d5HH7+aOLzDeXZOA9x0tOT6SvZGtqVl7/jhLkgtO+cKrJMU0+DRyELfj?=
+ =?us-ascii?Q?LhOOPG5iweVYNFBmWttG1ZSZjntB4eXbv5bmn3XU5rPnUkMmU0ujEhizrTLH?=
+ =?us-ascii?Q?VWOieStopXsQZ3slMke39AfzVdoALGXDh3Lm++ks9ncV3kd7uhMNzP+EwpNO?=
+ =?us-ascii?Q?bddBn90PNH3xha3PaRKbHSE86pvDhIVebXLRjElBnlx4DMJTNxICt0igfv4L?=
+ =?us-ascii?Q?NLElF9ptb5+b1DQpV3hoVMNBMUqdeR/YxoXb3DH9LiUSsLdWQ1Cw5/dHjdEv?=
+ =?us-ascii?Q?Fy3sBrJclbkrQlyUl3vgto0kRmWScy5+r1GLZRd/DRV9wuMeQ5aCNWgmD37F?=
+ =?us-ascii?Q?6toi4k0SHICHRFxdl2BMy8Y7TT4eMpHFnYDQQvEaqjyOg4ydhQSilAvWeDEV?=
+ =?us-ascii?Q?lwc6w7SHaUXBxtL3kPp9uHGMkpFcr9NFl88pogtA8j+6gQuDJNyjaWnXnyu0?=
+ =?us-ascii?Q?Yrnb9lHtmZ3KUQMc6fb7mt8fIMzn+LDCCyCvHa1IsGaC9ULk+TO7iB2exiRo?=
+ =?us-ascii?Q?U4ajsT8Fbjc5gALecqEA6Fg3kLLIYijvBIa7Xl0OzmNrOCrpYr4llOR7z9Jt?=
+ =?us-ascii?Q?ZEEdqwrNu8nLJixonmVSEho8kTDXwKw9FrOMQhXTnPL03C3G7wny7WbiCB/R?=
+ =?us-ascii?Q?wtH5Q+j0B9jUe8SFuq3jhW7i/p92Z4++6Y7mRhh65QQ6FE+dBXDYWQJkZGE0?=
+ =?us-ascii?Q?HA0pQvNStBZsTvZGajkYQYzTLfgHG76auJGd+Z7rtBoBAG/DVY8SO59bj9e9?=
+ =?us-ascii?Q?hBfUo1ofAeZRByNh6QY2IiI5iMVHB+Pg4Vq92HN6iXS/5JRbYM+EkAArvcgW?=
+ =?us-ascii?Q?mEJ/8+WXr9J0aCYwlh3RqFvoRqJ8Ri3dbIEcM9NQ1xdUtPaWw5s3ywlyE/r4?=
+ =?us-ascii?Q?Iv6xzK3fVVsL2SbYtj4+/ZXUsfsSFkoRzZwc1cUbXHILK1+WLHOxJ/Rs58Pw?=
+ =?us-ascii?Q?mD2nUO459qwl2PotTg+BYUn11dREsZ3kWEIsXYAy3peeZNttoAGEL0Sf/idz?=
+ =?us-ascii?Q?UbOSls0ttjp+0k2dMZNp1har5fLDwQdoTV3EyRVQs//KYnyN9p60MCFfR2pV?=
+ =?us-ascii?Q?w9OW26wdtGUd4jsijnvp9+Mof5CfA1IRMdprHDc8/exnOZpjXj4O3SjRne6E?=
+ =?us-ascii?Q?Iths/qL4av8UY91u9XQTrLWltEguYqGK5eGnQNqToGRWEoDjYfhsmHH6tEk1?=
+ =?us-ascii?Q?NzlVOobcCUvBRt2tCrSNaHThlIlTMeZdwYsUspa+ovCIdwikzScmw3HTA2dD?=
+ =?us-ascii?Q?ummww/VjSEQRwci+yg3iywukbEbzwgCXqLmNUqm6mdgXPVuTEZpZBD1vQykG?=
+ =?us-ascii?Q?CY9tk9HaGJM6s1QXeyTnFFBxQzW9aPRGlzSXmVhFlNofX24w8GluGOgCPxj4?=
+ =?us-ascii?Q?hsTZSk+SS6yckat0X49rHYOk9PuXbPfL5e8KTL2LMZe0duTehpGWTdnzXWV1?=
+ =?us-ascii?Q?STUrYqTwXdMk4QQvEfG1xe6b/fmAmfwcRxzMYO4MJd/sjfmz4265MQrg3KO6?=
+ =?us-ascii?Q?rkzSkit1lM2K8rcmW8C33T1w8+rPLecFd9RbZD8V1Ahm2WHBM1PyEzfA7XWX?=
+ =?us-ascii?Q?lG6YSfqelvGfaSUv4l22sXaUoRlJE3D7uc/sEdXRhFbd2HxGdZDsIbRyp3jN?=
+ =?us-ascii?Q?V90sVC0jTVPOG99jhhPsSjtMS3vb54DPJc6cD0iCCg1cCerzz6iFuB3gzkCA?=
+ =?us-ascii?Q?/+sXoCAtMltDxKlEE6upKwPN9CmhUAPjc4471qBq4foXJOK80LfX4KRhFspG?=
+ =?us-ascii?Q?ZM8kTexzgg=3D=3D?=
 X-OriginatorOrg: atomlin.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: b1c373d0-b894-48e3-e7a3-08deadf8ec02
+X-MS-Exchange-CrossTenant-Network-Message-Id: cafdaa9b-428b-4b99-467c-08deae1341f9
 X-MS-Exchange-CrossTenant-AuthSource: CWLP123MB3523.GBRP123.PROD.OUTLOOK.COM
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 May 2026 18:29:37.4434
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 May 2026 21:38:07.0938
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: e6a32402-7d7b-4830-9a2b-76945bbbcb57
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 5JOJY42Eiqzda4i1vAjf4UckhQL0maRglgCZH3YsAhlqCVxQp805aTg+0cMJ5fDIyhbi2hKpl5+Ylo05hXvaXQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: LO2P123MB7306
-X-Rspamd-Queue-Id: 5E851500FF7
+X-MS-Exchange-CrossTenant-UserPrincipalName: EpO9L3fPMQLmQ2fpvb7UiJcP3XE3QQjhA1FGO0NIo1jQ9ioUfI6VEHVJpTiuBydhEfYYrPx9dbl6Xj31nSm8xg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: LO2P123MB5888
+X-Rspamd-Queue-Id: EED7F501812
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [0.44 / 15.00];
-	SIGNED_PGP(-2.00)[];
+X-Spamd-Result: default: False [3.54 / 15.00];
 	SUSPICIOUS_RECIPS(1.50)[];
+	MID_CONTAINS_FROM(1.00)[];
 	ARC_REJECT(1.00)[cv is fail on i=2];
-	MID_RHS_NOT_FQDN(0.50)[];
-	MIME_GOOD(-0.20)[multipart/signed,text/plain];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64];
+	R_MISSING_CHARSET(0.50)[];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
 	MAILLIST(-0.15)[generic];
+	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-15700-lists,cgroups=lfdr.de];
-	RCVD_TLS_LAST(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	FREEMAIL_TO(0.00)[alpha.franken.de,paul-moore.com,namei.org,hallyn.com,redhat.com,infradead.org,linaro.org,gmail.com,schaufler-ca.com,kernel.org,cmpxchg.org,suse.com];
-	DMARC_NA(0.00)[atomlin.com];
-	MIME_TRACE(0.00)[0:+,1:+,2:~];
+	MIME_TRACE(0.00)[0:+];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	FREEMAIL_CC(0.00)[huaweicloud.com,arm.com,goodmis.org,google.com,suse.de,redhat.com,amd.com,kernel.org,suse.com,ashe.io,gmail.com,abita.co,vger.kernel.org];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	MISSING_XM_UA(0.00)[];
-	RCVD_COUNT_FIVE(0.00)[5];
+	TAGGED_FROM(0.00)[bounces-15701-lists,cgroups=lfdr.de];
+	FREEMAIL_CC(0.00)[huaweicloud.com,arm.com,goodmis.org,google.com,suse.de,redhat.com,amd.com,kernel.org,atomlin.com,suse.com,ashe.io,gmail.com,abita.co,vger.kernel.org];
+	FREEMAIL_TO(0.00)[alpha.franken.de,paul-moore.com,namei.org,hallyn.com,redhat.com,infradead.org,linaro.org,gmail.com,schaufler-ca.com,kernel.org,cmpxchg.org,suse.com];
+	RCVD_TLS_LAST(0.00)[];
+	DMARC_NA(0.00)[atomlin.com];
+	NEURAL_SPAM(0.00)[0.812];
+	RCPT_COUNT_TWELVE(0.00)[36];
 	PRECEDENCE_BULK(0.00)[];
 	FROM_NEQ_ENVFROM(0.00)[atomlin@atomlin.com,cgroups@vger.kernel.org];
+	FROM_HAS_DN(0.00)[];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
-	TO_DN_NONE(0.00)[];
+	RCVD_COUNT_FIVE(0.00)[5];
 	R_DKIM_NA(0.00)[];
-	NEURAL_HAM(-0.00)[-0.887];
-	RCPT_COUNT_TWELVE(0.00)[35];
+	TO_DN_NONE(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
 	TAGGED_RCPT(0.00)[cgroups];
 	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
 X-Rspamd-Action: no action
 
---bfnb57jctgu5ouv2
-Content-Type: text/plain; protected-headers=v1; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-Subject: Re: [PATCH 2/3] security: Expand task_setscheduler LSM hook to
- include CPU affinity mask
-MIME-Version: 1.0
+Hi,
 
-On Sat, May 09, 2026 at 12:48:46PM -0400, Aaron Tomlin wrote:
-> @@ -3592,7 +3592,7 @@ static int cpuset_can_fork(struct task_struct *task=
-, struct css_set *cset)
->  	if (ret)
->  		goto out_unlock;
-> =20
-> -	ret =3D security_task_setscheduler(task);
-> +	ret =3D security_task_setscheduler(task, NULL);
->  	if (ret)
->  		goto out_unlock;
-> =20
+This series expands the task_setscheduler LSM hook to include the requested
+CPU affinity mask, enabling BPF-based security modules to enforce strict
+spatial isolation boundaries. During the development of this expansion, two
+pre-existing subsystem bugs were identified and fixed.
 
-Apologies, we want the CPU affinity mask here too. The NULL should be
-replaced with cs->effective_cpus. This will be addressed in the next
-iteration.
+In modern multi-tenant and real-time environments, CPU isolation is a
+critical boundary. Currently, the task_setscheduler hook lacks visibility
+into the actual CPU affinity mask being requested via sched_setaffinity()
+or cgroup migrations. This limits the effectiveness of eBPF-driven security
+policies when attempting to monitor and shield specific cores.
 
---=20
-Aaron Tomlin
+By expanding the LSM hook signature, BPF LSMs are provided with the
+necessary context to audit and even restrict specific CPU pinning requests.
 
---bfnb57jctgu5ouv2
-Content-Type: application/pgp-signature; name="signature.asc"
+    Patch 1 (cgroup/cpuset): Fixes a pre-existing deadline (DL) bandwidth
+    metric leak in cpuset_can_attach(). It was discovered that if a task
+    fails its security checks mid-batch during a thread group migration,
+    the loop aborts without unwinding previously accumulated DL metrics
+    (nr_migrate_dl_tasks and sum_migrate_dl_bw). This patch introduces an
+    out_unlock_reset path to guarantee clean unwinding.
 
------BEGIN PGP SIGNATURE-----
+    Patch 2 (security): Implements the core LSM hook expansion. It safely
+    propagates either the requested cpumask (via sched_setaffinity and
+    cpuset_can_attach) or passes NULL for unchanged affinities. It also
+    adds proper __nullable annotations to ensure the BPF verifier mandates
+    explicit NULL checks for attached eBPF programs, and mechanically
+    updates SELinux, Smack, and Commoncap.
 
-iQIzBAEBCgAdFiEEeQaE6/qKljiNHm6b4t6WWBnMd9YFAmn/fQsACgkQ4t6WWBnM
-d9YjuQ/6AndL9DQe3dSQXU2X/diy4JIic5ikCsyVYf2QgjbgIBCfItEzPMiHrWW5
-qh0lupYXoSwdnMWhCnwREcGG6+9svLfSZxKdXiSUIoLS2f6nxvrx1oUVktwx6hyJ
-ZZUda7Ts9MAhGtTBZAVFBlUlIfXQAjejM+3D1fEhUDkypW7hlQaagx9JLW2dqG9N
-NRIeQ+v0oL0hJMbLSzVuIQJgurrbLNkWYIaMe0qRZTZCfk3DzDpXZahnCG4lTjNm
-oLwMbJYBC6RZ9HVkc02X4z7odzwvIYmLWq7B7TiC90HTSSrlm4348Y3oBEjCgm/H
-iK6kN5hyjaYtK6TZKdZR5f068c1pq1yZaeHqB5eS4/dMpLunLnMbsYwFWah9TwaH
-D2ACkHHnguLoxJnvMrPUx37b+bP6QxOxj49cIaUJYO5PZAWqXddcoQr8I/7Q7Rej
-Xo6HlLqHBrF4X0HVEdCOLNLBXgTR6zPVjMaSFbculvZFtbvUBjEzw3AN/ySUmMOj
-H5GMTfOLE+NChlyCOFW5pHgUMPSfFhj2kh+IDypLM7C7h9I+kWJi7gUU5BrMy5st
-EwMJ401cX2SEMC0XEFxxNcAhkTsUKg43wM6yU2TmFF4curxDPqIwFZsIQK7ltmAn
-X2VMCt+6grjkmeYoImZAGHDVJcp9+pCWE1PkkiUp+TjxGh2vyuE=
-=YX/I
------END PGP SIGNATURE-----
+    Patch 3 (mips): Resolves a critical memory corruption vulnerability in
+    the MIPS MT architecture's sched_setaffinity implementation. When
+    CONFIG_CPUMASK_OFFSTACK=y is enabled, copy_from_user() was clobbering
+    the stack pointer due to an invalid sizeof() evaluation, followed by an
+    uninitialised heap allocation. This patch safely reorders the
+    allocations and properly utilises cpumask_size().
 
---bfnb57jctgu5ouv2--
+These patches have been logically separated to assist subsystem maintainers
+with review and backporting.
+
+Comments and feedback are welcome.
+
+Kind regards,
+
+
+Changes since v1 [1]:
+ - Reordered the allocation and user-copy of new_mask in the MIPS
+   architecture's mipsmt_sys_sched_setaffinity() to occur before the
+   LSM hook is invoked. This ensures the security modules evaluate a fully
+   populated mask rather than uninitialised memory, while cleanly handling
+   error unwinding
+
+ - Updated cpuset_can_fork() to pass the destination cpuset's effective CPU
+   mask instead of NULL
+
+[1]: https://lore.kernel.org/lkml/20260509164847.939294-1-atomlin@atomlin.com/
+
+
+Aaron Tomlin (3):
+  cgroup/cpuset: Fix deadline bandwidth leak in cpuset_can_attach()
+  security: Expand task_setscheduler LSM hook to include CPU affinity
+    mask
+  mips: sched: Fix CPUMASK_OFFSTACK memory corruption
+
+ arch/mips/kernel/mips-mt-fpaff.c | 46 +++++++++++++++++---------------
+ fs/proc/base.c                   |  2 +-
+ include/linux/lsm_hook_defs.h    |  3 ++-
+ include/linux/security.h         | 11 +++++---
+ kernel/cgroup/cpuset.c           | 13 ++++++---
+ kernel/sched/syscalls.c          |  4 +--
+ security/commoncap.c             |  7 +++--
+ security/security.c              | 11 ++++----
+ security/selinux/hooks.c         |  3 ++-
+ security/smack/smack_lsm.c       | 11 ++++++--
+ 10 files changed, 67 insertions(+), 44 deletions(-)
+
+-- 
+2.51.0
+
 
