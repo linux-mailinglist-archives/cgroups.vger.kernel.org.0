@@ -1,51 +1,51 @@
-Return-Path: <cgroups+bounces-15760-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-15761-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id EP65MmP3AWoFmwEAu9opvQ
-	(envelope-from <cgroups+bounces-15760-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Mon, 11 May 2026 17:36:03 +0200
+	id EOYRJeX9AWppnAEAu9opvQ
+	(envelope-from <cgroups+bounces-15761-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Mon, 11 May 2026 18:03:49 +0200
 X-Original-To: lists+cgroups@lfdr.de
 Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 791D25114C9
-	for <lists+cgroups@lfdr.de>; Mon, 11 May 2026 17:36:03 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 34375511C06
+	for <lists+cgroups@lfdr.de>; Mon, 11 May 2026 18:03:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by tor.lore.kernel.org (Postfix) with ESMTP id 61FFD31BDBAB
-	for <lists+cgroups@lfdr.de>; Mon, 11 May 2026 15:17:05 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id 3231D302BBFD
+	for <lists+cgroups@lfdr.de>; Mon, 11 May 2026 15:56:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EEBCC3783AE;
-	Mon, 11 May 2026 15:15:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8FC9941C2F9;
+	Mon, 11 May 2026 15:56:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Fb7tKuor"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="iWY1agl2"
 X-Original-To: cgroups@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B0F2630ACEE;
-	Mon, 11 May 2026 15:15:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B007402B87;
+	Mon, 11 May 2026 15:56:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1778512551; cv=none; b=T8m5W6ATu4zvdmcTL8R/XL9SGazAoxnYC5tsxCKQOo2DA8vh9z27NhX5lUcbBNoNi6t4YZlTsqQi17Op45OS16JFj7R0Q8MkHwdC5J8FZ3Zp0KBxwlLnSWRZaq1IQx4p0nMfw2gpciT8ovj9pSuMznU1mjOSO5ZzG/hhvgrwDFA=
+	t=1778514987; cv=none; b=KoY6A5jwu4s5haU0bCze8wdUAVFd4U7fxApaJIUT4xl2oGxWunHdENsgQxArpG5QM6StoYiP+5+FPEhqLgErMP8I2mviRgpMc93+O1/cKYo/SwB0LejTnADfa1zZmuJ/uWZ6c45/7dWxGC0EyIUIgFfo4UfB8hpWQlsmH7p9/2Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1778512551; c=relaxed/simple;
-	bh=XU8h+UNIZXd2xu8Y6zOdyfGnC8dGq+kPUi+hYVKln78=;
+	s=arc-20240116; t=1778514987; c=relaxed/simple;
+	bh=wHF3j54IopBAPswmwUy+Go6x+2HXg2Z8f8E+TCPm3PQ=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=UmcNLAZvJxhtBd/INjvWmaOtE2j4yINFT0+nswdyCRt1qYB3k4XfRDrW1FWZcdEG9HFd5zgx7m9svNakJ8NmpxjrlIBuybKH41HSldudbyXhI19iu/jb3cdVQx2lJVwZbywpuvgJooyAf/6gGYk4SclKuGS2Ia7vuKx+SJ+EfI0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Fb7tKuor; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 48EA3C2BCB0;
-	Mon, 11 May 2026 15:15:46 +0000 (UTC)
+	 In-Reply-To:Content-Type; b=ijZCqYZgWmbJGOMbRsh29/BxiwzJ7YjxE879UyRaRDiYFDMSJkRa7WkXgZaZsbMHsCtxhlXzSqr+JcZVy0YH2jtfa8Z8yqw4da55mTXx0uZIbBIbnguQWSh/XHbG+Q8iddIVeeJVAEWczMvS5JW+xi3IhEYmtWJQJllQud6PffE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=iWY1agl2; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 11D17C2BCB0;
+	Mon, 11 May 2026 15:56:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1778512551;
-	bh=XU8h+UNIZXd2xu8Y6zOdyfGnC8dGq+kPUi+hYVKln78=;
+	s=k20201202; t=1778514986;
+	bh=wHF3j54IopBAPswmwUy+Go6x+2HXg2Z8f8E+TCPm3PQ=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=Fb7tKuorEh7gKXNnQi4K7eFGBeo2w8f3vgRJMdUhhqPl8rhj0zua61ZI1MLE/hL9P
-	 IXocQEGsApafUL4lQlxZ1tO6lJp71RkaiJZXmAtf/1o8kkItpPhg3TyhR8Wn8UfpUZ
-	 sZWAYh+jR/2lacJ3BhpstlHUqnnj+K19vA3Vk69fHjGi7wOH6PY73beiIkHyJrWYa1
-	 fW4w0yhbR1ej4tzu2sNhdbCUIBnkJflAd7CvIC+gH/33s6cJoGOuHBsz6jzjRMrnzC
-	 r3p0ibbAePYx7w4LVg/xyj96Oa8q/0+2p6hGngNv0023489qEclWFXHJmDYvt6/voO
-	 nuHqWuY/CpZJA==
-Message-ID: <c72ead41-0bb3-4da0-856c-315dc552c722@kernel.org>
-Date: Mon, 11 May 2026 17:15:44 +0200
+	b=iWY1agl25YwFg/1AFNy9/VKJjHwRcbFqhG2jvhJjHofiGhZENmc49UsWAL8ItB0VX
+	 LuQiFxMk08urZ4n1sV0aCAEm3T36Nn6DRFSMyjCl9IvcVUFcciMK5IGGCfzTkvVgkZ
+	 FJkI4LfP4jrPSYkLwkSjXILCi/XOOV99yUNeMjgim97fCybsUeuHgCqfCBK4sKgyYU
+	 jh3Sk0psLkcXDXKeBLWUrQBvwYJ2hc7secFOqxsYYu2cGoR9z8dO91DNCV9bevvz+V
+	 L66WRhCxH76G0hDBACkxMGxDegrnu7E0dLI9mWZNrXaoFHTugvb8+sXLBrc9iu0Ae4
+	 PU8UnQrRVFCBw==
+Message-ID: <3ff8b23a-479d-46e8-b820-a23697587f01@kernel.org>
+Date: Mon, 11 May 2026 17:56:19 +0200
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -53,27 +53,28 @@ List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 05/12] mm, swap: unify large folio allocation
-To: Kairui Song <ryncsn@gmail.com>
-Cc: linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
- Zi Yan <ziy@nvidia.com>, Baolin Wang <baolin.wang@linux.alibaba.com>,
- Barry Song <baohua@kernel.org>, Hugh Dickins <hughd@google.com>,
- Chris Li <chrisl@kernel.org>, Kemeng Shi <shikemeng@huaweicloud.com>,
- Nhat Pham <nphamcs@gmail.com>, Baoquan He <bhe@redhat.com>,
- Johannes Weiner <hannes@cmpxchg.org>, Youngjun Park <youngjun.park@lge.com>,
- Chengming Zhou <chengming.zhou@linux.dev>,
+Subject: Re: [RFC PATCH 0/9 v2] mm/memcontrol: Make memory cgroup limits
+ tier-aware
+To: Joshua Hahn <joshua.hahnjy@gmail.com>, linux-mm@kvack.org
+Cc: Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>,
+ Michal Koutny <mkoutny@suse.com>, Michal Hocko <mhocko@kernel.org>,
  Roman Gushchin <roman.gushchin@linux.dev>,
- Shakeel Butt <shakeel.butt@linux.dev>, Muchun Song <muchun.song@linux.dev>,
- Qi Zheng <zhengqi.arch@bytedance.com>, linux-kernel@vger.kernel.org,
- cgroups@vger.kernel.org, Yosry Ahmed <yosry@kernel.org>,
- Lorenzo Stoakes <ljs@kernel.org>, Dev Jain <dev.jain@arm.com>,
- Lance Yang <lance.yang@linux.dev>, Michal Hocko <mhocko@suse.com>,
- Michal Hocko <mhocko@kernel.org>, Suren Baghdasaryan <surenb@google.com>,
- Axel Rasmussen <axelrasmussen@google.com>
-References: <20260421-swap-table-p4-v3-0-2f23759a76bc@tencent.com>
- <20260421-swap-table-p4-v3-5-2f23759a76bc@tencent.com>
- <675e9027-9fb5-47b5-9a2d-c9a416a27d0d@kernel.org>
- <CAMgjq7DegMz2ZEHOhHkAqDEWDuCSZ7Ktsxw1ibDY8axFzRRGnQ@mail.gmail.com>
+ Shakeel Butt <shakeel.butt@linux.dev>,
+ Andrew Morton <akpm@linux-foundation.org>, Chris Li <chrisl@kernel.org>,
+ Kairui Song <kasong@tencent.com>, Muchun Song <muchun.song@linux.dev>,
+ Lorenzo Stoakes <ljs@kernel.org>, "Liam R. Howlett"
+ <Liam.Howlett@oracle.com>, Vlastimil Babka <vbabka@kernel.org>,
+ Mike Rapoport <rppt@kernel.org>, Suren Baghdasaryan <surenb@google.com>,
+ Kemeng Shi <shikemeng@huaweicloud.com>, Nhat Pham <nphamcs@gmail.com>,
+ Baoquan He <bhe@redhat.com>, Barry Song <baohua@kernel.org>,
+ Youngjun Park <youngjun.park@lge.com>, Qi Zheng <qi.zheng@linux.dev>,
+ Axel Rasmussen <axelrasmussen@google.com>, Yuanchu Xie <yuanchu@google.com>,
+ Wei Xu <weixugc@google.com>, Kaiyang Zhao <kaiyang2@cs.cmu.edu>,
+ David Rientjes <rientjes@google.com>,
+ Yiannis Nikolakopoulos <yiannis@zptcorp.com>,
+ "Rao, Bharata Bhasker" <bharata@amd.com>, cgroups@vger.kernel.org,
+ linux-kernel@vger.kernel.org, kernel-team@meta.com
+References: <20260423203445.2914963-1-joshua.hahnjy@gmail.com>
 From: "David Hildenbrand (Arm)" <david@kernel.org>
 Content-Language: en-US
 Autocrypt: addr=david@kernel.org; keydata=
@@ -120,12 +121,13 @@ Autocrypt: addr=david@kernel.org; keydata=
  3iyY2Nsd7JxfKu1PRhCGwXzRw5TlfEsoRI7V9A8isUCoqE2Dzh3FvYHVeX4Us+bRL/oqareJ
  CIFqgYMyvHj7Q06kTKmauOe4Nf0l0qEkIuIzfoLJ3qr5UyXc2hLtWyT9Ir+lYlX9efqh7mOY
  qIws/H2t
-In-Reply-To: <CAMgjq7DegMz2ZEHOhHkAqDEWDuCSZ7Ktsxw1ibDY8axFzRRGnQ@mail.gmail.com>
+In-Reply-To: <20260423203445.2914963-1-joshua.hahnjy@gmail.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: 791D25114C9
+X-Rspamd-Queue-Id: 34375511C06
 X-Rspamd-Server: lfdr
-X-Spamd-Result: default: False [-2.16 / 15.00];
+X-Spamd-Result: default: False [-0.66 / 15.00];
+	SUSPICIOUS_RECIPS(1.50)[];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
 	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
@@ -133,15 +135,15 @@ X-Spamd-Result: default: False [-2.16 / 15.00];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-15760-lists,cgroups=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	FREEMAIL_TO(0.00)[gmail.com];
-	FREEMAIL_CC(0.00)[kvack.org,linux-foundation.org,nvidia.com,linux.alibaba.com,kernel.org,google.com,huaweicloud.com,gmail.com,redhat.com,cmpxchg.org,lge.com,linux.dev,bytedance.com,vger.kernel.org,arm.com,suse.com];
-	RCPT_COUNT_TWELVE(0.00)[28];
-	RCVD_COUNT_THREE(0.00)[4];
-	MIME_TRACE(0.00)[0:+];
-	FORGED_SENDER_MAILLIST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-15761-lists,cgroups=lfdr.de];
 	FROM_HAS_DN(0.00)[];
+	RCVD_COUNT_THREE(0.00)[4];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	FREEMAIL_TO(0.00)[gmail.com,kvack.org];
+	RCPT_COUNT_TWELVE(0.00)[33];
+	MIME_TRACE(0.00)[0:+];
+	FREEMAIL_CC(0.00)[kernel.org,cmpxchg.org,suse.com,linux.dev,linux-foundation.org,tencent.com,oracle.com,google.com,huaweicloud.com,gmail.com,redhat.com,lge.com,cs.cmu.edu,zptcorp.com,amd.com,vger.kernel.org,meta.com];
 	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	TO_DN_SOME(0.00)[];
 	NEURAL_HAM(-0.00)[-1.000];
@@ -152,64 +154,57 @@ X-Spamd-Result: default: False [-2.16 / 15.00];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TAGGED_RCPT(0.00)[cgroups];
 	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[tencent.com:email,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
 X-Rspamd-Action: no action
 
-On 5/11/26 16:37, Kairui Song wrote:
-> On Mon, May 11, 2026 at 8:58 PM David Hildenbrand (Arm)
-> <david@kernel.org> wrote:
->>
->> On 4/21/26 08:16, Kairui Song via B4 Relay wrote:
->>> From: Kairui Song <kasong@tencent.com>
->>>
->>> Now that direct large order allocation is supported in the swap cache,
->>> both anon and shmem can use it instead of implementing their own methods.
->>> This unifies the fallback and swap cache check, which also reduces the
->>> TOCTOU race window of swap cache state: previously, high order swapin
->>> required checking swap cache states first, then allocating and falling
->>> back separately. Now all these steps happen in the same compact loop.
->>>
->>> Order fallback and statistics are also unified, callers just need to
->>> check and pass the acceptable order bitmask.
->>>
->>> There is basically no behavior change. This only makes things more
->>> unified and prepares for later commits. Cgroup and zero map checks can
->>> also be moved into the compact loop, further reducing race windows and
->>> redundancy
->>>
->>
->> You should spell out the rename from swapin_folio() to swapin_entry() [and why
->> it is done].
->>
->> swapin_readahead() vs. swapin_entry() looks a bit odd, fiven that both consume
->> an entry.
+On 4/23/26 22:34, Joshua Hahn wrote:
+> INTRODUCTION
+> ============
+> Memory cgroups provide an interface that allow multiple works on a host to
+> co-exist via weak and strong memory isolation guarantees. This works, because
+> for the most part, all memory has equal utility. Isolating a cgroup’s memory
+> footprint restricts how much it can hurt other workloads competing for memory,
+> or protects it from other cgroups looking for more memory.
 > 
-> Yes, the current status is a bit odd, about two years ago I also
-> wanted to name it `swapin_direct()`.
-> https://lore.kernel.org/linux-mm/20240326185032.72159-3-ryncsn@gmail.com/
+> However, on systems with tiered memory (e.g. CXL), memory utility is no longer
+> homogeneous; toptier and lowtier memory provide different performance
+> characteristics and have different scarcity, meaning memory footprint no longer
+> serves as an accurate representation of a cgroup’s consumption of the system’s
+> limited resources. As an extreme example, a cgroup with 10G of toptier
+> (e.g. DRAM) memory and a cgroup with 10G of lowtier (e.g. CXL) memory both
+> appear to be consuming the same amount of system resources from memcg’s
+> perspective, despite the performance asymmetry between the two workloads.
 > 
-> But actually ZRAM or shmem would also benefit from supporting unified
-> readahead like this:
-> https://lore.kernel.org/linux-mm/20240102175338.62012-6-ryncsn@gmail.com/
+> Therefore on tiered systems, memory isolation cannot currently happen, as
+> workloads that are well-behaved within their memcg limits may still hurt the
+> performance of other well-behaving workloads by hogging more than its
+> “fair share” of toptier memory.
 > 
-> So calling it `swapin_entry` seems more future-proof. At some point in
-> the future we might remove `swapin_readahead`. All swapin operations
-> could have a unified or at least a per-device readahead policy like
-> the one in the link above, instead of the current policy where the
-> caller must decide whether to perform readahead.
+> Introduce tier-aware memcg limits, which establish independent toptier limits
+> that scale with the memory limits and the ratio of toptier:total memory
+> available on the system.
 > 
-> But any suggestion on naming is welcome :)
+> INTERFACE
+> =========
+> This series introduces only one adjustable knob to userspace; a new cgroup mount
+> option “memory_tiered_limits” which toggles whether the cgroup mount will scale
+> toptier limits. It also introduces 4 new read-only sysfs entries per-cgroup:
+> memory.toptier_{min, low, high, max}.
+> 
+> The new toptier memory limits are scaled according to the amount of toptier
+> memory and total memory available on the system as such:
+> 
+> memory.toptier_high = (toptier_mem / total_mem) * memory.high
+> 
+> For instance, on a host with 100GB memory, with 75G toptier and 25G CXL, the
+> “toptier ratio” would be 75 / 100 = 0.75. A cgroup with the following memcg
+> limits {min: 8G, low: 12G, high: 20G, max: 24G} might see toptier limits scaled
+> at {min: 6G, low: 9G, high: 15G, max: 18G}.
 
-The other proposal
+Assume you have a bigger hierarchy (HBP, DRAM, CXL), or assume you have multiple
+NUMA nodes with a hierarchy each.
 
-	https://lore.kernel.org/all/tencent_CD11FE9B4A0B362E95E776C5F679598FAA07@qq.com/
-
-calls it
-
-	swapin_synchronous_folio
-
-Maybe just swapin_sync_io()/swapin_sync() or sth like that?
-
+Your proposal doesn't really seem to be very versatile, or am I wrong?
 
 -- 
 Cheers,
