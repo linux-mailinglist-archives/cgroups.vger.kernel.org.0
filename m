@@ -1,71 +1,75 @@
-Return-Path: <cgroups+bounces-15772-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-15773-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id QP6gL94aAmocoAEAu9opvQ
-	(envelope-from <cgroups+bounces-15772-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Mon, 11 May 2026 20:07:26 +0200
+	id YOzmJqEZAmognwEAu9opvQ
+	(envelope-from <cgroups+bounces-15773-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Mon, 11 May 2026 20:02:09 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 28F15514147
-	for <lists+cgroups@lfdr.de>; Mon, 11 May 2026 20:07:26 +0200 (CEST)
+Received: from sin.lore.kernel.org (sin.lore.kernel.org [104.64.211.4])
+	by mail.lfdr.de (Postfix) with ESMTPS id 94A3B513FFC
+	for <lists+cgroups@lfdr.de>; Mon, 11 May 2026 20:02:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 75E1531F1A47
-	for <lists+cgroups@lfdr.de>; Mon, 11 May 2026 17:37:29 +0000 (UTC)
+	by sin.lore.kernel.org (Postfix) with ESMTP id E3BF23030F98
+	for <lists+cgroups@lfdr.de>; Mon, 11 May 2026 17:52:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 40A6C4508FC;
-	Mon, 11 May 2026 17:37:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F53646AF24;
+	Mon, 11 May 2026 17:52:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GHd3INcC"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PST++QM6"
 X-Original-To: cgroups@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0402A35958;
-	Mon, 11 May 2026 17:37:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A99632143D;
+	Mon, 11 May 2026 17:52:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1778521038; cv=none; b=TtoDHB2jGMaRa6iWXsbEFoN+1ONgiiaNHmTbR+Dj0sMkXK/ng4VhhDXzNsZl2u0jWS/0FbQkCxQSD3vk1VrslW8b2Mo/n1PvAjt00bNGENUDuS8sLez3DKlmHdEHSx7qAI/ij9vr2TtzIGugGnUwItSNSqYiQJrtMHXCB6LI+lw=
+	t=1778521959; cv=none; b=D37Mcrq5CsNKEYzyZZKDqOZWzT+0VNzxQi1tAK7XYEboqctdCtvAmO1ZzqktqCiRmM8+/Txl6yUYdWpO8azZO4ywzTmifi7sNf9btMk8gdD3gWUC+NfOc8yhxpsZupVfgDKMX7cjtZYYbR0D9fNjCswaPTQq6rNyi4zutylI+Kg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1778521038; c=relaxed/simple;
-	bh=N/d70V8PE3dSH/aumUplyCyeuucJ1n4qD1Ocrb4xtAk=;
+	s=arc-20240116; t=1778521959; c=relaxed/simple;
+	bh=l6B+rqGZ5/Zt8k7HOC+8wI+SYXF0Yo7x5fXG3U1HbeU=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=HOPIox+9AAF0nmsZhBeNhixROALlOhBdsuBzncBQjaCqWGMbMt9lxdZAANsV8pn1saYmopssjCde4lCsClMbs3Q90KwADYOrR+flhc9t/JAlwT5bFy4LN0OMdmTbwOtus3vMsvgS6EZvaECfwJeQW3zM2CdEorBaLVDCScv9P/A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GHd3INcC; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7DA75C2BCB0;
-	Mon, 11 May 2026 17:37:17 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=lg1uKHHo/lrK5jj1hLqROaXceQNYDPyzJh5X0ZvedPHEABkIda2rTHPROWqO1TjbozHQ8pC6uzKufE8k0vFqcY+V76iLtWq0WWynkeh/PabD5wu8iRF9xoZ/DaWZjsFOR7ZZEfSAmX8pmXvGx10KAt1XBPEmUwcjuHUz0vP0iAE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=PST++QM6; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CD841C2BCB0;
+	Mon, 11 May 2026 17:52:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1778521037;
-	bh=N/d70V8PE3dSH/aumUplyCyeuucJ1n4qD1Ocrb4xtAk=;
+	s=k20201202; t=1778521958;
+	bh=l6B+rqGZ5/Zt8k7HOC+8wI+SYXF0Yo7x5fXG3U1HbeU=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=GHd3INcC285TiWddXtQwWIiRNQyLtd9nu93/mvX2tce6l0FHh4AumBvxV/q4lAEzY
-	 ImYIBT+m5GX/oaZoxzbyLdJc3NH0RasadrYewCSkuZBkAUesVxULsXQ6lInQ3Qouaa
-	 xmykr/j53WH5pBRGg0fnl3/PkKBVfGFycBiqCRWmR7IMGVNeIrJTikgJ6eeDOW5kDf
-	 6PG73sxcYoxH0kI2dfVGU92zpDUXwEiJqoYy6nrOEAQBTdUiOY5bCjbpCK24uWiekE
-	 NWaBILveXm96wvx2Pqrb5Tw5jYjtS1KM8jIwaNEndbwvRSB1OKFtC44H4rNtZ/OOCj
-	 Em1kJEHJ7V2Aw==
-Date: Mon, 11 May 2026 07:37:16 -1000
+	b=PST++QM6GYsCgVFZqaUlK3WSL4FnDuHnM4EmXv6BPqZ6xpPUggFz0DepEarH8u5ON
+	 dSAFlUOWZKCp0XB4sZkHe2kUMuwCcP/MMBJiGXqCdD64nLNZvuFd02rjeCjUSZ0fQ3
+	 zhsC/jPaSt160bNj2a7RVCkGEzN/K+FHkPUCyH/ETpwhvc+sNeahHl+nvW58uY15Uj
+	 4DEAErSKUqNM4uGS+SDXJekCFywjDh+2u9ikbYewT5/5iBbQhjI2fTgE6VZSAtamFN
+	 /K3VdEGcPkjXD5yZqKgfCffYOO0o2Q6Se4NHI2rqeAX2U0WHDUeFcwIvdtDItLnc1e
+	 +eBi83Gk7svGg==
+Date: Mon, 11 May 2026 07:52:37 -1000
 From: Tejun Heo <tj@kernel.org>
-To: Peter Zijlstra <peterz@infradead.org>
-Cc: Yuri Andriaccio <yurand2000@gmail.com>, Ingo Molnar <mingo@redhat.com>,
-	Juri Lelli <juri.lelli@redhat.com>,
+To: Juri Lelli <juri.lelli@redhat.com>
+Cc: luca abeni <luca.abeni@santannapisa.it>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Yuri Andriaccio <yurand2000@gmail.com>,
+	Ingo Molnar <mingo@redhat.com>,
 	Vincent Guittot <vincent.guittot@linaro.org>,
 	Dietmar Eggemann <dietmar.eggemann@arm.com>,
 	Steven Rostedt <rostedt@goodmis.org>,
 	Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
 	Valentin Schneider <vschneid@redhat.com>,
 	linux-kernel@vger.kernel.org,
-	Luca Abeni <luca.abeni@santannapisa.it>,
 	Yuri Andriaccio <yuri.andriaccio@santannapisa.it>,
 	hannes@cmpxchg.org, mkoutny@suse.com, cgroups@vger.kernel.org
 Subject: Re: [RFC PATCH v5 20/29] sched/deadline: Allow deeper hierarchies of
  RT cgroups
-Message-ID: <agITzCYT3yf_szi7@slm.duckdns.org>
+Message-ID: <agIXZU9E2OwPfeX3@slm.duckdns.org>
 References: <20260430213835.62217-1-yurand2000@gmail.com>
  <20260430213835.62217-21-yurand2000@gmail.com>
  <20260505151523.GF3102624@noisy.programming.kicks-ass.net>
  <afpLir8tD0Ycb3D8@slm.duckdns.org>
  <20260507105331.GQ1026330@noisy.programming.kicks-ass.net>
+ <afypzfyH0M7Rcge2@jlelli-thinkpadt14gen4.remote.csb>
+ <20260507183931.3915dc59@nowhere>
+ <agGhi9_SG6vRnDVq@jlelli-thinkpadt14gen4.remote.csb>
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
@@ -74,22 +78,22 @@ List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20260507105331.GQ1026330@noisy.programming.kicks-ass.net>
-X-Rspamd-Queue-Id: 28F15514147
+In-Reply-To: <agGhi9_SG6vRnDVq@jlelli-thinkpadt14gen4.remote.csb>
+X-Rspamd-Queue-Id: 94A3B513FFC
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-2.16 / 15.00];
 	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
 	DMARC_POLICY_ALLOW(-0.50)[kernel.org,quarantine];
 	R_DKIM_ALLOW(-0.20)[kernel.org:s=k20201202];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
+	R_SPF_ALLOW(-0.20)[+ip4:104.64.211.4:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	TAGGED_FROM(0.00)[bounces-15772-lists,cgroups=lfdr.de];
+	TAGGED_FROM(0.00)[bounces-15773-lists,cgroups=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
 	RCVD_COUNT_THREE(0.00)[4];
 	FORGED_SENDER_MAILLIST(0.00)[];
-	FREEMAIL_CC(0.00)[gmail.com,redhat.com,linaro.org,arm.com,goodmis.org,google.com,suse.de,vger.kernel.org,santannapisa.it,cmpxchg.org,suse.com];
+	FREEMAIL_CC(0.00)[santannapisa.it,infradead.org,gmail.com,redhat.com,linaro.org,arm.com,goodmis.org,google.com,suse.de,vger.kernel.org,cmpxchg.org,suse.com];
 	RCPT_COUNT_TWELVE(0.00)[16];
 	MIME_TRACE(0.00)[0:+];
 	FROM_HAS_DN(0.00)[];
@@ -100,71 +104,49 @@ X-Spamd-Result: default: False [-2.16 / 15.00];
 	FROM_NEQ_ENVFROM(0.00)[tj@kernel.org,cgroups@vger.kernel.org];
 	DKIM_TRACE(0.00)[kernel.org:+];
 	TAGGED_RCPT(0.00)[cgroups];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
+	ASN(0.00)[asn:63949, ipnet:104.64.192.0/19, country:SG];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	TO_DN_SOME(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[slm.duckdns.org:mid,sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[slm.duckdns.org:mid,sin.lore.kernel.org:helo,sin.lore.kernel.org:rdns]
 X-Rspamd-Action: no action
 
-Hello, Peter.
+Hello,
 
-On Thu, May 07, 2026 at 12:53:31PM +0200, Peter Zijlstra wrote:
+On Mon, May 11, 2026 at 11:29:47AM +0200, Juri Lelli wrote:
 ...
-> Looking at cpu_period_quota_parse() this thing takes two u64 values for:
-> {runtime, period} but allows runtime to be the string "max".
+> While I like the automatic approach, I also fear that it might be more
+> difficult to maintain/use from a systemd admin perspective, e.g. I
+> cannot make a subgroup reservation bigger because there are threads
+> running in the parent group which consume all the remaining (internal)
+> bandwidth. If we make it explicit it seems easier to see where bandwidth
+> is allocated at all levels.
 > 
-> I think we'd want an optional extension to that and allow 3 values for:
-> {runtime, period, deadline}, where if the deadline is not given, it will
-> be the same as period.
+> Peter? Tejun? What do we want to do with this interface?
 
-Yeah, I don't know what's needed here but extending the interface as
-necessary is completely fine.
+blkcg on cgroup1 did soemthing similar for a while. It had a separate subdir
+for knobs that apply to "internal threads". Effectivley, this becomes
+creating a separate controller group for every cgroup as a sibling to its
+children. It does work obviously but it is pretty ugly and unintuitive, both
+in interface and implementation, and I'm skeptical this was actually useful
+in any meaningful way. Nobody complained when we ripped it out.
 
-> Right... this then means we need two controls, one to do hierarchical
-> bandwidth distribution, and one to assign bandwidth to the internal
-> group -- which is then subject to its own bandwidth distribution
-> constraint.
-> 
-> This might be a little confusing, but there is no way around that
-> AFAICT.
+If rt were to become its own cgroup controller, maybe one can just side-step
+this by not supporting threaded mode at least at the beginning. If people
+ask for it, hopefully we'll be able to develop better understanding of their
+usecases and drive design that way. In practice, I don't think threaded mode
+gets used all that much because usually only application processes
+themselves know about their own threads, are not in the business of creating
+their own cgroups (delegation to each application isn't common), and have
+other ways of controlling their own threads. So, there's some chance that
+this may not actually come up.
 
-Separating out the rt as a separate controller is one way and if the
-configuration wants to stick to strict allocation model where nothing is
-available by default unless explicitly allocated, this would be the only
-way. Interface-wise, I think this is going to be fine but I suspect this
-likely would complicated internal implementation quite a bit as now rt can't
-piggyback on existing sched core cgroup infra - no task_group or
-synchronization built around them - and has to build everything on its own.
-It's not the end of the world but not ideal either.
-
-> > - This has the same problem with cgroup1's rt cgroup sched support where
-> >   there is no way to have a permissive default configuration, which means
-> >   that users who don't really care about distributing rt shares
-> >   hierarchically would get blocked from running rt processes by default,
-> >   which basically forces distros to disable rt cgroup sched support. This is
-> >   not new but it'd be a shame to put in all the work and the end result is
-> >   that most people don't even have access to the feature.
-> 
-> Right, but cgroup-v2 allows enabling/disabling specific controllers for
-> a (sub)-hierarchy, right? So if the controller is not enabled (by
-> default), it will fall back to putting the tasks in whatever parent does
-> have it on, and by default the root group would have and would accept
-> tasks.
-> 
-> Additionally, I think we want a flag to allow non-priv tasks to use RT
-> inside the controller -- after all, these tasks would be subject to
-> strict bandwidth controls and cannot burn the system like unbounded/root
-> FIFO tasks can.
-> 
-> Does that all sound workable?
-
-Yeah, if rt becomes its own controller, I don't see any fundamental
-roadblocks. It'd involve a bunch of churn which may add to maintenance
-overhead but it should work. An alternative would be coming up with some way
-to express the default no-enforcement state through the config knobs. I'm
-sure this would be doable too and if folks can figure out a reasonable
-interface, it should be able to obtain basically the same functionality with
-a lot less code.
+If rt stays as a part of cpu controller, my preference would be keeping the
+config implicit for threaded mode at least at the beginning. ie. Don't get
+in the way of people using threaded mode by blocking it but having some
+reasonable and clear default (e.g. internal tasks have priority as suggested
+or internal tasks get whatever is left over which may make more sense in the
+allocation model) may be sufficient. If not, like in the other case, we can
+make specific design decisions based on concrete use cases later.
 
 Thanks.
 
