@@ -1,289 +1,304 @@
-Return-Path: <cgroups+bounces-15782-lists+cgroups=lfdr.de@vger.kernel.org>
+Return-Path: <cgroups+bounces-15783-lists+cgroups=lfdr.de@vger.kernel.org>
 Delivered-To: lists+cgroups@lfdr.de
 Received: from mail.lfdr.de
 	by lfdr with LMTP
-	id 0D1uAbM1AmocpAEAu9opvQ
-	(envelope-from <cgroups+bounces-15782-lists+cgroups=lfdr.de@vger.kernel.org>)
-	for <lists+cgroups@lfdr.de>; Mon, 11 May 2026 22:01:55 +0200
+	id YDZNDTs2AmocpAEAu9opvQ
+	(envelope-from <cgroups+bounces-15783-lists+cgroups=lfdr.de@vger.kernel.org>)
+	for <lists+cgroups@lfdr.de>; Mon, 11 May 2026 22:04:11 +0200
 X-Original-To: lists+cgroups@lfdr.de
-Received: from sea.lore.kernel.org (sea.lore.kernel.org [IPv6:2600:3c0a:e001:db::12fc:5321])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5C1CF515610
-	for <lists+cgroups@lfdr.de>; Mon, 11 May 2026 22:01:54 +0200 (CEST)
+Received: from tor.lore.kernel.org (tor.lore.kernel.org [IPv6:2600:3c04:e001:36c::12fc:5321])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9A93F51569D
+	for <lists+cgroups@lfdr.de>; Mon, 11 May 2026 22:04:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (conduit.subspace.kernel.org [100.90.174.1])
-	by sea.lore.kernel.org (Postfix) with ESMTP id 9BC643010C22
-	for <lists+cgroups@lfdr.de>; Mon, 11 May 2026 20:00:43 +0000 (UTC)
+	by tor.lore.kernel.org (Postfix) with ESMTP id CAD9D305C4DA
+	for <lists+cgroups@lfdr.de>; Mon, 11 May 2026 20:03:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CC0953033CB;
-	Mon, 11 May 2026 20:00:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 513C43290C9;
+	Mon, 11 May 2026 20:03:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="b8K1Um0d"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="aJKGcV9E"
 X-Original-To: cgroups@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ed1-f46.google.com (mail-ed1-f46.google.com [209.85.208.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F113431D74B
-	for <cgroups@vger.kernel.org>; Mon, 11 May 2026 20:00:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1778529642; cv=none; b=meJgEgFdH75jQfJ8kGZ5rjXPtrL8YMonunHm1sEuXysI+A//aIclljy0IuN3S/IQVHtEyIq5oRmevfOGsE7rXwbyGTSYk2/asMuxGi6bMhshmlfwARpSkxa5wdZeMhYAAbfbTTyHPfRk2PcppXOXW84/mieNc6Ou82CO4TDic7I=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1778529642; c=relaxed/simple;
-	bh=1KRAqQAWTAhWVrs204gKu/wV0zuf6t0FkpqjQuZTGq8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=lao2rKgcQ2pjLMdMa27XvXp4wkXLPfFMofYtD8NBPXJSnEIvtn1ANDcx4AA3NNHZtjoIgwih2tFB2uHzdvcdGMlAXMK6SVzCWtL2Y36z6B/I8RiFYZitMs1bJHdvigieJMmpm9g94i5SDKGssfFXooU9vteUucv9oAK1zwY1bb8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=b8K1Um0d; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1778529640;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=nW6nfkcXo0UZUmY08qZpxOObv3dTS8UzyfTVH8HRueI=;
-	b=b8K1Um0dJz91FeTWZ5QaAjuPZIR2ZeHwymdLGBCKnnV1dpRawXdAtWF1IClGnXprNg3cx4
-	8RqtSMIQysgkKt0Rplohbe8+lqXRHyaKPsso4YeCeIEfntyLStrFkyjvnfwk3gMGJdGdFn
-	9NKaFoH4UFrsop39NHkibYd5diSfokY=
-Received: from mx-prod-mc-03.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-551-Zo71Wcg5O5aVL0-tkh0m-g-1; Mon,
- 11 May 2026 16:00:35 -0400
-X-MC-Unique: Zo71Wcg5O5aVL0-tkh0m-g-1
-X-Mimecast-MFC-AGG-ID: Zo71Wcg5O5aVL0-tkh0m-g_1778529632
-Received: from mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.111])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mx-prod-mc-03.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id E64701956062;
-	Mon, 11 May 2026 20:00:30 +0000 (UTC)
-Received: from [10.2.17.16] (unknown [10.2.17.16])
-	by mx-prod-int-08.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id 14E031800465;
-	Mon, 11 May 2026 20:00:24 +0000 (UTC)
-Message-ID: <a9bd9e15-d11e-4dcd-ab06-be2e83525ce3@redhat.com>
-Date: Mon, 11 May 2026 16:00:23 -0400
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 115FB2E8DEC
+	for <cgroups@vger.kernel.org>; Mon, 11 May 2026 20:03:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=209.85.208.46
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1778529828; cv=pass; b=raa8mriCT/f+T5qBaQ6jvp30I/RpJFyHzqGrZ9YTmsL+NuNMdUcuEXntFZUSbV9NIo4UU84BWPT80O9WkwO0n7vPKTKTuDdrV1rdhsxYEv99KLhWL718MEDuvrD7Mt5GSDdgeNhmnA44MgLIEGjM4Sy1KrKPZgXJ++zL6zOFk/4=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1778529828; c=relaxed/simple;
+	bh=IQoo2L8EhaJ1Fc2RW4QQ6a7gHDjPWRMIXP79pVn/Lw8=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=XoehX8Zs6I4m6NmlDadKZ7zYUpHxk8ixPcKZPByPGJdTbEB8VX8aEQAHcZWT7RFirdEz3NEeSvHtdn9/zNLuxJUg0ZYW2S7ZgIzV9URW2gGfy9S8C6W+xQkS8E1w3DGsL6o05xQUkw9vSjjBNeZQuNA4qrW9dh8dXnejXfsKW/Y=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=aJKGcV9E; arc=pass smtp.client-ip=209.85.208.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f46.google.com with SMTP id 4fb4d7f45d1cf-678a16429c6so7259931a12.1
+        for <cgroups@vger.kernel.org>; Mon, 11 May 2026 13:03:45 -0700 (PDT)
+ARC-Seal: i=1; a=rsa-sha256; t=1778529824; cv=none;
+        d=google.com; s=arc-20240605;
+        b=Rxys2fdOHLwPPEGHSLZ+qD0/VKXuMiRx2fZODBYVfOB/Gq1R+fENndt7dAHNxCF9A/
+         a6NoX1hqjrDIvW/GFjxludAKfaWptkFCbQH3TZ7ePPsm3/Mxsjzj0XkRgB8ZnuIKDNVl
+         nZ2wZVhdIua4FobURTfT83pUa9IAAg2XTmcytNN+AcC0TLIJVUtDhsUJNFC3CPf/O7yQ
+         j4e3Xpzt2DIFmAj6LOKYvLgvXRWcOOkzR5x4ZQ7yBB6zupk2baacsc2DMt6wW9FC8sNA
+         Jcf7ZF5TDexH/J1D1XQUPVMqQUVnNMkRxipiUnDOe8AjtJ857+fBFoOMFpW6g4yRGrMU
+         KAhA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=google.com; s=arc-20240605;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:dkim-signature;
+        bh=IQoo2L8EhaJ1Fc2RW4QQ6a7gHDjPWRMIXP79pVn/Lw8=;
+        fh=qBE8TWSVaddSjJSwGchTmfSHXsSeuVWHsb5Vjb1EVIE=;
+        b=Ie0qh5fVD4eswGmmvQ3nSOhpKFdwtM2yP+0s8t7tKrMv1laWO5wC+Og4JMIKnpwK5J
+         /Em/n1KVLgclMWvMEOM/rQv1Znp1dCtAIo7QZQ/AJvo8xY7uD4ZMmj9E+/ioY1zu7L06
+         H/YXfPvuYjaABk4+Sk65rcEp7iyP9RDyAV3AWs+nWv2JcXlmJnCt5o/ztiFQ62kL15Fd
+         Jx14CRqKtQf4D9nLNRMpVp1j+SV9klxjJEw+dfJrBJNrokM43eGezICUfWW3wgkuhduC
+         C0523ccY1fX81rZnQmm4q2T0dKj6tDd/5OYTDIHkC2VV80lq6qxd4WYdOg7Jgi4OfdqD
+         RDHw==;
+        darn=vger.kernel.org
+ARC-Authentication-Results: i=1; mx.google.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20251104; t=1778529824; x=1779134624; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=IQoo2L8EhaJ1Fc2RW4QQ6a7gHDjPWRMIXP79pVn/Lw8=;
+        b=aJKGcV9EsZUZ4OIMmYrjdtJAOGuwEYSveODmQvkq+BLT/TSj3hHuOAhsqGEI8j96qn
+         0IILsxK+MEfTteMYBIJx7U8PuPWEIZEMDkHGknha8jPp+9L03cjxUkDPmBrq27zjW3Ml
+         eo2DeJQ1EkALUvMOORqYv3wytjGgUeZUnQq6ObTsB6ToAPzaIEKj8Rp7HJj5hYk5000n
+         BJ+wlR3jBDwaMUBwUy2rasDtAb2V42ueUoiC2FxLKjSEFT83oz6U55XC+x0ZXhcVIrgj
+         cFkixbRz7zwGMnOr3wbZP2+B5rhmHERQ4oLidrO0VM11Kjr+Ch0Qy5pKaB53F5YrpUr/
+         8NYg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20251104; t=1778529824; x=1779134624;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-gg:x-gm-message-state:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=IQoo2L8EhaJ1Fc2RW4QQ6a7gHDjPWRMIXP79pVn/Lw8=;
+        b=stODq8606BmDjW3kdVIdSP7+UGh+dD/R76FYKZ79koiXVgyeTwBOQOhCw3OcwwSPIO
+         /butVSXSelKZma4pEB8pOWo9OV4P+JHzhoj428ze3oX9O3olwDwwIZZz3yF0uVY2RMOT
+         LNcBP8YHqzoJSqZRcW7ujPlbGu6PwQ46mkz7WXyTDqnqcLDqfd+Cafgz3VmzUhiqUn7r
+         cK14etqK/knI4fZlrZ2qUvO1QU4CP3pGUs4ZDPh5f4cFUbPitxCHdEtq0EKvEnL3i2qc
+         Kl0FJalTqvwHw2qM5yrIFWWn+W3Kwrr1334FhdX1DtRC7JmqrNl8HqcD21SW+sXgbXlF
+         Htdw==
+X-Forwarded-Encrypted: i=1; AFNElJ+fSs58x+RMsrm2mkZY9GQcZCOe3FPXKDoyzoFnyHAO24hyiNl2UCBgTPIl2If/eaptv31S8E7I@vger.kernel.org
+X-Gm-Message-State: AOJu0YwVnVtx7iwxmI/mVBx5ESDUnTwd1jzkSYrcZCd7uSPFohq+RhMN
+	YgnQBJL3n9m+rAoY3+clpMdTbSl8ZFAIQM0L5o+867PjrUkKPipGS1cEL3DVgr1zlp6jxDNhFdg
+	YLUc32LM5gOXt+VmCd+BcZBfkQ4BBocw=
+X-Gm-Gg: Acq92OHSqpOw3FmVZbQZz/YMdaGauqIX29gqIieIJuzrJIEoVU7KOa1Hb4q5U1Vw5uK
+	lKpu5YvFvc9xC9QBxRy69Y7QEXWK8u7ny6bDSfK78YIhRTxl6In3SbiIUUeBDI1XReYZBVYGJoj
+	+HZZURTsoobqz88pLoLFVVHncmq7zdgrvkqsbSIzjyZY2uYuTkFfJOp9tvCOLAbyY7hR6PFrwCb
+	B5H2GTtSf6aM+taLYj+zedejh6h74ohknbt6SvPNgrDdGvL2sCec1wMd8s40u5Pwnuh+JeiPPF/
+	a3if/R6QBXkIAmB9Dgk/HPmxqZOawfl7QjxSK9uw
+X-Received: by 2002:a05:6402:324d:b0:67b:7e67:7f5f with SMTP id
+ 4fb4d7f45d1cf-680b360118fmr374089a12.9.1778529823702; Mon, 11 May 2026
+ 13:03:43 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: cgroups@vger.kernel.org
 List-Id: <cgroups.vger.kernel.org>
 List-Subscribe: <mailto:cgroups+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:cgroups+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 2/2] cgroup/cpuset: reserve DL bandwidth only for
- root-domain moves
-To: Guopeng Zhang <zhangguopeng@kylinos.cn>, Tejun Heo <tj@kernel.org>,
- =?UTF-8?Q?Michal_Koutn=C3=BD?= <mkoutny@suse.com>,
- Ingo Molnar <mingo@redhat.com>, Peter Zijlstra <peterz@infradead.org>,
- Juri Lelli <juri.lelli@redhat.com>, Chen Ridong <chenridong@huaweicloud.com>
-Cc: Johannes Weiner <hannes@cmpxchg.org>,
- Vincent Guittot <vincent.guittot@linaro.org>,
- Dietmar Eggemann <dietmar.eggemann@arm.com>,
- Steven Rostedt <rostedt@goodmis.org>, Ben Segall <bsegall@google.com>,
- Mel Gorman <mgorman@suse.de>, Valentin Schneider <vschneid@redhat.com>,
- K Prateek Nayak <kprateek.nayak@amd.com>,
- Gabriele Monaco <gmonaco@redhat.com>, Will Deacon <will@kernel.org>,
- linux-kernel@vger.kernel.org, cgroups@vger.kernel.org
-References: <20260509102031.97608-1-zhangguopeng@kylinos.cn>
- <20260509102031.97608-3-zhangguopeng@kylinos.cn>
-Content-Language: en-US
-From: Waiman Long <longman@redhat.com>
-In-Reply-To: <20260509102031.97608-3-zhangguopeng@kylinos.cn>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.30.177.111
-X-Rspamd-Queue-Id: 5C1CF515610
+References: <20260423203445.2914963-1-joshua.hahnjy@gmail.com> <3ff8b23a-479d-46e8-b820-a23697587f01@kernel.org>
+In-Reply-To: <3ff8b23a-479d-46e8-b820-a23697587f01@kernel.org>
+From: Joshua Hahn <joshua.hahnjy@gmail.com>
+Date: Mon, 11 May 2026 22:03:32 +0200
+X-Gm-Features: AVHnY4K1a6nMigh3_903jx2K6M9LAk--_V64cSO-XxSGUFqXFVJ32lwBtBHSK00
+Message-ID: <CAN+CAwPK4cW6k6LazZsbuvewswOwzM8VJgPvcg0jef7FwfF1qg@mail.gmail.com>
+Subject: Re: [RFC PATCH 0/9 v2] mm/memcontrol: Make memory cgroup limits tier-aware
+To: "David Hildenbrand (Arm)" <david@kernel.org>
+Cc: linux-mm@kvack.org, Tejun Heo <tj@kernel.org>, Johannes Weiner <hannes@cmpxchg.org>, 
+	Michal Koutny <mkoutny@suse.com>, Michal Hocko <mhocko@kernel.org>, 
+	Roman Gushchin <roman.gushchin@linux.dev>, Shakeel Butt <shakeel.butt@linux.dev>, 
+	Andrew Morton <akpm@linux-foundation.org>, Chris Li <chrisl@kernel.org>, 
+	Kairui Song <kasong@tencent.com>, Muchun Song <muchun.song@linux.dev>, 
+	Lorenzo Stoakes <ljs@kernel.org>, "Liam R. Howlett" <Liam.Howlett@oracle.com>, 
+	Vlastimil Babka <vbabka@kernel.org>, Mike Rapoport <rppt@kernel.org>, 
+	Suren Baghdasaryan <surenb@google.com>, Kemeng Shi <shikemeng@huaweicloud.com>, 
+	Nhat Pham <nphamcs@gmail.com>, Baoquan He <bhe@redhat.com>, Barry Song <baohua@kernel.org>, 
+	Youngjun Park <youngjun.park@lge.com>, Qi Zheng <qi.zheng@linux.dev>, 
+	Axel Rasmussen <axelrasmussen@google.com>, Yuanchu Xie <yuanchu@google.com>, 
+	Wei Xu <weixugc@google.com>, Kaiyang Zhao <kaiyang2@cs.cmu.edu>, 
+	David Rientjes <rientjes@google.com>, Yiannis Nikolakopoulos <yiannis@zptcorp.com>, 
+	"Rao, Bharata Bhasker" <bharata@amd.com>, cgroups@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	kernel-team@meta.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Rspamd-Queue-Id: 9A93F51569D
 X-Rspamd-Server: lfdr
 X-Spamd-Result: default: False [-2.16 / 15.00];
-	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=1];
-	DMARC_POLICY_ALLOW(-0.50)[redhat.com,quarantine];
-	R_SPF_ALLOW(-0.20)[+ip6:2600:3c0a:e001:db::/64:c];
-	R_DKIM_ALLOW(-0.20)[redhat.com:s=mimecast20190719];
+	ARC_ALLOW(-1.00)[subspace.kernel.org:s=arc-20240116:i=2];
+	DMARC_POLICY_ALLOW(-0.50)[gmail.com,none];
+	R_DKIM_ALLOW(-0.20)[gmail.com:s=20251104];
+	R_SPF_ALLOW(-0.20)[+ip6:2600:3c04:e001:36c::/64:c];
 	MAILLIST(-0.15)[generic];
 	MIME_GOOD(-0.10)[text/plain];
 	HAS_LIST_UNSUB(-0.01)[];
-	MIME_TRACE(0.00)[0:+];
-	RCPT_COUNT_TWELVE(0.00)[19];
-	TAGGED_FROM(0.00)[bounces-15782-lists,cgroups=lfdr.de];
-	FORGED_SENDER_MAILLIST(0.00)[];
+	TAGGED_FROM(0.00)[bounces-15783-lists,cgroups=lfdr.de];
 	RCVD_TLS_LAST(0.00)[];
-	DKIM_TRACE(0.00)[redhat.com:+];
-	FORGED_RECIPIENTS_MAILLIST(0.00)[];
+	FORGED_SENDER_MAILLIST(0.00)[];
+	FREEMAIL_CC(0.00)[kvack.org,kernel.org,cmpxchg.org,suse.com,linux.dev,linux-foundation.org,tencent.com,oracle.com,google.com,huaweicloud.com,gmail.com,redhat.com,lge.com,cs.cmu.edu,zptcorp.com,amd.com,vger.kernel.org,meta.com];
+	FREEMAIL_FROM(0.00)[gmail.com];
+	RCVD_COUNT_THREE(0.00)[4];
+	RCPT_COUNT_TWELVE(0.00)[33];
+	MIME_TRACE(0.00)[0:+];
 	FROM_HAS_DN(0.00)[];
+	FORGED_RECIPIENTS_MAILLIST(0.00)[];
 	TO_DN_SOME(0.00)[];
-	PRECEDENCE_BULK(0.00)[];
-	FROM_NEQ_ENVFROM(0.00)[longman@redhat.com,cgroups@vger.kernel.org];
-	ASN(0.00)[asn:63949, ipnet:2600:3c0a::/32, country:SG];
-	RCVD_COUNT_FIVE(0.00)[6];
-	MID_RHS_MATCH_FROM(0.00)[];
 	NEURAL_HAM(-0.00)[-1.000];
+	PRECEDENCE_BULK(0.00)[];
+	FROM_NEQ_ENVFROM(0.00)[joshuahahnjy@gmail.com,cgroups@vger.kernel.org];
+	DKIM_TRACE(0.00)[gmail.com:+];
+	MID_RHS_MATCH_FROMTLD(0.00)[];
+	ASN(0.00)[asn:63949, ipnet:2600:3c04::/32, country:SG];
 	TAGGED_RCPT(0.00)[cgroups];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sea.lore.kernel.org:helo,sea.lore.kernel.org:rdns]
+	MISSING_XM_UA(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[mail.gmail.com:mid,tor.lore.kernel.org:helo,tor.lore.kernel.org:rdns]
 X-Rspamd-Action: no action
 
-On 5/9/26 6:20 AM, Guopeng Zhang wrote:
-> cpuset_can_attach() currently adds the bandwidth of all migrating
-> SCHED_DEADLINE tasks to sum_migrate_dl_bw. If the source and destination
-> cpuset effective CPU masks do not overlap, the whole sum is then
-> reserved in the destination root domain.
+On Mon, May 11, 2026 at 5:56=E2=80=AFPM David Hildenbrand (Arm)
+<david@kernel.org> wrote:
 >
-> set_cpus_allowed_dl(), however, subtracts bandwidth from the source
-> root domain only when the affinity change really moves the task between
-> root domains. A DL task can move between cpusets that are still in the
-> same root domain, so including that task in sum_migrate_dl_bw can reserve
-> destination bandwidth without a matching source-side subtraction.
->
-> Share the root-domain move test with set_cpus_allowed_dl(). Keep
-> nr_migrate_dl_tasks counting all migrating deadline tasks for cpuset DL
-> task accounting, but add to sum_migrate_dl_bw only for tasks that need a
-> root-domain bandwidth move. Keep using the destination cpuset effective
-> CPU mask and leave the broader can_attach()/attach() transaction model
-> unchanged.
->
-> Fixes: 2ef269ef1ac0 ("cgroup/cpuset: Free DL BW in case can_attach() fails")
-> Signed-off-by: Guopeng Zhang <zhangguopeng@kylinos.cn>
-> ---
->   include/linux/sched/deadline.h  |  9 +++++++++
->   kernel/cgroup/cpuset-internal.h |  1 +
->   kernel/cgroup/cpuset.c          | 33 ++++++++++++++++++---------------
->   kernel/sched/deadline.c         | 13 ++++++++++---
->   4 files changed, 38 insertions(+), 18 deletions(-)
->
-> diff --git a/include/linux/sched/deadline.h b/include/linux/sched/deadline.h
-> index 1198138cb839..273538200a44 100644
-> --- a/include/linux/sched/deadline.h
-> +++ b/include/linux/sched/deadline.h
-> @@ -33,6 +33,15 @@ struct root_domain;
->   extern void dl_add_task_root_domain(struct task_struct *p);
->   extern void dl_clear_root_domain(struct root_domain *rd);
->   extern void dl_clear_root_domain_cpu(int cpu);
-> +/*
-> + * Return whether moving DL task @p to @new_mask requires moving DL
-> + * bandwidth accounting between root domains. This helper is specific to
-> + * DL bandwidth move accounting semantics and is shared by
-> + * cpuset_can_attach() and set_cpus_allowed_dl() so both paths use the
-> + * same source root-domain test.
-> + */
-> +extern bool dl_task_needs_bw_move(struct task_struct *p,
-> +				  const struct cpumask *new_mask);
->   
->   extern u64 dl_cookie;
->   extern bool dl_bw_visited(int cpu, u64 cookie);
-> diff --git a/kernel/cgroup/cpuset-internal.h b/kernel/cgroup/cpuset-internal.h
-> index bb4e692bea30..f7aaf01f7cd5 100644
-> --- a/kernel/cgroup/cpuset-internal.h
-> +++ b/kernel/cgroup/cpuset-internal.h
-> @@ -167,6 +167,7 @@ struct cpuset {
->   	 */
->   	int nr_deadline_tasks;
->   	int nr_migrate_dl_tasks;
-> +	/* DL bandwidth that needs destination reservation for this attach. */
->   	u64 sum_migrate_dl_bw;
->   	/*
->   	 * CPU used for temporary DL bandwidth allocation during attach;
-> diff --git a/kernel/cgroup/cpuset.c b/kernel/cgroup/cpuset.c
-> index b9c839538900..23abfbbb4686 100644
-> --- a/kernel/cgroup/cpuset.c
-> +++ b/kernel/cgroup/cpuset.c
-> @@ -2993,7 +2993,7 @@ static int cpuset_can_attach(struct cgroup_taskset *tset)
->   	struct cpuset *cs, *oldcs;
->   	struct task_struct *task;
->   	bool setsched_check;
-> -	int ret;
-> +	int cpu, ret;
->   
->   	/* used later by cpuset_attach() */
->   	cpuset_attach_old_cs = task_cs(cgroup_taskset_first(tset, &css));
-> @@ -3038,28 +3038,31 @@ static int cpuset_can_attach(struct cgroup_taskset *tset)
->   		}
->   
->   		if (dl_task(task)) {
-> +			/*
-> +			 * Count all migrating DL tasks for cpuset task accounting.
-> +			 * Only tasks that need a root-domain bandwidth move
-> +			 * contribute to sum_migrate_dl_bw.
-> +			 */
->   			cs->nr_migrate_dl_tasks++;
-> -			cs->sum_migrate_dl_bw += task->dl.dl_bw;
-> +			if (dl_task_needs_bw_move(task, cs->effective_cpus))
-> +				cs->sum_migrate_dl_bw += task->dl.dl_bw;
->   		}
->   	}
->   
-> -	if (!cs->nr_migrate_dl_tasks)
-> +	if (!cs->sum_migrate_dl_bw)
->   		goto out_success;
->   
-> -	if (!cpumask_intersects(oldcs->effective_cpus, cs->effective_cpus)) {
-> -		int cpu = cpumask_any_and(cpu_active_mask, cs->effective_cpus);
-> -
-> -		if (unlikely(cpu >= nr_cpu_ids)) {
-> -			ret = -EINVAL;
-> -			goto out_unlock;
-> -		}
-> +	cpu = cpumask_any_and(cpu_active_mask, cs->effective_cpus);
-> +	if (unlikely(cpu >= nr_cpu_ids)) {
-> +		ret = -EINVAL;
-> +		goto out_unlock;
-> +	}
->   
-> -		ret = dl_bw_alloc(cpu, cs->sum_migrate_dl_bw);
-> -		if (ret)
-> -			goto out_unlock;
-> +	ret = dl_bw_alloc(cpu, cs->sum_migrate_dl_bw);
-> +	if (ret)
-> +		goto out_unlock;
->   
-> -		cs->dl_bw_cpu = cpu;
-> -	}
-> +	cs->dl_bw_cpu = cpu;
->   
->   out_success:
->   	/*
-> diff --git a/kernel/sched/deadline.c b/kernel/sched/deadline.c
-> index edca7849b165..7db4c87df83b 100644
-> --- a/kernel/sched/deadline.c
-> +++ b/kernel/sched/deadline.c
-> @@ -3107,20 +3107,18 @@ static void task_woken_dl(struct rq *rq, struct task_struct *p)
->   static void set_cpus_allowed_dl(struct task_struct *p,
->   				struct affinity_context *ctx)
->   {
-> -	struct root_domain *src_rd;
->   	struct rq *rq;
->   
->   	WARN_ON_ONCE(!dl_task(p));
->   
->   	rq = task_rq(p);
-> -	src_rd = rq->rd;
->   	/*
->   	 * Migrating a SCHED_DEADLINE task between exclusive
->   	 * cpusets (different root_domains) entails a bandwidth
->   	 * update. We already made space for us in the destination
->   	 * domain (see cpuset_can_attach()).
->   	 */
-> -	if (!cpumask_intersects(src_rd->span, ctx->new_mask)) {
-> +	if (dl_task_needs_bw_move(p, ctx->new_mask)) {
->   		struct dl_bw *src_dl_b;
->   
->   		src_dl_b = dl_bw_of(cpu_of(rq));
-> @@ -3137,6 +3135,15 @@ static void set_cpus_allowed_dl(struct task_struct *p,
->   	set_cpus_allowed_common(p, ctx);
->   }
->   
-> +bool dl_task_needs_bw_move(struct task_struct *p,
-> +			   const struct cpumask *new_mask)
-> +{
-> +	if (!dl_task(p))
-> +		return false;
-> +
-> +	return !cpumask_intersects(task_rq(p)->rd->span, new_mask);
-> +}
-> +
->   /* Assumes rq->lock is held */
->   static void rq_online_dl(struct rq *rq)
->   {
+> On 4/23/26 22:34, Joshua Hahn wrote:
+> > INTRODUCTION
+> > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> > Memory cgroups provide an interface that allow multiple works on a host=
+ to
+> > co-exist via weak and strong memory isolation guarantees. This works, b=
+ecause
+> > for the most part, all memory has equal utility. Isolating a cgroup=E2=
+=80=99s memory
+> > footprint restricts how much it can hurt other workloads competing for =
+memory,
+> > or protects it from other cgroups looking for more memory.
+> >
+> > However, on systems with tiered memory (e.g. CXL), memory utility is no=
+ longer
+> > homogeneous; toptier and lowtier memory provide different performance
+> > characteristics and have different scarcity, meaning memory footprint n=
+o longer
+> > serves as an accurate representation of a cgroup=E2=80=99s consumption =
+of the system=E2=80=99s
+> > limited resources. As an extreme example, a cgroup with 10G of toptier
+> > (e.g. DRAM) memory and a cgroup with 10G of lowtier (e.g. CXL) memory b=
+oth
+> > appear to be consuming the same amount of system resources from memcg=
+=E2=80=99s
+> > perspective, despite the performance asymmetry between the two workload=
+s.
+> >
+> > Therefore on tiered systems, memory isolation cannot currently happen, =
+as
+> > workloads that are well-behaved within their memcg limits may still hur=
+t the
+> > performance of other well-behaving workloads by hogging more than its
+> > =E2=80=9Cfair share=E2=80=9D of toptier memory.
+> >
+> > Introduce tier-aware memcg limits, which establish independent toptier =
+limits
+> > that scale with the memory limits and the ratio of toptier:total memory
+> > available on the system.
+> >
+> > INTERFACE
+> > =3D=3D=3D=3D=3D=3D=3D=3D=3D
+> > This series introduces only one adjustable knob to userspace; a new cgr=
+oup mount
+> > option =E2=80=9Cmemory_tiered_limits=E2=80=9D which toggles whether the=
+ cgroup mount will scale
+> > toptier limits. It also introduces 4 new read-only sysfs entries per-cg=
+roup:
+> > memory.toptier_{min, low, high, max}.
+> >
+> > The new toptier memory limits are scaled according to the amount of top=
+tier
+> > memory and total memory available on the system as such:
+> >
+> > memory.toptier_high =3D (toptier_mem / total_mem) * memory.high
+> >
+> > For instance, on a host with 100GB memory, with 75G toptier and 25G CXL=
+, the
+> > =E2=80=9Ctoptier ratio=E2=80=9D would be 75 / 100 =3D 0.75. A cgroup wi=
+th the following memcg
+> > limits {min: 8G, low: 12G, high: 20G, max: 24G} might see toptier limit=
+s scaled
+> > at {min: 6G, low: 9G, high: 15G, max: 18G}.
 
-LGTM
+Hi David!!
 
-Reviewed-by: Waiman Long <longman@redhat.com>
+It was great seeing you at LSFMMBPF. I didn't get a chance to have a
+conversation with you at Zagreb but hopefully I will be less shy and say
+hello next conference : -)
 
+> Assume you have a bigger hierarchy (HBP, DRAM, CXL), or assume you have m=
+ultiple
+> NUMA nodes with a hierarchy each.
+>
+> Your proposal doesn't really seem to be very versatile, or am I wrong?
+
+Let me address these comments separately!
+
+First, for the multi-numa-per-tier case, I think this is already pretty wel=
+l
+handled by my series. Once we realize that a memcg is consuming too much me=
+mory
+from a tier, we trigger reclaim from that memcg via
+try_to_free_mem_cgroup_pages,
+which as far as I can tell already handles the multi-numa per memcg case.
+Other than restricting the scan_control's nodemask to target the nodes
+from that tier, I don't think there's anything else to be done.
+
+Next for the 3+ tier case, I think this is a lot more scalable than it seem=
+s
+at first. This series depends on another RFC that I sent out [1],
+which pushes the concept of "stock" from memcg to page_counter, which means
+that it is more scalable to just add more page counters to each memcg.
+This means that each tier would just need another page_counter to track its
+memory usage, and we trigger selective reclaim on the tier that is being
+targeted via the scan control nodemask we introduce in this series.
+
+At my talk in LSFMMBPF, Usama noted that the user-visible API should probab=
+ly
+remain the same, no matter what. The way I have currently established the
+memcg files aren't really scalable, so Usama suggested turning the
+"memory.toptier_XXX" sysfs files to "memory.tiered_XXX", which would includ=
+e
+a newline-separated / space-separated list of per-tier limits. Something li=
+ke:
+
+$ cat memory.tiered_max
+tier_0 20971520
+tier_1 31457280
+...
+
+So we have a way to make both the user-facing side stable, and the internal=
+s
+also more scalable.
+
+With that said, I've opted to leave the internals to 2 tiers for now -- I t=
+hink
+it is not too late to add the generalization series when we start seeing
+3+ tier systems out there in the wild. My goal was to introduce tieredness,
+and we can work towards generalization in a future work.
+
+On that note, it seems like in general mm is aware of 3+ tiers, but most of=
+ the
+existing work revolves around distinguishing between toptier/everything els=
+e.
+I got this impression from reading mm/memory-tiers.c -- but please feel fre=
+e
+to correct me if you feel like I have the wrong idea here : -)
+
+So perhaps the generalization work would benefit from first introducing mor=
+e
+general tier awareness (not just toptier vs. rest) in memory-tiers.c.
+
+What do you think? Does this approach of introducing toptier restriction fo=
+r
+now, and then generalizing in future work make sense to you?
+
+Thanks again for your interest. Have a great day!
+Joshua
+
+[1] https://lore.kernel.org/all/20260410210742.550489-1-joshua.hahnjy@gmail=
+.com/
 
